@@ -26,6 +26,9 @@ build/
 .next/
 out/
 
+# fumadocs-mdx generated source
+.source/
+
 # IDE
 .idea/
 .vscode/
