@@ -8,6 +8,7 @@ import {
 import { notFound } from 'next/navigation';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
 import type { Metadata } from 'next';
 
 interface PageProps {
@@ -34,6 +35,7 @@ export default async function Page({ params }: PageProps) {
           components={{
             ...defaultMdxComponents,
             ComponentPreview,
+            PropsTable,
           }}
         />
       </DocsBody>
