@@ -1,0 +1,34 @@
+{
+  "name": "@loworbit/visor-tokens",
+  "version": "0.1.0",
+  "description": "Design tokens for the Visor design system — CSS custom properties for theming.",
+  "type": "module",
+  "main": "./dist/index.css",
+  "exports": {
+    ".": "./dist/index.css",
+    "./css": "./dist/index.css",
+    "./primitives": "./dist/primitives.css",
+    "./semantic": "./dist/semantic.css",
+    "./themes/*": "./dist/themes/*.css"
+  },
+  "scripts": {
+    "build": "echo 'TODO: implement token build in VI-8'",
+    "typecheck": "tsc --noEmit"
+  },
+  "files": [
+    "dist/"
+  ],
+  "keywords": [
+    "design-tokens",
+    "design-system",
+    "visor",
+    "css-variables"
+  ],
+  "license": "UNLICENSED",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@visor/docs",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Visor design system documentation site — built with fumadocs.",
+  "scripts": {
+    "dev": "echo 'TODO: implement docs site in VI-9'",
+    "build": "echo 'TODO: implement docs site in VI-9'",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}
