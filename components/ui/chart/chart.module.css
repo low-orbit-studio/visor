@@ -1,0 +1,203 @@
+/* Chart container */
+.container {
+  display: flex;
+  aspect-ratio: 16 / 9;
+  justify-content: center;
+  font-size: var(--text-xs, 0.75rem);
+  color: var(--color-foreground, #0f172a);
+}
+
+/* Recharts axis tick text */
+.container :global(.recharts-cartesian-axis-tick text) {
+  fill: var(--color-muted-foreground, #64748b);
+}
+
+/* Recharts cartesian grid lines */
+.container :global(.recharts-cartesian-grid line[stroke='#ccc']) {
+  stroke: var(--color-border, #e2e8f0);
+  opacity: 0.5;
+}
+
+/* Recharts tooltip cursor */
+.container :global(.recharts-curve.recharts-tooltip-cursor) {
+  stroke: var(--color-border, #e2e8f0);
+}
+
+/* Recharts dot strokes */
+.container :global(.recharts-dot[stroke='#fff']) {
+  stroke: transparent;
+}
+
+/* Recharts layers and surfaces */
+.container :global(.recharts-layer) {
+  outline: none;
+}
+
+.container :global(.recharts-surface) {
+  outline: none;
+}
+
+.container :global(.recharts-sector) {
+  outline: none;
+}
+
+.container :global(.recharts-sector[stroke='#fff']) {
+  stroke: transparent;
+}
+
+/* Recharts polar grid */
+.container :global(.recharts-polar-grid [stroke='#ccc']) {
+  stroke: var(--color-border, #e2e8f0);
+}
+
+/* Recharts radial bar background */
+.container :global(.recharts-radial-bar-background-sector) {
+  fill: var(--color-muted, #f1f5f9);
+}
+
+/* Recharts tooltip cursor rect */
+.container :global(.recharts-rectangle.recharts-tooltip-cursor) {
+  fill: var(--color-muted, #f1f5f9);
+}
+
+/* Recharts reference line */
+.container :global(.recharts-reference-line [stroke='#ccc']) {
+  stroke: var(--color-border, #e2e8f0);
+}
+
+/* Tooltip content */
+.tooltipContent {
+  display: grid;
+  min-width: 8rem;
+  align-items: start;
+  gap: 0.375rem;
+  border-radius: var(--radius-md, 0.375rem);
+  border: 1px solid var(--color-border, #e2e8f0);
+  background-color: var(--color-background, #ffffff);
+  padding: 0.375rem 0.625rem;
+  font-size: var(--text-xs, 0.75rem);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+.tooltipLabel {
+  font-weight: 500;
+}
+
+.tooltipItems {
+  display: grid;
+  gap: 0.375rem;
+}
+
+.tooltipItem {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.tooltipItem:has(.indicatorDot) {
+  align-items: center;
+}
+
+.tooltipItemContent {
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  line-height: 1;
+}
+
+.tooltipItemContent:has(.tooltipNestLabel) {
+  align-items: flex-end;
+}
+
+.tooltipItemContent:not(:has(.tooltipNestLabel)) {
+  align-items: center;
+}
+
+.tooltipItemLabels {
+  display: grid;
+  gap: 0.375rem;
+}
+
+.tooltipName {
+  color: var(--color-muted-foreground, #64748b);
+}
+
+.tooltipValue {
+  font-family: var(--font-mono, monospace);
+  font-weight: 500;
+  color: var(--color-foreground, #0f172a);
+  font-variant-numeric: tabular-nums;
+}
+
+.tooltipNestLabel {
+  font-weight: 500;
+}
+
+/* Indicators */
+.indicator {
+  flex-shrink: 0;
+  border-radius: 2px;
+  border: 1px solid var(--color-border-bg, currentColor);
+  background-color: var(--color-indicator-bg, currentColor);
+}
+
+.indicatorDot {
+  height: 0.625rem;
+  width: 0.625rem;
+}
+
+.indicatorLine {
+  width: 0.25rem;
+  align-self: stretch;
+}
+
+.indicatorDashed {
+  width: 0;
+  border-width: 1.5px;
+  border-style: dashed;
+  background-color: transparent;
+}
+
+/* Icon in tooltip/legend */
+.tooltipItem :global(svg) {
+  height: 0.625rem;
+  width: 0.625rem;
+  color: var(--color-muted-foreground, #64748b);
+}
+
+/* Legend content */
+.legendContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.legendContentTop {
+  padding-bottom: 0.75rem;
+}
+
+.legendContentBottom {
+  padding-top: 0.75rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.legendItem :global(svg) {
+  height: 0.75rem;
+  width: 0.75rem;
+  color: var(--color-muted-foreground, #64748b);
+}
+
+.legendSwatch {
+  height: 0.5rem;
+  width: 0.5rem;
+  flex-shrink: 0;
+  border-radius: 2px;
+}

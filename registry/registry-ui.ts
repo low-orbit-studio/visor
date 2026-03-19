@@ -156,4 +156,22 @@ export const ui: Registry = [
       },
     ],
   },
+  {
+    name: "chart",
+    type: "registry:ui",
+    description:
+      "A Recharts wrapper providing ChartContainer, ChartTooltip, and ChartLegend with theming via @loworbit/visor-tokens CSS custom properties.",
+    dependencies: ["recharts", "@loworbit/visor-tokens"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/chart/chart.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/chart/chart.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
 ]
