@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/visor-logo.png" alt="Visor" width="480" />
+</p>
+
 # Visor
 
 > Low Orbit Studio's shared design system — a two-layer distribution model: components via a shadcn-style registry (copy-and-own) and tokens via an npm package (`@loworbit/visor-tokens`).
