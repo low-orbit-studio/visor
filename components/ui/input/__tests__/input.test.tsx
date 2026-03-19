@@ -1,0 +1,42 @@
+import { render, screen } from "@testing-library/react"
+import { describe, it, expect } from "vitest"
+import { Input } from "../input"
+
+describe("Input", () => {
+  it("renders with default props", () => {
+    render(<Input placeholder="Enter text" />)
+    const input = screen.getByPlaceholderText("Enter text")
+    expect(input).toBeInTheDocument()
+  })
+
+  it("renders with custom className", () => {
+    render(<Input className="custom-class" />)
+    const input = screen.getByRole("textbox")
+    expect(input).toHaveClass("custom-class")
+  })
+
+  it("renders as disabled when disabled prop is set", () => {
+    render(<Input disabled />)
+    const input = screen.getByRole("textbox")
+    expect(input).toBeDisabled()
+  })
+
+  it("renders with specified type", () => {
+    render(<Input type="email" />)
+    const input = screen.getByRole("textbox")
+    expect(input).toHaveAttribute("type", "email")
+  })
+
+  it("passes through HTML input attributes", () => {
+    render(<Input required aria-label="Name" />)
+    const input = screen.getByRole("textbox")
+    expect(input).toBeRequired()
+    expect(input).toHaveAttribute("aria-label", "Name")
+  })
+
+  it("forwards ref correctly", () => {
+    const ref = { current: null }
+    render(<Input ref={ref} />)
+    expect(ref.current).not.toBeNull()
+  })
+})
