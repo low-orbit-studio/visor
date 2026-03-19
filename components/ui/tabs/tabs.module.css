@@ -1,0 +1,85 @@
+/* Tabs root */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Tabs list */
+.list {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full, 9999px);
+  padding: 3px;
+  color: var(--color-muted-foreground, #64748b);
+  height: 2.25rem;
+  width: fit-content;
+}
+
+.listVariantDefault {
+  background-color: var(--color-muted, #f1f5f9);
+}
+
+.listVariantLine {
+  gap: 0.25rem;
+  background-color: transparent;
+  border-radius: 0;
+  border-bottom: 1px solid var(--color-border, #e2e8f0);
+  height: auto;
+  padding-bottom: 0;
+}
+
+/* Tabs trigger */
+.trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  border-radius: var(--radius-md, 0.375rem);
+  border: 1px solid transparent;
+  padding: 0.25rem 0.5rem;
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--color-foreground-muted, #64748b);
+  background: transparent;
+  cursor: pointer;
+  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
+  outline: none;
+  flex: 1;
+  height: calc(100% - 2px);
+}
+
+.trigger:hover {
+  color: var(--color-foreground, #0f172a);
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--color-focus-ring, currentColor);
+  outline-offset: 2px;
+}
+
+.trigger:disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.trigger[data-state="active"] {
+  background-color: var(--color-background, #ffffff);
+  color: var(--color-foreground, #0f172a);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Tabs content */
+.content {
+  flex: 1;
+  font-size: var(--text-sm, 0.875rem);
+  outline: none;
+}
+
+.content:focus-visible {
+  outline: 2px solid var(--color-focus-ring, currentColor);
+  outline-offset: 2px;
+}
