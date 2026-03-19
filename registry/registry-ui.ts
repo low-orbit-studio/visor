@@ -318,4 +318,147 @@ export const ui: Registry = [
       },
     ],
   },
+  {
+    name: "dialog",
+    type: "registry:ui",
+    description:
+      "A modal dialog component with overlay, content, header, title, and description sub-components.",
+    dependencies: ["@radix-ui/react-dialog", "@phosphor-icons/react", "@loworbit/visor-tokens"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/dialog/dialog.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/dialog/dialog.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "sheet",
+    type: "registry:ui",
+    description:
+      "A slide-over panel component built on Dialog with support for top, right, bottom, and left sides.",
+    dependencies: [
+      "@radix-ui/react-dialog",
+      "@phosphor-icons/react",
+      "class-variance-authority",
+      "@loworbit/visor-tokens",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/sheet/sheet.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/sheet/sheet.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "dropdown-menu",
+    type: "registry:ui",
+    description:
+      "A dropdown menu component with items, checkbox items, radio items, sub-menus, labels, and separators.",
+    dependencies: [
+      "@radix-ui/react-dropdown-menu",
+      "@phosphor-icons/react",
+      "@loworbit/visor-tokens",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/dropdown-menu/dropdown-menu.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/dropdown-menu/dropdown-menu.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "tabs",
+    type: "registry:ui",
+    description:
+      "A tabs component with list, trigger, and content sub-components. Supports default and line variants.",
+    dependencies: [
+      "@radix-ui/react-tabs",
+      "class-variance-authority",
+      "@loworbit/visor-tokens",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/tabs/tabs.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/tabs/tabs.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "breadcrumb",
+    type: "registry:ui",
+    description:
+      "A breadcrumb navigation component with list, item, link, page, separator, and ellipsis sub-components.",
+    dependencies: ["@phosphor-icons/react", "@loworbit/visor-tokens"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/breadcrumb/breadcrumb.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/breadcrumb/breadcrumb.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "scroll-area",
+    type: "registry:ui",
+    description:
+      "A scroll area component with custom scrollbars using Radix UI ScrollArea.",
+    dependencies: ["@radix-ui/react-scroll-area", "@loworbit/visor-tokens"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/scroll-area/scroll-area.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/scroll-area/scroll-area.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "sidebar",
+    type: "registry:ui",
+    description:
+      "A feature-rich collapsible sidebar component with provider, menu, groups, and sub-menus.",
+    dependencies: [
+      "class-variance-authority",
+      "@phosphor-icons/react",
+      "@loworbit/visor-tokens",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/sidebar/sidebar.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/sidebar/sidebar.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
 ]

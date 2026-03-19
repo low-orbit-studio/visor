@@ -1,0 +1,194 @@
+/* Dropdown menu content */
+.content {
+  z-index: 50;
+  min-width: 12rem;
+  overflow: hidden;
+  border-radius: var(--radius-lg, 0.5rem);
+  border: 1px solid var(--color-border, #e2e8f0);
+  background-color: var(--color-popover, #ffffff);
+  color: var(--color-popover-foreground, #0f172a);
+  padding: 0.25rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+.content[data-state="open"] {
+  animation: contentShow 100ms ease-out;
+}
+
+.content[data-state="closed"] {
+  animation: contentHide 100ms ease-in;
+}
+
+/* Sub content */
+.subContent {
+  z-index: 50;
+  min-width: 9rem;
+  overflow: hidden;
+  border-radius: var(--radius-lg, 0.5rem);
+  border: 1px solid var(--color-border, #e2e8f0);
+  background-color: var(--color-popover, #ffffff);
+  color: var(--color-popover-foreground, #0f172a);
+  padding: 0.25rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+.subContent[data-state="open"] {
+  animation: contentShow 100ms ease-out;
+}
+
+.subContent[data-state="closed"] {
+  animation: contentHide 100ms ease-in;
+}
+
+/* Menu item */
+.item {
+  position: relative;
+  display: flex;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: var(--radius-md, 0.375rem);
+  padding: 0.5rem 0.75rem;
+  font-size: var(--text-sm, 0.875rem);
+  outline: none;
+  transition: background-color 100ms ease, color 100ms ease;
+}
+
+.item:focus,
+.item[data-highlighted] {
+  background-color: var(--color-accent, #f1f5f9);
+  color: var(--color-accent-foreground, #0f172a);
+}
+
+.item[data-disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.itemDestructive {
+  color: var(--color-destructive, #ef4444);
+}
+
+.itemDestructive:focus,
+.itemDestructive[data-highlighted] {
+  background-color: var(--color-destructive-muted, rgba(239, 68, 68, 0.1));
+  color: var(--color-destructive, #ef4444);
+}
+
+.itemInset {
+  padding-left: 2.375rem;
+}
+
+/* Checkbox and radio items */
+.checkboxItem,
+.radioItem {
+  position: relative;
+  display: flex;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: var(--radius-md, 0.375rem);
+  padding: 0.5rem 0.75rem;
+  padding-right: 2rem;
+  font-size: var(--text-sm, 0.875rem);
+  outline: none;
+  transition: background-color 100ms ease, color 100ms ease;
+}
+
+.checkboxItem:focus,
+.checkboxItem[data-highlighted],
+.radioItem:focus,
+.radioItem[data-highlighted] {
+  background-color: var(--color-accent, #f1f5f9);
+  color: var(--color-accent-foreground, #0f172a);
+}
+
+.checkboxItem[data-disabled],
+.radioItem[data-disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Item indicator */
+.itemIndicator {
+  pointer-events: none;
+  position: absolute;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Label */
+.label {
+  padding: 0.625rem 0.75rem;
+  font-size: var(--text-xs, 0.75rem);
+  color: var(--color-muted-foreground, #64748b);
+}
+
+/* Separator */
+.separator {
+  height: 1px;
+  margin: 0.25rem -0.25rem;
+  background-color: var(--color-border, #e2e8f0);
+}
+
+/* Shortcut */
+.shortcut {
+  margin-left: auto;
+  font-size: var(--text-xs, 0.75rem);
+  letter-spacing: 0.1em;
+  color: var(--color-muted-foreground, #64748b);
+}
+
+/* Sub trigger */
+.subTrigger {
+  display: flex;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-md, 0.375rem);
+  padding: 0.5rem 0.75rem;
+  font-size: var(--text-sm, 0.875rem);
+  outline: none;
+  transition: background-color 100ms ease, color 100ms ease;
+}
+
+.subTrigger:focus,
+.subTrigger[data-state="open"] {
+  background-color: var(--color-accent, #f1f5f9);
+  color: var(--color-accent-foreground, #0f172a);
+}
+
+.subTriggerIcon {
+  margin-left: auto;
+  width: 1rem;
+  height: 1rem;
+}
+
+@keyframes contentShow {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes contentHide {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
