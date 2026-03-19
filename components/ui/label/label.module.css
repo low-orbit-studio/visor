@@ -1,0 +1,18 @@
+/* Label base styles */
+.base {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--color-foreground, #0f172a);
+  user-select: none;
+  cursor: default;
+}
+
+.base:has(+ :disabled),
+.base:has(~ :disabled) {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

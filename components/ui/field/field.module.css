@@ -1,0 +1,47 @@
+/* Field */
+.field {
+  display: flex;
+  width: 100%;
+  gap: 0.75rem;
+}
+
+.fieldVertical {
+  flex-direction: column;
+}
+
+.fieldHorizontal {
+  flex-direction: row;
+  align-items: center;
+}
+
+/* Field Label */
+.fieldLabel {
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 500;
+  color: var(--color-foreground, #0f172a);
+  line-height: 1.4;
+}
+
+/* Field Description */
+.fieldDescription {
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 400;
+  color: var(--color-muted-foreground, #94a3b8);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Field Error */
+.fieldError {
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 400;
+  color: var(--color-destructive, #ef4444);
+}
+
+.fieldErrorList {
+  margin-left: 1rem;
+  list-style: disc;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
