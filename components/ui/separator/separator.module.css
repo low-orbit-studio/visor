@@ -1,0 +1,15 @@
+/* Separator */
+.separator {
+  flex-shrink: 0;
+  background-color: var(--color-border, #e2e8f0);
+}
+
+.horizontal {
+  height: 1px;
+  width: 100%;
+}
+
+.vertical {
+  width: 1px;
+  align-self: stretch;
+}

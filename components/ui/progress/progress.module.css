@@ -1,0 +1,20 @@
+/* Progress root */
+.root {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 0.75rem;
+  align-items: center;
+  overflow: hidden;
+  border-radius: var(--radius-full, 9999px);
+  background-color: var(--color-muted, #f1f5f9);
+}
+
+/* Progress indicator */
+.indicator {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  background-color: var(--color-primary, #0f172a);
+  transition: transform 0.3s ease;
+}
