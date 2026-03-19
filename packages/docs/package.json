@@ -1,16 +1,29 @@
 {
-  "name": "@visor/docs",
+  "name": "@loworbit/visor-docs",
   "version": "0.1.0",
   "private": true,
   "description": "Visor design system documentation site — built with fumadocs.",
   "scripts": {
-    "dev": "echo 'TODO: implement docs site in VI-9'",
-    "build": "echo 'TODO: implement docs site in VI-9'",
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "license": "UNLICENSED",
+  "dependencies": {
+    "fumadocs-core": "^14.6.4",
+    "fumadocs-mdx": "^11.5.2",
+    "fumadocs-ui": "^14.6.4",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "shiki": "^1.29.2"
+  },
   "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.1",
     "typescript": "^5.7.2"
   }
 }
