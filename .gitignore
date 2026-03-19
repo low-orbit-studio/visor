@@ -1,1 +1,45 @@
-.env.local
+# Dependencies
+node_modules/
+package-lock.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor / lock files
+*.swp
+*.swo
+*~
+.~lock.*#
+
+# Temp files
+*.tmp
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+.next/
+out/
+
+# IDE
+.idea/
+.vscode/
+*.code-workspace
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Playbook
+scripts
+
+# Testing
+coverage/
+.nyc_output/
