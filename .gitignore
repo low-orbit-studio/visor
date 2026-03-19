@@ -20,11 +20,16 @@ Thumbs.db
 .env.*
 !.env.example
 
+# Linear
+.linear.json
+
 # Build output
 dist/
 build/
 .next/
 out/
+next-env.d.ts
+*.tsbuildinfo
 
 # fumadocs-mdx generated source
 .source/
