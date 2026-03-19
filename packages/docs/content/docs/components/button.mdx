@@ -4,6 +4,7 @@ description: A versatile button component with multiple variants and sizes. Buil
 ---
 
 import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
 
 ## Installation
 
@@ -81,13 +82,7 @@ export default function Example() {
 
 ### ButtonProps
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `'default' \| 'secondary' \| 'outline' \| 'ghost' \| 'destructive'` | `'default'` | Visual style variant |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Button size |
-| `disabled` | `boolean` | `false` | Disable the button |
-| `className` | `string` | — | Additional CSS class names |
-| `onClick` | `React.MouseEventHandler` | — | Click handler |
+<PropsTable component="button" />
 
 The component also accepts all standard `<button>` HTML attributes.
 
