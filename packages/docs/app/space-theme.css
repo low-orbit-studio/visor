@@ -1,0 +1,66 @@
+/* ── Space theme — core tokens + starfield ── */
+
+.space-theme {
+  --bg: #080810;
+  --surface: #0e0e1a;
+  --border: rgba(255, 255, 255, 0.07);
+  --accent: #5b6fff;
+  --accent2: #ff5b8f;
+  --text: #e8e8f0;
+  --muted: #6b6b80;
+  --success: #4fffb0;
+  --card: #12121f;
+
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  position: relative;
+  font-family: var(--font-syne), system-ui, sans-serif;
+}
+
+.space-theme code,
+.space-theme pre {
+  font-family: var(--font-space-mono), monospace;
+}
+
+/* Starfield */
+.space-theme .starfield {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.space-theme .star {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  opacity: 0;
+  animation: starTwinkle var(--d, 3s) ease-in-out infinite;
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0; }
+  50% { opacity: var(--o, 0.6); }
+}
+
+/* ── Fumadocs overrides for space theme ── */
+.space-theme {
+  --fd-background: var(--bg);
+  --fd-foreground: var(--text);
+  --fd-card: var(--card);
+  --fd-card-foreground: var(--text);
+  --fd-border: var(--border);
+  --fd-muted: var(--surface);
+  --fd-muted-foreground: var(--muted);
+  --fd-accent: var(--accent);
+  --fd-accent-foreground: #ffffff;
+  --fd-primary: var(--accent);
+  --fd-primary-foreground: #ffffff;
+  --fd-secondary: var(--surface);
+  --fd-secondary-foreground: var(--text);
+  --fd-popover: var(--card);
+  --fd-popover-foreground: var(--text);
+  --fd-ring: var(--accent);
+}

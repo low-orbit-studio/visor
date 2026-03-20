@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function HomePage() {
   return (
@@ -9,72 +10,57 @@ export default function HomePage() {
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: '100vh',
-        gap: '1.5rem',
+        gap: '2.5rem',
         padding: '2rem',
-        fontFamily: 'system-ui, sans-serif',
+        fontFamily: 'var(--font-syne), system-ui, sans-serif',
       }}
     >
-      <div style={{ textAlign: 'center', maxWidth: '600px' }}>
-        <h1
+      <Image
+        src="/visor-hero.png"
+        alt="Visor — One component system. Total Control."
+        width={800}
+        height={280}
+        priority
+        style={{ maxWidth: '100%', height: 'auto' }}
+      />
+      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+        <Link
+          href="/docs"
           style={{
-            fontSize: '2.5rem',
-            fontWeight: 700,
-            marginBottom: '0.75rem',
-            letterSpacing: '-0.02em',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '2.75rem',
+            padding: '0 1.5rem',
+            borderRadius: '0.375rem',
+            backgroundColor: 'var(--accent)',
+            color: '#ffffff',
+            fontWeight: 600,
+            fontSize: '0.9375rem',
+            textDecoration: 'none',
           }}
         >
-          Visor
-        </h1>
-        <p
+          Browse Docs
+        </Link>
+        <Link
+          href="/docs/components/button"
           style={{
-            fontSize: '1.125rem',
-            color: '#64748b',
-            marginBottom: '2rem',
-            lineHeight: 1.6,
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '2.75rem',
+            padding: '0 1.5rem',
+            borderRadius: '0.375rem',
+            backgroundColor: 'transparent',
+            color: 'var(--text)',
+            fontWeight: 500,
+            fontSize: '0.9375rem',
+            textDecoration: 'none',
+            border: '1px solid var(--border)',
           }}
         >
-          Low Orbit Studio&apos;s shared design system. Components you own,
-          tokens that keep you consistent.
-        </p>
-        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-          <Link
-            href="/docs"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '2.5rem',
-              padding: '0 1.25rem',
-              borderRadius: '0.375rem',
-              backgroundColor: '#0f172a',
-              color: '#f8fafc',
-              fontWeight: 500,
-              fontSize: '0.875rem',
-              textDecoration: 'none',
-            }}
-          >
-            Browse Docs
-          </Link>
-          <Link
-            href="/docs/components/button"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '2.5rem',
-              padding: '0 1.25rem',
-              borderRadius: '0.375rem',
-              backgroundColor: 'transparent',
-              color: '#0f172a',
-              fontWeight: 500,
-              fontSize: '0.875rem',
-              textDecoration: 'none',
-              border: '1px solid #e2e8f0',
-            }}
-          >
-            Components
-          </Link>
-        </div>
+          Components
+        </Link>
       </div>
     </main>
   );

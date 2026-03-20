@@ -1,4 +1,5 @@
 @import 'fumadocs-ui/style.css';
+@import './space-theme.css';
 
 :root {
   /* Visor design tokens — fallback values for docs site */
