@@ -278,32 +278,83 @@ function generateSemanticCSS(): string {
 // Adaptive (theme) CSS generation
 // ============================================================
 
-function generateThemeCSS(theme: "light" | "dark"): string {
-  const selector = theme === "light" ? ":root" : ".theme-dark";
-  const lines: string[] = [];
-
-  lines.push(sectionComment(`Adaptive: Text (${theme})`));
+/** Build adaptive token declarations for a given theme variant */
+function buildAdaptiveDecls(theme: "light" | "dark"): {
+  textDecls: string[];
+  surfaceDecls: string[];
+  borderDecls: string[];
+} {
   const textDecls: string[] = [];
   for (const [name, values] of Object.entries(adaptiveText)) {
     textDecls.push(`--text-${name}: ${toVar(values[theme])};`);
   }
-  lines.push(block(selector, textDecls));
 
-  lines.push(sectionComment(`Adaptive: Surface (${theme})`));
   const surfaceDecls: string[] = [];
   for (const [name, values] of Object.entries(adaptiveSurface)) {
     surfaceDecls.push(`--surface-${name}: ${toVar(values[theme])};`);
   }
-  lines.push(block(selector, surfaceDecls));
 
-  lines.push(sectionComment(`Adaptive: Border (${theme})`));
   const borderDecls: string[] = [];
   for (const [name, values] of Object.entries(adaptiveBorder)) {
     borderDecls.push(`--border-${name}: ${toVar(values[theme])};`);
   }
-  lines.push(block(selector, borderDecls));
 
+  return { textDecls, surfaceDecls, borderDecls };
+}
+
+function generateThemeCSS(theme: "light" | "dark"): string {
   const themeLabel = theme === "light" ? "Light Theme" : "Dark Theme";
+  const lines: string[] = [];
+  const { textDecls, surfaceDecls, borderDecls } = buildAdaptiveDecls(theme);
+
+  if (theme === "light") {
+    // Light theme: applied to :root (default)
+    lines.push(sectionComment("Adaptive: Text (light)"));
+    lines.push(block(":root", textDecls));
+
+    lines.push(sectionComment("Adaptive: Surface (light)"));
+    lines.push(block(":root", surfaceDecls));
+
+    lines.push(sectionComment("Adaptive: Border (light)"));
+    lines.push(block(":root", borderDecls));
+  } else {
+    // Dark theme: applied to manual selectors
+    const darkSelectors = [
+      ".dark",
+      ".theme-dark",
+      '[data-theme="dark"]',
+    ];
+    const darkSelector = darkSelectors.join(",\n");
+
+    lines.push(sectionComment("Adaptive: Text (dark) — manual toggle"));
+    lines.push(block(darkSelector, textDecls));
+
+    lines.push(sectionComment("Adaptive: Surface (dark) — manual toggle"));
+    lines.push(block(darkSelector, surfaceDecls));
+
+    lines.push(sectionComment("Adaptive: Border (dark) — manual toggle"));
+    lines.push(block(darkSelector, borderDecls));
+
+    // prefers-color-scheme: dark — auto detection
+    lines.push(sectionComment("Adaptive: Text (dark) — prefers-color-scheme"));
+    lines.push(
+      `@media (prefers-color-scheme: dark) {\n${block(":root:not(.light):not(.theme-light):not([data-theme=\"light\"])", textDecls)}}`
+    );
+    lines.push("");
+
+    lines.push(sectionComment("Adaptive: Surface (dark) — prefers-color-scheme"));
+    lines.push(
+      `@media (prefers-color-scheme: dark) {\n${block(":root:not(.light):not(.theme-light):not([data-theme=\"light\"])", surfaceDecls)}}`
+    );
+    lines.push("");
+
+    lines.push(sectionComment("Adaptive: Border (dark) — prefers-color-scheme"));
+    lines.push(
+      `@media (prefers-color-scheme: dark) {\n${block(":root:not(.light):not(.theme-light):not([data-theme=\"light\"])", borderDecls)}}`
+    );
+    lines.push("");
+  }
+
   return header(`Visor Design Tokens — ${themeLabel}`) + lines.join("\n");
 }
 
@@ -350,7 +401,8 @@ function generateTokensCSS(): string {
 
   lines.push(
     "/* ============================================",
-    "   Tier 3: Adaptive — Dark Theme (.theme-dark)",
+    "   Tier 3: Adaptive — Dark Theme (.dark, .theme-dark, [data-theme=\"dark\"])",
+    "   and @media (prefers-color-scheme: dark)",
     "   ============================================ */"
   );
   const darkContent = generateThemeCSS("dark");

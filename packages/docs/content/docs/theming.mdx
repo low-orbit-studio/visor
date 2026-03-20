@@ -1,0 +1,196 @@
+---
+title: Theming
+description: Light and dark mode support in Visor — automatic system preference detection and manual theme toggle.
+---
+
+## Overview
+
+Visor ships light and dark themes out of the box via `@loworbit/visor-tokens`. Both themes are CSS-only — no JavaScript required for the default behavior.
+
+The system works at two levels:
+
+1. **Automatic** — `prefers-color-scheme: dark` is respected by default. Users with dark system preferences get dark mode immediately.
+2. **Manual toggle** — Apply a class or data attribute to override the system preference.
+
+## Quick Start
+
+Import the full token bundle in your app's root CSS file:
+
+```css
+@import '@loworbit/visor-tokens';
+```
+
+That's it. The bundle includes:
+- All primitive tokens (colors, spacing, typography)
+- All semantic tokens
+- Light theme applied to `:root`
+- Dark theme applied via `@media (prefers-color-scheme: dark)` and manual selectors
+
+## Automatic Dark Mode
+
+No setup required. When a user's OS is set to dark mode, `prefers-color-scheme: dark` applies the dark token values automatically.
+
+The dark theme activates on `:root` unless the consumer has explicitly forced light mode:
+
+```css
+/* Applied automatically when system prefers dark */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not(.theme-light):not([data-theme="light"]) {
+    --text-primary: var(--color-gray-50);
+    --surface-page: var(--color-gray-950);
+    /* ...all adaptive tokens switch to dark values */
+  }
+}
+```
+
+## Manual Theme Toggle
+
+To override the system preference, apply one of the following to your `<html>` element (or any root container):
+
+| Selector | Effect |
+|----------|--------|
+| `.dark` | Force dark mode |
+| `.theme-dark` | Force dark mode (legacy alias) |
+| `[data-theme="dark"]` | Force dark mode |
+| `.light` | Force light mode (override dark system preference) |
+| `.theme-light` | Force light mode (legacy alias) |
+| `[data-theme="light"]` | Force light mode |
+
+### HTML Attribute Example
+
+```html
+<!-- Force dark mode regardless of system preference -->
+<html data-theme="dark">
+
+<!-- Force light mode regardless of system preference -->
+<html data-theme="light">
+
+<!-- Let the system preference decide (default) -->
+<html>
+```
+
+### Class Example
+
+```html
+<html class="dark">
+  <!-- dark mode active -->
+</html>
+```
+
+## JavaScript Theme Toggle
+
+The `@loworbit/visor-tokens` package exports utilities for toggling themes programmatically:
+
+```ts
+import { applyTheme, getSystemTheme } from '@loworbit/visor-tokens';
+
+// Apply a theme
+applyTheme('dark');   // adds .dark to <html>
+applyTheme('light');  // adds .light to <html>
+
+// Read the system preference
+const systemTheme = getSystemTheme(); // 'light' | 'dark'
+```
+
+You can also pass a custom element as the second argument:
+
+```ts
+const container = document.getElementById('app');
+applyTheme('dark', container);
+```
+
+### Persisting User Preference
+
+Combine `applyTheme` with `localStorage` to persist the user's choice:
+
+```ts
+import { applyTheme, getSystemTheme, type Theme } from '@loworbit/visor-tokens';
+
+function initTheme() {
+  const stored = localStorage.getItem('theme') as Theme | null;
+  const theme = stored ?? getSystemTheme();
+  applyTheme(theme);
+}
+
+function toggleTheme() {
+  const current = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+  const next: Theme = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem('theme', next);
+}
+```
+
+### React Hook Example
+
+```tsx
+import { useState, useEffect } from 'react';
+import { applyTheme, getSystemTheme, type Theme } from '@loworbit/visor-tokens';
+
+function useTheme() {
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window === 'undefined') return 'light';
+    return (localStorage.getItem('theme') as Theme) ?? getSystemTheme();
+  });
+
+  useEffect(() => {
+    applyTheme(theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  return { theme, setTheme };
+}
+
+// Usage
+function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
+  return (
+    <button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+      {theme === 'dark' ? 'Switch to Light' : 'Switch to Dark'}
+    </button>
+  );
+}
+```
+
+## Granular CSS Imports
+
+Instead of the full bundle, you can import individual CSS files:
+
+```css
+/* Primitive tokens only */
+@import '@loworbit/visor-tokens/primitives';
+
+/* Semantic tokens only */
+@import '@loworbit/visor-tokens/semantic';
+
+/* Light theme adaptive tokens */
+@import '@loworbit/visor-tokens/themes/light';
+
+/* Dark theme adaptive tokens (manual selectors + media query) */
+@import '@loworbit/visor-tokens/themes/dark';
+```
+
+This is useful when you want to compose the token layers manually or when your build system handles CSS concatenation.
+
+## Token Architecture
+
+All components in Visor reference CSS custom properties — never hardcoded values. This means every component automatically responds to theme changes with zero extra code.
+
+```css
+/* A component referencing adaptive tokens */
+.card {
+  background: var(--surface-card);   /* white in light, gray-900 in dark */
+  color: var(--text-primary);        /* gray-900 in light, gray-50 in dark */
+  border: 1px solid var(--border-default); /* gray-200 in light, gray-700 in dark */
+}
+```
+
+The 3-tier token architecture:
+
+```
+Primitives         Semantic              Adaptive
+--color-gray-50    --text-primary        switches light ↔ dark
+--color-gray-900   --surface-card        based on theme class
+--color-blue-500   --border-default      or prefers-color-scheme
+```
+
+Consumers can override any tier. Overriding a primitive cascades to all semantic and adaptive tokens that reference it.
