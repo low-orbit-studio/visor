@@ -25,6 +25,8 @@ import {
   primitiveShadows,
   primitiveZIndex,
   primitiveFontFamilies,
+  primitiveMotionDurations,
+  primitiveMotionEasings,
 } from "../tokens/primitives.js";
 
 import {
@@ -34,6 +36,8 @@ import {
   semanticInteractive,
   semanticSpacing,
   semanticTypography,
+  semanticMotionDuration,
+  semanticMotionEasing,
 } from "../tokens/semantic.js";
 
 import {
@@ -177,6 +181,22 @@ function generatePrimitivesCSS(): string {
   }
   lines.push(block(":root", zIndexDecls));
 
+  // Motion Durations
+  lines.push(sectionComment("Primitive: Motion Durations"));
+  const motionDurationDecls: string[] = [];
+  for (const [name, value] of Object.entries(primitiveMotionDurations)) {
+    motionDurationDecls.push(`--motion-duration-${name}: ${value};`);
+  }
+  lines.push(block(":root", motionDurationDecls));
+
+  // Motion Easings
+  lines.push(sectionComment("Primitive: Motion Easings"));
+  const motionEasingDecls: string[] = [];
+  for (const [name, value] of Object.entries(primitiveMotionEasings)) {
+    motionEasingDecls.push(`--motion-easing-${name}: ${value};`);
+  }
+  lines.push(block(":root", motionEasingDecls));
+
   return header("Visor Design Tokens — Primitives") + lines.join("\n");
 }
 
@@ -234,6 +254,22 @@ function generateSemanticCSS(): string {
     typographyDecls.push(`--${name}: ${toVar(ref)};`);
   }
   lines.push(block(":root", typographyDecls));
+
+  // Motion Duration
+  lines.push(sectionComment("Semantic: Motion Duration"));
+  const motionDurationDecls: string[] = [];
+  for (const [name, ref] of Object.entries(semanticMotionDuration)) {
+    motionDurationDecls.push(`--motion-duration-${name}: ${toVar(ref)};`);
+  }
+  lines.push(block(":root", motionDurationDecls));
+
+  // Motion Easing
+  lines.push(sectionComment("Semantic: Motion Easing"));
+  const motionEasingDecls: string[] = [];
+  for (const [name, ref] of Object.entries(semanticMotionEasing)) {
+    motionEasingDecls.push(`--motion-easing-${name}: ${toVar(ref)};`);
+  }
+  lines.push(block(":root", motionEasingDecls));
 
   return header("Visor Design Tokens — Semantic") + lines.join("\n");
 }
@@ -383,6 +419,8 @@ function main(): void {
   console.log(`  Spacing steps: ${Object.keys(primitiveSpacing).length}`);
   console.log(`  Radius steps: ${Object.keys(primitiveRadius).length}`);
   console.log(`  Shadow steps: ${Object.keys(primitiveShadows).length}`);
+  console.log(`  Motion durations: ${Object.keys(primitiveMotionDurations).length}`);
+  console.log(`  Motion easings: ${Object.keys(primitiveMotionEasings).length}`);
   console.log(
     `  Semantic text: ${Object.keys(semanticText).length}`
   );
@@ -391,6 +429,12 @@ function main(): void {
   );
   console.log(
     `  Semantic border: ${Object.keys(semanticBorder).length}`
+  );
+  console.log(
+    `  Semantic motion duration: ${Object.keys(semanticMotionDuration).length}`
+  );
+  console.log(
+    `  Semantic motion easing: ${Object.keys(semanticMotionEasing).length}`
   );
   console.log(
     `  Adaptive text: ${Object.keys(adaptiveText).length} (light + dark)`
