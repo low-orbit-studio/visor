@@ -36,18 +36,20 @@ npm install @loworbit/visor-tokens
 @import "@loworbit/visor-tokens";
 ```
 
-### 3. Configure the registry
+### 3. Initialize Visor
 
-Create a `components.json` at your project root:
+```sh
+npx @loworbitstudio/visor init
+```
+
+This creates a `visor.json` in your project root with default path mappings:
 
 ```json
 {
-  "$schema": "https://visor.loworbit.studio/schema.json",
-  "registry": "https://visor.loworbit.studio/registry",
-  "aliases": {
-    "components": "@/components/ui",
-    "hooks": "@/hooks",
-    "lib": "@/lib"
+  "paths": {
+    "components": "components/ui",
+    "hooks": "hooks",
+    "lib": "lib"
   }
 }
 ```
@@ -251,16 +253,16 @@ export default function RootLayout({ children }) {
 
 ### Updating a Component
 
-Re-run the CLI with `--force` to pull the latest upstream version:
+Re-run the CLI with `--overwrite` to pull the latest upstream version:
 
 ```sh
-npx visor add button --force
+npx visor add button --overwrite
 ```
 
 Because you own the files, the CLI shows a diff before overwriting. If you've customized the component, use git to merge:
 
 1. Commit your customizations.
-2. Run `npx visor add button --force`.
+2. Run `npx visor add button --overwrite`.
 3. Use `git diff` to review what changed.
 4. Merge your customizations into the updated version.
 5. Commit the result.
@@ -280,10 +282,11 @@ Token updates propagate automatically to all components. No component files chan
 ## CLI Reference
 
 ```sh
-npx visor add <component>           # Add a component or hook
-npx visor add <component> --force   # Update an existing component
-npx visor list                      # List all available components
-npx visor info <component>          # Show component details and dependencies
+npx @loworbitstudio/visor init                   # Create visor.json config
+npx @loworbitstudio/visor add <component>         # Add a component or hook
+npx @loworbitstudio/visor add <component> --overwrite  # Update an existing component
+npx @loworbitstudio/visor list                    # List all available components
+npx @loworbitstudio/visor diff [component]        # Show local vs. registry differences
 ```
 
 ---
@@ -335,6 +338,7 @@ visor/
 ├── lib/               # Utility source (registry entries)
 ├── registry/          # Registry schema and definitions
 └── packages/
+    ├── cli/           # @loworbitstudio/visor CLI
     ├── tokens/        # @loworbit/visor-tokens npm package
     └── docs/          # fumadocs documentation site
 ```
