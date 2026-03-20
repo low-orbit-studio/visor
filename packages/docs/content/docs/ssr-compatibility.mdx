@@ -1,0 +1,163 @@
+---
+title: SSR Compatibility
+description: Which Visor components are server-safe vs client-only, and how to use them correctly in Next.js App Router.
+---
+
+## Overview
+
+Visor components are distributed as copy-and-own source files. When you add them to a Next.js App Router project, some components render on the server without issue, while others require the React Client Component boundary (`"use client"`).
+
+This page documents the SSR status of every component and hook, explains why each classification exists, and shows how to use client components correctly within a server-first architecture.
+
+## Component SSR Matrix
+
+| Component | SSR Status | Reason |
+|-----------|-----------|--------|
+| `Alert` | Server-safe | Pure HTML rendering, no hooks, no Radix |
+| `Avatar` | Client-only | Radix UI primitive (`@radix-ui/react-avatar`) |
+| `Badge` | Server-safe | Pure HTML rendering, no hooks, no Radix |
+| `Breadcrumb` | Server-safe | Pure HTML rendering, no hooks, no Radix |
+| `Button` | Server-safe | Pure HTML rendering, no hooks, no Radix |
+| `Card` | Server-safe | Pure HTML rendering, no hooks, no Radix |
+| `Chart` | Client-only | Uses `useContext`, `useMemo`, and Recharts (client-only charting library) |
+| `Checkbox` | Client-only | Radix UI primitive (`@radix-ui/react-checkbox`) |
+| `Dialog` | Client-only | Radix UI primitive (`@radix-ui/react-dialog`), manages open/close state |
+| `DropdownMenu` | Client-only | Radix UI primitive (`@radix-ui/react-dropdown-menu`), manages open/close state |
+| `Field` | Server-safe | Pure HTML rendering, no hooks, no Radix |
+| `Input` | Server-safe | Pure HTML rendering, no hooks, no Radix |
+| `Label` | Client-only | Radix UI primitive (`@radix-ui/react-label`) |
+| `Progress` | Client-only | Radix UI primitive (`@radix-ui/react-progress`) |
+| `ScrollArea` | Client-only | Radix UI primitive (`@radix-ui/react-scroll-area`) |
+| `Select` | Client-only | Radix UI primitive (`@radix-ui/react-select`), manages open/close state |
+| `Separator` | Client-only | Radix UI primitive (`@radix-ui/react-separator`) |
+| `Sheet` | Client-only | Radix UI primitive (`@radix-ui/react-dialog`), manages open/close state |
+| `Sidebar` | Client-only | Uses `useState`, `useEffect`, `useContext`, `useRef`, media query hooks |
+| `Skeleton` | Server-safe | Pure HTML rendering, no hooks, no Radix |
+| `Switch` | Client-only | Radix UI primitive (`@radix-ui/react-switch`) |
+| `Tabs` | Client-only | Radix UI primitive (`@radix-ui/react-tabs`), manages active tab state |
+| `Textarea` | Server-safe | Pure HTML rendering, no hooks, no Radix |
+| `Tooltip` | Client-only | Radix UI primitive (`@radix-ui/react-tooltip`), manages open/close state |
+
+## Hook SSR Matrix
+
+All custom hooks require the client boundary because they use React hooks (`useState`, `useEffect`, `useRef`, etc.) which only run in the browser.
+
+| Hook | SSR Status | Reason |
+|------|-----------|--------|
+| `useBoolean` | Client-only | Uses `useState`, `useCallback` |
+| `useClickOutside` | Client-only | Uses `useEffect`, accesses `document` |
+| `useDebounce` | Client-only | Uses `useState`, `useEffect` |
+| `useFocusTrap` | Client-only | Uses `useEffect`, accesses `document` |
+| `useIntersectionObserver` | Client-only | Uses `useState`, `useEffect`, `useRef`, `IntersectionObserver` API |
+| `useKeyboardShortcut` | Client-only | Uses `useEffect`, accesses `document` |
+| `useLocalStorage` | Client-only | Uses `useState`, `useEffect`, accesses `window.localStorage` |
+| `useMediaQuery` | Client-only | Uses `useState`, `useEffect`, accesses `window.matchMedia` |
+| `usePrevious` | Client-only | Uses `useEffect`, `useRef` |
+
+## Why Radix UI Requires `"use client"`
+
+All Radix UI primitives use React hooks internally for state management, focus trapping, keyboard navigation, and portal rendering. Any component that imports from a `@radix-ui/*` package must be a Client Component — even if your wrapper doesn't call any hooks directly.
+
+## Usage Patterns
+
+### Server-safe components
+
+Server-safe components can be imported and rendered directly in Server Components — no wrapper needed.
+
+```tsx
+// app/page.tsx (Server Component — no "use client")
+import { Alert } from "@/components/ui/alert/alert"
+import { Badge } from "@/components/ui/badge/badge"
+import { Button } from "@/components/ui/button/button"
+import { Card } from "@/components/ui/card/card"
+
+export default function Page() {
+  return (
+    <Card>
+      <Alert variant="info">This renders on the server.</Alert>
+      <Badge>New</Badge>
+      <Button>Get Started</Button>
+    </Card>
+  )
+}
+```
+
+### Client components in Server Components
+
+Client components can be children of Server Components. The server component passes data down; the client component handles interactivity.
+
+```tsx
+// app/page.tsx (Server Component)
+import { UserMenu } from "@/components/user-menu" // client component
+
+export default async function Page() {
+  const user = await fetchUser() // server-side data fetch
+  return <UserMenu user={user} />
+}
+```
+
+```tsx
+// components/user-menu.tsx (Client Component)
+"use client"
+
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu/dropdown-menu"
+
+export function UserMenu({ user }: { user: User }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger>{user.name}</DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuItem>Profile</DropdownMenuItem>
+        <DropdownMenuItem>Sign out</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+```
+
+### Passing Server Component children into Client Components
+
+You can pass Server Component subtrees as `children` into client components. React renders the server children on the server and slots them into the client component.
+
+```tsx
+// app/layout.tsx (Server Component)
+import { Sidebar, SidebarProvider } from "@/components/ui/sidebar/sidebar"
+import { ServerNav } from "@/components/server-nav" // Server Component
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <SidebarProvider>
+      <Sidebar>
+        <ServerNav /> {/* rendered on server, passed as children */}
+      </Sidebar>
+      <main>{children}</main>
+    </SidebarProvider>
+  )
+}
+```
+
+### Lazy loading client components
+
+For heavy client components (like `Chart` or `Dialog`), use `next/dynamic` to defer loading until needed.
+
+```tsx
+import dynamic from "next/dynamic"
+
+const Chart = dynamic(
+  () => import("@/components/ui/chart/chart").then((m) => m.ChartContainer),
+  {
+    loading: () => <div>Loading chart...</div>,
+    ssr: false, // skip server render for pure client-side charts
+  }
+)
+```
+
+## Best Practices
+
+1. **Keep Server Components at the leaves** — fetch data in Server Components and pass it as props to Client Components. This maximizes server rendering.
+
+2. **Push `"use client"` boundaries down** — only mark the smallest subtree that actually needs interactivity as a Client Component. Don't add `"use client"` to layout or page files unless required.
+
+3. **Compose, don't wrap** — pass server-rendered children into client components via `children` instead of importing server components inside client components.
+
+4. **Avoid `ssr: false` unless necessary** — `next/dynamic` with `ssr: false` skips the initial HTML entirely. Only use it for components that depend on browser-only APIs unavailable in Node.js (e.g., WebGL, canvas).
