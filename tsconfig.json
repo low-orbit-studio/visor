@@ -27,7 +27,8 @@
     "lib/**/*.ts",
     "hooks/**/*.ts",
     "vitest.config.ts",
-    "vitest.setup.ts"
+    "vitest.setup.ts",
+    "css-modules.d.ts"
   ],
   "exclude": ["node_modules", "dist", "packages"]
 }
