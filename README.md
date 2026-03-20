@@ -1,9 +1,5 @@
 <p align="center">
-  <img src="assets/visor-logo.png" alt="Visor" width="480" />
-</p>
-
-<p align="center">
-  A React design system with a two-layer distribution model — components you own, tokens that stay in sync.
+  <img src="assets/visor-logo-dark.png" alt="Visor — One component system. Total Control. By Low Orbit Studio" width="480" />
 </p>
 
 <p align="center">
