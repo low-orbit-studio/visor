@@ -1,0 +1,140 @@
+---
+title: Versioning & Changelog
+description: How Visor versions its tokens package and registry components, and how breaking changes are communicated to consumers.
+---
+
+Visor uses a two-layer distribution model — tokens via npm and components via a copy-and-own registry. Each layer has a distinct versioning approach.
+
+---
+
+## Tokens Package — Semver
+
+`@loworbit/visor-tokens` is the only npm-distributed piece of Visor. It follows [Semantic Versioning](https://semver.org/).
+
+### Semver Rules
+
+| Bump | When to Use |
+|------|-------------|
+| **Major** (`1.0.0 → 2.0.0`) | Removing a token, renaming a token, changing a token's semantic meaning, restructuring the CSS layer architecture |
+| **Minor** (`0.1.0 → 0.2.0`) | Adding new tokens, adding a new theme, adding a new token tier |
+| **Patch** (`0.1.0 → 0.1.1`) | Adjusting a token's value, fixing a typo in a comment, internal build changes with no output change |
+
+**Rule of thumb:** If a consumer's stylesheet would break or render differently after `npm update`, it's a breaking change and requires a major bump.
+
+### Examples
+
+```
+--color-primary renamed → --color-brand-primary    MAJOR
+Adding --color-surface-overlay                      MINOR
+Tweaking --color-primary from #3b82f6 to #2563eb   PATCH
+Removing --spacing-xs                               MAJOR
+```
+
+---
+
+## Registry Components — Metadata Versioning
+
+Registry components are distributed via copy-and-own — consumers run `npx visor add button` and the source is copied directly into their project. There is no npm package to version.
+
+Each component carries a version in its registry metadata:
+
+```json
+{
+  "name": "button",
+  "version": "1.2.0",
+  "description": "A polymorphic button component with multiple variants."
+}
+```
+
+### Version Bump Rules
+
+| Bump | When to Use |
+|------|-------------|
+| **Major** | API-breaking changes — removed props, renamed props, changed behavior |
+| **Minor** | New props, new variants, new slots |
+| **Patch** | Bug fixes, accessibility improvements, internal refactors with no API change |
+
+### Consumer Responsibility
+
+Once a component is copied into a consumer project, it is owned by that project. The consumer decides when (and whether) to pull in updates — there is no automatic update mechanism. The registry metadata version is a reference point, not an enforcement mechanism.
+
+Check the current canonical version in these docs and manually apply relevant changes as needed.
+
+---
+
+## Changelog Tooling — Changesets
+
+Visor uses [Changesets](https://github.com/changesets/changesets) for changelog management. It's the standard for monorepos and integrates cleanly with npm workspaces.
+
+### Workflow
+
+#### 1. Record a change
+
+After completing work that affects `@loworbit/visor-tokens`, run:
+
+```bash
+npm run changeset
+```
+
+The CLI prompts you to select the affected package, choose a bump type, and write a summary. This creates a `.changeset/<id>.md` file — commit it alongside your code.
+
+#### 2. Release
+
+When ready to release:
+
+```bash
+npm run changeset:version
+```
+
+This consumes pending changesets, bumps the version in `packages/tokens/package.json`, and updates `CHANGELOG.md`. Commit the result, then publish:
+
+```bash
+npm run changeset:publish
+```
+
+### Available Scripts
+
+| Script | Purpose |
+|--------|---------|
+| `npm run changeset` | Create a changeset for a pending change |
+| `npm run changeset:version` | Consume changesets and bump versions |
+| `npm run changeset:publish` | Publish updated packages to npm |
+
+---
+
+## Breaking Change Communication
+
+Major version bumps require more than a changelog entry.
+
+### Process
+
+1. **Changeset summary** — clearly state what changed and why it is breaking.
+2. **Migration guide** — add `docs/migrations/v{MAJOR}.md` with before/after examples and step-by-step instructions.
+3. **Docs site** — add or update a migration guide page so it appears here.
+4. **Changelog link** — after `changeset:version` runs, manually add a link to the migration guide in the generated `CHANGELOG.md` entry.
+5. **Consumer notification** — notify downstream consumers via the appropriate channel.
+
+### Migration Guide Format
+
+```markdown
+# Migration Guide: v1 → v2
+
+## Breaking Changes
+
+### Token renamed: `--color-primary` → `--color-brand-primary`
+
+**Why:** Aligned with the updated semantic naming convention.
+
+**Action required:**
+
+Find and replace all uses of `var(--color-primary)` with `var(--color-brand-primary)`.
+```
+
+---
+
+## Reference
+
+- [Changesets documentation](https://github.com/changesets/changesets)
+- [Semantic Versioning spec](https://semver.org)
+- Migration guides: `docs/migrations/`
+- Full strategy details: `docs/versioning.md`

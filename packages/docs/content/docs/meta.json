@@ -1,4 +1,4 @@
 {
   "title": "Visor",
-  "pages": ["index", "components"]
+  "pages": ["index", "versioning", "components"]
 }
