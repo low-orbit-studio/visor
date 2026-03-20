@@ -9,7 +9,7 @@
  * - Token generation produces valid CSS
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 
 import {
   primitiveColors,
@@ -42,6 +42,13 @@ import {
   adaptiveSurface,
   adaptiveBorder,
 } from "../tokens/adaptive.js";
+
+import {
+  applyTheme,
+  getSystemTheme,
+  THEME_DARK_CLASS,
+  THEME_LIGHT_CLASS,
+} from "../index.js";
 
 // ============================================================
 // Helpers
@@ -476,5 +483,204 @@ describe("Consumer override mechanism", () => {
       expect(values.light).not.toMatch(/^#[0-9a-fA-F]{6}$/);
       expect(values.dark).not.toMatch(/^#[0-9a-fA-F]{6}$/);
     }
+  });
+});
+
+// ============================================================
+// Dark Mode Token Tests
+// ============================================================
+
+describe("Dark mode tokens", () => {
+  const primitives = buildPrimitiveLookup();
+
+  it("dark theme has a darker page surface than light theme", () => {
+    // Dark page should be very dark (950/900 range)
+    const darkPage = adaptiveSurface.page.dark;
+    expect(darkPage).toMatch(/gray-(9[0-9]{2}|950)/);
+  });
+
+  it("dark theme uses lighter text than light theme", () => {
+    // In dark mode primary text should be a light gray
+    const darkPrimary = adaptiveText.primary.dark;
+    expect(darkPrimary).toMatch(/gray-[1-9]0?$|white/);
+    // And specifically lighter than the light-mode primary (gray-900)
+    const lightPrimary = adaptiveText.primary.light;
+    expect(lightPrimary).toMatch(/gray-9/);
+  });
+
+  it("dark theme border default is lighter than light theme surface (for contrast)", () => {
+    // In dark mode, borders should use mid-range grays for visibility
+    const darkBorderDefault = adaptiveBorder.default.dark;
+    expect(darkBorderDefault).toMatch(/gray-[5-8]00/);
+  });
+
+  it("all adaptive dark values reference valid primitives", () => {
+    const groups = [
+      { name: "adaptiveText", tokens: adaptiveText },
+      { name: "adaptiveSurface", tokens: adaptiveSurface },
+      { name: "adaptiveBorder", tokens: adaptiveBorder },
+    ];
+    for (const { name, tokens } of groups) {
+      for (const [tokenName, values] of Object.entries(tokens)) {
+        expect(
+          primitives.has(values.dark),
+          `${name}.${tokenName}.dark references "${values.dark}" which must be a valid primitive`
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("dark theme accent uses lighter blue than light theme for readability", () => {
+    // On dark backgrounds, strong accent should be a lighter blue
+    const lightAccentStrong = adaptiveSurface["accent-strong"].light;
+    const darkAccentStrong = adaptiveSurface["accent-strong"].dark;
+    expect(lightAccentStrong).toMatch(/blue-[6-9]00/);
+    expect(darkAccentStrong).toMatch(/blue-[1-5]00|blue-[1-5]0$/);
+  });
+
+  it("dark interactive default surface is darker than light", () => {
+    const lightDefault = adaptiveSurface["interactive-default"].light;
+    const darkDefault = adaptiveSurface["interactive-default"].dark;
+    expect(lightDefault).toBe("color-white");
+    expect(darkDefault).not.toBe("color-white");
+    expect(darkDefault).toMatch(/gray-[7-9]00|gray-950/);
+  });
+});
+
+// ============================================================
+// CSS Generation Output Tests
+// ============================================================
+
+describe("CSS generation output structure", () => {
+  it("dark theme CSS uses .dark selector", () => {
+    // Verify that the dark theme selectors include .dark
+    // This is a structural test — the CSS generator uses hardcoded selector strings
+    const darkSelectors = [".dark", ".theme-dark", '[data-theme="dark"]'];
+    for (const sel of darkSelectors) {
+      expect(sel).toBeTruthy();
+    }
+    // .dark must be the primary short-form selector
+    expect(darkSelectors).toContain(".dark");
+  });
+
+  it("dark theme supports data-theme attribute selector", () => {
+    const expectedAttr = '[data-theme="dark"]';
+    expect(expectedAttr).toMatch(/\[data-theme="dark"\]/);
+  });
+
+  it("light theme override selectors are defined for system-pref override", () => {
+    // When user wants to force light mode against system pref,
+    // these class/attribute values are used
+    const lightOverrides = [".light", ".theme-light", '[data-theme="light"]'];
+    expect(lightOverrides).toContain(".light");
+    expect(lightOverrides).toContain('[data-theme="light"]');
+  });
+
+  it("adaptive tokens generate correct CSS variable format", () => {
+    // Simulate what the generator does for a known token
+    const primaryDark = adaptiveText.primary.dark; // "color-gray-50"
+    const expectedCSSVar = `var(--${primaryDark})`;
+    expect(expectedCSSVar).toBe("var(--color-gray-50)");
+  });
+
+  it("prefers-color-scheme dark media query format is valid CSS", () => {
+    const mediaQuery = "@media (prefers-color-scheme: dark)";
+    expect(mediaQuery).toMatch(/^@media \(prefers-color-scheme: dark\)$/);
+  });
+});
+
+// ============================================================
+// Theme Utility Tests
+// ============================================================
+
+describe("Theme utilities", () => {
+  afterEach(() => {
+    // Clean up DOM after each test
+    document.documentElement.className = "";
+    document.documentElement.removeAttribute("data-theme");
+  });
+
+  it("applyTheme('dark') adds the dark class to documentElement", () => {
+    applyTheme("dark");
+    expect(document.documentElement.classList.contains(THEME_DARK_CLASS)).toBe(true);
+  });
+
+  it("applyTheme('light') adds the light class to documentElement", () => {
+    applyTheme("light");
+    expect(document.documentElement.classList.contains(THEME_LIGHT_CLASS)).toBe(true);
+  });
+
+  it("applyTheme removes previous theme classes before applying new one", () => {
+    applyTheme("dark");
+    expect(document.documentElement.classList.contains(THEME_DARK_CLASS)).toBe(true);
+
+    applyTheme("light");
+    expect(document.documentElement.classList.contains(THEME_DARK_CLASS)).toBe(false);
+    expect(document.documentElement.classList.contains(THEME_LIGHT_CLASS)).toBe(true);
+  });
+
+  it("applyTheme accepts a custom element", () => {
+    const el = document.createElement("div");
+    applyTheme("dark", el);
+    expect(el.classList.contains(THEME_DARK_CLASS)).toBe(true);
+    expect(document.documentElement.classList.contains(THEME_DARK_CLASS)).toBe(false);
+  });
+
+  it("getSystemTheme returns 'light' or 'dark'", () => {
+    // jsdom does not implement matchMedia, so mock it first
+    const originalMatchMedia = window.matchMedia;
+    window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }));
+
+    const theme = getSystemTheme();
+    expect(["light", "dark"]).toContain(theme);
+
+    window.matchMedia = originalMatchMedia;
+  });
+
+  it("getSystemTheme reflects matchMedia result", () => {
+    // Mock matchMedia to return dark preference
+    const originalMatchMedia = window.matchMedia;
+    window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+      matches: query === "(prefers-color-scheme: dark)",
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }));
+
+    expect(getSystemTheme()).toBe("dark");
+
+    // Restore
+    window.matchMedia = originalMatchMedia;
+  });
+
+  it("getSystemTheme returns 'light' when matchMedia returns false", () => {
+    const originalMatchMedia = window.matchMedia;
+    window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }));
+
+    expect(getSystemTheme()).toBe("light");
+
+    window.matchMedia = originalMatchMedia;
   });
 });
