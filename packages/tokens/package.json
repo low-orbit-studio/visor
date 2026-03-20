@@ -1,6 +1,6 @@
 {
   "name": "@loworbit/visor-tokens",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Design tokens for the Visor design system — CSS custom properties for theming.",
   "type": "module",
   "main": "./dist/index.css",
