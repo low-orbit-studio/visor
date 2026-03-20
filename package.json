@@ -15,9 +15,13 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "docs:dev": "npm run dev -w packages/docs",
-    "docs:build": "npm run build -w packages/docs"
+    "docs:build": "npm run build -w packages/docs",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "changeset:publish": "changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.30.0",
     "@eslint/js": "^9.18.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
