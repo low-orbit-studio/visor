@@ -47,6 +47,9 @@ venv/
 # Playbook
 scripts
 
+# Claude Code
+.claude/
+
 # Testing
 coverage/
 .nyc_output/
