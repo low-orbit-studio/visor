@@ -1,6 +1,7 @@
 import { render } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Skeleton } from "../skeleton"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Skeleton", () => {
   it("renders without crashing", () => {
@@ -36,5 +37,18 @@ describe("Skeleton", () => {
   it("renders as a div element", () => {
     const { container } = render(<Skeleton />)
     expect(container.firstChild?.nodeName).toBe("DIV")
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations (aria-hidden skeleton)", async () => {
+    // Skeletons are decorative loading placeholders; hide from AT with aria-hidden
+    const { container } = render(
+      <div>
+        <p>Loading...</p>
+        <Skeleton aria-hidden="true" style={{ width: "200px", height: "20px" }} />
+      </div>
+    )
+    await checkA11y(container)
   })
 })

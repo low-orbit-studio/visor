@@ -8,6 +8,7 @@ import {
   CardContent,
   CardFooter,
 } from "../card"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Card", () => {
   it("renders with default props", () => {
@@ -116,5 +117,21 @@ describe("Card compound usage", () => {
     expect(screen.getByText("Description")).toBeInTheDocument()
     expect(screen.getByText("Content")).toBeInTheDocument()
     expect(screen.getByText("Footer")).toBeInTheDocument()
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations", async () => {
+    const { container } = render(
+      <Card>
+        <CardHeader>
+          <CardTitle>Card Title</CardTitle>
+          <CardDescription>A description of the card content.</CardDescription>
+        </CardHeader>
+        <CardContent>Main content area.</CardContent>
+        <CardFooter>Footer actions</CardFooter>
+      </Card>
+    )
+    await checkA11y(container)
   })
 })

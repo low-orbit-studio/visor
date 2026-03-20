@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Progress } from "../progress"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Progress", () => {
   it("renders without crashing", () => {
@@ -50,5 +51,22 @@ describe("Progress", () => {
     const indicator = container.querySelector("[data-slot='progress-indicator']")
     expect(indicator).toBeInTheDocument()
     expect((indicator as HTMLElement).style.transform).toBe("translateX(-60%)")
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations", async () => {
+    const { container } = render(<Progress value={50} aria-label="Upload progress" />)
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations with aria-labelledby", async () => {
+    const { container } = render(
+      <div>
+        <p id="progress-label">Loading files...</p>
+        <Progress value={75} aria-labelledby="progress-label" />
+      </div>
+    )
+    await checkA11y(container)
   })
 })

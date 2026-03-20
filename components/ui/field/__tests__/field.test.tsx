@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Field, FieldLabel, FieldDescription, FieldError } from "../field"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Field", () => {
   it("renders with default props", () => {
@@ -100,5 +101,29 @@ describe("FieldError", () => {
     )
     const items = screen.getAllByText("Required")
     expect(items).toHaveLength(1)
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations (full field structure)", async () => {
+    const { container } = render(
+      <Field>
+        <FieldLabel htmlFor="email">Email address</FieldLabel>
+        <input id="email" type="email" aria-describedby="email-desc" />
+        <FieldDescription id="email-desc">Enter your work email.</FieldDescription>
+      </Field>
+    )
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (field with error)", async () => {
+    const { container } = render(
+      <Field>
+        <FieldLabel htmlFor="name">Name</FieldLabel>
+        <input id="name" type="text" aria-describedby="name-error" aria-invalid="true" />
+        <FieldError id="name-error">Name is required</FieldError>
+      </Field>
+    )
+    await checkA11y(container)
   })
 })

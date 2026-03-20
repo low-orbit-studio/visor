@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Badge } from "../badge"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Badge", () => {
   it("renders with default props", () => {
@@ -47,5 +48,17 @@ describe("Badge", () => {
   it("renders children correctly", () => {
     render(<Badge>Status</Badge>)
     expect(screen.getByText("Status")).toBeInTheDocument()
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations (default variant)", async () => {
+    const { container } = render(<Badge>New</Badge>)
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (destructive variant)", async () => {
+    const { container } = render(<Badge variant="destructive">Error</Badge>)
+    await checkA11y(container)
   })
 })

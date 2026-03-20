@@ -9,6 +9,7 @@ import {
   useChart,
   type ChartConfig,
 } from "../chart"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 // Mock recharts to avoid ResizeObserver issues in jsdom
 vi.mock("recharts", () => ({
@@ -390,5 +391,16 @@ describe("useChart", () => {
     )
 
     expect(capturedConfig).toEqual(baseConfig)
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations (chart container)", async () => {
+    const { container } = render(
+      <ChartContainer config={baseConfig} aria-label="Sales and revenue chart">
+        <div>Chart visualization</div>
+      </ChartContainer>
+    )
+    await checkA11y(container)
   })
 })

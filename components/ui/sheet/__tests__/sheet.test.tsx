@@ -10,6 +10,7 @@ import {
   SheetDescription,
   SheetClose,
 } from "../sheet"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Sheet", () => {
   it("renders trigger correctly", () => {
@@ -98,5 +99,33 @@ describe("Sheet", () => {
       </Sheet>
     )
     expect(screen.queryByText("Close")).not.toBeInTheDocument()
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations (trigger/closed state)", async () => {
+    const { container } = render(
+      <Sheet>
+        <SheetTrigger>Open Sheet</SheetTrigger>
+        <SheetContent>
+          <SheetTitle>Settings</SheetTitle>
+        </SheetContent>
+      </Sheet>
+    )
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (open state)", async () => {
+    const { container } = render(
+      <Sheet open>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Settings Panel</SheetTitle>
+            <SheetDescription>Configure your preferences below.</SheetDescription>
+          </SheetHeader>
+        </SheetContent>
+      </Sheet>
+    )
+    await checkA11y(container)
   })
 })

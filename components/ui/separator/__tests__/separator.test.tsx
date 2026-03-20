@@ -1,6 +1,7 @@
 import { render } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Separator } from "../separator"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Separator", () => {
   it("renders without crashing", () => {
@@ -43,5 +44,17 @@ describe("Separator", () => {
     const ref = { current: null }
     render(<Separator ref={ref} />)
     expect(ref.current).not.toBeNull()
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations (decorative)", async () => {
+    const { container } = render(<Separator />)
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (non-decorative)", async () => {
+    const { container } = render(<Separator decorative={false} />)
+    await checkA11y(container)
   })
 })

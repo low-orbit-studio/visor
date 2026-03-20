@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Button } from "../button"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Button", () => {
   it("renders with default props", () => {
@@ -36,5 +37,17 @@ describe("Button", () => {
     )
     expect(screen.getByText("Label")).toBeInTheDocument()
     expect(screen.getByText("Icon")).toBeInTheDocument()
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations (default)", async () => {
+    const { container } = render(<Button>Click me</Button>)
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (disabled)", async () => {
+    const { container } = render(<Button disabled>Disabled</Button>)
+    await checkA11y(container)
   })
 })

@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Avatar, AvatarFallback } from "../avatar"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Avatar", () => {
   it("renders with fallback text", () => {
@@ -90,5 +91,25 @@ describe("AvatarFallback", () => {
       </Avatar>
     )
     expect(screen.getByText("XY")).toHaveAttribute("data-slot", "avatar-fallback")
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations with fallback text", async () => {
+    const { container } = render(
+      <Avatar>
+        <AvatarFallback>JD</AvatarFallback>
+      </Avatar>
+    )
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations with aria-label", async () => {
+    const { container } = render(
+      <Avatar aria-label="John Doe avatar">
+        <AvatarFallback>JD</AvatarFallback>
+      </Avatar>
+    )
+    await checkA11y(container)
   })
 })
