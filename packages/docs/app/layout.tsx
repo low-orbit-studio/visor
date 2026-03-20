@@ -1,6 +1,21 @@
 import type { Metadata } from 'next';
+import { Syne, Space_Mono } from 'next/font/google';
 import { RootProvider } from 'fumadocs-ui/provider';
+import { Starfield } from '@/components/starfield';
 import './globals.css';
+
+const syne = Syne({
+  subsets: ['latin'],
+  variable: '--font-syne',
+  display: 'swap',
+});
+
+const spaceMono = Space_Mono({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-space-mono',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: {
@@ -17,8 +32,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
-        <RootProvider>{children}</RootProvider>
+      <body className={`space-theme ${syne.variable} ${spaceMono.variable}`}>
+        <Starfield />
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <RootProvider>{children}</RootProvider>
+        </div>
       </body>
     </html>
   );
