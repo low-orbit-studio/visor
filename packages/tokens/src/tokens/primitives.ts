@@ -156,3 +156,21 @@ export const primitiveFontFamilies = {
   sans: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
   mono: '"SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace',
 } as const;
+
+// Motion durations (milliseconds)
+export const primitiveMotionDurations = {
+  "100": "100ms",
+  "200": "200ms",
+  "300": "300ms",
+  "500": "500ms",
+  "800": "800ms",
+} as const;
+
+// Motion easing curves
+export const primitiveMotionEasings = {
+  linear: "linear",
+  "ease-in": "cubic-bezier(0.4, 0, 1, 1)",
+  "ease-out": "cubic-bezier(0, 0, 0.2, 1)",
+  "ease-in-out": "cubic-bezier(0.4, 0, 0.2, 1)",
+  spring: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+} as const;

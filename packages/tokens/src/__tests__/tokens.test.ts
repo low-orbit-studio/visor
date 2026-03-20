@@ -22,6 +22,8 @@ import {
   primitiveShadows,
   primitiveZIndex,
   primitiveFontFamilies,
+  primitiveMotionDurations,
+  primitiveMotionEasings,
 } from "../tokens/primitives.js";
 
 import {
@@ -31,6 +33,8 @@ import {
   semanticInteractive,
   semanticSpacing,
   semanticTypography,
+  semanticMotionDuration,
+  semanticMotionEasing,
 } from "../tokens/semantic.js";
 
 import {
@@ -55,6 +59,8 @@ function buildPrimitiveLookup(): Set<string> {
   for (const name of Object.keys(primitiveLineHeights)) valid.add(`line-height-${name}`);
   for (const name of Object.keys(primitiveShadows)) valid.add(`shadow-${name}`);
   for (const name of Object.keys(primitiveZIndex)) valid.add(`z-${name}`);
+  for (const name of Object.keys(primitiveMotionDurations)) valid.add(`motion-duration-${name}`);
+  for (const name of Object.keys(primitiveMotionEasings)) valid.add(`motion-easing-${name}`);
   return valid;
 }
 
@@ -153,6 +159,38 @@ describe("Primitive tokens", () => {
     expect(primitiveZIndex).toHaveProperty("popover");
     expect(primitiveZIndex).toHaveProperty("toast");
   });
+
+  it("motion duration values are valid CSS time values", () => {
+    const timeRegex = /^\d+ms$/;
+    for (const [name, value] of Object.entries(primitiveMotionDurations)) {
+      expect(value, `motion-duration-${name}`).toMatch(timeRegex);
+    }
+  });
+
+  it("motion easing values are valid CSS easing functions", () => {
+    for (const [name, value] of Object.entries(primitiveMotionEasings)) {
+      const isValidEasing =
+        value === "linear" ||
+        value.startsWith("cubic-bezier(") ||
+        value.startsWith("ease");
+      expect(isValidEasing, `motion-easing-${name}: "${value}" should be a valid CSS easing`).toBe(true);
+    }
+  });
+
+  it("motion duration has expected step values", () => {
+    expect(primitiveMotionDurations).toHaveProperty("100");
+    expect(primitiveMotionDurations).toHaveProperty("200");
+    expect(primitiveMotionDurations).toHaveProperty("300");
+    expect(primitiveMotionDurations).toHaveProperty("500");
+    expect(primitiveMotionDurations).toHaveProperty("800");
+  });
+
+  it("motion easing has expected curve names", () => {
+    expect(primitiveMotionEasings).toHaveProperty("ease-in");
+    expect(primitiveMotionEasings).toHaveProperty("ease-out");
+    expect(primitiveMotionEasings).toHaveProperty("ease-in-out");
+    expect(primitiveMotionEasings).toHaveProperty("spring");
+  });
 });
 
 // ============================================================
@@ -242,6 +280,37 @@ describe("Semantic tokens", () => {
     expect(semanticInteractive).toHaveProperty("primary-bg-hover");
     expect(semanticInteractive).toHaveProperty("primary-text");
     expect(semanticInteractive).toHaveProperty("destructive-bg");
+  });
+
+  it("all motion duration tokens reference valid motion-duration primitives", () => {
+    for (const [name, ref] of Object.entries(semanticMotionDuration)) {
+      expect(
+        primitives.has(ref),
+        `motion-duration-${name} references "${ref}" which should be a valid primitive`
+      ).toBe(true);
+    }
+  });
+
+  it("all motion easing tokens reference valid motion-easing primitives", () => {
+    for (const [name, ref] of Object.entries(semanticMotionEasing)) {
+      expect(
+        primitives.has(ref),
+        `motion-easing-${name} references "${ref}" which should be a valid primitive`
+      ).toBe(true);
+    }
+  });
+
+  it("has required motion duration semantic roles", () => {
+    expect(semanticMotionDuration).toHaveProperty("fast");
+    expect(semanticMotionDuration).toHaveProperty("normal");
+    expect(semanticMotionDuration).toHaveProperty("slow");
+  });
+
+  it("has required motion easing semantic roles", () => {
+    expect(semanticMotionEasing).toHaveProperty("default");
+    expect(semanticMotionEasing).toHaveProperty("enter");
+    expect(semanticMotionEasing).toHaveProperty("exit");
+    expect(semanticMotionEasing).toHaveProperty("spring");
   });
 });
 

@@ -111,6 +111,28 @@ export const semanticSpacing = {
   "layout-2xl": "spacing-24",
 } as const;
 
+/** Motion duration tokens */
+export const semanticMotionDuration = {
+  // Micro-interactions: tooltips, hovers, small state changes
+  fast: "motion-duration-100",
+  // Standard transitions: modals, drawers, panels
+  normal: "motion-duration-200",
+  // Larger animations: page transitions, complex choreography
+  slow: "motion-duration-500",
+} as const;
+
+/** Motion easing tokens */
+export const semanticMotionEasing = {
+  // General purpose easing for most transitions
+  default: "motion-easing-ease-in-out",
+  // Elements appearing / entering the viewport
+  enter: "motion-easing-ease-out",
+  // Elements leaving / exiting the viewport
+  exit: "motion-easing-ease-in",
+  // Bouncy / playful interactions
+  spring: "motion-easing-spring",
+} as const;
+
 /** Typography role tokens */
 export const semanticTypography = {
   // Font family roles
