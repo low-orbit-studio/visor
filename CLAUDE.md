@@ -27,6 +27,10 @@ Visor uses two distribution layers:
 
 - **Default team:** Visor (VI)
 
+## Documentation
+
+Visor is open-source and public-facing. When adding features, commands, or components, update both the README and the fumadocs site (`packages/docs/`) to reflect the changes.
+
 ## Relevant Playbook Treebranches
 
 | Treebranch | When to Use | Skill |

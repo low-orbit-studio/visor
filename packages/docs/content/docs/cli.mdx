@@ -1,0 +1,97 @@
+---
+title: CLI
+description: Use the Visor CLI to add components, hooks, and utilities to your project.
+---
+
+## Installation
+
+The CLI is distributed as `@loworbitstudio/visor`. No global install required — use `npx` to run commands directly.
+
+## Commands
+
+### `visor init`
+
+Initialize Visor in your project. Creates a `visor.json` config file with default path mappings.
+
+```bash
+npx @loworbitstudio/visor init
+```
+
+Default config:
+
+```json
+{
+  "paths": {
+    "components": "components/ui",
+    "hooks": "hooks",
+    "lib": "lib"
+  }
+}
+```
+
+Edit `visor.json` to change where files are placed. For example, a Next.js App Router project might use:
+
+```json
+{
+  "paths": {
+    "components": "src/components/ui",
+    "hooks": "src/hooks",
+    "lib": "src/lib"
+  }
+}
+```
+
+### `visor add`
+
+Add one or more components, hooks, or utilities to your project.
+
+```bash
+npx @loworbitstudio/visor add button
+npx @loworbitstudio/visor add button input card
+npx @loworbitstudio/visor add use-debounce
+```
+
+The CLI resolves transitive registry dependencies automatically. For example, `visor add button` also adds the `utils` library since Button depends on it.
+
+npm dependencies (like `@radix-ui/react-dialog` or `class-variance-authority`) are installed automatically.
+
+#### Options
+
+| Flag | Description |
+|------|-------------|
+| `--overwrite` | Overwrite existing files. Without this flag, existing files are skipped. |
+
+### `visor list`
+
+List all available registry items, grouped by type (Components, Hooks, Utilities). Items already installed in your project are marked.
+
+```bash
+npx @loworbitstudio/visor list
+```
+
+### `visor diff`
+
+Show unified diffs between your local files and the registry versions. Useful for seeing what's changed upstream since you installed a component.
+
+```bash
+npx @loworbitstudio/visor diff           # Diff all installed items
+npx @loworbitstudio/visor diff button    # Diff a specific component
+```
+
+## Typical Workflow
+
+```bash
+# 1. Set up
+npx @loworbitstudio/visor init
+
+# 2. Add components
+npx @loworbitstudio/visor add button card input
+
+# 3. Customize freely — you own the files
+
+# 4. Later, check for upstream updates
+npx @loworbitstudio/visor diff
+
+# 5. Pull updates for specific components
+npx @loworbitstudio/visor add button --overwrite
+```
