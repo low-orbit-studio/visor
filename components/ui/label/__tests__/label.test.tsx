@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Label } from "../label"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Label", () => {
   it("renders with text content", () => {
@@ -36,5 +37,22 @@ describe("Label", () => {
     )
     expect(screen.getByText("Required")).toBeInTheDocument()
     expect(screen.getByText("Field")).toBeInTheDocument()
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations (standalone label)", async () => {
+    const { container } = render(<Label>Email address</Label>)
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (label with associated input)", async () => {
+    const { container } = render(
+      <div>
+        <Label htmlFor="email">Email address</Label>
+        <input id="email" type="email" />
+      </div>
+    )
+    await checkA11y(container)
   })
 })

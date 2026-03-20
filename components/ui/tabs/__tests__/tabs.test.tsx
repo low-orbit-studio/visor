@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../tabs"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Tabs", () => {
   it("renders tabs with triggers and content", () => {
@@ -93,5 +94,23 @@ describe("Tabs", () => {
     )
     // tab2 content should be visible
     expect(screen.getByText("Content 2")).toBeInTheDocument()
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations", async () => {
+    const { container } = render(
+      <Tabs defaultValue="tab1">
+        <TabsList aria-label="Account settings">
+          <TabsTrigger value="tab1">Profile</TabsTrigger>
+          <TabsTrigger value="tab2">Security</TabsTrigger>
+          <TabsTrigger value="tab3">Notifications</TabsTrigger>
+        </TabsList>
+        <TabsContent value="tab1">Profile settings content</TabsContent>
+        <TabsContent value="tab2">Security settings content</TabsContent>
+        <TabsContent value="tab3">Notification settings content</TabsContent>
+      </Tabs>
+    )
+    await checkA11y(container)
   })
 })

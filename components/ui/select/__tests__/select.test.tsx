@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../select"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Select", () => {
   it("renders trigger with placeholder", () => {
@@ -81,5 +82,22 @@ describe("Select", () => {
       </Select>
     )
     expect(screen.getByRole("combobox")).toBeInTheDocument()
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations (closed state)", async () => {
+    const { container } = render(
+      <Select>
+        <SelectTrigger aria-label="Choose a fruit">
+          <SelectValue placeholder="Select a fruit" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="apple">Apple</SelectItem>
+          <SelectItem value="banana">Banana</SelectItem>
+        </SelectContent>
+      </Select>
+    )
+    await checkA11y(container)
   })
 })

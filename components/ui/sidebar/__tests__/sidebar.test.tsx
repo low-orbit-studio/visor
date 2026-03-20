@@ -37,6 +37,7 @@ import {
   SidebarInset,
   useSidebar,
 } from "../sidebar"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 function TestSidebar() {
   return (
@@ -192,5 +193,12 @@ describe("Sidebar", () => {
     )
     const trigger = screen.getByTestId("trigger")
     expect(trigger).toHaveAttribute("data-slot", "sidebar-trigger")
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations", async () => {
+    const { container } = render(<TestSidebar />)
+    await checkA11y(container)
   })
 })

@@ -1,0 +1,245 @@
+---
+title: Accessibility
+description: How Visor approaches WCAG 2.1 AA compliance and how to write accessible components and tests.
+---
+
+## Overview
+
+Visor components are built to meet **WCAG 2.1 AA** accessibility standards. This guide documents the patterns every component author must follow, how to use the axe-core test helper, and a checklist for reviewing new components.
+
+All components ship with automated accessibility tests using [axe-core](https://github.com/dequelabs/axe-core) integrated into the Vitest test suite.
+
+---
+
+## Testing with axe-core
+
+A `checkA11y` helper is provided in `test-utils/a11y.ts`. It runs axe-core WCAG 2.1 AA checks against a rendered container and throws a descriptive error if violations are found.
+
+### Usage
+
+```tsx
+import { render } from "@testing-library/react"
+import { describe, it } from "vitest"
+import { Button } from "../button"
+import { checkA11y } from "../../../../test-utils/a11y"
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations", async () => {
+    const { container } = render(<Button>Click me</Button>)
+    await checkA11y(container)
+  })
+})
+```
+
+### Every component test file must include an `accessibility` describe block
+
+```tsx
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations", async () => {
+    const { container } = render(<MyComponent />)
+    await checkA11y(container)
+  })
+})
+```
+
+For interactive components with open/closed states (dialogs, tooltips, dropdowns, sheets), test **both** states:
+
+```tsx
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations (closed state)", async () => {
+    const { container } = render(<Dialog><DialogTrigger>Open</DialogTrigger>...</Dialog>)
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (open state)", async () => {
+    const { container } = render(<Dialog open>...</Dialog>)
+    await checkA11y(container)
+  })
+})
+```
+
+---
+
+## Required Patterns for Component Authors
+
+### 1. Semantic HTML
+
+Use the correct HTML element for the job. Avoid using `<div>` or `<span>` where a semantic element exists.
+
+| Use case | Correct element |
+|----------|----------------|
+| Navigation | `<nav>` |
+| Lists | `<ol>`, `<ul>` |
+| Buttons | `<button>` |
+| Form controls | `<input>`, `<select>`, `<textarea>` |
+| Headings | `<h1>`–`<h6>` |
+
+### 2. ARIA Labels
+
+Every interactive control that doesn't have visible text must have an accessible name via:
+
+- `aria-label` — short, inline label
+- `aria-labelledby` — references a visible label element
+- `htmlFor` + `id` pairing on `<label>` + form control
+
+```tsx
+// Good — visible label via htmlFor
+<label htmlFor="email">Email address</label>
+<input id="email" type="email" />
+
+// Good — aria-label for icon-only button
+<button aria-label="Close dialog">
+  <XIcon />
+</button>
+
+// Bad — no accessible name
+<button><XIcon /></button>
+```
+
+### 3. Form Controls Must Be Labeled
+
+Every `<input>`, `<textarea>`, `<select>`, `<Checkbox>`, and `<Switch>` must have an accessible name:
+
+```tsx
+// Option 1: htmlFor + id
+<Label htmlFor="name">Full name</Label>
+<Input id="name" />
+
+// Option 2: aria-label
+<Input aria-label="Search" type="search" />
+
+// Option 3: aria-labelledby
+<p id="hint">Enter your username</p>
+<Input aria-labelledby="hint" />
+```
+
+### 4. Keyboard Navigation
+
+All interactive components must be fully keyboard-operable:
+
+- Focus must be visible (never remove `:focus-visible` styles)
+- Dialogs and sheets must trap focus when open
+- Tooltips must be accessible on keyboard focus, not just hover
+- Dropdown menus must follow arrow key navigation patterns
+
+Radix UI primitives handle most keyboard interactions automatically for complex components (Dialog, DropdownMenu, Select, Tabs, etc.).
+
+### 5. Color and Contrast
+
+- Text must meet **4.5:1** contrast ratio against its background (AA normal text)
+- Large text (18px+ or 14px+ bold) must meet **3:1**
+- UI components (focus rings, button borders) must meet **3:1** against adjacent colors
+- Never use color alone to convey information — always pair with text, icons, or patterns
+
+Since components use CSS custom properties from `@loworbit/visor-tokens`, contrast is defined at the token level. Check token values when authoring new themes.
+
+### 6. Focus Management
+
+- Dialogs and sheets: focus must move to the first focusable element inside when opened
+- Dialogs and sheets: focus must return to the trigger element when closed
+- Tooltips: use `aria-describedby` to associate tooltip content with the trigger
+
+Radix UI handles this automatically for Dialog, Sheet, Select, and DropdownMenu.
+
+### 7. ARIA Roles
+
+Use ARIA roles only when native HTML semantics are insufficient:
+
+```tsx
+// Built-in roles from Radix
+<DropdownMenuContent role="menu" />     // handled by Radix
+<DialogContent role="dialog" />         // handled by Radix
+
+// Custom roles where needed
+<div role="alert">...</div>             // Alert, FieldError
+<div role="group">...</div>             // Field
+<nav aria-label="breadcrumb">...</nav>  // Breadcrumb
+```
+
+Avoid adding redundant ARIA roles on elements that already have implicit roles (e.g., `<button role="button">`).
+
+### 8. Decorative and Loading States
+
+Purely decorative elements must be hidden from assistive technology:
+
+```tsx
+// Decorative icon — hidden from AT
+<XIcon aria-hidden="true" />
+
+// Loading skeleton — decorative placeholder
+<Skeleton aria-hidden="true" />
+
+// Or provide a visible status elsewhere
+<>
+  <p>Loading content...</p>
+  <Skeleton aria-hidden="true" />
+</>
+```
+
+Avoid using `aria-label` on `<div>` elements without a matching `role`. If you need to label a container, give it a role first:
+
+```tsx
+// Wrong
+<div aria-label="Loading">...</div>
+
+// Correct
+<div role="status" aria-label="Loading content">...</div>
+
+// Or just hide it
+<div aria-hidden="true">...</div>
+```
+
+### 9. Live Regions
+
+Use `role="alert"` or `aria-live` for dynamic content that needs to be announced:
+
+```tsx
+// Alert component uses role="alert" — announced immediately
+<Alert variant="destructive">
+  <AlertTitle>Error</AlertTitle>
+  <AlertDescription>Failed to save changes.</AlertDescription>
+</Alert>
+
+// FieldError uses role="alert" — announced when it appears
+<FieldError>This field is required</FieldError>
+```
+
+---
+
+## WCAG 2.1 AA Checklist for New Components
+
+Before submitting a component, confirm:
+
+- [ ] All interactive elements have accessible names
+- [ ] Focus order is logical and matches visual order
+- [ ] Focus is visible (`:focus-visible` styles present)
+- [ ] Keyboard navigation is fully functional
+- [ ] Color contrast meets 4.5:1 (normal text) and 3:1 (large text, UI)
+- [ ] Color is not used as the only means to convey information
+- [ ] Decorative images and icons have `aria-hidden="true"`
+- [ ] ARIA attributes match the element's role
+- [ ] Interactive controls are not nested inside other interactive controls
+- [ ] The component test file includes a `describe("accessibility")` block
+- [ ] All a11y tests pass (`npm test`)
+
+---
+
+## Common axe-core Violations and Fixes
+
+| Violation ID | Cause | Fix |
+|---|---|---|
+| `label` | Input without accessible name | Add `<label htmlFor>`, `aria-label`, or `aria-labelledby` |
+| `color-contrast` | Insufficient contrast | Update token values or CSS |
+| `nested-interactive` | Button inside button | Use `asChild` prop or restructure markup |
+| `aria-prohibited-attr` | `aria-label` on element with incompatible role | Add a role or use `aria-hidden` |
+| `button-name` | Icon button with no label | Add `aria-label` to the button |
+| `image-alt` | `<img>` without `alt` | Add descriptive `alt` text, or `alt=""` if decorative |
+
+---
+
+## Resources
+
+- [WCAG 2.1 Quick Reference](https://www.w3.org/WAI/WCAG21/quickref/)
+- [Radix UI Accessibility](https://www.radix-ui.com/primitives/docs/overview/accessibility)
+- [axe-core Rules](https://dequeuniversity.com/rules/axe/4.10)
+- [WAI-ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)

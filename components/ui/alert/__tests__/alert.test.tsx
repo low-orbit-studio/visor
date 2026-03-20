@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Alert, AlertTitle, AlertDescription } from "../alert"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Alert", () => {
   it("renders with default props", () => {
@@ -74,5 +75,27 @@ describe("Alert compound usage", () => {
     )
     expect(screen.getByText("Heads up!")).toBeInTheDocument()
     expect(screen.getByText("You can add components.")).toBeInTheDocument()
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations (default)", async () => {
+    const { container } = render(
+      <Alert>
+        <AlertTitle>Heads up!</AlertTitle>
+        <AlertDescription>You can add components to your app.</AlertDescription>
+      </Alert>
+    )
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (destructive variant)", async () => {
+    const { container } = render(
+      <Alert variant="destructive">
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>Something went wrong.</AlertDescription>
+      </Alert>
+    )
+    await checkA11y(container)
   })
 })

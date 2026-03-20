@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react"
 import { userEvent } from "@testing-library/user-event"
 import { describe, it, expect, vi } from "vitest"
 import { Checkbox } from "../checkbox"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Checkbox", () => {
   it("renders with default props", () => {
@@ -47,5 +48,27 @@ describe("Checkbox", () => {
     const ref = { current: null }
     render(<Checkbox ref={ref} aria-label="Accept" />)
     expect(ref.current).not.toBeNull()
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations (unchecked)", async () => {
+    const { container } = render(<Checkbox aria-label="Accept terms" />)
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (checked)", async () => {
+    const { container } = render(<Checkbox defaultChecked aria-label="Accept terms" />)
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations with label element", async () => {
+    const { container } = render(
+      <div>
+        <Checkbox id="terms" />
+        <label htmlFor="terms">Accept terms and conditions</label>
+      </div>
+    )
+    await checkA11y(container)
   })
 })

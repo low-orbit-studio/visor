@@ -9,6 +9,7 @@ import {
   DialogDescription,
   DialogClose,
 } from "../dialog"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Dialog", () => {
   it("renders trigger correctly", () => {
@@ -97,5 +98,33 @@ describe("Dialog", () => {
       </Dialog>
     )
     expect(screen.getByTestId("close-btn")).toHaveAttribute("data-slot", "dialog-close")
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations (trigger/closed state)", async () => {
+    const { container } = render(
+      <Dialog>
+        <DialogTrigger>Open Dialog</DialogTrigger>
+        <DialogContent>
+          <DialogTitle>Title</DialogTitle>
+        </DialogContent>
+      </Dialog>
+    )
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (open state)", async () => {
+    const { container } = render(
+      <Dialog open>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Dialog Title</DialogTitle>
+            <DialogDescription>This dialog contains important information.</DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+    )
+    await checkA11y(container)
   })
 })

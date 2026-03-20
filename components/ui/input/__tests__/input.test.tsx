@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Input } from "../input"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Input", () => {
   it("renders with default props", () => {
@@ -38,5 +39,22 @@ describe("Input", () => {
     const ref = { current: null }
     render(<Input ref={ref} />)
     expect(ref.current).not.toBeNull()
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations (with aria-label)", async () => {
+    const { container } = render(<Input aria-label="Search" type="search" />)
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (with associated label)", async () => {
+    const { container } = render(
+      <div>
+        <label htmlFor="name-input">Full name</label>
+        <Input id="name-input" type="text" />
+      </div>
+    )
+    await checkA11y(container)
   })
 })

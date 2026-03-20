@@ -6,6 +6,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../tooltip"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Tooltip", () => {
   it("renders trigger without crashing", () => {
@@ -57,5 +58,35 @@ describe("Tooltip", () => {
     if (content) {
       expect(content).toHaveClass("custom-tooltip")
     }
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations (closed state)", async () => {
+    const { container } = render(
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button>Help</button>
+          </TooltipTrigger>
+          <TooltipContent>More information about this feature</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    )
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (open state)", async () => {
+    const { container } = render(
+      <TooltipProvider>
+        <Tooltip defaultOpen>
+          <TooltipTrigger asChild>
+            <button>Help</button>
+          </TooltipTrigger>
+          <TooltipContent>More information about this feature</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    )
+    await checkA11y(container)
   })
 })

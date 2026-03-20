@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Textarea } from "../textarea"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Textarea", () => {
   it("renders with default props", () => {
@@ -38,5 +39,22 @@ describe("Textarea", () => {
     const ref = { current: null }
     render(<Textarea ref={ref} aria-label="Description" />)
     expect(ref.current).not.toBeNull()
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations (with aria-label)", async () => {
+    const { container } = render(<Textarea aria-label="Message" />)
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (with associated label)", async () => {
+    const { container } = render(
+      <div>
+        <label htmlFor="message">Your message</label>
+        <Textarea id="message" />
+      </div>
+    )
+    await checkA11y(container)
   })
 })

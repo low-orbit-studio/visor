@@ -9,6 +9,7 @@ import {
   BreadcrumbSeparator,
   BreadcrumbEllipsis,
 } from "../breadcrumb"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Breadcrumb", () => {
   it("renders a breadcrumb nav", () => {
@@ -114,5 +115,28 @@ describe("Breadcrumb", () => {
       </Breadcrumb>
     )
     expect(screen.getByText("More")).toBeInTheDocument()
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations", async () => {
+    const { container } = render(
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/docs">Docs</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Current Page</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+    )
+    await checkA11y(container)
   })
 })

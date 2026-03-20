@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { ScrollArea, ScrollBar } from "../scroll-area"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("ScrollArea", () => {
   it("renders children", () => {
@@ -55,5 +56,18 @@ describe("ScrollArea", () => {
     )
     expect(screen.getByText("Item 0")).toBeInTheDocument()
     expect(screen.getByText("Item 99")).toBeInTheDocument()
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations", async () => {
+    const { container } = render(
+      <ScrollArea style={{ height: "200px" }} aria-label="Scrollable content">
+        <div>Item 1</div>
+        <div>Item 2</div>
+        <div>Item 3</div>
+      </ScrollArea>
+    )
+    await checkA11y(container)
   })
 })

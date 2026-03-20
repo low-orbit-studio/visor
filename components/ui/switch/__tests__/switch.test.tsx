@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react"
 import { userEvent } from "@testing-library/user-event"
 import { describe, it, expect, vi } from "vitest"
 import { Switch } from "../switch"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Switch", () => {
   it("renders with default props", () => {
@@ -47,5 +48,27 @@ describe("Switch", () => {
     const ref = { current: null }
     render(<Switch ref={ref} aria-label="Toggle" />)
     expect(ref.current).not.toBeNull()
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations (unchecked)", async () => {
+    const { container } = render(<Switch aria-label="Enable notifications" />)
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (checked)", async () => {
+    const { container } = render(<Switch defaultChecked aria-label="Enable notifications" />)
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations with label element", async () => {
+    const { container } = render(
+      <div>
+        <Switch id="notifications" />
+        <label htmlFor="notifications">Enable notifications</label>
+      </div>
+    )
+    await checkA11y(container)
   })
 })

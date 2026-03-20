@@ -16,6 +16,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuSubContent,
 } from "../dropdown-menu"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("DropdownMenu", () => {
   it("renders trigger correctly", () => {
@@ -133,5 +134,37 @@ describe("DropdownMenu", () => {
       </DropdownMenu>
     )
     expect(screen.getByText("More")).toBeInTheDocument()
+  })
+})
+
+describe("accessibility", () => {
+  it("has no WCAG 2.1 AA violations (trigger/closed state)", async () => {
+    const { container } = render(
+      <DropdownMenu>
+        <DropdownMenuTrigger>Open Menu</DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>Item 1</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (open state)", async () => {
+    const { container } = render(
+      <DropdownMenu open>
+        <DropdownMenuTrigger>Open Menu</DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuItem>Duplicate</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    )
+    await checkA11y(container)
   })
 })
