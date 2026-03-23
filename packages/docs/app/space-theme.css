@@ -128,7 +128,7 @@ html:not(.dark) .space-theme {
 
   /* Translucent glass — for code blocks, table headers, etc. */
   --glass: rgba(255, 255, 255, 0.7);
-  --glass-border: border-color: hsl(252 18% 72%);
+  --glass-border: hsl(252 18% 80%);
 
   /* Text hierarchy — dark indigo tones */
   --text: #1a1630;
@@ -304,8 +304,12 @@ html:not(.dark) .space-theme thead th {
 
 /* ── Sidebar ── */
 
-.space-theme aside[id="nd-sidebar"] {
-  background: var(--surface);
+.dark .space-theme aside[id="nd-sidebar"] {
+  background: color-mix(in srgb, var(--accent) 17%, transparent);
+}
+
+html:not(.dark) .space-theme aside[id="nd-sidebar"] {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .space-theme aside[id="nd-sidebar"] > div {
