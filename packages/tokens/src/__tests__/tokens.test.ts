@@ -1,7 +1,7 @@
 /**
  * Token System Tests
  *
- * Tests for the @loworbitstudio/visor package:
+ * Tests for the @loworbitstudio/visor-core package:
  * - Primitive token validity
  * - Semantic token references resolve to valid primitives
  * - Adaptive tokens have both light and dark values

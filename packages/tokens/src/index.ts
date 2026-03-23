@@ -9,7 +9,7 @@
  * 3. Adaptive — theme-aware tokens that switch based on active theme class
  *
  * Usage:
- *   import "@loworbitstudio/visor"  // full bundle — primitives + semantic + adaptive (light + dark)
+ *   import "@loworbitstudio/visor-core"  // full bundle — primitives + semantic + adaptive (light + dark)
  *
  * Theming — automatic (system preference):
  *   The full bundle respects prefers-color-scheme: dark automatically.
@@ -25,10 +25,10 @@
  *     data-theme="light"        — force light mode
  *
  * Granular imports:
- *   import "@loworbitstudio/visor/primitives"      — primitive tokens only
- *   import "@loworbitstudio/visor/semantic"        — semantic tokens only
- *   import "@loworbitstudio/visor/themes/light"    — light theme adaptive tokens
- *   import "@loworbitstudio/visor/themes/dark"     — dark theme adaptive tokens
+ *   import "@loworbitstudio/visor-core/primitives"      — primitive tokens only
+ *   import "@loworbitstudio/visor-core/semantic"        — semantic tokens only
+ *   import "@loworbitstudio/visor-core/themes/light"    — light theme adaptive tokens
+ *   import "@loworbitstudio/visor-core/themes/dark"     — dark theme adaptive tokens
  *
  * Then reference tokens in CSS:
  *   color: var(--text-primary);

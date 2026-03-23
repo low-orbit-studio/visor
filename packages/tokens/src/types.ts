@@ -1,11 +1,11 @@
 /**
- * @loworbitstudio/visor — Type Exports
+ * @loworbitstudio/visor-core — Type Exports
  *
  * TypeScript types and constants for all token names.
  * Provides autocomplete when referencing token names programmatically.
  *
  * Usage:
- *   import { TOKEN_TEXT_PRIMARY } from "@loworbitstudio/visor/types"
+ *   import { TOKEN_TEXT_PRIMARY } from "@loworbitstudio/visor-core/types"
  *   element.style.setProperty(TOKEN_TEXT_PRIMARY, "#000")
  */
 

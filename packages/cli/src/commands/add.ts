@@ -89,8 +89,8 @@ export function addCommand(
   if (!hasVisorTokens(cwd)) {
     logger.blank()
     logger.warn(
-      "@loworbitstudio/visor is not installed. Components require it for styling."
+      "@loworbitstudio/visor-core is not installed. Components require it for styling."
     )
-    logger.info("  npm install @loworbitstudio/visor")
+    logger.info("  npm install @loworbitstudio/visor-core")
   }
 }

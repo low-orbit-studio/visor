@@ -14,10 +14,10 @@ This guide covers migrating to Visor from two common starting points:
 | Concern | shadcn/ui | Visor |
 |---------|-----------|-------|
 | Styling | Tailwind CSS utilities | CSS Modules + CSS custom properties |
-| Tokens | Tailwind config + CSS vars | `@loworbitstudio/visor` npm package |
+| Tokens | Tailwind config + CSS vars | `@loworbitstudio/visor-core` npm package |
 | Theming | `dark:` Tailwind variants | `.theme-dark` class on root element |
 | Distribution | CLI copies source | CLI copies source (same model) |
-| Runtime dependency | None | `@loworbitstudio/visor` |
+| Runtime dependency | None | `@loworbitstudio/visor-core` |
 | Variants | CVA with Tailwind classes | CVA with CSS Module class names |
 
 The distribution model is conceptually identical — both use a CLI to copy component source into your project. The main differences are in how styles are written and how theming works.
@@ -85,7 +85,7 @@ npm install @loworbitstudio/visor
 
 ```css
 /* globals.css */
-@import "@loworbitstudio/visor";
+@import "@loworbitstudio/visor-core";
 
 /* Your project-level overrides (optional) */
 :root {
@@ -236,7 +236,7 @@ Most shadcn component names map directly to Visor:
 | Component ownership | Package-managed | You own the files |
 | Updates | `npm update @kaiah/ui` | `npx visor add <name> --force` |
 | Customization | Prop-based only | Direct source editing |
-| Token source | Package-bundled | `@loworbitstudio/visor` (separate package) |
+| Token source | Package-bundled | `@loworbitstudio/visor-core` (separate package) |
 | Import path | `@kaiah/ui` | `@/components/ui/<name>` |
 
 ### Step-by-Step Migration
@@ -260,7 +260,7 @@ npm install @loworbitstudio/visor
 
 ```css
 /* globals.css */
-@import "@loworbitstudio/visor";
+@import "@loworbitstudio/visor-core";
 ```
 
 #### 3. Add Visor components via the CLI
@@ -357,7 +357,7 @@ grep -r "@kaiah/ui" src/
 
 ```
 [ ] npm install @loworbitstudio/visor
-[ ] @import "@loworbitstudio/visor" in globals.css
+[ ] @import "@loworbitstudio/visor-core" in globals.css
 [ ] npx visor add <all used components>
 [ ] Update all import paths from @kaiah/ui to @/components/ui/...
 [ ] Migrate token overrides to Visor variable names
@@ -373,9 +373,9 @@ grep -r "@kaiah/ui" src/
 
 ### Issue: Component styles are not applying
 
-**Cause:** The `@import "@loworbitstudio/visor"` line is missing or placed after other CSS that overrides it.
+**Cause:** The `@import "@loworbitstudio/visor-core"` line is missing or placed after other CSS that overrides it.
 
-**Fix:** Ensure `@import "@loworbitstudio/visor"` is the first line of your global CSS file (or at least before your component imports).
+**Fix:** Ensure `@import "@loworbitstudio/visor-core"` is the first line of your global CSS file (or at least before your component imports).
 
 ### Issue: Dark mode is not working
 

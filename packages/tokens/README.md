@@ -13,16 +13,16 @@ npm install @loworbitstudio/visor
 Import the full token bundle in your project's entry CSS or JS:
 
 ```css
-@import "@loworbitstudio/visor";
+@import "@loworbitstudio/visor-core";
 ```
 
 Or import specific layers:
 
 ```css
-@import "@loworbitstudio/visor/primitives";   /* Tier 1: raw values */
-@import "@loworbitstudio/visor/semantic";     /* Tier 2: purpose-named */
-@import "@loworbitstudio/visor/themes/light"; /* Tier 3: light theme */
-@import "@loworbitstudio/visor/themes/dark";  /* Tier 3: dark theme */
+@import "@loworbitstudio/visor-core/primitives";   /* Tier 1: raw values */
+@import "@loworbitstudio/visor-core/semantic";     /* Tier 2: purpose-named */
+@import "@loworbitstudio/visor-core/themes/light"; /* Tier 3: light theme */
+@import "@loworbitstudio/visor-core/themes/dark";  /* Tier 3: dark theme */
 ```
 
 Then use tokens in your CSS:
@@ -129,7 +129,7 @@ import {
   TOKEN_TEXT_PRIMARY,
   TOKEN_SURFACE_CARD,
   TOKEN_BORDER_DEFAULT,
-} from "@loworbitstudio/visor/types"
+} from "@loworbitstudio/visor-core/types"
 
 // Use in JS (e.g., for animations or dynamic styles)
 element.style.setProperty(TOKEN_TEXT_PRIMARY, "#custom-value")

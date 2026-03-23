@@ -26,7 +26,7 @@ const testRegistry: BundledRegistry = {
     }),
     makeItem({
       name: "button",
-      dependencies: ["class-variance-authority", "@loworbitstudio/visor"],
+      dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
       registryDependencies: ["utils"],
       files: [
         { path: "components/ui/button/button.tsx", type: "registry:ui", content: "<Button />" },
@@ -35,7 +35,7 @@ const testRegistry: BundledRegistry = {
     }),
     makeItem({
       name: "field",
-      dependencies: ["class-variance-authority", "@loworbitstudio/visor"],
+      dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
       registryDependencies: ["utils", "label"],
       files: [
         { path: "components/ui/field/field.tsx", type: "registry:ui", content: "<Field />" },
@@ -43,7 +43,7 @@ const testRegistry: BundledRegistry = {
     }),
     makeItem({
       name: "label",
-      dependencies: ["@radix-ui/react-label", "@loworbitstudio/visor"],
+      dependencies: ["@radix-ui/react-label", "@loworbitstudio/visor-core"],
       registryDependencies: ["utils"],
       files: [
         { path: "components/ui/label/label.tsx", type: "registry:ui", content: "<Label />" },
@@ -107,7 +107,7 @@ describe("collectDependencies", () => {
     const items = resolveTransitiveDeps(testRegistry, ["button"])
     const { dependencies } = collectDependencies(items)
     expect(dependencies).toContain("class-variance-authority")
-    expect(dependencies).toContain("@loworbitstudio/visor")
+    expect(dependencies).toContain("@loworbitstudio/visor-core")
     expect(dependencies).toContain("clsx")
     expect(dependencies).toContain("tailwind-merge")
     // Should be sorted

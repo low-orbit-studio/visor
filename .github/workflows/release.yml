@@ -37,7 +37,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   publish-cli:
-    name: Publish @loworbitstudio/visor to npm
+    name: Publish @loworbitstudio/visor-core to npm
     runs-on: ubuntu-latest
 
     steps:

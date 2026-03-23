@@ -40,7 +40,7 @@ visor/
 │   ├── registry-hooks.ts
 │   └── registry-lib.ts
 ├── packages/
-│   ├── tokens/         # @loworbitstudio/visor npm package
+│   ├── tokens/         # @loworbitstudio/visor-core npm package
 │   │   └── src/        # CSS custom property definitions
 │   └── docs/           # fumadocs documentation site (Next.js)
 │       ├── app/        # Next.js app directory
@@ -49,7 +49,7 @@ visor/
 └── lib/                # Shared utility functions
 ```
 
-**Distribution model:** Components are copy-and-own via the registry — consumers run `npx visor add <component>` and own the source. Tokens are distributed as the `@loworbitstudio/visor` npm package.
+**Distribution model:** Components are copy-and-own via the registry — consumers run `npx visor add <component>` and own the source. Tokens are distributed as the `@loworbitstudio/visor-core` npm package.
 
 ## Adding or Modifying Components
 
@@ -62,7 +62,7 @@ visor/
 ### Component conventions
 
 - Use **CSS Modules** for all styles — no Tailwind, no CSS-in-JS.
-- Reference **CSS custom properties** exclusively — never hard-code color, spacing, or typography values. All tokens live in `@loworbitstudio/visor`.
+- Reference **CSS custom properties** exclusively — never hard-code color, spacing, or typography values. All tokens live in `@loworbitstudio/visor-core`.
 - Use **CVA (class-variance-authority)** for component variants.
 - Use **Radix UI primitives** only for components that require complex accessibility behavior (dialogs, dropdowns, etc.). Prefer plain HTML elements otherwise.
 - Use **Phosphor Icons** (`@phosphor-icons/react`) for any icon needs.

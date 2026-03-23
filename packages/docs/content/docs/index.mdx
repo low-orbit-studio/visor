@@ -9,7 +9,7 @@ Visor is a two-layer design system distribution model:
 
 1. **Components → Registry (copy-and-own).** Run `npx visor add button` and the source files are copied directly into your project. No lock-in, full control.
 
-2. **Tokens → npm package (`@loworbitstudio/visor`).** The only npm-distributed piece. CSS custom properties that all components reference. Updates propagate automatically via `npm update`.
+2. **Tokens → npm package (`@loworbitstudio/visor-core`).** The only npm-distributed piece. CSS custom properties that all components reference. Updates propagate automatically via `npm update`.
 
 ## Why this model?
 
@@ -25,7 +25,7 @@ Visor's token system follows a 3-tier architecture:
 | **Semantic** | Named by purpose | `--color-primary: var(--blue-500)` |
 | **Adaptive** | Theme-aware | Switches based on `.theme-dark` class |
 
-All components reference CSS custom properties, never hard-coded values. Themes are distributable CSS variable sets shipped via `@loworbitstudio/visor`.
+All components reference CSS custom properties, never hard-coded values. Themes are distributable CSS variable sets shipped via `@loworbitstudio/visor-core`.
 
 ## Getting Started
 
@@ -38,7 +38,7 @@ npm install @loworbitstudio/visor
 Import the tokens in your app's root CSS:
 
 ```css
-@import '@loworbitstudio/visor';
+@import '@loworbitstudio/visor-core';
 ```
 
 Then add a component:
