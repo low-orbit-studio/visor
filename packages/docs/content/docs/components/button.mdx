@@ -5,6 +5,7 @@ description: A versatile button component with multiple variants and sizes. Buil
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
+import { Button } from '@/components/ui/button';
 
 ## Installation
 
@@ -40,11 +41,11 @@ export default function Example() {
 <Button variant="destructive">Destructive</Button>`}
 >
   <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
-    <button style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '2.5rem', padding: '0 1rem', borderRadius: '0.375rem', backgroundColor: '#0f172a', color: '#f8fafc', fontWeight: 500, fontSize: '0.875rem', border: '1px solid transparent', cursor: 'pointer' }}>Default</button>
-    <button style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '2.5rem', padding: '0 1rem', borderRadius: '0.375rem', backgroundColor: '#f1f5f9', color: '#0f172a', fontWeight: 500, fontSize: '0.875rem', border: '1px solid transparent', cursor: 'pointer' }}>Secondary</button>
-    <button style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '2.5rem', padding: '0 1rem', borderRadius: '0.375rem', backgroundColor: 'transparent', color: '#0f172a', fontWeight: 500, fontSize: '0.875rem', border: '1px solid #e2e8f0', cursor: 'pointer' }}>Outline</button>
-    <button style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '2.5rem', padding: '0 1rem', borderRadius: '0.375rem', backgroundColor: 'transparent', color: '#0f172a', fontWeight: 500, fontSize: '0.875rem', border: '1px solid transparent', cursor: 'pointer' }}>Ghost</button>
-    <button style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '2.5rem', padding: '0 1rem', borderRadius: '0.375rem', backgroundColor: '#ef4444', color: '#fef2f2', fontWeight: 500, fontSize: '0.875rem', border: '1px solid transparent', cursor: 'pointer' }}>Destructive</button>
+    <Button variant="default">Default</Button>
+    <Button variant="secondary">Secondary</Button>
+    <Button variant="outline">Outline</Button>
+    <Button variant="ghost">Ghost</Button>
+    <Button variant="destructive">Destructive</Button>
   </div>
 </ComponentPreview>
 
@@ -59,9 +60,9 @@ export default function Example() {
 <Button size="lg">Large</Button>`}
 >
   <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-    <button style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '2rem', padding: '0 0.75rem', borderRadius: '0.375rem', backgroundColor: '#0f172a', color: '#f8fafc', fontWeight: 500, fontSize: '0.75rem', border: '1px solid transparent', cursor: 'pointer' }}>Small</button>
-    <button style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '2.5rem', padding: '0 1rem', borderRadius: '0.375rem', backgroundColor: '#0f172a', color: '#f8fafc', fontWeight: 500, fontSize: '0.875rem', border: '1px solid transparent', cursor: 'pointer' }}>Medium</button>
-    <button style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '3rem', padding: '0 1.5rem', borderRadius: '0.375rem', backgroundColor: '#0f172a', color: '#f8fafc', fontWeight: 500, fontSize: '1rem', border: '1px solid transparent', cursor: 'pointer' }}>Large</button>
+    <Button size="sm">Small</Button>
+    <Button size="md">Medium</Button>
+    <Button size="lg">Large</Button>
   </div>
 </ComponentPreview>
 
@@ -73,8 +74,8 @@ export default function Example() {
 <Button variant="outline" disabled>Disabled Outline</Button>`}
 >
   <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-    <button disabled style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '2.5rem', padding: '0 1rem', borderRadius: '0.375rem', backgroundColor: '#0f172a', color: '#f8fafc', fontWeight: 500, fontSize: '0.875rem', border: '1px solid transparent', cursor: 'not-allowed', opacity: 0.5 }}>Disabled</button>
-    <button disabled style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '2.5rem', padding: '0 1rem', borderRadius: '0.375rem', backgroundColor: 'transparent', color: '#0f172a', fontWeight: 500, fontSize: '0.875rem', border: '1px solid #e2e8f0', cursor: 'not-allowed', opacity: 0.5 }}>Disabled Outline</button>
+    <Button disabled>Disabled</Button>
+    <Button variant="outline" disabled>Disabled Outline</Button>
   </div>
 </ComponentPreview>
 

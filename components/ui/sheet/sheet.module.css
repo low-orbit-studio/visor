@@ -20,8 +20,8 @@
   z-index: 50;
   display: flex;
   flex-direction: column;
-  background-color: var(--color-background, #ffffff);
-  font-size: var(--text-sm, 0.875rem);
+  background-color: var(--surface-page, #ffffff);
+  font-size: var(--font-size-sm, 0.875rem);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   transition: transform 200ms ease-in-out, opacity 200ms ease-in-out;
 }
@@ -31,7 +31,7 @@
   inset-inline: 0;
   top: 0;
   height: auto;
-  border-bottom: 1px solid var(--color-border, #e2e8f0);
+  border-bottom: 1px solid var(--border-default, #e2e8f0);
   max-height: 80vh;
 }
 
@@ -49,7 +49,7 @@
   height: 100%;
   width: 75%;
   max-width: 24rem;
-  border-left: 1px solid var(--color-border, #e2e8f0);
+  border-left: 1px solid var(--border-default, #e2e8f0);
 }
 
 .sideRight[data-state="open"] {
@@ -64,7 +64,7 @@
   inset-inline: 0;
   bottom: 0;
   height: auto;
-  border-top: 1px solid var(--color-border, #e2e8f0);
+  border-top: 1px solid var(--border-default, #e2e8f0);
   max-height: 80vh;
 }
 
@@ -82,7 +82,7 @@
   height: 100%;
   width: 75%;
   max-width: 24rem;
-  border-right: 1px solid var(--color-border, #e2e8f0);
+  border-right: 1px solid var(--border-default, #e2e8f0);
 }
 
 .sideLeft[data-state="open"] {
@@ -108,7 +108,7 @@
   opacity: 0.7;
   transition: opacity 150ms ease;
   padding: 0.25rem;
-  color: var(--color-foreground, #0f172a);
+  color: var(--text-primary, #0f172a);
 }
 
 .closeButton:hover {
@@ -116,7 +116,7 @@
 }
 
 .closeButton:focus-visible {
-  outline: 2px solid var(--color-focus-ring, currentColor);
+  outline: 2px solid var(--border-focus, currentColor);
   outline-offset: 2px;
 }
 
@@ -144,16 +144,16 @@
 
 /* Title */
 .title {
-  font-size: var(--text-base, 1rem);
+  font-size: var(--font-size-base, 1rem);
   font-weight: 500;
-  color: var(--color-foreground, #0f172a);
+  color: var(--text-primary, #0f172a);
   margin: 0;
 }
 
 /* Description */
 .description {
-  font-size: var(--text-sm, 0.875rem);
-  color: var(--color-muted-foreground, #64748b);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #64748b);
   margin: 0;
 }
 

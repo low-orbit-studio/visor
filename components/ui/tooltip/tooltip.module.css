@@ -7,10 +7,10 @@
   align-items: center;
   gap: 0.375rem;
   border-radius: var(--radius-lg, 0.5rem);
-  background-color: var(--color-foreground, #0f172a);
+  background-color: var(--surface-overlay, #0f172a);
   padding: 0.375rem 0.75rem;
-  font-size: var(--text-xs, 0.75rem);
-  color: var(--color-background, #ffffff);
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-inverse, #ffffff);
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   animation-duration: 0.15s;
   animation-timing-function: ease-out;

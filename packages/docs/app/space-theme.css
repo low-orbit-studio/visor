@@ -1,4 +1,4 @@
-/* ── Space theme — core tokens + starfield + sunrise light mode ── */
+/* ── Space theme — visor-core adapter + starfield + sunrise light mode ── */
 
 /* ── Font faces ── */
 
@@ -39,8 +39,8 @@
   --font-mono: "Monaspace Neon", monospace;
 
   min-height: 100vh;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--surface-page);
+  color: var(--text-primary);
   position: relative;
   font-family: var(--font-satoshi);
 }
@@ -48,25 +48,45 @@
 /* ── Dark mode (default — current space theme) ── */
 
 .dark .space-theme {
-  --bg: #080810;
-
-  /* Accent-derived surfaces */
-  --surface: color-mix(in srgb, var(--accent) 4%, #0a0a14);
-  --card: color-mix(in srgb, var(--accent) 6%, #0e0e18);
+  /* Space-theme-specific surfaces */
   --surface-elevated: color-mix(in srgb, var(--accent) 8%, #121220);
 
-  /* Accent-derived borders */
-  --border: color-mix(in srgb, var(--accent) 12%, transparent);
-  --border-strong: color-mix(in srgb, var(--accent) 20%, transparent);
+  /* Visor-core token overrides — dark */
+  --surface-page: #080810;
+  --surface-subtle: color-mix(in srgb, var(--accent) 4%, #0a0a14);
+  --surface-card: color-mix(in srgb, var(--accent) 6%, #0e0e18);
+  --surface-muted: color-mix(in srgb, var(--accent) 4%, #0a0a14);
+  --surface-overlay: #080810;
+  --surface-interactive-default: color-mix(in srgb, var(--accent) 6%, #0e0e18);
+  --surface-interactive-hover: color-mix(in srgb, var(--accent) 8%, #121220);
+  --surface-interactive-active: color-mix(in srgb, var(--accent) 12%, #161628);
+
+  --border-default: color-mix(in srgb, var(--accent) 12%, transparent);
+  --border-strong: color-mix(in srgb, var(--accent) 30%, transparent);
+  --border-focus: var(--accent);
+
+  --text-primary: #e8e8f0;
+  --text-secondary: rgba(232, 232, 240, 0.72);
+  --text-tertiary: rgba(232, 232, 240, 0.5);
+  --text-inverse: #080810;
+
+  --interactive-primary-bg: var(--accent);
+  --interactive-primary-bg-hover: color-mix(in srgb, var(--accent) 85%, white);
+  --interactive-primary-text: #ffffff;
+  --interactive-secondary-bg: color-mix(in srgb, var(--accent) 40%, transparent);
+  --interactive-secondary-bg-hover: color-mix(in srgb, var(--accent) 50%, transparent);
+  --interactive-secondary-text: #e8e8f0;
+  --interactive-ghost-bg: rgba(255, 255, 255, 0.2);
+  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.25);
+  --interactive-destructive-bg: var(--color-red-600);
+  --interactive-destructive-bg-hover: var(--color-red-700);
+  --interactive-destructive-text: #ffffff;
 
   /* Translucent glass — for code blocks, table headers, etc. */
   --glass: color-mix(in srgb, var(--accent) 15%, rgba(0, 0, 0, 0.3));
   --glass-border: rgba(255, 255, 255, 0.2);
 
-  /* Text hierarchy — 4 levels */
-  --text: #e8e8f0;
-  --text-secondary: rgba(232, 232, 240, 0.72);
-  --text-tertiary: rgba(232, 232, 240, 0.5);
+  /* Muted text for space-theme-specific elements */
   --muted: #6b6b80;
 
   /* Fumadocs HSL triplets — dark */
@@ -91,8 +111,10 @@
 /* ── Sunrise light mode ── */
 
 html:not(.dark) .space-theme {
-  --bg: #e0ddef;
-  /* Sunrise sky gradient — steel-blue top → lavender-pink → warm peach glow at bottom center */
+  /* Space-theme-specific surfaces */
+  --surface-elevated: color-mix(in srgb, var(--accent) 6%, #dbd8e8);
+
+  /* Sunrise sky gradient */
   background: radial-gradient(
       ellipse 120% 50% at 50% 100%,
       rgba(255, 210, 160, 0.45) 0%,
@@ -113,27 +135,46 @@ html:not(.dark) .space-theme {
     ) !important;
   background-attachment: fixed !important;
 
-  /* Accent-derived surfaces — warm lavender tints */
-  --surface: color-mix(in srgb, var(--accent) 5%, #e4e1ee);
-  --card: color-mix(in srgb, var(--accent) 4%, #f2f0f8);
-  --surface-elevated: color-mix(in srgb, var(--accent) 6%, #dbd8e8);
+  /* Visor-core token overrides — light/sunrise */
+  --surface-page: #e0ddef;
+  --surface-subtle: color-mix(in srgb, var(--accent) 5%, #e4e1ee);
+  --surface-card: color-mix(in srgb, var(--accent) 4%, #f2f0f8);
+  --surface-muted: color-mix(in srgb, var(--accent) 5%, #e4e1ee);
+  --surface-overlay: #1a1630;
+  --surface-interactive-default: color-mix(in srgb, var(--accent) 4%, #f2f0f8);
+  --surface-interactive-hover: color-mix(in srgb, var(--accent) 6%, #dbd8e8);
+  --surface-interactive-active: color-mix(in srgb, var(--accent) 10%, #d0cde0);
 
-  /* Borders — visible but gentle */
-  --border: color-mix(in srgb, var(--accent) 12%, rgba(60, 50, 90, 0.1));
+  --border-default: color-mix(in srgb, var(--accent) 12%, rgba(60, 50, 90, 0.1));
   --border-strong: color-mix(
     in srgb,
     var(--accent) 18%,
     rgba(60, 50, 90, 0.18)
   );
+  --border-focus: var(--accent);
+
+  --text-primary: #1a1630;
+  --text-secondary: rgba(26, 22, 48, 0.72);
+  --text-tertiary: rgba(26, 22, 48, 0.5);
+  --text-inverse: #f2f0f8;
+
+  --interactive-primary-bg: var(--accent);
+  --interactive-primary-bg-hover: color-mix(in srgb, var(--accent) 85%, #1a1630);
+  --interactive-primary-text: #ffffff;
+  --interactive-secondary-bg: color-mix(in srgb, var(--accent) 4%, #f2f0f8);
+  --interactive-secondary-bg-hover: color-mix(in srgb, var(--accent) 8%, #e8e5f0);
+  --interactive-secondary-text: #1a1630;
+  --interactive-ghost-bg: color-mix(in srgb, var(--accent) 20%, transparent);
+  --interactive-ghost-bg-hover: color-mix(in srgb, var(--accent) 28%, transparent);
+  --interactive-destructive-bg: var(--color-red-600);
+  --interactive-destructive-bg-hover: var(--color-red-700);
+  --interactive-destructive-text: #ffffff;
 
   /* Translucent glass — for code blocks, table headers, etc. */
   --glass: rgba(255, 255, 255, 0.7);
   --glass-border: hsl(252 18% 80%);
 
-  /* Text hierarchy — dark indigo tones */
-  --text: #1a1630;
-  --text-secondary: rgba(26, 22, 48, 0.72);
-  --text-tertiary: rgba(26, 22, 48, 0.5);
+  /* Muted text for space-theme-specific elements */
   --muted: #8580a0;
 
   /* Fumadocs HSL triplets — sunrise */
@@ -319,7 +360,7 @@ html:not(.dark) .space-theme aside[id="nd-sidebar"] {
 /* ── Search input — keep kbd badges readable on hover ── */
 
 html:not(.dark) .space-theme button:hover kbd {
-  color: var(--text);
+  color: var(--text-primary);
 }
 
 /* ── Links & interactive states ── */

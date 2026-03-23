@@ -5,12 +5,12 @@
   gap: 1.5rem;
   overflow: hidden;
   border-radius: var(--radius-xl, 1rem);
-  background-color: var(--color-card, #ffffff);
-  color: var(--color-card-foreground, #0f172a);
-  font-size: var(--text-sm, 0.875rem);
+  background-color: var(--surface-card, #ffffff);
+  color: var(--text-primary, #0f172a);
+  font-size: var(--font-size-sm, 0.875rem);
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
-  box-shadow: 0 0 0 1px var(--color-border, #e2e8f0);
+  box-shadow: 0 0 0 1px var(--border-default, #e2e8f0);
 }
 
 .cardSm {
@@ -32,15 +32,15 @@
 
 /* CardTitle */
 .cardTitle {
-  font-size: var(--text-base, 1rem);
+  font-size: var(--font-size-base, 1rem);
   font-weight: 500;
-  color: var(--color-card-foreground, #0f172a);
+  color: var(--text-primary, #0f172a);
 }
 
 /* CardDescription */
 .cardDescription {
-  font-size: var(--text-sm, 0.875rem);
-  color: var(--color-muted-foreground, #64748b);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #64748b);
 }
 
 /* CardContent */

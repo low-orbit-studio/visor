@@ -24,7 +24,9 @@ export function ComponentPreview({
 
   return (
     <div className="preview-container">
-      <div className="preview-render">{children}</div>
+      <div className="preview-render" style={{ isolation: 'isolate', color: 'var(--text-primary)' }}>
+        {children}
+      </div>
       <div className="preview-footer">
         {title ? <p className="preview-title">{title}</p> : <span />}
         <div style={{ display: 'flex', gap: '0.5rem' }}>
