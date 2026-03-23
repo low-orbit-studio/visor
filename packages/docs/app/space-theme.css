@@ -1,6 +1,7 @@
-/* ── Space theme — core tokens + starfield ── */
+/* ── Space theme — core tokens + starfield + sunrise light mode ── */
 
-/* Step 1: Satoshi font for body text */
+/* ── Font faces ── */
+
 @font-face {
   font-family: 'Satoshi';
   src: url('/fonts/Satoshi-Variable.woff2') format('woff2');
@@ -25,27 +26,12 @@
   font-style: normal;
 }
 
+/* ── Shared tokens (mode-independent) ── */
+
 .space-theme {
-  /* ── Core tokens ── */
-  --bg: #080810;
   --accent: #5b6fff;
   --accent2: #ff5b8f;
   --success: #4fffb0;
-
-  /* Step 6: Accent-derived surfaces via color-mix */
-  --surface: color-mix(in srgb, var(--accent) 4%, #0a0a14);
-  --card: color-mix(in srgb, var(--accent) 6%, #0e0e18);
-  --surface-elevated: color-mix(in srgb, var(--accent) 8%, #121220);
-
-  /* Step 6: Accent-derived borders */
-  --border: color-mix(in srgb, var(--accent) 12%, transparent);
-  --border-strong: color-mix(in srgb, var(--accent) 20%, transparent);
-
-  /* Step 3: Text hierarchy — 4 levels */
-  --text: #e8e8f0;
-  --text-secondary: rgba(232, 232, 240, 0.72);
-  --text-tertiary: rgba(232, 232, 240, 0.50);
-  --muted: #6b6b80;
 
   /* Font stacks */
   --font-satoshi: 'Satoshi', system-ui, sans-serif;
@@ -59,105 +45,27 @@
   font-family: var(--font-satoshi);
 }
 
-/* Step 1: Headings — swap --font-heading to change */
-.space-theme h1,
-.space-theme h2,
-.space-theme h3,
-.space-theme h4,
-.space-theme h5,
-.space-theme h6 {
-  font-family: var(--font-heading);
-}
+/* ── Dark mode (default — current space theme) ── */
 
-.space-theme code,
-.space-theme pre {
-  font-family: var(--font-mono);
-}
+.dark .space-theme {
+  --bg: #080810;
 
-/* Step 2: Eyebrow pattern — Space Mono accent labels */
-.space-theme .eyebrow,
-.space-theme [data-eyebrow] {
-  font-family: var(--font-space-mono), monospace;
-  color: var(--accent);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
+  /* Accent-derived surfaces */
+  --surface: color-mix(in srgb, var(--accent) 4%, #0a0a14);
+  --card: color-mix(in srgb, var(--accent) 6%, #0e0e18);
+  --surface-elevated: color-mix(in srgb, var(--accent) 8%, #121220);
 
-/* Step 3: Text hierarchy — apply secondary/tertiary to fumadocs elements */
-.space-theme .fd-paragraph:not(:first-child),
-.space-theme [class*="fd-body"] {
-  color: var(--text-secondary);
-}
+  /* Accent-derived borders */
+  --border: color-mix(in srgb, var(--accent) 12%, transparent);
+  --border-strong: color-mix(in srgb, var(--accent) 20%, transparent);
 
-.space-theme nav[aria-label="breadcrumb"],
-.space-theme nav[aria-label="breadcrumb"] * {
-  color: var(--text-tertiary);
-}
+  /* Text hierarchy — 4 levels */
+  --text: #e8e8f0;
+  --text-secondary: rgba(232, 232, 240, 0.72);
+  --text-tertiary: rgba(232, 232, 240, 0.50);
+  --muted: #6b6b80;
 
-/* Step 3: Page descriptions */
-.space-theme .fd-not-prose {
-  color: var(--text-secondary);
-}
-
-/* Starfield */
-.space-theme .starfield {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
-}
-
-.space-theme .star {
-  position: absolute;
-  border-radius: 50%;
-  background: white;
-  opacity: 0;
-  animation: starTwinkle var(--d, 3s) ease-in-out infinite;
-}
-
-@keyframes starTwinkle {
-  0%, 100% { opacity: 0; }
-  50% { opacity: var(--o, 0.6); }
-}
-
-/* ── Step 5: Code block & inline code polish ── */
-
-/* Inline code */
-.space-theme :not(pre) > code {
-  background: var(--surface-elevated);
-  border: 1px solid var(--border-strong);
-  border-radius: 0.25rem;
-  padding: 0.15em 0.5em;
-  font-size: 0.875em;
-}
-
-/* Code blocks — softer border than inline code */
-.space-theme pre {
-  background: var(--surface) !important;
-  border: 1px solid color-mix(in srgb, var(--accent) 8%, transparent);
-  border-radius: 0.5rem;
-  padding: 1rem;
-}
-
-/* Fumadocs code block overrides */
-.space-theme figure[data-rehype-pretty-code-figure] pre {
-  background: var(--surface) !important;
-  border: 1px solid color-mix(in srgb, var(--accent) 8%, transparent);
-  border-radius: 0.5rem;
-}
-
-.space-theme figure[data-rehype-pretty-code-figure] code {
-  background: transparent;
-  border: none;
-  padding: 0;
-}
-
-/* ── Step 4 & 6: Fumadocs overrides for space theme ── */
-/* Fumadocs expects raw HSL triplets — wrapped in hsl() by fumadocs internals */
-.space-theme {
+  /* Fumadocs HSL triplets — dark */
   --fd-background: 240 33% 5%;
   --fd-foreground: 240 27% 93%;
   --fd-card: 233 20% 9%;
@@ -176,42 +84,221 @@
   --fd-ring: 233 100% 71%;
 }
 
-/* Step 4: Table borders — slightly stronger for readability */
-.space-theme table {
+/* ── Sunrise light mode ── */
+
+html:not(.dark) .space-theme {
+  --bg: #edeaf4;
+
+  /* Accent-derived surfaces — warm lavender tints */
+  --surface: color-mix(in srgb, var(--accent) 5%, #e4e1ee);
+  --card: color-mix(in srgb, var(--accent) 4%, #f2f0f8);
+  --surface-elevated: color-mix(in srgb, var(--accent) 6%, #dbd8e8);
+
+  /* Borders — visible but gentle */
+  --border: color-mix(in srgb, var(--accent) 12%, rgba(60, 50, 90, 0.10));
+  --border-strong: color-mix(in srgb, var(--accent) 18%, rgba(60, 50, 90, 0.18));
+
+  /* Text hierarchy — dark indigo tones */
+  --text: #1a1630;
+  --text-secondary: rgba(26, 22, 48, 0.72);
+  --text-tertiary: rgba(26, 22, 48, 0.50);
+  --muted: #8580a0;
+
+  /* Fumadocs HSL triplets — sunrise */
+  --fd-background: 252 28% 94%;
+  --fd-foreground: 252 37% 14%;
+  --fd-card: 252 28% 96%;
+  --fd-card-foreground: 252 37% 14%;
+  --fd-border: 252 18% 82%;
+  --fd-muted: 252 18% 90%;
+  --fd-muted-foreground: 252 12% 54%;
+  --fd-accent: 233 100% 65%;
+  --fd-accent-foreground: 0 0% 100%;
+  --fd-primary: 233 100% 60%;
+  --fd-primary-foreground: 0 0% 100%;
+  --fd-secondary: 252 20% 92%;
+  --fd-secondary-foreground: 252 37% 14%;
+  --fd-popover: 252 28% 96%;
+  --fd-popover-foreground: 252 37% 14%;
+  --fd-ring: 233 100% 65%;
+}
+
+/* ── Typography (shared) ── */
+
+.space-theme h1,
+.space-theme h2,
+.space-theme h3,
+.space-theme h4,
+.space-theme h5,
+.space-theme h6 {
+  font-family: var(--font-heading);
+}
+
+.space-theme code,
+.space-theme pre {
+  font-family: var(--font-mono);
+}
+
+/* Eyebrow pattern — Space Mono accent labels */
+.space-theme .eyebrow,
+.space-theme [data-eyebrow] {
+  font-family: var(--font-space-mono), monospace;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Text hierarchy — apply secondary/tertiary to fumadocs elements */
+.space-theme .fd-paragraph:not(:first-child),
+.space-theme [class*="fd-body"] {
+  color: var(--text-secondary);
+}
+
+.space-theme nav[aria-label="breadcrumb"],
+.space-theme nav[aria-label="breadcrumb"] * {
+  color: var(--text-tertiary);
+}
+
+/* Page descriptions */
+.space-theme .fd-not-prose {
+  color: var(--text-secondary);
+}
+
+/* ── Starfield ── */
+
+.space-theme .starfield {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.space-theme .star {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  opacity: 0;
+  animation: starTwinkle var(--d, 3s) ease-in-out infinite;
+}
+
+/* Light mode stars — accent-tinted instead of white, dimmed via container opacity */
+html:not(.dark) .space-theme .star {
+  background: var(--accent);
+}
+
+html:not(.dark) .space-theme .starfield {
+  opacity: 0.4;
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0; }
+  50% { opacity: var(--o, 0.6); }
+}
+
+/* ── Code block & inline code ── */
+
+/* Inline code */
+.space-theme :not(pre) > code {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 0.25rem;
+  padding: 0.15em 0.5em;
+  font-size: 0.875em;
+}
+
+/* Code blocks */
+.space-theme pre {
+  background: var(--surface) !important;
+  border: 1px solid color-mix(in srgb, var(--accent) 8%, transparent);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  font-size: 0.875rem;
+  font-weight: 200;
+}
+
+/* Fumadocs code block overrides */
+.space-theme figure[data-rehype-pretty-code-figure] pre {
+  background: var(--surface) !important;
+  border: 1px solid color-mix(in srgb, var(--accent) 8%, transparent);
+  border-radius: 0.5rem;
+}
+
+.space-theme figure[data-rehype-pretty-code-figure] code {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+/* Light mode code blocks — slightly more border definition */
+html:not(.dark) .space-theme pre {
+  border: 1px solid color-mix(in srgb, var(--accent) 12%, rgba(60, 50, 90, 0.12));
+}
+
+html:not(.dark) .space-theme figure[data-rehype-pretty-code-figure] pre {
+  border: 1px solid color-mix(in srgb, var(--accent) 12%, rgba(60, 50, 90, 0.12));
+}
+
+/* ── Tables ── */
+
+/* Dark mode tables */
+.dark .space-theme table {
   border-color: hsl(233 30% 18%);
 }
 
-.space-theme th,
-.space-theme td {
+.dark .space-theme th,
+.dark .space-theme td {
   border-color: hsl(233 30% 18%);
 }
 
-.space-theme thead th {
+.dark .space-theme thead th {
   background: color-mix(in srgb, var(--accent) 10%, #0e0e16);
   border-bottom-color: hsl(233 30% 22%);
 }
 
-/* Step 6: Card & sidebar separation */
+/* Light mode tables */
+html:not(.dark) .space-theme table {
+  border-color: hsl(252 18% 82%);
+}
+
+html:not(.dark) .space-theme th,
+html:not(.dark) .space-theme td {
+  border-color: hsl(252 18% 82%);
+}
+
+html:not(.dark) .space-theme thead th {
+  background: color-mix(in srgb, var(--accent) 6%, #e8e5f0);
+  border-bottom-color: hsl(252 18% 76%);
+}
+
+/* ── Sidebar ── */
+
 .space-theme aside[id="nd-sidebar"] {
   background: var(--surface);
 }
 
-/* Sidebar separator — very subtle hint of division */
 .space-theme aside[id="nd-sidebar"] > div {
   border-color: color-mix(in srgb, var(--accent) 6%, transparent);
 }
 
-/* ── Step 7: Link & interactive states ── */
+/* ── Links & interactive states ── */
 
-/* Links */
 .space-theme a:not([class]) {
   color: var(--accent);
   text-decoration: none;
   transition: color 0.15s ease;
 }
 
-.space-theme a:not([class]):hover {
+.dark .space-theme a:not([class]):hover {
   color: color-mix(in srgb, var(--accent) 80%, white);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+html:not(.dark) .space-theme a:not([class]):hover {
+  color: color-mix(in srgb, var(--accent) 80%, #1a1630);
   text-decoration: underline;
   text-underline-offset: 0.15em;
 }

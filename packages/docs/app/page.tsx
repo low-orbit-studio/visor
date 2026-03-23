@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import { ThemeImage } from '@/components/theme-image';
 
 export default function HomePage() {
   return (
@@ -15,8 +15,9 @@ export default function HomePage() {
         fontFamily: 'var(--font-heading)',
       }}
     >
-      <Image
-        src="/visor-hero.png"
+      <ThemeImage
+        srcDark="/visor-hero.png"
+        srcLight="/visor-hero-light.png"
         alt="Visor — One component system. Total Control."
         width={800}
         height={280}
