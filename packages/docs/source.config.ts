@@ -10,7 +10,7 @@ export default defineConfig({
     rehypeCodeOptions: {
       themes: {
         light: 'github-light',
-        dark: 'github-dark',
+        dark: 'tokyo-night',
       },
       ...rehypeCodeDefaultOptions,
     },

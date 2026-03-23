@@ -1,26 +1,94 @@
 /* ── Space theme — core tokens + starfield ── */
 
+/* Step 1: Satoshi font for body text */
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Variable.woff2') format('woff2');
+  font-weight: 300 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-VariableItalic.woff2') format('woff2');
+  font-weight: 300 900;
+  font-display: swap;
+  font-style: italic;
+}
+
 .space-theme {
+  /* ── Core tokens ── */
   --bg: #080810;
-  --surface: #0e0e1a;
-  --border: rgba(255, 255, 255, 0.07);
   --accent: #5b6fff;
   --accent2: #ff5b8f;
-  --text: #e8e8f0;
-  --muted: #6b6b80;
   --success: #4fffb0;
-  --card: #12121f;
+
+  /* Step 6: Accent-derived surfaces via color-mix */
+  --surface: color-mix(in srgb, var(--accent) 4%, #0a0a14);
+  --card: color-mix(in srgb, var(--accent) 6%, #0e0e18);
+  --surface-elevated: color-mix(in srgb, var(--accent) 8%, #121220);
+
+  /* Step 6: Accent-derived borders */
+  --border: color-mix(in srgb, var(--accent) 12%, transparent);
+  --border-strong: color-mix(in srgb, var(--accent) 20%, transparent);
+
+  /* Step 3: Text hierarchy — 4 levels */
+  --text: #e8e8f0;
+  --text-secondary: rgba(232, 232, 240, 0.72);
+  --text-tertiary: rgba(232, 232, 240, 0.50);
+  --muted: #6b6b80;
+
+  /* Font stacks */
+  --font-satoshi: 'Satoshi', system-ui, sans-serif;
 
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
   position: relative;
+  font-family: var(--font-satoshi);
+}
+
+/* Step 1: Syne for headings only */
+.space-theme h1,
+.space-theme h2,
+.space-theme h3,
+.space-theme h4,
+.space-theme h5,
+.space-theme h6 {
   font-family: var(--font-syne), system-ui, sans-serif;
 }
 
 .space-theme code,
 .space-theme pre {
   font-family: var(--font-space-mono), monospace;
+}
+
+/* Step 2: Eyebrow pattern — Space Mono accent labels */
+.space-theme .eyebrow,
+.space-theme [data-eyebrow] {
+  font-family: var(--font-space-mono), monospace;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Step 3: Text hierarchy — apply secondary/tertiary to fumadocs elements */
+.space-theme .fd-paragraph:not(:first-child),
+.space-theme [class*="fd-body"] {
+  color: var(--text-secondary);
+}
+
+.space-theme nav[aria-label="breadcrumb"],
+.space-theme nav[aria-label="breadcrumb"] * {
+  color: var(--text-tertiary);
+}
+
+/* Step 3: Page descriptions */
+.space-theme .fd-not-prose {
+  color: var(--text-secondary);
 }
 
 /* Starfield */
@@ -45,7 +113,39 @@
   50% { opacity: var(--o, 0.6); }
 }
 
-/* ── Fumadocs overrides for space theme ── */
+/* ── Step 5: Code block & inline code polish ── */
+
+/* Inline code */
+.space-theme :not(pre) > code {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 0.25rem;
+  padding: 0.15em 0.35em;
+  font-size: 0.875em;
+}
+
+/* Code blocks */
+.space-theme pre {
+  background: var(--surface) !important;
+  border: 1px solid var(--border-strong);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+/* Fumadocs code block overrides */
+.space-theme figure[data-rehype-pretty-code-figure] pre {
+  background: var(--surface) !important;
+  border: 1px solid var(--border-strong);
+  border-radius: 0.5rem;
+}
+
+.space-theme figure[data-rehype-pretty-code-figure] code {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+/* ── Step 4 & 6: Fumadocs overrides for space theme ── */
 .space-theme {
   --fd-background: var(--bg);
   --fd-foreground: var(--text);
@@ -53,7 +153,7 @@
   --fd-card-foreground: var(--text);
   --fd-border: var(--border);
   --fd-muted: var(--surface);
-  --fd-muted-foreground: var(--muted);
+  --fd-muted-foreground: var(--text-secondary);
   --fd-accent: var(--accent);
   --fd-accent-foreground: #ffffff;
   --fd-primary: var(--accent);
@@ -63,4 +163,50 @@
   --fd-popover: var(--card);
   --fd-popover-foreground: var(--text);
   --fd-ring: var(--accent);
+}
+
+/* Step 4: Table border softening */
+.space-theme table {
+  border-color: var(--border);
+}
+
+.space-theme th,
+.space-theme td {
+  border-color: var(--border);
+}
+
+.space-theme thead th {
+  border-bottom-color: var(--border-strong);
+}
+
+/* Step 6: Card & sidebar separation */
+.space-theme aside[id="nd-sidebar"] {
+  background: var(--surface);
+}
+
+/* ── Step 7: Link & interactive states ── */
+
+/* Links */
+.space-theme a:not([class]) {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.space-theme a:not([class]):hover {
+  color: color-mix(in srgb, var(--accent) 80%, white);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* Focus ring */
+.space-theme :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Sidebar active item */
+.space-theme [data-active="true"] {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
 }

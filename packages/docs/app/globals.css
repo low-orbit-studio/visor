@@ -93,3 +93,34 @@
 .preview-copy:hover {
   background: var(--color-muted, #f1f5f9);
 }
+
+/* Space theme preview container overrides */
+.space-theme .preview-container {
+  border-color: var(--border-strong);
+  background: var(--card);
+}
+
+.space-theme .preview-render {
+  background: var(--surface-elevated);
+}
+
+.space-theme .preview-footer {
+  background: var(--surface);
+  border-top-color: var(--border);
+}
+
+.space-theme .preview-title {
+  color: var(--text-tertiary);
+}
+
+.space-theme .preview-toggle,
+.space-theme .preview-copy {
+  border-color: var(--border-strong);
+  background: var(--card);
+  color: var(--text-secondary);
+}
+
+.space-theme .preview-toggle:hover,
+.space-theme .preview-copy:hover {
+  background: var(--surface-elevated);
+}
