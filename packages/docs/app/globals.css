@@ -102,3 +102,27 @@
 .space-theme .preview-copy:hover {
   background: var(--surface-elevated);
 }
+
+/* Code area inside preview — inherit the theme's glass treatment, no extra border/radius */
+.preview-code pre {
+  margin: 0;
+  padding: 1rem;
+  overflow-x: auto;
+  font-size: 0.8125rem !important;
+  font-weight: 200 !important;
+  line-height: 1.6;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.preview-code pre code {
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  font-size: inherit;
+  font-weight: inherit !important;
+}
+
+.preview-code pre code span {
+  font-weight: inherit !important;
+}
