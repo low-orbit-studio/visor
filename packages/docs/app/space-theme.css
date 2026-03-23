@@ -87,7 +87,28 @@
 /* ── Sunrise light mode ── */
 
 html:not(.dark) .space-theme {
-  --bg: #edeaf4;
+  --bg: #e0ddef;
+  /* Sunrise sky gradient — steel-blue top → lavender-pink → warm peach glow at bottom center */
+  background:
+    radial-gradient(
+      ellipse 120% 50% at 50% 100%,
+      rgba(255, 210, 160, 0.45) 0%,
+      rgba(245, 190, 170, 0.30) 25%,
+      rgba(220, 195, 215, 0.15) 50%,
+      transparent 75%
+    ),
+    linear-gradient(
+      to bottom,
+      #cdd4e4 0%,
+      #d5d5e6 15%,
+      #dbd3e4 30%,
+      #e2d4e0 45%,
+      #eddcd8 60%,
+      #f2e4d6 75%,
+      #f5e8d4 90%,
+      #f0ddd0 100%
+    ) !important;
+  background-attachment: fixed !important;
 
   /* Accent-derived surfaces — warm lavender tints */
   --surface: color-mix(in srgb, var(--accent) 5%, #e4e1ee);
