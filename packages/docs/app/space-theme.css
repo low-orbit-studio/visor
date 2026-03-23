@@ -316,6 +316,12 @@ html:not(.dark) .space-theme aside[id="nd-sidebar"] {
   border-color: color-mix(in srgb, var(--accent) 6%, transparent);
 }
 
+/* ── Search input — keep kbd badges readable on hover ── */
+
+html:not(.dark) .space-theme button:hover kbd {
+  color: var(--text);
+}
+
 /* ── Links & interactive states ── */
 
 .space-theme a:not([class]) {
