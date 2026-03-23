@@ -124,10 +124,10 @@
   font-size: 0.875em;
 }
 
-/* Code blocks */
+/* Code blocks — softer border than inline code */
 .space-theme pre {
   background: var(--surface) !important;
-  border: 1px solid var(--border-strong);
+  border: 1px solid color-mix(in srgb, var(--accent) 8%, transparent);
   border-radius: 0.5rem;
   padding: 1rem;
 }
@@ -135,7 +135,7 @@
 /* Fumadocs code block overrides */
 .space-theme figure[data-rehype-pretty-code-figure] pre {
   background: var(--surface) !important;
-  border: 1px solid var(--border-strong);
+  border: 1px solid color-mix(in srgb, var(--accent) 8%, transparent);
   border-radius: 0.5rem;
 }
 
@@ -146,42 +146,49 @@
 }
 
 /* ── Step 4 & 6: Fumadocs overrides for space theme ── */
+/* Fumadocs expects raw HSL triplets — wrapped in hsl() by fumadocs internals */
 .space-theme {
-  --fd-background: var(--bg);
-  --fd-foreground: var(--text);
-  --fd-card: var(--card);
-  --fd-card-foreground: var(--text);
-  --fd-border: var(--border);
-  --fd-muted: var(--surface);
-  --fd-muted-foreground: var(--text-secondary);
-  --fd-accent: var(--accent);
-  --fd-accent-foreground: #ffffff;
-  --fd-primary: var(--accent);
-  --fd-primary-foreground: #ffffff;
-  --fd-secondary: var(--surface);
-  --fd-secondary-foreground: var(--text);
-  --fd-popover: var(--card);
-  --fd-popover-foreground: var(--text);
-  --fd-ring: var(--accent);
+  --fd-background: 240 33% 5%;
+  --fd-foreground: 240 27% 93%;
+  --fd-card: 233 20% 9%;
+  --fd-card-foreground: 240 27% 93%;
+  --fd-border: 233 30% 15%;
+  --fd-muted: 233 20% 8%;
+  --fd-muted-foreground: 240 27% 72%;
+  --fd-accent: 233 100% 71%;
+  --fd-accent-foreground: 0 0% 100%;
+  --fd-primary: 233 100% 71%;
+  --fd-primary-foreground: 0 0% 100%;
+  --fd-secondary: 233 20% 6%;
+  --fd-secondary-foreground: 240 27% 93%;
+  --fd-popover: 233 20% 9%;
+  --fd-popover-foreground: 240 27% 93%;
+  --fd-ring: 233 100% 71%;
 }
 
-/* Step 4: Table border softening */
+/* Step 4: Table borders — slightly stronger for readability */
 .space-theme table {
-  border-color: var(--border);
+  border-color: hsl(233 30% 18%);
 }
 
 .space-theme th,
 .space-theme td {
-  border-color: var(--border);
+  border-color: hsl(233 30% 18%);
 }
 
 .space-theme thead th {
-  border-bottom-color: var(--border-strong);
+  background: color-mix(in srgb, var(--accent) 10%, #0e0e16);
+  border-bottom-color: hsl(233 30% 22%);
 }
 
 /* Step 6: Card & sidebar separation */
 .space-theme aside[id="nd-sidebar"] {
   background: var(--surface);
+}
+
+/* Sidebar separator — very subtle hint of division */
+.space-theme aside[id="nd-sidebar"] > div {
+  border-color: color-mix(in srgb, var(--accent) 6%, transparent);
 }
 
 /* ── Step 7: Link & interactive states ── */
