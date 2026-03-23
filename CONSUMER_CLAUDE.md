@@ -9,7 +9,7 @@
 This project uses **Visor** — Low Orbit Studio's shared design system. Visor uses a two-layer distribution model:
 
 1. **Components** — shadcn-style registry (copy-and-own). Source files live in this project and are fully editable.
-2. **Tokens** — `@loworbit/visor-tokens` npm package. CSS custom properties for design consistency. Updated via `npm update`.
+2. **Tokens** — `@loworbitstudio/visor` npm package. CSS custom properties for design consistency. Updated via `npm update`.
 
 ### Key Principle
 
@@ -62,17 +62,17 @@ This overwrites the local file with the registry version. Use git to review and 
 
 ## Tokens Package
 
-`@loworbit/visor-tokens` is imported once in the global CSS entry point. Do not import it in individual component files.
+`@loworbitstudio/visor` is imported once in the global CSS entry point. Do not import it in individual component files.
 
 ```css
 /* globals.css or app/globals.css */
-@import "@loworbit/visor-tokens";
+@import "@loworbitstudio/visor";
 ```
 
 To update tokens:
 
 ```sh
-npm update @loworbit/visor-tokens
+npm update @loworbitstudio/visor
 ```
 
 Token updates propagate to all components automatically — no file changes required.
@@ -173,7 +173,7 @@ Visor uses class-based theming. Apply themes by adding a class to the root HTML 
 Override tokens in your global CSS after the import:
 
 ```css
-@import "@loworbit/visor-tokens";
+@import "@loworbitstudio/visor";
 
 /* Project-level overrides */
 :root {
@@ -194,7 +194,7 @@ Override tokens in your global CSS after the import:
 ```
 your-project/
 ├── app/
-│   └── globals.css          ← @import "@loworbit/visor-tokens" lives here
+│   └── globals.css          ← @import "@loworbitstudio/visor" lives here
 ├── components/
 │   └── ui/
 │       ├── button/
@@ -213,8 +213,8 @@ your-project/
 
 ## Do Not
 
-- Do not modify files in `node_modules/@loworbit/visor-tokens` — override tokens in your global CSS instead.
-- Do not import `@loworbit/visor-tokens` in individual component files — it belongs in the global CSS entry point only.
+- Do not modify files in `node_modules/@loworbitstudio/visor` — override tokens in your global CSS instead.
+- Do not import `@loworbitstudio/visor` in individual component files — it belongs in the global CSS entry point only.
 - Do not use hard-coded color values in component styles — always reference CSS custom properties.
 - Do not use Tailwind utility classes in Visor component `.module.css` files — CSS Modules + custom properties is the pattern.
 

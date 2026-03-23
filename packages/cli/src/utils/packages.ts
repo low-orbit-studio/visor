@@ -25,7 +25,7 @@ export function isPackageInstalled(
 }
 
 export function hasVisorTokens(cwd: string): boolean {
-  return isPackageInstalled("@loworbit/visor-tokens", cwd)
+  return isPackageInstalled("@loworbitstudio/visor", cwd)
 }
 
 export function getUninstalledDeps(

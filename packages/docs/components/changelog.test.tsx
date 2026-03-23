@@ -15,7 +15,7 @@ describe('Changelog', () => {
 
   it('renders changelog content from file', () => {
     vi.spyOn(fs, 'readFileSync').mockReturnValue(
-      '# @loworbit/visor-tokens\n\n## 0.2.0\n\n### Minor Changes\n\n- Initial release'
+      '# @loworbitstudio/visor\n\n## 0.2.0\n\n### Minor Changes\n\n- Initial release'
     );
 
     render(<Changelog />);

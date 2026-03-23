@@ -5,7 +5,7 @@ description: Light and dark mode support in Visor — automatic system preferenc
 
 ## Overview
 
-Visor ships light and dark themes out of the box via `@loworbit/visor-tokens`. Both themes are CSS-only — no JavaScript required for the default behavior.
+Visor ships light and dark themes out of the box via `@loworbitstudio/visor`. Both themes are CSS-only — no JavaScript required for the default behavior.
 
 The system works at two levels:
 
@@ -17,7 +17,7 @@ The system works at two levels:
 Import the full token bundle in your app's root CSS file:
 
 ```css
-@import '@loworbit/visor-tokens';
+@import '@loworbitstudio/visor';
 ```
 
 That's it. The bundle includes:
@@ -79,10 +79,10 @@ To override the system preference, apply one of the following to your `<html>` e
 
 ## JavaScript Theme Toggle
 
-The `@loworbit/visor-tokens` package exports utilities for toggling themes programmatically:
+The `@loworbitstudio/visor` package exports utilities for toggling themes programmatically:
 
 ```ts
-import { applyTheme, getSystemTheme } from '@loworbit/visor-tokens';
+import { applyTheme, getSystemTheme } from '@loworbitstudio/visor';
 
 // Apply a theme
 applyTheme('dark');   // adds .dark to <html>
@@ -104,7 +104,7 @@ applyTheme('dark', container);
 Combine `applyTheme` with `localStorage` to persist the user's choice:
 
 ```ts
-import { applyTheme, getSystemTheme, type Theme } from '@loworbit/visor-tokens';
+import { applyTheme, getSystemTheme, type Theme } from '@loworbitstudio/visor';
 
 function initTheme() {
   const stored = localStorage.getItem('theme') as Theme | null;
@@ -124,7 +124,7 @@ function toggleTheme() {
 
 ```tsx
 import { useState, useEffect } from 'react';
-import { applyTheme, getSystemTheme, type Theme } from '@loworbit/visor-tokens';
+import { applyTheme, getSystemTheme, type Theme } from '@loworbitstudio/visor';
 
 function useTheme() {
   const [theme, setTheme] = useState<Theme>(() => {
@@ -157,16 +157,16 @@ Instead of the full bundle, you can import individual CSS files:
 
 ```css
 /* Primitive tokens only */
-@import '@loworbit/visor-tokens/primitives';
+@import '@loworbitstudio/visor/primitives';
 
 /* Semantic tokens only */
-@import '@loworbit/visor-tokens/semantic';
+@import '@loworbitstudio/visor/semantic';
 
 /* Light theme adaptive tokens */
-@import '@loworbit/visor-tokens/themes/light';
+@import '@loworbitstudio/visor/themes/light';
 
 /* Dark theme adaptive tokens (manual selectors + media query) */
-@import '@loworbit/visor-tokens/themes/dark';
+@import '@loworbitstudio/visor/themes/dark';
 ```
 
 This is useful when you want to compose the token layers manually or when your build system handles CSS concatenation.

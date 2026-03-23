@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@loworbit/visor-tokens"><img src="https://img.shields.io/npm/v/@loworbit/visor-tokens?label=%40loworbit%2Fvisor-tokens" alt="npm version" /></a>
+  <a href="https://www.npmjs.com/package/@loworbitstudio/visor"><img src="https://img.shields.io/npm/v/@loworbitstudio/visor?label=%40loworbit%2Fvisor-tokens" alt="npm version" /></a>
   <a href="https://visor.loworbit.studio">Documentation</a>
 </p>
 
@@ -15,7 +15,7 @@ Visor is a theming-first React component library built by [Low Orbit Studio](htt
 
 **Layer 1 — Components (copy-and-own).** Run `npx visor add button` and the source files are copied directly into your project. You own them. Edit them freely. No runtime dependency on Visor.
 
-**Layer 2 — Tokens (`@loworbit/visor-tokens`).** The only npm package. It provides all the CSS custom properties that Visor components reference. Update the package and design changes cascade to every component automatically — without touching a single component file.
+**Layer 2 — Tokens (`@loworbitstudio/visor`).** The only npm package. It provides all the CSS custom properties that Visor components reference. Update the package and design changes cascade to every component automatically — without touching a single component file.
 
 This model is inspired by shadcn/ui's copy-and-own approach, combined with a shared token layer that keeps multi-project consistency without locking you in.
 
@@ -26,14 +26,14 @@ This model is inspired by shadcn/ui's copy-and-own approach, combined with a sha
 ### 1. Install the tokens package
 
 ```sh
-npm install @loworbit/visor-tokens
+npm install @loworbitstudio/visor
 ```
 
 ### 2. Import tokens into your global CSS
 
 ```css
 /* app/globals.css or src/index.css */
-@import "@loworbit/visor-tokens";
+@import "@loworbitstudio/visor";
 ```
 
 ### 3. Initialize Visor
@@ -199,7 +199,7 @@ Override any token after your `@import` statement — no forking required:
 
 ```css
 /* globals.css */
-@import "@loworbit/visor-tokens";
+@import "@loworbitstudio/visor";
 
 :root {
   /* Rebrand the primary color across the entire system */
@@ -241,10 +241,10 @@ export default function RootLayout({ children }) {
 ### Importing Specific Token Layers
 
 ```css
-@import "@loworbit/visor-tokens/primitives";   /* Tier 1: raw values */
-@import "@loworbit/visor-tokens/semantic";     /* Tier 2: purpose-named */
-@import "@loworbit/visor-tokens/themes/light"; /* Tier 3: light theme */
-@import "@loworbit/visor-tokens/themes/dark";  /* Tier 3: dark theme */
+@import "@loworbitstudio/visor/primitives";   /* Tier 1: raw values */
+@import "@loworbitstudio/visor/semantic";     /* Tier 2: purpose-named */
+@import "@loworbitstudio/visor/themes/light"; /* Tier 3: light theme */
+@import "@loworbitstudio/visor/themes/dark";  /* Tier 3: dark theme */
 ```
 
 ---
@@ -272,7 +272,7 @@ Because you own the files, the CLI shows a diff before overwriting. If you've cu
 Token updates are standard npm updates:
 
 ```sh
-npm update @loworbit/visor-tokens
+npm update @loworbitstudio/visor
 ```
 
 Token updates propagate automatically to all components. No component files change.
@@ -339,7 +339,7 @@ visor/
 ├── registry/          # Registry schema and definitions
 └── packages/
     ├── cli/           # @loworbitstudio/visor CLI
-    ├── tokens/        # @loworbit/visor-tokens npm package
+    ├── tokens/        # @loworbitstudio/visor npm package
     └── docs/          # fumadocs documentation site
 ```
 

@@ -1,5 +1,5 @@
 {
-  "name": "@loworbit/visor-tokens",
+  "name": "@loworbitstudio/visor",
   "version": "0.2.0",
   "description": "Design tokens for the Visor design system — CSS custom properties for theming.",
   "type": "module",

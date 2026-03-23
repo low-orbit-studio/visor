@@ -1,13 +1,13 @@
 # Visor
 
-> Low Orbit Studio's shared design system — a two-layer distribution model: components via a shadcn-style registry (copy-and-own) and tokens via an npm package (`@loworbit/visor-tokens`).
+> Low Orbit Studio's shared design system — a two-layer distribution model: components via a shadcn-style registry (copy-and-own) and tokens via an npm package (`@loworbitstudio/visor`).
 
 ## Distribution Model
 
 Visor uses two distribution layers:
 
 1. **Components → Registry (copy-and-own).** Consumers run `npx visor add button`, source files get copied into their project. Full edit rights, no lock-in. Scaffolded from shadcn's `registry-template`.
-2. **Tokens → npm package (`@loworbit/visor-tokens`).** The only npm-distributed piece. CSS custom properties that all components reference. Updates propagate automatically via `npm update`, keeping design consistency across projects without constraining component implementations.
+2. **Tokens → npm package (`@loworbitstudio/visor`).** The only npm-distributed piece. CSS custom properties that all components reference. Updates propagate automatically via `npm update`, keeping design consistency across projects without constraining component implementations.
 
 **Why this model:** Consumers can edit components without forking. Aligns with the playbook's "own your components" philosophy while the shared tokens package keeps design consistency effortless.
 
@@ -15,7 +15,7 @@ Visor uses two distribution layers:
 
 - **Framework:** React + TypeScript
 - **Registry:** shadcn-style (`registry-template` scaffold)
-- **Tokens package:** `@loworbit/visor-tokens` (CSS custom properties)
+- **Tokens package:** `@loworbitstudio/visor` (CSS custom properties)
 - **Styling:** CSS Modules + CSS custom properties (no Tailwind, no CSS-in-JS)
 - **Variants:** CVA (class-variance-authority)
 - **Primitives:** Radix UI (complex behaviors only)
@@ -50,7 +50,7 @@ Visor's token system follows the 3-tier architecture adapted from Blacklight:
 2. **Semantic** — Named by purpose (`--text-primary`, `--surface-card`, `--border-default`)
 3. **Adaptive** — Theme-aware tokens that switch based on active theme class
 
-**Theming is the core differentiator.** All components must be fully theme-agnostic — they reference CSS custom properties, never hard-coded values. Themes are distributable CSS variable sets shipped via `@loworbit/visor-tokens`.
+**Theming is the core differentiator.** All components must be fully theme-agnostic — they reference CSS custom properties, never hard-coded values. Themes are distributable CSS variable sets shipped via `@loworbitstudio/visor`.
 
 Reference design system: `~/Code/low-orbit/low-orbit-playbook/reference-nextjs-app/`
 Source components: `~/Code/kaiah/kaiah-app/packages/ui/src/components/ui/`

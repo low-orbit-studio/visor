@@ -49,7 +49,7 @@ describe("init command", () => {
     // No package.json → tokens not installed
     initCommand(testDir)
     expect(console.log).toHaveBeenCalledWith(
-      expect.stringContaining("@loworbit/visor-tokens")
+      expect.stringContaining("@loworbitstudio/visor")
     )
   })
 
@@ -57,7 +57,7 @@ describe("init command", () => {
     writeFileSync(
       join(testDir, "package.json"),
       JSON.stringify({
-        dependencies: { "@loworbit/visor-tokens": "^0.1.0" },
+        dependencies: { "@loworbitstudio/visor": "^0.1.0" },
       }),
       "utf-8"
     )
@@ -66,7 +66,7 @@ describe("init command", () => {
 
     const calls = (console.log as ReturnType<typeof vi.fn>).mock.calls
     const tokenWarnings = calls.filter((call: unknown[]) =>
-      String(call[0]).includes("@loworbit/visor-tokens is not installed")
+      String(call[0]).includes("@loworbitstudio/visor is not installed")
     )
     expect(tokenWarnings).toHaveLength(0)
   })

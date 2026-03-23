@@ -6,7 +6,7 @@ export const ui: Registry = [
     type: "registry:ui",
     description:
       "A button component with multiple variants and sizes using CVA.",
-    dependencies: ["class-variance-authority", "@loworbit/visor-tokens"],
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor"],
     registryDependencies: ["utils"],
     files: [
       {
@@ -23,7 +23,7 @@ export const ui: Registry = [
     name: "input",
     type: "registry:ui",
     description: "A text input component with focus and validation states.",
-    dependencies: ["@loworbit/visor-tokens"],
+    dependencies: ["@loworbitstudio/visor"],
     registryDependencies: ["utils"],
     files: [
       {
@@ -40,7 +40,7 @@ export const ui: Registry = [
     name: "label",
     type: "registry:ui",
     description: "An accessible label component built on Radix UI Label.",
-    dependencies: ["@radix-ui/react-label", "@loworbit/visor-tokens"],
+    dependencies: ["@radix-ui/react-label", "@loworbitstudio/visor"],
     registryDependencies: ["utils"],
     files: [
       {
@@ -57,7 +57,7 @@ export const ui: Registry = [
     name: "textarea",
     type: "registry:ui",
     description: "A textarea component with auto-resize and validation states.",
-    dependencies: ["@loworbit/visor-tokens"],
+    dependencies: ["@loworbitstudio/visor"],
     registryDependencies: ["utils"],
     files: [
       {
@@ -77,7 +77,7 @@ export const ui: Registry = [
     dependencies: [
       "@radix-ui/react-checkbox",
       "@phosphor-icons/react",
-      "@loworbit/visor-tokens",
+      "@loworbitstudio/visor",
     ],
     registryDependencies: ["utils"],
     files: [
@@ -99,7 +99,7 @@ export const ui: Registry = [
     dependencies: [
       "@radix-ui/react-select",
       "@phosphor-icons/react",
-      "@loworbit/visor-tokens",
+      "@loworbitstudio/visor",
     ],
     registryDependencies: ["utils"],
     files: [
@@ -121,7 +121,7 @@ export const ui: Registry = [
     dependencies: [
       "class-variance-authority",
       "@radix-ui/react-switch",
-      "@loworbit/visor-tokens",
+      "@loworbitstudio/visor",
     ],
     registryDependencies: ["utils"],
     files: [
@@ -142,7 +142,7 @@ export const ui: Registry = [
       "A form field wrapper composing label, description, and error components.",
     dependencies: [
       "class-variance-authority",
-      "@loworbit/visor-tokens",
+      "@loworbitstudio/visor",
     ],
     registryDependencies: ["utils", "label"],
     files: [
@@ -160,8 +160,8 @@ export const ui: Registry = [
     name: "chart",
     type: "registry:ui",
     description:
-      "A Recharts wrapper providing ChartContainer, ChartTooltip, and ChartLegend with theming via @loworbit/visor-tokens CSS custom properties.",
-    dependencies: ["recharts", "@loworbit/visor-tokens"],
+      "A Recharts wrapper providing ChartContainer, ChartTooltip, and ChartLegend with theming via @loworbitstudio/visor CSS custom properties.",
+    dependencies: ["recharts", "@loworbitstudio/visor"],
     registryDependencies: ["utils"],
     files: [
       {
@@ -179,7 +179,7 @@ export const ui: Registry = [
     type: "registry:ui",
     description:
       "A compound card component with header, title, description, content, and footer sub-components.",
-    dependencies: ["@loworbit/visor-tokens"],
+    dependencies: ["@loworbitstudio/visor"],
     registryDependencies: ["utils"],
     files: [
       {
@@ -197,7 +197,7 @@ export const ui: Registry = [
     type: "registry:ui",
     description:
       "A badge component with multiple variants (default, secondary, outline, destructive) using CVA.",
-    dependencies: ["class-variance-authority", "@loworbit/visor-tokens"],
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor"],
     registryDependencies: ["utils"],
     files: [
       {
@@ -215,7 +215,7 @@ export const ui: Registry = [
     type: "registry:ui",
     description:
       "An avatar component with image and fallback support, built on Radix UI Avatar.",
-    dependencies: ["@radix-ui/react-avatar", "@loworbit/visor-tokens"],
+    dependencies: ["@radix-ui/react-avatar", "@loworbitstudio/visor"],
     registryDependencies: ["utils"],
     files: [
       {
@@ -233,7 +233,7 @@ export const ui: Registry = [
     type: "registry:ui",
     description:
       "A separator component supporting horizontal and vertical orientations, built on Radix UI Separator.",
-    dependencies: ["@radix-ui/react-separator", "@loworbit/visor-tokens"],
+    dependencies: ["@radix-ui/react-separator", "@loworbitstudio/visor"],
     registryDependencies: ["utils"],
     files: [
       {
@@ -251,7 +251,7 @@ export const ui: Registry = [
     type: "registry:ui",
     description:
       "A skeleton loading placeholder component with a pulse animation.",
-    dependencies: ["@loworbit/visor-tokens"],
+    dependencies: ["@loworbitstudio/visor"],
     registryDependencies: ["utils"],
     files: [
       {
@@ -269,7 +269,7 @@ export const ui: Registry = [
     type: "registry:ui",
     description:
       "A tooltip component with provider, trigger, and content sub-components, built on Radix UI Tooltip.",
-    dependencies: ["@radix-ui/react-tooltip", "@loworbit/visor-tokens"],
+    dependencies: ["@radix-ui/react-tooltip", "@loworbitstudio/visor"],
     registryDependencies: ["utils"],
     files: [
       {
@@ -287,7 +287,7 @@ export const ui: Registry = [
     type: "registry:ui",
     description:
       "An alert component with title and description sub-components, supporting default, destructive, success, and warning variants.",
-    dependencies: ["class-variance-authority", "@loworbit/visor-tokens"],
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor"],
     registryDependencies: ["utils"],
     files: [
       {
@@ -305,7 +305,7 @@ export const ui: Registry = [
     type: "registry:ui",
     description:
       "A progress bar component built on Radix UI Progress.",
-    dependencies: ["@radix-ui/react-progress", "@loworbit/visor-tokens"],
+    dependencies: ["@radix-ui/react-progress", "@loworbitstudio/visor"],
     registryDependencies: ["utils"],
     files: [
       {
@@ -323,7 +323,7 @@ export const ui: Registry = [
     type: "registry:ui",
     description:
       "A modal dialog component with overlay, content, header, title, and description sub-components.",
-    dependencies: ["@radix-ui/react-dialog", "@phosphor-icons/react", "@loworbit/visor-tokens"],
+    dependencies: ["@radix-ui/react-dialog", "@phosphor-icons/react", "@loworbitstudio/visor"],
     registryDependencies: ["utils"],
     files: [
       {
@@ -345,7 +345,7 @@ export const ui: Registry = [
       "@radix-ui/react-dialog",
       "@phosphor-icons/react",
       "class-variance-authority",
-      "@loworbit/visor-tokens",
+      "@loworbitstudio/visor",
     ],
     registryDependencies: ["utils"],
     files: [
@@ -367,7 +367,7 @@ export const ui: Registry = [
     dependencies: [
       "@radix-ui/react-dropdown-menu",
       "@phosphor-icons/react",
-      "@loworbit/visor-tokens",
+      "@loworbitstudio/visor",
     ],
     registryDependencies: ["utils"],
     files: [
@@ -389,7 +389,7 @@ export const ui: Registry = [
     dependencies: [
       "@radix-ui/react-tabs",
       "class-variance-authority",
-      "@loworbit/visor-tokens",
+      "@loworbitstudio/visor",
     ],
     registryDependencies: ["utils"],
     files: [
@@ -408,7 +408,7 @@ export const ui: Registry = [
     type: "registry:ui",
     description:
       "A breadcrumb navigation component with list, item, link, page, separator, and ellipsis sub-components.",
-    dependencies: ["@phosphor-icons/react", "@loworbit/visor-tokens"],
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor"],
     registryDependencies: ["utils"],
     files: [
       {
@@ -426,7 +426,7 @@ export const ui: Registry = [
     type: "registry:ui",
     description:
       "A scroll area component with custom scrollbars using Radix UI ScrollArea.",
-    dependencies: ["@radix-ui/react-scroll-area", "@loworbit/visor-tokens"],
+    dependencies: ["@radix-ui/react-scroll-area", "@loworbitstudio/visor"],
     registryDependencies: ["utils"],
     files: [
       {
@@ -447,7 +447,7 @@ export const ui: Registry = [
     dependencies: [
       "class-variance-authority",
       "@phosphor-icons/react",
-      "@loworbit/visor-tokens",
+      "@loworbitstudio/visor",
     ],
     registryDependencies: ["utils"],
     files: [

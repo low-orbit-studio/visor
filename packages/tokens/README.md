@@ -1,11 +1,11 @@
-# @loworbit/visor-tokens
+# @loworbitstudio/visor
 
 CSS custom property design tokens for the Visor design system.
 
 ## Installation
 
 ```sh
-npm install @loworbit/visor-tokens
+npm install @loworbitstudio/visor
 ```
 
 ## Usage
@@ -13,16 +13,16 @@ npm install @loworbit/visor-tokens
 Import the full token bundle in your project's entry CSS or JS:
 
 ```css
-@import "@loworbit/visor-tokens";
+@import "@loworbitstudio/visor";
 ```
 
 Or import specific layers:
 
 ```css
-@import "@loworbit/visor-tokens/primitives";   /* Tier 1: raw values */
-@import "@loworbit/visor-tokens/semantic";     /* Tier 2: purpose-named */
-@import "@loworbit/visor-tokens/themes/light"; /* Tier 3: light theme */
-@import "@loworbit/visor-tokens/themes/dark";  /* Tier 3: dark theme */
+@import "@loworbitstudio/visor/primitives";   /* Tier 1: raw values */
+@import "@loworbitstudio/visor/semantic";     /* Tier 2: purpose-named */
+@import "@loworbitstudio/visor/themes/light"; /* Tier 3: light theme */
+@import "@loworbitstudio/visor/themes/dark";  /* Tier 3: dark theme */
 ```
 
 Then use tokens in your CSS:
@@ -129,7 +129,7 @@ import {
   TOKEN_TEXT_PRIMARY,
   TOKEN_SURFACE_CARD,
   TOKEN_BORDER_DEFAULT,
-} from "@loworbit/visor-tokens/types"
+} from "@loworbitstudio/visor/types"
 
 // Use in JS (e.g., for animations or dynamic styles)
 element.style.setProperty(TOKEN_TEXT_PRIMARY, "#custom-value")
