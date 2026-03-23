@@ -12,7 +12,7 @@ export default function HomePage() {
         minHeight: '100vh',
         gap: '2.5rem',
         padding: '2rem',
-        fontFamily: 'var(--font-syne), system-ui, sans-serif',
+        fontFamily: 'var(--font-heading)',
       }}
     >
       <Image

@@ -49,6 +49,7 @@
 
   /* Font stacks */
   --font-satoshi: 'Satoshi', system-ui, sans-serif;
+  --font-heading: var(--font-satoshi);
   --font-mono: 'Monaspace Neon', monospace;
 
   min-height: 100vh;
@@ -58,14 +59,14 @@
   font-family: var(--font-satoshi);
 }
 
-/* Step 1: Syne for headings only */
+/* Step 1: Headings — swap --font-heading to change */
 .space-theme h1,
 .space-theme h2,
 .space-theme h3,
 .space-theme h4,
 .space-theme h5,
 .space-theme h6 {
-  font-family: var(--font-syne), system-ui, sans-serif;
+  font-family: var(--font-heading);
 }
 
 .space-theme code,
