@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Space_Mono } from 'next/font/google';
-import { RootProvider } from 'fumadocs-ui/provider';
+import { RootProvider } from 'fumadocs-ui/provider/next';
 import { ConditionalStarfield } from '@/components/conditional-starfield';
 import { Toaster } from '@/components/ui/toast';
 import './globals.css';
