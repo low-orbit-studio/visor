@@ -707,4 +707,88 @@ export const ui: Registry = [
       },
     ],
   },
+  {
+    name: "pagination",
+    type: "registry:ui",
+    description:
+      "A composable pagination component with previous/next navigation, page links, and ellipsis.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/pagination/pagination.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/pagination/pagination.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "navbar",
+    type: "registry:ui",
+    description:
+      "A top navigation bar with brand, content areas, links, and style variants (default, transparent, bordered).",
+    dependencies: [
+      "class-variance-authority",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/navbar/navbar.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/navbar/navbar.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "menubar",
+    type: "registry:ui",
+    description:
+      "A horizontal menu bar with menus, items, checkbox items, radio items, sub-menus, and keyboard navigation.",
+    dependencies: [
+      "@radix-ui/react-menubar",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/menubar/menubar.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/menubar/menubar.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "command",
+    type: "registry:ui",
+    description:
+      "A command palette/search component with filtering, keyboard navigation, and optional dialog mode.",
+    dependencies: [
+      "cmdk",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils", "dialog"],
+    files: [
+      {
+        path: "components/ui/command/command.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/command/command.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
 ]

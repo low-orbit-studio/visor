@@ -13,6 +13,7 @@ For global wisdom (universal lessons): [`~/Code/low-orbit/low-orbit-playbook/roo
 | ID | Topic | Tags | File |
 |----|-------|------|------|
 | W001 | vitest-axe requires custom type declarations | testing, typescript, a11y | [W001](W001-vitest-axe-types.md) |
+| W002 | cmdk requires scrollIntoView mock and axe-core rule exception | testing, cmdk, a11y, jsdom | [W002](W002-cmdk-jsdom-mocks.md) |
 
 ## Adding Entries
 

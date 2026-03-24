@@ -1,0 +1,113 @@
+/* Navbar root */
+.root {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 3.5rem;
+  padding: var(--spacing-3, 0.75rem) var(--spacing-6, 1.5rem);
+  gap: var(--spacing-4, 1rem);
+}
+
+/* Variant: default */
+.variantDefault {
+  background-color: var(--surface-card, #ffffff);
+  border-bottom: 1px solid var(--border-default, #e5e7eb);
+}
+
+/* Variant: transparent */
+.variantTransparent {
+  background-color: transparent;
+}
+
+/* Variant: bordered */
+.variantBordered {
+  background-color: var(--surface-card, #ffffff);
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-lg, 0.5rem);
+}
+
+/* Brand slot */
+.brand {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Content area */
+.content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+}
+
+.contentStart {
+  margin-right: auto;
+}
+
+.contentCenter {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.contentEnd {
+  margin-left: auto;
+}
+
+/* Item */
+.item {
+  display: flex;
+  align-items: center;
+}
+
+/* Link */
+.link {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  border-radius: var(--radius-md, 0.375rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.link:hover {
+  color: var(--text-primary, #111827);
+  background-color: var(--surface-interactive-hover, #f3f4f6);
+}
+
+.link:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* Active link */
+.linkActive {
+  color: var(--text-primary, #111827);
+  font-weight: 500;
+}
+
+/* Toggle (hidden in Phase 1a — mobile placeholder) */
+.toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2, 0.5rem);
+  border: none;
+  border-radius: var(--radius-md, 0.375rem);
+  background: transparent;
+  color: var(--text-primary, #111827);
+  cursor: pointer;
+}
+
+.toggle:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+.toggleIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}

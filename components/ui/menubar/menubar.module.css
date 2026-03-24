@@ -1,0 +1,236 @@
+/* Menubar root */
+.root {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+  border-radius: var(--radius-lg, 0.5rem);
+  border: 1px solid var(--border-default, #e5e7eb);
+  background-color: var(--surface-card, #ffffff);
+  padding: var(--spacing-1, 0.25rem);
+  height: 2.5rem;
+}
+
+/* Menubar trigger */
+.trigger {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 500;
+  border-radius: var(--radius-md, 0.375rem);
+  cursor: default;
+  outline: none;
+  user-select: none;
+  transition: background-color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out),
+    color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out);
+}
+
+.trigger:hover,
+.trigger:focus,
+.trigger[data-state="open"] {
+  background-color: var(--surface-interactive-hover, #f3f4f6);
+  color: var(--text-primary, #111827);
+}
+
+.trigger:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* Menu content */
+.content {
+  z-index: 50;
+  min-width: 12rem;
+  overflow: hidden;
+  border-radius: var(--radius-lg, 0.5rem);
+  border: 1px solid var(--border-default, #e5e7eb);
+  background-color: var(--surface-card, #ffffff);
+  color: var(--text-primary, #111827);
+  padding: var(--spacing-1, 0.25rem);
+  box-shadow: var(--shadow-lg);
+}
+
+.content[data-state="open"] {
+  animation: contentShow var(--motion-duration-fast, 100ms) var(--motion-easing-enter, ease-out);
+}
+
+.content[data-state="closed"] {
+  animation: contentHide var(--motion-duration-fast, 100ms) var(--motion-easing-exit, ease-in);
+}
+
+/* Sub content */
+.subContent {
+  z-index: 50;
+  min-width: 9rem;
+  overflow: hidden;
+  border-radius: var(--radius-lg, 0.5rem);
+  border: 1px solid var(--border-default, #e5e7eb);
+  background-color: var(--surface-card, #ffffff);
+  color: var(--text-primary, #111827);
+  padding: var(--spacing-1, 0.25rem);
+  box-shadow: var(--shadow-lg);
+}
+
+.subContent[data-state="open"] {
+  animation: contentShow var(--motion-duration-fast, 100ms) var(--motion-easing-enter, ease-out);
+}
+
+.subContent[data-state="closed"] {
+  animation: contentHide var(--motion-duration-fast, 100ms) var(--motion-easing-exit, ease-in);
+}
+
+/* Menu item */
+.item {
+  position: relative;
+  display: flex;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: var(--radius-md, 0.375rem);
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  outline: none;
+  transition: background-color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out),
+    color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out);
+}
+
+.item:focus,
+.item[data-highlighted] {
+  background-color: var(--surface-interactive-hover, #f3f4f6);
+  color: var(--text-primary, #111827);
+}
+
+.item[data-disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.itemDestructive {
+  color: var(--text-error, #ef4444);
+}
+
+.itemDestructive:focus,
+.itemDestructive[data-highlighted] {
+  background-color: var(--surface-error-subtle, rgba(239, 68, 68, 0.1));
+  color: var(--text-error, #ef4444);
+}
+
+.itemInset {
+  padding-left: 2.375rem;
+}
+
+/* Checkbox and radio items */
+.checkboxItem,
+.radioItem {
+  position: relative;
+  display: flex;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: var(--radius-md, 0.375rem);
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  padding-right: var(--spacing-8, 2rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  outline: none;
+  transition: background-color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out),
+    color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out);
+}
+
+.checkboxItem:focus,
+.checkboxItem[data-highlighted],
+.radioItem:focus,
+.radioItem[data-highlighted] {
+  background-color: var(--surface-interactive-hover, #f3f4f6);
+  color: var(--text-primary, #111827);
+}
+
+.checkboxItem[data-disabled],
+.radioItem[data-disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Item indicator */
+.itemIndicator {
+  pointer-events: none;
+  position: absolute;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Label */
+.label {
+  padding: 0.625rem var(--spacing-3, 0.75rem);
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-secondary, #6b7280);
+}
+
+/* Separator */
+.separator {
+  height: 1px;
+  margin: var(--spacing-1, 0.25rem) calc(-1 * var(--spacing-1, 0.25rem));
+  background-color: var(--border-default, #e5e7eb);
+}
+
+/* Shortcut */
+.shortcut {
+  margin-left: auto;
+  font-size: var(--font-size-xs, 0.75rem);
+  letter-spacing: 0.1em;
+  color: var(--text-secondary, #6b7280);
+}
+
+/* Sub trigger */
+.subTrigger {
+  display: flex;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  border-radius: var(--radius-md, 0.375rem);
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  outline: none;
+  transition: background-color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out),
+    color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out);
+}
+
+.subTrigger:focus,
+.subTrigger[data-state="open"] {
+  background-color: var(--surface-interactive-hover, #f3f4f6);
+  color: var(--text-primary, #111827);
+}
+
+.subTriggerIcon {
+  margin-left: auto;
+  width: 1rem;
+  height: 1rem;
+}
+
+@keyframes contentShow {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes contentHide {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}

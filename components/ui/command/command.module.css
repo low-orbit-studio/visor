@@ -1,0 +1,146 @@
+/* Command root */
+.root {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-lg, 0.5rem);
+  background-color: var(--surface-card, #ffffff);
+  color: var(--text-primary, #111827);
+}
+
+/* Dialog overrides */
+.dialogContent {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Hide the close button inside dialog content */
+.dialogContent > button:last-child {
+  display: none;
+}
+
+.dialogCommand {
+  /* Inherits dialog content border-radius */
+}
+
+/* Input wrapper */
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  border-bottom: 1px solid var(--border-default, #e5e7eb);
+  padding: var(--spacing-3, 0.75rem);
+}
+
+.inputIcon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: var(--text-secondary, #6b7280);
+}
+
+.input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-primary, #111827);
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--text-tertiary, #9ca3af);
+}
+
+/* List */
+.list {
+  max-height: 18rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--spacing-1, 0.25rem);
+}
+
+/* Empty state */
+.empty {
+  padding: var(--spacing-6, 1.5rem);
+  text-align: center;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+}
+
+/* Group */
+.group {
+  overflow: hidden;
+  padding: var(--spacing-1, 0.25rem);
+}
+
+/* Group heading — cmdk renders heading via [cmdk-group-heading] */
+.group [cmdk-group-heading] {
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+}
+
+/* Item */
+.item {
+  position: relative;
+  display: flex;
+  cursor: default;
+  user-select: none;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  border-radius: var(--radius-md, 0.375rem);
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  outline: none;
+  transition: background-color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out),
+    color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out);
+}
+
+.item[data-selected="true"] {
+  background-color: var(--surface-interactive-hover, #f3f4f6);
+  color: var(--text-primary, #111827);
+}
+
+.item[data-disabled="true"] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Separator */
+.separator {
+  height: 1px;
+  margin: var(--spacing-1, 0.25rem) calc(-1 * var(--spacing-1, 0.25rem));
+  background-color: var(--border-default, #e5e7eb);
+}
+
+/* Shortcut */
+.shortcut {
+  margin-left: auto;
+  font-size: var(--font-size-xs, 0.75rem);
+  letter-spacing: 0.1em;
+  color: var(--text-secondary, #6b7280);
+}
+
+/* Loading */
+.loading {
+  padding: var(--spacing-4, 1rem);
+  text-align: center;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+}
+
+/* Screen reader only */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
