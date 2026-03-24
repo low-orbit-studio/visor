@@ -1,0 +1,111 @@
+/* Carousel */
+.root {
+  position: relative;
+}
+
+/* Viewport */
+.viewport {
+  overflow: hidden;
+}
+
+/* Content — flex container for slides */
+.content {
+  display: flex;
+}
+
+.content[data-orientation="vertical"] {
+  flex-direction: column;
+}
+
+/* Item */
+.item {
+  min-width: 0;
+  flex-shrink: 0;
+  flex-grow: 0;
+  flex-basis: 100%;
+}
+
+.item[data-orientation="horizontal"] {
+  padding-left: var(--spacing-4, 1rem);
+}
+
+.item[data-orientation="vertical"] {
+  padding-top: var(--spacing-4, 1rem);
+}
+
+/* Content negative margin to compensate item padding */
+.content[data-orientation="horizontal"] {
+  margin-left: calc(-1 * var(--spacing-4, 1rem));
+}
+
+.content[data-orientation="vertical"] {
+  margin-top: calc(-1 * var(--spacing-4, 1rem));
+}
+
+/* Navigation buttons */
+.navButton {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-full, 9999px);
+  border: 1px solid var(--border-default, #e5e7eb);
+  background-color: var(--surface-card, #ffffff);
+  color: var(--text-primary, #111827);
+  cursor: pointer;
+  transition: background-color var(--motion-duration-fast, 150ms) var(--motion-easing-default, ease),
+              color var(--motion-duration-fast, 150ms) var(--motion-easing-default, ease);
+}
+
+.navButton:hover:not(:disabled) {
+  background-color: var(--surface-muted, #f3f4f6);
+}
+
+.navButton:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #3b82f6);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+.navButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.navPrevious[data-orientation="horizontal"] {
+  left: calc(-1 * var(--spacing-12, 3rem));
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.navPrevious[data-orientation="vertical"] {
+  top: calc(-1 * var(--spacing-12, 3rem));
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.navNext[data-orientation="horizontal"] {
+  right: calc(-1 * var(--spacing-12, 3rem));
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.navNext[data-orientation="vertical"] {
+  bottom: calc(-1 * var(--spacing-12, 3rem));
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Screen reader only */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

@@ -4,8 +4,10 @@
   "defaultOpen": true,
   "pages": [
     "accordion",
+    "carousel",
     "code-block",
     "collapsible",
+    "image",
     "table",
     "timeline"
   ]

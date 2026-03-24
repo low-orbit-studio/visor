@@ -27,6 +27,42 @@ if (typeof globalThis.ResizeObserver === "undefined") {
   }
 }
 
+// Mock IntersectionObserver — not implemented in jsdom but required by Embla
+// Carousel for slide visibility tracking.
+if (typeof globalThis.IntersectionObserver === "undefined") {
+  globalThis.IntersectionObserver = class IntersectionObserver {
+    readonly root: Element | null = null
+    readonly rootMargin: string = "0px"
+    readonly thresholds: ReadonlyArray<number> = [0]
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+    takeRecords(): IntersectionObserverEntry[] {
+      return []
+    }
+    constructor(_cb: IntersectionObserverCallback, _options?: IntersectionObserverInit) {}
+  }
+}
+
+// Mock matchMedia — not implemented in jsdom but required by Embla Carousel
+// for responsive breakpoint detection.
+if (typeof globalThis.matchMedia === "undefined") {
+  globalThis.matchMedia = function matchMedia(query: string) {
+    return {
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: function () {},
+      removeListener: function () {},
+      addEventListener: function () {},
+      removeEventListener: function () {},
+      dispatchEvent: function () {
+        return false
+      },
+    } as MediaQueryList
+  }
+}
+
 // Mock scrollIntoView — not implemented in jsdom but required by cmdk
 // (Command Palette) for keyboard navigation.
 if (typeof Element.prototype.scrollIntoView === "undefined") {

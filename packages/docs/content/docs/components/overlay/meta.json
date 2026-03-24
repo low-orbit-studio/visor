@@ -5,6 +5,7 @@
   "pages": [
     "context-menu",
     "hover-card",
+    "lightbox",
     "popover"
   ]
 }
