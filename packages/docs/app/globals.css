@@ -1,6 +1,7 @@
 @import 'fumadocs-ui/style.css';
 @import '../../tokens/dist/tokens.css';
 @import './space-theme.css';
+@import './neutral-theme.css';
 
 /* Component preview styles */
 .preview-container {
