@@ -3,12 +3,12 @@
 import { useState, useEffect } from "react";
 import { Palette } from "@phosphor-icons/react";
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-} from "./ui/dropdown-menu";
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "./ui/select";
 import styles from "./theme-switcher.module.css";
 
 const THEMES = ["space", "neutral"] as const;
@@ -50,26 +50,24 @@ export function ThemeSwitcher() {
   }
 
   if (!mounted) {
-    return <div className={styles.trigger} style={{ visibility: 'hidden' }} aria-hidden />;
+    return <div className={styles.wrapper} aria-hidden />;
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button className={styles.trigger} aria-label="Switch theme">
-          <Palette size={16} weight="duotone" />
-          <span className={styles.label}>{theme}</span>
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" sideOffset={8}>
-        <DropdownMenuRadioGroup value={theme} onValueChange={handleChange}>
+    <div className={styles.wrapper}>
+      <Select value={theme} onValueChange={handleChange}>
+        <SelectTrigger size="sm" className={styles.trigger}>
+          <Palette size={14} weight="duotone" />
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
           {THEMES.map((t) => (
-            <DropdownMenuRadioItem key={t} value={t}>
+            <SelectItem key={t} value={t}>
               {t.charAt(0).toUpperCase() + t.slice(1)}
-            </DropdownMenuRadioItem>
+            </SelectItem>
           ))}
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </SelectContent>
+      </Select>
+    </div>
   );
 }

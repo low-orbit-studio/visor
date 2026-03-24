@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       nav={{
         title: (
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Image src="/astronaut.png" alt="" width={38} height={38} />
+            <Image src="/astronaut.png" alt="" width={34} height={34} style={{ marginLeft: 2, marginRight: 2 }} />
             <Image
               src="/visor-wordmark-light.png"
               alt="Visor"
@@ -29,7 +29,9 @@ export default function Layout({ children }: { children: ReactNode }) {
           </div>
         ),
         url: '/',
-        children: <ThemeSwitcher />,
+      }}
+      sidebar={{
+        banner: <ThemeSwitcher />,
       }}
     >
       {children}
