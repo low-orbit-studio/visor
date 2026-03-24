@@ -22,9 +22,9 @@
 Highest-value general-purpose components. Built alongside the second standard theme to validate theming across each new component.
 
 ### Navigation
-- [ ] Navbar
-- [ ] Pagination
-- [ ] Command Palette (cmdk-style)
+- [x] Navbar
+- [x] Pagination
+- [x] Command Palette (cmdk-style)
 
 ### Data Display
 - [ ] Table / DataTable
@@ -44,7 +44,7 @@ Highest-value general-purpose components. Built alongside the second standard th
 ### Overlay
 - [ ] Context Menu
 - [ ] Hover Card
-- [ ] Menubar
+- [x] Menubar
 
 ## Phase 1b: Remaining Components + Deck
 

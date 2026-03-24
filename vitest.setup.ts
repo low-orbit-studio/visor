@@ -26,3 +26,9 @@ if (typeof globalThis.ResizeObserver === "undefined") {
     disconnect() {}
   }
 }
+
+// Mock scrollIntoView — not implemented in jsdom but required by cmdk
+// (Command Palette) for keyboard navigation.
+if (typeof Element.prototype.scrollIntoView === "undefined") {
+  Element.prototype.scrollIntoView = function () {}
+}
