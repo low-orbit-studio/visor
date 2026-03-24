@@ -6,23 +6,14 @@
 /*
  * Safari border-color fix
  *
- * fumadocs sets a global border-color using CSS Color Level 4 syntax:
- *   border-color: hsl(var(--fd-border) / 1)
- *
- * Safari treats this as invalid CSS — the `/ 1` alpha shorthand inside hsl()
- * with a custom property doesn't resolve. Safari discards the declaration
- * entirely and falls back to Tailwind's reset value (#e5e7eb), which then
- * gets dark-mode-remapped to a near-black color (~rgb(27, 29, 50)).
- *
- * This override uses the same variable but drops the / alpha syntax.
- * The :root * selector ensures it wins specificity over both Tailwind's
- * *, ::before, ::after reset and fumadocs' bare * selector, regardless
- * of how the CSS bundler orders the imports.
+ * Ensures theme border colors win specificity over both Tailwind's
+ * reset and fumadocs' base layer selector.
+ * fumadocs v16 uses --color-fd-border (full color value).
  */
 :root *,
 :root *::before,
 :root *::after {
-  border-color: hsl(var(--fd-border));
+  border-color: var(--color-fd-border);
 }
 
 /* Component preview styles */
