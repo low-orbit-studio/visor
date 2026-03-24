@@ -1,0 +1,72 @@
+---
+title: Context Menu
+description: A menu that appears on right-click. Built on Radix UI with support for nested submenus, checkboxes, and radio items.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuLabel } from '@/components/ui/context-menu';
+
+## Installation
+
+```bash
+npx visor add context-menu
+```
+
+## Usage
+
+```tsx
+import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem } from '@/components/ui/context-menu/context-menu';
+
+<ContextMenu>
+  <ContextMenuTrigger>Right click here</ContextMenuTrigger>
+  <ContextMenuContent>
+    <ContextMenuItem>Edit</ContextMenuItem>
+    <ContextMenuItem>Duplicate</ContextMenuItem>
+    <ContextMenuItem>Delete</ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>
+```
+
+## Basic Context Menu
+
+<ComponentPreview
+  title="Right-Click Menu"
+  code={`import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuLabel } from '@/components/ui/context-menu/context-menu';
+
+<ContextMenu>
+  <ContextMenuTrigger>
+    <div style={{ border: '2px dashed var(--border-default, #d1d5db)', borderRadius: '0.5rem', padding: '3rem', textAlign: 'center' }}>
+      Right click here
+    </div>
+  </ContextMenuTrigger>
+  <ContextMenuContent>
+    <ContextMenuLabel>Actions</ContextMenuLabel>
+    <ContextMenuItem>Edit</ContextMenuItem>
+    <ContextMenuItem>Duplicate</ContextMenuItem>
+    <ContextMenuSeparator />
+    <ContextMenuItem>Delete</ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>`}
+>
+  <ContextMenu>
+    <ContextMenuTrigger>
+      <div style={{ border: '2px dashed var(--border-default, #d1d5db)', borderRadius: '0.5rem', padding: '3rem', textAlign: 'center' }}>
+        Right click here
+      </div>
+    </ContextMenuTrigger>
+    <ContextMenuContent>
+      <ContextMenuLabel>Actions</ContextMenuLabel>
+      <ContextMenuItem>Edit</ContextMenuItem>
+      <ContextMenuItem>Duplicate</ContextMenuItem>
+      <ContextMenuSeparator />
+      <ContextMenuItem>Delete</ContextMenuItem>
+    </ContextMenuContent>
+  </ContextMenu>
+</ComponentPreview>
+
+## API Reference
+
+### ContextMenuProps
+
+<PropsTable component="context-menu" />

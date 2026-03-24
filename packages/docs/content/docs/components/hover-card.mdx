@@ -1,0 +1,58 @@
+---
+title: Hover Card
+description: A card that appears when hovering over a trigger element. Built on Radix UI.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
+
+## Installation
+
+```bash
+npx visor add hover-card
+```
+
+## Usage
+
+```tsx
+import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card/hover-card';
+
+<HoverCard>
+  <HoverCardTrigger>Hover me</HoverCardTrigger>
+  <HoverCardContent>Card content here.</HoverCardContent>
+</HoverCard>
+```
+
+## Basic Hover Card
+
+<ComponentPreview
+  title="Hover to Preview"
+  code={`import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card/hover-card';
+
+<HoverCard>
+  <HoverCardTrigger asChild>
+    <a href="#" style={{ fontWeight: 600, textDecoration: 'underline' }}>@visor</a>
+  </HoverCardTrigger>
+  <HoverCardContent>
+    <p style={{ margin: 0, fontWeight: 600 }}>Visor Design System</p>
+    <p style={{ margin: '0.25rem 0 0', fontSize: '0.875rem' }}>A shared design system with copy-and-own components and distributable theme tokens.</p>
+  </HoverCardContent>
+</HoverCard>`}
+>
+  <HoverCard>
+    <HoverCardTrigger asChild>
+      <a href="#" style={{ fontWeight: 600, textDecoration: 'underline' }}>@visor</a>
+    </HoverCardTrigger>
+    <HoverCardContent>
+      <p style={{ margin: 0, fontWeight: 600 }}>Visor Design System</p>
+      <p style={{ margin: '0.25rem 0 0', fontSize: '0.875rem' }}>A shared design system with copy-and-own components and distributable theme tokens.</p>
+    </HoverCardContent>
+  </HoverCard>
+</ComponentPreview>
+
+## API Reference
+
+### HoverCardProps
+
+<PropsTable component="hover-card" />

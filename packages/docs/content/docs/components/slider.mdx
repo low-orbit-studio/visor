@@ -1,0 +1,41 @@
+---
+title: Slider
+description: A draggable range input for selecting numeric values. Built on Radix UI.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Slider } from '@/components/ui/slider';
+
+## Installation
+
+```bash
+npx visor add slider
+```
+
+## Usage
+
+```tsx
+import { Slider } from '@/components/ui/slider/slider';
+
+<Slider defaultValue={[50]} max={100} step={1} />
+```
+
+## Default
+
+<ComponentPreview
+  title="Slider"
+  code={`import { Slider } from '@/components/ui/slider/slider';
+
+<Slider defaultValue={[50]} max={100} step={1} />`}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <Slider defaultValue={[50]} max={100} step={1} />
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### SliderProps
+
+<PropsTable component="slider" />

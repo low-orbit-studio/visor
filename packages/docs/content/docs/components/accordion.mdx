@@ -1,0 +1,68 @@
+---
+title: Accordion
+description: Vertically stacked collapsible sections. Built on Radix UI with single or multiple expansion modes.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
+
+## Installation
+
+```bash
+npx visor add accordion
+```
+
+## Usage
+
+```tsx
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion/accordion';
+
+<Accordion type="single" collapsible>
+  <AccordionItem value="item-1">
+    <AccordionTrigger>Section One</AccordionTrigger>
+    <AccordionContent>Content for section one.</AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+## Single Collapsible
+
+<ComponentPreview
+  title="Single Mode"
+  code={`<Accordion type="single" collapsible>
+  <AccordionItem value="item-1">
+    <AccordionTrigger>What is Visor?</AccordionTrigger>
+    <AccordionContent>A shared design system with copy-and-own components.</AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="item-2">
+    <AccordionTrigger>How do I install components?</AccordionTrigger>
+    <AccordionContent>Run npx visor add followed by the component name.</AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="item-3">
+    <AccordionTrigger>Can I customize components?</AccordionTrigger>
+    <AccordionContent>Yes — you own the source files and can edit them freely.</AccordionContent>
+  </AccordionItem>
+</Accordion>`}
+>
+  <Accordion type="single" collapsible>
+    <AccordionItem value="item-1">
+      <AccordionTrigger>What is Visor?</AccordionTrigger>
+      <AccordionContent>A shared design system with copy-and-own components.</AccordionContent>
+    </AccordionItem>
+    <AccordionItem value="item-2">
+      <AccordionTrigger>How do I install components?</AccordionTrigger>
+      <AccordionContent>Run npx visor add followed by the component name.</AccordionContent>
+    </AccordionItem>
+    <AccordionItem value="item-3">
+      <AccordionTrigger>Can I customize components?</AccordionTrigger>
+      <AccordionContent>Yes — you own the source files and can edit them freely.</AccordionContent>
+    </AccordionItem>
+  </Accordion>
+</ComponentPreview>
+
+## API Reference
+
+### AccordionProps
+
+<PropsTable component="accordion" />

@@ -1,4 +1,22 @@
 {
   "title": "Components",
-  "pages": ["button"]
+  "pages": [
+    "button",
+    "popover",
+    "context-menu",
+    "hover-card",
+    "toast",
+    "banner",
+    "radio-group",
+    "slider",
+    "toggle-group",
+    "combobox",
+    "table",
+    "accordion",
+    "collapsible",
+    "navbar",
+    "pagination",
+    "command",
+    "menubar"
+  ]
 }

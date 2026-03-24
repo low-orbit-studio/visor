@@ -1,0 +1,68 @@
+---
+title: Radio Group
+description: A set of mutually exclusive radio options. Built on Radix UI.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+
+## Installation
+
+```bash
+npx visor add radio-group
+```
+
+## Usage
+
+```tsx
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group/radio-group';
+
+<RadioGroup defaultValue="a">
+  <RadioGroupItem value="a" />
+  <RadioGroupItem value="b" />
+</RadioGroup>
+```
+
+## Options
+
+<ComponentPreview
+  title="Radio Group"
+  code={`import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group/radio-group';
+
+<RadioGroup defaultValue="a">
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+    <RadioGroupItem value="a" id="a" />
+    <label htmlFor="a">Option A</label>
+  </div>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+    <RadioGroupItem value="b" id="b" />
+    <label htmlFor="b">Option B</label>
+  </div>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+    <RadioGroupItem value="c" id="c" />
+    <label htmlFor="c">Option C</label>
+  </div>
+</RadioGroup>`}
+>
+  <RadioGroup defaultValue="a">
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <RadioGroupItem value="a" id="radio-a" />
+      <label htmlFor="radio-a">Option A</label>
+    </div>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <RadioGroupItem value="b" id="radio-b" />
+      <label htmlFor="radio-b">Option B</label>
+    </div>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <RadioGroupItem value="c" id="radio-c" />
+      <label htmlFor="radio-c">Option C</label>
+    </div>
+  </RadioGroup>
+</ComponentPreview>
+
+## API Reference
+
+### RadioGroupProps
+
+<PropsTable component="radio-group" />
