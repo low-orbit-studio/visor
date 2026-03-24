@@ -16,6 +16,11 @@
   border-color: var(--color-fd-border);
 }
 
+/* Footer prev/next nav — fumadocs v16 omits bg-fd-card */
+.\@container.grid > a.rounded-lg {
+  background-color: var(--color-fd-card);
+}
+
 /* Component preview styles */
 .preview-container {
   border: 1px solid var(--border-default, #e2e8f0);
