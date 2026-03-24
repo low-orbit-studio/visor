@@ -60,8 +60,8 @@
   --interactive-primary-bg: var(--accent);
   --interactive-primary-bg-hover: #22d3ee;  /* cyan-400 */
   --interactive-primary-text: #ffffff;
-  --interactive-secondary-bg: #27272a;      /* zinc-800 */
-  --interactive-secondary-bg-hover: #3f3f46; /* zinc-700 */
+  --interactive-secondary-bg: #0e3a44;      /* accent at ~12% lightness */
+  --interactive-secondary-bg-hover: #115c6b; /* accent at ~18% lightness */
   --interactive-secondary-text: #fafafa;    /* zinc-50 */
   --interactive-destructive-bg: #ef4444;    /* red-500 */
   --interactive-destructive-bg-hover: #dc2626; /* red-600 */
@@ -110,13 +110,13 @@ html:not(.dark) .neutral-theme {
   --interactive-primary-bg: var(--accent);
   --interactive-primary-bg-hover: #0e7490;  /* cyan-700 */
   --interactive-primary-text: #ffffff;
-  --interactive-secondary-bg: #f4f4f5;       /* zinc-100 */
-  --interactive-secondary-bg-hover: #e4e4e7; /* zinc-200 */
-  --interactive-secondary-text: #18181b;    /* zinc-900 */
+  --interactive-secondary-bg: #e0f5fa;       /* accent at ~93% lightness */
+  --interactive-secondary-bg-hover: #c4ecf5; /* accent at ~87% lightness */
+  --interactive-secondary-text: #0e7490;    /* cyan-700 */
   --interactive-destructive-bg: #dc2626;    /* red-600 */
   --interactive-destructive-bg-hover: #b91c1c; /* red-700 */
   --interactive-destructive-text: #ffffff;
-  --interactive-ghost-bg: transparent;
+  --interactive-ghost-bg: rgba(0, 0, 0, 0.05);
   --interactive-ghost-bg-hover: #f4f4f5;    /* zinc-100 */
 }
 
