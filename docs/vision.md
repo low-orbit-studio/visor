@@ -24,16 +24,25 @@ The component library, token system, interchange format, and Google Fonts integr
 ### 6. Theme Gallery & Comparator
 A browsable gallery of public themes. The docs site gets a global theme switcher so every component page is a live preview. A four-quadrant theme comparator shows two themes x light/dark simultaneously with real components.
 
-### 7. Easy Theme Generation
-Choose fonts and colors, get a complete theme. Google Fonts available to everyone. Blacklight's paid font library available to authenticated Low Orbit projects. Font pairing suggestions with mood tags.
+### 7. Theme Extraction
+Point at any existing project and extract its design system into a `.visor.yaml` theme. A deterministic CLI tool handles static analysis (scanning CSS custom properties, globals, tailwind config) while a Claude Code skill uses AI to resolve ambiguities and interpret design intent. Enables migration of existing projects without manual token mapping.
 
-### 8. Figma Integration
+### 8. Theme Validation
+Every theme must pass validation before it can be saved or applied. Rules enforce completeness (all required tokens present), WCAG color contrast ratios, type scale coherence, and structural integrity. Warnings surface non-blocking issues like overly similar primary/accent colors. Validation runs in the CLI (`npx visor theme validate`) and live in the visual theme creator.
+
+### 9. Visual Theme Creator
+A rich visual experience in the docs site for creating and modifying themes. Pick base colors and an OKLCH algorithm generates harmonious shade palettes. Choose fonts, spacing, radius, and shadows with real-time preview against actual Visor components. Clone any existing theme as a starting point and modify it. Live validation shows issues inline. Export to `.visor.yaml` when done.
+
+### 10. Font Infrastructure
+Google Fonts available to everyone. Blacklight's paid font library (Cloudflare R2 CDN) available to authenticated Low Orbit projects. Font pairing suggestions with mood tags.
+
+### 11. Figma Integration
 Generate Figma variables from the interchange format (or read them). Closes the designer-developer gap.
 
-### 9. Flutter Token Distribution
+### 12. Flutter Token Distribution
 Generate Dart theme constants from the interchange format so Flutter projects consume the same design system. Full Flutter component library evaluated later based on need.
 
-### 10. User Accounts & Private Themes
+### 13. User Accounts & Private Themes
 Users can save favorite design systems and keep private themes. Architecture TBD, but private theme support is a hard requirement.
 
 ## Design Principles

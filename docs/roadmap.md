@@ -26,19 +26,55 @@ See [ai-consumability.md](./ai-consumability.md) for the full spec.
 - Composition patterns/recipes — higher-level documented patterns ("form with validation", "dashboard layout", "CRUD table") showing how components combine
 - Agent-first CLI enhancements — `--json` flag on all commands, rich `--help`, composable commands, structured output (following CLI-Anything principles)
 
-## Phase 3: Design System Interchange Format
+## Phase 3: Interchange Format, Import/Export & Validation
 
-Define the `.visor.yaml` spec and build adapter layers.
+Define the `.visor.yaml` spec, build adapter layers, and create a comprehensive theme validator.
 
 See [interchange-format.md](./interchange-format.md) for the format spec and adapter design.
 
 **Key work:**
-- Finalize the interchange format spec
+- Finalize the interchange format spec with a formal JSON Schema
+- Reconcile the draft spec with the actual 3-tier token system (the draft uses flat color names; tokens use primitives → semantic → adaptive)
+- Build `packages/theme-engine/` — shared package housing:
+  - JSON Schema for `.visor.yaml` validation
+  - Shade generation algorithm (OKLCH-based, generates 50–950 scale from a base hex)
+  - Import: parse `.visor.yaml` → generate CSS custom property overrides
+  - Export: read current theme tokens → produce `.visor.yaml`
+  - Mapping layer: flat `.visor.yaml` colors → primitive shade scales → semantic/adaptive token assignment
+- CLI commands:
+  - `npx visor theme apply <file>` — reads `.visor.yaml`, generates full CSS token overrides
+  - `npx visor theme export [--format yaml|json|figma]` — exports current theme
+  - `npx visor theme validate <file> [--json]` — runs full validation ruleset
 - Build adapters: NextJS, fumadocs, decks
-- CLI commands: `npx visor theme apply`, `validate`, `generate`, `export`
 - Ensure any valid theme file completely transforms a Visor project (light + dark)
 
-## Phase 4: Docs Site & Theme Experience
+**Validator rules:**
+- **Completeness** — all required tokens present (colors light+dark, typography, spacing, radius, shadows)
+- **WCAG contrast** — text-primary on background/surface ≥ 4.5:1, interactive colors ≥ 3:1, same checks for dark mode
+- **Type scale coherence** — heading-weight ≥ body-weight, valid font family strings
+- **Structural integrity** — version/name present, valid CSS color formats, non-negative radius, valid shadow strings
+- **Warnings (non-blocking)** — primary/accent too similar, missing glow shadow, inconsistent radius scale
+
+**Why `packages/theme-engine/`:** Validator, shade generator, and import/export logic are consumed by both CLI (Node.js) and docs site (browser). Shared package avoids duplication. The visual theme creator (Phase 6) also depends on this.
+
+## Phase 4: Theme Extraction
+
+Extract design systems from existing projects into `.visor.yaml` themes. Both a deterministic CLI tool and an AI-powered Claude Code skill.
+
+**Key work:**
+- CLI: `npx visor theme extract [--from <path>] [--json]` — deterministic static analysis
+  - Scan targets: CSS custom properties, globals.css, CSS module files, tailwind config, package.json
+  - Output: best-effort `.visor.yaml` with confidence annotations (high/medium/low per mapped token)
+  - Ambiguous mappings flagged for human/AI review
+- Claude Code skill: registered in `~/.claude/skills/` following playbook patterns
+  - Wraps the CLI extract command
+  - Uses AI to resolve ambiguities (e.g., which blue is "primary"?)
+  - Interprets design intent from variable naming and usage patterns
+  - Produces a complete, validated `.visor.yaml`
+- Test against real projects: Kaiah, Blacklight, reference-nextjs-app
+- Extracted themes are local `.visor.yaml` files (private by default; cloud storage comes in Phase 11)
+
+## Phase 5: Docs Site & Theme Experience
 
 Make the docs site a world-class showcase.
 
@@ -48,17 +84,34 @@ Make the docs site a world-class showcase.
 - Full MDX documentation for every component (currently only button exists)
 - All examples respond to the active theme
 
-## Phase 5: Theme Generation & Font Infrastructure
+## Phase 6: Visual Theme Creator
 
-Make creating a new theme as easy as picking fonts and colors.
+A visual theme creation experience in the docs site with harmonious color generation and clone-to-modify workflow.
 
 **Key work:**
-- Interactive theme wizard: choose colors + fonts, preview in real-time, export `.visor.yaml`
-- Google Fonts: open to everyone
+- Lives in the docs site at `/create` (or `/theme/create`)
+- Color picker with shade generation: pick base primary + accent colors, OKLCH algorithm generates full shade palettes
+- Typography section: Google Fonts API selector, weight picker, scale preview
+- Spacing/radius/shadow controls with sensible defaults
+- "Start from" dropdown: blank theme, or clone any existing theme (loads `.visor.yaml` as starting state)
+- Real-time preview panel showing actual Visor components (button, card, input, badge, alert, dialog) with in-progress theme applied via CSS custom property injection
+- Light/dark mode toggle in preview
+- Live validation: runs Phase 3 validator continuously, shows warnings/errors inline
+- Export button: downloads `.visor.yaml` file
+- "Apply to project" shortcut: copies CLI command to clipboard
+- Depends on `packages/theme-engine/` (shade generator, validator, mapper)
+
+## Phase 7: Font Infrastructure
+
+Font loading, pairing, and CDN infrastructure.
+
+**Key work:**
+- Google Fonts integration: open to everyone
 - Blacklight font library (Cloudflare R2 CDN): authenticated Low Orbit projects only
 - Font pairing with mood tags (leverage Blacklight's `epk_theme_font_pairing` system)
+- Font loading strategy (font-display, preload hints)
 
-## Phase 6: Project Templates & Starters
+## Phase 8: Project Templates & Starters
 
 `npx visor init --template <name>` scaffolds a complete, themed, working app.
 
@@ -69,7 +122,7 @@ Make creating a new theme as easy as picking fonts and colors.
 - `docs` — Documentation site (fumadocs-based)
 - `deck` — Pitch deck with slide framework
 
-## Phase 7: Flutter Token Distribution
+## Phase 9: Flutter Token Distribution
 
 Generate Dart `ThemeData` from `.visor.yaml` so Flutter projects consume the same design system.
 
@@ -78,7 +131,7 @@ Generate Dart `ThemeData` from `.visor.yaml` so Flutter projects consume the sam
 - Colors, typography, spacing, radius, shadows all map to Flutter equivalents
 - Evaluate need for a full Flutter component library based on usage across projects
 
-## Phase 8: Figma Integration
+## Phase 10: Figma Integration
 
 Bi-directional sync between Visor themes and Figma.
 
@@ -86,7 +139,7 @@ Bi-directional sync between Visor themes and Figma.
 - Export `.visor.yaml` to Figma Variables JSON
 - Import Figma Variables to `.visor.yaml`
 
-## Phase 9: User Accounts & Theme Marketplace
+## Phase 11: User Accounts & Theme Marketplace
 
 Users can save, share, and browse themes. Private themes supported.
 
@@ -96,11 +149,13 @@ Users can save, share, and browse themes. Private themes supported.
 - Public theme browsing without auth
 - Authenticated users: save favorites, create private themes, access licensed fonts
 
+**Note:** Phases 3–7 produce and consume local `.visor.yaml` files. This phase adds cloud persistence, sharing, and private theme storage with authentication.
+
 ---
 
 ## Migration Plan
 
-Once Phases 1-3 are complete:
+Once Phases 1-4 are complete:
 
 1. **Kaiah** — First retrofit (already referenced as source material)
 2. **Reference NextJS App** — Migrate to Visor components + interchange format
