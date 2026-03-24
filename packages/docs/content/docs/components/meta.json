@@ -1,22 +1,12 @@
 {
   "title": "Components",
+  "description": "Groups and pages are alphabetized. When adding a new component, place it in the correct group in alphabetical order.",
   "pages": [
-    "button",
-    "popover",
-    "context-menu",
-    "hover-card",
-    "toast",
-    "banner",
-    "radio-group",
-    "slider",
-    "toggle-group",
-    "combobox",
-    "table",
-    "accordion",
-    "collapsible",
-    "navbar",
-    "pagination",
-    "command",
-    "menubar"
+    "data-display",
+    "feedback",
+    "form",
+    "general",
+    "navigation",
+    "overlay"
   ]
 }

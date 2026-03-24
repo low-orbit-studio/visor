@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Space_Mono } from 'next/font/google';
 import { RootProvider } from 'fumadocs-ui/provider';
 import { ConditionalStarfield } from '@/components/conditional-starfield';
+import { Toaster } from '@/components/ui/toast';
 import './globals.css';
 
 const spaceMono = Space_Mono({
@@ -26,7 +27,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={spaceMono.variable}>
+      <body className={spaceMono.variable} suppressHydrationWarning>
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){var v=["space","neutral"];var t=localStorage.getItem("visor-theme");if(v.indexOf(t)<0)t="space";document.body.classList.add(t+"-theme")})()`,
@@ -36,6 +37,7 @@ export default function RootLayout({
         <div style={{ position: 'relative', zIndex: 1 }}>
           <RootProvider>{children}</RootProvider>
         </div>
+        <Toaster />
       </body>
     </html>
   );
