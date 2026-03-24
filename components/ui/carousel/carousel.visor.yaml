@@ -1,0 +1,62 @@
+name: Carousel
+description: A composable slide carousel with horizontal and vertical orientations, built on Embla Carousel.
+category: media
+
+when_to_use:
+  - Image galleries or product photo slideshows
+  - Feature showcases or onboarding walkthroughs
+  - Testimonial or card carousels
+  - Any horizontally or vertically scrollable set of items with navigation controls
+
+when_not_to_use:
+  - Full-screen image viewing with zoom (use Lightbox)
+  - Tabbed content where all tabs are visible (use Tabs)
+  - Scrollable lists without slide semantics (use ScrollArea)
+  - Auto-advancing hero banners where accessibility is critical (consider static layout)
+
+why: >
+  Carousel wraps Embla Carousel with a compound component API, providing
+  previous/next navigation buttons, keyboard arrow support, and proper ARIA
+  roles (region + roledescription). The composable sub-components let you
+  control layout without fighting the library internals.
+
+props:
+  - name: orientation
+    type: "'horizontal' | 'vertical'"
+    default: "'horizontal'"
+  - name: opts
+    type: "CarouselOptions"
+    description: Embla Carousel options (loop, align, slidesToScroll, etc.)
+  - name: plugins
+    type: "CarouselPlugin"
+    description: Embla Carousel plugins (autoplay, etc.)
+  - name: setApi
+    type: "(api: CarouselApi) => void"
+    description: Callback to receive the Embla API instance for imperative control
+
+sub_components:
+  - name: Carousel
+    description: Root provider managing Embla instance and orientation context.
+  - name: CarouselContent
+    description: Flex container for slides, handles viewport overflow.
+  - name: CarouselItem
+    description: Individual slide wrapper with proper ARIA roledescription.
+  - name: CarouselPrevious
+    description: Previous slide navigation button.
+  - name: CarouselNext
+    description: Next slide navigation button.
+
+dependencies:
+  - "embla-carousel-react"
+  - "@phosphor-icons/react"
+
+example: |
+  <Carousel>
+    <CarouselContent>
+      <CarouselItem>Slide 1</CarouselItem>
+      <CarouselItem>Slide 2</CarouselItem>
+      <CarouselItem>Slide 3</CarouselItem>
+    </CarouselContent>
+    <CarouselPrevious />
+    <CarouselNext />
+  </Carousel>

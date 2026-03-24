@@ -1,0 +1,66 @@
+name: Stepper
+description: A multi-step progress indicator with horizontal and vertical orientations and auto-derived step status.
+category: navigation
+
+when_to_use:
+  - Multi-step forms or wizards showing progress
+  - Onboarding flows with sequential steps
+  - Checkout or signup processes with distinct stages
+  - Any workflow where users need to see their current position and progress
+
+when_not_to_use:
+  - Simple progress percentage (use Progress)
+  - Tab-based content switching without sequential flow (use Tabs)
+  - Timelines of past events (use Timeline)
+  - Pagination through pages of content (use Pagination)
+
+why: >
+  Stepper provides a compound component API for building step indicators with
+  automatic status derivation (complete/active/upcoming) based on the activeStep
+  prop. The trigger circles show check icons for completed steps, and separators
+  visually connect steps with completion-aware coloring. Both horizontal and
+  vertical orientations are supported with proper ARIA roles.
+
+props:
+  - name: activeStep
+    type: number
+    default: "0"
+    description: Zero-based index of the current active step
+  - name: orientation
+    type: "'horizontal' | 'vertical'"
+    default: "'horizontal'"
+
+sub_components:
+  - name: Stepper
+    description: Root provider managing active step and orientation context.
+  - name: StepperItem
+    description: Container for a single step with auto-derived status from context.
+  - name: StepperTrigger
+    description: Clickable step indicator circle with status-based styling and check icon.
+  - name: StepperTitle
+    description: Step label text.
+  - name: StepperDescription
+    description: Optional secondary description for a step.
+  - name: StepperSeparator
+    description: Connector line between steps with completion-aware coloring.
+
+dependencies:
+  - "@phosphor-icons/react"
+
+example: |
+  <Stepper activeStep={1}>
+    <StepperItem step={0}>
+      <StepperTrigger step={0} />
+      <StepperTitle>Account</StepperTitle>
+    </StepperItem>
+    <StepperSeparator complete />
+    <StepperItem step={1}>
+      <StepperTrigger step={1} />
+      <StepperTitle>Profile</StepperTitle>
+    </StepperItem>
+    <StepperSeparator />
+    <StepperItem step={2}>
+      <StepperTrigger step={2} />
+      <StepperTitle>Review</StepperTitle>
+    </StepperItem>
+  </Stepper>

@@ -1,0 +1,50 @@
+name: Heading
+description: A semantic heading component (h1-h6) with independent size and weight variants.
+category: typography
+
+when_to_use:
+  - Page titles and section headings
+  - Card or dialog headers needing semantic HTML levels
+  - Any heading where semantic level and visual size should be independent
+  - Marketing or landing page headings with custom sizing
+
+when_not_to_use:
+  - Body text or paragraphs (use Text)
+  - Labels for form fields (use Label or Field)
+  - Decorative large text without heading semantics (use Text with a larger size)
+
+why: >
+  Heading renders the correct semantic HTML element (h1-h6) based on the level
+  prop while allowing visual size to be set independently. This decouples
+  document outline from visual design, so an h3 can look like an h1 when needed.
+  Default size auto-maps from level (h1=2xl, h2=xl, etc.) but can be overridden.
+
+variants:
+  size: [xs, sm, md, lg, xl, 2xl]
+  weight: [normal, medium, semibold, bold]
+
+props:
+  - name: level
+    type: "1 | 2 | 3 | 4 | 5 | 6"
+    default: "2"
+    description: Semantic heading level (renders h1-h6)
+  - name: size
+    type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'"
+    description: Visual size (defaults to auto-mapping from level)
+  - name: weight
+    type: "'normal' | 'medium' | 'semibold' | 'bold'"
+    default: "'semibold'"
+
+dependencies:
+  - "class-variance-authority"
+
+example: |
+  <Heading level={1}>Page Title</Heading>
+
+  <Heading level={3} size="xl" weight="bold">
+    Visually large h3
+  </Heading>
+
+  <Heading level={4} size="xs" weight="medium">
+    Small section heading
+  </Heading>

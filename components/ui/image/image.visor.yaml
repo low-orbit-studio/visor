@@ -1,0 +1,59 @@
+name: Image
+description: An image component with loading skeleton, error fallback, aspect ratio presets, and lazy loading.
+category: media
+
+when_to_use:
+  - Displaying images that may load slowly and need a loading state
+  - Thumbnails or cards where a consistent aspect ratio is required
+  - Any image where a broken-image fallback improves resilience
+  - Lazy-loaded images below the fold
+
+when_not_to_use:
+  - Full-screen image viewing (use Lightbox)
+  - Background images or decorative patterns (use CSS background-image)
+  - Icons or small inline graphics (use Phosphor icons or SVGs)
+  - Next.js optimized images with automatic sizing (use next/image)
+
+why: >
+  Image wraps a native img element with automatic loading skeleton, error
+  fallback UI, and aspect ratio presets. It handles the loading-to-loaded
+  transition gracefully, preventing layout shift with pre-defined aspect ratios.
+  The error state shows a broken image icon (or custom fallback) instead of the
+  browser's default broken image.
+
+props:
+  - name: aspectRatio
+    type: "'square' | 'video' | 'portrait' | 'auto'"
+    default: "'auto'"
+    description: "Preset aspect ratio (1:1, 16:9, 3:4, or none)"
+  - name: fallback
+    type: "React.ReactNode"
+    description: Custom content shown when the image fails to load
+  - name: objectFit
+    type: "'cover' | 'contain' | 'fill' | 'none'"
+    default: "'cover'"
+  - name: loading
+    type: "'lazy' | 'eager'"
+    default: "'lazy'"
+  - name: src
+    type: string
+  - name: alt
+    type: string
+
+dependencies:
+  - "@phosphor-icons/react"
+
+example: |
+  <Image
+    src="/photos/hero.jpg"
+    alt="Mountain landscape"
+    aspectRatio="video"
+  />
+
+  <Image
+    src={user.avatar}
+    alt={user.name}
+    aspectRatio="square"
+    objectFit="cover"
+    fallback={<span>No photo</span>}
+  />

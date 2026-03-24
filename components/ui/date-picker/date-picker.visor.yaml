@@ -1,0 +1,57 @@
+name: DatePicker
+description: A date picker combining a trigger button with a popover Calendar for single-date selection.
+category: form
+
+when_to_use:
+  - Single date input in forms (birth date, due date, event date)
+  - Any field where users need to pick one date from a calendar popup
+  - Compact date selection that doesn't take up inline space
+
+when_not_to_use:
+  - Date range selection (use Calendar with mode="range" directly)
+  - Always-visible calendar display (use Calendar inline)
+  - Date and time together (use a dedicated datetime picker)
+  - Free-form date text entry (use Input with date validation)
+
+why: >
+  DatePicker composes Calendar with a Radix Popover trigger, handling open/close
+  state, date formatting via date-fns, placeholder text, and disabled state. The
+  trigger displays a calendar icon and the formatted date, providing a familiar
+  and accessible date input pattern without manual wiring.
+
+props:
+  - name: value
+    type: "Date | undefined"
+    description: Currently selected date
+  - name: onChange
+    type: "(date: Date | undefined) => void"
+    description: Called when a date is selected
+  - name: placeholder
+    type: string
+    default: '"Pick a date"'
+  - name: dateFormat
+    type: string
+    default: '"PPP"'
+    description: date-fns format string for displaying the selected date
+  - name: disabled
+    type: boolean
+    default: "false"
+
+dependencies:
+  - "@radix-ui/react-popover"
+  - "date-fns"
+  - "@phosphor-icons/react"
+
+example: |
+  <DatePicker
+    value={selectedDate}
+    onChange={setSelectedDate}
+    placeholder="Select a date"
+  />
+
+  <DatePicker
+    value={dueDate}
+    onChange={setDueDate}
+    dateFormat="MM/dd/yyyy"
+    disabled={isReadOnly}
+  />

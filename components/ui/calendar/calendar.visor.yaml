@@ -1,0 +1,51 @@
+name: Calendar
+description: A date grid component for browsing and selecting dates, with range selection support.
+category: form
+
+when_to_use:
+  - Inline date selection where the calendar is always visible
+  - Date range picking (start and end dates)
+  - Embedding a month view inside a custom date picker or scheduling UI
+  - Displaying a mini calendar widget in a sidebar or panel
+
+when_not_to_use:
+  - Selecting a single date from a text input trigger (use DatePicker)
+  - Date/time selection together (use a dedicated datetime picker)
+  - Scheduling with time slots (use a full calendar/scheduler library)
+
+why: >
+  Calendar wraps react-day-picker with Visor token styling and Phosphor icon
+  navigation. It handles keyboard navigation, range selection, disabled dates,
+  outside-month dimming, and today highlighting out of the box. The thin wrapper
+  keeps the full react-day-picker API surface available for advanced use cases.
+
+props:
+  - name: mode
+    type: "'single' | 'multiple' | 'range'"
+    description: Selection mode passed through to react-day-picker
+  - name: selected
+    type: "Date | Date[] | DateRange | undefined"
+    description: Currently selected date(s)
+  - name: onSelect
+    type: "(date: Date | Date[] | DateRange | undefined) => void"
+    description: Called when selection changes
+  - name: className
+    type: string
+
+dependencies:
+  - "react-day-picker"
+  - "date-fns"
+  - "@phosphor-icons/react"
+
+example: |
+  <Calendar
+    mode="single"
+    selected={date}
+    onSelect={setDate}
+  />
+
+  <Calendar
+    mode="range"
+    selected={{ from: startDate, to: endDate }}
+    onSelect={setRange}
+  />
