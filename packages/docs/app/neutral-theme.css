@@ -144,9 +144,9 @@ html:not(.dark) .neutral-theme {
 }
 
 html:not(.dark) .neutral-theme {
-  --color-fd-background: hsl(0, 0%, 100%);
+  --color-fd-background: hsl(0, 0%, 96%);
   --color-fd-foreground: hsl(240, 6%, 10%);
-  --color-fd-card: hsl(0, 0%, 100%);
+  --color-fd-card: hsl(0, 0%, 95%);
   --color-fd-card-foreground: hsl(240, 6%, 10%);
   --color-fd-border: hsl(240, 5%, 90%);
   --color-fd-muted: hsl(240, 5%, 96%);
