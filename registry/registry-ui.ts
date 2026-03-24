@@ -620,4 +620,91 @@ export const ui: Registry = [
       },
     ],
   },
+  {
+    name: "radio-group",
+    type: "registry:ui",
+    description:
+      "An accessible radio group component built on Radix UI RadioGroup. Follows the same pattern as Checkbox.",
+    dependencies: [
+      "@radix-ui/react-radio-group",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/radio-group/radio-group.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/radio-group/radio-group.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "slider",
+    type: "registry:ui",
+    description:
+      "An accessible slider component built on Radix UI Slider. Supports single value and range (two thumbs).",
+    dependencies: [
+      "@radix-ui/react-slider",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/slider/slider.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/slider/slider.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "toggle-group",
+    type: "registry:ui",
+    description:
+      "A toggle group component built on Radix UI ToggleGroup. Supports single-select and multi-select modes with CVA variants.",
+    dependencies: [
+      "@radix-ui/react-toggle-group",
+      "class-variance-authority",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/toggle-group/toggle-group.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/toggle-group/toggle-group.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "combobox",
+    type: "registry:ui",
+    description:
+      "A combobox/autocomplete component built on Radix UI Popover with filterable dropdown, keyboard navigation, and full a11y support.",
+    dependencies: [
+      "@radix-ui/react-popover",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/combobox/combobox.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/combobox/combobox.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
 ]

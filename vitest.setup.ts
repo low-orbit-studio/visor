@@ -16,3 +16,13 @@ expect.extend(matchers)
 // This ensures axe runs correctly in the test environment
 import { configure } from "axe-core"
 configure({ allowedOrigins: ["<same_origin>"] })
+
+// Mock ResizeObserver — not implemented in jsdom but required by some Radix UI
+// primitives (e.g. Slider, ScrollArea). Provide a no-op implementation.
+if (typeof globalThis.ResizeObserver === "undefined") {
+  globalThis.ResizeObserver = class ResizeObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+}
