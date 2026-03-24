@@ -1,0 +1,113 @@
+/* Toaster container */
+.toaster {
+  /* Container styling if needed */
+}
+
+/* Individual toast — :global() selectors required because Sonner owns its own DOM rendering.
+   This is an intentional exception to the pure CSS Modules pattern. */
+:global([data-sonner-toast]) {
+  font-family: var(--font-family-sans, system-ui, sans-serif);
+  background-color: var(--surface-card, #ffffff);
+  border: 1px solid var(--border-default, #e5e7eb);
+  color: var(--text-primary, #111827);
+  border-radius: var(--radius-lg, 0.5rem);
+  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
+  gap: var(--spacing-2, 0.5rem);
+}
+
+/* Toast title */
+:global([data-sonner-toast] [data-title]) {
+  font-weight: 500;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-primary, #111827);
+}
+
+/* Toast description */
+:global([data-sonner-toast] [data-description]) {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+}
+
+/* Type-specific colors */
+:global([data-sonner-toast][data-type="success"]) {
+  border-color: color-mix(in srgb, var(--border-success, #22c55e) 30%, transparent);
+}
+
+:global([data-sonner-toast][data-type="error"]) {
+  border-color: color-mix(in srgb, var(--border-error, #ef4444) 30%, transparent);
+}
+
+:global([data-sonner-toast][data-type="warning"]) {
+  border-color: color-mix(in srgb, var(--border-warning, #f59e0b) 30%, transparent);
+}
+
+:global([data-sonner-toast][data-type="info"]) {
+  border-color: color-mix(in srgb, var(--border-info, #3b82f6) 30%, transparent);
+}
+
+/* Action button */
+:global([data-sonner-toast] [data-button]) {
+  background-color: var(--interactive-primary-bg, #111827);
+  color: var(--interactive-primary-text, #ffffff);
+  border-radius: var(--radius-md, 0.375rem);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 500;
+  padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
+}
+
+/* Cancel button */
+:global([data-sonner-toast] [data-cancel]) {
+  background-color: transparent;
+  color: var(--text-secondary, #6b7280);
+  font-size: var(--font-size-xs, 0.75rem);
+}
+
+/* Close button */
+:global([data-sonner-toast] [data-close-button]) {
+  background-color: var(--surface-card, #ffffff);
+  border: 1px solid var(--border-default, #e5e7eb);
+  color: var(--text-secondary, #6b7280);
+}
+
+/* Dark mode support */
+:global(.dark [data-sonner-toast]),
+:global([data-theme="dark"] [data-sonner-toast]) {
+  background-color: var(--surface-card, #1f2937);
+  border-color: var(--border-default, #374151);
+  color: var(--text-primary, #f9fafb);
+}
+
+/* Class-based styles applied via Sonner's classNames option */
+.toast {
+  /* Specificity boost layer — matches :global styles above */
+}
+
+.title {
+  font-weight: 500;
+}
+
+.description {
+  color: var(--text-secondary, #6b7280);
+}
+
+.actionButton {
+  background-color: var(--interactive-primary-bg, #111827);
+  color: var(--interactive-primary-text, #ffffff);
+  border-radius: var(--radius-md, 0.375rem);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 500;
+  padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
+}
+
+.cancelButton {
+  background-color: transparent;
+  color: var(--text-secondary, #6b7280);
+  font-size: var(--font-size-xs, 0.75rem);
+}
+
+.closeButton {
+  background-color: var(--surface-card, #ffffff);
+  border: 1px solid var(--border-default, #e5e7eb);
+  color: var(--text-secondary, #6b7280);
+}

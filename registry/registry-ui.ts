@@ -461,4 +461,102 @@ export const ui: Registry = [
       },
     ],
   },
+  {
+    name: "context-menu",
+    type: "registry:ui",
+    description:
+      "A context menu component triggered by right-click, with items, checkbox items, radio items, sub-menus, labels, and separators.",
+    dependencies: [
+      "@radix-ui/react-context-menu",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/context-menu/context-menu.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/context-menu/context-menu.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "hover-card",
+    type: "registry:ui",
+    description:
+      "A hover card component that displays rich content on hover, built on Radix UI HoverCard.",
+    dependencies: ["@radix-ui/react-hover-card", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/hover-card/hover-card.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/hover-card/hover-card.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "popover",
+    type: "registry:ui",
+    description:
+      "A popover component for floating content panels, built on Radix UI Popover.",
+    dependencies: ["@radix-ui/react-popover", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/popover/popover.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/popover/popover.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "banner",
+    type: "registry:ui",
+    description:
+      "A full-width banner/callout component with intent variants (info, warning, error, success) and optional sticky positioning.",
+    dependencies: [
+      "class-variance-authority",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/banner/banner.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/banner/banner.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "toast",
+    type: "registry:ui",
+    description:
+      "A toast notification system using Sonner with visor-core token theming.",
+    dependencies: ["sonner", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/toast/toast.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/toast/toast.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
 ]
