@@ -45,6 +45,7 @@ import {
   adaptiveText,
   adaptiveSurface,
   adaptiveBorder,
+  adaptiveInteractive,
 } from "../tokens/adaptive.js";
 
 import {
@@ -451,6 +452,64 @@ describe("Adaptive tokens", () => {
       expect(semanticText, `semanticText should have "${name}"`).toHaveProperty(name);
     }
   });
+
+  it("all adaptive interactive tokens have both light and dark values", () => {
+    for (const [name, values] of Object.entries(adaptiveInteractive)) {
+      expect(values.light, `adaptiveInteractive.${name}.light`).toBeTruthy();
+      expect(values.dark, `adaptiveInteractive.${name}.dark`).toBeTruthy();
+    }
+  });
+
+  it("all adaptive interactive light values reference valid primitives", () => {
+    for (const [name, values] of Object.entries(adaptiveInteractive)) {
+      expect(
+        primitives.has(values.light),
+        `adaptiveInteractive.${name}.light references "${values.light}"`
+      ).toBe(true);
+    }
+  });
+
+  it("all adaptive interactive dark values reference valid primitives", () => {
+    for (const [name, values] of Object.entries(adaptiveInteractive)) {
+      expect(
+        primitives.has(values.dark),
+        `adaptiveInteractive.${name}.dark references "${values.dark}"`
+      ).toBe(true);
+    }
+  });
+
+  it("has all 14 expected adaptive interactive tokens", () => {
+    const expectedTokens = [
+      "primary-bg", "primary-bg-hover", "primary-bg-active", "primary-text",
+      "secondary-bg", "secondary-bg-hover", "secondary-bg-active", "secondary-text", "secondary-border",
+      "destructive-bg", "destructive-bg-hover", "destructive-text",
+      "ghost-bg", "ghost-bg-hover",
+    ];
+    for (const token of expectedTokens) {
+      expect(adaptiveInteractive, `adaptiveInteractive should have "${token}"`).toHaveProperty(token);
+    }
+    expect(Object.keys(adaptiveInteractive)).toHaveLength(14);
+  });
+
+  it("adaptive interactive token names match semantic interactive token names", () => {
+    for (const name of Object.keys(adaptiveInteractive)) {
+      expect(semanticInteractive, `semanticInteractive should have "${name}"`).toHaveProperty(name);
+    }
+  });
+
+  it("dark primary uses lighter blue than light primary for contrast", () => {
+    const lightPrimary = adaptiveInteractive["primary-bg"].light;
+    const darkPrimary = adaptiveInteractive["primary-bg"].dark;
+    expect(lightPrimary).toMatch(/blue-[6-9]00/);
+    expect(darkPrimary).toMatch(/blue-[3-5]00/);
+  });
+
+  it("dark secondary text inverts (light uses dark gray, dark uses light gray)", () => {
+    const lightText = adaptiveInteractive["secondary-text"].light;
+    const darkText = adaptiveInteractive["secondary-text"].dark;
+    expect(lightText).toMatch(/gray-9/);
+    expect(darkText).toMatch(/gray-[1-5]0?$/);
+  });
 });
 
 // ============================================================
@@ -564,6 +623,7 @@ describe("Dark mode tokens", () => {
       { name: "adaptiveText", tokens: adaptiveText },
       { name: "adaptiveSurface", tokens: adaptiveSurface },
       { name: "adaptiveBorder", tokens: adaptiveBorder },
+      { name: "adaptiveInteractive", tokens: adaptiveInteractive },
     ];
     for (const { name, tokens } of groups) {
       for (const [tokenName, values] of Object.entries(tokens)) {
