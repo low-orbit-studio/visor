@@ -22,6 +22,8 @@ import {
   primitiveShadows,
   primitiveZIndex,
   primitiveFontFamilies,
+  primitiveOverlay,
+  primitiveFocusRing,
   primitiveMotionDurations,
   primitiveMotionEasings,
 } from "../tokens/primitives.js";
@@ -33,6 +35,8 @@ import {
   semanticInteractive,
   semanticSpacing,
   semanticTypography,
+  semanticOverlay,
+  semanticFocusRing,
   semanticMotionDuration,
   semanticMotionEasing,
 } from "../tokens/semantic.js";
@@ -66,6 +70,8 @@ function buildPrimitiveLookup(): Set<string> {
   for (const name of Object.keys(primitiveLineHeights)) valid.add(`line-height-${name}`);
   for (const name of Object.keys(primitiveShadows)) valid.add(`shadow-${name}`);
   for (const name of Object.keys(primitiveZIndex)) valid.add(`z-${name}`);
+  for (const name of Object.keys(primitiveOverlay)) valid.add(`overlay-${name}`);
+  for (const name of Object.keys(primitiveFocusRing)) valid.add(`focus-ring-${name}`);
   for (const name of Object.keys(primitiveMotionDurations)) valid.add(`motion-duration-${name}`);
   for (const name of Object.keys(primitiveMotionEasings)) valid.add(`motion-easing-${name}`);
   return valid;
@@ -184,8 +190,29 @@ describe("Primitive tokens", () => {
     }
   });
 
+  it("shadow scale includes xs through xl", () => {
+    expect(primitiveShadows).toHaveProperty("xs");
+    expect(primitiveShadows).toHaveProperty("sm");
+    expect(primitiveShadows).toHaveProperty("md");
+    expect(primitiveShadows).toHaveProperty("lg");
+    expect(primitiveShadows).toHaveProperty("xl");
+  });
+
+  it("overlay-bg is a valid CSS value", () => {
+    expect(primitiveOverlay).toHaveProperty("bg");
+    expect(primitiveOverlay.bg).toMatch(/rgba/);
+  });
+
+  it("focus ring width and offset are valid CSS length values", () => {
+    expect(primitiveFocusRing).toHaveProperty("width");
+    expect(primitiveFocusRing).toHaveProperty("offset");
+    expect(primitiveFocusRing.width).toMatch(/^\d+px$/);
+    expect(primitiveFocusRing.offset).toMatch(/^\d+px$/);
+  });
+
   it("motion duration has expected step values", () => {
     expect(primitiveMotionDurations).toHaveProperty("100");
+    expect(primitiveMotionDurations).toHaveProperty("150");
     expect(primitiveMotionDurations).toHaveProperty("200");
     expect(primitiveMotionDurations).toHaveProperty("300");
     expect(primitiveMotionDurations).toHaveProperty("500");
@@ -318,6 +345,24 @@ describe("Semantic tokens", () => {
     expect(semanticMotionEasing).toHaveProperty("enter");
     expect(semanticMotionEasing).toHaveProperty("exit");
     expect(semanticMotionEasing).toHaveProperty("spring");
+  });
+
+  it("all overlay tokens reference valid primitives", () => {
+    for (const [name, ref] of Object.entries(semanticOverlay)) {
+      expect(
+        primitives.has(ref),
+        `overlay-${name} references "${ref}" which should be a valid primitive`
+      ).toBe(true);
+    }
+  });
+
+  it("all focus ring tokens reference valid primitives", () => {
+    for (const [name, ref] of Object.entries(semanticFocusRing)) {
+      expect(
+        primitives.has(ref),
+        `focus-ring-${name} references "${ref}" which should be a valid primitive`
+      ).toBe(true);
+    }
   });
 });
 

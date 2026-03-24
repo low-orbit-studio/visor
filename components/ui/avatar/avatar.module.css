@@ -37,8 +37,8 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-full, 9999px);
-  background-color: var(--surface-muted, #f1f5f9);
-  color: var(--text-secondary, #64748b);
+  background-color: var(--surface-muted, #f3f4f6);
+  color: var(--text-secondary, #6b7280);
   font-size: var(--font-size-sm, 0.875rem);
   font-weight: 500;
 }

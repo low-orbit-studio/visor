@@ -134,6 +134,7 @@ export const primitiveLineHeights = {
 
 // Shadows
 export const primitiveShadows = {
+  xs: "0 1px 1px 0 rgba(0, 0, 0, 0.04)",
   sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
   md: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)",
   lg: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)",
@@ -157,9 +158,21 @@ export const primitiveFontFamilies = {
   mono: '"SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace',
 } as const;
 
+// Overlay
+export const primitiveOverlay = {
+  bg: "rgba(0, 0, 0, 0.5)",
+} as const;
+
+// Focus ring
+export const primitiveFocusRing = {
+  width: "2px",
+  offset: "2px",
+} as const;
+
 // Motion durations (milliseconds)
 export const primitiveMotionDurations = {
   "100": "100ms",
+  "150": "150ms",
   "200": "200ms",
   "300": "300ms",
   "500": "500ms",

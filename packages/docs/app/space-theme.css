@@ -1,6 +1,9 @@
-/* ── Space theme — visor-core adapter + starfield + sunrise light mode ── */
+/* ══════════════════════════════════════════════════════════════════════
+   Space Theme — Creative Theme for Visor Docs
+   Follows the 5-section theme template (see docs/token-rules.md)
+   ══════════════════════════════════════════════════════════════════════ */
 
-/* ── Theme-aware wordmark ── */
+/* ── Section 0: Theme-aware wordmark ── */
 .dark .wordmark-light { display: none; }
 html:not(.dark) .wordmark-dark { display: none; }
 
@@ -30,7 +33,7 @@ html:not(.dark) .wordmark-dark { display: none; }
   font-style: normal;
 }
 
-/* ── Shared tokens (mode-independent) ── */
+/* ── Section 1: Shared tokens (mode-independent) ── */
 
 .space-theme {
   --accent: #5b6fff;
@@ -49,11 +52,11 @@ html:not(.dark) .wordmark-dark { display: none; }
   font-family: var(--font-satoshi);
 }
 
-/* ── Dark mode (default — current space theme) ── */
+/* ── Section 2: Dark mode overrides ── */
 
 .dark .space-theme {
   /* Space-theme-specific surfaces */
-  --surface-elevated: color-mix(in srgb, var(--accent) 8%, #121220);
+  --space-surface-elevated: color-mix(in srgb, var(--accent) 8%, #121220);
 
   /* Visor-core token overrides — dark */
   --surface-page: #080810;
@@ -95,11 +98,11 @@ html:not(.dark) .wordmark-dark { display: none; }
   --interactive-destructive-text: #ffffff;
 
   /* Translucent glass — for code blocks, table headers, etc. */
-  --glass: color-mix(in srgb, var(--accent) 15%, rgba(0, 0, 0, 0.3));
-  --glass-border: rgba(255, 255, 255, 0.2);
+  --space-glass: color-mix(in srgb, var(--accent) 15%, rgba(0, 0, 0, 0.3));
+  --space-glass-border: rgba(255, 255, 255, 0.2);
 
   /* Muted text for space-theme-specific elements */
-  --muted: #6b6b80;
+  --space-muted: #6b6b80;
 
   /* Fumadocs HSL triplets — dark */
   --fd-background: 240 33% 5%;
@@ -120,11 +123,11 @@ html:not(.dark) .wordmark-dark { display: none; }
   --fd-ring: 233 100% 71%;
 }
 
-/* ── Sunrise light mode ── */
+/* ── Section 3: Light mode overrides (sunrise) ── */
 
 html:not(.dark) .space-theme {
   /* Space-theme-specific surfaces */
-  --surface-elevated: color-mix(in srgb, var(--accent) 6%, #dbd8e8);
+  --space-surface-elevated: color-mix(in srgb, var(--accent) 6%, #dbd8e8);
 
   /* Sunrise sky gradient */
   background: radial-gradient(
@@ -191,11 +194,11 @@ html:not(.dark) .space-theme {
   --interactive-destructive-text: #ffffff;
 
   /* Translucent glass — for code blocks, table headers, etc. */
-  --glass: rgba(255, 255, 255, 0.7);
-  --glass-border: hsl(252 18% 80%);
+  --space-glass: rgba(255, 255, 255, 0.7);
+  --space-glass-border: hsl(252 18% 80%);
 
   /* Muted text for space-theme-specific elements */
-  --muted: #8580a0;
+  --space-muted: #8580a0;
 
   /* Fumadocs HSL triplets — sunrise */
   --fd-background: 252 28% 94%;
@@ -215,6 +218,8 @@ html:not(.dark) .space-theme {
   --fd-popover-foreground: 252 37% 14%;
   --fd-ring: 233 100% 71%;
 }
+
+/* ── Section 5: Creative extensions ── */
 
 /* ── Typography (shared) ── */
 
@@ -300,7 +305,7 @@ html:not(.dark) .space-theme .starfield {
 
 /* Inline code */
 .space-theme :not(pre) > code {
-  background: var(--surface-elevated);
+  background: var(--space-surface-elevated);
   border: 1px solid var(--border-strong);
   border-radius: 0.25rem;
   padding: 0.15em 0.5em;
@@ -309,8 +314,8 @@ html:not(.dark) .space-theme .starfield {
 
 /* Code blocks — translucent glass so background gradient shows through */
 .space-theme pre {
-  background: var(--glass) !important;
-  border: 1px solid var(--glass-border);
+  background: var(--space-glass) !important;
+  border: 1px solid var(--space-glass-border);
   border-radius: 0.5rem;
   padding: 1rem;
   font-size: 0.875rem;
@@ -319,8 +324,8 @@ html:not(.dark) .space-theme .starfield {
 
 /* Fumadocs code block overrides */
 .space-theme figure[data-rehype-pretty-code-figure] pre {
-  background: var(--glass) !important;
-  border: 1px solid var(--glass-border);
+  background: var(--space-glass) !important;
+  border: 1px solid var(--space-glass-border);
   border-radius: 0.5rem;
 }
 
@@ -388,7 +393,7 @@ html:not(.dark) .space-theme button:hover kbd {
 .space-theme a:not([class]) {
   color: var(--accent);
   text-decoration: none;
-  transition: color 0.15s ease;
+  transition: color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
 .dark .space-theme a:not([class]):hover {
@@ -405,12 +410,19 @@ html:not(.dark) .space-theme a:not([class]):hover {
 
 /* Focus ring */
 .space-theme :focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width, 2px) solid var(--accent);
+  outline-offset: var(--focus-ring-offset, 2px);
 }
 
 /* Sidebar active item */
 .space-theme [data-active="true"] {
   color: var(--accent);
   background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+/* Footer prev/next nav cards — label text and icons must be readable on accent hover bg.
+   fumadocs sets text-fd-muted-foreground on the label which stays dark in light mode
+   even when the parent card gets hover:bg-fd-accent/80. Override to inherit. */
+html:not(.dark) .space-theme .grid > a:hover {
+  --fd-muted-foreground: hsl(var(--fd-accent-foreground));
 }

@@ -3,7 +3,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: var(--spacing-2, 0.5rem);
   white-space: nowrap;
   border-radius: var(--radius-md, 0.375rem);
   font-size: var(--font-size-sm, 0.875rem);
@@ -11,14 +11,14 @@
   line-height: 1;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+  transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
   text-decoration: none;
   outline: none;
 }
 
 .base:focus-visible {
-  outline: 2px solid var(--border-focus, currentColor);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
 }
 
 .base:disabled {
@@ -28,40 +28,40 @@
 
 /* Variants */
 .variantDefault {
-  background-color: var(--interactive-primary-bg, #0f172a);
-  color: var(--interactive-primary-text, #f8fafc);
+  background-color: var(--interactive-primary-bg, #111827);
+  color: var(--interactive-primary-text, #f9fafb);
 }
 
 .variantDefault:hover {
-  background-color: var(--interactive-primary-bg-hover, #1e293b);
+  background-color: var(--interactive-primary-bg-hover, #1f2937);
 }
 
 .variantSecondary {
-  background-color: var(--interactive-secondary-bg, #f1f5f9);
-  color: var(--interactive-secondary-text, #0f172a);
+  background-color: var(--interactive-secondary-bg, #f3f4f6);
+  color: var(--interactive-secondary-text, #111827);
 }
 
 .variantSecondary:hover {
-  background-color: var(--interactive-secondary-bg-hover, #e2e8f0);
+  background-color: var(--interactive-secondary-bg-hover, #e5e7eb);
 }
 
 .variantOutline {
   background-color: transparent;
-  color: var(--text-primary, #0f172a);
-  border-color: var(--border-strong, #e2e8f0);
+  color: var(--text-primary, #111827);
+  border-color: var(--border-strong, #e5e7eb);
 }
 
 .variantOutline:hover {
-  background-color: var(--surface-muted, #f1f5f9);
+  background-color: var(--surface-muted, #f3f4f6);
 }
 
 .variantGhost {
   background-color: var(--interactive-ghost-bg, transparent);
-  color: var(--text-primary, #0f172a);
+  color: var(--text-primary, #111827);
 }
 
 .variantGhost:hover {
-  background-color: var(--interactive-ghost-bg-hover, var(--surface-muted, #f1f5f9));
+  background-color: var(--interactive-ghost-bg-hover, var(--surface-muted, #f3f4f6));
 }
 
 .variantDestructive {
@@ -76,17 +76,17 @@
 /* Sizes */
 .sizeSm {
   height: 2rem;
-  padding: 0 0.75rem;
+  padding: 0 var(--spacing-3, 0.75rem);
   font-size: var(--font-size-xs, 0.75rem);
 }
 
 .sizeMd {
   height: 2.5rem;
-  padding: 0 1rem;
+  padding: 0 var(--spacing-4, 1rem);
 }
 
 .sizeLg {
   height: 3rem;
-  padding: 0 1.5rem;
+  padding: 0 var(--spacing-6, 1.5rem);
   font-size: var(--font-size-base, 1rem);
 }

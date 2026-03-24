@@ -101,10 +101,18 @@ export const TOKEN_FONT_WEIGHT_SEMIBOLD = "--font-weight-semibold" as const;
 export const TOKEN_FONT_WEIGHT_BOLD = "--font-weight-bold" as const;
 
 // Shadows
+export const TOKEN_SHADOW_XS = "--shadow-xs" as const;
 export const TOKEN_SHADOW_SM = "--shadow-sm" as const;
 export const TOKEN_SHADOW_MD = "--shadow-md" as const;
 export const TOKEN_SHADOW_LG = "--shadow-lg" as const;
 export const TOKEN_SHADOW_XL = "--shadow-xl" as const;
+
+// Overlay
+export const TOKEN_OVERLAY_BG = "--overlay-bg" as const;
+
+// Focus Ring
+export const TOKEN_FOCUS_RING_WIDTH = "--focus-ring-width" as const;
+export const TOKEN_FOCUS_RING_OFFSET = "--focus-ring-offset" as const;
 
 // Z-Index
 export const TOKEN_Z_BASE = "--z-base" as const;

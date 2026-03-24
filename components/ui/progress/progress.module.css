@@ -7,7 +7,7 @@
   align-items: center;
   overflow: hidden;
   border-radius: var(--radius-full, 9999px);
-  background-color: var(--surface-muted, #f1f5f9);
+  background-color: var(--surface-muted, #f3f4f6);
 }
 
 /* Progress indicator */
@@ -15,6 +15,6 @@
   width: 100%;
   height: 100%;
   flex: 1;
-  background-color: var(--interactive-primary-bg, #0f172a);
+  background-color: var(--interactive-primary-bg, #111827);
   transition: transform 0.3s ease;
 }

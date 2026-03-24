@@ -7,13 +7,13 @@
   align-items: center;
   gap: 0.375rem;
   border-radius: var(--radius-lg, 0.5rem);
-  background-color: var(--surface-overlay, #0f172a);
-  padding: 0.375rem 0.75rem;
+  background-color: var(--surface-overlay, #111827);
+  padding: 0.375rem var(--spacing-3, 0.75rem);
   font-size: var(--font-size-xs, 0.75rem);
   color: var(--text-inverse, #ffffff);
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  animation-duration: 0.15s;
-  animation-timing-function: ease-out;
+  box-shadow: var(--shadow-md);
+  animation-duration: var(--motion-duration-150, 150ms);
+  animation-timing-function: var(--motion-easing-enter, ease-out);
 }
 
 .content[data-state="delayed-open"] {

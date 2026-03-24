@@ -56,6 +56,20 @@ Reference design system: `~/Code/low-orbit/low-orbit-playbook/reference-nextjs-a
 Source components: `~/Code/kaiah/kaiah-app/packages/ui/src/components/ui/`
 Source tokens: `~/Code/blacklight/packages/design-tokens/`
 
+## Token Rules
+
+Full rules: [`docs/token-rules.md`](./docs/token-rules.md). Key enforcement points for AI-assisted work:
+
+1. **Fallbacks use Gray, not Slate** — `var()` fallbacks must use Tailwind Gray hex values (`#111827`, not `#0f172a`)
+2. **Shadows are tokenized** — Use `var(--shadow-xs|sm|md|lg|xl)`, never inline `rgba()` shadows
+3. **Spacing on 4px grid** — Padding/gap/margin use `var(--spacing-N)` tokens
+4. **Motion is tokenized** — Transitions use `var(--motion-duration-*)` + `var(--motion-easing-*)`
+5. **Focus rings are tokenized** — Use `var(--focus-ring-width)` and `var(--focus-ring-offset)`
+6. **Overlay uses token** — Backdrops use `var(--overlay-bg)`
+7. **Themes follow 5-section template** — shared → dark → light → framework bridge → creative extensions
+8. **Theme-specific tokens are namespaced** — `--space-glass`, `--veronica-warmth`, never bare `--glass`
+9. **No magic numbers** — Every value traces to a token or is documented as intentional
+
 ## Playbook Reference
 
 The [Low Orbit Playbook](~/Code/low-orbit/low-orbit-playbook/) provides prescriptive methodology for every lifecycle stage. Global skills are installed at `~/.claude/skills/`.
@@ -74,6 +88,7 @@ Visor's long-term goals, phased roadmap, and detailed specs live in `/docs/`. Re
 - [`docs/component-inventory.md`](./docs/component-inventory.md) — Current vs target components, source material for each
 - [`docs/interchange-format.md`](./docs/interchange-format.md) — Design system interchange format spec (draft)
 - [`docs/ai-consumability.md`](./docs/ai-consumability.md) — AI agent consumability spec (metadata, manifest, patterns, agent-first CLI)
+- [`docs/token-rules.md`](./docs/token-rules.md) — Token rules, theme contract, and 5-section theme template
 
 **Current focus:** Phase 1 — Component Library Expansion (25 → ~55 general-purpose + deck category).
 

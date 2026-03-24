@@ -9,13 +9,13 @@
   width: 100%;
   height: 100%;
   border-radius: inherit;
-  transition: box-shadow 150ms ease, outline-color 150ms ease;
+  transition: box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), outline-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
   outline: none;
 }
 
 .viewport:focus-visible {
-  outline: 2px solid var(--border-focus, currentColor);
-  outline-offset: 2px;
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
 }
 
 /* Scrollbar base */
@@ -24,7 +24,7 @@
   touch-action: none;
   padding: 1px;
   user-select: none;
-  transition: background-color 150ms ease;
+  transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
 /* Vertical scrollbar */
@@ -47,10 +47,10 @@
   position: relative;
   flex: 1;
   border-radius: 9999px;
-  background-color: var(--border-default, #e2e8f0);
-  transition: background-color 150ms ease;
+  background-color: var(--border-default, #e5e7eb);
+  transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
 .thumb:hover {
-  background-color: var(--border-strong, #cbd5e1);
+  background-color: var(--border-strong, #d1d5db);
 }
