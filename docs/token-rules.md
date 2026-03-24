@@ -267,6 +267,8 @@ A theme **must** override all of the following tokens to be valid. These are the
 
 **Interactive tokens:**
 
+> **Architecture note:** Interactive tokens are currently defined only in the semantic layer (`semantic.ts`) where they reference blue primitives directly. They need to be promoted to the adaptive layer (`adaptive.ts`) with light/dark pairs so that themes can override the primary/secondary/destructive colors without bypassing the token architecture. This is a Phase 1a priority — without it, a theme cannot change its primary color cleanly.
+
 | Token | Purpose |
 |-------|---------|
 | `--interactive-primary-bg` | Primary button background |

@@ -90,7 +90,7 @@ Visor's long-term goals, phased roadmap, and detailed specs live in `/docs/`. Re
 - [`docs/ai-consumability.md`](./docs/ai-consumability.md) — AI agent consumability spec (metadata, manifest, patterns, agent-first CLI)
 - [`docs/token-rules.md`](./docs/token-rules.md) — Token rules, theme contract, and 5-section theme template
 
-**Current focus:** Phase 1 — Component Library Expansion (25 → ~55 general-purpose + deck category).
+**Current focus:** Phase 1a — Core Expansion + Theme Architecture Validation (~15 priority components, second standard theme, interactive adaptive tokens, docs theme switcher).
 
 ## Environment
 
