@@ -1,0 +1,33 @@
+name: Textarea
+description: A textarea component with focus and validation states.
+category: form
+
+when_to_use:
+  - Multi-line text entry (comments, descriptions, notes)
+  - Long-form content input (bios, messages, feedback)
+  - Any input where users need to see multiple lines at once
+
+when_not_to_use:
+  - Single-line text entry (use Input)
+  - Rich text editing with formatting (use a dedicated rich text editor)
+  - Code editing (use a code editor component)
+
+why: >
+  Textarea provides consistent styling, focus rings, and validation states
+  that match the Input component. It disables browser resize by default for
+  layout consistency and supports aria-invalid for error states. It
+  integrates with the Field component for labels and error messages.
+
+props:
+  - name: rows
+    type: number
+    description: Number of visible text lines
+  - name: placeholder
+    type: string
+
+dependencies: []
+
+example: |
+  <Textarea placeholder="Write your message..." rows={4} />
+
+  <Textarea aria-invalid="true" />

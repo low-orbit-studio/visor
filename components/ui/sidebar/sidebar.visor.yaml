@@ -1,0 +1,117 @@
+name: Sidebar
+description: Feature-rich collapsible sidebar with provider, menus, groups, and sub-navigation.
+category: layout
+
+when_to_use:
+  - Primary app navigation with grouped menu items
+  - Admin dashboards with hierarchical navigation
+  - Multi-section apps needing persistent side navigation
+  - Layouts requiring collapsible or icon-only sidebar states
+
+when_not_to_use:
+  - Temporary slide-over panels (use Sheet)
+  - Top-level horizontal navigation (use Navbar)
+  - Simple page-level section navigation (use Tabs)
+  - Mobile-only navigation without desktop sidebar (use Sheet)
+
+why: >
+  Sidebar is a comprehensive layout component with provider-based state
+  management, supporting expanded/collapsed/icon-only modes, left/right
+  placement, and floating/inset/sidebar variants. It includes keyboard
+  shortcut toggling (Cmd+B), cookie persistence, and responsive mobile
+  detection. The compound component API with menus, groups, labels, and
+  sub-menus covers complex navigation hierarchies out of the box.
+
+variants:
+  variant: [default, outline]
+  size: [sm, default, lg]
+
+sub_components:
+  - name: SidebarProvider
+    description: Context provider managing sidebar state, mobile detection, and keyboard shortcuts.
+  - name: Sidebar
+    description: The sidebar container with side, variant, and collapsible props.
+  - name: SidebarTrigger
+    description: Button that toggles sidebar open/closed.
+  - name: SidebarRail
+    description: Clickable rail at the sidebar edge for toggling.
+  - name: SidebarInset
+    description: Main content area companion to the sidebar.
+  - name: SidebarHeader
+    description: Top section of the sidebar for branding or user info.
+  - name: SidebarFooter
+    description: Bottom section for settings or user actions.
+  - name: SidebarContent
+    description: Scrollable content area between header and footer.
+  - name: SidebarGroup
+    description: Visual grouping of related menu items.
+  - name: SidebarGroupLabel
+    description: Heading label for a group.
+  - name: SidebarGroupAction
+    description: Action button in a group header.
+  - name: SidebarGroupContent
+    description: Content container within a group.
+  - name: SidebarMenu
+    description: List container for menu items.
+  - name: SidebarMenuItem
+    description: Individual menu list item.
+  - name: SidebarMenuButton
+    description: Interactive button within a menu item with active state support.
+  - name: SidebarMenuAction
+    description: Secondary action button on a menu item (e.g., more options).
+  - name: SidebarMenuBadge
+    description: Badge indicator on a menu item (e.g., notification count).
+  - name: SidebarMenuSub
+    description: Nested sub-menu list.
+  - name: SidebarMenuSubItem
+    description: Individual sub-menu list item.
+  - name: SidebarMenuSubButton
+    description: Interactive link/button within a sub-menu item.
+  - name: SidebarSeparator
+    description: Horizontal divider between sections.
+
+props:
+  - name: side
+    type: "'left' | 'right'"
+    default: "left"
+  - name: variant
+    type: "'sidebar' | 'floating' | 'inset'"
+    default: "sidebar"
+  - name: collapsible
+    type: "'offcanvas' | 'icon' | 'none'"
+    default: "offcanvas"
+  - name: defaultOpen
+    type: boolean
+    default: true
+    description: Initial open state (SidebarProvider prop)
+
+dependencies:
+  - "class-variance-authority"
+  - "@phosphor-icons/react"
+
+example: |
+  <SidebarProvider>
+    <Sidebar>
+      <SidebarHeader>
+        <h2>My App</h2>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton isActive>Dashboard</SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton>Settings</SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
+    <SidebarInset>
+      <main>Page content</main>
+    </SidebarInset>
+  </SidebarProvider>

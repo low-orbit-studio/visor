@@ -1,0 +1,74 @@
+name: Combobox
+description: A combobox/autocomplete component with filterable dropdown, keyboard navigation, and full a11y support.
+category: form
+
+when_to_use:
+  - Searchable selection from a large list of options (countries, users, tags)
+  - Autocomplete fields where users type to filter options
+  - When the option list is too long for a plain Select
+
+when_not_to_use:
+  - Small option lists with fewer than 7 items (use Select or Radio Group)
+  - Free-text input without predefined options (use Input)
+  - Multi-step command execution (use Command)
+  - Simple dropdowns without search (use Select)
+
+why: >
+  Combobox provides a searchable dropdown built on Radix UI Popover with
+  full keyboard navigation and ARIA combobox semantics. It supports both
+  controlled and uncontrolled modes for input, selection, and open state.
+  Grouping, empty states, and separators are built in as sub-components.
+
+props:
+  - name: inputValue
+    type: string
+    description: Controlled search/input text
+  - name: defaultInputValue
+    type: string
+    default: "''"
+  - name: onInputChange
+    type: "(value: string) => void"
+  - name: value
+    type: string
+    description: Controlled selected value
+  - name: defaultValue
+    type: string
+    default: "''"
+  - name: onSelect
+    type: "(value: string, label: string) => void"
+  - name: open
+    type: boolean
+    description: Controlled open state
+  - name: onOpenChange
+    type: "(open: boolean) => void"
+  - name: disabled
+    type: boolean
+
+sub_components:
+  - name: ComboboxInput
+    description: The text input with search functionality and caret icon.
+  - name: ComboboxContent
+    description: The dropdown popover containing the option list.
+  - name: ComboboxItem
+    description: An individual selectable option with check indicator.
+  - name: ComboboxEmpty
+    description: Placeholder shown when no options match the search query.
+  - name: ComboboxGroup
+    description: Groups related items under an optional heading.
+  - name: ComboboxSeparator
+    description: A visual divider between groups or items.
+
+dependencies:
+  - "@radix-ui/react-popover"
+  - "@phosphor-icons/react"
+
+example: |
+  <Combobox onSelect={(value, label) => console.log(value, label)}>
+    <ComboboxInput placeholder="Search frameworks..." />
+    <ComboboxContent>
+      <ComboboxItem value="next" label="Next.js">Next.js</ComboboxItem>
+      <ComboboxItem value="remix" label="Remix">Remix</ComboboxItem>
+      <ComboboxItem value="astro" label="Astro">Astro</ComboboxItem>
+      <ComboboxEmpty>No frameworks found.</ComboboxEmpty>
+    </ComboboxContent>
+  </Combobox>

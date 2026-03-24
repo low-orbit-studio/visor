@@ -1,0 +1,34 @@
+name: Input
+description: A text input component with focus and validation states.
+category: form
+
+when_to_use:
+  - Single-line text entry (name, email, search, URL)
+  - Password fields
+  - Numeric input with type="number"
+  - File uploads with type="file"
+
+when_not_to_use:
+  - Multi-line text entry (use Textarea)
+  - Selecting from predefined options (use Select or Combobox)
+  - Boolean on/off values (use Checkbox or Switch)
+  - Rich text editing (use a dedicated rich text editor)
+
+why: >
+  Input provides consistent styling, focus rings, validation states, and
+  disabled appearance across all text-based form fields. It supports
+  aria-invalid for error states and integrates with the Field component
+  for labels and error messages.
+
+props:
+  - name: type
+    type: string
+    default: "text"
+    description: HTML input type (text, email, password, number, file, etc.)
+
+dependencies: []
+
+example: |
+  <Input type="email" placeholder="you@example.com" />
+
+  <Input type="password" aria-invalid="true" />

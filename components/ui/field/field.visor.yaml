@@ -1,0 +1,47 @@
+name: Field
+description: A form field wrapper composing label, description, and error components.
+category: form
+
+when_to_use:
+  - Wrapping any form control with a label and optional description
+  - Displaying validation errors below a form control
+  - Consistent vertical or horizontal field layout in forms
+
+when_not_to_use:
+  - Standalone labels without a wrapper (use Label directly)
+  - Non-form content grouping (use a <div> or Card)
+  - Complex multi-field layouts (compose individual Field components)
+
+why: >
+  Field provides consistent spacing and structure for form fields. It
+  composes FieldLabel, FieldDescription, and FieldError to handle the
+  full lifecycle of a form control — from labeling through validation
+  feedback. It supports vertical and horizontal orientations via CVA.
+
+variants:
+  orientation: [vertical, horizontal]
+
+props:
+  - name: orientation
+    type: "'vertical' | 'horizontal'"
+    default: "vertical"
+    description: Layout direction of the field and its label
+
+sub_components:
+  - name: FieldLabel
+    description: Styled label for the form control. Wraps the Label component.
+  - name: FieldDescription
+    description: Helper text below the label providing additional guidance.
+  - name: FieldError
+    description: Error message display with role="alert". Accepts an errors array or children.
+
+dependencies:
+  - "class-variance-authority"
+
+example: |
+  <Field>
+    <FieldLabel htmlFor="email">Email</FieldLabel>
+    <FieldDescription>We will never share your email.</FieldDescription>
+    <Input id="email" type="email" />
+    <FieldError errors={[{ message: "Email is required" }]} />
+  </Field>

@@ -1,0 +1,50 @@
+name: Tooltip
+description: Small text label that appears on hover or focus to describe an element.
+category: feedback
+
+when_to_use:
+  - Labeling icon-only buttons
+  - Providing additional context for truncated text
+  - Explaining a disabled control's reason
+  - Showing keyboard shortcuts for actions
+
+when_not_to_use:
+  - Rich content with links or interactive elements (use Popover or HoverCard)
+  - Content that should persist without hover (use Popover)
+  - Error messages for form fields (use Field error state)
+  - Long-form descriptions (use a visible label or description)
+
+why: >
+  Tooltip wraps Radix UI Tooltip with Visor's inverted surface tokens for
+  high-contrast readability. It handles show/hide delays, portal rendering,
+  and proper aria-describedby associations automatically. The provider
+  component sets global delay timing for consistent behavior across the app.
+
+sub_components:
+  - name: TooltipProvider
+    description: Wraps the app to set global tooltip delay and behavior.
+  - name: Tooltip
+    description: Root component managing open/close state for a single tooltip.
+  - name: TooltipTrigger
+    description: Element that activates the tooltip on hover/focus.
+  - name: TooltipContent
+    description: The floating label rendered in a portal.
+
+props:
+  - name: sideOffset
+    type: number
+    default: "4"
+    description: Distance in pixels between trigger and tooltip
+
+dependencies:
+  - "@radix-ui/react-tooltip"
+
+example: |
+  <TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button variant="ghost" size="sm"><TrashIcon /></Button>
+      </TooltipTrigger>
+      <TooltipContent>Delete item</TooltipContent>
+    </Tooltip>
+  </TooltipProvider>

@@ -1,0 +1,60 @@
+name: Breadcrumb
+description: A breadcrumb navigation component showing the user's location within a page hierarchy.
+category: navigation
+
+when_to_use:
+  - Showing hierarchical page location in multi-level navigation
+  - Helping users navigate back to parent pages in deep content structures
+  - Complementing sidebar or top navigation with contextual wayfinding
+  - E-commerce category paths or documentation section trails
+
+when_not_to_use:
+  - Linear step-by-step wizards (use a stepper component)
+  - Switching between peer-level content (use Tabs)
+  - Browser-like back/forward navigation (use native browser controls)
+  - Flat site structures with no hierarchy
+
+why: >
+  Breadcrumb provides semantic nav with correct aria-label and aria-current
+  attributes out of the box. The compound pattern supports custom separators,
+  ellipsis for deep hierarchies, and works with any routing library via the
+  asChild prop on BreadcrumbLink.
+
+props:
+  - name: asChild
+    type: "boolean"
+    description: "Renders BreadcrumbLink as its child element (for router Link components)"
+
+sub_components:
+  - name: BreadcrumbList
+    description: Ordered list container for breadcrumb items with flex layout and wrapping.
+  - name: BreadcrumbItem
+    description: List item wrapper for a single breadcrumb entry.
+  - name: BreadcrumbLink
+    description: Clickable link for navigable breadcrumb levels.
+  - name: BreadcrumbPage
+    description: Non-interactive span for the current page with aria-current="page".
+  - name: BreadcrumbSeparator
+    description: Visual divider between items, defaults to a right caret icon.
+  - name: BreadcrumbEllipsis
+    description: Dots indicator for collapsed intermediate levels.
+
+dependencies:
+  - "@phosphor-icons/react"
+
+example: |
+  <Breadcrumb>
+    <BreadcrumbList>
+      <BreadcrumbItem>
+        <BreadcrumbLink href="/">Home</BreadcrumbLink>
+      </BreadcrumbItem>
+      <BreadcrumbSeparator />
+      <BreadcrumbItem>
+        <BreadcrumbLink href="/docs">Docs</BreadcrumbLink>
+      </BreadcrumbItem>
+      <BreadcrumbSeparator />
+      <BreadcrumbItem>
+        <BreadcrumbPage>Components</BreadcrumbPage>
+      </BreadcrumbItem>
+    </BreadcrumbList>
+  </Breadcrumb>

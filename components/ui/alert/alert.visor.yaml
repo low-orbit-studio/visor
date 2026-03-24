@@ -1,0 +1,44 @@
+name: Alert
+description: Static inline callout for important messages with semantic variants.
+category: feedback
+
+when_to_use:
+  - Displaying a persistent warning or error within page content
+  - Showing success confirmation that should remain visible
+  - Informational callouts in documentation or onboarding flows
+  - Form-level error summaries above or below a form
+
+when_not_to_use:
+  - Ephemeral notifications that auto-dismiss (use Toast)
+  - Full-width announcements at the top of a page (use Banner)
+  - Inline field-level validation messages (use Field error state)
+  - Messages requiring user action to dismiss (use Dialog)
+
+why: >
+  Alert provides a semantically correct role="alert" container with CVA-driven
+  variants for default, destructive, success, and warning states. It ensures
+  consistent color coding and structure with AlertTitle and AlertDescription
+  sub-components, all themed via CSS custom properties.
+
+variants:
+  variant: [default, destructive, success, warning]
+
+sub_components:
+  - name: AlertTitle
+    description: Bold heading text for the alert message.
+  - name: AlertDescription
+    description: Secondary descriptive text below the title.
+
+props:
+  - name: variant
+    type: "'default' | 'destructive' | 'success' | 'warning'"
+    default: "default"
+
+dependencies:
+  - "class-variance-authority"
+
+example: |
+  <Alert variant="destructive">
+    <AlertTitle>Error</AlertTitle>
+    <AlertDescription>Your session has expired. Please log in again.</AlertDescription>
+  </Alert>

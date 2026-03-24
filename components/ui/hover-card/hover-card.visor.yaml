@@ -1,0 +1,50 @@
+name: HoverCard
+description: Rich content card that appears when hovering over a trigger element.
+category: overlay
+
+when_to_use:
+  - User profile previews on hover (avatar, name, bio)
+  - Link previews showing destination page summary
+  - Product or item quick-view on hover
+  - Additional metadata for list items without navigating away
+
+when_not_to_use:
+  - Simple text labels (use Tooltip)
+  - Interactive content that needs click activation (use Popover)
+  - Menus with selectable items (use DropdownMenu)
+  - Content that must work on touch devices (use Popover with click trigger)
+
+why: >
+  HoverCard wraps Radix UI HoverCard with Visor token styling, providing a
+  hover-activated floating card with open/close delays to prevent flickering.
+  It renders in a portal for correct z-index stacking and includes animated
+  enter/exit transitions. Ideal for progressive disclosure of rich content
+  without requiring a click.
+
+sub_components:
+  - name: HoverCard
+    description: Root component managing hover state and delays.
+  - name: HoverCardTrigger
+    description: Element that activates the card on hover.
+  - name: HoverCardContent
+    description: The floating content card rendered in a portal.
+
+props:
+  - name: sideOffset
+    type: number
+    default: "4"
+    description: Distance in pixels between trigger and content
+
+dependencies:
+  - "@radix-ui/react-hover-card"
+
+example: |
+  <HoverCard>
+    <HoverCardTrigger asChild>
+      <a href="/user/jane">@jane</a>
+    </HoverCardTrigger>
+    <HoverCardContent>
+      <p><strong>Jane Smith</strong></p>
+      <p>Product designer at Acme Corp</p>
+    </HoverCardContent>
+  </HoverCard>

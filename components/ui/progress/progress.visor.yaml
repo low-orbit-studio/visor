@@ -1,0 +1,32 @@
+name: Progress
+description: Horizontal bar indicating completion percentage of a task.
+category: feedback
+
+when_to_use:
+  - File upload progress
+  - Multi-step form or wizard completion
+  - Loading or processing indicators with known progress
+  - Profile completeness or quota usage
+
+when_not_to_use:
+  - Indeterminate loading with no known progress (use Skeleton or a spinner)
+  - Step-by-step navigation (use Breadcrumb or Tabs)
+  - Binary on/off state (use Switch)
+  - Circular progress indicators (build a custom component)
+
+why: >
+  Progress wraps Radix UI Progress with Visor token styling, providing a
+  fully accessible progress bar with correct aria-valuenow, aria-valuemin,
+  and aria-valuemax attributes. The indicator uses CSS transform for smooth
+  animated transitions when the value changes.
+
+props:
+  - name: value
+    type: number
+    description: Current progress value from 0 to 100
+
+dependencies:
+  - "@radix-ui/react-progress"
+
+example: |
+  <Progress value={65} />

@@ -1,0 +1,67 @@
+name: Select
+description: An accessible select component built on Radix UI Select with all sub-components.
+category: form
+
+when_to_use:
+  - Choosing one option from a predefined list (country, role, status)
+  - Dropdown menus for form fields with 5+ options
+  - Replacing native <select> elements with a styled alternative
+
+when_not_to_use:
+  - Searchable/filterable option lists (use Combobox)
+  - Multi-select with checkboxes (use Combobox or Checkbox group)
+  - Binary on/off choices (use Switch or Checkbox)
+  - Navigation actions (use Dropdown Menu)
+
+why: >
+  Select wraps Radix UI Select to provide keyboard navigation, focus
+  management, scroll buttons, and ARIA-compliant listbox behavior. It
+  supports grouped options, custom labels, separators, and portal-based
+  positioning to avoid overflow clipping.
+
+props:
+  - name: value
+    type: string
+    description: Controlled selected value
+  - name: defaultValue
+    type: string
+  - name: onValueChange
+    type: "(value: string) => void"
+  - name: disabled
+    type: boolean
+    default: false
+  - name: placeholder
+    type: string
+    description: Shown via SelectValue when no value is selected
+
+sub_components:
+  - name: SelectTrigger
+    description: The button that opens the select dropdown. Accepts a size prop ("sm" | "default").
+  - name: SelectValue
+    description: Displays the selected value or placeholder text inside the trigger.
+  - name: SelectContent
+    description: The dropdown container with scroll buttons and portal positioning.
+  - name: SelectItem
+    description: An individual selectable option with a check indicator.
+  - name: SelectGroup
+    description: Groups related items together.
+  - name: SelectLabel
+    description: A non-selectable label for a group of items.
+  - name: SelectSeparator
+    description: A visual divider between groups or items.
+
+dependencies:
+  - "@radix-ui/react-select"
+  - "@phosphor-icons/react"
+
+example: |
+  <Select defaultValue="viewer">
+    <SelectTrigger>
+      <SelectValue placeholder="Select a role" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="admin">Admin</SelectItem>
+      <SelectItem value="editor">Editor</SelectItem>
+      <SelectItem value="viewer">Viewer</SelectItem>
+    </SelectContent>
+  </Select>

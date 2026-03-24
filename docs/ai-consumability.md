@@ -194,6 +194,9 @@ The current CLI focuses on file operations (add, init, diff). The enhanced CLI a
 ## Implementation Notes
 
 - Component `.visor.yaml` metadata files live alongside the component source (e.g., `components/ui/button/button.visor.yaml`)
-- `visor-manifest.json` is auto-generated from individual metadata files during build
-- Pattern files live in a top-level `patterns/` directory
+- `visor-manifest.json` is auto-generated from individual metadata files during build (`npm run build:manifest -w packages/cli`)
+- Pattern files live in a top-level `patterns/` directory using `.visor-pattern.yaml` extension
 - The CLI reads metadata from the registry, not from local files — so even consumers who haven't installed a component can query its metadata
+- `tokens_used` is **auto-extracted** from each component's `.module.css` file at build time — not manually authored in YAML. This prevents drift between token usage and metadata.
+- `props` is optional in `.visor.yaml` — compound components that delegate all behavior to sub-components (e.g., Dialog) may omit it
+- A validation test ensures every registered component has a corresponding `.visor.yaml` file

@@ -34,9 +34,9 @@ Make Visor as understandable and usable by AI agents as it is by human developer
 See [ai-consumability.md](./ai-consumability.md) for the full spec.
 
 **Key work:**
-- Component metadata manifests — structured YAML/JSON per component with props, variants, slots, dependencies, usage examples, "when to use" / "when not to use" guidance
-- Single registry manifest (`visor-manifest.json`) — one file an agent loads to understand everything available
-- Composition patterns/recipes — higher-level documented patterns ("form with validation", "dashboard layout", "CRUD table") showing how components combine
+- [x] Component metadata manifests — structured YAML/JSON per component with props, variants, slots, dependencies, usage examples, "when to use" / "when not to use" guidance
+- [x] Single registry manifest (`visor-manifest.json`) — one file an agent loads to understand everything available
+- [x] Composition patterns/recipes — higher-level documented patterns ("form with validation", "dashboard layout", "CRUD table") showing how components combine
 - Agent-first CLI enhancements — `--json` flag on all commands, rich `--help`, composable commands, structured output (following CLI-Anything principles)
 
 ## Phase 3: Interchange Format, Import/Export, Validation & Basic Font Resolution

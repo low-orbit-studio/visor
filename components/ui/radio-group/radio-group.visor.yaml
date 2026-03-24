@@ -1,0 +1,58 @@
+name: Radio Group
+description: An accessible radio group component built on Radix UI RadioGroup.
+category: form
+
+when_to_use:
+  - Selecting exactly one option from a small set (2-6 choices)
+  - Mutually exclusive choices where all options should be visible
+  - Form fields like gender, plan selection, or priority level
+
+when_not_to_use:
+  - Multiple selections allowed (use Checkbox group)
+  - Long option lists with 7+ items (use Select or Combobox)
+  - Binary on/off toggle (use Switch or Checkbox)
+
+why: >
+  RadioGroup wraps Radix UI RadioGroup to provide correct keyboard
+  navigation (arrow keys cycle options), focus management, and ARIA
+  radio group semantics. It follows the same visual pattern as Checkbox
+  for consistency. Pair each RadioGroupItem with a Label for accessibility.
+
+sub_components:
+  - name: RadioGroupItem
+    description: An individual radio button with a filled circle indicator when selected.
+
+props:
+  - name: value
+    type: string
+    description: Controlled selected value
+  - name: defaultValue
+    type: string
+  - name: onValueChange
+    type: "(value: string) => void"
+  - name: disabled
+    type: boolean
+    default: false
+  - name: orientation
+    type: "'vertical' | 'horizontal'"
+    default: "vertical"
+
+dependencies:
+  - "@radix-ui/react-radio-group"
+  - "@phosphor-icons/react"
+
+example: |
+  <RadioGroup defaultValue="medium">
+    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+      <RadioGroupItem value="small" id="small" />
+      <Label htmlFor="small">Small</Label>
+    </div>
+    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+      <RadioGroupItem value="medium" id="medium" />
+      <Label htmlFor="medium">Medium</Label>
+    </div>
+    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+      <RadioGroupItem value="large" id="large" />
+      <Label htmlFor="large">Large</Label>
+    </div>
+  </RadioGroup>

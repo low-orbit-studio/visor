@@ -1,0 +1,54 @@
+name: Banner
+description: Full-width announcement bar with intent variants and optional sticky positioning.
+category: feedback
+
+when_to_use:
+  - Site-wide announcements (maintenance, new features, promotions)
+  - Persistent warnings at the top of a page or section
+  - System status messages (degraded service, read-only mode)
+  - Cookie consent or legal notices
+
+when_not_to_use:
+  - Inline contextual callouts within content (use Alert)
+  - Ephemeral notifications (use Toast)
+  - Messages scoped to a single form or component (use Alert)
+  - Modal confirmations (use Dialog)
+
+why: >
+  Banner provides a full-width bar with semantic intent variants (info, warning,
+  error, success) and optional sticky positioning. It automatically sets the
+  correct ARIA role based on intent (alert for warning/error, status for others)
+  and includes sub-components for title, description, and action areas.
+
+variants:
+  intent: [info, warning, error, success]
+  position: [inline, sticky]
+
+sub_components:
+  - name: BannerTitle
+    description: Bold heading text for the banner message.
+  - name: BannerDescription
+    description: Secondary descriptive text.
+  - name: BannerAction
+    description: Right-aligned container for action buttons or links.
+
+props:
+  - name: intent
+    type: "'info' | 'warning' | 'error' | 'success'"
+    default: "info"
+  - name: position
+    type: "'inline' | 'sticky'"
+    default: "inline"
+
+dependencies:
+  - "class-variance-authority"
+  - "@phosphor-icons/react"
+
+example: |
+  <Banner intent="warning" position="sticky">
+    <BannerTitle>Scheduled maintenance</BannerTitle>
+    <BannerDescription>The system will be down Saturday 2am-4am EST.</BannerDescription>
+    <BannerAction>
+      <Button variant="outline" size="sm">Learn more</Button>
+    </BannerAction>
+  </Banner>

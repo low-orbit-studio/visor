@@ -1,0 +1,66 @@
+name: Accordion
+description: An accessible accordion for expanding and collapsing content sections with single or multiple mode.
+category: data-display
+
+when_to_use:
+  - FAQ sections where users expand one question at a time
+  - Settings panels with grouped options that can be shown or hidden
+  - Long-form content organized into collapsible sections
+  - Any list where showing all content at once would overwhelm the user
+
+when_not_to_use:
+  - Switching between mutually exclusive content views (use Tabs)
+  - A single expandable section (use Collapsible)
+  - Navigation menus with expandable groups (use Sidebar)
+  - Step-by-step disclosure wizards (use a stepper component)
+
+why: >
+  Accordion wraps Radix UI Accordion for full keyboard navigation, ARIA
+  expanded/collapsed states, and animated height transitions. Supports both
+  single-expand and multi-expand modes. The chevron icon rotates automatically
+  to indicate open/closed state.
+
+props:
+  - name: type
+    type: '"single" | "multiple"'
+    description: "Whether one or many items can be expanded at once"
+  - name: defaultValue
+    type: "string | string[]"
+    description: "Initially expanded item value(s)"
+  - name: value
+    type: "string | string[]"
+    description: "Controlled expanded item value(s)"
+  - name: onValueChange
+    type: "(value: string | string[]) => void"
+    description: "Callback when expanded items change"
+  - name: collapsible
+    type: "boolean"
+    description: "Allow all items to be collapsed when type is single"
+
+sub_components:
+  - name: AccordionItem
+    description: Wrapper for a single collapsible section, identified by its value prop.
+  - name: AccordionTrigger
+    description: Clickable header button with auto-rotating chevron icon.
+  - name: AccordionContent
+    description: Animated content panel that expands and collapses with height transitions.
+
+dependencies:
+  - "@radix-ui/react-accordion"
+  - "@phosphor-icons/react"
+
+example: |
+  <Accordion type="single" collapsible>
+    <AccordionItem value="item-1">
+      <AccordionTrigger>Is it accessible?</AccordionTrigger>
+      <AccordionContent>
+        Yes. It adheres to the WAI-ARIA Accordion pattern.
+      </AccordionContent>
+    </AccordionItem>
+    <AccordionItem value="item-2">
+      <AccordionTrigger>Is it animated?</AccordionTrigger>
+      <AccordionContent>
+        Yes. It uses CSS animations for smooth expand/collapse.
+      </AccordionContent>
+    </AccordionItem>
+  </Accordion>

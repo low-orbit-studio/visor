@@ -1,0 +1,45 @@
+name: Toast
+description: Ephemeral notification messages that appear and auto-dismiss.
+category: feedback
+
+when_to_use:
+  - Confirming a successful action (save, delete, send)
+  - Reporting a background process result (upload complete, sync finished)
+  - Displaying non-blocking error messages
+  - Showing brief informational notices that do not require user action
+
+when_not_to_use:
+  - Persistent messages that must stay visible (use Banner)
+  - Errors that block the user from proceeding (use Dialog)
+  - Inline validation feedback on form fields (use Field error state)
+  - Content that requires user acknowledgment (use Alert or Dialog)
+
+why: >
+  Toast wraps the Sonner library with Visor's token-based theming so every
+  notification automatically matches the active theme. It provides a single
+  Toaster provider and a toast() function for imperative usage, handling
+  positioning, stacking, auto-dismiss timing, and type-based color coding
+  (success, error, warning, info) without any per-call styling.
+
+sub_components:
+  - name: Toaster
+    description: Provider component that renders the toast container and applies Visor token styles.
+
+props:
+  - name: position
+    type: "'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'"
+    default: "bottom-right"
+    description: Screen position where toasts appear
+
+dependencies:
+  - "sonner"
+
+example: |
+  import { Toaster, toast } from "@/components/ui/toast"
+
+  {/* Place once in your layout */}
+  <Toaster />
+
+  {/* Call imperatively */}
+  toast.success("Changes saved")
+  toast.error("Something went wrong")

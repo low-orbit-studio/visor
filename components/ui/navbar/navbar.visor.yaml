@@ -1,0 +1,66 @@
+name: Navbar
+description: A top navigation bar with brand, content areas, links, and style variants.
+category: navigation
+
+when_to_use:
+  - Primary site-wide navigation at the top of a page
+  - Application header with logo, nav links, and action buttons
+  - Marketing pages with transparent or bordered nav styles
+  - Any layout that needs a persistent horizontal navigation bar
+
+when_not_to_use:
+  - Vertical navigation menus (use Sidebar)
+  - In-page content switching (use Tabs)
+  - Footer navigation (use a custom footer layout)
+  - Desktop app-style horizontal menu with dropdowns (use Menubar)
+
+why: >
+  Navbar handles the layout complexity of a responsive top navigation bar — brand
+  placement, flexible content alignment, link active states, and accessible toggle
+  for mobile. Three style variants (default, transparent, bordered) cover common
+  design patterns without custom CSS.
+
+variants:
+  variant: [default, transparent, bordered]
+
+props:
+  - name: variant
+    type: '"default" | "transparent" | "bordered"'
+    default: '"default"'
+  - name: isActive
+    type: "boolean"
+    description: "Marks a NavbarLink as the current page"
+  - name: align
+    type: '"start" | "center" | "end"'
+    default: '"start"'
+    description: "Controls NavbarContent horizontal alignment"
+
+sub_components:
+  - name: NavbarBrand
+    description: Container for the logo or brand mark, flex-shrink protected.
+  - name: NavbarContent
+    description: Flexible content area with configurable alignment (start, center, end).
+  - name: NavbarItem
+    description: Generic wrapper for any navbar child element.
+  - name: NavbarLink
+    description: Styled anchor with hover, focus, and active page states.
+  - name: NavbarToggle
+    description: Hamburger button for mobile navigation (hidden by default).
+
+dependencies:
+  - "class-variance-authority"
+  - "@phosphor-icons/react"
+
+example: |
+  <Navbar variant="default">
+    <NavbarBrand>Logo</NavbarBrand>
+    <NavbarContent align="center">
+      <NavbarLink href="/" isActive>Home</NavbarLink>
+      <NavbarLink href="/about">About</NavbarLink>
+    </NavbarContent>
+    <NavbarContent align="end">
+      <NavbarItem>
+        <Button size="sm">Sign In</Button>
+      </NavbarItem>
+    </NavbarContent>
+  </Navbar>

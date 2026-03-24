@@ -1,0 +1,79 @@
+name: Chart
+description: A Recharts wrapper providing themed chart container, tooltip, and legend components.
+category: data-display
+
+when_to_use:
+  - Line, bar, area, pie, or radar charts in dashboards
+  - Data visualizations that need consistent theming with the rest of the UI
+  - Any Recharts-based chart that should inherit Visor design tokens
+  - Charts with custom tooltips and legends that match the application style
+
+when_not_to_use:
+  - Simple numeric displays without charts (use text or Badge)
+  - Tabular data without visual charting (use Table)
+  - Complex interactive data exploration (use a dedicated charting library like D3)
+  - Static infographics or illustrations (use SVG or images directly)
+
+why: >
+  Chart bridges Recharts with Visor's token system by injecting scoped CSS custom
+  properties for chart colors, overriding Recharts' default styling for axis text,
+  grid lines, tooltips, and cursors. ChartConfig drives per-series colors with
+  light/dark theme support. ChartTooltipContent and ChartLegendContent provide
+  pre-styled, token-aware tooltip and legend renderers.
+
+props:
+  - name: config
+    type: "ChartConfig"
+    description: "Map of series keys to labels, icons, and color values (per-theme or single)"
+  - name: indicator
+    type: '"line" | "dot" | "dashed"'
+    default: '"dot"'
+    description: "Tooltip color indicator style"
+  - name: hideLabel
+    type: "boolean"
+    default: "false"
+    description: "Hides the tooltip header label"
+  - name: hideIndicator
+    type: "boolean"
+    default: "false"
+    description: "Hides the color indicator in tooltip items"
+  - name: hideIcon
+    type: "boolean"
+    default: "false"
+    description: "Hides icons in legend items"
+  - name: verticalAlign
+    type: '"top" | "bottom"'
+    default: '"bottom"'
+    description: "Legend vertical position"
+
+sub_components:
+  - name: ChartContainer
+    description: Responsive wrapper that provides ChartConfig context and injects scoped color CSS.
+  - name: ChartTooltip
+    description: Re-export of Recharts Tooltip for use with ChartTooltipContent.
+  - name: ChartTooltipContent
+    description: Token-themed tooltip renderer with indicator dots, labels, and formatted values.
+  - name: ChartLegend
+    description: Re-export of Recharts Legend for use with ChartLegendContent.
+  - name: ChartLegendContent
+    description: Token-themed legend renderer with color swatches and config-driven labels.
+  - name: ChartStyle
+    description: Internal component that injects scoped CSS custom properties for chart colors.
+
+dependencies:
+  - "recharts"
+
+example: |
+  const config: ChartConfig = {
+    sales: { label: "Sales", color: "var(--chart-1)" },
+    revenue: { label: "Revenue", color: "var(--chart-2)" },
+  }
+
+  <ChartContainer config={config}>
+    <BarChart data={data}>
+      <Bar dataKey="sales" fill="var(--color-sales)" />
+      <Bar dataKey="revenue" fill="var(--color-revenue)" />
+      <ChartTooltip content={<ChartTooltipContent />} />
+      <ChartLegend content={<ChartLegendContent />} />
+    </BarChart>
+  </ChartContainer>

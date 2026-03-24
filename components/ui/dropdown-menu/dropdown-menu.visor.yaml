@@ -1,0 +1,81 @@
+name: DropdownMenu
+description: Menu of actions or options that opens from a trigger button.
+category: overlay
+
+when_to_use:
+  - Actions menu on a card, row, or toolbar (edit, delete, duplicate)
+  - User account menus with navigation and sign-out
+  - Contextual options where space is limited
+  - Grouped actions with sub-menus, checkboxes, or radio selections
+
+when_not_to_use:
+  - Right-click context menus (use ContextMenu)
+  - Form field selection from a list (use Select or Combobox)
+  - Horizontal app-level menu bar (use Menubar)
+  - Floating rich content (use Popover)
+
+why: >
+  DropdownMenu wraps Radix UI DropdownMenu with Visor token styling, providing
+  full keyboard navigation, focus management, and sub-menu support. It includes
+  checkbox and radio item variants for stateful selections, destructive item
+  styling, keyboard shortcut display, and animated enter/exit transitions —
+  all themed via CSS custom properties.
+
+sub_components:
+  - name: DropdownMenu
+    description: Root component managing open/close state.
+  - name: DropdownMenuTrigger
+    description: Button that opens the menu.
+  - name: DropdownMenuContent
+    description: The floating menu container.
+  - name: DropdownMenuItem
+    description: A clickable menu action.
+  - name: DropdownMenuCheckboxItem
+    description: A toggleable checkbox item.
+  - name: DropdownMenuRadioGroup
+    description: Container for mutually exclusive radio items.
+  - name: DropdownMenuRadioItem
+    description: A selectable radio option.
+  - name: DropdownMenuLabel
+    description: Non-interactive group heading.
+  - name: DropdownMenuSeparator
+    description: Visual divider between groups.
+  - name: DropdownMenuShortcut
+    description: Keyboard shortcut hint aligned to the right.
+  - name: DropdownMenuGroup
+    description: Logical grouping of related items.
+  - name: DropdownMenuSub
+    description: Root for a nested sub-menu.
+  - name: DropdownMenuSubTrigger
+    description: Item that opens a sub-menu on hover.
+  - name: DropdownMenuSubContent
+    description: The nested sub-menu container.
+  - name: DropdownMenuPortal
+    description: Portal wrapper for rendering outside the DOM tree.
+
+props:
+  - name: inset
+    type: boolean
+    default: false
+    description: Adds left padding to align with items that have indicators
+  - name: variant
+    type: "'default' | 'destructive'"
+    default: "default"
+    description: Visual style for the menu item
+
+dependencies:
+  - "@radix-ui/react-dropdown-menu"
+  - "@phosphor-icons/react"
+
+example: |
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="ghost">Actions</Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent>
+      <DropdownMenuItem>Edit</DropdownMenuItem>
+      <DropdownMenuItem>Duplicate</DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
