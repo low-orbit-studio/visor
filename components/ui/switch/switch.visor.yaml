@@ -1,0 +1,47 @@
+name: Switch
+description: An accessible toggle switch component built on Radix UI Switch.
+category: form
+
+when_to_use:
+  - Toggling a setting on/off with immediate effect (dark mode, notifications)
+  - Binary preferences in settings panels
+  - Enabling/disabling features where the change is applied instantly
+
+when_not_to_use:
+  - Form fields submitted later with a save button (use Checkbox)
+  - Selecting from multiple options (use Radio Group or Select)
+  - Toggling between multiple states (use Toggle Group)
+
+why: >
+  Switch wraps Radix UI Switch to provide a visually distinct on/off toggle
+  with correct keyboard interaction and ARIA states. It includes a sliding
+  thumb animation and supports two sizes. Use it for settings that take
+  effect immediately, and Checkbox for deferred form submissions.
+
+variants:
+  size: [sm, default]
+
+props:
+  - name: size
+    type: "'sm' | 'default'"
+    default: "default"
+  - name: checked
+    type: boolean
+    description: Controlled checked state
+  - name: defaultChecked
+    type: boolean
+  - name: onCheckedChange
+    type: "(checked: boolean) => void"
+  - name: disabled
+    type: boolean
+    default: false
+
+dependencies:
+  - "class-variance-authority"
+  - "@radix-ui/react-switch"
+
+example: |
+  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+    <Switch id="notifications" />
+    <Label htmlFor="notifications">Enable notifications</Label>
+  </div>

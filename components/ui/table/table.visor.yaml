@@ -1,0 +1,64 @@
+name: Table
+description: A presentational table component with semantic HTML sub-components and responsive horizontal scrolling.
+category: data-display
+
+when_to_use:
+  - Displaying structured, tabular data with rows and columns
+  - Data grids with sortable headers and row selection states
+  - Financial summaries with header, body, and footer sections
+  - Any content that naturally maps to a rows-and-columns layout
+
+when_not_to_use:
+  - Layout/grid positioning of non-tabular content (use CSS Grid or flexbox)
+  - Key-value pair lists (use a description list or Card)
+  - Single-column lists of items (use a list with Card or custom layout)
+  - Interactive data grids with inline editing (use a dedicated data-grid library)
+
+why: >
+  Table provides semantic HTML table elements (thead, tbody, tfoot, th, td, caption)
+  wrapped in a horizontally scrollable container. Row hover and selected states,
+  header weight, and footer background are styled via tokens. Keeps markup
+  accessible while looking polished across themes.
+
+props:
+  - name: scope
+    type: '"col" | "row" | "colgroup" | "rowgroup"'
+    default: '"col"'
+    description: "Scope attribute for TableHead cells"
+
+sub_components:
+  - name: TableHeader
+    description: Wraps thead — applies bottom border to header rows.
+  - name: TableBody
+    description: Wraps tbody — removes bottom border from the last row.
+  - name: TableFooter
+    description: Wraps tfoot — adds top border and muted background.
+  - name: TableRow
+    description: Wraps tr — adds bottom border, hover highlight, and selected state.
+  - name: TableHead
+    description: Wraps th — bold, left-aligned column header with scope attribute.
+  - name: TableCell
+    description: Wraps td — standard cell padding and vertical alignment.
+  - name: TableCaption
+    description: Wraps caption — muted text below the table for descriptions.
+
+dependencies: []
+
+example: |
+  <Table>
+    <TableCaption>Recent invoices</TableCaption>
+    <TableHeader>
+      <TableRow>
+        <TableHead>Invoice</TableHead>
+        <TableHead>Status</TableHead>
+        <TableHead>Amount</TableHead>
+      </TableRow>
+    </TableHeader>
+    <TableBody>
+      <TableRow>
+        <TableCell>INV-001</TableCell>
+        <TableCell>Paid</TableCell>
+        <TableCell>$250.00</TableCell>
+      </TableRow>
+    </TableBody>
+  </Table>

@@ -1,0 +1,81 @@
+name: ContextMenu
+description: Right-click menu with actions, checkboxes, radio items, and sub-menus.
+category: overlay
+
+when_to_use:
+  - Right-click actions on canvas elements, cards, or file lists
+  - Desktop-style contextual operations (copy, paste, rename)
+  - Power-user shortcuts on interactive surfaces
+  - Custom right-click menus replacing the browser default
+
+when_not_to_use:
+  - Click-triggered action menus (use DropdownMenu)
+  - Form field selection (use Select or Combobox)
+  - Horizontal navigation menus (use Menubar)
+  - Touch-only interfaces where right-click is unavailable (use DropdownMenu)
+
+why: >
+  ContextMenu wraps Radix UI ContextMenu with Visor token styling, providing
+  a right-click activated menu with the same full feature set as DropdownMenu:
+  keyboard navigation, sub-menus, checkbox and radio items, destructive
+  variants, and shortcut labels. The shared menu styling ensures visual
+  consistency with other menu components in the system.
+
+sub_components:
+  - name: ContextMenu
+    description: Root component managing open/close state.
+  - name: ContextMenuTrigger
+    description: Wrapping element that activates the menu on right-click.
+  - name: ContextMenuContent
+    description: The floating menu container.
+  - name: ContextMenuItem
+    description: A clickable menu action.
+  - name: ContextMenuCheckboxItem
+    description: A toggleable checkbox item.
+  - name: ContextMenuRadioGroup
+    description: Container for mutually exclusive radio items.
+  - name: ContextMenuRadioItem
+    description: A selectable radio option.
+  - name: ContextMenuLabel
+    description: Non-interactive group heading.
+  - name: ContextMenuSeparator
+    description: Visual divider between groups.
+  - name: ContextMenuShortcut
+    description: Keyboard shortcut hint aligned to the right.
+  - name: ContextMenuGroup
+    description: Logical grouping of related items.
+  - name: ContextMenuSub
+    description: Root for a nested sub-menu.
+  - name: ContextMenuSubTrigger
+    description: Item that opens a sub-menu on hover.
+  - name: ContextMenuSubContent
+    description: The nested sub-menu container.
+  - name: ContextMenuPortal
+    description: Portal wrapper for rendering outside the DOM tree.
+
+props:
+  - name: inset
+    type: boolean
+    default: false
+    description: Adds left padding to align with items that have indicators
+  - name: variant
+    type: "'default' | 'destructive'"
+    default: "default"
+    description: Visual style for the menu item
+
+dependencies:
+  - "@radix-ui/react-context-menu"
+  - "@phosphor-icons/react"
+
+example: |
+  <ContextMenu>
+    <ContextMenuTrigger>
+      <div className="card">Right-click me</div>
+    </ContextMenuTrigger>
+    <ContextMenuContent>
+      <ContextMenuItem>Copy</ContextMenuItem>
+      <ContextMenuItem>Paste</ContextMenuItem>
+      <ContextMenuSeparator />
+      <ContextMenuItem variant="destructive">Delete</ContextMenuItem>
+    </ContextMenuContent>
+  </ContextMenu>

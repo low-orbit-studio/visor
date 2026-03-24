@@ -1,0 +1,110 @@
+name: CRUD Table
+description: Data table with row actions, confirmation dialog, and pagination for managing collections of records.
+
+components_used:
+  - table
+  - button
+  - dropdown-menu
+  - dialog
+  - alert
+  - pagination
+  - badge
+
+when_to_use:
+  - Admin pages listing and managing resources (users, orders, products)
+  - Any collection view with create, read, update, delete operations
+  - Data tables needing row-level actions and bulk operations
+
+structure: |
+  <>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <h1>Users</h1>
+      <Button onClick={handleCreate}>Add user</Button>
+    </div>
+
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Name</TableHead>
+          <TableHead>Email</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead />
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {users.map((user) => (
+          <TableRow key={user.id}>
+            <TableCell>{user.name}</TableCell>
+            <TableCell>{user.email}</TableCell>
+            <TableCell>
+              <Badge variant={user.active ? "default" : "secondary"}>
+                {user.active ? "Active" : "Inactive"}
+              </Badge>
+            </TableCell>
+            <TableCell>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm">Actions</Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => handleEdit(user)}>
+                    Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="destructive"
+                    onClick={() => setDeleteTarget(user)}
+                  >
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious href={prevPageUrl} />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink href="/users?page=1" isActive>1</PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink href="/users?page=2">2</PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationNext href={nextPageUrl} />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+
+    <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Delete user</DialogTitle>
+          <DialogDescription>
+            This will permanently delete {deleteTarget?.name}. This action cannot be undone.
+          </DialogDescription>
+        </DialogHeader>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--spacing-2)" }}>
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button variant="destructive" onClick={() => handleDelete(deleteTarget)}>
+            Delete
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  </>
+
+notes: >
+  DropdownMenu on each row provides edit and delete actions without cluttering the table.
+  Badge in the status column gives quick visual distinction between states.
+  Delete action opens a confirmation Dialog to prevent accidental data loss.
+  Pagination is rendered below the table. For large datasets, consider server-side pagination.
+  Add an Alert component above the table to display success/error messages after CRUD operations.

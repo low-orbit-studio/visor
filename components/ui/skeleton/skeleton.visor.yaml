@@ -1,0 +1,32 @@
+name: Skeleton
+description: Placeholder loading shape with a pulse animation.
+category: feedback
+
+when_to_use:
+  - Showing content placeholders while data loads
+  - Skeleton screens for cards, lists, or profiles
+  - Preventing layout shift during async data fetching
+  - Placeholder for images or avatars before they load
+
+when_not_to_use:
+  - Known-progress loading (use Progress)
+  - Full-page loading spinners (use a dedicated spinner component)
+  - Empty states with no expected content (use an empty state illustration)
+  - Loading states that need descriptive text (use a loading message)
+
+why: >
+  Skeleton provides a simple animated placeholder that matches the muted
+  surface token for any active theme. Consumers control the shape by
+  applying width, height, and border-radius via className — the component
+  itself only provides the pulse animation and base color.
+
+props:
+  - name: className
+    type: string
+    description: Control dimensions and shape (e.g., "w-full h-4 rounded")
+
+dependencies: []
+
+example: |
+  <Skeleton className="h-4 w-[200px]" />
+  <Skeleton className="h-12 w-12 rounded-full" />

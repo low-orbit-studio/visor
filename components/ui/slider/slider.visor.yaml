@@ -1,0 +1,49 @@
+name: Slider
+description: An accessible slider component built on Radix UI Slider with single and range support.
+category: form
+
+when_to_use:
+  - Selecting a numeric value within a continuous range (volume, price, brightness)
+  - Range selection with two thumbs (price range, date range)
+  - Visual feedback for value adjustment is important
+
+when_not_to_use:
+  - Precise numeric input where typing is faster (use Input with type="number")
+  - Discrete choices from a small set (use Radio Group or Toggle Group)
+  - Progress indication without user interaction (use Progress)
+
+why: >
+  Slider wraps Radix UI Slider to provide keyboard-accessible value
+  selection with a track, filled range, and draggable thumb(s). It
+  automatically renders the correct number of thumbs based on the
+  value/defaultValue array length, supporting both single-value and
+  range use cases.
+
+props:
+  - name: value
+    type: "number[]"
+    description: Controlled value (array with 1 element for single, 2 for range)
+  - name: defaultValue
+    type: "number[]"
+  - name: onValueChange
+    type: "(value: number[]) => void"
+  - name: min
+    type: number
+    default: "0"
+  - name: max
+    type: number
+    default: "100"
+  - name: step
+    type: number
+    default: "1"
+  - name: disabled
+    type: boolean
+    default: false
+
+dependencies:
+  - "@radix-ui/react-slider"
+
+example: |
+  <Slider defaultValue={[50]} max={100} step={1} />
+
+  <Slider defaultValue={[25, 75]} max={100} step={5} />

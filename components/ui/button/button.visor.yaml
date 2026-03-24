@@ -1,0 +1,48 @@
+name: Button
+description: Primary interactive element for triggering actions.
+category: form
+
+when_to_use:
+  - Triggering an action (submit, save, delete, confirm)
+  - Primary and secondary CTAs on a page
+  - Form submission
+  - Destructive actions requiring visual emphasis
+
+when_not_to_use:
+  - Navigation to another page (use a link or NextJS Link)
+  - Toggling state on/off (use Switch or Toggle Group)
+  - Selecting from options (use Select or Radio Group)
+
+why: >
+  Button is the most common interactive primitive. It handles focus management,
+  keyboard interaction, and disabled states correctly out of the box.
+  Using it instead of a styled <div> or <a> ensures accessibility compliance.
+
+variants:
+  variant: [default, secondary, outline, ghost, destructive]
+  size: [sm, md, lg]
+
+props:
+  - name: variant
+    type: "'default' | 'secondary' | 'outline' | 'ghost' | 'destructive'"
+    default: "default"
+  - name: size
+    type: "'sm' | 'md' | 'lg'"
+    default: "md"
+  - name: asChild
+    type: boolean
+    default: false
+    description: Merge props onto child element instead of rendering a <button>
+  - name: disabled
+    type: boolean
+    default: false
+
+dependencies:
+  - "class-variance-authority"
+
+example: |
+  <Button variant="default" size="md">Save changes</Button>
+
+  <Button variant="destructive">Delete account</Button>
+
+  <Button variant="ghost" size="sm">Cancel</Button>

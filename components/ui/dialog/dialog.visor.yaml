@@ -1,0 +1,60 @@
+name: Dialog
+description: Modal overlay that requires user attention before returning to the page.
+category: overlay
+
+when_to_use:
+  - Confirmation prompts (delete, discard, submit)
+  - Forms that need focused attention (edit profile, create item)
+  - Important information that requires acknowledgment
+  - Multi-step wizards in a modal context
+
+when_not_to_use:
+  - Side panels for detail views (use Sheet)
+  - Non-blocking notifications (use Toast)
+  - Simple yes/no without context (use a native confirm or Alert)
+  - Menus or navigation (use DropdownMenu or Sheet)
+
+why: >
+  Dialog wraps Radix UI Dialog with Visor token styling, providing accessible
+  modal behavior including focus trapping, Escape key dismissal, overlay click
+  dismissal, and correct aria-labelledby/aria-describedby associations. The
+  built-in close button and animated overlay ensure a polished experience
+  without any manual wiring.
+
+sub_components:
+  - name: Dialog
+    description: Root component managing open/close state.
+  - name: DialogTrigger
+    description: Element that opens the dialog on click.
+  - name: DialogContent
+    description: The modal panel with overlay, close button, and animations.
+  - name: DialogHeader
+    description: Container for title and description at the top.
+  - name: DialogTitle
+    description: Accessible dialog heading.
+  - name: DialogDescription
+    description: Secondary text describing the dialog purpose.
+  - name: DialogClose
+    description: Explicit close trigger (in addition to the built-in X button).
+  - name: DialogOverlay
+    description: Background overlay behind the dialog.
+  - name: DialogPortal
+    description: Portal wrapper for rendering outside the DOM tree.
+
+dependencies:
+  - "@radix-ui/react-dialog"
+  - "@phosphor-icons/react"
+
+example: |
+  <Dialog>
+    <DialogTrigger asChild>
+      <Button>Edit profile</Button>
+    </DialogTrigger>
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>Edit profile</DialogTitle>
+        <DialogDescription>Make changes to your profile here.</DialogDescription>
+      </DialogHeader>
+      {/* form content */}
+    </DialogContent>
+  </Dialog>

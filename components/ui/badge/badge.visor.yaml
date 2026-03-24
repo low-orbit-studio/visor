@@ -1,0 +1,38 @@
+name: Badge
+description: A small label component for status indicators, counts, and tags with multiple visual variants.
+category: data-display
+
+when_to_use:
+  - Status indicators (active, pending, error) next to items
+  - Notification counts or unread message badges
+  - Tags or labels on cards, tables, or list items
+  - Category or type indicators in search results
+
+when_not_to_use:
+  - Clickable filter chips (use ToggleGroup)
+  - Dismissible tags with a close button (use a custom tag component)
+  - Full-width alert banners (use Alert or Banner)
+  - Decorative icons without text meaning (use an icon directly)
+
+why: >
+  Badge provides four semantic variants (default, secondary, outline, destructive)
+  with consistent pill shape, font sizing, and color tokens. The compact height
+  and font-weight keep badges readable at small sizes. Focus ring support means
+  badges can be interactive when wrapped in buttons or links.
+
+variants:
+  variant: [default, secondary, outline, destructive]
+
+props:
+  - name: variant
+    type: '"default" | "secondary" | "outline" | "destructive"'
+    default: '"default"'
+
+dependencies:
+  - "class-variance-authority"
+
+example: |
+  <Badge variant="default">Active</Badge>
+  <Badge variant="secondary">Draft</Badge>
+  <Badge variant="outline">v2.1.0</Badge>
+  <Badge variant="destructive">Error</Badge>

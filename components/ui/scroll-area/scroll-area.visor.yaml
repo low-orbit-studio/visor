@@ -1,0 +1,46 @@
+name: ScrollArea
+description: Custom-styled scrollable container with thin scrollbar overlays.
+category: layout
+
+when_to_use:
+  - Scrollable lists or panels with custom scrollbar styling
+  - Chat message containers or log viewers
+  - Sidebar content that may overflow
+  - Dropdowns or panels with bounded height and scrollable content
+
+when_not_to_use:
+  - Full-page scrolling (use native browser scroll)
+  - Horizontal carousels with snap points (build a custom carousel)
+  - Content that should never scroll (use overflow hidden)
+  - Very small scrollable areas where native scrollbars suffice
+
+why: >
+  ScrollArea wraps Radix UI ScrollArea to provide cross-browser consistent
+  custom scrollbars that respect Visor's border tokens. It supports both
+  vertical and horizontal scrollbars, renders a thin overlay thumb that
+  darkens on hover, and inherits the container's border-radius for seamless
+  integration.
+
+sub_components:
+  - name: ScrollArea
+    description: Root scrollable container with viewport and scrollbar.
+  - name: ScrollBar
+    description: Custom scrollbar track and thumb, supports vertical and horizontal orientation.
+
+props:
+  - name: orientation
+    type: "'vertical' | 'horizontal'"
+    default: "vertical"
+    description: ScrollBar orientation
+
+dependencies:
+  - "@radix-ui/react-scroll-area"
+
+example: |
+  <ScrollArea className="h-[300px]">
+    <div className="p-4">
+      {items.map(item => (
+        <div key={item.id}>{item.name}</div>
+      ))}
+    </div>
+  </ScrollArea>

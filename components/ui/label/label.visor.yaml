@@ -1,0 +1,31 @@
+name: Label
+description: An accessible label component built on Radix UI Label.
+category: form
+
+when_to_use:
+  - Labeling any form control (Input, Textarea, Select, Checkbox)
+  - Standalone label when not using the Field component
+  - Labels with inline icons or badges via flex layout
+
+when_not_to_use:
+  - Labels inside Field component (use FieldLabel instead)
+  - Heading text (use a heading element or Heading component)
+  - Decorative text that does not label a control (use a <span>)
+
+why: >
+  Label wraps Radix UI Label to provide correct htmlFor association with
+  form controls. It automatically adjusts opacity and cursor when its
+  associated control is disabled, ensuring visual consistency and
+  accessibility compliance.
+
+props:
+  - name: htmlFor
+    type: string
+    description: ID of the form control this label is associated with
+
+dependencies:
+  - "@radix-ui/react-label"
+
+example: |
+  <Label htmlFor="email">Email address</Label>
+  <Input id="email" type="email" />

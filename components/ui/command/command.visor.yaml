@@ -1,0 +1,68 @@
+name: Command
+description: A command palette with search filtering, keyboard navigation, and optional dialog mode.
+category: navigation
+
+when_to_use:
+  - Quick-search command palettes activated by a keyboard shortcut
+  - Searchable action menus with grouped items
+  - Application-wide "find anything" interfaces
+  - Replacing multi-level menus with a single searchable list
+
+when_not_to_use:
+  - Simple dropdown selection from a short list (use Select or Combobox)
+  - Form field autocomplete with free text input (use Combobox)
+  - Context-sensitive right-click menus (use ContextMenu)
+  - Static navigation links (use Navbar or Sidebar)
+
+why: >
+  Command wraps cmdk for fast, fuzzy-filtered search with keyboard-first navigation
+  and accessible focus management. CommandDialog composes with the Dialog component
+  for modal overlay usage. Grouping, separators, shortcuts, loading states, and
+  empty states are all built in.
+
+props:
+  - name: open
+    type: "boolean"
+    description: "Controls CommandDialog open state"
+  - name: onOpenChange
+    type: "(open: boolean) => void"
+    description: "Callback when CommandDialog open state changes"
+
+sub_components:
+  - name: CommandDialog
+    description: Modal wrapper that renders Command inside a Dialog overlay.
+  - name: CommandInput
+    description: Search input with magnifying glass icon and border separator.
+  - name: CommandList
+    description: Scrollable container for filtered results.
+  - name: CommandEmpty
+    description: Centered message shown when no items match the search query.
+  - name: CommandGroup
+    description: Labeled group of related command items.
+  - name: CommandItem
+    description: Selectable action item with hover and keyboard highlight states.
+  - name: CommandSeparator
+    description: Horizontal divider between groups.
+  - name: CommandShortcut
+    description: Right-aligned keyboard shortcut hint text.
+  - name: CommandLoading
+    description: Loading indicator shown while results are being fetched.
+
+dependencies:
+  - "cmdk"
+  - "@phosphor-icons/react"
+
+example: |
+  <CommandDialog open={open} onOpenChange={setOpen}>
+    <CommandInput placeholder="Type a command..." />
+    <CommandList>
+      <CommandEmpty>No results found.</CommandEmpty>
+      <CommandGroup heading="Actions">
+        <CommandItem>
+          New File
+          <CommandShortcut>⌘N</CommandShortcut>
+        </CommandItem>
+        <CommandItem>Search</CommandItem>
+      </CommandGroup>
+    </CommandList>
+  </CommandDialog>

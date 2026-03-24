@@ -1,0 +1,41 @@
+name: Checkbox
+description: An accessible checkbox component built on Radix UI Checkbox.
+category: form
+
+when_to_use:
+  - Boolean on/off selection (agree to terms, enable feature)
+  - Multiple selections from a list of options
+  - Toggling individual settings in a form
+
+when_not_to_use:
+  - Mutually exclusive choices (use Radio Group)
+  - Toggling a live setting with immediate effect (use Switch)
+  - Selecting one option from a dropdown (use Select)
+
+why: >
+  Checkbox wraps Radix UI Checkbox to provide correct keyboard navigation,
+  focus management, and ARIA states. It renders a check icon indicator on
+  selection and supports error states via aria-invalid. Pair it with Label
+  for accessible labeling.
+
+props:
+  - name: checked
+    type: "boolean | 'indeterminate'"
+    description: Controlled checked state
+  - name: defaultChecked
+    type: boolean
+  - name: onCheckedChange
+    type: "(checked: boolean | 'indeterminate') => void"
+  - name: disabled
+    type: boolean
+    default: false
+
+dependencies:
+  - "@radix-ui/react-checkbox"
+  - "@phosphor-icons/react"
+
+example: |
+  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+    <Checkbox id="terms" />
+    <Label htmlFor="terms">Accept terms and conditions</Label>
+  </div>

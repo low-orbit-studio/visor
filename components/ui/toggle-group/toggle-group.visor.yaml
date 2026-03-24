@@ -1,0 +1,59 @@
+name: Toggle Group
+description: A toggle group component with single-select and multi-select modes using CVA variants.
+category: form
+
+when_to_use:
+  - Switching between mutually exclusive views or modes (grid/list, day/week/month)
+  - Selecting one or multiple options from a small set of 2-5 choices
+  - Toolbar-style option groups with icon or text items
+
+when_not_to_use:
+  - Navigation between pages or routes (use Tabs)
+  - Binary on/off toggle (use Switch)
+  - Selecting from a long list (use Select or Combobox)
+  - Form submission with radio-style semantics (use Radio Group)
+
+why: >
+  ToggleGroup wraps Radix UI ToggleGroup to provide accessible single-select
+  or multi-select behavior with keyboard navigation. It supports two visual
+  variants (default and outline) and three sizes via CVA. Items visually
+  indicate their pressed state with distinct background and text colors.
+
+variants:
+  variant: [default, outline]
+  size: [sm, md, lg]
+
+props:
+  - name: type
+    type: "'single' | 'multiple'"
+    description: Whether one or multiple items can be pressed at a time
+  - name: variant
+    type: "'default' | 'outline'"
+    default: "default"
+  - name: size
+    type: "'sm' | 'md' | 'lg'"
+    default: "md"
+  - name: value
+    type: "string | string[]"
+    description: Controlled selected value(s)
+  - name: defaultValue
+    type: "string | string[]"
+  - name: onValueChange
+    type: "(value: string | string[]) => void"
+  - name: disabled
+    type: boolean
+    default: false
+
+sub_components:
+  - name: ToggleGroupItem
+    description: An individual toggle item. Accepts variant and size props to override the group defaults.
+
+dependencies:
+  - "@radix-ui/react-toggle-group"
+  - "class-variance-authority"
+
+example: |
+  <ToggleGroup type="single" defaultValue="grid" variant="outline">
+    <ToggleGroupItem value="grid">Grid</ToggleGroupItem>
+    <ToggleGroupItem value="list">List</ToggleGroupItem>
+  </ToggleGroup>

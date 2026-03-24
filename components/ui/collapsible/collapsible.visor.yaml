@@ -1,0 +1,51 @@
+name: Collapsible
+description: Simple expandable section with animated open/close transitions.
+category: layout
+
+when_to_use:
+  - Showing/hiding a single content section (e.g., advanced options)
+  - FAQ items with expand-on-click behavior
+  - Progressive disclosure of optional content
+  - Settings groups that can be collapsed to save space
+
+when_not_to_use:
+  - Multiple expandable sections in a list (use Accordion)
+  - Navigation sub-menus (use Sidebar menu sub-components)
+  - Tab-based content switching (use Tabs)
+  - Hiding content that should be visible by default (reconsider the layout)
+
+why: >
+  Collapsible wraps Radix UI Collapsible with Visor token styling, providing
+  smooth height-based animations for expand/collapse transitions. It handles
+  controlled and uncontrolled open state, keyboard activation, and correct
+  aria-expanded attributes without any manual ARIA wiring.
+
+sub_components:
+  - name: Collapsible
+    description: Root component managing open/close state.
+  - name: CollapsibleTrigger
+    description: Button that toggles the content visibility.
+  - name: CollapsibleContent
+    description: Animated container for the collapsible content.
+
+props:
+  - name: open
+    type: boolean
+    description: Controlled open state
+  - name: onOpenChange
+    type: "(open: boolean) => void"
+    description: Callback when open state changes
+  - name: defaultOpen
+    type: boolean
+    description: Initial open state for uncontrolled usage
+
+dependencies:
+  - "@radix-ui/react-collapsible"
+
+example: |
+  <Collapsible>
+    <CollapsibleTrigger>Advanced options</CollapsibleTrigger>
+    <CollapsibleContent>
+      <p>Additional settings and configuration.</p>
+    </CollapsibleContent>
+  </Collapsible>

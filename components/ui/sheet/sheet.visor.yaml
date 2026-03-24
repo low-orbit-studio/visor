@@ -1,0 +1,78 @@
+name: Sheet
+description: Slide-over panel that enters from any edge of the screen.
+category: overlay
+
+when_to_use:
+  - Detail views or edit forms in a side panel
+  - Mobile navigation menus
+  - Filters or settings panels
+  - Multi-step flows that should not take over the full viewport
+
+when_not_to_use:
+  - Centered modals requiring focused attention (use Dialog)
+  - Dropdown menus triggered from a button (use DropdownMenu)
+  - Non-blocking notifications (use Toast)
+  - Permanent sidebars (use Sidebar)
+
+why: >
+  Sheet extends Radix UI Dialog as a slide-over panel with CVA-driven side
+  variants (top, right, bottom, left). It includes an overlay, animated
+  enter/exit transitions, optional close button, and all the same a11y
+  guarantees as Dialog — focus trapping, Escape dismissal, and screen reader
+  announcements.
+
+variants:
+  side: [top, right, bottom, left]
+
+sub_components:
+  - name: Sheet
+    description: Root component managing open/close state.
+  - name: SheetTrigger
+    description: Element that opens the sheet on click.
+  - name: SheetContent
+    description: The sliding panel with overlay and close button.
+  - name: SheetHeader
+    description: Container for title and description.
+  - name: SheetFooter
+    description: Container for action buttons at the bottom.
+  - name: SheetTitle
+    description: Accessible sheet heading.
+  - name: SheetDescription
+    description: Secondary descriptive text.
+  - name: SheetClose
+    description: Explicit close trigger.
+  - name: SheetOverlay
+    description: Background overlay behind the sheet.
+  - name: SheetPortal
+    description: Portal wrapper for rendering outside the DOM tree.
+
+props:
+  - name: side
+    type: "'top' | 'right' | 'bottom' | 'left'"
+    default: "right"
+  - name: showCloseButton
+    type: boolean
+    default: true
+    description: Whether to render the built-in close button
+
+dependencies:
+  - "@radix-ui/react-dialog"
+  - "@phosphor-icons/react"
+  - "class-variance-authority"
+
+example: |
+  <Sheet>
+    <SheetTrigger asChild>
+      <Button variant="outline">Open filters</Button>
+    </SheetTrigger>
+    <SheetContent side="right">
+      <SheetHeader>
+        <SheetTitle>Filters</SheetTitle>
+        <SheetDescription>Narrow down your results.</SheetDescription>
+      </SheetHeader>
+      {/* filter controls */}
+      <SheetFooter>
+        <Button>Apply</Button>
+      </SheetFooter>
+    </SheetContent>
+  </Sheet>

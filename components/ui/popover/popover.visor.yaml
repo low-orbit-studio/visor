@@ -1,0 +1,53 @@
+name: Popover
+description: Floating content panel anchored to a trigger element.
+category: feedback
+
+when_to_use:
+  - Displaying a small form or filter controls near a trigger
+  - Rich content previews that need more space than a tooltip
+  - Non-modal floating panels for settings or options
+  - Date pickers or color pickers anchored to an input
+
+when_not_to_use:
+  - Simple text hints on hover (use Tooltip)
+  - Full modal interactions requiring overlay (use Dialog)
+  - Navigation menus with selectable items (use DropdownMenu)
+  - Displaying rich content on hover only (use HoverCard)
+
+why: >
+  Popover provides a portal-rendered floating panel built on Radix UI with
+  correct focus management, dismiss-on-click-outside, and keyboard handling.
+  It supports alignment and offset props for precise positioning, and its
+  CSS Module styles use Visor tokens for consistent theming and animations.
+
+sub_components:
+  - name: Popover
+    description: Root component managing open/close state.
+  - name: PopoverTrigger
+    description: Element that toggles the popover on click.
+  - name: PopoverContent
+    description: The floating content panel rendered in a portal.
+  - name: PopoverAnchor
+    description: Optional custom anchor element for positioning.
+
+props:
+  - name: align
+    type: "'start' | 'center' | 'end'"
+    default: "center"
+  - name: sideOffset
+    type: number
+    default: "4"
+    description: Distance in pixels between trigger and content
+
+dependencies:
+  - "@radix-ui/react-popover"
+
+example: |
+  <Popover>
+    <PopoverTrigger asChild>
+      <Button variant="outline">Open settings</Button>
+    </PopoverTrigger>
+    <PopoverContent>
+      <p>Popover content here</p>
+    </PopoverContent>
+  </Popover>

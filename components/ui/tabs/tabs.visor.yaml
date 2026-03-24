@@ -1,0 +1,61 @@
+name: Tabs
+description: A tabs component for switching between content panels with default and line style variants.
+category: navigation
+
+when_to_use:
+  - Switching between related content panels on the same page
+  - Organizing settings, profiles, or dashboards into logical sections
+  - Replacing page navigation when content is closely related and lightweight
+  - Any UI where only one content section should be visible at a time
+
+when_not_to_use:
+  - Sequential step-by-step flows (use a stepper or wizard)
+  - Expanding/collapsing multiple content sections simultaneously (use Accordion)
+  - Global page-level navigation (use Navbar or Sidebar)
+  - Filtering or sorting data (use ToggleGroup or Select)
+
+why: >
+  Tabs wraps Radix UI Tabs for full keyboard navigation and ARIA tab semantics.
+  Two list variants — default (pill-style background) and line (bottom border) —
+  cover the most common tab patterns. Active state styling and focus rings are
+  handled automatically.
+
+variants:
+  variant: [default, line]
+
+props:
+  - name: variant
+    type: '"default" | "line"'
+    default: '"default"'
+    description: "Controls TabsList visual style"
+  - name: defaultValue
+    type: "string"
+    description: "Initially active tab value (uncontrolled)"
+  - name: value
+    type: "string"
+    description: "Active tab value (controlled)"
+  - name: onValueChange
+    type: "(value: string) => void"
+    description: "Callback when active tab changes"
+
+sub_components:
+  - name: TabsList
+    description: Horizontal container for tab triggers with variant styling.
+  - name: TabsTrigger
+    description: Clickable tab button tied to a content panel via matching value prop.
+  - name: TabsContent
+    description: Content panel that displays when its matching tab trigger is active.
+
+dependencies:
+  - "@radix-ui/react-tabs"
+  - "class-variance-authority"
+
+example: |
+  <Tabs defaultValue="overview">
+    <TabsList variant="default">
+      <TabsTrigger value="overview">Overview</TabsTrigger>
+      <TabsTrigger value="settings">Settings</TabsTrigger>
+    </TabsList>
+    <TabsContent value="overview">Overview content here.</TabsContent>
+    <TabsContent value="settings">Settings content here.</TabsContent>
+  </Tabs>

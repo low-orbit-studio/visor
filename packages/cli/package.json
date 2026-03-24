@@ -8,8 +8,9 @@
   },
   "main": "./dist/index.js",
   "scripts": {
-    "build": "npm run build:cli && npm run build:registry",
+    "build": "npm run build:cli && npm run build:registry && npm run build:manifest",
     "build:registry": "tsx src/generate/build-registry.ts",
+    "build:manifest": "tsx src/generate/build-manifest.ts",
     "build:cli": "tsup",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
@@ -30,7 +31,8 @@
   "dependencies": {
     "commander": "^13.1.0",
     "diff": "^7.0.0",
-    "picocolors": "^1.1.1"
+    "picocolors": "^1.1.1",
+    "yaml": "^2.8.3"
   },
   "devDependencies": {
     "@types/diff": "^7.0.2",

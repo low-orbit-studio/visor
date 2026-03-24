@@ -1,0 +1,81 @@
+name: Menubar
+description: Horizontal menu bar with dropdown menus, keyboard navigation, and full a11y support.
+category: overlay
+
+when_to_use:
+  - Application-level menu bars (File, Edit, View, Help)
+  - Desktop-style interfaces with multiple top-level menus
+  - Admin panels or editors needing grouped menu actions
+  - Toolbar alternatives with categorized actions
+
+when_not_to_use:
+  - Single action menu from a button (use DropdownMenu)
+  - Page navigation (use Navbar or Tabs)
+  - Right-click context menus (use ContextMenu)
+  - Mobile interfaces where horizontal menus are impractical (use Sheet)
+
+why: >
+  Menubar wraps Radix UI Menubar with Visor token styling, providing a
+  horizontal bar of menus with full keyboard navigation (arrow keys between
+  menus, Enter/Space to open). Each menu supports items, checkbox items,
+  radio items, sub-menus, labels, separators, and shortcut hints — matching
+  the same API patterns as DropdownMenu for consistency.
+
+sub_components:
+  - name: Menubar
+    description: Root horizontal bar container.
+  - name: MenubarMenu
+    description: A single menu within the bar.
+  - name: MenubarTrigger
+    description: Button that opens a menu dropdown.
+  - name: MenubarContent
+    description: The dropdown menu container.
+  - name: MenubarItem
+    description: A clickable menu action.
+  - name: MenubarCheckboxItem
+    description: A toggleable checkbox item.
+  - name: MenubarRadioGroup
+    description: Container for mutually exclusive radio items.
+  - name: MenubarRadioItem
+    description: A selectable radio option.
+  - name: MenubarLabel
+    description: Non-interactive group heading.
+  - name: MenubarSeparator
+    description: Visual divider between groups.
+  - name: MenubarShortcut
+    description: Keyboard shortcut hint aligned to the right.
+  - name: MenubarGroup
+    description: Logical grouping of related items.
+  - name: MenubarSub
+    description: Root for a nested sub-menu.
+  - name: MenubarSubTrigger
+    description: Item that opens a sub-menu on hover.
+  - name: MenubarSubContent
+    description: The nested sub-menu container.
+
+props:
+  - name: inset
+    type: boolean
+    default: false
+    description: Adds left padding to align with items that have indicators
+  - name: variant
+    type: "'default' | 'destructive'"
+    default: "default"
+    description: Visual style for the menu item
+
+dependencies:
+  - "@radix-ui/react-menubar"
+  - "@phosphor-icons/react"
+
+example: |
+  <Menubar>
+    <MenubarMenu>
+      <MenubarTrigger>File</MenubarTrigger>
+      <MenubarContent>
+        <MenubarItem>New <MenubarShortcut>Cmd+N</MenubarShortcut></MenubarItem>
+        <MenubarItem>Open <MenubarShortcut>Cmd+O</MenubarShortcut></MenubarItem>
+        <MenubarSeparator />
+        <MenubarItem>Save <MenubarShortcut>Cmd+S</MenubarShortcut></MenubarItem>
+      </MenubarContent>
+    </MenubarMenu>
+  </Menubar>

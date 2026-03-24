@@ -291,6 +291,20 @@ npx @loworbitstudio/visor diff [component]        # Show local vs. registry diff
 
 ---
 
+## AI Agent Consumability
+
+Visor includes structured metadata that makes it easy for AI agents to discover, understand, and compose components without reading source code.
+
+**Per-component metadata** — Each component has a `.visor.yaml` file alongside its source with props, variants, slots, dependencies, usage examples, and "when to use" / "when not to use" guidance.
+
+**Registry manifest** — `visor-manifest.json` is auto-generated during build, aggregating all component metadata (including auto-extracted CSS tokens) into a single file an agent can load.
+
+**Composition patterns** — Pattern files in `patterns/` document how components combine for common use cases (form with validation, dashboard layout, CRUD table).
+
+See [docs/ai-consumability.md](docs/ai-consumability.md) for the full spec.
+
+---
+
 ## Stack
 
 - **React + TypeScript**
@@ -333,12 +347,13 @@ npm run docs:dev  # Start docs site
 
 ```
 visor/
-├── components/ui/     # Component source (registry entries)
+├── components/ui/     # Component source + .visor.yaml metadata
 ├── hooks/             # Hook source (registry entries)
 ├── lib/               # Utility source (registry entries)
+├── patterns/          # Composition patterns (.visor-pattern.yaml)
 ├── registry/          # Registry schema and definitions
 └── packages/
-    ├── cli/           # @loworbitstudio/visor CLI
+    ├── cli/           # @loworbitstudio/visor CLI + manifest builder
     ├── tokens/        # @loworbitstudio/visor-core npm package
     └── docs/          # fumadocs documentation site
 ```

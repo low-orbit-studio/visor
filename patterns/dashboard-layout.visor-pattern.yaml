@@ -1,0 +1,81 @@
+name: Dashboard Layout
+description: App shell with collapsible sidebar navigation, top navbar, and content area with cards and tabs.
+
+components_used:
+  - sidebar
+  - navbar
+  - card
+  - tabs
+  - separator
+  - scroll-area
+
+when_to_use:
+  - Admin dashboards and internal tools
+  - Multi-section apps with persistent navigation
+  - Content-heavy layouts needing sidebar + main area structure
+
+structure: |
+  <SidebarProvider>
+    <Sidebar>
+      <SidebarHeader>
+        <h2>App Name</h2>
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Main</SidebarGroupLabel>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <a href="/dashboard">Dashboard</a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <a href="/settings">Settings</a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
+
+    <main>
+      <Navbar>
+        <SidebarTrigger />
+        <Separator orientation="vertical" />
+        <span>Dashboard</span>
+      </Navbar>
+
+      <ScrollArea>
+        <Tabs defaultValue="overview">
+          <TabsList>
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          </TabsList>
+          <TabsContent value="overview">
+            <div style={{ display: "grid", gap: "var(--spacing-4)", gridTemplateColumns: "repeat(3, 1fr)" }}>
+              <Card>
+                <CardHeader><CardTitle>Revenue</CardTitle></CardHeader>
+                <CardContent>$12,345</CardContent>
+              </Card>
+              <Card>
+                <CardHeader><CardTitle>Users</CardTitle></CardHeader>
+                <CardContent>1,234</CardContent>
+              </Card>
+              <Card>
+                <CardHeader><CardTitle>Orders</CardTitle></CardHeader>
+                <CardContent>567</CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </ScrollArea>
+    </main>
+  </SidebarProvider>
+
+notes: >
+  SidebarProvider manages the collapsed/expanded state and provides context to child components.
+  SidebarTrigger in the Navbar toggles the sidebar on mobile and desktop.
+  Use ScrollArea for the main content area to get consistent styled scrollbars.
+  Cards in a CSS Grid layout adapt to the content area width.
+  Tabs organize different dashboard views without page navigation.

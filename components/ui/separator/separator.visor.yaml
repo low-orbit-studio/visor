@@ -1,0 +1,46 @@
+name: Separator
+description: Visual divider between content sections in horizontal or vertical orientation.
+category: layout
+
+when_to_use:
+  - Dividing sections of content within a page
+  - Separating groups of items in a list or toolbar
+  - Visual breaks between sidebar sections
+  - Horizontal rules in card or dialog content
+
+when_not_to_use:
+  - Separating menu items in a dropdown (use the menu's built-in separator)
+  - Adding spacing without a visible line (use margin or gap)
+  - Decorative borders on cards or containers (use CSS border)
+  - Table row dividers (use Table's built-in styling)
+
+why: >
+  Separator wraps Radix UI Separator with Visor border tokens, providing
+  correct semantic role (separator or none for decorative) and orientation
+  support. It ensures consistent divider appearance across themes without
+  hard-coding colors.
+
+props:
+  - name: orientation
+    type: "'horizontal' | 'vertical'"
+    default: "horizontal"
+  - name: decorative
+    type: boolean
+    default: true
+    description: When true, removes the separator from the accessibility tree
+
+dependencies:
+  - "@radix-ui/react-separator"
+
+example: |
+  <div>
+    <h3>Section A</h3>
+    <Separator />
+    <h3>Section B</h3>
+  </div>
+
+  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+    <span>Item 1</span>
+    <Separator orientation="vertical" />
+    <span>Item 2</span>
+  </div>

@@ -1,0 +1,56 @@
+name: Card
+description: A compound card component for grouping related content with header, body, and footer sections.
+category: data-display
+
+when_to_use:
+  - Grouping related information into a visual container
+  - Dashboard widgets with title, content, and action footer
+  - Product or profile cards with structured layout
+  - Any self-contained content block that needs a bordered surface
+
+when_not_to_use:
+  - Full-width page sections without visual boundaries (use plain layout)
+  - Interactive list items that navigate on click (use a link or button wrapper)
+  - Alert or notification messages (use Alert or Banner)
+  - Modal or overlay content (use Dialog or Sheet)
+
+why: >
+  Card provides a consistent compound layout for grouped content — header with
+  title/description, flexible content area, and aligned footer. The two size
+  variants (default and sm) control internal spacing. Border is rendered via
+  box-shadow for clean border-radius handling, and all surfaces reference tokens
+  for full theme compatibility.
+
+props:
+  - name: size
+    type: '"default" | "sm"'
+    default: '"default"'
+    description: "Controls internal padding and gap spacing"
+
+sub_components:
+  - name: CardHeader
+    description: Top section with grid layout for title and description.
+  - name: CardTitle
+    description: Primary heading text with medium weight.
+  - name: CardDescription
+    description: Secondary descriptive text in muted color.
+  - name: CardContent
+    description: Main body area with horizontal padding.
+  - name: CardFooter
+    description: Bottom section with flex layout for actions.
+
+dependencies: []
+
+example: |
+  <Card>
+    <CardHeader>
+      <CardTitle>Notifications</CardTitle>
+      <CardDescription>Manage your notification preferences.</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <p>You have 3 unread messages.</p>
+    </CardContent>
+    <CardFooter>
+      <Button>Mark all as read</Button>
+    </CardFooter>
+  </Card>

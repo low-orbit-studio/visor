@@ -1,0 +1,68 @@
+name: Pagination
+description: A composable pagination component with previous/next navigation, page links, and ellipsis.
+category: navigation
+
+when_to_use:
+  - Navigating between pages of a paginated data set
+  - Table or list views with server-side pagination
+  - Search results spanning multiple pages
+  - Any content that is split across numbered pages
+
+when_not_to_use:
+  - Infinite scroll or "load more" patterns (use a Button)
+  - Switching between content views (use Tabs)
+  - Step-by-step wizard flows (use a custom stepper)
+  - Single-page content with anchor sections (use Breadcrumb or scroll navigation)
+
+why: >
+  Pagination provides accessible, composable building blocks for page navigation
+  with proper aria-labels, keyboard focus management, and active page indication.
+  The compound structure lets consumers build exactly the pagination layout they
+  need — with or without previous/next links, ellipsis, and custom sizing.
+
+props:
+  - name: isActive
+    type: "boolean"
+    description: "Marks a PaginationLink as the current page"
+  - name: size
+    type: '"default" | "sm" | "lg"'
+    default: '"default"'
+    description: "Controls PaginationLink dimensions"
+
+sub_components:
+  - name: PaginationContent
+    description: Flex container (ul) that holds all pagination items.
+  - name: PaginationItem
+    description: List item wrapper for each pagination element.
+  - name: PaginationLink
+    description: Clickable page number with active state and size variants.
+  - name: PaginationPrevious
+    description: Previous page link with left caret icon.
+  - name: PaginationNext
+    description: Next page link with right caret icon.
+  - name: PaginationEllipsis
+    description: Dots indicator for skipped page ranges.
+
+dependencies:
+  - "@phosphor-icons/react"
+
+example: |
+  <Pagination>
+    <PaginationContent>
+      <PaginationItem>
+        <PaginationPrevious href="/page/1" />
+      </PaginationItem>
+      <PaginationItem>
+        <PaginationLink href="/page/1">1</PaginationLink>
+      </PaginationItem>
+      <PaginationItem>
+        <PaginationLink href="/page/2" isActive>2</PaginationLink>
+      </PaginationItem>
+      <PaginationItem>
+        <PaginationEllipsis />
+      </PaginationItem>
+      <PaginationItem>
+        <PaginationNext href="/page/3" />
+      </PaginationItem>
+    </PaginationContent>
+  </Pagination>
