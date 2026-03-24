@@ -1,0 +1,72 @@
+---
+title: Command Palette
+description: A searchable command palette for quick actions. Built on cmdk.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
+
+## Installation
+
+```bash
+npx visor add command
+```
+
+## Usage
+
+```tsx
+import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command/command';
+
+<Command>
+  <CommandInput placeholder="Type a command..." />
+  <CommandList>
+    <CommandEmpty>No results found.</CommandEmpty>
+    <CommandGroup heading="Actions">
+      <CommandItem>Profile</CommandItem>
+      <CommandItem>Settings</CommandItem>
+    </CommandGroup>
+  </CommandList>
+</Command>
+```
+
+## Example
+
+<ComponentPreview
+  title="Command Palette"
+  code={`<Command>
+  <CommandInput placeholder="Search actions..." />
+  <CommandList>
+    <CommandEmpty>No results found.</CommandEmpty>
+    <CommandGroup heading="Account">
+      <CommandItem>Profile</CommandItem>
+      <CommandItem>Settings</CommandItem>
+    </CommandGroup>
+    <CommandGroup heading="Session">
+      <CommandItem>Logout</CommandItem>
+    </CommandGroup>
+  </CommandList>
+</Command>`}
+>
+  <div style={{ maxWidth: '28rem', border: '1px solid var(--border-default, #e5e7eb)', borderRadius: '0.5rem' }}>
+    <Command>
+      <CommandInput placeholder="Search actions..." />
+      <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandGroup heading="Account">
+          <CommandItem>Profile</CommandItem>
+          <CommandItem>Settings</CommandItem>
+        </CommandGroup>
+        <CommandGroup heading="Session">
+          <CommandItem>Logout</CommandItem>
+        </CommandGroup>
+      </CommandList>
+    </Command>
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### CommandProps
+
+<PropsTable component="command" />

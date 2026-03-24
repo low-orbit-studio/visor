@@ -1,0 +1,68 @@
+---
+title: Combobox
+description: An autocomplete input with a filterable dropdown list. Supports controlled and uncontrolled modes.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Combobox, ComboboxInput, ComboboxContent, ComboboxItem, ComboboxEmpty } from '@/components/ui/combobox';
+
+## Installation
+
+```bash
+npx visor add combobox
+```
+
+## Usage
+
+```tsx
+import { Combobox, ComboboxInput, ComboboxContent, ComboboxItem, ComboboxEmpty } from '@/components/ui/combobox/combobox';
+
+<Combobox>
+  <ComboboxInput placeholder="Pick a fruit..." />
+  <ComboboxContent>
+    <ComboboxItem value="apple">Apple</ComboboxItem>
+    <ComboboxItem value="banana">Banana</ComboboxItem>
+    <ComboboxEmpty>No results found.</ComboboxEmpty>
+  </ComboboxContent>
+</Combobox>
+```
+
+## Filterable List
+
+<ComponentPreview
+  title="Combobox"
+  code={`import { Combobox, ComboboxInput, ComboboxContent, ComboboxItem, ComboboxEmpty } from '@/components/ui/combobox/combobox';
+
+<Combobox>
+  <ComboboxInput placeholder="Pick a fruit..." />
+  <ComboboxContent>
+    <ComboboxItem value="apple">Apple</ComboboxItem>
+    <ComboboxItem value="banana">Banana</ComboboxItem>
+    <ComboboxItem value="cherry">Cherry</ComboboxItem>
+    <ComboboxItem value="grape">Grape</ComboboxItem>
+    <ComboboxItem value="orange">Orange</ComboboxItem>
+    <ComboboxEmpty>No results found.</ComboboxEmpty>
+  </ComboboxContent>
+</Combobox>`}
+>
+  <div style={{ width: '100%', maxWidth: '16rem' }}>
+    <Combobox>
+      <ComboboxInput placeholder="Pick a fruit..." />
+      <ComboboxContent>
+        <ComboboxItem value="apple">Apple</ComboboxItem>
+        <ComboboxItem value="banana">Banana</ComboboxItem>
+        <ComboboxItem value="cherry">Cherry</ComboboxItem>
+        <ComboboxItem value="grape">Grape</ComboboxItem>
+        <ComboboxItem value="orange">Orange</ComboboxItem>
+        <ComboboxEmpty>No results found.</ComboboxEmpty>
+      </ComboboxContent>
+    </Combobox>
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### ComboboxProps
+
+<PropsTable component="combobox" />

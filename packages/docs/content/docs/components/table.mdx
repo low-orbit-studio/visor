@@ -1,0 +1,100 @@
+---
+title: Table
+description: Semantic HTML table components for structured data display.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableCaption } from '@/components/ui/table';
+
+## Installation
+
+```bash
+npx visor add table
+```
+
+## Usage
+
+```tsx
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table/table';
+
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Name</TableHead>
+      <TableHead>Email</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell>Alice</TableCell>
+      <TableCell>alice@example.com</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+## Example
+
+<ComponentPreview
+  title="Basic Table"
+  code={`<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Name</TableHead>
+      <TableHead>Email</TableHead>
+      <TableHead>Role</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell>Alice</TableCell>
+      <TableCell>alice@example.com</TableCell>
+      <TableCell>Admin</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Bob</TableCell>
+      <TableCell>bob@example.com</TableCell>
+      <TableCell>Editor</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Carol</TableCell>
+      <TableCell>carol@example.com</TableCell>
+      <TableCell>Viewer</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>`}
+>
+  <Table>
+    <TableHeader>
+      <TableRow>
+        <TableHead>Name</TableHead>
+        <TableHead>Email</TableHead>
+        <TableHead>Role</TableHead>
+      </TableRow>
+    </TableHeader>
+    <TableBody>
+      <TableRow>
+        <TableCell>Alice</TableCell>
+        <TableCell>alice@example.com</TableCell>
+        <TableCell>Admin</TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell>Bob</TableCell>
+        <TableCell>bob@example.com</TableCell>
+        <TableCell>Editor</TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell>Carol</TableCell>
+        <TableCell>carol@example.com</TableCell>
+        <TableCell>Viewer</TableCell>
+      </TableRow>
+    </TableBody>
+  </Table>
+</ComponentPreview>
+
+## API Reference
+
+### TableProps
+
+<PropsTable component="table" />

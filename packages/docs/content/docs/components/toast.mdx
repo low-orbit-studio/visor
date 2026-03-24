@@ -1,0 +1,53 @@
+---
+title: Toast
+description: Lightweight notification toasts powered by Sonner. Add the Toaster provider once, then call toast() anywhere.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ToastDemo } from '@/components/ui/toast-demo';
+
+## Installation
+
+```bash
+npx visor add toast
+```
+
+## Usage
+
+```tsx
+// In your root layout:
+import { Toaster } from '@/components/ui/toast/toast';
+
+export default function Layout({ children }) {
+  return (
+    <>
+      {children}
+      <Toaster />
+    </>
+  );
+}
+
+// Anywhere in your app:
+import { toast } from '@/components/ui/toast/toast';
+
+toast('Event created');
+```
+
+## Basic Toast
+
+<ComponentPreview
+  title="Trigger a Toast"
+  code={`import { toast } from '@/components/ui/toast/toast';
+import { Button } from '@/components/ui/button/button';
+
+<Button onClick={() => toast('Event created')}>Show Toast</Button>`}
+>
+  <ToastDemo />
+</ComponentPreview>
+
+## API Reference
+
+### ToastProps
+
+<PropsTable component="toast" />

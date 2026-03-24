@@ -1,0 +1,87 @@
+---
+title: Menubar
+description: A horizontal menu bar with dropdown menus, keyboard navigation, and support for checkboxes and radio items. Built on Radix UI.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem, MenubarSeparator } from '@/components/ui/menubar';
+
+## Installation
+
+```bash
+npx visor add menubar
+```
+
+## Usage
+
+```tsx
+import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem, MenubarSeparator } from '@/components/ui/menubar/menubar';
+
+<Menubar>
+  <MenubarMenu>
+    <MenubarTrigger>File</MenubarTrigger>
+    <MenubarContent>
+      <MenubarItem>New</MenubarItem>
+      <MenubarItem>Open</MenubarItem>
+    </MenubarContent>
+  </MenubarMenu>
+</Menubar>
+```
+
+## Example
+
+<ComponentPreview
+  title="Menu Bar"
+  code={`<Menubar>
+  <MenubarMenu>
+    <MenubarTrigger>File</MenubarTrigger>
+    <MenubarContent>
+      <MenubarItem>New File</MenubarItem>
+      <MenubarItem>Open</MenubarItem>
+      <MenubarSeparator />
+      <MenubarItem>Save</MenubarItem>
+    </MenubarContent>
+  </MenubarMenu>
+  <MenubarMenu>
+    <MenubarTrigger>Edit</MenubarTrigger>
+    <MenubarContent>
+      <MenubarItem>Undo</MenubarItem>
+      <MenubarItem>Redo</MenubarItem>
+      <MenubarSeparator />
+      <MenubarItem>Cut</MenubarItem>
+      <MenubarItem>Copy</MenubarItem>
+      <MenubarItem>Paste</MenubarItem>
+    </MenubarContent>
+  </MenubarMenu>
+</Menubar>`}
+>
+  <Menubar>
+    <MenubarMenu>
+      <MenubarTrigger>File</MenubarTrigger>
+      <MenubarContent>
+        <MenubarItem>New File</MenubarItem>
+        <MenubarItem>Open</MenubarItem>
+        <MenubarSeparator />
+        <MenubarItem>Save</MenubarItem>
+      </MenubarContent>
+    </MenubarMenu>
+    <MenubarMenu>
+      <MenubarTrigger>Edit</MenubarTrigger>
+      <MenubarContent>
+        <MenubarItem>Undo</MenubarItem>
+        <MenubarItem>Redo</MenubarItem>
+        <MenubarSeparator />
+        <MenubarItem>Cut</MenubarItem>
+        <MenubarItem>Copy</MenubarItem>
+        <MenubarItem>Paste</MenubarItem>
+      </MenubarContent>
+    </MenubarMenu>
+  </Menubar>
+</ComponentPreview>
+
+## API Reference
+
+### MenubarProps
+
+<PropsTable component="menubar" />

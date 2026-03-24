@@ -1,0 +1,55 @@
+---
+title: Collapsible
+description: A simple expandable section with a trigger and hidden content. Built on Radix UI.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
+import { Button } from '@/components/ui/button';
+
+## Installation
+
+```bash
+npx visor add collapsible
+```
+
+## Usage
+
+```tsx
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible/collapsible';
+
+<Collapsible>
+  <CollapsibleTrigger>Toggle</CollapsibleTrigger>
+  <CollapsibleContent>Hidden content here.</CollapsibleContent>
+</Collapsible>
+```
+
+## Example
+
+<ComponentPreview
+  title="Basic Collapsible"
+  code={`<Collapsible>
+  <CollapsibleTrigger asChild>
+    <Button variant="outline">Toggle Details</Button>
+  </CollapsibleTrigger>
+  <CollapsibleContent>
+    <p>This content is hidden by default and revealed when the trigger is clicked.</p>
+  </CollapsibleContent>
+</Collapsible>`}
+>
+  <Collapsible>
+    <CollapsibleTrigger asChild>
+      <Button variant="outline">Toggle Details</Button>
+    </CollapsibleTrigger>
+    <CollapsibleContent>
+      <p>This content is hidden by default and revealed when the trigger is clicked.</p>
+    </CollapsibleContent>
+  </Collapsible>
+</ComponentPreview>
+
+## API Reference
+
+### CollapsibleProps
+
+<PropsTable component="collapsible" />

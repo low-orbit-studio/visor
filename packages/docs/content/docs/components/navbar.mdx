@@ -1,0 +1,57 @@
+---
+title: Navbar
+description: A responsive navigation bar with brand, links, and mobile toggle. Supports multiple style variants.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarLink } from '@/components/ui/navbar';
+
+## Installation
+
+```bash
+npx visor add navbar
+```
+
+## Usage
+
+```tsx
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarLink } from '@/components/ui/navbar/navbar';
+
+<Navbar>
+  <NavbarBrand>My App</NavbarBrand>
+  <NavbarContent>
+    <NavbarItem><NavbarLink href="/">Home</NavbarLink></NavbarItem>
+    <NavbarItem><NavbarLink href="/about">About</NavbarLink></NavbarItem>
+  </NavbarContent>
+</Navbar>
+```
+
+## Variants
+
+<ComponentPreview
+  title="Default Navbar"
+  code={`<Navbar variant="default">
+  <NavbarBrand>Visor</NavbarBrand>
+  <NavbarContent>
+    <NavbarItem><NavbarLink href="#">Docs</NavbarLink></NavbarItem>
+    <NavbarItem><NavbarLink href="#">Components</NavbarLink></NavbarItem>
+    <NavbarItem><NavbarLink href="#">Themes</NavbarLink></NavbarItem>
+  </NavbarContent>
+</Navbar>`}
+>
+  <Navbar variant="default">
+    <NavbarBrand>Visor</NavbarBrand>
+    <NavbarContent>
+      <NavbarItem><NavbarLink href="#">Docs</NavbarLink></NavbarItem>
+      <NavbarItem><NavbarLink href="#">Components</NavbarLink></NavbarItem>
+      <NavbarItem><NavbarLink href="#">Themes</NavbarLink></NavbarItem>
+    </NavbarContent>
+  </Navbar>
+</ComponentPreview>
+
+## API Reference
+
+### NavbarProps
+
+<PropsTable component="navbar" />

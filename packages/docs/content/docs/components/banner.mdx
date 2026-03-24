@@ -1,0 +1,75 @@
+---
+title: Banner
+description: A prominent message bar with multiple intent variants. Supports inline and sticky positioning.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Banner, BannerTitle, BannerDescription, BannerAction } from '@/components/ui/banner';
+import { Button } from '@/components/ui/button';
+
+## Installation
+
+```bash
+npx visor add banner
+```
+
+## Usage
+
+```tsx
+import { Banner, BannerTitle, BannerDescription } from '@/components/ui/banner/banner';
+
+<Banner intent="info">
+  <BannerTitle>Heads up</BannerTitle>
+  <BannerDescription>This is an informational message.</BannerDescription>
+</Banner>
+```
+
+## Intent Variants
+
+<ComponentPreview
+  title="All Intents"
+  code={`import { Banner, BannerTitle, BannerDescription } from '@/components/ui/banner/banner';
+
+<Banner intent="info">
+  <BannerTitle>Info</BannerTitle>
+  <BannerDescription>This is an informational banner.</BannerDescription>
+</Banner>
+<Banner intent="success">
+  <BannerTitle>Success</BannerTitle>
+  <BannerDescription>Operation completed successfully.</BannerDescription>
+</Banner>
+<Banner intent="warning">
+  <BannerTitle>Warning</BannerTitle>
+  <BannerDescription>Please review before continuing.</BannerDescription>
+</Banner>
+<Banner intent="error">
+  <BannerTitle>Error</BannerTitle>
+  <BannerDescription>Something went wrong.</BannerDescription>
+</Banner>`}
+>
+  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', flexDirection: 'column', width: '100%' }}>
+    <Banner intent="info">
+      <BannerTitle>Info</BannerTitle>
+      <BannerDescription>This is an informational banner.</BannerDescription>
+    </Banner>
+    <Banner intent="success">
+      <BannerTitle>Success</BannerTitle>
+      <BannerDescription>Operation completed successfully.</BannerDescription>
+    </Banner>
+    <Banner intent="warning">
+      <BannerTitle>Warning</BannerTitle>
+      <BannerDescription>Please review before continuing.</BannerDescription>
+    </Banner>
+    <Banner intent="error">
+      <BannerTitle>Error</BannerTitle>
+      <BannerDescription>Something went wrong.</BannerDescription>
+    </Banner>
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### BannerProps
+
+<PropsTable component="banner" />

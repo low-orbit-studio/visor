@@ -1,0 +1,60 @@
+---
+title: Popover
+description: A floating panel that appears next to a trigger element. Built on Radix UI.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+
+## Installation
+
+```bash
+npx visor add popover
+```
+
+## Usage
+
+```tsx
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover/popover';
+
+<Popover>
+  <PopoverTrigger>Open</PopoverTrigger>
+  <PopoverContent>Place content here.</PopoverContent>
+</Popover>
+```
+
+## Basic Popover
+
+<ComponentPreview
+  title="Basic Popover"
+  code={`import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover/popover';
+import { Button } from '@/components/ui/button/button';
+
+<Popover>
+  <PopoverTrigger asChild>
+    <Button variant="outline">Open Popover</Button>
+  </PopoverTrigger>
+  <PopoverContent>
+    <p style={{ margin: 0, fontWeight: 600 }}>Dimensions</p>
+    <p style={{ margin: '0.5rem 0 0', fontSize: '0.875rem' }}>Set the dimensions for the layer.</p>
+  </PopoverContent>
+</Popover>`}
+>
+  <Popover>
+    <PopoverTrigger asChild>
+      <Button variant="outline">Open Popover</Button>
+    </PopoverTrigger>
+    <PopoverContent>
+      <p style={{ margin: 0, fontWeight: 600 }}>Dimensions</p>
+      <p style={{ margin: '0.5rem 0 0', fontSize: '0.875rem' }}>Set the dimensions for the layer.</p>
+    </PopoverContent>
+  </Popover>
+</ComponentPreview>
+
+## API Reference
+
+### PopoverProps
+
+<PropsTable component="popover" />
