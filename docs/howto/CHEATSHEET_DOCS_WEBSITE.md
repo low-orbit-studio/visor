@@ -6,7 +6,7 @@
 npm run dev -w packages/docs
 ```
 
-Opens at **http://localhost:9301** (Turbopack enabled).
+Opens at **http://localhost:4050** (Turbopack enabled).
 
 ## Build
 
