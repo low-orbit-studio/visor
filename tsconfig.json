@@ -26,6 +26,7 @@
     "components/**/*.tsx",
     "lib/**/*.ts",
     "hooks/**/*.ts",
+    "test-utils/**/*.ts",
     "vitest.config.ts",
     "vitest.setup.ts",
     "css-modules.d.ts"
