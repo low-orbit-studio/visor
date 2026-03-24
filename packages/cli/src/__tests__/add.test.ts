@@ -24,7 +24,7 @@ vi.mock("../registry/resolve.js", async (importOriginal) => {
         {
           name: "utils",
           type: "registry:lib",
-          dependencies: ["clsx", "tailwind-merge"],
+          dependencies: ["clsx"],
           files: [
             {
               path: "lib/utils.ts",
