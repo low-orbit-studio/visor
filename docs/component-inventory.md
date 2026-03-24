@@ -1,25 +1,31 @@
 # Component Inventory
 
-## Current Components (25)
+## Current Components (40)
 
-### Form (8)
-- button, input, label, textarea, checkbox, select, switch, field
+### Form (12)
+- button, checkbox, combobox, field, input, label, radio-group, select, slider, switch, textarea, toggle-group
 
 ### Container / Layout (4)
-- card, badge, sidebar, sheet
+- badge, card, sheet, sidebar
 
-### Content Display (4)
-- avatar, separator, skeleton, progress
+### Content Display (6)
+- accordion, avatar, collapsible, progress, separator, skeleton
 
-### Interaction (5)
-- dialog, dropdown-menu, tabs, breadcrumb, scroll-area
+### Navigation (4)
+- breadcrumb, command, navbar, pagination
 
-### Feedback (3)
-- alert, tooltip, chart
+### Interaction (3)
+- dropdown-menu, scroll-area, tabs
 
-## Phase 1a: Priority Components (~15)
+### Overlay (5)
+- context-menu, dialog, hover-card, menubar, popover
 
-Highest-value general-purpose components. Built alongside the second standard theme to validate theming across each new component.
+### Feedback (6)
+- alert, banner, chart, table, toast, tooltip
+
+## Phase 1a: Priority Components — COMPLETE
+
+All 15 priority components shipped.
 
 ### Navigation
 - [x] Navbar
@@ -27,23 +33,23 @@ Highest-value general-purpose components. Built alongside the second standard th
 - [x] Command Palette (cmdk-style)
 
 ### Data Display
-- [ ] Table / DataTable
-- [ ] Accordion / Collapsible
+- [x] Table / DataTable
+- [x] Accordion / Collapsible
 
 ### Feedback
-- [ ] Toast (Sonner-style)
-- [ ] Popover
-- [ ] Banner / Callout
+- [x] Toast (Sonner-style)
+- [x] Popover
+- [x] Banner / Callout
 
 ### Form
-- [ ] Radio Group
-- [ ] Slider / Range
-- [ ] Combobox / Autocomplete
-- [ ] Toggle Group
+- [x] Radio Group
+- [x] Slider / Range
+- [x] Combobox / Autocomplete
+- [x] Toggle Group
 
 ### Overlay
-- [ ] Context Menu
-- [ ] Hover Card
+- [x] Context Menu
+- [x] Hover Card
 - [x] Menubar
 
 ## Phase 1b: Remaining Components + Deck
@@ -79,9 +85,9 @@ Accessible via `npx visor add --category deck` or individually.
 
 ## Current Hooks (9)
 
-- use-media-query, use-debounce, use-click-outside, use-local-storage
-- use-intersection-observer, use-keyboard-shortcut, use-focus-trap
-- use-previous, use-boolean
+- use-boolean, use-click-outside, use-debounce, use-focus-trap
+- use-intersection-observer, use-keyboard-shortcut, use-local-storage
+- use-media-query, use-previous
 
 ## Source Material
 
@@ -94,7 +100,7 @@ Accessible via `npx visor add --category deck` or individually.
 
 ## Testing Strategy
 
-- **Phase 1a:** Add axe-core a11y testing to vitest setup; all new components include a11y tests from day one
+- **Phase 1a:** ~~Add axe-core a11y testing to vitest setup~~ — DONE
 - **Phase 1b:** Move tests from reference-nextjs-app to Visor (not copy — Visor becomes source of truth). Verify reference-nextjs-app doesn't depend on these tests for its own CI before moving.
 - 100% test coverage for all components
 - Vitest + React Testing Library
