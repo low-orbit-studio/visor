@@ -25,6 +25,8 @@ import {
   primitiveShadows,
   primitiveZIndex,
   primitiveFontFamilies,
+  primitiveOverlay,
+  primitiveFocusRing,
   primitiveMotionDurations,
   primitiveMotionEasings,
 } from "../tokens/primitives.js";
@@ -36,6 +38,8 @@ import {
   semanticInteractive,
   semanticSpacing,
   semanticTypography,
+  semanticOverlay,
+  semanticFocusRing,
   semanticMotionDuration,
   semanticMotionEasing,
 } from "../tokens/semantic.js";
@@ -181,6 +185,22 @@ function generatePrimitivesCSS(): string {
   }
   lines.push(block(":root", zIndexDecls));
 
+  // Overlay
+  lines.push(sectionComment("Primitive: Overlay"));
+  const overlayDecls: string[] = [];
+  for (const [name, value] of Object.entries(primitiveOverlay)) {
+    overlayDecls.push(`--overlay-${name}: ${value};`);
+  }
+  lines.push(block(":root", overlayDecls));
+
+  // Focus Ring
+  lines.push(sectionComment("Primitive: Focus Ring"));
+  const focusRingDecls: string[] = [];
+  for (const [name, value] of Object.entries(primitiveFocusRing)) {
+    focusRingDecls.push(`--focus-ring-${name}: ${value};`);
+  }
+  lines.push(block(":root", focusRingDecls));
+
   // Motion Durations
   lines.push(sectionComment("Primitive: Motion Durations"));
   const motionDurationDecls: string[] = [];
@@ -270,6 +290,22 @@ function generateSemanticCSS(): string {
     motionEasingDecls.push(`--motion-easing-${name}: ${toVar(ref)};`);
   }
   lines.push(block(":root", motionEasingDecls));
+
+  // Overlay
+  lines.push(sectionComment("Semantic: Overlay"));
+  const overlaySemanticDecls: string[] = [];
+  for (const [name, ref] of Object.entries(semanticOverlay)) {
+    overlaySemanticDecls.push(`--overlay-${name}: ${toVar(ref)};`);
+  }
+  lines.push(block(":root", overlaySemanticDecls));
+
+  // Focus Ring
+  lines.push(sectionComment("Semantic: Focus Ring"));
+  const focusRingSemanticDecls: string[] = [];
+  for (const [name, ref] of Object.entries(semanticFocusRing)) {
+    focusRingSemanticDecls.push(`--focus-ring-${name}: ${toVar(ref)};`);
+  }
+  lines.push(block(":root", focusRingSemanticDecls));
 
   return header("Visor Design Tokens — Semantic") + lines.join("\n");
 }

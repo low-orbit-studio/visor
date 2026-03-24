@@ -1,0 +1,183 @@
+---
+title: Token Rules
+description: The 9 prescriptive rules for authoring Visor components — fallbacks, shadows, spacing, motion, overlays, focus rings, color formats, theme structure, and no magic numbers.
+---
+
+Every component in Visor must comply with these 9 rules. They ensure consistency across the design system and guarantee that components work correctly with any compliant theme.
+
+## 1. Fallback Rule
+
+All CSS `var()` fallbacks must use **Tailwind Gray** palette hex values — not Slate, Zinc, or any other neutral scale. The Gray palette in `@loworbitstudio/visor-core` is the single source of truth.
+
+```css
+/* Correct */
+color: var(--text-primary, #111827);
+border-color: var(--border-default, #e5e7eb);
+
+/* Wrong — Slate palette */
+color: var(--text-primary, #0f172a);
+border-color: var(--border-default, #e2e8f0);
+```
+
+<details>
+<summary>Gray palette reference</summary>
+
+| Token | Hex |
+|-------|-----|
+| gray-50 | `#f9fafb` |
+| gray-100 | `#f3f4f6` |
+| gray-200 | `#e5e7eb` |
+| gray-300 | `#d1d5db` |
+| gray-400 | `#9ca3af` |
+| gray-500 | `#6b7280` |
+| gray-600 | `#4b5563` |
+| gray-700 | `#374151` |
+| gray-800 | `#1f2937` |
+| gray-900 | `#111827` |
+| gray-950 | `#030712` |
+
+</details>
+
+## 2. Shadow Rule
+
+All `box-shadow` declarations must use `var(--shadow-*)` tokens. No inline rgba shadow values.
+
+```css
+/* Correct */
+box-shadow: var(--shadow-md);
+
+/* Wrong */
+box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+```
+
+Available tokens: `--shadow-xs`, `--shadow-sm`, `--shadow-md`, `--shadow-lg`, `--shadow-xl`.
+
+**Exception:** Focus ring shadows using the `color-mix()` pattern are acceptable (see Rule 6).
+
+## 3. Spacing Rule
+
+All `padding`, `gap`, and `margin` values must use spacing tokens on the 4px grid.
+
+```css
+/* Correct */
+padding: var(--spacing-4);       /* 16px */
+gap: var(--spacing-2);           /* 8px */
+
+/* Wrong */
+padding: 1rem;
+gap: 8px;
+```
+
+| Token | Value |
+|-------|-------|
+| `--spacing-1` | 4px |
+| `--spacing-2` | 8px |
+| `--spacing-3` | 12px |
+| `--spacing-4` | 16px |
+| `--spacing-5` | 20px |
+| `--spacing-6` | 24px |
+| `--spacing-8` | 32px |
+| `--spacing-10` | 40px |
+| `--spacing-12` | 48px |
+| `--spacing-16` | 64px |
+
+**Exception:** Component sizing (`height`, `width`) may use explicit values until sizing tokens are introduced.
+
+## 4. Motion Rule
+
+All transitions must use `var(--motion-duration-*)` for timing and `var(--motion-easing-*)` for easing.
+
+```css
+/* Correct */
+transition: color var(--motion-duration-fast) var(--motion-easing-default);
+
+/* Wrong */
+transition: color 0.15s ease;
+```
+
+**Duration tokens:**
+
+| Semantic | Value | Use case |
+|----------|-------|----------|
+| `--motion-duration-fast` | 100ms | Tooltips, hovers |
+| `--motion-duration-150` | 150ms | Small state changes |
+| `--motion-duration-normal` | 200ms | Modals, drawers |
+| `--motion-duration-slow` | 500ms | Page transitions |
+
+**Easing tokens:**
+
+| Semantic | Use case |
+|----------|----------|
+| `--motion-easing-default` | General purpose (ease-in-out) |
+| `--motion-easing-enter` | Elements appearing (ease-out) |
+| `--motion-easing-exit` | Elements leaving (ease-in) |
+| `--motion-easing-spring` | Bouncy interactions |
+
+## 5. Overlay Rule
+
+Modal and dialog backdrops must use `var(--overlay-bg)`.
+
+```css
+/* Correct */
+background: var(--overlay-bg);
+
+/* Wrong */
+background: rgba(0, 0, 0, 0.5);
+```
+
+## 6. Focus Ring Rule
+
+Focus rings must use `var(--focus-ring-width)` and `var(--focus-ring-offset)`. Two patterns are supported:
+
+**Outline-based** (buttons, tabs, nav items):
+
+```css
+.button:focus-visible {
+  outline: var(--focus-ring-width) solid var(--border-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+```
+
+**Box-shadow-based** (form inputs):
+
+```css
+.input:focus-visible {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 var(--focus-ring-width)
+    color-mix(in srgb, var(--border-focus) 25%, transparent);
+}
+```
+
+## 7. Color Format Rule
+
+- **Hex** from Tailwind Gray for `var()` fallbacks
+- **`color-mix()`** for dynamic derivation in theme files
+- **`rgba()`** only in primitive token definitions (shadows, overlay)
+- **HSL** deferred to Phase 5 (theme builder)
+
+## 8. Theme Structure Rule
+
+All themes follow the **5-section template**:
+
+1. **Shared tokens** — accent colors, fonts, theme-specific primitives
+2. **Dark mode overrides** — all visor-core token overrides for dark
+3. **Light mode overrides** — all visor-core token overrides for light
+4. **Framework bridge** — framework-specific values (e.g., fumadocs HSL triplets)
+5. **Creative extensions** — animations, glass, gradients (creative themes only)
+
+See [Creating Themes](/docs/creating-themes) for the full template and theme contract.
+
+## 9. No Magic Numbers Rule
+
+Every value must trace to a token or be documented as intentional.
+
+```css
+/* Wrong */
+padding: 0.625rem;
+
+/* Correct — token */
+padding: var(--spacing-3);
+
+/* Correct — documented */
+height: 2.25rem; /* 36px — size-md, sizing tokens deferred */
+```

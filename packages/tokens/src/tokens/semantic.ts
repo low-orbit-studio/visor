@@ -133,6 +133,17 @@ export const semanticMotionEasing = {
   spring: "motion-easing-spring",
 } as const;
 
+/** Overlay tokens */
+export const semanticOverlay = {
+  bg: "overlay-bg",
+} as const;
+
+/** Focus ring tokens */
+export const semanticFocusRing = {
+  width: "focus-ring-width",
+  offset: "focus-ring-offset",
+} as const;
+
 /** Typography role tokens */
 export const semanticTypography = {
   // Font family roles

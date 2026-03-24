@@ -19,6 +19,10 @@ import {
   primitiveShadows,
   primitiveZIndex,
   primitiveFontFamilies,
+  primitiveOverlay,
+  primitiveFocusRing,
+  primitiveMotionDurations,
+  primitiveMotionEasings,
 } from "../tokens/primitives.js";
 
 import {
@@ -28,6 +32,10 @@ import {
   semanticInteractive,
   semanticSpacing,
   semanticTypography,
+  semanticOverlay,
+  semanticFocusRing,
+  semanticMotionDuration,
+  semanticMotionEasing,
 } from "../tokens/semantic.js";
 
 import {
@@ -77,6 +85,18 @@ function buildPrimitiveLookup(): Set<string> {
   }
   for (const name of Object.keys(primitiveZIndex)) {
     valid.add(`z-${name}`);
+  }
+  for (const name of Object.keys(primitiveOverlay)) {
+    valid.add(`overlay-${name}`);
+  }
+  for (const name of Object.keys(primitiveFocusRing)) {
+    valid.add(`focus-ring-${name}`);
+  }
+  for (const name of Object.keys(primitiveMotionDurations)) {
+    valid.add(`motion-duration-${name}`);
+  }
+  for (const name of Object.keys(primitiveMotionEasings)) {
+    valid.add(`motion-easing-${name}`);
   }
 
   return valid;
@@ -129,6 +149,46 @@ function validateSemanticTokens(
       errors.push({
         location: `semanticTypography.${name}`,
         message: `--${name} references unknown primitive: "${ref}"`,
+      });
+    }
+  }
+
+  // Semantic overlay references overlay primitives
+  for (const [name, ref] of Object.entries(semanticOverlay)) {
+    if (!primitives.has(ref)) {
+      errors.push({
+        location: `semanticOverlay.${name}`,
+        message: `--overlay-${name} references unknown primitive: "${ref}"`,
+      });
+    }
+  }
+
+  // Semantic focus ring references focus ring primitives
+  for (const [name, ref] of Object.entries(semanticFocusRing)) {
+    if (!primitives.has(ref)) {
+      errors.push({
+        location: `semanticFocusRing.${name}`,
+        message: `--focus-ring-${name} references unknown primitive: "${ref}"`,
+      });
+    }
+  }
+
+  // Semantic motion duration references motion duration primitives
+  for (const [name, ref] of Object.entries(semanticMotionDuration)) {
+    if (!primitives.has(ref)) {
+      errors.push({
+        location: `semanticMotionDuration.${name}`,
+        message: `--motion-duration-${name} references unknown primitive: "${ref}"`,
+      });
+    }
+  }
+
+  // Semantic motion easing references motion easing primitives
+  for (const [name, ref] of Object.entries(semanticMotionEasing)) {
+    if (!primitives.has(ref)) {
+      errors.push({
+        location: `semanticMotionEasing.${name}`,
+        message: `--motion-easing-${name} references unknown primitive: "${ref}"`,
       });
     }
   }
@@ -207,7 +267,7 @@ function main(): void {
   if (errors.length === 0) {
     console.log("✓ All tokens are valid\n");
     console.log(`  Primitives registered: ${primitives.size}`);
-    console.log(`  Semantic groups validated: 6`);
+    console.log(`  Semantic groups validated: 10`);
     console.log(`  Adaptive groups validated: 3`);
     process.exit(0);
   } else {

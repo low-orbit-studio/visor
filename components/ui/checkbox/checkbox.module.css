@@ -8,16 +8,16 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-sm, 0.25rem);
-  border: 1px solid var(--border-default, #e2e8f0);
+  border: 1px solid var(--border-default, #e5e7eb);
   background-color: transparent;
-  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
   outline: none;
   cursor: pointer;
 }
 
 .root:focus-visible {
-  border-color: var(--border-focus, #0f172a);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--border-focus, #0f172a) 15%, transparent);
+  border-color: var(--border-focus, #111827);
+  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
 }
 
 .root:disabled {
@@ -27,13 +27,13 @@
 
 .root[aria-invalid="true"] {
   border-color: var(--border-error, #ef4444);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--border-error, #ef4444) 15%, transparent);
+  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-error, #ef4444) 15%, transparent);
 }
 
 .root[data-state="checked"] {
-  border-color: var(--interactive-primary-bg, #0f172a);
-  background-color: var(--interactive-primary-bg, #0f172a);
-  color: var(--interactive-primary-text, #f8fafc);
+  border-color: var(--interactive-primary-bg, #111827);
+  background-color: var(--interactive-primary-bg, #111827);
+  color: var(--interactive-primary-text, #f9fafb);
 }
 
 /* Indicator */

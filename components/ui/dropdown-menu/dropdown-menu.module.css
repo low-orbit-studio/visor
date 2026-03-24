@@ -4,19 +4,19 @@
   min-width: 12rem;
   overflow: hidden;
   border-radius: var(--radius-lg, 0.5rem);
-  border: 1px solid var(--border-default, #e2e8f0);
+  border: 1px solid var(--border-default, #e5e7eb);
   background-color: var(--surface-card, #ffffff);
-  color: var(--text-primary, #0f172a);
-  padding: 0.25rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  color: var(--text-primary, #111827);
+  padding: var(--spacing-1, 0.25rem);
+  box-shadow: var(--shadow-lg);
 }
 
 .content[data-state="open"] {
-  animation: contentShow 100ms ease-out;
+  animation: contentShow var(--motion-duration-fast, 100ms) var(--motion-easing-enter, ease-out);
 }
 
 .content[data-state="closed"] {
-  animation: contentHide 100ms ease-in;
+  animation: contentHide var(--motion-duration-fast, 100ms) var(--motion-easing-exit, ease-in);
 }
 
 /* Sub content */
@@ -25,19 +25,19 @@
   min-width: 9rem;
   overflow: hidden;
   border-radius: var(--radius-lg, 0.5rem);
-  border: 1px solid var(--border-default, #e2e8f0);
+  border: 1px solid var(--border-default, #e5e7eb);
   background-color: var(--surface-card, #ffffff);
-  color: var(--text-primary, #0f172a);
-  padding: 0.25rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  color: var(--text-primary, #111827);
+  padding: var(--spacing-1, 0.25rem);
+  box-shadow: var(--shadow-lg);
 }
 
 .subContent[data-state="open"] {
-  animation: contentShow 100ms ease-out;
+  animation: contentShow var(--motion-duration-fast, 100ms) var(--motion-easing-enter, ease-out);
 }
 
 .subContent[data-state="closed"] {
-  animation: contentHide 100ms ease-in;
+  animation: contentHide var(--motion-duration-fast, 100ms) var(--motion-easing-exit, ease-in);
 }
 
 /* Menu item */
@@ -49,16 +49,16 @@
   align-items: center;
   gap: 0.625rem;
   border-radius: var(--radius-md, 0.375rem);
-  padding: 0.5rem 0.75rem;
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
   font-size: var(--font-size-sm, 0.875rem);
   outline: none;
-  transition: background-color 100ms ease, color 100ms ease;
+  transition: background-color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out), color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out);
 }
 
 .item:focus,
 .item[data-highlighted] {
-  background-color: var(--surface-interactive-hover, #f1f5f9);
-  color: var(--text-primary, #0f172a);
+  background-color: var(--surface-interactive-hover, #f3f4f6);
+  color: var(--text-primary, #111827);
 }
 
 .item[data-disabled] {
@@ -90,19 +90,19 @@
   align-items: center;
   gap: 0.625rem;
   border-radius: var(--radius-md, 0.375rem);
-  padding: 0.5rem 0.75rem;
-  padding-right: 2rem;
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  padding-right: var(--spacing-8, 2rem);
   font-size: var(--font-size-sm, 0.875rem);
   outline: none;
-  transition: background-color 100ms ease, color 100ms ease;
+  transition: background-color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out), color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out);
 }
 
 .checkboxItem:focus,
 .checkboxItem[data-highlighted],
 .radioItem:focus,
 .radioItem[data-highlighted] {
-  background-color: var(--surface-interactive-hover, #f1f5f9);
-  color: var(--text-primary, #0f172a);
+  background-color: var(--surface-interactive-hover, #f3f4f6);
+  color: var(--text-primary, #111827);
 }
 
 .checkboxItem[data-disabled],
@@ -125,16 +125,16 @@
 
 /* Label */
 .label {
-  padding: 0.625rem 0.75rem;
+  padding: 0.625rem var(--spacing-3, 0.75rem);
   font-size: var(--font-size-xs, 0.75rem);
-  color: var(--text-secondary, #64748b);
+  color: var(--text-secondary, #6b7280);
 }
 
 /* Separator */
 .separator {
   height: 1px;
-  margin: 0.25rem -0.25rem;
-  background-color: var(--border-default, #e2e8f0);
+  margin: var(--spacing-1, 0.25rem) calc(-1 * var(--spacing-1, 0.25rem));
+  background-color: var(--border-default, #e5e7eb);
 }
 
 /* Shortcut */
@@ -142,7 +142,7 @@
   margin-left: auto;
   font-size: var(--font-size-xs, 0.75rem);
   letter-spacing: 0.1em;
-  color: var(--text-secondary, #64748b);
+  color: var(--text-secondary, #6b7280);
 }
 
 /* Sub trigger */
@@ -151,18 +151,18 @@
   cursor: default;
   user-select: none;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--spacing-2, 0.5rem);
   border-radius: var(--radius-md, 0.375rem);
-  padding: 0.5rem 0.75rem;
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
   font-size: var(--font-size-sm, 0.875rem);
   outline: none;
-  transition: background-color 100ms ease, color 100ms ease;
+  transition: background-color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out), color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out);
 }
 
 .subTrigger:focus,
 .subTrigger[data-state="open"] {
-  background-color: var(--surface-interactive-hover, #f1f5f9);
-  color: var(--text-primary, #0f172a);
+  background-color: var(--surface-interactive-hover, #f3f4f6);
+  color: var(--text-primary, #111827);
 }
 
 .subTriggerIcon {

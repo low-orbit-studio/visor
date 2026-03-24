@@ -1,0 +1,183 @@
+---
+title: Creating Themes
+description: How to create a Visor theme — the theme contract, 5-section template, standard vs creative themes, and the space theme as a reference implementation.
+---
+
+Visor themes are CSS files that override the design tokens from `@loworbitstudio/visor-core`. Any valid theme transforms every Visor component's appearance without touching component code.
+
+## Theme Contract
+
+The theme contract defines which tokens a theme must override, which are optional, and how to add theme-specific extensions.
+
+### Required Tokens (~35)
+
+A theme **must** override all of these for components to render correctly in both light and dark modes.
+
+**Text:**
+
+| Token | Purpose |
+|-------|---------|
+| `--text-primary` | Primary body text |
+| `--text-secondary` | Supporting text |
+| `--text-tertiary` | Placeholder text |
+| `--text-disabled` | Disabled state |
+| `--text-inverse` | Text on inverted backgrounds |
+| `--text-inverse-secondary` | Secondary text on inverted backgrounds |
+| `--text-link` | Link text |
+| `--text-link-hover` | Link hover |
+| `--text-success` | Success feedback |
+| `--text-warning` | Warning feedback |
+| `--text-error` | Error feedback |
+| `--text-info` | Info feedback |
+
+**Surface:**
+
+| Token | Purpose |
+|-------|---------|
+| `--surface-page` | Page background |
+| `--surface-card` | Card/panel background |
+| `--surface-subtle` | Subtle differentiation |
+| `--surface-muted` | Muted areas |
+| `--surface-overlay` | Overlay base color |
+| `--surface-interactive-default` | Interactive resting state |
+| `--surface-interactive-hover` | Interactive hover |
+| `--surface-interactive-active` | Interactive pressed |
+
+**Border:**
+
+| Token | Purpose |
+|-------|---------|
+| `--border-default` | Standard borders |
+| `--border-muted` | Subtle borders |
+| `--border-strong` | Emphasized borders |
+| `--border-focus` | Focus ring color |
+| `--border-disabled` | Disabled borders |
+
+**Interactive:**
+
+| Token | Purpose |
+|-------|---------|
+| `--interactive-primary-bg` | Primary button background |
+| `--interactive-primary-bg-hover` | Primary button hover |
+| `--interactive-primary-text` | Primary button text |
+| `--interactive-secondary-bg` | Secondary button background |
+| `--interactive-secondary-bg-hover` | Secondary button hover |
+| `--interactive-secondary-text` | Secondary button text |
+| `--interactive-destructive-bg` | Destructive button background |
+| `--interactive-destructive-bg-hover` | Destructive button hover |
+| `--interactive-destructive-text` | Destructive button text |
+
+### Optional Tokens (~15)
+
+These have sensible defaults from visor-core. Override them to customize accent and status colors.
+
+Includes: `--surface-accent-subtle`, `--surface-accent-default`, `--surface-accent-strong`, all status surfaces (`success`, `warning`, `error`, `info` in `subtle` and `default` variants), and status borders.
+
+### Extension Tokens (Namespaced)
+
+Theme-specific tokens use a `--{theme-name}-*` prefix. Components must **never** depend on these — they are consumed only by theme-specific CSS.
+
+```css
+/* Space theme extensions */
+--space-glass: color-mix(in srgb, var(--accent) 15%, rgba(0, 0, 0, 0.3));
+--space-surface-elevated: color-mix(in srgb, var(--accent) 8%, #121220);
+
+/* Veronica theme extensions */
+--veronica-warmth: hsl(24, 80%, 55%);
+```
+
+## 5-Section Template
+
+Every theme file follows this structure. Copy it as your starting point.
+
+```css
+/* ── {Theme Name} — visor-core adapter ── */
+
+/* ═══ Section 1: Shared tokens (mode-independent) ═══ */
+
+.{theme-name}-theme {
+  --accent: #5b6fff;
+  /* --font-heading: "Custom Font", system-ui, sans-serif; */
+
+  min-height: 100vh;
+  background: var(--surface-page);
+  color: var(--text-primary);
+}
+
+/* ═══ Section 2: Dark mode overrides ═══ */
+
+.dark .{theme-name}-theme {
+  --text-primary: /* dark value */;
+  --surface-page: /* dark value */;
+  --border-default: /* dark value */;
+  --interactive-primary-bg: /* dark value */;
+  /* ... all required tokens */
+}
+
+/* ═══ Section 3: Light mode overrides ═══ */
+
+html:not(.dark) .{theme-name}-theme {
+  --text-primary: /* light value */;
+  --surface-page: /* light value */;
+  --border-default: /* light value */;
+  --interactive-primary-bg: /* light value */;
+  /* ... all required tokens */
+}
+
+/* ═══ Section 4: Framework bridge ═══ */
+
+/* fumadocs HSL triplets, if applicable */
+.dark .{theme-name}-theme {
+  --fd-background: /* H S% L% */;
+  /* ... */
+}
+
+/* ═══ Section 5: Creative extensions (creative themes only) ═══ */
+
+/* Namespaced extension tokens + custom CSS */
+```
+
+## Theme Tiers
+
+### Standard Themes
+
+Standard themes contain only token overrides — no custom CSS. They can be described entirely via `.visor.yaml` and are compatible with the theme builder (Phase 5).
+
+```yaml
+name: "Corporate Blue"
+tier: standard
+tokens:
+  shared:
+    accent: "#1e40af"
+  dark:
+    text-primary: "#f3f4f6"
+    surface-page: "#0a0a0f"
+    # ... all required tokens
+  light:
+    text-primary: "#111827"
+    surface-page: "#ffffff"
+    # ... all required tokens
+```
+
+**Use standard themes when:** you need brand-aligned colors and typography without visual effects.
+
+### Creative Themes
+
+Creative themes include section 5 — visual effects, animations, and custom CSS that go beyond token overrides. They still satisfy the full theme contract.
+
+**Use creative themes when:** you want gradients, glass effects, starfields, custom animations, or any visual treatment that cannot be expressed as a token value.
+
+**The space theme is Visor's reference creative theme.** It extends the contract with:
+- Starfield animation with twinkling stars
+- Glass/translucent code blocks
+- Sunrise gradient background (light mode)
+- Custom font faces (Satoshi, Monaspace Neon)
+
+**Distinguishing rule:** If a theme needs anything in section 5, it is creative. If sections 1-4 fully describe it, it is standard.
+
+## Tips
+
+- Use `color-mix()` to derive surfaces from your accent color — this creates cohesive tinted surfaces.
+- Test both light and dark modes. A common mistake is only tuning one mode.
+- Keep `--border-focus` high-contrast against both light and dark backgrounds.
+- Reference the [space theme source](https://github.com/low-orbit-studio/visor/blob/main/packages/docs/app/space-theme.css) as a working example.

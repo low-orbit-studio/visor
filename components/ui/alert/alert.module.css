@@ -5,8 +5,8 @@
   width: 100%;
   gap: 0.125rem;
   border-radius: var(--radius-lg, 0.5rem);
-  border: 1px solid var(--border-default, #e2e8f0);
-  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-default, #e5e7eb);
+  padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
   font-size: var(--font-size-sm, 0.875rem);
   text-align: left;
 }
@@ -14,8 +14,8 @@
 /* Variants */
 .variantDefault {
   background-color: var(--surface-card, #ffffff);
-  color: var(--text-primary, #0f172a);
-  border-color: var(--border-default, #e2e8f0);
+  color: var(--text-primary, #111827);
+  border-color: var(--border-default, #e5e7eb);
 }
 
 .variantDestructive {
@@ -46,7 +46,7 @@
 /* AlertDescription */
 .description {
   font-size: var(--font-size-sm, 0.875rem);
-  color: var(--text-secondary, #64748b);
+  color: var(--text-secondary, #6b7280);
   line-height: 1.5;
 }
 

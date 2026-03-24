@@ -4,23 +4,23 @@
   aspect-ratio: 16 / 9;
   justify-content: center;
   font-size: var(--font-size-xs, 0.75rem);
-  color: var(--text-primary, #0f172a);
+  color: var(--text-primary, #111827);
 }
 
 /* Recharts axis tick text */
 .container :global(.recharts-cartesian-axis-tick text) {
-  fill: var(--text-secondary, #64748b);
+  fill: var(--text-secondary, #6b7280);
 }
 
 /* Recharts cartesian grid lines */
 .container :global(.recharts-cartesian-grid line[stroke='#ccc']) {
-  stroke: var(--border-default, #e2e8f0);
+  stroke: var(--border-default, #e5e7eb);
   opacity: 0.5;
 }
 
 /* Recharts tooltip cursor */
 .container :global(.recharts-curve.recharts-tooltip-cursor) {
-  stroke: var(--border-default, #e2e8f0);
+  stroke: var(--border-default, #e5e7eb);
 }
 
 /* Recharts dot strokes */
@@ -47,22 +47,22 @@
 
 /* Recharts polar grid */
 .container :global(.recharts-polar-grid [stroke='#ccc']) {
-  stroke: var(--border-default, #e2e8f0);
+  stroke: var(--border-default, #e5e7eb);
 }
 
 /* Recharts radial bar background */
 .container :global(.recharts-radial-bar-background-sector) {
-  fill: var(--surface-muted, #f1f5f9);
+  fill: var(--surface-muted, #f3f4f6);
 }
 
 /* Recharts tooltip cursor rect */
 .container :global(.recharts-rectangle.recharts-tooltip-cursor) {
-  fill: var(--surface-muted, #f1f5f9);
+  fill: var(--surface-muted, #f3f4f6);
 }
 
 /* Recharts reference line */
 .container :global(.recharts-reference-line [stroke='#ccc']) {
-  stroke: var(--border-default, #e2e8f0);
+  stroke: var(--border-default, #e5e7eb);
 }
 
 /* Tooltip content */
@@ -72,11 +72,11 @@
   align-items: start;
   gap: 0.375rem;
   border-radius: var(--radius-md, 0.375rem);
-  border: 1px solid var(--border-default, #e2e8f0);
+  border: 1px solid var(--border-default, #e5e7eb);
   background-color: var(--surface-page, #ffffff);
   padding: 0.375rem 0.625rem;
   font-size: var(--font-size-xs, 0.75rem);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
 }
 
 .tooltipLabel {
@@ -93,7 +93,7 @@
   width: 100%;
   flex-wrap: wrap;
   align-items: stretch;
-  gap: 0.5rem;
+  gap: var(--spacing-2, 0.5rem);
 }
 
 .tooltipItem:has(.indicatorDot) {
@@ -121,13 +121,13 @@
 }
 
 .tooltipName {
-  color: var(--text-secondary, #64748b);
+  color: var(--text-secondary, #6b7280);
 }
 
 .tooltipValue {
   font-family: var(--font-mono, monospace);
   font-weight: 500;
-  color: var(--text-primary, #0f172a);
+  color: var(--text-primary, #111827);
   font-variant-numeric: tabular-nums;
 }
 
@@ -164,7 +164,7 @@
 .tooltipItem :global(svg) {
   height: 0.625rem;
   width: 0.625rem;
-  color: var(--text-secondary, #64748b);
+  color: var(--text-secondary, #6b7280);
 }
 
 /* Legend content */
@@ -172,15 +172,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: var(--spacing-4, 1rem);
 }
 
 .legendContentTop {
-  padding-bottom: 0.75rem;
+  padding-bottom: var(--spacing-3, 0.75rem);
 }
 
 .legendContentBottom {
-  padding-top: 0.75rem;
+  padding-top: var(--spacing-3, 0.75rem);
 }
 
 .legendItem {
@@ -192,7 +192,7 @@
 .legendItem :global(svg) {
   height: 0.75rem;
   width: 0.75rem;
-  color: var(--text-secondary, #64748b);
+  color: var(--text-secondary, #6b7280);
 }
 
 .legendSwatch {
