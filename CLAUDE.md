@@ -1,13 +1,13 @@
 # Visor
 
-> Low Orbit Studio's shared design system — a two-layer distribution model: components via a shadcn-style registry (copy-and-own) and tokens via an npm package (`@loworbit/visor-tokens`).
+> Low Orbit Studio's shared design system — a two-layer distribution model: components via a shadcn-style registry (copy-and-own) and tokens via an npm package (`@loworbitstudio/visor-core`).
 
 ## Distribution Model
 
 Visor uses two distribution layers:
 
 1. **Components → Registry (copy-and-own).** Consumers run `npx visor add button`, source files get copied into their project. Full edit rights, no lock-in. Scaffolded from shadcn's `registry-template`.
-2. **Tokens → npm package (`@loworbit/visor-tokens`).** The only npm-distributed piece. CSS custom properties that all components reference. Updates propagate automatically via `npm update`, keeping design consistency across projects without constraining component implementations.
+2. **Tokens → npm package (`@loworbitstudio/visor-core`).** The only npm-distributed piece. CSS custom properties that all components reference. Updates propagate automatically via `npm update`, keeping design consistency across projects without constraining component implementations.
 
 **Why this model:** Consumers can edit components without forking. Aligns with the playbook's "own your components" philosophy while the shared tokens package keeps design consistency effortless.
 
@@ -15,7 +15,7 @@ Visor uses two distribution layers:
 
 - **Framework:** React + TypeScript
 - **Registry:** shadcn-style (`registry-template` scaffold)
-- **Tokens package:** `@loworbit/visor-tokens` (CSS custom properties)
+- **Tokens package:** `@loworbitstudio/visor-core` (CSS custom properties)
 - **Styling:** CSS Modules + CSS custom properties (no Tailwind, no CSS-in-JS)
 - **Variants:** CVA (class-variance-authority)
 - **Primitives:** Radix UI (complex behaviors only)
@@ -50,7 +50,7 @@ Visor's token system follows the 3-tier architecture adapted from Blacklight:
 2. **Semantic** — Named by purpose (`--text-primary`, `--surface-card`, `--border-default`)
 3. **Adaptive** — Theme-aware tokens that switch based on active theme class
 
-**Theming is the core differentiator.** All components must be fully theme-agnostic — they reference CSS custom properties, never hard-coded values. Themes are distributable CSS variable sets shipped via `@loworbit/visor-tokens`.
+**Theming is the core differentiator.** All components must be fully theme-agnostic — they reference CSS custom properties, never hard-coded values. Themes are distributable CSS variable sets shipped via `@loworbitstudio/visor-core`.
 
 Reference design system: `~/Code/low-orbit/low-orbit-playbook/reference-nextjs-app/`
 Source components: `~/Code/kaiah/kaiah-app/packages/ui/src/components/ui/`
@@ -64,6 +64,18 @@ The [Low Orbit Playbook](~/Code/low-orbit/low-orbit-playbook/) provides prescrip
 - **`/lo-{treebranch}`** — Direct access to a specific methodology domain.
 
 When facing a decision, load the relevant playbook treebranch before proceeding. The playbook is prescriptive — follow it, don't improvise.
+
+## Vision & Roadmap
+
+Visor's long-term goals, phased roadmap, and detailed specs live in `/docs/`. Read these when working on strategic decisions, planning new features, or understanding priorities:
+
+- [`docs/vision.md`](./docs/vision.md) — Goals, design principles, source material
+- [`docs/roadmap.md`](./docs/roadmap.md) — 8-phase plan with current status
+- [`docs/component-inventory.md`](./docs/component-inventory.md) — Current vs target components, source material for each
+- [`docs/interchange-format.md`](./docs/interchange-format.md) — Design system interchange format spec (draft)
+- [`docs/ai-consumability.md`](./docs/ai-consumability.md) — AI agent consumability spec (metadata, manifest, patterns, agent-first CLI)
+
+**Current focus:** Phase 1 — Component Library Expansion (25 → ~55 general-purpose + deck category).
 
 ## Environment
 

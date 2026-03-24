@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import { ThemeImage } from '@/components/theme-image';
 
 export default function HomePage() {
   return (
@@ -12,11 +12,12 @@ export default function HomePage() {
         minHeight: '100vh',
         gap: '2.5rem',
         padding: '2rem',
-        fontFamily: 'var(--font-syne), system-ui, sans-serif',
+        fontFamily: 'var(--font-heading)',
       }}
     >
-      <Image
-        src="/visor-hero.png"
+      <ThemeImage
+        srcDark="/visor-hero.png"
+        srcLight="/visor-hero-light.png"
         alt="Visor — One component system. Total Control."
         width={800}
         height={280}

@@ -9,8 +9,8 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.375rem;
-  font-size: var(--text-sm, 0.875rem);
-  color: var(--color-muted-foreground, #64748b);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #64748b);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -25,19 +25,19 @@
 
 /* Breadcrumb link */
 .link {
-  color: var(--color-muted-foreground, #64748b);
+  color: var(--text-secondary, #64748b);
   text-decoration: none;
   transition: color 150ms ease;
 }
 
 .link:hover {
-  color: var(--color-foreground, #0f172a);
+  color: var(--text-primary, #0f172a);
 }
 
 /* Breadcrumb page (current) */
 .page {
   font-weight: 400;
-  color: var(--color-foreground, #0f172a);
+  color: var(--text-primary, #0f172a);
   cursor: default;
 }
 
@@ -45,7 +45,7 @@
 .separator {
   display: inline-flex;
   align-items: center;
-  color: var(--color-muted-foreground, #64748b);
+  color: var(--text-secondary, #64748b);
 }
 
 .separator > svg {
@@ -60,7 +60,7 @@
   height: 1.25rem;
   align-items: center;
   justify-content: center;
-  color: var(--color-muted-foreground, #64748b);
+  color: var(--text-secondary, #64748b);
 }
 
 .ellipsis > svg {

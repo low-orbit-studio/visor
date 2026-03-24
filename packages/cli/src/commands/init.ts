@@ -20,8 +20,8 @@ export function initCommand(cwd: string): void {
   if (!hasVisorTokens(cwd)) {
     logger.blank()
     logger.warn(
-      "@loworbit/visor-tokens is not installed. Components require it for styling."
+      "@loworbitstudio/visor-core is not installed. Components require it for styling."
     )
-    logger.info("  npm install @loworbit/visor-tokens")
+    logger.info("  npm install @loworbitstudio/visor-core")
   }
 }

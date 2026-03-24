@@ -1,29 +1,262 @@
-/* ── Space theme — core tokens + starfield ── */
+/* ── Space theme — visor-core adapter + starfield + sunrise light mode ── */
+
+/* ── Font faces ── */
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Variable.woff2") format("woff2");
+  font-weight: 300 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-VariableItalic.woff2") format("woff2");
+  font-weight: 300 900;
+  font-display: swap;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Monaspace Neon";
+  src: url("/fonts/MonaspaceNeon-Variable.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: swap;
+  font-style: normal;
+}
+
+/* ── Shared tokens (mode-independent) ── */
 
 .space-theme {
-  --bg: #080810;
-  --surface: #0e0e1a;
-  --border: rgba(255, 255, 255, 0.07);
   --accent: #5b6fff;
-  --accent2: #ff5b8f;
-  --text: #e8e8f0;
-  --muted: #6b6b80;
+  --accent2: hsl(341, 100%, 68%);
   --success: #4fffb0;
-  --card: #12121f;
+
+  /* Font stacks */
+  --font-satoshi: "Satoshi", system-ui, sans-serif;
+  --font-heading: var(--font-satoshi);
+  --font-mono: "Monaspace Neon", monospace;
 
   min-height: 100vh;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--surface-page);
+  color: var(--text-primary);
   position: relative;
-  font-family: var(--font-syne), system-ui, sans-serif;
+  font-family: var(--font-satoshi);
+}
+
+/* ── Dark mode (default — current space theme) ── */
+
+.dark .space-theme {
+  /* Space-theme-specific surfaces */
+  --surface-elevated: color-mix(in srgb, var(--accent) 8%, #121220);
+
+  /* Visor-core token overrides — dark */
+  --surface-page: #080810;
+  --surface-subtle: color-mix(in srgb, var(--accent) 4%, #0a0a14);
+  --surface-card: color-mix(in srgb, var(--accent) 6%, #0e0e18);
+  --surface-muted: color-mix(in srgb, var(--accent) 4%, #0a0a14);
+  --surface-overlay: #080810;
+  --surface-interactive-default: color-mix(in srgb, var(--accent) 6%, #0e0e18);
+  --surface-interactive-hover: color-mix(in srgb, var(--accent) 8%, #121220);
+  --surface-interactive-active: color-mix(in srgb, var(--accent) 12%, #161628);
+
+  --border-default: color-mix(in srgb, var(--accent) 12%, transparent);
+  --border-strong: color-mix(in srgb, var(--accent) 30%, transparent);
+  --border-focus: var(--accent);
+
+  --text-primary: #e8e8f0;
+  --text-secondary: rgba(232, 232, 240, 0.72);
+  --text-tertiary: rgba(232, 232, 240, 0.5);
+  --text-inverse: #080810;
+
+  --interactive-primary-bg: var(--accent);
+  --interactive-primary-bg-hover: color-mix(in srgb, var(--accent) 85%, white);
+  --interactive-primary-text: #ffffff;
+  --interactive-secondary-bg: color-mix(
+    in srgb,
+    var(--accent) 40%,
+    transparent
+  );
+  --interactive-secondary-bg-hover: color-mix(
+    in srgb,
+    var(--accent) 50%,
+    transparent
+  );
+  --interactive-secondary-text: #e8e8f0;
+  --interactive-ghost-bg: rgba(255, 255, 255, 0.2);
+  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.25);
+  --interactive-destructive-bg: hsl(341, 100%, 58%);
+  --interactive-destructive-bg-hover: hsl(341, 90%, 48%);
+  --interactive-destructive-text: #ffffff;
+
+  /* Translucent glass — for code blocks, table headers, etc. */
+  --glass: color-mix(in srgb, var(--accent) 15%, rgba(0, 0, 0, 0.3));
+  --glass-border: rgba(255, 255, 255, 0.2);
+
+  /* Muted text for space-theme-specific elements */
+  --muted: #6b6b80;
+
+  /* Fumadocs HSL triplets — dark */
+  --fd-background: 240 33% 5%;
+  --fd-foreground: 240 27% 93%;
+  --fd-card: 233 20% 9%;
+  --fd-card-foreground: 240 27% 93%;
+  --fd-border: 233 30% 15%;
+  --fd-muted: 233 20% 8%;
+  --fd-muted-foreground: 240 27% 72%;
+  --fd-accent: 233 100% 71%;
+  --fd-accent-foreground: 0 0% 100%;
+  --fd-primary: 233 100% 71%;
+  --fd-primary-foreground: 0 0% 100%;
+  --fd-secondary: 233 20% 6%;
+  --fd-secondary-foreground: 240 27% 93%;
+  --fd-popover: 233 20% 9%;
+  --fd-popover-foreground: 240 27% 93%;
+  --fd-ring: 233 100% 71%;
+}
+
+/* ── Sunrise light mode ── */
+
+html:not(.dark) .space-theme {
+  /* Space-theme-specific surfaces */
+  --surface-elevated: color-mix(in srgb, var(--accent) 6%, #dbd8e8);
+
+  /* Sunrise sky gradient */
+  background: radial-gradient(
+      ellipse 120% 50% at 50% 100%,
+      rgba(255, 210, 160, 0.45) 0%,
+      rgba(245, 190, 170, 0.3) 25%,
+      rgba(220, 195, 215, 0.15) 50%,
+      transparent 75%
+    ),
+    linear-gradient(
+      to bottom,
+      hsl(222, 40%, 84%) 0%,
+      hsl(240, 30%, 92%) 15%,
+      hsl(270, 30%, 92%) 30%,
+      hsl(290, 28%, 89%) 45%,
+      hsl(320, 38%, 92%) 60%,
+      hsl(34, 35%, 92%) 75%,
+      hsl(38, 45%, 92%) 90%,
+      hsl(22, 35%, 91%) 100%
+    ) !important;
+  background-attachment: fixed !important;
+
+  /* Visor-core token overrides — light/sunrise */
+  --surface-page: #e0ddef;
+  --surface-subtle: color-mix(in srgb, var(--accent) 5%, #e4e1ee);
+  --surface-card: color-mix(in srgb, var(--accent) 4%, #f2f0f8);
+  --surface-muted: color-mix(in srgb, var(--accent) 5%, #e4e1ee);
+  --surface-overlay: #1a1630;
+  --surface-interactive-default: color-mix(in srgb, var(--accent) 4%, #f2f0f8);
+  --surface-interactive-hover: color-mix(in srgb, var(--accent) 6%, #dbd8e8);
+  --surface-interactive-active: color-mix(in srgb, var(--accent) 10%, #d0cde0);
+
+  --border-default: color-mix(
+    in srgb,
+    var(--accent) 12%,
+    rgba(60, 50, 90, 0.1)
+  );
+  --border-strong: color-mix(
+    in srgb,
+    var(--accent) 18%,
+    rgba(60, 50, 90, 0.18)
+  );
+  --border-focus: var(--accent);
+
+  --text-primary: #1a1630;
+  --text-secondary: rgba(26, 22, 48, 0.72);
+  --text-tertiary: rgba(26, 22, 48, 0.5);
+  --text-inverse: #f2f0f8;
+
+  --interactive-primary-bg: var(--accent);
+  --interactive-primary-bg-hover: color-mix(
+    in srgb,
+    var(--accent) 85%,
+    #1a1630
+  );
+  --interactive-primary-text: #ffffff;
+  --interactive-secondary-bg: hsl(233, 80%, 82%);
+  --interactive-secondary-bg-hover: hsl(233, 80%, 76%);
+  --interactive-secondary-text: #1a1630;
+  --interactive-ghost-bg: hsl(240, 15%, 78%);
+  --interactive-ghost-bg-hover: hsl(240, 15%, 76%);
+  --interactive-destructive-bg: hsl(341, 90%, 58%);
+  --interactive-destructive-bg-hover: hsl(341, 75%, 48%);
+  --interactive-destructive-text: #ffffff;
+
+  /* Translucent glass — for code blocks, table headers, etc. */
+  --glass: rgba(255, 255, 255, 0.7);
+  --glass-border: hsl(252 18% 80%);
+
+  /* Muted text for space-theme-specific elements */
+  --muted: #8580a0;
+
+  /* Fumadocs HSL triplets — sunrise */
+  --fd-background: 252 28% 94%;
+  --fd-foreground: 252 37% 14%;
+  --fd-card: 252 28% 96%;
+  --fd-card-foreground: 252 37% 14%;
+  --fd-border: 252 18% 82%;
+  --fd-muted: 252 18% 90%;
+  --fd-muted-foreground: 252 12% 54%;
+  --fd-accent: 233 100% 65%;
+  --fd-accent-foreground: 0 0% 100%;
+  --fd-primary: 233 100% 60%;
+  --fd-primary-foreground: 0 0% 100%;
+  --fd-secondary: 252 20% 92%;
+  --fd-secondary-foreground: 252 37% 14%;
+  --fd-popover: 252 28% 96%;
+  --fd-popover-foreground: 252 37% 14%;
+  --fd-ring: 233 100% 71%;
+}
+
+/* ── Typography (shared) ── */
+
+.space-theme h1,
+.space-theme h2,
+.space-theme h3,
+.space-theme h4,
+.space-theme h5,
+.space-theme h6 {
+  font-family: var(--font-heading);
 }
 
 .space-theme code,
 .space-theme pre {
-  font-family: var(--font-space-mono), monospace;
+  font-family: var(--font-mono);
 }
 
-/* Starfield */
+/* Eyebrow pattern — Space Mono accent labels */
+.space-theme .eyebrow,
+.space-theme [data-eyebrow] {
+  font-family: var(--font-space-mono), monospace;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Text hierarchy — apply secondary/tertiary to fumadocs elements */
+.space-theme .fd-paragraph:not(:first-child),
+.space-theme [class*="fd-body"] {
+  color: var(--text-secondary);
+}
+
+.space-theme nav[aria-label="breadcrumb"],
+.space-theme nav[aria-label="breadcrumb"] * {
+  color: var(--text-tertiary);
+}
+
+/* Page descriptions */
+.space-theme .fd-not-prose {
+  color: var(--text-secondary);
+}
+
+/* ── Starfield ── */
+
 .space-theme .starfield {
   position: fixed;
   inset: 0;
@@ -40,27 +273,140 @@
   animation: starTwinkle var(--d, 3s) ease-in-out infinite;
 }
 
-@keyframes starTwinkle {
-  0%, 100% { opacity: 0; }
-  50% { opacity: var(--o, 0.6); }
+/* Light mode stars — accent-tinted instead of white, dimmed via container opacity */
+html:not(.dark) .space-theme .star {
+  background: var(--accent);
 }
 
-/* ── Fumadocs overrides for space theme ── */
-.space-theme {
-  --fd-background: var(--bg);
-  --fd-foreground: var(--text);
-  --fd-card: var(--card);
-  --fd-card-foreground: var(--text);
-  --fd-border: var(--border);
-  --fd-muted: var(--surface);
-  --fd-muted-foreground: var(--muted);
-  --fd-accent: var(--accent);
-  --fd-accent-foreground: #ffffff;
-  --fd-primary: var(--accent);
-  --fd-primary-foreground: #ffffff;
-  --fd-secondary: var(--surface);
-  --fd-secondary-foreground: var(--text);
-  --fd-popover: var(--card);
-  --fd-popover-foreground: var(--text);
-  --fd-ring: var(--accent);
+html:not(.dark) .space-theme .starfield {
+  opacity: 0.4;
+}
+
+@keyframes starTwinkle {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: var(--o, 0.6);
+  }
+}
+
+/* ── Code block & inline code ── */
+
+/* Inline code */
+.space-theme :not(pre) > code {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 0.25rem;
+  padding: 0.15em 0.5em;
+  font-size: 0.875em;
+}
+
+/* Code blocks — translucent glass so background gradient shows through */
+.space-theme pre {
+  background: var(--glass) !important;
+  border: 1px solid var(--glass-border);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  font-size: 0.875rem;
+  font-weight: 200;
+}
+
+/* Fumadocs code block overrides */
+.space-theme figure[data-rehype-pretty-code-figure] pre {
+  background: var(--glass) !important;
+  border: 1px solid var(--glass-border);
+  border-radius: 0.5rem;
+}
+
+.space-theme figure[data-rehype-pretty-code-figure] code {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+/* ── Tables ── */
+
+/* Dark mode tables */
+.dark .space-theme table {
+  border-color: hsl(233 30% 28%);
+}
+
+.dark .space-theme th,
+.dark .space-theme td {
+  border-color: hsl(233 30% 28%);
+}
+
+.dark .space-theme thead th {
+  background: color-mix(in srgb, var(--accent) 20%, #0e0e16);
+  border-bottom-color: hsl(233 30% 22%);
+}
+
+/* Light mode tables */
+html:not(.dark) .space-theme table {
+  border-color: hsl(252 18% 72%);
+}
+
+html:not(.dark) .space-theme th,
+html:not(.dark) .space-theme td {
+  background: transparent;
+  border-color: hsl(252 18% 82%);
+}
+
+html:not(.dark) .space-theme thead th {
+  background: color-mix(in srgb, var(--accent) 6%, #e8e5f0);
+  border-bottom-color: hsl(252 18% 76%);
+}
+
+/* ── Sidebar ── */
+
+.dark .space-theme aside[id="nd-sidebar"] {
+  background: color-mix(in srgb, var(--accent) 17%, transparent);
+}
+
+html:not(.dark) .space-theme aside[id="nd-sidebar"] {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.space-theme aside[id="nd-sidebar"] > div {
+  border-color: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+/* ── Search input — keep kbd badges readable on hover ── */
+
+html:not(.dark) .space-theme button:hover kbd {
+  color: var(--text-primary);
+}
+
+/* ── Links & interactive states ── */
+
+.space-theme a:not([class]) {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.dark .space-theme a:not([class]):hover {
+  color: color-mix(in srgb, var(--accent) 80%, white);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+html:not(.dark) .space-theme a:not([class]):hover {
+  color: color-mix(in srgb, var(--accent) 80%, #1a1630);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* Focus ring */
+.space-theme :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Sidebar active item */
+.space-theme [data-active="true"] {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
 }

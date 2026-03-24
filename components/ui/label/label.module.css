@@ -3,10 +3,10 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: var(--text-sm, 0.875rem);
+  font-size: var(--font-size-sm, 0.875rem);
   font-weight: 500;
   line-height: 1;
-  color: var(--color-foreground, #0f172a);
+  color: var(--text-primary, #0f172a);
   user-select: none;
   cursor: default;
 }

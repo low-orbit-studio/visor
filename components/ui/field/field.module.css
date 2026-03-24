@@ -16,26 +16,26 @@
 
 /* Field Label */
 .fieldLabel {
-  font-size: var(--text-sm, 0.875rem);
+  font-size: var(--font-size-sm, 0.875rem);
   font-weight: 500;
-  color: var(--color-foreground, #0f172a);
+  color: var(--text-primary, #0f172a);
   line-height: 1.4;
 }
 
 /* Field Description */
 .fieldDescription {
-  font-size: var(--text-sm, 0.875rem);
+  font-size: var(--font-size-sm, 0.875rem);
   font-weight: 400;
-  color: var(--color-muted-foreground, #94a3b8);
+  color: var(--text-secondary, #94a3b8);
   line-height: 1.5;
   margin: 0;
 }
 
 /* Field Error */
 .fieldError {
-  font-size: var(--text-sm, 0.875rem);
+  font-size: var(--font-size-sm, 0.875rem);
   font-weight: 400;
-  color: var(--color-destructive, #ef4444);
+  color: var(--text-error, #ef4444);
 }
 
 .fieldErrorList {

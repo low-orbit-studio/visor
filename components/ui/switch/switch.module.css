@@ -6,15 +6,15 @@
   align-items: center;
   border-radius: 9999px;
   border: 1px solid transparent;
-  background-color: var(--color-input, #e2e8f0);
+  background-color: var(--border-default, #e2e8f0);
   transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
   outline: none;
   cursor: pointer;
 }
 
 .root:focus-visible {
-  border-color: var(--color-ring, #0f172a);
-  box-shadow: 0 0 0 3px var(--color-ring-alpha, rgba(15, 23, 42, 0.1));
+  border-color: var(--border-focus, #0f172a);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--border-focus, #0f172a) 15%, transparent);
 }
 
 .root:disabled {
@@ -23,12 +23,12 @@
 }
 
 .root[aria-invalid="true"] {
-  border-color: var(--color-destructive, #ef4444);
-  box-shadow: 0 0 0 3px var(--color-destructive-alpha, rgba(239, 68, 68, 0.1));
+  border-color: var(--border-error, #ef4444);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--border-error, #ef4444) 15%, transparent);
 }
 
 .root[data-state="checked"] {
-  background-color: var(--color-primary, #0f172a);
+  background-color: var(--interactive-primary-bg, #0f172a);
 }
 
 /* Size variants */
@@ -46,7 +46,7 @@
 .thumb {
   display: block;
   border-radius: 9999px;
-  background-color: var(--color-background, #ffffff);
+  background-color: var(--surface-page, #ffffff);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   transition: transform 0.15s ease;
   pointer-events: none;

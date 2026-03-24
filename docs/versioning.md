@@ -1,10 +1,10 @@
 # Visor Versioning & Changelog Strategy
 
-Visor uses a two-layer distribution model — tokens via npm (`@loworbit/visor-tokens`) and components via a shadcn-style copy-and-own registry. Each layer has a distinct versioning approach.
+Visor uses a two-layer distribution model — tokens via npm (`@loworbitstudio/visor-core`) and components via a shadcn-style copy-and-own registry. Each layer has a distinct versioning approach.
 
 ---
 
-## Tokens Package — Semver (`@loworbit/visor-tokens`)
+## Tokens Package — Semver (`@loworbitstudio/visor-core`)
 
 The tokens package is the only npm-distributed piece. It follows [Semantic Versioning](https://semver.org/).
 
@@ -81,7 +81,7 @@ npm run changeset
 ```
 
 The CLI will prompt you to:
-1. Select which packages are affected (`@loworbit/visor-tokens`)
+1. Select which packages are affected (`@loworbitstudio/visor-core`)
 2. Choose the bump type (`major`, `minor`, or `patch`)
 3. Write a summary of the change
 

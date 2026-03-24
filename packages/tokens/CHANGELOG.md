@@ -1,4 +1,4 @@
-# @loworbit/visor-tokens
+# @loworbitstudio/visor-core
 
 ## 0.2.0
 

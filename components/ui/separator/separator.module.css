@@ -1,7 +1,7 @@
 /* Separator */
 .separator {
   flex-shrink: 0;
-  background-color: var(--color-border, #e2e8f0);
+  background-color: var(--border-default, #e2e8f0);
 }
 
 .horizontal {
