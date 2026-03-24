@@ -10,8 +10,21 @@ export default function Layout({ children }: { children: ReactNode }) {
       nav={{
         title: (
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Image src="/visor-logo.png" alt="Visor" width={28} height={28} />
-            <span>Visor</span>
+            <Image src="/astronaut.png" alt="" width={38} height={38} />
+            <Image
+              src="/visor-wordmark-light.png"
+              alt="Visor"
+              width={64}
+              height={18}
+              className="wordmark-light"
+            />
+            <Image
+              src="/visor-wordmark-dark.png"
+              alt="Visor"
+              width={64}
+              height={18}
+              className="wordmark-dark"
+            />
           </div>
         ),
         url: '/',

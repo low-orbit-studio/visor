@@ -1,5 +1,9 @@
 /* ── Space theme — visor-core adapter + starfield + sunrise light mode ── */
 
+/* ── Theme-aware wordmark ── */
+.dark .wordmark-light { display: none; }
+html:not(.dark) .wordmark-dark { display: none; }
+
 /* ── Font faces ── */
 
 @font-face {
