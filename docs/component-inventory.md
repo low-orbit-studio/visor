@@ -55,16 +55,16 @@ All 15 priority components shipped.
 ## Phase 1b: Remaining Components + Deck
 
 ### Remaining General-Purpose
-- [ ] Stepper / Wizard
-- [ ] Code Block (with syntax highlighting)
-- [ ] Timeline
+- [x] Stepper / Wizard
+- [x] Code Block (with syntax highlighting)
+- [x] Timeline
 - [ ] Date Picker
 - [ ] File Upload
 - [ ] Carousel
 - [ ] Lightbox / Image Viewer
 - [ ] Image (with loading states)
-- [ ] Heading
-- [ ] Text / Prose
+- [x] Heading
+- [x] Text / Prose
 
 ### Deck Components (Separate Category)
 

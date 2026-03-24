@@ -1,0 +1,121 @@
+/* Stepper container */
+.stepper {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  width: 100%;
+}
+
+.stepperVertical {
+  flex-direction: column;
+}
+
+/* Stepper item */
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  flex: 1;
+  min-width: 0;
+}
+
+.itemVertical {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+/* Trigger (step indicator circle) */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-full, 9999px);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: background-color var(--motion-duration-200, 200ms) var(--motion-easing-default, ease-in-out),
+    border-color var(--motion-duration-200, 200ms) var(--motion-easing-default, ease-in-out),
+    color var(--motion-duration-200, 200ms) var(--motion-easing-default, ease-in-out);
+}
+
+.trigger:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* Trigger status variants */
+.trigger--complete {
+  background-color: var(--interactive-primary-bg, #111827);
+  border-color: var(--interactive-primary-bg, #111827);
+  color: var(--interactive-primary-text, #f9fafb);
+}
+
+.trigger--active {
+  background-color: transparent;
+  border-color: var(--interactive-primary-bg, #111827);
+  color: var(--interactive-primary-bg, #111827);
+}
+
+.trigger--upcoming {
+  background-color: transparent;
+  border-color: var(--border-default, #e5e7eb);
+  color: var(--text-tertiary, #9ca3af);
+}
+
+/* Title */
+.title {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-primary, #111827);
+  line-height: var(--line-height-snug, 1.375);
+  white-space: nowrap;
+}
+
+/* Description */
+.description {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-secondary, #6b7280);
+  line-height: var(--line-height-normal, 1.5);
+  margin: 0;
+}
+
+/* Separator */
+.separator {
+  flex: 1;
+  height: 2px;
+  min-width: var(--spacing-4, 1rem);
+  background-color: var(--border-muted, #e5e7eb);
+  align-self: center;
+  margin: 0 var(--spacing-2, 0.5rem);
+  transition: background-color var(--motion-duration-200, 200ms) var(--motion-easing-default, ease-in-out);
+}
+
+.separatorVertical {
+  width: 2px;
+  height: var(--spacing-6, 1.5rem);
+  min-width: auto;
+  margin: var(--spacing-1, 0.25rem) 0 var(--spacing-1, 0.25rem) calc(1rem - 1px);
+  align-self: flex-start;
+  flex: none;
+}
+
+.separatorComplete {
+  background-color: var(--interactive-primary-bg, #111827);
+}
+
+/* Screen reader only */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

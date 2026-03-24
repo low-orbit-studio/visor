@@ -1,0 +1,211 @@
+---
+title: Stepper
+description: A multi-step progress indicator with horizontal and vertical orientations. Auto-derives step status from activeStep with accessible ARIA roles.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import {
+  Stepper,
+  StepperItem,
+  StepperTrigger,
+  StepperTitle,
+  StepperDescription,
+  StepperSeparator,
+} from '@/components/ui/stepper';
+
+## Installation
+
+```bash
+npx visor add stepper
+```
+
+This copies two files into your project:
+
+- `components/ui/stepper/stepper.tsx` — the component
+- `components/ui/stepper/stepper.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  Stepper,
+  StepperItem,
+  StepperTrigger,
+  StepperTitle,
+  StepperSeparator,
+} from '@/components/ui/stepper/stepper';
+
+export default function Example() {
+  return (
+    <Stepper activeStep={1}>
+      <StepperItem step={0}>
+        <StepperTrigger step={0} />
+        <StepperTitle>Account</StepperTitle>
+      </StepperItem>
+      <StepperSeparator complete />
+      <StepperItem step={1}>
+        <StepperTrigger step={1} />
+        <StepperTitle>Profile</StepperTitle>
+      </StepperItem>
+      <StepperSeparator />
+      <StepperItem step={2}>
+        <StepperTrigger step={2} />
+        <StepperTitle>Review</StepperTitle>
+      </StepperItem>
+    </Stepper>
+  );
+}
+```
+
+## Horizontal (Default)
+
+<ComponentPreview
+  title="Horizontal Stepper"
+  code={`<Stepper activeStep={1}>
+  <StepperItem step={0}>
+    <StepperTrigger step={0} />
+    <StepperTitle>Account</StepperTitle>
+  </StepperItem>
+  <StepperSeparator complete />
+  <StepperItem step={1}>
+    <StepperTrigger step={1} />
+    <StepperTitle>Profile</StepperTitle>
+  </StepperItem>
+  <StepperSeparator />
+  <StepperItem step={2}>
+    <StepperTrigger step={2} />
+    <StepperTitle>Review</StepperTitle>
+  </StepperItem>
+</Stepper>`}
+>
+  <Stepper activeStep={1}>
+    <StepperItem step={0}>
+      <StepperTrigger step={0} />
+      <StepperTitle>Account</StepperTitle>
+    </StepperItem>
+    <StepperSeparator complete />
+    <StepperItem step={1}>
+      <StepperTrigger step={1} />
+      <StepperTitle>Profile</StepperTitle>
+    </StepperItem>
+    <StepperSeparator />
+    <StepperItem step={2}>
+      <StepperTrigger step={2} />
+      <StepperTitle>Review</StepperTitle>
+    </StepperItem>
+  </Stepper>
+</ComponentPreview>
+
+## With Descriptions
+
+<ComponentPreview
+  title="Steps with Descriptions"
+  code={`<Stepper activeStep={1}>
+  <StepperItem step={0}>
+    <StepperTrigger step={0} />
+    <div>
+      <StepperTitle>Account</StepperTitle>
+      <StepperDescription>Create your account</StepperDescription>
+    </div>
+  </StepperItem>
+  <StepperSeparator complete />
+  <StepperItem step={1}>
+    <StepperTrigger step={1} />
+    <div>
+      <StepperTitle>Profile</StepperTitle>
+      <StepperDescription>Set up your profile</StepperDescription>
+    </div>
+  </StepperItem>
+  <StepperSeparator />
+  <StepperItem step={2}>
+    <StepperTrigger step={2} />
+    <div>
+      <StepperTitle>Review</StepperTitle>
+      <StepperDescription>Confirm details</StepperDescription>
+    </div>
+  </StepperItem>
+</Stepper>`}
+>
+  <Stepper activeStep={1}>
+    <StepperItem step={0}>
+      <StepperTrigger step={0} />
+      <div>
+        <StepperTitle>Account</StepperTitle>
+        <StepperDescription>Create your account</StepperDescription>
+      </div>
+    </StepperItem>
+    <StepperSeparator complete />
+    <StepperItem step={1}>
+      <StepperTrigger step={1} />
+      <div>
+        <StepperTitle>Profile</StepperTitle>
+        <StepperDescription>Set up your profile</StepperDescription>
+      </div>
+    </StepperItem>
+    <StepperSeparator />
+    <StepperItem step={2}>
+      <StepperTrigger step={2} />
+      <div>
+        <StepperTitle>Review</StepperTitle>
+        <StepperDescription>Confirm details</StepperDescription>
+      </div>
+    </StepperItem>
+  </Stepper>
+</ComponentPreview>
+
+## Vertical
+
+<ComponentPreview
+  title="Vertical Stepper"
+  code={`<Stepper orientation="vertical" activeStep={1}>
+  <StepperItem step={0}>
+    <StepperTrigger step={0} />
+    <StepperTitle>Account</StepperTitle>
+  </StepperItem>
+  <StepperSeparator complete />
+  <StepperItem step={1}>
+    <StepperTrigger step={1} />
+    <StepperTitle>Profile</StepperTitle>
+  </StepperItem>
+  <StepperSeparator />
+  <StepperItem step={2}>
+    <StepperTrigger step={2} />
+    <StepperTitle>Review</StepperTitle>
+  </StepperItem>
+</Stepper>`}
+>
+  <Stepper orientation="vertical" activeStep={1}>
+    <StepperItem step={0}>
+      <StepperTrigger step={0} />
+      <StepperTitle>Account</StepperTitle>
+    </StepperItem>
+    <StepperSeparator complete />
+    <StepperItem step={1}>
+      <StepperTrigger step={1} />
+      <StepperTitle>Profile</StepperTitle>
+    </StepperItem>
+    <StepperSeparator />
+    <StepperItem step={2}>
+      <StepperTrigger step={2} />
+      <StepperTitle>Review</StepperTitle>
+    </StepperItem>
+  </Stepper>
+</ComponentPreview>
+
+## API Reference
+
+### StepperProps
+
+<PropsTable component="stepper" />
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `Stepper` | `<div>` | Root container with context provider |
+| `StepperItem` | `<div>` | Step wrapper, auto-derives status |
+| `StepperTrigger` | `<button>` | Clickable step indicator circle |
+| `StepperTitle` | `<div>` | Step label |
+| `StepperDescription` | `<p>` | Step description |
+| `StepperSeparator` | `<div>` | Connecting line between steps |

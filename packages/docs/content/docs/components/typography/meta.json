@@ -1,12 +1,9 @@
 {
-  "title": "Navigation",
+  "title": "Typography",
   "description": "Components alphabetized. Insert new entries in A-Z order.",
   "defaultOpen": true,
   "pages": [
-    "command",
-    "menubar",
-    "navbar",
-    "pagination",
-    "stepper"
+    "heading",
+    "text"
   ]
 }

@@ -4,7 +4,9 @@
   "defaultOpen": true,
   "pages": [
     "accordion",
+    "code-block",
     "collapsible",
-    "table"
+    "table",
+    "timeline"
   ]
 }
