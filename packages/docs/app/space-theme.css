@@ -104,23 +104,23 @@ html:not(.dark) .wordmark-dark { display: none; }
   /* Muted text for space-theme-specific elements */
   --space-muted: #6b6b80;
 
-  /* Fumadocs HSL triplets — dark */
-  --fd-background: 240 33% 5%;
-  --fd-foreground: 240 27% 93%;
-  --fd-card: 233 20% 9%;
-  --fd-card-foreground: 240 27% 93%;
-  --fd-border: 233 20% 22%;
-  --fd-muted: 233 20% 8%;
-  --fd-muted-foreground: 240 27% 72%;
-  --fd-accent: 233 100% 71%;
-  --fd-accent-foreground: 0 0% 100%;
-  --fd-primary: 233 100% 71%;
-  --fd-primary-foreground: 0 0% 100%;
-  --fd-secondary: 233 20% 6%;
-  --fd-secondary-foreground: 240 27% 93%;
-  --fd-popover: 233 20% 9%;
-  --fd-popover-foreground: 240 27% 93%;
-  --fd-ring: 233 100% 71%;
+  /* Fumadocs color tokens — dark (v16 uses --color-fd-* with full hsl values) */
+  --color-fd-background: hsl(240, 33%, 5%);
+  --color-fd-foreground: hsl(240, 27%, 93%);
+  --color-fd-card: hsl(233, 20%, 9%);
+  --color-fd-card-foreground: hsl(240, 27%, 93%);
+  --color-fd-border: hsl(233, 20%, 22%);
+  --color-fd-muted: hsl(233, 20%, 8%);
+  --color-fd-muted-foreground: hsl(240, 27%, 72%);
+  --color-fd-accent: hsl(233, 100%, 71%);
+  --color-fd-accent-foreground: hsl(0, 0%, 100%);
+  --color-fd-primary: hsl(233, 100%, 71%);
+  --color-fd-primary-foreground: hsl(0, 0%, 100%);
+  --color-fd-secondary: hsl(233, 20%, 6%);
+  --color-fd-secondary-foreground: hsl(240, 27%, 93%);
+  --color-fd-popover: hsl(233, 20%, 9%);
+  --color-fd-popover-foreground: hsl(240, 27%, 93%);
+  --color-fd-ring: hsl(233, 100%, 71%);
 }
 
 /* ── Section 3: Light mode overrides (sunrise) ── */
@@ -200,23 +200,23 @@ html:not(.dark) .space-theme {
   /* Muted text for space-theme-specific elements */
   --space-muted: #8580a0;
 
-  /* Fumadocs HSL triplets — sunrise */
-  --fd-background: 252 28% 94%;
-  --fd-foreground: 252 37% 14%;
-  --fd-card: 252 28% 96%;
-  --fd-card-foreground: 252 37% 14%;
-  --fd-border: 252 18% 82%;
-  --fd-muted: 252 18% 90%;
-  --fd-muted-foreground: 252 12% 54%;
-  --fd-accent: 233 100% 65%;
-  --fd-accent-foreground: 0 0% 100%;
-  --fd-primary: 233 100% 60%;
-  --fd-primary-foreground: 0 0% 100%;
-  --fd-secondary: 252 20% 92%;
-  --fd-secondary-foreground: 252 37% 14%;
-  --fd-popover: 252 28% 96%;
-  --fd-popover-foreground: 252 37% 14%;
-  --fd-ring: 233 100% 71%;
+  /* Fumadocs color tokens — sunrise (v16 uses --color-fd-* with full hsl values) */
+  --color-fd-background: hsl(252, 28%, 94%);
+  --color-fd-foreground: hsl(252, 37%, 14%);
+  --color-fd-card: hsl(252, 28%, 96%);
+  --color-fd-card-foreground: hsl(252, 37%, 14%);
+  --color-fd-border: hsl(252, 18%, 82%);
+  --color-fd-muted: hsl(252, 18%, 90%);
+  --color-fd-muted-foreground: hsl(252, 12%, 54%);
+  --color-fd-accent: hsl(233, 100%, 65%);
+  --color-fd-accent-foreground: hsl(0, 0%, 100%);
+  --color-fd-primary: hsl(233, 100%, 60%);
+  --color-fd-primary-foreground: hsl(0, 0%, 100%);
+  --color-fd-secondary: hsl(252, 20%, 92%);
+  --color-fd-secondary-foreground: hsl(252, 37%, 14%);
+  --color-fd-popover: hsl(252, 28%, 96%);
+  --color-fd-popover-foreground: hsl(252, 37%, 14%);
+  --color-fd-ring: hsl(233, 100%, 71%);
 }
 
 /* ── Section 5: Creative extensions ── */
@@ -321,13 +321,23 @@ html:not(.dark) .space-theme .starfield {
   font-weight: 200;
 }
 
-/* Fumadocs code block overrides */
-.space-theme figure[data-rehype-pretty-code-figure] pre {
+/* Fumadocs v16 code block overrides — figure.shiki has bg-fd-card.
+   Glass goes on the figure wrapper only; pre/code must be transparent
+   to avoid double-layering (stacked translucent backgrounds create
+   visible bands in the py-3.5 padding area). */
+.space-theme figure.shiki {
   background: var(--space-glass) !important;
-  border-radius: 0.5rem;
 }
 
-.space-theme figure[data-rehype-pretty-code-figure] code {
+.space-theme figure.shiki pre {
+  background: transparent !important;
+  border-radius: 0;
+  padding: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.space-theme figure.shiki code {
   background: transparent;
   border: none;
   padding: 0;

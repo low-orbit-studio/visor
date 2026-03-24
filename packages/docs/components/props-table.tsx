@@ -19,7 +19,7 @@ export function PropsTable({ component }: PropsTableProps) {
   }
 
   return (
-    <div className={styles.wrapper}>
+    <div className={`${styles.wrapper} not-prose`}>
       <table className={styles.table}>
         <thead>
           <tr>
