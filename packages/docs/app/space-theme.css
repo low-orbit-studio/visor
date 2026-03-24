@@ -109,7 +109,7 @@ html:not(.dark) .wordmark-dark { display: none; }
   --fd-foreground: 240 27% 93%;
   --fd-card: 233 20% 9%;
   --fd-card-foreground: 240 27% 93%;
-  --fd-border: 233 30% 15%;
+  --fd-border: 233 20% 22%;
   --fd-muted: 233 20% 8%;
   --fd-muted-foreground: 240 27% 72%;
   --fd-accent: 233 100% 71%;
