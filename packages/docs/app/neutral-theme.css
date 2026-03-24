@@ -2,7 +2,7 @@
    Neutral Theme — Standard Theme for Visor Docs
    Follows the 5-section theme template (see docs/token-rules.md)
    Sections 1-4 only (standard tier — no creative extensions)
-   Palette: Tailwind Zinc · Accent: desaturated blue-gray
+   Palette: Tailwind Zinc · Accent: Teal-cyan (#1798ad)
    Authoring: direct hex values (no color-mix derivations)
    ══════════════════════════════════════════════════════════════════════ */
 
@@ -11,8 +11,8 @@
    ═══════════════════════════════════════════════ */
 
 .neutral-theme {
-  /* Accent — desaturated blue-gray, intentionally muted */
-  --accent: #6775a0;
+  /* Accent — teal-cyan, WCAG AA compliant with white text */
+  --accent: #1798ad;
 
   /* Base styles */
   min-height: 100vh;
@@ -32,8 +32,8 @@
   --text-disabled: #52525b;        /* zinc-600 */
   --text-inverse: #18181b;         /* zinc-900 */
   --text-inverse-secondary: #3f3f46; /* zinc-700 */
-  --text-link: #93a3d1;           /* accent lightened */
-  --text-link-hover: #b0bde0;     /* accent lighter */
+  --text-link: #67e8f9;           /* cyan-300 */
+  --text-link-hover: #a5f3fc;     /* cyan-200 */
   --text-success: #4ade80;        /* green-400 */
   --text-warning: #fbbf24;        /* amber-400 */
   --text-error: #f87171;          /* red-400 */
@@ -58,10 +58,10 @@
 
   /* ── Interactive ── */
   --interactive-primary-bg: var(--accent);
-  --interactive-primary-bg-hover: #7a88b3;  /* accent lightened */
+  --interactive-primary-bg-hover: #22d3ee;  /* cyan-400 */
   --interactive-primary-text: #ffffff;
-  --interactive-secondary-bg: #27272a;      /* zinc-800 */
-  --interactive-secondary-bg-hover: #3f3f46; /* zinc-700 */
+  --interactive-secondary-bg: #0e3a44;      /* accent at ~12% lightness */
+  --interactive-secondary-bg-hover: #115c6b; /* accent at ~18% lightness */
   --interactive-secondary-text: #fafafa;    /* zinc-50 */
   --interactive-destructive-bg: #ef4444;    /* red-500 */
   --interactive-destructive-bg-hover: #dc2626; /* red-600 */
@@ -82,8 +82,8 @@ html:not(.dark) .neutral-theme {
   --text-disabled: #d4d4d8;        /* zinc-300 */
   --text-inverse: #fafafa;         /* zinc-50 */
   --text-inverse-secondary: #e4e4e7; /* zinc-200 */
-  --text-link: #4f5d85;           /* accent darkened */
-  --text-link-hover: #3d4a6e;     /* accent darker */
+  --text-link: #0891b2;           /* cyan-600 */
+  --text-link-hover: #0e7490;     /* cyan-700 */
   --text-success: #15803d;        /* green-700 */
   --text-warning: #b45309;        /* amber-700 */
   --text-error: #b91c1c;          /* red-700 */
@@ -108,15 +108,15 @@ html:not(.dark) .neutral-theme {
 
   /* ── Interactive ── */
   --interactive-primary-bg: var(--accent);
-  --interactive-primary-bg-hover: #5a6893;  /* accent darkened */
+  --interactive-primary-bg-hover: #0e7490;  /* cyan-700 */
   --interactive-primary-text: #ffffff;
-  --interactive-secondary-bg: #ffffff;
-  --interactive-secondary-bg-hover: #fafafa; /* zinc-50 */
-  --interactive-secondary-text: #18181b;    /* zinc-900 */
+  --interactive-secondary-bg: #e0f5fa;       /* accent at ~93% lightness */
+  --interactive-secondary-bg-hover: #c4ecf5; /* accent at ~87% lightness */
+  --interactive-secondary-text: #0e7490;    /* cyan-700 */
   --interactive-destructive-bg: #dc2626;    /* red-600 */
   --interactive-destructive-bg-hover: #b91c1c; /* red-700 */
   --interactive-destructive-text: #ffffff;
-  --interactive-ghost-bg: #ffffff;
+  --interactive-ghost-bg: rgba(0, 0, 0, 0.05);
   --interactive-ghost-bg-hover: #f4f4f5;    /* zinc-100 */
 }
 
@@ -132,15 +132,15 @@ html:not(.dark) .neutral-theme {
   --fd-border: 240 4% 26%;
   --fd-muted: 240 4% 16%;
   --fd-muted-foreground: 240 4% 64%;
-  --fd-accent: 225 24% 51%;
+  --fd-accent: 187 76% 38%;
   --fd-accent-foreground: 0 0% 100%;
-  --fd-primary: 225 24% 51%;
+  --fd-primary: 187 76% 38%;
   --fd-primary-foreground: 0 0% 100%;
   --fd-secondary: 240 4% 16%;
   --fd-secondary-foreground: 0 0% 98%;
   --fd-popover: 240 6% 10%;
   --fd-popover-foreground: 0 0% 98%;
-  --fd-ring: 225 24% 51%;
+  --fd-ring: 187 76% 38%;
 }
 
 html:not(.dark) .neutral-theme {
@@ -151,13 +151,13 @@ html:not(.dark) .neutral-theme {
   --fd-border: 240 5% 90%;
   --fd-muted: 240 5% 96%;
   --fd-muted-foreground: 240 4% 46%;
-  --fd-accent: 225 24% 47%;
+  --fd-accent: 187 76% 38%;
   --fd-accent-foreground: 0 0% 100%;
-  --fd-primary: 225 24% 47%;
+  --fd-primary: 187 76% 38%;
   --fd-primary-foreground: 0 0% 100%;
   --fd-secondary: 240 5% 96%;
   --fd-secondary-foreground: 240 6% 10%;
   --fd-popover: 0 0% 100%;
   --fd-popover-foreground: 240 6% 10%;
-  --fd-ring: 225 24% 51%;
+  --fd-ring: 187 76% 38%;
 }
