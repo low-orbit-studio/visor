@@ -1,0 +1,163 @@
+/* ══════════════════════════════════════════════════════════════════════
+   Neutral Theme — Standard Theme for Visor Docs
+   Follows the 5-section theme template (see docs/token-rules.md)
+   Sections 1-4 only (standard tier — no creative extensions)
+   Palette: Tailwind Zinc · Accent: desaturated blue-gray
+   Authoring: direct hex values (no color-mix derivations)
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════
+   Section 1: Shared tokens (mode-independent)
+   ═══════════════════════════════════════════════ */
+
+.neutral-theme {
+  /* Accent — desaturated blue-gray, intentionally muted */
+  --accent: #6775a0;
+
+  /* Base styles */
+  min-height: 100vh;
+  background: var(--surface-page);
+  color: var(--text-primary);
+}
+
+/* ═══════════════════════════════════════════════
+   Section 2: Dark mode overrides
+   ═══════════════════════════════════════════════ */
+
+.dark .neutral-theme {
+  /* ── Text ── */
+  --text-primary: #fafafa;         /* zinc-50 */
+  --text-secondary: #a1a1aa;       /* zinc-400 */
+  --text-tertiary: #71717a;        /* zinc-500 */
+  --text-disabled: #52525b;        /* zinc-600 */
+  --text-inverse: #18181b;         /* zinc-900 */
+  --text-inverse-secondary: #3f3f46; /* zinc-700 */
+  --text-link: #93a3d1;           /* accent lightened */
+  --text-link-hover: #b0bde0;     /* accent lighter */
+  --text-success: #4ade80;        /* green-400 */
+  --text-warning: #fbbf24;        /* amber-400 */
+  --text-error: #f87171;          /* red-400 */
+  --text-info: #38bdf8;           /* sky-400 */
+
+  /* ── Surfaces ── */
+  --surface-page: #09090b;        /* zinc-950 */
+  --surface-card: #18181b;        /* zinc-900 */
+  --surface-subtle: #09090b;      /* zinc-950 — same as page; subtle differentiation deferred to border treatment */
+  --surface-muted: #27272a;       /* zinc-800 */
+  --surface-overlay: #09090b;     /* zinc-950 */
+  --surface-interactive-default: #18181b; /* zinc-900 */
+  --surface-interactive-hover: #27272a;   /* zinc-800 */
+  --surface-interactive-active: #3f3f46;  /* zinc-700 */
+
+  /* ── Borders ── */
+  --border-default: #3f3f46;      /* zinc-700 */
+  --border-muted: #27272a;        /* zinc-800 */
+  --border-strong: #52525b;       /* zinc-600 */
+  --border-focus: var(--accent);
+  --border-disabled: #27272a;     /* zinc-800 */
+
+  /* ── Interactive ── */
+  --interactive-primary-bg: var(--accent);
+  --interactive-primary-bg-hover: #7a88b3;  /* accent lightened */
+  --interactive-primary-text: #ffffff;
+  --interactive-secondary-bg: #27272a;      /* zinc-800 */
+  --interactive-secondary-bg-hover: #3f3f46; /* zinc-700 */
+  --interactive-secondary-text: #fafafa;    /* zinc-50 */
+  --interactive-destructive-bg: #ef4444;    /* red-500 */
+  --interactive-destructive-bg-hover: #dc2626; /* red-600 */
+  --interactive-destructive-text: #ffffff;
+  --interactive-ghost-bg: #18181b;          /* zinc-900 */
+  --interactive-ghost-bg-hover: #27272a;    /* zinc-800 */
+}
+
+/* ═══════════════════════════════════════════════
+   Section 3: Light mode overrides
+   ═══════════════════════════════════════════════ */
+
+html:not(.dark) .neutral-theme {
+  /* ── Text ── */
+  --text-primary: #18181b;         /* zinc-900 */
+  --text-secondary: #52525b;       /* zinc-600 */
+  --text-tertiary: #a1a1aa;        /* zinc-400 */
+  --text-disabled: #d4d4d8;        /* zinc-300 */
+  --text-inverse: #fafafa;         /* zinc-50 */
+  --text-inverse-secondary: #e4e4e7; /* zinc-200 */
+  --text-link: #4f5d85;           /* accent darkened */
+  --text-link-hover: #3d4a6e;     /* accent darker */
+  --text-success: #15803d;        /* green-700 */
+  --text-warning: #b45309;        /* amber-700 */
+  --text-error: #b91c1c;          /* red-700 */
+  --text-info: #0369a1;           /* sky-700 */
+
+  /* ── Surfaces ── */
+  --surface-page: #ffffff;
+  --surface-card: #ffffff;
+  --surface-subtle: #fafafa;       /* zinc-50 */
+  --surface-muted: #f4f4f5;        /* zinc-100 */
+  --surface-overlay: #18181b;      /* zinc-900 */
+  --surface-interactive-default: #ffffff;
+  --surface-interactive-hover: #fafafa;  /* zinc-50 */
+  --surface-interactive-active: #f4f4f5; /* zinc-100 */
+
+  /* ── Borders ── */
+  --border-default: #e4e4e7;       /* zinc-200 */
+  --border-muted: #f4f4f5;         /* zinc-100 */
+  --border-strong: #d4d4d8;        /* zinc-300 */
+  --border-focus: var(--accent);
+  --border-disabled: #f4f4f5;      /* zinc-100 */
+
+  /* ── Interactive ── */
+  --interactive-primary-bg: var(--accent);
+  --interactive-primary-bg-hover: #5a6893;  /* accent darkened */
+  --interactive-primary-text: #ffffff;
+  --interactive-secondary-bg: #ffffff;
+  --interactive-secondary-bg-hover: #fafafa; /* zinc-50 */
+  --interactive-secondary-text: #18181b;    /* zinc-900 */
+  --interactive-destructive-bg: #dc2626;    /* red-600 */
+  --interactive-destructive-bg-hover: #b91c1c; /* red-700 */
+  --interactive-destructive-text: #ffffff;
+  --interactive-ghost-bg: #ffffff;
+  --interactive-ghost-bg-hover: #f4f4f5;    /* zinc-100 */
+}
+
+/* ═══════════════════════════════════════════════
+   Section 4: Framework bridge (fumadocs)
+   ═══════════════════════════════════════════════ */
+
+.dark .neutral-theme {
+  --fd-background: 240 6% 4%;
+  --fd-foreground: 0 0% 98%;
+  --fd-card: 240 6% 10%;
+  --fd-card-foreground: 0 0% 98%;
+  --fd-border: 240 4% 26%;
+  --fd-muted: 240 4% 16%;
+  --fd-muted-foreground: 240 4% 64%;
+  --fd-accent: 225 24% 51%;
+  --fd-accent-foreground: 0 0% 100%;
+  --fd-primary: 225 24% 51%;
+  --fd-primary-foreground: 0 0% 100%;
+  --fd-secondary: 240 4% 16%;
+  --fd-secondary-foreground: 0 0% 98%;
+  --fd-popover: 240 6% 10%;
+  --fd-popover-foreground: 0 0% 98%;
+  --fd-ring: 225 24% 51%;
+}
+
+html:not(.dark) .neutral-theme {
+  --fd-background: 0 0% 100%;
+  --fd-foreground: 240 6% 10%;
+  --fd-card: 0 0% 100%;
+  --fd-card-foreground: 240 6% 10%;
+  --fd-border: 240 5% 90%;
+  --fd-muted: 240 5% 96%;
+  --fd-muted-foreground: 240 4% 46%;
+  --fd-accent: 225 24% 47%;
+  --fd-accent-foreground: 0 0% 100%;
+  --fd-primary: 225 24% 47%;
+  --fd-primary-foreground: 0 0% 100%;
+  --fd-secondary: 240 5% 96%;
+  --fd-secondary-foreground: 240 6% 10%;
+  --fd-popover: 0 0% 100%;
+  --fd-popover-foreground: 240 6% 10%;
+  --fd-ring: 225 24% 51%;
+}
