@@ -2,20 +2,20 @@
 
 Phases are sequential but may overlap. Status is updated as work progresses.
 
-## Phase 1a: Core Expansion + Theme Architecture Validation — IN PROGRESS
+## Phase 1a: Core Expansion + Theme Architecture Validation — COMPLETE
 
-Validate the theming architecture with a second standard theme while expanding the highest-priority components. Fix the adaptive token gap before scaling up.
+Validated the theming architecture with a second standard theme while expanding the component library from 25 to 40 components.
 
-See [component-inventory.md](./component-inventory.md) for the full current vs target list.
-
-**Key work:**
-- Promote interactive tokens to the adaptive layer (currently only text/surface/border are adaptive — interactive tokens like `--interactive-primary-bg` are hardcoded to blue primitives and can't be theme-switched)
-- Create a **"Neutral" standard theme** (zinc palette, sections 1-4 only, no creative extensions) to validate the full token contract across all components
-- Add a **basic theme switcher** to the docs site header for immediate visual verification
-- Add ~15 highest-priority general-purpose components (table, accordion, toast, popover, radio group, slider, combobox, navbar, pagination, command palette, toggle group, context menu, hover card, menubar, banner)
-- Add axe-core a11y testing to vitest setup
-- Replace tailwind-merge with plain clsx (tailwind-merge does nothing useful for CSS Module classnames)
-- All components must be fully theme-agnostic, using CSS Modules + CSS custom properties
+**Completed work:**
+- [x] Promoted interactive tokens to the adaptive layer
+- [x] Created **"Neutral" standard theme** (zinc palette, sections 1-4)
+- [x] Added **theme switcher** to the docs site header
+- [x] Added 15 priority components (table, accordion, toast, popover, radio group, slider, combobox, navbar, pagination, command palette, toggle group, context menu, hover card, menubar, banner)
+- [x] Added axe-core a11y testing to vitest setup
+- [x] Replaced tailwind-merge with plain clsx
+- [x] All components are fully theme-agnostic (CSS Modules + CSS custom properties)
+- [x] Upgraded to fumadocs v16, Next.js 16, React 19.2
+- [x] Added minimal MDX documentation for all components
 
 ## Phase 1b: Remaining Components + Deck
 
