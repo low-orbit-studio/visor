@@ -26,7 +26,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={spaceMono.variable}>
+      <body className={spaceMono.variable} suppressHydrationWarning>
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){var v=["space","neutral"];var t=localStorage.getItem("visor-theme");if(v.indexOf(t)<0)t="space";document.body.classList.add(t+"-theme")})()`,
