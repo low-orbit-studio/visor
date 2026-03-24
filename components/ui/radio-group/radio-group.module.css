@@ -1,0 +1,53 @@
+/* RadioGroup root */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+/* RadioGroup item (the button) */
+.item {
+  position: relative;
+  display: flex;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid var(--border-default, #e5e7eb);
+  background-color: transparent;
+  transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+  outline: none;
+  cursor: pointer;
+}
+
+.item:focus-visible {
+  border-color: var(--border-focus, #111827);
+  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
+}
+
+.item:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.item[data-state="checked"] {
+  border-color: var(--interactive-primary-bg, #111827);
+  background-color: var(--interactive-primary-bg, #111827);
+  color: var(--interactive-primary-text, #f9fafb);
+}
+
+/* Indicator */
+.indicator {
+  display: grid;
+  place-content: center;
+  color: currentColor;
+}
+
+.icon {
+  width: 0.5rem;
+  height: 0.5rem;
+}
