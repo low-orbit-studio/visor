@@ -1,0 +1,57 @@
+---
+title: Image
+description: An image component with loading skeleton, error fallback, aspect ratio presets, and lazy loading.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Image } from '@/components/ui/image';
+
+## Installation
+
+```bash
+npx visor add image
+```
+
+This copies two files into your project:
+
+- `components/ui/image/image.tsx` — the component
+- `components/ui/image/image.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Image } from '@/components/ui/image/image';
+
+export default function Example() {
+  return (
+    <Image
+      src="/photo.jpg"
+      alt="A scenic landscape"
+      aspectRatio="video"
+      objectFit="cover"
+    />
+  );
+}
+```
+
+## Examples
+
+<ComponentPreview
+  title="Aspect Ratios"
+  code={`<div style={{ display: 'flex', gap: '1rem', alignItems: 'start' }}>
+  <Image src="https://picsum.photos/200" alt="Square" aspectRatio="square" style={{ width: 120 }} />
+  <Image src="https://picsum.photos/320/180" alt="Video" aspectRatio="video" style={{ width: 200 }} />
+  <Image src="https://picsum.photos/150/200" alt="Portrait" aspectRatio="portrait" style={{ width: 120 }} />
+</div>`}
+>
+  <div style={{ display: 'flex', gap: '1rem', alignItems: 'start' }}>
+    <Image src="https://picsum.photos/200" alt="Square" aspectRatio="square" style={{ width: 120 }} />
+    <Image src="https://picsum.photos/320/180" alt="Video" aspectRatio="video" style={{ width: 200 }} />
+    <Image src="https://picsum.photos/150/200" alt="Portrait" aspectRatio="portrait" style={{ width: 120 }} />
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+<PropsTable component="image" />

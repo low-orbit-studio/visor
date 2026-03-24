@@ -1,0 +1,106 @@
+---
+title: Carousel
+description: A composable carousel component with horizontal and vertical orientations, built on Embla Carousel.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from '@/components/ui/carousel';
+
+## Installation
+
+```bash
+npx visor add carousel
+```
+
+This copies two files into your project:
+
+- `components/ui/carousel/carousel.tsx` — the component
+- `components/ui/carousel/carousel.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from '@/components/ui/carousel/carousel';
+
+export default function Example() {
+  return (
+    <Carousel>
+      <CarouselContent>
+        <CarouselItem>Slide 1</CarouselItem>
+        <CarouselItem>Slide 2</CarouselItem>
+        <CarouselItem>Slide 3</CarouselItem>
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+  );
+}
+```
+
+## Basic Example
+
+<ComponentPreview
+  title="Carousel"
+  code={`<Carousel>
+  <CarouselContent>
+    <CarouselItem>
+      <div style={{ padding: '2rem', textAlign: 'center', background: 'var(--surface-muted)', borderRadius: 'var(--radius-md)' }}>Slide 1</div>
+    </CarouselItem>
+    <CarouselItem>
+      <div style={{ padding: '2rem', textAlign: 'center', background: 'var(--surface-muted)', borderRadius: 'var(--radius-md)' }}>Slide 2</div>
+    </CarouselItem>
+    <CarouselItem>
+      <div style={{ padding: '2rem', textAlign: 'center', background: 'var(--surface-muted)', borderRadius: 'var(--radius-md)' }}>Slide 3</div>
+    </CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>`}
+>
+  <div style={{ maxWidth: '20rem', margin: '0 auto' }}>
+    <Carousel>
+      <CarouselContent>
+        <CarouselItem>
+          <div style={{ padding: '2rem', textAlign: 'center', background: 'var(--surface-muted)', borderRadius: 'var(--radius-md)' }}>Slide 1</div>
+        </CarouselItem>
+        <CarouselItem>
+          <div style={{ padding: '2rem', textAlign: 'center', background: 'var(--surface-muted)', borderRadius: 'var(--radius-md)' }}>Slide 2</div>
+        </CarouselItem>
+        <CarouselItem>
+          <div style={{ padding: '2rem', textAlign: 'center', background: 'var(--surface-muted)', borderRadius: 'var(--radius-md)' }}>Slide 3</div>
+        </CarouselItem>
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### CarouselProps
+
+<PropsTable component="carousel" />
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `Carousel` | `<div>` | Root container with context provider |
+| `CarouselContent` | `<div>` | Scrollable content wrapper |
+| `CarouselItem` | `<div>` | Individual slide |
+| `CarouselPrevious` | `<button>` | Previous slide button |
+| `CarouselNext` | `<button>` | Next slide button |

@@ -1,0 +1,57 @@
+---
+title: Date Picker
+description: A date picker combining Calendar with a Radix Popover trigger showing the formatted date.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { DatePicker } from '@/components/ui/date-picker';
+
+## Installation
+
+```bash
+npx visor add date-picker
+```
+
+This copies two files into your project:
+
+- `components/ui/date-picker/date-picker.tsx` — the component
+- `components/ui/date-picker/date-picker.module.css` — the styles
+
+**Note:** Date Picker depends on the Calendar component. Install it too:
+
+```bash
+npx visor add calendar
+```
+
+## Usage
+
+```tsx
+import { DatePicker } from '@/components/ui/date-picker/date-picker';
+import { useState } from 'react';
+
+export default function Example() {
+  const [date, setDate] = useState<Date>();
+
+  return (
+    <DatePicker
+      value={date}
+      onChange={setDate}
+      placeholder="Pick a date"
+    />
+  );
+}
+```
+
+## Basic Example
+
+<ComponentPreview
+  title="Date Picker"
+  code={`<DatePicker placeholder="Pick a date" />`}
+>
+  <DatePicker placeholder="Pick a date" />
+</ComponentPreview>
+
+## API Reference
+
+<PropsTable component="date-picker" />

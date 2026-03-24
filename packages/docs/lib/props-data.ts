@@ -578,4 +578,164 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'Disables the menu item.',
     },
   ],
+
+  carousel: [
+    {
+      name: 'orientation',
+      type: "'horizontal' | 'vertical'",
+      default: "'horizontal'",
+      description: 'Scroll direction of the carousel.',
+    },
+    {
+      name: 'opts',
+      type: 'EmblaOptionsType',
+      description: 'Embla Carousel options for fine-grained control.',
+    },
+    {
+      name: 'plugins',
+      type: 'EmblaPluginType[]',
+      description: 'Embla Carousel plugins (e.g., autoplay, auto-scroll).',
+    },
+    {
+      name: 'setApi',
+      type: '(api: CarouselApi) => void',
+      description: 'Callback to receive the Embla API instance.',
+    },
+  ],
+
+  image: [
+    {
+      name: 'aspectRatio',
+      type: "'square' | 'video' | 'portrait' | 'auto'",
+      default: "'auto'",
+      description: 'Preset aspect ratio for the image container.',
+    },
+    {
+      name: 'fallback',
+      type: 'ReactNode',
+      description: 'Content shown when the image fails to load.',
+    },
+    {
+      name: 'objectFit',
+      type: "'cover' | 'contain' | 'fill' | 'none'",
+      default: "'cover'",
+      description: 'How the image fits within its container.',
+    },
+    {
+      name: 'loading',
+      type: "'eager' | 'lazy'",
+      default: "'lazy'",
+      description: 'Native browser loading strategy.',
+    },
+  ],
+
+  calendar: [
+    {
+      name: 'mode',
+      type: "'single' | 'multiple' | 'range'",
+      description: 'Selection mode for the calendar.',
+    },
+    {
+      name: 'selected',
+      type: 'Date | Date[] | DateRange',
+      description: 'Currently selected date(s).',
+    },
+    {
+      name: 'onSelect',
+      type: '(date: Date | undefined) => void',
+      description: 'Callback when a date is selected.',
+    },
+    {
+      name: 'disabled',
+      type: 'Matcher | Matcher[]',
+      description: 'Dates to disable (date objects, ranges, or matchers).',
+    },
+  ],
+
+  'date-picker': [
+    {
+      name: 'value',
+      type: 'Date',
+      description: 'The selected date.',
+    },
+    {
+      name: 'onChange',
+      type: '(date: Date | undefined) => void',
+      description: 'Callback when the date changes.',
+    },
+    {
+      name: 'placeholder',
+      type: 'string',
+      default: "'Pick a date'",
+      description: 'Text shown when no date is selected.',
+    },
+    {
+      name: 'dateFormat',
+      type: 'string',
+      default: "'PPP'",
+      description: 'Date format string (date-fns format).',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables the date picker.',
+    },
+  ],
+
+  'file-upload': [
+    {
+      name: 'accept',
+      type: 'string',
+      description: "Accepted file types (e.g., 'image/*', '.pdf,.doc').",
+    },
+    {
+      name: 'maxSize',
+      type: 'number',
+      default: '10',
+      description: 'Maximum file size in MB.',
+    },
+    {
+      name: 'maxFiles',
+      type: 'number',
+      default: '1',
+      description: 'Maximum number of files allowed.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables the drop zone.',
+    },
+    {
+      name: 'onFilesChange',
+      type: '(files: File[]) => void',
+      description: 'Callback when valid files are selected or dropped.',
+    },
+  ],
+
+  lightbox: [
+    {
+      name: 'images',
+      type: 'LightboxImage[]',
+      required: true,
+      description: 'Array of images with src and alt properties.',
+    },
+    {
+      name: 'initialIndex',
+      type: 'number',
+      default: '0',
+      description: 'Index of the initially displayed image.',
+    },
+    {
+      name: 'open',
+      type: 'boolean',
+      description: 'Controlled open state.',
+    },
+    {
+      name: 'onOpenChange',
+      type: '(open: boolean) => void',
+      description: 'Callback when the open state changes.',
+    },
+  ],
 };

@@ -1,0 +1,51 @@
+---
+title: File Upload
+description: A drag-and-drop file upload zone with file validation, keyboard activation, and customizable content.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { FileUpload } from '@/components/ui/file-upload';
+
+## Installation
+
+```bash
+npx visor add file-upload
+```
+
+This copies two files into your project:
+
+- `components/ui/file-upload/file-upload.tsx` — the component
+- `components/ui/file-upload/file-upload.module.css` — the styles
+
+## Usage
+
+```tsx
+import { FileUpload } from '@/components/ui/file-upload/file-upload';
+
+export default function Example() {
+  return (
+    <FileUpload
+      accept="image/*"
+      maxSize={5}
+      maxFiles={3}
+      onFilesChange={(files) => console.log(files)}
+    />
+  );
+}
+```
+
+## Basic Example
+
+<ComponentPreview
+  title="File Upload"
+  code={`<FileUpload accept="image/*" maxSize={5} />`}
+>
+  <FileUpload accept="image/*" maxSize={5} />
+</ComponentPreview>
+
+## API Reference
+
+<PropsTable component="file-upload" />
+
+The File Upload component is a **drop zone only** — it handles file selection and validation but does not manage file lists, progress tracking, or upload logic. Compose it with your own file list and upload implementation.

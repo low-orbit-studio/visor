@@ -887,4 +887,136 @@ export const ui: Registry = [
       },
     ],
   },
+  {
+    name: "calendar",
+    type: "registry:ui",
+    description:
+      "A calendar component wrapping react-day-picker with Visor token styling and Phosphor icon navigation.",
+    dependencies: [
+      "react-day-picker",
+      "date-fns",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/calendar/calendar.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/calendar/calendar.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "carousel",
+    type: "registry:ui",
+    description:
+      "A composable carousel component with horizontal and vertical orientations, built on Embla Carousel.",
+    dependencies: [
+      "embla-carousel-react",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/carousel/carousel.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/carousel/carousel.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "date-picker",
+    type: "registry:ui",
+    description:
+      "A date picker component combining Calendar with a Radix Popover trigger showing the formatted date.",
+    dependencies: [
+      "@radix-ui/react-popover",
+      "date-fns",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["calendar", "utils"],
+    files: [
+      {
+        path: "components/ui/date-picker/date-picker.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/date-picker/date-picker.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "file-upload",
+    type: "registry:ui",
+    description:
+      "A drag-and-drop file upload zone with file validation, keyboard activation, and customizable content.",
+    dependencies: [
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/file-upload/file-upload.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/file-upload/file-upload.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "image",
+    type: "registry:ui",
+    description:
+      "An image component with loading skeleton, error fallback, aspect ratio presets, and lazy loading.",
+    dependencies: [
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/image/image.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/image/image.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "lightbox",
+    type: "registry:ui",
+    description:
+      "A full-screen image viewer with gallery navigation, keyboard and touch support, built on Radix Dialog.",
+    dependencies: [
+      "@radix-ui/react-dialog",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/lightbox/lightbox.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/lightbox/lightbox.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
 ]

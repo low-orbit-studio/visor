@@ -1,0 +1,92 @@
+---
+title: Lightbox
+description: A full-screen image viewer with gallery navigation, keyboard and touch support, built on Radix Dialog.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import {
+  Lightbox,
+  LightboxTrigger,
+  LightboxContent,
+} from '@/components/ui/lightbox';
+
+## Installation
+
+```bash
+npx visor add lightbox
+```
+
+This copies two files into your project:
+
+- `components/ui/lightbox/lightbox.tsx` — the component
+- `components/ui/lightbox/lightbox.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  Lightbox,
+  LightboxTrigger,
+  LightboxContent,
+} from '@/components/ui/lightbox/lightbox';
+
+const images = [
+  { src: '/photo-1.jpg', alt: 'Mountain landscape' },
+  { src: '/photo-2.jpg', alt: 'Ocean sunset' },
+  { src: '/photo-3.jpg', alt: 'Forest trail' },
+];
+
+export default function Example() {
+  return (
+    <Lightbox images={images}>
+      <LightboxTrigger>View Gallery</LightboxTrigger>
+      <LightboxContent />
+    </Lightbox>
+  );
+}
+```
+
+## Basic Example
+
+<ComponentPreview
+  title="Lightbox"
+  code={`<Lightbox images={[
+  { src: 'https://picsum.photos/800/600?random=1', alt: 'Photo 1' },
+  { src: 'https://picsum.photos/800/600?random=2', alt: 'Photo 2' },
+  { src: 'https://picsum.photos/800/600?random=3', alt: 'Photo 3' },
+]}>
+  <LightboxTrigger asChild>
+    <button>View Gallery (3 photos)</button>
+  </LightboxTrigger>
+  <LightboxContent />
+</Lightbox>`}
+>
+  <Lightbox images={[
+    { src: 'https://picsum.photos/800/600?random=1', alt: 'Photo 1' },
+    { src: 'https://picsum.photos/800/600?random=2', alt: 'Photo 2' },
+    { src: 'https://picsum.photos/800/600?random=3', alt: 'Photo 3' },
+  ]}>
+    <LightboxTrigger>View Gallery (3 photos)</LightboxTrigger>
+    <LightboxContent />
+  </Lightbox>
+</ComponentPreview>
+
+## Features
+
+- **Keyboard navigation:** Arrow keys to navigate, Escape to close
+- **Touch support:** Swipe left/right on mobile
+- **Image preloading:** Adjacent images are preloaded for smooth transitions
+- **Accessible:** Built on Radix Dialog for focus management and screen reader support
+
+## API Reference
+
+<PropsTable component="lightbox" />
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `Lightbox` | Root | Context provider with image data |
+| `LightboxTrigger` | `<button>` | Opens the lightbox |
+| `LightboxContent` | Dialog | Full-screen image viewer |

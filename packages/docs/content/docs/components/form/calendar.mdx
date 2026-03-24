@@ -1,0 +1,53 @@
+---
+title: Calendar
+description: A calendar component wrapping react-day-picker with Visor token styling and Phosphor icon navigation.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Calendar } from '@/components/ui/calendar';
+
+## Installation
+
+```bash
+npx visor add calendar
+```
+
+This copies two files into your project:
+
+- `components/ui/calendar/calendar.tsx` — the component
+- `components/ui/calendar/calendar.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Calendar } from '@/components/ui/calendar/calendar';
+import { useState } from 'react';
+
+export default function Example() {
+  const [date, setDate] = useState<Date | undefined>(new Date());
+
+  return (
+    <Calendar
+      mode="single"
+      selected={date}
+      onSelect={setDate}
+    />
+  );
+}
+```
+
+## Basic Example
+
+<ComponentPreview
+  title="Calendar"
+  code={`<Calendar mode="single" />`}
+>
+  <Calendar mode="single" />
+</ComponentPreview>
+
+## API Reference
+
+<PropsTable component="calendar" />
+
+The Calendar component accepts all [react-day-picker](https://react-day-picker.js.org/) props including `mode`, `selected`, `onSelect`, `disabled`, `fromDate`, `toDate`, and more.

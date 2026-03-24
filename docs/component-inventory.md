@@ -1,15 +1,15 @@
 # Component Inventory
 
-## Current Components (40)
+## Current Components (46)
 
-### Form (12)
-- button, checkbox, combobox, field, input, label, radio-group, select, slider, switch, textarea, toggle-group
+### Form (15)
+- button, calendar, checkbox, combobox, date-picker, field, file-upload, input, label, radio-group, select, slider, switch, textarea, toggle-group
 
 ### Container / Layout (4)
 - badge, card, sheet, sidebar
 
-### Content Display (6)
-- accordion, avatar, collapsible, progress, separator, skeleton
+### Content Display (8)
+- accordion, avatar, carousel, collapsible, image, progress, separator, skeleton
 
 ### Navigation (4)
 - breadcrumb, command, navbar, pagination
@@ -17,8 +17,8 @@
 ### Interaction (3)
 - dropdown-menu, scroll-area, tabs
 
-### Overlay (5)
-- context-menu, dialog, hover-card, menubar, popover
+### Overlay (6)
+- context-menu, dialog, hover-card, lightbox, menubar, popover
 
 ### Feedback (6)
 - alert, banner, chart, table, toast, tooltip
@@ -58,11 +58,11 @@ All 15 priority components shipped.
 - [x] Stepper / Wizard
 - [x] Code Block (with syntax highlighting)
 - [x] Timeline
-- [ ] Date Picker
-- [ ] File Upload
-- [ ] Carousel
-- [ ] Lightbox / Image Viewer
-- [ ] Image (with loading states)
+- [x] Date Picker
+- [x] File Upload
+- [x] Carousel
+- [x] Lightbox / Image Viewer
+- [x] Image (with loading states)
 - [x] Heading
 - [x] Text / Prose
 
