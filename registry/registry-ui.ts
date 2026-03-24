@@ -559,4 +559,65 @@ export const ui: Registry = [
       },
     ],
   },
+  {
+    name: "table",
+    type: "registry:ui",
+    description:
+      "A presentational table component with semantic HTML sub-components: TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, and TableCaption.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/table/table.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/table/table.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "accordion",
+    type: "registry:ui",
+    description:
+      "An accessible accordion component with single and multiple expansion modes, built on Radix UI Accordion.",
+    dependencies: [
+      "@radix-ui/react-accordion",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/accordion/accordion.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/accordion/accordion.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "collapsible",
+    type: "registry:ui",
+    description:
+      "A simple collapsible component for single expandable sections, built on Radix UI Collapsible.",
+    dependencies: [
+      "@radix-ui/react-collapsible",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/collapsible/collapsible.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/collapsible/collapsible.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
 ]

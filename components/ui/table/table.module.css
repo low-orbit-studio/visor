@@ -1,0 +1,76 @@
+/* Table container */
+.container {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Table */
+.table {
+  width: 100%;
+  caption-side: bottom;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-primary, #111827);
+}
+
+/* TableHeader */
+.header tr {
+  border-bottom: 1px solid var(--border-default, #e5e7eb);
+}
+
+/* TableBody */
+.body tr:last-child {
+  border-bottom: none;
+}
+
+/* TableFooter */
+.footer {
+  border-top: 1px solid var(--border-default, #e5e7eb);
+  background-color: var(--surface-muted, #f3f4f6);
+  font-weight: 500;
+}
+
+.footer tr:last-child {
+  border-bottom: none;
+}
+
+/* TableRow */
+.row {
+  border-bottom: 1px solid var(--border-default, #e5e7eb);
+  transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.row:hover {
+  background-color: var(--surface-muted, #f3f4f6);
+}
+
+.row[data-state="selected"] {
+  background-color: var(--surface-muted, #f3f4f6);
+}
+
+/* TableHead */
+.head {
+  height: 3rem;
+  padding-left: var(--spacing-3, 0.75rem);
+  padding-right: var(--spacing-3, 0.75rem);
+  text-align: left;
+  vertical-align: middle;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--text-primary, #111827);
+}
+
+/* TableCell */
+.cell {
+  padding: var(--spacing-3, 0.75rem);
+  vertical-align: middle;
+  color: var(--text-primary, #111827);
+}
+
+/* TableCaption */
+.caption {
+  margin-top: var(--spacing-4, 1rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+}

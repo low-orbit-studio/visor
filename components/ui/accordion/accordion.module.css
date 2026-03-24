@@ -1,0 +1,95 @@
+/* Accordion root */
+.root {
+  width: 100%;
+}
+
+/* AccordionItem */
+.item {
+  border-bottom: 1px solid var(--border-default, #e5e7eb);
+}
+
+/* AccordionHeader */
+.header {
+  display: flex;
+}
+
+/* AccordionTrigger */
+.trigger {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2, 0.5rem);
+  padding-top: var(--spacing-4, 1rem);
+  padding-bottom: var(--spacing-4, 1rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 500;
+  color: var(--text-primary, #111827);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+  outline: none;
+  width: 100%;
+}
+
+.trigger:hover {
+  color: var(--text-secondary, #6b7280);
+}
+
+.trigger:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+/* Chevron icon */
+.icon {
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  color: var(--text-secondary, #6b7280);
+  transition: transform var(--motion-duration-200, 200ms) var(--motion-easing-default, ease-in-out);
+}
+
+.trigger[data-state="open"] .icon {
+  transform: rotate(180deg);
+}
+
+/* AccordionContent */
+.content {
+  overflow: hidden;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+}
+
+.content[data-state="closed"] {
+  animation: accordionCollapse var(--motion-duration-200, 200ms) var(--motion-easing-default, ease-in-out);
+}
+
+.content[data-state="open"] {
+  animation: accordionExpand var(--motion-duration-200, 200ms) var(--motion-easing-default, ease-in-out);
+}
+
+.contentInner {
+  padding-bottom: var(--spacing-4, 1rem);
+}
+
+@keyframes accordionExpand {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordionCollapse {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
