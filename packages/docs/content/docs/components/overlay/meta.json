@@ -1,0 +1,10 @@
+{
+  "title": "Overlay",
+  "description": "Components alphabetized. Insert new entries in A-Z order.",
+  "defaultOpen": true,
+  "pages": [
+    "context-menu",
+    "hover-card",
+    "popover"
+  ]
+}

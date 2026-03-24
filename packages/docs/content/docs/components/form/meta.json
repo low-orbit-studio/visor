@@ -1,0 +1,11 @@
+{
+  "title": "Form",
+  "description": "Components alphabetized. Insert new entries in A-Z order.",
+  "defaultOpen": true,
+  "pages": [
+    "combobox",
+    "radio-group",
+    "slider",
+    "toggle-group"
+  ]
+}

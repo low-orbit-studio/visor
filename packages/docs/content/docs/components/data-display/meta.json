@@ -1,0 +1,10 @@
+{
+  "title": "Data Display",
+  "description": "Components alphabetized. Insert new entries in A-Z order.",
+  "defaultOpen": true,
+  "pages": [
+    "accordion",
+    "collapsible",
+    "table"
+  ]
+}
