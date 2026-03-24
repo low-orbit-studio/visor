@@ -79,7 +79,7 @@ Extract design systems from existing projects into `.visor.yaml` themes. Both a 
 Make the docs site a world-class showcase.
 
 **Key work:**
-- Global theme switcher dropdown in docs header — every page is a live preview
+- [x] Global theme switcher dropdown in docs header — every page is a live preview
 - Four-quadrant theme comparator (`/compare`) — 2 themes x light/dark showing real components
 - Full MDX documentation for every component (currently only button exists)
 - All examples respond to the active theme
