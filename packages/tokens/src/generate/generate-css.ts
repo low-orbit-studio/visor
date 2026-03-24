@@ -48,6 +48,7 @@ import {
   adaptiveText,
   adaptiveSurface,
   adaptiveBorder,
+  adaptiveInteractive,
 } from "../tokens/adaptive.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -319,6 +320,7 @@ function buildAdaptiveDecls(theme: "light" | "dark"): {
   textDecls: string[];
   surfaceDecls: string[];
   borderDecls: string[];
+  interactiveDecls: string[];
 } {
   const textDecls: string[] = [];
   for (const [name, values] of Object.entries(adaptiveText)) {
@@ -335,13 +337,18 @@ function buildAdaptiveDecls(theme: "light" | "dark"): {
     borderDecls.push(`--border-${name}: ${toVar(values[theme])};`);
   }
 
-  return { textDecls, surfaceDecls, borderDecls };
+  const interactiveDecls: string[] = [];
+  for (const [name, values] of Object.entries(adaptiveInteractive)) {
+    interactiveDecls.push(`--interactive-${name}: ${toVar(values[theme])};`);
+  }
+
+  return { textDecls, surfaceDecls, borderDecls, interactiveDecls };
 }
 
 function generateThemeCSS(theme: "light" | "dark"): string {
   const themeLabel = theme === "light" ? "Light Theme" : "Dark Theme";
   const lines: string[] = [];
-  const { textDecls, surfaceDecls, borderDecls } = buildAdaptiveDecls(theme);
+  const { textDecls, surfaceDecls, borderDecls, interactiveDecls } = buildAdaptiveDecls(theme);
 
   if (theme === "light") {
     // Light theme: applied to :root (default)
@@ -353,6 +360,9 @@ function generateThemeCSS(theme: "light" | "dark"): string {
 
     lines.push(sectionComment("Adaptive: Border (light)"));
     lines.push(block(":root", borderDecls));
+
+    lines.push(sectionComment("Adaptive: Interactive (light)"));
+    lines.push(block(":root", interactiveDecls));
   } else {
     // Dark theme: applied to manual selectors
     const darkSelectors = [
@@ -371,6 +381,9 @@ function generateThemeCSS(theme: "light" | "dark"): string {
     lines.push(sectionComment("Adaptive: Border (dark) — manual toggle"));
     lines.push(block(darkSelector, borderDecls));
 
+    lines.push(sectionComment("Adaptive: Interactive (dark) — manual toggle"));
+    lines.push(block(darkSelector, interactiveDecls));
+
     // prefers-color-scheme: dark — auto detection
     lines.push(sectionComment("Adaptive: Text (dark) — prefers-color-scheme"));
     lines.push(
@@ -387,6 +400,12 @@ function generateThemeCSS(theme: "light" | "dark"): string {
     lines.push(sectionComment("Adaptive: Border (dark) — prefers-color-scheme"));
     lines.push(
       `@media (prefers-color-scheme: dark) {\n${block(":root:not(.light):not(.theme-light):not([data-theme=\"light\"])", borderDecls)}}`
+    );
+    lines.push("");
+
+    lines.push(sectionComment("Adaptive: Interactive (dark) — prefers-color-scheme"));
+    lines.push(
+      `@media (prefers-color-scheme: dark) {\n${block(":root:not(.light):not(.theme-light):not([data-theme=\"light\"])", interactiveDecls)}}`
     );
     lines.push("");
   }
@@ -532,6 +551,9 @@ function main(): void {
   );
   console.log(
     `  Adaptive border: ${Object.keys(adaptiveBorder).length} (light + dark)`
+  );
+  console.log(
+    `  Adaptive interactive: ${Object.keys(adaptiveInteractive).length} (light + dark)`
   );
 
   console.log("\n✓ Token generation complete");

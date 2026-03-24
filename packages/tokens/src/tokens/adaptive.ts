@@ -190,3 +190,70 @@ export const adaptiveBorder: Record<string, AdaptiveTokenValue> = {
     dark: "color-sky-500",
   },
 };
+
+/** Adaptive interactive tokens */
+export const adaptiveInteractive: Record<string, AdaptiveTokenValue> = {
+  // Primary action
+  "primary-bg": {
+    light: "color-blue-600",
+    dark: "color-blue-500",
+  },
+  "primary-bg-hover": {
+    light: "color-blue-700",
+    dark: "color-blue-400",
+  },
+  "primary-bg-active": {
+    light: "color-blue-800",
+    dark: "color-blue-300",
+  },
+  "primary-text": {
+    light: "color-white",
+    dark: "color-white",
+  },
+
+  // Secondary action
+  "secondary-bg": {
+    light: "color-white",
+    dark: "color-gray-800",
+  },
+  "secondary-bg-hover": {
+    light: "color-gray-50",
+    dark: "color-gray-700",
+  },
+  "secondary-bg-active": {
+    light: "color-gray-100",
+    dark: "color-gray-600",
+  },
+  "secondary-text": {
+    light: "color-gray-900",
+    dark: "color-gray-50",
+  },
+  "secondary-border": {
+    light: "color-gray-300",
+    dark: "color-gray-600",
+  },
+
+  // Destructive action
+  "destructive-bg": {
+    light: "color-red-600",
+    dark: "color-red-500",
+  },
+  "destructive-bg-hover": {
+    light: "color-red-700",
+    dark: "color-red-600",
+  },
+  "destructive-text": {
+    light: "color-white",
+    dark: "color-white",
+  },
+
+  // Ghost action
+  "ghost-bg": {
+    light: "color-white",
+    dark: "color-gray-800",
+  },
+  "ghost-bg-hover": {
+    light: "color-gray-100",
+    dark: "color-gray-700",
+  },
+};

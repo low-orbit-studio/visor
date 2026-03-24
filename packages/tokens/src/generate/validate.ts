@@ -42,6 +42,7 @@ import {
   adaptiveText,
   adaptiveSurface,
   adaptiveBorder,
+  adaptiveInteractive,
 } from "../tokens/adaptive.js";
 
 interface ValidationError {
@@ -208,6 +209,7 @@ function validateAdaptiveTokens(
     { groupName: "adaptiveText", tokens: adaptiveText },
     { groupName: "adaptiveSurface", tokens: adaptiveSurface },
     { groupName: "adaptiveBorder", tokens: adaptiveBorder },
+    { groupName: "adaptiveInteractive", tokens: adaptiveInteractive },
   ];
 
   for (const { groupName, tokens } of groups) {
@@ -268,7 +270,7 @@ function main(): void {
     console.log("✓ All tokens are valid\n");
     console.log(`  Primitives registered: ${primitives.size}`);
     console.log(`  Semantic groups validated: 10`);
-    console.log(`  Adaptive groups validated: 3`);
+    console.log(`  Adaptive groups validated: 4`);
     process.exit(0);
   } else {
     console.error(`✗ Found ${errors.length} validation error(s):\n`);

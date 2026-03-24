@@ -95,6 +95,10 @@ export const semanticInteractive = {
   "destructive-bg": "color-red-600",
   "destructive-bg-hover": "color-red-700",
   "destructive-text": "color-white",
+
+  // Ghost action
+  "ghost-bg": "color-white",
+  "ghost-bg-hover": "color-gray-100",
 } as const;
 
 /** Component spacing tokens (map to spacing primitives) */

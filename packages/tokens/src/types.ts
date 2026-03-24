@@ -187,6 +187,8 @@ export const TOKEN_INTERACTIVE_SECONDARY_BORDER = "--interactive-secondary-borde
 export const TOKEN_INTERACTIVE_DESTRUCTIVE_BG = "--interactive-destructive-bg" as const;
 export const TOKEN_INTERACTIVE_DESTRUCTIVE_BG_HOVER = "--interactive-destructive-bg-hover" as const;
 export const TOKEN_INTERACTIVE_DESTRUCTIVE_TEXT = "--interactive-destructive-text" as const;
+export const TOKEN_INTERACTIVE_GHOST_BG = "--interactive-ghost-bg" as const;
+export const TOKEN_INTERACTIVE_GHOST_BG_HOVER = "--interactive-ghost-bg-hover" as const;
 
 // ============================================================
 // Token Name Union Types
@@ -280,4 +282,20 @@ export type BorderToken =
   | typeof TOKEN_BORDER_ERROR
   | typeof TOKEN_BORDER_INFO;
 
-export type VisorToken = PrimitiveColorToken | TextToken | SurfaceToken | BorderToken;
+export type InteractiveToken =
+  | typeof TOKEN_INTERACTIVE_PRIMARY_BG
+  | typeof TOKEN_INTERACTIVE_PRIMARY_BG_HOVER
+  | typeof TOKEN_INTERACTIVE_PRIMARY_BG_ACTIVE
+  | typeof TOKEN_INTERACTIVE_PRIMARY_TEXT
+  | typeof TOKEN_INTERACTIVE_SECONDARY_BG
+  | typeof TOKEN_INTERACTIVE_SECONDARY_BG_HOVER
+  | typeof TOKEN_INTERACTIVE_SECONDARY_BG_ACTIVE
+  | typeof TOKEN_INTERACTIVE_SECONDARY_TEXT
+  | typeof TOKEN_INTERACTIVE_SECONDARY_BORDER
+  | typeof TOKEN_INTERACTIVE_DESTRUCTIVE_BG
+  | typeof TOKEN_INTERACTIVE_DESTRUCTIVE_BG_HOVER
+  | typeof TOKEN_INTERACTIVE_DESTRUCTIVE_TEXT
+  | typeof TOKEN_INTERACTIVE_GHOST_BG
+  | typeof TOKEN_INTERACTIVE_GHOST_BG_HOVER;
+
+export type VisorToken = PrimitiveColorToken | TextToken | SurfaceToken | BorderToken | InteractiveToken;
