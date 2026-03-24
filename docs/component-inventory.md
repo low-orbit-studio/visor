@@ -17,19 +17,18 @@
 ### Feedback (3)
 - alert, tooltip, chart
 
-## Target Components to Add (~30)
+## Phase 1a: Priority Components (~15)
+
+Highest-value general-purpose components. Built alongside the second standard theme to validate theming across each new component.
 
 ### Navigation
 - [ ] Navbar
 - [ ] Pagination
 - [ ] Command Palette (cmdk-style)
-- [ ] Stepper / Wizard
 
 ### Data Display
 - [ ] Table / DataTable
 - [ ] Accordion / Collapsible
-- [ ] Code Block (with syntax highlighting)
-- [ ] Timeline
 
 ### Feedback
 - [ ] Toast (Sonner-style)
@@ -39,9 +38,7 @@
 ### Form
 - [ ] Radio Group
 - [ ] Slider / Range
-- [ ] Date Picker
 - [ ] Combobox / Autocomplete
-- [ ] File Upload
 - [ ] Toggle Group
 
 ### Overlay
@@ -49,16 +46,21 @@
 - [ ] Hover Card
 - [ ] Menubar
 
-### Media
+## Phase 1b: Remaining Components + Deck
+
+### Remaining General-Purpose
+- [ ] Stepper / Wizard
+- [ ] Code Block (with syntax highlighting)
+- [ ] Timeline
+- [ ] Date Picker
+- [ ] File Upload
 - [ ] Carousel
 - [ ] Lightbox / Image Viewer
 - [ ] Image (with loading states)
-
-### Typography
 - [ ] Heading
 - [ ] Text / Prose
 
-## Deck Components (Separate Category)
+### Deck Components (Separate Category)
 
 Accessible via `npx visor add --category deck` or individually.
 
@@ -92,6 +94,8 @@ Accessible via `npx visor add --category deck` or individually.
 
 ## Testing Strategy
 
-- Move tests from reference-nextjs-app to Visor (not copy — Visor becomes source of truth)
+- **Phase 1a:** Add axe-core a11y testing to vitest setup; all new components include a11y tests from day one
+- **Phase 1b:** Move tests from reference-nextjs-app to Visor (not copy — Visor becomes source of truth). Verify reference-nextjs-app doesn't depend on these tests for its own CI before moving.
 - 100% test coverage for all components
 - Vitest + React Testing Library
+- Add component composition tests (dialog + form, sidebar + nav, dropdown in table)
