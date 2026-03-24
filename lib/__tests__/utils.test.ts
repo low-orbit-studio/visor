@@ -15,8 +15,8 @@ describe("cn", () => {
     expect(cn("foo", undefined, null, "bar")).toBe("foo bar")
   })
 
-  it("deduplicates tailwind classes (last wins)", () => {
-    expect(cn("p-4", "p-2")).toBe("p-2")
+  it("concatenates multiple class names without deduplication", () => {
+    expect(cn("p-4", "p-2")).toBe("p-4 p-2")
   })
 
   it("handles empty input", () => {

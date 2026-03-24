@@ -5,8 +5,8 @@ export const lib: Registry = [
     name: "utils",
     type: "registry:lib",
     description:
-      "Utility function for merging class names with tailwind-merge and clsx.",
-    dependencies: ["clsx", "tailwind-merge"],
+      "Utility function for merging class names with clsx.",
+    dependencies: ["clsx"],
     files: [
       {
         path: "lib/utils.ts",

@@ -21,7 +21,7 @@ const testRegistry: BundledRegistry = {
     makeItem({
       name: "utils",
       type: "registry:lib",
-      dependencies: ["clsx", "tailwind-merge"],
+      dependencies: ["clsx"],
       files: [{ path: "lib/utils.ts", type: "registry:lib", content: "export {}" }],
     }),
     makeItem({
@@ -109,7 +109,6 @@ describe("collectDependencies", () => {
     expect(dependencies).toContain("class-variance-authority")
     expect(dependencies).toContain("@loworbitstudio/visor-core")
     expect(dependencies).toContain("clsx")
-    expect(dependencies).toContain("tailwind-merge")
     // Should be sorted
     expect(dependencies).toEqual([...dependencies].sort())
   })
