@@ -57,8 +57,10 @@ export function ThemeSwitcher() {
     <div className={styles.wrapper}>
       <Select value={theme} onValueChange={handleChange}>
         <SelectTrigger size="sm" className={styles.trigger}>
-          <Palette size={14} weight="duotone" />
-          <SelectValue />
+          <span className={styles.triggerLabel}>
+            <Palette size={16} weight="duotone" />
+            <SelectValue />
+          </span>
         </SelectTrigger>
         <SelectContent>
           {THEMES.map((t) => (
