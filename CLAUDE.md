@@ -65,6 +65,18 @@ The [Low Orbit Playbook](~/Code/low-orbit/low-orbit-playbook/) provides prescrip
 
 When facing a decision, load the relevant playbook treebranch before proceeding. The playbook is prescriptive — follow it, don't improvise.
 
+## Vision & Roadmap
+
+Visor's long-term goals, phased roadmap, and detailed specs live in `/docs/`. Read these when working on strategic decisions, planning new features, or understanding priorities:
+
+- [`docs/vision.md`](./docs/vision.md) — Goals, design principles, source material
+- [`docs/roadmap.md`](./docs/roadmap.md) — 8-phase plan with current status
+- [`docs/component-inventory.md`](./docs/component-inventory.md) — Current vs target components, source material for each
+- [`docs/interchange-format.md`](./docs/interchange-format.md) — Design system interchange format spec (draft)
+- [`docs/ai-consumability.md`](./docs/ai-consumability.md) — AI agent consumability spec (metadata, manifest, patterns, agent-first CLI)
+
+**Current focus:** Phase 1 — Component Library Expansion (25 → ~55 general-purpose + deck category).
+
 ## Environment
 
 - `.env.local` at repo root — contains API keys (if needed)
