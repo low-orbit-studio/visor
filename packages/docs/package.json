@@ -12,19 +12,19 @@
   "keywords": [],
   "license": "UNLICENSED",
   "dependencies": {
-    "fumadocs-core": "^14.6.4",
-    "fumadocs-mdx": "^11.5.2",
-    "fumadocs-ui": "^14.6.4",
-    "next": "^15.1.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "fumadocs-core": "^16.7.5",
+    "fumadocs-mdx": "^14.2.4",
+    "fumadocs-ui": "^16.7.5",
+    "next": "^16.2.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "react-markdown": "^10.1.0",
     "shiki": "^1.29.2"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "@types/react": "^19.0.1",
-    "@types/react-dom": "^19.0.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "typescript": "^5.7.2"
   }
 }
