@@ -1,0 +1,134 @@
+---
+title: Timeline
+description: A vertical timeline component for displaying chronological events with status indicators, custom icons, and timestamps.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import {
+  Timeline,
+  TimelineItem,
+  TimelineIcon,
+  TimelineContent,
+  TimelineTitle,
+  TimelineDescription,
+  TimelineTimestamp,
+} from '@/components/ui/timeline';
+
+## Installation
+
+```bash
+npx visor add timeline
+```
+
+This copies two files into your project:
+
+- `components/ui/timeline/timeline.tsx` — the component
+- `components/ui/timeline/timeline.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  Timeline,
+  TimelineItem,
+  TimelineContent,
+  TimelineTitle,
+  TimelineDescription,
+} from '@/components/ui/timeline/timeline';
+
+export default function Example() {
+  return (
+    <Timeline>
+      <TimelineItem status="complete">
+        <TimelineContent>
+          <TimelineTitle>Order placed</TimelineTitle>
+          <TimelineDescription>Your order has been confirmed.</TimelineDescription>
+        </TimelineContent>
+      </TimelineItem>
+      <TimelineItem status="active">
+        <TimelineContent>
+          <TimelineTitle>In transit</TimelineTitle>
+          <TimelineDescription>Package is on its way.</TimelineDescription>
+        </TimelineContent>
+      </TimelineItem>
+      <TimelineItem>
+        <TimelineContent>
+          <TimelineTitle>Delivered</TimelineTitle>
+        </TimelineContent>
+      </TimelineItem>
+    </Timeline>
+  );
+}
+```
+
+## Basic Example
+
+<ComponentPreview
+  title="Timeline with Status"
+  code={`<Timeline>
+  <TimelineItem status="complete">
+    <TimelineContent>
+      <TimelineTitle>Design</TimelineTitle>
+      <TimelineDescription>Wireframes and prototypes approved.</TimelineDescription>
+      <TimelineTimestamp dateTime="2024-01-10">Jan 10, 2024</TimelineTimestamp>
+    </TimelineContent>
+  </TimelineItem>
+  <TimelineItem status="active">
+    <TimelineContent>
+      <TimelineTitle>Development</TimelineTitle>
+      <TimelineDescription>Building the feature.</TimelineDescription>
+      <TimelineTimestamp dateTime="2024-01-20">Jan 20, 2024</TimelineTimestamp>
+    </TimelineContent>
+  </TimelineItem>
+  <TimelineItem>
+    <TimelineContent>
+      <TimelineTitle>Launch</TimelineTitle>
+      <TimelineDescription>Ship to production.</TimelineDescription>
+    </TimelineContent>
+  </TimelineItem>
+</Timeline>`}
+>
+  <Timeline>
+    <TimelineItem status="complete">
+      <TimelineContent>
+        <TimelineTitle>Design</TimelineTitle>
+        <TimelineDescription>Wireframes and prototypes approved.</TimelineDescription>
+        <TimelineTimestamp dateTime="2024-01-10">Jan 10, 2024</TimelineTimestamp>
+      </TimelineContent>
+    </TimelineItem>
+    <TimelineItem status="active">
+      <TimelineContent>
+        <TimelineTitle>Development</TimelineTitle>
+        <TimelineDescription>Building the feature.</TimelineDescription>
+        <TimelineTimestamp dateTime="2024-01-20">Jan 20, 2024</TimelineTimestamp>
+      </TimelineContent>
+    </TimelineItem>
+    <TimelineItem>
+      <TimelineContent>
+        <TimelineTitle>Launch</TimelineTitle>
+        <TimelineDescription>Ship to production.</TimelineDescription>
+      </TimelineContent>
+    </TimelineItem>
+  </Timeline>
+</ComponentPreview>
+
+## API Reference
+
+### TimelineItemProps
+
+<PropsTable component="timeline" />
+
+The container and all sub-components accept standard HTML `<div>` attributes. `TimelineTimestamp` renders a `<time>` element and accepts a `dateTime` prop.
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `Timeline` | `<div>` | Container |
+| `TimelineItem` | `<div>` | Item wrapper with status |
+| `TimelineIcon` | `<div>` | Optional custom icon slot |
+| `TimelineContent` | `<div>` | Content wrapper |
+| `TimelineTitle` | `<div>` | Event title |
+| `TimelineDescription` | `<p>` | Event description |
+| `TimelineTimestamp` | `<time>` | Semantic timestamp |

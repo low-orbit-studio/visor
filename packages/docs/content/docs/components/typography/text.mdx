@@ -1,0 +1,92 @@
+---
+title: Text
+description: A body text component with size, weight, color, and line-height variants. Renders as a paragraph by default with polymorphic element support.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Text } from '@/components/ui/text';
+
+## Installation
+
+```bash
+npx visor add text
+```
+
+This copies two files into your project:
+
+- `components/ui/text/text.tsx` — the component
+- `components/ui/text/text.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Text } from '@/components/ui/text/text';
+
+export default function Example() {
+  return <Text>This is a paragraph of body text.</Text>;
+}
+```
+
+## Sizes
+
+<ComponentPreview
+  title="All Sizes"
+  code={`import { Text } from '@/components/ui/text/text';
+
+<Text size="xs">Extra small text</Text>
+<Text size="sm">Small text</Text>
+<Text size="md">Medium text (default)</Text>
+<Text size="lg">Large text</Text>
+<Text size="xl">Extra large text</Text>`}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+    <Text size="xs">Extra small text</Text>
+    <Text size="sm">Small text</Text>
+    <Text size="md">Medium text (default)</Text>
+    <Text size="lg">Large text</Text>
+    <Text size="xl">Extra large text</Text>
+  </div>
+</ComponentPreview>
+
+## Colors
+
+<ComponentPreview
+  title="Color Variants"
+  code={`<Text color="primary">Primary text color</Text>
+<Text color="secondary">Secondary text color</Text>
+<Text color="tertiary">Tertiary text color</Text>`}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+    <Text color="primary">Primary text color</Text>
+    <Text color="secondary">Secondary text color</Text>
+    <Text color="tertiary">Tertiary text color</Text>
+  </div>
+</ComponentPreview>
+
+## Polymorphic Element
+
+Use the `as` prop to render as a different HTML element.
+
+<ComponentPreview
+  title="Polymorphic Rendering"
+  code={`<Text as="p">Paragraph (default)</Text>
+<Text as="span">Inline span</Text>
+<Text as="div">Block div</Text>
+<Text as="label">Label element</Text>`}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+    <Text as="p">Paragraph (default)</Text>
+    <Text as="span">Inline span</Text>
+    <Text as="div">Block div</Text>
+    <Text as="label">Label element</Text>
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### TextProps
+
+<PropsTable component="text" />
+
+The component also accepts all standard HTML paragraph attributes.

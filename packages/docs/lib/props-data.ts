@@ -403,6 +403,161 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'code-block': [
+    {
+      name: 'code',
+      type: 'string',
+      required: true,
+      description: 'The raw code string to display.',
+    },
+    {
+      name: 'language',
+      type: 'string',
+      description: 'Language label displayed as a badge in the header.',
+    },
+    {
+      name: 'showLineNumbers',
+      type: 'boolean',
+      default: 'false',
+      description: 'Show line numbers alongside the code.',
+    },
+    {
+      name: 'showCopyButton',
+      type: 'boolean',
+      default: 'true',
+      description: 'Show a copy-to-clipboard button in the header.',
+    },
+    {
+      name: 'title',
+      type: 'string',
+      description: 'Optional title (e.g., filename) displayed in the header.',
+    },
+    {
+      name: 'children',
+      type: 'React.ReactNode',
+      description: 'Pre-highlighted content to render instead of raw code lines.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  heading: [
+    {
+      name: 'level',
+      type: '1 | 2 | 3 | 4 | 5 | 6',
+      default: '2',
+      description: 'Semantic heading level, controls which HTML element is rendered (h1–h6).',
+    },
+    {
+      name: 'size',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'",
+      description: 'Visual size override. Auto-mapped from level if not set.',
+    },
+    {
+      name: 'weight',
+      type: "'normal' | 'medium' | 'semibold' | 'bold'",
+      default: "'semibold'",
+      description: 'Font weight of the heading.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  stepper: [
+    {
+      name: 'activeStep',
+      type: 'number',
+      default: '0',
+      description: 'Zero-based index of the currently active step.',
+    },
+    {
+      name: 'orientation',
+      type: "'horizontal' | 'vertical'",
+      default: "'horizontal'",
+      description: 'Layout direction of the stepper.',
+    },
+    {
+      name: 'step',
+      type: 'number',
+      required: true,
+      description: 'Zero-based step index (on StepperItem and StepperTrigger).',
+    },
+    {
+      name: 'status',
+      type: "'complete' | 'active' | 'upcoming'",
+      description: 'Explicit status override. Auto-derived from activeStep if not set.',
+    },
+    {
+      name: 'complete',
+      type: 'boolean',
+      default: 'false',
+      description: 'Whether the separator line shows as complete (on StepperSeparator).',
+    },
+  ],
+
+  text: [
+    {
+      name: 'as',
+      type: "'p' | 'span' | 'div' | 'label'",
+      default: "'p'",
+      description: 'HTML element to render.',
+    },
+    {
+      name: 'size',
+      type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'",
+      default: "'md'",
+      description: 'Font size of the text.',
+    },
+    {
+      name: 'weight',
+      type: "'normal' | 'medium' | 'semibold' | 'bold'",
+      default: "'normal'",
+      description: 'Font weight of the text.',
+    },
+    {
+      name: 'color',
+      type: "'primary' | 'secondary' | 'tertiary' | 'inherit'",
+      default: "'primary'",
+      description: 'Text color mapped to semantic color tokens.',
+    },
+    {
+      name: 'leading',
+      type: "'tight' | 'snug' | 'normal' | 'relaxed' | 'loose'",
+      default: "'normal'",
+      description: 'Line height of the text.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  timeline: [
+    {
+      name: 'status',
+      type: "'complete' | 'active' | 'upcoming'",
+      default: "'upcoming'",
+      description: 'Status of a TimelineItem, controls dot and connector styling.',
+    },
+    {
+      name: 'dateTime',
+      type: 'string',
+      description: 'Machine-readable date for TimelineTimestamp (HTML time element).',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
   menubar: [
     {
       name: 'variant',

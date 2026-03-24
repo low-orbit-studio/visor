@@ -1,0 +1,119 @@
+/* Timeline container */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Timeline item */
+.item {
+  display: flex;
+  gap: var(--spacing-3, 0.75rem);
+  position: relative;
+  padding-bottom: var(--spacing-6, 1.5rem);
+}
+
+/* Connector line */
+.item::after {
+  content: "";
+  position: absolute;
+  left: calc(0.5rem - 1px); /* center of the dot (8px / 2 - 1px border) */
+  top: calc(1rem + var(--spacing-1, 0.25rem));
+  bottom: 0;
+  width: 2px;
+  background-color: var(--border-muted, #e5e7eb);
+}
+
+.item:last-child::after {
+  display: none;
+}
+
+.item:last-child {
+  padding-bottom: 0;
+}
+
+/* Default dot (when no TimelineIcon is provided) */
+.item::before {
+  content: "";
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  border-radius: var(--radius-full, 9999px);
+  margin-top: var(--spacing-1, 0.25rem);
+  z-index: 1;
+  transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+/* Status-based dot styling */
+.item--upcoming::before {
+  background-color: var(--surface-muted, #f3f4f6);
+  border: 2px solid var(--border-default, #e5e7eb);
+}
+
+.item--active::before {
+  background-color: var(--interactive-primary-bg, #111827);
+  border: 2px solid var(--interactive-primary-bg, #111827);
+}
+
+.item--complete::before {
+  background-color: var(--interactive-primary-bg, #111827);
+  border: 2px solid var(--interactive-primary-bg, #111827);
+}
+
+/* Hide default dot when TimelineIcon is present */
+.item:has(> [data-slot="timeline-icon"])::before {
+  display: none;
+}
+
+/* Adjust connector position when icon is present */
+.item:has(> [data-slot="timeline-icon"])::after {
+  left: calc(0.75rem - 1px); /* center of the icon container */
+}
+
+/* Timeline icon slot */
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: var(--radius-full, 9999px);
+  background-color: var(--interactive-primary-bg, #111827);
+  color: var(--interactive-primary-text, #f9fafb);
+  z-index: 1;
+  margin-top: var(--spacing-1, 0.25rem);
+}
+
+/* Content area */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+  min-width: 0;
+  padding-top: 0;
+}
+
+/* Title */
+.title {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-primary, #111827);
+  line-height: var(--line-height-snug, 1.375);
+}
+
+/* Description */
+.description {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+  line-height: var(--line-height-normal, 1.5);
+  margin: 0;
+}
+
+/* Timestamp */
+.timestamp {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-tertiary, #9ca3af);
+  line-height: var(--line-height-normal, 1.5);
+}

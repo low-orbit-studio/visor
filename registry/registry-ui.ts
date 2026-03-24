@@ -2,6 +2,102 @@ import type { Registry } from "./schema"
 
 export const ui: Registry = [
   {
+    name: "code-block",
+    type: "registry:ui",
+    description:
+      "A lightweight code display component with optional line numbers, copy-to-clipboard, and language badge.",
+    dependencies: [
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/code-block/code-block.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/code-block/code-block.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "heading",
+    type: "registry:ui",
+    description:
+      "A semantic heading component (h1-h6) with independent size and weight variants using CVA.",
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/heading/heading.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/heading/heading.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "stepper",
+    type: "registry:ui",
+    description:
+      "A multi-step progress indicator with horizontal and vertical orientations, auto-derived step status, and accessible ARIA roles.",
+    dependencies: [
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/stepper/stepper.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/stepper/stepper.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "text",
+    type: "registry:ui",
+    description:
+      "A body text component with size, weight, color, and line-height variants using CVA.",
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/text/text.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/text/text.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "timeline",
+    type: "registry:ui",
+    description:
+      "A vertical timeline component with status-based styling, optional icons, timestamps, and connector lines.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/timeline/timeline.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/timeline/timeline.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "button",
     type: "registry:ui",
     description:

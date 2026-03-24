@@ -1,0 +1,129 @@
+---
+title: Code Block
+description: A lightweight code display component with optional line numbers, copy-to-clipboard, and language badge. Consumers integrate their own syntax highlighter.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { CodeBlock } from '@/components/ui/code-block';
+
+## Installation
+
+```bash
+npx visor add code-block
+```
+
+This copies two files into your project:
+
+- `components/ui/code-block/code-block.tsx` — the component
+- `components/ui/code-block/code-block.module.css` — the styles
+
+## Usage
+
+```tsx
+import { CodeBlock } from '@/components/ui/code-block/code-block';
+
+export default function Example() {
+  return (
+    <CodeBlock
+      code="const greeting = 'Hello, world!';"
+      language="typescript"
+    />
+  );
+}
+```
+
+## Basic Example
+
+<ComponentPreview
+  title="Basic Code Block"
+  code={`<CodeBlock
+  code="const greeting = 'Hello, world!';"
+  language="typescript"
+/>`}
+>
+  <CodeBlock
+    code="const greeting = 'Hello, world!';"
+    language="typescript"
+  />
+</ComponentPreview>
+
+## With Line Numbers
+
+<ComponentPreview
+  title="Line Numbers"
+  code={`<CodeBlock
+  code={\`function fibonacci(n) {
+  if (n <= 1) return n;
+  return fibonacci(n - 1) + fibonacci(n - 2);
+}\`}
+  language="javascript"
+  showLineNumbers
+/>`}
+>
+  <CodeBlock
+    code={`function fibonacci(n) {\n  if (n <= 1) return n;\n  return fibonacci(n - 1) + fibonacci(n - 2);\n}`}
+    language="javascript"
+    showLineNumbers
+  />
+</ComponentPreview>
+
+## With Title
+
+<ComponentPreview
+  title="File Title"
+  code={`<CodeBlock
+  code="export default function App() { return <h1>Hello</h1>; }"
+  title="app.tsx"
+  language="tsx"
+/>`}
+>
+  <CodeBlock
+    code="export default function App() { return <h1>Hello</h1>; }"
+    title="app.tsx"
+    language="tsx"
+  />
+</ComponentPreview>
+
+## Without Copy Button
+
+<ComponentPreview
+  title="No Copy Button"
+  code={`<CodeBlock
+  code="npm install @loworbitstudio/visor-core"
+  language="bash"
+  showCopyButton={false}
+/>`}
+>
+  <CodeBlock
+    code="npm install @loworbitstudio/visor-core"
+    language="bash"
+    showCopyButton={false}
+  />
+</ComponentPreview>
+
+## API Reference
+
+### CodeBlockProps
+
+<PropsTable component="code-block" />
+
+The component also accepts all standard `<div>` HTML attributes.
+
+## Syntax Highlighting
+
+This component intentionally ships without a syntax highlighter. To integrate Shiki, Prism, or any other highlighter, pass pre-highlighted markup as `children`:
+
+```tsx
+import { codeToHtml } from 'shiki';
+
+const highlighted = await codeToHtml(code, {
+  lang: 'tsx',
+  theme: 'github-dark',
+});
+
+// Pass highlighted HTML as children — it replaces the raw code rendering
+<CodeBlock code={code} language="tsx">
+  <div>{/* render your highlighted output here */}</div>
+</CodeBlock>
+```

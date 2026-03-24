@@ -18,6 +18,15 @@ import { describe, it, expect, vi } from "vitest"
 
 import { Alert, AlertTitle, AlertDescription } from "../alert/alert"
 import { Badge } from "../badge/badge"
+import { Heading } from "../heading/heading"
+import { Text } from "../text/text"
+import {
+  Timeline,
+  TimelineItem,
+  TimelineContent,
+  TimelineTitle,
+  TimelineDescription,
+} from "../timeline/timeline"
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -47,6 +56,14 @@ import { Textarea } from "../textarea/textarea"
 
 // ─── Client-only components ───────────────────────────────────────────────────
 
+import { CodeBlock } from "../code-block/code-block"
+import {
+  Stepper,
+  StepperItem,
+  StepperTrigger,
+  StepperTitle,
+  StepperSeparator,
+} from "../stepper/stepper"
 import { Avatar, AvatarFallback, AvatarImage } from "../avatar/avatar"
 import { Checkbox } from "../checkbox/checkbox"
 import {
@@ -184,6 +201,31 @@ describe("SSR: server-safe components render to string without error", () => {
     const html = renderToString(<Textarea placeholder="Write something" />)
     expect(html).toContain("Write something")
   })
+
+  it("Heading renders to string", () => {
+    const html = renderToString(<Heading level={1}>Page Title</Heading>)
+    expect(html).toContain("Page Title")
+  })
+
+  it("Text renders to string", () => {
+    const html = renderToString(<Text>Body content</Text>)
+    expect(html).toContain("Body content")
+  })
+
+  it("Timeline renders to string", () => {
+    const html = renderToString(
+      <Timeline>
+        <TimelineItem status="complete">
+          <TimelineContent>
+            <TimelineTitle>Step 1</TimelineTitle>
+            <TimelineDescription>First step</TimelineDescription>
+          </TimelineContent>
+        </TimelineItem>
+      </Timeline>
+    )
+    expect(html).toContain("Step 1")
+    expect(html).toContain("First step")
+  })
 })
 
 // ─── Client rendering tests (all components) ─────────────────────────────────
@@ -255,7 +297,53 @@ describe("Client: all components render without crashing", () => {
     expect(getByRole("textbox")).toBeDefined()
   })
 
+  it("Heading renders on client", () => {
+    const { getByRole } = render(<Heading level={2}>Section</Heading>)
+    expect(getByRole("heading", { level: 2 })).toBeDefined()
+  })
+
+  it("Text renders on client", () => {
+    const { getByText } = render(<Text>Paragraph text</Text>)
+    expect(getByText("Paragraph text")).toBeDefined()
+  })
+
+  it("Timeline renders on client", () => {
+    const { getByText } = render(
+      <Timeline>
+        <TimelineItem>
+          <TimelineContent>
+            <TimelineTitle>Event</TimelineTitle>
+          </TimelineContent>
+        </TimelineItem>
+      </Timeline>
+    )
+    expect(getByText("Event")).toBeDefined()
+  })
+
   // Client-only
+  it("CodeBlock renders on client", () => {
+    const { getByText } = render(<CodeBlock code="const x = 1" />)
+    expect(getByText("const x = 1")).toBeDefined()
+  })
+
+  it("Stepper renders on client", () => {
+    const { getByText } = render(
+      <Stepper activeStep={0}>
+        <StepperItem step={0}>
+          <StepperTrigger step={0} />
+          <StepperTitle>First</StepperTitle>
+        </StepperItem>
+        <StepperSeparator />
+        <StepperItem step={1}>
+          <StepperTrigger step={1} />
+          <StepperTitle>Second</StepperTitle>
+        </StepperItem>
+      </Stepper>
+    )
+    expect(getByText("First")).toBeDefined()
+    expect(getByText("Second")).toBeDefined()
+  })
+
   it("Avatar renders on client", () => {
     const { getByText } = render(
       <Avatar>
