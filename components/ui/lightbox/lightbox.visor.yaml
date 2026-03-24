@@ -1,0 +1,63 @@
+name: Lightbox
+description: A full-screen image viewer with gallery navigation, keyboard and touch support, built on Radix Dialog.
+category: media
+
+when_to_use:
+  - Full-screen viewing of images in a gallery or portfolio
+  - Product image zoom/detail views
+  - Photo galleries with prev/next navigation
+  - Any scenario where images need to be viewed at maximum size with a dark overlay
+
+when_not_to_use:
+  - Inline image display (use Image)
+  - Image carousels that stay in-page (use Carousel)
+  - Video playback (use a dedicated video player)
+  - Modal dialogs with non-image content (use Dialog)
+
+why: >
+  Lightbox wraps Radix Dialog with a dark overlay optimized for image viewing.
+  It provides arrow key navigation, touch swipe support, image counter, close
+  button, and adjacent image preloading. The compound component API separates
+  trigger from content, and controlled open state allows programmatic control.
+
+props:
+  - name: images
+    type: "LightboxImage[]"
+    description: "Array of { src, alt } objects to display"
+  - name: initialIndex
+    type: number
+    default: "0"
+    description: Index of the initially displayed image
+  - name: open
+    type: boolean
+    description: Controlled open state
+  - name: onOpenChange
+    type: "(open: boolean) => void"
+    description: Called when open state changes
+
+sub_components:
+  - name: Lightbox
+    description: Root provider managing image list, navigation state, and Dialog open state.
+  - name: LightboxTrigger
+    description: Element that opens the lightbox on click.
+  - name: LightboxContent
+    description: Full-screen overlay with image display, navigation, counter, and close button.
+
+dependencies:
+  - "@radix-ui/react-dialog"
+  - "@phosphor-icons/react"
+
+example: |
+  <Lightbox
+    images={[
+      { src: "/photo-1.jpg", alt: "Beach sunset" },
+      { src: "/photo-2.jpg", alt: "Mountain view" },
+    ]}
+    open={isOpen}
+    onOpenChange={setIsOpen}
+  >
+    <LightboxTrigger>
+      <button>View gallery</button>
+    </LightboxTrigger>
+    <LightboxContent />
+  </Lightbox>

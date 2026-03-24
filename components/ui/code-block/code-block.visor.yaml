@@ -1,0 +1,53 @@
+name: CodeBlock
+description: A lightweight code display component with optional line numbers, copy-to-clipboard, and language badge.
+category: typography
+
+when_to_use:
+  - Displaying code snippets in documentation or blog posts
+  - Showing configuration examples or API responses
+  - Inline code previews with a copy button for quick copying
+  - Technical content where line numbers aid readability
+
+when_not_to_use:
+  - Inline code within a sentence (use a styled <code> element)
+  - Editable code (use a code editor component like Monaco or CodeMirror)
+  - Syntax-highlighted code with language-aware coloring (pass pre-highlighted children)
+
+why: >
+  CodeBlock provides a consistent code display surface with a header bar for
+  title/language labeling and a copy-to-clipboard button. Line numbers are
+  opt-in. The component uses monospace font tokens and handles clipboard API
+  gracefully when unavailable. Pass children for custom rendering (e.g.,
+  pre-highlighted HTML from a syntax highlighter).
+
+props:
+  - name: code
+    type: string
+    description: Raw code string to display
+  - name: language
+    type: string
+    description: Language label shown in the header
+  - name: showLineNumbers
+    type: boolean
+    default: "false"
+  - name: showCopyButton
+    type: boolean
+    default: "true"
+  - name: title
+    type: string
+    description: Custom title for the header (overrides language label)
+  - name: children
+    type: "React.ReactNode"
+    description: Custom rendered code content (overrides default line rendering)
+
+dependencies:
+  - "@phosphor-icons/react"
+
+example: |
+  <CodeBlock
+    code={`const greeting = "Hello, world!"\nconsole.log(greeting)`}
+    language="typescript"
+    showLineNumbers
+  />
+
+  <CodeBlock code="npm install @loworbitstudio/visor-core" title="Install" />

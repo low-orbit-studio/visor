@@ -1,0 +1,58 @@
+name: Text
+description: A body text component with size, weight, color, and line-height variants.
+category: typography
+
+when_to_use:
+  - Body paragraphs and descriptive text
+  - Captions, helper text, or secondary descriptions
+  - Any text content that needs consistent typographic styling
+  - Inline text elements (span, label) with variant control
+
+when_not_to_use:
+  - Page or section headings (use Heading)
+  - Form field labels (use Label or Field)
+  - Code snippets or monospace text (use CodeBlock or inline <code>)
+
+why: >
+  Text provides a polymorphic body text primitive with CVA variants for size,
+  weight, color, and line-height. It renders as p by default but supports span,
+  div, and label via the as prop. All typography values reference design tokens,
+  ensuring consistency across themes.
+
+variants:
+  size: [xs, sm, md, lg, xl]
+  weight: [normal, medium, semibold, bold]
+  color: [primary, secondary, tertiary, inherit]
+  leading: [tight, snug, normal, relaxed, loose]
+
+props:
+  - name: as
+    type: "'p' | 'span' | 'div' | 'label'"
+    default: "'p'"
+    description: HTML element to render
+  - name: size
+    type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'"
+    default: "'md'"
+  - name: weight
+    type: "'normal' | 'medium' | 'semibold' | 'bold'"
+    default: "'normal'"
+  - name: color
+    type: "'primary' | 'secondary' | 'tertiary' | 'inherit'"
+    default: "'primary'"
+  - name: leading
+    type: "'tight' | 'snug' | 'normal' | 'relaxed' | 'loose'"
+    default: "'normal'"
+
+dependencies:
+  - "class-variance-authority"
+
+example: |
+  <Text>Default body text paragraph.</Text>
+
+  <Text size="sm" color="secondary">
+    Helper text or caption.
+  </Text>
+
+  <Text as="span" weight="semibold" size="lg">
+    Inline emphasized text
+  </Text>

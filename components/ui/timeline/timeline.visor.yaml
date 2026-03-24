@@ -1,0 +1,67 @@
+name: Timeline
+description: A vertical timeline with status-based styling, optional icons, timestamps, and connector lines.
+category: data-display
+
+when_to_use:
+  - Activity feeds showing chronological events
+  - Order or shipment tracking with status progression
+  - Changelog or version history displays
+  - Project milestones or roadmap visualization
+
+when_not_to_use:
+  - Multi-step form wizards with navigation (use Stepper)
+  - Horizontal progress indicators (use Stepper with horizontal orientation)
+  - Simple ordered lists without visual connectors (use a standard list)
+  - Calendar-based event views (use Calendar)
+
+why: >
+  Timeline provides a compound component API for building vertical event feeds
+  with automatic connector lines between items and status-based dot styling
+  (complete, active, upcoming). Optional TimelineIcon replaces the default dot
+  with a custom icon. The CSS handles connector positioning automatically,
+  including adjustments when icons are present.
+
+props:
+  - name: status
+    type: "'complete' | 'active' | 'upcoming'"
+    default: "'upcoming'"
+    description: Status of a TimelineItem, controls dot and connector styling
+
+sub_components:
+  - name: Timeline
+    description: Root container for the vertical timeline.
+  - name: TimelineItem
+    description: Individual event with status-based dot styling and connector line.
+  - name: TimelineIcon
+    description: Optional custom icon replacing the default status dot.
+  - name: TimelineContent
+    description: Container for the event's title, description, and timestamp.
+  - name: TimelineTitle
+    description: Primary label for the event.
+  - name: TimelineDescription
+    description: Secondary descriptive text for the event.
+  - name: TimelineTimestamp
+    description: Semantic <time> element for the event date/time.
+
+dependencies: []
+
+example: |
+  <Timeline>
+    <TimelineItem status="complete">
+      <TimelineContent>
+        <TimelineTitle>Order placed</TimelineTitle>
+        <TimelineTimestamp dateTime="2024-01-15">Jan 15</TimelineTimestamp>
+      </TimelineContent>
+    </TimelineItem>
+    <TimelineItem status="active">
+      <TimelineContent>
+        <TimelineTitle>In transit</TimelineTitle>
+        <TimelineDescription>Package is on the way.</TimelineDescription>
+      </TimelineContent>
+    </TimelineItem>
+    <TimelineItem status="upcoming">
+      <TimelineContent>
+        <TimelineTitle>Delivered</TimelineTitle>
+      </TimelineContent>
+    </TimelineItem>
+  </Timeline>

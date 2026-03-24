@@ -1,0 +1,57 @@
+name: FileUpload
+description: A drag-and-drop file upload zone with file validation, keyboard activation, and customizable content.
+category: form
+
+when_to_use:
+  - File upload fields in forms (documents, images, attachments)
+  - Drag-and-drop upload zones for bulk file ingestion
+  - Profile picture or avatar upload areas
+  - Any file input where a visual drop target improves UX
+
+when_not_to_use:
+  - Simple file input without drag-and-drop (use a native input[type="file"])
+  - Large file uploads needing progress tracking (extend with a progress bar)
+  - Image cropping or editing after upload (compose with a separate editor)
+
+why: >
+  FileUpload provides a complete drag-and-drop file input with built-in
+  validation for file size and count, keyboard activation (Enter/Space),
+  and visual drag-over feedback. The default content shows accepted types
+  and limits, but children can fully replace the drop zone UI. The hidden
+  native input handles click-to-browse and resets after each selection.
+
+props:
+  - name: accept
+    type: string
+    description: "Accepted file types (e.g., 'image/*', '.pdf,.doc')"
+  - name: maxSize
+    type: number
+    default: "10"
+    description: Maximum file size in MB
+  - name: maxFiles
+    type: number
+    default: "1"
+    description: Maximum number of files allowed
+  - name: disabled
+    type: boolean
+    default: "false"
+  - name: onFilesChange
+    type: "(files: File[]) => void"
+    description: Called when valid files are selected or dropped
+  - name: children
+    type: "React.ReactNode"
+    description: Custom drop zone content (overrides default UI)
+
+dependencies:
+  - "@phosphor-icons/react"
+
+example: |
+  <FileUpload
+    accept="image/*"
+    maxSize={5}
+    onFilesChange={(files) => console.log(files)}
+  />
+
+  <FileUpload accept=".pdf,.doc" maxFiles={3}>
+    <p>Drop your documents here</p>
+  </FileUpload>
