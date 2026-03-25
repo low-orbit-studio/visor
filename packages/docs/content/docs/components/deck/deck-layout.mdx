@@ -1,0 +1,45 @@
+---
+title: DeckLayout
+description: The root layout for a slide deck with scroll-snap, keyboard navigation, and integrated dot navigation.
+---
+
+## Installation
+
+```bash
+npx visor add deck-layout
+```
+
+## Usage
+
+```tsx
+import { DeckLayout } from '@/components/deck/deck-layout/deck-layout';
+
+export default function Example() {
+  return (
+    <DeckLayout slideTitles={['Intro', 'Features', 'Demo', 'Close']}>
+      <section id="s-intro">Slide 1</section>
+      <section id="s-features">Slide 2</section>
+      <section id="s-demo">Slide 3</section>
+      <section id="s-close">Slide 4</section>
+    </DeckLayout>
+  );
+}
+```
+
+## Features
+
+- **Scroll-snap slide container** — full-viewport snapping between slides
+- **Keyboard navigation** — Arrow keys, Space, Home, and End to move between slides
+- **Mouse wheel navigation** — smooth scroll-snap on wheel events
+- **IntersectionObserver animations** — triggers entrance animations as slides come into view
+- **Integrated DotNav** — automatic dot navigation synced to scroll position
+- **Optional controls render prop** — inject custom UI into the deck chrome
+
+## API Reference
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | — | Slide elements to render |
+| `slideTitles` | `string[]` | — | Labels for DotNav tooltips |
+| `controls` | `(props) => ReactNode` | — | Render prop for custom deck controls |
+| `className` | `string` | — | Additional CSS class |

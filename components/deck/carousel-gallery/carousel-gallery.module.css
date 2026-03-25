@@ -1,0 +1,39 @@
+.grid {
+  display: grid;
+  gap: var(--spacing-4, 16px);
+  width: 100%;
+  margin-top: var(--spacing-6, 24px);
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+}
+
+.card {
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: none;
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+  transition: transform var(--motion-duration-fast, 150ms) var(--motion-easing-standard, ease);
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.caption {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #4b5563);
+  margin-top: var(--spacing-2, 8px);
+  text-align: center;
+}

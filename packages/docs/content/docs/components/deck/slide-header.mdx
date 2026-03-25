@@ -1,0 +1,41 @@
+---
+title: SlideHeader
+description: An animated slide header with subtitle, title, and optional description.
+---
+
+## Installation
+
+```bash
+npx visor add deck-slide-header
+```
+
+## Usage
+
+```tsx
+import { SlideHeader } from '@/components/deck/slide-header/slide-header';
+
+export default function Example() {
+  return (
+    <SlideHeader
+      subtitle="Chapter 1"
+      title="Getting Started"
+      description="An introduction to the platform and its capabilities."
+    />
+  );
+}
+```
+
+## Features
+
+- **Stagger entrance animations** — subtitle, title, and description animate in sequence
+- **Fluid typography** — scales smoothly across viewport sizes
+- **Theme-aware text colors** — inherits from the parent Slide theme
+
+## API Reference
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `subtitle` | `string` | — | Small text above the title |
+| `title` | `string` | — | Main heading text |
+| `description` | `string` | — | Optional body text below the title |
+| `className` | `string` | — | Additional CSS class |

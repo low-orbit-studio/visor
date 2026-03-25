@@ -13,9 +13,10 @@ export function initCommand(cwd: string): void {
   logger.success("Created visor.json")
   logger.blank()
   logger.info("Default paths:")
-  logger.item(`components → ${DEFAULT_CONFIG.paths.components}`)
-  logger.item(`hooks      → ${DEFAULT_CONFIG.paths.hooks}`)
-  logger.item(`lib        → ${DEFAULT_CONFIG.paths.lib}`)
+  logger.item(`components      → ${DEFAULT_CONFIG.paths.components}`)
+  logger.item(`deck components → ${DEFAULT_CONFIG.paths.deckComponents}`)
+  logger.item(`hooks           → ${DEFAULT_CONFIG.paths.hooks}`)
+  logger.item(`lib             → ${DEFAULT_CONFIG.paths.lib}`)
 
   if (!hasVisorTokens(cwd)) {
     logger.blank()

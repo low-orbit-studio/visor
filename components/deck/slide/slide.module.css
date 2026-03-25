@@ -1,0 +1,102 @@
+.slide {
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 5vh 8vw;
+  scroll-snap-align: start;
+  overflow: hidden;
+  background-color: var(--surface-default, #f9fafb);
+  color: var(--text-primary, #111827);
+}
+
+.center {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.flush {
+  padding: 0;
+}
+
+.dark {
+  background-color: var(--color-primary-900, #111827);
+  color: var(--text-on-dark, #f9fafb);
+}
+
+.hero {
+  justify-content: flex-end;
+  padding-bottom: 8vh;
+}
+
+.photo {
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.bgImage {
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Hero background image */
+.heroBg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    var(--color-primary-900, #111827) 0%,
+    rgba(17, 24, 39, 0.6) 40%,
+    transparent 100%
+  );
+  z-index: 1;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+}
+
+/* Full-bleed background image */
+.bgImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.bgOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.4);
+  z-index: 1;
+}
+
+/* Animation: fade in when slide becomes visible */
+.slide [data-deck-animate] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity var(--motion-duration-normal, 500ms) var(--motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1)),
+    transform var(--motion-duration-normal, 500ms) var(--motion-easing-standard, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+:global([data-deck-visible="true"]) [data-deck-animate] {
+  opacity: 1;
+  transform: translateY(0);
+}

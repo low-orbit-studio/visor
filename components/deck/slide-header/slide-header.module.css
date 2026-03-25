@@ -1,0 +1,36 @@
+.header {
+  display: flex;
+  flex-direction: column;
+}
+
+.subtitle {
+  font-size: clamp(0.78rem, 0.7rem + 0.3vw, 0.92rem);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent, #6b7280);
+}
+
+.title {
+  font-size: clamp(2.2rem, 1.8rem + 1.5vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-top: var(--spacing-4, 16px);
+  color: inherit;
+}
+
+.description {
+  font-size: clamp(1.05rem, 1rem + 0.2vw, 1.2rem);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.6;
+  margin-top: var(--spacing-4, 16px);
+  max-width: 40rem;
+  color: var(--text-secondary, #4b5563);
+}
+
+/* Inherit light text in dark slides */
+:global([data-theme="dark"]) .description {
+  color: var(--text-on-dark-secondary, #d1d5db);
+}

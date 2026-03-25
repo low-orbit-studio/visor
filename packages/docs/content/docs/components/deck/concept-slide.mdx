@@ -1,0 +1,47 @@
+---
+title: ConceptSlide
+description: A slide with auto-playing muted video background and text overlay.
+---
+
+## Installation
+
+```bash
+npx visor add deck-concept-slide
+```
+
+## Usage
+
+```tsx
+import { ConceptSlide } from '@/components/deck/concept-slide/concept-slide';
+
+export default function Example() {
+  return (
+    <ConceptSlide
+      id="concept"
+      theme="dark"
+      video="/videos/demo-reel.mp4"
+      poster="/images/demo-poster.jpg"
+    >
+      <h2>Our Vision</h2>
+      <p>Building the future, one pixel at a time.</p>
+    </ConceptSlide>
+  );
+}
+```
+
+## Features
+
+- **Auto-playing muted video background** — looping video plays without audio
+- **Text overlay** — content renders on top of the video
+- **Scale animation on visibility** — video scales up when the slide enters the viewport
+
+## API Reference
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `id` | `string` | — | Unique slide identifier |
+| `theme` | `"light" \| "dark"` | `"light"` | Color theme for overlay text |
+| `video` | `string` | — | URL of the background video |
+| `poster` | `string` | — | Poster image shown before video loads |
+| `children` | `ReactNode` | — | Overlay content |
+| `className` | `string` | — | Additional CSS class |

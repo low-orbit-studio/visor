@@ -1,0 +1,103 @@
+.footer {
+  width: 100vw;
+  min-height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-primary-900, #111827);
+  color: var(--text-on-dark, #f9fafb);
+  padding: 8vh 8vw;
+}
+
+.inner {
+  width: 100%;
+  max-width: 80rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 2fr repeat(auto-fit, minmax(10rem, 1fr));
+  gap: var(--spacing-8, 32px);
+}
+
+.brand {
+  max-width: 24rem;
+}
+
+.logo {
+  font-size: clamp(1.6rem, 1.3rem + 1vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.logoDot {
+  color: var(--color-accent, #6b7280);
+}
+
+.description {
+  font-size: clamp(1.6rem, 1.3rem + 1vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: var(--spacing-4, 16px);
+  color: var(--text-on-dark, #f9fafb);
+}
+
+.colTitle {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent, #6b7280);
+  margin-bottom: var(--spacing-4, 16px);
+}
+
+.link {
+  display: block;
+  border: none;
+  background: none;
+  padding: var(--spacing-1, 4px) 0;
+  text-align: left;
+  font-size: 0.95rem;
+  color: var(--text-on-dark-secondary, #d1d5db);
+  cursor: pointer;
+  transition: color var(--motion-duration-fast, 150ms) var(--motion-easing-standard, ease);
+  text-decoration: none;
+}
+
+.link:hover {
+  color: var(--text-on-dark, #f9fafb);
+}
+
+.linkAccent {
+  color: var(--color-accent, #6b7280);
+  font-weight: 600;
+}
+
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-12, 48px);
+  padding-top: var(--spacing-6, 24px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tagline {
+  font-size: 0.85rem;
+  color: var(--text-on-dark-secondary, #d1d5db);
+}
+
+.taglineLink {
+  color: var(--color-accent, #6b7280);
+  text-decoration: none;
+}
+
+.taglineLink:hover {
+  text-decoration: underline;
+}
+
+.copy {
+  font-size: 0.78rem;
+  color: var(--text-on-dark-secondary, #d1d5db);
+}

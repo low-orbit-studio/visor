@@ -1,0 +1,44 @@
+---
+title: DotNav
+description: Fixed-position navigation dots for tracking and jumping between slides.
+---
+
+## Installation
+
+```bash
+npx visor add deck-dot-nav
+```
+
+## Usage
+
+```tsx
+import { DotNav } from '@/components/deck/dot-nav/dot-nav';
+
+export default function Example() {
+  return (
+    <DotNav
+      slideCount={5}
+      currentIndex={0}
+      onDotClick={(index) => console.log('Navigate to', index)}
+      titles={['Intro', 'Features', 'Demo', 'Pricing', 'Close']}
+    />
+  );
+}
+```
+
+## Features
+
+- **Fixed position navigation dots** — always visible during the presentation
+- **Hover tooltips with slide titles** — shows the slide name on hover
+- **Active state indicators** — highlights the current slide
+- **Dark variant for dark slides** — use `variant="dark"` for light-colored dots
+
+## API Reference
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `slideCount` | `number` | — | Total number of slides |
+| `currentIndex` | `number` | — | Index of the currently active slide |
+| `onDotClick` | `(index: number) => void` | — | Callback when a dot is clicked |
+| `variant` | `"light" \| "dark"` | `"light"` | Color variant for dot styling |
+| `titles` | `string[]` | — | Tooltip labels for each dot |

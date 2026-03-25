@@ -18,6 +18,7 @@ export interface BundledRegistryItem {
   name: string
   type: RegistryItemType
   description?: string
+  category?: string
   dependencies?: string[]
   devDependencies?: string[]
   registryDependencies?: string[]

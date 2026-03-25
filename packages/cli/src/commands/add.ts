@@ -14,6 +14,7 @@ import { logger } from "../utils/logger.js"
 
 export interface AddOptions {
   overwrite?: boolean
+  category?: string
 }
 
 export function addCommand(
@@ -24,11 +25,42 @@ export function addCommand(
   const config = loadConfig(cwd)
   const registry = loadRegistry()
 
+  // Resolve component names from --category flag
+  let itemNames = components
+
+  if (options.category) {
+    if (components.length > 0) {
+      logger.error(
+        "Cannot use --category with individual component names. Use one or the other."
+      )
+      process.exit(1)
+    }
+
+    const categoryItems = registry.items.filter(
+      (item) => item.category === options.category
+    )
+
+    if (categoryItems.length === 0) {
+      logger.error(`No items found in category "${options.category}".`)
+      process.exit(1)
+    }
+
+    itemNames = categoryItems.map((item) => item.name)
+    logger.info(
+      `Category "${options.category}": ${itemNames.length} item(s) found`
+    )
+  }
+
+  if (itemNames.length === 0) {
+    logger.error("No items specified. Provide item names or use --category.")
+    process.exit(1)
+  }
+
   // Resolve all items including transitive registry dependencies
-  const items = resolveTransitiveDeps(registry, components)
+  const items = resolveTransitiveDeps(registry, itemNames)
 
   logger.info(
-    `Resolving ${components.length} item(s) → ${items.length} total (with dependencies)`
+    `Resolving ${itemNames.length} item(s) → ${items.length} total (with dependencies)`
   )
   logger.blank()
 
