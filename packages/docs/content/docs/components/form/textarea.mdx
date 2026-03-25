@@ -1,0 +1,52 @@
+---
+title: Textarea
+description: A multi-line text input with focus and validation states.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Textarea } from '@/components/ui/textarea';
+
+## Installation
+
+```bash
+npx visor add textarea
+```
+
+## Usage
+
+```tsx
+import { Textarea } from '@/components/ui/textarea/textarea';
+
+<Textarea placeholder="Type your message here." />
+```
+
+## Default
+
+<ComponentPreview
+  title="Textarea"
+  code={`import { Textarea } from '@/components/ui/textarea/textarea';
+
+<Textarea placeholder="Type your message here." />`}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <Textarea placeholder="Type your message here." />
+  </div>
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={`<Textarea disabled placeholder="Disabled textarea" />`}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <Textarea disabled placeholder="Disabled textarea" />
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### TextareaProps
+
+<PropsTable component="textarea" />

@@ -1019,4 +1019,142 @@ export const ui: Registry = [
       },
     ],
   },
+  {
+    name: "fieldset",
+    type: "registry:ui",
+    description:
+      "A semantic fieldset wrapper with styled legend for grouping related form fields.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/fieldset/fieldset.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/fieldset/fieldset.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "search-input",
+    type: "registry:ui",
+    description:
+      "A search input with magnifying glass icon and optional clear button.",
+    dependencies: [
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils", "input"],
+    files: [
+      {
+        path: "components/ui/search-input/search-input.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/search-input/search-input.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "password-input",
+    type: "registry:ui",
+    description:
+      "A password input with show/hide toggle and optional strength meter.",
+    dependencies: [
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils", "input"],
+    files: [
+      {
+        path: "components/ui/password-input/password-input.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/password-input/password-input.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "number-input",
+    type: "registry:ui",
+    description:
+      "A number input with increment/decrement buttons and min/max/step support.",
+    dependencies: [
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/number-input/number-input.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/number-input/number-input.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "phone-input",
+    type: "registry:ui",
+    description:
+      "A phone number input with automatic US format formatting.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "input"],
+    files: [
+      {
+        path: "components/ui/phone-input/phone-input.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/phone-input/phone-input.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "otp-input",
+    type: "registry:ui",
+    description:
+      "A multi-digit OTP/verification code input with auto-advance and paste support.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/otp-input/otp-input.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/otp-input/otp-input.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "tag-input",
+    type: "registry:ui",
+    description:
+      "A multi-value tag input with removable chips, keyboard support, and max tag limit.",
+    dependencies: [
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/tag-input/tag-input.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/tag-input/tag-input.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
 ]

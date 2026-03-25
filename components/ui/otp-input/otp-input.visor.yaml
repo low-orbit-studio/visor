@@ -1,0 +1,42 @@
+name: OTPInput
+description: A multi-digit OTP/verification code input with auto-advance and paste support.
+category: form
+
+when_to_use:
+  - Verification code entry (email, SMS, authenticator)
+  - PIN entry
+  - Any fixed-length numeric code input
+
+when_not_to_use:
+  - Variable-length numeric input (use Input or NumberInput)
+  - Password entry (use PasswordInput)
+
+why: >
+  OTPInput provides individual digit cells that auto-advance on entry,
+  support paste, and handle backspace navigation. This is the standard
+  pattern for verification codes that improves completion rates.
+
+props:
+  - name: length
+    type: number
+    default: "6"
+    description: Number of digit cells.
+  - name: value
+    type: string
+    description: Controlled value (digits only).
+  - name: onChange
+    type: "(value: string) => void"
+    description: Callback when the code changes.
+  - name: disabled
+    type: boolean
+    default: "false"
+    description: Disables all digit cells.
+  - name: autoFocus
+    type: boolean
+    default: "false"
+    description: Auto-focus the first cell on mount.
+
+dependencies: []
+
+example: |
+  <OTPInput length={6} onChange={(code) => console.log(code)} />

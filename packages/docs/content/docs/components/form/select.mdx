@@ -1,0 +1,73 @@
+---
+title: Select
+description: An accessible dropdown select for choosing from a list of options. Built on Radix UI.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
+
+## Installation
+
+```bash
+npx visor add select
+```
+
+## Usage
+
+```tsx
+import {
+  Select, SelectTrigger, SelectValue,
+  SelectContent, SelectItem,
+} from '@/components/ui/select/select';
+
+<Select>
+  <SelectTrigger>
+    <SelectValue placeholder="Pick one" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="a">Option A</SelectItem>
+    <SelectItem value="b">Option B</SelectItem>
+  </SelectContent>
+</Select>
+```
+
+## Default
+
+<ComponentPreview
+  title="Select"
+  code={`import {
+  Select, SelectTrigger, SelectValue,
+  SelectContent, SelectItem,
+} from '@/components/ui/select/select';
+
+<Select>
+  <SelectTrigger>
+    <SelectValue placeholder="Select a fruit" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="apple">Apple</SelectItem>
+    <SelectItem value="banana">Banana</SelectItem>
+    <SelectItem value="cherry">Cherry</SelectItem>
+  </SelectContent>
+</Select>`}
+>
+  <div style={{ width: '100%', maxWidth: '14rem' }}>
+    <Select>
+      <SelectTrigger>
+        <SelectValue placeholder="Select a fruit" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="apple">Apple</SelectItem>
+        <SelectItem value="banana">Banana</SelectItem>
+        <SelectItem value="cherry">Cherry</SelectItem>
+      </SelectContent>
+    </Select>
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### SelectProps
+
+<PropsTable component="select" />

@@ -1,0 +1,63 @@
+---
+title: Input
+description: A text input component with focus and validation states.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Input } from '@/components/ui/input';
+
+## Installation
+
+```bash
+npx visor add input
+```
+
+## Usage
+
+```tsx
+import { Input } from '@/components/ui/input/input';
+
+<Input type="email" placeholder="you@example.com" />
+```
+
+## Default
+
+<ComponentPreview
+  title="Input"
+  code={`import { Input } from '@/components/ui/input/input';
+
+<Input type="email" placeholder="you@example.com" />`}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <Input type="email" placeholder="you@example.com" />
+  </div>
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={`<Input disabled placeholder="Disabled input" />`}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <Input disabled placeholder="Disabled input" />
+  </div>
+</ComponentPreview>
+
+## Invalid
+
+<ComponentPreview
+  title="Invalid"
+  code={`<Input aria-invalid="true" defaultValue="bad-email" />`}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <Input aria-invalid="true" defaultValue="bad-email" />
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### InputProps
+
+<PropsTable component="input" />

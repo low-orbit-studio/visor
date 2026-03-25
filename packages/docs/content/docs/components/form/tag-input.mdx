@@ -1,0 +1,63 @@
+---
+title: Tag Input
+description: A multi-value tag input with removable chips and keyboard support.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { TagInput } from '@/components/ui/tag-input';
+
+## Installation
+
+```bash
+npx visor add tag-input
+```
+
+## Usage
+
+```tsx
+import { TagInput } from '@/components/ui/tag-input/tag-input';
+
+<TagInput placeholder="Add skills..." onChange={(tags) => console.log(tags)} />
+```
+
+## Default
+
+<ComponentPreview
+  title="Tag Input"
+  code={`import { TagInput } from '@/components/ui/tag-input/tag-input';
+
+<TagInput placeholder="Add skills..." />`}
+>
+  <div style={{ width: '100%', maxWidth: '24rem' }}>
+    <TagInput placeholder="Add skills..." />
+  </div>
+</ComponentPreview>
+
+## With Default Tags
+
+<ComponentPreview
+  title="With Default Tags"
+  code={`<TagInput defaultValue={['React', 'TypeScript', 'CSS']} placeholder="Add more..." />`}
+>
+  <div style={{ width: '100%', maxWidth: '24rem' }}>
+    <TagInput defaultValue={['React', 'TypeScript', 'CSS']} placeholder="Add more..." />
+  </div>
+</ComponentPreview>
+
+## With Max Limit
+
+<ComponentPreview
+  title="Max 3 Tags"
+  code={`<TagInput defaultValue={['React', 'Vue']} max={3} placeholder="Add one more..." />`}
+>
+  <div style={{ width: '100%', maxWidth: '24rem' }}>
+    <TagInput defaultValue={['React', 'Vue']} max={3} placeholder="Add one more..." />
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### TagInputProps
+
+<PropsTable component="tag-input" />

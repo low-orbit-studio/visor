@@ -1,0 +1,43 @@
+---
+title: Phone Input
+description: A phone number input with automatic US format formatting.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { PhoneInput } from '@/components/ui/phone-input';
+
+## Installation
+
+```bash
+npx visor add phone-input
+```
+
+This also installs the `input` component as a dependency.
+
+## Usage
+
+```tsx
+import { PhoneInput } from '@/components/ui/phone-input/phone-input';
+
+<PhoneInput placeholder="(555) 123-4567" />
+```
+
+## Default
+
+<ComponentPreview
+  title="Phone Input"
+  code={`import { PhoneInput } from '@/components/ui/phone-input/phone-input';
+
+<PhoneInput aria-label="Phone number" placeholder="(555) 123-4567" />`}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <PhoneInput aria-label="Phone number" placeholder="(555) 123-4567" />
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### PhoneInputProps
+
+<PropsTable component="phone-input" />

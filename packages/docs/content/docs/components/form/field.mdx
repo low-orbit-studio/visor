@@ -1,0 +1,96 @@
+---
+title: Field
+description: A form field wrapper composing label, description, and error display.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Field, FieldLabel, FieldDescription, FieldError } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+
+## Installation
+
+```bash
+npx visor add field
+```
+
+## Usage
+
+```tsx
+import { Field, FieldLabel, FieldDescription, FieldError } from '@/components/ui/field/field';
+import { Input } from '@/components/ui/input/input';
+
+<Field>
+  <FieldLabel htmlFor="name">Name</FieldLabel>
+  <Input id="name" placeholder="Jane Doe" />
+  <FieldDescription>Your full name as it appears on your ID.</FieldDescription>
+</Field>
+```
+
+## Default
+
+<ComponentPreview
+  title="Field"
+  code={`import { Field, FieldLabel, FieldDescription } from '@/components/ui/field/field';
+import { Input } from '@/components/ui/input/input';
+
+<Field>
+  <FieldLabel htmlFor="name">Full name</FieldLabel>
+  <Input id="name" placeholder="Jane Doe" />
+  <FieldDescription>Your full name as it appears on your ID.</FieldDescription>
+</Field>`}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <Field>
+      <FieldLabel htmlFor="name-demo">Full name</FieldLabel>
+      <Input id="name-demo" placeholder="Jane Doe" />
+      <FieldDescription>Your full name as it appears on your ID.</FieldDescription>
+    </Field>
+  </div>
+</ComponentPreview>
+
+## With Error
+
+<ComponentPreview
+  title="Field with Error"
+  code={`<Field>
+  <FieldLabel htmlFor="email">Email</FieldLabel>
+  <Input id="email" aria-invalid="true" defaultValue="not-an-email" />
+  <FieldError>Please enter a valid email address.</FieldError>
+</Field>`}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <Field>
+      <FieldLabel htmlFor="email-demo">Email</FieldLabel>
+      <Input id="email-demo" aria-invalid="true" defaultValue="not-an-email" />
+      <FieldError>Please enter a valid email address.</FieldError>
+    </Field>
+  </div>
+</ComponentPreview>
+
+## Horizontal
+
+<ComponentPreview
+  title="Horizontal Field"
+  code={`<Field orientation="horizontal">
+  <FieldLabel htmlFor="username">Username</FieldLabel>
+  <Input id="username" placeholder="jdoe" />
+</Field>`}
+>
+  <div style={{ width: '100%', maxWidth: '24rem' }}>
+    <Field orientation="horizontal">
+      <FieldLabel htmlFor="username-demo">Username</FieldLabel>
+      <Input id="username-demo" placeholder="jdoe" />
+    </Field>
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### FieldProps
+
+<PropsTable component="field" />
+
+### FieldErrorProps
+
+<PropsTable component="field-error" />

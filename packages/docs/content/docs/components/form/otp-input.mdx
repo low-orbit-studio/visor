@@ -1,0 +1,48 @@
+---
+title: OTP Input
+description: A multi-digit OTP/verification code input with auto-advance and paste support.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { OTPInput } from '@/components/ui/otp-input';
+
+## Installation
+
+```bash
+npx visor add otp-input
+```
+
+## Usage
+
+```tsx
+import { OTPInput } from '@/components/ui/otp-input/otp-input';
+
+<OTPInput length={6} onChange={(code) => console.log(code)} />
+```
+
+## Default (6 digits)
+
+<ComponentPreview
+  title="OTP Input"
+  code={`import { OTPInput } from '@/components/ui/otp-input/otp-input';
+
+<OTPInput length={6} />`}
+>
+  <OTPInput length={6} />
+</ComponentPreview>
+
+## 4 Digits
+
+<ComponentPreview
+  title="4-Digit PIN"
+  code={`<OTPInput length={4} />`}
+>
+  <OTPInput length={4} />
+</ComponentPreview>
+
+## API Reference
+
+### OTPInputProps
+
+<PropsTable component="otp-input" />

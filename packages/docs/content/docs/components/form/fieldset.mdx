@@ -1,0 +1,72 @@
+---
+title: Fieldset
+description: A semantic fieldset with styled legend for grouping related form fields.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Fieldset, FieldsetLegend } from '@/components/ui/fieldset';
+import { Field, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+
+## Installation
+
+```bash
+npx visor add fieldset
+```
+
+## Usage
+
+```tsx
+import { Fieldset, FieldsetLegend } from '@/components/ui/fieldset/fieldset';
+
+<Fieldset>
+  <FieldsetLegend>Contact Information</FieldsetLegend>
+  {/* form fields */}
+</Fieldset>
+```
+
+## Default
+
+<ComponentPreview
+  title="Fieldset"
+  code={`import { Fieldset, FieldsetLegend } from '@/components/ui/fieldset/fieldset';
+import { Field, FieldLabel } from '@/components/ui/field/field';
+import { Input } from '@/components/ui/input/input';
+
+<Fieldset>
+  <FieldsetLegend>Contact Information</FieldsetLegend>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
+    <Field>
+      <FieldLabel htmlFor="fname">First name</FieldLabel>
+      <Input id="fname" placeholder="Jane" />
+    </Field>
+    <Field>
+      <FieldLabel htmlFor="lname">Last name</FieldLabel>
+      <Input id="lname" placeholder="Doe" />
+    </Field>
+  </div>
+</Fieldset>`}
+>
+  <div style={{ width: '100%', maxWidth: '24rem' }}>
+    <Fieldset>
+      <FieldsetLegend>Contact Information</FieldsetLegend>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
+        <Field>
+          <FieldLabel htmlFor="fname-demo">First name</FieldLabel>
+          <Input id="fname-demo" placeholder="Jane" />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="lname-demo">Last name</FieldLabel>
+          <Input id="lname-demo" placeholder="Doe" />
+        </Field>
+      </div>
+    </Fieldset>
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### FieldsetProps
+
+<PropsTable component="fieldset" />
