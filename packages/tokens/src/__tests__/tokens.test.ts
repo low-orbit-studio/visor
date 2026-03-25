@@ -365,6 +365,27 @@ describe("Semantic tokens", () => {
       ).toBe(true);
     }
   });
+
+  it("semantic overlay tokens do not produce circular var() references", () => {
+    // Regression: semanticOverlay.bg = "overlay-bg" produced --overlay-bg: var(--overlay-bg)
+    // The generator prefixes with "overlay-" so the ref must NOT already start with "overlay-"
+    for (const [name, ref] of Object.entries(semanticOverlay)) {
+      expect(
+        ref,
+        `overlay-${name} must not self-reference (ref "${ref}" would become --overlay-${name}: var(--${ref}))`
+      ).not.toBe(`overlay-${name}`);
+    }
+  });
+
+  it("semantic focus ring tokens do not produce circular var() references", () => {
+    // Regression: semanticFocusRing.width = "focus-ring-width" produced --focus-ring-width: var(--focus-ring-width)
+    for (const [name, ref] of Object.entries(semanticFocusRing)) {
+      expect(
+        ref,
+        `focus-ring-${name} must not self-reference (ref "${ref}" would become --focus-ring-${name}: var(--${ref}))`
+      ).not.toBe(`focus-ring-${name}`);
+    }
+  });
 });
 
 // ============================================================

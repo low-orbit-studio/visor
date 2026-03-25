@@ -75,7 +75,18 @@ html:not(.dark) .wordmark-dark { display: none; }
   --text-primary: #e8e8f0;
   --text-secondary: rgba(232, 232, 240, 0.72);
   --text-tertiary: rgba(232, 232, 240, 0.5);
+  --text-disabled: rgba(232, 232, 240, 0.3);
   --text-inverse: #080810;
+  --text-inverse-secondary: #1a1830;
+  --text-link: color-mix(in srgb, var(--accent) 80%, white);
+  --text-link-hover: color-mix(in srgb, var(--accent) 60%, white);
+  --text-success: #4ade80;              /* green-400 */
+  --text-warning: #fbbf24;              /* amber-400 */
+  --text-error: #f87171;                /* red-400 */
+  --text-info: #38bdf8;                 /* sky-400 */
+
+  --border-muted: color-mix(in srgb, var(--accent) 6%, transparent);
+  --border-disabled: color-mix(in srgb, var(--accent) 4%, transparent);
 
   --interactive-primary-bg: var(--accent);
   --interactive-primary-bg-hover: color-mix(in srgb, var(--accent) 85%, white);
@@ -91,11 +102,33 @@ html:not(.dark) .wordmark-dark { display: none; }
     transparent
   );
   --interactive-secondary-text: #e8e8f0;
+  --interactive-secondary-bg-active: color-mix(in srgb, var(--accent) 60%, transparent);
+  --interactive-secondary-border: color-mix(in srgb, var(--accent) 30%, transparent);
+  --interactive-primary-bg-active: color-mix(in srgb, var(--accent) 70%, white);
   --interactive-ghost-bg: rgba(255, 255, 255, 0.2);
   --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.25);
   --interactive-destructive-bg: hsl(341, 100%, 58%);
   --interactive-destructive-bg-hover: hsl(341, 90%, 48%);
   --interactive-destructive-text: #ffffff;
+
+  /* ── Optional: Accent/status surfaces ── */
+  --surface-accent-subtle: color-mix(in srgb, var(--accent) 10%, #080810);
+  --surface-accent-default: var(--accent);
+  --surface-accent-strong: color-mix(in srgb, var(--accent) 80%, white);
+  --surface-success-subtle: color-mix(in srgb, #4ade80 10%, #080810);
+  --surface-success-default: #22c55e;      /* green-500 */
+  --surface-warning-subtle: color-mix(in srgb, #fbbf24 10%, #080810);
+  --surface-warning-default: #f59e0b;      /* amber-500 */
+  --surface-error-subtle: color-mix(in srgb, #f87171 10%, #080810);
+  --surface-error-default: #ef4444;        /* red-500 */
+  --surface-info-subtle: color-mix(in srgb, #38bdf8 10%, #080810);
+  --surface-info-default: #0ea5e9;         /* sky-500 */
+
+  /* ── Optional: Status borders ── */
+  --border-success: #22c55e;              /* green-500 */
+  --border-warning: #f59e0b;              /* amber-500 */
+  --border-error: #ef4444;                /* red-500 */
+  --border-info: #0ea5e9;                 /* sky-500 */
 
   /* Translucent glass — for code blocks, table headers, etc. */
   --space-glass: color-mix(in srgb, var(--accent) 15%, rgba(0, 0, 0, 0.3));
@@ -175,7 +208,18 @@ html:not(.dark) .space-theme {
   --text-primary: #1a1630;
   --text-secondary: rgba(26, 22, 48, 0.72);
   --text-tertiary: rgba(26, 22, 48, 0.5);
+  --text-disabled: rgba(26, 22, 48, 0.3);
   --text-inverse: #f2f0f8;
+  --text-inverse-secondary: #dbd8e8;
+  --text-link: var(--accent);
+  --text-link-hover: color-mix(in srgb, var(--accent) 80%, #1a1630);
+  --text-success: #15803d;              /* green-700 */
+  --text-warning: #b45309;              /* amber-700 */
+  --text-error: #b91c1c;                /* red-700 */
+  --text-info: #0369a1;                 /* sky-700 */
+
+  --border-muted: color-mix(in srgb, var(--accent) 6%, rgba(60, 50, 90, 0.06));
+  --border-disabled: color-mix(in srgb, var(--accent) 4%, rgba(60, 50, 90, 0.04));
 
   --interactive-primary-bg: var(--accent);
   --interactive-primary-bg-hover: color-mix(
@@ -187,11 +231,33 @@ html:not(.dark) .space-theme {
   --interactive-secondary-bg: hsl(233, 80%, 82%);
   --interactive-secondary-bg-hover: hsl(233, 80%, 76%);
   --interactive-secondary-text: #1a1630;
+  --interactive-secondary-bg-active: hsl(233, 80%, 70%);
+  --interactive-secondary-border: hsl(233, 40%, 72%);
+  --interactive-primary-bg-active: color-mix(in srgb, var(--accent) 70%, #1a1630);
   --interactive-ghost-bg: hsl(240, 15%, 78%);
   --interactive-ghost-bg-hover: hsl(240, 15%, 76%);
   --interactive-destructive-bg: hsl(341, 90%, 58%);
   --interactive-destructive-bg-hover: hsl(341, 75%, 48%);
   --interactive-destructive-text: #ffffff;
+
+  /* ── Optional: Accent/status surfaces ── */
+  --surface-accent-subtle: color-mix(in srgb, var(--accent) 8%, #f2f0f8);
+  --surface-accent-default: var(--accent);
+  --surface-accent-strong: color-mix(in srgb, var(--accent) 80%, #1a1630);
+  --surface-success-subtle: #f0fdf4;       /* green-50 */
+  --surface-success-default: #22c55e;      /* green-500 */
+  --surface-warning-subtle: #fffbeb;       /* amber-50 */
+  --surface-warning-default: #f59e0b;      /* amber-500 */
+  --surface-error-subtle: #fef2f2;         /* red-50 */
+  --surface-error-default: #ef4444;        /* red-500 */
+  --surface-info-subtle: #f0f9ff;          /* sky-50 */
+  --surface-info-default: #0ea5e9;         /* sky-500 */
+
+  /* ── Optional: Status borders ── */
+  --border-success: #16a34a;              /* green-600 */
+  --border-warning: #d97706;              /* amber-600 */
+  --border-error: #dc2626;                /* red-600 */
+  --border-info: #0284c7;                 /* sky-600 */
 
   /* Translucent glass — for code blocks, table headers, etc. */
   --space-glass: rgba(255, 255, 255, 0.7);

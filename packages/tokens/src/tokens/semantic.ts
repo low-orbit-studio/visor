@@ -137,16 +137,21 @@ export const semanticMotionEasing = {
   spring: "motion-easing-spring",
 } as const;
 
-/** Overlay tokens */
-export const semanticOverlay = {
-  bg: "overlay-bg",
-} as const;
+/**
+ * Overlay tokens — intentionally empty.
+ * Overlay tokens (--overlay-bg) are emitted only at the primitive layer.
+ * The semantic layer previously re-emitted them as --overlay-bg: var(--overlay-bg)
+ * which created a circular reference. Since the semantic name matches the primitive
+ * name exactly, no semantic alias is needed.
+ */
+export const semanticOverlay: Record<string, string> = {} as const;
 
-/** Focus ring tokens */
-export const semanticFocusRing = {
-  width: "focus-ring-width",
-  offset: "focus-ring-offset",
-} as const;
+/**
+ * Focus ring tokens — intentionally empty.
+ * Focus ring tokens (--focus-ring-width, --focus-ring-offset) are emitted only at
+ * the primitive layer. Same circular-reference issue as overlay.
+ */
+export const semanticFocusRing: Record<string, string> = {} as const;
 
 /** Typography role tokens */
 export const semanticTypography = {
