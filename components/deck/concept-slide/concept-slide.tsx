@@ -29,7 +29,7 @@ export function ConceptSlide({
     <Slide id={id} theme={theme} flush className={className}>
       <div data-slot="concept-slide" className={styles.wrapper}>
         <div className={styles.videoWrap}>
-          {/* eslint-disable-next-line jsx-a11y/media-has-caption -- decorative background video, muted */}
+          {/* decorative background video, muted — no caption needed */}
           <video
             className={styles.video}
             autoPlay
