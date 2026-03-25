@@ -1,0 +1,47 @@
+---
+title: Label
+description: An accessible label for form controls. Built on Radix UI.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+
+## Installation
+
+```bash
+npx visor add label
+```
+
+## Usage
+
+```tsx
+import { Label } from '@/components/ui/label/label';
+
+<Label htmlFor="email">Email</Label>
+```
+
+## Default
+
+<ComponentPreview
+  title="Label"
+  code={`import { Label } from '@/components/ui/label/label';
+import { Input } from '@/components/ui/input/input';
+
+<div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+  <Label htmlFor="email">Email address</Label>
+  <Input id="email" type="email" placeholder="you@example.com" />
+</div>`}
+>
+  <div style={{ width: '100%', maxWidth: '20rem', display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+    <Label htmlFor="email-demo">Email address</Label>
+    <Input id="email-demo" type="email" placeholder="you@example.com" />
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### LabelProps
+
+<PropsTable component="label" />

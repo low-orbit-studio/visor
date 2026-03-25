@@ -1,0 +1,45 @@
+name: TagInput
+description: A multi-value tag input with removable chips, keyboard support, and max tag limit.
+category: form
+
+when_to_use:
+  - Multi-value inputs (tags, categories, labels)
+  - Email recipient fields
+  - Keyword or skill entry
+
+when_not_to_use:
+  - Single value selection (use Select or Combobox)
+  - Predefined option sets only (use Combobox with multi-select)
+
+why: >
+  TagInput provides a familiar multi-value entry pattern where each value
+  is visualized as a removable chip. Enter/comma creates tags, backspace
+  removes the last one, and duplicates are prevented.
+
+props:
+  - name: value
+    type: "string[]"
+    description: Controlled array of tag strings.
+  - name: defaultValue
+    type: "string[]"
+    description: Default tags for uncontrolled usage.
+  - name: onChange
+    type: "(tags: string[]) => void"
+    description: Callback when the tag list changes.
+  - name: placeholder
+    type: string
+    default: "'Add tag...'"
+    description: Placeholder text when no tags are entered.
+  - name: max
+    type: number
+    description: Maximum number of tags allowed.
+  - name: disabled
+    type: boolean
+    default: "false"
+    description: Disables the tag input.
+
+dependencies:
+  - "@phosphor-icons/react"
+
+example: |
+  <TagInput placeholder="Add skills..." max={5} onChange={(tags) => console.log(tags)} />

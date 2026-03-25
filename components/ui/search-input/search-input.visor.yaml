@@ -1,0 +1,28 @@
+name: SearchInput
+description: A search input with magnifying glass icon and optional clear button.
+category: form
+
+when_to_use:
+  - Search fields in navigation bars, sidebars, or content areas
+  - Filterable lists or tables
+  - Any text input specifically for searching
+
+when_not_to_use:
+  - General text input (use Input)
+  - Complex search with filters (use Combobox)
+
+why: >
+  SearchInput provides a recognizable search pattern with a magnifying glass
+  icon and clear button. It wraps Input for consistent styling and adds
+  type="search" semantics for accessibility.
+
+props:
+  - name: onClear
+    type: "() => void"
+    description: Callback when the clear button is clicked.
+
+dependencies:
+  - "@phosphor-icons/react"
+
+example: |
+  <SearchInput placeholder="Search..." onClear={() => setValue('')} />

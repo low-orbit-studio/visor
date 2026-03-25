@@ -1,0 +1,45 @@
+name: NumberInput
+description: A number input with increment/decrement buttons and min/max/step support.
+category: form
+
+when_to_use:
+  - Quantity selectors (cart, inventory)
+  - Numeric settings with bounded ranges
+  - Any input where users adjust a number up or down
+
+when_not_to_use:
+  - Free-form numeric entry where buttons add no value (use Input with type="number")
+  - Slider-appropriate values with continuous range (use Slider)
+  - Currency or formatted number entry (use a specialized currency input)
+
+why: >
+  NumberInput provides a touch-friendly, accessible number entry with
+  increment/decrement buttons. Using inputMode="numeric" instead of
+  type="number" avoids browser spinner conflicts with the custom buttons.
+
+props:
+  - name: value
+    type: number
+    description: Controlled numeric value.
+  - name: defaultValue
+    type: number
+    description: Default value for uncontrolled usage.
+  - name: onChange
+    type: "(value: number | undefined) => void"
+    description: Callback when the value changes.
+  - name: min
+    type: number
+    description: Minimum allowed value.
+  - name: max
+    type: number
+    description: Maximum allowed value.
+  - name: step
+    type: number
+    default: "1"
+    description: Increment/decrement step size.
+
+dependencies:
+  - "@phosphor-icons/react"
+
+example: |
+  <NumberInput defaultValue={1} min={0} max={10} step={1} />

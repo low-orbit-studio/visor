@@ -1,0 +1,9 @@
+/* Phone input wrapper */
+.wrapper {
+  width: 100%;
+}
+
+/* Input — inherits all styling from Input component */
+.input {
+  /* No overrides needed */
+}

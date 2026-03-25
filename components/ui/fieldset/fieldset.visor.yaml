@@ -1,0 +1,36 @@
+name: Fieldset
+description: A semantic fieldset wrapper with styled legend for grouping related form fields.
+category: form
+
+when_to_use:
+  - Grouping related form fields under a common heading
+  - Creating logical sections within a larger form
+  - Adding accessible field groupings with a legend
+
+when_not_to_use:
+  - Single field with label/description (use Field)
+  - Non-form content grouping (use Card or a semantic section)
+
+why: >
+  Fieldset provides native HTML grouping semantics for form fields. Screen readers
+  announce the legend text when entering the group, improving form navigation for
+  assistive technology users.
+
+sub_components:
+  - name: FieldsetLegend
+    description: The heading/caption for the fieldset group.
+
+dependencies: []
+
+example: |
+  <Fieldset>
+    <FieldsetLegend>Contact Information</FieldsetLegend>
+    <Field>
+      <FieldLabel htmlFor="name">Name</FieldLabel>
+      <Input id="name" />
+    </Field>
+    <Field>
+      <FieldLabel htmlFor="email">Email</FieldLabel>
+      <Input id="email" type="email" />
+    </Field>
+  </Fieldset>

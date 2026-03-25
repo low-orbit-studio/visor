@@ -1,0 +1,32 @@
+name: PhoneInput
+description: A phone number input with automatic US format formatting.
+category: form
+
+when_to_use:
+  - Phone number entry fields
+  - Contact forms requiring phone numbers
+
+when_not_to_use:
+  - International phone numbers with country codes (needs a more complex solution)
+  - General text input (use Input)
+
+why: >
+  PhoneInput wraps Input with automatic (XXX) XXX-XXXX formatting as users type.
+  The onChange callback returns raw digits for easy storage and validation, while
+  the display shows the formatted number for readability.
+
+props:
+  - name: value
+    type: string
+    description: Controlled value (raw digits).
+  - name: defaultValue
+    type: string
+    description: Default value for uncontrolled usage.
+  - name: onChange
+    type: "(value: string) => void"
+    description: Callback with raw digits when value changes.
+
+dependencies: []
+
+example: |
+  <PhoneInput placeholder="(555) 123-4567" onChange={(digits) => console.log(digits)} />

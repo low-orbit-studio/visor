@@ -1,0 +1,62 @@
+---
+title: Switch
+description: An accessible toggle switch for boolean settings. Built on Radix UI.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+
+## Installation
+
+```bash
+npx visor add switch
+```
+
+## Usage
+
+```tsx
+import { Switch } from '@/components/ui/switch/switch';
+
+<Switch />
+```
+
+## Default
+
+<ComponentPreview
+  title="Switch"
+  code={`import { Switch } from '@/components/ui/switch/switch';
+import { Label } from '@/components/ui/label/label';
+
+<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+  <Switch id="airplane" />
+  <Label htmlFor="airplane">Airplane mode</Label>
+</div>`}
+>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+    <Switch id="airplane-demo" />
+    <Label htmlFor="airplane-demo">Airplane mode</Label>
+  </div>
+</ComponentPreview>
+
+## Small
+
+<ComponentPreview
+  title="Small Switch"
+  code={`<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+  <Switch id="small" size="sm" />
+  <Label htmlFor="small">Small switch</Label>
+</div>`}
+>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+    <Switch id="small-demo" size="sm" />
+    <Label htmlFor="small-demo">Small switch</Label>
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### SwitchProps
+
+<PropsTable component="switch" />

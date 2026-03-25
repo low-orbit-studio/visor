@@ -1,0 +1,62 @@
+---
+title: Checkbox
+description: An accessible checkbox for toggling a boolean value. Built on Radix UI.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+
+## Installation
+
+```bash
+npx visor add checkbox
+```
+
+## Usage
+
+```tsx
+import { Checkbox } from '@/components/ui/checkbox/checkbox';
+
+<Checkbox />
+```
+
+## Default
+
+<ComponentPreview
+  title="Checkbox"
+  code={`import { Checkbox } from '@/components/ui/checkbox/checkbox';
+import { Label } from '@/components/ui/label/label';
+
+<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+  <Checkbox id="terms" />
+  <Label htmlFor="terms">Accept terms and conditions</Label>
+</div>`}
+>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+    <Checkbox id="terms-demo" />
+    <Label htmlFor="terms-demo">Accept terms and conditions</Label>
+  </div>
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={`<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+  <Checkbox id="disabled" disabled />
+  <Label htmlFor="disabled">Disabled checkbox</Label>
+</div>`}
+>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+    <Checkbox id="disabled-demo" disabled />
+    <Label htmlFor="disabled-demo">Disabled checkbox</Label>
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### CheckboxProps
+
+<PropsTable component="checkbox" />

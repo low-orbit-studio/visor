@@ -1,0 +1,20 @@
+/* Fieldset base styles */
+.fieldset {
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-md, 0.375rem);
+  padding: var(--spacing-4, 1rem);
+  margin: 0;
+}
+
+.fieldset:disabled {
+  opacity: 0.5;
+}
+
+/* Legend styles */
+.legend {
+  padding: 0 var(--spacing-1, 0.25rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--text-primary, #111827);
+}

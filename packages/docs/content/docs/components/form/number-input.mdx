@@ -1,0 +1,48 @@
+---
+title: Number Input
+description: A number input with increment/decrement buttons and min/max/step support.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { NumberInput } from '@/components/ui/number-input';
+
+## Installation
+
+```bash
+npx visor add number-input
+```
+
+## Usage
+
+```tsx
+import { NumberInput } from '@/components/ui/number-input/number-input';
+
+<NumberInput defaultValue={1} min={0} max={10} />
+```
+
+## Default
+
+<ComponentPreview
+  title="Number Input"
+  code={`import { NumberInput } from '@/components/ui/number-input/number-input';
+
+<NumberInput defaultValue={1} min={0} max={99} aria-label="Quantity" />`}
+>
+  <NumberInput defaultValue={1} min={0} max={99} aria-label="Quantity" />
+</ComponentPreview>
+
+## With Step
+
+<ComponentPreview
+  title="Step of 5"
+  code={`<NumberInput defaultValue={0} step={5} min={0} max={100} aria-label="Amount" />`}
+>
+  <NumberInput defaultValue={0} step={5} min={0} max={100} aria-label="Amount" />
+</ComponentPreview>
+
+## API Reference
+
+### NumberInputProps
+
+<PropsTable component="number-input" />

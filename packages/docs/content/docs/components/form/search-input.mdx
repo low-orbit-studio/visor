@@ -1,0 +1,43 @@
+---
+title: Search Input
+description: A search input with magnifying glass icon and optional clear button.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { SearchInput } from '@/components/ui/search-input';
+
+## Installation
+
+```bash
+npx visor add search-input
+```
+
+This also installs the `input` component as a dependency.
+
+## Usage
+
+```tsx
+import { SearchInput } from '@/components/ui/search-input/search-input';
+
+<SearchInput placeholder="Search..." />
+```
+
+## Default
+
+<ComponentPreview
+  title="Search Input"
+  code={`import { SearchInput } from '@/components/ui/search-input/search-input';
+
+<SearchInput placeholder="Search components..." />`}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <SearchInput placeholder="Search components..." />
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### SearchInputProps
+
+<PropsTable component="search-input" />

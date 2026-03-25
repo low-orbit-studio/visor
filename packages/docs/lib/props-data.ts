@@ -738,4 +738,427 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'Callback when the open state changes.',
     },
   ],
+
+  checkbox: [
+    {
+      name: 'checked',
+      type: 'boolean | "indeterminate"',
+      description: 'Controlled checked state.',
+    },
+    {
+      name: 'defaultChecked',
+      type: 'boolean',
+      description: 'Default checked state for uncontrolled usage.',
+    },
+    {
+      name: 'onCheckedChange',
+      type: '(checked: boolean | "indeterminate") => void',
+      description: 'Callback when the checked state changes.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables the checkbox.',
+    },
+    {
+      name: 'required',
+      type: 'boolean',
+      default: 'false',
+      description: 'Marks the checkbox as required for form validation.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  input: [
+    {
+      name: 'type',
+      type: 'string',
+      default: "'text'",
+      description: 'HTML input type (text, email, password, number, file, etc.).',
+    },
+    {
+      name: 'placeholder',
+      type: 'string',
+      description: 'Placeholder text shown when the input is empty.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables the input.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+    {
+      name: '...props',
+      type: 'React.InputHTMLAttributes<HTMLInputElement>',
+      description: 'All standard HTML input attributes are forwarded.',
+    },
+  ],
+
+  label: [
+    {
+      name: 'htmlFor',
+      type: 'string',
+      description: 'The ID of the form element this label is associated with.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+    {
+      name: '...props',
+      type: 'React.LabelHTMLAttributes<HTMLLabelElement>',
+      description: 'All standard HTML label attributes are forwarded.',
+    },
+  ],
+
+  select: [
+    {
+      name: 'value',
+      type: 'string',
+      description: 'Controlled value of the selected item.',
+    },
+    {
+      name: 'defaultValue',
+      type: 'string',
+      description: 'Default selected value for uncontrolled usage.',
+    },
+    {
+      name: 'onValueChange',
+      type: '(value: string) => void',
+      description: 'Callback when the selected value changes.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables the select.',
+    },
+    {
+      name: 'size',
+      type: "'sm' | 'default'",
+      default: "'default'",
+      description: 'Size of the select trigger (on SelectTrigger).',
+    },
+    {
+      name: 'position',
+      type: "'popper' | 'item-aligned'",
+      default: "'popper'",
+      description: 'Positioning mode of the dropdown content (on SelectContent).',
+    },
+  ],
+
+  switch: [
+    {
+      name: 'checked',
+      type: 'boolean',
+      description: 'Controlled checked state.',
+    },
+    {
+      name: 'defaultChecked',
+      type: 'boolean',
+      description: 'Default checked state for uncontrolled usage.',
+    },
+    {
+      name: 'onCheckedChange',
+      type: '(checked: boolean) => void',
+      description: 'Callback when the checked state changes.',
+    },
+    {
+      name: 'size',
+      type: "'default' | 'sm'",
+      default: "'default'",
+      description: 'Size of the switch.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables the switch.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  textarea: [
+    {
+      name: 'placeholder',
+      type: 'string',
+      description: 'Placeholder text shown when the textarea is empty.',
+    },
+    {
+      name: 'rows',
+      type: 'number',
+      description: 'Number of visible text rows.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables the textarea.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+    {
+      name: '...props',
+      type: 'React.TextareaHTMLAttributes<HTMLTextAreaElement>',
+      description: 'All standard HTML textarea attributes are forwarded.',
+    },
+  ],
+
+  field: [
+    {
+      name: 'orientation',
+      type: "'vertical' | 'horizontal'",
+      default: "'vertical'",
+      description: 'Layout direction of the field group.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  'field-error': [
+    {
+      name: 'errors',
+      type: 'Array<{ message?: string } | undefined>',
+      description: 'Array of error objects to display. Duplicates are deduplicated by message.',
+    },
+    {
+      name: 'children',
+      type: 'React.ReactNode',
+      description: 'Custom error content. Takes precedence over the errors prop.',
+    },
+  ],
+
+  fieldset: [
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables all form controls within the fieldset.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+    {
+      name: '...props',
+      type: 'React.FieldsetHTMLAttributes<HTMLFieldSetElement>',
+      description: 'All standard HTML fieldset attributes are forwarded.',
+    },
+  ],
+
+  'search-input': [
+    {
+      name: 'onClear',
+      type: '() => void',
+      description: 'Callback when the clear button is clicked.',
+    },
+    {
+      name: 'placeholder',
+      type: 'string',
+      description: 'Placeholder text for the search field.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables the search input.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the wrapper.',
+    },
+    {
+      name: '...props',
+      type: 'React.InputHTMLAttributes<HTMLInputElement>',
+      description: 'All standard HTML input attributes are forwarded.',
+    },
+  ],
+
+  'password-input': [
+    {
+      name: 'showStrength',
+      type: 'boolean',
+      default: 'false',
+      description: 'Show a password strength meter below the input.',
+    },
+    {
+      name: 'placeholder',
+      type: 'string',
+      description: 'Placeholder text for the password field.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables the password input.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the wrapper.',
+    },
+    {
+      name: '...props',
+      type: 'React.InputHTMLAttributes<HTMLInputElement>',
+      description: 'All standard HTML input attributes are forwarded.',
+    },
+  ],
+
+  'number-input': [
+    {
+      name: 'value',
+      type: 'number',
+      description: 'Controlled numeric value.',
+    },
+    {
+      name: 'defaultValue',
+      type: 'number',
+      description: 'Default value for uncontrolled usage.',
+    },
+    {
+      name: 'onChange',
+      type: '(value: number | undefined) => void',
+      description: 'Callback when the value changes.',
+    },
+    {
+      name: 'min',
+      type: 'number',
+      description: 'Minimum allowed value.',
+    },
+    {
+      name: 'max',
+      type: 'number',
+      description: 'Maximum allowed value.',
+    },
+    {
+      name: 'step',
+      type: 'number',
+      default: '1',
+      description: 'Increment/decrement step size.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables the number input and buttons.',
+    },
+  ],
+
+  'phone-input': [
+    {
+      name: 'value',
+      type: 'string',
+      description: 'Controlled value (raw digits).',
+    },
+    {
+      name: 'defaultValue',
+      type: 'string',
+      description: 'Default value for uncontrolled usage.',
+    },
+    {
+      name: 'onChange',
+      type: '(value: string) => void',
+      description: 'Callback with raw digits when value changes.',
+    },
+    {
+      name: 'placeholder',
+      type: 'string',
+      description: 'Placeholder text for the phone field.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables the phone input.',
+    },
+  ],
+
+  'otp-input': [
+    {
+      name: 'length',
+      type: 'number',
+      default: '6',
+      description: 'Number of digit cells.',
+    },
+    {
+      name: 'value',
+      type: 'string',
+      description: 'Controlled value (digits only).',
+    },
+    {
+      name: 'onChange',
+      type: '(value: string) => void',
+      description: 'Callback when the code changes.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables all digit cells.',
+    },
+    {
+      name: 'autoFocus',
+      type: 'boolean',
+      default: 'false',
+      description: 'Auto-focus the first cell on mount.',
+    },
+  ],
+
+  'tag-input': [
+    {
+      name: 'value',
+      type: 'string[]',
+      description: 'Controlled array of tag strings.',
+    },
+    {
+      name: 'defaultValue',
+      type: 'string[]',
+      description: 'Default tags for uncontrolled usage.',
+    },
+    {
+      name: 'onChange',
+      type: '(tags: string[]) => void',
+      description: 'Callback when the tag list changes.',
+    },
+    {
+      name: 'placeholder',
+      type: 'string',
+      default: "'Add tag...'",
+      description: 'Placeholder text when no tags are entered.',
+    },
+    {
+      name: 'max',
+      type: 'number',
+      description: 'Maximum number of tags allowed.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables the tag input.',
+    },
+  ],
 };
