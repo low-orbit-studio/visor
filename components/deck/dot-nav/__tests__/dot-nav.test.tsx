@@ -61,6 +61,21 @@ describe("DotNav", () => {
     expect(screen.getByText("Intro")).toBeInTheDocument()
     expect(screen.getByText("Content")).toBeInTheDocument()
   })
+
+  it("does not render tooltip spans when titles are not provided", () => {
+    render(<DotNav slideCount={3} currentIndex={0} onDotClick={vi.fn()} />)
+    const tooltips = document.querySelectorAll('[class*="tooltip"]')
+    expect(tooltips).toHaveLength(0)
+  })
+
+  it("applies hover class on mouseEnter and removes on mouseLeave", () => {
+    render(<DotNav slideCount={3} currentIndex={0} onDotClick={vi.fn()} />)
+    const dots = screen.getAllByRole("button")
+    fireEvent.mouseEnter(dots[1])
+    expect(dots[1]).toHaveClass("hovered")
+    fireEvent.mouseLeave(dots[1])
+    expect(dots[1]).not.toHaveClass("hovered")
+  })
 })
 
 describe("DotNav accessibility", () => {

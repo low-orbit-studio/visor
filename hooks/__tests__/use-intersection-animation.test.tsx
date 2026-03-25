@@ -93,4 +93,22 @@ describe("useIntersectionAnimation", () => {
     unmount()
     expect(mockDisconnect).toHaveBeenCalled()
   })
+
+  it("does not create observer for empty sections array", () => {
+    mockObserve.mockClear()
+    render(<TestComponent sections={[]} setCurrentIndex={setCurrentIndex} />)
+    expect(mockObserve).not.toHaveBeenCalled()
+  })
+
+  it("ignores entries with unknown targets", () => {
+    render(<TestComponent sections={sections} setCurrentIndex={setCurrentIndex} />)
+
+    const unknownElement = document.createElement("div")
+    observerCallback(
+      [{ target: unknownElement, isIntersecting: true } as IntersectionObserverEntry],
+      {} as IntersectionObserver
+    )
+
+    expect(setCurrentIndex).not.toHaveBeenCalled()
+  })
 })

@@ -42,6 +42,17 @@ describe("HeroSlide", () => {
     const animated = document.querySelectorAll("[data-deck-animate]")
     expect(animated.length).toBeGreaterThanOrEqual(4)
   })
+
+  it("passes heroImage to Slide for hero background mode", () => {
+    render(
+      <HeroSlide id="s1" badge="X" title="T" subtitle="S" heroImage="/hero.jpg" />
+    )
+    const slide = document.querySelector('[data-slot="slide"]')
+    expect(slide).toBeInTheDocument()
+    // When heroImage is provided, Slide renders in hero mode (not split)
+    const heroSlot = document.querySelector('[data-slot="hero-slide"]')
+    expect(heroSlot).toBeInTheDocument()
+  })
 })
 
 describe("HeroSlide accessibility", () => {

@@ -50,6 +50,13 @@ describe("TOCSlide", () => {
     renderWithDeck(<TOCSlide sections={sections} />)
     expect(document.getElementById("s-toc")).toBeInTheDocument()
   })
+
+  it("applies stagger delay animations on sections", () => {
+    renderWithDeck(<TOCSlide sections={sections} />)
+    const animated = document.querySelectorAll("[data-deck-animate]")
+    // subtitle + title + 2 section groups = at least 4
+    expect(animated.length).toBeGreaterThanOrEqual(4)
+  })
 })
 
 describe("TOCSlide accessibility", () => {
