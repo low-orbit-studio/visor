@@ -74,6 +74,17 @@ describe("Registry", () => {
       }
     })
 
+    it("design-system-specimen block is registered", () => {
+      const specimen = blocks.find(
+        (item) => item.name === "design-system-specimen"
+      )
+      expect(specimen).toBeDefined()
+      expect(specimen?.category).toBe("documentation")
+      expect(specimen?.registryDependencies).toContain("button")
+      expect(specimen?.registryDependencies).toContain("input")
+      expect(specimen?.registryDependencies).toContain("utils")
+    })
+
     it("login-form-placeholder block is registered", () => {
       const placeholder = blocks.find(
         (item) => item.name === "login-form-placeholder"

@@ -50,7 +50,7 @@ Stabilize the design system contract, complete the form system, add blocks infra
 - **Form system completion** — Document all undocumented form components (checkbox, input, label, select, switch, textarea, field). Add missing specialized inputs: password (show/hide), search (with clear), number (+/- controls), phone, OTP/PIN, tags/chip input, fieldset/legend grouping.
 - **Form validation research spike** — Evaluate React Hook Form + Zod vs Conform + Zod vs other approaches for a Form wrapper component with schema validation support.
 - **Blocks infrastructure** — Add "blocks" concept to the registry (multi-component composed patterns, distinct from individual components). CLI support, own docs sidebar section. Blocks are copy-and-own like components but represent complete UI patterns (login form, settings page, dashboard panel).
-- **Design system specimen block** — Live interactive showcase in the docs site that responds to the active theme. Visual specimen for colors, typography, spacing, shadows, elevation, radius, motion, accessibility contrast. Pull patterns from reference-nextjs-app (12-slide specimen) and Veronica (form/button/chip specimens, ComponentShowcase with force-state system).
+- [x] **Design system specimen block** — Live interactive showcase in the docs site that responds to the active theme. Visual specimen for colors, typography, spacing, shadows, elevation, radius, motion, accessibility contrast. Pull patterns from reference-nextjs-app (12-slide specimen) and Veronica (form/button/chip specimens, ComponentShowcase with force-state system).
 
 **Source material:**
 - Reference NextJS App: `~/Code/low-orbit/low-orbit-playbook/reference-nextjs-app/` — ColorSwatchGrid, ElevationGrid, SpacingScale, TypeRow, AccessibilitySpecimen, etc.
