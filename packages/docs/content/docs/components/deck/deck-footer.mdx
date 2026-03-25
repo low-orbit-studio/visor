@@ -1,0 +1,75 @@
+---
+title: DeckFooter
+description: A multi-column footer with navigation links, slide anchors, and built-in copyright.
+---
+
+## Installation
+
+```bash
+npx visor add deck-footer
+```
+
+## Usage
+
+```tsx
+import { DeckFooter } from '@/components/deck/deck-footer/deck-footer';
+
+const columns = [
+  {
+    title: 'Sections',
+    links: [
+      { label: 'Introduction', slide: 's-intro' },
+      { label: 'Features', slide: 's-features' },
+      { label: 'Pricing', slide: 's-pricing' },
+    ],
+  },
+  {
+    title: 'Resources',
+    links: [
+      { label: 'Documentation', href: 'https://docs.example.com' },
+      { label: 'GitHub', href: 'https://github.com/example', accent: true },
+    ],
+  },
+];
+
+export default function Example() {
+  return (
+    <DeckFooter
+      description="A brief summary of the presentation."
+      columns={columns}
+      brandName="Low Orbit Studio"
+    />
+  );
+}
+```
+
+## Features
+
+- **Multi-column link grid** — organize links by category
+- **Slide navigation via useDeck** — links with `slide` scroll to that slide
+- **Built-in colophon/copyright** — automatic brand and year display
+
+## API Reference
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `description` | `string` | — | Footer description text |
+| `columns` | `DeckFooterColumn[]` | — | Array of link columns |
+| `brandName` | `string` | `"Low Orbit Studio"` | Brand name for the copyright line |
+| `className` | `string` | — | Additional CSS class |
+
+### DeckFooterColumn
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `title` | `string` | Column heading |
+| `links` | `DeckFooterLink[]` | Array of links in the column |
+
+### DeckFooterLink
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `label` | `string` | Display text |
+| `slide` | `string` | Slide ID to scroll to (uses useDeck) |
+| `href` | `string` | External URL |
+| `accent` | `boolean` | Highlight the link with accent styling |

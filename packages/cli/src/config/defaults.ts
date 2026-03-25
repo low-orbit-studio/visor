@@ -1,6 +1,7 @@
 export interface VisorConfig {
   paths: {
     components: string
+    deckComponents: string
     hooks: string
     lib: string
   }
@@ -9,6 +10,7 @@ export interface VisorConfig {
 export const DEFAULT_CONFIG: VisorConfig = {
   paths: {
     components: "components/ui",
+    deckComponents: "components/deck",
     hooks: "hooks",
     lib: "lib",
   },

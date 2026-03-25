@@ -1,0 +1,86 @@
+.aboveOverlay {
+  position: relative;
+  z-index: 2;
+}
+
+.content {
+  max-width: 60rem;
+}
+
+.split {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-12, 48px);
+  width: 100%;
+}
+
+.splitText {
+  flex: 1;
+}
+
+.splitLogo {
+  flex: 0 0 auto;
+  max-width: 28rem;
+}
+
+.logoImage {
+  width: 100%;
+  height: auto;
+  max-height: 28rem;
+  object-fit: contain;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: var(--spacing-1, 4px) var(--spacing-3, 12px);
+  border-radius: var(--radius-full, 9999px);
+  background-color: rgba(255, 255, 255, 0.15);
+  color: var(--text-on-dark, #f9fafb);
+}
+
+.title {
+  font-size: clamp(3.2rem, 2.5rem + 2.5vw, 6.5rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-top: var(--spacing-6, 24px);
+  color: var(--text-on-dark, #f9fafb);
+}
+
+.subtitle {
+  font-size: clamp(1.6rem, 1.3rem + 1vw, 2.6rem);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  margin-top: var(--spacing-6, 24px);
+  color: var(--text-on-dark-secondary, #d1d5db);
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: var(--spacing-8, 32px);
+  width: 6rem;
+}
+
+.description {
+  font-size: clamp(1.05rem, 1rem + 0.2vw, 1.2rem);
+  font-weight: 400;
+  line-height: 1.6;
+  margin-top: var(--spacing-6, 24px);
+  max-width: 40rem;
+  color: var(--text-on-dark-secondary, #d1d5db);
+}
+
+@media (max-width: 768px) {
+  .split {
+    flex-direction: column;
+  }
+
+  .splitLogo {
+    max-width: 16rem;
+  }
+}

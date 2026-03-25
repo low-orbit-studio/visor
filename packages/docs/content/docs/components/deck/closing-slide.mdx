@@ -1,0 +1,43 @@
+---
+title: ClosingSlide
+description: A centered dark-themed closing slide with staggered text entrance animations.
+---
+
+## Installation
+
+```bash
+npx visor add deck-closing-slide
+```
+
+## Usage
+
+```tsx
+import { ClosingSlide } from '@/components/deck/closing-slide/closing-slide';
+
+export default function Example() {
+  return (
+    <ClosingSlide
+      tagline="Thanks for watching."
+      subtitle="Low Orbit Studio"
+      body="Get in touch at hello@loworbitstudio.com"
+    />
+  );
+}
+```
+
+## Features
+
+- **Centered dark theme** — high-contrast closing statement
+- **Staggered text entrance** — tagline, subtitle, and body animate in sequence
+- **Customizable tagline and body** — adapt to any presentation context
+
+## API Reference
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `id` | `string` | `"s-close"` | Unique slide identifier |
+| `tagline` | `string` | `"Thank you."` | Large heading text |
+| `subtitle` | `string` | — | Text below the tagline |
+| `body` | `string` | — | Body text below the subtitle |
+| `extra` | `ReactNode` | — | Additional content below the body |
+| `className` | `string` | — | Additional CSS class |

@@ -1,0 +1,51 @@
+---
+title: HeroSlide
+description: A full-viewport hero slide with image overlay, split layout, and staggered animations.
+---
+
+## Installation
+
+```bash
+npx visor add deck-hero-slide
+```
+
+## Usage
+
+```tsx
+import { HeroSlide } from '@/components/deck/hero-slide/hero-slide';
+
+export default function Example() {
+  return (
+    <HeroSlide
+      id="hero"
+      badge="New Release"
+      title="Product Launch"
+      subtitle="Introducing the next generation"
+      heroImage="/images/hero-bg.jpg"
+      logo="/images/logo.svg"
+      description="A brief overview of what makes this special."
+    />
+  );
+}
+```
+
+## Features
+
+- **Hero image with gradient overlay** — full-bleed background with readable text
+- **Split layout with logo** — logo placement alongside title content
+- **Staggered entrance animations** — badge, title, subtitle, and description animate in sequence
+- **Badge and divider elements** — visual accents for branding
+
+## API Reference
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `id` | `string` | — | Unique slide identifier |
+| `badge` | `string` | — | Small label displayed above the title |
+| `title` | `string` | — | Main heading text |
+| `titleContent` | `ReactNode` | — | Custom JSX to render instead of the title string |
+| `subtitle` | `string` | — | Text below the title |
+| `heroImage` | `string` | — | URL for the background hero image |
+| `logo` | `string` | — | URL for a logo image |
+| `description` | `string` | — | Body text below the subtitle |
+| `className` | `string` | — | Additional CSS class |

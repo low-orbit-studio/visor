@@ -70,18 +70,18 @@ All 15 priority components shipped.
 
 Accessible via `npx visor add --category deck` or individually.
 
-- [ ] Slide (base wrapper)
-- [ ] DeckLayout
-- [ ] DeckHeroSlide
-- [ ] SlideHeader
-- [ ] CardGrid
-- [ ] DotNav
-- [ ] TOCSlide
-- [ ] ClosingSlide
-- [ ] ConceptSlide
-- [ ] CarouselGallery
-- [ ] ImageLightbox
-- [ ] Footer (deck variant)
+- [x] Slide (base wrapper)
+- [x] DeckLayout
+- [x] DeckHeroSlide
+- [x] SlideHeader
+- [x] CardGrid
+- [x] DotNav
+- [x] TOCSlide
+- [x] ClosingSlide
+- [x] ConceptSlide
+- [x] CarouselGallery
+- [x] ImageLightbox (covered by existing Visor Lightbox — CarouselGallery uses it)
+- [x] Footer (deck variant)
 
 ## Current Hooks (9)
 

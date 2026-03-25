@@ -1,0 +1,50 @@
+---
+title: Slide
+description: A full-viewport slide container with theme support, hero images, and background images.
+---
+
+## Installation
+
+```bash
+npx visor add slide
+```
+
+## Usage
+
+```tsx
+import { Slide } from '@/components/deck/slide/slide';
+
+export default function Example() {
+  return (
+    <Slide id="intro" theme="dark" center>
+      <h1>Welcome</h1>
+      <p>Your presentation starts here.</p>
+    </Slide>
+  );
+}
+```
+
+## Features
+
+- **Theme-aware dark/light modes** — automatically adjusts text and background colors
+- **Hero image with overlay** — set `hero` and `heroImage` for a full-bleed image with gradient
+- **Background image support** — subtle background via `bgImage`
+- **Centered layout** — optional `center` prop for vertically centered content
+- **Flush mode** — removes default padding for edge-to-edge layouts
+- **CSS Modules with Visor tokens** — consistent spacing, color, and typography
+
+## API Reference
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `id` | `string` | — | Unique slide identifier for navigation |
+| `theme` | `"light" \| "dark"` | `"light"` | Color theme for the slide |
+| `dotNavTheme` | `"light" \| "dark"` | — | Override theme for the DotNav indicator |
+| `center` | `boolean` | — | Vertically center slide content |
+| `flush` | `boolean` | — | Remove default padding |
+| `hero` | `boolean` | — | Enable hero image layout |
+| `heroImage` | `string` | — | URL for the hero background image |
+| `bgImage` | `string` | — | URL for a subtle background image |
+| `photo` | `boolean` | — | Photo-optimized layout |
+| `className` | `string` | — | Additional CSS class |
+| `children` | `ReactNode` | — | Slide content |

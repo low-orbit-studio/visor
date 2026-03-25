@@ -87,7 +87,7 @@ describe("list command", () => {
     writeFileSync(
       join(testDir, "visor.json"),
       JSON.stringify({
-        paths: { components: "components/ui", hooks: "hooks", lib: "lib" },
+        paths: { components: "components/ui", deckComponents: "components/deck", hooks: "hooks", lib: "lib" },
       }),
       "utf-8"
     )

@@ -28,10 +28,11 @@ program
 program
   .command("add")
   .description("Add components, hooks, or utilities to your project")
-  .argument("<items...>", "names of registry items to add")
+  .argument("[items...]", "names of registry items to add")
   .option("--overwrite", "overwrite existing files", false)
-  .action((items: string[], options: { overwrite: boolean }) => {
-    addCommand(items, process.cwd(), { overwrite: options.overwrite })
+  .option("--category <name>", "install all items from a category")
+  .action((items: string[], options: { overwrite: boolean; category?: string }) => {
+    addCommand(items, process.cwd(), { overwrite: options.overwrite, category: options.category })
   })
 
 program

@@ -18,7 +18,14 @@ export function loadConfig(cwd: string): VisorConfig {
     )
   }
   const raw = readFileSync(configPath, "utf-8")
-  return JSON.parse(raw) as VisorConfig
+  const parsed = JSON.parse(raw) as Partial<VisorConfig>
+  // Merge with defaults so existing visor.json files get new fields
+  return {
+    paths: {
+      ...DEFAULT_CONFIG.paths,
+      ...parsed.paths,
+    },
+  }
 }
 
 export function writeConfig(cwd: string, config: VisorConfig): void {

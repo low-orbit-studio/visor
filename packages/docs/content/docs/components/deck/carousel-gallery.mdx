@@ -1,0 +1,47 @@
+---
+title: CarouselGallery
+description: An image grid with click-to-enlarge lightbox viewing and optional captions.
+---
+
+## Installation
+
+```bash
+npx visor add deck-carousel-gallery
+```
+
+## Usage
+
+```tsx
+import { CarouselGallery } from '@/components/deck/carousel-gallery/carousel-gallery';
+
+const slides = [
+  { src: '/images/photo-1.jpg', alt: 'Mountain view' },
+  { src: '/images/photo-2.jpg', alt: 'Ocean sunset', caption: 'Malibu, CA' },
+  { src: '/images/photo-3.jpg', alt: 'City skyline' },
+];
+
+export default function Example() {
+  return <CarouselGallery slides={slides} />;
+}
+```
+
+## Features
+
+- **Image grid with click-to-enlarge** — thumbnails open in a full-screen viewer
+- **Built on Visor Lightbox** — inherits keyboard, touch, and accessibility support
+- **Optional image captions** — display descriptive text beneath each image
+
+## API Reference
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `slides` | `GallerySlide[]` | — | Array of image objects |
+| `className` | `string` | — | Additional CSS class |
+
+### GallerySlide
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `src` | `string` | Yes | Image URL |
+| `alt` | `string` | Yes | Alt text for accessibility |
+| `caption` | `string` | No | Optional caption text |

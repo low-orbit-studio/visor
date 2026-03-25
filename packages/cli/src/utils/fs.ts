@@ -25,6 +25,11 @@ export function resolveOutputPath(
   let relativePath: string
 
   if (type === "registry:ui") {
+    // Deck components have their own output path
+    if (registryPath.startsWith("components/deck/")) {
+      relativePath = registryPath.replace(/^components\/deck\//, "")
+      return join(cwd, config.paths.deckComponents, relativePath)
+    }
     // Strip "components/ui/" prefix
     relativePath = registryPath.replace(/^components\/ui\//, "")
     return join(cwd, config.paths.components, relativePath)

@@ -1,0 +1,40 @@
+---
+title: CardGrid
+description: A responsive grid layout with automatic stagger animations for child cards.
+---
+
+## Installation
+
+```bash
+npx visor add deck-card-grid
+```
+
+## Usage
+
+```tsx
+import { CardGrid } from '@/components/deck/card-grid/card-grid';
+
+export default function Example() {
+  return (
+    <CardGrid columns={3}>
+      <div>Card 1</div>
+      <div>Card 2</div>
+      <div>Card 3</div>
+    </CardGrid>
+  );
+}
+```
+
+## Features
+
+- **Auto stagger animations on children** — each card animates in with a sequential delay
+- **Configurable column count** — choose from 2, 3, 4, or 5 columns
+- **Responsive grid layout** — adapts to available space
+
+## API Reference
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `columns` | `2 \| 3 \| 4 \| 5` | `3` | Number of grid columns |
+| `className` | `string` | — | Additional CSS class |
+| `children` | `ReactNode` | — | Grid items to display |

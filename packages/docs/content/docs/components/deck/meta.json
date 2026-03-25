@@ -1,0 +1,18 @@
+{
+  "title": "Deck",
+  "description": "Presentation deck components. Alphabetized A-Z.",
+  "defaultOpen": true,
+  "pages": [
+    "card-grid",
+    "carousel-gallery",
+    "closing-slide",
+    "concept-slide",
+    "deck-footer",
+    "deck-layout",
+    "dot-nav",
+    "hero-slide",
+    "slide",
+    "slide-header",
+    "toc-slide"
+  ]
+}

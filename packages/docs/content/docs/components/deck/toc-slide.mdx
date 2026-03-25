@@ -1,0 +1,59 @@
+---
+title: TOCSlide
+description: A table-of-contents slide with click-to-navigate section links and optional background image.
+---
+
+## Installation
+
+```bash
+npx visor add deck-toc-slide
+```
+
+## Usage
+
+```tsx
+import { TOCSlide } from '@/components/deck/toc-slide/toc-slide';
+
+const sections = [
+  {
+    section: 'Introduction',
+    items: [
+      { id: 's-intro', title: 'Welcome' },
+      { id: 's-overview', title: 'Overview' },
+    ],
+  },
+  {
+    section: 'Features',
+    items: [
+      { id: 's-feature-1', title: 'Performance' },
+      { id: 's-feature-2', title: 'Design' },
+    ],
+  },
+];
+
+export default function Example() {
+  return <TOCSlide sections={sections} backgroundImage="/images/toc-bg.jpg" />;
+}
+```
+
+## Features
+
+- **Click-to-navigate section links** — jump directly to any slide in the deck
+- **Optional background image** — add a subtle visual backdrop
+- **Auto-grid layout** — sections arrange themselves based on content
+
+## API Reference
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `sections` | `TOCSection[]` | — | Array of section groups |
+| `backgroundImage` | `string` | — | URL for the background image |
+| `id` | `string` | `"s-toc"` | Unique slide identifier |
+| `className` | `string` | — | Additional CSS class |
+
+### TOCSection
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `section` | `string` | Section heading label |
+| `items` | `{ id: string; title: string }[]` | Navigable items within the section |

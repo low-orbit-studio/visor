@@ -1,4 +1,5 @@
 export { ui } from "./registry-ui"
 export { hooks } from "./registry-hooks"
 export { lib } from "./registry-lib"
+export { deck } from "./registry-deck"
 export type { Registry, RegistryItem, RegistryFile, RegistryItemType } from "./schema"
