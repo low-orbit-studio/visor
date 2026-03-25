@@ -56,6 +56,7 @@ describe("writeConfig / loadConfig", () => {
     const customConfig = {
       paths: {
         components: "src/components",
+        deckComponents: "components/deck",
         hooks: "src/hooks",
         lib: "src/lib",
       },
