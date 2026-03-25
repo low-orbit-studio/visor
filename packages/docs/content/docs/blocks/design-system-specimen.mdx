@@ -1,0 +1,56 @@
+---
+title: Design System Specimen
+description: A live, interactive design system specimen block that showcases the full Visor token system and component library. Responds dynamically to the active theme.
+---
+
+## Installation
+
+```bash
+npx visor add --block design-system-specimen
+```
+
+This copies the specimen block and all its sub-components into your project:
+
+- `blocks/design-system-specimen/design-system-specimen.tsx` — orchestrator component
+- `blocks/design-system-specimen/design-system-specimen.module.css` — styles
+- `blocks/design-system-specimen/specimen-data.ts` — token data arrays
+- `blocks/design-system-specimen/token-specimens.tsx` — color, typography, spacing, shadow, surface, radius sections
+- `blocks/design-system-specimen/motion-specimens.tsx` — duration and easing previews
+- `blocks/design-system-specimen/component-specimens.tsx` — button, form, and component showcase
+- `blocks/design-system-specimen/utility-specimens.tsx` — icon grid and accessibility checks
+
+## Usage
+
+```tsx
+import { DesignSystemSpecimen } from '@/blocks/design-system-specimen/design-system-specimen';
+
+export default function DesignSystemPage() {
+  return <DesignSystemSpecimen />;
+}
+```
+
+## What It Covers
+
+The specimen block includes 12 interactive sections:
+
+- **Color Palette** — Swatches for all primitive and semantic color tokens
+- **Typography** — Full type scale from display (4xl) to fine print (xs)
+- **Spacing** — Visual spacing scale with proportional bars
+- **Shadows & Elevation** — All shadow levels applied to cards
+- **Surfaces** — Background variants with labels
+- **Border Radius** — Radius scale from sharp to fully rounded
+- **Motion & Duration** — Animated bars showing each duration token
+- **Easing Curves** — Animated dots demonstrating each easing function
+- **Icons** — Phosphor icon grid with size scale and semantic map
+- **Accessibility** — WCAG contrast pairs with AA/AAA pass/fail indicators
+- **Buttons** — All variants, sizes, and interactive states
+- **Form Controls** — Text input, textarea, checkbox, radio, select, switch, slider, toggle group
+- **Component Showcase** — Card, badge, alert, progress, tabs, separator
+
+## Theme Responsive
+
+The specimen is fully theme-responsive. Use the theme switcher in the docs header to see every section update in real-time. This makes it useful for validating that a theme covers all design tokens completely.
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI. Blocks are copy-and-own, just like components — install them into your project and customize freely.
