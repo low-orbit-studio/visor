@@ -44,6 +44,15 @@ export interface ComponentMetadata {
   example: string
 }
 
+export interface BlockMetadata {
+  name: string
+  description: string
+  category: string
+  components_used: string[]
+  when_to_use: string[]
+  when_not_to_use: string[]
+}
+
 export interface PatternMetadata {
   name: string
   description: string
@@ -71,6 +80,14 @@ export interface ManifestHook {
   description: string
 }
 
+export interface ManifestBlock {
+  category: string
+  description: string
+  components_used: string[]
+  when_to_use: string[]
+  when_not_to_use: string[]
+}
+
 export interface ManifestPattern {
   description: string
   components_used: string[]
@@ -81,6 +98,7 @@ export interface VisorManifest {
   version: string
   generated_at: string
   components: Record<string, ManifestComponent>
+  blocks: Record<string, ManifestBlock>
   hooks: Record<string, ManifestHook>
   patterns: Record<string, ManifestPattern>
   categories: Record<string, string[]>

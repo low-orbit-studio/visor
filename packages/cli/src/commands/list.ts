@@ -18,6 +18,7 @@ const TYPE_LABELS: Record<string, string> = {
 
 const CATEGORY_LABELS: Record<string, string> = {
   deck: "Deck Components",
+  authentication: "Authentication Blocks",
 }
 
 interface ItemGroup {
