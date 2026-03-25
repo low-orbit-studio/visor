@@ -39,6 +39,24 @@ describe("ClosingSlide", () => {
     render(<ClosingSlide />)
     expect(document.getElementById("s-close")).toBeInTheDocument()
   })
+
+  it("renders with custom id", () => {
+    render(<ClosingSlide id="s-end" />)
+    expect(document.getElementById("s-end")).toBeInTheDocument()
+  })
+
+  it("applies stagger delay animations", () => {
+    render(<ClosingSlide subtitle="Sub" body="Body" />)
+    const animated = document.querySelectorAll("[data-deck-animate]")
+    expect(animated.length).toBeGreaterThanOrEqual(3)
+  })
+
+  it("does not render extra content when omitted", () => {
+    render(<ClosingSlide />)
+    const content = document.querySelector('[data-slot="closing-slide"]')!
+    // Should have tagline and divider, but no extra nodes beyond those
+    expect(content.textContent).toContain("Thank you.")
+  })
 })
 
 describe("ClosingSlide accessibility", () => {

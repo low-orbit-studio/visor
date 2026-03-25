@@ -47,6 +47,48 @@ describe("CardGrid", () => {
     const grid = document.querySelector('[data-slot="card-grid"]') as HTMLElement
     expect(grid.style.gridTemplateColumns).toBe("repeat(4, 1fr)")
   })
+
+  it("does not set gridTemplateColumns for default columns (3)", () => {
+    render(
+      <CardGrid>
+        <div>Card</div>
+      </CardGrid>
+    )
+    const grid = document.querySelector('[data-slot="card-grid"]') as HTMLElement
+    expect(grid.style.gridTemplateColumns).toBe("")
+  })
+
+  it("preserves existing child className", () => {
+    render(
+      <CardGrid>
+        <div className="existing">Card</div>
+      </CardGrid>
+    )
+    const child = document.querySelector('[data-slot="card-grid"]')!.firstElementChild as HTMLElement
+    expect(child.className).toContain("existing")
+  })
+
+  it("handles non-element children gracefully", () => {
+    render(
+      <CardGrid>
+        <div>Card</div>
+        {null}
+        {"text"}
+      </CardGrid>
+    )
+    const grid = document.querySelector('[data-slot="card-grid"]')
+    expect(grid).toBeInTheDocument()
+  })
+
+  it("forwards custom className", () => {
+    render(
+      <CardGrid className="custom">
+        <div>Card</div>
+      </CardGrid>
+    )
+    const grid = document.querySelector('[data-slot="card-grid"]')
+    expect(grid).toHaveClass("custom")
+  })
 })
 
 describe("CardGrid accessibility", () => {

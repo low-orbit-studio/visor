@@ -24,8 +24,8 @@ Complete the component library and add the deck category.
 **Key work:**
 - Add remaining general-purpose components to reach ~55 total
 - ~~Add ~12 deck components as a separate registry category (`npx visor add --category deck`)~~ ✅
-- Move tests from reference-nextjs-app to Visor (not copy) — 100% coverage target
-- Add component composition tests (dialog + form, sidebar + nav, dropdown in table)
+- ~~Move tests from reference-nextjs-app to Visor (not copy) — 100% coverage target~~ ✅
+- ~~Add component composition tests (dialog + form, sidebar + nav, dropdown in table)~~ ✅
 
 ## Phase 2: AI Agent Consumability
 

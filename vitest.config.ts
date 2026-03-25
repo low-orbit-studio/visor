@@ -12,5 +12,19 @@ export default defineConfig({
         classNameStrategy: "non-scoped",
       },
     },
+    coverage: {
+      provider: "v8",
+      include: [
+        "components/**/*.{ts,tsx}",
+        "hooks/**/*.ts",
+        "lib/**/*.ts",
+      ],
+      exclude: [
+        "**/__tests__/**",
+        "**/*.test.{ts,tsx}",
+        "**/*.d.ts",
+        "**/index.ts",
+      ],
+    },
   },
 })

@@ -41,4 +41,23 @@ describe("useWheelNav", () => {
     vi.advanceTimersByTime(100)
     expect(goTo).toHaveBeenCalledTimes(1)
   })
+
+  it("cleans up event listener and clears timeout on unmount", () => {
+    const localGoTo = vi.fn()
+    vi.useRealTimers()
+    vi.useFakeTimers()
+    const { unmount } = render(<TestComponent goTo={localGoTo} />)
+    fireEvent.wheel(document, { deltaY: 100 })
+    unmount()
+    vi.advanceTimersByTime(100)
+    expect(localGoTo).not.toHaveBeenCalled()
+  })
+
+  it("unmount without pending timeout does not throw", () => {
+    const localGoTo = vi.fn()
+    vi.useRealTimers()
+    vi.useFakeTimers()
+    const { unmount } = render(<TestComponent goTo={localGoTo} />)
+    expect(() => unmount()).not.toThrow()
+  })
 })

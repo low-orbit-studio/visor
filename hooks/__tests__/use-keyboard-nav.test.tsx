@@ -48,4 +48,25 @@ describe("useKeyboardNav", () => {
     fireEvent.keyDown(document, { key: "ArrowRight", metaKey: true })
     expect(goTo).not.toHaveBeenCalled()
   })
+
+  it("ignores non-navigation keys", () => {
+    fireEvent.keyDown(document, { key: "Enter" })
+    fireEvent.keyDown(document, { key: "a" })
+    fireEvent.keyDown(document, { key: "Escape" })
+    fireEvent.keyDown(document, { key: "Tab" })
+    expect(goTo).not.toHaveBeenCalled()
+  })
+
+  it("navigates to first on Cmd+ArrowUp", () => {
+    fireEvent.keyDown(document, { key: "ArrowUp", metaKey: true })
+    expect(goTo).toHaveBeenCalledWith(0)
+  })
+
+  it("cleans up event listener on unmount", () => {
+    const localGoTo = vi.fn()
+    const { unmount } = render(<TestComponent goTo={localGoTo} />)
+    unmount()
+    fireEvent.keyDown(document, { key: "ArrowDown" })
+    expect(localGoTo).not.toHaveBeenCalled()
+  })
 })

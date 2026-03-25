@@ -57,6 +57,44 @@ describe("Slide", () => {
     const slide = document.querySelector('[data-slot="slide"]')
     expect(slide).toHaveClass("custom")
   })
+
+  it("applies center class when center prop is true", () => {
+    render(<Slide id="s1" center>Content</Slide>)
+    const slide = document.querySelector('[data-slot="slide"]')
+    expect(slide).toHaveClass("center")
+  })
+
+  it("applies flush class when flush prop is true", () => {
+    render(<Slide id="s1" flush>Content</Slide>)
+    const slide = document.querySelector('[data-slot="slide"]')
+    expect(slide).toHaveClass("flush")
+  })
+
+  it("applies photo class when photo prop is true", () => {
+    render(<Slide id="s1" photo>Content</Slide>)
+    const slide = document.querySelector('[data-slot="slide"]')
+    expect(slide).toHaveClass("photo")
+  })
+
+  it("does not render hero background elements without heroImage", () => {
+    render(<Slide id="s1" hero>Content</Slide>)
+    const slide = document.querySelector('[data-slot="slide"]')
+    expect(slide).toHaveClass("hero")
+    // No hero background or overlay when heroImage is absent
+    expect(document.querySelector(".heroBg")).not.toBeInTheDocument()
+    expect(document.querySelector(".heroOverlay")).not.toBeInTheDocument()
+  })
+
+  it("wraps children in heroContent when hero and heroImage are set", () => {
+    render(
+      <Slide id="s1" hero heroImage="/hero.jpg">
+        Wrapped content
+      </Slide>
+    )
+    const heroContent = document.querySelector(".heroContent")
+    expect(heroContent).toBeInTheDocument()
+    expect(heroContent!.textContent).toBe("Wrapped content")
+  })
 })
 
 describe("Slide accessibility", () => {

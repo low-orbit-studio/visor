@@ -59,6 +59,56 @@ describe("DeckFooter", () => {
     renderWithDeck(<DeckFooter description="D" brandName="Acme Inc" />)
     expect(screen.getAllByText(/Acme Inc/).length).toBeGreaterThanOrEqual(1)
   })
+
+  it("renders brand section without columns", () => {
+    renderWithDeck(<DeckFooter description="Brand only" />)
+    expect(screen.getByText("Brand only")).toBeInTheDocument()
+    // No grid when columns are not provided
+    const grid = document.querySelector('[class*="grid"]')
+    expect(grid).not.toBeInTheDocument()
+  })
+
+  it("renders href links as anchor elements", () => {
+    renderWithDeck(<DeckFooter description="D" columns={columns} />)
+    const link = screen.getByText("Engineering").closest("a")
+    expect(link).toBeInTheDocument()
+    expect(link).toHaveAttribute("href", "https://example.com")
+  })
+
+  it("applies accent class to slide links", () => {
+    const accentColumns = [{
+      title: "Links",
+      links: [{ label: "Highlight", slide: "s-highlight", accent: true }],
+    }]
+    renderWithDeck(<DeckFooter description="D" columns={accentColumns} />)
+    const btn = screen.getByText("Highlight")
+    expect(btn).toHaveClass("linkAccent")
+  })
+
+  it("applies accent class to href links", () => {
+    const accentColumns = [{
+      title: "Links",
+      links: [{ label: "External", href: "https://example.com", accent: true }],
+    }]
+    renderWithDeck(<DeckFooter description="D" columns={accentColumns} />)
+    const link = screen.getByText("External")
+    expect(link).toHaveClass("linkAccent")
+  })
+
+  it("falls back to # when href is missing on non-slide links", () => {
+    const fallbackColumns = [{
+      title: "Links",
+      links: [{ label: "Empty" }],
+    }]
+    renderWithDeck(<DeckFooter description="D" columns={fallbackColumns} />)
+    const link = screen.getByText("Empty").closest("a")
+    expect(link).toHaveAttribute("href", "#")
+  })
+
+  it("renders colophon/bottom section", () => {
+    renderWithDeck(<DeckFooter description="D" />)
+    expect(screen.getByText(/Built by/)).toBeInTheDocument()
+  })
 })
 
 describe("DeckFooter accessibility", () => {

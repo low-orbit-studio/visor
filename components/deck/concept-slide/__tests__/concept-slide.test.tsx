@@ -34,6 +34,48 @@ describe("ConceptSlide", () => {
     )
     expect(screen.getByText("Big Concept")).toBeInTheDocument()
   })
+
+  it("video has autoPlay, muted, and loop attributes", () => {
+    render(
+      <ConceptSlide id="s1" video="/video.mp4" poster="/poster.jpg">
+        Content
+      </ConceptSlide>
+    )
+    const video = document.querySelector("video")!
+    expect(video.autoplay).toBe(true)
+    expect(video.muted).toBe(true)
+    expect(video.loop).toBe(true)
+  })
+
+  it("source element has correct type attribute", () => {
+    render(
+      <ConceptSlide id="s1" video="/video.mp4" poster="/poster.jpg">
+        Content
+      </ConceptSlide>
+    )
+    const source = document.querySelector("source")
+    expect(source).toHaveAttribute("type", "video/mp4")
+  })
+
+  it("defaults to light theme", () => {
+    render(
+      <ConceptSlide id="s1" video="/v.mp4" poster="/p.jpg">
+        Content
+      </ConceptSlide>
+    )
+    const slide = document.querySelector('[data-slot="slide"]')
+    expect(slide).toHaveAttribute("data-theme", "light")
+  })
+
+  it("applies dark theme when specified", () => {
+    render(
+      <ConceptSlide id="s1" video="/v.mp4" poster="/p.jpg" theme="dark">
+        Content
+      </ConceptSlide>
+    )
+    const slide = document.querySelector('[data-slot="slide"]')
+    expect(slide).toHaveAttribute("data-theme", "dark")
+  })
 })
 
 // Note: a11y test skipped for ConceptSlide — axe-core times out on
