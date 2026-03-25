@@ -17,27 +17,44 @@ Validated the theming architecture with a second standard theme while expanding 
 - [x] Upgraded to fumadocs v16, Next.js 16, React 19.2
 - [x] Added minimal MDX documentation for all components
 
-## Phase 1b: Remaining Components + Deck
+## Phase 1b: Remaining Components + Deck — COMPLETE
 
-Complete the component library and add the deck category.
+Completed the component library and added the deck category.
 
-**Key work:**
-- Add remaining general-purpose components to reach ~55 total
-- ~~Add ~12 deck components as a separate registry category (`npx visor add --category deck`)~~ ✅
-- ~~Move tests from reference-nextjs-app to Visor (not copy) — 100% coverage target~~ ✅
-- ~~Add component composition tests (dialog + form, sidebar + nav, dropdown in table)~~ ✅
+**Completed work:**
+- [x] Added remaining general-purpose components (stepper, code block, timeline, heading, text, date picker, file upload, carousel, lightbox, image)
+- [x] Added 12 deck components as a separate registry category (`npx visor add --category deck`)
+- [x] Moved tests from reference-nextjs-app to Visor — 100% coverage target
+- [x] Added component composition tests (dialog + form, sidebar + nav, dropdown in table)
 
-## Phase 2: AI Agent Consumability
+## Phase 2: AI Agent Consumability — COMPLETE
 
-Make Visor as understandable and usable by AI agents as it is by human developers.
+Made Visor understandable and usable by AI agents.
 
 See [ai-consumability.md](./ai-consumability.md) for the full spec.
 
+**Completed work:**
+- [x] Component metadata manifests — structured YAML/JSON per component
+- [x] Single registry manifest (`visor-manifest.json`)
+- [x] Composition patterns/recipes
+
+**Remaining (deferred to later phase):**
+- Agent-first CLI enhancements — `--json` flag on all commands, rich `--help`, composable commands, structured output
+
+## Phase 2.5: Foundation Hardening — IN PROGRESS
+
+Stabilize the design system contract, complete the form system, add blocks infrastructure, and build a live design system specimen. This foundation must be solid before the interchange format can codify it.
+
 **Key work:**
-- [x] Component metadata manifests — structured YAML/JSON per component with props, variants, slots, dependencies, usage examples, "when to use" / "when not to use" guidance
-- [x] Single registry manifest (`visor-manifest.json`) — one file an agent loads to understand everything available
-- [x] Composition patterns/recipes — higher-level documented patterns ("form with validation", "dashboard layout", "CRUD table") showing how components combine
-- Agent-first CLI enhancements — `--json` flag on all commands, rich `--help`, composable commands, structured output (following CLI-Anything principles)
+- **Token contract audit & fixes** — Fix circular token references, slate-to-gray fallback violations, missing theme contract tokens, fumadocs CSS bridge cleanup. Iterative — tokens will expand as new components surface gaps.
+- **Form system completion** — Document all undocumented form components (checkbox, input, label, select, switch, textarea, field). Add missing specialized inputs: password (show/hide), search (with clear), number (+/- controls), phone, OTP/PIN, tags/chip input, fieldset/legend grouping.
+- **Form validation research spike** — Evaluate React Hook Form + Zod vs Conform + Zod vs other approaches for a Form wrapper component with schema validation support.
+- **Blocks infrastructure** — Add "blocks" concept to the registry (multi-component composed patterns, distinct from individual components). CLI support, own docs sidebar section. Blocks are copy-and-own like components but represent complete UI patterns (login form, settings page, dashboard panel).
+- **Design system specimen block** — Live interactive showcase in the docs site that responds to the active theme. Visual specimen for colors, typography, spacing, shadows, elevation, radius, motion, accessibility contrast. Pull patterns from reference-nextjs-app (12-slide specimen) and Veronica (form/button/chip specimens, ComponentShowcase with force-state system).
+
+**Source material:**
+- Reference NextJS App: `~/Code/low-orbit/low-orbit-playbook/reference-nextjs-app/` — ColorSwatchGrid, ElevationGrid, SpacingScale, TypeRow, AccessibilitySpecimen, etc.
+- Veronica Planning: `~/Code/veronica/veronica-planning/` — FormSpecimen, ButtonSpecimen, ChipSpecimen, ComponentShowcase
 
 ## Phase 3: Interchange Format, Import/Export, Validation & Basic Font Resolution
 
