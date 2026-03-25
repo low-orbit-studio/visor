@@ -1,0 +1,35 @@
+---
+title: Login Form Placeholder
+description: A minimal placeholder login form block demonstrating the blocks pipeline. Replace with a full implementation using Visor form components.
+---
+
+## Installation
+
+```bash
+npx visor add --block login-form-placeholder
+```
+
+This copies files into your project:
+
+- `blocks/login-form-placeholder/login-form-placeholder.tsx` — the block component
+- `blocks/login-form-placeholder/login-form-placeholder.module.css` — the styles
+
+## Usage
+
+```tsx
+import { LoginFormPlaceholder } from '@/blocks/login-form-placeholder/login-form-placeholder';
+
+export default function LoginPage() {
+  return <LoginFormPlaceholder />;
+}
+```
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI — such as login forms, settings pages, or dashboard panels.
+
+Blocks are copy-and-own, just like components. Install them into your project and customize freely.
+
+## Note
+
+This is a placeholder block used to validate the blocks infrastructure pipeline. It will be replaced by a real implementation using Visor form components (Input, Label, Button, Field) in a future ticket.

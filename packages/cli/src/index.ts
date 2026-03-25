@@ -27,12 +27,13 @@ program
 
 program
   .command("add")
-  .description("Add components, hooks, or utilities to your project")
+  .description("Add components, hooks, blocks, or utilities to your project")
   .argument("[items...]", "names of registry items to add")
   .option("--overwrite", "overwrite existing files", false)
   .option("--category <name>", "install all items from a category")
-  .action((items: string[], options: { overwrite: boolean; category?: string }) => {
-    addCommand(items, process.cwd(), { overwrite: options.overwrite, category: options.category })
+  .option("--block", "install blocks instead of components")
+  .action((items: string[], options: { overwrite: boolean; category?: string; block?: boolean }) => {
+    addCommand(items, process.cwd(), { overwrite: options.overwrite, category: options.category, block: options.block })
   })
 
 program

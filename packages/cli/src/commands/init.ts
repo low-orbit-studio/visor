@@ -15,6 +15,7 @@ export function initCommand(cwd: string): void {
   logger.info("Default paths:")
   logger.item(`components      → ${DEFAULT_CONFIG.paths.components}`)
   logger.item(`deck components → ${DEFAULT_CONFIG.paths.deckComponents}`)
+  logger.item(`blocks          → ${DEFAULT_CONFIG.paths.blocks}`)
   logger.item(`hooks           → ${DEFAULT_CONFIG.paths.hooks}`)
   logger.item(`lib             → ${DEFAULT_CONFIG.paths.lib}`)
 

@@ -1,0 +1,9 @@
+name: Login Form Placeholder
+description: A minimal placeholder login form block demonstrating the blocks pipeline. Replace with a full implementation using Visor form components.
+category: authentication
+components_used: []
+when_to_use:
+  - Testing blocks infrastructure end-to-end
+  - Scaffolding a login page before building the real block
+when_not_to_use:
+  - Production authentication flows (use a real login block)

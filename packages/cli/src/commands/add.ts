@@ -15,6 +15,7 @@ import { logger } from "../utils/logger.js"
 export interface AddOptions {
   overwrite?: boolean
   category?: string
+  block?: boolean
 }
 
 export function addCommand(
@@ -24,6 +25,19 @@ export function addCommand(
 ): void {
   const config = loadConfig(cwd)
   const registry = loadRegistry()
+
+  // When --block is used, validate that requested items are blocks
+  if (options.block && components.length > 0) {
+    for (const name of components) {
+      const item = registry.items.find((i) => i.name === name)
+      if (item && item.type !== "registry:block") {
+        logger.error(
+          `"${name}" is not a block. Remove the --block flag to install it as a component.`
+        )
+        process.exit(1)
+      }
+    }
+  }
 
   // Resolve component names from --category flag
   let itemNames = components
@@ -52,6 +66,21 @@ export function addCommand(
   }
 
   if (itemNames.length === 0) {
+    if (options.block) {
+      // List all available blocks
+      const blockItems = registry.items.filter(
+        (item) => item.type === "registry:block"
+      )
+      if (blockItems.length === 0) {
+        logger.error("No blocks available in the registry.")
+      } else {
+        logger.error("No block name specified. Available blocks:")
+        for (const item of blockItems) {
+          logger.info(`  ${item.name}`)
+        }
+      }
+      process.exit(1)
+    }
     logger.error("No items specified. Provide item names or use --category.")
     process.exit(1)
   }

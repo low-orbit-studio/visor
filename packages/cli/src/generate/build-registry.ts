@@ -23,8 +23,9 @@ async function main(): Promise<void> {
   const { hooks } = await import(join(REPO_ROOT, "registry/registry-hooks.ts"))
   const { lib } = await import(join(REPO_ROOT, "registry/registry-lib.ts"))
   const { deck } = await import(join(REPO_ROOT, "registry/registry-deck.ts"))
+  const { blocks } = await import(join(REPO_ROOT, "registry/registry-blocks.ts"))
 
-  const allItems = [...ui, ...hooks, ...lib, ...deck]
+  const allItems = [...ui, ...hooks, ...lib, ...deck, ...blocks]
   const bundledItems: BundledRegistryItem[] = []
 
   for (const item of allItems) {

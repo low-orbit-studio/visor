@@ -12,9 +12,11 @@ import { parse as parseYAML } from "yaml"
 import { extractTokensFromCSS } from "./extract-tokens.js"
 import type {
   ComponentMetadata,
+  BlockMetadata,
   PatternMetadata,
   VisorManifest,
   ManifestComponent,
+  ManifestBlock,
   ManifestHook,
   ManifestPattern,
 } from "./manifest-types.js"
@@ -23,6 +25,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = join(__dirname, "../../../..")
 const DIST_DIR = join(__dirname, "../../dist")
 const COMPONENTS_DIR = join(REPO_ROOT, "components/ui")
+const BLOCKS_DIR = join(REPO_ROOT, "blocks")
 const PATTERNS_DIR = join(REPO_ROOT, "patterns")
 
 const REQUIRED_COMPONENT_FIELDS = [
@@ -34,6 +37,15 @@ const REQUIRED_COMPONENT_FIELDS = [
   "why",
   "dependencies",
   "example",
+] as const
+
+const REQUIRED_BLOCK_FIELDS = [
+  "name",
+  "description",
+  "category",
+  "components_used",
+  "when_to_use",
+  "when_not_to_use",
 ] as const
 
 const REQUIRED_PATTERN_FIELDS = [
@@ -83,6 +95,33 @@ function loadComponentMetadata(): Map<string, ComponentMetadata> {
   }
 
   return components
+}
+
+function loadBlockMetadata(): Map<string, BlockMetadata> {
+  const blocksMap = new Map<string, BlockMetadata>()
+
+  if (!existsSync(BLOCKS_DIR)) {
+    console.warn("  Warning: blocks/ directory not found")
+    return blocksMap
+  }
+
+  const dirs = readdirSync(BLOCKS_DIR, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && !d.name.startsWith("__"))
+
+  for (const dir of dirs) {
+    const yamlPath = join(BLOCKS_DIR, dir.name, `${dir.name}.visor.yaml`)
+    if (!existsSync(yamlPath)) {
+      console.warn(`  Warning: No .visor.yaml for block ${dir.name}`)
+      continue
+    }
+
+    const raw = readFileSync(yamlPath, "utf-8")
+    const data = parseYAML(raw) as Record<string, unknown>
+    validateRequiredFields(data, REQUIRED_BLOCK_FIELDS, yamlPath)
+    blocksMap.set(dir.name, data as unknown as BlockMetadata)
+  }
+
+  return blocksMap
 }
 
 function loadTokensForComponent(componentName: string): string[] {
@@ -162,6 +201,9 @@ async function main(): Promise<void> {
   const components = loadComponentMetadata()
   console.log(`  Found ${components.size} component metadata files`)
 
+  const blocksMeta = loadBlockMetadata()
+  console.log(`  Found ${blocksMeta.size} block metadata files`)
+
   const patterns = loadPatterns()
   console.log(`  Found ${patterns.size} pattern files`)
 
@@ -188,6 +230,19 @@ async function main(): Promise<void> {
     console.log(`  ✓ ${name} (${tokens.length} tokens)`)
   }
 
+  // Build manifest blocks
+  const manifestBlocks: Record<string, ManifestBlock> = {}
+  for (const [name, meta] of blocksMeta) {
+    manifestBlocks[name] = {
+      category: meta.category,
+      description: meta.description,
+      components_used: meta.components_used,
+      when_to_use: meta.when_to_use,
+      when_not_to_use: meta.when_not_to_use,
+    }
+    console.log(`  ✓ block: ${name}`)
+  }
+
   // Build manifest patterns
   const manifestPatterns: Record<string, ManifestPattern> = {}
   for (const [name, meta] of patterns) {
@@ -207,6 +262,7 @@ async function main(): Promise<void> {
     version: rootPkg.version,
     generated_at: new Date().toISOString(),
     components: manifestComponents,
+    blocks: manifestBlocks,
     hooks: Object.fromEntries(hooks),
     patterns: manifestPatterns,
     categories: buildCategories(components),
@@ -219,7 +275,7 @@ async function main(): Promise<void> {
   const outputPath = join(DIST_DIR, "visor-manifest.json")
   writeFileSync(outputPath, JSON.stringify(manifest, null, 2), "utf-8")
 
-  console.log(`\n✓ Built manifest: ${components.size} components, ${patterns.size} patterns, ${hooks.size} hooks`)
+  console.log(`\n✓ Built manifest: ${components.size} components, ${blocksMeta.size} blocks, ${patterns.size} patterns, ${hooks.size} hooks`)
   console.log(`✓ Written to ${outputPath}`)
 }
 

@@ -57,6 +57,7 @@ describe("writeConfig / loadConfig", () => {
       paths: {
         components: "src/components",
         deckComponents: "components/deck",
+        blocks: "blocks",
         hooks: "src/hooks",
         lib: "src/lib",
       },

@@ -46,6 +46,19 @@ vi.mock("../registry/resolve.js", async (importOriginal) => {
             },
           ],
         },
+        {
+          name: "login-form-placeholder",
+          type: "registry:block",
+          category: "authentication",
+          description: "A placeholder login form block",
+          files: [
+            {
+              path: "blocks/login-form-placeholder/login-form-placeholder.tsx",
+              type: "registry:block",
+              content: "export {}",
+            },
+          ],
+        },
       ],
     })),
   }
@@ -82,12 +95,23 @@ describe("list command", () => {
     expect(output).toContain("utils")
   })
 
+  it("lists blocks in a separate group", () => {
+    listCommand(testDir)
+
+    const output = (console.log as ReturnType<typeof vi.fn>).mock.calls
+      .map((c: unknown[]) => String(c[0]))
+      .join("\n")
+
+    expect(output).toContain("Authentication Blocks")
+    expect(output).toContain("login-form-placeholder")
+  })
+
   it("marks installed items when visor.json exists", () => {
     // Create visor.json
     writeFileSync(
       join(testDir, "visor.json"),
       JSON.stringify({
-        paths: { components: "components/ui", deckComponents: "components/deck", hooks: "hooks", lib: "lib" },
+        paths: { components: "components/ui", deckComponents: "components/deck", blocks: "blocks", hooks: "hooks", lib: "lib" },
       }),
       "utf-8"
     )
