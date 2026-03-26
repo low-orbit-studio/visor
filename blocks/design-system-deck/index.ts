@@ -1,0 +1,1 @@
+export { designSystemDeckRegistry } from "./registry"
