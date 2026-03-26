@@ -17,6 +17,23 @@ Initialize Visor in your project. Creates a `visor.json` config file with defaul
 npx @loworbitstudio/visor init
 ```
 
+#### Options
+
+| Flag | Description |
+|------|-------------|
+| `--template nextjs` | Scaffold a themed Next.js project (creates `.visor.yaml` + `app/globals.css`) |
+
+**Template scaffolding:**
+
+```bash
+npx @loworbitstudio/visor init --template nextjs
+```
+
+This creates:
+- `visor.json` — path configuration
+- `.visor.yaml` — starter theme (customize your brand colors here)
+- `app/globals.css` — generated theme CSS via the NextJS adapter
+
 Default config:
 
 ```json
@@ -76,6 +93,43 @@ Show unified diffs between your local files and the registry versions. Useful fo
 ```bash
 npx @loworbitstudio/visor diff           # Diff all installed items
 npx @loworbitstudio/visor diff button    # Diff a specific component
+```
+
+### `visor theme apply`
+
+Generate CSS from a `.visor.yaml` theme file.
+
+```bash
+npx @loworbitstudio/visor theme apply .visor.yaml
+npx @loworbitstudio/visor theme apply .visor.yaml --adapter nextjs
+npx @loworbitstudio/visor theme apply .visor.yaml --adapter fumadocs
+npx @loworbitstudio/visor theme apply .visor.yaml --adapter deck
+```
+
+#### Options
+
+| Flag | Description |
+|------|-------------|
+| `-o, --output <path>` | Custom output file path |
+| `--adapter <name>` | Target adapter: `nextjs`, `fumadocs`, `deck` |
+| `--json` | Output structured JSON (for AI agents) |
+
+See [Adapters](/docs/adapters) for details on each adapter's output.
+
+### `visor theme validate`
+
+Validate a `.visor.yaml` file against the schema and run WCAG contrast checks.
+
+```bash
+npx @loworbitstudio/visor theme validate .visor.yaml
+```
+
+### `visor theme export`
+
+Export a minimal `.visor.yaml` from an existing theme.
+
+```bash
+npx @loworbitstudio/visor theme export .visor.yaml
 ```
 
 ## Typical Workflow

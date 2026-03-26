@@ -1,11 +1,34 @@
 import { readFileSync, writeFileSync, mkdirSync } from "fs"
 import { resolve, dirname } from "path"
-import { generateTheme } from "@loworbitstudio/visor-theme-engine"
+import { generateTheme, generateThemeData } from "@loworbitstudio/visor-theme-engine"
+import {
+  nextjsAdapter,
+  fumadocsAdapter,
+  deckAdapter,
+} from "@loworbitstudio/visor-theme-engine/adapters"
+import type { AdapterName } from "@loworbitstudio/visor-theme-engine/adapters"
 import { logger } from "../utils/logger.js"
 
 export interface ThemeApplyOptions {
   output?: string
   json?: boolean
+  adapter?: AdapterName
+}
+
+/** Default output filename per adapter. */
+function defaultOutputPath(adapter: AdapterName | undefined, themeName?: string): string {
+  switch (adapter) {
+    case "nextjs":
+      return "globals.css"
+    case "fumadocs":
+      return "visor-fumadocs-bridge.css"
+    case "deck": {
+      const slug = (themeName ?? "theme").toLowerCase().replace(/\s+/g, "-")
+      return `visor-deck-${slug}.css`
+    }
+    default:
+      return "visor-theme.css"
+  }
 }
 
 export function themeApplyCommand(
@@ -34,10 +57,46 @@ export function themeApplyCommand(
     process.exit(2)
   }
 
-  // Generate the theme CSS
-  let output: ReturnType<typeof generateTheme>
+  // Generate the theme
+  let css: string
+  let themeName: string | undefined
+  let sections: Record<string, number> | undefined
+
   try {
-    output = generateTheme(yamlContent)
+    if (options.adapter) {
+      const data = generateThemeData(yamlContent)
+      themeName = data.config.name
+
+      const adapterInput = {
+        primitives: data.primitives,
+        tokens: data.tokens,
+        config: data.config,
+      }
+
+      switch (options.adapter) {
+        case "nextjs":
+          css = nextjsAdapter(adapterInput)
+          break
+        case "fumadocs":
+          css = fumadocsAdapter(adapterInput)
+          break
+        case "deck":
+          css = deckAdapter(adapterInput)
+          break
+        default:
+          throw new Error(`Unknown adapter: ${options.adapter}`)
+      }
+    } else {
+      const output = generateTheme(yamlContent)
+      css = output.fullBundleCss
+      sections = {
+        primitives: output.primitivesCss.length,
+        semantic: output.semanticCss.length,
+        light: output.lightCss.length,
+        dark: output.darkCss.length,
+        fullBundle: output.fullBundleCss.length,
+      }
+    }
   } catch (err) {
     const message =
       err instanceof Error ? err.message : "Unknown error generating theme"
@@ -51,12 +110,13 @@ export function themeApplyCommand(
   }
 
   // Write the output
-  const outputPath = resolve(cwd, options.output ?? "visor-theme.css")
+  const outputFile = options.output ?? defaultOutputPath(options.adapter, themeName)
+  const outputPath = resolve(cwd, outputFile)
   const outputDir = dirname(outputPath)
 
   try {
     mkdirSync(outputDir, { recursive: true })
-    writeFileSync(outputPath, output.fullBundleCss, "utf-8")
+    writeFileSync(outputPath, css, "utf-8")
   } catch {
     if (options.json) {
       console.log(
@@ -72,28 +132,24 @@ export function themeApplyCommand(
   }
 
   if (options.json) {
-    console.log(
-      JSON.stringify({
-        success: true,
-        file: outputPath,
-        sections: {
-          primitives: output.primitivesCss.length,
-          semantic: output.semanticCss.length,
-          light: output.lightCss.length,
-          dark: output.darkCss.length,
-          fullBundle: output.fullBundleCss.length,
-        },
-      })
-    )
+    const jsonResult: Record<string, unknown> = {
+      success: true,
+      file: outputPath,
+    }
+    if (options.adapter) {
+      jsonResult.adapter = options.adapter
+      jsonResult.size = css.length
+    }
+    if (sections) {
+      jsonResult.sections = sections
+    }
+    console.log(JSON.stringify(jsonResult))
   } else {
     logger.success(`Theme CSS generated: ${outputPath}`)
-    logger.blank()
-    logger.info("Generated sections:")
-    logger.item(`Primitives   ${formatSize(output.primitivesCss.length)}`)
-    logger.item(`Semantic     ${formatSize(output.semanticCss.length)}`)
-    logger.item(`Light mode   ${formatSize(output.lightCss.length)}`)
-    logger.item(`Dark mode    ${formatSize(output.darkCss.length)}`)
-    logger.item(`Full bundle  ${formatSize(output.fullBundleCss.length)}`)
+    if (options.adapter) {
+      logger.info(`Adapter: ${options.adapter}`)
+    }
+    logger.item(`Size: ${formatSize(css.length)}`)
   }
 }
 

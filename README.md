@@ -238,6 +238,46 @@ export default function RootLayout({ children }) {
 }
 ```
 
+### Creating a Theme from `.visor.yaml`
+
+Define your theme in a YAML file and generate framework-specific CSS:
+
+```yaml
+# .visor.yaml
+name: my-brand
+version: 1
+colors:
+  primary: "#6366f1"
+```
+
+```bash
+# Generate Next.js globals.css with @layer support
+npx @loworbitstudio/visor theme apply .visor.yaml --adapter nextjs
+
+# Generate fumadocs bridge tokens
+npx @loworbitstudio/visor theme apply .visor.yaml --adapter fumadocs
+
+# Generate scoped deck CSS
+npx @loworbitstudio/visor theme apply .visor.yaml --adapter deck
+```
+
+Or scaffold a complete themed project:
+
+```bash
+npx @loworbitstudio/visor init --template nextjs
+```
+
+### FOWT Prevention
+
+Prevent flash of wrong theme by adding a blocking script to your `<head>`:
+
+```typescript
+import { FOWT_SCRIPT } from '@loworbitstudio/visor-theme-engine/fowt';
+
+// In your layout.tsx <head>:
+<script>{FOWT_SCRIPT}</script>
+```
+
 ### Importing Specific Token Layers
 
 ```css

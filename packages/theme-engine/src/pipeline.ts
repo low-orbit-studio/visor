@@ -26,6 +26,7 @@ import type {
   ResolvedThemeConfig,
   GeneratedPrimitives,
   ThemeOutput,
+  ThemeData,
 } from "./types.js";
 
 // ============================================================
@@ -94,6 +95,25 @@ export function generateTheme(yamlString: string): ThemeOutput {
 export function generateThemeFromConfig(
   config: VisorThemeConfig
 ): ThemeOutput {
+  return generateThemeDataFromConfig(config).output;
+}
+
+/**
+ * Generate theme data including intermediate artifacts from a .visor.yaml string.
+ * Returns config, primitives, tokens, and CSS output — used by adapters.
+ */
+export function generateThemeData(yamlString: string): ThemeData {
+  const config = parseConfig(yamlString);
+  return generateThemeDataFromConfig(config);
+}
+
+/**
+ * Generate theme data including intermediate artifacts from a pre-parsed config.
+ * Returns config, primitives, tokens, and CSS output — used by adapters.
+ */
+export function generateThemeDataFromConfig(
+  config: VisorThemeConfig
+): ThemeData {
   // Validate
   const validation = validateConfig(config);
   if (!validation.valid) {
@@ -115,11 +135,13 @@ export function generateThemeFromConfig(
   tokens = applyOverrides(tokens, resolved.overrides);
 
   // Stage 3: Generate CSS
-  return {
+  const output: ThemeOutput = {
     primitivesCss: generatePrimitivesCss(primitives, resolved),
     semanticCss: generateSemanticCss(tokens),
     lightCss: generateLightCss(tokens),
     darkCss: generateDarkCss(tokens),
     fullBundleCss: generateFullBundleCss(primitives, tokens, resolved),
   };
+
+  return { config: resolved, primitives, tokens, output };
 }

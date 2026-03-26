@@ -1,0 +1,121 @@
+---
+title: Adapters
+description: Generate framework-specific CSS from .visor.yaml themes using Visor's adapter layer.
+---
+
+Adapters transform theme engine output into CSS formatted for specific frameworks. Instead of a monolithic CSS bundle, adapters produce targeted output with proper `@layer` ordering, framework bridge tokens, or scoped selectors.
+
+## Available Adapters
+
+### NextJS
+
+Generates a `globals.css` file with `@layer` declarations, Google Fonts `@import`, and dark mode support.
+
+```bash
+npx @loworbitstudio/visor theme apply .visor.yaml --adapter nextjs
+```
+
+Output includes:
+- `@import url(...)` for Google Fonts (when non-system fonts are specified)
+- `@layer` order declaration for specificity control
+- Primitives in `@layer visor-primitives`
+- Light/dark adaptive tokens in `@layer visor-adaptive`
+- FOWT prevention usage comment
+
+**next/font integration:** If you use `next/font` for font loading, remove the `@import` lines from the generated CSS to avoid double-loading fonts. Configure fonts in your `layout.tsx` instead.
+
+### Fumadocs
+
+Generates a bridge CSS file that maps Visor semantic tokens to fumadocs `--color-fd-*` custom properties.
+
+```bash
+npx @loworbitstudio/visor theme apply .visor.yaml --adapter fumadocs
+```
+
+This replaces the manual Section 4 (framework bridge) in theme CSS files. The bridge maps tokens like:
+
+| Fumadocs Token | Visor Source |
+|---------------|-------------|
+| `--color-fd-background` | `--surface-page` |
+| `--color-fd-foreground` | `--text-primary` |
+| `--color-fd-card` | `--surface-card` |
+| `--color-fd-border` | `--border-default` |
+| `--color-fd-primary` | `--surface-accent-default` |
+| `--color-fd-ring` | `--border-focus` |
+
+### Deck
+
+Generates CSS scoped under a `.deck--{theme-name}` class for pitch decks where multiple themes coexist on one page.
+
+```bash
+npx @loworbitstudio/visor theme apply .visor.yaml --adapter deck
+```
+
+All tokens are nested under the scope class — no `:root` selectors. Dark mode uses `.dark .deck--{name}` selectors.
+
+## CSS @layer Strategy
+
+Adapter output uses CSS `@layer` declarations for specificity ordering:
+
+```css
+@layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;
+```
+
+This ensures:
+- **Primitives** have lowest specificity
+- **Semantic** tokens override primitives
+- **Adaptive** (light/dark) tokens override semantic
+- **Bridge** tokens (fumadocs) override everything
+
+No `!important` needed — layers handle specificity naturally.
+
+## Programmatic Usage
+
+Adapters are available as functions from the theme engine package:
+
+```typescript
+import { generateThemeData } from '@loworbitstudio/visor-theme-engine';
+import { nextjsAdapter, fumadocsAdapter, deckAdapter } from '@loworbitstudio/visor-theme-engine/adapters';
+
+const data = generateThemeData(yamlString);
+const input = {
+  primitives: data.primitives,
+  tokens: data.tokens,
+  config: data.config,
+};
+
+const nextjsCss = nextjsAdapter(input);
+const fumadocsCss = fumadocsAdapter(input);
+const deckCss = deckAdapter(input, { scopeClass: '.my-deck' });
+```
+
+## FOWT Prevention
+
+Flash of Wrong Theme (FOWT) occurs when a page loads with the default theme before JavaScript can apply the user's preferred theme. Visor provides a blocking script to prevent this.
+
+```typescript
+import { FOWT_SCRIPT } from '@loworbitstudio/visor-theme-engine/fowt';
+```
+
+Add this as a blocking script in your document `<head>` before any stylesheets:
+
+```tsx
+// In your Next.js layout.tsx
+<head>
+  <script>{FOWT_SCRIPT}</script>
+</head>
+```
+
+The script reads `localStorage('visor-theme')`, falls back to `prefers-color-scheme`, and sets `.dark` or `.light` on `<html>` before first paint.
+
+### Custom Configuration
+
+```typescript
+import { generateFowtScript } from '@loworbitstudio/visor-theme-engine/fowt';
+
+// Custom localStorage key
+const script = generateFowtScript({ storageKey: 'my-app-theme' });
+
+// Force dark mode default
+const darkScript = generateFowtScript({ defaultTheme: 'dark' });
+```
