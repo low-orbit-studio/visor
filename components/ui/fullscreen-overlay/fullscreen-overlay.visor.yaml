@@ -7,6 +7,10 @@ when_to_use:
   - Expanding block previews or demos to full viewport
   - Showing content in an immersive full-screen view
   - Any scenario needing a dismissible full-viewport portal
+why: >-
+  Block previews and interactive demos need a way to expand to full viewport for
+  immersive viewing. Dialog is too constrained — this provides a clean full-screen
+  portal with accessibility built in.
 when_not_to_use:
   - Standard modal dialogs — use Dialog instead
   - Image galleries — use Lightbox instead

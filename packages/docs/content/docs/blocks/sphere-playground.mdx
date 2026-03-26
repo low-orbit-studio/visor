@@ -1,0 +1,91 @@
+---
+title: Sphere Playground
+description: An interactive demo composing the Sphere visualization with a Configuration Panel for real-time parameter control.
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { SpherePlayground } from '@/components/blocks/sphere-playground';
+
+## Preview
+
+<BlockPreview
+  title="Sphere Playground"
+  code={`<SpherePlayground />`}
+>
+  <div className="sphere-playground-preview">
+    <SpherePlayground />
+  </div>
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block sphere-playground
+```
+
+This installs the sphere-playground block along with its dependencies: `sphere`, `configuration-panel`, `slider`, and `toggle-group`.
+
+Three.js is a peer dependency:
+
+```bash
+npm install three
+npm install -D @types/three
+```
+
+## Usage
+
+```tsx
+import { SpherePlayground } from "@/blocks/sphere-playground/sphere-playground"
+
+export default function DemoPage() {
+  return (
+    <div style={{ width: "100%", height: "100vh" }}>
+      <SpherePlayground />
+    </div>
+  )
+}
+```
+
+### Custom Initial State
+
+```tsx
+<SpherePlayground
+  defaultMode="lorenz"
+  defaultColorScheme="aurora"
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `defaultMode` | `'sphere' \| 'curl' \| 'turing' \| 'lorenz' \| 'tendrils'` | `'sphere'` | Initial geometry mode |
+| `defaultColorScheme` | `'solar' \| 'aqua' \| 'ember' \| 'aurora' \| 'ghost'` | `'solar'` | Initial color scheme |
+| `className` | `string` | — | Additional CSS class names |
+| `style` | `React.CSSProperties` | — | Inline style for the container |
+
+## Controls
+
+The floating configuration panel provides real-time control over:
+
+- **Geometry** — Switch between 5 particle distribution modes
+- **Color** — Choose from 5 color schemes
+- **Appearance** — Adjust dot size, speed, blur, saturation, and lightness
+- **Think Mode** — Control the think-mode animation intensity
+
+## Fullscreen Mode
+
+Click the **Fullscreen** button in the preview footer to expand the playground to fill the entire viewport. This is where the sphere really shines — 256K particles at full resolution with the glassmorphic control panel floating over the visualization.
+
+## Theme Responsive
+
+The sphere renders on a black background by default, making it pair beautifully with the Blackout theme. The configuration panel uses semantic tokens and adapts to any active theme through its glassmorphic styling.
+
+## Composition
+
+This block composes four Visor primitives:
+
+- **Sphere** — GPU-accelerated particle visualization (background)
+- **ConfigurationPanel** — Floating glassmorphic control panel (overlay)
+- **Slider** — Continuous value controls for appearance parameters
+- **ToggleGroup** — Mode and color scheme selectors

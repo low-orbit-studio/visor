@@ -4,6 +4,7 @@
   "pages": [
     "configuration-panel",
     "design-system-specimen",
-    "login-form-placeholder"
+    "login-form-placeholder",
+    "sphere-playground"
   ]
 }
