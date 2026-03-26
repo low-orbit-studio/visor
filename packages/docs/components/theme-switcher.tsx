@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Palette } from "@phosphor-icons/react";
 import {
   Select,
@@ -35,22 +35,12 @@ function applyTheme(theme: Theme) {
 }
 
 export function ThemeSwitcher() {
-  const [theme, setTheme] = useState<Theme>(DEFAULT_THEME);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setTheme(getStoredTheme());
-    setMounted(true);
-  }, []);
+  const [theme, setTheme] = useState<Theme>(getStoredTheme);
 
   function handleChange(value: string) {
     const next = value as Theme;
     setTheme(next);
     applyTheme(next);
-  }
-
-  if (!mounted) {
-    return <div className={styles.wrapper} aria-hidden />;
   }
 
   return (
