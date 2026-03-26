@@ -1,0 +1,78 @@
+name: Sphere
+description: GPU-accelerated particle sphere visualization with 256K particles, custom GLSL shaders, 6 geometry modes, 5 color schemes, and think-mode animation effects.
+category: visual-elements
+
+when_to_use:
+  - Ambient background visualization (hero sections, landing pages)
+  - AI thinking/processing indicator
+  - Decorative visual element on dark backgrounds
+  - Data visualization with particle-based aesthetics
+
+when_not_to_use:
+  - Small UI components or icons (too heavy — requires Three.js)
+  - Pages where bundle size is critical (~150KB gzipped for Three.js)
+  - Content-heavy pages where animation would distract
+
+why: >
+  Sphere provides a GPU-accelerated particle visualization that runs at 60fps
+  with 256K particles in a single draw call. It uses custom GLSL shaders for
+  all visual computation, keeping CPU overhead minimal. The component is fully
+  theme-agnostic via configurable color schemes and SSR-safe via dynamic imports.
+
+props:
+  - name: mode
+    type: "'sphere' | 'curl' | 'turing' | 'lorenz' | 'tendrils'"
+    default: "sphere"
+    description: Geometry mode for particle distribution
+  - name: colorScheme
+    type: "'solar' | 'aqua' | 'ember' | 'aurora' | 'ghost'"
+    default: "solar"
+    description: Named color scheme
+  - name: colors
+    type: "GradientColors"
+    description: Custom 5-stop gradient (overrides colorScheme)
+  - name: particleCount
+    type: number
+    default: 256000
+  - name: speed
+    type: number
+    default: 1
+    description: Animation speed multiplier
+  - name: waves
+    type: number
+    default: 1
+    description: Wave displacement multiplier
+  - name: dotSize
+    type: number
+    default: 1
+    description: Particle dot size multiplier
+  - name: blur
+    type: number
+    default: 0.5
+    description: Softness (0 = hard dots, 1 = full glow)
+  - name: thinkIntensity
+    type: number
+    default: 0
+    description: Think-mode intensity (0-1)
+  - name: thinkEffects
+    type: "SphereThinkEffects"
+    description: Which think-mode effects are enabled
+  - name: orbitControls
+    type: boolean
+    default: true
+    description: Enable drag-to-rotate
+  - name: autoRotate
+    type: boolean
+    default: true
+
+dependencies:
+  - three
+  - "@loworbitstudio/visor-core"
+
+example: |
+  <Sphere
+    mode="sphere"
+    colorScheme="solar"
+    speed={1}
+    style={{ width: "100%", height: "400px" }}
+  />

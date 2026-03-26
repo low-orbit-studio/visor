@@ -1,0 +1,8 @@
+{
+  "title": "Visual Elements",
+  "description": "GPU-accelerated visual components. Insert new entries in A-Z order.",
+  "defaultOpen": true,
+  "pages": [
+    "sphere"
+  ]
+}

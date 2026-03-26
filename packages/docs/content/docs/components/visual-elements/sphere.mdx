@@ -1,0 +1,158 @@
+---
+title: Sphere
+description: GPU-accelerated particle sphere visualization with 256K particles, 6 geometry modes, 5 color schemes, and think-mode animation effects.
+---
+
+import { PropsTable } from '@/components/props-table';
+
+## Installation
+
+```bash
+npx visor add sphere
+```
+
+This installs `three` (~150KB gzipped) as a dependency. If your project already uses Three.js, the existing installation will be reused.
+
+## Usage
+
+```tsx
+import { Sphere } from '@/components/visual/sphere/sphere';
+
+<div style={{ width: '100%', height: '400px' }}>
+  <Sphere colorScheme="solar" mode="sphere" />
+</div>
+```
+
+The Sphere component fills its container. Wrap it in a sized element.
+
+## SSR Compatibility
+
+Sphere uses `"use client"` and dynamically imports Three.js inside `useEffect`. It renders an empty `<div>` during SSR and hydrates the WebGL canvas on the client. No additional configuration is needed for Next.js.
+
+## Geometry Modes
+
+Six particle distribution algorithms, each with unique shader displacement:
+
+| Mode | Description |
+|------|-------------|
+| `sphere` | Fibonacci sphere with dual-layer noise displacement and tangential swirl |
+| `curl` | Curl noise flow field along the sphere surface |
+| `turing` | Reaction-diffusion pattern (activator-inhibitor model) |
+| `lorenz` | Lorenz strange attractor trajectory sampling |
+| `tendrils` | 80 radial tendrils emanating from the sphere surface |
+
+```tsx
+<Sphere mode="lorenz" colorScheme="ember" />
+```
+
+## Color Schemes
+
+Five built-in gradient schemes (5 stops each, bottom to top):
+
+| Scheme | Description |
+|--------|-------------|
+| `solar` | Warm gold to cool blue-white (default) |
+| `aqua` | Deep teal to bright cyan |
+| `ember` | Deep red-brown to warm off-white |
+| `aurora` | Green to purple northern lights |
+| `ghost` | Monochrome grayscale |
+
+### Custom Colors
+
+Override with a 5-stop gradient array (RGB values in 0-1 range):
+
+```tsx
+<Sphere
+  colors={[
+    [0.1, 0.0, 0.3],
+    [0.3, 0.0, 0.6],
+    [0.5, 0.1, 0.8],
+    [0.7, 0.3, 0.9],
+    [0.9, 0.6, 1.0],
+  ]}
+/>
+```
+
+## Think Mode
+
+The sphere supports a "thinking" animation with three layered effects:
+
+- **Pulses** — Expanding ring waves from random surface points
+- **Ramp** — Speed boost during think intensity
+- **Scatter** — Staccato heartbeat contractions that scatter particles outward
+
+### Declarative Control
+
+```tsx
+<Sphere thinkIntensity={0.8} thinkEffects={{ pulses: true, ramp: true, scatter: true }} />
+```
+
+### Imperative Control
+
+Use a ref for start/stop with automatic ease ramping:
+
+```tsx
+const sphereRef = useRef<SphereRef>(null);
+
+<Sphere ref={sphereRef} />
+
+// Start thinking (automatic ease-in)
+sphereRef.current?.startThinking();
+
+// Stop thinking (automatic ease-out)
+sphereRef.current?.stopThinking();
+```
+
+## Visual Tuning
+
+Fine-tune the visualization appearance:
+
+```tsx
+<Sphere
+  speed={1.5}       // Animation speed multiplier
+  waves={2}         // Noise displacement intensity
+  dotSize={0.8}     // Particle size
+  blur={0.6}        // Softness (0 = hard dots, 1 = full glow)
+  saturation={1.2}  // Color saturation
+  lightness={0.9}   // Color lightness
+  scale={1.0}       // Overall scale
+/>
+```
+
+## Orbit Controls
+
+Drag to rotate, scroll to zoom. Disable with `orbitControls={false}`.
+
+```tsx
+<Sphere orbitControls autoRotate autoRotateSpeed={0.5} />
+```
+
+## Reduced Motion
+
+When `prefers-reduced-motion: reduce` is active, the animation freezes in place and auto-rotation stops. The sphere remains visible as a static image. Orbit controls still respond to user interaction.
+
+## Ref API
+
+| Method | Description |
+|--------|-------------|
+| `startThinking()` | Start think mode with automatic ease-in ramp |
+| `stopThinking()` | Stop think mode with automatic ease-out ramp |
+| `getThinkIntensity()` | Get current think intensity (0-1) |
+| `setThinkIntensity(value)` | Set think intensity directly (0-1) |
+| `setMode(mode)` | Switch geometry mode |
+| `setColorScheme(scheme)` | Apply a named color scheme |
+| `setColors(colors)` | Apply custom gradient colors |
+| `resetCamera()` | Animated camera reset to default position |
+| `dispose()` | Force dispose of all GPU resources |
+
+## Performance
+
+- 256K particles rendered in a single GPU draw call (`THREE.Points`)
+- All visual computation runs in GLSL shaders — CPU updates ~10 uniforms per frame
+- Additive blending creates natural bright hotspots without extra computation
+- Device pixel ratio clamped to 2 by default (`maxPixelRatio` prop)
+- Targets 60fps on modern hardware
+
+## Props
+
+<PropsTable component="sphere" />
