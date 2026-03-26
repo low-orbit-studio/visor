@@ -1,0 +1,135 @@
+---
+title: DeckRenderer
+description: Renders a navigable slide deck from a declarative registry config with TOC, footer, fullscreen, and keyboard navigation.
+---
+
+## Installation
+
+```bash
+npx visor add deck-renderer
+```
+
+This installs the DeckRenderer component along with its dependencies: `deck-layout`, `deck-footer`, `toc-slide`, `fullscreen-overlay`, and the `deck-registry` utility library.
+
+## Usage
+
+### 1. Define a registry
+
+Create a registry file that describes your slides:
+
+```tsx
+import type { DeckRegistry } from '@/lib/deck-registry';
+import { IntroSlide } from './slides/intro';
+import { FeaturesSlide } from './slides/features';
+import { DemoSlide } from './slides/demo';
+import { ClosingSlide } from './slides/closing';
+
+export const myDeckRegistry: DeckRegistry = {
+  description: 'A showcase of our product features.',
+  slides: [
+    { id: 's-intro', title: 'Introduction', section: '_title', component: IntroSlide },
+    { id: 's-features', title: 'Features', section: 'Product', component: FeaturesSlide },
+    { id: 's-demo', title: 'Demo', section: 'Product', component: DemoSlide },
+    { id: 's-closing', title: 'Thank You', section: '_closing', component: ClosingSlide },
+  ],
+};
+```
+
+### 2. Render the deck
+
+```tsx
+import { DeckRenderer } from '@/components/deck/deck-renderer/deck-renderer';
+import { myDeckRegistry } from './registry';
+
+export default function DeckPage() {
+  return <DeckRenderer registry={myDeckRegistry} showTOC />;
+}
+```
+
+## Features
+
+- **Declarative registry** -- define slides as a typed array of `SlideEntry` objects
+- **Auto-generated TOC** -- table of contents slide built from registry sections
+- **Dot navigation** -- synced to slide position via the integrated `DotNav`
+- **Keyboard navigation** -- arrow keys, Space, Home, End (inherited from `DeckLayout`)
+- **Fullscreen mode** -- uses `FullscreenOverlay` for immersive presentation
+- **Optional footer** -- navigation columns auto-derived from registry sections
+- **Section filtering** -- sections prefixed with `_` are excluded from TOC and footer
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `registry` | `DeckRegistry` | -- | Declarative slide registry configuration |
+| `showTOC` | `boolean` | `false` | Insert a TOC slide after the first slide |
+| `tocImage` | `string` | -- | Background image URL for the TOC slide |
+| `showFooter` | `boolean` | `true` | Show footer with section navigation |
+| `brandName` | `string` | `"Low Orbit Studio"` | Brand name displayed in the footer |
+| `fullscreen` | `boolean` | `false` | Enable fullscreen mode with a trigger button |
+| `fullscreenLabel` | `string` | `"Fullscreen"` | Label for the fullscreen trigger button |
+| `className` | `string` | -- | Additional CSS class for the root element |
+
+## Types
+
+The following types are exported from `lib/deck-registry` for template authors:
+
+```tsx
+import type { DeckRegistry, SlideEntry, DeckSection } from '@/lib/deck-registry';
+```
+
+### SlideEntry
+
+```tsx
+interface SlideEntry {
+  id: string;         // Unique slide identifier (e.g. "s-intro")
+  title: string;      // Display title for navigation
+  section: string;    // Section name for grouping ("_" prefix = hidden)
+  component: ComponentType;  // React component to render
+}
+```
+
+### DeckSection
+
+```tsx
+interface DeckSection {
+  section: string;
+  slides: SlideEntry[];
+}
+```
+
+### DeckRegistry
+
+```tsx
+interface DeckRegistry {
+  description: string;
+  slides: SlideEntry[];
+  footerExtras?: FooterExtra[];
+}
+```
+
+## Section Conventions
+
+- Sections starting with `_` (e.g. `_title`, `_closing`) are **excluded** from the auto-generated TOC and footer navigation columns.
+- All other sections are grouped in the TOC and footer in the order they first appear.
+
+## Fullscreen Mode
+
+When `fullscreen` is enabled, the deck renders inside a `FullscreenOverlay`. A trigger button is rendered that opens the overlay. Escape key dismisses fullscreen (handled by the overlay).
+
+```tsx
+<DeckRenderer
+  registry={myDeckRegistry}
+  fullscreen
+  fullscreenLabel="Present"
+/>
+```
+
+## Composition
+
+DeckRenderer composes these Visor primitives:
+
+- **DeckLayout** -- scroll-snap container with keyboard/wheel/intersection navigation
+- **DotNav** -- right-side navigation dots (via DeckLayout)
+- **TOCSlide** -- auto-generated table of contents
+- **DeckFooter** -- multi-column footer with section navigation
+- **FullscreenOverlay** -- immersive fullscreen presentation mode

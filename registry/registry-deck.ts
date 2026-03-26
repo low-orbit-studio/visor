@@ -322,4 +322,35 @@ export const deck: Registry = [
       },
     ],
   },
+
+  // Renderer
+  {
+    name: "deck-renderer",
+    type: "registry:ui",
+    category: "deck",
+    description:
+      "Renders a navigable slide deck from a declarative DeckRegistry config. Supports TOC, footer, fullscreen mode, and keyboard navigation.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: [
+      "deck-layout",
+      "deck-footer",
+      "deck-toc-slide",
+      "fullscreen-overlay",
+      "utils",
+    ],
+    files: [
+      {
+        path: "components/deck/deck-renderer/deck-renderer.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/deck/deck-renderer/deck-renderer.module.css",
+        type: "registry:ui",
+      },
+      {
+        path: "lib/deck-registry.ts",
+        type: "registry:lib",
+      },
+    ],
+  },
 ]
