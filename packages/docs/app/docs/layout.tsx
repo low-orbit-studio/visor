@@ -31,7 +31,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         url: '/',
       }}
       sidebar={{
-        banner: <ThemeSwitcher />,
+        banner: <ThemeSwitcher key="theme-switcher" />,
       }}
     >
       {children}
