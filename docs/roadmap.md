@@ -72,7 +72,7 @@ See [interchange-format.md](./interchange-format.md) for the format spec and ada
   - Import: parse `.visor.yaml` → generate CSS custom property overrides
   - Export: read current theme tokens → produce `.visor.yaml`
   - Mapping layer: flat `.visor.yaml` colors → primitive shade scales → semantic/adaptive token assignment
-- **Basic font infrastructure:** Google Fonts URL resolution from family name, `font-display` strategy, preload hint generation (the interchange format needs this to be complete)
+- ~~**Basic font infrastructure:** Google Fonts URL resolution from family name, `font-display` strategy, preload hint generation (the interchange format needs this to be complete)~~ ✅ Done — see `packages/theme-engine/src/fonts/`
 - CLI commands:
   - `npx visor theme apply <file>` — reads `.visor.yaml`, generates full CSS token overrides
   - `npx visor theme export [--format yaml|json|figma]` — exports current theme
