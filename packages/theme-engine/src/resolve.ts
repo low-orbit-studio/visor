@@ -5,7 +5,8 @@
  * producing a fully resolved config ready for the pipeline.
  */
 
-import type { VisorThemeConfig, ResolvedThemeConfig } from "./types.js";
+import { parseColor } from "./color.js";
+import type { VisorThemeConfig, ResolvedThemeConfig, ColorFormat } from "./types.js";
 
 // ============================================================
 // Default Values (from Visor's primitives.ts)
@@ -53,6 +54,36 @@ const DEFAULTS = {
 
 export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
   const colors = config.colors;
+
+  // Track original color strings and formats for round-trip export
+  const originalColors: Record<string, string> = {};
+  const colorFormats: Record<string, ColorFormat> = {};
+
+  for (const [key, value] of Object.entries(colors)) {
+    if (value !== undefined) {
+      const parsed = parseColor(value);
+      if (parsed) {
+        originalColors[key] = value;
+        if (parsed.format !== "hex") {
+          colorFormats[key] = parsed.format;
+        }
+      }
+    }
+  }
+
+  if (config["colors-dark"]) {
+    for (const [key, value] of Object.entries(config["colors-dark"])) {
+      if (value !== undefined) {
+        const parsed = parseColor(value);
+        if (parsed) {
+          originalColors[`dark.${key}`] = value;
+          if (parsed.format !== "hex") {
+            colorFormats[`dark.${key}`] = parsed.format;
+          }
+        }
+      }
+    }
+  }
 
   return {
     name: config.name,
@@ -114,5 +145,7 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
       easing: config.motion?.easing ?? DEFAULTS.motion.easing,
     },
     overrides: config.overrides,
+    originalColors,
+    colorFormats,
   };
 }

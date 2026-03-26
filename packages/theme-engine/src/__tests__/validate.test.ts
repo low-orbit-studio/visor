@@ -599,7 +599,7 @@ describe("validate — intentionally broken themes", () => {
       name: "Bad Dark",
       version: 1,
       colors: { primary: "#2563EB" },
-      "colors-dark": { primary: "rgb(0,0,0)" },
+      "colors-dark": { primary: "not-a-color" },
     });
     expect(result.valid).toBe(false);
   });
@@ -678,5 +678,98 @@ describe("validate — output structure", () => {
     });
     expect(result.valid).toBe(false);
     expect(result.warnings).toHaveLength(0);
+  });
+});
+
+// ============================================================
+// Multi-Format Color Support
+// ============================================================
+
+describe("validate — multi-format colors", () => {
+  it("accepts rgba color values", () => {
+    const result = validate({
+      name: "RGBA Theme",
+      version: 1,
+      colors: {
+        primary: "#2563EB",
+        background: "rgba(255, 255, 255, 1)",
+      },
+    });
+    expect(result.valid).toBe(true);
+  });
+
+  it("accepts hsla color values", () => {
+    const result = validate({
+      name: "HSLA Theme",
+      version: 1,
+      colors: {
+        primary: "hsl(220, 83%, 53%)",
+      },
+    });
+    expect(result.valid).toBe(true);
+  });
+
+  it("accepts oklch color values", () => {
+    const result = validate({
+      name: "OKLCH Theme",
+      version: 1,
+      colors: {
+        primary: "oklch(0.5 0.2 260)",
+      },
+    });
+    expect(result.valid).toBe(true);
+  });
+
+  it("accepts mixed format colors", () => {
+    const result = validate({
+      name: "Mixed Theme",
+      version: 1,
+      colors: {
+        primary: "#2563EB",
+        accent: "oklch(0.6 0.15 300)",
+        background: "rgba(250, 250, 250, 1)",
+        surface: "hsl(0, 0%, 100%)",
+      },
+    });
+    expect(result.valid).toBe(true);
+  });
+
+  it("accepts rgba in dark mode overrides", () => {
+    const result = validate({
+      name: "Dark RGBA",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      "colors-dark": {
+        background: "rgba(10, 10, 10, 1)",
+        surface: "rgba(26, 26, 26, 1)",
+      },
+    });
+    expect(result.valid).toBe(true);
+  });
+
+  it("still rejects invalid color strings", () => {
+    const result = validate({
+      name: "Bad Colors",
+      version: 1,
+      colors: {
+        primary: "not-valid",
+      },
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.code === "INVALID_COLOR" || e.code === "STRUCTURAL")).toBe(true);
+  });
+
+  it("runs contrast warnings for non-hex colors", () => {
+    // This should still produce contrast warnings for low-contrast combos
+    const result = validate({
+      name: "Low Contrast",
+      version: 1,
+      colors: {
+        primary: "hsl(0, 0%, 90%)", // very light gray as primary
+        background: "hsl(0, 0%, 95%)", // almost white background
+      },
+    });
+    expect(result.valid).toBe(true);
+    expect(result.warnings.some((w) => w.code === "WCAG_CONTRAST")).toBe(true);
   });
 });

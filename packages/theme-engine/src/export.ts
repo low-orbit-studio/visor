@@ -85,45 +85,51 @@ export function exportTheme(
     version: 1,
   };
 
+  // Helper: get original color string if user provided a non-hex format
+  const getOriginal = (key: string): string | undefined =>
+    config.originalColors?.[key];
+
   // Colors — always include primary, only include others if non-default
+  // Prefer original color string for round-trip fidelity
   const colors: Record<string, string> = {
-    primary: extractAnchorColor(primitives, "primary"),
+    primary: getOriginal("primary") ?? extractAnchorColor(primitives, "primary"),
   };
 
   // Accent — include if different from primary
+  const accentOriginal = getOriginal("accent");
   const accentHex = extractAnchorColor(primitives, "accent");
-  if (accentHex.toLowerCase() !== colors.primary.toLowerCase()) {
-    colors.accent = accentHex;
+  if (accentHex.toLowerCase() !== extractAnchorColor(primitives, "primary").toLowerCase()) {
+    colors.accent = accentOriginal ?? accentHex;
   }
 
   // Neutral — include if not null (null = Tailwind Gray default)
   if (config.colors.neutral !== null) {
-    colors.neutral = extractAnchorColor(primitives, "neutral");
+    colors.neutral = getOriginal("neutral") ?? extractAnchorColor(primitives, "neutral");
   }
 
-  // Background/surface
+  // Background/surface — use original string if non-hex
   if (config.colors.background.toLowerCase() !== DEFAULT_COLORS.background) {
-    colors.background = config.colors.background;
+    colors.background = getOriginal("background") ?? config.colors.background;
   }
   if (config.colors.surface.toLowerCase() !== DEFAULT_COLORS.surface) {
-    colors.surface = config.colors.surface;
+    colors.surface = getOriginal("surface") ?? config.colors.surface;
   }
 
   // Status colors — include if non-default
   for (const role of ["success", "warning", "error", "info"] as const) {
     const hex = extractAnchorColor(primitives, role);
     if (!isDefaultColor(role, hex)) {
-      colors[role] = hex;
+      colors[role] = getOriginal(role) ?? hex;
     }
   }
 
   output.colors = colors as VisorThemeConfig["colors"];
 
-  // colors-dark — include if present
+  // colors-dark — include if present, prefer original strings for round-trip
   if (config["colors-dark"]) {
     const darkColors: Record<string, string> = {};
     for (const [key, value] of Object.entries(config["colors-dark"])) {
-      if (value) darkColors[key] = value;
+      if (value) darkColors[key] = getOriginal(`dark.${key}`) ?? value;
     }
     if (Object.keys(darkColors).length > 0) {
       output["colors-dark"] =

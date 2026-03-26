@@ -23,39 +23,39 @@
       "additionalProperties": false,
       "properties": {
         "primary": {
-          "$ref": "#/$defs/hexColor",
+          "$ref": "#/$defs/cssColor",
           "description": "Brand color. Drives interactive-*, accent-*, text-link, border-focus tokens. Anchored at shade 600."
         },
         "accent": {
-          "$ref": "#/$defs/hexColor",
+          "$ref": "#/$defs/cssColor",
           "description": "Secondary brand color. Defaults to primary if omitted."
         },
         "neutral": {
-          "$ref": "#/$defs/hexColor",
+          "$ref": "#/$defs/cssColor",
           "description": "Base neutral color for generating the gray scale (50-950). Defaults to Tailwind Gray if omitted."
         },
         "background": {
-          "$ref": "#/$defs/hexColor",
+          "$ref": "#/$defs/cssColor",
           "description": "Page background for light mode. Default: #FFFFFF."
         },
         "surface": {
-          "$ref": "#/$defs/hexColor",
+          "$ref": "#/$defs/cssColor",
           "description": "Card/panel background for light mode. Default: #FFFFFF."
         },
         "success": {
-          "$ref": "#/$defs/hexColor",
+          "$ref": "#/$defs/cssColor",
           "description": "Success status color. Default: #22C55E (Tailwind green-500)."
         },
         "warning": {
-          "$ref": "#/$defs/hexColor",
+          "$ref": "#/$defs/cssColor",
           "description": "Warning status color. Default: #F59E0B (Tailwind amber-500)."
         },
         "error": {
-          "$ref": "#/$defs/hexColor",
+          "$ref": "#/$defs/cssColor",
           "description": "Error status color. Default: #EF4444 (Tailwind red-500)."
         },
         "info": {
-          "$ref": "#/$defs/hexColor",
+          "$ref": "#/$defs/cssColor",
           "description": "Info status color. Default: #0EA5E9 (Tailwind sky-500)."
         }
       }
@@ -65,15 +65,15 @@
       "description": "Dark mode color overrides. Any key from colors can be overridden. Omitted keys inherit from the derived dark mode values (not from light mode).",
       "additionalProperties": false,
       "properties": {
-        "primary": { "$ref": "#/$defs/hexColor" },
-        "accent": { "$ref": "#/$defs/hexColor" },
-        "neutral": { "$ref": "#/$defs/hexColor" },
-        "background": { "$ref": "#/$defs/hexColor" },
-        "surface": { "$ref": "#/$defs/hexColor" },
-        "success": { "$ref": "#/$defs/hexColor" },
-        "warning": { "$ref": "#/$defs/hexColor" },
-        "error": { "$ref": "#/$defs/hexColor" },
-        "info": { "$ref": "#/$defs/hexColor" }
+        "primary": { "$ref": "#/$defs/cssColor" },
+        "accent": { "$ref": "#/$defs/cssColor" },
+        "neutral": { "$ref": "#/$defs/cssColor" },
+        "background": { "$ref": "#/$defs/cssColor" },
+        "surface": { "$ref": "#/$defs/cssColor" },
+        "success": { "$ref": "#/$defs/cssColor" },
+        "warning": { "$ref": "#/$defs/cssColor" },
+        "error": { "$ref": "#/$defs/cssColor" },
+        "info": { "$ref": "#/$defs/cssColor" }
       }
     },
     "typography": {
@@ -216,10 +216,15 @@
     }
   },
   "$defs": {
-    "hexColor": {
+    "cssColor": {
       "type": "string",
-      "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
-      "description": "CSS hex color value. Accepts #RGB, #RRGGBB, or #RRGGBBAA formats."
+      "description": "CSS color value. Accepts hex (#RGB, #RRGGBB, #RRGGBBAA), rgb()/rgba(), hsl()/hsla(), or oklch() formats.",
+      "anyOf": [
+        { "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$" },
+        { "pattern": "^rgba?\\(" },
+        { "pattern": "^hsla?\\(" },
+        { "pattern": "^oklch\\(" }
+      ]
     }
   }
 }

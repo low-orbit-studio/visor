@@ -6,7 +6,7 @@
  */
 
 import visorThemeSchema from "./visor-theme.schema.json";
-import { isValidHex } from "./color.js";
+import { isValidHex, isValidColor } from "./color.js";
 import type { VisorThemeConfig } from "./types.js";
 
 export { visorThemeSchema };
@@ -47,8 +47,8 @@ export function validateConfig(config: unknown): ValidationResult {
 
   const colors = obj.colors as Record<string, unknown>;
 
-  if (typeof colors.primary !== "string" || !isValidHex(colors.primary)) {
-    errors.push("'colors.primary' is required and must be a valid hex color");
+  if (typeof colors.primary !== "string" || !isValidColor(colors.primary)) {
+    errors.push("'colors.primary' is required and must be a valid CSS color (hex, rgba, hsla, or oklch)");
   }
 
   // Validate optional color fields
@@ -65,8 +65,8 @@ export function validateConfig(config: unknown): ValidationResult {
 
   for (const field of optionalColorFields) {
     if (colors[field] !== undefined) {
-      if (typeof colors[field] !== "string" || !isValidHex(colors[field] as string)) {
-        errors.push(`'colors.${field}' must be a valid hex color`);
+      if (typeof colors[field] !== "string" || !isValidColor(colors[field] as string)) {
+        errors.push(`'colors.${field}' must be a valid CSS color (hex, rgba, hsla, or oklch)`);
       }
     }
   }
@@ -82,9 +82,9 @@ export function validateConfig(config: unknown): ValidationResult {
         if (darkColors[field] !== undefined) {
           if (
             typeof darkColors[field] !== "string" ||
-            !isValidHex(darkColors[field] as string)
+            !isValidColor(darkColors[field] as string)
           ) {
-            errors.push(`'colors-dark.${field}' must be a valid hex color`);
+            errors.push(`'colors-dark.${field}' must be a valid CSS color (hex, rgba, hsla, or oklch)`);
           }
         }
       }
