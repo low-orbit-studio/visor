@@ -359,6 +359,12 @@ html:not(.dark) .blackout-theme {
   border-color: rgba(255, 255, 255, 0.04);
 }
 
+/* ── Popover / dropdown — solid so content behind doesn't bleed through ── */
+
+.blackout-theme [data-radix-popper-content-wrapper] {
+  --surface-card: #141414;
+}
+
 /* ── Links & interactive states ── */
 
 .blackout-theme a:not([class]) {
