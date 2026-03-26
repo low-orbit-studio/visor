@@ -1,0 +1,196 @@
+/* ─── Shared slide layout utilities ──────────────────────────────────────── */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6, 1.5rem);
+  width: 100%;
+}
+
+/* ─── Color Palette ──────────────────────────────────────────────────────── */
+
+.semanticColorSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 1rem);
+  margin-top: var(--spacing-4, 1rem);
+}
+
+/* ─── Typography ─────────────────────────────────────────────────────────── */
+
+.typeSpecimenList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 1rem);
+}
+
+/* ─── Shadows ────────────────────────────────────────────────────────────── */
+
+.shadowGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: var(--spacing-6, 1.5rem);
+}
+
+/* ─── Surfaces ───────────────────────────────────────────────────────────── */
+
+.surfaceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: var(--spacing-3, 0.75rem);
+}
+
+/* ─── Icons ──────────────────────────────────────────────────────────────── */
+
+.iconSubsection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+/* ─── Accessibility ──────────────────────────────────────────────────────── */
+
+.contrastList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+/* ─── Buttons ────────────────────────────────────────────────────────────── */
+
+.buttonSubsection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.buttonRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3, 0.75rem);
+  align-items: center;
+}
+
+.forceStateGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+  gap: var(--spacing-4, 1rem);
+}
+
+.forceStateItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+  align-items: center;
+}
+
+.forceHoverButton {
+  background: var(--interactive-primary-bg-hover, #1d4ed8);
+}
+
+.forceActiveButton {
+  background: var(--interactive-primary-bg-active, #1e40af);
+}
+
+.forceFocusButton {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #3b82f6);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* ─── Forms ──────────────────────────────────────────────────────────────── */
+
+.formGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6, 1.5rem);
+}
+
+.formSpecimenGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+  padding-bottom: var(--spacing-6, 1.5rem);
+  border-bottom: 1px solid var(--border-muted, #f3f4f6);
+}
+
+.formSpecimenGroup:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.formStateRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4, 1rem);
+  align-items: flex-start;
+}
+
+.formStateItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+  min-width: 12rem;
+  flex: 1;
+  max-width: 20rem;
+}
+
+.formStateItemInline {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.inputError {
+  border-color: var(--border-error, #ef4444);
+}
+
+/* ─── Component Showcase ─────────────────────────────────────────────────── */
+
+.showcaseGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: var(--spacing-6, 1.5rem);
+}
+
+.showcaseItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.showcaseItemContent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2, 0.5rem);
+  align-items: center;
+}
+
+.showcaseItemStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+/* ─── Opacity ────────────────────────────────────────────────────────────── */
+
+.opacityGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: var(--spacing-4, 1rem);
+}
+
+.opacityItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.opacitySample {
+  font-size: var(--font-size-lg, 1.125rem);
+  line-height: 1.5;
+}
+
+.opacityMeta {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-tertiary, #6b7280);
+}
