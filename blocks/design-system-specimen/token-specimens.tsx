@@ -2,6 +2,12 @@ import * as React from "react"
 import { cn } from "../../lib/utils"
 import { Heading } from "../../components/ui/heading/heading"
 import { Text } from "../../components/ui/text/text"
+import { ColorSwatchGrid, SemanticColorGrid } from "../../components/ui/color-swatch/color-swatch"
+import { TypeSpecimen } from "../../components/ui/type-specimen/type-specimen"
+import { SpacingScale } from "../../components/ui/spacing-scale/spacing-scale"
+import { ElevationCard } from "../../components/ui/elevation-card/elevation-card"
+import { SurfaceRow } from "../../components/ui/surface-row/surface-row"
+import { RadiusScale } from "../../components/ui/radius-scale/radius-scale"
 import styles from "./design-system-specimen.module.css"
 import type {
   ColorScaleData,
@@ -36,54 +42,28 @@ export function ColorPaletteSection({
       </Text>
 
       {scales.map((scale) => (
-        <div key={scale.name} className={styles.colorScaleGroup}>
-          <Text weight="medium" size="sm" as="div">{scale.name}</Text>
-          <div className={styles.colorGrid}>
-            {scale.swatches.map((swatch) => (
-              <div key={swatch.token} className={styles.colorSwatch}>
-                <div
-                  className={styles.colorSwatchPreview}
-                  style={{ background: `var(${swatch.token}, ${swatch.hex})` }}
-                >
-                  <span
-                    className={styles.colorSwatchHex}
-                    style={{ color: swatch.lightText ? "#ffffff" : "#111827" }}
-                  >
-                    {swatch.hex}
-                  </span>
-                </div>
-                <Text size="xs" color="secondary" as="span" className={styles.colorSwatchLabel}>
-                  {swatch.name}
-                </Text>
-              </div>
-            ))}
-          </div>
-        </div>
+        <ColorSwatchGrid
+          key={scale.name}
+          label={scale.name}
+          swatches={scale.swatches.map((s) => ({
+            token: s.token,
+            hex: s.hex,
+            name: s.name,
+            lightText: s.lightText,
+          }))}
+        />
       ))}
 
       <div className={styles.semanticColorSection}>
         <Text weight="medium" size="sm" as="div">Semantic Colors</Text>
         {categories.map((category) => (
-          <div key={category} className={styles.semanticColorGroup}>
-            <Text size="xs" color="tertiary" weight="medium" as="div">
-              {category}
-            </Text>
-            <div className={styles.semanticColorGrid}>
-              {semanticColors
-                .filter((c) => c.category === category)
-                .map((color) => (
-                  <div key={color.token} className={styles.semanticColorItem}>
-                    <div
-                      className={styles.semanticColorPreview}
-                      style={{ background: `var(${color.token})` }}
-                    />
-                    <Text size="xs" color="secondary" as="span">
-                      {color.label}
-                    </Text>
-                  </div>
-                ))}
-            </div>
-          </div>
+          <SemanticColorGrid
+            key={category}
+            category={category}
+            items={semanticColors
+              .filter((c) => c.category === category)
+              .map((c) => ({ token: c.token, label: c.label }))}
+          />
         ))}
       </div>
     </section>
@@ -110,22 +90,13 @@ export function TypographySection({
 
       <div className={styles.typeSpecimenList}>
         {specimens.map((spec) => (
-          <div key={spec.token} className={styles.typeRow}>
-            <div className={styles.typeRowMeta}>
-              <Text size="xs" weight="medium" color="secondary" as="span">
-                {spec.label}
-              </Text>
-              <Text size="xs" color="tertiary" as="span">
-                {spec.sizePx}px
-              </Text>
-            </div>
-            <div
-              className={styles.typeRowSample}
-              style={{ fontSize: `var(${spec.token}, ${spec.sizePx}px)` }}
-            >
-              {spec.sampleText}
-            </div>
-          </div>
+          <TypeSpecimen
+            key={spec.token}
+            token={spec.token}
+            label={spec.label}
+            sizePx={spec.sizePx}
+            sampleText={spec.sampleText}
+          />
         ))}
       </div>
     </section>
@@ -140,8 +111,6 @@ interface SpacingSectionProps {
 }
 
 export function SpacingSection({ steps, className }: SpacingSectionProps) {
-  const maxPx = Math.max(...steps.map((s) => s.px), 1)
-
   return (
     <section id="specimen-spacing" className={cn(styles.section, className)}>
       <Heading level={3} size="lg">Spacing</Heading>
@@ -149,24 +118,7 @@ export function SpacingSection({ steps, className }: SpacingSectionProps) {
         4px-based spacing scale.
       </Text>
 
-      <div className={styles.spacingList}>
-        {steps.map((step) => (
-          <div key={step.token} className={styles.spacingRow}>
-            <Text size="xs" weight="medium" as="span" className={styles.spacingLabel}>
-              {step.name}
-            </Text>
-            <div className={styles.spacingBarTrack}>
-              <div
-                className={styles.spacingBar}
-                style={{ width: `${(step.px / maxPx) * 100}%` }}
-              />
-            </div>
-            <Text size="xs" color="tertiary" as="span" className={styles.spacingValue}>
-              {step.px}px / {step.rem}
-            </Text>
-          </div>
-        ))}
-      </div>
+      <SpacingScale steps={steps} />
     </section>
   )
 }
@@ -188,14 +140,11 @@ export function ShadowSection({ levels, className }: ShadowSectionProps) {
 
       <div className={styles.shadowGrid}>
         {levels.map((level) => (
-          <div
+          <ElevationCard
             key={level.token}
-            className={styles.shadowCard}
-            style={{ boxShadow: `var(${level.token})` }}
-          >
-            <Text weight="medium" size="sm">{level.name}</Text>
-            <Text size="xs" color="secondary" as="span">{level.token}</Text>
-          </div>
+            token={level.token}
+            name={level.name}
+          />
         ))}
       </div>
     </section>
@@ -219,24 +168,12 @@ export function SurfaceSection({ surfaces, className }: SurfaceSectionProps) {
 
       <div className={styles.surfaceGrid}>
         {surfaces.map((surface) => (
-          <div
+          <SurfaceRow
             key={surface.token}
-            className={styles.surfaceCard}
-            style={{ background: `var(${surface.token})` }}
-          >
-            <span
-              className={styles.surfaceLabel}
-              style={{ color: surface.lightText ? "var(--text-inverse, #ffffff)" : "var(--text-primary, #111827)" }}
-            >
-              {surface.name}
-            </span>
-            <span
-              className={styles.surfaceToken}
-              style={{ color: surface.lightText ? "var(--text-inverse-secondary, #e5e7eb)" : "var(--text-secondary, #6b7280)" }}
-            >
-              {surface.token}
-            </span>
-          </div>
+            token={surface.token}
+            name={surface.name}
+            lightText={surface.lightText}
+          />
         ))}
       </div>
     </section>
@@ -258,24 +195,7 @@ export function RadiusSection({ steps, className }: RadiusSectionProps) {
         Radius scale from sharp to fully rounded.
       </Text>
 
-      <div className={styles.radiusGrid}>
-        {steps.map((step) => (
-          <div key={step.token} className={styles.radiusItem}>
-            <div
-              className={styles.radiusBox}
-              style={{
-                borderRadius: step.name === "full"
-                  ? "var(--radius-full, 9999px)"
-                  : `var(${step.token}, ${step.px}px)`,
-              }}
-            />
-            <Text weight="medium" size="xs" as="span">{step.name}</Text>
-            <Text size="xs" color="tertiary" as="span">
-              {step.name === "full" ? "9999px" : `${step.px}px`}
-            </Text>
-          </div>
-        ))}
-      </div>
+      <RadiusScale steps={steps} />
     </section>
   )
 }

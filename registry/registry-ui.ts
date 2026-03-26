@@ -1179,4 +1179,184 @@ export const ui: Registry = [
       },
     ],
   },
+  {
+    name: "accessibility-specimen",
+    type: "registry:ui",
+    description:
+      "WCAG contrast pair display with color preview, ratio value, and AA/AAA pass/fail badges.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "text", "badge"],
+    files: [
+      {
+        path: "components/ui/accessibility-specimen/accessibility-specimen.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/accessibility-specimen/accessibility-specimen.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "color-swatch",
+    type: "registry:ui",
+    description:
+      "Individual color swatch with hex value display, plus grid variants for color scales and semantic color tokens.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "text"],
+    files: [
+      {
+        path: "components/ui/color-swatch/color-swatch.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/color-swatch/color-swatch.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "elevation-card",
+    type: "registry:ui",
+    description:
+      "Shadow level display card showing a single elevation token with its name and token reference.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "text"],
+    files: [
+      {
+        path: "components/ui/elevation-card/elevation-card.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/elevation-card/elevation-card.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "icon-grid",
+    type: "registry:ui",
+    description:
+      "Icon set display with names, usage descriptions, and a size scale row.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "text"],
+    files: [
+      {
+        path: "components/ui/icon-grid/icon-grid.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/icon-grid/icon-grid.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "motion-specimen",
+    type: "registry:ui",
+    description:
+      "Duration and easing preview components with interactive play-animation controls.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "text", "button"],
+    files: [
+      {
+        path: "components/ui/motion-specimen/motion-specimen.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/motion-specimen/motion-specimen.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "opacity-bar",
+    type: "registry:ui",
+    description:
+      "Opacity level visualization showing bars at varying opacity values with token names.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "text"],
+    files: [
+      {
+        path: "components/ui/opacity-bar/opacity-bar.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/opacity-bar/opacity-bar.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "radius-scale",
+    type: "registry:ui",
+    description:
+      "Border radius examples with labels and pixel values, displayed in a responsive grid.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "text"],
+    files: [
+      {
+        path: "components/ui/radius-scale/radius-scale.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/radius-scale/radius-scale.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "spacing-scale",
+    type: "registry:ui",
+    description:
+      "Visual spacing scale displaying token names, proportional bars, and pixel/rem values.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "text"],
+    files: [
+      {
+        path: "components/ui/spacing-scale/spacing-scale.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/spacing-scale/spacing-scale.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "surface-row",
+    type: "registry:ui",
+    description:
+      "Surface background variant display showing a surface token with its name and token reference.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/surface-row/surface-row.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/surface-row/surface-row.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "type-specimen",
+    type: "registry:ui",
+    description:
+      "A single typography row displaying sample text at a given font-size token with weight and size metadata.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "text"],
+    files: [
+      {
+        path: "components/ui/type-specimen/type-specimen.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/type-specimen/type-specimen.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
 ]

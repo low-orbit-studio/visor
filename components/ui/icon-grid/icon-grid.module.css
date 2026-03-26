@@ -1,0 +1,44 @@
+/* ─── IconSizeRow ─────────────────────────────────────────────────────────── */
+
+.sizeRow {
+  display: flex;
+  gap: var(--spacing-4, 1rem);
+  align-items: flex-end;
+}
+
+.sizeItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+}
+
+.sizeBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary, #111827);
+}
+
+/* ─── IconGrid ───────────────────────────────────────────────────────────── */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.gridItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+  padding: var(--spacing-3, 0.75rem);
+  border: 1px solid var(--border-muted, #f3f4f6);
+  border-radius: var(--radius-md, 4px);
+  text-align: center;
+}
+
+.gridBox {
+  color: var(--text-primary, #111827);
+}

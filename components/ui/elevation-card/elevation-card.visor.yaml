@@ -1,0 +1,30 @@
+name: Elevation Card
+description: Shadow level display card showing a single elevation token with its name and token reference.
+category: specimen
+
+when_to_use:
+  - Displaying shadow/elevation tokens in a design system specimen
+  - Comparing shadow levels side by side
+  - Theme validation for shadow tokens
+
+when_not_to_use:
+  - General-purpose card layouts (use Card)
+  - Interactive elevation on hover (apply shadow tokens directly)
+
+why: >
+  ElevationCard renders a card with the specified shadow token applied via
+  box-shadow, making it easy to visually compare elevation levels. Token name
+  and variable reference are displayed for developer reference.
+
+props:
+  - name: token
+    type: string
+    description: CSS custom property for the shadow
+  - name: name
+    type: string
+    description: Display name for the shadow level
+
+dependencies: []
+
+example: |
+  <ElevationCard token="--shadow-md" name="md" />

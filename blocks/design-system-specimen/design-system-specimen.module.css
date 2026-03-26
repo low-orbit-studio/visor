@@ -15,44 +15,7 @@
   gap: var(--spacing-4, 1rem);
 }
 
-/* ─── Color Palette ───────────────────────────────────────────────────────── */
-
-.colorScaleGroup {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2, 0.5rem);
-}
-
-.colorGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr));
-  gap: var(--spacing-2, 0.5rem);
-}
-
-.colorSwatch {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-1, 0.25rem);
-}
-
-.colorSwatchPreview {
-  aspect-ratio: 1;
-  border-radius: var(--radius-md, 4px);
-  border: 1px solid var(--border-muted, #f3f4f6);
-  display: flex;
-  align-items: flex-end;
-  padding: var(--spacing-1, 0.25rem);
-}
-
-.colorSwatchHex {
-  font-size: var(--font-size-xs, 0.75rem);
-  font-family: var(--font-mono, monospace);
-  line-height: 1;
-}
-
-.colorSwatchLabel {
-  text-align: center;
-}
+/* ─── Color Palette (orchestration) ──────────────────────────────────────── */
 
 .semanticColorSection {
   display: flex;
@@ -61,33 +24,7 @@
   margin-top: var(--spacing-4, 1rem);
 }
 
-.semanticColorGroup {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2, 0.5rem);
-}
-
-.semanticColorGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
-  gap: var(--spacing-2, 0.5rem);
-}
-
-.semanticColorItem {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-2, 0.5rem);
-}
-
-.semanticColorPreview {
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: var(--radius-sm, 2px);
-  border: 1px solid var(--border-muted, #f3f4f6);
-  flex-shrink: 0;
-}
-
-/* ─── Typography ──────────────────────────────────────────────────────────── */
+/* ─── Typography (orchestration) ─────────────────────────────────────────── */
 
 .typeSpecimenList {
   display: flex;
@@ -95,71 +32,7 @@
   gap: var(--spacing-4, 1rem);
 }
 
-.typeRow {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-1, 0.25rem);
-  padding-bottom: var(--spacing-4, 1rem);
-  border-bottom: 1px solid var(--border-muted, #f3f4f6);
-}
-
-.typeRow:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.typeRowMeta {
-  display: flex;
-  gap: var(--spacing-2, 0.5rem);
-  align-items: baseline;
-}
-
-.typeRowSample {
-  color: var(--text-primary, #111827);
-  font-weight: var(--font-weight-normal, 400);
-  line-height: var(--line-height-tight, 1.25);
-}
-
-/* ─── Spacing ─────────────────────────────────────────────────────────────── */
-
-.spacingList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2, 0.5rem);
-}
-
-.spacingRow {
-  display: grid;
-  grid-template-columns: 2.5rem 1fr auto;
-  gap: var(--spacing-3, 0.75rem);
-  align-items: center;
-}
-
-.spacingLabel {
-  text-align: right;
-  font-family: var(--font-mono, monospace);
-}
-
-.spacingBarTrack {
-  height: var(--spacing-3, 0.75rem);
-  background: var(--surface-subtle, #f9fafb);
-  border-radius: var(--radius-sm, 2px);
-  overflow: hidden;
-}
-
-.spacingBar {
-  height: 100%;
-  background: var(--surface-accent-default, #3b82f6);
-  border-radius: var(--radius-sm, 2px);
-  min-width: 2px;
-}
-
-.spacingValue {
-  font-family: var(--font-mono, monospace);
-  white-space: nowrap;
-}
-
-/* ─── Shadows ─────────────────────────────────────────────────────────────── */
+/* ─── Shadows (orchestration) ────────────────────────────────────────────── */
 
 .shadowGrid {
   display: grid;
@@ -167,17 +40,7 @@
   gap: var(--spacing-6, 1.5rem);
 }
 
-.shadowCard {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2, 0.5rem);
-  padding: var(--spacing-6, 1.5rem);
-  background: var(--surface-card, #ffffff);
-  border-radius: var(--radius-lg, 8px);
-  text-align: center;
-}
-
-/* ─── Surfaces ────────────────────────────────────────────────────────────── */
+/* ─── Surfaces (orchestration) ───────────────────────────────────────────── */
 
 .surfaceGrid {
   display: grid;
@@ -185,143 +48,7 @@
   gap: var(--spacing-3, 0.75rem);
 }
 
-.surfaceCard {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-1, 0.25rem);
-  padding: var(--spacing-4, 1rem);
-  border-radius: var(--radius-md, 4px);
-  border: 1px solid var(--border-muted, #f3f4f6);
-  min-height: 5rem;
-}
-
-.surfaceLabel {
-  font-size: var(--font-size-sm, 0.875rem);
-  font-weight: var(--font-weight-medium, 500);
-}
-
-.surfaceToken {
-  font-size: var(--font-size-xs, 0.75rem);
-  font-family: var(--font-mono, monospace);
-}
-
-/* ─── Border Radius ───────────────────────────────────────────────────────── */
-
-.radiusGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
-  gap: var(--spacing-4, 1rem);
-}
-
-.radiusItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-2, 0.5rem);
-}
-
-.radiusBox {
-  width: 3.5rem;
-  height: 3.5rem;
-  background: var(--surface-accent-default, #3b82f6);
-  border: 1px solid var(--border-default, #e5e7eb);
-}
-
-/* ─── Motion ──────────────────────────────────────────────────────────────── */
-
-.motionList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-3, 0.75rem);
-}
-
-.motionRow {
-  display: grid;
-  grid-template-columns: 3.5rem 1fr auto;
-  gap: var(--spacing-3, 0.75rem);
-  align-items: center;
-}
-
-.motionLabel {
-  text-align: right;
-  font-family: var(--font-mono, monospace);
-}
-
-.motionBarTrack {
-  height: var(--spacing-3, 0.75rem);
-  background: var(--surface-subtle, #f9fafb);
-  border-radius: var(--radius-sm, 2px);
-  overflow: hidden;
-}
-
-.motionBar {
-  height: 100%;
-  width: 0;
-  background: var(--surface-accent-default, #3b82f6);
-  border-radius: var(--radius-sm, 2px);
-  transition-property: width;
-  transition-timing-function: var(--motion-easing-ease-out, cubic-bezier(0, 0, 0.2, 1));
-}
-
-.motionBarPlaying {
-  width: 100%;
-}
-
-.motionValue {
-  font-family: var(--font-mono, monospace);
-  white-space: nowrap;
-  min-width: 12rem;
-}
-
-.easingList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-3, 0.75rem);
-}
-
-.easingRow {
-  display: grid;
-  grid-template-columns: 5rem 1fr auto;
-  gap: var(--spacing-3, 0.75rem);
-  align-items: center;
-}
-
-.easingLabel {
-  text-align: right;
-  font-family: var(--font-mono, monospace);
-}
-
-.easingTrack {
-  height: var(--spacing-3, 0.75rem);
-  background: var(--surface-subtle, #f9fafb);
-  border-radius: var(--radius-full, 9999px);
-  position: relative;
-  overflow: hidden;
-}
-
-.easingDot {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translate(0, -50%);
-  width: var(--spacing-3, 0.75rem);
-  height: var(--spacing-3, 0.75rem);
-  border-radius: var(--radius-full, 9999px);
-  background: var(--surface-accent-default, #3b82f6);
-  transition-property: left;
-  transition-duration: var(--motion-duration-500, 500ms);
-}
-
-.easingDotPlaying {
-  left: calc(100% - var(--spacing-3, 0.75rem));
-}
-
-.easingValue {
-  font-family: var(--font-mono, monospace);
-  white-space: nowrap;
-}
-
-/* ─── Icons ───────────────────────────────────────────────────────────────── */
+/* ─── Icons (orchestration) ──────────────────────────────────────────────── */
 
 .iconSubsection {
   display: flex;
@@ -329,90 +56,12 @@
   gap: var(--spacing-3, 0.75rem);
 }
 
-.iconSizeRow {
-  display: flex;
-  gap: var(--spacing-4, 1rem);
-  align-items: flex-end;
-}
-
-.iconSizeItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-1, 0.25rem);
-}
-
-.iconSizeBox {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-primary, #111827);
-}
-
-.iconGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
-  gap: var(--spacing-3, 0.75rem);
-}
-
-.iconGridItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-1, 0.25rem);
-  padding: var(--spacing-3, 0.75rem);
-  border: 1px solid var(--border-muted, #f3f4f6);
-  border-radius: var(--radius-md, 4px);
-  text-align: center;
-}
-
-.iconGridBox {
-  color: var(--text-primary, #111827);
-}
-
-/* ─── Accessibility ───────────────────────────────────────────────────────── */
+/* ─── Accessibility (orchestration) ──────────────────────────────────────── */
 
 .contrastList {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-3, 0.75rem);
-}
-
-.contrastRow {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: var(--spacing-4, 1rem);
-  align-items: center;
-  padding: var(--spacing-3, 0.75rem);
-  background: var(--surface-subtle, #f9fafb);
-  border-radius: var(--radius-md, 4px);
-}
-
-.contrastSwatches {
-  display: flex;
-}
-
-.contrastPreview {
-  width: 3rem;
-  height: 3rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-md, 4px);
-  font-size: var(--font-size-lg, 1.125rem);
-  font-weight: var(--font-weight-bold, 700);
-  border: 1px solid var(--border-muted, #f3f4f6);
-}
-
-.contrastInfo {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-1, 0.25rem);
-}
-
-.contrastBadges {
-  display: flex;
-  gap: var(--spacing-2, 0.5rem);
 }
 
 /* ─── Button Specimens ────────────────────────────────────────────────────── */

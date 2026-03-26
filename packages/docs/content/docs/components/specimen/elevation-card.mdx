@@ -1,0 +1,31 @@
+---
+title: Elevation Card
+description: Shadow level display card showing a single elevation token with its name and token reference.
+---
+
+## Installation
+
+```bash
+npx visor add elevation-card
+```
+
+This copies two files into your project:
+
+- `components/ui/elevation-card/elevation-card.tsx` — the component
+- `components/ui/elevation-card/elevation-card.module.css` — the styles
+
+## Usage
+
+```tsx
+import { ElevationCard } from '@/components/ui/elevation-card/elevation-card';
+
+<ElevationCard token="--shadow-md" name="md" />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `token` | `string` | — | CSS custom property for the shadow |
+| `name` | `string` | — | Display name for the shadow level |
+| `className` | `string` | — | Additional CSS classes |

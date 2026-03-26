@@ -1,0 +1,37 @@
+name: Motion Specimen
+description: Duration and easing preview components with interactive play-animation controls.
+category: specimen
+
+when_to_use:
+  - Displaying motion duration tokens with animated previews
+  - Showing easing curve tokens with visual transitions
+  - Design system motion documentation
+
+when_not_to_use:
+  - Applying actual transitions (use motion tokens directly)
+  - Progress or loading animations (use Progress or Skeleton)
+
+why: >
+  MotionDuration and MotionEasing provide interactive previews of motion tokens.
+  Clicking "Play animation" triggers all bars/dots simultaneously, making it easy
+  to compare durations and easing curves side by side.
+
+props:
+  - name: durations
+    type: MotionDurationItemProps[]
+    description: Array of duration items with token, name, and ms values (MotionDuration)
+  - name: easings
+    type: MotionEasingItemProps[]
+    description: Array of easing items with token, name, and CSS value (MotionEasing)
+
+dependencies:
+  - button
+
+example: |
+  <MotionDuration durations={[
+    { token: "--motion-duration-200", name: "200", ms: 200 },
+    { token: "--motion-duration-300", name: "300", ms: 300 },
+  ]} />
+  <MotionEasing easings={[
+    { token: "--motion-easing-ease-out", name: "ease-out", value: "cubic-bezier(0, 0, 0.2, 1)" },
+  ]} />

@@ -1,0 +1,36 @@
+.row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--spacing-4, 1rem);
+  align-items: center;
+  padding: var(--spacing-3, 0.75rem);
+  background: var(--surface-subtle, #f9fafb);
+  border-radius: var(--radius-md, 4px);
+}
+
+.swatches {
+  display: flex;
+}
+
+.preview {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md, 4px);
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: var(--font-weight-bold, 700);
+  border: 1px solid var(--border-muted, #f3f4f6);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+}
+
+.badges {
+  display: flex;
+  gap: var(--spacing-2, 0.5rem);
+}

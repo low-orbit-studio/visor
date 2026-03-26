@@ -1,0 +1,37 @@
+name: Icon Grid
+description: Icon set display with names, usage descriptions, and a size scale row for comparing icon sizes.
+category: specimen
+
+when_to_use:
+  - Displaying an icon library in a design system specimen
+  - Showing icon sizes at different scales
+  - Icon reference documentation
+
+when_not_to_use:
+  - Rendering individual icons in UI (use icons directly)
+  - Icon pickers or selection interfaces
+
+why: >
+  IconGrid and IconSizeRow provide standardized layouts for displaying icon
+  libraries with metadata. The grid shows each icon with its name and usage,
+  while the size row demonstrates scale differences.
+
+props:
+  - name: icons
+    type: IconGridItemProps[]
+    description: Array of icon items with name, usage, and rendered icon element
+  - name: sizes
+    type: "{ size: number; icon: React.ReactNode }[]"
+    description: Array of sizes with rendered icon elements (IconSizeRow)
+
+dependencies: []
+
+example: |
+  <IconGrid icons={[
+    { name: "House", usage: "Home / dashboard", icon: <House size={24} /> },
+    { name: "Gear", usage: "Settings", icon: <Gear size={24} /> },
+  ]} />
+  <IconSizeRow sizes={[
+    { size: 16, icon: <House size={16} /> },
+    { size: 24, icon: <House size={24} /> },
+  ]} />

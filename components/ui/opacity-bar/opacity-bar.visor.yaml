@@ -1,0 +1,30 @@
+name: Opacity Bar
+description: Opacity level visualization showing bars at varying opacity values with token names.
+category: specimen
+
+when_to_use:
+  - Displaying opacity token levels in a design system specimen
+  - Comparing opacity values visually
+  - Theme validation for opacity tokens
+
+when_not_to_use:
+  - Applying actual opacity values (use opacity tokens directly)
+  - Progress indicators (use Progress)
+
+why: >
+  OpacityBar renders a bar at each opacity level, making relative transparency
+  immediately visible. Token names and labels are shown for reference.
+
+props:
+  - name: levels
+    type: OpacityBarItemProps[]
+    description: Array of opacity levels with token, name, and value (0-1)
+
+dependencies: []
+
+example: |
+  <OpacityBar levels={[
+    { token: "--opacity-25", name: "25%", value: 0.25 },
+    { token: "--opacity-50", name: "50%", value: 0.5 },
+    { token: "--opacity-100", name: "100%", value: 1 },
+  ]} />

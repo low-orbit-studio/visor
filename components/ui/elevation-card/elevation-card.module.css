@@ -1,0 +1,9 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+  padding: var(--spacing-6, 1.5rem);
+  background: var(--surface-card, #ffffff);
+  border-radius: var(--radius-lg, 8px);
+  text-align: center;
+}

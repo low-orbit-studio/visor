@@ -1,0 +1,70 @@
+/* ─── ColorSwatch ────────────────────────────────────────────────────────── */
+
+.swatch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+}
+
+.preview {
+  aspect-ratio: 1;
+  border-radius: var(--radius-md, 4px);
+  border: 1px solid var(--border-muted, #f3f4f6);
+  display: flex;
+  align-items: flex-end;
+  padding: var(--spacing-1, 0.25rem);
+}
+
+.hex {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-family: var(--font-mono, monospace);
+  line-height: 1;
+}
+
+.label {
+  text-align: center;
+}
+
+/* ─── ColorSwatchGrid ────────────────────────────────────────────────────── */
+
+.scaleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr));
+  gap: var(--spacing-2, 0.5rem);
+}
+
+/* ─── SemanticColorItem ──────────────────────────────────────────────────── */
+
+.semanticItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.semanticPreview {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: var(--radius-sm, 2px);
+  border: 1px solid var(--border-muted, #f3f4f6);
+  flex-shrink: 0;
+}
+
+/* ─── SemanticColorGrid ──────────────────────────────────────────────────── */
+
+.semanticGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.semanticGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  gap: var(--spacing-2, 0.5rem);
+}

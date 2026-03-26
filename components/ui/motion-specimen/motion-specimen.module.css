@@ -1,0 +1,101 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 1rem);
+}
+
+/* ─── Duration ───────────────────────────────────────────────────────────── */
+
+.durationList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.durationRow {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr auto;
+  gap: var(--spacing-3, 0.75rem);
+  align-items: center;
+}
+
+.durationLabel {
+  text-align: right;
+  font-family: var(--font-mono, monospace);
+}
+
+.barTrack {
+  height: var(--spacing-3, 0.75rem);
+  background: var(--surface-subtle, #f9fafb);
+  border-radius: var(--radius-sm, 2px);
+  overflow: hidden;
+}
+
+.durationBar {
+  height: 100%;
+  width: 0;
+  background: var(--surface-accent-default, #3b82f6);
+  border-radius: var(--radius-sm, 2px);
+  transition-property: width;
+  transition-timing-function: var(--motion-easing-ease-out, cubic-bezier(0, 0, 0.2, 1));
+}
+
+.durationBarPlaying {
+  width: 100%;
+}
+
+.durationValue {
+  font-family: var(--font-mono, monospace);
+  white-space: nowrap;
+  min-width: 12rem;
+}
+
+/* ─── Easing ─────────────────────────────────────────────────────────────── */
+
+.easingList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.easingRow {
+  display: grid;
+  grid-template-columns: 5rem 1fr auto;
+  gap: var(--spacing-3, 0.75rem);
+  align-items: center;
+}
+
+.easingLabel {
+  text-align: right;
+  font-family: var(--font-mono, monospace);
+}
+
+.easingTrack {
+  height: var(--spacing-3, 0.75rem);
+  background: var(--surface-subtle, #f9fafb);
+  border-radius: var(--radius-full, 9999px);
+  position: relative;
+  overflow: hidden;
+}
+
+.easingDot {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(0, -50%);
+  width: var(--spacing-3, 0.75rem);
+  height: var(--spacing-3, 0.75rem);
+  border-radius: var(--radius-full, 9999px);
+  background: var(--surface-accent-default, #3b82f6);
+  transition-property: left;
+  transition-duration: var(--motion-duration-500, 500ms);
+}
+
+.easingDotPlaying {
+  left: calc(100% - var(--spacing-3, 0.75rem));
+}
+
+.easingValue {
+  font-family: var(--font-mono, monospace);
+  white-space: nowrap;
+}

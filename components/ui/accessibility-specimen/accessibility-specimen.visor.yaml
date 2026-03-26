@@ -1,0 +1,54 @@
+name: Accessibility Specimen
+description: WCAG contrast pair display with color preview, ratio value, and AA/AAA pass/fail badges.
+category: specimen
+
+when_to_use:
+  - Displaying WCAG contrast ratios for text/background pairs
+  - Design system accessibility audit documentation
+  - Theme validation for contrast compliance
+
+when_not_to_use:
+  - Runtime contrast checking (use a contrast calculator library)
+  - General badge or status displays (use Badge)
+
+why: >
+  AccessibilitySpecimen renders a preview swatch with the foreground and background
+  tokens applied, alongside the contrast ratio and WCAG AA/AAA pass/fail badges.
+  This makes accessibility compliance immediately visible during theme development.
+
+props:
+  - name: fgToken
+    type: string
+    description: CSS custom property for the foreground color
+  - name: bgToken
+    type: string
+    description: CSS custom property for the background color
+  - name: fgLabel
+    type: string
+    description: Human-readable label for the foreground
+  - name: bgLabel
+    type: string
+    description: Human-readable label for the background
+  - name: ratio
+    type: number
+    description: Contrast ratio
+  - name: wcagAA
+    type: boolean
+    description: Whether the pair passes WCAG AA
+  - name: wcagAAA
+    type: boolean
+    description: Whether the pair passes WCAG AAA
+
+dependencies:
+  - badge
+
+example: |
+  <AccessibilitySpecimen
+    fgToken="--text-primary"
+    bgToken="--surface-page"
+    fgLabel="text-primary"
+    bgLabel="surface-page"
+    ratio={15.4}
+    wcagAA
+    wcagAAA
+  />

@@ -1,0 +1,38 @@
+---
+title: Type Specimen
+description: A single typography row displaying sample text at a given font-size token with weight and size metadata.
+---
+
+## Installation
+
+```bash
+npx visor add type-specimen
+```
+
+This copies two files into your project:
+
+- `components/ui/type-specimen/type-specimen.tsx` — the component
+- `components/ui/type-specimen/type-specimen.module.css` — the styles
+
+## Usage
+
+```tsx
+import { TypeSpecimen } from '@/components/ui/type-specimen/type-specimen';
+
+<TypeSpecimen
+  token="--font-size-xl"
+  label="xl"
+  sizePx={20}
+  sampleText="Subsection heading"
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `token` | `string` | — | CSS custom property for font size |
+| `label` | `string` | — | Label for the type step (e.g. "xl", "base") |
+| `sizePx` | `number` | — | Font size in pixels for fallback |
+| `sampleText` | `string` | — | Sample text to render at this size |
+| `className` | `string` | — | Additional CSS classes |

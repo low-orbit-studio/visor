@@ -1,0 +1,75 @@
+---
+title: Color Swatch
+description: Individual color swatch with hex value display, plus grid variants for color scales and semantic color tokens.
+---
+
+## Installation
+
+```bash
+npx visor add color-swatch
+```
+
+This copies two files into your project:
+
+- `components/ui/color-swatch/color-swatch.tsx` — the component
+- `components/ui/color-swatch/color-swatch.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  ColorSwatch,
+  ColorSwatchGrid,
+  SemanticColorItem,
+  SemanticColorGrid,
+} from '@/components/ui/color-swatch/color-swatch';
+
+{/* Single swatch */}
+<ColorSwatch token="--color-blue-500" hex="#3b82f6" name="500" lightText />
+
+{/* Grid of swatches */}
+<ColorSwatchGrid
+  label="Gray"
+  swatches={[
+    { token: "--color-gray-50", hex: "#f9fafb", name: "50" },
+    { token: "--color-gray-900", hex: "#111827", name: "900", lightText: true },
+  ]}
+/>
+
+{/* Semantic color group */}
+<SemanticColorGrid
+  category="Text"
+  items={[
+    { token: "--text-primary", label: "text-primary" },
+    { token: "--text-secondary", label: "text-secondary" },
+  ]}
+/>
+```
+
+## Components
+
+### ColorSwatch
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `token` | `string` | — | CSS custom property name |
+| `hex` | `string` | — | Hex value for fallback and display |
+| `name` | `string` | — | Label shown beneath the swatch |
+| `lightText` | `boolean` | `false` | When true, hex text renders white |
+| `className` | `string` | — | Additional CSS classes |
+
+### ColorSwatchGrid
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | — | Scale name shown above the grid |
+| `swatches` | `ColorSwatchProps[]` | — | Array of swatch data to render |
+| `className` | `string` | — | Additional CSS classes |
+
+### SemanticColorGrid
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `category` | `string` | — | Category name shown above the group |
+| `items` | `SemanticColorItemProps[]` | — | Items in this category |
+| `className` | `string` | — | Additional CSS classes |
