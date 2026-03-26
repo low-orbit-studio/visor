@@ -3,6 +3,9 @@ import { initCommand } from "./commands/init.js"
 import { listCommand } from "./commands/list.js"
 import { addCommand } from "./commands/add.js"
 import { diffCommand } from "./commands/diff.js"
+import { themeApplyCommand } from "./commands/theme-apply.js"
+import { themeExportCommand } from "./commands/theme-export.js"
+import { themeValidateCommand } from "./commands/theme-validate.js"
 
 const program = new Command()
 
@@ -45,5 +48,59 @@ program
   .action((component: string | undefined) => {
     diffCommand(component, process.cwd())
   })
+
+// Theme subcommands
+const theme = program
+  .command("theme")
+  .description("Theme management commands")
+
+theme
+  .command("apply")
+  .description(
+    "Read a .visor.yaml file and generate full CSS token overrides"
+  )
+  .argument("<file>", "path to .visor.yaml file")
+  .option("-o, --output <path>", "output CSS file path", "visor-theme.css")
+  .option("--json", "output structured JSON (for AI agents)")
+  .action(
+    (
+      file: string,
+      options: { output?: string; json?: boolean }
+    ) => {
+      themeApplyCommand(file, process.cwd(), options)
+    }
+  )
+
+theme
+  .command("export")
+  .description(
+    "Read current theme tokens and produce a .visor.yaml (or other format)"
+  )
+  .argument("[file]", "path to source .visor.yaml file")
+  .option(
+    "--format <format>",
+    "output format: yaml or json",
+    "yaml"
+  )
+  .option("--json", "output structured JSON (for AI agents)")
+  .action(
+    (
+      file: string | undefined,
+      options: { format?: "yaml" | "json"; json?: boolean }
+    ) => {
+      themeExportCommand(file, process.cwd(), options)
+    }
+  )
+
+theme
+  .command("validate")
+  .description("Run full validation ruleset on a .visor.yaml file")
+  .argument("<file>", "path to .visor.yaml file")
+  .option("--json", "output structured JSON (for AI agents)")
+  .action(
+    (file: string, options: { json?: boolean }) => {
+      themeValidateCommand(file, process.cwd(), options)
+    }
+  )
 
 program.parse()
