@@ -35,6 +35,16 @@ export type SelectiveShadeScale = Record<50 | 100 | 500 | 600 | 700 | 900, strin
 
 export type RGB = [number, number, number];
 export type OKLCH = [number, number, number]; // [L, C, H] — L: 0-1, C: chroma, H: 0-360
+export type RGBA = [number, number, number, number]; // [r, g, b, a] — r,g,b: 0-255, a: 0-1
+
+export type ColorFormat = "hex" | "rgba" | "hsla" | "oklch";
+
+export interface ParsedColor {
+  rgb: RGB;
+  alpha?: number; // 0-1, undefined = fully opaque
+  format: ColorFormat;
+  original: string; // raw input string for round-trip
+}
 
 // ============================================================
 // Config Types (.visor.yaml)
@@ -146,6 +156,10 @@ export interface ResolvedThemeConfig {
     light?: Record<string, string>;
     dark?: Record<string, string>;
   };
+  /** Original color strings from user input, for round-trip export. */
+  originalColors?: Record<string, string>;
+  /** Color format of each user-provided color, keyed by field name. */
+  colorFormats?: Record<string, ColorFormat>;
 }
 
 // ============================================================

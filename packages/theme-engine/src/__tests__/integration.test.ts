@@ -142,3 +142,90 @@ colors:
     expect(output.fullBundleCss.length).toBeGreaterThan(0);
   });
 });
+
+// ============================================================
+// Multi-Format Color Pipeline
+// ============================================================
+
+describe("multi-format color pipeline", () => {
+  it("generates theme from YAML with rgba colors", () => {
+    const yaml = `
+name: RGBA Theme
+version: 1
+colors:
+  primary: "#2563EB"
+  background: "rgba(250, 250, 250, 1)"
+  surface: "rgba(255, 255, 255, 1)"
+    `.trim();
+
+    const output = generateTheme(yaml);
+    expect(output.primitivesCss).toContain("--color-primary-600");
+    expect(output.fullBundleCss.length).toBeGreaterThan(0);
+  });
+
+  it("generates theme from YAML with oklch primary", () => {
+    const yaml = `
+name: OKLCH Theme
+version: 1
+colors:
+  primary: "oklch(0.5 0.2 260)"
+    `.trim();
+
+    const output = generateTheme(yaml);
+    expect(output.primitivesCss).toContain("--color-primary-600");
+    expect(output.lightCss).toContain("--text-primary");
+  });
+
+  it("generates theme from YAML with mixed formats", () => {
+    const yaml = `
+name: Mixed Theme
+version: 1
+colors:
+  primary: "#2563EB"
+  accent: "hsl(270, 60%, 50%)"
+  background: "rgba(255, 255, 255, 1)"
+  surface: "oklch(1.0 0 0)"
+    `.trim();
+
+    const output = generateTheme(yaml);
+    expect(output.primitivesCss).toContain("--color-primary-600");
+    expect(output.primitivesCss).toContain("--color-accent-600");
+    expect(output.fullBundleCss.length).toBeGreaterThan(0);
+  });
+
+  it("round-trips rgba colors through export", () => {
+    const yaml = `
+name: Round Trip
+version: 1
+colors:
+  primary: "rgba(37, 99, 235, 1)"
+  background: "rgba(250, 250, 250, 1)"
+    `.trim();
+
+    const config = parseConfig(yaml);
+    const resolved = resolveConfig(config);
+    const primitives = generatePrimitives(resolved);
+    const exported = exportTheme(primitives, resolved);
+
+    // Original rgba values should be preserved in export
+    expect(exported).toContain("rgba(37, 99, 235, 1)");
+    expect(exported).toContain("rgba(250, 250, 250, 1)");
+  });
+
+  it("round-trips oklch colors through export", () => {
+    const yaml = `
+name: OKLCH Round Trip
+version: 1
+colors:
+  primary: "oklch(0.5 0.2 260)"
+    `.trim();
+
+    const config = parseConfig(yaml);
+    const resolved = resolveConfig(config);
+    const primitives = generatePrimitives(resolved);
+    const exported = exportTheme(primitives, resolved);
+
+    // Original oklch value should be preserved
+    expect(exported).toContain("oklch(0.5 0.2 260)");
+  });
+});

@@ -43,6 +43,14 @@ export {
   isValidHex,
   normalizeHex,
   getContrastRatio,
+  parseColor,
+  isValidColor,
+  serializeColor,
+  compositeOverBackground,
+  parseHex,
+  parseRgba,
+  parseHsla,
+  parseOklch,
 } from "./color.js";
 export { resolveConfig } from "./resolve.js";
 export { assignSemanticTokens } from "./assign.js";
@@ -71,4 +79,7 @@ export type {
   SelectiveShadeScale,
   RGB,
   OKLCH,
+  RGBA,
+  ColorFormat,
+  ParsedColor,
 } from "./types.js";

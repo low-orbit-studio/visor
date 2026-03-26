@@ -218,3 +218,48 @@ describe("TAILWIND_GRAY", () => {
     }
   });
 });
+
+// ============================================================
+// Non-Hex Input Formats
+// ============================================================
+
+describe("generateShadeScale — non-hex input", () => {
+  it("generates shades from rgb() input", () => {
+    const scale = generateShadeScale("rgb(37, 99, 235)", "primary");
+    for (const step of FULL_SHADE_STEPS) {
+      expect(isValidHex6((scale as FullShadeScale)[step])).toBe(true);
+    }
+  });
+
+  it("generates shades from hsl() input", () => {
+    const scale = generateShadeScale("hsl(220, 83%, 53%)", "primary");
+    for (const step of FULL_SHADE_STEPS) {
+      expect(isValidHex6((scale as FullShadeScale)[step])).toBe(true);
+    }
+  });
+
+  it("generates shades from oklch() input", () => {
+    const scale = generateShadeScale("oklch(0.5 0.2 260)", "primary");
+    for (const step of FULL_SHADE_STEPS) {
+      expect(isValidHex6((scale as FullShadeScale)[step])).toBe(true);
+    }
+  });
+
+  it("rgb input produces similar shades to equivalent hex", () => {
+    const hexScale = generateShadeScale("#2563EB", "primary") as FullShadeScale;
+    const rgbScale = generateShadeScale("rgb(37, 99, 235)", "primary") as FullShadeScale;
+
+    // Shade 500 should be similar (not identical due to rounding)
+    const hex500 = hexScale[500];
+    const rgb500 = rgbScale[500];
+    expect(hex500).toBe(rgb500);
+  });
+
+  it("output is always hex regardless of input format", () => {
+    const scale = generateShadeScale("rgba(100, 200, 50, 0.8)", "success");
+    for (const step of SELECTIVE_SHADE_STEPS) {
+      const value = (scale as Record<number, string>)[step];
+      expect(value).toMatch(/^#[0-9a-f]{6}$/);
+    }
+  });
+});

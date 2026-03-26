@@ -11,8 +11,8 @@
 
 import { validateConfig as validateSchema } from "./schema.js";
 import { resolveConfig } from "./resolve.js";
-import { hexToOklch, getContrastRatio, isValidHex } from "./color.js";
-import type { VisorThemeConfig } from "./types.js";
+import { hexToOklch, getContrastRatio, isValidHex, isValidColor, parseColor, rgbToOklch } from "./color.js";
+import type { VisorThemeConfig, RGB } from "./types.js";
 
 // ============================================================
 // Types
@@ -62,13 +62,16 @@ function issue(
 }
 
 /**
- * Approximate deltaE (OKLCH) between two hex colors.
+ * Approximate deltaE (OKLCH) between two CSS colors.
  * Uses Euclidean distance in OKLCH space — sufficient for
  * detecting "too similar" colors.
  */
-function deltaEOklch(hex1: string, hex2: string): number {
-  const [l1, c1, h1] = hexToOklch(hex1);
-  const [l2, c2, h2] = hexToOklch(hex2);
+function deltaEOklch(color1: string, color2: string): number {
+  const parsed1 = parseColor(color1);
+  const parsed2 = parseColor(color2);
+  if (!parsed1 || !parsed2) return Infinity;
+  const [l1, c1, h1] = rgbToOklch(...parsed1.rgb);
+  const [l2, c2, h2] = rgbToOklch(...parsed2.rgb);
 
   // Convert polar hue to Cartesian for distance
   const h1Rad = (h1 * Math.PI) / 180;
@@ -110,15 +113,15 @@ function checkCompleteness(
   issues: ValidationIssue[]
 ): void {
   // colors.primary is required — checked by schema validation
-  // Check that all color values are valid hex when provided
+  // Check that all color values are valid when provided
   const colorEntries = Object.entries(config.colors) as [string, string][];
   for (const [key, value] of colorEntries) {
-    if (value !== undefined && !isValidHex(value)) {
+    if (value !== undefined && !isValidColor(value)) {
       issues.push(
         issue(
           "error",
           "INVALID_COLOR",
-          `'colors.${key}' is not a valid CSS hex color: ${value}`,
+          `'colors.${key}' is not a valid CSS color: ${value}`,
           `colors.${key}`
         )
       );
@@ -130,12 +133,12 @@ function checkCompleteness(
   if (darkColors) {
     const darkEntries = Object.entries(darkColors) as [string, string][];
     for (const [key, value] of darkEntries) {
-      if (value !== undefined && !isValidHex(value)) {
+      if (value !== undefined && !isValidColor(value)) {
         issues.push(
           issue(
             "error",
             "INVALID_COLOR",
-            `'colors-dark.${key}' is not a valid CSS hex color: ${value}`,
+            `'colors-dark.${key}' is not a valid CSS color: ${value}`,
             `colors-dark.${key}`
           )
         );
@@ -298,6 +301,12 @@ function checkTypeScaleCoherence(
 // Warning Rules (non-blocking)
 // ============================================================
 
+/** Parse a color string to RGB, returning a fallback if parsing fails. */
+function colorToRgb(color: string): RGB {
+  const parsed = parseColor(color);
+  return parsed ? parsed.rgb : [0, 0, 0];
+}
+
 function checkContrastWarnings(
   config: VisorThemeConfig,
   issues: ValidationIssue[]
@@ -310,14 +319,15 @@ function checkContrastWarnings(
   const lightSurface = resolved.colors.surface;
   const primary = resolved.colors.primary;
 
-  // Text on background: we don't have a text color in the config,
-  // but we can check that primary (used for interactive elements) has enough contrast.
-  // Use neutral-900 proxy (dark text on light bg).
-  // The resolved neutral might be null (Tailwind Gray), so use #111827 as fallback.
+  // Resolve background RGB for alpha compositing
+  const lightBgRgb = colorToRgb(lightBg);
+  const lightSurfaceRgb = colorToRgb(lightSurface);
+
+  // Text on background: use neutral-900 proxy (dark text on light bg).
   const textDark = "#111827"; // neutral-900 equivalent
 
-  // Text contrast on background
-  const textOnBg = getContrastRatio(textDark, lightBg);
+  // Text contrast on background (composite against bg for alpha colors)
+  const textOnBg = getContrastRatio(textDark, lightBg, lightBgRgb);
   if (textOnBg < CONTRAST_TEXT_AA) {
     issues.push(
       issue(
@@ -330,7 +340,7 @@ function checkContrastWarnings(
   }
 
   // Text contrast on surface
-  const textOnSurface = getContrastRatio(textDark, lightSurface);
+  const textOnSurface = getContrastRatio(textDark, lightSurface, lightSurfaceRgb);
   if (textOnSurface < CONTRAST_TEXT_AA) {
     issues.push(
       issue(
@@ -343,7 +353,7 @@ function checkContrastWarnings(
   }
 
   // Interactive color (primary) on background
-  const primaryOnBg = getContrastRatio(primary, lightBg);
+  const primaryOnBg = getContrastRatio(primary, lightBg, lightBgRgb);
   if (primaryOnBg < CONTRAST_INTERACTIVE_AA) {
     issues.push(
       issue(
@@ -356,7 +366,7 @@ function checkContrastWarnings(
   }
 
   // Interactive color (primary) on surface
-  const primaryOnSurface = getContrastRatio(primary, lightSurface);
+  const primaryOnSurface = getContrastRatio(primary, lightSurface, lightSurfaceRgb);
   if (primaryOnSurface < CONTRAST_INTERACTIVE_AA) {
     issues.push(
       issue(
@@ -373,10 +383,13 @@ function checkContrastWarnings(
   const darkSurface = resolved["colors-dark"]?.surface ?? "#171717";
   const darkPrimary = resolved["colors-dark"]?.primary ?? primary;
 
+  const darkBgRgb = colorToRgb(darkBg);
+  const darkSurfaceRgb = colorToRgb(darkSurface);
+
   // Light text on dark backgrounds
   const textLight = "#f9fafb"; // neutral-50 equivalent
 
-  const textOnDarkBg = getContrastRatio(textLight, darkBg);
+  const textOnDarkBg = getContrastRatio(textLight, darkBg, darkBgRgb);
   if (textOnDarkBg < CONTRAST_TEXT_AA) {
     issues.push(
       issue(
@@ -388,7 +401,7 @@ function checkContrastWarnings(
     );
   }
 
-  const textOnDarkSurface = getContrastRatio(textLight, darkSurface);
+  const textOnDarkSurface = getContrastRatio(textLight, darkSurface, darkSurfaceRgb);
   if (textOnDarkSurface < CONTRAST_TEXT_AA) {
     issues.push(
       issue(
@@ -401,7 +414,7 @@ function checkContrastWarnings(
   }
 
   // Interactive color (primary) on dark background
-  const darkPrimaryOnBg = getContrastRatio(darkPrimary, darkBg);
+  const darkPrimaryOnBg = getContrastRatio(darkPrimary, darkBg, darkBgRgb);
   if (darkPrimaryOnBg < CONTRAST_INTERACTIVE_AA) {
     issues.push(
       issue(
@@ -414,7 +427,7 @@ function checkContrastWarnings(
   }
 
   // Interactive color on dark surface
-  const darkPrimaryOnSurface = getContrastRatio(darkPrimary, darkSurface);
+  const darkPrimaryOnSurface = getContrastRatio(darkPrimary, darkSurface, darkSurfaceRgb);
   if (darkPrimaryOnSurface < CONTRAST_INTERACTIVE_AA) {
     issues.push(
       issue(

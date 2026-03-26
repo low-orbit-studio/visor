@@ -5,7 +5,7 @@
  * using the OKLCH color space. Implements the algorithm from the interchange format spec.
  */
 
-import { hexToOklch, oklchToHex } from "./color.js";
+import { hexToOklch, oklchToHex, parseColor, rgbToOklch } from "./color.js";
 import type {
   ColorRole,
   FullShadeScale,
@@ -138,16 +138,20 @@ function computeLightness(
 }
 
 /**
- * Generate a shade scale from a base hex color and a color role.
+ * Generate a shade scale from a base color and a color role.
+ * Accepts any supported CSS color format (hex, rgba, hsla, oklch).
  *
  * Primary/accent/neutral produce a full 11-step scale (50-950).
  * Status colors (success/warning/error/info) produce a selective 6-step scale.
  */
 export function generateShadeScale(
-  hex: string,
+  color: string,
   role: ColorRole
 ): FullShadeScale | SelectiveShadeScale {
-  const [inputL, inputC, inputH] = hexToOklch(hex);
+  const parsed = parseColor(color);
+  const [inputL, inputC, inputH] = parsed
+    ? rgbToOklch(...parsed.rgb)
+    : hexToOklch(color);
   const anchorShade = ANCHOR_SHADE[role];
   const steps = FULL_SCALE_ROLES.includes(role)
     ? FULL_SHADE_STEPS
