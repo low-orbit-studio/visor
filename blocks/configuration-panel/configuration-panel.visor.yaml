@@ -1,0 +1,51 @@
+name: configuration-panel
+description: >-
+  A floating, glassmorphic configuration panel for organizing controls into
+  labeled sections. Supports collapse animation, positional anchoring, and
+  responsive stacking. Composed from Visor form components.
+category: configuration
+components_used:
+  - separator
+when_to_use:
+  - Building control panels for interactive visualizations
+  - Settings or configuration UIs that float over content
+  - Any grouped-controls panel needing glassmorphic styling
+when_not_to_use:
+  - Static forms that live inline in page flow (use Card instead)
+  - Simple single-control toggles (use individual form components)
+why: >-
+  Extracted from the sphere experiment's control panel as a reusable block.
+  Provides a consistent glassmorphic panel pattern that composes any Visor
+  form components into labeled sections with collapse and positioning built in.
+props:
+  - name: sections
+    type: "Array<{ label: string; children: ReactNode }>"
+    required: true
+    description: Panel content organized by labeled section
+  - name: position
+    type: "'bottom-left' | 'bottom-right' | 'top-left' | 'top-right'"
+    default: "'bottom-left'"
+    description: Fixed position anchor point
+  - name: collapsible
+    type: boolean
+    default: "true"
+    description: Whether the panel can be collapsed
+  - name: defaultCollapsed
+    type: boolean
+    default: "false"
+    description: Initial collapsed state
+  - name: title
+    type: string
+    description: Panel title text
+  - name: subtitle
+    type: string
+    description: Panel subtitle text
+  - name: className
+    type: string
+    description: Additional CSS class names
+dependencies:
+  - "@loworbitstudio/visor-core"
+  - "@phosphor-icons/react"
+registryDependencies:
+  - utils
+  - separator
