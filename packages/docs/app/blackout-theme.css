@@ -1,0 +1,407 @@
+/* ══════════════════════════════════════════════════════════════════════
+   Blackout Theme — Ultra-minimal dark glassmorphic theme for Visor Docs
+   Follows the 5-section theme template (see docs/token-rules.md)
+   Palette: Pure black · Grayscale restraint · Opacity-based hierarchy
+   Font: Satoshi · Smaller, denser typography scale
+   Source aesthetic: ~/Code/sandbox/sphere/styles.css
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Section 0: Font faces ── */
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-Variable.woff2") format("woff2");
+  font-weight: 300 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: url("/fonts/Satoshi-VariableItalic.woff2") format("woff2");
+  font-weight: 300 900;
+  font-display: swap;
+  font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════
+   Section 1: Shared tokens (mode-independent)
+   ═══════════════════════════════════════════════ */
+
+.blackout-theme {
+  /* No color accent — grayscale restraint */
+  --accent: rgba(255, 255, 255, 0.4);
+
+  /* Font stacks */
+  --font-satoshi: "Satoshi", system-ui, sans-serif;
+  --font-heading: var(--font-satoshi);
+
+  /* Blackout-namespaced tokens */
+  --blackout-glass: rgba(255, 255, 255, 0.04);
+  --blackout-glass-border: rgba(255, 255, 255, 0.06);
+  --blackout-glass-hover: rgba(255, 255, 255, 0.08);
+  --blackout-glow: rgba(255, 255, 255, 0.05);
+
+  /* No shadows — core to the aesthetic */
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-xl: none;
+
+  /* Base styles */
+  min-height: 100vh;
+  background: var(--surface-page);
+  color: var(--text-primary);
+  font-family: var(--font-satoshi);
+}
+
+/* ═══════════════════════════════════════════════
+   Section 2: Dark mode overrides
+   ═══════════════════════════════════════════════ */
+
+.dark .blackout-theme {
+  /* ── Text — opacity-based hierarchy ── */
+  --text-primary: rgba(255, 255, 255, 0.7);
+  --text-secondary: rgba(255, 255, 255, 0.45);
+  --text-tertiary: rgba(255, 255, 255, 0.2);
+  --text-disabled: rgba(255, 255, 255, 0.1);
+  --text-inverse: #000000;
+  --text-inverse-secondary: #111111;
+  --text-link: rgba(255, 255, 255, 0.5);
+  --text-link-hover: rgba(255, 255, 255, 0.7);
+  --text-success: rgba(74, 222, 128, 0.7);     /* green-400 at 0.7 */
+  --text-warning: rgba(251, 191, 36, 0.7);     /* amber-400 at 0.7 */
+  --text-error: rgba(248, 113, 113, 0.7);      /* red-400 at 0.7 */
+  --text-info: rgba(56, 189, 248, 0.7);        /* sky-400 at 0.7 */
+
+  /* ── Surfaces — pure black base, glassmorphic cards ── */
+  --surface-page: #000000;
+  --surface-card: var(--blackout-glass);
+  --surface-subtle: rgba(255, 255, 255, 0.02);
+  --surface-muted: rgba(255, 255, 255, 0.04);
+  --surface-overlay: #000000;
+  --surface-interactive-default: var(--blackout-glass);
+  --surface-interactive-hover: var(--blackout-glass-hover);
+  --surface-interactive-active: rgba(255, 255, 255, 0.12);
+  --surface-interactive-disabled: rgba(255, 255, 255, 0.02);
+
+  /* ── Borders — barely visible ── */
+  --border-default: rgba(255, 255, 255, 0.06);
+  --border-muted: rgba(255, 255, 255, 0.03);
+  --border-strong: rgba(255, 255, 255, 0.1);
+  --border-focus: rgba(255, 255, 255, 0.4);
+  --border-disabled: rgba(255, 255, 255, 0.03);
+
+  /* ── Interactive — restrained grayscale ── */
+  --interactive-primary-bg: rgba(255, 255, 255, 0.1);
+  --interactive-primary-bg-hover: rgba(255, 255, 255, 0.15);
+  --interactive-primary-bg-active: rgba(255, 255, 255, 0.2);
+  --interactive-primary-text: rgba(255, 255, 255, 0.65);
+  --interactive-secondary-bg: rgba(255, 255, 255, 0.04);
+  --interactive-secondary-bg-hover: rgba(255, 255, 255, 0.08);
+  --interactive-secondary-bg-active: rgba(255, 255, 255, 0.12);
+  --interactive-secondary-text: rgba(255, 255, 255, 0.45);
+  --interactive-secondary-border: rgba(255, 255, 255, 0.08);
+  --interactive-destructive-bg: rgba(239, 68, 68, 0.3);
+  --interactive-destructive-bg-hover: rgba(239, 68, 68, 0.4);
+  --interactive-destructive-text: rgba(248, 113, 113, 0.8);
+  --interactive-ghost-bg: transparent;
+  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.06);
+
+  /* ── Accent/status surfaces ── */
+  --surface-accent-subtle: rgba(255, 255, 255, 0.04);
+  --surface-accent-default: rgba(255, 255, 255, 0.1);
+  --surface-accent-strong: rgba(255, 255, 255, 0.2);
+  --surface-success-subtle: rgba(74, 222, 128, 0.06);
+  --surface-success-default: rgba(74, 222, 128, 0.15);
+  --surface-warning-subtle: rgba(251, 191, 36, 0.06);
+  --surface-warning-default: rgba(251, 191, 36, 0.15);
+  --surface-error-subtle: rgba(248, 113, 113, 0.06);
+  --surface-error-default: rgba(248, 113, 113, 0.15);
+  --surface-info-subtle: rgba(56, 189, 248, 0.06);
+  --surface-info-default: rgba(56, 189, 248, 0.15);
+
+  /* ── Status borders ── */
+  --border-success: rgba(74, 222, 128, 0.3);
+  --border-warning: rgba(251, 191, 36, 0.3);
+  --border-error: rgba(248, 113, 113, 0.3);
+  --border-info: rgba(56, 189, 248, 0.3);
+
+  /* ── Overlay ── */
+  --overlay-bg: rgba(0, 0, 0, 0.8);
+
+  /* ── Fumadocs bridge — dark ── */
+  --color-fd-background: #000000;
+  --color-fd-foreground: rgba(255, 255, 255, 0.7);
+  --color-fd-card: rgba(255, 255, 255, 0.04);
+  --color-fd-card-foreground: rgba(255, 255, 255, 0.7);
+  --color-fd-border: rgba(255, 255, 255, 0.06);
+  --color-fd-muted: rgba(255, 255, 255, 0.04);
+  --color-fd-muted-foreground: rgba(255, 255, 255, 0.45);
+  --color-fd-accent: rgba(255, 255, 255, 0.4);
+  --color-fd-accent-foreground: rgba(255, 255, 255, 0.7);
+  --color-fd-primary: rgba(255, 255, 255, 0.4);
+  --color-fd-primary-foreground: rgba(255, 255, 255, 0.85);
+  --color-fd-secondary: rgba(255, 255, 255, 0.04);
+  --color-fd-secondary-foreground: rgba(255, 255, 255, 0.7);
+  --color-fd-popover: #080808;
+  --color-fd-popover-foreground: rgba(255, 255, 255, 0.7);
+  --color-fd-ring: rgba(255, 255, 255, 0.2);
+}
+
+/* ═══════════════════════════════════════════════
+   Section 3: Light mode overrides
+   Blackout stays dark even in "light" mode —
+   slightly elevated from pure black for contrast.
+   ═══════════════════════════════════════════════ */
+
+html:not(.dark) .blackout-theme {
+  /* ── Text ── */
+  --text-primary: rgba(255, 255, 255, 0.75);
+  --text-secondary: rgba(255, 255, 255, 0.5);
+  --text-tertiary: rgba(255, 255, 255, 0.25);
+  --text-disabled: rgba(255, 255, 255, 0.12);
+  --text-inverse: #000000;
+  --text-inverse-secondary: #0a0a0a;
+  --text-link: rgba(255, 255, 255, 0.55);
+  --text-link-hover: rgba(255, 255, 255, 0.75);
+  --text-success: rgba(74, 222, 128, 0.75);
+  --text-warning: rgba(251, 191, 36, 0.75);
+  --text-error: rgba(248, 113, 113, 0.75);
+  --text-info: rgba(56, 189, 248, 0.75);
+
+  /* ── Surfaces — near-black, not white ── */
+  --surface-page: #0a0a0a;
+  --surface-card: rgba(255, 255, 255, 0.05);
+  --surface-subtle: rgba(255, 255, 255, 0.02);
+  --surface-muted: rgba(255, 255, 255, 0.05);
+  --surface-overlay: #000000;
+  --surface-interactive-default: rgba(255, 255, 255, 0.05);
+  --surface-interactive-hover: rgba(255, 255, 255, 0.08);
+  --surface-interactive-active: rgba(255, 255, 255, 0.14);
+
+  /* ── Borders ── */
+  --border-default: rgba(255, 255, 255, 0.08);
+  --border-muted: rgba(255, 255, 255, 0.04);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --border-focus: rgba(255, 255, 255, 0.45);
+  --border-disabled: rgba(255, 255, 255, 0.04);
+
+  /* ── Interactive ── */
+  --interactive-primary-bg: rgba(255, 255, 255, 0.12);
+  --interactive-primary-bg-hover: rgba(255, 255, 255, 0.18);
+  --interactive-primary-bg-active: rgba(255, 255, 255, 0.24);
+  --interactive-primary-text: rgba(255, 255, 255, 0.7);
+  --interactive-secondary-bg: rgba(255, 255, 255, 0.05);
+  --interactive-secondary-bg-hover: rgba(255, 255, 255, 0.1);
+  --interactive-secondary-bg-active: rgba(255, 255, 255, 0.14);
+  --interactive-secondary-text: rgba(255, 255, 255, 0.5);
+  --interactive-secondary-border: rgba(255, 255, 255, 0.1);
+  --interactive-destructive-bg: rgba(239, 68, 68, 0.35);
+  --interactive-destructive-bg-hover: rgba(239, 68, 68, 0.45);
+  --interactive-destructive-text: rgba(248, 113, 113, 0.85);
+  --interactive-ghost-bg: transparent;
+  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.08);
+
+  /* ── Accent/status surfaces ── */
+  --surface-accent-subtle: rgba(255, 255, 255, 0.05);
+  --surface-accent-default: rgba(255, 255, 255, 0.12);
+  --surface-accent-strong: rgba(255, 255, 255, 0.24);
+  --surface-success-subtle: rgba(74, 222, 128, 0.08);
+  --surface-success-default: rgba(74, 222, 128, 0.18);
+  --surface-warning-subtle: rgba(251, 191, 36, 0.08);
+  --surface-warning-default: rgba(251, 191, 36, 0.18);
+  --surface-error-subtle: rgba(248, 113, 113, 0.08);
+  --surface-error-default: rgba(248, 113, 113, 0.18);
+  --surface-info-subtle: rgba(56, 189, 248, 0.08);
+  --surface-info-default: rgba(56, 189, 248, 0.18);
+
+  /* ── Status borders ── */
+  --border-success: rgba(74, 222, 128, 0.35);
+  --border-warning: rgba(251, 191, 36, 0.35);
+  --border-error: rgba(248, 113, 113, 0.35);
+  --border-info: rgba(56, 189, 248, 0.35);
+
+  /* ── Fumadocs bridge — light (stays dark) ── */
+  --color-fd-background: #0a0a0a;
+  --color-fd-foreground: rgba(255, 255, 255, 0.75);
+  --color-fd-card: rgba(255, 255, 255, 0.05);
+  --color-fd-card-foreground: rgba(255, 255, 255, 0.75);
+  --color-fd-border: rgba(255, 255, 255, 0.08);
+  --color-fd-muted: rgba(255, 255, 255, 0.05);
+  --color-fd-muted-foreground: rgba(255, 255, 255, 0.5);
+  --color-fd-accent: rgba(255, 255, 255, 0.45);
+  --color-fd-accent-foreground: rgba(255, 255, 255, 0.75);
+  --color-fd-primary: rgba(255, 255, 255, 0.45);
+  --color-fd-primary-foreground: rgba(255, 255, 255, 0.9);
+  --color-fd-secondary: rgba(255, 255, 255, 0.05);
+  --color-fd-secondary-foreground: rgba(255, 255, 255, 0.75);
+  --color-fd-popover: #0e0e0e;
+  --color-fd-popover-foreground: rgba(255, 255, 255, 0.75);
+  --color-fd-ring: rgba(255, 255, 255, 0.25);
+}
+
+/* ═══════════════════════════════════════════════
+   Section 5: Creative extensions
+   ═══════════════════════════════════════════════ */
+
+/* ── Typography — Satoshi, smaller + denser ── */
+
+.blackout-theme h1,
+.blackout-theme h2,
+.blackout-theme h3,
+.blackout-theme h4,
+.blackout-theme h5,
+.blackout-theme h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+/* Smaller type scale — tighter, denser */
+.blackout-theme h1 { font-size: 1.75rem; line-height: 1.15; letter-spacing: -0.01em; }
+.blackout-theme h2 { font-size: 1.25rem; line-height: 1.2; letter-spacing: 0; }
+.blackout-theme h3 { font-size: 1rem; line-height: 1.3; letter-spacing: 0.01em; }
+.blackout-theme h4 { font-size: 0.875rem; line-height: 1.4; letter-spacing: 0.01em; }
+
+/* Labels — uppercase, ultra-dim, tracked */
+.blackout-theme .eyebrow,
+.blackout-theme [data-eyebrow] {
+  font-family: var(--font-satoshi);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.2);
+}
+
+/* Body text */
+.blackout-theme p,
+.blackout-theme li {
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+/* ── Glassmorphism — backdrop-filter on elevated surfaces ── */
+
+.blackout-theme [data-glass],
+.blackout-theme .fd-not-prose > div,
+.blackout-theme aside[id="nd-sidebar"] {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ── Code blocks — translucent glass ── */
+
+.blackout-theme :not(pre) > code {
+  background: var(--blackout-glass);
+  border: 1px solid var(--blackout-glass-border);
+  border-radius: 0.25rem;
+  padding: 0.15em 0.5em;
+  font-size: 0.875em;
+}
+
+.blackout-theme pre {
+  background: var(--blackout-glass) !important;
+  border: 1px solid var(--blackout-glass-border);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  font-size: 0.8125rem;
+}
+
+.blackout-theme figure.shiki {
+  background: var(--blackout-glass) !important;
+  border: 1px solid var(--blackout-glass-border);
+}
+
+.blackout-theme figure.shiki pre {
+  background: transparent !important;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  font-size: inherit;
+}
+
+.blackout-theme figure.shiki code {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+/* ── Tables — barely-there borders ── */
+
+.blackout-theme table {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.blackout-theme th,
+.blackout-theme td {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.blackout-theme thead th {
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ── Sidebar ── */
+
+.blackout-theme aside[id="nd-sidebar"] {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.blackout-theme aside[id="nd-sidebar"] > div {
+  border-color: rgba(255, 255, 255, 0.04);
+}
+
+/* ── Links & interactive states ── */
+
+.blackout-theme a:not([class]) {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  transition: color var(--motion-duration-150, 150ms) ease;
+}
+
+.blackout-theme a:not([class]):hover {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* Focus ring — subtle */
+.blackout-theme :focus-visible {
+  outline: var(--focus-ring-width, 2px) solid rgba(255, 255, 255, 0.2);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* Active item — glow reserved for active states */
+.blackout-theme [data-active="true"] {
+  color: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 20px var(--blackout-glow);
+}
+
+/* Text hierarchy — fumadocs secondary text */
+.blackout-theme .fd-paragraph:not(:first-child),
+.blackout-theme [class*="fd-body"] {
+  color: var(--text-secondary);
+}
+
+.blackout-theme nav[aria-label="breadcrumb"],
+.blackout-theme nav[aria-label="breadcrumb"] * {
+  color: var(--text-tertiary);
+}
+
+.blackout-theme .fd-not-prose {
+  color: var(--text-secondary);
+}
+
+/* Footer prev/next nav — label readable on hover */
+html:not(.dark) .blackout-theme .grid > a:hover {
+  --fd-muted-foreground: rgba(255, 255, 255, 0.7);
+}

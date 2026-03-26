@@ -2,6 +2,7 @@
 @import '../../tokens/dist/tokens.css';
 @import './space-theme.css';
 @import './neutral-theme.css';
+@import './blackout-theme.css';
 
 /*
  * Safari border-color fix
@@ -120,6 +121,37 @@
 .space-theme .preview-toggle:hover,
 .space-theme .preview-copy:hover {
   background: var(--surface-elevated);
+}
+
+/* Blackout theme preview container overrides */
+.blackout-theme .preview-container {
+  border-color: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.blackout-theme .preview-render {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.blackout-theme .preview-footer {
+  background: rgba(255, 255, 255, 0.02);
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+.blackout-theme .preview-title {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.blackout-theme .preview-toggle,
+.blackout-theme .preview-copy {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.blackout-theme .preview-toggle:hover,
+.blackout-theme .preview-copy:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* Code area inside preview — inherit the theme's glass treatment, no extra border/radius */

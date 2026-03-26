@@ -1,0 +1,64 @@
+name: blackout
+version: 1
+
+colors:
+  primary: "#666666"
+  neutral: "#333333"
+  background: "#000000"
+  surface: "#0a0a0a"
+
+colors-dark:
+  background: "#000000"
+  surface: "#0a0a0a"
+
+typography:
+  heading:
+    family: Satoshi
+    weight: 700
+  body:
+    family: Satoshi
+    weight: 400
+
+radius:
+  sm: 2
+  md: 4
+  lg: 8
+  xl: 12
+
+shadows:
+  xs: "none"
+  sm: "none"
+  md: "none"
+  lg: "none"
+  xl: "none"
+
+motion:
+  duration-fast: "100ms"
+  duration-normal: "150ms"
+  duration-slow: "300ms"
+
+overrides:
+  dark:
+    text-primary: "rgba(255, 255, 255, 0.7)"
+    text-secondary: "rgba(255, 255, 255, 0.45)"
+    text-tertiary: "rgba(255, 255, 255, 0.2)"
+    text-disabled: "rgba(255, 255, 255, 0.1)"
+    surface-page: "#000000"
+    surface-card: "rgba(255, 255, 255, 0.04)"
+    surface-subtle: "rgba(255, 255, 255, 0.02)"
+    surface-muted: "rgba(255, 255, 255, 0.04)"
+    border-default: "rgba(255, 255, 255, 0.06)"
+    border-muted: "rgba(255, 255, 255, 0.03)"
+    border-strong: "rgba(255, 255, 255, 0.1)"
+  light:
+    text-primary: "rgba(255, 255, 255, 0.75)"
+    text-secondary: "rgba(255, 255, 255, 0.5)"
+    text-tertiary: "rgba(255, 255, 255, 0.25)"
+    text-disabled: "rgba(255, 255, 255, 0.12)"
+    surface-page: "#0a0a0a"
+    surface-card: "rgba(255, 255, 255, 0.05)"
+    surface-subtle: "rgba(255, 255, 255, 0.02)"
+    surface-muted: "rgba(255, 255, 255, 0.05)"
+    border-default: "rgba(255, 255, 255, 0.08)"
+    border-muted: "rgba(255, 255, 255, 0.04)"
+    border-strong: "rgba(255, 255, 255, 0.12)"
