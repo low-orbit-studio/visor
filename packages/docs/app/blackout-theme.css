@@ -291,6 +291,13 @@ html:not(.dark) .blackout-theme {
   -webkit-backdrop-filter: blur(20px);
 }
 
+/* ── Syntax highlighting — always use dark Shiki colors ── */
+
+html:not(.dark) .blackout-theme .shiki code span {
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+}
+
 /* ── Code blocks — translucent glass ── */
 
 .blackout-theme :not(pre) > code {
