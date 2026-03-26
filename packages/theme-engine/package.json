@@ -1,24 +1,45 @@
 {
   "name": "@loworbitstudio/visor-theme-engine",
   "version": "0.1.0",
-  "description": "Theme engine for the Visor design system — font resolution, validation, and import/export.",
+  "description": "Theme engine for the Visor design system — shade generation, token mapping, font resolution, and import/export for .visor.yaml themes.",
   "type": "module",
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./fonts": "./src/fonts/index.ts"
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./fonts": "./src/fonts/index.ts",
+    "./schema": "./src/visor-theme.schema.json"
   },
   "scripts": {
+    "build": "tsup",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "update-catalog": "tsx scripts/update-google-fonts-catalog.ts"
   },
   "files": [
-    "src/"
+    "dist/",
+    "src/visor-theme.schema.json"
+  ],
+  "keywords": [
+    "visor",
+    "design-system",
+    "theme",
+    "oklch",
+    "tokens"
   ],
   "license": "UNLICENSED",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "yaml": "^2.8.3"
+  },
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "tsup": "^8.4.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"

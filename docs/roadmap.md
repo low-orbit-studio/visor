@@ -66,13 +66,13 @@ See [interchange-format.md](./interchange-format.md) for the format spec and ada
 - ~~**Design spike first:** Document the exact algorithm for `.visor.yaml` flat colors → 3-tier token mapping~~ **DONE** (VI-47) — see [`interchange-format.md`](./interchange-format.md) for complete mapping algorithm, JSON Schema, and edge cases
 - ~~Finalize the interchange format spec with a formal JSON Schema~~ **DONE** (VI-47) — see [`visor-theme.schema.json`](./visor-theme.schema.json)
 - Reconcile the draft spec with the actual 3-tier token system (the draft uses flat color names; tokens use primitives → semantic → adaptive)
-- Build `packages/theme-engine/` — shared package housing:
-  - JSON Schema for `.visor.yaml` validation
-  - Shade generation algorithm (OKLCH-based, generates 50–950 scale from a base hex)
-  - Import: parse `.visor.yaml` → generate CSS custom property overrides
-  - Export: read current theme tokens → produce `.visor.yaml`
-  - Mapping layer: flat `.visor.yaml` colors → primitive shade scales → semantic/adaptive token assignment
-- ~~**Basic font infrastructure:** Google Fonts URL resolution from family name, `font-display` strategy, preload hint generation (the interchange format needs this to be complete)~~ ✅ Done — see `packages/theme-engine/src/fonts/`
+- ~~Build `packages/theme-engine/` — shared package housing:~~ **DONE** (VI-48)
+  - ~~JSON Schema for `.visor.yaml` validation~~ **DONE** (VI-48)
+  - ~~Shade generation algorithm (OKLCH-based, generates 50–950 scale from a base hex)~~ **DONE** (VI-48)
+  - ~~Import: parse `.visor.yaml` → generate CSS custom property overrides~~ **DONE** (VI-48)
+  - ~~Export: read current theme tokens → produce `.visor.yaml`~~ **DONE** (VI-48)
+  - ~~Mapping layer: flat `.visor.yaml` colors → primitive shade scales → semantic/adaptive token assignment~~ **DONE** (VI-48)
+- ~~**Basic font infrastructure:** Google Fonts URL resolution from family name, `font-display` strategy, preload hint generation (the interchange format needs this to be complete)~~ **DONE** (VI-51) — see `packages/theme-engine/src/fonts/`
 - CLI commands:
   - `npx visor theme apply <file>` — reads `.visor.yaml`, generates full CSS token overrides
   - `npx visor theme export [--format yaml|json|figma]` — exports current theme

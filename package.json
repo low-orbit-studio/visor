@@ -8,7 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build -w packages/tokens && npm run build -w packages/cli && npm run build -w packages/docs",
+    "build": "npm run build -w packages/theme-engine && npm run build -w packages/tokens && npm run build -w packages/cli && npm run build -w packages/docs",
     "build:tokens": "npm run build -w packages/tokens",
     "test": "vitest run",
     "test:watch": "vitest",
