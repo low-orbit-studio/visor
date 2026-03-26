@@ -956,6 +956,28 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "fullscreen-overlay",
+    type: "registry:ui",
+    description:
+      "A full-viewport overlay for expanding content to fill the screen, built on Radix Dialog.",
+    dependencies: [
+      "@radix-ui/react-dialog",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/fullscreen-overlay/fullscreen-overlay.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/fullscreen-overlay/fullscreen-overlay.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "file-upload",
     type: "registry:ui",
     description:

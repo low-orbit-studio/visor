@@ -3,6 +3,85 @@ title: Configuration Panel
 description: A floating, glassmorphic configuration panel for organizing controls into labeled sections with collapse animation and positional anchoring.
 ---
 
+import { BlockPreview } from '@/components/block-preview';
+import { ConfigurationPanel } from '@/components/blocks/configuration-panel';
+import { Slider } from '@/components/ui/slider';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Button } from '@/components/ui/button';
+
+## Preview
+
+<BlockPreview
+  title="Configuration Panel"
+  code={`<ConfigurationPanel
+  title="Controls"
+  subtitle="Adjust parameters"
+  position="bottom-left"
+  sections={[
+    {
+      label: "Geometry",
+      children: (
+        <ToggleGroup type="single" defaultValue="sphere" variant="outline" size="sm">
+          <ToggleGroupItem value="sphere">Sphere</ToggleGroupItem>
+          <ToggleGroupItem value="curl">Curl</ToggleGroupItem>
+          <ToggleGroupItem value="lorenz">Lorenz</ToggleGroupItem>
+        </ToggleGroup>
+      ),
+    },
+    {
+      label: "Appearance",
+      children: (
+        <>
+          <Slider defaultValue={[50]} max={100} step={1} aria-label="Size" />
+          <Slider defaultValue={[30]} max={100} step={1} aria-label="Blur" />
+        </>
+      ),
+    },
+    {
+      label: "Actions",
+      children: (
+        <Button variant="outline" size="sm">Reset</Button>
+      ),
+    },
+  ]}
+/>`}
+>
+  <div style={{ display: 'flex', justifyContent: 'center', padding: '1rem', width: '100%' }}>
+    <ConfigurationPanel
+      title="Controls"
+      subtitle="Adjust parameters"
+      className="configuration-panel-preview"
+      sections={[
+        {
+          label: "Geometry",
+          children: (
+            <ToggleGroup type="single" defaultValue="sphere" variant="outline" size="sm">
+              <ToggleGroupItem value="sphere">Sphere</ToggleGroupItem>
+              <ToggleGroupItem value="curl">Curl</ToggleGroupItem>
+              <ToggleGroupItem value="lorenz">Lorenz</ToggleGroupItem>
+            </ToggleGroup>
+          ),
+        },
+        {
+          label: "Appearance",
+          children: (
+            <>
+              <Slider defaultValue={[50]} max={100} step={1} aria-label="Size" />
+              <Slider defaultValue={[30]} max={100} step={1} aria-label="Blur" />
+            </>
+          ),
+        },
+        {
+          label: "Actions",
+          children: (
+            <Button variant="outline" size="sm">Reset</Button>
+          ),
+        },
+      ]}
+    />
+  </div>
+</BlockPreview>
+
 ## Installation
 
 ```bash

@@ -177,3 +177,10 @@
 .preview-code pre code span {
   font-weight: inherit !important;
 }
+
+/* Block preview overrides — force fixed-position blocks to render inline */
+.configuration-panel-preview {
+  position: static !important;
+  width: 100% !important;
+  max-width: 20rem !important;
+}
