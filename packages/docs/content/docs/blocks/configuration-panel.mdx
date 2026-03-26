@@ -141,7 +141,7 @@ export default function VisualizationPage() {
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `sections` | `Array<{ label: string; children: ReactNode }>` | Required | Panel content organized by labeled section |
-| `position` | `'bottom-left' \| 'bottom-right' \| 'top-left' \| 'top-right'` | `'bottom-left'` | Fixed position anchor point |
+| `position` | `'bottom-left' \| 'bottom-right' \| 'top-left' \| 'top-right'` | `'bottom-left'` | Position anchor point within the containing block |
 | `collapsible` | `boolean` | `true` | Whether the panel can be collapsed |
 | `defaultCollapsed` | `boolean` | `false` | Initial collapsed state |
 | `title` | `string` | — | Panel title text |
@@ -154,7 +154,7 @@ The panel uses semantic tokens (`--surface-card`, `--border-default`) combined w
 
 ## Responsive Behavior
 
-On viewports below 640px, the panel switches from fixed positioning to static flow, expanding to full width. This makes it usable on mobile without obscuring content.
+On viewports below 640px, the panel switches from absolute positioning to static flow, expanding to full width. This makes it usable on mobile without obscuring content.
 
 ## Composition
 
