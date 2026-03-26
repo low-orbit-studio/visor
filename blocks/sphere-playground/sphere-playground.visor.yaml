@@ -1,0 +1,50 @@
+name: sphere-playground
+description: >-
+  An interactive demo composing the Sphere visualization with a Configuration
+  Panel for real-time parameter control. The signature showcase for Visual Elements.
+category: visual-elements
+components_used:
+  - sphere
+  - configuration-panel
+  - slider
+  - toggle-group
+when_to_use:
+  - Showcasing the Sphere component with interactive controls
+  - Building immersive GPU-accelerated visual demos
+  - Demonstrating Visor's visual element capabilities
+when_not_to_use:
+  - Embedding a sphere without controls — use the Sphere component directly
+  - Building a custom control panel — use ConfigurationPanel independently
+why: >-
+  The Sphere is Visor's signature visual element but needs interactive controls
+  to demonstrate its full range. This block composes Sphere + ConfigurationPanel
+  into a ready-to-use playground — the hero demo for Visual Elements docs.
+props:
+  - name: defaultMode
+    type: GeometryMode
+    default: '"sphere"'
+    description: Initial geometry mode
+  - name: defaultColorScheme
+    type: ColorScheme
+    default: '"solar"'
+    description: Initial color scheme
+  - name: className
+    type: string
+    required: false
+    description: Additional CSS class for the container
+  - name: style
+    type: React.CSSProperties
+    required: false
+    description: Inline style for the container
+dependencies:
+  - three
+  - "@loworbitstudio/visor-core"
+  - "@phosphor-icons/react"
+devDependencies:
+  - "@types/three"
+registryDependencies:
+  - utils
+  - sphere
+  - configuration-panel
+  - slider
+  - toggle-group

@@ -87,6 +87,36 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "sphere-playground",
+    type: "registry:block",
+    category: "visual-elements",
+    description:
+      "An interactive demo composing the Sphere visualization with a Configuration Panel for real-time parameter control. The signature showcase for Visual Elements.",
+    dependencies: [
+      "three",
+      "@loworbitstudio/visor-core",
+      "@phosphor-icons/react",
+    ],
+    devDependencies: ["@types/three"],
+    registryDependencies: [
+      "utils",
+      "sphere",
+      "configuration-panel",
+      "slider",
+      "toggle-group",
+    ],
+    files: [
+      {
+        path: "blocks/sphere-playground/sphere-playground.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/sphere-playground/sphere-playground.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "login-form-placeholder",
     type: "registry:block",
     category: "authentication",
