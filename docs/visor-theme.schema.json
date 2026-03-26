@@ -1,0 +1,225 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://visor.loworbit.studio/schemas/visor-theme.schema.json",
+  "title": "Visor Theme",
+  "description": "Schema for .visor.yaml theme files — portable visual identity definitions for the Visor design system.",
+  "type": "object",
+  "required": ["name", "version", "colors"],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable theme name."
+    },
+    "version": {
+      "const": 1,
+      "description": "Schema version. Currently always 1."
+    },
+    "colors": {
+      "type": "object",
+      "description": "Color definitions for light mode. Only primary is required — all others have sensible defaults.",
+      "required": ["primary"],
+      "additionalProperties": false,
+      "properties": {
+        "primary": {
+          "$ref": "#/$defs/hexColor",
+          "description": "Brand color. Drives interactive-*, accent-*, text-link, border-focus tokens. Anchored at shade 600."
+        },
+        "accent": {
+          "$ref": "#/$defs/hexColor",
+          "description": "Secondary brand color. Defaults to primary if omitted."
+        },
+        "neutral": {
+          "$ref": "#/$defs/hexColor",
+          "description": "Base neutral color for generating the gray scale (50-950). Defaults to Tailwind Gray if omitted."
+        },
+        "background": {
+          "$ref": "#/$defs/hexColor",
+          "description": "Page background for light mode. Default: #FFFFFF."
+        },
+        "surface": {
+          "$ref": "#/$defs/hexColor",
+          "description": "Card/panel background for light mode. Default: #FFFFFF."
+        },
+        "success": {
+          "$ref": "#/$defs/hexColor",
+          "description": "Success status color. Default: #22C55E (Tailwind green-500)."
+        },
+        "warning": {
+          "$ref": "#/$defs/hexColor",
+          "description": "Warning status color. Default: #F59E0B (Tailwind amber-500)."
+        },
+        "error": {
+          "$ref": "#/$defs/hexColor",
+          "description": "Error status color. Default: #EF4444 (Tailwind red-500)."
+        },
+        "info": {
+          "$ref": "#/$defs/hexColor",
+          "description": "Info status color. Default: #0EA5E9 (Tailwind sky-500)."
+        }
+      }
+    },
+    "colors-dark": {
+      "type": "object",
+      "description": "Dark mode color overrides. Any key from colors can be overridden. Omitted keys inherit from the derived dark mode values (not from light mode).",
+      "additionalProperties": false,
+      "properties": {
+        "primary": { "$ref": "#/$defs/hexColor" },
+        "accent": { "$ref": "#/$defs/hexColor" },
+        "neutral": { "$ref": "#/$defs/hexColor" },
+        "background": { "$ref": "#/$defs/hexColor" },
+        "surface": { "$ref": "#/$defs/hexColor" },
+        "success": { "$ref": "#/$defs/hexColor" },
+        "warning": { "$ref": "#/$defs/hexColor" },
+        "error": { "$ref": "#/$defs/hexColor" },
+        "info": { "$ref": "#/$defs/hexColor" }
+      }
+    },
+    "typography": {
+      "type": "object",
+      "description": "Typography configuration. Defaults to system font stacks if omitted.",
+      "additionalProperties": false,
+      "properties": {
+        "heading": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "family": {
+              "type": "string",
+              "description": "Google Fonts family name or CSS font stack."
+            },
+            "weight": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 900,
+              "description": "Font weight for headings. Default: 600."
+            }
+          }
+        },
+        "body": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "family": {
+              "type": "string",
+              "description": "Google Fonts family name or CSS font stack."
+            },
+            "weight": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 900,
+              "description": "Font weight for body text. Default: 400."
+            }
+          }
+        },
+        "mono": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "family": {
+              "type": "string",
+              "description": "Google Fonts family name or CSS font stack for monospace."
+            }
+          }
+        },
+        "letter-spacing": {
+          "type": "object",
+          "description": "Letter spacing scale.",
+          "additionalProperties": false,
+          "properties": {
+            "tight": { "type": "string" },
+            "normal": { "type": "string" },
+            "wide": { "type": "string" }
+          }
+        }
+      }
+    },
+    "spacing": {
+      "type": "object",
+      "description": "Spacing configuration.",
+      "additionalProperties": false,
+      "properties": {
+        "base": {
+          "type": "number",
+          "minimum": 1,
+          "description": "Base spacing unit in pixels. Default: 4. Generates the full spacing scale."
+        }
+      }
+    },
+    "radius": {
+      "type": "object",
+      "description": "Border radius scale in pixels.",
+      "additionalProperties": false,
+      "properties": {
+        "sm": { "type": "number", "minimum": 0 },
+        "md": { "type": "number", "minimum": 0 },
+        "lg": { "type": "number", "minimum": 0 },
+        "xl": { "type": "number", "minimum": 0 },
+        "pill": { "type": "number", "minimum": 0, "description": "Default: 9999." }
+      }
+    },
+    "shadows": {
+      "type": "object",
+      "description": "Named shadow definitions as CSS box-shadow values.",
+      "additionalProperties": false,
+      "properties": {
+        "xs": { "type": "string" },
+        "sm": { "type": "string" },
+        "md": { "type": "string" },
+        "lg": { "type": "string" },
+        "xl": { "type": "string" }
+      }
+    },
+    "motion": {
+      "type": "object",
+      "description": "Motion/animation configuration.",
+      "additionalProperties": false,
+      "properties": {
+        "duration-fast": {
+          "type": "string",
+          "pattern": "^\\d+ms$",
+          "description": "Fast duration for micro-interactions. Default: 100ms."
+        },
+        "duration-normal": {
+          "type": "string",
+          "pattern": "^\\d+ms$",
+          "description": "Normal duration for standard transitions. Default: 200ms."
+        },
+        "duration-slow": {
+          "type": "string",
+          "pattern": "^\\d+ms$",
+          "description": "Slow duration for larger animations. Default: 500ms."
+        },
+        "easing": {
+          "type": "string",
+          "description": "Default easing curve as a CSS timing function."
+        }
+      }
+    },
+    "overrides": {
+      "type": "object",
+      "description": "Per-token escape hatch. Values replace derived tokens. Use CSS custom property names without the -- prefix as keys.",
+      "additionalProperties": false,
+      "properties": {
+        "light": {
+          "type": "object",
+          "description": "Token overrides applied in light mode.",
+          "additionalProperties": { "type": "string" }
+        },
+        "dark": {
+          "type": "object",
+          "description": "Token overrides applied in dark mode.",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hexColor": {
+      "type": "string",
+      "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+      "description": "CSS hex color value. Accepts #RGB, #RRGGBB, or #RRGGBBAA formats."
+    }
+  }
+}
