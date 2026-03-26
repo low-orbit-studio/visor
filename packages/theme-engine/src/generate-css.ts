@@ -18,7 +18,7 @@ import { FULL_SHADE_STEPS, SELECTIVE_SHADE_STEPS } from "./shades.js";
 // Helpers
 // ============================================================
 
-function header(label: string): string {
+export function header(label: string): string {
   return [
     "/* ============================================",
     `   ${label}`,
@@ -29,11 +29,11 @@ function header(label: string): string {
   ].join("\n");
 }
 
-function sectionComment(label: string): string {
+export function sectionComment(label: string): string {
   return `\n/* --- ${label} --- */`;
 }
 
-function block(selector: string, declarations: string[]): string {
+export function block(selector: string, declarations: string[]): string {
   if (declarations.length === 0) return "";
   return [selector + " {", ...declarations.map((d) => `  ${d}`), "}", ""].join(
     "\n"

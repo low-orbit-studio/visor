@@ -135,4 +135,62 @@ describe("theme apply command", () => {
 
     expect(out1).toBe(out2)
   })
+
+  it("generates NextJS adapter output with --adapter nextjs", () => {
+    const yamlPath = join(testDir, ".visor.yaml")
+    writeFileSync(yamlPath, VALID_YAML, "utf-8")
+
+    themeApplyCommand(".visor.yaml", testDir, { adapter: "nextjs" })
+
+    const outputPath = join(testDir, "globals.css")
+    expect(existsSync(outputPath)).toBe(true)
+    const css = readFileSync(outputPath, "utf-8")
+    expect(css).toContain("@layer visor-primitives")
+  })
+
+  it("generates fumadocs adapter output with --adapter fumadocs", () => {
+    const yamlPath = join(testDir, ".visor.yaml")
+    writeFileSync(yamlPath, VALID_YAML, "utf-8")
+
+    themeApplyCommand(".visor.yaml", testDir, { adapter: "fumadocs" })
+
+    const outputPath = join(testDir, "visor-fumadocs-bridge.css")
+    expect(existsSync(outputPath)).toBe(true)
+    const css = readFileSync(outputPath, "utf-8")
+    expect(css).toContain("--color-fd-background:")
+  })
+
+  it("generates deck adapter output with --adapter deck", () => {
+    const yamlPath = join(testDir, ".visor.yaml")
+    writeFileSync(yamlPath, VALID_YAML, "utf-8")
+
+    themeApplyCommand(".visor.yaml", testDir, { adapter: "deck" })
+
+    const outputPath = join(testDir, "visor-deck-test-theme.css")
+    expect(existsSync(outputPath)).toBe(true)
+    const css = readFileSync(outputPath, "utf-8")
+    expect(css).toContain(".deck--test-theme")
+  })
+
+  it("adapter JSON output includes adapter name", () => {
+    const yamlPath = join(testDir, ".visor.yaml")
+    writeFileSync(yamlPath, VALID_YAML, "utf-8")
+
+    themeApplyCommand(".visor.yaml", testDir, { json: true, adapter: "nextjs" })
+
+    const calls = (console.log as ReturnType<typeof vi.fn>).mock.calls
+    const jsonOutput = calls.find((call: unknown[]) => {
+      try {
+        const parsed = JSON.parse(String(call[0]))
+        return parsed.success !== undefined
+      } catch {
+        return false
+      }
+    })
+
+    expect(jsonOutput).toBeDefined()
+    const parsed = JSON.parse(String(jsonOutput![0]))
+    expect(parsed.adapter).toBe("nextjs")
+    expect(parsed.size).toBeGreaterThan(0)
+  })
 })

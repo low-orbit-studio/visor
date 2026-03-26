@@ -12,6 +12,8 @@ export * from "./fonts/index.js";
 export {
   generateTheme,
   generateThemeFromConfig,
+  generateThemeData,
+  generateThemeDataFromConfig,
   parseConfig,
   generatePrimitives,
 } from "./pipeline.js";
@@ -59,6 +61,7 @@ export type {
   VisorThemeConfig,
   ResolvedThemeConfig,
   ThemeOutput,
+  ThemeData,
   GeneratedPrimitives,
   SemanticTokens,
   SemanticTokenValue,

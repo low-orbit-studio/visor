@@ -1,0 +1,48 @@
+name: Full Theme
+version: 1
+colors:
+  primary: "#2563EB"
+  accent: "#7C3AED"
+  neutral: "#64748B"
+  background: "#FAFAFA"
+  surface: "#FFFFFF"
+  success: "#22C55E"
+  warning: "#F59E0B"
+  error: "#EF4444"
+  info: "#0EA5E9"
+colors-dark:
+  background: "#0A0A0A"
+  surface: "#1A1A1A"
+typography:
+  heading:
+    family: Inter
+    weight: 700
+  body:
+    family: Inter
+    weight: 400
+  mono:
+    family: JetBrains Mono
+spacing:
+  base: 4
+radius:
+  sm: 2
+  md: 6
+  lg: 12
+  xl: 16
+  pill: 9999
+shadows:
+  xs: "0 1px 1px 0 rgba(0, 0, 0, 0.04)"
+  sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)"
+  md: "0 4px 6px -1px rgba(0, 0, 0, 0.1)"
+  lg: "0 10px 15px -3px rgba(0, 0, 0, 0.1)"
+  xl: "0 20px 25px -5px rgba(0, 0, 0, 0.1)"
+motion:
+  duration-fast: 100ms
+  duration-normal: 200ms
+  duration-slow: 500ms
+  easing: cubic-bezier(0.4, 0, 0.2, 1)
+overrides:
+  light:
+    text-primary: "#111111"
+  dark:
+    text-primary: "#FAFAFA"

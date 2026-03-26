@@ -181,3 +181,11 @@ export interface ThemeOutput {
   darkCss: string;
   fullBundleCss: string;
 }
+
+/** Full pipeline result including intermediate artifacts for adapter consumption. */
+export interface ThemeData {
+  config: ResolvedThemeConfig;
+  primitives: GeneratedPrimitives;
+  tokens: SemanticTokens;
+  output: ThemeOutput;
+}

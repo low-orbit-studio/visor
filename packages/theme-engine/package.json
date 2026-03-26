@@ -10,6 +10,14 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
+    "./adapters": {
+      "import": "./dist/adapters/index.js",
+      "types": "./dist/adapters/index.d.ts"
+    },
+    "./fowt": {
+      "import": "./dist/fowt.js",
+      "types": "./dist/fowt.d.ts"
+    },
     "./fonts": "./src/fonts/index.ts",
     "./schema": "./src/visor-theme.schema.json"
   },

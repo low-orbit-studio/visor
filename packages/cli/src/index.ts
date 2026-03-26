@@ -4,6 +4,7 @@ import { listCommand } from "./commands/list.js"
 import { addCommand } from "./commands/add.js"
 import { diffCommand } from "./commands/diff.js"
 import { themeApplyCommand } from "./commands/theme-apply.js"
+import type { ThemeApplyOptions } from "./commands/theme-apply.js"
 import { themeExportCommand } from "./commands/theme-export.js"
 import { themeValidateCommand } from "./commands/theme-validate.js"
 
@@ -16,9 +17,10 @@ program
 
 program
   .command("init")
-  .description("Initialize Visor in the current project (creates visor.json)")
-  .action(() => {
-    initCommand(process.cwd())
+  .description("Initialize Visor in the current project")
+  .option("--template <name>", "scaffold a themed project (nextjs)")
+  .action((options: { template?: string }) => {
+    initCommand(process.cwd(), options)
   })
 
 program
@@ -60,14 +62,18 @@ theme
     "Read a .visor.yaml file and generate full CSS token overrides"
   )
   .argument("<file>", "path to .visor.yaml file")
-  .option("-o, --output <path>", "output CSS file path", "visor-theme.css")
+  .option("-o, --output <path>", "output CSS file path")
   .option("--json", "output structured JSON (for AI agents)")
+  .option("--adapter <name>", "target adapter: nextjs, fumadocs, deck")
   .action(
     (
       file: string,
-      options: { output?: string; json?: boolean }
+      options: { output?: string; json?: boolean; adapter?: string }
     ) => {
-      themeApplyCommand(file, process.cwd(), options)
+      themeApplyCommand(file, process.cwd(), {
+        ...options,
+        adapter: options.adapter as ThemeApplyOptions["adapter"],
+      })
     }
   )
 

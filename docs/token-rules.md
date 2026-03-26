@@ -217,6 +217,27 @@ If a value cannot use a token yet (e.g., component sizing), add a CSS comment ex
 
 ---
 
+## CSS @layer Strategy
+
+Adapter-generated CSS uses `@layer` declarations for specificity ordering. This ensures theme overrides work without `!important`.
+
+```css
+@layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;
+```
+
+| Layer | Contents | Specificity |
+|-------|----------|-------------|
+| `visor-primitives` | Color scales, spacing, radius, typography, shadows, motion | Lowest |
+| `visor-semantic` | Purpose-named tokens (text-*, surface-*, border-*, interactive-*) | ↑ |
+| `visor-adaptive` | Light/dark mode token values | ↑ |
+| `visor-bridge` | Framework bridge tokens (fumadocs --color-fd-*) | Highest |
+
+**Important:** The `@layer` strategy is adapter-only. The base `generateFullBundleCss` output and existing hand-authored theme files do not use layers — this maintains backward compatibility.
+
+When using adapters (`npx visor theme apply .visor.yaml --adapter nextjs`), layers are automatically included.
+
+---
+
 ## Theme Contract
 
 The theme contract defines which tokens a theme must, may, and can extend. This ensures components render correctly with any compliant theme.

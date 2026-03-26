@@ -77,11 +77,11 @@ See [interchange-format.md](./interchange-format.md) for the format spec and ada
   - `npx visor theme apply <file>` — reads `.visor.yaml`, generates full CSS token overrides
   - `npx visor theme export [--format yaml|json|figma]` — exports current theme
   - `npx visor theme validate <file> [--json]` — runs full validation ruleset
-- Build adapters: NextJS, fumadocs, decks
+- ~~Build adapters: NextJS, fumadocs, decks~~ **DONE** (VI-52) — see `packages/theme-engine/src/adapters/`
 - Ensure any valid theme file completely transforms a Visor project (light + dark)
-- **Minimal `npx visor init`:** Single starter template proving the end-to-end flow (theme file → working project)
-- Decide on CSS `@layer` strategy for token output specificity
-- Add FOWT (Flash of Wrong Theme) prevention: blocking `<script>` snippet for consumer projects + SSR guidance
+- ~~**Minimal `npx visor init`:** Single starter template proving the end-to-end flow (theme file → working project)~~ **DONE** (VI-52) — `npx visor init --template nextjs`
+- ~~Decide on CSS `@layer` strategy for token output specificity~~ **DONE** (VI-52) — 4-layer strategy: visor-primitives, visor-semantic, visor-adaptive, visor-bridge
+- ~~Add FOWT (Flash of Wrong Theme) prevention: blocking `<script>` snippet for consumer projects + SSR guidance~~ **DONE** (VI-52) — see `packages/theme-engine/src/fowt.ts`
 
 **Validator rules:**
 - **Completeness** — all required tokens present (colors light+dark, typography, spacing, radius, shadows)
