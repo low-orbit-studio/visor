@@ -1,0 +1,100 @@
+---
+title: Design System Deck
+description: A complete, registry-driven design system presentation deck with navigable slides, dot navigation, keyboard nav, and fullscreen support.
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { DesignSystemDeck } from '@/components/blocks/design-system-deck';
+
+## Preview
+
+<BlockPreview
+  title="Design System Deck"
+  code={`<DesignSystemDeck />`}
+>
+  <DesignSystemDeck />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block design-system-deck
+```
+
+This copies the deck block and all its dependencies into your project:
+
+- `blocks/design-system-deck/design-system-deck.tsx` — thin wrapper around DeckRenderer
+- `blocks/design-system-deck/registry.ts` — declarative slide list with id/title/section/component
+- `blocks/design-system-deck/slides/` — 12 slide components covering foundations, visual language, utility, and components
+
+## Usage
+
+```tsx
+import { DesignSystemDeck } from '@/blocks/design-system-deck/design-system-deck';
+
+export default function DesignSystemPage() {
+  return <DesignSystemDeck />;
+}
+```
+
+### Without Table of Contents
+
+```tsx
+<DesignSystemDeck showTOC={false} />
+```
+
+### Fullscreen Only
+
+```tsx
+<DesignSystemDeck fullscreen fullscreenLabel="View Design System" />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `showTOC` | `boolean` | `true` | Show an auto-generated table of contents slide |
+| `tocImage` | `string` | — | Background image for the TOC slide |
+| `showFooter` | `boolean` | `true` | Show a footer with section navigation |
+| `brandName` | `string` | `'Low Orbit Studio'` | Brand name displayed in the footer |
+| `fullscreen` | `boolean` | `false` | Render as a fullscreen overlay with trigger button |
+| `fullscreenLabel` | `string` | `'Fullscreen'` | Label for the fullscreen trigger button |
+| `className` | `string` | — | Additional CSS class for the root element |
+
+## Slides
+
+The deck includes 12 slides organized into 4 sections:
+
+**Foundation**
+- Color Palette — primitive and semantic color tokens
+- Typography — full type scale from display to fine print
+- Spacing — 4px-based spacing scale
+
+**Visual Language**
+- Elevation & Surfaces — shadow levels and surface tokens
+- Border Radius — radius scale
+- Motion — duration and easing tokens
+- Text Opacity — semantic text color hierarchy
+
+**Utility**
+- Icons — Phosphor icons at multiple sizes
+- Accessibility — WCAG contrast pairs with AA/AAA indicators
+
+**Components**
+- Buttons — all variants, sizes, and interactive states
+- Form Controls — input, checkbox, radio, select, switch, slider, toggle group
+- Component Showcase — card, badge, alert, progress, tabs, separator
+
+## Navigation
+
+- **Scroll** — vertical scroll between slides
+- **Keyboard** — arrow keys, Page Up/Down, Home/End
+- **Dot navigation** — clickable dots on the right side with slide title tooltips
+
+## Theme Responsive
+
+The deck is fully theme-responsive. Switch themes using the docs header theme switcher to see every slide update in real-time. This is the primary way to preview what a design system looks like under any given theme.
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI. Blocks are copy-and-own, just like components — install them into your project and customize freely.

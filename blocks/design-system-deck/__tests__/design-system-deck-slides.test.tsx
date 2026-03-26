@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
+import { DesignSystemDeck } from "../design-system-deck"
 import { designSystemDeckRegistry } from "../registry"
 import { ColorPaletteSlide } from "../slides/color-palette-slide"
 import { TypographySlide } from "../slides/typography-slide"
@@ -160,5 +161,37 @@ describe("Design System Deck Slides", () => {
         expect(container.innerHTML.length).toBeGreaterThan(0)
       })
     }
+  })
+})
+
+// ─── DesignSystemDeck Wrapper ─────────────────────────────────────────────────
+
+describe("DesignSystemDeck", () => {
+  it("renders the deck-renderer slot", () => {
+    const { container } = render(<DesignSystemDeck />)
+    expect(container.querySelector("[data-slot='deck-renderer']")).toBeInTheDocument()
+  })
+
+  it("renders all 12 slide components", () => {
+    const { container } = render(<DesignSystemDeck />)
+    const slides = container.querySelectorAll("[data-slot='slide']")
+    // 12 content slides + TOC slide (showTOC defaults to true)
+    expect(slides.length).toBeGreaterThanOrEqual(12)
+  })
+
+  it("includes TOC slide by default", () => {
+    render(<DesignSystemDeck />)
+    expect(screen.getAllByText("Table of Contents").length).toBeGreaterThan(0)
+  })
+
+  it("hides TOC slide when showTOC is false", () => {
+    render(<DesignSystemDeck showTOC={false} />)
+    expect(screen.queryAllByText("Table of Contents")).toHaveLength(0)
+  })
+
+  it("passes className to root element", () => {
+    const { container } = render(<DesignSystemDeck className="test-class" />)
+    const root = container.querySelector("[data-slot='deck-renderer']")
+    expect(root?.classList.contains("test-class")).toBe(true)
   })
 })
