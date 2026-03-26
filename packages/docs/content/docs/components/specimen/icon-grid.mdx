@@ -1,0 +1,51 @@
+---
+title: Icon Grid
+description: Icon set display with names, usage descriptions, and a size scale row for comparing icon sizes.
+---
+
+## Installation
+
+```bash
+npx visor add icon-grid
+```
+
+This copies two files into your project:
+
+- `components/ui/icon-grid/icon-grid.tsx` — the component
+- `components/ui/icon-grid/icon-grid.module.css` — the styles
+
+## Usage
+
+```tsx
+import { IconGrid, IconSizeRow } from '@/components/ui/icon-grid/icon-grid';
+import { House, Gear } from '@phosphor-icons/react';
+
+{/* Grid of icons with metadata */}
+<IconGrid icons={[
+  { name: "House", usage: "Home / dashboard", icon: <House size={24} /> },
+  { name: "Gear", usage: "Settings", icon: <Gear size={24} /> },
+]} />
+
+{/* Size comparison row */}
+<IconSizeRow sizes={[
+  { size: 16, icon: <House size={16} /> },
+  { size: 24, icon: <House size={24} /> },
+  { size: 32, icon: <House size={32} /> },
+]} />
+```
+
+## Components
+
+### IconGrid
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `icons` | `IconGridItemProps[]` | — | Array of icon items with name, usage, and rendered icon element |
+| `className` | `string` | — | Additional CSS classes |
+
+### IconSizeRow
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `sizes` | `{ size: number; icon: ReactNode }[]` | — | Array of sizes with rendered icon elements |
+| `className` | `string` | — | Additional CSS classes |

@@ -1,0 +1,44 @@
+name: Color Swatch
+description: Individual color swatch with hex value display, plus grid variants for color scales and semantic color tokens.
+category: specimen
+
+when_to_use:
+  - Displaying primitive color palette scales with hex values
+  - Showing semantic color token assignments with labels
+  - Design system documentation and theme previews
+  - Color audit and accessibility review pages
+
+when_not_to_use:
+  - Color pickers or interactive color selection (use a color picker)
+  - Inline color indicators without metadata (use a simple dot)
+  - Non-token arbitrary color display
+
+why: >
+  ColorSwatch and ColorSwatchGrid provide a standardized way to display color
+  tokens with their hex values and role labels. The semantic variants group
+  tokens by category (text, surface, border) for quick scanning. All colors
+  reference CSS custom properties so they respond to theme changes.
+
+props:
+  - name: token
+    type: string
+    description: CSS custom property name
+  - name: hex
+    type: string
+    description: Hex value for fallback and display
+  - name: name
+    type: string
+    description: Label shown beneath the swatch
+  - name: lightText
+    type: boolean
+    default: "false"
+    description: When true, hex text renders white
+
+dependencies: []
+
+example: |
+  <ColorSwatch token="--color-blue-500" hex="#3b82f6" name="500" lightText />
+  <ColorSwatchGrid label="Gray" swatches={[
+    { token: "--color-gray-50", hex: "#f9fafb", name: "50" },
+    { token: "--color-gray-900", hex: "#111827", name: "900", lightText: true },
+  ]} />

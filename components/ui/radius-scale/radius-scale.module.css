@@ -1,0 +1,19 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
+  gap: var(--spacing-4, 1rem);
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.box {
+  width: 3.5rem;
+  height: 3.5rem;
+  background: var(--surface-accent-default, #3b82f6);
+  border: 1px solid var(--border-default, #e5e7eb);
+}

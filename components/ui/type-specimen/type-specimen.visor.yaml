@@ -1,0 +1,36 @@
+name: Type Specimen
+description: A single typography row displaying sample text at a given font-size token with weight and size metadata.
+category: specimen
+
+when_to_use:
+  - Displaying a type scale with sample text at each step
+  - Design system typography documentation
+  - Theme validation for font size tokens
+
+when_not_to_use:
+  - Rendering actual page content (use Heading or Text)
+  - Font family comparison (use a dedicated font specimen)
+
+why: >
+  TypeSpecimen renders a single type-scale row with the token label, pixel size,
+  and sample text at the actual rendered size. It references CSS custom properties
+  so theme changes are reflected immediately.
+
+props:
+  - name: token
+    type: string
+    description: CSS custom property for font size
+  - name: label
+    type: string
+    description: Label for the type step
+  - name: sizePx
+    type: number
+    description: Font size in pixels for fallback
+  - name: sampleText
+    type: string
+    description: Sample text to render
+
+dependencies: []
+
+example: |
+  <TypeSpecimen token="--font-size-xl" label="xl" sizePx={20} sampleText="Subsection heading" />

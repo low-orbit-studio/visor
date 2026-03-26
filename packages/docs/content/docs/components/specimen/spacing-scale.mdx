@@ -1,0 +1,35 @@
+---
+title: Spacing Scale
+description: Visual spacing scale displaying token names, proportional bars, and pixel/rem values.
+---
+
+## Installation
+
+```bash
+npx visor add spacing-scale
+```
+
+This copies two files into your project:
+
+- `components/ui/spacing-scale/spacing-scale.tsx` — the component
+- `components/ui/spacing-scale/spacing-scale.module.css` — the styles
+
+## Usage
+
+```tsx
+import { SpacingScale } from '@/components/ui/spacing-scale/spacing-scale';
+
+<SpacingScale steps={[
+  { token: "--spacing-1", name: "1", px: 4, rem: "0.25rem" },
+  { token: "--spacing-2", name: "2", px: 8, rem: "0.5rem" },
+  { token: "--spacing-4", name: "4", px: 16, rem: "1rem" },
+  { token: "--spacing-8", name: "8", px: 32, rem: "2rem" },
+]} />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `steps` | `SpacingScaleItemProps[]` | — | Array of spacing steps with token, name, px, and rem values |
+| `className` | `string` | — | Additional CSS classes |

@@ -1,0 +1,33 @@
+---
+title: Surface Row
+description: Surface background variant display showing a surface token with its name and token reference.
+---
+
+## Installation
+
+```bash
+npx visor add surface-row
+```
+
+This copies two files into your project:
+
+- `components/ui/surface-row/surface-row.tsx` — the component
+- `components/ui/surface-row/surface-row.module.css` — the styles
+
+## Usage
+
+```tsx
+import { SurfaceRow } from '@/components/ui/surface-row/surface-row';
+
+<SurfaceRow token="--surface-card" name="Card" />
+<SurfaceRow token="--surface-overlay" name="Overlay" lightText />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `token` | `string` | — | CSS custom property for the surface background |
+| `name` | `string` | — | Display name for the surface |
+| `lightText` | `boolean` | `false` | When true, text renders in light colors for dark surfaces |
+| `className` | `string` | — | Additional CSS classes |

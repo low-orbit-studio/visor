@@ -1,0 +1,44 @@
+---
+title: Accessibility Specimen
+description: WCAG contrast pair display with color preview, ratio value, and AA/AAA pass/fail badges.
+---
+
+## Installation
+
+```bash
+npx visor add accessibility-specimen
+```
+
+This copies two files into your project:
+
+- `components/ui/accessibility-specimen/accessibility-specimen.tsx` — the component
+- `components/ui/accessibility-specimen/accessibility-specimen.module.css` — the styles
+
+## Usage
+
+```tsx
+import { AccessibilitySpecimen } from '@/components/ui/accessibility-specimen/accessibility-specimen';
+
+<AccessibilitySpecimen
+  fgToken="--text-primary"
+  bgToken="--surface-page"
+  fgLabel="text-primary"
+  bgLabel="surface-page"
+  ratio={15.4}
+  wcagAA
+  wcagAAA
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `fgToken` | `string` | — | CSS custom property for the foreground/text color |
+| `bgToken` | `string` | — | CSS custom property for the background color |
+| `fgLabel` | `string` | — | Human-readable label for the foreground color |
+| `bgLabel` | `string` | — | Human-readable label for the background color |
+| `ratio` | `number` | — | Contrast ratio (e.g. 4.5) |
+| `wcagAA` | `boolean` | — | Whether the pair passes WCAG AA |
+| `wcagAAA` | `boolean` | — | Whether the pair passes WCAG AAA |
+| `className` | `string` | — | Additional CSS classes |

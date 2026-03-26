@@ -1,0 +1,30 @@
+name: Radius Scale
+description: Border radius examples with labels and pixel values, displayed in a responsive grid.
+category: specimen
+
+when_to_use:
+  - Displaying the full radius token scale
+  - Design system documentation for border-radius tokens
+  - Theme validation for radius values
+
+when_not_to_use:
+  - Applying actual border-radius (use radius tokens directly)
+  - Showing a single radius value in isolation
+
+why: >
+  RadiusScale renders colored boxes at each radius step, making visual differences
+  immediately apparent. Token names and pixel values are shown for reference.
+
+props:
+  - name: steps
+    type: RadiusScaleItemProps[]
+    description: Array of radius steps with token, name, and px values
+
+dependencies: []
+
+example: |
+  <RadiusScale steps={[
+    { token: "--radius-sm", name: "sm", px: 2 },
+    { token: "--radius-md", name: "md", px: 4 },
+    { token: "--radius-full", name: "full", px: 9999 },
+  ]} />

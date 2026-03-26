@@ -2,7 +2,8 @@ import * as React from "react"
 import { cn } from "../../lib/utils"
 import { Heading } from "../../components/ui/heading/heading"
 import { Text } from "../../components/ui/text/text"
-import { Badge } from "../../components/ui/badge/badge"
+import { IconGrid, IconSizeRow } from "../../components/ui/icon-grid/icon-grid"
+import { AccessibilitySpecimen } from "../../components/ui/accessibility-specimen/accessibility-specimen"
 import {
   House,
   MagnifyingGlass,
@@ -52,6 +53,17 @@ interface IconGridSectionProps {
 }
 
 export function IconGridSection({ icons, className }: IconGridSectionProps) {
+  const gridItems = icons
+    .filter((icon) => ICON_MAP[icon.phosphorName])
+    .map((icon) => {
+      const IconComponent = ICON_MAP[icon.phosphorName]
+      return {
+        name: icon.name,
+        usage: icon.usage,
+        icon: <IconComponent size={24} />,
+      }
+    })
+
   return (
     <section id="specimen-icons" className={cn(styles.section, className)}>
       <Heading level={3} size="lg">Icons</Heading>
@@ -61,35 +73,17 @@ export function IconGridSection({ icons, className }: IconGridSectionProps) {
 
       <div className={styles.iconSubsection}>
         <Text weight="medium" size="sm" as="div">Size Scale</Text>
-        <div className={styles.iconSizeRow}>
-          {ICON_SIZES.map((size) => (
-            <div key={size} className={styles.iconSizeItem}>
-              <div className={styles.iconSizeBox}>
-                <House size={size} />
-              </div>
-              <Text size="xs" color="secondary" as="span">{size}px</Text>
-            </div>
-          ))}
-        </div>
+        <IconSizeRow
+          sizes={ICON_SIZES.map((size) => ({
+            size,
+            icon: <House size={size} />,
+          }))}
+        />
       </div>
 
       <div className={styles.iconSubsection}>
         <Text weight="medium" size="sm" as="div">Icon Map</Text>
-        <div className={styles.iconGrid}>
-          {icons.map((icon) => {
-            const IconComponent = ICON_MAP[icon.phosphorName]
-            if (!IconComponent) return null
-            return (
-              <div key={icon.name} className={styles.iconGridItem}>
-                <div className={styles.iconGridBox}>
-                  <IconComponent size={24} />
-                </div>
-                <Text size="xs" weight="medium" as="span">{icon.name}</Text>
-                <Text size="xs" color="tertiary" as="span">{icon.usage}</Text>
-              </div>
-            )
-          })}
-        </div>
+        <IconGrid icons={gridItems} />
       </div>
     </section>
   )
@@ -115,35 +109,16 @@ export function AccessibilitySection({
 
       <div className={styles.contrastList}>
         {pairs.map((pair, i) => (
-          <div key={i} className={styles.contrastRow}>
-            <div className={styles.contrastSwatches}>
-              <div
-                className={styles.contrastPreview}
-                style={{
-                  background: `var(${pair.bgToken})`,
-                  color: `var(${pair.fgToken})`,
-                }}
-              >
-                Aa
-              </div>
-            </div>
-            <div className={styles.contrastInfo}>
-              <Text size="xs" weight="medium" as="span">
-                {pair.fgLabel} / {pair.bgLabel}
-              </Text>
-              <Text size="xs" color="secondary" as="span">
-                {pair.ratio}:1
-              </Text>
-            </div>
-            <div className={styles.contrastBadges}>
-              <Badge variant={pair.wcagAA ? "default" : "outline"}>
-                AA {pair.wcagAA ? "\u2713" : "\u2717"}
-              </Badge>
-              <Badge variant={pair.wcagAAA ? "default" : "outline"}>
-                AAA {pair.wcagAAA ? "\u2713" : "\u2717"}
-              </Badge>
-            </div>
-          </div>
+          <AccessibilitySpecimen
+            key={i}
+            fgToken={pair.fgToken}
+            bgToken={pair.bgToken}
+            fgLabel={pair.fgLabel}
+            bgLabel={pair.bgLabel}
+            ratio={pair.ratio}
+            wcagAA={pair.wcagAA}
+            wcagAAA={pair.wcagAAA}
+          />
         ))}
       </div>
     </section>

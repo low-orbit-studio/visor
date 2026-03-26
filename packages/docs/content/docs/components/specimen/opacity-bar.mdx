@@ -1,0 +1,35 @@
+---
+title: Opacity Bar
+description: Opacity level visualization showing bars at varying opacity values with token names.
+---
+
+## Installation
+
+```bash
+npx visor add opacity-bar
+```
+
+This copies two files into your project:
+
+- `components/ui/opacity-bar/opacity-bar.tsx` — the component
+- `components/ui/opacity-bar/opacity-bar.module.css` — the styles
+
+## Usage
+
+```tsx
+import { OpacityBar } from '@/components/ui/opacity-bar/opacity-bar';
+
+<OpacityBar levels={[
+  { token: "--opacity-25", name: "25%", value: 0.25 },
+  { token: "--opacity-50", name: "50%", value: 0.5 },
+  { token: "--opacity-75", name: "75%", value: 0.75 },
+  { token: "--opacity-100", name: "100%", value: 1 },
+]} />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `levels` | `OpacityBarItemProps[]` | — | Array of opacity levels with token, name, and value (0-1) |
+| `className` | `string` | — | Additional CSS classes |

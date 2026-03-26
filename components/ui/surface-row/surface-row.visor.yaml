@@ -1,0 +1,35 @@
+name: Surface Row
+description: Surface background variant display showing a surface token with its name and token reference.
+category: specimen
+
+when_to_use:
+  - Displaying surface background tokens in a design system specimen
+  - Comparing surface layers and hierarchy
+  - Theme validation for surface tokens
+
+when_not_to_use:
+  - Actual page or card surfaces (use the surface tokens directly)
+  - Color swatches without surface context (use ColorSwatch)
+
+why: >
+  SurfaceRow renders a card-like element with the surface token applied as
+  background, with name and token reference overlaid. The lightText prop
+  ensures readability on dark surfaces.
+
+props:
+  - name: token
+    type: string
+    description: CSS custom property for the surface background
+  - name: name
+    type: string
+    description: Display name for the surface
+  - name: lightText
+    type: boolean
+    default: "false"
+    description: When true, text renders in light colors for dark surfaces
+
+dependencies: []
+
+example: |
+  <SurfaceRow token="--surface-card" name="Card" />
+  <SurfaceRow token="--surface-overlay" name="Overlay" lightText />

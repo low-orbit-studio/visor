@@ -1,0 +1,31 @@
+name: Spacing Scale
+description: Visual spacing scale displaying token names, proportional bars, and pixel/rem values.
+category: specimen
+
+when_to_use:
+  - Displaying the full spacing token scale with visual proportions
+  - Design system documentation for spacing tokens
+  - Theme validation for spacing values
+
+when_not_to_use:
+  - Applying actual spacing in layouts (use spacing tokens directly)
+  - Progress or loading indicators (use Progress)
+
+why: >
+  SpacingScale renders each spacing step as a proportional bar chart, making
+  relative sizes immediately scannable. Token names and pixel/rem values are
+  shown alongside for reference.
+
+props:
+  - name: steps
+    type: SpacingScaleItemProps[]
+    description: Array of spacing steps with token, name, px, and rem values
+
+dependencies: []
+
+example: |
+  <SpacingScale steps={[
+    { token: "--spacing-1", name: "1", px: 4, rem: "0.25rem" },
+    { token: "--spacing-2", name: "2", px: 8, rem: "0.5rem" },
+    { token: "--spacing-4", name: "4", px: 16, rem: "1rem" },
+  ]} />

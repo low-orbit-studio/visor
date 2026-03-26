@@ -1,0 +1,46 @@
+---
+title: Motion Specimen
+description: Duration and easing preview components with interactive play-animation controls.
+---
+
+## Installation
+
+```bash
+npx visor add motion-specimen
+```
+
+This copies two files into your project:
+
+- `components/ui/motion-specimen/motion-specimen.tsx` — the component
+- `components/ui/motion-specimen/motion-specimen.module.css` — the styles
+
+## Usage
+
+```tsx
+import { MotionDuration, MotionEasing } from '@/components/ui/motion-specimen/motion-specimen';
+
+<MotionDuration durations={[
+  { token: "--motion-duration-200", name: "200", ms: 200 },
+  { token: "--motion-duration-300", name: "300", ms: 300 },
+]} />
+
+<MotionEasing easings={[
+  { token: "--motion-easing-ease-out", name: "ease-out", value: "cubic-bezier(0, 0, 0.2, 1)" },
+]} />
+```
+
+## Components
+
+### MotionDuration
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `durations` | `MotionDurationItemProps[]` | — | Array of duration items with token, name, and ms values |
+| `className` | `string` | — | Additional CSS classes |
+
+### MotionEasing
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `easings` | `MotionEasingItemProps[]` | — | Array of easing items with token, name, and CSS value |
+| `className` | `string` | — | Additional CSS classes |

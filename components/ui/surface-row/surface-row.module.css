@@ -1,0 +1,19 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+  padding: var(--spacing-4, 1rem);
+  border-radius: var(--radius-md, 4px);
+  border: 1px solid var(--border-muted, #f3f4f6);
+  min-height: 5rem;
+}
+
+.label {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.token {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-family: var(--font-mono, monospace);
+}

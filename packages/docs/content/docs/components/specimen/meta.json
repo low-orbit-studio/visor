@@ -1,0 +1,17 @@
+{
+  "title": "Specimen",
+  "description": "Components alphabetized. Insert new entries in A-Z order.",
+  "defaultOpen": true,
+  "pages": [
+    "accessibility-specimen",
+    "color-swatch",
+    "elevation-card",
+    "icon-grid",
+    "motion-specimen",
+    "opacity-bar",
+    "radius-scale",
+    "spacing-scale",
+    "surface-row",
+    "type-specimen"
+  ]
+}
