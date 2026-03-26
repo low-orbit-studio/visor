@@ -470,25 +470,23 @@ Standard themes are describable entirely via a `.visor.yaml` configuration file.
 
 ```yaml
 name: "Corporate Blue"
-tier: standard
-tokens:
-  shared:
-    accent: "#1e40af"
-  dark:
-    text-primary: "#f3f4f6"
-    surface-page: "#0a0a0f"
-    surface-card: "#111827"
-    border-default: "#374151"
-    interactive-primary-bg: "#1e40af"
-    # ... all required tokens
-  light:
-    text-primary: "#111827"
-    surface-page: "#ffffff"
-    surface-card: "#ffffff"
-    border-default: "#e5e7eb"
-    interactive-primary-bg: "#1e40af"
-    # ... all required tokens
+version: 1
+colors:
+  primary: "#1e40af"
+  accent: "#3b82f6"
+# All other values (neutral, status colors, typography, spacing, etc.)
+# use Visor defaults. The theme engine generates the full 3-tier token
+# set from these two colors.
+#
+# For per-token control, use the overrides: escape hatch:
+# overrides:
+#   light:
+#     surface-page: "#f8fafc"
+#   dark:
+#     surface-page: "#0a0a0f"
 ```
+
+See [`interchange-format.md`](./interchange-format.md) for the complete `.visor.yaml` spec, mapping algorithm, and JSON Schema.
 
 ### Creative Themes
 

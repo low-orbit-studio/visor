@@ -63,8 +63,8 @@ Define the `.visor.yaml` spec, build adapter layers, create a theme validator, a
 See [interchange-format.md](./interchange-format.md) for the format spec and adapter design.
 
 **Key work:**
-- **Design spike first:** Document the exact algorithm for `.visor.yaml` flat colors → 3-tier token mapping (e.g., `primary: "#2563EB"` → all derived interactive/surface/text/border tokens) before implementing
-- Finalize the interchange format spec with a formal JSON Schema
+- ~~**Design spike first:** Document the exact algorithm for `.visor.yaml` flat colors → 3-tier token mapping~~ **DONE** (VI-47) — see [`interchange-format.md`](./interchange-format.md) for complete mapping algorithm, JSON Schema, and edge cases
+- ~~Finalize the interchange format spec with a formal JSON Schema~~ **DONE** (VI-47) — see [`visor-theme.schema.json`](./visor-theme.schema.json)
 - Reconcile the draft spec with the actual 3-tier token system (the draft uses flat color names; tokens use primitives → semantic → adaptive)
 - Build `packages/theme-engine/` — shared package housing:
   - JSON Schema for `.visor.yaml` validation
