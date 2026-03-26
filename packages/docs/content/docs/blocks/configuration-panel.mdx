@@ -1,0 +1,91 @@
+---
+title: Configuration Panel
+description: A floating, glassmorphic configuration panel for organizing controls into labeled sections with collapse animation and positional anchoring.
+---
+
+## Installation
+
+```bash
+npx visor add --block configuration-panel
+```
+
+## Usage
+
+```tsx
+import { ConfigurationPanel } from "@/blocks/configuration-panel/configuration-panel"
+import { Slider } from "@/components/ui/slider/slider"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group/toggle-group"
+import { Button } from "@/components/ui/button/button"
+
+export default function VisualizationPage() {
+  return (
+    <ConfigurationPanel
+      title="Controls"
+      subtitle="Adjust parameters"
+      position="bottom-left"
+      sections={[
+        {
+          label: "Geometry",
+          children: (
+            <ToggleGroup type="single" defaultValue="sphere" variant="outline" size="sm">
+              <ToggleGroupItem value="sphere">Sphere</ToggleGroupItem>
+              <ToggleGroupItem value="curl">Curl</ToggleGroupItem>
+              <ToggleGroupItem value="lorenz">Lorenz</ToggleGroupItem>
+            </ToggleGroup>
+          ),
+        },
+        {
+          label: "Appearance",
+          children: (
+            <>
+              <Slider defaultValue={[50]} max={100} step={1} aria-label="Size" />
+              <Slider defaultValue={[30]} max={100} step={1} aria-label="Blur" />
+            </>
+          ),
+        },
+        {
+          label: "Actions",
+          children: (
+            <Button variant="outline" size="sm">
+              Reset
+            </Button>
+          ),
+        },
+      ]}
+    />
+  )
+}
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `sections` | `Array<{ label: string; children: ReactNode }>` | Required | Panel content organized by labeled section |
+| `position` | `'bottom-left' \| 'bottom-right' \| 'top-left' \| 'top-right'` | `'bottom-left'` | Fixed position anchor point |
+| `collapsible` | `boolean` | `true` | Whether the panel can be collapsed |
+| `defaultCollapsed` | `boolean` | `false` | Initial collapsed state |
+| `title` | `string` | — | Panel title text |
+| `subtitle` | `string` | — | Panel subtitle text |
+| `className` | `string` | — | Additional CSS class names |
+
+## Glassmorphic Styling
+
+The panel uses semantic tokens (`--surface-card`, `--border-default`) combined with `backdrop-filter: blur(20px)` for a glassmorphic appearance. It works best on dark themes like Blackout, where `--surface-card` maps to `rgba(255, 255, 255, 0.04)`, but degrades gracefully on light themes as a frosted glass panel.
+
+## Responsive Behavior
+
+On viewports below 640px, the panel switches from fixed positioning to static flow, expanding to full width. This makes it usable on mobile without obscuring content.
+
+## Composition
+
+The configuration panel is designed for composition. It does not import specific form components — you pass any Visor components as children within sections. Common pairings include:
+
+- **Slider** for continuous value controls
+- **Toggle Group** for mode/option selectors
+- **Button** for actions
+- **Input** for text values
+
+## Theme Responsive
+
+The panel adapts to any Visor theme through semantic tokens. Section labels, dividers, and the glassmorphic backdrop all respond to the active theme's color system.

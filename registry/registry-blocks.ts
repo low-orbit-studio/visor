@@ -2,6 +2,28 @@ import type { Registry } from "./schema"
 
 export const blocks: Registry = [
   {
+    name: "configuration-panel",
+    type: "registry:block",
+    category: "configuration",
+    description:
+      "A floating, glassmorphic configuration panel for organizing controls into labeled sections. Supports collapse animation, positional anchoring, and responsive stacking.",
+    dependencies: [
+      "@loworbitstudio/visor-core",
+      "@phosphor-icons/react",
+    ],
+    registryDependencies: ["utils", "separator"],
+    files: [
+      {
+        path: "blocks/configuration-panel/configuration-panel.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/configuration-panel/configuration-panel.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "design-system-specimen",
     type: "registry:block",
     category: "documentation",
