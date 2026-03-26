@@ -72,9 +72,9 @@ Visor needs a Form wrapper component that integrates with the existing Field, In
 
 ### Rationale
 
-1. **Server-first aligns with Visor's architecture.** Visor targets Next.js App Router consumers. Conform is designed from the ground up for Server Actions and `useActionState`, which is the direction React and Next.js are heading. RHF requires a `"use client"` boundary for all form logic, which works against the server-first architecture.
+1. **Server-first aligns with Visor's architecture.** Visor targets Next.js App Router consumers. Conform is designed from the ground up for Server Actions and `useActionState`, which is the direction React and Next.js are heading. RHF requires a `"use client"` boundary for all form logic, which works against the server-first architecture. **Clarification:** The Form wrapper component itself still requires `"use client"` because it uses `useForm()` and `useActionState()` hooks. The server-first advantage is that the validation and mutation logic runs server-side via the action, and the form works before hydration — not that the Form component is a server component.
 
-2. **Progressive enhancement is a first-class feature.** Conform forms work without JavaScript — validation runs server-side, errors are returned via the action response, and the page works before hydration. This aligns with Visor's principle of building on web fundamentals (CSS custom properties, semantic HTML, progressive enhancement).
+2. **Progressive enhancement is a first-class feature.** Conform forms work without JavaScript — validation runs server-side, errors are returned via the action response, and the page works before hydration. This aligns with Visor's principle of building on web fundamentals (CSS custom properties, semantic HTML, progressive enhancement). **Note on `noValidate`:** The Form wrapper sets `noValidate` on the `<form>` element to disable native browser error bubbles in favor of Conform's custom error UI. This means without JS, validation happens server-side on submit rather than via native browser validation. This is an intentional trade-off — custom error presentation provides a better, more consistent UX than browser-native error bubbles.
 
 3. **Best composability with existing components.** Conform works with any valid HTML form markup. It does not impose wrapper components or require `Controller` patterns. Visor's existing Field, FieldLabel, FieldDescription, and FieldError components can be used directly — Conform just provides the data to wire them together via `getFieldsetProps()` and field metadata.
 
@@ -82,7 +82,7 @@ Visor needs a Form wrapper component that integrates with the existing Field, In
 
 5. **Smaller combined bundle.** At ~7 KB for the Conform packages vs ~10 KB for RHF + resolver, Conform is lighter. Both are dwarfed by Zod itself (~14 KB gzipped), which is shared regardless of form library choice.
 
-6. **Acceptable trade-offs.** Conform has a smaller community (~85K weekly downloads vs ~15.8M for RHF), which means fewer Stack Overflow answers and blog posts. However, the documentation is solid, the API surface is small, and the library is actively maintained with consistent releases. For a design system that ships source code (copy-and-own), the smaller community is less of a concern since consumers can read and modify the form components directly.
+6. **Acceptable trade-offs.** Conform has a significantly smaller community (~85K weekly downloads vs ~15.8M for RHF — a ~186x gap), which means fewer Stack Overflow answers and blog posts. However, the documentation is solid, the API surface is small, and the library is actively maintained with consistent releases. For a design system that ships source code (copy-and-own), the smaller community is less of a concern since consumers can read and modify the form components directly. The single-maintainer risk is real but mitigated by the library's small, well-scoped API surface — if abandoned, the integration surface in Visor is small enough to maintain independently or fork.
 
 ### Why not React Hook Form?
 
@@ -221,7 +221,7 @@ function FormField({
         {...getInputProps(field, { type })}
         placeholder={placeholder}
       />
-      <FieldError errors={field.errors?.map((msg) => ({ message: msg }))} />
+      <FieldError errors={field.errors} />
     </Field>
   )
 }
@@ -231,19 +231,26 @@ export { FormField }
 
 ### Usage Example — Server Action Pattern
 
-```tsx
-// app/contact/page.tsx
-import { z } from "zod"
-import { Form } from "@/components/ui/form/form"
-import { FormField } from "@/components/ui/form/form-field"
-import { Button } from "@/components/ui/button/button"
-import { contactAction } from "./actions"
+Schemas should be defined in a shared module (no `"use server"` / `"use client"` directive) so both the page and the action import the same source of truth:
 
-const contactSchema = z.object({
+```tsx
+// lib/schemas/contact.ts
+import { z } from "zod"
+
+export const contactSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Please enter a valid email"),
   message: z.string().min(10, "Message must be at least 10 characters"),
 })
+```
+
+```tsx
+// app/contact/page.tsx
+import { Form } from "@/components/ui/form/form"
+import { FormField } from "@/components/ui/form/form-field"
+import { Button } from "@/components/ui/button/button"
+import { contactSchema } from "@/lib/schemas/contact"
+import { contactAction } from "./actions"
 
 export default function ContactPage() {
   return (
@@ -266,13 +273,7 @@ export default function ContactPage() {
 "use server"
 
 import { parseWithZod } from "@conform-to/zod"
-import { z } from "zod"
-
-const contactSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Please enter a valid email"),
-  message: z.string().min(10, "Message must be at least 10 characters"),
-})
+import { contactSchema } from "@/lib/schemas/contact"
 
 export async function contactAction(prevState: unknown, formData: FormData) {
   const submission = parseWithZod(formData, { schema: contactSchema })
@@ -305,7 +306,7 @@ For consumers who want full control over markup:
         {...getInputProps(fields.email, { type: "email" })}
         aria-describedby={fields.email.descriptionId}
       />
-      <FieldError errors={fields.email.errors?.map((msg) => ({ message: msg }))} />
+      <FieldError errors={fields.email.errors} />
     </Field>
   )}
 </Form>
@@ -331,12 +332,32 @@ Conform's `getInputProps()` generates the `id`, `name`, `aria-invalid`, and `ari
 
 1. **`field.id`** — passed to `FieldLabel`'s `htmlFor` prop
 2. **`getInputProps(field, { type })`** — spread onto Visor's `Input` component
-3. **`field.errors`** — mapped to `FieldError`'s `errors` prop format
+3. **`field.errors`** — passed directly to `FieldError`'s `errors` prop (after FieldError compatibility update)
 4. **`field.descriptionId`** — used for `aria-describedby` on description text
 
-### No Breaking Changes Required
+### FieldError Compatibility
 
-The existing Field, FieldLabel, FieldDescription, and FieldError components need **zero modifications** to work with Conform. The Form wrapper is additive — it's a new component that orchestrates the existing primitives.
+Conform returns errors as `string[]`, but `FieldError` currently expects `Array<{ message?: string }>`. To eliminate mapping boilerplate in every field, `FieldError` should be updated to accept both formats:
+
+```tsx
+export interface FieldErrorProps extends React.HTMLAttributes<HTMLDivElement> {
+  errors?: Array<string | { message?: string } | undefined>
+}
+```
+
+With internal normalization:
+
+```tsx
+const messages = errors
+  ?.map((e) => (typeof e === "string" ? e : e?.message))
+  .filter(Boolean)
+```
+
+This is a non-breaking change (existing `{ message?: string }` callers continue to work) and makes FieldError library-agnostic — it works natively with Conform, RHF, or plain strings.
+
+### No Other Breaking Changes Required
+
+The existing Field, FieldLabel, and FieldDescription components need **zero modifications** to work with Conform. The Form wrapper is additive — it's a new component that orchestrates the existing primitives.
 
 ### Registry Dependencies
 
@@ -350,14 +371,83 @@ External npm dependencies:
 - `@conform-to/zod`
 - `zod` (likely already installed by consumers)
 
+## Usage Example — Client-Only Pattern (no Server Action)
+
+For forms that don't use server actions (settings panels, filters, search forms), Conform supports client-side-only validation via `onSubmit`:
+
+```tsx
+"use client"
+
+import { useForm, getFormProps, getInputProps } from "@conform-to/react"
+import { parseWithZod } from "@conform-to/zod"
+import { z } from "zod"
+import { Field, FieldLabel, FieldError } from "@/components/ui/field/field"
+import { Input } from "@/components/ui/input/input"
+import { Button } from "@/components/ui/button/button"
+
+const filterSchema = z.object({
+  query: z.string().min(1, "Enter a search term"),
+  maxResults: z.coerce.number().min(1).max(100),
+})
+
+export function FilterForm({ onFilter }: { onFilter: (data: z.infer<typeof filterSchema>) => void }) {
+  const [form, fields] = useForm({
+    shouldValidate: "onBlur",
+    onValidate({ formData }) {
+      return parseWithZod(formData, { schema: filterSchema })
+    },
+    onSubmit(event, { submission }) {
+      event.preventDefault()
+      if (submission?.status === "success") {
+        onFilter(submission.value)
+      }
+    },
+  })
+
+  return (
+    <form {...getFormProps(form)} noValidate>
+      <Field>
+        <FieldLabel htmlFor={fields.query.id}>Search</FieldLabel>
+        <Input {...getInputProps(fields.query, { type: "text" })} placeholder="Search..." />
+        <FieldError errors={fields.query.errors} />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor={fields.maxResults.id}>Max Results</FieldLabel>
+        <Input {...getInputProps(fields.maxResults, { type: "number" })} />
+        <FieldError errors={fields.maxResults.errors} />
+      </Field>
+      <Button type="submit">Apply</Button>
+    </form>
+  )
+}
+```
+
+## Radix UI Integration Notes
+
+Visor uses Radix UI for complex controls (Select, Checkbox, RadioGroup). These render custom DOM structures, not native `<select>` / `<input type="checkbox">` elements. Conform needs a `name` attribute on a form-submittable element to work.
+
+**Integration strategies:**
+
+| Component | Strategy |
+|---|---|
+| **Select** | Use Conform's `getSelectProps()` which manages a hidden `<input>` for form submission. Wire Radix Select's `onValueChange` to update the hidden input. Alternatively, use a native `<select>` for progressive enhancement at the cost of custom styling. |
+| **Checkbox** | Radix Checkbox renders a `<button>`, not an `<input>`. Use a hidden `<input>` managed by Conform, sync checked state via `onCheckedChange`. |
+| **RadioGroup** | Similar to Checkbox — hidden input with Conform, sync via `onValueChange`. |
+
+Each of these needs a documented recipe with a working example. These are the highest-friction integration points and will be the most common source of consumer questions.
+
+**Complex field patterns** (nested objects via `getFieldsetProps()`, dynamic arrays via `getCollectionProps()`) are supported by Conform but should also have dedicated recipes in the docs.
+
 ## Risks and Mitigations
 
-| Risk | Mitigation |
-|---|---|
-| Conform has smaller community than RHF | API is small and stable; Visor ships source code so consumers can modify |
-| Single maintainer (Edmund Hung) | Library is well-designed with clear scope; could be forked if abandoned |
-| Consumers unfamiliar with Conform | Visor docs will include recipes and examples; FormField convenience wrapper reduces learning curve |
-| Server Actions not used by all consumers | Form wrapper also works with client-side `onSubmit` via Conform's client validation mode |
+| Risk | Severity | Mitigation |
+|---|---|---|
+| Conform has ~186x fewer weekly downloads than RHF | Medium | API is small and stable; Visor ships source code so consumers can modify. Fewer community resources but official docs are solid. |
+| Single maintainer (Edmund Hung) | Medium | Library has a small, well-scoped API surface (~7 KB). If abandoned, Visor's integration surface is small enough to maintain independently or fork. Monitor release cadence as a leading indicator. |
+| Consumers unfamiliar with Conform | Low | Visor docs will include recipes and examples; FormField convenience wrapper reduces learning curve. The `Form` render-prop API is self-documenting. |
+| Server Actions not used by all consumers | Low | Form wrapper also works with client-side `onSubmit` via Conform's client validation mode (see client-only example above). |
+| Radix UI controls need hidden input wiring | Medium | Document recipes for Select, Checkbox, and RadioGroup integration. These are the highest-friction points and need working examples in the docs site. |
+| Complex field patterns (nested objects, dynamic arrays) | Low | Conform supports these via `getFieldsetProps()` and `getCollectionProps()`. Needs dedicated recipes but is not a library limitation. |
 
 ## References
 
