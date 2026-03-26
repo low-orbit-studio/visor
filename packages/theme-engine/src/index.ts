@@ -22,6 +22,14 @@ export { exportTheme } from "./export.js";
 // Schema & validation
 export { visorThemeSchema, validateConfig, isVisorThemeConfig } from "./schema.js";
 
+// Comprehensive theme validation
+export { validate } from "./validate.js";
+export type {
+  ThemeValidationResult,
+  ValidationIssue,
+  ValidationSeverity,
+} from "./validate.js";
+
 // Lower-level utilities (for docs site preview, advanced consumers)
 export { generateShadeScale, TAILWIND_GRAY } from "./shades.js";
 export {
