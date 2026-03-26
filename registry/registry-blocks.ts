@@ -28,7 +28,7 @@ export const blocks: Registry = [
     type: "registry:block",
     category: "documentation",
     description:
-      "Deck-ready slide components for presenting the Visor design system. Each slide wraps specimen display components inside Slide + SlideHeader for use with DeckRenderer.",
+      "A complete, registry-driven design system presentation deck. Composes all slide components into a DeckRenderer with TOC, dot navigation, keyboard nav, and fullscreen support. Responds dynamically to the active theme.",
     dependencies: [
       "@loworbitstudio/visor-core",
       "@phosphor-icons/react",
@@ -68,6 +68,7 @@ export const blocks: Registry = [
       "type-specimen",
     ],
     files: [
+      { path: "blocks/design-system-deck/design-system-deck.tsx", type: "registry:block" },
       { path: "blocks/design-system-deck/index.ts", type: "registry:block" },
       { path: "blocks/design-system-deck/registry.ts", type: "registry:block" },
       { path: "blocks/design-system-deck/slides/slides.module.css", type: "registry:block" },

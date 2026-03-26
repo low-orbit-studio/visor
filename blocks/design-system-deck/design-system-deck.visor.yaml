@@ -1,0 +1,32 @@
+name: Design System Deck
+description: A complete, registry-driven design system presentation deck. Composes all slide components into a DeckRenderer with TOC, dot navigation, keyboard nav, and fullscreen support. Responds dynamically to the active theme.
+category: documentation
+components_used:
+  - alert
+  - badge
+  - button
+  - card
+  - checkbox
+  - deck-renderer
+  - heading
+  - input
+  - label
+  - progress
+  - radio-group
+  - select
+  - separator
+  - slide
+  - slide-header
+  - slider
+  - switch
+  - tabs
+  - text
+  - textarea
+  - toggle-group
+when_to_use:
+  - Presenting a design system as a navigable deck
+  - Previewing a theme's full token coverage in slide format
+  - Design system documentation and onboarding
+when_not_to_use:
+  - Production user-facing pages
+  - When a flat specimen view is preferred (use design-system-specimen instead)
