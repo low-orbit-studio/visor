@@ -14,4 +14,17 @@ export const lib: Registry = [
       },
     ],
   },
+  {
+    name: "deck-registry",
+    type: "registry:lib",
+    category: "deck",
+    description:
+      "Types and utility functions for declarative deck registries (DeckRegistry, SlideEntry, DeckSection).",
+    files: [
+      {
+        path: "lib/deck-registry.ts",
+        type: "registry:lib",
+      },
+    ],
+  },
 ]
