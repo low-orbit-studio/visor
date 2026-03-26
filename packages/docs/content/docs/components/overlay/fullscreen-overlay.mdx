@@ -1,0 +1,90 @@
+---
+title: Fullscreen Overlay
+description: A full-viewport overlay for expanding content to fill the screen, built on Radix Dialog.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import {
+  FullscreenOverlay,
+  FullscreenOverlayTrigger,
+  FullscreenOverlayContent,
+} from '@/components/ui/fullscreen-overlay';
+
+## Installation
+
+```bash
+npx visor add fullscreen-overlay
+```
+
+This copies two files into your project:
+
+- `components/ui/fullscreen-overlay/fullscreen-overlay.tsx` — the component
+- `components/ui/fullscreen-overlay/fullscreen-overlay.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  FullscreenOverlay,
+  FullscreenOverlayTrigger,
+  FullscreenOverlayContent,
+} from '@/components/ui/fullscreen-overlay/fullscreen-overlay';
+
+export default function Example() {
+  return (
+    <FullscreenOverlay>
+      <FullscreenOverlayTrigger>Expand</FullscreenOverlayTrigger>
+      <FullscreenOverlayContent>
+        <p>Your content fills the full viewport here.</p>
+      </FullscreenOverlayContent>
+    </FullscreenOverlay>
+  );
+}
+```
+
+## Basic Example
+
+<ComponentPreview
+  title="Fullscreen Overlay"
+  code={`<FullscreenOverlay>
+  <FullscreenOverlayTrigger asChild>
+    <button>Open Fullscreen</button>
+  </FullscreenOverlayTrigger>
+  <FullscreenOverlayContent>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+      <p style={{ fontSize: '1.5rem' }}>Fullscreen content — press Escape or click × to close</p>
+    </div>
+  </FullscreenOverlayContent>
+</FullscreenOverlay>`}
+>
+  <FullscreenOverlay>
+    <FullscreenOverlayTrigger>Open Fullscreen</FullscreenOverlayTrigger>
+    <FullscreenOverlayContent>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+        <p style={{ fontSize: '1.5rem' }}>Fullscreen content — press Escape or click × to close</p>
+      </div>
+    </FullscreenOverlayContent>
+  </FullscreenOverlay>
+</ComponentPreview>
+
+## Features
+
+- **Full viewport:** Content fills the entire screen
+- **Keyboard dismiss:** Escape key closes the overlay
+- **Focus trap:** Built on Radix Dialog for automatic focus management
+- **Body scroll lock:** Prevents background scrolling while open
+- **Accessible:** ARIA labels, screen reader support, focus management
+- **Theme-agnostic:** Uses CSS custom properties for all visual tokens
+
+## API Reference
+
+<PropsTable component="fullscreen-overlay" />
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `FullscreenOverlay` | Root | Context provider wrapping Radix Dialog |
+| `FullscreenOverlayTrigger` | `<button>` | Opens the overlay |
+| `FullscreenOverlayContent` | Dialog | Full-viewport container for children |

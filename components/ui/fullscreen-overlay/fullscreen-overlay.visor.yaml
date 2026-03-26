@@ -1,0 +1,33 @@
+name: FullscreenOverlay
+description: >-
+  A full-viewport overlay for expanding content to fill the screen. Built on Radix
+  Dialog with close button, Escape to dismiss, focus trap, and body scroll lock.
+category: overlay
+when_to_use:
+  - Expanding block previews or demos to full viewport
+  - Showing content in an immersive full-screen view
+  - Any scenario needing a dismissible full-viewport portal
+when_not_to_use:
+  - Standard modal dialogs — use Dialog instead
+  - Image galleries — use Lightbox instead
+  - Side panels — use Sheet instead
+sub_components:
+  - name: FullscreenOverlay
+    description: Root component wrapping Radix Dialog.Root
+  - name: FullscreenOverlayTrigger
+    description: Button that opens the overlay
+  - name: FullscreenOverlayContent
+    description: Full-viewport portal container for children
+dependencies:
+  - "@radix-ui/react-dialog"
+  - "@phosphor-icons/react"
+  - "@loworbitstudio/visor-core"
+registryDependencies:
+  - utils
+example: |
+  <FullscreenOverlay>
+    <FullscreenOverlayTrigger>Expand</FullscreenOverlayTrigger>
+    <FullscreenOverlayContent>
+      <p>Full-screen content here</p>
+    </FullscreenOverlayContent>
+  </FullscreenOverlay>
