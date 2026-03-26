@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "build": "npm run build -w packages/tokens && npm run build -w packages/cli && npm run build -w packages/docs",
+    "build:tokens": "npm run build -w packages/tokens",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit && npm run typecheck --workspaces --if-present",

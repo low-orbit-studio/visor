@@ -1,0 +1,26 @@
+{
+  "name": "@loworbitstudio/visor-theme-engine",
+  "version": "0.1.0",
+  "description": "Theme engine for the Visor design system — font resolution, validation, and import/export.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./fonts": "./src/fonts/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "update-catalog": "tsx scripts/update-google-fonts-catalog.ts"
+  },
+  "files": [
+    "src/"
+  ],
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
