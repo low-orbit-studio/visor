@@ -11,7 +11,7 @@ import {
 } from "./ui/select";
 import styles from "./theme-switcher.module.css";
 
-const THEMES = ["space", "neutral"] as const;
+const THEMES = ["space", "neutral", "blackout"] as const;
 type Theme = (typeof THEMES)[number];
 
 const STORAGE_KEY = "visor-theme";
