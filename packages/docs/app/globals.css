@@ -178,7 +178,7 @@
   font-weight: inherit !important;
 }
 
-/* Block preview overrides — force fixed-position blocks to render inline */
+/* Block preview overrides — render panel inline in standalone preview */
 .configuration-panel-preview {
   position: static !important;
   width: 100% !important;

@@ -122,8 +122,12 @@ const Sphere = React.forwardRef<SphereRef, SphereProps>((props, ref) => {
       const bgColor =
         p.backgroundColor ?? DEFAULT_CONFIG.backgroundColor
 
-      // Renderer
+      // Renderer — use LinearSRGBColorSpace to match the original Three.js 0.160
+      // color pipeline. Without this, Three.js 0.183+ applies sRGB-to-linear
+      // conversion on Color uniforms, making additive-blended particles
+      // saturate to white.
       const renderer = new THREE.WebGLRenderer({ antialias: true })
+      renderer.outputColorSpace = THREE.LinearSRGBColorSpace
       const rect = container.getBoundingClientRect()
       renderer.setSize(rect.width, rect.height)
       renderer.setPixelRatio(
@@ -708,6 +712,6 @@ function applyGradient(internals: SphereInternals): void {
     const newS = Math.min(s * internals.saturationMult, 1.0)
     const newL = Math.min(l * internals.lightnessMult, 1.0)
     const [r, g, b] = hslToRgb(h, newS, newL)
-    colors[i].setRGB(r, g, b)
+    colors[i].setRGB(r, g, b, "srgb-linear")
   }
 }

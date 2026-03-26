@@ -102,7 +102,13 @@ export function createParticleSystem(
       uSparkleAlphaBoost: { value: config.sparkleAlphaBoost },
       uGradientColors: {
         value: config.gradientColors.map(
-          (c) => new THREE.Color(c[0], c[1], c[2]),
+          (c) =>
+            new THREE.Color().setRGB(
+              c[0],
+              c[1],
+              c[2],
+              THREE.LinearSRGBColorSpace,
+            ),
         ),
       },
       uGeometryMode: { value: 0 },
