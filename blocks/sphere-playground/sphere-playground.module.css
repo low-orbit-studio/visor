@@ -19,6 +19,10 @@
   border-color: rgba(255, 255, 255, 0.1);
 }
 
+.panel [data-slot="toggle-group"] {
+  gap: var(--spacing-1, 0.25rem);
+}
+
 .sliderRow {
   display: flex;
   align-items: center;
