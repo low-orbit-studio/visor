@@ -113,8 +113,8 @@ export function SpherePlayground({
         />
       </div>
 
-      <div className={styles.panelLayer}>
       <ConfigurationPanel
+        className={styles.panel}
         title="Sphere"
         subtitle="Visual controls"
         position="bottom-left"
@@ -296,7 +296,6 @@ export function SpherePlayground({
           },
         ]}
       />
-      </div>
     </div>
   )
 }
