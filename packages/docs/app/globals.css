@@ -133,7 +133,7 @@
 }
 
 .blackout-theme .preview-render {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--surface-card);
 }
 
 .blackout-theme .preview-footer {
@@ -160,8 +160,9 @@
 /* Code area inside preview — inherit the theme's glass treatment, no extra border/radius */
 .preview-code pre {
   margin: 0;
-  padding: 1rem;
+  padding: 1rem 0;
   overflow-x: auto;
+  white-space: pre;
   font-size: 0.8125rem !important;
   font-weight: 200 !important;
   line-height: 1.6;
@@ -181,6 +182,17 @@
   font-weight: inherit !important;
 }
 
+/* Shiki dual-theme color switching for ComponentPreview code blocks */
+.preview-code .shiki code span {
+  color: var(--shiki-light);
+  font-style: var(--shiki-light-font-style);
+}
+
+.dark .preview-code .shiki code span {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style);
+}
+
 /* Block preview overrides — render panel inline in standalone preview */
 .configuration-panel-preview {
   position: static !important;
@@ -191,7 +203,7 @@
 /* Sphere playground preview — constrain height for inline preview */
 .sphere-playground-preview {
   width: 100%;
-  height: 500px;
+  height: 700px;
 }
 
 /* In fullscreen overlay, let it fill the viewport */

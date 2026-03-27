@@ -22,6 +22,8 @@ export interface SpherePlaygroundProps {
   defaultMode?: GeometryMode
   /** Initial color scheme. Default: "solar" */
   defaultColorScheme?: ColorScheme
+  /** Start the control panel collapsed. Default: false */
+  defaultCollapsed?: boolean
   /** Additional CSS class for the container */
   className?: string
   /** Inline style for the container */
@@ -31,6 +33,7 @@ export interface SpherePlaygroundProps {
 export function SpherePlayground({
   defaultMode = "sphere",
   defaultColorScheme = "solar",
+  defaultCollapsed = false,
   className,
   style,
 }: SpherePlaygroundProps) {
@@ -115,6 +118,7 @@ export function SpherePlayground({
         subtitle="Visual controls"
         position="bottom-left"
         draggable
+        defaultCollapsed={defaultCollapsed}
         sections={[
           {
             label: "Geometry",
