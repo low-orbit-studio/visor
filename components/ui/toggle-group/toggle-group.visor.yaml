@@ -21,7 +21,7 @@ why: >
 
 variants:
   variant: [default, outline]
-  size: [sm, md, lg]
+  size: [xs, sm, md, lg]
 
 props:
   - name: type
@@ -31,7 +31,7 @@ props:
     type: "'default' | 'outline'"
     default: "default"
   - name: size
-    type: "'sm' | 'md' | 'lg'"
+    type: "'xs' | 'sm' | 'md' | 'lg'"
     default: "md"
   - name: value
     type: "string | string[]"

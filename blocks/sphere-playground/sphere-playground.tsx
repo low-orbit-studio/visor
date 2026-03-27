@@ -125,7 +125,7 @@ export function SpherePlayground({
                   value={mode}
                   onValueChange={handleModeChange}
                   variant="outline"
-                  size="sm"
+                  size="xs"
                 >
                   <ToggleGroupItem value="sphere">Sphere</ToggleGroupItem>
                   <ToggleGroupItem value="curl">Curl</ToggleGroupItem>
@@ -218,7 +218,7 @@ export function SpherePlayground({
                   value={colorScheme}
                   onValueChange={handleColorSchemeChange}
                   variant="outline"
-                  size="sm"
+                  size="xs"
                 >
                   <ToggleGroupItem value="solar">Solar</ToggleGroupItem>
                   <ToggleGroupItem value="aqua">Aqua</ToggleGroupItem>
@@ -266,7 +266,7 @@ export function SpherePlayground({
                   value={activeEffects}
                   onValueChange={handleEffectsChange}
                   variant="outline"
-                  size="sm"
+                  size="xs"
                 >
                   <ToggleGroupItem value="pulses">Pulses</ToggleGroupItem>
                   <ToggleGroupItem value="ramp">Ramp</ToggleGroupItem>

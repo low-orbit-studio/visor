@@ -51,6 +51,49 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group/toggl
   </div>
 </ComponentPreview>
 
+## Sizes
+
+<ComponentPreview
+  title="Sizes"
+  code={`import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group/toggle-group';
+
+<ToggleGroup type="single" size="xs">
+  <ToggleGroupItem value="a">A</ToggleGroupItem>
+  <ToggleGroupItem value="b">B</ToggleGroupItem>
+</ToggleGroup>
+<ToggleGroup type="single" size="sm">
+  <ToggleGroupItem value="a">A</ToggleGroupItem>
+  <ToggleGroupItem value="b">B</ToggleGroupItem>
+</ToggleGroup>
+<ToggleGroup type="single" size="md">
+  <ToggleGroupItem value="a">A</ToggleGroupItem>
+  <ToggleGroupItem value="b">B</ToggleGroupItem>
+</ToggleGroup>
+<ToggleGroup type="single" size="lg">
+  <ToggleGroupItem value="a">A</ToggleGroupItem>
+  <ToggleGroupItem value="b">B</ToggleGroupItem>
+</ToggleGroup>`}
+>
+  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
+    <ToggleGroup type="single" size="xs">
+      <ToggleGroupItem value="a">A</ToggleGroupItem>
+      <ToggleGroupItem value="b">B</ToggleGroupItem>
+    </ToggleGroup>
+    <ToggleGroup type="single" size="sm">
+      <ToggleGroupItem value="a">A</ToggleGroupItem>
+      <ToggleGroupItem value="b">B</ToggleGroupItem>
+    </ToggleGroup>
+    <ToggleGroup type="single" size="md">
+      <ToggleGroupItem value="a">A</ToggleGroupItem>
+      <ToggleGroupItem value="b">B</ToggleGroupItem>
+    </ToggleGroup>
+    <ToggleGroup type="single" size="lg">
+      <ToggleGroupItem value="a">A</ToggleGroupItem>
+      <ToggleGroupItem value="b">B</ToggleGroupItem>
+    </ToggleGroup>
+  </div>
+</ComponentPreview>
+
 ## API Reference
 
 ### ToggleGroupProps
