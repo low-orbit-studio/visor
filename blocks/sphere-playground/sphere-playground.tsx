@@ -115,7 +115,6 @@ export function SpherePlayground({
         subtitle="Visual controls"
         position="bottom-left"
         draggable
-        defaultCollapsed
         sections={[
           {
             label: "Geometry",

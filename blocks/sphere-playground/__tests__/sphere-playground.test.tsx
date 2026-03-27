@@ -117,14 +117,6 @@ describe("SpherePlayground", () => {
     expect(container.firstChild).toHaveClass("custom")
   })
 
-  it("starts with panel collapsed", () => {
-    const { container } = render(<SpherePlayground />)
-    const contentWrapper = container.querySelector(
-      "[class*='contentWrapper']"
-    ) as HTMLElement
-    expect(contentWrapper).toHaveAttribute("data-collapsed", "true")
-  })
-
   it("renders draggable panel", () => {
     const { container } = render(<SpherePlayground />)
     expect(container.querySelector("[data-draggable='true']")).toBeInTheDocument()
