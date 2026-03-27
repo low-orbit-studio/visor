@@ -45,6 +45,6 @@
   text-align: right;
   font-variant-numeric: tabular-nums;
   font-size: 0.6875rem;
-  color: var(--text-tertiary, #6b7280);
+  color: rgba(255, 255, 255, 0.5);
   flex-shrink: 0;
 }
