@@ -148,9 +148,22 @@
   background-color: var(--border-muted, #e5e7eb);
 }
 
+/* Draggable variant */
+.root[data-draggable="true"] .header {
+  cursor: grab;
+}
+
+.root[data-dragging="true"] {
+  user-select: none;
+}
+
+.root[data-dragging="true"] .header {
+  cursor: grabbing;
+}
+
 /* Responsive — stack on mobile */
 @media (max-width: 639px) {
-  .root {
+  .root:not([data-draggable="true"]) {
     position: static;
     width: 100%;
     max-width: none;

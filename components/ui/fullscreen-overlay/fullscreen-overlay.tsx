@@ -47,8 +47,10 @@ const FullscreenOverlayContent = React.forwardRef<
   React.ComponentRef<typeof DialogPrimitive.Content>,
   React.ComponentProps<typeof DialogPrimitive.Content> & {
     className?: string
+    /** Remove all padding so content fills the entire viewport */
+    fullbleed?: boolean
   }
->(({ className, children, ...props }, ref) => {
+>(({ className, children, fullbleed, ...props }, ref) => {
   return (
     <DialogPrimitive.Portal>
       <DialogPrimitive.Overlay className={styles.overlay} />
@@ -74,7 +76,12 @@ const FullscreenOverlayContent = React.forwardRef<
           <span className={styles.srOnly}>Close</span>
         </DialogPrimitive.Close>
 
-        <div className={styles.inner}>{children}</div>
+        <div
+          className={styles.inner}
+          data-fullbleed={fullbleed ? "true" : undefined}
+        >
+          {children}
+        </div>
       </DialogPrimitive.Content>
     </DialogPrimitive.Portal>
   )

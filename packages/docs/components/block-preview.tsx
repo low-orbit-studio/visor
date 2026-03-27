@@ -56,8 +56,8 @@ export function BlockPreview({
                 Fullscreen
               </button>
             </FullscreenOverlayTrigger>
-            <FullscreenOverlayContent>
-              <div style={{ isolation: 'isolate', color: 'var(--text-primary)' }}>
+            <FullscreenOverlayContent fullbleed>
+              <div style={{ isolation: 'isolate', color: 'var(--text-primary)', width: '100%', height: '100%' }}>
                 {children}
               </div>
             </FullscreenOverlayContent>

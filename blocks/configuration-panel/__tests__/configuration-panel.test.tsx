@@ -128,6 +128,20 @@ describe("ConfigurationPanel", () => {
     ).toBeInTheDocument()
   })
 
+  it("draggable prop sets data-draggable attribute", () => {
+    const { container } = render(
+      <ConfigurationPanel sections={sampleSections} title="Test" draggable />
+    )
+    expect(container.firstChild).toHaveAttribute("data-draggable", "true")
+  })
+
+  it("draggable is not set by default", () => {
+    const { container } = render(
+      <ConfigurationPanel sections={sampleSections} />
+    )
+    expect(container.firstChild).not.toHaveAttribute("data-draggable")
+  })
+
   it("passes accessibility checks", async () => {
     const { container } = render(
       <ConfigurationPanel

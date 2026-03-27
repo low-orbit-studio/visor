@@ -1,10 +1,14 @@
 "use client"
 
-import { useRef, useState, useCallback } from "react"
+import { useRef, useState, useCallback, useMemo } from "react"
 import { cn } from "../../lib/utils"
 import { Sphere } from "../../components/visual/sphere/sphere"
 import type { SphereRef } from "../../components/visual/sphere/sphere.types"
-import type { GeometryMode, ColorScheme } from "../../components/visual/sphere/sphere.types"
+import type {
+  GeometryMode,
+  ColorScheme,
+  SphereThinkEffects,
+} from "../../components/visual/sphere/sphere.types"
 import { ConfigurationPanel } from "../configuration-panel/configuration-panel"
 import { Slider } from "../../components/ui/slider/slider"
 import {
@@ -32,14 +36,32 @@ export function SpherePlayground({
 }: SpherePlaygroundProps) {
   const sphereRef = useRef<SphereRef>(null)
 
+  // --- State matching source defaults ---
   const [mode, setMode] = useState<GeometryMode>(defaultMode)
   const [colorScheme, setColorScheme] = useState<ColorScheme>(defaultColorScheme)
-  const [dotSize, setDotSize] = useState(1.0)
-  const [speed, setSpeed] = useState(1.0)
-  const [blur, setBlur] = useState(0.5)
-  const [saturation, setSaturation] = useState(1.0)
-  const [lightness, setLightness] = useState(1.0)
+  const [scale, setScale] = useState(0.7)
+  const [waves, setWaves] = useState(1.0)
+  const [speed, setSpeed] = useState(0) // raw log value; exponential: 3^(v/3)
+  const [dotSize, setDotSize] = useState(0.4)
+  const [blur, setBlur] = useState(0.75)
+  const [saturation, setSaturation] = useState(1.8)
+  const [lightness, setLightness] = useState(0.8)
   const [thinkIntensity, setThinkIntensity] = useState(0)
+  const [thinkEffects, setThinkEffects] = useState<SphereThinkEffects>({
+    pulses: true,
+    ramp: true,
+    scatter: true,
+  })
+
+  const speedMultiplier = useMemo(() => Math.pow(3, speed / 3), [speed])
+
+  const activeEffects = useMemo(() => {
+    const values: string[] = []
+    if (thinkEffects.pulses) values.push("pulses")
+    if (thinkEffects.ramp) values.push("ramp")
+    if (thinkEffects.scatter) values.push("scatter")
+    return values
+  }, [thinkEffects])
 
   const handleModeChange = useCallback(
     (value: string) => {
@@ -61,6 +83,14 @@ export function SpherePlayground({
     [],
   )
 
+  const handleEffectsChange = useCallback((values: string[]) => {
+    setThinkEffects({
+      pulses: values.includes("pulses"),
+      ramp: values.includes("ramp"),
+      scatter: values.includes("scatter"),
+    })
+  }, [])
+
   return (
     <div className={cn(styles.container, className)} style={style}>
       <div className={styles.sphere}>
@@ -68,12 +98,15 @@ export function SpherePlayground({
           ref={sphereRef}
           mode={mode}
           colorScheme={colorScheme}
+          scale={scale}
+          waves={waves}
           dotSize={dotSize}
-          speed={speed}
+          speed={speedMultiplier}
           blur={blur}
           saturation={saturation}
           lightness={lightness}
           thinkIntensity={thinkIntensity}
+          thinkEffects={thinkEffects}
         />
       </div>
 
@@ -81,113 +114,180 @@ export function SpherePlayground({
         title="Sphere"
         subtitle="Visual controls"
         position="bottom-left"
+        draggable
+        defaultCollapsed
         sections={[
           {
             label: "Geometry",
             children: (
-              <ToggleGroup
-                type="single"
-                value={mode}
-                onValueChange={handleModeChange}
-                variant="outline"
-                size="sm"
-              >
-                <ToggleGroupItem value="sphere">Sphere</ToggleGroupItem>
-                <ToggleGroupItem value="curl">Curl</ToggleGroupItem>
-                <ToggleGroupItem value="turing">Turing</ToggleGroupItem>
-                <ToggleGroupItem value="lorenz">Lorenz</ToggleGroupItem>
-                <ToggleGroupItem value="tendrils">Tendrils</ToggleGroupItem>
-              </ToggleGroup>
-            ),
-          },
-          {
-            label: "Color",
-            children: (
-              <ToggleGroup
-                type="single"
-                value={colorScheme}
-                onValueChange={handleColorSchemeChange}
-                variant="outline"
-                size="sm"
-              >
-                <ToggleGroupItem value="solar">Solar</ToggleGroupItem>
-                <ToggleGroupItem value="aqua">Aqua</ToggleGroupItem>
-                <ToggleGroupItem value="ember">Ember</ToggleGroupItem>
-                <ToggleGroupItem value="aurora">Aurora</ToggleGroupItem>
-                <ToggleGroupItem value="ghost">Ghost</ToggleGroupItem>
-              </ToggleGroup>
+              <>
+                <ToggleGroup
+                  type="single"
+                  value={mode}
+                  onValueChange={handleModeChange}
+                  variant="outline"
+                  size="sm"
+                >
+                  <ToggleGroupItem value="sphere">Sphere</ToggleGroupItem>
+                  <ToggleGroupItem value="curl">Curl</ToggleGroupItem>
+                  <ToggleGroupItem value="turing">Turing</ToggleGroupItem>
+                  <ToggleGroupItem value="lorenz">Lorenz</ToggleGroupItem>
+                  <ToggleGroupItem value="tendrils">Tendrils</ToggleGroupItem>
+                </ToggleGroup>
+                <div className={styles.sliderRow}>
+                  <span className={styles.sliderLabel}>Size</span>
+                  <Slider
+                    value={[scale]}
+                    onValueChange={([v]) => setScale(v)}
+                    min={0.2}
+                    max={3.0}
+                    step={0.05}
+                    aria-label="Size"
+                  />
+                  <span className={styles.sliderValue}>{scale.toFixed(1)}</span>
+                </div>
+                <div className={styles.sliderRow}>
+                  <span className={styles.sliderLabel}>Waves</span>
+                  <Slider
+                    value={[waves]}
+                    onValueChange={([v]) => setWaves(v)}
+                    min={0.0}
+                    max={3.0}
+                    step={0.05}
+                    aria-label="Waves"
+                  />
+                  <span className={styles.sliderValue}>{waves.toFixed(1)}</span>
+                </div>
+                <div className={styles.sliderRow}>
+                  <span className={styles.sliderLabel}>Speed</span>
+                  <Slider
+                    value={[speed]}
+                    onValueChange={([v]) => setSpeed(v)}
+                    min={-3}
+                    max={3}
+                    step={0.1}
+                    aria-label="Speed"
+                  />
+                  <span className={styles.sliderValue}>
+                    {speedMultiplier.toFixed(1)}
+                  </span>
+                </div>
+              </>
             ),
           },
           {
             label: "Appearance",
             children: (
               <>
-                <label className={styles.sliderLabel}>
-                  Dots
+                <div className={styles.sliderRow}>
+                  <span className={styles.sliderLabel}>Dots</span>
                   <Slider
-                    value={[dotSize * 50]}
-                    onValueChange={([v]) => setDotSize(v / 50)}
-                    max={100}
-                    step={1}
+                    value={[dotSize]}
+                    onValueChange={([v]) => setDotSize(v)}
+                    min={0.3}
+                    max={3.0}
+                    step={0.05}
                     aria-label="Dot size"
                   />
-                </label>
-                <label className={styles.sliderLabel}>
-                  Speed
+                  <span className={styles.sliderValue}>
+                    {dotSize.toFixed(1)}
+                  </span>
+                </div>
+                <div className={styles.sliderRow}>
+                  <span className={styles.sliderLabel}>Blur</span>
                   <Slider
-                    value={[speed * 50]}
-                    onValueChange={([v]) => setSpeed(v / 50)}
-                    max={100}
-                    step={1}
-                    aria-label="Speed"
-                  />
-                </label>
-                <label className={styles.sliderLabel}>
-                  Blur
-                  <Slider
-                    value={[blur * 100]}
-                    onValueChange={([v]) => setBlur(v / 100)}
-                    max={100}
-                    step={1}
+                    value={[blur]}
+                    onValueChange={([v]) => setBlur(v)}
+                    min={0.0}
+                    max={1.0}
+                    step={0.01}
                     aria-label="Blur"
                   />
-                </label>
-                <label className={styles.sliderLabel}>
-                  Saturation
-                  <Slider
-                    value={[saturation * 50]}
-                    onValueChange={([v]) => setSaturation(v / 50)}
-                    max={100}
-                    step={1}
-                    aria-label="Saturation"
-                  />
-                </label>
-                <label className={styles.sliderLabel}>
-                  Lightness
-                  <Slider
-                    value={[lightness * 50]}
-                    onValueChange={([v]) => setLightness(v / 50)}
-                    max={100}
-                    step={1}
-                    aria-label="Lightness"
-                  />
-                </label>
+                  <span className={styles.sliderValue}>
+                    {blur.toFixed(2)}
+                  </span>
+                </div>
               </>
             ),
           },
           {
-            label: "Think Mode",
+            label: "Color",
             children: (
-              <label className={styles.sliderLabel}>
-                Intensity
-                <Slider
-                  value={[thinkIntensity * 100]}
-                  onValueChange={([v]) => setThinkIntensity(v / 100)}
-                  max={100}
-                  step={1}
-                  aria-label="Think intensity"
-                />
-              </label>
+              <>
+                <ToggleGroup
+                  type="single"
+                  value={colorScheme}
+                  onValueChange={handleColorSchemeChange}
+                  variant="outline"
+                  size="sm"
+                >
+                  <ToggleGroupItem value="solar">Solar</ToggleGroupItem>
+                  <ToggleGroupItem value="aqua">Aqua</ToggleGroupItem>
+                  <ToggleGroupItem value="ember">Ember</ToggleGroupItem>
+                  <ToggleGroupItem value="aurora">Aurora</ToggleGroupItem>
+                  <ToggleGroupItem value="ghost">Ghost</ToggleGroupItem>
+                </ToggleGroup>
+                <div className={styles.sliderRow}>
+                  <span className={styles.sliderLabel}>Sat</span>
+                  <Slider
+                    value={[saturation]}
+                    onValueChange={([v]) => setSaturation(v)}
+                    min={0.0}
+                    max={2.0}
+                    step={0.05}
+                    aria-label="Saturation"
+                  />
+                  <span className={styles.sliderValue}>
+                    {saturation.toFixed(1)}
+                  </span>
+                </div>
+                <div className={styles.sliderRow}>
+                  <span className={styles.sliderLabel}>Light</span>
+                  <Slider
+                    value={[lightness]}
+                    onValueChange={([v]) => setLightness(v)}
+                    min={0.3}
+                    max={2.0}
+                    step={0.05}
+                    aria-label="Lightness"
+                  />
+                  <span className={styles.sliderValue}>
+                    {lightness.toFixed(1)}
+                  </span>
+                </div>
+              </>
+            ),
+          },
+          {
+            label: "Think",
+            children: (
+              <>
+                <ToggleGroup
+                  type="multiple"
+                  value={activeEffects}
+                  onValueChange={handleEffectsChange}
+                  variant="outline"
+                  size="sm"
+                >
+                  <ToggleGroupItem value="pulses">Pulses</ToggleGroupItem>
+                  <ToggleGroupItem value="ramp">Ramp</ToggleGroupItem>
+                  <ToggleGroupItem value="scatter">Scatter</ToggleGroupItem>
+                </ToggleGroup>
+                <div className={styles.sliderRow}>
+                  <span className={styles.sliderLabel}>Intensity</span>
+                  <Slider
+                    value={[thinkIntensity]}
+                    onValueChange={([v]) => setThinkIntensity(v)}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    aria-label="Think intensity"
+                  />
+                  <span className={styles.sliderValue}>
+                    {thinkIntensity.toFixed(2)}
+                  </span>
+                </div>
+              </>
             ),
           },
         ]}

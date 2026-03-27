@@ -69,9 +69,9 @@ describe("SpherePlayground", () => {
       screen.getByRole("region", { name: "Sphere" })
     ).toBeInTheDocument()
     expect(screen.getByText("Geometry")).toBeInTheDocument()
-    expect(screen.getByText("Color")).toBeInTheDocument()
     expect(screen.getByText("Appearance")).toBeInTheDocument()
-    expect(screen.getByText("Think Mode")).toBeInTheDocument()
+    expect(screen.getByText("Color")).toBeInTheDocument()
+    expect(screen.getByText("Think")).toBeInTheDocument()
   })
 
   it("renders geometry mode toggle options", () => {
@@ -93,23 +93,41 @@ describe("SpherePlayground", () => {
     expect(screen.getByText("Ghost")).toBeInTheDocument()
   })
 
-  it("renders appearance sliders", () => {
+  it("renders all sliders", () => {
     render(<SpherePlayground />)
-    expect(screen.getByRole("slider", { name: "Dot size" })).toBeInTheDocument()
+    expect(screen.getByRole("slider", { name: "Size" })).toBeInTheDocument()
+    expect(screen.getByRole("slider", { name: "Waves" })).toBeInTheDocument()
     expect(screen.getByRole("slider", { name: "Speed" })).toBeInTheDocument()
+    expect(screen.getByRole("slider", { name: "Dot size" })).toBeInTheDocument()
     expect(screen.getByRole("slider", { name: "Blur" })).toBeInTheDocument()
     expect(screen.getByRole("slider", { name: "Saturation" })).toBeInTheDocument()
     expect(screen.getByRole("slider", { name: "Lightness" })).toBeInTheDocument()
+    expect(screen.getByRole("slider", { name: "Think intensity" })).toBeInTheDocument()
   })
 
-  it("renders think mode slider", () => {
+  it("renders think effect toggle options", () => {
     render(<SpherePlayground />)
-    expect(screen.getByRole("slider", { name: "Think intensity" })).toBeInTheDocument()
+    expect(screen.getByText("Pulses")).toBeInTheDocument()
+    expect(screen.getByText("Ramp")).toBeInTheDocument()
+    expect(screen.getByText("Scatter")).toBeInTheDocument()
   })
 
   it("accepts className prop", () => {
     const { container } = render(<SpherePlayground className="custom" />)
     expect(container.firstChild).toHaveClass("custom")
+  })
+
+  it("starts with panel collapsed", () => {
+    const { container } = render(<SpherePlayground />)
+    const contentWrapper = container.querySelector(
+      "[class*='contentWrapper']"
+    ) as HTMLElement
+    expect(contentWrapper).toHaveAttribute("data-collapsed", "true")
+  })
+
+  it("renders draggable panel", () => {
+    const { container } = render(<SpherePlayground />)
+    expect(container.querySelector("[data-draggable='true']")).toBeInTheDocument()
   })
 
   // Note: a11y check skipped — axe-core requires canvas getContext which
