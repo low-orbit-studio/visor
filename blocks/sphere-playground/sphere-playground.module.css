@@ -19,6 +19,11 @@
   gap: var(--spacing-3, 0.75rem);
 }
 
+.sliderRow [data-slot="slider"] {
+  flex: 1;
+  min-width: 0;
+}
+
 .sliderLabel {
   min-width: 3.25rem;
   text-transform: uppercase;

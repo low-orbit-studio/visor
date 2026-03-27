@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useCallback, useEffect } from "react"
+import { useState, useRef, useCallback } from "react"
 import { CaretDown } from "@phosphor-icons/react"
 import { Separator } from "../../components/ui/separator/separator"
 import { cn } from "../../lib/utils"
@@ -77,14 +77,6 @@ export function ConfigurationPanel({
     setDragging(false)
   }, [])
 
-  // Prevent orbit controls and other parent handlers from capturing panel interactions
-  useEffect(() => {
-    const el = rootRef.current
-    if (!el) return
-    const stop = (e: PointerEvent) => e.stopPropagation()
-    el.addEventListener("pointerdown", stop)
-    return () => el.removeEventListener("pointerdown", stop)
-  }, [])
 
   const dragStyle = draggable
     ? { transform: `translate(${offset.x}px, ${offset.y}px)` }
