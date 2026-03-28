@@ -36,11 +36,12 @@ vi.mock("three", () => ({
   })),
   BufferAttribute: vi.fn(),
   ShaderMaterial: vi.fn(() => ({
-    uniforms: new Proxy({}, {
-      get: (_t, prop) => {
+    uniforms: new Proxy({} as Record<string, { value: unknown }>, {
+      get: (_t: Record<string, { value: unknown }>, prop: string | symbol) => {
         if (prop === "then") return undefined
-        _t[prop] = _t[prop] ?? { value: 0 }
-        return _t[prop]
+        const key = prop as string
+        _t[key] = _t[key] ?? { value: 0 }
+        return _t[key]
       },
     }),
     dispose: vi.fn(),
