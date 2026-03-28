@@ -1,0 +1,14 @@
+name: Login Form
+description: A login form block using Visor form components (Button, Input, Label, Card).
+category: authentication
+components_used:
+  - button
+  - input
+  - label
+  - card
+when_to_use:
+  - Authentication pages
+  - Sign-in screens
+  - Demo login flows
+when_not_to_use:
+  - Registration forms (extend with additional fields)

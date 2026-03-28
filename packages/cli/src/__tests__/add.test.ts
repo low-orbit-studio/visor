@@ -52,19 +52,19 @@ vi.mock("../registry/resolve.js", async (importOriginal) => {
           ],
         },
         {
-          name: "login-form-placeholder",
+          name: "login-form",
           type: "registry:block",
           category: "authentication",
           dependencies: ["@loworbitstudio/visor-core"],
           registryDependencies: ["utils"],
           files: [
             {
-              path: "blocks/login-form-placeholder/login-form-placeholder.tsx",
+              path: "blocks/login-form/login-form.tsx",
               type: "registry:block",
-              content: 'export function LoginFormPlaceholder() { return <div /> }',
+              content: 'export function LoginForm() { return <div /> }',
             },
             {
-              path: "blocks/login-form-placeholder/login-form-placeholder.module.css",
+              path: "blocks/login-form/login-form.module.css",
               type: "registry:block",
               content: ".root { display: flex; }",
             },
@@ -174,32 +174,32 @@ describe("add command", () => {
   })
 
   it("writes block files to the blocks path with --block flag", () => {
-    addCommand(["login-form-placeholder"], testDir, { block: true })
+    addCommand(["login-form"], testDir, { block: true })
 
     expect(
       existsSync(
-        join(testDir, "blocks/login-form-placeholder/login-form-placeholder.tsx")
+        join(testDir, "blocks/login-form/login-form.tsx")
       )
     ).toBe(true)
     expect(
       existsSync(
-        join(testDir, "blocks/login-form-placeholder/login-form-placeholder.module.css")
+        join(testDir, "blocks/login-form/login-form.module.css")
       )
     ).toBe(true)
   })
 
   it("writes correct block file contents", () => {
-    addCommand(["login-form-placeholder"], testDir, { block: true })
+    addCommand(["login-form"], testDir, { block: true })
 
     const content = readFileSync(
-      join(testDir, "blocks/login-form-placeholder/login-form-placeholder.tsx"),
+      join(testDir, "blocks/login-form/login-form.tsx"),
       "utf-8"
     )
-    expect(content).toContain("LoginFormPlaceholder")
+    expect(content).toContain("LoginForm")
   })
 
   it("resolves block registry dependencies", () => {
-    addCommand(["login-form-placeholder"], testDir, { block: true })
+    addCommand(["login-form"], testDir, { block: true })
 
     // utils should be written as a transitive dep
     expect(existsSync(join(testDir, "lib/utils.ts"))).toBe(true)

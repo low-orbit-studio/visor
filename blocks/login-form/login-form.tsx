@@ -5,15 +5,15 @@ import { Button } from "../../components/ui/button/button"
 import { Input } from "../../components/ui/input/input"
 import { Label } from "../../components/ui/label/label"
 import { Card } from "../../components/ui/card/card"
-import styles from "./login-form-placeholder.module.css"
+import styles from "./login-form.module.css"
 
-interface LoginFormPlaceholderProps {
+interface LoginFormProps {
   className?: string
 }
 
-export function LoginFormPlaceholder({
+export function LoginForm({
   className,
-}: LoginFormPlaceholderProps) {
+}: LoginFormProps) {
   return (
     <Card className={cn(styles.root, className)}>
       <div className={styles.header}>
