@@ -129,9 +129,9 @@
 }
 
 p.preview-title {
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: var(--text-primary, #111827);
-  font-weight: 700;
+  font-weight: 600;
   margin: 0;
 }
 
@@ -221,7 +221,7 @@ p.preview-title {
 
 .blackout-theme p.preview-title {
   color: #ffffff;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .blackout-theme .preview-toggle,
