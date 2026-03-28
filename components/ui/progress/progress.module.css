@@ -16,5 +16,5 @@
   height: 100%;
   flex: 1;
   background-color: var(--interactive-primary-bg, #111827);
-  transition: transform 0.3s ease;
+  transition: transform var(--motion-duration-300, 300ms) var(--motion-easing-default, ease-in-out);
 }

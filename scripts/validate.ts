@@ -6,6 +6,16 @@ import { cssModuleTypesSync } from './rules/css-module-types-sync.js';
 import { tokenFallbackGray } from './rules/token-fallback-gray.js';
 import { noInlineShadows } from './rules/no-inline-shadows.js';
 import { spacingGrid } from './rules/spacing-grid.js';
+import { noHardcodedMotion } from './rules/no-hardcoded-motion.js';
+import { noHardcodedOverlay } from './rules/no-hardcoded-overlay.js';
+import { focusRingTokens } from './rules/focus-ring-tokens.js';
+import { themeStructure } from './rules/theme-structure.js';
+import { noHardcodedColors } from './rules/no-hardcoded-colors.js';
+import { visorYamlExists } from './rules/visor-yaml-exists.js';
+import { visorYamlComplete } from './rules/visor-yaml-complete.js';
+import { testFileExists } from './rules/test-file-exists.js';
+import { cssModuleExists } from './rules/css-module-exists.js';
+import { registryEntryExists } from './rules/registry-entry-exists.js';
 import { docsHasPreview } from './rules/docs-has-preview.js';
 import { docsHasPropsTable } from './rules/docs-has-props-table.js';
 import { docsHasInstallCommand } from './rules/docs-has-install-command.js';
@@ -22,6 +32,16 @@ const rules: Rule[] = [
   tokenFallbackGray,
   noInlineShadows,
   spacingGrid,
+  noHardcodedMotion,
+  noHardcodedOverlay,
+  focusRingTokens,
+  themeStructure,
+  noHardcodedColors,
+  visorYamlExists,
+  visorYamlComplete,
+  testFileExists,
+  cssModuleExists,
+  registryEntryExists,
   docsHasPreview,
   docsHasPropsTable,
   docsHasInstallCommand,

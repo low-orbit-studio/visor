@@ -58,7 +58,7 @@
 .skeleton {
   position: absolute;
   inset: 0;
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: pulse var(--motion-duration-800, 800ms) var(--motion-easing-default, ease-in-out) infinite;
   background-color: var(--surface-muted, #f3f4f6);
 }
 
