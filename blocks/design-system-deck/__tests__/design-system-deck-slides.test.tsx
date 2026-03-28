@@ -2,8 +2,13 @@ import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { DesignSystemDeck } from "../design-system-deck"
 import { designSystemDeckRegistry } from "../registry"
-import { ColorPaletteSlide } from "../slides/color-palette-slide"
-import { TypographySlide } from "../slides/typography-slide"
+import { TitleSlide } from "../slides/title-slide"
+import { GrayScaleSlide } from "../slides/gray-scale-slide"
+import { AccentPaletteSlide } from "../slides/accent-palette-slide"
+import { SemanticTokensSlide } from "../slides/semantic-tokens-slide"
+import { TypeDisplaySlide } from "../slides/type-display-slide"
+import { TypeBodySlide } from "../slides/type-body-slide"
+import { ThemeArchitectureSlide } from "../slides/theme-architecture-slide"
 import { SpacingSlide } from "../slides/spacing-slide"
 import { ElevationSlide } from "../slides/elevation-slide"
 import { RadiusSlide } from "../slides/radius-slide"
@@ -14,18 +19,19 @@ import { AccessibilitySlide } from "../slides/accessibility-slide"
 import { ButtonSpecimenSlide } from "../slides/button-specimen-slide"
 import { FormSpecimenSlide } from "../slides/form-specimen-slide"
 import { ComponentShowcaseSlide } from "../slides/component-showcase-slide"
+import { ClosingSlide } from "../slides/closing-slide"
 
 describe("Design System Deck Slides", () => {
   // ─── Registry ───────────────────────────────────────────────────────────────
 
   describe("registry", () => {
-    it("has 12 slides", () => {
-      expect(designSystemDeckRegistry.slides).toHaveLength(12)
+    it("has 17 slides", () => {
+      expect(designSystemDeckRegistry.slides).toHaveLength(17)
     })
 
     it("has all expected sections", () => {
       const sections = [...new Set(designSystemDeckRegistry.slides.map((s) => s.section))]
-      expect(sections).toEqual(["Foundation", "Visual Language", "Utility", "Components"])
+      expect(sections).toEqual(["_title", "Foundation", "Visual Language", "Utility", "Components", "_closing"])
     })
 
     it("each slide has unique id", () => {
@@ -42,20 +48,61 @@ describe("Design System Deck Slides", () => {
 
   // ─── Individual Slides ──────────────────────────────────────────────────────
 
-  describe("ColorPaletteSlide", () => {
-    it("renders color scale labels", () => {
-      render(<ColorPaletteSlide />)
-      expect(screen.getByText("Gray")).toBeInTheDocument()
-      expect(screen.getByText("Blue")).toBeInTheDocument()
-      expect(screen.getByText("Semantic Colors")).toBeInTheDocument()
+  describe("TitleSlide", () => {
+    it("renders deck identity", () => {
+      render(<TitleSlide />)
+      expect(screen.getByText("Visor")).toBeInTheDocument()
+      expect(screen.getByText("Design System")).toBeInTheDocument()
     })
   })
 
-  describe("TypographySlide", () => {
-    it("renders type specimens", () => {
-      render(<TypographySlide />)
+  describe("GrayScaleSlide", () => {
+    it("renders gray scale label", () => {
+      render(<GrayScaleSlide />)
+      expect(screen.getByText("Gray")).toBeInTheDocument()
+    })
+  })
+
+  describe("AccentPaletteSlide", () => {
+    it("renders accent scale names", () => {
+      render(<AccentPaletteSlide />)
+      expect(screen.getAllByText("Blue").length).toBeGreaterThan(0)
+      expect(screen.getAllByText("Green").length).toBeGreaterThan(0)
+      expect(screen.getAllByText("Red").length).toBeGreaterThan(0)
+    })
+  })
+
+  describe("SemanticTokensSlide", () => {
+    it("renders semantic categories", () => {
+      render(<SemanticTokensSlide />)
+      expect(screen.getAllByText("Text").length).toBeGreaterThan(0)
+      expect(screen.getAllByText("Surface").length).toBeGreaterThan(0)
+      expect(screen.getAllByText("Border").length).toBeGreaterThan(0)
+    })
+  })
+
+  describe("TypeDisplaySlide", () => {
+    it("renders display type specimens", () => {
+      render(<TypeDisplaySlide />)
       expect(screen.getByText("Display text")).toBeInTheDocument()
-      expect(screen.getByText("Fine print and metadata")).toBeInTheDocument()
+      expect(screen.getByText("Section heading")).toBeInTheDocument()
+    })
+  })
+
+  describe("TypeBodySlide", () => {
+    it("renders body type specimens", () => {
+      render(<TypeBodySlide />)
+      expect(screen.getByText(/Default body text/)).toBeInTheDocument()
+      expect(screen.getByText(/Fine print/)).toBeInTheDocument()
+    })
+  })
+
+  describe("ThemeArchitectureSlide", () => {
+    it("renders theme layers", () => {
+      render(<ThemeArchitectureSlide />)
+      expect(screen.getByText("Primitives")).toBeInTheDocument()
+      expect(screen.getByText("Semantic")).toBeInTheDocument()
+      expect(screen.getByText("Adaptive")).toBeInTheDocument()
     })
   })
 
@@ -125,21 +172,14 @@ describe("Design System Deck Slides", () => {
       expect(screen.getByRole("button", { name: "ghost" })).toBeInTheDocument()
       expect(screen.getByRole("button", { name: "destructive" })).toBeInTheDocument()
     })
-
-    it("renders force-state wrappers", () => {
-      const { container } = render(<ButtonSpecimenSlide />)
-      expect(container.querySelector("[data-force-state='hover']")).toBeInTheDocument()
-      expect(container.querySelector("[data-force-state='active']")).toBeInTheDocument()
-      expect(container.querySelector("[data-force-state='focus']")).toBeInTheDocument()
-    })
   })
 
   describe("FormSpecimenSlide", () => {
-    it("renders form controls", () => {
+    it("renders curated form controls", () => {
       render(<FormSpecimenSlide />)
-      expect(screen.getByLabelText("Default", { selector: "input" })).toBeInTheDocument()
-      expect(screen.getByLabelText("Unchecked")).toBeInTheDocument()
-      expect(screen.getByLabelText("Option 1")).toBeInTheDocument()
+      expect(screen.getByText("Text Input")).toBeInTheDocument()
+      expect(screen.getByText("Switch")).toBeInTheDocument()
+      expect(screen.getByText("Checkbox")).toBeInTheDocument()
     })
   })
 
@@ -148,6 +188,13 @@ describe("Design System Deck Slides", () => {
       render(<ComponentShowcaseSlide />)
       expect(screen.getByText("Card Title")).toBeInTheDocument()
       expect(screen.getByText("Overview content goes here.")).toBeInTheDocument()
+    })
+  })
+
+  describe("ClosingSlide", () => {
+    it("renders closing content", () => {
+      render(<ClosingSlide />)
+      expect(screen.getByText("Start Building")).toBeInTheDocument()
     })
   })
 
@@ -172,11 +219,11 @@ describe("DesignSystemDeck", () => {
     expect(container.querySelector("[data-slot='deck-renderer']")).toBeInTheDocument()
   })
 
-  it("renders all 12 slide components", () => {
+  it("renders all 17 slide components", () => {
     const { container } = render(<DesignSystemDeck />)
     const slides = container.querySelectorAll("[data-slot='slide']")
-    // 12 content slides + TOC slide (showTOC defaults to true)
-    expect(slides.length).toBeGreaterThanOrEqual(12)
+    // 17 content slides + TOC slide (showTOC defaults to true)
+    expect(slides.length).toBeGreaterThanOrEqual(17)
   })
 
   it("includes TOC slide by default", () => {

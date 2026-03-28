@@ -17,11 +17,9 @@ components_used:
   - separator
   - slide
   - slide-header
-  - slider
   - switch
   - tabs
   - text
-  - textarea
   - toggle-group
 when_to_use:
   - Presenting a design system as a navigable deck

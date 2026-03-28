@@ -15,7 +15,7 @@ export function ButtonSpecimenSlide() {
       <SlideHeader
         subtitle="Components"
         title="Buttons"
-        description="All button variants, sizes, and interactive states."
+        description="Five variants across three sizes. All variants inherit theme tokens automatically."
       />
 
       <div className={styles.content}>
@@ -42,28 +42,11 @@ export function ButtonSpecimenSlide() {
         </div>
 
         <div className={styles.buttonSubsection}>
-          <Text weight="medium" size="sm" as="div">States</Text>
-          <div className={styles.forceStateGrid}>
-            <div className={styles.forceStateItem}>
-              <Text size="xs" color="secondary" as="div">Default</Text>
-              <Button>Button</Button>
-            </div>
-            <div className={styles.forceStateItem} data-force-state="hover">
-              <Text size="xs" color="secondary" as="div">Hover</Text>
-              <Button className={styles.forceHoverButton}>Button</Button>
-            </div>
-            <div className={styles.forceStateItem} data-force-state="active">
-              <Text size="xs" color="secondary" as="div">Active</Text>
-              <Button className={styles.forceActiveButton}>Button</Button>
-            </div>
-            <div className={styles.forceStateItem} data-force-state="focus">
-              <Text size="xs" color="secondary" as="div">Focus</Text>
-              <Button className={styles.forceFocusButton}>Button</Button>
-            </div>
-            <div className={styles.forceStateItem}>
-              <Text size="xs" color="secondary" as="div">Disabled</Text>
-              <Button disabled>Button</Button>
-            </div>
+          <Text weight="medium" size="sm" as="div">Disabled</Text>
+          <div className={styles.buttonRow}>
+            <Button disabled>Disabled</Button>
+            <Button variant="secondary" disabled>Disabled</Button>
+            <Button variant="outline" disabled>Disabled</Button>
           </div>
         </div>
       </div>
