@@ -20,7 +20,13 @@
 }
 
 .panel [data-slot="toggle-group"] {
+  width: 100%;
   gap: var(--spacing-1, 0.25rem);
+}
+
+.panel [data-slot="toggle-group"] button {
+  flex: 1;
+  justify-content: center;
 }
 
 .panel [data-slot="slider-control-value"] {
