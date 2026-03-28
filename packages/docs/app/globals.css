@@ -128,7 +128,7 @@
   border-top: 1px solid var(--border-default, #e5e7eb);
 }
 
-.preview-title {
+p.preview-title {
   font-size: 0.875rem;
   color: var(--text-primary, #111827);
   font-weight: 700;
@@ -219,8 +219,9 @@
   border-top-color: rgba(255, 255, 255, 0.06);
 }
 
-.blackout-theme .preview-title {
+.blackout-theme p.preview-title {
   color: #ffffff;
+  font-weight: 700;
 }
 
 .blackout-theme .preview-toggle,
