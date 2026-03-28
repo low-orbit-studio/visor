@@ -57,7 +57,10 @@
   border-top: none;
 }
 
-.preview-container[data-fullscreen="true"] .preview-footer .preview-title,
+.preview-container[data-fullscreen="true"] .preview-footer .preview-title {
+  color: rgba(255, 255, 255, 0.4);
+}
+
 .preview-container[data-fullscreen="true"] .preview-footer .preview-toggle,
 .preview-container[data-fullscreen="true"] .preview-footer .preview-copy {
   color: rgba(255, 255, 255, 0.7);
