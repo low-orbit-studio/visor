@@ -30,8 +30,15 @@ vi.mock("three", () => ({
   })),
   BufferAttribute: vi.fn(),
   ShaderMaterial: vi.fn(() => ({
-    uniforms: {},
+    uniforms: new Proxy({}, {
+      get: (_t, prop) => {
+        if (prop === "then") return undefined
+        _t[prop] = _t[prop] ?? { value: 0 }
+        return _t[prop]
+      },
+    }),
     dispose: vi.fn(),
+    needsUpdate: false,
   })),
   Points: vi.fn(() => ({})),
   Color: vi.fn(() => ({ setRGB: vi.fn() })),
