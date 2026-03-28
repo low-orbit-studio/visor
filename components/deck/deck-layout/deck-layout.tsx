@@ -82,8 +82,8 @@ export function DeckLayout({
     setCurrentIndex: updateCurrentIndex,
   })
 
-  useKeyboardNav({ goTo, currentIndexRef, totalSectionsRef })
-  useWheelNav({ goTo, currentIndexRef })
+  useKeyboardNav({ containerRef, goTo, currentIndexRef, totalSectionsRef })
+  useWheelNav({ containerRef, goTo, currentIndexRef })
 
   const deckValue = useMemo(() => ({ goTo, navigateTo }), [goTo, navigateTo])
 
@@ -101,6 +101,8 @@ export function DeckLayout({
         ref={containerRef}
         data-slot="deck-layout"
         className={cn(styles.container, className)}
+        tabIndex={0}
+        style={{ outline: 'none' }}
       >
         {children}
       </div>
