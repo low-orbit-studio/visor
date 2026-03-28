@@ -6,7 +6,7 @@ category: visual-elements
 components_used:
   - sphere
   - configuration-panel
-  - slider
+  - slider-control
   - toggle-group
 when_to_use:
   - Showcasing the Sphere component with interactive controls
@@ -46,5 +46,5 @@ registryDependencies:
   - utils
   - sphere
   - configuration-panel
-  - slider
+  - slider-control
   - toggle-group

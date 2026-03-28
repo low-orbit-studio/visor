@@ -760,6 +760,24 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "slider-control",
+    type: "registry:ui",
+    description:
+      "A labeled slider with inline value display, composing Slider with a label and formatted output.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "slider"],
+    files: [
+      {
+        path: "components/ui/slider-control/slider-control.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/slider-control/slider-control.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "toggle-group",
     type: "registry:ui",
     description:

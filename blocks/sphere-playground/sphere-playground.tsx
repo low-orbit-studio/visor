@@ -10,7 +10,7 @@ import type {
   SphereThinkEffects,
 } from "../../components/visual/sphere/sphere.types"
 import { ConfigurationPanel } from "../configuration-panel/configuration-panel"
-import { Slider } from "../../components/ui/slider/slider"
+import { SliderControl } from "../../components/ui/slider-control/slider-control"
 import {
   ToggleGroup,
   ToggleGroupItem,
@@ -138,44 +138,33 @@ export function SpherePlayground({
                   <ToggleGroupItem value="lorenz">Lorenz</ToggleGroupItem>
                   <ToggleGroupItem value="tendrils">Tendrils</ToggleGroupItem>
                 </ToggleGroup>
-                <div className={styles.sliderRow}>
-                  <span className={styles.sliderLabel}>Size</span>
-                  <Slider
-                    value={[scale]}
-                    onValueChange={([v]) => setScale(v)}
-                    min={0.2}
-                    max={3.0}
-                    step={0.05}
-                    aria-label="Size"
-                  />
-                  <span className={styles.sliderValue}>{scale.toFixed(1)}</span>
-                </div>
-                <div className={styles.sliderRow}>
-                  <span className={styles.sliderLabel}>Waves</span>
-                  <Slider
-                    value={[waves]}
-                    onValueChange={([v]) => setWaves(v)}
-                    min={0.0}
-                    max={3.0}
-                    step={0.05}
-                    aria-label="Waves"
-                  />
-                  <span className={styles.sliderValue}>{waves.toFixed(1)}</span>
-                </div>
-                <div className={styles.sliderRow}>
-                  <span className={styles.sliderLabel}>Speed</span>
-                  <Slider
-                    value={[speed]}
-                    onValueChange={([v]) => setSpeed(v)}
-                    min={-3}
-                    max={3}
-                    step={0.1}
-                    aria-label="Speed"
-                  />
-                  <span className={styles.sliderValue}>
-                    {speedMultiplier.toFixed(1)}
-                  </span>
-                </div>
+                <SliderControl
+                  label="Size"
+                  value={scale}
+                  onValueChange={setScale}
+                  displayValue={scale.toFixed(1)}
+                  min={0.2}
+                  max={3.0}
+                  step={0.05}
+                />
+                <SliderControl
+                  label="Waves"
+                  value={waves}
+                  onValueChange={setWaves}
+                  displayValue={waves.toFixed(1)}
+                  min={0.0}
+                  max={3.0}
+                  step={0.05}
+                />
+                <SliderControl
+                  label="Speed"
+                  value={speed}
+                  onValueChange={setSpeed}
+                  displayValue={speedMultiplier.toFixed(1)}
+                  min={-3}
+                  max={3}
+                  step={0.1}
+                />
               </>
             ),
           },
@@ -183,34 +172,25 @@ export function SpherePlayground({
             label: "Appearance",
             children: (
               <>
-                <div className={styles.sliderRow}>
-                  <span className={styles.sliderLabel}>Dots</span>
-                  <Slider
-                    value={[dotSize]}
-                    onValueChange={([v]) => setDotSize(v)}
-                    min={0.3}
-                    max={3.0}
-                    step={0.05}
-                    aria-label="Dot size"
-                  />
-                  <span className={styles.sliderValue}>
-                    {dotSize.toFixed(1)}
-                  </span>
-                </div>
-                <div className={styles.sliderRow}>
-                  <span className={styles.sliderLabel}>Blur</span>
-                  <Slider
-                    value={[blur]}
-                    onValueChange={([v]) => setBlur(v)}
-                    min={0.0}
-                    max={1.0}
-                    step={0.01}
-                    aria-label="Blur"
-                  />
-                  <span className={styles.sliderValue}>
-                    {blur.toFixed(2)}
-                  </span>
-                </div>
+                <SliderControl
+                  label="Dots"
+                  value={dotSize}
+                  onValueChange={setDotSize}
+                  displayValue={dotSize.toFixed(1)}
+                  min={0.3}
+                  max={3.0}
+                  step={0.05}
+                  aria-label="Dot size"
+                />
+                <SliderControl
+                  label="Blur"
+                  value={blur}
+                  onValueChange={setBlur}
+                  displayValue={blur.toFixed(2)}
+                  min={0.0}
+                  max={1.0}
+                  step={0.01}
+                />
               </>
             ),
           },
@@ -231,34 +211,26 @@ export function SpherePlayground({
                   <ToggleGroupItem value="aurora">Aurora</ToggleGroupItem>
                   <ToggleGroupItem value="ghost">Ghost</ToggleGroupItem>
                 </ToggleGroup>
-                <div className={styles.sliderRow}>
-                  <span className={styles.sliderLabel}>Sat</span>
-                  <Slider
-                    value={[saturation]}
-                    onValueChange={([v]) => setSaturation(v)}
-                    min={0.0}
-                    max={2.0}
-                    step={0.05}
-                    aria-label="Saturation"
-                  />
-                  <span className={styles.sliderValue}>
-                    {saturation.toFixed(1)}
-                  </span>
-                </div>
-                <div className={styles.sliderRow}>
-                  <span className={styles.sliderLabel}>Light</span>
-                  <Slider
-                    value={[lightness]}
-                    onValueChange={([v]) => setLightness(v)}
-                    min={0.3}
-                    max={2.0}
-                    step={0.05}
-                    aria-label="Lightness"
-                  />
-                  <span className={styles.sliderValue}>
-                    {lightness.toFixed(1)}
-                  </span>
-                </div>
+                <SliderControl
+                  label="Sat"
+                  value={saturation}
+                  onValueChange={setSaturation}
+                  displayValue={saturation.toFixed(1)}
+                  min={0.0}
+                  max={2.0}
+                  step={0.05}
+                  aria-label="Saturation"
+                />
+                <SliderControl
+                  label="Light"
+                  value={lightness}
+                  onValueChange={setLightness}
+                  displayValue={lightness.toFixed(1)}
+                  min={0.3}
+                  max={2.0}
+                  step={0.05}
+                  aria-label="Lightness"
+                />
               </>
             ),
           },
@@ -277,20 +249,16 @@ export function SpherePlayground({
                   <ToggleGroupItem value="ramp">Ramp</ToggleGroupItem>
                   <ToggleGroupItem value="scatter">Scatter</ToggleGroupItem>
                 </ToggleGroup>
-                <div className={styles.sliderRow}>
-                  <span className={styles.sliderLabel}>Intensity</span>
-                  <Slider
-                    value={[thinkIntensity]}
-                    onValueChange={([v]) => setThinkIntensity(v)}
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    aria-label="Think intensity"
-                  />
-                  <span className={styles.sliderValue}>
-                    {thinkIntensity.toFixed(2)}
-                  </span>
-                </div>
+                <SliderControl
+                  label="Intensity"
+                  value={thinkIntensity}
+                  onValueChange={setThinkIntensity}
+                  displayValue={thinkIntensity.toFixed(2)}
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  aria-label="Think intensity"
+                />
               </>
             ),
           },

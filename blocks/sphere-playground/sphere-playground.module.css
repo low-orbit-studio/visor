@@ -23,32 +23,6 @@
   gap: var(--spacing-1, 0.25rem);
 }
 
-.sliderRow {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-3, 0.75rem);
-}
-
-.sliderRow [data-slot="slider"] {
-  flex: 1;
-  min-width: 0;
-}
-
-.sliderLabel {
-  min-width: 3.25rem;
-  text-transform: uppercase;
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  color: var(--text-secondary, #9ca3af);
-  flex-shrink: 0;
-}
-
-.sliderValue {
-  min-width: 2rem;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  font-size: 0.6875rem;
+.panel [data-slot="slider-control-value"] {
   color: rgba(255, 255, 255, 0.5);
-  flex-shrink: 0;
 }
