@@ -7,6 +7,8 @@ import { themeApplyCommand } from "./commands/theme-apply.js"
 import type { ThemeApplyOptions } from "./commands/theme-apply.js"
 import { themeExportCommand } from "./commands/theme-export.js"
 import { themeValidateCommand } from "./commands/theme-validate.js"
+import { themeExtractCommand } from "./commands/theme-extract.js"
+import type { ThemeExtractOptions } from "./commands/theme-extract.js"
 
 const program = new Command()
 
@@ -106,6 +108,24 @@ theme
   .action(
     (file: string, options: { json?: boolean }) => {
       themeValidateCommand(file, process.cwd(), options)
+    }
+  )
+
+theme
+  .command("extract")
+  .description(
+    "Scan an existing project's CSS and produce a best-effort .visor.yaml theme file"
+  )
+  .option("--from <path>", "path to project directory to scan")
+  .option("--json", "output structured JSON (for AI agents)")
+  .option("-o, --output <path>", "output file path (default: .visor.yaml)")
+  .option("--validate", "run validator on the extracted theme")
+  .action(
+    (options: { from?: string; json?: boolean; output?: string; validate?: boolean }) => {
+      themeExtractCommand(process.cwd(), {
+        ...options,
+        runValidation: options.validate,
+      })
     }
   )
 

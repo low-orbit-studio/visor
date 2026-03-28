@@ -97,7 +97,7 @@ See [interchange-format.md](./interchange-format.md) for the format spec and ada
 Extract design systems from existing projects into `.visor.yaml` themes. Both a deterministic CLI tool and an AI-powered Claude Code skill. The docs site theme switcher from Phase 1a enables visual verification of extracted themes.
 
 **Key work:**
-- CLI: `npx visor theme extract [--from <path>] [--json]` — deterministic static analysis
+- [x] CLI: `npx visor theme extract [--from <path>] [--json]` — deterministic static analysis
   - Scan targets: CSS custom properties, globals.css, CSS module files, tailwind config, package.json
   - Output: best-effort `.visor.yaml` with confidence annotations (high/medium/low per mapped token)
   - Ambiguous mappings flagged for human/AI review
