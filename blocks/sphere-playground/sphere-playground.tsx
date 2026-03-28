@@ -49,7 +49,7 @@ export function SpherePlayground({
   const [waves, setWaves] = useState(1.0)
   const [speed, setSpeed] = useState(0) // raw log value; exponential: 3^(v/3)
   const [particleCount, setParticleCount] = useState(128000)
-  const [sparkleChance, setSparkleChance] = useState(0.03)
+  const [sparkleChance, setSparkleChance] = useState(0.02)
   const [saturation, setSaturation] = useState(1.8)
   const [lightness, setLightness] = useState(0.8)
   const [thinkIntensity, setThinkIntensity] = useState(0)
@@ -226,8 +226,8 @@ export function SpherePlayground({
                   onValueChange={setSparkleChance}
                   displayValue={`${Math.round(sparkleChance * 100)}%`}
                   min={0}
-                  max={0.5}
-                  step={0.01}
+                  max={0.1}
+                  step={0.005}
                   aria-label="Sparkle chance"
                 />
               </>
