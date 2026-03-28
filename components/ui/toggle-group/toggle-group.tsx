@@ -15,6 +15,59 @@ type ToggleGroupContextValue = {
 
 const ToggleGroupContext = React.createContext<ToggleGroupContextValue>({})
 
+/* ─── Sliding indicator hook ────────────────────────────────────────── */
+
+function useSlidingIndicator(
+  rootRef: React.RefObject<HTMLElement | null>,
+  variant: string | null | undefined,
+) {
+  const indicatorRef = React.useRef<HTMLSpanElement>(null)
+
+  const updateIndicator = React.useCallback(() => {
+    const root = rootRef.current
+    const indicator = indicatorRef.current
+    if (!root || !indicator || variant !== "outline") return
+
+    const activeItem = root.querySelector(
+      '[data-state="on"]',
+    ) as HTMLElement | null
+
+    if (!activeItem) {
+      indicator.style.opacity = "0"
+      return
+    }
+
+    const rootRect = root.getBoundingClientRect()
+    const itemRect = activeItem.getBoundingClientRect()
+
+    indicator.style.opacity = "1"
+    indicator.style.width = `${itemRect.width}px`
+    indicator.style.height = `${itemRect.height}px`
+    indicator.style.transform = `translate(${itemRect.left - rootRect.left}px, ${itemRect.top - rootRect.top}px)`
+  }, [rootRef, variant])
+
+  // Update on mount and whenever children change state
+  React.useEffect(() => {
+    const root = rootRef.current
+    if (!root || variant !== "outline") return
+
+    // Initial position
+    updateIndicator()
+
+    // Observe data-state changes on children
+    const observer = new MutationObserver(updateIndicator)
+    observer.observe(root, {
+      attributes: true,
+      attributeFilter: ["data-state"],
+      subtree: true,
+    })
+
+    return () => observer.disconnect()
+  }, [rootRef, variant, updateIndicator])
+
+  return indicatorRef
+}
+
 /* ─── ToggleGroup ───────────────────────────────────────────────────── */
 
 const toggleGroupVariants = cva(styles.root, {
@@ -49,6 +102,19 @@ const ToggleGroup = React.forwardRef<
     () => ({ variant, size }),
     [variant, size]
   )
+  const internalRef = React.useRef<HTMLDivElement>(null)
+  const indicatorRef = useSlidingIndicator(internalRef, variant)
+
+  // Merge internal ref with forwarded ref
+  const mergedRef = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      (internalRef as React.MutableRefObject<HTMLDivElement | null>).current = node
+      if (typeof ref === "function") ref(node)
+      else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = node
+    },
+    [ref],
+  )
+
   return (
     <ToggleGroupContext.Provider value={contextValue}>
       <ToggleGroupPrimitive.Root
@@ -56,9 +122,18 @@ const ToggleGroup = React.forwardRef<
         data-variant={variant ?? "default"}
         data-size={size ?? "md"}
         className={cn(toggleGroupVariants({ variant, size }), className)}
-        ref={ref}
+        ref={mergedRef}
         {...props}
-      />
+      >
+        {variant === "outline" && (
+          <span
+            ref={indicatorRef}
+            className={styles.indicator}
+            aria-hidden="true"
+          />
+        )}
+        {props.children}
+      </ToggleGroupPrimitive.Root>
     </ToggleGroupContext.Provider>
   )
 })

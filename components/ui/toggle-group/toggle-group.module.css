@@ -10,9 +10,32 @@
 }
 
 .variantOutline {
+  position: relative;
   border: 1px solid var(--border-default, #e5e7eb);
   gap: 0;
 }
+
+/* Sliding indicator pill */
+.indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: var(--interactive-primary-bg, #111827);
+  border-radius: var(--radius-md, 0.375rem);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  transition:
+    transform var(--motion-duration-200, 200ms) var(--motion-easing-default, ease-in-out),
+    width var(--motion-duration-200, 200ms) var(--motion-easing-default, ease-in-out),
+    opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+/* Match indicator radius to item radius per size */
+.sizeXs .indicator { border-radius: var(--radius-sm, 0.25rem); }
+.sizeSm .indicator { border-radius: var(--radius-md, 0.375rem); }
+.sizeMd .indicator { border-radius: var(--radius-md, 0.375rem); }
+.sizeLg .indicator { border-radius: var(--radius-lg, 0.5rem); }
 
 .sizeXs {
   /* inherited by items */
@@ -88,13 +111,18 @@
   color: var(--interactive-primary-text, #f9fafb);
 }
 
-/* Outline variant items */
-.itemVariantOutline:hover:not(:disabled) {
+/* Outline variant items — indicator provides the active background */
+.itemVariantOutline {
+  position: relative;
+  z-index: 1;
+}
+
+.itemVariantOutline:hover:not(:disabled):not([data-state="on"]) {
   background-color: var(--surface-interactive-hover, #f3f4f6);
 }
 
 .itemVariantOutline[data-state="on"] {
-  background-color: var(--interactive-primary-bg, #111827);
+  background-color: transparent;
   color: var(--interactive-primary-text, #f9fafb);
 }
 
