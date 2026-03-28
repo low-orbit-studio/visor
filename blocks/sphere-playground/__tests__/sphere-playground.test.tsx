@@ -117,6 +117,26 @@ describe("SpherePlayground", () => {
     expect(container.firstChild).toHaveClass("custom")
   })
 
+  it("calls onCodeChange with default Sphere code on mount", () => {
+    const onCodeChange = vi.fn()
+    render(<SpherePlayground onCodeChange={onCodeChange} />)
+    expect(onCodeChange).toHaveBeenCalledWith("<Sphere />")
+  })
+
+  it("calls onCodeChange with non-default props", () => {
+    const onCodeChange = vi.fn()
+    render(
+      <SpherePlayground
+        defaultMode="lorenz"
+        defaultColorScheme="ember"
+        onCodeChange={onCodeChange}
+      />,
+    )
+    const lastCall = onCodeChange.mock.calls.at(-1)?.[0] as string
+    expect(lastCall).toContain('mode="lorenz"')
+    expect(lastCall).toContain('colorScheme="ember"')
+  })
+
   it("renders draggable panel", () => {
     const { container } = render(<SpherePlayground />)
     expect(container.querySelector("[data-draggable='true']")).toBeInTheDocument()

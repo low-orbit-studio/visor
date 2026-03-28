@@ -4,16 +4,16 @@ description: An interactive demo composing the Sphere visualization with a Confi
 ---
 
 import { BlockPreview } from '@/components/block-preview';
-import { SpherePlayground } from '@/components/blocks/sphere-playground';
+import { SpherePlaygroundLive } from '@/components/blocks/sphere-playground-live';
 
 ## Preview
 
 <BlockPreview
   title="Sphere Playground"
-  code={`<SpherePlayground />`}
+  code={`<Sphere />`}
 >
   <div className="sphere-playground-preview">
-    <SpherePlayground defaultCollapsed />
+    <SpherePlaygroundLive defaultCollapsed />
   </div>
 </BlockPreview>
 

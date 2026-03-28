@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState, useCallback, useMemo } from "react"
+import { useRef, useState, useCallback, useMemo, useEffect } from "react"
 import { cn } from "../../lib/utils"
 import { Sphere } from "../../components/visual/sphere/sphere"
 import type { SphereRef } from "../../components/visual/sphere/sphere.types"
@@ -24,6 +24,8 @@ export interface SpherePlaygroundProps {
   defaultColorScheme?: ColorScheme
   /** Start the control panel collapsed. Default: false */
   defaultCollapsed?: boolean
+  /** Called with a live `<Sphere>` code snippet whenever settings change */
+  onCodeChange?: (code: string) => void
   /** Additional CSS class for the container */
   className?: string
   /** Inline style for the container */
@@ -34,6 +36,7 @@ export function SpherePlayground({
   defaultMode = "sphere",
   defaultColorScheme = "solar",
   defaultCollapsed = false,
+  onCodeChange,
   className,
   style,
 }: SpherePlaygroundProps) {
@@ -93,6 +96,42 @@ export function SpherePlayground({
       scatter: values.includes("scatter"),
     })
   }, [])
+
+  // --- Live code generation ---
+  const liveCode = useMemo(() => {
+    const props: string[] = []
+
+    if (mode !== "sphere") props.push(`  mode="${mode}"`)
+    if (colorScheme !== "solar") props.push(`  colorScheme="${colorScheme}"`)
+    if (scale !== 1.0) props.push(`  scale={${scale}}`)
+    if (waves !== 1.0) props.push(`  waves={${waves}}`)
+    if (speedMultiplier !== 1.0)
+      props.push(`  speed={${Number(speedMultiplier.toFixed(2))}}`)
+    if (dotSize !== 0.4) props.push(`  dotSize={${dotSize}}`)
+    if (blur !== 0.75) props.push(`  blur={${blur}}`)
+    if (saturation !== 1.8) props.push(`  saturation={${saturation}}`)
+    if (lightness !== 0.8) props.push(`  lightness={${lightness}}`)
+    if (thinkIntensity !== 0)
+      props.push(`  thinkIntensity={${thinkIntensity}}`)
+
+    const effectsDefault =
+      thinkEffects.pulses && thinkEffects.ramp && thinkEffects.scatter
+    if (!effectsDefault) {
+      const obj = `{ pulses: ${thinkEffects.pulses}, ramp: ${thinkEffects.ramp}, scatter: ${thinkEffects.scatter} }`
+      props.push(`  thinkEffects={${obj}}`)
+    }
+
+    if (props.length === 0) return "<Sphere />"
+    return `<Sphere\n${props.join("\n")}\n/>`
+  }, [
+    mode, colorScheme, scale, waves, speedMultiplier,
+    dotSize, blur, saturation, lightness,
+    thinkIntensity, thinkEffects,
+  ])
+
+  useEffect(() => {
+    onCodeChange?.(liveCode)
+  }, [liveCode, onCodeChange])
 
   return (
     <div className={cn(styles.container, className)} style={style}>
