@@ -6,6 +6,7 @@ description: Lightweight notification toasts powered by Sonner. Add the Toaster 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { ToastDemo } from '@/components/ui/toast-demo';
+import { ToastVariantsDemo, ToastWithDescriptionDemo, ToastWithActionDemo } from '@/components/ui/toast-variants-demo';
 
 ## Installation
 
@@ -13,38 +14,129 @@ import { ToastDemo } from '@/components/ui/toast-demo';
 npx visor add toast
 ```
 
+This copies two files into your project:
+
+- `components/ui/toast/toast.tsx` — the component
+- `components/ui/toast/toast.module.css` — the styles
+
+## Setup
+
+Add `<Toaster />` once in your root layout. All calls to `toast()` anywhere in your app will render there.
+
+```tsx
+// app/layout.tsx
+import { Toaster } from '@/components/ui/toast/toast';
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        {children}
+        <Toaster />
+      </body>
+    </html>
+  );
+}
+```
+
 ## Usage
 
 ```tsx
-// In your root layout:
-import { Toaster } from '@/components/ui/toast/toast';
-
-export default function Layout({ children }) {
-  return (
-    <>
-      {children}
-      <Toaster />
-    </>
-  );
-}
-
-// Anywhere in your app:
 import { toast } from '@/components/ui/toast/toast';
 
+// Basic
 toast('Event created');
+
+// With type
+toast.success('Changes saved');
+toast.error('Something went wrong');
+toast.warning('Storage almost full');
+toast.info('New update available');
+
+// With description
+toast('File uploaded', {
+  description: 'report-q4-2025.pdf was saved to your documents.',
+});
+
+// With action
+toast('Message sent', {
+  action: {
+    label: 'Undo',
+    onClick: () => toast('Message unsent'),
+  },
+});
 ```
 
-## Basic Toast
+## Variants
 
 <ComponentPreview
-  title="Trigger a Toast"
-  code={"import { toast } from '@/components/ui/toast/toast';\nimport { Button } from '@/components/ui/button/button';\n\n<Button onClick={() => toast('Event created')}>Show Toast</Button>"}
+  title="Toast Types"
+  code={"import { toast } from '@/components/ui/toast/toast';\nimport { Button } from '@/components/ui/button/button';\n\n<Button variant=\"outline\" size=\"sm\" onClick={() => toast('Event created')}>Default</Button>\n<Button variant=\"outline\" size=\"sm\" onClick={() => toast.success('Changes saved')}>Success</Button>\n<Button variant=\"outline\" size=\"sm\" onClick={() => toast.error('Something went wrong')}>Error</Button>\n<Button variant=\"outline\" size=\"sm\" onClick={() => toast.warning('Storage almost full')}>Warning</Button>\n<Button variant=\"outline\" size=\"sm\" onClick={() => toast.info('New update available')}>Info</Button>"}
 >
-  <ToastDemo />
+  <ToastVariantsDemo />
+</ComponentPreview>
+
+## With Description
+
+<ComponentPreview
+  title="Toast with Description"
+  code={"toast('File uploaded', {\n  description: 'report-q4-2025.pdf was saved to your documents.',\n});"}
+>
+  <ToastWithDescriptionDemo />
+</ComponentPreview>
+
+## With Action
+
+<ComponentPreview
+  title="Toast with Action"
+  code={"toast('Message sent', {\n  action: {\n    label: 'Undo',\n    onClick: () => toast('Message unsent'),\n  },\n});"}
+>
+  <ToastWithActionDemo />
 </ComponentPreview>
 
 ## API Reference
 
-### ToastProps
+### ToastProps (Toaster)
 
 <PropsTable component="toast" />
+
+The `<Toaster />` component accepts all [Sonner Toaster props](https://sonner.emilkowal.ski/toaster).
+
+### toast() API
+
+The `toast()` function is re-exported directly from Sonner. All Sonner toast options are available:
+
+```tsx
+toast(message, {
+  description?: string;      // Subtitle text
+  duration?: number;         // Override auto-dismiss duration (ms)
+  action?: { label: string; onClick: () => void };
+  cancel?: { label: string; onClick: () => void };
+  onDismiss?: (t) => void;
+  onAutoClose?: (t) => void;
+  id?: string | number;      // Deduplicate or update existing toasts
+});
+```
+
+## Accessibility
+
+- Toasts render in a `<ol>` with `aria-live` set to `polite` (default) or `assertive` for errors.
+- Each toast has `role="status"` for informational messages.
+- The `<Toaster />` is positioned outside the main document flow so it does not disrupt reading order.
+- Toasts auto-dismiss after 4 seconds by default — ensure any critical information is also conveyed inline, not only via toast.
+- Respect `prefers-reduced-motion`: Sonner reduces animation when the OS setting is active.
+
+## Customization
+
+After copying the component, common customizations include:
+
+```tsx
+// Custom position and duration
+<Toaster position="top-center" duration={6000} />
+
+// Rich colors for semantic types
+<Toaster richColors />
+
+// Limit visible toasts
+<Toaster visibleToasts={3} />
+```

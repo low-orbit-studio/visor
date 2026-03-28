@@ -3,6 +3,10 @@ title: Color Swatch
 description: Individual color swatch with hex value display, plus grid variants for color scales and semantic color tokens.
 ---
 
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ColorSwatch, ColorSwatchGrid, SemanticColorGrid } from '@/components/ui/color-swatch';
+
 ## Installation
 
 ```bash
@@ -46,30 +50,73 @@ import {
 />
 ```
 
-## Components
+## Single Swatch
 
-### ColorSwatch
+<ComponentPreview
+  title="Color Swatch"
+  code={"<ColorSwatch token=\"--color-blue-500\" hex=\"#3b82f6\" name=\"500\" lightText />"}
+>
+  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+    <ColorSwatch token="--color-blue-500" hex="#3b82f6" name="500" lightText />
+    <ColorSwatch token="--color-gray-100" hex="#f3f4f6" name="100" />
+    <ColorSwatch token="--color-gray-900" hex="#111827" name="900" lightText />
+  </div>
+</ComponentPreview>
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `token` | `string` | — | CSS custom property name |
-| `hex` | `string` | — | Hex value for fallback and display |
-| `name` | `string` | — | Label shown beneath the swatch |
-| `lightText` | `boolean` | `false` | When true, hex text renders white |
-| `className` | `string` | — | Additional CSS classes |
+## Color Scale Grid
 
-### ColorSwatchGrid
+<ComponentPreview
+  title="Color Scale Grid"
+  code={"<ColorSwatchGrid\n  label=\"Gray\"\n  swatches={[\n    { token: \"--color-gray-50\", hex: \"#f9fafb\", name: \"50\" },\n    { token: \"--color-gray-200\", hex: \"#e5e7eb\", name: \"200\" },\n    { token: \"--color-gray-500\", hex: \"#6b7280\", name: \"500\", lightText: true },\n    { token: \"--color-gray-700\", hex: \"#374151\", name: \"700\", lightText: true },\n    { token: \"--color-gray-900\", hex: \"#111827\", name: \"900\", lightText: true },\n  ]}\n/>"}
+>
+  <ColorSwatchGrid
+    label="Gray"
+    swatches={[
+      { token: "--color-gray-50", hex: "#f9fafb", name: "50" },
+      { token: "--color-gray-200", hex: "#e5e7eb", name: "200" },
+      { token: "--color-gray-500", hex: "#6b7280", name: "500", lightText: true },
+      { token: "--color-gray-700", hex: "#374151", name: "700", lightText: true },
+      { token: "--color-gray-900", hex: "#111827", name: "900", lightText: true },
+    ]}
+  />
+</ComponentPreview>
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `label` | `string` | — | Scale name shown above the grid |
-| `swatches` | `ColorSwatchProps[]` | — | Array of swatch data to render |
-| `className` | `string` | — | Additional CSS classes |
+## Semantic Color Grid
 
-### SemanticColorGrid
+<ComponentPreview
+  title="Semantic Colors"
+  code={"<SemanticColorGrid\n  category=\"Text\"\n  items={[\n    { token: \"--text-primary\", label: \"text-primary\" },\n    { token: \"--text-secondary\", label: \"text-secondary\" },\n    { token: \"--text-tertiary\", label: \"text-tertiary\" },\n  ]}\n/>"}
+>
+  <SemanticColorGrid
+    category="Text"
+    items={[
+      { token: "--text-primary", label: "text-primary" },
+      { token: "--text-secondary", label: "text-secondary" },
+      { token: "--text-tertiary", label: "text-tertiary" },
+    ]}
+  />
+</ComponentPreview>
+
+## API Reference
+
+### ColorSwatchProps
+
+<PropsTable component="color-swatch" />
+
+### ColorSwatchGridProps
+
+<PropsTable component="color-swatch-grid" />
+
+### SemanticColorGridProps
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `category` | `string` | — | Category name shown above the group |
 | `items` | `SemanticColorItemProps[]` | — | Items in this category |
 | `className` | `string` | — | Additional CSS classes |
+
+## Accessibility
+
+Color swatches are documentation utilities. Ensure the hex value overlaid on each swatch meets minimum contrast — use `lightText={true}` for dark swatches and `lightText={false}` (default) for light swatches.
+
+Color alone should never be the sole means of conveying information — use swatches alongside text labels and token names.

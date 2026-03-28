@@ -3,6 +3,10 @@ title: Type Specimen
 description: A single typography row displaying sample text at a given font-size token with weight and size metadata.
 ---
 
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { TypeSpecimen } from '@/components/ui/type-specimen';
+
 ## Installation
 
 ```bash
@@ -27,12 +31,29 @@ import { TypeSpecimen } from '@/components/ui/type-specimen/type-specimen';
 />
 ```
 
-## Props
+## Preview
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `token` | `string` | — | CSS custom property for font size |
-| `label` | `string` | — | Label for the type step (e.g. "xl", "base") |
-| `sizePx` | `number` | — | Font size in pixels for fallback |
-| `sampleText` | `string` | — | Sample text to render at this size |
-| `className` | `string` | — | Additional CSS classes |
+<ComponentPreview
+  title="Type Scale"
+  code={"<TypeSpecimen token=\"--font-size-xs\" label=\"xs\" sizePx={12} sampleText=\"Caption / helper text\" />\n<TypeSpecimen token=\"--font-size-sm\" label=\"sm\" sizePx={14} sampleText=\"Small body text\" />\n<TypeSpecimen token=\"--font-size-md\" label=\"md\" sizePx={16} sampleText=\"Base body text\" />\n<TypeSpecimen token=\"--font-size-lg\" label=\"lg\" sizePx={18} sampleText=\"Large body text\" />\n<TypeSpecimen token=\"--font-size-xl\" label=\"xl\" sizePx={20} sampleText=\"Subsection heading\" />\n<TypeSpecimen token=\"--font-size-2xl\" label=\"2xl\" sizePx={24} sampleText=\"Section heading\" />\n<TypeSpecimen token=\"--font-size-3xl\" label=\"3xl\" sizePx={30} sampleText=\"Page title\" />"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', width: '100%' }}>
+    <TypeSpecimen token="--font-size-xs" label="xs" sizePx={12} sampleText="Caption / helper text" />
+    <TypeSpecimen token="--font-size-sm" label="sm" sizePx={14} sampleText="Small body text" />
+    <TypeSpecimen token="--font-size-md" label="md" sizePx={16} sampleText="Base body text" />
+    <TypeSpecimen token="--font-size-lg" label="lg" sizePx={18} sampleText="Large body text" />
+    <TypeSpecimen token="--font-size-xl" label="xl" sizePx={20} sampleText="Subsection heading" />
+    <TypeSpecimen token="--font-size-2xl" label="2xl" sizePx={24} sampleText="Section heading" />
+    <TypeSpecimen token="--font-size-3xl" label="3xl" sizePx={30} sampleText="Page title" />
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### TypeSpecimenProps
+
+<PropsTable component="type-specimen" />
+
+## Accessibility
+
+TypeSpecimen is a documentation utility. Each row pairs the visual sample text with its label and pixel size in text form, so the type scale is readable without relying on visual font size alone.

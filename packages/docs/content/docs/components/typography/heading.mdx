@@ -81,3 +81,24 @@ The `size` prop lets you decouple visual size from semantic level — an `<h3>` 
 <PropsTable component="heading" />
 
 The component also accepts all standard HTML heading attributes.
+
+## Accessibility
+
+- Always use headings in a logical hierarchy — don't skip levels (e.g. `h1` → `h3`). Use the `size` prop to adjust visual appearance without changing the semantic level.
+- Every page should have exactly one `<h1>`. Use `level={1}` for the main page title only.
+- Screen readers navigate by heading structure. Meaningful, descriptive heading text improves navigation for keyboard and AT users.
+- Avoid using `Heading` purely for visual styling — use `Text` instead if semantics don't apply.
+
+## Customization
+
+After copying the component, you own it completely. Common customizations:
+
+```tsx
+// Add a gradient or custom color
+<Heading level={1} style={{ background: 'linear-gradient(...)', WebkitBackgroundClip: 'text' }}>
+  Gradient Title
+</Heading>
+
+// Combine with a custom class for one-off styles
+<Heading level={2} className="my-section-title">Section</Heading>
+```

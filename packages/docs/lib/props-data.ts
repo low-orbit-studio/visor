@@ -1326,4 +1326,385 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'Disables the tag input.',
     },
   ],
+
+  'accessibility-specimen': [
+    {
+      name: 'fgToken',
+      type: 'string',
+      required: true,
+      description: 'CSS custom property for the foreground/text color (e.g. "--text-primary").',
+    },
+    {
+      name: 'bgToken',
+      type: 'string',
+      required: true,
+      description: 'CSS custom property for the background color (e.g. "--surface-page").',
+    },
+    {
+      name: 'fgLabel',
+      type: 'string',
+      required: true,
+      description: 'Human-readable label for the foreground color.',
+    },
+    {
+      name: 'bgLabel',
+      type: 'string',
+      required: true,
+      description: 'Human-readable label for the background color.',
+    },
+    {
+      name: 'ratio',
+      type: 'number',
+      required: true,
+      description: 'Contrast ratio (e.g. 4.5).',
+    },
+    {
+      name: 'wcagAA',
+      type: 'boolean',
+      required: true,
+      description: 'Whether the color pair passes WCAG AA (4.5:1 for normal text).',
+    },
+    {
+      name: 'wcagAAA',
+      type: 'boolean',
+      required: true,
+      description: 'Whether the color pair passes WCAG AAA (7:1 for normal text).',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  'color-swatch': [
+    {
+      name: 'token',
+      type: 'string',
+      required: true,
+      description: 'CSS custom property token name (e.g. "--color-blue-500").',
+    },
+    {
+      name: 'hex',
+      type: 'string',
+      required: true,
+      description: 'Hex value for fallback and display.',
+    },
+    {
+      name: 'name',
+      type: 'string',
+      required: true,
+      description: 'Label shown beneath the swatch.',
+    },
+    {
+      name: 'lightText',
+      type: 'boolean',
+      default: 'false',
+      description: 'When true, hex text renders white instead of dark.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  'color-swatch-grid': [
+    {
+      name: 'label',
+      type: 'string',
+      required: true,
+      description: 'Scale name shown above the grid.',
+    },
+    {
+      name: 'swatches',
+      type: 'ColorSwatchProps[]',
+      required: true,
+      description: 'Array of swatch data to render.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  'elevation-card': [
+    {
+      name: 'token',
+      type: 'string',
+      required: true,
+      description: 'CSS custom property for the shadow (e.g. "--shadow-md").',
+    },
+    {
+      name: 'name',
+      type: 'string',
+      required: true,
+      description: 'Display name for the shadow level (e.g. "md").',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  'icon-grid': [
+    {
+      name: 'icons',
+      type: 'IconGridItemProps[]',
+      required: true,
+      description: 'Array of icon items with name, usage, and rendered icon element.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  'motion-specimen': [
+    {
+      name: 'durations',
+      type: 'MotionDurationItemProps[]',
+      required: true,
+      description: 'Array of duration items with token, name, and ms values. (MotionDuration component)',
+    },
+    {
+      name: 'easings',
+      type: 'MotionEasingItemProps[]',
+      required: true,
+      description: 'Array of easing items with token, name, and CSS value. (MotionEasing component)',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  'opacity-bar': [
+    {
+      name: 'levels',
+      type: 'OpacityBarItemProps[]',
+      required: true,
+      description: 'Array of opacity levels with token, name, and value (0–1).',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  'radius-scale': [
+    {
+      name: 'steps',
+      type: 'RadiusScaleItemProps[]',
+      required: true,
+      description: 'Array of radius steps with token, name, and px values.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  'spacing-scale': [
+    {
+      name: 'steps',
+      type: 'SpacingScaleItemProps[]',
+      required: true,
+      description: 'Array of spacing steps with token, name, px, and rem values.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  'surface-row': [
+    {
+      name: 'token',
+      type: 'string',
+      required: true,
+      description: 'CSS custom property for the surface background (e.g. "--surface-card").',
+    },
+    {
+      name: 'name',
+      type: 'string',
+      required: true,
+      description: 'Display name for the surface.',
+    },
+    {
+      name: 'lightText',
+      type: 'boolean',
+      default: 'false',
+      description: 'When true, text renders in light/inverse colors for dark surfaces.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  'type-specimen': [
+    {
+      name: 'token',
+      type: 'string',
+      required: true,
+      description: 'CSS custom property for font size (e.g. "--font-size-xl").',
+    },
+    {
+      name: 'label',
+      type: 'string',
+      required: true,
+      description: 'Label for this type step (e.g. "xl", "base").',
+    },
+    {
+      name: 'sizePx',
+      type: 'number',
+      required: true,
+      description: 'Font size in pixels for fallback display.',
+    },
+    {
+      name: 'sampleText',
+      type: 'string',
+      required: true,
+      description: 'Sample text to render at this size.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  sphere: [
+    {
+      name: 'mode',
+      type: "'sphere' | 'curl' | 'turing' | 'lorenz' | 'tendrils'",
+      default: "'sphere'",
+      description: 'Geometry mode for particle distribution.',
+    },
+    {
+      name: 'colorScheme',
+      type: "'solar' | 'aqua' | 'ember' | 'aurora' | 'ghost'",
+      default: "'solar'",
+      description: 'Named color scheme. Overridden by colors if both are provided.',
+    },
+    {
+      name: 'colors',
+      type: 'GradientColors',
+      description: 'Custom 5-stop gradient colors (RGB 0-1 range). Overrides colorScheme.',
+    },
+    {
+      name: 'particleCount',
+      type: 'number',
+      default: '256000',
+      description: 'Number of particles rendered.',
+    },
+    {
+      name: 'radius',
+      type: 'number',
+      default: '1.2',
+      description: 'Sphere radius.',
+    },
+    {
+      name: 'scale',
+      type: 'number',
+      default: '1.0',
+      description: 'Overall scale multiplier.',
+    },
+    {
+      name: 'speed',
+      type: 'number',
+      default: '1.0',
+      description: 'Animation speed multiplier.',
+    },
+    {
+      name: 'waves',
+      type: 'number',
+      default: '1.0',
+      description: 'Noise displacement multiplier (wave amplitude).',
+    },
+    {
+      name: 'dotSize',
+      type: 'number',
+      default: '1.0',
+      description: 'Particle size multiplier.',
+    },
+    {
+      name: 'blur',
+      type: 'number',
+      default: '0.5',
+      description: 'Particle softness (0 = hard dots, 1 = full glow).',
+    },
+    {
+      name: 'saturation',
+      type: 'number',
+      default: '1.0',
+      description: 'Color saturation multiplier.',
+    },
+    {
+      name: 'lightness',
+      type: 'number',
+      default: '1.0',
+      description: 'Color lightness multiplier.',
+    },
+    {
+      name: 'thinkIntensity',
+      type: 'number',
+      default: '0',
+      description: 'Think-mode intensity (0–1). Controls layered animation effects.',
+    },
+    {
+      name: 'thinkEffects',
+      type: 'SphereThinkEffects',
+      description: 'Which think-mode effects are enabled (pulses, ramp, scatter). All enabled by default.',
+    },
+    {
+      name: 'orbitControls',
+      type: 'boolean',
+      default: 'true',
+      description: 'Enable drag-to-rotate orbit controls.',
+    },
+    {
+      name: 'autoRotate',
+      type: 'boolean',
+      default: 'true',
+      description: 'Enable automatic rotation.',
+    },
+    {
+      name: 'autoRotateSpeed',
+      type: 'number',
+      default: '0.5',
+      description: 'Auto-rotation speed.',
+    },
+    {
+      name: 'maxPixelRatio',
+      type: 'number',
+      default: '2',
+      description: 'Max device pixel ratio (clamped for performance).',
+    },
+    {
+      name: 'backgroundColor',
+      type: 'number',
+      default: '0x000000',
+      description: 'Background color as a hex number.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class for the container div.',
+    },
+    {
+      name: 'style',
+      type: 'React.CSSProperties',
+      description: 'Inline style for the container div.',
+    },
+  ],
 };
