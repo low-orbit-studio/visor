@@ -296,6 +296,16 @@ p.preview-title {
   height: 700px;
 }
 
+/* Hide fixed-position dot-nav in inline preview (it escapes the container) */
+.preview-render [data-slot="dot-nav"] {
+  display: none;
+}
+
 [data-fullscreen="true"] .deck-preview {
   height: 100%;
+}
+
+/* Show dot-nav in fullscreen */
+[data-fullscreen="true"] [data-slot="dot-nav"] {
+  display: flex;
 }

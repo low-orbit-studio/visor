@@ -27,35 +27,33 @@ export function DotNav({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   return (
-    <div className={styles.navWrapper}>
-      <nav
-        data-slot="dot-nav"
-        className={cn(styles.nav, variant === "dark" && styles.dark)}
-        aria-label="Slide navigation"
-      >
-        {Array.from({ length: slideCount }, (_, i) => (
-          <button
-            key={i}
-            type="button"
-            className={cn(
-              styles.dot,
-              i === currentIndex && styles.active,
-              hoveredIndex === i && styles.hovered
-            )}
-            onClick={() => onDotClick(i)}
-            onMouseEnter={() => setHoveredIndex(i)}
-            onMouseLeave={() => setHoveredIndex(null)}
-            aria-label={titles[i] ?? `Go to slide ${i + 1}`}
-            aria-current={i === currentIndex ? "true" : undefined}
-          >
-            {titles[i] && (
-              <span className={styles.tooltip} aria-hidden="true">
-                {titles[i]}
-              </span>
-            )}
-          </button>
-        ))}
-      </nav>
-    </div>
+    <nav
+      data-slot="dot-nav"
+      className={cn(styles.nav, variant === "dark" && styles.dark)}
+      aria-label="Slide navigation"
+    >
+      {Array.from({ length: slideCount }, (_, i) => (
+        <button
+          key={i}
+          type="button"
+          className={cn(
+            styles.dot,
+            i === currentIndex && styles.active,
+            hoveredIndex === i && styles.hovered
+          )}
+          onClick={() => onDotClick(i)}
+          onMouseEnter={() => setHoveredIndex(i)}
+          onMouseLeave={() => setHoveredIndex(null)}
+          aria-label={titles[i] ?? `Go to slide ${i + 1}`}
+          aria-current={i === currentIndex ? "true" : undefined}
+        >
+          {titles[i] && (
+            <span className={styles.tooltip} aria-hidden="true">
+              {titles[i]}
+            </span>
+          )}
+        </button>
+      ))}
+    </nav>
   )
 }

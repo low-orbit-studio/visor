@@ -35,7 +35,10 @@ export function useSlideEngine({
       document.documentElement.classList.add("deck-scrolling")
 
       const container = containerRef?.current
-      const target = sections[index].offsetTop
+      const el = sections[index]
+      const target = container
+        ? el.offsetTop - container.offsetTop
+        : el.offsetTop
       const start = container ? container.scrollTop : window.scrollY
       const dist = target - start
 
