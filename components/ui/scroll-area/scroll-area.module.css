@@ -22,7 +22,7 @@
 .scrollbar {
   display: flex;
   touch-action: none;
-  padding: 1px;
+  padding: calc(var(--spacing-1, 0.25rem) / 4);
   user-select: none;
   transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }

@@ -18,11 +18,14 @@ function extractCssClasses(cssContent: string): string[] {
 
 function extractDtsClasses(dtsContent: string): string[] {
   const classes: string[] = [];
-  // Match readonly property declarations like: readonly className: string
-  const propRegex = /readonly\s+(\w+)\s*:/g;
+  // Match readonly property declarations:
+  //   readonly className: string          (simple identifiers)
+  //   readonly 'class-name': string       (quoted keys with hyphens or BEM modifiers)
+  //   readonly "class-name": string       (double-quoted keys)
+  const propRegex = /readonly\s+(?:['"]([^'"]+)['"]|(\w+))\s*:/g;
   let m = propRegex.exec(dtsContent);
   while (m !== null) {
-    classes.push(m[1]);
+    classes.push((m[1] ?? m[2]) as string);
     m = propRegex.exec(dtsContent);
   }
   return classes;

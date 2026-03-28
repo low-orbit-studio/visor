@@ -10,7 +10,7 @@
   overflow: hidden;
   border-radius: var(--radius-full, 9999px);
   border: 1px solid transparent;
-  padding: 0.125rem var(--spacing-2, 0.5rem);
+  padding: calc(var(--spacing-1, 0.25rem) / 2) var(--spacing-2, 0.5rem);
   font-size: var(--font-size-xs, 0.75rem);
   font-weight: 500;
   white-space: nowrap;
