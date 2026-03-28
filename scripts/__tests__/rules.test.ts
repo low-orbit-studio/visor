@@ -7,6 +7,11 @@ import { cssModuleTypesSync } from '../rules/css-module-types-sync.js';
 import { tokenFallbackGray } from '../rules/token-fallback-gray.js';
 import { noInlineShadows } from '../rules/no-inline-shadows.js';
 import { spacingGrid } from '../rules/spacing-grid.js';
+import { docsHasPreview } from '../rules/docs-has-preview.js';
+import { docsHasPropsTable } from '../rules/docs-has-props-table.js';
+import { docsHasInstallCommand } from '../rules/docs-has-install-command.js';
+import { docsConsistentSections } from '../rules/docs-consistent-sections.js';
+import { docsAlphabetized } from '../rules/docs-alphabetized.js';
 
 describe('no-template-literal-code-props', () => {
   it('has correct metadata', () => {
@@ -112,6 +117,70 @@ describe('spacing-grid', () => {
   });
 });
 
+describe('docs-has-preview', () => {
+  it('has correct metadata', () => {
+    expect(docsHasPreview.name).toBe('docs-has-preview');
+    expect(docsHasPreview.category).toBe('docs');
+    expect(docsHasPreview.warnOnly).toBe(true);
+  });
+
+  it('returns results for component docs', async () => {
+    const results = await docsHasPreview.run();
+    expect(results.length).toBeGreaterThan(0);
+  });
+});
+
+describe('docs-has-props-table', () => {
+  it('has correct metadata', () => {
+    expect(docsHasPropsTable.name).toBe('docs-has-props-table');
+    expect(docsHasPropsTable.category).toBe('docs');
+    expect(docsHasPropsTable.warnOnly).toBe(true);
+  });
+
+  it('returns results for component docs', async () => {
+    const results = await docsHasPropsTable.run();
+    expect(results.length).toBeGreaterThan(0);
+  });
+});
+
+describe('docs-has-install-command', () => {
+  it('has correct metadata', () => {
+    expect(docsHasInstallCommand.name).toBe('docs-has-install-command');
+    expect(docsHasInstallCommand.category).toBe('docs');
+    expect(docsHasInstallCommand.warnOnly).toBe(true);
+  });
+
+  it('returns results for component docs', async () => {
+    const results = await docsHasInstallCommand.run();
+    expect(results.length).toBeGreaterThan(0);
+  });
+});
+
+describe('docs-consistent-sections', () => {
+  it('has correct metadata', () => {
+    expect(docsConsistentSections.name).toBe('docs-consistent-sections');
+    expect(docsConsistentSections.category).toBe('docs');
+    expect(docsConsistentSections.warnOnly).toBe(true);
+  });
+
+  it('returns results for component docs', async () => {
+    const results = await docsConsistentSections.run();
+    expect(results.length).toBeGreaterThan(0);
+  });
+});
+
+describe('docs-alphabetized', () => {
+  it('has correct metadata', () => {
+    expect(docsAlphabetized.name).toBe('docs-alphabetized');
+    expect(docsAlphabetized.category).toBe('docs');
+  });
+
+  it('returns results for component meta files', async () => {
+    const results = await docsAlphabetized.run();
+    expect(results.length).toBeGreaterThan(0);
+  });
+});
+
 describe('rule type compliance', () => {
   const allRules = [
     noTemplateLiteralCodeProps,
@@ -122,6 +191,11 @@ describe('rule type compliance', () => {
     tokenFallbackGray,
     noInlineShadows,
     spacingGrid,
+    docsHasPreview,
+    docsHasPropsTable,
+    docsHasInstallCommand,
+    docsConsistentSections,
+    docsAlphabetized,
   ];
 
   it('all rules have required properties', () => {
