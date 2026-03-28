@@ -26,7 +26,13 @@ vi.mock("three", () => ({
   BufferGeometry: vi.fn(() => ({
     setAttribute: vi.fn(),
     dispose: vi.fn(),
-    attributes: {},
+    attributes: new Proxy({} as Record<string, { needsUpdate: boolean }>, {
+      get: (_t: Record<string, { needsUpdate: boolean }>, prop: string | symbol) => {
+        const key = prop as string
+        _t[key] = _t[key] ?? { needsUpdate: false }
+        return _t[key]
+      },
+    }),
   })),
   BufferAttribute: vi.fn(),
   ShaderMaterial: vi.fn(() => ({
