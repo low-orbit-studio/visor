@@ -42,7 +42,7 @@ export function SpherePlayground({
   // --- State matching source defaults ---
   const [mode, setMode] = useState<GeometryMode>(defaultMode)
   const [colorScheme, setColorScheme] = useState<ColorScheme>(defaultColorScheme)
-  const [scale, setScale] = useState(0.7)
+  const [scale, setScale] = useState(1.0)
   const [waves, setWaves] = useState(1.0)
   const [speed, setSpeed] = useState(0) // raw log value; exponential: 3^(v/3)
   const [dotSize, setDotSize] = useState(0.4)
