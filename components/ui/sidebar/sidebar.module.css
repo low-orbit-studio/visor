@@ -26,7 +26,7 @@
 .sidebarGap {
   width: var(--sidebar-width, 16rem);
   background: transparent;
-  transition: width var(--motion-duration-normal, 200ms) linear;
+  transition: width var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease-in-out);
   flex-shrink: 0;
 }
 
@@ -46,7 +46,7 @@
   display: flex;
   height: 100svh;
   width: var(--sidebar-width, 16rem);
-  transition: left var(--motion-duration-normal, 200ms) linear, right var(--motion-duration-normal, 200ms) linear, width var(--motion-duration-normal, 200ms) linear;
+  transition: left var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease-in-out), right var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease-in-out), width var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease-in-out);
 }
 
 .sidebarInner[data-side="left"] {
