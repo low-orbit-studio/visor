@@ -177,6 +177,8 @@ export interface SphereProps {
   dotSize?: number;
   /** Blur/softness (0 = hard dots, 1 = full glow). Default: 0.5 */
   blur?: number;
+  /** Fraction of particles that sparkle bright (0-1). Default: 0.03 */
+  sparkleChance?: number;
   /** Color saturation multiplier. Default: 1.0 */
   saturation?: number;
   /** Color lightness multiplier. Default: 1.0 */

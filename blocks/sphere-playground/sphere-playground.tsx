@@ -49,7 +49,7 @@ export function SpherePlayground({
   const [waves, setWaves] = useState(1.0)
   const [speed, setSpeed] = useState(0) // raw log value; exponential: 3^(v/3)
   const [particleCount, setParticleCount] = useState(128000)
-  const [blur, setBlur] = useState(0.75)
+  const [sparkleChance, setSparkleChance] = useState(0.03)
   const [saturation, setSaturation] = useState(1.8)
   const [lightness, setLightness] = useState(0.8)
   const [thinkIntensity, setThinkIntensity] = useState(0)
@@ -112,7 +112,7 @@ export function SpherePlayground({
       `  scale={${scale}}`,
       `  waves={${waves}}`,
       `  speed={${Number(speedMultiplier.toFixed(2))}}`,
-      `  blur={${blur}}`,
+      `  sparkleChance={${sparkleChance}}`,
       `  saturation={${saturation}}`,
       `  lightness={${lightness}}`,
       `  thinkIntensity={${thinkIntensity}}`,
@@ -121,7 +121,7 @@ export function SpherePlayground({
     return `<Sphere\n${props.join("\n")}\n/>`
   }, [
     mode, colorScheme, particleCount, scale, waves, speedMultiplier,
-    blur, saturation, lightness,
+    sparkleChance, saturation, lightness,
     thinkIntensity, thinkEffects,
   ])
 
@@ -133,16 +133,17 @@ export function SpherePlayground({
     <div className={cn(styles.container, className)} style={style}>
       <div className={styles.sphere}>
         <Sphere
-          key={particleCount}
+          key={`${particleCount}-${sparkleChance}`}
           ref={sphereRef}
           mode={mode}
           colorScheme={colorScheme}
           particleCount={particleCount}
+          sparkleChance={sparkleChance}
           scale={scale}
           waves={waves}
           dotSize={0.4}
           speed={speedMultiplier}
-          blur={blur}
+          blur={0.75}
           saturation={saturation}
           lightness={lightness}
           thinkIntensity={thinkIntensity}
@@ -220,13 +221,14 @@ export function SpherePlayground({
                   aria-label="Particle count"
                 />
                 <SliderControl
-                  label="Blur"
-                  value={blur}
-                  onValueChange={setBlur}
-                  displayValue={blur.toFixed(2)}
-                  min={0.0}
-                  max={1.0}
+                  label="Flecks"
+                  value={sparkleChance}
+                  onValueChange={setSparkleChance}
+                  displayValue={`${Math.round(sparkleChance * 100)}%`}
+                  min={0}
+                  max={0.5}
                   step={0.01}
+                  aria-label="Sparkle chance"
                 />
               </>
             ),

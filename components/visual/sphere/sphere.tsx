@@ -159,6 +159,7 @@ const Sphere = React.forwardRef<SphereRef, SphereProps>((props, ref) => {
       const particleSystem = createParticleSystem(THREE, {
         ...DEFAULT_CONFIG,
         particleCount: p.particleCount ?? DEFAULT_CONFIG.particleCount,
+        sparkleChance: p.sparkleChance ?? DEFAULT_CONFIG.sparkleChance,
         sphereRadius: p.radius ?? DEFAULT_CONFIG.sphereRadius,
         gradientColors: [...initialColors],
         dotSoftness:

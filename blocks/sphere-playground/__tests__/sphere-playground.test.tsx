@@ -99,7 +99,7 @@ describe("SpherePlayground", () => {
     expect(screen.getByRole("slider", { name: "Waves" })).toBeInTheDocument()
     expect(screen.getByRole("slider", { name: "Speed" })).toBeInTheDocument()
     expect(screen.getByRole("slider", { name: "Particle count" })).toBeInTheDocument()
-    expect(screen.getByRole("slider", { name: "Blur" })).toBeInTheDocument()
+    expect(screen.getByRole("slider", { name: "Sparkle chance" })).toBeInTheDocument()
     expect(screen.getByRole("slider", { name: "Saturation" })).toBeInTheDocument()
     expect(screen.getByRole("slider", { name: "Lightness" })).toBeInTheDocument()
     expect(screen.getByRole("slider", { name: "Think intensity" })).toBeInTheDocument()
