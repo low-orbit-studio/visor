@@ -37,13 +37,10 @@ function useSlidingIndicator(
       return
     }
 
-    const rootRect = root.getBoundingClientRect()
-    const itemRect = activeItem.getBoundingClientRect()
-
     indicator.style.opacity = "1"
-    indicator.style.width = `${itemRect.width}px`
-    indicator.style.height = `${itemRect.height}px`
-    indicator.style.transform = `translate(${itemRect.left - rootRect.left}px, ${itemRect.top - rootRect.top}px)`
+    indicator.style.width = `${activeItem.offsetWidth}px`
+    indicator.style.height = `${activeItem.offsetHeight}px`
+    indicator.style.transform = `translate(${activeItem.offsetLeft}px, ${activeItem.offsetTop}px)`
   }, [rootRef, variant])
 
   // Update on mount and whenever children change state
