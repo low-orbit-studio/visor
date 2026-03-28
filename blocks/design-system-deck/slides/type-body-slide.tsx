@@ -1,20 +1,20 @@
 import { Slide } from "../../../components/deck/slide/slide"
 import { SlideHeader } from "../../../components/deck/slide-header/slide-header"
 import { TypeSpecimen } from "../../../components/ui/type-specimen/type-specimen"
-import { TYPE_SPECIMENS } from "../../design-system-specimen/specimen-data"
+import { SLIDE_TYPE_BODY } from "./slide-data"
 import styles from "./slides.module.css"
 
-export function TypographySlide() {
+export function TypeBodySlide() {
   return (
-    <Slide id="s-typography">
+    <Slide id="s-type-body">
       <SlideHeader
         subtitle="Foundation"
-        title="Typography"
-        description="Full type scale from display headings to fine print."
+        title="Body & Utility"
+        description="Reading text and supporting sizes. Optimized for comfortable line lengths, generous line-heights, and clear hierarchy."
       />
 
       <div className={styles.typeSpecimenList}>
-        {TYPE_SPECIMENS.map((spec) => (
+        {SLIDE_TYPE_BODY.map((spec) => (
           <TypeSpecimen
             key={spec.token}
             token={spec.token}
