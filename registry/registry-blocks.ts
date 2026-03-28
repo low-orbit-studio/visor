@@ -196,7 +196,7 @@ export const blocks: Registry = [
     description:
       "A login form block using Visor form components (Button, Input, Label, Card).",
     dependencies: ["@loworbitstudio/visor-core"],
-    registryDependencies: ["utils", "button", "input", "label", "card"],
+    registryDependencies: ["utils", "button", "input", "field", "card"],
     files: [
       {
         path: "blocks/login-form/login-form.tsx",

@@ -4,7 +4,7 @@ category: authentication
 components_used:
   - button
   - input
-  - label
+  - field
   - card
 when_to_use:
   - Authentication pages

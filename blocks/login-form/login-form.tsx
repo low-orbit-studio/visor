@@ -3,7 +3,7 @@
 import { cn } from "../../lib/utils"
 import { Button } from "../../components/ui/button/button"
 import { Input } from "../../components/ui/input/input"
-import { Label } from "../../components/ui/label/label"
+import { Field, FieldLabel } from "../../components/ui/field/field"
 import { Card } from "../../components/ui/card/card"
 import styles from "./login-form.module.css"
 
@@ -23,22 +23,22 @@ export function LoginForm({
         </p>
       </div>
       <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
-        <div className={styles.field}>
-          <Label htmlFor="login-email">Email</Label>
+        <Field>
+          <FieldLabel htmlFor="login-email">Email</FieldLabel>
           <Input
             id="login-email"
             type="email"
             placeholder="you@example.com"
           />
-        </div>
-        <div className={styles.field}>
-          <Label htmlFor="login-password">Password</Label>
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="login-password">Password</FieldLabel>
           <Input
             id="login-password"
             type="password"
             placeholder="••••••••"
           />
-        </div>
+        </Field>
         <Button type="submit" className={styles.button}>
           Sign in
         </Button>
