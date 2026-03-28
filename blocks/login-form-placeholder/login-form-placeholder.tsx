@@ -1,22 +1,21 @@
 "use client"
 
-import styles from "./login-form-placeholder.module.css"
 import { cn } from "../../lib/utils"
+import { Button } from "../../components/ui/button/button"
+import { Input } from "../../components/ui/input/input"
+import { Label } from "../../components/ui/label/label"
+import { Card } from "../../components/ui/card/card"
+import styles from "./login-form-placeholder.module.css"
 
 interface LoginFormPlaceholderProps {
   className?: string
 }
 
-/**
- * Placeholder block for login form.
- * This is a minimal scaffold to prove the blocks pipeline end-to-end.
- * Replace with a real implementation in a future ticket.
- */
 export function LoginFormPlaceholder({
   className,
 }: LoginFormPlaceholderProps) {
   return (
-    <div className={cn(styles.root, className)}>
+    <Card className={cn(styles.root, className)}>
       <div className={styles.header}>
         <h2 className={styles.title}>Sign in</h2>
         <p className={styles.description}>
@@ -25,31 +24,25 @@ export function LoginFormPlaceholder({
       </div>
       <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
         <div className={styles.field}>
-          <label className={styles.label} htmlFor="email">
-            Email
-          </label>
-          <input
-            className={styles.input}
-            id="email"
+          <Label htmlFor="login-email">Email</Label>
+          <Input
+            id="login-email"
             type="email"
             placeholder="you@example.com"
           />
         </div>
         <div className={styles.field}>
-          <label className={styles.label} htmlFor="password">
-            Password
-          </label>
-          <input
-            className={styles.input}
-            id="password"
+          <Label htmlFor="login-password">Password</Label>
+          <Input
+            id="login-password"
             type="password"
             placeholder="••••••••"
           />
         </div>
-        <button className={styles.button} type="submit">
+        <Button type="submit" className={styles.button}>
           Sign in
-        </button>
+        </Button>
       </form>
-    </div>
+    </Card>
   )
 }
