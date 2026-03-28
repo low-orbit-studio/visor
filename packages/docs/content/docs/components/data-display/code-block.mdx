@@ -109,3 +109,10 @@ const highlighted = await codeToHtml(code, {
   <div>{/* render your highlighted output here */}</div>
 </CodeBlock>
 ```
+
+## Accessibility
+
+- The code container uses a `<pre>` element with `<code>` inside, which is the semantic standard for code blocks.
+- The copy button includes an accessible label. When copied, the button text changes to "Copied!" as visual feedback.
+- Set a `title` prop to help screen reader users identify the file or context of the code block.
+- The language badge is decorative; no ARIA role is required.

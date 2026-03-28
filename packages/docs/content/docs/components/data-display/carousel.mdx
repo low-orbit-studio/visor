@@ -75,6 +75,56 @@ export default function Example() {
   </div>
 </ComponentPreview>
 
+## Multiple Items Per View
+
+Use `opts` to configure how many slides are visible at once.
+
+<ComponentPreview
+  title="Multiple Items Visible"
+  code={"<Carousel opts={{ align: 'start' }}>\n  <CarouselContent style={{ display: 'flex', gap: '1rem' }}>\n    {['A', 'B', 'C', 'D', 'E'].map((label) => (\n      <CarouselItem key={label} style={{ flex: '0 0 40%' }}>\n        <div style={{ padding: '1.5rem', textAlign: 'center', background: 'var(--surface-muted)', borderRadius: 'var(--radius-md)' }}>{label}</div>\n      </CarouselItem>\n    ))}\n  </CarouselContent>\n  <CarouselPrevious />\n  <CarouselNext />\n</Carousel>"}
+>
+  <div style={{ maxWidth: '24rem', margin: '0 auto' }}>
+    <Carousel opts={{ align: 'start' }}>
+      <CarouselContent style={{ display: 'flex', gap: '1rem' }}>
+        {['A', 'B', 'C', 'D', 'E'].map((label) => (
+          <CarouselItem key={label} style={{ flex: '0 0 40%' }}>
+            <div style={{ padding: '1.5rem', textAlign: 'center', background: 'var(--surface-muted)', borderRadius: 'var(--radius-md)' }}>{label}</div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+  </div>
+</ComponentPreview>
+
+## Loop Mode
+
+Enable infinite looping with `opts={{ loop: true }}`.
+
+<ComponentPreview
+  title="Loop Enabled"
+  code={"<Carousel opts={{ loop: true }}>\n  <CarouselContent>\n    <CarouselItem>\n      <div style={{ padding: '2rem', textAlign: 'center', background: 'var(--surface-muted)', borderRadius: 'var(--radius-md)' }}>Slide 1</div>\n    </CarouselItem>\n    <CarouselItem>\n      <div style={{ padding: '2rem', textAlign: 'center', background: 'var(--surface-muted)', borderRadius: 'var(--radius-md)' }}>Slide 2</div>\n    </CarouselItem>\n    <CarouselItem>\n      <div style={{ padding: '2rem', textAlign: 'center', background: 'var(--surface-muted)', borderRadius: 'var(--radius-md)' }}>Slide 3</div>\n    </CarouselItem>\n  </CarouselContent>\n  <CarouselPrevious />\n  <CarouselNext />\n</Carousel>"}
+>
+  <div style={{ maxWidth: '20rem', margin: '0 auto' }}>
+    <Carousel opts={{ loop: true }}>
+      <CarouselContent>
+        <CarouselItem>
+          <div style={{ padding: '2rem', textAlign: 'center', background: 'var(--surface-muted)', borderRadius: 'var(--radius-md)' }}>Slide 1</div>
+        </CarouselItem>
+        <CarouselItem>
+          <div style={{ padding: '2rem', textAlign: 'center', background: 'var(--surface-muted)', borderRadius: 'var(--radius-md)' }}>Slide 2</div>
+        </CarouselItem>
+        <CarouselItem>
+          <div style={{ padding: '2rem', textAlign: 'center', background: 'var(--surface-muted)', borderRadius: 'var(--radius-md)' }}>Slide 3</div>
+        </CarouselItem>
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+  </div>
+</ComponentPreview>
+
 ## API Reference
 
 ### CarouselProps
@@ -90,3 +140,12 @@ export default function Example() {
 | `CarouselItem` | `<div>` | Individual slide |
 | `CarouselPrevious` | `<button>` | Previous slide button |
 | `CarouselNext` | `<button>` | Next slide button |
+
+## Accessibility
+
+- The root element has `role="region"` and `aria-roledescription="carousel"`.
+- Each `CarouselItem` has `role="group"` and `aria-roledescription="slide"`.
+- Navigation buttons include visually hidden "Previous slide" / "Next slide" text for screen readers.
+- `ArrowLeft` and `ArrowRight` keyboard navigation scrolls the carousel.
+- Previous/Next buttons are automatically `disabled` when the carousel cannot scroll in that direction.
+- Add an `aria-label` to the root `Carousel` to identify it for screen reader users (e.g., `aria-label="Product photos"`).

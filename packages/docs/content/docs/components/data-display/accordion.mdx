@@ -13,23 +13,34 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/
 npx visor add accordion
 ```
 
+This copies two files into your project:
+
+- `components/ui/accordion/accordion.tsx` — the component
+- `components/ui/accordion/accordion.module.css` — the styles
+
 ## Usage
 
 ```tsx
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion/accordion';
 
-<Accordion type="single" collapsible>
-  <AccordionItem value="item-1">
-    <AccordionTrigger>Section One</AccordionTrigger>
-    <AccordionContent>Content for section one.</AccordionContent>
-  </AccordionItem>
-</Accordion>
+export default function Example() {
+  return (
+    <Accordion type="single" collapsible>
+      <AccordionItem value="item-1">
+        <AccordionTrigger>Section One</AccordionTrigger>
+        <AccordionContent>Content for section one.</AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+}
 ```
 
-## Single Collapsible
+## Single Mode
+
+Only one item can be open at a time. With `collapsible`, clicking the open item closes it.
 
 <ComponentPreview
-  title="Single Mode"
+  title="Single Collapsible"
   code={"<Accordion type=\"single\" collapsible>\n  <AccordionItem value=\"item-1\">\n    <AccordionTrigger>What is Visor?</AccordionTrigger>\n    <AccordionContent>A shared design system with copy-and-own components.</AccordionContent>\n  </AccordionItem>\n  <AccordionItem value=\"item-2\">\n    <AccordionTrigger>How do I install components?</AccordionTrigger>\n    <AccordionContent>Run npx visor add followed by the component name.</AccordionContent>\n  </AccordionItem>\n  <AccordionItem value=\"item-3\">\n    <AccordionTrigger>Can I customize components?</AccordionTrigger>\n    <AccordionContent>Yes — you own the source files and can edit them freely.</AccordionContent>\n  </AccordionItem>\n</Accordion>"}
 >
   <Accordion type="single" collapsible>
@@ -48,8 +59,71 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/
   </Accordion>
 </ComponentPreview>
 
+## Multiple Mode
+
+Multiple items can be expanded simultaneously.
+
+<ComponentPreview
+  title="Multiple Expansion"
+  code={"<Accordion type=\"multiple\" defaultValue={['item-1', 'item-2']}>\n  <AccordionItem value=\"item-1\">\n    <AccordionTrigger>Design Tokens</AccordionTrigger>\n    <AccordionContent>CSS custom properties distributed via npm. Themes update automatically.</AccordionContent>\n  </AccordionItem>\n  <AccordionItem value=\"item-2\">\n    <AccordionTrigger>Registry Components</AccordionTrigger>\n    <AccordionContent>Copied into your project with full edit rights.</AccordionContent>\n  </AccordionItem>\n  <AccordionItem value=\"item-3\">\n    <AccordionTrigger>Theming</AccordionTrigger>\n    <AccordionContent>All components reference CSS custom properties — swap themes by changing a class.</AccordionContent>\n  </AccordionItem>\n</Accordion>"}
+>
+  <Accordion type="multiple" defaultValue={['item-1', 'item-2']}>
+    <AccordionItem value="item-1">
+      <AccordionTrigger>Design Tokens</AccordionTrigger>
+      <AccordionContent>CSS custom properties distributed via npm. Themes update automatically.</AccordionContent>
+    </AccordionItem>
+    <AccordionItem value="item-2">
+      <AccordionTrigger>Registry Components</AccordionTrigger>
+      <AccordionContent>Copied into your project with full edit rights.</AccordionContent>
+    </AccordionItem>
+    <AccordionItem value="item-3">
+      <AccordionTrigger>Theming</AccordionTrigger>
+      <AccordionContent>All components reference CSS custom properties — swap themes by changing a class.</AccordionContent>
+    </AccordionItem>
+  </Accordion>
+</ComponentPreview>
+
+## Disabled Item
+
+Individual items can be disabled to prevent expansion.
+
+<ComponentPreview
+  title="Disabled Item"
+  code={"<Accordion type=\"single\" collapsible>\n  <AccordionItem value=\"item-1\">\n    <AccordionTrigger>Available Feature</AccordionTrigger>\n    <AccordionContent>This item can be expanded.</AccordionContent>\n  </AccordionItem>\n  <AccordionItem value=\"item-2\" disabled>\n    <AccordionTrigger>Coming Soon</AccordionTrigger>\n    <AccordionContent>This item is disabled.</AccordionContent>\n  </AccordionItem>\n</Accordion>"}
+>
+  <Accordion type="single" collapsible>
+    <AccordionItem value="item-1">
+      <AccordionTrigger>Available Feature</AccordionTrigger>
+      <AccordionContent>This item can be expanded.</AccordionContent>
+    </AccordionItem>
+    <AccordionItem value="item-2" disabled>
+      <AccordionTrigger>Coming Soon</AccordionTrigger>
+      <AccordionContent>This item is disabled.</AccordionContent>
+    </AccordionItem>
+  </Accordion>
+</ComponentPreview>
+
 ## API Reference
 
 ### AccordionProps
 
 <PropsTable component="accordion" />
+
+The component also accepts all standard `<div>` HTML attributes.
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `Accordion` | `<div>` | Root container. Requires `type` prop. |
+| `AccordionItem` | `<div>` | Individual collapsible section. Requires `value` prop. |
+| `AccordionTrigger` | `<button>` | Toggle button with animated caret icon. |
+| `AccordionContent` | `<div>` | Animated content area. |
+
+## Accessibility
+
+- Built on Radix UI `Accordion` primitive — fully keyboard accessible.
+- Uses `role="button"` on triggers with `aria-expanded` state management.
+- `ArrowDown` / `ArrowUp` navigate between triggers; `Enter` or `Space` toggles.
+- Disabled items receive `aria-disabled="true"` and are skipped in keyboard navigation.
+- Content regions use `role="region"` linked to their trigger via `aria-labelledby`.

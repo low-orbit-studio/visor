@@ -62,7 +62,9 @@ export default function Example() {
 }
 ```
 
-## Basic Example
+## All Statuses
+
+Each `TimelineItem` accepts a `status` of `complete`, `active`, or `upcoming` (default).
 
 <ComponentPreview
   title="Timeline with Status"
@@ -92,6 +94,69 @@ export default function Example() {
   </Timeline>
 </ComponentPreview>
 
+## Custom Icon
+
+Use `TimelineIcon` to replace the default dot with any content.
+
+<ComponentPreview
+  title="Custom Icon"
+  code={"<Timeline>\n  <TimelineItem status=\"complete\">\n    <TimelineIcon>✓</TimelineIcon>\n    <TimelineContent>\n      <TimelineTitle>Completed Step</TimelineTitle>\n      <TimelineDescription>This step is done.</TimelineDescription>\n    </TimelineContent>\n  </TimelineItem>\n  <TimelineItem status=\"active\">\n    <TimelineIcon>→</TimelineIcon>\n    <TimelineContent>\n      <TimelineTitle>Active Step</TimelineTitle>\n      <TimelineDescription>Currently in progress.</TimelineDescription>\n    </TimelineContent>\n  </TimelineItem>\n  <TimelineItem>\n    <TimelineIcon>○</TimelineIcon>\n    <TimelineContent>\n      <TimelineTitle>Upcoming Step</TimelineTitle>\n      <TimelineDescription>Not yet started.</TimelineDescription>\n    </TimelineContent>\n  </TimelineItem>\n</Timeline>"}
+>
+  <Timeline>
+    <TimelineItem status="complete">
+      <TimelineIcon>✓</TimelineIcon>
+      <TimelineContent>
+        <TimelineTitle>Completed Step</TimelineTitle>
+        <TimelineDescription>This step is done.</TimelineDescription>
+      </TimelineContent>
+    </TimelineItem>
+    <TimelineItem status="active">
+      <TimelineIcon>→</TimelineIcon>
+      <TimelineContent>
+        <TimelineTitle>Active Step</TimelineTitle>
+        <TimelineDescription>Currently in progress.</TimelineDescription>
+      </TimelineContent>
+    </TimelineItem>
+    <TimelineItem>
+      <TimelineIcon>○</TimelineIcon>
+      <TimelineContent>
+        <TimelineTitle>Upcoming Step</TimelineTitle>
+        <TimelineDescription>Not yet started.</TimelineDescription>
+      </TimelineContent>
+    </TimelineItem>
+  </Timeline>
+</ComponentPreview>
+
+## With Timestamps
+
+`TimelineTimestamp` renders a `<time>` element. Pass a machine-readable `dateTime` for semantic correctness.
+
+<ComponentPreview
+  title="With Timestamps"
+  code={"<Timeline>\n  <TimelineItem status=\"complete\">\n    <TimelineContent>\n      <TimelineTitle>Repository created</TimelineTitle>\n      <TimelineTimestamp dateTime=\"2024-03-01\">March 1, 2024</TimelineTimestamp>\n    </TimelineContent>\n  </TimelineItem>\n  <TimelineItem status=\"complete\">\n    <TimelineContent>\n      <TimelineTitle>First commit pushed</TimelineTitle>\n      <TimelineTimestamp dateTime=\"2024-03-05\">March 5, 2024</TimelineTimestamp>\n    </TimelineContent>\n  </TimelineItem>\n  <TimelineItem status=\"active\">\n    <TimelineContent>\n      <TimelineTitle>Beta release</TimelineTitle>\n      <TimelineTimestamp dateTime=\"2024-04-01\">April 1, 2024</TimelineTimestamp>\n    </TimelineContent>\n  </TimelineItem>\n</Timeline>"}
+>
+  <Timeline>
+    <TimelineItem status="complete">
+      <TimelineContent>
+        <TimelineTitle>Repository created</TimelineTitle>
+        <TimelineTimestamp dateTime="2024-03-01">March 1, 2024</TimelineTimestamp>
+      </TimelineContent>
+    </TimelineItem>
+    <TimelineItem status="complete">
+      <TimelineContent>
+        <TimelineTitle>First commit pushed</TimelineTitle>
+        <TimelineTimestamp dateTime="2024-03-05">March 5, 2024</TimelineTimestamp>
+      </TimelineContent>
+    </TimelineItem>
+    <TimelineItem status="active">
+      <TimelineContent>
+        <TimelineTitle>Beta release</TimelineTitle>
+        <TimelineTimestamp dateTime="2024-04-01">April 1, 2024</TimelineTimestamp>
+      </TimelineContent>
+    </TimelineItem>
+  </Timeline>
+</ComponentPreview>
+
 ## API Reference
 
 ### TimelineItemProps
@@ -111,3 +176,10 @@ The container and all sub-components accept standard HTML `<div>` attributes. `T
 | `TimelineTitle` | `<div>` | Event title |
 | `TimelineDescription` | `<p>` | Event description |
 | `TimelineTimestamp` | `<time>` | Semantic timestamp |
+
+## Accessibility
+
+- Use `TimelineTimestamp` with a `dateTime` attribute in ISO 8601 format (`YYYY-MM-DD` or `YYYY-MM-DDTHH:mm:ss`) for machine-readable dates that screen readers and parsers understand.
+- The `status` prop maps to a `data-status` attribute which drives visual styling — no ARIA role is applied automatically. For critical status changes (e.g., order tracking), consider adding `aria-label` to `TimelineItem` describing the status.
+- If icons in `TimelineIcon` are purely decorative, ensure they have `aria-hidden="true"`.
+- Wrap the entire `Timeline` in a `<section>` with an `aria-label` when it represents a named region of the page.
