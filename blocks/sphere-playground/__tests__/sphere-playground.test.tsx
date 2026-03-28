@@ -16,6 +16,7 @@ vi.mock("three", () => ({
     render: vi.fn(),
     dispose: vi.fn(),
     domElement: document.createElement("canvas"),
+    outputColorSpace: "",
   })),
   Scene: vi.fn(() => ({ add: vi.fn() })),
   PerspectiveCamera: vi.fn(() => ({
