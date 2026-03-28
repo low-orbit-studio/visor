@@ -44,6 +44,7 @@ vi.mock("three", () => ({
   Clock: vi.fn(() => ({ getDelta: vi.fn(() => 0.016) })),
   Timer: vi.fn(() => ({ update: vi.fn(), getDelta: vi.fn(() => 0.016), getElapsed: vi.fn(() => 0), connect: vi.fn(), disconnect: vi.fn(), dispose: vi.fn() })),
   AdditiveBlending: 2,
+  LinearSRGBColorSpace: "srgb-linear",
 }))
 
 vi.mock("three/addons/controls/OrbitControls.js", () => ({
