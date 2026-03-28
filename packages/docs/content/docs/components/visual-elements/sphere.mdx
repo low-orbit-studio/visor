@@ -3,7 +3,9 @@ title: Sphere
 description: GPU-accelerated particle sphere visualization with 256K particles, 6 geometry modes, 5 color schemes, and think-mode animation effects.
 ---
 
+import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
+import { Sphere as SphereDemo } from '@/components/ui/sphere';
 
 ## Installation
 
@@ -24,6 +26,17 @@ import { Sphere } from '@/components/visual/sphere/sphere';
 ```
 
 The Sphere component fills its container. Wrap it in a sized element.
+
+## Preview
+
+<ComponentPreview
+  title="Sphere"
+  code={"import { Sphere } from '@/components/visual/sphere/sphere';\n\n<div style={{ width: '100%', height: '400px' }}>\n  <Sphere colorScheme=\"solar\" mode=\"sphere\" />\n</div>"}
+>
+  <div style={{ width: '100%', height: '400px' }}>
+    <SphereDemo colorScheme="solar" mode="sphere" />
+  </div>
+</ComponentPreview>
 
 ## SSR Compatibility
 

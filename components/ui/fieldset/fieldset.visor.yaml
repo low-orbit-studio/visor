@@ -16,6 +16,20 @@ why: >
   announce the legend text when entering the group, improving form navigation for
   assistive technology users.
 
+props:
+  - name: className
+    type: string
+    default: "undefined"
+    description: Additional CSS class names
+  - name: disabled
+    type: boolean
+    default: false
+    description: Disables all form controls within the fieldset
+  - name: children
+    type: React.ReactNode
+    default: "undefined"
+    description: Form fields and legend to group
+
 sub_components:
   - name: FieldsetLegend
     description: The heading/caption for the fieldset group.

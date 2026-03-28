@@ -21,6 +21,28 @@ why: >
   built-in close button and animated overlay ensure a polished experience
   without any manual wiring.
 
+props:
+  - name: open
+    type: boolean
+    default: "undefined"
+    description: Controlled open state (Dialog root)
+  - name: onOpenChange
+    type: "(open: boolean) => void"
+    default: "undefined"
+    description: Called when open state changes (Dialog root)
+  - name: modal
+    type: boolean
+    default: true
+    description: When true, interaction with outside elements is blocked (Dialog root)
+  - name: className
+    type: string
+    default: "undefined"
+    description: Additional CSS class names (DialogContent)
+  - name: children
+    type: React.ReactNode
+    default: "undefined"
+    description: Content to render inside the dialog
+
 sub_components:
   - name: Dialog
     description: Root component managing open/close state.

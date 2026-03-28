@@ -15,6 +15,24 @@ when_not_to_use:
   - Standard modal dialogs — use Dialog instead
   - Image galleries — use Lightbox instead
   - Side panels — use Sheet instead
+props:
+  - name: open
+    type: boolean
+    default: "undefined"
+    description: Controlled open state
+  - name: onOpenChange
+    type: "(open: boolean) => void"
+    default: "undefined"
+    description: Called when open state changes
+  - name: children
+    type: React.ReactNode
+    default: "undefined"
+    description: Trigger and content sub-components
+  - name: fullbleed
+    type: boolean
+    default: false
+    description: Remove all padding so content fills the entire viewport (FullscreenOverlayContent only)
+
 sub_components:
   - name: FullscreenOverlay
     description: Root component wrapping Radix Dialog.Root

@@ -36,6 +36,6 @@
 
 /* File input styles */
 .base[type="file"] {
-  padding: 0.125rem var(--spacing-3, 0.75rem);
+  padding: calc(var(--spacing-1, 0.25rem) / 2) var(--spacing-3, 0.75rem);
   font-size: var(--font-size-sm, 0.875rem);
 }

@@ -3,7 +3,7 @@
   position: relative;
   display: grid;
   width: 100%;
-  gap: 0.125rem;
+  gap: calc(var(--spacing-1, 0.25rem) / 2);
   border-radius: var(--radius-lg, 0.5rem);
   border: 1px solid var(--border-default, #e5e7eb);
   padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);

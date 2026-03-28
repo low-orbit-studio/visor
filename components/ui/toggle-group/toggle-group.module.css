@@ -42,7 +42,7 @@
 }
 
 .variantOutline.sizeXs {
-  padding: 2px;
+  padding: calc(var(--spacing-1, 0.25rem) / 2);
   border-radius: var(--radius-md, 0.375rem);
 }
 
