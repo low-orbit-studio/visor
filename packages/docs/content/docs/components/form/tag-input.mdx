@@ -13,6 +13,11 @@ import { TagInput } from '@/components/ui/tag-input';
 npx visor add tag-input
 ```
 
+This copies two files into your project:
+
+- `components/ui/tag-input/tag-input.tsx` — the component
+- `components/ui/tag-input/tag-input.module.css` — the styles
+
 ## Usage
 
 ```tsx
@@ -54,8 +59,27 @@ import { TagInput } from '@/components/ui/tag-input/tag-input';
   </div>
 </ComponentPreview>
 
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={"<TagInput defaultValue={['React', 'TypeScript']} disabled />"}
+>
+  <div style={{ width: '100%', maxWidth: '24rem' }}>
+    <TagInput defaultValue={['React', 'TypeScript']} disabled />
+  </div>
+</ComponentPreview>
+
 ## API Reference
 
 ### TagInputProps
 
 <PropsTable component="tag-input" />
+
+## Accessibility
+
+- The input has `role="combobox"` with `aria-expanded` when suggestions are shown
+- Each tag chip has an associated remove button with `aria-label="Remove [tag name]"`
+- Keyboard: Enter or comma adds a tag; Backspace removes the last tag when input is empty; Delete removes a focused tag
+- Use an `aria-label` or associated `<Label>` to describe what kind of tags are expected (e.g., "Skills", "Topics")
+- When `max` is reached, the input is disabled and an `aria-live` region announces that the limit has been hit

@@ -13,6 +13,11 @@ import { OTPInput } from '@/components/ui/otp-input';
 npx visor add otp-input
 ```
 
+This copies two files into your project:
+
+- `components/ui/otp-input/otp-input.tsx` — the component
+- `components/ui/otp-input/otp-input.module.css` — the styles
+
 ## Usage
 
 ```tsx
@@ -21,7 +26,7 @@ import { OTPInput } from '@/components/ui/otp-input/otp-input';
 <OTPInput length={6} onChange={(code) => console.log(code)} />
 ```
 
-## Default (6 digits)
+## Default (6 Digits)
 
 <ComponentPreview
   title="OTP Input"
@@ -30,7 +35,7 @@ import { OTPInput } from '@/components/ui/otp-input/otp-input';
   <OTPInput length={6} />
 </ComponentPreview>
 
-## 4 Digits
+## 4-Digit PIN
 
 <ComponentPreview
   title="4-Digit PIN"
@@ -39,8 +44,25 @@ import { OTPInput } from '@/components/ui/otp-input/otp-input';
   <OTPInput length={4} />
 </ComponentPreview>
 
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={"<OTPInput length={6} disabled />"}
+>
+  <OTPInput length={6} disabled />
+</ComponentPreview>
+
 ## API Reference
 
 ### OTPInputProps
 
 <PropsTable component="otp-input" />
+
+## Accessibility
+
+- Each digit cell renders as `type="text"` with `inputmode="numeric"` and `maxlength="1"`
+- Cells are grouped inside a `<div role="group">` with an accessible label (e.g., `aria-label="One-time password"`)
+- Focus auto-advances to the next cell on digit entry and moves back on Backspace
+- Paste support fills all cells from clipboard and focuses the last filled cell
+- Provide a descriptive `aria-label` prop on the group for screen reader context (e.g., "Enter your 6-digit verification code")

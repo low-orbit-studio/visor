@@ -13,6 +13,11 @@ import { Input } from '@/components/ui/input';
 npx visor add input
 ```
 
+This copies two files into your project:
+
+- `components/ui/input/input.tsx` — the component
+- `components/ui/input/input.module.css` — the styles
+
 ## Usage
 
 ```tsx
@@ -29,6 +34,20 @@ import { Input } from '@/components/ui/input/input';
 >
   <div style={{ width: '100%', maxWidth: '20rem' }}>
     <Input type="email" placeholder="you@example.com" />
+  </div>
+</ComponentPreview>
+
+## Types
+
+<ComponentPreview
+  title="Input Types"
+  code={"<Input type=\"text\" placeholder=\"Text\" />\n<Input type=\"email\" placeholder=\"Email\" />\n<Input type=\"number\" placeholder=\"Number\" />\n<Input type=\"url\" placeholder=\"URL\" />"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%', maxWidth: '20rem' }}>
+    <Input type="text" placeholder="Text" />
+    <Input type="email" placeholder="Email" />
+    <Input type="number" placeholder="Number" />
+    <Input type="url" placeholder="URL" />
   </div>
 </ComponentPreview>
 
@@ -59,3 +78,12 @@ import { Input } from '@/components/ui/input/input';
 ### InputProps
 
 <PropsTable component="input" />
+
+The component also accepts all standard `<input>` HTML attributes.
+
+## Accessibility
+
+- Renders a native `<input>` — always pair with a `<Label>` using matching `htmlFor`/`id`
+- Use `aria-invalid="true"` to signal a validation error; pair with a `<FieldError>` or `aria-describedby` pointing to the error message
+- `disabled` sets `aria-disabled` and prevents interaction; `readonly` allows focus but prevents editing
+- Use the `Field` component to automatically compose label, description, and error for a fully accessible form field

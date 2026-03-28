@@ -13,6 +13,11 @@ import { SearchInput } from '@/components/ui/search-input';
 npx visor add search-input
 ```
 
+This copies two files into your project:
+
+- `components/ui/search-input/search-input.tsx` — the component
+- `components/ui/search-input/search-input.module.css` — the styles
+
 This also installs the `input` component as a dependency.
 
 ## Usage
@@ -34,8 +39,29 @@ import { SearchInput } from '@/components/ui/search-input/search-input';
   </div>
 </ComponentPreview>
 
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={"<SearchInput placeholder=\"Search...\" disabled />"}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <SearchInput placeholder="Search..." disabled />
+  </div>
+</ComponentPreview>
+
 ## API Reference
 
 ### SearchInputProps
 
 <PropsTable component="search-input" />
+
+The component also accepts all standard `<input>` HTML attributes.
+
+## Accessibility
+
+- Renders `type="search"` which adds browser-native clear functionality on some platforms
+- The search icon is `aria-hidden="true"` — it is decorative
+- The clear button (when shown) has `aria-label="Clear search"` and is only rendered when the input has a value
+- Provide a visible `<Label>` or `aria-label` to describe the search scope (e.g., "Search components", "Search users")
+- In a live-search context, pair with an `aria-live="polite"` region to announce result counts as the user types

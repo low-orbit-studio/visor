@@ -35,13 +35,31 @@ export default function Example() {
 }
 ```
 
-## Basic Example
+## Default
 
 <ComponentPreview
   title="File Upload"
-  code={"<FileUpload accept=\"image/*\" maxSize={5} />"}
+  code={"import { FileUpload } from '@/components/ui/file-upload/file-upload';\n\n<FileUpload accept=\"image/*\" maxSize={5} />"}
 >
   <FileUpload accept="image/*" maxSize={5} />
+</ComponentPreview>
+
+## Multiple Files
+
+<ComponentPreview
+  title="Multiple Files"
+  code={"<FileUpload accept=\"image/*,.pdf\" maxSize={10} maxFiles={5} />"}
+>
+  <FileUpload accept="image/*,.pdf" maxSize={10} maxFiles={5} />
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={"<FileUpload disabled />"}
+>
+  <FileUpload disabled />
 </ComponentPreview>
 
 ## API Reference
@@ -49,3 +67,11 @@ export default function Example() {
 <PropsTable component="file-upload" />
 
 The File Upload component is a **drop zone only** — it handles file selection and validation but does not manage file lists, progress tracking, or upload logic. Compose it with your own file list and upload implementation.
+
+## Accessibility
+
+- The drop zone renders as a `<button>` so it is reachable via Tab and activatable with Enter/Space
+- Keyboard users can open the native file picker via Enter or Space
+- `aria-label` defaults to "Upload files" — override it to describe the expected file type (e.g., "Upload profile photo")
+- Drag-over state is communicated visually via a border highlight; consider pairing with an `aria-live` region to announce when files are accepted or rejected
+- Screen readers announce validation errors (wrong file type, file too large) via an `aria-live="polite"` region

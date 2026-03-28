@@ -13,6 +13,11 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 npx visor add toggle-group
 ```
 
+This copies two files into your project:
+
+- `components/ui/toggle-group/toggle-group.tsx` — the component
+- `components/ui/toggle-group/toggle-group.module.css` — the styles
+
 ## Usage
 
 ```tsx
@@ -68,8 +73,29 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group/toggl
   </div>
 </ComponentPreview>
 
+## Multiple Selection
+
+<ComponentPreview
+  title="Multiple Selection"
+  code={"<ToggleGroup type=\"multiple\" defaultValue={['bold']}>\n  <ToggleGroupItem value=\"bold\">Bold</ToggleGroupItem>\n  <ToggleGroupItem value=\"italic\">Italic</ToggleGroupItem>\n  <ToggleGroupItem value=\"underline\">Underline</ToggleGroupItem>\n</ToggleGroup>"}
+>
+  <ToggleGroup type="multiple" defaultValue={['bold']}>
+    <ToggleGroupItem value="bold">Bold</ToggleGroupItem>
+    <ToggleGroupItem value="italic">Italic</ToggleGroupItem>
+    <ToggleGroupItem value="underline">Underline</ToggleGroupItem>
+  </ToggleGroup>
+</ComponentPreview>
+
 ## API Reference
 
 ### ToggleGroupProps
 
 <PropsTable component="toggle-group" />
+
+## Accessibility
+
+- Built on `@radix-ui/react-toggle-group` with full WAI-ARIA toolbar semantics
+- The group renders with `role="group"`; each item renders with `role="radio"` (single) or `role="checkbox"` (multiple)
+- Active items have `aria-pressed="true"` (or `aria-checked` depending on type)
+- Provide an `aria-label` on `<ToggleGroup>` to describe the purpose of the group (e.g., "Text formatting", "View mode")
+- Keyboard: Arrow keys navigate between items within the group; Space/Enter toggles the focused item

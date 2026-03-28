@@ -15,6 +15,11 @@ import { Input } from '@/components/ui/input';
 npx visor add fieldset
 ```
 
+This copies two files into your project:
+
+- `components/ui/fieldset/fieldset.tsx` — the component
+- `components/ui/fieldset/fieldset.module.css` — the styles
+
 ## Usage
 
 ```tsx
@@ -49,8 +54,38 @@ import { Fieldset, FieldsetLegend } from '@/components/ui/fieldset/fieldset';
   </div>
 </ComponentPreview>
 
+## Disabled
+
+<ComponentPreview
+  title="Disabled Fieldset"
+  code={"<Fieldset disabled>\n  <FieldsetLegend>Shipping Address</FieldsetLegend>\n  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>\n    <Field>\n      <FieldLabel htmlFor=\"street\">Street</FieldLabel>\n      <Input id=\"street\" placeholder=\"123 Main St\" />\n    </Field>\n    <Field>\n      <FieldLabel htmlFor=\"city\">City</FieldLabel>\n      <Input id=\"city\" placeholder=\"Brooklyn\" />\n    </Field>\n  </div>\n</Fieldset>"}
+>
+  <div style={{ width: '100%', maxWidth: '24rem' }}>
+    <Fieldset disabled>
+      <FieldsetLegend>Shipping Address</FieldsetLegend>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
+        <Field>
+          <FieldLabel htmlFor="street-demo">Street</FieldLabel>
+          <Input id="street-demo" placeholder="123 Main St" />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="city-demo">City</FieldLabel>
+          <Input id="city-demo" placeholder="Brooklyn" />
+        </Field>
+      </div>
+    </Fieldset>
+  </div>
+</ComponentPreview>
+
 ## API Reference
 
 ### FieldsetProps
 
 <PropsTable component="fieldset" />
+
+## Accessibility
+
+- Renders a native `<fieldset>` element — semantically groups related controls
+- `FieldsetLegend` renders a `<legend>`, which screen readers associate with all controls inside the fieldset
+- Setting `disabled` on the `<fieldset>` propagates to all descendant form controls automatically via the browser
+- Prefer `Fieldset` + `FieldsetLegend` over generic `<div>` wrappers when controls share a logical purpose (e.g., address fields, contact info)

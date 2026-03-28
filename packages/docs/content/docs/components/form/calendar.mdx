@@ -37,13 +37,43 @@ export default function Example() {
 }
 ```
 
-## Basic Example
+## Single Selection
 
 <ComponentPreview
-  title="Calendar"
-  code={"<Calendar mode=\"single\" />"}
+  title="Single Date"
+  code={"import { Calendar } from '@/components/ui/calendar/calendar';\n\n<Calendar mode=\"single\" />"}
 >
   <Calendar mode="single" />
+</ComponentPreview>
+
+## Range Selection
+
+<ComponentPreview
+  title="Date Range"
+  code={"import { Calendar } from '@/components/ui/calendar/calendar';\n\n<Calendar mode=\"range\" />"}
+>
+  <Calendar mode="range" />
+</ComponentPreview>
+
+## Multiple Selection
+
+<ComponentPreview
+  title="Multiple Dates"
+  code={"import { Calendar } from '@/components/ui/calendar/calendar';\n\n<Calendar mode=\"multiple\" />"}
+>
+  <Calendar mode="multiple" />
+</ComponentPreview>
+
+## With Disabled Dates
+
+<ComponentPreview
+  title="Disabled Dates"
+  code={"import { Calendar } from '@/components/ui/calendar/calendar';\n\n<Calendar\n  mode=\"single\"\n  disabled={{ dayOfWeek: [0, 6] }}\n/>"}
+>
+  <Calendar
+    mode="single"
+    disabled={{ dayOfWeek: [0, 6] }}
+  />
 </ComponentPreview>
 
 ## API Reference
@@ -51,3 +81,11 @@ export default function Example() {
 <PropsTable component="calendar" />
 
 The Calendar component accepts all [react-day-picker](https://react-day-picker.js.org/) props including `mode`, `selected`, `onSelect`, `disabled`, `fromDate`, `toDate`, and more.
+
+## Accessibility
+
+- Built on `react-day-picker` which renders a full ARIA grid calendar
+- Navigation buttons include `aria-label` attributes ("Go to previous month", "Go to next month")
+- Days communicate their state via `aria-selected`, `aria-disabled`, and `aria-current="date"` for today
+- Full keyboard navigation: Arrow keys move focus between days, Enter/Space select, Page Up/Down navigate months
+- Announce the current month/year via `role="heading"` on the caption
