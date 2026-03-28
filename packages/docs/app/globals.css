@@ -289,3 +289,13 @@ p.preview-title {
 [data-fullscreen="true"] .sphere-playground-preview {
   height: 100%;
 }
+
+/* Deck preview — constrain height for inline preview */
+.deck-preview {
+  width: 100%;
+  height: 700px;
+}
+
+[data-fullscreen="true"] .deck-preview {
+  height: 100%;
+}

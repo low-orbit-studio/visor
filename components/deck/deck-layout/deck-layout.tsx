@@ -71,6 +71,7 @@ export function DeckLayout({
   }, [])
 
   const { goTo, navigateTo } = useSlideEngine({
+    containerRef,
     sectionsRef,
     currentIndexRef,
     setCurrentIndex: updateCurrentIndex,
@@ -89,14 +90,6 @@ export function DeckLayout({
 
   return (
     <DeckProvider value={deckValue}>
-      <DotNav
-        slideCount={slideCount}
-        currentIndex={currentIndex}
-        onDotClick={goTo}
-        variant={currentTheme}
-        titles={slideTitles}
-      />
-      {controls?.({ containerRef, currentIndex, variant: currentTheme })}
       <div
         ref={containerRef}
         data-slot="deck-layout"
@@ -105,6 +98,14 @@ export function DeckLayout({
         style={{ outline: 'none' }}
       >
         {children}
+        <DotNav
+          slideCount={slideCount}
+          currentIndex={currentIndex}
+          onDotClick={goTo}
+          variant={currentTheme}
+          titles={slideTitles}
+        />
+        {controls?.({ containerRef, currentIndex, variant: currentTheme })}
       </div>
     </DeckProvider>
   )

@@ -7,6 +7,8 @@ function easeInOutQuad(t: number): number {
 }
 
 export interface UseSlideEngineOptions {
+  /** Container element that scrolls */
+  containerRef?: React.RefObject<HTMLElement | null>
   sectionsRef: React.RefObject<HTMLElement[]>
   currentIndexRef: React.MutableRefObject<number>
   setCurrentIndex?: (index: number) => void
@@ -14,6 +16,7 @@ export interface UseSlideEngineOptions {
 }
 
 export function useSlideEngine({
+  containerRef,
   sectionsRef,
   currentIndexRef,
   setCurrentIndex,
@@ -31,18 +34,24 @@ export function useSlideEngine({
 
       document.documentElement.classList.add("deck-scrolling")
 
+      const container = containerRef?.current
       const target = sections[index].offsetTop
-      const start = window.scrollY
+      const start = container ? container.scrollTop : window.scrollY
       const dist = target - start
-      let t0: number | null = null
 
-      function step(ts: number) {
-        if (t0 === null) t0 = ts
-        const p = Math.min((ts - t0) / duration, 1)
-        window.scrollTo(0, start + dist * easeInOutQuad(p))
+      function step(ts: number, t0: number | null): void {
+        const startTime = t0 ?? ts
+        const p = Math.min((ts - startTime) / duration, 1)
+        const pos = start + dist * easeInOutQuad(p)
+
+        if (container) {
+          container.scrollTop = pos
+        } else {
+          window.scrollTo(0, pos)
+        }
 
         if (p < 1) {
-          requestAnimationFrame(step)
+          requestAnimationFrame((t) => step(t, startTime))
         } else {
           document.documentElement.classList.remove("deck-scrolling")
           isScrollingRef.current = false
@@ -55,9 +64,9 @@ export function useSlideEngine({
         }
       }
 
-      requestAnimationFrame(step)
+      requestAnimationFrame((ts) => step(ts, null))
     },
-    [sectionsRef, currentIndexRef, duration, setCurrentIndex]
+    [containerRef, sectionsRef, currentIndexRef, duration, setCurrentIndex]
   )
 
   const navigateTo = useCallback(
