@@ -117,10 +117,15 @@ describe("SpherePlayground", () => {
     expect(container.firstChild).toHaveClass("custom")
   })
 
-  it("calls onCodeChange with default Sphere code on mount", () => {
+  it("calls onCodeChange with all props on mount", () => {
     const onCodeChange = vi.fn()
     render(<SpherePlayground onCodeChange={onCodeChange} />)
-    expect(onCodeChange).toHaveBeenCalledWith("<Sphere />")
+    const code = onCodeChange.mock.calls.at(-1)?.[0] as string
+    expect(code).toContain('mode="sphere"')
+    expect(code).toContain("scale={1}")
+    expect(code).toContain("dotSize={0.4}")
+    expect(code).toContain("saturation={1.8}")
+    expect(code).toContain("thinkEffects=")
   })
 
   it("calls onCodeChange with non-default props", () => {

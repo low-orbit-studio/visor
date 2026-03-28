@@ -99,29 +99,20 @@ export function SpherePlayground({
 
   // --- Live code generation ---
   const liveCode = useMemo(() => {
-    const props: string[] = []
-
-    if (mode !== "sphere") props.push(`  mode="${mode}"`)
-    if (colorScheme !== "solar") props.push(`  colorScheme="${colorScheme}"`)
-    if (scale !== 1.0) props.push(`  scale={${scale}}`)
-    if (waves !== 1.0) props.push(`  waves={${waves}}`)
-    if (speedMultiplier !== 1.0)
-      props.push(`  speed={${Number(speedMultiplier.toFixed(2))}}`)
-    if (dotSize !== 0.4) props.push(`  dotSize={${dotSize}}`)
-    if (blur !== 0.75) props.push(`  blur={${blur}}`)
-    if (saturation !== 1.8) props.push(`  saturation={${saturation}}`)
-    if (lightness !== 0.8) props.push(`  lightness={${lightness}}`)
-    if (thinkIntensity !== 0)
-      props.push(`  thinkIntensity={${thinkIntensity}}`)
-
-    const effectsDefault =
-      thinkEffects.pulses && thinkEffects.ramp && thinkEffects.scatter
-    if (!effectsDefault) {
-      const obj = `{ pulses: ${thinkEffects.pulses}, ramp: ${thinkEffects.ramp}, scatter: ${thinkEffects.scatter} }`
-      props.push(`  thinkEffects={${obj}}`)
-    }
-
-    if (props.length === 0) return "<Sphere />"
+    const effects = `{ pulses: ${thinkEffects.pulses}, ramp: ${thinkEffects.ramp}, scatter: ${thinkEffects.scatter} }`
+    const props = [
+      `  mode="${mode}"`,
+      `  colorScheme="${colorScheme}"`,
+      `  scale={${scale}}`,
+      `  waves={${waves}}`,
+      `  speed={${Number(speedMultiplier.toFixed(2))}}`,
+      `  dotSize={${dotSize}}`,
+      `  blur={${blur}}`,
+      `  saturation={${saturation}}`,
+      `  lightness={${lightness}}`,
+      `  thinkIntensity={${thinkIntensity}}`,
+      `  thinkEffects={${effects}}`,
+    ]
     return `<Sphere\n${props.join("\n")}\n/>`
   }, [
     mode, colorScheme, scale, waves, speedMultiplier,
