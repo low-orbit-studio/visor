@@ -37,10 +37,7 @@ export default function Example() {
 
 <ComponentPreview
   title="Basic Code Block"
-  code={`<CodeBlock
-  code="const greeting = 'Hello, world!';"
-  language="typescript"
-/>`}
+  code={"<CodeBlock\n  code=\"const greeting = 'Hello, world!';\"\n  language=\"typescript\"\n/>"}
 >
   <CodeBlock
     code="const greeting = 'Hello, world!';"
@@ -52,17 +49,10 @@ export default function Example() {
 
 <ComponentPreview
   title="Line Numbers"
-  code={`<CodeBlock
-  code={\`function fibonacci(n) {
-  if (n <= 1) return n;
-  return fibonacci(n - 1) + fibonacci(n - 2);
-}\`}
-  language="javascript"
-  showLineNumbers
-/>`}
+  code={"<CodeBlock\n  code={`function fibonacci(n) {\n  if (n <= 1) return n;\n  return fibonacci(n - 1) + fibonacci(n - 2);\n}`}\n  language=\"javascript\"\n  showLineNumbers\n/>"}
 >
   <CodeBlock
-    code={`function fibonacci(n) {\n  if (n <= 1) return n;\n  return fibonacci(n - 1) + fibonacci(n - 2);\n}`}
+    code={"function fibonacci(n) {\n  if (n <= 1) return n;\n  return fibonacci(n - 1) + fibonacci(n - 2);\n}"}
     language="javascript"
     showLineNumbers
   />
@@ -72,11 +62,7 @@ export default function Example() {
 
 <ComponentPreview
   title="File Title"
-  code={`<CodeBlock
-  code="export default function App() { return <h1>Hello</h1>; }"
-  title="app.tsx"
-  language="tsx"
-/>`}
+  code={"<CodeBlock\n  code=\"export default function App() { return <h1>Hello</h1>; }\"\n  title=\"app.tsx\"\n  language=\"tsx\"\n/>"}
 >
   <CodeBlock
     code="export default function App() { return <h1>Hello</h1>; }"
@@ -89,11 +75,7 @@ export default function Example() {
 
 <ComponentPreview
   title="No Copy Button"
-  code={`<CodeBlock
-  code="npm install @loworbitstudio/visor-core"
-  language="bash"
-  showCopyButton={false}
-/>`}
+  code={"<CodeBlock\n  code=\"npm install @loworbitstudio/visor-core\"\n  language=\"bash\"\n  showCopyButton={false}\n/>"}
 >
   <CodeBlock
     code="npm install @loworbitstudio/visor-core"

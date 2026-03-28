@@ -34,19 +34,7 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
 
 <ComponentPreview
   title="Command Palette"
-  code={`<Command>
-  <CommandInput placeholder="Search actions..." />
-  <CommandList>
-    <CommandEmpty>No results found.</CommandEmpty>
-    <CommandGroup heading="Account">
-      <CommandItem>Profile</CommandItem>
-      <CommandItem>Settings</CommandItem>
-    </CommandGroup>
-    <CommandGroup heading="Session">
-      <CommandItem>Logout</CommandItem>
-    </CommandGroup>
-  </CommandList>
-</Command>`}
+  code={"<Command>\n  <CommandInput placeholder=\"Search actions...\" />\n  <CommandList>\n    <CommandEmpty>No results found.</CommandEmpty>\n    <CommandGroup heading=\"Account\">\n      <CommandItem>Profile</CommandItem>\n      <CommandItem>Settings</CommandItem>\n    </CommandGroup>\n    <CommandGroup heading=\"Session\">\n      <CommandItem>Logout</CommandItem>\n    </CommandGroup>\n  </CommandList>\n</Command>"}
 >
   <div style={{ maxWidth: '28rem', border: '1px solid var(--border-default, #e5e7eb)', borderRadius: '0.5rem' }}>
     <Command>
