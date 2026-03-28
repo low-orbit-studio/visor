@@ -1,0 +1,29 @@
+.root {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.root [data-slot="slider"] {
+  flex: 1;
+  min-width: 0;
+}
+
+.label {
+  min-width: 3.25rem;
+  text-transform: uppercase;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary, #9ca3af);
+  flex-shrink: 0;
+}
+
+.value {
+  min-width: 2rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.6875rem;
+  color: var(--text-secondary, #9ca3af);
+  flex-shrink: 0;
+}

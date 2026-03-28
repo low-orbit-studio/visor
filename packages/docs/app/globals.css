@@ -30,6 +30,84 @@
   margin: 1.5rem 0;
 }
 
+/* Fullscreen mode — same DOM, CSS-only toggle */
+.preview-container[data-fullscreen="true"] {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
+
+.preview-container[data-fullscreen="true"] .preview-render {
+  height: 100%;
+  padding: 0;
+}
+
+.preview-container[data-fullscreen="true"] .preview-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: none;
+}
+
+.preview-container[data-fullscreen="true"] .preview-footer .preview-title {
+  color: var(--text-primary);
+}
+
+.preview-container[data-fullscreen="true"] .preview-footer .preview-toggle,
+.preview-container[data-fullscreen="true"] .preview-footer .preview-copy {
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.preview-container[data-fullscreen="true"] .preview-footer .preview-toggle:hover,
+.preview-container[data-fullscreen="true"] .preview-footer .preview-copy:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.preview-container[data-fullscreen="true"] .preview-code {
+  display: none;
+}
+
+/* Raise block panels above the fullscreen footer bar */
+.preview-container[data-fullscreen="true"] [role="region"] {
+  bottom: 4.5rem;
+}
+
+.preview-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: background 150ms, color 150ms;
+}
+
+.preview-close:hover {
+  background: rgba(0, 0, 0, 0.7);
+  color: rgba(255, 255, 255, 0.95);
+}
+
 .preview-render {
   display: flex;
   align-items: center;
@@ -50,14 +128,16 @@
   border-top: 1px solid var(--border-default, #e5e7eb);
 }
 
-.preview-title {
-  font-size: 0.75rem;
-  color: var(--text-secondary, #6b7280);
-  font-weight: 500;
+p.preview-title {
+  font-size: 1rem;
+  color: var(--text-primary, #111827);
+  font-weight: 600;
   margin: 0;
 }
 
 .preview-toggle {
+  display: inline-flex;
+  align-items: center;
   font-size: 0.75rem;
   padding: 0.25rem 0.75rem;
   border-radius: 0.25rem;
@@ -66,6 +146,7 @@
   color: var(--text-primary, #111827);
   cursor: pointer;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .preview-toggle:hover {
@@ -108,7 +189,7 @@
 }
 
 .space-theme .preview-title {
-  color: var(--text-tertiary);
+  color: var(--text-primary);
 }
 
 .space-theme .preview-toggle,
@@ -130,7 +211,7 @@
 }
 
 .blackout-theme .preview-render {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--surface-card);
 }
 
 .blackout-theme .preview-footer {
@@ -138,8 +219,9 @@
   border-top-color: rgba(255, 255, 255, 0.06);
 }
 
-.blackout-theme .preview-title {
-  color: rgba(255, 255, 255, 0.2);
+.blackout-theme p.preview-title {
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .blackout-theme .preview-toggle,
@@ -157,8 +239,9 @@
 /* Code area inside preview — inherit the theme's glass treatment, no extra border/radius */
 .preview-code pre {
   margin: 0;
-  padding: 1rem;
+  padding: 1rem 0;
   overflow-x: auto;
+  white-space: pre;
   font-size: 0.8125rem !important;
   font-weight: 200 !important;
   line-height: 1.6;
@@ -178,6 +261,17 @@
   font-weight: inherit !important;
 }
 
+/* Shiki dual-theme color switching for ComponentPreview code blocks */
+.preview-code .shiki code span {
+  color: var(--shiki-light);
+  font-style: var(--shiki-light-font-style);
+}
+
+.dark .preview-code .shiki code span {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style);
+}
+
 /* Block preview overrides — render panel inline in standalone preview */
 .configuration-panel-preview {
   position: static !important;
@@ -188,5 +282,30 @@
 /* Sphere playground preview — constrain height for inline preview */
 .sphere-playground-preview {
   width: 100%;
-  height: 500px;
+  height: 700px;
+}
+
+/* In fullscreen, fill the viewport */
+[data-fullscreen="true"] .sphere-playground-preview {
+  height: 100%;
+}
+
+/* Deck preview — constrain height for inline preview */
+.deck-preview {
+  width: 100%;
+  height: 700px;
+}
+
+/* Hide fixed-position dot-nav in inline preview (it escapes the container) */
+.preview-render [data-slot="dot-nav"] {
+  display: none;
+}
+
+[data-fullscreen="true"] .deck-preview {
+  height: 100%;
+}
+
+/* Show dot-nav in fullscreen */
+[data-fullscreen="true"] [data-slot="dot-nav"] {
+  display: flex;
 }

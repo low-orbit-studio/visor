@@ -1,0 +1,55 @@
+name: Slider Control
+description: A labeled slider with inline value display, composing Slider with a label and formatted output.
+category: form
+
+when_to_use:
+  - Parameter controls in configuration panels
+  - Any slider that needs a visible label and current value
+  - Compact control rows in toolbars or sidebars
+
+when_not_to_use:
+  - Standalone slider without label (use Slider directly)
+  - Form fields with validation (use Field + Slider)
+
+why: >
+  SliderControl composes the Slider primitive with a label and formatted
+  value display in a horizontal row layout. It eliminates the repeated
+  label-slider-value pattern found in configuration panels and provides
+  a consistent, accessible control surface.
+
+props:
+  - name: label
+    type: string
+    description: Label displayed to the left of the slider
+  - name: value
+    type: number
+    description: Current slider value
+  - name: onValueChange
+    type: "(value: number) => void"
+    description: Called when the slider value changes
+  - name: displayValue
+    type: string
+    description: Formatted display value shown to the right. Defaults to value.toString()
+  - name: min
+    type: number
+    description: Minimum slider value
+  - name: max
+    type: number
+    description: Maximum slider value
+  - name: step
+    type: number
+    description: Step increment
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+example: |
+  <SliderControl
+    label="Size"
+    value={scale}
+    onValueChange={setScale}
+    displayValue={scale.toFixed(1)}
+    min={0.2}
+    max={3.0}
+    step={0.05}
+  />

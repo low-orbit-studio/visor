@@ -1,19 +1,20 @@
 ---
 title: Sphere Playground
 description: An interactive demo composing the Sphere visualization with a Configuration Panel for real-time parameter control.
+full: true
 ---
 
 import { BlockPreview } from '@/components/block-preview';
-import { SpherePlayground } from '@/components/blocks/sphere-playground';
+import { SpherePlaygroundLive } from '@/components/blocks/sphere-playground-live';
 
 ## Preview
 
 <BlockPreview
   title="Sphere Playground"
-  code={`<SpherePlayground />`}
+  code={`<Sphere />`}
 >
   <div className="sphere-playground-preview">
-    <SpherePlayground />
+    <SpherePlaygroundLive defaultCollapsed />
   </div>
 </BlockPreview>
 
@@ -66,12 +67,14 @@ export default function DemoPage() {
 
 ## Controls
 
-The floating configuration panel provides real-time control over:
+The floating configuration panel provides real-time control over four sections (matching the [source sandbox](https://github.com/loworbitstudio/sphere) layout):
 
-- **Geometry** — Switch between 5 particle distribution modes
-- **Color** — Choose from 5 color schemes
-- **Appearance** — Adjust dot size, speed, blur, saturation, and lightness
-- **Think Mode** — Control the think-mode animation intensity
+- **Geometry** — Switch between 5 particle distribution modes, plus Size, Waves, and Speed sliders
+- **Appearance** — Adjust dot size and blur
+- **Color** — Choose from 5 color schemes, plus Saturation and Lightness sliders
+- **Think** — Toggle Pulses, Ramp, and Scatter effects, plus an Intensity slider
+
+The panel is draggable — grab the header to reposition it anywhere. It starts collapsed in the inline preview; click the caret to expand.
 
 ## Fullscreen Mode
 

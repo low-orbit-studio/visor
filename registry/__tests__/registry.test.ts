@@ -85,9 +85,9 @@ describe("Registry", () => {
       expect(specimen?.registryDependencies).toContain("utils")
     })
 
-    it("login-form-placeholder block is registered", () => {
+    it("login-form block is registered", () => {
       const placeholder = blocks.find(
-        (item) => item.name === "login-form-placeholder"
+        (item) => item.name === "login-form"
       )
       expect(placeholder).toBeDefined()
       expect(placeholder?.category).toBe("authentication")

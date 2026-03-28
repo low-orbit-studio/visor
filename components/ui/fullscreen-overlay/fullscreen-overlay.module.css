@@ -43,6 +43,11 @@
   padding-top: var(--spacing-16, 4rem);
 }
 
+.inner[data-fullbleed="true"] {
+  padding: 0;
+  overflow: hidden;
+}
+
 /* Close button */
 .close {
   position: absolute;

@@ -1,13 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { codeToHtml } from 'shiki';
-import { ArrowsOut } from '@phosphor-icons/react';
-import {
-  FullscreenOverlay,
-  FullscreenOverlayTrigger,
-  FullscreenOverlayContent,
-} from '@/components/ui/fullscreen-overlay';
+import { ArrowsOut, ArrowsIn, X } from '@phosphor-icons/react';
+import { BlockCodeProvider } from './block-code-context';
 
 interface BlockPreviewProps {
   children: React.ReactNode;
@@ -17,62 +13,110 @@ interface BlockPreviewProps {
 
 export function BlockPreview({
   children,
-  code,
+  code: staticCode,
   title,
 }: BlockPreviewProps) {
   const [showCode, setShowCode] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [dynamicCode, setDynamicCode] = useState<string | null>(null);
   const [highlightedHTML, setHighlightedHTML] = useState<string | null>(null);
+  const highlightTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
+  const displayCode = dynamicCode ?? staticCode;
+
+  // Debounced Shiki highlighting
   useEffect(() => {
     if (!showCode) return;
-    const isDark = document.documentElement.classList.contains('dark');
-    const theme = isDark ? 'github-dark' : 'github-light';
 
-    codeToHtml(code, { lang: 'tsx', theme }).then(setHighlightedHTML);
-  }, [showCode, code]);
+    clearTimeout(highlightTimer.current);
+    highlightTimer.current = setTimeout(() => {
+      const isDark = document.documentElement.classList.contains('dark');
+      const theme = isDark ? 'github-dark' : 'github-light';
+      codeToHtml(displayCode, { lang: 'tsx', theme }).then(setHighlightedHTML);
+    }, 150);
+
+    return () => clearTimeout(highlightTimer.current);
+  }, [showCode, displayCode]);
+
+  // Escape key closes fullscreen
+  useEffect(() => {
+    if (!fullscreen) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') setFullscreen(false);
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [fullscreen]);
+
+  // Lock body scroll when fullscreen
+  useEffect(() => {
+    if (fullscreen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [fullscreen]);
 
   async function handleCopy() {
-    await navigator.clipboard.writeText(code);
+    await navigator.clipboard.writeText(displayCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
 
+  const toggleFullscreen = useCallback(() => setFullscreen(prev => !prev), []);
+
   return (
-    <div className="preview-container">
+    <div
+      className="preview-container"
+      data-fullscreen={fullscreen ? 'true' : undefined}
+    >
       <div
         className="preview-render"
         style={{ isolation: 'isolate', color: 'var(--text-primary)', minHeight: '200px', alignItems: 'stretch' }}
       >
-        {children}
+        <BlockCodeProvider onCodeChange={setDynamicCode}>
+          {children}
+        </BlockCodeProvider>
       </div>
+
+      {fullscreen && (
+        <button
+          className="preview-close"
+          onClick={toggleFullscreen}
+          aria-label="Exit fullscreen"
+        >
+          <X weight="bold" />
+        </button>
+      )}
+
       <div className="preview-footer">
         {title ? <p className="preview-title">{title}</p> : <span />}
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <FullscreenOverlay>
-            <FullscreenOverlayTrigger asChild>
-              <button className="preview-toggle" aria-label="Open fullscreen">
-                <ArrowsOut size={14} style={{ verticalAlign: 'middle', marginRight: '0.25rem' }} />
-                Fullscreen
-              </button>
-            </FullscreenOverlayTrigger>
-            <FullscreenOverlayContent>
-              <div style={{ isolation: 'isolate', color: 'var(--text-primary)' }}>
-                {children}
-              </div>
-            </FullscreenOverlayContent>
-          </FullscreenOverlay>
-          {showCode && (
+          <button
+            className="preview-toggle"
+            onClick={toggleFullscreen}
+            aria-label={fullscreen ? 'Exit fullscreen' : 'Open fullscreen'}
+          >
+            {fullscreen
+              ? <><ArrowsIn size={14} style={{ verticalAlign: 'middle', marginRight: '0.25rem' }} />Exit</>
+              : <><ArrowsOut size={14} style={{ verticalAlign: 'middle', marginRight: '0.25rem' }} />Fullscreen</>
+            }
+          </button>
+          {!fullscreen && showCode && (
             <button className="preview-copy" onClick={handleCopy}>
               {copied ? 'Copied!' : 'Copy'}
             </button>
           )}
-          <button
-            className="preview-toggle"
-            onClick={() => setShowCode(!showCode)}
-          >
-            {showCode ? 'Hide Code' : 'Show Code'}
-          </button>
+          {!fullscreen && (
+            <button
+              className="preview-toggle"
+              onClick={() => setShowCode(!showCode)}
+            >
+              {showCode ? 'Hide Code' : 'Show Code'}
+            </button>
+          )}
         </div>
       </div>
       {showCode && (
@@ -81,7 +125,7 @@ export function BlockPreview({
             // Safe: highlightedHTML is generated by Shiki from static MDX code strings, not user input
             <div dangerouslySetInnerHTML={{ __html: highlightedHTML }} />
           ) : (
-            <pre><code>{code}</code></pre>
+            <pre><code>{displayCode}</code></pre>
           )}
         </div>
       )}

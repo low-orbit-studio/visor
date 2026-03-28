@@ -1,15 +1,15 @@
-import type * as React from "react"
+import type * as React from "react";
 
 // ---------------------------------------------------------------------------
 // Geometry modes & color schemes
 // ---------------------------------------------------------------------------
 
-export type GeometryMode = "sphere" | "curl" | "turing" | "lorenz" | "tendrils"
+export type GeometryMode = "sphere" | "curl" | "turing" | "lorenz" | "tendrils";
 
-export type ColorScheme = "solar" | "aqua" | "ember" | "aurora" | "ghost"
+export type ColorScheme = "solar" | "aqua" | "ember" | "aurora" | "ghost";
 
 /** RGB color in 0-1 range */
-export type GradientColor = [r: number, g: number, b: number]
+export type GradientColor = [r: number, g: number, b: number];
 
 /** 5-stop gradient from bottom to top */
 export type GradientColors = [
@@ -17,12 +17,12 @@ export type GradientColors = [
   GradientColor,
   GradientColor,
   GradientColor,
-  GradientColor,
-]
+  GradientColor
+];
 
 export interface ColorSchemeDefinition {
-  label: string
-  colors: GradientColors
+  label: string;
+  colors: GradientColors;
 }
 
 export const COLOR_SCHEMES: Record<ColorScheme, ColorSchemeDefinition> = {
@@ -76,7 +76,7 @@ export const COLOR_SCHEMES: Record<ColorScheme, ColorSchemeDefinition> = {
       [0.92, 0.92, 0.95],
     ],
   },
-}
+};
 
 export const GEOMETRY_MODES: GeometryMode[] = [
   "sphere",
@@ -84,14 +84,14 @@ export const GEOMETRY_MODES: GeometryMode[] = [
   "turing",
   "lorenz",
   "tendrils",
-]
+];
 
 // ---------------------------------------------------------------------------
 // Configuration defaults
 // ---------------------------------------------------------------------------
 
 export const DEFAULT_CONFIG = {
-  particleCount: 256000,
+  particleCount: 128000,
   sphereRadius: 1.2,
 
   // Particle appearance
@@ -137,7 +137,7 @@ export const DEFAULT_CONFIG = {
 
   backgroundColor: 0x000000,
   defaultScheme: "solar" as ColorScheme,
-} as const
+} as const;
 
 // ---------------------------------------------------------------------------
 // Think-mode effects
@@ -145,11 +145,11 @@ export const DEFAULT_CONFIG = {
 
 export interface SphereThinkEffects {
   /** Expanding ring waves from random surface points. Default: true */
-  pulses?: boolean
+  pulses?: boolean;
   /** Speed ramp during think intensity. Default: true */
-  ramp?: boolean
+  ramp?: boolean;
   /** Staccato scatter contraction heartbeat. Default: true */
-  scatter?: boolean
+  scatter?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -158,51 +158,53 @@ export interface SphereThinkEffects {
 
 export interface SphereProps {
   /** Geometry mode for particle distribution. Default: "sphere" */
-  mode?: GeometryMode
+  mode?: GeometryMode;
   /** Named color scheme. Overridden by `colors` if both provided. Default: "solar" */
-  colorScheme?: ColorScheme
+  colorScheme?: ColorScheme;
   /** Custom gradient colors (5 stops, bottom to top). Overrides `colorScheme`. */
-  colors?: GradientColors
+  colors?: GradientColors;
   /** Number of particles. Default: 256000 */
-  particleCount?: number
+  particleCount?: number;
   /** Sphere radius. Default: 1.2 */
-  radius?: number
+  radius?: number;
   /** Overall scale multiplier. Default: 1.0 */
-  scale?: number
+  scale?: number;
   /** Animation speed multiplier. Default: 1.0 */
-  speed?: number
+  speed?: number;
   /** Wave displacement multiplier (noise amplitude). Default: 1.0 */
-  waves?: number
+  waves?: number;
   /** Particle dot size multiplier. Default: 1.0 */
-  dotSize?: number
+  dotSize?: number;
   /** Blur/softness (0 = hard dots, 1 = full glow). Default: 0.5 */
-  blur?: number
+  blur?: number;
+  /** Fraction of particles that sparkle bright (0-1). Default: 0.03 */
+  sparkleChance?: number;
   /** Color saturation multiplier. Default: 1.0 */
-  saturation?: number
+  saturation?: number;
   /** Color lightness multiplier. Default: 1.0 */
-  lightness?: number
+  lightness?: number;
   /** Think-mode intensity (0-1). Externally controlled. Default: 0 */
-  thinkIntensity?: number
+  thinkIntensity?: number;
   /** Which think-mode effects are enabled. Default: all true */
-  thinkEffects?: SphereThinkEffects
+  thinkEffects?: SphereThinkEffects;
   /** Background color (hex number). Default: 0x000000 */
-  backgroundColor?: number
+  backgroundColor?: number;
   /** Camera field of view. Default: 60 */
-  fov?: number
+  fov?: number;
   /** Camera Z distance. Default: 3.2 */
-  cameraDistance?: number
+  cameraDistance?: number;
   /** Enable orbit controls (drag to rotate). Default: true */
-  orbitControls?: boolean
+  orbitControls?: boolean;
   /** Enable auto-rotation. Default: true */
-  autoRotate?: boolean
+  autoRotate?: boolean;
   /** Auto-rotation speed. Default: 0.5 */
-  autoRotateSpeed?: number
+  autoRotateSpeed?: number;
   /** Max device pixel ratio (clamped for perf). Default: 2 */
-  maxPixelRatio?: number
+  maxPixelRatio?: number;
   /** Additional CSS class for the container div */
-  className?: string
+  className?: string;
   /** Inline style for the container div */
-  style?: React.CSSProperties
+  style?: React.CSSProperties;
 }
 
 // ---------------------------------------------------------------------------
@@ -211,21 +213,21 @@ export interface SphereProps {
 
 export interface SphereRef {
   /** Start think mode with automatic ease-in ramp */
-  startThinking: () => void
+  startThinking: () => void;
   /** Stop think mode with automatic ease-out ramp */
-  stopThinking: () => void
+  stopThinking: () => void;
   /** Get current think intensity (0-1) */
-  getThinkIntensity: () => number
+  getThinkIntensity: () => number;
   /** Manually set think intensity (0-1) without ramping */
-  setThinkIntensity: (value: number) => void
+  setThinkIntensity: (value: number) => void;
   /** Switch geometry mode */
-  setMode: (mode: GeometryMode) => void
+  setMode: (mode: GeometryMode) => void;
   /** Apply a named color scheme */
-  setColorScheme: (scheme: ColorScheme) => void
+  setColorScheme: (scheme: ColorScheme) => void;
   /** Apply custom gradient colors */
-  setColors: (colors: GradientColors) => void
+  setColors: (colors: GradientColors) => void;
   /** Reset camera to default position with animation */
-  resetCamera: () => void
+  resetCamera: () => void;
   /** Force dispose of all GPU resources */
-  dispose: () => void
+  dispose: () => void;
 }

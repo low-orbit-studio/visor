@@ -1,0 +1,53 @@
+---
+title: Login Form
+description: A login form block using Visor form components (Button, Input, Label, Card).
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { LoginForm } from '@/components/blocks/login-form';
+
+## Preview
+
+<BlockPreview
+  title="Login Form"
+  code={`<LoginForm />`}
+>
+  <LoginForm />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block login-form
+```
+
+This copies files into your project:
+
+- `blocks/login-form/login-form.tsx` — the block component
+- `blocks/login-form/login-form.module.css` — the styles
+
+## Usage
+
+```tsx
+import { LoginForm } from '@/blocks/login-form/login-form';
+
+export default function LoginPage() {
+  return <LoginForm />;
+}
+```
+
+## Composition
+
+This block composes four Visor primitives:
+
+- **Card** — Container with surface styling and border
+- **Input** — Theme-aware text inputs
+- **Label** — Accessible form labels
+- **Button** — Primary action button
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI — such as login forms, settings pages, or dashboard panels.
+
+Blocks are copy-and-own, just like components. Install them into your project and customize freely.

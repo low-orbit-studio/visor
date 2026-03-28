@@ -190,20 +190,20 @@ export const blocks: Registry = [
     ],
   },
   {
-    name: "login-form-placeholder",
+    name: "login-form",
     type: "registry:block",
     category: "authentication",
     description:
-      "A minimal placeholder login form block demonstrating the blocks pipeline. Replace with a full implementation.",
+      "A login form block using Visor form components (Button, Input, Label, Card).",
     dependencies: ["@loworbitstudio/visor-core"],
-    registryDependencies: ["utils"],
+    registryDependencies: ["utils", "button", "input", "field", "card"],
     files: [
       {
-        path: "blocks/login-form-placeholder/login-form-placeholder.tsx",
+        path: "blocks/login-form/login-form.tsx",
         type: "registry:block",
       },
       {
-        path: "blocks/login-form-placeholder/login-form-placeholder.module.css",
+        path: "blocks/login-form/login-form.module.css",
         type: "registry:block",
       },
     ],

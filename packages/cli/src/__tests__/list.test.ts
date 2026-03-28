@@ -47,13 +47,13 @@ vi.mock("../registry/resolve.js", async (importOriginal) => {
           ],
         },
         {
-          name: "login-form-placeholder",
+          name: "login-form",
           type: "registry:block",
           category: "authentication",
           description: "A placeholder login form block",
           files: [
             {
-              path: "blocks/login-form-placeholder/login-form-placeholder.tsx",
+              path: "blocks/login-form/login-form.tsx",
               type: "registry:block",
               content: "export {}",
             },
@@ -103,7 +103,7 @@ describe("list command", () => {
       .join("\n")
 
     expect(output).toContain("Authentication Blocks")
-    expect(output).toContain("login-form-placeholder")
+    expect(output).toContain("login-form")
   })
 
   it("marks installed items when visor.json exists", () => {

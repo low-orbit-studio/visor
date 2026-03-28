@@ -2,22 +2,19 @@
 
 import { useCallback, useRef } from "react"
 
-function easeInOutQuad(t: number): number {
-  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
-}
-
 export interface UseSlideEngineOptions {
+  /** Container element that scrolls */
+  containerRef?: React.RefObject<HTMLElement | null>
   sectionsRef: React.RefObject<HTMLElement[]>
   currentIndexRef: React.MutableRefObject<number>
   setCurrentIndex?: (index: number) => void
-  duration?: number
 }
 
 export function useSlideEngine({
+  containerRef,
   sectionsRef,
   currentIndexRef,
   setCurrentIndex,
-  duration = 700,
 }: UseSlideEngineOptions) {
   const isScrollingRef = useRef(false)
 
@@ -28,36 +25,28 @@ export function useSlideEngine({
 
       isScrollingRef.current = true
       currentIndexRef.current = index
+      setCurrentIndex?.(index)
 
-      document.documentElement.classList.add("deck-scrolling")
+      const container = containerRef?.current
+      const el = sections[index]
 
-      const target = sections[index].offsetTop
-      const start = window.scrollY
-      const dist = target - start
-      let t0: number | null = null
-
-      function step(ts: number) {
-        if (t0 === null) t0 = ts
-        const p = Math.min((ts - t0) / duration, 1)
-        window.scrollTo(0, start + dist * easeInOutQuad(p))
-
-        if (p < 1) {
-          requestAnimationFrame(step)
-        } else {
-          document.documentElement.classList.remove("deck-scrolling")
-          isScrollingRef.current = false
-          setCurrentIndex?.(index)
-
-          const section = sections[index]
-          if (section) {
-            section.setAttribute("data-deck-visible", "true")
-          }
-        }
+      // Use native smooth scroll — the browser coordinates with scroll-snap
+      // internally, avoiding the stutter caused by rAF + snap fighting.
+      if (container) {
+        const target = el.offsetTop - container.offsetTop
+        container.scrollTo({ top: target, behavior: "smooth" })
+      } else {
+        el.scrollIntoView({ behavior: "smooth", block: "start" })
       }
 
-      requestAnimationFrame(step)
+      el.setAttribute("data-deck-visible", "true")
+
+      // Unlock after scroll settles (native smooth scroll ~400-600ms)
+      setTimeout(() => {
+        isScrollingRef.current = false
+      }, 600)
     },
-    [sectionsRef, currentIndexRef, duration, setCurrentIndex]
+    [containerRef, sectionsRef, currentIndexRef, setCurrentIndex]
   )
 
   const navigateTo = useCallback(

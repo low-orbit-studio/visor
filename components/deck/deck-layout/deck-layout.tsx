@@ -70,7 +70,8 @@ export function DeckLayout({
     )
   }, [])
 
-  const { goTo, navigateTo } = useSlideEngine({
+  const { goTo, navigateTo, isScrollingRef } = useSlideEngine({
+    containerRef,
     sectionsRef,
     currentIndexRef,
     setCurrentIndex: updateCurrentIndex,
@@ -80,10 +81,35 @@ export function DeckLayout({
     sectionsRef,
     currentIndexRef,
     setCurrentIndex: updateCurrentIndex,
+    isScrollingRef,
   })
 
-  useKeyboardNav({ goTo, currentIndexRef, totalSectionsRef })
-  useWheelNav({ goTo, currentIndexRef })
+  useKeyboardNav({ containerRef, goTo, currentIndexRef, totalSectionsRef })
+  useWheelNav({ containerRef, goTo, currentIndexRef })
+
+  // Focus/blur container based on fullscreen state so keyboard nav
+  // only captures arrow keys during presentation mode
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    const observer = new MutationObserver(() => {
+      const isFullscreen = container.closest("[data-fullscreen='true']") !== null
+      if (isFullscreen) {
+        container.focus()
+      } else {
+        container.blur()
+      }
+    })
+
+    // Observe ancestors for data-fullscreen changes
+    const previewContainer = container.closest(".preview-container")
+    if (previewContainer) {
+      observer.observe(previewContainer, { attributes: true, attributeFilter: ["data-fullscreen"] })
+    }
+
+    return () => observer.disconnect()
+  }, [])
 
   const deckValue = useMemo(() => ({ goTo, navigateTo }), [goTo, navigateTo])
 
@@ -101,6 +127,8 @@ export function DeckLayout({
         ref={containerRef}
         data-slot="deck-layout"
         className={cn(styles.container, className)}
+        tabIndex={0}
+        style={{ outline: 'none' }}
       >
         {children}
       </div>

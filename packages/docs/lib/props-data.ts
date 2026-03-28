@@ -231,7 +231,7 @@ export const propsData: Record<string, PropDef[]> = {
     },
     {
       name: 'size',
-      type: "'sm' | 'md' | 'lg'",
+      type: "'xs' | 'sm' | 'md' | 'lg'",
       default: "'md'",
       description: 'Size of the toggle items.',
     },
