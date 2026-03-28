@@ -75,6 +75,11 @@
   display: none;
 }
 
+/* Raise block panels above the fullscreen footer bar */
+.preview-container[data-fullscreen="true"] [role="region"] {
+  bottom: 4.5rem;
+}
+
 .preview-close {
   position: absolute;
   top: 1rem;

@@ -104,17 +104,19 @@ export function BlockPreview({
               : <><ArrowsOut size={14} style={{ verticalAlign: 'middle', marginRight: '0.25rem' }} />Fullscreen</>
             }
           </button>
-          {showCode && (
+          {!fullscreen && showCode && (
             <button className="preview-copy" onClick={handleCopy}>
               {copied ? 'Copied!' : 'Copy'}
             </button>
           )}
-          <button
-            className="preview-toggle"
-            onClick={() => setShowCode(!showCode)}
-          >
-            {showCode ? 'Hide Code' : 'Show Code'}
-          </button>
+          {!fullscreen && (
+            <button
+              className="preview-toggle"
+              onClick={() => setShowCode(!showCode)}
+            >
+              {showCode ? 'Hide Code' : 'Show Code'}
+            </button>
+          )}
         </div>
       </div>
       {showCode && (
