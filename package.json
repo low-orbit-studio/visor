@@ -13,6 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit && npm run typecheck --workspaces --if-present",
+    "validate": "npx tsx scripts/validate.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "docs:dev": "npm run dev -w packages/docs",

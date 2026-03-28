@@ -32,22 +32,7 @@ import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem } 
 
 <ComponentPreview
   title="Right-Click Menu"
-  code={`import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuLabel } from '@/components/ui/context-menu/context-menu';
-
-<ContextMenu>
-  <ContextMenuTrigger>
-    <div style={{ border: '2px dashed var(--border-default, #d1d5db)', borderRadius: '0.5rem', padding: '3rem', textAlign: 'center' }}>
-      Right click here
-    </div>
-  </ContextMenuTrigger>
-  <ContextMenuContent>
-    <ContextMenuLabel>Actions</ContextMenuLabel>
-    <ContextMenuItem>Edit</ContextMenuItem>
-    <ContextMenuItem>Duplicate</ContextMenuItem>
-    <ContextMenuSeparator />
-    <ContextMenuItem>Delete</ContextMenuItem>
-  </ContextMenuContent>
-</ContextMenu>`}
+  code={"import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuLabel } from '@/components/ui/context-menu/context-menu';\n\n<ContextMenu>\n  <ContextMenuTrigger>\n    <div style={{ border: '2px dashed var(--border-default, #d1d5db)', borderRadius: '0.5rem', padding: '3rem', textAlign: 'center' }}>\n      Right click here\n    </div>\n  </ContextMenuTrigger>\n  <ContextMenuContent>\n    <ContextMenuLabel>Actions</ContextMenuLabel>\n    <ContextMenuItem>Edit</ContextMenuItem>\n    <ContextMenuItem>Duplicate</ContextMenuItem>\n    <ContextMenuSeparator />\n    <ContextMenuItem>Delete</ContextMenuItem>\n  </ContextMenuContent>\n</ContextMenu>"}
 >
   <ContextMenu>
     <ContextMenuTrigger>

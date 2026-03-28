@@ -44,8 +44,8 @@ __pycache__/
 .venv/
 venv/
 
-# Playbook
-scripts
+# Playbook (allow project scripts/, ignore playbook scripts)
+!/scripts/
 
 # Claude Code
 .claude/

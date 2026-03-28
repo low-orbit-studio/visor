@@ -20,12 +20,11 @@ export function ComponentPreview({
 
   useEffect(() => {
     if (!showCode) return;
-    // Detect current color scheme to pick the right Shiki theme
-    const isDark = document.documentElement.classList.contains('dark');
-    const theme = isDark ? 'github-dark' : 'github-light';
-
-    // Re-highlight when theme might have changed
-    codeToHtml(code, { lang: 'tsx', theme }).then(setHighlightedHTML);
+    codeToHtml(code, {
+      lang: 'tsx',
+      themes: { light: 'github-light', dark: 'tokyo-night' },
+      defaultColor: false,
+    }).then(setHighlightedHTML);
   }, [showCode, code]);
 
   async function handleCopy() {

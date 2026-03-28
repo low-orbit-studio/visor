@@ -30,23 +30,7 @@ import { Fieldset, FieldsetLegend } from '@/components/ui/fieldset/fieldset';
 
 <ComponentPreview
   title="Fieldset"
-  code={`import { Fieldset, FieldsetLegend } from '@/components/ui/fieldset/fieldset';
-import { Field, FieldLabel } from '@/components/ui/field/field';
-import { Input } from '@/components/ui/input/input';
-
-<Fieldset>
-  <FieldsetLegend>Contact Information</FieldsetLegend>
-  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
-    <Field>
-      <FieldLabel htmlFor="fname">First name</FieldLabel>
-      <Input id="fname" placeholder="Jane" />
-    </Field>
-    <Field>
-      <FieldLabel htmlFor="lname">Last name</FieldLabel>
-      <Input id="lname" placeholder="Doe" />
-    </Field>
-  </div>
-</Fieldset>`}
+  code={"import { Fieldset, FieldsetLegend } from '@/components/ui/fieldset/fieldset';\nimport { Field, FieldLabel } from '@/components/ui/field/field';\nimport { Input } from '@/components/ui/input/input';\n\n<Fieldset>\n  <FieldsetLegend>Contact Information</FieldsetLegend>\n  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>\n    <Field>\n      <FieldLabel htmlFor=\"fname\">First name</FieldLabel>\n      <Input id=\"fname\" placeholder=\"Jane\" />\n    </Field>\n    <Field>\n      <FieldLabel htmlFor=\"lname\">Last name</FieldLabel>\n      <Input id=\"lname\" placeholder=\"Doe\" />\n    </Field>\n  </div>\n</Fieldset>"}
 >
   <div style={{ width: '100%', maxWidth: '24rem' }}>
     <Fieldset>

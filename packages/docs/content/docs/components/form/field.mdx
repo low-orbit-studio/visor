@@ -31,14 +31,7 @@ import { Input } from '@/components/ui/input/input';
 
 <ComponentPreview
   title="Field"
-  code={`import { Field, FieldLabel, FieldDescription } from '@/components/ui/field/field';
-import { Input } from '@/components/ui/input/input';
-
-<Field>
-  <FieldLabel htmlFor="name">Full name</FieldLabel>
-  <Input id="name" placeholder="Jane Doe" />
-  <FieldDescription>Your full name as it appears on your ID.</FieldDescription>
-</Field>`}
+  code={"import { Field, FieldLabel, FieldDescription } from '@/components/ui/field/field';\nimport { Input } from '@/components/ui/input/input';\n\n<Field>\n  <FieldLabel htmlFor=\"name\">Full name</FieldLabel>\n  <Input id=\"name\" placeholder=\"Jane Doe\" />\n  <FieldDescription>Your full name as it appears on your ID.</FieldDescription>\n</Field>"}
 >
   <div style={{ width: '100%', maxWidth: '20rem' }}>
     <Field>
@@ -53,11 +46,7 @@ import { Input } from '@/components/ui/input/input';
 
 <ComponentPreview
   title="Field with Error"
-  code={`<Field>
-  <FieldLabel htmlFor="email">Email</FieldLabel>
-  <Input id="email" aria-invalid="true" defaultValue="not-an-email" />
-  <FieldError>Please enter a valid email address.</FieldError>
-</Field>`}
+  code={"<Field>\n  <FieldLabel htmlFor=\"email\">Email</FieldLabel>\n  <Input id=\"email\" aria-invalid=\"true\" defaultValue=\"not-an-email\" />\n  <FieldError>Please enter a valid email address.</FieldError>\n</Field>"}
 >
   <div style={{ width: '100%', maxWidth: '20rem' }}>
     <Field>
@@ -72,10 +61,7 @@ import { Input } from '@/components/ui/input/input';
 
 <ComponentPreview
   title="Horizontal Field"
-  code={`<Field orientation="horizontal">
-  <FieldLabel htmlFor="username">Username</FieldLabel>
-  <Input id="username" placeholder="jdoe" />
-</Field>`}
+  code={"<Field orientation=\"horizontal\">\n  <FieldLabel htmlFor=\"username\">Username</FieldLabel>\n  <Input id=\"username\" placeholder=\"jdoe\" />\n</Field>"}
 >
   <div style={{ width: '100%', maxWidth: '24rem' }}>
     <Field orientation="horizontal">

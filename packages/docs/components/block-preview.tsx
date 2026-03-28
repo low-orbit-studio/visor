@@ -31,9 +31,11 @@ export function BlockPreview({
 
     clearTimeout(highlightTimer.current);
     highlightTimer.current = setTimeout(() => {
-      const isDark = document.documentElement.classList.contains('dark');
-      const theme = isDark ? 'github-dark' : 'github-light';
-      codeToHtml(displayCode, { lang: 'tsx', theme }).then(setHighlightedHTML);
+      codeToHtml(displayCode, {
+        lang: 'tsx',
+        themes: { light: 'github-light', dark: 'tokyo-night' },
+        defaultColor: false,
+      }).then(setHighlightedHTML);
     }, 150);
 
     return () => clearTimeout(highlightTimer.current);
