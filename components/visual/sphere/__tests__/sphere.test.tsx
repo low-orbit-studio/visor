@@ -88,6 +88,39 @@ describe("sphere-color", () => {
     const [, , lWhite] = rgbToHsl(1, 1, 1)
     expect(lWhite).toBe(1)
   })
+
+  it("round-trips pure red", async () => {
+    const { rgbToHsl, hslToRgb } = await import("../sphere-color")
+    const [h, s, l] = rgbToHsl(1, 0, 0)
+    const [r, g, b] = hslToRgb(h, s, l)
+    expect(r).toBeCloseTo(1, 5)
+    expect(g).toBeCloseTo(0, 5)
+    expect(b).toBeCloseTo(0, 5)
+  })
+
+  it("round-trips pure green", async () => {
+    const { rgbToHsl, hslToRgb } = await import("../sphere-color")
+    const [h, s, l] = rgbToHsl(0, 1, 0)
+    const [r, g, b] = hslToRgb(h, s, l)
+    expect(r).toBeCloseTo(0, 5)
+    expect(g).toBeCloseTo(1, 5)
+    expect(b).toBeCloseTo(0, 5)
+  })
+
+  it("round-trips pure blue", async () => {
+    const { rgbToHsl, hslToRgb } = await import("../sphere-color")
+    const [h, s, l] = rgbToHsl(0, 0, 1)
+    const [r, g, b] = hslToRgb(h, s, l)
+    expect(r).toBeCloseTo(0, 5)
+    expect(g).toBeCloseTo(0, 5)
+    expect(b).toBeCloseTo(1, 5)
+  })
+
+  it("mid-gray has zero saturation", async () => {
+    const { rgbToHsl } = await import("../sphere-color")
+    const [, s] = rgbToHsl(0.5, 0.5, 0.5)
+    expect(s).toBe(0)
+  })
 })
 
 describe("sphere.types", () => {
@@ -153,6 +186,60 @@ describe("sphere.types", () => {
       expect(DEFAULT_CONFIG).toHaveProperty(key)
     }
   })
+
+  it("DEFAULT_CONFIG particleCount is a positive integer", async () => {
+    const { DEFAULT_CONFIG } = await import("../sphere.types")
+    expect(DEFAULT_CONFIG.particleCount).toBeGreaterThan(0)
+    expect(Number.isInteger(DEFAULT_CONFIG.particleCount)).toBe(true)
+  })
+
+  it("DEFAULT_CONFIG numeric values are finite", async () => {
+    const { DEFAULT_CONFIG } = await import("../sphere.types")
+    const numericKeys = [
+      "particleCount", "sphereRadius", "particleBaseSize",
+      "particleSizeVariation", "particleSizeScale", "particleMaxSize",
+      "dotSoftness", "alphaBase", "alphaBreathRange", "alphaDepthMin",
+      "alphaFinal", "sparkleChance", "noiseScale", "noiseSpeed",
+      "noiseAmplitude", "turbulenceScale", "turbulenceAmplitude",
+      "swirlAmount", "fov", "cameraZ",
+    ] as const
+    for (const key of numericKeys) {
+      expect(Number.isFinite(DEFAULT_CONFIG[key])).toBe(true)
+    }
+  })
+
+  it("DEFAULT_CONFIG gradientColors has 5 stops", async () => {
+    const { DEFAULT_CONFIG } = await import("../sphere.types")
+    expect(DEFAULT_CONFIG.gradientColors).toHaveLength(5)
+  })
+
+  it("DEFAULT_CONFIG gradientStops are ascending", async () => {
+    const { DEFAULT_CONFIG } = await import("../sphere.types")
+    const stops = DEFAULT_CONFIG.gradientStops
+    expect(stops).toHaveLength(5)
+    for (let i = 1; i < stops.length; i++) {
+      expect(stops[i]).toBeGreaterThan(stops[i - 1])
+    }
+  })
+
+  it("DEFAULT_CONFIG sparkleChance is between 0 and 1", async () => {
+    const { DEFAULT_CONFIG } = await import("../sphere.types")
+    expect(DEFAULT_CONFIG.sparkleChance).toBeGreaterThanOrEqual(0)
+    expect(DEFAULT_CONFIG.sparkleChance).toBeLessThanOrEqual(1)
+  })
+
+  it("DEFAULT_CONFIG noise values are positive", async () => {
+    const { DEFAULT_CONFIG } = await import("../sphere.types")
+    expect(DEFAULT_CONFIG.noiseAmplitude).toBeGreaterThan(0)
+    expect(DEFAULT_CONFIG.turbulenceAmplitude).toBeGreaterThan(0)
+    expect(DEFAULT_CONFIG.swirlAmount).toBeGreaterThan(0)
+  })
+
+  it("DEFAULT_CONFIG fov is between 1 and 180", async () => {
+    const { DEFAULT_CONFIG } = await import("../sphere.types")
+    expect(DEFAULT_CONFIG.fov).toBeGreaterThanOrEqual(1)
+    expect(DEFAULT_CONFIG.fov).toBeLessThanOrEqual(180)
+  })
 })
 
 describe("sphere-geometries", () => {
@@ -172,6 +259,22 @@ describe("sphere-geometries", () => {
     }
   })
 
+  it("generateSphere: all points within radius + epsilon", async () => {
+    const { generateSphere } = await import("../sphere-geometries")
+    const count = 500
+    const positions = new Float32Array(count * 3)
+    const radius = 2.0
+    generateSphere(positions, count, radius)
+
+    for (let i = 0; i < count; i++) {
+      const x = positions[i * 3]
+      const y = positions[i * 3 + 1]
+      const z = positions[i * 3 + 2]
+      const dist = Math.sqrt(x * x + y * y + z * z)
+      expect(dist).toBeLessThanOrEqual(radius + 0.01)
+    }
+  })
+
   it("generateLorenz fills buffer with non-zero coordinates", async () => {
     const { generateLorenz } = await import("../sphere-geometries")
     const count = 50
@@ -185,14 +288,30 @@ describe("sphere-geometries", () => {
     expect(hasNonZero).toBe(true)
   })
 
+  it("generateLorenz: produces non-degenerate distribution", async () => {
+    const { generateLorenz } = await import("../sphere-geometries")
+    const count = 200
+    const positions = new Float32Array(count * 3)
+    generateLorenz(positions, count, 1.2)
+
+    // Check standard deviation is > 0 (not all same point)
+    let sumX = 0, sumX2 = 0
+    for (let i = 0; i < count; i++) {
+      const x = positions[i * 3]
+      sumX += x
+      sumX2 += x * x
+    }
+    const meanX = sumX / count
+    const variance = sumX2 / count - meanX * meanX
+    expect(variance).toBeGreaterThan(0)
+  })
+
   it("generateTendrils fills buffer completely", async () => {
     const { generateTendrils } = await import("../sphere-geometries")
     const count = 160 // divisible by 80 tendrils
     const positions = new Float32Array(count * 3)
     generateTendrils(positions, count, 1.2)
 
-    // Tendrils start from center, so first particles may be near 0
-    // but later particles should have significant displacement
     let maxDist = 0
     for (let i = 0; i < count; i++) {
       const x = positions[i * 3]
@@ -201,6 +320,16 @@ describe("sphere-geometries", () => {
       maxDist = Math.max(maxDist, Math.sqrt(x * x + y * y + z * z))
     }
     expect(maxDist).toBeGreaterThan(0)
+  })
+
+  it("geometry generators handle count=1 without crash", async () => {
+    const { generateSphere, generateLorenz, generateTendrils } =
+      await import("../sphere-geometries")
+    const positions = new Float32Array(3)
+
+    expect(() => generateSphere(positions, 1, 1.0)).not.toThrow()
+    expect(() => generateLorenz(positions, 1, 1.0)).not.toThrow()
+    expect(() => generateTendrils(positions, 1, 1.0)).not.toThrow()
   })
 
   it("MODE_IDS maps all 5 modes to sequential integers", async () => {
@@ -290,5 +419,11 @@ describe("Sphere component", () => {
     const container = screen.getByRole("img")
     expect(container.style.width).toBe("400px")
     expect(container.style.height).toBe("300px")
+  })
+
+  it("unmount does not throw", async () => {
+    const { Sphere } = await import("../sphere")
+    const { unmount } = render(<Sphere />)
+    expect(() => unmount()).not.toThrow()
   })
 })

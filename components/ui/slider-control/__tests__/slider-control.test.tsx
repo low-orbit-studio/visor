@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
 import { describe, it, expect, vi } from "vitest"
 import { SliderControl } from "../slider-control"
 import { checkA11y } from "../../../../test-utils/a11y"
@@ -11,6 +10,8 @@ describe("SliderControl", () => {
     onValueChange: vi.fn(),
   }
 
+  // ─── Rendering ──────────────────────────────────────────────────────
+
   it("renders without crashing", () => {
     render(<SliderControl {...defaultProps} />)
     expect(screen.getByText("Size")).toBeInTheDocument()
@@ -21,7 +22,7 @@ describe("SliderControl", () => {
     expect(screen.getByText("Size")).toBeInTheDocument()
   })
 
-  it("renders the default display value", () => {
+  it("renders the default display value (value.toString())", () => {
     render(<SliderControl {...defaultProps} />)
     expect(screen.getByText("0.7")).toBeInTheDocument()
   })
@@ -32,6 +33,16 @@ describe("SliderControl", () => {
     )
     expect(screen.getByText("70%")).toBeInTheDocument()
   })
+
+  it("displayValue overrides default toString", () => {
+    render(
+      <SliderControl {...defaultProps} value={0.5} displayValue="50%" />,
+    )
+    expect(screen.getByText("50%")).toBeInTheDocument()
+    expect(screen.queryByText("0.5")).not.toBeInTheDocument()
+  })
+
+  // ─── Aria / Accessibility ───────────────────────────────────────────
 
   it("renders the slider with correct aria-label from label prop", () => {
     render(<SliderControl {...defaultProps} />)
@@ -53,12 +64,21 @@ describe("SliderControl", () => {
     )
   })
 
+  it("sets data-slot on value element", () => {
+    const { container } = render(<SliderControl {...defaultProps} />)
+    expect(
+      container.querySelector("[data-slot='slider-control-value']"),
+    ).toBeInTheDocument()
+  })
+
   it("accepts className prop", () => {
     const { container } = render(
       <SliderControl {...defaultProps} className="custom" />,
     )
     expect(container.firstChild).toHaveClass("custom")
   })
+
+  // ─── Slider props ───────────────────────────────────────────────────
 
   it("passes min, max, step to the slider", () => {
     render(
@@ -74,11 +94,59 @@ describe("SliderControl", () => {
     expect(slider).toHaveAttribute("aria-valuemax", "10")
   })
 
+  it("slider reflects the controlled value", () => {
+    render(
+      <SliderControl {...defaultProps} value={5} min={0} max={10} />,
+    )
+    const slider = screen.getByRole("slider")
+    expect(slider).toHaveAttribute("aria-valuenow", "5")
+  })
+
+  it("re-renders with updated value prop", () => {
+    const { rerender } = render(
+      <SliderControl {...defaultProps} value={0.5} />,
+    )
+    expect(screen.getByText("0.5")).toBeInTheDocument()
+
+    rerender(<SliderControl {...defaultProps} value={0.9} />)
+    expect(screen.getByText("0.9")).toBeInTheDocument()
+  })
+
+  // ─── Ref ────────────────────────────────────────────────────────────
+
   it("forwards ref to the slider", () => {
     const ref = { current: null }
     render(<SliderControl {...defaultProps} ref={ref} />)
     expect(ref.current).not.toBeNull()
   })
+
+  // ─── Edge cases ─────────────────────────────────────────────────────
+
+  it("renders zero value correctly", () => {
+    render(<SliderControl {...defaultProps} value={0} />)
+    expect(screen.getByText("0")).toBeInTheDocument()
+  })
+
+  it("renders negative value correctly", () => {
+    render(
+      <SliderControl {...defaultProps} value={-3} min={-5} max={5} />,
+    )
+    expect(screen.getByText("-3")).toBeInTheDocument()
+  })
+
+  it("renders very large value correctly", () => {
+    render(
+      <SliderControl
+        {...defaultProps}
+        value={1024000}
+        displayValue="1.0M"
+        max={2000000}
+      />,
+    )
+    expect(screen.getByText("1.0M")).toBeInTheDocument()
+  })
+
+  // ─── A11y ───────────────────────────────────────────────────────────
 
   it("passes accessibility checks", async () => {
     const { container } = render(<SliderControl {...defaultProps} />)
