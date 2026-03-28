@@ -70,7 +70,7 @@ export function DeckLayout({
     )
   }, [])
 
-  const { goTo, navigateTo } = useSlideEngine({
+  const { goTo, navigateTo, isScrollingRef } = useSlideEngine({
     containerRef,
     sectionsRef,
     currentIndexRef,
@@ -81,6 +81,7 @@ export function DeckLayout({
     sectionsRef,
     currentIndexRef,
     setCurrentIndex: updateCurrentIndex,
+    isScrollingRef,
   })
 
   useKeyboardNav({ containerRef, goTo, currentIndexRef, totalSectionsRef })

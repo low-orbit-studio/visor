@@ -3,9 +3,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest"
 import { useRef } from "react"
 import { useSlideEngine } from "../use-slide-engine"
 
-// Store callbacks for controlled execution
-let rafCallbacks: Array<(ts: number) => void> = []
-
 function TestComponent({
   onEngine,
 }: {
@@ -25,54 +22,63 @@ function TestComponent({
 
 describe("useSlideEngine", () => {
   beforeEach(() => {
-    rafCallbacks = []
-    vi.spyOn(window, "requestAnimationFrame").mockImplementation((cb) => {
-      rafCallbacks.push(cb)
-      return rafCallbacks.length
-    })
-    vi.spyOn(window, "scrollTo").mockImplementation(() => {})
+    vi.useFakeTimers()
+    // Mock scrollIntoView since jsdom doesn't implement it
+    Element.prototype.scrollIntoView = vi.fn()
   })
 
-  it("returns goTo and navigateTo functions", () => {
+  it("returns goTo, navigateTo, and isScrollingRef", () => {
     let engine: ReturnType<typeof useSlideEngine> | null = null
     render(<TestComponent onEngine={(e) => { engine = e }} />)
-    expect(engine).toBeDefined()
     expect(typeof engine!.goTo).toBe("function")
     expect(typeof engine!.navigateTo).toBe("function")
+    expect(engine!.isScrollingRef).toBeDefined()
   })
 
   it("does not navigate to out-of-bounds index", () => {
     let engine: ReturnType<typeof useSlideEngine> | null = null
     render(<TestComponent onEngine={(e) => { engine = e }} />)
     act(() => engine!.goTo(-1))
-    expect(window.requestAnimationFrame).not.toHaveBeenCalled()
+    expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled()
   })
 
-  it("sets data-deck-visible on target after animation completes", () => {
+  it("does not navigate to index >= sections.length", () => {
+    let engine: ReturnType<typeof useSlideEngine> | null = null
+    render(<TestComponent onEngine={(e) => { engine = e }} />)
+    act(() => engine!.goTo(10))
+    expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled()
+  })
+
+  it("goTo sets isScrollingRef and calls scrollIntoView", () => {
     let engine: ReturnType<typeof useSlideEngine> | null = null
     render(<TestComponent onEngine={(e) => { engine = e }} />)
 
     act(() => engine!.goTo(1))
-    expect(rafCallbacks.length).toBe(1)
-
-    // Simulate animation completing (p >= 1)
-    act(() => {
-      const cb = rafCallbacks[0]
-      cb(0) // first call sets t0
-    })
-    act(() => {
-      const cb = rafCallbacks[rafCallbacks.length - 1]
-      cb(10000) // far future = animation complete
+    expect(engine!.isScrollingRef.current).toBe(true)
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({
+      behavior: "smooth",
+      block: "start",
     })
   })
 
-  it("starts animation and adds deck-scrolling class on goTo", () => {
+  it("sets data-deck-visible on target slide", () => {
     let engine: ReturnType<typeof useSlideEngine> | null = null
-    render(<TestComponent onEngine={(e) => { engine = e }} />)
+    const sections = [
+      document.createElement("div"),
+      document.createElement("div"),
+    ]
+    const sectionsRef = { current: sections }
+    const currentIndexRef = { current: 0 }
 
+    function Component({ onEngine }: { onEngine: (e: ReturnType<typeof useSlideEngine>) => void }) {
+      const eng = useSlideEngine({ sectionsRef: sectionsRef as React.RefObject<HTMLElement[]>, currentIndexRef })
+      onEngine(eng)
+      return <div />
+    }
+
+    render(<Component onEngine={(e) => { engine = e }} />)
     act(() => engine!.goTo(1))
-    expect(document.documentElement.classList.contains("deck-scrolling")).toBe(true)
-    expect(window.requestAnimationFrame).toHaveBeenCalled()
+    expect(sections[1].getAttribute("data-deck-visible")).toBe("true")
   })
 
   it("blocks concurrent goTo while scrolling", () => {
@@ -80,31 +86,22 @@ describe("useSlideEngine", () => {
     render(<TestComponent onEngine={(e) => { engine = e }} />)
 
     act(() => engine!.goTo(1))
-    const callCount = (window.requestAnimationFrame as ReturnType<typeof vi.fn>).mock.calls.length
+    const callCount = (Element.prototype.scrollIntoView as ReturnType<typeof vi.fn>).mock.calls.length
 
     act(() => engine!.goTo(2))
-    expect((window.requestAnimationFrame as ReturnType<typeof vi.fn>).mock.calls.length).toBe(callCount)
+    // Should not have scrolled again
+    expect((Element.prototype.scrollIntoView as ReturnType<typeof vi.fn>).mock.calls.length).toBe(callCount)
   })
 
-  it("removes deck-scrolling class when animation completes", () => {
+  it("unlocks isScrollingRef after timeout", () => {
     let engine: ReturnType<typeof useSlideEngine> | null = null
     render(<TestComponent onEngine={(e) => { engine = e }} />)
 
     act(() => engine!.goTo(1))
-    expect(document.documentElement.classList.contains("deck-scrolling")).toBe(true)
+    expect(engine!.isScrollingRef.current).toBe(true)
 
-    // Complete animation
-    act(() => rafCallbacks[0](0))
-    act(() => rafCallbacks[rafCallbacks.length - 1](10000))
-
-    expect(document.documentElement.classList.contains("deck-scrolling")).toBe(false)
-  })
-
-  it("does not navigate to index >= sections.length", () => {
-    let engine: ReturnType<typeof useSlideEngine> | null = null
-    render(<TestComponent onEngine={(e) => { engine = e }} />)
-    act(() => engine!.goTo(10))
-    expect(window.requestAnimationFrame).not.toHaveBeenCalled()
+    act(() => vi.advanceTimersByTime(600))
+    expect(engine!.isScrollingRef.current).toBe(false)
   })
 
   it("navigateTo resolves element ID to correct index", () => {
@@ -130,9 +127,8 @@ describe("useSlideEngine", () => {
 
     render(<NavTestComponent onEngine={(e) => { engine = e }} />)
     act(() => engine!.navigateTo("slide-2"))
-    expect(window.requestAnimationFrame).toHaveBeenCalled()
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalled()
 
-    // Clean up
     document.getElementById("slide-1")?.remove()
     document.getElementById("slide-2")?.remove()
   })
@@ -141,6 +137,6 @@ describe("useSlideEngine", () => {
     let engine: ReturnType<typeof useSlideEngine> | null = null
     render(<TestComponent onEngine={(e) => { engine = e }} />)
     act(() => engine!.navigateTo("nonexistent"))
-    expect(window.requestAnimationFrame).not.toHaveBeenCalled()
+    expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled()
   })
 })

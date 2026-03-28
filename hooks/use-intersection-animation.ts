@@ -6,6 +6,8 @@ export interface UseIntersectionAnimationOptions {
   sectionsRef: React.RefObject<HTMLElement[]>
   currentIndexRef: React.MutableRefObject<number>
   setCurrentIndex: (index: number) => void
+  /** Ref that indicates programmatic scrolling is in progress */
+  isScrollingRef?: React.MutableRefObject<boolean>
   threshold?: number
 }
 
@@ -13,6 +15,7 @@ export function useIntersectionAnimation({
   sectionsRef,
   currentIndexRef,
   setCurrentIndex,
+  isScrollingRef,
   threshold = 0.4,
 }: UseIntersectionAnimationOptions) {
   useEffect(() => {
@@ -26,7 +29,7 @@ export function useIntersectionAnimation({
           if (idx === -1) return
 
           if (entry.isIntersecting) {
-            if (!document.documentElement.classList.contains("deck-scrolling")) {
+            if (!isScrollingRef?.current) {
               currentIndexRef.current = idx
               setCurrentIndex(idx)
             }
@@ -48,5 +51,5 @@ export function useIntersectionAnimation({
     }
 
     return () => observer.disconnect()
-  }, [sectionsRef, currentIndexRef, setCurrentIndex, threshold])
+  }, [sectionsRef, currentIndexRef, setCurrentIndex, isScrollingRef, threshold])
 }
