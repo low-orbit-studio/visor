@@ -48,7 +48,7 @@ export function SpherePlayground({
   const [scale, setScale] = useState(1.0)
   const [waves, setWaves] = useState(1.0)
   const [speed, setSpeed] = useState(0) // raw log value; exponential: 3^(v/3)
-  const [dotSize, setDotSize] = useState(0.4)
+  const [particleCount, setParticleCount] = useState(128000)
   const [blur, setBlur] = useState(0.75)
   const [saturation, setSaturation] = useState(1.8)
   const [lightness, setLightness] = useState(0.8)
@@ -60,6 +60,11 @@ export function SpherePlayground({
   })
 
   const speedMultiplier = useMemo(() => Math.pow(3, speed / 3), [speed])
+
+  const particleCountLabel = useMemo(() => {
+    if (particleCount >= 1000000) return `${(particleCount / 1000000).toFixed(1)}M`
+    return `${Math.round(particleCount / 1000)}k`
+  }, [particleCount])
 
   const activeEffects = useMemo(() => {
     const values: string[] = []
@@ -103,10 +108,10 @@ export function SpherePlayground({
     const props = [
       `  mode="${mode}"`,
       `  colorScheme="${colorScheme}"`,
+      `  particleCount={${particleCount}}`,
       `  scale={${scale}}`,
       `  waves={${waves}}`,
       `  speed={${Number(speedMultiplier.toFixed(2))}}`,
-      `  dotSize={${dotSize}}`,
       `  blur={${blur}}`,
       `  saturation={${saturation}}`,
       `  lightness={${lightness}}`,
@@ -115,8 +120,8 @@ export function SpherePlayground({
     ]
     return `<Sphere\n${props.join("\n")}\n/>`
   }, [
-    mode, colorScheme, scale, waves, speedMultiplier,
-    dotSize, blur, saturation, lightness,
+    mode, colorScheme, particleCount, scale, waves, speedMultiplier,
+    blur, saturation, lightness,
     thinkIntensity, thinkEffects,
   ])
 
@@ -128,12 +133,14 @@ export function SpherePlayground({
     <div className={cn(styles.container, className)} style={style}>
       <div className={styles.sphere}>
         <Sphere
+          key={particleCount}
           ref={sphereRef}
           mode={mode}
           colorScheme={colorScheme}
+          particleCount={particleCount}
           scale={scale}
           waves={waves}
-          dotSize={dotSize}
+          dotSize={0.4}
           speed={speedMultiplier}
           blur={blur}
           saturation={saturation}
@@ -204,13 +211,13 @@ export function SpherePlayground({
               <>
                 <SliderControl
                   label="Dots"
-                  value={dotSize}
-                  onValueChange={setDotSize}
-                  displayValue={dotSize.toFixed(1)}
-                  min={0.3}
-                  max={3.0}
-                  step={0.05}
-                  aria-label="Dot size"
+                  value={particleCount}
+                  onValueChange={setParticleCount}
+                  displayValue={particleCountLabel}
+                  min={6000}
+                  max={1024000}
+                  step={2000}
+                  aria-label="Particle count"
                 />
                 <SliderControl
                   label="Blur"

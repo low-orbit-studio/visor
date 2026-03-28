@@ -98,7 +98,7 @@ describe("SpherePlayground", () => {
     expect(screen.getByRole("slider", { name: "Size" })).toBeInTheDocument()
     expect(screen.getByRole("slider", { name: "Waves" })).toBeInTheDocument()
     expect(screen.getByRole("slider", { name: "Speed" })).toBeInTheDocument()
-    expect(screen.getByRole("slider", { name: "Dot size" })).toBeInTheDocument()
+    expect(screen.getByRole("slider", { name: "Particle count" })).toBeInTheDocument()
     expect(screen.getByRole("slider", { name: "Blur" })).toBeInTheDocument()
     expect(screen.getByRole("slider", { name: "Saturation" })).toBeInTheDocument()
     expect(screen.getByRole("slider", { name: "Lightness" })).toBeInTheDocument()
@@ -123,7 +123,7 @@ describe("SpherePlayground", () => {
     const code = onCodeChange.mock.calls.at(-1)?.[0] as string
     expect(code).toContain('mode="sphere"')
     expect(code).toContain("scale={1}")
-    expect(code).toContain("dotSize={0.4}")
+    expect(code).toContain("particleCount={128000}")
     expect(code).toContain("saturation={1.8}")
     expect(code).toContain("thinkEffects=")
   })
