@@ -30,14 +30,25 @@ vi.mock("three", () => ({
   })),
   BufferAttribute: vi.fn(),
   ShaderMaterial: vi.fn(() => ({
-    uniforms: new Proxy({} as Record<string, { value: unknown }>, {
-      get: (_t: Record<string, { value: unknown }>, prop: string | symbol) => {
-        if (prop === "then") return undefined
-        const key = prop as string
-        _t[key] = _t[key] ?? { value: 0 }
-        return _t[key]
+    uniforms: new Proxy(
+      {
+        uGradientColors: {
+          value: Array.from({ length: 5 }, () => ({ setRGB: vi.fn() })),
+        },
+        uPulseOrigins: {
+          value: Array.from({ length: 6 }, () => ({ set: vi.fn() })),
+        },
+        uPulseTimes: { value: new Float32Array(6) },
+      } as Record<string, { value: unknown }>,
+      {
+        get: (_t: Record<string, { value: unknown }>, prop: string | symbol) => {
+          if (prop === "then") return undefined
+          const key = prop as string
+          _t[key] = _t[key] ?? { value: 0 }
+          return _t[key]
+        },
       },
-    }),
+    ),
     dispose: vi.fn(),
     needsUpdate: false,
   })),
