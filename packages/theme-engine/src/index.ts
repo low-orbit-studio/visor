@@ -64,6 +64,15 @@ export {
   generateFullBundleCss,
 } from "./generate-css.js";
 
+// Extraction pipeline
+export { extractFromCSS, parseCSSDeclarations } from "./extract.js";
+export type {
+  ExtractionResult,
+  ExtractedToken,
+  Confidence,
+  CSSFile,
+} from "./extract.js";
+
 // Types
 export type {
   VisorThemeConfig,
