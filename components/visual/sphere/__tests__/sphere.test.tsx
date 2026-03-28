@@ -36,6 +36,7 @@ vi.mock("three", () => ({
   Color: vi.fn(() => ({ setRGB: vi.fn() })),
   Vector3: vi.fn(() => ({ set: vi.fn() })),
   Clock: vi.fn(() => ({ getDelta: vi.fn(() => 0.016) })),
+  Timer: vi.fn(() => ({ update: vi.fn(), getDelta: vi.fn(() => 0.016), getElapsed: vi.fn(() => 0), connect: vi.fn(), disconnect: vi.fn(), dispose: vi.fn() })),
   AdditiveBlending: 2,
 }))
 

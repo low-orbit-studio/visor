@@ -262,6 +262,8 @@ const Sphere = React.forwardRef<SphereRef, SphereProps>((props, ref) => {
         dispose() {
           cancelAnimationFrame(internals!.animationId)
           particleSystem.dispose()
+          timer.disconnect()
+          timer.dispose()
           renderer.dispose()
           orbitControls.dispose()
           if (renderer.domElement.parentNode) {
@@ -283,7 +285,8 @@ const Sphere = React.forwardRef<SphereRef, SphereProps>((props, ref) => {
       }
 
       // ─── Animation loop ────────────────────────────────────────────
-      const clock = new THREE.Clock()
+      const timer = new THREE.Timer()
+      timer.connect(document)
 
       function scheduleNextBeat(now: number): void {
         if (!internals) return
@@ -312,7 +315,7 @@ const Sphere = React.forwardRef<SphereRef, SphereProps>((props, ref) => {
         internals.nextPulseSlot = (internals.nextPulseSlot + 1) % 6
       }
 
-      function animate(): void {
+      function animate(timestamp?: number): void {
         if (!internals) return
         internals.animationId = requestAnimationFrame(animate)
 
@@ -321,7 +324,8 @@ const Sphere = React.forwardRef<SphereRef, SphereProps>((props, ref) => {
           return
         }
 
-        const delta = clock.getDelta()
+        timer.update(timestamp)
+        const delta = timer.getDelta()
 
         // Think intensity ramp
         const now = performance.now()
