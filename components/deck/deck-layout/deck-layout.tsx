@@ -87,6 +87,11 @@ export function DeckLayout({
   useKeyboardNav({ containerRef, goTo, currentIndexRef, totalSectionsRef })
   useWheelNav({ containerRef, goTo, currentIndexRef })
 
+  // Auto-focus container so keyboard nav works immediately
+  useEffect(() => {
+    containerRef.current?.focus()
+  }, [])
+
   const deckValue = useMemo(() => ({ goTo, navigateTo }), [goTo, navigateTo])
 
   return (
