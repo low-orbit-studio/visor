@@ -6,6 +6,11 @@ import { cssModuleTypesSync } from './rules/css-module-types-sync.js';
 import { tokenFallbackGray } from './rules/token-fallback-gray.js';
 import { noInlineShadows } from './rules/no-inline-shadows.js';
 import { spacingGrid } from './rules/spacing-grid.js';
+import { docsHasPreview } from './rules/docs-has-preview.js';
+import { docsHasPropsTable } from './rules/docs-has-props-table.js';
+import { docsHasInstallCommand } from './rules/docs-has-install-command.js';
+import { docsConsistentSections } from './rules/docs-consistent-sections.js';
+import { docsAlphabetized } from './rules/docs-alphabetized.js';
 import type { Rule } from './rules/types.js';
 
 const rules: Rule[] = [
@@ -17,6 +22,11 @@ const rules: Rule[] = [
   tokenFallbackGray,
   noInlineShadows,
   spacingGrid,
+  docsHasPreview,
+  docsHasPropsTable,
+  docsHasInstallCommand,
+  docsConsistentSections,
+  docsAlphabetized,
 ];
 
 const RED = '\x1b[31m';
