@@ -58,7 +58,7 @@
 }
 
 .preview-container[data-fullscreen="true"] .preview-footer .preview-title {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .preview-container[data-fullscreen="true"] .preview-footer .preview-toggle,
@@ -129,7 +129,7 @@
 }
 
 .preview-title {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   color: var(--text-secondary, #6b7280);
   font-weight: 500;
   margin: 0;
@@ -220,7 +220,7 @@
 }
 
 .blackout-theme .preview-title {
-  color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.45);
 }
 
 .blackout-theme .preview-toggle,
