@@ -7,12 +7,18 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 
 ## Installation
 
 ```bash
 npx visor add label
 ```
+
+This copies two files into your project:
+
+- `components/ui/label/label.tsx` — the component
+- `components/ui/label/label.module.css` — the styles
 
 ## Usage
 
@@ -34,8 +40,43 @@ import { Label } from '@/components/ui/label/label';
   </div>
 </ComponentPreview>
 
+## With Checkbox
+
+<ComponentPreview
+  title="Label with Checkbox"
+  code={"import { Label } from '@/components/ui/label/label';\nimport { Checkbox } from '@/components/ui/checkbox/checkbox';\n\n<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n  <Checkbox id=\"newsletter\" />\n  <Label htmlFor=\"newsletter\">Subscribe to newsletter</Label>\n</div>"}
+>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+    <Checkbox id="newsletter-demo" />
+    <Label htmlFor="newsletter-demo">Subscribe to newsletter</Label>
+  </div>
+</ComponentPreview>
+
+## Required Indicator
+
+<ComponentPreview
+  title="Required Field"
+  code={"<div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>\n  <Label htmlFor=\"name\">\n    Full name <span aria-hidden=\"true\" style={{ color: 'var(--text-error)' }}>*</span>\n  </Label>\n  <Input id=\"name\" required placeholder=\"Jane Doe\" />\n</div>"}
+>
+  <div style={{ width: '100%', maxWidth: '20rem', display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+    <Label htmlFor="name-demo">
+      Full name <span aria-hidden="true" style={{ color: 'var(--text-error)' }}>*</span>
+    </Label>
+    <Input id="name-demo" required placeholder="Jane Doe" />
+  </div>
+</ComponentPreview>
+
 ## API Reference
 
 ### LabelProps
 
 <PropsTable component="label" />
+
+The component also accepts all standard `<label>` HTML attributes.
+
+## Accessibility
+
+- Built on `@radix-ui/react-label` — renders a native `<label>` element
+- Always use `htmlFor` matching the associated control's `id` for proper screen reader association
+- Clicking the label focuses or activates the associated control (standard browser behavior)
+- For required field indicators, use `aria-hidden="true"` on the visual asterisk and add `required` or `aria-required="true"` on the input itself

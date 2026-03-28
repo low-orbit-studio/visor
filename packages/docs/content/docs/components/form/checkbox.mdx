@@ -14,12 +14,21 @@ import { Label } from '@/components/ui/label';
 npx visor add checkbox
 ```
 
+This copies two files into your project:
+
+- `components/ui/checkbox/checkbox.tsx` — the component
+- `components/ui/checkbox/checkbox.module.css` — the styles
+
 ## Usage
 
 ```tsx
 import { Checkbox } from '@/components/ui/checkbox/checkbox';
+import { Label } from '@/components/ui/label/label';
 
-<Checkbox />
+<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+  <Checkbox id="terms" />
+  <Label htmlFor="terms">Accept terms and conditions</Label>
+</div>
 ```
 
 ## Default
@@ -34,15 +43,45 @@ import { Checkbox } from '@/components/ui/checkbox/checkbox';
   </div>
 </ComponentPreview>
 
+## Checked
+
+<ComponentPreview
+  title="Checked"
+  code={"<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n  <Checkbox id=\"checked\" defaultChecked />\n  <Label htmlFor=\"checked\">I agree to the terms</Label>\n</div>"}
+>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+    <Checkbox id="checked-demo" defaultChecked />
+    <Label htmlFor="checked-demo">I agree to the terms</Label>
+  </div>
+</ComponentPreview>
+
+## Indeterminate
+
+<ComponentPreview
+  title="Indeterminate"
+  code={"<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n  <Checkbox id=\"indeterminate\" checked=\"indeterminate\" />\n  <Label htmlFor=\"indeterminate\">Select all</Label>\n</div>"}
+>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+    <Checkbox id="indeterminate-demo" checked="indeterminate" />
+    <Label htmlFor="indeterminate-demo">Select all</Label>
+  </div>
+</ComponentPreview>
+
 ## Disabled
 
 <ComponentPreview
   title="Disabled"
-  code={"<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n  <Checkbox id=\"disabled\" disabled />\n  <Label htmlFor=\"disabled\">Disabled checkbox</Label>\n</div>"}
+  code={"<div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>\n  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n    <Checkbox id=\"disabled\" disabled />\n    <Label htmlFor=\"disabled\">Disabled unchecked</Label>\n  </div>\n  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n    <Checkbox id=\"disabled-checked\" disabled defaultChecked />\n    <Label htmlFor=\"disabled-checked\">Disabled checked</Label>\n  </div>\n</div>"}
 >
-  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-    <Checkbox id="disabled-demo" disabled />
-    <Label htmlFor="disabled-demo">Disabled checkbox</Label>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <Checkbox id="disabled-demo" disabled />
+      <Label htmlFor="disabled-demo">Disabled unchecked</Label>
+    </div>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <Checkbox id="disabled-checked-demo" disabled defaultChecked />
+      <Label htmlFor="disabled-checked-demo">Disabled checked</Label>
+    </div>
   </div>
 </ComponentPreview>
 
@@ -51,3 +90,13 @@ import { Checkbox } from '@/components/ui/checkbox/checkbox';
 ### CheckboxProps
 
 <PropsTable component="checkbox" />
+
+The component also accepts all standard `<button>` HTML attributes (Radix renders checkbox as a button).
+
+## Accessibility
+
+- Built on `@radix-ui/react-checkbox` for full WAI-ARIA compliance
+- Renders as `role="checkbox"` with `aria-checked` reflecting the current state (including `"mixed"` for indeterminate)
+- Always pair with a `<Label>` using matching `id`/`htmlFor` for screen reader association
+- Keyboard: Space toggles the checkbox; Tab moves focus to/from it
+- Disabled state sets `aria-disabled="true"` and removes interaction

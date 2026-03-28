@@ -13,6 +13,11 @@ import { Slider } from '@/components/ui/slider';
 npx visor add slider
 ```
 
+This copies two files into your project:
+
+- `components/ui/slider/slider.tsx` — the component
+- `components/ui/slider/slider.module.css` — the styles
+
 ## Usage
 
 ```tsx
@@ -32,8 +37,49 @@ import { Slider } from '@/components/ui/slider/slider';
   </div>
 </ComponentPreview>
 
+## Range (Two Thumbs)
+
+<ComponentPreview
+  title="Range Slider"
+  code={"<Slider defaultValue={[25, 75]} max={100} step={1} />"}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <Slider defaultValue={[25, 75]} max={100} step={1} />
+  </div>
+</ComponentPreview>
+
+## With Step
+
+<ComponentPreview
+  title="Step of 10"
+  code={"<Slider defaultValue={[30]} max={100} step={10} />"}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <Slider defaultValue={[30]} max={100} step={10} />
+  </div>
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={"<Slider defaultValue={[40]} max={100} disabled />"}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <Slider defaultValue={[40]} max={100} disabled />
+  </div>
+</ComponentPreview>
+
 ## API Reference
 
 ### SliderProps
 
 <PropsTable component="slider" />
+
+## Accessibility
+
+- Built on `@radix-ui/react-slider` with full WAI-ARIA slider semantics
+- Each thumb renders with `role="slider"`, `aria-valuemin`, `aria-valuemax`, and `aria-valuenow`
+- Provide `aria-label` on `<Slider>` or use `aria-labelledby` pointing to a visible label
+- Keyboard: Arrow keys adjust value by `step`; Home/End jump to min/max; Page Up/Down adjust by larger increments
+- For range sliders, each thumb is independently focusable and operable

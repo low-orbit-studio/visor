@@ -6,6 +6,7 @@ description: A set of mutually exclusive radio options. Built on Radix UI.
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 
 ## Installation
 
@@ -13,14 +14,26 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 npx visor add radio-group
 ```
 
+This copies two files into your project:
+
+- `components/ui/radio-group/radio-group.tsx` — the component
+- `components/ui/radio-group/radio-group.module.css` — the styles
+
 ## Usage
 
 ```tsx
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group/radio-group';
+import { Label } from '@/components/ui/label/label';
 
 <RadioGroup defaultValue="a">
-  <RadioGroupItem value="a" />
-  <RadioGroupItem value="b" />
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+    <RadioGroupItem value="a" id="a" />
+    <Label htmlFor="a">Option A</Label>
+  </div>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+    <RadioGroupItem value="b" id="b" />
+    <Label htmlFor="b">Option B</Label>
+  </div>
 </RadioGroup>
 ```
 
@@ -28,7 +41,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group/radio-gr
 
 <ComponentPreview
   title="Radio Group"
-  code={"import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group/radio-group';\n\n<RadioGroup defaultValue=\"a\">\n  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n    <RadioGroupItem value=\"a\" id=\"a\" />\n    <label htmlFor=\"a\">Option A</label>\n  </div>\n  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n    <RadioGroupItem value=\"b\" id=\"b\" />\n    <label htmlFor=\"b\">Option B</label>\n  </div>\n  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n    <RadioGroupItem value=\"c\" id=\"c\" />\n    <label htmlFor=\"c\">Option C</label>\n  </div>\n</RadioGroup>"}
+  code={"import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group/radio-group';\nimport { Label } from '@/components/ui/label/label';\n\n<RadioGroup defaultValue=\"a\">\n  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n    <RadioGroupItem value=\"a\" id=\"a\" />\n    <Label htmlFor=\"a\">Option A</Label>\n  </div>\n  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n    <RadioGroupItem value=\"b\" id=\"b\" />\n    <Label htmlFor=\"b\">Option B</Label>\n  </div>\n  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n    <RadioGroupItem value=\"c\" id=\"c\" />\n    <Label htmlFor=\"c\">Option C</Label>\n  </div>\n</RadioGroup>"}
 >
   <RadioGroup defaultValue="a">
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -46,8 +59,34 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group/radio-gr
   </RadioGroup>
 </ComponentPreview>
 
+## Disabled
+
+<ComponentPreview
+  title="Disabled Group"
+  code={"<RadioGroup defaultValue=\"a\" disabled>\n  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n    <RadioGroupItem value=\"a\" id=\"da\" />\n    <Label htmlFor=\"da\">Option A</Label>\n  </div>\n  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n    <RadioGroupItem value=\"b\" id=\"db\" />\n    <Label htmlFor=\"db\">Option B</Label>\n  </div>\n</RadioGroup>"}
+>
+  <RadioGroup defaultValue="a" disabled>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <RadioGroupItem value="a" id="radio-da" />
+      <label htmlFor="radio-da">Option A</label>
+    </div>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <RadioGroupItem value="b" id="radio-db" />
+      <label htmlFor="radio-db">Option B</label>
+    </div>
+  </RadioGroup>
+</ComponentPreview>
+
 ## API Reference
 
 ### RadioGroupProps
 
 <PropsTable component="radio-group" />
+
+## Accessibility
+
+- Built on `@radix-ui/react-radio-group` with full WAI-ARIA radio group semantics
+- `RadioGroup` renders with `role="radiogroup"`; each `RadioGroupItem` renders with `role="radio"`
+- Wrap the group in a `<Fieldset>` with a `<FieldsetLegend>` to give the group an accessible name
+- Each item should have an associated `<Label>` via matching `htmlFor`/`id`
+- Keyboard: Arrow keys move selection within the group; Tab moves focus to/from the group

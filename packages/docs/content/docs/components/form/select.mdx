@@ -13,6 +13,11 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 npx visor add select
 ```
 
+This copies two files into your project:
+
+- `components/ui/select/select.tsx` — the component
+- `components/ui/select/select.module.css` — the styles
+
 ## Usage
 
 ```tsx
@@ -52,8 +57,54 @@ import {
   </div>
 </ComponentPreview>
 
+## Small Size
+
+<ComponentPreview
+  title="Small Select"
+  code={"<Select>\n  <SelectTrigger size=\"sm\">\n    <SelectValue placeholder=\"Pick one\" />\n  </SelectTrigger>\n  <SelectContent>\n    <SelectItem value=\"a\">Option A</SelectItem>\n    <SelectItem value=\"b\">Option B</SelectItem>\n    <SelectItem value=\"c\">Option C</SelectItem>\n  </SelectContent>\n</Select>"}
+>
+  <div style={{ width: '100%', maxWidth: '12rem' }}>
+    <Select>
+      <SelectTrigger size="sm">
+        <SelectValue placeholder="Pick one" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="a">Option A</SelectItem>
+        <SelectItem value="b">Option B</SelectItem>
+        <SelectItem value="c">Option C</SelectItem>
+      </SelectContent>
+    </Select>
+  </div>
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={"<Select disabled>\n  <SelectTrigger>\n    <SelectValue placeholder=\"Disabled select\" />\n  </SelectTrigger>\n  <SelectContent>\n    <SelectItem value=\"a\">Option A</SelectItem>\n  </SelectContent>\n</Select>"}
+>
+  <div style={{ width: '100%', maxWidth: '14rem' }}>
+    <Select disabled>
+      <SelectTrigger>
+        <SelectValue placeholder="Disabled select" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="a">Option A</SelectItem>
+      </SelectContent>
+    </Select>
+  </div>
+</ComponentPreview>
+
 ## API Reference
 
 ### SelectProps
 
 <PropsTable component="select" />
+
+## Accessibility
+
+- Built on `@radix-ui/react-select` with full WAI-ARIA combobox semantics
+- Trigger has `role="combobox"` with `aria-expanded` and `aria-haspopup="listbox"`
+- Content renders a `role="listbox"`; each item has `role="option"` with `aria-selected`
+- Always pair `SelectTrigger` with a `<Label>` via `htmlFor`/`id` for screen reader association
+- Keyboard: Space/Enter opens the dropdown; Arrow keys navigate options; Enter selects; Escape closes

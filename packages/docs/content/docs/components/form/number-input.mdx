@@ -13,6 +13,11 @@ import { NumberInput } from '@/components/ui/number-input';
 npx visor add number-input
 ```
 
+This copies two files into your project:
+
+- `components/ui/number-input/number-input.tsx` — the component
+- `components/ui/number-input/number-input.module.css` — the styles
+
 ## Usage
 
 ```tsx
@@ -39,8 +44,34 @@ import { NumberInput } from '@/components/ui/number-input/number-input';
   <NumberInput defaultValue={0} step={5} min={0} max={100} aria-label="Amount" />
 </ComponentPreview>
 
+## With Min/Max Bounds
+
+<ComponentPreview
+  title="Bounded Range"
+  code={"<NumberInput defaultValue={50} min={1} max={100} aria-label=\"Percentage\" />"}
+>
+  <NumberInput defaultValue={50} min={1} max={100} aria-label="Percentage" />
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={"<NumberInput defaultValue={5} disabled aria-label=\"Disabled quantity\" />"}
+>
+  <NumberInput defaultValue={5} disabled aria-label="Disabled quantity" />
+</ComponentPreview>
+
 ## API Reference
 
 ### NumberInputProps
 
 <PropsTable component="number-input" />
+
+## Accessibility
+
+- Always provide an `aria-label` or pair with a `<Label>` using `htmlFor`/`id` — the component has no visible label by default
+- Increment/decrement buttons have `aria-label="Increment"` and `aria-label="Decrement"`
+- The input renders as `type="text"` with `inputmode="numeric"` for appropriate mobile keyboard
+- Keyboard: Up/Down arrow keys increment/decrement the value; Tab navigates between the input and buttons
+- `min`/`max` bounds are enforced both visually (buttons disable at bounds) and on input blur

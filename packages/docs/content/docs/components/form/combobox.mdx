@@ -13,10 +13,21 @@ import { Combobox, ComboboxInput, ComboboxContent, ComboboxItem, ComboboxEmpty }
 npx visor add combobox
 ```
 
+This copies two files into your project:
+
+- `components/ui/combobox/combobox.tsx` — the component
+- `components/ui/combobox/combobox.module.css` — the styles
+
 ## Usage
 
 ```tsx
-import { Combobox, ComboboxInput, ComboboxContent, ComboboxItem, ComboboxEmpty } from '@/components/ui/combobox/combobox';
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxContent,
+  ComboboxItem,
+  ComboboxEmpty,
+} from '@/components/ui/combobox/combobox';
 
 <Combobox>
   <ComboboxInput placeholder="Pick a fruit..." />
@@ -49,8 +60,33 @@ import { Combobox, ComboboxInput, ComboboxContent, ComboboxItem, ComboboxEmpty }
   </div>
 </ComponentPreview>
 
+## Empty State
+
+<ComponentPreview
+  title="Empty State"
+  code={"<Combobox>\n  <ComboboxInput placeholder=\"Type something unusual...\" />\n  <ComboboxContent>\n    <ComboboxItem value=\"apple\">Apple</ComboboxItem>\n    <ComboboxEmpty>No results found.</ComboboxEmpty>\n  </ComboboxContent>\n</Combobox>"}
+>
+  <div style={{ width: '100%', maxWidth: '16rem' }}>
+    <Combobox>
+      <ComboboxInput placeholder="Type something unusual..." />
+      <ComboboxContent>
+        <ComboboxItem value="apple">Apple</ComboboxItem>
+        <ComboboxEmpty>No results found.</ComboboxEmpty>
+      </ComboboxContent>
+    </Combobox>
+  </div>
+</ComponentPreview>
+
 ## API Reference
 
 ### ComboboxProps
 
 <PropsTable component="combobox" />
+
+## Accessibility
+
+- Input renders with `role="combobox"`, `aria-expanded`, and `aria-autocomplete="list"`
+- The dropdown list renders with `role="listbox"`; each option has `role="option"`
+- `aria-activedescendant` tracks keyboard-focused option
+- Keyboard: Type to filter, Arrow Down/Up navigate options, Enter selects, Escape closes
+- Screen readers announce the number of available options when the list opens

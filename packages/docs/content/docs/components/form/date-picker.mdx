@@ -43,15 +43,41 @@ export default function Example() {
 }
 ```
 
-## Basic Example
+## Default
 
 <ComponentPreview
   title="Date Picker"
-  code={"<DatePicker placeholder=\"Pick a date\" />"}
+  code={"import { DatePicker } from '@/components/ui/date-picker/date-picker';\n\n<DatePicker placeholder=\"Pick a date\" />"}
 >
   <DatePicker placeholder="Pick a date" />
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={"<DatePicker placeholder=\"Pick a date\" disabled />"}
+>
+  <DatePicker placeholder="Pick a date" disabled />
+</ComponentPreview>
+
+## Custom Format
+
+<ComponentPreview
+  title="Custom Date Format"
+  code={"<DatePicker placeholder=\"Select date\" dateFormat=\"MM/dd/yyyy\" />"}
+>
+  <DatePicker placeholder="Select date" dateFormat="MM/dd/yyyy" />
 </ComponentPreview>
 
 ## API Reference
 
 <PropsTable component="date-picker" />
+
+## Accessibility
+
+- The trigger button has descriptive text showing either the selected date or placeholder
+- When no date is selected, a `<CalendarIcon>` provides visual context alongside the placeholder
+- The popover calendar inherits full keyboard navigation from the Calendar component
+- Focus is trapped in the calendar popover when open; Escape closes it and returns focus to the trigger
+- Pair with a `<Label>` and matching `htmlFor`/`id` in a form context for proper labeling

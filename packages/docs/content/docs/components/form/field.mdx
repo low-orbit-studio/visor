@@ -7,12 +7,18 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Field, FieldLabel, FieldDescription, FieldError } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 ## Installation
 
 ```bash
 npx visor add field
 ```
+
+This copies two files into your project:
+
+- `components/ui/field/field.tsx` — the component
+- `components/ui/field/field.module.css` — the styles
 
 ## Usage
 
@@ -71,6 +77,21 @@ import { Input } from '@/components/ui/input/input';
   </div>
 </ComponentPreview>
 
+## With Textarea
+
+<ComponentPreview
+  title="Field with Textarea"
+  code={"<Field>\n  <FieldLabel htmlFor=\"bio\">Bio</FieldLabel>\n  <Textarea id=\"bio\" placeholder=\"Tell us about yourself...\" />\n  <FieldDescription>Maximum 200 characters.</FieldDescription>\n</Field>"}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <Field>
+      <FieldLabel htmlFor="bio-demo">Bio</FieldLabel>
+      <Textarea id="bio-demo" placeholder="Tell us about yourself..." />
+      <FieldDescription>Maximum 200 characters.</FieldDescription>
+    </Field>
+  </div>
+</ComponentPreview>
+
 ## API Reference
 
 ### FieldProps
@@ -80,3 +101,11 @@ import { Input } from '@/components/ui/input/input';
 ### FieldErrorProps
 
 <PropsTable component="field-error" />
+
+## Accessibility
+
+- `Field` renders as a `<div>` — pair with `Fieldset` for groups of related fields
+- `FieldLabel` renders a semantic `<label>` — always use `htmlFor` matching the control's `id`
+- `FieldDescription` renders with a generated `id` that can be referenced by `aria-describedby` on the input
+- `FieldError` renders with `role="alert"` so screen readers announce errors immediately
+- Set `aria-invalid="true"` on the input when showing a `FieldError` to communicate the invalid state

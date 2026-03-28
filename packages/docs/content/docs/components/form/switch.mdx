@@ -14,12 +14,21 @@ import { Label } from '@/components/ui/label';
 npx visor add switch
 ```
 
+This copies two files into your project:
+
+- `components/ui/switch/switch.tsx` — the component
+- `components/ui/switch/switch.module.css` — the styles
+
 ## Usage
 
 ```tsx
 import { Switch } from '@/components/ui/switch/switch';
+import { Label } from '@/components/ui/label/label';
 
-<Switch />
+<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+  <Switch id="airplane" />
+  <Label htmlFor="airplane">Airplane mode</Label>
+</div>
 ```
 
 ## Default
@@ -34,15 +43,51 @@ import { Switch } from '@/components/ui/switch/switch';
   </div>
 </ComponentPreview>
 
-## Small
+## Sizes
 
 <ComponentPreview
-  title="Small Switch"
-  code={"<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n  <Switch id=\"small\" size=\"sm\" />\n  <Label htmlFor=\"small\">Small switch</Label>\n</div>"}
+  title="Sizes"
+  code={"<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n  <Switch id=\"default-sz\" />\n  <Label htmlFor=\"default-sz\">Default</Label>\n</div>\n<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n  <Switch id=\"small-sz\" size=\"sm\" />\n  <Label htmlFor=\"small-sz\">Small</Label>\n</div>"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <Switch id="default-sz-demo" />
+      <Label htmlFor="default-sz-demo">Default</Label>
+    </div>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <Switch id="small-sz-demo" size="sm" />
+      <Label htmlFor="small-sz-demo">Small</Label>
+    </div>
+  </div>
+</ComponentPreview>
+
+## Checked
+
+<ComponentPreview
+  title="Checked"
+  code={"<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n  <Switch id=\"checked-sw\" defaultChecked />\n  <Label htmlFor=\"checked-sw\">Notifications enabled</Label>\n</div>"}
 >
   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-    <Switch id="small-demo" size="sm" />
-    <Label htmlFor="small-demo">Small switch</Label>
+    <Switch id="checked-sw-demo" defaultChecked />
+    <Label htmlFor="checked-sw-demo">Notifications enabled</Label>
+  </div>
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={"<div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>\n  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n    <Switch id=\"disabled-off\" disabled />\n    <Label htmlFor=\"disabled-off\">Disabled (off)</Label>\n  </div>\n  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n    <Switch id=\"disabled-on\" disabled defaultChecked />\n    <Label htmlFor=\"disabled-on\">Disabled (on)</Label>\n  </div>\n</div>"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <Switch id="disabled-off-demo" disabled />
+      <Label htmlFor="disabled-off-demo">Disabled (off)</Label>
+    </div>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <Switch id="disabled-on-demo" disabled defaultChecked />
+      <Label htmlFor="disabled-on-demo">Disabled (on)</Label>
+    </div>
   </div>
 </ComponentPreview>
 
@@ -51,3 +96,13 @@ import { Switch } from '@/components/ui/switch/switch';
 ### SwitchProps
 
 <PropsTable component="switch" />
+
+The component also accepts all standard `<button>` HTML attributes (Radix renders switch as a button).
+
+## Accessibility
+
+- Built on `@radix-ui/react-switch` with full WAI-ARIA switch semantics
+- Renders with `role="switch"` and `aria-checked` reflecting the current state
+- Always pair with a `<Label>` using matching `id`/`htmlFor` — the label text communicates what the switch controls
+- Keyboard: Space or Enter toggles the switch; Tab moves focus to/from it
+- Use past-tense or noun labels ("Notifications", "Dark mode") rather than action labels ("Enable notifications")

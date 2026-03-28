@@ -13,6 +13,11 @@ import { Textarea } from '@/components/ui/textarea';
 npx visor add textarea
 ```
 
+This copies two files into your project:
+
+- `components/ui/textarea/textarea.tsx` — the component
+- `components/ui/textarea/textarea.module.css` — the styles
+
 ## Usage
 
 ```tsx
@@ -32,6 +37,17 @@ import { Textarea } from '@/components/ui/textarea/textarea';
   </div>
 </ComponentPreview>
 
+## Custom Rows
+
+<ComponentPreview
+  title="Custom Rows"
+  code={"<Textarea placeholder=\"Detailed description...\" rows={6} />"}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <Textarea placeholder="Detailed description..." rows={6} />
+  </div>
+</ComponentPreview>
+
 ## Disabled
 
 <ComponentPreview
@@ -43,8 +59,28 @@ import { Textarea } from '@/components/ui/textarea/textarea';
   </div>
 </ComponentPreview>
 
+## Invalid
+
+<ComponentPreview
+  title="Invalid"
+  code={"<Textarea aria-invalid=\"true\" defaultValue=\"This field has an error.\" />"}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <Textarea aria-invalid="true" defaultValue="This field has an error." />
+  </div>
+</ComponentPreview>
+
 ## API Reference
 
 ### TextareaProps
 
 <PropsTable component="textarea" />
+
+The component also accepts all standard `<textarea>` HTML attributes.
+
+## Accessibility
+
+- Renders a native `<textarea>` element — always pair with a `<Label>` using matching `htmlFor`/`id`
+- Use `aria-invalid="true"` to signal a validation error; pair with a `<FieldError>` or `aria-describedby` pointing to the error message
+- Use the `Field` component to automatically compose label, description, and error for a fully accessible form field
+- Consider adding a character count display with `aria-live="polite"` when using `maxLength`

@@ -13,6 +13,11 @@ import { PhoneInput } from '@/components/ui/phone-input';
 npx visor add phone-input
 ```
 
+This copies two files into your project:
+
+- `components/ui/phone-input/phone-input.tsx` — the component
+- `components/ui/phone-input/phone-input.module.css` — the styles
+
 This also installs the `input` component as a dependency.
 
 ## Usage
@@ -34,8 +39,28 @@ import { PhoneInput } from '@/components/ui/phone-input/phone-input';
   </div>
 </ComponentPreview>
 
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={"<PhoneInput aria-label=\"Phone number\" placeholder=\"(555) 123-4567\" disabled />"}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <PhoneInput aria-label="Phone number" placeholder="(555) 123-4567" disabled />
+  </div>
+</ComponentPreview>
+
 ## API Reference
 
 ### PhoneInputProps
 
 <PropsTable component="phone-input" />
+
+The component also accepts all standard `<input>` HTML attributes.
+
+## Accessibility
+
+- Renders a native `<input>` with `type="tel"` and `inputmode="tel"` for appropriate mobile keyboard
+- Always pair with a `<Label>` using `htmlFor`/`id`, or provide `aria-label` directly
+- The `onChange` callback returns raw digits only — display formatting is applied visually but not stored in the value
+- For international numbers, consider pairing with a country code selector
