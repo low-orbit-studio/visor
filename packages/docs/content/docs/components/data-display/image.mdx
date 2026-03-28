@@ -35,7 +35,9 @@ export default function Example() {
 }
 ```
 
-## Examples
+## Aspect Ratios
+
+The component includes four preset aspect ratios. A loading skeleton is shown until the image resolves.
 
 <ComponentPreview
   title="Aspect Ratios"
@@ -48,6 +50,62 @@ export default function Example() {
   </div>
 </ComponentPreview>
 
+## Object Fit Modes
+
+Control how the image fills its container.
+
+<ComponentPreview
+  title="Object Fit"
+  code={"<div style={{ display: 'flex', gap: '1rem' }}>\n  <div>\n    <p style={{ marginBottom: '0.5rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>cover</p>\n    <Image src=\"https://picsum.photos/400/300\" alt=\"Cover\" aspectRatio=\"square\" objectFit=\"cover\" style={{ width: 120 }} />\n  </div>\n  <div>\n    <p style={{ marginBottom: '0.5rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>contain</p>\n    <Image src=\"https://picsum.photos/400/300\" alt=\"Contain\" aspectRatio=\"square\" objectFit=\"contain\" style={{ width: 120 }} />\n  </div>\n</div>"}
+>
+  <div style={{ display: 'flex', gap: '1rem' }}>
+    <div>
+      <p style={{ marginBottom: '0.5rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>cover</p>
+      <Image src="https://picsum.photos/400/300" alt="Cover" aspectRatio="square" objectFit="cover" style={{ width: 120 }} />
+    </div>
+    <div>
+      <p style={{ marginBottom: '0.5rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>contain</p>
+      <Image src="https://picsum.photos/400/300" alt="Contain" aspectRatio="square" objectFit="contain" style={{ width: 120 }} />
+    </div>
+  </div>
+</ComponentPreview>
+
+## Error Fallback
+
+When an image fails to load, a fallback is shown. Defaults to a broken image icon.
+
+<ComponentPreview
+  title="Error Fallback"
+  code={"<div style={{ display: 'flex', gap: '1rem' }}>\n  <div>\n    <p style={{ marginBottom: '0.5rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Default fallback</p>\n    <Image src=\"/invalid-url.jpg\" alt=\"Broken\" aspectRatio=\"square\" style={{ width: 120 }} />\n  </div>\n  <div>\n    <p style={{ marginBottom: '0.5rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Custom fallback</p>\n    <Image\n      src=\"/invalid-url.jpg\"\n      alt=\"Broken\"\n      aspectRatio=\"square\"\n      style={{ width: 120 }}\n      fallback={<span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>No image</span>}\n    />\n  </div>\n</div>"}
+>
+  <div style={{ display: 'flex', gap: '1rem' }}>
+    <div>
+      <p style={{ marginBottom: '0.5rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Default fallback</p>
+      <Image src="/invalid-url.jpg" alt="Broken" aspectRatio="square" style={{ width: 120 }} />
+    </div>
+    <div>
+      <p style={{ marginBottom: '0.5rem', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Custom fallback</p>
+      <Image
+        src="/invalid-url.jpg"
+        alt="Broken"
+        aspectRatio="square"
+        style={{ width: 120 }}
+        fallback={<span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>No image</span>}
+      />
+    </div>
+  </div>
+</ComponentPreview>
+
 ## API Reference
 
 <PropsTable component="image" />
+
+The component also accepts all standard `<img>` HTML attributes.
+
+## Accessibility
+
+- Always provide a meaningful `alt` text describing the image content.
+- For decorative images, pass `alt=""` to hide them from screen readers.
+- The loading skeleton is hidden from assistive technology (`aria-hidden`).
+- The fallback state is visible to sighted users; ensure any custom `fallback` content is also accessible if it conveys meaning.
+- Images use native `loading="lazy"` by default — override with `loading="eager"` for above-the-fold images to avoid layout shift.

@@ -14,18 +14,27 @@ import { Button } from '@/components/ui/button';
 npx visor add collapsible
 ```
 
+This copies two files into your project:
+
+- `components/ui/collapsible/collapsible.tsx` — the component
+- `components/ui/collapsible/collapsible.module.css` — the styles
+
 ## Usage
 
 ```tsx
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible/collapsible';
 
-<Collapsible>
-  <CollapsibleTrigger>Toggle</CollapsibleTrigger>
-  <CollapsibleContent>Hidden content here.</CollapsibleContent>
-</Collapsible>
+export default function Example() {
+  return (
+    <Collapsible>
+      <CollapsibleTrigger>Toggle</CollapsibleTrigger>
+      <CollapsibleContent>Hidden content here.</CollapsibleContent>
+    </Collapsible>
+  );
+}
 ```
 
-## Example
+## Basic Example
 
 <ComponentPreview
   title="Basic Collapsible"
@@ -41,8 +50,60 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/component
   </Collapsible>
 </ComponentPreview>
 
+## Default Open
+
+Use `defaultOpen` to start the collapsible in an expanded state.
+
+<ComponentPreview
+  title="Default Open"
+  code={"<Collapsible defaultOpen>\n  <CollapsibleTrigger asChild>\n    <Button variant=\"outline\">Toggle Section</Button>\n  </CollapsibleTrigger>\n  <CollapsibleContent>\n    <p style={{ marginTop: '0.75rem', padding: '0.75rem', background: 'var(--surface-muted)', borderRadius: 'var(--radius-md)' }}>This content is visible by default.</p>\n  </CollapsibleContent>\n</Collapsible>"}
+>
+  <Collapsible defaultOpen>
+    <CollapsibleTrigger asChild>
+      <Button variant="outline">Toggle Section</Button>
+    </CollapsibleTrigger>
+    <CollapsibleContent>
+      <p style={{ marginTop: '0.75rem', padding: '0.75rem', background: 'var(--surface-muted)', borderRadius: 'var(--radius-md)' }}>This content is visible by default.</p>
+    </CollapsibleContent>
+  </Collapsible>
+</ComponentPreview>
+
+## Disabled State
+
+<ComponentPreview
+  title="Disabled Collapsible"
+  code={"<Collapsible disabled>\n  <CollapsibleTrigger asChild>\n    <Button variant=\"outline\" disabled>Toggle (Disabled)</Button>\n  </CollapsibleTrigger>\n  <CollapsibleContent>\n    <p>This content cannot be revealed.</p>\n  </CollapsibleContent>\n</Collapsible>"}
+>
+  <Collapsible disabled>
+    <CollapsibleTrigger asChild>
+      <Button variant="outline" disabled>Toggle (Disabled)</Button>
+    </CollapsibleTrigger>
+    <CollapsibleContent>
+      <p>This content cannot be revealed.</p>
+    </CollapsibleContent>
+  </Collapsible>
+</ComponentPreview>
+
 ## API Reference
 
 ### CollapsibleProps
 
 <PropsTable component="collapsible" />
+
+The component also accepts all standard `<div>` HTML attributes.
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `Collapsible` | `<div>` | Root container. Manages open/closed state. |
+| `CollapsibleTrigger` | `<button>` | Toggle button. Use `asChild` to render a custom element. |
+| `CollapsibleContent` | `<div>` | Animated content panel. |
+
+## Accessibility
+
+- Built on Radix UI `Collapsible` primitive — fully keyboard accessible.
+- The trigger has `aria-expanded` that reflects open/closed state automatically.
+- The content panel is linked to its trigger via `aria-controls`.
+- When `disabled`, the trigger receives `aria-disabled="true"`.
+- Use `CollapsibleTrigger` with `asChild` to render any element as the toggle while preserving ARIA attributes.
