@@ -1,11 +1,26 @@
 ---
 title: Context Menu
-description: A menu that appears on right-click. Built on Radix UI with support for nested submenus, checkboxes, and radio items.
+description: A menu that appears on right-click or long-press. Built on Radix UI with support for nested submenus, checkboxes, radio items, shortcuts, and disabled states.
 ---
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
-import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuLabel } from '@/components/ui/context-menu';
+import {
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuLabel,
+  ContextMenuCheckboxItem,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubTrigger,
+  ContextMenuSubContent,
+  ContextMenuGroup,
+} from '@/components/ui/context-menu';
 
 ## Installation
 
@@ -13,31 +28,49 @@ import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, C
 npx visor add context-menu
 ```
 
+This copies two files into your project:
+
+- `components/ui/context-menu/context-menu.tsx` — the component
+- `components/ui/context-menu/context-menu.module.css` — the styles
+
 ## Usage
 
 ```tsx
-import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem } from '@/components/ui/context-menu/context-menu';
+import {
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuLabel,
+} from '@/components/ui/context-menu/context-menu';
 
-<ContextMenu>
-  <ContextMenuTrigger>Right click here</ContextMenuTrigger>
-  <ContextMenuContent>
-    <ContextMenuItem>Edit</ContextMenuItem>
-    <ContextMenuItem>Duplicate</ContextMenuItem>
-    <ContextMenuItem>Delete</ContextMenuItem>
-  </ContextMenuContent>
-</ContextMenu>
+export default function Example() {
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger>Right click here</ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuLabel>Actions</ContextMenuLabel>
+        <ContextMenuItem>Edit</ContextMenuItem>
+        <ContextMenuItem>Duplicate</ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem variant="destructive">Delete</ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  );
+}
 ```
 
 ## Basic Context Menu
 
 <ComponentPreview
   title="Right-Click Menu"
-  code={"import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuSeparator, ContextMenuLabel } from '@/components/ui/context-menu/context-menu';\n\n<ContextMenu>\n  <ContextMenuTrigger>\n    <div style={{ border: '2px dashed var(--border-default, #d1d5db)', borderRadius: '0.5rem', padding: '3rem', textAlign: 'center' }}>\n      Right click here\n    </div>\n  </ContextMenuTrigger>\n  <ContextMenuContent>\n    <ContextMenuLabel>Actions</ContextMenuLabel>\n    <ContextMenuItem>Edit</ContextMenuItem>\n    <ContextMenuItem>Duplicate</ContextMenuItem>\n    <ContextMenuSeparator />\n    <ContextMenuItem>Delete</ContextMenuItem>\n  </ContextMenuContent>\n</ContextMenu>"}
+  code={"import {\n  ContextMenu, ContextMenuTrigger, ContextMenuContent,\n  ContextMenuItem, ContextMenuSeparator, ContextMenuLabel,\n} from '@/components/ui/context-menu/context-menu';\n\n<ContextMenu>\n  <ContextMenuTrigger>\n    <div style={{ border: '2px dashed var(--border-default, #d1d5db)', borderRadius: '0.5rem', padding: '3rem', textAlign: 'center', cursor: 'context-menu' }}>\n      Right click anywhere here\n    </div>\n  </ContextMenuTrigger>\n  <ContextMenuContent>\n    <ContextMenuLabel>Actions</ContextMenuLabel>\n    <ContextMenuItem>Edit</ContextMenuItem>\n    <ContextMenuItem>Duplicate</ContextMenuItem>\n    <ContextMenuSeparator />\n    <ContextMenuItem variant=\"destructive\">Delete</ContextMenuItem>\n  </ContextMenuContent>\n</ContextMenu>"}
 >
   <ContextMenu>
     <ContextMenuTrigger>
-      <div style={{ border: '2px dashed var(--border-default, #d1d5db)', borderRadius: '0.5rem', padding: '3rem', textAlign: 'center' }}>
-        Right click here
+      <div style={{ border: '2px dashed var(--border-default, #d1d5db)', borderRadius: '0.5rem', padding: '3rem', textAlign: 'center', cursor: 'context-menu' }}>
+        Right click anywhere here
       </div>
     </ContextMenuTrigger>
     <ContextMenuContent>
@@ -45,7 +78,153 @@ import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem } 
       <ContextMenuItem>Edit</ContextMenuItem>
       <ContextMenuItem>Duplicate</ContextMenuItem>
       <ContextMenuSeparator />
-      <ContextMenuItem>Delete</ContextMenuItem>
+      <ContextMenuItem variant="destructive">Delete</ContextMenuItem>
+    </ContextMenuContent>
+  </ContextMenu>
+</ComponentPreview>
+
+## With Keyboard Shortcuts
+
+<ComponentPreview
+  title="Shortcuts"
+  code={"import {\n  ContextMenu, ContextMenuTrigger, ContextMenuContent,\n  ContextMenuItem, ContextMenuSeparator, ContextMenuShortcut,\n} from '@/components/ui/context-menu/context-menu';\n\n<ContextMenu>\n  <ContextMenuTrigger>\n    <div style={{ border: '2px dashed var(--border-default, #d1d5db)', borderRadius: '0.5rem', padding: '3rem', textAlign: 'center', cursor: 'context-menu' }}>\n      Right click for shortcuts\n    </div>\n  </ContextMenuTrigger>\n  <ContextMenuContent>\n    <ContextMenuItem>\n      Cut <ContextMenuShortcut>⌘X</ContextMenuShortcut>\n    </ContextMenuItem>\n    <ContextMenuItem>\n      Copy <ContextMenuShortcut>⌘C</ContextMenuShortcut>\n    </ContextMenuItem>\n    <ContextMenuItem>\n      Paste <ContextMenuShortcut>⌘V</ContextMenuShortcut>\n    </ContextMenuItem>\n  </ContextMenuContent>\n</ContextMenu>"}
+>
+  <ContextMenu>
+    <ContextMenuTrigger>
+      <div style={{ border: '2px dashed var(--border-default, #d1d5db)', borderRadius: '0.5rem', padding: '3rem', textAlign: 'center', cursor: 'context-menu' }}>
+        Right click for shortcuts
+      </div>
+    </ContextMenuTrigger>
+    <ContextMenuContent>
+      <ContextMenuItem>
+        Cut <ContextMenuShortcut>⌘X</ContextMenuShortcut>
+      </ContextMenuItem>
+      <ContextMenuItem>
+        Copy <ContextMenuShortcut>⌘C</ContextMenuShortcut>
+      </ContextMenuItem>
+      <ContextMenuItem>
+        Paste <ContextMenuShortcut>⌘V</ContextMenuShortcut>
+      </ContextMenuItem>
+    </ContextMenuContent>
+  </ContextMenu>
+</ComponentPreview>
+
+## Destructive Items
+
+<ComponentPreview
+  title="Destructive Items"
+  code={"import {\n  ContextMenu, ContextMenuTrigger, ContextMenuContent,\n  ContextMenuItem, ContextMenuSeparator, ContextMenuLabel,\n} from '@/components/ui/context-menu/context-menu';\n\n<ContextMenu>\n  <ContextMenuTrigger>\n    <div style={{ border: '2px dashed var(--border-default, #d1d5db)', borderRadius: '0.5rem', padding: '3rem', textAlign: 'center', cursor: 'context-menu' }}>\n      Right click to see destructive items\n    </div>\n  </ContextMenuTrigger>\n  <ContextMenuContent>\n    <ContextMenuLabel>File</ContextMenuLabel>\n    <ContextMenuItem>Rename</ContextMenuItem>\n    <ContextMenuItem>Move to folder…</ContextMenuItem>\n    <ContextMenuSeparator />\n    <ContextMenuItem variant=\"destructive\">Move to Trash</ContextMenuItem>\n    <ContextMenuItem variant=\"destructive\" disabled>Permanently Delete</ContextMenuItem>\n  </ContextMenuContent>\n</ContextMenu>"}
+>
+  <ContextMenu>
+    <ContextMenuTrigger>
+      <div style={{ border: '2px dashed var(--border-default, #d1d5db)', borderRadius: '0.5rem', padding: '3rem', textAlign: 'center', cursor: 'context-menu' }}>
+        Right click to see destructive items
+      </div>
+    </ContextMenuTrigger>
+    <ContextMenuContent>
+      <ContextMenuLabel>File</ContextMenuLabel>
+      <ContextMenuItem>Rename</ContextMenuItem>
+      <ContextMenuItem>Move to folder…</ContextMenuItem>
+      <ContextMenuSeparator />
+      <ContextMenuItem variant="destructive">Move to Trash</ContextMenuItem>
+      <ContextMenuItem variant="destructive" disabled>Permanently Delete</ContextMenuItem>
+    </ContextMenuContent>
+  </ContextMenu>
+</ComponentPreview>
+
+## Disabled Items
+
+<ComponentPreview
+  title="Disabled Items"
+  code={"import {\n  ContextMenu, ContextMenuTrigger, ContextMenuContent,\n  ContextMenuItem, ContextMenuSeparator,\n} from '@/components/ui/context-menu/context-menu';\n\n<ContextMenu>\n  <ContextMenuTrigger>\n    <div style={{ border: '2px dashed var(--border-default, #d1d5db)', borderRadius: '0.5rem', padding: '3rem', textAlign: 'center', cursor: 'context-menu' }}>\n      Right click to see disabled items\n    </div>\n  </ContextMenuTrigger>\n  <ContextMenuContent>\n    <ContextMenuItem>Available Action</ContextMenuItem>\n    <ContextMenuItem disabled>Disabled Action</ContextMenuItem>\n    <ContextMenuSeparator />\n    <ContextMenuItem disabled>Also Disabled</ContextMenuItem>\n  </ContextMenuContent>\n</ContextMenu>"}
+>
+  <ContextMenu>
+    <ContextMenuTrigger>
+      <div style={{ border: '2px dashed var(--border-default, #d1d5db)', borderRadius: '0.5rem', padding: '3rem', textAlign: 'center', cursor: 'context-menu' }}>
+        Right click to see disabled items
+      </div>
+    </ContextMenuTrigger>
+    <ContextMenuContent>
+      <ContextMenuItem>Available Action</ContextMenuItem>
+      <ContextMenuItem disabled>Disabled Action</ContextMenuItem>
+      <ContextMenuSeparator />
+      <ContextMenuItem disabled>Also Disabled</ContextMenuItem>
+    </ContextMenuContent>
+  </ContextMenu>
+</ComponentPreview>
+
+## Checkbox Items
+
+<ComponentPreview
+  title="Checkbox Items"
+  code={"import {\n  ContextMenu, ContextMenuTrigger, ContextMenuContent,\n  ContextMenuCheckboxItem, ContextMenuLabel,\n} from '@/components/ui/context-menu/context-menu';\nimport { useState } from 'react';\n\nexport default function CheckboxExample() {\n  const [showBookmarks, setShowBookmarks] = useState(true);\n  const [showFullUrls, setShowFullUrls] = useState(false);\n\n  return (\n    <ContextMenu>\n      <ContextMenuTrigger>\n        <div>Right click for view options</div>\n      </ContextMenuTrigger>\n      <ContextMenuContent>\n        <ContextMenuLabel>View</ContextMenuLabel>\n        <ContextMenuCheckboxItem\n          checked={showBookmarks}\n          onCheckedChange={setShowBookmarks}\n        >\n          Show Bookmarks Bar\n        </ContextMenuCheckboxItem>\n        <ContextMenuCheckboxItem\n          checked={showFullUrls}\n          onCheckedChange={setShowFullUrls}\n        >\n          Show Full URLs\n        </ContextMenuCheckboxItem>\n      </ContextMenuContent>\n    </ContextMenu>\n  );\n}"}
+>
+  <ContextMenu>
+    <ContextMenuTrigger>
+      <div style={{ border: '2px dashed var(--border-default, #d1d5db)', borderRadius: '0.5rem', padding: '3rem', textAlign: 'center', cursor: 'context-menu' }}>
+        Right click for view options
+      </div>
+    </ContextMenuTrigger>
+    <ContextMenuContent>
+      <ContextMenuLabel>View</ContextMenuLabel>
+      <ContextMenuCheckboxItem checked={true}>
+        Show Bookmarks Bar
+      </ContextMenuCheckboxItem>
+      <ContextMenuCheckboxItem checked={false}>
+        Show Full URLs
+      </ContextMenuCheckboxItem>
+    </ContextMenuContent>
+  </ContextMenu>
+</ComponentPreview>
+
+## Radio Items
+
+<ComponentPreview
+  title="Radio Items"
+  code={"import {\n  ContextMenu, ContextMenuTrigger, ContextMenuContent,\n  ContextMenuLabel, ContextMenuRadioGroup, ContextMenuRadioItem,\n} from '@/components/ui/context-menu/context-menu';\nimport { useState } from 'react';\n\nexport default function RadioExample() {\n  const [layout, setLayout] = useState('grid');\n\n  return (\n    <ContextMenu>\n      <ContextMenuTrigger>\n        <div>Right click for layout options</div>\n      </ContextMenuTrigger>\n      <ContextMenuContent>\n        <ContextMenuLabel>Layout</ContextMenuLabel>\n        <ContextMenuRadioGroup value={layout} onValueChange={setLayout}>\n          <ContextMenuRadioItem value=\"grid\">Grid View</ContextMenuRadioItem>\n          <ContextMenuRadioItem value=\"list\">List View</ContextMenuRadioItem>\n          <ContextMenuRadioItem value=\"columns\">Columns View</ContextMenuRadioItem>\n        </ContextMenuRadioGroup>\n      </ContextMenuContent>\n    </ContextMenu>\n  );\n}"}
+>
+  <ContextMenu>
+    <ContextMenuTrigger>
+      <div style={{ border: '2px dashed var(--border-default, #d1d5db)', borderRadius: '0.5rem', padding: '3rem', textAlign: 'center', cursor: 'context-menu' }}>
+        Right click for layout options
+      </div>
+    </ContextMenuTrigger>
+    <ContextMenuContent>
+      <ContextMenuLabel>Layout</ContextMenuLabel>
+      <ContextMenuRadioGroup value="grid">
+        <ContextMenuRadioItem value="grid">Grid View</ContextMenuRadioItem>
+        <ContextMenuRadioItem value="list">List View</ContextMenuRadioItem>
+        <ContextMenuRadioItem value="columns">Columns View</ContextMenuRadioItem>
+      </ContextMenuRadioGroup>
+    </ContextMenuContent>
+  </ContextMenu>
+</ComponentPreview>
+
+## Nested Submenus
+
+<ComponentPreview
+  title="Submenus"
+  code={"import {\n  ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem,\n  ContextMenuSeparator, ContextMenuSub, ContextMenuSubTrigger, ContextMenuSubContent,\n} from '@/components/ui/context-menu/context-menu';\n\n<ContextMenu>\n  <ContextMenuTrigger>\n    <div style={{ border: '2px dashed var(--border-default, #d1d5db)', borderRadius: '0.5rem', padding: '3rem', textAlign: 'center', cursor: 'context-menu' }}>\n      Right click for nested menus\n    </div>\n  </ContextMenuTrigger>\n  <ContextMenuContent>\n    <ContextMenuItem>Open</ContextMenuItem>\n    <ContextMenuSub>\n      <ContextMenuSubTrigger>Share</ContextMenuSubTrigger>\n      <ContextMenuSubContent>\n        <ContextMenuItem>Email Link</ContextMenuItem>\n        <ContextMenuItem>Copy Link</ContextMenuItem>\n        <ContextMenuSeparator />\n        <ContextMenuItem>Export as PDF</ContextMenuItem>\n      </ContextMenuSubContent>\n    </ContextMenuSub>\n    <ContextMenuSeparator />\n    <ContextMenuItem variant=\"destructive\">Delete</ContextMenuItem>\n  </ContextMenuContent>\n</ContextMenu>"}
+>
+  <ContextMenu>
+    <ContextMenuTrigger>
+      <div style={{ border: '2px dashed var(--border-default, #d1d5db)', borderRadius: '0.5rem', padding: '3rem', textAlign: 'center', cursor: 'context-menu' }}>
+        Right click for nested menus
+      </div>
+    </ContextMenuTrigger>
+    <ContextMenuContent>
+      <ContextMenuItem>Open</ContextMenuItem>
+      <ContextMenuSub>
+        <ContextMenuSubTrigger>Share</ContextMenuSubTrigger>
+        <ContextMenuSubContent>
+          <ContextMenuItem>Email Link</ContextMenuItem>
+          <ContextMenuItem>Copy Link</ContextMenuItem>
+          <ContextMenuSeparator />
+          <ContextMenuItem>Export as PDF</ContextMenuItem>
+        </ContextMenuSubContent>
+      </ContextMenuSub>
+      <ContextMenuSeparator />
+      <ContextMenuItem variant="destructive">Delete</ContextMenuItem>
     </ContextMenuContent>
   </ContextMenu>
 </ComponentPreview>
@@ -55,3 +234,30 @@ import { ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem } 
 ### ContextMenuProps
 
 <PropsTable component="context-menu" />
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `ContextMenu` | Root | Context provider (wraps Radix ContextMenu.Root) |
+| `ContextMenuTrigger` | Any element | Right-click target area |
+| `ContextMenuContent` | Floating panel | Container for menu items |
+| `ContextMenuGroup` | Group | Groups related items |
+| `ContextMenuLabel` | Label | Non-interactive section heading |
+| `ContextMenuItem` | Item | Clickable menu item |
+| `ContextMenuCheckboxItem` | Item | Toggleable checkbox item |
+| `ContextMenuRadioGroup` | Group | Container for radio items |
+| `ContextMenuRadioItem` | Item | Mutually exclusive selection item |
+| `ContextMenuSeparator` | `<hr>` | Visual divider between groups |
+| `ContextMenuShortcut` | `<span>` | Keyboard shortcut label displayed on the right |
+| `ContextMenuSub` | Root | Wrapper for a nested submenu |
+| `ContextMenuSubTrigger` | Item | Trigger that opens a submenu |
+| `ContextMenuSubContent` | Floating panel | Container for submenu items |
+
+## Accessibility
+
+- Built on [Radix UI ContextMenu](https://www.radix-ui.com/docs/primitives/components/context-menu) — ARIA roles (`menu`, `menuitem`, `menuitemcheckbox`, `menuitemradio`) are applied automatically.
+- Keyboard navigation: `ArrowUp`/`ArrowDown` to move between items, `ArrowRight` to open submenus, `ArrowLeft` to close them, `Escape` to dismiss.
+- Focus is trapped within the open menu and restored to the trigger on close.
+- Disabled items use `aria-disabled` and are not keyboard-reachable.
+- Shortcut text is visible to screen readers — use `aria-hidden` if the shortcut text would be redundant.

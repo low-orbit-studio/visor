@@ -1,6 +1,6 @@
 ---
 title: Lightbox
-description: A full-screen image viewer with gallery navigation, keyboard and touch support, built on Radix Dialog.
+description: A full-screen image viewer with gallery navigation, keyboard and touch support. Built on Radix Dialog with image preloading and swipe gestures.
 ---
 
 import { ComponentPreview } from '@/components/preview';
@@ -10,6 +10,7 @@ import {
   LightboxTrigger,
   LightboxContent,
 } from '@/components/ui/lightbox';
+import { Button } from '@/components/ui/button';
 
 ## Installation
 
@@ -40,35 +41,124 @@ const images = [
 export default function Example() {
   return (
     <Lightbox images={images}>
-      <LightboxTrigger>View Gallery</LightboxTrigger>
+      <LightboxTrigger asChild>
+        <Button>View Gallery</Button>
+      </LightboxTrigger>
       <LightboxContent />
     </Lightbox>
   );
 }
 ```
 
-## Basic Example
+## Gallery (Multiple Images)
 
 <ComponentPreview
-  title="Lightbox"
-  code={"<Lightbox images={[\n  { src: 'https://picsum.photos/800/600?random=1', alt: 'Photo 1' },\n  { src: 'https://picsum.photos/800/600?random=2', alt: 'Photo 2' },\n  { src: 'https://picsum.photos/800/600?random=3', alt: 'Photo 3' },\n]}>\n  <LightboxTrigger asChild>\n    <button>View Gallery (3 photos)</button>\n  </LightboxTrigger>\n  <LightboxContent />\n</Lightbox>"}
+  title="Photo Gallery"
+  code={"import { Lightbox, LightboxTrigger, LightboxContent } from '@/components/ui/lightbox/lightbox';\nimport { Button } from '@/components/ui/button/button';\n\nconst images = [\n  { src: 'https://picsum.photos/800/600?random=1', alt: 'Photo 1' },\n  { src: 'https://picsum.photos/800/600?random=2', alt: 'Photo 2' },\n  { src: 'https://picsum.photos/800/600?random=3', alt: 'Photo 3' },\n];\n\n<Lightbox images={images}>\n  <LightboxTrigger asChild>\n    <Button>View Gallery (3 photos)</Button>\n  </LightboxTrigger>\n  <LightboxContent />\n</Lightbox>"}
 >
   <Lightbox images={[
     { src: 'https://picsum.photos/800/600?random=1', alt: 'Photo 1' },
     { src: 'https://picsum.photos/800/600?random=2', alt: 'Photo 2' },
     { src: 'https://picsum.photos/800/600?random=3', alt: 'Photo 3' },
   ]}>
-    <LightboxTrigger>View Gallery (3 photos)</LightboxTrigger>
+    <LightboxTrigger asChild>
+      <Button>View Gallery (3 photos)</Button>
+    </LightboxTrigger>
     <LightboxContent />
   </Lightbox>
 </ComponentPreview>
 
+## Single Image
+
+When only one image is provided, navigation arrows and the counter are hidden automatically.
+
+<ComponentPreview
+  title="Single Image"
+  code={"import { Lightbox, LightboxTrigger, LightboxContent } from '@/components/ui/lightbox/lightbox';\nimport { Button } from '@/components/ui/button/button';\n\n<Lightbox images={[{ src: 'https://picsum.photos/800/600?random=5', alt: 'A single photo' }]}>\n  <LightboxTrigger asChild>\n    <Button variant=\"outline\">View Photo</Button>\n  </LightboxTrigger>\n  <LightboxContent />\n</Lightbox>"}
+>
+  <Lightbox images={[{ src: 'https://picsum.photos/800/600?random=5', alt: 'A single photo' }]}>
+    <LightboxTrigger asChild>
+      <Button variant="outline">View Photo</Button>
+    </LightboxTrigger>
+    <LightboxContent />
+  </Lightbox>
+</ComponentPreview>
+
+## Grid Thumbnails
+
+A common pattern is to open the lightbox from a thumbnail grid, passing `initialIndex` to start at the clicked image.
+
+```tsx
+import { useState } from 'react';
+import { Lightbox, LightboxContent } from '@/components/ui/lightbox/lightbox';
+
+const images = [
+  { src: '/photo-1.jpg', alt: 'Mountain landscape' },
+  { src: '/photo-2.jpg', alt: 'Ocean sunset' },
+  { src: '/photo-3.jpg', alt: 'Forest trail' },
+];
+
+export default function ThumbnailGrid() {
+  const [open, setOpen] = useState(false);
+  const [index, setIndex] = useState(0);
+
+  function handleClick(i: number) {
+    setIndex(i);
+    setOpen(true);
+  }
+
+  return (
+    <>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+        {images.map((img, i) => (
+          <button key={i} onClick={() => handleClick(i)} style={{ padding: 0, border: 'none', cursor: 'pointer' }}>
+            <img src={img.src} alt={img.alt} style={{ width: '100%', display: 'block' }} />
+          </button>
+        ))}
+      </div>
+      <Lightbox images={images} open={open} onOpenChange={setOpen} initialIndex={index}>
+        <LightboxContent />
+      </Lightbox>
+    </>
+  );
+}
+```
+
+## Controlled State
+
+Use `open` and `onOpenChange` to fully control the lightbox without a `LightboxTrigger`.
+
+```tsx
+import { useState } from 'react';
+import { Lightbox, LightboxContent } from '@/components/ui/lightbox/lightbox';
+import { Button } from '@/components/ui/button/button';
+
+export default function ControlledLightbox() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>Open Lightbox</Button>
+      <Lightbox
+        images={[{ src: '/photo.jpg', alt: 'A photo' }]}
+        open={open}
+        onOpenChange={setOpen}
+      >
+        <LightboxContent />
+      </Lightbox>
+    </>
+  );
+}
+```
+
 ## Features
 
-- **Keyboard navigation:** Arrow keys to navigate, Escape to close
-- **Touch support:** Swipe left/right on mobile
+- **Keyboard navigation:** `ArrowLeft`/`ArrowRight` to navigate, `Escape` to close
+- **Touch/swipe support:** Swipe left/right on mobile to navigate
 - **Image preloading:** Adjacent images are preloaded for smooth transitions
+- **Auto-hides navigation:** Arrows and counter are hidden for single-image lightboxes
 - **Accessible:** Built on Radix Dialog for focus management and screen reader support
+- **Theme-agnostic:** Uses CSS custom properties for all visual tokens
 
 ## API Reference
 
@@ -78,6 +168,16 @@ export default function Example() {
 
 | Component | Element | Purpose |
 |-----------|---------|---------|
-| `Lightbox` | Root | Context provider with image data |
-| `LightboxTrigger` | `<button>` | Opens the lightbox |
-| `LightboxContent` | Dialog | Full-screen image viewer |
+| `Lightbox` | Root | Context provider with image data and navigation state |
+| `LightboxTrigger` | `<button>` | Opens the lightbox; use `asChild` to wrap a custom trigger |
+| `LightboxContent` | Dialog | Full-screen image viewer with navigation controls |
+
+## Accessibility
+
+- Built on [Radix UI Dialog](https://www.radix-ui.com/docs/primitives/components/dialog) — `role="dialog"`, `aria-modal="true"`, visually hidden title and description are provided automatically.
+- `aria-label` on the content is set dynamically to the current image's `alt` text.
+- The current position is announced as "Viewing image N of M" via a visually hidden description.
+- Navigation buttons have visually hidden "Previous image" / "Next image" labels.
+- The close button has a visually hidden "Close" label for screen readers.
+- Focus is trapped inside the lightbox when open and restored to the trigger on close.
+- Always provide meaningful `alt` text for every image — it is used for accessibility announcements.

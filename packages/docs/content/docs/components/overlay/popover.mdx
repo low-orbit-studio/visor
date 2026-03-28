@@ -1,6 +1,6 @@
 ---
 title: Popover
-description: A floating panel that appears next to a trigger element. Built on Radix UI.
+description: A floating panel that appears next to a trigger element. Built on Radix UI with configurable alignment, offset, and controlled state support.
 ---
 
 import { ComponentPreview } from '@/components/preview';
@@ -14,15 +14,33 @@ import { Button } from '@/components/ui/button';
 npx visor add popover
 ```
 
+This copies two files into your project:
+
+- `components/ui/popover/popover.tsx` — the component
+- `components/ui/popover/popover.module.css` — the styles
+
 ## Usage
 
 ```tsx
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover/popover';
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '@/components/ui/popover/popover';
+import { Button } from '@/components/ui/button/button';
 
-<Popover>
-  <PopoverTrigger>Open</PopoverTrigger>
-  <PopoverContent>Place content here.</PopoverContent>
-</Popover>
+export default function Example() {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline">Open</Button>
+      </PopoverTrigger>
+      <PopoverContent>
+        <p>Place content here.</p>
+      </PopoverContent>
+    </Popover>
+  );
+}
 ```
 
 ## Basic Popover
@@ -42,8 +60,166 @@ import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover
   </Popover>
 </ComponentPreview>
 
+## Alignment Variants
+
+Use the `align` prop on `PopoverContent` to align the panel relative to the trigger.
+
+<ComponentPreview
+  title="Alignment"
+  code={"import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover/popover';\nimport { Button } from '@/components/ui/button/button';\n\n<div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>\n  <Popover>\n    <PopoverTrigger asChild>\n      <Button variant=\"outline\" size=\"sm\">Start</Button>\n    </PopoverTrigger>\n    <PopoverContent align=\"start\">\n      <p style={{ margin: 0, fontSize: '0.875rem' }}>Aligned to start</p>\n    </PopoverContent>\n  </Popover>\n\n  <Popover>\n    <PopoverTrigger asChild>\n      <Button variant=\"outline\" size=\"sm\">Center</Button>\n    </PopoverTrigger>\n    <PopoverContent align=\"center\">\n      <p style={{ margin: 0, fontSize: '0.875rem' }}>Aligned to center</p>\n    </PopoverContent>\n  </Popover>\n\n  <Popover>\n    <PopoverTrigger asChild>\n      <Button variant=\"outline\" size=\"sm\">End</Button>\n    </PopoverTrigger>\n    <PopoverContent align=\"end\">\n      <p style={{ margin: 0, fontSize: '0.875rem' }}>Aligned to end</p>\n    </PopoverContent>\n  </Popover>\n</div>"}
+>
+  <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" size="sm">Start</Button>
+      </PopoverTrigger>
+      <PopoverContent align="start">
+        <p style={{ margin: 0, fontSize: '0.875rem' }}>Aligned to start</p>
+      </PopoverContent>
+    </Popover>
+
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" size="sm">Center</Button>
+      </PopoverTrigger>
+      <PopoverContent align="center">
+        <p style={{ margin: 0, fontSize: '0.875rem' }}>Aligned to center</p>
+      </PopoverContent>
+    </Popover>
+
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" size="sm">End</Button>
+      </PopoverTrigger>
+      <PopoverContent align="end">
+        <p style={{ margin: 0, fontSize: '0.875rem' }}>Aligned to end</p>
+      </PopoverContent>
+    </Popover>
+  </div>
+</ComponentPreview>
+
+## Side Positioning
+
+Use the `side` prop to control which side of the trigger the panel opens on.
+
+<ComponentPreview
+  title="Side Positioning"
+  code={"import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover/popover';\nimport { Button } from '@/components/ui/button/button';\n\n<div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', padding: '1rem' }}>\n  <Popover>\n    <PopoverTrigger asChild>\n      <Button variant=\"outline\" size=\"sm\">Top</Button>\n    </PopoverTrigger>\n    <PopoverContent side=\"top\">\n      <p style={{ margin: 0, fontSize: '0.875rem' }}>Opens above</p>\n    </PopoverContent>\n  </Popover>\n\n  <Popover>\n    <PopoverTrigger asChild>\n      <Button variant=\"outline\" size=\"sm\">Right</Button>\n    </PopoverTrigger>\n    <PopoverContent side=\"right\">\n      <p style={{ margin: 0, fontSize: '0.875rem' }}>Opens right</p>\n    </PopoverContent>\n  </Popover>\n\n  <Popover>\n    <PopoverTrigger asChild>\n      <Button variant=\"outline\" size=\"sm\">Bottom</Button>\n    </PopoverTrigger>\n    <PopoverContent side=\"bottom\">\n      <p style={{ margin: 0, fontSize: '0.875rem' }}>Opens below</p>\n    </PopoverContent>\n  </Popover>\n\n  <Popover>\n    <PopoverTrigger asChild>\n      <Button variant=\"outline\" size=\"sm\">Left</Button>\n    </PopoverTrigger>\n    <PopoverContent side=\"left\">\n      <p style={{ margin: 0, fontSize: '0.875rem' }}>Opens left</p>\n    </PopoverContent>\n  </Popover>\n</div>"}
+>
+  <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', padding: '1rem' }}>
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" size="sm">Top</Button>
+      </PopoverTrigger>
+      <PopoverContent side="top">
+        <p style={{ margin: 0, fontSize: '0.875rem' }}>Opens above</p>
+      </PopoverContent>
+    </Popover>
+
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" size="sm">Right</Button>
+      </PopoverTrigger>
+      <PopoverContent side="right">
+        <p style={{ margin: 0, fontSize: '0.875rem' }}>Opens right</p>
+      </PopoverContent>
+    </Popover>
+
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" size="sm">Bottom</Button>
+      </PopoverTrigger>
+      <PopoverContent side="bottom">
+        <p style={{ margin: 0, fontSize: '0.875rem' }}>Opens below</p>
+      </PopoverContent>
+    </Popover>
+
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" size="sm">Left</Button>
+      </PopoverTrigger>
+      <PopoverContent side="left">
+        <p style={{ margin: 0, fontSize: '0.875rem' }}>Opens left</p>
+      </PopoverContent>
+    </Popover>
+  </div>
+</ComponentPreview>
+
+## With Form Content
+
+Popovers are commonly used to contain small forms or settings panels.
+
+<ComponentPreview
+  title="Settings Panel"
+  code={"import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover/popover';\nimport { Button } from '@/components/ui/button/button';\n\n<Popover>\n  <PopoverTrigger asChild>\n    <Button variant=\"outline\">Settings</Button>\n  </PopoverTrigger>\n  <PopoverContent style={{ width: '240px' }}>\n    <p style={{ margin: '0 0 0.75rem', fontWeight: 600, fontSize: '0.875rem' }}>Display settings</p>\n    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>\n      <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.875rem' }}>\n        <span>Compact mode</span>\n        <input type=\"checkbox\" />\n      </label>\n      <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.875rem' }}>\n        <span>Show previews</span>\n        <input type=\"checkbox\" defaultChecked />\n      </label>\n    </div>\n  </PopoverContent>\n</Popover>"}
+>
+  <Popover>
+    <PopoverTrigger asChild>
+      <Button variant="outline">Settings</Button>
+    </PopoverTrigger>
+    <PopoverContent style={{ width: '240px' }}>
+      <p style={{ margin: '0 0 0.75rem', fontWeight: 600, fontSize: '0.875rem' }}>Display settings</p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.875rem' }}>
+          <span>Compact mode</span>
+          <input type="checkbox" />
+        </label>
+        <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.875rem' }}>
+          <span>Show previews</span>
+          <input type="checkbox" defaultChecked />
+        </label>
+      </div>
+    </PopoverContent>
+  </Popover>
+</ComponentPreview>
+
+## Controlled State
+
+Use `open` and `onOpenChange` to fully control when the popover is shown.
+
+```tsx
+import { useState } from 'react';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover/popover';
+import { Button } from '@/components/ui/button/button';
+
+export default function ControlledPopover() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="outline">{open ? 'Close' : 'Open'}</Button>
+      </PopoverTrigger>
+      <PopoverContent>
+        <p style={{ margin: 0 }}>Controlled popover content.</p>
+        <Button size="sm" onClick={() => setOpen(false)} style={{ marginTop: '0.75rem' }}>
+          Dismiss
+        </Button>
+      </PopoverContent>
+    </Popover>
+  );
+}
+```
+
 ## API Reference
 
 ### PopoverProps
 
 <PropsTable component="popover" />
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `Popover` | Root | Context provider (wraps Radix Popover.Root) |
+| `PopoverTrigger` | `<button>` | The element that opens the popover; use `asChild` to wrap a custom trigger |
+| `PopoverContent` | Floating panel | The popover panel; accepts `side`, `align`, and `sideOffset` |
+| `PopoverAnchor` | Any element | Optional anchor to position the popover relative to a different element than the trigger |
+
+## Accessibility
+
+- Built on [Radix UI Popover](https://www.radix-ui.com/docs/primitives/components/popover) — `role="dialog"` and `aria-expanded` are applied automatically.
+- Focus moves into the popover when it opens and returns to the trigger when it closes.
+- Pressing `Escape` closes the popover.
+- Clicking outside the popover closes it.
+- For non-modal popovers containing only non-interactive content (e.g., tooltips), consider [HoverCard](/docs/components/overlay/hover-card) instead.

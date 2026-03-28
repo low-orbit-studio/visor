@@ -1,6 +1,6 @@
 ---
 title: Hover Card
-description: A card that appears when hovering over a trigger element. Built on Radix UI.
+description: A card that appears when hovering over a trigger element. Built on Radix UI with configurable delay, alignment, and side positioning.
 ---
 
 import { ComponentPreview } from '@/components/preview';
@@ -13,15 +13,32 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/h
 npx visor add hover-card
 ```
 
+This copies two files into your project:
+
+- `components/ui/hover-card/hover-card.tsx` — the component
+- `components/ui/hover-card/hover-card.module.css` — the styles
+
 ## Usage
 
 ```tsx
-import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card/hover-card';
+import {
+  HoverCard,
+  HoverCardTrigger,
+  HoverCardContent,
+} from '@/components/ui/hover-card/hover-card';
 
-<HoverCard>
-  <HoverCardTrigger>Hover me</HoverCardTrigger>
-  <HoverCardContent>Card content here.</HoverCardContent>
-</HoverCard>
+export default function Example() {
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <a href="#">Hover me</a>
+      </HoverCardTrigger>
+      <HoverCardContent>
+        <p>Card content here.</p>
+      </HoverCardContent>
+    </HoverCard>
+  );
+}
 ```
 
 ## Basic Hover Card
@@ -41,8 +58,110 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/h
   </HoverCard>
 </ComponentPreview>
 
+## Side Positioning
+
+Use the `side` prop on `HoverCardContent` to control which side of the trigger the card appears on.
+
+<ComponentPreview
+  title="Positioning Sides"
+  code={"import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card/hover-card';\n\n<div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap', padding: '2rem' }}>\n  <HoverCard>\n    <HoverCardTrigger asChild>\n      <button style={{ padding: '0.5rem 1rem', border: '1px solid var(--border-default, #d1d5db)', borderRadius: '0.375rem' }}>Top</button>\n    </HoverCardTrigger>\n    <HoverCardContent side=\"top\">\n      <p style={{ margin: 0, fontSize: '0.875rem' }}>Appears above the trigger</p>\n    </HoverCardContent>\n  </HoverCard>\n\n  <HoverCard>\n    <HoverCardTrigger asChild>\n      <button style={{ padding: '0.5rem 1rem', border: '1px solid var(--border-default, #d1d5db)', borderRadius: '0.375rem' }}>Right</button>\n    </HoverCardTrigger>\n    <HoverCardContent side=\"right\">\n      <p style={{ margin: 0, fontSize: '0.875rem' }}>Appears to the right</p>\n    </HoverCardContent>\n  </HoverCard>\n\n  <HoverCard>\n    <HoverCardTrigger asChild>\n      <button style={{ padding: '0.5rem 1rem', border: '1px solid var(--border-default, #d1d5db)', borderRadius: '0.375rem' }}>Bottom</button>\n    </HoverCardTrigger>\n    <HoverCardContent side=\"bottom\">\n      <p style={{ margin: 0, fontSize: '0.875rem' }}>Appears below the trigger</p>\n    </HoverCardContent>\n  </HoverCard>\n\n  <HoverCard>\n    <HoverCardTrigger asChild>\n      <button style={{ padding: '0.5rem 1rem', border: '1px solid var(--border-default, #d1d5db)', borderRadius: '0.375rem' }}>Left</button>\n    </HoverCardTrigger>\n    <HoverCardContent side=\"left\">\n      <p style={{ margin: 0, fontSize: '0.875rem' }}>Appears to the left</p>\n    </HoverCardContent>\n  </HoverCard>\n</div>"}
+>
+  <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap', padding: '2rem' }}>
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <button style={{ padding: '0.5rem 1rem', border: '1px solid var(--border-default, #d1d5db)', borderRadius: '0.375rem' }}>Top</button>
+      </HoverCardTrigger>
+      <HoverCardContent side="top">
+        <p style={{ margin: 0, fontSize: '0.875rem' }}>Appears above the trigger</p>
+      </HoverCardContent>
+    </HoverCard>
+
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <button style={{ padding: '0.5rem 1rem', border: '1px solid var(--border-default, #d1d5db)', borderRadius: '0.375rem' }}>Right</button>
+      </HoverCardTrigger>
+      <HoverCardContent side="right">
+        <p style={{ margin: 0, fontSize: '0.875rem' }}>Appears to the right</p>
+      </HoverCardContent>
+    </HoverCard>
+
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <button style={{ padding: '0.5rem 1rem', border: '1px solid var(--border-default, #d1d5db)', borderRadius: '0.375rem' }}>Bottom</button>
+      </HoverCardTrigger>
+      <HoverCardContent side="bottom">
+        <p style={{ margin: 0, fontSize: '0.875rem' }}>Appears below the trigger</p>
+      </HoverCardContent>
+    </HoverCard>
+
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <button style={{ padding: '0.5rem 1rem', border: '1px solid var(--border-default, #d1d5db)', borderRadius: '0.375rem' }}>Left</button>
+      </HoverCardTrigger>
+      <HoverCardContent side="left">
+        <p style={{ margin: 0, fontSize: '0.875rem' }}>Appears to the left</p>
+      </HoverCardContent>
+    </HoverCard>
+  </div>
+</ComponentPreview>
+
+## Rich Content
+
+Hover cards can contain structured content such as user profiles, previews, or metadata.
+
+<ComponentPreview
+  title="Rich Content"
+  code={"import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card/hover-card';\n\n<HoverCard>\n  <HoverCardTrigger asChild>\n    <a href=\"#\" style={{ fontWeight: 600, textDecoration: 'underline' }}>Justin Schier</a>\n  </HoverCardTrigger>\n  <HoverCardContent style={{ width: '280px' }}>\n    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>\n      <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '50%', background: 'var(--surface-raised, #e5e7eb)', flexShrink: 0 }} />\n      <div>\n        <p style={{ margin: 0, fontWeight: 600, fontSize: '0.875rem' }}>Justin Schier</p>\n        <p style={{ margin: '0.125rem 0 0', fontSize: '0.8125rem', color: 'var(--text-secondary, #6b7280)' }}>@justinschier</p>\n        <p style={{ margin: '0.5rem 0 0', fontSize: '0.8125rem' }}>Head engineer, design system author, music lover.</p>\n      </div>\n    </div>\n  </HoverCardContent>\n</HoverCard>"}
+>
+  <HoverCard>
+    <HoverCardTrigger asChild>
+      <a href="#" style={{ fontWeight: 600, textDecoration: 'underline' }}>Justin Schier</a>
+    </HoverCardTrigger>
+    <HoverCardContent style={{ width: '280px' }}>
+      <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+        <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '50%', background: 'var(--surface-raised, #e5e7eb)', flexShrink: 0 }} />
+        <div>
+          <p style={{ margin: 0, fontWeight: 600, fontSize: '0.875rem' }}>Justin Schier</p>
+          <p style={{ margin: '0.125rem 0 0', fontSize: '0.8125rem', color: 'var(--text-secondary, #6b7280)' }}>@justinschier</p>
+          <p style={{ margin: '0.5rem 0 0', fontSize: '0.8125rem' }}>Head engineer, design system author, music lover.</p>
+        </div>
+      </div>
+    </HoverCardContent>
+  </HoverCard>
+</ComponentPreview>
+
+## Open/Close Delay
+
+Control how quickly the card appears and disappears with `openDelay` and `closeDelay` (in milliseconds) on the root `HoverCard` component.
+
+```tsx
+<HoverCard openDelay={200} closeDelay={100}>
+  <HoverCardTrigger asChild>
+    <a href="#">Hover me</a>
+  </HoverCardTrigger>
+  <HoverCardContent>
+    <p>Appears after 200ms, disappears after 100ms.</p>
+  </HoverCardContent>
+</HoverCard>
+```
+
 ## API Reference
 
 ### HoverCardProps
 
 <PropsTable component="hover-card" />
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `HoverCard` | Root | Context provider (wraps Radix HoverCard.Root) |
+| `HoverCardTrigger` | Any element | The element that triggers the card on hover |
+| `HoverCardContent` | Floating panel | The card container; accepts `side`, `align`, and `sideOffset` |
+
+## Accessibility
+
+- Built on [Radix UI HoverCard](https://www.radix-ui.com/docs/primitives/components/hover-card) — the content region is not focusable by default. Use HoverCard for supplemental, non-critical information only.
+- For content that must be keyboard-accessible (e.g., links, buttons inside the card), use [Popover](/docs/components/overlay/popover) instead.
+- The trigger should be a focusable element (link or button) so keyboard users can navigate to the associated content in another way.
+- Screen readers are not guaranteed to announce hover card content; treat it as decorative preview text.

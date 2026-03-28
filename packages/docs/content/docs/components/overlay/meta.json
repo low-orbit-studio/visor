@@ -4,6 +4,7 @@
   "defaultOpen": true,
   "pages": [
     "context-menu",
+    "fullscreen-overlay",
     "hover-card",
     "lightbox",
     "popover"

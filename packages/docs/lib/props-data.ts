@@ -62,16 +62,39 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'Callback when the open state changes.',
     },
     {
+      name: 'defaultOpen',
+      type: 'boolean',
+      default: 'false',
+      description: 'Default open state for uncontrolled usage.',
+    },
+    {
+      name: 'side',
+      type: "'top' | 'right' | 'bottom' | 'left'",
+      default: "'bottom'",
+      description: 'Side of the trigger the popover appears on (on PopoverContent).',
+    },
+    {
       name: 'align',
       type: "'start' | 'center' | 'end'",
       default: "'center'",
-      description: 'Alignment of the popover content relative to the trigger.',
+      description: 'Alignment of the popover content relative to the trigger (on PopoverContent).',
     },
     {
       name: 'sideOffset',
       type: 'number',
       default: '4',
-      description: 'Distance in pixels between the trigger and the popover.',
+      description: 'Distance in pixels between the trigger and the popover (on PopoverContent).',
+    },
+    {
+      name: 'asChild',
+      type: 'boolean',
+      default: 'false',
+      description: 'On PopoverTrigger — merges props onto the immediate child element instead of rendering a <button>.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto PopoverContent.',
     },
   ],
 
@@ -80,19 +103,84 @@ export const propsData: Record<string, PropDef[]> = {
       name: 'variant',
       type: "'default' | 'destructive'",
       default: "'default'",
-      description: 'Visual style of menu items.',
+      description: 'Visual style of ContextMenuItem — use "destructive" for dangerous actions.',
     },
     {
       name: 'inset',
       type: 'boolean',
       default: 'false',
-      description: 'Adds left padding to align with items that have icons.',
+      description: 'Adds left padding to ContextMenuItem, ContextMenuLabel, or ContextMenuSubTrigger to align with items that have icons.',
     },
     {
       name: 'disabled',
       type: 'boolean',
       default: 'false',
-      description: 'Disables the menu item.',
+      description: 'Disables the menu item, making it non-interactive and visually muted.',
+    },
+    {
+      name: 'checked',
+      type: 'boolean | "indeterminate"',
+      description: 'Controlled checked state for ContextMenuCheckboxItem.',
+    },
+    {
+      name: 'onCheckedChange',
+      type: '(checked: boolean) => void',
+      description: 'Callback when the checked state of a ContextMenuCheckboxItem changes.',
+    },
+    {
+      name: 'value',
+      type: 'string',
+      description: 'Value for ContextMenuRadioItem. The selected value is managed by ContextMenuRadioGroup.',
+    },
+    {
+      name: 'onValueChange',
+      type: '(value: string) => void',
+      description: 'Callback on ContextMenuRadioGroup when the selected radio value changes.',
+    },
+    {
+      name: 'onSelect',
+      type: '(event: Event) => void',
+      description: 'Callback when a ContextMenuItem is selected. Call event.preventDefault() to keep the menu open.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  'fullscreen-overlay': [
+    {
+      name: 'open',
+      type: 'boolean',
+      description: 'Controlled open state of the overlay.',
+    },
+    {
+      name: 'onOpenChange',
+      type: '(open: boolean) => void',
+      description: 'Callback when the open state changes.',
+    },
+    {
+      name: 'fullbleed',
+      type: 'boolean',
+      default: 'false',
+      description: 'Removes all inner padding on FullscreenOverlayContent, allowing content to fill the entire viewport edge-to-edge.',
+    },
+    {
+      name: 'children',
+      type: 'React.ReactNode',
+      description: 'Content to render inside FullscreenOverlayContent.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto FullscreenOverlayContent.',
+    },
+    {
+      name: 'asChild',
+      type: 'boolean',
+      default: 'false',
+      description: 'On FullscreenOverlayTrigger — merges props onto the immediate child element instead of rendering a <button>.',
     },
   ],
 
@@ -108,10 +196,39 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'Callback when the open state changes.',
     },
     {
+      name: 'openDelay',
+      type: 'number',
+      default: '700',
+      description: 'Milliseconds to wait before opening on hover.',
+    },
+    {
+      name: 'closeDelay',
+      type: 'number',
+      default: '300',
+      description: 'Milliseconds to wait before closing after hover ends.',
+    },
+    {
+      name: 'side',
+      type: "'top' | 'right' | 'bottom' | 'left'",
+      default: "'bottom'",
+      description: 'Side of the trigger the card appears on (on HoverCardContent).',
+    },
+    {
+      name: 'align',
+      type: "'start' | 'center' | 'end'",
+      default: "'center'",
+      description: 'Alignment of the card relative to the trigger (on HoverCardContent).',
+    },
+    {
       name: 'sideOffset',
       type: 'number',
       default: '4',
-      description: 'Distance in pixels between the trigger and the card.',
+      description: 'Distance in pixels between the trigger and the card (on HoverCardContent).',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto HoverCardContent.',
     },
   ],
 
@@ -719,23 +836,28 @@ export const propsData: Record<string, PropDef[]> = {
       name: 'images',
       type: 'LightboxImage[]',
       required: true,
-      description: 'Array of images with src and alt properties.',
+      description: 'Array of images to display. Each image requires a src URL and descriptive alt text.',
     },
     {
       name: 'initialIndex',
       type: 'number',
       default: '0',
-      description: 'Index of the initially displayed image.',
+      description: 'Zero-based index of the image to show when the lightbox first opens.',
     },
     {
       name: 'open',
       type: 'boolean',
-      description: 'Controlled open state.',
+      description: 'Controlled open state. Use with onOpenChange for fully controlled usage.',
     },
     {
       name: 'onOpenChange',
       type: '(open: boolean) => void',
-      description: 'Callback when the open state changes.',
+      description: 'Callback when the open state changes (user closes or Escape is pressed).',
+    },
+    {
+      name: 'children',
+      type: 'React.ReactNode',
+      description: 'Accepts LightboxTrigger and LightboxContent as children.',
     },
   ],
 
