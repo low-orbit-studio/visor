@@ -265,8 +265,8 @@ export function SpherePlayground({
                   value={lightness}
                   onValueChange={setLightness}
                   displayValue={lightness.toFixed(1)}
-                  min={0.3}
-                  max={2.0}
+                  min={0.1}
+                  max={1.0}
                   step={0.05}
                   aria-label="Lightness"
                 />
