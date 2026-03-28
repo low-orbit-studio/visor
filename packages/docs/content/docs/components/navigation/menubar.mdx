@@ -1,11 +1,18 @@
 ---
 title: Menubar
-description: A horizontal menu bar with dropdown menus, keyboard navigation, and support for checkboxes and radio items. Built on Radix UI.
+description: A horizontal menu bar with dropdown menus, keyboard navigation, and support for checkboxes and radio items. Built on Radix UI — copy it into your project and own it completely.
 ---
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
-import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem, MenubarSeparator } from '@/components/ui/menubar';
+import {
+  Menubar,
+  MenubarMenu,
+  MenubarTrigger,
+  MenubarContent,
+  MenubarItem,
+  MenubarSeparator,
+} from '@/components/ui/menubar';
 
 ## Installation
 
@@ -13,23 +20,41 @@ import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem, Menu
 npx visor add menubar
 ```
 
+This copies two files into your project:
+
+- `components/ui/menubar/menubar.tsx` — the component
+- `components/ui/menubar/menubar.module.css` — the styles
+
 ## Usage
 
 ```tsx
-import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem, MenubarSeparator } from '@/components/ui/menubar/menubar';
+import {
+  Menubar,
+  MenubarMenu,
+  MenubarTrigger,
+  MenubarContent,
+  MenubarItem,
+  MenubarSeparator,
+} from '@/components/ui/menubar/menubar';
 
-<Menubar>
-  <MenubarMenu>
-    <MenubarTrigger>File</MenubarTrigger>
-    <MenubarContent>
-      <MenubarItem>New</MenubarItem>
-      <MenubarItem>Open</MenubarItem>
-    </MenubarContent>
-  </MenubarMenu>
-</Menubar>
+export default function Example() {
+  return (
+    <Menubar>
+      <MenubarMenu>
+        <MenubarTrigger>File</MenubarTrigger>
+        <MenubarContent>
+          <MenubarItem>New</MenubarItem>
+          <MenubarItem>Open</MenubarItem>
+          <MenubarSeparator />
+          <MenubarItem>Save</MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+    </Menubar>
+  );
+}
 ```
 
-## Example
+## Default
 
 <ComponentPreview
   title="Menu Bar"
@@ -59,8 +84,78 @@ import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem, Menu
   </Menubar>
 </ComponentPreview>
 
+## Destructive Items
+
+<ComponentPreview
+  title="Destructive Item Variant"
+  code={"<Menubar>\n  <MenubarMenu>\n    <MenubarTrigger>Account</MenubarTrigger>\n    <MenubarContent>\n      <MenubarItem>Profile</MenubarItem>\n      <MenubarItem>Settings</MenubarItem>\n      <MenubarSeparator />\n      <MenubarItem variant=\"destructive\">Delete Account</MenubarItem>\n    </MenubarContent>\n  </MenubarMenu>\n</Menubar>"}
+>
+  <Menubar>
+    <MenubarMenu>
+      <MenubarTrigger>Account</MenubarTrigger>
+      <MenubarContent>
+        <MenubarItem>Profile</MenubarItem>
+        <MenubarItem>Settings</MenubarItem>
+        <MenubarSeparator />
+        <MenubarItem variant="destructive">Delete Account</MenubarItem>
+      </MenubarContent>
+    </MenubarMenu>
+  </Menubar>
+</ComponentPreview>
+
+## Disabled Items
+
+<ComponentPreview
+  title="Disabled Items"
+  code={"<Menubar>\n  <MenubarMenu>\n    <MenubarTrigger>Edit</MenubarTrigger>\n    <MenubarContent>\n      <MenubarItem>Undo</MenubarItem>\n      <MenubarItem disabled>Redo</MenubarItem>\n      <MenubarSeparator />\n      <MenubarItem>Cut</MenubarItem>\n      <MenubarItem disabled>Paste</MenubarItem>\n    </MenubarContent>\n  </MenubarMenu>\n</Menubar>"}
+>
+  <Menubar>
+    <MenubarMenu>
+      <MenubarTrigger>Edit</MenubarTrigger>
+      <MenubarContent>
+        <MenubarItem>Undo</MenubarItem>
+        <MenubarItem disabled>Redo</MenubarItem>
+        <MenubarSeparator />
+        <MenubarItem>Cut</MenubarItem>
+        <MenubarItem disabled>Paste</MenubarItem>
+      </MenubarContent>
+    </MenubarMenu>
+  </Menubar>
+</ComponentPreview>
+
 ## API Reference
 
-### MenubarProps
+### MenubarItem Props
 
 <PropsTable component="menubar" />
+
+The `Menubar` root, `MenubarMenu`, `MenubarTrigger`, `MenubarContent`, and `MenubarSeparator` forward all standard Radix UI Menubar primitive props.
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `Menubar` | `<div>` | Root container for the menu bar |
+| `MenubarMenu` | — | Wrapper for a single menu trigger + content pair |
+| `MenubarTrigger` | `<button>` | Clickable trigger that opens a menu |
+| `MenubarContent` | `<div>` | Dropdown menu panel |
+| `MenubarGroup` | `<div>` | Logical group of items within content |
+| `MenubarItem` | `<div>` | Selectable action item |
+| `MenubarCheckboxItem` | `<div>` | Toggleable checkbox item |
+| `MenubarRadioGroup` | `<div>` | Container for mutually exclusive radio items |
+| `MenubarRadioItem` | `<div>` | Radio-style selectable item |
+| `MenubarLabel` | `<div>` | Non-interactive section label |
+| `MenubarSeparator` | `<hr>` | Visual divider between groups or items |
+| `MenubarShortcut` | `<span>` | Keyboard shortcut label aligned to the right |
+| `MenubarSub` | — | Wrapper for a nested sub-menu |
+| `MenubarSubTrigger` | `<div>` | Item that opens a sub-menu on hover/focus |
+| `MenubarSubContent` | `<div>` | Sub-menu dropdown panel |
+
+## Accessibility
+
+- The Menubar root renders with `role="menubar"` and manages keyboard navigation automatically.
+- Each `MenubarTrigger` has `aria-haspopup="menu"` and `aria-expanded` managed by Radix UI.
+- `MenubarContent` renders with `role="menu"` and each `MenubarItem` has `role="menuitem"`.
+- `MenubarCheckboxItem` uses `role="menuitemcheckbox"` with `aria-checked`; `MenubarRadioItem` uses `role="menuitemradio"`.
+- Keyboard navigation: `←`/`→` moves between top-level triggers, `↑`/`↓` navigates items within an open menu, `Enter`/`Space` selects, `Escape` closes the open menu.
+- Disabled items use `aria-disabled="true"` and are skipped during keyboard navigation.

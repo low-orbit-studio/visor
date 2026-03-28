@@ -1,6 +1,6 @@
 ---
 title: Command Palette
-description: A searchable command palette for quick actions. Built on cmdk.
+description: A searchable command palette for quick actions. Built on cmdk — copy it into your project and own it completely.
 ---
 
 import { ComponentPreview } from '@/components/preview';
@@ -13,28 +13,44 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
 npx visor add command
 ```
 
+This copies two files into your project:
+
+- `components/ui/command/command.tsx` — the component
+- `components/ui/command/command.module.css` — the styles
+
 ## Usage
 
 ```tsx
-import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command/command';
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+} from '@/components/ui/command/command';
 
-<Command>
-  <CommandInput placeholder="Type a command..." />
-  <CommandList>
-    <CommandEmpty>No results found.</CommandEmpty>
-    <CommandGroup heading="Actions">
-      <CommandItem>Profile</CommandItem>
-      <CommandItem>Settings</CommandItem>
-    </CommandGroup>
-  </CommandList>
-</Command>
+export default function Example() {
+  return (
+    <Command>
+      <CommandInput placeholder="Type a command..." />
+      <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandGroup heading="Actions">
+          <CommandItem>Profile</CommandItem>
+          <CommandItem>Settings</CommandItem>
+        </CommandGroup>
+      </CommandList>
+    </Command>
+  );
+}
 ```
 
-## Example
+## Default
 
 <ComponentPreview
   title="Command Palette"
-  code={"<Command>\n  <CommandInput placeholder=\"Search actions...\" />\n  <CommandList>\n    <CommandEmpty>No results found.</CommandEmpty>\n    <CommandGroup heading=\"Account\">\n      <CommandItem>Profile</CommandItem>\n      <CommandItem>Settings</CommandItem>\n    </CommandGroup>\n    <CommandGroup heading=\"Session\">\n      <CommandItem>Logout</CommandItem>\n    </CommandGroup>\n  </CommandList>\n</Command>"}
+  code={"import {\n  Command,\n  CommandInput,\n  CommandList,\n  CommandEmpty,\n  CommandGroup,\n  CommandItem,\n} from '@/components/ui/command/command';\n\n<Command>\n  <CommandInput placeholder=\"Search actions...\" />\n  <CommandList>\n    <CommandEmpty>No results found.</CommandEmpty>\n    <CommandGroup heading=\"Account\">\n      <CommandItem>Profile</CommandItem>\n      <CommandItem>Settings</CommandItem>\n    </CommandGroup>\n    <CommandGroup heading=\"Session\">\n      <CommandItem>Logout</CommandItem>\n    </CommandGroup>\n  </CommandList>\n</Command>"}
 >
   <div style={{ maxWidth: '28rem', border: '1px solid var(--border-default, #e5e7eb)', borderRadius: '0.5rem' }}>
     <Command>
@@ -53,8 +69,79 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
   </div>
 </ComponentPreview>
 
+## Multiple Groups
+
+<ComponentPreview
+  title="Multiple Groups"
+  code={"<Command>\n  <CommandInput placeholder=\"Search...\" />\n  <CommandList>\n    <CommandEmpty>No results found.</CommandEmpty>\n    <CommandGroup heading=\"Navigation\">\n      <CommandItem>Dashboard</CommandItem>\n      <CommandItem>Analytics</CommandItem>\n      <CommandItem>Reports</CommandItem>\n    </CommandGroup>\n    <CommandGroup heading=\"Settings\">\n      <CommandItem>Profile</CommandItem>\n      <CommandItem>Billing</CommandItem>\n      <CommandItem>Team</CommandItem>\n    </CommandGroup>\n    <CommandGroup heading=\"Help\">\n      <CommandItem>Documentation</CommandItem>\n      <CommandItem>Support</CommandItem>\n    </CommandGroup>\n  </CommandList>\n</Command>"}
+>
+  <div style={{ maxWidth: '28rem', border: '1px solid var(--border-default, #e5e7eb)', borderRadius: '0.5rem' }}>
+    <Command>
+      <CommandInput placeholder="Search..." />
+      <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandGroup heading="Navigation">
+          <CommandItem>Dashboard</CommandItem>
+          <CommandItem>Analytics</CommandItem>
+          <CommandItem>Reports</CommandItem>
+        </CommandGroup>
+        <CommandGroup heading="Settings">
+          <CommandItem>Profile</CommandItem>
+          <CommandItem>Billing</CommandItem>
+          <CommandItem>Team</CommandItem>
+        </CommandGroup>
+        <CommandGroup heading="Help">
+          <CommandItem>Documentation</CommandItem>
+          <CommandItem>Support</CommandItem>
+        </CommandGroup>
+      </CommandList>
+    </Command>
+  </div>
+</ComponentPreview>
+
+## Empty State
+
+<ComponentPreview
+  title="Empty State"
+  code={"<Command>\n  <CommandInput placeholder=\"Search for something rare...\" />\n  <CommandList>\n    <CommandEmpty>No results found. Try a different search.</CommandEmpty>\n  </CommandList>\n</Command>"}
+>
+  <div style={{ maxWidth: '28rem', border: '1px solid var(--border-default, #e5e7eb)', borderRadius: '0.5rem' }}>
+    <Command>
+      <CommandInput placeholder="Search for something rare..." defaultValue="xyzzy" />
+      <CommandList>
+        <CommandEmpty>No results found. Try a different search.</CommandEmpty>
+      </CommandList>
+    </Command>
+  </div>
+</ComponentPreview>
+
 ## API Reference
 
-### CommandProps
+### Command
 
 <PropsTable component="command" />
+
+The `Command` root accepts all standard `<div>` HTML attributes in addition to the props above.
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `Command` | `<div>` | Root container — provides filtering context |
+| `CommandInput` | `<input>` | Search input with built-in magnifier icon |
+| `CommandList` | `<div>` | Scrollable list container |
+| `CommandEmpty` | `<div>` | Shown when no items match the current search |
+| `CommandGroup` | `<div>` | Labeled group of related items |
+| `CommandItem` | `<div>` | Selectable action item |
+| `CommandSeparator` | `<hr>` | Visual divider between groups or items |
+| `CommandShortcut` | `<span>` | Keyboard shortcut label aligned to the right |
+| `CommandLoading` | `<div>` | Loading indicator while results are fetched |
+| `CommandDialog` | `<Dialog>` | Full-screen dialog wrapper for the command palette |
+
+## Accessibility
+
+- The `CommandInput` renders a native `<input>` with `role="combobox"` and manages `aria-expanded` and `aria-activedescendant` automatically via cmdk.
+- `CommandList` has `role="listbox"` and each `CommandItem` has `role="option"`.
+- `CommandEmpty` is announced to screen readers when visible.
+- Keyboard navigation: `↑`/`↓` moves between items, `Enter` selects, `Escape` dismisses when wrapped in `CommandDialog`.
+- Use `CommandShortcut` to display keyboard hints visually — these are decorative and do not bind keyboard events. Wire shortcuts yourself with `useEffect` or a keyboard library.

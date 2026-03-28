@@ -1,6 +1,6 @@
 ---
 title: Pagination
-description: Page navigation controls with previous, next, page numbers, and ellipsis indicators.
+description: Page navigation controls with previous, next, page numbers, and ellipsis indicators — copy it into your project and own it completely.
 ---
 
 import { ComponentPreview } from '@/components/preview';
@@ -13,21 +13,39 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 npx visor add pagination
 ```
 
+This copies two files into your project:
+
+- `components/ui/pagination/pagination.tsx` — the component
+- `components/ui/pagination/pagination.module.css` — the styles
+
 ## Usage
 
 ```tsx
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext } from '@/components/ui/pagination/pagination';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationEllipsis,
+} from '@/components/ui/pagination/pagination';
 
-<Pagination>
-  <PaginationContent>
-    <PaginationItem><PaginationPrevious href="#" /></PaginationItem>
-    <PaginationItem><PaginationLink href="#">1</PaginationLink></PaginationItem>
-    <PaginationItem><PaginationNext href="#" /></PaginationItem>
-  </PaginationContent>
-</Pagination>
+export default function Example() {
+  return (
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem><PaginationPrevious href="#" /></PaginationItem>
+        <PaginationItem><PaginationLink href="#">1</PaginationLink></PaginationItem>
+        <PaginationItem><PaginationLink href="#">2</PaginationLink></PaginationItem>
+        <PaginationItem><PaginationNext href="#" /></PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  );
+}
 ```
 
-## Example
+## Default
 
 <ComponentPreview
   title="Page Navigation"
@@ -45,8 +63,83 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
   </Pagination>
 </ComponentPreview>
 
+## Sizes
+
+<ComponentPreview
+  title="Small Size"
+  code={"<Pagination>\n  <PaginationContent>\n    <PaginationItem><PaginationPrevious href=\"#\" /></PaginationItem>\n    <PaginationItem><PaginationLink href=\"#\" size=\"sm\" isActive>1</PaginationLink></PaginationItem>\n    <PaginationItem><PaginationLink href=\"#\" size=\"sm\">2</PaginationLink></PaginationItem>\n    <PaginationItem><PaginationLink href=\"#\" size=\"sm\">3</PaginationLink></PaginationItem>\n    <PaginationItem><PaginationNext href=\"#\" /></PaginationItem>\n  </PaginationContent>\n</Pagination>"}
+>
+  <Pagination>
+    <PaginationContent>
+      <PaginationItem><PaginationPrevious href="#" /></PaginationItem>
+      <PaginationItem><PaginationLink href="#" size="sm" isActive>1</PaginationLink></PaginationItem>
+      <PaginationItem><PaginationLink href="#" size="sm">2</PaginationLink></PaginationItem>
+      <PaginationItem><PaginationLink href="#" size="sm">3</PaginationLink></PaginationItem>
+      <PaginationItem><PaginationNext href="#" /></PaginationItem>
+    </PaginationContent>
+  </Pagination>
+</ComponentPreview>
+
+<ComponentPreview
+  title="Large Size"
+  code={"<Pagination>\n  <PaginationContent>\n    <PaginationItem><PaginationPrevious href=\"#\" /></PaginationItem>\n    <PaginationItem><PaginationLink href=\"#\" size=\"lg\" isActive>1</PaginationLink></PaginationItem>\n    <PaginationItem><PaginationLink href=\"#\" size=\"lg\">2</PaginationLink></PaginationItem>\n    <PaginationItem><PaginationLink href=\"#\" size=\"lg\">3</PaginationLink></PaginationItem>\n    <PaginationItem><PaginationNext href=\"#\" /></PaginationItem>\n  </PaginationContent>\n</Pagination>"}
+>
+  <Pagination>
+    <PaginationContent>
+      <PaginationItem><PaginationPrevious href="#" /></PaginationItem>
+      <PaginationItem><PaginationLink href="#" size="lg" isActive>1</PaginationLink></PaginationItem>
+      <PaginationItem><PaginationLink href="#" size="lg">2</PaginationLink></PaginationItem>
+      <PaginationItem><PaginationLink href="#" size="lg">3</PaginationLink></PaginationItem>
+      <PaginationItem><PaginationNext href="#" /></PaginationItem>
+    </PaginationContent>
+  </Pagination>
+</ComponentPreview>
+
+## With Ellipsis
+
+<ComponentPreview
+  title="Many Pages with Ellipsis"
+  code={"<Pagination>\n  <PaginationContent>\n    <PaginationItem><PaginationPrevious href=\"#\" /></PaginationItem>\n    <PaginationItem><PaginationLink href=\"#\">1</PaginationLink></PaginationItem>\n    <PaginationItem><PaginationEllipsis /></PaginationItem>\n    <PaginationItem><PaginationLink href=\"#\">4</PaginationLink></PaginationItem>\n    <PaginationItem><PaginationLink href=\"#\" isActive>5</PaginationLink></PaginationItem>\n    <PaginationItem><PaginationLink href=\"#\">6</PaginationLink></PaginationItem>\n    <PaginationItem><PaginationEllipsis /></PaginationItem>\n    <PaginationItem><PaginationLink href=\"#\">10</PaginationLink></PaginationItem>\n    <PaginationItem><PaginationNext href=\"#\" /></PaginationItem>\n  </PaginationContent>\n</Pagination>"}
+>
+  <Pagination>
+    <PaginationContent>
+      <PaginationItem><PaginationPrevious href="#" /></PaginationItem>
+      <PaginationItem><PaginationLink href="#">1</PaginationLink></PaginationItem>
+      <PaginationItem><PaginationEllipsis /></PaginationItem>
+      <PaginationItem><PaginationLink href="#">4</PaginationLink></PaginationItem>
+      <PaginationItem><PaginationLink href="#" isActive>5</PaginationLink></PaginationItem>
+      <PaginationItem><PaginationLink href="#">6</PaginationLink></PaginationItem>
+      <PaginationItem><PaginationEllipsis /></PaginationItem>
+      <PaginationItem><PaginationLink href="#">10</PaginationLink></PaginationItem>
+      <PaginationItem><PaginationNext href="#" /></PaginationItem>
+    </PaginationContent>
+  </Pagination>
+</ComponentPreview>
+
 ## API Reference
 
-### PaginationProps
+### PaginationLink Props
 
 <PropsTable component="pagination" />
+
+`Pagination` renders a `<nav>` element and accepts all standard HTML nav attributes. `PaginationPrevious` and `PaginationNext` include built-in accessible labels.
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `Pagination` | `<nav>` | Root navigation container |
+| `PaginationContent` | `<ul>` | List container for pagination items |
+| `PaginationItem` | `<li>` | Wrapper for each page control |
+| `PaginationLink` | `<a>` | Page number link with active state |
+| `PaginationPrevious` | `<a>` | Previous page link with left arrow icon |
+| `PaginationNext` | `<a>` | Next page link with right arrow icon |
+| `PaginationEllipsis` | `<span>` | Visual gap indicator for skipped pages |
+
+## Accessibility
+
+- `Pagination` renders a `<nav>` element with `aria-label="pagination"` and `role="navigation"`.
+- `PaginationLink` sets `aria-current="page"` when `isActive` is true.
+- `PaginationPrevious` includes `aria-label="Go to previous page"` and `PaginationNext` includes `aria-label="Go to next page"`.
+- `PaginationEllipsis` is hidden from assistive technology with `aria-hidden="true"` and includes a visually hidden "More pages" span for screen readers.
+- When implementing controlled pagination, update `href` values to reflect real page URLs, or use `onClick` handlers with `href="#"` for client-side routing.

@@ -1,6 +1,6 @@
 ---
 title: Navbar
-description: A responsive navigation bar with brand, links, and mobile toggle. Supports multiple style variants.
+description: A responsive navigation bar with brand, links, and mobile toggle. Supports multiple style variants — copy it into your project and own it completely.
 ---
 
 import { ComponentPreview } from '@/components/preview';
@@ -13,24 +13,39 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarLink } from '@/co
 npx visor add navbar
 ```
 
+This copies two files into your project:
+
+- `components/ui/navbar/navbar.tsx` — the component
+- `components/ui/navbar/navbar.module.css` — the styles
+
 ## Usage
 
 ```tsx
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarLink } from '@/components/ui/navbar/navbar';
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  NavbarLink,
+} from '@/components/ui/navbar/navbar';
 
-<Navbar>
-  <NavbarBrand>My App</NavbarBrand>
-  <NavbarContent>
-    <NavbarItem><NavbarLink href="/">Home</NavbarLink></NavbarItem>
-    <NavbarItem><NavbarLink href="/about">About</NavbarLink></NavbarItem>
-  </NavbarContent>
-</Navbar>
+export default function Example() {
+  return (
+    <Navbar>
+      <NavbarBrand>My App</NavbarBrand>
+      <NavbarContent>
+        <NavbarItem><NavbarLink href="/">Home</NavbarLink></NavbarItem>
+        <NavbarItem><NavbarLink href="/about">About</NavbarLink></NavbarItem>
+      </NavbarContent>
+    </Navbar>
+  );
+}
 ```
 
 ## Variants
 
 <ComponentPreview
-  title="Default Navbar"
+  title="Default Variant"
   code={"<Navbar variant=\"default\">\n  <NavbarBrand>Visor</NavbarBrand>\n  <NavbarContent>\n    <NavbarItem><NavbarLink href=\"#\">Docs</NavbarLink></NavbarItem>\n    <NavbarItem><NavbarLink href=\"#\">Components</NavbarLink></NavbarItem>\n    <NavbarItem><NavbarLink href=\"#\">Themes</NavbarLink></NavbarItem>\n  </NavbarContent>\n</Navbar>"}
 >
   <Navbar variant="default">
@@ -43,8 +58,88 @@ import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarLink } from '@/co
   </Navbar>
 </ComponentPreview>
 
+<ComponentPreview
+  title="Bordered Variant"
+  code={"<Navbar variant=\"bordered\">\n  <NavbarBrand>Visor</NavbarBrand>\n  <NavbarContent>\n    <NavbarItem><NavbarLink href=\"#\">Docs</NavbarLink></NavbarItem>\n    <NavbarItem><NavbarLink href=\"#\">Components</NavbarLink></NavbarItem>\n    <NavbarItem><NavbarLink href=\"#\">Themes</NavbarLink></NavbarItem>\n  </NavbarContent>\n</Navbar>"}
+>
+  <Navbar variant="bordered">
+    <NavbarBrand>Visor</NavbarBrand>
+    <NavbarContent>
+      <NavbarItem><NavbarLink href="#">Docs</NavbarLink></NavbarItem>
+      <NavbarItem><NavbarLink href="#">Components</NavbarLink></NavbarItem>
+      <NavbarItem><NavbarLink href="#">Themes</NavbarLink></NavbarItem>
+    </NavbarContent>
+  </Navbar>
+</ComponentPreview>
+
+<ComponentPreview
+  title="Transparent Variant"
+  code={"<Navbar variant=\"transparent\">\n  <NavbarBrand>Visor</NavbarBrand>\n  <NavbarContent>\n    <NavbarItem><NavbarLink href=\"#\">Docs</NavbarLink></NavbarItem>\n    <NavbarItem><NavbarLink href=\"#\">Components</NavbarLink></NavbarItem>\n    <NavbarItem><NavbarLink href=\"#\">Themes</NavbarLink></NavbarItem>\n  </NavbarContent>\n</Navbar>"}
+>
+  <Navbar variant="transparent">
+    <NavbarBrand>Visor</NavbarBrand>
+    <NavbarContent>
+      <NavbarItem><NavbarLink href="#">Docs</NavbarLink></NavbarItem>
+      <NavbarItem><NavbarLink href="#">Components</NavbarLink></NavbarItem>
+      <NavbarItem><NavbarLink href="#">Themes</NavbarLink></NavbarItem>
+    </NavbarContent>
+  </Navbar>
+</ComponentPreview>
+
+## Active Link
+
+<ComponentPreview
+  title="Active Link State"
+  code={"<Navbar>\n  <NavbarBrand>Visor</NavbarBrand>\n  <NavbarContent>\n    <NavbarItem><NavbarLink href=\"#\" isActive>Docs</NavbarLink></NavbarItem>\n    <NavbarItem><NavbarLink href=\"#\">Components</NavbarLink></NavbarItem>\n    <NavbarItem><NavbarLink href=\"#\">Themes</NavbarLink></NavbarItem>\n  </NavbarContent>\n</Navbar>"}
+>
+  <Navbar>
+    <NavbarBrand>Visor</NavbarBrand>
+    <NavbarContent>
+      <NavbarItem><NavbarLink href="#" isActive>Docs</NavbarLink></NavbarItem>
+      <NavbarItem><NavbarLink href="#">Components</NavbarLink></NavbarItem>
+      <NavbarItem><NavbarLink href="#">Themes</NavbarLink></NavbarItem>
+    </NavbarContent>
+  </Navbar>
+</ComponentPreview>
+
+## Content Alignment
+
+<ComponentPreview
+  title="End-Aligned Content"
+  code={"<Navbar>\n  <NavbarBrand>Visor</NavbarBrand>\n  <NavbarContent align=\"end\">\n    <NavbarItem><NavbarLink href=\"#\">Sign In</NavbarLink></NavbarItem>\n    <NavbarItem><NavbarLink href=\"#\">Sign Up</NavbarLink></NavbarItem>\n  </NavbarContent>\n</Navbar>"}
+>
+  <Navbar>
+    <NavbarBrand>Visor</NavbarBrand>
+    <NavbarContent align="end">
+      <NavbarItem><NavbarLink href="#">Sign In</NavbarLink></NavbarItem>
+      <NavbarItem><NavbarLink href="#">Sign Up</NavbarLink></NavbarItem>
+    </NavbarContent>
+  </Navbar>
+</ComponentPreview>
+
 ## API Reference
 
 ### NavbarProps
 
 <PropsTable component="navbar" />
+
+The `Navbar` component renders a `<nav>` element and accepts all standard HTML nav attributes in addition to the props above.
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `Navbar` | `<nav>` | Root navigation container with `aria-label="main"` |
+| `NavbarBrand` | `<div>` | Brand / logo area on the left |
+| `NavbarContent` | `<div>` | Container for navigation links; supports `align` prop |
+| `NavbarItem` | `<div>` | Wrapper for a single navigation item |
+| `NavbarLink` | `<a>` | Navigation anchor with active state support |
+| `NavbarToggle` | `<button>` | Mobile hamburger toggle button |
+
+## Accessibility
+
+- The `Navbar` renders a `<nav>` element with `aria-label="main"` to identify it as the primary navigation landmark.
+- `NavbarLink` sets `aria-current="page"` when `isActive` is true, communicating the current page to screen readers.
+- `NavbarToggle` includes a built-in `aria-label="Toggle navigation"` for mobile menus.
+- Use a single `<Navbar>` with `aria-label="main"` per page. If you have secondary navigation, use additional `<nav>` landmarks with distinct labels.
+- Keyboard navigation follows standard anchor and button behavior — all interactive elements are reachable via `Tab`.

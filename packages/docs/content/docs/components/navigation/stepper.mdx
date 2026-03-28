@@ -1,6 +1,6 @@
 ---
 title: Stepper
-description: A multi-step progress indicator with horizontal and vertical orientations. Auto-derives step status from activeStep with accessible ARIA roles.
+description: A multi-step progress indicator with horizontal and vertical orientations. Auto-derives step status from activeStep with accessible ARIA roles — copy it into your project and own it completely.
 ---
 
 import { ComponentPreview } from '@/components/preview';
@@ -139,6 +139,30 @@ export default function Example() {
   </Stepper>
 </ComponentPreview>
 
+## All Steps Complete
+
+<ComponentPreview
+  title="All Steps Completed"
+  code={"<Stepper activeStep={3}>\n  <StepperItem step={0}>\n    <StepperTrigger step={0} />\n    <StepperTitle>Account</StepperTitle>\n  </StepperItem>\n  <StepperSeparator complete />\n  <StepperItem step={1}>\n    <StepperTrigger step={1} />\n    <StepperTitle>Profile</StepperTitle>\n  </StepperItem>\n  <StepperSeparator complete />\n  <StepperItem step={2}>\n    <StepperTrigger step={2} />\n    <StepperTitle>Review</StepperTitle>\n  </StepperItem>\n</Stepper>"}
+>
+  <Stepper activeStep={3}>
+    <StepperItem step={0}>
+      <StepperTrigger step={0} />
+      <StepperTitle>Account</StepperTitle>
+    </StepperItem>
+    <StepperSeparator complete />
+    <StepperItem step={1}>
+      <StepperTrigger step={1} />
+      <StepperTitle>Profile</StepperTitle>
+    </StepperItem>
+    <StepperSeparator complete />
+    <StepperItem step={2}>
+      <StepperTrigger step={2} />
+      <StepperTitle>Review</StepperTitle>
+    </StepperItem>
+  </Stepper>
+</ComponentPreview>
+
 ## API Reference
 
 ### StepperProps
@@ -150,8 +174,17 @@ export default function Example() {
 | Component | Element | Purpose |
 |-----------|---------|---------|
 | `Stepper` | `<div>` | Root container with context provider |
-| `StepperItem` | `<div>` | Step wrapper, auto-derives status |
+| `StepperItem` | `<div>` | Step wrapper, auto-derives status from `activeStep` |
 | `StepperTrigger` | `<button>` | Clickable step indicator circle |
 | `StepperTitle` | `<div>` | Step label |
 | `StepperDescription` | `<p>` | Step description |
 | `StepperSeparator` | `<div>` | Connecting line between steps |
+
+## Accessibility
+
+- `Stepper` renders with `role="group"` and `aria-label="Progress"` to group the steps as a meaningful unit.
+- `StepperItem` sets `aria-current="step"` on the currently active step.
+- `StepperTrigger` is a `<button>` element and includes a visually hidden label ("Completed" or "Step N") for screen readers.
+- The check icon in completed triggers has `aria-hidden="true"` since the status is communicated via the button's text content.
+- Step status (`complete`, `active`, `upcoming`) is also exposed as a `data-status` attribute for custom CSS targeting.
+- When steps are clickable (navigating back), ensure `StepperTrigger` has a meaningful `onClick` handler. For read-only steppers, pass `disabled` or `tabIndex={-1}` to prevent interaction.
