@@ -3,6 +3,10 @@ title: Motion Specimen
 description: Duration and easing preview components with interactive play-animation controls.
 ---
 
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { MotionDuration, MotionEasing } from '@/components/ui/motion-specimen';
+
 ## Installation
 
 ```bash
@@ -20,27 +24,68 @@ This copies two files into your project:
 import { MotionDuration, MotionEasing } from '@/components/ui/motion-specimen/motion-specimen';
 
 <MotionDuration durations={[
+  { token: "--motion-duration-100", name: "100", ms: 100 },
   { token: "--motion-duration-200", name: "200", ms: 200 },
   { token: "--motion-duration-300", name: "300", ms: 300 },
+  { token: "--motion-duration-500", name: "500", ms: 500 },
 ]} />
 
 <MotionEasing easings={[
   { token: "--motion-easing-ease-out", name: "ease-out", value: "cubic-bezier(0, 0, 0.2, 1)" },
+  { token: "--motion-easing-ease-in-out", name: "ease-in-out", value: "cubic-bezier(0.4, 0, 0.2, 1)" },
 ]} />
 ```
 
-## Components
+## Duration Scale
 
-### MotionDuration
+Click "Play animation" to trigger all bars simultaneously and compare durations.
+
+<ComponentPreview
+  title="Motion Durations"
+  code={"<MotionDuration durations={[\n  { token: \"--motion-duration-100\", name: \"100\", ms: 100 },\n  { token: \"--motion-duration-200\", name: \"200\", ms: 200 },\n  { token: \"--motion-duration-300\", name: \"300\", ms: 300 },\n  { token: \"--motion-duration-500\", name: \"500\", ms: 500 },\n]} />"}
+>
+  <MotionDuration durations={[
+    { token: "--motion-duration-100", name: "100", ms: 100 },
+    { token: "--motion-duration-200", name: "200", ms: 200 },
+    { token: "--motion-duration-300", name: "300", ms: 300 },
+    { token: "--motion-duration-500", name: "500", ms: 500 },
+  ]} />
+</ComponentPreview>
+
+## Easing Curves
+
+Click "Play animation" to preview each easing function side by side.
+
+<ComponentPreview
+  title="Motion Easings"
+  code={"<MotionEasing easings={[\n  { token: \"--motion-easing-linear\", name: \"linear\", value: \"linear\" },\n  { token: \"--motion-easing-ease-out\", name: \"ease-out\", value: \"cubic-bezier(0, 0, 0.2, 1)\" },\n  { token: \"--motion-easing-ease-in\", name: \"ease-in\", value: \"cubic-bezier(0.4, 0, 1, 1)\" },\n  { token: \"--motion-easing-ease-in-out\", name: \"ease-in-out\", value: \"cubic-bezier(0.4, 0, 0.2, 1)\" },\n]} />"}
+>
+  <MotionEasing easings={[
+    { token: "--motion-easing-linear", name: "linear", value: "linear" },
+    { token: "--motion-easing-ease-out", name: "ease-out", value: "cubic-bezier(0, 0, 0.2, 1)" },
+    { token: "--motion-easing-ease-in", name: "ease-in", value: "cubic-bezier(0.4, 0, 1, 1)" },
+    { token: "--motion-easing-ease-in-out", name: "ease-in-out", value: "cubic-bezier(0.4, 0, 0.2, 1)" },
+  ]} />
+</ComponentPreview>
+
+## API Reference
+
+### MotionDurationProps
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `durations` | `MotionDurationItemProps[]` | — | Array of duration items with token, name, and ms values |
-| `className` | `string` | — | Additional CSS classes |
+| `className` | `string` | — | Additional CSS class names |
 
-### MotionEasing
+### MotionEasingProps
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `easings` | `MotionEasingItemProps[]` | — | Array of easing items with token, name, and CSS value |
-| `className` | `string` | — | Additional CSS classes |
+| `className` | `string` | — | Additional CSS class names |
+
+## Accessibility
+
+Motion specimen components respect `prefers-reduced-motion`. When the OS setting is active, the "Play animation" button triggers no visual motion — this is intentional and mirrors how production components should behave.
+
+The interactive play button has an accessible label and keyboard support. No additional configuration is required.

@@ -3,6 +3,10 @@ title: Opacity Bar
 description: Opacity level visualization showing bars at varying opacity values with token names.
 ---
 
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { OpacityBar } from '@/components/ui/opacity-bar';
+
 ## Installation
 
 ```bash
@@ -20,6 +24,7 @@ This copies two files into your project:
 import { OpacityBar } from '@/components/ui/opacity-bar/opacity-bar';
 
 <OpacityBar levels={[
+  { token: "--opacity-0", name: "0%", value: 0 },
   { token: "--opacity-25", name: "25%", value: 0.25 },
   { token: "--opacity-50", name: "50%", value: 0.5 },
   { token: "--opacity-75", name: "75%", value: 0.75 },
@@ -27,9 +32,27 @@ import { OpacityBar } from '@/components/ui/opacity-bar/opacity-bar';
 ]} />
 ```
 
-## Props
+## Preview
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `levels` | `OpacityBarItemProps[]` | — | Array of opacity levels with token, name, and value (0-1) |
-| `className` | `string` | — | Additional CSS classes |
+<ComponentPreview
+  title="Opacity Scale"
+  code={"<OpacityBar levels={[\n  { token: \"--opacity-0\", name: \"0%\", value: 0 },\n  { token: \"--opacity-25\", name: \"25%\", value: 0.25 },\n  { token: \"--opacity-50\", name: \"50%\", value: 0.5 },\n  { token: \"--opacity-75\", name: \"75%\", value: 0.75 },\n  { token: \"--opacity-100\", name: \"100%\", value: 1 },\n]} />"}
+>
+  <OpacityBar levels={[
+    { token: "--opacity-0", name: "0%", value: 0 },
+    { token: "--opacity-25", name: "25%", value: 0.25 },
+    { token: "--opacity-50", name: "50%", value: 0.5 },
+    { token: "--opacity-75", name: "75%", value: 0.75 },
+    { token: "--opacity-100", name: "100%", value: 1 },
+  ]} />
+</ComponentPreview>
+
+## API Reference
+
+### OpacityBarProps
+
+<PropsTable component="opacity-bar" />
+
+## Accessibility
+
+OpacityBar is a documentation utility. The bars are decorative and supplemented by text labels (`name`) and token names for non-visual access. No interactive behavior.

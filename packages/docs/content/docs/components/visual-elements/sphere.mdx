@@ -153,6 +153,22 @@ When `prefers-reduced-motion: reduce` is active, the animation freezes in place 
 - Device pixel ratio clamped to 2 by default (`maxPixelRatio` prop)
 - Targets 60fps on modern hardware
 
-## Props
+## API Reference
+
+### SphereProps
 
 <PropsTable component="sphere" />
+
+## Accessibility
+
+- The sphere is a purely decorative visualization — it conveys no information that must be accessible.
+- Wrap in `aria-hidden="true"` when used as pure decoration so screen readers skip it entirely.
+- `prefers-reduced-motion` is respected: animation and auto-rotation stop automatically when the OS setting is active.
+- Do not use Sphere as a primary means of conveying status or data — pair it with text or other accessible indicators.
+
+```tsx
+{/* Decorative usage */}
+<div aria-hidden="true">
+  <Sphere colorScheme="solar" />
+</div>
+```

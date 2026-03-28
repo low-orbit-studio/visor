@@ -14,15 +14,24 @@ import { Button } from '@/components/ui/button';
 npx visor add banner
 ```
 
+This copies two files into your project:
+
+- `components/ui/banner/banner.tsx` — the component
+- `components/ui/banner/banner.module.css` — the styles
+
 ## Usage
 
 ```tsx
 import { Banner, BannerTitle, BannerDescription } from '@/components/ui/banner/banner';
 
-<Banner intent="info">
-  <BannerTitle>Heads up</BannerTitle>
-  <BannerDescription>This is an informational message.</BannerDescription>
-</Banner>
+export default function Example() {
+  return (
+    <Banner intent="info">
+      <BannerTitle>Heads up</BannerTitle>
+      <BannerDescription>This is an informational message.</BannerDescription>
+    </Banner>
+  );
+}
 ```
 
 ## Intent Variants
@@ -51,8 +60,77 @@ import { Banner, BannerTitle, BannerDescription } from '@/components/ui/banner/b
   </div>
 </ComponentPreview>
 
+## With Action
+
+Use `BannerAction` to place a call-to-action alongside the message.
+
+<ComponentPreview
+  title="With Action"
+  code={"<Banner intent=\"warning\">\n  <BannerTitle>Maintenance scheduled</BannerTitle>\n  <BannerDescription>The service will be down on Sunday from 2–4 AM UTC.</BannerDescription>\n  <BannerAction>\n    <Button size=\"sm\" variant=\"outline\">Dismiss</Button>\n  </BannerAction>\n</Banner>"}
+>
+  <div style={{ width: '100%' }}>
+    <Banner intent="warning">
+      <BannerTitle>Maintenance scheduled</BannerTitle>
+      <BannerDescription>The service will be down on Sunday from 2–4 AM UTC.</BannerDescription>
+      <BannerAction>
+        <Button size="sm" variant="outline">Dismiss</Button>
+      </BannerAction>
+    </Banner>
+  </div>
+</ComponentPreview>
+
+## Sticky Positioning
+
+Set `position="sticky"` to pin the banner to the top of the viewport.
+
+```tsx
+<Banner intent="info" position="sticky">
+  <BannerTitle>New version available</BannerTitle>
+  <BannerDescription>Refresh to load the latest update.</BannerDescription>
+  <BannerAction>
+    <Button size="sm" variant="outline">Refresh</Button>
+  </BannerAction>
+</Banner>
+```
+
 ## API Reference
 
 ### BannerProps
 
 <PropsTable component="banner" />
+
+The component also accepts all standard `<div>` HTML attributes.
+
+### Sub-components
+
+- **`BannerTitle`** — Renders the heading text. Accepts all `<div>` attributes.
+- **`BannerDescription`** — Renders the body text. Accepts all `<div>` attributes.
+- **`BannerAction`** — Slot for action buttons or links. Accepts all `<div>` attributes.
+
+## Accessibility
+
+- `warning` and `error` intents render with `role="alert"`, which announces the banner to screen readers immediately.
+- `info` and `success` intents render with `role="status"`, which is polite and non-interrupting.
+- Use `BannerTitle` to provide a concise label for the message — screen readers read it as the announcement summary.
+- When using `BannerAction` with a dismiss button, ensure the button has a clear accessible label (e.g. `aria-label="Dismiss warning"`).
+
+## Customization
+
+After copying the component, you own it completely. Common customizations:
+
+```tsx
+// Add a close/dismiss button with state
+const [visible, setVisible] = React.useState(true);
+
+{visible && (
+  <Banner intent="info">
+    <BannerTitle>Cookie notice</BannerTitle>
+    <BannerDescription>We use cookies to improve your experience.</BannerDescription>
+    <BannerAction>
+      <Button size="sm" variant="ghost" onClick={() => setVisible(false)}>
+        Accept
+      </Button>
+    </BannerAction>
+  </Banner>
+)}
+```

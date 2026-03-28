@@ -3,6 +3,10 @@ title: Accessibility Specimen
 description: WCAG contrast pair display with color preview, ratio value, and AA/AAA pass/fail badges.
 ---
 
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { AccessibilitySpecimen } from '@/components/ui/accessibility-specimen';
+
 ## Installation
 
 ```bash
@@ -30,15 +34,42 @@ import { AccessibilitySpecimen } from '@/components/ui/accessibility-specimen/ac
 />
 ```
 
-## Props
+## Preview
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `fgToken` | `string` | — | CSS custom property for the foreground/text color |
-| `bgToken` | `string` | — | CSS custom property for the background color |
-| `fgLabel` | `string` | — | Human-readable label for the foreground color |
-| `bgLabel` | `string` | — | Human-readable label for the background color |
-| `ratio` | `number` | — | Contrast ratio (e.g. 4.5) |
-| `wcagAA` | `boolean` | — | Whether the pair passes WCAG AA |
-| `wcagAAA` | `boolean` | — | Whether the pair passes WCAG AAA |
-| `className` | `string` | — | Additional CSS classes |
+<ComponentPreview
+  title="Contrast Pairs"
+  code={"<AccessibilitySpecimen\n  fgToken=\"--text-primary\"\n  bgToken=\"--surface-page\"\n  fgLabel=\"text-primary\"\n  bgLabel=\"surface-page\"\n  ratio={15.4}\n  wcagAA={true}\n  wcagAAA={true}\n/>\n<AccessibilitySpecimen\n  fgToken=\"--text-secondary\"\n  bgToken=\"--surface-page\"\n  fgLabel=\"text-secondary\"\n  bgLabel=\"surface-page\"\n  ratio={4.8}\n  wcagAA={true}\n  wcagAAA={false}\n/>"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
+    <AccessibilitySpecimen
+      fgToken="--text-primary"
+      bgToken="--surface-page"
+      fgLabel="text-primary"
+      bgLabel="surface-page"
+      ratio={15.4}
+      wcagAA={true}
+      wcagAAA={true}
+    />
+    <AccessibilitySpecimen
+      fgToken="--text-secondary"
+      bgToken="--surface-page"
+      fgLabel="text-secondary"
+      bgLabel="surface-page"
+      ratio={4.8}
+      wcagAA={true}
+      wcagAAA={false}
+    />
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### AccessibilitySpecimenProps
+
+<PropsTable component="accessibility-specimen" />
+
+## Accessibility
+
+This component is itself a documentation utility — it visualizes WCAG contrast compliance for your design token pairs. Use it in your design system docs to surface which token combinations meet AA (4.5:1) and AAA (7:1) contrast requirements for normal-size text, or AA Large (3:1) for large text.
+
+Contrast ratios should be calculated with a tool or library before passing to this component — it renders the result, it does not compute it.

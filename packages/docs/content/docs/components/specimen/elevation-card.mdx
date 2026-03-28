@@ -3,6 +3,10 @@ title: Elevation Card
 description: Shadow level display card showing a single elevation token with its name and token reference.
 ---
 
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ElevationCard } from '@/components/ui/elevation-card';
+
 ## Installation
 
 ```bash
@@ -22,10 +26,27 @@ import { ElevationCard } from '@/components/ui/elevation-card/elevation-card';
 <ElevationCard token="--shadow-md" name="md" />
 ```
 
-## Props
+## Preview
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `token` | `string` | — | CSS custom property for the shadow |
-| `name` | `string` | — | Display name for the shadow level |
-| `className` | `string` | — | Additional CSS classes |
+<ComponentPreview
+  title="Elevation Scale"
+  code={"<ElevationCard token=\"--shadow-xs\" name=\"xs\" />\n<ElevationCard token=\"--shadow-sm\" name=\"sm\" />\n<ElevationCard token=\"--shadow-md\" name=\"md\" />\n<ElevationCard token=\"--shadow-lg\" name=\"lg\" />\n<ElevationCard token=\"--shadow-xl\" name=\"xl\" />"}
+>
+  <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', padding: '1rem 0' }}>
+    <ElevationCard token="--shadow-xs" name="xs" />
+    <ElevationCard token="--shadow-sm" name="sm" />
+    <ElevationCard token="--shadow-md" name="md" />
+    <ElevationCard token="--shadow-lg" name="lg" />
+    <ElevationCard token="--shadow-xl" name="xl" />
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### ElevationCardProps
+
+<PropsTable component="elevation-card" />
+
+## Accessibility
+
+ElevationCard is a documentation utility component. It uses `box-shadow` to visualize shadow tokens and does not convey interactive behavior. Render it inside a landmark region with an appropriate heading when used in design system documentation pages.

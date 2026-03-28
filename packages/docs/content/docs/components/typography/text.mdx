@@ -43,6 +43,20 @@ export default function Example() {
   </div>
 </ComponentPreview>
 
+## Weights
+
+<ComponentPreview
+  title="Weight Variants"
+  code={"<Text weight=\"normal\">Normal weight (default)</Text>\n<Text weight=\"medium\">Medium weight</Text>\n<Text weight=\"semibold\">Semibold weight</Text>\n<Text weight=\"bold\">Bold weight</Text>"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+    <Text weight="normal">Normal weight (default)</Text>
+    <Text weight="medium">Medium weight</Text>
+    <Text weight="semibold">Semibold weight</Text>
+    <Text weight="bold">Bold weight</Text>
+  </div>
+</ComponentPreview>
+
 ## Colors
 
 <ComponentPreview
@@ -53,6 +67,23 @@ export default function Example() {
     <Text color="primary">Primary text color</Text>
     <Text color="secondary">Secondary text color</Text>
     <Text color="tertiary">Tertiary text color</Text>
+  </div>
+</ComponentPreview>
+
+## Line Height
+
+The `leading` prop controls line height. Use `relaxed` or `loose` for long-form body text.
+
+<ComponentPreview
+  title="Line Height Variants"
+  code={"<Text leading=\"tight\">Tight — The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.</Text>\n<Text leading=\"snug\">Snug — The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.</Text>\n<Text leading=\"normal\">Normal (default) — The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.</Text>\n<Text leading=\"relaxed\">Relaxed — The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.</Text>\n<Text leading=\"loose\">Loose — The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.</Text>"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '480px' }}>
+    <Text leading="tight">Tight — The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.</Text>
+    <Text leading="snug">Snug — The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.</Text>
+    <Text leading="normal">Normal (default) — The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.</Text>
+    <Text leading="relaxed">Relaxed — The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.</Text>
+    <Text leading="loose">Loose — The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.</Text>
   </div>
 </ComponentPreview>
 
@@ -79,3 +110,22 @@ Use the `as` prop to render as a different HTML element.
 <PropsTable component="text" />
 
 The component also accepts all standard HTML paragraph attributes.
+
+## Accessibility
+
+- Use `color="secondary"` or `color="tertiary"` with care — these map to lower-contrast tokens. Verify contrast ratios meet WCAG AA (4.5:1) for any informational text.
+- Prefer `leading="relaxed"` for body copy longer than two lines; it improves readability for users with dyslexia.
+- Use `as="label"` with an `htmlFor` prop when pairing with form inputs, rather than wrapping a `Label` component.
+- Avoid using `Text` for headings — use `Heading` to maintain a proper document outline.
+
+## Customization
+
+After copying the component, you own it completely. Common customizations:
+
+```tsx
+// Truncate to a single line with ellipsis
+<Text className="truncate">Very long text that gets cut off...</Text>
+
+// Combine with color="inherit" for themed contexts
+<Text color="inherit" size="sm">Inherits color from parent</Text>
+```

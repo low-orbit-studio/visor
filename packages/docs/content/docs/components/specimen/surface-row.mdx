@@ -3,6 +3,10 @@ title: Surface Row
 description: Surface background variant display showing a surface token with its name and token reference.
 ---
 
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { SurfaceRow } from '@/components/ui/surface-row';
+
 ## Installation
 
 ```bash
@@ -19,15 +23,31 @@ This copies two files into your project:
 ```tsx
 import { SurfaceRow } from '@/components/ui/surface-row/surface-row';
 
+<SurfaceRow token="--surface-page" name="Page" />
 <SurfaceRow token="--surface-card" name="Card" />
 <SurfaceRow token="--surface-overlay" name="Overlay" lightText />
 ```
 
-## Props
+## Preview
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `token` | `string` | — | CSS custom property for the surface background |
-| `name` | `string` | — | Display name for the surface |
-| `lightText` | `boolean` | `false` | When true, text renders in light colors for dark surfaces |
-| `className` | `string` | — | Additional CSS classes |
+<ComponentPreview
+  title="Surface Tokens"
+  code={"<SurfaceRow token=\"--surface-page\" name=\"Page\" />\n<SurfaceRow token=\"--surface-card\" name=\"Card\" />\n<SurfaceRow token=\"--surface-raised\" name=\"Raised\" />\n<SurfaceRow token=\"--surface-overlay\" name=\"Overlay\" lightText />"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
+    <SurfaceRow token="--surface-page" name="Page" />
+    <SurfaceRow token="--surface-card" name="Card" />
+    <SurfaceRow token="--surface-raised" name="Raised" />
+    <SurfaceRow token="--surface-overlay" name="Overlay" lightText />
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### SurfaceRowProps
+
+<PropsTable component="surface-row" />
+
+## Accessibility
+
+SurfaceRow is a documentation utility. Use `lightText={true}` for dark surfaces to maintain readable contrast on the text labels. Each row includes both a human-readable name and the token name — visual background is supplemented by text for non-visual access.
