@@ -87,9 +87,28 @@ export function DeckLayout({
   useKeyboardNav({ containerRef, goTo, currentIndexRef, totalSectionsRef })
   useWheelNav({ containerRef, goTo, currentIndexRef })
 
-  // Auto-focus container so keyboard nav works immediately
+  // Focus/blur container based on fullscreen state so keyboard nav
+  // only captures arrow keys during presentation mode
   useEffect(() => {
-    containerRef.current?.focus()
+    const container = containerRef.current
+    if (!container) return
+
+    const observer = new MutationObserver(() => {
+      const isFullscreen = container.closest("[data-fullscreen='true']") !== null
+      if (isFullscreen) {
+        container.focus()
+      } else {
+        container.blur()
+      }
+    })
+
+    // Observe ancestors for data-fullscreen changes
+    const previewContainer = container.closest(".preview-container")
+    if (previewContainer) {
+      observer.observe(previewContainer, { attributes: true, attributeFilter: ["data-fullscreen"] })
+    }
+
+    return () => observer.disconnect()
   }, [])
 
   const deckValue = useMemo(() => ({ goTo, navigateTo }), [goTo, navigateTo])
