@@ -1,13 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { codeToHtml } from 'shiki';
-import { ArrowsOut } from '@phosphor-icons/react';
-import {
-  FullscreenOverlay,
-  FullscreenOverlayTrigger,
-  FullscreenOverlayContent,
-} from '@/components/ui/fullscreen-overlay';
+import { ArrowsOut, ArrowsIn, X } from '@phosphor-icons/react';
 
 interface BlockPreviewProps {
   children: React.ReactNode;
@@ -22,6 +17,7 @@ export function BlockPreview({
 }: BlockPreviewProps) {
   const [showCode, setShowCode] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [fullscreen, setFullscreen] = useState(false);
   const [highlightedHTML, setHighlightedHTML] = useState<string | null>(null);
 
   useEffect(() => {
@@ -32,36 +28,69 @@ export function BlockPreview({
     codeToHtml(code, { lang: 'tsx', theme }).then(setHighlightedHTML);
   }, [showCode, code]);
 
+  // Escape key closes fullscreen
+  useEffect(() => {
+    if (!fullscreen) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') setFullscreen(false);
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [fullscreen]);
+
+  // Lock body scroll when fullscreen
+  useEffect(() => {
+    if (fullscreen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [fullscreen]);
+
   async function handleCopy() {
     await navigator.clipboard.writeText(code);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
 
+  const toggleFullscreen = useCallback(() => setFullscreen(prev => !prev), []);
+
   return (
-    <div className="preview-container">
+    <div
+      className="preview-container"
+      data-fullscreen={fullscreen ? 'true' : undefined}
+    >
       <div
         className="preview-render"
         style={{ isolation: 'isolate', color: 'var(--text-primary)', minHeight: '200px', alignItems: 'stretch' }}
       >
         {children}
       </div>
+
+      {fullscreen && (
+        <button
+          className="preview-close"
+          onClick={toggleFullscreen}
+          aria-label="Exit fullscreen"
+        >
+          <X weight="bold" />
+        </button>
+      )}
+
       <div className="preview-footer">
         {title ? <p className="preview-title">{title}</p> : <span />}
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <FullscreenOverlay>
-            <FullscreenOverlayTrigger asChild>
-              <button className="preview-toggle" aria-label="Open fullscreen">
-                <ArrowsOut size={14} style={{ verticalAlign: 'middle', marginRight: '0.25rem' }} />
-                Fullscreen
-              </button>
-            </FullscreenOverlayTrigger>
-            <FullscreenOverlayContent fullbleed>
-              <div style={{ isolation: 'isolate', color: 'var(--text-primary)', width: '100%', height: '100%' }}>
-                {children}
-              </div>
-            </FullscreenOverlayContent>
-          </FullscreenOverlay>
+          <button
+            className="preview-toggle"
+            onClick={toggleFullscreen}
+            aria-label={fullscreen ? 'Exit fullscreen' : 'Open fullscreen'}
+          >
+            {fullscreen
+              ? <><ArrowsIn size={14} style={{ verticalAlign: 'middle', marginRight: '0.25rem' }} />Exit</>
+              : <><ArrowsOut size={14} style={{ verticalAlign: 'middle', marginRight: '0.25rem' }} />Fullscreen</>
+            }
+          </button>
           {showCode && (
             <button className="preview-copy" onClick={handleCopy}>
               {copied ? 'Copied!' : 'Copy'}

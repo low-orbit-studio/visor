@@ -30,6 +30,76 @@
   margin: 1.5rem 0;
 }
 
+/* Fullscreen mode — same DOM, CSS-only toggle */
+.preview-container[data-fullscreen="true"] {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
+
+.preview-container[data-fullscreen="true"] .preview-render {
+  height: 100%;
+  padding: 0;
+}
+
+.preview-container[data-fullscreen="true"] .preview-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: none;
+}
+
+.preview-container[data-fullscreen="true"] .preview-footer .preview-title,
+.preview-container[data-fullscreen="true"] .preview-footer .preview-toggle,
+.preview-container[data-fullscreen="true"] .preview-footer .preview-copy {
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.preview-container[data-fullscreen="true"] .preview-footer .preview-toggle:hover,
+.preview-container[data-fullscreen="true"] .preview-footer .preview-copy:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.preview-container[data-fullscreen="true"] .preview-code {
+  display: none;
+}
+
+.preview-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: background 150ms, color 150ms;
+}
+
+.preview-close:hover {
+  background: rgba(0, 0, 0, 0.7);
+  color: rgba(255, 255, 255, 0.95);
+}
+
 .preview-render {
   display: flex;
   align-items: center;
@@ -206,7 +276,7 @@
   height: 700px;
 }
 
-/* In fullscreen overlay, let it fill the viewport */
-[data-slot="fullscreen-overlay-content"] .sphere-playground-preview {
+/* In fullscreen, fill the viewport */
+[data-fullscreen="true"] .sphere-playground-preview {
   height: 100%;
 }
