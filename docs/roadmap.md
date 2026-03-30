@@ -101,7 +101,7 @@ Extract design systems from existing projects into `.visor.yaml` themes. Both a 
   - Scan targets: CSS custom properties, globals.css, CSS module files, tailwind config, package.json
   - Output: best-effort `.visor.yaml` with confidence annotations (high/medium/low per mapped token)
   - Ambiguous mappings flagged for human/AI review
-- Claude Code skill: registered in `~/.claude/skills/` following playbook patterns
+- [x] Claude Code skill: registered in `~/.claude/skills/` following playbook patterns
   - Wraps the CLI extract command
   - Uses AI to resolve ambiguities (e.g., which blue is "primary"?)
   - Interprets design intent from variable naming and usage patterns
