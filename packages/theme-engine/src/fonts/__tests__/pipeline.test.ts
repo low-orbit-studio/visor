@@ -54,7 +54,7 @@ describe("resolveThemeFonts", () => {
     expect(result.css).toContain("--weight-body: 400");
   });
 
-  it("warns for custom/commercial fonts", () => {
+  it("warns for local/commercial fonts", () => {
     const typography: VisorTypography = {
       heading: { family: "PP Model Plastic", weight: 500 },
       body: { family: "PP Model Mono", weight: 300 },
@@ -62,14 +62,14 @@ describe("resolveThemeFonts", () => {
 
     const result = resolveThemeFonts(typography);
 
-    expect(result.heading!.source).toBe("custom");
-    expect(result.body!.source).toBe("custom");
+    expect(result.heading!.source).toBe("local");
+    expect(result.body!.source).toBe("local");
     expect(result.warnings).toHaveLength(2);
     expect(result.warnings[0]).toContain("PP Model Plastic");
     expect(result.warnings[1]).toContain("PP Model Mono");
   });
 
-  it("handles mixed Google + custom fonts", () => {
+  it("handles mixed Google + local fonts", () => {
     const typography: VisorTypography = {
       heading: { family: "PP Model Plastic" },
       body: { family: "Inter" },
@@ -77,10 +77,66 @@ describe("resolveThemeFonts", () => {
 
     const result = resolveThemeFonts(typography);
 
-    expect(result.heading!.source).toBe("custom");
+    expect(result.heading!.source).toBe("local");
     expect(result.body!.source).toBe("google-fonts");
     expect(result.warnings).toHaveLength(1);
     expect(result.preloadLinks.some((l) => l.includes("Inter"))).toBe(true);
+  });
+
+  it("resolves visor-fonts with CDN @font-face blocks", () => {
+    const typography: VisorTypography = {
+      heading: {
+        family: "PP Model Plastic",
+        weight: 500,
+        source: "visor-fonts",
+        org: "low-orbit",
+      },
+    };
+
+    const result = resolveThemeFonts(typography);
+
+    expect(result.heading!.source).toBe("visor-fonts");
+    expect(result.heading!.org).toBe("low-orbit");
+    expect(result.warnings).toHaveLength(0);
+    expect(result.css).toContain("@font-face {");
+    expect(result.css).toContain("fonts.visor.design/low-orbit/pp-model-plastic/");
+    expect(result.css).toContain('font-family: "PP Model Plastic"');
+  });
+
+  it("generates correct CDN URLs for visor-fonts weights", () => {
+    const typography: VisorTypography = {
+      heading: {
+        family: "PP Model Plastic",
+        weight: 700,
+        source: "visor-fonts",
+        org: "low-orbit",
+      },
+    };
+
+    const result = resolveThemeFonts(typography);
+
+    expect(result.css).toContain("PPModelPlastic-Bold.woff2");
+  });
+
+  it("handles mixed visor-fonts + Google Fonts", () => {
+    const typography: VisorTypography = {
+      heading: {
+        family: "PP Model Plastic",
+        weight: 500,
+        source: "visor-fonts",
+        org: "low-orbit",
+      },
+      body: { family: "Inter", weight: 400 },
+    };
+
+    const result = resolveThemeFonts(typography);
+
+    expect(result.heading!.source).toBe("visor-fonts");
+    expect(result.body!.source).toBe("google-fonts");
+    expect(result.warnings).toHaveLength(0);
+    expect(result.css).toContain("fonts.visor.design");
+    expect(result.css).toContain("--font-heading");
+    expect(result.css).toContain("--font-body");
   });
 
   it("handles typography with only heading font", () => {

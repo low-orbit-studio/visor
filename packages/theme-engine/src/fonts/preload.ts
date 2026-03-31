@@ -5,6 +5,7 @@
  * and preloading critical font files.
  */
 
+import { VISOR_FONTS_CDN, buildVisorFontUrl } from "./resolve.js";
 import type { FontResolution } from "./types.js";
 
 const GOOGLE_FONTS_ORIGIN = "https://fonts.googleapis.com";
@@ -47,10 +48,29 @@ export function generatePreloadLinks(
     }
   }
 
-  // Custom font file preloads
+  // Visor Fonts preconnect + preload
+  const hasVisorFonts = resolutions.some((r) => r.source === "visor-fonts");
+  if (hasVisorFonts) {
+    links.push(
+      `<link rel="preconnect" href="${VISOR_FONTS_CDN}" crossorigin>`
+    );
+
+    for (const resolution of resolutions) {
+      if (resolution.source === "visor-fonts" && resolution.org) {
+        for (const weight of resolution.weights) {
+          const url = buildVisorFontUrl(resolution.org, resolution.family, weight);
+          links.push(
+            `<link rel="preload" as="font" type="font/woff2" href="${url}" crossorigin>`
+          );
+        }
+      }
+    }
+  }
+
+  // Local font file preloads
   if (customFontPaths) {
     for (const resolution of resolutions) {
-      if (resolution.source === "custom") {
+      if (resolution.source === "local") {
         const paths = customFontPaths.get(resolution.family);
         if (paths) {
           for (const path of paths) {

@@ -3,7 +3,7 @@
  */
 
 /** Where a font is loaded from */
-export type FontSource = "google-fonts" | "custom";
+export type FontSource = "google-fonts" | "visor-fonts" | "local";
 
 /** CSS font-display strategy */
 export type FontDisplayStrategy =
@@ -29,8 +29,10 @@ export interface FontResolution {
   display: FontDisplayStrategy;
   /** Font category (sans-serif, serif, monospace, etc.) for fallback selection */
   category: string;
-  /** Human-readable message for custom fonts needing manual setup */
+  /** Human-readable message for local fonts needing manual setup */
   guidance: string | null;
+  /** Organization namespace (only for visor-fonts source) */
+  org: string | null;
 }
 
 /** Options for resolving a single font */
@@ -43,6 +45,10 @@ export interface FontResolveOptions {
   display?: FontDisplayStrategy;
   /** Font category override for custom fonts (default: "sans-serif") */
   category?: string;
+  /** Font source override — skips Google Fonts lookup when set */
+  source?: FontSource;
+  /** Organization namespace for visor-fonts CDN (required when source is "visor-fonts") */
+  org?: string;
 }
 
 /** Typography section from a .visor.yaml file */
@@ -50,10 +56,14 @@ export interface VisorTypography {
   heading?: {
     family: string;
     weight?: number;
+    source?: FontSource;
+    org?: string;
   };
   body?: {
     family: string;
     weight?: number;
+    source?: FontSource;
+    org?: string;
   };
   mono?: {
     family: string;

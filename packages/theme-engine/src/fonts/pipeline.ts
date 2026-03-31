@@ -8,7 +8,7 @@
  *   - Warnings for fonts needing manual setup
  */
 
-import { resolveFont } from "./resolve.js";
+import { resolveFont, buildVisorFontUrl } from "./resolve.js";
 import { generatePreloadLinks, generateStylesheetLinks } from "./preload.js";
 import type {
   FontResolution,
@@ -43,15 +43,39 @@ function generateFontCSS(
     lines.push("");
   }
 
-  // Custom font @font-face placeholders
-  const customFonts = [heading, body].filter(
-    (r): r is FontResolution => r !== null && r.source === "custom"
+  // Visor Fonts @font-face declarations (real, not placeholders)
+  const visorFonts = [heading, body].filter(
+    (r): r is FontResolution => r !== null && r.source === "visor-fonts"
   );
-  if (customFonts.length > 0) {
+  const seenVisorFonts = new Set<string>();
+  if (visorFonts.length > 0) {
+    lines.push("/* Visor Fonts — CDN-hosted @font-face declarations */");
+    for (const font of visorFonts) {
+      if (seenVisorFonts.has(font.family)) continue;
+      seenVisorFonts.add(font.family);
+      for (const weight of font.weights) {
+        const url = buildVisorFontUrl(font.org ?? "", font.family, weight);
+        lines.push(`@font-face {`);
+        lines.push(`  font-family: "${font.family}";`);
+        lines.push(`  src: url("${url}") format("woff2");`);
+        lines.push(`  font-weight: ${weight};`);
+        lines.push(`  font-style: ${font.italic ? "italic" : "normal"};`);
+        lines.push(`  font-display: ${font.display};`);
+        lines.push(`}`);
+        lines.push("");
+      }
+    }
+  }
+
+  // Local font @font-face placeholders
+  const localFonts = [heading, body].filter(
+    (r): r is FontResolution => r !== null && r.source === "local"
+  );
+  if (localFonts.length > 0) {
     lines.push(
-      "/* Custom fonts — add your @font-face declarations below */"
+      "/* Local fonts — add your @font-face declarations below */"
     );
-    for (const font of customFonts) {
+    for (const font of localFonts) {
       lines.push(`/* @font-face {`);
       lines.push(`     font-family: "${font.family}";`);
       lines.push(`     src: url("/fonts/${font.family.replace(/ /g, "-").toLowerCase()}.woff2") format("woff2");`);
@@ -211,6 +235,8 @@ export function resolveThemeFonts(
     headingResolution = resolveFont(typography.heading.family, {
       weights: weights.length > 0 ? weights : undefined,
       display,
+      source: typography.heading.source,
+      org: typography.heading.org,
     });
 
     if (headingResolution.guidance) {
@@ -241,12 +267,16 @@ export function resolveThemeFonts(
       headingResolution = resolveFont(typography.heading!.family, {
         weights: mergedWeights,
         display,
+        source: typography.heading!.source,
+        org: typography.heading!.org,
       });
       bodyResolution = headingResolution;
     } else {
       bodyResolution = resolveFont(typography.body.family, {
         weights: bodyWeights.length > 0 ? bodyWeights : undefined,
         display,
+        source: typography.body.source,
+        org: typography.body.org,
       });
 
       if (bodyResolution.guidance) {

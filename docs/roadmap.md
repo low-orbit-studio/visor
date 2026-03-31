@@ -143,9 +143,12 @@ A visual theme creation experience in the docs site with harmonious color genera
 Blacklight font library and font pairing intelligence. Basic font resolution (Google Fonts, `font-display`) ships in Phase 3.
 
 **Key work:**
-- Blacklight font library (Cloudflare R2 CDN): authenticated Low Orbit projects only
+- ~~Visor Fonts CDN support (`visor-fonts` source type in .visor.yaml): R2-hosted fonts with @font-face generation~~ **DONE** (VI-81) — see `packages/theme-engine/src/fonts/`
+- ~~Font upload CLI (`visor fonts add`): upload woff2 files to R2 CDN~~ **DONE** (VI-80) — see `packages/cli/src/commands/fonts-add.ts`
+- ~~R2 CDN setup (fonts.visor.design)~~ **DONE** (VI-79) — Cloudflare R2 bucket with custom domain
 - Font pairing with mood tags (leverage Blacklight's `epk_theme_font_pairing` system)
 - Advanced font loading optimizations (subsetting, variable font support)
+- Font weight/variant discovery from CDN (manifest-based)
 
 ## Phase 8: Project Templates & Starters
 

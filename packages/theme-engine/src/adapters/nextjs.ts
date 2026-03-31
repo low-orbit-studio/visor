@@ -41,7 +41,7 @@ export function nextjsAdapter(
   if (includeFontImports && input.config.typography) {
     const fontResult = resolveThemeFonts(input.config.typography);
     const googleFonts = [fontResult.heading, fontResult.body].filter(
-      (r) => r !== null && r.source === "google-fonts",
+      (r): r is NonNullable<typeof r> => r !== null && r.source === "google-fonts",
     );
 
     // Deduplicate by CSS URL
