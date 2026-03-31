@@ -65,12 +65,13 @@ export {
 } from "./generate-css.js";
 
 // Extraction pipeline
-export { extractFromCSS, parseCSSDeclarations } from "./extract.js";
+export { extractFromCSS, parseCSSDeclarations, parseFontFaceDeclarations, cleanFontValue } from "./extract.js";
 export type {
   ExtractionResult,
   ExtractedToken,
   Confidence,
   CSSFile,
+  FontFaceDeclaration,
 } from "./extract.js";
 
 // Types

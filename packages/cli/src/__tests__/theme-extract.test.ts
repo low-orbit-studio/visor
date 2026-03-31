@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { mkdirSync, rmSync, writeFileSync, readFileSync, existsSync } from "fs";
 import { join } from "path";
 import { tmpdir } from "os";
-import { themeExtractCommand } from "../commands/theme-extract.js";
+import { themeExtractCommand, parseNextFontDeclarations, parseNextFontFromLayouts } from "../commands/theme-extract.js";
 
 const SAMPLE_CSS = `:root {
   --primary-600: #6366f1;
@@ -280,5 +280,119 @@ describe("theme extract command", () => {
     });
     const parsed = JSON.parse(String(jsonCall![0]));
     expect(parsed.extraction.unmapped.length).toBeGreaterThan(0);
+  });
+
+  it("resolves var(--font-sans) to Inter from next/font layout (Fix 2: VI-82)", () => {
+    // CSS with var() font reference
+    const cssWithVarFont = `:root {
+      --primary-600: #6366f1;
+      --font-sans: var(--font-sans);
+    }`;
+    writeFileSync(join(testDir, "globals.css"), cssWithVarFont, "utf-8");
+
+    // Layout file with next/font declaration
+    mkdirSync(join(testDir, "app"), { recursive: true });
+    writeFileSync(
+      join(testDir, "app", "layout.tsx"),
+      `import { Inter } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+export default function RootLayout({ children }) {
+  return <html className={inter.variable}>{children}</html>;
+}`,
+      "utf-8"
+    );
+
+    themeExtractCommand(outputDir, { from: testDir, json: true });
+
+    const calls = (console.log as ReturnType<typeof vi.fn>).mock.calls;
+    const jsonCall = calls.find((call: unknown[]) => {
+      try {
+        const parsed = JSON.parse(String(call[0]));
+        return parsed.config !== undefined;
+      } catch {
+        return false;
+      }
+    });
+    const parsed = JSON.parse(String(jsonCall![0]));
+    expect(parsed.config.typography?.body?.family).toBe("Inter");
+  });
+});
+
+// ============================================================
+// parseNextFontDeclarations (Fix 2: VI-82)
+// ============================================================
+
+describe("parseNextFontDeclarations", () => {
+  it("parses Google Font import with variable assignment", () => {
+    const content = `import { Inter } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});`;
+    const fontMap = new Map<string, string>();
+    parseNextFontDeclarations(content, fontMap);
+
+    expect(fontMap.get("--font-sans")).toBe("Inter");
+  });
+
+  it("parses multiple Google Font imports", () => {
+    const content = `import { Inter, Roboto_Mono } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+const robotoMono = Roboto_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+});`;
+    const fontMap = new Map<string, string>();
+    parseNextFontDeclarations(content, fontMap);
+
+    expect(fontMap.get("--font-sans")).toBe("Inter");
+    expect(fontMap.get("--font-mono")).toBe("Roboto Mono");
+  });
+
+  it("handles local font imports with src path", () => {
+    const content = `import localFont from "next/font/local";
+
+const satoshi = localFont({
+  src: "./fonts/Satoshi-Variable.woff2",
+  variable: "--font-heading",
+});`;
+    const fontMap = new Map<string, string>();
+    parseNextFontDeclarations(content, fontMap);
+
+    expect(fontMap.get("--font-heading")).toBe("Satoshi");
+  });
+
+  it("maps underscore-separated Google Font names to proper names", () => {
+    const content = `import { Plus_Jakarta_Sans } from "next/font/google";
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-body",
+});`;
+    const fontMap = new Map<string, string>();
+    parseNextFontDeclarations(content, fontMap);
+
+    expect(fontMap.get("--font-body")).toBe("Plus Jakarta Sans");
+  });
+
+  it("returns empty map when no next/font imports found", () => {
+    const content = `import React from "react";
+
+export default function Layout() { return <div />; }`;
+    const fontMap = new Map<string, string>();
+    parseNextFontDeclarations(content, fontMap);
+
+    expect(fontMap.size).toBe(0);
   });
 });

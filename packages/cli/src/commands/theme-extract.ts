@@ -100,6 +100,9 @@ export function themeExtractCommand(
   // Run extraction
   const result = extractFromCSS(cssFiles, themeName);
 
+  // Fix 2 (VI-82): Resolve var() font references by scanning layout files
+  resolveVarFontReferences(result, targetDir);
+
   // Check for font dependencies in package.json
   const fontHints = extractFontHints(targetDir);
   if (fontHints && !result.config.typography) {
@@ -193,6 +196,217 @@ function scanDirForCSS(dir: string, files: CSSFile[], seen: Set<string>, maxDept
     }
   } catch {
     // Skip unreadable directories
+  }
+}
+
+// ============================================================
+// var() Font Resolution (Fix 2: VI-82)
+// ============================================================
+
+/** Layout file paths to scan for next/font declarations (relative to project root) */
+const LAYOUT_FILE_PATHS = [
+  "src/app/layout.tsx",
+  "src/app/layout.ts",
+  "src/app/layout.jsx",
+  "src/app/layout.js",
+  "app/layout.tsx",
+  "app/layout.ts",
+  "app/layout.jsx",
+  "app/layout.js",
+  "src/pages/_app.tsx",
+  "src/pages/_app.ts",
+  "src/pages/_app.jsx",
+  "src/pages/_app.js",
+  "pages/_app.tsx",
+  "pages/_app.ts",
+  "pages/_app.jsx",
+  "pages/_app.js",
+];
+
+/**
+ * Well-known next/font import names mapped to font family names.
+ * Covers the most common Google Fonts used with next/font.
+ */
+const NEXT_FONT_MAP: Record<string, string> = {
+  Inter: "Inter",
+  Roboto: "Roboto",
+  Open_Sans: "Open Sans",
+  Lato: "Lato",
+  Poppins: "Poppins",
+  Montserrat: "Montserrat",
+  Raleway: "Raleway",
+  Nunito: "Nunito",
+  Playfair_Display: "Playfair Display",
+  Source_Code_Pro: "Source Code Pro",
+  Fira_Code: "Fira Code",
+  JetBrains_Mono: "JetBrains Mono",
+  Roboto_Mono: "Roboto Mono",
+  IBM_Plex_Mono: "IBM Plex Mono",
+  IBM_Plex_Sans: "IBM Plex Sans",
+  DM_Sans: "DM Sans",
+  Space_Grotesk: "Space Grotesk",
+  Geist: "Geist",
+  Geist_Mono: "Geist Mono",
+  Manrope: "Manrope",
+  Outfit: "Outfit",
+  Plus_Jakarta_Sans: "Plus Jakarta Sans",
+  Work_Sans: "Work Sans",
+  Rubik: "Rubik",
+  Sora: "Sora",
+  Lexend: "Lexend",
+};
+
+/**
+ * Scan Next.js layout files for font declarations and resolve var() references
+ * in the extracted typography config.
+ *
+ * Scoped to Next.js patterns only — not a general var() resolver.
+ */
+function resolveVarFontReferences(result: ExtractionResult, targetDir: string): void {
+  const typo = result.config.typography;
+  if (!typo) return;
+
+  // Check if any font family is a var() reference
+  const hasVarRef =
+    typo.heading?.family?.startsWith("var(") ||
+    typo.body?.family?.startsWith("var(") ||
+    typo.mono?.family?.startsWith("var(");
+
+  if (!hasVarRef) return;
+
+  // Parse layout files for next/font declarations
+  const fontMap = parseNextFontFromLayouts(targetDir);
+  if (fontMap.size === 0) return;
+
+  // Resolve var() references
+  if (typo.heading?.family?.startsWith("var(")) {
+    const varName = extractVarName(typo.heading.family);
+    const resolved = fontMap.get(varName);
+    if (resolved) typo.heading.family = resolved;
+  }
+  if (typo.body?.family?.startsWith("var(")) {
+    const varName = extractVarName(typo.body.family);
+    const resolved = fontMap.get(varName);
+    if (resolved) typo.body.family = resolved;
+  }
+  if (typo.mono?.family?.startsWith("var(")) {
+    const varName = extractVarName(typo.mono.family);
+    const resolved = fontMap.get(varName);
+    if (resolved) typo.mono.family = resolved;
+  }
+}
+
+/** Extract the CSS variable name from a var() expression: var(--font-sans) -> --font-sans */
+function extractVarName(varExpr: string): string {
+  const match = varExpr.match(/var\(\s*(--[\w-]+)/);
+  return match ? match[1] : varExpr;
+}
+
+/**
+ * Parse Next.js layout files for `next/font` import declarations.
+ * Returns a map of CSS variable name to resolved font family name.
+ *
+ * Detects patterns like:
+ *   import { Inter } from "next/font/google";
+ *   const inter = Inter({ variable: "--font-sans" });
+ *
+ *   import localFont from "next/font/local";
+ *   const myFont = localFont({ variable: "--font-heading", ... });
+ */
+export function parseNextFontFromLayouts(targetDir: string): Map<string, string> {
+  const fontMap = new Map<string, string>();
+
+  for (const relPath of LAYOUT_FILE_PATHS) {
+    const fullPath = join(targetDir, relPath);
+    if (!existsSync(fullPath)) continue;
+
+    try {
+      const content = readFileSync(fullPath, "utf-8");
+      parseNextFontDeclarations(content, fontMap);
+    } catch {
+      // Skip unreadable files
+    }
+  }
+
+  return fontMap;
+}
+
+/**
+ * Parse next/font declarations from file content.
+ * Extracts the font name and its CSS variable assignment.
+ */
+export function parseNextFontDeclarations(
+  content: string,
+  fontMap: Map<string, string>
+): void {
+  // Pattern 1: Named Google Font imports
+  // import { Inter, Roboto_Mono } from "next/font/google"
+  const googleImportRe = /import\s*\{([^}]+)\}\s*from\s*["']next\/font\/google["']/g;
+  let importMatch: RegExpMatchArray | null;
+
+  const importedFonts: string[] = [];
+  const googleImportMatches = content.matchAll(googleImportRe);
+  for (const m of googleImportMatches) {
+    const names = m[1].split(",").map((n) => n.trim()).filter(Boolean);
+    importedFonts.push(...names);
+  }
+
+  // For each imported font, find its variable assignment
+  for (const fontName of importedFonts) {
+    const family = NEXT_FONT_MAP[fontName] ?? fontName.replace(/_/g, " ");
+
+    // Match: const inter = Inter({ ... variable: "--font-sans" ... })
+    const callRe = new RegExp(
+      `(?:const|let|var)\\s+\\w+\\s*=\\s*${fontName}\\s*\\(\\s*\\{([\\s\\S]*?)\\}\\s*\\)`,
+      "m"
+    );
+    const callMatch = content.match(callRe);
+    if (callMatch) {
+      const varMatch = callMatch[1].match(/variable\s*:\s*["'](--[\w-]+)["']/);
+      if (varMatch) {
+        fontMap.set(varMatch[1], family);
+      }
+    }
+  }
+
+  // Pattern 2: Local font imports
+  // import localFont from "next/font/local"
+  // const myFont = localFont({ src: "...", variable: "--font-heading" })
+  const localImportRe = /import\s+(\w+)\s+from\s*["']next\/font\/local["']/;
+  const localImportMatch = content.match(localImportRe);
+
+  if (localImportMatch) {
+    const localFnName = localImportMatch[1];
+    // Find all calls to localFont(...)
+    const localCallRe = new RegExp(
+      `(?:const|let|var)\\s+\\w+\\s*=\\s*${localFnName}\\s*\\(\\s*\\{([\\s\\S]*?)\\}\\s*\\)`,
+      "gm"
+    );
+    const localCallMatches = content.matchAll(localCallRe);
+
+    for (const localCallMatch of localCallMatches) {
+      const block = localCallMatch[1];
+      const varMatch = block.match(/variable\s*:\s*["'](--[\w-]+)["']/);
+      if (!varMatch) continue;
+
+      const varName = varMatch[1];
+
+      // Try to infer family name from the src path
+      // e.g., src: "./fonts/Satoshi-Variable.woff2" -> Satoshi
+      const srcMatch = block.match(/src\s*:\s*["']([^"']+)["']/);
+      if (srcMatch) {
+        const srcPath = srcMatch[1];
+        const fileName = basename(srcPath, extname(srcPath));
+        // Extract font name: strip weight/style suffixes
+        const fontBaseName = fileName
+          .replace(/[-_](Variable|Regular|Bold|Light|Medium|SemiBold|ExtraBold|Thin|Black|Italic).*$/i, "")
+          .replace(/[-_]/g, " ")
+          .trim();
+        if (fontBaseName) {
+          fontMap.set(varName, fontBaseName);
+        }
+      }
+    }
   }
 }
 

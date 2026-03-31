@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { extractFromCSS, parseCSSDeclarations, type CSSFile } from "../extract.js";
+import { extractFromCSS, parseCSSDeclarations, parseFontFaceDeclarations, cleanFontValue, type CSSFile } from "../extract.js";
 
 describe("parseCSSDeclarations", () => {
   it("extracts custom properties from :root", () => {
@@ -366,5 +366,221 @@ describe("extractFromCSS", () => {
     const result = extractFromCSS(files);
     expect(result.config.colors.primary).toBe("#6366f1");
     expect(result.warnings.some((w) => w.includes("primary color"))).toBe(true);
+  });
+
+  it("extracts font family from @font-face when no custom property fonts exist", () => {
+    const files: CSSFile[] = [
+      {
+        path: "globals.css",
+        content: `@font-face {
+          font-family: "Satoshi";
+          src: url("/fonts/Satoshi-Variable.woff2") format("woff2");
+          font-weight: 300 900;
+          font-style: normal;
+        }
+        @font-face {
+          font-family: "Satoshi";
+          src: url("/fonts/Satoshi-VariableItalic.woff2") format("woff2");
+          font-weight: 300 900;
+          font-style: italic;
+        }
+        :root {
+          --primary-600: #6366f1;
+        }`,
+      },
+    ];
+    const result = extractFromCSS(files, "test-theme");
+    expect(result.config.typography?.heading?.family).toBe("Satoshi");
+    expect(result.config.typography?.body?.family).toBe("Satoshi");
+  });
+
+  it("prefers custom property fonts over @font-face fonts", () => {
+    const files: CSSFile[] = [
+      {
+        path: "globals.css",
+        content: `@font-face {
+          font-family: "Satoshi";
+          src: url("/fonts/Satoshi-Variable.woff2") format("woff2");
+          font-weight: 300 900;
+          font-style: normal;
+        }
+        :root {
+          --primary-600: #6366f1;
+          --font-family-heading: "Inter";
+          --font-family-body: "Inter";
+        }`,
+      },
+    ];
+    const result = extractFromCSS(files, "test-theme");
+    expect(result.config.typography?.heading?.family).toBe("Inter");
+    expect(result.config.typography?.body?.family).toBe("Inter");
+  });
+
+  it("classifies mono @font-face fonts correctly", () => {
+    const files: CSSFile[] = [
+      {
+        path: "globals.css",
+        content: `@font-face {
+          font-family: "Satoshi";
+          src: url("/fonts/Satoshi-Variable.woff2") format("woff2");
+          font-weight: 300 900;
+          font-style: normal;
+        }
+        @font-face {
+          font-family: "JetBrains Mono";
+          src: url("/fonts/JetBrainsMono.woff2") format("woff2");
+          font-weight: 400;
+          font-style: normal;
+        }
+        :root {
+          --primary-600: #6366f1;
+        }`,
+      },
+    ];
+    const result = extractFromCSS(files, "test-theme");
+    expect(result.config.typography?.heading?.family).toBe("Satoshi");
+    expect(result.config.typography?.body?.family).toBe("Satoshi");
+    expect(result.config.typography?.mono?.family).toBe("JetBrains Mono");
+  });
+});
+
+// ============================================================
+// parseFontFaceDeclarations (Fix 1: VI-82)
+// ============================================================
+
+describe("parseFontFaceDeclarations", () => {
+  it("extracts font-family from @font-face block", () => {
+    const css = `@font-face {
+      font-family: "Satoshi";
+      src: url("/fonts/Satoshi-Variable.woff2") format("woff2");
+      font-weight: 300 900;
+      font-style: normal;
+    }`;
+    const result = parseFontFaceDeclarations(css);
+    expect(result).toHaveLength(1);
+    expect(result[0].family).toBe("Satoshi");
+    expect(result[0].weight).toBe("300 900");
+    expect(result[0].style).toBe("normal");
+  });
+
+  it("deduplicates multiple @font-face blocks for same family", () => {
+    const css = `@font-face {
+      font-family: "Satoshi";
+      src: url("/fonts/Satoshi-Regular.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "Satoshi";
+      src: url("/fonts/Satoshi-Bold.woff2") format("woff2");
+      font-weight: 700;
+      font-style: normal;
+    }`;
+    const result = parseFontFaceDeclarations(css);
+    expect(result).toHaveLength(1);
+    expect(result[0].family).toBe("Satoshi");
+  });
+
+  it("extracts multiple different font families", () => {
+    const css = `@font-face {
+      font-family: "Satoshi";
+      src: url("/fonts/Satoshi.woff2") format("woff2");
+      font-weight: 400;
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      src: url("/fonts/JetBrainsMono.woff2") format("woff2");
+      font-weight: 400;
+    }`;
+    const result = parseFontFaceDeclarations(css);
+    expect(result).toHaveLength(2);
+    expect(result[0].family).toBe("Satoshi");
+    expect(result[1].family).toBe("JetBrains Mono");
+  });
+
+  it("strips quotes from font-family values", () => {
+    const css = `@font-face {
+      font-family: 'My Font';
+      src: url("/fonts/myfont.woff2") format("woff2");
+    }`;
+    const result = parseFontFaceDeclarations(css);
+    expect(result).toHaveLength(1);
+    expect(result[0].family).toBe("My Font");
+  });
+
+  it("handles unquoted font-family values", () => {
+    const css = `@font-face {
+      font-family: Satoshi;
+      src: url("/fonts/Satoshi.woff2") format("woff2");
+    }`;
+    const result = parseFontFaceDeclarations(css);
+    expect(result).toHaveLength(1);
+    expect(result[0].family).toBe("Satoshi");
+  });
+
+  it("ignores @font-face blocks inside CSS comments", () => {
+    const css = `/* @font-face {
+      font-family: "CommentedOut";
+      src: url("/fonts/foo.woff2") format("woff2");
+    } */
+    @font-face {
+      font-family: "Actual";
+      src: url("/fonts/actual.woff2") format("woff2");
+    }`;
+    const result = parseFontFaceDeclarations(css);
+    expect(result).toHaveLength(1);
+    expect(result[0].family).toBe("Actual");
+  });
+
+  it("returns empty array when no @font-face blocks exist", () => {
+    const css = `:root { --primary: #6366f1; }`;
+    const result = parseFontFaceDeclarations(css);
+    expect(result).toHaveLength(0);
+  });
+});
+
+// ============================================================
+// cleanFontValue (Fix 3: VI-82)
+// ============================================================
+
+describe("cleanFontValue", () => {
+  it("returns var() references as-is", () => {
+    expect(cleanFontValue("var(--font-sans)")).toBe("var(--font-sans)");
+  });
+
+  it("strips surrounding quotes from a simple font name", () => {
+    expect(cleanFontValue('"Inter"')).toBe("Inter");
+  });
+
+  it("strips trailing quote artifact from font stack", () => {
+    // The exact Blacklight bug: "PP Model Plastic", sans-serif"
+    expect(cleanFontValue('"PP Model Plastic", sans-serif"')).toBe("PP Model Plastic");
+  });
+
+  it("removes generic fallback families from font stacks", () => {
+    expect(cleanFontValue('"Inter", sans-serif')).toBe("Inter");
+    expect(cleanFontValue('"Fira Code", monospace')).toBe("Fira Code");
+    expect(cleanFontValue('"Georgia", serif')).toBe("Georgia");
+  });
+
+  it("handles single-quoted font names", () => {
+    expect(cleanFontValue("'PP Model Mono', monospace")).toBe("PP Model Mono");
+  });
+
+  it("handles unquoted font names", () => {
+    expect(cleanFontValue("Inter")).toBe("Inter");
+  });
+
+  it("handles font stack with multiple real fonts", () => {
+    expect(cleanFontValue('"Helvetica Neue", Arial, sans-serif')).toBe("Helvetica Neue");
+  });
+
+  it("handles only generic families (edge case)", () => {
+    expect(cleanFontValue("sans-serif")).toBe("sans-serif");
+  });
+
+  it("strips mismatched quotes", () => {
+    expect(cleanFontValue('"PP Model Plastic"')).toBe("PP Model Plastic");
+    expect(cleanFontValue("'PP Model Plastic'")).toBe("PP Model Plastic");
   });
 });
