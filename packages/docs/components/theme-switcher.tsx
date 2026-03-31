@@ -11,7 +11,7 @@ import {
 } from "./ui/select";
 import styles from "./theme-switcher.module.css";
 
-const THEMES = ["space", "neutral", "blackout"] as const;
+const THEMES = ["space", "neutral", "blackout", "reference-app", "blacklight-extracted", "kaiah"] as const;
 type Theme = (typeof THEMES)[number];
 
 const STORAGE_KEY = "visor-theme";
@@ -55,7 +55,7 @@ export function ThemeSwitcher() {
         <SelectContent>
           {THEMES.map((t) => (
             <SelectItem key={t} value={t}>
-              {t.charAt(0).toUpperCase() + t.slice(1)}
+              {t.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
             </SelectItem>
           ))}
         </SelectContent>
