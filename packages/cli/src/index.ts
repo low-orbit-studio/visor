@@ -9,6 +9,8 @@ import { themeExportCommand } from "./commands/theme-export.js"
 import { themeValidateCommand } from "./commands/theme-validate.js"
 import { themeExtractCommand } from "./commands/theme-extract.js"
 import type { ThemeExtractOptions } from "./commands/theme-extract.js"
+import { fontsAddCommand } from "./commands/fonts-add.js"
+import type { FontsAddOptions } from "./commands/fonts-add.js"
 
 const program = new Command()
 
@@ -126,6 +128,24 @@ theme
         ...options,
         runValidation: options.validate,
       })
+    }
+  )
+
+// Fonts subcommands
+const fonts = program
+  .command("fonts")
+  .description("Font library management commands")
+
+fonts
+  .command("add")
+  .description("Upload woff2 font files to the Visor Font Library on R2")
+  .argument("<path>", "path to a .woff2 file or directory containing .woff2 files")
+  .requiredOption("--org <org>", "organization namespace (e.g. low-orbit)")
+  .option("--family <name>", "font family slug (auto-inferred from filename if omitted)")
+  .option("--json", "output structured JSON (for AI agents)")
+  .action(
+    (path: string, options: { org: string; family?: string; json?: boolean }) => {
+      fontsAddCommand(path, options)
     }
   )
 
