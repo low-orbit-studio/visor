@@ -338,6 +338,73 @@ function selectBestColors(
 }
 
 // ============================================================
+// @font-face Parsing (Fix 1: VI-82)
+// ============================================================
+
+export interface FontFaceDeclaration {
+  family: string;
+  src?: string;
+  weight?: string;
+  style?: string;
+}
+
+/**
+ * Parse @font-face blocks from CSS content and extract font metadata.
+ * Runs before CSS custom property extraction so @font-face fonts are
+ * available as fallback font hints.
+ */
+export function parseFontFaceDeclarations(css: string): FontFaceDeclaration[] {
+  const results: FontFaceDeclaration[] = [];
+  // Remove CSS comments first
+  const cleaned = css.replace(/\/\*[\s\S]*?\*\//g, "");
+
+  const fontFaceRe = /@font-face\s*\{([^}]+)\}/g;
+  let match: RegExpExecArray | null;
+
+  while ((match = fontFaceRe.exec(cleaned)) !== null) {
+    const block = match[1];
+    const decl: Partial<FontFaceDeclaration> = {};
+
+    // Extract font-family
+    const familyMatch = block.match(/font-family\s*:\s*([^;]+);/);
+    if (familyMatch) {
+      decl.family = familyMatch[1].trim().replace(/^["']|["']$/g, "");
+    }
+
+    // Extract src
+    const srcMatch = block.match(/src\s*:\s*([^;]+);/);
+    if (srcMatch) {
+      decl.src = srcMatch[1].trim();
+    }
+
+    // Extract font-weight
+    const weightMatch = block.match(/font-weight\s*:\s*([^;]+);/);
+    if (weightMatch) {
+      decl.weight = weightMatch[1].trim();
+    }
+
+    // Extract font-style
+    const styleMatch = block.match(/font-style\s*:\s*([^;]+);/);
+    if (styleMatch) {
+      decl.style = styleMatch[1].trim();
+    }
+
+    if (decl.family) {
+      results.push(decl as FontFaceDeclaration);
+    }
+  }
+
+  // Deduplicate by family name (multiple @font-face blocks for weight variants)
+  const seen = new Set<string>();
+  return results.filter((d) => {
+    const key = d.family.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+// ============================================================
 // Typography Extraction
 // ============================================================
 
@@ -347,7 +414,16 @@ interface TypographyResult {
   mono?: { family?: string };
 }
 
-function extractTypography(declarations: CSSDeclaration[]): TypographyResult {
+/**
+ * Extract typography information from CSS declarations.
+ *
+ * @param declarations - Parsed CSS custom property declarations
+ * @param fontFaces - Optional @font-face declarations parsed from CSS files (Fix 1: VI-82)
+ */
+function extractTypography(
+  declarations: CSSDeclaration[],
+  fontFaces?: FontFaceDeclaration[]
+): TypographyResult {
   const result: TypographyResult = {};
 
   for (const decl of declarations) {
@@ -371,12 +447,74 @@ function extractTypography(declarations: CSSDeclaration[]): TypographyResult {
     }
   }
 
+  // Fix 1 (VI-82): If no typography found from custom properties, fall back to
+  // @font-face declarations. Use the first non-mono @font-face font as body/heading.
+  if (fontFaces && fontFaces.length > 0) {
+    const MONO_INDICATORS = /mono|code|console|courier/i;
+
+    for (const ff of fontFaces) {
+      if (MONO_INDICATORS.test(ff.family)) {
+        if (!result.mono?.family) {
+          result.mono = { family: ff.family };
+        }
+      } else {
+        if (!result.heading?.family) {
+          result.heading = { ...result.heading, family: ff.family };
+        }
+        if (!result.body?.family) {
+          result.body = { ...result.body, family: ff.family };
+        }
+      }
+    }
+  }
+
   return result;
 }
 
-function cleanFontValue(val: string): string {
+/** Generic fallback family names to strip from font stacks */
+const FALLBACK_FAMILIES = new Set([
+  "sans-serif",
+  "serif",
+  "monospace",
+  "cursive",
+  "fantasy",
+  "system-ui",
+  "ui-sans-serif",
+  "ui-serif",
+  "ui-monospace",
+  "ui-rounded",
+]);
+
+/**
+ * Clean a font-family CSS value to extract just the primary font name.
+ *
+ * Handles:
+ * - var() references (returned as-is by default, or resolved via resolveVarFont)
+ * - Quoted font names with trailing quote artifacts (Fix 3: VI-82)
+ * - Font stacks with fallback families (Fix 3: VI-82)
+ * - Bare font names
+ */
+export function cleanFontValue(val: string): string {
   if (val.startsWith("var(")) return val;
-  return val.replace(/^["']|["']$/g, "");
+
+  // Split font stack on commas and take the first non-generic family
+  const parts = val.split(",").map((p) => p.trim());
+
+  for (const part of parts) {
+    // Strip all quote characters (handles mismatched/trailing quotes)
+    const cleaned = part.replace(/["']/g, "").trim();
+
+    // Skip generic fallback families
+    if (FALLBACK_FAMILIES.has(cleaned.toLowerCase())) continue;
+
+    // Skip empty strings
+    if (!cleaned) continue;
+
+    return cleaned;
+  }
+
+  // If everything was a fallback, return the original cleaned of quotes
+  return val.replace(/["']/g, "").trim();
 }
 
 // ============================================================
@@ -533,10 +671,15 @@ export function extractFromCSS(
   const allDeclarations: CSSDeclaration[] = [];
 
   // Parse all CSS files
+  const allFontFaces: FontFaceDeclaration[] = [];
   for (const file of files) {
     try {
       const decls = parseCSSDeclarations(file.content);
       allDeclarations.push(...decls);
+
+      // Fix 1 (VI-82): Also parse @font-face blocks
+      const fontFaces = parseFontFaceDeclarations(file.content);
+      allFontFaces.push(...fontFaces);
     } catch (err) {
       warnings.push(`Failed to parse ${file.path}: ${err instanceof Error ? err.message : String(err)}`);
     }
@@ -560,7 +703,7 @@ export function extractFromCSS(
   const bestColors = selectBestColors(candidates);
 
   // Extract non-color tokens from all declarations (each extractor filters by property name)
-  const typography = extractTypography(allDeclarations);
+  const typography = extractTypography(allDeclarations, allFontFaces);
   const spacing = extractSpacing(allDeclarations);
   const radius = extractRadius(allDeclarations);
   const shadows = extractShadows(allDeclarations);
