@@ -10,6 +10,7 @@ import type {
   FontResolution,
   FontResolveOptions,
   FontDisplayStrategy,
+  FontSource,
 } from "./types.js";
 
 const DEFAULT_WEIGHTS = [400, 700];
@@ -52,11 +53,53 @@ function buildGoogleFontsCssUrl(
 }
 
 /**
+ * Build a Visor Fonts CDN URL for a specific font file.
+ *
+ * URL pattern: https://fonts.visor.design/{org}/{family-slug}/{filename}.woff2
+ * Family slug: lowercase family name, spaces to hyphens.
+ * Filename: original uploaded name (e.g., PPModelPlastic-Regular).
+ */
+export const VISOR_FONTS_CDN = "https://fonts.visor.design";
+
+function buildFamilySlug(family: string): string {
+  return family.toLowerCase().replace(/ /g, "-");
+}
+
+function buildFamilyPrefix(family: string): string {
+  return family.replace(/ /g, "");
+}
+
+const WEIGHT_NAMES: Record<number, string> = {
+  100: "Thin",
+  200: "ExtraLight",
+  300: "Light",
+  400: "Regular",
+  500: "Medium",
+  600: "SemiBold",
+  700: "Bold",
+  800: "ExtraBold",
+  900: "Black",
+};
+
+export function buildVisorFontUrl(
+  org: string,
+  family: string,
+  weight: number
+): string {
+  const slug = buildFamilySlug(family);
+  const prefix = buildFamilyPrefix(family);
+  const weightName = WEIGHT_NAMES[weight] ?? `W${weight}`;
+  return `${VISOR_FONTS_CDN}/${org}/${slug}/${prefix}-${weightName}.woff2`;
+}
+
+/**
  * Resolve a font family name to a FontResolution.
  *
- * Looks up the family in the bundled Google Fonts catalog.
- * If found, constructs the CSS URL with requested weights and display strategy.
- * If not found, returns a custom source with guidance for manual setup.
+ * Resolution order:
+ *   1. If source is explicitly "visor-fonts", build CDN URLs (requires org)
+ *   2. If source is explicitly "local", return local guidance
+ *   3. Otherwise, look up in Google Fonts catalog
+ *   4. If not found in catalog, fall back to local
  */
 export function resolveFont(
   family: string,
@@ -65,6 +108,41 @@ export function resolveFont(
   const display = options.display ?? DEFAULT_DISPLAY;
   const requestedWeights = options.weights ?? DEFAULT_WEIGHTS;
   const italic = options.italic ?? false;
+  const explicitSource: FontSource | undefined = options.source;
+
+  // Explicit visor-fonts source — build CDN URLs
+  if (explicitSource === "visor-fonts") {
+    return {
+      family,
+      source: "visor-fonts",
+      cssUrl: null,
+      weights: requestedWeights,
+      italic,
+      display,
+      category: options.category ?? "sans-serif",
+      guidance: null,
+      org: options.org ?? null,
+    };
+  }
+
+  // Explicit local source — skip catalog lookup
+  if (explicitSource === "local") {
+    return {
+      family,
+      source: "local",
+      cssUrl: null,
+      weights: requestedWeights,
+      italic,
+      display,
+      category: options.category ?? "sans-serif",
+      guidance:
+        `"${family}" is a local font. To use this font:\n` +
+        `  1. Add the font files (.woff2) to your project's public/fonts/ directory\n` +
+        `  2. Create @font-face declarations in your theme CSS\n` +
+        `  3. Reference the font family in your theme's --font-display or --font-body token`,
+      org: null,
+    };
+  }
 
   const catalogEntry = lookupGoogleFont(family);
 
@@ -98,21 +176,24 @@ export function resolveFont(
       display,
       category: catalogEntry.category,
       guidance: null,
+      org: null,
     };
   }
 
-  // Not in Google Fonts — flag as custom
+  // Not in Google Fonts — flag as local
   return {
     family,
-    source: "custom",
+    source: "local",
     cssUrl: null,
     weights: requestedWeights,
     italic,
     display,
     category: options.category ?? "sans-serif",
-    guidance: `"${family}" is not available on Google Fonts. To use this font:\n` +
+    guidance:
+      `"${family}" is not available on Google Fonts. To use this font:\n` +
       `  1. Add the font files (.woff2) to your project's public/fonts/ directory\n` +
       `  2. Create @font-face declarations in your theme CSS\n` +
       `  3. Reference the font family in your theme's --font-display or --font-body token`,
+    org: null,
   };
 }

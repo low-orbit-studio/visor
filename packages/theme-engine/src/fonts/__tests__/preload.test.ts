@@ -15,19 +15,35 @@ function makeGoogleFont(
     display: "swap",
     category: "sans-serif",
     guidance: null,
+    org: null,
   };
 }
 
-function makeCustomFont(family: string): FontResolution {
+function makeLocalFont(family: string): FontResolution {
   return {
     family,
-    source: "custom",
+    source: "local",
     cssUrl: null,
     weights: [400, 700],
     italic: false,
     display: "swap",
     category: "sans-serif",
     guidance: `"${family}" is not available on Google Fonts.`,
+    org: null,
+  };
+}
+
+function makeVisorFont(family: string, org: string, weights: number[] = [400, 700]): FontResolution {
+  return {
+    family,
+    source: "visor-fonts",
+    cssUrl: null,
+    weights,
+    italic: false,
+    display: "swap",
+    category: "sans-serif",
+    guidance: null,
+    org,
   };
 }
 
@@ -70,7 +86,7 @@ describe("generatePreloadLinks", () => {
     ]);
 
     const links = generatePreloadLinks(
-      [makeCustomFont("PitchSans")],
+      [makeLocalFont("PitchSans")],
       customPaths
     );
 
@@ -88,9 +104,42 @@ describe("generatePreloadLinks", () => {
   });
 
   it("skips preconnect when no Google Fonts present", () => {
-    const links = generatePreloadLinks([makeCustomFont("Custom")]);
+    const links = generatePreloadLinks([makeLocalFont("Custom")]);
 
     expect(links.some((l) => l.includes("googleapis.com"))).toBe(false);
+  });
+
+  it("generates preconnect for Visor Fonts CDN", () => {
+    const links = generatePreloadLinks([
+      makeVisorFont("PP Model Plastic", "low-orbit"),
+    ]);
+
+    expect(links).toContainEqual(
+      expect.stringContaining('rel="preconnect" href="https://fonts.visor.design"')
+    );
+  });
+
+  it("generates preload links for Visor Fonts woff2 files", () => {
+    const links = generatePreloadLinks([
+      makeVisorFont("PP Model Plastic", "low-orbit", [400, 700]),
+    ]);
+
+    expect(links).toContainEqual(
+      expect.stringContaining("fonts.visor.design/low-orbit/pp-model-plastic/PPModelPlastic-Regular.woff2")
+    );
+    expect(links).toContainEqual(
+      expect.stringContaining("fonts.visor.design/low-orbit/pp-model-plastic/PPModelPlastic-Bold.woff2")
+    );
+  });
+
+  it("deduplicates preconnect for multiple Visor Fonts", () => {
+    const links = generatePreloadLinks([
+      makeVisorFont("PP Model Plastic", "low-orbit", [400]),
+      makeVisorFont("PP Model Mono", "low-orbit", [400]),
+    ]);
+
+    const preconnectLinks = links.filter((l) => l.includes("fonts.visor.design") && l.includes("preconnect"));
+    expect(preconnectLinks).toHaveLength(1);
   });
 });
 
@@ -105,7 +154,7 @@ describe("generateStylesheetLinks", () => {
   });
 
   it("skips custom fonts", () => {
-    const links = generateStylesheetLinks([makeCustomFont("Custom")]);
+    const links = generateStylesheetLinks([makeLocalFont("Custom")]);
     expect(links).toHaveLength(0);
   });
 });

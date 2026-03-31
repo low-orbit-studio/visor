@@ -93,17 +93,68 @@ describe("resolveFont", () => {
     });
   });
 
-  describe("custom font resolution", () => {
-    it("flags unknown fonts as custom", () => {
+  describe("visor-fonts resolution", () => {
+    it("resolves visor-fonts source with org", () => {
+      const result = resolveFont("PP Model Plastic", {
+        source: "visor-fonts",
+        org: "low-orbit",
+      });
+
+      expect(result.source).toBe("visor-fonts");
+      expect(result.family).toBe("PP Model Plastic");
+      expect(result.org).toBe("low-orbit");
+      expect(result.cssUrl).toBeNull();
+      expect(result.guidance).toBeNull();
+    });
+
+    it("preserves requested weights for visor-fonts", () => {
+      const result = resolveFont("PP Model Plastic", {
+        source: "visor-fonts",
+        org: "low-orbit",
+        weights: [300, 400, 700],
+      });
+
+      expect(result.weights).toEqual([300, 400, 700]);
+    });
+
+    it("skips Google Fonts lookup when source is visor-fonts", () => {
+      // "Inter" is in Google Fonts, but explicit source should override
+      const result = resolveFont("Inter", {
+        source: "visor-fonts",
+        org: "test-org",
+      });
+
+      expect(result.source).toBe("visor-fonts");
+      expect(result.cssUrl).toBeNull();
+    });
+
+    it("defaults to sans-serif category for visor-fonts", () => {
+      const result = resolveFont("CustomFont", {
+        source: "visor-fonts",
+        org: "test-org",
+      });
+      expect(result.category).toBe("sans-serif");
+    });
+  });
+
+  describe("local font resolution", () => {
+    it("flags unknown fonts as local", () => {
       const result = resolveFont("PP Model Plastic");
 
-      expect(result.source).toBe("custom");
+      expect(result.source).toBe("local");
       expect(result.cssUrl).toBeNull();
       expect(result.guidance).toBeTruthy();
       expect(result.guidance).toContain("not available on Google Fonts");
     });
 
-    it("preserves requested weights for custom fonts", () => {
+    it("resolves explicit local source", () => {
+      const result = resolveFont("CustomBrand", { source: "local" });
+
+      expect(result.source).toBe("local");
+      expect(result.guidance).toContain("local font");
+    });
+
+    it("preserves requested weights for local fonts", () => {
       const result = resolveFont("PitchSans", { weights: [400, 500, 700] });
 
       expect(result.weights).toEqual([400, 500, 700]);
@@ -116,12 +167,12 @@ describe("resolveFont", () => {
       expect(result.guidance).toContain("@font-face");
     });
 
-    it("defaults custom fonts to sans-serif category", () => {
+    it("defaults local fonts to sans-serif category", () => {
       const result = resolveFont("CustomBrand");
       expect(result.category).toBe("sans-serif");
     });
 
-    it("accepts category override for custom fonts", () => {
+    it("accepts category override for local fonts", () => {
       const result = resolveFont("CustomSerif", { category: "serif" });
       expect(result.category).toBe("serif");
     });

@@ -397,14 +397,30 @@ typography:
 1. If the value matches a CSS generic family (`system-ui`, `serif`, `sans-serif`, `monospace`, `cursive`, `fantasy`), use as-is
 2. If the value contains a comma (font stack), use as-is — no lookup
 3. Otherwise, resolve via Google Fonts API → generate `@import` or `<link>` tag
-4. For paid/private fonts, use `source` annotation:
+4. For CDN-hosted fonts (Visor Fonts), use `source: "visor-fonts"` with an `org` namespace:
 
 ```yaml
 typography:
   heading:
     family: "PP Model Plastic"
-    source: "url(https://fonts.example.com/pp-model-plastic.woff2)"
+    source: "visor-fonts"
+    org: "low-orbit"
 ```
+
+   This generates `@font-face` declarations pointing to `https://fonts.visor.design/{org}/{family-slug}/{file}.woff2`.
+
+5. For self-hosted/local fonts, use `source: "local"`:
+
+```yaml
+typography:
+  heading:
+    family: "CustomBrand"
+    source: "local"
+```
+
+   This generates placeholder `@font-face` blocks with guidance for manual setup.
+
+6. When `source` is omitted, it defaults to `"google-fonts"` and the family is resolved via the Google Fonts catalog. Unknown families fall back to `"local"`.
 
 ### 3. Extended Color Palettes: Primary + Accent
 
