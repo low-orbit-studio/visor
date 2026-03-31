@@ -41,20 +41,16 @@ See [ai-consumability.md](./ai-consumability.md) for the full spec.
 **Remaining (deferred to later phase):**
 - Agent-first CLI enhancements — `--json` flag on all commands, rich `--help`, composable commands, structured output
 
-## Phase 2.5: Foundation Hardening — IN PROGRESS
+## Phase 2.5: Foundation Hardening — COMPLETE
 
-Stabilize the design system contract, complete the form system, add blocks infrastructure, and build a live design system specimen. This foundation must be solid before the interchange format can codify it.
+Stabilized the design system contract, completed the form system, added blocks infrastructure, and built a live design system specimen.
 
-**Key work:**
-- **Token contract audit & fixes** — Fix circular token references, slate-to-gray fallback violations, missing theme contract tokens, fumadocs CSS bridge cleanup. Iterative — tokens will expand as new components surface gaps.
-- **Form system completion** — Document all undocumented form components (checkbox, input, label, select, switch, textarea, field). Add missing specialized inputs: password (show/hide), search (with clear), number (+/- controls), phone, OTP/PIN, tags/chip input, fieldset/legend grouping.
-- **Form validation research spike** — Evaluate React Hook Form + Zod vs Conform + Zod vs other approaches for a Form wrapper component with schema validation support.
-- **Blocks infrastructure** — Add "blocks" concept to the registry (multi-component composed patterns, distinct from individual components). CLI support, own docs sidebar section. Blocks are copy-and-own like components but represent complete UI patterns (login form, settings page, dashboard panel).
-- [x] **Design system specimen block** — Live interactive showcase in the docs site that responds to the active theme. Visual specimen for colors, typography, spacing, shadows, elevation, radius, motion, accessibility contrast. Pull patterns from reference-nextjs-app (12-slide specimen) and Veronica (form/button/chip specimens, ComponentShowcase with force-state system).
-
-**Source material:**
-- Reference NextJS App: `~/Code/low-orbit/low-orbit-playbook/reference-nextjs-app/` — ColorSwatchGrid, ElevationGrid, SpacingScale, TypeRow, AccessibilitySpecimen, etc.
-- Veronica Planning: `~/Code/veronica/veronica-planning/` — FormSpecimen, ButtonSpecimen, ChipSpecimen, ComponentShowcase
+**Completed work:**
+- [x] **Token contract audit & fixes** — Circular token references fixed, slate-to-gray fallback violations resolved, fumadocs CSS bridge cleaned up (VI-42, VI-23)
+- [x] **Form system completion** — All form components documented. Specialized inputs added: password (show/hide), search (with clear), number (+/- controls), phone, OTP/PIN, tags/chip input, fieldset/legend grouping (VI-43, VI-30, VI-38)
+- [x] **Form validation research spike** — Evaluated RHF + Zod vs Conform + Zod. **Decision: Conform + Zod** for server-first architecture, progressive enhancement, and better composability with Visor's Field pattern. ADR at `docs/decisions/001-form-validation-approach.md`. Form wrapper component implementation deferred to a future phase. (VI-44)
+- [x] **Blocks infrastructure** — Registry supports blocks category, CLI support, 5+ blocks implemented including login-form, configuration-panel, design-system-deck, design-system-specimen, sphere-playground (VI-45)
+- [x] **Design system specimen block** — Live interactive showcase responding to active theme (VI-46)
 
 ## Phase 3: Interchange Format, Import/Export, Validation & Basic Font Resolution
 
@@ -92,21 +88,15 @@ See [interchange-format.md](./interchange-format.md) for the format spec and ada
 
 **Why `packages/theme-engine/`:** Validator, shade generator, and import/export logic are consumed by both CLI (Node.js) and docs site (browser). Shared package avoids duplication. The visual theme creator (Phase 6) also depends on this.
 
-## Phase 4: Theme Extraction
+## Phase 4: Theme Extraction — COMPLETE
 
-Extract design systems from existing projects into `.visor.yaml` themes. Both a deterministic CLI tool and an AI-powered Claude Code skill. The docs site theme switcher from Phase 1a enables visual verification of extracted themes.
+Extracted design systems from existing projects into `.visor.yaml` themes. Both a deterministic CLI tool and an AI-powered Claude Code skill.
 
-**Key work:**
-- [x] CLI: `npx visor theme extract [--from <path>] [--json]` — deterministic static analysis
-  - Scan targets: CSS custom properties, globals.css, CSS module files, tailwind config, package.json
-  - Output: best-effort `.visor.yaml` with confidence annotations (high/medium/low per mapped token)
-  - Ambiguous mappings flagged for human/AI review
-- [x] Claude Code skill: registered in `~/.claude/skills/` following playbook patterns
-  - Wraps the CLI extract command
-  - Uses AI to resolve ambiguities (e.g., which blue is "primary"?)
-  - Interprets design intent from variable naming and usage patterns
-  - Produces a complete, validated `.visor.yaml`
-- [x] Test against real projects: Kaiah, Blacklight, reference-nextjs-app
+**Completed work:**
+- [x] CLI: `npx visor theme extract [--from <path>] [--json]` — deterministic static analysis (VI-76)
+- [x] Claude Code skill: registered in `~/.claude/skills/`, wraps CLI extract with AI ambiguity resolution (VI-77)
+- [x] Test against real projects: Kaiah, Blacklight, reference-nextjs-app (VI-78)
+- [x] Font extraction fixes: `@font-face` parsing, `var(--font-sans)` resolution, quote artifact cleanup (VI-82)
 - Extracted themes are local `.visor.yaml` files (private by default; cloud storage comes in Phase 11)
 
 ## Phase 5: Docs Site & Theme Experience
