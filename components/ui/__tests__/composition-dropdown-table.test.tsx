@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { render, screen, act } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import {
   Table,
@@ -112,7 +112,11 @@ describe("Composition: Dropdown in Table accessibility", () => {
   })
 
   it("has no WCAG 2.1 AA violations (open dropdown)", async () => {
-    const { container } = render(<TableWithDropdowns openRow={1} />)
-    await checkA11y(container)
+    let container: HTMLElement
+    await act(async () => {
+      const result = render(<TableWithDropdowns openRow={1} />)
+      container = result.container
+    })
+    await checkA11y(container!)
   })
 })

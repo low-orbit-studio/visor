@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { render, screen, act } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Popover, PopoverTrigger, PopoverContent, PopoverAnchor } from "../popover"
 import { checkA11y } from "../../../../test-utils/a11y"
@@ -87,14 +87,18 @@ describe("accessibility", () => {
   })
 
   it("has no WCAG 2.1 AA violations (open state)", async () => {
-    const { container } = render(
-      <Popover open={true}>
-        <PopoverTrigger asChild>
-          <button>Open popover</button>
-        </PopoverTrigger>
-        <PopoverContent>Popover information</PopoverContent>
-      </Popover>
-    )
-    await checkA11y(container)
+    let container: HTMLElement
+    await act(async () => {
+      const result = render(
+        <Popover open={true}>
+          <PopoverTrigger asChild>
+            <button>Open popover</button>
+          </PopoverTrigger>
+          <PopoverContent>Popover information</PopoverContent>
+        </Popover>
+      )
+      container = result.container
+    })
+    await checkA11y(container!)
   })
 })

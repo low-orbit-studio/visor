@@ -16,7 +16,7 @@ describe("Dialog", () => {
     render(
       <Dialog>
         <DialogTrigger>Open Dialog</DialogTrigger>
-        <DialogContent>
+        <DialogContent aria-describedby={undefined}>
           <DialogTitle>Title</DialogTitle>
         </DialogContent>
       </Dialog>
@@ -28,7 +28,7 @@ describe("Dialog", () => {
     render(
       <Dialog>
         <DialogTrigger data-testid="trigger">Open</DialogTrigger>
-        <DialogContent>
+        <DialogContent aria-describedby={undefined}>
           <DialogTitle>Title</DialogTitle>
         </DialogContent>
       </Dialog>
@@ -55,7 +55,7 @@ describe("Dialog", () => {
   it("DialogTitle has data-slot attribute", () => {
     render(
       <Dialog open>
-        <DialogContent>
+        <DialogContent aria-describedby={undefined}>
           <DialogTitle>Test Title</DialogTitle>
         </DialogContent>
       </Dialog>
@@ -80,7 +80,7 @@ describe("Dialog", () => {
   it("DialogContent shows close button", () => {
     render(
       <Dialog open>
-        <DialogContent>
+        <DialogContent aria-describedby={undefined}>
           <DialogTitle>Title</DialogTitle>
         </DialogContent>
       </Dialog>
@@ -91,7 +91,7 @@ describe("Dialog", () => {
   it("DialogClose renders correctly", () => {
     render(
       <Dialog open>
-        <DialogContent>
+        <DialogContent aria-describedby={undefined}>
           <DialogTitle>Title</DialogTitle>
         </DialogContent>
         <DialogClose data-testid="close-btn">Close</DialogClose>
@@ -106,7 +106,7 @@ describe("accessibility", () => {
     const { container } = render(
       <Dialog>
         <DialogTrigger>Open Dialog</DialogTrigger>
-        <DialogContent>
+        <DialogContent aria-describedby={undefined}>
           <DialogTitle>Title</DialogTitle>
         </DialogContent>
       </Dialog>

@@ -1,11 +1,11 @@
 /* ============================================
-   Blacklight Extracted Theme — Extracted by Visor Theme Engine
-   Generated from blacklight-extracted.visor.yaml
+   Blacklight Brand Theme — Extracted by Visor Theme Engine
+   Generated from blacklight-brand.visor.yaml
    DO NOT EDIT — regenerate with: npx visor theme apply
    ============================================ */
 
 /* --- Primitive: Colors --- */
-.blacklight-extracted-theme {
+.blacklight-brand-theme {
   min-height: 100vh;
   background: var(--surface-page, var(--surface-background));
   color: var(--text-primary);
@@ -71,7 +71,7 @@
 }
 
 /* --- Primitive: Spacing --- */
-.blacklight-extracted-theme {
+.blacklight-brand-theme {
   --spacing-0: 0; /* 0px */
   --spacing-1: 0.25rem; /* 4px */
   --spacing-2: 0.5rem; /* 8px */
@@ -88,7 +88,7 @@
 }
 
 /* --- Primitive: Border Radius --- */
-.blacklight-extracted-theme {
+.blacklight-brand-theme {
   --radius-none: 0;
   --radius-sm: 0.5rem; /* 8px */
   --radius-md: 0.75rem; /* 12px */
@@ -100,7 +100,7 @@
 }
 
 /* --- Primitive: Typography --- */
-.blacklight-extracted-theme {
+.blacklight-brand-theme {
   --font-sans: PP Model Mono;
   --font-mono: PP Model Mono;
   --font-size-xs: 0.75rem; /* 12px */
@@ -124,7 +124,7 @@
 }
 
 /* --- Primitive: Shadows --- */
-.blacklight-extracted-theme {
+.blacklight-brand-theme {
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
   --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -133,7 +133,7 @@
 }
 
 /* --- Primitive: Motion --- */
-.blacklight-extracted-theme {
+.blacklight-brand-theme {
   --motion-duration-100: 150ms;
   --motion-duration-150: 150ms;
   --motion-duration-200: 200ms;
@@ -148,7 +148,7 @@
 }
 
 /* --- Primitive: Miscellaneous --- */
-.blacklight-extracted-theme {
+.blacklight-brand-theme {
   --border-width-1: 1px;
   --border-width-2: 2px;
   --border-width-3: 3px;
@@ -166,7 +166,7 @@
 }
 
 /* --- Adaptive: Text (light) --- */
-.blacklight-extracted-theme {
+.blacklight-brand-theme {
   --text-primary: rgba(255, 255, 255, 1);
   --text-secondary: rgba(255, 255, 255, 0.7);
   --text-tertiary: rgba(255, 255, 255, 0.5);
@@ -182,7 +182,7 @@
 }
 
 /* --- Adaptive: Surface (light) --- */
-.blacklight-extracted-theme {
+.blacklight-brand-theme {
   --surface-page: #020214;
   --surface-card: #12122A;
   --surface-subtle: #f4f5f7;
@@ -206,7 +206,7 @@
 }
 
 /* --- Adaptive: Border (light) --- */
-.blacklight-extracted-theme {
+.blacklight-brand-theme {
   --border-default: rgba(255, 255, 255, 0.1);
   --border-muted: #e6e8ec;
   --border-strong: #b2b7c2;
@@ -219,7 +219,7 @@
 }
 
 /* --- Adaptive: Interactive (light) --- */
-.blacklight-extracted-theme {
+.blacklight-brand-theme {
   --interactive-primary-bg: #f46c00;
   --interactive-primary-bg-hover: #6d2c01;
   --interactive-primary-bg-active: #4e1d00;
@@ -237,7 +237,7 @@
 }
 
 /* --- Adaptive: Text (dark) — manual toggle --- */
-.dark .blacklight-extracted-theme {
+.dark .blacklight-brand-theme {
   --text-primary: rgba(255, 255, 255, 1);
   --text-secondary: rgba(255, 255, 255, 0.7);
   --text-tertiary: rgba(255, 255, 255, 0.5);
@@ -253,7 +253,7 @@
 }
 
 /* --- Adaptive: Surface (dark) — manual toggle --- */
-.dark .blacklight-extracted-theme {
+.dark .blacklight-brand-theme {
   --surface-page: #020214;
   --surface-card: #12122A;
   --surface-subtle: #292e38;
@@ -277,7 +277,7 @@
 }
 
 /* --- Adaptive: Border (dark) — manual toggle --- */
-.dark .blacklight-extracted-theme {
+.dark .blacklight-brand-theme {
   --border-default: rgba(255, 255, 255, 0.1);
   --border-muted: #292e38;
   --border-strong: #000000;
@@ -290,7 +290,7 @@
 }
 
 /* --- Adaptive: Interactive (dark) — manual toggle --- */
-.dark .blacklight-extracted-theme {
+.dark .blacklight-brand-theme {
   --interactive-primary-bg: #b54e00;
   --interactive-primary-bg-hover: #df6718;
   --interactive-primary-bg-active: #fc9b6a;
@@ -309,7 +309,7 @@
 
 /* --- Adaptive: Text (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-.blacklight-extracted-theme:not(.light) {
+.blacklight-brand-theme:not(.light) {
   --text-primary: rgba(255, 255, 255, 1);
   --text-secondary: rgba(255, 255, 255, 0.7);
   --text-tertiary: rgba(255, 255, 255, 0.5);
@@ -327,7 +327,7 @@
 
 /* --- Adaptive: Surface (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-.blacklight-extracted-theme:not(.light) {
+.blacklight-brand-theme:not(.light) {
   --surface-page: #020214;
   --surface-card: #12122A;
   --surface-subtle: #292e38;
@@ -353,7 +353,7 @@
 
 /* --- Adaptive: Border (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-.blacklight-extracted-theme:not(.light) {
+.blacklight-brand-theme:not(.light) {
   --border-default: rgba(255, 255, 255, 0.1);
   --border-muted: #292e38;
   --border-strong: #000000;
@@ -368,7 +368,7 @@
 
 /* --- Adaptive: Interactive (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-.blacklight-extracted-theme:not(.light) {
+.blacklight-brand-theme:not(.light) {
   --interactive-primary-bg: #b54e00;
   --interactive-primary-bg-hover: #df6718;
   --interactive-primary-bg-active: #fc9b6a;

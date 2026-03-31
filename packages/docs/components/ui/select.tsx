@@ -5,5 +5,8 @@ export {
   SelectTrigger,
   SelectValue,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectSeparator,
 } from '../../../../components/ui/select/select';
