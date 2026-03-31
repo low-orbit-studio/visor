@@ -106,7 +106,7 @@ Extract design systems from existing projects into `.visor.yaml` themes. Both a 
   - Uses AI to resolve ambiguities (e.g., which blue is "primary"?)
   - Interprets design intent from variable naming and usage patterns
   - Produces a complete, validated `.visor.yaml`
-- Test against real projects: Kaiah, Blacklight, reference-nextjs-app
+- [x] Test against real projects: Kaiah, Blacklight, reference-nextjs-app
 - Extracted themes are local `.visor.yaml` files (private by default; cloud storage comes in Phase 11)
 
 ## Phase 5: Docs Site & Theme Experience

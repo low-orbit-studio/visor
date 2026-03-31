@@ -1,0 +1,66 @@
+name: reference-app
+version: 1
+
+colors:
+  primary: "#1A5F7A"
+  accent: "#5BC4BF"
+  neutral: "#6B7280"
+  background: "#F5F5F0"
+  surface: "#FFFFFF"
+  success: "#22C55E"
+  warning: "#FFB217"
+  error: "#EF4444"
+  info: "#0EA5E9"
+
+colors-dark:
+  primary: "#5AABBF"
+  accent: "#8CD8D4"
+  background: "#1E1F21"
+  surface: "#2A2B2D"
+
+typography:
+  heading:
+    family: "Satoshi"
+    weight: 700
+  body:
+    family: "Satoshi"
+    weight: 400
+  mono:
+    family: "JetBrains Mono"
+
+spacing:
+  base: 4
+
+radius:
+  sm: 4
+  md: 8
+  lg: 12
+  xl: 16
+  pill: 9999
+
+shadows:
+  xs: "0 1px 2px rgba(30, 31, 33, 0.04)"
+  sm: "0 4px 16px rgba(30, 31, 33, 0.08)"
+  md: "0 8px 28px rgba(30, 31, 33, 0.07)"
+  lg: "0 16px 48px rgba(30, 31, 33, 0.12)"
+  xl: "0 24px 64px rgba(30, 31, 33, 0.16)"
+
+motion:
+  duration-fast: "100ms"
+  duration-normal: "200ms"
+  duration-slow: "500ms"
+  easing: "cubic-bezier(0.4, 0, 0.2, 1)"
+
+overrides:
+  light:
+    text-primary: "#1E1F21"
+    text-secondary: "rgba(30, 31, 33, 0.7)"
+    text-tertiary: "rgba(30, 31, 33, 0.5)"
+    surface-background: "#F5F5F0"
+    surface-card: "#FFFFFF"
+  dark:
+    text-primary: "#F5F5F0"
+    text-secondary: "rgba(245, 245, 240, 0.7)"
+    text-tertiary: "rgba(245, 245, 240, 0.5)"
+    surface-background: "#1E1F21"
+    surface-card: "#2A2B2D"
