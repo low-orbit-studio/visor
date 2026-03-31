@@ -47,6 +47,9 @@ venv/
 # Playbook (allow project scripts/, ignore playbook scripts)
 !/scripts/
 
+# Cloudflare
+.wrangler/
+
 # Claude Code
 .claude/
 
