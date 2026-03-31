@@ -103,8 +103,7 @@ describe("ToggleGroup keyboard navigation", () => {
   it("navigates items with arrow keys", async () => {
     const user = userEvent.setup()
     renderToggleGroup({ defaultValue: "left" })
-    const leftButton = screen.getByText("Left")
-    leftButton.focus()
+    await user.click(screen.getByText("Left"))
     await user.keyboard("{ArrowRight}")
     expect(screen.getByText("Center")).toHaveFocus()
   })

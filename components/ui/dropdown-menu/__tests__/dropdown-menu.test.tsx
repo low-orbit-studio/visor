@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { render, screen, act } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import {
   DropdownMenu,
@@ -151,20 +151,24 @@ describe("accessibility", () => {
   })
 
   it("has no WCAG 2.1 AA violations (open state)", async () => {
-    const { container } = render(
-      <DropdownMenu open>
-        <DropdownMenuTrigger>Open Menu</DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuGroup>
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
-            <DropdownMenuItem>Duplicate</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    )
-    await checkA11y(container)
+    let container: HTMLElement
+    await act(async () => {
+      const result = render(
+        <DropdownMenu open>
+          <DropdownMenuTrigger>Open Menu</DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem>Edit</DropdownMenuItem>
+              <DropdownMenuItem>Duplicate</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+      container = result.container
+    })
+    await checkA11y(container!)
   })
 })

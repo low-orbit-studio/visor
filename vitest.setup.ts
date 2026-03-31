@@ -17,6 +17,16 @@ expect.extend(matchers)
 import { configure } from "axe-core"
 configure({ allowedOrigins: ["<same_origin>"] })
 
+// Suppress jsdom "Not implemented" stderr noise from axe-core probing
+// HTMLCanvasElement.getContext and window.getComputedStyle(elt, pseudoElt).
+// These are expected in jsdom and don't affect test correctness.
+const originalConsoleError = console.error
+console.error = (...args: unknown[]) => {
+  const msg = typeof args[0] === "string" ? args[0] : ""
+  if (msg.includes("Error: Not implemented:")) return
+  originalConsoleError(...args)
+}
+
 // Mock ResizeObserver — not implemented in jsdom but required by some Radix UI
 // primitives (e.g. Slider, ScrollArea). Provide a no-op implementation.
 if (typeof globalThis.ResizeObserver === "undefined") {

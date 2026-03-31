@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react"
+import { render, screen, fireEvent, act } from "@testing-library/react"
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { CodeBlock } from "../code-block"
 import { checkA11y } from "../../../../test-utils/a11y"
@@ -50,7 +50,9 @@ describe("CodeBlock", () => {
     })
 
     render(<CodeBlock code="const x = 1" />)
-    fireEvent.click(screen.getByRole("button", { name: /copy code/i }))
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: /copy code/i }))
+    })
 
     expect(writeText).toHaveBeenCalledWith("const x = 1")
   })

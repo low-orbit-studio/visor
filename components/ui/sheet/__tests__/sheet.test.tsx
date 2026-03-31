@@ -17,7 +17,7 @@ describe("Sheet", () => {
     render(
       <Sheet>
         <SheetTrigger>Open Sheet</SheetTrigger>
-        <SheetContent>
+        <SheetContent aria-describedby={undefined}>
           <SheetTitle>Title</SheetTitle>
         </SheetContent>
       </Sheet>
@@ -29,7 +29,7 @@ describe("Sheet", () => {
     render(
       <Sheet>
         <SheetTrigger data-testid="trigger">Open</SheetTrigger>
-        <SheetContent>
+        <SheetContent aria-describedby={undefined}>
           <SheetTitle>Title</SheetTitle>
         </SheetContent>
       </Sheet>
@@ -59,7 +59,7 @@ describe("Sheet", () => {
   it("SheetTitle has correct data-slot", () => {
     render(
       <Sheet open>
-        <SheetContent>
+        <SheetContent aria-describedby={undefined}>
           <SheetTitle>My Sheet</SheetTitle>
         </SheetContent>
       </Sheet>
@@ -70,7 +70,7 @@ describe("Sheet", () => {
   it("SheetContent renders with side data attribute", () => {
     render(
       <Sheet open>
-        <SheetContent side="left" data-testid="sheet-content">
+        <SheetContent side="left" data-testid="sheet-content" aria-describedby={undefined}>
           <SheetTitle>Title</SheetTitle>
         </SheetContent>
       </Sheet>
@@ -82,7 +82,7 @@ describe("Sheet", () => {
   it("shows close button by default", () => {
     render(
       <Sheet open>
-        <SheetContent>
+        <SheetContent aria-describedby={undefined}>
           <SheetTitle>Title</SheetTitle>
         </SheetContent>
       </Sheet>
@@ -93,7 +93,7 @@ describe("Sheet", () => {
   it("hides close button when showCloseButton is false", () => {
     render(
       <Sheet open>
-        <SheetContent showCloseButton={false}>
+        <SheetContent showCloseButton={false} aria-describedby={undefined}>
           <SheetTitle>Title</SheetTitle>
         </SheetContent>
       </Sheet>
@@ -107,7 +107,7 @@ describe("accessibility", () => {
     const { container } = render(
       <Sheet>
         <SheetTrigger>Open Sheet</SheetTrigger>
-        <SheetContent>
+        <SheetContent aria-describedby={undefined}>
           <SheetTitle>Settings</SheetTitle>
         </SheetContent>
       </Sheet>

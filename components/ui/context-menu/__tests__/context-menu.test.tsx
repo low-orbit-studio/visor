@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react"
+import { render, screen, fireEvent, act } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import {
   ContextMenu,
@@ -176,7 +176,9 @@ describe("accessibility", () => {
         </ContextMenuContent>
       </ContextMenu>
     )
-    openContextMenu()
+    await act(async () => {
+      openContextMenu()
+    })
     await checkA11y(container)
   })
 })

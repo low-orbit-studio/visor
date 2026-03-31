@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { render, screen, act } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import {
   Tooltip,
@@ -25,7 +25,7 @@ describe("Tooltip", () => {
     render(
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger>
+          <TooltipTrigger asChild>
             <button>Trigger button</button>
           </TooltipTrigger>
           <TooltipContent>Tooltip content</TooltipContent>
@@ -77,16 +77,20 @@ describe("accessibility", () => {
   })
 
   it("has no WCAG 2.1 AA violations (open state)", async () => {
-    const { container } = render(
-      <TooltipProvider>
-        <Tooltip defaultOpen>
-          <TooltipTrigger asChild>
-            <button>Help</button>
-          </TooltipTrigger>
-          <TooltipContent>More information about this feature</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    )
-    await checkA11y(container)
+    let container: HTMLElement
+    await act(async () => {
+      const result = render(
+        <TooltipProvider>
+          <Tooltip defaultOpen>
+            <TooltipTrigger asChild>
+              <button>Help</button>
+            </TooltipTrigger>
+            <TooltipContent>More information about this feature</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )
+      container = result.container
+    })
+    await checkA11y(container!)
   })
 })

@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react"
-import { describe, it, expect } from "vitest"
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
 import {
   Command,
   CommandDialog,
@@ -160,6 +160,23 @@ describe("Command", () => {
 })
 
 describe("CommandDialog", () => {
+  // CommandDialog renders DialogContent without a DialogDescription internally.
+  // Suppress the Radix warning since we cannot modify the component source.
+  let originalWarn: typeof console.warn
+
+  beforeEach(() => {
+    originalWarn = console.warn
+    console.warn = vi.fn((...args: unknown[]) => {
+      const msg = typeof args[0] === "string" ? args[0] : ""
+      if (msg.includes("Missing `Description`")) return
+      originalWarn(...args)
+    })
+  })
+
+  afterEach(() => {
+    console.warn = originalWarn
+  })
+
   it("renders dialog with command palette", () => {
     render(
       <CommandDialog open>
