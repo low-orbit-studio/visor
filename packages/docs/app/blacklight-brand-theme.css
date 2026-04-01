@@ -269,16 +269,16 @@
   --interactive-primary-bg-hover: #6d2c01;
   --interactive-primary-bg-active: #4e1d00;
   --interactive-primary-text: #ffffff;
-  --interactive-secondary-bg: rgba(255, 255, 255, 0.03);
-  --interactive-secondary-bg-hover: rgba(255, 255, 255, 0.05);
-  --interactive-secondary-bg-active: rgba(255, 255, 255, 0.08);
-  --interactive-secondary-text: rgba(255, 255, 255, 0.7);
-  --interactive-secondary-border: rgba(255, 255, 255, 0.1);
+  --interactive-secondary-bg: rgba(244, 108, 0, 0.4);
+  --interactive-secondary-bg-hover: rgba(244, 108, 0, 0.5);
+  --interactive-secondary-bg-active: rgba(244, 108, 0, 0.6);
+  --interactive-secondary-text: #ffffff;
+  --interactive-secondary-border: transparent;
   --interactive-destructive-bg: #ef4444;
   --interactive-destructive-bg-hover: #990015;
   --interactive-destructive-text: #ffffff;
-  --interactive-ghost-bg: transparent;
-  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.05);
+  --interactive-ghost-bg: rgba(255, 255, 255, 0.05);
+  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.1);
 }
 
 /* --- Adaptive: Text (dark) — manual toggle --- */
@@ -340,16 +340,16 @@
   --interactive-primary-bg-hover: #df6718;
   --interactive-primary-bg-active: #fc9b6a;
   --interactive-primary-text: #ffffff;
-  --interactive-secondary-bg: rgba(255, 255, 255, 0.03);
-  --interactive-secondary-bg-hover: rgba(255, 255, 255, 0.05);
-  --interactive-secondary-bg-active: rgba(255, 255, 255, 0.08);
-  --interactive-secondary-text: rgba(255, 255, 255, 0.7);
-  --interactive-secondary-border: rgba(255, 255, 255, 0.1);
+  --interactive-secondary-bg: rgba(244, 108, 0, 0.4);
+  --interactive-secondary-bg-hover: rgba(244, 108, 0, 0.5);
+  --interactive-secondary-bg-active: rgba(244, 108, 0, 0.6);
+  --interactive-secondary-text: #ffffff;
+  --interactive-secondary-border: transparent;
   --interactive-destructive-bg: #ef4444;
   --interactive-destructive-bg-hover: #b91c1c;
   --interactive-destructive-text: #ffffff;
-  --interactive-ghost-bg: transparent;
-  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.05);
+  --interactive-ghost-bg: rgba(255, 255, 255, 0.05);
+  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.1);
 }
 
 /* --- Adaptive: Text (dark) — prefers-color-scheme --- */
@@ -418,16 +418,16 @@
   --interactive-primary-bg-hover: #df6718;
   --interactive-primary-bg-active: #fc9b6a;
   --interactive-primary-text: #ffffff;
-  --interactive-secondary-bg: rgba(255, 255, 255, 0.03);
-  --interactive-secondary-bg-hover: rgba(255, 255, 255, 0.05);
-  --interactive-secondary-bg-active: rgba(255, 255, 255, 0.08);
-  --interactive-secondary-text: rgba(255, 255, 255, 0.7);
-  --interactive-secondary-border: rgba(255, 255, 255, 0.1);
+  --interactive-secondary-bg: rgba(244, 108, 0, 0.4);
+  --interactive-secondary-bg-hover: rgba(244, 108, 0, 0.5);
+  --interactive-secondary-bg-active: rgba(244, 108, 0, 0.6);
+  --interactive-secondary-text: #ffffff;
+  --interactive-secondary-border: transparent;
   --interactive-destructive-bg: #ef4444;
   --interactive-destructive-bg-hover: #b91c1c;
   --interactive-destructive-text: #ffffff;
-  --interactive-ghost-bg: transparent;
-  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.05);
+  --interactive-ghost-bg: rgba(255, 255, 255, 0.05);
+  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.1);
 }
 }
 
@@ -490,16 +490,16 @@ html:not(.dark) .blacklight-brand-theme {
   --interactive-primary-bg-hover: #df6718;
   --interactive-primary-bg-active: #fc9b6a;
   --interactive-primary-text: #ffffff;
-  --interactive-secondary-bg: rgba(255, 255, 255, 0.04);
-  --interactive-secondary-bg-hover: rgba(255, 255, 255, 0.06);
-  --interactive-secondary-bg-active: rgba(255, 255, 255, 0.1);
-  --interactive-secondary-text: rgba(255, 255, 255, 0.7);
-  --interactive-secondary-border: rgba(255, 255, 255, 0.12);
+  --interactive-secondary-bg: rgba(244, 108, 0, 0.4);
+  --interactive-secondary-bg-hover: rgba(244, 108, 0, 0.5);
+  --interactive-secondary-bg-active: rgba(244, 108, 0, 0.6);
+  --interactive-secondary-text: #ffffff;
+  --interactive-secondary-border: transparent;
   --interactive-destructive-bg: #ef4444;
   --interactive-destructive-bg-hover: #990015;
   --interactive-destructive-text: #ffffff;
-  --interactive-ghost-bg: transparent;
-  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.08);
+  --interactive-ghost-bg: rgba(255, 255, 255, 0.05);
+  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.1);
 
   /* ── Fumadocs bridge — light (stays dark) ── */
   --color-fd-background: #06061a;
@@ -682,6 +682,13 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
 .blacklight-brand-theme code,
 .blacklight-brand-theme pre {
   font-family: var(--font-mono);
+}
+
+/* ── Buttons — less border radius ── */
+
+.blacklight-brand-theme [data-slot="button"],
+.blacklight-brand-theme button {
+  border-radius: var(--radius-sm, 0.25rem);
 }
 
 /* ── Form field labels and hints ── */
