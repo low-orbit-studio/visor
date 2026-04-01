@@ -33,25 +33,28 @@
   margin: 1.5rem 0;
 }
 
-/* Fullscreen mode — same DOM, CSS-only toggle */
-.preview-container[data-fullscreen="true"] {
+/* Fullscreen mode — same DOM, CSS-only toggle
+   Doubled attribute selector bumps specificity above theme overrides
+   like .blackout-theme .preview-container (0,2,0 → 0,3,0) */
+.preview-container[data-fullscreen="true"][data-fullscreen] {
   position: fixed;
   inset: 0;
   z-index: 9999;
   margin: 0;
   border: none;
   border-radius: 0;
-  background: var(--surface-page, #ffffff) !important;
+  background: var(--surface-page, #ffffff);
 }
 
-.preview-container[data-fullscreen="true"] .preview-render {
+.preview-container[data-fullscreen="true"][data-fullscreen] .preview-render {
   height: 100%;
   padding: 0;
   overflow: auto;
-  background: var(--surface-page, #ffffff) !important;
+  align-content: center;
+  background: var(--surface-page, #ffffff);
 }
 
-.preview-container[data-fullscreen="true"] .preview-footer {
+.preview-container[data-fullscreen="true"][data-fullscreen] .preview-footer {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -63,29 +66,29 @@
   border-top: none;
 }
 
-.preview-container[data-fullscreen="true"] .preview-footer .preview-title {
+.preview-container[data-fullscreen="true"][data-fullscreen] .preview-footer .preview-title {
   color: var(--text-primary);
 }
 
-.preview-container[data-fullscreen="true"] .preview-footer .preview-toggle,
-.preview-container[data-fullscreen="true"] .preview-footer .preview-copy {
+.preview-container[data-fullscreen="true"][data-fullscreen] .preview-footer .preview-toggle,
+.preview-container[data-fullscreen="true"][data-fullscreen] .preview-footer .preview-copy {
   color: rgba(255, 255, 255, 0.7);
   border-color: rgba(255, 255, 255, 0.15);
   background: rgba(255, 255, 255, 0.08);
 }
 
-.preview-container[data-fullscreen="true"] .preview-footer .preview-toggle:hover,
-.preview-container[data-fullscreen="true"] .preview-footer .preview-copy:hover {
+.preview-container[data-fullscreen="true"][data-fullscreen] .preview-footer .preview-toggle:hover,
+.preview-container[data-fullscreen="true"][data-fullscreen] .preview-footer .preview-copy:hover {
   color: rgba(255, 255, 255, 0.9);
   background: rgba(255, 255, 255, 0.15);
 }
 
-.preview-container[data-fullscreen="true"] .preview-code {
+.preview-container[data-fullscreen="true"][data-fullscreen] .preview-code {
   display: none;
 }
 
 /* Raise block panels above the fullscreen footer bar */
-.preview-container[data-fullscreen="true"] [role="region"] {
+.preview-container[data-fullscreen="true"][data-fullscreen] [role="region"] {
   bottom: 4.5rem;
 }
 
