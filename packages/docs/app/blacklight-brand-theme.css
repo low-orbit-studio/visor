@@ -727,6 +727,25 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
   opacity: 0.7;
 }
 
+/* ── Calendar — reset prose table overrides ── */
+
+.blacklight-brand-theme [data-slot="calendar"] table,
+.blacklight-brand-theme [data-slot="calendar"] thead,
+.blacklight-brand-theme [data-slot="calendar"] tbody,
+.blacklight-brand-theme [data-slot="calendar"] tr,
+.blacklight-brand-theme [data-slot="calendar"] td,
+.blacklight-brand-theme [data-slot="calendar"] th {
+  background: transparent;
+  border: none;
+  padding: 0;
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  height: auto;
+}
+
 /* ── Footer prev/next nav — label readable on hover ── */
 html:not(.dark) .blacklight-brand-theme .grid > a:hover {
   --fd-muted-foreground: rgba(255, 255, 255, 0.7);
