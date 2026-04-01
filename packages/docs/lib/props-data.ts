@@ -1234,30 +1234,51 @@ export const propsData: Record<string, PropDef[]> = {
 
   'phone-input': [
     {
+      name: 'id',
+      type: 'string',
+      description: 'HTML id attribute for the input element.',
+    },
+    {
+      name: 'name',
+      type: 'string',
+      description: 'HTML name attribute for the input element.',
+    },
+    {
       name: 'value',
       type: 'string',
-      description: 'Controlled value (raw digits).',
-    },
-    {
-      name: 'defaultValue',
-      type: 'string',
-      description: 'Default value for uncontrolled usage.',
-    },
-    {
-      name: 'onChange',
-      type: '(value: string) => void',
-      description: 'Callback with raw digits when value changes.',
+      description: 'Initial phone number value (e.g. "+14155551234").',
     },
     {
       name: 'placeholder',
       type: 'string',
-      description: 'Placeholder text for the phone field.',
+      description: 'Placeholder text for the input.',
+    },
+    {
+      name: 'required',
+      type: 'boolean',
+      default: 'false',
+      description: 'Whether the field is required.',
     },
     {
       name: 'disabled',
       type: 'boolean',
       default: 'false',
-      description: 'Disables the phone input.',
+      description: 'Whether the field is disabled.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS classes applied to the wrapper.',
+    },
+    {
+      name: 'onChange',
+      type: '(value: string, isValid: boolean) => void',
+      description: 'Called with the full international number and validation status on every change.',
+    },
+    {
+      name: 'onBlur',
+      type: '() => void',
+      description: 'Called when the input loses focus.',
     },
   ],
 
