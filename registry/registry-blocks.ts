@@ -231,4 +231,23 @@ export const blocks: Registry = [
       },
     ],
   },
+  {
+    name: "testimonial-section",
+    type: "registry:block",
+    category: "marketing",
+    description:
+      "A social proof section with testimonial quotes, avatars, and attribution.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "card", "avatar", "text", "heading", "separator"],
+    files: [
+      {
+        path: "blocks/testimonial-section/testimonial-section.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/testimonial-section/testimonial-section.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
 ]
