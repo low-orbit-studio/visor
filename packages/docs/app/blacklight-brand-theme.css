@@ -554,6 +554,13 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
   font-style: var(--shiki-dark-font-style) !important;
 }
 
+/* ── Preview footer ── */
+
+.blacklight-brand-theme .preview-footer {
+  background: var(--surface-card);
+  border-top-color: var(--border-default);
+}
+
 /* ── Sidebar ── */
 
 .blacklight-brand-theme aside[id="nd-sidebar"] {
