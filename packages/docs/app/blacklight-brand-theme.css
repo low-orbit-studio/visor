@@ -140,15 +140,15 @@
   --font-sans: "PP Model Mono", monospace;
   --font-mono: "PP Model Mono", monospace;
   --font-heading: "PP Model Plastic", sans-serif;
-  /* Scaled ~0.875x — PP Model Mono runs larger than typical sans-serif */
-  --font-size-xs: 0.6875rem; /* 11px */
-  --font-size-sm: 0.75rem; /* 12px */
-  --font-size-base: 0.875rem; /* 14px */
-  --font-size-lg: 1rem; /* 16px */
-  --font-size-xl: 1.125rem; /* 18px */
-  --font-size-2xl: 1.3125rem; /* 21px */
-  --font-size-3xl: 1.625rem; /* 26px */
-  --font-size-4xl: 2rem; /* 32px */
+  /* Scaled ~0.8x — PP Model Mono runs larger than typical sans-serif */
+  --font-size-xs: 0.625rem; /* 10px */
+  --font-size-sm: 0.6875rem; /* 11px */
+  --font-size-base: 0.75rem; /* 12px */
+  --font-size-lg: 0.875rem; /* 14px */
+  --font-size-xl: 1rem; /* 16px */
+  --font-size-2xl: 1.125rem; /* 18px */
+  --font-size-3xl: 1.5rem; /* 24px */
+  --font-size-4xl: 1.75rem; /* 28px */
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
