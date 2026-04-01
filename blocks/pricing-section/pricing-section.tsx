@@ -6,7 +6,6 @@ import { Badge } from "../../components/ui/badge/badge"
 import { Button } from "../../components/ui/button/button"
 import { Heading } from "../../components/ui/heading/heading"
 import { Text } from "../../components/ui/text/text"
-import { Separator } from "../../components/ui/separator/separator"
 import { Check } from "@phosphor-icons/react"
 import styles from "./pricing-section.module.css"
 
@@ -80,12 +79,9 @@ export function PricingSection({
                   )}
                 </div>
                 {tier.description && (
-                  <Text color="secondary" size="sm" className={styles.tierDescription}>
-                    {tier.description}
-                  </Text>
+                  <p className={styles.tierDescription}>{tier.description}</p>
                 )}
               </CardHeader>
-              <Separator />
               <CardContent className={styles.tierContent}>
                 <ul className={styles.featureList} aria-label={`${tier.name} features`}>
                   {tier.features.map((feature, j) => (
