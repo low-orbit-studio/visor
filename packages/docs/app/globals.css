@@ -41,11 +41,13 @@
   margin: 0;
   border: none;
   border-radius: 0;
+  background: var(--surface-page, #ffffff);
 }
 
 .preview-container[data-fullscreen="true"] .preview-render {
   height: 100%;
   padding: 0;
+  overflow: auto;
 }
 
 .preview-container[data-fullscreen="true"] .preview-footer {
