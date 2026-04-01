@@ -184,6 +184,10 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
             required={required}
             disabled={disabled}
             autoComplete="tel"
+            data-1p-ignore
+            data-lpignore="true"
+            data-bwignore
+            data-form-type="other"
           />
         </div>
       )
@@ -201,6 +205,10 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
           required={required}
           disabled={disabled}
           autoComplete="tel"
+          data-1p-ignore
+          data-lpignore="true"
+          data-bwignore
+          data-form-type="other"
           onBlur={handleBlur}
         />
       </div>
