@@ -386,8 +386,136 @@
 }
 }
 
+/* ═══════════════════════════════════════════════
+   Section 3: Light mode overrides
+   Blacklight Brand stays dark even in "light" mode —
+   slightly elevated from the deep navy for contrast.
+   ═══════════════════════════════════════════════ */
+
+html:not(.dark) .blacklight-brand-theme {
+  /* ── Text — slightly brighter than dark mode ── */
+  --text-primary: rgba(255, 255, 255, 0.95);
+  --text-secondary: rgba(255, 255, 255, 0.65);
+  --text-tertiary: rgba(255, 255, 255, 0.45);
+  --text-disabled: rgba(255, 255, 255, 0.2);
+  --text-inverse: #020214;
+  --text-inverse-secondary: #12122A;
+  --text-link: #fc9b6a;
+  --text-link-hover: #ffc6aa;
+  --text-success: #10b981;
+  --text-warning: #f59e0b;
+  --text-error: #ef4444;
+  --text-info: #3b82f6;
+
+  /* ── Surfaces — slightly lifted navy ── */
+  --surface-page: #06061a;
+  --surface-card: #16162e;
+  --surface-subtle: #0e0e24;
+  --surface-muted: #1a1a34;
+  --surface-overlay: #020214;
+  --surface-interactive-default: #16162e;
+  --surface-interactive-hover: #1e1e3a;
+  --surface-interactive-active: #262644;
+  --surface-interactive-disabled: #0e0e24;
+  --surface-accent-subtle: #300f00;
+  --surface-accent-default: #b54e00;
+  --surface-accent-strong: #df6718;
+  --surface-success-subtle: #002919;
+  --surface-success-default: #10b981;
+  --surface-warning-subtle: #361f00;
+  --surface-warning-default: #f59e0b;
+  --surface-error-subtle: #410004;
+  --surface-error-default: #ef4444;
+  --surface-info-subtle: #001a4a;
+  --surface-info-default: #3b82f6;
+
+  /* ── Borders — slightly more visible ── */
+  --border-default: rgba(255, 255, 255, 0.12);
+  --border-muted: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --border-focus: #df6718;
+  --border-disabled: rgba(255, 255, 255, 0.06);
+  --border-success: #10b981;
+  --border-warning: #f59e0b;
+  --border-error: #ef4444;
+  --border-info: #3b82f6;
+
+  /* ── Interactive ── */
+  --interactive-primary-bg: #b54e00;
+  --interactive-primary-bg-hover: #df6718;
+  --interactive-primary-bg-active: #fc9b6a;
+  --interactive-primary-text: #ffffff;
+  --interactive-secondary-bg: #16162e;
+  --interactive-secondary-bg-hover: #1e1e3a;
+  --interactive-secondary-bg-active: #262644;
+  --interactive-secondary-text: rgba(255, 255, 255, 0.7);
+  --interactive-secondary-border: rgba(255, 255, 255, 0.12);
+  --interactive-destructive-bg: #ef4444;
+  --interactive-destructive-bg-hover: #990015;
+  --interactive-destructive-text: #ffffff;
+  --interactive-ghost-bg: transparent;
+  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.08);
+
+  /* ── Fumadocs bridge — light (stays dark) ── */
+  --color-fd-background: #06061a;
+  --color-fd-foreground: rgba(255, 255, 255, 0.95);
+  --color-fd-card: #16162e;
+  --color-fd-card-foreground: rgba(255, 255, 255, 0.95);
+  --color-fd-border: rgba(255, 255, 255, 0.12);
+  --color-fd-muted: #1a1a34;
+  --color-fd-muted-foreground: rgba(255, 255, 255, 0.65);
+  --color-fd-accent: #f46c00;
+  --color-fd-accent-foreground: #ffffff;
+  --color-fd-primary: #f46c00;
+  --color-fd-primary-foreground: #ffffff;
+  --color-fd-secondary: #16162e;
+  --color-fd-secondary-foreground: rgba(255, 255, 255, 0.95);
+  --color-fd-popover: #0e0e24;
+  --color-fd-popover-foreground: rgba(255, 255, 255, 0.95);
+  --color-fd-ring: rgba(244, 108, 0, 0.4);
+}
+
+/* ═══════════════════════════════════════════════
+   Section 4: Fumadocs bridge — dark
+   ═══════════════════════════════════════════════ */
+
+.dark .blacklight-brand-theme {
+  --color-fd-background: #020214;
+  --color-fd-foreground: rgba(255, 255, 255, 0.9);
+  --color-fd-card: #12122A;
+  --color-fd-card-foreground: rgba(255, 255, 255, 0.9);
+  --color-fd-border: rgba(255, 255, 255, 0.1);
+  --color-fd-muted: #171b22;
+  --color-fd-muted-foreground: rgba(255, 255, 255, 0.6);
+  --color-fd-accent: #f46c00;
+  --color-fd-accent-foreground: #ffffff;
+  --color-fd-primary: #f46c00;
+  --color-fd-primary-foreground: #ffffff;
+  --color-fd-secondary: #12122A;
+  --color-fd-secondary-foreground: rgba(255, 255, 255, 0.9);
+  --color-fd-popover: #0a0a1a;
+  --color-fd-popover-foreground: rgba(255, 255, 255, 0.9);
+  --color-fd-ring: rgba(244, 108, 0, 0.3);
+}
+
+/* ═══════════════════════════════════════════════
+   Section 5: Creative extensions
+   ═══════════════════════════════════════════════ */
+
+/* ── Syntax highlighting — always use dark Shiki colors ── */
+
+html:not(.dark) .blacklight-brand-theme .shiki code span {
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+}
+
 /* ── Sidebar ── */
 
 .blacklight-brand-theme aside[id="nd-sidebar"] {
   background: #0a0a1a;
+}
+
+/* ── Footer prev/next nav — label readable on hover ── */
+html:not(.dark) .blacklight-brand-theme .grid > a:hover {
+  --fd-muted-foreground: rgba(255, 255, 255, 0.7);
 }
