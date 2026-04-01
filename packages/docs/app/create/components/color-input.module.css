@@ -1,0 +1,108 @@
+/* ─── Color Input ───────────────────────────────────────────────────────── */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+/* ─── Label Row ─────────────────────────────────────────────────────────── */
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.label {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 500;
+  color: var(--text-primary, #111827);
+  text-transform: capitalize;
+}
+
+.required {
+  color: var(--text-error, #991b1b);
+  font-size: var(--font-size-xs, 0.75rem);
+}
+
+/* ─── Input Row ─────────────────────────────────────────────────────────── */
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.swatch {
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm, 0.25rem);
+  border: 1px solid var(--border-default, #e5e7eb);
+  cursor: pointer;
+  padding: 0;
+  background: none;
+  transition: box-shadow var(--motion-duration-fast, 150ms) var(--motion-easing-default, ease);
+}
+
+.swatch:hover {
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+}
+
+.swatch[data-active="true"] {
+  outline: 2px solid var(--border-focus, #6366f1);
+  outline-offset: 1px;
+}
+
+.hexInput {
+  flex: 1;
+  min-width: 0;
+  height: 2rem;
+  padding: 0 var(--spacing-2, 0.5rem);
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-sm, 0.25rem);
+  background: var(--surface-card, #ffffff);
+  color: var(--text-primary, #111827);
+  font-family: var(--font-mono, monospace);
+  font-size: var(--font-size-sm, 0.875rem);
+  transition: border-color var(--motion-duration-fast, 150ms) var(--motion-easing-default, ease);
+}
+
+.hexInput:focus {
+  outline: none;
+  border-color: var(--border-focus, #6366f1);
+}
+
+.hexInput[data-invalid="true"] {
+  border-color: var(--border-error, #ef4444);
+}
+
+/* ─── Contrast Warning ──────────────────────────────────────────────────── */
+
+.contrastInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+  font-size: var(--font-size-xs, 0.75rem);
+}
+
+.contrastPass {
+  color: var(--text-success, #166534);
+}
+
+.contrastFail {
+  color: var(--text-error, #991b1b);
+  font-weight: 500;
+}
+
+/* ─── Picker Dropdown ───────────────────────────────────────────────────── */
+
+.pickerDropdown {
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-md, 0.5rem);
+  padding: var(--spacing-3, 0.75rem);
+  background: var(--surface-card, #ffffff);
+  box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+}
