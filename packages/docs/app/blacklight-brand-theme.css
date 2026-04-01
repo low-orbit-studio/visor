@@ -684,6 +684,12 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
   font-family: var(--font-mono);
 }
 
+/* ── Toggle group items — PP Model Mono runs large at small sizes ── */
+
+.blacklight-brand-theme [data-slot="toggle-group-item"] {
+  font-size: 10px;
+}
+
 /* ── Code blocks — less border radius ── */
 
 .blacklight-brand-theme pre,
