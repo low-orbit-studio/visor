@@ -182,6 +182,24 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "footer-section",
+    type: "registry:block",
+    category: "marketing",
+    description: "A multi-column responsive footer with link groups, logo, and copyright.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "heading", "text", "separator"],
+    files: [
+      {
+        path: "blocks/footer-section/footer-section.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/footer-section/footer-section.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "hero-section",
     type: "registry:block",
     category: "marketing",
