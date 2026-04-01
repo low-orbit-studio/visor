@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-// @ts-expect-error intl-tel-input/styles is a valid CSS export but lacks type declaration
 import "intl-tel-input/styles"
 import { cn } from "../../../lib/utils"
 
