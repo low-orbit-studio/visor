@@ -24,6 +24,24 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "features-grid",
+    type: "registry:block",
+    category: "marketing",
+    description: "A responsive grid of feature cards with icons, titles, and descriptions.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "card", "heading", "text"],
+    files: [
+      {
+        path: "blocks/features-grid/features-grid.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/features-grid/features-grid.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "design-system-deck",
     type: "registry:block",
     category: "documentation",
