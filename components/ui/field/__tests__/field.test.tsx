@@ -102,6 +102,31 @@ describe("FieldError", () => {
     const items = screen.getAllByText("Required")
     expect(items).toHaveLength(1)
   })
+
+  it("renders error from string array (Conform format)", () => {
+    render(<FieldError errors={["Field is required"]} />)
+    expect(screen.getByText("Field is required")).toBeInTheDocument()
+  })
+
+  it("renders multiple string errors as a list", () => {
+    render(<FieldError errors={["Too short", "Invalid format"]} />)
+    expect(screen.getByText("Too short")).toBeInTheDocument()
+    expect(screen.getByText("Invalid format")).toBeInTheDocument()
+  })
+
+  it("handles mixed string and object errors", () => {
+    render(
+      <FieldError errors={["String error", { message: "Object error" }]} />
+    )
+    expect(screen.getByText("String error")).toBeInTheDocument()
+    expect(screen.getByText("Object error")).toBeInTheDocument()
+  })
+
+  it("deduplicates string errors", () => {
+    render(<FieldError errors={["Required", "Required"]} />)
+    const items = screen.getAllByText("Required")
+    expect(items).toHaveLength(1)
+  })
 })
 
 describe("accessibility", () => {

@@ -1078,6 +1078,34 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "form",
+    type: "registry:ui",
+    description:
+      "A form wrapper integrating Conform + Zod for schema-validated server action forms with FormField convenience wrapper.",
+    dependencies: [
+      "@conform-to/react",
+      "@conform-to/zod",
+      "zod",
+      "class-variance-authority",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils", "field", "input", "button"],
+    files: [
+      {
+        path: "components/ui/form/form.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/form/form-field.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/form/form.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "search-input",
     type: "registry:ui",
     description:

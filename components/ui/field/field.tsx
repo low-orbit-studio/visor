@@ -79,7 +79,7 @@ FieldDescription.displayName = "FieldDescription"
 /* ─── FieldError ────────────────────────────────────────────────────── */
 
 export interface FieldErrorProps extends React.HTMLAttributes<HTMLDivElement> {
-  errors?: Array<{ message?: string } | undefined>
+  errors?: Array<string | { message?: string } | undefined>
 }
 
 const FieldError = React.forwardRef<HTMLDivElement, FieldErrorProps>(
@@ -87,18 +87,18 @@ const FieldError = React.forwardRef<HTMLDivElement, FieldErrorProps>(
     let content: React.ReactNode = children
 
     if (!content && errors?.length) {
-      const uniqueErrors = [
-        ...new Map(errors.map((e) => [e?.message, e])).values(),
-      ]
-      if (uniqueErrors.length === 1) {
-        content = uniqueErrors[0]?.message
-      } else {
+      const messages = errors
+        .map((e) => (typeof e === "string" ? e : e?.message))
+        .filter(Boolean) as string[]
+      const uniqueMessages = [...new Set(messages)]
+      if (uniqueMessages.length === 1) {
+        content = uniqueMessages[0]
+      } else if (uniqueMessages.length > 1) {
         content = (
           <ul className={styles.fieldErrorList}>
-            {uniqueErrors.map(
-              (error, index) =>
-                error?.message && <li key={index}>{error.message}</li>
-            )}
+            {uniqueMessages.map((message, index) => (
+              <li key={index}>{message}</li>
+            ))}
           </ul>
         )
       }
