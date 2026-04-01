@@ -7,7 +7,10 @@
     "dev": "next dev --turbopack -p 4050",
     "build": "next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:vr": "playwright test",
+    "test:vr:ui": "playwright test --ui",
+    "test:vr:update": "playwright test --update-snapshots"
   },
   "keywords": [],
   "license": "UNLICENSED",

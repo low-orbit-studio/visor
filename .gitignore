@@ -57,3 +57,7 @@ venv/
 coverage/
 .nyc_output/
 test-results/
+
+# Playwright
+playwright-report/
+blob-report/
