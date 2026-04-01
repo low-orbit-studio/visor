@@ -77,6 +77,10 @@ export function BlockPreview({
       <div
         className="preview-render"
         style={{ isolation: 'isolate', color: 'var(--text-primary)', minHeight: '200px', alignItems: 'stretch' }}
+        data-1p-ignore
+        data-lpignore="true"
+        data-bwignore
+        data-form-type="other"
       >
         <BlockCodeProvider onCodeChange={setDynamicCode}>
           {children}
