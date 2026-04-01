@@ -38,6 +38,7 @@ const DEFAULT_THEME: VisorThemeConfig = {
     heading: { family: "Inter", weight: 700 },
     body: { family: "Inter", weight: 400 },
     mono: { family: "JetBrains Mono" },
+    "letter-spacing": { tight: "-0.05em", normal: "0", wide: "0.1em" },
   },
   spacing: { base: 4 },
   radius: { sm: 2, md: 4, lg: 8, xl: 12, pill: 9999 },
@@ -771,5 +772,440 @@ describe("validate — multi-format colors", () => {
     });
     expect(result.valid).toBe(true);
     expect(result.warnings.some((w) => w.code === "WCAG_CONTRAST")).toBe(true);
+  });
+});
+
+// ============================================================
+// Letter-Spacing Validation
+// ============================================================
+
+describe("validate — letter-spacing", () => {
+  it("accepts valid em values", () => {
+    const result = validate({
+      name: "LS Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      typography: { "letter-spacing": { tight: "-0.05em", normal: "0", wide: "0.1em" } },
+    });
+    expect(result.valid).toBe(true);
+  });
+
+  it("accepts valid rem and px values", () => {
+    const result = validate({
+      name: "LS Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      typography: { "letter-spacing": { tight: "-0.5px", wide: "0.05rem" } },
+    });
+    expect(result.valid).toBe(true);
+  });
+
+  it("rejects invalid letter-spacing values", () => {
+    const result = validate({
+      name: "LS Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      typography: { "letter-spacing": { tight: "loose" } },
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.code === "INVALID_LETTER_SPACING")).toBe(true);
+  });
+
+  it("rejects empty letter-spacing string", () => {
+    const result = validate({
+      name: "LS Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      typography: { "letter-spacing": { normal: "" } },
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.code === "INVALID_LETTER_SPACING")).toBe(true);
+  });
+});
+
+// ============================================================
+// Motion Easing Validation
+// ============================================================
+
+describe("validate — motion easing", () => {
+  it("accepts named keyword 'ease'", () => {
+    const result = validate({
+      name: "Easing Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      motion: { easing: "ease" },
+    });
+    expect(result.valid).toBe(true);
+  });
+
+  it("accepts named keyword 'linear'", () => {
+    const result = validate({
+      name: "Easing Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      motion: { easing: "linear" },
+    });
+    expect(result.valid).toBe(true);
+  });
+
+  it("accepts cubic-bezier function", () => {
+    const result = validate({
+      name: "Easing Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      motion: { easing: "cubic-bezier(0.4, 0, 0.2, 1)" },
+    });
+    expect(result.valid).toBe(true);
+  });
+
+  it("accepts steps function", () => {
+    const result = validate({
+      name: "Easing Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      motion: { easing: "steps(4, end)" },
+    });
+    expect(result.valid).toBe(true);
+  });
+
+  it("rejects invalid easing value", () => {
+    const result = validate({
+      name: "Easing Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      motion: { easing: "bouncy" },
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.code === "INVALID_EASING")).toBe(true);
+  });
+});
+
+// ============================================================
+// Motion Duration Runtime Validation
+// ============================================================
+
+describe("validate — motion duration runtime", () => {
+  it("accepts valid duration ordering", () => {
+    const result = validate({
+      name: "Duration Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      motion: { "duration-fast": "100ms", "duration-normal": "200ms", "duration-slow": "500ms" },
+    });
+    expect(result.valid).toBe(true);
+    expect(result.warnings.some((w) => w.code === "DURATION_ORDER")).toBe(false);
+  });
+
+  it("warns when fast >= normal", () => {
+    const result = validate({
+      name: "Duration Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      motion: { "duration-fast": "300ms", "duration-normal": "200ms", "duration-slow": "500ms" },
+    });
+    expect(result.valid).toBe(true);
+    expect(result.warnings.some((w) => w.code === "DURATION_ORDER" && w.message.includes("fast"))).toBe(true);
+  });
+
+  it("warns when normal >= slow", () => {
+    const result = validate({
+      name: "Duration Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      motion: { "duration-fast": "100ms", "duration-normal": "600ms", "duration-slow": "500ms" },
+    });
+    expect(result.valid).toBe(true);
+    expect(result.warnings.some((w) => w.code === "DURATION_ORDER" && w.message.includes("normal"))).toBe(true);
+  });
+
+  it("errors when duration exceeds 10000ms", () => {
+    const result = validate({
+      name: "Duration Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      motion: { "duration-slow": "15000ms" },
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.code === "INVALID_DURATION")).toBe(true);
+  });
+
+  it("accepts 0ms duration as valid format but errors on range", () => {
+    const result = validate({
+      name: "Duration Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      motion: { "duration-fast": "0ms" },
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.code === "INVALID_DURATION")).toBe(true);
+  });
+
+  it("accepts boundary value of 10000ms", () => {
+    const result = validate({
+      name: "Duration Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      motion: { "duration-slow": "10000ms" },
+    });
+    expect(result.valid).toBe(true);
+  });
+});
+
+// ============================================================
+// Override Validation
+// ============================================================
+
+describe("validate — overrides", () => {
+  it("accepts valid overrides with known semantic tokens", () => {
+    const result = validate({
+      name: "Override Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      overrides: {
+        light: { "text-primary": "rgba(0, 0, 0, 0.95)" },
+        dark: { "surface-page": "#000000" },
+      },
+    });
+    expect(result.valid).toBe(true);
+    expect(result.warnings.some((w) => w.code === "UNKNOWN_OVERRIDE_KEY")).toBe(false);
+  });
+
+  it("errors on empty override values", () => {
+    const result = validate({
+      name: "Override Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      overrides: { light: { "text-primary": "" } },
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.code === "INVALID_OVERRIDE")).toBe(true);
+  });
+
+  it("warns on unknown override keys", () => {
+    const result = validate({
+      name: "Override Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      overrides: { light: { "custom-thing": "#FF0000" } },
+    });
+    expect(result.valid).toBe(true);
+    expect(result.warnings.some((w) => w.code === "UNKNOWN_OVERRIDE_KEY")).toBe(true);
+  });
+
+  it("allows known semantic tokens without warnings", () => {
+    const result = validate({
+      name: "Override Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      overrides: {
+        dark: {
+          "text-primary": "rgba(255, 255, 255, 0.95)",
+          "surface-card": "rgba(255, 255, 255, 0.04)",
+          "border-default": "rgba(255, 255, 255, 0.06)",
+          "interactive-primary-bg": "#5555FF",
+        },
+      },
+    });
+    expect(result.valid).toBe(true);
+    expect(result.warnings.filter((w) => w.code === "UNKNOWN_OVERRIDE_KEY")).toHaveLength(0);
+  });
+});
+
+// ============================================================
+// Resolved Completeness Contract
+// ============================================================
+
+describe("validate — resolved completeness", () => {
+  it("minimal config passes completeness (defaults fill gaps)", () => {
+    const result = validate({
+      name: "Minimal",
+      version: 1,
+      colors: { primary: "#2563EB" },
+    });
+    expect(result.valid).toBe(true);
+    expect(result.errors.some((e) => e.code === "INCOMPLETE_RESOLVED")).toBe(false);
+  });
+
+  it("fully specified config passes completeness", () => {
+    const result = validate(DEFAULT_THEME);
+    expect(result.valid).toBe(true);
+    expect(result.errors.some((e) => e.code === "INCOMPLETE_RESOLVED")).toBe(false);
+  });
+});
+
+// ============================================================
+// Unknown Key Rejection
+// ============================================================
+
+describe("validate — unknown keys", () => {
+  it("rejects unknown top-level key", () => {
+    const result = validate({
+      name: "Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      colour: "#FF0000",
+    } as unknown);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.code === "STRUCTURAL" && e.message.includes("colour"))).toBe(true);
+  });
+
+  it("rejects unknown color key", () => {
+    const result = validate({
+      name: "Test",
+      version: 1,
+      colors: { primary: "#2563EB", brand: "#FF0000" },
+    } as unknown);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.code === "STRUCTURAL" && e.message.includes("brand"))).toBe(true);
+  });
+
+  it("rejects unknown colors-dark key", () => {
+    const result = validate({
+      name: "Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      "colors-dark": { brand: "#FF0000" },
+    } as unknown);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.code === "STRUCTURAL" && e.message.includes("brand"))).toBe(true);
+  });
+
+  it("rejects unknown typography key", () => {
+    const result = validate({
+      name: "Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      typography: { display: { family: "Inter" } },
+    } as unknown);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.code === "STRUCTURAL" && e.message.includes("display"))).toBe(true);
+  });
+
+  it("rejects unknown radius key", () => {
+    const result = validate({
+      name: "Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      radius: { sm: 2, xxl: 32 },
+    } as unknown);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.code === "STRUCTURAL" && e.message.includes("xxl"))).toBe(true);
+  });
+
+  it("rejects unknown motion key", () => {
+    const result = validate({
+      name: "Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      motion: { "duration-fast": "100ms", bounce: "true" },
+    } as unknown);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.code === "STRUCTURAL" && e.message.includes("bounce"))).toBe(true);
+  });
+
+  it("rejects unknown shadow key", () => {
+    const result = validate({
+      name: "Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      shadows: { glow: "0 0 20px rgba(0,0,0,0.5)" },
+    } as unknown);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.code === "STRUCTURAL" && e.message.includes("glow"))).toBe(true);
+  });
+
+  it("rejects unknown overrides key", () => {
+    const result = validate({
+      name: "Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      overrides: { light: { "text-primary": "#000" }, midnight: { "text-primary": "#FFF" } },
+    } as unknown);
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.code === "STRUCTURAL" && e.message.includes("midnight"))).toBe(true);
+  });
+});
+
+// ============================================================
+// Status Colors
+// ============================================================
+
+describe("validate — status colors", () => {
+  it("accepts valid status colors", () => {
+    const result = validate({
+      name: "Status Test",
+      version: 1,
+      colors: {
+        primary: "#2563EB",
+        success: "#22C55E",
+        warning: "#F59E0B",
+        error: "#EF4444",
+        info: "#0EA5E9",
+      },
+    });
+    expect(result.valid).toBe(true);
+  });
+
+  it("rejects invalid success color", () => {
+    const result = validate({
+      name: "Status Test",
+      version: 1,
+      colors: { primary: "#2563EB", success: "green" },
+    });
+    expect(result.valid).toBe(false);
+  });
+
+  it("rejects invalid warning color", () => {
+    const result = validate({
+      name: "Status Test",
+      version: 1,
+      colors: { primary: "#2563EB", warning: "amber" },
+    });
+    expect(result.valid).toBe(false);
+  });
+
+  it("rejects invalid error color", () => {
+    const result = validate({
+      name: "Status Test",
+      version: 1,
+      colors: { primary: "#2563EB", error: "red" },
+    });
+    expect(result.valid).toBe(false);
+  });
+
+  it("rejects invalid info color", () => {
+    const result = validate({
+      name: "Status Test",
+      version: 1,
+      colors: { primary: "#2563EB", info: "blue" },
+    });
+    expect(result.valid).toBe(false);
+  });
+});
+
+// ============================================================
+// Radius Pill
+// ============================================================
+
+describe("validate — radius.pill", () => {
+  it("accepts pill value of 9999", () => {
+    const result = validate({
+      name: "Pill Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      radius: { pill: 9999 },
+    });
+    expect(result.valid).toBe(true);
+  });
+
+  it("rejects negative pill value", () => {
+    const result = validate({
+      name: "Pill Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      radius: { pill: -1 },
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.code === "INVALID_RADIUS")).toBe(true);
   });
 });

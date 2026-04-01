@@ -16,6 +16,152 @@ export interface ValidationResult {
   errors: string[];
 }
 
+// ============================================================
+// Known Keys — mirrors the JSON Schema structure
+// ============================================================
+
+const KNOWN_TOP_LEVEL_KEYS = new Set([
+  "name", "version", "colors", "colors-dark", "typography",
+  "spacing", "radius", "shadows", "motion", "overrides",
+]);
+
+const KNOWN_COLOR_KEYS = new Set([
+  "primary", "accent", "neutral", "background", "surface",
+  "success", "warning", "error", "info",
+]);
+
+const KNOWN_TYPOGRAPHY_KEYS = new Set([
+  "heading", "body", "mono", "letter-spacing",
+]);
+
+const KNOWN_TYPOGRAPHY_FONT_KEYS = new Set(["family", "weight"]);
+const KNOWN_TYPOGRAPHY_MONO_KEYS = new Set(["family"]);
+const KNOWN_LETTER_SPACING_KEYS = new Set(["tight", "normal", "wide"]);
+
+const KNOWN_SPACING_KEYS = new Set(["base"]);
+const KNOWN_RADIUS_KEYS = new Set(["sm", "md", "lg", "xl", "pill"]);
+const KNOWN_SHADOW_KEYS = new Set(["xs", "sm", "md", "lg", "xl"]);
+const KNOWN_MOTION_KEYS = new Set(["duration-fast", "duration-normal", "duration-slow", "easing"]);
+const KNOWN_OVERRIDES_KEYS = new Set(["light", "dark"]);
+
+/**
+ * Check for unknown keys at every nesting level.
+ * Catches typos like `colour` instead of `colors`.
+ */
+function checkUnknownKeys(obj: Record<string, unknown>, errors: string[]): void {
+  // Top-level
+  for (const key of Object.keys(obj)) {
+    if (!KNOWN_TOP_LEVEL_KEYS.has(key)) {
+      errors.push(`Unknown top-level key '${key}'. Valid keys: ${[...KNOWN_TOP_LEVEL_KEYS].join(", ")}`);
+    }
+  }
+
+  // colors
+  if (typeof obj.colors === "object" && obj.colors !== null) {
+    for (const key of Object.keys(obj.colors as Record<string, unknown>)) {
+      if (!KNOWN_COLOR_KEYS.has(key)) {
+        errors.push(`Unknown key 'colors.${key}'. Valid keys: ${[...KNOWN_COLOR_KEYS].join(", ")}`);
+      }
+    }
+  }
+
+  // colors-dark
+  if (typeof obj["colors-dark"] === "object" && obj["colors-dark"] !== null) {
+    for (const key of Object.keys(obj["colors-dark"] as Record<string, unknown>)) {
+      if (!KNOWN_COLOR_KEYS.has(key)) {
+        errors.push(`Unknown key 'colors-dark.${key}'. Valid keys: ${[...KNOWN_COLOR_KEYS].join(", ")}`);
+      }
+    }
+  }
+
+  // typography
+  if (typeof obj.typography === "object" && obj.typography !== null) {
+    const typo = obj.typography as Record<string, unknown>;
+    for (const key of Object.keys(typo)) {
+      if (!KNOWN_TYPOGRAPHY_KEYS.has(key)) {
+        errors.push(`Unknown key 'typography.${key}'. Valid keys: ${[...KNOWN_TYPOGRAPHY_KEYS].join(", ")}`);
+      }
+    }
+    // typography.heading
+    if (typeof typo.heading === "object" && typo.heading !== null) {
+      for (const key of Object.keys(typo.heading as Record<string, unknown>)) {
+        if (!KNOWN_TYPOGRAPHY_FONT_KEYS.has(key)) {
+          errors.push(`Unknown key 'typography.heading.${key}'. Valid keys: ${[...KNOWN_TYPOGRAPHY_FONT_KEYS].join(", ")}`);
+        }
+      }
+    }
+    // typography.body
+    if (typeof typo.body === "object" && typo.body !== null) {
+      for (const key of Object.keys(typo.body as Record<string, unknown>)) {
+        if (!KNOWN_TYPOGRAPHY_FONT_KEYS.has(key)) {
+          errors.push(`Unknown key 'typography.body.${key}'. Valid keys: ${[...KNOWN_TYPOGRAPHY_FONT_KEYS].join(", ")}`);
+        }
+      }
+    }
+    // typography.mono
+    if (typeof typo.mono === "object" && typo.mono !== null) {
+      for (const key of Object.keys(typo.mono as Record<string, unknown>)) {
+        if (!KNOWN_TYPOGRAPHY_MONO_KEYS.has(key)) {
+          errors.push(`Unknown key 'typography.mono.${key}'. Valid keys: ${[...KNOWN_TYPOGRAPHY_MONO_KEYS].join(", ")}`);
+        }
+      }
+    }
+    // typography.letter-spacing
+    if (typeof typo["letter-spacing"] === "object" && typo["letter-spacing"] !== null) {
+      for (const key of Object.keys(typo["letter-spacing"] as Record<string, unknown>)) {
+        if (!KNOWN_LETTER_SPACING_KEYS.has(key)) {
+          errors.push(`Unknown key 'typography.letter-spacing.${key}'. Valid keys: ${[...KNOWN_LETTER_SPACING_KEYS].join(", ")}`);
+        }
+      }
+    }
+  }
+
+  // spacing
+  if (typeof obj.spacing === "object" && obj.spacing !== null) {
+    for (const key of Object.keys(obj.spacing as Record<string, unknown>)) {
+      if (!KNOWN_SPACING_KEYS.has(key)) {
+        errors.push(`Unknown key 'spacing.${key}'. Valid keys: ${[...KNOWN_SPACING_KEYS].join(", ")}`);
+      }
+    }
+  }
+
+  // radius
+  if (typeof obj.radius === "object" && obj.radius !== null) {
+    for (const key of Object.keys(obj.radius as Record<string, unknown>)) {
+      if (!KNOWN_RADIUS_KEYS.has(key)) {
+        errors.push(`Unknown key 'radius.${key}'. Valid keys: ${[...KNOWN_RADIUS_KEYS].join(", ")}`);
+      }
+    }
+  }
+
+  // shadows
+  if (typeof obj.shadows === "object" && obj.shadows !== null) {
+    for (const key of Object.keys(obj.shadows as Record<string, unknown>)) {
+      if (!KNOWN_SHADOW_KEYS.has(key)) {
+        errors.push(`Unknown key 'shadows.${key}'. Valid keys: ${[...KNOWN_SHADOW_KEYS].join(", ")}`);
+      }
+    }
+  }
+
+  // motion
+  if (typeof obj.motion === "object" && obj.motion !== null) {
+    for (const key of Object.keys(obj.motion as Record<string, unknown>)) {
+      if (!KNOWN_MOTION_KEYS.has(key)) {
+        errors.push(`Unknown key 'motion.${key}'. Valid keys: ${[...KNOWN_MOTION_KEYS].join(", ")}`);
+      }
+    }
+  }
+
+  // overrides
+  if (typeof obj.overrides === "object" && obj.overrides !== null) {
+    for (const key of Object.keys(obj.overrides as Record<string, unknown>)) {
+      if (!KNOWN_OVERRIDES_KEYS.has(key)) {
+        errors.push(`Unknown key 'overrides.${key}'. Valid keys: ${[...KNOWN_OVERRIDES_KEYS].join(", ")}`);
+      }
+    }
+  }
+}
+
 /**
  * Lightweight structural validation for a .visor.yaml config object.
  * Checks required fields, types, and hex color format.
@@ -29,6 +175,9 @@ export function validateConfig(config: unknown): ValidationResult {
   }
 
   const obj = config as Record<string, unknown>;
+
+  // Unknown key rejection (catches typos like `colour` instead of `colors`)
+  checkUnknownKeys(obj, errors);
 
   // Required fields
   if (typeof obj.name !== "string" || obj.name.length === 0) {

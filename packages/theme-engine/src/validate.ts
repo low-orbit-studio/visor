@@ -12,7 +12,13 @@
 import { validateConfig as validateSchema } from "./schema.js";
 import { resolveConfig } from "./resolve.js";
 import { hexToOklch, getContrastRatio, isValidHex, isValidColor, parseColor, rgbToOklch } from "./color.js";
-import type { VisorThemeConfig, RGB } from "./types.js";
+import type { VisorThemeConfig, ResolvedThemeConfig, RGB } from "./types.js";
+import {
+  SEMANTIC_TEXT_MAP,
+  SEMANTIC_SURFACE_MAP,
+  SEMANTIC_BORDER_MAP,
+  SEMANTIC_INTERACTIVE_MAP,
+} from "./semantic-map.js";
 
 // ============================================================
 // Types
@@ -43,6 +49,26 @@ const CONTRAST_INTERACTIVE_AA = 3.0;
 
 /** DeltaE threshold below which primary/accent are "too similar" */
 const DELTA_E_SIMILAR_THRESHOLD = 10;
+
+/** Valid CSS length pattern for letter-spacing (e.g., "-0.05em", "0", "0.1rem", "1px") */
+const CSS_LENGTH_RE = /^-?\d+(\.\d+)?(em|rem|px|%|ex|ch|vw|vh|cm|mm|in|pt|pc)?$/;
+
+/** Named CSS timing function keywords */
+const NAMED_EASINGS = new Set([
+  "linear", "ease", "ease-in", "ease-out", "ease-in-out",
+]);
+
+/** Patterns for CSS timing functions */
+const CUBIC_BEZIER_RE = /^cubic-bezier\(\s*-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?\s*\)$/;
+const STEPS_RE = /^steps\(\s*\d+\s*(,\s*(start|end|jump-start|jump-end|jump-none|jump-both)\s*)?\)$/;
+
+/** Build the set of known semantic token keys from semantic-map.ts */
+const KNOWN_SEMANTIC_TOKENS: Set<string> = new Set([
+  ...Object.keys(SEMANTIC_TEXT_MAP).map((k) => `text-${k}`),
+  ...Object.keys(SEMANTIC_SURFACE_MAP).map((k) => `surface-${k}`),
+  ...Object.keys(SEMANTIC_BORDER_MAP).map((k) => `border-${k}`),
+  ...Object.keys(SEMANTIC_INTERACTIVE_MAP).map((k) => `interactive-${k}`),
+]);
 
 // ============================================================
 // Helpers
@@ -293,6 +319,236 @@ function checkTypeScaleCoherence(
           "typography"
         )
       );
+    }
+  }
+}
+
+function checkLetterSpacing(
+  config: VisorThemeConfig,
+  issues: ValidationIssue[]
+): void {
+  const ls = config.typography?.["letter-spacing"];
+  if (!ls) return;
+
+  for (const key of ["tight", "normal", "wide"] as const) {
+    const value = ls[key];
+    if (value !== undefined) {
+      if (typeof value !== "string" || !CSS_LENGTH_RE.test(value.trim())) {
+        issues.push(
+          issue(
+            "error",
+            "INVALID_LETTER_SPACING",
+            `'typography.letter-spacing.${key}' must be a valid CSS length (e.g., "-0.05em", "0", "0.1rem"), got: ${value}`,
+            `typography.letter-spacing.${key}`
+          )
+        );
+      }
+    }
+  }
+}
+
+function isValidEasing(value: string): boolean {
+  const trimmed = value.trim();
+  if (NAMED_EASINGS.has(trimmed)) return true;
+  if (CUBIC_BEZIER_RE.test(trimmed)) return true;
+  if (STEPS_RE.test(trimmed)) return true;
+  return false;
+}
+
+function checkMotionEasing(
+  config: VisorThemeConfig,
+  issues: ValidationIssue[]
+): void {
+  const easing = config.motion?.easing;
+  if (easing === undefined) return;
+
+  if (typeof easing !== "string" || !isValidEasing(easing)) {
+    issues.push(
+      issue(
+        "error",
+        "INVALID_EASING",
+        `'motion.easing' must be a valid CSS timing function (e.g., "ease", "cubic-bezier(0.4, 0, 0.2, 1)", "steps(4, end)"), got: ${easing}`,
+        "motion.easing"
+      )
+    );
+  }
+}
+
+function parseDurationMs(value: string): number | null {
+  const match = /^(\d+)ms$/.exec(value);
+  return match ? parseInt(match[1], 10) : null;
+}
+
+function checkMotionDurationRuntime(
+  config: VisorThemeConfig,
+  issues: ValidationIssue[]
+): void {
+  const motion = config.motion;
+  if (!motion) return;
+
+  const durationKeys = ["duration-fast", "duration-normal", "duration-slow"] as const;
+  const parsed: Record<string, number> = {};
+
+  for (const key of durationKeys) {
+    const value = motion[key];
+    if (value === undefined) continue;
+
+    const ms = parseDurationMs(value);
+    if (ms === null) continue; // format already validated by schema
+
+    if (ms <= 0) {
+      issues.push(
+        issue(
+          "error",
+          "INVALID_DURATION",
+          `'motion.${key}' must be > 0ms, got: ${value}`,
+          `motion.${key}`
+        )
+      );
+    } else if (ms > 10000) {
+      issues.push(
+        issue(
+          "error",
+          "INVALID_DURATION",
+          `'motion.${key}' must be <= 10000ms, got: ${value}`,
+          `motion.${key}`
+        )
+      );
+    }
+
+    parsed[key] = ms;
+  }
+
+  // Warn if ordering is violated: fast < normal < slow
+  if (parsed["duration-fast"] !== undefined && parsed["duration-normal"] !== undefined) {
+    if (parsed["duration-fast"] >= parsed["duration-normal"]) {
+      issues.push(
+        issue(
+          "warning",
+          "DURATION_ORDER",
+          `'motion.duration-fast' (${parsed["duration-fast"]}ms) should be less than 'motion.duration-normal' (${parsed["duration-normal"]}ms)`,
+          "motion"
+        )
+      );
+    }
+  }
+  if (parsed["duration-normal"] !== undefined && parsed["duration-slow"] !== undefined) {
+    if (parsed["duration-normal"] >= parsed["duration-slow"]) {
+      issues.push(
+        issue(
+          "warning",
+          "DURATION_ORDER",
+          `'motion.duration-normal' (${parsed["duration-normal"]}ms) should be less than 'motion.duration-slow' (${parsed["duration-slow"]}ms)`,
+          "motion"
+        )
+      );
+    }
+  }
+}
+
+function checkOverrides(
+  config: VisorThemeConfig,
+  issues: ValidationIssue[]
+): void {
+  if (!config.overrides) return;
+
+  for (const mode of ["light", "dark"] as const) {
+    const modeOverrides = config.overrides[mode];
+    if (!modeOverrides) continue;
+
+    for (const [key, value] of Object.entries(modeOverrides)) {
+      // Error on empty values
+      if (typeof value !== "string" || value.trim().length === 0) {
+        issues.push(
+          issue(
+            "error",
+            "INVALID_OVERRIDE",
+            `'overrides.${mode}.${key}' must be a non-empty string`,
+            `overrides.${mode}.${key}`
+          )
+        );
+        continue;
+      }
+
+      // Warn on keys that don't match any known semantic token
+      if (!KNOWN_SEMANTIC_TOKENS.has(key)) {
+        issues.push(
+          issue(
+            "warning",
+            "UNKNOWN_OVERRIDE_KEY",
+            `'overrides.${mode}.${key}' does not match any known semantic token. Valid tokens include: text-primary, surface-page, border-default, interactive-primary-bg, etc.`,
+            `overrides.${mode}.${key}`
+          )
+        );
+      }
+    }
+  }
+}
+
+/**
+ * Completeness contract -- verifies the resolved theme has every token
+ * the design system requires. Runs after resolveConfig() so we validate
+ * the RESOLVED output, not the minimal user input.
+ */
+function checkResolvedCompleteness(
+  resolved: ResolvedThemeConfig,
+  issues: ValidationIssue[]
+): void {
+  // Required color fields in resolved config
+  const requiredColors: Array<keyof ResolvedThemeConfig["colors"]> = [
+    "primary", "accent", "background", "surface",
+    "success", "warning", "error", "info",
+  ];
+  for (const key of requiredColors) {
+    const value = resolved.colors[key];
+    if (value === undefined || value === null) {
+      // neutral is allowed to be null (uses Tailwind Gray)
+      if ((key as string) === "neutral") continue;
+      issues.push(
+        issue("error", "INCOMPLETE_RESOLVED", `Resolved config missing 'colors.${key}'`, `colors.${key}`)
+      );
+    }
+  }
+
+  // Typography
+  if (!resolved.typography.heading.family) {
+    issues.push(issue("error", "INCOMPLETE_RESOLVED", "Resolved config missing 'typography.heading.family'", "typography.heading.family"));
+  }
+  if (!resolved.typography.body.family) {
+    issues.push(issue("error", "INCOMPLETE_RESOLVED", "Resolved config missing 'typography.body.family'", "typography.body.family"));
+  }
+  if (!resolved.typography.mono.family) {
+    issues.push(issue("error", "INCOMPLETE_RESOLVED", "Resolved config missing 'typography.mono.family'", "typography.mono.family"));
+  }
+
+  // Spacing
+  if (resolved.spacing.base === undefined || resolved.spacing.base === null) {
+    issues.push(issue("error", "INCOMPLETE_RESOLVED", "Resolved config missing 'spacing.base'", "spacing.base"));
+  }
+
+  // Radius -- all 5 tokens
+  const requiredRadius: Array<keyof ResolvedThemeConfig["radius"]> = ["sm", "md", "lg", "xl", "pill"];
+  for (const key of requiredRadius) {
+    if (resolved.radius[key] === undefined || resolved.radius[key] === null) {
+      issues.push(issue("error", "INCOMPLETE_RESOLVED", `Resolved config missing 'radius.${key}'`, `radius.${key}`));
+    }
+  }
+
+  // Shadows -- all 5 tokens
+  const requiredShadows: Array<keyof ResolvedThemeConfig["shadows"]> = ["xs", "sm", "md", "lg", "xl"];
+  for (const key of requiredShadows) {
+    if (!resolved.shadows[key]) {
+      issues.push(issue("error", "INCOMPLETE_RESOLVED", `Resolved config missing 'shadows.${key}'`, `shadows.${key}`));
+    }
+  }
+
+  // Motion -- all 4 tokens
+  const requiredMotion: Array<keyof ResolvedThemeConfig["motion"]> = [
+    "duration-fast", "duration-normal", "duration-slow", "easing",
+  ];
+  for (const key of requiredMotion) {
+    if (!resolved.motion[key]) {
+      issues.push(issue("error", "INCOMPLETE_RESOLVED", `Resolved config missing 'motion.${key}'`, `motion.${key}`));
     }
   }
 }
@@ -569,19 +825,45 @@ export function validate(config: unknown): ThemeValidationResult {
   // 3. Type scale coherence (errors)
   checkTypeScaleCoherence(typedConfig, errors);
 
+  // 4. Letter-spacing validation (errors)
+  checkLetterSpacing(typedConfig, errors);
+
+  // 5. Motion easing validation (errors)
+  checkMotionEasing(typedConfig, errors);
+
+  // 6. Motion duration runtime (errors + warnings mixed)
+  const durationIssues: ValidationIssue[] = [];
+  checkMotionDurationRuntime(typedConfig, durationIssues);
+  for (const iss of durationIssues) {
+    (iss.severity === "error" ? errors : warnings).push(iss);
+  }
+
+  // 7. Override validation (errors + warnings mixed)
+  const overrideIssues: ValidationIssue[] = [];
+  checkOverrides(typedConfig, overrideIssues);
+  for (const iss of overrideIssues) {
+    (iss.severity === "error" ? errors : warnings).push(iss);
+  }
+
+  // 8. Resolved completeness contract (errors)
+  if (errors.length === 0) {
+    const resolved = resolveConfig(typedConfig);
+    checkResolvedCompleteness(resolved, errors);
+  }
+
   // Only run warning checks if there are no errors
   // (warnings depend on valid config structure)
   if (errors.length === 0) {
-    // 4. WCAG contrast warnings
+    // 9. WCAG contrast warnings
     checkContrastWarnings(typedConfig, warnings);
 
-    // 5. Primary/accent similarity
+    // 10. Primary/accent similarity
     checkColorSimilarity(typedConfig, warnings);
 
-    // 6. Missing glow shadow
+    // 11. Missing glow shadow
     checkMissingGlowShadow(typedConfig, warnings);
 
-    // 7. Inconsistent radius scale
+    // 12. Inconsistent radius scale
     checkRadiusScale(typedConfig, warnings);
   }
 
