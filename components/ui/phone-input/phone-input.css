@@ -79,9 +79,10 @@
   opacity: 0.5 !important;
 }
 
-/* Dropdown content (search + country list container) — match Select .content */
+/* Dropdown content (search + country list container) — must be opaque since
+   intl-tel-input renders on document.body, potentially outside theme wrappers */
 .iti__dropdown-content {
-  background-color: var(--surface-card, #ffffff) !important;
+  background-color: var(--surface-overlay, var(--surface-card, #ffffff)) !important;
   border: 1px solid var(--border-default, #e5e7eb) !important;
   border-radius: var(--radius-lg, 0.5rem) !important;
   box-shadow: var(--shadow-md) !important;
@@ -109,9 +110,9 @@
   color: var(--text-secondary, #9ca3af) !important;
 }
 
-/* Country list background */
+/* Country list background — matches dropdown content */
 .iti__country-list {
-  background-color: var(--surface-card, #ffffff) !important;
+  background-color: var(--surface-overlay, var(--surface-card, #ffffff)) !important;
 }
 
 /* Individual country items — match Select .item */
