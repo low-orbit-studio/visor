@@ -38,6 +38,7 @@
 
 .triggerSizeSm {
   height: 2.25rem;
+  border-radius: var(--radius-sm, 0.25rem);
 }
 
 .triggerSizeMd {
