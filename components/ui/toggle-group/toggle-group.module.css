@@ -126,6 +126,11 @@
   color: var(--interactive-primary-text, #f9fafb);
 }
 
+/* Multiple-select outline — items need their own active bg (no sliding indicator) */
+:global([data-type="multiple"]) .itemVariantOutline[data-state="on"] {
+  background-color: var(--interactive-primary-bg, #111827);
+}
+
 /* Sizes */
 .itemSizeXs {
   height: 1.5rem;

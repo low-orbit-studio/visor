@@ -16,6 +16,7 @@ For global wisdom (universal lessons): [`~/Code/low-orbit/low-orbit-playbook/roo
 | W002 | cmdk requires scrollIntoView mock and axe-core rule exception | testing, cmdk, a11y, jsdom | [W002](W002-cmdk-jsdom-mocks.md) |
 | W006 | Wrangler R2 CLI defaults to local simulator | cloudflare, r2, wrangler, infrastructure | [W006](W006-wrangler-r2-gotchas.md) |
 | W007 | intl-tel-input focus loss prevention via callback refs | intl-tel-input, react, focus, refs | [W007](W007-intl-tel-input-focus.md) |
+| W008 | Visor Fonts CDN org slug is "low-orbit-studio" | fonts, cdn, r2, infrastructure | [W008](W008-visor-fonts-cdn-org.md) |
 
 ## Adding Entries
 

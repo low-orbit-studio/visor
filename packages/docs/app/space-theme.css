@@ -46,6 +46,7 @@ html:not(.dark) .wordmark-dark { display: none; }
   --font-mono: "Monaspace Neon", monospace;
 
   min-height: 100vh;
+  font-size: 1rem;
   background: var(--surface-page);
   color: var(--text-primary);
   position: relative;

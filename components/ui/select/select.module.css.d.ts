@@ -1,7 +1,8 @@
 declare const styles: {
   readonly trigger: string
-  readonly triggerDefault: string
-  readonly triggerSm: string
+  readonly triggerSizeSm: string
+  readonly triggerSizeMd: string
+  readonly triggerSizeLg: string
   readonly triggerIcon: string
   readonly content: string
   readonly viewport: string

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ThemeImage } from '@/components/theme-image';
+import { Button } from '@/components/ui/button';
 
 export default function HomePage() {
   return (
@@ -25,43 +26,12 @@ export default function HomePage() {
         style={{ maxWidth: '100%', height: 'auto' }}
       />
       <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-        <Link
-          href="/docs"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '2.75rem',
-            padding: '0 1.5rem',
-            borderRadius: '0.375rem',
-            backgroundColor: 'var(--accent)',
-            color: '#ffffff',
-            fontWeight: 600,
-            fontSize: '0.9375rem',
-            textDecoration: 'none',
-          }}
-        >
-          Browse Docs
-        </Link>
-        <Link
-          href="/docs/components/button"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '2.75rem',
-            padding: '0 1.5rem',
-            borderRadius: '0.375rem',
-            backgroundColor: 'transparent',
-            color: 'var(--text)',
-            fontWeight: 500,
-            fontSize: '0.9375rem',
-            textDecoration: 'none',
-            border: '1px solid var(--border)',
-          }}
-        >
-          Components
-        </Link>
+        <Button asChild size="lg">
+          <Link href="/docs">Browse Docs</Link>
+        </Button>
+        <Button asChild variant="outline" size="lg">
+          <Link href="/docs/components/button">Components</Link>
+        </Button>
       </div>
     </main>
   );

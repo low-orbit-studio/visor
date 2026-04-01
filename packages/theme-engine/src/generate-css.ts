@@ -127,6 +127,10 @@ function generateShadowPrimitives(config: ResolvedThemeConfig): string[] {
 function generateTypographyPrimitives(config: ResolvedThemeConfig): string[] {
   const decls: string[] = [];
 
+  // Font-size scale — applied to wrapper/root, cascades to em-relative elements
+  const scale = config.typography.scale;
+  decls.push(`font-size: ${scale === 1 ? "1rem" : `${scale}rem`};`);
+
   // Font families
   decls.push(`--font-sans: ${config.typography.body.family};`);
   decls.push(`--font-mono: ${config.typography.mono.family};`);

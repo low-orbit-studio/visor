@@ -19,6 +19,10 @@ why: >
   integrates with the Field component for labels and error messages.
 
 props:
+  - name: size
+    type: "'sm' | 'md' | 'lg'"
+    default: "md"
+    description: Controls min-height, padding, font-size, and border-radius
   - name: rows
     type: number
     description: Number of visible text lines

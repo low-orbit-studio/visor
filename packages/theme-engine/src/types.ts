@@ -76,6 +76,7 @@ export interface VisorThemeConfig {
     info?: string;
   };
   typography?: {
+    scale?: number;
     heading?: {
       family?: string;
       weight?: number;
@@ -139,6 +140,7 @@ export interface ResolvedThemeConfig {
   };
   "colors-dark"?: VisorThemeConfig["colors-dark"];
   typography: {
+    scale: number;
     heading: { family: string; weight: number };
     body: { family: string; weight: number };
     mono: { family: string };

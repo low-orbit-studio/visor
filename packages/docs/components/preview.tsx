@@ -35,7 +35,14 @@ export function ComponentPreview({
 
   return (
     <div className="preview-container">
-      <div className="preview-render" style={{ isolation: 'isolate', color: 'var(--text-primary)' }}>
+      <div
+        className="preview-render"
+        style={{ isolation: 'isolate', color: 'var(--text-primary)' }}
+        data-1p-ignore
+        data-lpignore="true"
+        data-bwignore
+        data-form-type="other"
+      >
         {children}
       </div>
       <div className="preview-footer">

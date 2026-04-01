@@ -36,12 +36,23 @@
   color: var(--text-secondary, #9ca3af);
 }
 
-.triggerDefault {
+.triggerSizeSm {
   height: 2.25rem;
+  border-radius: var(--radius-sm, 0.25rem);
 }
 
-.triggerSm {
-  height: 2rem;
+.triggerSizeMd {
+  height: auto;
+  padding: 0.875rem 1rem;
+  font-size: var(--font-size-sm, 0.875rem);
+  border-radius: var(--radius-sm, 0.5rem);
+}
+
+.triggerSizeLg {
+  height: auto;
+  padding: 1.125rem 1.25rem;
+  font-size: var(--font-size-base, 1rem);
+  border-radius: var(--radius-sm, 0.5rem);
 }
 
 .triggerIcon {

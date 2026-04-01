@@ -3,8 +3,8 @@
   z-index: 50;
   display: flex;
   flex-direction: column;
-  min-width: 17rem;
-  max-width: 20rem;
+  min-width: fit-content;
+  max-width: 24rem;
   border-radius: var(--radius-xl, 0.75rem);
   background-color: var(--surface-card, #ffffff);
   border: 1px solid var(--border-default, #e5e7eb);
@@ -145,6 +145,7 @@
 
 /* Divider between sections */
 .divider {
+  margin-top: var(--spacing-2, 0.5rem);
   background-color: var(--border-muted, #e5e7eb);
 }
 

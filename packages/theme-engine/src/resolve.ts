@@ -27,6 +27,7 @@ const DEFAULTS = {
     info: "#0EA5E9",
   },
   typography: {
+    scale: 1,
     heading: { family: DEFAULT_FONT_SANS, weight: 600 },
     body: { family: DEFAULT_FONT_SANS, weight: 400 },
     mono: { family: DEFAULT_FONT_MONO },
@@ -101,6 +102,7 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
     },
     "colors-dark": config["colors-dark"],
     typography: {
+      scale: config.typography?.scale ?? DEFAULTS.typography.scale,
       heading: {
         family:
           config.typography?.heading?.family ?? DEFAULTS.typography.heading.family,

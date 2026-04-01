@@ -38,6 +38,7 @@ colors-dark:
 
 # --- Typography (optional — defaults to system fonts) ---
 typography:
+  scale: 1                          # Font-size multiplier (default: 1). Applied to theme wrapper.
   heading:
     family: "Inter"                # Google Fonts name or CSS font stack
     weight: 600                    # Default: 600
