@@ -1,0 +1,60 @@
+name: Hero Section
+description: A full-width hero section with background media support, heading, subheading, and call-to-action button.
+category: marketing
+components_used:
+  - heading
+  - text
+  - button
+when_to_use:
+  - Marketing landing page hero
+  - Product launch pages
+  - App landing pages
+when_not_to_use:
+  - Presentation slides (use deck hero-slide)
+  - Content sections without full-viewport height
+props:
+  heading:
+    type: string
+    required: true
+    description: The main hero heading text
+  subheading:
+    type: string
+    required: false
+    description: Supporting subtitle below the heading
+  buttonText:
+    type: string
+    required: false
+    description: Label for the CTA button. Omit to render no button.
+  buttonHref:
+    type: string
+    required: false
+    description: If provided, renders the button as an anchor tag
+  onButtonClick:
+    type: "() => void"
+    required: false
+    description: Click handler for the button (used when no buttonHref)
+  backgroundImage:
+    type: string
+    required: false
+    description: URL for a CSS background-image. Ignored when backgroundVideo is set.
+  backgroundVideo:
+    type: string
+    required: false
+    description: URL for a video element used as the background. Takes priority over backgroundImage.
+  overlay:
+    type: boolean
+    required: false
+    default: "true"
+    description: When true (default) and media is present, renders a semi-transparent overlay using var(--overlay-bg)
+  className:
+    type: string
+    required: false
+    description: Additional CSS class applied to the root section element
+  children:
+    type: ReactNode
+    required: false
+    description: Custom content rendered below the heading/subheading area (badges, secondary buttons, logos, etc.)
+background_modes:
+  video: backgroundVideo prop — renders a <video autoPlay muted loop playsInline> behind content
+  image: backgroundImage prop — applied as CSS background-image on the root element
+  none: No media — section uses var(--surface-page) background and var(--text-primary) for text

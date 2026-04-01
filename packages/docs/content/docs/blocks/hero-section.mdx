@@ -1,0 +1,124 @@
+---
+title: Hero Section
+description: A full-width hero section with background media, heading, subheading, and call-to-action button.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { HeroSection } from '@/components/blocks/hero-section';
+
+## Preview
+
+<BlockPreview
+  title="Hero Section"
+  code={"<HeroSection\n  heading=\"Build Beautiful Interfaces\"\n  subheading=\"A design system built for real projects — theme-agnostic, copy-and-own, and production-ready.\"\n  buttonText=\"Get Started Free\"\n  buttonHref=\"/start\"\n/>"}
+>
+  <HeroSection
+    heading="Build Beautiful Interfaces"
+    subheading="A design system built for real projects — theme-agnostic, copy-and-own, and production-ready."
+    buttonText="Get Started Free"
+    buttonHref="/start"
+  />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block hero-section
+```
+
+This copies files into your project:
+
+- `blocks/hero-section/hero-section.tsx` — the block component
+- `blocks/hero-section/hero-section.module.css` — the styles
+
+## Usage
+
+```tsx
+import { HeroSection } from '@/blocks/hero-section/hero-section';
+
+export default function HomePage() {
+  return (
+    <HeroSection
+      heading="Build Beautiful Interfaces"
+      subheading="A design system built for real projects."
+      buttonText="Get Started Free"
+      buttonHref="/start"
+    />
+  );
+}
+```
+
+### With image background
+
+```tsx
+<HeroSection
+  heading="Launch Something Great"
+  subheading="Everything you need to ship fast."
+  buttonText="Start Building"
+  buttonHref="/start"
+  backgroundImage="/images/hero-bg.jpg"
+/>
+```
+
+### With video background
+
+```tsx
+<HeroSection
+  heading="The Future of Design Systems"
+  subheading="Theme-agnostic components that scale with your team."
+  buttonText="Explore Visor"
+  buttonHref="/docs"
+  backgroundVideo="/videos/hero-loop.mp4"
+  overlay={true}
+/>
+```
+
+### With children slot
+
+```tsx
+<HeroSection
+  heading="Build Beautiful Interfaces"
+  subheading="Trusted by design teams worldwide."
+  buttonText="Get Started"
+>
+  <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+    <Badge>Open Source</Badge>
+    <Badge>WCAG 2.1 AA</Badge>
+    <Badge>Copy & Own</Badge>
+  </div>
+</HeroSection>
+```
+
+## Background Modes
+
+The hero section supports three background modes, applied in priority order:
+
+| Mode | Prop | Behavior |
+|------|------|----------|
+| **Video** | `backgroundVideo` | Renders an `autoPlay muted loop playsInline` `<video>` element behind content. Takes priority over `backgroundImage`. |
+| **Image** | `backgroundImage` | Applied as a CSS `background-image` on the root element with `cover` and `center`. |
+| **None** | (omit both) | Section uses `var(--surface-page)` background and `var(--text-primary)` for text. |
+
+When media is present, the component applies `var(--text-inverse)` for text color and optionally renders a semi-transparent overlay using `var(--overlay-bg)`.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `heading` | `string` | — | **Required.** The main hero heading. |
+| `subheading` | `string` | — | Supporting subtitle rendered below the heading. |
+| `buttonText` | `string` | — | Label for the CTA button. Omit to render no button. |
+| `buttonHref` | `string` | — | If provided, renders the button as an `<a>` tag with this href. |
+| `onButtonClick` | `() => void` | — | Click handler for the button when no `buttonHref` is set. |
+| `backgroundImage` | `string` | — | URL for CSS background image. Ignored when `backgroundVideo` is set. |
+| `backgroundVideo` | `string` | — | URL for a video background element. Takes priority over `backgroundImage`. |
+| `overlay` | `boolean` | `true` | When true and media is present, adds a translucent overlay using `var(--overlay-bg)`. |
+| `className` | `string` | — | Additional CSS class applied to the root `<section>` element. |
+| `children` | `ReactNode` | — | Custom content rendered below the heading/subheading area (badges, logos, secondary buttons). |
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI — such as hero sections, feature grids, or login forms.
+
+Blocks are copy-and-own, just like components. Install them into your project and customize freely.
