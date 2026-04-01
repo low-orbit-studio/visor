@@ -18,7 +18,9 @@
 
 @media (min-width: 768px) {
   .top {
-    grid-template-columns: 2fr repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: 2fr;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
   }
 }
 
