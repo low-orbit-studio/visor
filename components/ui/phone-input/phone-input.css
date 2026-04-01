@@ -22,22 +22,46 @@
 
 /* The input element itself — match Visor Input component (input.module.css) */
 .iti input.iti__tel-input {
-  height: 2.25rem !important;
   width: 100% !important;
   min-width: 0 !important;
-  border-radius: var(--radius-md, 0.375rem) !important;
   border: 1px solid var(--border-default, #e5e7eb) !important;
   background-color: var(--surface-interactive-default, #f9fafb) !important;
-  padding-top: var(--spacing-1, 0.25rem) !important;
-  padding-bottom: var(--spacing-1, 0.25rem) !important;
-  padding-right: var(--spacing-3, 0.75rem) !important;
   /* padding-left is set dynamically by intl-tel-input to fit the flag + dial code */
-  font-size: var(--font-size-sm, 0.875rem) !important;
-  line-height: 1.5 !important;
   color: var(--text-primary, #111827) !important;
+  line-height: 1.5 !important;
   transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
               box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out) !important;
   outline: none !important;
+}
+
+/* Size: sm — compact (default for backwards compat) */
+[data-size="sm"] .iti input.iti__tel-input {
+  height: 2.25rem !important;
+  padding-top: var(--spacing-1, 0.25rem) !important;
+  padding-bottom: var(--spacing-1, 0.25rem) !important;
+  padding-right: var(--spacing-3, 0.75rem) !important;
+  font-size: var(--font-size-sm, 0.875rem) !important;
+  border-radius: var(--radius-sm, 0.25rem) !important;
+}
+
+/* Size: md (default) */
+[data-size="md"] .iti input.iti__tel-input {
+  height: auto !important;
+  padding-top: 0.875rem !important;
+  padding-bottom: 0.875rem !important;
+  padding-right: 1rem !important;
+  font-size: var(--font-size-sm, 0.875rem) !important;
+  border-radius: var(--radius-sm, 0.5rem) !important;
+}
+
+/* Size: lg */
+[data-size="lg"] .iti input.iti__tel-input {
+  height: auto !important;
+  padding-top: 1.125rem !important;
+  padding-bottom: 1.125rem !important;
+  padding-right: 1.25rem !important;
+  font-size: var(--font-size-base, 1rem) !important;
+  border-radius: var(--radius-sm, 0.5rem) !important;
 }
 
 .iti input.iti__tel-input::placeholder {

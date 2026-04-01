@@ -36,6 +36,10 @@ props:
   - name: disabled
     type: boolean
     description: Whether the field is disabled.
+  - name: size
+    type: '"sm" | "md" | "lg"'
+    default: '"md"'
+    description: Size variant — matches Input component sizes.
   - name: className
     type: string
     description: Additional CSS classes applied to the wrapper.
