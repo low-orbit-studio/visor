@@ -1,0 +1,25 @@
+/* ─── Color Controls Panel ──────────────────────────────────────────────── */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 1rem);
+}
+
+/* ─── Group ─────────────────────────────────────────────────────────────── */
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.groupTitle {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary, #9ca3af);
+  padding-bottom: var(--spacing-1, 0.25rem);
+  border-bottom: 1px solid var(--border-default, #e5e7eb);
+}

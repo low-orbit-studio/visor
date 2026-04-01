@@ -1,0 +1,23 @@
+/* ─── Shade Preview ─────────────────────────────────────────────────────── */
+
+.strip {
+  display: flex;
+  gap: 1px;
+  border-radius: var(--radius-sm, 0.25rem);
+  overflow: hidden;
+  height: 1.25rem;
+}
+
+.swatch {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  padding: 0;
+}
+
+.swatch[data-anchor="true"] {
+  outline: 2px solid var(--text-primary, #111827);
+  outline-offset: -2px;
+  z-index: 1;
+  border-radius: 1px;
+}

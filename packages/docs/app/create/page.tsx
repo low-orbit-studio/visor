@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useThemeCreator } from "./hooks/use-theme-creator";
 import { PreviewPanel } from "./components/preview-panel";
 import { ValidationDisplay } from "./components/validation-display";
+import { ColorControls } from "./components/color-controls";
 import styles from "./create.module.css";
 
 export default function CreatePage() {
@@ -21,11 +22,7 @@ export default function CreatePage() {
 
       <div className={styles.layout}>
         <div className={styles.controls}>
-          <div className={styles.controlsPlaceholder}>
-            Theme controls coming soon.
-            <br />
-            Editing: {config.name}
-          </div>
+          <ColorControls config={config} updateConfig={updateConfig} />
           <ValidationDisplay result={validationResult} />
         </div>
 
