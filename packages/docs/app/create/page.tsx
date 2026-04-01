@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import { useThemeCreator } from "./hooks/use-theme-creator";
 import { PreviewPanel } from "./components/preview-panel";
@@ -9,17 +9,18 @@ import { ColorControls } from "./components/color-controls";
 import { TypographyControls } from "./components/typography-controls";
 import { SpacingControls } from "./components/spacing-controls";
 import { AdvancedControls } from "./components/advanced-controls";
+import { ExportBar } from "./components/export-bar";
+import { StartFromDropdown } from "./components/start-from-dropdown";
+import { DarkModeToggle } from "./components/dark-mode-toggle";
 import styles from "./create.module.css";
 
 export default function CreatePage() {
-  const { config, themeData, validationResult, updateConfig } =
+  const { config, themeData, validationResult, updateConfig, replaceConfig } =
     useThemeCreator();
+  const [darkMode, setDarkMode] = useState(false);
 
   /** Forward font-load postMessage to the preview iframe */
   const handleLoadFont = useCallback((url: string) => {
-    // The PreviewPanel manages the iframe ref internally,
-    // so we broadcast to all iframes via a targeted approach.
-    // We look for the preview iframe in the DOM.
     const iframe = document.querySelector<HTMLIFrameElement>(
       'iframe[title="Theme preview"]'
     );
@@ -28,17 +29,20 @@ export default function CreatePage() {
     }
   }, []);
 
+
+  const handleNameChange = useCallback(
+    (name: string) => {
+      updateConfig("name", name);
+    },
+    [updateConfig]
+  );
+
   // Extract current values with defaults
-  const headingFamily =
-    config.typography?.heading?.family ?? "";
-  const headingWeight =
-    config.typography?.heading?.weight ?? 600;
-  const bodyFamily =
-    config.typography?.body?.family ?? "";
-  const bodyWeight =
-    config.typography?.body?.weight ?? 400;
-  const monoFamily =
-    config.typography?.mono?.family ?? "";
+  const headingFamily = config.typography?.heading?.family ?? "";
+  const headingWeight = config.typography?.heading?.weight ?? 600;
+  const bodyFamily = config.typography?.body?.family ?? "";
+  const bodyWeight = config.typography?.body?.weight ?? 400;
+  const monoFamily = config.typography?.mono?.family ?? "";
 
   const spacingBase = config.spacing?.base ?? 4;
   const radiusSm = config.radius?.sm ?? 2;
@@ -61,10 +65,28 @@ export default function CreatePage() {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Theme Creator</h1>
-        <Link href="/docs" className={styles.backLink}>
-          Back to Docs
-        </Link>
+        <div className={styles.headerLeft}>
+          <h1 className={styles.title}>Theme Creator</h1>
+          <Link href="/docs" className={styles.backLink}>
+            Back to Docs
+          </Link>
+        </div>
+        <div className={styles.headerControls}>
+          <StartFromDropdown onLoadConfig={replaceConfig} />
+          <DarkModeToggle
+            darkMode={darkMode}
+            onToggle={() => setDarkMode((prev) => !prev)}
+          />
+        </div>
+      </div>
+
+      <div className={styles.exportRow}>
+        <ExportBar
+          themeName={config.name}
+          onNameChange={handleNameChange}
+          themeData={themeData}
+          validationResult={validationResult}
+        />
       </div>
 
       <div className={styles.layout}>
@@ -135,7 +157,7 @@ export default function CreatePage() {
         </div>
 
         <div className={styles.preview}>
-          <PreviewPanel themeData={themeData} />
+          <PreviewPanel themeData={themeData} darkMode={darkMode} />
         </div>
       </div>
     </div>

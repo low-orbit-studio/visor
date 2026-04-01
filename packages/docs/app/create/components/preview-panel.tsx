@@ -6,11 +6,11 @@ import styles from "./preview-panel.module.css";
 
 interface PreviewPanelProps {
   themeData: ThemeData | null;
+  darkMode?: boolean;
 }
 
-export function PreviewPanel({ themeData }: PreviewPanelProps) {
+export function PreviewPanel({ themeData, darkMode = false }: PreviewPanelProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [darkMode, setDarkMode] = useState(false);
   const [iframeReady, setIframeReady] = useState(false);
 
   // Send CSS to iframe when themeData changes
@@ -53,14 +53,9 @@ export function PreviewPanel({ themeData }: PreviewPanelProps) {
     <div className={styles.panel}>
       <div className={styles.toolbar}>
         <span className={styles.toolbarLabel}>Preview</span>
-        <button
-          type="button"
-          className={styles.modeToggle}
-          onClick={() => setDarkMode((prev) => !prev)}
-          aria-label={`Switch to ${darkMode ? "light" : "dark"} mode`}
-        >
+        <span className={styles.modeLabel}>
           {darkMode ? "Dark" : "Light"}
-        </button>
+        </span>
       </div>
       <iframe
         ref={iframeRef}
