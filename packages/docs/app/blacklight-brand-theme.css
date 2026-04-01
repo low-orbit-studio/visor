@@ -43,6 +43,7 @@
   min-height: 100vh;
   background: var(--surface-page, var(--surface-background));
   color: var(--text-primary);
+  font-family: var(--font-sans);
   --color-white: #ffffff;
   --color-black: #000000;
   --color-primary-50: #fff2ec;
@@ -548,6 +549,22 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
 
 .blacklight-brand-theme aside[id="nd-sidebar"] {
   background: #0a0a1a;
+}
+
+/* ── Typography — PP Model Plastic for headings, PP Model Mono for body/code ── */
+
+.blacklight-brand-theme h1,
+.blacklight-brand-theme h2,
+.blacklight-brand-theme h3,
+.blacklight-brand-theme h4,
+.blacklight-brand-theme h5,
+.blacklight-brand-theme h6 {
+  font-family: var(--font-heading);
+}
+
+.blacklight-brand-theme code,
+.blacklight-brand-theme pre {
+  font-family: var(--font-mono);
 }
 
 /* ── Footer prev/next nav — label readable on hover ── */
