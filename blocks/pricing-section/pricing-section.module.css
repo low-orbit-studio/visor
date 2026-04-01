@@ -1,0 +1,124 @@
+.root {
+  padding: var(--spacing-16, 4rem) var(--spacing-6, 1.5rem);
+}
+
+.container {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: var(--spacing-12, 3rem);
+}
+
+.headerDescription {
+  margin-top: var(--spacing-4, 1rem);
+}
+
+.grid {
+  display: grid;
+  gap: var(--spacing-6, 1.5rem);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+}
+
+.tier {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tierHighlighted {
+  border-color: var(--border-focus, #3b82f6);
+  background-color: var(--surface-accent-subtle, #eff6ff);
+}
+
+.tierHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.tierBadge {
+  align-self: flex-start;
+  margin-bottom: var(--spacing-1, 0.25rem);
+}
+
+.tierName {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-secondary, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-1, 0.25rem);
+}
+
+.price {
+  font-size: var(--font-size-3xl, 1.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #111827);
+  line-height: 1;
+}
+
+.period {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.tierDescription {
+  margin-top: var(--spacing-1, 0.25rem);
+}
+
+.tierContent {
+  flex: 1;
+}
+
+.featureList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.featureItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-2, 0.5rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+}
+
+.featureIcon {
+  color: var(--text-success, #15803d);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tierFooter {
+  margin-top: auto;
+  padding-top: var(--spacing-6, 1.5rem);
+}
+
+.tierButton {
+  width: 100%;
+}

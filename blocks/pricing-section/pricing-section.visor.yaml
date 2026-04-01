@@ -1,0 +1,76 @@
+name: Pricing Section
+description: A responsive pricing tier grid with feature lists, highlighted plan, and per-tier CTAs.
+category: marketing
+components_used:
+  - card
+  - badge
+  - button
+  - separator
+  - heading
+  - text
+when_to_use:
+  - SaaS pricing pages
+  - Product comparison grids
+  - Subscription tier displays
+when_not_to_use:
+  - Single product pricing (use Card directly)
+  - Feature comparison tables without pricing
+props:
+  PricingTier:
+    name:
+      type: string
+      required: true
+      description: The tier name (e.g. "Starter", "Pro", "Enterprise")
+    price:
+      type: string
+      required: true
+      description: Formatted price string (e.g. "$19", "Free", "Custom"). Use use-currency hook or pre-format before passing.
+    period:
+      type: string
+      required: false
+      description: Billing period label shown next to the price (e.g. "/mo", "/year")
+    description:
+      type: string
+      required: false
+      description: Short description of the tier shown below the price
+    features:
+      type: string[]
+      required: true
+      description: List of feature strings displayed with Check icons
+    buttonText:
+      type: string
+      required: true
+      description: CTA button label
+    buttonHref:
+      type: string
+      required: false
+      description: If provided, renders the button as an anchor tag
+    onButtonClick:
+      type: "() => void"
+      required: false
+      description: Click handler for the CTA button (used when no buttonHref)
+    highlighted:
+      type: boolean
+      required: false
+      description: When true, applies accent border and subtle background to the tier card
+    badge:
+      type: string
+      required: false
+      description: Optional badge label shown above the tier name (e.g. "Most Popular")
+  PricingSectionProps:
+    heading:
+      type: string
+      required: false
+      description: Optional section heading displayed above the tier grid
+    description:
+      type: string
+      required: false
+      description: Optional supporting text below the section heading
+    tiers:
+      type: PricingTier[]
+      required: true
+      description: Array of pricing tier objects to render
+    className:
+      type: string
+      required: false
+      description: Additional CSS class applied to the root section element
