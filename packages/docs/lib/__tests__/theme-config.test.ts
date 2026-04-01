@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "fs";
+import { resolve } from "path";
 import { THEME_GROUPS, ALL_THEMES } from "../theme-config";
 
 describe("theme-config", () => {
@@ -23,5 +25,19 @@ describe("theme-config", () => {
   it("has no duplicate theme values", () => {
     const unique = new Set(ALL_THEMES);
     expect(unique.size).toBe(ALL_THEMES.length);
+  });
+});
+
+describe("theme CSS contract", () => {
+  const REQUIRED_TOKENS = ["--font-body", "--font-heading"];
+  const themesDir = resolve(__dirname, "../../app");
+
+  it.each(ALL_THEMES)("%s defines all required font tokens", (theme) => {
+    const css = readFileSync(resolve(themesDir, `${theme}-theme.css`), "utf-8");
+    for (const token of REQUIRED_TOKENS) {
+      expect(css, `${theme}-theme.css is missing ${token}`).toMatch(
+        new RegExp(`${token.replace(/[-/]/g, "\\$&")}\\s*:`)
+      );
+    }
   });
 });

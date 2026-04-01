@@ -35,6 +35,7 @@
   /* Font stacks */
   --font-satoshi: "Satoshi", system-ui, sans-serif;
   --font-heading: var(--font-satoshi);
+  --font-body: var(--font-satoshi);
 
   /* Blackout-namespaced tokens */
   --blackout-glass: rgba(255, 255, 255, 0.04);

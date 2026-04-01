@@ -132,7 +132,9 @@ function generateTypographyPrimitives(config: ResolvedThemeConfig): string[] {
   decls.push(`font-size: ${scale === 1 ? "1rem" : `${scale}rem`};`);
 
   // Font families
+  decls.push(`--font-heading: ${config.typography.heading.family};`);
   decls.push(`--font-sans: ${config.typography.body.family};`);
+  decls.push(`--font-body: ${config.typography.body.family};`);
   decls.push(`--font-mono: ${config.typography.mono.family};`);
 
   // Font sizes (matching Visor defaults — not configurable via .visor.yaml yet)
