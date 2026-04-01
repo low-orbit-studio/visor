@@ -42,7 +42,22 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Visual regression tests
-        run: npm run test:vr -w packages/docs
+        run: |
+          SNAPSHOTS_DIR="packages/docs/e2e/visual-regression.spec.ts-snapshots"
+          if [ -d "$SNAPSHOTS_DIR" ] && [ "$(ls -A $SNAPSHOTS_DIR 2>/dev/null)" ]; then
+            npm run test:vr -w packages/docs
+          else
+            echo "No baselines found — generating initial snapshots"
+            npm run test:vr:update -w packages/docs
+          fi
+
+      - name: Upload baseline snapshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vr-snapshots
+          path: packages/docs/e2e/visual-regression.spec.ts-snapshots/
+          retention-days: 30
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
