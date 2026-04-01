@@ -5,6 +5,8 @@ import {
   useForm,
   getFormProps,
   type FormMetadata,
+  type SubmissionResult,
+  type DefaultValue,
 } from "@conform-to/react"
 import { parseWithZod } from "@conform-to/zod"
 import type { z } from "zod"
@@ -43,10 +45,9 @@ function Form<Schema extends z.ZodType>({
 }: FormProps<Schema>) {
   const [lastResult, formAction] = React.useActionState(action, null)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [form, fields] = useForm<z.infer<Schema>>({
-    lastResult: lastResult as any,
-    defaultValue: defaultValue as any,
+    lastResult: lastResult as SubmissionResult<string[]> | null | undefined,
+    defaultValue: defaultValue as DefaultValue<z.infer<Schema>> | undefined,
     shouldValidate,
     onValidate({ formData }) {
       return parseWithZod(formData, { schema })
