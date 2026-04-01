@@ -1,6 +1,6 @@
-/* Phone input — wrapper-only styles
+/* Phone input — wrapper-only styles.
  * The intl-tel-input library manages its own DOM and styles.
- * Global overrides are in phone-input.css (non-module).
+ * Global overrides are in the non-module stylesheet.
  */
 .wrapper {
   width: 100%;
