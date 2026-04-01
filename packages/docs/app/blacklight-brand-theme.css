@@ -562,18 +562,13 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
 
 /* ── Typography — PP Model Plastic for headings, PP Model Mono for body/code ── */
 
-.blacklight-brand-theme h1 {
-  font-family: var(--font-sans);
-  font-size: 1.625rem;
-  font-weight: 500;
-}
-
+.blacklight-brand-theme h1,
 .blacklight-brand-theme h2,
 .blacklight-brand-theme h3,
 .blacklight-brand-theme h4,
 .blacklight-brand-theme h5,
 .blacklight-brand-theme h6 {
-  font-family: var(--font-sans);
+  font-family: var(--font-heading);
   font-weight: 500;
 }
 
