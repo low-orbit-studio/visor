@@ -83,17 +83,16 @@ Extracted design systems from existing projects into `.visor.yaml` themes. Both 
 - [x] Font extraction fixes: `@font-face` parsing, `var(--font-sans)` resolution, quote artifact cleanup (VI-82)
 - Extracted themes are local `.visor.yaml` files (private by default; cloud storage comes in Phase 11)
 
-## Phase 5: Docs Site & Theme Experience
+## Phase 5: Docs Site & Theme Experience — COMPLETE
 
-Make the docs site a world-class showcase.
+Made the docs site a world-class showcase with live theme previews, visual comparison, and regression testing.
 
-**Key work:**
+**Completed work:**
 - [x] Global theme switcher dropdown in docs header — every page is a live preview
-- Upgrade the basic theme switcher (Phase 1a) to a polished global dropdown
-- [x] Four-quadrant theme comparator (`/compare`) — 2 themes x light/dark showing real components
-- [x] Full MDX documentation for every component (currently only button exists)
-- All examples respond to the active theme
-- Add visual regression testing (Playwright screenshots) before themes proliferate further
+- [x] Four-quadrant theme comparator (`/compare`) — 2 themes × light/dark showing real components (VI-91)
+- [x] Full MDX documentation for every component
+- [x] All examples respond to the active theme
+- [x] Visual regression testing — Playwright screenshots across all themes × light/dark (VI-88)
 
 ## Phase 6: Visual Theme Creator
 
