@@ -577,6 +577,15 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
   font-family: var(--font-mono);
 }
 
+/* ── Form field labels — uppercase, light weight, subdued ── */
+
+.blacklight-brand-theme label {
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+}
+
 /* ── Footer prev/next nav — label readable on hover ── */
 html:not(.dark) .blacklight-brand-theme .grid > a:hover {
   --fd-muted-foreground: rgba(255, 255, 255, 0.7);
