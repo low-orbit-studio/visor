@@ -220,7 +220,7 @@ p.preview-title {
 }
 
 .blackout-theme .preview-render {
-  background: var(--surface-card);
+  background: var(--surface-page);
 }
 
 .blackout-theme .preview-footer {
