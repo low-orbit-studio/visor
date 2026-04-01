@@ -1,0 +1,13 @@
+name: CTA Section
+description: A centered call-to-action section composing Heading, Text, and Button.
+category: marketing
+components_used:
+  - heading
+  - text
+  - button
+when_to_use:
+  - Marketing landing pages
+  - Conversion sections
+  - Upgrade prompts
+when_not_to_use:
+  - Inline CTAs within content (use Button directly)

@@ -194,6 +194,25 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "cta-section",
+    type: "registry:block",
+    category: "marketing",
+    description:
+      "A centered call-to-action section with heading, description, and button.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "heading", "text", "button"],
+    files: [
+      {
+        path: "blocks/cta-section/cta-section.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/cta-section/cta-section.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "login-form",
     type: "registry:block",
     category: "authentication",
