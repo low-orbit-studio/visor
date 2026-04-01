@@ -44,6 +44,7 @@
   background: var(--surface-page, var(--surface-background));
   color: var(--text-primary);
   font-family: var(--font-sans);
+  font-weight: 300;
   --color-white: #ffffff;
   --color-black: #000000;
   --color-primary-50: #fff2ec;
@@ -559,7 +560,8 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
 .blacklight-brand-theme h4,
 .blacklight-brand-theme h5,
 .blacklight-brand-theme h6 {
-  font-family: var(--font-heading);
+  font-family: var(--font-sans);
+  font-weight: 500;
 }
 
 .blacklight-brand-theme code,
