@@ -12,7 +12,7 @@
 .month {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4, 1rem);
+  gap: var(--spacing-2, 0.5rem);
 }
 
 .monthCaption {
@@ -68,6 +68,13 @@
   width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
+  border: none;
+}
+
+.monthGrid th,
+.monthGrid td,
+.monthGrid tr {
+  border: none;
 }
 
 .weekdays {
