@@ -48,6 +48,46 @@ import { Input } from '@/components/ui/input/input';
   </div>
 </ComponentPreview>
 
+## Sizes
+
+Input and Textarea accept a `size` prop (`sm`, `md`, `lg`) that controls height, padding, and border-radius.
+
+<ComponentPreview
+  title="Small Field"
+  code={"<Field>\n  <FieldLabel htmlFor=\"sm\">Small</FieldLabel>\n  <Input id=\"sm\" size=\"sm\" placeholder=\"Compact field\" />\n</Field>"}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <Field>
+      <FieldLabel htmlFor="sm-demo">Small</FieldLabel>
+      <Input id="sm-demo" size="sm" placeholder="Compact field" />
+    </Field>
+  </div>
+</ComponentPreview>
+
+<ComponentPreview
+  title="Medium Field (default)"
+  code={"<Field>\n  <FieldLabel htmlFor=\"md\">Medium</FieldLabel>\n  <Input id=\"md\" size=\"md\" placeholder=\"Default field\" />\n</Field>"}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <Field>
+      <FieldLabel htmlFor="md-demo">Medium</FieldLabel>
+      <Input id="md-demo" size="md" placeholder="Default field" />
+    </Field>
+  </div>
+</ComponentPreview>
+
+<ComponentPreview
+  title="Large Field"
+  code={"<Field>\n  <FieldLabel htmlFor=\"lg\">Large</FieldLabel>\n  <Input id=\"lg\" size=\"lg\" placeholder=\"Spacious field\" />\n</Field>"}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <Field>
+      <FieldLabel htmlFor="lg-demo">Large</FieldLabel>
+      <Input id="lg-demo" size="lg" placeholder="Spacious field" />
+    </Field>
+  </div>
+</ComponentPreview>
+
 ## With Error
 
 <ComponentPreview
