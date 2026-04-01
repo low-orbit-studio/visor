@@ -567,11 +567,15 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
   background: var(--surface-page);
 }
 
+.blacklight-brand-theme [data-slot="table-header"] {
+  background: #020214;
+}
+
 .blacklight-brand-theme [data-slot="table-head"] {
   border: none;
   border-bottom: 1px solid #1a1a2e;
   padding: 12px 16px;
-  background: var(--surface-page);
+  background: #020214;
   font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
@@ -611,12 +615,17 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
   background: var(--surface-page);
 }
 
+.blacklight-brand-theme article thead,
+.blacklight-brand-theme .prose thead {
+  background: #020214;
+}
+
 .blacklight-brand-theme article th,
 .blacklight-brand-theme .prose th {
   border: none;
   border-bottom: 1px solid #1a1a2e;
   padding: 12px 16px;
-  background: var(--surface-page);
+  background: #020214;
   font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
