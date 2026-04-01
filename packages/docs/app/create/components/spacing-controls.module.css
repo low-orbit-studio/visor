@@ -1,0 +1,86 @@
+/* ─── Spacing Controls ───────────────────────────────────────────────────── */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.sectionTitle {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+  margin: 0;
+}
+
+.subsection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.subsectionLabel {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary, #6b7280);
+  margin: 0;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+}
+
+.fieldLabel {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.radiusGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.radiusGrid > .fieldGroup:last-child:nth-child(odd) {
+  grid-column: span 2;
+}
+
+/* ─── Spacing Preview Strip ──────────────────────────────────────────────── */
+
+.previewStrip {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-1, 0.25rem);
+  padding: var(--spacing-2, 0.5rem);
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-sm, 0.25rem);
+  background: var(--surface-secondary, #f9fafb);
+  min-height: 48px;
+}
+
+.previewBar {
+  flex: 1;
+  min-width: 0;
+  border-radius: var(--radius-sm, 0.25rem);
+  background: var(--color-primary-500, #6366f1);
+  transition: height 150ms ease;
+}
+
+.previewLabel {
+  font-size: 9px;
+  text-align: center;
+  color: var(--text-tertiary, #9ca3af);
+  margin-top: var(--spacing-1, 0.25rem);
+}
+
+.previewBarWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
