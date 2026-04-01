@@ -5,11 +5,9 @@
    ============================================ */
 
 /* ── Font-size scale — PP Model Mono has a large x-height ──
-   rem values are relative to html. The theme class is on body,
-   so we use :has() to scale the root font-size. ── */
-:root:has(.blacklight-brand-theme) {
-  font-size: 80%;
-}
+   Scale is baked into the font-size tokens below (×0.8) so that
+   layout rem values (padding, max-width) stay consistent with
+   other themes. ── */
 
 /* ── Section 0: Font faces ── */
 
@@ -51,7 +49,7 @@
   background: var(--surface-page, var(--surface-background));
   color: var(--text-primary);
   font-family: var(--font-sans);
-  font-size: 0.875rem;
+  font-size: 0.7rem;
   font-weight: 300;
   --color-white: #ffffff;
   --color-black: #000000;
@@ -148,14 +146,14 @@
   --font-sans: "PP Model Mono", monospace;
   --font-mono: "PP Model Mono", monospace;
   --font-heading: "PP Model Plastic", sans-serif;
-  --font-size-xs: 0.75rem; /* 12px */
-  --font-size-sm: 0.875rem; /* 14px */
-  --font-size-base: 1rem; /* 16px */
-  --font-size-lg: 1.125rem; /* 18px */
-  --font-size-xl: 1.25rem; /* 20px */
-  --font-size-2xl: 1.5rem; /* 24px */
-  --font-size-3xl: 1.875rem; /* 30px */
-  --font-size-4xl: 2.25rem; /* 36px */
+  --font-size-xs: 0.6rem; /* 12px × 0.8 */
+  --font-size-sm: 0.7rem; /* 14px × 0.8 */
+  --font-size-base: 0.8rem; /* 16px × 0.8 */
+  --font-size-lg: 0.9rem; /* 18px × 0.8 */
+  --font-size-xl: 1rem; /* 20px × 0.8 */
+  --font-size-2xl: 1.2rem; /* 24px × 0.8 */
+  --font-size-3xl: 1.5rem; /* 30px × 0.8 */
+  --font-size-4xl: 1.8rem; /* 36px × 0.8 */
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
