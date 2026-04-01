@@ -37,6 +37,18 @@ export const hooks: Registry = [
     ],
   },
   {
+    name: "use-currency",
+    type: "registry:hook",
+    description:
+      "Detects user locale and returns currency symbol and price formatter for USD, EUR, and GBP.",
+    files: [
+      {
+        path: "hooks/use-currency.ts",
+        type: "registry:hook",
+      },
+    ],
+  },
+  {
     name: "use-local-storage",
     type: "registry:hook",
     description:
