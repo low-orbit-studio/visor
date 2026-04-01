@@ -121,6 +121,7 @@
   padding: var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem) !important;
   font-size: var(--font-size-sm, 0.875rem) !important;
   line-height: 1.4 !important;
+  white-space: nowrap !important;
 }
 
 /* Hover and keyboard highlight — match Select .item:focus */
