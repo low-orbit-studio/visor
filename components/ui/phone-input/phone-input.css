@@ -112,9 +112,8 @@
 }
 
 /* Divider between search and country list */
-.iti__search-input + .iti__country-list,
-.iti__country-list {
-  border-top: 1px solid var(--border-default, #e5e7eb) !important;
+.iti__search-input-wrapper {
+  border-bottom: 1px solid var(--border-default, #e5e7eb) !important;
 }
 
 /* Country list background — matches dropdown content */
