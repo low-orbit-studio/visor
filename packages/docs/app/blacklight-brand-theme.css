@@ -230,13 +230,13 @@
 .blacklight-brand-theme {
   --surface-page: #020214;
   --surface-card: #12122A;
-  --surface-subtle: #f4f5f7;
-  --surface-muted: #e6e8ec;
-  --surface-overlay: #171b22;
-  --surface-interactive-default: #ffffff;
-  --surface-interactive-hover: #f4f5f7;
-  --surface-interactive-active: #e6e8ec;
-  --surface-interactive-disabled: #f4f5f7;
+  --surface-subtle: rgba(255, 255, 255, 0.02);
+  --surface-muted: rgba(255, 255, 255, 0.04);
+  --surface-overlay: #07090e;
+  --surface-interactive-default: rgba(255, 255, 255, 0.03);
+  --surface-interactive-hover: rgba(255, 255, 255, 0.05);
+  --surface-interactive-active: rgba(255, 255, 255, 0.08);
+  --surface-interactive-disabled: rgba(255, 255, 255, 0.02);
   --surface-accent-subtle: #fff2ec;
   --surface-accent-default: #b54e00;
   --surface-accent-strong: #f46c00;
@@ -269,16 +269,16 @@
   --interactive-primary-bg-hover: #6d2c01;
   --interactive-primary-bg-active: #4e1d00;
   --interactive-primary-text: #ffffff;
-  --interactive-secondary-bg: #ffffff;
-  --interactive-secondary-bg-hover: #f4f5f7;
-  --interactive-secondary-bg-active: #e6e8ec;
-  --interactive-secondary-text: #171b22;
-  --interactive-secondary-border: #b2b7c2;
+  --interactive-secondary-bg: rgba(255, 255, 255, 0.03);
+  --interactive-secondary-bg-hover: rgba(255, 255, 255, 0.05);
+  --interactive-secondary-bg-active: rgba(255, 255, 255, 0.08);
+  --interactive-secondary-text: rgba(255, 255, 255, 0.7);
+  --interactive-secondary-border: rgba(255, 255, 255, 0.1);
   --interactive-destructive-bg: #ef4444;
   --interactive-destructive-bg-hover: #990015;
   --interactive-destructive-text: #ffffff;
-  --interactive-ghost-bg: #ffffff;
-  --interactive-ghost-bg-hover: #e6e8ec;
+  --interactive-ghost-bg: transparent;
+  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.05);
 }
 
 /* --- Adaptive: Text (dark) — manual toggle --- */
@@ -304,10 +304,10 @@
   --surface-subtle: #292e38;
   --surface-muted: #3d424d;
   --surface-overlay: #07090e;
-  --surface-interactive-default: #292e38;
-  --surface-interactive-hover: #3d424d;
-  --surface-interactive-active: #4d525c;
-  --surface-interactive-disabled: #292e38;
+  --surface-interactive-default: rgba(255, 255, 255, 0.03);
+  --surface-interactive-hover: rgba(255, 255, 255, 0.05);
+  --surface-interactive-active: rgba(255, 255, 255, 0.08);
+  --surface-interactive-disabled: rgba(255, 255, 255, 0.02);
   --surface-accent-subtle: #300f00;
   --surface-accent-default: #b54e00;
   --surface-accent-strong: #df6718;
@@ -340,16 +340,16 @@
   --interactive-primary-bg-hover: #df6718;
   --interactive-primary-bg-active: #fc9b6a;
   --interactive-primary-text: #ffffff;
-  --interactive-secondary-bg: #292e38;
-  --interactive-secondary-bg-hover: #3d424d;
-  --interactive-secondary-bg-active: #4d525c;
-  --interactive-secondary-text: #f4f5f7;
-  --interactive-secondary-border: #52525b;
+  --interactive-secondary-bg: rgba(255, 255, 255, 0.03);
+  --interactive-secondary-bg-hover: rgba(255, 255, 255, 0.05);
+  --interactive-secondary-bg-active: rgba(255, 255, 255, 0.08);
+  --interactive-secondary-text: rgba(255, 255, 255, 0.7);
+  --interactive-secondary-border: rgba(255, 255, 255, 0.1);
   --interactive-destructive-bg: #ef4444;
   --interactive-destructive-bg-hover: #b91c1c;
   --interactive-destructive-text: #ffffff;
-  --interactive-ghost-bg: #292e38;
-  --interactive-ghost-bg-hover: #3d424d;
+  --interactive-ghost-bg: transparent;
+  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.05);
 }
 
 /* --- Adaptive: Text (dark) — prefers-color-scheme --- */
@@ -378,10 +378,10 @@
   --surface-subtle: #292e38;
   --surface-muted: #3d424d;
   --surface-overlay: #07090e;
-  --surface-interactive-default: #292e38;
-  --surface-interactive-hover: #3d424d;
-  --surface-interactive-active: #4d525c;
-  --surface-interactive-disabled: #292e38;
+  --surface-interactive-default: rgba(255, 255, 255, 0.03);
+  --surface-interactive-hover: rgba(255, 255, 255, 0.05);
+  --surface-interactive-active: rgba(255, 255, 255, 0.08);
+  --surface-interactive-disabled: rgba(255, 255, 255, 0.02);
   --surface-accent-subtle: #300f00;
   --surface-accent-default: #b54e00;
   --surface-accent-strong: #df6718;
@@ -418,16 +418,16 @@
   --interactive-primary-bg-hover: #df6718;
   --interactive-primary-bg-active: #fc9b6a;
   --interactive-primary-text: #ffffff;
-  --interactive-secondary-bg: #292e38;
-  --interactive-secondary-bg-hover: #3d424d;
-  --interactive-secondary-bg-active: #4d525c;
-  --interactive-secondary-text: #f4f5f7;
-  --interactive-secondary-border: #52525b;
+  --interactive-secondary-bg: rgba(255, 255, 255, 0.03);
+  --interactive-secondary-bg-hover: rgba(255, 255, 255, 0.05);
+  --interactive-secondary-bg-active: rgba(255, 255, 255, 0.08);
+  --interactive-secondary-text: rgba(255, 255, 255, 0.7);
+  --interactive-secondary-border: rgba(255, 255, 255, 0.1);
   --interactive-destructive-bg: #ef4444;
   --interactive-destructive-bg-hover: #b91c1c;
   --interactive-destructive-text: #ffffff;
-  --interactive-ghost-bg: #292e38;
-  --interactive-ghost-bg-hover: #3d424d;
+  --interactive-ghost-bg: transparent;
+  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.05);
 }
 }
 
@@ -458,10 +458,10 @@ html:not(.dark) .blacklight-brand-theme {
   --surface-subtle: #0e0e24;
   --surface-muted: #1a1a34;
   --surface-overlay: #020214;
-  --surface-interactive-default: #16162e;
-  --surface-interactive-hover: #1e1e3a;
-  --surface-interactive-active: #262644;
-  --surface-interactive-disabled: #0e0e24;
+  --surface-interactive-default: rgba(255, 255, 255, 0.04);
+  --surface-interactive-hover: rgba(255, 255, 255, 0.06);
+  --surface-interactive-active: rgba(255, 255, 255, 0.1);
+  --surface-interactive-disabled: rgba(255, 255, 255, 0.02);
   --surface-accent-subtle: #300f00;
   --surface-accent-default: #b54e00;
   --surface-accent-strong: #df6718;
@@ -490,9 +490,9 @@ html:not(.dark) .blacklight-brand-theme {
   --interactive-primary-bg-hover: #df6718;
   --interactive-primary-bg-active: #fc9b6a;
   --interactive-primary-text: #ffffff;
-  --interactive-secondary-bg: #16162e;
-  --interactive-secondary-bg-hover: #1e1e3a;
-  --interactive-secondary-bg-active: #262644;
+  --interactive-secondary-bg: rgba(255, 255, 255, 0.04);
+  --interactive-secondary-bg-hover: rgba(255, 255, 255, 0.06);
+  --interactive-secondary-bg-active: rgba(255, 255, 255, 0.1);
   --interactive-secondary-text: rgba(255, 255, 255, 0.7);
   --interactive-secondary-border: rgba(255, 255, 255, 0.12);
   --interactive-destructive-bg: #ef4444;
