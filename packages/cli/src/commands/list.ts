@@ -33,7 +33,19 @@ export interface ListOptions {
 
 export function listCommand(cwd: string, options: ListOptions = {}): void {
   const json = options.json ?? false
-  const registry = loadRegistry()
+
+  let registry: ReturnType<typeof loadRegistry>
+  try {
+    registry = loadRegistry()
+  } catch (error) {
+    if (json) {
+      const message = error instanceof Error ? error.message : String(error)
+      console.log(JSON.stringify({ success: false, error: message }, null, 2))
+      process.exit(1)
+    }
+    throw error
+  }
+
   const hasConfig = configExists(cwd)
 
   // Group items by type, then sub-group by category

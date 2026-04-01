@@ -14,8 +14,21 @@ export function diffCommand(
   options: DiffOptions = {}
 ): void {
   const json = options.json ?? false
-  const config = loadConfig(cwd)
-  const registry = loadRegistry()
+
+  let config: ReturnType<typeof loadConfig>
+  let registry: ReturnType<typeof loadRegistry>
+
+  try {
+    config = loadConfig(cwd)
+    registry = loadRegistry()
+  } catch (error) {
+    if (json) {
+      const message = error instanceof Error ? error.message : String(error)
+      console.log(JSON.stringify({ success: false, error: message }, null, 2))
+      process.exit(1)
+    }
+    throw error
+  }
 
   // If no component specified, diff all installed items
   const itemsToDiff = componentName

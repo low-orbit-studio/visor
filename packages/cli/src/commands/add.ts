@@ -25,8 +25,21 @@ export function addCommand(
   options: AddOptions = {}
 ): void {
   const json = options.json ?? false
-  const config = loadConfig(cwd)
-  const registry = loadRegistry()
+
+  let config: ReturnType<typeof loadConfig>
+  let registry: ReturnType<typeof loadRegistry>
+
+  try {
+    config = loadConfig(cwd)
+    registry = loadRegistry()
+  } catch (error) {
+    if (json) {
+      const message = error instanceof Error ? error.message : String(error)
+      console.log(JSON.stringify({ success: false, error: message }, null, 2))
+      process.exit(1)
+    }
+    throw error
+  }
 
   // When --block is used, validate that requested items are blocks
   if (options.block && components.length > 0) {
@@ -145,7 +158,17 @@ export function addCommand(
   }
 
   // Resolve all items including transitive registry dependencies
-  const items = resolveTransitiveDeps(registry, itemNames)
+  let items: ReturnType<typeof resolveTransitiveDeps>
+  try {
+    items = resolveTransitiveDeps(registry, itemNames)
+  } catch (error) {
+    if (json) {
+      const message = error instanceof Error ? error.message : String(error)
+      console.log(JSON.stringify({ success: false, error: message }, null, 2))
+      process.exit(1)
+    }
+    throw error
+  }
 
   if (!json) {
     logger.info(
