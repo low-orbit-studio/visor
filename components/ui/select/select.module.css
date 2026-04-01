@@ -54,6 +54,13 @@
   border-radius: var(--radius-sm, 0.5rem);
 }
 
+.triggerSizeXl {
+  height: auto;
+  padding: 1.125rem 1.25rem;
+  font-size: var(--font-size-base, 1rem);
+  border-radius: var(--radius-sm, 0.5rem);
+}
+
 .triggerIcon {
   pointer-events: none;
   width: 1rem;

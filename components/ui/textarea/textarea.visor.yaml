@@ -20,7 +20,7 @@ why: >
 
 props:
   - name: size
-    type: "'sm' | 'md' | 'lg'"
+    type: "'sm' | 'md' | 'lg' | 'xl'"
     default: "md"
     description: Controls min-height, padding, font-size, and border-radius
   - name: rows

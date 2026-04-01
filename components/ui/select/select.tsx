@@ -15,13 +15,14 @@ const SelectValue = SelectPrimitive.Value
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
-    size?: "sm" | "md" | "lg"
+    size?: "sm" | "md" | "lg" | "xl"
   }
 >(({ className, size = "md", children, ...props }, ref) => {
   const sizeClass = {
     sm: styles.triggerSizeSm,
     md: styles.triggerSizeMd,
     lg: styles.triggerSizeLg,
+    xl: styles.triggerSizeXl,
   }[size]
 
   return (

@@ -36,7 +36,7 @@ props:
 
 sub_components:
   - name: SelectTrigger
-    description: The button that opens the select dropdown. Accepts a size prop ("sm" | "md" | "lg").
+    description: The button that opens the select dropdown. Accepts a size prop ("sm" | "md" | "lg" | "xl").
   - name: SelectValue
     description: Displays the selected value or placeholder text inside the trigger.
   - name: SelectContent
