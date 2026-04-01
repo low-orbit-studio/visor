@@ -121,7 +121,7 @@
 .price {
   font-size: var(--font-size-4xl, 2.25rem);
   font-family: var(--font-heading, var(--font-body, ui-sans-serif, system-ui, sans-serif));
-  font-weight: var(--font-weight-semibold, 600);
+  font-weight: var(--font-weight-medium, 500);
   color: var(--text-primary, #111827);
   line-height: 1;
   letter-spacing: -0.02em;
