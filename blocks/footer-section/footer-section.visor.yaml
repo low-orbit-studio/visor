@@ -1,0 +1,14 @@
+name: Footer Section
+description: A multi-column responsive footer with link groups, logo area, and copyright.
+category: marketing
+components_used:
+  - heading
+  - text
+  - separator
+when_to_use:
+  - Website footers
+  - Landing page footers
+  - App marketing site footers
+when_not_to_use:
+  - In-app footers (typically minimal)
+  - Presentation footers (use deck-footer)

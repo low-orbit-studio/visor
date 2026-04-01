@@ -1,0 +1,147 @@
+---
+title: Footer Section
+description: A multi-column responsive footer with link groups, logo slot, tagline, and copyright. Suitable for marketing sites and landing pages.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { FooterSection } from '@/components/blocks/footer-section';
+
+## Preview
+
+<BlockPreview
+  title="Footer Section"
+  code={"<FooterSection\n  logo={<span style={{ fontWeight: 700, fontSize: '1.25rem' }}>Visor</span>}\n  tagline=\"The shared design system for Low Orbit Studio products.\"\n  linkGroups={[\n    {\n      heading: \"Product\",\n      links: [\n        { label: \"Features\", href: \"/features\" },\n        { label: \"Pricing\", href: \"/pricing\" },\n        { label: \"Changelog\", href: \"/changelog\" },\n      ],\n    },\n    {\n      heading: \"Company\",\n      links: [\n        { label: \"About\", href: \"/about\" },\n        { label: \"GitHub\", href: \"https://github.com\", external: true },\n      ],\n    },\n  ]}\n  copyright=\"© 2025 Low Orbit Studio. All rights reserved.\"\n/>"}
+>
+  <FooterSection
+    logo={<span style={{ fontWeight: 700, fontSize: '1.25rem' }}>Visor</span>}
+    tagline="The shared design system for Low Orbit Studio products."
+    linkGroups={[
+      {
+        heading: "Product",
+        links: [
+          { label: "Features", href: "/features" },
+          { label: "Pricing", href: "/pricing" },
+          { label: "Changelog", href: "/changelog" },
+        ],
+      },
+      {
+        heading: "Company",
+        links: [
+          { label: "About", href: "/about" },
+          { label: "GitHub", href: "https://github.com", external: true },
+        ],
+      },
+    ]}
+    copyright="© 2025 Low Orbit Studio. All rights reserved."
+  />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block footer-section
+```
+
+This copies files into your project:
+
+- `blocks/footer-section/footer-section.tsx` — the block component
+- `blocks/footer-section/footer-section.module.css` — the styles
+
+## Usage
+
+```tsx
+import { FooterSection } from '@/blocks/footer-section/footer-section';
+
+export default function MarketingLayout() {
+  return (
+    <FooterSection
+      logo={<img src="/logo.svg" alt="MyApp" width={100} />}
+      tagline="Building better interfaces for everyone."
+      linkGroups={[
+        {
+          heading: "Product",
+          links: [
+            { label: "Features", href: "/features" },
+            { label: "Pricing", href: "/pricing" },
+          ],
+        },
+        {
+          heading: "Company",
+          links: [
+            { label: "About", href: "/about" },
+            { label: "Blog", href: "/blog" },
+            { label: "GitHub", href: "https://github.com", external: true },
+          ],
+        },
+      ]}
+      copyright="© 2025 MyApp Inc. All rights reserved."
+    />
+  );
+}
+```
+
+### With bottomContent slot
+
+Use `bottomContent` for social icons, badges, or newsletter forms that render between the link groups and the copyright row:
+
+```tsx
+<FooterSection
+  logo={<img src="/logo.svg" alt="MyApp" width={100} />}
+  linkGroups={linkGroups}
+  bottomContent={
+    <div style={{ display: 'flex', gap: '1rem' }}>
+      <a href="https://twitter.com/myapp" aria-label="Twitter">Twitter</a>
+      <a href="https://github.com/myapp" aria-label="GitHub">GitHub</a>
+    </div>
+  }
+/>
+```
+
+## Props
+
+### FooterSectionProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `linkGroups` | `LinkGroup[]` | Required | Array of link group objects to render as nav columns |
+| `logo` | `ReactNode` | — | Logo or brand mark displayed in the brand column |
+| `tagline` | `string` | — | Short tagline displayed below the logo |
+| `bottomContent` | `ReactNode` | — | Slot for content between link groups and copyright row (social icons, badges, etc.) |
+| `copyright` | `string` | `© {year}` | Copyright line text. Defaults to current year if omitted |
+| `className` | `string` | — | Additional CSS class applied to the root `<footer>` |
+
+### LinkGroup
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `heading` | `string` | Required | Navigation group heading (displayed uppercase) |
+| `links` | `LinkItem[]` | Required | Array of link items within this group |
+
+### LinkItem
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | Required | Link display text |
+| `href` | `string` | Required | Link destination URL |
+| `external` | `boolean` | `false` | When true, adds `target="_blank"` and `rel="noopener noreferrer"` |
+
+## Responsive Behavior
+
+On mobile (below 768px), all columns stack vertically in a single column — brand, then each link group in order. On desktop (768px and above), the layout switches to a CSS grid with the brand column spanning approximately 2x the width of each link group column.
+
+## Semantic HTML
+
+The root element is a `<footer>` landmark. Each link group is wrapped in a `<nav>` with an `aria-label` matching the group heading. The copyright line is rendered in a `<small>` element.
+
+## Composition
+
+This block composes three Visor primitives:
+
+- **Heading** — Group headings with `h6` level and tertiary color
+- **Text** — Used implicitly via the tagline paragraph
+- **Separator** — Horizontal rule separating the link columns from the copyright row
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI. Blocks are copy-and-own — install them into your project and customize freely.
