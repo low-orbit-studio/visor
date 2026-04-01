@@ -556,17 +556,60 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
 
 /* ── Tables — matching Blacklight admin ── */
 
-.blacklight-brand-theme table {
+/* Visor Table component (data-slot selectors beat CSS Modules) */
+.blacklight-brand-theme [data-slot="table-container"] {
+  border: none;
+}
+
+.blacklight-brand-theme [data-slot="table"] {
   border-collapse: collapse;
 }
 
-.blacklight-brand-theme th,
-.blacklight-brand-theme td {
+.blacklight-brand-theme [data-slot="table-head"] {
+  border: none;
+  padding: 0.75rem 1rem;
+  background: var(--surface-page);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.5);
+  height: auto;
+}
+
+.blacklight-brand-theme [data-slot="table-cell"] {
   border: none;
   padding: 0.75rem 1rem;
 }
 
-.blacklight-brand-theme thead th {
+.blacklight-brand-theme [data-slot="table-header"] tr {
+  border-bottom: 1px solid #1a1a2e;
+}
+
+.blacklight-brand-theme [data-slot="table-row"] {
+  border-bottom: 1px solid #1a1a2e;
+}
+
+.blacklight-brand-theme [data-slot="table-row"]:hover {
+  background: #12122a;
+}
+
+.blacklight-brand-theme [data-slot="table-footer"] {
+  border-top: 1px solid #1a1a2e;
+  background: var(--surface-page);
+}
+
+/* Fumadocs prose tables (API Reference, Sub-components) */
+.blacklight-brand-theme article table,
+.blacklight-brand-theme .prose table {
+  border-collapse: collapse;
+}
+
+.blacklight-brand-theme article th,
+.blacklight-brand-theme .prose th {
+  border: none;
+  border-bottom: 1px solid #1a1a2e;
+  padding: 0.75rem 1rem;
   background: var(--surface-page);
   font-size: 0.75rem;
   font-weight: 500;
@@ -575,12 +618,16 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
   color: rgba(255, 255, 255, 0.5);
 }
 
-.blacklight-brand-theme tbody tr {
-  border-top: 1px solid #1a1a2e;
+.blacklight-brand-theme article td,
+.blacklight-brand-theme .prose td {
+  border: none;
+  border-bottom: 1px solid #1a1a2e;
+  padding: 0.75rem 1rem;
 }
 
-.blacklight-brand-theme tbody tr:hover {
-  background: #12122a;
+.blacklight-brand-theme article tr:last-child td,
+.blacklight-brand-theme .prose tr:last-child td {
+  border-bottom: none;
 }
 
 /* ── Preview footer ── */
