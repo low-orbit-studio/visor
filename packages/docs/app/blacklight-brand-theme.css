@@ -4,6 +4,13 @@
    Hand-corrected — #000000 placeholder values replaced with proper computed values
    ============================================ */
 
+/* ── Font-size scale — PP Model Mono has a large x-height ──
+   rem values are relative to html. The theme class is on body,
+   so we use :has() to scale the root font-size. ── */
+:root:has(.blacklight-brand-theme) {
+  font-size: 80%;
+}
+
 /* ── Section 0: Font faces ── */
 
 @font-face {
