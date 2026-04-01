@@ -103,6 +103,8 @@
 /* --- Primitive: Typography --- */
 .reference-app-theme {
   --font-sans: Satoshi;
+  --font-heading: var(--font-sans);
+  --font-body: var(--font-sans);
   --font-mono: JetBrains Mono;
   --font-size-xs: 0.75rem; /* 12px */
   --font-size-sm: 0.875rem; /* 14px */

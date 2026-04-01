@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import "intl-tel-input/styles"
 import { cn } from "../../../lib/utils"
 
 export interface PhoneInputProps {
@@ -110,9 +111,6 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
           "intl-tel-input/intlTelInputWithUtils"
         )
         const intlTelInput = intlTelInputModule.default
-
-        // @ts-expect-error intl-tel-input/styles is a valid CSS export but lacks type declaration
-        await import("intl-tel-input/styles")
 
         const input = inputRef.current
         if (!input) return

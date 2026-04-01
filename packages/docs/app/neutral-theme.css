@@ -14,6 +14,10 @@
   /* Accent — teal-cyan, WCAG AA compliant with white text */
   --accent: #1798ad;
 
+  /* Font — system stack (no custom font) */
+  --font-heading: ui-sans-serif, system-ui, sans-serif;
+  --font-body: ui-sans-serif, system-ui, sans-serif;
+
   /* Base styles */
   min-height: 100vh;
   font-size: 1rem;
@@ -205,4 +209,36 @@ html:not(.dark) .neutral-theme {
   --color-fd-popover: #ffffff;
   --color-fd-popover-foreground: #18181b; /* zinc-900 */
   --color-fd-ring: var(--accent);        /* teal-cyan */
+}
+
+/* ═══════════════════════════════════════════════
+   Section 5: Table styling — subtle borders
+   ═══════════════════════════════════════════════ */
+
+.dark .neutral-theme table {
+  border-color: #27272a;                 /* zinc-800 */
+}
+
+.dark .neutral-theme th,
+.dark .neutral-theme td {
+  border-color: #27272a;                 /* zinc-800 */
+}
+
+.dark .neutral-theme thead th {
+  background: #18181b;                   /* zinc-900 */
+  border-bottom-color: #3f3f46;          /* zinc-700 */
+}
+
+html:not(.dark) .neutral-theme table {
+  border-color: #e4e4e7;                 /* zinc-200 */
+}
+
+html:not(.dark) .neutral-theme th,
+html:not(.dark) .neutral-theme td {
+  border-color: #e4e4e7;                 /* zinc-200 */
+}
+
+html:not(.dark) .neutral-theme thead th {
+  background: #f4f4f5;                   /* zinc-100 */
+  border-bottom-color: #d4d4d8;          /* zinc-300 */
 }

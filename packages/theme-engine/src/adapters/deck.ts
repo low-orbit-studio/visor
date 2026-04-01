@@ -70,7 +70,9 @@ function generateScopedPrimitives(
   decls.push(`--radius-full: ${config.radius.pill}px;`);
 
   // Typography
+  decls.push(`--font-heading: ${config.typography.heading.family};`);
   decls.push(`--font-sans: ${config.typography.body.family};`);
+  decls.push(`--font-body: ${config.typography.body.family};`);
   decls.push(`--font-mono: ${config.typography.mono.family};`);
 
   return decls;

@@ -1,4 +1,6 @@
 .root {
+  width: 100%;
+  margin-top: auto;
   padding: var(--spacing-16, 4rem) var(--spacing-6, 1.5rem);
   border-top: 1px solid var(--border-default, #e5e7eb);
 }
@@ -17,7 +19,9 @@
 
 @media (min-width: 768px) {
   .top {
-    grid-template-columns: 2fr repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: 2fr;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
   }
 }
 

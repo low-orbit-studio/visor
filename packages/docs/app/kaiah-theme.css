@@ -105,6 +105,8 @@
 /* --- Primitive: Typography --- */
 .kaiah-theme {
   --font-sans: Inter;
+  --font-heading: var(--font-sans);
+  --font-body: var(--font-sans);
   --font-mono: JetBrains Mono;
   --font-size-xs: 0.75rem; /* 12px */
   --font-size-sm: 0.875rem; /* 14px */

@@ -43,6 +43,7 @@ html:not(.dark) .wordmark-dark { display: none; }
   /* Font stacks */
   --font-satoshi: "Satoshi", system-ui, sans-serif;
   --font-heading: var(--font-satoshi);
+  --font-body: var(--font-satoshi);
   --font-mono: "Monaspace Neon", monospace;
 
   min-height: 100vh;
