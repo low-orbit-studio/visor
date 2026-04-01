@@ -1,0 +1,11 @@
+{
+  "title": "Themes",
+  "description": "Theme tools, token rules, and guides for creating and comparing Visor themes.",
+  "pages": [
+    "theming",
+    "creating-themes",
+    "token-rules",
+    "theme-creator",
+    "theme-comparator"
+  ]
+}

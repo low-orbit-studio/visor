@@ -10,6 +10,25 @@ const config = {
   experimental: {
     // Required for monorepo imports from parent workspace
   },
+  async redirects() {
+    return [
+      {
+        source: '/docs/theming',
+        destination: '/docs/themes/theming',
+        permanent: true,
+      },
+      {
+        source: '/docs/creating-themes',
+        destination: '/docs/themes/creating-themes',
+        permanent: true,
+      },
+      {
+        source: '/docs/token-rules',
+        destination: '/docs/themes/token-rules',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default withMDX(config);
