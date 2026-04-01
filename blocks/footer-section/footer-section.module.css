@@ -1,5 +1,6 @@
 .root {
   width: 100%;
+  margin-top: auto;
   padding: var(--spacing-16, 4rem) var(--spacing-6, 1.5rem);
   border-top: 1px solid var(--border-default, #e5e7eb);
 }
