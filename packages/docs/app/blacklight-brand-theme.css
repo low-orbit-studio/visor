@@ -1,8 +1,42 @@
 /* ============================================
    Blacklight Brand Theme — Extracted by Visor Theme Engine
    Generated from blacklight-brand.visor.yaml
-   DO NOT EDIT — regenerate with: npx visor theme apply
+   Hand-corrected — #000000 placeholder values replaced with proper computed values
    ============================================ */
+
+/* ── Section 0: Font faces ── */
+
+@font-face {
+  font-family: "PP Model Mono";
+  src: url("https://fonts.visor.design/low-orbit-studio/pp-model-mono/PPModelMono-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "PP Model Mono";
+  src: url("https://fonts.visor.design/low-orbit-studio/pp-model-mono/PPModelMono-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "PP Model Plastic";
+  src: url("https://fonts.visor.design/low-orbit-studio/pp-model-plastic/PPModelPlastic-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "PP Model Plastic";
+  src: url("https://fonts.visor.design/low-orbit-studio/pp-model-plastic/PPModelPlastic-Super.woff2") format("woff2");
+  font-weight: 800;
+  font-display: swap;
+  font-style: normal;
+}
 
 /* --- Primitive: Colors --- */
 .blacklight-brand-theme {
@@ -39,7 +73,7 @@
   --color-neutral-300: #b2b7c2;
   --color-neutral-400: #898f9c;
   --color-neutral-500: #6c727e;
-  --color-neutral-600: #000000;
+  --color-neutral-600: #555a66;
   --color-neutral-700: #3d424d;
   --color-neutral-800: #292e38;
   --color-neutral-900: #171b22;
@@ -47,25 +81,25 @@
   --color-success-50: #e9faf1;
   --color-success-100: #d7f5e5;
   --color-success-500: #10b981;
-  --color-success-600: #000000;
+  --color-success-600: #089265;
   --color-success-700: #006b48;
   --color-success-900: #002919;
   --color-warning-50: #fff3e6;
   --color-warning-100: #ffebd5;
   --color-warning-500: #f59e0b;
-  --color-warning-600: #000000;
+  --color-warning-600: #c17b06;
   --color-warning-700: #8d5800;
   --color-warning-900: #361f00;
   --color-error-50: #fff2f0;
   --color-error-100: #ffe3e0;
   --color-error-500: #ef4444;
-  --color-error-600: #000000;
+  --color-error-600: #c4222d;
   --color-error-700: #990015;
   --color-error-900: #410004;
   --color-info-50: #f0f6ff;
   --color-info-100: #dfebff;
   --color-info-500: #3b82f6;
-  --color-info-600: #000000;
+  --color-info-600: #1e64cf;
   --color-info-700: #0045a8;
   --color-info-900: #001a4a;
 }
@@ -101,8 +135,9 @@
 
 /* --- Primitive: Typography --- */
 .blacklight-brand-theme {
-  --font-sans: PP Model Mono;
-  --font-mono: PP Model Mono;
+  --font-sans: "PP Model Mono", monospace;
+  --font-mono: "PP Model Mono", monospace;
+  --font-heading: "PP Model Plastic", sans-serif;
   --font-size-xs: 0.75rem; /* 12px */
   --font-size-sm: 0.875rem; /* 14px */
   --font-size-base: 1rem; /* 16px */
@@ -229,7 +264,7 @@
   --interactive-secondary-bg-active: #e6e8ec;
   --interactive-secondary-text: #171b22;
   --interactive-secondary-border: #b2b7c2;
-  --interactive-destructive-bg: #000000;
+  --interactive-destructive-bg: #ef4444;
   --interactive-destructive-bg-hover: #990015;
   --interactive-destructive-text: #ffffff;
   --interactive-ghost-bg: #ffffff;
@@ -241,7 +276,7 @@
   --text-primary: rgba(255, 255, 255, 1);
   --text-secondary: rgba(255, 255, 255, 0.7);
   --text-tertiary: rgba(255, 255, 255, 0.5);
-  --text-disabled: #000000;
+  --text-disabled: #3d424d;
   --text-inverse: #171b22;
   --text-inverse-secondary: #3d424d;
   --text-link: #df6718;
@@ -261,7 +296,7 @@
   --surface-overlay: #07090e;
   --surface-interactive-default: #292e38;
   --surface-interactive-hover: #3d424d;
-  --surface-interactive-active: #000000;
+  --surface-interactive-active: #4d525c;
   --surface-interactive-disabled: #292e38;
   --surface-accent-subtle: #300f00;
   --surface-accent-default: #b54e00;
@@ -280,7 +315,7 @@
 .dark .blacklight-brand-theme {
   --border-default: rgba(255, 255, 255, 0.1);
   --border-muted: #292e38;
-  --border-strong: #000000;
+  --border-strong: #52525b;
   --border-focus: #df6718;
   --border-disabled: #292e38;
   --border-success: #10b981;
@@ -297,11 +332,11 @@
   --interactive-primary-text: #ffffff;
   --interactive-secondary-bg: #292e38;
   --interactive-secondary-bg-hover: #3d424d;
-  --interactive-secondary-bg-active: #000000;
+  --interactive-secondary-bg-active: #4d525c;
   --interactive-secondary-text: #f4f5f7;
-  --interactive-secondary-border: #000000;
+  --interactive-secondary-border: #52525b;
   --interactive-destructive-bg: #ef4444;
-  --interactive-destructive-bg-hover: #000000;
+  --interactive-destructive-bg-hover: #b91c1c;
   --interactive-destructive-text: #ffffff;
   --interactive-ghost-bg: #292e38;
   --interactive-ghost-bg-hover: #3d424d;
@@ -313,7 +348,7 @@
   --text-primary: rgba(255, 255, 255, 1);
   --text-secondary: rgba(255, 255, 255, 0.7);
   --text-tertiary: rgba(255, 255, 255, 0.5);
-  --text-disabled: #000000;
+  --text-disabled: #3d424d;
   --text-inverse: #171b22;
   --text-inverse-secondary: #3d424d;
   --text-link: #df6718;
@@ -335,7 +370,7 @@
   --surface-overlay: #07090e;
   --surface-interactive-default: #292e38;
   --surface-interactive-hover: #3d424d;
-  --surface-interactive-active: #000000;
+  --surface-interactive-active: #4d525c;
   --surface-interactive-disabled: #292e38;
   --surface-accent-subtle: #300f00;
   --surface-accent-default: #b54e00;
@@ -356,7 +391,7 @@
 .blacklight-brand-theme:not(.light) {
   --border-default: rgba(255, 255, 255, 0.1);
   --border-muted: #292e38;
-  --border-strong: #000000;
+  --border-strong: #52525b;
   --border-focus: #df6718;
   --border-disabled: #292e38;
   --border-success: #10b981;
@@ -375,11 +410,11 @@
   --interactive-primary-text: #ffffff;
   --interactive-secondary-bg: #292e38;
   --interactive-secondary-bg-hover: #3d424d;
-  --interactive-secondary-bg-active: #000000;
+  --interactive-secondary-bg-active: #4d525c;
   --interactive-secondary-text: #f4f5f7;
-  --interactive-secondary-border: #000000;
+  --interactive-secondary-border: #52525b;
   --interactive-destructive-bg: #ef4444;
-  --interactive-destructive-bg-hover: #000000;
+  --interactive-destructive-bg-hover: #b91c1c;
   --interactive-destructive-text: #ffffff;
   --interactive-ghost-bg: #292e38;
   --interactive-ghost-bg-hover: #3d424d;
