@@ -16,7 +16,7 @@ function renderFormField(props: {
   fieldName: "name" | "email"
   label: string
   description?: string
-  type?: React.HTMLInputTypeAttribute
+  type?: "text" | "email" | "password" | "tel" | "url" | "number" | "search" | "date" | "datetime-local" | "month" | "week" | "time" | "color" | "file" | "hidden"
   placeholder?: string
 }) {
   return render(

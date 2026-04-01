@@ -13,8 +13,7 @@ import styles from "./form.module.css"
 
 /* ─── Types ────────────────────────────────────────────────────────── */
 
-export interface FormProps<Schema extends z.ZodType>
-  extends Omit<React.FormHTMLAttributes<HTMLFormElement>, "action"> {
+export interface FormProps<Schema extends z.ZodType> {
   /** Zod schema for validation */
   schema: Schema
   /** Server action function */
@@ -28,6 +27,8 @@ export interface FormProps<Schema extends z.ZodType>
   defaultValue?: Partial<z.infer<Schema>>
   /** When to validate: "onSubmit" | "onBlur" | "onInput" */
   shouldValidate?: "onSubmit" | "onBlur" | "onInput"
+  /** Additional CSS class name */
+  className?: string
 }
 
 /* ─── Form ─────────────────────────────────────────────────────────── */
@@ -39,13 +40,13 @@ function Form<Schema extends z.ZodType>({
   defaultValue,
   shouldValidate = "onBlur",
   className,
-  ...props
 }: FormProps<Schema>) {
   const [lastResult, formAction] = React.useActionState(action, null)
 
-  const [form, fields] = useForm({
-    lastResult,
-    defaultValue,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [form, fields] = useForm<z.infer<Schema>>({
+    lastResult: lastResult as any,
+    defaultValue: defaultValue as any,
     shouldValidate,
     onValidate({ formData }) {
       return parseWithZod(formData, { schema })
@@ -58,7 +59,6 @@ function Form<Schema extends z.ZodType>({
       action={formAction}
       className={cn(styles.form, className)}
       noValidate
-      {...props}
     >
       {children({ form, fields })}
     </form>

@@ -14,7 +14,7 @@ export interface FormFieldProps {
   /** Optional description text */
   description?: string
   /** Input type */
-  type?: React.HTMLInputTypeAttribute
+  type?: "text" | "email" | "password" | "tel" | "url" | "number" | "search" | "date" | "datetime-local" | "month" | "week" | "time" | "color" | "file" | "hidden"
   /** Input placeholder */
   placeholder?: string
 }
@@ -33,7 +33,7 @@ function FormField({
       <FieldLabel htmlFor={field.id}>{label}</FieldLabel>
       {description && <FieldDescription>{description}</FieldDescription>}
       <Input
-        {...getInputProps(field, { type })}
+        {...getInputProps(field, { type: type as "text" })}
         placeholder={placeholder}
       />
       <FieldError errors={field.errors} />
