@@ -182,6 +182,25 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "hero-section",
+    type: "registry:block",
+    category: "marketing",
+    description:
+      "A full-width hero section with background media, heading, and call-to-action.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "heading", "text", "button"],
+    files: [
+      {
+        path: "blocks/hero-section/hero-section.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/hero-section/hero-section.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "sphere-playground",
     type: "registry:block",
     category: "visual-elements",
