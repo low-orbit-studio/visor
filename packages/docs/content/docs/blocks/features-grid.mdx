@@ -5,8 +5,7 @@ full: true
 ---
 
 import { BlockPreview } from '@/components/block-preview';
-import { FeaturesGrid } from '@/components/blocks/features-grid';
-import { Rocket, Palette, ShieldCheck, Lightning } from '@phosphor-icons/react';
+import { FeaturesGridPreview } from '@/components/blocks/features-grid-preview';
 
 ## Preview
 
@@ -14,27 +13,7 @@ import { Rocket, Palette, ShieldCheck, Lightning } from '@phosphor-icons/react';
   title="Features Grid"
   code={"import { Rocket, Palette, ShieldCheck } from '@phosphor-icons/react';\n\n<FeaturesGrid\n  heading=\"Why Visor?\"\n  description=\"A design system built for real projects — theme-agnostic, copy-and-own, and production-ready.\"\n  features={[\n    {\n      icon: <Rocket size={24} />,\n      title: \"Fast to Ship\",\n      description: \"Copy components directly into your project. No lock-in, no wrappers, no magic.\",\n    },\n    {\n      icon: <Palette size={24} />,\n      title: \"Themeable\",\n      description: \"Every token is a CSS custom property. Swap themes without touching a single component.\",\n    },\n    {\n      icon: <ShieldCheck size={24} />,\n      title: \"Accessible\",\n      description: \"WCAG 2.1 AA compliant out of the box. Built on Radix UI primitives where it matters.\",\n    },\n  ]}\n/>"}
 >
-  <FeaturesGrid
-    heading="Why Visor?"
-    description="A design system built for real projects — theme-agnostic, copy-and-own, and production-ready."
-    features={[
-      {
-        icon: <Rocket size={24} />,
-        title: "Fast to Ship",
-        description: "Copy components directly into your project. No lock-in, no wrappers, no magic.",
-      },
-      {
-        icon: <Palette size={24} />,
-        title: "Themeable",
-        description: "Every token is a CSS custom property. Swap themes without touching a single component.",
-      },
-      {
-        icon: <ShieldCheck size={24} />,
-        title: "Accessible",
-        description: "WCAG 2.1 AA compliant out of the box. Built on Radix UI primitives where it matters.",
-      },
-    ]}
-  />
+  <FeaturesGridPreview />
 </BlockPreview>
 
 ## Installation
