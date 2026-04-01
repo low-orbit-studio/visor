@@ -554,30 +554,33 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
   font-style: var(--shiki-dark-font-style) !important;
 }
 
-/* ── Tables — subdued headers, subtle row borders ── */
+/* ── Tables — matching Blacklight admin ── */
 
 .blacklight-brand-theme table {
-  border-color: rgba(255, 255, 255, 0.06);
+  border-collapse: collapse;
 }
 
 .blacklight-brand-theme th,
 .blacklight-brand-theme td {
-  border-color: rgba(255, 255, 255, 0.06);
-  font-weight: 300;
+  border: none;
+  padding: 0.75rem 1rem;
 }
 
 .blacklight-brand-theme thead th {
-  background: transparent;
-  border-bottom-color: rgba(255, 255, 255, 0.1);
-  font-size: 0.6875rem;
+  background: var(--surface-page);
+  font-size: 0.75rem;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.blacklight-brand-theme tbody tr {
+  border-top: 1px solid #1a1a2e;
 }
 
 .blacklight-brand-theme tbody tr:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: #12122a;
 }
 
 /* ── Preview footer ── */
