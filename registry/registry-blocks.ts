@@ -232,6 +232,25 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "steps-section",
+    type: "registry:block",
+    category: "marketing",
+    description:
+      "A numbered process section with steps and connector lines.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "heading", "text"],
+    files: [
+      {
+        path: "blocks/steps-section/steps-section.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/steps-section/steps-section.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "testimonial-section",
     type: "registry:block",
     category: "marketing",

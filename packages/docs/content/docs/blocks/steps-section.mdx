@@ -1,0 +1,111 @@
+---
+title: Steps Section
+description: A numbered process section with auto-numbered steps and connector lines. Suitable for "how it works" sections and onboarding flows.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { StepsSection } from '@/components/blocks/steps-section';
+
+## Preview
+
+<BlockPreview
+  title="Steps Section"
+  code={"<StepsSection\n  heading=\"How It Works\"\n  description=\"Get up and running in three simple steps.\"\n  steps={[\n    { title: \"Install\", description: \"Add Visor to your project with a single command.\" },\n    { title: \"Configure\", description: \"Pick your theme and customize your tokens.\" },\n    { title: \"Ship\", description: \"Deploy with confidence — tokens update automatically.\" },\n  ]}\n/>"}
+>
+  <StepsSection
+    heading="How It Works"
+    description="Get up and running in three simple steps."
+    steps={[
+      { title: "Install", description: "Add Visor to your project with a single command." },
+      { title: "Configure", description: "Pick your theme and customize your tokens." },
+      { title: "Ship", description: "Deploy with confidence — tokens update automatically." },
+    ]}
+  />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block steps-section
+```
+
+This copies files into your project:
+
+- `blocks/steps-section/steps-section.tsx` — the block component
+- `blocks/steps-section/steps-section.module.css` — the styles
+
+## Usage
+
+```tsx
+import { StepsSection } from '@/blocks/steps-section/steps-section';
+
+export default function HowItWorksPage() {
+  return (
+    <StepsSection
+      heading="How It Works"
+      description="Get up and running in three simple steps."
+      steps={[
+        { title: "Install", description: "Add Visor to your project with a single command." },
+        { title: "Configure", description: "Pick your theme and customize your tokens." },
+        { title: "Ship", description: "Deploy with confidence — tokens update automatically." },
+      ]}
+    />
+  );
+}
+```
+
+## With Icons
+
+Steps can display an icon instead of the auto-generated number by providing the `icon` prop on any step:
+
+```tsx
+import { ArrowRight, Gear, Rocket } from "@phosphor-icons/react";
+
+<StepsSection
+  heading="How It Works"
+  steps={[
+    { title: "Install", description: "Add Visor to your project.", icon: <ArrowRight size={32} /> },
+    { title: "Configure", description: "Customize your tokens.", icon: <Gear size={32} /> },
+    { title: "Ship", description: "Deploy with confidence.", icon: <Rocket size={32} /> },
+  ]}
+/>
+```
+
+## Props
+
+### StepsSectionProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `steps` | `Step[]` | Required | Array of step objects to render |
+| `heading` | `string` | — | Optional section heading |
+| `description` | `string` | — | Optional section description below the heading |
+| `className` | `string` | — | Additional CSS class names |
+
+### Step
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `string` | Required | Step title |
+| `description` | `string` | Required | Step description text |
+| `icon` | `ReactNode` | — | Optional icon to display instead of the auto-numbered label |
+
+## Responsive Behavior
+
+On mobile (below 640px), steps stack vertically in a single column and connector lines are hidden. On desktop (640px and above), steps display in a horizontal grid with equal-width columns and connector lines appear between each step.
+
+## Auto-Numbering
+
+Steps are automatically numbered with zero-padded labels: `01`, `02`, `03`, etc. When an `icon` is provided for a step, the number is replaced by the icon. Numbers and icons are sized using `var(--font-size-4xl)` and colored with `var(--text-tertiary)` for a subtle, muted visual hierarchy.
+
+## Composition
+
+This block composes two Visor primitives:
+
+- **Heading** — Section heading and per-step titles
+- **Text** — Section description and per-step descriptions
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI. Blocks are copy-and-own — install them into your project and customize freely.

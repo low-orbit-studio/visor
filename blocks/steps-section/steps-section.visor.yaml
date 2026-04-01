@@ -1,0 +1,13 @@
+name: Steps Section
+description: A numbered process section with auto-numbered steps and connector lines. Suitable for "how it works" sections and onboarding flows.
+category: marketing
+components_used:
+  - heading
+  - text
+when_to_use:
+  - How it works sections
+  - Onboarding flow overviews
+  - Process explanations
+when_not_to_use:
+  - Detailed multi-step wizards (use stepper/form)
+  - Vertical timelines with dates (use timeline component)
