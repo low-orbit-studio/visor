@@ -12,14 +12,14 @@ export default function Layout({ children }: { children: ReactNode }) {
         title: (
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Image src="/astronaut.png" alt="" width={34} height={34} style={{ marginLeft: 2, marginRight: 2 }} />
-            <Image
+            <img
               src="/visor-wordmark-light.png"
               alt="Visor"
               width={64}
               height={18}
               className="wordmark-light"
             />
-            <Image
+            <img
               src="/visor-wordmark-dark.png"
               alt="Visor"
               width={64}

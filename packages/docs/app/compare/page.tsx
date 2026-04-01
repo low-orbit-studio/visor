@@ -132,48 +132,37 @@ function ComparatorContent() {
     return DEFAULTS;
   });
 
-  const syncUrl = useCallback(
-    (newState: ComparatorState) => {
-      if (isDefault(newState)) {
-        router.replace("/compare", { scroll: false });
-      } else {
-        router.replace(`/compare?${stateToParams(newState)}`, {
-          scroll: false,
-        });
-      }
-    },
-    [router]
-  );
+  useEffect(() => {
+    if (isDefault(state)) {
+      router.replace("/compare", { scroll: false });
+    } else {
+      router.replace(`/compare?${stateToParams(state)}`, {
+        scroll: false,
+      });
+    }
+  }, [state, router]);
 
   const updateQuadrant = useCallback(
     (key: QuadrantKey, update: Partial<QuadrantState>) => {
-      setState((prev) => {
-        const next = {
-          ...prev,
-          [key]: { ...prev[key], ...update },
-        };
-        syncUrl(next);
-        return next;
-      });
+      setState((prev) => ({
+        ...prev,
+        [key]: { ...prev[key], ...update },
+      }));
     },
-    [syncUrl]
+    []
   );
 
   const toggleMode = useCallback(
     (key: QuadrantKey) => {
-      setState((prev) => {
-        const next = {
-          ...prev,
-          [key]: {
-            ...prev[key],
-            mode: prev[key].mode === "dark" ? ("light" as Mode) : ("dark" as Mode),
-          },
-        };
-        syncUrl(next);
-        return next;
-      });
+      setState((prev) => ({
+        ...prev,
+        [key]: {
+          ...prev[key],
+          mode: prev[key].mode === "dark" ? ("light" as Mode) : ("dark" as Mode),
+        },
+      }));
     },
-    [syncUrl]
+    []
   );
 
   return (
