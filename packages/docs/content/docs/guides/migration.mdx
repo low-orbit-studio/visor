@@ -74,7 +74,7 @@ The extractor scans these locations automatically:
 - `tailwind.config.js` / `tailwind.config.ts` for color palettes
 - `package.json` for font dependencies
 
-The output file defaults to `extracted-theme.visor.yaml` in your project root.
+The output file defaults to `.visor.yaml` in your project root.
 
 **Extraction confidence:** The extractor assigns confidence levels (`high`, `medium`, `low`) to each mapped value. Low-confidence mappings are flagged with `# TODO` comments in the YAML — review these before applying.
 
@@ -158,7 +158,7 @@ Generate CSS from your validated `.visor.yaml`:
 npx @loworbitstudio/visor theme apply my-brand.visor.yaml --adapter nextjs
 ```
 
-This writes `app/globals.css` (or the path configured in `visor.json`) with:
+This writes `globals.css` in the current directory (or the path specified with `--output`) with:
 
 - Google Fonts `@import` (when non-system fonts are specified)
 - `@layer` order declaration
@@ -232,12 +232,12 @@ import { Button } from "@/components/ui/button";
 // New — Visor Button with theme-aware variants
 import { Button } from "@/components/ui/button";
 
-<Button variant="primary" onClick={handleClick}>
+<Button variant="default" onClick={handleClick}>
   Save Changes
 </Button>
 ```
 
-Available variants: `primary`, `secondary`, `ghost`, `destructive`, `link`.
+Available variants: `default`, `secondary`, `outline`, `ghost`, `destructive`.
 
 ### Input
 
@@ -258,11 +258,13 @@ import { Input } from "@/components/ui/input";
 For labeled form fields, pair with `Field`:
 
 ```tsx
-import { Field } from "@/components/ui/field";
+import { Field, FieldLabel, FieldDescription } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
-<Field label="Email" htmlFor="email" hint="We will never share your email.">
+<Field>
+  <FieldLabel htmlFor="email">Email</FieldLabel>
   <Input id="email" type="email" />
+  <FieldDescription>We will never share your email.</FieldDescription>
 </Field>
 ```
 
@@ -313,14 +315,14 @@ The Dialog backdrop uses `var(--overlay-bg)` — it automatically adapts to the 
 </table>
 
 // New — Visor Table
-import { Table, TableHead, TableBody, TableRow, TableCell } from "@/components/ui/table";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 
 <Table>
-  <TableHead>
+  <TableHeader>
     <TableRow>
-      <TableCell header>Name</TableCell>
+      <TableHead>Name</TableHead>
     </TableRow>
-  </TableHead>
+  </TableHeader>
   <TableBody>
     <TableRow>
       <TableCell>Alice</TableCell>
@@ -578,9 +580,10 @@ Output format:
   "errors": [],
   "warnings": [
     {
+      "severity": "warning",
       "code": "low-contrast-border",
       "message": "border-muted may fail WCAG AA at small sizes",
-      "token": "--border-muted"
+      "path": "--border-muted"
     }
   ]
 }
