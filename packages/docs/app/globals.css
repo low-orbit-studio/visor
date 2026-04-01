@@ -21,6 +21,10 @@
 }
 
 /* Footer prev/next nav — fumadocs v16 omits bg-fd-card */
+.\@container.grid {
+  margin-top: 4rem;
+}
+
 .\@container.grid > a.rounded-lg {
   background-color: var(--color-fd-card);
 }
