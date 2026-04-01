@@ -568,9 +568,9 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
 .blacklight-brand-theme [data-slot="table-head"] {
   border: none;
   border-bottom: 1px solid #1a1a2e;
-  padding: 1rem 1.25rem;
+  padding: 12px 16px;
   background: var(--surface-page);
-  font-size: 0.75rem;
+  font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -580,7 +580,7 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
 
 .blacklight-brand-theme [data-slot="table-cell"] {
   border: none;
-  padding: 1rem 1.25rem;
+  padding: 12px 16px;
 }
 
 .blacklight-brand-theme [data-slot="table-header"] tr {
@@ -611,9 +611,9 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
 .blacklight-brand-theme .prose th {
   border: none;
   border-bottom: 1px solid #1a1a2e;
-  padding: 1rem 1.25rem;
+  padding: 12px 16px;
   background: var(--surface-page);
-  font-size: 0.75rem;
+  font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -624,7 +624,7 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
 .blacklight-brand-theme .prose td {
   border: none;
   border-top: 1px solid #1a1a2e;
-  padding: 1rem 1.25rem;
+  padding: 12px 16px;
 }
 
 .blacklight-brand-theme article tr:last-child td,
