@@ -21,6 +21,10 @@ why: >
   for labels and error messages.
 
 props:
+  - name: size
+    type: "'sm' | 'md' | 'lg'"
+    default: "md"
+    description: Controls height, padding, font-size, and border-radius
   - name: type
     type: string
     default: "text"
