@@ -5,6 +5,7 @@ description: An international phone number input with country code selection, ge
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
+import { PhoneInput } from '@/components/ui/phone-input';
 
 ## Installation
 
@@ -54,10 +55,7 @@ function MyForm() {
   code={"import { PhoneInput } from '@/components/ui/phone-input/phone-input';\n\n<PhoneInput name=\"phone\" placeholder=\"Enter phone number\" />"}
 >
   <div style={{ width: '100%', maxWidth: '20rem' }}>
-    <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-      PhoneInput requires a browser environment for intl-tel-input initialization.
-      In the docs preview, it renders as a basic tel input (SSR fallback).
-    </div>
+    <PhoneInput name="phone-default" placeholder="Enter phone number" />
   </div>
 </ComponentPreview>
 
@@ -68,9 +66,11 @@ function MyForm() {
   code={"<PhoneInput\n  name=\"phone\"\n  placeholder=\"Enter phone number\"\n  onChange={(value, isValid) => {\n    console.log('Number:', value, 'Valid:', isValid);\n  }}\n/>"}
 >
   <div style={{ width: '100%', maxWidth: '20rem' }}>
-    <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-      The onChange callback returns both the full international number (e.g. &quot;+14155551234&quot;) and a validation boolean.
-    </div>
+    <PhoneInput
+      name="phone-onchange"
+      placeholder="Enter phone number"
+      onChange={(value, isValid) => console.log('Number:', value, 'Valid:', isValid)}
+    />
   </div>
 </ComponentPreview>
 
@@ -81,9 +81,7 @@ function MyForm() {
   code={"<PhoneInput name=\"phone\" placeholder=\"Enter phone number\" disabled />"}
 >
   <div style={{ width: '100%', maxWidth: '20rem' }}>
-    <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-      Disabled state prevents interaction with both the input and country selector.
-    </div>
+    <PhoneInput name="phone-disabled" placeholder="Enter phone number" disabled />
   </div>
 </ComponentPreview>
 
