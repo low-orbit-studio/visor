@@ -1,9 +1,7 @@
-/* Phone input wrapper */
+/* Phone input — wrapper-only styles.
+ * The intl-tel-input library manages its own DOM and styles.
+ * Global overrides are in the non-module stylesheet.
+ */
 .wrapper {
   width: 100%;
-}
-
-/* Input — inherits all styling from Input component */
-.input {
-  /* No overrides needed */
 }

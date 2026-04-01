@@ -1,11 +1,10 @@
 ---
 title: Phone Input
-description: A phone number input with automatic US format formatting.
+description: An international phone number input with country code selection, geo-IP detection, format-as-you-type, and validation.
 ---
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
-import { PhoneInput } from '@/components/ui/phone-input';
 
 ## Installation
 
@@ -13,29 +12,65 @@ import { PhoneInput } from '@/components/ui/phone-input';
 npx visor add phone-input
 ```
 
-This copies two files into your project:
+This copies three files into your project:
 
 - `components/ui/phone-input/phone-input.tsx` — the component
-- `components/ui/phone-input/phone-input.module.css` — the styles
+- `components/ui/phone-input/phone-input.css` — global theme overrides for intl-tel-input
+- `components/ui/phone-input/phone-input.module.css` — wrapper styles
 
-This also installs the `input` component as a dependency.
+It also installs `intl-tel-input` as a dependency.
+
+**Important:** Import the global CSS file in your app layout or entry point:
+
+```tsx
+import '@/components/ui/phone-input/phone-input.css';
+```
 
 ## Usage
 
 ```tsx
 import { PhoneInput } from '@/components/ui/phone-input/phone-input';
 
-<PhoneInput placeholder="(555) 123-4567" />
+function MyForm() {
+  const [phone, setPhone] = useState('');
+  const [isValid, setIsValid] = useState(false);
+
+  return (
+    <PhoneInput
+      name="phone"
+      onChange={(value, valid) => {
+        setPhone(value);
+        setIsValid(valid);
+      }}
+    />
+  );
+}
 ```
 
 ## Default
 
 <ComponentPreview
   title="Phone Input"
-  code={"import { PhoneInput } from '@/components/ui/phone-input/phone-input';\n\n<PhoneInput aria-label=\"Phone number\" placeholder=\"(555) 123-4567\" />"}
+  code={"import { PhoneInput } from '@/components/ui/phone-input/phone-input';\n\n<PhoneInput name=\"phone\" placeholder=\"Enter phone number\" />"}
 >
   <div style={{ width: '100%', maxWidth: '20rem' }}>
-    <PhoneInput aria-label="Phone number" placeholder="(555) 123-4567" />
+    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+      PhoneInput requires a browser environment for intl-tel-input initialization.
+      In the docs preview, it renders as a basic tel input (SSR fallback).
+    </p>
+  </div>
+</ComponentPreview>
+
+## With onChange
+
+<ComponentPreview
+  title="With onChange"
+  code={"<PhoneInput\n  name=\"phone\"\n  placeholder=\"Enter phone number\"\n  onChange={(value, isValid) => {\n    console.log('Number:', value, 'Valid:', isValid);\n  }}\n/>"}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+      The onChange callback returns both the full international number (e.g. &quot;+14155551234&quot;) and a validation boolean.
+    </p>
   </div>
 </ComponentPreview>
 
@@ -43,10 +78,12 @@ import { PhoneInput } from '@/components/ui/phone-input/phone-input';
 
 <ComponentPreview
   title="Disabled"
-  code={"<PhoneInput aria-label=\"Phone number\" placeholder=\"(555) 123-4567\" disabled />"}
+  code={"<PhoneInput name=\"phone\" placeholder=\"Enter phone number\" disabled />"}
 >
   <div style={{ width: '100%', maxWidth: '20rem' }}>
-    <PhoneInput aria-label="Phone number" placeholder="(555) 123-4567" disabled />
+    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+      Disabled state prevents interaction with both the input and country selector.
+    </p>
   </div>
 </ComponentPreview>
 
@@ -56,11 +93,28 @@ import { PhoneInput } from '@/components/ui/phone-input/phone-input';
 
 <PropsTable component="phone-input" />
 
-The component also accepts all standard `<input>` HTML attributes.
+## Features
+
+- **Country code selection** — searchable dropdown with all countries and dial codes
+- **Geo-IP detection** — auto-detects user's country on mount with US fallback
+- **Format-as-you-type** — applies per-country formatting rules as users type
+- **Validation** — powered by libphonenumber, returns validation status via `onChange`
+- **SSR-safe** — renders a basic `<input type="tel">` during server render, hydrates with full functionality on mount
+
+## CSS Import
+
+The component requires a global CSS import for the intl-tel-input dropdown theming. This file overrides the library's default styles with Visor design tokens:
+
+```tsx
+// In your layout.tsx or _app.tsx
+import '@/components/ui/phone-input/phone-input.css';
+```
+
+The CSS is global (not a CSS Module) because intl-tel-input renders its dropdown via `document.body`, outside React's component tree.
 
 ## Accessibility
 
-- Renders a native `<input>` with `type="tel"` and `inputmode="tel"` for appropriate mobile keyboard
+- Renders a native `<input>` with `type="tel"` and `autocomplete="tel"` for appropriate mobile keyboard and autofill
 - Always pair with a `<Label>` using `htmlFor`/`id`, or provide `aria-label` directly
-- The `onChange` callback returns raw digits only — display formatting is applied visually but not stored in the value
-- For international numbers, consider pairing with a country code selector
+- The country dropdown supports keyboard navigation and search
+- Focus is maintained during parent re-renders (callback refs pattern)
