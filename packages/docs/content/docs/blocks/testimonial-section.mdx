@@ -1,0 +1,135 @@
+---
+title: Testimonial Section
+description: A social proof section with testimonial quotes, avatars, and attribution. Supports single centered layout or responsive grid for multiple testimonials.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { TestimonialSection } from '@/components/blocks/testimonial-section';
+
+## Preview
+
+### Single Testimonial
+
+<BlockPreview
+  title="Single Testimonial"
+  code={"<TestimonialSection\n  heading=\"What our customers say\"\n  testimonials={[\n    {\n      quote: \"Visor's design system has completely transformed how our team builds consistent UI. The token system is a game-changer.\",\n      author: \"Jane Smith\",\n      role: \"Design Lead\",\n      company: \"Acme Corp\",\n    },\n  ]}\n/>"}
+>
+  <TestimonialSection
+    heading="What our customers say"
+    testimonials={[
+      {
+        quote: "Visor's design system has completely transformed how our team builds consistent UI. The token system is a game-changer.",
+        author: "Jane Smith",
+        role: "Design Lead",
+        company: "Acme Corp",
+      },
+    ]}
+  />
+</BlockPreview>
+
+### Multiple Testimonials (Grid)
+
+<BlockPreview
+  title="Testimonial Grid"
+  code={"<TestimonialSection\n  heading=\"Loved by teams everywhere\"\n  testimonials={[\n    {\n      quote: \"Incredible component library with best-in-class theming support. Our team shipped faster than ever.\",\n      author: \"Alice Johnson\",\n      role: \"Frontend Engineer\",\n      company: \"TechCo\",\n    },\n    {\n      quote: \"The token system makes it effortless to stay visually consistent across all our products.\",\n      author: \"Bob Williams\",\n      role: \"Product Designer\",\n      company: \"Designify\",\n    },\n    {\n      quote: \"Copy-and-own components are a revelation. We customize freely without worrying about upstream breaking changes.\",\n      author: \"Carol Davis\",\n      role: \"CTO\",\n      company: \"StartupXYZ\",\n    },\n  ]}\n/>"}
+>
+  <TestimonialSection
+    heading="Loved by teams everywhere"
+    testimonials={[
+      {
+        quote: "Incredible component library with best-in-class theming support. Our team shipped faster than ever.",
+        author: "Alice Johnson",
+        role: "Frontend Engineer",
+        company: "TechCo",
+      },
+      {
+        quote: "The token system makes it effortless to stay visually consistent across all our products.",
+        author: "Bob Williams",
+        role: "Product Designer",
+        company: "Designify",
+      },
+      {
+        quote: "Copy-and-own components are a revelation. We customize freely without worrying about upstream breaking changes.",
+        author: "Carol Davis",
+        role: "CTO",
+        company: "StartupXYZ",
+      },
+    ]}
+  />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block testimonial-section
+```
+
+This copies files into your project:
+
+- `blocks/testimonial-section/testimonial-section.tsx` — the block component
+- `blocks/testimonial-section/testimonial-section.module.css` — the styles
+
+## Usage
+
+```tsx
+import { TestimonialSection } from '@/blocks/testimonial-section/testimonial-section';
+
+export default function HomePage() {
+  return (
+    <TestimonialSection
+      heading="What our customers say"
+      testimonials={[
+        {
+          quote: "This design system transformed how we build UI.",
+          author: "Jane Smith",
+          role: "Design Lead",
+          company: "Acme Corp",
+          avatarSrc: "/avatars/jane.jpg",
+        },
+      ]}
+    />
+  );
+}
+```
+
+## Props
+
+### `TestimonialSectionProps`
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `testimonials` | `Testimonial[]` | — | Array of testimonial objects (required) |
+| `heading` | `string` | — | Optional section heading |
+| `className` | `string` | — | Additional CSS class for the root element |
+
+### `Testimonial`
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `quote` | `string` | — | The testimonial quote text (required) |
+| `author` | `string` | — | Author's full name (required) |
+| `role` | `string` | — | Author's job title |
+| `company` | `string` | — | Author's company name |
+| `avatarSrc` | `string` | — | URL for the author's avatar image |
+| `avatarFallback` | `string` | — | Fallback text for avatar (defaults to first letter of author name) |
+
+## Composition
+
+This block composes five Visor primitives:
+
+- **Card** — Container with surface styling for the multi-testimonial grid layout
+- **Avatar** — Author profile image with fallback initial support
+- **Heading** — Optional section heading
+- **Text** — Author name and role/company attribution
+- **Separator** — Visual divider between quote and attribution
+
+## Semantic HTML
+
+Quotes use `<blockquote>` and attribution uses `<cite>` per HTML spec and WCAG guidelines. Quote marks are rendered via CSS `::before` pseudo-element to keep them decorative and screen-reader-neutral.
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI — such as testimonial sections, login forms, or settings panels.
+
+Blocks are copy-and-own, just like components. Install them into your project and customize freely.

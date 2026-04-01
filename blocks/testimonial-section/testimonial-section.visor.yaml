@@ -1,0 +1,16 @@
+name: Testimonial Section
+description: A social proof section with testimonial quotes, avatars, and attribution. Supports single centered layout or responsive grid for multiple testimonials.
+category: marketing
+components_used:
+  - card
+  - avatar
+  - text
+  - heading
+  - separator
+when_to_use:
+  - Customer testimonials
+  - Social proof sections
+  - Review showcases
+when_not_to_use:
+  - Product reviews with ratings (extend with star component)
+  - User-generated content feeds
