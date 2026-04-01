@@ -51,6 +51,7 @@
 
   /* Base styles */
   min-height: 100vh;
+  font-size: 1rem;
   background: var(--surface-page);
   color: var(--text-primary);
   font-family: var(--font-satoshi);

@@ -1,7 +1,7 @@
 /* ============================================
    Kaiah Theme — Extracted by Visor Theme Engine
    Generated from kaiah.visor.yaml
-   DO NOT EDIT — regenerate with: npx visor theme apply
+   Hand-corrected — theme engine output had placeholder values
    ============================================ */
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
@@ -9,6 +9,7 @@
 /* --- Primitive: Colors --- */
 .kaiah-theme {
   min-height: 100vh;
+  font-size: 1rem;
   background: var(--surface-page, var(--surface-background));
   color: var(--text-primary);
   --color-white: #ffffff;
@@ -30,7 +31,7 @@
   --color-accent-300: #bab7b0;
   --color-accent-400: #938f87;
   --color-accent-500: #757168;
-  --color-accent-600: #f5f0e6;
+  --color-accent-600: #5d5a51;
   --color-accent-700: #46423a;
   --color-accent-800: #312d27;
   --color-accent-900: #1d1a15;
@@ -41,7 +42,7 @@
   --color-neutral-300: #b2b7c2;
   --color-neutral-400: #898f9c;
   --color-neutral-500: #6c727e;
-  --color-neutral-600: #000000;
+  --color-neutral-600: #555a66;
   --color-neutral-700: #3d424d;
   --color-neutral-800: #292e38;
   --color-neutral-900: #171b22;
@@ -49,25 +50,25 @@
   --color-success-50: #e8fbeb;
   --color-success-100: #d8f7dc;
   --color-success-500: #22c55e;
-  --color-success-600: #000000;
+  --color-success-600: #129c48;
   --color-success-700: #017231;
   --color-success-900: #002b0e;
   --color-warning-50: #fff3e6;
   --color-warning-100: #ffebd5;
   --color-warning-500: #f59e0b;
-  --color-warning-600: #000000;
+  --color-warning-600: #c17b06;
   --color-warning-700: #8d5800;
   --color-warning-900: #361f00;
   --color-error-50: #fff2f0;
   --color-error-100: #ffe1dd;
   --color-error-500: #dc2626;
-  --color-error-600: #000000;
+  --color-error-600: #b31318;
   --color-error-700: #890009;
   --color-error-900: #3d0002;
   --color-info-50: #ecf7ff;
   --color-info-100: #daf0ff;
   --color-info-500: #0ea5e9;
-  --color-info-600: #000000;
+  --color-info-600: #0782b9;
   --color-info-700: #005f88;
   --color-info-900: #002437;
 }
@@ -231,10 +232,10 @@
   --interactive-secondary-bg-active: #e6e8ec;
   --interactive-secondary-text: #171b22;
   --interactive-secondary-border: #b2b7c2;
-  --interactive-destructive-bg: #000000;
+  --interactive-destructive-bg: #dc2626;
   --interactive-destructive-bg-hover: #890009;
   --interactive-destructive-text: #ffffff;
-  --interactive-ghost-bg: #ffffff;
+  --interactive-ghost-bg: transparent;
   --interactive-ghost-bg-hover: #e6e8ec;
 }
 
@@ -243,7 +244,7 @@
   --text-primary: rgba(255, 255, 255, 0.95);
   --text-secondary: rgba(255, 255, 255, 0.6);
   --text-tertiary: rgba(255, 255, 255, 0.4);
-  --text-disabled: #000000;
+  --text-disabled: #52504b;
   --text-inverse: #171b22;
   --text-inverse-secondary: #3d424d;
   --text-link: #9a8d78;
@@ -263,7 +264,7 @@
   --surface-overlay: #07090e;
   --surface-interactive-default: #292e38;
   --surface-interactive-hover: #3d424d;
-  --surface-interactive-active: #000000;
+  --surface-interactive-active: #4a4540;
   --surface-interactive-disabled: #292e38;
   --surface-accent-subtle: #21190c;
   --surface-accent-default: #7d7059;
@@ -282,7 +283,7 @@
 .dark .kaiah-theme {
   --border-default: #3d424d;
   --border-muted: #292e38;
-  --border-strong: #000000;
+  --border-strong: #5c574e;
   --border-focus: #9a8d78;
   --border-disabled: #292e38;
   --border-success: #22c55e;
@@ -299,11 +300,11 @@
   --interactive-primary-text: #ffffff;
   --interactive-secondary-bg: #292e38;
   --interactive-secondary-bg-hover: #3d424d;
-  --interactive-secondary-bg-active: #000000;
+  --interactive-secondary-bg-active: #4a4540;
   --interactive-secondary-text: #f4f5f7;
-  --interactive-secondary-border: #000000;
+  --interactive-secondary-border: #5c574e;
   --interactive-destructive-bg: #dc2626;
-  --interactive-destructive-bg-hover: #000000;
+  --interactive-destructive-bg-hover: #b91c1c;
   --interactive-destructive-text: #ffffff;
   --interactive-ghost-bg: #292e38;
   --interactive-ghost-bg-hover: #3d424d;
@@ -315,7 +316,7 @@
   --text-primary: rgba(255, 255, 255, 0.95);
   --text-secondary: rgba(255, 255, 255, 0.6);
   --text-tertiary: rgba(255, 255, 255, 0.4);
-  --text-disabled: #000000;
+  --text-disabled: #52504b;
   --text-inverse: #171b22;
   --text-inverse-secondary: #3d424d;
   --text-link: #9a8d78;
@@ -337,7 +338,7 @@
   --surface-overlay: #07090e;
   --surface-interactive-default: #292e38;
   --surface-interactive-hover: #3d424d;
-  --surface-interactive-active: #000000;
+  --surface-interactive-active: #4a4540;
   --surface-interactive-disabled: #292e38;
   --surface-accent-subtle: #21190c;
   --surface-accent-default: #7d7059;
@@ -358,7 +359,7 @@
 .kaiah-theme:not(.light) {
   --border-default: #3d424d;
   --border-muted: #292e38;
-  --border-strong: #000000;
+  --border-strong: #5c574e;
   --border-focus: #9a8d78;
   --border-disabled: #292e38;
   --border-success: #22c55e;
@@ -377,13 +378,53 @@
   --interactive-primary-text: #ffffff;
   --interactive-secondary-bg: #292e38;
   --interactive-secondary-bg-hover: #3d424d;
-  --interactive-secondary-bg-active: #000000;
+  --interactive-secondary-bg-active: #4a4540;
   --interactive-secondary-text: #f4f5f7;
-  --interactive-secondary-border: #000000;
+  --interactive-secondary-border: #5c574e;
   --interactive-destructive-bg: #dc2626;
-  --interactive-destructive-bg-hover: #000000;
+  --interactive-destructive-bg-hover: #b91c1c;
   --interactive-destructive-text: #ffffff;
   --interactive-ghost-bg: #292e38;
   --interactive-ghost-bg-hover: #3d424d;
 }
+}
+
+/* --- Fumadocs bridge: dark --- */
+.dark .kaiah-theme {
+  --color-fd-background: #1A1714;
+  --color-fd-foreground: rgba(255, 255, 255, 0.95);
+  --color-fd-card: #2A2520;
+  --color-fd-card-foreground: rgba(255, 255, 255, 0.95);
+  --color-fd-border: #5c574e;
+  --color-fd-muted: #3d3832;
+  --color-fd-muted-foreground: rgba(255, 255, 255, 0.6);
+  --color-fd-accent: #9a8d78;
+  --color-fd-accent-foreground: #ffffff;
+  --color-fd-primary: #9a8d78;
+  --color-fd-primary-foreground: #ffffff;
+  --color-fd-secondary: #2A2520;
+  --color-fd-secondary-foreground: rgba(255, 255, 255, 0.95);
+  --color-fd-popover: #2A2520;
+  --color-fd-popover-foreground: rgba(255, 255, 255, 0.95);
+  --color-fd-ring: rgba(154, 141, 120, 0.4);
+}
+
+/* --- Fumadocs bridge: light --- */
+html:not(.dark) .kaiah-theme {
+  --color-fd-background: #ffffff;
+  --color-fd-foreground: rgba(0, 0, 0, 0.95);
+  --color-fd-card: #ffffff;
+  --color-fd-card-foreground: rgba(0, 0, 0, 0.95);
+  --color-fd-border: #d1d4db;
+  --color-fd-muted: #f4f5f7;
+  --color-fd-muted-foreground: rgba(0, 0, 0, 0.6);
+  --color-fd-accent: #3b2f1a;
+  --color-fd-accent-foreground: #ffffff;
+  --color-fd-primary: #3b2f1a;
+  --color-fd-primary-foreground: #ffffff;
+  --color-fd-secondary: #f4f5f7;
+  --color-fd-secondary-foreground: rgba(0, 0, 0, 0.95);
+  --color-fd-popover: #ffffff;
+  --color-fd-popover-foreground: rgba(0, 0, 0, 0.95);
+  --color-fd-ring: rgba(59, 47, 26, 0.3);
 }

@@ -44,6 +44,7 @@
   background: var(--surface-page, var(--surface-background));
   color: var(--text-primary);
   font-family: var(--font-sans);
+  font-size: 0.875rem;
   font-weight: 300;
   --color-white: #ffffff;
   --color-black: #000000;
@@ -140,15 +141,14 @@
   --font-sans: "PP Model Mono", monospace;
   --font-mono: "PP Model Mono", monospace;
   --font-heading: "PP Model Plastic", sans-serif;
-  /* Scaled ~0.8x — PP Model Mono runs larger than typical sans-serif */
-  --font-size-xs: 0.625rem; /* 10px */
-  --font-size-sm: 0.6875rem; /* 11px */
-  --font-size-base: 0.75rem; /* 12px */
-  --font-size-lg: 0.875rem; /* 14px */
-  --font-size-xl: 1rem; /* 16px */
-  --font-size-2xl: 1.125rem; /* 18px */
-  --font-size-3xl: 1.5rem; /* 24px */
-  --font-size-4xl: 1.75rem; /* 28px */
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem; /* 36px */
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
@@ -555,7 +555,12 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
 
 /* ── Typography — PP Model Plastic for headings, PP Model Mono for body/code ── */
 
-.blacklight-brand-theme h1,
+.blacklight-brand-theme h1 {
+  font-family: var(--font-sans);
+  font-size: 1.625rem;
+  font-weight: 500;
+}
+
 .blacklight-brand-theme h2,
 .blacklight-brand-theme h3,
 .blacklight-brand-theme h4,

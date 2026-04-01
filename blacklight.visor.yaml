@@ -19,6 +19,7 @@ colors-dark:
   accent: "#00D4FF"
 
 typography:
+  scale: 0.875
   heading:
     family: "PP Model Plastic"
     weight: 600
