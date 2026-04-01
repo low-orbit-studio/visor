@@ -90,7 +90,7 @@ Make the docs site a world-class showcase.
 **Key work:**
 - [x] Global theme switcher dropdown in docs header — every page is a live preview
 - Upgrade the basic theme switcher (Phase 1a) to a polished global dropdown
-- Four-quadrant theme comparator (`/compare`) — 2 themes x light/dark showing real components
+- [x] Four-quadrant theme comparator (`/compare`) — 2 themes x light/dark showing real components
 - [x] Full MDX documentation for every component (currently only button exists)
 - All examples respond to the active theme
 - Add visual regression testing (Playwright screenshots) before themes proliferate further
