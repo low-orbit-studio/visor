@@ -1,4 +1,5 @@
 .root {
+  width: 100%;
   padding: var(--spacing-16, 4rem) var(--spacing-6, 1.5rem);
 }
 
@@ -14,12 +15,18 @@
 
 .headerDescription {
   margin-top: var(--spacing-4, 1rem);
+  max-width: 36rem;
+  margin-left: auto;
+  margin-right: auto;
 }
+
+/* ── Grid ── */
 
 .grid {
   display: grid;
   gap: var(--spacing-6, 1.5rem);
   grid-template-columns: 1fr;
+  align-items: start;
 }
 
 @media (min-width: 640px) {
@@ -30,20 +37,49 @@
 
 @media (min-width: 1024px) {
   .grid {
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   }
 }
+
+/* ── Tier card ── */
 
 .tier {
   display: flex;
   flex-direction: column;
   height: 100%;
+  transition:
+    transform var(--motion-duration-normal, 200ms) cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow var(--motion-duration-normal, 200ms) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.tierHighlighted {
-  border-color: var(--border-focus, #3b82f6);
-  background-color: var(--surface-accent-subtle, #eff6ff);
+.tier:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 0 0 1px var(--border-default, #e5e7eb),
+    var(--shadow-lg, 0 10px 30px -10px rgba(0, 0, 0, 0.15));
 }
+
+/* ── Highlighted tier ── */
+
+.tierHighlighted {
+  border-color: var(--accent, #3b82f6);
+  box-shadow:
+    0 0 0 1px var(--accent, #3b82f6),
+    0 0 0 4px color-mix(in srgb, var(--accent, #3b82f6) 12%, transparent);
+  background-color: var(--surface-accent-subtle, #eff6ff);
+  position: relative;
+}
+
+.tierHighlighted:hover {
+  box-shadow:
+    0 0 0 1px var(--accent, #3b82f6),
+    0 0 0 4px color-mix(in srgb, var(--accent, #3b82f6) 15%, transparent),
+    0 0 40px -10px color-mix(in srgb, var(--accent, #3b82f6) 30%, transparent),
+    0 20px 40px -20px rgba(0, 0, 0, 0.25);
+  transform: translateY(-6px);
+}
+
+/* ── Tier header ── */
 
 .tierHeader {
   display: flex;
@@ -59,11 +95,22 @@
 .tierName {
   font-size: var(--font-size-sm, 0.875rem);
   font-weight: var(--font-weight-medium, 500);
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-tertiary, #9ca3af);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin: 0;
+  transition: color var(--motion-duration-fast, 100ms) cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.tier:hover .tierName {
+  color: var(--text-secondary, #6b7280);
+}
+
+.tierHighlighted .tierName {
+  color: var(--accent, #3b82f6);
+}
+
+/* ── Price ── */
 
 .priceRow {
   display: flex;
@@ -72,10 +119,12 @@
 }
 
 .price {
-  font-size: var(--font-size-3xl, 1.875rem);
+  font-size: var(--font-size-4xl, 2.25rem);
+  font-family: var(--font-heading, var(--font-body, ui-sans-serif, system-ui, sans-serif));
   font-weight: var(--font-weight-semibold, 600);
   color: var(--text-primary, #111827);
   line-height: 1;
+  letter-spacing: -0.02em;
 }
 
 .period {
@@ -86,6 +135,8 @@
 .tierDescription {
   margin-top: var(--spacing-1, 0.25rem);
 }
+
+/* ── Feature list ── */
 
 .tierContent {
   flex: 1;
@@ -103,16 +154,18 @@
 .featureItem {
   display: flex;
   align-items: flex-start;
-  gap: var(--spacing-2, 0.5rem);
+  gap: var(--spacing-3, 0.75rem);
   font-size: var(--font-size-sm, 0.875rem);
   color: var(--text-secondary, #6b7280);
 }
 
 .featureIcon {
-  color: var(--text-success, #15803d);
+  color: var(--accent, #15803d);
   flex-shrink: 0;
   margin-top: 2px;
 }
+
+/* ── Footer ── */
 
 .tierFooter {
   margin-top: auto;
@@ -121,4 +174,18 @@
 
 .tierButton {
   width: 100%;
+}
+
+/* ── Reduced motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .tier,
+  .tierName {
+    transition: none;
+  }
+
+  .tier:hover,
+  .tierHighlighted:hover {
+    transform: none;
+  }
 }
