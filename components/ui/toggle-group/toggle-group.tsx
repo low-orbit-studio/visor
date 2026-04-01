@@ -100,7 +100,9 @@ const ToggleGroup = React.forwardRef<
     [variant, size]
   )
   const internalRef = React.useRef<HTMLDivElement>(null)
-  const indicatorRef = useSlidingIndicator(internalRef, variant)
+  // Sliding indicator only works for single-select toggle groups
+  const useIndicator = variant === "outline" && props.type !== "multiple"
+  const indicatorRef = useSlidingIndicator(internalRef, useIndicator ? variant : undefined)
 
   // Merge internal ref with forwarded ref
   const mergedRef = React.useCallback(
@@ -118,11 +120,12 @@ const ToggleGroup = React.forwardRef<
         data-slot="toggle-group"
         data-variant={variant ?? "default"}
         data-size={size ?? "md"}
+        data-type={props.type ?? "single"}
         className={cn(toggleGroupVariants({ variant, size }), className)}
         ref={mergedRef}
         {...props}
       >
-        {variant === "outline" && (
+        {useIndicator && (
           <span
             ref={indicatorRef}
             className={styles.indicator}
