@@ -1144,12 +1144,16 @@ export const ui: Registry = [
     name: "phone-input",
     type: "registry:ui",
     description:
-      "A phone number input with automatic US format formatting.",
-    dependencies: ["@loworbitstudio/visor-core"],
-    registryDependencies: ["utils", "input"],
+      "An international phone number input with country code selection, geo-IP detection, format-as-you-type, and validation.",
+    dependencies: ["@loworbitstudio/visor-core", "intl-tel-input"],
+    registryDependencies: ["utils"],
     files: [
       {
         path: "components/ui/phone-input/phone-input.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/phone-input/phone-input.css",
         type: "registry:ui",
       },
       {

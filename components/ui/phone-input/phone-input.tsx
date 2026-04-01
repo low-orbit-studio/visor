@@ -119,13 +119,15 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
 
         const iti = intlTelInput(input, {
           initialCountry: "auto",
-          geoIpLookup: (callback: (countryCode: string) => void) => {
+          geoIpLookup: (callback, failure) => {
             fetch("https://ipapi.co/country/", {
               headers: { Accept: "text/plain" },
             })
               .then((res) => res.text())
-              .then((country) => callback(country.trim().toLowerCase()))
-              .catch(() => callback("us"))
+              .then((country) =>
+                callback(country.trim().toLowerCase() as "us")
+              )
+              .catch(() => failure())
           },
           separateDialCode: true,
           formatAsYouType: true,

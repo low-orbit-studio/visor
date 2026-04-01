@@ -1,32 +1,59 @@
 name: PhoneInput
-description: A phone number input with automatic US format formatting.
+description: An international phone number input with country code selection, geo-IP detection, format-as-you-type, and validation.
 category: form
 
 when_to_use:
-  - Phone number entry fields
+  - Phone number entry fields (domestic or international)
   - Contact forms requiring phone numbers
+  - Any form where phone validation is needed
 
 when_not_to_use:
-  - International phone numbers with country codes (needs a more complex solution)
   - General text input (use Input)
+  - Phone + extension combined fields (build a composite)
 
 why: >
-  PhoneInput wraps Input with automatic (XXX) XXX-XXXX formatting as users type.
-  The onChange callback returns raw digits for easy storage and validation, while
-  the display shows the formatted number for readability.
+  PhoneInput wraps intl-tel-input to provide country code selection with geo-IP
+  auto-detection, format-as-you-type with per-country formatting rules, and
+  libphonenumber validation. The onChange callback returns both the full
+  international number and a validation boolean. SSR-safe via dynamic imports.
 
 props:
+  - name: id
+    type: string
+    description: HTML id attribute for the input element.
+  - name: name
+    type: string
+    description: HTML name attribute for the input element.
   - name: value
     type: string
-    description: Controlled value (raw digits).
-  - name: defaultValue
+    description: Initial phone number value (e.g. "+14155551234").
+  - name: placeholder
     type: string
-    description: Default value for uncontrolled usage.
+    description: Placeholder text for the input.
+  - name: required
+    type: boolean
+    description: Whether the field is required.
+  - name: disabled
+    type: boolean
+    description: Whether the field is disabled.
+  - name: className
+    type: string
+    description: Additional CSS classes applied to the wrapper.
   - name: onChange
-    type: "(value: string) => void"
-    description: Callback with raw digits when value changes.
+    type: "(value: string, isValid: boolean) => void"
+    description: Called with the full international number and validation status on every change.
+  - name: onBlur
+    type: "() => void"
+    description: Called when the input loses focus.
 
-dependencies: []
+dependencies:
+  - intl-tel-input
 
 example: |
-  <PhoneInput placeholder="(555) 123-4567" onChange={(digits) => console.log(digits)} />
+  <PhoneInput
+    name="phone"
+    placeholder="Enter phone number"
+    onChange={(value, isValid) => {
+      console.log(value, isValid);
+    }}
+  />
