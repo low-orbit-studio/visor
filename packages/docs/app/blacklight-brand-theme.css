@@ -385,3 +385,9 @@
   --interactive-ghost-bg-hover: #3d424d;
 }
 }
+
+/* ── Sidebar ── */
+
+.blacklight-brand-theme aside[id="nd-sidebar"] {
+  background: #0a0a1a;
+}
