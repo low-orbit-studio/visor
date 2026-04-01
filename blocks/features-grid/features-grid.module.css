@@ -1,0 +1,56 @@
+.root {
+  padding: var(--spacing-16, 4rem) var(--spacing-6, 1.5rem);
+}
+
+.container {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: var(--spacing-12, 3rem);
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.grid {
+  display: grid;
+  gap: var(--spacing-6, 1.5rem);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid[data-columns="2"] {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid[data-columns="3"] {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .grid[data-columns="4"] {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.card {
+  height: 100%;
+}
+
+.icon {
+  color: var(--text-link, #2563eb);
+  margin-bottom: var(--spacing-4, 1rem);
+  display: flex;
+}
+
+.title {
+  margin-bottom: var(--spacing-2, 0.5rem);
+}

@@ -1,0 +1,14 @@
+name: Features Grid
+description: A responsive grid of feature cards with icons, titles, and descriptions. Demonstrates Card + icon composition in a configurable grid layout.
+category: marketing
+components_used:
+  - card
+  - heading
+  - text
+when_to_use:
+  - Product feature showcases
+  - Service offering grids
+  - Capability overviews
+when_not_to_use:
+  - Icon-only grids without descriptions (use icon-grid specimen)
+  - Single feature highlights

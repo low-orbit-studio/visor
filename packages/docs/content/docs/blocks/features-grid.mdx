@@ -1,0 +1,124 @@
+---
+title: Features Grid
+description: A responsive grid of feature cards with icons, titles, and descriptions.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { FeaturesGrid } from '@/components/blocks/features-grid';
+import { Rocket, Palette, ShieldCheck, Lightning } from '@phosphor-icons/react';
+
+## Preview
+
+<BlockPreview
+  title="Features Grid"
+  code={"import { Rocket, Palette, ShieldCheck } from '@phosphor-icons/react';\n\n<FeaturesGrid\n  heading=\"Why Visor?\"\n  description=\"A design system built for real projects — theme-agnostic, copy-and-own, and production-ready.\"\n  features={[\n    {\n      icon: <Rocket size={24} />,\n      title: \"Fast to Ship\",\n      description: \"Copy components directly into your project. No lock-in, no wrappers, no magic.\",\n    },\n    {\n      icon: <Palette size={24} />,\n      title: \"Themeable\",\n      description: \"Every token is a CSS custom property. Swap themes without touching a single component.\",\n    },\n    {\n      icon: <ShieldCheck size={24} />,\n      title: \"Accessible\",\n      description: \"WCAG 2.1 AA compliant out of the box. Built on Radix UI primitives where it matters.\",\n    },\n  ]}\n/>"}
+>
+  <FeaturesGrid
+    heading="Why Visor?"
+    description="A design system built for real projects — theme-agnostic, copy-and-own, and production-ready."
+    features={[
+      {
+        icon: <Rocket size={24} />,
+        title: "Fast to Ship",
+        description: "Copy components directly into your project. No lock-in, no wrappers, no magic.",
+      },
+      {
+        icon: <Palette size={24} />,
+        title: "Themeable",
+        description: "Every token is a CSS custom property. Swap themes without touching a single component.",
+      },
+      {
+        icon: <ShieldCheck size={24} />,
+        title: "Accessible",
+        description: "WCAG 2.1 AA compliant out of the box. Built on Radix UI primitives where it matters.",
+      },
+    ]}
+  />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block features-grid
+```
+
+This copies files into your project:
+
+- `blocks/features-grid/features-grid.tsx` — the block component
+- `blocks/features-grid/features-grid.module.css` — the styles
+
+## Usage
+
+```tsx
+import { FeaturesGrid } from '@/blocks/features-grid/features-grid';
+import { Rocket, Palette, ShieldCheck } from '@phosphor-icons/react';
+
+export default function HomePage() {
+  return (
+    <FeaturesGrid
+      heading="Why choose us?"
+      description="Everything you need to build great products."
+      features={[
+        {
+          icon: <Rocket size={24} />,
+          title: "Fast to Ship",
+          description: "Go from idea to production in days, not months.",
+        },
+        {
+          icon: <Palette size={24} />,
+          title: "Fully Themeable",
+          description: "Design tokens make every color, size, and shadow configurable.",
+        },
+        {
+          icon: <ShieldCheck size={24} />,
+          title: "Accessible",
+          description: "WCAG 2.1 AA compliant from the start.",
+        },
+      ]}
+    />
+  );
+}
+```
+
+## Props
+
+### FeaturesGridProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `features` | `FeatureItem[]` | — | **Required.** Array of feature card data. |
+| `heading` | `string` | — | Optional section heading rendered above the grid. |
+| `description` | `string` | — | Optional section description rendered below the heading. |
+| `columns` | `2 \| 3 \| 4` | `3` | Number of columns at desktop widths (≥1024px). |
+| `className` | `string` | — | Additional CSS class applied to the root `<section>`. |
+
+### FeatureItem
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `icon` | `ReactNode` | Icon element. Pass a Phosphor icon directly: `<Rocket size={24} />`. |
+| `title` | `string` | Feature card title. |
+| `description` | `string` | Feature card description. |
+
+## Responsive Behavior
+
+The grid responds to screen width automatically:
+
+- **Mobile (< 640px):** 1 column
+- **Tablet (640px – 1023px):** 2 columns
+- **Desktop (≥ 1024px):** `columns` prop value (2, 3, or 4)
+
+## Composition
+
+This block composes three Visor primitives:
+
+- **Card** — Container with surface styling and border
+- **Heading** — Section and card titles with semantic levels
+- **Text** — Descriptions with theme-aware color tokens
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI — such as feature grids, login forms, or settings panels.
+
+Blocks are copy-and-own, just like components. Install them into your project and customize freely.
