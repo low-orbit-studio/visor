@@ -23,15 +23,17 @@ program
   .command("init")
   .description("Initialize Visor in the current project")
   .option("--template <name>", "scaffold a themed project (nextjs)")
-  .action((options: { template?: string }) => {
+  .option("--json", "output structured JSON (for AI agents)")
+  .action((options: { template?: string; json?: boolean }) => {
     initCommand(process.cwd(), options)
   })
 
 program
   .command("list")
   .description("List all available registry items")
-  .action(() => {
-    listCommand(process.cwd())
+  .option("--json", "output structured JSON (for AI agents)")
+  .action((options: { json?: boolean }) => {
+    listCommand(process.cwd(), options)
   })
 
 program
@@ -41,8 +43,9 @@ program
   .option("--overwrite", "overwrite existing files", false)
   .option("--category <name>", "install all items from a category")
   .option("--block", "install blocks instead of components")
-  .action((items: string[], options: { overwrite: boolean; category?: string; block?: boolean }) => {
-    addCommand(items, process.cwd(), { overwrite: options.overwrite, category: options.category, block: options.block })
+  .option("--json", "output structured JSON (for AI agents)")
+  .action((items: string[], options: { overwrite: boolean; category?: string; block?: boolean; json?: boolean }) => {
+    addCommand(items, process.cwd(), { overwrite: options.overwrite, category: options.category, block: options.block, json: options.json })
   })
 
 program
@@ -51,8 +54,9 @@ program
     "Show differences between local files and the registry"
   )
   .argument("[component]", "component name to diff (all if omitted)")
-  .action((component: string | undefined) => {
-    diffCommand(component, process.cwd())
+  .option("--json", "output structured JSON (for AI agents)")
+  .action((component: string | undefined, options: { json?: boolean }) => {
+    diffCommand(component, process.cwd(), options)
   })
 
 // Theme subcommands

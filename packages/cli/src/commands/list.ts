@@ -27,7 +27,12 @@ interface ItemGroup {
   items: BundledRegistryItem[]
 }
 
-export function listCommand(cwd: string): void {
+export interface ListOptions {
+  json?: boolean
+}
+
+export function listCommand(cwd: string, options: ListOptions = {}): void {
+  const json = options.json ?? false
   const registry = loadRegistry()
   const hasConfig = configExists(cwd)
 
@@ -52,6 +57,56 @@ export function listCommand(cwd: string): void {
 
   // Try to load config for installed detection
   const config = hasConfig ? loadConfig(cwd) : null
+
+  if (json) {
+    // Build structured output
+    const items = registry.items.map((item) => {
+      let installed = false
+      if (config) {
+        const firstFile = item.files[0]
+        if (firstFile) {
+          const outputPath = resolveOutputPath(
+            firstFile.path,
+            firstFile.type,
+            config,
+            cwd
+          )
+          installed = fileExists(outputPath)
+        }
+      }
+      return {
+        type: item.type,
+        category: item.category ?? null,
+        name: item.name,
+        description: item.description ?? null,
+        installed,
+      }
+    })
+
+    // Build byType summary
+    const byType: Record<string, number> = {}
+    for (const item of items) {
+      byType[item.type] = (byType[item.type] ?? 0) + 1
+    }
+
+    console.log(
+      JSON.stringify(
+        {
+          success: true,
+          items,
+          summary: {
+            total: items.length,
+            installed: items.filter((i) => i.installed).length,
+            byType,
+          },
+        },
+        null,
+        2
+      )
+    )
+    process.exit(0)
+    return
+  }
 
   for (const group of groupMap.values()) {
     const label = group.category

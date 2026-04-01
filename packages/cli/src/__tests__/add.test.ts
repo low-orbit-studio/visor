@@ -204,4 +204,93 @@ describe("add command", () => {
     // utils should be written as a transitive dep
     expect(existsSync(join(testDir, "lib/utils.ts"))).toBe(true)
   })
+
+  describe("--json flag", () => {
+    function mockProcessExit() {
+      return vi.spyOn(process, "exit").mockImplementation(((code?: number) => {
+        throw new Error(`process.exit(${code})`)
+      }) as never)
+    }
+
+    function getJsonOutput(): unknown {
+      const calls = (console.log as ReturnType<typeof vi.fn>).mock.calls
+      const jsonOutput = calls.map((c: unknown[]) => String(c[0])).find((s) => s.startsWith("{"))
+      expect(jsonOutput).toBeDefined()
+      return JSON.parse(jsonOutput!)
+    }
+
+    it("outputs valid JSON with success field", () => {
+      mockProcessExit()
+      expect(() => {
+        addCommand(["button"], testDir, { json: true })
+      }).toThrow("process.exit(0)")
+
+      const result = getJsonOutput() as { success: boolean }
+      expect(result.success).toBe(true)
+    })
+
+    it("outputs requested and resolved arrays", () => {
+      mockProcessExit()
+      expect(() => {
+        addCommand(["button"], testDir, { json: true })
+      }).toThrow("process.exit(0)")
+
+      const result = getJsonOutput() as { requested: string[]; resolved: string[] }
+      expect(result.requested).toContain("button")
+      expect(Array.isArray(result.resolved)).toBe(true)
+      // button has utils as a registry dep, so resolved should include both
+      expect(result.resolved).toContain("button")
+      expect(result.resolved).toContain("utils")
+    })
+
+    it("outputs files.written array", () => {
+      mockProcessExit()
+      expect(() => {
+        addCommand(["button"], testDir, { json: true })
+      }).toThrow("process.exit(0)")
+
+      const result = getJsonOutput() as { files: { written: string[]; skipped: string[] } }
+      expect(Array.isArray(result.files.written)).toBe(true)
+      expect(result.files.written.length).toBeGreaterThan(0)
+    })
+
+    it("outputs files.skipped when file exists without --overwrite", () => {
+      mkdirSync(join(testDir, "components/ui/button"), { recursive: true })
+      writeFileSync(
+        join(testDir, "components/ui/button/button.tsx"),
+        "// existing",
+        "utf-8"
+      )
+
+      mockProcessExit()
+      expect(() => {
+        addCommand(["button"], testDir, { json: true })
+      }).toThrow("process.exit(0)")
+
+      const result = getJsonOutput() as { files: { written: string[]; skipped: string[] } }
+      expect(result.files.skipped).toContain("components/ui/button/button.tsx")
+    })
+
+    it("outputs dependencies object", () => {
+      mockProcessExit()
+      expect(() => {
+        addCommand(["button"], testDir, { json: true })
+      }).toThrow("process.exit(0)")
+
+      const result = getJsonOutput() as { dependencies: { installed: string[]; failed: string[] } }
+      expect(Array.isArray(result.dependencies.installed)).toBe(true)
+      expect(Array.isArray(result.dependencies.failed)).toBe(true)
+    })
+
+    it("outputs success:false and exits 1 when no items specified", () => {
+      mockProcessExit()
+      expect(() => {
+        addCommand([], testDir, { json: true })
+      }).toThrow("process.exit(1)")
+
+      const result = getJsonOutput() as { success: boolean; error: string }
+      expect(result.success).toBe(false)
+      expect(result.error).toBeDefined()
+    })
+  })
 })
