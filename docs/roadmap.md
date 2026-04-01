@@ -52,41 +52,25 @@ Stabilized the design system contract, completed the form system, added blocks i
 - [x] **Blocks infrastructure** — Registry supports blocks category, CLI support, 5+ blocks implemented including login-form, configuration-panel, design-system-deck, design-system-specimen, sphere-playground (VI-45)
 - [x] **Design system specimen block** — Live interactive showcase responding to active theme (VI-46)
 
-## Phase 3: Interchange Format, Import/Export, Validation & Basic Font Resolution
+## Phase 3: Interchange Format, Import/Export, Validation & Basic Font Resolution — COMPLETE
 
-Define the `.visor.yaml` spec, build adapter layers, create a theme validator, and add basic font infrastructure.
+Defined the `.visor.yaml` spec, built adapter layers, created a strict theme validator, and added basic font infrastructure.
 
 See [interchange-format.md](./interchange-format.md) for the format spec and adapter design.
 
-**Key work:**
-- ~~**Design spike first:** Document the exact algorithm for `.visor.yaml` flat colors → 3-tier token mapping~~ **DONE** (VI-47) — see [`interchange-format.md`](./interchange-format.md) for complete mapping algorithm, JSON Schema, and edge cases
-- ~~Finalize the interchange format spec with a formal JSON Schema~~ **DONE** (VI-47) — see [`visor-theme.schema.json`](./visor-theme.schema.json)
-- Reconcile the draft spec with the actual 3-tier token system (the draft uses flat color names; tokens use primitives → semantic → adaptive)
-- ~~Build `packages/theme-engine/` — shared package housing:~~ **DONE** (VI-48)
-  - ~~JSON Schema for `.visor.yaml` validation~~ **DONE** (VI-48)
-  - ~~Shade generation algorithm (OKLCH-based, generates 50–950 scale from a base hex)~~ **DONE** (VI-48)
-  - ~~Import: parse `.visor.yaml` → generate CSS custom property overrides~~ **DONE** (VI-48)
-  - ~~Export: read current theme tokens → produce `.visor.yaml`~~ **DONE** (VI-48)
-  - ~~Mapping layer: flat `.visor.yaml` colors → primitive shade scales → semantic/adaptive token assignment~~ **DONE** (VI-48)
-- ~~**Basic font infrastructure:** Google Fonts URL resolution from family name, `font-display` strategy, preload hint generation (the interchange format needs this to be complete)~~ **DONE** (VI-51) — see `packages/theme-engine/src/fonts/`
-- CLI commands:
-  - `npx visor theme apply <file>` — reads `.visor.yaml`, generates full CSS token overrides
-  - `npx visor theme export [--format yaml|json|figma]` — exports current theme
-  - `npx visor theme validate <file> [--json]` — runs full validation ruleset
-- ~~Build adapters: NextJS, fumadocs, decks~~ **DONE** (VI-52) — see `packages/theme-engine/src/adapters/`
-- Ensure any valid theme file completely transforms a Visor project (light + dark)
-- ~~**Minimal `npx visor init`:** Single starter template proving the end-to-end flow (theme file → working project)~~ **DONE** (VI-52) — `npx visor init --template nextjs`
-- ~~Decide on CSS `@layer` strategy for token output specificity~~ **DONE** (VI-52) — 4-layer strategy: visor-primitives, visor-semantic, visor-adaptive, visor-bridge
-- ~~Add FOWT (Flash of Wrong Theme) prevention: blocking `<script>` snippet for consumer projects + SSR guidance~~ **DONE** (VI-52) — see `packages/theme-engine/src/fowt.ts`
-
-**Validator rules:**
-- **Completeness** — all required tokens present (colors light+dark, typography, spacing, radius, shadows)
-- **WCAG contrast** — text-primary on background/surface ≥ 4.5:1, interactive colors ≥ 3:1, same checks for dark mode
-- **Type scale coherence** — heading-weight ≥ body-weight, valid font family strings
-- **Structural integrity** — version/name present, valid CSS color formats, non-negative radius, valid shadow strings
-- **Warnings (non-blocking)** — primary/accent too similar, missing glow shadow, inconsistent radius scale
-
-**Why `packages/theme-engine/`:** Validator, shade generator, and import/export logic are consumed by both CLI (Node.js) and docs site (browser). Shared package avoids duplication. The visual theme creator (Phase 6) also depends on this.
+**Completed work:**
+- [x] Design spike: `.visor.yaml` flat colors → 3-tier token mapping algorithm (VI-47) — see [`interchange-format.md`](./interchange-format.md)
+- [x] Formal JSON Schema for `.visor.yaml` (VI-47) — see [`visor-theme.schema.json`](./visor-theme.schema.json)
+- [x] Reconciled draft spec with actual 3-tier token system — interchange-format.md documents the full 4-stage pipeline (shade generation → semantic assignment → adaptive assembly → override application), implementation matches exactly
+- [x] `packages/theme-engine/` — shared package with JSON Schema validation, OKLCH shade generation, import/export, mapping layer (VI-48)
+- [x] Basic font infrastructure — Google Fonts URL resolution, `font-display`, preload hints (VI-51)
+- [x] CLI commands: `theme apply`, `theme export`, `theme validate` — all implemented with tests and `--json` support
+- [x] Adapters: NextJS, fumadocs, decks (VI-52)
+- [x] Valid theme file completely transforms a Visor project (light + dark) — strict validator (VI-85) `checkResolvedCompleteness()` guarantees every token the design system needs is present in resolved output
+- [x] `npx visor init --template nextjs` — end-to-end flow proven (VI-52)
+- [x] CSS `@layer` strategy — 4-layer: visor-primitives, visor-semantic, visor-adaptive, visor-bridge (VI-52)
+- [x] FOWT prevention — blocking `<script>` snippet + SSR guidance (VI-52)
+- [x] Validator rules: completeness, WCAG contrast, type scale coherence, structural integrity, warnings (VI-49, VI-85)
 
 ## Phase 4: Theme Extraction — COMPLETE
 
