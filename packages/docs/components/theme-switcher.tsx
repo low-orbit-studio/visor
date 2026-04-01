@@ -11,39 +11,8 @@ import {
   SelectItem,
   SelectLabel,
 } from "./ui/select";
+import { THEME_GROUPS, ALL_THEMES } from "@/lib/theme-config";
 import styles from "./theme-switcher.module.css";
-
-interface ThemeEntry {
-  value: string;
-  label: string;
-}
-
-interface ThemeGroup {
-  label: string;
-  themes: ThemeEntry[];
-}
-
-const THEME_GROUPS: ThemeGroup[] = [
-  {
-    label: "Visor",
-    themes: [
-      { value: "blackout", label: "Blackout" },
-      { value: "neutral", label: "Neutral" },
-      { value: "space", label: "Space" },
-    ],
-  },
-  {
-    label: "Low Orbit",
-    themes: [
-      { value: "blacklight-brand", label: "Blacklight Brand" },
-      { value: "kaiah", label: "Kaiah" },
-      { value: "reference-app", label: "Reference App" },
-    ],
-  },
-];
-
-const ALL_THEMES = THEME_GROUPS.flatMap((g) => g.themes.map((t) => t.value));
-type Theme = string;
 
 const STORAGE_KEY = "visor-theme";
 const DEFAULT_THEME = "space";

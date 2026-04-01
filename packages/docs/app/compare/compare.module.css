@@ -1,0 +1,137 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: var(--spacing-4, 1rem);
+  gap: var(--spacing-4, 1rem);
+  background: var(--surface-page, #ffffff);
+  color: var(--text-primary, #111827);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.title {
+  font-size: var(--font-size-xl, 1.25rem);
+  font-weight: 600;
+  font-family: var(--font-heading, inherit);
+}
+
+.backLink {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--text-primary, #111827);
+}
+
+/* ─── Controls ────────────────────────────────────────────────────────────── */
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.controlItem {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.controlLabel {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+  white-space: nowrap;
+  min-width: 1.5rem;
+}
+
+.modeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2rem;
+  padding: 0 var(--spacing-2, 0.5rem);
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-sm, 0.25rem);
+  background: var(--surface-card, #ffffff);
+  color: var(--text-primary, #111827);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--motion-duration-fast, 150ms) var(--motion-easing-default, ease);
+}
+
+.modeButton:hover {
+  background: var(--surface-muted, #f9fafb);
+}
+
+/* ─── Grid ────────────────────────────────────────────────────────────────── */
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-3, 0.75rem);
+  flex: 1;
+}
+
+.quadrant {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-md, 0.5rem);
+  overflow: hidden;
+  min-height: 0;
+}
+
+.quadrantLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  background: var(--surface-muted, #f9fafb);
+  border-bottom: 1px solid var(--border-default, #e5e7eb);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+}
+
+.quadrantIframe {
+  flex: 1;
+  width: 100%;
+  border: none;
+  min-height: 0;
+}
+
+/* ─── Responsive ──────────────────────────────────────────────────────────── */
+
+@media (min-width: 1200px) {
+  .grid {
+    grid-auto-rows: calc(50vh - 4rem);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .grid {
+    grid-auto-rows: 400px;
+  }
+}
+
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 300px;
+  }
+
+  .controls {
+    grid-template-columns: 1fr;
+  }
+}
