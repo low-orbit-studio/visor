@@ -28,6 +28,18 @@ export default function PreviewPage() {
         document.documentElement.classList.remove("dark");
       }
     }
+
+    if (event.data.type === "load-font" && typeof event.data.url === "string") {
+      const url = event.data.url;
+      // Avoid duplicate link elements for the same URL
+      const existing = document.querySelector(`link[href="${CSS.escape(url)}"]`);
+      if (!existing) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = url;
+        document.head.appendChild(link);
+      }
+    }
   }, []);
 
   useEffect(() => {
