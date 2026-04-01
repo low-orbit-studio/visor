@@ -17,6 +17,8 @@ export interface PhoneInputProps {
   required?: boolean
   /** Whether the field is disabled */
   disabled?: boolean
+  /** Size variant — matches Input component sizes */
+  size?: "sm" | "md" | "lg"
   /** Additional CSS classes applied to the wrapper */
   className?: string
   /** Called with (fullInternationalNumber, isValid) on change */
@@ -40,6 +42,7 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
       placeholder,
       required = false,
       disabled = false,
+      size = "md",
       className,
       onChange,
       onBlur,
@@ -171,7 +174,7 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
     // SSR-safe: render basic input during server render
     if (!isMounted) {
       return (
-        <div data-slot="phone-input" className={cn(className)}>
+        <div data-slot="phone-input" data-size={size} className={cn(className)}>
           <input
             type="tel"
             id={id}
@@ -181,13 +184,17 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
             required={required}
             disabled={disabled}
             autoComplete="tel"
+            data-1p-ignore
+            data-lpignore="true"
+            data-bwignore
+            data-form-type="other"
           />
         </div>
       )
     }
 
     return (
-      <div data-slot="phone-input" className={cn(className)}>
+      <div data-slot="phone-input" data-size={size} className={cn(className)}>
         <input
           ref={setRefs}
           type="tel"
@@ -198,6 +205,10 @@ const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
           required={required}
           disabled={disabled}
           autoComplete="tel"
+          data-1p-ignore
+          data-lpignore="true"
+          data-bwignore
+          data-form-type="other"
           onBlur={handleBlur}
         />
       </div>

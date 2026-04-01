@@ -183,6 +183,45 @@ describe("PhoneInput SSR safety", () => {
   })
 })
 
+describe("PhoneInput size variants", () => {
+  afterEach(() => {
+    cleanup()
+  })
+
+  it("defaults to data-size md", () => {
+    render(<PhoneInput name="phone" />)
+    const wrapper = screen.getByRole("textbox").closest("[data-slot='phone-input']")
+    expect(wrapper).toHaveAttribute("data-size", "md")
+  })
+
+  it("applies data-size sm", () => {
+    render(<PhoneInput name="phone" size="sm" />)
+    const wrapper = screen.getByRole("textbox").closest("[data-slot='phone-input']")
+    expect(wrapper).toHaveAttribute("data-size", "sm")
+  })
+
+  it("applies data-size lg", () => {
+    render(<PhoneInput name="phone" size="lg" />)
+    const wrapper = screen.getByRole("textbox").closest("[data-slot='phone-input']")
+    expect(wrapper).toHaveAttribute("data-size", "lg")
+  })
+})
+
+describe("PhoneInput password manager suppression", () => {
+  afterEach(() => {
+    cleanup()
+  })
+
+  it("has data attributes to suppress password managers", () => {
+    render(<PhoneInput name="phone" />)
+    const input = screen.getByRole("textbox")
+    expect(input).toHaveAttribute("data-1p-ignore")
+    expect(input).toHaveAttribute("data-lpignore", "true")
+    expect(input).toHaveAttribute("data-bwignore")
+    expect(input).toHaveAttribute("data-form-type", "other")
+  })
+})
+
 describe("PhoneInput intl-tel-input mock", () => {
   it("mocks intl-tel-input via vi.mock", () => {
     expect(mockIntlTelInput).toBeDefined()
