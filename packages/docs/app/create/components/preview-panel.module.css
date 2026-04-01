@@ -1,0 +1,51 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-md, 0.5rem);
+  overflow: hidden;
+  min-height: 0;
+  flex: 1;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  background: var(--surface-muted, #f9fafb);
+  border-bottom: 1px solid var(--border-default, #e5e7eb);
+}
+
+.toolbarLabel {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+}
+
+.modeToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2rem;
+  padding: 0 var(--spacing-2, 0.5rem);
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-sm, 0.25rem);
+  background: var(--surface-card, #ffffff);
+  color: var(--text-primary, #111827);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--motion-duration-fast, 150ms) var(--motion-easing-default, ease);
+}
+
+.modeToggle:hover {
+  background: var(--surface-muted, #f9fafb);
+}
+
+.iframe {
+  flex: 1;
+  width: 100%;
+  border: none;
+  min-height: 0;
+}

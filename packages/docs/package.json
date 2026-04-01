@@ -15,6 +15,7 @@
   "keywords": [],
   "license": "UNLICENSED",
   "dependencies": {
+    "@loworbitstudio/visor-theme-engine": "*",
     "fumadocs-core": "^16.7.5",
     "fumadocs-mdx": "^14.2.4",
     "fumadocs-ui": "^16.7.5",
