@@ -287,6 +287,24 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "pricing-section",
+    type: "registry:block",
+    category: "marketing",
+    description: "A responsive pricing tier grid with feature lists and CTAs.",
+    dependencies: ["@loworbitstudio/visor-core", "@phosphor-icons/react"],
+    registryDependencies: ["utils", "card", "badge", "button", "separator", "heading", "text"],
+    files: [
+      {
+        path: "blocks/pricing-section/pricing-section.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/pricing-section/pricing-section.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "steps-section",
     type: "registry:block",
     category: "marketing",

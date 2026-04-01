@@ -1,0 +1,200 @@
+---
+title: Pricing Section
+description: A responsive pricing tier grid with highlighted plan, feature lists, and per-tier CTAs. The canonical complex marketing block for SaaS and product sites.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { PricingSection } from '@/components/blocks/pricing-section';
+
+## Preview
+
+<BlockPreview
+  title="Pricing Section"
+  code={"<PricingSection\n  heading=\"Simple, Transparent Pricing\"\n  description=\"Start free. Scale as you grow. No hidden fees.\"\n  tiers={[\n    {\n      name: \"Starter\",\n      price: \"Free\",\n      description: \"Perfect for side projects and personal use.\",\n      features: [\"Up to 3 projects\", \"Basic analytics\", \"Community support\"],\n      buttonText: \"Get Started\",\n      buttonHref: \"/signup\",\n    },\n    {\n      name: \"Pro\",\n      price: \"$29\",\n      period: \"/mo\",\n      description: \"For growing teams that need more power.\",\n      features: [\"Unlimited projects\", \"Advanced analytics\", \"Priority support\", \"Custom domains\"],\n      buttonText: \"Start Free Trial\",\n      buttonHref: \"/signup/pro\",\n      highlighted: true,\n      badge: \"Most Popular\",\n    },\n    {\n      name: \"Enterprise\",\n      price: \"Custom\",\n      description: \"Tailored solutions for large organizations.\",\n      features: [\"Everything in Pro\", \"Dedicated support\", \"SLA guarantee\", \"Custom contracts\"],\n      buttonText: \"Contact Sales\",\n      buttonHref: \"/contact\",\n    },\n  ]}\n/>"}
+>
+  <PricingSection
+    heading="Simple, Transparent Pricing"
+    description="Start free. Scale as you grow. No hidden fees."
+    tiers={[
+      {
+        name: "Starter",
+        price: "Free",
+        description: "Perfect for side projects and personal use.",
+        features: ["Up to 3 projects", "Basic analytics", "Community support"],
+        buttonText: "Get Started",
+        buttonHref: "/signup",
+      },
+      {
+        name: "Pro",
+        price: "$29",
+        period: "/mo",
+        description: "For growing teams that need more power.",
+        features: ["Unlimited projects", "Advanced analytics", "Priority support", "Custom domains"],
+        buttonText: "Start Free Trial",
+        buttonHref: "/signup/pro",
+        highlighted: true,
+        badge: "Most Popular",
+      },
+      {
+        name: "Enterprise",
+        price: "Custom",
+        description: "Tailored solutions for large organizations.",
+        features: ["Everything in Pro", "Dedicated support", "SLA guarantee", "Custom contracts"],
+        buttonText: "Contact Sales",
+        buttonHref: "/contact",
+      },
+    ]}
+  />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block pricing-section
+```
+
+This copies files into your project:
+
+- `blocks/pricing-section/pricing-section.tsx` — the block component
+- `blocks/pricing-section/pricing-section.module.css` — the styles
+
+## Usage
+
+```tsx
+import { PricingSection } from '@/blocks/pricing-section/pricing-section';
+import type { PricingTier } from '@/blocks/pricing-section/pricing-section';
+
+const tiers: PricingTier[] = [
+  {
+    name: "Starter",
+    price: "Free",
+    features: ["Up to 3 projects", "Basic analytics"],
+    buttonText: "Get Started",
+    buttonHref: "/signup",
+  },
+  {
+    name: "Pro",
+    price: "$29",
+    period: "/mo",
+    features: ["Unlimited projects", "Advanced analytics", "Priority support"],
+    buttonText: "Start Free Trial",
+    buttonHref: "/signup/pro",
+    highlighted: true,
+    badge: "Most Popular",
+  },
+];
+
+export default function PricingPage() {
+  return (
+    <PricingSection
+      heading="Simple, Transparent Pricing"
+      description="No hidden fees. Cancel anytime."
+      tiers={tiers}
+    />
+  );
+}
+```
+
+### With click callbacks
+
+```tsx
+<PricingSection
+  heading="Choose Your Plan"
+  tiers={[
+    {
+      name: "Pro",
+      price: "$29",
+      period: "/mo",
+      features: ["All features", "Priority support"],
+      buttonText: "Upgrade Now",
+      onButtonClick: () => openUpgradeModal("pro"),
+      highlighted: true,
+    },
+  ]}
+/>
+```
+
+### With formatted prices
+
+Use the `use-currency` hook to format prices before passing them as strings:
+
+```tsx
+import { useCurrency } from '@/hooks/use-currency/use-currency';
+
+function PricingWithCurrency() {
+  const { format } = useCurrency();
+
+  const tiers: PricingTier[] = [
+    {
+      name: "Pro",
+      price: format(2900), // "$29.00"
+      period: "/mo",
+      features: ["All features"],
+      buttonText: "Get Pro",
+      highlighted: true,
+    },
+  ];
+
+  return <PricingSection tiers={tiers} />;
+}
+```
+
+## Responsive Behavior
+
+The grid adapts to the number of tiers:
+
+- **Mobile (below 640px):** Single column — tiers stack vertically
+- **Tablet (640–1023px):** Two columns — tiers display side by side
+- **Desktop (1024px+):** `auto-fit` with `minmax(240px, 1fr)` — adapts naturally to tier count without hardcoding a column count
+
+## Highlighted Tier
+
+Set `highlighted: true` on any tier to apply the accent treatment:
+
+- Border color switches to `var(--border-focus)` (theme-aware)
+- Background switches to `var(--surface-accent-subtle)` (theme-aware)
+- Button renders with `variant="default"` instead of `variant="outline"`
+- An optional `badge` string renders above the tier name (e.g., "Most Popular")
+
+## Composition
+
+This block composes these Visor components:
+
+- **Card** (+ CardHeader, CardContent, CardFooter) — Tier container
+- **Badge** — Optional "Most Popular" label
+- **Button** — Per-tier CTA; renders as `<a>` when `buttonHref` is provided
+- **Heading** — Section heading
+- **Text** — Section description and tier descriptions
+- **Separator** — Visual divider between header and feature list
+- **Check** (Phosphor icon) — Feature list check marks
+
+## Props
+
+### PricingSectionProps
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `tiers` | `PricingTier[]` | Yes | Array of pricing tier objects to render |
+| `heading` | `string` | No | Optional section heading above the grid |
+| `description` | `string` | No | Optional supporting text below the heading |
+| `className` | `string` | No | Additional CSS class applied to the root `<section>` |
+
+### PricingTier
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `name` | `string` | Yes | Tier name (e.g. "Starter", "Pro", "Enterprise") |
+| `price` | `string` | Yes | Formatted price string (e.g. "$29", "Free", "Custom") |
+| `period` | `string` | No | Billing period shown next to price (e.g. "/mo", "/year") |
+| `description` | `string` | No | Short description below the price |
+| `features` | `string[]` | Yes | Feature list items, each rendered with a Check icon |
+| `buttonText` | `string` | Yes | CTA button label |
+| `buttonHref` | `string` | No | If provided, renders the button as an anchor tag |
+| `onButtonClick` | `() => void` | No | Click handler (used when no `buttonHref`) |
+| `highlighted` | `boolean` | No | Applies accent border, subtle background, and default button variant |
+| `badge` | `string` | No | Optional badge label shown above the tier name |
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI. Blocks are copy-and-own — install them into your project and customize freely.
