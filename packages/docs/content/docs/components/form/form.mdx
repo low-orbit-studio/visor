@@ -1,0 +1,373 @@
+---
+title: Form
+description: A form wrapper integrating Conform + Zod for schema-validated server action forms.
+---
+
+## Installation
+
+```bash
+npx visor add form
+```
+
+This copies three files into your project:
+
+- `components/ui/form/form.tsx` — the Form wrapper component
+- `components/ui/form/form-field.tsx` — the FormField convenience wrapper
+- `components/ui/form/form.module.css` — minimal styles
+
+And installs npm dependencies:
+
+- `@conform-to/react` — form state management
+- `@conform-to/zod` — Zod adapter for Conform
+- `zod` — schema validation
+
+## Overview
+
+The Form component wraps [Conform](https://conform.guide/) and React's `useActionState` to provide schema-validated server action forms with minimal boilerplate. It exposes form and field metadata via a render prop, letting you compose with existing Visor components like Field, FieldLabel, FieldError, and Input.
+
+**FormField** is a convenience wrapper for the most common case: a labeled text input with optional description and error display.
+
+Key features:
+
+- **Server-first** — designed for Next.js Server Actions with `useActionState`
+- **Progressive enhancement** — forms work before JavaScript hydration
+- **Schema validation** — Zod schemas validate on both client and server
+- **Composable** — works with all existing Visor form components
+- **Accessible** — Conform auto-generates `id`, `aria-describedby`, and `aria-invalid`
+
+## Basic Usage
+
+### 1. Define a schema
+
+Create a Zod schema in a shared module (no `"use server"` / `"use client"` directive) so both the page and action import the same source of truth:
+
+```tsx
+// lib/schemas/contact.ts
+import { z } from "zod"
+
+export const contactSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Please enter a valid email"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+})
+```
+
+### 2. Create a server action
+
+```tsx
+// app/contact/actions.ts
+"use server"
+
+import { parseWithZod } from "@conform-to/zod"
+import { contactSchema } from "@/lib/schemas/contact"
+
+export async function contactAction(prevState: unknown, formData: FormData) {
+  const submission = parseWithZod(formData, { schema: contactSchema })
+
+  if (submission.status !== "success") {
+    return submission.reply()
+  }
+
+  const { name, email, message } = submission.value
+  // ... send email, save to DB, etc.
+
+  return submission.reply({ resetForm: true })
+}
+```
+
+### 3. Build the form
+
+```tsx
+// app/contact/page.tsx
+import { Form } from "@/components/ui/form/form"
+import { FormField } from "@/components/ui/form/form-field"
+import { Button } from "@/components/ui/button/button"
+import { contactSchema } from "@/lib/schemas/contact"
+import { contactAction } from "./actions"
+
+export default function ContactPage() {
+  return (
+    <Form schema={contactSchema} action={contactAction}>
+      {({ fields }) => (
+        <>
+          <FormField field={fields.name} label="Name" placeholder="Your name" />
+          <FormField
+            field={fields.email}
+            label="Email"
+            type="email"
+            placeholder="you@example.com"
+          />
+          <FormField
+            field={fields.message}
+            label="Message"
+            placeholder="Your message..."
+          />
+          <Button type="submit">Send</Button>
+        </>
+      )}
+    </Form>
+  )
+}
+```
+
+## Manual Field Composition
+
+For full control over markup, use the render prop to access field metadata directly and compose with Visor's Field primitives:
+
+```tsx
+import { getInputProps } from "@conform-to/react"
+import { Form } from "@/components/ui/form/form"
+import { Field, FieldLabel, FieldDescription, FieldError } from "@/components/ui/field/field"
+import { Input } from "@/components/ui/input/input"
+import { Button } from "@/components/ui/button/button"
+
+<Form schema={mySchema} action={myAction}>
+  {({ fields }) => (
+    <>
+      <Field>
+        <FieldLabel htmlFor={fields.email.id}>Email</FieldLabel>
+        <FieldDescription id={fields.email.descriptionId}>
+          We will never share your email.
+        </FieldDescription>
+        <Input
+          {...getInputProps(fields.email, { type: "email" })}
+          aria-describedby={fields.email.descriptionId}
+        />
+        <FieldError errors={fields.email.errors} />
+      </Field>
+      <Button type="submit">Submit</Button>
+    </>
+  )}
+</Form>
+```
+
+## Radix UI Recipes
+
+Visor uses Radix UI for complex controls. These render custom DOM elements (not native `<select>` or `<input type="checkbox">`), so they need special wiring with Conform.
+
+### Select
+
+Use a hidden `<input>` managed by Conform and sync with Radix Select's `onValueChange`:
+
+```tsx
+import { getInputProps } from "@conform-to/react"
+import { Form } from "@/components/ui/form/form"
+import { Field, FieldLabel, FieldError } from "@/components/ui/field/field"
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select/select"
+
+<Form schema={mySchema} action={myAction}>
+  {({ fields }) => (
+    <Field>
+      <FieldLabel htmlFor={fields.role.id}>Role</FieldLabel>
+      <input
+        {...getInputProps(fields.role, { type: "hidden" })}
+      />
+      <Select
+        defaultValue={fields.role.value}
+        onValueChange={(value) => {
+          const input = document.getElementById(fields.role.id) as HTMLInputElement
+          if (input) {
+            input.value = value
+            input.dispatchEvent(new Event("change", { bubbles: true }))
+          }
+        }}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder="Select a role" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="admin">Admin</SelectItem>
+          <SelectItem value="editor">Editor</SelectItem>
+          <SelectItem value="viewer">Viewer</SelectItem>
+        </SelectContent>
+      </Select>
+      <FieldError errors={fields.role.errors} />
+    </Field>
+  )}
+</Form>
+```
+
+### Checkbox
+
+Use a hidden `<input>` and sync via Radix Checkbox's `onCheckedChange`:
+
+```tsx
+import { getInputProps } from "@conform-to/react"
+import { Form } from "@/components/ui/form/form"
+import { Field, FieldLabel, FieldError } from "@/components/ui/field/field"
+import { Checkbox } from "@/components/ui/checkbox/checkbox"
+
+<Form schema={mySchema} action={myAction}>
+  {({ fields }) => (
+    <Field orientation="horizontal">
+      <input
+        {...getInputProps(fields.terms, { type: "hidden" })}
+      />
+      <Checkbox
+        id={`${fields.terms.id}-checkbox`}
+        defaultChecked={fields.terms.value === "on"}
+        onCheckedChange={(checked) => {
+          const input = document.getElementById(fields.terms.id) as HTMLInputElement
+          if (input) {
+            input.value = checked ? "on" : ""
+            input.dispatchEvent(new Event("change", { bubbles: true }))
+          }
+        }}
+      />
+      <FieldLabel htmlFor={`${fields.terms.id}-checkbox`}>
+        I agree to the terms and conditions
+      </FieldLabel>
+      <FieldError errors={fields.terms.errors} />
+    </Field>
+  )}
+</Form>
+```
+
+### RadioGroup
+
+Similar pattern with a hidden input synced via `onValueChange`:
+
+```tsx
+import { getInputProps } from "@conform-to/react"
+import { Form } from "@/components/ui/form/form"
+import { Field, FieldLabel, FieldError } from "@/components/ui/field/field"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group/radio-group"
+
+<Form schema={mySchema} action={myAction}>
+  {({ fields }) => (
+    <Field>
+      <FieldLabel>Plan</FieldLabel>
+      <input
+        {...getInputProps(fields.plan, { type: "hidden" })}
+      />
+      <RadioGroup
+        defaultValue={fields.plan.value}
+        onValueChange={(value) => {
+          const input = document.getElementById(fields.plan.id) as HTMLInputElement
+          if (input) {
+            input.value = value
+            input.dispatchEvent(new Event("change", { bubbles: true }))
+          }
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <RadioGroupItem value="free" id="plan-free" />
+          <label htmlFor="plan-free">Free</label>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <RadioGroupItem value="pro" id="plan-pro" />
+          <label htmlFor="plan-pro">Pro</label>
+        </div>
+      </RadioGroup>
+      <FieldError errors={fields.plan.errors} />
+    </Field>
+  )}
+</Form>
+```
+
+## Client-Only Validation
+
+For forms that don't use server actions (settings panels, filters, search forms), use Conform directly without the Form wrapper:
+
+```tsx
+"use client"
+
+import { useForm, getFormProps, getInputProps } from "@conform-to/react"
+import { parseWithZod } from "@conform-to/zod"
+import { z } from "zod"
+import { Field, FieldLabel, FieldError } from "@/components/ui/field/field"
+import { Input } from "@/components/ui/input/input"
+import { Button } from "@/components/ui/button/button"
+
+const filterSchema = z.object({
+  query: z.string().min(1, "Enter a search term"),
+  maxResults: z.coerce.number().min(1).max(100),
+})
+
+export function FilterForm({
+  onFilter,
+}: {
+  onFilter: (data: z.infer<typeof filterSchema>) => void
+}) {
+  const [form, fields] = useForm({
+    shouldValidate: "onBlur",
+    onValidate({ formData }) {
+      return parseWithZod(formData, { schema: filterSchema })
+    },
+    onSubmit(event, { submission }) {
+      event.preventDefault()
+      if (submission?.status === "success") {
+        onFilter(submission.value)
+      }
+    },
+  })
+
+  return (
+    <form {...getFormProps(form)} noValidate>
+      <Field>
+        <FieldLabel htmlFor={fields.query.id}>Search</FieldLabel>
+        <Input
+          {...getInputProps(fields.query, { type: "text" })}
+          placeholder="Search..."
+        />
+        <FieldError errors={fields.query.errors} />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor={fields.maxResults.id}>Max Results</FieldLabel>
+        <Input {...getInputProps(fields.maxResults, { type: "number" })} />
+        <FieldError errors={fields.maxResults.errors} />
+      </Field>
+      <Button type="submit">Apply</Button>
+    </form>
+  )
+}
+```
+
+## API Reference
+
+### FormProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `schema` | `z.ZodType` | required | Zod schema for client and server validation |
+| `action` | `(prevState: unknown, formData: FormData) => Promise<unknown>` | required | Server action function for form submission |
+| `children` | `(context: \{ form, fields \}) => ReactNode` | required | Render prop receiving form metadata and field accessors |
+| `defaultValue` | `Partial<z.infer<Schema>>` | — | Default values for form fields |
+| `shouldValidate` | `"onSubmit" \| "onBlur" \| "onInput"` | `"onBlur"` | When to trigger client-side validation |
+| `className` | `string` | — | Additional CSS class for the form element |
+
+### FormFieldProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `field` | `FieldMetadata<string>` | required | Conform field metadata from the form render prop |
+| `label` | `string` | required | Label text for the field |
+| `description` | `string` | — | Optional description text below the label |
+| `type` | `HTMLInputTypeAttribute` | `"text"` | Input type attribute |
+| `placeholder` | `string` | — | Input placeholder text |
+
+## Accessibility
+
+- The form sets `noValidate` to disable native browser error bubbles in favor of Conform's custom error UI
+- Without JavaScript, validation happens server-side on submit via the server action
+- Conform auto-generates `id`, `aria-describedby`, and `aria-invalid` attributes on inputs
+- FieldError renders with `role="alert"` so screen readers announce errors immediately
+- FormField automatically connects labels to inputs via `htmlFor` matching `field.id`
+- All Form and FormField components pass axe-core WCAG 2.1 AA checks
+
+## Dependencies
+
+| Package | Purpose |
+|---------|---------|
+| `@conform-to/react` | Form state management, field metadata, progressive enhancement |
+| `@conform-to/zod` | Zod schema adapter for Conform's validation |
+| `zod` | Schema definition and type inference |
+| `field` | Field, FieldLabel, FieldDescription, FieldError (registry dependency) |
+| `input` | Input component (registry dependency) |
+| `button` | Button component (peer — needed for submit) |

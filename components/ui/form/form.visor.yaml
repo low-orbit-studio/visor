@@ -1,0 +1,69 @@
+name: Form
+description: A form wrapper integrating Conform + Zod for schema-validated server action forms.
+category: form
+
+when_to_use:
+  - Building forms with Zod schema validation
+  - Server action forms in Next.js App Router
+  - Forms requiring progressive enhancement (works before JS hydration)
+  - Any form needing consistent validation and error display
+
+when_not_to_use:
+  - Simple forms with no validation (use a plain <form>)
+  - Client-only forms without schema validation (use Conform directly)
+  - Non-React projects
+
+why: >
+  Form wraps Conform's useForm and React's useActionState to provide
+  schema-validated server action forms with minimal boilerplate. It
+  exposes form and field metadata via a render prop, letting consumers
+  compose with Field, FieldLabel, FieldError, and Input components.
+  FormField is a convenience wrapper for the most common text input case.
+
+props:
+  - name: schema
+    type: "z.ZodType"
+    required: true
+    description: Zod schema for client and server validation
+  - name: action
+    type: "(prevState: unknown, formData: FormData) => Promise<unknown>"
+    required: true
+    description: Server action function for form submission
+  - name: children
+    type: "(context: { form, fields }) => React.ReactNode"
+    required: true
+    description: Render prop receiving form metadata and field accessors
+  - name: defaultValue
+    type: "Partial<z.infer<Schema>>"
+    description: Default values for form fields
+  - name: shouldValidate
+    type: "'onSubmit' | 'onBlur' | 'onInput'"
+    default: "onBlur"
+    description: When to trigger client-side validation
+
+sub_components:
+  - name: FormField
+    description: Convenience wrapper composing Field, FieldLabel, FieldDescription, Input, and FieldError for a single text input.
+
+dependencies:
+  - "@conform-to/react"
+  - "@conform-to/zod"
+  - zod
+  - class-variance-authority
+
+example: |
+  import { Form } from "@/components/ui/form/form";
+  import { FormField } from "@/components/ui/form/form-field";
+  import { Button } from "@/components/ui/button/button";
+  import { contactSchema } from "@/lib/schemas/contact";
+  import { contactAction } from "./actions";
+
+  <Form schema={contactSchema} action={contactAction}>
+    {({ fields }) => (
+      <>
+        <FormField field={fields.name} label="Name" placeholder="Your name" />
+        <FormField field={fields.email} label="Email" type="email" />
+        <Button type="submit">Send</Button>
+      </>
+    )}
+  </Form>
