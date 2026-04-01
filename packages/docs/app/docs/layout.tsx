@@ -15,16 +15,18 @@ export default function Layout({ children }: { children: ReactNode }) {
             <Image
               src="/visor-wordmark-light.png"
               alt="Visor"
-              width={64}
-              height={18}
+              width={0}
+              height={0}
               className="wordmark-light"
+              style={{ width: 64, height: 'auto' }}
             />
             <Image
               src="/visor-wordmark-dark.png"
               alt="Visor"
-              width={64}
-              height={18}
+              width={0}
+              height={0}
               className="wordmark-dark"
+              style={{ width: 64, height: 'auto' }}
             />
           </div>
         ),
