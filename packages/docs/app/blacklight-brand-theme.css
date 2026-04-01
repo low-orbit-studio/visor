@@ -684,6 +684,14 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
   font-family: var(--font-mono);
 }
 
+/* ── Code blocks — less border radius ── */
+
+.blacklight-brand-theme pre,
+.blacklight-brand-theme code,
+.blacklight-brand-theme figure.shiki {
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
 /* ── Buttons — less border radius ── */
 
 .blacklight-brand-theme [data-slot="button"],
