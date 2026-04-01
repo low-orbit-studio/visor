@@ -25,6 +25,7 @@ export interface UseThemeCreatorReturn {
   themeData: ThemeData | null;
   validationResult: ThemeValidationResult | null;
   updateConfig: (path: string, value: unknown) => void;
+  replaceConfig: (config: VisorThemeConfig) => void;
 }
 
 function setNestedValue(
@@ -102,5 +103,9 @@ export function useThemeCreator(
     );
   }, []);
 
-  return { config, themeData, validationResult, updateConfig };
+  const replaceConfig = useCallback((newConfig: VisorThemeConfig) => {
+    setConfig(newConfig);
+  }, []);
+
+  return { config, themeData, validationResult, updateConfig, replaceConfig };
 }

@@ -1,0 +1,30 @@
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.label {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+  white-space: nowrap;
+}
+
+.select {
+  height: 2rem;
+  padding: 0 var(--spacing-2, 0.5rem);
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-sm, 0.25rem);
+  background: var(--surface-card, #ffffff);
+  color: var(--text-primary, #111827);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 500;
+  cursor: pointer;
+  min-width: 120px; /* dropdown sizing — not tokenized */
+}
+
+.select:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #6366f1);
+  outline-offset: var(--focus-ring-offset, 1px);
+}

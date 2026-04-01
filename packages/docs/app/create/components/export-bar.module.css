@@ -1,0 +1,66 @@
+.bar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.nameInput {
+  height: 2rem;
+  padding: 0 var(--spacing-2, 0.5rem);
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-sm, 0.25rem);
+  background: var(--surface-card, #ffffff);
+  color: var(--text-primary, #111827);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 500;
+  min-width: 140px; /* input sizing — not tokenized */
+  max-width: 200px; /* input sizing — not tokenized */
+}
+
+.nameInput::placeholder {
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.nameInput:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #6366f1);
+  outline-offset: var(--focus-ring-offset, 1px);
+}
+
+.downloadButton,
+.copyButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+  height: 2rem;
+  padding: 0 var(--spacing-2, 0.5rem);
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-sm, 0.25rem);
+  background: var(--surface-card, #ffffff);
+  color: var(--text-primary, #111827);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out);
+  white-space: nowrap;
+}
+
+.downloadButton:hover:not(:disabled),
+.copyButton:hover:not(:disabled) {
+  background: var(--surface-muted, #f9fafb);
+}
+
+.downloadButton:disabled,
+.copyButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.buttonLabel {
+  font-size: var(--font-size-xs, 0.75rem);
+}
+
+@media (max-width: 640px) {
+  .buttonLabel {
+    display: none;
+  }
+}

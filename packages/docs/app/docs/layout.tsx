@@ -30,6 +30,12 @@ export default function Layout({ children }: { children: ReactNode }) {
         ),
         url: '/',
       }}
+      links={[
+        {
+          text: 'Theme Creator',
+          url: '/create',
+        },
+      ]}
       sidebar={{
         banner: <ThemeSwitcher key="theme-switcher" />,
       }}

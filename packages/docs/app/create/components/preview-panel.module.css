@@ -23,24 +23,10 @@
   color: var(--text-secondary, #6b7280);
 }
 
-.modeToggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 2rem;
-  padding: 0 var(--spacing-2, 0.5rem);
-  border: 1px solid var(--border-default, #e5e7eb);
-  border-radius: var(--radius-sm, 0.25rem);
-  background: var(--surface-card, #ffffff);
-  color: var(--text-primary, #111827);
+.modeLabel {
   font-size: var(--font-size-xs, 0.75rem);
   font-weight: 500;
-  cursor: pointer;
-  transition: background var(--motion-duration-fast, 150ms) var(--motion-easing-default, ease);
-}
-
-.modeToggle:hover {
-  background: var(--surface-muted, #f9fafb);
+  color: var(--text-tertiary, #9ca3af);
 }
 
 .iframe {

@@ -3,16 +3,24 @@
   flex-direction: column;
   min-height: 100vh;
   padding: var(--spacing-4, 1rem);
-  gap: var(--spacing-4, 1rem);
+  gap: var(--spacing-3, 0.75rem);
   background: var(--surface-page, #ffffff);
   color: var(--text-primary, #111827);
 }
+
+/* ─── Header ────────────────────────────────────────────────────────────── */
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
   gap: var(--spacing-3, 0.75rem);
 }
 
@@ -30,6 +38,21 @@
 
 .backLink:hover {
   color: var(--text-primary, #111827);
+}
+
+.headerControls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+/* ─── Export Row ─────────────────────────────────────────────────────────── */
+
+.exportRow {
+  display: flex;
+  align-items: center;
+  padding-bottom: var(--spacing-2, 0.5rem);
+  border-bottom: 1px solid var(--border-default, #e5e7eb);
 }
 
 /* ─── Main Layout ────────────────────────────────────────────────────────── */
@@ -51,15 +74,6 @@
   overflow-y: auto;
 }
 
-.controlsPlaceholder {
-  padding: var(--spacing-4, 1rem);
-  border: 1px dashed var(--border-default, #e5e7eb);
-  border-radius: var(--radius-md, 0.5rem);
-  color: var(--text-tertiary, #9ca3af);
-  font-size: var(--font-size-sm, 0.875rem);
-  text-align: center;
-}
-
 /* ─── Preview Column ─────────────────────────────────────────────────────── */
 
 .preview {
@@ -71,6 +85,11 @@
 /* ─── Responsive ─────────────────────────────────────────────────────────── */
 
 @media (max-width: 767px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .layout {
     grid-template-columns: 1fr;
     grid-auto-rows: auto;

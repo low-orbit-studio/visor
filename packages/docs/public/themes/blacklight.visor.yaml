@@ -1,0 +1,69 @@
+name: blacklight
+version: 1
+
+colors:
+  primary: "#F46C00"
+  accent: "#00D4FF"
+  neutral: "#6B7280"
+  background: "#020214"
+  surface: "#12122A"
+  success: "#10B981"
+  warning: "#F59E0B"
+  error: "#EF4444"
+  info: "#3B82F6"
+
+colors-dark:
+  background: "#020214"
+  surface: "#12122A"
+  primary: "#F46C00"
+  accent: "#00D4FF"
+
+typography:
+  scale: 0.8
+  heading:
+    family: "PP Model Plastic"
+    weight: 600
+  body:
+    family: "PP Model Mono"
+    weight: 400
+  mono:
+    family: "PP Model Mono"
+
+spacing:
+  base: 4
+
+radius:
+  sm: 8
+  md: 12
+  lg: 16
+  xl: 24
+  pill: 9999
+
+shadows:
+  xs: "0 1px 2px rgba(0, 0, 0, 0.2)"
+  sm: "0 2px 4px rgba(0, 0, 0, 0.2)"
+  md: "0 4px 8px rgba(0, 0, 0, 0.2)"
+  lg: "0 8px 16px rgba(0, 0, 0, 0.2)"
+  xl: "0 16px 32px rgba(0, 0, 0, 0.25)"
+
+motion:
+  duration-fast: "150ms"
+  duration-normal: "200ms"
+  duration-slow: "400ms"
+  easing: "cubic-bezier(0.4, 0, 0.2, 1)"
+
+overrides:
+  light:
+    text-primary: "rgba(255, 255, 255, 1)"
+    text-secondary: "rgba(255, 255, 255, 0.7)"
+    text-tertiary: "rgba(255, 255, 255, 0.5)"
+    surface-background: "#020214"
+    surface-card: "#12122A"
+    border-default: "rgba(255, 255, 255, 0.1)"
+  dark:
+    text-primary: "rgba(255, 255, 255, 1)"
+    text-secondary: "rgba(255, 255, 255, 0.7)"
+    text-tertiary: "rgba(255, 255, 255, 0.5)"
+    surface-background: "#020214"
+    surface-card: "#12122A"
+    border-default: "rgba(255, 255, 255, 0.1)"
