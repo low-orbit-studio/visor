@@ -87,6 +87,7 @@
   border-radius: var(--radius-lg, 0.5rem) !important;
   box-shadow: var(--shadow-md) !important;
   z-index: var(--z-index-dropdown, 1000) !important;
+  min-width: 18rem !important;
 }
 
 /* Search input inside dropdown — match Visor Input base */
@@ -95,7 +96,7 @@
   border: 1px solid var(--border-default, #e5e7eb) !important;
   color: var(--text-primary, #111827) !important;
   border-radius: var(--radius-md, 0.375rem) !important;
-  padding: var(--spacing-2, 0.5rem) !important;
+  padding: var(--spacing-2, 0.5rem) var(--spacing-2, 0.5rem) var(--spacing-2, 0.5rem) 2rem !important;
   font-size: var(--font-size-sm, 0.875rem) !important;
   outline: none !important;
   transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out) !important;
@@ -108,6 +109,12 @@
 
 .iti__search-input::placeholder {
   color: var(--text-secondary, #9ca3af) !important;
+}
+
+/* Divider between search and country list */
+.iti__search-input + .iti__country-list,
+.iti__country-list {
+  border-top: 1px solid var(--border-default, #e5e7eb) !important;
 }
 
 /* Country list background — matches dropdown content */
