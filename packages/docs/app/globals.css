@@ -41,7 +41,7 @@
   margin: 0;
   border: none;
   border-radius: 0;
-  background: var(--surface-page, #ffffff);
+  background: var(--surface-page, #ffffff) !important;
 }
 
 .preview-container[data-fullscreen="true"] .preview-render {
