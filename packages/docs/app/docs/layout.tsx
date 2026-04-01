@@ -18,6 +18,7 @@ export default function Layout({ children }: { children: ReactNode }) {
               width={64}
               height={18}
               className="wordmark-light"
+              style={{ height: 'auto' }}
             />
             <Image
               src="/visor-wordmark-dark.png"
@@ -25,6 +26,7 @@ export default function Layout({ children }: { children: ReactNode }) {
               width={64}
               height={18}
               className="wordmark-dark"
+              style={{ height: 'auto' }}
             />
           </div>
         ),
