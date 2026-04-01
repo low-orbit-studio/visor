@@ -90,8 +90,9 @@
 /* Individual country items — match Select .item */
 .iti__country {
   color: var(--text-primary, #111827) !important;
-  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem) !important;
+  padding: var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem) !important;
   font-size: var(--font-size-sm, 0.875rem) !important;
+  line-height: 1.4 !important;
 }
 
 /* Hover and keyboard highlight — match Select .item:focus */
@@ -142,4 +143,5 @@
 /* Selected dial code text */
 .iti__selected-dial-code {
   color: var(--text-primary, #111827) !important;
+  margin-right: var(--spacing-2, 0.5rem) !important;
 }
