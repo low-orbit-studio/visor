@@ -4,19 +4,48 @@ import { resolveOutputPath, readFile } from "../utils/fs.js"
 import { computeDiff, hasDifferences } from "../utils/diff.js"
 import { logger } from "../utils/logger.js"
 
+export interface DiffOptions {
+  json?: boolean
+}
+
 export function diffCommand(
   componentName: string | undefined,
-  cwd: string
+  cwd: string,
+  options: DiffOptions = {}
 ): void {
-  const config = loadConfig(cwd)
-  const registry = loadRegistry()
+  const json = options.json ?? false
+
+  let config: ReturnType<typeof loadConfig>
+  let registry: ReturnType<typeof loadRegistry>
+
+  try {
+    config = loadConfig(cwd)
+    registry = loadRegistry()
+  } catch (error) {
+    if (json) {
+      const message = error instanceof Error ? error.message : String(error)
+      console.log(JSON.stringify({ success: false, error: message }, null, 2))
+      process.exit(1)
+    }
+    throw error
+  }
 
   // If no component specified, diff all installed items
   const itemsToDiff = componentName
     ? (() => {
         const item = findItem(registry, componentName)
         if (!item) {
-          logger.error(`Component "${componentName}" not found in registry.`)
+          if (json) {
+            console.log(
+              JSON.stringify(
+                { success: false, error: `Component "${componentName}" not found in registry.` },
+                null,
+                2
+              )
+            )
+          } else {
+            logger.error(`Component "${componentName}" not found in registry.`)
+          }
           process.exit(1)
         }
         return [item]
@@ -25,6 +54,15 @@ export function diffCommand(
 
   let totalDiffs = 0
   let totalFiles = 0
+
+  interface DiffEntry {
+    file: string
+    component: string
+    hasDifferences: boolean
+    diff: string
+  }
+
+  const diffs: DiffEntry[] = []
 
   for (const item of itemsToDiff) {
     let itemHasDiff = false
@@ -42,7 +80,25 @@ export function diffCommand(
 
       totalFiles++
 
-      if (!hasDifferences(localContent, file.content)) continue
+      const fileHasDiff = hasDifferences(localContent, file.content)
+
+      if (json) {
+        const diffText = fileHasDiff
+          ? computeDiff(file.path, localContent, file.content)
+          : ""
+        diffs.push({
+          file: file.path,
+          component: item.name,
+          hasDifferences: fileHasDiff,
+          diff: diffText,
+        })
+        if (fileHasDiff) {
+          totalDiffs++
+        }
+        continue
+      }
+
+      if (!fileHasDiff) continue
 
       if (!itemHasDiff) {
         logger.heading(item.name)
@@ -53,6 +109,25 @@ export function diffCommand(
       console.log(diff)
       totalDiffs++
     }
+  }
+
+  if (json) {
+    console.log(
+      JSON.stringify(
+        {
+          success: true,
+          diffs,
+          summary: {
+            totalFiles,
+            filesWithDiffs: totalDiffs,
+          },
+        },
+        null,
+        2
+      )
+    )
+    process.exit(0)
+    return
   }
 
   if (totalDiffs === 0) {

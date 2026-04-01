@@ -16,6 +16,7 @@ export interface AddOptions {
   overwrite?: boolean
   category?: string
   block?: boolean
+  json?: boolean
 }
 
 export function addCommand(
@@ -23,17 +24,41 @@ export function addCommand(
   cwd: string,
   options: AddOptions = {}
 ): void {
-  const config = loadConfig(cwd)
-  const registry = loadRegistry()
+  const json = options.json ?? false
+
+  let config: ReturnType<typeof loadConfig>
+  let registry: ReturnType<typeof loadRegistry>
+
+  try {
+    config = loadConfig(cwd)
+    registry = loadRegistry()
+  } catch (error) {
+    if (json) {
+      const message = error instanceof Error ? error.message : String(error)
+      console.log(JSON.stringify({ success: false, error: message }, null, 2))
+      process.exit(1)
+    }
+    throw error
+  }
 
   // When --block is used, validate that requested items are blocks
   if (options.block && components.length > 0) {
     for (const name of components) {
       const item = registry.items.find((i) => i.name === name)
       if (item && item.type !== "registry:block") {
-        logger.error(
-          `"${name}" is not a block. Remove the --block flag to install it as a component.`
-        )
+        if (json) {
+          console.log(
+            JSON.stringify(
+              { success: false, error: `"${name}" is not a block. Remove the --block flag to install it as a component.` },
+              null,
+              2
+            )
+          )
+        } else {
+          logger.error(
+            `"${name}" is not a block. Remove the --block flag to install it as a component.`
+          )
+        }
         process.exit(1)
       }
     }
@@ -44,9 +69,19 @@ export function addCommand(
 
   if (options.category) {
     if (components.length > 0) {
-      logger.error(
-        "Cannot use --category with individual component names. Use one or the other."
-      )
+      if (json) {
+        console.log(
+          JSON.stringify(
+            { success: false, error: "Cannot use --category with individual component names. Use one or the other." },
+            null,
+            2
+          )
+        )
+      } else {
+        logger.error(
+          "Cannot use --category with individual component names. Use one or the other."
+        )
+      }
       process.exit(1)
     }
 
@@ -55,14 +90,26 @@ export function addCommand(
     )
 
     if (categoryItems.length === 0) {
-      logger.error(`No items found in category "${options.category}".`)
+      if (json) {
+        console.log(
+          JSON.stringify(
+            { success: false, error: `No items found in category "${options.category}".` },
+            null,
+            2
+          )
+        )
+      } else {
+        logger.error(`No items found in category "${options.category}".`)
+      }
       process.exit(1)
     }
 
     itemNames = categoryItems.map((item) => item.name)
-    logger.info(
-      `Category "${options.category}": ${itemNames.length} item(s) found`
-    )
+    if (!json) {
+      logger.info(
+        `Category "${options.category}": ${itemNames.length} item(s) found`
+      )
+    }
   }
 
   if (itemNames.length === 0) {
@@ -71,31 +118,68 @@ export function addCommand(
       const blockItems = registry.items.filter(
         (item) => item.type === "registry:block"
       )
-      if (blockItems.length === 0) {
-        logger.error("No blocks available in the registry.")
+      if (json) {
+        console.log(
+          JSON.stringify(
+            {
+              success: false,
+              error: blockItems.length === 0
+                ? "No blocks available in the registry."
+                : `No block name specified. Available blocks: ${blockItems.map((i) => i.name).join(", ")}`,
+            },
+            null,
+            2
+          )
+        )
       } else {
-        logger.error("No block name specified. Available blocks:")
-        for (const item of blockItems) {
-          logger.info(`  ${item.name}`)
+        if (blockItems.length === 0) {
+          logger.error("No blocks available in the registry.")
+        } else {
+          logger.error("No block name specified. Available blocks:")
+          for (const item of blockItems) {
+            logger.info(`  ${item.name}`)
+          }
         }
       }
       process.exit(1)
     }
-    logger.error("No items specified. Provide item names or use --category.")
+    if (json) {
+      console.log(
+        JSON.stringify(
+          { success: false, error: "No items specified. Provide item names or use --category." },
+          null,
+          2
+        )
+      )
+    } else {
+      logger.error("No items specified. Provide item names or use --category.")
+    }
     process.exit(1)
   }
 
   // Resolve all items including transitive registry dependencies
-  const items = resolveTransitiveDeps(registry, itemNames)
+  let items: ReturnType<typeof resolveTransitiveDeps>
+  try {
+    items = resolveTransitiveDeps(registry, itemNames)
+  } catch (error) {
+    if (json) {
+      const message = error instanceof Error ? error.message : String(error)
+      console.log(JSON.stringify({ success: false, error: message }, null, 2))
+      process.exit(1)
+    }
+    throw error
+  }
 
-  logger.info(
-    `Resolving ${itemNames.length} item(s) → ${items.length} total (with dependencies)`
-  )
-  logger.blank()
+  if (!json) {
+    logger.info(
+      `Resolving ${itemNames.length} item(s) → ${items.length} total (with dependencies)`
+    )
+    logger.blank()
+  }
 
   // Write files
-  let filesWritten = 0
-  let filesSkipped = 0
+  const writtenFiles: string[] = []
+  const skippedFiles: string[] = []
 
   for (const item of items) {
     for (const file of item.files) {
@@ -107,21 +191,27 @@ export function addCommand(
       )
 
       if (fileExists(outputPath) && !options.overwrite) {
-        logger.item(`skip ${file.path} (already exists)`)
-        filesSkipped++
+        if (!json) {
+          logger.item(`skip ${file.path} (already exists)`)
+        }
+        skippedFiles.push(file.path)
         continue
       }
 
       writeFile(outputPath, file.content)
-      logger.success(file.path)
-      filesWritten++
+      if (!json) {
+        logger.success(file.path)
+      }
+      writtenFiles.push(file.path)
     }
   }
 
-  logger.blank()
-  logger.info(
-    `Files: ${filesWritten} written, ${filesSkipped} skipped`
-  )
+  if (!json) {
+    logger.blank()
+    logger.info(
+      `Files: ${writtenFiles.length} written, ${skippedFiles.length} skipped`
+    )
+  }
 
   // Collect and install npm dependencies
   const { dependencies, devDependencies } = collectDependencies(items)
@@ -129,29 +219,68 @@ export function addCommand(
   const uninstalledDeps = getUninstalledDeps(dependencies, cwd)
   const uninstalledDevDeps = getUninstalledDeps(devDependencies, cwd)
 
+  const installedDeps: string[] = []
+  const failedDeps: string[] = []
+
   if (uninstalledDeps.length > 0) {
-    logger.blank()
-    logger.info("Installing dependencies...")
-    if (!installPackages(uninstalledDeps, cwd)) {
-      logger.warn("Some dependencies failed to install. Install them manually:")
-      logger.info(`  npm install ${uninstalledDeps.join(" ")}`)
+    if (!json) {
+      logger.blank()
+      logger.info("Installing dependencies...")
+    }
+    if (installPackages(uninstalledDeps, cwd)) {
+      installedDeps.push(...uninstalledDeps)
+    } else {
+      failedDeps.push(...uninstalledDeps)
+      if (!json) {
+        logger.warn("Some dependencies failed to install. Install them manually:")
+        logger.info(`  npm install ${uninstalledDeps.join(" ")}`)
+      }
     }
   }
 
   if (uninstalledDevDeps.length > 0) {
-    logger.blank()
-    logger.info("Installing dev dependencies...")
-    if (!installPackages(uninstalledDevDeps, cwd, true)) {
-      logger.warn("Some dev dependencies failed to install. Install them manually:")
-      logger.info(`  npm install --save-dev ${uninstalledDevDeps.join(" ")}`)
+    if (!json) {
+      logger.blank()
+      logger.info("Installing dev dependencies...")
+    }
+    if (installPackages(uninstalledDevDeps, cwd, true)) {
+      installedDeps.push(...uninstalledDevDeps)
+    } else {
+      failedDeps.push(...uninstalledDevDeps)
+      if (!json) {
+        logger.warn("Some dev dependencies failed to install. Install them manually:")
+        logger.info(`  npm install --save-dev ${uninstalledDevDeps.join(" ")}`)
+      }
     }
   }
 
+  const warnings: string[] = []
+
   if (!hasVisorTokens(cwd)) {
-    logger.blank()
-    logger.warn(
-      "@loworbitstudio/visor-core is not installed. Components require it for styling."
+    const warning = "@loworbitstudio/visor-core is not installed. Components require it for styling."
+    warnings.push(warning)
+    if (!json) {
+      logger.blank()
+      logger.warn(warning)
+      logger.info("  npm install @loworbitstudio/visor-core")
+    }
+  }
+
+  if (json) {
+    console.log(
+      JSON.stringify(
+        {
+          success: true,
+          requested: itemNames,
+          resolved: items.map((i) => i.name),
+          files: { written: writtenFiles, skipped: skippedFiles },
+          dependencies: { installed: installedDeps, failed: failedDeps },
+          warnings,
+        },
+        null,
+        2
+      )
     )
-    logger.info("  npm install @loworbitstudio/visor-core")
+    process.exit(0)
   }
 }

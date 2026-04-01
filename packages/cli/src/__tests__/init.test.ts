@@ -106,4 +106,94 @@ describe("init command", () => {
       initCommand(testDir, { template: "flutter" })
     }).toThrow("process.exit(1)")
   })
+
+  describe("--json flag", () => {
+    it("outputs valid JSON with success field", () => {
+      mockProcessExit()
+      expect(() => {
+        initCommand(testDir, { json: true })
+      }).toThrow("process.exit(0)")
+
+      const calls = (console.log as ReturnType<typeof vi.fn>).mock.calls
+      const jsonCall = calls.find((c: unknown[]) => {
+        try {
+          JSON.parse(String(c[0]))
+          return true
+        } catch {
+          return false
+        }
+      })
+      expect(jsonCall).toBeDefined()
+      const result = JSON.parse(String(jsonCall![0]))
+      expect(result.success).toBe(true)
+    })
+
+    it("outputs files.created containing visor.json", () => {
+      mockProcessExit()
+      expect(() => {
+        initCommand(testDir, { json: true })
+      }).toThrow("process.exit(0)")
+
+      const calls = (console.log as ReturnType<typeof vi.fn>).mock.calls
+      const jsonOutput = calls.map((c: unknown[]) => String(c[0])).find((s) => s.startsWith("{"))
+      const result = JSON.parse(jsonOutput!)
+      expect(result.files.created).toContain("visor.json")
+    })
+
+    it("outputs files.skipped containing visor.json when it already exists", () => {
+      writeFileSync(
+        join(testDir, "visor.json"),
+        JSON.stringify({ paths: { components: "src/ui", deckComponents: "components/deck", blocks: "blocks", hooks: "hooks", lib: "lib" } }),
+        "utf-8"
+      )
+
+      mockProcessExit()
+      expect(() => {
+        initCommand(testDir, { json: true })
+      }).toThrow("process.exit(0)")
+
+      const calls = (console.log as ReturnType<typeof vi.fn>).mock.calls
+      const jsonOutput = calls.map((c: unknown[]) => String(c[0])).find((s) => s.startsWith("{"))
+      const result = JSON.parse(jsonOutput!)
+      expect(result.files.skipped).toContain("visor.json")
+    })
+
+    it("outputs warnings when visor-core is not installed", () => {
+      mockProcessExit()
+      expect(() => {
+        initCommand(testDir, { json: true })
+      }).toThrow("process.exit(0)")
+
+      const calls = (console.log as ReturnType<typeof vi.fn>).mock.calls
+      const jsonOutput = calls.map((c: unknown[]) => String(c[0])).find((s) => s.startsWith("{"))
+      const result = JSON.parse(jsonOutput!)
+      expect(result.warnings.length).toBeGreaterThan(0)
+      expect(result.warnings[0]).toContain("visor-core")
+    })
+
+    it("outputs success:false and exits 1 for invalid template", () => {
+      mockProcessExit()
+      expect(() => {
+        initCommand(testDir, { template: "flutter", json: true })
+      }).toThrow("process.exit(1)")
+
+      const calls = (console.log as ReturnType<typeof vi.fn>).mock.calls
+      const jsonOutput = calls.map((c: unknown[]) => String(c[0])).find((s) => s.startsWith("{"))
+      const result = JSON.parse(jsonOutput!)
+      expect(result.success).toBe(false)
+      expect(result.error).toBeDefined()
+    })
+
+    it("outputs nextSteps array", () => {
+      mockProcessExit()
+      expect(() => {
+        initCommand(testDir, { json: true })
+      }).toThrow("process.exit(0)")
+
+      const calls = (console.log as ReturnType<typeof vi.fn>).mock.calls
+      const jsonOutput = calls.map((c: unknown[]) => String(c[0])).find((s) => s.startsWith("{"))
+      const result = JSON.parse(jsonOutput!)
+      expect(Array.isArray(result.nextSteps)).toBe(true)
+    })
+  })
 })
