@@ -1,0 +1,80 @@
+---
+title: CTA Section
+description: A centered call-to-action section composing Heading, Text, and Button. The first marketing block, establishing the marketing category convention.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { CtaSection } from '@/components/blocks/cta-section';
+
+## Preview
+
+<BlockPreview
+  title="CTA Section"
+  code={"<CtaSection\n  heading=\"Ready to get started?\"\n  description=\"Join thousands of teams using Visor to build better interfaces.\"\n  buttonText=\"Get Started Free\"\n  buttonHref=\"/signup\"\n/>"}
+>
+  <CtaSection
+    heading="Ready to get started?"
+    description="Join thousands of teams using Visor to build better interfaces."
+    buttonText="Get Started Free"
+    buttonHref="/signup"
+  />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block cta-section
+```
+
+This copies files into your project:
+
+- `blocks/cta-section/cta-section.tsx` — the block component
+- `blocks/cta-section/cta-section.module.css` — the styles
+
+## Usage
+
+```tsx
+import { CtaSection } from '@/blocks/cta-section/cta-section';
+
+export default function MarketingPage() {
+  return (
+    <CtaSection
+      heading="Ready to get started?"
+      description="Join thousands of teams using Visor to build better interfaces."
+      buttonText="Get Started Free"
+      buttonHref="/signup"
+    />
+  );
+}
+```
+
+### With click handler
+
+```tsx
+<CtaSection
+  heading="Upgrade your plan"
+  description="Unlock premium features and priority support."
+  buttonText="Upgrade Now"
+  onButtonClick={() => openUpgradeModal()}
+/>
+```
+
+## Composition
+
+This block composes three Visor primitives:
+
+- **Heading** — Semantic `h2` with theme-aware typography
+- **Text** — Body copy with secondary color token
+- **Button** — Primary action, renders as `<a>` when `buttonHref` is provided
+
+## Props
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `heading` | `string` | Yes | The main heading text |
+| `description` | `string` | No | Supporting body copy below the heading |
+| `buttonText` | `string` | Yes | Label for the CTA button |
+| `buttonHref` | `string` | No | If provided, renders the button as an anchor tag |
+| `onButtonClick` | `() => void` | No | Click handler for button (used when no `buttonHref`) |
+| `className` | `string` | No | Additional CSS class applied to the root `<section>` |

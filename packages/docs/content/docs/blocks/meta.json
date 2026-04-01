@@ -3,6 +3,7 @@
   "description": "Complete UI patterns composed of multiple Visor components. Blocks are alphabetized. Insert new entries in A-Z order.",
   "pages": [
     "configuration-panel",
+    "cta-section",
     "design-system-deck",
     "design-system-specimen",
     "login-form",
