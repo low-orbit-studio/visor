@@ -21,6 +21,7 @@ export interface PricingTier {
   onButtonClick?: () => void
   highlighted?: boolean
   badge?: string
+  color?: string
 }
 
 export interface PricingSectionProps {
@@ -65,6 +66,7 @@ export function PricingSection({
             <Card
               key={i}
               className={cn(styles.tier, tier.highlighted && styles.tierHighlighted)}
+              style={tier.color ? { "--tier-color": tier.color } as React.CSSProperties : undefined}
             >
               <CardHeader className={styles.tierHeader}>
                 {tier.badge && (

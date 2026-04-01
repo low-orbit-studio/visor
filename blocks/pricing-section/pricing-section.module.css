@@ -55,26 +55,26 @@
 .tier:hover {
   transform: translateY(-4px);
   box-shadow:
-    0 0 0 1px var(--border-default, #e5e7eb),
-    var(--shadow-lg, 0 10px 30px -10px rgba(0, 0, 0, 0.15));
+    0 0 0 1px color-mix(in srgb, var(--tier-color, var(--border-default, #e5e7eb)) 50%, transparent),
+    0 0 30px -10px color-mix(in srgb, var(--tier-color, var(--accent, #3b82f6)) 15%, transparent),
+    0 10px 30px -10px rgba(0, 0, 0, 0.15);
 }
 
 /* ── Highlighted tier ── */
 
 .tierHighlighted {
-  border-color: var(--accent, #3b82f6);
   box-shadow:
-    0 0 0 1px var(--accent, #3b82f6),
-    0 0 0 4px color-mix(in srgb, var(--accent, #3b82f6) 12%, transparent);
-  background-color: var(--surface-accent-subtle, #eff6ff);
+    0 0 0 1px var(--tier-color, var(--accent, #3b82f6)),
+    0 0 0 4px color-mix(in srgb, var(--tier-color, var(--accent, #3b82f6)) 12%, transparent);
+  background-color: color-mix(in srgb, var(--tier-color, var(--accent, #3b82f6)) 5%, var(--surface-card, #ffffff));
   position: relative;
 }
 
 .tierHighlighted:hover {
   box-shadow:
-    0 0 0 1px var(--accent, #3b82f6),
-    0 0 0 4px color-mix(in srgb, var(--accent, #3b82f6) 15%, transparent),
-    0 0 40px -10px color-mix(in srgb, var(--accent, #3b82f6) 30%, transparent),
+    0 0 0 1px var(--tier-color, var(--accent, #3b82f6)),
+    0 0 0 4px color-mix(in srgb, var(--tier-color, var(--accent, #3b82f6)) 15%, transparent),
+    0 0 40px -10px color-mix(in srgb, var(--tier-color, var(--accent, #3b82f6)) 30%, transparent),
     0 20px 40px -20px rgba(0, 0, 0, 0.25);
   transform: translateY(-6px);
 }
@@ -103,11 +103,11 @@
 }
 
 .tier:hover .tierName {
-  color: var(--text-secondary, #6b7280);
+  color: var(--tier-color, var(--text-secondary, #6b7280));
 }
 
 .tierHighlighted .tierName {
-  color: var(--accent, #3b82f6);
+  color: var(--tier-color, var(--accent, #3b82f6));
 }
 
 /* ── Price ── */
@@ -160,7 +160,7 @@
 }
 
 .featureIcon {
-  color: var(--accent, #15803d);
+  color: var(--tier-color, var(--accent, #15803d));
   flex-shrink: 0;
   margin-top: 2px;
 }
