@@ -577,6 +577,31 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
   font-family: var(--font-mono);
 }
 
+/* ── Form fields — match Blacklight website spacing ── */
+
+.blacklight-brand-theme input,
+.blacklight-brand-theme textarea,
+.blacklight-brand-theme select,
+.blacklight-brand-theme [role="combobox"] {
+  height: auto;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-sm, 0.5rem);
+  font-weight: 300;
+}
+
+.blacklight-brand-theme textarea {
+  min-height: 6.25rem;
+}
+
+.blacklight-brand-theme input:focus,
+.blacklight-brand-theme textarea:focus,
+.blacklight-brand-theme select:focus,
+.blacklight-brand-theme [role="combobox"]:focus {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+}
+
 /* ── Footer prev/next nav — label readable on hover ── */
 html:not(.dark) .blacklight-brand-theme .grid > a:hover {
   --fd-muted-foreground: rgba(255, 255, 255, 0.7);
