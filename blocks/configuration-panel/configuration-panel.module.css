@@ -145,7 +145,7 @@
 
 /* Divider between sections */
 .divider {
-  margin-top: 8px;
+  margin-top: var(--spacing-2, 0.5rem);
   background-color: var(--border-muted, #e5e7eb);
 }
 
