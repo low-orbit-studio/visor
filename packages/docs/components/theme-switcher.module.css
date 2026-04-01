@@ -8,10 +8,10 @@
   height: auto;
   gap: 0.5rem;
   border-radius: 0.5rem;
-  border: 1px solid hsl(var(--fd-border) / 0.5);
-  background-color: hsl(var(--fd-secondary) / 0.5);
+  border: 1px solid color-mix(in srgb, var(--color-fd-border) 50%, transparent);
+  background-color: color-mix(in srgb, var(--color-fd-secondary) 50%, transparent);
   padding: 0.4375rem 0.375rem 0.4375rem 0.5rem;
-  color: hsl(var(--fd-muted-foreground));
+  color: var(--color-fd-muted-foreground);
 }
 
 .groupedItem {
