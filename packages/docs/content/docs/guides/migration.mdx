@@ -1,0 +1,592 @@
+---
+title: Migration Guide
+description: Retrofit an existing project to Visor — step-by-step from theme extraction through component adoption.
+---
+
+This guide walks through two paths: setting up Visor in a brand-new project, and retrofitting an existing project that already has its own design system.
+
+## Prerequisites
+
+Before you start, make sure you have:
+
+- **Node.js 18+** — required by the Visor CLI
+- **npm** — the CLI is distributed via npx, no global install required
+- **An existing Next.js project** (for the retrofit path) or a blank project directory (for new projects)
+
+No pre-installation is required. All Visor CLI commands run via `npx @loworbitstudio/visor`.
+
+---
+
+## Quick Start — New Projects
+
+If you are starting from scratch, use `visor init` to scaffold a fully themed project in one command.
+
+```bash
+npx @loworbitstudio/visor init --template nextjs
+```
+
+This creates three files in your project root:
+
+| File | Purpose |
+|------|---------|
+| `visor.json` | Path config — where components, hooks, and utilities are placed |
+| `.visor.yaml` | Your theme file — customize brand colors, typography, radius, and more |
+| `app/globals.css` | Generated theme CSS via the NextJS adapter |
+
+Edit `.visor.yaml` with your brand colors, then re-run `theme apply` any time you change it:
+
+```bash
+npx @loworbitstudio/visor theme apply .visor.yaml --adapter nextjs
+```
+
+Then add components:
+
+```bash
+npx @loworbitstudio/visor add button card input
+```
+
+That is it for new projects. Continue to [Component Migration Patterns](#component-migration-patterns) for examples of common component usage.
+
+---
+
+## Retrofit Workflow — Existing Projects
+
+Retrofitting an existing project follows a five-step workflow:
+
+1. Extract your existing theme
+2. Review and edit the generated `.visor.yaml`
+3. Validate the theme
+4. Apply the theme (generate CSS)
+5. Add components and update imports
+
+### Step 1 — Extract Your Theme
+
+The CLI scans your project for CSS custom properties, `globals.css`, token files, and Tailwind config, then produces a `.visor.yaml` draft.
+
+```bash
+npx @loworbitstudio/visor theme extract --from ./
+```
+
+The extractor scans these locations automatically:
+- `globals.css`, `global.css`, `tokens.css`, `variables.css`, `theme.css`
+- Directories: `src/`, `app/`, `styles/`, `css/`, `src/styles/`
+- CSS module files for component-scoped tokens
+- `tailwind.config.js` / `tailwind.config.ts` for color palettes
+- `package.json` for font dependencies
+
+The output file defaults to `.visor.yaml` in your project root.
+
+**Extraction confidence:** The extractor assigns confidence levels (`high`, `medium`, `low`) to each mapped value. Low-confidence mappings are flagged with `# TODO` comments in the YAML — review these before applying.
+
+```bash
+# Output to a custom path
+npx @loworbitstudio/visor theme extract --from ./src --output ./my-brand.visor.yaml
+
+# Get structured JSON output (useful in CI or scripts)
+npx @loworbitstudio/visor theme extract --from ./ --json
+```
+
+### Step 2 — Review and Tweak the Generated `.visor.yaml`
+
+Open the generated file. It will look something like this:
+
+```yaml
+name: "My Brand"
+version: 1
+
+colors:
+  primary: "#1A5F7A"     # extracted from --color-primary
+  accent: "#5BC4BF"      # extracted from --color-accent
+  neutral: "#6B7280"     # TODO: verify — low confidence
+  background: "#FFFFFF"
+  surface: "#FFFFFF"
+  success: "#22C55E"
+  warning: "#F59E0B"
+  error: "#EF4444"
+  info: "#0EA5E9"
+
+colors-dark:
+  background: "#0D0D0D"
+  surface: "#1E1E1E"
+
+typography:
+  heading:
+    family: "Inter"
+    weight: 600
+  body:
+    family: "Inter"
+    weight: 400
+  mono:
+    family: "JetBrains Mono"
+```
+
+**What to check:**
+
+- **`colors.primary`** — This single value drives interactive elements (buttons, links, focus rings). Make sure it matches your primary brand color exactly.
+- **`colors.accent`** — Secondary brand color. Defaults to the same as `primary` if omitted.
+- **`colors-dark`** — The extractor may not find explicit dark-mode overrides. Fill these in if your project has a dark theme.
+- **`typography.heading.family`** — Confirm this matches the font actually used in your headings.
+- **`# TODO` comments** — Resolve every low-confidence mapping before moving on.
+
+Only `name`, `version`, and `colors.primary` are required. Everything else has sensible defaults.
+
+### Step 3 — Validate the Theme
+
+Run the validator to catch schema errors, missing required tokens, and WCAG contrast failures before generating any CSS.
+
+```bash
+npx @loworbitstudio/visor theme validate my-brand.visor.yaml
+```
+
+The validator checks:
+
+| Check | What it catches |
+|-------|----------------|
+| Schema validation | Missing required fields, wrong types |
+| Completeness | All ~35 required semantic tokens resolve in output |
+| WCAG contrast | AA compliance for text/background pairs |
+| Type scale coherence | Heading scale is larger than body scale |
+| Structural integrity | Color values are valid CSS hex/oklch/hsl |
+
+Fix any errors reported before proceeding. Warnings are non-blocking but should be reviewed.
+
+### Step 4 — Apply the Theme
+
+Generate CSS from your validated `.visor.yaml`:
+
+```bash
+npx @loworbitstudio/visor theme apply my-brand.visor.yaml --adapter nextjs
+```
+
+This writes `globals.css` in the current directory (or the path specified with `--output`) with:
+
+- Google Fonts `@import` (when non-system fonts are specified)
+- `@layer` order declaration
+- Primitive tokens in `@layer visor-primitives`
+- Light/dark adaptive tokens in `@layer visor-adaptive`
+
+**Other adapters:**
+
+```bash
+# For fumadocs docs sites — generates fumadocs bridge tokens
+npx @loworbitstudio/visor theme apply my-brand.visor.yaml --adapter fumadocs
+
+# For pitch decks — scopes tokens under .deck--{theme-name}
+npx @loworbitstudio/visor theme apply my-brand.visor.yaml --adapter deck
+
+# Custom output path
+npx @loworbitstudio/visor theme apply my-brand.visor.yaml --output src/styles/theme.css
+```
+
+Import the generated CSS in your app's root layout:
+
+```css
+/* app/globals.css is already imported via layout.tsx in most Next.js projects */
+@import '@loworbitstudio/visor-core';
+/* ...rest of your globals.css */
+```
+
+Or import `@loworbitstudio/visor-core` at the top of your generated `globals.css` — the adapter output assumes this import exists.
+
+### Step 5 — Add Components and Update Imports
+
+Initialize `visor.json` if you have not already (required before adding components):
+
+```bash
+npx @loworbitstudio/visor init
+```
+
+Then add components:
+
+```bash
+npx @loworbitstudio/visor add button card input dialog
+```
+
+Components are copied into your project at the path configured in `visor.json` (default: `components/ui/`). You own them — edit them freely.
+
+Update your import paths from your old component library to the new Visor components:
+
+```tsx
+// Before
+import { Button } from "@/components/Button";
+
+// After
+import { Button } from "@/components/ui/button";
+```
+
+---
+
+## Component Migration Patterns
+
+### Button
+
+```tsx
+// Old — custom button with inline styles or hardcoded classes
+<button
+  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+  onClick={handleClick}
+>
+  Save Changes
+</button>
+
+// New — Visor Button with theme-aware variants
+import { Button } from "@/components/ui/button";
+
+<Button variant="default" onClick={handleClick}>
+  Save Changes
+</Button>
+```
+
+Available variants: `default`, `secondary`, `outline`, `ghost`, `destructive`.
+
+### Input
+
+```tsx
+// Old
+<input
+  type="text"
+  className="border border-gray-300 rounded px-3 py-2 w-full"
+  placeholder="Enter value"
+/>
+
+// New
+import { Input } from "@/components/ui/input";
+
+<Input type="text" placeholder="Enter value" />
+```
+
+For labeled form fields, pair with `Field`:
+
+```tsx
+import { Field, FieldLabel, FieldDescription } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+
+<Field>
+  <FieldLabel htmlFor="email">Email</FieldLabel>
+  <Input id="email" type="email" />
+  <FieldDescription>We will never share your email.</FieldDescription>
+</Field>
+```
+
+### Dialog
+
+```tsx
+// Old — custom modal with fixed z-index and manual backdrop
+<div className="fixed inset-0 z-50 bg-black/50">
+  <div className="bg-white rounded-lg p-6 ...">
+    {/* content */}
+  </div>
+</div>
+
+// New — Visor Dialog using Radix UI primitive
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+
+<Dialog open={open} onOpenChange={setOpen}>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Confirm Action</DialogTitle>
+    </DialogHeader>
+    <p>Are you sure you want to proceed?</p>
+    <Button onClick={() => setOpen(false)}>Confirm</Button>
+  </DialogContent>
+</Dialog>
+```
+
+The Dialog backdrop uses `var(--overlay-bg)` — it automatically adapts to the active theme.
+
+### Table
+
+```tsx
+// Old — plain HTML table with custom styles
+<table className="w-full text-sm border-collapse">
+  <thead>
+    <tr className="border-b">
+      <th className="text-left py-2 px-4">Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td className="py-2 px-4">Alice</td></tr>
+  </tbody>
+</table>
+
+// New — Visor Table
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Name</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell>Alice</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+---
+
+## Theme Customization
+
+### Overriding Tokens
+
+Use the `overrides` section in `.visor.yaml` to override specific tokens without changing the generated color palettes:
+
+```yaml
+overrides:
+  light:
+    interactive-primary-bg: "#1A5F7A"
+    border-focus: "#5BC4BF"
+  dark:
+    interactive-primary-bg: "#5BC4BF"
+    surface-page: "#080810"
+```
+
+This is the recommended escape hatch for edge cases where the automatic token derivation does not match your brand requirements.
+
+### Dark Mode Configuration
+
+Dark mode works in two ways:
+
+**System preference (automatic):** No setup required. The `prefers-color-scheme: dark` media query activates dark tokens automatically.
+
+**Manual toggle:** Apply a class or data attribute to `<html>`:
+
+```html
+<!-- Force dark mode -->
+<html data-theme="dark">
+
+<!-- Force light mode -->
+<html data-theme="light">
+
+<!-- System default -->
+<html>
+```
+
+From JavaScript:
+
+```ts
+import { applyTheme } from '@loworbitstudio/visor-core';
+applyTheme('dark');
+applyTheme('light');
+```
+
+### Flash of Wrong Theme (FOWT) Prevention
+
+If you toggle themes via JavaScript, add a blocking script to your document `<head>` to prevent the flash of wrong theme on page load. The script reads `localStorage('visor-theme')`, falls back to `prefers-color-scheme`, and sets `.dark` or `.light` on `<html>` before first paint.
+
+```ts
+import { FOWT_SCRIPT } from '@loworbitstudio/visor-theme-engine/fowt';
+```
+
+Insert `FOWT_SCRIPT` as an inline script in your layout's `<head>` — it must run before any stylesheets load. See the [Adapters](/docs/adapters) page for full FOWT configuration options.
+
+---
+
+## Font Setup
+
+Fonts are configured in the `typography` section of `.visor.yaml`. Three sources are supported.
+
+### Google Fonts (Default)
+
+When `source` is omitted, the font family is resolved via the Google Fonts catalog. The adapter generates a `@import url(...)` at the top of your CSS:
+
+```yaml
+typography:
+  heading:
+    family: "Plus Jakarta Sans"
+    weight: 700
+  body:
+    family: "Inter"
+    weight: 400
+```
+
+This generates:
+
+```css
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&family=Inter:wght@400&display=swap");
+```
+
+**With `next/font`:** If you use `next/font` for font loading (recommended for Next.js), remove the `@import` lines from the generated CSS and configure fonts in `layout.tsx` instead — otherwise fonts are loaded twice.
+
+### Visor Fonts CDN
+
+For fonts hosted on the Visor Fonts CDN (`fonts.visor.design`), set `source: "visor-fonts"` and specify your organization:
+
+```yaml
+typography:
+  heading:
+    family: "PP Model Plastic"
+    source: "visor-fonts"
+    org: "low-orbit"
+```
+
+This generates `@font-face` declarations pointing to:
+
+```
+https://fonts.visor.design/{org}/{family-slug}/{file}.woff2
+```
+
+To upload your own fonts to the CDN:
+
+```bash
+npx @loworbitstudio/visor fonts add ./path/to/fonts/ --org your-org
+```
+
+Font files must be `.woff2` format. The family slug is derived automatically from the filename (e.g., `PPModelPlastic-Regular.woff2` → `pp-model-plastic`).
+
+### Local / Self-Hosted Fonts
+
+For fonts you host yourself, set `source: "local"`:
+
+```yaml
+typography:
+  heading:
+    family: "CustomBrand"
+    source: "local"
+```
+
+This generates placeholder `@font-face` blocks with `/* TODO */` comments for you to fill in the `src` URLs manually:
+
+```css
+@font-face {
+  font-family: "CustomBrand";
+  src: url("/* TODO: path to your font file */") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+```
+
+Replace the placeholder with your actual font file paths. Place the font files in `public/fonts/` and reference them with a root-relative URL:
+
+```css
+src: url("/fonts/CustomBrand-Regular.woff2") format("woff2");
+```
+
+---
+
+## Troubleshooting
+
+### Tokens Not Applying
+
+**Symptom:** Components appear unstyled or fall back to browser defaults.
+
+**Check:** Make sure `@loworbitstudio/visor-core` is imported before your theme CSS:
+
+```css
+/* globals.css */
+@import '@loworbitstudio/visor-core';
+/* ... generated theme CSS below ... */
+```
+
+**Check:** Confirm the package is installed:
+
+```bash
+npm install @loworbitstudio/visor-core
+```
+
+### Dark Mode Not Working
+
+**Symptom:** Dark mode never activates, or activates on the wrong element.
+
+**Check:** The theme toggle class must be on `<html>`, not `<body>` or a child element:
+
+```ts
+// Correct
+document.documentElement.classList.add('dark');
+
+// Incorrect
+document.body.classList.add('dark');
+```
+
+**Check:** If you use FOWT prevention, ensure the blocking script runs before stylesheets.
+
+### Validator Reports Missing Tokens
+
+**Symptom:** `theme validate` fails with "missing required token" errors.
+
+**Cause:** The extracted `.visor.yaml` did not capture enough color information to derive all required tokens. The extractor works best when your project has explicit CSS custom property declarations in `:root`.
+
+**Fix:** Add explicit values to the `overrides` section for the missing tokens, or manually set more `colors.*` fields in `.visor.yaml` to guide derivation.
+
+### Google Fonts Not Loading
+
+**Symptom:** Heading or body font falls back to system font.
+
+**Check:** If using `next/font`, the `@import` line in `globals.css` must be removed — `next/font` and `@import` cannot coexist.
+
+**Check:** If not using `next/font`, ensure `app/globals.css` is imported in `app/layout.tsx`:
+
+```tsx
+import './globals.css';
+```
+
+### Components Missing After `visor add`
+
+**Symptom:** Import works but the file does not exist.
+
+**Check:** `visor.json` must exist in the project root before running `visor add`. Run `npx @loworbitstudio/visor init` if it is missing.
+
+**Check:** The `paths.components` value in `visor.json` determines where files are placed. Confirm it matches where you are importing from.
+
+---
+
+## CI Integration
+
+Validate themes in CI to catch regressions before they reach production.
+
+### GitHub Actions
+
+```yaml
+# .github/workflows/validate-theme.yml
+name: Validate Theme
+
+on: [push, pull_request]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Validate Visor theme
+        run: npx @loworbitstudio/visor theme validate .visor.yaml
+```
+
+The `theme validate` command exits with code `1` on errors and code `0` on success (warnings do not fail the build). This makes it safe to run as a required CI check.
+
+### Structured Output for Reporting
+
+Use `--json` for machine-readable output in CI pipelines:
+
+```bash
+npx @loworbitstudio/visor theme validate .visor.yaml --json
+```
+
+Output format:
+
+```json
+{
+  "valid": true,
+  "errors": [],
+  "warnings": [
+    {
+      "severity": "warning",
+      "code": "low-contrast-border",
+      "message": "border-muted may fail WCAG AA at small sizes",
+      "path": "--border-muted"
+    }
+  ]
+}
+```
+
+Parse `valid` to determine pass/fail, and surface `errors` and `warnings` in your CI dashboard or PR annotations.
