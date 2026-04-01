@@ -9,7 +9,6 @@ const inputVariants = cva(styles.base, {
       sm: styles.sizeSm,
       md: styles.sizeMd,
       lg: styles.sizeLg,
-      xl: styles.sizeXl,
     },
   },
   defaultVariants: {

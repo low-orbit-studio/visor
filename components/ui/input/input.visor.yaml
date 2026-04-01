@@ -22,7 +22,7 @@ why: >
 
 props:
   - name: size
-    type: "'sm' | 'md' | 'lg' | 'xl'"
+    type: "'sm' | 'md' | 'lg'"
     default: "md"
     description: Controls height, padding, font-size, and border-radius
   - name: type

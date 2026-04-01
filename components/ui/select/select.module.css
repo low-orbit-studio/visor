@@ -37,24 +37,17 @@
 }
 
 .triggerSizeSm {
-  height: 1.75rem;
-  padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
-  font-size: var(--font-size-xs, 0.75rem);
-  border-radius: var(--radius-sm, 0.25rem);
-}
-
-.triggerSizeMd {
   height: 2.25rem;
 }
 
-.triggerSizeLg {
+.triggerSizeMd {
   height: auto;
   padding: 0.875rem 1rem;
   font-size: var(--font-size-sm, 0.875rem);
   border-radius: var(--radius-sm, 0.5rem);
 }
 
-.triggerSizeXl {
+.triggerSizeLg {
   height: auto;
   padding: 1.125rem 1.25rem;
   font-size: var(--font-size-base, 1rem);

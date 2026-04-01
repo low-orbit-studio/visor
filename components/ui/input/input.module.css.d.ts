@@ -3,7 +3,6 @@ declare const styles: {
   readonly sizeSm: string
   readonly sizeMd: string
   readonly sizeLg: string
-  readonly sizeXl: string
 }
 
 export default styles
