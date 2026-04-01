@@ -589,6 +589,10 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
   padding: 12px 16px;
 }
 
+.blacklight-brand-theme [data-slot="table-body"] {
+  background: #0a0a1a;
+}
+
 .blacklight-brand-theme [data-slot="table-header"] tr {
   border-bottom: none;
 }
@@ -633,12 +637,16 @@ html:not(.dark) .blacklight-brand-theme .shiki code span {
   color: rgba(255, 255, 255, 0.5);
 }
 
+.blacklight-brand-theme article tbody,
+.blacklight-brand-theme .prose tbody {
+  background: #0a0a1a;
+}
+
 .blacklight-brand-theme article td,
 .blacklight-brand-theme .prose td {
   border: none;
   border-top: 1px solid #1a1a2e;
   padding: 12px 16px;
-  background: var(--surface-page);
 }
 
 .blacklight-brand-theme article tr:last-child td,
