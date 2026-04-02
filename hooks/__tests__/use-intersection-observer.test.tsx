@@ -39,7 +39,7 @@ describe("useIntersectionObserver", () => {
     vi.stubGlobal(
       "IntersectionObserver",
       vi.fn(
-        (callback: (entries: IntersectionObserverEntry[]) => void) => {
+        function (callback: (entries: IntersectionObserverEntry[]) => void) {
           capturedCallback = callback
           capturedObserver = {
             observe: vi.fn(),
