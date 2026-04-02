@@ -9,7 +9,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs"
 import { join, dirname } from "path"
 import { fileURLToPath } from "url"
-import { load as loadYaml } from "js-yaml"
+import { parse as parseYAML } from "yaml"
 import type { BundledRegistry, BundledRegistryItem } from "../registry/types.js"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -43,7 +43,7 @@ async function main(): Promise<void> {
         const yamlPath = join(entryPath, `${entry}${suffix}`)
         if (existsSync(yamlPath)) {
           try {
-            const data = loadYaml(readFileSync(yamlPath, "utf-8")) as Record<string, unknown>
+            const data = parseYAML(readFileSync(yamlPath, "utf-8")) as Record<string, unknown>
             if (data.category) categoryMap.set(entry, String(data.category))
           } catch { /* skip unparseable */ }
         }
@@ -51,7 +51,7 @@ async function main(): Promise<void> {
         // Hook: hooks/{name}.visor.yaml
         const name = entry.replace(suffix, "")
         try {
-          const data = loadYaml(readFileSync(entryPath, "utf-8")) as Record<string, unknown>
+          const data = parseYAML(readFileSync(entryPath, "utf-8")) as Record<string, unknown>
           if (data.category) categoryMap.set(name, String(data.category))
         } catch { /* skip unparseable */ }
       }
