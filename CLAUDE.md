@@ -95,6 +95,7 @@ Visor's long-term goals, phased roadmap, and detailed specs live in `/docs/`. Re
 ## Environment
 
 - `.env.local` at repo root — contains API keys (if needed)
+- `.env.schema` at repo root — documents all env vars with Varlock + Bitwarden SM integration. Run `varlock load` or use `npm run fonts:add` to auto-inject secrets from Bitwarden SM.
 
 ## Project Wisdom
 

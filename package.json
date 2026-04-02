@@ -30,10 +30,12 @@
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
-    "prepare": "husky"
+    "prepare": "husky",
+    "fonts:add": "varlock run -- npx visor fonts add"
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
+    "@varlock/bitwarden-plugin": "^0.0.5",
     "@eslint/js": "^9.18.0",
     "@playwright/test": "^1.59.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -55,6 +57,7 @@
     "three": "^0.183.2",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.20.0",
+    "varlock": "^0.6.0",
     "vitest": "^4.1.2"
   },
   "dependencies": {
