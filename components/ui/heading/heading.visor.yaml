@@ -1,5 +1,6 @@
 name: Heading
 description: A semantic heading component (h1-h6) with independent size and weight variants.
+extends: HTMLHeadingElement
 category: typography
 
 when_to_use:

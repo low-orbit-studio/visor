@@ -1,5 +1,6 @@
 name: Table
 description: A presentational table component with semantic HTML sub-components and responsive horizontal scrolling.
+extends: HTMLTableElement
 category: data-display
 
 when_to_use:

@@ -1,5 +1,6 @@
 name: Label
 description: An accessible label component built on Radix UI Label.
+extends: HTMLLabelElement
 category: form
 
 when_to_use:

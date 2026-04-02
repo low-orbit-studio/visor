@@ -102,6 +102,13 @@ toast('Message sent', {
 
 The `<Toaster />` component accepts all [Sonner Toaster props](https://sonner.emilkowal.ski/toaster).
 
+## Sub-components
+
+| Component | Element | Purpose |
+| --- | --- | --- |
+| `Toaster` | `<ol>` (Sonner) | Provider component rendering the toast container; add once in root layout |
+| `toast` | — (function) | Imperative API for triggering toasts (`toast()`, `toast.success()`, `toast.error()`, etc.) |
+
 ### toast() API
 
 The `toast()` function is re-exported directly from Sonner. All Sonner toast options are available:

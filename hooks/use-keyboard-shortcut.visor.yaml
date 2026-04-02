@@ -1,0 +1,54 @@
+name: useKeyboardShortcut
+description: Fires a callback when a specific keyboard shortcut with modifier keys is pressed.
+category: hooks
+
+params:
+  - name: key
+    type: "string"
+    required: true
+    description: The key to listen for (case-insensitive, e.g. "k", "Escape").
+  - name: callback
+    type: "(event: KeyboardEvent) => void"
+    required: true
+    description: Function invoked when the shortcut is triggered.
+  - name: options
+    type: "KeyboardShortcutOptions"
+    required: false
+    description: Modifier and target configuration.
+  - name: options.meta
+    type: "boolean"
+    required: false
+    default: "false"
+    description: Whether the Meta (Cmd/Win) key must be held.
+  - name: options.ctrl
+    type: "boolean"
+    required: false
+    default: "false"
+    description: Whether the Ctrl key must be held.
+  - name: options.shift
+    type: "boolean"
+    required: false
+    default: "false"
+    description: Whether the Shift key must be held.
+  - name: options.alt
+    type: "boolean"
+    required: false
+    default: "false"
+    description: Whether the Alt/Option key must be held.
+  - name: options.target
+    type: "EventTarget | null"
+    required: false
+    default: "document"
+    description: Element to attach the listener to.
+  - name: options.preventDefault
+    type: "boolean"
+    required: false
+    default: "false"
+    description: Whether to prevent the default browser action.
+
+returns: []
+
+dependencies: []
+
+example: |
+  useKeyboardShortcut("k", openSearch, { meta: true, preventDefault: true })

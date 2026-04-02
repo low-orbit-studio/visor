@@ -1,5 +1,6 @@
 name: Motion Specimen
 description: Duration and easing preview components with interactive play-animation controls.
+extends: HTMLDivElement
 category: specimen
 
 when_to_use:

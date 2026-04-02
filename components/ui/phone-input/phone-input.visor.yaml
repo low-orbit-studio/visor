@@ -1,5 +1,6 @@
 name: PhoneInput
 description: An international phone number input with country code selection, geo-IP detection, format-as-you-type, and validation.
+extends: HTMLInputElement
 category: form
 
 when_to_use:

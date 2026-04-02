@@ -1,0 +1,28 @@
+name: useWheelNav
+description: Converts mouse wheel events into debounced section navigation for deck-style presentations.
+category: hooks
+
+params:
+  - name: containerRef
+    type: "React.RefObject<HTMLElement | null>"
+    required: false
+    description: Container element to listen on. Falls back to document if not provided.
+  - name: goTo
+    type: "(index: number) => void"
+    required: true
+    description: Navigation function that scrolls to the given section index.
+  - name: currentIndexRef
+    type: "React.MutableRefObject<number>"
+    required: true
+    description: Mutable ref holding the current section index.
+
+returns: []
+
+dependencies: []
+
+example: |
+  useWheelNav({
+    containerRef,
+    goTo,
+    currentIndexRef,
+  })

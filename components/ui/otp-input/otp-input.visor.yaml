@@ -1,5 +1,6 @@
 name: OTPInput
 description: A multi-digit OTP/verification code input with auto-advance and paste support.
+extends: HTMLDivElement
 category: form
 
 when_to_use:

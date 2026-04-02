@@ -1,5 +1,6 @@
 name: Fieldset
 description: A semantic fieldset wrapper with styled legend for grouping related form fields.
+extends: HTMLFieldSetElement
 category: form
 
 when_to_use:

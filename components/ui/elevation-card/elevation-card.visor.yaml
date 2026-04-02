@@ -1,5 +1,6 @@
 name: Elevation Card
 description: Shadow level display card showing a single elevation token with its name and token reference.
+extends: HTMLDivElement
 category: specimen
 
 when_to_use:

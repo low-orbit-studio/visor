@@ -1,0 +1,39 @@
+name: useIntersectionAnimation
+description: Tracks section visibility via IntersectionObserver and updates the current index for deck-style navigation.
+category: hooks
+
+params:
+  - name: sectionsRef
+    type: "React.RefObject<HTMLElement[]>"
+    required: true
+    description: Ref to an array of section elements to observe.
+  - name: currentIndexRef
+    type: "React.MutableRefObject<number>"
+    required: true
+    description: Mutable ref holding the current visible section index.
+  - name: setCurrentIndex
+    type: "(index: number) => void"
+    required: true
+    description: State setter called when the visible section changes.
+  - name: isScrollingRef
+    type: "React.MutableRefObject<boolean>"
+    required: false
+    description: Ref indicating programmatic scrolling is in progress; suppresses index updates when true.
+  - name: threshold
+    type: "number"
+    required: false
+    default: "0.4"
+    description: IntersectionObserver visibility threshold (0 to 1).
+
+returns: []
+
+dependencies: []
+
+example: |
+  useIntersectionAnimation({
+    sectionsRef,
+    currentIndexRef,
+    setCurrentIndex,
+    isScrollingRef,
+    threshold: 0.4,
+  })

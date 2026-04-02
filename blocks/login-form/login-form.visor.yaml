@@ -12,3 +12,4 @@ when_to_use:
   - Demo login flows
 when_not_to_use:
   - Registration forms (extend with additional fields)
+  - OAuth-only flows with no email/password fields

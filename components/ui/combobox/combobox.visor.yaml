@@ -1,5 +1,6 @@
 name: Combobox
 description: A combobox/autocomplete component with filterable dropdown, keyboard navigation, and full a11y support.
+extends: HTMLDivElement
 category: form
 
 when_to_use:

@@ -171,22 +171,26 @@ Enhance the existing `npx visor` CLI to be optimized for agent consumption, foll
 **New/enhanced commands:**
 
 ```bash
-# Discovery
+# Discovery — Available
 npx visor list --json                          # Full component catalog (structured)
 npx visor list --category form --json          # Filter by category
+
+# Discovery — Planned
 npx visor info button --json                   # Full metadata for a component
 npx visor pattern list --json                  # Available composition patterns
 npx visor pattern info form-with-validation --json
 
-# Theme operations (all with structured output)
+# Theme operations (all with structured output) — Available
 npx visor theme validate ./theme.yaml --json
 npx visor theme generate --primary "#1A5F7A" --accent "#5BC4BF" --font-display "Inter" --json
 npx visor theme apply ./theme.yaml --json
 npx visor theme export --format figma --json
 
-# Composition helpers
+# Composition helpers — Planned
 npx visor suggest --for "user settings page" --json  # Suggest components for a use case
 ```
+
+> **Note:** Commands marked "Planned" are part of the future agent-first CLI roadmap and are not yet implemented. See the roadmap for timeline.
 
 **Key difference from current CLI:**
 The current CLI focuses on file operations (add, init, diff). The enhanced CLI adds *knowledge operations* — querying component metadata, patterns, and guidance without touching files.

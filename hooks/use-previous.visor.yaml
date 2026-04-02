@@ -1,0 +1,20 @@
+name: usePrevious
+description: Returns the previous value of a variable from the last render.
+category: hooks
+
+params:
+  - name: value
+    type: "T"
+    required: true
+    description: The value to track across renders.
+
+returns:
+  - name: previousValue
+    type: "T | undefined"
+    description: The value from the previous render, or undefined on the first render.
+
+dependencies: []
+
+example: |
+  const prevCount = usePrevious(count)
+  const direction = count > (prevCount ?? 0) ? "up" : "down"

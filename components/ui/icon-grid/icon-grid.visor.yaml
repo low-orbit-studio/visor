@@ -1,5 +1,6 @@
 name: Icon Grid
 description: Icon set display with names, usage descriptions, and a size scale row for comparing icon sizes.
+extends: HTMLDivElement
 category: specimen
 
 when_to_use:

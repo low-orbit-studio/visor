@@ -1,5 +1,6 @@
 name: Accessibility Specimen
 description: WCAG contrast pair display with color preview, ratio value, and AA/AAA pass/fail badges.
+extends: HTMLDivElement
 category: specimen
 
 when_to_use:

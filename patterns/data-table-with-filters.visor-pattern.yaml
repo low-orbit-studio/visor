@@ -1,0 +1,86 @@
+name: Data Table with Filters
+description: Filterable data table with a toolbar for search, category filters, and column sorting.
+
+components_used:
+  - table
+  - input
+  - select
+  - button
+  - badge
+  - dropdown-menu
+  - pagination
+
+when_to_use:
+  - Data-heavy pages where users need to find specific records
+  - Admin dashboards with sortable, filterable lists
+  - Search result pages with faceted filtering
+
+structure: |
+  <>
+    <div style={{ display: "flex", gap: "var(--spacing-3)", marginBottom: "var(--spacing-4)" }}>
+      <Input
+        placeholder="Search..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        style={{ maxWidth: 320 }}
+      />
+      <Select value={statusFilter} onValueChange={setStatusFilter}>
+        <SelectTrigger style={{ width: 160 }}>
+          <SelectValue placeholder="Status" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All</SelectItem>
+          <SelectItem value="active">Active</SelectItem>
+          <SelectItem value="inactive">Inactive</SelectItem>
+        </SelectContent>
+      </Select>
+      {activeFilterCount > 0 && (
+        <Button variant="ghost" size="sm" onClick={clearFilters}>
+          Clear filters <Badge variant="secondary">{activeFilterCount}</Badge>
+        </Button>
+      )}
+    </div>
+
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead onClick={() => toggleSort("name")} style={{ cursor: "pointer" }}>
+            Name {sortIcon("name")}
+          </TableHead>
+          <TableHead>Email</TableHead>
+          <TableHead>Status</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {filteredData.map((row) => (
+          <TableRow key={row.id}>
+            <TableCell>{row.name}</TableCell>
+            <TableCell>{row.email}</TableCell>
+            <TableCell>
+              <Badge variant={row.active ? "default" : "secondary"}>
+                {row.active ? "Active" : "Inactive"}
+              </Badge>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious href={prevUrl} />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationNext href={nextUrl} />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  </>
+
+notes: >
+  Place the filter toolbar directly above the table for spatial proximity.
+  Use Input for free-text search and Select for categorical filters.
+  Show a Badge count on the clear-filters Button to indicate active filter count.
+  Column headers with sort functionality should use cursor: pointer and an icon indicator.
+  For server-side filtering, debounce the search Input with useDebounce.

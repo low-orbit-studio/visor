@@ -947,6 +947,12 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'HTML input type (text, email, password, number, file, etc.).',
     },
     {
+      name: 'size',
+      type: "'sm' | 'md' | 'lg'",
+      default: "'md'",
+      description: 'Controls height, padding, font-size, and border-radius.',
+    },
+    {
       name: 'placeholder',
       type: 'string',
       description: 'Placeholder text shown when the input is empty.',
@@ -1011,8 +1017,8 @@ export const propsData: Record<string, PropDef[]> = {
     },
     {
       name: 'size',
-      type: "'sm' | 'default'",
-      default: "'default'",
+      type: "'sm' | 'md' | 'lg'",
+      default: "'md'",
       description: 'Size of the select trigger (on SelectTrigger).',
     },
     {

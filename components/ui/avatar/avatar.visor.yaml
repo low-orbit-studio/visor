@@ -1,5 +1,6 @@
 name: Avatar
 description: A circular avatar component with image display and fallback support for initials or icons.
+extends: HTMLSpanElement
 category: data-display
 
 when_to_use:

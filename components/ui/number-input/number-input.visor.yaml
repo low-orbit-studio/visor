@@ -1,5 +1,6 @@
 name: NumberInput
 description: A number input with increment/decrement buttons and min/max/step support.
+extends: HTMLInputElement
 category: form
 
 when_to_use:

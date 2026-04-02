@@ -1,5 +1,6 @@
 name: Timeline
 description: A vertical timeline with status-based styling, optional icons, timestamps, and connector lines.
+extends: HTMLDivElement
 category: data-display
 
 when_to_use:

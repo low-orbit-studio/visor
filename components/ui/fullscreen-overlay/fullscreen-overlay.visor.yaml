@@ -2,6 +2,7 @@ name: FullscreenOverlay
 description: >-
   A full-viewport overlay for expanding content to fill the screen. Built on Radix
   Dialog with close button, Escape to dismiss, focus trap, and body scroll lock.
+extends: HTMLDivElement
 category: overlay
 when_to_use:
   - Expanding block previews or demos to full viewport

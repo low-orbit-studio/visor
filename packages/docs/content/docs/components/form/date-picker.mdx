@@ -74,6 +74,16 @@ export default function Example() {
 
 <PropsTable component="date-picker" />
 
+## Sub-components
+
+DatePicker exports a single component that internally composes a Radix Popover and the Calendar component:
+
+| Component | Element | Purpose |
+| --- | --- | --- |
+| `DatePicker` | `<button>` (trigger) | Trigger button displaying the selected date or placeholder |
+| DatePicker.Content | `<div>` (portal) | Popover panel containing the calendar |
+| `Calendar` | `<div>` | Month-view calendar for date selection (installed separately) |
+
 ## Accessibility
 
 - The trigger button has descriptive text showing either the selected date or placeholder

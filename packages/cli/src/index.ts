@@ -32,7 +32,8 @@ program
   .command("list")
   .description("List all available registry items")
   .option("--json", "output structured JSON (for AI agents)")
-  .action((options: { json?: boolean }) => {
+  .option("--category <name>", "filter items by category")
+  .action((options: { json?: boolean; category?: string }) => {
     listCommand(process.cwd(), options)
   })
 

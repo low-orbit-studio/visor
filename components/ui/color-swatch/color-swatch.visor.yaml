@@ -1,5 +1,6 @@
 name: Color Swatch
 description: Individual color swatch with hex value display, plus grid variants for color scales and semantic color tokens.
+extends: HTMLDivElement
 category: specimen
 
 when_to_use:

@@ -1,5 +1,6 @@
 name: Pagination
 description: A composable pagination component with previous/next navigation, page links, and ellipsis.
+extends: HTMLElement
 category: navigation
 
 when_to_use:

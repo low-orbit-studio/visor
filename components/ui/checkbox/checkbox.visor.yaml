@@ -1,5 +1,6 @@
 name: Checkbox
 description: An accessible checkbox component built on Radix UI Checkbox.
+extends: HTMLButtonElement
 category: form
 
 when_to_use:

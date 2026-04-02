@@ -1,5 +1,6 @@
 name: HoverCard
 description: Rich content card that appears when hovering over a trigger element.
+extends: HTMLDivElement
 category: overlay
 
 when_to_use:

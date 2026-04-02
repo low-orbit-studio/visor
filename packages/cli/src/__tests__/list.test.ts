@@ -133,6 +133,77 @@ describe("list command", () => {
     expect(output).toContain("(installed)")
   })
 
+  describe("--category flag", () => {
+    it("filters items to only the matching category", () => {
+      listCommand(testDir, { category: "authentication" })
+
+      const output = (console.log as ReturnType<typeof vi.fn>).mock.calls
+        .map((c: unknown[]) => String(c[0]))
+        .join("\n")
+
+      expect(output).toContain("login-form")
+      expect(output).not.toContain("button")
+      expect(output).not.toContain("use-debounce")
+      expect(output).not.toContain("utils")
+    })
+
+    it("shows error when no items match the category", () => {
+      const exitSpy = vi.spyOn(process, "exit").mockImplementation(((code?: number) => {
+        throw new Error(`process.exit(${code})`)
+      }) as never)
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+
+      expect(() => {
+        listCommand(testDir, { category: "nonexistent" })
+      }).toThrow("process.exit(1)")
+
+      const output = (errorSpy).mock.calls
+        .map((c: unknown[]) => String(c[0]))
+        .join("\n")
+
+      expect(output).toContain('No items found in category "nonexistent"')
+      errorSpy.mockRestore()
+      exitSpy.mockRestore()
+    })
+
+    it("shows error in JSON format when no items match with --json", () => {
+      const exitSpy = vi.spyOn(process, "exit").mockImplementation(((code?: number) => {
+        throw new Error(`process.exit(${code})`)
+      }) as never)
+
+      expect(() => {
+        listCommand(testDir, { category: "nonexistent", json: true })
+      }).toThrow("process.exit(1)")
+
+      const calls = (console.log as ReturnType<typeof vi.fn>).mock.calls
+      const jsonOutput = calls.map((c: unknown[]) => String(c[0])).find((s) => s.startsWith("{"))
+      expect(jsonOutput).toBeDefined()
+      const result = JSON.parse(jsonOutput!)
+      expect(result.success).toBe(false)
+      expect(result.error).toContain('No items found in category "nonexistent"')
+      exitSpy.mockRestore()
+    })
+
+    it("works with --json flag to output filtered items", () => {
+      const exitSpy = vi.spyOn(process, "exit").mockImplementation(((code?: number) => {
+        throw new Error(`process.exit(${code})`)
+      }) as never)
+
+      expect(() => {
+        listCommand(testDir, { category: "authentication", json: true })
+      }).toThrow("process.exit(0)")
+
+      const calls = (console.log as ReturnType<typeof vi.fn>).mock.calls
+      const jsonOutput = calls.map((c: unknown[]) => String(c[0])).find((s) => s.startsWith("{"))
+      const result = JSON.parse(jsonOutput!)
+      expect(result.success).toBe(true)
+      expect(result.items).toHaveLength(1)
+      expect(result.items[0].name).toBe("login-form")
+      expect(result.summary.total).toBe(1)
+      exitSpy.mockRestore()
+    })
+  })
+
   describe("--json flag", () => {
     function mockProcessExit() {
       return vi.spyOn(process, "exit").mockImplementation(((code?: number) => {

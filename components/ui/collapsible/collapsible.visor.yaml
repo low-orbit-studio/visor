@@ -1,5 +1,6 @@
 name: Collapsible
 description: Simple expandable section with animated open/close transitions.
+extends: HTMLDivElement
 category: layout
 
 when_to_use:

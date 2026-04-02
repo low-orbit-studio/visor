@@ -1,5 +1,6 @@
 name: Radius Scale
 description: Border radius examples with labels and pixel values, displayed in a responsive grid.
+extends: HTMLDivElement
 category: specimen
 
 when_to_use:

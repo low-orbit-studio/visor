@@ -1,5 +1,6 @@
 name: Tabs
 description: A tabs component for switching between content panels with default and line style variants.
+extends: HTMLDivElement
 category: navigation
 
 when_to_use:

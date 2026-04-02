@@ -1,5 +1,6 @@
 name: Popover
 description: Floating content panel anchored to a trigger element.
+extends: HTMLDivElement
 category: feedback
 
 when_to_use:

@@ -1,5 +1,6 @@
 name: FileUpload
 description: A drag-and-drop file upload zone with file validation, keyboard activation, and customizable content.
+extends: HTMLDivElement
 category: form
 
 when_to_use:

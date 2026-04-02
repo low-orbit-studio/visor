@@ -1,0 +1,29 @@
+name: useLocalStorage
+description: Persists state to localStorage with SSR safety and cross-tab synchronization.
+category: hooks
+
+params:
+  - name: key
+    type: "string"
+    required: true
+    description: The localStorage key to read from and write to.
+  - name: initialValue
+    type: "T"
+    required: true
+    description: Default value used when no stored value exists or localStorage is unavailable.
+
+returns:
+  - name: storedValue
+    type: "T"
+    description: Current value from localStorage (or the initial value as fallback).
+  - name: setValue
+    type: "(value: T | ((prev: T) => T)) => void"
+    description: Updates the stored value. Accepts a direct value or an updater function.
+  - name: removeValue
+    type: "() => void"
+    description: Removes the key from localStorage and resets to the initial value.
+
+dependencies: []
+
+example: |
+  const [theme, setTheme, removeTheme] = useLocalStorage("theme", "light")

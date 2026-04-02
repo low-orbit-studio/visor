@@ -1,5 +1,6 @@
 name: DropdownMenu
 description: Menu of actions or options that opens from a trigger button.
+extends: HTMLDivElement
 category: overlay
 
 when_to_use:

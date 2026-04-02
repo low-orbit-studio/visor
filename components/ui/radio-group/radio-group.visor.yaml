@@ -1,5 +1,6 @@
 name: Radio Group
 description: An accessible radio group component built on Radix UI RadioGroup.
+extends: HTMLDivElement
 category: form
 
 when_to_use:

@@ -1,0 +1,33 @@
+name: useKeyboardNav
+description: Handles keyboard navigation for deck-style slide presentations (Arrow keys, Home, End, Space).
+category: hooks
+
+params:
+  - name: containerRef
+    type: "React.RefObject<HTMLElement | null>"
+    required: false
+    description: Container element to listen on. Falls back to document if not provided.
+  - name: goTo
+    type: "(index: number) => void"
+    required: true
+    description: Navigation function that scrolls to the given section index.
+  - name: currentIndexRef
+    type: "React.MutableRefObject<number>"
+    required: true
+    description: Mutable ref holding the current section index.
+  - name: totalSectionsRef
+    type: "React.MutableRefObject<number>"
+    required: true
+    description: Mutable ref holding the total number of sections.
+
+returns: []
+
+dependencies: []
+
+example: |
+  useKeyboardNav({
+    containerRef,
+    goTo,
+    currentIndexRef,
+    totalSectionsRef,
+  })

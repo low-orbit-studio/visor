@@ -1,5 +1,6 @@
 name: Banner
 description: Full-width announcement bar with intent variants and optional sticky positioning.
+extends: HTMLDivElement
 category: feedback
 
 when_to_use:

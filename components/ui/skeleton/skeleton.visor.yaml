@@ -1,5 +1,6 @@
 name: Skeleton
 description: Placeholder loading shape with a pulse animation.
+extends: HTMLDivElement
 category: feedback
 
 when_to_use:

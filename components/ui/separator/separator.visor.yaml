@@ -1,5 +1,6 @@
 name: Separator
 description: Visual divider between content sections in horizontal or vertical orientation.
+extends: HTMLDivElement
 category: layout
 
 when_to_use:

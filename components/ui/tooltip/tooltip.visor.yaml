@@ -1,5 +1,6 @@
 name: Tooltip
 description: Small text label that appears on hover or focus to describe an element.
+extends: HTMLDivElement
 category: feedback
 
 when_to_use:

@@ -1,5 +1,6 @@
 name: DatePicker
 description: A date picker combining a trigger button with a popover Calendar for single-date selection.
+extends: HTMLButtonElement
 category: form
 
 when_to_use:

@@ -6,6 +6,7 @@ description: A number input with increment/decrement buttons and min/max/step su
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { NumberInput } from '@/components/ui/number-input';
+import { Field, FieldLabel, FieldError } from '@/components/ui/field';
 
 ## Installation
 
@@ -60,6 +61,28 @@ import { NumberInput } from '@/components/ui/number-input/number-input';
   code={"<NumberInput defaultValue={5} disabled aria-label=\"Disabled quantity\" />"}
 >
   <NumberInput defaultValue={5} disabled aria-label="Disabled quantity" />
+</ComponentPreview>
+
+## Invalid
+
+<ComponentPreview
+  title="Invalid"
+  code={"<NumberInput defaultValue={-1} aria-invalid=\"true\" aria-label=\"Invalid quantity\" />"}
+>
+  <NumberInput defaultValue={-1} aria-invalid="true" aria-label="Invalid quantity" />
+</ComponentPreview>
+
+## With Field
+
+<ComponentPreview
+  title="With Field"
+  code={"import { Field, FieldLabel, FieldError } from '@/components/ui/field/field';\nimport { NumberInput } from '@/components/ui/number-input/number-input';\n\n<Field>\n  <FieldLabel htmlFor=\"qty\">Quantity</FieldLabel>\n  <NumberInput id=\"qty\" defaultValue={1} min={1} max={99} />\n  <FieldError errors={[\"Quantity must be at least 1.\"]} />\n</Field>"}
+>
+  <Field>
+    <FieldLabel htmlFor="qty-field">Quantity</FieldLabel>
+    <NumberInput id="qty-field" defaultValue={0} min={1} max={99} aria-invalid="true" />
+    <FieldError errors={["Quantity must be at least 1."]} />
+  </Field>
 </ComponentPreview>
 
 ## API Reference
