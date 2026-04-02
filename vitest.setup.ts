@@ -11,10 +11,16 @@ import { expect } from "vitest"
 //   expect(results).toHaveNoViolations()
 expect.extend({ toHaveNoViolations })
 
-// Configure axe-core to use jsdom's document implementation
-// This ensures axe runs correctly in the test environment
+// Configure axe-core for the jsdom test environment.
+// - allowedOrigins: required for axe to run against jsdom's document
+// - color-contrast disabled: jsdom has no real CSS engine, so getComputedStyle
+//   returns empty values and canvas is unimplemented. Color-contrast results are
+//   always meaningless in jsdom and generate "Not implemented" noise in CI output.
 import { configure } from "axe-core"
-configure({ allowedOrigins: ["<same_origin>"] })
+configure({
+  allowedOrigins: ["<same_origin>"],
+  rules: [{ id: "color-contrast", enabled: false }],
+})
 
 // Suppress jsdom "Not implemented" stderr noise from axe-core probing
 // HTMLCanvasElement.getContext and window.getComputedStyle(elt, pseudoElt).
