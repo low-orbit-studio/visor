@@ -6,7 +6,7 @@
  *
  * Token mapping from Blacklight --theme-* → Visor semantic tokens:
  *   --theme-background   → --surface-interactive-default (inputs)
- *   --theme-muted         → --surface-card (dropdown/overlay surfaces)
+ *   --theme-muted         → --surface-card (dropdown surfaces)
  *   --theme-border        → --border-default
  *   --theme-foreground    → --text-primary
  *   --theme-muted-foreground → --text-secondary
@@ -82,7 +82,7 @@
 /* Dropdown content (search + country list container) — must be opaque since
    intl-tel-input renders on document.body, potentially outside theme wrappers */
 .iti__dropdown-content {
-  background-color: var(--surface-overlay, var(--surface-card, #ffffff)) !important;
+  background-color: var(--surface-card, #ffffff) !important;
   border: 1px solid var(--border-default, #e5e7eb) !important;
   border-radius: var(--radius-lg, 0.5rem) !important;
   box-shadow: var(--shadow-md) !important;
@@ -118,7 +118,7 @@
 
 /* Country list background — matches dropdown content */
 .iti__country-list {
-  background-color: var(--surface-overlay, var(--surface-card, #ffffff)) !important;
+  background-color: var(--surface-card, #ffffff) !important;
 }
 
 /* Individual country items — match Select .item */
