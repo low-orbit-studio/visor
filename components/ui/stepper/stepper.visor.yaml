@@ -1,5 +1,6 @@
 name: Stepper
 description: A multi-step progress indicator with horizontal and vertical orientations and auto-derived step status.
+extends: HTMLDivElement
 category: navigation
 
 when_to_use:

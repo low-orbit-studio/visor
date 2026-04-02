@@ -1,5 +1,6 @@
 name: Breadcrumb
 description: A breadcrumb navigation component showing the user's location within a page hierarchy.
+extends: HTMLElement
 category: navigation
 
 when_to_use:

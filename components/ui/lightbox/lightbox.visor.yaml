@@ -1,5 +1,6 @@
 name: Lightbox
 description: A full-screen image viewer with gallery navigation, keyboard and touch support, built on Radix Dialog.
+extends: HTMLDivElement
 category: media
 
 when_to_use:

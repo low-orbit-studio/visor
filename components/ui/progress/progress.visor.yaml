@@ -1,5 +1,6 @@
 name: Progress
 description: Horizontal bar indicating completion percentage of a task.
+extends: HTMLDivElement
 category: feedback
 
 when_to_use:

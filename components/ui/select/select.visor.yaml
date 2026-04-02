@@ -1,5 +1,6 @@
 name: Select
 description: An accessible select component built on Radix UI Select with all sub-components.
+extends: HTMLButtonElement
 category: form
 
 when_to_use:

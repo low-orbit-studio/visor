@@ -1,5 +1,6 @@
 name: Type Specimen
 description: A single typography row displaying sample text at a given font-size token with weight and size metadata.
+extends: HTMLDivElement
 category: specimen
 
 when_to_use:

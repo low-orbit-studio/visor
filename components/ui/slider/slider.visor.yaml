@@ -1,5 +1,6 @@
 name: Slider
 description: An accessible slider component built on Radix UI Slider with single and range support.
+extends: HTMLSpanElement
 category: form
 
 when_to_use:

@@ -1,0 +1,32 @@
+name: useBoolean
+description: Manages a boolean state with stable toggle, setTrue, and setFalse helpers.
+category: hooks
+
+params:
+  - name: initialValue
+    type: "boolean"
+    required: false
+    default: "false"
+    description: Initial boolean state value.
+
+returns:
+  - name: value
+    type: "boolean"
+    description: Current boolean state.
+  - name: setTrue
+    type: "() => void"
+    description: Sets state to true.
+  - name: setFalse
+    type: "() => void"
+    description: Sets state to false.
+  - name: toggle
+    type: "() => void"
+    description: Toggles state between true and false.
+  - name: setValue
+    type: "(value: boolean) => void"
+    description: Sets state to an explicit boolean value.
+
+dependencies: []
+
+example: |
+  const { value: isOpen, setTrue: open, setFalse: close, toggle } = useBoolean(false)

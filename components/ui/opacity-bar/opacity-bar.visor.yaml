@@ -1,5 +1,6 @@
 name: Opacity Bar
 description: Opacity level visualization showing bars at varying opacity values with token names.
+extends: HTMLDivElement
 category: specimen
 
 when_to_use:

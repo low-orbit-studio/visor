@@ -1,5 +1,6 @@
 name: CodeBlock
 description: A lightweight code display component with optional line numbers, copy-to-clipboard, and language badge.
+extends: HTMLDivElement
 category: typography
 
 when_to_use:

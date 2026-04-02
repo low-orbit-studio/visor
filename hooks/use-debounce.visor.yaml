@@ -1,0 +1,24 @@
+name: useDebounce
+description: Debounces a value by delaying updates until after a specified delay.
+category: hooks
+
+params:
+  - name: value
+    type: "T"
+    required: true
+    description: The value to debounce.
+  - name: delay
+    type: "number"
+    required: true
+    description: Delay in milliseconds before the debounced value updates.
+
+returns:
+  - name: debouncedValue
+    type: "T"
+    description: The debounced value, updated only after the delay elapses with no new changes.
+
+dependencies: []
+
+example: |
+  const [query, setQuery] = useState("")
+  const debouncedQuery = useDebounce(query, 300)

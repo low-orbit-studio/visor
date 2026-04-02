@@ -1,5 +1,6 @@
 name: Button
 description: Primary interactive element for triggering actions.
+extends: HTMLButtonElement
 category: form
 
 when_to_use:

@@ -1,5 +1,6 @@
 name: Sidebar
 description: Feature-rich collapsible sidebar with provider, menus, groups, and sub-navigation.
+extends: HTMLDivElement
 category: layout
 
 when_to_use:

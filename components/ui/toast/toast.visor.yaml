@@ -1,5 +1,6 @@
 name: Toast
 description: Ephemeral notification messages that appear and auto-dismiss.
+extends: HTMLDivElement
 category: feedback
 
 when_to_use:

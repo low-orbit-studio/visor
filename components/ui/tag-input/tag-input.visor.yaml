@@ -1,5 +1,6 @@
 name: TagInput
 description: A multi-value tag input with removable chips, keyboard support, and max tag limit.
+extends: HTMLDivElement
 category: form
 
 when_to_use:

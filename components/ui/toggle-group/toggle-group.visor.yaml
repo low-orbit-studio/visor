@@ -1,5 +1,6 @@
 name: Toggle Group
 description: A toggle group component with single-select and multi-select modes using CVA variants.
+extends: HTMLDivElement
 category: form
 
 when_to_use:

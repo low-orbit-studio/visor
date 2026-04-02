@@ -1,5 +1,6 @@
 name: Card
 description: A compound card component for grouping related content with header, body, and footer sections.
+extends: HTMLDivElement
 category: data-display
 
 when_to_use:

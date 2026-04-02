@@ -1,5 +1,6 @@
 name: Chart
 description: A Recharts wrapper providing themed chart container, tooltip, and legend components.
+extends: HTMLDivElement
 category: data-display
 
 when_to_use:

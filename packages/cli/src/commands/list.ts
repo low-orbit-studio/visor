@@ -29,6 +29,7 @@ interface ItemGroup {
 
 export interface ListOptions {
   json?: boolean
+  category?: string
 }
 
 export function listCommand(cwd: string, options: ListOptions = {}): void {
@@ -46,11 +47,36 @@ export function listCommand(cwd: string, options: ListOptions = {}): void {
     throw error
   }
 
+  // Filter by category if --category flag is provided
+  let registryItems = registry.items
+  if (options.category) {
+    registryItems = registry.items.filter(
+      (item) => item.category === options.category
+    )
+
+    if (registryItems.length === 0) {
+      if (json) {
+        console.log(
+          JSON.stringify(
+            { success: false, error: `No items found in category "${options.category}".` },
+            null,
+            2
+          )
+        )
+        process.exit(1)
+        return
+      }
+      logger.error(`No items found in category "${options.category}".`)
+      process.exit(1)
+      return
+    }
+  }
+
   const hasConfig = configExists(cwd)
 
   // Group items by type, then sub-group by category
   const groupMap = new Map<string, ItemGroup>()
-  for (const item of registry.items) {
+  for (const item of registryItems) {
     // Use a separator that won't conflict with type format
     const groupKey = item.category
       ? `${item.type}||${item.category}`
@@ -72,7 +98,7 @@ export function listCommand(cwd: string, options: ListOptions = {}): void {
 
   if (json) {
     // Build structured output
-    const items = registry.items.map((item) => {
+    const items = registryItems.map((item) => {
       let installed = false
       if (config) {
         const firstFile = item.files[0]

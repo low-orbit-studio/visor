@@ -1,5 +1,6 @@
 name: Alert
 description: Static inline callout for important messages with semantic variants.
+extends: HTMLDivElement
 category: feedback
 
 when_to_use:

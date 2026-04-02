@@ -1,0 +1,20 @@
+name: useMediaQuery
+description: Subscribes to a CSS media query and returns whether it currently matches.
+category: hooks
+
+params:
+  - name: query
+    type: "string"
+    required: true
+    description: CSS media query string (e.g. "(min-width: 768px)").
+
+returns:
+  - name: matches
+    type: "boolean"
+    description: Whether the media query currently matches. SSR-safe (defaults to false).
+
+dependencies: []
+
+example: |
+  const isMobile = useMediaQuery("(max-width: 767px)")
+  const prefersDark = useMediaQuery("(prefers-color-scheme: dark)")

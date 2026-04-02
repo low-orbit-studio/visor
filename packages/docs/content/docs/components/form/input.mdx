@@ -6,6 +6,7 @@ description: A text input component with focus and validation states.
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Input } from '@/components/ui/input';
+import { Field, FieldLabel, FieldError } from '@/components/ui/field';
 
 ## Installation
 
@@ -62,6 +63,19 @@ import { Input } from '@/components/ui/input/input';
   </div>
 </ComponentPreview>
 
+## Sizes
+
+<ComponentPreview
+  title="Sizes"
+  code={"<Input size=\"sm\" placeholder=\"Small\" />\n<Input size=\"md\" placeholder=\"Medium (default)\" />\n<Input size=\"lg\" placeholder=\"Large\" />"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%', maxWidth: '20rem' }}>
+    <Input size="sm" placeholder="Small" />
+    <Input size="md" placeholder="Medium (default)" />
+    <Input size="lg" placeholder="Large" />
+  </div>
+</ComponentPreview>
+
 ## Invalid
 
 <ComponentPreview
@@ -70,6 +84,21 @@ import { Input } from '@/components/ui/input/input';
 >
   <div style={{ width: '100%', maxWidth: '20rem' }}>
     <Input aria-invalid="true" defaultValue="bad-email" />
+  </div>
+</ComponentPreview>
+
+## With Field
+
+<ComponentPreview
+  title="With Field"
+  code={"import { Field, FieldLabel, FieldError } from '@/components/ui/field/field';\nimport { Input } from '@/components/ui/input/input';\n\n<Field>\n  <FieldLabel htmlFor=\"email\">Email address</FieldLabel>\n  <Input id=\"email\" type=\"email\" placeholder=\"you@example.com\" aria-invalid=\"true\" />\n  <FieldError errors={[\"Please enter a valid email address.\"]} />\n</Field>"}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <Field>
+      <FieldLabel htmlFor="email-field">Email address</FieldLabel>
+      <Input id="email-field" type="email" placeholder="you@example.com" aria-invalid="true" />
+      <FieldError errors={["Please enter a valid email address."]} />
+    </Field>
   </div>
 </ComponentPreview>
 

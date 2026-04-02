@@ -1,5 +1,6 @@
 name: Command
 description: A command palette with search filtering, keyboard navigation, and optional dialog mode.
+extends: HTMLDivElement
 category: navigation
 
 when_to_use:

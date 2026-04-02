@@ -17,46 +17,242 @@ Components are **owned by this project**. They were copied in from the Visor reg
 
 ---
 
-## Adding a New Component
-
-To add a Visor component to this project:
+## Adding Components
 
 ```sh
-npx visor add <component-name>
+npx visor add <component-name>          # Add one component
+npx visor add button input label card   # Add multiple at once
+npx visor add --category form           # Add all components in a category
 ```
 
-Example:
+After running, source files appear at `components/ui/<component-name>/`.
 
-```sh
-npx visor add button
-npx visor add input label card
-```
-
-After running this command, the component source files will appear at:
-
-```
-components/ui/<component-name>/
-├── <component-name>.tsx
-└── <component-name>.module.css
-```
-
-The first component added also creates `lib/utils.ts` (the `cn()` utility).
-
-Available components: `button`, `input`, `label`, `checkbox`, `select`, `switch`, `textarea`, `field`, `card`, `badge`, `avatar`, `separator`, `skeleton`, `tooltip`, `alert`, `progress`, `dialog`, `sheet`, `dropdown-menu`, `tabs`, `breadcrumb`, `sidebar`, `scroll-area`, `chart`
-
-Available hooks: `use-debounce`, `use-click-outside`, `use-local-storage`, `use-media-query`, `use-intersection-observer`, `use-keyboard-shortcut`, `use-focus-trap`, `use-previous`, `use-boolean`
-
----
-
-## Updating a Component
-
-To pull the latest upstream version of a component:
+To pull the latest upstream version:
 
 ```sh
 npx visor add <component-name> --force
 ```
 
-This overwrites the local file with the registry version. Use git to review and merge your customizations.
+---
+
+## Component Catalog (71)
+
+### Data Display (7)
+
+| Component | Description |
+| --- | --- |
+| `accordion` | Vertically stacked expandable panels |
+| `avatar` | User or entity image with fallback initials |
+| `badge` | Small status or category label |
+| `card` | Contained surface for grouping related content |
+| `chart` | Data visualization wrapper using Recharts |
+| `table` | Structured data display with header, body, and footer rows |
+| `timeline` | Chronological list of events with connectors |
+
+### Feedback (7)
+
+| Component | Description |
+| --- | --- |
+| `alert` | Inline callout for important messages |
+| `banner` | Full-width notification bar |
+| `popover` | Floating content panel anchored to a trigger |
+| `progress` | Horizontal bar indicating completion |
+| `skeleton` | Placeholder shimmer for loading states |
+| `toast` | Non-blocking notification that auto-dismisses |
+| `tooltip` | Small label shown on hover/focus |
+
+### Form (24)
+
+| Component | Description |
+| --- | --- |
+| `button` | Primary interactive element for triggering actions |
+| `calendar` | Month-view date grid for date selection |
+| `checkbox` | Toggleable boolean input |
+| `combobox` | Searchable dropdown with free-text input |
+| `date-picker` | Calendar-backed date input with popover |
+| `field` | Wrapper for label, input, description, and error message |
+| `fieldset` | Groups related form fields with optional legend |
+| `file-upload` | Drag-and-drop or click-to-upload file input |
+| `form` | Form wrapper with validation context |
+| `input` | Single-line text input (sizes: sm, md, lg) |
+| `label` | Accessible text label for form controls |
+| `number-input` | Numeric input with increment/decrement buttons |
+| `otp-input` | Multi-digit one-time-password input |
+| `password-input` | Masked input with show/hide toggle and strength meter |
+| `phone-input` | Phone number input with country code selector |
+| `radio-group` | Single-select from a group of options |
+| `search-input` | Input with search icon and clear button |
+| `select` | Dropdown single-select (sizes: sm, md, lg) |
+| `slider` | Range input with track and thumb |
+| `slider-control` | Labeled slider with value display |
+| `switch` | Toggle between on/off states |
+| `tag-input` | Multi-value input with tag chips |
+| `textarea` | Multi-line text input |
+| `toggle-group` | Multi-option toggle button group |
+
+### Layout (4)
+
+| Component | Description |
+| --- | --- |
+| `collapsible` | Show/hide content with animated expand/collapse |
+| `scroll-area` | Custom scrollbar container |
+| `separator` | Visual divider between sections |
+| `sidebar` | Collapsible side navigation panel |
+
+### Media (3)
+
+| Component | Description |
+| --- | --- |
+| `carousel` | Horizontally scrollable content slider |
+| `image` | Responsive image with loading states |
+| `lightbox` | Full-screen image viewer overlay |
+
+### Navigation (6)
+
+| Component | Description |
+| --- | --- |
+| `breadcrumb` | Hierarchical page location trail |
+| `command` | Command palette for search and actions |
+| `navbar` | Horizontal top navigation bar |
+| `pagination` | Page navigation with prev/next and page links |
+| `stepper` | Multi-step progress indicator |
+| `tabs` | Tabbed content switcher |
+
+### Overlay (7)
+
+| Component | Description |
+| --- | --- |
+| `context-menu` | Right-click contextual menu |
+| `dialog` | Modal dialog with backdrop overlay |
+| `dropdown-menu` | Button-triggered dropdown menu |
+| `fullscreen-overlay` | Full-viewport overlay for immersive content |
+| `hover-card` | Content card shown on hover |
+| `menubar` | Horizontal menu bar with dropdown sub-menus |
+| `sheet` | Slide-in panel from any edge |
+
+### Specimen (10)
+
+| Component | Description |
+| --- | --- |
+| `accessibility-specimen` | Interactive ARIA attribute showcase |
+| `color-swatch` | Color token display with hex/label |
+| `elevation-card` | Box-shadow scale demonstration |
+| `icon-grid` | Icon catalog grid |
+| `motion-specimen` | Animation and transition preview |
+| `opacity-bar` | Opacity scale demonstration |
+| `radius-scale` | Border-radius scale demonstration |
+| `spacing-scale` | Spacing token scale demonstration |
+| `surface-row` | Surface token color demonstration |
+| `type-specimen` | Typography scale demonstration |
+
+### Typography (3)
+
+| Component | Description |
+| --- | --- |
+| `code-block` | Syntax-highlighted code display |
+| `heading` | Semantic heading (h1–h6) with visual size override |
+| `text` | General-purpose text element with size variants |
+
+---
+
+## Hooks (14)
+
+```sh
+npx visor add <hook-name>
+```
+
+| Hook | Description |
+| --- | --- |
+| `use-boolean` | Stable toggle/setTrue/setFalse helpers for boolean state |
+| `use-click-outside` | Fires callback on click/touch outside a referenced element |
+| `use-currency` | Locale-aware currency symbol and price formatter |
+| `use-debounce` | Delays value updates for high-frequency events |
+| `use-focus-trap` | Traps keyboard focus within a container |
+| `use-intersection-animation` | Updates active index based on section visibility |
+| `use-intersection-observer` | Tracks element viewport visibility via IntersectionObserver |
+| `use-keyboard-nav` | Arrow/Home/End navigation between indexed sections |
+| `use-keyboard-shortcut` | Fires callback on keyboard shortcut with modifier keys |
+| `use-local-storage` | Persists state to localStorage with SSR safety |
+| `use-media-query` | SSR-safe CSS media query match detection |
+| `use-previous` | Returns previous render value of a variable |
+| `use-slide-engine` | Smooth programmatic scrolling between sections |
+| `use-wheel-nav` | Converts wheel events to discrete index navigation |
+
+---
+
+## Blocks (12)
+
+Pre-composed, page-level sections built from Visor components.
+
+```sh
+npx visor add --type block <block-name>
+```
+
+| Block | Category | Description |
+| --- | --- | --- |
+| `configuration-panel` | interactive | Floating glassmorphic control panel with collapsible sections |
+| `cta-section` | marketing | Centered call-to-action with heading, text, and button |
+| `design-system-deck` | presentation | Full design system presentation deck with navigation |
+| `design-system-specimen` | presentation | Live interactive token and component showcase |
+| `features-grid` | marketing | Responsive grid of feature cards with icons |
+| `footer-section` | marketing | Multi-column footer with link groups and copyright |
+| `hero-section` | marketing | Full-width hero with background media and CTA |
+| `login-form` | authentication | Login form with email/password fields |
+| `pricing-section` | marketing | Responsive pricing tier grid with feature lists |
+| `sphere-playground` | interactive | Interactive 3D sphere with real-time parameter controls |
+| `steps-section` | marketing | Numbered process section with connector lines |
+| `testimonial-section` | marketing | Social proof section with quotes and avatars |
+
+---
+
+## Composition Patterns (7)
+
+Recommended component compositions for common UI scenarios. These are not installable — they serve as structural guidance.
+
+| Pattern | Components Used |
+| --- | --- |
+| Auth Flow | card, input, button, field, alert, tabs |
+| CRUD Table | table, button, dropdown-menu, dialog, alert, pagination, badge |
+| Dashboard Layout | sidebar, navbar, card, tabs, breadcrumb |
+| Data Table with Filters | table, input, select, button, badge, dropdown-menu, pagination |
+| Empty State | card, button, heading, text |
+| Form with Validation | field, input, label, textarea, button, alert |
+| Settings Page | card, input, textarea, select, switch, button, field, fieldset, separator, tabs, avatar |
+
+---
+
+## Theme Operations
+
+Visor uses class-based theming. Apply themes by adding a class to `<html>`:
+
+```html
+<html>                        <!-- Light (default) -->
+<html class="theme-dark">     <!-- Dark theme -->
+<html class="theme-brand">    <!-- Custom theme -->
+```
+
+Override tokens in global CSS after the import:
+
+```css
+@import "@loworbitstudio/visor-core";
+
+:root {
+  --interactive-primary-bg: #6366f1;
+}
+
+.theme-dark {
+  --surface-page: #09090b;
+}
+```
+
+CLI theme commands:
+
+```sh
+npx visor theme validate ./theme.yaml --json
+npx visor theme generate --primary "#1A5F7A" --json
+npx visor theme apply ./theme.yaml --json
+npx visor theme export --format figma --json
+```
 
 ---
 
@@ -69,48 +265,12 @@ This overwrites the local file with the registry version. Use git to review and 
 @import "@loworbitstudio/visor-core";
 ```
 
-To update tokens:
-
-```sh
-npm update @loworbitstudio/visor
-```
-
-Token updates propagate to all components automatically — no file changes required.
-
----
-
-## Styling Conventions
-
-### Always use CSS custom properties — never hard-coded values
-
-```css
-/* Correct */
-.card {
-  background: var(--surface-card);
-  color: var(--text-primary);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-4);
-}
-
-/* Incorrect — breaks theming */
-.card {
-  background: #ffffff;
-  color: #111827;
-  border: 1px solid #e2e8f0;
-}
-```
-
-### Use CSS Modules for component styles
-
-All component styles live in `.module.css` files alongside the component. Do not use inline styles, Tailwind classes, or CSS-in-JS for Visor component styling.
-
-### Token naming conventions
+### Token naming
 
 | Prefix | Purpose | Examples |
-|--------|---------|---------|
+| --- | --- | --- |
 | `--color-*` | Primitive color values | `--color-gray-900`, `--color-blue-500` |
-| `--spacing-*` | Spacing scale | `--spacing-4` (1rem), `--spacing-8` (2rem) |
+| `--spacing-*` | Spacing scale (4px grid) | `--spacing-4` (1rem), `--spacing-8` (2rem) |
 | `--radius-*` | Border radius scale | `--radius-sm`, `--radius-md`, `--radius-lg` |
 | `--text-*` | Semantic text colors | `--text-primary`, `--text-secondary`, `--text-muted` |
 | `--surface-*` | Background surfaces | `--surface-page`, `--surface-card`, `--surface-overlay` |
@@ -118,110 +278,48 @@ All component styles live in `.module.css` files alongside the component. Do not
 | `--interactive-*` | Interactive element tokens | `--interactive-primary-bg`, `--interactive-primary-text` |
 | `--font-size-*` | Type scale | `--font-size-sm`, `--font-size-base`, `--font-size-lg` |
 | `--shadow-*` | Box shadows | `--shadow-sm`, `--shadow-md`, `--shadow-lg` |
-
-### Using CVA for component variants
-
-Components use CVA (class-variance-authority) with CSS Module classes:
-
-```tsx
-import { cva } from "class-variance-authority"
-import styles from "./component.module.css"
-
-const componentVariants = cva(styles.base, {
-  variants: {
-    variant: {
-      default: styles.variantDefault,
-      secondary: styles.variantSecondary,
-    },
-    size: {
-      sm: styles.sizeSm,
-      md: styles.sizeMd,
-    },
-  },
-  defaultVariants: { variant: "default", size: "md" },
-})
-```
-
-### The `cn()` utility
-
-Use `cn()` from `lib/utils` to merge class names:
-
-```tsx
-import { cn } from "@/lib/utils"
-
-// Merge CVA output with consumer className prop
-<div className={cn(componentVariants({ variant, size }), className)} />
-```
+| `--motion-*` | Animation timing | `--motion-duration-fast`, `--motion-easing-default` |
 
 ---
 
-## Theming
+## Styling Conventions
 
-Visor uses class-based theming. Apply themes by adding a class to the root HTML element.
-
-```html
-<!-- Light (default) -->
-<html>
-
-<!-- Dark theme -->
-<html class="theme-dark">
-
-<!-- Custom project theme -->
-<html class="theme-brand">
-```
-
-Override tokens in your global CSS after the import:
-
-```css
-@import "@loworbitstudio/visor-core";
-
-/* Project-level overrides */
-:root {
-  --interactive-primary-bg: #6366f1;
-  --interactive-primary-bg-hover: #4f46e5;
-}
-
-.theme-dark {
-  --surface-page: #09090b;
-  --surface-card: #18181b;
-}
-```
+- **CSS Modules** — All component styles live in `.module.css` files. No Tailwind, no CSS-in-JS.
+- **CSS custom properties** — Always use tokens, never hard-coded values.
+- **CVA** — Variants use `class-variance-authority` with CSS Module class references.
+- **`cn()`** — Import from `@/lib/utils` to merge class names.
 
 ---
 
-## Project Structure (after adding Visor components)
+## AI Metadata Artifacts
 
-```
-your-project/
-├── app/
-│   └── globals.css          ← @import "@loworbitstudio/visor-core" lives here
-├── components/
-│   └── ui/
-│       ├── button/
-│       │   ├── button.tsx           ← Edit freely
-│       │   └── button.module.css    ← Edit freely
-│       └── card/
-│           ├── card.tsx
-│           └── card.module.css
-├── hooks/                   ← Copied Visor hooks live here
-├── lib/
-│   └── utils.ts             ← cn() utility (copied once)
-└── components.json          ← Visor registry configuration
+Each component ships with a `.visor.yaml` metadata file containing:
+- `name`, `description`, `category`
+- `extends` — HTML element the component wraps (e.g., `HTMLButtonElement`)
+- `when_to_use` / `when_not_to_use` — Decision guidance
+- `props` — Typed prop definitions with defaults
+- `variants` — Available variant options
+- `dependencies` — External package requirements
+
+The full manifest (`visor-manifest.json`) aggregates all component, block, hook, and pattern metadata and is available via the CLI:
+
+```sh
+npx visor list --json                     # Full catalog
+npx visor list --category form --json     # Filter by category
 ```
 
 ---
 
 ## Do Not
 
-- Do not modify files in `node_modules/@loworbitstudio/visor-core` — override tokens in your global CSS instead.
-- Do not import `@loworbitstudio/visor-core` in individual component files — it belongs in the global CSS entry point only.
-- Do not use hard-coded color values in component styles — always reference CSS custom properties.
-- Do not use Tailwind utility classes in Visor component `.module.css` files — CSS Modules + custom properties is the pattern.
+- Modify files in `node_modules/@loworbitstudio/visor-core` — override tokens in CSS instead.
+- Import `@loworbitstudio/visor-core` in individual component files — global CSS entry point only.
+- Use hard-coded color values in component styles — always reference CSS custom properties.
+- Use Tailwind utility classes in `.module.css` files — CSS Modules + custom properties is the pattern.
 
 ---
 
 ## Registry Reference
 
-Visor registry: `https://visor.loworbit.studio/registry`
-
-For programmatic access to the component list and schemas, see the Visor repository README or the docs site.
+- Docs: `https://visor.design`
+- Registry: `https://visor.design/registry`

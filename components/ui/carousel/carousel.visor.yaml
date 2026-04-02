@@ -1,5 +1,6 @@
 name: Carousel
 description: A composable slide carousel with horizontal and vertical orientations, built on Embla Carousel.
+extends: HTMLDivElement
 category: media
 
 when_to_use:

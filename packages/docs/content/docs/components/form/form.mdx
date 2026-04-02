@@ -352,6 +352,13 @@ export function FilterForm({
 | `type` | `HTMLInputTypeAttribute` | `"text"` | Input type attribute |
 | `placeholder` | `string` | — | Input placeholder text |
 
+## Sub-components
+
+| Component | Element | Purpose |
+| --- | --- | --- |
+| `Form` | `<form>` | Root form element wiring Conform + Zod + `useActionState` for server action validation |
+| `FormField` | `<div>` (Field wrapper) | Convenience wrapper composing Field, FieldLabel, Input, and FieldError for a single field |
+
 ## Accessibility
 
 - The form sets `noValidate` to disable native browser error bubbles in favor of Conform's custom error UI

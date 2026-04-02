@@ -1,5 +1,6 @@
 name: Dialog
 description: Modal overlay that requires user attention before returning to the page.
+extends: HTMLDivElement
 category: overlay
 
 when_to_use:

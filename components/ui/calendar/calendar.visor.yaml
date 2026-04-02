@@ -1,5 +1,6 @@
 name: Calendar
 description: A date grid component for browsing and selecting dates, with range selection support.
+extends: HTMLDivElement
 category: form
 
 when_to_use:

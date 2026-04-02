@@ -1,5 +1,6 @@
 name: SearchInput
 description: A search input with magnifying glass icon and optional clear button.
+extends: HTMLInputElement
 category: form
 
 when_to_use:

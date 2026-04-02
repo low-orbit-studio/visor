@@ -1,5 +1,6 @@
 name: Textarea
 description: A textarea component with focus and validation states.
+extends: HTMLTextAreaElement
 category: form
 
 when_to_use:

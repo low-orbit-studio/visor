@@ -1,5 +1,6 @@
 name: Text
 description: A body text component with size, weight, color, and line-height variants.
+extends: HTMLElement
 category: typography
 
 when_to_use:

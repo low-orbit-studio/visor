@@ -1,0 +1,42 @@
+name: useIntersectionObserver
+description: Tracks whether an element is visible within the viewport or a scroll container.
+category: hooks
+
+params:
+  - name: once
+    type: "boolean"
+    required: false
+    default: "false"
+    description: If true, stops observing after the element first intersects.
+  - name: threshold
+    type: "number | number[]"
+    required: false
+    default: "0"
+    description: IntersectionObserver visibility threshold.
+  - name: root
+    type: "Element | null"
+    required: false
+    default: "null"
+    description: Scroll container to use as the intersection root.
+  - name: rootMargin
+    type: "string"
+    required: false
+    default: "\"0%\""
+    description: Margin around the root for expanding or shrinking the intersection area.
+
+returns:
+  - name: ref
+    type: "React.RefObject<Element | null>"
+    description: Ref to attach to the element you want to observe.
+  - name: isIntersecting
+    type: "boolean"
+    description: Whether the observed element is currently intersecting.
+  - name: entry
+    type: "IntersectionObserverEntry | null"
+    description: The raw IntersectionObserverEntry, or null before first observation.
+
+dependencies: []
+
+example: |
+  const { ref, isIntersecting } = useIntersectionObserver({ once: true, threshold: 0.5 })
+  return <div ref={ref}>{isIntersecting ? "Visible" : "Hidden"}</div>

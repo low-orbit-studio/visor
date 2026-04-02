@@ -1,5 +1,6 @@
 name: Accordion
 description: An accessible accordion for expanding and collapsing content sections with single or multiple mode.
+extends: HTMLDivElement
 category: data-display
 
 when_to_use:

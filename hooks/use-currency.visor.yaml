@@ -1,0 +1,22 @@
+name: useCurrency
+description: Detects the user's locale and returns the appropriate currency, symbol, and price formatter.
+category: hooks
+
+params: []
+
+returns:
+  - name: currency
+    type: "'usd' | 'eur' | 'gbp'"
+    description: Detected currency code based on browser locale.
+  - name: symbol
+    type: "string"
+    description: Currency symbol ($, EUR, or GBP).
+  - name: formatPrice
+    type: "(prices: Record<Currency, number>) => string"
+    description: Formats a price object into a localized string using the detected currency.
+
+dependencies: []
+
+example: |
+  const { currency, symbol, formatPrice } = useCurrency()
+  const label = formatPrice({ usd: 99, eur: 89, gbp: 79 }) // "$99"

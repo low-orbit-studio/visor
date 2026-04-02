@@ -120,4 +120,52 @@ export const hooks: Registry = [
       },
     ],
   },
+  {
+    name: "use-intersection-animation",
+    type: "registry:hook",
+    description:
+      "Observes section visibility via IntersectionObserver and updates the active index for scroll-driven animations.",
+    files: [
+      {
+        path: "hooks/use-intersection-animation.ts",
+        type: "registry:hook",
+      },
+    ],
+  },
+  {
+    name: "use-keyboard-nav",
+    type: "registry:hook",
+    description:
+      "Handles Arrow Up/Down and Home/End keyboard navigation to move between indexed sections or slides.",
+    files: [
+      {
+        path: "hooks/use-keyboard-nav.ts",
+        type: "registry:hook",
+      },
+    ],
+  },
+  {
+    name: "use-slide-engine",
+    type: "registry:hook",
+    description:
+      "Provides smooth programmatic scrolling between indexed sections with a scrolling-lock guard to prevent observer conflicts.",
+    files: [
+      {
+        path: "hooks/use-slide-engine.ts",
+        type: "registry:hook",
+      },
+    ],
+  },
+  {
+    name: "use-wheel-nav",
+    type: "registry:hook",
+    description:
+      "Converts vertical wheel events into discrete index-based navigation with debounced throttling.",
+    files: [
+      {
+        path: "hooks/use-wheel-nav.ts",
+        type: "registry:hook",
+      },
+    ],
+  },
 ]

@@ -142,6 +142,15 @@ Input and Textarea accept a `size` prop (`sm`, `md`, `lg`) that controls height,
 
 <PropsTable component="field-error" />
 
+## Sub-components
+
+| Component | Element | Purpose |
+| --- | --- | --- |
+| `Field` | `<div>` | Wrapper grouping label, input, description, and error |
+| `FieldLabel` | `<label>` | Semantic label linked to the input via `htmlFor` |
+| `FieldDescription` | `<p>` | Helper text providing additional context for the field |
+| `FieldError` | `<div>` | Error message container with `role="alert"` for live announcements |
+
 ## Accessibility
 
 - `Field` renders as a `<div>` — pair with `Fieldset` for groups of related fields

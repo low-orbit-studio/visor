@@ -1,5 +1,6 @@
 name: Spacing Scale
 description: Visual spacing scale displaying token names, proportional bars, and pixel/rem values.
+extends: HTMLDivElement
 category: specimen
 
 when_to_use:

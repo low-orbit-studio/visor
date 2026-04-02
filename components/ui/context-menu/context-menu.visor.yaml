@@ -1,5 +1,6 @@
 name: ContextMenu
 description: Right-click menu with actions, checkboxes, radio items, and sub-menus.
+extends: HTMLDivElement
 category: overlay
 
 when_to_use:

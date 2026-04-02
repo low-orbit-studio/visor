@@ -1,0 +1,22 @@
+name: useFocusTrap
+description: Traps keyboard focus within the referenced element for accessible modals and dialogs.
+category: hooks
+
+params:
+  - name: ref
+    type: "RefObject<HTMLElement | null>"
+    required: true
+    description: Ref to the container element that traps focus.
+  - name: enabled
+    type: "boolean"
+    required: false
+    default: "true"
+    description: Whether the focus trap is active.
+
+returns: []
+
+dependencies: []
+
+example: |
+  const ref = useRef<HTMLDivElement>(null)
+  useFocusTrap(ref, isOpen)

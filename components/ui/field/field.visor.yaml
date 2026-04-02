@@ -1,5 +1,6 @@
 name: Field
 description: A form field wrapper composing label, description, and error components.
+extends: HTMLDivElement
 category: form
 
 when_to_use:

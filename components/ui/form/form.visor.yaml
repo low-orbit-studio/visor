@@ -1,5 +1,6 @@
 name: Form
 description: A form wrapper integrating Conform + Zod for schema-validated server action forms.
+extends: HTMLFormElement
 category: form
 
 when_to_use:

@@ -1,5 +1,6 @@
 name: Menubar
 description: Horizontal menu bar with dropdown menus, keyboard navigation, and full a11y support.
+extends: HTMLDivElement
 category: overlay
 
 when_to_use:

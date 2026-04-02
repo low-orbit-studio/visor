@@ -1,5 +1,6 @@
 name: Navbar
 description: A top navigation bar with brand, content areas, links, and style variants.
+extends: HTMLElement
 category: navigation
 
 when_to_use:

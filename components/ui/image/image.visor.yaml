@@ -1,5 +1,6 @@
 name: Image
 description: An image component with loading skeleton, error fallback, aspect ratio presets, and lazy loading.
+extends: HTMLImageElement
 category: media
 
 when_to_use:

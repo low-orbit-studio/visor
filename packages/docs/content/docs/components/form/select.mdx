@@ -101,6 +101,21 @@ import {
 
 <PropsTable component="select" />
 
+## Sub-components
+
+| Component | Element | Purpose |
+| --- | --- | --- |
+| `Select` | — (Radix Root) | Root provider managing open state and value |
+| `SelectTrigger` | `<button>` | Clickable trigger that opens the dropdown |
+| `SelectValue` | `<span>` | Displays the selected value or placeholder text |
+| `SelectContent` | `<div>` (portal) | Dropdown panel containing options |
+| `SelectItem` | `<div>` | Individual selectable option with check indicator |
+| `SelectGroup` | `<div>` | Groups related options together |
+| `SelectLabel` | `<div>` | Non-interactive label for an option group |
+| `SelectSeparator` | `<div>` | Visual divider between groups or items |
+| `SelectScrollUpButton` | `<div>` | Scroll-up indicator at the top of a long list |
+| `SelectScrollDownButton` | `<div>` | Scroll-down indicator at the bottom of a long list |
+
 ## Accessibility
 
 - Built on `@radix-ui/react-select` with full WAI-ARIA combobox semantics

@@ -76,6 +76,17 @@ import { Slider } from '@/components/ui/slider/slider';
 
 <PropsTable component="slider" />
 
+## Sub-components
+
+Slider exports a single component that internally composes Radix UI primitives:
+
+| Component | Element | Purpose |
+| --- | --- | --- |
+| `Slider` | `<span>` (Radix Root) | Root container managing value state and keyboard interaction |
+| Slider.Track | `<span>` | Horizontal track representing the full range |
+| Slider.Range | `<span>` | Filled portion of the track indicating the current value |
+| Slider.Thumb | `<span>` | Draggable handle(s) with `role="slider"` for each value |
+
 ## Accessibility
 
 - Built on `@radix-ui/react-slider` with full WAI-ARIA slider semantics

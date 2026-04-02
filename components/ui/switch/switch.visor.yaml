@@ -1,5 +1,6 @@
 name: Switch
 description: An accessible toggle switch component built on Radix UI Switch.
+extends: HTMLButtonElement
 category: form
 
 when_to_use:

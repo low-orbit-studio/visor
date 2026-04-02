@@ -83,6 +83,18 @@ import {
 
 <PropsTable component="combobox" />
 
+## Sub-components
+
+| Component | Element | Purpose |
+| --- | --- | --- |
+| `Combobox` | `<div>` | Root provider managing open state, input value, and selection |
+| `ComboboxInput` | `<input>` | Text input with `role="combobox"` for typing and filtering |
+| `ComboboxContent` | `<div>` (portal) | Popover dropdown containing the listbox |
+| `ComboboxItem` | `<li>` | Selectable option with `role="option"` and check indicator |
+| `ComboboxEmpty` | `<li>` | Placeholder shown when no options match the filter |
+| `ComboboxGroup` | `<li>` | Groups related options under an optional heading |
+| `ComboboxSeparator` | `<li>` | Visual divider between groups or items |
+
 ## Accessibility
 
 - Input renders with `role="combobox"`, `aria-expanded`, and `aria-autocomplete="list"`

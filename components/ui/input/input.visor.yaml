@@ -1,5 +1,6 @@
 name: Input
 description: A text input component with focus and validation states.
+extends: HTMLInputElement
 category: form
 
 when_to_use:

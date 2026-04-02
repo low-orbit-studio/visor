@@ -1,5 +1,6 @@
 name: Badge
 description: A small label component for status indicators, counts, and tags with multiple visual variants.
+extends: HTMLSpanElement
 category: data-display
 
 when_to_use:

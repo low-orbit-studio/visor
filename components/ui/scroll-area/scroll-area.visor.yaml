@@ -1,5 +1,6 @@
 name: ScrollArea
 description: Custom-styled scrollable container with thin scrollbar overlays.
+extends: HTMLDivElement
 category: layout
 
 when_to_use:

@@ -1,0 +1,47 @@
+name: Empty State
+description: Placeholder shown when a page, list, or search has no content to display.
+
+components_used:
+  - card
+  - button
+  - heading
+  - text
+
+when_to_use:
+  - Empty lists or tables (no data yet)
+  - Search results returning zero matches
+  - First-time user onboarding (no content created yet)
+  - Error states where content failed to load
+
+structure: |
+  <Card
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      textAlign: "center",
+      padding: "var(--spacing-12) var(--spacing-6)",
+    }}
+  >
+    {/* Icon or illustration */}
+    <div style={{ marginBottom: "var(--spacing-4)", opacity: 0.5 }}>
+      <MagnifyingGlass size={48} />
+    </div>
+
+    <Heading level={3} size="md">No results found</Heading>
+    <Text size="sm" style={{ color: "var(--text-secondary)", maxWidth: 400, marginTop: "var(--spacing-2)" }}>
+      Try adjusting your search or filters to find what you are looking for.
+    </Text>
+
+    <div style={{ marginTop: "var(--spacing-6)", display: "flex", gap: "var(--spacing-3)" }}>
+      <Button variant="outline" onClick={clearFilters}>Clear filters</Button>
+      <Button onClick={handleCreate}>Create new</Button>
+    </div>
+  </Card>
+
+notes: >
+  Use a Phosphor icon or illustration at the top to set the tone.
+  Keep the message concise — one heading and one supporting line.
+  Provide at least one action Button so the user has a clear next step.
+  For first-time states, the primary action should be "Create" or "Get started".
+  For error states, include a "Retry" Button instead.

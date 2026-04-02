@@ -1,5 +1,6 @@
 name: Slider Control
 description: A labeled slider with inline value display, composing Slider with a label and formatted output.
+extends: HTMLDivElement
 category: form
 
 when_to_use:
