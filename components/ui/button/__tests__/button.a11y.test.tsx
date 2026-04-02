@@ -4,7 +4,7 @@
  * Demonstrates the vitest-axe pattern for automated WCAG 2.1 AA checks.
  * Copy this pattern into new component test files:
  *
- *   import { axe } from "vitest-axe"
+ *   import { axe } from "../../../../test-utils/axe"
  *   const results = await axe(container)
  *   expect(results).toHaveNoViolations()
  *
@@ -14,7 +14,7 @@
 
 import { render } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
-import { axe } from "vitest-axe"
+import { axe } from "../../../../test-utils/axe"
 import { Button } from "../button"
 
 describe("Button a11y (vitest-axe)", () => {

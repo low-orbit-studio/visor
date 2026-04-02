@@ -7,9 +7,10 @@ beforeAll(() => {
   vi.spyOn(console, "error").mockImplementation(() => {})
 })
 
-// Mock three.js before any imports that might use it
+// Mock three.js before any imports that might use it.
+// vitest 4 requires regular functions (not arrows) for constructor mocks.
 vi.mock("three", () => ({
-  WebGLRenderer: vi.fn(() => ({
+  WebGLRenderer: vi.fn(function () { return {
     setSize: vi.fn(),
     setPixelRatio: vi.fn(),
     setClearColor: vi.fn(),
@@ -17,19 +18,19 @@ vi.mock("three", () => ({
     dispose: vi.fn(),
     domElement: document.createElement("canvas"),
     outputColorSpace: "",
-  })),
-  Scene: vi.fn(() => ({ add: vi.fn() })),
-  PerspectiveCamera: vi.fn(() => ({
+  }}),
+  Scene: vi.fn(function () { return { add: vi.fn() }}),
+  PerspectiveCamera: vi.fn(function () { return {
     position: { z: 0, clone: vi.fn(() => ({ x: 0, y: 0, z: 3.2 })) },
     aspect: 1,
     updateProjectionMatrix: vi.fn(),
-  })),
-  Group: vi.fn(() => ({
+  }}),
+  Group: vi.fn(function () { return {
     add: vi.fn(),
     scale: { setScalar: vi.fn() },
     rotation: { x: 0, y: 0, z: 0, clone: vi.fn() },
-  })),
-  BufferGeometry: vi.fn(() => ({
+  }}),
+  BufferGeometry: vi.fn(function () { return {
     setAttribute: vi.fn(),
     dispose: vi.fn(),
     attributes: new Proxy({} as Record<string, { needsUpdate: boolean }>, {
@@ -39,9 +40,9 @@ vi.mock("three", () => ({
         return _t[key]
       },
     }),
-  })),
-  BufferAttribute: vi.fn(),
-  ShaderMaterial: vi.fn(() => ({
+  }}),
+  BufferAttribute: vi.fn(function () { return {} }),
+  ShaderMaterial: vi.fn(function () { return {
     uniforms: new Proxy(
       {
         uGradientColors: {
@@ -63,18 +64,18 @@ vi.mock("three", () => ({
     ),
     dispose: vi.fn(),
     needsUpdate: false,
-  })),
-  Points: vi.fn(() => ({})),
-  Color: vi.fn(() => ({ setRGB: vi.fn() })),
-  Vector3: vi.fn(() => ({ set: vi.fn() })),
-  Clock: vi.fn(() => ({ getDelta: vi.fn(() => 0.016) })),
-  Timer: vi.fn(() => ({ update: vi.fn(), getDelta: vi.fn(() => 0.016), getElapsed: vi.fn(() => 0), connect: vi.fn(), disconnect: vi.fn(), dispose: vi.fn() })),
+  }}),
+  Points: vi.fn(function () { return {} }),
+  Color: vi.fn(function () { return { setRGB: vi.fn() }}),
+  Vector3: vi.fn(function () { return { set: vi.fn() }}),
+  Clock: vi.fn(function () { return { getDelta: vi.fn(() => 0.016) }}),
+  Timer: vi.fn(function () { return { update: vi.fn(), getDelta: vi.fn(() => 0.016), getElapsed: vi.fn(() => 0), connect: vi.fn(), disconnect: vi.fn(), dispose: vi.fn() }}),
   AdditiveBlending: 2,
   LinearSRGBColorSpace: "srgb-linear",
 }))
 
 vi.mock("three/addons/controls/OrbitControls.js", () => ({
-  OrbitControls: vi.fn(() => ({
+  OrbitControls: vi.fn(function () { return {
     enableDamping: false,
     dampingFactor: 0,
     enablePan: true,
@@ -86,7 +87,7 @@ vi.mock("three/addons/controls/OrbitControls.js", () => ({
     target: { clone: vi.fn(() => ({ x: 0, y: 0, z: 0 })) },
     update: vi.fn(),
     dispose: vi.fn(),
-  })),
+  }}),
 }))
 
 import { SpherePlayground } from "../sphere-playground"
