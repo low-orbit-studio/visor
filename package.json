@@ -4,6 +4,15 @@
   "private": true,
   "type": "module",
   "description": "Low Orbit Studio's shared design system",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/low-orbit-studio/visor.git"
+  },
+  "homepage": "https://visor.loworbit.studio",
+  "bugs": {
+    "url": "https://github.com/low-orbit-studio/visor/issues"
+  },
   "workspaces": [
     "packages/*"
   ],
