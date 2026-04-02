@@ -457,16 +457,16 @@ html:not(.dark) .veronica-theme {
   --interactive-primary-bg-hover: #363739;
   --interactive-primary-bg-active: #131415;
   --interactive-primary-text: #ffffff;
-  --interactive-secondary-bg: #ffffff;
-  --interactive-secondary-bg-hover: #f9fafb;
-  --interactive-secondary-bg-active: #f3f4f6;
+  --interactive-secondary-bg: rgba(30, 31, 33, 0.05);
+  --interactive-secondary-bg-hover: rgba(30, 31, 33, 0.08);
+  --interactive-secondary-bg-active: rgba(30, 31, 33, 0.12);
   --interactive-secondary-text: #1e1f21;
-  --interactive-secondary-border: #d1d5db;
+  --interactive-secondary-border: rgba(30, 31, 33, 0.12);
   --interactive-destructive-bg: #dc2626;
   --interactive-destructive-bg-hover: #890009;
   --interactive-destructive-text: #ffffff;
-  --interactive-ghost-bg: transparent;
-  --interactive-ghost-bg-hover: #f3f4f6;
+  --interactive-ghost-bg: rgba(0, 0, 0, 0.03);
+  --interactive-ghost-bg-hover: rgba(0, 0, 0, 0.06);
 }
 
 /* ============================================
