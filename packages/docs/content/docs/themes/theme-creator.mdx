@@ -3,6 +3,8 @@ title: Theme Creator
 description: Interactive tool for building custom Visor themes — adjust colors, typography, and design tokens, then export a ready-to-use CSS file.
 ---
 
+import { Button } from '@/components/ui/button';
+
 The Theme Creator is an interactive design tool for building custom Visor themes. Adjust colors using the OKLCH color picker, tweak typography and spacing tokens, preview your changes live across all components, and export a production-ready CSS file.
 
 ## What it does
@@ -12,6 +14,6 @@ The Theme Creator is an interactive design tool for building custom Visor themes
 - **OKLCH color picker** — Perceptually uniform color selection with automatic light/dark variant generation
 - **CSS export** — Download a complete theme CSS file ready to drop into any Visor project
 
-<a href="/create" style={{ display: 'inline-block', marginTop: '1rem' }}>
-  Launch Theme Creator →
+<a href="/create">
+  <Button style={{ marginTop: '1rem' }}>Launch Theme Creator →</Button>
 </a>

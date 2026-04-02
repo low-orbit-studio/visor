@@ -247,7 +247,7 @@ describe("SpherePlayground", () => {
     expect(code).toContain("waves={1}")
     expect(code).toContain("speed={1}")
     expect(code).toContain("particleCount={128000}")
-    expect(code).toContain("sparkleChance={0.02}")
+    expect(code).toContain("sparkleChance={0.01}")
     expect(code).toContain("saturation={1.8}")
     expect(code).toContain("lightness={0.8}")
     expect(code).toContain("thinkIntensity={0}")
@@ -305,9 +305,9 @@ describe("SpherePlayground", () => {
     expect(screen.getByText("128k")).toBeInTheDocument()
   })
 
-  it("displays default sparkle chance as 2%", () => {
+  it("displays default sparkle chance as 1%", () => {
     render(<SpherePlayground />)
-    expect(screen.getByText("2%")).toBeInTheDocument()
+    expect(screen.getByText("1%")).toBeInTheDocument()
   })
 
   it("displays default speed multiplier as 1.0", () => {
