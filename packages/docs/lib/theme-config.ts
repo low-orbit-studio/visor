@@ -18,10 +18,16 @@ export const THEME_GROUPS: ThemeGroup[] = [
     ],
   },
   {
+    label: "Client",
+    themes: [
+      { value: "kaiah", label: "Kaiah" },
+      { value: "veronica", label: "Veronica" },
+    ],
+  },
+  {
     label: "Low Orbit",
     themes: [
       { value: "blacklight-brand", label: "Blacklight Brand" },
-      { value: "kaiah", label: "Kaiah" },
       { value: "reference-app", label: "Reference App" },
     ],
   },

@@ -1,0 +1,77 @@
+name: veronica
+version: 1
+
+colors:
+  primary: "#FFDCC8"
+  accent: "#1E1F21"
+  neutral: "#6B7280"
+  background: "#FAFAF8"
+  surface: "#FFFFFF"
+  success: "#22C55E"
+  warning: "#F59E0B"
+  error: "#DC2626"
+  info: "#0EA5E9"
+
+colors-dark:
+  primary: "#FFDCC8"
+  accent: "#1E1F21"
+  background: "#1E1F21"
+  surface: "#2B2C2E"
+  error: "#F87171"
+
+typography:
+  heading:
+    family: "PitchSans"
+    weight: 600
+  body:
+    family: "PitchSans"
+    weight: 400
+  mono:
+    family: "JetBrains Mono"
+
+spacing:
+  base: 4
+
+radius:
+  sm: 4
+  md: 8
+  lg: 12
+  xl: 16
+  pill: 9999
+
+shadows:
+  xs: "0 1px 2px rgba(30, 31, 33, 0.04)"
+  sm: "0 2px 12px rgba(0, 0, 0, 0.03)"
+  md: "0 4px 6px rgba(0, 0, 0, 0.06)"
+  lg: "0 10px 15px rgba(0, 0, 0, 0.08)"
+  xl: "0 20px 25px rgba(0, 0, 0, 0.1)"
+
+motion:
+  duration-fast: "100ms"
+  duration-normal: "200ms"
+  duration-slow: "500ms"
+  easing: "cubic-bezier(0.23, 1, 0.32, 1)"
+
+overrides:
+  light:
+    text-primary: "#1E1F21"
+    text-secondary: "rgba(30, 31, 33, 0.8)"
+    text-tertiary: "rgba(30, 31, 33, 0.6)"
+    text-link: "#7C5A40"
+    text-link-hover: "#A87D60"
+    surface-page: "#FAFAF8"
+    interactive-primary-bg: "#1E1F21"
+    interactive-primary-bg-hover: "#363739"
+    interactive-primary-text: "#FFFFFF"
+    border-focus: "#FFDCC8"
+  dark:
+    text-primary: "rgba(255, 255, 255, 0.95)"
+    text-secondary: "rgba(255, 255, 255, 0.7)"
+    text-tertiary: "rgba(255, 255, 255, 0.45)"
+    text-link: "#FFDCC8"
+    text-link-hover: "#FFEEE3"
+    surface-page: "#1E1F21"
+    interactive-primary-bg: "#FFDCC8"
+    interactive-primary-bg-hover: "#FFEEE3"
+    interactive-primary-text: "#1E1F21"
+    border-focus: "#FFDCC8"
