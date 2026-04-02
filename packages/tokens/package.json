@@ -30,7 +30,15 @@
     "visor",
     "css-variables"
   ],
-  "license": "UNLICENSED",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/low-orbit-studio/visor.git"
+  },
+  "homepage": "https://visor.loworbit.studio",
+  "bugs": {
+    "url": "https://github.com/low-orbit-studio/visor/issues"
+  },
   "publishConfig": {
     "access": "public"
   },
