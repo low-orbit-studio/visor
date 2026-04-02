@@ -97,6 +97,23 @@
             }
           }
         },
+        "display": {
+          "type": "object",
+          "description": "Display/decorative font for hero text and splash screens. Falls back to heading font if omitted.",
+          "additionalProperties": false,
+          "properties": {
+            "family": {
+              "type": "string",
+              "description": "Google Fonts family name or CSS font stack."
+            },
+            "weight": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 900,
+              "description": "Font weight for display text. Default: 400."
+            }
+          }
+        },
         "body": {
           "type": "object",
           "additionalProperties": false,

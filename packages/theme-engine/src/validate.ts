@@ -210,7 +210,7 @@ function checkCompleteness(
 
   // Validate typography weight values
   if (config.typography) {
-    const { heading, body } = config.typography;
+    const { heading, display: displayFont, body } = config.typography;
     if (heading?.weight !== undefined) {
       if (
         typeof heading.weight !== "number" ||
@@ -223,6 +223,22 @@ function checkCompleteness(
             "INVALID_WEIGHT",
             `'typography.heading.weight' must be between 100 and 900, got: ${heading.weight}`,
             "typography.heading.weight"
+          )
+        );
+      }
+    }
+    if (displayFont?.weight !== undefined) {
+      if (
+        typeof displayFont.weight !== "number" ||
+        displayFont.weight < 100 ||
+        displayFont.weight > 900
+      ) {
+        issues.push(
+          issue(
+            "error",
+            "INVALID_WEIGHT",
+            `'typography.display.weight' must be between 100 and 900, got: ${displayFont.weight}`,
+            "typography.display.weight"
           )
         );
       }
@@ -253,6 +269,18 @@ function checkCompleteness(
             "INVALID_FONT_FAMILY",
             "'typography.heading.family' must be a non-empty string",
             "typography.heading.family"
+          )
+        );
+      }
+    }
+    if (displayFont?.family !== undefined) {
+      if (typeof displayFont.family !== "string" || displayFont.family.trim().length === 0) {
+        issues.push(
+          issue(
+            "error",
+            "INVALID_FONT_FAMILY",
+            "'typography.display.family' must be a non-empty string",
+            "typography.display.family"
           )
         );
       }

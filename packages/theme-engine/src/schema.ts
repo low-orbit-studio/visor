@@ -31,7 +31,7 @@ const KNOWN_COLOR_KEYS = new Set([
 ]);
 
 const KNOWN_TYPOGRAPHY_KEYS = new Set([
-  "heading", "body", "mono", "letter-spacing",
+  "heading", "display", "body", "mono", "letter-spacing",
 ]);
 
 const KNOWN_TYPOGRAPHY_FONT_KEYS = new Set(["family", "weight"]);
@@ -87,6 +87,14 @@ function checkUnknownKeys(obj: Record<string, unknown>, errors: string[]): void 
       for (const key of Object.keys(typo.heading as Record<string, unknown>)) {
         if (!KNOWN_TYPOGRAPHY_FONT_KEYS.has(key)) {
           errors.push(`Unknown key 'typography.heading.${key}'. Valid keys: ${[...KNOWN_TYPOGRAPHY_FONT_KEYS].join(", ")}`);
+        }
+      }
+    }
+    // typography.display
+    if (typeof typo.display === "object" && typo.display !== null) {
+      for (const key of Object.keys(typo.display as Record<string, unknown>)) {
+        if (!KNOWN_TYPOGRAPHY_FONT_KEYS.has(key)) {
+          errors.push(`Unknown key 'typography.display.${key}'. Valid keys: ${[...KNOWN_TYPOGRAPHY_FONT_KEYS].join(", ")}`);
         }
       }
     }

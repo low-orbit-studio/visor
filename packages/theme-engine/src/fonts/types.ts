@@ -59,6 +59,12 @@ export interface VisorTypography {
     source?: FontSource;
     org?: string;
   };
+  display?: {
+    family: string;
+    weight?: number;
+    source?: FontSource;
+    org?: string;
+  };
   body?: {
     family: string;
     weight?: number;
@@ -79,6 +85,8 @@ export interface VisorTypography {
 export interface ThemeFontResult {
   /** Resolved heading font (if specified) */
   heading: FontResolution | null;
+  /** Resolved display font (if specified) */
+  display: FontResolution | null;
   /** Resolved body font (if specified) */
   body: FontResolution | null;
   /** Preconnect and preload link tags */
