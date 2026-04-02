@@ -94,6 +94,22 @@ Made the docs site a world-class showcase with live theme previews, visual compa
 - [x] All examples respond to the active theme
 - [x] Visual regression testing — Playwright screenshots across all themes × light/dark (VI-88)
 
+## Phase 5.5: Open Source Readiness
+
+Prepare Visor for public adoption as a leading open source design system. Two tracks: protect proprietary assets and build community infrastructure.
+
+**Key work:**
+- **Proprietary asset lockdown** — Move client themes (Veronica, Kaiah, Blacklight, Space) out of the public repo; evaluate private package or authenticated loading
+- **Fonts CDN CORS** — See Phase 7; restrict `fonts.visor.design` to allowed origins
+- **Community infrastructure** — CODE_OF_CONDUCT.md, issue/PR templates, FUNDING.yml, good first issue labels, GitHub Discussions
+- **Package metadata** — `repository`, `license`, `homepage`, `bugs` fields across all package.json files
+- **Changelog & releases** — Conventional commits + auto-changelog tooling (changesets or similar)
+- **Competitive analysis** — Study shadcn/ui, Radix, Mantine, Park UI for gaps
+- **Governance & sustainability** — Single-maintainer plan, contributor ladder, decision-making process
+- **Marketing surface** — README badges, social preview, npm README, "used by" section, GitHub topics
+
+**Tracking:** VI-110
+
 ## Phase 6: Visual Theme Creator
 
 A visual theme creation experience in the docs site with harmonious color generation and clone-to-modify workflow.
@@ -119,6 +135,7 @@ Blacklight font library and font pairing intelligence. Basic font resolution (Go
 - ~~Visor Fonts CDN support (`visor-fonts` source type in .visor.yaml): R2-hosted fonts with @font-face generation~~ **DONE** (VI-81) — see `packages/theme-engine/src/fonts/`
 - ~~Font upload CLI (`visor fonts add`): upload woff2 files to R2 CDN~~ **DONE** (VI-80) — see `packages/cli/src/commands/fonts-add.ts`
 - ~~R2 CDN setup (fonts.visor.design)~~ **DONE** (VI-79) — Cloudflare R2 bucket with custom domain
+- **Fonts CDN CORS policy** — Restrict `fonts.visor.design` to allowed origins via Cloudflare R2/Workers (VI-110)
 - Font pairing with mood tags (leverage Blacklight's `epk_theme_font_pairing` system)
 - Advanced font loading optimizations (subsetting, variable font support)
 - Font weight/variant discovery from CDN (manifest-based)
