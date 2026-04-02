@@ -112,6 +112,38 @@
             "required": ["org"]
           }
         },
+        "display": {
+          "type": "object",
+          "description": "Display/decorative font for hero text and splash screens. Falls back to heading font if omitted.",
+          "additionalProperties": false,
+          "properties": {
+            "family": {
+              "type": "string",
+              "description": "Font family name — Google Fonts name, Visor Fonts name, or CSS font stack."
+            },
+            "weight": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 900,
+              "description": "Font weight for display text. Default: 400."
+            },
+            "source": {
+              "type": "string",
+              "enum": ["google-fonts", "visor-fonts", "local"],
+              "description": "Font source. Default: \"google-fonts\". Use \"visor-fonts\" for CDN-hosted fonts, \"local\" for self-hosted fonts."
+            },
+            "org": {
+              "type": "string",
+              "description": "Organization namespace for visor-fonts CDN. Required when source is \"visor-fonts\"."
+            }
+          },
+          "if": {
+            "properties": { "source": { "const": "visor-fonts" } }
+          },
+          "then": {
+            "required": ["org"]
+          }
+        },
         "body": {
           "type": "object",
           "additionalProperties": false,

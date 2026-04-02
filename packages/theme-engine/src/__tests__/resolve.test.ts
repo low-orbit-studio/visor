@@ -48,9 +48,11 @@ describe("resolveConfig", () => {
   it("defaults typography to system font stacks", () => {
     const resolved = resolveConfig(minimalConfig);
     expect(resolved.typography.heading.family).toContain("BlinkMacSystemFont");
+    expect(resolved.typography.display.family).toContain("BlinkMacSystemFont");
     expect(resolved.typography.body.family).toContain("BlinkMacSystemFont");
     expect(resolved.typography.mono.family).toContain("SF Mono");
     expect(resolved.typography.heading.weight).toBe(600);
+    expect(resolved.typography.display.weight).toBe(400);
     expect(resolved.typography.body.weight).toBe(400);
   });
 

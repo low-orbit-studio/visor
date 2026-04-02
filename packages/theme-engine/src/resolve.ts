@@ -109,6 +109,14 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
         weight:
           config.typography?.heading?.weight ?? DEFAULTS.typography.heading.weight,
       },
+      display: {
+        family:
+          config.typography?.display?.family
+          ?? config.typography?.heading?.family
+          ?? DEFAULTS.typography.heading.family,
+        weight:
+          config.typography?.display?.weight ?? 400,
+      },
       body: {
         family:
           config.typography?.body?.family ?? DEFAULTS.typography.body.family,

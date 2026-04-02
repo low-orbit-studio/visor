@@ -410,6 +410,7 @@ export function parseFontFaceDeclarations(css: string): FontFaceDeclaration[] {
 
 interface TypographyResult {
   heading?: { family?: string; weight?: number };
+  display?: { family?: string; weight?: number };
   body?: { family?: string; weight?: number };
   mono?: { family?: string };
 }
@@ -430,8 +431,10 @@ function extractTypography(
     const prop = decl.property;
     const val = decl.value;
 
-    if (prop.includes("font-heading") || prop.includes("font-display") || prop === "--font-family-heading") {
+    if (prop.includes("font-heading") || prop === "--font-family-heading") {
       result.heading = { ...result.heading, family: cleanFontValue(val) };
+    } else if (prop.includes("font-display") || prop === "--font-family-display") {
+      result.display = { ...result.display, family: cleanFontValue(val) };
     } else if (prop.includes("font-body") || prop.includes("font-sans") || prop === "--font-family-body") {
       result.body = { ...result.body, family: cleanFontValue(val) };
     } else if (prop.includes("font-mono") || prop.includes("font-code") || prop === "--font-family-mono") {
@@ -441,6 +444,9 @@ function extractTypography(
     if (prop.includes("weight-heading") || prop === "--font-weight-heading") {
       const weight = parseInt(val);
       if (!isNaN(weight)) result.heading = { ...result.heading, weight };
+    } else if (prop.includes("weight-display") || prop === "--font-weight-display") {
+      const weight = parseInt(val);
+      if (!isNaN(weight)) result.display = { ...result.display, weight };
     } else if (prop.includes("weight-body") || prop === "--font-weight-body") {
       const weight = parseInt(val);
       if (!isNaN(weight)) result.body = { ...result.body, weight };
@@ -765,9 +771,10 @@ export function extractFromCSS(
   }
 
   // Add typography
-  if (typography.heading || typography.body || typography.mono) {
+  if (typography.heading || typography.display || typography.body || typography.mono) {
     config.typography = {};
     if (typography.heading) config.typography.heading = typography.heading;
+    if (typography.display) config.typography.display = typography.display;
     if (typography.body) config.typography.body = typography.body;
     if (typography.mono) config.typography.mono = typography.mono;
   }

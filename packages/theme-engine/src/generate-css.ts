@@ -133,6 +133,7 @@ function generateTypographyPrimitives(config: ResolvedThemeConfig): string[] {
 
   // Font families
   decls.push(`--font-heading: ${config.typography.heading.family};`);
+  decls.push(`--font-display: ${config.typography.display.family};`);
   decls.push(`--font-sans: ${config.typography.body.family};`);
   decls.push(`--font-body: ${config.typography.body.family};`);
   decls.push(`--font-mono: ${config.typography.mono.family};`);
@@ -157,6 +158,7 @@ function generateTypographyPrimitives(config: ResolvedThemeConfig): string[] {
   decls.push("--font-weight-medium: 500;");
   decls.push(`--font-weight-semibold: ${config.typography.heading.weight};`);
   decls.push("--font-weight-bold: 700;");
+  decls.push(`--weight-display: ${config.typography.display.weight};`);
 
   // Line heights
   const lineHeights: Record<string, number> = {

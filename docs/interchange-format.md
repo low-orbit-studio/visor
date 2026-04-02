@@ -42,6 +42,9 @@ typography:
   heading:
     family: "Inter"                # Google Fonts name or CSS font stack
     weight: 600                    # Default: 600
+  display:
+    family: "Playfair Display"     # Display/decorative font for hero text (default: heading family)
+    weight: 400                    # Default: 400
   body:
     family: "Inter"
     weight: 400                    # Default: 400
@@ -104,6 +107,7 @@ overrides:
 | `colors.info` | No | `#0EA5E9` |
 | `colors-dark` | No | All dark values derived from shade generation |
 | `typography` | No | System font stacks |
+| `typography.display` | No | Falls back to heading family |
 | `spacing` | No | 4px base unit |
 | `radius` | No | Visor defaults (sm:2, md:4, lg:8, xl:12, pill:9999) |
 | `shadows` | No | Visor defaults (5-step scale) |

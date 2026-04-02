@@ -1075,10 +1075,20 @@ describe("validate — unknown keys", () => {
       name: "Test",
       version: 1,
       colors: { primary: "#2563EB" },
-      typography: { display: { family: "Inter" } },
+      typography: { fancy: { family: "Inter" } },
     } as unknown);
     expect(result.valid).toBe(false);
-    expect(result.errors.some((e) => e.code === "STRUCTURAL" && e.message.includes("display"))).toBe(true);
+    expect(result.errors.some((e) => e.code === "STRUCTURAL" && e.message.includes("fancy"))).toBe(true);
+  });
+
+  it("accepts display typography key", () => {
+    const result = validate({
+      name: "Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      typography: { display: { family: "Playfair Display", weight: 400 } },
+    } as unknown);
+    expect(result.valid).toBe(true);
   });
 
   it("rejects unknown radius key", () => {

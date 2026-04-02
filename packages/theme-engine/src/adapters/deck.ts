@@ -71,6 +71,7 @@ function generateScopedPrimitives(
 
   // Typography
   decls.push(`--font-heading: ${config.typography.heading.family};`);
+  decls.push(`--font-display: ${config.typography.display.family};`);
   decls.push(`--font-sans: ${config.typography.body.family};`);
   decls.push(`--font-body: ${config.typography.body.family};`);
   decls.push(`--font-mono: ${config.typography.mono.family};`);

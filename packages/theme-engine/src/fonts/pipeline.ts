@@ -26,13 +26,14 @@ import type {
  */
 function generateFontCSS(
   heading: FontResolution | null,
+  displayFont: FontResolution | null,
   body: FontResolution | null,
   typography: VisorTypography
 ): string {
   const lines: string[] = [];
 
   // Google Fonts stylesheet imports (as CSS comments for reference)
-  const googleFonts = [heading, body].filter(
+  const googleFonts = [heading, displayFont, body].filter(
     (r): r is FontResolution => r !== null && r.source === "google-fonts"
   );
   if (googleFonts.length > 0) {
@@ -44,7 +45,7 @@ function generateFontCSS(
   }
 
   // Visor Fonts @font-face declarations (real, not placeholders)
-  const visorFonts = [heading, body].filter(
+  const visorFonts = [heading, displayFont, body].filter(
     (r): r is FontResolution => r !== null && r.source === "visor-fonts"
   );
   const seenVisorFonts = new Set<string>();
@@ -68,7 +69,7 @@ function generateFontCSS(
   }
 
   // Local font @font-face placeholders
-  const localFonts = [heading, body].filter(
+  const localFonts = [heading, displayFont, body].filter(
     (r): r is FontResolution => r !== null && r.source === "local"
   );
   if (localFonts.length > 0) {
@@ -88,7 +89,7 @@ function generateFontCSS(
   }
 
   // Size-adjusted fallback @font-face declarations (eliminates CLS during swap)
-  const allFonts = [heading, body].filter(
+  const allFonts = [heading, displayFont, body].filter(
     (r): r is FontResolution => r !== null
   );
   const seenFamilies = new Set<string>();
@@ -111,6 +112,14 @@ function generateFontCSS(
     );
   }
 
+  if (displayFont) {
+    const fallbackName = `${displayFont.family} Fallback`;
+    const fallback = getFallbackStack(displayFont);
+    overrides.push(
+      `  --font-display: "${displayFont.family}", "${fallbackName}", ${fallback};`
+    );
+  }
+
   if (body) {
     const fallbackName = `${body.family} Fallback`;
     const fallback = getFallbackStack(body);
@@ -124,6 +133,11 @@ function generateFontCSS(
   if (typography.heading?.weight) {
     overrides.push(
       `  --weight-heading: ${typography.heading.weight};`
+    );
+  }
+  if (typography.display?.weight) {
+    overrides.push(
+      `  --weight-display: ${typography.display.weight};`
     );
   }
   if (typography.body?.weight) {
@@ -285,10 +299,67 @@ export function resolveThemeFonts(
     }
   }
 
+  // Resolve display font
+  let displayResolution: FontResolution | null = null;
+  if (typography.display?.family) {
+    const displayWeights: number[] = [];
+    if (typography.display.weight) displayWeights.push(typography.display.weight);
+
+    // Same family as heading — merge weights into a single resolution (smart deduplication)
+    if (
+      headingResolution &&
+      typography.display.family.toLowerCase() ===
+        headingResolution.family.toLowerCase()
+    ) {
+      const mergedWeights = Array.from(
+        new Set([...headingResolution.weights, ...displayWeights])
+      ).sort((a, b) => a - b);
+
+      headingResolution = resolveFont(typography.heading!.family, {
+        weights: mergedWeights,
+        display,
+        source: typography.heading!.source,
+        org: typography.heading!.org,
+      });
+      displayResolution = headingResolution;
+    } else if (
+      bodyResolution &&
+      typography.display.family.toLowerCase() ===
+        bodyResolution.family.toLowerCase()
+    ) {
+      // Same family as body — merge weights
+      const mergedWeights = Array.from(
+        new Set([...bodyResolution.weights, ...displayWeights])
+      ).sort((a, b) => a - b);
+
+      bodyResolution = resolveFont(typography.body!.family, {
+        weights: mergedWeights,
+        display,
+        source: typography.body!.source,
+        org: typography.body!.org,
+      });
+      displayResolution = bodyResolution;
+    } else {
+      displayResolution = resolveFont(typography.display.family, {
+        weights: displayWeights.length > 0 ? displayWeights : undefined,
+        display,
+        source: typography.display.source,
+        org: typography.display.org,
+      });
+
+      if (displayResolution.guidance) {
+        warnings.push(displayResolution.guidance);
+      }
+    }
+  }
+
   // Collect all unique resolutions for preload generation
   const allResolutions: FontResolution[] = [];
   if (headingResolution) allResolutions.push(headingResolution);
-  if (bodyResolution && bodyResolution !== headingResolution) {
+  if (displayResolution && displayResolution !== headingResolution) {
+    allResolutions.push(displayResolution);
+  }
+  if (bodyResolution && bodyResolution !== headingResolution && bodyResolution !== displayResolution) {
     allResolutions.push(bodyResolution);
   }
 
@@ -296,10 +367,11 @@ export function resolveThemeFonts(
   const stylesheetLinks = generateStylesheetLinks(allResolutions);
   const allLinks = [...preloadLinks, ...stylesheetLinks];
 
-  const css = generateFontCSS(headingResolution, bodyResolution, typography);
+  const css = generateFontCSS(headingResolution, displayResolution, bodyResolution, typography);
 
   return {
     heading: headingResolution,
+    display: displayResolution,
     body: bodyResolution,
     preloadLinks: allLinks,
     css,

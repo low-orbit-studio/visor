@@ -81,6 +81,10 @@ export interface VisorThemeConfig {
       family?: string;
       weight?: number;
     };
+    display?: {
+      family?: string;
+      weight?: number;
+    };
     body?: {
       family?: string;
       weight?: number;
@@ -142,6 +146,7 @@ export interface ResolvedThemeConfig {
   typography: {
     scale: number;
     heading: { family: string; weight: number };
+    display: { family: string; weight: number };
     body: { family: string; weight: number };
     mono: { family: string };
   };
