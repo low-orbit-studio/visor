@@ -14,9 +14,34 @@
   z-index: 0;
 }
 
+/* Force dark context on the panel — the sphere always renders on a black
+   canvas, so the overlay panel must use light-on-dark tokens regardless of
+   the page's active color mode. Instead of overriding individual element
+   colors (fragile), we override the semantic tokens at the panel boundary.
+   Every child component reads these tokens and automatically gets correct
+   dark-context values — no selector specificity battles, no maintenance. */
 .panel {
-  background-color: rgba(10, 10, 10, 0.95);
-  border-color: rgba(255, 255, 255, 0.1);
+  /* Surface */
+  --surface-card: rgba(10, 10, 10, 0.95);
+  --surface-interactive-default: rgba(255, 255, 255, 0.08);
+  --surface-interactive-hover: rgba(255, 255, 255, 0.14);
+
+  /* Text */
+  --text-primary: rgba(255, 255, 255, 0.95);
+  --text-secondary: rgba(255, 255, 255, 0.5);
+  --text-tertiary: rgba(255, 255, 255, 0.35);
+
+  /* Border */
+  --border-default: rgba(255, 255, 255, 0.1);
+  --border-muted: rgba(255, 255, 255, 0.06);
+  --border-focus: rgba(255, 255, 255, 0.4);
+
+  /* Interactive */
+  --interactive-primary-bg: rgba(255, 255, 255, 0.9);
+  --interactive-primary-text: rgba(0, 0, 0, 0.95);
+
+  background-color: var(--surface-card);
+  border-color: var(--border-default);
 }
 
 .panel [data-slot="toggle-group"] {
@@ -27,8 +52,4 @@
 .panel [data-slot="toggle-group"] button {
   flex: 1;
   justify-content: center;
-}
-
-.panel [data-slot="slider-control-value"] {
-  color: rgba(255, 255, 255, 0.5);
 }
