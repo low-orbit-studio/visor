@@ -406,8 +406,8 @@ html:not(.dark) .veronica-theme {
   --text-disabled: #9ca3af;
   --text-inverse: #ffffff;
   --text-inverse-secondary: #e5e7eb;
-  --text-link: #7c5a40;
-  --text-link-hover: #a87d60;
+  --text-link: #ffdcc8;
+  --text-link-hover: #ffeee3;
   --text-success: #017231;
   --text-warning: #8d5800;
   --text-error: #890009;
@@ -502,8 +502,8 @@ html:not(.dark) .veronica-theme {
   --color-fd-border: #e5e7eb;
   --color-fd-muted: #f9fafb;
   --color-fd-muted-foreground: rgba(30, 31, 33, 0.8);
-  --color-fd-accent: #7c5a40;
-  --color-fd-accent-foreground: #ffffff;
+  --color-fd-accent: #ffdcc8;
+  --color-fd-accent-foreground: #1e1f21;
   --color-fd-primary: #1e1f21;
   --color-fd-primary-foreground: #ffffff;
   --color-fd-secondary: #f9fafb;
