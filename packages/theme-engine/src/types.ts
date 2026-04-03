@@ -4,6 +4,8 @@
  * Covers the full pipeline: .visor.yaml config → shade scales → semantic tokens → CSS output.
  */
 
+import type { FontSource } from "./fonts/types.js";
+
 // ============================================================
 // Shade Generation Types
 // ============================================================
@@ -80,14 +82,20 @@ export interface VisorThemeConfig {
     heading?: {
       family?: string;
       weight?: number;
+      source?: FontSource;
+      org?: string;
     };
     display?: {
       family?: string;
       weight?: number;
+      source?: FontSource;
+      org?: string;
     };
     body?: {
       family?: string;
       weight?: number;
+      source?: FontSource;
+      org?: string;
     };
     mono?: {
       family?: string;
@@ -145,9 +153,9 @@ export interface ResolvedThemeConfig {
   "colors-dark"?: VisorThemeConfig["colors-dark"];
   typography: {
     scale: number;
-    heading: { family: string; weight: number };
-    display: { family: string; weight: number };
-    body: { family: string; weight: number };
+    heading: { family: string; weight: number; source?: FontSource; org?: string };
+    display: { family: string; weight: number; source?: FontSource; org?: string };
+    body: { family: string; weight: number; source?: FontSource; org?: string };
     mono: { family: string };
   };
   spacing: { base: number };

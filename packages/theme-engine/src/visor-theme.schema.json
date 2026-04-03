@@ -94,6 +94,15 @@
               "minimum": 100,
               "maximum": 900,
               "description": "Font weight for headings. Default: 600."
+            },
+            "source": {
+              "type": "string",
+              "enum": ["google-fonts", "visor-fonts", "local"],
+              "description": "Font source. Defaults to Google Fonts lookup, then local."
+            },
+            "org": {
+              "type": "string",
+              "description": "Organization namespace for visor-fonts CDN (required when source is visor-fonts)."
             }
           }
         },
@@ -111,6 +120,15 @@
               "minimum": 100,
               "maximum": 900,
               "description": "Font weight for display text. Default: 400."
+            },
+            "source": {
+              "type": "string",
+              "enum": ["google-fonts", "visor-fonts", "local"],
+              "description": "Font source. Defaults to Google Fonts lookup, then local."
+            },
+            "org": {
+              "type": "string",
+              "description": "Organization namespace for visor-fonts CDN (required when source is visor-fonts)."
             }
           }
         },
@@ -127,6 +145,15 @@
               "minimum": 100,
               "maximum": 900,
               "description": "Font weight for body text. Default: 400."
+            },
+            "source": {
+              "type": "string",
+              "enum": ["google-fonts", "visor-fonts", "local"],
+              "description": "Font source. Defaults to Google Fonts lookup, then local."
+            },
+            "org": {
+              "type": "string",
+              "description": "Organization namespace for visor-fonts CDN (required when source is visor-fonts)."
             }
           }
         },

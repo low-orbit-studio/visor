@@ -34,7 +34,7 @@ const KNOWN_TYPOGRAPHY_KEYS = new Set([
   "heading", "display", "body", "mono", "letter-spacing",
 ]);
 
-const KNOWN_TYPOGRAPHY_FONT_KEYS = new Set(["family", "weight"]);
+const KNOWN_TYPOGRAPHY_FONT_KEYS = new Set(["family", "weight", "source", "org"]);
 const KNOWN_TYPOGRAPHY_MONO_KEYS = new Set(["family"]);
 const KNOWN_LETTER_SPACING_KEYS = new Set(["tight", "normal", "wide"]);
 
@@ -259,6 +259,17 @@ export function validateConfig(config: unknown): ValidationResult {
         ) {
           errors.push(`'motion.${key}' must match pattern "Nms" (e.g., "200ms")`);
         }
+      }
+    }
+  }
+
+  // Validate typography font source/org cross-field constraints
+  if (typeof obj.typography === "object" && obj.typography !== null) {
+    const typo = obj.typography as Record<string, unknown>;
+    for (const slot of ["heading", "display", "body"]) {
+      const font = typo[slot] as Record<string, unknown> | undefined;
+      if (font && font.source === "visor-fonts" && !font.org) {
+        errors.push(`'typography.${slot}.org' is required when source is 'visor-fonts'`);
       }
     }
   }
