@@ -1,0 +1,91 @@
+name: entr
+version: 1
+
+# ENTR is a dark-first, flat-design Flutter app.
+# Dark mode is the primary mode — light mode is derived from Figma light DS.
+# Source: ~/Code/zeitguest/entr/client/packages/ui/lib/src/
+
+colors:
+  primary: "#22C56D"
+  accent: "#38C7E0"
+  neutral: "#4A5968"
+  background: "#FFFFFF"
+  surface: "#F5F7FA"
+  success: "#22C56D"
+  warning: "#F59E0B"
+  error: "#FE5D8B"
+  info: "#03A9F4"
+
+colors-dark:
+  primary: "#6BEBA5"
+  accent: "#38C7E0"
+  background: "#1E1F21"
+  surface: "#242628"
+  error: "#FE5D8B"
+
+typography:
+  display:
+    family: "Modern Society"
+    weight: 400
+    source: visor-fonts
+    org: low-orbit-studio
+  heading:
+    family: "Outfit"
+    weight: 700
+  body:
+    family: "Outfit"
+    weight: 400
+  letter-spacing:
+    normal: "0.05em"
+
+spacing:
+  base: 4
+
+radius:
+  sm: 8
+  md: 12
+  lg: 16
+  xl: 24
+  pill: 9999
+
+# ENTR is a flat-design app — elevation: 0 throughout (Drawer is the only exception at 1)
+shadows:
+  xs: "none"
+  sm: "none"
+  md: "none"
+  lg: "none"
+  xl: "none"
+
+motion:
+  duration-fast: "150ms"
+  duration-normal: "250ms"
+  duration-slow: "400ms"
+  easing: "cubic-bezier(0.4, 0, 0.2, 1)"
+
+overrides:
+  dark:
+    text-primary: "#FAFCFE"
+    text-secondary: "rgba(250, 252, 254, 0.65)"
+    text-tertiary: "rgba(250, 252, 254, 0.4)"
+    text-disabled: "rgba(250, 252, 254, 0.25)"
+    surface-page: "#1E1F21"
+    surface-card: "#242628"
+    surface-subtle: "rgba(255, 255, 255, 0.04)"
+    surface-muted: "rgba(255, 255, 255, 0.03)"
+    border-default: "rgba(255, 255, 255, 0.08)"
+    border-muted: "rgba(255, 255, 255, 0.04)"
+    border-strong: "rgba(255, 255, 255, 0.14)"
+    interactive-primary-bg: "#6BEBA5"
+  light:
+    text-primary: "#1A1C1E"
+    text-secondary: "rgba(26, 28, 30, 0.65)"
+    text-tertiary: "rgba(26, 28, 30, 0.4)"
+    text-disabled: "rgba(26, 28, 30, 0.25)"
+    surface-page: "#FFFFFF"
+    surface-card: "#F5F7FA"
+    surface-subtle: "rgba(0, 0, 0, 0.03)"
+    surface-muted: "rgba(0, 0, 0, 0.02)"
+    border-default: "rgba(0, 0, 0, 0.08)"
+    border-muted: "rgba(0, 0, 0, 0.04)"
+    border-strong: "rgba(0, 0, 0, 0.14)"
+    interactive-primary-bg: "#22C56D"

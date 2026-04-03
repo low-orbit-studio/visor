@@ -9,6 +9,7 @@
  */
 
 import { resolveThemeFonts } from "../fonts/pipeline.js";
+import { buildVisorFontUrl } from "../fonts/resolve.js";
 import {
   generatePrimitivesCss,
   generateLightCss,
@@ -37,7 +38,7 @@ export function nextjsAdapter(
 
   lines.push(header("Visor Theme — NextJS Adapter"));
 
-  // 1. Google Fonts @import (must come before @layer per CSS spec)
+  // 1. Google Fonts @import + Visor Fonts @font-face (must come before @layer per CSS spec)
   if (includeFontImports && input.config.typography) {
     const fontResult = resolveThemeFonts(input.config.typography);
     const googleFonts = [fontResult.heading, fontResult.display, fontResult.body].filter(
@@ -63,6 +64,27 @@ export function nextjsAdapter(
         " */",
       );
       lines.push("");
+    }
+
+    // Visor Fonts @font-face declarations (CDN-hosted fonts)
+    const visorFonts = [fontResult.heading, fontResult.display, fontResult.body].filter(
+      (r): r is NonNullable<typeof r> => r !== null && r.source === "visor-fonts",
+    );
+    const seenVisorFamilies = new Set<string>();
+    for (const font of visorFonts) {
+      if (seenVisorFamilies.has(font.family)) continue;
+      seenVisorFamilies.add(font.family);
+      for (const weight of font.weights) {
+        const url = buildVisorFontUrl(font.org ?? "", font.family, weight);
+        lines.push(`@font-face {`);
+        lines.push(`  font-family: "${font.family}";`);
+        lines.push(`  src: url("${url}") format("woff2");`);
+        lines.push(`  font-weight: ${weight};`);
+        lines.push(`  font-style: ${font.italic ? "italic" : "normal"};`);
+        lines.push(`  font-display: ${font.display};`);
+        lines.push(`}`);
+        lines.push("");
+      }
     }
   }
 

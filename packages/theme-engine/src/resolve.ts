@@ -108,6 +108,8 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
           config.typography?.heading?.family ?? DEFAULTS.typography.heading.family,
         weight:
           config.typography?.heading?.weight ?? DEFAULTS.typography.heading.weight,
+        ...(config.typography?.heading?.source && { source: config.typography.heading.source }),
+        ...(config.typography?.heading?.org && { org: config.typography.heading.org }),
       },
       display: {
         family:
@@ -116,12 +118,16 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
           ?? DEFAULTS.typography.heading.family,
         weight:
           config.typography?.display?.weight ?? 400,
+        ...(config.typography?.display?.source && { source: config.typography.display.source }),
+        ...(config.typography?.display?.org && { org: config.typography.display.org }),
       },
       body: {
         family:
           config.typography?.body?.family ?? DEFAULTS.typography.body.family,
         weight:
           config.typography?.body?.weight ?? DEFAULTS.typography.body.weight,
+        ...(config.typography?.body?.source && { source: config.typography.body.source }),
+        ...(config.typography?.body?.org && { org: config.typography.body.org }),
       },
       mono: {
         family:
