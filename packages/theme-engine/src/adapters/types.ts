@@ -36,5 +36,11 @@ export interface DeckAdapterOptions extends AdapterOptions {
   scopeClass?: string;
 }
 
+/** Options specific to the Docs adapter. */
+export interface DocsAdapterOptions extends AdapterOptions {
+  /** Include font imports at the top (default: true) */
+  includeFontImports?: boolean;
+}
+
 /** Supported adapter names. */
-export type AdapterName = "nextjs" | "fumadocs" | "deck";
+export type AdapterName = "nextjs" | "fumadocs" | "deck" | "docs";

@@ -5,6 +5,7 @@ import {
   nextjsAdapter,
   fumadocsAdapter,
   deckAdapter,
+  docsAdapter,
 } from "@loworbitstudio/visor-theme-engine/adapters"
 import type { AdapterName } from "@loworbitstudio/visor-theme-engine/adapters"
 import { logger } from "../utils/logger.js"
@@ -25,6 +26,10 @@ function defaultOutputPath(adapter: AdapterName | undefined, themeName?: string)
     case "deck": {
       const slug = (themeName ?? "theme").toLowerCase().replace(/\s+/g, "-")
       return `visor-deck-${slug}.css`
+    }
+    case "docs": {
+      const slug = (themeName ?? "theme").toLowerCase().replace(/\s+/g, "-")
+      return `${slug}-theme.css`
     }
     default:
       return "visor-theme.css"
@@ -82,6 +87,9 @@ export function themeApplyCommand(
           break
         case "deck":
           css = deckAdapter(adapterInput)
+          break
+        case "docs":
+          css = docsAdapter(adapterInput)
           break
         default:
           throw new Error(`Unknown adapter: ${options.adapter}`)

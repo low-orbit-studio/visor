@@ -111,10 +111,41 @@ npx @loworbitstudio/visor theme apply .visor.yaml --adapter deck
 | Flag | Description |
 |------|-------------|
 | `-o, --output <path>` | Custom output file path |
-| `--adapter <name>` | Target adapter: `nextjs`, `fumadocs`, `deck` |
+| `--adapter <name>` | Target adapter: `nextjs`, `fumadocs`, `deck`, `docs` |
 | `--json` | Output structured JSON (for AI agents) |
 
 See [Adapters](/docs/adapters) for details on each adapter's output.
+
+### `visor theme register`
+
+Register a theme in the Visor docs site in one command. Creates the CSS file, adds the `@import` to `globals.css`, and adds the theme entry to `theme-config.ts` — all in alphabetical order. Idempotent: running it twice produces no changes.
+
+```bash
+npx @loworbitstudio/visor theme register .visor.yaml --group "Client"
+npx @loworbitstudio/visor theme register .visor.yaml --group "Visor" --dry-run
+```
+
+#### Options
+
+| Flag | Description |
+|------|-------------|
+| `--group <name>` | **(Required)** Theme group to register in: `Visor`, `Client`, `Low Orbit` |
+| `--dry-run` | Show what would change without writing files |
+| `--json` | Output structured JSON (for AI agents) |
+
+### `visor theme unregister`
+
+Remove a theme from the docs site. Deletes the CSS file, removes the `@import` from `globals.css`, and removes the entry from `theme-config.ts`.
+
+```bash
+npx @loworbitstudio/visor theme unregister entr
+```
+
+#### Options
+
+| Flag | Description |
+|------|-------------|
+| `--json` | Output structured JSON (for AI agents) |
 
 ### `visor theme validate`
 

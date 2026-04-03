@@ -61,3 +61,8 @@ test-results/
 # Playwright
 playwright-report/
 blob-report/
+
+# Claude Code session artifacts
+.lo/plans/
+.lo/verification/
+*.bak.*
