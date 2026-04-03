@@ -20,6 +20,7 @@ export const THEME_GROUPS: ThemeGroup[] = [
   {
     label: "Client",
     themes: [
+      { value: "entr", label: "ENTR" },
       { value: "kaiah", label: "Kaiah" },
       { value: "veronica", label: "Veronica" },
     ],
