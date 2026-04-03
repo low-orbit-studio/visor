@@ -259,6 +259,22 @@ npx @loworbitstudio/visor theme apply .visor.yaml --adapter fumadocs
 
 # Generate scoped deck CSS
 npx @loworbitstudio/visor theme apply .visor.yaml --adapter deck
+
+# Generate docs-site CSS (class-scoped, includes fumadocs bridge)
+npx @loworbitstudio/visor theme apply .visor.yaml --adapter docs
+```
+
+Register a theme in the Visor docs site in one command:
+
+```bash
+# Creates CSS file, updates globals.css and theme-config.ts
+npx @loworbitstudio/visor theme register .visor.yaml --group "Client"
+
+# Preview changes without writing
+npx @loworbitstudio/visor theme register .visor.yaml --group "Client" --dry-run
+
+# Remove a theme
+npx @loworbitstudio/visor theme unregister my-brand
 ```
 
 Or scaffold a complete themed project:

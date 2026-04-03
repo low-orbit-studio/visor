@@ -9,6 +9,9 @@ import { themeExportCommand } from "./commands/theme-export.js"
 import { themeValidateCommand } from "./commands/theme-validate.js"
 import { themeExtractCommand } from "./commands/theme-extract.js"
 import type { ThemeExtractOptions } from "./commands/theme-extract.js"
+import { themeRegisterCommand } from "./commands/theme-register.js"
+import type { ThemeRegisterOptions } from "./commands/theme-register.js"
+import { themeUnregisterCommand } from "./commands/theme-unregister.js"
 import { fontsAddCommand } from "./commands/fonts-add.js"
 import type { FontsAddOptions } from "./commands/fonts-add.js"
 
@@ -133,6 +136,34 @@ theme
         ...options,
         runValidation: options.validate,
       })
+    }
+  )
+
+theme
+  .command("register")
+  .description(
+    "Register a theme in the docs site — creates CSS, updates globals.css and theme-config.ts"
+  )
+  .argument("<file>", "path to .visor.yaml file")
+  .requiredOption("--group <name>", "theme group to register in (e.g. Visor, Client, Low Orbit)")
+  .option("--dry-run", "show what would change without writing files")
+  .option("--json", "output structured JSON (for AI agents)")
+  .action(
+    (file: string, options: { group: string; dryRun?: boolean; json?: boolean }) => {
+      themeRegisterCommand(file, process.cwd(), options as ThemeRegisterOptions)
+    }
+  )
+
+theme
+  .command("unregister")
+  .description(
+    "Remove a theme from the docs site — deletes CSS file, removes globals.css import and theme-config.ts entry"
+  )
+  .argument("<slug>", "theme slug to unregister (e.g. entr, kaiah)")
+  .option("--json", "output structured JSON (for AI agents)")
+  .action(
+    (slug: string, options: { json?: boolean }) => {
+      themeUnregisterCommand(slug, process.cwd(), options)
     }
   )
 

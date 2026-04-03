@@ -8,6 +8,7 @@
 export { nextjsAdapter } from "./nextjs.js";
 export { fumadocsAdapter } from "./fumadocs.js";
 export { deckAdapter } from "./deck.js";
+export { docsAdapter } from "./docs.js";
 export { LAYER_ORDER, wrapInLayer } from "./layers.js";
 export { FUMADOCS_BRIDGE_MAP } from "./fumadocs-map.js";
 
@@ -17,6 +18,7 @@ export type {
   AdapterName,
   NextJSAdapterOptions,
   DeckAdapterOptions,
+  DocsAdapterOptions,
 } from "./types.js";
 
 export type { FumadocsBridgeEntry } from "./fumadocs-map.js";
