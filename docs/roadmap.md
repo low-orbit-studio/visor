@@ -104,7 +104,7 @@ Prepare Visor for public adoption as a leading open source design system. Two tr
 - **Community infrastructure** — CODE_OF_CONDUCT.md, issue/PR templates, FUNDING.yml, good first issue labels, GitHub Discussions
 - **Package metadata** — `repository`, `license`, `homepage`, `bugs` fields across all package.json files
 - **Changelog & releases** — Conventional commits + auto-changelog tooling (changesets or similar)
-- **Competitive analysis** — Study shadcn/ui, Radix, Mantine, Park UI for gaps
+- **Competitive analysis** — Study shadcn/ui, Radix, Mantine, Park UI for gaps ✓ ([VI-122](https://linear.app/low-orbit-studio/issue/VI-122) → `docs/research/token-architecture-spike.md`)
 - **Governance & sustainability** — Single-maintainer plan, contributor ladder, decision-making process
 - **Marketing surface** — README badges, social preview, npm README, "used by" section, GitHub topics
 
