@@ -132,13 +132,22 @@ export const primitiveLineHeights = {
   loose: 2,
 } as const;
 
-// Shadows
+// Shadows (light mode)
 export const primitiveShadows = {
-  xs: "0 1px 1px 0 rgba(0, 0, 0, 0.04)",
+  xs: "inset 0 1px 2px 0 rgba(0, 0, 0, 0.06)", // tight inward — input focus insets
   sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
   md: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)",
   lg: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)",
   xl: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+} as const;
+
+// Shadows (dark mode) — higher alpha needed to read on dark surfaces
+export const primitiveShadowsDark = {
+  xs: "inset 0 1px 2px 0 rgba(0, 0, 0, 0.15)",
+  sm: "0 1px 2px 0 rgba(0, 0, 0, 0.25)",
+  md: "0 4px 6px -1px rgba(0, 0, 0, 0.35), 0 2px 4px -2px rgba(0, 0, 0, 0.3)",
+  lg: "0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.35)",
+  xl: "0 20px 25px -5px rgba(0, 0, 0, 0.45), 0 8px 10px -6px rgba(0, 0, 0, 0.4)",
 } as const;
 
 // Z-index scale

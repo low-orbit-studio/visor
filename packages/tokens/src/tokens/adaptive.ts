@@ -266,6 +266,18 @@ export const adaptiveInteractive: Record<string, AdaptiveTokenValue> = {
   },
 };
 
+/** Adaptive skeleton shimmer tokens */
+export const adaptiveSkeleton: Record<string, AdaptiveTokenValue> = {
+  from: {
+    light: "color-neutral-100",
+    dark: "color-neutral-800",
+  },
+  to: {
+    light: "color-neutral-200",
+    dark: "color-neutral-700",
+  },
+};
+
 /** Adaptive chart tokens — maps to shadcn --chart-* (VI-127) */
 export const adaptiveChart: Record<string, AdaptiveTokenValue> = {
   "1": {

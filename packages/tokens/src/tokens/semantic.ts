@@ -179,6 +179,14 @@ export const semanticTypography = {
   "weight-strong": "font-weight-bold",
 } as const;
 
+/** Skeleton shimmer tokens */
+export const semanticSkeleton = {
+  // Shimmer gradient start color (dimmer end of the sweep)
+  from: "surface-muted",
+  // Shimmer gradient highlight color (brighter peak of the sweep)
+  to: "surface-subtle",
+} as const;
+
 /** Chart color tokens — maps to shadcn --chart-* (VI-127) */
 export const semanticChart = {
   "1": "color-primary-500",

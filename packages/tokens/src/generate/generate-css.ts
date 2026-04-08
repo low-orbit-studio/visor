@@ -23,6 +23,7 @@ import {
   primitiveFontWeights,
   primitiveLineHeights,
   primitiveShadows,
+  primitiveShadowsDark,
   primitiveZIndex,
   primitiveFontFamilies,
   primitiveOverlay,
@@ -42,6 +43,7 @@ import {
   semanticFocusRing,
   semanticMotionDuration,
   semanticMotionEasing,
+  semanticSkeleton,
   semanticChart,
   semanticSidebar,
 } from "../tokens/semantic.js";
@@ -51,6 +53,7 @@ import {
   adaptiveSurface,
   adaptiveBorder,
   adaptiveInteractive,
+  adaptiveSkeleton,
   adaptiveChart,
   adaptiveSidebar,
 } from "../tokens/adaptive.js";
@@ -312,6 +315,14 @@ function generateSemanticCSS(): string {
   }
   lines.push(block(":root", focusRingSemanticDecls));
 
+  // Skeleton
+  lines.push(sectionComment("Semantic: Skeleton"));
+  const skeletonDecls: string[] = [];
+  for (const [name, ref] of Object.entries(semanticSkeleton)) {
+    skeletonDecls.push(`--skeleton-${name}: ${toVar(ref)};`);
+  }
+  lines.push(block(":root", skeletonDecls));
+
   // Chart
   lines.push(sectionComment("Semantic: Chart"));
   const chartDecls: string[] = [];
@@ -341,6 +352,8 @@ function buildAdaptiveDecls(theme: "light" | "dark"): {
   surfaceDecls: string[];
   borderDecls: string[];
   interactiveDecls: string[];
+  skeletonDecls: string[];
+  shadowDecls: string[];
   chartDecls: string[];
   sidebarDecls: string[];
 } {
@@ -364,6 +377,18 @@ function buildAdaptiveDecls(theme: "light" | "dark"): {
     interactiveDecls.push(`--interactive-${name}: ${toVar(values[theme])};`);
   }
 
+  const skeletonDecls: string[] = [];
+  for (const [name, values] of Object.entries(adaptiveSkeleton)) {
+    skeletonDecls.push(`--skeleton-${name}: ${toVar(values[theme])};`);
+  }
+
+  // Shadows use raw values (not var() references) so they override per-theme correctly
+  const shadowSource = theme === "dark" ? primitiveShadowsDark : primitiveShadows;
+  const shadowDecls: string[] = [];
+  for (const [name, value] of Object.entries(shadowSource)) {
+    shadowDecls.push(`--shadow-${name}: ${value};`);
+  }
+
   const chartDecls: string[] = [];
   for (const [name, values] of Object.entries(adaptiveChart)) {
     chartDecls.push(`--chart-${name}: ${toVar(values[theme])};`);
@@ -374,13 +399,13 @@ function buildAdaptiveDecls(theme: "light" | "dark"): {
     sidebarDecls.push(`--sidebar-${name}: ${toVar(values[theme])};`);
   }
 
-  return { textDecls, surfaceDecls, borderDecls, interactiveDecls, chartDecls, sidebarDecls };
+  return { textDecls, surfaceDecls, borderDecls, interactiveDecls, skeletonDecls, shadowDecls, chartDecls, sidebarDecls };
 }
 
 function generateThemeCSS(theme: "light" | "dark"): string {
   const themeLabel = theme === "light" ? "Light Theme" : "Dark Theme";
   const lines: string[] = [];
-  const { textDecls, surfaceDecls, borderDecls, interactiveDecls, chartDecls, sidebarDecls } = buildAdaptiveDecls(theme);
+  const { textDecls, surfaceDecls, borderDecls, interactiveDecls, skeletonDecls, shadowDecls, chartDecls, sidebarDecls } = buildAdaptiveDecls(theme);
 
   if (theme === "light") {
     // Light theme: applied to :root (default)
@@ -395,6 +420,12 @@ function generateThemeCSS(theme: "light" | "dark"): string {
 
     lines.push(sectionComment("Adaptive: Interactive (light)"));
     lines.push(block(":root", interactiveDecls));
+
+    lines.push(sectionComment("Adaptive: Skeleton (light)"));
+    lines.push(block(":root", skeletonDecls));
+
+    lines.push(sectionComment("Adaptive: Shadows (light)"));
+    lines.push(block(":root", shadowDecls));
 
     lines.push(sectionComment("Adaptive: Chart (light)"));
     lines.push(block(":root", chartDecls));
@@ -422,6 +453,12 @@ function generateThemeCSS(theme: "light" | "dark"): string {
     lines.push(sectionComment("Adaptive: Interactive (dark) — manual toggle"));
     lines.push(block(darkSelector, interactiveDecls));
 
+    lines.push(sectionComment("Adaptive: Skeleton (dark) — manual toggle"));
+    lines.push(block(darkSelector, skeletonDecls));
+
+    lines.push(sectionComment("Adaptive: Shadows (dark) — manual toggle"));
+    lines.push(block(darkSelector, shadowDecls));
+
     lines.push(sectionComment("Adaptive: Chart (dark) — manual toggle"));
     lines.push(block(darkSelector, chartDecls));
 
@@ -445,6 +482,14 @@ function generateThemeCSS(theme: "light" | "dark"): string {
 
     lines.push(sectionComment("Adaptive: Interactive (dark) — prefers-color-scheme"));
     lines.push(`@media (prefers-color-scheme: dark) {\n${block(mediaRoot, interactiveDecls)}}`);
+    lines.push("");
+
+    lines.push(sectionComment("Adaptive: Skeleton (dark) — prefers-color-scheme"));
+    lines.push(`@media (prefers-color-scheme: dark) {\n${block(mediaRoot, skeletonDecls)}}`);
+    lines.push("");
+
+    lines.push(sectionComment("Adaptive: Shadows (dark) — prefers-color-scheme"));
+    lines.push(`@media (prefers-color-scheme: dark) {\n${block(mediaRoot, shadowDecls)}}`);
     lines.push("");
 
     lines.push(sectionComment("Adaptive: Chart (dark) — prefers-color-scheme"));
@@ -509,6 +554,22 @@ function generateTokensCSS(): string {
   const darkContent = generateThemeCSS("dark");
   const darkBody = darkContent.split("\n").slice(6).join("\n");
   lines.push(darkBody);
+
+  lines.push(
+    "/* ============================================",
+    "   Global: Motion Safety",
+    "   ============================================ */"
+  );
+  lines.push(
+    "@media (prefers-reduced-motion: reduce) {",
+    "  *, *::before, *::after {",
+    "    animation-duration: 0.01ms !important;",
+    "    animation-iteration-count: 1 !important;",
+    "    transition-duration: 0.01ms !important;",
+    "  }",
+    "}",
+    ""
+  );
 
   return lines.join("\n");
 }
