@@ -39,6 +39,8 @@ import {
   semanticFocusRing,
   semanticMotionDuration,
   semanticMotionEasing,
+  semanticChart,
+  semanticSidebar,
 } from "../tokens/semantic.js";
 
 import {
@@ -46,6 +48,8 @@ import {
   adaptiveSurface,
   adaptiveBorder,
   adaptiveInteractive,
+  adaptiveChart,
+  adaptiveSidebar,
 } from "../tokens/adaptive.js";
 
 import {
@@ -129,25 +133,25 @@ describe("Primitive tokens", () => {
     }
   });
 
-  it("includes gray scale from 50 to 950", () => {
-    const graySteps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
-    for (const step of graySteps) {
-      expect(primitiveColors, `gray-${step}`).toHaveProperty(`gray-${step}`);
+  it("includes neutral scale from 50 to 950", () => {
+    const neutralSteps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+    for (const step of neutralSteps) {
+      expect(primitiveColors, `neutral-${step}`).toHaveProperty(`neutral-${step}`);
     }
   });
 
-  it("includes blue accent scale", () => {
-    const blueSteps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
-    for (const step of blueSteps) {
-      expect(primitiveColors, `blue-${step}`).toHaveProperty(`blue-${step}`);
+  it("includes primary accent scale", () => {
+    const primarySteps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
+    for (const step of primarySteps) {
+      expect(primitiveColors, `primary-${step}`).toHaveProperty(`primary-${step}`);
     }
   });
 
-  it("includes status colors (green, amber, red, sky)", () => {
-    expect(primitiveColors).toHaveProperty("green-500");
-    expect(primitiveColors).toHaveProperty("amber-500");
-    expect(primitiveColors).toHaveProperty("red-500");
-    expect(primitiveColors).toHaveProperty("sky-500");
+  it("includes status colors (success, warning, error, info)", () => {
+    expect(primitiveColors).toHaveProperty("success-500");
+    expect(primitiveColors).toHaveProperty("warning-500");
+    expect(primitiveColors).toHaveProperty("error-500");
+    expect(primitiveColors).toHaveProperty("info-500");
   });
 
   it("includes white and black", () => {
@@ -453,11 +457,11 @@ describe("Adaptive tokens", () => {
   });
 
   it("dark theme inverts text primary/secondary (dark is lighter)", () => {
-    // In dark mode, primary text should be a lighter gray than light mode
-    const lightPrimary = adaptiveText.primary.light; // should be dark gray
-    const darkPrimary = adaptiveText.primary.dark;   // should be light gray
-    expect(lightPrimary).toContain("gray-9");        // dark gray (900/950)
-    expect(darkPrimary).toContain("gray-5");         // light gray (50/100)
+    // In dark mode, primary text should be a lighter neutral than light mode
+    const lightPrimary = adaptiveText.primary.light; // should be dark neutral
+    const darkPrimary = adaptiveText.primary.dark;   // should be light neutral
+    expect(lightPrimary).toContain("neutral-9");     // dark neutral (900/950)
+    expect(darkPrimary).toContain("neutral-5");      // light neutral (50/100)
   });
 
   it("dark theme uses darker background for page surface", () => {
@@ -518,18 +522,18 @@ describe("Adaptive tokens", () => {
     }
   });
 
-  it("dark primary uses lighter blue than light primary for contrast", () => {
+  it("dark primary uses lighter primary than light primary for contrast", () => {
     const lightPrimary = adaptiveInteractive["primary-bg"].light;
     const darkPrimary = adaptiveInteractive["primary-bg"].dark;
-    expect(lightPrimary).toMatch(/blue-[6-9]00/);
-    expect(darkPrimary).toMatch(/blue-[3-5]00/);
+    expect(lightPrimary).toMatch(/primary-[6-9]00/);
+    expect(darkPrimary).toMatch(/primary-[3-5]00/);
   });
 
-  it("dark secondary text inverts (light uses dark gray, dark uses light gray)", () => {
+  it("dark secondary text inverts (light uses dark neutral, dark uses light neutral)", () => {
     const lightText = adaptiveInteractive["secondary-text"].light;
     const darkText = adaptiveInteractive["secondary-text"].dark;
-    expect(lightText).toMatch(/gray-9/);
-    expect(darkText).toMatch(/gray-[1-5]0?$/);
+    expect(lightText).toMatch(/neutral-9/);
+    expect(darkText).toMatch(/neutral-[1-5]0?$/);
   });
 });
 
@@ -621,22 +625,22 @@ describe("Dark mode tokens", () => {
   it("dark theme has a darker page surface than light theme", () => {
     // Dark page should be very dark (950/900 range)
     const darkPage = adaptiveSurface.page.dark;
-    expect(darkPage).toMatch(/gray-(9[0-9]{2}|950)/);
+    expect(darkPage).toMatch(/neutral-(9[0-9]{2}|950)/);
   });
 
   it("dark theme uses lighter text than light theme", () => {
-    // In dark mode primary text should be a light gray
+    // In dark mode primary text should be a light neutral
     const darkPrimary = adaptiveText.primary.dark;
-    expect(darkPrimary).toMatch(/gray-[1-9]0?$|white/);
-    // And specifically lighter than the light-mode primary (gray-900)
+    expect(darkPrimary).toMatch(/neutral-[1-9]0?$|white/);
+    // And specifically lighter than the light-mode primary (neutral-900)
     const lightPrimary = adaptiveText.primary.light;
-    expect(lightPrimary).toMatch(/gray-9/);
+    expect(lightPrimary).toMatch(/neutral-9/);
   });
 
   it("dark theme border default is lighter than light theme surface (for contrast)", () => {
-    // In dark mode, borders should use mid-range grays for visibility
+    // In dark mode, borders should use mid-range neutrals for visibility
     const darkBorderDefault = adaptiveBorder.default.dark;
-    expect(darkBorderDefault).toMatch(/gray-[5-8]00/);
+    expect(darkBorderDefault).toMatch(/neutral-[5-8]00/);
   });
 
   it("all adaptive dark values reference valid primitives", () => {
@@ -645,6 +649,8 @@ describe("Dark mode tokens", () => {
       { name: "adaptiveSurface", tokens: adaptiveSurface },
       { name: "adaptiveBorder", tokens: adaptiveBorder },
       { name: "adaptiveInteractive", tokens: adaptiveInteractive },
+      { name: "adaptiveChart", tokens: adaptiveChart },
+      { name: "adaptiveSidebar", tokens: adaptiveSidebar },
     ];
     for (const { name, tokens } of groups) {
       for (const [tokenName, values] of Object.entries(tokens)) {
@@ -656,12 +662,12 @@ describe("Dark mode tokens", () => {
     }
   });
 
-  it("dark theme accent uses lighter blue than light theme for readability", () => {
-    // On dark backgrounds, strong accent should be a lighter blue
+  it("dark theme accent uses lighter primary than light theme for readability", () => {
+    // On dark backgrounds, strong accent should be a lighter primary
     const lightAccentStrong = adaptiveSurface["accent-strong"].light;
     const darkAccentStrong = adaptiveSurface["accent-strong"].dark;
-    expect(lightAccentStrong).toMatch(/blue-[6-9]00/);
-    expect(darkAccentStrong).toMatch(/blue-[1-5]00|blue-[1-5]0$/);
+    expect(lightAccentStrong).toMatch(/primary-[6-9]00/);
+    expect(darkAccentStrong).toMatch(/primary-[1-5]00|primary-[1-5]0$/);
   });
 
   it("dark interactive default surface is darker than light", () => {
@@ -669,7 +675,7 @@ describe("Dark mode tokens", () => {
     const darkDefault = adaptiveSurface["interactive-default"].dark;
     expect(lightDefault).toBe("color-white");
     expect(darkDefault).not.toBe("color-white");
-    expect(darkDefault).toMatch(/gray-[7-9]00|gray-950/);
+    expect(darkDefault).toMatch(/neutral-[7-9]00|neutral-950/);
   });
 });
 
@@ -704,9 +710,9 @@ describe("CSS generation output structure", () => {
 
   it("adaptive tokens generate correct CSS variable format", () => {
     // Simulate what the generator does for a known token
-    const primaryDark = adaptiveText.primary.dark; // "color-gray-50"
+    const primaryDark = adaptiveText.primary.dark; // "color-neutral-50"
     const expectedCSSVar = `var(--${primaryDark})`;
-    expect(expectedCSSVar).toBe("var(--color-gray-50)");
+    expect(expectedCSSVar).toBe("var(--color-neutral-50)");
   });
 
   it("prefers-color-scheme dark media query format is valid CSS", () => {
@@ -718,6 +724,75 @@ describe("CSS generation output structure", () => {
 // ============================================================
 // Theme Utility Tests
 // ============================================================
+
+// ============================================================
+// New semantic tokens (VI-127)
+// ============================================================
+
+describe("New semantic tokens (VI-127)", () => {
+  const primitives = buildPrimitiveLookup();
+
+  it("semanticChart has keys 1 through 5", () => {
+    expect(Object.keys(semanticChart)).toEqual(["1", "2", "3", "4", "5"]);
+  });
+
+  it("all chart tokens reference valid primitives", () => {
+    for (const [name, ref] of Object.entries(semanticChart)) {
+      expect(primitives.has(ref), `chart-${name} references "${ref}"`).toBe(true);
+    }
+  });
+
+  it("semanticSidebar has all expected keys", () => {
+    const expected = ["bg", "text", "primary-bg", "primary-text", "accent-bg", "accent-text", "border", "ring", "text-muted"];
+    for (const key of expected) {
+      expect(semanticSidebar, `semanticSidebar should have "${key}"`).toHaveProperty(key);
+    }
+  });
+
+  it("all sidebar tokens reference valid primitives", () => {
+    for (const [name, ref] of Object.entries(semanticSidebar)) {
+      expect(primitives.has(ref), `sidebar-${name} references "${ref}"`).toBe(true);
+    }
+  });
+
+  it("adaptiveChart has light/dark pairs for all 5 chart tokens", () => {
+    for (const [name, values] of Object.entries(adaptiveChart)) {
+      expect(values.light, `adaptiveChart.${name}.light`).toBeTruthy();
+      expect(values.dark, `adaptiveChart.${name}.dark`).toBeTruthy();
+      expect(primitives.has(values.light), `adaptiveChart.${name}.light references "${values.light}"`).toBe(true);
+      expect(primitives.has(values.dark), `adaptiveChart.${name}.dark references "${values.dark}"`).toBe(true);
+    }
+  });
+
+  it("adaptiveSidebar has light/dark pairs for all sidebar tokens", () => {
+    for (const [name, values] of Object.entries(adaptiveSidebar)) {
+      expect(values.light, `adaptiveSidebar.${name}.light`).toBeTruthy();
+      expect(values.dark, `adaptiveSidebar.${name}.dark`).toBeTruthy();
+      expect(primitives.has(values.light), `adaptiveSidebar.${name}.light references "${values.light}"`).toBe(true);
+      expect(primitives.has(values.dark), `adaptiveSidebar.${name}.dark references "${values.dark}"`).toBe(true);
+    }
+  });
+
+  it("semanticSurface includes popover", () => {
+    expect(semanticSurface).toHaveProperty("popover");
+  });
+
+  it("semanticBorder includes input", () => {
+    expect(semanticBorder).toHaveProperty("input");
+  });
+
+  it("adaptiveSurface includes popover with light/dark pairs", () => {
+    expect(adaptiveSurface).toHaveProperty("popover");
+    expect(adaptiveSurface.popover.light).toBeTruthy();
+    expect(adaptiveSurface.popover.dark).toBeTruthy();
+  });
+
+  it("adaptiveBorder includes input with light/dark pairs", () => {
+    expect(adaptiveBorder).toHaveProperty("input");
+    expect(adaptiveBorder.input.light).toBeTruthy();
+    expect(adaptiveBorder.input.dark).toBeTruthy();
+  });
+});
 
 describe("Theme utilities", () => {
   afterEach(() => {

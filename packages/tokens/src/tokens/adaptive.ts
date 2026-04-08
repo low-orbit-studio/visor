@@ -18,52 +18,52 @@ export interface AdaptiveTokenValue {
 /** Adaptive text tokens */
 export const adaptiveText: Record<string, AdaptiveTokenValue> = {
   primary: {
-    light: "color-gray-900",
-    dark: "color-gray-50",
+    light: "color-neutral-900",
+    dark: "color-neutral-50",
   },
   secondary: {
-    light: "color-gray-600",
-    dark: "color-gray-400",
+    light: "color-neutral-600",
+    dark: "color-neutral-400",
   },
   tertiary: {
-    light: "color-gray-400",
-    dark: "color-gray-500",
+    light: "color-neutral-400",
+    dark: "color-neutral-500",
   },
   disabled: {
-    light: "color-gray-300",
-    dark: "color-gray-600",
+    light: "color-neutral-300",
+    dark: "color-neutral-600",
   },
   inverse: {
     light: "color-white",
-    dark: "color-gray-900",
+    dark: "color-neutral-900",
   },
   "inverse-secondary": {
-    light: "color-gray-200",
-    dark: "color-gray-700",
+    light: "color-neutral-200",
+    dark: "color-neutral-700",
   },
   link: {
-    light: "color-blue-600",
-    dark: "color-blue-400",
+    light: "color-primary-600",
+    dark: "color-primary-400",
   },
   "link-hover": {
-    light: "color-blue-700",
-    dark: "color-blue-300",
+    light: "color-primary-700",
+    dark: "color-primary-300",
   },
   success: {
-    light: "color-green-700",
-    dark: "color-green-500",
+    light: "color-success-700",
+    dark: "color-success-500",
   },
   warning: {
-    light: "color-amber-700",
-    dark: "color-amber-500",
+    light: "color-warning-700",
+    dark: "color-warning-500",
   },
   error: {
-    light: "color-red-700",
-    dark: "color-red-500",
+    light: "color-error-700",
+    dark: "color-error-500",
   },
   info: {
-    light: "color-sky-700",
-    dark: "color-sky-500",
+    light: "color-info-700",
+    dark: "color-info-500",
   },
 };
 
@@ -71,123 +71,131 @@ export const adaptiveText: Record<string, AdaptiveTokenValue> = {
 export const adaptiveSurface: Record<string, AdaptiveTokenValue> = {
   page: {
     light: "color-white",
-    dark: "color-gray-950",
+    dark: "color-neutral-950",
   },
   card: {
     light: "color-white",
-    dark: "color-gray-900",
+    dark: "color-neutral-900",
   },
   subtle: {
-    light: "color-gray-50",
-    dark: "color-gray-800",
+    light: "color-neutral-50",
+    dark: "color-neutral-800",
   },
   muted: {
-    light: "color-gray-100",
-    dark: "color-gray-700",
+    light: "color-neutral-100",
+    dark: "color-neutral-700",
   },
   overlay: {
-    light: "color-gray-900",
-    dark: "color-gray-950",
+    light: "color-neutral-900",
+    dark: "color-neutral-950",
+  },
+  popover: {
+    light: "color-white",
+    dark: "color-neutral-900",
   },
   "interactive-default": {
     light: "color-white",
-    dark: "color-gray-800",
+    dark: "color-neutral-800",
   },
   "interactive-hover": {
-    light: "color-gray-50",
-    dark: "color-gray-700",
+    light: "color-neutral-50",
+    dark: "color-neutral-700",
   },
   "interactive-active": {
-    light: "color-gray-100",
-    dark: "color-gray-600",
+    light: "color-neutral-100",
+    dark: "color-neutral-600",
   },
   "interactive-disabled": {
-    light: "color-gray-50",
-    dark: "color-gray-800",
+    light: "color-neutral-50",
+    dark: "color-neutral-800",
   },
   "accent-subtle": {
-    light: "color-blue-50",
-    dark: "color-blue-900",
+    light: "color-primary-50",
+    dark: "color-primary-900",
   },
   "accent-default": {
-    light: "color-blue-500",
-    dark: "color-blue-500",
+    light: "color-primary-500",
+    dark: "color-primary-500",
   },
   "accent-strong": {
-    light: "color-blue-600",
-    dark: "color-blue-400",
+    light: "color-primary-600",
+    dark: "color-primary-400",
   },
   "success-subtle": {
-    light: "color-green-50",
-    dark: "color-green-900",
+    light: "color-success-50",
+    dark: "color-success-900",
   },
   "success-default": {
-    light: "color-green-500",
-    dark: "color-green-500",
+    light: "color-success-500",
+    dark: "color-success-500",
   },
   "warning-subtle": {
-    light: "color-amber-50",
-    dark: "color-amber-900",
+    light: "color-warning-50",
+    dark: "color-warning-900",
   },
   "warning-default": {
-    light: "color-amber-500",
-    dark: "color-amber-500",
+    light: "color-warning-500",
+    dark: "color-warning-500",
   },
   "error-subtle": {
-    light: "color-red-50",
-    dark: "color-red-900",
+    light: "color-error-50",
+    dark: "color-error-900",
   },
   "error-default": {
-    light: "color-red-500",
-    dark: "color-red-500",
+    light: "color-error-500",
+    dark: "color-error-500",
   },
   "info-subtle": {
-    light: "color-sky-50",
-    dark: "color-sky-900",
+    light: "color-info-50",
+    dark: "color-info-900",
   },
   "info-default": {
-    light: "color-sky-500",
-    dark: "color-sky-500",
+    light: "color-info-500",
+    dark: "color-info-500",
   },
 };
 
 /** Adaptive border tokens */
 export const adaptiveBorder: Record<string, AdaptiveTokenValue> = {
   default: {
-    light: "color-gray-200",
-    dark: "color-gray-700",
+    light: "color-neutral-200",
+    dark: "color-neutral-700",
   },
   muted: {
-    light: "color-gray-100",
-    dark: "color-gray-800",
+    light: "color-neutral-100",
+    dark: "color-neutral-800",
   },
   strong: {
-    light: "color-gray-300",
-    dark: "color-gray-600",
+    light: "color-neutral-300",
+    dark: "color-neutral-600",
   },
   focus: {
-    light: "color-blue-500",
-    dark: "color-blue-400",
+    light: "color-primary-500",
+    dark: "color-primary-400",
   },
   disabled: {
-    light: "color-gray-100",
-    dark: "color-gray-800",
+    light: "color-neutral-100",
+    dark: "color-neutral-800",
+  },
+  input: {
+    light: "color-neutral-200",
+    dark: "color-neutral-700",
   },
   success: {
-    light: "color-green-500",
-    dark: "color-green-500",
+    light: "color-success-500",
+    dark: "color-success-500",
   },
   warning: {
-    light: "color-amber-500",
-    dark: "color-amber-500",
+    light: "color-warning-500",
+    dark: "color-warning-500",
   },
   error: {
-    light: "color-red-500",
-    dark: "color-red-500",
+    light: "color-error-500",
+    dark: "color-error-500",
   },
   info: {
-    light: "color-sky-500",
-    dark: "color-sky-500",
+    light: "color-info-500",
+    dark: "color-info-500",
   },
 };
 
@@ -195,16 +203,16 @@ export const adaptiveBorder: Record<string, AdaptiveTokenValue> = {
 export const adaptiveInteractive: Record<string, AdaptiveTokenValue> = {
   // Primary action
   "primary-bg": {
-    light: "color-blue-600",
-    dark: "color-blue-500",
+    light: "color-primary-600",
+    dark: "color-primary-500",
   },
   "primary-bg-hover": {
-    light: "color-blue-700",
-    dark: "color-blue-400",
+    light: "color-primary-700",
+    dark: "color-primary-400",
   },
   "primary-bg-active": {
-    light: "color-blue-800",
-    dark: "color-blue-300",
+    light: "color-primary-800",
+    dark: "color-primary-300",
   },
   "primary-text": {
     light: "color-white",
@@ -214,33 +222,33 @@ export const adaptiveInteractive: Record<string, AdaptiveTokenValue> = {
   // Secondary action
   "secondary-bg": {
     light: "color-white",
-    dark: "color-gray-800",
+    dark: "color-neutral-800",
   },
   "secondary-bg-hover": {
-    light: "color-gray-50",
-    dark: "color-gray-700",
+    light: "color-neutral-50",
+    dark: "color-neutral-700",
   },
   "secondary-bg-active": {
-    light: "color-gray-100",
-    dark: "color-gray-600",
+    light: "color-neutral-100",
+    dark: "color-neutral-600",
   },
   "secondary-text": {
-    light: "color-gray-900",
-    dark: "color-gray-50",
+    light: "color-neutral-900",
+    dark: "color-neutral-50",
   },
   "secondary-border": {
-    light: "color-gray-300",
-    dark: "color-gray-600",
+    light: "color-neutral-300",
+    dark: "color-neutral-600",
   },
 
   // Destructive action
   "destructive-bg": {
-    light: "color-red-600",
-    dark: "color-red-500",
+    light: "color-error-600",
+    dark: "color-error-500",
   },
   "destructive-bg-hover": {
-    light: "color-red-700",
-    dark: "color-red-600",
+    light: "color-error-700",
+    dark: "color-error-600",
   },
   "destructive-text": {
     light: "color-white",
@@ -250,10 +258,74 @@ export const adaptiveInteractive: Record<string, AdaptiveTokenValue> = {
   // Ghost action
   "ghost-bg": {
     light: "color-white",
-    dark: "color-gray-800",
+    dark: "color-neutral-800",
   },
   "ghost-bg-hover": {
-    light: "color-gray-100",
-    dark: "color-gray-700",
+    light: "color-neutral-100",
+    dark: "color-neutral-700",
+  },
+};
+
+/** Adaptive chart tokens — maps to shadcn --chart-* (VI-127) */
+export const adaptiveChart: Record<string, AdaptiveTokenValue> = {
+  "1": {
+    light: "color-primary-500",
+    dark: "color-primary-400",
+  },
+  "2": {
+    light: "color-success-500",
+    dark: "color-success-500",
+  },
+  "3": {
+    light: "color-warning-500",
+    dark: "color-warning-500",
+  },
+  "4": {
+    light: "color-info-500",
+    dark: "color-info-500",
+  },
+  "5": {
+    light: "color-error-500",
+    dark: "color-error-500",
+  },
+};
+
+/** Adaptive sidebar tokens — maps to shadcn --sidebar-* (VI-127) */
+export const adaptiveSidebar: Record<string, AdaptiveTokenValue> = {
+  bg: {
+    light: "color-neutral-50",
+    dark: "color-neutral-900",
+  },
+  text: {
+    light: "color-neutral-700",
+    dark: "color-neutral-300",
+  },
+  "primary-bg": {
+    light: "color-primary-600",
+    dark: "color-primary-500",
+  },
+  "primary-text": {
+    light: "color-white",
+    dark: "color-white",
+  },
+  "accent-bg": {
+    light: "color-neutral-100",
+    dark: "color-neutral-800",
+  },
+  "accent-text": {
+    light: "color-neutral-900",
+    dark: "color-neutral-50",
+  },
+  border: {
+    light: "color-neutral-200",
+    dark: "color-neutral-700",
+  },
+  ring: {
+    light: "color-primary-500",
+    dark: "color-primary-400",
+  },
+  "text-muted": {
+    light: "color-neutral-500",
+    dark: "color-neutral-400",
   },
 };

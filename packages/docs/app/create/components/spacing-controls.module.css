@@ -66,7 +66,7 @@
   flex: 1;
   min-width: 0;
   border-radius: var(--radius-sm, 0.25rem);
-  background: var(--color-primary-500, #6366f1);
+  background: var(--surface-accent-default);
   transition: height 150ms ease;
 }
 
