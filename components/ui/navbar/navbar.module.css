@@ -11,7 +11,7 @@
 /* Variant: default */
 .variantDefault {
   background-color: var(--surface-card, #ffffff);
-  border-bottom: 1px solid var(--border-default, #e5e7eb);
+  box-shadow: var(--shadow-md);
 }
 
 /* Variant: transparent */
@@ -22,8 +22,8 @@
 /* Variant: bordered */
 .variantBordered {
   background-color: var(--surface-card, #ffffff);
-  border: 1px solid var(--border-default, #e5e7eb);
   border-radius: var(--radius-lg, 0.5rem);
+  box-shadow: var(--shadow-md);
 }
 
 /* Brand slot */

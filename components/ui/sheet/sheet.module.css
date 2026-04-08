@@ -31,7 +31,6 @@
   inset-inline: 0;
   top: 0;
   height: auto;
-  border-bottom: 1px solid var(--border-default, #e5e7eb);
   max-height: 80vh;
 }
 
@@ -49,7 +48,6 @@
   height: 100%;
   width: 75%;
   max-width: 24rem;
-  border-left: 1px solid var(--border-default, #e5e7eb);
 }
 
 .sideRight[data-state="open"] {
@@ -64,7 +62,6 @@
   inset-inline: 0;
   bottom: 0;
   height: auto;
-  border-top: 1px solid var(--border-default, #e5e7eb);
   max-height: 80vh;
 }
 
@@ -82,7 +79,6 @@
   height: 100%;
   width: 75%;
   max-width: 24rem;
-  border-right: 1px solid var(--border-default, #e5e7eb);
 }
 
 .sideLeft[data-state="open"] {

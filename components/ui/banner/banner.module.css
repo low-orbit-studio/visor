@@ -7,6 +7,7 @@
   padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
   font-size: var(--font-size-sm, 0.875rem);
   border-bottom: 1px solid;
+  box-shadow: var(--shadow-sm);
 }
 
 /* Intent variants */

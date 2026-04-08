@@ -71,10 +71,9 @@
   min-width: 9rem;
   overflow: hidden;
   border-radius: var(--radius-lg, 0.5rem);
-  border: 1px solid var(--border-default, #e5e7eb);
   background-color: var(--surface-card, #ffffff);
   color: var(--text-primary, #111827);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Select Viewport */
