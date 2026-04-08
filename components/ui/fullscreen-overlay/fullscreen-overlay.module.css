@@ -68,9 +68,11 @@
               border-color var(--motion-duration-fast, 150ms) var(--motion-easing-default, ease);
 }
 
-.close:hover {
-  background-color: var(--surface-hover, #f3f4f6);
-  border-color: var(--border-strong, #d1d5db);
+@media (hover: hover) {
+  .close:hover {
+    background-color: var(--surface-hover, #f3f4f6);
+    border-color: var(--border-strong, #d1d5db);
+  }
 }
 
 .close:focus-visible {

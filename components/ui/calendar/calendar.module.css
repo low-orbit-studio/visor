@@ -54,9 +54,11 @@
     var(--motion-easing-default, ease);
 }
 
-.navButton:hover {
-  background-color: var(--surface-muted, #f3f4f6);
-  color: var(--text-primary, #111827);
+@media (hover: hover) {
+  .navButton:hover {
+    background-color: var(--surface-muted, #f3f4f6);
+    color: var(--text-primary, #111827);
+  }
 }
 
 .navButton:focus-visible {
@@ -121,8 +123,10 @@
     var(--motion-easing-default, ease);
 }
 
-.dayButton:hover {
-  background-color: var(--surface-muted, #f3f4f6);
+@media (hover: hover) {
+  .dayButton:hover {
+    background-color: var(--surface-muted, #f3f4f6);
+  }
 }
 
 .dayButton:focus-visible {
@@ -136,8 +140,10 @@
   color: var(--text-inverse, #ffffff);
 }
 
-.selected .dayButton:hover {
-  background-color: var(--interactive-primary-bg-hover, #2563eb);
+@media (hover: hover) {
+  .selected .dayButton:hover {
+    background-color: var(--interactive-primary-bg-hover, #2563eb);
+  }
 }
 
 /* Today */

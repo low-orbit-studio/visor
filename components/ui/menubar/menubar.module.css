@@ -25,11 +25,17 @@
     color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out);
 }
 
-.trigger:hover,
 .trigger:focus,
 .trigger[data-state="open"] {
   background-color: var(--surface-interactive-hover, #f3f4f6);
   color: var(--text-primary, #111827);
+}
+
+@media (hover: hover) {
+  .trigger:hover {
+    background-color: var(--surface-interactive-hover, #f3f4f6);
+    color: var(--text-primary, #111827);
+  }
 }
 
 .trigger:focus-visible {

@@ -17,6 +17,12 @@
   cursor: pointer;
 }
 
+@media (hover: hover) {
+  .trigger:hover:not(:focus-visible):not(:disabled):not([aria-invalid="true"]) {
+    border-color: var(--border-strong, #d1d5db);
+  }
+}
+
 .trigger:focus-visible {
   border-color: var(--border-focus, #111827);
   box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);

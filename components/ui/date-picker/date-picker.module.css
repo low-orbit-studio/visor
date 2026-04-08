@@ -16,8 +16,10 @@
   white-space: nowrap;
 }
 
-.trigger:hover:not(.disabled) {
-  border-color: var(--border-hover, #d1d5db);
+@media (hover: hover) {
+  .trigger:hover:not(.disabled) {
+    border-color: var(--border-strong, #d1d5db);
+  }
 }
 
 .trigger:focus-visible {

@@ -15,6 +15,12 @@
     box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
+@media (hover: hover) {
+  .wrapper:hover:not(.wrapperFocused):not(.wrapperDisabled) {
+    border-color: var(--border-strong, #d1d5db);
+  }
+}
+
 .wrapperFocused {
   border-color: var(--border-focus, #111827);
   box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
@@ -59,8 +65,10 @@
   transition: color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
-.tagRemove:hover {
-  color: var(--text-primary, #111827);
+@media (hover: hover) {
+  .tagRemove:hover {
+    color: var(--text-primary, #111827);
+  }
 }
 
 .tagRemove svg {

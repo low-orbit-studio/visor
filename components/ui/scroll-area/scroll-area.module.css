@@ -51,6 +51,8 @@
   transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
-.thumb:hover {
-  background-color: var(--border-strong, #d1d5db);
+@media (hover: hover) {
+  .thumb:hover {
+    background-color: var(--border-strong, #d1d5db);
+  }
 }
