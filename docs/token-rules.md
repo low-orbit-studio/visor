@@ -1,6 +1,8 @@
 # Token Rules & Theme Contract
 
 > Prescriptive rules for authoring components and themes in Visor. Every component and theme must comply with these rules. No exceptions unless explicitly noted.
+>
+> **shadcn/ui v4 compatibility:** Visor's token system covers all 31 shadcn/ui v4 tokens — text, surface, border, interactive, chart (1-5), and sidebar. Consumers porting shadcn components find a 1:1 token mapping. `--sidebar-text-muted` is a Visor extension not present in shadcn.
 
 ## Token Rules
 
@@ -19,21 +21,21 @@ color: var(--text-primary, #0f172a);
 border-color: var(--border-default, #e2e8f0);
 ```
 
-Reference values:
+Reference values (primitive token names use role-based naming — `neutral-*`, `primary-*`, `success-*`, `warning-*`, `error-*`, `info-*`):
 
-| Token | Gray Hex |
+| Token | Hex |
 |-------|----------|
-| gray-50 | `#f9fafb` |
-| gray-100 | `#f3f4f6` |
-| gray-200 | `#e5e7eb` |
-| gray-300 | `#d1d5db` |
-| gray-400 | `#9ca3af` |
-| gray-500 | `#6b7280` |
-| gray-600 | `#4b5563` |
-| gray-700 | `#374151` |
-| gray-800 | `#1f2937` |
-| gray-900 | `#111827` |
-| gray-950 | `#030712` |
+| neutral-50 | `#f9fafb` |
+| neutral-100 | `#f3f4f6` |
+| neutral-200 | `#e5e7eb` |
+| neutral-300 | `#d1d5db` |
+| neutral-400 | `#9ca3af` |
+| neutral-500 | `#6b7280` |
+| neutral-600 | `#4b5563` |
+| neutral-700 | `#374151` |
+| neutral-800 | `#1f2937` |
+| neutral-900 | `#111827` |
+| neutral-950 | `#030712` |
 
 ### 2. Shadow Rule
 
@@ -310,26 +312,52 @@ A theme **may** override these tokens. They have sensible defaults from visor-co
 
 | Token | Default source |
 |-------|---------------|
-| `--surface-accent-subtle` | blue-50 / blue-900 |
-| `--surface-accent-default` | blue-500 |
-| `--surface-accent-strong` | blue-600 / blue-400 |
-| `--surface-success-subtle` | green-50 / green-900 |
-| `--surface-success-default` | green-500 |
-| `--surface-warning-subtle` | amber-50 / amber-900 |
-| `--surface-warning-default` | amber-500 |
-| `--surface-error-subtle` | red-50 / red-900 |
-| `--surface-error-default` | red-500 |
-| `--surface-info-subtle` | sky-50 / sky-900 |
-| `--surface-info-default` | sky-500 |
+| `--surface-accent-subtle` | primary-50 / primary-900 |
+| `--surface-accent-default` | primary-500 |
+| `--surface-accent-strong` | primary-600 / primary-400 |
+| `--surface-popover` | white / neutral-900 |
+| `--surface-success-subtle` | success-50 / success-900 |
+| `--surface-success-default` | success-500 |
+| `--surface-warning-subtle` | warning-50 / warning-900 |
+| `--surface-warning-default` | warning-500 |
+| `--surface-error-subtle` | error-50 / error-900 |
+| `--surface-error-default` | error-500 |
+| `--surface-info-subtle` | info-50 / info-900 |
+| `--surface-info-default` | info-500 |
 
 **Status borders:**
 
 | Token | Default source |
 |-------|---------------|
-| `--border-success` | green-500 |
-| `--border-warning` | amber-500 |
-| `--border-error` | red-500 |
-| `--border-info` | sky-500 |
+| `--border-input` | neutral-200 / neutral-700 |
+| `--border-success` | success-500 |
+| `--border-warning` | warning-500 |
+| `--border-error` | error-500 |
+| `--border-info` | info-500 |
+
+**Chart tokens:**
+
+| Token | Default source |
+|-------|---------------|
+| `--chart-1` | primary-500 / primary-400 |
+| `--chart-2` | success-500 / success-400 |
+| `--chart-3` | warning-500 / warning-400 |
+| `--chart-4` | info-500 / info-400 |
+| `--chart-5` | error-500 / error-400 |
+
+**Sidebar tokens:**
+
+| Token | Default source |
+|-------|---------------|
+| `--sidebar-bg` | neutral-50 / neutral-900 |
+| `--sidebar-text` | neutral-700 / neutral-300 |
+| `--sidebar-primary-bg` | primary-600 / primary-500 |
+| `--sidebar-primary-text` | white / white |
+| `--sidebar-accent-bg` | neutral-100 / neutral-800 |
+| `--sidebar-accent-text` | neutral-900 / neutral-50 |
+| `--sidebar-border` | neutral-200 / neutral-700 |
+| `--sidebar-ring` | primary-500 / primary-400 |
+| `--sidebar-text-muted` | neutral-500 / neutral-400 (Visor extension) |
 
 ### Extension Tokens (Namespaced)
 

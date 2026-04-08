@@ -42,6 +42,8 @@ import {
   semanticFocusRing,
   semanticMotionDuration,
   semanticMotionEasing,
+  semanticChart,
+  semanticSidebar,
 } from "../tokens/semantic.js";
 
 import {
@@ -49,6 +51,8 @@ import {
   adaptiveSurface,
   adaptiveBorder,
   adaptiveInteractive,
+  adaptiveChart,
+  adaptiveSidebar,
 } from "../tokens/adaptive.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -308,6 +312,22 @@ function generateSemanticCSS(): string {
   }
   lines.push(block(":root", focusRingSemanticDecls));
 
+  // Chart
+  lines.push(sectionComment("Semantic: Chart"));
+  const chartDecls: string[] = [];
+  for (const [name, ref] of Object.entries(semanticChart)) {
+    chartDecls.push(`--chart-${name}: ${toVar(ref)};`);
+  }
+  lines.push(block(":root", chartDecls));
+
+  // Sidebar
+  lines.push(sectionComment("Semantic: Sidebar"));
+  const sidebarDecls: string[] = [];
+  for (const [name, ref] of Object.entries(semanticSidebar)) {
+    sidebarDecls.push(`--sidebar-${name}: ${toVar(ref)};`);
+  }
+  lines.push(block(":root", sidebarDecls));
+
   return header("Visor Design Tokens — Semantic") + lines.join("\n");
 }
 
@@ -321,6 +341,8 @@ function buildAdaptiveDecls(theme: "light" | "dark"): {
   surfaceDecls: string[];
   borderDecls: string[];
   interactiveDecls: string[];
+  chartDecls: string[];
+  sidebarDecls: string[];
 } {
   const textDecls: string[] = [];
   for (const [name, values] of Object.entries(adaptiveText)) {
@@ -342,13 +364,23 @@ function buildAdaptiveDecls(theme: "light" | "dark"): {
     interactiveDecls.push(`--interactive-${name}: ${toVar(values[theme])};`);
   }
 
-  return { textDecls, surfaceDecls, borderDecls, interactiveDecls };
+  const chartDecls: string[] = [];
+  for (const [name, values] of Object.entries(adaptiveChart)) {
+    chartDecls.push(`--chart-${name}: ${toVar(values[theme])};`);
+  }
+
+  const sidebarDecls: string[] = [];
+  for (const [name, values] of Object.entries(adaptiveSidebar)) {
+    sidebarDecls.push(`--sidebar-${name}: ${toVar(values[theme])};`);
+  }
+
+  return { textDecls, surfaceDecls, borderDecls, interactiveDecls, chartDecls, sidebarDecls };
 }
 
 function generateThemeCSS(theme: "light" | "dark"): string {
   const themeLabel = theme === "light" ? "Light Theme" : "Dark Theme";
   const lines: string[] = [];
-  const { textDecls, surfaceDecls, borderDecls, interactiveDecls } = buildAdaptiveDecls(theme);
+  const { textDecls, surfaceDecls, borderDecls, interactiveDecls, chartDecls, sidebarDecls } = buildAdaptiveDecls(theme);
 
   if (theme === "light") {
     // Light theme: applied to :root (default)
@@ -363,6 +395,12 @@ function generateThemeCSS(theme: "light" | "dark"): string {
 
     lines.push(sectionComment("Adaptive: Interactive (light)"));
     lines.push(block(":root", interactiveDecls));
+
+    lines.push(sectionComment("Adaptive: Chart (light)"));
+    lines.push(block(":root", chartDecls));
+
+    lines.push(sectionComment("Adaptive: Sidebar (light)"));
+    lines.push(block(":root", sidebarDecls));
   } else {
     // Dark theme: applied to manual selectors
     const darkSelectors = [
@@ -384,29 +422,37 @@ function generateThemeCSS(theme: "light" | "dark"): string {
     lines.push(sectionComment("Adaptive: Interactive (dark) — manual toggle"));
     lines.push(block(darkSelector, interactiveDecls));
 
+    lines.push(sectionComment("Adaptive: Chart (dark) — manual toggle"));
+    lines.push(block(darkSelector, chartDecls));
+
+    lines.push(sectionComment("Adaptive: Sidebar (dark) — manual toggle"));
+    lines.push(block(darkSelector, sidebarDecls));
+
     // prefers-color-scheme: dark — auto detection
+    const mediaRoot = ":root:not(.light):not(.theme-light):not([data-theme=\"light\"])";
+
     lines.push(sectionComment("Adaptive: Text (dark) — prefers-color-scheme"));
-    lines.push(
-      `@media (prefers-color-scheme: dark) {\n${block(":root:not(.light):not(.theme-light):not([data-theme=\"light\"])", textDecls)}}`
-    );
+    lines.push(`@media (prefers-color-scheme: dark) {\n${block(mediaRoot, textDecls)}}`);
     lines.push("");
 
     lines.push(sectionComment("Adaptive: Surface (dark) — prefers-color-scheme"));
-    lines.push(
-      `@media (prefers-color-scheme: dark) {\n${block(":root:not(.light):not(.theme-light):not([data-theme=\"light\"])", surfaceDecls)}}`
-    );
+    lines.push(`@media (prefers-color-scheme: dark) {\n${block(mediaRoot, surfaceDecls)}}`);
     lines.push("");
 
     lines.push(sectionComment("Adaptive: Border (dark) — prefers-color-scheme"));
-    lines.push(
-      `@media (prefers-color-scheme: dark) {\n${block(":root:not(.light):not(.theme-light):not([data-theme=\"light\"])", borderDecls)}}`
-    );
+    lines.push(`@media (prefers-color-scheme: dark) {\n${block(mediaRoot, borderDecls)}}`);
     lines.push("");
 
     lines.push(sectionComment("Adaptive: Interactive (dark) — prefers-color-scheme"));
-    lines.push(
-      `@media (prefers-color-scheme: dark) {\n${block(":root:not(.light):not(.theme-light):not([data-theme=\"light\"])", interactiveDecls)}}`
-    );
+    lines.push(`@media (prefers-color-scheme: dark) {\n${block(mediaRoot, interactiveDecls)}}`);
+    lines.push("");
+
+    lines.push(sectionComment("Adaptive: Chart (dark) — prefers-color-scheme"));
+    lines.push(`@media (prefers-color-scheme: dark) {\n${block(mediaRoot, chartDecls)}}`);
+    lines.push("");
+
+    lines.push(sectionComment("Adaptive: Sidebar (dark) — prefers-color-scheme"));
+    lines.push(`@media (prefers-color-scheme: dark) {\n${block(mediaRoot, sidebarDecls)}}`);
     lines.push("");
   }
 
@@ -554,6 +600,18 @@ function main(): void {
   );
   console.log(
     `  Adaptive interactive: ${Object.keys(adaptiveInteractive).length} (light + dark)`
+  );
+  console.log(
+    `  Semantic chart: ${Object.keys(semanticChart).length}`
+  );
+  console.log(
+    `  Semantic sidebar: ${Object.keys(semanticSidebar).length}`
+  );
+  console.log(
+    `  Adaptive chart: ${Object.keys(adaptiveChart).length} (light + dark)`
+  );
+  console.log(
+    `  Adaptive sidebar: ${Object.keys(adaptiveSidebar).length} (light + dark)`
   );
 
   console.log("\n✓ Token generation complete");
