@@ -3,6 +3,9 @@
   position: relative;
   width: 100%;
   overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: var(--radius-lg, 0.5rem);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Table */

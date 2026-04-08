@@ -24,10 +24,9 @@
   max-width: 32rem;
   transform: translate(-50%, -50%);
   border-radius: var(--radius-lg, 0.5rem);
-  border: 1px solid var(--border-default, #e5e7eb);
   background-color: var(--surface-page, #ffffff);
   padding: var(--spacing-6, 1.5rem);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-xl);
   transition: opacity var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease-in-out), transform var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease-in-out);
 }
 

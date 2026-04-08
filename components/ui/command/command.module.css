@@ -6,6 +6,7 @@
   border-radius: var(--radius-lg, 0.5rem);
   background-color: var(--surface-card, #ffffff);
   color: var(--text-primary, #111827);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Dialog overrides */
@@ -19,8 +20,9 @@
   display: none;
 }
 
+/* When command is nested inside dialog, suppress its own shadow — dialog provides elevation */
 .dialogCommand {
-  /* Inherits dialog content border-radius */
+  box-shadow: none;
 }
 
 /* Input wrapper */
