@@ -48,6 +48,12 @@
   cursor: grab;
 }
 
+@media (hover: hover) {
+  .thumb:hover:not(:focus-visible) {
+    border-color: var(--interactive-primary-bg-hover, #1d4ed8);
+  }
+}
+
 .thumb:active {
   cursor: grabbing;
 }

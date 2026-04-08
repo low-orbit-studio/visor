@@ -30,8 +30,21 @@
   transition: color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
-.link:hover {
-  color: var(--text-primary, #111827);
+.link:active {
+  transform: translateY(1px);
+  transition: none;
+}
+
+.link:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+@media (hover: hover) {
+  .link:hover {
+    color: var(--text-primary, #111827);
+  }
 }
 
 /* Breadcrumb page (current) */

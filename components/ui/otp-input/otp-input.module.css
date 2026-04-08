@@ -24,6 +24,12 @@
   color: var(--text-secondary, #9ca3af);
 }
 
+@media (hover: hover) {
+  .cell:hover:not(:focus-visible):not(:disabled) {
+    border-color: var(--border-strong, #d1d5db);
+  }
+}
+
 .cell:focus-visible {
   border-color: var(--border-focus, #111827);
   box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);

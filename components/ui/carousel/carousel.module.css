@@ -59,8 +59,10 @@
               color var(--motion-duration-fast, 150ms) var(--motion-easing-default, ease);
 }
 
-.navButton:hover:not(:disabled) {
-  background-color: var(--surface-muted, #f3f4f6);
+@media (hover: hover) {
+  .navButton:hover:not(:disabled) {
+    background-color: var(--surface-muted, #f3f4f6);
+  }
 }
 
 .navButton:focus-visible {

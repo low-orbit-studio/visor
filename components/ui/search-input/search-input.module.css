@@ -45,8 +45,10 @@
   transition: color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
-.clearButton:hover {
-  color: var(--text-primary, #111827);
+@media (hover: hover) {
+  .clearButton:hover {
+    color: var(--text-primary, #111827);
+  }
 }
 
 .clearButton:focus-visible {

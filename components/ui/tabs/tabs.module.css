@@ -46,14 +46,21 @@
   color: var(--text-secondary, #6b7280);
   background: transparent;
   cursor: pointer;
-  transition: color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+  transition: color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), transform var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
   outline: none;
   flex: 1;
   height: calc(100% - 2px);
 }
 
-.trigger:hover {
-  color: var(--text-primary, #111827);
+.trigger:active:not(:disabled) {
+  transform: translateY(1px);
+  transition: none;
+}
+
+@media (hover: hover) {
+  .trigger:hover {
+    color: var(--text-primary, #111827);
+  }
 }
 
 .trigger:focus-visible {

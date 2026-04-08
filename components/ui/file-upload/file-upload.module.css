@@ -16,9 +16,11 @@
               background-color var(--motion-duration-fast, 150ms) var(--motion-easing-default, ease);
 }
 
-.root:hover:not(.disabled) {
-  border-color: var(--border-hover, #d1d5db);
-  background-color: var(--surface-muted, #f3f4f6);
+@media (hover: hover) {
+  .root:hover:not(.disabled) {
+    border-color: var(--border-strong, #d1d5db);
+    background-color: var(--surface-muted, #f3f4f6);
+  }
 }
 
 .root:focus-visible {

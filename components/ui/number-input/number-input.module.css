@@ -10,6 +10,13 @@
     box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
+@media (hover: hover) {
+  .button:hover {
+    color: var(--text-primary, #111827);
+    background-color: var(--surface-muted, #f3f4f6);
+  }
+}
+
 .wrapper:focus-within {
   border-color: var(--border-focus, #111827);
   box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
@@ -37,13 +44,14 @@
     background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
-.button:hover {
-  color: var(--text-primary, #111827);
-  background-color: var(--surface-muted, #f3f4f6);
-}
-
 .button:active {
   background-color: var(--surface-interactive-hover, #e5e7eb);
+  transition: none;
+}
+
+.button:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, -2px);
 }
 
 .button:disabled {

@@ -29,13 +29,20 @@
   border: none;
   cursor: pointer;
   text-align: left;
-  transition: color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+  transition: color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), transform var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
   outline: none;
   width: 100%;
 }
 
-.trigger:hover {
-  color: var(--text-secondary, #6b7280);
+.trigger:active {
+  transform: translateY(1px);
+  transition: none;
+}
+
+@media (hover: hover) {
+  .trigger:hover {
+    color: var(--text-secondary, #6b7280);
+  }
 }
 
 .trigger:focus-visible {

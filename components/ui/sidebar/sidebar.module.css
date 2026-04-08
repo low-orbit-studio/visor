@@ -99,8 +99,15 @@
   transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
-.trigger:hover {
-  background-color: var(--surface-muted, #f3f4f6);
+.trigger:active {
+  transform: translateY(1px);
+  transition: none;
+}
+
+@media (hover: hover) {
+  .trigger:hover {
+    background-color: var(--surface-muted, #f3f4f6);
+  }
 }
 
 .trigger:focus-visible {
@@ -120,8 +127,10 @@
   transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
-.rail:hover {
-  background-color: var(--sidebar-border);
+@media (hover: hover) {
+  .rail:hover {
+    background-color: var(--sidebar-border);
+  }
 }
 
 /* Inset main content area */
@@ -212,9 +221,16 @@
   transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
-.groupAction:hover {
-  background-color: var(--sidebar-accent-bg);
-  color: var(--sidebar-accent-text);
+.groupAction:active {
+  transform: translateY(1px);
+  transition: none;
+}
+
+@media (hover: hover) {
+  .groupAction:hover {
+    background-color: var(--sidebar-accent-bg);
+    color: var(--sidebar-accent-text);
+  }
 }
 
 /* Group content */
@@ -275,9 +291,16 @@
 }
 
 /* Menu button variants */
-.menuButtonDefault:hover {
-  background-color: var(--sidebar-accent-bg);
-  color: var(--sidebar-accent-text);
+.menuButton:active:not(:disabled) {
+  transform: translateY(1px);
+  transition: none;
+}
+
+@media (hover: hover) {
+  .menuButtonDefault:hover {
+    background-color: var(--sidebar-accent-bg);
+    color: var(--sidebar-accent-text);
+  }
 }
 
 .menuButtonOutline {
@@ -285,9 +308,11 @@
   box-shadow: inset 0 0 0 1px var(--sidebar-border);
 }
 
-.menuButtonOutline:hover {
-  background-color: var(--sidebar-accent-bg);
-  color: var(--sidebar-accent-text);
+@media (hover: hover) {
+  .menuButtonOutline:hover {
+    background-color: var(--sidebar-accent-bg);
+    color: var(--sidebar-accent-text);
+  }
 }
 
 /* Menu button sizes */
@@ -328,16 +353,28 @@
   transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
-.menuAction:hover {
-  background-color: var(--sidebar-accent-bg);
-  color: var(--sidebar-accent-text);
+.menuAction:active {
+  transform: translateY(1px);
+  transition: none;
+}
+
+@media (hover: hover) {
+  .menuAction:hover {
+    background-color: var(--sidebar-accent-bg);
+    color: var(--sidebar-accent-text);
+  }
 }
 
 .menuActionHover {
   opacity: 0;
 }
 
-.menuItem:hover .menuActionHover,
+@media (hover: hover) {
+  .menuItem:hover .menuActionHover {
+    opacity: 1;
+  }
+}
+
 .menuItem:focus-within .menuActionHover {
   opacity: 1;
 }
@@ -398,9 +435,16 @@
   outline: none;
 }
 
-.menuSubButton:hover {
-  background-color: var(--sidebar-accent-bg);
-  color: var(--sidebar-accent-text);
+.menuSubButton:active {
+  transform: translateY(1px);
+  transition: none;
+}
+
+@media (hover: hover) {
+  .menuSubButton:hover {
+    background-color: var(--sidebar-accent-bg);
+    color: var(--sidebar-accent-text);
+  }
 }
 
 .menuSubButton:focus-visible {

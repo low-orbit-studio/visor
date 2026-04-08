@@ -32,6 +32,12 @@
   color: var(--text-secondary, #9ca3af);
 }
 
+@media (hover: hover) {
+  .input:hover:not(:focus-visible):not(:disabled) {
+    border-color: var(--border-strong, #d1d5db);
+  }
+}
+
 .input:focus-visible {
   border-color: var(--border-focus, #111827);
   box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
@@ -93,10 +99,16 @@
   user-select: none;
 }
 
-.item:hover:not([data-disabled]),
 .item:focus:not([data-disabled]) {
   background-color: var(--surface-interactive-hover, #f3f4f6);
   cursor: pointer;
+}
+
+@media (hover: hover) {
+  .item:hover:not([data-disabled]) {
+    background-color: var(--surface-interactive-hover, #f3f4f6);
+    cursor: pointer;
+  }
 }
 
 .item[data-disabled] {

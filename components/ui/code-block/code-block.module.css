@@ -40,9 +40,11 @@
     background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
-.copyButton:hover {
-  background-color: var(--surface-interactive-hover, rgba(0, 0, 0, 0.05));
-  color: var(--text-primary, #111827);
+@media (hover: hover) {
+  .copyButton:hover {
+    background-color: var(--surface-interactive-hover, rgba(0, 0, 0, 0.05));
+    color: var(--text-primary, #111827);
+  }
 }
 
 .copyButton:focus-visible {

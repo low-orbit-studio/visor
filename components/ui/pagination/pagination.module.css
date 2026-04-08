@@ -37,11 +37,19 @@
   cursor: pointer;
   user-select: none;
   transition: background-color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out),
-    color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out);
+    color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out),
+    transform var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out);
 }
 
-.link:hover {
-  background-color: var(--surface-interactive-hover, #f3f4f6);
+.link:active:not(.linkActive) {
+  transform: translateY(1px);
+  transition: none;
+}
+
+@media (hover: hover) {
+  .link:hover {
+    background-color: var(--surface-interactive-hover, #f3f4f6);
+  }
 }
 
 .link:focus-visible {
