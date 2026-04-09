@@ -10,6 +10,9 @@ import { noHardcodedMotion } from './rules/no-hardcoded-motion.js';
 import { noHardcodedOverlay } from './rules/no-hardcoded-overlay.js';
 import { focusRingTokens } from './rules/focus-ring-tokens.js';
 import { themeStructure } from './rules/theme-structure.js';
+import { themePrimaryScale } from './rules/theme-primary-scale.js';
+import { themeYamlExists } from './rules/theme-yaml-exists.js';
+import { themeYamlValid } from './rules/theme-yaml-valid.js';
 import { noHardcodedColors } from './rules/no-hardcoded-colors.js';
 import { visorYamlExists } from './rules/visor-yaml-exists.js';
 import { visorYamlComplete } from './rules/visor-yaml-complete.js';
@@ -21,6 +24,7 @@ import { docsHasPropsTable } from './rules/docs-has-props-table.js';
 import { docsHasInstallCommand } from './rules/docs-has-install-command.js';
 import { docsConsistentSections } from './rules/docs-consistent-sections.js';
 import { docsAlphabetized } from './rules/docs-alphabetized.js';
+import { themeFontImports } from './rules/theme-font-imports.js';
 import type { Rule } from './rules/types.js';
 
 const rules: Rule[] = [
@@ -36,6 +40,10 @@ const rules: Rule[] = [
   noHardcodedOverlay,
   focusRingTokens,
   themeStructure,
+  themePrimaryScale,
+  themeFontImports,
+  themeYamlExists,
+  themeYamlValid,
   noHardcodedColors,
   visorYamlExists,
   visorYamlComplete,

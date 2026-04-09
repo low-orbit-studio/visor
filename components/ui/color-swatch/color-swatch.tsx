@@ -1,5 +1,8 @@
+"use client"
+
 import * as React from "react"
 import { cn } from "../../../lib/utils"
+import { toHex, needsLightText } from "../../../lib/color-utils"
 import { Text } from "../text/text"
 import styles from "./color-swatch.module.css"
 
@@ -14,6 +17,10 @@ export interface ColorSwatchProps {
   name: string
   /** When true, hex text renders white instead of dark */
   lightText?: boolean
+  /** Size variant — controls hex text size; passed down from ColorSwatchGrid */
+  size?: "default" | "lg" | "sm"
+  /** When true, reads the live computed CSS value for the hex display instead of the static fallback */
+  dynamic?: boolean
   className?: string
 }
 
@@ -43,6 +50,55 @@ export interface SemanticColorGridProps {
   className?: string
 }
 
+// ─── Hooks ──────────────────────────────────────────────────────────────────
+
+/**
+ * Resolves the live color value of a CSS custom property by applying it as
+ * backgroundColor on a hidden probe div inside document.body (the theme scope),
+ * then reading the fully-resolved getComputedStyle value.
+ *
+ * This mirrors the useLiveFontName pattern and is guaranteed to work regardless
+ * of where the theme class is applied (html vs body vs a child element).
+ */
+function useLiveCssColor(token: string, enabled: boolean): string | null {
+  const [value, setValue] = React.useState<string | null>(null)
+
+  React.useEffect(() => {
+    if (!enabled) return
+
+    const probe = document.createElement("div")
+    Object.assign(probe.style, {
+      position: "absolute",
+      visibility: "hidden",
+      pointerEvents: "none",
+      backgroundColor: `var(${token})`,
+    })
+    document.body.appendChild(probe)
+
+    function read() {
+      // Re-stamp the var so the browser recalculates after a theme class change
+      probe.style.backgroundColor = `var(${token})`
+      const resolved = getComputedStyle(probe).backgroundColor
+      // Skip transparent/unset (means the token isn't defined in this theme)
+      if (resolved && resolved !== "rgba(0, 0, 0, 0)" && resolved !== "transparent") {
+        setValue(toHex(resolved))
+      }
+    }
+
+    read()
+    const obs = new MutationObserver(read)
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme"] })
+    obs.observe(document.body, { attributes: true, attributeFilter: ["class", "data-theme"] })
+
+    return () => {
+      obs.disconnect()
+      probe.remove()
+    }
+  }, [token, enabled])
+
+  return value
+}
+
 // ─── ColorSwatch ────────────────────────────────────────────────────────────
 
 function ColorSwatch({
@@ -50,8 +106,15 @@ function ColorSwatch({
   hex,
   name,
   lightText,
+  size = "default",
+  dynamic,
   className,
 }: ColorSwatchProps) {
+  const liveHex = useLiveCssColor(token, !!dynamic)
+  const displayHex = dynamic && liveHex ? liveHex : hex
+  // Auto-compute text color from live value when dynamic; fall back to prop
+  const useLightText = dynamic && liveHex ? needsLightText(liveHex) : !!lightText
+
   return (
     <div data-slot="color-swatch" className={cn(styles.swatch, className)}>
       <div
@@ -59,10 +122,10 @@ function ColorSwatch({
         style={{ background: `var(${token}, ${hex})` }}
       >
         <span
-          className={styles.hex}
-          style={{ color: lightText ? "#ffffff" : "#111827" }}
+          className={cn(styles.hex, size === "sm" && styles.hexSm)}
+          style={{ color: useLightText ? "#ffffff" : "#111827" }}
         >
-          {hex}
+          {displayHex}
         </span>
       </div>
       <Text size="xs" color="secondary" as="span" className={styles.label}>
@@ -86,7 +149,7 @@ function ColorSwatchGrid({ label, swatches, size = "default", className }: Color
       <Text weight="medium" size="sm" as="div">{label}</Text>
       <div className={gridSizeClass[size]}>
         {swatches.map((swatch) => (
-          <ColorSwatch key={swatch.token} {...swatch} />
+          <ColorSwatch key={swatch.token} {...swatch} size={size} />
         ))}
       </div>
     </div>

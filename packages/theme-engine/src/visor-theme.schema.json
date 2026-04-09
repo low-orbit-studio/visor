@@ -167,6 +167,10 @@
             }
           }
         },
+        "scale": {
+          "type": "number",
+          "description": "Type scale multiplier applied to the font-size ramp. Default: 1."
+        },
         "letter-spacing": {
           "type": "object",
           "description": "Letter spacing scale.",

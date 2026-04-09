@@ -31,7 +31,7 @@ const KNOWN_COLOR_KEYS = new Set([
 ]);
 
 const KNOWN_TYPOGRAPHY_KEYS = new Set([
-  "heading", "display", "body", "mono", "letter-spacing",
+  "heading", "display", "body", "mono", "letter-spacing", "scale",
 ]);
 
 const KNOWN_TYPOGRAPHY_FONT_KEYS = new Set(["family", "weight", "source", "org"]);

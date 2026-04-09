@@ -41,7 +41,7 @@ export function nextjsAdapter(
   // 1. Google Fonts @import + Visor Fonts @font-face (must come before @layer per CSS spec)
   if (includeFontImports && input.config.typography) {
     const fontResult = resolveThemeFonts(input.config.typography);
-    const googleFonts = [fontResult.heading, fontResult.display, fontResult.body].filter(
+    const googleFonts = [fontResult.heading, fontResult.display, fontResult.body, fontResult.mono].filter(
       (r): r is NonNullable<typeof r> => r !== null && r.source === "google-fonts",
     );
 
@@ -67,7 +67,7 @@ export function nextjsAdapter(
     }
 
     // Visor Fonts @font-face declarations (CDN-hosted fonts)
-    const visorFonts = [fontResult.heading, fontResult.display, fontResult.body].filter(
+    const visorFonts = [fontResult.heading, fontResult.display, fontResult.body, fontResult.mono].filter(
       (r): r is NonNullable<typeof r> => r !== null && r.source === "visor-fonts",
     );
     const seenVisorFamilies = new Set<string>();

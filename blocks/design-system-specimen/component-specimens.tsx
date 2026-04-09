@@ -266,19 +266,9 @@ export function FormSpecimenSection({ className }: FormSpecimenSectionProps) {
 
 // ─── Component Showcase ──────────────────────────────────────────────────────
 
-interface ComponentShowcaseSectionProps {
-  className?: string
-}
-
-export function ComponentShowcaseSection({ className }: ComponentShowcaseSectionProps) {
+export function ComponentShowcaseContent() {
   return (
-    <section id="specimen-components" className={cn(styles.section, className)}>
-      <Heading level={3} size="lg">Component Showcase</Heading>
-      <Text color="secondary" size="sm">
-        A selection of Visor components composed together.
-      </Text>
-
-      <div className={styles.showcaseGrid}>
+    <div className={styles.showcaseGrid}>
         {/* Card */}
         <div className={styles.showcaseItem}>
           <Text size="xs" color="tertiary" weight="medium" as="div">Card</Text>
@@ -375,7 +365,22 @@ export function ComponentShowcaseSection({ className }: ComponentShowcaseSection
             <Text size="sm">Content below</Text>
           </div>
         </div>
-      </div>
+    </div>
+  )
+}
+
+interface ComponentShowcaseSectionProps {
+  className?: string
+}
+
+export function ComponentShowcaseSection({ className }: ComponentShowcaseSectionProps) {
+  return (
+    <section id="specimen-components" className={cn(styles.section, className)}>
+      <Heading level={3} size="lg">Component Showcase</Heading>
+      <Text color="secondary" size="sm">
+        A selection of Visor components composed together.
+      </Text>
+      <ComponentShowcaseContent />
     </section>
   )
 }

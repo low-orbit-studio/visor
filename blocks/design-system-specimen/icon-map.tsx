@@ -1,0 +1,38 @@
+import * as React from "react"
+import {
+  House,
+  MagnifyingGlass,
+  Gear,
+  User,
+  Bell,
+  EnvelopeSimple,
+  Plus,
+  X,
+  Check,
+  Warning,
+  Info,
+  ArrowRight,
+  CaretDown,
+  DotsThree,
+  PencilSimple,
+  Trash,
+} from "@phosphor-icons/react"
+
+export const ICON_MAP: Record<string, React.ComponentType<{ size?: number; weight?: "regular" | "bold" | "fill" }>> = {
+  House,
+  MagnifyingGlass,
+  Gear,
+  User,
+  Bell,
+  EnvelopeSimple,
+  Plus,
+  X,
+  Check,
+  Warning,
+  Info,
+  ArrowRight,
+  CaretDown,
+  DotsThree,
+  PencilSimple,
+  Trash,
+}

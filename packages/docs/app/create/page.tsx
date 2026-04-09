@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import Link from "next/link";
+import { lookupGoogleFont } from "@loworbitstudio/visor-theme-engine";
 import { useThemeCreator } from "./hooks/use-theme-creator";
 import { PreviewPanel } from "./components/preview-panel";
 import { ValidationDisplay } from "./components/validation-display";
@@ -18,6 +19,8 @@ export default function CreatePage() {
   const { config, themeData, validationResult, updateConfig, replaceConfig } =
     useThemeCreator();
   const [darkMode, setDarkMode] = useState(false);
+  const controlsRef = useRef<HTMLDivElement>(null);
+  const isSyncingRef = useRef(false);
 
   /** Forward font-load postMessage to the preview iframe */
   const handleLoadFont = useCallback((url: string) => {
@@ -27,6 +30,69 @@ export default function CreatePage() {
     if (iframe?.contentWindow) {
       iframe.contentWindow.postMessage({ type: "load-font", url }, "*");
     }
+  }, []);
+
+  /** Load Google Fonts into the preview iframe whenever font families change */
+  useEffect(() => {
+    const families = [
+      config.typography?.heading?.family,
+      config.typography?.body?.family,
+      config.typography?.mono?.family,
+    ].filter(Boolean) as string[];
+
+    for (const family of families) {
+      const entry = lookupGoogleFont(family);
+      if (entry) {
+        const encoded = family.replace(/ /g, "+");
+        const wghts = entry.weights.sort((a, b) => a - b).join(";");
+        const url = `https://fonts.googleapis.com/css2?family=${encoded}:wght@${wghts}&display=swap`;
+        handleLoadFont(url);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    config.typography?.heading?.family,
+    config.typography?.body?.family,
+    config.typography?.mono?.family,
+  ]);
+
+  /** When controls column scrolls, sync the preview iframe proportionally */
+  const handleControlsScroll = useCallback(() => {
+    if (isSyncingRef.current) return;
+    const el = controlsRef.current;
+    if (!el) return;
+    const max = el.scrollHeight - el.clientHeight;
+    if (max <= 0) return;
+    const percent = el.scrollTop / max;
+    const iframe = document.querySelector<HTMLIFrameElement>(
+      'iframe[title="Theme preview"]'
+    );
+    if (iframe?.contentWindow) {
+      isSyncingRef.current = true;
+      iframe.contentWindow.postMessage({ type: "set-scroll", percent }, "*");
+      setTimeout(() => {
+        isSyncingRef.current = false;
+      }, 50);
+    }
+  }, []);
+
+  /** When preview iframe scrolls, sync the controls column proportionally */
+  useEffect(() => {
+    const handleMessage = (e: MessageEvent) => {
+      if (e.data?.type !== "scroll-report") return;
+      if (isSyncingRef.current) return;
+      const el = controlsRef.current;
+      if (!el) return;
+      const max = el.scrollHeight - el.clientHeight;
+      if (max <= 0) return;
+      isSyncingRef.current = true;
+      el.scrollTop = (e.data.percent as number) * max;
+      setTimeout(() => {
+        isSyncingRef.current = false;
+      }, 50);
+    };
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
   }, []);
 
 
@@ -90,7 +156,7 @@ export default function CreatePage() {
       </div>
 
       <div className={styles.layout}>
-        <div className={styles.controls}>
+        <div ref={controlsRef} className={styles.controls} onScroll={handleControlsScroll}>
           <ColorControls config={config} updateConfig={updateConfig} />
 
           <TypographyControls

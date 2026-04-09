@@ -1,6 +1,6 @@
 export { TitleSlide } from "./title-slide"
-export { GrayScaleSlide } from "./gray-scale-slide"
-export { AccentPaletteSlide } from "./accent-palette-slide"
+export { ThemeColorsSlide } from "./theme-colors-slide"
+export { StatusColorsSlide } from "./status-colors-slide"
 export { SemanticTokensSlide } from "./semantic-tokens-slide"
 export { TypeDisplaySlide } from "./type-display-slide"
 export { TypeBodySlide } from "./type-body-slide"

@@ -1,0 +1,50 @@
+---
+title: Color Bar
+description: A full-width color bar displaying a live CSS token value with hex and token label. Used in design specimens to highlight a theme's brand color.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ColorBar } from '@/components/ui/color-bar';
+
+## Installation
+
+```bash
+npx visor add color-bar
+```
+
+This copies two files into your project:
+
+- `components/ui/color-bar/color-bar.tsx` — the component
+- `components/ui/color-bar/color-bar.module.css` — the styles
+
+## Usage
+
+```tsx
+import { ColorBar } from '@/components/ui/color-bar/color-bar';
+
+<ColorBar token="--interactive-primary-bg" label="Brand Color" />
+```
+
+## Preview
+
+<ComponentPreview
+  title="Color Bar"
+  code={"<ColorBar token=\"--interactive-primary-bg\" label=\"Brand Color\" />"}
+>
+  <ColorBar token="--interactive-primary-bg" label="Brand Color" />
+</ComponentPreview>
+
+## API Reference
+
+### ColorBarProps
+
+<PropsTable component="color-bar" />
+
+## Behavior
+
+ColorBar reads the live CSS token value at runtime using a hidden probe element appended to `document.body`. This ensures it always reflects the **active theme**, regardless of where the theme class is applied.
+
+Text color (white or dark) is auto-computed via WCAG contrast against the resolved background, so no manual `lightText` prop is needed.
+
+A `MutationObserver` watches for theme class changes on both `<html>` and `<body>` and re-reads the value automatically when the theme switches.

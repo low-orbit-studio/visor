@@ -99,6 +99,9 @@ export interface VisorThemeConfig {
     };
     mono?: {
       family?: string;
+      weight?: number;
+      source?: FontSource;
+      org?: string;
     };
     "letter-spacing"?: {
       tight?: string;

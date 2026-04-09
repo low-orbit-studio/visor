@@ -1248,6 +1248,24 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "color-bar",
+    type: "registry:ui",
+    description:
+      "A full-width color bar displaying a live CSS token value with hex and token label. Used in design specimens to highlight a theme's brand color.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/color-bar/color-bar.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/color-bar/color-bar.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "color-swatch",
     type: "registry:ui",
     description:

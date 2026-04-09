@@ -32,10 +32,24 @@
   /* No color accent — grayscale restraint */
   --accent: rgba(255, 255, 255, 0.4);
 
+  /* Primary color scale — OKLCH-interpolated, neutral gray (no color accent) */
+  --color-primary-50: #eff0f2;
+  --color-primary-100: #dadce0;
+  --color-primary-200: #c0c3ca;
+  --color-primary-300: #a3a8b1;
+  --color-primary-400: #858b97;
+  --color-primary-500: #6b7280;
+  --color-primary-600: #575d69;
+  --color-primary-700: #434853;
+  --color-primary-800: #31353e;
+  --color-primary-900: #21242c;
+  --color-primary-950: #15181f;
+
   /* Font stacks */
   --font-satoshi: "Satoshi", system-ui, sans-serif;
   --font-heading: var(--font-satoshi);
   --font-body: var(--font-satoshi);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   /* Blackout-namespaced tokens */
   --blackout-glass: rgba(255, 255, 255, 0.06);

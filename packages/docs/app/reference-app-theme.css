@@ -4,6 +4,8 @@
    Hand-corrected — theme engine output had placeholder values
    ============================================ */
 
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap");
+
 /* --- Primitive: Colors --- */
 .reference-app-theme {
   min-height: 100vh;
@@ -12,17 +14,17 @@
   color: var(--text-primary);
   --color-white: #ffffff;
   --color-black: #000000;
-  --color-primary-50: #edf7fc;
-  --color-primary-100: #dbebf3;
-  --color-primary-200: #bdd9e7;
-  --color-primary-300: #93bfd4;
-  --color-primary-400: #5f98b2;
+  --color-primary-50: #e9f1f6;
+  --color-primary-100: #cfdfe7;
+  --color-primary-200: #adc8d5;
+  --color-primary-300: #89aec0;
+  --color-primary-400: #6093aa;
   --color-primary-500: #397a96;
-  --color-primary-600: #1a5f7a;
-  --color-primary-700: #004962;
-  --color-primary-800: #003345;
-  --color-primary-900: #001e2a;
-  --color-primary-950: #000b12;
+  --color-primary-600: #2a647c;
+  --color-primary-700: #1a4e64;
+  --color-primary-800: #0b3a4c;
+  --color-primary-900: #002938;
+  --color-primary-950: #001c29;
   --color-accent-50: #ebf8f7;
   --color-accent-100: #d6edec;
   --color-accent-200: #b4dedb;

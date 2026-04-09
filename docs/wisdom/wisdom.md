@@ -17,6 +17,10 @@ For global wisdom (universal lessons): [`~/Code/low-orbit/low-orbit-playbook/roo
 | W006 | Wrangler R2 CLI defaults to local simulator | cloudflare, r2, wrangler, infrastructure | [W006](W006-wrangler-r2-gotchas.md) |
 | W007 | intl-tel-input focus loss prevention via callback refs | intl-tel-input, react, focus, refs | [W007](W007-intl-tel-input-focus.md) |
 | W008 | Visor Fonts CDN org slug is "low-orbit-studio" | fonts, cdn, r2, infrastructure | [W008](W008-visor-fonts-cdn-org.md) |
+| W009 | `<code>` elements inherit global badge styles — use `<span>` with font-family on colored surfaces | css, typography, color, specimen | [W009](W009-code-element-badge-styles.md) |
+| W010 | Every theme must explicitly define `--font-mono` or it silently falls back to sans-serif | tokens, typography, themes | [W010](W010-theme-font-mono-required.md) |
+| W011 | Script CSS insertion must target first selector rule, not first `{` (avoids landing in @font-face) | scripts, css, themes, automation | [W011](W011-theme-css-script-insertion.md) |
+| W012 | Docs MDX components require a `'use client'` re-export shim in `packages/docs/components/ui/` | docs, nextjs, mdx, imports | [W012](W012-docs-component-shims.md) |
 
 ## Adding Entries
 

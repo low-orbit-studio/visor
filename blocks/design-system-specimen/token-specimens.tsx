@@ -3,6 +3,7 @@ import { cn } from "../../lib/utils"
 import { Heading } from "../../components/ui/heading/heading"
 import { Text } from "../../components/ui/text/text"
 import { ColorSwatchGrid, SemanticColorGrid } from "../../components/ui/color-swatch/color-swatch"
+import { ColorBar } from "../../components/ui/color-bar/color-bar"
 import { TypeSpecimen } from "../../components/ui/type-specimen/type-specimen"
 import { FontShowcaseGrid } from "../../components/ui/font-showcase/font-showcase"
 import { SpacingScale } from "../../components/ui/spacing-scale/spacing-scale"
@@ -52,17 +53,22 @@ export function ColorPaletteSection({
           Theme Colors
         </Text>
         {themeScales.map((scale) => (
-          <ColorSwatchGrid
-            key={scale.name}
-            label={scale.name}
-            size="lg"
-            swatches={scale.swatches.map((s) => ({
-              token: s.token,
-              hex: s.hex,
-              name: s.name,
-              lightText: s.lightText,
-            }))}
-          />
+          <div key={scale.name} className={styles.themeScaleGroup}>
+            {scale.brandToken && (
+              <ColorBar token={scale.brandToken} label="Brand Color" />
+            )}
+            <ColorSwatchGrid
+              label={scale.name}
+              size="lg"
+              swatches={scale.swatches.map((s) => ({
+                token: s.token,
+                hex: s.hex,
+                name: s.name,
+                lightText: s.lightText,
+                dynamic: s.dynamic,
+              }))}
+            />
+          </div>
         ))}
       </div>
 

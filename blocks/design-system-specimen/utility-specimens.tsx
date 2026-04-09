@@ -4,46 +4,11 @@ import { Heading } from "../../components/ui/heading/heading"
 import { Text } from "../../components/ui/text/text"
 import { IconGrid, IconSizeRow } from "../../components/ui/icon-grid/icon-grid"
 import { AccessibilitySpecimen } from "../../components/ui/accessibility-specimen/accessibility-specimen"
-import {
-  House,
-  MagnifyingGlass,
-  Gear,
-  User,
-  Bell,
-  EnvelopeSimple,
-  Plus,
-  X,
-  Check,
-  Warning,
-  Info,
-  ArrowRight,
-  CaretDown,
-  DotsThree,
-  PencilSimple,
-  Trash,
-} from "@phosphor-icons/react"
+import { House } from "@phosphor-icons/react"
 import styles from "./design-system-specimen.module.css"
 import type { IconSpecimenData, ContrastPairData } from "./specimen-data"
 import { ICON_SIZES } from "./specimen-data"
-
-const ICON_MAP: Record<string, React.ComponentType<{ size?: number; weight?: "regular" | "bold" | "fill" }>> = {
-  House,
-  MagnifyingGlass,
-  Gear,
-  User,
-  Bell,
-  EnvelopeSimple,
-  Plus,
-  X,
-  Check,
-  Warning,
-  Info,
-  ArrowRight,
-  CaretDown,
-  DotsThree,
-  PencilSimple,
-  Trash,
-}
+import { ICON_MAP } from "./icon-map"
 
 // ─── Icon Grid ───────────────────────────────────────────────────────────────
 

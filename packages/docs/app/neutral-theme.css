@@ -17,12 +17,26 @@
   /* Font — system stack (no custom font) */
   --font-heading: ui-sans-serif, system-ui, sans-serif;
   --font-body: ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   /* Base styles */
   min-height: 100vh;
   font-size: 1rem;
   background: var(--surface-page);
   color: var(--text-primary);
+  /* Primary color scale — OKLCH-interpolated, brand at 500 */
+  --color-primary-50: #e7f4f7;
+  --color-primary-100: #cde6ec;
+  --color-primary-200: #abd5de;
+  --color-primary-300: #85c1ce;
+  --color-primary-400: #56acbd;
+  --color-primary-500: #1798ad;
+  --color-primary-600: #007c8e;
+  --color-primary-700: #006070;
+  --color-primary-800: #004654;
+  --color-primary-900: #00303c;
+  --color-primary-950: #00202a;
+
 }
 
 /* ═══════════════════════════════════════════════

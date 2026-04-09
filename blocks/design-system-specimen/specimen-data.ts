@@ -12,11 +12,15 @@ export interface ColorSwatchData {
   hex: string
   name: string
   lightText?: boolean
+  /** When true, ColorSwatch reads the live computed value instead of displaying the fallback hex */
+  dynamic?: boolean
 }
 
 export interface ColorScaleData {
   name: string
   swatches: ColorSwatchData[]
+  /** When set, renders a featured brand swatch above the scale reading this token */
+  brandToken?: string
 }
 
 export interface SemanticColorData {
@@ -95,8 +99,8 @@ export interface FontFamilyData {
   token: string
   /** Display role (e.g. "Heading & Body", "Monospace") */
   role: string
-  /** Font family display name */
-  familyName: string
+  /** Font family display name — omit to read dynamically from the CSS token */
+  familyName?: string
   /** Available weights */
   weights: FontWeightData[]
 }
@@ -110,9 +114,24 @@ export interface StatusColorScaleData extends ColorScaleData {
 
 export const THEME_COLOR_SCALES: ColorScaleData[] = [
   {
+    name: "Primary",
+    brandToken: "--interactive-primary-bg",
+    swatches: [
+      { token: "--color-primary-100", hex: "#cfdfe7", name: "100", dynamic: true },
+      { token: "--color-primary-200", hex: "#adc8d5", name: "200", dynamic: true },
+      { token: "--color-primary-300", hex: "#89aec0", name: "300", dynamic: true },
+      { token: "--color-primary-400", hex: "#6093aa", name: "400", dynamic: true },
+      { token: "--color-primary-500", hex: "#397a96", name: "500", lightText: true, dynamic: true },
+      { token: "--color-primary-600", hex: "#2a647c", name: "600", lightText: true, dynamic: true },
+      { token: "--color-primary-700", hex: "#1a4e64", name: "700", lightText: true, dynamic: true },
+      { token: "--color-primary-800", hex: "#0b3a4c", name: "800", lightText: true, dynamic: true },
+      { token: "--color-primary-900", hex: "#002938", name: "900", lightText: true, dynamic: true },
+      { token: "--color-primary-950", hex: "#001c29", name: "950", lightText: true, dynamic: true },
+    ],
+  },
+  {
     name: "Neutral",
     swatches: [
-      { token: "--color-gray-50", hex: "#f9fafb", name: "50" },
       { token: "--color-gray-100", hex: "#f3f4f6", name: "100" },
       { token: "--color-gray-200", hex: "#e5e7eb", name: "200" },
       { token: "--color-gray-300", hex: "#d1d5db", name: "300" },
@@ -123,21 +142,6 @@ export const THEME_COLOR_SCALES: ColorScaleData[] = [
       { token: "--color-gray-800", hex: "#1f2937", name: "800", lightText: true },
       { token: "--color-gray-900", hex: "#111827", name: "900", lightText: true },
       { token: "--color-gray-950", hex: "#030712", name: "950", lightText: true },
-    ],
-  },
-  {
-    name: "Primary",
-    swatches: [
-      { token: "--color-blue-50", hex: "#eff6ff", name: "50" },
-      { token: "--color-blue-100", hex: "#dbeafe", name: "100" },
-      { token: "--color-blue-200", hex: "#bfdbfe", name: "200" },
-      { token: "--color-blue-300", hex: "#93c5fd", name: "300" },
-      { token: "--color-blue-400", hex: "#60a5fa", name: "400" },
-      { token: "--color-blue-500", hex: "#3b82f6", name: "500", lightText: true },
-      { token: "--color-blue-600", hex: "#2563eb", name: "600", lightText: true },
-      { token: "--color-blue-700", hex: "#1d4ed8", name: "700", lightText: true },
-      { token: "--color-blue-800", hex: "#1e40af", name: "800", lightText: true },
-      { token: "--color-blue-900", hex: "#1e3a8a", name: "900", lightText: true },
     ],
   },
 ]
@@ -227,7 +231,6 @@ export const FONT_FAMILIES: FontFamilyData[] = [
   {
     token: "--font-heading",
     role: "Heading & Body",
-    familyName: "Satoshi",
     weights: [
       { label: "Regular", value: 400 },
       { label: "Medium", value: 500 },
@@ -238,7 +241,6 @@ export const FONT_FAMILIES: FontFamilyData[] = [
   {
     token: "--font-mono",
     role: "Monospace",
-    familyName: "Monaspace Neon",
     weights: [
       { label: "Regular", value: 400 },
       { label: "Medium", value: 500 },

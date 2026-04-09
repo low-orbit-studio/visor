@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import { cn } from "../../../lib/utils"
 import { Text } from "../text/text"
@@ -15,8 +17,8 @@ export interface FontShowcaseProps {
   token: string
   /** Display role (e.g. "Heading & Body", "Monospace") */
   role: string
-  /** Font family display name */
-  familyName: string
+  /** Font family display name — omit to read dynamically from the CSS token */
+  familyName?: string
   /** Available weights to display */
   weights: FontWeightSpecimen[]
   className?: string
@@ -25,6 +27,46 @@ export interface FontShowcaseProps {
 export interface FontShowcaseGridProps {
   fonts: FontShowcaseProps[]
   className?: string
+}
+
+// ─── Hooks ──────────────────────────────────────────────────────────────────
+
+/**
+ * Resolves the first font name from a CSS custom property by applying it to a
+ * hidden span and reading the computed fontFamily. Re-syncs on theme class changes.
+ */
+function useLiveFontName(token: string): string {
+  const [name, setName] = React.useState("")
+
+  React.useEffect(() => {
+    const span = document.createElement("span")
+    Object.assign(span.style, {
+      position: "absolute",
+      visibility: "hidden",
+      pointerEvents: "none",
+      fontFamily: `var(${token})`,
+    })
+    document.body.appendChild(span)
+
+    function read() {
+      const ff = getComputedStyle(span).fontFamily
+      // Parse first font name: "PP Model Plastic", sans-serif → PP Model Plastic
+      const first = ff.split(",")[0].trim().replace(/^["']|["']$/g, "")
+      setName(first || token)
+    }
+
+    read()
+    const obs = new MutationObserver(read)
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme", "data-creator-revision"] })
+    obs.observe(document.body, { attributes: true, attributeFilter: ["class", "data-theme"] })
+
+    return () => {
+      obs.disconnect()
+      span.remove()
+    }
+  }, [token])
+
+  return name
 }
 
 // ─── FontShowcase ───────────────────────────────────────────────────────────
@@ -37,13 +79,15 @@ function FontShowcase({
   className,
 }: FontShowcaseProps) {
   const fontFamily = `var(${token})`
+  const liveName = useLiveFontName(token)
+  const displayName = familyName ?? liveName
 
   return (
     <div data-slot="font-showcase" className={cn(styles.card, className)}>
       <div className={styles.header}>
         <div className={styles.meta}>
           <span className={styles.familyName} style={{ fontFamily }}>
-            {familyName}
+            {displayName}
           </span>
           <Text size="xs" color="secondary" as="span">{role}</Text>
           <code className={styles.token}>{token}</code>

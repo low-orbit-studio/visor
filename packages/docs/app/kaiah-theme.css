@@ -5,6 +5,7 @@
    ============================================ */
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap");
 
 /* --- Primitive: Colors --- */
 .kaiah-theme {
@@ -14,17 +15,17 @@
   color: var(--text-primary);
   --color-white: #ffffff;
   --color-black: #000000;
-  --color-primary-50: #f7f5f1;
-  --color-primary-100: #ebe7e1;
-  --color-primary-200: #dad3c8;
-  --color-primary-300: #c0b6a5;
-  --color-primary-400: #9a8d78;
-  --color-primary-500: #7d7059;
-  --color-primary-600: #3b2f1a;
-  --color-primary-700: #4d402b;
-  --color-primary-800: #362c1b;
-  --color-primary-900: #21190c;
-  --color-primary-950: #0d0802;
+  --color-primary-50: #edebe7;
+  --color-primary-100: #d0ccc5;
+  --color-primary-200: #aca69b;
+  --color-primary-300: #857d6f;
+  --color-primary-400: #5d5341;
+  --color-primary-500: #3b2f1a;
+  --color-primary-600: #332916;
+  --color-primary-700: #2c2212;
+  --color-primary-800: #241c0e;
+  --color-primary-900: #1e170b;
+  --color-primary-950: #191308;
   --color-accent-50: #f6f5f3;
   --color-accent-100: #e9e8e5;
   --color-accent-200: #d6d4d0;
