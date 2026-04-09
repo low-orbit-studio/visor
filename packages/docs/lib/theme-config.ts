@@ -15,14 +15,14 @@ export const THEME_GROUPS: ThemeGroup[] = [
     label: "Visor",
     themes: [
       { value: "blackout", label: "Blackout", yamlFile: "blackout" },
-      { value: "neutral", label: "Neutral" },
-      { value: "space", label: "Space" },
+      { value: "neutral", label: "Neutral", yamlFile: "neutral" },
+      { value: "space", label: "Space", yamlFile: "space" },
     ],
   },
   {
     label: "Client",
     themes: [
-      { value: "entr", label: "ENTR" },
+      { value: "entr", label: "ENTR", yamlFile: "entr" },
       { value: "kaiah", label: "Kaiah", yamlFile: "kaiah" },
       { value: "veronica", label: "Veronica", yamlFile: "veronica" },
     ],

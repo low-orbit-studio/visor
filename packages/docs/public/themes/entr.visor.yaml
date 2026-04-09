@@ -1,0 +1,69 @@
+name: entr
+version: 1
+
+colors:
+  primary: "#22c56d"
+  neutral: "#4a5968"
+  background: "#ffffff"
+  surface: "#f5f7fa"
+  success: "#22C55E"
+  warning: "#F59E0B"
+  error: "#FE5D8B"
+  info: "#03A9F4"
+
+colors-dark:
+  primary: "#6beba5"
+  background: "#1e1f21"
+  surface: "#242628"
+  error: "#FE5D8B"
+
+typography:
+  heading:
+    family: "Outfit"
+    weight: 600
+  body:
+    family: "Outfit"
+    weight: 400
+  mono:
+    family: "Outfit"
+
+spacing:
+  base: 4
+
+radius:
+  sm: 8
+  md: 12
+  lg: 16
+  xl: 24
+  pill: 9999
+
+shadows:
+  xs: "none"
+  sm: "none"
+  md: "none"
+  lg: "none"
+  xl: "none"
+
+motion:
+  duration-fast: "100ms"
+  duration-normal: "150ms"
+  duration-slow: "300ms"
+  easing: "cubic-bezier(0.4, 0, 0.2, 1)"
+
+overrides:
+  light:
+    text-primary: "#1a1c1e"
+    text-secondary: "rgba(26, 28, 30, 0.65)"
+    text-tertiary: "rgba(26, 28, 30, 0.4)"
+    text-link: "#16a35a"
+    interactive-primary-bg: "#22c56d"
+    interactive-primary-text: "#ffffff"
+    border-focus: "#22c56d"
+  dark:
+    text-primary: "#fafcfe"
+    text-secondary: "rgba(250, 252, 254, 0.65)"
+    text-tertiary: "rgba(250, 252, 254, 0.4)"
+    text-link: "#6beba5"
+    interactive-primary-bg: "#6beba5"
+    interactive-primary-text: "#1a1c1e"
+    border-focus: "#6beba5"

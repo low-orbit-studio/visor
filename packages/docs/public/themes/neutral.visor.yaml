@@ -1,0 +1,68 @@
+name: neutral
+version: 1
+
+colors:
+  primary: "#1798ad"
+  neutral: "#71717a"
+  background: "#ffffff"
+  surface: "#ffffff"
+  success: "#22C55E"
+  warning: "#F59E0B"
+  error: "#EF4444"
+  info: "#0EA5E9"
+
+colors-dark:
+  background: "#09090b"
+  surface: "#18181b"
+  error: "#F87171"
+
+typography:
+  heading:
+    family: "system-ui"
+    weight: 700
+  body:
+    family: "system-ui"
+    weight: 400
+  mono:
+    family: "ui-monospace"
+
+spacing:
+  base: 4
+
+radius:
+  sm: 4
+  md: 6
+  lg: 8
+  xl: 12
+  pill: 9999
+
+shadows:
+  xs: "0 1px 2px rgba(0, 0, 0, 0.05)"
+  sm: "0 1px 3px rgba(0, 0, 0, 0.1)"
+  md: "0 4px 6px rgba(0, 0, 0, 0.07)"
+  lg: "0 10px 15px rgba(0, 0, 0, 0.07)"
+  xl: "0 20px 25px rgba(0, 0, 0, 0.08)"
+
+motion:
+  duration-fast: "100ms"
+  duration-normal: "150ms"
+  duration-slow: "300ms"
+  easing: "cubic-bezier(0.4, 0, 0.2, 1)"
+
+overrides:
+  light:
+    text-primary: "#18181b"
+    text-secondary: "#52525b"
+    text-tertiary: "#a1a1aa"
+    text-link: "#0891b2"
+    interactive-primary-bg: "#1798ad"
+    interactive-primary-text: "#ffffff"
+    border-focus: "#1798ad"
+  dark:
+    text-primary: "#fafafa"
+    text-secondary: "#a1a1aa"
+    text-tertiary: "#71717a"
+    text-link: "#67e8f9"
+    interactive-primary-bg: "#1798ad"
+    interactive-primary-text: "#ffffff"
+    border-focus: "#1798ad"
