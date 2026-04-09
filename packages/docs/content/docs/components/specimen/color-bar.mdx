@@ -4,6 +4,7 @@ description: A full-width color bar displaying a live CSS token value with hex a
 ---
 
 import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
 import { ColorBar } from '@/components/ui/color-bar/color-bar';
 
 ## Installation
@@ -36,11 +37,9 @@ import { ColorBar } from '@/components/ui/color-bar/color-bar';
 
 ## API Reference
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `token` | `string` | — | CSS custom property for the brand color (e.g. `--interactive-primary-bg`) |
-| `label` | `string` | `"Brand Color"` | Label shown at the top of the bar |
-| `className` | `string` | — | Additional CSS classes |
+### ColorBarProps
+
+<PropsTable component="color-bar" />
 
 ## Behavior
 
