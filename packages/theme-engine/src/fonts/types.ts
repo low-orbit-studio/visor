@@ -73,6 +73,9 @@ export interface VisorTypography {
   };
   mono?: {
     family: string;
+    weight?: number;
+    source?: FontSource;
+    org?: string;
   };
   "letter-spacing"?: {
     tight?: string;
@@ -89,6 +92,8 @@ export interface ThemeFontResult {
   display: FontResolution | null;
   /** Resolved body font (if specified) */
   body: FontResolution | null;
+  /** Resolved monospace font (if specified) */
+  mono: FontResolution | null;
   /** Preconnect and preload link tags */
   preloadLinks: string[];
   /** CSS @font-face + custom property overrides */

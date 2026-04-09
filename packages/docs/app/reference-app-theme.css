@@ -4,6 +4,8 @@
    Hand-corrected — theme engine output had placeholder values
    ============================================ */
 
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap");
+
 /* --- Primitive: Colors --- */
 .reference-app-theme {
   min-height: 100vh;

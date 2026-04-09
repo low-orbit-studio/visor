@@ -217,7 +217,7 @@ export function docsAdapter(
 
   if (includeFontImports && input.config.typography) {
     const fontResult = resolveThemeFonts(input.config.typography);
-    const fontSlots = [fontResult.heading, fontResult.display, fontResult.body];
+    const fontSlots = [fontResult.heading, fontResult.display, fontResult.body, fontResult.mono];
 
     // Google Fonts @import
     const seenUrls = new Set<string>();

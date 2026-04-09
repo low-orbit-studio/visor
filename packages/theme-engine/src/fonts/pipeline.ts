@@ -28,12 +28,14 @@ function generateFontCSS(
   heading: FontResolution | null,
   displayFont: FontResolution | null,
   body: FontResolution | null,
+  mono: FontResolution | null,
   typography: VisorTypography
 ): string {
   const lines: string[] = [];
+  const allSlots = [heading, displayFont, body, mono];
 
   // Google Fonts stylesheet imports (as CSS comments for reference)
-  const googleFonts = [heading, displayFont, body].filter(
+  const googleFonts = allSlots.filter(
     (r): r is FontResolution => r !== null && r.source === "google-fonts"
   );
   if (googleFonts.length > 0) {
@@ -45,7 +47,7 @@ function generateFontCSS(
   }
 
   // Visor Fonts @font-face declarations (real, not placeholders)
-  const visorFonts = [heading, displayFont, body].filter(
+  const visorFonts = allSlots.filter(
     (r): r is FontResolution => r !== null && r.source === "visor-fonts"
   );
   const seenVisorFonts = new Set<string>();
@@ -69,7 +71,7 @@ function generateFontCSS(
   }
 
   // Local font @font-face placeholders
-  const localFonts = [heading, displayFont, body].filter(
+  const localFonts = allSlots.filter(
     (r): r is FontResolution => r !== null && r.source === "local"
   );
   if (localFonts.length > 0) {
@@ -89,7 +91,7 @@ function generateFontCSS(
   }
 
   // Size-adjusted fallback @font-face declarations (eliminates CLS during swap)
-  const allFonts = [heading, displayFont, body].filter(
+  const allFonts = allSlots.filter(
     (r): r is FontResolution => r !== null
   );
   const seenFamilies = new Set<string>();
@@ -125,6 +127,12 @@ function generateFontCSS(
     const fallback = getFallbackStack(body);
     overrides.push(`  --font-body: "${body.family}", "${fallbackName}", ${fallback};`);
     overrides.push(`  --font-sans: "${body.family}", "${fallbackName}", ${fallback};`);
+  }
+
+  if (mono) {
+    const fallbackName = `${mono.family} Fallback`;
+    const fallback = getFallbackStack(mono);
+    overrides.push(`  --font-mono: "${mono.family}", "${fallbackName}", ${fallback};`);
   }
 
   // Weight overrides from typography config
@@ -353,6 +361,25 @@ export function resolveThemeFonts(
     }
   }
 
+  // Resolve mono font
+  let monoResolution: FontResolution | null = null;
+  if (typography.mono?.family) {
+    const monoWeights: number[] = [];
+    if (typography.mono.weight) monoWeights.push(typography.mono.weight);
+
+    monoResolution = resolveFont(typography.mono.family, {
+      weights: monoWeights.length > 0 ? monoWeights : undefined,
+      display,
+      source: typography.mono.source,
+      org: typography.mono.org,
+      category: "monospace",
+    });
+
+    if (monoResolution.guidance) {
+      warnings.push(monoResolution.guidance);
+    }
+  }
+
   // Collect all unique resolutions for preload generation
   const allResolutions: FontResolution[] = [];
   if (headingResolution) allResolutions.push(headingResolution);
@@ -362,17 +389,19 @@ export function resolveThemeFonts(
   if (bodyResolution && bodyResolution !== headingResolution && bodyResolution !== displayResolution) {
     allResolutions.push(bodyResolution);
   }
+  if (monoResolution) allResolutions.push(monoResolution);
 
   const preloadLinks = generatePreloadLinks(allResolutions);
   const stylesheetLinks = generateStylesheetLinks(allResolutions);
   const allLinks = [...preloadLinks, ...stylesheetLinks];
 
-  const css = generateFontCSS(headingResolution, displayResolution, bodyResolution, typography);
+  const css = generateFontCSS(headingResolution, displayResolution, bodyResolution, monoResolution, typography);
 
   return {
     heading: headingResolution,
     display: displayResolution,
     body: bodyResolution,
+    mono: monoResolution,
     preloadLinks: allLinks,
     css,
     warnings,
