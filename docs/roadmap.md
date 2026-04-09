@@ -94,21 +94,31 @@ Made the docs site a world-class showcase with live theme previews, visual compa
 - [x] All examples respond to the active theme
 - [x] Visual regression testing — Playwright screenshots across all themes × light/dark (VI-88)
 
-## Phase 5.5: Open Source Readiness
+## Phase 5.5: Internal Adoption Readiness
 
-Prepare Visor for public adoption as a leading open source design system. Two tracks: protect proprietary assets and build community infrastructure.
+Unblock Visor consumption across Low Orbit projects. Minimal work to make `npm install` and `npx visor add` functional for internal use.
 
 **Key work:**
-- **Proprietary asset lockdown** — Move client themes (Veronica, Kaiah, Blacklight, Space) out of the public repo; evaluate private package or authenticated loading
-- **Fonts CDN CORS** — See Phase 7; restrict `fonts.visor.design` to allowed origins
-- **Community infrastructure** — CODE_OF_CONDUCT.md, issue/PR templates, FUNDING.yml, good first issue labels, GitHub Discussions
-- **Package metadata** — `repository`, `license`, `homepage`, `bugs` fields across all package.json files
-- **Changelog & releases** — Conventional commits + auto-changelog tooling (changesets or similar)
+- [ ] **First npm publish** — Set `NPM_TOKEN` in GitHub repo secrets, push `v0.3.0` tag to trigger release workflow for `@loworbitstudio/visor-core`, `@loworbitstudio/visor`, and `@loworbitstudio/visor-theme-engine`
+- [ ] **Fix theme-engine raw TS export** — `./fonts` export points to `./src/fonts/index.ts` instead of compiled `./dist/fonts/...`; one-line fix in package.json
+- [ ] **Research spike: proprietary theme strategy** — Evaluate options for keeping client themes (Veronica, Kaiah, Blacklight, ENTR, Space) in the monorepo for development/docs while preventing public access. Options to evaluate: build-time injection from private repo, `.gitignore` + pull script, private npm package, git submodule, runtime loading from authenticated CDN
+
+**Tracking:** VI-110
+
+## Phase 5.5b: Open Source Readiness
+
+Prepare Visor for public adoption. Not required for internal use — do this when ready to market Visor externally.
+
+**Key work:**
+- **Proprietary theme implementation** — Execute the strategy chosen in Phase 5.5 research spike
+- **Fonts CDN CORS** — Restrict `fonts.visor.design` to allowed origins via Cloudflare R2/Workers
+- **Community infrastructure** — Issue/PR templates, FUNDING.yml, good first issue labels, GitHub Discussions
+- **Changelog & releases** — Wire up changesets auto-publish workflow, generate first CHANGELOG.md
+- **Getting-started guide** — Standalone "zero to first component" page (migration guide covers retrofits, not new projects)
+- **Document remaining components** — 5 undocumented core components (alert, avatar, badge, card, dialog, etc.)
 - **Competitive analysis** — Study shadcn/ui, Radix, Mantine, Park UI for gaps ✓ ([VI-122](https://linear.app/low-orbit-studio/issue/VI-122) → `docs/research/token-architecture-spike.md`)
 - **Governance & sustainability** — Single-maintainer plan, contributor ladder, decision-making process
 - **Marketing surface** — README badges, social preview, npm README, "used by" section, GitHub topics
-
-**Tracking:** VI-110
 
 ## Phase 6: Visual Theme Creator
 
