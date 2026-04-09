@@ -1,0 +1,114 @@
+/* ─── FontShowcase Card ──────────────────────────────────────────────────── */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 1rem);
+  padding: var(--spacing-6, 1.5rem);
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-xl, 0.75rem);
+  background: var(--surface-card, #ffffff);
+  transition: box-shadow var(--motion-duration-fast, 150ms) var(--motion-easing-default, ease);
+}
+
+@media (hover: hover) {
+  .card:hover {
+    box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+  }
+}
+
+/* ─── Header ─────────────────────────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+}
+
+.familyName {
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+  line-height: 1.25;
+}
+
+.token {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--font-size-xs, 0.625rem);
+  color: var(--text-tertiary, #9ca3af);
+  background: var(--surface-muted, #f3f4f6);
+  padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
+  border-radius: var(--radius-sm, 0.25rem);
+  display: inline-block;
+  margin-top: var(--spacing-1, 0.25rem);
+  width: fit-content;
+}
+
+/* ─── Hero ────────────────────────────────────────────────────────────────── */
+
+.hero {
+  font-size: 4.5rem;
+  line-height: 1;
+  color: var(--text-primary, #111827);
+  letter-spacing: -0.02em;
+  user-select: none;
+  opacity: 0.9;
+}
+
+/* ─── Divider ─────────────────────────────────────────────────────────────── */
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--border-muted, #f3f4f6);
+}
+
+/* ─── Weight Specimens ────────────────────────────────────────────────────── */
+
+.weights {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.weightRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-4, 1rem);
+}
+
+.weightSample {
+  font-size: var(--font-size-xl, 1.25rem);
+  line-height: 1.3;
+  color: var(--text-primary, #111827);
+  flex: 1;
+  min-width: 0;
+}
+
+.weightMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+  gap: var(--spacing-1, 0.25rem);
+}
+
+.weightValue {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--font-size-xs, 0.625rem);
+  color: var(--text-tertiary, #9ca3af);
+}
+
+/* ─── Grid ────────────────────────────────────────────────────────────────── */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: var(--spacing-6, 1.5rem);
+}

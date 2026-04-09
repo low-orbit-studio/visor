@@ -5,6 +5,8 @@ declare const styles: {
   readonly label: string
   readonly scaleGroup: string
   readonly grid: string
+  readonly gridLg: string
+  readonly gridSm: string
   readonly semanticItem: string
   readonly semanticPreview: string
   readonly semanticGroup: string

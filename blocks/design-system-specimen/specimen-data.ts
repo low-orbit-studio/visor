@@ -85,11 +85,32 @@ export interface IconSpecimenData {
   usage: string
 }
 
+export interface FontWeightData {
+  label: string
+  value: number
+}
+
+export interface FontFamilyData {
+  /** CSS custom property token (e.g. "--font-heading") */
+  token: string
+  /** Display role (e.g. "Heading & Body", "Monospace") */
+  role: string
+  /** Font family display name */
+  familyName: string
+  /** Available weights */
+  weights: FontWeightData[]
+}
+
 // ─── Color Scales ────────────────────────────────────────────────────────────
 
-export const COLOR_SCALES: ColorScaleData[] = [
+export interface StatusColorScaleData extends ColorScaleData {
+  /** Semantic role label (e.g. "Success", "Warning") */
+  role: string
+}
+
+export const THEME_COLOR_SCALES: ColorScaleData[] = [
   {
-    name: "Gray",
+    name: "Neutral",
     swatches: [
       { token: "--color-gray-50", hex: "#f9fafb", name: "50" },
       { token: "--color-gray-100", hex: "#f3f4f6", name: "100" },
@@ -105,7 +126,7 @@ export const COLOR_SCALES: ColorScaleData[] = [
     ],
   },
   {
-    name: "Blue",
+    name: "Primary",
     swatches: [
       { token: "--color-blue-50", hex: "#eff6ff", name: "50" },
       { token: "--color-blue-100", hex: "#dbeafe", name: "100" },
@@ -119,8 +140,12 @@ export const COLOR_SCALES: ColorScaleData[] = [
       { token: "--color-blue-900", hex: "#1e3a8a", name: "900", lightText: true },
     ],
   },
+]
+
+export const STATUS_COLOR_SCALES: StatusColorScaleData[] = [
   {
-    name: "Green",
+    name: "Success",
+    role: "Success",
     swatches: [
       { token: "--color-green-50", hex: "#f0fdf4", name: "50" },
       { token: "--color-green-100", hex: "#dcfce7", name: "100" },
@@ -131,7 +156,8 @@ export const COLOR_SCALES: ColorScaleData[] = [
     ],
   },
   {
-    name: "Amber",
+    name: "Warning",
+    role: "Warning",
     swatches: [
       { token: "--color-amber-50", hex: "#fffbeb", name: "50" },
       { token: "--color-amber-100", hex: "#fef3c7", name: "100" },
@@ -142,7 +168,8 @@ export const COLOR_SCALES: ColorScaleData[] = [
     ],
   },
   {
-    name: "Red",
+    name: "Error",
+    role: "Error",
     swatches: [
       { token: "--color-red-50", hex: "#fef2f2", name: "50" },
       { token: "--color-red-100", hex: "#fee2e2", name: "100" },
@@ -153,7 +180,8 @@ export const COLOR_SCALES: ColorScaleData[] = [
     ],
   },
   {
-    name: "Sky",
+    name: "Info",
+    role: "Info",
     swatches: [
       { token: "--color-sky-50", hex: "#f0f9ff", name: "50" },
       { token: "--color-sky-100", hex: "#e0f2fe", name: "100" },
@@ -194,6 +222,30 @@ export const SEMANTIC_COLORS: SemanticColorData[] = [
 ]
 
 // ─── Typography ──────────────────────────────────────────────────────────────
+
+export const FONT_FAMILIES: FontFamilyData[] = [
+  {
+    token: "--font-heading",
+    role: "Heading & Body",
+    familyName: "Satoshi",
+    weights: [
+      { label: "Regular", value: 400 },
+      { label: "Medium", value: 500 },
+      { label: "Semibold", value: 600 },
+      { label: "Bold", value: 700 },
+    ],
+  },
+  {
+    token: "--font-mono",
+    role: "Monospace",
+    familyName: "Monaspace Neon",
+    weights: [
+      { label: "Regular", value: 400 },
+      { label: "Medium", value: 500 },
+      { label: "Bold", value: 700 },
+    ],
+  },
+]
 
 export const TYPE_SPECIMENS: TypeSpecimenData[] = [
   { token: "--font-size-4xl", label: "4xl", sizePx: 36, sampleText: "Display text" },

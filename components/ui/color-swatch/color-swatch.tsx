@@ -22,6 +22,8 @@ export interface ColorSwatchGridProps {
   label: string
   /** Array of swatch data to render */
   swatches: ColorSwatchProps[]
+  /** Grid density: lg for theme colors, sm for status colors, default for standard */
+  size?: "default" | "lg" | "sm"
   className?: string
 }
 
@@ -72,11 +74,17 @@ function ColorSwatch({
 
 // ─── ColorSwatchGrid ────────────────────────────────────────────────────────
 
-function ColorSwatchGrid({ label, swatches, className }: ColorSwatchGridProps) {
+const gridSizeClass = {
+  default: styles.grid,
+  lg: styles.gridLg,
+  sm: styles.gridSm,
+} as const
+
+function ColorSwatchGrid({ label, swatches, size = "default", className }: ColorSwatchGridProps) {
   return (
     <div data-slot="color-swatch-grid" className={cn(styles.scaleGroup, className)}>
       <Text weight="medium" size="sm" as="div">{label}</Text>
-      <div className={styles.grid}>
+      <div className={gridSizeClass[size]}>
         {swatches.map((swatch) => (
           <ColorSwatch key={swatch.token} {...swatch} />
         ))}

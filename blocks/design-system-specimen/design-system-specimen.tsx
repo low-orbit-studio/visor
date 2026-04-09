@@ -22,8 +22,10 @@ import {
   ComponentShowcaseSection,
 } from "./component-specimens"
 import {
-  COLOR_SCALES,
+  THEME_COLOR_SCALES,
+  STATUS_COLOR_SCALES,
   SEMANTIC_COLORS,
+  FONT_FAMILIES,
   TYPE_SPECIMENS,
   SPACING_STEPS,
   SHADOW_LEVELS,
@@ -61,10 +63,10 @@ export function DesignSystemSpecimen({
 
       <Separator />
 
-      <ColorPaletteSection scales={COLOR_SCALES} semanticColors={SEMANTIC_COLORS} />
+      <ColorPaletteSection themeScales={THEME_COLOR_SCALES} statusScales={STATUS_COLOR_SCALES} semanticColors={SEMANTIC_COLORS} />
       <Separator />
 
-      <TypographySection specimens={TYPE_SPECIMENS} />
+      <TypographySection fontFamilies={FONT_FAMILIES} specimens={TYPE_SPECIMENS} />
       <Separator />
 
       <SpacingSection steps={SPACING_STEPS} />

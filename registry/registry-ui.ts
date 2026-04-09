@@ -1392,6 +1392,24 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "font-showcase",
+    type: "registry:ui",
+    description:
+      "A card displaying a font family with its name, role, hero glyph, and weight specimens.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "text"],
+    files: [
+      {
+        path: "components/ui/font-showcase/font-showcase.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/font-showcase/font-showcase.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "type-specimen",
     type: "registry:ui",
     description:

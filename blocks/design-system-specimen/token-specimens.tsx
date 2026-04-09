@@ -4,6 +4,7 @@ import { Heading } from "../../components/ui/heading/heading"
 import { Text } from "../../components/ui/text/text"
 import { ColorSwatchGrid, SemanticColorGrid } from "../../components/ui/color-swatch/color-swatch"
 import { TypeSpecimen } from "../../components/ui/type-specimen/type-specimen"
+import { FontShowcaseGrid } from "../../components/ui/font-showcase/font-showcase"
 import { SpacingScale } from "../../components/ui/spacing-scale/spacing-scale"
 import { ElevationCard } from "../../components/ui/elevation-card/elevation-card"
 import { SurfaceRow } from "../../components/ui/surface-row/surface-row"
@@ -11,7 +12,9 @@ import { RadiusScale } from "../../components/ui/radius-scale/radius-scale"
 import styles from "./design-system-specimen.module.css"
 import type {
   ColorScaleData,
+  StatusColorScaleData,
   SemanticColorData,
+  FontFamilyData,
   TypeSpecimenData,
   SpacingStepData,
   ShadowLevelData,
@@ -22,13 +25,15 @@ import type {
 // ─── Color Palette ───────────────────────────────────────────────────────────
 
 interface ColorPaletteSectionProps {
-  scales: ColorScaleData[]
+  themeScales: ColorScaleData[]
+  statusScales: StatusColorScaleData[]
   semanticColors: SemanticColorData[]
   className?: string
 }
 
 export function ColorPaletteSection({
-  scales,
+  themeScales,
+  statusScales,
   semanticColors,
   className,
 }: ColorPaletteSectionProps) {
@@ -38,24 +43,56 @@ export function ColorPaletteSection({
     <section id="specimen-colors" className={cn(styles.section, className)}>
       <Heading level={3} size="lg">Color Palette</Heading>
       <Text color="secondary" size="sm">
-        Primitive color scales and semantic color tokens.
+        Theme identity colors, status indicators, and semantic tokens.
       </Text>
 
-      {scales.map((scale) => (
-        <ColorSwatchGrid
-          key={scale.name}
-          label={scale.name}
-          swatches={scale.swatches.map((s) => ({
-            token: s.token,
-            hex: s.hex,
-            name: s.name,
-            lightText: s.lightText,
-          }))}
-        />
-      ))}
+      {/* Theme Colors — prominent */}
+      <div className={styles.themeColors}>
+        <Text size="xs" color="tertiary" weight="medium" as="div" className={styles.subsectionLabel}>
+          Theme Colors
+        </Text>
+        {themeScales.map((scale) => (
+          <ColorSwatchGrid
+            key={scale.name}
+            label={scale.name}
+            size="lg"
+            swatches={scale.swatches.map((s) => ({
+              token: s.token,
+              hex: s.hex,
+              name: s.name,
+              lightText: s.lightText,
+            }))}
+          />
+        ))}
+      </div>
 
+      {/* Status Colors — compact */}
+      <div className={styles.statusColors}>
+        <Text size="xs" color="tertiary" weight="medium" as="div" className={styles.subsectionLabel}>
+          Status Colors
+        </Text>
+        <div className={styles.statusGrid}>
+          {statusScales.map((scale) => (
+            <ColorSwatchGrid
+              key={scale.name}
+              label={scale.role}
+              size="sm"
+              swatches={scale.swatches.map((s) => ({
+                token: s.token,
+                hex: s.hex,
+                name: s.name,
+                lightText: s.lightText,
+              }))}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Semantic Colors — unchanged */}
       <div className={styles.semanticColorSection}>
-        <Text weight="medium" size="sm" as="div">Semantic Colors</Text>
+        <Text size="xs" color="tertiary" weight="medium" as="div" className={styles.subsectionLabel}>
+          Semantic Tokens
+        </Text>
         {categories.map((category) => (
           <SemanticColorGrid
             key={category}
@@ -73,11 +110,13 @@ export function ColorPaletteSection({
 // ─── Typography ──────────────────────────────────────────────────────────────
 
 interface TypographySectionProps {
+  fontFamilies: FontFamilyData[]
   specimens: TypeSpecimenData[]
   className?: string
 }
 
 export function TypographySection({
+  fontFamilies,
   specimens,
   className,
 }: TypographySectionProps) {
@@ -85,19 +124,40 @@ export function TypographySection({
     <section id="specimen-typography" className={cn(styles.section, className)}>
       <Heading level={3} size="lg">Typography</Heading>
       <Text color="secondary" size="sm">
-        Full type scale from display to fine print.
+        Font families, weights, and the full type scale.
       </Text>
 
-      <div className={styles.typeSpecimenList}>
-        {specimens.map((spec) => (
-          <TypeSpecimen
-            key={spec.token}
-            token={spec.token}
-            label={spec.label}
-            sizePx={spec.sizePx}
-            sampleText={spec.sampleText}
-          />
-        ))}
+      {/* Font Showcase */}
+      <div>
+        <Text size="xs" color="tertiary" weight="medium" as="div" className={styles.subsectionLabel}>
+          Font Families
+        </Text>
+        <FontShowcaseGrid
+          fonts={fontFamilies.map((f) => ({
+            token: f.token,
+            role: f.role,
+            familyName: f.familyName,
+            weights: f.weights,
+          }))}
+        />
+      </div>
+
+      {/* Type Scale */}
+      <div>
+        <Text size="xs" color="tertiary" weight="medium" as="div" className={styles.subsectionLabel}>
+          Type Scale
+        </Text>
+        <div className={styles.typeSpecimenList}>
+          {specimens.map((spec) => (
+            <TypeSpecimen
+              key={spec.token}
+              token={spec.token}
+              label={spec.label}
+              sizePx={spec.sizePx}
+              sampleText={spec.sampleText}
+            />
+          ))}
+        </div>
       </div>
     </section>
   )

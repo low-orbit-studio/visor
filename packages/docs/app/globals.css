@@ -61,6 +61,14 @@
   background: var(--surface-page, #ffffff);
 }
 
+/* Spacer clears the absolutely-positioned footer bar so content scrolls fully */
+.preview-container[data-fullscreen="true"][data-fullscreen] .preview-render::after {
+  content: "";
+  display: block;
+  flex-shrink: 0;
+  height: 4.5rem;
+}
+
 .preview-container[data-fullscreen="true"][data-fullscreen] .preview-footer {
   position: absolute;
   bottom: 0;
