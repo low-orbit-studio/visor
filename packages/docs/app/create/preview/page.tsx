@@ -78,8 +78,10 @@ export default function PreviewPage() {
     if (event.data.type === "dark-mode") {
       if (event.data.enabled) {
         document.documentElement.classList.add("dark");
+        document.documentElement.classList.remove("light");
       } else {
         document.documentElement.classList.remove("dark");
+        document.documentElement.classList.add("light");
       }
     }
 
@@ -115,7 +117,16 @@ export default function PreviewPage() {
   }, [handleMessage]);
 
   return (
-    <div ref={rootRef} onScroll={handleScroll} style={{ overflow: "auto", height: "100%" }}>
+    <div
+      ref={rootRef}
+      onScroll={handleScroll}
+      style={{
+        overflow: "auto",
+        height: "100%",
+        background: "var(--surface-page, #ffffff)",
+        color: "var(--text-primary, #111827)",
+      }}
+    >
       <ComparatorSpecimen />
     </div>
   );
