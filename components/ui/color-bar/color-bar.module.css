@@ -27,7 +27,6 @@
 .hex {
   font-size: var(--font-size-base, 1rem);
   font-family: var(--font-mono, monospace);
-  font-weight: 600;
   line-height: 1;
 }
 
