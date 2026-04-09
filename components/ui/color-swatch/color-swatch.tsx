@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import { cn } from "../../../lib/utils"
 import { toHex, needsLightText } from "../../../lib/color-utils"
@@ -59,35 +61,48 @@ export interface SemanticColorGridProps {
 // ─── Hooks ──────────────────────────────────────────────────────────────────
 
 /**
- * Reads the live computed CSS custom property value from the nearest scoped
- * element (via ref), normalizes it to hex via culori, and re-syncs whenever
- * the theme class changes on <body> or <html>.
+ * Resolves the live color value of a CSS custom property by applying it as
+ * backgroundColor on a hidden probe div inside document.body (the theme scope),
+ * then reading the fully-resolved getComputedStyle value.
+ *
+ * This mirrors the useLiveFontName pattern and is guaranteed to work regardless
+ * of where the theme class is applied (html vs body vs a child element).
  */
-function useLiveCssColor(
-  token: string,
-  enabled: boolean,
-  ref?: React.RefObject<Element | null>
-): string | null {
+function useLiveCssColor(token: string, enabled: boolean): string | null {
   const [value, setValue] = React.useState<string | null>(null)
 
   React.useEffect(() => {
     if (!enabled) return
 
+    const probe = document.createElement("div")
+    Object.assign(probe.style, {
+      position: "absolute",
+      visibility: "hidden",
+      pointerEvents: "none",
+      backgroundColor: `var(${token})`,
+    })
+    document.body.appendChild(probe)
+
     function read() {
-      // Read from the component's own element when available — ensures we're
-      // inside the theme scope (theme class lives on <body>, not <html>).
-      const el = ref?.current ?? document.body
-      const raw = getComputedStyle(el).getPropertyValue(token).trim()
-      if (raw) setValue(toHex(raw))
+      // Re-stamp the var so the browser recalculates after a theme class change
+      probe.style.backgroundColor = `var(${token})`
+      const resolved = getComputedStyle(probe).backgroundColor
+      // Skip transparent/unset (means the token isn't defined in this theme)
+      if (resolved && resolved !== "rgba(0, 0, 0, 0)" && resolved !== "transparent") {
+        setValue(toHex(resolved))
+      }
     }
 
     read()
-    // Observe both <html> and <body> since different apps may apply the theme class to either
     const obs = new MutationObserver(read)
     obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme"] })
     obs.observe(document.body, { attributes: true, attributeFilter: ["class", "data-theme"] })
-    return () => obs.disconnect()
-  }, [token, enabled]) // ref intentionally excluded — always reads current ref.current
+
+    return () => {
+      obs.disconnect()
+      probe.remove()
+    }
+  }, [token, enabled])
 
   return value
 }
@@ -103,14 +118,13 @@ function ColorSwatch({
   dynamic,
   className,
 }: ColorSwatchProps) {
-  const containerRef = React.useRef<HTMLDivElement>(null)
-  const liveHex = useLiveCssColor(token, !!dynamic, containerRef)
+  const liveHex = useLiveCssColor(token, !!dynamic)
   const displayHex = dynamic && liveHex ? liveHex : hex
   // Auto-compute text color from live value when dynamic; fall back to prop
   const useLightText = dynamic && liveHex ? needsLightText(liveHex) : !!lightText
 
   return (
-    <div ref={containerRef} data-slot="color-swatch" className={cn(styles.swatch, className)}>
+    <div data-slot="color-swatch" className={cn(styles.swatch, className)}>
       <div
         className={styles.preview}
         style={{ background: `var(${token}, ${hex})` }}
@@ -132,14 +146,12 @@ function ColorSwatch({
 // ─── BrandColorSwatch ───────────────────────────────────────────────────────
 
 function BrandColorSwatch({ token, label = "Brand Color", className }: BrandColorSwatchProps) {
-  const containerRef = React.useRef<HTMLDivElement>(null)
-  const liveHex = useLiveCssColor(token, true, containerRef)
+  const liveHex = useLiveCssColor(token, true)
   const useLightText = liveHex ? needsLightText(liveHex) : false
   const textColor = useLightText ? "#ffffff" : "#111827"
 
   return (
     <div
-      ref={containerRef}
       data-slot="brand-color-swatch"
       className={cn(styles.brandSwatch, className)}
       style={{ background: `var(${token})` }}
