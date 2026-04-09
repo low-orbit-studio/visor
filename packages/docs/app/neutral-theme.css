@@ -17,6 +17,7 @@
   /* Font — system stack (no custom font) */
   --font-heading: ui-sans-serif, system-ui, sans-serif;
   --font-body: ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   /* Base styles */
   min-height: 100vh;
