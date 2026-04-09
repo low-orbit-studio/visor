@@ -4,6 +4,11 @@ declare const styles: {
   readonly hex: string
   readonly hexSm: string
   readonly label: string
+  readonly brandSwatch: string
+  readonly brandContent: string
+  readonly brandLabel: string
+  readonly brandHex: string
+  readonly brandToken: string
   readonly scaleGroup: string
   readonly grid: string
   readonly gridLg: string

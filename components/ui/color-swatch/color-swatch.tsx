@@ -1,5 +1,6 @@
 import * as React from "react"
 import { cn } from "../../../lib/utils"
+import { toHex, needsLightText } from "../../../lib/color-utils"
 import { Text } from "../text/text"
 import styles from "./color-swatch.module.css"
 
@@ -31,6 +32,14 @@ export interface ColorSwatchGridProps {
   className?: string
 }
 
+export interface BrandColorSwatchProps {
+  /** CSS custom property token for the brand color (e.g. "--interactive-primary-bg") */
+  token: string
+  /** Label shown on the swatch */
+  label?: string
+  className?: string
+}
+
 export interface SemanticColorItemProps {
   /** CSS custom property token name */
   token: string
@@ -49,7 +58,10 @@ export interface SemanticColorGridProps {
 
 // ─── Hooks ──────────────────────────────────────────────────────────────────
 
-/** Reads the live computed CSS custom property value, re-syncing on theme class changes. */
+/**
+ * Reads the live computed CSS custom property value, normalizes it to hex via
+ * culori, and re-syncs on theme class changes.
+ */
 function useLiveCssColor(token: string, enabled: boolean): string | null {
   const [value, setValue] = React.useState<string | null>(null)
 
@@ -60,7 +72,7 @@ function useLiveCssColor(token: string, enabled: boolean): string | null {
       const raw = getComputedStyle(document.documentElement)
         .getPropertyValue(token)
         .trim()
-      if (raw) setValue(raw)
+      if (raw) setValue(toHex(raw))
     }
 
     read()
@@ -88,6 +100,8 @@ function ColorSwatch({
 }: ColorSwatchProps) {
   const liveHex = useLiveCssColor(token, !!dynamic)
   const displayHex = dynamic && liveHex ? liveHex : hex
+  // Auto-compute text color from live value when dynamic; fall back to prop
+  const useLightText = dynamic && liveHex ? needsLightText(liveHex) : !!lightText
 
   return (
     <div data-slot="color-swatch" className={cn(styles.swatch, className)}>
@@ -97,7 +111,7 @@ function ColorSwatch({
       >
         <span
           className={cn(styles.hex, size === "sm" && styles.hexSm)}
-          style={{ color: lightText ? "#ffffff" : "#111827" }}
+          style={{ color: useLightText ? "#ffffff" : "#111827" }}
         >
           {displayHex}
         </span>
@@ -105,6 +119,34 @@ function ColorSwatch({
       <Text size="xs" color="secondary" as="span" className={styles.label}>
         {name}
       </Text>
+    </div>
+  )
+}
+
+// ─── BrandColorSwatch ───────────────────────────────────────────────────────
+
+function BrandColorSwatch({ token, label = "Brand Color", className }: BrandColorSwatchProps) {
+  const liveHex = useLiveCssColor(token, true)
+  const useLightText = liveHex ? needsLightText(liveHex) : false
+  const textColor = useLightText ? "#ffffff" : "#111827"
+
+  return (
+    <div
+      data-slot="brand-color-swatch"
+      className={cn(styles.brandSwatch, className)}
+      style={{ background: `var(${token})` }}
+    >
+      <div className={styles.brandContent}>
+        <span className={styles.brandLabel} style={{ color: textColor }}>
+          {label}
+        </span>
+        <code className={styles.brandHex} style={{ color: textColor }}>
+          {liveHex ?? ""}
+        </code>
+      </div>
+      <code className={styles.brandToken} style={{ color: textColor }}>
+        {token}
+      </code>
     </div>
   )
 }
@@ -163,4 +205,4 @@ function SemanticColorGrid({ category, items, className }: SemanticColorGridProp
   )
 }
 
-export { ColorSwatch, ColorSwatchGrid, SemanticColorItem, SemanticColorGrid }
+export { ColorSwatch, BrandColorSwatch, ColorSwatchGrid, SemanticColorItem, SemanticColorGrid }

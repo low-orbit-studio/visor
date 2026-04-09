@@ -28,6 +28,12 @@
   gap: var(--spacing-4, 1rem);
 }
 
+.themeScaleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+}
+
 .statusColors {
   display: flex;
   flex-direction: column;

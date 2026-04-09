@@ -19,6 +19,8 @@ export interface ColorSwatchData {
 export interface ColorScaleData {
   name: string
   swatches: ColorSwatchData[]
+  /** When set, renders a featured brand swatch above the scale reading this token */
+  brandToken?: string
 }
 
 export interface SemanticColorData {
@@ -113,6 +115,7 @@ export interface StatusColorScaleData extends ColorScaleData {
 export const THEME_COLOR_SCALES: ColorScaleData[] = [
   {
     name: "Primary",
+    brandToken: "--interactive-primary-bg",
     swatches: [
       { token: "--color-primary-50", hex: "#edf7fc", name: "50", dynamic: true },
       { token: "--color-primary-100", hex: "#dbebf3", name: "100", dynamic: true },

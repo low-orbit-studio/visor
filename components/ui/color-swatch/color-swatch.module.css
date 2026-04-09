@@ -29,6 +29,45 @@
   text-align: center;
 }
 
+/* ─── BrandColorSwatch ───────────────────────────────────────────────────── */
+
+.brandSwatch {
+  border-radius: var(--radius-md, 4px);
+  border: 1px solid var(--border-muted, #f3f4f6);
+  padding: var(--spacing-4, 1rem) var(--spacing-4, 1rem);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  min-height: 5rem;
+}
+
+.brandContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+}
+
+.brandLabel {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 600;
+  line-height: 1;
+  opacity: 0.75;
+}
+
+.brandHex {
+  font-size: var(--font-size-base, 1rem);
+  font-family: var(--font-mono, monospace);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.brandToken {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-family: var(--font-mono, monospace);
+  line-height: 1;
+  opacity: 0.6;
+}
+
 /* ─── ColorSwatchGrid ────────────────────────────────────────────────────── */
 
 .scaleGroup {
