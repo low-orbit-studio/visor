@@ -58,6 +58,9 @@ const THEMES: Array<{ file: string; brand: string; label: string }> = [
     brand: "#6b7280",
     label: "Blackout",
   },
+  // NOTE: veronica-theme.css is intentionally excluded.
+  // Veronica has no brand color — its primary scale is a hand-curated warm
+  // peach palette and should not be overwritten by this script.
 ]
 
 // Map of step name → t value in the [lightAnchor, brand, darkAnchor] interpolator.
