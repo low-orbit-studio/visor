@@ -30,7 +30,8 @@
     "vitest.config.ts",
     "vitest.setup.ts",
     "css-modules.d.ts",
-    "vitest-axe.d.ts"
+    "vitest-axe.d.ts",
+    "culori.d.ts"
   ],
   "exclude": ["node_modules", "dist", "packages"]
 }

@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { glob } from 'node:fs/promises';
-import { lookupGoogleFont } from '@loworbitstudio/visor-theme-engine';
+import { lookupGoogleFont } from '../../packages/theme-engine/src/fonts/google-fonts-catalog.js';
 import type { Rule, RuleResult } from './types.js';
 
 /**

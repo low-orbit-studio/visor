@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { parseConfig } from '@loworbitstudio/visor-theme-engine';
+import { parseConfig } from '../../packages/theme-engine/src/pipeline.js';
 import type { Rule, RuleResult } from './types.js';
 
 // Inline the theme registry so this rule doesn't depend on the docs package at runtime
