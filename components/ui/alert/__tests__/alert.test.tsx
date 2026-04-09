@@ -34,6 +34,11 @@ describe("Alert", () => {
     expect(screen.getByRole("alert")).toBeInTheDocument()
   })
 
+  it("renders info variant", () => {
+    render(<Alert variant="info">Info</Alert>)
+    expect(screen.getByRole("alert")).toBeInTheDocument()
+  })
+
   it("forwards ref", () => {
     const ref = { current: null }
     render(<Alert ref={ref}>Alert</Alert>)

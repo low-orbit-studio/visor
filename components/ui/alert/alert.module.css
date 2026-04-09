@@ -18,18 +18,27 @@
 }
 
 .variantDestructive {
-  background-color: var(--surface-card, #ffffff);
-  color: var(--text-error, #ef4444);
+  background-color: var(--surface-error-subtle, #fef2f2);
+  color: var(--text-error, #b91c1c);
+  border: 1px solid var(--border-error, #ef4444);
 }
 
 .variantSuccess {
-  background-color: var(--surface-card, #ffffff);
-  color: var(--text-success, #22c55e);
+  background-color: var(--surface-success-subtle, #f0fdf4);
+  color: var(--text-success, #15803d);
+  border: 1px solid var(--border-success, #22c55e);
 }
 
 .variantWarning {
-  background-color: var(--surface-card, #ffffff);
-  color: var(--text-warning, #f59e0b);
+  background-color: var(--surface-warning-subtle, #fffbeb);
+  color: var(--text-warning, #b45309);
+  border: 1px solid var(--border-warning, #f59e0b);
+}
+
+.variantInfo {
+  background-color: var(--surface-info-subtle, #f0f9ff);
+  color: var(--text-info, #0369a1);
+  border: 1px solid var(--border-info, #0ea5e9);
 }
 
 /* AlertTitle */
@@ -47,5 +56,17 @@
 }
 
 .variantDestructive .description {
-  color: color-mix(in srgb, var(--text-error, #ef4444) 90%, transparent);
+  color: color-mix(in srgb, var(--text-error, #b91c1c) 90%, transparent);
+}
+
+.variantSuccess .description {
+  color: color-mix(in srgb, var(--text-success, #15803d) 90%, transparent);
+}
+
+.variantWarning .description {
+  color: color-mix(in srgb, var(--text-warning, #b45309) 90%, transparent);
+}
+
+.variantInfo .description {
+  color: color-mix(in srgb, var(--text-info, #0369a1) 90%, transparent);
 }
