@@ -26,11 +26,11 @@ vi.mock("@/lib/theme-config", () => ({
   THEME_GROUPS: [
     {
       label: "Visor",
-      themes: [{ value: "blackout", label: "Blackout" }],
+      themes: [{ value: "blackout", label: "Blackout", yamlFile: "blackout" }],
     },
     {
       label: "Low Orbit",
-      themes: [{ value: "kaiah", label: "Kaiah" }],
+      themes: [{ value: "kaiah", label: "Kaiah", yamlFile: "kaiah" }],
     },
   ],
 }));

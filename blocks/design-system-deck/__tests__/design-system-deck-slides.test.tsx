@@ -3,8 +3,8 @@ import { describe, it, expect } from "vitest"
 import { DesignSystemDeck } from "../design-system-deck"
 import { designSystemDeckRegistry } from "../registry"
 import { TitleSlide } from "../slides/title-slide"
-import { GrayScaleSlide } from "../slides/gray-scale-slide"
-import { AccentPaletteSlide } from "../slides/accent-palette-slide"
+import { ThemeColorsSlide } from "../slides/theme-colors-slide"
+import { StatusColorsSlide } from "../slides/status-colors-slide"
 import { SemanticTokensSlide } from "../slides/semantic-tokens-slide"
 import { TypeDisplaySlide } from "../slides/type-display-slide"
 import { TypeBodySlide } from "../slides/type-body-slide"
@@ -56,19 +56,21 @@ describe("Design System Deck Slides", () => {
     })
   })
 
-  describe("GrayScaleSlide", () => {
-    it("renders gray scale label", () => {
-      render(<GrayScaleSlide />)
-      expect(screen.getByText("Gray")).toBeInTheDocument()
+  describe("ThemeColorsSlide", () => {
+    it("renders theme color scale labels", () => {
+      render(<ThemeColorsSlide />)
+      expect(screen.getByText("Primary")).toBeInTheDocument()
+      expect(screen.getByText("Neutral")).toBeInTheDocument()
     })
   })
 
-  describe("AccentPaletteSlide", () => {
-    it("renders accent scale names", () => {
-      render(<AccentPaletteSlide />)
-      expect(screen.getAllByText("Blue").length).toBeGreaterThan(0)
-      expect(screen.getAllByText("Green").length).toBeGreaterThan(0)
-      expect(screen.getAllByText("Red").length).toBeGreaterThan(0)
+  describe("StatusColorsSlide", () => {
+    it("renders status color scale labels", () => {
+      render(<StatusColorsSlide />)
+      expect(screen.getByText("Success")).toBeInTheDocument()
+      expect(screen.getByText("Warning")).toBeInTheDocument()
+      expect(screen.getByText("Error")).toBeInTheDocument()
+      expect(screen.getByText("Info")).toBeInTheDocument()
     })
   })
 
