@@ -1,6 +1,7 @@
 @import 'fumadocs-ui/style.css';
 @import '../../tokens/dist/tokens.css';
 @import '../../../components/ui/phone-input/phone-input.css';
+@import './modern-minimal-theme.css';
 @import './space-theme.css';
 @import './neutral-theme.css';
 @import './blackout-theme.css';

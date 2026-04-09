@@ -15,6 +15,7 @@ export const THEME_GROUPS: ThemeGroup[] = [
     label: "Visor",
     themes: [
       { value: "blackout", label: "Blackout", yamlFile: "blackout" },
+      { value: "modern-minimal", label: "Modern Minimal", yamlFile: "modern-minimal" },
       { value: "neutral", label: "Neutral", yamlFile: "neutral" },
       { value: "space", label: "Space", yamlFile: "space" },
     ],

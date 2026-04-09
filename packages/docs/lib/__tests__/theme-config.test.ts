@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { readFileSync } from "fs";
+import { readFileSync, readdirSync } from "fs";
 import { resolve } from "path";
+import { parse } from "yaml";
 import { THEME_GROUPS, ALL_THEMES } from "../theme-config";
 
 describe("theme-config", () => {
@@ -25,6 +26,33 @@ describe("theme-config", () => {
   it("has no duplicate theme values", () => {
     const unique = new Set(ALL_THEMES);
     expect(unique.size).toBe(ALL_THEMES.length);
+  });
+});
+
+describe("root theme YAML registration guard", () => {
+  // All *.visor.yaml files at the repo root that look like standalone themes
+  // (i.e. have a `name` field) must be registered in theme-config.ts.
+  // A theme is considered registered if either:
+  //   (a) its slugified name matches a `value` in ALL_THEMES, or
+  //   (b) its filename stem matches a `yamlFile` field in any registered theme
+  //       (e.g. blacklight.visor.yaml → yamlFile: "blacklight" on blacklight-brand)
+  // If this test fails, run: npx visor theme register <file>.visor.yaml --group <Group>
+  const repoRoot = resolve(__dirname, "../../../../");
+  const rootYamlFiles = readdirSync(repoRoot).filter((f) => f.endsWith(".visor.yaml"));
+  const allYamlFiles = THEME_GROUPS.flatMap((g) => g.themes.map((t) => t.yamlFile).filter(Boolean));
+
+  it.each(rootYamlFiles)("%s is registered in theme-config", (yamlFile) => {
+    const content = readFileSync(resolve(repoRoot, yamlFile), "utf-8");
+    const parsed = parse(content) as { name?: string };
+    if (!parsed?.name) return; // skip YAMLs without a name (e.g. component configs)
+    const slug = parsed.name.toLowerCase().replace(/\s+/g, "-");
+    const stem = yamlFile.replace(/\.visor\.yaml$/, "");
+    const isRegistered = ALL_THEMES.includes(slug) || allYamlFiles.includes(stem);
+    expect(
+      isRegistered,
+      `${yamlFile} defines theme "${parsed.name}" but it is not registered in theme-config.ts.\n` +
+        `Run: npx visor theme register ${yamlFile} --group <Visor|Client|Low Orbit>`
+    ).toBe(true);
   });
 });
 
