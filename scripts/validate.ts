@@ -12,6 +12,7 @@ import { focusRingTokens } from './rules/focus-ring-tokens.js';
 import { themeStructure } from './rules/theme-structure.js';
 import { themePrimaryScale } from './rules/theme-primary-scale.js';
 import { themeYamlExists } from './rules/theme-yaml-exists.js';
+import { themeYamlValid } from './rules/theme-yaml-valid.js';
 import { noHardcodedColors } from './rules/no-hardcoded-colors.js';
 import { visorYamlExists } from './rules/visor-yaml-exists.js';
 import { visorYamlComplete } from './rules/visor-yaml-complete.js';
@@ -40,6 +41,7 @@ const rules: Rule[] = [
   themeStructure,
   themePrimaryScale,
   themeYamlExists,
+  themeYamlValid,
   noHardcodedColors,
   visorYamlExists,
   visorYamlComplete,
