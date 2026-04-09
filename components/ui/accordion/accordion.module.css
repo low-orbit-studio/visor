@@ -23,7 +23,7 @@
   padding-top: var(--spacing-4, 1rem);
   padding-bottom: var(--spacing-4, 1rem);
   font-size: var(--font-size-sm, 0.875rem);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium, 500);
   color: var(--text-primary, #111827);
   background: transparent;
   border: none;

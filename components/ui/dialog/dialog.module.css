@@ -83,7 +83,7 @@
 /* Title */
 .title {
   font-size: var(--font-size-lg, 1.125rem);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold, 600);
   color: var(--text-primary, #111827);
   margin: 0;
 }

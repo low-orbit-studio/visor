@@ -86,7 +86,7 @@
 /* Active link */
 .linkActive {
   color: var(--text-primary, #111827);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium, 500);
 }
 
 /* Toggle (hidden in Phase 1a — mobile placeholder) */

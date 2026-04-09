@@ -4,7 +4,7 @@
   align-items: center;
   gap: var(--spacing-2, 0.5rem);
   font-size: var(--font-size-sm, 0.875rem);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium, 500);
   line-height: 1;
   color: var(--text-primary, #111827);
   user-select: none;

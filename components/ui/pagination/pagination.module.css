@@ -61,7 +61,7 @@
 .linkActive {
   border: 1px solid var(--border-default, #e5e7eb);
   background-color: var(--surface-card, #ffffff);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium, 500);
 }
 
 /* Size variants */
