@@ -42,6 +42,7 @@
 .token {
   font-family: var(--font-mono, monospace);
   font-size: var(--font-size-xs, 0.625rem);
+  line-height: 1;
   color: var(--text-tertiary, #9ca3af);
   background: var(--surface-muted, #f3f4f6);
   padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
@@ -102,6 +103,7 @@
 .weightValue {
   font-family: var(--font-mono, monospace);
   font-size: var(--font-size-xs, 0.625rem);
+  line-height: 1;
   color: var(--text-tertiary, #9ca3af);
 }
 
