@@ -21,6 +21,10 @@
   line-height: 1;
 }
 
+.hexSm {
+  font-size: 0.625rem; /* 10px — one step below xs, no token yet */
+}
+
 .label {
   text-align: center;
 }
@@ -47,7 +51,7 @@
 
 .gridSm {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(2.75rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(3.5rem, 1fr)); /* 3.5rem min fits 7-char hex at 0.625rem mono + padding */
   gap: var(--spacing-1, 0.25rem);
 }
 

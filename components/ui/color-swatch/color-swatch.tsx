@@ -14,6 +14,8 @@ export interface ColorSwatchProps {
   name: string
   /** When true, hex text renders white instead of dark */
   lightText?: boolean
+  /** Size variant — controls hex text size; passed down from ColorSwatchGrid */
+  size?: "default" | "lg" | "sm"
   className?: string
 }
 
@@ -50,6 +52,7 @@ function ColorSwatch({
   hex,
   name,
   lightText,
+  size = "default",
   className,
 }: ColorSwatchProps) {
   return (
@@ -59,7 +62,7 @@ function ColorSwatch({
         style={{ background: `var(${token}, ${hex})` }}
       >
         <span
-          className={styles.hex}
+          className={cn(styles.hex, size === "sm" && styles.hexSm)}
           style={{ color: lightText ? "#ffffff" : "#111827" }}
         >
           {hex}
@@ -86,7 +89,7 @@ function ColorSwatchGrid({ label, swatches, size = "default", className }: Color
       <Text weight="medium" size="sm" as="div">{label}</Text>
       <div className={gridSizeClass[size]}>
         {swatches.map((swatch) => (
-          <ColorSwatch key={swatch.token} {...swatch} />
+          <ColorSwatch key={swatch.token} {...swatch} size={size} />
         ))}
       </div>
     </div>
