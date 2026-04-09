@@ -10,6 +10,7 @@ import { noHardcodedMotion } from './rules/no-hardcoded-motion.js';
 import { noHardcodedOverlay } from './rules/no-hardcoded-overlay.js';
 import { focusRingTokens } from './rules/focus-ring-tokens.js';
 import { themeStructure } from './rules/theme-structure.js';
+import { themePrimaryScale } from './rules/theme-primary-scale.js';
 import { noHardcodedColors } from './rules/no-hardcoded-colors.js';
 import { visorYamlExists } from './rules/visor-yaml-exists.js';
 import { visorYamlComplete } from './rules/visor-yaml-complete.js';
@@ -36,6 +37,7 @@ const rules: Rule[] = [
   noHardcodedOverlay,
   focusRingTokens,
   themeStructure,
+  themePrimaryScale,
   noHardcodedColors,
   visorYamlExists,
   visorYamlComplete,
