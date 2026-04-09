@@ -41,6 +41,23 @@ const THEMES: Array<{ file: string; brand: string; label: string }> = [
     brand: "#3b2f1a",
     label: "Kaiah",
   },
+  {
+    file: "neutral-theme.css",
+    brand: "#1798ad",
+    label: "Neutral",
+  },
+  {
+    file: "space-theme.css",
+    brand: "#5b6fff",
+    label: "Space",
+  },
+  {
+    // Blackout is intentionally grayscale — no color accent.
+    // Primary scale anchored at gray-500 for a neutral zinc-like gradient.
+    file: "blackout-theme.css",
+    brand: "#6b7280",
+    label: "Blackout",
+  },
 ]
 
 // Map of step name → t value in the [lightAnchor, brand, darkAnchor] interpolator.
@@ -92,19 +109,46 @@ function computeScale(brandHex: string): Record<string, string> {
 function updateThemeFile(filePath: string, steps: Record<string, string>): void {
   let css = readFileSync(filePath, "utf-8")
 
-  for (const [step, hex] of Object.entries(steps)) {
-    const token = `--color-primary-${step}`
-    // Replace the value of any existing declaration: --color-primary-NNN: <anything>;
-    const re = new RegExp(`(${token}\\s*:\\s*)([^;]+)(;)`, "g")
-    if (!re.test(css)) {
-      console.warn(`  ⚠ ${token} not found in ${filePath} — skipping step ${step}`)
-      continue
+  // Check whether any --color-primary-* tokens exist in this file
+  const hasExisting = Object.keys(steps).some((step) =>
+    css.includes(`--color-primary-${step}`)
+  )
+
+  if (hasExisting) {
+    // Replace existing declarations in-place
+    for (const [step, hex] of Object.entries(steps)) {
+      const token = `--color-primary-${step}`
+      css = css.replace(
+        new RegExp(`(${token}\\s*:\\s*)([^;]+)(;)`, "g"),
+        `$1${hex}$3`
+      )
     }
-    // Reset lastIndex after test()
-    css = css.replace(
-      new RegExp(`(${token}\\s*:\\s*)([^;]+)(;)`, "g"),
-      `$1${hex}$3`
-    )
+  } else {
+    // Insert a new block. Find the first opening brace of the theme class rule
+    // and append the scale just before its closing brace.
+    const block = [
+      "",
+      "  /* Primary color scale — OKLCH-interpolated, brand at 500 */",
+      ...Object.entries(steps).map(
+        ([step, hex]) => `  --color-primary-${step}: ${hex};`
+      ),
+    ].join("\n")
+
+    // Find the first selector rule (skip @font-face, @import, etc.)
+    // Look for the first line that starts with a class or element selector
+    const selectorMatch = css.match(/\n([.#][\w-]+\s*\{)/)
+    if (!selectorMatch || selectorMatch.index == null) {
+      console.warn(`  ⚠ Could not find insertion point in ${filePath}`)
+      return
+    }
+    // Find the closing brace of that first selector rule
+    const selectorStart = selectorMatch.index
+    const closeIdx = css.indexOf("\n}", selectorStart)
+    if (closeIdx === -1) {
+      console.warn(`  ⚠ Could not find closing brace in ${filePath}`)
+      return
+    }
+    css = css.slice(0, closeIdx) + block + "\n" + css.slice(closeIdx)
   }
 
   writeFileSync(filePath, css, "utf-8")
