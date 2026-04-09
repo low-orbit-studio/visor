@@ -11,6 +11,7 @@ import { RadiusScale } from "../../components/ui/radius-scale/radius-scale"
 import styles from "./design-system-specimen.module.css"
 import type {
   ColorScaleData,
+  StatusColorScaleData,
   SemanticColorData,
   TypeSpecimenData,
   SpacingStepData,
@@ -22,13 +23,15 @@ import type {
 // ─── Color Palette ───────────────────────────────────────────────────────────
 
 interface ColorPaletteSectionProps {
-  scales: ColorScaleData[]
+  themeScales: ColorScaleData[]
+  statusScales: StatusColorScaleData[]
   semanticColors: SemanticColorData[]
   className?: string
 }
 
 export function ColorPaletteSection({
-  scales,
+  themeScales,
+  statusScales,
   semanticColors,
   className,
 }: ColorPaletteSectionProps) {
@@ -38,24 +41,56 @@ export function ColorPaletteSection({
     <section id="specimen-colors" className={cn(styles.section, className)}>
       <Heading level={3} size="lg">Color Palette</Heading>
       <Text color="secondary" size="sm">
-        Primitive color scales and semantic color tokens.
+        Theme identity colors, status indicators, and semantic tokens.
       </Text>
 
-      {scales.map((scale) => (
-        <ColorSwatchGrid
-          key={scale.name}
-          label={scale.name}
-          swatches={scale.swatches.map((s) => ({
-            token: s.token,
-            hex: s.hex,
-            name: s.name,
-            lightText: s.lightText,
-          }))}
-        />
-      ))}
+      {/* Theme Colors — prominent */}
+      <div className={styles.themeColors}>
+        <Text size="xs" color="tertiary" weight="medium" as="div" className={styles.subsectionLabel}>
+          Theme Colors
+        </Text>
+        {themeScales.map((scale) => (
+          <ColorSwatchGrid
+            key={scale.name}
+            label={scale.name}
+            size="lg"
+            swatches={scale.swatches.map((s) => ({
+              token: s.token,
+              hex: s.hex,
+              name: s.name,
+              lightText: s.lightText,
+            }))}
+          />
+        ))}
+      </div>
 
+      {/* Status Colors — compact */}
+      <div className={styles.statusColors}>
+        <Text size="xs" color="tertiary" weight="medium" as="div" className={styles.subsectionLabel}>
+          Status Colors
+        </Text>
+        <div className={styles.statusGrid}>
+          {statusScales.map((scale) => (
+            <ColorSwatchGrid
+              key={scale.name}
+              label={scale.role}
+              size="sm"
+              swatches={scale.swatches.map((s) => ({
+                token: s.token,
+                hex: s.hex,
+                name: s.name,
+                lightText: s.lightText,
+              }))}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Semantic Colors — unchanged */}
       <div className={styles.semanticColorSection}>
-        <Text weight="medium" size="sm" as="div">Semantic Colors</Text>
+        <Text size="xs" color="tertiary" weight="medium" as="div" className={styles.subsectionLabel}>
+          Semantic Tokens
+        </Text>
         {categories.map((category) => (
           <SemanticColorGrid
             key={category}

@@ -39,6 +39,18 @@
   gap: var(--spacing-2, 0.5rem);
 }
 
+.gridLg {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.gridSm {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(2.75rem, 1fr));
+  gap: var(--spacing-1, 0.25rem);
+}
+
 /* ─── SemanticColorItem ──────────────────────────────────────────────────── */
 
 .semanticItem {

@@ -17,11 +17,33 @@
 
 /* ─── Color Palette (orchestration) ──────────────────────────────────────── */
 
+.subsectionLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.themeColors {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 1rem);
+}
+
+.statusColors {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: var(--spacing-4, 1rem);
+}
+
 .semanticColorSection {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-4, 1rem);
-  margin-top: var(--spacing-4, 1rem);
 }
 
 /* ─── Typography (orchestration) ─────────────────────────────────────────── */

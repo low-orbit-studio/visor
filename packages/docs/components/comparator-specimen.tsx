@@ -11,7 +11,8 @@ import {
 } from "../../../blocks/design-system-specimen/component-specimens";
 import { AccessibilitySection } from "../../../blocks/design-system-specimen/utility-specimens";
 import {
-  COLOR_SCALES,
+  THEME_COLOR_SCALES,
+  STATUS_COLOR_SCALES,
   SEMANTIC_COLORS,
   TYPE_SPECIMENS,
   CONTRAST_PAIRS,
@@ -21,7 +22,7 @@ import styles from "./comparator-specimen.module.css";
 export function ComparatorSpecimen() {
   return (
     <div className={styles.root}>
-      <ColorPaletteSection scales={COLOR_SCALES} semanticColors={SEMANTIC_COLORS} />
+      <ColorPaletteSection themeScales={THEME_COLOR_SCALES} statusScales={STATUS_COLOR_SCALES} semanticColors={SEMANTIC_COLORS} />
       <Separator />
       <TypographySection specimens={TYPE_SPECIMENS} />
       <Separator />

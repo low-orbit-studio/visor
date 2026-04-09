@@ -87,9 +87,14 @@ export interface IconSpecimenData {
 
 // ─── Color Scales ────────────────────────────────────────────────────────────
 
-export const COLOR_SCALES: ColorScaleData[] = [
+export interface StatusColorScaleData extends ColorScaleData {
+  /** Semantic role label (e.g. "Success", "Warning") */
+  role: string
+}
+
+export const THEME_COLOR_SCALES: ColorScaleData[] = [
   {
-    name: "Gray",
+    name: "Neutral",
     swatches: [
       { token: "--color-gray-50", hex: "#f9fafb", name: "50" },
       { token: "--color-gray-100", hex: "#f3f4f6", name: "100" },
@@ -105,7 +110,7 @@ export const COLOR_SCALES: ColorScaleData[] = [
     ],
   },
   {
-    name: "Blue",
+    name: "Primary",
     swatches: [
       { token: "--color-blue-50", hex: "#eff6ff", name: "50" },
       { token: "--color-blue-100", hex: "#dbeafe", name: "100" },
@@ -119,8 +124,12 @@ export const COLOR_SCALES: ColorScaleData[] = [
       { token: "--color-blue-900", hex: "#1e3a8a", name: "900", lightText: true },
     ],
   },
+]
+
+export const STATUS_COLOR_SCALES: StatusColorScaleData[] = [
   {
-    name: "Green",
+    name: "Success",
+    role: "Success",
     swatches: [
       { token: "--color-green-50", hex: "#f0fdf4", name: "50" },
       { token: "--color-green-100", hex: "#dcfce7", name: "100" },
@@ -131,7 +140,8 @@ export const COLOR_SCALES: ColorScaleData[] = [
     ],
   },
   {
-    name: "Amber",
+    name: "Warning",
+    role: "Warning",
     swatches: [
       { token: "--color-amber-50", hex: "#fffbeb", name: "50" },
       { token: "--color-amber-100", hex: "#fef3c7", name: "100" },
@@ -142,7 +152,8 @@ export const COLOR_SCALES: ColorScaleData[] = [
     ],
   },
   {
-    name: "Red",
+    name: "Error",
+    role: "Error",
     swatches: [
       { token: "--color-red-50", hex: "#fef2f2", name: "50" },
       { token: "--color-red-100", hex: "#fee2e2", name: "100" },
@@ -153,7 +164,8 @@ export const COLOR_SCALES: ColorScaleData[] = [
     ],
   },
   {
-    name: "Sky",
+    name: "Info",
+    role: "Info",
     swatches: [
       { token: "--color-sky-50", hex: "#f0f9ff", name: "50" },
       { token: "--color-sky-100", hex: "#e0f2fe", name: "100" },
