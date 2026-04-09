@@ -69,6 +69,8 @@ toast('Message sent', {
 
 ## Variants
 
+Each toast type receives a distinct color treatment: a subtle intent-colored background with a left accent border. This makes it easy to distinguish success, error, warning, and info toasts at a glance.
+
 <ComponentPreview
   title="Toast Types"
   code={"import { toast } from '@/components/ui/toast/toast';\nimport { Button } from '@/components/ui/button/button';\n\n<Button variant=\"outline\" size=\"sm\" onClick={() => toast('Event created')}>Default</Button>\n<Button variant=\"outline\" size=\"sm\" onClick={() => toast.success('Changes saved')}>Success</Button>\n<Button variant=\"outline\" size=\"sm\" onClick={() => toast.error('Something went wrong')}>Error</Button>\n<Button variant=\"outline\" size=\"sm\" onClick={() => toast.warning('Storage almost full')}>Warning</Button>\n<Button variant=\"outline\" size=\"sm\" onClick={() => toast.info('New update available')}>Info</Button>"}
@@ -133,6 +135,19 @@ toast(message, {
 - Toasts auto-dismiss after 4 seconds by default — ensure any critical information is also conveyed inline, not only via toast.
 - Respect `prefers-reduced-motion`: Sonner reduces animation when the OS setting is active.
 
+## Color Signal
+
+Typed toasts (`toast.success()`, `toast.error()`, `toast.warning()`, `toast.info()`) automatically receive semantic color styling via CSS custom properties. The color treatment adapts to the active theme — no configuration needed.
+
+| Type | Background | Accent Border |
+| --- | --- | --- |
+| `success` | `--surface-success-subtle` | `--border-success` |
+| `error` | `--surface-error-subtle` | `--border-error` |
+| `warning` | `--surface-warning-subtle` | `--border-warning` |
+| `info` | `--surface-info-subtle` | `--border-info` |
+
+Default (untyped) toasts retain the neutral surface style.
+
 ## Customization
 
 After copying the component, common customizations include:
@@ -140,9 +155,6 @@ After copying the component, common customizations include:
 ```tsx
 // Custom position and duration
 <Toaster position="top-center" duration={6000} />
-
-// Rich colors for semantic types
-<Toaster richColors />
 
 // Limit visible toasts
 <Toaster visibleToasts={3} />
