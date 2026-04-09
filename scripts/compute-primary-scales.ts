@@ -96,6 +96,8 @@ function computeScale(brandHex: string): Record<string, string> {
 
   return Object.fromEntries(
     Object.entries(STEP_T).map(([step, t]) => {
+      // Step 500 is the brand color — return the original hex exactly, no roundtrip
+      if (step === "500") return [step, brandHex]
       const color = scale(t)
       const hex = formatHex(color)
       if (!hex) throw new Error(`Failed to compute step ${step} at t=${t} for ${brandHex}`)
