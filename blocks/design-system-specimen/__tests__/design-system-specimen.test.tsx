@@ -38,10 +38,10 @@ describe("DesignSystemSpecimen", () => {
     }
   })
 
-  it("renders color swatches for Gray scale", () => {
+  it("renders color swatches for Neutral scale", () => {
     render(<DesignSystemSpecimen />)
-    // Gray scale has 11 swatches (50-950)
-    expect(screen.getByText("Gray")).toBeInTheDocument()
+    // Neutral scale has 11 swatches (50-950)
+    expect(screen.getByText("Neutral")).toBeInTheDocument()
   })
 
   it("renders typography specimens", () => {
