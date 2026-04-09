@@ -13,6 +13,18 @@
   box-shadow: var(--shadow-lg);
   padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
   gap: var(--spacing-2, 0.5rem);
+  /* Override Sonner's default 400ms transitions with Visor motion tokens */
+  transition:
+    transform var(--motion-duration-normal, 200ms) var(--motion-easing-enter, ease-out),
+    opacity var(--motion-duration-normal, 200ms) var(--motion-easing-enter, ease-out),
+    height var(--motion-duration-normal, 200ms) !important;
+}
+
+/* Faster exit animation for dismissed toasts */
+.toaster :global([data-sonner-toast][data-removed="true"]) {
+  transition:
+    transform var(--motion-duration-150, 150ms) var(--motion-easing-exit, ease-in),
+    opacity var(--motion-duration-150, 150ms) var(--motion-easing-exit, ease-in) !important;
 }
 
 /* Toast title */

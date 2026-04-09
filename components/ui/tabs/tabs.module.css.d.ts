@@ -5,6 +5,7 @@ declare const styles: {
   readonly listVariantLine: string
   readonly trigger: string
   readonly content: string
+  readonly indicator: string
 }
 
 export default styles

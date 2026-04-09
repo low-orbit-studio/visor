@@ -38,15 +38,78 @@ export interface TabsListProps
 const TabsList = React.forwardRef<
   React.ComponentRef<typeof TabsPrimitive.List>,
   TabsListProps
->(({ className, variant = "default", ...props }, ref) => (
-  <TabsPrimitive.List
-    ref={ref}
-    data-slot="tabs-list"
-    data-variant={variant}
-    className={cn(tabsListVariants({ variant }), className)}
-    {...props}
-  />
-))
+>(({ className, variant = "default", children, ...props }, ref) => {
+  const internalRef = React.useRef<HTMLDivElement>(null)
+  const [indicatorStyle, setIndicatorStyle] = React.useState<{
+    left: number
+    width: number
+  } | null>(null)
+
+  // Merge forwarded ref with internal ref
+  const mergedRef = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      internalRef.current = node
+      if (typeof ref === "function") {
+        ref(node)
+      } else if (ref) {
+        ref.current = node
+      }
+    },
+    [ref]
+  )
+
+  const updateIndicator = React.useCallback(() => {
+    if (variant !== "line" || !internalRef.current) return
+    const activeTab = internalRef.current.querySelector<HTMLElement>(
+      '[data-state="active"]'
+    )
+    if (activeTab) {
+      setIndicatorStyle({
+        left: activeTab.offsetLeft,
+        width: activeTab.offsetWidth,
+      })
+    }
+  }, [variant])
+
+  React.useEffect(() => {
+    if (variant !== "line" || !internalRef.current) return
+    updateIndicator()
+
+    const observer = new MutationObserver(updateIndicator)
+    observer.observe(internalRef.current, {
+      attributes: true,
+      attributeFilter: ["data-state"],
+      subtree: true,
+    })
+
+    window.addEventListener("resize", updateIndicator)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener("resize", updateIndicator)
+    }
+  }, [variant, updateIndicator])
+
+  return (
+    <TabsPrimitive.List
+      ref={mergedRef}
+      data-slot="tabs-list"
+      data-variant={variant}
+      className={cn(tabsListVariants({ variant }), className)}
+      {...props}
+    >
+      {children}
+      {variant === "line" && indicatorStyle && (
+        <span
+          className={styles.indicator}
+          style={{
+            left: indicatorStyle.left,
+            width: indicatorStyle.width,
+          }}
+        />
+      )}
+    </TabsPrimitive.List>
+  )
+})
 TabsList.displayName = "TabsList"
 
 const TabsTrigger = React.forwardRef<

@@ -22,6 +22,7 @@
 }
 
 .listVariantLine {
+  position: relative;
   gap: var(--spacing-1, 0.25rem);
   background-color: transparent;
   border-radius: 0;
@@ -89,4 +90,21 @@
 .content:focus-visible {
   outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
   outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* Line variant: active trigger loses shadow/bg, just text color */
+.listVariantLine .trigger[data-state="active"] {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+/* Animated sliding indicator for line variant */
+.indicator {
+  position: absolute;
+  bottom: -1px;
+  height: 2px;
+  background-color: var(--text-primary, #111827);
+  border-radius: var(--radius-full, 9999px);
+  transition: left var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease-in-out),
+              width var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease-in-out);
 }
