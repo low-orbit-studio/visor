@@ -3,45 +3,10 @@ import { Slide } from "../../../components/deck/slide/slide"
 import { SlideHeader } from "../../../components/deck/slide-header/slide-header"
 import { Text } from "../../../components/ui/text/text"
 import { IconGrid, IconSizeRow } from "../../../components/ui/icon-grid/icon-grid"
-import {
-  House,
-  MagnifyingGlass,
-  Gear,
-  User,
-  Bell,
-  EnvelopeSimple,
-  Plus,
-  X,
-  Check,
-  Warning,
-  Info,
-  ArrowRight,
-  CaretDown,
-  DotsThree,
-  PencilSimple,
-  Trash,
-} from "@phosphor-icons/react"
+import { House } from "@phosphor-icons/react"
 import { ICON_SPECIMENS, ICON_SIZES } from "../../design-system-specimen/specimen-data"
+import { ICON_MAP } from "../../design-system-specimen/icon-map"
 import styles from "./slides.module.css"
-
-const ICON_MAP: Record<string, React.ComponentType<{ size?: number; weight?: "regular" | "bold" | "fill" }>> = {
-  House,
-  MagnifyingGlass,
-  Gear,
-  User,
-  Bell,
-  EnvelopeSimple,
-  Plus,
-  X,
-  Check,
-  Warning,
-  Info,
-  ArrowRight,
-  CaretDown,
-  DotsThree,
-  PencilSimple,
-  Trash,
-}
 
 export function IconsSlide() {
   const gridItems = ICON_SPECIMENS

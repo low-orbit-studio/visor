@@ -69,24 +69,20 @@
   gap: var(--spacing-6, 1.5rem);
 }
 
-/* ─── Color: Accent Palette ─────────────────────────────────────────────── */
+/* ─── Color: Theme Colors ───────────────────────────────────────────────── */
 
-.accentScalesGrid {
+.themeScaleGroup {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-5, 1.25rem);
-}
-
-.accentScaleGroup {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2, 0.5rem);
-}
-
-.accentScaleHeader {
-  display: flex;
-  align-items: baseline;
   gap: var(--spacing-3, 0.75rem);
+}
+
+/* ─── Color: Status Colors ──────────────────────────────────────────────── */
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: var(--spacing-4, 1rem);
 }
 
 /* ─── Theme Architecture ────────────────────────────────────────────────── */

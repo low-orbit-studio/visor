@@ -1,8 +1,8 @@
 import type { DeckRegistry } from "../../lib/deck-registry"
 import {
   TitleSlide,
-  GrayScaleSlide,
-  AccentPaletteSlide,
+  ThemeColorsSlide,
+  StatusColorsSlide,
   SemanticTokensSlide,
   TypeDisplaySlide,
   TypeBodySlide,
@@ -26,8 +26,8 @@ export const designSystemDeckRegistry: DeckRegistry = {
     { id: "s-title", title: "Title", section: "_title", component: TitleSlide },
 
     // Foundation
-    { id: "s-gray-scale", title: "Gray Scale", section: "Foundation", component: GrayScaleSlide },
-    { id: "s-accent-palette", title: "Accent Palette", section: "Foundation", component: AccentPaletteSlide },
+    { id: "s-theme-colors", title: "Theme Colors", section: "Foundation", component: ThemeColorsSlide },
+    { id: "s-status-colors", title: "Status Colors", section: "Foundation", component: StatusColorsSlide },
     { id: "s-semantic-tokens", title: "Semantic Tokens", section: "Foundation", component: SemanticTokensSlide },
     { id: "s-type-display", title: "Display Scale", section: "Foundation", component: TypeDisplaySlide },
     { id: "s-type-body", title: "Body & Utility", section: "Foundation", component: TypeBodySlide },
