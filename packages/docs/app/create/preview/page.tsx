@@ -29,6 +29,18 @@ export default function PreviewPage() {
   const rootRef = useRef<HTMLDivElement>(null);
   const isSyncingRef = useRef(false);
 
+  // Strip the global docs-site theme class so the creator's CSS bundle is the
+  // sole source of token values.  The root layout injects e.g. "blacklight-brand-theme"
+  // from localStorage — that would override the creator's :root declarations.
+  useEffect(() => {
+    const themeClasses = [...document.body.classList].filter((c) =>
+      c.endsWith("-theme")
+    );
+    for (const cls of themeClasses) {
+      document.body.classList.remove(cls);
+    }
+  }, []);
+
   /** When the preview scrolls, report scroll percent to the parent frame */
   const handleScroll = useCallback(() => {
     if (isSyncingRef.current) return;
