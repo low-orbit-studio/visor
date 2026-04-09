@@ -28,17 +28,17 @@
   font-family: var(--font-sans);
 
   /* ENTR green primary palette */
-  --color-primary-50: #f0fdf6;
-  --color-primary-100: #dcfced;
-  --color-primary-200: #bbf7d5;
-  --color-primary-300: #86efb0;
-  --color-primary-400: #4ade82;
-  --color-primary-500: #22c56d;
-  --color-primary-600: #16a35a;
-  --color-primary-700: #107d44;
-  --color-primary-800: #0c5f32;
-  --color-primary-900: #064020;
-  --color-primary-950: #031f0f;
+  --color-primary-50: #ebfaf0;
+  --color-primary-100: #dbf8e5;
+  --color-primary-200: #c5f6d7;
+  --color-primary-300: #abf3c7;
+  --color-primary-400: #8cefb5;
+  --color-primary-500: #6beba5;
+  --color-primary-600: #49bd80;
+  --color-primary-700: #26905c;
+  --color-primary-800: #00663b;
+  --color-primary-900: #00431e;
+  --color-primary-950: #00290a;
 
   /* ENTR cyan accent palette */
   --color-accent-50: #ecfeff;
