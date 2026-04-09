@@ -4,6 +4,7 @@ import { Heading } from "../../components/ui/heading/heading"
 import { Text } from "../../components/ui/text/text"
 import { ColorSwatchGrid, SemanticColorGrid } from "../../components/ui/color-swatch/color-swatch"
 import { TypeSpecimen } from "../../components/ui/type-specimen/type-specimen"
+import { FontShowcaseGrid } from "../../components/ui/font-showcase/font-showcase"
 import { SpacingScale } from "../../components/ui/spacing-scale/spacing-scale"
 import { ElevationCard } from "../../components/ui/elevation-card/elevation-card"
 import { SurfaceRow } from "../../components/ui/surface-row/surface-row"
@@ -13,6 +14,7 @@ import type {
   ColorScaleData,
   StatusColorScaleData,
   SemanticColorData,
+  FontFamilyData,
   TypeSpecimenData,
   SpacingStepData,
   ShadowLevelData,
@@ -108,11 +110,13 @@ export function ColorPaletteSection({
 // ─── Typography ──────────────────────────────────────────────────────────────
 
 interface TypographySectionProps {
+  fontFamilies: FontFamilyData[]
   specimens: TypeSpecimenData[]
   className?: string
 }
 
 export function TypographySection({
+  fontFamilies,
   specimens,
   className,
 }: TypographySectionProps) {
@@ -120,19 +124,40 @@ export function TypographySection({
     <section id="specimen-typography" className={cn(styles.section, className)}>
       <Heading level={3} size="lg">Typography</Heading>
       <Text color="secondary" size="sm">
-        Full type scale from display to fine print.
+        Font families, weights, and the full type scale.
       </Text>
 
-      <div className={styles.typeSpecimenList}>
-        {specimens.map((spec) => (
-          <TypeSpecimen
-            key={spec.token}
-            token={spec.token}
-            label={spec.label}
-            sizePx={spec.sizePx}
-            sampleText={spec.sampleText}
-          />
-        ))}
+      {/* Font Showcase */}
+      <div>
+        <Text size="xs" color="tertiary" weight="medium" as="div" className={styles.subsectionLabel}>
+          Font Families
+        </Text>
+        <FontShowcaseGrid
+          fonts={fontFamilies.map((f) => ({
+            token: f.token,
+            role: f.role,
+            familyName: f.familyName,
+            weights: f.weights,
+          }))}
+        />
+      </div>
+
+      {/* Type Scale */}
+      <div>
+        <Text size="xs" color="tertiary" weight="medium" as="div" className={styles.subsectionLabel}>
+          Type Scale
+        </Text>
+        <div className={styles.typeSpecimenList}>
+          {specimens.map((spec) => (
+            <TypeSpecimen
+              key={spec.token}
+              token={spec.token}
+              label={spec.label}
+              sizePx={spec.sizePx}
+              sampleText={spec.sampleText}
+            />
+          ))}
+        </div>
       </div>
     </section>
   )

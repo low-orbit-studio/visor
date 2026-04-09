@@ -14,6 +14,7 @@ import {
   THEME_COLOR_SCALES,
   STATUS_COLOR_SCALES,
   SEMANTIC_COLORS,
+  FONT_FAMILIES,
   TYPE_SPECIMENS,
   CONTRAST_PAIRS,
 } from "../../../blocks/design-system-specimen/specimen-data";
@@ -24,7 +25,7 @@ export function ComparatorSpecimen() {
     <div className={styles.root}>
       <ColorPaletteSection themeScales={THEME_COLOR_SCALES} statusScales={STATUS_COLOR_SCALES} semanticColors={SEMANTIC_COLORS} />
       <Separator />
-      <TypographySection specimens={TYPE_SPECIMENS} />
+      <TypographySection fontFamilies={FONT_FAMILIES} specimens={TYPE_SPECIMENS} />
       <Separator />
       <ButtonSpecimenSection />
       <Separator />

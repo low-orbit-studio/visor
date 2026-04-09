@@ -85,6 +85,22 @@ export interface IconSpecimenData {
   usage: string
 }
 
+export interface FontWeightData {
+  label: string
+  value: number
+}
+
+export interface FontFamilyData {
+  /** CSS custom property token (e.g. "--font-heading") */
+  token: string
+  /** Display role (e.g. "Heading & Body", "Monospace") */
+  role: string
+  /** Font family display name */
+  familyName: string
+  /** Available weights */
+  weights: FontWeightData[]
+}
+
 // ─── Color Scales ────────────────────────────────────────────────────────────
 
 export interface StatusColorScaleData extends ColorScaleData {
@@ -206,6 +222,30 @@ export const SEMANTIC_COLORS: SemanticColorData[] = [
 ]
 
 // ─── Typography ──────────────────────────────────────────────────────────────
+
+export const FONT_FAMILIES: FontFamilyData[] = [
+  {
+    token: "--font-heading",
+    role: "Heading & Body",
+    familyName: "Satoshi",
+    weights: [
+      { label: "Regular", value: 400 },
+      { label: "Medium", value: 500 },
+      { label: "Semibold", value: 600 },
+      { label: "Bold", value: 700 },
+    ],
+  },
+  {
+    token: "--font-mono",
+    role: "Monospace",
+    familyName: "Monaspace Neon",
+    weights: [
+      { label: "Regular", value: 400 },
+      { label: "Medium", value: 500 },
+      { label: "Bold", value: 700 },
+    ],
+  },
+]
 
 export const TYPE_SPECIMENS: TypeSpecimenData[] = [
   { token: "--font-size-4xl", label: "4xl", sizePx: 36, sampleText: "Display text" },

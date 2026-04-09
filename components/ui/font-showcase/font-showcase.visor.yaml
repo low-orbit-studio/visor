@@ -1,0 +1,42 @@
+name: Font Showcase
+description: A card displaying a font family with its name, role, hero glyph, and weight specimens.
+extends: HTMLDivElement
+category: specimen
+
+when_to_use:
+  - Displaying font families used by a theme
+  - Design system typography documentation
+  - Comparing weight variants of a typeface
+
+when_not_to_use:
+  - Rendering actual page content (use Heading or Text)
+  - Showing the type size scale (use TypeSpecimen)
+
+why: >
+  FontShowcase renders a card for a single font family showing the family name,
+  role, a large hero glyph, and weight specimens with sample text. All font values
+  reference CSS custom properties so theme changes are reflected immediately.
+
+props:
+  - name: token
+    type: string
+    description: CSS custom property for font-family
+  - name: role
+    type: string
+    description: Display role label
+  - name: familyName
+    type: string
+    description: Font family display name
+  - name: weights
+    type: FontWeightSpecimen[]
+    description: Available weights to display
+
+dependencies: []
+
+example: |
+  <FontShowcase
+    token="--font-heading"
+    role="Heading & Body"
+    familyName="Satoshi"
+    weights={[{ label: "Regular", value: 400 }, { label: "Bold", value: 700 }]}
+  />
