@@ -24,6 +24,7 @@ import { docsHasPropsTable } from './rules/docs-has-props-table.js';
 import { docsHasInstallCommand } from './rules/docs-has-install-command.js';
 import { docsConsistentSections } from './rules/docs-consistent-sections.js';
 import { docsAlphabetized } from './rules/docs-alphabetized.js';
+import { themeFontImports } from './rules/theme-font-imports.js';
 import type { Rule } from './rules/types.js';
 
 const rules: Rule[] = [
@@ -40,6 +41,7 @@ const rules: Rule[] = [
   focusRingTokens,
   themeStructure,
   themePrimaryScale,
+  themeFontImports,
   themeYamlExists,
   themeYamlValid,
   noHardcodedColors,
