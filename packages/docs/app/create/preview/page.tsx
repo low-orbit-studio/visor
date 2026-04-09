@@ -1,9 +1,23 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import { ComparatorSpecimen } from "@/components/comparator-specimen";
 
 export default function PreviewPage() {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const isSyncingRef = useRef(false);
+
+  /** When the preview scrolls, report scroll percent to the parent frame */
+  const handleScroll = useCallback(() => {
+    if (isSyncingRef.current) return;
+    const el = rootRef.current;
+    if (!el) return;
+    const max = el.scrollHeight - el.clientHeight;
+    if (max <= 0) return;
+    const percent = el.scrollTop / max;
+    window.parent.postMessage({ type: "scroll-report", percent }, "*");
+  }, []);
+
   const handleMessage = useCallback((event: MessageEvent) => {
     if (!event.data || typeof event.data !== "object") return;
 
@@ -40,6 +54,19 @@ export default function PreviewPage() {
         document.head.appendChild(link);
       }
     }
+
+    /** Sync scroll from the controls column */
+    if (event.data.type === "set-scroll") {
+      const el = rootRef.current;
+      if (!el) return;
+      const max = el.scrollHeight - el.clientHeight;
+      if (max <= 0) return;
+      isSyncingRef.current = true;
+      el.scrollTop = (event.data.percent as number) * max;
+      setTimeout(() => {
+        isSyncingRef.current = false;
+      }, 50);
+    }
   }, []);
 
   useEffect(() => {
@@ -48,7 +75,7 @@ export default function PreviewPage() {
   }, [handleMessage]);
 
   return (
-    <div style={{ overflow: "auto", height: "100%" }}>
+    <div ref={rootRef} onScroll={handleScroll} style={{ overflow: "auto", height: "100%" }}>
       <ComparatorSpecimen />
     </div>
   );

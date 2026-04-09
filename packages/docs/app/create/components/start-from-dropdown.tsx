@@ -6,14 +6,6 @@ import type { VisorThemeConfig } from "@loworbitstudio/visor-theme-engine";
 import { THEME_GROUPS } from "@/lib/theme-config";
 import styles from "./start-from-dropdown.module.css";
 
-/** Map theme values to their .visor.yaml filenames (only themes with configs) */
-const THEME_YAML_MAP: Record<string, string> = {
-  blackout: "blackout",
-  "blacklight-brand": "blacklight",
-  kaiah: "kaiah",
-  "reference-app": "reference-app",
-};
-
 const DEFAULT_CONFIG: VisorThemeConfig = {
   name: "custom",
   version: 1,
@@ -37,11 +29,13 @@ export function StartFromDropdown({ onLoadConfig }: StartFromDropdownProps) {
         return;
       }
 
-      const yamlFile = THEME_YAML_MAP[value];
-      if (!yamlFile) return;
+      // Find the yamlFile from the central config
+      const allThemes = THEME_GROUPS.flatMap((g) => g.themes);
+      const entry = allThemes.find((t) => t.value === value);
+      if (!entry?.yamlFile) return;
 
       try {
-        const response = await fetch(`/themes/${yamlFile}.visor.yaml`);
+        const response = await fetch(`/themes/${entry.yamlFile}.visor.yaml`);
         if (!response.ok) throw new Error(`Failed to fetch theme: ${response.status}`);
         const yamlString = await response.text();
         const config = parseConfig(yamlString);
@@ -67,13 +61,16 @@ export function StartFromDropdown({ onLoadConfig }: StartFromDropdownProps) {
         <option value="blank">Blank</option>
         {THEME_GROUPS.map((group) => (
           <optgroup key={group.label} label={group.label}>
-            {group.themes
-              .filter((t) => t.value in THEME_YAML_MAP)
-              .map((theme) => (
-                <option key={theme.value} value={theme.value}>
-                  {theme.label}
-                </option>
-              ))}
+            {group.themes.map((theme) => (
+              <option
+                key={theme.value}
+                value={theme.value}
+                disabled={!theme.yamlFile}
+              >
+                {theme.label}
+                {!theme.yamlFile ? " (no config)" : ""}
+              </option>
+            ))}
           </optgroup>
         ))}
       </select>
