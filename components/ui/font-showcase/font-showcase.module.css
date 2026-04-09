@@ -109,6 +109,6 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(22.5rem, 1fr));
   gap: var(--spacing-6, 1.5rem);
 }
