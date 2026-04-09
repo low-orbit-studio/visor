@@ -120,6 +120,7 @@ function FontFamilyPicker({
     <div className={styles.fieldGroup}>
       <span className={styles.fieldLabel}>{label}</span>
       <Combobox
+        key={value}
         inputValue={undefined}
         defaultInputValue={value}
         onInputChange={handleInputChange}

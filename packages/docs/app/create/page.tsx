@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import Link from "next/link";
+import { lookupGoogleFont } from "@loworbitstudio/visor-theme-engine";
 import { useThemeCreator } from "./hooks/use-theme-creator";
 import { PreviewPanel } from "./components/preview-panel";
 import { ValidationDisplay } from "./components/validation-display";
@@ -30,6 +31,30 @@ export default function CreatePage() {
       iframe.contentWindow.postMessage({ type: "load-font", url }, "*");
     }
   }, []);
+
+  /** Load Google Fonts into the preview iframe whenever font families change */
+  useEffect(() => {
+    const families = [
+      config.typography?.heading?.family,
+      config.typography?.body?.family,
+      config.typography?.mono?.family,
+    ].filter(Boolean) as string[];
+
+    for (const family of families) {
+      const entry = lookupGoogleFont(family);
+      if (entry) {
+        const encoded = family.replace(/ /g, "+");
+        const wghts = entry.weights.sort((a, b) => a - b).join(";");
+        const url = `https://fonts.googleapis.com/css2?family=${encoded}:wght@${wghts}&display=swap`;
+        handleLoadFont(url);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    config.typography?.heading?.family,
+    config.typography?.body?.family,
+    config.typography?.mono?.family,
+  ]);
 
   /** When controls column scrolls, sync the preview iframe proportionally */
   const handleControlsScroll = useCallback(() => {
