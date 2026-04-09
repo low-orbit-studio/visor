@@ -74,12 +74,12 @@ function ColorBar({ token, label = "Brand Color", className }: ColorBarProps) {
         {label}
       </span>
       <div className={styles.footer}>
-        <code className={styles.hex} style={{ color: textColor }}>
+        <span className={styles.hex} style={{ color: textColor }}>
           {liveHex ?? ""}
-        </code>
-        <code className={styles.token} style={{ color: textColor }}>
+        </span>
+        <span className={styles.token} style={{ color: textColor }}>
           {token}
-        </code>
+        </span>
       </div>
     </div>
   )
