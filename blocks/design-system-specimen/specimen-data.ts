@@ -112,22 +112,6 @@ export interface StatusColorScaleData extends ColorScaleData {
 
 export const THEME_COLOR_SCALES: ColorScaleData[] = [
   {
-    name: "Neutral",
-    swatches: [
-      { token: "--color-gray-50", hex: "#f9fafb", name: "50" },
-      { token: "--color-gray-100", hex: "#f3f4f6", name: "100" },
-      { token: "--color-gray-200", hex: "#e5e7eb", name: "200" },
-      { token: "--color-gray-300", hex: "#d1d5db", name: "300" },
-      { token: "--color-gray-400", hex: "#9ca3af", name: "400" },
-      { token: "--color-gray-500", hex: "#6b7280", name: "500", lightText: true },
-      { token: "--color-gray-600", hex: "#4b5563", name: "600", lightText: true },
-      { token: "--color-gray-700", hex: "#374151", name: "700", lightText: true },
-      { token: "--color-gray-800", hex: "#1f2937", name: "800", lightText: true },
-      { token: "--color-gray-900", hex: "#111827", name: "900", lightText: true },
-      { token: "--color-gray-950", hex: "#030712", name: "950", lightText: true },
-    ],
-  },
-  {
     name: "Primary",
     swatches: [
       { token: "--color-primary-50", hex: "#edf7fc", name: "50", dynamic: true },
@@ -141,6 +125,22 @@ export const THEME_COLOR_SCALES: ColorScaleData[] = [
       { token: "--color-primary-800", hex: "#003345", name: "800", lightText: true, dynamic: true },
       { token: "--color-primary-900", hex: "#001e2a", name: "900", lightText: true, dynamic: true },
       { token: "--color-primary-950", hex: "#000b12", name: "950", lightText: true, dynamic: true },
+    ],
+  },
+  {
+    name: "Neutral",
+    swatches: [
+      { token: "--color-gray-50", hex: "#f9fafb", name: "50" },
+      { token: "--color-gray-100", hex: "#f3f4f6", name: "100" },
+      { token: "--color-gray-200", hex: "#e5e7eb", name: "200" },
+      { token: "--color-gray-300", hex: "#d1d5db", name: "300" },
+      { token: "--color-gray-400", hex: "#9ca3af", name: "400" },
+      { token: "--color-gray-500", hex: "#6b7280", name: "500", lightText: true },
+      { token: "--color-gray-600", hex: "#4b5563", name: "600", lightText: true },
+      { token: "--color-gray-700", hex: "#374151", name: "700", lightText: true },
+      { token: "--color-gray-800", hex: "#1f2937", name: "800", lightText: true },
+      { token: "--color-gray-900", hex: "#111827", name: "900", lightText: true },
+      { token: "--color-gray-950", hex: "#030712", name: "950", lightText: true },
     ],
   },
 ]
