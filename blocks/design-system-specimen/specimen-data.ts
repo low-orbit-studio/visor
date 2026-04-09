@@ -117,7 +117,6 @@ export const THEME_COLOR_SCALES: ColorScaleData[] = [
     name: "Primary",
     brandToken: "--interactive-primary-bg",
     swatches: [
-      { token: "--color-primary-50", hex: "#e9f1f6", name: "50", dynamic: true },
       { token: "--color-primary-100", hex: "#cfdfe7", name: "100", dynamic: true },
       { token: "--color-primary-200", hex: "#adc8d5", name: "200", dynamic: true },
       { token: "--color-primary-300", hex: "#89aec0", name: "300", dynamic: true },
@@ -133,7 +132,6 @@ export const THEME_COLOR_SCALES: ColorScaleData[] = [
   {
     name: "Neutral",
     swatches: [
-      { token: "--color-gray-50", hex: "#f9fafb", name: "50" },
       { token: "--color-gray-100", hex: "#f3f4f6", name: "100" },
       { token: "--color-gray-200", hex: "#e5e7eb", name: "200" },
       { token: "--color-gray-300", hex: "#d1d5db", name: "300" },
