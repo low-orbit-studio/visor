@@ -16,6 +16,8 @@ export interface ColorSwatchProps {
   lightText?: boolean
   /** Size variant — controls hex text size; passed down from ColorSwatchGrid */
   size?: "default" | "lg" | "sm"
+  /** When true, reads the live computed CSS value for the hex display instead of the static fallback */
+  dynamic?: boolean
   className?: string
 }
 
@@ -45,6 +47,34 @@ export interface SemanticColorGridProps {
   className?: string
 }
 
+// ─── Hooks ──────────────────────────────────────────────────────────────────
+
+/** Reads the live computed CSS custom property value, re-syncing on theme class changes. */
+function useLiveCssColor(token: string, enabled: boolean): string | null {
+  const [value, setValue] = React.useState<string | null>(null)
+
+  React.useEffect(() => {
+    if (!enabled) return
+
+    function read() {
+      const raw = getComputedStyle(document.documentElement)
+        .getPropertyValue(token)
+        .trim()
+      if (raw) setValue(raw)
+    }
+
+    read()
+    const obs = new MutationObserver(read)
+    obs.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class", "data-theme"],
+    })
+    return () => obs.disconnect()
+  }, [token, enabled])
+
+  return value
+}
+
 // ─── ColorSwatch ────────────────────────────────────────────────────────────
 
 function ColorSwatch({
@@ -53,8 +83,12 @@ function ColorSwatch({
   name,
   lightText,
   size = "default",
+  dynamic,
   className,
 }: ColorSwatchProps) {
+  const liveHex = useLiveCssColor(token, !!dynamic)
+  const displayHex = dynamic && liveHex ? liveHex : hex
+
   return (
     <div data-slot="color-swatch" className={cn(styles.swatch, className)}>
       <div
@@ -65,7 +99,7 @@ function ColorSwatch({
           className={cn(styles.hex, size === "sm" && styles.hexSm)}
           style={{ color: lightText ? "#ffffff" : "#111827" }}
         >
-          {hex}
+          {displayHex}
         </span>
       </div>
       <Text size="xs" color="secondary" as="span" className={styles.label}>

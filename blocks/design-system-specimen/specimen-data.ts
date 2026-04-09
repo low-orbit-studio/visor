@@ -12,6 +12,8 @@ export interface ColorSwatchData {
   hex: string
   name: string
   lightText?: boolean
+  /** When true, ColorSwatch reads the live computed value instead of displaying the fallback hex */
+  dynamic?: boolean
 }
 
 export interface ColorScaleData {
@@ -95,8 +97,8 @@ export interface FontFamilyData {
   token: string
   /** Display role (e.g. "Heading & Body", "Monospace") */
   role: string
-  /** Font family display name */
-  familyName: string
+  /** Font family display name — omit to read dynamically from the CSS token */
+  familyName?: string
   /** Available weights */
   weights: FontWeightData[]
 }
@@ -128,16 +130,17 @@ export const THEME_COLOR_SCALES: ColorScaleData[] = [
   {
     name: "Primary",
     swatches: [
-      { token: "--color-blue-50", hex: "#eff6ff", name: "50" },
-      { token: "--color-blue-100", hex: "#dbeafe", name: "100" },
-      { token: "--color-blue-200", hex: "#bfdbfe", name: "200" },
-      { token: "--color-blue-300", hex: "#93c5fd", name: "300" },
-      { token: "--color-blue-400", hex: "#60a5fa", name: "400" },
-      { token: "--color-blue-500", hex: "#3b82f6", name: "500", lightText: true },
-      { token: "--color-blue-600", hex: "#2563eb", name: "600", lightText: true },
-      { token: "--color-blue-700", hex: "#1d4ed8", name: "700", lightText: true },
-      { token: "--color-blue-800", hex: "#1e40af", name: "800", lightText: true },
-      { token: "--color-blue-900", hex: "#1e3a8a", name: "900", lightText: true },
+      { token: "--color-primary-50", hex: "#edf7fc", name: "50", dynamic: true },
+      { token: "--color-primary-100", hex: "#dbebf3", name: "100", dynamic: true },
+      { token: "--color-primary-200", hex: "#bdd9e7", name: "200", dynamic: true },
+      { token: "--color-primary-300", hex: "#93bfd4", name: "300", dynamic: true },
+      { token: "--color-primary-400", hex: "#5f98b2", name: "400", dynamic: true },
+      { token: "--color-primary-500", hex: "#397a96", name: "500", lightText: true, dynamic: true },
+      { token: "--color-primary-600", hex: "#1a5f7a", name: "600", lightText: true, dynamic: true },
+      { token: "--color-primary-700", hex: "#004962", name: "700", lightText: true, dynamic: true },
+      { token: "--color-primary-800", hex: "#003345", name: "800", lightText: true, dynamic: true },
+      { token: "--color-primary-900", hex: "#001e2a", name: "900", lightText: true, dynamic: true },
+      { token: "--color-primary-950", hex: "#000b12", name: "950", lightText: true, dynamic: true },
     ],
   },
 ]
@@ -227,7 +230,6 @@ export const FONT_FAMILIES: FontFamilyData[] = [
   {
     token: "--font-heading",
     role: "Heading & Body",
-    familyName: "Satoshi",
     weights: [
       { label: "Regular", value: 400 },
       { label: "Medium", value: 500 },
@@ -238,7 +240,6 @@ export const FONT_FAMILIES: FontFamilyData[] = [
   {
     token: "--font-mono",
     role: "Monospace",
-    familyName: "Monaspace Neon",
     weights: [
       { label: "Regular", value: 400 },
       { label: "Medium", value: 500 },
