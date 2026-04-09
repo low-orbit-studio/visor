@@ -59,30 +59,35 @@ export interface SemanticColorGridProps {
 // ─── Hooks ──────────────────────────────────────────────────────────────────
 
 /**
- * Reads the live computed CSS custom property value, normalizes it to hex via
- * culori, and re-syncs on theme class changes.
+ * Reads the live computed CSS custom property value from the nearest scoped
+ * element (via ref), normalizes it to hex via culori, and re-syncs whenever
+ * the theme class changes on <body> or <html>.
  */
-function useLiveCssColor(token: string, enabled: boolean): string | null {
+function useLiveCssColor(
+  token: string,
+  enabled: boolean,
+  ref?: React.RefObject<Element | null>
+): string | null {
   const [value, setValue] = React.useState<string | null>(null)
 
   React.useEffect(() => {
     if (!enabled) return
 
     function read() {
-      const raw = getComputedStyle(document.documentElement)
-        .getPropertyValue(token)
-        .trim()
+      // Read from the component's own element when available — ensures we're
+      // inside the theme scope (theme class lives on <body>, not <html>).
+      const el = ref?.current ?? document.body
+      const raw = getComputedStyle(el).getPropertyValue(token).trim()
       if (raw) setValue(toHex(raw))
     }
 
     read()
+    // Observe both <html> and <body> since different apps may apply the theme class to either
     const obs = new MutationObserver(read)
-    obs.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class", "data-theme"],
-    })
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme"] })
+    obs.observe(document.body, { attributes: true, attributeFilter: ["class", "data-theme"] })
     return () => obs.disconnect()
-  }, [token, enabled])
+  }, [token, enabled]) // ref intentionally excluded — always reads current ref.current
 
   return value
 }
@@ -98,13 +103,14 @@ function ColorSwatch({
   dynamic,
   className,
 }: ColorSwatchProps) {
-  const liveHex = useLiveCssColor(token, !!dynamic)
+  const containerRef = React.useRef<HTMLDivElement>(null)
+  const liveHex = useLiveCssColor(token, !!dynamic, containerRef)
   const displayHex = dynamic && liveHex ? liveHex : hex
   // Auto-compute text color from live value when dynamic; fall back to prop
   const useLightText = dynamic && liveHex ? needsLightText(liveHex) : !!lightText
 
   return (
-    <div data-slot="color-swatch" className={cn(styles.swatch, className)}>
+    <div ref={containerRef} data-slot="color-swatch" className={cn(styles.swatch, className)}>
       <div
         className={styles.preview}
         style={{ background: `var(${token}, ${hex})` }}
@@ -126,12 +132,14 @@ function ColorSwatch({
 // ─── BrandColorSwatch ───────────────────────────────────────────────────────
 
 function BrandColorSwatch({ token, label = "Brand Color", className }: BrandColorSwatchProps) {
-  const liveHex = useLiveCssColor(token, true)
+  const containerRef = React.useRef<HTMLDivElement>(null)
+  const liveHex = useLiveCssColor(token, true, containerRef)
   const useLightText = liveHex ? needsLightText(liveHex) : false
   const textColor = useLightText ? "#ffffff" : "#111827"
 
   return (
     <div
+      ref={containerRef}
       data-slot="brand-color-swatch"
       className={cn(styles.brandSwatch, className)}
       style={{ background: `var(${token})` }}

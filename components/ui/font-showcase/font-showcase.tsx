@@ -55,10 +55,8 @@ function useLiveFontName(token: string): string {
 
     read()
     const obs = new MutationObserver(read)
-    obs.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class", "data-theme"],
-    })
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class", "data-theme"] })
+    obs.observe(document.body, { attributes: true, attributeFilter: ["class", "data-theme"] })
 
     return () => {
       obs.disconnect()
