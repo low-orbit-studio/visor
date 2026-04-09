@@ -12,7 +12,7 @@
   border: 1px solid transparent;
   padding: calc(var(--spacing-1, 0.25rem) / 2) var(--spacing-2, 0.5rem);
   font-size: var(--font-size-xs, 0.75rem);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium, 500);
   white-space: nowrap;
   transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }

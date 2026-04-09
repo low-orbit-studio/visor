@@ -42,7 +42,7 @@
   border: 1px solid transparent;
   padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
   font-size: var(--font-size-sm, 0.875rem);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium, 500);
   white-space: nowrap;
   color: var(--text-secondary, #6b7280);
   background: transparent;

@@ -13,7 +13,7 @@
   min-width: 3.25rem;
   text-transform: uppercase;
   font-size: 0.6875rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium, 500);
   letter-spacing: 0.06em;
   color: var(--text-secondary, #9ca3af);
   flex-shrink: 0;

@@ -13,7 +13,7 @@
   background-color: var(--surface-interactive-default, #f9fafb);
   text-align: center;
   font-size: var(--font-size-lg, 1.125rem);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium, 500);
   color: var(--text-primary, #111827);
   outline: none;
   transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),

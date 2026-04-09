@@ -80,7 +80,7 @@
 }
 
 .tooltipLabel {
-  font-weight: 500;
+  font-weight: var(--font-weight-medium, 500);
 }
 
 .tooltipItems {
@@ -126,13 +126,13 @@
 
 .tooltipValue {
   font-family: var(--font-mono, monospace);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium, 500);
   color: var(--text-primary, #111827);
   font-variant-numeric: tabular-nums;
 }
 
 .tooltipNestLabel {
-  font-weight: 500;
+  font-weight: var(--font-weight-medium, 500);
 }
 
 /* Indicators */

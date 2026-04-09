@@ -56,7 +56,7 @@
 
 .text {
   font-size: var(--font-size-sm, 0.875rem);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium, 500);
   color: var(--text-secondary, #6b7280);
 }
 

@@ -17,7 +17,7 @@
 /* Field Label */
 .fieldLabel {
   font-size: var(--font-size-sm, 0.875rem);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium, 500);
   color: var(--text-primary, #111827);
   line-height: 1.4;
 }
@@ -25,7 +25,7 @@
 /* Field Description */
 .fieldDescription {
   font-size: var(--font-size-sm, 0.875rem);
-  font-weight: 400;
+  font-weight: var(--font-weight-normal, 400);
   color: var(--text-secondary, #9ca3af);
   line-height: 1.5;
   margin: 0;
@@ -34,7 +34,7 @@
 /* Field Error */
 .fieldError {
   font-size: var(--font-size-sm, 0.875rem);
-  font-weight: 400;
+  font-weight: var(--font-weight-normal, 400);
   color: var(--text-error, #ef4444);
 }
 

@@ -33,7 +33,7 @@
 /* CardTitle */
 .cardTitle {
   font-size: var(--font-size-base, 1rem);
-  font-weight: 500;
+  font-weight: var(--font-weight-semibold, 600);
   color: var(--text-primary, #111827);
 }
 

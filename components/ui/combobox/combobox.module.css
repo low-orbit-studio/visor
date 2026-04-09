@@ -118,7 +118,7 @@
 
 .item[data-selected] {
   background-color: var(--surface-interactive-hover, #f3f4f6);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium, 500);
 }
 
 .itemCheck {
@@ -159,7 +159,7 @@
 .groupHeading {
   padding: var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem) var(--spacing-1, 0.25rem);
   font-size: var(--font-size-xs, 0.75rem);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium, 500);
   color: var(--text-secondary, #9ca3af);
   text-transform: uppercase;
   letter-spacing: 0.05em;

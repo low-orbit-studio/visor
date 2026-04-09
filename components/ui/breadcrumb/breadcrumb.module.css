@@ -49,7 +49,7 @@
 
 /* Breadcrumb page (current) */
 .page {
-  font-weight: 400;
+  font-weight: var(--font-weight-normal, 400);
   color: var(--text-primary, #111827);
   cursor: default;
 }

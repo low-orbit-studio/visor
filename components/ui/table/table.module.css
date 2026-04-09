@@ -31,7 +31,7 @@
 .footer {
   border-top: 1px solid var(--border-default, #e5e7eb);
   background-color: var(--surface-muted, #f3f4f6);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium, 500);
 }
 
 .footer tr:last-child {
@@ -59,7 +59,7 @@
   padding-right: var(--spacing-3, 0.75rem);
   text-align: left;
   vertical-align: middle;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium, 500);
   white-space: nowrap;
   color: var(--text-primary, #111827);
 }
