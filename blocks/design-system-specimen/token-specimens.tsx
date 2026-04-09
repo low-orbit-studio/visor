@@ -2,7 +2,8 @@ import * as React from "react"
 import { cn } from "../../lib/utils"
 import { Heading } from "../../components/ui/heading/heading"
 import { Text } from "../../components/ui/text/text"
-import { BrandColorSwatch, ColorSwatchGrid, SemanticColorGrid } from "../../components/ui/color-swatch/color-swatch"
+import { ColorSwatchGrid, SemanticColorGrid } from "../../components/ui/color-swatch/color-swatch"
+import { ColorBar } from "../../components/ui/color-bar/color-bar"
 import { TypeSpecimen } from "../../components/ui/type-specimen/type-specimen"
 import { FontShowcaseGrid } from "../../components/ui/font-showcase/font-showcase"
 import { SpacingScale } from "../../components/ui/spacing-scale/spacing-scale"
@@ -54,7 +55,7 @@ export function ColorPaletteSection({
         {themeScales.map((scale) => (
           <div key={scale.name} className={styles.themeScaleGroup}>
             {scale.brandToken && (
-              <BrandColorSwatch token={scale.brandToken} label="Brand Color" />
+              <ColorBar token={scale.brandToken} label="Brand Color" />
             )}
             <ColorSwatchGrid
               label={scale.name}

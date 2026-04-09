@@ -4,6 +4,7 @@
   "defaultOpen": true,
   "pages": [
     "accessibility-specimen",
+    "color-bar",
     "color-swatch",
     "elevation-card",
     "icon-grid",

@@ -1,0 +1,34 @@
+name: Color Bar
+description: A full-width color bar displaying a live CSS token value with hex and token label. Used in design specimens to highlight a theme's brand color.
+extends: HTMLDivElement
+category: specimen
+
+when_to_use:
+  - Highlighting a theme's primary brand color in a design specimen
+  - Displaying a single high-prominence color token with its hex and token name
+  - Theme showcase or color documentation pages
+
+when_not_to_use:
+  - Displaying a full color scale (use ColorSwatchGrid)
+  - Semantic token grids (use SemanticColorGrid)
+  - Interactive color selection (use a color picker)
+
+why: >
+  ColorBar renders a token's live color as a wide bar, making the brand color
+  immediately prominent. It reads the CSS custom property value at runtime so it
+  always reflects the active theme — no hardcoded hex values needed. Text color
+  is auto-computed via WCAG contrast to ensure readability on any brand color.
+
+props:
+  - name: token
+    type: string
+    description: CSS custom property token for the brand color (e.g. "--interactive-primary-bg")
+  - name: label
+    type: string
+    default: '"Brand Color"'
+    description: Label shown at the top of the bar
+
+dependencies: []
+
+example: |
+  <ColorBar token="--interactive-primary-bg" label="Brand Color" />

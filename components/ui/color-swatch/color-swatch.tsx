@@ -34,14 +34,6 @@ export interface ColorSwatchGridProps {
   className?: string
 }
 
-export interface BrandColorSwatchProps {
-  /** CSS custom property token for the brand color (e.g. "--interactive-primary-bg") */
-  token: string
-  /** Label shown on the swatch */
-  label?: string
-  className?: string
-}
-
 export interface SemanticColorItemProps {
   /** CSS custom property token name */
   token: string
@@ -143,34 +135,6 @@ function ColorSwatch({
   )
 }
 
-// ─── BrandColorSwatch ───────────────────────────────────────────────────────
-
-function BrandColorSwatch({ token, label = "Brand Color", className }: BrandColorSwatchProps) {
-  const liveHex = useLiveCssColor(token, true)
-  const useLightText = liveHex ? needsLightText(liveHex) : false
-  const textColor = useLightText ? "#ffffff" : "#111827"
-
-  return (
-    <div
-      data-slot="brand-color-swatch"
-      className={cn(styles.brandSwatch, className)}
-      style={{ background: `var(${token})` }}
-    >
-      <div className={styles.brandContent}>
-        <span className={styles.brandLabel} style={{ color: textColor }}>
-          {label}
-        </span>
-        <code className={styles.brandHex} style={{ color: textColor }}>
-          {liveHex ?? ""}
-        </code>
-      </div>
-      <code className={styles.brandToken} style={{ color: textColor }}>
-        {token}
-      </code>
-    </div>
-  )
-}
-
 // ─── ColorSwatchGrid ────────────────────────────────────────────────────────
 
 const gridSizeClass = {
@@ -225,4 +189,4 @@ function SemanticColorGrid({ category, items, className }: SemanticColorGridProp
   )
 }
 
-export { ColorSwatch, BrandColorSwatch, ColorSwatchGrid, SemanticColorItem, SemanticColorGrid }
+export { ColorSwatch, ColorSwatchGrid, SemanticColorItem, SemanticColorGrid }
