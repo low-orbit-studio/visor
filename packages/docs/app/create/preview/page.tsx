@@ -1,7 +1,29 @@
 "use client";
 
 import { useEffect, useCallback, useRef } from "react";
+import { lookupGoogleFont } from "@loworbitstudio/visor-theme-engine";
 import { ComparatorSpecimen } from "@/components/comparator-specimen";
+
+/** Extract custom font family names from a CSS bundle and load Google Fonts. */
+function loadFontsFromCss(css: string) {
+  const seen = new Set<string>();
+  const pattern = /--font-(?:heading|display|body|sans|mono):\s*([^;]+);/g;
+  let m: RegExpExecArray | null;
+  while ((m = pattern.exec(css)) !== null) {
+    const family = m[1].trim().replace(/^["']|["']$/g, "").split(",")[0].trim();
+    if (!family || seen.has(family)) continue;
+    seen.add(family);
+    if (!lookupGoogleFont(family)) continue;
+    const encoded = family.replace(/ /g, "+");
+    const url = `https://fonts.googleapis.com/css2?family=${encoded}&display=swap`;
+    if (!document.querySelector(`link[href="${url}"]`)) {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = url;
+      document.head.appendChild(link);
+    }
+  }
+}
 
 export default function PreviewPage() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -33,6 +55,12 @@ export default function PreviewPage() {
       }
 
       styleEl.textContent = event.data.css;
+
+      // Signal live CSS-reading components (e.g. useLiveFontName) to re-read
+      document.documentElement.dataset.creatorRevision = String(Date.now());
+
+      // Load any Google Fonts referenced in the new CSS bundle
+      loadFontsFromCss(event.data.css as string);
     }
 
     if (event.data.type === "dark-mode") {
