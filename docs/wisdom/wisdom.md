@@ -21,6 +21,7 @@ For global wisdom (universal lessons): [`~/Code/low-orbit/low-orbit-playbook/roo
 | W010 | Every theme must explicitly define `--font-mono` or it silently falls back to sans-serif | tokens, typography, themes | [W010](W010-theme-font-mono-required.md) |
 | W011 | Script CSS insertion must target first selector rule, not first `{` (avoids landing in @font-face) | scripts, css, themes, automation | [W011](W011-theme-css-script-insertion.md) |
 | W012 | Docs MDX components require a `'use client'` re-export shim in `packages/docs/components/ui/` | docs, nextjs, mdx, imports | [W012](W012-docs-component-shims.md) |
+| W013 | R2 endpoint must not include bucket name — causes doubled path on upload | cloudflare, r2, fonts, infrastructure | [W013](W013-r2-endpoint-bucket-doubling.md) |
 
 ## Adding Entries
 
