@@ -39,6 +39,41 @@ describe("Badge", () => {
     expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "destructive")
   })
 
+  it("applies data-variant for success variant", () => {
+    render(<Badge variant="success">Badge</Badge>)
+    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "success")
+  })
+
+  it("applies data-variant for warning variant", () => {
+    render(<Badge variant="warning">Badge</Badge>)
+    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "warning")
+  })
+
+  it("applies data-variant for info variant", () => {
+    render(<Badge variant="info">Badge</Badge>)
+    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "info")
+  })
+
+  it("applies data-variant for filled-destructive variant", () => {
+    render(<Badge variant="filled-destructive">Badge</Badge>)
+    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "filled-destructive")
+  })
+
+  it("applies data-variant for filled-success variant", () => {
+    render(<Badge variant="filled-success">Badge</Badge>)
+    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "filled-success")
+  })
+
+  it("applies data-variant for filled-warning variant", () => {
+    render(<Badge variant="filled-warning">Badge</Badge>)
+    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "filled-warning")
+  })
+
+  it("applies data-variant for filled-info variant", () => {
+    render(<Badge variant="filled-info">Badge</Badge>)
+    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "filled-info")
+  })
+
   it("forwards ref", () => {
     const ref = { current: null }
     render(<Badge ref={ref}>Badge</Badge>)
@@ -59,6 +94,16 @@ describe("accessibility", () => {
 
   it("has no WCAG 2.1 AA violations (destructive variant)", async () => {
     const { container } = render(<Badge variant="destructive">Error</Badge>)
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (success variant)", async () => {
+    const { container } = render(<Badge variant="success">Done</Badge>)
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (info variant)", async () => {
+    const { container } = render(<Badge variant="info">Note</Badge>)
     await checkA11y(container)
   })
 })

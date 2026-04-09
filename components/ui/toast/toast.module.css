@@ -28,7 +28,26 @@
   color: var(--text-secondary, #6b7280);
 }
 
-/* Type-specific colors — color signal via icon and text, border removed */
+/* Type-specific colors — subtle bg fill + left accent border */
+.toaster :global([data-sonner-toast][data-type="success"]) {
+  background-color: var(--surface-success-subtle, #f0fdf4);
+  border-left: 3px solid var(--border-success, #22c55e);
+}
+
+.toaster :global([data-sonner-toast][data-type="error"]) {
+  background-color: var(--surface-error-subtle, #fef2f2);
+  border-left: 3px solid var(--border-error, #ef4444);
+}
+
+.toaster :global([data-sonner-toast][data-type="warning"]) {
+  background-color: var(--surface-warning-subtle, #fffbeb);
+  border-left: 3px solid var(--border-warning, #f59e0b);
+}
+
+.toaster :global([data-sonner-toast][data-type="info"]) {
+  background-color: var(--surface-info-subtle, #f0f9ff);
+  border-left: 3px solid var(--border-info, #0ea5e9);
+}
 
 /* Action button */
 .toaster :global([data-sonner-toast] [data-button]) {
@@ -54,9 +73,9 @@
   color: var(--text-secondary, #6b7280);
 }
 
-/* Dark mode support */
-:global(.dark) .toaster :global([data-sonner-toast]),
-:global([data-theme="dark"]) .toaster :global([data-sonner-toast]) {
+/* Dark mode support — :where() keeps specificity low so type-specific selectors above win */
+:global(:where(.dark)) .toaster :global([data-sonner-toast]),
+:global(:where([data-theme="dark"])) .toaster :global([data-sonner-toast]) {
   background-color: var(--surface-card, #1f2937);
   color: var(--text-primary, #f9fafb);
 }

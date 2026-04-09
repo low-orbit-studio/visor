@@ -42,7 +42,50 @@
 }
 
 .variantDestructive {
-  background-color: color-mix(in srgb, var(--surface-error-default, #ef4444) 10%, transparent);
-  color: var(--text-error, #ef4444);
+  background-color: var(--surface-error-subtle, #fef2f2);
+  color: var(--text-error, #b91c1c);
+  border-color: transparent;
+}
+
+.variantSuccess {
+  background-color: var(--surface-success-subtle, #f0fdf4);
+  color: var(--text-success, #15803d);
+  border-color: transparent;
+}
+
+.variantWarning {
+  background-color: var(--surface-warning-subtle, #fffbeb);
+  color: var(--text-warning, #b45309);
+  border-color: transparent;
+}
+
+.variantInfo {
+  background-color: var(--surface-info-subtle, #f0f9ff);
+  color: var(--text-info, #0369a1);
+  border-color: transparent;
+}
+
+/* Filled variants — step 9 bg + contrast text */
+.variantFilledDestructive {
+  background-color: var(--surface-error-default, #ef4444);
+  color: var(--text-inverse, #ffffff);
+  border-color: transparent;
+}
+
+.variantFilledSuccess {
+  background-color: var(--surface-success-default, #22c55e);
+  color: var(--text-inverse, #ffffff);
+  border-color: transparent;
+}
+
+.variantFilledWarning {
+  background-color: var(--surface-warning-default, #f59e0b);
+  color: var(--text-inverse, #ffffff);
+  border-color: transparent;
+}
+
+.variantFilledInfo {
+  background-color: var(--surface-info-default, #0ea5e9);
+  color: var(--text-inverse, #ffffff);
   border-color: transparent;
 }

@@ -12,27 +12,27 @@
 
 /* Intent variants */
 .intentInfo {
-  background-color: var(--surface-card, #ffffff);
-  color: var(--text-primary, #111827);
-  border-color: var(--border-default, #e5e7eb);
+  background-color: var(--surface-info-subtle, #f0f9ff);
+  color: var(--text-info, #0369a1);
+  border-color: var(--border-info, #0ea5e9);
 }
 
 .intentWarning {
-  background-color: var(--surface-card, #ffffff);
-  color: var(--text-warning, #f59e0b);
-  border-color: color-mix(in srgb, var(--border-warning, #f59e0b) 30%, transparent);
+  background-color: var(--surface-warning-subtle, #fffbeb);
+  color: var(--text-warning, #b45309);
+  border-color: var(--border-warning, #f59e0b);
 }
 
 .intentError {
-  background-color: var(--surface-card, #ffffff);
-  color: var(--text-error, #ef4444);
-  border-color: color-mix(in srgb, var(--border-error, #ef4444) 30%, transparent);
+  background-color: var(--surface-error-subtle, #fef2f2);
+  color: var(--text-error, #b91c1c);
+  border-color: var(--border-error, #ef4444);
 }
 
 .intentSuccess {
-  background-color: var(--surface-card, #ffffff);
-  color: var(--text-success, #22c55e);
-  border-color: color-mix(in srgb, var(--border-success, #22c55e) 30%, transparent);
+  background-color: var(--surface-success-subtle, #f0fdf4);
+  color: var(--text-success, #15803d);
+  border-color: var(--border-success, #22c55e);
 }
 
 /* Position variants */
@@ -68,16 +68,20 @@
   line-height: 1.5;
 }
 
+.intentInfo .description {
+  color: color-mix(in srgb, var(--text-info, #0369a1) 90%, transparent);
+}
+
 .intentWarning .description {
-  color: color-mix(in srgb, var(--text-warning, #f59e0b) 90%, transparent);
+  color: color-mix(in srgb, var(--text-warning, #b45309) 90%, transparent);
 }
 
 .intentError .description {
-  color: color-mix(in srgb, var(--text-error, #ef4444) 90%, transparent);
+  color: color-mix(in srgb, var(--text-error, #b91c1c) 90%, transparent);
 }
 
 .intentSuccess .description {
-  color: color-mix(in srgb, var(--text-success, #22c55e) 90%, transparent);
+  color: color-mix(in srgb, var(--text-success, #15803d) 90%, transparent);
 }
 
 /* BannerAction */
