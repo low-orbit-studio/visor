@@ -25,6 +25,7 @@ export const THEME_GROUPS: ThemeGroup[] = [
     themes: [
       { value: "entr", label: "ENTR", yamlFile: "entr" },
       { value: "kaiah", label: "Kaiah", yamlFile: "kaiah" },
+      { value: "solespark", label: "SoleSpark", yamlFile: "solespark" },
       { value: "veronica", label: "Veronica", yamlFile: "veronica" },
     ],
   },
