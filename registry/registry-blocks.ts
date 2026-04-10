@@ -94,6 +94,34 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "admin-tabbed-editor",
+    type: "registry:block",
+    category: "admin",
+    description:
+      "Full-page editor with horizontal tabs, tab-scoped content panels, and a sticky save/cancel footer. Unsaved-changes guard fires on tab switch and cancel; save supports async with pending state.",
+    dependencies: [
+      "@radix-ui/react-tabs",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: [
+      "utils",
+      "page-header",
+      "tabs",
+      "button",
+      "confirm-dialog",
+    ],
+    files: [
+      {
+        path: "blocks/admin-tabbed-editor/admin-tabbed-editor.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/admin-tabbed-editor/admin-tabbed-editor.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "configuration-panel",
     type: "registry:block",
     category: "configuration",

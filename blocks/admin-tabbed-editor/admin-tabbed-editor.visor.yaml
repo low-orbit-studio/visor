@@ -1,0 +1,16 @@
+name: Admin Tabbed Editor
+description: Full-page editor with horizontal tabs, tab-scoped content panels, and a sticky save/cancel footer. Composes PageHeader, Tabs, Button, and ConfirmDialog. Tab switching and cancel are protected by an unsaved-changes guard, save supports async with pending state.
+category: admin
+components_used:
+  - page-header
+  - tabs
+  - button
+  - confirm-dialog
+when_to_use:
+  - Full-page record editors where settings span multiple logical sections
+  - Profile editors, settings pages, resource configuration pages
+  - Any editor that benefits from a single global save across multiple tab panels
+when_not_to_use:
+  - Inline single-record edits (use admin-detail-drawer)
+  - Multi-step forms with a linear progression (use admin-wizard)
+  - Pages without meaningful grouping (use a plain form)

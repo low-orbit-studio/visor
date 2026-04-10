@@ -1,0 +1,162 @@
+---
+title: Admin Tabbed Editor
+description: Full-page editor with horizontal tabs, tab-scoped content panels, and a sticky save/cancel footer. Unsaved-changes guard fires on tab switch and cancel; save supports async with pending state.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { AdminTabbedEditorDemo } from '@/components/blocks/admin-tabbed-editor-demo';
+
+## Preview
+
+<BlockPreview
+  title="Admin Tabbed Editor"
+  code={"<AdminTabbedEditor\n  title=\"Account settings\"\n  description=\"Update your account preferences.\"\n  tabs={[\n    { id: 'general', label: 'General', content: <GeneralPanel /> },\n    { id: 'profile', label: 'Profile', content: <ProfilePanel /> },\n    { id: 'notifications', label: 'Notifications', content: <NotificationsPanel /> },\n    { id: 'danger', label: 'Danger zone', content: <DangerPanel /> },\n  ]}\n  dirty={dirty}\n  onSave={async () => { await saveProfile(draft); }}\n  onCancel={() => setDraft(profile)}\n  footerStatus={dirty ? 'Unsaved changes' : 'All changes saved'}\n/>"}
+>
+  <AdminTabbedEditorDemo />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block admin-tabbed-editor
+```
+
+This copies files into your project:
+
+- `blocks/admin-tabbed-editor/admin-tabbed-editor.tsx` — the block component
+- `blocks/admin-tabbed-editor/admin-tabbed-editor.module.css` — the styles
+
+The registry pulls in `page-header`, `tabs`, `button`, and `confirm-dialog` as dependencies.
+
+## Usage
+
+```tsx
+'use client';
+
+import * as React from 'react';
+import { AdminTabbedEditor } from '@/blocks/admin-tabbed-editor/admin-tabbed-editor';
+import { Input } from '@/components/ui/input/input';
+import { Label } from '@/components/ui/label/label';
+
+interface Profile {
+  displayName: string;
+  email: string;
+  bio: string;
+}
+
+export function ProfileEditor({ profile }: { profile: Profile }) {
+  const [draft, setDraft] = React.useState(profile);
+  const dirty =
+    draft.displayName !== profile.displayName ||
+    draft.email !== profile.email ||
+    draft.bio !== profile.bio;
+
+  async function handleSave() {
+    const res = await fetch('/api/profile', {
+      method: 'PATCH',
+      body: JSON.stringify(draft),
+    });
+    if (!res.ok) throw new Error('Failed to save');
+  }
+
+  return (
+    <AdminTabbedEditor
+      title="Profile"
+      description="Manage your public profile."
+      dirty={dirty}
+      onSave={handleSave}
+      onCancel={() => setDraft(profile)}
+      tabs={[
+        {
+          id: 'general',
+          label: 'General',
+          content: (
+            <>
+              <Label htmlFor="displayName">Display name</Label>
+              <Input
+                id="displayName"
+                value={draft.displayName}
+                onChange={(e) =>
+                  setDraft({ ...draft, displayName: e.target.value })
+                }
+              />
+            </>
+          ),
+        },
+        {
+          id: 'contact',
+          label: 'Contact',
+          content: (
+            <>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={draft.email}
+                onChange={(e) =>
+                  setDraft({ ...draft, email: e.target.value })
+                }
+              />
+            </>
+          ),
+        },
+      ]}
+    />
+  );
+}
+```
+
+## Anatomy
+
+The block is a three-zone column:
+
+1. **PageHeader** — title, eyebrow, description, breadcrumb, and header actions slot. Does not scroll.
+2. **Tabs** — a horizontal `TabsList` followed by one `TabsContent` per tab. The active panel scrolls with the page.
+3. **Footer** — sticky row with `Cancel` on the left, optional `footerStatus` in the middle, and `Save` on the right. Always visible inside the scroll container.
+
+## The three guarantees
+
+### 1. Sticky save/cancel footer
+
+The footer uses `position: sticky; bottom: 0` so it stays pinned inside the block's scroll container — it never escapes into viewport space, which keeps docs previews and embedded usages predictable. The footer stays visible regardless of which tab is active.
+
+### 2. Unsaved-changes guard
+
+When `dirty` is true, switching tabs opens a ConfirmDialog. On discard, the pending tab id is committed; on keep-editing, the current tab stays active. The Cancel button runs through the same guard before calling `onCancel`. Customize the copy with `unsavedGuardTitle`, `unsavedGuardDescription`, `unsavedGuardConfirmLabel`, and `unsavedGuardCancelLabel`.
+
+Dirty state is owned by the consumer — the block never clears it. After a successful save, your handler should set `dirty` to false by resyncing the draft with the committed record.
+
+### 3. Async save handler
+
+`onSave` can return a Promise. While the promise is pending the save button sets `aria-busy` and disables itself. On resolve the pending state clears; on reject the pending state clears and the rejection is re-thrown so your error boundary or global handler can react. The save button is disabled whenever `dirty` is false.
+
+## Controlled vs uncontrolled tabs
+
+- **Uncontrolled** — pass `defaultActiveTab` (or omit it to default to the first tab). The block tracks the active tab internally.
+- **Controlled** — pass `activeTab` and handle `onActiveTabChange`. Useful when the tab should be driven by the URL or persisted across reloads.
+
+## Accessibility
+
+- The footer is a `role="group"` with `aria-label="Editor actions"` so assistive tech groups the buttons.
+- The save button reports `aria-busy` and `disabled` while the async save is in flight.
+- The unsaved-changes guard is a nested dialog — Radix handles focus trap stacking through the ConfirmDialog primitive.
+- Radix Tabs handles keyboard navigation for the tab list (arrow keys, Home, End).
+
+## Props
+
+See `AdminTabbedEditorProps` in `blocks/admin-tabbed-editor/admin-tabbed-editor.tsx` for the full list. In summary:
+
+- **Header** — `title` (required), `eyebrow`, `description`, `breadcrumb`, `headerActions`.
+- **Tabs** — `tabs` (required), `activeTab`, `defaultActiveTab`, `onActiveTabChange`.
+- **Actions** — `onSave`, `onCancel`, `saveLabel`, `cancelLabel`.
+- **State** — `dirty`, `busy`, `disabled`, `footerStatus`, `hideFooter`.
+- **Unsaved guard** — `unsavedGuardTitle`, `unsavedGuardDescription`, `unsavedGuardConfirmLabel`, `unsavedGuardCancelLabel`.
+
+Each tab is a `{ id, label, content, icon?, badge?, disabled? }` object.
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI — such as admin shells, login forms, or dashboard panels.
+
+Blocks are copy-and-own, just like components. Install them into your project and customize freely.
