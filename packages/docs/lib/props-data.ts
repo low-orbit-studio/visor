@@ -1735,6 +1735,78 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'activity-feed': [
+    {
+      name: 'variant',
+      type: "'default' | 'compact' | 'timeline'",
+      default: "'default'",
+      description:
+        'Display mode. Default is padded rows with borders, compact is denser with smaller text, timeline adds a connecting rail between leading indicators.',
+    },
+    {
+      name: 'children',
+      type: 'React.ReactNode',
+      description: 'ActivityFeedItem children.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the root <ol>.',
+    },
+    {
+      name: '...props',
+      type: 'React.HTMLAttributes<HTMLOListElement>',
+      description: 'All standard HTML attributes are forwarded to the root <ol>.',
+    },
+  ],
+
+  'activity-feed-item': [
+    {
+      name: 'title',
+      type: 'React.ReactNode',
+      required: true,
+      description: 'Primary event description.',
+    },
+    {
+      name: 'timestamp',
+      type: 'React.ReactNode',
+      required: true,
+      description:
+        'Pre-formatted timestamp. Pass a string, or pass your own <time> element for full control over dateTime semantics.',
+    },
+    {
+      name: 'leading',
+      type: 'React.ReactNode',
+      description: 'Leading visual — icon, avatar, or colored dot.',
+    },
+    {
+      name: 'description',
+      type: 'React.ReactNode',
+      description: 'Optional secondary detail beneath the title.',
+    },
+    {
+      name: 'actor',
+      type: 'React.ReactNode',
+      description:
+        'Who performed the event — a name string, or an avatar + name cluster.',
+    },
+    {
+      name: 'trailing',
+      type: 'React.ReactNode',
+      description: 'Right-aligned meta slot — status badge, link, etc.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the <li>.',
+    },
+    {
+      name: '...props',
+      type: 'React.LiHTMLAttributes<HTMLLIElement>',
+      description: 'All standard HTML attributes are forwarded to the <li>.',
+    },
+  ],
+
   'bulk-action-bar': [
     {
       name: 'count',

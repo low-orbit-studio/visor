@@ -1446,6 +1446,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "activity-feed",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "An admin activity feed compound — vertical ordered list of timestamped events for dashboards, audit logs, and notification views. ActivityFeed + ActivityFeedItem with leading, title, description, actor, timestamp, and trailing slots. Default, compact, and timeline variants propagated via React Context.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/activity-feed/activity-feed.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/activity-feed/activity-feed.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "bulk-action-bar",
     type: "registry:ui",
     category: "admin",

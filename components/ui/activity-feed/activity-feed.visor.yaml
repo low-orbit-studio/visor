@@ -1,0 +1,80 @@
+name: ActivityFeed
+description: Admin compound for rendering a vertical list of timestamped events — dashboards, audit logs, and notification views.
+extends: HTMLOListElement
+category: admin
+
+when_to_use:
+  - Rendering a chronological list of events (audit logs, activity streams)
+  - Surfacing recent actions on a dashboard (who did what, when)
+  - Building notification panels or change history views
+  - Visualizing a sequence of steps in a timeline layout
+
+when_not_to_use:
+  - Static non-temporal lists (use a regular list or Table)
+  - Tabular data with multiple columns (use DataTable)
+  - Single-call-to-action placeholders (use EmptyState)
+
+why: >
+  Activity streams are duplicated across every admin dashboard, typically
+  reimplemented as inline divs with ad-hoc spacing. Canonicalizing into a
+  compound ActivityFeed + ActivityFeedItem provides consistent vertical
+  rhythm, semantic <ol>/<li> markup for assistive tech, and three display
+  modes (default, compact, timeline) that cover the common admin variants
+  without forcing consumers to fork.
+
+variants:
+  variant: [default, compact, timeline]
+
+props:
+  - name: variant
+    type: "'default' | 'compact' | 'timeline'"
+    default: "default"
+    description: Display mode. Default is padded rows with borders, compact is denser, timeline adds a connecting rail between leading indicators.
+  - name: children
+    type: React.ReactNode
+    description: ActivityFeedItem children.
+
+subcomponents:
+  - name: ActivityFeedItem
+    extends: HTMLLIElement
+    props:
+      - name: leading
+        type: React.ReactNode
+        description: Leading visual — icon, avatar, or colored dot.
+      - name: title
+        type: React.ReactNode
+        required: true
+        description: Primary event description.
+      - name: description
+        type: React.ReactNode
+        description: Optional secondary detail.
+      - name: actor
+        type: React.ReactNode
+        description: Who performed the event — name string, or an avatar + name cluster.
+      - name: timestamp
+        type: React.ReactNode
+        required: true
+        description: Pre-formatted timestamp. Pass a string or your own <time> element.
+      - name: trailing
+        type: React.ReactNode
+        description: Right-aligned meta slot — status badge, link, etc.
+
+dependencies: []
+
+example: |
+  <ActivityFeed variant="timeline">
+    <ActivityFeed.Item
+      leading={<CheckCircle />}
+      title="Profile published"
+      actor="Justin"
+      timestamp="2m ago"
+      trailing={<StatusBadge status="success">Live</StatusBadge>}
+    />
+    <ActivityFeed.Item
+      leading={<PencilSimple />}
+      title="Profile edited"
+      description="Updated bio and avatar"
+      actor="Justin"
+      timestamp="5m ago"
+    />
+  </ActivityFeed>
