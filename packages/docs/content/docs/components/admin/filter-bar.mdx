@@ -5,14 +5,12 @@ description: Admin filter bar compound — search input, filter controls slot, r
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
-import { FilterBar } from '@/components/ui/filter-bar';
 import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from '@/components/ui/select';
+  FilterBarSearchOnlyDemo,
+  FilterBarWithSelectDemo,
+  FilterBarWithChipsDemo,
+  FilterBarDenseDemo,
+} from '@/components/ui/filter-bar-demo';
 
 ## Installation
 
@@ -81,11 +79,7 @@ export default function Example() {
   title="Search only"
   code={"<FilterBar\n  searchValue={search}\n  onSearchChange={setSearch}\n  searchPlaceholder=\"Search users\"\n/>"}
 >
-  <FilterBar
-    searchValue=""
-    onSearchChange={() => {}}
-    searchPlaceholder="Search users"
-  />
+  <FilterBarSearchOnlyDemo />
 </ComponentPreview>
 
 ## With a Select Filter
@@ -94,40 +88,16 @@ export default function Example() {
   title="Composed with a Select"
   code={"<FilterBar\n  searchValue={search}\n  onSearchChange={setSearch}\n  resultsCount=\"42 results\"\n>\n  <Select value={role} onValueChange={setRole}>\n    <SelectTrigger>\n      <SelectValue placeholder=\"Role\" />\n    </SelectTrigger>\n    <SelectContent>\n      <SelectItem value=\"admin\">Admin</SelectItem>\n      <SelectItem value=\"editor\">Editor</SelectItem>\n    </SelectContent>\n  </Select>\n</FilterBar>"}
 >
-  <FilterBar
-    searchValue=""
-    onSearchChange={() => {}}
-    resultsCount="42 results"
-  >
-    <Select>
-      <SelectTrigger>
-        <SelectValue placeholder="Role" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="admin">Admin</SelectItem>
-        <SelectItem value="editor">Editor</SelectItem>
-        <SelectItem value="viewer">Viewer</SelectItem>
-      </SelectContent>
-    </Select>
-  </FilterBar>
+  <FilterBarWithSelectDemo />
 </ComponentPreview>
 
 ## With Active Filter Chips
 
 <ComponentPreview
   title="Chips and clear-all"
-  code={"<FilterBar\n  searchValue={search}\n  onSearchChange={setSearch}\n  activeFilters={[\n    { id: 'role', label: 'Role: Admin', onRemove: () => {} },\n    { id: 'status', label: 'Status: Active', onRemove: () => {} },\n  ]}\n  onClearAll={() => {}}\n  resultsCount=\"8 results\"\n/>"}
+  code={"<FilterBar\n  searchValue={search}\n  onSearchChange={setSearch}\n  activeFilters={[\n    { id: 'role', label: 'Role: Admin', onRemove: removeRole },\n    { id: 'status', label: 'Status: Active', onRemove: removeStatus },\n  ]}\n  onClearAll={clearAll}\n  resultsCount=\"8 results\"\n/>"}
 >
-  <FilterBar
-    searchValue=""
-    onSearchChange={() => {}}
-    activeFilters={[
-      { id: 'role', label: 'Role: Admin', onRemove: () => {} },
-      { id: 'status', label: 'Status: Active', onRemove: () => {} },
-    ]}
-    onClearAll={() => {}}
-    resultsCount="8 results"
-  />
+  <FilterBarWithChipsDemo />
 </ComponentPreview>
 
 ## Dense
@@ -136,12 +106,7 @@ export default function Example() {
   title="Dense padding for packed admin layouts"
   code={"<FilterBar dense searchValue={search} onSearchChange={setSearch} />"}
 >
-  <FilterBar
-    dense
-    searchValue=""
-    onSearchChange={() => {}}
-    searchPlaceholder="Search"
-  />
+  <FilterBarDenseDemo />
 </ComponentPreview>
 
 ## API Reference

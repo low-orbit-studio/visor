@@ -5,8 +5,13 @@ description: Admin confirmation dialog compound wrapping Dialog with severity-dr
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
-import { ConfirmDialog } from '@/components/ui/confirm-dialog';
-import { Button } from '@/components/ui/button';
+import {
+  ConfirmDialogInfoDemo,
+  ConfirmDialogWarningDemo,
+  ConfirmDialogDangerDemo,
+  ConfirmDialogConfirmTextDemo,
+  ConfirmDialogCustomBodyDemo,
+} from '@/components/ui/confirm-dialog-demo';
 
 ## Installation
 
@@ -50,12 +55,7 @@ ConfirmDialog ships with three severity levels. Each severity swaps the leading 
   title="Info severity"
   code={"<ConfirmDialog\n  trigger={<Button variant=\"outline\">Archive project</Button>}\n  severity=\"info\"\n  title=\"Archive project?\"\n  description=\"You can restore it from the archive at any time.\"\n/>"}
 >
-  <ConfirmDialog
-    trigger={<Button variant="outline">Archive project</Button>}
-    severity="info"
-    title="Archive project?"
-    description="You can restore it from the archive at any time."
-  />
+  <ConfirmDialogInfoDemo />
 </ComponentPreview>
 
 ### Warning
@@ -64,12 +64,7 @@ ConfirmDialog ships with three severity levels. Each severity swaps the leading 
   title="Warning severity (default)"
   code={"<ConfirmDialog\n  trigger={<Button>Cancel subscription</Button>}\n  severity=\"warning\"\n  title=\"Cancel subscription?\"\n  description=\"Your plan will end at the next billing cycle.\"\n/>"}
 >
-  <ConfirmDialog
-    trigger={<Button>Cancel subscription</Button>}
-    severity="warning"
-    title="Cancel subscription?"
-    description="Your plan will end at the next billing cycle."
-  />
+  <ConfirmDialogWarningDemo />
 </ComponentPreview>
 
 ### Danger
@@ -78,12 +73,7 @@ ConfirmDialog ships with three severity levels. Each severity swaps the leading 
   title="Danger severity — destructive button, focuses cancel on open"
   code={"<ConfirmDialog\n  trigger={<Button variant=\"destructive\">Delete project</Button>}\n  severity=\"danger\"\n  title=\"Delete project?\"\n  description=\"This action cannot be undone.\"\n/>"}
 >
-  <ConfirmDialog
-    trigger={<Button variant="destructive">Delete project</Button>}
-    severity="danger"
-    title="Delete project?"
-    description="This action cannot be undone."
-  />
+  <ConfirmDialogDangerDemo />
 </ComponentPreview>
 
 ## Confirm-Text Gate
@@ -94,13 +84,7 @@ For truly destructive operations — delete a production project, revoke a globa
   title="Must type 'acme' to enable Delete"
   code={"<ConfirmDialog\n  trigger={<Button variant=\"destructive\">Delete acme</Button>}\n  severity=\"danger\"\n  title=\"Delete project acme?\"\n  description=\"This will permanently delete the project and all associated data.\"\n  confirmText=\"acme\"\n/>"}
 >
-  <ConfirmDialog
-    trigger={<Button variant="destructive">Delete acme</Button>}
-    severity="danger"
-    title="Delete project acme?"
-    description="This will permanently delete the project and all associated data."
-    confirmText="acme"
-  />
+  <ConfirmDialogConfirmTextDemo />
 </ComponentPreview>
 
 ## Custom Body
@@ -111,17 +95,7 @@ Pass `children` for a richer body slot. Children override the `description` prop
   title="Richer body with list"
   code={"<ConfirmDialog\n  trigger={<Button>Revoke API key</Button>}\n  severity=\"warning\"\n  title=\"Revoke API key?\"\n>\n  <p>Any services using this key will lose access immediately.</p>\n  <ul>\n    <li>Used by 3 services</li>\n    <li>Created 4 months ago</li>\n  </ul>\n</ConfirmDialog>"}
 >
-  <ConfirmDialog
-    trigger={<Button>Revoke API key</Button>}
-    severity="warning"
-    title="Revoke API key?"
-  >
-    <p>Any services using this key will lose access immediately.</p>
-    <ul>
-      <li>Used by 3 services</li>
-      <li>Created 4 months ago</li>
-    </ul>
-  </ConfirmDialog>
+  <ConfirmDialogCustomBodyDemo />
 </ComponentPreview>
 
 ## API Reference

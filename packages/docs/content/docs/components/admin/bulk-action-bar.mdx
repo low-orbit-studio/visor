@@ -5,8 +5,11 @@ description: Admin bulk action bar compound — sticky or inline toolbar that ap
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
-import { BulkActionBar } from '@/components/ui/bulk-action-bar';
-import { Button } from '@/components/ui/button';
+import {
+  BulkActionBarInlineDemo,
+  BulkActionBarCustomLabelDemo,
+  BulkActionBarNoDismissDemo,
+} from '@/components/ui/bulk-action-bar-demo';
 
 ## Installation
 
@@ -53,16 +56,9 @@ The inline variant flows in the document instead of pinning to the viewport bott
 
 <ComponentPreview
   title="Inline bulk action bar"
-  code={"<BulkActionBar count={3} inline onClear={() => {}}>\n  <Button variant=\"outline\" size=\"sm\">Archive</Button>\n  <Button variant=\"destructive\" size=\"sm\">Delete</Button>\n</BulkActionBar>"}
+  code={"const [selected, setSelected] = useState(['a', 'b', 'c']);\n\n<BulkActionBar\n  count={selected.length}\n  inline\n  onClear={() => setSelected([])}\n>\n  <Button variant=\"outline\" size=\"sm\">Archive</Button>\n  <Button variant=\"destructive\" size=\"sm\">Delete</Button>\n</BulkActionBar>"}
 >
-  <BulkActionBar count={3} inline autoFocus={false} onClear={() => {}}>
-    <Button variant="outline" size="sm">
-      Archive
-    </Button>
-    <Button variant="destructive" size="sm">
-      Delete
-    </Button>
-  </BulkActionBar>
+  <BulkActionBarInlineDemo />
 </ComponentPreview>
 
 ## Custom Label
@@ -71,19 +67,9 @@ Provide a `label` renderer to customize the count string — useful for pluraliz
 
 <ComponentPreview
   title="Custom label renderer"
-  code={"<BulkActionBar\n  count={12}\n  inline\n  label={(n) => `${n} users selected`}\n  onClear={() => {}}\n>\n  <Button variant=\"destructive\" size=\"sm\">Delete</Button>\n</BulkActionBar>"}
+  code={"<BulkActionBar\n  count={12}\n  inline\n  label={(n) => `${n} users selected`}\n  onClear={() => setSelected([])}\n>\n  <Button variant=\"destructive\" size=\"sm\">Delete</Button>\n</BulkActionBar>"}
 >
-  <BulkActionBar
-    count={12}
-    inline
-    autoFocus={false}
-    label={(n) => `${n} users selected`}
-    onClear={() => {}}
-  >
-    <Button variant="destructive" size="sm">
-      Delete
-    </Button>
-  </BulkActionBar>
+  <BulkActionBarCustomLabelDemo />
 </ComponentPreview>
 
 ## Without Dismiss
@@ -94,11 +80,7 @@ Set `dismissible={false}` when the selection should only be cleared programmatic
   title="No dismiss button"
   code={"<BulkActionBar count={4} inline dismissible={false}>\n  <Button variant=\"outline\" size=\"sm\">Archive</Button>\n</BulkActionBar>"}
 >
-  <BulkActionBar count={4} inline autoFocus={false} dismissible={false}>
-    <Button variant="outline" size="sm">
-      Archive
-    </Button>
-  </BulkActionBar>
+  <BulkActionBarNoDismissDemo />
 </ComponentPreview>
 
 ## API Reference
