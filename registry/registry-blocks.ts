@@ -2,6 +2,25 @@ import type { Registry } from "./schema"
 
 export const blocks: Registry = [
   {
+    name: "admin-shell",
+    type: "registry:block",
+    category: "admin",
+    description:
+      "Foundational admin layout with sidebar, topbar, and main content area. Slot-driven for logo, navigation, breadcrumbs, user menu, and status indicators.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "breadcrumb", "dropdown-menu", "sidebar"],
+    files: [
+      {
+        path: "blocks/admin-shell/admin-shell.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/admin-shell/admin-shell.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "configuration-panel",
     type: "registry:block",
     category: "configuration",

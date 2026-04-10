@@ -1,0 +1,16 @@
+name: Admin Shell
+description: Foundational admin layout with sidebar, topbar, and main content area. Slot-driven for logo, navigation, breadcrumbs, user menu, and status indicators.
+category: admin
+components_used:
+  - breadcrumb
+  - dropdown-menu
+  - sidebar
+when_to_use:
+  - Internal admin tools and back-office apps
+  - Dashboards with persistent side navigation
+  - CRUD-heavy applications needing a consistent chrome
+  - Any multi-page admin area requiring breadcrumbs and a user menu
+when_not_to_use:
+  - Public marketing pages (use hero-section, cta-section, footer-section)
+  - Authentication screens (use login-form)
+  - Full-bleed canvas experiences without chrome

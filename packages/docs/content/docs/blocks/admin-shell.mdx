@@ -1,0 +1,121 @@
+---
+title: Admin Shell
+description: Foundational admin layout with sidebar, topbar, and main content area. Slot-driven for logo, navigation, breadcrumbs, user menu, and status indicators.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { AdminShell } from '@/components/blocks/admin-shell';
+
+## Preview
+
+<BlockPreview
+  title="Admin Shell"
+  code={"<AdminShell\n  logo={<strong>Acme Admin</strong>}\n  sidebarNav={\n    <>\n      <a href=\"#\">Dashboard</a>\n      <a href=\"#\">Users</a>\n      <a href=\"#\">Billing</a>\n      <a href=\"#\">Settings</a>\n    </>\n  }\n  sidebarFooter={<span>jane@acme.com</span>}\n  breadcrumb={<span>Dashboard</span>}\n  topbarEnd={<button>Account</button>}\n>\n  <h1>Welcome back</h1>\n  <p>Your admin content renders here.</p>\n</AdminShell>"}
+>
+  <AdminShell
+    logo={<strong>Acme Admin</strong>}
+    sidebarNav={
+      <>
+        <a href="#">Dashboard</a>
+        <a href="#">Users</a>
+        <a href="#">Billing</a>
+        <a href="#">Settings</a>
+      </>
+    }
+    sidebarFooter={<span>jane@acme.com</span>}
+    breadcrumb={<span>Dashboard</span>}
+    topbarEnd={<button>Account</button>}
+  >
+    <h1>Welcome back</h1>
+    <p>Your admin content renders here.</p>
+  </AdminShell>
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block admin-shell
+```
+
+This copies files into your project:
+
+- `blocks/admin-shell/admin-shell.tsx` — the block component
+- `blocks/admin-shell/admin-shell.module.css` — the styles
+
+## Usage
+
+```tsx
+import { AdminShell } from '@/blocks/admin-shell/admin-shell';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from '@/components/ui/breadcrumb/breadcrumb';
+
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <AdminShell
+      logo={<img src="/logo.svg" alt="Acme" />}
+      sidebarNav={
+        <>
+          <a href="/admin">Dashboard</a>
+          <a href="/admin/users">Users</a>
+          <a href="/admin/billing">Billing</a>
+          <a href="/admin/settings">Settings</a>
+        </>
+      }
+      sidebarFooter={<UserMenu />}
+      breadcrumb={
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>Admin</BreadcrumbItem>
+            <BreadcrumbItem>Users</BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      }
+      topbarCenter={<StatusIndicators />}
+      topbarEnd={<ThemeToggle />}
+    >
+      {children}
+    </AdminShell>
+  );
+}
+```
+
+## Layout
+
+The shell is a two-column flex layout:
+
+- **Left column** — A sticky sidebar containing (top to bottom) a branding slot, a scrollable navigation area, and a footer slot for the user menu.
+- **Right column** — A sticky topbar above a scrollable `<main>` element. The topbar has three slots: start (breadcrumb + extras), center (status indicators, search), and end (user menu, theme toggle).
+
+The `<main>` element carries `id="admin-main-content"` so the built-in skip link (visible on keyboard focus) can jump past the chrome.
+
+## Accessibility
+
+- Skip link (visually hidden, visible on focus) jumps to `#admin-main-content`.
+- `<aside aria-label="Primary navigation">` wraps the sidebar.
+- `<nav aria-label="Sidebar">` wraps the nav slot.
+- `<header role="banner">` wraps the topbar.
+- `<main role="main">` with `tabIndex={-1}` allows the skip link to move focus into the content area.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `logo` | `ReactNode` | — | Branding slot at the top of the sidebar. |
+| `sidebarNav` | `ReactNode` | — | **Required.** Navigation content. Consumer provides their own link list. |
+| `sidebarFooter` | `ReactNode` | — | Bottom-of-sidebar slot (user menu, logout, theme toggle). |
+| `sidebarWidth` | `number \| string` | `256` | Sidebar width. Numbers are pixels; strings pass through. |
+| `breadcrumb` | `ReactNode` | — | Rendered at the start of the topbar. |
+| `topbarStart` | `ReactNode` | — | Left side of the topbar, after the breadcrumb. |
+| `topbarCenter` | `ReactNode` | — | Center slot for status indicators, search, etc. |
+| `topbarEnd` | `ReactNode` | — | Right side of the topbar. |
+| `hideTopbar` | `boolean` | `false` | When true, no topbar is rendered. |
+| `children` | `ReactNode` | — | **Required.** Main content. |
+| `mainMaxWidth` | `number \| string` | — | Optional max-width for the main content area. |
+| `mainPadding` | `"none" \| "sm" \| "md" \| "lg"` | `"lg"` | Padding applied inside the main content area. |
+| `className` | `string` | — | Additional CSS class on the root element. |
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI — such as admin shells, login forms, or dashboard panels.
+
+Blocks are copy-and-own, just like components. Install them into your project and customize freely.
