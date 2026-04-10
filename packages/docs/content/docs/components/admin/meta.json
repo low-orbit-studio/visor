@@ -4,6 +4,7 @@
   "defaultOpen": true,
   "pages": [
     "page-header",
-    "stat-card"
+    "stat-card",
+    "status-badge"
   ]
 }

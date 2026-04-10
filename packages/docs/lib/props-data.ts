@@ -1848,4 +1848,51 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'All standard HTML attributes are forwarded to the root.',
     },
   ],
+
+  'status-badge': [
+    {
+      name: 'status',
+      type: "'healthy' | 'degraded' | 'down' | 'failed' | 'running' | 'pending' | 'queued' | 'idle' | 'complete'",
+      required: true,
+      description:
+        'Semantic admin status. Drives the underlying Badge variant, the indicator dot color, and the default label.',
+    },
+    {
+      name: 'label',
+      type: 'React.ReactNode',
+      description:
+        'Visible text. Defaults to the capitalized status key (e.g. "Healthy", "Running").',
+    },
+    {
+      name: 'tone',
+      type: "'subtle' | 'filled'",
+      default: "'subtle'",
+      description:
+        'Which Badge variant family to use. Filled uses saturated backgrounds; subtle uses tinted surfaces.',
+    },
+    {
+      name: 'indicator',
+      type: 'boolean',
+      default: 'true',
+      description: 'Render the leading colored indicator dot.',
+    },
+    {
+      name: 'pulse',
+      type: 'boolean',
+      default: 'false',
+      description:
+        'Animate the indicator dot with a soft pulse. Respects prefers-reduced-motion.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the root element.',
+    },
+    {
+      name: '...props',
+      type: 'Omit<React.HTMLAttributes<HTMLSpanElement>, "children">',
+      description:
+        'All standard HTML attributes (except children) are forwarded to the underlying Badge element.',
+    },
+  ],
 };

@@ -1483,4 +1483,23 @@ export const ui: Registry = [
       },
     ],
   },
+  {
+    name: "status-badge",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "A semantic wrapper over Badge that maps admin status names (healthy, degraded, down, running, pending, queued, idle, failed, complete) to visual variants with an optional colored indicator dot and pulse animation.",
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "badge"],
+    files: [
+      {
+        path: "components/ui/status-badge/status-badge.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/status-badge/status-badge.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
 ]
