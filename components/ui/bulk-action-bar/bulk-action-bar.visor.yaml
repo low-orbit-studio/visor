@@ -1,0 +1,70 @@
+name: BulkActionBar
+description: Admin bulk action bar compound — sticky or inline toolbar that appears when rows are selected. Shows a live-announced selection count, an actions slot, and an optional dismiss button. Auto-focuses the first action on mount and treats Escape as a dismiss.
+extends: HTMLDivElement
+category: admin
+
+when_to_use:
+  - Exposing bulk operations on selected rows in a data-table or list
+  - Providing a persistent "N selected + actions" affordance above the fold
+  - Coordinating multi-item actions (delete, archive, export, assign)
+
+when_not_to_use:
+  - Single-row actions (use a row-level menu or inline buttons)
+  - Global app actions unrelated to a selection (use a Toolbar or header)
+  - Long-running bulk jobs that need their own progress UI (pair with a Progress or Toast)
+
+why: >
+  Selection-driven admin UIs repeatedly re-implement the same "N selected +
+  actions + dismiss" bar. Canonicalizing the layout removes drift, guarantees
+  accessible semantics (role="toolbar", aria-live count), provides a
+  predictable Escape-to-clear affordance, and ships a smooth entrance
+  animation that respects prefers-reduced-motion.
+
+props:
+  - name: count
+    type: number
+    required: true
+    description: Number of selected items. The bar returns null when count is 0 or less.
+  - name: children
+    type: React.ReactNode
+    required: true
+    description: Action buttons cluster — typically one or more Button instances.
+  - name: inline
+    type: boolean
+    default: "false"
+    description: Render inline (non-sticky) instead of fixed to the viewport bottom.
+  - name: label
+    type: "(count: number) => React.ReactNode"
+    default: "(n) => `${n} selected`"
+    description: Renderer for the selection count label. Wrapped in aria-live="polite".
+  - name: clearLabel
+    type: React.ReactNode
+    default: "\"Clear selection\""
+    description: Aria-label for the dismiss button. Used verbatim when it is a string.
+  - name: onClear
+    type: "() => void"
+    description: Fired by the Escape key and the dismiss button. The Escape handler is only attached when this is provided.
+  - name: dismissible
+    type: boolean
+    default: "true"
+    description: Show the dismiss (X) button. Requires onClear to render.
+  - name: autoFocus
+    type: boolean
+    default: "true"
+    description: Auto-focus the first enabled action button on mount.
+
+dependencies:
+  - "@phosphor-icons/react"
+
+registry_dependencies:
+  - "utils"
+  - "button"
+
+example: |
+  <BulkActionBar
+    count={selected.length}
+    onClear={() => setSelected([])}
+  >
+    <Button variant="outline" size="sm">Archive</Button>
+    <Button variant="destructive" size="sm">Delete</Button>
+  </BulkActionBar>

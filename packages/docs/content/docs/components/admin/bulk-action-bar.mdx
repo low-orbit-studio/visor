@@ -1,0 +1,139 @@
+---
+title: Bulk Action Bar
+description: Admin bulk action bar compound — sticky or inline toolbar that appears when rows are selected. Shows a live-announced selection count, an actions slot, and an optional dismiss button. Built with CSS Modules and a reduced-motion-aware entrance animation — copy it into your project and own it completely.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { BulkActionBar } from '@/components/ui/bulk-action-bar';
+import { Button } from '@/components/ui/button';
+
+## Installation
+
+```bash
+npx visor add bulk-action-bar
+```
+
+This copies two files into your project:
+
+- `components/ui/bulk-action-bar/bulk-action-bar.tsx` — the component
+- `components/ui/bulk-action-bar/bulk-action-bar.module.css` — the styles
+
+The registry also pulls in `button` as a dependency.
+
+## Usage
+
+```tsx
+import { useState } from 'react';
+import { BulkActionBar } from '@/components/ui/bulk-action-bar/bulk-action-bar';
+import { Button } from '@/components/ui/button/button';
+
+export default function Example() {
+  const [selected, setSelected] = useState<string[]>([]);
+
+  return (
+    <BulkActionBar
+      count={selected.length}
+      onClear={() => setSelected([])}
+    >
+      <Button variant="outline" size="sm">
+        Archive
+      </Button>
+      <Button variant="destructive" size="sm">
+        Delete
+      </Button>
+    </BulkActionBar>
+  );
+}
+```
+
+## Inline
+
+The inline variant flows in the document instead of pinning to the viewport bottom — useful when the bar lives inside a scroll container or a dialog.
+
+<ComponentPreview
+  title="Inline bulk action bar"
+  code={"<BulkActionBar count={3} inline onClear={() => {}}>\n  <Button variant=\"outline\" size=\"sm\">Archive</Button>\n  <Button variant=\"destructive\" size=\"sm\">Delete</Button>\n</BulkActionBar>"}
+>
+  <BulkActionBar count={3} inline autoFocus={false} onClear={() => {}}>
+    <Button variant="outline" size="sm">
+      Archive
+    </Button>
+    <Button variant="destructive" size="sm">
+      Delete
+    </Button>
+  </BulkActionBar>
+</ComponentPreview>
+
+## Custom Label
+
+Provide a `label` renderer to customize the count string — useful for pluralization or domain-specific nouns.
+
+<ComponentPreview
+  title="Custom label renderer"
+  code={"<BulkActionBar\n  count={12}\n  inline\n  label={(n) => `${n} users selected`}\n  onClear={() => {}}\n>\n  <Button variant=\"destructive\" size=\"sm\">Delete</Button>\n</BulkActionBar>"}
+>
+  <BulkActionBar
+    count={12}
+    inline
+    autoFocus={false}
+    label={(n) => `${n} users selected`}
+    onClear={() => {}}
+  >
+    <Button variant="destructive" size="sm">
+      Delete
+    </Button>
+  </BulkActionBar>
+</ComponentPreview>
+
+## Without Dismiss
+
+Set `dismissible={false}` when the selection should only be cleared programmatically by consumer actions.
+
+<ComponentPreview
+  title="No dismiss button"
+  code={"<BulkActionBar count={4} inline dismissible={false}>\n  <Button variant=\"outline\" size=\"sm\">Archive</Button>\n</BulkActionBar>"}
+>
+  <BulkActionBar count={4} inline autoFocus={false} dismissible={false}>
+    <Button variant="outline" size="sm">
+      Archive
+    </Button>
+  </BulkActionBar>
+</ComponentPreview>
+
+## API Reference
+
+### BulkActionBarProps
+
+<PropsTable component="bulk-action-bar" />
+
+The component also accepts all standard HTML attributes for the root `<div>`.
+
+## Behavior
+
+- **Mounts only when `count > 0`** — zero selection renders nothing, no invisible DOM.
+- **Escape-to-clear** — when `onClear` is provided, pressing Escape anywhere on the page fires it.
+- **Auto-focus** — on mount, focus moves to the first enabled action button. Disable with `autoFocus={false}`.
+- **Entrance animation** — sticky variant slides up + fades in over 300ms. `prefers-reduced-motion` skips the animation entirely.
+- **Live announcement** — the count is wrapped in `aria-live="polite"` so assistive tech announces selection changes.
+
+## Source Files
+
+After running `npx visor add bulk-action-bar`, you'll have:
+
+### `bulk-action-bar.tsx`
+
+A forwardRef client component with `role="toolbar"` and `aria-label="Bulk actions"`. The count span is `aria-live="polite"`, the Escape handler is attached via `useEffect` only when `onClear` is supplied, and auto-focus runs once on mount via a `useRef` to the actions slot.
+
+### `bulk-action-bar.module.css`
+
+All values use CSS custom properties from `@loworbitstudio/visor-core`. The sticky variant uses `position: fixed` with `z-index: 50` (promote to a `--z-index-toolbar` token once the z-index scale is formalized), and the entrance keyframes are wrapped in a `prefers-reduced-motion` guard.
+
+## Customization
+
+After copying the component, you own it completely. Common customizations:
+
+- Anchor the sticky variant inside a scroll container by swapping `position: fixed` for `position: sticky`.
+- Replace the default count label with a translation function that handles plural forms.
+- Add a "Select all" affordance next to the count for cross-page selection.
+- Promote the bar into a Portal when the surrounding layout clips fixed children.

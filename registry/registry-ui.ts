@@ -1446,6 +1446,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "bulk-action-bar",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "An admin bulk action bar compound — sticky or inline toolbar that appears when rows are selected. Shows a live-announced selection count, an actions slot for consumer-provided buttons, and an optional dismiss affordance. Auto-focuses the first action on mount, Escape fires onClear, and the entrance animation respects prefers-reduced-motion.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "button"],
+    files: [
+      {
+        path: "components/ui/bulk-action-bar/bulk-action-bar.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/bulk-action-bar/bulk-action-bar.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "confirm-dialog",
     type: "registry:ui",
     category: "admin",

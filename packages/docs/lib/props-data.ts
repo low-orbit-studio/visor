@@ -1735,6 +1735,64 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'bulk-action-bar': [
+    {
+      name: 'count',
+      type: 'number',
+      required: true,
+      description:
+        'Number of selected items. The bar returns null when count is 0 or less.',
+    },
+    {
+      name: 'children',
+      type: 'React.ReactNode',
+      required: true,
+      description:
+        'Action buttons cluster — typically one or more Button instances.',
+    },
+    {
+      name: 'inline',
+      type: 'boolean',
+      default: 'false',
+      description:
+        'Render inline (non-sticky) instead of fixed to the viewport bottom.',
+    },
+    {
+      name: 'label',
+      type: '(count: number) => React.ReactNode',
+      default: '(n) => `${n} selected`',
+      description:
+        'Renderer for the selection count label. Wrapped in aria-live="polite" so changes are announced.',
+    },
+    {
+      name: 'clearLabel',
+      type: 'React.ReactNode',
+      default: "'Clear selection'",
+      description:
+        'Aria-label for the dismiss button. Used verbatim when it is a string.',
+    },
+    {
+      name: 'onClear',
+      type: '() => void',
+      description:
+        'Fired by the Escape key and the dismiss button. The Escape handler is only attached when this is provided.',
+    },
+    {
+      name: 'dismissible',
+      type: 'boolean',
+      default: 'true',
+      description:
+        'Show the dismiss (X) button. Requires onClear to render the button.',
+    },
+    {
+      name: 'autoFocus',
+      type: 'boolean',
+      default: 'true',
+      description:
+        'Auto-focus the first enabled action button on mount. Only runs on mount, not on count changes.',
+    },
+  ],
+
   'confirm-dialog': [
     {
       name: 'title',

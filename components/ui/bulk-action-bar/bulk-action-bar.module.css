@@ -1,0 +1,86 @@
+/* Bulk Action Bar: appears when rows are selected. Sticky by default. */
+.base {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-4, 1rem);
+  padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
+  background-color: var(--surface-card, #ffffff);
+  border-top: 1px solid var(--border-default, #e5e7eb);
+  color: var(--text-primary, #111827);
+  box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1));
+  border-radius: var(--radius-lg, 0.75rem);
+}
+
+/* Sticky variant — pinned to the viewport bottom. */
+.sticky {
+  position: fixed;
+  bottom: var(--spacing-4, 1rem);
+  left: var(--spacing-4, 1rem);
+  right: var(--spacing-4, 1rem);
+  /*
+   * Toolbar layer. No --z-index-toolbar token exists yet in
+   * @loworbitstudio/visor-core — promote to a token once the z-index scale
+   * is formalized.
+   */
+  z-index: 50;
+  animation: bulk-action-bar-enter var(--motion-duration-moderate, 300ms)
+    var(--motion-easing-standard, ease-out);
+}
+
+/* Inline variant — flows in the document, no fixed positioning. */
+.inline {
+  position: relative;
+  width: 100%;
+}
+
+/* Selection count label */
+.count {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-primary, #111827);
+  line-height: var(--line-height-tight, 1.25);
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+/* Actions cluster — horizontal, wraps on narrow rows */
+.actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-2, 0.5rem);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Dismiss button — sits flush on the right */
+.dismiss {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.dismiss svg {
+  width: var(--spacing-4, 1rem);
+  height: var(--spacing-4, 1rem);
+}
+
+/* Entrance animation: slide up + fade in. */
+@keyframes bulk-action-bar-enter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--spacing-4, 1rem));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Respect prefers-reduced-motion — skip the slide, keep it mounted. */
+@media (prefers-reduced-motion: reduce) {
+  .sticky {
+    animation: none;
+  }
+}
