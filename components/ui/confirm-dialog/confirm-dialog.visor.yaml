@@ -1,0 +1,92 @@
+name: ConfirmDialog
+description: Admin confirmation dialog compound wrapping Dialog with severity-driven icon/color/button variant, optional confirm-text gate, and async-aware confirm handler.
+extends: Dialog
+category: admin
+
+when_to_use:
+  - Confirming a destructive action like delete, revoke, or purge
+  - Gating a high-stakes action with a typed confirmation phrase
+  - Surfacing a pending state during async confirm handlers
+  - Replacing inline "are you sure?" prompts in admin UIs
+
+when_not_to_use:
+  - Informational modals without an action (use Dialog directly)
+  - Inline form confirmation (use Field validation)
+  - Toasts or banners for non-blocking confirmations
+  - Multi-step wizard confirmations (use a dedicated flow)
+
+why: >
+  Destructive-action confirmation is ubiquitous in admin UIs — delete user,
+  cancel subscription, revoke API key, purge data. Canonicalizing the pattern
+  into a single compound gives us consistent icon/color semantics per severity,
+  a safer default focus target on danger, and an opinionated confirm-text gate
+  for irreversible operations.
+
+variants:
+  severity: [info, warning, danger]
+
+props:
+  - name: title
+    type: React.ReactNode
+    required: true
+    description: Dialog title. Rendered next to the severity icon.
+  - name: description
+    type: React.ReactNode
+    description: Short body above the action row. Used as DialogDescription for aria-describedby.
+  - name: children
+    type: React.ReactNode
+    description: Richer body slot. Overrides description when provided.
+  - name: severity
+    type: "'info' | 'warning' | 'danger'"
+    default: "warning"
+    description: Drives icon, icon color, and confirm button variant.
+  - name: trigger
+    type: React.ReactNode
+    description: Optional trigger wrapped in DialogTrigger. Omit for fully-controlled usage.
+  - name: open
+    type: boolean
+    description: Controlled open state.
+  - name: defaultOpen
+    type: boolean
+    description: Uncontrolled initial open state.
+  - name: onOpenChange
+    type: "(open: boolean) => void"
+    description: Called when open state changes.
+  - name: confirmLabel
+    type: React.ReactNode
+    description: Confirm button label. Defaults to "Delete" for danger, "Confirm" otherwise.
+  - name: cancelLabel
+    type: React.ReactNode
+    default: "Cancel"
+    description: Cancel button label.
+  - name: confirmText
+    type: string
+    description: If set, the user must type this exact string to enable the confirm button.
+  - name: confirmTextLabel
+    type: React.ReactNode
+    description: Label for the confirm-text input. Defaults to "Type {confirmText} to confirm".
+  - name: onConfirm
+    type: "() => void | Promise<void>"
+    description: Confirm handler. Returning a Promise enables pending state and keeps the dialog open until resolved.
+  - name: onCancel
+    type: "() => void"
+    description: Cancel handler.
+  - name: busy
+    type: boolean
+    description: Externally-controlled busy state. Overrides internal async pending detection.
+
+dependencies:
+  - "@radix-ui/react-dialog"
+  - "@phosphor-icons/react"
+
+example: |
+  <ConfirmDialog
+    trigger={<Button variant="destructive">Delete project</Button>}
+    severity="danger"
+    title="Delete project?"
+    description="This action cannot be undone. All associated data will be permanently removed."
+    confirmText="acme"
+    onConfirm={async () => {
+      await deleteProject()
+    }}
+  />

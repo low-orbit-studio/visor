@@ -3,6 +3,7 @@
   "description": "Components alphabetized. Insert new entries in A-Z order.",
   "defaultOpen": true,
   "pages": [
+    "confirm-dialog",
     "empty-state",
     "page-header",
     "stat-card",

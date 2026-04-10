@@ -1446,6 +1446,29 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "confirm-dialog",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "An admin confirmation dialog compound wrapping Dialog with severity-driven icon/color/button variant (info/warning/danger), optional confirm-text gate for high-stakes actions, async-aware confirm handler with pending state, and safer focus defaults for danger-level confirmations.",
+    dependencies: [
+      "@radix-ui/react-dialog",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils", "dialog", "button"],
+    files: [
+      {
+        path: "components/ui/confirm-dialog/confirm-dialog.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/confirm-dialog/confirm-dialog.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "empty-state",
     type: "registry:ui",
     category: "admin",

@@ -1,0 +1,125 @@
+/* ConfirmDialog — destructive-action confirmation compound wrapping Dialog. */
+
+.root {
+  container-type: inline-size;
+  container-name: confirm-dialog;
+}
+
+/* Title row with leading severity icon */
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+/* Severity icon — sized via svg to respect Phosphor sizing contract */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.icon svg {
+  width: var(--spacing-5, 1.25rem);
+  height: var(--spacing-5, 1.25rem);
+}
+
+.iconInfo {
+  color: var(--text-info, #0369a1);
+}
+
+.iconWarning {
+  color: var(--text-warning, #b45309);
+}
+
+.iconDanger {
+  color: var(--text-error, #b91c1c);
+}
+
+/* Body slot — description paragraph or richer children */
+.body {
+  margin-top: var(--spacing-2, 0.5rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+  line-height: var(--line-height-relaxed, 1.6);
+}
+
+.body > :first-child {
+  margin-top: 0;
+}
+
+.body > :last-child {
+  margin-bottom: 0;
+}
+
+/* Confirm-text gate — labeled text input between body and actions */
+.confirmGate {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+  margin-top: var(--spacing-4, 1rem);
+}
+
+.confirmGateLabel {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-primary, #111827);
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.confirmGateInput {
+  width: 100%;
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  border-radius: var(--radius-md, 0.5rem);
+  border: 1px solid var(--border-default, #e5e7eb);
+  background-color: var(--surface-page, #ffffff);
+  color: var(--text-primary, #111827);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-family: inherit;
+  line-height: var(--line-height-normal, 1.5);
+  transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.confirmGateInput:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+  border-color: var(--border-focus, currentColor);
+}
+
+.confirmGateInput:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Action row — cancel + confirm, right-aligned on wide, stacked on narrow */
+.actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  margin-top: var(--spacing-6, 1.5rem);
+}
+
+.action {
+  display: inline-flex;
+}
+
+/* Container query: stack actions vertically on narrow dialog widths */
+@container confirm-dialog (max-width: 360px) {
+  .actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .actions .action {
+    width: 100%;
+  }
+
+  .actions .action > * {
+    width: 100%;
+    justify-content: center;
+  }
+}

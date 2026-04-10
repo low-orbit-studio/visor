@@ -1735,6 +1735,102 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'confirm-dialog': [
+    {
+      name: 'title',
+      type: 'React.ReactNode',
+      required: true,
+      description:
+        'Dialog title. Rendered next to the severity icon inside DialogTitle.',
+    },
+    {
+      name: 'description',
+      type: 'React.ReactNode',
+      description:
+        'Short body above the action row. Used as DialogDescription for aria-describedby.',
+    },
+    {
+      name: 'children',
+      type: 'React.ReactNode',
+      description:
+        'Richer body slot. Overrides description when both are provided.',
+    },
+    {
+      name: 'severity',
+      type: "'info' | 'warning' | 'danger'",
+      default: "'warning'",
+      description:
+        'Drives icon, icon color, and confirm button variant. Danger uses the destructive button variant and focuses the cancel button on open.',
+    },
+    {
+      name: 'trigger',
+      type: 'React.ReactNode',
+      description:
+        'Optional trigger wrapped in DialogTrigger. Omit for fully-controlled usage with `open`/`onOpenChange`.',
+    },
+    {
+      name: 'open',
+      type: 'boolean',
+      description: 'Controlled open state.',
+    },
+    {
+      name: 'defaultOpen',
+      type: 'boolean',
+      description: 'Uncontrolled initial open state.',
+    },
+    {
+      name: 'onOpenChange',
+      type: '(open: boolean) => void',
+      description: 'Called when the dialog open state changes.',
+    },
+    {
+      name: 'confirmLabel',
+      type: 'React.ReactNode',
+      description:
+        'Confirm button label. Defaults to "Delete" when severity is "danger", otherwise "Confirm".',
+    },
+    {
+      name: 'cancelLabel',
+      type: 'React.ReactNode',
+      default: "'Cancel'",
+      description: 'Cancel button label.',
+    },
+    {
+      name: 'confirmText',
+      type: 'string',
+      description:
+        'If set, the user must type this exact (case-sensitive) string to enable the confirm button.',
+    },
+    {
+      name: 'confirmTextLabel',
+      type: 'React.ReactNode',
+      description:
+        'Label for the confirm-text input. Defaults to "Type {confirmText} to confirm".',
+    },
+    {
+      name: 'onConfirm',
+      type: '() => void | Promise<void>',
+      description:
+        'Confirm handler. Returning a Promise enables pending state and keeps the dialog open until resolved. On rejection the dialog stays open and the error is re-thrown so the consumer can observe it.',
+    },
+    {
+      name: 'onCancel',
+      type: '() => void',
+      description: 'Cancel handler. Called before the dialog closes.',
+    },
+    {
+      name: 'busy',
+      type: 'boolean',
+      description:
+        'Externally-controlled busy state. Overrides internal async pending detection and disables both buttons.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names merged onto DialogContent.',
+    },
+  ],
+
   'empty-state': [
     {
       name: 'heading',
