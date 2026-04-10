@@ -1,0 +1,16 @@
+name: Admin Dashboard
+description: Drop-in admin overview composition — PageHeader, responsive stat grid, optional secondary region, and ActivityFeed with empty-state fallback. Composes existing admin compounds, nothing to configure.
+category: admin
+components_used:
+  - page-header
+  - stat-card
+  - activity-feed
+  - empty-state
+when_to_use:
+  - Landing page for an admin or back-office app
+  - Overview-at-a-glance screens mixing KPIs and recent events
+  - Any dashboard needing a title, metrics, and a recent-activity feed
+when_not_to_use:
+  - Data-heavy list or table pages (use admin-list-page)
+  - Detail / edit screens for a single record (use admin-detail-drawer)
+  - Settings forms (use admin-settings-page)

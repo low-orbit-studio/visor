@@ -1,0 +1,120 @@
+---
+title: Admin Dashboard
+description: Drop-in admin overview composition — PageHeader, responsive stat grid, optional secondary region, and ActivityFeed with empty-state fallback.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { AdminDashboardDemo } from '@/components/blocks/admin-dashboard-demo';
+
+## Preview
+
+<BlockPreview
+  title="Admin Dashboard"
+  code={"<AdminDashboard\n  eyebrow=\"Overview\"\n  title=\"Dashboard\"\n  description=\"A live snapshot of your workspace.\"\n  actions={<Button>New report</Button>}\n  stats={[\n    { id: 'revenue', label: 'Total revenue', value: '$48,120', delta: { value: '+12.4%', direction: 'up', label: 'vs last month' }, variant: 'highlight' },\n    { id: 'active-users', label: 'Active users', value: '2,847', delta: { value: '+3.1%', direction: 'up' } },\n    { id: 'conversion', label: 'Conversion rate', value: '4.82%', delta: { value: '-0.4%', direction: 'down' } },\n    { id: 'churn', label: 'Churn', value: '1.2%', delta: { value: '0.0%', direction: 'flat' } },\n  ]}\n  activities={[\n    { id: '1', title: 'New subscription', description: 'Acme Corp upgraded to the Team plan.', actor: 'Jane Cooper', timestamp: '2 minutes ago' },\n    { id: '2', title: 'User invited', description: 'dev@initech.example was invited.', actor: 'Wade Warren', timestamp: '18 minutes ago' },\n  ]}\n  activityViewAllHref=\"/admin/activity\"\n/>"}
+>
+  <AdminDashboardDemo />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block admin-dashboard
+```
+
+This copies files into your project:
+
+- `blocks/admin-dashboard/admin-dashboard.tsx` — the block component
+- `blocks/admin-dashboard/admin-dashboard.module.css` — the styles
+
+The registry pulls in `page-header`, `stat-card`, `activity-feed`, and `empty-state` as dependencies.
+
+## Usage
+
+```tsx
+import { AdminDashboard } from '@/blocks/admin-dashboard/admin-dashboard';
+import { Button } from '@/components/ui/button/button';
+
+export default function DashboardPage() {
+  return (
+    <AdminDashboard
+      eyebrow="Overview"
+      title="Dashboard"
+      description="A live snapshot of your workspace."
+      actions={<Button>New report</Button>}
+      stats={[
+        {
+          id: 'revenue',
+          label: 'Total revenue',
+          value: '$48,120',
+          delta: { value: '+12.4%', direction: 'up', label: 'vs last month' },
+          variant: 'highlight',
+        },
+        {
+          id: 'active-users',
+          label: 'Active users',
+          value: '2,847',
+          delta: { value: '+3.1%', direction: 'up' },
+        },
+      ]}
+      activities={[
+        {
+          id: '1',
+          title: 'New subscription',
+          description: 'Acme Corp upgraded to the Team plan.',
+          actor: 'Jane Cooper',
+          timestamp: '2 minutes ago',
+        },
+      ]}
+      activityViewAllHref="/admin/activity"
+    />
+  );
+}
+```
+
+Drop this inside an `AdminShell` to get the full chrome — sidebar, topbar, and dashboard content in one composition.
+
+## Layout
+
+The block is a vertical stack with consistent spacing:
+
+1. **PageHeader** — title, optional eyebrow, optional description, optional actions slot.
+2. **Stat grid** — responsive grid of StatCards. Driven by container queries: 1 column narrow, 2 columns at 36rem, 3 columns at 56rem, 4 columns at 72rem.
+3. **Secondary region** *(optional)* — a free-form slot for charts, announcements, or other widgets.
+4. **Activity section** — a `<section aria-labelledby>` with a title, optional "View all" link, and an ActivityFeed. Falls back to a subtle EmptyState when `activities` is empty.
+
+Because the block uses container queries on its own root, it adapts to whatever column width the surrounding AdminShell hands it — no global breakpoints involved.
+
+## Empty State
+
+If `activities.length === 0`, the block renders a default `<EmptyState>` with a "No recent activity" message. Pass your own `activityEmptyState` ReactNode to override it entirely.
+
+## Accessibility
+
+- The activity section is a semantic `<section>` with `aria-labelledby` pointing at the generated heading.
+- The activity heading is a level-2 `<h2>` — assumes the PageHeader title is the page's `<h1>`.
+- The "View all" link has a tokenized focus ring.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `ReactNode` | — | **Required.** Page title rendered in the PageHeader. |
+| `eyebrow` | `ReactNode` | — | Optional small uppercase label above the title. |
+| `description` | `ReactNode` | — | Optional supporting copy below the title. |
+| `actions` | `ReactNode` | — | Optional actions slot on the right side of the header. |
+| `stats` | `AdminDashboardStat[]` | `[]` | Stat cards rendered in the responsive grid. |
+| `activityTitle` | `ReactNode` | `"Recent activity"` | Heading rendered above the activity feed. |
+| `activities` | `AdminDashboardActivity[]` | `[]` | Activity events rendered in the feed. |
+| `activityViewAllHref` | `string` | — | If provided, renders a "View all" link in the activity section header. |
+| `activityEmptyState` | `ReactNode` | Default EmptyState | Replaces the default EmptyState when `activities` is empty. |
+| `activityVariant` | `"default" \| "compact" \| "timeline"` | `"default"` | Variant forwarded to the underlying ActivityFeed. |
+| `secondaryRegion` | `ReactNode` | — | Optional region rendered below the stat grid and above the activity feed. |
+| `titleAs` | `"h1" \| "h2" \| "h3"` | `"h1"` | Heading level used for the PageHeader title. |
+| `className` | `string` | — | Additional CSS class on the root element. |
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI — such as admin shells, login forms, or dashboard panels.
+
+Blocks are copy-and-own, just like components. Install them into your project and customize freely.

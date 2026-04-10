@@ -21,6 +21,31 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "admin-dashboard",
+    type: "registry:block",
+    category: "admin",
+    description:
+      "Drop-in admin overview composition — PageHeader, responsive stat grid, optional secondary region, and ActivityFeed with empty-state fallback. Composes existing admin compounds.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: [
+      "utils",
+      "page-header",
+      "stat-card",
+      "activity-feed",
+      "empty-state",
+    ],
+    files: [
+      {
+        path: "blocks/admin-dashboard/admin-dashboard.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/admin-dashboard/admin-dashboard.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "configuration-panel",
     type: "registry:block",
     category: "configuration",
