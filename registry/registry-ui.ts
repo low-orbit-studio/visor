@@ -1445,4 +1445,23 @@ export const ui: Registry = [
       },
     ],
   },
+  {
+    name: "page-header",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "An admin page header compound with eyebrow, title, description, breadcrumb slot, and actions slot. Uses container queries for responsive collapse.",
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/page-header/page-header.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/page-header/page-header.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
 ]

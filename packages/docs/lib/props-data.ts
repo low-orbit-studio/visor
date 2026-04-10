@@ -1734,4 +1734,64 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'Inline style for the container div.',
     },
   ],
+
+  'page-header': [
+    {
+      name: 'title',
+      type: 'React.ReactNode',
+      required: true,
+      description:
+        'Page heading content. Rendered in the element given by titleAs.',
+    },
+    {
+      name: 'eyebrow',
+      type: 'React.ReactNode',
+      description: 'Small uppercase label rendered above the title.',
+    },
+    {
+      name: 'description',
+      type: 'React.ReactNode',
+      description: 'Supporting copy rendered below the title.',
+    },
+    {
+      name: 'breadcrumb',
+      type: 'React.ReactNode',
+      description:
+        'ReactNode rendered above the title row, typically a Breadcrumb component.',
+    },
+    {
+      name: 'actions',
+      type: 'React.ReactNode',
+      description:
+        'ReactNode rendered on the right side of the title row, typically a cluster of buttons.',
+    },
+    {
+      name: 'as',
+      type: "'header' | 'section' | 'div'",
+      default: "'header'",
+      description: 'Root element tag.',
+    },
+    {
+      name: 'titleAs',
+      type: "'h1' | 'h2' | 'h3'",
+      default: "'h1'",
+      description: 'Heading element used for the title.',
+    },
+    {
+      name: 'size',
+      type: "'sm' | 'md' | 'lg'",
+      default: "'md'",
+      description: 'Controls vertical rhythm and title size.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the root element.',
+    },
+    {
+      name: '...props',
+      type: 'React.HTMLAttributes<HTMLElement>',
+      description: 'All standard HTML attributes are forwarded to the root.',
+    },
+  ],
 };
