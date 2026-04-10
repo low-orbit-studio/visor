@@ -10,6 +10,9 @@ components_used:
   - dropdown-menu
   - pagination
 
+related_blocks:
+  - admin-list-page
+
 when_to_use:
   - Data-heavy pages where users need to find specific records
   - Admin dashboards with sortable, filterable lists

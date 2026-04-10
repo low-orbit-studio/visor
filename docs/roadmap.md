@@ -81,7 +81,7 @@ Extracted design systems from existing projects into `.visor.yaml` themes. Both 
 - [x] Claude Code skill: registered in `~/.claude/skills/`, wraps CLI extract with AI ambiguity resolution (VI-77)
 - [x] Test against real projects: Kaiah, Blacklight, reference-nextjs-app (VI-78)
 - [x] Font extraction fixes: `@font-face` parsing, `var(--font-sans)` resolution, quote artifact cleanup (VI-82)
-- Extracted themes are local `.visor.yaml` files (private by default; cloud storage comes in Phase 11)
+- Extracted themes are local `.visor.yaml` files (private by default; cloud storage comes in Phase 12)
 
 ## Phase 5: Docs Site & Theme Experience — COMPLETE
 
@@ -120,7 +120,22 @@ Prepare Visor for public adoption. Not required for internal use — do this whe
 - **Governance & sustainability** — Single-maintainer plan, contributor ladder, decision-making process
 - **Marketing surface** — README badges, social preview, npm README, "used by" section, GitHub topics
 
-## Phase 6: Visual Theme Creator
+## Phase 6: Admin UI Category — COMPLETE
+
+Added a first-class `admin` registry category so Visor consumers can assemble internal tools and CRUD apps fast. Ships 10 admin-flavored compounds and 7 drop-in blocks, all theme-agnostic, fully documented, and installable via `npx visor add --category admin`.
+
+See [component-inventory.md](./component-inventory.md) for the full list.
+
+**Completed work:**
+- [x] 10 admin compounds: activity-feed, bulk-action-bar, confirm-dialog, data-table, empty-state, filter-bar, kbd, page-header, stat-card, status-badge (VI-139, VI-140)
+- [x] 7 admin blocks: admin-shell, admin-dashboard, admin-list-page, admin-detail-drawer, admin-tabbed-editor, admin-settings-page, admin-wizard (VI-141)
+- [x] Per-component and per-block MDX docs with live demos, props tables, and metadata
+- [x] Registry entries tagged `category: "admin"`; `npx visor list --category admin` surfaces the whole set
+- [x] Cross-references to existing `patterns/*.visor-pattern.yaml` (dashboard-layout, crud-table, data-table-with-filters, settings-page)
+- [x] Admin UI section added to `docs/component-inventory.md`
+- [x] VI-138 epic closed by VI-142
+
+## Phase 7: Visual Theme Creator
 
 A visual theme creation experience in the docs site with harmonious color generation and clone-to-modify workflow.
 
@@ -137,7 +152,7 @@ A visual theme creation experience in the docs site with harmonious color genera
 - "Apply to project" shortcut: copies CLI command to clipboard
 - Depends on `packages/theme-engine/` (shade generator, validator, mapper)
 
-## Phase 7: Advanced Font Infrastructure
+## Phase 8: Advanced Font Infrastructure
 
 Blacklight font library and font pairing intelligence. Basic font resolution (Google Fonts, `font-display`) ships in Phase 3.
 
@@ -150,7 +165,7 @@ Blacklight font library and font pairing intelligence. Basic font resolution (Go
 - Advanced font loading optimizations (subsetting, variable font support)
 - Font weight/variant discovery from CDN (manifest-based)
 
-## Phase 8: Project Templates & Starters
+## Phase 9: Project Templates & Starters
 
 `npx visor init --template <name>` scaffolds a complete, themed, working app. A minimal single-template `npx visor init` ships in Phase 3; this phase expands to a full template gallery.
 
@@ -161,7 +176,7 @@ Blacklight font library and font pairing intelligence. Basic font resolution (Go
 - `docs` — Documentation site (fumadocs-based)
 - `deck` — Pitch deck with slide framework
 
-## Phase 9: Flutter Token Distribution
+## Phase 10: Flutter Token Distribution
 
 Generate Dart `ThemeData` from `.visor.yaml` so Flutter projects consume the same design system.
 
@@ -170,7 +185,7 @@ Generate Dart `ThemeData` from `.visor.yaml` so Flutter projects consume the sam
 - Colors, typography, spacing, radius, shadows all map to Flutter equivalents
 - Evaluate need for a full Flutter component library based on usage across projects
 
-## Phase 10: Figma Integration
+## Phase 11: Figma Integration
 
 Bi-directional sync between Visor themes and Figma.
 
@@ -178,7 +193,7 @@ Bi-directional sync between Visor themes and Figma.
 - Export `.visor.yaml` to Figma Variables JSON
 - Import Figma Variables to `.visor.yaml`
 
-## Phase 11: User Accounts & Theme Marketplace
+## Phase 12: User Accounts & Theme Marketplace
 
 Users can save, share, and browse themes. Private themes supported.
 
@@ -188,7 +203,7 @@ Users can save, share, and browse themes. Private themes supported.
 - Public theme browsing without auth
 - Authenticated users: save favorites, create private themes, access licensed fonts
 
-**Note:** Phases 3–7 produce and consume local `.visor.yaml` files. This phase adds cloud persistence, sharing, and private theme storage with authentication.
+**Note:** Phases 3–8 produce and consume local `.visor.yaml` files. This phase adds cloud persistence, sharing, and private theme storage with authentication.
 
 ---
 

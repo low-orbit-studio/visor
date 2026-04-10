@@ -60,6 +60,7 @@ export interface PatternMetadata {
   when_to_use: string[]
   structure: string
   notes: string
+  related_blocks?: string[]
 }
 
 export interface ManifestComponent {

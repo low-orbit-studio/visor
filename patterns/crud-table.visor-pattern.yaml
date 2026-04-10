@@ -10,6 +10,9 @@ components_used:
   - pagination
   - badge
 
+related_blocks:
+  - admin-list-page
+
 when_to_use:
   - Admin pages listing and managing resources (users, orders, products)
   - Any collection view with create, read, update, delete operations

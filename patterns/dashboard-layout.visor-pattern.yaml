@@ -9,6 +9,10 @@ components_used:
   - separator
   - scroll-area
 
+related_blocks:
+  - admin-shell
+  - admin-dashboard
+
 when_to_use:
   - Admin dashboards and internal tools
   - Multi-section apps with persistent navigation
