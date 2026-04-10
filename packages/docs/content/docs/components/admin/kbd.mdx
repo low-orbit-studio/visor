@@ -1,0 +1,124 @@
+---
+title: Kbd
+description: Tiny primitive for rendering keyboard shortcuts using the semantic <kbd> element. Supports a single key via children or a multi-key sequence via the keys prop with a customizable separator. Built with CSS Modules — copy it into your project and own it completely.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Kbd } from '@/components/ui/kbd';
+
+## Installation
+
+```bash
+npx visor add kbd
+```
+
+This copies two files into your project:
+
+- `components/ui/kbd/kbd.tsx` — the component
+- `components/ui/kbd/kbd.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Kbd } from '@/components/ui/kbd/kbd';
+
+export default function Example() {
+  return (
+    <p>
+      Press <Kbd keys={['⌘', 'K']} /> to open the command palette.
+    </p>
+  );
+}
+```
+
+## Single Key
+
+<ComponentPreview
+  title="A single key cap"
+  code={"<Kbd>K</Kbd>"}
+>
+  <Kbd>K</Kbd>
+</ComponentPreview>
+
+## Multi-Key Combo
+
+<ComponentPreview
+  title="Keys joined by the default '+' separator"
+  code={"<Kbd keys={['⌘', 'K']} />"}
+>
+  <Kbd keys={["⌘", "K"]} />
+</ComponentPreview>
+
+## Custom Separator
+
+<ComponentPreview
+  title="Sequential shortcut joined by 'then'"
+  code={"<Kbd keys={['G', 'P']} separator=\"then\" />"}
+>
+  <Kbd keys={["G", "P"]} separator="then" />
+</ComponentPreview>
+
+## Sizes
+
+<ComponentPreview
+  title="All sizes"
+  code={"<Kbd size=\"sm\">K</Kbd>\n<Kbd size=\"md\">K</Kbd>\n<Kbd size=\"lg\">K</Kbd>"}
+>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+    <Kbd size="sm">K</Kbd>
+    <Kbd size="md">K</Kbd>
+    <Kbd size="lg">K</Kbd>
+  </div>
+</ComponentPreview>
+
+## Variants
+
+<ComponentPreview
+  title="Default (filled muted) and outline (transparent)"
+  code={"<Kbd variant=\"default\" keys={['⌘', 'K']} />\n<Kbd variant=\"outline\" keys={['⌘', 'K']} />"}
+>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+    <Kbd variant="default" keys={["⌘", "K"]} />
+    <Kbd variant="outline" keys={["⌘", "K"]} />
+  </div>
+</ComponentPreview>
+
+## Inline With Text
+
+<ComponentPreview
+  title="Inside a sentence"
+  code={"<p>Press <Kbd keys={['⌘', 'K']} /> to open the command palette.</p>"}
+>
+  <p style={{ margin: 0 }}>
+    Press <Kbd keys={["⌘", "K"]} /> to open the command palette.
+  </p>
+</ComponentPreview>
+
+## API Reference
+
+### KbdProps
+
+<PropsTable component="kbd" />
+
+The component also accepts all standard HTML attributes for the root `<kbd>` (single-key) or wrapper `<span>` (multi-key) element.
+
+## Source Files
+
+After running `npx visor add kbd`, you'll have:
+
+### `kbd.tsx`
+
+A forwardRef component using CVA for size and variant. When `keys` is omitted it renders a single semantic `<kbd>` element with the variant chrome. When `keys` is provided it renders a layout-only wrapper `<span>` containing one `<kbd>` per key, joined by an `aria-hidden` separator span. The variant classes are applied to each inner `<kbd>` so each key gets its own raised key cap rendering — the wrapper itself stays unstyled.
+
+### `kbd.module.css`
+
+All values use CSS custom properties from `@loworbitstudio/visor-core`, so the kbd automatically adapts to your active theme. The "raised key cap" elevation comes from `var(--shadow-xs)` rather than an inline `rgba()` shadow, and the monospace face uses `var(--font-family-mono)` with a system fallback stack.
+
+## Customization
+
+After copying the component, you own it completely. Common customizations:
+
+- Add a `link` variant that wraps the `<kbd>` in an `<a>` for clickable shortcuts.
+- Extend variants to include a `subtle` style for use inside dark tooltips.
+- Swap `box-shadow` for a heavier "double border" key cap look if you want a more skeuomorphic feel.

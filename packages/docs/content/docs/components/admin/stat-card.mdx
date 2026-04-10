@@ -1,0 +1,189 @@
+---
+title: Stat Card
+description: Compact admin dashboard metric card with label, value, delta, trend, and footer slots. Built with CSS Modules, container queries, and accessible delta announcements — copy it into your project and own it completely.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { StatCard } from '@/components/ui/stat-card';
+
+## Installation
+
+```bash
+npx visor add stat-card
+```
+
+This copies two files into your project:
+
+- `components/ui/stat-card/stat-card.tsx` — the component
+- `components/ui/stat-card/stat-card.module.css` — the styles
+
+## Usage
+
+```tsx
+import { StatCard } from '@/components/ui/stat-card/stat-card';
+
+export default function Example() {
+  return (
+    <StatCard
+      label="Total Revenue"
+      value="$48,120"
+      delta={{ value: '+12.4%', direction: 'up', label: 'vs last month' }}
+    />
+  );
+}
+```
+
+## Basic
+
+<ComponentPreview
+  title="Label and value"
+  code={"import { StatCard } from '@/components/ui/stat-card/stat-card';\n\n<StatCard label=\"Total Revenue\" value=\"$48,120\" />"}
+>
+  <StatCard label="Total Revenue" value="$48,120" />
+</ComponentPreview>
+
+## With Delta (Up)
+
+<ComponentPreview
+  title="Positive change"
+  code={"<StatCard\n  label=\"Total Revenue\"\n  value=\"$48,120\"\n  delta={{ value: '+12.4%', direction: 'up', label: 'vs last month' }}\n/>"}
+>
+  <StatCard
+    label="Total Revenue"
+    value="$48,120"
+    delta={{ value: '+12.4%', direction: 'up', label: 'vs last month' }}
+  />
+</ComponentPreview>
+
+## With Delta (Down)
+
+<ComponentPreview
+  title="Negative change"
+  code={"<StatCard\n  label=\"Churn Rate\"\n  value=\"3.2%\"\n  delta={{ value: '-0.4%', direction: 'down', label: 'vs last month' }}\n/>"}
+>
+  <StatCard
+    label="Churn Rate"
+    value="3.2%"
+    delta={{ value: '-0.4%', direction: 'down', label: 'vs last month' }}
+  />
+</ComponentPreview>
+
+## With Delta (Flat)
+
+<ComponentPreview
+  title="No change"
+  code={"<StatCard\n  label=\"Signups\"\n  value=\"412\"\n  delta={{ value: '0%', direction: 'flat', label: 'vs last month' }}\n/>"}
+>
+  <StatCard
+    label="Signups"
+    value="412"
+    delta={{ value: '0%', direction: 'flat', label: 'vs last month' }}
+  />
+</ComponentPreview>
+
+## With Trend
+
+<ComponentPreview
+  title="Metric with sparkline"
+  code={"<StatCard\n  label=\"Sessions\"\n  value=\"2,340\"\n  trend={<svg width=\"48\" height=\"20\"><polyline fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.5\" points=\"0,14 12,8 24,12 36,4 48,6\" /></svg>}\n/>"}
+>
+  <StatCard
+    label="Sessions"
+    value="2,340"
+    trend={
+      <svg width="48" height="20" aria-hidden="true">
+        <polyline
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          points="0,14 12,8 24,12 36,4 48,6"
+        />
+      </svg>
+    }
+  />
+</ComponentPreview>
+
+## With Footer
+
+<ComponentPreview
+  title="Metric with footer link"
+  code={"<StatCard\n  label=\"Active Users\"\n  value=\"892\"\n  footer={<a href=\"/users\">View all users</a>}\n/>"}
+>
+  <StatCard
+    label="Active Users"
+    value="892"
+    footer={<a href="/users">View all users</a>}
+  />
+</ComponentPreview>
+
+## Variants
+
+<ComponentPreview
+  title="All variants"
+  code={"<StatCard variant=\"default\" label=\"Default\" value=\"1,204\" />\n<StatCard variant=\"highlight\" label=\"Highlight\" value=\"$48,120\" />\n<StatCard variant=\"compact\" label=\"Compact\" value=\"42\" />"}
+>
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+    <StatCard
+      variant="default"
+      label="Default"
+      value="1,204"
+      delta={{ value: '+4.1%', direction: 'up' }}
+    />
+    <StatCard
+      variant="highlight"
+      label="Highlight"
+      value="$48,120"
+      delta={{ value: '+12.4%', direction: 'up', label: 'vs last month' }}
+    />
+    <StatCard
+      variant="compact"
+      label="Compact"
+      value="42"
+      delta={{ value: '-1', direction: 'down' }}
+    />
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### StatCardProps
+
+<PropsTable component="stat-card" />
+
+The component also accepts all standard HTML attributes for the root element (defaults to `<article>`).
+
+### StatCardDelta
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `value` | `React.ReactNode` | Display value, e.g. `"+12.4%"` or `"-$2.1K"`. |
+| `direction` | `'up' \| 'down' \| 'flat'` | Semantic direction — drives color and glyph. |
+| `label` | `string` _(optional)_ | Context label (e.g. `"vs last month"`). Visible and announced. |
+
+## Accessibility
+
+Color alone is never sufficient to convey the direction of a change. StatCard always announces the direction word (`up`, `down`, or `flat`) to screen readers via visually-hidden text alongside the visible glyph and delta value. The glyph itself is marked `aria-hidden` so assistive tech hears a clean sentence like _"up 12.4% vs last month"_.
+
+The root element defaults to `<article>`, giving screen reader users a landmark they can navigate to. Use the `as` prop to override this when embedding inside another landmark.
+
+## Source Files
+
+After running `npx visor add stat-card`, you'll have:
+
+### `stat-card.tsx`
+
+A forwardRef component using CVA for variant selection and CSS Modules for layout. The root element is configurable via the `as` prop.
+
+### `stat-card.module.css`
+
+All styles use CSS custom properties from `@loworbitstudio/visor-core`, so the card automatically adapts to your active theme. The wrapper uses `container-type: inline-size` so the header row collapses on very narrow containers instead of overflowing. Transitions are wrapped in a `prefers-reduced-motion` guard.
+
+## Customization
+
+After copying the component, you own it completely. Common customizations:
+
+- Replace the Unicode arrow glyphs with Phosphor icons (`ArrowUp`, `ArrowDown`, `Minus`).
+- Add a `loading` state that renders a skeleton value.
+- Extend variants with a `subtle` treatment for secondary dashboards.
+- Swap the `<article>` root for a `<button>` when the whole card should be clickable.

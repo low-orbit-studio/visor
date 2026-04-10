@@ -1,0 +1,86 @@
+/* Admin Detail Drawer
+ * Composes Sheet's right-side content with a three-zone flex column:
+ *   header (flex:none) → body (flex:1 scrollable) → footer (flex:none sticky).
+ * Width variants override Sheet's default max-width (24rem) so the block can
+ * ship sm/md/lg/xl presets for different edit scenarios.
+ */
+
+.content {
+  /* Clamp against viewport so narrow screens still get a full-height drawer. */
+  max-width: 100vw;
+  padding: 0;
+  gap: 0;
+}
+
+/* Width variants — override Sheet's default `max-width: 24rem`. */
+.widthSm {
+  width: 100%;
+  max-width: min(20rem, 100vw); /* 320px */
+}
+
+.widthMd {
+  width: 100%;
+  max-width: min(30rem, 100vw); /* 480px */
+}
+
+.widthLg {
+  width: 100%;
+  max-width: min(40rem, 100vw); /* 640px */
+}
+
+.widthXl {
+  width: 100%;
+  max-width: min(50rem, 100vw); /* 800px */
+}
+
+/* Header sits at the top with the default Sheet padding but forced to not grow. */
+.header {
+  flex: 0 0 auto;
+  padding: var(--spacing-6, 1.5rem);
+  border-bottom: 1px solid var(--border-subtle, #e5e7eb);
+}
+
+/* Body is the scrollable region; shrinks to fill available space. */
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--spacing-6, 1.5rem);
+  color: var(--text-primary, #111827);
+}
+
+/* Sticky footer — pinned to the bottom of the drawer, never scrolls out. */
+.footer {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-3, 0.75rem);
+  padding: var(--spacing-4, 1rem) var(--spacing-6, 1.5rem);
+  border-top: 1px solid var(--border-subtle, #e5e7eb);
+  background-color: var(--surface-page, #ffffff);
+  box-shadow: var(--shadow-sm);
+}
+
+.footerCancel {
+  flex: 0 0 auto;
+}
+
+.footerStatus {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+  text-align: center;
+}
+
+/* When there's no footerStatus, push the save button all the way to the right. */
+.footerSave {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+/* If the footerStatus slot is present, reset the margin so it sits next to status. */
+.footerStatus + .footerSave {
+  margin-left: 0;
+}

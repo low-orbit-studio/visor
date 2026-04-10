@@ -2,6 +2,178 @@ import type { Registry } from "./schema"
 
 export const blocks: Registry = [
   {
+    name: "admin-shell",
+    type: "registry:block",
+    category: "admin",
+    description:
+      "Foundational admin layout with sidebar, topbar, and main content area. Slot-driven for logo, navigation, breadcrumbs, user menu, and status indicators.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "breadcrumb", "dropdown-menu", "sidebar"],
+    files: [
+      {
+        path: "blocks/admin-shell/admin-shell.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/admin-shell/admin-shell.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
+    name: "admin-dashboard",
+    type: "registry:block",
+    category: "admin",
+    description:
+      "Drop-in admin overview composition — PageHeader, responsive stat grid, optional secondary region, and ActivityFeed with empty-state fallback. Composes existing admin compounds.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: [
+      "utils",
+      "page-header",
+      "stat-card",
+      "activity-feed",
+      "empty-state",
+    ],
+    files: [
+      {
+        path: "blocks/admin-dashboard/admin-dashboard.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/admin-dashboard/admin-dashboard.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
+    name: "admin-list-page",
+    type: "registry:block",
+    category: "admin",
+    description:
+      "CRUD list archetype composing PageHeader, FilterBar, DataTable, BulkActionBar, and EmptyState into a single drop-in page. Generic over row data type, with controlled/uncontrolled search, selection, sorting, and pagination.",
+    dependencies: ["@tanstack/react-table", "@loworbitstudio/visor-core"],
+    registryDependencies: [
+      "utils",
+      "page-header",
+      "filter-bar",
+      "data-table",
+      "bulk-action-bar",
+      "empty-state",
+    ],
+    files: [
+      {
+        path: "blocks/admin-list-page/admin-list-page.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/admin-list-page/admin-list-page.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
+    name: "admin-detail-drawer",
+    type: "registry:block",
+    category: "admin",
+    description:
+      "Right-side slide-out panel for viewing or editing a single record. Composes Sheet with a sticky save/cancel footer, async save handler with pending state, an unsaved-changes guard powered by ConfirmDialog, and sm/md/lg/xl width variants.",
+    dependencies: [
+      "@radix-ui/react-dialog",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils", "sheet", "button", "confirm-dialog"],
+    files: [
+      {
+        path: "blocks/admin-detail-drawer/admin-detail-drawer.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/admin-detail-drawer/admin-detail-drawer.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
+    name: "admin-tabbed-editor",
+    type: "registry:block",
+    category: "admin",
+    description:
+      "Full-page editor with horizontal tabs, tab-scoped content panels, and a sticky save/cancel footer. Unsaved-changes guard fires on tab switch and cancel; save supports async with pending state.",
+    dependencies: [
+      "@radix-ui/react-tabs",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: [
+      "utils",
+      "page-header",
+      "tabs",
+      "button",
+      "confirm-dialog",
+    ],
+    files: [
+      {
+        path: "blocks/admin-tabbed-editor/admin-tabbed-editor.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/admin-tabbed-editor/admin-tabbed-editor.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
+    name: "admin-settings-page",
+    type: "registry:block",
+    category: "admin",
+    description:
+      "Long scrollable settings archetype with labeled sections, optional sticky left-side nav (intersection-observer active highlight), and two mutually-exclusive save modes — a global sticky save/cancel footer with unsaved-changes guard, or per-section save/revert rows. Composes PageHeader, Separator, Heading, Text, Button, and ConfirmDialog.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: [
+      "utils",
+      "page-header",
+      "separator",
+      "heading",
+      "text",
+      "button",
+      "confirm-dialog",
+    ],
+    files: [
+      {
+        path: "blocks/admin-settings-page/admin-settings-page.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/admin-settings-page/admin-settings-page.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
+    name: "admin-wizard",
+    type: "registry:block",
+    category: "admin",
+    description:
+      "Guided multi-step flow composing PageHeader, Stepper, Button, and ConfirmDialog into a drop-in wizard. Supports per-step async validation, final async submit, horizontal or vertical stepper orientation, optional click-to-jump navigation to completed steps, and a cancel guard for unsaved progress.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: [
+      "utils",
+      "page-header",
+      "stepper",
+      "button",
+      "confirm-dialog",
+    ],
+    files: [
+      {
+        path: "blocks/admin-wizard/admin-wizard.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/admin-wizard/admin-wizard.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "configuration-panel",
     type: "registry:block",
     category: "configuration",

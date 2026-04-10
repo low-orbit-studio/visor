@@ -1,0 +1,65 @@
+name: StatusBadge
+description: Semantic wrapper over Badge that maps admin status names to visual variants with an optional colored indicator dot.
+extends: Badge
+category: admin
+
+when_to_use:
+  - Communicating operational state in admin tables, detail pages, and dashboards
+  - Labeling service health (healthy, degraded, down)
+  - Labeling job or task lifecycle (queued, running, pending, complete, failed, idle)
+  - Any place you want a consistent "Status: X" accessible announcement
+
+when_not_to_use:
+  - Generic visual tags or categorizations — use Badge directly
+  - Form validation hints — use inline error text
+  - High-traffic notification counts — use a numeric Badge
+
+why: >
+  Admin UIs repeat the same handful of operational states over and over
+  (healthy, degraded, down, running, pending, queued, idle, failed, complete).
+  A semantic wrapper guarantees a consistent visual mapping, a consistent
+  "Status:" announcement for screen readers, and an optional animated
+  indicator for in-flight states — without forcing authors to remember which
+  Badge variant corresponds to which operational meaning.
+
+variants:
+  status:
+    - healthy
+    - degraded
+    - down
+    - failed
+    - running
+    - pending
+    - queued
+    - idle
+    - complete
+  tone: [subtle, filled]
+
+props:
+  - name: status
+    type: StatusBadgeStatus
+    required: true
+    description: Semantic admin status. Drives color mapping and default label.
+  - name: label
+    type: React.ReactNode
+    description: Visible text. Defaults to the capitalized status key.
+  - name: tone
+    type: "'subtle' | 'filled'"
+    default: "subtle"
+    description: Which Badge variant family to use.
+  - name: indicator
+    type: boolean
+    default: true
+    description: Render the leading colored dot.
+  - name: pulse
+    type: boolean
+    default: false
+    description: Animate the indicator dot with a soft pulse. Respects prefers-reduced-motion.
+
+dependencies:
+  - "badge"
+
+example: |
+  <StatusBadge status="healthy" />
+  <StatusBadge status="running" pulse />
+  <StatusBadge status="failed" tone="filled" />

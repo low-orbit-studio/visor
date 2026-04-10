@@ -1734,4 +1734,676 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'Inline style for the container div.',
     },
   ],
+
+  'activity-feed': [
+    {
+      name: 'variant',
+      type: "'default' | 'compact' | 'timeline'",
+      default: "'default'",
+      description:
+        'Display mode. Default is padded rows with borders, compact is denser with smaller text, timeline adds a connecting rail between leading indicators.',
+    },
+    {
+      name: 'children',
+      type: 'React.ReactNode',
+      description: 'ActivityFeedItem children.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the root <ol>.',
+    },
+    {
+      name: '...props',
+      type: 'React.HTMLAttributes<HTMLOListElement>',
+      description: 'All standard HTML attributes are forwarded to the root <ol>.',
+    },
+  ],
+
+  'activity-feed-item': [
+    {
+      name: 'title',
+      type: 'React.ReactNode',
+      required: true,
+      description: 'Primary event description.',
+    },
+    {
+      name: 'timestamp',
+      type: 'React.ReactNode',
+      required: true,
+      description:
+        'Pre-formatted timestamp. Pass a string, or pass your own <time> element for full control over dateTime semantics.',
+    },
+    {
+      name: 'leading',
+      type: 'React.ReactNode',
+      description: 'Leading visual — icon, avatar, or colored dot.',
+    },
+    {
+      name: 'description',
+      type: 'React.ReactNode',
+      description: 'Optional secondary detail beneath the title.',
+    },
+    {
+      name: 'actor',
+      type: 'React.ReactNode',
+      description:
+        'Who performed the event — a name string, or an avatar + name cluster.',
+    },
+    {
+      name: 'trailing',
+      type: 'React.ReactNode',
+      description: 'Right-aligned meta slot — status badge, link, etc.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the <li>.',
+    },
+    {
+      name: '...props',
+      type: 'React.LiHTMLAttributes<HTMLLIElement>',
+      description: 'All standard HTML attributes are forwarded to the <li>.',
+    },
+  ],
+
+  'bulk-action-bar': [
+    {
+      name: 'count',
+      type: 'number',
+      required: true,
+      description:
+        'Number of selected items. The bar returns null when count is 0 or less.',
+    },
+    {
+      name: 'children',
+      type: 'React.ReactNode',
+      required: true,
+      description:
+        'Action buttons cluster — typically one or more Button instances.',
+    },
+    {
+      name: 'inline',
+      type: 'boolean',
+      default: 'false',
+      description:
+        'Render inline (non-sticky) instead of fixed to the viewport bottom.',
+    },
+    {
+      name: 'label',
+      type: '(count: number) => React.ReactNode',
+      default: '(n) => `${n} selected`',
+      description:
+        'Renderer for the selection count label. Wrapped in aria-live="polite" so changes are announced.',
+    },
+    {
+      name: 'clearLabel',
+      type: 'React.ReactNode',
+      default: "'Clear selection'",
+      description:
+        'Aria-label for the dismiss button. Used verbatim when it is a string.',
+    },
+    {
+      name: 'onClear',
+      type: '() => void',
+      description:
+        'Fired by the Escape key and the dismiss button. The Escape handler is only attached when this is provided.',
+    },
+    {
+      name: 'dismissible',
+      type: 'boolean',
+      default: 'true',
+      description:
+        'Show the dismiss (X) button. Requires onClear to render the button.',
+    },
+    {
+      name: 'autoFocus',
+      type: 'boolean',
+      default: 'true',
+      description:
+        'Auto-focus the first enabled action button on mount. Only runs on mount, not on count changes.',
+    },
+  ],
+
+  'confirm-dialog': [
+    {
+      name: 'title',
+      type: 'React.ReactNode',
+      required: true,
+      description:
+        'Dialog title. Rendered next to the severity icon inside DialogTitle.',
+    },
+    {
+      name: 'description',
+      type: 'React.ReactNode',
+      description:
+        'Short body above the action row. Used as DialogDescription for aria-describedby.',
+    },
+    {
+      name: 'children',
+      type: 'React.ReactNode',
+      description:
+        'Richer body slot. Overrides description when both are provided.',
+    },
+    {
+      name: 'severity',
+      type: "'info' | 'warning' | 'danger'",
+      default: "'warning'",
+      description:
+        'Drives icon, icon color, and confirm button variant. Danger uses the destructive button variant and focuses the cancel button on open.',
+    },
+    {
+      name: 'trigger',
+      type: 'React.ReactNode',
+      description:
+        'Optional trigger wrapped in DialogTrigger. Omit for fully-controlled usage with `open`/`onOpenChange`.',
+    },
+    {
+      name: 'open',
+      type: 'boolean',
+      description: 'Controlled open state.',
+    },
+    {
+      name: 'defaultOpen',
+      type: 'boolean',
+      description: 'Uncontrolled initial open state.',
+    },
+    {
+      name: 'onOpenChange',
+      type: '(open: boolean) => void',
+      description: 'Called when the dialog open state changes.',
+    },
+    {
+      name: 'confirmLabel',
+      type: 'React.ReactNode',
+      description:
+        'Confirm button label. Defaults to "Delete" when severity is "danger", otherwise "Confirm".',
+    },
+    {
+      name: 'cancelLabel',
+      type: 'React.ReactNode',
+      default: "'Cancel'",
+      description: 'Cancel button label.',
+    },
+    {
+      name: 'confirmText',
+      type: 'string',
+      description:
+        'If set, the user must type this exact (case-sensitive) string to enable the confirm button.',
+    },
+    {
+      name: 'confirmTextLabel',
+      type: 'React.ReactNode',
+      description:
+        'Label for the confirm-text input. Defaults to "Type {confirmText} to confirm".',
+    },
+    {
+      name: 'onConfirm',
+      type: '() => void | Promise<void>',
+      description:
+        'Confirm handler. Returning a Promise enables pending state and keeps the dialog open until resolved. On rejection the dialog stays open and the error is re-thrown so the consumer can observe it.',
+    },
+    {
+      name: 'onCancel',
+      type: '() => void',
+      description: 'Cancel handler. Called before the dialog closes.',
+    },
+    {
+      name: 'busy',
+      type: 'boolean',
+      description:
+        'Externally-controlled busy state. Overrides internal async pending detection and disables both buttons.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names merged onto DialogContent.',
+    },
+  ],
+
+  'data-table': [
+    {
+      name: 'columns',
+      type: 'ColumnDef<TData, TValue>[]',
+      required: true,
+      description:
+        'Tanstack column definitions. Each entry drives the header, cell renderer, sort behavior, and column id.',
+    },
+    {
+      name: 'data',
+      type: 'TData[]',
+      required: true,
+      description: 'Array of row records to render.',
+    },
+    {
+      name: 'sorting',
+      type: 'SortingState',
+      description: 'Controlled sorting state. Omit for uncontrolled usage.',
+    },
+    {
+      name: 'onSortingChange',
+      type: 'OnChangeFn<SortingState>',
+      description: 'Called when sorting state changes.',
+    },
+    {
+      name: 'defaultSorting',
+      type: 'SortingState',
+      description: 'Uncontrolled initial sorting state.',
+    },
+    {
+      name: 'pagination',
+      type: 'PaginationState',
+      description: 'Controlled pagination state.',
+    },
+    {
+      name: 'onPaginationChange',
+      type: 'OnChangeFn<PaginationState>',
+      description: 'Called when pagination state changes.',
+    },
+    {
+      name: 'pageSize',
+      type: 'number',
+      default: '10',
+      description: 'Initial page size when pagination is uncontrolled.',
+    },
+    {
+      name: 'pageSizeOptions',
+      type: 'number[]',
+      default: '[10, 25, 50, 100]',
+      description: 'Options for the rows-per-page select.',
+    },
+    {
+      name: 'enableRowSelection',
+      type: 'boolean',
+      default: 'false',
+      description:
+        'When true, injects a checkbox column at position 0 with select-all and per-row checkboxes.',
+    },
+    {
+      name: 'rowSelection',
+      type: 'RowSelectionState',
+      description: 'Controlled row selection state.',
+    },
+    {
+      name: 'onRowSelectionChange',
+      type: 'OnChangeFn<RowSelectionState>',
+      description: 'Called when row selection state changes.',
+    },
+    {
+      name: 'getRowId',
+      type: '(row: TData, index: number) => string',
+      description:
+        'Custom stable row id getter. Defaults to index-based ids when omitted.',
+    },
+    {
+      name: 'globalFilter',
+      type: 'string',
+      description: 'Controlled global filter value.',
+    },
+    {
+      name: 'onGlobalFilterChange',
+      type: '(value: string) => void',
+      description: 'Called when the global filter value changes.',
+    },
+    {
+      name: 'loading',
+      type: 'boolean',
+      default: 'false',
+      description:
+        'When true, renders skeleton rows in place of data rows.',
+    },
+    {
+      name: 'emptyState',
+      type: 'React.ReactNode',
+      description:
+        'Override for the default EmptyState slot rendered when data is empty.',
+    },
+    {
+      name: 'stickyHeader',
+      type: 'boolean',
+      default: 'false',
+      description:
+        'When true, the thead is positioned sticky at the top of the scroll container.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names merged onto the root div.',
+    },
+  ],
+
+  'empty-state': [
+    {
+      name: 'heading',
+      type: 'React.ReactNode',
+      required: true,
+      description:
+        'Short direct statement of the empty condition. Rendered in the element given by headingAs.',
+    },
+    {
+      name: 'icon',
+      type: 'React.ReactNode',
+      description:
+        'Leading visual, typically a Phosphor icon. Marked aria-hidden since the heading text carries the meaning.',
+    },
+    {
+      name: 'description',
+      type: 'React.ReactNode',
+      description: '1-2 sentence explanation or guidance beneath the heading.',
+    },
+    {
+      name: 'action',
+      type: 'React.ReactNode',
+      description: 'Primary CTA slot. Typically a Button.',
+    },
+    {
+      name: 'secondaryAction',
+      type: 'React.ReactNode',
+      description: 'De-emphasized fallback action. Typically a Button.',
+    },
+    {
+      name: 'size',
+      type: "'sm' | 'md' | 'lg'",
+      default: "'md'",
+      description:
+        'Controls padding, icon size, heading size, and overall vertical rhythm.',
+    },
+    {
+      name: 'tone',
+      type: "'default' | 'subtle'",
+      default: "'default'",
+      description:
+        'Default uses a dashed border on a muted surface. Subtle is borderless.',
+    },
+    {
+      name: 'headingAs',
+      type: "'h2' | 'h3' | 'h4'",
+      default: "'h3'",
+      description: 'Heading element used for the heading slot.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the root element.',
+    },
+    {
+      name: '...props',
+      type: 'React.HTMLAttributes<HTMLDivElement>',
+      description: 'All standard HTML attributes are forwarded to the root div.',
+    },
+  ],
+
+  'filter-bar': [
+    {
+      name: 'searchValue',
+      type: 'string',
+      description: 'Controlled value for the search input.',
+    },
+    {
+      name: 'onSearchChange',
+      type: '(value: string) => void',
+      description:
+        'Handler for search input changes. When omitted, the search input is not rendered.',
+    },
+    {
+      name: 'searchPlaceholder',
+      type: 'string',
+      default: "'Search...'",
+      description: 'Placeholder text for the search input.',
+    },
+    {
+      name: 'children',
+      type: 'React.ReactNode',
+      description:
+        'Filter control slot — typically Select or Combobox instances rendered horizontally after the search.',
+    },
+    {
+      name: 'activeFilters',
+      type: 'FilterBarChip[]',
+      description:
+        'Active filters rendered as removable Badge chips on a secondary row. Each chip has { id, label, onRemove }.',
+    },
+    {
+      name: 'onClearAll',
+      type: '() => void',
+      description:
+        'Handler for the clear-all button. The button only renders when this is provided AND at least one filter is active or a search value is present.',
+    },
+    {
+      name: 'clearLabel',
+      type: 'React.ReactNode',
+      default: "'Clear all'",
+      description: 'Label for the clear-all button.',
+    },
+    {
+      name: 'resultsCount',
+      type: 'React.ReactNode',
+      description:
+        'Meta text rendered on the far right, e.g. "42 results". Wrapped in aria-live="polite" so filter changes are announced.',
+    },
+    {
+      name: 'dense',
+      type: 'boolean',
+      default: 'false',
+      description: 'Tighter padding for dense admin layouts.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the root element.',
+    },
+    {
+      name: '...props',
+      type: 'React.HTMLAttributes<HTMLDivElement>',
+      description: 'All standard HTML attributes are forwarded to the root div.',
+    },
+  ],
+
+  'kbd': [
+    {
+      name: 'children',
+      type: 'React.ReactNode',
+      description:
+        'Single-key content rendered inside the <kbd>. Ignored when `keys` is provided.',
+    },
+    {
+      name: 'keys',
+      type: 'string[]',
+      description:
+        'If provided, renders each key as its own <kbd> joined by `separator`. Mutually exclusive with `children` — `keys` wins if both are passed.',
+    },
+    {
+      name: 'separator',
+      type: 'React.ReactNode',
+      default: "'+'",
+      description:
+        'Separator rendered between keys in a multi-key sequence. Wrapped in an aria-hidden span so screen readers read each <kbd> on its own.',
+    },
+    {
+      name: 'size',
+      type: "'sm' | 'md' | 'lg'",
+      default: "'md'",
+      description: 'Controls padding and font-size of each key cap.',
+    },
+    {
+      name: 'variant',
+      type: "'default' | 'outline'",
+      default: "'default'",
+      description:
+        'Default uses a filled muted surface; outline is transparent with a border only.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description:
+        'Additional CSS class names merged onto the root element (the single <kbd> or, in multi-key mode, the wrapper <span>).',
+    },
+    {
+      name: '...props',
+      type: 'React.HTMLAttributes<HTMLElement>',
+      description:
+        'All standard HTML attributes are forwarded to the root element.',
+    },
+  ],
+
+  'page-header': [
+    {
+      name: 'title',
+      type: 'React.ReactNode',
+      required: true,
+      description:
+        'Page heading content. Rendered in the element given by titleAs.',
+    },
+    {
+      name: 'eyebrow',
+      type: 'React.ReactNode',
+      description: 'Small uppercase label rendered above the title.',
+    },
+    {
+      name: 'description',
+      type: 'React.ReactNode',
+      description: 'Supporting copy rendered below the title.',
+    },
+    {
+      name: 'breadcrumb',
+      type: 'React.ReactNode',
+      description:
+        'ReactNode rendered above the title row, typically a Breadcrumb component.',
+    },
+    {
+      name: 'actions',
+      type: 'React.ReactNode',
+      description:
+        'ReactNode rendered on the right side of the title row, typically a cluster of buttons.',
+    },
+    {
+      name: 'as',
+      type: "'header' | 'section' | 'div'",
+      default: "'header'",
+      description: 'Root element tag.',
+    },
+    {
+      name: 'titleAs',
+      type: "'h1' | 'h2' | 'h3'",
+      default: "'h1'",
+      description: 'Heading element used for the title.',
+    },
+    {
+      name: 'size',
+      type: "'sm' | 'md' | 'lg'",
+      default: "'md'",
+      description: 'Controls vertical rhythm and title size.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the root element.',
+    },
+    {
+      name: '...props',
+      type: 'React.HTMLAttributes<HTMLElement>',
+      description: 'All standard HTML attributes are forwarded to the root.',
+    },
+  ],
+
+  'stat-card': [
+    {
+      name: 'label',
+      type: 'React.ReactNode',
+      required: true,
+      description: 'Small uppercase label describing the metric.',
+    },
+    {
+      name: 'value',
+      type: 'React.ReactNode',
+      required: true,
+      description: 'Prominent metric value rendered in a large display size.',
+    },
+    {
+      name: 'delta',
+      type: 'StatCardDelta',
+      description:
+        'Change indicator with value, direction ("up" | "down" | "flat"), and optional context label. Direction is announced to screen readers.',
+    },
+    {
+      name: 'trend',
+      type: 'React.ReactNode',
+      description:
+        'Slot for a sparkline, chart, or icon rendered next to the label. Marked aria-hidden by default.',
+    },
+    {
+      name: 'footer',
+      type: 'React.ReactNode',
+      description: 'Sublabel or link rendered beneath the value.',
+    },
+    {
+      name: 'variant',
+      type: "'default' | 'highlight' | 'compact'",
+      default: "'default'",
+      description: 'Visual density and emphasis.',
+    },
+    {
+      name: 'as',
+      type: "'article' | 'section' | 'div'",
+      default: "'article'",
+      description: 'Root element tag. Defaults to article for landmark semantics.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the root element.',
+    },
+    {
+      name: '...props',
+      type: 'React.HTMLAttributes<HTMLElement>',
+      description: 'All standard HTML attributes are forwarded to the root.',
+    },
+  ],
+
+  'status-badge': [
+    {
+      name: 'status',
+      type: "'healthy' | 'degraded' | 'down' | 'failed' | 'running' | 'pending' | 'queued' | 'idle' | 'complete'",
+      required: true,
+      description:
+        'Semantic admin status. Drives the underlying Badge variant, the indicator dot color, and the default label.',
+    },
+    {
+      name: 'label',
+      type: 'React.ReactNode',
+      description:
+        'Visible text. Defaults to the capitalized status key (e.g. "Healthy", "Running").',
+    },
+    {
+      name: 'tone',
+      type: "'subtle' | 'filled'",
+      default: "'subtle'",
+      description:
+        'Which Badge variant family to use. Filled uses saturated backgrounds; subtle uses tinted surfaces.',
+    },
+    {
+      name: 'indicator',
+      type: 'boolean',
+      default: 'true',
+      description: 'Render the leading colored indicator dot.',
+    },
+    {
+      name: 'pulse',
+      type: 'boolean',
+      default: 'false',
+      description:
+        'Animate the indicator dot with a soft pulse. Respects prefers-reduced-motion.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the root element.',
+    },
+    {
+      name: '...props',
+      type: 'Omit<React.HTMLAttributes<HTMLSpanElement>, "children">',
+      description:
+        'All standard HTML attributes (except children) are forwarded to the underlying Badge element.',
+    },
+  ],
 };

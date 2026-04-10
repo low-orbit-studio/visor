@@ -1,0 +1,149 @@
+---
+title: Filter Bar
+description: Admin filter bar compound — search input, filter controls slot, removable active-filter chips, results count, and a clear-all affordance above a data-table. Built with CSS Modules and container queries — copy it into your project and own it completely.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import {
+  FilterBarSearchOnlyDemo,
+  FilterBarWithSelectDemo,
+  FilterBarWithChipsDemo,
+  FilterBarDenseDemo,
+} from '@/components/ui/filter-bar-demo';
+
+## Installation
+
+```bash
+npx visor add filter-bar
+```
+
+This copies two files into your project:
+
+- `components/ui/filter-bar/filter-bar.tsx` — the component
+- `components/ui/filter-bar/filter-bar.module.css` — the styles
+
+The registry also pulls in `search-input`, `badge`, and `button` as dependencies.
+
+## Usage
+
+```tsx
+import { useState } from 'react';
+import { FilterBar } from '@/components/ui/filter-bar/filter-bar';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select/select';
+
+export default function Example() {
+  const [search, setSearch] = useState('');
+  const [role, setRole] = useState<string | null>(null);
+
+  const activeFilters = role
+    ? [{ id: 'role', label: `Role: ${role}`, onRemove: () => setRole(null) }]
+    : [];
+
+  return (
+    <FilterBar
+      searchValue={search}
+      onSearchChange={setSearch}
+      searchPlaceholder="Search users"
+      activeFilters={activeFilters}
+      onClearAll={() => {
+        setSearch('');
+        setRole(null);
+      }}
+      resultsCount="42 results"
+    >
+      <Select value={role ?? ''} onValueChange={setRole}>
+        <SelectTrigger>
+          <SelectValue placeholder="Role" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="Admin">Admin</SelectItem>
+          <SelectItem value="Editor">Editor</SelectItem>
+          <SelectItem value="Viewer">Viewer</SelectItem>
+        </SelectContent>
+      </Select>
+    </FilterBar>
+  );
+}
+```
+
+## Basic
+
+<ComponentPreview
+  title="Search only"
+  code={"<FilterBar\n  searchValue={search}\n  onSearchChange={setSearch}\n  searchPlaceholder=\"Search users\"\n/>"}
+>
+  <FilterBarSearchOnlyDemo />
+</ComponentPreview>
+
+## With a Select Filter
+
+<ComponentPreview
+  title="Composed with a Select"
+  code={"<FilterBar\n  searchValue={search}\n  onSearchChange={setSearch}\n  resultsCount=\"42 results\"\n>\n  <Select value={role} onValueChange={setRole}>\n    <SelectTrigger>\n      <SelectValue placeholder=\"Role\" />\n    </SelectTrigger>\n    <SelectContent>\n      <SelectItem value=\"admin\">Admin</SelectItem>\n      <SelectItem value=\"editor\">Editor</SelectItem>\n    </SelectContent>\n  </Select>\n</FilterBar>"}
+>
+  <FilterBarWithSelectDemo />
+</ComponentPreview>
+
+## With Active Filter Chips
+
+<ComponentPreview
+  title="Chips and clear-all"
+  code={"<FilterBar\n  searchValue={search}\n  onSearchChange={setSearch}\n  activeFilters={[\n    { id: 'role', label: 'Role: Admin', onRemove: removeRole },\n    { id: 'status', label: 'Status: Active', onRemove: removeStatus },\n  ]}\n  onClearAll={clearAll}\n  resultsCount=\"8 results\"\n/>"}
+>
+  <FilterBarWithChipsDemo />
+</ComponentPreview>
+
+## Dense
+
+<ComponentPreview
+  title="Dense padding for packed admin layouts"
+  code={"<FilterBar dense searchValue={search} onSearchChange={setSearch} />"}
+>
+  <FilterBarDenseDemo />
+</ComponentPreview>
+
+## API Reference
+
+### FilterBarProps
+
+<PropsTable component="filter-bar" />
+
+The component also accepts all standard HTML attributes for the root `<div>`.
+
+### FilterBarChip
+
+```ts
+interface FilterBarChip {
+  id: string;
+  label: React.ReactNode;
+  onRemove: () => void;
+}
+```
+
+## Source Files
+
+After running `npx visor add filter-bar`, you'll have:
+
+### `filter-bar.tsx`
+
+A forwardRef client component that composes `SearchInput`, a children slot for filter controls, `Badge variant="secondary"` chips with labeled remove buttons, and a ghost `Button` for clear-all. The root is a `<div role="search">` so assistive tech treats the bar as a search region, and the results count is wrapped in `aria-live="polite"` so filter changes are announced.
+
+### `filter-bar.module.css`
+
+All values use CSS custom properties from `@loworbitstudio/visor-core`. The component uses `container-type: inline-size` with a `@container` query so the bar stacks vertically inside narrow containers without viewport media queries.
+
+## Customization
+
+After copying the component, you own it completely. Common customizations:
+
+- Add a leading icon slot next to the search for domain iconography.
+- Replace chips with a dropdown "Active filters" menu when the list gets long.
+- Add a "Save view" affordance next to clear-all for persisted filter sets.
+- Swap `role="search"` for `role="region"` with an `aria-labelledby` when nesting inside a larger search landmark.

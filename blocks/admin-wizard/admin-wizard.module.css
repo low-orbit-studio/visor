@@ -1,0 +1,132 @@
+/* Admin Wizard
+ * Guided multi-step flow: PageHeader → Stepper → active step content →
+ * footer with Cancel (left) / Back + Next (right). Horizontal stepper renders
+ * above the content; vertical renders beside it.
+ */
+
+.root {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+  background-color: var(--surface-page, #ffffff);
+  color: var(--text-primary, #111827);
+}
+
+.header {
+  padding: var(--spacing-6, 1.5rem);
+  border-bottom: 1px solid var(--border-subtle, #e5e7eb);
+}
+
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6, 1.5rem);
+  padding: var(--spacing-6, 1.5rem);
+}
+
+/* Horizontal orientation — stepper above, content below */
+.horizontal .body {
+  flex-direction: column;
+}
+
+/* Vertical orientation — stepper on the left, content on the right */
+.vertical .body {
+  display: grid;
+  grid-template-columns: minmax(14rem, 18rem) 1fr;
+  align-items: start;
+  gap: var(--spacing-8, 2rem);
+}
+
+.stepperWrap {
+  min-width: 0;
+}
+
+.horizontal .stepperWrap {
+  padding-bottom: var(--spacing-2, 0.5rem);
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.stepper {
+  width: 100%;
+}
+
+.stepMeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+  min-width: 0;
+}
+
+.optional {
+  font-weight: var(--font-weight-normal, 400);
+  color: var(--text-secondary, #6b7280);
+  font-size: var(--font-size-xs, 0.75rem);
+}
+
+.content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 1rem);
+  animation: admin-wizard-fade var(--motion-duration-fast, 150ms)
+    var(--motion-easing-standard, ease);
+}
+
+@keyframes admin-wizard-fade {
+  from {
+    opacity: 0;
+    transform: translateY(var(--spacing-1, 0.25rem));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+  }
+}
+
+.footer {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-3, 0.75rem);
+  padding: var(--spacing-4, 1rem) var(--spacing-6, 1.5rem);
+  border-top: 1px solid var(--border-subtle, #e5e7eb);
+  background-color: var(--surface-page, #ffffff);
+  box-shadow: var(--shadow-sm);
+}
+
+.footerLeft {
+  flex: 0 0 auto;
+}
+
+.footerRight {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+/* Narrow container — collapse vertical stepper above content and wrap footer */
+@container (max-width: 48rem) {
+  .vertical .body {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-4, 1rem);
+  }
+
+  .footer {
+    flex-wrap: wrap;
+  }
+}

@@ -1,0 +1,15 @@
+name: Admin Detail Drawer
+description: Right-side slide-out panel for viewing or editing a single record. Composes Sheet with a sticky save/cancel footer, async save handler with pending state, an unsaved-changes guard powered by ConfirmDialog, and sm/md/lg/xl width variants.
+category: admin
+components_used:
+  - sheet
+  - button
+  - confirm-dialog
+when_to_use:
+  - Inline editing of a single record from a list or dashboard
+  - Click-a-row, edit-its-details-without-leaving-the-page patterns
+  - Detail panels where protecting against accidental close is important
+when_not_to_use:
+  - Full-page single-record editors (use admin-tabbed-editor)
+  - Multi-step forms (use admin-wizard)
+  - Simple confirmation prompts (use ConfirmDialog directly)

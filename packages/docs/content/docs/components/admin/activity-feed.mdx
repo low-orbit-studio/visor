@@ -1,0 +1,192 @@
+---
+title: Activity Feed
+description: Admin activity feed compound — vertical ordered list of timestamped events for dashboards, audit logs, and notification views. ActivityFeed + ActivityFeedItem with leading, title, description, actor, timestamp, and trailing slots. Default, compact, and timeline variants. Built with CSS Modules and React Context — copy it into your project and own it completely.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ActivityFeed, ActivityFeedItem } from '@/components/ui/activity-feed';
+
+## Installation
+
+```bash
+npx visor add activity-feed
+```
+
+This copies two files into your project:
+
+- `components/ui/activity-feed/activity-feed.tsx` — the component
+- `components/ui/activity-feed/activity-feed.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  ActivityFeed,
+  ActivityFeedItem,
+} from '@/components/ui/activity-feed/activity-feed';
+
+export default function Example() {
+  return (
+    <ActivityFeed aria-label="Recent activity">
+      <ActivityFeedItem
+        title="Profile published"
+        actor="Justin"
+        timestamp="2m ago"
+      />
+      <ActivityFeedItem
+        title="Profile edited"
+        description="Updated bio and avatar"
+        actor="Justin"
+        timestamp="5m ago"
+      />
+    </ActivityFeed>
+  );
+}
+```
+
+`ActivityFeed.Item` is also available as a dot-notation alias for
+`ActivityFeedItem`.
+
+## Basic
+
+<ComponentPreview
+  title="Title and timestamp"
+  code={"<ActivityFeed aria-label=\"Recent activity\">\n  <ActivityFeedItem title=\"Profile published\" timestamp=\"2m ago\" />\n  <ActivityFeedItem title=\"Profile edited\" timestamp=\"5m ago\" />\n  <ActivityFeedItem title=\"Profile archived\" timestamp=\"1h ago\" />\n</ActivityFeed>"}
+>
+  <ActivityFeed aria-label="Recent activity">
+    <ActivityFeedItem title="Profile published" timestamp="2m ago" />
+    <ActivityFeedItem title="Profile edited" timestamp="5m ago" />
+    <ActivityFeedItem title="Profile archived" timestamp="1h ago" />
+  </ActivityFeed>
+</ComponentPreview>
+
+## With Description and Actor
+
+<ComponentPreview
+  title="All slots"
+  code={"<ActivityFeed aria-label=\"Recent activity\">\n  <ActivityFeedItem\n    title=\"Profile published\"\n    description=\"All checks passed and the profile is now live.\"\n    actor=\"Justin\"\n    timestamp=\"2m ago\"\n  />\n  <ActivityFeedItem\n    title=\"Profile edited\"\n    description=\"Updated bio and avatar photo.\"\n    actor=\"Alex\"\n    timestamp=\"5m ago\"\n  />\n</ActivityFeed>"}
+>
+  <ActivityFeed aria-label="Recent activity">
+    <ActivityFeedItem
+      title="Profile published"
+      description="All checks passed and the profile is now live."
+      actor="Justin"
+      timestamp="2m ago"
+    />
+    <ActivityFeedItem
+      title="Profile edited"
+      description="Updated bio and avatar photo."
+      actor="Alex"
+      timestamp="5m ago"
+    />
+  </ActivityFeed>
+</ComponentPreview>
+
+## With Trailing Meta
+
+<ComponentPreview
+  title="Right-aligned status"
+  code={"<ActivityFeed aria-label=\"Recent activity\">\n  <ActivityFeedItem\n    title=\"Profile published\"\n    actor=\"Justin\"\n    timestamp=\"2m ago\"\n    trailing={<span>Live</span>}\n  />\n  <ActivityFeedItem\n    title=\"Import failed\"\n    actor=\"System\"\n    timestamp=\"10m ago\"\n    trailing={<span>Error</span>}\n  />\n</ActivityFeed>"}
+>
+  <ActivityFeed aria-label="Recent activity">
+    <ActivityFeedItem
+      title="Profile published"
+      actor="Justin"
+      timestamp="2m ago"
+      trailing={<span>Live</span>}
+    />
+    <ActivityFeedItem
+      title="Import failed"
+      actor="System"
+      timestamp="10m ago"
+      trailing={<span>Error</span>}
+    />
+  </ActivityFeed>
+</ComponentPreview>
+
+## Compact Variant
+
+<ComponentPreview
+  title="Denser spacing, smaller text"
+  code={"<ActivityFeed variant=\"compact\" aria-label=\"Audit log\">\n  <ActivityFeedItem title=\"user.login\" actor=\"justin@example.com\" timestamp=\"2m ago\" />\n  <ActivityFeedItem title=\"record.update\" actor=\"alex@example.com\" timestamp=\"5m ago\" />\n  <ActivityFeedItem title=\"record.delete\" actor=\"system\" timestamp=\"12m ago\" />\n</ActivityFeed>"}
+>
+  <ActivityFeed variant="compact" aria-label="Audit log">
+    <ActivityFeedItem
+      title="user.login"
+      actor="justin@example.com"
+      timestamp="2m ago"
+    />
+    <ActivityFeedItem
+      title="record.update"
+      actor="alex@example.com"
+      timestamp="5m ago"
+    />
+    <ActivityFeedItem
+      title="record.delete"
+      actor="system"
+      timestamp="12m ago"
+    />
+  </ActivityFeed>
+</ComponentPreview>
+
+## Timeline Variant
+
+<ComponentPreview
+  title="Left rail with connecting line"
+  code={"<ActivityFeed variant=\"timeline\" aria-label=\"Deployment pipeline\">\n  <ActivityFeedItem title=\"Build started\" timestamp=\"10m ago\" />\n  <ActivityFeedItem title=\"Tests passed\" timestamp=\"7m ago\" />\n  <ActivityFeedItem title=\"Deployed to staging\" timestamp=\"5m ago\" />\n  <ActivityFeedItem title=\"Promoted to production\" timestamp=\"just now\" />\n</ActivityFeed>"}
+>
+  <ActivityFeed variant="timeline" aria-label="Deployment pipeline">
+    <ActivityFeedItem title="Build started" timestamp="10m ago" />
+    <ActivityFeedItem title="Tests passed" timestamp="7m ago" />
+    <ActivityFeedItem title="Deployed to staging" timestamp="5m ago" />
+    <ActivityFeedItem title="Promoted to production" timestamp="just now" />
+  </ActivityFeed>
+</ComponentPreview>
+
+## API Reference
+
+### ActivityFeedProps
+
+<PropsTable component="activity-feed" />
+
+The component also accepts all standard HTML attributes for the root `<ol>`.
+
+### ActivityFeedItemProps
+
+<PropsTable component="activity-feed-item" />
+
+The component also accepts all standard HTML attributes for the `<li>`.
+
+## Source Files
+
+After running `npx visor add activity-feed`, you'll have:
+
+### `activity-feed.tsx`
+
+A compound component pair. `ActivityFeed` is a forwardRef `<ol>` that
+exposes a React Context carrying the active `variant`. `ActivityFeedItem`
+is a forwardRef `<li>` that reads the context and adapts its layout —
+keeping the API ergonomic without forcing consumers to thread the variant
+prop through every child. `ActivityFeed.Item` is attached as a dot-notation
+alias for consumers who prefer that style.
+
+### `activity-feed.module.css`
+
+All values reference CSS custom properties from `@loworbitstudio/visor-core`,
+so the feed adapts to your active theme. The timeline variant renders a
+connecting rail between leading indicators via a `::before` pseudo-element
+on the leading slot; the last item's rail is hidden with a `:last-child`
+selector so the line doesn't extend past the final event.
+
+## Customization
+
+After copying the component, you own it completely. Common customizations:
+
+- Add a grouped `ActivityFeedGroup` sub-component with a date heading for
+  "Today / Yesterday / Last week" sectioning.
+- Add a `color` prop to items that tints the leading slot and the timeline
+  rail (e.g., success/warning/error).
+- Make items keyboard-focusable and clickable for drilling into event
+  detail — wrap the body in an `<a>` or `<button>` and add focus rings via
+  `var(--focus-ring-width)` and `var(--focus-ring-offset)`.

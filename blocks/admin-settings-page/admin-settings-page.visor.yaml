@@ -1,0 +1,18 @@
+name: Admin Settings Page
+description: Long scrollable settings archetype with labeled sections and an optional sticky left-side nav that sync-scrolls via intersection observer. Supports two mutually-exclusive modes — a single global sticky save/cancel footer (default) or per-section save/revert footer rows. Composes PageHeader, Separator, Heading, Text, Button, and ConfirmDialog.
+category: admin
+components_used:
+  - page-header
+  - separator
+  - heading
+  - text
+  - button
+  - confirm-dialog
+when_to_use:
+  - Application or workspace settings pages organized into labeled sections
+  - Profile pages, account pages, billing pages, team pages — anywhere long scrolling form content needs wayfinding
+  - Pages where some sections commit independently (per-section mode) or where all edits commit together (global mode)
+when_not_to_use:
+  - Editors where each tab replaces the previous panel entirely (use admin-tabbed-editor)
+  - Inline single-record edits (use admin-detail-drawer)
+  - Multi-step flows with a linear progression (use admin-wizard)

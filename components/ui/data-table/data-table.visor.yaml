@@ -1,0 +1,107 @@
+name: DataTable
+description: Generic Tanstack-powered data table compound that composes Visor's table primitive. Handles sorting, pagination, row selection, global filter, loading, and empty states.
+extends: HTMLElement
+category: admin
+
+when_to_use:
+  - Rendering a list of tabular records in an admin surface
+  - Needing client-side sorting, pagination, selection, or global filtering without hand-rolling state
+  - Composing list pages from a single table compound (admin-list-page)
+  - Showing a loading skeleton or empty state inline with the table layout
+
+when_not_to_use:
+  - Static presentational tables (use the Table primitive directly)
+  - Server-driven infinite scroll with no pagination UI (compose Table + custom virtualization instead)
+  - Comparison tables or pricing matrices (those aren't row-of-records data)
+  - Dashboards that need rich cell editing (extend this compound or build a dedicated grid)
+
+why: >
+  Admin UIs repeatedly reimplement the same list-of-records pattern — column sort,
+  pagination footer, row selection checkboxes, empty state, loading skeleton.
+  Wrapping Tanstack Table once and composing the existing Visor table primitive
+  gives admin teams a single drop-in compound and keeps all markup, tokens, and
+  accessibility concerns flowing through the shared primitive.
+
+variants: {}
+
+props:
+  - name: columns
+    type: "ColumnDef<TData, TValue>[]"
+    required: true
+    description: Tanstack column definitions. Each entry drives the header, cell renderer, sort behavior, and id.
+  - name: data
+    type: "TData[]"
+    required: true
+    description: Array of row records.
+  - name: sorting
+    type: SortingState
+    description: Controlled sorting state.
+  - name: onSortingChange
+    type: "OnChangeFn<SortingState>"
+    description: Called when sorting state changes.
+  - name: defaultSorting
+    type: SortingState
+    description: Uncontrolled initial sorting state.
+  - name: pagination
+    type: PaginationState
+    description: Controlled pagination state.
+  - name: onPaginationChange
+    type: "OnChangeFn<PaginationState>"
+    description: Called when pagination state changes.
+  - name: pageSize
+    type: number
+    default: "10"
+    description: Initial page size when pagination is uncontrolled.
+  - name: pageSizeOptions
+    type: "number[]"
+    default: "[10, 25, 50, 100]"
+    description: Options for the rows-per-page select.
+  - name: enableRowSelection
+    type: boolean
+    default: "false"
+    description: When true, injects a checkbox column at position 0 with select-all and per-row checkboxes.
+  - name: rowSelection
+    type: RowSelectionState
+    description: Controlled row selection state.
+  - name: onRowSelectionChange
+    type: "OnChangeFn<RowSelectionState>"
+    description: Called when row selection state changes.
+  - name: getRowId
+    type: "(row: TData, index: number) => string"
+    description: Custom stable row id getter. Defaults to index-based ids.
+  - name: globalFilter
+    type: string
+    description: Controlled global filter value.
+  - name: onGlobalFilterChange
+    type: "(value: string) => void"
+    description: Called when the global filter value changes.
+  - name: loading
+    type: boolean
+    default: "false"
+    description: When true, renders skeleton rows in place of data rows.
+  - name: emptyState
+    type: React.ReactNode
+    description: Override for the default EmptyState slot rendered when data is empty.
+  - name: stickyHeader
+    type: boolean
+    default: "false"
+    description: When true, the thead is positioned sticky at the top of the scroll container.
+
+dependencies:
+  - "@tanstack/react-table"
+  - "@phosphor-icons/react"
+  - "class-variance-authority"
+
+example: |
+  const columns: ColumnDef<User>[] = [
+    { accessorKey: "name", header: "Name" },
+    { accessorKey: "email", header: "Email" },
+    { accessorKey: "role", header: "Role" },
+  ]
+
+  <DataTable
+    columns={columns}
+    data={users}
+    enableRowSelection
+    defaultSorting={[{ id: "name", desc: false }]}
+  />

@@ -1,0 +1,164 @@
+---
+title: Admin Detail Drawer
+description: Right-side slide-out panel for viewing or editing a single record, with sticky save/cancel footer, async save handler, and an unsaved-changes guard.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { AdminDetailDrawerDemo } from '@/components/blocks/admin-detail-drawer-demo';
+
+## Preview
+
+<BlockPreview
+  title="Admin Detail Drawer"
+  code={"<AdminDetailDrawer\n  open={open}\n  onOpenChange={setOpen}\n  title=\"Edit user\"\n  description=\"Update the user's profile.\"\n  dirty={dirty}\n  onSave={async () => { await saveUser(draft); }}\n  footerStatus={dirty ? 'Unsaved changes' : 'All changes saved'}\n>\n  <form>\n    <Label htmlFor=\"name\">Name</Label>\n    <Input id=\"name\" value={draft.name} onChange={handleName} />\n    {/* ... */}\n  </form>\n</AdminDetailDrawer>"}
+>
+  <AdminDetailDrawerDemo />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block admin-detail-drawer
+```
+
+This copies files into your project:
+
+- `blocks/admin-detail-drawer/admin-detail-drawer.tsx` — the block component
+- `blocks/admin-detail-drawer/admin-detail-drawer.module.css` — the styles
+
+The registry pulls in `sheet`, `button`, and `confirm-dialog` as dependencies.
+
+## Usage
+
+```tsx
+'use client';
+
+import * as React from 'react';
+import { AdminDetailDrawer } from '@/blocks/admin-detail-drawer/admin-detail-drawer';
+import { Input } from '@/components/ui/input/input';
+import { Label } from '@/components/ui/label/label';
+import { Button } from '@/components/ui/button/button';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+export function EditUserDrawer({
+  user,
+  open,
+  onOpenChange,
+  onSaved,
+}: {
+  user: User;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSaved: (user: User) => void;
+}) {
+  const [draft, setDraft] = React.useState(user);
+
+  React.useEffect(() => {
+    if (open) setDraft(user);
+  }, [open, user]);
+
+  const dirty = draft.name !== user.name || draft.email !== user.email;
+
+  async function handleSave() {
+    const res = await fetch(`/api/users/${user.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(draft),
+    });
+    if (!res.ok) throw new Error('Failed to save');
+    onSaved(await res.json());
+  }
+
+  return (
+    <AdminDetailDrawer
+      open={open}
+      onOpenChange={onOpenChange}
+      title={`Edit ${user.name}`}
+      description="Update the user's profile."
+      dirty={dirty}
+      onSave={handleSave}
+      width="md"
+    >
+      <form>
+        <Label htmlFor="name">Name</Label>
+        <Input
+          id="name"
+          value={draft.name}
+          onChange={(e) => setDraft({ ...draft, name: e.target.value })}
+        />
+        <Label htmlFor="email">Email</Label>
+        <Input
+          id="email"
+          type="email"
+          value={draft.email}
+          onChange={(e) => setDraft({ ...draft, email: e.target.value })}
+        />
+      </form>
+    </AdminDetailDrawer>
+  );
+}
+```
+
+## Anatomy
+
+The drawer is a three-zone flex column inside Radix Sheet's right-side content:
+
+1. **Header** — title, optional description, and the Sheet's built-in close button. Does not scroll.
+2. **Body** — consumer's form or detail content. Scrolls independently when the content exceeds the drawer height.
+3. **Footer** — sticky row with `Cancel` on the left, optional status slot in the middle, and `Save` on the right. Always visible.
+
+## The three guarantees
+
+What makes this a block rather than a thin Sheet wrapper is a set of durable behaviors.
+
+### 1. Sticky save/cancel footer
+
+The footer is pinned to the bottom of the drawer. When the body scrolls, the actions stay in view — no matter how long the form grows. Pass `footerStatus` to drop a status message (e.g. `"Last saved 2 minutes ago"`, `"3 unsaved changes"`) into the middle slot.
+
+### 2. Unsaved-changes guard
+
+When `dirty` is true, any close gesture (X button, Escape, overlay click, Cancel button) opens a ConfirmDialog before discarding. Customize the copy with `unsavedGuardTitle`, `unsavedGuardDescription`, `unsavedGuardConfirmLabel`, and `unsavedGuardCancelLabel`.
+
+### 3. Async save handler
+
+`onSave` can return a Promise. While the promise is pending the save button sets `aria-busy` and disables itself. On resolve, the drawer closes cleanly. On reject, the drawer stays open, the pending state clears, and the rejection is re-thrown so your error boundary or global handler can react.
+
+## Width variants
+
+The drawer ships four width presets, all capped at `100vw` so narrow screens still get a full-height drawer:
+
+- `sm` — 320px
+- `md` — 480px (default)
+- `lg` — 640px
+- `xl` — 800px
+
+## Accessibility
+
+- The footer is a `role="group"` with `aria-label="Drawer actions"` so assistive tech groups the buttons.
+- The save button reports `aria-busy` and `disabled` while the async save is in flight.
+- The unsaved-changes guard is a nested dialog — Radix handles focus trap stacking through the primitive.
+- The drawer cannot be closed while a save is in flight (prevents the user from losing work mid-request).
+
+## Props
+
+See `AdminDetailDrawerProps` in `blocks/admin-detail-drawer/admin-detail-drawer.tsx` for the full list. In summary:
+
+- **Open state** — `open` (required), `onOpenChange` (required).
+- **Header** — `title` (required), `description`.
+- **Body** — `children` (required).
+- **Actions** — `onSave`, `onCancel`, `saveLabel`, `cancelLabel`, `saveVariant`.
+- **State** — `dirty`, `busy`, `disabled`.
+- **Footer** — `footerStatus`, `hideFooter`.
+- **Width** — `width` (`"sm" | "md" | "lg" | "xl"`).
+- **Unsaved guard** — `unsavedGuardTitle`, `unsavedGuardDescription`, `unsavedGuardConfirmLabel`, `unsavedGuardCancelLabel`.
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI — such as admin shells, login forms, or dashboard panels.
+
+Blocks are copy-and-own, just like components. Install them into your project and customize freely.

@@ -1,0 +1,174 @@
+---
+title: Status Badge
+description: Semantic wrapper over Badge that maps admin status names to visual variants with a colored indicator dot and optional pulse animation — copy it into your project and own it completely.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { StatusBadge } from '@/components/ui/status-badge';
+
+## Installation
+
+```bash
+npx visor add status-badge
+```
+
+This copies the component into your project and pulls `badge` as a
+transitive registry dependency:
+
+- `components/ui/status-badge/status-badge.tsx` — the component
+- `components/ui/status-badge/status-badge.module.css` — the styles
+- `components/ui/badge/badge.tsx` — the underlying Badge (auto-installed)
+- `components/ui/badge/badge.module.css` — Badge styles (auto-installed)
+
+## Usage
+
+```tsx
+import { StatusBadge } from '@/components/ui/status-badge/status-badge';
+
+export default function Example() {
+  return <StatusBadge status="healthy" />;
+}
+```
+
+## Basic
+
+<ComponentPreview
+  title="Default status badge"
+  code={"import { StatusBadge } from '@/components/ui/status-badge/status-badge';\n\n<StatusBadge status=\"healthy\" />"}
+>
+  <StatusBadge status="healthy" />
+</ComponentPreview>
+
+## All Statuses (Subtle)
+
+<ComponentPreview
+  title="All nine admin statuses"
+  code={"<StatusBadge status=\"healthy\" />\n<StatusBadge status=\"degraded\" />\n<StatusBadge status=\"down\" />\n<StatusBadge status=\"running\" />\n<StatusBadge status=\"pending\" />\n<StatusBadge status=\"queued\" />\n<StatusBadge status=\"idle\" />\n<StatusBadge status=\"failed\" />\n<StatusBadge status=\"complete\" />"}
+>
+  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+    <StatusBadge status="healthy" />
+    <StatusBadge status="degraded" />
+    <StatusBadge status="down" />
+    <StatusBadge status="running" />
+    <StatusBadge status="pending" />
+    <StatusBadge status="queued" />
+    <StatusBadge status="idle" />
+    <StatusBadge status="failed" />
+    <StatusBadge status="complete" />
+  </div>
+</ComponentPreview>
+
+## All Statuses (Filled)
+
+<ComponentPreview
+  title="Filled tone"
+  code={"<StatusBadge status=\"healthy\" tone=\"filled\" />\n<StatusBadge status=\"degraded\" tone=\"filled\" />\n<StatusBadge status=\"down\" tone=\"filled\" />\n<StatusBadge status=\"running\" tone=\"filled\" />\n<StatusBadge status=\"pending\" tone=\"filled\" />\n<StatusBadge status=\"queued\" tone=\"filled\" />\n<StatusBadge status=\"idle\" tone=\"filled\" />\n<StatusBadge status=\"failed\" tone=\"filled\" />\n<StatusBadge status=\"complete\" tone=\"filled\" />"}
+>
+  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+    <StatusBadge status="healthy" tone="filled" />
+    <StatusBadge status="degraded" tone="filled" />
+    <StatusBadge status="down" tone="filled" />
+    <StatusBadge status="running" tone="filled" />
+    <StatusBadge status="pending" tone="filled" />
+    <StatusBadge status="queued" tone="filled" />
+    <StatusBadge status="idle" tone="filled" />
+    <StatusBadge status="failed" tone="filled" />
+    <StatusBadge status="complete" tone="filled" />
+  </div>
+</ComponentPreview>
+
+## Pulsing Indicator
+
+Use `pulse` on in-flight states like `running` or `pending` to draw the eye.
+The animation is skipped automatically when the user has
+`prefers-reduced-motion` enabled.
+
+<ComponentPreview
+  title="Running with pulse"
+  code={"<StatusBadge status=\"running\" pulse />\n<StatusBadge status=\"pending\" pulse />"}
+>
+  <div style={{ display: 'flex', gap: '0.5rem' }}>
+    <StatusBadge status="running" pulse />
+    <StatusBadge status="pending" pulse />
+  </div>
+</ComponentPreview>
+
+## Custom Label
+
+<ComponentPreview
+  title="Override the default label"
+  code={"<StatusBadge status=\"healthy\" label=\"All systems nominal\" />"}
+>
+  <StatusBadge status="healthy" label="All systems nominal" />
+</ComponentPreview>
+
+## Without Indicator
+
+<ComponentPreview
+  title="Text-only badge"
+  code={"<StatusBadge status=\"complete\" indicator={false} />"}
+>
+  <StatusBadge status="complete" indicator={false} />
+</ComponentPreview>
+
+## API Reference
+
+### StatusBadgeProps
+
+<PropsTable component="status-badge" />
+
+### Status → Variant Mapping
+
+| Status | Color group | Subtle variant | Filled variant |
+| --- | --- | --- | --- |
+| `healthy` | success | `success` | `filled-success` |
+| `complete` | success | `success` | `filled-success` |
+| `degraded` | warning | `warning` | `filled-warning` |
+| `pending` | warning | `warning` | `filled-warning` |
+| `down` | destructive | `destructive` | `filled-destructive` |
+| `failed` | destructive | `destructive` | `filled-destructive` |
+| `running` | info | `info` | `filled-info` |
+| `queued` | neutral | `secondary` | `secondary` |
+| `idle` | neutral | `secondary` | `secondary` |
+
+Neutral statuses fall through to `secondary` in both tones because Badge
+does not expose a `filled-secondary` variant.
+
+## Accessibility
+
+Color alone is never sufficient to communicate a status. StatusBadge always
+renders a visually-hidden `Status:` prefix before the label so screen
+readers announce the full phrase — e.g. _"Status: Healthy"_ — regardless
+of which tone or indicator state is active. The indicator dot is marked
+`aria-hidden` so assistive tech ignores the decorative glyph.
+
+The pulse animation is wrapped in a `prefers-reduced-motion` guard and is
+paused entirely for users who have requested reduced motion.
+
+## Source Files
+
+After running `npx visor add status-badge`, you'll have:
+
+### `status-badge.tsx`
+
+A forwardRef component that composes `<Badge>` unchanged and layers on the
+semantic status → variant mapping, the indicator dot, and the accessible
+prefix.
+
+### `status-badge.module.css`
+
+Only the additions on top of Badge: the indicator dot (sized and colored
+via CSS custom properties), the pulse keyframes, and the visually-hidden
+utility. Everything else — padding, radius, typography, background — is
+inherited from Badge.
+
+## Customization
+
+After copying the component, you own it completely. Common customizations:
+
+- Add a new status (e.g. `maintenance`) by extending the color group map.
+- Localize `statusBadgeLabels` by importing and overriding specific keys.
+- Swap the indicator dot for a Phosphor icon per status (e.g. `CheckCircle`,
+  `WarningCircle`).
+- Tune the pulse timing by editing the `@keyframes` block in the CSS module.

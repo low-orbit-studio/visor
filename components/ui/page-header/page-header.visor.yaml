@@ -1,0 +1,70 @@
+name: PageHeader
+description: Admin page header compound with eyebrow, title, description, breadcrumb, and actions slots.
+extends: HTMLElement
+category: navigation
+
+when_to_use:
+  - Rendering the top header of an admin or app page
+  - Pairing a page title with a cluster of actions (buttons, overflow menus)
+  - Showing a breadcrumb above a page title
+  - Providing supporting description copy under a page title
+
+when_not_to_use:
+  - Section-level headings inside a page body (use Heading directly)
+  - Marketing hero sections with media and large CTAs
+  - Modal or sheet titles (those components have their own title slots)
+
+why: >
+  The page-header pattern was repeated inline ~10 times across blacklight-admin
+  and feature-local in veronica-admin. Canonicalizing it into a single
+  compound enforces consistent vertical rhythm, responsive collapse behavior,
+  and heading semantics across admin surfaces.
+
+variants:
+  size: [sm, md, lg]
+
+props:
+  - name: title
+    type: React.ReactNode
+    required: true
+    description: Page heading content. Rendered in the element given by titleAs.
+  - name: eyebrow
+    type: React.ReactNode
+    description: Small uppercase label rendered above the title.
+  - name: description
+    type: React.ReactNode
+    description: Supporting copy rendered below the title.
+  - name: breadcrumb
+    type: React.ReactNode
+    description: ReactNode rendered above the title row, typically a Breadcrumb.
+  - name: actions
+    type: React.ReactNode
+    description: ReactNode rendered on the right side of the title row.
+  - name: as
+    type: "'header' | 'section' | 'div'"
+    default: "header"
+    description: Root element tag.
+  - name: titleAs
+    type: "'h1' | 'h2' | 'h3'"
+    default: "h1"
+    description: Heading element used for the title.
+  - name: size
+    type: "'sm' | 'md' | 'lg'"
+    default: "md"
+    description: Controls vertical rhythm and title size.
+
+dependencies:
+  - "class-variance-authority"
+
+example: |
+  <PageHeader
+    eyebrow="Blacklight Admin"
+    title="Customers"
+    description="Manage customer accounts, billing, and access."
+    actions={
+      <>
+        <Button variant="outline">Export</Button>
+        <Button>New customer</Button>
+      </>
+    }
+  />

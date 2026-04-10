@@ -1,0 +1,16 @@
+name: Admin Wizard
+description: Guided multi-step flow composing PageHeader, Stepper, and Button into a drop-in wizard with per-step async validation, final submit handler, horizontal or vertical stepper orientation, optional click-to-jump stepper navigation to completed steps, and a cancel guard via ConfirmDialog. Only the active step's content is mounted.
+category: admin
+components_used:
+  - page-header
+  - stepper
+  - button
+  - confirm-dialog
+when_to_use:
+  - Multi-step create flows — onboarding, account setup, content creation
+  - Guided configuration where each step depends on decisions made earlier
+  - Any linear progression where the user should see clear progress and can step back to revise earlier answers
+when_not_to_use:
+  - Long scrollable settings pages (use admin-settings-page)
+  - Editors where each tab is an independent view of the same record (use admin-tabbed-editor)
+  - Single-record inline edits (use admin-detail-drawer)

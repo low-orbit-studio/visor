@@ -1,0 +1,131 @@
+---
+title: Page Header
+description: Admin page header compound with eyebrow, title, description, breadcrumb, and actions slots. Built with CSS Modules and container queries — copy it into your project and own it completely.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { PageHeader } from '@/components/ui/page-header';
+import { Button } from '@/components/ui/button';
+
+## Installation
+
+```bash
+npx visor add page-header
+```
+
+This copies two files into your project:
+
+- `components/ui/page-header/page-header.tsx` — the component
+- `components/ui/page-header/page-header.module.css` — the styles
+
+## Usage
+
+```tsx
+import { PageHeader } from '@/components/ui/page-header/page-header';
+import { Button } from '@/components/ui/button/button';
+
+export default function Example() {
+  return (
+    <PageHeader
+      eyebrow="Blacklight Admin"
+      title="Customers"
+      description="Manage customer accounts, billing, and access."
+      actions={<Button>New customer</Button>}
+    />
+  );
+}
+```
+
+## Basic
+
+<ComponentPreview
+  title="Title only"
+  code={"import { PageHeader } from '@/components/ui/page-header/page-header';\n\n<PageHeader title=\"Customers\" />"}
+>
+  <PageHeader title="Customers" />
+</ComponentPreview>
+
+## With Description
+
+<ComponentPreview
+  title="Title and description"
+  code={"<PageHeader\n  title=\"Customers\"\n  description=\"Manage customer accounts, billing, and access.\"\n/>"}
+>
+  <PageHeader
+    title="Customers"
+    description="Manage customer accounts, billing, and access."
+  />
+</ComponentPreview>
+
+## With Eyebrow
+
+<ComponentPreview
+  title="Eyebrow, title, description"
+  code={"<PageHeader\n  eyebrow=\"Blacklight Admin\"\n  title=\"Customers\"\n  description=\"Manage customer accounts, billing, and access.\"\n/>"}
+>
+  <PageHeader
+    eyebrow="Blacklight Admin"
+    title="Customers"
+    description="Manage customer accounts, billing, and access."
+  />
+</ComponentPreview>
+
+## With Actions
+
+<ComponentPreview
+  title="Title with actions"
+  code={"<PageHeader\n  title=\"Customers\"\n  description=\"Manage customer accounts, billing, and access.\"\n  actions={\n    <>\n      <Button variant=\"outline\">Export</Button>\n      <Button>New customer</Button>\n    </>\n  }\n/>"}
+>
+  <PageHeader
+    title="Customers"
+    description="Manage customer accounts, billing, and access."
+    actions={
+      <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <Button variant="outline">Export</Button>
+        <Button>New customer</Button>
+      </div>
+    }
+  />
+</ComponentPreview>
+
+## Sizes
+
+<ComponentPreview
+  title="All sizes"
+  code={"<PageHeader size=\"sm\" title=\"Small\" description=\"Compact vertical rhythm.\" />\n<PageHeader size=\"md\" title=\"Medium\" description=\"Default vertical rhythm.\" />\n<PageHeader size=\"lg\" title=\"Large\" description=\"Spacious vertical rhythm.\" />"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+    <PageHeader size="sm" title="Small" description="Compact vertical rhythm." />
+    <PageHeader size="md" title="Medium" description="Default vertical rhythm." />
+    <PageHeader size="lg" title="Large" description="Spacious vertical rhythm." />
+  </div>
+</ComponentPreview>
+
+## API Reference
+
+### PageHeaderProps
+
+<PropsTable component="page-header" />
+
+The component also accepts all standard HTML attributes for the root element (defaults to `<header>`).
+
+## Source Files
+
+After running `npx visor add page-header`, you'll have:
+
+### `page-header.tsx`
+
+A forwardRef component using CVA for size variants and CSS Modules for layout. The root element is configurable via the `as` prop and the heading level via `titleAs`.
+
+### `page-header.module.css`
+
+All styles use CSS custom properties from `@loworbitstudio/visor-core`, so the page header automatically adapts to your active theme. Responsive collapse (actions stack under the title on narrow containers) is driven by container queries — the wrapper uses `container-type: inline-size`, so the component adapts to its parent container's width rather than the viewport.
+
+## Customization
+
+After copying the component, you own it completely. Common customizations:
+
+- Add a `meta` slot for timestamps, owner avatars, or status badges.
+- Replace the default semantic `<header>` root with a custom sticky wrapper.
+- Extend `size` variants to include a compact inline variant for embedded contexts.

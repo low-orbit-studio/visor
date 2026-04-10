@@ -83,6 +83,33 @@ Accessible via `npx visor add --category deck` or individually.
 - [x] ImageLightbox (covered by existing Visor Lightbox — CarouselGallery uses it)
 - [x] Footer (deck variant)
 
+## Admin UI
+
+Admin-flavored compounds and blocks for building internal tools fast. Installable via `npx visor add --category admin`. See [docs/roadmap.md](./roadmap.md) Phase 6 — Admin UI Category.
+
+### Compounds (10)
+
+- **activity-feed** — vertical list of timestamped events for dashboards, audit logs, and notification views
+- **bulk-action-bar** — sticky or inline toolbar that appears when rows are selected, with live-announced selection count and dismiss affordance
+- **confirm-dialog** — severity-driven confirmation dialog with optional confirm-text gate and async-aware confirm handler
+- **data-table** — Tanstack-powered table compound with sorting, pagination, selection, global filter, loading, and empty states
+- **empty-state** — placeholder for empty lists, tables, search results, and dashboard regions with icon, heading, description, and action slots
+- **filter-bar** — search input, filter controls slot, removable active-filter chips, results count, and clear-all affordance above a data-table
+- **kbd** — tiny primitive for rendering keyboard shortcuts using the semantic `<kbd>` element
+- **page-header** — eyebrow, title, description, breadcrumb, and actions slots with container-query responsive collapse
+- **stat-card** — dashboard metric card with label, value, delta, trend, and footer slots
+- **status-badge** — semantic wrapper over Badge mapping admin status names (healthy, degraded, down, running, pending, failed, etc.) to visual variants with optional indicator dot
+
+### Blocks (7)
+
+- **admin-shell** — foundational admin layout with sidebar, topbar, and main content area; slot-driven for logo, navigation, breadcrumbs, user menu, and status indicators
+- **admin-dashboard** — drop-in overview composition with PageHeader, responsive stat grid, optional secondary region, and ActivityFeed with empty-state fallback
+- **admin-list-page** — CRUD list archetype composing PageHeader, FilterBar, DataTable, BulkActionBar, and EmptyState into a single drop-in page
+- **admin-detail-drawer** — right-side slide-out panel for viewing or editing a single record, with sticky save/cancel footer and unsaved-changes guard
+- **admin-tabbed-editor** — full-page editor with horizontal tabs, tab-scoped content panels, sticky save/cancel footer, and unsaved-changes guard
+- **admin-settings-page** — long scrollable settings archetype with labeled sections, optional sticky left-side nav, and global-or-per-section save modes
+- **admin-wizard** — guided multi-step flow composing PageHeader, Stepper, and Button with per-step async validation, final submit, and cancel guard
+
 ## Current Hooks (9)
 
 - use-boolean, use-click-outside, use-debounce, use-focus-trap

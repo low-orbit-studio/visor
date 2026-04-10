@@ -1,0 +1,183 @@
+/* Activity Feed — vertical list of timestamped events */
+.base {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  color: var(--text-primary, #111827);
+}
+
+.item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+/* Leading slot — wraps consumer-provided icon/avatar/dot */
+.leading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-tertiary, #6b7280);
+  line-height: 1;
+}
+
+.leading svg {
+  width: var(--spacing-5, 1.25rem);
+  height: var(--spacing-5, 1.25rem);
+}
+
+/* Body wraps everything right of the leading slot */
+.body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+}
+
+/* Header row: heading cluster + trailing meta */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+/* Heading cluster: title + optional actor */
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--spacing-2, 0.5rem);
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-snug, 1.375);
+  color: var(--text-primary, #111827);
+}
+
+.actor {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+}
+
+.trailing {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.description {
+  margin: 0;
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: var(--line-height-relaxed, 1.6);
+  color: var(--text-secondary, #6b7280);
+}
+
+.timestamp {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-tertiary, #6b7280);
+  line-height: var(--line-height-snug, 1.375);
+}
+
+/* ============================================================
+ * Variant: default — padded rows separated by borders
+ * ============================================================ */
+.variantDefault.base > .item + .item {
+  border-top: 1px solid var(--border-default, #e5e7eb);
+}
+
+.variantDefault.item {
+  padding: var(--spacing-4, 1rem) 0;
+}
+
+.variantDefault.base > .item:first-child {
+  padding-top: 0;
+}
+
+.variantDefault.base > .item:last-child {
+  padding-bottom: 0;
+}
+
+/* ============================================================
+ * Variant: compact — denser spacing, smaller text
+ * ============================================================ */
+.variantCompact.base > .item + .item {
+  border-top: 1px solid var(--border-subtle, #f3f4f6);
+}
+
+.variantCompact.item {
+  padding: var(--spacing-2, 0.5rem) 0;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.variantCompact .title,
+.variantCompact .actor,
+.variantCompact .description {
+  font-size: var(--font-size-xs, 0.75rem);
+}
+
+.variantCompact .leading svg {
+  width: var(--spacing-4, 1rem);
+  height: var(--spacing-4, 1rem);
+}
+
+.variantCompact.base > .item:first-child {
+  padding-top: 0;
+}
+
+.variantCompact.base > .item:last-child {
+  padding-bottom: 0;
+}
+
+/* ============================================================
+ * Variant: timeline — left rail with connecting line
+ * ============================================================ */
+.variantTimeline.base {
+  gap: var(--spacing-5, 1.25rem);
+}
+
+.variantTimeline.item {
+  padding-bottom: var(--spacing-1, 0.25rem);
+}
+
+/* Connecting line between leading indicators.
+ * The rail runs from the bottom edge of the leading slot to the
+ * bottom of the item. The final item does not get a rail because
+ * the flex gap above collapses past the last child. We use a CSS
+ * selector to hide the rail on the last item. */
+.variantTimeline .leading {
+  position: relative;
+  /* Ensure the line is consistent even when leading is raw text */
+  min-width: var(--spacing-5, 1.25rem);
+  min-height: var(--spacing-5, 1.25rem);
+  z-index: 0;
+}
+
+.variantTimeline .leading::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 1px;
+  /* Extend through the flex gap into the next item's leading slot */
+  height: calc(100% + var(--spacing-5, 1.25rem));
+  background-color: var(--border-default, #e5e7eb);
+  transform: translateX(-50%);
+  z-index: -1;
+}
+
+.variantTimeline.base > .item:last-child .leading::before {
+  display: none;
+}

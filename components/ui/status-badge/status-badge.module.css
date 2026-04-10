@@ -1,0 +1,84 @@
+/*
+ * StatusBadge — semantic wrapper over Badge.
+ *
+ * These styles only cover the additions on top of Badge: the leading
+ * indicator dot, its per-status color, the optional pulse animation, and
+ * the visually-hidden "Status:" prefix. All visual chrome (padding, radius,
+ * typography, background) is inherited from Badge.
+ */
+
+/* Indicator dot — filled circle, 0.5rem, colored per status */
+.indicator {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  border-radius: var(--radius-full, 9999px);
+  background-color: currentColor;
+}
+
+/* Per-color-group fills. Use brand surface default tokens so the dot
+ * reads as a saturated status color independent of the Badge subtle bg. */
+.indicatorSuccess {
+  background-color: var(--surface-success-default, #22c55e);
+}
+
+.indicatorWarning {
+  background-color: var(--surface-warning-default, #f59e0b);
+}
+
+.indicatorDestructive {
+  background-color: var(--surface-error-default, #ef4444);
+}
+
+.indicatorInfo {
+  background-color: var(--surface-info-default, #0ea5e9);
+}
+
+.indicatorNeutral {
+  background-color: var(--text-tertiary, #6b7280);
+}
+
+/* Pulse animation — soft opacity + scale.
+ * Keyframes are defined locally to keep the component self-contained. */
+.pulse {
+  /* Doubled 800ms token gives ~1.6s per cycle — slow enough to read as a
+   * heartbeat without drawing focus away from content. */
+  animation: status-badge-pulse
+    calc(var(--motion-duration-800, 800ms) * 2)
+    var(--motion-easing-standard, ease-in-out) infinite;
+  transform-origin: center;
+  will-change: opacity, transform;
+}
+
+@keyframes status-badge-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.85);
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    animation: none;
+  }
+}
+
+/* Visually hidden but announced to screen readers */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

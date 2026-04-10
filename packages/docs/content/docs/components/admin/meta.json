@@ -1,0 +1,17 @@
+{
+  "title": "Admin",
+  "description": "Components alphabetized. Insert new entries in A-Z order.",
+  "defaultOpen": true,
+  "pages": [
+    "activity-feed",
+    "bulk-action-bar",
+    "confirm-dialog",
+    "data-table",
+    "empty-state",
+    "filter-bar",
+    "kbd",
+    "page-header",
+    "stat-card",
+    "status-badge"
+  ]
+}

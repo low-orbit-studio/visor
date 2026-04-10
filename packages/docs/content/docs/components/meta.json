@@ -2,6 +2,7 @@
   "title": "Components",
   "description": "Groups and pages are alphabetized. When adding a new component, place it in the correct group in alphabetical order.",
   "pages": [
+    "admin",
     "data-display",
     "deck",
     "feedback",

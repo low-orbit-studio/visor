@@ -1445,4 +1445,211 @@ export const ui: Registry = [
       },
     ],
   },
+  {
+    name: "activity-feed",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "An admin activity feed compound — vertical ordered list of timestamped events for dashboards, audit logs, and notification views. ActivityFeed + ActivityFeedItem with leading, title, description, actor, timestamp, and trailing slots. Default, compact, and timeline variants propagated via React Context.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/activity-feed/activity-feed.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/activity-feed/activity-feed.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "bulk-action-bar",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "An admin bulk action bar compound — sticky or inline toolbar that appears when rows are selected. Shows a live-announced selection count, an actions slot for consumer-provided buttons, and an optional dismiss affordance. Auto-focuses the first action on mount, Escape fires onClear, and the entrance animation respects prefers-reduced-motion.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "button"],
+    files: [
+      {
+        path: "components/ui/bulk-action-bar/bulk-action-bar.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/bulk-action-bar/bulk-action-bar.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "confirm-dialog",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "An admin confirmation dialog compound wrapping Dialog with severity-driven icon/color/button variant (info/warning/danger), optional confirm-text gate for high-stakes actions, async-aware confirm handler with pending state, and safer focus defaults for danger-level confirmations.",
+    dependencies: [
+      "@radix-ui/react-dialog",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils", "dialog", "button"],
+    files: [
+      {
+        path: "components/ui/confirm-dialog/confirm-dialog.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/confirm-dialog/confirm-dialog.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "data-table",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "A generic Tanstack-powered data table compound that composes Visor's table primitive. Handles client-side sorting, pagination, row selection, global filter, sticky header, loading skeleton rows, and a pluggable empty state.",
+    dependencies: [
+      "@tanstack/react-table",
+      "@phosphor-icons/react",
+      "class-variance-authority",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: [
+      "utils",
+      "table",
+      "button",
+      "checkbox",
+      "select",
+      "skeleton",
+      "empty-state",
+    ],
+    files: [
+      {
+        path: "components/ui/data-table/data-table.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/data-table/data-table.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "empty-state",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "An admin placeholder compound for empty lists, tables, search results, and dashboard regions. Icon, heading, description, primary and secondary action slots. Size variants (sm/md/lg) and tone variants (default dashed border / subtle).",
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/empty-state/empty-state.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/empty-state/empty-state.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "filter-bar",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "An admin filter bar compound — composes search-input, a filter controls slot, removable active-filter chips, a results count, and a clear-all affordance. Row 1 holds search, filters, and meta; row 2 holds chips. Container queries stack the bar vertically on narrow regions.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "search-input", "badge", "button"],
+    files: [
+      {
+        path: "components/ui/filter-bar/filter-bar.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/filter-bar/filter-bar.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "kbd",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "A tiny primitive for rendering keyboard shortcuts using the semantic <kbd> element. Supports a single key via children or a multi-key sequence via the keys prop with a customizable separator. Size (sm/md/lg) and variant (default/outline).",
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/kbd/kbd.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/kbd/kbd.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "page-header",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "An admin page header compound with eyebrow, title, description, breadcrumb slot, and actions slot. Uses container queries for responsive collapse.",
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/page-header/page-header.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/page-header/page-header.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "stat-card",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "A compact dashboard metric card with label, value, delta, trend, and footer slots. Supports default, highlight, and compact variants with accessible delta announcements.",
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/stat-card/stat-card.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/stat-card/stat-card.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "status-badge",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "A semantic wrapper over Badge that maps admin status names (healthy, degraded, down, running, pending, queued, idle, failed, complete) to visual variants with an optional colored indicator dot and pulse animation.",
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "badge"],
+    files: [
+      {
+        path: "components/ui/status-badge/status-badge.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/status-badge/status-badge.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
 ]

@@ -1,0 +1,131 @@
+/* Admin Tabbed Editor
+ * Full-page editor archetype: PageHeader → Tabs (list + panels) → sticky footer.
+ * The footer uses position: sticky so it stays pinned inside the scroll
+ * container without escaping the block in docs previews.
+ */
+
+.root {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+  gap: 0;
+  background-color: var(--surface-page, #ffffff);
+  color: var(--text-primary, #111827);
+}
+
+.header {
+  padding: var(--spacing-6, 1.5rem);
+  border-bottom: 1px solid var(--border-subtle, #e5e7eb);
+}
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+}
+
+.tabsList {
+  flex: 0 0 auto;
+  padding: 0 var(--spacing-6, 1.5rem);
+  border-bottom: 1px solid var(--border-subtle, #e5e7eb);
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.tabsTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  white-space: nowrap;
+}
+
+.triggerIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 1em;
+  height: 1em;
+  font-size: var(--font-size-base, 1rem);
+  line-height: 1;
+}
+
+.triggerLabel {
+  display: inline-flex;
+  align-items: center;
+}
+
+.triggerBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  margin-left: var(--spacing-1, 0.25rem);
+}
+
+.tabsContent {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--spacing-6, 1.5rem);
+  color: var(--text-primary, #111827);
+}
+
+/* Sticky footer — pinned to the bottom of the scroll container (not the
+ * viewport) so docs previews and embedded usages render predictably. */
+.footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-3, 0.75rem);
+  padding: var(--spacing-4, 1rem) var(--spacing-6, 1.5rem);
+  border-top: 1px solid var(--border-subtle, #e5e7eb);
+  background-color: var(--surface-page, #ffffff);
+  box-shadow: var(--shadow-sm);
+}
+
+.footerCancel {
+  flex: 0 0 auto;
+}
+
+.footerStatus {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+  text-align: center;
+}
+
+.footerSave {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.footerStatus + .footerSave {
+  margin-left: 0;
+}
+
+/* Narrow container — hide tab label text and show icons only when a tab
+ * provides one. Falls back to the label when no icon is present. */
+@container (max-width: 32rem) {
+  .tabsTrigger:has(.triggerIcon) .triggerLabel {
+    display: none;
+  }
+
+  .footer {
+    flex-wrap: wrap;
+  }
+
+  .footerStatus {
+    order: 3;
+    flex-basis: 100%;
+    text-align: left;
+  }
+}
