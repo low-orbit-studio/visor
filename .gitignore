@@ -65,3 +65,4 @@ blob-report/
 # Claude Code session artifacts
 .lo/
 *.bak.*
+.worktrees/
