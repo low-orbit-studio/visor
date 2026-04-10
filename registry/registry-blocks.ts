@@ -149,6 +149,31 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "admin-wizard",
+    type: "registry:block",
+    category: "admin",
+    description:
+      "Guided multi-step flow composing PageHeader, Stepper, Button, and ConfirmDialog into a drop-in wizard. Supports per-step async validation, final async submit, horizontal or vertical stepper orientation, optional click-to-jump navigation to completed steps, and a cancel guard for unsaved progress.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: [
+      "utils",
+      "page-header",
+      "stepper",
+      "button",
+      "confirm-dialog",
+    ],
+    files: [
+      {
+        path: "blocks/admin-wizard/admin-wizard.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/admin-wizard/admin-wizard.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "configuration-panel",
     type: "registry:block",
     category: "configuration",

@@ -1,0 +1,184 @@
+---
+title: Admin Wizard
+description: Guided multi-step flow composing PageHeader, Stepper, Button, and ConfirmDialog. Supports per-step async validation, final async submit, horizontal or vertical orientation, click-to-jump navigation to completed steps, and a cancel guard.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { AdminWizardDemo } from '@/components/blocks/admin-wizard-demo';
+
+## Preview
+
+<BlockPreview
+  title="Admin Wizard — create project"
+  code={"<AdminWizard\n  title=\"Create a project\"\n  eyebrow=\"New project\"\n  description=\"Walk through a few steps to spin up a fresh project.\"\n  steps={[\n    { id: 'basics', label: 'Basic info', validate: validateBasics, content: <BasicsForm /> },\n    { id: 'category', label: 'Select category', content: <CategoryForm /> },\n    { id: 'configure', label: 'Configure', optional: true, content: <ConfigureForm /> },\n    { id: 'review', label: 'Review', content: <ReviewPanel /> },\n  ]}\n  onSubmit={async () => { await createProject(draft); }}\n  onCancel={handleCancel}\n  dirty={dirty}\n  submitLabel=\"Create project\"\n/>"}
+>
+  <AdminWizardDemo />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block admin-wizard
+```
+
+This copies files into your project:
+
+- `blocks/admin-wizard/admin-wizard.tsx` — the block component
+- `blocks/admin-wizard/admin-wizard.module.css` — the styles
+
+The registry pulls in `page-header`, `stepper`, `button`, and `confirm-dialog` as dependencies.
+
+## Usage
+
+```tsx
+'use client';
+
+import * as React from 'react';
+import { AdminWizard } from '@/blocks/admin-wizard/admin-wizard';
+import { Input } from '@/components/ui/input/input';
+import { Label } from '@/components/ui/label/label';
+
+interface ProjectDraft {
+  name: string;
+  category: string;
+}
+
+export function CreateProjectWizard() {
+  const [draft, setDraft] = React.useState<ProjectDraft>({
+    name: '',
+    category: 'product',
+  });
+
+  const dirty = draft.name !== '' || draft.category !== 'product';
+
+  async function handleSubmit() {
+    const res = await fetch('/api/projects', {
+      method: 'POST',
+      body: JSON.stringify(draft),
+    });
+    if (!res.ok) throw new Error('Failed to create project');
+  }
+
+  return (
+    <AdminWizard
+      title="Create a project"
+      dirty={dirty}
+      onSubmit={handleSubmit}
+      onCancel={() => setDraft({ name: '', category: 'product' })}
+      submitLabel="Create project"
+      steps={[
+        {
+          id: 'basics',
+          label: 'Basic info',
+          validate: () => draft.name.trim().length > 0,
+          content: (
+            <>
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                value={draft.name}
+                onChange={(e) => setDraft({ ...draft, name: e.target.value })}
+              />
+            </>
+          ),
+        },
+        {
+          id: 'category',
+          label: 'Category',
+          content: (
+            <>
+              <Label htmlFor="category">Category</Label>
+              <Input
+                id="category"
+                value={draft.category}
+                onChange={(e) =>
+                  setDraft({ ...draft, category: e.target.value })
+                }
+              />
+            </>
+          ),
+        },
+        {
+          id: 'review',
+          label: 'Review',
+          content: (
+            <dl>
+              <dt>Name</dt>
+              <dd>{draft.name}</dd>
+              <dt>Category</dt>
+              <dd>{draft.category}</dd>
+            </dl>
+          ),
+        },
+      ]}
+    />
+  );
+}
+```
+
+## Anatomy
+
+The block renders four zones:
+
+1. **PageHeader** — title, eyebrow, description, breadcrumb, and header actions slot.
+2. **Stepper** — renders every step with a status (`complete`, `active`, or `upcoming`). Horizontal by default; `stepperOrientation="vertical"` renders the stepper alongside the content. Steps can be marked `optional`.
+3. **Content** — only the active step's `content` is mounted. The region is a `role="tabpanel"` labelled by the active stepper item.
+4. **Footer** — `Cancel` on the left; `Back` + `Next` on the right. The Next button morphs into the Submit button on the final step.
+
+## Per-step validation
+
+Each step can supply a `validate` function. When the user clicks Next:
+
+- A synchronous `false` return cancels the advance.
+- A `Promise<boolean>` flips the Next button into an `aria-busy` state until it resolves; a resolved `false` or a rejection cancels the advance.
+- On success the current step is added to `completedSteps` and the wizard advances to `currentStep + 1`.
+
+Back navigation never calls `validate` — users can freely step backward when `allowBackNavigation` is true (the default).
+
+## Final submit
+
+On the final step the Next button becomes the Submit button and calls `onSubmit`. If `onSubmit` returns a Promise, the Submit button flips to `aria-busy` until it resolves. Consumers own success/error UX — the wizard doesn't auto-close or reset.
+
+## Click-to-jump stepper navigation
+
+With `allowStepperClickNav` (default `true`), stepper triggers are clickable buttons:
+
+- Clicking a step at index `i < currentStep` jumps backward (requires `allowBackNavigation`).
+- Clicking the current step is a no-op.
+- Clicking a step at index `i > currentStep` is only allowed if **every** step between the current step and the target is in `completedSteps` — i.e. the user can re-enter a step they've already validated past.
+
+Disabled triggers render with a non-interactive affordance, so the stepper keeps its visual rhythm regardless of where the user is in the flow.
+
+## Cancel guard
+
+When `dirty` is `true`, clicking Cancel opens a `ConfirmDialog` with discard/keep-editing actions. When `dirty` is `false` the guard is skipped and `onCancel` fires immediately. The guard labels are customizable via the `unsavedGuard*` props.
+
+## Orientation
+
+`stepperOrientation="horizontal"` (default) puts the stepper above the content with a scrollable overflow guard for narrow containers. `stepperOrientation="vertical"` renders a two-column layout — stepper on the left, content on the right — which collapses back to a single column below 48rem container width.
+
+## Accessibility
+
+- The content region uses `role="tabpanel"` with `aria-labelledby` pointing to the active step's label id.
+- Stepper triggers announce `Go to step N: <label>` via `aria-label`.
+- The Next / Submit button reports `aria-busy` during validation or submission.
+- The cancel guard is a `ConfirmDialog` with warning severity and focusable discard / keep-editing actions.
+- The footer is a `role="group"` with `aria-label="Wizard actions"`.
+
+## Props
+
+See `AdminWizardProps` in `blocks/admin-wizard/admin-wizard.tsx` for the full list. In summary:
+
+- **Header** — `title` (required), `eyebrow`, `description`, `breadcrumb`, `headerActions`.
+- **Steps** — `steps` (required). Each step is `{ id, label, description?, content, validate?, optional? }`.
+- **State** — `activeStep`, `defaultActiveStep`, `onActiveStepChange`, `dirty`, `busy`.
+- **Actions** — `onSubmit`, `onCancel`, `backLabel`, `nextLabel`, `submitLabel`, `cancelLabel`.
+- **Layout** — `stepperOrientation`, `allowBackNavigation`, `allowStepperClickNav`.
+- **Unsaved guard** — `unsavedGuardTitle`, `unsavedGuardDescription`, `unsavedGuardConfirmLabel`, `unsavedGuardCancelLabel`.
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI — such as admin shells, login forms, or dashboard panels.
+
+Blocks are copy-and-own, just like components. Install them into your project and customize freely.
