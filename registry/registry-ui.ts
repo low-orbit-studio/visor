@@ -1464,4 +1464,23 @@ export const ui: Registry = [
       },
     ],
   },
+  {
+    name: "stat-card",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "A compact dashboard metric card with label, value, delta, trend, and footer slots. Supports default, highlight, and compact variants with accessible delta announcements.",
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/stat-card/stat-card.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/stat-card/stat-card.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
 ]

@@ -1,0 +1,62 @@
+name: StatCard
+description: Admin dashboard metric card with label, value, delta, trend, and footer slots.
+extends: HTMLElement
+category: admin
+
+when_to_use:
+  - Rendering a single key metric on an admin dashboard or summary row
+  - Displaying a numeric KPI alongside a period-over-period delta
+  - Pairing a metric with a sparkline, icon, or small chart
+  - Building the upcoming admin-dashboard block
+
+when_not_to_use:
+  - Marketing feature tiles (use a marketing card pattern instead)
+  - Long-form content cards with titles and descriptions (use a generic Card)
+  - Tabular data — prefer DataTable for multiple metrics in rows
+  - Showing a single value inline in body copy (use plain text)
+
+why: >
+  The stat-card pattern was repeated inline across veronica-admin and
+  blacklight-admin dashboards. Canonicalizing it enforces consistent label
+  treatment, tabular numerics, accessible delta announcements (color alone is
+  never sufficient), and a single place to tune density and highlight states.
+
+variants:
+  variant: [default, highlight, compact]
+
+props:
+  - name: label
+    type: React.ReactNode
+    required: true
+    description: Small uppercase label describing the metric.
+  - name: value
+    type: React.ReactNode
+    required: true
+    description: Prominent metric value.
+  - name: delta
+    type: StatCardDelta
+    description: Change indicator with value, direction, and optional label.
+  - name: trend
+    type: React.ReactNode
+    description: Slot for a sparkline, chart, or icon rendered next to the label.
+  - name: footer
+    type: React.ReactNode
+    description: Sublabel or link rendered beneath the value.
+  - name: as
+    type: "'article' | 'section' | 'div'"
+    default: "article"
+    description: Root element tag.
+  - name: variant
+    type: "'default' | 'highlight' | 'compact'"
+    default: "default"
+    description: Visual density and emphasis.
+
+dependencies:
+  - "class-variance-authority"
+
+example: |
+  <StatCard
+    label="Total Revenue"
+    value="$48,120"
+    delta={{ value: "+12.4%", direction: "up", label: "vs last month" }}
+  />

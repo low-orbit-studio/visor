@@ -1794,4 +1794,58 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'All standard HTML attributes are forwarded to the root.',
     },
   ],
+
+  'stat-card': [
+    {
+      name: 'label',
+      type: 'React.ReactNode',
+      required: true,
+      description: 'Small uppercase label describing the metric.',
+    },
+    {
+      name: 'value',
+      type: 'React.ReactNode',
+      required: true,
+      description: 'Prominent metric value rendered in a large display size.',
+    },
+    {
+      name: 'delta',
+      type: 'StatCardDelta',
+      description:
+        'Change indicator with value, direction ("up" | "down" | "flat"), and optional context label. Direction is announced to screen readers.',
+    },
+    {
+      name: 'trend',
+      type: 'React.ReactNode',
+      description:
+        'Slot for a sparkline, chart, or icon rendered next to the label. Marked aria-hidden by default.',
+    },
+    {
+      name: 'footer',
+      type: 'React.ReactNode',
+      description: 'Sublabel or link rendered beneath the value.',
+    },
+    {
+      name: 'variant',
+      type: "'default' | 'highlight' | 'compact'",
+      default: "'default'",
+      description: 'Visual density and emphasis.',
+    },
+    {
+      name: 'as',
+      type: "'article' | 'section' | 'div'",
+      default: "'article'",
+      description: 'Root element tag. Defaults to article for landmark semantics.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the root element.',
+    },
+    {
+      name: '...props',
+      type: 'React.HTMLAttributes<HTMLElement>',
+      description: 'All standard HTML attributes are forwarded to the root.',
+    },
+  ],
 };
