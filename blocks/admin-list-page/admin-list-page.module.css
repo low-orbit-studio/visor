@@ -1,0 +1,33 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6, 1.5rem);
+  width: 100%;
+  container-type: inline-size;
+  container-name: admin-list-page;
+  color: var(--text-primary, #111827);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5, 1.25rem);
+  min-width: 0;
+}
+
+.tableSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 1rem);
+  min-width: 0;
+}
+
+@container admin-list-page (min-width: 56rem) {
+  .root {
+    gap: var(--spacing-8, 2rem);
+  }
+
+  .header {
+    gap: var(--spacing-6, 1.5rem);
+  }
+}

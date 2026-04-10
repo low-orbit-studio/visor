@@ -1,0 +1,17 @@
+name: Admin List Page
+description: CRUD list archetype composing PageHeader, FilterBar, DataTable, BulkActionBar, and EmptyState into a single drop-in page. Generic over row data type, supports controlled and uncontrolled search/selection/sorting/pagination, exposes a bulk actions slot that appears only when rows are selected.
+category: admin
+components_used:
+  - page-header
+  - filter-bar
+  - data-table
+  - bulk-action-bar
+  - empty-state
+when_to_use:
+  - List-all pages for users, orders, invoices, or projects
+  - Any CRUD index view needing search, filters, and sortable/paginated rows
+  - Pages that need bulk actions (archive, delete, export) on selected rows
+when_not_to_use:
+  - Overview dashboards with KPIs and activity feeds (use admin-dashboard)
+  - Single-record detail or edit screens (use admin-detail-drawer)
+  - Settings or preferences forms (use admin-settings-page)

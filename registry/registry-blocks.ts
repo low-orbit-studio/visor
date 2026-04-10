@@ -46,6 +46,32 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "admin-list-page",
+    type: "registry:block",
+    category: "admin",
+    description:
+      "CRUD list archetype composing PageHeader, FilterBar, DataTable, BulkActionBar, and EmptyState into a single drop-in page. Generic over row data type, with controlled/uncontrolled search, selection, sorting, and pagination.",
+    dependencies: ["@tanstack/react-table", "@loworbitstudio/visor-core"],
+    registryDependencies: [
+      "utils",
+      "page-header",
+      "filter-bar",
+      "data-table",
+      "bulk-action-bar",
+      "empty-state",
+    ],
+    files: [
+      {
+        path: "blocks/admin-list-page/admin-list-page.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/admin-list-page/admin-list-page.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "configuration-panel",
     type: "registry:block",
     category: "configuration",

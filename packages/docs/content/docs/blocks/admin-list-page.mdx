@@ -1,0 +1,153 @@
+---
+title: Admin List Page
+description: CRUD list archetype composing PageHeader, FilterBar, DataTable, BulkActionBar, and EmptyState into a single drop-in page.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { AdminListPageDemo } from '@/components/blocks/admin-list-page-demo';
+
+## Preview
+
+<BlockPreview
+  title="Admin List Page"
+  code={"<AdminListPage\n  eyebrow=\"Team\"\n  title=\"Users\"\n  description=\"Manage everyone with access to this workspace.\"\n  actions={<Button size=\"sm\">New user</Button>}\n  searchValue={search}\n  onSearchChange={setSearch}\n  searchPlaceholder=\"Search users...\"\n  columns={columns}\n  data={filteredData}\n  getRowId={(row) => row.id}\n  enableRowSelection\n  bulkActions={<><Button variant=\"outline\" size=\"sm\">Archive</Button><Button variant=\"destructive\" size=\"sm\">Delete</Button></>}\n  bulkActionBarInline\n/>"}
+>
+  <AdminListPageDemo />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block admin-list-page
+```
+
+This copies files into your project:
+
+- `blocks/admin-list-page/admin-list-page.tsx` — the block component
+- `blocks/admin-list-page/admin-list-page.module.css` — the styles
+
+The registry pulls in `page-header`, `filter-bar`, `data-table`, `bulk-action-bar`, and `empty-state` as dependencies.
+
+## Usage
+
+```tsx
+'use client';
+
+import * as React from 'react';
+import { AdminListPage } from '@/blocks/admin-list-page/admin-list-page';
+import { Button } from '@/components/ui/button/button';
+import { Badge } from '@/components/ui/badge/badge';
+import type { ColumnDef } from '@/components/ui/data-table/data-table';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: 'Active' | 'Invited' | 'Suspended';
+}
+
+export default function UsersPage() {
+  const [search, setSearch] = React.useState('');
+  const [users, setUsers] = React.useState<User[]>([]);
+
+  const columns = React.useMemo<ColumnDef<User, unknown>[]>(
+    () => [
+      { accessorKey: 'name', header: 'Name' },
+      { accessorKey: 'email', header: 'Email' },
+      { accessorKey: 'role', header: 'Role' },
+      {
+        accessorKey: 'status',
+        header: 'Status',
+        cell: ({ row }) => <Badge>{row.original.status}</Badge>,
+      },
+    ],
+    []
+  );
+
+  const filtered = React.useMemo(() => {
+    const needle = search.trim().toLowerCase();
+    if (!needle) return users;
+    return users.filter(
+      (u) =>
+        u.name.toLowerCase().includes(needle) ||
+        u.email.toLowerCase().includes(needle)
+    );
+  }, [search, users]);
+
+  return (
+    <AdminListPage
+      eyebrow="Team"
+      title="Users"
+      description="Manage everyone with access to this workspace."
+      actions={<Button size="sm">New user</Button>}
+      searchValue={search}
+      onSearchChange={setSearch}
+      searchPlaceholder="Search users..."
+      columns={columns}
+      data={filtered}
+      getRowId={(row) => row.id}
+      enableRowSelection
+      bulkActions={
+        <>
+          <Button variant="outline" size="sm">Archive</Button>
+          <Button variant="destructive" size="sm">Delete</Button>
+        </>
+      }
+    />
+  );
+}
+```
+
+Drop this inside an AdminShell to get the full chrome — sidebar, topbar, and list page in one composition.
+
+## Layout
+
+The block is a vertical stack with a semantic structure:
+
+1. **Header region** — wraps the PageHeader (title, eyebrow, description, actions, breadcrumb) and the FilterBar (search input, filter slot, active filter chips, results count).
+2. **Table region** — wraps the DataTable and the optional BulkActionBar.
+
+The root uses container queries so spacing scales with the column width handed to it by the surrounding AdminShell — no global breakpoints involved.
+
+## Controlled vs. uncontrolled
+
+Every piece of orchestration state can be controlled or uncontrolled:
+
+- **Search** — pass `searchValue` and `onSearchChange` for controlled, or omit both to hide the search input entirely.
+- **Row selection** — pass `rowSelection` and `onRowSelectionChange` for controlled, or just set `enableRowSelection` to let the block manage it internally.
+- **Sorting and pagination** — forwarded directly to the underlying DataTable, which supports both modes.
+
+When uncontrolled, the block still drives the BulkActionBar — it counts the selected rows itself and wires `onClear` to reset the internal state.
+
+## Bulk actions
+
+The BulkActionBar only renders when `bulkActions` is provided and the selected-row count is greater than zero. By default it is sticky at the bottom of the viewport; pass `bulkActionBarInline` to render it inline below the table instead.
+
+Consumers own the action buttons — the block just provides the slot, the count, and the clear handler.
+
+## Empty state
+
+The DataTable already renders a subtle "No results" EmptyState when `data` is empty. Pass `emptyState` to replace it entirely — for example, a CTA encouraging the user to create their first record.
+
+## Accessibility
+
+- The top region is a semantic header element; the table region is a semantic section labelled by the page title when the title is a plain string.
+- Search, sorting, pagination, and selection all inherit the accessibility guarantees of their underlying compounds.
+- The BulkActionBar is a toolbar with Escape-to-clear behavior.
+
+## Props
+
+See the `AdminListPageProps` interface in `blocks/admin-list-page/admin-list-page.tsx` for the full prop list. In summary:
+
+- **Header** — `title` (required), `eyebrow`, `description`, `actions`, `breadcrumb`, `titleAs`.
+- **Filter bar** — `searchValue`, `onSearchChange`, `searchPlaceholder`, `filters`, `activeFilters`, `onClearFilters`, `resultsCount`, `hideFilterBar`.
+- **Data table** — `columns` (required), `data` (required), `getRowId`, `sorting`, `onSortingChange`, `pagination`, `onPaginationChange`, `pageSize`, `pageSizeOptions`, `rowSelection`, `onRowSelectionChange`, `enableRowSelection`, `loading`, `emptyState`.
+- **Bulk actions** — `bulkActions`, `bulkActionBarInline`, `bulkActionLabel`.
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI — such as admin shells, login forms, or dashboard panels.
+
+Blocks are copy-and-own, just like components. Install them into your project and customize freely.
