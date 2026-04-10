@@ -1,0 +1,322 @@
+/* Admin Settings Page
+ * Long scrollable settings archetype: PageHeader → optional nav + main
+ * column of stacked sections → optional sticky global save footer. Nav can
+ * live to the left (sticky rail) or above (horizontal chip bar). At narrow
+ * container widths the side nav collapses above the main column.
+ */
+
+.root {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+  gap: 0;
+  background-color: var(--surface-page, #ffffff);
+  color: var(--text-primary, #111827);
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    scroll-behavior: auto;
+  }
+}
+
+/* Visually hidden skip link — becomes visible on focus so keyboard users
+ * can jump past the header and nav into the first section. */
+.skipLink {
+  position: absolute;
+  left: var(--spacing-2, 0.5rem);
+  top: var(--spacing-2, 0.5rem);
+  z-index: 2;
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  background-color: var(--surface-page, #ffffff);
+  color: var(--text-primary, #111827);
+  border: 1px solid var(--border-default, #d1d5db);
+  border-radius: var(--radius-md, 0.5rem);
+  box-shadow: var(--shadow-sm);
+  font-size: var(--font-size-sm, 0.875rem);
+  text-decoration: none;
+  transform: translateY(-200%);
+  transition:
+    transform var(--motion-duration-fast, 150ms)
+      var(--motion-easing-standard, ease);
+}
+
+.skipLink:focus-visible {
+  transform: translateY(0);
+  outline: var(--focus-ring-width, 2px) solid
+    var(--focus-ring-color, #2563eb);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+.header {
+  padding: var(--spacing-6, 1.5rem);
+  border-bottom: 1px solid var(--border-subtle, #e5e7eb);
+}
+
+/* Top nav variant — horizontal chip bar rendered below the header. */
+.topNav {
+  flex: 0 0 auto;
+  padding: var(--spacing-3, 0.75rem) var(--spacing-6, 1.5rem);
+  border-bottom: 1px solid var(--border-subtle, #e5e7eb);
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.topNavList {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.topNavItem {
+  flex: 0 0 auto;
+}
+
+.topNavLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  border-radius: var(--radius-md, 0.5rem);
+  color: var(--text-secondary, #6b7280);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--motion-duration-fast, 150ms)
+      var(--motion-easing-standard, ease),
+    color var(--motion-duration-fast, 150ms)
+      var(--motion-easing-standard, ease);
+}
+
+.topNavLink:hover {
+  background-color: var(--surface-hover, #f3f4f6);
+  color: var(--text-primary, #111827);
+}
+
+.topNavLink:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid
+    var(--focus-ring-color, #2563eb);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* Body = optional left nav + main column. */
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  width: 100%;
+}
+
+.withLeftNav .body {
+  grid-template-columns: minmax(12rem, 16rem) 1fr;
+}
+
+/* Side nav — sticky rail pinned to the top of the scroll container. */
+.sideNav {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  padding: var(--spacing-6, 1.5rem) var(--spacing-4, 1rem)
+    var(--spacing-6, 1.5rem) var(--spacing-6, 1.5rem);
+  border-right: 1px solid var(--border-subtle, #e5e7eb);
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+.sideNavList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sideNavItem {
+  display: block;
+}
+
+.sideNavLink {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  width: 100%;
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  border-radius: var(--radius-md, 0.5rem);
+  color: var(--text-secondary, #6b7280);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color var(--motion-duration-fast, 150ms)
+      var(--motion-easing-standard, ease),
+    color var(--motion-duration-fast, 150ms)
+      var(--motion-easing-standard, ease);
+}
+
+.sideNavLink:hover {
+  background-color: var(--surface-hover, #f3f4f6);
+  color: var(--text-primary, #111827);
+}
+
+.sideNavLink:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid
+    var(--focus-ring-color, #2563eb);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+.navLinkActive {
+  background-color: var(--surface-active, #f3f4f6);
+  color: var(--text-primary, #111827);
+  font-weight: 600;
+}
+
+.navIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 1em;
+  height: 1em;
+  font-size: var(--font-size-base, 1rem);
+  line-height: 1;
+}
+
+.navLabel {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+/* Main column — stacked sections. */
+.main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-6, 1.5rem);
+  gap: var(--spacing-6, 1.5rem);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 1rem);
+  scroll-margin-top: var(--spacing-6, 1.5rem);
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+}
+
+.sectionTitle {
+  margin: 0;
+}
+
+.sectionDescription {
+  margin: 0;
+}
+
+.sectionContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 1rem);
+}
+
+.sectionSeparator {
+  margin: 0;
+}
+
+.sectionFooter {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-2, 0.5rem);
+  padding-top: var(--spacing-2, 0.5rem);
+}
+
+/* Sticky global footer — pinned to the bottom of the scroll container. */
+.footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-3, 0.75rem);
+  padding: var(--spacing-4, 1rem) var(--spacing-6, 1.5rem);
+  border-top: 1px solid var(--border-subtle, #e5e7eb);
+  background-color: var(--surface-page, #ffffff);
+  box-shadow: var(--shadow-sm);
+}
+
+.footerCancel {
+  flex: 0 0 auto;
+}
+
+.footerStatus {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+  text-align: center;
+}
+
+.footerSave {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.footerStatus + .footerSave {
+  margin-left: 0;
+}
+
+/* Narrow container — collapse left nav above the main column and let the
+ * footer wrap the status below the action buttons. */
+@container (max-width: 48rem) {
+  .withLeftNav .body {
+    grid-template-columns: 1fr;
+  }
+
+  .sideNav {
+    position: static;
+    max-height: none;
+    padding: var(--spacing-3, 0.75rem) var(--spacing-6, 1.5rem);
+    border-right: none;
+    border-bottom: 1px solid var(--border-subtle, #e5e7eb);
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .sideNavList {
+    flex-direction: row;
+    gap: var(--spacing-2, 0.5rem);
+  }
+
+  .sideNavItem {
+    flex: 0 0 auto;
+  }
+
+  .footer {
+    flex-wrap: wrap;
+  }
+
+  .footerStatus {
+    order: 3;
+    flex-basis: 100%;
+    text-align: left;
+  }
+}

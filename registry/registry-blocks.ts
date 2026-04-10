@@ -122,6 +122,33 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "admin-settings-page",
+    type: "registry:block",
+    category: "admin",
+    description:
+      "Long scrollable settings archetype with labeled sections, optional sticky left-side nav (intersection-observer active highlight), and two mutually-exclusive save modes — a global sticky save/cancel footer with unsaved-changes guard, or per-section save/revert rows. Composes PageHeader, Separator, Heading, Text, Button, and ConfirmDialog.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: [
+      "utils",
+      "page-header",
+      "separator",
+      "heading",
+      "text",
+      "button",
+      "confirm-dialog",
+    ],
+    files: [
+      {
+        path: "blocks/admin-settings-page/admin-settings-page.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/admin-settings-page/admin-settings-page.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "configuration-panel",
     type: "registry:block",
     category: "configuration",

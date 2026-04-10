@@ -1,0 +1,175 @@
+---
+title: Admin Settings Page
+description: Long scrollable settings archetype with labeled sections, optional sticky left-side nav with intersection-observer highlight, and either a global sticky save footer (default) or per-section save/revert rows.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import {
+  AdminSettingsPageGlobalDemo,
+  AdminSettingsPagePerSectionDemo,
+} from '@/components/blocks/admin-settings-page-demo';
+
+## Preview — global save mode
+
+<BlockPreview
+  title="Admin Settings Page — global save"
+  code={"<AdminSettingsPage\n  title=\"Workspace settings\"\n  description=\"Manage workspace-level configuration.\"\n  sections={[\n    { id: 'general', label: 'General', title: 'General', content: <GeneralPanel /> },\n    { id: 'branding', label: 'Branding', title: 'Branding', content: <BrandingPanel /> },\n    { id: 'team', label: 'Team', title: 'Team', content: <TeamPanel /> },\n    { id: 'integrations', label: 'Integrations', title: 'Integrations', content: <IntegrationsPanel /> },\n    { id: 'danger', label: 'Danger zone', title: 'Danger zone', content: <DangerPanel /> },\n  ]}\n  dirty={dirty}\n  onSave={async () => { await saveWorkspace(draft); }}\n  onCancel={() => setDraft(saved)}\n  footerStatus={dirty ? 'Unsaved changes' : 'All changes saved'}\n/>"}
+>
+  <AdminSettingsPageGlobalDemo />
+</BlockPreview>
+
+## Preview — per-section save mode
+
+<BlockPreview
+  title="Admin Settings Page — per section save"
+  code={"<AdminSettingsPage\n  title=\"Workspace settings\"\n  perSectionSave\n  sections={[\n    {\n      id: 'general',\n      label: 'General',\n      title: 'General',\n      dirty: generalDirty,\n      busy: busyKey === 'general',\n      onSave: saveGeneral,\n      onRevert: revertGeneral,\n      content: <GeneralPanel />,\n    },\n    // ...\n  ]}\n/>"}
+>
+  <AdminSettingsPagePerSectionDemo />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block admin-settings-page
+```
+
+This copies files into your project:
+
+- `blocks/admin-settings-page/admin-settings-page.tsx` — the block component
+- `blocks/admin-settings-page/admin-settings-page.module.css` — the styles
+
+The registry pulls in `page-header`, `separator`, `heading`, `text`, `button`, and `confirm-dialog` as dependencies.
+
+## Usage
+
+```tsx
+'use client';
+
+import * as React from 'react';
+import { AdminSettingsPage } from '@/blocks/admin-settings-page/admin-settings-page';
+import { Input } from '@/components/ui/input/input';
+import { Label } from '@/components/ui/label/label';
+
+interface Workspace {
+  name: string;
+  slug: string;
+  brandColor: string;
+}
+
+export function WorkspaceSettings({ workspace }: { workspace: Workspace }) {
+  const [draft, setDraft] = React.useState(workspace);
+  const dirty =
+    draft.name !== workspace.name ||
+    draft.slug !== workspace.slug ||
+    draft.brandColor !== workspace.brandColor;
+
+  async function handleSave() {
+    const res = await fetch('/api/workspace', {
+      method: 'PATCH',
+      body: JSON.stringify(draft),
+    });
+    if (!res.ok) throw new Error('Failed to save');
+  }
+
+  return (
+    <AdminSettingsPage
+      title="Workspace settings"
+      description="Manage workspace-level configuration."
+      dirty={dirty}
+      onSave={handleSave}
+      onCancel={() => setDraft(workspace)}
+      sections={[
+        {
+          id: 'general',
+          label: 'General',
+          title: 'General',
+          description: 'Basic information about your workspace.',
+          content: (
+            <>
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                value={draft.name}
+                onChange={(e) => setDraft({ ...draft, name: e.target.value })}
+              />
+            </>
+          ),
+        },
+        {
+          id: 'branding',
+          label: 'Branding',
+          title: 'Branding',
+          description: 'Colors and assets used across the product.',
+          content: (
+            <>
+              <Label htmlFor="brand">Brand color</Label>
+              <Input
+                id="brand"
+                value={draft.brandColor}
+                onChange={(e) =>
+                  setDraft({ ...draft, brandColor: e.target.value })
+                }
+              />
+            </>
+          ),
+        },
+      ]}
+    />
+  );
+}
+```
+
+## Anatomy
+
+The block renders four zones:
+
+1. **PageHeader** — title, eyebrow, description, breadcrumb, and header actions slot.
+2. **Optional nav** — either a sticky left-side rail (`navPosition="left"`, default) or a horizontal chip bar rendered below the header (`navPosition="top"`). Hidden entirely when there is only one section, or when `showNav={false}`.
+3. **Main column** — stacked `<section>` elements with `Heading`, optional description, content, and an optional per-section save/revert row. `Separator` rules visually divide sections.
+4. **Sticky global footer** — only rendered in global save mode (the default). Sticky to the bottom of the scroll container with cancel, optional status slot, and save button.
+
+A visually-hidden "Skip to content" link sits at the top of the block and becomes visible on keyboard focus.
+
+## Two save modes
+
+### Global save (default)
+
+`perSectionSave` is `false`. All edits live in the consumer's draft state, `dirty` drives the save button, and the block renders the sticky global footer. Cancelling while dirty opens the unsaved-changes guard. `onSave` can return a Promise — the save button sets `aria-busy` while the Promise is pending.
+
+### Per-section save
+
+`perSectionSave={true}`. Each section runs its own save/revert row below its content. The block no longer renders the global footer or the cancel guard. Each section's `dirty`, `busy`, `onSave`, and `onRevert` are owned by the consumer — the block just wires them up. Sections without an `onSave` or `onRevert` render no footer row at all (useful for read-only panels mixed with editable ones).
+
+The two modes are mutually exclusive: when `perSectionSave` is true, `onSave` / `onCancel` / `dirty` / `footerStatus` at the page level are ignored.
+
+## Navigation & active section
+
+The left nav (or top chip bar) lists every section. Clicking a link smoothly scrolls the section into view and updates the URL hash. An `IntersectionObserver` watches the sections and updates the active link as the user scrolls — the active link gets `aria-current="true"` and a highlighted visual state. The observer uses a `rootMargin` of `0px 0px -60% 0px` so the active section switches when the next section reaches the upper third of the viewport.
+
+At narrow container widths (`max-width: 48rem`) the left nav collapses into a horizontal scroll strip above the main column, so the content is always readable without side-by-side squeeze. `prefers-reduced-motion` disables smooth scrolling.
+
+## Accessibility
+
+- The left nav is a `<nav aria-label="Settings sections">` with `aria-current="true"` on the active link.
+- Each section is a proper `<section>` with an `aria-labelledby` pointing to its `Heading` id.
+- The global footer is a `role="group"` with `aria-label="Settings actions"`; the per-section footer rows use `aria-label="Section actions"`.
+- A visually-hidden skip link jumps keyboard users past the header and nav directly to the first section.
+- The save button reports `aria-busy` while async saves are in flight.
+
+## Props
+
+See `AdminSettingsPageProps` in `blocks/admin-settings-page/admin-settings-page.tsx` for the full list. In summary:
+
+- **Header** — `title` (required), `eyebrow`, `description`, `breadcrumb`, `headerActions`.
+- **Sections** — `sections` (required). Each section is `{ id, label, title, description?, icon?, content, dirty?, busy?, onSave?, onRevert?, saveLabel?, revertLabel? }`.
+- **Navigation** — `showNav`, `navPosition`.
+- **Mode** — `perSectionSave`.
+- **Global actions** — `onSave`, `onCancel`, `saveLabel`, `cancelLabel`, `dirty`, `busy`, `footerStatus`, `hideFooter`.
+- **Unsaved guard** — `unsavedGuardTitle`, `unsavedGuardDescription`, `unsavedGuardConfirmLabel`, `unsavedGuardCancelLabel`.
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI — such as admin shells, login forms, or dashboard panels.
+
+Blocks are copy-and-own, just like components. Install them into your project and customize freely.

@@ -5,6 +5,7 @@
     "admin-dashboard",
     "admin-detail-drawer",
     "admin-list-page",
+    "admin-settings-page",
     "admin-shell",
     "admin-tabbed-editor",
     "configuration-panel",
