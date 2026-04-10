@@ -72,6 +72,28 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "admin-detail-drawer",
+    type: "registry:block",
+    category: "admin",
+    description:
+      "Right-side slide-out panel for viewing or editing a single record. Composes Sheet with a sticky save/cancel footer, async save handler with pending state, an unsaved-changes guard powered by ConfirmDialog, and sm/md/lg/xl width variants.",
+    dependencies: [
+      "@radix-ui/react-dialog",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils", "sheet", "button", "confirm-dialog"],
+    files: [
+      {
+        path: "blocks/admin-detail-drawer/admin-detail-drawer.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/admin-detail-drawer/admin-detail-drawer.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "configuration-panel",
     type: "registry:block",
     category: "configuration",
