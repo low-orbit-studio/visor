@@ -1892,6 +1892,53 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'kbd': [
+    {
+      name: 'children',
+      type: 'React.ReactNode',
+      description:
+        'Single-key content rendered inside the <kbd>. Ignored when `keys` is provided.',
+    },
+    {
+      name: 'keys',
+      type: 'string[]',
+      description:
+        'If provided, renders each key as its own <kbd> joined by `separator`. Mutually exclusive with `children` — `keys` wins if both are passed.',
+    },
+    {
+      name: 'separator',
+      type: 'React.ReactNode',
+      default: "'+'",
+      description:
+        'Separator rendered between keys in a multi-key sequence. Wrapped in an aria-hidden span so screen readers read each <kbd> on its own.',
+    },
+    {
+      name: 'size',
+      type: "'sm' | 'md' | 'lg'",
+      default: "'md'",
+      description: 'Controls padding and font-size of each key cap.',
+    },
+    {
+      name: 'variant',
+      type: "'default' | 'outline'",
+      default: "'default'",
+      description:
+        'Default uses a filled muted surface; outline is transparent with a border only.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description:
+        'Additional CSS class names merged onto the root element (the single <kbd> or, in multi-key mode, the wrapper <span>).',
+    },
+    {
+      name: '...props',
+      type: 'React.HTMLAttributes<HTMLElement>',
+      description:
+        'All standard HTML attributes are forwarded to the root element.',
+    },
+  ],
+
   'page-header': [
     {
       name: 'title',

@@ -5,6 +5,7 @@
   "pages": [
     "confirm-dialog",
     "empty-state",
+    "kbd",
     "page-header",
     "stat-card",
     "status-badge"

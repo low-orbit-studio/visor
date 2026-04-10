@@ -1488,6 +1488,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "kbd",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "A tiny primitive for rendering keyboard shortcuts using the semantic <kbd> element. Supports a single key via children or a multi-key sequence via the keys prop with a customizable separator. Size (sm/md/lg) and variant (default/outline).",
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/kbd/kbd.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/kbd/kbd.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "page-header",
     type: "registry:ui",
     category: "admin",

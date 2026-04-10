@@ -1,0 +1,52 @@
+name: Kbd
+description: Tiny primitive for rendering keyboard shortcuts using the semantic <kbd> element.
+extends: HTMLElement
+category: admin
+
+when_to_use:
+  - Showing a keyboard shortcut inside a tooltip (e.g. ⌘K for the command palette)
+  - Rendering hotkeys next to menu items
+  - Listing shortcuts on a help or settings page
+  - Inline documentation of keyboard input
+
+when_not_to_use:
+  - Rendering arbitrary code or terminal output (use CodeBlock)
+  - Displaying user input from a form (use the actual input value)
+  - Decorative monospace text (use Text with a mono font)
+
+why: >
+  Keyboard shortcut chrome was duplicated inline across blacklight-admin and
+  veronica-admin. Canonicalizing into a tiny semantic primitive ensures every
+  shortcut uses the native <kbd> element (so screen readers announce it as
+  keyboard input) and looks consistent across tooltips, menus, and help pages.
+
+variants:
+  size: [sm, md, lg]
+  variant: [default, outline]
+
+props:
+  - name: keys
+    type: "string[]"
+    description: >
+      If provided, renders each key as its own <kbd> joined by separator.
+      Mutually exclusive with children — keys wins if both are passed.
+  - name: separator
+    type: React.ReactNode
+    default: '"+"'
+    description: Separator rendered between keys. Wrapped in an aria-hidden span.
+  - name: size
+    type: "'sm' | 'md' | 'lg'"
+    default: "md"
+    description: Controls padding and font-size of each key cap.
+  - name: variant
+    type: "'default' | 'outline'"
+    default: "default"
+    description: Default is a filled muted surface; outline is transparent with a border only.
+
+dependencies:
+  - "class-variance-authority"
+
+example: |
+  <Kbd>⌘K</Kbd>
+  <Kbd keys={["⌘", "K"]} />
+  <Kbd keys={["Ctrl", "K"]} separator="+" size="lg" variant="outline" />
