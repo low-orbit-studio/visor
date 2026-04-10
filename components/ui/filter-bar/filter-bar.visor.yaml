@@ -1,0 +1,83 @@
+name: FilterBar
+description: Admin filter bar compound — search input, filter controls slot, removable active-filter chips, results count, and clear-all affordance above a data-table.
+extends: HTMLDivElement
+category: admin
+
+when_to_use:
+  - Rendering a filter region above a data-table or filterable list
+  - Composing a search field with one or more Select/Combobox filters
+  - Displaying active filters as removable chips with a clear-all affordance
+  - Showing a result count that updates as filters change
+
+when_not_to_use:
+  - Full faceted search sidebars (build a dedicated FacetedFilterPanel)
+  - Global app-wide search (use Command or a top-nav search)
+  - Inline column filters inside a table header
+
+why: >
+  Admin UIs repeatedly re-implement the same "search + filters + chips +
+  clear-all" strip above their tables. Canonicalizing the layout removes
+  drift, guarantees accessible semantics (role="search", aria-live count,
+  labeled chip removal), and keeps the bar responsive via container queries.
+
+props:
+  - name: searchValue
+    type: string
+    description: Controlled value for the search input.
+  - name: onSearchChange
+    type: "(value: string) => void"
+    description: Search change handler. When omitted, the search input is not rendered.
+  - name: searchPlaceholder
+    type: string
+    default: "Search..."
+    description: Placeholder text for the search input.
+  - name: children
+    type: React.ReactNode
+    description: Filter control slot — typically Select or Combobox instances.
+  - name: activeFilters
+    type: FilterBarChip[]
+    description: Active filters rendered as removable chips on the secondary row.
+  - name: onClearAll
+    type: "() => void"
+    description: Handler for the clear-all button. Button renders only when this is provided AND a filter or search value is active.
+  - name: clearLabel
+    type: React.ReactNode
+    default: "Clear all"
+    description: Label for the clear-all button.
+  - name: resultsCount
+    type: React.ReactNode
+    description: Meta text rendered on the far right, e.g. "42 results". Wrapped in aria-live="polite".
+  - name: dense
+    type: boolean
+    default: "false"
+    description: Tighter padding for dense admin layouts.
+
+dependencies:
+  - "@phosphor-icons/react"
+
+registry_dependencies:
+  - "utils"
+  - "search-input"
+  - "badge"
+  - "button"
+
+example: |
+  <FilterBar
+    searchValue={search}
+    onSearchChange={setSearch}
+    resultsCount={`${rows.length} results`}
+    activeFilters={[
+      { id: "role", label: "Role: Admin", onRemove: () => setRole(null) },
+    ]}
+    onClearAll={() => { setSearch(""); setRole(null) }}
+  >
+    <Select value={role ?? ""} onValueChange={setRole}>
+      <SelectTrigger>
+        <SelectValue placeholder="Role" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="admin">Admin</SelectItem>
+        <SelectItem value="editor">Editor</SelectItem>
+      </SelectContent>
+    </Select>
+  </FilterBar>

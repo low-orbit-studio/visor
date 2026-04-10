@@ -2003,6 +2003,72 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'filter-bar': [
+    {
+      name: 'searchValue',
+      type: 'string',
+      description: 'Controlled value for the search input.',
+    },
+    {
+      name: 'onSearchChange',
+      type: '(value: string) => void',
+      description:
+        'Handler for search input changes. When omitted, the search input is not rendered.',
+    },
+    {
+      name: 'searchPlaceholder',
+      type: 'string',
+      default: "'Search...'",
+      description: 'Placeholder text for the search input.',
+    },
+    {
+      name: 'children',
+      type: 'React.ReactNode',
+      description:
+        'Filter control slot — typically Select or Combobox instances rendered horizontally after the search.',
+    },
+    {
+      name: 'activeFilters',
+      type: 'FilterBarChip[]',
+      description:
+        'Active filters rendered as removable Badge chips on a secondary row. Each chip has { id, label, onRemove }.',
+    },
+    {
+      name: 'onClearAll',
+      type: '() => void',
+      description:
+        'Handler for the clear-all button. The button only renders when this is provided AND at least one filter is active or a search value is present.',
+    },
+    {
+      name: 'clearLabel',
+      type: 'React.ReactNode',
+      default: "'Clear all'",
+      description: 'Label for the clear-all button.',
+    },
+    {
+      name: 'resultsCount',
+      type: 'React.ReactNode',
+      description:
+        'Meta text rendered on the far right, e.g. "42 results". Wrapped in aria-live="polite" so filter changes are announced.',
+    },
+    {
+      name: 'dense',
+      type: 'boolean',
+      default: 'false',
+      description: 'Tighter padding for dense admin layouts.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the root element.',
+    },
+    {
+      name: '...props',
+      type: 'React.HTMLAttributes<HTMLDivElement>',
+      description: 'All standard HTML attributes are forwarded to the root div.',
+    },
+  ],
+
   'kbd': [
     {
       name: 'children',

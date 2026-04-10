@@ -1520,6 +1520,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "filter-bar",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "An admin filter bar compound — composes search-input, a filter controls slot, removable active-filter chips, a results count, and a clear-all affordance. Row 1 holds search, filters, and meta; row 2 holds chips. Container queries stack the bar vertically on narrow regions.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "search-input", "badge", "button"],
+    files: [
+      {
+        path: "components/ui/filter-bar/filter-bar.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/filter-bar/filter-bar.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "kbd",
     type: "registry:ui",
     category: "admin",
