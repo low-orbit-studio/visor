@@ -4,6 +4,7 @@
   "defaultOpen": true,
   "pages": [
     "confirm-dialog",
+    "data-table",
     "empty-state",
     "kbd",
     "page-header",

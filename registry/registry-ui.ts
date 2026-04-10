@@ -1469,6 +1469,38 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "data-table",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "A generic Tanstack-powered data table compound that composes Visor's table primitive. Handles client-side sorting, pagination, row selection, global filter, sticky header, loading skeleton rows, and a pluggable empty state.",
+    dependencies: [
+      "@tanstack/react-table",
+      "@phosphor-icons/react",
+      "class-variance-authority",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: [
+      "utils",
+      "table",
+      "button",
+      "checkbox",
+      "select",
+      "skeleton",
+      "empty-state",
+    ],
+    files: [
+      {
+        path: "components/ui/data-table/data-table.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/data-table/data-table.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "empty-state",
     type: "registry:ui",
     category: "admin",

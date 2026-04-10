@@ -1,0 +1,128 @@
+---
+title: Data Table
+description: A generic Tanstack-powered data table compound that composes Visor's table primitive. Handles sorting, pagination, row selection, global filter, sticky header, loading, and empty states. Built with CSS Modules — copy it into your project and own it completely.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { DataTable, type ColumnDef } from '@/components/ui/data-table';
+
+export const sampleUsers = [
+  { id: '1', name: 'Ada Lovelace', email: 'ada@example.com', role: 'Admin' },
+  { id: '2', name: 'Bjarne Stroustrup', email: 'bjarne@example.com', role: 'Editor' },
+  { id: '3', name: 'Carmack', email: 'carmack@example.com', role: 'Viewer' },
+  { id: '4', name: 'Dennis Ritchie', email: 'dennis@example.com', role: 'Admin' },
+  { id: '5', name: 'Edsger Dijkstra', email: 'edsger@example.com', role: 'Editor' },
+  { id: '6', name: 'Grace Hopper', email: 'grace@example.com', role: 'Admin' },
+  { id: '7', name: 'Hedy Lamarr', email: 'hedy@example.com', role: 'Viewer' },
+  { id: '8', name: 'Ivan Sutherland', email: 'ivan@example.com', role: 'Editor' },
+  { id: '9', name: 'John von Neumann', email: 'neumann@example.com', role: 'Admin' },
+  { id: '10', name: 'Ken Thompson', email: 'ken@example.com', role: 'Admin' },
+  { id: '11', name: 'Linus Torvalds', email: 'linus@example.com', role: 'Admin' },
+  { id: '12', name: 'Margaret Hamilton', email: 'margaret@example.com', role: 'Editor' },
+];
+
+export const sampleColumns = [
+  { accessorKey: 'name', header: 'Name' },
+  { accessorKey: 'email', header: 'Email' },
+  { accessorKey: 'role', header: 'Role' },
+];
+
+## Installation
+
+```bash
+npx visor add data-table
+```
+
+This copies two files into your project and installs `@tanstack/react-table`:
+
+- `components/ui/data-table/data-table.tsx` — the component
+- `components/ui/data-table/data-table.module.css` — the styles
+
+## Usage
+
+```tsx
+import { DataTable, type ColumnDef } from '@/components/ui/data-table/data-table';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+const columns: ColumnDef<User>[] = [
+  { accessorKey: 'name', header: 'Name' },
+  { accessorKey: 'email', header: 'Email' },
+  { accessorKey: 'role', header: 'Role' },
+];
+
+export default function UsersPage({ users }: { users: User[] }) {
+  return <DataTable columns={columns} data={users} enableRowSelection />;
+}
+```
+
+## Basic
+
+<ComponentPreview
+  title="Sortable, paginated table"
+  code={"<DataTable columns={columns} data={users} />"}
+>
+  <DataTable columns={sampleColumns} data={sampleUsers} pageSize={5} />
+</ComponentPreview>
+
+## Row Selection
+
+<ComponentPreview
+  title="Checkbox selection column"
+  code={"<DataTable columns={columns} data={users} enableRowSelection />"}
+>
+  <DataTable columns={sampleColumns} data={sampleUsers} enableRowSelection pageSize={5} />
+</ComponentPreview>
+
+## Loading State
+
+<ComponentPreview
+  title="Skeleton rows while data is loading"
+  code={"<DataTable columns={columns} data={[]} loading pageSize={5} />"}
+>
+  <DataTable columns={sampleColumns} data={[]} loading pageSize={5} />
+</ComponentPreview>
+
+## Empty State
+
+<ComponentPreview
+  title="Default empty state when data is empty"
+  code={"<DataTable columns={columns} data={[]} />"}
+>
+  <DataTable columns={sampleColumns} data={[]} />
+</ComponentPreview>
+
+## API Reference
+
+### DataTableProps
+
+<PropsTable component="data-table" />
+
+The component also accepts all standard HTML attributes for the root `<div>`.
+
+## Source Files
+
+After running `npx visor add data-table`, you'll have:
+
+### `data-table.tsx`
+
+A `"use client"` component that wraps `useReactTable` from `@tanstack/react-table` and composes the existing Visor `Table`, `TableHeader`, `TableBody`, `TableRow`, `TableHead`, and `TableCell` primitives. Sorting, pagination, row selection, and global filter are all supported in either controlled or uncontrolled modes. The component re-exports the useful Tanstack types (`ColumnDef`, `SortingState`, `RowSelectionState`, `PaginationState`) so consumers don't need a second import.
+
+### `data-table.module.css`
+
+All values use CSS custom properties from `@loworbitstudio/visor-core`, so the table automatically adapts to your active theme. The root uses `container-type: inline-size` so the pagination footer stacks vertically inside narrow containers without relying on viewport media queries. Sort headers use native `<button>` elements inside the `<th>` so screen readers announce them correctly; the parent `<th>` carries `aria-sort`.
+
+## Customization
+
+After copying the component, you own it completely. Common customizations:
+
+- Swap the native `<select>` page-size picker for Visor's `Select` compound if you want Radix-consistent styling across the app.
+- Add server-driven pagination by passing `pagination` and `onPaginationChange` and wiring them to your data fetch.
+- Extend the selection column with a bulk-action bar by reading `rowSelection` from the controlled state.
+- Add column-visibility toggles by layering Tanstack's `getVisibilityState`-style APIs.

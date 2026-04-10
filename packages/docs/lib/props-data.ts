@@ -1831,6 +1831,117 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'data-table': [
+    {
+      name: 'columns',
+      type: 'ColumnDef<TData, TValue>[]',
+      required: true,
+      description:
+        'Tanstack column definitions. Each entry drives the header, cell renderer, sort behavior, and column id.',
+    },
+    {
+      name: 'data',
+      type: 'TData[]',
+      required: true,
+      description: 'Array of row records to render.',
+    },
+    {
+      name: 'sorting',
+      type: 'SortingState',
+      description: 'Controlled sorting state. Omit for uncontrolled usage.',
+    },
+    {
+      name: 'onSortingChange',
+      type: 'OnChangeFn<SortingState>',
+      description: 'Called when sorting state changes.',
+    },
+    {
+      name: 'defaultSorting',
+      type: 'SortingState',
+      description: 'Uncontrolled initial sorting state.',
+    },
+    {
+      name: 'pagination',
+      type: 'PaginationState',
+      description: 'Controlled pagination state.',
+    },
+    {
+      name: 'onPaginationChange',
+      type: 'OnChangeFn<PaginationState>',
+      description: 'Called when pagination state changes.',
+    },
+    {
+      name: 'pageSize',
+      type: 'number',
+      default: '10',
+      description: 'Initial page size when pagination is uncontrolled.',
+    },
+    {
+      name: 'pageSizeOptions',
+      type: 'number[]',
+      default: '[10, 25, 50, 100]',
+      description: 'Options for the rows-per-page select.',
+    },
+    {
+      name: 'enableRowSelection',
+      type: 'boolean',
+      default: 'false',
+      description:
+        'When true, injects a checkbox column at position 0 with select-all and per-row checkboxes.',
+    },
+    {
+      name: 'rowSelection',
+      type: 'RowSelectionState',
+      description: 'Controlled row selection state.',
+    },
+    {
+      name: 'onRowSelectionChange',
+      type: 'OnChangeFn<RowSelectionState>',
+      description: 'Called when row selection state changes.',
+    },
+    {
+      name: 'getRowId',
+      type: '(row: TData, index: number) => string',
+      description:
+        'Custom stable row id getter. Defaults to index-based ids when omitted.',
+    },
+    {
+      name: 'globalFilter',
+      type: 'string',
+      description: 'Controlled global filter value.',
+    },
+    {
+      name: 'onGlobalFilterChange',
+      type: '(value: string) => void',
+      description: 'Called when the global filter value changes.',
+    },
+    {
+      name: 'loading',
+      type: 'boolean',
+      default: 'false',
+      description:
+        'When true, renders skeleton rows in place of data rows.',
+    },
+    {
+      name: 'emptyState',
+      type: 'React.ReactNode',
+      description:
+        'Override for the default EmptyState slot rendered when data is empty.',
+    },
+    {
+      name: 'stickyHeader',
+      type: 'boolean',
+      default: 'false',
+      description:
+        'When true, the thead is positioned sticky at the top of the scroll container.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names merged onto the root div.',
+    },
+  ],
+
   'empty-state': [
     {
       name: 'heading',
