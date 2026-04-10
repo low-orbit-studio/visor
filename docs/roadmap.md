@@ -101,7 +101,7 @@ Unblock Visor consumption across Low Orbit projects. Minimal work to make `npm i
 **Key work:**
 - [ ] **First npm publish** — Set `NPM_TOKEN` in GitHub repo secrets, push `v0.3.0` tag to trigger release workflow for `@loworbitstudio/visor-core`, `@loworbitstudio/visor`, and `@loworbitstudio/visor-theme-engine`
 - [ ] **Fix theme-engine raw TS export** — `./fonts` export points to `./src/fonts/index.ts` instead of compiled `./dist/fonts/...`; one-line fix in package.json
-- [ ] **Research spike: proprietary theme strategy** — Evaluate options for keeping client themes (Veronica, Kaiah, Blacklight, ENTR, Space) in the monorepo for development/docs while preventing public access. Options to evaluate: build-time injection from private repo, `.gitignore` + pull script, private npm package, git submodule, runtime loading from authenticated CDN
+- [ ] **Research spike: proprietary theme strategy** — Evaluate options for keeping client themes (Veronica, Kaiah, Blacklight, ENTR, Space, SoleSpark) in the monorepo for development/docs while preventing public access. Options to evaluate: build-time injection from private repo, `.gitignore` + pull script, private npm package, git submodule, runtime loading from authenticated CDN
 
 **Tracking:** VI-110
 
@@ -215,4 +215,4 @@ Once Phases 1-4 are complete:
 2. **Reference NextJS App** — Migrate to Visor components + interchange format
 3. **Low Orbit Decks** — Retrofit to use Visor deck category
 4. **New projects** (Sked, Reboot, etc.) — Start on Visor from day one
-5. **Existing projects** (Veronica, SoleSpark, ENTR, Blacklight) — Migrate as capacity allows
+5. **Existing projects** (Veronica, ~~SoleSpark~~ ✓, ENTR, Blacklight) — Migrate as capacity allows
