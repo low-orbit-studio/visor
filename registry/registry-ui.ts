@@ -1446,6 +1446,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "empty-state",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "An admin placeholder compound for empty lists, tables, search results, and dashboard regions. Icon, heading, description, primary and secondary action slots. Size variants (sm/md/lg) and tone variants (default dashed border / subtle).",
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/empty-state/empty-state.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/empty-state/empty-state.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "page-header",
     type: "registry:ui",
     category: "admin",

@@ -1,0 +1,67 @@
+name: EmptyState
+description: Admin placeholder compound for lists, tables, search results, and dashboard regions with no data.
+extends: HTMLDivElement
+category: admin
+
+when_to_use:
+  - Rendering a placeholder for an empty list, table, or search result
+  - Communicating that a user has not yet created their first item
+  - Providing a clear CTA to unblock an empty state
+  - Filling dashboard regions that temporarily have no data
+
+when_not_to_use:
+  - Full-screen error or 404 pages (use a dedicated error surface)
+  - Loading states (use Skeleton or a spinner)
+  - Inline validation messages (use Field or Alert)
+
+why: >
+  "No data" placeholders were duplicated inline across blacklight-admin and
+  veronica-admin. Canonicalizing them into a single compound ensures
+  consistent vertical rhythm, tone (dashed card vs subtle), and accessible
+  announcement via role="status".
+
+variants:
+  size: [sm, md, lg]
+  tone: [default, subtle]
+
+props:
+  - name: heading
+    type: React.ReactNode
+    required: true
+    description: Short direct statement of the empty condition.
+  - name: icon
+    type: React.ReactNode
+    description: Leading visual, typically a Phosphor icon. Marked aria-hidden.
+  - name: description
+    type: React.ReactNode
+    description: 1-2 sentence explanation or guidance beneath the heading.
+  - name: action
+    type: React.ReactNode
+    description: Primary CTA slot. Typically a Button.
+  - name: secondaryAction
+    type: React.ReactNode
+    description: De-emphasized fallback action. Typically a Button.
+  - name: size
+    type: "'sm' | 'md' | 'lg'"
+    default: "md"
+    description: Controls padding, icon size, heading size, and vertical rhythm.
+  - name: tone
+    type: "'default' | 'subtle'"
+    default: "default"
+    description: Default uses a dashed border on a muted surface. Subtle is borderless.
+  - name: headingAs
+    type: "'h2' | 'h3' | 'h4'"
+    default: "h3"
+    description: Heading element used for the heading slot.
+
+dependencies:
+  - "class-variance-authority"
+
+example: |
+  <EmptyState
+    icon={<FolderOpen />}
+    heading="No profiles yet"
+    description="Create your first profile to get started."
+    action={<Button>New profile</Button>}
+    secondaryAction={<Button variant="outline">Learn more</Button>}
+  />

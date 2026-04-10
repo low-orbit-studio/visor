@@ -1735,6 +1735,67 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'empty-state': [
+    {
+      name: 'heading',
+      type: 'React.ReactNode',
+      required: true,
+      description:
+        'Short direct statement of the empty condition. Rendered in the element given by headingAs.',
+    },
+    {
+      name: 'icon',
+      type: 'React.ReactNode',
+      description:
+        'Leading visual, typically a Phosphor icon. Marked aria-hidden since the heading text carries the meaning.',
+    },
+    {
+      name: 'description',
+      type: 'React.ReactNode',
+      description: '1-2 sentence explanation or guidance beneath the heading.',
+    },
+    {
+      name: 'action',
+      type: 'React.ReactNode',
+      description: 'Primary CTA slot. Typically a Button.',
+    },
+    {
+      name: 'secondaryAction',
+      type: 'React.ReactNode',
+      description: 'De-emphasized fallback action. Typically a Button.',
+    },
+    {
+      name: 'size',
+      type: "'sm' | 'md' | 'lg'",
+      default: "'md'",
+      description:
+        'Controls padding, icon size, heading size, and overall vertical rhythm.',
+    },
+    {
+      name: 'tone',
+      type: "'default' | 'subtle'",
+      default: "'default'",
+      description:
+        'Default uses a dashed border on a muted surface. Subtle is borderless.',
+    },
+    {
+      name: 'headingAs',
+      type: "'h2' | 'h3' | 'h4'",
+      default: "'h3'",
+      description: 'Heading element used for the heading slot.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the root element.',
+    },
+    {
+      name: '...props',
+      type: 'React.HTMLAttributes<HTMLDivElement>',
+      description: 'All standard HTML attributes are forwarded to the root div.',
+    },
+  ],
+
   'page-header': [
     {
       name: 'title',
