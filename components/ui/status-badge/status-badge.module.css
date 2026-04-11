@@ -39,6 +39,17 @@
   background-color: var(--text-tertiary, #6b7280);
 }
 
+/* In filled tone, the dot sits on top of a saturated brand fill —
+ * paint it with the same inverse token the Badge uses for its text
+ * so it's visible in every theme. Neutral is excluded: it maps to
+ * the secondary Badge variant, which is not a saturated fill. */
+[data-tone="filled"] .indicatorSuccess,
+[data-tone="filled"] .indicatorWarning,
+[data-tone="filled"] .indicatorDestructive,
+[data-tone="filled"] .indicatorInfo {
+  background-color: var(--text-inverse, #ffffff);
+}
+
 /* Pulse animation — soft opacity + scale.
  * Keyframes are defined locally to keep the component self-contained. */
 .pulse {
