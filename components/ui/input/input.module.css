@@ -41,6 +41,38 @@
   font-size: var(--font-size-sm, 0.875rem);
 }
 
+/* Leading-icon wrapper
+ *
+ * When the consumer passes a leadingIcon node, Input wraps its <input> in a
+ * <span> and positions the icon absolutely inside it. The <input> itself
+ * picks up .hasLeadingIcon, which adds enough left padding to clear the
+ * icon (sized in em so it scales with the field's font-size). */
+.leadingIconWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+
+.leadingIcon {
+  position: absolute;
+  left: var(--spacing-3, 0.75rem);
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary, #9ca3af);
+  pointer-events: none;
+  font-size: 1.125em;
+  line-height: 1;
+}
+
+.hasLeadingIcon {
+  padding-left: calc(var(--spacing-3, 0.75rem) * 2 + 1.125em);
+}
+
 /* Size variants */
 .sizeSm {
   height: 2.25rem;

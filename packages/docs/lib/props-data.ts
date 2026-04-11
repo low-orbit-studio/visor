@@ -953,6 +953,12 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'Controls height, padding, font-size, and border-radius.',
     },
     {
+      name: 'leadingIcon',
+      type: 'React.ReactNode',
+      description:
+        'Optional leading glyph rendered inside the field (e.g. a Phosphor icon). The input reserves enough left padding to clear it.',
+    },
+    {
       name: 'placeholder',
       type: 'string',
       description: 'Placeholder text shown when the input is empty.',

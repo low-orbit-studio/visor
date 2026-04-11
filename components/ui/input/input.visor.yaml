@@ -30,6 +30,9 @@ props:
     type: string
     default: "text"
     description: HTML input type (text, email, password, number, file, etc.)
+  - name: leadingIcon
+    type: React.ReactNode
+    description: Optional leading glyph rendered inside the field (e.g. a Phosphor icon). The input reserves enough left padding to clear it.
 
 dependencies: []
 
