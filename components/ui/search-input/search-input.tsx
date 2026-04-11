@@ -32,18 +32,20 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
       onClear?.()
     }
 
+    const showClear = String(currentValue).length > 0
+
     return (
       <div data-slot="search-input" className={cn(styles.wrapper, className)}>
-        <MagnifyingGlass className={styles.searchIcon} aria-hidden="true" />
         <Input
           ref={ref}
           type="search"
           value={currentValue}
           onChange={handleChange}
-          className={styles.input}
+          leadingIcon={<MagnifyingGlass weight="bold" />}
+          className={cn(showClear && styles.inputWithClear)}
           {...props}
         />
-        {String(currentValue).length > 0 && (
+        {showClear && (
           <button
             type="button"
             className={styles.clearButton}

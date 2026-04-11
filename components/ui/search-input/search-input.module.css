@@ -1,4 +1,8 @@
-/* Search input wrapper */
+/* Search input wrapper
+ *
+ * The leading magnifier is provided by Input's leadingIcon prop; this
+ * wrapper only exists to overlay the optional clear button on top of
+ * the field when there's a value to clear. */
 .wrapper {
   position: relative;
   display: flex;
@@ -6,24 +10,14 @@
   width: 100%;
 }
 
-/* Search icon */
-.searchIcon {
-  position: absolute;
-  left: var(--spacing-3, 0.75rem);
-  width: 1rem;
-  height: 1rem;
-  color: var(--text-secondary, #9ca3af);
-  pointer-events: none;
-}
-
-/* Input override — pad left for icon, pad right for clear button */
-.input {
-  padding-left: var(--spacing-8, 2rem);
+/* Reserve right padding on the input when the clear button is rendered
+ * so the text doesn't slide under the button. */
+.inputWithClear {
   padding-right: var(--spacing-8, 2rem);
 }
 
-/* Hide browser-native search clear button */
-.input::-webkit-search-cancel-button {
+/* Hide browser-native search clear button — we ship our own */
+.wrapper input[type="search"]::-webkit-search-cancel-button {
   display: none;
 }
 
