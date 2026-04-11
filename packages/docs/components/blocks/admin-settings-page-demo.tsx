@@ -51,7 +51,7 @@ const shellStyles: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   overflow: 'auto',
-  border: '1px solid var(--border-subtle, #e5e7eb)',
+  border: '1px solid var(--border-muted, #e5e7eb)',
   borderRadius: 'var(--radius-md, 0.5rem)',
 };
 

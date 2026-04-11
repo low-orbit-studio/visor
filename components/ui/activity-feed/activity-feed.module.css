@@ -114,7 +114,7 @@
  * Variant: compact — denser spacing, smaller text
  * ============================================================ */
 .variantCompact.base > .item + .item {
-  border-top: 1px solid var(--border-subtle, #f3f4f6);
+  border-top: 1px solid var(--border-muted, #e5e7eb);
 }
 
 .variantCompact.item {

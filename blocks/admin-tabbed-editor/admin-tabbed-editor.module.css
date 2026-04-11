@@ -17,7 +17,7 @@
 
 .header {
   padding: var(--spacing-6, 1.5rem);
-  border-bottom: 1px solid var(--border-subtle, #e5e7eb);
+  border-bottom: 1px solid var(--border-muted, #e5e7eb);
 }
 
 .tabs {
@@ -31,7 +31,7 @@
 .tabsList {
   flex: 0 0 auto;
   padding: 0 var(--spacing-6, 1.5rem);
-  border-bottom: 1px solid var(--border-subtle, #e5e7eb);
+  border-bottom: 1px solid var(--border-muted, #e5e7eb);
   overflow-x: auto;
   overflow-y: hidden;
 }
@@ -86,7 +86,7 @@
   align-items: center;
   gap: var(--spacing-3, 0.75rem);
   padding: var(--spacing-4, 1rem) var(--spacing-6, 1.5rem);
-  border-top: 1px solid var(--border-subtle, #e5e7eb);
+  border-top: 1px solid var(--border-muted, #e5e7eb);
   background-color: var(--surface-page, #ffffff);
   box-shadow: var(--shadow-sm);
 }

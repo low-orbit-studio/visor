@@ -33,7 +33,7 @@ const shellStyles: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   overflow: 'auto',
-  border: '1px solid var(--border-subtle, #e5e7eb)',
+  border: '1px solid var(--border-muted, #e5e7eb)',
   borderRadius: 'var(--radius-md, 0.5rem)',
 };
 
@@ -55,7 +55,7 @@ const reviewStyles: React.CSSProperties = {
   flexDirection: 'column',
   gap: 'var(--spacing-2, 0.5rem)',
   padding: 'var(--spacing-4, 1rem)',
-  border: '1px solid var(--border-subtle, #e5e7eb)',
+  border: '1px solid var(--border-muted, #e5e7eb)',
   borderRadius: 'var(--radius-md, 0.5rem)',
   backgroundColor: 'var(--surface-muted, #f9fafb)',
   maxWidth: '28rem',

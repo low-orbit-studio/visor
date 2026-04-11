@@ -53,14 +53,14 @@
 
 .header {
   padding: var(--spacing-6, 1.5rem);
-  border-bottom: 1px solid var(--border-subtle, #e5e7eb);
+  border-bottom: 1px solid var(--border-muted, #e5e7eb);
 }
 
 /* Top nav variant — horizontal chip bar rendered below the header. */
 .topNav {
   flex: 0 0 auto;
   padding: var(--spacing-3, 0.75rem) var(--spacing-6, 1.5rem);
-  border-bottom: 1px solid var(--border-subtle, #e5e7eb);
+  border-bottom: 1px solid var(--border-muted, #e5e7eb);
   overflow-x: auto;
   overflow-y: hidden;
 }
@@ -98,7 +98,7 @@
 }
 
 .topNavLink:hover {
-  background-color: var(--surface-hover, #f3f4f6);
+  background-color: var(--surface-interactive-hover, #f3f4f6);
   color: var(--text-primary, #111827);
 }
 
@@ -128,7 +128,7 @@
   align-self: start;
   padding: var(--spacing-6, 1.5rem) var(--spacing-4, 1rem)
     var(--spacing-6, 1.5rem) var(--spacing-6, 1.5rem);
-  border-right: 1px solid var(--border-subtle, #e5e7eb);
+  border-right: 1px solid var(--border-muted, #e5e7eb);
   max-height: 100vh;
   overflow-y: auto;
 }
@@ -165,7 +165,7 @@
 }
 
 .sideNavLink:hover {
-  background-color: var(--surface-hover, #f3f4f6);
+  background-color: var(--surface-interactive-hover, #f3f4f6);
   color: var(--text-primary, #111827);
 }
 
@@ -176,7 +176,7 @@
 }
 
 .navLinkActive {
-  background-color: var(--surface-active, #f3f4f6);
+  background-color: var(--surface-interactive-active, #e5e7eb);
   color: var(--text-primary, #111827);
   font-weight: 600;
 }
@@ -258,7 +258,7 @@
   align-items: center;
   gap: var(--spacing-3, 0.75rem);
   padding: var(--spacing-4, 1rem) var(--spacing-6, 1.5rem);
-  border-top: 1px solid var(--border-subtle, #e5e7eb);
+  border-top: 1px solid var(--border-muted, #e5e7eb);
   background-color: var(--surface-page, #ffffff);
   box-shadow: var(--shadow-sm);
 }
@@ -296,7 +296,7 @@
     max-height: none;
     padding: var(--spacing-3, 0.75rem) var(--spacing-6, 1.5rem);
     border-right: none;
-    border-bottom: 1px solid var(--border-subtle, #e5e7eb);
+    border-bottom: 1px solid var(--border-muted, #e5e7eb);
     overflow-x: auto;
     overflow-y: hidden;
   }
