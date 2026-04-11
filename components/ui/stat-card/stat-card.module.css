@@ -1,9 +1,20 @@
-/* Stat Card base: self-contained dashboard metric card */
+/* Stat Card base: self-contained dashboard metric card
+ *
+ * Sizing strategy: hug content by default. Place stat cards in a grid
+ * (`grid-template-columns: repeat(N, 1fr)`) or a flex row with `flex: 1`
+ * per child when uniform widths are needed across a dashboard. A single
+ * stat card in a generic flex-row parent renders at its natural content
+ * width — the big value token drives the minimum width.
+ *
+ * No inline-size containment here: inline-size containment prevents the
+ * element's intrinsic width from depending on its children, which means
+ * it collapses to 0 inside a flex-row parent with `flex: 0 1 auto`. Since
+ * the card's responsive variants are already driven by explicit props,
+ * the container query buys nothing and costs the natural sizing behavior.
+ */
 .base {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  min-width: 0;
   gap: var(--spacing-2, 0.5rem);
   padding: var(--spacing-5, 1.25rem);
   background-color: var(--surface-card, #ffffff);
@@ -11,8 +22,6 @@
   border-radius: var(--radius-lg, 0.75rem);
   color: var(--text-primary, #111827);
   box-shadow: var(--shadow-xs, 0 1px 2px 0 rgb(0 0 0 / 0.05));
-  container-type: inline-size;
-  container-name: stat-card;
   transition:
     box-shadow var(--motion-duration-150, 150ms)
       var(--motion-easing-standard, ease),
@@ -173,19 +182,6 @@
 .variantCompact .footer {
   padding-top: var(--spacing-2, 0.5rem);
   font-size: var(--font-size-xs, 0.75rem);
-}
-
-/* Container query: collapse header row on very narrow cards */
-@container stat-card (max-width: 200px) {
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-2, 0.5rem);
-  }
-
-  .trend {
-    justify-content: flex-start;
-  }
 }
 
 /* Respect reduced motion */
