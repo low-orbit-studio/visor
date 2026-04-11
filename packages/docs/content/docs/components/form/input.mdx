@@ -7,7 +7,7 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel, FieldError } from '@/components/ui/field';
-import { MagnifyingGlass, EnvelopeSimple, User } from '@phosphor-icons/react';
+import { InputLeadingIconDemo } from '@/components/ui/input-leading-icon-demo';
 
 ## Installation
 
@@ -88,11 +88,7 @@ field's font-size.
   title="Leading icon"
   code={"import { MagnifyingGlass, EnvelopeSimple, User } from '@phosphor-icons/react';\nimport { Input } from '@/components/ui/input/input';\n\n<Input leadingIcon={<MagnifyingGlass weight=\"bold\" />} placeholder=\"Search products\" />\n<Input leadingIcon={<EnvelopeSimple weight=\"bold\" />} type=\"email\" placeholder=\"you@example.com\" />\n<Input leadingIcon={<User weight=\"bold\" />} placeholder=\"Username\" />"}
 >
-  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%', maxWidth: '20rem' }}>
-    <Input leadingIcon={<MagnifyingGlass weight="bold" />} placeholder="Search products" />
-    <Input leadingIcon={<EnvelopeSimple weight="bold" />} type="email" placeholder="you@example.com" />
-    <Input leadingIcon={<User weight="bold" />} placeholder="Username" />
-  </div>
+  <InputLeadingIconDemo />
 </ComponentPreview>
 
 ## Invalid
