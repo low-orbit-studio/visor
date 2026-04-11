@@ -7,33 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { StatCard } from '@/components/ui/stat-card';
 
-## Installation
-
-```bash
-npx visor add stat-card
-```
-
-This copies two files into your project:
-
-- `components/ui/stat-card/stat-card.tsx` — the component
-- `components/ui/stat-card/stat-card.module.css` — the styles
-
-## Usage
-
-```tsx
-import { StatCard } from '@/components/ui/stat-card/stat-card';
-
-export default function Example() {
-  return (
-    <StatCard
-      label="Total Revenue"
-      value="$48,120"
-      delta={{ value: '+12.4%', direction: 'up', label: 'vs last month' }}
-    />
-  );
-}
-```
-
 ## Basic
 
 <ComponentPreview
@@ -163,6 +136,33 @@ Dimensional density. `md` is the dashboard default; `sm` is for dense rows of co
     <StatCard size="sm" label="Revenue" value="$12k" delta={{ value: '+5%', direction: 'up' }} />
   </div>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add stat-card
+```
+
+This copies two files into your project:
+
+- `components/ui/stat-card/stat-card.tsx` — the component
+- `components/ui/stat-card/stat-card.module.css` — the styles
+
+## Usage
+
+```tsx
+import { StatCard } from '@/components/ui/stat-card/stat-card';
+
+export default function Example() {
+  return (
+    <StatCard
+      label="Total Revenue"
+      value="$48,120"
+      delta={{ value: '+12.4%', direction: 'up', label: 'vs last month' }}
+    />
+  );
+}
+```
 
 ## API Reference
 

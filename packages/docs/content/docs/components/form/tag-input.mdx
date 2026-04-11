@@ -7,25 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { TagInput } from '@/components/ui/tag-input';
 
-## Installation
-
-```bash
-npx visor add tag-input
-```
-
-This copies two files into your project:
-
-- `components/ui/tag-input/tag-input.tsx` — the component
-- `components/ui/tag-input/tag-input.module.css` — the styles
-
-## Usage
-
-```tsx
-import { TagInput } from '@/components/ui/tag-input/tag-input';
-
-<TagInput placeholder="Add skills..." onChange={(tags) => console.log(tags)} />
-```
-
 ## Default
 
 <ComponentPreview
@@ -69,6 +50,25 @@ import { TagInput } from '@/components/ui/tag-input/tag-input';
     <TagInput defaultValue={['React', 'TypeScript']} disabled />
   </div>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add tag-input
+```
+
+This copies two files into your project:
+
+- `components/ui/tag-input/tag-input.tsx` — the component
+- `components/ui/tag-input/tag-input.module.css` — the styles
+
+## Usage
+
+```tsx
+import { TagInput } from '@/components/ui/tag-input/tag-input';
+
+<TagInput placeholder="Add skills..." onChange={(tags) => console.log(tags)} />
+```
 
 ## API Reference
 

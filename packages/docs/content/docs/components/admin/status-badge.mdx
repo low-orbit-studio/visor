@@ -7,30 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { StatusBadge } from '@/components/ui/status-badge';
 
-## Installation
-
-```bash
-npx visor add status-badge
-```
-
-This copies the component into your project and pulls `badge` as a
-transitive registry dependency:
-
-- `components/ui/status-badge/status-badge.tsx` — the component
-- `components/ui/status-badge/status-badge.module.css` — the styles
-- `components/ui/badge/badge.tsx` — the underlying Badge (auto-installed)
-- `components/ui/badge/badge.module.css` — Badge styles (auto-installed)
-
-## Usage
-
-```tsx
-import { StatusBadge } from '@/components/ui/status-badge/status-badge';
-
-export default function Example() {
-  return <StatusBadge status="healthy" />;
-}
-```
-
 ## Basic
 
 <ComponentPreview
@@ -111,6 +87,30 @@ The animation is skipped automatically when the user has
 >
   <StatusBadge status="complete" indicator={false} />
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add status-badge
+```
+
+This copies the component into your project and pulls `badge` as a
+transitive registry dependency:
+
+- `components/ui/status-badge/status-badge.tsx` — the component
+- `components/ui/status-badge/status-badge.module.css` — the styles
+- `components/ui/badge/badge.tsx` — the underlying Badge (auto-installed)
+- `components/ui/badge/badge.module.css` — Badge styles (auto-installed)
+
+## Usage
+
+```tsx
+import { StatusBadge } from '@/components/ui/status-badge/status-badge';
+
+export default function Example() {
+  return <StatusBadge status="healthy" />;
+}
+```
 
 ## API Reference
 

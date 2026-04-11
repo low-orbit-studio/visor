@@ -7,35 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { MotionDuration, MotionEasing } from '@/components/ui/motion-specimen';
 
-## Installation
-
-```bash
-npx visor add motion-specimen
-```
-
-This copies two files into your project:
-
-- `components/ui/motion-specimen/motion-specimen.tsx` — the component
-- `components/ui/motion-specimen/motion-specimen.module.css` — the styles
-
-## Usage
-
-```tsx
-import { MotionDuration, MotionEasing } from '@/components/ui/motion-specimen/motion-specimen';
-
-<MotionDuration durations={[
-  { token: "--motion-duration-100", name: "100", ms: 100 },
-  { token: "--motion-duration-200", name: "200", ms: 200 },
-  { token: "--motion-duration-300", name: "300", ms: 300 },
-  { token: "--motion-duration-500", name: "500", ms: 500 },
-]} />
-
-<MotionEasing easings={[
-  { token: "--motion-easing-ease-out", name: "ease-out", value: "cubic-bezier(0, 0, 0.2, 1)" },
-  { token: "--motion-easing-ease-in-out", name: "ease-in-out", value: "cubic-bezier(0.4, 0, 0.2, 1)" },
-]} />
-```
-
 ## Duration Scale
 
 Click "Play animation" to trigger all bars simultaneously and compare durations.
@@ -67,6 +38,35 @@ Click "Play animation" to preview each easing function side by side.
     { token: "--motion-easing-ease-in-out", name: "ease-in-out", value: "cubic-bezier(0.4, 0, 0.2, 1)" },
   ]} />
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add motion-specimen
+```
+
+This copies two files into your project:
+
+- `components/ui/motion-specimen/motion-specimen.tsx` — the component
+- `components/ui/motion-specimen/motion-specimen.module.css` — the styles
+
+## Usage
+
+```tsx
+import { MotionDuration, MotionEasing } from '@/components/ui/motion-specimen/motion-specimen';
+
+<MotionDuration durations={[
+  { token: "--motion-duration-100", name: "100", ms: 100 },
+  { token: "--motion-duration-200", name: "200", ms: 200 },
+  { token: "--motion-duration-300", name: "300", ms: 300 },
+  { token: "--motion-duration-500", name: "500", ms: 500 },
+]} />
+
+<MotionEasing easings={[
+  { token: "--motion-easing-ease-out", name: "ease-out", value: "cubic-bezier(0, 0, 0.2, 1)" },
+  { token: "--motion-easing-ease-in-out", name: "ease-in-out", value: "cubic-bezier(0.4, 0, 0.2, 1)" },
+]} />
+```
 
 ## API Reference
 

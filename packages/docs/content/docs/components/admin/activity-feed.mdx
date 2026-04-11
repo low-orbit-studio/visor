@@ -7,47 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { ActivityFeed, ActivityFeedItem } from '@/components/ui/activity-feed';
 
-## Installation
-
-```bash
-npx visor add activity-feed
-```
-
-This copies two files into your project:
-
-- `components/ui/activity-feed/activity-feed.tsx` — the component
-- `components/ui/activity-feed/activity-feed.module.css` — the styles
-
-## Usage
-
-```tsx
-import {
-  ActivityFeed,
-  ActivityFeedItem,
-} from '@/components/ui/activity-feed/activity-feed';
-
-export default function Example() {
-  return (
-    <ActivityFeed aria-label="Recent activity">
-      <ActivityFeedItem
-        title="Profile published"
-        actor="Justin"
-        timestamp="2m ago"
-      />
-      <ActivityFeedItem
-        title="Profile edited"
-        description="Updated bio and avatar"
-        actor="Justin"
-        timestamp="5m ago"
-      />
-    </ActivityFeed>
-  );
-}
-```
-
-`ActivityFeed.Item` is also available as a dot-notation alias for
-`ActivityFeedItem`.
-
 ## Basic
 
 <ComponentPreview
@@ -143,6 +102,47 @@ export default function Example() {
     <ActivityFeedItem title="Promoted to production" timestamp="just now" />
   </ActivityFeed>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add activity-feed
+```
+
+This copies two files into your project:
+
+- `components/ui/activity-feed/activity-feed.tsx` — the component
+- `components/ui/activity-feed/activity-feed.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  ActivityFeed,
+  ActivityFeedItem,
+} from '@/components/ui/activity-feed/activity-feed';
+
+export default function Example() {
+  return (
+    <ActivityFeed aria-label="Recent activity">
+      <ActivityFeedItem
+        title="Profile published"
+        actor="Justin"
+        timestamp="2m ago"
+      />
+      <ActivityFeedItem
+        title="Profile edited"
+        description="Updated bio and avatar"
+        actor="Justin"
+        timestamp="5m ago"
+      />
+    </ActivityFeed>
+  );
+}
+```
+
+`ActivityFeed.Item` is also available as a dot-notation alias for
+`ActivityFeedItem`.
 
 ## API Reference
 

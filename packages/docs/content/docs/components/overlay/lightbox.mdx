@@ -12,44 +12,6 @@ import {
 } from '@/components/ui/lightbox';
 import { Button } from '@/components/ui/button';
 
-## Installation
-
-```bash
-npx visor add lightbox
-```
-
-This copies two files into your project:
-
-- `components/ui/lightbox/lightbox.tsx` — the component
-- `components/ui/lightbox/lightbox.module.css` — the styles
-
-## Usage
-
-```tsx
-import {
-  Lightbox,
-  LightboxTrigger,
-  LightboxContent,
-} from '@/components/ui/lightbox/lightbox';
-
-const images = [
-  { src: '/photo-1.jpg', alt: 'Mountain landscape' },
-  { src: '/photo-2.jpg', alt: 'Ocean sunset' },
-  { src: '/photo-3.jpg', alt: 'Forest trail' },
-];
-
-export default function Example() {
-  return (
-    <Lightbox images={images}>
-      <LightboxTrigger asChild>
-        <Button>View Gallery</Button>
-      </LightboxTrigger>
-      <LightboxContent />
-    </Lightbox>
-  );
-}
-```
-
 ## Gallery (Multiple Images)
 
 <ComponentPreview
@@ -159,6 +121,44 @@ export default function ControlledLightbox() {
 - **Auto-hides navigation:** Arrows and counter are hidden for single-image lightboxes
 - **Accessible:** Built on Radix Dialog for focus management and screen reader support
 - **Theme-agnostic:** Uses CSS custom properties for all visual tokens
+
+## Installation
+
+```bash
+npx visor add lightbox
+```
+
+This copies two files into your project:
+
+- `components/ui/lightbox/lightbox.tsx` — the component
+- `components/ui/lightbox/lightbox.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  Lightbox,
+  LightboxTrigger,
+  LightboxContent,
+} from '@/components/ui/lightbox/lightbox';
+
+const images = [
+  { src: '/photo-1.jpg', alt: 'Mountain landscape' },
+  { src: '/photo-2.jpg', alt: 'Ocean sunset' },
+  { src: '/photo-3.jpg', alt: 'Forest trail' },
+];
+
+export default function Example() {
+  return (
+    <Lightbox images={images}>
+      <LightboxTrigger asChild>
+        <Button>View Gallery</Button>
+      </LightboxTrigger>
+      <LightboxContent />
+    </Lightbox>
+  );
+}
+```
 
 ## API Reference
 

@@ -7,36 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Calendar } from '@/components/ui/calendar';
 
-## Installation
-
-```bash
-npx visor add calendar
-```
-
-This copies two files into your project:
-
-- `components/ui/calendar/calendar.tsx` — the component
-- `components/ui/calendar/calendar.module.css` — the styles
-
-## Usage
-
-```tsx
-import { Calendar } from '@/components/ui/calendar/calendar';
-import { useState } from 'react';
-
-export default function Example() {
-  const [date, setDate] = useState<Date | undefined>(new Date());
-
-  return (
-    <Calendar
-      mode="single"
-      selected={date}
-      onSelect={setDate}
-    />
-  );
-}
-```
-
 ## Single Selection
 
 <ComponentPreview
@@ -75,6 +45,36 @@ export default function Example() {
     disabled={{ dayOfWeek: [0, 6] }}
   />
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add calendar
+```
+
+This copies two files into your project:
+
+- `components/ui/calendar/calendar.tsx` — the component
+- `components/ui/calendar/calendar.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Calendar } from '@/components/ui/calendar/calendar';
+import { useState } from 'react';
+
+export default function Example() {
+  const [date, setDate] = useState<Date | undefined>(new Date());
+
+  return (
+    <Calendar
+      mode="single"
+      selected={date}
+      onSelect={setDate}
+    />
+  );
+}
+```
 
 ## API Reference
 

@@ -7,6 +7,22 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { RadiusScale } from '@/components/ui/radius-scale';
 
+## Preview
+
+<ComponentPreview
+  title="Radius Scale"
+  code={"<RadiusScale steps={[\n  { token: \"--radius-none\", name: \"none\", px: 0 },\n  { token: \"--radius-sm\", name: \"sm\", px: 2 },\n  { token: \"--radius-md\", name: \"md\", px: 4 },\n  { token: \"--radius-lg\", name: \"lg\", px: 8 },\n  { token: \"--radius-xl\", name: \"xl\", px: 12 },\n  { token: \"--radius-full\", name: \"full\", px: 9999 },\n]} />"}
+>
+  <RadiusScale steps={[
+    { token: "--radius-none", name: "none", px: 0 },
+    { token: "--radius-sm", name: "sm", px: 2 },
+    { token: "--radius-md", name: "md", px: 4 },
+    { token: "--radius-lg", name: "lg", px: 8 },
+    { token: "--radius-xl", name: "xl", px: 12 },
+    { token: "--radius-full", name: "full", px: 9999 },
+  ]} />
+</ComponentPreview>
+
 ## Installation
 
 ```bash
@@ -32,22 +48,6 @@ import { RadiusScale } from '@/components/ui/radius-scale/radius-scale';
   { token: "--radius-full", name: "full", px: 9999 },
 ]} />
 ```
-
-## Preview
-
-<ComponentPreview
-  title="Radius Scale"
-  code={"<RadiusScale steps={[\n  { token: \"--radius-none\", name: \"none\", px: 0 },\n  { token: \"--radius-sm\", name: \"sm\", px: 2 },\n  { token: \"--radius-md\", name: \"md\", px: 4 },\n  { token: \"--radius-lg\", name: \"lg\", px: 8 },\n  { token: \"--radius-xl\", name: \"xl\", px: 12 },\n  { token: \"--radius-full\", name: \"full\", px: 9999 },\n]} />"}
->
-  <RadiusScale steps={[
-    { token: "--radius-none", name: "none", px: 0 },
-    { token: "--radius-sm", name: "sm", px: 2 },
-    { token: "--radius-md", name: "md", px: 4 },
-    { token: "--radius-lg", name: "lg", px: 8 },
-    { token: "--radius-xl", name: "xl", px: 12 },
-    { token: "--radius-full", name: "full", px: 9999 },
-  ]} />
-</ComponentPreview>
 
 ## API Reference
 

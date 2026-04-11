@@ -14,46 +14,6 @@ import {
   MenubarSeparator,
 } from '@/components/ui/menubar';
 
-## Installation
-
-```bash
-npx visor add menubar
-```
-
-This copies two files into your project:
-
-- `components/ui/menubar/menubar.tsx` — the component
-- `components/ui/menubar/menubar.module.css` — the styles
-
-## Usage
-
-```tsx
-import {
-  Menubar,
-  MenubarMenu,
-  MenubarTrigger,
-  MenubarContent,
-  MenubarItem,
-  MenubarSeparator,
-} from '@/components/ui/menubar/menubar';
-
-export default function Example() {
-  return (
-    <Menubar>
-      <MenubarMenu>
-        <MenubarTrigger>File</MenubarTrigger>
-        <MenubarContent>
-          <MenubarItem>New</MenubarItem>
-          <MenubarItem>Open</MenubarItem>
-          <MenubarSeparator />
-          <MenubarItem>Save</MenubarItem>
-        </MenubarContent>
-      </MenubarMenu>
-    </Menubar>
-  );
-}
-```
-
 ## Default
 
 <ComponentPreview
@@ -122,6 +82,46 @@ export default function Example() {
     </MenubarMenu>
   </Menubar>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add menubar
+```
+
+This copies two files into your project:
+
+- `components/ui/menubar/menubar.tsx` — the component
+- `components/ui/menubar/menubar.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  Menubar,
+  MenubarMenu,
+  MenubarTrigger,
+  MenubarContent,
+  MenubarItem,
+  MenubarSeparator,
+} from '@/components/ui/menubar/menubar';
+
+export default function Example() {
+  return (
+    <Menubar>
+      <MenubarMenu>
+        <MenubarTrigger>File</MenubarTrigger>
+        <MenubarContent>
+          <MenubarItem>New</MenubarItem>
+          <MenubarItem>Open</MenubarItem>
+          <MenubarSeparator />
+          <MenubarItem>Save</MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+    </Menubar>
+  );
+}
+```
 
 ## API Reference
 

@@ -13,38 +13,6 @@ import {
   ConfirmDialogCustomBodyDemo,
 } from '@/components/ui/confirm-dialog-demo';
 
-## Installation
-
-```bash
-npx visor add confirm-dialog
-```
-
-This copies two files into your project and pulls in the `dialog` and `button` components as registry dependencies:
-
-- `components/ui/confirm-dialog/confirm-dialog.tsx` — the component
-- `components/ui/confirm-dialog/confirm-dialog.module.css` — the styles
-
-## Usage
-
-```tsx
-import { ConfirmDialog } from '@/components/ui/confirm-dialog/confirm-dialog';
-import { Button } from '@/components/ui/button/button';
-
-export default function Example() {
-  return (
-    <ConfirmDialog
-      trigger={<Button variant="destructive">Delete project</Button>}
-      severity="danger"
-      title="Delete project?"
-      description="This action cannot be undone. All associated data will be permanently removed."
-      onConfirm={async () => {
-        await deleteProject();
-      }}
-    />
-  );
-}
-```
-
 ## Severities
 
 ConfirmDialog ships with three severity levels. Each severity swaps the leading icon, its color, and the confirm button variant.
@@ -97,6 +65,38 @@ Pass `children` for a richer body slot. Children override the `description` prop
 >
   <ConfirmDialogCustomBodyDemo />
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add confirm-dialog
+```
+
+This copies two files into your project and pulls in the `dialog` and `button` components as registry dependencies:
+
+- `components/ui/confirm-dialog/confirm-dialog.tsx` — the component
+- `components/ui/confirm-dialog/confirm-dialog.module.css` — the styles
+
+## Usage
+
+```tsx
+import { ConfirmDialog } from '@/components/ui/confirm-dialog/confirm-dialog';
+import { Button } from '@/components/ui/button/button';
+
+export default function Example() {
+  return (
+    <ConfirmDialog
+      trigger={<Button variant="destructive">Delete project</Button>}
+      severity="danger"
+      title="Delete project?"
+      description="This action cannot be undone. All associated data will be permanently removed."
+      onConfirm={async () => {
+        await deleteProject();
+      }}
+    />
+  );
+}
+```
 
 ## API Reference
 

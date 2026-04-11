@@ -7,6 +7,33 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { DatePicker } from '@/components/ui/date-picker';
 
+## Default
+
+<ComponentPreview
+  title="Date Picker"
+  code={"import { DatePicker } from '@/components/ui/date-picker/date-picker';\n\n<DatePicker placeholder=\"Pick a date\" />"}
+>
+  <DatePicker placeholder="Pick a date" />
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={"<DatePicker placeholder=\"Pick a date\" disabled />"}
+>
+  <DatePicker placeholder="Pick a date" disabled />
+</ComponentPreview>
+
+## Custom Format
+
+<ComponentPreview
+  title="Custom Date Format"
+  code={"<DatePicker placeholder=\"Select date\" dateFormat=\"MM/dd/yyyy\" />"}
+>
+  <DatePicker placeholder="Select date" dateFormat="MM/dd/yyyy" />
+</ComponentPreview>
+
 ## Installation
 
 ```bash
@@ -42,33 +69,6 @@ export default function Example() {
   );
 }
 ```
-
-## Default
-
-<ComponentPreview
-  title="Date Picker"
-  code={"import { DatePicker } from '@/components/ui/date-picker/date-picker';\n\n<DatePicker placeholder=\"Pick a date\" />"}
->
-  <DatePicker placeholder="Pick a date" />
-</ComponentPreview>
-
-## Disabled
-
-<ComponentPreview
-  title="Disabled"
-  code={"<DatePicker placeholder=\"Pick a date\" disabled />"}
->
-  <DatePicker placeholder="Pick a date" disabled />
-</ComponentPreview>
-
-## Custom Format
-
-<ComponentPreview
-  title="Custom Date Format"
-  code={"<DatePicker placeholder=\"Select date\" dateFormat=\"MM/dd/yyyy\" />"}
->
-  <DatePicker placeholder="Select date" dateFormat="MM/dd/yyyy" />
-</ComponentPreview>
 
 ## API Reference
 

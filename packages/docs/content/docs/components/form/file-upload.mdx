@@ -7,6 +7,33 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { FileUpload } from '@/components/ui/file-upload';
 
+## Default
+
+<ComponentPreview
+  title="File Upload"
+  code={"import { FileUpload } from '@/components/ui/file-upload/file-upload';\n\n<FileUpload accept=\"image/*\" maxSize={5} />"}
+>
+  <FileUpload accept="image/*" maxSize={5} />
+</ComponentPreview>
+
+## Multiple Files
+
+<ComponentPreview
+  title="Multiple Files"
+  code={"<FileUpload accept=\"image/*,.pdf\" maxSize={10} maxFiles={5} />"}
+>
+  <FileUpload accept="image/*,.pdf" maxSize={10} maxFiles={5} />
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={"<FileUpload disabled />"}
+>
+  <FileUpload disabled />
+</ComponentPreview>
+
 ## Installation
 
 ```bash
@@ -34,33 +61,6 @@ export default function Example() {
   );
 }
 ```
-
-## Default
-
-<ComponentPreview
-  title="File Upload"
-  code={"import { FileUpload } from '@/components/ui/file-upload/file-upload';\n\n<FileUpload accept=\"image/*\" maxSize={5} />"}
->
-  <FileUpload accept="image/*" maxSize={5} />
-</ComponentPreview>
-
-## Multiple Files
-
-<ComponentPreview
-  title="Multiple Files"
-  code={"<FileUpload accept=\"image/*,.pdf\" maxSize={10} maxFiles={5} />"}
->
-  <FileUpload accept="image/*,.pdf" maxSize={10} maxFiles={5} />
-</ComponentPreview>
-
-## Disabled
-
-<ComponentPreview
-  title="Disabled"
-  code={"<FileUpload disabled />"}
->
-  <FileUpload disabled />
-</ComponentPreview>
 
 ## API Reference
 

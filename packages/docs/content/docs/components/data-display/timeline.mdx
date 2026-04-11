@@ -15,53 +15,6 @@ import {
   TimelineTimestamp,
 } from '@/components/ui/timeline';
 
-## Installation
-
-```bash
-npx visor add timeline
-```
-
-This copies two files into your project:
-
-- `components/ui/timeline/timeline.tsx` — the component
-- `components/ui/timeline/timeline.module.css` — the styles
-
-## Usage
-
-```tsx
-import {
-  Timeline,
-  TimelineItem,
-  TimelineContent,
-  TimelineTitle,
-  TimelineDescription,
-} from '@/components/ui/timeline/timeline';
-
-export default function Example() {
-  return (
-    <Timeline>
-      <TimelineItem status="complete">
-        <TimelineContent>
-          <TimelineTitle>Order placed</TimelineTitle>
-          <TimelineDescription>Your order has been confirmed.</TimelineDescription>
-        </TimelineContent>
-      </TimelineItem>
-      <TimelineItem status="active">
-        <TimelineContent>
-          <TimelineTitle>In transit</TimelineTitle>
-          <TimelineDescription>Package is on its way.</TimelineDescription>
-        </TimelineContent>
-      </TimelineItem>
-      <TimelineItem>
-        <TimelineContent>
-          <TimelineTitle>Delivered</TimelineTitle>
-        </TimelineContent>
-      </TimelineItem>
-    </Timeline>
-  );
-}
-```
-
 ## All Statuses
 
 Each `TimelineItem` accepts a `status` of `complete`, `active`, or `upcoming` (default).
@@ -156,6 +109,53 @@ Use `TimelineIcon` to replace the default dot with any content.
     </TimelineItem>
   </Timeline>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add timeline
+```
+
+This copies two files into your project:
+
+- `components/ui/timeline/timeline.tsx` — the component
+- `components/ui/timeline/timeline.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  Timeline,
+  TimelineItem,
+  TimelineContent,
+  TimelineTitle,
+  TimelineDescription,
+} from '@/components/ui/timeline/timeline';
+
+export default function Example() {
+  return (
+    <Timeline>
+      <TimelineItem status="complete">
+        <TimelineContent>
+          <TimelineTitle>Order placed</TimelineTitle>
+          <TimelineDescription>Your order has been confirmed.</TimelineDescription>
+        </TimelineContent>
+      </TimelineItem>
+      <TimelineItem status="active">
+        <TimelineContent>
+          <TimelineTitle>In transit</TimelineTitle>
+          <TimelineDescription>Package is on its way.</TimelineDescription>
+        </TimelineContent>
+      </TimelineItem>
+      <TimelineItem>
+        <TimelineContent>
+          <TimelineTitle>Delivered</TimelineTitle>
+        </TimelineContent>
+      </TimelineItem>
+    </Timeline>
+  );
+}
+```
 
 ## API Reference
 

@@ -8,17 +8,6 @@ import { PropsTable } from '@/components/props-table';
 import { ToastDemo } from '@/components/ui/toast-demo';
 import { ToastVariantsDemo, ToastWithDescriptionDemo, ToastWithActionDemo } from '@/components/ui/toast-variants-demo';
 
-## Installation
-
-```bash
-npx visor add toast
-```
-
-This copies two files into your project:
-
-- `components/ui/toast/toast.tsx` — the component
-- `components/ui/toast/toast.module.css` — the styles
-
 ## Setup
 
 Add `<Toaster />` once in your root layout. All calls to `toast()` anywhere in your app will render there.
@@ -37,34 +26,6 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
-```
-
-## Usage
-
-```tsx
-import { toast } from '@/components/ui/toast/toast';
-
-// Basic
-toast('Event created');
-
-// With type
-toast.success('Changes saved');
-toast.error('Something went wrong');
-toast.warning('Storage almost full');
-toast.info('New update available');
-
-// With description
-toast('File uploaded', {
-  description: 'report-q4-2025.pdf was saved to your documents.',
-});
-
-// With action
-toast('Message sent', {
-  action: {
-    label: 'Undo',
-    onClick: () => toast('Message unsent'),
-  },
-});
 ```
 
 ## Variants
@@ -95,6 +56,45 @@ Each toast type receives a distinct color treatment: a subtle intent-colored bac
 >
   <ToastWithActionDemo />
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add toast
+```
+
+This copies two files into your project:
+
+- `components/ui/toast/toast.tsx` — the component
+- `components/ui/toast/toast.module.css` — the styles
+
+## Usage
+
+```tsx
+import { toast } from '@/components/ui/toast/toast';
+
+// Basic
+toast('Event created');
+
+// With type
+toast.success('Changes saved');
+toast.error('Something went wrong');
+toast.warning('Storage almost full');
+toast.info('New update available');
+
+// With description
+toast('File uploaded', {
+  description: 'report-q4-2025.pdf was saved to your documents.',
+});
+
+// With action
+toast('Message sent', {
+  action: {
+    label: 'Undo',
+    onClick: () => toast('Message unsent'),
+  },
+});
+```
 
 ## API Reference
 

@@ -7,45 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
 
-## Installation
-
-```bash
-npx visor add command
-```
-
-This copies two files into your project:
-
-- `components/ui/command/command.tsx` — the component
-- `components/ui/command/command.module.css` — the styles
-
-## Usage
-
-```tsx
-import {
-  Command,
-  CommandInput,
-  CommandList,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-} from '@/components/ui/command/command';
-
-export default function Example() {
-  return (
-    <Command>
-      <CommandInput placeholder="Type a command..." />
-      <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
-        <CommandGroup heading="Actions">
-          <CommandItem>Profile</CommandItem>
-          <CommandItem>Settings</CommandItem>
-        </CommandGroup>
-      </CommandList>
-    </Command>
-  );
-}
-```
-
 ## Default
 
 <ComponentPreview
@@ -114,6 +75,45 @@ export default function Example() {
     </Command>
   </div>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add command
+```
+
+This copies two files into your project:
+
+- `components/ui/command/command.tsx` — the component
+- `components/ui/command/command.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+} from '@/components/ui/command/command';
+
+export default function Example() {
+  return (
+    <Command>
+      <CommandInput placeholder="Type a command..." />
+      <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandGroup heading="Actions">
+          <CommandItem>Profile</CommandItem>
+          <CommandItem>Settings</CommandItem>
+        </CommandGroup>
+      </CommandList>
+    </Command>
+  );
+}
+```
 
 ## API Reference
 

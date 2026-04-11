@@ -8,35 +8,6 @@ import { PropsTable } from '@/components/props-table';
 import { PageHeader } from '@/components/ui/page-header';
 import { Button } from '@/components/ui/button';
 
-## Installation
-
-```bash
-npx visor add page-header
-```
-
-This copies two files into your project:
-
-- `components/ui/page-header/page-header.tsx` — the component
-- `components/ui/page-header/page-header.module.css` — the styles
-
-## Usage
-
-```tsx
-import { PageHeader } from '@/components/ui/page-header/page-header';
-import { Button } from '@/components/ui/button/button';
-
-export default function Example() {
-  return (
-    <PageHeader
-      eyebrow="Blacklight Admin"
-      title="Customers"
-      description="Manage customer accounts, billing, and access."
-      actions={<Button>New customer</Button>}
-    />
-  );
-}
-```
-
 ## Basic
 
 <ComponentPreview
@@ -101,6 +72,35 @@ export default function Example() {
     <PageHeader size="lg" title="Large" description="Spacious vertical rhythm." />
   </div>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add page-header
+```
+
+This copies two files into your project:
+
+- `components/ui/page-header/page-header.tsx` — the component
+- `components/ui/page-header/page-header.module.css` — the styles
+
+## Usage
+
+```tsx
+import { PageHeader } from '@/components/ui/page-header/page-header';
+import { Button } from '@/components/ui/button/button';
+
+export default function Example() {
+  return (
+    <PageHeader
+      eyebrow="Blacklight Admin"
+      title="Customers"
+      description="Manage customer accounts, billing, and access."
+      actions={<Button>New customer</Button>}
+    />
+  );
+}
+```
 
 ## API Reference
 

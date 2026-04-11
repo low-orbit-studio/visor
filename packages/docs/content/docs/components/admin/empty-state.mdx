@@ -8,34 +8,6 @@ import { PropsTable } from '@/components/props-table';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Button } from '@/components/ui/button';
 
-## Installation
-
-```bash
-npx visor add empty-state
-```
-
-This copies two files into your project:
-
-- `components/ui/empty-state/empty-state.tsx` — the component
-- `components/ui/empty-state/empty-state.module.css` — the styles
-
-## Usage
-
-```tsx
-import { EmptyState } from '@/components/ui/empty-state/empty-state';
-import { Button } from '@/components/ui/button/button';
-
-export default function Example() {
-  return (
-    <EmptyState
-      heading="No profiles yet"
-      description="Create your first profile to get started."
-      action={<Button>New profile</Button>}
-    />
-  );
-}
-```
-
 ## Basic
 
 <ComponentPreview
@@ -116,6 +88,34 @@ export default function Example() {
     <EmptyState size="lg" heading="Large" description="Spacious vertical rhythm." />
   </div>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add empty-state
+```
+
+This copies two files into your project:
+
+- `components/ui/empty-state/empty-state.tsx` — the component
+- `components/ui/empty-state/empty-state.module.css` — the styles
+
+## Usage
+
+```tsx
+import { EmptyState } from '@/components/ui/empty-state/empty-state';
+import { Button } from '@/components/ui/button/button';
+
+export default function Example() {
+  return (
+    <EmptyState
+      heading="No profiles yet"
+      description="Create your first profile to get started."
+      action={<Button>New profile</Button>}
+    />
+  );
+}
+```
 
 ## API Reference
 

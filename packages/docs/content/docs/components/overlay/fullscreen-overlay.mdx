@@ -12,40 +12,6 @@ import {
 } from '@/components/ui/fullscreen-overlay';
 import { Button } from '@/components/ui/button';
 
-## Installation
-
-```bash
-npx visor add fullscreen-overlay
-```
-
-This copies two files into your project:
-
-- `components/ui/fullscreen-overlay/fullscreen-overlay.tsx` — the component
-- `components/ui/fullscreen-overlay/fullscreen-overlay.module.css` — the styles
-
-## Usage
-
-```tsx
-import {
-  FullscreenOverlay,
-  FullscreenOverlayTrigger,
-  FullscreenOverlayContent,
-} from '@/components/ui/fullscreen-overlay/fullscreen-overlay';
-
-export default function Example() {
-  return (
-    <FullscreenOverlay>
-      <FullscreenOverlayTrigger asChild>
-        <Button>Expand</Button>
-      </FullscreenOverlayTrigger>
-      <FullscreenOverlayContent>
-        <p>Your content fills the full viewport here.</p>
-      </FullscreenOverlayContent>
-    </FullscreenOverlay>
-  );
-}
-```
-
 ## Basic Example
 
 <ComponentPreview
@@ -125,6 +91,40 @@ export default function ControlledExample() {
 - **Body scroll lock:** Prevents background scrolling while open
 - **Fullbleed mode:** Remove padding for edge-to-edge content
 - **Theme-agnostic:** Uses CSS custom properties for all visual tokens
+
+## Installation
+
+```bash
+npx visor add fullscreen-overlay
+```
+
+This copies two files into your project:
+
+- `components/ui/fullscreen-overlay/fullscreen-overlay.tsx` — the component
+- `components/ui/fullscreen-overlay/fullscreen-overlay.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  FullscreenOverlay,
+  FullscreenOverlayTrigger,
+  FullscreenOverlayContent,
+} from '@/components/ui/fullscreen-overlay/fullscreen-overlay';
+
+export default function Example() {
+  return (
+    <FullscreenOverlay>
+      <FullscreenOverlayTrigger asChild>
+        <Button>Expand</Button>
+      </FullscreenOverlayTrigger>
+      <FullscreenOverlayContent>
+        <p>Your content fills the full viewport here.</p>
+      </FullscreenOverlayContent>
+    </FullscreenOverlay>
+  );
+}
+```
 
 ## API Reference
 

@@ -7,49 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { ColorSwatch, ColorSwatchGrid, SemanticColorGrid } from '@/components/ui/color-swatch';
 
-## Installation
-
-```bash
-npx visor add color-swatch
-```
-
-This copies two files into your project:
-
-- `components/ui/color-swatch/color-swatch.tsx` — the component
-- `components/ui/color-swatch/color-swatch.module.css` — the styles
-
-## Usage
-
-```tsx
-import {
-  ColorSwatch,
-  ColorSwatchGrid,
-  SemanticColorItem,
-  SemanticColorGrid,
-} from '@/components/ui/color-swatch/color-swatch';
-
-{/* Single swatch */}
-<ColorSwatch token="--color-blue-500" hex="#3b82f6" name="500" lightText />
-
-{/* Grid of swatches */}
-<ColorSwatchGrid
-  label="Gray"
-  swatches={[
-    { token: "--color-gray-50", hex: "#f9fafb", name: "50" },
-    { token: "--color-gray-900", hex: "#111827", name: "900", lightText: true },
-  ]}
-/>
-
-{/* Semantic color group */}
-<SemanticColorGrid
-  category="Text"
-  items={[
-    { token: "--text-primary", label: "text-primary" },
-    { token: "--text-secondary", label: "text-secondary" },
-  ]}
-/>
-```
-
 ## Single Swatch
 
 <ComponentPreview
@@ -96,6 +53,49 @@ import {
     ]}
   />
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add color-swatch
+```
+
+This copies two files into your project:
+
+- `components/ui/color-swatch/color-swatch.tsx` — the component
+- `components/ui/color-swatch/color-swatch.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  ColorSwatch,
+  ColorSwatchGrid,
+  SemanticColorItem,
+  SemanticColorGrid,
+} from '@/components/ui/color-swatch/color-swatch';
+
+{/* Single swatch */}
+<ColorSwatch token="--color-blue-500" hex="#3b82f6" name="500" lightText />
+
+{/* Grid of swatches */}
+<ColorSwatchGrid
+  label="Gray"
+  swatches={[
+    { token: "--color-gray-50", hex: "#f9fafb", name: "50" },
+    { token: "--color-gray-900", hex: "#111827", name: "900", lightText: true },
+  ]}
+/>
+
+{/* Semantic color group */}
+<SemanticColorGrid
+  category="Text"
+  items={[
+    { token: "--text-primary", label: "text-primary" },
+    { token: "--text-secondary", label: "text-secondary" },
+  ]}
+/>
+```
 
 ## API Reference
 

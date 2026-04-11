@@ -7,26 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Sphere as SphereDemo } from '@/components/ui/sphere';
 
-## Installation
-
-```bash
-npx visor add sphere
-```
-
-This installs `three` (~150KB gzipped) as a dependency. If your project already uses Three.js, the existing installation will be reused.
-
-## Usage
-
-```tsx
-import { Sphere } from '@/components/visual/sphere/sphere';
-
-<div style={{ width: '100%', height: '400px' }}>
-  <Sphere colorScheme="solar" mode="sphere" />
-</div>
-```
-
-The Sphere component fills its container. Wrap it in a sized element.
-
 ## Preview
 
 <ComponentPreview
@@ -165,6 +145,26 @@ When `prefers-reduced-motion: reduce` is active, the animation freezes in place 
 - Additive blending creates natural bright hotspots without extra computation
 - Device pixel ratio clamped to 2 by default (`maxPixelRatio` prop)
 - Targets 60fps on modern hardware
+
+## Installation
+
+```bash
+npx visor add sphere
+```
+
+This installs `three` (~150KB gzipped) as a dependency. If your project already uses Three.js, the existing installation will be reused.
+
+## Usage
+
+```tsx
+import { Sphere } from '@/components/visual/sphere/sphere';
+
+<div style={{ width: '100%', height: '400px' }}>
+  <Sphere colorScheme="solar" mode="sphere" />
+</div>
+```
+
+The Sphere component fills its container. Wrap it in a sized element.
 
 ## API Reference
 

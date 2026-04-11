@@ -3,6 +3,16 @@ title: DeckRenderer
 description: Renders a navigable slide deck from a declarative registry config with TOC, footer, fullscreen, and keyboard navigation.
 ---
 
+## Features
+
+- **Declarative registry** -- define slides as a typed array of `SlideEntry` objects
+- **Auto-generated TOC** -- table of contents slide built from registry sections
+- **Dot navigation** -- synced to slide position via the integrated `DotNav`
+- **Keyboard navigation** -- arrow keys, Space, Home, End (inherited from `DeckLayout`)
+- **Fullscreen mode** -- uses `FullscreenOverlay` for immersive presentation
+- **Optional footer** -- navigation columns auto-derived from registry sections
+- **Section filtering** -- sections prefixed with `_` are excluded from TOC and footer
+
 ## Installation
 
 ```bash
@@ -45,16 +55,6 @@ export default function DeckPage() {
   return <DeckRenderer registry={myDeckRegistry} showTOC />;
 }
 ```
-
-## Features
-
-- **Declarative registry** -- define slides as a typed array of `SlideEntry` objects
-- **Auto-generated TOC** -- table of contents slide built from registry sections
-- **Dot navigation** -- synced to slide position via the integrated `DotNav`
-- **Keyboard navigation** -- arrow keys, Space, Home, End (inherited from `DeckLayout`)
-- **Fullscreen mode** -- uses `FullscreenOverlay` for immersive presentation
-- **Optional footer** -- navigation columns auto-derived from registry sections
-- **Section filtering** -- sections prefixed with `_` are excluded from TOC and footer
 
 ## Props
 

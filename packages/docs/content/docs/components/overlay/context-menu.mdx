@@ -22,45 +22,6 @@ import {
   ContextMenuGroup,
 } from '@/components/ui/context-menu';
 
-## Installation
-
-```bash
-npx visor add context-menu
-```
-
-This copies two files into your project:
-
-- `components/ui/context-menu/context-menu.tsx` — the component
-- `components/ui/context-menu/context-menu.module.css` — the styles
-
-## Usage
-
-```tsx
-import {
-  ContextMenu,
-  ContextMenuTrigger,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuSeparator,
-  ContextMenuLabel,
-} from '@/components/ui/context-menu/context-menu';
-
-export default function Example() {
-  return (
-    <ContextMenu>
-      <ContextMenuTrigger>Right click here</ContextMenuTrigger>
-      <ContextMenuContent>
-        <ContextMenuLabel>Actions</ContextMenuLabel>
-        <ContextMenuItem>Edit</ContextMenuItem>
-        <ContextMenuItem>Duplicate</ContextMenuItem>
-        <ContextMenuSeparator />
-        <ContextMenuItem variant="destructive">Delete</ContextMenuItem>
-      </ContextMenuContent>
-    </ContextMenu>
-  );
-}
-```
-
 ## Basic Context Menu
 
 <ComponentPreview
@@ -228,6 +189,45 @@ export default function Example() {
     </ContextMenuContent>
   </ContextMenu>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add context-menu
+```
+
+This copies two files into your project:
+
+- `components/ui/context-menu/context-menu.tsx` — the component
+- `components/ui/context-menu/context-menu.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuLabel,
+} from '@/components/ui/context-menu/context-menu';
+
+export default function Example() {
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger>Right click here</ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuLabel>Actions</ContextMenuLabel>
+        <ContextMenuItem>Edit</ContextMenuItem>
+        <ContextMenuItem>Duplicate</ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem variant="destructive">Delete</ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  );
+}
+```
 
 ## API Reference
 

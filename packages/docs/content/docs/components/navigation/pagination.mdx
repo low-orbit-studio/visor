@@ -7,44 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from '@/components/ui/pagination';
 
-## Installation
-
-```bash
-npx visor add pagination
-```
-
-This copies two files into your project:
-
-- `components/ui/pagination/pagination.tsx` — the component
-- `components/ui/pagination/pagination.module.css` — the styles
-
-## Usage
-
-```tsx
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationPrevious,
-  PaginationNext,
-  PaginationEllipsis,
-} from '@/components/ui/pagination/pagination';
-
-export default function Example() {
-  return (
-    <Pagination>
-      <PaginationContent>
-        <PaginationItem><PaginationPrevious href="#" /></PaginationItem>
-        <PaginationItem><PaginationLink href="#">1</PaginationLink></PaginationItem>
-        <PaginationItem><PaginationLink href="#">2</PaginationLink></PaginationItem>
-        <PaginationItem><PaginationNext href="#" /></PaginationItem>
-      </PaginationContent>
-    </Pagination>
-  );
-}
-```
-
 ## Default
 
 <ComponentPreview
@@ -115,6 +77,44 @@ export default function Example() {
     </PaginationContent>
   </Pagination>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add pagination
+```
+
+This copies two files into your project:
+
+- `components/ui/pagination/pagination.tsx` — the component
+- `components/ui/pagination/pagination.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationEllipsis,
+} from '@/components/ui/pagination/pagination';
+
+export default function Example() {
+  return (
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem><PaginationPrevious href="#" /></PaginationItem>
+        <PaginationItem><PaginationLink href="#">1</PaginationLink></PaginationItem>
+        <PaginationItem><PaginationLink href="#">2</PaginationLink></PaginationItem>
+        <PaginationItem><PaginationNext href="#" /></PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  );
+}
+```
 
 ## API Reference
 

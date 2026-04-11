@@ -7,34 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 
-## Installation
-
-```bash
-npx visor add accordion
-```
-
-This copies two files into your project:
-
-- `components/ui/accordion/accordion.tsx` — the component
-- `components/ui/accordion/accordion.module.css` — the styles
-
-## Usage
-
-```tsx
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion/accordion';
-
-export default function Example() {
-  return (
-    <Accordion type="single" collapsible>
-      <AccordionItem value="item-1">
-        <AccordionTrigger>Section One</AccordionTrigger>
-        <AccordionContent>Content for section one.</AccordionContent>
-      </AccordionItem>
-    </Accordion>
-  );
-}
-```
-
 ## Single Mode
 
 Only one item can be open at a time. With `collapsible`, clicking the open item closes it.
@@ -102,6 +74,34 @@ Individual items can be disabled to prevent expansion.
     </AccordionItem>
   </Accordion>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add accordion
+```
+
+This copies two files into your project:
+
+- `components/ui/accordion/accordion.tsx` — the component
+- `components/ui/accordion/accordion.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion/accordion';
+
+export default function Example() {
+  return (
+    <Accordion type="single" collapsible>
+      <AccordionItem value="item-1">
+        <AccordionTrigger>Section One</AccordionTrigger>
+        <AccordionContent>Content for section one.</AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+}
+```
 
 ## API Reference
 

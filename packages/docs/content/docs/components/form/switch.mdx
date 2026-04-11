@@ -8,29 +8,6 @@ import { PropsTable } from '@/components/props-table';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
-## Installation
-
-```bash
-npx visor add switch
-```
-
-This copies two files into your project:
-
-- `components/ui/switch/switch.tsx` — the component
-- `components/ui/switch/switch.module.css` — the styles
-
-## Usage
-
-```tsx
-import { Switch } from '@/components/ui/switch/switch';
-import { Label } from '@/components/ui/label/label';
-
-<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-  <Switch id="airplane" />
-  <Label htmlFor="airplane">Airplane mode</Label>
-</div>
-```
-
 ## Default
 
 <ComponentPreview
@@ -90,6 +67,29 @@ import { Label } from '@/components/ui/label/label';
     </div>
   </div>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add switch
+```
+
+This copies two files into your project:
+
+- `components/ui/switch/switch.tsx` — the component
+- `components/ui/switch/switch.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Switch } from '@/components/ui/switch/switch';
+import { Label } from '@/components/ui/label/label';
+
+<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+  <Switch id="airplane" />
+  <Label htmlFor="airplane">Airplane mode</Label>
+</div>
+```
 
 ## API Reference
 

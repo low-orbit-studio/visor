@@ -7,41 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarLink } from '@/components/ui/navbar';
 
-## Installation
-
-```bash
-npx visor add navbar
-```
-
-This copies two files into your project:
-
-- `components/ui/navbar/navbar.tsx` — the component
-- `components/ui/navbar/navbar.module.css` — the styles
-
-## Usage
-
-```tsx
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  NavbarLink,
-} from '@/components/ui/navbar/navbar';
-
-export default function Example() {
-  return (
-    <Navbar>
-      <NavbarBrand>My App</NavbarBrand>
-      <NavbarContent>
-        <NavbarItem><NavbarLink href="/">Home</NavbarLink></NavbarItem>
-        <NavbarItem><NavbarLink href="/about">About</NavbarLink></NavbarItem>
-      </NavbarContent>
-    </Navbar>
-  );
-}
-```
-
 ## Variants
 
 <ComponentPreview
@@ -116,6 +81,41 @@ export default function Example() {
     </NavbarContent>
   </Navbar>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add navbar
+```
+
+This copies two files into your project:
+
+- `components/ui/navbar/navbar.tsx` — the component
+- `components/ui/navbar/navbar.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  NavbarLink,
+} from '@/components/ui/navbar/navbar';
+
+export default function Example() {
+  return (
+    <Navbar>
+      <NavbarBrand>My App</NavbarBrand>
+      <NavbarContent>
+        <NavbarItem><NavbarLink href="/">Home</NavbarLink></NavbarItem>
+        <NavbarItem><NavbarLink href="/about">About</NavbarLink></NavbarItem>
+      </NavbarContent>
+    </Navbar>
+  );
+}
+```
 
 ## API Reference
 
