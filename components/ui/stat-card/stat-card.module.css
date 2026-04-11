@@ -34,28 +34,33 @@
   /* inherits base */
 }
 
-/* Highlight variant — stronger border + lifted shadow */
+/* Highlight variant — accent-tinted surface with elevation
+ *
+ * Uses color-mix over the theme's brand accent (--interactive-primary-bg)
+ * plus the theme's card surface, so the variant reads as "featured / primary"
+ * regardless of whether the active theme is light or dark and regardless of
+ * which brand color the theme ships. No hardcoded gradient — gradients
+ * conflict with dark modes where lighter colors at the top look like flares.
+ */
 .variantHighlight {
-  border-color: var(--border-strong, #d1d5db);
-  box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1));
-  background-image: linear-gradient(
-    180deg,
-    var(--surface-raised, #f9fafb) 0%,
-    var(--surface-card, #ffffff) 100%
+  background-color: color-mix(
+    in srgb,
+    var(--interactive-primary-bg, #2563eb) 6%,
+    var(--surface-card, #ffffff)
   );
-}
-
-.variantHighlight::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  box-shadow: inset 0 0 0 1px var(--border-strong, #d1d5db);
-}
-
-.variantHighlight {
-  position: relative;
+  border-color: color-mix(
+    in srgb,
+    var(--interactive-primary-bg, #2563eb) 40%,
+    var(--border-default, #e5e7eb)
+  );
+  box-shadow:
+    var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1)),
+    0 0 24px -8px
+      color-mix(
+        in srgb,
+        var(--interactive-primary-bg, #2563eb) 25%,
+        transparent
+      );
 }
 
 /* Compact variant — denser padding, smaller value */
