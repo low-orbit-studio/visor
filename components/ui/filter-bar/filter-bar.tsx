@@ -96,6 +96,7 @@ const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
               className={styles.searchSlot}
             >
               <SearchInput
+                size="sm"
                 value={searchValue ?? ""}
                 onChange={handleSearchChange}
                 onClear={handleSearchClear}

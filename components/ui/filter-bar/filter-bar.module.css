@@ -41,6 +41,13 @@
   width: min(100%, 18rem);
 }
 
+/* Radius harmony — children step down one level from the container's --radius-lg */
+.searchSlot input,
+.filters > button[role="combobox"],
+.filters button[data-slot="select-trigger"] {
+  border-radius: var(--radius-md, 0.25rem);
+}
+
 /* Filters cluster — horizontal flow, wraps on tight rows */
 .filters {
   display: flex;
@@ -73,16 +80,18 @@
   flex: 0 0 auto;
 }
 
-/* Secondary row: active filter chips */
+/* Secondary row: active filter chips
+ * Separation from the primary row is achieved via whitespace alone
+ * (the .base gap token handles the vertical rhythm) rather than a
+ * hairline rule — modern admin pattern that avoids harsh contrast
+ * bands on dark themes where subtle borders are hard to render.
+ */
 .chips {
   display: flex;
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--spacing-2, 0.5rem);
-  padding-top: var(--spacing-1, 0.25rem);
-  border-top: 1px solid var(--border-subtle, #f3f4f6);
-  margin-top: calc(var(--spacing-1, 0.25rem) * -1);
 }
 
 /* Individual chip — uses Badge variant="secondary" as the surface */
