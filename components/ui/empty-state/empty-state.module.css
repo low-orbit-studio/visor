@@ -5,6 +5,8 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+  width: 100%;
+  min-width: 0;
   gap: var(--spacing-2, 0.5rem);
   color: var(--text-secondary, #6b7280);
   border-radius: var(--radius-lg, 0.75rem);
