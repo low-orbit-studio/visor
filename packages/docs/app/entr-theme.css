@@ -464,3 +464,44 @@ html:not(.dark) .entr-theme {
   --color-fd-popover-foreground: #1a1c1e;
   --color-fd-ring: #22c56d;
 }
+
+/* ============================================
+   Section 5: Creative extensions
+   ============================================
+
+   ENTR is a flat-design theme — form fields have no border stroke at all.
+   Contrast comes from a filled surface, not an outline. The typography on
+   fields is also one size up (base vs sm) and one weight up (medium vs
+   normal) so inputs read as solid blocks rather than lightweight chrome. */
+
+.entr-theme [data-slot="input"],
+.entr-theme [data-slot="textarea"],
+.entr-theme [data-slot="select-trigger"],
+.entr-theme [data-slot="combobox-input-wrapper"] {
+  border-color: transparent;
+  background-color: var(--surface-muted);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+}
+
+.entr-theme [data-slot="input"]::placeholder,
+.entr-theme [data-slot="textarea"]::placeholder,
+.entr-theme [data-slot="combobox-input"]::placeholder {
+  font-weight: var(--font-weight-normal);
+}
+
+.entr-theme [data-slot="input"]:hover:not(:focus-visible):not(:disabled),
+.entr-theme [data-slot="textarea"]:hover:not(:focus-visible):not(:disabled),
+.entr-theme [data-slot="select-trigger"]:hover:not(:focus-visible):not(:disabled),
+.entr-theme [data-slot="combobox-input-wrapper"]:hover:not(:focus-within) {
+  border-color: transparent;
+  background-color: var(--surface-interactive-hover);
+}
+
+.entr-theme [data-slot="input"]:focus-visible,
+.entr-theme [data-slot="textarea"]:focus-visible,
+.entr-theme [data-slot="select-trigger"]:focus-visible,
+.entr-theme [data-slot="combobox-input-wrapper"]:focus-within {
+  border-color: transparent;
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--border-focus);
+}
