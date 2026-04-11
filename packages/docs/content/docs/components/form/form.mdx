@@ -3,6 +3,34 @@ title: Form
 description: A form wrapper integrating Conform + Zod for schema-validated server action forms.
 ---
 
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Field, FieldLabel, FieldDescription, FieldError } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+
+## Preview
+
+<ComponentPreview
+  title="Form shell"
+  code={"import { Form } from '@/components/ui/form/form';\nimport { FormField } from '@/components/ui/form/form-field';\nimport { Button } from '@/components/ui/button/button';\nimport { contactSchema } from '@/lib/schemas/contact';\nimport { contactAction } from './actions';\n\n<Form schema={contactSchema} action={contactAction}>\n  {({ fields }) => (\n    <>\n      <FormField field={fields.name} label=\"Name\" placeholder=\"Your name\" />\n      <FormField field={fields.email} label=\"Email\" type=\"email\" placeholder=\"you@example.com\" />\n      <Button type=\"submit\">Send</Button>\n    </>\n  )}\n</Form>"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', maxWidth: '22rem' }}>
+    <Field>
+      <FieldLabel htmlFor="form-preview-name">Name</FieldLabel>
+      <Input id="form-preview-name" type="text" placeholder="Your name" />
+    </Field>
+    <Field>
+      <FieldLabel htmlFor="form-preview-email">Email</FieldLabel>
+      <FieldDescription>We&rsquo;ll never share your address.</FieldDescription>
+      <Input id="form-preview-email" type="email" placeholder="you@example.com" />
+    </Field>
+    <Button type="button">Send</Button>
+  </div>
+</ComponentPreview>
+
+The live preview above renders the visual shell a `<Form>` would compose. The code panel shows the real server-action wiring.
+
 ## Overview
 
 The Form component wraps [Conform](https://conform.guide/) and React's `useActionState` to provide schema-validated server action forms with minimal boilerplate. It exposes form and field metadata via a render prop, letting you compose with existing Visor components like Field, FieldLabel, FieldError, and Input.
@@ -331,26 +359,13 @@ And installs npm dependencies:
 
 ## API Reference
 
-### FormProps
+### Form
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `schema` | `z.ZodType` | required | Zod schema for client and server validation |
-| `action` | `(prevState: unknown, formData: FormData) => Promise<unknown>` | required | Server action function for form submission |
-| `children` | `(context: \{ form, fields \}) => ReactNode` | required | Render prop receiving form metadata and field accessors |
-| `defaultValue` | `Partial<z.infer<Schema>>` | — | Default values for form fields |
-| `shouldValidate` | `"onSubmit" \| "onBlur" \| "onInput"` | `"onBlur"` | When to trigger client-side validation |
-| `className` | `string` | — | Additional CSS class for the form element |
+<PropsTable component="form" />
 
-### FormFieldProps
+### FormField
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `field` | `FieldMetadata<string>` | required | Conform field metadata from the form render prop |
-| `label` | `string` | required | Label text for the field |
-| `description` | `string` | — | Optional description text below the label |
-| `type` | `HTMLInputTypeAttribute` | `"text"` | Input type attribute |
-| `placeholder` | `string` | — | Input placeholder text |
+<PropsTable component="form-field" />
 
 ## Sub-components
 

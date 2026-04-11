@@ -55,8 +55,8 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Validate
-        run: npm run validate
+      - name: Validate (strict - fails on any warning)
+        run: npm run validate:strict
 
   typecheck:
     name: Typecheck

@@ -24,8 +24,11 @@ export const focusRingTokens: Rule = {
 
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
+        // Strip :not(...) wrappers so selectors like :hover:not(:focus-visible)
+        // don't start a phantom focus block.
+        const lineWithoutNot = line.replace(/:not\([^)]*\)/g, '');
 
-        if (/:focus-visible/.test(line)) {
+        if (/:focus-visible/.test(lineWithoutNot)) {
           inFocusBlock = true;
           braceDepth = 0;
           blockStart = i;

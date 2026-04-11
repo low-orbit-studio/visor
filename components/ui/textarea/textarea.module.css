@@ -47,14 +47,14 @@
 
 .sizeMd {
   min-height: 6.25rem;
-  padding: 0.875rem 1rem;
+  padding: var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem);
   font-size: var(--font-size-sm, 0.875rem);
   border-radius: var(--radius-sm, 0.5rem);
 }
 
 .sizeLg {
   min-height: 8rem;
-  padding: 1.125rem 1.25rem;
+  padding: var(--spacing-4_5, 1.125rem) var(--spacing-5, 1.25rem);
   font-size: var(--font-size-base, 1rem);
   border-radius: var(--radius-sm, 0.5rem);
 }

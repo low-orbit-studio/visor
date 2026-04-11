@@ -65,7 +65,9 @@ const BOLD = '\x1b[1m';
 const RESET = '\x1b[0m';
 
 async function main() {
-  const filterArg = process.argv[2];
+  const args = process.argv.slice(2);
+  const strict = args.includes('--strict');
+  const filterArg = args.find((a) => !a.startsWith('--'));
   const activeRules = filterArg
     ? rules.filter((r) => r.name === filterArg || r.category === filterArg)
     : rules;
@@ -126,10 +128,17 @@ async function main() {
 
   const warnStr = totalWarns > 0 ? `, ${YELLOW}${totalWarns} warnings${RESET}` : '';
   console.log(
-    `\n${BOLD}Results:${RESET} ${GREEN}${totalPass} passed${RESET}, ${totalFails > 0 ? RED : GREEN}${totalFails} failed${RESET}${warnStr}\n`
+    `\n${BOLD}Results:${RESET} ${GREEN}${totalPass} passed${RESET}, ${totalFails > 0 ? RED : GREEN}${totalFails} failed${RESET}${warnStr}${strict ? ` ${DIM}(strict)${RESET}` : ''}\n`
   );
 
-  process.exit(totalFails > 0 ? 1 : 0);
+  if (strict && totalWarns > 0) {
+    console.log(
+      `${RED}Strict mode:${RESET} treating ${totalWarns} warning${totalWarns === 1 ? '' : 's'} as failure.\n`
+    );
+  }
+
+  const failed = totalFails > 0 || (strict && totalWarns > 0);
+  process.exit(failed ? 1 : 0);
 }
 
 main().catch((err) => {

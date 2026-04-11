@@ -6,6 +6,8 @@
 
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap");
 
+/* ── Section 1: Shared tokens (mode-independent) ── */
+
 /* --- Primitive: Colors --- */
 .reference-app-theme {
   min-height: 100vh;
@@ -241,6 +243,8 @@
   --interactive-ghost-bg-hover: #e6e8ec;
 }
 
+/* ── Section 2: Dark mode overrides ── */
+
 /* --- Adaptive: Text (dark) — manual toggle --- */
 .dark .reference-app-theme {
   --text-primary: #F5F5F0;
@@ -410,6 +414,8 @@
   --color-fd-popover-foreground: #F5F5F0;
   --color-fd-ring: rgba(95, 152, 178, 0.4);
 }
+
+/* ── Section 3: Light mode overrides ── */
 
 /* --- Fumadocs bridge: light --- */
 html:not(.dark) .reference-app-theme {

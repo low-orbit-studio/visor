@@ -45,6 +45,8 @@
   font-style: normal;
 }
 
+/* ── Section 1: Shared tokens (mode-independent) ── */
+
 /* --- Primitive: Colors --- */
 .blacklight-brand-theme {
   min-height: 100vh;
@@ -281,6 +283,8 @@
   --interactive-ghost-bg: rgba(255, 255, 255, 0.05);
   --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.1);
 }
+
+/* ── Section 2: Dark mode overrides ── */
 
 /* --- Adaptive: Text (dark) — manual toggle --- */
 .dark .blacklight-brand-theme {
