@@ -119,11 +119,13 @@ export default function Example() {
 
 ## Variants
 
+Variants control visual emphasis. Pair with any `size`.
+
 <ComponentPreview
-  title="All variants"
-  code={"<StatCard variant=\"default\" label=\"Default\" value=\"1,204\" />\n<StatCard variant=\"highlight\" label=\"Highlight\" value=\"$48,120\" />\n<StatCard variant=\"compact\" label=\"Compact\" value=\"42\" />"}
+  title="Default and highlight"
+  code={"<StatCard variant=\"default\" label=\"Default\" value=\"1,204\" />\n<StatCard variant=\"highlight\" label=\"Highlight\" value=\"$48,120\" />"}
 >
-  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', width: '100%' }}>
     <StatCard
       variant="default"
       label="Default"
@@ -136,12 +138,29 @@ export default function Example() {
       value="$48,120"
       delta={{ value: '+12.4%', direction: 'up', label: 'vs last month' }}
     />
-    <StatCard
-      variant="compact"
-      label="Compact"
-      value="42"
-      delta={{ value: '-1', direction: 'down' }}
-    />
+  </div>
+</ComponentPreview>
+
+## Sizes
+
+Dimensional density. `md` is the dashboard default; `sm` is for dense rows of compact cards where multiple metrics need to share a tight row.
+
+<ComponentPreview
+  title="Compact (size sm) on its own"
+  code={"<StatCard size=\"sm\" label=\"Active Users\" value=\"892\" />"}
+>
+  <StatCard size="sm" label="Active Users" value="892" />
+</ComponentPreview>
+
+<ComponentPreview
+  title="Row of compact stat cards"
+  code={"<div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>\n  <StatCard size=\"sm\" label=\"Sessions\" value=\"2,340\" delta={{ value: '+8%', direction: 'up' }} />\n  <StatCard size=\"sm\" label=\"Signups\" value=\"412\" delta={{ value: '+2%', direction: 'up' }} />\n  <StatCard size=\"sm\" label=\"Bounce\" value=\"28%\" delta={{ value: '-1%', direction: 'down' }} />\n  <StatCard size=\"sm\" label=\"Revenue\" value=\"$12k\" delta={{ value: '+5%', direction: 'up' }} />\n</div>"}
+>
+  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+    <StatCard size="sm" label="Sessions" value="2,340" delta={{ value: '+8%', direction: 'up' }} />
+    <StatCard size="sm" label="Signups" value="412" delta={{ value: '+2%', direction: 'up' }} />
+    <StatCard size="sm" label="Bounce" value="28%" delta={{ value: '-1%', direction: 'down' }} />
+    <StatCard size="sm" label="Revenue" value="$12k" delta={{ value: '+5%', direction: 'up' }} />
   </div>
 </ComponentPreview>
 

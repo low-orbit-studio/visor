@@ -63,8 +63,13 @@
       );
 }
 
-/* Compact variant — denser padding, smaller value */
-.variantCompact {
+/* Size md — default — no overrides; uses the base padding/gap/font-size */
+.sizeMd {
+  /* inherits base */
+}
+
+/* Size sm — denser padding, smaller value */
+.sizeSm {
   padding: var(--spacing-4, 1rem);
   gap: var(--spacing-1, 0.25rem);
 }
@@ -111,8 +116,12 @@
   font-variant-numeric: tabular-nums;
 }
 
-.variantCompact .value {
+.sizeSm .value {
   font-size: var(--font-size-2xl, 1.5rem);
+}
+
+.sizeSm .label {
+  font-size: var(--font-size-xs, 0.75rem);
 }
 
 .variantHighlight .value {
@@ -178,13 +187,13 @@
 .footer {
   margin-top: var(--spacing-1, 0.25rem);
   padding-top: var(--spacing-3, 0.75rem);
-  border-top: 1px solid var(--border-subtle, #f3f4f6);
+  border-top: 1px solid var(--border-default, #e5e7eb);
   font-size: var(--font-size-sm, 0.875rem);
   color: var(--text-secondary, #6b7280);
   line-height: var(--line-height-normal, 1.5);
 }
 
-.variantCompact .footer {
+.sizeSm .footer {
   padding-top: var(--spacing-2, 0.5rem);
   font-size: var(--font-size-xs, 0.75rem);
 }

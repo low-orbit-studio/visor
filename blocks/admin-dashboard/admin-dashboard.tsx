@@ -23,7 +23,8 @@ export interface AdminDashboardStat {
   value: React.ReactNode
   delta?: StatCardDelta
   trend?: React.ReactNode
-  variant?: "default" | "highlight" | "compact"
+  variant?: "default" | "highlight"
+  size?: "sm" | "md"
 }
 
 export interface AdminDashboardActivity {
@@ -115,6 +116,7 @@ export function AdminDashboard({
               delta={stat.delta}
               trend={stat.trend}
               variant={stat.variant}
+              size={stat.size}
             />
           ))}
         </div>

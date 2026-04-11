@@ -22,7 +22,8 @@ why: >
   never sufficient), and a single place to tune density and highlight states.
 
 variants:
-  variant: [default, highlight, compact]
+  variant: [default, highlight]
+  size: [sm, md]
 
 props:
   - name: label
@@ -47,9 +48,13 @@ props:
     default: "article"
     description: Root element tag.
   - name: variant
-    type: "'default' | 'highlight' | 'compact'"
+    type: "'default' | 'highlight'"
     default: "default"
-    description: Visual density and emphasis.
+    description: Visual emphasis — highlight adds an accent-tinted surface, border, and glow.
+  - name: size
+    type: "'sm' | 'md'"
+    default: "md"
+    description: Dimensional density. Use sm for dense rows of compact cards; md is the default dashboard size.
 
 dependencies:
   - "class-variance-authority"

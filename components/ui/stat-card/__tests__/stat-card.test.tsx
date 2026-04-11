@@ -99,12 +99,18 @@ describe("StatCard", () => {
     ).toBeNull()
   })
 
-  it("applies the compact variant", () => {
+  it("applies the sm size", () => {
     const { container } = render(
-      <StatCard label="Compact" value="42" variant="compact" />
+      <StatCard label="Compact" value="42" size="sm" />
     )
     const root = container.querySelector('[data-slot="stat-card"]')
-    expect(root).toHaveAttribute("data-variant", "compact")
+    expect(root).toHaveAttribute("data-size", "sm")
+  })
+
+  it("defaults to the md size", () => {
+    const { container } = render(<StatCard label="Default" value="100" />)
+    const root = container.querySelector('[data-slot="stat-card"]')
+    expect(root).toHaveAttribute("data-size", "md")
   })
 
   it("applies the highlight variant", () => {

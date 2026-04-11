@@ -8,11 +8,15 @@ const statCardVariants = cva(styles.base, {
     variant: {
       default: styles.variantDefault,
       highlight: styles.variantHighlight,
-      compact: styles.variantCompact,
+    },
+    size: {
+      sm: styles.sizeSm,
+      md: styles.sizeMd,
     },
   },
   defaultVariants: {
     variant: "default",
+    size: "md",
   },
 })
 
@@ -63,6 +67,7 @@ const StatCard = React.forwardRef<HTMLElement, StatCardProps>(
     {
       className,
       variant,
+      size,
       label,
       value,
       delta,
@@ -80,7 +85,8 @@ const StatCard = React.forwardRef<HTMLElement, StatCardProps>(
         ref={ref}
         data-slot="stat-card"
         data-variant={variant ?? "default"}
-        className={cn(statCardVariants({ variant }), className)}
+        data-size={size ?? "md"}
+        className={cn(statCardVariants({ variant, size }), className)}
         {...props}
       >
         <div data-slot="stat-card-header" className={styles.header}>
