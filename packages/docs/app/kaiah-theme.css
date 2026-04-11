@@ -7,6 +7,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap");
 
+/* ── Section 1: Shared tokens (mode-independent) ── */
+
 /* --- Primitive: Colors --- */
 .kaiah-theme {
   min-height: 100vh;
@@ -242,6 +244,8 @@
   --interactive-ghost-bg-hover: #e6e8ec;
 }
 
+/* ── Section 2: Dark mode overrides ── */
+
 /* --- Adaptive: Text (dark) — manual toggle --- */
 .dark .kaiah-theme {
   --text-primary: rgba(255, 255, 255, 0.95);
@@ -411,6 +415,8 @@
   --color-fd-popover-foreground: rgba(255, 255, 255, 0.95);
   --color-fd-ring: rgba(154, 141, 120, 0.4);
 }
+
+/* ── Section 3: Light mode overrides ── */
 
 /* --- Fumadocs bridge: light --- */
 html:not(.dark) .kaiah-theme {

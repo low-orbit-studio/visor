@@ -1126,6 +1126,74 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  form: [
+    {
+      name: 'schema',
+      type: 'z.ZodType',
+      required: true,
+      description: 'Zod schema used for both client-side and server-side validation.',
+    },
+    {
+      name: 'action',
+      type: '(prevState: unknown, formData: FormData) => Promise<unknown>',
+      required: true,
+      description: 'Server action function invoked on form submission.',
+    },
+    {
+      name: 'children',
+      type: '(context: { form, fields }) => ReactNode',
+      required: true,
+      description: 'Render prop receiving Conform form metadata and field accessors.',
+    },
+    {
+      name: 'defaultValue',
+      type: 'Partial<z.infer<Schema>>',
+      description: 'Default values hydrated into the form on first render.',
+    },
+    {
+      name: 'shouldValidate',
+      type: '"onSubmit" | "onBlur" | "onInput"',
+      default: '"onBlur"',
+      description: 'When Conform triggers client-side validation.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names merged onto the <form> element.',
+    },
+  ],
+
+  'form-field': [
+    {
+      name: 'field',
+      type: 'FieldMetadata<string>',
+      required: true,
+      description: 'Conform field metadata from the parent Form render prop.',
+    },
+    {
+      name: 'label',
+      type: 'string',
+      required: true,
+      description: 'Label text rendered above the input.',
+    },
+    {
+      name: 'description',
+      type: 'string',
+      description: 'Optional helper text rendered below the label.',
+    },
+    {
+      name: 'type',
+      type: 'HTMLInputTypeAttribute',
+      default: '"text"',
+      description: 'Underlying <input> type attribute.',
+    },
+    {
+      name: 'placeholder',
+      type: 'string',
+      description: 'Placeholder text passed to the underlying Input.',
+    },
+  ],
+
   fieldset: [
     {
       name: 'disabled',

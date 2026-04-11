@@ -79,7 +79,9 @@ Scale reference:
 | `--spacing-1` | 4px |
 | `--spacing-2` | 8px |
 | `--spacing-3` | 12px |
+| `--spacing-3_5` | 14px *(half-step, form-density escape hatch)* |
 | `--spacing-4` | 16px |
+| `--spacing-4_5` | 18px *(half-step, form-density escape hatch)* |
 | `--spacing-5` | 20px |
 | `--spacing-6` | 24px |
 | `--spacing-8` | 32px |

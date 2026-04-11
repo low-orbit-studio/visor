@@ -161,10 +161,14 @@ describe("Primitive tokens", () => {
     expect(primitiveColors.black).toBe("#000000");
   });
 
-  it("spacing scale follows 4px base unit", () => {
-    // All non-zero spacing values should be multiples of 4
+  it("spacing scale follows 4px base unit (half-step tokens allowed on 2px)", () => {
+    // Whole-step tokens (--spacing-N) must be multiples of 4.
+    // Half-step tokens (--spacing-N_5) are form-density escape hatches on 2px.
     for (const [name, value] of Object.entries(primitiveSpacing)) {
-      if (value !== 0) {
+      if (value === 0) continue;
+      if (name.includes("_5")) {
+        expect(value % 2, `spacing ${name} (${value}px) is multiple of 2`).toBe(0);
+      } else {
         expect(value % 4, `spacing ${name} (${value}px) is multiple of 4`).toBe(0);
       }
     }
@@ -554,7 +558,7 @@ describe("CSS generation", () => {
   it("spacing token names follow --spacing-{n} convention", () => {
     for (const name of Object.keys(primitiveSpacing)) {
       const cssVar = `--spacing-${name}`;
-      expect(cssVar).toMatch(/^--spacing-[0-9]+$/);
+      expect(cssVar).toMatch(/^--spacing-[0-9]+(_5)?$/);
     }
   });
 

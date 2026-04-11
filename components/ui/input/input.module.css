@@ -79,14 +79,14 @@
 
 .sizeMd {
   height: auto;
-  padding: 0.875rem 1rem;
+  padding: var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem);
   font-size: var(--font-size-sm, 0.875rem);
   border-radius: var(--radius-sm, 0.5rem);
 }
 
 .sizeLg {
   height: auto;
-  padding: 1.125rem 1.25rem;
+  padding: var(--spacing-4_5, 1.125rem) var(--spacing-5, 1.25rem);
   font-size: var(--font-size-base, 1rem);
   border-radius: var(--radius-sm, 0.5rem);
 }
@@ -101,9 +101,9 @@
 }
 
 .sizeMd.hasLeadingIcon {
-  padding-left: calc(1rem + 0.75rem + 1.125em);
+  padding-left: calc(var(--spacing-4, 1rem) + var(--spacing-3, 0.75rem) + 1.125em);
 }
 
 .sizeLg.hasLeadingIcon {
-  padding-left: calc(1.25rem + 0.75rem + 1.125em);
+  padding-left: calc(var(--spacing-5, 1.25rem) + var(--spacing-3, 0.75rem) + 1.125em);
 }
