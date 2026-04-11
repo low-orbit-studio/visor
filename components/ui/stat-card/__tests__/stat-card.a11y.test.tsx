@@ -12,9 +12,9 @@ describe("StatCard a11y (vitest-axe)", () => {
     expect(results).toHaveNoViolations()
   })
 
-  it("has no WCAG 2.1 AA violations (compact)", async () => {
+  it("has no WCAG 2.1 AA violations (size sm)", async () => {
     const { container } = render(
-      <StatCard label="Active" value="892" variant="compact" />
+      <StatCard label="Active" value="892" size="sm" />
     )
     const results = await axe(container)
     expect(results).toHaveNoViolations()

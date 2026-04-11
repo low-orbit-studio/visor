@@ -7,25 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Slider } from '@/components/ui/slider';
 
-## Installation
-
-```bash
-npx visor add slider
-```
-
-This copies two files into your project:
-
-- `components/ui/slider/slider.tsx` — the component
-- `components/ui/slider/slider.module.css` — the styles
-
-## Usage
-
-```tsx
-import { Slider } from '@/components/ui/slider/slider';
-
-<Slider defaultValue={[50]} max={100} step={1} />
-```
-
 ## Default
 
 <ComponentPreview
@@ -69,6 +50,25 @@ import { Slider } from '@/components/ui/slider/slider';
     <Slider defaultValue={[40]} max={100} disabled />
   </div>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add slider
+```
+
+This copies two files into your project:
+
+- `components/ui/slider/slider.tsx` — the component
+- `components/ui/slider/slider.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Slider } from '@/components/ui/slider/slider';
+
+<Slider defaultValue={[50]} max={100} step={1} />
+```
 
 ## API Reference
 

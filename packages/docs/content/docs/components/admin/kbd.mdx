@@ -7,31 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Kbd } from '@/components/ui/kbd';
 
-## Installation
-
-```bash
-npx visor add kbd
-```
-
-This copies two files into your project:
-
-- `components/ui/kbd/kbd.tsx` — the component
-- `components/ui/kbd/kbd.module.css` — the styles
-
-## Usage
-
-```tsx
-import { Kbd } from '@/components/ui/kbd/kbd';
-
-export default function Example() {
-  return (
-    <p>
-      Press <Kbd keys={['⌘', 'K']} /> to open the command palette.
-    </p>
-  );
-}
-```
-
 ## Single Key
 
 <ComponentPreview
@@ -94,6 +69,31 @@ export default function Example() {
     Press <Kbd keys={["⌘", "K"]} /> to open the command palette.
   </p>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add kbd
+```
+
+This copies two files into your project:
+
+- `components/ui/kbd/kbd.tsx` — the component
+- `components/ui/kbd/kbd.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Kbd } from '@/components/ui/kbd/kbd';
+
+export default function Example() {
+  return (
+    <p>
+      Press <Kbd keys={['⌘', 'K']} /> to open the command palette.
+    </p>
+  );
+}
+```
 
 ## API Reference
 

@@ -7,6 +7,21 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { OpacityBar } from '@/components/ui/opacity-bar';
 
+## Preview
+
+<ComponentPreview
+  title="Opacity Scale"
+  code={"<OpacityBar levels={[\n  { token: \"--opacity-0\", name: \"0%\", value: 0 },\n  { token: \"--opacity-25\", name: \"25%\", value: 0.25 },\n  { token: \"--opacity-50\", name: \"50%\", value: 0.5 },\n  { token: \"--opacity-75\", name: \"75%\", value: 0.75 },\n  { token: \"--opacity-100\", name: \"100%\", value: 1 },\n]} />"}
+>
+  <OpacityBar levels={[
+    { token: "--opacity-0", name: "0%", value: 0 },
+    { token: "--opacity-25", name: "25%", value: 0.25 },
+    { token: "--opacity-50", name: "50%", value: 0.5 },
+    { token: "--opacity-75", name: "75%", value: 0.75 },
+    { token: "--opacity-100", name: "100%", value: 1 },
+  ]} />
+</ComponentPreview>
+
 ## Installation
 
 ```bash
@@ -31,21 +46,6 @@ import { OpacityBar } from '@/components/ui/opacity-bar/opacity-bar';
   { token: "--opacity-100", name: "100%", value: 1 },
 ]} />
 ```
-
-## Preview
-
-<ComponentPreview
-  title="Opacity Scale"
-  code={"<OpacityBar levels={[\n  { token: \"--opacity-0\", name: \"0%\", value: 0 },\n  { token: \"--opacity-25\", name: \"25%\", value: 0.25 },\n  { token: \"--opacity-50\", name: \"50%\", value: 0.5 },\n  { token: \"--opacity-75\", name: \"75%\", value: 0.75 },\n  { token: \"--opacity-100\", name: \"100%\", value: 1 },\n]} />"}
->
-  <OpacityBar levels={[
-    { token: "--opacity-0", name: "0%", value: 0 },
-    { token: "--opacity-25", name: "25%", value: 0.25 },
-    { token: "--opacity-50", name: "50%", value: 0.5 },
-    { token: "--opacity-75", name: "75%", value: 0.75 },
-    { token: "--opacity-100", name: "100%", value: 1 },
-  ]} />
-</ComponentPreview>
 
 ## API Reference
 

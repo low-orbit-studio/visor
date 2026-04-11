@@ -28,40 +28,6 @@ export const sampleColumns = [
   { accessorKey: 'role', header: 'Role' },
 ];
 
-## Installation
-
-```bash
-npx visor add data-table
-```
-
-This copies two files into your project and installs `@tanstack/react-table`:
-
-- `components/ui/data-table/data-table.tsx` — the component
-- `components/ui/data-table/data-table.module.css` — the styles
-
-## Usage
-
-```tsx
-import { DataTable, type ColumnDef } from '@/components/ui/data-table/data-table';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-}
-
-const columns: ColumnDef<User>[] = [
-  { accessorKey: 'name', header: 'Name' },
-  { accessorKey: 'email', header: 'Email' },
-  { accessorKey: 'role', header: 'Role' },
-];
-
-export default function UsersPage({ users }: { users: User[] }) {
-  return <DataTable columns={columns} data={users} enableRowSelection />;
-}
-```
-
 ## Basic
 
 <ComponentPreview
@@ -97,6 +63,40 @@ export default function UsersPage({ users }: { users: User[] }) {
 >
   <DataTable columns={sampleColumns} data={[]} />
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add data-table
+```
+
+This copies two files into your project and installs `@tanstack/react-table`:
+
+- `components/ui/data-table/data-table.tsx` — the component
+- `components/ui/data-table/data-table.module.css` — the styles
+
+## Usage
+
+```tsx
+import { DataTable, type ColumnDef } from '@/components/ui/data-table/data-table';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+const columns: ColumnDef<User>[] = [
+  { accessorKey: 'name', header: 'Name' },
+  { accessorKey: 'email', header: 'Email' },
+  { accessorKey: 'role', header: 'Role' },
+];
+
+export default function UsersPage({ users }: { users: User[] }) {
+  return <DataTable columns={columns} data={users} enableRowSelection />;
+}
+```
 
 ## API Reference
 

@@ -8,35 +8,6 @@ import { PropsTable } from '@/components/props-table';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 
-## Installation
-
-```bash
-npx visor add radio-group
-```
-
-This copies two files into your project:
-
-- `components/ui/radio-group/radio-group.tsx` — the component
-- `components/ui/radio-group/radio-group.module.css` — the styles
-
-## Usage
-
-```tsx
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group/radio-group';
-import { Label } from '@/components/ui/label/label';
-
-<RadioGroup defaultValue="a">
-  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-    <RadioGroupItem value="a" id="a" />
-    <Label htmlFor="a">Option A</Label>
-  </div>
-  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-    <RadioGroupItem value="b" id="b" />
-    <Label htmlFor="b">Option B</Label>
-  </div>
-</RadioGroup>
-```
-
 ## Options
 
 <ComponentPreview
@@ -76,6 +47,35 @@ import { Label } from '@/components/ui/label/label';
     </div>
   </RadioGroup>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add radio-group
+```
+
+This copies two files into your project:
+
+- `components/ui/radio-group/radio-group.tsx` — the component
+- `components/ui/radio-group/radio-group.module.css` — the styles
+
+## Usage
+
+```tsx
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group/radio-group';
+import { Label } from '@/components/ui/label/label';
+
+<RadioGroup defaultValue="a">
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+    <RadioGroupItem value="a" id="a" />
+    <Label htmlFor="a">Option A</Label>
+  </div>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+    <RadioGroupItem value="b" id="b" />
+    <Label htmlFor="b">Option B</Label>
+  </div>
+</RadioGroup>
+```
 
 ## API Reference
 

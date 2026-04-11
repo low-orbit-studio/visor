@@ -1,6 +1,8 @@
 /* ConfirmDialog — destructive-action confirmation compound wrapping Dialog. */
 
 .root {
+  width: 100%;
+  min-width: 0;
   container-type: inline-size;
   container-name: confirm-dialog;
 }

@@ -3,24 +3,6 @@ title: Form
 description: A form wrapper integrating Conform + Zod for schema-validated server action forms.
 ---
 
-## Installation
-
-```bash
-npx visor add form
-```
-
-This copies three files into your project:
-
-- `components/ui/form/form.tsx` — the Form wrapper component
-- `components/ui/form/form-field.tsx` — the FormField convenience wrapper
-- `components/ui/form/form.module.css` — minimal styles
-
-And installs npm dependencies:
-
-- `@conform-to/react` — form state management
-- `@conform-to/zod` — Zod adapter for Conform
-- `zod` — schema validation
-
 ## Overview
 
 The Form component wraps [Conform](https://conform.guide/) and React's `useActionState` to provide schema-validated server action forms with minimal boilerplate. It exposes form and field metadata via a render prop, letting you compose with existing Visor components like Field, FieldLabel, FieldError, and Input.
@@ -328,6 +310,24 @@ export function FilterForm({
   )
 }
 ```
+
+## Installation
+
+```bash
+npx visor add form
+```
+
+This copies three files into your project:
+
+- `components/ui/form/form.tsx` — the Form wrapper component
+- `components/ui/form/form-field.tsx` — the FormField convenience wrapper
+- `components/ui/form/form.module.css` — minimal styles
+
+And installs npm dependencies:
+
+- `@conform-to/react` — form state management
+- `@conform-to/zod` — Zod adapter for Conform
+- `zod` — schema validation
 
 ## API Reference
 

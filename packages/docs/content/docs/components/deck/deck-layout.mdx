@@ -3,6 +3,15 @@ title: DeckLayout
 description: The root layout for a slide deck with scroll-snap, keyboard navigation, and integrated dot navigation.
 ---
 
+## Features
+
+- **Scroll-snap slide container** — full-viewport snapping between slides
+- **Keyboard navigation** — Arrow keys, Space, Home, and End to move between slides
+- **Mouse wheel navigation** — smooth scroll-snap on wheel events
+- **IntersectionObserver animations** — triggers entrance animations as slides come into view
+- **Integrated DotNav** — automatic dot navigation synced to scroll position
+- **Optional controls render prop** — inject custom UI into the deck chrome
+
 ## Installation
 
 ```bash
@@ -25,15 +34,6 @@ export default function Example() {
   );
 }
 ```
-
-## Features
-
-- **Scroll-snap slide container** — full-viewport snapping between slides
-- **Keyboard navigation** — Arrow keys, Space, Home, and End to move between slides
-- **Mouse wheel navigation** — smooth scroll-snap on wheel events
-- **IntersectionObserver animations** — triggers entrance animations as slides come into view
-- **Integrated DotNav** — automatic dot navigation synced to scroll position
-- **Optional controls render prop** — inject custom UI into the deck chrome
 
 ## API Reference
 

@@ -13,43 +13,6 @@ import {
   CarouselNext,
 } from '@/components/ui/carousel';
 
-## Installation
-
-```bash
-npx visor add carousel
-```
-
-This copies two files into your project:
-
-- `components/ui/carousel/carousel.tsx` — the component
-- `components/ui/carousel/carousel.module.css` — the styles
-
-## Usage
-
-```tsx
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-} from '@/components/ui/carousel/carousel';
-
-export default function Example() {
-  return (
-    <Carousel>
-      <CarouselContent>
-        <CarouselItem>Slide 1</CarouselItem>
-        <CarouselItem>Slide 2</CarouselItem>
-        <CarouselItem>Slide 3</CarouselItem>
-      </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
-    </Carousel>
-  );
-}
-```
-
 ## Basic Example
 
 <ComponentPreview
@@ -124,6 +87,43 @@ Enable infinite looping with `opts={{ loop: true }}`.
     </Carousel>
   </div>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add carousel
+```
+
+This copies two files into your project:
+
+- `components/ui/carousel/carousel.tsx` — the component
+- `components/ui/carousel/carousel.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from '@/components/ui/carousel/carousel';
+
+export default function Example() {
+  return (
+    <Carousel>
+      <CarouselContent>
+        <CarouselItem>Slide 1</CarouselItem>
+        <CarouselItem>Slide 2</CarouselItem>
+        <CarouselItem>Slide 3</CarouselItem>
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+  );
+}
+```
 
 ## API Reference
 

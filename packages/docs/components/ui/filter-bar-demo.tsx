@@ -32,7 +32,7 @@ export function FilterBarWithSelectDemo() {
       resultsCount="42 results"
     >
       <Select value={role} onValueChange={setRole}>
-        <SelectTrigger>
+        <SelectTrigger size="sm">
           <SelectValue placeholder="Role" />
         </SelectTrigger>
         <SelectContent>

@@ -7,40 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
 
-## Installation
-
-```bash
-npx visor add hover-card
-```
-
-This copies two files into your project:
-
-- `components/ui/hover-card/hover-card.tsx` — the component
-- `components/ui/hover-card/hover-card.module.css` — the styles
-
-## Usage
-
-```tsx
-import {
-  HoverCard,
-  HoverCardTrigger,
-  HoverCardContent,
-} from '@/components/ui/hover-card/hover-card';
-
-export default function Example() {
-  return (
-    <HoverCard>
-      <HoverCardTrigger asChild>
-        <a href="#">Hover me</a>
-      </HoverCardTrigger>
-      <HoverCardContent>
-        <p>Card content here.</p>
-      </HoverCardContent>
-    </HoverCard>
-  );
-}
-```
-
 ## Basic Hover Card
 
 <ComponentPreview
@@ -143,6 +109,40 @@ Control how quickly the card appears and disappears with `openDelay` and `closeD
     <p>Appears after 200ms, disappears after 100ms.</p>
   </HoverCardContent>
 </HoverCard>
+```
+
+## Installation
+
+```bash
+npx visor add hover-card
+```
+
+This copies two files into your project:
+
+- `components/ui/hover-card/hover-card.tsx` — the component
+- `components/ui/hover-card/hover-card.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  HoverCard,
+  HoverCardTrigger,
+  HoverCardContent,
+} from '@/components/ui/hover-card/hover-card';
+
+export default function Example() {
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <a href="#">Hover me</a>
+      </HoverCardTrigger>
+      <HoverCardContent>
+        <p>Card content here.</p>
+      </HoverCardContent>
+    </HoverCard>
+  );
+}
 ```
 
 ## API Reference

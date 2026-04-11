@@ -7,6 +7,24 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { SpacingScale } from '@/components/ui/spacing-scale';
 
+## Preview
+
+<ComponentPreview
+  title="Spacing Scale"
+  code={"<SpacingScale steps={[\n  { token: \"--spacing-1\", name: \"1\", px: 4, rem: \"0.25rem\" },\n  { token: \"--spacing-2\", name: \"2\", px: 8, rem: \"0.5rem\" },\n  { token: \"--spacing-3\", name: \"3\", px: 12, rem: \"0.75rem\" },\n  { token: \"--spacing-4\", name: \"4\", px: 16, rem: \"1rem\" },\n  { token: \"--spacing-6\", name: \"6\", px: 24, rem: \"1.5rem\" },\n  { token: \"--spacing-8\", name: \"8\", px: 32, rem: \"2rem\" },\n  { token: \"--spacing-12\", name: \"12\", px: 48, rem: \"3rem\" },\n  { token: \"--spacing-16\", name: \"16\", px: 64, rem: \"4rem\" },\n]} />"}
+>
+  <SpacingScale steps={[
+    { token: "--spacing-1", name: "1", px: 4, rem: "0.25rem" },
+    { token: "--spacing-2", name: "2", px: 8, rem: "0.5rem" },
+    { token: "--spacing-3", name: "3", px: 12, rem: "0.75rem" },
+    { token: "--spacing-4", name: "4", px: 16, rem: "1rem" },
+    { token: "--spacing-6", name: "6", px: 24, rem: "1.5rem" },
+    { token: "--spacing-8", name: "8", px: 32, rem: "2rem" },
+    { token: "--spacing-12", name: "12", px: 48, rem: "3rem" },
+    { token: "--spacing-16", name: "16", px: 64, rem: "4rem" },
+  ]} />
+</ComponentPreview>
+
 ## Installation
 
 ```bash
@@ -31,24 +49,6 @@ import { SpacingScale } from '@/components/ui/spacing-scale/spacing-scale';
   { token: "--spacing-16", name: "16", px: 64, rem: "4rem" },
 ]} />
 ```
-
-## Preview
-
-<ComponentPreview
-  title="Spacing Scale"
-  code={"<SpacingScale steps={[\n  { token: \"--spacing-1\", name: \"1\", px: 4, rem: \"0.25rem\" },\n  { token: \"--spacing-2\", name: \"2\", px: 8, rem: \"0.5rem\" },\n  { token: \"--spacing-3\", name: \"3\", px: 12, rem: \"0.75rem\" },\n  { token: \"--spacing-4\", name: \"4\", px: 16, rem: \"1rem\" },\n  { token: \"--spacing-6\", name: \"6\", px: 24, rem: \"1.5rem\" },\n  { token: \"--spacing-8\", name: \"8\", px: 32, rem: \"2rem\" },\n  { token: \"--spacing-12\", name: \"12\", px: 48, rem: \"3rem\" },\n  { token: \"--spacing-16\", name: \"16\", px: 64, rem: \"4rem\" },\n]} />"}
->
-  <SpacingScale steps={[
-    { token: "--spacing-1", name: "1", px: 4, rem: "0.25rem" },
-    { token: "--spacing-2", name: "2", px: 8, rem: "0.5rem" },
-    { token: "--spacing-3", name: "3", px: 12, rem: "0.75rem" },
-    { token: "--spacing-4", name: "4", px: 16, rem: "1rem" },
-    { token: "--spacing-6", name: "6", px: 24, rem: "1.5rem" },
-    { token: "--spacing-8", name: "8", px: 32, rem: "2rem" },
-    { token: "--spacing-12", name: "12", px: 48, rem: "3rem" },
-    { token: "--spacing-16", name: "16", px: 64, rem: "4rem" },
-  ]} />
-</ComponentPreview>
 
 ## API Reference
 

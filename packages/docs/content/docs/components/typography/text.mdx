@@ -7,27 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Text } from '@/components/ui/text';
 
-## Installation
-
-```bash
-npx visor add text
-```
-
-This copies two files into your project:
-
-- `components/ui/text/text.tsx` — the component
-- `components/ui/text/text.module.css` — the styles
-
-## Usage
-
-```tsx
-import { Text } from '@/components/ui/text/text';
-
-export default function Example() {
-  return <Text>This is a paragraph of body text.</Text>;
-}
-```
-
 ## Sizes
 
 <ComponentPreview
@@ -102,6 +81,27 @@ Use the `as` prop to render as a different HTML element.
     <Text as="label">Label element</Text>
   </div>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add text
+```
+
+This copies two files into your project:
+
+- `components/ui/text/text.tsx` — the component
+- `components/ui/text/text.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Text } from '@/components/ui/text/text';
+
+export default function Example() {
+  return <Text>This is a paragraph of body text.</Text>;
+}
+```
 
 ## API Reference
 

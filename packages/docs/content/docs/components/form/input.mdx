@@ -7,25 +7,7 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel, FieldError } from '@/components/ui/field';
-
-## Installation
-
-```bash
-npx visor add input
-```
-
-This copies two files into your project:
-
-- `components/ui/input/input.tsx` — the component
-- `components/ui/input/input.module.css` — the styles
-
-## Usage
-
-```tsx
-import { Input } from '@/components/ui/input/input';
-
-<Input type="email" placeholder="you@example.com" />
-```
+import { InputLeadingIconDemo } from '@/components/ui/input-leading-icon-demo';
 
 ## Default
 
@@ -76,6 +58,20 @@ import { Input } from '@/components/ui/input/input';
   </div>
 </ComponentPreview>
 
+## Leading icon
+
+Pass any node (we use [Phosphor Icons](https://phosphoricons.com/)) as
+`leadingIcon` to render an icon inside the field. The input reserves
+enough left padding to clear the glyph, which scales in `em` with the
+field's font-size.
+
+<ComponentPreview
+  title="Leading icon"
+  code={"import { MagnifyingGlass, EnvelopeSimple, User } from '@phosphor-icons/react';\nimport { Input } from '@/components/ui/input/input';\n\n<Input leadingIcon={<MagnifyingGlass weight=\"bold\" />} placeholder=\"Search products\" />\n<Input leadingIcon={<EnvelopeSimple weight=\"bold\" />} type=\"email\" placeholder=\"you@example.com\" />\n<Input leadingIcon={<User weight=\"bold\" />} placeholder=\"Username\" />"}
+>
+  <InputLeadingIconDemo />
+</ComponentPreview>
+
 ## Invalid
 
 <ComponentPreview
@@ -101,6 +97,25 @@ import { Input } from '@/components/ui/input/input';
     </Field>
   </div>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add input
+```
+
+This copies two files into your project:
+
+- `components/ui/input/input.tsx` — the component
+- `components/ui/input/input.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Input } from '@/components/ui/input/input';
+
+<Input type="email" placeholder="you@example.com" />
+```
 
 ## API Reference
 

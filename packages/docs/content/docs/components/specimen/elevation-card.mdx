@@ -7,6 +7,21 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { ElevationCard } from '@/components/ui/elevation-card';
 
+## Preview
+
+<ComponentPreview
+  title="Elevation Scale"
+  code={"<ElevationCard token=\"--shadow-xs\" name=\"xs\" />\n<ElevationCard token=\"--shadow-sm\" name=\"sm\" />\n<ElevationCard token=\"--shadow-md\" name=\"md\" />\n<ElevationCard token=\"--shadow-lg\" name=\"lg\" />\n<ElevationCard token=\"--shadow-xl\" name=\"xl\" />"}
+>
+  <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', padding: '1rem 0' }}>
+    <ElevationCard token="--shadow-xs" name="xs" />
+    <ElevationCard token="--shadow-sm" name="sm" />
+    <ElevationCard token="--shadow-md" name="md" />
+    <ElevationCard token="--shadow-lg" name="lg" />
+    <ElevationCard token="--shadow-xl" name="xl" />
+  </div>
+</ComponentPreview>
+
 ## Installation
 
 ```bash
@@ -25,21 +40,6 @@ import { ElevationCard } from '@/components/ui/elevation-card/elevation-card';
 
 <ElevationCard token="--shadow-md" name="md" />
 ```
-
-## Preview
-
-<ComponentPreview
-  title="Elevation Scale"
-  code={"<ElevationCard token=\"--shadow-xs\" name=\"xs\" />\n<ElevationCard token=\"--shadow-sm\" name=\"sm\" />\n<ElevationCard token=\"--shadow-md\" name=\"md\" />\n<ElevationCard token=\"--shadow-lg\" name=\"lg\" />\n<ElevationCard token=\"--shadow-xl\" name=\"xl\" />"}
->
-  <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', padding: '1rem 0' }}>
-    <ElevationCard token="--shadow-xs" name="xs" />
-    <ElevationCard token="--shadow-sm" name="sm" />
-    <ElevationCard token="--shadow-md" name="md" />
-    <ElevationCard token="--shadow-lg" name="lg" />
-    <ElevationCard token="--shadow-xl" name="xl" />
-  </div>
-</ComponentPreview>
 
 ## API Reference
 

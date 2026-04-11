@@ -7,38 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Combobox, ComboboxInput, ComboboxContent, ComboboxItem, ComboboxEmpty } from '@/components/ui/combobox';
 
-## Installation
-
-```bash
-npx visor add combobox
-```
-
-This copies two files into your project:
-
-- `components/ui/combobox/combobox.tsx` — the component
-- `components/ui/combobox/combobox.module.css` — the styles
-
-## Usage
-
-```tsx
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxContent,
-  ComboboxItem,
-  ComboboxEmpty,
-} from '@/components/ui/combobox/combobox';
-
-<Combobox>
-  <ComboboxInput placeholder="Pick a fruit..." />
-  <ComboboxContent>
-    <ComboboxItem value="apple">Apple</ComboboxItem>
-    <ComboboxItem value="banana">Banana</ComboboxItem>
-    <ComboboxEmpty>No results found.</ComboboxEmpty>
-  </ComboboxContent>
-</Combobox>
-```
-
 ## Filterable List
 
 <ComponentPreview
@@ -76,6 +44,38 @@ import {
     </Combobox>
   </div>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add combobox
+```
+
+This copies two files into your project:
+
+- `components/ui/combobox/combobox.tsx` — the component
+- `components/ui/combobox/combobox.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxContent,
+  ComboboxItem,
+  ComboboxEmpty,
+} from '@/components/ui/combobox/combobox';
+
+<Combobox>
+  <ComboboxInput placeholder="Pick a fruit..." />
+  <ComboboxContent>
+    <ComboboxItem value="apple">Apple</ComboboxItem>
+    <ComboboxItem value="banana">Banana</ComboboxItem>
+    <ComboboxEmpty>No results found.</ComboboxEmpty>
+  </ComboboxContent>
+</Combobox>
+```
 
 ## API Reference
 

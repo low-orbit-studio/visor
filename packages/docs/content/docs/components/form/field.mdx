@@ -9,30 +9,6 @@ import { Field, FieldLabel, FieldDescription, FieldError } from '@/components/ui
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
-## Installation
-
-```bash
-npx visor add field
-```
-
-This copies two files into your project:
-
-- `components/ui/field/field.tsx` — the component
-- `components/ui/field/field.module.css` — the styles
-
-## Usage
-
-```tsx
-import { Field, FieldLabel, FieldDescription, FieldError } from '@/components/ui/field/field';
-import { Input } from '@/components/ui/input/input';
-
-<Field>
-  <FieldLabel htmlFor="name">Name</FieldLabel>
-  <Input id="name" placeholder="Jane Doe" />
-  <FieldDescription>Your full name as it appears on your ID.</FieldDescription>
-</Field>
-```
-
 ## Default
 
 <ComponentPreview
@@ -131,6 +107,30 @@ Input and Textarea accept a `size` prop (`sm`, `md`, `lg`) that controls height,
     </Field>
   </div>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add field
+```
+
+This copies two files into your project:
+
+- `components/ui/field/field.tsx` — the component
+- `components/ui/field/field.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Field, FieldLabel, FieldDescription, FieldError } from '@/components/ui/field/field';
+import { Input } from '@/components/ui/input/input';
+
+<Field>
+  <FieldLabel htmlFor="name">Name</FieldLabel>
+  <Input id="name" placeholder="Jane Doe" />
+  <FieldDescription>Your full name as it appears on your ID.</FieldDescription>
+</Field>
+```
 
 ## API Reference
 

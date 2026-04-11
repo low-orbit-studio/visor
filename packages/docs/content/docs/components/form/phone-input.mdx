@@ -7,47 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { PhoneInput } from '@/components/ui/phone-input';
 
-## Installation
-
-```bash
-npx visor add phone-input
-```
-
-This copies three files into your project:
-
-- `components/ui/phone-input/phone-input.tsx` — the component
-- `components/ui/phone-input/phone-input.css` — global theme overrides for intl-tel-input
-- `components/ui/phone-input/phone-input.module.css` — wrapper styles
-
-It also installs `intl-tel-input` as a dependency.
-
-**Important:** Import the global CSS file in your app layout or entry point:
-
-```tsx
-import '@/components/ui/phone-input/phone-input.css';
-```
-
-## Usage
-
-```tsx
-import { PhoneInput } from '@/components/ui/phone-input/phone-input';
-
-function MyForm() {
-  const [phone, setPhone] = useState('');
-  const [isValid, setIsValid] = useState(false);
-
-  return (
-    <PhoneInput
-      name="phone"
-      onChange={(value, valid) => {
-        setPhone(value);
-        setIsValid(valid);
-      }}
-    />
-  );
-}
-```
-
 ## Default
 
 <ComponentPreview
@@ -112,6 +71,47 @@ function MyForm() {
     <PhoneInput name="phone-disabled" placeholder="Enter phone number" disabled />
   </div>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add phone-input
+```
+
+This copies three files into your project:
+
+- `components/ui/phone-input/phone-input.tsx` — the component
+- `components/ui/phone-input/phone-input.css` — global theme overrides for intl-tel-input
+- `components/ui/phone-input/phone-input.module.css` — wrapper styles
+
+It also installs `intl-tel-input` as a dependency.
+
+**Important:** Import the global CSS file in your app layout or entry point:
+
+```tsx
+import '@/components/ui/phone-input/phone-input.css';
+```
+
+## Usage
+
+```tsx
+import { PhoneInput } from '@/components/ui/phone-input/phone-input';
+
+function MyForm() {
+  const [phone, setPhone] = useState('');
+  const [isValid, setIsValid] = useState(false);
+
+  return (
+    <PhoneInput
+      name="phone"
+      onChange={(value, valid) => {
+        setPhone(value);
+        setIsValid(valid);
+      }}
+    />
+  );
+}
+```
 
 ## API Reference
 

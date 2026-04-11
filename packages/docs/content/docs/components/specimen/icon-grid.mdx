@@ -7,6 +7,24 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { IconGridDemo, IconSizeRowDemo } from '@/components/ui/icon-grid';
 
+## Icon Grid
+
+<ComponentPreview
+  title="Icon Set"
+  code={"<IconGrid icons={[\n  { name: \"House\", usage: \"Home / dashboard\", icon: <House size={24} /> },\n  { name: \"Gear\", usage: \"Settings\", icon: <Gear size={24} /> },\n  { name: \"MagnifyingGlass\", usage: \"Search\", icon: <MagnifyingGlass size={24} /> },\n  { name: \"Bell\", usage: \"Notifications\", icon: <Bell size={24} /> },\n  { name: \"User\", usage: \"Profile / account\", icon: <User size={24} /> },\n]} />"}
+>
+  <IconGridDemo />
+</ComponentPreview>
+
+## Size Row
+
+<ComponentPreview
+  title="Icon Size Scale"
+  code={"<IconSizeRow sizes={[\n  { size: 12, icon: <House size={12} /> },\n  { size: 16, icon: <House size={16} /> },\n  { size: 20, icon: <House size={20} /> },\n  { size: 24, icon: <House size={24} /> },\n  { size: 32, icon: <House size={32} /> },\n  { size: 48, icon: <House size={48} /> },\n]} />"}
+>
+  <IconSizeRowDemo />
+</ComponentPreview>
+
 ## Installation
 
 ```bash
@@ -37,24 +55,6 @@ import { House, Gear } from '@phosphor-icons/react';
   { size: 32, icon: <House size={32} /> },
 ]} />
 ```
-
-## Icon Grid
-
-<ComponentPreview
-  title="Icon Set"
-  code={"<IconGrid icons={[\n  { name: \"House\", usage: \"Home / dashboard\", icon: <House size={24} /> },\n  { name: \"Gear\", usage: \"Settings\", icon: <Gear size={24} /> },\n  { name: \"MagnifyingGlass\", usage: \"Search\", icon: <MagnifyingGlass size={24} /> },\n  { name: \"Bell\", usage: \"Notifications\", icon: <Bell size={24} /> },\n  { name: \"User\", usage: \"Profile / account\", icon: <User size={24} /> },\n]} />"}
->
-  <IconGridDemo />
-</ComponentPreview>
-
-## Size Row
-
-<ComponentPreview
-  title="Icon Size Scale"
-  code={"<IconSizeRow sizes={[\n  { size: 12, icon: <House size={12} /> },\n  { size: 16, icon: <House size={16} /> },\n  { size: 20, icon: <House size={20} /> },\n  { size: 24, icon: <House size={24} /> },\n  { size: 32, icon: <House size={32} /> },\n  { size: 48, icon: <House size={48} /> },\n]} />"}
->
-  <IconSizeRowDemo />
-</ComponentPreview>
 
 ## API Reference
 

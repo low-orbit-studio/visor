@@ -37,6 +37,7 @@ export function HeroSection({
   return (
     <section
       aria-label={heading}
+      data-slot="hero-section"
       className={cn(styles.root, hasMedia && styles.withMedia, className)}
       style={backgroundImage && !backgroundVideo ? { backgroundImage: `url(${backgroundImage})` } : undefined}
     >

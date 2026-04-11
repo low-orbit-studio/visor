@@ -7,6 +7,20 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { SurfaceRow } from '@/components/ui/surface-row';
 
+## Preview
+
+<ComponentPreview
+  title="Surface Tokens"
+  code={"<SurfaceRow token=\"--surface-page\" name=\"Page\" />\n<SurfaceRow token=\"--surface-card\" name=\"Card\" />\n<SurfaceRow token=\"--surface-raised\" name=\"Raised\" />\n<SurfaceRow token=\"--surface-overlay\" name=\"Overlay\" lightText />"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
+    <SurfaceRow token="--surface-page" name="Page" />
+    <SurfaceRow token="--surface-card" name="Card" />
+    <SurfaceRow token="--surface-raised" name="Raised" />
+    <SurfaceRow token="--surface-overlay" name="Overlay" lightText />
+  </div>
+</ComponentPreview>
+
 ## Installation
 
 ```bash
@@ -27,20 +41,6 @@ import { SurfaceRow } from '@/components/ui/surface-row/surface-row';
 <SurfaceRow token="--surface-card" name="Card" />
 <SurfaceRow token="--surface-overlay" name="Overlay" lightText />
 ```
-
-## Preview
-
-<ComponentPreview
-  title="Surface Tokens"
-  code={"<SurfaceRow token=\"--surface-page\" name=\"Page\" />\n<SurfaceRow token=\"--surface-card\" name=\"Card\" />\n<SurfaceRow token=\"--surface-raised\" name=\"Raised\" />\n<SurfaceRow token=\"--surface-overlay\" name=\"Overlay\" lightText />"}
->
-  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
-    <SurfaceRow token="--surface-page" name="Page" />
-    <SurfaceRow token="--surface-card" name="Card" />
-    <SurfaceRow token="--surface-raised" name="Raised" />
-    <SurfaceRow token="--surface-overlay" name="Overlay" lightText />
-  </div>
-</ComponentPreview>
 
 ## API Reference
 

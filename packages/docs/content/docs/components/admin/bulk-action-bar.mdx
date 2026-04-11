@@ -11,6 +11,39 @@ import {
   BulkActionBarNoDismissDemo,
 } from '@/components/ui/bulk-action-bar-demo';
 
+## Inline
+
+The inline variant flows in the document instead of pinning to the viewport bottom — useful when the bar lives inside a scroll container or a dialog.
+
+<ComponentPreview
+  title="Inline bulk action bar"
+  code={"const [selected, setSelected] = useState(['a', 'b', 'c']);\n\n<BulkActionBar\n  count={selected.length}\n  inline\n  onClear={() => setSelected([])}\n>\n  <Button variant=\"outline\" size=\"sm\">Archive</Button>\n  <Button variant=\"destructive\" size=\"sm\">Delete</Button>\n</BulkActionBar>"}
+>
+  <BulkActionBarInlineDemo />
+</ComponentPreview>
+
+## Custom Label
+
+Provide a `label` renderer to customize the count string — useful for pluralization or domain-specific nouns.
+
+<ComponentPreview
+  title="Custom label renderer"
+  code={"<BulkActionBar\n  count={12}\n  inline\n  label={(n) => `${n} users selected`}\n  onClear={() => setSelected([])}\n>\n  <Button variant=\"destructive\" size=\"sm\">Delete</Button>\n</BulkActionBar>"}
+>
+  <BulkActionBarCustomLabelDemo />
+</ComponentPreview>
+
+## Without Dismiss
+
+Set `dismissible={false}` when the selection should only be cleared programmatically by consumer actions.
+
+<ComponentPreview
+  title="No dismiss button"
+  code={"<BulkActionBar count={4} inline dismissible={false}>\n  <Button variant=\"outline\" size=\"sm\">Archive</Button>\n</BulkActionBar>"}
+>
+  <BulkActionBarNoDismissDemo />
+</ComponentPreview>
+
 ## Installation
 
 ```bash
@@ -49,39 +82,6 @@ export default function Example() {
   );
 }
 ```
-
-## Inline
-
-The inline variant flows in the document instead of pinning to the viewport bottom — useful when the bar lives inside a scroll container or a dialog.
-
-<ComponentPreview
-  title="Inline bulk action bar"
-  code={"const [selected, setSelected] = useState(['a', 'b', 'c']);\n\n<BulkActionBar\n  count={selected.length}\n  inline\n  onClear={() => setSelected([])}\n>\n  <Button variant=\"outline\" size=\"sm\">Archive</Button>\n  <Button variant=\"destructive\" size=\"sm\">Delete</Button>\n</BulkActionBar>"}
->
-  <BulkActionBarInlineDemo />
-</ComponentPreview>
-
-## Custom Label
-
-Provide a `label` renderer to customize the count string — useful for pluralization or domain-specific nouns.
-
-<ComponentPreview
-  title="Custom label renderer"
-  code={"<BulkActionBar\n  count={12}\n  inline\n  label={(n) => `${n} users selected`}\n  onClear={() => setSelected([])}\n>\n  <Button variant=\"destructive\" size=\"sm\">Delete</Button>\n</BulkActionBar>"}
->
-  <BulkActionBarCustomLabelDemo />
-</ComponentPreview>
-
-## Without Dismiss
-
-Set `dismissible={false}` when the selection should only be cleared programmatically by consumer actions.
-
-<ComponentPreview
-  title="No dismiss button"
-  code={"<BulkActionBar count={4} inline dismissible={false}>\n  <Button variant=\"outline\" size=\"sm\">Archive</Button>\n</BulkActionBar>"}
->
-  <BulkActionBarNoDismissDemo />
-</ComponentPreview>
 
 ## API Reference
 

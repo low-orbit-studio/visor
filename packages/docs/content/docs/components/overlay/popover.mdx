@@ -8,41 +8,6 @@ import { PropsTable } from '@/components/props-table';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 
-## Installation
-
-```bash
-npx visor add popover
-```
-
-This copies two files into your project:
-
-- `components/ui/popover/popover.tsx` — the component
-- `components/ui/popover/popover.module.css` — the styles
-
-## Usage
-
-```tsx
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from '@/components/ui/popover/popover';
-import { Button } from '@/components/ui/button/button';
-
-export default function Example() {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline">Open</Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        <p>Place content here.</p>
-      </PopoverContent>
-    </Popover>
-  );
-}
-```
-
 ## Basic Popover
 
 <ComponentPreview
@@ -195,6 +160,41 @@ export default function ControlledPopover() {
         <Button size="sm" onClick={() => setOpen(false)} style={{ marginTop: '0.75rem' }}>
           Dismiss
         </Button>
+      </PopoverContent>
+    </Popover>
+  );
+}
+```
+
+## Installation
+
+```bash
+npx visor add popover
+```
+
+This copies two files into your project:
+
+- `components/ui/popover/popover.tsx` — the component
+- `components/ui/popover/popover.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '@/components/ui/popover/popover';
+import { Button } from '@/components/ui/button/button';
+
+export default function Example() {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline">Open</Button>
+      </PopoverTrigger>
+      <PopoverContent>
+        <p>Place content here.</p>
       </PopoverContent>
     </Popover>
   );

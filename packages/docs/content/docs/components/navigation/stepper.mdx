@@ -14,50 +14,6 @@ import {
   StepperSeparator,
 } from '@/components/ui/stepper';
 
-## Installation
-
-```bash
-npx visor add stepper
-```
-
-This copies two files into your project:
-
-- `components/ui/stepper/stepper.tsx` — the component
-- `components/ui/stepper/stepper.module.css` — the styles
-
-## Usage
-
-```tsx
-import {
-  Stepper,
-  StepperItem,
-  StepperTrigger,
-  StepperTitle,
-  StepperSeparator,
-} from '@/components/ui/stepper/stepper';
-
-export default function Example() {
-  return (
-    <Stepper activeStep={1}>
-      <StepperItem step={0}>
-        <StepperTrigger step={0} />
-        <StepperTitle>Account</StepperTitle>
-      </StepperItem>
-      <StepperSeparator complete />
-      <StepperItem step={1}>
-        <StepperTrigger step={1} />
-        <StepperTitle>Profile</StepperTitle>
-      </StepperItem>
-      <StepperSeparator />
-      <StepperItem step={2}>
-        <StepperTrigger step={2} />
-        <StepperTitle>Review</StepperTitle>
-      </StepperItem>
-    </Stepper>
-  );
-}
-```
-
 ## Horizontal (Default)
 
 <ComponentPreview
@@ -162,6 +118,50 @@ export default function Example() {
     </StepperItem>
   </Stepper>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add stepper
+```
+
+This copies two files into your project:
+
+- `components/ui/stepper/stepper.tsx` — the component
+- `components/ui/stepper/stepper.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  Stepper,
+  StepperItem,
+  StepperTrigger,
+  StepperTitle,
+  StepperSeparator,
+} from '@/components/ui/stepper/stepper';
+
+export default function Example() {
+  return (
+    <Stepper activeStep={1}>
+      <StepperItem step={0}>
+        <StepperTrigger step={0} />
+        <StepperTitle>Account</StepperTitle>
+      </StepperItem>
+      <StepperSeparator complete />
+      <StepperItem step={1}>
+        <StepperTrigger step={1} />
+        <StepperTitle>Profile</StepperTitle>
+      </StepperItem>
+      <StepperSeparator />
+      <StepperItem step={2}>
+        <StepperTrigger step={2} />
+        <StepperTitle>Review</StepperTitle>
+      </StepperItem>
+    </Stepper>
+  );
+}
+```
 
 ## API Reference
 

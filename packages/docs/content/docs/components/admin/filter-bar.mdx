@@ -12,6 +12,42 @@ import {
   FilterBarDenseDemo,
 } from '@/components/ui/filter-bar-demo';
 
+## Basic
+
+<ComponentPreview
+  title="Search only"
+  code={"<FilterBar\n  searchValue={search}\n  onSearchChange={setSearch}\n  searchPlaceholder=\"Search users\"\n/>"}
+>
+  <FilterBarSearchOnlyDemo />
+</ComponentPreview>
+
+## With a Select Filter
+
+<ComponentPreview
+  title="Composed with a Select"
+  code={"<FilterBar\n  searchValue={search}\n  onSearchChange={setSearch}\n  resultsCount=\"42 results\"\n>\n  <Select value={role} onValueChange={setRole}>\n    <SelectTrigger>\n      <SelectValue placeholder=\"Role\" />\n    </SelectTrigger>\n    <SelectContent>\n      <SelectItem value=\"admin\">Admin</SelectItem>\n      <SelectItem value=\"editor\">Editor</SelectItem>\n    </SelectContent>\n  </Select>\n</FilterBar>"}
+>
+  <FilterBarWithSelectDemo />
+</ComponentPreview>
+
+## With Active Filter Chips
+
+<ComponentPreview
+  title="Chips and clear-all"
+  code={"<FilterBar\n  searchValue={search}\n  onSearchChange={setSearch}\n  activeFilters={[\n    { id: 'role', label: 'Role: Admin', onRemove: removeRole },\n    { id: 'status', label: 'Status: Active', onRemove: removeStatus },\n  ]}\n  onClearAll={clearAll}\n  resultsCount=\"8 results\"\n/>"}
+>
+  <FilterBarWithChipsDemo />
+</ComponentPreview>
+
+## Dense
+
+<ComponentPreview
+  title="Dense padding for packed admin layouts"
+  code={"<FilterBar dense searchValue={search} onSearchChange={setSearch} />"}
+>
+  <FilterBarDenseDemo />
+</ComponentPreview>
+
 ## Installation
 
 ```bash
@@ -72,42 +108,6 @@ export default function Example() {
   );
 }
 ```
-
-## Basic
-
-<ComponentPreview
-  title="Search only"
-  code={"<FilterBar\n  searchValue={search}\n  onSearchChange={setSearch}\n  searchPlaceholder=\"Search users\"\n/>"}
->
-  <FilterBarSearchOnlyDemo />
-</ComponentPreview>
-
-## With a Select Filter
-
-<ComponentPreview
-  title="Composed with a Select"
-  code={"<FilterBar\n  searchValue={search}\n  onSearchChange={setSearch}\n  resultsCount=\"42 results\"\n>\n  <Select value={role} onValueChange={setRole}>\n    <SelectTrigger>\n      <SelectValue placeholder=\"Role\" />\n    </SelectTrigger>\n    <SelectContent>\n      <SelectItem value=\"admin\">Admin</SelectItem>\n      <SelectItem value=\"editor\">Editor</SelectItem>\n    </SelectContent>\n  </Select>\n</FilterBar>"}
->
-  <FilterBarWithSelectDemo />
-</ComponentPreview>
-
-## With Active Filter Chips
-
-<ComponentPreview
-  title="Chips and clear-all"
-  code={"<FilterBar\n  searchValue={search}\n  onSearchChange={setSearch}\n  activeFilters={[\n    { id: 'role', label: 'Role: Admin', onRemove: removeRole },\n    { id: 'status', label: 'Status: Active', onRemove: removeStatus },\n  ]}\n  onClearAll={clearAll}\n  resultsCount=\"8 results\"\n/>"}
->
-  <FilterBarWithChipsDemo />
-</ComponentPreview>
-
-## Dense
-
-<ComponentPreview
-  title="Dense padding for packed admin layouts"
-  code={"<FilterBar dense searchValue={search} onSearchChange={setSearch} />"}
->
-  <FilterBarDenseDemo />
-</ComponentPreview>
 
 ## API Reference
 

@@ -7,34 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Image } from '@/components/ui/image';
 
-## Installation
-
-```bash
-npx visor add image
-```
-
-This copies two files into your project:
-
-- `components/ui/image/image.tsx` — the component
-- `components/ui/image/image.module.css` — the styles
-
-## Usage
-
-```tsx
-import { Image } from '@/components/ui/image/image';
-
-export default function Example() {
-  return (
-    <Image
-      src="/photo.jpg"
-      alt="A scenic landscape"
-      aspectRatio="video"
-      objectFit="cover"
-    />
-  );
-}
-```
-
 ## Aspect Ratios
 
 The component includes four preset aspect ratios. A loading skeleton is shown until the image resolves.
@@ -95,6 +67,34 @@ When an image fails to load, a fallback is shown. Defaults to a broken image ico
     </div>
   </div>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add image
+```
+
+This copies two files into your project:
+
+- `components/ui/image/image.tsx` — the component
+- `components/ui/image/image.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Image } from '@/components/ui/image/image';
+
+export default function Example() {
+  return (
+    <Image
+      src="/photo.jpg"
+      alt="A scenic landscape"
+      aspectRatio="video"
+      objectFit="cover"
+    />
+  );
+}
+```
 
 ## API Reference
 

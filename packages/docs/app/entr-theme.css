@@ -236,13 +236,18 @@
   --surface-info-default: #38c7e0;
 }
 
-/* --- Adaptive: Border (dark) — manual toggle --- */
+/* --- Adaptive: Border (dark) — manual toggle ---
+ *
+ * ENTR is a flat-design theme: no strokes anywhere. Neutral border tokens
+ * are all transparent so cards, filter bars, dialog shells, etc. render
+ * borderless. Status border tokens (focus, error, warning, success, info)
+ * stay visible because they communicate state, not chrome. */
 .dark .entr-theme {
-  --border-default: rgba(255, 255, 255, 0.08);
-  --border-muted: rgba(255, 255, 255, 0.04);
-  --border-strong: rgba(255, 255, 255, 0.14);
+  --border-default: transparent;
+  --border-muted: transparent;
+  --border-strong: transparent;
   --border-focus: #6beba5;
-  --border-disabled: rgba(255, 255, 255, 0.04);
+  --border-disabled: transparent;
   --border-success: rgba(107, 235, 165, 0.5);
   --border-warning: rgba(251, 191, 36, 0.5);
   --border-error: rgba(254, 93, 139, 0.5);
@@ -314,11 +319,11 @@
 /* --- Adaptive: Border (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
 .entr-theme:not(.light) {
-  --border-default: rgba(255, 255, 255, 0.08);
-  --border-muted: rgba(255, 255, 255, 0.04);
-  --border-strong: rgba(255, 255, 255, 0.14);
+  --border-default: transparent;
+  --border-muted: transparent;
+  --border-strong: transparent;
   --border-focus: #6beba5;
-  --border-disabled: rgba(255, 255, 255, 0.04);
+  --border-disabled: transparent;
   --border-success: rgba(107, 235, 165, 0.5);
   --border-warning: rgba(251, 191, 36, 0.5);
   --border-error: rgba(254, 93, 139, 0.5);
@@ -392,11 +397,11 @@ html:not(.dark) .entr-theme {
 
 /* --- Adaptive: Border (light) --- */
 html:not(.dark) .entr-theme {
-  --border-default: rgba(0, 0, 0, 0.08);
-  --border-muted: rgba(0, 0, 0, 0.04);
-  --border-strong: rgba(0, 0, 0, 0.14);
+  --border-default: transparent;
+  --border-muted: transparent;
+  --border-strong: transparent;
   --border-focus: #22c56d;
-  --border-disabled: rgba(0, 0, 0, 0.04);
+  --border-disabled: transparent;
   --border-success: #22c56d;
   --border-warning: #f59e0b;
   --border-error: #fe5d8b;
@@ -463,4 +468,44 @@ html:not(.dark) .entr-theme {
   --color-fd-popover: #ffffff;
   --color-fd-popover-foreground: #1a1c1e;
   --color-fd-ring: #22c56d;
+}
+
+/* ============================================
+   Section 5: Creative extensions
+   ============================================
+
+   ENTR is a flat-design theme — no borders anywhere (handled globally via
+   transparent --border-* tokens above) and no shadows. Form fields get a
+   targeted tweak beyond the shared theme: one size up, one weight up, and
+   a filled --surface-muted background so they read as solid blocks rather
+   than lightweight chrome. Hover bumps to --surface-interactive-hover and
+   focus adds a green box-shadow ring from --border-focus. */
+
+.entr-theme [data-slot="input"],
+.entr-theme [data-slot="textarea"],
+.entr-theme [data-slot="select-trigger"],
+.entr-theme [data-slot="combobox-input-wrapper"] {
+  background-color: var(--surface-muted);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+}
+
+.entr-theme [data-slot="input"]::placeholder,
+.entr-theme [data-slot="textarea"]::placeholder,
+.entr-theme [data-slot="combobox-input"]::placeholder {
+  font-weight: var(--font-weight-normal);
+}
+
+.entr-theme [data-slot="input"]:hover:not(:focus-visible):not(:disabled),
+.entr-theme [data-slot="textarea"]:hover:not(:focus-visible):not(:disabled),
+.entr-theme [data-slot="select-trigger"]:hover:not(:focus-visible):not(:disabled),
+.entr-theme [data-slot="combobox-input-wrapper"]:hover:not(:focus-within) {
+  background-color: var(--surface-interactive-hover);
+}
+
+.entr-theme [data-slot="input"]:focus-visible,
+.entr-theme [data-slot="textarea"]:focus-visible,
+.entr-theme [data-slot="select-trigger"]:focus-visible,
+.entr-theme [data-slot="combobox-input-wrapper"]:focus-within {
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--border-focus);
 }

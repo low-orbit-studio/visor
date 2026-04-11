@@ -7,33 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { AccessibilitySpecimen } from '@/components/ui/accessibility-specimen';
 
-## Installation
-
-```bash
-npx visor add accessibility-specimen
-```
-
-This copies two files into your project:
-
-- `components/ui/accessibility-specimen/accessibility-specimen.tsx` — the component
-- `components/ui/accessibility-specimen/accessibility-specimen.module.css` — the styles
-
-## Usage
-
-```tsx
-import { AccessibilitySpecimen } from '@/components/ui/accessibility-specimen/accessibility-specimen';
-
-<AccessibilitySpecimen
-  fgToken="--text-primary"
-  bgToken="--surface-page"
-  fgLabel="text-primary"
-  bgLabel="surface-page"
-  ratio={15.4}
-  wcagAA
-  wcagAAA
-/>
-```
-
 ## Preview
 
 <ComponentPreview
@@ -61,6 +34,33 @@ import { AccessibilitySpecimen } from '@/components/ui/accessibility-specimen/ac
     />
   </div>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add accessibility-specimen
+```
+
+This copies two files into your project:
+
+- `components/ui/accessibility-specimen/accessibility-specimen.tsx` — the component
+- `components/ui/accessibility-specimen/accessibility-specimen.module.css` — the styles
+
+## Usage
+
+```tsx
+import { AccessibilitySpecimen } from '@/components/ui/accessibility-specimen/accessibility-specimen';
+
+<AccessibilitySpecimen
+  fgToken="--text-primary"
+  bgToken="--surface-page"
+  fgLabel="text-primary"
+  bgLabel="surface-page"
+  ratio={15.4}
+  wcagAA
+  wcagAAA
+/>
+```
 
 ## API Reference
 

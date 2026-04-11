@@ -8,32 +8,6 @@ import { PropsTable } from '@/components/props-table';
 import { Banner, BannerTitle, BannerDescription, BannerAction } from '@/components/ui/banner';
 import { Button } from '@/components/ui/button';
 
-## Installation
-
-```bash
-npx visor add banner
-```
-
-This copies two files into your project:
-
-- `components/ui/banner/banner.tsx` — the component
-- `components/ui/banner/banner.module.css` — the styles
-
-## Usage
-
-```tsx
-import { Banner, BannerTitle, BannerDescription } from '@/components/ui/banner/banner';
-
-export default function Example() {
-  return (
-    <Banner intent="info">
-      <BannerTitle>Heads up</BannerTitle>
-      <BannerDescription>This is an informational message.</BannerDescription>
-    </Banner>
-  );
-}
-```
-
 ## Intent Variants
 
 Each intent receives a semantic color treatment: an intent-colored subtle background with a matching border. This makes banners visually distinct by type while remaining readable in both light and dark themes.
@@ -93,6 +67,32 @@ Set `position="sticky"` to pin the banner to the top of the viewport.
     <Button size="sm" variant="outline">Refresh</Button>
   </BannerAction>
 </Banner>
+```
+
+## Installation
+
+```bash
+npx visor add banner
+```
+
+This copies two files into your project:
+
+- `components/ui/banner/banner.tsx` — the component
+- `components/ui/banner/banner.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Banner, BannerTitle, BannerDescription } from '@/components/ui/banner/banner';
+
+export default function Example() {
+  return (
+    <Banner intent="info">
+      <BannerTitle>Heads up</BannerTitle>
+      <BannerDescription>This is an informational message.</BannerDescription>
+    </Banner>
+  );
+}
 ```
 
 ## API Reference

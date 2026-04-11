@@ -8,29 +8,6 @@ import { PropsTable } from '@/components/props-table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 
-## Installation
-
-```bash
-npx visor add checkbox
-```
-
-This copies two files into your project:
-
-- `components/ui/checkbox/checkbox.tsx` — the component
-- `components/ui/checkbox/checkbox.module.css` — the styles
-
-## Usage
-
-```tsx
-import { Checkbox } from '@/components/ui/checkbox/checkbox';
-import { Label } from '@/components/ui/label/label';
-
-<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-  <Checkbox id="terms" />
-  <Label htmlFor="terms">Accept terms and conditions</Label>
-</div>
-```
-
 ## Default
 
 <ComponentPreview
@@ -84,6 +61,29 @@ import { Label } from '@/components/ui/label/label';
     </div>
   </div>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add checkbox
+```
+
+This copies two files into your project:
+
+- `components/ui/checkbox/checkbox.tsx` — the component
+- `components/ui/checkbox/checkbox.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Checkbox } from '@/components/ui/checkbox/checkbox';
+import { Label } from '@/components/ui/label/label';
+
+<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+  <Checkbox id="terms" />
+  <Label htmlFor="terms">Accept terms and conditions</Label>
+</div>
+```
 
 ## API Reference
 

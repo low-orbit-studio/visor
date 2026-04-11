@@ -9,20 +9,21 @@ interface Section {
 
 const REQUIRED_SECTIONS: Section[] = [
   {
-    name: 'Installation',
-    test: (c) => c.search(/^## Installation/m),
-  },
-  {
     name: 'ComponentPreview',
     test: (c) => c.indexOf('<ComponentPreview'),
   },
   {
+    name: 'Installation',
+    test: (c) => c.search(/^## Installation/m),
+  },
+  {
     name: 'API Reference (PropsTable)',
     test: (c) => {
-      // Match "## API Reference", "## Props", or a heading containing PropsTable usage nearby
-      const apiMatch = c.search(/^## .*(?:API|Props)/m);
+      // Anchor on "## API Reference" or "## Props" (exact section titles),
+      // not any heading containing the substring "API" — otherwise a
+      // component section like "## Ref API" triggers false positives.
+      const apiMatch = c.search(/^## (?:API Reference|Props)\b/m);
       const propsTablePos = c.indexOf('<PropsTable');
-      // Return whichever comes first as the section position
       if (apiMatch >= 0) return apiMatch;
       if (propsTablePos >= 0) return propsTablePos;
       return -1;
@@ -33,7 +34,7 @@ const REQUIRED_SECTIONS: Section[] = [
 export const docsConsistentSections: Rule = {
   name: 'docs-consistent-sections',
   description:
-    'Every component .mdx has required sections in order: Installation, Preview(s), API Reference',
+    'Every component .mdx has required sections in order: Preview(s), Installation, API Reference',
   category: 'docs',
   warnOnly: true,
   async run() {

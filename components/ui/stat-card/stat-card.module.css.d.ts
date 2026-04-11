@@ -2,7 +2,8 @@ declare const styles: {
   readonly base: string
   readonly variantDefault: string
   readonly variantHighlight: string
-  readonly variantCompact: string
+  readonly sizeSm: string
+  readonly sizeMd: string
   readonly header: string
   readonly label: string
   readonly trend: string

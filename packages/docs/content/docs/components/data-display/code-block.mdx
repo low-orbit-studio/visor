@@ -7,32 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { CodeBlock } from '@/components/ui/code-block';
 
-## Installation
-
-```bash
-npx visor add code-block
-```
-
-This copies two files into your project:
-
-- `components/ui/code-block/code-block.tsx` — the component
-- `components/ui/code-block/code-block.module.css` — the styles
-
-## Usage
-
-```tsx
-import { CodeBlock } from '@/components/ui/code-block/code-block';
-
-export default function Example() {
-  return (
-    <CodeBlock
-      code="const greeting = 'Hello, world!';"
-      language="typescript"
-    />
-  );
-}
-```
-
 ## Basic Example
 
 <ComponentPreview
@@ -83,6 +57,32 @@ export default function Example() {
     showCopyButton={false}
   />
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add code-block
+```
+
+This copies two files into your project:
+
+- `components/ui/code-block/code-block.tsx` — the component
+- `components/ui/code-block/code-block.module.css` — the styles
+
+## Usage
+
+```tsx
+import { CodeBlock } from '@/components/ui/code-block/code-block';
+
+export default function Example() {
+  return (
+    <CodeBlock
+      code="const greeting = 'Hello, world!';"
+      language="typescript"
+    />
+  );
+}
+```
 
 ## API Reference
 

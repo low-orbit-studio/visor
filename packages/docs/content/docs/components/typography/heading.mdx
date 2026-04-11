@@ -7,27 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Heading } from '@/components/ui/heading';
 
-## Installation
-
-```bash
-npx visor add heading
-```
-
-This copies two files into your project:
-
-- `components/ui/heading/heading.tsx` — the component
-- `components/ui/heading/heading.module.css` — the styles
-
-## Usage
-
-```tsx
-import { Heading } from '@/components/ui/heading/heading';
-
-export default function Example() {
-  return <Heading level={1}>Page Title</Heading>;
-}
-```
-
 ## Levels
 
 Each `level` renders the corresponding HTML heading element (`<h1>` through `<h6>`) with an auto-mapped visual size.
@@ -73,6 +52,27 @@ The `size` prop lets you decouple visual size from semantic level — an `<h3>` 
     <Heading weight="bold">Bold Weight</Heading>
   </div>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add heading
+```
+
+This copies two files into your project:
+
+- `components/ui/heading/heading.tsx` — the component
+- `components/ui/heading/heading.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Heading } from '@/components/ui/heading/heading';
+
+export default function Example() {
+  return <Heading level={1}>Page Title</Heading>;
+}
+```
 
 ## API Reference
 

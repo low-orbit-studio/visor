@@ -7,28 +7,6 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
-## Installation
-
-```bash
-npx visor add toggle-group
-```
-
-This copies two files into your project:
-
-- `components/ui/toggle-group/toggle-group.tsx` — the component
-- `components/ui/toggle-group/toggle-group.module.css` — the styles
-
-## Usage
-
-```tsx
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group/toggle-group';
-
-<ToggleGroup type="single">
-  <ToggleGroupItem value="a">A</ToggleGroupItem>
-  <ToggleGroupItem value="b">B</ToggleGroupItem>
-</ToggleGroup>
-```
-
 ## Variants
 
 <ComponentPreview
@@ -85,6 +63,28 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group/toggl
     <ToggleGroupItem value="underline">Underline</ToggleGroupItem>
   </ToggleGroup>
 </ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add toggle-group
+```
+
+This copies two files into your project:
+
+- `components/ui/toggle-group/toggle-group.tsx` — the component
+- `components/ui/toggle-group/toggle-group.module.css` — the styles
+
+## Usage
+
+```tsx
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group/toggle-group';
+
+<ToggleGroup type="single">
+  <ToggleGroupItem value="a">A</ToggleGroupItem>
+  <ToggleGroupItem value="b">B</ToggleGroupItem>
+</ToggleGroup>
+```
 
 ## API Reference
 
