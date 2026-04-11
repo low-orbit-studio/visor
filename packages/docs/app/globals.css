@@ -322,6 +322,19 @@ p.preview-title {
   height: 700px;
 }
 
+/* Hero section — 100dvh is the right value in a real page, but in an
+   inline block preview it makes the frame absurdly tall. Cap it to match
+   the deck preview height. Fullscreen mode restores the natural height. */
+.preview-render [data-slot="hero-section"] {
+  min-height: 0;
+  height: 700px;
+}
+
+[data-fullscreen="true"] [data-slot="hero-section"] {
+  min-height: 100dvh;
+  height: auto;
+}
+
 /* Hide fixed-position dot-nav in inline preview (it escapes the container) */
 .preview-render [data-slot="dot-nav"] {
   display: none;
