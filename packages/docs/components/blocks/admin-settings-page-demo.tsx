@@ -46,6 +46,7 @@ const sectionStyles: React.CSSProperties = {
 };
 
 const shellStyles: React.CSSProperties = {
+  width: '100%',
   height: '32rem',
   display: 'flex',
   flexDirection: 'column',

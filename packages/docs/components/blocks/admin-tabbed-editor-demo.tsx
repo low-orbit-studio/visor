@@ -197,6 +197,7 @@ export function AdminTabbedEditorDemo() {
   return (
     <div
       style={{
+        width: '100%',
         height: '30rem',
         display: 'flex',
         flexDirection: 'column',

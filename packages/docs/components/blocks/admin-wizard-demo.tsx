@@ -28,6 +28,7 @@ const INITIAL_DRAFT: WizardDraft = {
 };
 
 const shellStyles: React.CSSProperties = {
+  width: '100%',
   height: '36rem',
   display: 'flex',
   flexDirection: 'column',
