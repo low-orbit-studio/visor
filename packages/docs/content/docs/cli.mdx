@@ -166,8 +166,8 @@ npx @loworbitstudio/visor theme export .visor.yaml
 ## Typical Workflow
 
 ```bash
-# 1. Set up
-npx @loworbitstudio/visor init
+# 1. Set up (Next.js — generates tokens inline)
+npx @loworbitstudio/visor init --template nextjs
 
 # 2. Add components
 npx @loworbitstudio/visor add button card input
@@ -180,3 +180,36 @@ npx @loworbitstudio/visor diff
 # 5. Pull updates for specific components
 npx @loworbitstudio/visor add button --overwrite
 ```
+
+## Known Limitations
+
+### Turbopack and symlinked packages
+
+Turbopack (used in `next dev --turbopack`) cannot resolve CSS `@import` paths
+through symlinked `node_modules`. This affects local `file:` or `link:` installs
+of `@loworbitstudio/visor-core`.
+
+**Workarounds:**
+
+1. **Use `--template nextjs` (recommended)** — generates all tokens inline in `app/globals.css`. No package import required.
+
+   ```bash
+   npx @loworbitstudio/visor init --template nextjs
+   ```
+
+2. **Use a relative path import** instead of the package name:
+
+   ```css
+   /* Instead of: @import '@loworbitstudio/visor-core'; */
+   @import '../../path-to/visor-core/dist/tokens.css';
+   ```
+
+3. **Use webpack** — run `next dev` without `--turbopack` to use webpack's resolver, which handles symlinked CSS correctly.
+
+### `@loworbitstudio/visor-core` not yet on npm
+
+The token package is not yet published. Commands that suggest installing it will
+instead succeed if you use `--template nextjs` (which generates tokens inline)
+or import via a relative path in your project.
+
+Run `visor init --template nextjs` to get a working setup today without needing the npm package.

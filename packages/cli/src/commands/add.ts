@@ -1,4 +1,4 @@
-import { loadConfig } from "../config/config.js"
+import { loadConfig, configExists, writeConfig } from "../config/config.js"
 import {
   loadRegistry,
   resolveTransitiveDeps,
@@ -11,6 +11,7 @@ import {
   hasVisorTokens,
 } from "../utils/packages.js"
 import { logger } from "../utils/logger.js"
+import { DEFAULT_CONFIG } from "../config/defaults.js"
 
 export interface AddOptions {
   overwrite?: boolean
@@ -26,6 +27,18 @@ export function addCommand(
 ): void {
   const json = options.json ?? false
 
+  let autoInitialized = false
+
+  // Auto-init: create visor.json with defaults if it doesn't exist
+  if (!configExists(cwd)) {
+    writeConfig(cwd, DEFAULT_CONFIG)
+    autoInitialized = true
+    if (!json) {
+      logger.info("No visor.json found — created one with default paths.")
+      logger.blank()
+    }
+  }
+
   let config: ReturnType<typeof loadConfig>
   let registry: ReturnType<typeof loadRegistry>
 
@@ -33,12 +46,13 @@ export function addCommand(
     config = loadConfig(cwd)
     registry = loadRegistry()
   } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
     if (json) {
-      const message = error instanceof Error ? error.message : String(error)
       console.log(JSON.stringify({ success: false, error: message }, null, 2))
-      process.exit(1)
+    } else {
+      logger.error(message)
     }
-    throw error
+    process.exit(1)
   }
 
   // When --block is used, validate that requested items are blocks
@@ -262,7 +276,8 @@ export function addCommand(
     if (!json) {
       logger.blank()
       logger.warn(warning)
-      logger.info("  npm install @loworbitstudio/visor-core")
+      logger.info("  For Next.js: npx @loworbitstudio/visor init --template nextjs")
+      logger.info("  This generates all tokens inline — no npm package needed.")
     }
   }
 
@@ -271,6 +286,7 @@ export function addCommand(
       JSON.stringify(
         {
           success: true,
+          autoInitialized,
           requested: itemNames,
           resolved: items.map((i) => i.name),
           files: { written: writtenFiles, skipped: skippedFiles },
