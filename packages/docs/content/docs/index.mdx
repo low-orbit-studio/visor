@@ -29,17 +29,37 @@ All components reference CSS custom properties, never hard-coded values. Themes 
 
 ## Getting Started
 
-Install the tokens package in your project:
+### Option A: Next.js (recommended)
+
+Initialize Visor with the Next.js template — this creates `visor.json`, `.visor.yaml`, and `app/globals.css` with all design tokens generated inline. No npm token package required.
 
 ```bash
-npm install @loworbitstudio/visor
+npx @loworbitstudio/visor init --template nextjs
 ```
 
-Import the tokens in your app's root CSS:
+Then add your first component:
+
+```bash
+npx visor add button
+```
+
+That's it. The component source lands in your project and you own it.
+
+### Option B: Manual setup
+
+For non-Next.js projects or custom token management:
+
+```bash
+npx @loworbitstudio/visor init
+```
+
+Then import the token package in your app's root CSS:
 
 ```css
 @import '@loworbitstudio/visor-core';
 ```
+
+> **Note:** `@loworbitstudio/visor-core` is not yet published to npm. For local development, use the monorepo-relative import or Option A which generates tokens inline. See the [CLI docs](/docs/cli) for workarounds.
 
 Then add a component:
 
@@ -48,3 +68,7 @@ npx visor add button
 ```
 
 Browse the [Components](/docs/components/button) section to see everything available.
+
+### Available themes
+
+The token package ships `light` and `dark` themes. Creative reference themes used in the docs site (Space, ENTR, Veronica, etc.) are not distributed via the token package — copy the relevant CSS file into your project to use them. See [Theming](/docs/themes/theming) for details.

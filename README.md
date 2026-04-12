@@ -23,20 +23,27 @@ This model is inspired by shadcn/ui's copy-and-own approach, combined with a sha
 
 ## Quick Start
 
-### 1. Install the tokens package
+### Option A: Next.js (recommended)
+
+Initialize Visor with the Next.js template — this creates `visor.json`, `.visor.yaml`, and `app/globals.css` with all design tokens generated inline. No npm token package required.
 
 ```sh
-npm install @loworbitstudio/visor
+npx @loworbitstudio/visor init --template nextjs
 ```
 
-### 2. Import tokens into your global CSS
+Add your first component:
 
-```css
-/* app/globals.css or src/index.css */
-@import "@loworbitstudio/visor-core";
+```sh
+npx visor add button
 ```
 
-### 3. Initialize Visor
+That's it. The component source lands in your project and you own it.
+
+### Option B: Manual setup
+
+For non-Next.js projects or custom token management:
+
+**1. Initialize Visor**
 
 ```sh
 npx @loworbitstudio/visor init
@@ -54,13 +61,20 @@ This creates a `visor.json` in your project root with default path mappings:
 }
 ```
 
-### 4. Add your first component
+**2. Import tokens into your global CSS**
+
+```css
+/* app/globals.css or src/index.css */
+@import "@loworbitstudio/visor-core";
+```
+
+> **Note:** `@loworbitstudio/visor-core` is not yet published to npm. For local development, use a monorepo-relative import path or use Option A which generates tokens inline.
+
+**3. Add your first component**
 
 ```sh
 npx visor add button
 ```
-
-That's it. The component source lands in your project and you own it.
 
 ---
 

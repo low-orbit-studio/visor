@@ -205,6 +205,19 @@ describe("add command", () => {
     expect(existsSync(join(testDir, "lib/utils.ts"))).toBe(true)
   })
 
+  it("auto-creates visor.json when missing", () => {
+    // Remove visor.json that beforeEach created
+    const { rmSync } = require("fs")
+    rmSync(join(testDir, "visor.json"))
+    expect(existsSync(join(testDir, "visor.json"))).toBe(false)
+
+    // Should not throw — should auto-init and write the component
+    addCommand(["button"], testDir)
+
+    expect(existsSync(join(testDir, "visor.json"))).toBe(true)
+    expect(existsSync(join(testDir, "components/ui/button/button.tsx"))).toBe(true)
+  })
+
   describe("--json flag", () => {
     function mockProcessExit() {
       return vi.spyOn(process, "exit").mockImplementation(((code?: number) => {

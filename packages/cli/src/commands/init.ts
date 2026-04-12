@@ -69,7 +69,7 @@ export function initCommand(cwd: string, options?: InitOptions): void {
     if (!json) {
       logger.blank()
       logger.warn(warning)
-      logger.info("  npm install @loworbitstudio/visor-core")
+      logger.info("  For Next.js: re-run with --template nextjs to generate tokens inline.")
     }
   }
 
@@ -83,7 +83,7 @@ export function initCommand(cwd: string, options?: InitOptions): void {
       nextSteps.push("Run: npx visor add button — to add your first component")
     }
     if (missingTokens) {
-      nextSteps.push("npm install @loworbitstudio/visor-core")
+      nextSteps.push("Re-run with --template nextjs to generate tokens inline (no npm package needed)")
     }
     console.log(
       JSON.stringify(

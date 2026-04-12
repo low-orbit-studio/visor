@@ -1,11 +1,15 @@
-# @loworbitstudio/visor
+# @loworbitstudio/visor-core
 
 CSS custom property design tokens for the Visor design system.
 
 ## Installation
 
+> **Note:** This package (`@loworbitstudio/visor-core`) is not yet published to npm. For new projects, use `npx @loworbitstudio/visor init --template nextjs` — it generates all tokens inline via the theme engine, no npm package needed. For monorepo usage, import via a relative path.
+
+When the package is published, installation will be:
+
 ```sh
-npm install @loworbitstudio/visor
+npm install @loworbitstudio/visor-core
 ```
 
 ## Usage
