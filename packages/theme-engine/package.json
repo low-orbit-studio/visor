@@ -18,7 +18,6 @@
       "import": "./dist/fowt.js",
       "types": "./dist/fowt.d.ts"
     },
-    "./fonts": "./src/fonts/index.ts",
     "./schema": "./src/visor-theme.schema.json"
   },
   "scripts": {
