@@ -1,9 +1,13 @@
+// @vitest-environment node
 /**
  * Verifies that font utilities are accessible from the main entry's dist build,
  * and that the deprecated ./fonts subpath export has been removed.
  *
  * These tests intentionally import from `dist/` (not workspace src) to catch
  * regressions in the published artifact. Run `npm run build` before running tests.
+ *
+ * @vitest-environment node is required because this file uses import.meta.url
+ * for dist path resolution, which only works in a Node environment (not jsdom).
  */
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
