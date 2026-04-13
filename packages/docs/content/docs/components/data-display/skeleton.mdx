@@ -1,0 +1,68 @@
+---
+title: Skeleton
+description: Placeholder loading shape with a pulse animation.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Skeleton } from '@/components/ui/skeleton';
+
+## Default
+
+Skeleton renders a pulsing placeholder block. Control the shape and size through `style` or `className`.
+
+<ComponentPreview
+  title="Text Skeleton"
+  code={"import { Skeleton } from '@/components/ui/skeleton/skeleton';\n\n<div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>\n  <Skeleton style={{ height: '1rem', width: '75%' }} />\n  <Skeleton style={{ height: '1rem', width: '50%' }} />\n  <Skeleton style={{ height: '1rem', width: '60%' }} />\n</div>"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%', maxWidth: '20rem' }}>
+    <Skeleton style={{ height: '1rem', width: '75%' }} />
+    <Skeleton style={{ height: '1rem', width: '50%' }} />
+    <Skeleton style={{ height: '1rem', width: '60%' }} />
+  </div>
+</ComponentPreview>
+
+## Card Loading State
+
+Combine multiple skeletons to build loading placeholders for complex layouts like cards.
+
+<ComponentPreview
+  title="Card Skeleton"
+  code={"import { Skeleton } from '@/components/ui/skeleton/skeleton';\n\n<div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>\n  <Skeleton style={{ height: '2.5rem', width: '2.5rem', borderRadius: '9999px' }} />\n  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>\n    <Skeleton style={{ height: '0.875rem', width: '10rem' }} />\n    <Skeleton style={{ height: '0.875rem', width: '7rem' }} />\n  </div>\n</div>"}
+>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+    <Skeleton style={{ height: '2.5rem', width: '2.5rem', borderRadius: '9999px' }} />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+      <Skeleton style={{ height: '0.875rem', width: '10rem' }} />
+      <Skeleton style={{ height: '0.875rem', width: '7rem' }} />
+    </div>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add skeleton
+```
+
+This copies two files into your project:
+
+- `components/ui/skeleton/skeleton.tsx` — the component
+- `components/ui/skeleton/skeleton.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Skeleton } from '@/components/ui/skeleton/skeleton';
+
+<Skeleton style={{ height: '1rem', width: '12rem' }} />
+<Skeleton style={{ height: '2.5rem', width: '2.5rem', borderRadius: '9999px' }} />
+```
+
+## API Reference
+
+### SkeletonProps
+
+<PropsTable component="skeleton" />
+
+The component also accepts all standard `<div>` HTML attributes.

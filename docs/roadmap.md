@@ -38,8 +38,14 @@ See [ai-consumability.md](./ai-consumability.md) for the full spec.
 - [x] Single registry manifest (`visor-manifest.json`)
 - [x] Composition patterns/recipes
 
-**Remaining (deferred to later phase):**
-- Agent-first CLI enhancements — `--json` flag on all commands, rich `--help`, composable commands, structured output
+**Completed (initially deferred, now done):**
+- [x] Agent-first CLI enhancements — `--json` flag on ALL commands, rich `--help` via Commander, `--category` filtering
+- [x] `CONSUMER_CLAUDE.md` — comprehensive AI agent context file for downstream project consumers
+
+**Remaining (deferred to Phase 5.5b or later):**
+- `visor info <component> --json` — single-component metadata query
+- `visor pattern list` / `visor pattern info` — pattern discovery CLI commands
+- `visor suggest --for "use case"` — AI-driven component suggestion
 
 ## Phase 2.5: Foundation Hardening — COMPLETE
 
@@ -94,31 +100,31 @@ Made the docs site a world-class showcase with live theme previews, visual compa
 - [x] All examples respond to the active theme
 - [x] Visual regression testing — Playwright screenshots across all themes × light/dark (VI-88)
 
-## Phase 5.5: Internal Adoption Readiness
+## Phase 5.5: Internal Adoption Readiness — COMPLETE
 
-Unblock Visor consumption across Low Orbit projects. Minimal work to make `npm install` and `npx visor add` functional for internal use.
+Unblocked Visor consumption across Low Orbit projects. `npm install` and `npx visor add` are fully functional for internal use.
 
-**Key work:**
+**Completed work:**
 - [x] **First npm publish** — Release workflow rewritten to use changesets/action (push-to-main trigger, all 3 packages). First publish via `changeset publish` — requires OTP or automation token (VI-124)
-- [ ] **Fix theme-engine raw TS export** — `./fonts` export points to `./src/fonts/index.ts` instead of compiled `./dist/fonts/...`; one-line fix in package.json
-- [x] **Research spike: proprietary theme strategy** — Evaluate options for keeping client themes (Veronica, Kaiah, Blacklight, ENTR, Space, SoleSpark) in the monorepo for development/docs while preventing public access. Options to evaluate: build-time injection from private repo, `.gitignore` + pull script, private npm package, git submodule, runtime loading from authenticated CDN
-
-**Tracking:** VI-110
+- [x] **Fix theme-engine raw TS export** — Removed broken `./fonts` subpath export; fonts already re-exported from main entry (VI-145)
+- [x] **Theme distribution strategy** — Separated stock themes (shipped in public repo) from proprietary themes (gitignored, locally discoverable). `custom-themes/` path with `.gitignore` support (VI-148)
+- [x] **Post-npm docs cleanup** — Removed stale pre-publish warnings, filled block prop docs gaps, fixed "use client" annotations surfaced in dogfood runs (VI-149)
+- [x] **Research spike: proprietary theme strategy** — Theme distribution strategy researched and implemented (VI-148)
+- [x] **Dogfood testing** — Admin blocks tested rigorously through multiple rounds (VI-141/142, VI-146/147)
 
 ## Phase 5.5b: Open Source Readiness
 
 Prepare Visor for public adoption. Not required for internal use — do this when ready to market Visor externally.
 
 **Key work:**
-- **Proprietary theme implementation** — Execute the strategy chosen in Phase 5.5 research spike
-- **Fonts CDN CORS** — Restrict `fonts.visor.design` to allowed origins via Cloudflare R2/Workers
-- **Community infrastructure** — Issue/PR templates, FUNDING.yml, good first issue labels, GitHub Discussions
-- **Changelog & releases** — Wire up changesets auto-publish workflow, generate first CHANGELOG.md
-- **Getting-started guide** — Standalone "zero to first component" page (migration guide covers retrofits, not new projects)
-- **Document remaining components** — 5 undocumented core components (alert, avatar, badge, card, dialog, etc.)
-- **Competitive analysis** — Study shadcn/ui, Radix, Mantine, Park UI for gaps ✓ ([VI-122](https://linear.app/low-orbit-studio/issue/VI-122) → `docs/research/token-architecture-spike.md`)
-- **Governance & sustainability** — Single-maintainer plan, contributor ladder, decision-making process
-- **Marketing surface** — README badges, social preview, npm README, "used by" section, GitHub topics
+- [x] **Proprietary theme implementation** — Stock vs custom theme separation shipped in VI-148; custom-themes gitignored, CLI discovers both
+- [ ] **Fonts CDN CORS** — Restrict `fonts.visor.design` to allowed origins via Cloudflare R2/Workers (VI-110, still open)
+- [ ] **Community infrastructure** — Issue/PR templates, FUNDING.yml, good first issue labels, GitHub Discussions
+- [ ] **Changelog & releases** — Wire up changesets auto-publish workflow, generate first CHANGELOG.md
+- [ ] **Getting-started guide** — Standalone "zero to first component" page (migration guide covers retrofits, not new projects)
+- [ ] **Competitive analysis** — Study shadcn/ui, Radix, Mantine, Park UI for gaps ✓ ([VI-122](https://linear.app/low-orbit-studio/issue/VI-122) → `docs/research/token-architecture-spike.md`)
+- [ ] **Governance & sustainability** — Single-maintainer plan, contributor ladder, decision-making process
+- [ ] **Marketing surface** — README badges, social preview, npm README, "used by" section, GitHub topics
 
 ## Phase 6: Admin UI Category — COMPLETE
 

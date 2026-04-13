@@ -88,45 +88,97 @@ npx visor add button input label card
 
 ### Available Components
 
+The registry ships 83+ UI components across 6 categories, plus admin compounds, blocks, and hooks.
+
+**Form (24)**
+`button` · `calendar` · `checkbox` · `combobox` · `date-picker` · `field` · `fieldset` · `file-upload` · `form` · `input` · `label` · `number-input` · `otp-input` · `password-input` · `phone-input` · `radio-group` · `search-input` · `select` · `slider` · `slider-control` · `switch` · `tag-input` · `textarea` · `toggle-group`
+
+**Data Display (12)**
+`accordion` · `avatar` · `carousel` · `code-block` · `collapsible` · `heading` · `image` · `progress` · `separator` · `skeleton` · `text` · `timeline`
+
+**Navigation (5)**
+`breadcrumb` · `command` · `navbar` · `pagination` · `stepper`
+
+**Overlay (7)**
+`context-menu` · `dialog` · `fullscreen-overlay` · `hover-card` · `lightbox` · `menubar` · `popover`
+
+**Feedback (6)**
+`alert` · `banner` · `chart` · `table` · `toast` · `tooltip`
+
+**Layout (4)**
+`badge` · `card` · `sheet` · `sidebar`
+
+Add an entire category at once:
+
+```sh
+npx visor add --category form      # Add all form components
+npx visor add --category overlay   # Add all overlay components
+```
+
+### Admin Components
+
+10 compound components for data-heavy admin UIs. Add with `--category admin`:
+
+```sh
+npx visor add --category admin
+```
+
 | Component | CLI Name | Description |
 |-----------|----------|-------------|
-| Alert | `alert` | Contextual alert messages |
-| Avatar | `avatar` | User avatar with fallback |
-| Badge | `badge` | Status and category badge |
-| Breadcrumb | `breadcrumb` | Navigation breadcrumb |
-| Button | `button` | Multi-variant button with CVA |
-| Card | `card` | Surface container with slots |
-| Chart | `chart` | Chart wrapper (Recharts) |
-| Checkbox | `checkbox` | Checkbox with indeterminate state |
-| Dialog | `dialog` | Modal dialog (Radix UI) |
-| Dropdown Menu | `dropdown-menu` | Dropdown menu (Radix UI) |
-| Field | `field` | Form field wrapper — label + input + error |
-| Input | `input` | Text input field |
-| Label | `label` | Form label (Radix UI) |
-| Progress | `progress` | Progress indicator |
-| Scroll Area | `scroll-area` | Styled scrollable container (Radix UI) |
-| Select | `select` | Dropdown select (Radix UI) |
-| Separator | `separator` | Visual divider |
-| Sheet | `sheet` | Slide-over panel (Radix UI) |
-| Sidebar | `sidebar` | App sidebar layout |
-| Skeleton | `skeleton` | Loading placeholder |
-| Switch | `switch` | Toggle switch (Radix UI) |
-| Tabs | `tabs` | Tab navigation (Radix UI) |
-| Textarea | `textarea` | Multi-line text input |
-| Tooltip | `tooltip` | Hover tooltip (Radix UI) |
+| Activity Feed | `activity-feed` | Timestamped event stream |
+| Bulk Action Bar | `bulk-action-bar` | Floating bar for multi-select actions |
+| Confirm Dialog | `confirm-dialog` | Destructive action confirmation modal |
+| Data Table | `data-table` | Sortable, filterable table with pagination |
+| Empty State | `empty-state` | Zero-data placeholder with CTA |
+| Filter Bar | `filter-bar` | Composable filter chip row |
+| Kbd | `kbd` | Keyboard shortcut display |
+| Page Header | `page-header` | Title + actions header for admin pages |
+| Stat Card | `stat-card` | KPI metric card with trend |
+| Status Badge | `status-badge` | Semantic status indicator |
+
+### Blocks
+
+19 full-page and section-level blocks. Add with `--block`:
+
+```sh
+npx visor add admin-dashboard --block
+npx visor add hero-section --block
+```
+
+| Block | CLI Name | Category |
+|-------|----------|----------|
+| Admin Dashboard | `admin-dashboard` | Admin |
+| Admin Detail Drawer | `admin-detail-drawer` | Admin |
+| Admin List Page | `admin-list-page` | Admin |
+| Admin Settings Page | `admin-settings-page` | Admin |
+| Admin Shell | `admin-shell` | Admin |
+| Admin Tabbed Editor | `admin-tabbed-editor` | Admin |
+| Admin Wizard | `admin-wizard` | Admin |
+| CTA Section | `cta-section` | Marketing |
+| Features Grid | `features-grid` | Marketing |
+| Footer Section | `footer-section` | Marketing |
+| Hero Section | `hero-section` | Marketing |
+| Pricing Section | `pricing-section` | Marketing |
+| Steps Section | `steps-section` | Marketing |
+| Testimonial Section | `testimonial-section` | Marketing |
+| Login Form | `login-form` | Auth |
+| Configuration Panel | `configuration-panel` | Configuration |
+| Design System Deck | `design-system-deck` | Documentation |
+| Design System Specimen | `design-system-specimen` | Documentation |
+| Sphere Playground | `sphere-playground` | Visual |
 
 ### Available Hooks
 
+**General (10)**
+`use-boolean` · `use-click-outside` · `use-currency` · `use-debounce` · `use-focus-trap` · `use-intersection-observer` · `use-keyboard-shortcut` · `use-local-storage` · `use-media-query` · `use-previous`
+
+**Deck (4)**
+`use-intersection-animation` · `use-keyboard-nav` · `use-slide-engine` · `use-wheel-nav`
+
 ```sh
 npx visor add use-boolean
-npx visor add use-click-outside
 npx visor add use-debounce
-npx visor add use-focus-trap
-npx visor add use-intersection-observer
-npx visor add use-keyboard-shortcut
-npx visor add use-local-storage
-npx visor add use-media-query
-npx visor add use-previous
+npx visor add use-slide-engine
 ```
 
 ---
@@ -350,12 +402,37 @@ Token updates propagate automatically to all components. No component files chan
 ## CLI Reference
 
 ```sh
-npx @loworbitstudio/visor init                   # Create visor.json config
-npx @loworbitstudio/visor add <component>         # Add a component or hook
-npx @loworbitstudio/visor add <component> --overwrite  # Update an existing component
-npx @loworbitstudio/visor list                    # List all available components
-npx @loworbitstudio/visor diff [component]        # Show local vs. registry differences
+# Setup
+npx @loworbitstudio/visor init                              # Create visor.json config
+npx @loworbitstudio/visor init --template nextjs            # Initialize with Next.js template
+
+# Components
+npx @loworbitstudio/visor add <component>                   # Add a component, hook, or lib entry
+npx @loworbitstudio/visor add <c1> <c2> <c3>                # Add multiple at once
+npx @loworbitstudio/visor add --category <name>             # Add all items in a category
+npx @loworbitstudio/visor add <component> --block           # Add a block
+npx @loworbitstudio/visor add <component> --overwrite       # Update an existing component
+npx @loworbitstudio/visor list                              # List all available components
+npx @loworbitstudio/visor list --category <name>            # List by category
+npx @loworbitstudio/visor diff [component]                  # Show local vs. registry differences
+
+# Themes
+npx @loworbitstudio/visor theme apply <file>                # Generate CSS from .visor.yaml
+npx @loworbitstudio/visor theme apply <file> --adapter nextjs     # Next.js adapter
+npx @loworbitstudio/visor theme apply <file> --adapter fumadocs   # fumadocs adapter
+npx @loworbitstudio/visor theme apply <file> --adapter deck       # Deck adapter
+npx @loworbitstudio/visor theme validate <file>             # Validate a .visor.yaml theme
+npx @loworbitstudio/visor theme export [file]               # Export theme to YAML/JSON
+npx @loworbitstudio/visor theme extract                     # Extract .visor.yaml from existing CSS
+npx @loworbitstudio/visor theme register <file>             # Register theme in the docs site
+npx @loworbitstudio/visor theme unregister <slug>           # Remove a theme from the docs site
+npx @loworbitstudio/visor theme sync                        # Re-generate CSS for all themes
+
+# Fonts
+npx @loworbitstudio/visor fonts add <path> --org <name>     # Upload woff2 to Visor Fonts CDN
 ```
+
+All commands support `--json` for structured output (useful for AI agents and scripts).
 
 ---
 

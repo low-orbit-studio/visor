@@ -30,7 +30,7 @@ After running, source files appear at `components/ui/<component-name>/`.
 To pull the latest upstream version:
 
 ```sh
-npx visor add <component-name> --force
+npx visor add <component-name> --overwrite
 ```
 
 ---

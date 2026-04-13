@@ -1,0 +1,117 @@
+---
+title: Tabs
+description: Switch between content panels with default and line style variants. Built on Radix UI.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+
+## Default
+
+Pill-style tabs with a background indicator.
+
+<ComponentPreview
+  title="Default Tabs"
+  code={"import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs/tabs';\n\n<Tabs defaultValue=\"overview\">\n  <TabsList>\n    <TabsTrigger value=\"overview\">Overview</TabsTrigger>\n    <TabsTrigger value=\"settings\">Settings</TabsTrigger>\n    <TabsTrigger value=\"billing\">Billing</TabsTrigger>\n  </TabsList>\n  <TabsContent value=\"overview\">Overview content here.</TabsContent>\n  <TabsContent value=\"settings\">Settings content here.</TabsContent>\n  <TabsContent value=\"billing\">Billing content here.</TabsContent>\n</Tabs>"}
+>
+  <Tabs defaultValue="overview">
+    <TabsList>
+      <TabsTrigger value="overview">Overview</TabsTrigger>
+      <TabsTrigger value="settings">Settings</TabsTrigger>
+      <TabsTrigger value="billing">Billing</TabsTrigger>
+    </TabsList>
+    <TabsContent value="overview">Overview content here.</TabsContent>
+    <TabsContent value="settings">Settings content here.</TabsContent>
+    <TabsContent value="billing">Billing content here.</TabsContent>
+  </Tabs>
+</ComponentPreview>
+
+## Line Variant
+
+Underline-style tabs with a bottom border indicator.
+
+<ComponentPreview
+  title="Line Tabs"
+  code={"<Tabs defaultValue=\"tab1\">\n  <TabsList variant=\"line\">\n    <TabsTrigger value=\"tab1\">Account</TabsTrigger>\n    <TabsTrigger value=\"tab2\">Security</TabsTrigger>\n    <TabsTrigger value=\"tab3\">Notifications</TabsTrigger>\n  </TabsList>\n  <TabsContent value=\"tab1\">Account settings.</TabsContent>\n  <TabsContent value=\"tab2\">Security settings.</TabsContent>\n  <TabsContent value=\"tab3\">Notification preferences.</TabsContent>\n</Tabs>"}
+>
+  <Tabs defaultValue="tab1">
+    <TabsList variant="line">
+      <TabsTrigger value="tab1">Account</TabsTrigger>
+      <TabsTrigger value="tab2">Security</TabsTrigger>
+      <TabsTrigger value="tab3">Notifications</TabsTrigger>
+    </TabsList>
+    <TabsContent value="tab1">Account settings.</TabsContent>
+    <TabsContent value="tab2">Security settings.</TabsContent>
+    <TabsContent value="tab3">Notification preferences.</TabsContent>
+  </Tabs>
+</ComponentPreview>
+
+## Disabled Tab
+
+Individual tabs can be disabled.
+
+<ComponentPreview
+  title="Disabled Tab"
+  code={"<Tabs defaultValue=\"active\">\n  <TabsList>\n    <TabsTrigger value=\"active\">Active</TabsTrigger>\n    <TabsTrigger value=\"disabled\" disabled>Disabled</TabsTrigger>\n    <TabsTrigger value=\"another\">Another</TabsTrigger>\n  </TabsList>\n  <TabsContent value=\"active\">Active tab content.</TabsContent>\n  <TabsContent value=\"disabled\">This is not reachable.</TabsContent>\n  <TabsContent value=\"another\">Another tab content.</TabsContent>\n</Tabs>"}
+>
+  <Tabs defaultValue="active">
+    <TabsList>
+      <TabsTrigger value="active">Active</TabsTrigger>
+      <TabsTrigger value="disabled" disabled>Disabled</TabsTrigger>
+      <TabsTrigger value="another">Another</TabsTrigger>
+    </TabsList>
+    <TabsContent value="active">Active tab content.</TabsContent>
+    <TabsContent value="disabled">This is not reachable.</TabsContent>
+    <TabsContent value="another">Another tab content.</TabsContent>
+  </Tabs>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add tabs
+```
+
+This copies two files into your project:
+
+- `components/ui/tabs/tabs.tsx` — the component
+- `components/ui/tabs/tabs.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs/tabs';
+
+<Tabs defaultValue="overview">
+  <TabsList variant="default">
+    <TabsTrigger value="overview">Overview</TabsTrigger>
+    <TabsTrigger value="settings">Settings</TabsTrigger>
+  </TabsList>
+  <TabsContent value="overview">Overview content.</TabsContent>
+  <TabsContent value="settings">Settings content.</TabsContent>
+</Tabs>
+```
+
+## API Reference
+
+### TabsProps
+
+<PropsTable component="tabs" />
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `Tabs` | `<div>` (Radix Root) | Root container. Requires `defaultValue` or controlled `value`. |
+| `TabsList` | `<div>` | Horizontal container for tab triggers. Accepts `variant` prop. |
+| `TabsTrigger` | `<button>` | Clickable tab button tied to content via matching `value` prop. |
+| `TabsContent` | `<div>` | Content panel that displays when its matching trigger is active. |
+
+## Accessibility
+
+- Built on `@radix-ui/react-tabs` with full WAI-ARIA tab semantics.
+- `TabsList` has `role="tablist"`; triggers have `role="tab"` with `aria-selected`.
+- Content panels have `role="tabpanel"` linked to their trigger via `aria-labelledby`.
+- `ArrowLeft` / `ArrowRight` navigate between triggers; `Enter` or `Space` activates.
+- Disabled triggers receive `aria-disabled="true"` and are skipped in keyboard navigation.

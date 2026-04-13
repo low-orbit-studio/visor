@@ -4,10 +4,16 @@
   "defaultOpen": true,
   "pages": [
     "accordion",
+    "avatar",
+    "badge",
+    "card",
     "carousel",
     "code-block",
     "collapsible",
     "image",
+    "progress",
+    "separator",
+    "skeleton",
     "table",
     "timeline"
   ]

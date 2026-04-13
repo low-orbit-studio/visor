@@ -1,0 +1,123 @@
+---
+title: Card
+description: A compound card component for grouping related content with header, body, and footer sections.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+
+## Default
+
+A basic card with header, content, and footer.
+
+<ComponentPreview
+  title="Default Card"
+  code={"import {\n  Card, CardHeader, CardTitle, CardDescription,\n  CardContent, CardFooter,\n} from '@/components/ui/card/card';\n\n<Card>\n  <CardHeader>\n    <CardTitle>Notifications</CardTitle>\n    <CardDescription>Manage your notification preferences.</CardDescription>\n  </CardHeader>\n  <CardContent>\n    <p>You have 3 unread messages.</p>\n  </CardContent>\n  <CardFooter>\n    <Button>Mark all as read</Button>\n  </CardFooter>\n</Card>"}
+>
+  <Card>
+    <CardHeader>
+      <CardTitle>Notifications</CardTitle>
+      <CardDescription>Manage your notification preferences.</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <p>You have 3 unread messages.</p>
+    </CardContent>
+    <CardFooter>
+      <Button>Mark all as read</Button>
+    </CardFooter>
+  </Card>
+</ComponentPreview>
+
+## Content Only
+
+A simple card with just a content section.
+
+<ComponentPreview
+  title="Content Only"
+  code={"<Card>\n  <CardContent>\n    <p>A minimal card with only content — no header or footer.</p>\n  </CardContent>\n</Card>"}
+>
+  <Card>
+    <CardContent>
+      <p>A minimal card with only content — no header or footer.</p>
+    </CardContent>
+  </Card>
+</ComponentPreview>
+
+## Small Size
+
+The `sm` size variant reduces internal padding and gap spacing.
+
+<ComponentPreview
+  title="Small Card"
+  code={"<Card size=\"sm\">\n  <CardHeader>\n    <CardTitle>Compact Card</CardTitle>\n    <CardDescription>Uses smaller padding.</CardDescription>\n  </CardHeader>\n  <CardContent>\n    <p>Ideal for dashboard widgets.</p>\n  </CardContent>\n</Card>"}
+>
+  <Card size="sm">
+    <CardHeader>
+      <CardTitle>Compact Card</CardTitle>
+      <CardDescription>Uses smaller padding.</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <p>Ideal for dashboard widgets.</p>
+    </CardContent>
+  </Card>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add card
+```
+
+This copies two files into your project:
+
+- `components/ui/card/card.tsx` — the component
+- `components/ui/card/card.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  Card, CardHeader, CardTitle, CardDescription,
+  CardContent, CardFooter,
+} from '@/components/ui/card/card';
+
+<Card>
+  <CardHeader>
+    <CardTitle>Title</CardTitle>
+    <CardDescription>Description text.</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <p>Body content here.</p>
+  </CardContent>
+  <CardFooter>
+    <Button>Action</Button>
+  </CardFooter>
+</Card>
+```
+
+## API Reference
+
+### CardProps
+
+<PropsTable component="card" />
+
+The component also accepts all standard `<div>` HTML attributes.
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `Card` | `<div>` | Root container with border and background surface. |
+| `CardHeader` | `<div>` | Top section with grid layout for title and description. |
+| `CardTitle` | `<div>` | Primary heading text. |
+| `CardDescription` | `<div>` | Secondary descriptive text in muted color. |
+| `CardContent` | `<div>` | Main body area with horizontal padding. |
+| `CardFooter` | `<div>` | Bottom section with flex layout for actions. |
+
+## Accessibility
+
+- Card is a presentational container — it does not add any ARIA roles by default.
+- Use semantic heading elements inside `CardTitle` when appropriate for document outline.
+- Interactive cards should wrap the entire card in an anchor or button as needed.

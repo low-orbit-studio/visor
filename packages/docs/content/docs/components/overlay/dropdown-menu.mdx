@@ -1,0 +1,125 @@
+---
+title: Dropdown Menu
+description: Menu of actions or options that opens from a trigger button. Built on Radix UI.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuGroup, DropdownMenuCheckboxItem, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent } from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+
+## Default
+
+A basic actions menu triggered by a button.
+
+<ComponentPreview
+  title="Default Dropdown"
+  code={"import {\n  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent,\n  DropdownMenuItem, DropdownMenuSeparator,\n} from '@/components/ui/dropdown-menu/dropdown-menu';\n\n<DropdownMenu>\n  <DropdownMenuTrigger asChild>\n    <Button variant=\"outline\">Actions</Button>\n  </DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuItem>Edit</DropdownMenuItem>\n    <DropdownMenuItem>Duplicate</DropdownMenuItem>\n    <DropdownMenuSeparator />\n    <DropdownMenuItem variant=\"destructive\">Delete</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"}
+>
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="outline">Actions</Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent>
+      <DropdownMenuItem>Edit</DropdownMenuItem>
+      <DropdownMenuItem>Duplicate</DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+</ComponentPreview>
+
+## With Labels and Shortcuts
+
+Group items under a label and display keyboard shortcut hints.
+
+<ComponentPreview
+  title="Labels and Shortcuts"
+  code={"<DropdownMenu>\n  <DropdownMenuTrigger asChild>\n    <Button variant=\"outline\">File</Button>\n  </DropdownMenuTrigger>\n  <DropdownMenuContent>\n    <DropdownMenuLabel>Document</DropdownMenuLabel>\n    <DropdownMenuGroup>\n      <DropdownMenuItem>\n        New <DropdownMenuShortcut>\u2318N</DropdownMenuShortcut>\n      </DropdownMenuItem>\n      <DropdownMenuItem>\n        Open <DropdownMenuShortcut>\u2318O</DropdownMenuShortcut>\n      </DropdownMenuItem>\n      <DropdownMenuItem>\n        Save <DropdownMenuShortcut>\u2318S</DropdownMenuShortcut>\n      </DropdownMenuItem>\n    </DropdownMenuGroup>\n    <DropdownMenuSeparator />\n    <DropdownMenuItem variant=\"destructive\">Delete</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"}
+>
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="outline">File</Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent>
+      <DropdownMenuLabel>Document</DropdownMenuLabel>
+      <DropdownMenuGroup>
+        <DropdownMenuItem>
+          New <DropdownMenuShortcut>{"\u2318N"}</DropdownMenuShortcut>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          Open <DropdownMenuShortcut>{"\u2318O"}</DropdownMenuShortcut>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          Save <DropdownMenuShortcut>{"\u2318S"}</DropdownMenuShortcut>
+        </DropdownMenuItem>
+      </DropdownMenuGroup>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add dropdown-menu
+```
+
+This copies two files into your project:
+
+- `components/ui/dropdown-menu/dropdown-menu.tsx` — the component
+- `components/ui/dropdown-menu/dropdown-menu.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent,
+  DropdownMenuItem, DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu/dropdown-menu';
+
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button variant="ghost">Actions</Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuItem>Edit</DropdownMenuItem>
+    <DropdownMenuItem>Duplicate</DropdownMenuItem>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+## API Reference
+
+### DropdownMenuProps
+
+<PropsTable component="dropdown-menu" />
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `DropdownMenu` | -- (Radix Root) | Root component managing open/close state. |
+| `DropdownMenuTrigger` | `<button>` | Button that opens the menu. |
+| `DropdownMenuContent` | `<div>` (portal) | The floating menu container. |
+| `DropdownMenuItem` | `<div>` | A clickable menu action. Supports `variant="destructive"`. |
+| `DropdownMenuCheckboxItem` | `<div>` | A toggleable checkbox item. |
+| `DropdownMenuRadioGroup` | `<div>` | Container for mutually exclusive radio items. |
+| `DropdownMenuRadioItem` | `<div>` | A selectable radio option. |
+| `DropdownMenuLabel` | `<div>` | Non-interactive group heading. |
+| `DropdownMenuSeparator` | `<div>` | Visual divider between groups. |
+| `DropdownMenuShortcut` | `<span>` | Keyboard shortcut hint aligned to the right. |
+| `DropdownMenuGroup` | `<div>` | Logical grouping of related items. |
+| `DropdownMenuSub` | -- | Root for a nested sub-menu. |
+| `DropdownMenuSubTrigger` | `<div>` | Item that opens a sub-menu on hover. |
+| `DropdownMenuSubContent` | `<div>` | The nested sub-menu container. |
+
+## Accessibility
+
+- Built on `@radix-ui/react-dropdown-menu` with full WAI-ARIA menu semantics.
+- `ArrowDown` / `ArrowUp` navigate between items; `Enter` or `Space` activates.
+- Sub-menus open with `ArrowRight` and close with `ArrowLeft` or `Escape`.
+- Items with `variant="destructive"` are visually distinct but keyboard-accessible like any other item.

@@ -1,0 +1,135 @@
+---
+title: Sidebar
+description: Feature-rich collapsible sidebar with provider, menus, groups, and sub-navigation.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { SidebarProvider, Sidebar, SidebarHeader, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
+
+## Default
+
+A sidebar with grouped navigation items wrapping a main content area.
+
+<ComponentPreview
+  title="Sidebar Navigation"
+  code={"import {\n  SidebarProvider, Sidebar, SidebarHeader, SidebarContent,\n  SidebarGroup, SidebarGroupLabel, SidebarGroupContent,\n  SidebarMenu, SidebarMenuItem, SidebarMenuButton,\n  SidebarFooter, SidebarInset,\n} from '@/components/ui/sidebar/sidebar';\n\n<SidebarProvider>\n  <Sidebar>\n    <SidebarHeader>\n      <h2>My App</h2>\n    </SidebarHeader>\n    <SidebarContent>\n      <SidebarGroup>\n        <SidebarGroupLabel>Navigation</SidebarGroupLabel>\n        <SidebarGroupContent>\n          <SidebarMenu>\n            <SidebarMenuItem>\n              <SidebarMenuButton isActive>Dashboard</SidebarMenuButton>\n            </SidebarMenuItem>\n            <SidebarMenuItem>\n              <SidebarMenuButton>Settings</SidebarMenuButton>\n            </SidebarMenuItem>\n          </SidebarMenu>\n        </SidebarGroupContent>\n      </SidebarGroup>\n    </SidebarContent>\n    <SidebarFooter>\n      <p>Footer content</p>\n    </SidebarFooter>\n  </Sidebar>\n  <SidebarInset>\n    <main>Page content</main>\n  </SidebarInset>\n</SidebarProvider>"}
+>
+  <div style={{ height: '320px', display: 'flex', border: '1px solid var(--border-default, #e5e7eb)', borderRadius: 'var(--radius-md, 0.5rem)', overflow: 'hidden' }}>
+    <SidebarProvider defaultOpen>
+      <Sidebar>
+        <SidebarHeader>
+          <span style={{ fontWeight: 600, padding: '0.5rem' }}>My App</span>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton isActive>Dashboard</SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton>Settings</SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton>Profile</SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted, #6b7280)', padding: '0.5rem' }}>v1.0.0</span>
+        </SidebarFooter>
+      </Sidebar>
+      <SidebarInset>
+        <main style={{ padding: '1rem' }}>Page content</main>
+      </SidebarInset>
+    </SidebarProvider>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add sidebar
+```
+
+This copies two files into your project:
+
+- `components/ui/sidebar/sidebar.tsx` — the component
+- `components/ui/sidebar/sidebar.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  SidebarProvider, Sidebar, SidebarHeader, SidebarContent,
+  SidebarGroup, SidebarGroupLabel, SidebarGroupContent,
+  SidebarMenu, SidebarMenuItem, SidebarMenuButton,
+  SidebarFooter, SidebarInset,
+} from '@/components/ui/sidebar/sidebar';
+
+<SidebarProvider>
+  <Sidebar>
+    <SidebarHeader>
+      <h2>My App</h2>
+    </SidebarHeader>
+    <SidebarContent>
+      <SidebarGroup>
+        <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton isActive>Dashboard</SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+    </SidebarContent>
+  </Sidebar>
+  <SidebarInset>
+    <main>Page content</main>
+  </SidebarInset>
+</SidebarProvider>
+```
+
+## API Reference
+
+### SidebarProps
+
+<PropsTable component="sidebar" />
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `SidebarProvider` | `<div>` | Context provider managing state, mobile detection, and keyboard shortcuts. |
+| `Sidebar` | `<div>` | The sidebar container with `side`, `variant`, and `collapsible` props. |
+| `SidebarTrigger` | `<button>` | Button that toggles sidebar open/closed. |
+| `SidebarRail` | `<button>` | Clickable rail at the sidebar edge for toggling. |
+| `SidebarInset` | `<main>` | Main content area companion to the sidebar. |
+| `SidebarHeader` | `<div>` | Top section for branding or user info. |
+| `SidebarFooter` | `<div>` | Bottom section for settings or user actions. |
+| `SidebarContent` | `<div>` | Scrollable content area between header and footer. |
+| `SidebarGroup` | `<div>` | Visual grouping of related menu items. |
+| `SidebarGroupLabel` | `<div>` | Heading label for a group. |
+| `SidebarGroupAction` | `<button>` | Action button in a group header. |
+| `SidebarGroupContent` | `<div>` | Content container within a group. |
+| `SidebarMenu` | `<ul>` | List container for menu items. |
+| `SidebarMenuItem` | `<li>` | Individual menu list item. |
+| `SidebarMenuButton` | `<button>` | Interactive button with active state and tooltip support. |
+| `SidebarMenuAction` | `<button>` | Secondary action (e.g., more options) on a menu item. |
+| `SidebarMenuBadge` | `<div>` | Badge indicator (e.g., notification count). |
+| `SidebarMenuSub` | `<ul>` | Nested sub-menu list. |
+| `SidebarMenuSubItem` | `<li>` | Sub-menu list item. |
+| `SidebarMenuSubButton` | `<a>` | Interactive link/button within a sub-menu item. |
+| `SidebarSeparator` | `<hr>` | Horizontal divider between sections. |
+
+## Accessibility
+
+- Toggle keyboard shortcut: `Cmd+B` (macOS) / `Ctrl+B` (Windows/Linux).
+- Menu items use semantic `<ul>` / `<li>` structure.
+- `SidebarMenuButton` supports `isActive` for `aria-current` indication.
+- Collapsible modes (offcanvas, icon-only) preserve accessible labels via tooltips.

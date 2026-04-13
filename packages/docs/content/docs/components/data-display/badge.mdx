@@ -1,0 +1,67 @@
+---
+title: Badge
+description: A small label component for status indicators, counts, and tags with multiple visual variants.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Badge } from '@/components/ui/badge';
+
+## Variants
+
+Badge ships with four core variants for common status patterns. Each variant uses semantic color tokens so badges adapt automatically across themes.
+
+<ComponentPreview
+  title="Badge Variants"
+  code={"import { Badge } from '@/components/ui/badge/badge';\n\n<Badge variant=\"default\">Active</Badge>\n<Badge variant=\"secondary\">Draft</Badge>\n<Badge variant=\"outline\">v2.1.0</Badge>\n<Badge variant=\"destructive\">Error</Badge>"}
+>
+  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+    <Badge variant="default">Active</Badge>
+    <Badge variant="secondary">Draft</Badge>
+    <Badge variant="outline">v2.1.0</Badge>
+    <Badge variant="destructive">Error</Badge>
+  </div>
+</ComponentPreview>
+
+## Semantic Variants
+
+Additional semantic variants provide intent-specific coloring for success, warning, and info states.
+
+<ComponentPreview
+  title="Semantic Variants"
+  code={"import { Badge } from '@/components/ui/badge/badge';\n\n<Badge variant=\"success\">Deployed</Badge>\n<Badge variant=\"warning\">Pending</Badge>\n<Badge variant=\"info\">New</Badge>"}
+>
+  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+    <Badge variant="success">Deployed</Badge>
+    <Badge variant="warning">Pending</Badge>
+    <Badge variant="info">New</Badge>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add badge
+```
+
+This copies two files into your project:
+
+- `components/ui/badge/badge.tsx` — the component
+- `components/ui/badge/badge.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Badge } from '@/components/ui/badge/badge';
+
+<Badge variant="default">Active</Badge>
+<Badge variant="outline">v2.1.0</Badge>
+```
+
+## API Reference
+
+### BadgeProps
+
+<PropsTable component="badge" />
+
+The component also accepts all standard `<span>` HTML attributes.

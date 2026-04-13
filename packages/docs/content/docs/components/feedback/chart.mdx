@@ -1,0 +1,118 @@
+---
+title: Chart
+description: A Recharts wrapper providing themed chart container, tooltip, and legend components.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ChartDemo } from '@/components/ui/chart-demo';
+
+<ComponentPreview
+  title="Bar Chart"
+  code={"import { ChartContainer } from '@/components/ui/chart/chart';\nimport type { ChartConfig } from '@/components/ui/chart/chart';\nimport { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';\n\nconst data = [\n  { name: 'Jan', value: 400 },\n  { name: 'Feb', value: 300 },\n  { name: 'Mar', value: 600 },\n  { name: 'Apr', value: 500 },\n  { name: 'May', value: 700 },\n];\n\nconst config: ChartConfig = {\n  value: { label: 'Revenue', color: 'var(--chart-1)' },\n};\n\n<ChartContainer config={config} style={{ height: 200, width: '100%' }}>\n  <ResponsiveContainer width=\"100%\" height=\"100%\">\n    <BarChart data={data}>\n      <CartesianGrid strokeDasharray=\"3 3\" />\n      <XAxis dataKey=\"name\" />\n      <YAxis />\n      <Tooltip />\n      <Bar dataKey=\"value\" fill=\"var(--color-value)\" />\n    </BarChart>\n  </ResponsiveContainer>\n</ChartContainer>"}
+>
+  <ChartDemo />
+</ComponentPreview>
+
+## Overview
+
+Chart bridges Recharts with Visor's token system. `ChartContainer` injects scoped CSS custom properties for chart colors, while `ChartTooltipContent` and `ChartLegendContent` provide pre-styled, token-aware renderers.
+
+```tsx
+import {
+  ChartContainer, ChartTooltip, ChartTooltipContent,
+  ChartLegend, ChartLegendContent
+} from '@/components/ui/chart/chart';
+import type { ChartConfig } from '@/components/ui/chart/chart';
+import { BarChart, Bar, XAxis, YAxis } from 'recharts';
+
+const data = [
+  { month: 'Jan', sales: 186, revenue: 80 },
+  { month: 'Feb', sales: 305, revenue: 200 },
+  { month: 'Mar', sales: 237, revenue: 120 },
+];
+
+const config: ChartConfig = {
+  sales: { label: 'Sales', color: 'var(--chart-1)' },
+  revenue: { label: 'Revenue', color: 'var(--chart-2)' },
+};
+
+<ChartContainer config={config}>
+  <BarChart data={data}>
+    <XAxis dataKey="month" />
+    <YAxis />
+    <Bar dataKey="sales" fill="var(--color-sales)" />
+    <Bar dataKey="revenue" fill="var(--color-revenue)" />
+    <ChartTooltip content={<ChartTooltipContent />} />
+    <ChartLegend content={<ChartLegendContent />} />
+  </BarChart>
+</ChartContainer>
+```
+
+## ChartConfig
+
+The `ChartConfig` object maps series keys to labels, optional icons, and color values. Colors can be a single value or per-theme:
+
+```tsx
+// Single color for all themes
+const config: ChartConfig = {
+  sales: { label: 'Sales', color: 'var(--chart-1)' },
+};
+
+// Per-theme colors
+const config: ChartConfig = {
+  sales: {
+    label: 'Sales',
+    theme: { light: '#4f46e5', dark: '#818cf8' },
+  },
+};
+```
+
+## Installation
+
+```bash
+npx visor add chart
+```
+
+This copies two files into your project:
+
+- `components/ui/chart/chart.tsx` — the component
+- `components/ui/chart/chart.module.css` — the styles
+
+**Peer dependency:** Chart requires `recharts` to be installed in your project.
+
+```bash
+npm install recharts
+```
+
+## API Reference
+
+### ChartProps
+
+<PropsTable component="chart" />
+
+### Sub-components
+
+| Component | Purpose |
+|-----------|---------|
+| `ChartContainer` | Responsive wrapper that provides ChartConfig context and injects scoped color CSS |
+| `ChartTooltip` | Re-export of Recharts Tooltip for use with ChartTooltipContent |
+| `ChartTooltipContent` | Token-themed tooltip renderer with indicator dots, labels, and formatted values |
+| `ChartLegend` | Re-export of Recharts Legend for use with ChartLegendContent |
+| `ChartLegendContent` | Token-themed legend renderer with color swatches and config-driven labels |
+| `ChartStyle` | Internal component that injects scoped CSS custom properties for chart colors |
+
+### ChartTooltipContent Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `indicator` | `"line" \| "dot" \| "dashed"` | `"dot"` | Tooltip color indicator style |
+| `hideLabel` | `boolean` | `false` | Hides the tooltip header label |
+| `hideIndicator` | `boolean` | `false` | Hides the color indicator in tooltip items |
+
+### ChartLegendContent Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `hideIcon` | `boolean` | `false` | Hides icons in legend items |
+| `verticalAlign` | `"top" \| "bottom"` | `"bottom"` | Legend vertical position |
