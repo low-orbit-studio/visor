@@ -1,0 +1,95 @@
+---
+title: Tooltip
+description: Small text label that appears on hover or focus to describe an element.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Button } from '@/components/ui/button';
+
+## Default
+
+Wrap your trigger element with `Tooltip` and `TooltipTrigger`, then place the label text in `TooltipContent`. A `TooltipProvider` must wrap all tooltips in your app.
+
+<ComponentPreview
+  title="Basic Tooltip"
+  code={"import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip/tooltip';\nimport { Button } from '@/components/ui/button/button';\n\n<TooltipProvider>\n  <Tooltip>\n    <TooltipTrigger asChild>\n      <Button variant=\"outline\">Hover me</Button>\n    </TooltipTrigger>\n    <TooltipContent>This is a tooltip</TooltipContent>\n  </Tooltip>\n</TooltipProvider>"}
+>
+  <TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button variant="outline">Hover me</Button>
+      </TooltipTrigger>
+      <TooltipContent>This is a tooltip</TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
+</ComponentPreview>
+
+## Side Offset
+
+Use the `sideOffset` prop on `TooltipContent` to control the distance between the trigger and the tooltip.
+
+<ComponentPreview
+  title="Custom Offset"
+  code={"import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip/tooltip';\nimport { Button } from '@/components/ui/button/button';\n\n<TooltipProvider>\n  <Tooltip>\n    <TooltipTrigger asChild>\n      <Button variant=\"outline\">12px offset</Button>\n    </TooltipTrigger>\n    <TooltipContent sideOffset={12}>Tooltip with more spacing</TooltipContent>\n  </Tooltip>\n</TooltipProvider>"}
+>
+  <TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button variant="outline">12px offset</Button>
+      </TooltipTrigger>
+      <TooltipContent sideOffset={12}>Tooltip with more spacing</TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add tooltip
+```
+
+This copies two files into your project:
+
+- `components/ui/tooltip/tooltip.tsx` — the component
+- `components/ui/tooltip/tooltip.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  Tooltip, TooltipContent, TooltipProvider, TooltipTrigger
+} from '@/components/ui/tooltip/tooltip';
+
+// Wrap your app with TooltipProvider once
+<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <button>?</button>
+    </TooltipTrigger>
+    <TooltipContent>Help text</TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+```
+
+## API Reference
+
+### TooltipProps
+
+<PropsTable component="tooltip" />
+
+### Sub-components
+
+| Component | Purpose |
+|-----------|---------|
+| `TooltipProvider` | Wraps the app to set global tooltip delay and behavior |
+| `Tooltip` | Root component managing open/close state for a single tooltip |
+| `TooltipTrigger` | Element that activates the tooltip on hover/focus |
+| `TooltipContent` | The floating label rendered in a portal |
+
+## Accessibility
+
+- Built on `@radix-ui/react-tooltip` with automatic `aria-describedby` associations.
+- Tooltips appear on both hover and keyboard focus, ensuring full keyboard accessibility.
+- Use tooltips for supplementary labels only — they should not contain essential information or interactive elements.

@@ -1,0 +1,92 @@
+---
+title: Alert
+description: Static inline callout for important messages with semantic variants.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+
+## Variants
+
+Alert provides semantic variants for different message types. Each variant uses distinct color tokens that adapt across themes.
+
+<ComponentPreview
+  title="Alert Variants"
+  code={"import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert/alert';\n\n<Alert variant=\"default\">\n  <AlertTitle>Heads up</AlertTitle>\n  <AlertDescription>This is a default informational alert.</AlertDescription>\n</Alert>\n<Alert variant=\"destructive\">\n  <AlertTitle>Error</AlertTitle>\n  <AlertDescription>Your session has expired. Please log in again.</AlertDescription>\n</Alert>\n<Alert variant=\"success\">\n  <AlertTitle>Success</AlertTitle>\n  <AlertDescription>Your changes have been saved.</AlertDescription>\n</Alert>\n<Alert variant=\"warning\">\n  <AlertTitle>Warning</AlertTitle>\n  <AlertDescription>This action cannot be undone.</AlertDescription>\n</Alert>"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%' }}>
+    <Alert variant="default">
+      <AlertTitle>Heads up</AlertTitle>
+      <AlertDescription>This is a default informational alert.</AlertDescription>
+    </Alert>
+    <Alert variant="destructive">
+      <AlertTitle>Error</AlertTitle>
+      <AlertDescription>Your session has expired. Please log in again.</AlertDescription>
+    </Alert>
+    <Alert variant="success">
+      <AlertTitle>Success</AlertTitle>
+      <AlertDescription>Your changes have been saved.</AlertDescription>
+    </Alert>
+    <Alert variant="warning">
+      <AlertTitle>Warning</AlertTitle>
+      <AlertDescription>This action cannot be undone.</AlertDescription>
+    </Alert>
+  </div>
+</ComponentPreview>
+
+## Description Only
+
+AlertTitle is optional. Use AlertDescription alone for simpler inline messages.
+
+<ComponentPreview
+  title="Description Only"
+  code={"import { Alert, AlertDescription } from '@/components/ui/alert/alert';\n\n<Alert variant=\"info\">\n  <AlertDescription>You can customize your notification preferences in settings.</AlertDescription>\n</Alert>"}
+>
+  <div style={{ width: '100%' }}>
+    <Alert variant="info">
+      <AlertDescription>You can customize your notification preferences in settings.</AlertDescription>
+    </Alert>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add alert
+```
+
+This copies two files into your project:
+
+- `components/ui/alert/alert.tsx` — the component
+- `components/ui/alert/alert.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert/alert';
+
+<Alert variant="destructive">
+  <AlertTitle>Error</AlertTitle>
+  <AlertDescription>Something went wrong.</AlertDescription>
+</Alert>
+```
+
+## API Reference
+
+### AlertProps
+
+<PropsTable component="alert" />
+
+The component also accepts all standard `<div>` HTML attributes.
+
+### Sub-components
+
+- **`AlertTitle`** — Bold heading text for the alert message. Accepts all `<div>` attributes.
+- **`AlertDescription`** — Secondary descriptive text below the title. Accepts all `<div>` attributes.
+
+## Accessibility
+
+- Renders with `role="alert"`, which announces the content to screen readers immediately.
+- Use `AlertTitle` to provide a concise summary that screen readers announce first.
+- For non-urgent messages, consider using Banner with `role="status"` instead.

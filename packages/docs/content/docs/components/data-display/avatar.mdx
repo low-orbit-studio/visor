@@ -1,0 +1,84 @@
+---
+title: Avatar
+description: A circular avatar component with image display and fallback support for initials or icons.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+
+## Default
+
+Avatar displays an image with automatic fallback to initials when the image is unavailable.
+
+<ComponentPreview
+  title="Avatar with Fallback"
+  code={"import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar/avatar';\n\n<Avatar>\n  <AvatarImage src=\"https://github.com/shadcn.png\" alt=\"User\" />\n  <AvatarFallback>JD</AvatarFallback>\n</Avatar>\n<Avatar>\n  <AvatarFallback>AB</AvatarFallback>\n</Avatar>"}
+>
+  <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+    <Avatar>
+      <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+      <AvatarFallback>JD</AvatarFallback>
+    </Avatar>
+    <Avatar>
+      <AvatarFallback>AB</AvatarFallback>
+    </Avatar>
+  </div>
+</ComponentPreview>
+
+## Sizes
+
+Three size variants keep avatar dimensions consistent: `sm` (1.5rem), `default` (2rem), and `lg` (2.5rem).
+
+<ComponentPreview
+  title="Avatar Sizes"
+  code={"import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar/avatar';\n\n<Avatar size=\"sm\">\n  <AvatarFallback>SM</AvatarFallback>\n</Avatar>\n<Avatar size=\"default\">\n  <AvatarFallback>MD</AvatarFallback>\n</Avatar>\n<Avatar size=\"lg\">\n  <AvatarFallback>LG</AvatarFallback>\n</Avatar>"}
+>
+  <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+    <Avatar size="sm">
+      <AvatarFallback>SM</AvatarFallback>
+    </Avatar>
+    <Avatar size="default">
+      <AvatarFallback>MD</AvatarFallback>
+    </Avatar>
+    <Avatar size="lg">
+      <AvatarFallback>LG</AvatarFallback>
+    </Avatar>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add avatar
+```
+
+This copies two files into your project:
+
+- `components/ui/avatar/avatar.tsx` — the component
+- `components/ui/avatar/avatar.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar/avatar';
+
+<Avatar>
+  <AvatarImage src="/profile.jpg" alt="Jane Doe" />
+  <AvatarFallback>JD</AvatarFallback>
+</Avatar>
+```
+
+## API Reference
+
+### AvatarProps
+
+<PropsTable component="avatar" />
+
+### Sub-components
+
+| Component | Purpose |
+|-----------|---------|
+| `Avatar` | Root container with size variants |
+| `AvatarImage` | Image element with object-fit cover |
+| `AvatarFallback` | Centered fallback content shown when the image is unavailable |

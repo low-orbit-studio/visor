@@ -1,0 +1,118 @@
+---
+title: Breadcrumb
+description: A breadcrumb navigation component showing the user's location within a page hierarchy.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator, BreadcrumbEllipsis } from '@/components/ui/breadcrumb';
+
+## Default
+
+Breadcrumb uses a compound component pattern with explicit separators between items. The final item uses `BreadcrumbPage` to indicate the current page.
+
+<ComponentPreview
+  title="Basic Breadcrumb"
+  code={"import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb/breadcrumb';\n\n<Breadcrumb>\n  <BreadcrumbList>\n    <BreadcrumbItem>\n      <BreadcrumbLink href=\"/\">Home</BreadcrumbLink>\n    </BreadcrumbItem>\n    <BreadcrumbSeparator />\n    <BreadcrumbItem>\n      <BreadcrumbLink href=\"/docs\">Docs</BreadcrumbLink>\n    </BreadcrumbItem>\n    <BreadcrumbSeparator />\n    <BreadcrumbItem>\n      <BreadcrumbPage>Components</BreadcrumbPage>\n    </BreadcrumbItem>\n  </BreadcrumbList>\n</Breadcrumb>"}
+>
+  <Breadcrumb>
+    <BreadcrumbList>
+      <BreadcrumbItem>
+        <BreadcrumbLink href="/">Home</BreadcrumbLink>
+      </BreadcrumbItem>
+      <BreadcrumbSeparator />
+      <BreadcrumbItem>
+        <BreadcrumbLink href="/docs">Docs</BreadcrumbLink>
+      </BreadcrumbItem>
+      <BreadcrumbSeparator />
+      <BreadcrumbItem>
+        <BreadcrumbPage>Components</BreadcrumbPage>
+      </BreadcrumbItem>
+    </BreadcrumbList>
+  </Breadcrumb>
+</ComponentPreview>
+
+## With Ellipsis
+
+Use `BreadcrumbEllipsis` to collapse intermediate levels in deep hierarchies.
+
+<ComponentPreview
+  title="Collapsed Breadcrumb"
+  code={"import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator, BreadcrumbEllipsis } from '@/components/ui/breadcrumb/breadcrumb';\n\n<Breadcrumb>\n  <BreadcrumbList>\n    <BreadcrumbItem>\n      <BreadcrumbLink href=\"/\">Home</BreadcrumbLink>\n    </BreadcrumbItem>\n    <BreadcrumbSeparator />\n    <BreadcrumbItem>\n      <BreadcrumbEllipsis />\n    </BreadcrumbItem>\n    <BreadcrumbSeparator />\n    <BreadcrumbItem>\n      <BreadcrumbLink href=\"/docs/components\">Components</BreadcrumbLink>\n    </BreadcrumbItem>\n    <BreadcrumbSeparator />\n    <BreadcrumbItem>\n      <BreadcrumbPage>Breadcrumb</BreadcrumbPage>\n    </BreadcrumbItem>\n  </BreadcrumbList>\n</Breadcrumb>"}
+>
+  <Breadcrumb>
+    <BreadcrumbList>
+      <BreadcrumbItem>
+        <BreadcrumbLink href="/">Home</BreadcrumbLink>
+      </BreadcrumbItem>
+      <BreadcrumbSeparator />
+      <BreadcrumbItem>
+        <BreadcrumbEllipsis />
+      </BreadcrumbItem>
+      <BreadcrumbSeparator />
+      <BreadcrumbItem>
+        <BreadcrumbLink href="/docs/components">Components</BreadcrumbLink>
+      </BreadcrumbItem>
+      <BreadcrumbSeparator />
+      <BreadcrumbItem>
+        <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+      </BreadcrumbItem>
+    </BreadcrumbList>
+  </Breadcrumb>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add breadcrumb
+```
+
+This copies two files into your project:
+
+- `components/ui/breadcrumb/breadcrumb.tsx` — the component
+- `components/ui/breadcrumb/breadcrumb.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  Breadcrumb, BreadcrumbList, BreadcrumbItem,
+  BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator
+} from '@/components/ui/breadcrumb/breadcrumb';
+
+<Breadcrumb>
+  <BreadcrumbList>
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/">Home</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbPage>Current Page</BreadcrumbPage>
+    </BreadcrumbItem>
+  </BreadcrumbList>
+</Breadcrumb>
+```
+
+## API Reference
+
+### BreadcrumbProps
+
+<PropsTable component="breadcrumb" />
+
+### Sub-components
+
+| Component | Purpose |
+|-----------|---------|
+| `Breadcrumb` | Root `<nav>` element with `aria-label="breadcrumb"` |
+| `BreadcrumbList` | Ordered list container with flex layout and wrapping |
+| `BreadcrumbItem` | List item wrapper for a single breadcrumb entry |
+| `BreadcrumbLink` | Clickable link for navigable breadcrumb levels |
+| `BreadcrumbPage` | Non-interactive span for the current page with `aria-current="page"` |
+| `BreadcrumbSeparator` | Visual divider between items, defaults to a caret icon |
+| `BreadcrumbEllipsis` | Dots indicator for collapsed intermediate levels |
+
+## Accessibility
+
+- Renders a `<nav>` element with `aria-label="breadcrumb"` for landmark navigation.
+- The current page is marked with `aria-current="page"` and rendered as non-interactive.
+- Separators are hidden from the accessibility tree with `aria-hidden="true"`.

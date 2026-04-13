@@ -1,0 +1,74 @@
+---
+title: Separator
+description: Visual divider between content sections in horizontal or vertical orientation.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Separator } from '@/components/ui/separator';
+
+## Horizontal
+
+The default orientation renders a full-width horizontal rule using Visor border tokens.
+
+<ComponentPreview
+  title="Horizontal Separator"
+  code={"import { Separator } from '@/components/ui/separator/separator';\n\n<div>\n  <p>Section A</p>\n  <Separator />\n  <p>Section B</p>\n</div>"}
+>
+  <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+    <p style={{ margin: 0 }}>Section A</p>
+    <Separator />
+    <p style={{ margin: 0 }}>Section B</p>
+  </div>
+</ComponentPreview>
+
+## Vertical
+
+Set `orientation="vertical"` to render a vertical divider between inline elements.
+
+<ComponentPreview
+  title="Vertical Separator"
+  code={"import { Separator } from '@/components/ui/separator/separator';\n\n<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n  <span>Item 1</span>\n  <Separator orientation=\"vertical\" />\n  <span>Item 2</span>\n  <Separator orientation=\"vertical\" />\n  <span>Item 3</span>\n</div>"}
+>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', height: '1.25rem' }}>
+    <span>Item 1</span>
+    <Separator orientation="vertical" />
+    <span>Item 2</span>
+    <Separator orientation="vertical" />
+    <span>Item 3</span>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add separator
+```
+
+This copies two files into your project:
+
+- `components/ui/separator/separator.tsx` — the component
+- `components/ui/separator/separator.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Separator } from '@/components/ui/separator/separator';
+
+<Separator />
+<Separator orientation="vertical" />
+```
+
+## API Reference
+
+### SeparatorProps
+
+<PropsTable component="separator" />
+
+The component also accepts all standard Radix UI Separator props.
+
+## Accessibility
+
+- Built on `@radix-ui/react-separator` with correct `role="separator"` semantics.
+- Set `decorative={false}` when the separator conveys meaningful content grouping that screen readers should announce.
+- Decorative separators (the default) are hidden from the accessibility tree with `role="none"`.
