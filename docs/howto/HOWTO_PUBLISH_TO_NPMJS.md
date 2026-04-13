@@ -34,7 +34,7 @@ The release workflow (`.github/workflows/release.yml`) runs on every push to `ma
 ### Requirements
 
 - `NPM_TOKEN` secret set in GitHub repo settings (Settings → Secrets → Actions)
-- The token must be an **automation** type to bypass npm 2FA. Create one at [npmjs.com → Access Tokens → Generate New Token → Automation](https://www.npmjs.com/settings/~/tokens).
+- The token must be an **automation** type to bypass npm browser auth. Create one at [npmjs.com → Access Tokens → Generate New Token → Automation](https://www.npmjs.com/settings/~/tokens).
 
 ---
 
@@ -66,19 +66,11 @@ npm run build
 
 ### 4. Publish
 
-If your npm account has 2FA enabled, you need a one-time password:
-
-```sh
-NPM_CONFIG_OTP=<your-authenticator-code> npm run changeset:publish
-```
-
-Without 2FA (automation token set locally):
-
 ```sh
 npm run changeset:publish
 ```
 
-Changesets will detect which packages have versions not yet on npm and publish only those.
+npm will open a browser authentication page. When prompted with `Press ENTER to open in the browser...`, press Enter and complete the auth flow at the npmjs.com URL shown. Changesets will detect which packages have versions not yet on npm and publish only those.
 
 ### 5. Verify
 
@@ -92,15 +84,15 @@ npm view @loworbitstudio/visor-theme-engine
 
 ## Troubleshooting
 
-### `EOTP` error
+### Browser auth prompt instead of OTP
 
-npm 2FA is requiring a one-time password. Pass it via `NPM_CONFIG_OTP`:
+npm uses browser-based authentication (a URL like `https://www.npmjs.com/auth/cli/...`) instead of a TOTP code when the account uses passkeys or security keys. This is expected — press Enter to open the URL, log in, and the publish will complete automatically.
 
-```sh
-NPM_CONFIG_OTP=123456 npm run changeset:publish
-```
+For CI (GitHub Actions), this is bypassed entirely by using an **automation** type token. See Requirements above.
 
-For CI, ensure `NPM_TOKEN` is an **automation** token (not a legacy token). Automation tokens bypass OTP.
+### `E403` warning during publish
+
+You may see a `403` on the `/v1/user` check at the start of publish — this is cosmetic and does not prevent publishing. Changesets proceeds and publishes successfully regardless.
 
 ### `E404` — package not found after publish
 
