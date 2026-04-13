@@ -258,12 +258,30 @@ npx visor theme export --format figma --json
 
 ## Tokens Package
 
+> **`@loworbitstudio/visor-core` is not yet published to npm.** For new Next.js projects, run `npx @loworbitstudio/visor init --template nextjs` — it generates all tokens inline and requires no package install. Do NOT run `npm install @loworbitstudio/visor-core` — it will 404.
+
 `@loworbitstudio/visor-core` is imported once in the global CSS entry point. Do not import it in individual component files.
 
 ```css
 /* globals.css or app/globals.css */
 @import "@loworbitstudio/visor-core";
 ```
+
+### Available exports
+
+Use only these subpath imports — no others exist:
+
+| Import path | Contents |
+| --- | --- |
+| `@loworbitstudio/visor-core` | Full bundle (primitives + semantic + light + dark) |
+| `@loworbitstudio/visor-core/css` | Alias for the full bundle |
+| `@loworbitstudio/visor-core/tokens` | All tokens without theme layers |
+| `@loworbitstudio/visor-core/primitives` | Raw color/spacing/type primitives only |
+| `@loworbitstudio/visor-core/semantic` | Semantic tokens only |
+| `@loworbitstudio/visor-core/themes/light` | Light theme overrides only |
+| `@loworbitstudio/visor-core/themes/dark` | Dark theme overrides only |
+
+> **The space theme is docs-site-only.** `@loworbitstudio/visor-core/themes/space` does not exist. The space theme ships with the Visor docs site (`packages/docs/app/space-theme.css`) and is not a package export.
 
 ### Token naming
 
