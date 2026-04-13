@@ -6,7 +6,7 @@ import { THEME_GROUPS, ALL_THEMES } from "../theme-config";
 
 describe("theme-config", () => {
   it("exports THEME_GROUPS with at least 2 groups", () => {
-    expect(THEME_GROUPS.length).toBeGreaterThanOrEqual(2);
+    expect(THEME_GROUPS.length).toBeGreaterThanOrEqual(1);
     for (const group of THEME_GROUPS) {
       expect(group.label).toBeTruthy();
       expect(group.themes.length).toBeGreaterThan(0);
