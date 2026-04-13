@@ -35,7 +35,7 @@ npx visor add <component-name> --overwrite
 
 ---
 
-## Component Catalog (71)
+## Component Catalog (81)
 
 ### Data Display (7)
 
@@ -153,6 +153,23 @@ npx visor add <component-name> --overwrite
 | `heading` | Semantic heading (h1–h6) with visual size override |
 | `text` | General-purpose text element with size variants |
 
+### Admin (10)
+
+Installable as a batch: `npx visor add --category admin`
+
+| Component | Description |
+| --- | --- |
+| `activity-feed` | Vertical list of timestamped events for dashboards and audit logs |
+| `bulk-action-bar` | Sticky toolbar shown when rows are selected, with count and dismiss |
+| `confirm-dialog` | Severity-driven confirmation dialog with optional confirm-text gate |
+| `data-table` | Tanstack-powered table with sorting, pagination, selection, and filter |
+| `empty-state` | Placeholder for empty lists, tables, and dashboard regions |
+| `filter-bar` | Search input, filter chips, results count, and clear-all above a table |
+| `kbd` | Inline keyboard shortcut rendered with semantic `<kbd>` elements |
+| `page-header` | Eyebrow, title, description, breadcrumb, and actions with responsive collapse |
+| `stat-card` | Dashboard metric card with label, value, delta, trend, and footer |
+| `status-badge` | Semantic badge mapping admin statuses to visual variants with indicator dot |
+
 ---
 
 ## Hooks (14)
@@ -180,12 +197,12 @@ npx visor add <hook-name>
 
 ---
 
-## Blocks (12)
+## Blocks (19)
 
 Pre-composed, page-level sections built from Visor components.
 
 ```sh
-npx visor add --type block <block-name>
+npx visor add --block <block-name>
 ```
 
 | Block | Category | Description |
@@ -202,6 +219,13 @@ npx visor add --type block <block-name>
 | `sphere-playground` | interactive | Interactive 3D sphere with real-time parameter controls |
 | `steps-section` | marketing | Numbered process section with connector lines |
 | `testimonial-section` | marketing | Social proof section with quotes and avatars |
+| `admin-dashboard` | admin | Drop-in overview with stat grid, activity feed, and empty-state fallback |
+| `admin-detail-drawer` | admin | Slide-out panel for viewing/editing a record with save footer |
+| `admin-list-page` | admin | CRUD list composing filter bar, data table, bulk actions, and empty state |
+| `admin-settings-page` | admin | Scrollable settings with labeled sections and per-section save |
+| `admin-shell` | admin | Foundational admin layout with sidebar, topbar, and slot-driven content |
+| `admin-tabbed-editor` | admin | Full-page tabbed editor with sticky save footer and unsaved-changes guard |
+| `admin-wizard` | admin | Guided multi-step flow with per-step validation and cancel guard |
 
 ---
 
