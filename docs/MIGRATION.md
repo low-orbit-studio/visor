@@ -234,7 +234,7 @@ Most shadcn component names map directly to Visor:
 |---------|-------------|-------|
 | Distribution | npm package | Copy-and-own (CLI) |
 | Component ownership | Package-managed | You own the files |
-| Updates | `npm update @kaiah/ui` | `npx visor add <name> --force` |
+| Updates | `npm update @kaiah/ui` | `npx visor add <name> --overwrite` |
 | Customization | Prop-based only | Direct source editing |
 | Token source | Package-bundled | `@loworbitstudio/visor-core` (separate package) |
 | Import path | `@kaiah/ui` | `@/components/ui/<name>` |
