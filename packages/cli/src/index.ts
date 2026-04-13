@@ -49,9 +49,10 @@ program
   .option("--overwrite", "overwrite existing files", false)
   .option("--category <name>", "install all items from a category")
   .option("--block", "install blocks instead of components")
+  .option("--dry-run", "preview what would be added without writing files")
   .option("--json", "output structured JSON (for AI agents)")
-  .action((items: string[], options: { overwrite: boolean; category?: string; block?: boolean; json?: boolean }) => {
-    addCommand(items, process.cwd(), { overwrite: options.overwrite, category: options.category, block: options.block, json: options.json })
+  .action((items: string[], options: { overwrite: boolean; category?: string; block?: boolean; dryRun?: boolean; json?: boolean }) => {
+    addCommand(items, process.cwd(), { overwrite: options.overwrite, category: options.category, block: options.block, dryRun: options.dryRun, json: options.json })
   })
 
 program

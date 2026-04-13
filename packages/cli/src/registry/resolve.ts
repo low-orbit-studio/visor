@@ -30,13 +30,17 @@ export function findItem(
 
 export function resolveTransitiveDeps(
   registry: BundledRegistry,
-  names: string[]
+  names: string[],
+  onWarning?: (msg: string) => void
 ): BundledRegistryItem[] {
   const resolved = new Map<string, BundledRegistryItem>()
-  const queue = [...names]
+  const queue: Array<{ name: string; ancestors: Set<string> }> = names.map((n) => ({
+    name: n,
+    ancestors: new Set<string>(),
+  }))
 
   while (queue.length > 0) {
-    const name = queue.shift()!
+    const { name, ancestors } = queue.shift()!
     if (resolved.has(name)) continue
 
     const item = findItem(registry, name)
@@ -47,9 +51,15 @@ export function resolveTransitiveDeps(
     resolved.set(name, item)
 
     if (item.registryDependencies) {
+      const childAncestors = new Set(ancestors)
+      childAncestors.add(name)
+
       for (const dep of item.registryDependencies) {
-        if (!resolved.has(dep)) {
-          queue.push(dep)
+        if (childAncestors.has(dep)) {
+          // True circular: dep is an ancestor of this item
+          onWarning?.(`Circular registry dependency: ${name} → ${dep}`)
+        } else if (!resolved.has(dep)) {
+          queue.push({ name: dep, ancestors: childAncestors })
         }
       }
     }

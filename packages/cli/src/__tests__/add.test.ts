@@ -76,6 +76,7 @@ vi.mock("../registry/resolve.js", async (importOriginal) => {
 })
 
 import { addCommand } from "../commands/add.js"
+import { installPackages, getUninstalledDeps } from "../utils/packages.js"
 
 let testDir: string
 
@@ -304,6 +305,85 @@ describe("add command", () => {
       const result = getJsonOutput() as { success: boolean; error: string }
       expect(result.success).toBe(false)
       expect(result.error).toBeDefined()
+    })
+
+    it("outputs success:false and exits 1 when dependencies fail to install", () => {
+      vi.mocked(getUninstalledDeps).mockReturnValue(["class-variance-authority"])
+      vi.mocked(installPackages).mockReturnValue(false)
+
+      mockProcessExit()
+      expect(() => {
+        addCommand(["button"], testDir, { json: true })
+      }).toThrow("process.exit(1)")
+
+      const result = getJsonOutput() as { success: boolean; dependencies: { failed: string[] } }
+      expect(result.success).toBe(false)
+      expect(result.dependencies.failed.length).toBeGreaterThan(0)
+    })
+  })
+
+  describe("--dry-run flag", () => {
+    function mockProcessExit() {
+      return vi.spyOn(process, "exit").mockImplementation(((code?: number) => {
+        throw new Error(`process.exit(${code})`)
+      }) as never)
+    }
+
+    function getJsonOutput(): unknown {
+      const calls = (console.log as ReturnType<typeof vi.fn>).mock.calls
+      const jsonOutput = calls.map((c: unknown[]) => String(c[0])).find((s) => s.startsWith("{"))
+      expect(jsonOutput).toBeDefined()
+      return JSON.parse(jsonOutput!)
+    }
+
+    it("does not write files when dryRun is true", () => {
+      addCommand(["button"], testDir, { dryRun: true })
+
+      expect(
+        existsSync(join(testDir, "components/ui/button/button.tsx"))
+      ).toBe(false)
+    })
+
+    it("includes dryRun:true and files in JSON output", () => {
+      mockProcessExit()
+      expect(() => {
+        addCommand(["button"], testDir, { json: true, dryRun: true })
+      }).toThrow("process.exit(0)")
+
+      const result = getJsonOutput() as {
+        success: boolean
+        dryRun: boolean
+        files: { written: string[] }
+        dependencies: { installed: string[] }
+      }
+      expect(result.success).toBe(true)
+      expect(result.dryRun).toBe(true)
+      expect(result.files.written.length).toBeGreaterThan(0)
+    })
+
+    it("does not call installPackages when dryRun is true", () => {
+      vi.mocked(installPackages).mockClear()
+
+      addCommand(["button"], testDir, { dryRun: true })
+
+      expect(vi.mocked(installPackages)).not.toHaveBeenCalled()
+    })
+  })
+
+  describe("exit code on dependency failure", () => {
+    it("exits 1 when dependencies fail to install (non-JSON mode)", () => {
+      vi.mocked(getUninstalledDeps).mockReturnValue(["class-variance-authority"])
+      vi.mocked(installPackages).mockReturnValue(false)
+
+      const exitSpy = vi.spyOn(process, "exit").mockImplementation(((code?: number) => {
+        throw new Error(`process.exit(${code})`)
+      }) as never)
+
+      expect(() => {
+        addCommand(["button"], testDir)
+      }).toThrow("process.exit(1)")
+
+      exitSpy.mockRestore()
     })
   })
 })
