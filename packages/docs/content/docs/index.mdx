@@ -53,13 +53,17 @@ For non-Next.js projects or custom token management:
 npx @loworbitstudio/visor init
 ```
 
-Then import the token package in your app's root CSS:
+Install the token package:
+
+```bash
+npm install @loworbitstudio/visor-core
+```
+
+Then import it in your app's root CSS:
 
 ```css
 @import '@loworbitstudio/visor-core';
 ```
-
-> **Note:** `@loworbitstudio/visor-core` is not yet published to npm. For local development, use the monorepo-relative import or Option A which generates tokens inline. See the [CLI docs](/docs/cli) for workarounds.
 
 Then add a component:
 

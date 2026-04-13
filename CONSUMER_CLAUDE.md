@@ -258,8 +258,6 @@ npx visor theme export --format figma --json
 
 ## Tokens Package
 
-> **`@loworbitstudio/visor-core` is not yet published to npm.** For new Next.js projects, run `npx @loworbitstudio/visor init --template nextjs` — it generates all tokens inline and requires no package install. Do NOT run `npm install @loworbitstudio/visor-core` — it will 404.
-
 `@loworbitstudio/visor-core` is imported once in the global CSS entry point. Do not import it in individual component files.
 
 ```css
