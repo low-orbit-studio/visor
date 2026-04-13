@@ -21,7 +21,7 @@ export interface ValidationResult {
 // ============================================================
 
 const KNOWN_TOP_LEVEL_KEYS = new Set([
-  "name", "version", "colors", "colors-dark", "typography",
+  "name", "version", "group", "colors", "colors-dark", "typography",
   "spacing", "radius", "shadows", "motion", "overrides",
 ]);
 

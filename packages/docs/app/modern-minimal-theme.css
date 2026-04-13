@@ -15,8 +15,6 @@
 }
 
 
-/* ── Section 1: Shared tokens (mode-independent) ── */
-
 /* --- Primitive: Colors --- */
 .modern-minimal-theme {
   min-height: 100vh;
@@ -192,8 +190,6 @@
 }
 
 
-/* ── Section 2: Dark mode overrides ── */
-
 /* --- Adaptive: Text (dark) — manual toggle --- */
 .dark .modern-minimal-theme {
   --text-primary: rgba(255, 255, 255, 0.7);
@@ -351,8 +347,6 @@
   }
 }
 
-
-/* ── Section 3: Light mode overrides ── */
 
 /* --- Adaptive: Text (light) --- */
 html:not(.dark) .modern-minimal-theme {

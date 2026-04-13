@@ -15,7 +15,7 @@ import { THEME_GROUPS, ALL_THEMES } from "@/lib/theme-config";
 import styles from "./theme-switcher.module.css";
 
 const STORAGE_KEY = "visor-theme";
-const DEFAULT_THEME = "space";
+const DEFAULT_THEME = "blackout";
 
 function getStoredTheme(): string {
   if (typeof window === "undefined") return DEFAULT_THEME;

@@ -1,153 +1,414 @@
-/* ══════════════════════════════════════════════════════════════════════
-   Blackout Theme — Ultra-minimal dark glassmorphic theme for Visor Docs
-   Follows the 5-section theme template (see docs/token-rules.md)
-   Palette: Pure black · Grayscale restraint · Opacity-based hierarchy
-   Font: Satoshi · Smaller, denser typography scale
-   Source aesthetic: ~/Code/sandbox/sphere/styles.css
-   ══════════════════════════════════════════════════════════════════════ */
 
-/* ── Section 0: Font faces ── */
-
-@font-face {
-  font-family: "Satoshi";
-  src: url("/fonts/Satoshi-Variable.woff2") format("woff2");
-  font-weight: 300 900;
-  font-display: swap;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Satoshi";
-  src: url("/fonts/Satoshi-VariableItalic.woff2") format("woff2");
-  font-weight: 300 900;
-  font-display: swap;
-  font-style: italic;
-}
-
-/* ═══════════════════════════════════════════════
-   Section 1: Shared tokens (mode-independent)
-   ═══════════════════════════════════════════════ */
-
+/* --- Primitive: Colors --- */
 .blackout-theme {
-  /* No color accent — grayscale restraint */
-  --accent: rgba(255, 255, 255, 0.4);
+  min-height: 100vh;
+  font-size: 1rem;
+  background: var(--surface-page, var(--surface-background));
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-primary-50: #f5f5f5;
+  --color-primary-100: #e8e8e8;
+  --color-primary-200: #d4d4d4;
+  --color-primary-300: #b7b7b7;
+  --color-primary-400: #8f8f8f;
+  --color-primary-500: #717171;
+  --color-primary-600: #666666;
+  --color-primary-700: #424242;
+  --color-primary-800: #2e2e2e;
+  --color-primary-900: #1b1b1b;
+  --color-primary-950: #090909;
+  --color-accent-50: #f5f5f5;
+  --color-accent-100: #e8e8e8;
+  --color-accent-200: #d4d4d4;
+  --color-accent-300: #b7b7b7;
+  --color-accent-400: #8f8f8f;
+  --color-accent-500: #717171;
+  --color-accent-600: #666666;
+  --color-accent-700: #424242;
+  --color-accent-800: #2e2e2e;
+  --color-accent-900: #1b1b1b;
+  --color-accent-950: #090909;
+  --color-neutral-50: #f5f5f5;
+  --color-neutral-100: #e0e0e0;
+  --color-neutral-200: #c2c2c2;
+  --color-neutral-300: #979797;
+  --color-neutral-400: #5c5c5c;
+  --color-neutral-500: #333333;
+  --color-neutral-600: #000000;
+  --color-neutral-700: #212121;
+  --color-neutral-800: #181818;
+  --color-neutral-900: #101011;
+  --color-neutral-950: #090909;
+  --color-success-50: #e8fbeb;
+  --color-success-100: #d8f7dc;
+  --color-success-500: #22c55e;
+  --color-success-600: #000000;
+  --color-success-700: #017231;
+  --color-success-900: #002b0e;
+  --color-warning-50: #fff3e6;
+  --color-warning-100: #ffebd5;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #000000;
+  --color-warning-700: #8d5800;
+  --color-warning-900: #361f00;
+  --color-error-50: #fff2f0;
+  --color-error-100: #ffe3e0;
+  --color-error-500: #ef4444;
+  --color-error-600: #000000;
+  --color-error-700: #990015;
+  --color-error-900: #410004;
+  --color-info-50: #ecf7ff;
+  --color-info-100: #daf0ff;
+  --color-info-500: #0ea5e9;
+  --color-info-600: #000000;
+  --color-info-700: #005f88;
+  --color-info-900: #002437;
+}
 
-  /* Primary color scale — OKLCH-interpolated, neutral gray (no color accent) */
-  --color-primary-50: #eff0f2;
-  --color-primary-100: #dadce0;
-  --color-primary-200: #c0c3ca;
-  --color-primary-300: #a3a8b1;
-  --color-primary-400: #858b97;
-  --color-primary-500: #6b7280;
-  --color-primary-600: #575d69;
-  --color-primary-700: #434853;
-  --color-primary-800: #31353e;
-  --color-primary-900: #21242c;
-  --color-primary-950: #15181f;
 
-  /* Font stacks */
-  --font-satoshi: "Satoshi", system-ui, sans-serif;
-  --font-heading: var(--font-satoshi);
-  --font-body: var(--font-satoshi);
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+/* --- Primitive: Spacing --- */
+.blackout-theme {
+  --spacing-0: 0;
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-10: 2.5rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+  --spacing-20: 5rem;
+  --spacing-24: 6rem;
+}
 
-  /* Blackout-namespaced tokens */
-  --blackout-glass: rgba(255, 255, 255, 0.06);
-  --blackout-glass-border: rgba(255, 255, 255, 0.06);
-  --blackout-glass-hover: rgba(255, 255, 255, 0.08);
-  --blackout-glow: rgba(255, 255, 255, 0.05);
 
-  /* No shadows — core to the aesthetic */
+/* --- Primitive: Border Radius --- */
+.blackout-theme {
+  --radius-none: 0;
+  --radius-sm: 0.125rem; /* 2px */
+  --radius-md: 0.25rem; /* 4px */
+  --radius-lg: 0.5rem; /* 8px */
+  --radius-xl: 0.75rem; /* 12px */
+  --radius-2xl: 0.9997499999999999rem; /* 16px */
+  --radius-3xl: 1.5rem; /* 24px */
+  --radius-full: 9999px;
+}
+
+
+/* --- Primitive: Typography --- */
+.blackout-theme {
+  --font-display: Satoshi;
+  --font-sans: Satoshi;
+  --font-heading: var(--font-sans);
+  --font-body: Satoshi;
+  --font-mono: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem; /* 36px */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 700;
+  --font-weight-bold: 700;
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+  --letter-spacing-normal: 0.05em;
+}
+
+
+/* --- Primitive: Shadows --- */
+.blackout-theme {
   --shadow-xs: none;
   --shadow-sm: none;
   --shadow-md: none;
   --shadow-lg: none;
   --shadow-xl: none;
-
-  /* Base styles */
-  min-height: 100vh;
-  font-size: 1rem;
-  background: var(--surface-page);
-  color: var(--text-primary);
-  font-family: var(--font-satoshi);
 }
 
-/* ═══════════════════════════════════════════════
-   Section 2: Dark mode overrides
-   ═══════════════════════════════════════════════ */
 
+/* --- Primitive: Motion --- */
+.blackout-theme {
+  --motion-duration-100: 100ms;
+  --motion-duration-150: 150ms;
+  --motion-duration-200: 150ms;
+  --motion-duration-300: 300ms;
+  --motion-duration-500: 300ms;
+  --motion-duration-800: 800ms;
+  --motion-easing-linear: linear;
+  --motion-easing-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --motion-easing-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --motion-easing-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+
+/* --- Primitive: Miscellaneous --- */
+.blackout-theme {
+  --border-width-1: 1px;
+  --border-width-2: 2px;
+  --border-width-3: 3px;
+  --border-width-4: 4px;
+  --z-base: 0;
+  --z-raised: 1;
+  --z-dropdown: 1000;
+  --z-sticky: 1100;
+  --z-modal: 1300;
+  --z-popover: 1400;
+  --z-toast: 1500;
+  --overlay-bg: rgba(0, 0, 0, 0.5);
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+}
+
+
+/* --- Adaptive: Text (dark) — manual toggle --- */
 .dark .blackout-theme {
-  /* ── Text — opacity-based hierarchy ── */
   --text-primary: rgba(255, 255, 255, 0.7);
   --text-secondary: rgba(255, 255, 255, 0.45);
   --text-tertiary: rgba(255, 255, 255, 0.2);
   --text-disabled: rgba(255, 255, 255, 0.1);
-  --text-inverse: #000000;
-  --text-inverse-secondary: #111111;
-  --text-link: rgba(255, 255, 255, 0.5);
-  --text-link-hover: rgba(255, 255, 255, 0.7);
-  --text-success: rgba(74, 222, 128, 0.7);     /* green-400 at 0.7 */
-  --text-warning: rgba(251, 191, 36, 0.7);     /* amber-400 at 0.7 */
-  --text-error: rgba(248, 113, 113, 0.7);      /* red-400 at 0.7 */
-  --text-info: rgba(56, 189, 248, 0.7);        /* sky-400 at 0.7 */
+  --text-inverse: #101011;
+  --text-inverse-secondary: #212121;
+  --text-link: #8f8f8f;
+  --text-link-hover: #b7b7b7;
+  --text-success: #22c55e;
+  --text-warning: #f59e0b;
+  --text-error: #ef4444;
+  --text-info: #0ea5e9;
+}
 
-  /* ── Surfaces — pure black base, glassmorphic cards ── */
+
+/* --- Adaptive: Surface (dark) — manual toggle --- */
+.dark .blackout-theme {
   --surface-page: #000000;
-  --surface-card: var(--blackout-glass);
+  --surface-card: rgba(255, 255, 255, 0.04);
   --surface-subtle: rgba(255, 255, 255, 0.02);
   --surface-muted: rgba(255, 255, 255, 0.04);
-  --surface-overlay: #000000;
-  --surface-interactive-default: var(--blackout-glass);
-  --surface-interactive-hover: var(--blackout-glass-hover);
-  --surface-interactive-active: rgba(255, 255, 255, 0.12);
-  --surface-interactive-disabled: rgba(255, 255, 255, 0.02);
+  --surface-overlay: #090909;
+  --surface-interactive-default: #181818;
+  --surface-interactive-hover: #212121;
+  --surface-interactive-active: #000000;
+  --surface-interactive-disabled: #181818;
+  --surface-accent-subtle: #1b1b1b;
+  --surface-accent-default: #717171;
+  --surface-accent-strong: #8f8f8f;
+  --surface-success-subtle: #002b0e;
+  --surface-success-default: #22c55e;
+  --surface-warning-subtle: #361f00;
+  --surface-warning-default: #f59e0b;
+  --surface-error-subtle: #410004;
+  --surface-error-default: #ef4444;
+  --surface-info-subtle: #002437;
+  --surface-info-default: #0ea5e9;
+}
 
-  /* ── Borders — barely visible ── */
+
+/* --- Adaptive: Border (dark) — manual toggle --- */
+.dark .blackout-theme {
   --border-default: rgba(255, 255, 255, 0.06);
   --border-muted: rgba(255, 255, 255, 0.03);
   --border-strong: rgba(255, 255, 255, 0.1);
-  --border-focus: rgba(255, 255, 255, 0.4);
-  --border-disabled: rgba(255, 255, 255, 0.03);
+  --border-focus: #8f8f8f;
+  --border-disabled: #181818;
+  --border-success: #22c55e;
+  --border-warning: #f59e0b;
+  --border-error: #ef4444;
+  --border-info: #0ea5e9;
+}
 
-  /* ── Interactive — restrained grayscale ── */
-  --interactive-primary-bg: rgba(255, 255, 255, 0.1);
-  --interactive-primary-bg-hover: rgba(255, 255, 255, 0.15);
-  --interactive-primary-bg-active: rgba(255, 255, 255, 0.2);
-  --interactive-primary-text: rgba(255, 255, 255, 0.65);
-  --interactive-secondary-bg: rgba(255, 255, 255, 0.04);
-  --interactive-secondary-bg-hover: rgba(255, 255, 255, 0.08);
-  --interactive-secondary-bg-active: rgba(255, 255, 255, 0.12);
-  --interactive-secondary-text: rgba(255, 255, 255, 0.45);
-  --interactive-secondary-border: rgba(255, 255, 255, 0.08);
-  --interactive-destructive-bg: rgba(239, 68, 68, 0.3);
-  --interactive-destructive-bg-hover: rgba(239, 68, 68, 0.4);
-  --interactive-destructive-text: rgba(248, 113, 113, 0.8);
-  --interactive-ghost-bg: transparent;
-  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.06);
 
-  /* ── Accent/status surfaces ── */
-  --surface-accent-subtle: rgba(255, 255, 255, 0.04);
-  --surface-accent-default: rgba(255, 255, 255, 0.1);
-  --surface-accent-strong: rgba(255, 255, 255, 0.2);
-  --surface-success-subtle: rgba(74, 222, 128, 0.06);
-  --surface-success-default: rgba(74, 222, 128, 0.15);
-  --surface-warning-subtle: rgba(251, 191, 36, 0.06);
-  --surface-warning-default: rgba(251, 191, 36, 0.15);
-  --surface-error-subtle: rgba(248, 113, 113, 0.06);
-  --surface-error-default: rgba(248, 113, 113, 0.15);
-  --surface-info-subtle: rgba(56, 189, 248, 0.06);
-  --surface-info-default: rgba(56, 189, 248, 0.15);
+/* --- Adaptive: Interactive (dark) — manual toggle --- */
+.dark .blackout-theme {
+  --interactive-primary-bg: #717171;
+  --interactive-primary-bg-hover: #8f8f8f;
+  --interactive-primary-bg-active: #b7b7b7;
+  --interactive-primary-text: #ffffff;
+  --interactive-secondary-bg: #181818;
+  --interactive-secondary-bg-hover: #212121;
+  --interactive-secondary-bg-active: #000000;
+  --interactive-secondary-text: #f5f5f5;
+  --interactive-secondary-border: #000000;
+  --interactive-destructive-bg: #ef4444;
+  --interactive-destructive-bg-hover: #000000;
+  --interactive-destructive-text: #ffffff;
+  --interactive-ghost-bg: #181818;
+  --interactive-ghost-bg-hover: #212121;
+}
 
-  /* ── Status borders ── */
-  --border-success: rgba(74, 222, 128, 0.3);
-  --border-warning: rgba(251, 191, 36, 0.3);
-  --border-error: rgba(248, 113, 113, 0.3);
-  --border-info: rgba(56, 189, 248, 0.3);
 
-  /* ── Overlay ── */
-  --overlay-bg: rgba(0, 0, 0, 0.8);
+/* --- Adaptive: Text (dark) — prefers-color-scheme --- */
+@media (prefers-color-scheme: dark) {
+  .blackout-theme:not(.light) {
+    --text-primary: rgba(255, 255, 255, 0.7);
+    --text-secondary: rgba(255, 255, 255, 0.45);
+    --text-tertiary: rgba(255, 255, 255, 0.2);
+    --text-disabled: rgba(255, 255, 255, 0.1);
+    --text-inverse: #101011;
+    --text-inverse-secondary: #212121;
+    --text-link: #8f8f8f;
+    --text-link-hover: #b7b7b7;
+    --text-success: #22c55e;
+    --text-warning: #f59e0b;
+    --text-error: #ef4444;
+    --text-info: #0ea5e9;
+  }
+}
 
-  /* ── Fumadocs bridge — dark ── */
+
+/* --- Adaptive: Surface (dark) — prefers-color-scheme --- */
+@media (prefers-color-scheme: dark) {
+  .blackout-theme:not(.light) {
+    --surface-page: #000000;
+    --surface-card: rgba(255, 255, 255, 0.04);
+    --surface-subtle: rgba(255, 255, 255, 0.02);
+    --surface-muted: rgba(255, 255, 255, 0.04);
+    --surface-overlay: #090909;
+    --surface-interactive-default: #181818;
+    --surface-interactive-hover: #212121;
+    --surface-interactive-active: #000000;
+    --surface-interactive-disabled: #181818;
+    --surface-accent-subtle: #1b1b1b;
+    --surface-accent-default: #717171;
+    --surface-accent-strong: #8f8f8f;
+    --surface-success-subtle: #002b0e;
+    --surface-success-default: #22c55e;
+    --surface-warning-subtle: #361f00;
+    --surface-warning-default: #f59e0b;
+    --surface-error-subtle: #410004;
+    --surface-error-default: #ef4444;
+    --surface-info-subtle: #002437;
+    --surface-info-default: #0ea5e9;
+  }
+}
+
+
+/* --- Adaptive: Border (dark) — prefers-color-scheme --- */
+@media (prefers-color-scheme: dark) {
+  .blackout-theme:not(.light) {
+    --border-default: rgba(255, 255, 255, 0.06);
+    --border-muted: rgba(255, 255, 255, 0.03);
+    --border-strong: rgba(255, 255, 255, 0.1);
+    --border-focus: #8f8f8f;
+    --border-disabled: #181818;
+    --border-success: #22c55e;
+    --border-warning: #f59e0b;
+    --border-error: #ef4444;
+    --border-info: #0ea5e9;
+  }
+}
+
+
+/* --- Adaptive: Interactive (dark) — prefers-color-scheme --- */
+@media (prefers-color-scheme: dark) {
+  .blackout-theme:not(.light) {
+    --interactive-primary-bg: #717171;
+    --interactive-primary-bg-hover: #8f8f8f;
+    --interactive-primary-bg-active: #b7b7b7;
+    --interactive-primary-text: #ffffff;
+    --interactive-secondary-bg: #181818;
+    --interactive-secondary-bg-hover: #212121;
+    --interactive-secondary-bg-active: #000000;
+    --interactive-secondary-text: #f5f5f5;
+    --interactive-secondary-border: #000000;
+    --interactive-destructive-bg: #ef4444;
+    --interactive-destructive-bg-hover: #000000;
+    --interactive-destructive-text: #ffffff;
+    --interactive-ghost-bg: #181818;
+    --interactive-ghost-bg-hover: #212121;
+  }
+}
+
+
+/* --- Adaptive: Text (light) --- */
+html:not(.dark) .blackout-theme {
+  --text-primary: rgba(255, 255, 255, 0.75);
+  --text-secondary: rgba(255, 255, 255, 0.5);
+  --text-tertiary: rgba(255, 255, 255, 0.25);
+  --text-disabled: rgba(255, 255, 255, 0.12);
+  --text-inverse: #ffffff;
+  --text-inverse-secondary: #c2c2c2;
+  --text-link: #666666;
+  --text-link-hover: #424242;
+  --text-success: #017231;
+  --text-warning: #8d5800;
+  --text-error: #990015;
+  --text-info: #005f88;
+}
+
+
+/* --- Adaptive: Surface (light) --- */
+html:not(.dark) .blackout-theme {
+  --surface-page: #0a0a0a;
+  --surface-card: rgba(255, 255, 255, 0.05);
+  --surface-subtle: rgba(255, 255, 255, 0.02);
+  --surface-muted: rgba(255, 255, 255, 0.05);
+  --surface-overlay: #101011;
+  --surface-interactive-default: #ffffff;
+  --surface-interactive-hover: #f5f5f5;
+  --surface-interactive-active: #e0e0e0;
+  --surface-interactive-disabled: #f5f5f5;
+  --surface-accent-subtle: #f5f5f5;
+  --surface-accent-default: #717171;
+  --surface-accent-strong: #666666;
+  --surface-success-subtle: #e8fbeb;
+  --surface-success-default: #22c55e;
+  --surface-warning-subtle: #fff3e6;
+  --surface-warning-default: #f59e0b;
+  --surface-error-subtle: #fff2f0;
+  --surface-error-default: #ef4444;
+  --surface-info-subtle: #ecf7ff;
+  --surface-info-default: #0ea5e9;
+}
+
+
+/* --- Adaptive: Border (light) --- */
+html:not(.dark) .blackout-theme {
+  --border-default: rgba(255, 255, 255, 0.08);
+  --border-muted: rgba(255, 255, 255, 0.04);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --border-focus: #717171;
+  --border-disabled: #e0e0e0;
+  --border-success: #22c55e;
+  --border-warning: #f59e0b;
+  --border-error: #ef4444;
+  --border-info: #0ea5e9;
+}
+
+
+/* --- Adaptive: Interactive (light) --- */
+html:not(.dark) .blackout-theme {
+  --interactive-primary-bg: #666666;
+  --interactive-primary-bg-hover: #424242;
+  --interactive-primary-bg-active: #2e2e2e;
+  --interactive-primary-text: #ffffff;
+  --interactive-secondary-bg: #ffffff;
+  --interactive-secondary-bg-hover: #f5f5f5;
+  --interactive-secondary-bg-active: #e0e0e0;
+  --interactive-secondary-text: #101011;
+  --interactive-secondary-border: #979797;
+  --interactive-destructive-bg: #000000;
+  --interactive-destructive-bg-hover: #990015;
+  --interactive-destructive-text: #ffffff;
+  --interactive-ghost-bg: #ffffff;
+  --interactive-ghost-bg-hover: #e0e0e0;
+}
+
+
+/* --- Fumadocs bridge: dark --- */
+.dark .blackout-theme {
   --color-fd-background: #000000;
   --color-fd-foreground: rgba(255, 255, 255, 0.7);
   --color-fd-card: rgba(255, 255, 255, 0.04);
@@ -155,91 +416,20 @@
   --color-fd-border: rgba(255, 255, 255, 0.06);
   --color-fd-muted: rgba(255, 255, 255, 0.04);
   --color-fd-muted-foreground: rgba(255, 255, 255, 0.45);
-  --color-fd-accent: rgba(255, 255, 255, 0.4);
-  --color-fd-accent-foreground: rgba(255, 255, 255, 0.7);
-  --color-fd-primary: rgba(255, 255, 255, 0.4);
-  --color-fd-primary-foreground: rgba(255, 255, 255, 0.85);
+  --color-fd-accent: #717171;
+  --color-fd-accent-foreground: #ffffff;
+  --color-fd-primary: #717171;
+  --color-fd-primary-foreground: #ffffff;
   --color-fd-secondary: rgba(255, 255, 255, 0.04);
   --color-fd-secondary-foreground: rgba(255, 255, 255, 0.7);
-  --color-fd-popover: #080808;
+  --color-fd-popover: rgba(255, 255, 255, 0.04);
   --color-fd-popover-foreground: rgba(255, 255, 255, 0.7);
-  --color-fd-ring: rgba(255, 255, 255, 0.2);
+  --color-fd-ring: #8f8f8f;
 }
 
-/* ═══════════════════════════════════════════════
-   Section 3: Light mode overrides
-   Blackout stays dark even in "light" mode —
-   slightly elevated from pure black for contrast.
-   ═══════════════════════════════════════════════ */
 
+/* --- Fumadocs bridge: light --- */
 html:not(.dark) .blackout-theme {
-  /* ── Text ── */
-  --text-primary: rgba(255, 255, 255, 0.75);
-  --text-secondary: rgba(255, 255, 255, 0.5);
-  --text-tertiary: rgba(255, 255, 255, 0.25);
-  --text-disabled: rgba(255, 255, 255, 0.12);
-  --text-inverse: #000000;
-  --text-inverse-secondary: #0a0a0a;
-  --text-link: rgba(255, 255, 255, 0.55);
-  --text-link-hover: rgba(255, 255, 255, 0.75);
-  --text-success: rgba(74, 222, 128, 0.75);
-  --text-warning: rgba(251, 191, 36, 0.75);
-  --text-error: rgba(248, 113, 113, 0.75);
-  --text-info: rgba(56, 189, 248, 0.75);
-
-  /* ── Surfaces — near-black, not white ── */
-  --surface-page: #0a0a0a;
-  --surface-card: rgba(255, 255, 255, 0.05);
-  --surface-subtle: rgba(255, 255, 255, 0.02);
-  --surface-muted: rgba(255, 255, 255, 0.05);
-  --surface-overlay: #000000;
-  --surface-interactive-default: rgba(255, 255, 255, 0.05);
-  --surface-interactive-hover: rgba(255, 255, 255, 0.08);
-  --surface-interactive-active: rgba(255, 255, 255, 0.14);
-
-  /* ── Borders ── */
-  --border-default: rgba(255, 255, 255, 0.08);
-  --border-muted: rgba(255, 255, 255, 0.04);
-  --border-strong: rgba(255, 255, 255, 0.12);
-  --border-focus: rgba(255, 255, 255, 0.45);
-  --border-disabled: rgba(255, 255, 255, 0.04);
-
-  /* ── Interactive ── */
-  --interactive-primary-bg: rgba(255, 255, 255, 0.12);
-  --interactive-primary-bg-hover: rgba(255, 255, 255, 0.18);
-  --interactive-primary-bg-active: rgba(255, 255, 255, 0.24);
-  --interactive-primary-text: rgba(255, 255, 255, 0.7);
-  --interactive-secondary-bg: rgba(255, 255, 255, 0.05);
-  --interactive-secondary-bg-hover: rgba(255, 255, 255, 0.1);
-  --interactive-secondary-bg-active: rgba(255, 255, 255, 0.14);
-  --interactive-secondary-text: rgba(255, 255, 255, 0.5);
-  --interactive-secondary-border: rgba(255, 255, 255, 0.1);
-  --interactive-destructive-bg: rgba(239, 68, 68, 0.35);
-  --interactive-destructive-bg-hover: rgba(239, 68, 68, 0.45);
-  --interactive-destructive-text: rgba(248, 113, 113, 0.85);
-  --interactive-ghost-bg: transparent;
-  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.08);
-
-  /* ── Accent/status surfaces ── */
-  --surface-accent-subtle: rgba(255, 255, 255, 0.05);
-  --surface-accent-default: rgba(255, 255, 255, 0.12);
-  --surface-accent-strong: rgba(255, 255, 255, 0.24);
-  --surface-success-subtle: rgba(74, 222, 128, 0.08);
-  --surface-success-default: rgba(74, 222, 128, 0.18);
-  --surface-warning-subtle: rgba(251, 191, 36, 0.08);
-  --surface-warning-default: rgba(251, 191, 36, 0.18);
-  --surface-error-subtle: rgba(248, 113, 113, 0.08);
-  --surface-error-default: rgba(248, 113, 113, 0.18);
-  --surface-info-subtle: rgba(56, 189, 248, 0.08);
-  --surface-info-default: rgba(56, 189, 248, 0.18);
-
-  /* ── Status borders ── */
-  --border-success: rgba(74, 222, 128, 0.35);
-  --border-warning: rgba(251, 191, 36, 0.35);
-  --border-error: rgba(248, 113, 113, 0.35);
-  --border-info: rgba(56, 189, 248, 0.35);
-
-  /* ── Fumadocs bridge — light (stays dark) ── */
   --color-fd-background: #0a0a0a;
   --color-fd-foreground: rgba(255, 255, 255, 0.75);
   --color-fd-card: rgba(255, 255, 255, 0.05);
@@ -247,190 +437,14 @@ html:not(.dark) .blackout-theme {
   --color-fd-border: rgba(255, 255, 255, 0.08);
   --color-fd-muted: rgba(255, 255, 255, 0.05);
   --color-fd-muted-foreground: rgba(255, 255, 255, 0.5);
-  --color-fd-accent: rgba(255, 255, 255, 0.45);
-  --color-fd-accent-foreground: rgba(255, 255, 255, 0.75);
-  --color-fd-primary: rgba(255, 255, 255, 0.45);
-  --color-fd-primary-foreground: rgba(255, 255, 255, 0.9);
+  --color-fd-accent: #717171;
+  --color-fd-accent-foreground: #ffffff;
+  --color-fd-primary: #717171;
+  --color-fd-primary-foreground: #ffffff;
   --color-fd-secondary: rgba(255, 255, 255, 0.05);
   --color-fd-secondary-foreground: rgba(255, 255, 255, 0.75);
-  --color-fd-popover: #0e0e0e;
+  --color-fd-popover: rgba(255, 255, 255, 0.05);
   --color-fd-popover-foreground: rgba(255, 255, 255, 0.75);
-  --color-fd-ring: rgba(255, 255, 255, 0.25);
+  --color-fd-ring: #717171;
 }
 
-/* ═══════════════════════════════════════════════
-   Section 5: Creative extensions
-   ═══════════════════════════════════════════════ */
-
-/* ── Typography — Satoshi, smaller + denser ── */
-
-.blackout-theme h1,
-.blackout-theme h2,
-.blackout-theme h3,
-.blackout-theme h4,
-.blackout-theme h5,
-.blackout-theme h6 {
-  font-family: var(--font-heading);
-  font-weight: 700;
-}
-
-/* Smaller type scale — tighter, denser */
-.blackout-theme h1 { font-size: 1.75rem; line-height: 1.15; letter-spacing: -0.01em; }
-.blackout-theme h2 { font-size: 1.25rem; line-height: 1.2; letter-spacing: 0; }
-.blackout-theme h3 { font-size: 1rem; line-height: 1.3; letter-spacing: 0.01em; }
-.blackout-theme h4 { font-size: 0.875rem; line-height: 1.4; letter-spacing: 0.01em; }
-
-/* Labels — uppercase, ultra-dim, tracked */
-.blackout-theme .eyebrow,
-.blackout-theme [data-eyebrow] {
-  font-family: var(--font-satoshi);
-  font-size: 0.5625rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: rgba(255, 255, 255, 0.2);
-}
-
-/* Body text */
-.blackout-theme p,
-.blackout-theme li {
-  font-weight: 400;
-  letter-spacing: 0.02em;
-}
-
-/* ── Glassmorphism — backdrop-filter on elevated surfaces ── */
-
-.blackout-theme [data-glass],
-.blackout-theme .fd-not-prose > div,
-.blackout-theme aside[id="nd-sidebar"] {
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-
-/* ── Syntax highlighting — always use dark Shiki colors ── */
-
-html:not(.dark) .blackout-theme .shiki code span {
-  color: var(--shiki-dark) !important;
-  font-style: var(--shiki-dark-font-style) !important;
-}
-
-/* ── Code blocks — translucent glass ── */
-
-.blackout-theme :not(pre) > code {
-  background: var(--blackout-glass);
-  border: 1px solid var(--blackout-glass-border);
-  border-radius: 0.25rem;
-  padding: 0.15em 0.5em;
-  font-size: 0.875em;
-}
-
-.blackout-theme pre {
-  background: var(--blackout-glass) !important;
-  border: 1px solid var(--blackout-glass-border);
-  border-radius: 0.5rem;
-  padding: 1rem;
-  font-size: 0.8125rem;
-}
-
-.blackout-theme figure.shiki {
-  background: var(--blackout-glass) !important;
-  border: 1px solid var(--blackout-glass-border);
-}
-
-.blackout-theme figure.shiki pre {
-  background: transparent !important;
-  border: none;
-  border-radius: 0;
-  padding: 0;
-  font-size: inherit;
-}
-
-.blackout-theme figure.shiki code {
-  background: transparent;
-  border: none;
-  padding: 0;
-}
-
-/* ── Tables — barely-there borders ── */
-
-.blackout-theme table {
-  border-color: rgba(255, 255, 255, 0.06);
-}
-
-.blackout-theme th,
-.blackout-theme td {
-  border-color: rgba(255, 255, 255, 0.06);
-}
-
-.blackout-theme thead th {
-  background: rgba(255, 255, 255, 0.04);
-  border-bottom-color: rgba(255, 255, 255, 0.08);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: rgba(255, 255, 255, 0.35);
-}
-
-/* ── Sidebar ── */
-
-.blackout-theme aside[id="nd-sidebar"] {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.blackout-theme aside[id="nd-sidebar"] > div {
-  border-color: rgba(255, 255, 255, 0.04);
-}
-
-/* ── Popover / dropdown — solid so content behind doesn't bleed through ── */
-
-.blackout-theme [data-radix-popper-content-wrapper] {
-  --surface-card: #141414;
-}
-
-/* ── Links & interactive states ── */
-
-.blackout-theme a:not([class]) {
-  color: rgba(255, 255, 255, 0.5);
-  text-decoration: none;
-  transition: color var(--motion-duration-150, 150ms) ease;
-}
-
-.blackout-theme a:not([class]):hover {
-  color: rgba(255, 255, 255, 0.7);
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
-}
-
-/* Focus ring — subtle */
-.blackout-theme :focus-visible {
-  outline: var(--focus-ring-width, 2px) solid rgba(255, 255, 255, 0.2);
-  outline-offset: var(--focus-ring-offset, 2px);
-}
-
-/* Active item — glow reserved for active states */
-.blackout-theme [data-active="true"] {
-  color: rgba(255, 255, 255, 0.65);
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 20px var(--blackout-glow);
-}
-
-/* Text hierarchy — fumadocs secondary text */
-.blackout-theme .fd-paragraph:not(:first-child),
-.blackout-theme [class*="fd-body"] {
-  color: var(--text-secondary);
-}
-
-.blackout-theme nav[aria-label="breadcrumb"],
-.blackout-theme nav[aria-label="breadcrumb"] * {
-  color: var(--text-tertiary);
-}
-
-.blackout-theme .fd-not-prose {
-  color: var(--text-secondary);
-}
-
-/* Footer prev/next nav — label readable on hover */
-html:not(.dark) .blackout-theme .grid > a:hover {
-  --fd-muted-foreground: rgba(255, 255, 255, 0.7);
-}

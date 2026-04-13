@@ -101,7 +101,7 @@ Unblock Visor consumption across Low Orbit projects. Minimal work to make `npm i
 **Key work:**
 - [ ] **First npm publish** — Set `NPM_TOKEN` in GitHub repo secrets, push `v0.3.0` tag to trigger release workflow for `@loworbitstudio/visor-core`, `@loworbitstudio/visor`, and `@loworbitstudio/visor-theme-engine`
 - [ ] **Fix theme-engine raw TS export** — `./fonts` export points to `./src/fonts/index.ts` instead of compiled `./dist/fonts/...`; one-line fix in package.json
-- [ ] **Research spike: proprietary theme strategy** — Evaluate options for keeping client themes (Veronica, Kaiah, Blacklight, ENTR, Space, SoleSpark) in the monorepo for development/docs while preventing public access. Options to evaluate: build-time injection from private repo, `.gitignore` + pull script, private npm package, git submodule, runtime loading from authenticated CDN
+- [x] **Research spike: proprietary theme strategy** — Evaluate options for keeping client themes (Veronica, Kaiah, Blacklight, ENTR, Space, SoleSpark) in the monorepo for development/docs while preventing public access. Options to evaluate: build-time injection from private repo, `.gitignore` + pull script, private npm package, git submodule, runtime loading from authenticated CDN
 
 **Tracking:** VI-110
 

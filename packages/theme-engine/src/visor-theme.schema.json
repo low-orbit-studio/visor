@@ -16,6 +16,10 @@
       "const": 1,
       "description": "Schema version. Currently always 1."
     },
+    "group": {
+      "type": "string",
+      "description": "Theme group for the docs site theme switcher (e.g. 'Visor', 'Client', 'Low Orbit'). Used by `visor theme sync`. Defaults to folder-based grouping when omitted."
+    },
     "colors": {
       "type": "object",
       "description": "Color definitions for light mode. Only primary is required — all others have sensible defaults.",

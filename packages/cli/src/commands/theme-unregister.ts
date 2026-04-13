@@ -1,23 +1,10 @@
 import { readFileSync, writeFileSync, existsSync, unlinkSync } from "fs"
-import { resolve, dirname, join } from "path"
+import { join } from "path"
 import { logger } from "../utils/logger.js"
+import { findRepoRoot } from "../utils/theme-helpers.js"
 
 export interface ThemeUnregisterOptions {
   json?: boolean
-}
-
-/** Walk up from dir until we find a directory containing packages/docs. */
-function findRepoRoot(startDir: string): string | null {
-  let current = resolve(startDir)
-  while (true) {
-    if (existsSync(join(current, "packages", "docs"))) {
-      return current
-    }
-    const parent = dirname(current)
-    if (parent === current) break
-    current = parent
-  }
-  return null
 }
 
 function removeGlobalsImport(content: string, slug: string): { updated: string; changed: boolean } {
