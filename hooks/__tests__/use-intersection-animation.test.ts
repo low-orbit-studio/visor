@@ -24,9 +24,9 @@ describe("useIntersectionAnimation", () => {
       constructor(cb: IntersectionObserverCallback) {
         lastCallback = cb
       }
-      observe = _observeSpy
-      unobserve = vi.fn()
-      disconnect = _disconnectSpy
+      observe = _observeSpy as unknown as (target: Element) => void
+      unobserve = vi.fn() as unknown as (target: Element) => void
+      disconnect = _disconnectSpy as unknown as () => void
       takeRecords = (): IntersectionObserverEntry[] => []
     }
 

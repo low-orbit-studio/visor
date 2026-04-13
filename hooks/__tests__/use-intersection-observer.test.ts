@@ -17,9 +17,9 @@ class MockIntersectionObserver implements IntersectionObserver {
     lastCallback = cb
   }
 
-  observe = observeSpy
-  unobserve = vi.fn()
-  disconnect = disconnectSpy
+  observe = observeSpy as unknown as (target: Element) => void
+  unobserve = vi.fn() as unknown as (target: Element) => void
+  disconnect = disconnectSpy as unknown as () => void
   takeRecords = (): IntersectionObserverEntry[] => []
 }
 
@@ -37,9 +37,9 @@ describe("useIntersectionObserver", () => {
       constructor(cb: IntersectionObserverCallback) {
         lastCallback = cb
       }
-      observe = observeSpy
-      unobserve = vi.fn()
-      disconnect = disconnectSpy
+      observe = observeSpy as unknown as (target: Element) => void
+      unobserve = vi.fn() as unknown as (target: Element) => void
+      disconnect = disconnectSpy as unknown as () => void
       takeRecords = (): IntersectionObserverEntry[] => []
     }
 

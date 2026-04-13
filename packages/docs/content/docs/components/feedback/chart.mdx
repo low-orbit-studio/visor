@@ -5,6 +5,37 @@ description: A Recharts wrapper providing themed chart container, tooltip, and l
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
+import { ChartContainer } from '@/components/ui/chart/chart';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
+<ComponentPreview
+  title="Bar Chart"
+  code={"import { ChartContainer } from '@/components/ui/chart/chart';\nimport type { ChartConfig } from '@/components/ui/chart/chart';\nimport { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';\n\nconst data = [\n  { name: 'Jan', value: 400 },\n  { name: 'Feb', value: 300 },\n  { name: 'Mar', value: 600 },\n  { name: 'Apr', value: 500 },\n  { name: 'May', value: 700 },\n];\n\nconst config: ChartConfig = {\n  value: { label: 'Revenue', color: 'var(--chart-1)' },\n};\n\n<ChartContainer config={config} style={{ height: 200, width: '100%' }}>\n  <ResponsiveContainer width=\"100%\" height=\"100%\">\n    <BarChart data={data}>\n      <CartesianGrid strokeDasharray=\"3 3\" />\n      <XAxis dataKey=\"name\" />\n      <YAxis />\n      <Tooltip />\n      <Bar dataKey=\"value\" fill=\"var(--color-value)\" />\n    </BarChart>\n  </ResponsiveContainer>\n</ChartContainer>"}
+>
+  {(() => {
+    const data = [
+      { name: 'Jan', value: 400 },
+      { name: 'Feb', value: 300 },
+      { name: 'Mar', value: 600 },
+      { name: 'Apr', value: 500 },
+      { name: 'May', value: 700 },
+    ];
+    const config = { value: { label: 'Revenue', color: 'var(--chart-1)' } };
+    return (
+      <ChartContainer config={config} style={{ height: 200, width: '100%' }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Bar dataKey="value" fill="var(--color-value)" />
+          </BarChart>
+        </ResponsiveContainer>
+      </ChartContainer>
+    );
+  })()}
+</ComponentPreview>
 
 ## Overview
 
