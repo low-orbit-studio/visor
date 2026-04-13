@@ -32,6 +32,8 @@ The registry pulls in `page-header`, `stat-card`, `activity-feed`, and `empty-st
 ## Usage
 
 ```tsx
+'use client';
+
 import { AdminDashboard } from '@/blocks/admin-dashboard/admin-dashboard';
 import { Button } from '@/components/ui/button/button';
 
@@ -112,6 +114,30 @@ If `activities.length === 0`, the block renders a default `<EmptyState>` with a 
 | `secondaryRegion` | `ReactNode` | — | Optional region rendered below the stat grid and above the activity feed. |
 | `titleAs` | `"h1" \| "h2" \| "h3"` | `"h1"` | Heading level used for the PageHeader title. |
 | `className` | `string` | — | Additional CSS class on the root element. |
+
+### AdminDashboardStat
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `id` | `string` | — | **Required.** Unique key for React list reconciliation. |
+| `label` | `ReactNode` | — | **Required.** Stat label text. |
+| `value` | `ReactNode` | — | **Required.** Stat value. |
+| `delta` | `StatCardDelta` | — | Optional change indicator (value + direction). |
+| `trend` | `ReactNode` | — | Optional trend visualization (sparkline, icon). |
+| `variant` | `"default" \| "highlight"` | `"default"` | Visual variant. |
+| `size` | `"sm" \| "md"` | `"md"` | Card size. |
+
+### AdminDashboardActivity
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `id` | `string` | — | **Required.** Unique key for React list reconciliation. |
+| `leading` | `ReactNode` | — | Optional leading element (avatar, icon). |
+| `title` | `ReactNode` | — | **Required.** Activity title. |
+| `description` | `ReactNode` | — | Optional detail text. |
+| `actor` | `ReactNode` | — | Optional actor name/element. |
+| `timestamp` | `ReactNode` | — | **Required.** When the activity occurred. |
+| `trailing` | `ReactNode` | — | Optional trailing element (action button, badge). |
 
 ## About Blocks
 

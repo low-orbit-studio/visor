@@ -72,6 +72,8 @@ The CLI resolves transitive registry dependencies automatically. For example, `v
 
 npm dependencies (like `@radix-ui/react-dialog` or `class-variance-authority`) are installed automatically.
 
+If `visor.json` doesn't exist, `visor add` creates one automatically with default paths. You can skip `visor init` and go straight to adding components.
+
 #### Options
 
 | Flag | Description |
@@ -206,10 +208,3 @@ of `@loworbitstudio/visor-core`.
 
 3. **Use webpack** — run `next dev` without `--turbopack` to use webpack's resolver, which handles symlinked CSS correctly.
 
-### `@loworbitstudio/visor-core` not yet on npm
-
-The token package is not yet published. Commands that suggest installing it will
-instead succeed if you use `--template nextjs` (which generates tokens inline)
-or import via a relative path in your project.
-
-Run `visor init --template nextjs` to get a working setup today without needing the npm package.
