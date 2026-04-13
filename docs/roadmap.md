@@ -99,7 +99,7 @@ Made the docs site a world-class showcase with live theme previews, visual compa
 Unblock Visor consumption across Low Orbit projects. Minimal work to make `npm install` and `npx visor add` functional for internal use.
 
 **Key work:**
-- [ ] **First npm publish** — Set `NPM_TOKEN` in GitHub repo secrets, push `v0.3.0` tag to trigger release workflow for `@loworbitstudio/visor-core`, `@loworbitstudio/visor`, and `@loworbitstudio/visor-theme-engine`
+- [x] **First npm publish** — Release workflow rewritten to use changesets/action (push-to-main trigger, all 3 packages). First publish via `changeset publish` — requires OTP or automation token (VI-124)
 - [ ] **Fix theme-engine raw TS export** — `./fonts` export points to `./src/fonts/index.ts` instead of compiled `./dist/fonts/...`; one-line fix in package.json
 - [x] **Research spike: proprietary theme strategy** — Evaluate options for keeping client themes (Veronica, Kaiah, Blacklight, ENTR, Space, SoleSpark) in the monorepo for development/docs while preventing public access. Options to evaluate: build-time injection from private repo, `.gitignore` + pull script, private npm package, git submodule, runtime loading from authenticated CDN
 
