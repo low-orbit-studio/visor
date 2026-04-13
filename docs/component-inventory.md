@@ -1,6 +1,6 @@
 # Component Inventory
 
-## Current Components (53)
+## Current Components (83)
 
 ### Form (22)
 - button, calendar, checkbox, combobox, date-picker, field, fieldset, file-upload, input, label, number-input, otp-input, password-input, phone-input, radio-group, search-input, select, slider, switch, tag-input, textarea, toggle-group
@@ -110,11 +110,12 @@ Admin-flavored compounds and blocks for building internal tools fast. Installabl
 - **admin-settings-page** — long scrollable settings archetype with labeled sections, optional sticky left-side nav, and global-or-per-section save modes
 - **admin-wizard** — guided multi-step flow composing PageHeader, Stepper, and Button with per-step async validation, final submit, and cancel guard
 
-## Current Hooks (9)
+## Current Hooks (14)
 
-- use-boolean, use-click-outside, use-debounce, use-focus-trap
-- use-intersection-observer, use-keyboard-shortcut, use-local-storage
-- use-media-query, use-previous
+- use-boolean, use-click-outside, use-currency, use-debounce, use-focus-trap
+- use-intersection-animation, use-intersection-observer, use-keyboard-nav
+- use-keyboard-shortcut, use-local-storage, use-media-query, use-previous
+- use-slide-engine, use-wheel-nav
 
 ## Source Material
 
