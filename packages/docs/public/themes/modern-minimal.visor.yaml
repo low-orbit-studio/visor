@@ -1,5 +1,6 @@
 name: modern-minimal
 version: 1
+group: Visor
 
 colors:
   primary: "#6eaaa6"

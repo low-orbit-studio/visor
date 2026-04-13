@@ -12,6 +12,8 @@ import type { ThemeExtractOptions } from "./commands/theme-extract.js"
 import { themeRegisterCommand } from "./commands/theme-register.js"
 import type { ThemeRegisterOptions } from "./commands/theme-register.js"
 import { themeUnregisterCommand } from "./commands/theme-unregister.js"
+import { themeSyncCommand } from "./commands/theme-sync.js"
+import type { ThemeSyncOptions } from "./commands/theme-sync.js"
 import { fontsAddCommand } from "./commands/fonts-add.js"
 import type { FontsAddOptions } from "./commands/fonts-add.js"
 
@@ -164,6 +166,19 @@ theme
   .action(
     (slug: string, options: { json?: boolean }) => {
       themeUnregisterCommand(slug, process.cwd(), options)
+    }
+  )
+
+theme
+  .command("sync")
+  .description(
+    "Scan themes/ and custom-themes/ directories, regenerate all theme CSS, globals.css imports, and theme-config.ts"
+  )
+  .option("--dry-run", "show what would change without writing files")
+  .option("--json", "output structured JSON (for AI agents)")
+  .action(
+    (options: ThemeSyncOptions) => {
+      themeSyncCommand(process.cwd(), options)
     }
   )
 

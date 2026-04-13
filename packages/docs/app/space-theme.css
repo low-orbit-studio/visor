@@ -1,517 +1,456 @@
-/* ══════════════════════════════════════════════════════════════════════
-   Space Theme — Creative Theme for Visor Docs
-   Follows the 5-section theme template (see docs/token-rules.md)
-   ══════════════════════════════════════════════════════════════════════ */
-
-/* ── Section 0: Theme-aware wordmark ── */
-.dark .wordmark-light { display: none; }
-html:not(.dark) .wordmark-dark { display: none; }
-
-/* ── Font faces ── */
-
-@font-face {
-  font-family: "Satoshi";
-  src: url("/fonts/Satoshi-Variable.woff2") format("woff2");
-  font-weight: 300 900;
-  font-display: swap;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Satoshi";
-  src: url("/fonts/Satoshi-VariableItalic.woff2") format("woff2");
-  font-weight: 300 900;
-  font-display: swap;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: "Monaspace Neon";
-  src: url("/fonts/MonaspaceNeon-Variable.woff2") format("woff2");
-  font-weight: 200 800;
-  font-display: swap;
-  font-style: normal;
-}
 
 /* ── Section 1: Shared tokens (mode-independent) ── */
 
+/* --- Primitive: Colors --- */
 .space-theme {
-  --accent: #5b6fff;
-  --accent2: hsl(341, 100%, 68%);
-  --success: #4fffb0;
-
-  /* Primary color scale — OKLCH-interpolated, brand at 500 */
-  --color-primary-50: #eaf0ff;
-  --color-primary-100: #d3deff;
-  --color-primary-200: #b5c7ff;
-  --color-primary-300: #96acff;
-  --color-primary-400: #768dff;
-  --color-primary-500: #5b6fff;
-  --color-primary-600: #4857d6;
-  --color-primary-700: #3540af;
-  --color-primary-800: #242a8a;
-  --color-primary-900: #161669;
-  --color-primary-950: #0c0651;
-
-  /* Font stacks */
-  --font-satoshi: "Satoshi", system-ui, sans-serif;
-  --font-heading: var(--font-satoshi);
-  --font-body: var(--font-satoshi);
-  --font-mono: "Monaspace Neon", monospace;
-
   min-height: 100vh;
   font-size: 1rem;
-  background: var(--surface-page);
+  background: var(--surface-page, var(--surface-background));
   color: var(--text-primary);
-  position: relative;
-  font-family: var(--font-satoshi);
+  font-family: var(--font-sans);
+  
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-primary-50: #f2f5ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-200: #c6d2ff;
+  --color-primary-300: #9fb3ff;
+  --color-primary-400: #6b82ff;
+  --color-primary-500: #4d5ceb;
+  --color-primary-600: #5b6fff;
+  --color-primary-700: #281fb0;
+  --color-primary-800: #1b0b86;
+  --color-primary-900: #0e005a;
+  --color-primary-950: #04002d;
+  --color-accent-50: #f2f5ff;
+  --color-accent-100: #e0e7ff;
+  --color-accent-200: #c6d2ff;
+  --color-accent-300: #9fb3ff;
+  --color-accent-400: #6b82ff;
+  --color-accent-500: #4d5ceb;
+  --color-accent-600: #5b6fff;
+  --color-accent-700: #281fb0;
+  --color-accent-800: #1b0b86;
+  --color-accent-900: #0e005a;
+  --color-accent-950: #04002d;
+  --color-neutral-50: #f5f5f8;
+  --color-neutral-100: #e7e7ed;
+  --color-neutral-200: #d2d2dd;
+  --color-neutral-300: #b4b4c2;
+  --color-neutral-400: #8a8a98;
+  --color-neutral-500: #6c6c79;
+  --color-neutral-600: #000000;
+  --color-neutral-700: #3f3f4b;
+  --color-neutral-800: #2b2b36;
+  --color-neutral-900: #191923;
+  --color-neutral-950: #080810;
+  --color-success-50: #e8fbeb;
+  --color-success-100: #d8f7dc;
+  --color-success-500: #22c55e;
+  --color-success-600: #000000;
+  --color-success-700: #017231;
+  --color-success-900: #002b0e;
+  --color-warning-50: #fff3e6;
+  --color-warning-100: #ffebd5;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #000000;
+  --color-warning-700: #8d5800;
+  --color-warning-900: #361f00;
+  --color-error-50: #fff2f0;
+  --color-error-100: #ffe3e0;
+  --color-error-500: #ef4444;
+  --color-error-600: #000000;
+  --color-error-700: #990015;
+  --color-error-900: #410004;
+  --color-info-50: #ecf7ff;
+  --color-info-100: #daf0ff;
+  --color-info-500: #0ea5e9;
+  --color-info-600: #000000;
+  --color-info-700: #005f88;
+  --color-info-900: #002437;
 }
+
+
+/* --- Primitive: Spacing --- */
+.space-theme {
+  --spacing-0: 0;
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-10: 2.5rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+  --spacing-20: 5rem;
+  --spacing-24: 6rem;
+}
+
+
+/* --- Primitive: Border Radius --- */
+.space-theme {
+  --radius-none: 0;
+  --radius-sm: 0.25rem; /* 4px */
+  --radius-md: 0.375rem; /* 6px */
+  --radius-lg: 0.5rem; /* 8px */
+  --radius-xl: 0.75rem; /* 12px */
+  --radius-2xl: 0.9997499999999999rem; /* 16px */
+  --radius-3xl: 1.5rem; /* 24px */
+  --radius-full: 9999px;
+}
+
+
+/* --- Primitive: Typography --- */
+.space-theme {
+  --font-display: Satoshi;
+  --font-sans: Satoshi;
+  --font-heading: var(--font-sans);
+  --font-body: Satoshi;
+  --font-mono: Monaspace Neon;
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem; /* 36px */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 700;
+  --font-weight-bold: 700;
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+  --letter-spacing-normal: 0.05em;
+}
+
+
+/* --- Primitive: Shadows --- */
+.space-theme {
+  --shadow-xs: 0 1px 2px rgba(91, 111, 255, 0.08);
+  --shadow-sm: 0 1px 3px rgba(91, 111, 255, 0.1);
+  --shadow-md: 0 4px 12px rgba(91, 111, 255, 0.12);
+  --shadow-lg: 0 10px 24px rgba(91, 111, 255, 0.14);
+  --shadow-xl: 0 20px 40px rgba(91, 111, 255, 0.16);
+}
+
+
+/* --- Primitive: Motion --- */
+.space-theme {
+  --motion-duration-100: 100ms;
+  --motion-duration-150: 150ms;
+  --motion-duration-200: 200ms;
+  --motion-duration-300: 300ms;
+  --motion-duration-500: 400ms;
+  --motion-duration-800: 800ms;
+  --motion-easing-linear: linear;
+  --motion-easing-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --motion-easing-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --motion-easing-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+
+/* --- Primitive: Miscellaneous --- */
+.space-theme {
+  --border-width-1: 1px;
+  --border-width-2: 2px;
+  --border-width-3: 3px;
+  --border-width-4: 4px;
+  --z-base: 0;
+  --z-raised: 1;
+  --z-dropdown: 1000;
+  --z-sticky: 1100;
+  --z-modal: 1300;
+  --z-popover: 1400;
+  --z-toast: 1500;
+  --overlay-bg: rgba(0, 0, 0, 0.5);
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+}
+
 
 /* ── Section 2: Dark mode overrides ── */
 
+/* --- Adaptive: Text (dark) — manual toggle --- */
 .dark .space-theme {
-  /* Space-theme-specific surfaces */
-  --space-surface-elevated: color-mix(in srgb, var(--accent) 8%, #121220);
-
-  /* Visor-core token overrides — dark */
-  --surface-page: #080810;
-  --surface-subtle: color-mix(in srgb, var(--accent) 4%, #0a0a14);
-  --surface-card: color-mix(in srgb, var(--accent) 6%, #0e0e18);
-  --surface-muted: color-mix(in srgb, var(--accent) 4%, #0a0a14);
-  --surface-overlay: #080810;
-  --surface-interactive-default: color-mix(in srgb, var(--accent) 6%, #0e0e18);
-  --surface-interactive-hover: color-mix(in srgb, var(--accent) 8%, #121220);
-  --surface-interactive-active: color-mix(in srgb, var(--accent) 12%, #161628);
-
-  --border-default: color-mix(in srgb, var(--accent) 12%, transparent);
-  --border-strong: color-mix(in srgb, var(--accent) 30%, transparent);
-  --border-focus: var(--accent);
-
   --text-primary: #e8e8f0;
   --text-secondary: rgba(232, 232, 240, 0.72);
   --text-tertiary: rgba(232, 232, 240, 0.5);
-  --text-disabled: rgba(232, 232, 240, 0.3);
-  --text-inverse: #080810;
-  --text-inverse-secondary: #1a1830;
-  --text-link: color-mix(in srgb, var(--accent) 80%, white);
-  --text-link-hover: color-mix(in srgb, var(--accent) 60%, white);
-  --text-success: #4ade80;              /* green-400 */
-  --text-warning: #fbbf24;              /* amber-400 */
-  --text-error: #f87171;                /* red-400 */
-  --text-info: #38bdf8;                 /* sky-400 */
-
-  --border-muted: color-mix(in srgb, var(--accent) 6%, transparent);
-  --border-disabled: color-mix(in srgb, var(--accent) 4%, transparent);
-
-  --interactive-primary-bg: var(--accent);
-  --interactive-primary-bg-hover: color-mix(in srgb, var(--accent) 85%, white);
-  --interactive-primary-text: #ffffff;
-  --interactive-secondary-bg: color-mix(
-    in srgb,
-    var(--accent) 40%,
-    transparent
-  );
-  --interactive-secondary-bg-hover: color-mix(
-    in srgb,
-    var(--accent) 50%,
-    transparent
-  );
-  --interactive-secondary-text: #e8e8f0;
-  --interactive-secondary-bg-active: color-mix(in srgb, var(--accent) 60%, transparent);
-  --interactive-secondary-border: color-mix(in srgb, var(--accent) 30%, transparent);
-  --interactive-primary-bg-active: color-mix(in srgb, var(--accent) 70%, white);
-  --interactive-ghost-bg: rgba(255, 255, 255, 0.2);
-  --interactive-ghost-bg-hover: rgba(255, 255, 255, 0.25);
-  --interactive-destructive-bg: hsl(341, 100%, 58%);
-  --interactive-destructive-bg-hover: hsl(341, 90%, 48%);
-  --interactive-destructive-text: #ffffff;
-
-  /* ── Optional: Accent/status surfaces ── */
-  --surface-accent-subtle: color-mix(in srgb, var(--accent) 10%, #080810);
-  --surface-accent-default: var(--accent);
-  --surface-accent-strong: color-mix(in srgb, var(--accent) 80%, white);
-  --surface-success-subtle: color-mix(in srgb, #4ade80 10%, #080810);
-  --surface-success-default: #22c55e;      /* green-500 */
-  --surface-warning-subtle: color-mix(in srgb, #fbbf24 10%, #080810);
-  --surface-warning-default: #f59e0b;      /* amber-500 */
-  --surface-error-subtle: color-mix(in srgb, #f87171 10%, #080810);
-  --surface-error-default: #ef4444;        /* red-500 */
-  --surface-info-subtle: color-mix(in srgb, #38bdf8 10%, #080810);
-  --surface-info-default: #0ea5e9;         /* sky-500 */
-
-  /* ── Optional: Status borders ── */
-  --border-success: #22c55e;              /* green-500 */
-  --border-warning: #f59e0b;              /* amber-500 */
-  --border-error: #ef4444;                /* red-500 */
-  --border-info: #0ea5e9;                 /* sky-500 */
-
-  /* Translucent glass — for code blocks, table headers, etc. */
-  --space-glass: color-mix(in srgb, var(--accent) 15%, rgba(0, 0, 0, 0.3));
-  --space-glass-border: rgba(255, 255, 255, 0.2);
-
-  /* Muted text for space-theme-specific elements */
-  --space-muted: #6b6b80;
-
-  /* Fumadocs color tokens — dark (v16 uses --color-fd-* with full hsl values) */
-  --color-fd-background: hsl(240, 33%, 5%);
-  --color-fd-foreground: hsl(240, 27%, 93%);
-  --color-fd-card: hsl(233, 20%, 9%);
-  --color-fd-card-foreground: hsl(240, 27%, 93%);
-  --color-fd-border: hsl(233, 20%, 22%);
-  --color-fd-muted: hsl(233, 20%, 8%);
-  --color-fd-muted-foreground: hsl(240, 27%, 72%);
-  --color-fd-accent: hsl(233, 100%, 71%);
-  --color-fd-accent-foreground: hsl(0, 0%, 100%);
-  --color-fd-primary: hsl(233, 100%, 71%);
-  --color-fd-primary-foreground: hsl(0, 0%, 100%);
-  --color-fd-secondary: hsl(233, 20%, 6%);
-  --color-fd-secondary-foreground: hsl(240, 27%, 93%);
-  --color-fd-popover: hsl(233, 20%, 9%);
-  --color-fd-popover-foreground: hsl(240, 27%, 93%);
-  --color-fd-ring: hsl(233, 100%, 71%);
+  --text-disabled: #000000;
+  --text-inverse: #191923;
+  --text-inverse-secondary: #3f3f4b;
+  --text-link: #8b9fff;
+  --text-link-hover: #9fb3ff;
+  --text-success: #22c55e;
+  --text-warning: #f59e0b;
+  --text-error: #ef4444;
+  --text-info: #0ea5e9;
 }
 
-/* ── Section 3: Light mode overrides (sunrise) ── */
 
+/* --- Adaptive: Surface (dark) — manual toggle --- */
+.dark .space-theme {
+  --surface-page: #080810;
+  --surface-card: #0e0e18;
+  --surface-subtle: #2b2b36;
+  --surface-muted: #3f3f4b;
+  --surface-overlay: #080810;
+  --surface-interactive-default: #2b2b36;
+  --surface-interactive-hover: #3f3f4b;
+  --surface-interactive-active: #000000;
+  --surface-interactive-disabled: #2b2b36;
+  --surface-accent-subtle: #0e005a;
+  --surface-accent-default: #4d5ceb;
+  --surface-accent-strong: #6b82ff;
+  --surface-success-subtle: #002b0e;
+  --surface-success-default: #22c55e;
+  --surface-warning-subtle: #361f00;
+  --surface-warning-default: #f59e0b;
+  --surface-error-subtle: #410004;
+  --surface-error-default: #ef4444;
+  --surface-info-subtle: #002437;
+  --surface-info-default: #0ea5e9;
+}
+
+
+/* --- Adaptive: Border (dark) — manual toggle --- */
+.dark .space-theme {
+  --border-default: #3f3f4b;
+  --border-muted: #2b2b36;
+  --border-strong: #000000;
+  --border-focus: #5b6fff;
+  --border-disabled: #2b2b36;
+  --border-success: #22c55e;
+  --border-warning: #f59e0b;
+  --border-error: #ef4444;
+  --border-info: #0ea5e9;
+}
+
+
+/* --- Adaptive: Interactive (dark) — manual toggle --- */
+.dark .space-theme {
+  --interactive-primary-bg: #5b6fff;
+  --interactive-primary-bg-hover: #6b82ff;
+  --interactive-primary-bg-active: #9fb3ff;
+  --interactive-primary-text: #ffffff;
+  --interactive-secondary-bg: #2b2b36;
+  --interactive-secondary-bg-hover: #3f3f4b;
+  --interactive-secondary-bg-active: #000000;
+  --interactive-secondary-text: #f5f5f8;
+  --interactive-secondary-border: #000000;
+  --interactive-destructive-bg: #ef4444;
+  --interactive-destructive-bg-hover: #000000;
+  --interactive-destructive-text: #ffffff;
+  --interactive-ghost-bg: #2b2b36;
+  --interactive-ghost-bg-hover: #3f3f4b;
+}
+
+
+/* --- Adaptive: Text (dark) — prefers-color-scheme --- */
+@media (prefers-color-scheme: dark) {
+  .space-theme:not(.light) {
+    --text-primary: #e8e8f0;
+    --text-secondary: rgba(232, 232, 240, 0.72);
+    --text-tertiary: rgba(232, 232, 240, 0.5);
+    --text-disabled: #000000;
+    --text-inverse: #191923;
+    --text-inverse-secondary: #3f3f4b;
+    --text-link: #8b9fff;
+    --text-link-hover: #9fb3ff;
+    --text-success: #22c55e;
+    --text-warning: #f59e0b;
+    --text-error: #ef4444;
+    --text-info: #0ea5e9;
+  }
+}
+
+
+/* --- Adaptive: Surface (dark) — prefers-color-scheme --- */
+@media (prefers-color-scheme: dark) {
+  .space-theme:not(.light) {
+    --surface-page: #080810;
+    --surface-card: #0e0e18;
+    --surface-subtle: #2b2b36;
+    --surface-muted: #3f3f4b;
+    --surface-overlay: #080810;
+    --surface-interactive-default: #2b2b36;
+    --surface-interactive-hover: #3f3f4b;
+    --surface-interactive-active: #000000;
+    --surface-interactive-disabled: #2b2b36;
+    --surface-accent-subtle: #0e005a;
+    --surface-accent-default: #4d5ceb;
+    --surface-accent-strong: #6b82ff;
+    --surface-success-subtle: #002b0e;
+    --surface-success-default: #22c55e;
+    --surface-warning-subtle: #361f00;
+    --surface-warning-default: #f59e0b;
+    --surface-error-subtle: #410004;
+    --surface-error-default: #ef4444;
+    --surface-info-subtle: #002437;
+    --surface-info-default: #0ea5e9;
+  }
+}
+
+
+/* --- Adaptive: Border (dark) — prefers-color-scheme --- */
+@media (prefers-color-scheme: dark) {
+  .space-theme:not(.light) {
+    --border-default: #3f3f4b;
+    --border-muted: #2b2b36;
+    --border-strong: #000000;
+    --border-focus: #5b6fff;
+    --border-disabled: #2b2b36;
+    --border-success: #22c55e;
+    --border-warning: #f59e0b;
+    --border-error: #ef4444;
+    --border-info: #0ea5e9;
+  }
+}
+
+
+/* --- Adaptive: Interactive (dark) — prefers-color-scheme --- */
+@media (prefers-color-scheme: dark) {
+  .space-theme:not(.light) {
+    --interactive-primary-bg: #5b6fff;
+    --interactive-primary-bg-hover: #6b82ff;
+    --interactive-primary-bg-active: #9fb3ff;
+    --interactive-primary-text: #ffffff;
+    --interactive-secondary-bg: #2b2b36;
+    --interactive-secondary-bg-hover: #3f3f4b;
+    --interactive-secondary-bg-active: #000000;
+    --interactive-secondary-text: #f5f5f8;
+    --interactive-secondary-border: #000000;
+    --interactive-destructive-bg: #ef4444;
+    --interactive-destructive-bg-hover: #000000;
+    --interactive-destructive-text: #ffffff;
+    --interactive-ghost-bg: #2b2b36;
+    --interactive-ghost-bg-hover: #3f3f4b;
+  }
+}
+
+
+/* ── Section 3: Light mode overrides ── */
+
+/* --- Adaptive: Text (light) --- */
 html:not(.dark) .space-theme {
-  /* Space-theme-specific surfaces */
-  --space-surface-elevated: color-mix(in srgb, var(--accent) 6%, #dbd8e8);
-
-  /* Sunrise sky gradient */
-  background: radial-gradient(
-      ellipse 120% 50% at 50% 100%,
-      rgba(255, 210, 160, 0.45) 0%,
-      rgba(245, 190, 170, 0.3) 25%,
-      rgba(220, 195, 215, 0.15) 50%,
-      transparent 75%
-    ),
-    linear-gradient(
-      to bottom,
-      hsl(222, 40%, 84%) 0%,
-      hsl(240, 30%, 92%) 15%,
-      hsl(270, 30%, 92%) 30%,
-      hsl(290, 28%, 89%) 45%,
-      hsl(320, 38%, 92%) 60%,
-      hsl(34, 35%, 92%) 75%,
-      hsl(38, 45%, 92%) 90%,
-      hsl(22, 35%, 91%) 100%
-    ) !important;
-  background-attachment: fixed !important;
-
-  /* Visor-core token overrides — light/sunrise */
-  --surface-page: #e0ddef;
-  --surface-subtle: color-mix(in srgb, var(--accent) 5%, #e4e1ee);
-  --surface-card: color-mix(in srgb, var(--accent) 4%, #f2f0f8);
-  --surface-muted: color-mix(in srgb, var(--accent) 5%, #e4e1ee);
-  --surface-overlay: #1a1630;
-  --surface-interactive-default: color-mix(in srgb, var(--accent) 4%, #f2f0f8);
-  --surface-interactive-hover: color-mix(in srgb, var(--accent) 6%, #dbd8e8);
-  --surface-interactive-active: color-mix(in srgb, var(--accent) 10%, #d0cde0);
-
-  --border-default: color-mix(
-    in srgb,
-    var(--accent) 12%,
-    rgba(60, 50, 90, 0.1)
-  );
-  --border-strong: color-mix(
-    in srgb,
-    var(--accent) 18%,
-    rgba(60, 50, 90, 0.18)
-  );
-  --border-focus: var(--accent);
-
   --text-primary: #1a1630;
   --text-secondary: rgba(26, 22, 48, 0.72);
   --text-tertiary: rgba(26, 22, 48, 0.5);
-  --text-disabled: rgba(26, 22, 48, 0.3);
-  --text-inverse: #f2f0f8;
-  --text-inverse-secondary: #dbd8e8;
-  --text-link: var(--accent);
-  --text-link-hover: color-mix(in srgb, var(--accent) 80%, #1a1630);
-  --text-success: #15803d;              /* green-700 */
-  --text-warning: #b45309;              /* amber-700 */
-  --text-error: #b91c1c;                /* red-700 */
-  --text-info: #0369a1;                 /* sky-700 */
+  --text-disabled: #b4b4c2;
+  --text-inverse: #ffffff;
+  --text-inverse-secondary: #d2d2dd;
+  --text-link: #5b6fff;
+  --text-link-hover: #281fb0;
+  --text-success: #017231;
+  --text-warning: #8d5800;
+  --text-error: #990015;
+  --text-info: #005f88;
+}
 
-  --border-muted: color-mix(in srgb, var(--accent) 6%, rgba(60, 50, 90, 0.06));
-  --border-disabled: color-mix(in srgb, var(--accent) 4%, rgba(60, 50, 90, 0.04));
 
-  --interactive-primary-bg: var(--accent);
-  --interactive-primary-bg-hover: color-mix(
-    in srgb,
-    var(--accent) 85%,
-    #1a1630
-  );
+/* --- Adaptive: Surface (light) --- */
+html:not(.dark) .space-theme {
+  --surface-page: #e0ddef;
+  --surface-card: #f2f0f8;
+  --surface-subtle: #f5f5f8;
+  --surface-muted: #e7e7ed;
+  --surface-overlay: #191923;
+  --surface-interactive-default: #ffffff;
+  --surface-interactive-hover: #f5f5f8;
+  --surface-interactive-active: #e7e7ed;
+  --surface-interactive-disabled: #f5f5f8;
+  --surface-accent-subtle: #f2f5ff;
+  --surface-accent-default: #4d5ceb;
+  --surface-accent-strong: #5b6fff;
+  --surface-success-subtle: #e8fbeb;
+  --surface-success-default: #22c55e;
+  --surface-warning-subtle: #fff3e6;
+  --surface-warning-default: #f59e0b;
+  --surface-error-subtle: #fff2f0;
+  --surface-error-default: #ef4444;
+  --surface-info-subtle: #ecf7ff;
+  --surface-info-default: #0ea5e9;
+}
+
+
+/* --- Adaptive: Border (light) --- */
+html:not(.dark) .space-theme {
+  --border-default: #d2d2dd;
+  --border-muted: #e7e7ed;
+  --border-strong: #b4b4c2;
+  --border-focus: #5b6fff;
+  --border-disabled: #e7e7ed;
+  --border-success: #22c55e;
+  --border-warning: #f59e0b;
+  --border-error: #ef4444;
+  --border-info: #0ea5e9;
+}
+
+
+/* --- Adaptive: Interactive (light) --- */
+html:not(.dark) .space-theme {
+  --interactive-primary-bg: #5b6fff;
+  --interactive-primary-bg-hover: #281fb0;
+  --interactive-primary-bg-active: #1b0b86;
   --interactive-primary-text: #ffffff;
-  --interactive-secondary-bg: hsl(233, 80%, 82%);
-  --interactive-secondary-bg-hover: hsl(233, 80%, 76%);
-  --interactive-secondary-text: #1a1630;
-  --interactive-secondary-bg-active: hsl(233, 80%, 70%);
-  --interactive-secondary-border: hsl(233, 40%, 72%);
-  --interactive-primary-bg-active: color-mix(in srgb, var(--accent) 70%, #1a1630);
-  --interactive-ghost-bg: hsl(240, 15%, 78%);
-  --interactive-ghost-bg-hover: hsl(240, 15%, 76%);
-  --interactive-destructive-bg: hsl(341, 90%, 58%);
-  --interactive-destructive-bg-hover: hsl(341, 75%, 48%);
+  --interactive-secondary-bg: #ffffff;
+  --interactive-secondary-bg-hover: #f5f5f8;
+  --interactive-secondary-bg-active: #e7e7ed;
+  --interactive-secondary-text: #191923;
+  --interactive-secondary-border: #b4b4c2;
+  --interactive-destructive-bg: #000000;
+  --interactive-destructive-bg-hover: #990015;
   --interactive-destructive-text: #ffffff;
-
-  /* ── Optional: Accent/status surfaces ── */
-  --surface-accent-subtle: color-mix(in srgb, var(--accent) 8%, #f2f0f8);
-  --surface-accent-default: var(--accent);
-  --surface-accent-strong: color-mix(in srgb, var(--accent) 80%, #1a1630);
-  --surface-success-subtle: #f0fdf4;       /* green-50 */
-  --surface-success-default: #22c55e;      /* green-500 */
-  --surface-warning-subtle: #fffbeb;       /* amber-50 */
-  --surface-warning-default: #f59e0b;      /* amber-500 */
-  --surface-error-subtle: #fef2f2;         /* red-50 */
-  --surface-error-default: #ef4444;        /* red-500 */
-  --surface-info-subtle: #f0f9ff;          /* sky-50 */
-  --surface-info-default: #0ea5e9;         /* sky-500 */
-
-  /* ── Optional: Status borders ── */
-  --border-success: #16a34a;              /* green-600 */
-  --border-warning: #d97706;              /* amber-600 */
-  --border-error: #dc2626;                /* red-600 */
-  --border-info: #0284c7;                 /* sky-600 */
-
-  /* Translucent glass — for code blocks, table headers, etc. */
-  --space-glass: rgba(255, 255, 255, 0.7);
-  --space-glass-border: hsl(252 18% 80%);
-
-  /* Muted text for space-theme-specific elements */
-  --space-muted: #8580a0;
-
-  /* Fumadocs color tokens — sunrise (v16 uses --color-fd-* with full hsl values) */
-  --color-fd-background: hsl(252, 28%, 94%);
-  --color-fd-foreground: hsl(252, 37%, 14%);
-  --color-fd-card: hsl(252, 28%, 96%);
-  --color-fd-card-foreground: hsl(252, 37%, 14%);
-  --color-fd-border: hsl(252, 18%, 82%);
-  --color-fd-muted: hsl(252, 18%, 90%);
-  --color-fd-muted-foreground: hsl(252, 12%, 54%);
-  --color-fd-accent: hsl(233, 100%, 65%);
-  --color-fd-accent-foreground: hsl(0, 0%, 100%);
-  --color-fd-primary: hsl(233, 100%, 60%);
-  --color-fd-primary-foreground: hsl(0, 0%, 100%);
-  --color-fd-secondary: hsl(252, 20%, 92%);
-  --color-fd-secondary-foreground: hsl(252, 37%, 14%);
-  --color-fd-popover: hsl(252, 28%, 96%);
-  --color-fd-popover-foreground: hsl(252, 37%, 14%);
-  --color-fd-ring: hsl(233, 100%, 71%);
+  --interactive-ghost-bg: #ffffff;
+  --interactive-ghost-bg-hover: #e7e7ed;
 }
 
-/* ── Section 5: Creative extensions ── */
 
-/* ── Typography (shared) ── */
-
-.space-theme h1,
-.space-theme h2,
-.space-theme h3,
-.space-theme h4,
-.space-theme h5,
-.space-theme h6 {
-  font-family: var(--font-heading);
+/* --- Fumadocs bridge: dark --- */
+.dark .space-theme {
+  --color-fd-background: #080810;
+  --color-fd-foreground: #e8e8f0;
+  --color-fd-card: #0e0e18;
+  --color-fd-card-foreground: #e8e8f0;
+  --color-fd-border: #3f3f4b;
+  --color-fd-muted: #3f3f4b;
+  --color-fd-muted-foreground: rgba(232, 232, 240, 0.72);
+  --color-fd-accent: #4d5ceb;
+  --color-fd-accent-foreground: #ffffff;
+  --color-fd-primary: #4d5ceb;
+  --color-fd-primary-foreground: #ffffff;
+  --color-fd-secondary: #3f3f4b;
+  --color-fd-secondary-foreground: #e8e8f0;
+  --color-fd-popover: #0e0e18;
+  --color-fd-popover-foreground: #e8e8f0;
+  --color-fd-ring: #5b6fff;
 }
 
-.space-theme code,
-.space-theme pre {
-  font-family: var(--font-mono);
+
+/* --- Fumadocs bridge: light --- */
+html:not(.dark) .space-theme {
+  --color-fd-background: #e0ddef;
+  --color-fd-foreground: #1a1630;
+  --color-fd-card: #f2f0f8;
+  --color-fd-card-foreground: #1a1630;
+  --color-fd-border: #d2d2dd;
+  --color-fd-muted: #e7e7ed;
+  --color-fd-muted-foreground: rgba(26, 22, 48, 0.72);
+  --color-fd-accent: #4d5ceb;
+  --color-fd-accent-foreground: #ffffff;
+  --color-fd-primary: #4d5ceb;
+  --color-fd-primary-foreground: #ffffff;
+  --color-fd-secondary: #e7e7ed;
+  --color-fd-secondary-foreground: #1a1630;
+  --color-fd-popover: #f2f0f8;
+  --color-fd-popover-foreground: #1a1630;
+  --color-fd-ring: #5b6fff;
 }
 
-/* Eyebrow pattern — Space Mono accent labels */
-.space-theme .eyebrow,
-.space-theme [data-eyebrow] {
-  font-family: var(--font-space-mono), monospace;
-  color: var(--accent);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-/* Text hierarchy — apply secondary/tertiary to fumadocs elements */
-.space-theme .fd-paragraph:not(:first-child),
-.space-theme [class*="fd-body"] {
-  color: var(--text-secondary);
-}
-
-.space-theme nav[aria-label="breadcrumb"],
-.space-theme nav[aria-label="breadcrumb"] * {
-  color: var(--text-tertiary);
-}
-
-/* Page descriptions */
-.space-theme .fd-not-prose {
-  color: var(--text-secondary);
-}
-
-/* ── Starfield ── */
-
-.space-theme .starfield {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
-}
-
-.space-theme .star {
-  position: absolute;
-  border-radius: 50%;
-  background: white;
-  opacity: 0;
-  animation: starTwinkle var(--d, 3s) ease-in-out infinite;
-}
-
-/* Light mode stars — accent-tinted instead of white, dimmed via container opacity */
-html:not(.dark) .space-theme .star {
-  background: var(--accent);
-}
-
-html:not(.dark) .space-theme .starfield {
-  opacity: 0.4;
-}
-
-@keyframes starTwinkle {
-  0%,
-  100% {
-    opacity: 0;
-  }
-  50% {
-    opacity: var(--o, 0.6);
-  }
-}
-
-/* ── Code block & inline code ── */
-
-/* Inline code */
-.space-theme :not(pre) > code {
-  background: var(--space-surface-elevated);
-  border: 1px solid var(--border-strong);
-  border-radius: 0.25rem;
-  padding: 0.15em 0.5em;
-  font-size: 0.875em;
-}
-
-/* Code blocks — translucent glass so background gradient shows through */
-.space-theme pre {
-  background: var(--space-glass) !important;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  font-size: 0.875rem;
-  font-weight: 200;
-}
-
-/* Fumadocs v16 code block overrides — figure.shiki has bg-fd-card.
-   Glass goes on the figure wrapper only; pre/code must be transparent
-   to avoid double-layering (stacked translucent backgrounds create
-   visible bands in the py-3.5 padding area). */
-.space-theme figure.shiki {
-  background: var(--space-glass) !important;
-}
-
-.space-theme figure.shiki pre {
-  background: transparent !important;
-  border-radius: 0;
-  padding: 0;
-  font-size: inherit;
-  font-weight: inherit;
-}
-
-.space-theme figure.shiki code {
-  background: transparent;
-  border: none;
-  padding: 0;
-}
-
-/* ── Tables ── */
-
-/* Dark mode tables */
-.dark .space-theme table {
-  border-color: hsl(233 30% 28%);
-}
-
-.dark .space-theme th,
-.dark .space-theme td {
-  border-color: hsl(233 30% 28%);
-}
-
-.dark .space-theme thead th {
-  background: color-mix(in srgb, var(--accent) 20%, #0e0e16);
-  border-bottom-color: hsl(233 30% 22%);
-}
-
-/* Light mode tables */
-html:not(.dark) .space-theme table {
-  border-color: hsl(252 18% 72%);
-}
-
-html:not(.dark) .space-theme th,
-html:not(.dark) .space-theme td {
-  background: transparent;
-  border-color: hsl(252 18% 82%);
-}
-
-html:not(.dark) .space-theme thead th {
-  background: color-mix(in srgb, var(--accent) 6%, #e8e5f0);
-  border-bottom-color: hsl(252 18% 76%);
-}
-
-/* ── Sidebar ── */
-
-.dark .space-theme aside[id="nd-sidebar"] {
-  background: color-mix(in srgb, var(--accent) 17%, transparent);
-}
-
-html:not(.dark) .space-theme aside[id="nd-sidebar"] {
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
-}
-
-.space-theme aside[id="nd-sidebar"] > div {
-  border-color: color-mix(in srgb, var(--accent) 6%, transparent);
-}
-
-/* ── Search input — keep kbd badges readable on hover ── */
-
-html:not(.dark) .space-theme button:hover kbd {
-  color: var(--text-primary);
-}
-
-/* ── Links & interactive states ── */
-
-.space-theme a:not([class]) {
-  color: var(--accent);
-  text-decoration: none;
-  transition: color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
-}
-
-.dark .space-theme a:not([class]):hover {
-  color: color-mix(in srgb, var(--accent) 80%, white);
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
-}
-
-html:not(.dark) .space-theme a:not([class]):hover {
-  color: color-mix(in srgb, var(--accent) 80%, #1a1630);
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
-}
-
-/* Focus ring */
-.space-theme :focus-visible {
-  outline: var(--focus-ring-width, 2px) solid var(--accent);
-  outline-offset: var(--focus-ring-offset, 2px);
-}
-
-/* Sidebar active item */
-.space-theme [data-active="true"] {
-  color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
-}
-
-/* Footer prev/next nav cards — label text and icons must be readable on accent hover bg.
-   fumadocs sets text-fd-muted-foreground on the label which stays dark in light mode
-   even when the parent card gets hover:bg-fd-accent/80. Override to inherit. */
-html:not(.dark) .space-theme .grid > a:hover {
-  --fd-muted-foreground: hsl(var(--fd-accent-foreground));
-}

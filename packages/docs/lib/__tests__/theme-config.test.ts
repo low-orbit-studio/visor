@@ -6,7 +6,7 @@ import { THEME_GROUPS, ALL_THEMES } from "../theme-config";
 
 describe("theme-config", () => {
   it("exports THEME_GROUPS with at least 2 groups", () => {
-    expect(THEME_GROUPS.length).toBeGreaterThanOrEqual(2);
+    expect(THEME_GROUPS.length).toBeGreaterThanOrEqual(1);
     for (const group of THEME_GROUPS) {
       expect(group.label).toBeTruthy();
       expect(group.themes.length).toBeGreaterThan(0);
@@ -17,7 +17,7 @@ describe("theme-config", () => {
     expect(ALL_THEMES).toContain("space");
     expect(ALL_THEMES).toContain("blackout");
     expect(ALL_THEMES).toContain("neutral");
-    expect(ALL_THEMES).toContain("kaiah");
+    expect(ALL_THEMES).toContain("modern-minimal");
     expect(ALL_THEMES.length).toBe(
       THEME_GROUPS.reduce((sum, g) => sum + g.themes.length, 0)
     );
@@ -29,29 +29,31 @@ describe("theme-config", () => {
   });
 });
 
-describe("root theme YAML registration guard", () => {
-  // All *.visor.yaml files at the repo root that look like standalone themes
-  // (i.e. have a `name` field) must be registered in theme-config.ts.
-  // A theme is considered registered if either:
-  //   (a) its slugified name matches a `value` in ALL_THEMES, or
-  //   (b) its filename stem matches a `yamlFile` field in any registered theme
-  //       (e.g. blacklight.visor.yaml → yamlFile: "blacklight" on blacklight-brand)
-  // If this test fails, run: npx visor theme register <file>.visor.yaml --group <Group>
+describe("themes/ directory registration guard", () => {
+  // All *.visor.yaml files in the themes/ directory (stock themes) must be
+  // registered in theme-config.ts. Custom themes in custom-themes/ are optional
+  // (they are gitignored and only present after running `visor theme sync`).
+  // If this test fails, run: visor theme sync
   const repoRoot = resolve(__dirname, "../../../../");
-  const rootYamlFiles = readdirSync(repoRoot).filter((f) => f.endsWith(".visor.yaml"));
+  const themesDir = resolve(repoRoot, "themes");
+  const stockYamlFiles = readdirSync(themesDir).filter((f) => f.endsWith(".visor.yaml"));
   const allYamlFiles = THEME_GROUPS.flatMap((g) => g.themes.map((t) => t.yamlFile).filter(Boolean));
 
-  it.each(rootYamlFiles)("%s is registered in theme-config", (yamlFile) => {
-    const content = readFileSync(resolve(repoRoot, yamlFile), "utf-8");
+  it("themes/ directory has at least one stock YAML", () => {
+    expect(stockYamlFiles.length).toBeGreaterThan(0);
+  });
+
+  it.each(stockYamlFiles)("%s is registered in theme-config", (yamlFile) => {
+    const content = readFileSync(resolve(themesDir, yamlFile), "utf-8");
     const parsed = parse(content) as { name?: string };
-    if (!parsed?.name) return; // skip YAMLs without a name (e.g. component configs)
+    if (!parsed?.name) return; // skip YAMLs without a name field
     const slug = parsed.name.toLowerCase().replace(/\s+/g, "-");
     const stem = yamlFile.replace(/\.visor\.yaml$/, "");
     const isRegistered = ALL_THEMES.includes(slug) || allYamlFiles.includes(stem);
     expect(
       isRegistered,
       `${yamlFile} defines theme "${parsed.name}" but it is not registered in theme-config.ts.\n` +
-        `Run: npx visor theme register ${yamlFile} --group <Visor|Client|Low Orbit>`
+        `Run: visor theme sync`
     ).toBe(true);
   });
 });

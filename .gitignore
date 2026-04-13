@@ -68,3 +68,23 @@ blob-report/
 
 # Git worktrees
 .worktrees/
+
+# Custom themes (proprietary — not committed to public repo)
+custom-themes/
+
+# BEGIN visor-custom-theme-css (managed by `visor theme sync` — do not edit manually)
+packages/docs/app/blacklight-brand-theme.css
+packages/docs/app/entr-theme.css
+packages/docs/app/kaiah-theme.css
+packages/docs/app/reference-app-theme.css
+packages/docs/app/solespark-theme.css
+packages/docs/app/veronica-theme.css
+# END visor-custom-theme-css
+
+# Custom theme YAML copies in docs public folder
+packages/docs/public/themes/blacklight-brand.visor.yaml
+packages/docs/public/themes/entr.visor.yaml
+packages/docs/public/themes/kaiah.visor.yaml
+packages/docs/public/themes/reference-app.visor.yaml
+packages/docs/public/themes/solespark.visor.yaml
+packages/docs/public/themes/veronica.visor.yaml

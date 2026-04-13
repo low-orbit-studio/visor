@@ -1,26 +1,14 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs"
-import { resolve, dirname, join } from "path"
+import { resolve, join } from "path"
 import { generateThemeData } from "@loworbitstudio/visor-theme-engine"
 import { docsAdapter } from "@loworbitstudio/visor-theme-engine/adapters"
 import { logger } from "../utils/logger.js"
+import { toSlug, toLabel, findRepoRoot } from "../utils/theme-helpers.js"
 
 export interface ThemeRegisterOptions {
   group: string
   dryRun?: boolean
   json?: boolean
-}
-
-/** Convert a theme name to a kebab-case slug. */
-function toSlug(name: string): string {
-  return name.toLowerCase().replace(/\s+/g, "-")
-}
-
-/** Convert a theme name to a display label (title-cased words). */
-function toLabel(name: string): string {
-  return name
-    .split(/[\s-]+/)
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ")
 }
 
 /**
@@ -137,20 +125,6 @@ function insertThemeConfig(
 
   const updated = content.slice(0, insertPos) + insertion + content.slice(insertPos)
   return { updated, changed: true }
-}
-
-/** Walk up from dir until we find a directory containing packages/docs. */
-function findRepoRoot(startDir: string): string | null {
-  let current = resolve(startDir)
-  while (true) {
-    if (existsSync(join(current, "packages", "docs"))) {
-      return current
-    }
-    const parent = dirname(current)
-    if (parent === current) break
-    current = parent
-  }
-  return null
 }
 
 export function themeRegisterCommand(

@@ -1,5 +1,6 @@
 name: blackout
 version: 1
+group: Visor
 
 colors:
   primary: "#666666"

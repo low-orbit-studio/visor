@@ -30,7 +30,7 @@ export default function RootLayout({
       <body className={spaceMono.variable} suppressHydrationWarning>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){var t=localStorage.getItem("visor-theme")||"space";document.body.classList.add(t+"-theme")})()`,
+            __html: `(function(){var t=localStorage.getItem("visor-theme")||"blackout";document.body.classList.add(t+"-theme")})()`,
           }}
         />
         <ConditionalStarfield />

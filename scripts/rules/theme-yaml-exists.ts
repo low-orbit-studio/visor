@@ -2,16 +2,15 @@ import { access } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { Rule, RuleResult } from './types.js';
 
-// Inline the theme registry so this rule doesn't depend on the docs package at runtime
+// Stock themes only — these are committed and must always be present in public/themes/.
+// Custom/proprietary themes (entr, kaiah, veronica, solespark, blacklight-brand, reference-app)
+// live in custom-themes/ (gitignored) and are copied to public/themes/ by `visor theme sync`.
+// They are not checked here because they are absent on fresh clone.
 const THEME_YAML_FILES: { label: string; yamlFile: string }[] = [
   { label: 'Blackout', yamlFile: 'blackout' },
+  { label: 'Modern Minimal', yamlFile: 'modern-minimal' },
   { label: 'Neutral', yamlFile: 'neutral' },
   { label: 'Space', yamlFile: 'space' },
-  { label: 'ENTR', yamlFile: 'entr' },
-  { label: 'Kaiah', yamlFile: 'kaiah' },
-  { label: 'Veronica', yamlFile: 'veronica' },
-  { label: 'Blacklight Brand', yamlFile: 'blacklight' },
-  { label: 'Reference App', yamlFile: 'reference-app' },
 ];
 
 export const themeYamlExists: Rule = {

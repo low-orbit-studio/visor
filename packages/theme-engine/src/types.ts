@@ -55,6 +55,8 @@ export interface ParsedColor {
 export interface VisorThemeConfig {
   name: string;
   version: 1;
+  /** Theme group for the docs site theme switcher (e.g. 'Visor', 'Client', 'Low Orbit'). Used by `visor theme sync`. */
+  group?: string;
   colors: {
     primary: string;
     accent?: string;
