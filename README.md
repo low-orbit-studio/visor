@@ -68,8 +68,6 @@ This creates a `visor.json` in your project root with default path mappings:
 @import "@loworbitstudio/visor-core";
 ```
 
-> **Note:** `@loworbitstudio/visor-core` is not yet published to npm. For local development, use a monorepo-relative import path or use Option A which generates tokens inline.
-
 **3. Add your first component**
 
 ```sh
@@ -342,7 +340,7 @@ Because you own the files, the CLI shows a diff before overwriting. If you've cu
 Token updates are standard npm updates:
 
 ```sh
-npm update @loworbitstudio/visor
+npm update @loworbitstudio/visor-core
 ```
 
 Token updates propagate automatically to all components. No component files change.
