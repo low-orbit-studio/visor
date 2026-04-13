@@ -36,9 +36,16 @@ export interface AdminListPageProps<TData>
   titleAs?: PageHeaderProps["titleAs"]
 
   // ── Filter bar ───────────────────────────────────────────────────────────
-  /** Controlled search value. */
+  /**
+   * Controlled search value. Pass with `onSearchChange` to enable the search
+   * input. You own the state and filtering logic:
+   * @example
+   * const [search, setSearch] = React.useState('');
+   * const filtered = data.filter(row => row.name.includes(search));
+   * <AdminListPage searchValue={search} onSearchChange={setSearch} data={filtered} />
+   */
   searchValue?: string
-  /** Handler invoked when the search input changes. */
+  /** Handler invoked when the search input changes. Pair with `searchValue`. */
   onSearchChange?: (value: string) => void
   /** Placeholder for the search input. Defaults to "Search...". */
   searchPlaceholder?: string
