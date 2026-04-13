@@ -22,22 +22,6 @@ export const THEME_GROUPS: ThemeGroup[] = [
     { value: "space", label: "Space", yamlFile: "space" },
     ],
   },
-  {
-    label: "Client",
-    themes: [
-    { value: "entr", label: "Entr", yamlFile: "entr" },
-    { value: "kaiah", label: "Kaiah", yamlFile: "kaiah" },
-    { value: "solespark", label: "Solespark", yamlFile: "solespark" },
-    { value: "veronica", label: "Veronica", yamlFile: "veronica" },
-    ],
-  },
-  {
-    label: "Low Orbit",
-    themes: [
-    { value: "blacklight-brand", label: "Blacklight Brand", yamlFile: "blacklight-brand" },
-    { value: "reference-app", label: "Reference App", yamlFile: "reference-app" },
-    ],
-  },
 ];
 
 export const ALL_THEMES = THEME_GROUPS.flatMap((g) => g.themes.map((t) => t.value));

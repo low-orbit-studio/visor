@@ -251,6 +251,8 @@ export function docsAdapter(
 
   // ─── Section 1: Shared tokens (mode-independent primitives) ───────────────
 
+  lines.push("\n/* ── Section 1: Shared tokens (mode-independent) ── */");
+
   const sharedDecls: string[] = [
     "min-height: 100vh;",
     "font-size: 1rem;",
@@ -293,6 +295,8 @@ export function docsAdapter(
 
   // ─── Section 2: Dark mode overrides ───────────────────────────────────────
 
+  lines.push("\n/* ── Section 2: Dark mode overrides ── */");
+
   const darkDecls = generateSemanticDecls(input.tokens, "dark");
 
   // Manual toggle
@@ -324,6 +328,8 @@ export function docsAdapter(
   }
 
   // ─── Section 3: Light mode overrides ──────────────────────────────────────
+
+  lines.push("\n/* ── Section 3: Light mode overrides ── */");
 
   const lightCategoryDecls = [
     { label: "Text", entries: Object.entries(input.tokens.text).map(([n, v]) => `--text-${n}: ${v.light};`) },

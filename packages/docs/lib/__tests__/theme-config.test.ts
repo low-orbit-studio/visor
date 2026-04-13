@@ -17,7 +17,7 @@ describe("theme-config", () => {
     expect(ALL_THEMES).toContain("space");
     expect(ALL_THEMES).toContain("blackout");
     expect(ALL_THEMES).toContain("neutral");
-    expect(ALL_THEMES).toContain("kaiah");
+    expect(ALL_THEMES).toContain("modern-minimal");
     expect(ALL_THEMES.length).toBe(
       THEME_GROUPS.reduce((sum, g) => sum + g.themes.length, 0)
     );
