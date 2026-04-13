@@ -1,0 +1,87 @@
+---
+title: Font Showcase
+description: A card displaying a font family with its name, role, hero glyph, and weight specimens.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { FontShowcase } from '@/components/ui/font-showcase';
+
+## Default
+
+Renders a font specimen card with a hero glyph and weight samples.
+
+<ComponentPreview
+  title="Font Showcase"
+  code={"import { FontShowcase } from '@/components/ui/font-showcase/font-showcase';\n\n<FontShowcase\n  token=\"--font-heading\"\n  role=\"Heading & Body\"\n  familyName=\"Satoshi\"\n  weights={[\n    { label: 'Regular', value: 400 },\n    { label: 'Medium', value: 500 },\n    { label: 'Bold', value: 700 },\n  ]}\n/>"}
+>
+  <FontShowcase
+    token="--font-heading"
+    role="Heading & Body"
+    familyName="Satoshi"
+    weights={[
+      { label: 'Regular', value: 400 },
+      { label: 'Medium', value: 500 },
+      { label: 'Bold', value: 700 },
+    ]}
+  />
+</ComponentPreview>
+
+## Monospace Font
+
+Show a monospace font family specimen.
+
+<ComponentPreview
+  title="Monospace Showcase"
+  code={"<FontShowcase\n  token=\"--font-mono\"\n  role=\"Code\"\n  familyName=\"JetBrains Mono\"\n  weights={[\n    { label: 'Regular', value: 400 },\n    { label: 'Bold', value: 700 },\n  ]}\n/>"}
+>
+  <FontShowcase
+    token="--font-mono"
+    role="Code"
+    familyName="JetBrains Mono"
+    weights={[
+      { label: 'Regular', value: 400 },
+      { label: 'Bold', value: 700 },
+    ]}
+  />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add font-showcase
+```
+
+This copies two files into your project:
+
+- `components/ui/font-showcase/font-showcase.tsx` — the component
+- `components/ui/font-showcase/font-showcase.module.css` — the styles
+
+## Usage
+
+```tsx
+import { FontShowcase } from '@/components/ui/font-showcase/font-showcase';
+
+<FontShowcase
+  token="--font-heading"
+  role="Heading & Body"
+  familyName="Satoshi"
+  weights={[
+    { label: 'Regular', value: 400 },
+    { label: 'Medium', value: 500 },
+    { label: 'Bold', value: 700 },
+  ]}
+/>
+```
+
+## API Reference
+
+### FontShowcaseProps
+
+<PropsTable component="font-showcase" />
+
+## Accessibility
+
+- Font specimens are presentational — they display typography samples for reference.
+- Weight labels provide context for each specimen row.
+- The hero glyph uses a large font size for visual impact but carries no semantic meaning.

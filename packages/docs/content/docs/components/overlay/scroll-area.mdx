@@ -1,0 +1,104 @@
+---
+title: Scroll Area
+description: Custom-styled scrollable container with thin scrollbar overlays. Built on Radix UI.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+
+## Default
+
+A fixed-height container with a vertical scrollbar for overflowing content.
+
+<ComponentPreview
+  title="Vertical Scroll"
+  code={"import { ScrollArea } from '@/components/ui/scroll-area/scroll-area';\n\n<ScrollArea style={{ height: '200px' }}>\n  <div style={{ padding: '1rem' }}>\n    <h4>Tags</h4>\n    <div>TypeScript</div>\n    <div>React</div>\n    <div>CSS Modules</div>\n    <div>Radix UI</div>\n    <div>Vitest</div>\n    <div>CVA</div>\n    <div>Design Tokens</div>\n    <div>Theming</div>\n    <div>Accessibility</div>\n    <div>Responsive</div>\n    <div>Animation</div>\n    <div>SSR</div>\n  </div>\n</ScrollArea>"}
+>
+  <ScrollArea style={{ height: '200px', width: '100%', maxWidth: '16rem', border: '1px solid var(--border-default, #e5e7eb)', borderRadius: 'var(--radius-md, 0.5rem)' }}>
+    <div style={{ padding: '1rem' }}>
+      <h4 style={{ marginBottom: '0.75rem', fontWeight: 500 }}>Tags</h4>
+      <div style={{ paddingBlock: '0.25rem' }}>TypeScript</div>
+      <div style={{ paddingBlock: '0.25rem' }}>React</div>
+      <div style={{ paddingBlock: '0.25rem' }}>CSS Modules</div>
+      <div style={{ paddingBlock: '0.25rem' }}>Radix UI</div>
+      <div style={{ paddingBlock: '0.25rem' }}>Vitest</div>
+      <div style={{ paddingBlock: '0.25rem' }}>CVA</div>
+      <div style={{ paddingBlock: '0.25rem' }}>Design Tokens</div>
+      <div style={{ paddingBlock: '0.25rem' }}>Theming</div>
+      <div style={{ paddingBlock: '0.25rem' }}>Accessibility</div>
+      <div style={{ paddingBlock: '0.25rem' }}>Responsive</div>
+      <div style={{ paddingBlock: '0.25rem' }}>Animation</div>
+      <div style={{ paddingBlock: '0.25rem' }}>SSR</div>
+    </div>
+  </ScrollArea>
+</ComponentPreview>
+
+## Horizontal
+
+Use the `ScrollBar` sub-component with `orientation="horizontal"` for horizontal scrolling.
+
+<ComponentPreview
+  title="Horizontal Scroll"
+  code={"import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area/scroll-area';\n\n<ScrollArea style={{ width: '300px', whiteSpace: 'nowrap' }}>\n  <div style={{ display: 'flex', gap: '1rem', padding: '1rem' }}>\n    <div>Item 1</div>\n    <div>Item 2</div>\n    <div>Item 3</div>\n    <div>Item 4</div>\n    <div>Item 5</div>\n    <div>Item 6</div>\n    <div>Item 7</div>\n    <div>Item 8</div>\n  </div>\n  <ScrollBar orientation=\"horizontal\" />\n</ScrollArea>"}
+>
+  <ScrollArea style={{ width: '100%', maxWidth: '300px', whiteSpace: 'nowrap', border: '1px solid var(--border-default, #e5e7eb)', borderRadius: 'var(--radius-md, 0.5rem)' }}>
+    <div style={{ display: 'flex', gap: '1rem', padding: '1rem' }}>
+      <div style={{ flexShrink: 0, padding: '0.5rem 1rem', background: 'var(--surface-raised, #f9fafb)', borderRadius: 'var(--radius-sm, 0.25rem)' }}>Item 1</div>
+      <div style={{ flexShrink: 0, padding: '0.5rem 1rem', background: 'var(--surface-raised, #f9fafb)', borderRadius: 'var(--radius-sm, 0.25rem)' }}>Item 2</div>
+      <div style={{ flexShrink: 0, padding: '0.5rem 1rem', background: 'var(--surface-raised, #f9fafb)', borderRadius: 'var(--radius-sm, 0.25rem)' }}>Item 3</div>
+      <div style={{ flexShrink: 0, padding: '0.5rem 1rem', background: 'var(--surface-raised, #f9fafb)', borderRadius: 'var(--radius-sm, 0.25rem)' }}>Item 4</div>
+      <div style={{ flexShrink: 0, padding: '0.5rem 1rem', background: 'var(--surface-raised, #f9fafb)', borderRadius: 'var(--radius-sm, 0.25rem)' }}>Item 5</div>
+      <div style={{ flexShrink: 0, padding: '0.5rem 1rem', background: 'var(--surface-raised, #f9fafb)', borderRadius: 'var(--radius-sm, 0.25rem)' }}>Item 6</div>
+      <div style={{ flexShrink: 0, padding: '0.5rem 1rem', background: 'var(--surface-raised, #f9fafb)', borderRadius: 'var(--radius-sm, 0.25rem)' }}>Item 7</div>
+      <div style={{ flexShrink: 0, padding: '0.5rem 1rem', background: 'var(--surface-raised, #f9fafb)', borderRadius: 'var(--radius-sm, 0.25rem)' }}>Item 8</div>
+    </div>
+    <ScrollBar orientation="horizontal" />
+  </ScrollArea>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add scroll-area
+```
+
+This copies two files into your project:
+
+- `components/ui/scroll-area/scroll-area.tsx` — the component
+- `components/ui/scroll-area/scroll-area.module.css` — the styles
+
+## Usage
+
+```tsx
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area/scroll-area';
+
+<ScrollArea style={{ height: '300px' }}>
+  <div style={{ padding: '1rem' }}>
+    {items.map(item => (
+      <div key={item.id}>{item.name}</div>
+    ))}
+  </div>
+</ScrollArea>
+```
+
+## API Reference
+
+### ScrollAreaProps
+
+<PropsTable component="scroll-area" />
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `ScrollArea` | `<div>` | Root scrollable container with viewport and scrollbar. |
+| `ScrollBar` | `<div>` | Custom scrollbar track and thumb, supports `vertical` and `horizontal` orientation. |
+
+## Accessibility
+
+- Built on `@radix-ui/react-scroll-area` for cross-browser consistent custom scrollbars.
+- Native scroll semantics are preserved — the viewport is a standard scrollable element.
+- Custom scrollbar thumb is interactive and draggable.
+- Keyboard scrolling works as expected with arrow keys and page up/down.

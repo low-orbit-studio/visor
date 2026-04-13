@@ -1,0 +1,151 @@
+---
+title: Sheet
+description: Slide-over panel that enters from any edge of the screen. Built on Radix UI Dialog.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetFooter, SheetTitle, SheetDescription, SheetClose } from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
+
+## Default (Right)
+
+A sheet that slides in from the right side.
+
+<ComponentPreview
+  title="Right Sheet"
+  code={"import {\n  Sheet, SheetTrigger, SheetContent,\n  SheetHeader, SheetTitle, SheetDescription,\n} from '@/components/ui/sheet/sheet';\n\n<Sheet>\n  <SheetTrigger asChild>\n    <Button variant=\"outline\">Open filters</Button>\n  </SheetTrigger>\n  <SheetContent side=\"right\">\n    <SheetHeader>\n      <SheetTitle>Filters</SheetTitle>\n      <SheetDescription>Narrow down your results.</SheetDescription>\n    </SheetHeader>\n    <p>Filter controls go here.</p>\n  </SheetContent>\n</Sheet>"}
+>
+  <Sheet>
+    <SheetTrigger asChild>
+      <Button variant="outline">Open filters</Button>
+    </SheetTrigger>
+    <SheetContent side="right">
+      <SheetHeader>
+        <SheetTitle>Filters</SheetTitle>
+        <SheetDescription>Narrow down your results.</SheetDescription>
+      </SheetHeader>
+      <p>Filter controls go here.</p>
+    </SheetContent>
+  </Sheet>
+</ComponentPreview>
+
+## Left Side
+
+A sheet sliding in from the left, useful for navigation.
+
+<ComponentPreview
+  title="Left Sheet"
+  code={"<Sheet>\n  <SheetTrigger asChild>\n    <Button variant=\"outline\">Menu</Button>\n  </SheetTrigger>\n  <SheetContent side=\"left\">\n    <SheetHeader>\n      <SheetTitle>Navigation</SheetTitle>\n      <SheetDescription>Browse sections of the app.</SheetDescription>\n    </SheetHeader>\n    <nav>\n      <ul>\n        <li>Dashboard</li>\n        <li>Settings</li>\n        <li>Profile</li>\n      </ul>\n    </nav>\n  </SheetContent>\n</Sheet>"}
+>
+  <Sheet>
+    <SheetTrigger asChild>
+      <Button variant="outline">Menu</Button>
+    </SheetTrigger>
+    <SheetContent side="left">
+      <SheetHeader>
+        <SheetTitle>Navigation</SheetTitle>
+        <SheetDescription>Browse sections of the app.</SheetDescription>
+      </SheetHeader>
+      <nav>
+        <ul>
+          <li>Dashboard</li>
+          <li>Settings</li>
+          <li>Profile</li>
+        </ul>
+      </nav>
+    </SheetContent>
+  </Sheet>
+</ComponentPreview>
+
+## With Footer
+
+A sheet with header, content, and action footer.
+
+<ComponentPreview
+  title="Sheet with Footer"
+  code={"<Sheet>\n  <SheetTrigger asChild>\n    <Button>Edit settings</Button>\n  </SheetTrigger>\n  <SheetContent side=\"right\">\n    <SheetHeader>\n      <SheetTitle>Settings</SheetTitle>\n      <SheetDescription>Update your preferences.</SheetDescription>\n    </SheetHeader>\n    <p>Settings form here.</p>\n    <SheetFooter>\n      <SheetClose asChild>\n        <Button variant=\"outline\">Cancel</Button>\n      </SheetClose>\n      <Button>Save</Button>\n    </SheetFooter>\n  </SheetContent>\n</Sheet>"}
+>
+  <Sheet>
+    <SheetTrigger asChild>
+      <Button>Edit settings</Button>
+    </SheetTrigger>
+    <SheetContent side="right">
+      <SheetHeader>
+        <SheetTitle>Settings</SheetTitle>
+        <SheetDescription>Update your preferences.</SheetDescription>
+      </SheetHeader>
+      <p>Settings form here.</p>
+      <SheetFooter>
+        <SheetClose asChild>
+          <Button variant="outline">Cancel</Button>
+        </SheetClose>
+        <Button>Save</Button>
+      </SheetFooter>
+    </SheetContent>
+  </Sheet>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add sheet
+```
+
+This copies two files into your project:
+
+- `components/ui/sheet/sheet.tsx` — the component
+- `components/ui/sheet/sheet.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  Sheet, SheetTrigger, SheetContent,
+  SheetHeader, SheetTitle, SheetDescription, SheetFooter,
+} from '@/components/ui/sheet/sheet';
+
+<Sheet>
+  <SheetTrigger asChild>
+    <Button variant="outline">Open</Button>
+  </SheetTrigger>
+  <SheetContent side="right">
+    <SheetHeader>
+      <SheetTitle>Title</SheetTitle>
+      <SheetDescription>Description.</SheetDescription>
+    </SheetHeader>
+    {/* content */}
+    <SheetFooter>
+      <Button>Save</Button>
+    </SheetFooter>
+  </SheetContent>
+</Sheet>
+```
+
+## API Reference
+
+### SheetProps
+
+<PropsTable component="sheet" />
+
+## Sub-components
+
+| Component | Element | Purpose |
+|-----------|---------|---------|
+| `Sheet` | -- (Radix Root) | Root component managing open/close state. |
+| `SheetTrigger` | `<button>` | Element that opens the sheet on click. |
+| `SheetContent` | `<div>` (portal) | The sliding panel with overlay and close button. |
+| `SheetHeader` | `<div>` | Container for title and description. |
+| `SheetFooter` | `<div>` | Container for action buttons at the bottom. |
+| `SheetTitle` | `<h2>` | Accessible sheet heading. |
+| `SheetDescription` | `<p>` | Secondary descriptive text. |
+| `SheetClose` | `<button>` | Explicit close trigger. |
+| `SheetOverlay` | `<div>` | Background overlay behind the sheet. |
+
+## Accessibility
+
+- Built on `@radix-ui/react-dialog` — shares the same a11y model as Dialog.
+- Focus is trapped inside the sheet while open.
+- `Escape` key closes the sheet; clicking the overlay also dismisses it.
+- `SheetTitle` provides the accessible label via `aria-labelledby`.
+- The `side` variants (`top`, `right`, `bottom`, `left`) control slide direction.

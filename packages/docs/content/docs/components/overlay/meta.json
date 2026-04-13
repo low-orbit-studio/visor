@@ -4,9 +4,13 @@
   "defaultOpen": true,
   "pages": [
     "context-menu",
+    "dialog",
+    "dropdown-menu",
     "fullscreen-overlay",
     "hover-card",
     "lightbox",
-    "popover"
+    "popover",
+    "scroll-area",
+    "sheet"
   ]
 }

@@ -1,0 +1,91 @@
+---
+title: Slider Control
+description: A labeled slider with inline value display, composing Slider with a label and formatted output.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { SliderControl } from '@/components/ui/slider-control';
+
+## Default
+
+A slider with a label and formatted value display.
+
+<ComponentPreview
+  title="Slider Control"
+  code={"import { SliderControl } from '@/components/ui/slider-control/slider-control';\n\n<SliderControl\n  label=\"Opacity\"\n  value={75}\n  min={0}\n  max={100}\n  step={1}\n  displayValue=\"75%\"\n/>"}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <SliderControl
+      label="Opacity"
+      value={75}
+      min={0}
+      max={100}
+      step={1}
+      displayValue="75%"
+    />
+  </div>
+</ComponentPreview>
+
+## Decimal Step
+
+Use fractional steps for fine-grained control.
+
+<ComponentPreview
+  title="Decimal Step"
+  code={"<SliderControl\n  label=\"Scale\"\n  value={1.5}\n  min={0.2}\n  max={3.0}\n  step={0.05}\n  displayValue=\"1.50x\"\n/>"}
+>
+  <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <SliderControl
+      label="Scale"
+      value={1.5}
+      min={0.2}
+      max={3.0}
+      step={0.05}
+      displayValue="1.50x"
+    />
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add slider-control
+```
+
+This copies two files into your project:
+
+- `components/ui/slider-control/slider-control.tsx` — the component
+- `components/ui/slider-control/slider-control.module.css` — the styles
+
+## Usage
+
+```tsx
+import { SliderControl } from '@/components/ui/slider-control/slider-control';
+
+const [scale, setScale] = useState(1.0);
+
+<SliderControl
+  label="Size"
+  value={scale}
+  onValueChange={setScale}
+  displayValue={scale.toFixed(1)}
+  min={0.2}
+  max={3.0}
+  step={0.05}
+/>
+```
+
+## API Reference
+
+### SliderControlProps
+
+<PropsTable component="slider-control" />
+
+The component also accepts all standard `<div>` HTML attributes.
+
+## Accessibility
+
+- Composes the Slider primitive which uses `role="slider"` with `aria-valuemin`, `aria-valuemax`, and `aria-valuenow`.
+- The label is associated with the slider for screen reader announcements.
+- Keyboard: `ArrowLeft` / `ArrowRight` adjust the value by `step`; `Home` / `End` jump to min/max.
