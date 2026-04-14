@@ -22,9 +22,9 @@ import { glob } from 'node:fs/promises';
 import { parse } from 'yaml';
 import type { Rule, RuleResult } from './types.js';
 
-const MIN_WHEN_TO_USE = 2;
-const MIN_WHEN_NOT_TO_USE = 1;
-const MIN_STRUCTURE_LENGTH = 20; // chars — enough to be real JSX, not a placeholder
+export const MIN_WHEN_TO_USE = 2;
+export const MIN_WHEN_NOT_TO_USE = 1;
+export const MIN_STRUCTURE_LENGTH = 20; // chars — enough to be real JSX, not a placeholder
 
 export const discoverabilitySelectionQuality: Rule = {
   name: 'discoverability-selection-quality',

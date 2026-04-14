@@ -195,6 +195,31 @@ npx visor suggest --for "user settings page" --json  # Suggest components for a 
 **Key difference from current CLI:**
 The current CLI focuses on file operations (add, init, diff). The enhanced CLI adds *knowledge operations* — querying component metadata, patterns, and guidance without touching files.
 
+## Discoverability Score
+
+Visor ships a CI validator rule that computes a repeatable 0–100 AI discoverability score across the 10-question framework. Each CI run shows the current score and per-dimension breakdown:
+
+```sh
+npm run validate discoverability-score
+```
+
+The rule lives at `scripts/rules/discoverability-score.ts` and emits 10 dimension results plus a summary. All checks are deterministic filesystem/content reads — no AI calls.
+
+| # | Dimension | Signal |
+|---|-----------|--------|
+| Q1 | Selection | % components with ≥2 `when_to_use` + ≥1 `when_not_to_use` |
+| Q2 | Composition | Pattern count scaled (0→0pt, 7→5pt, 15→10pt) |
+| Q3 | API Reference | % components without variant drift or YAML completeness failures |
+| Q4 | Bootstrap | `CONSUMER_CLAUDE.md` Quick Start + `visor init` command present |
+| Q5 | Theming | Token tier files + `interchange-format.md` + ≥3 theme CLI commands |
+| Q6 | Token Discovery | `visor-manifest.json` has `tokens` key + `visor tokens list --json` |
+| Q7 | Troubleshooting | Troubleshooting section ≥200 chars + `visor doctor` present |
+| Q8 | Versioning | `CHANGELOG.json` + `manifest.version` + `visor diff` present |
+| Q9 | Responsive | % of 5 layout-critical components with `responsive:` field |
+| Q10 | Visual Reference | % components with `preview_url` in `.visor.yaml` |
+
+To gate CI at a minimum score, set `DISCOVERABILITY_MIN_SCORE` and flip `warnOnly: false` in `discoverability-score.ts`.
+
 ## Implementation Notes
 
 - Component `.visor.yaml` metadata files live alongside the component source (e.g., `components/ui/button/button.visor.yaml`)
