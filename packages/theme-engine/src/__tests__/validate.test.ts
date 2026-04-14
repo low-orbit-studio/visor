@@ -1219,3 +1219,68 @@ describe("validate — radius.pill", () => {
     expect(result.errors.some((e) => e.code === "INVALID_RADIUS")).toBe(true);
   });
 });
+
+// ============================================================
+// Dark/Light Color Parity
+// ============================================================
+
+describe("validate — dark/light color parity", () => {
+  it("warns when custom colors set but no colors-dark section", () => {
+    const result = validate({
+      name: "Parity Test",
+      version: 1,
+      colors: { primary: "#2563EB", accent: "#8B5CF6" },
+    });
+    expect(result.valid).toBe(true);
+    expect(
+      result.warnings.some(
+        (w) =>
+          w.code === "DARK_LIGHT_PARITY" &&
+          w.message.includes("no colors-dark section exists")
+      )
+    ).toBe(true);
+  });
+
+  it("warns on key present in colors but missing from colors-dark", () => {
+    const result = validate({
+      name: "Parity Test",
+      version: 1,
+      colors: { primary: "#2563EB", accent: "#8B5CF6" },
+      "colors-dark": { background: "#0a0a0a" },
+    });
+    expect(result.valid).toBe(true);
+    expect(
+      result.warnings.some(
+        (w) =>
+          w.code === "DARK_LIGHT_PARITY" &&
+          w.message.includes('"accent"') &&
+          w.message.includes("missing from colors-dark")
+      )
+    ).toBe(true);
+  });
+
+  it("no warning when only primary is set and no colors-dark", () => {
+    const result = validate({
+      name: "Parity Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+    });
+    expect(result.valid).toBe(true);
+    expect(
+      result.warnings.some((w) => w.code === "DARK_LIGHT_PARITY")
+    ).toBe(false);
+  });
+
+  it("no warning when colors and colors-dark keys match", () => {
+    const result = validate({
+      name: "Parity Test",
+      version: 1,
+      colors: { primary: "#2563EB", accent: "#8B5CF6", background: "#FFFFFF" },
+      "colors-dark": { accent: "#A78BFA", background: "#0a0a0a" },
+    });
+    expect(result.valid).toBe(true);
+    expect(
+      result.warnings.some((w) => w.code === "DARK_LIGHT_PARITY")
+    ).toBe(false);
+  });
+});
