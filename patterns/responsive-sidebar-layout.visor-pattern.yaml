@@ -1,0 +1,87 @@
+name: responsive-sidebar-layout
+description: A full-app shell that renders a persistent sidebar on desktop and a Sheet-based drawer on mobile, sharing the same navigation content.
+
+components_used:
+  - sidebar
+  - sheet
+  - navbar
+  - button
+  - separator
+  - scroll-area
+
+when_to_use:
+  - Any multi-section app needing sidebar navigation that must work on mobile
+  - When the desktop sidebar should collapse to a drawer without duplicating nav markup
+  - Admin tools, dashboards, or SaaS apps requiring a responsive shell
+
+structure: |
+  <SidebarProvider>
+    {/* Desktop sidebar — hidden on mobile via CSS */}
+    <Sidebar className="sidebar-desktop">
+      <SidebarHeader>
+        <a href="/" className="sidebar-logo">App Name</a>
+      </SidebarHeader>
+      <Separator />
+      <SidebarContent>
+        <ScrollArea>
+          <SidebarGroup>
+            <SidebarMenu>
+              {navItems.map((item) => (
+                <SidebarMenuItem key={item.href}>
+                  <SidebarMenuButton asChild isActive={pathname === item.href}>
+                    <a href={item.href}>
+                      <item.icon />
+                      {item.label}
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        </ScrollArea>
+      </SidebarContent>
+    </Sidebar>
+
+    <div className="layout-main">
+      <Navbar>
+        {/* Mobile: Sheet trigger replaces SidebarTrigger */}
+        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+          <SheetTrigger asChild className="sidebar-mobile-trigger">
+            <Button variant="ghost" size="icon" aria-label="Open navigation">
+              <HamburgerMenuIcon />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="sidebar-sheet">
+            <SheetHeader>
+              <SheetTitle>Navigation</SheetTitle>
+            </SheetHeader>
+            <nav>
+              {navItems.map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="sheet-nav-item"
+                >
+                  <item.icon />
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+          </SheetContent>
+        </Sheet>
+        <Separator orientation="vertical" className="sidebar-mobile-trigger" />
+        <span className="navbar-title">{pageTitle}</span>
+      </Navbar>
+
+      <main className="layout-content">
+        {children}
+      </main>
+    </div>
+  </SidebarProvider>
+
+notes: >
+  Use CSS to show/hide the desktop Sidebar and the mobile Sheet trigger at the appropriate breakpoint.
+  The Sheet and Sidebar share the same navItems array — avoid duplicating navigation logic.
+  Close the Sheet when a nav link is clicked on mobile to avoid stale open state.
+  SidebarProvider context is still useful on desktop even when paired with a Sheet for mobile.

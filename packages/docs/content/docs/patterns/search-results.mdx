@@ -1,0 +1,79 @@
+---
+title: Search Results
+description: A search UI combining a type-ahead input, command palette, and filterable result cards with empty-state fallback.
+---
+
+## When to Use
+
+- Search pages where users need to filter and browse a large dataset
+- When combining free-text search with faceted category filters
+- Directory, catalog, or discovery interfaces with card-based result display
+
+## Components Used
+
+- [Search Input](/docs/components/search-input)
+- [Command](/docs/components/command)
+- [Combobox](/docs/components/combobox)
+- [Card](/docs/components/card)
+- [Badge](/docs/components/badge)
+- [Empty State](/docs/components/empty-state)
+
+## Structure
+
+```tsx
+<div className="search-layout">
+  <div className="search-controls">
+    <SearchInput
+      value={query}
+      onChange={setQuery}
+      placeholder="Search items..."
+      onClear={() => setQuery("")}
+    />
+    <Combobox
+      options={categoryOptions}
+      value={selectedCategory}
+      onValueChange={setSelectedCategory}
+      placeholder="All categories"
+    />
+  </div>
+
+  <Command shouldFilter={false}>
+    <CommandList>
+      {isLoading && (
+        <CommandEmpty>Searching...</CommandEmpty>
+      )}
+      {!isLoading && results.length === 0 && (
+        <EmptyState
+          icon={<MagnifyingGlassIcon />}
+          title="No results found"
+          description={`No items match "${query}". Try a different search term.`}
+        />
+      )}
+      {!isLoading && results.length > 0 && (
+        <CommandGroup heading={`${results.length} results`}>
+          {results.map((item) => (
+            <CommandItem key={item.id} onSelect={() => navigate(item.href)}>
+              <Card className="search-result-card">
+                <CardHeader>
+                  <CardTitle>{item.title}</CardTitle>
+                  <Badge variant="secondary">{item.category}</Badge>
+                </CardHeader>
+                <CardContent>
+                  <p>{item.description}</p>
+                </CardContent>
+              </Card>
+            </CommandItem>
+          ))}
+        </CommandGroup>
+      )}
+    </CommandList>
+  </Command>
+</div>
+```
+
+## Notes
+
+- Pass `shouldFilter={false}` to Command when search is server-side or debounced.
+- SearchInput provides the clear button and search icon affordance; avoid reimplementing in plain Input.
+- EmptyState handles the zero-results case — do not use a bare paragraph.
+- Combobox for category filter is preferred over Select when the option list may be long or searchable.

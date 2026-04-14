@@ -1,0 +1,91 @@
+---
+title: Data Table Row Actions
+description: A data table with per-row action menus, bulk selection with a bulk action bar, confirmation dialogs, and toast feedback for destructive operations.
+---
+
+## When to Use
+
+- Admin lists where rows have contextual actions (edit, archive, delete)
+- When supporting both single-row and bulk operations on the same table
+- Any CRUD interface where destructive actions require confirmation
+
+## Components Used
+
+- [Data Table](/docs/components/data-table)
+- [Dropdown Menu](/docs/components/dropdown-menu)
+- [Dialog](/docs/components/dialog)
+- [Confirm Dialog](/docs/components/confirm-dialog)
+- [Toast](/docs/components/toast)
+- [Bulk Action Bar](/docs/components/bulk-action-bar)
+
+## Structure
+
+```tsx
+<>
+  {selectedRows.length > 0 && (
+    <BulkActionBar
+      selectedCount={selectedRows.length}
+      onClearSelection={() => setSelectedRows([])}
+    >
+      <Button variant="outline" size="sm" onClick={handleBulkArchive}>
+        Archive
+      </Button>
+      <Button variant="destructive" size="sm" onClick={() => setConfirmBulkDelete(true)}>
+        Delete
+      </Button>
+    </BulkActionBar>
+  )}
+
+  <DataTable
+    data={rows}
+    columns={[
+      ...dataColumns,
+      {
+        id: "actions",
+        cell: ({ row }) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label="Row actions">
+                <DotsThreeIcon />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onSelect={() => onEdit(row.original)}>Edit</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => onDuplicate(row.original)}>Duplicate</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                variant="destructive"
+                onSelect={() => setRowToDelete(row.original)}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ),
+      },
+    ]}
+    onRowSelectionChange={setSelectedRows}
+  />
+
+  <ConfirmDialog
+    open={!!rowToDelete}
+    onOpenChange={(o) => !o && setRowToDelete(null)}
+    title="Delete item?"
+    description="This action cannot be undone."
+    confirmLabel="Delete"
+    variant="destructive"
+    onConfirm={async () => {
+      await deleteRow(rowToDelete);
+      toast({ title: "Item deleted" });
+      setRowToDelete(null);
+    }}
+  />
+</>
+```
+
+## Notes
+
+- Always gate destructive row actions behind ConfirmDialog — never fire delete on first click.
+- BulkActionBar should only render when at least one row is selected; hide it otherwise.
+- Use toast to confirm the outcome of both single and bulk actions.
+- Keep the actions column fixed-width and right-aligned so it does not push other columns around.

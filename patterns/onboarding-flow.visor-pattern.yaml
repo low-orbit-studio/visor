@@ -1,0 +1,100 @@
+name: onboarding-flow
+description: A step-by-step welcome flow that collects user preferences and setup choices using progress tracking, cards, and inline forms with checkbox selections.
+
+components_used:
+  - stepper
+  - progress
+  - card
+  - button
+  - field
+  - input
+  - checkbox
+  - alert
+
+when_to_use:
+  - First-run experiences after account creation
+  - Feature setup flows where configuration choices shape the initial workspace
+  - Product tours that collect preferences before showing the main dashboard
+
+structure: |
+  <div className="onboarding-layout">
+    <div className="onboarding-header">
+      <h1>Welcome to App Name</h1>
+      <Progress value={(step / TOTAL_STEPS) * 100} aria-label={`Step ${step} of ${TOTAL_STEPS}`} />
+    </div>
+
+    <Stepper currentStep={step} steps={onboardingSteps} className="onboarding-stepper">
+      <StepperItem step={1} label="Your Profile" />
+      <StepperItem step={2} label="Your Team" />
+      <StepperItem step={3} label="Preferences" />
+    </Stepper>
+
+    <Card className="onboarding-card">
+      <CardHeader>
+        <CardTitle>{onboardingSteps[step - 1].title}</CardTitle>
+        <CardDescription>{onboardingSteps[step - 1].description}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        {step === 1 && (
+          <div className="step-fields">
+            <Field label="Display Name" required>
+              <Input value={form.displayName} onChange={handleChange("displayName")} />
+            </Field>
+            <Field label="Role">
+              <Input value={form.role} onChange={handleChange("role")} placeholder="e.g. Designer, Engineer" />
+            </Field>
+          </div>
+        )}
+
+        {step === 2 && (
+          <div className="step-fields">
+            <Field label="Team Name" required>
+              <Input value={form.teamName} onChange={handleChange("teamName")} />
+            </Field>
+            <Field label="Invite teammates (optional)">
+              <Input type="email" value={form.inviteEmail} onChange={handleChange("inviteEmail")} placeholder="colleague@example.com" />
+            </Field>
+          </div>
+        )}
+
+        {step === 3 && (
+          <div className="step-preferences">
+            <label className="preference-item">
+              <Checkbox
+                checked={form.emailDigest}
+                onCheckedChange={(v) => setForm((f) => ({ ...f, emailDigest: !!v }))}
+              />
+              <span>Send me a weekly digest</span>
+            </label>
+            <label className="preference-item">
+              <Checkbox
+                checked={form.marketingEmails}
+                onCheckedChange={(v) => setForm((f) => ({ ...f, marketingEmails: !!v }))}
+              />
+              <span>Keep me updated on new features</span>
+            </label>
+          </div>
+        )}
+
+        {stepError && (
+          <Alert variant="destructive">
+            <AlertDescription>{stepError}</AlertDescription>
+          </Alert>
+        )}
+      </CardContent>
+      <CardFooter className="onboarding-footer">
+        <Button variant="ghost" onClick={handleBack} disabled={step === 1}>
+          Back
+        </Button>
+        <Button onClick={handleNext} loading={submitting}>
+          {step === TOTAL_STEPS ? "Get Started" : "Continue"}
+        </Button>
+      </CardFooter>
+    </Card>
+  </div>
+
+notes: >
+  Keep each step focused — ideally 2-4 inputs per step to avoid overwhelming new users.
+  Progress bar gives a motivating completion signal; combine with Stepper for step identity.
+  All preferences should have sensible defaults so users can skip to completion without filling every field.
+  On the final step, replace "Continue" with an affirmative label like "Get Started" or "Go to Dashboard".
