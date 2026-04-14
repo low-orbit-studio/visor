@@ -32,6 +32,7 @@ import { patternsDocsPageExists } from './rules/patterns-docs-page-exists.js';
 import { registryBuildIntegrity } from './rules/registry-build-integrity.js';
 import { discoverabilityVariantDrift } from './rules/discoverability-variant-drift.js';
 import { discoverabilitySelectionQuality } from './rules/discoverability-selection-quality.js';
+import { discoverabilityScore } from './rules/discoverability-score.js';
 import type { Rule } from './rules/types.js';
 
 const rules: Rule[] = [
@@ -62,6 +63,7 @@ const rules: Rule[] = [
   registryBuildIntegrity,
   discoverabilityVariantDrift,
   discoverabilitySelectionQuality,
+  discoverabilityScore,
   hooksDocsPageExists,
   patternsDocsPageExists,
   docsPageExists,
@@ -118,10 +120,20 @@ async function main() {
     }
     totalPass += passes.length;
 
+    // Scoring rules: any result carries a numeric score — always print all results
+    const isScoring = results.some((r) => r.score !== undefined);
+
     if (failures.length === 0) {
       console.log(
         `${GREEN}✓${RESET} ${BOLD}${rule.name}${RESET} ${DIM}— ${rule.description}${RESET}`
       );
+      if (isScoring) {
+        for (const result of results) {
+          const isSummary = result === results[results.length - 1];
+          const color = result.pass ? (isSummary ? BOLD : DIM) : YELLOW;
+          console.log(`  ${color}${result.message}${RESET}`);
+        }
+      }
     } else {
       const severity = rule.warnOnly ? 'warn' : 'fail';
       const color = rule.warnOnly ? YELLOW : RED;
@@ -129,14 +141,28 @@ async function main() {
       console.log(
         `${color}${icon}${RESET} ${BOLD}${rule.name}${RESET} ${DIM}— ${rule.description}${RESET} ${YELLOW}(${failures.length} ${severity}${failures.length === 1 ? '' : 's'})${RESET}`
       );
-      for (const result of failures) {
-        const resultIcon = rule.warnOnly
-          ? `${YELLOW}⚠${RESET}`
-          : `${RED}✗${RESET}`;
-        const location = result.file
-          ? `${DIM}${result.file}${result.line ? `:${result.line}` : ''}${RESET} `
-          : '';
-        console.log(`  ${resultIcon} ${location}${result.message}`);
+      if (isScoring) {
+        // For scoring rules, always print all results; mark failures distinctly
+        for (const result of results) {
+          const isSummary = result === results[results.length - 1];
+          const resultColor = !result.pass
+            ? (rule.warnOnly ? YELLOW : RED)
+            : (isSummary ? BOLD : DIM);
+          const resultIcon = !result.pass
+            ? (rule.warnOnly ? `${YELLOW}⚠${RESET}` : `${RED}✗${RESET}`)
+            : ' ';
+          console.log(`  ${resultIcon} ${resultColor}${result.message}${RESET}`);
+        }
+      } else {
+        for (const result of failures) {
+          const resultIcon = rule.warnOnly
+            ? `${YELLOW}⚠${RESET}`
+            : `${RED}✗${RESET}`;
+          const location = result.file
+            ? `${DIM}${result.file}${result.line ? `:${result.line}` : ''}${RESET} `
+            : '';
+          console.log(`  ${resultIcon} ${location}${result.message}`);
+        }
       }
     }
   }
