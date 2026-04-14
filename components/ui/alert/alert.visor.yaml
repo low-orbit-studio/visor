@@ -17,12 +17,12 @@ when_not_to_use:
 
 why: >
   Alert provides a semantically correct role="alert" container with CVA-driven
-  variants for default, destructive, success, and warning states. It ensures
+  variants for default, destructive, success, warning, and info states. It ensures
   consistent color coding and structure with AlertTitle and AlertDescription
   sub-components, all themed via CSS custom properties.
 
 variants:
-  variant: [default, destructive, success, warning]
+  variant: [default, destructive, success, warning, info]
 
 sub_components:
   - name: AlertTitle
@@ -32,7 +32,7 @@ sub_components:
 
 props:
   - name: variant
-    type: "'default' | 'destructive' | 'success' | 'warning'"
+    type: "'default' | 'destructive' | 'success' | 'warning' | 'info'"
     default: "default"
 
 dependencies:

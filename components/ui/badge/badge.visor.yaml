@@ -16,17 +16,18 @@ when_not_to_use:
   - Decorative icons without text meaning (use an icon directly)
 
 why: >
-  Badge provides four semantic variants (default, secondary, outline, destructive)
-  with consistent pill shape, font sizing, and color tokens. The compact height
-  and font-weight keep badges readable at small sizes. Focus ring support means
-  badges can be interactive when wrapped in buttons or links.
+  Badge provides eleven semantic variants across tonal and filled styles — default,
+  secondary, outline, destructive, success, warning, info, and filled versions of
+  the semantic states. The consistent pill shape, font sizing, and color tokens keep
+  badges readable at small sizes. Focus ring support means badges can be interactive
+  when wrapped in buttons or links.
 
 variants:
-  variant: [default, secondary, outline, destructive]
+  variant: [default, secondary, outline, destructive, success, warning, info, filled-destructive, filled-success, filled-warning, filled-info]
 
 props:
   - name: variant
-    type: '"default" | "secondary" | "outline" | "destructive"'
+    type: '"default" | "secondary" | "outline" | "destructive" | "success" | "warning" | "info" | "filled-destructive" | "filled-success" | "filled-warning" | "filled-info"'
     default: '"default"'
 
 dependencies:
@@ -39,3 +40,7 @@ example: |
   <Badge variant="secondary">Draft</Badge>
   <Badge variant="outline">v2.1.0</Badge>
   <Badge variant="destructive">Error</Badge>
+  <Badge variant="success">Published</Badge>
+  <Badge variant="warning">Pending</Badge>
+  <Badge variant="info">Beta</Badge>
+  <Badge variant="filled-destructive">Critical</Badge>
