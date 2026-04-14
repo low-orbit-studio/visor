@@ -3,6 +3,7 @@ import { initCommand } from "./commands/init.js"
 import { listCommand } from "./commands/list.js"
 import { addCommand } from "./commands/add.js"
 import { diffCommand } from "./commands/diff.js"
+import { infoCommand } from "./commands/info.js"
 import { themeApplyCommand } from "./commands/theme-apply.js"
 import type { ThemeApplyOptions } from "./commands/theme-apply.js"
 import { themeExportCommand } from "./commands/theme-export.js"
@@ -64,6 +65,15 @@ program
   .option("--json", "output structured JSON (for AI agents)")
   .action((component: string | undefined, options: { json?: boolean }) => {
     diffCommand(component, process.cwd(), options)
+  })
+
+program
+  .command("info")
+  .description("Show detailed metadata for a component, hook, block, or pattern")
+  .argument("<component>", "Name of the component to look up")
+  .option("--json", "Output as JSON")
+  .action(async (component: string, options: { json?: boolean }) => {
+    await infoCommand(component, process.cwd(), options)
   })
 
 // Theme subcommands
