@@ -18,6 +18,7 @@ import type { ThemeSyncOptions } from "./commands/theme-sync.js"
 import { fontsAddCommand } from "./commands/fonts-add.js"
 import type { FontsAddOptions } from "./commands/fonts-add.js"
 import { doctorCommand } from "./commands/doctor.js"
+import { patternListCommand, patternInfoCommand } from "./commands/pattern.js"
 
 const program = new Command()
 
@@ -220,5 +221,27 @@ fonts
       fontsAddCommand(path, options)
     }
   )
+
+// Pattern subcommands
+const pattern = program
+  .command("pattern")
+  .description("Work with composition patterns")
+
+pattern
+  .command("list")
+  .description("List all composition patterns")
+  .option("--json", "Output as JSON")
+  .action((options: { json?: boolean }) => {
+    patternListCommand(process.cwd(), options)
+  })
+
+pattern
+  .command("info")
+  .argument("<name>", "Pattern name")
+  .description("Show full details for a composition pattern")
+  .option("--json", "Output as JSON")
+  .action((name: string, options: { json?: boolean }) => {
+    patternInfoCommand(name, process.cwd(), options)
+  })
 
 program.parse()
