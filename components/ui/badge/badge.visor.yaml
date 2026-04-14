@@ -32,6 +32,8 @@ props:
 dependencies:
   - "class-variance-authority"
 
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/badge"
+
 example: |
   <Badge variant="default">Active</Badge>
   <Badge variant="secondary">Draft</Badge>

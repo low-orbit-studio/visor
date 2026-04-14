@@ -38,6 +38,8 @@ props:
 dependencies:
   - "class-variance-authority"
 
+preview_url: "https://visor.loworbit.studio/docs/components/feedback/alert"
+
 example: |
   <Alert variant="destructive">
     <AlertTitle>Error</AlertTitle>
