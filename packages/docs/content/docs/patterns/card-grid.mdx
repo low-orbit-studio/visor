@@ -1,0 +1,86 @@
+---
+title: Card Grid
+description: A responsive grid of content cards with skeleton loading states, status badges, action buttons, pagination, and an empty-state fallback.
+---
+
+## When to Use
+
+- Displaying a collection of items as visual tiles (projects, products, team members)
+- When a table layout is too data-dense and card previews are more scannable
+- Catalog or gallery pages with paginated content
+
+## Components Used
+
+- [Card](/docs/components/card)
+- [Badge](/docs/components/badge)
+- [Button](/docs/components/button)
+- [Skeleton](/docs/components/skeleton)
+- [Empty State](/docs/components/empty-state)
+- [Pagination](/docs/components/pagination)
+
+## Structure
+
+```tsx
+<div className="card-grid-layout">
+  {isLoading ? (
+    <div className="card-grid">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <Card key={i}>
+          <CardHeader>
+            <Skeleton style={{ height: "20px", width: "60%" }} />
+            <Skeleton style={{ height: "16px", width: "30%" }} />
+          </CardHeader>
+          <CardContent>
+            <Skeleton style={{ height: "80px" }} />
+          </CardContent>
+          <CardFooter>
+            <Skeleton style={{ height: "32px", width: "80px" }} />
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
+  ) : items.length === 0 ? (
+    <EmptyState
+      icon={<GridFourIcon />}
+      title="No items yet"
+      description="Get started by creating your first item."
+      action={<Button onClick={onCreate}>Create Item</Button>}
+    />
+  ) : (
+    <>
+      <div className="card-grid">
+        {items.map((item) => (
+          <Card key={item.id}>
+            <CardHeader>
+              <CardTitle>{item.name}</CardTitle>
+              <Badge variant={item.status === "active" ? "default" : "secondary"}>
+                {item.status}
+              </Badge>
+            </CardHeader>
+            <CardContent>
+              <p>{item.description}</p>
+            </CardContent>
+            <CardFooter>
+              <Button variant="outline" size="sm" onClick={() => onView(item)}>
+                View
+              </Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+      <Pagination
+        page={page}
+        pageCount={pageCount}
+        onPageChange={setPage}
+      />
+    </>
+  )}
+</div>
+```
+
+## Notes
+
+- Use CSS Grid with auto-fill and a min column width for responsive behavior without media queries.
+- Render skeleton cards (matching the real card structure) during loading instead of a spinner.
+- EmptyState should include a primary action when creation is possible from this view.
+- Pagination lives below the grid; hide it when pageCount is 1.

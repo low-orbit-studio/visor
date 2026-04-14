@@ -1,0 +1,47 @@
+name: modal-form
+description: A dialog-based form pattern for creating or editing entities inline without navigating away.
+
+components_used:
+  - dialog
+  - field
+  - input
+  - label
+  - textarea
+  - button
+  - alert
+
+when_to_use:
+  - Creating or editing a record without leaving the current page
+  - Collecting a small set of inputs (fewer than 8 fields)
+  - When the action is contextual to the parent list or table
+
+structure: |
+  <Dialog open={open} onOpenChange={setOpen}>
+    <DialogTrigger asChild>
+      <Button>Create Item</Button>
+    </DialogTrigger>
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>Create Item</DialogTitle>
+      </DialogHeader>
+      {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Field label="Name" required>
+          <Input name="name" value={form.name} onChange={handleChange} />
+        </Field>
+        <Field label="Description">
+          <Textarea name="description" value={form.description} onChange={handleChange} />
+        </Field>
+        <div className="flex justify-end gap-2">
+          <Button type="button" variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+          <Button type="submit" loading={submitting}>Create</Button>
+        </div>
+      </form>
+    </DialogContent>
+  </Dialog>
+
+notes: >
+  Use DialogContent's default max-width for simple forms.
+  For complex multi-section forms, prefer a drawer or dedicated page instead.
+  Always handle onOpenChange to allow closing via backdrop click or Escape key.
+  Use Field component for consistent label/input/error spacing within the dialog.

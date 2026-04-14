@@ -229,19 +229,27 @@ npx visor add --block <block-name>
 
 ---
 
-## Composition Patterns (7)
+## Composition Patterns (15)
 
 Recommended component compositions for common UI scenarios. These are not installable — they serve as structural guidance.
 
 | Pattern | Components Used |
 | --- | --- |
 | Auth Flow | card, input, button, field, alert, tabs |
+| Card Grid | card, badge, button, skeleton, empty-state, pagination |
 | CRUD Table | table, button, dropdown-menu, dialog, alert, pagination, badge |
 | Dashboard Layout | sidebar, navbar, card, tabs, breadcrumb |
+| Data Table Row Actions | data-table, dropdown-menu, dialog, confirm-dialog, toast, bulk-action-bar |
 | Data Table with Filters | table, input, select, button, badge, dropdown-menu, pagination |
 | Empty State | card, button, heading, text |
 | Form with Validation | field, input, label, textarea, button, alert |
+| Modal Form | dialog, field, input, label, textarea, button, alert |
+| Notification Center | toast, command, button, badge, scroll-area |
+| Onboarding Flow | stepper, progress, card, button, field, input, checkbox, alert |
+| Responsive Sidebar Layout | sidebar, sheet, navbar, button, separator, scroll-area |
+| Search Results | search-input, command, combobox, card, badge, empty-state |
 | Settings Page | card, input, textarea, select, switch, button, field, fieldset, separator, tabs, avatar |
+| Wizard Flow | stepper, field, input, button, alert, progress, separator |
 
 ---
 

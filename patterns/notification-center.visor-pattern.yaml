@@ -1,0 +1,61 @@
+name: notification-center
+description: A popover-based notification hub with a command palette for filtering and bulk-managing alerts, toasts, and system messages.
+
+components_used:
+  - toast
+  - command
+  - button
+  - badge
+  - scroll-area
+
+when_to_use:
+  - Apps with persistent in-app notifications or activity alerts
+  - When users need to review, dismiss, or act on multiple notifications at once
+  - Combining real-time toast feedback with a browsable notification history
+
+structure: |
+  <Popover open={open} onOpenChange={setOpen}>
+    <PopoverTrigger asChild>
+      <Button variant="ghost" size="icon" aria-label="Notifications">
+        <BellIcon />
+        {unreadCount > 0 && (
+          <Badge variant="destructive" className="notification-badge">
+            {unreadCount}
+          </Badge>
+        )}
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent className="notification-popover">
+      <Command>
+        <CommandInput placeholder="Search notifications..." />
+        <CommandList>
+          <CommandGroup heading="Recent">
+            <ScrollArea style={{ height: "320px" }}>
+              {notifications.map((n) => (
+                <CommandItem key={n.id} onSelect={() => handleSelect(n)}>
+                  <div className="notification-item">
+                    <Badge variant={n.type === "error" ? "destructive" : "secondary"}>
+                      {n.type}
+                    </Badge>
+                    <span>{n.message}</span>
+                    <span className="notification-time">{n.timestamp}</span>
+                  </div>
+                </CommandItem>
+              ))}
+            </ScrollArea>
+          </CommandGroup>
+          <CommandSeparator />
+          <CommandGroup>
+            <CommandItem onSelect={markAllRead}>Mark all as read</CommandItem>
+            <CommandItem onSelect={clearAll}>Clear all</CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </Command>
+    </PopoverContent>
+  </Popover>
+
+notes: >
+  Use ScrollArea inside CommandList to keep the popover height bounded.
+  Pair with useToast for real-time feedback on actions taken within the center.
+  Badge on the trigger should disappear when unreadCount reaches zero.
+  For high-volume systems, paginate or virtualize the notification list rather than loading all at once.

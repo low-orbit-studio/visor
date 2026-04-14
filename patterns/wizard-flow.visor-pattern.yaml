@@ -1,0 +1,75 @@
+name: wizard-flow
+description: A multi-step guided flow with per-step validation, progress tracking, and a linear navigation structure for complex data collection.
+
+components_used:
+  - stepper
+  - field
+  - input
+  - button
+  - alert
+  - progress
+  - separator
+
+when_to_use:
+  - Onboarding flows, setup wizards, or checkout sequences
+  - When a single long form would overwhelm the user — break into logical steps
+  - Flows where earlier steps gate or inform later steps
+
+structure: |
+  <div className="wizard-layout">
+    <Progress value={(currentStep / totalSteps) * 100} aria-label="Setup progress" />
+
+    <Stepper currentStep={currentStep} steps={steps}>
+      <StepperItem step={1} label="Account" />
+      <StepperItem step={2} label="Profile" />
+      <StepperItem step={3} label="Preferences" />
+      <StepperItem step={4} label="Review" />
+    </Stepper>
+
+    <Separator />
+
+    <div className="wizard-content">
+      {currentStep === 1 && (
+        <div>
+          <Field label="Email" required>
+            <Input type="email" value={form.email} onChange={handleChange("email")} />
+          </Field>
+          <Field label="Password" required>
+            <Input type="password" value={form.password} onChange={handleChange("password")} />
+          </Field>
+        </div>
+      )}
+
+      {currentStep === 2 && (
+        <div>
+          <Field label="Full Name" required>
+            <Input value={form.name} onChange={handleChange("name")} />
+          </Field>
+          <Field label="Job Title">
+            <Input value={form.title} onChange={handleChange("title")} />
+          </Field>
+        </div>
+      )}
+
+      {stepError && (
+        <Alert variant="destructive">
+          <AlertDescription>{stepError}</AlertDescription>
+        </Alert>
+      )}
+    </div>
+
+    <div className="wizard-actions">
+      <Button variant="ghost" onClick={handleBack} disabled={currentStep === 1}>
+        Back
+      </Button>
+      <Button onClick={handleNext} loading={validating}>
+        {currentStep === totalSteps ? "Finish" : "Next"}
+      </Button>
+    </div>
+  </div>
+
+notes: >
+  Validate each step before advancing — show the Alert for step-level errors, not field-level.
+  Progress bar gives a continuous sense of completion; Stepper gives discrete step identity.
+  Persist wizard state in component state or URL search params to survive accidental back navigation.
+  Disable the Back button on the first step rather than hiding it to preserve layout stability.
