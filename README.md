@@ -415,6 +415,8 @@ npx @loworbitstudio/visor add <component> --overwrite       # Update an existing
 npx @loworbitstudio/visor list                              # List all available components
 npx @loworbitstudio/visor list --category <name>            # List by category
 npx @loworbitstudio/visor diff [component]                  # Show local vs. registry differences
+npx @loworbitstudio/visor suggest --for "<use case>"        # Find components for a use case
+npx @loworbitstudio/visor suggest --for "<use case>" --json # JSON output (for AI agents)
 
 # Themes
 npx @loworbitstudio/visor theme apply <file>                # Generate CSS from .visor.yaml
