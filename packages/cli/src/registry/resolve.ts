@@ -5,10 +5,12 @@ import type {
   BundledRegistry,
   BundledRegistryItem,
 } from "./types.js"
+import type { VisorManifest } from "../generate/manifest-types.js"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 let cachedRegistry: BundledRegistry | null = null
+let cachedManifest: VisorManifest | null = null
 
 export function loadRegistry(): BundledRegistry {
   if (cachedRegistry) return cachedRegistry
@@ -19,6 +21,17 @@ export function loadRegistry(): BundledRegistry {
   const raw = readFileSync(registryPath, "utf-8")
   cachedRegistry = JSON.parse(raw) as BundledRegistry
   return cachedRegistry
+}
+
+export function loadManifest(): VisorManifest {
+  if (cachedManifest) return cachedManifest
+
+  // After tsup bundles into dist/index.js, __dirname is the dist/ directory
+  // visor-manifest.json lives alongside index.js in dist/
+  const manifestPath = join(__dirname, "visor-manifest.json")
+  const raw = readFileSync(manifestPath, "utf-8")
+  cachedManifest = JSON.parse(raw) as VisorManifest
+  return cachedManifest
 }
 
 export function findItem(
