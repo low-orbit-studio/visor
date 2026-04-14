@@ -263,8 +263,6 @@ export const blocks: Registry = [
       { path: "blocks/design-system-deck/slides/index.ts", type: "registry:block" },
       { path: "blocks/design-system-deck/slides/slide-data.ts", type: "registry:block" },
       { path: "blocks/design-system-deck/slides/title-slide.tsx", type: "registry:block" },
-      { path: "blocks/design-system-deck/slides/gray-scale-slide.tsx", type: "registry:block" },
-      { path: "blocks/design-system-deck/slides/accent-palette-slide.tsx", type: "registry:block" },
       { path: "blocks/design-system-deck/slides/semantic-tokens-slide.tsx", type: "registry:block" },
       { path: "blocks/design-system-deck/slides/type-display-slide.tsx", type: "registry:block" },
       { path: "blocks/design-system-deck/slides/type-body-slide.tsx", type: "registry:block" },
@@ -279,6 +277,9 @@ export const blocks: Registry = [
       { path: "blocks/design-system-deck/slides/form-specimen-slide.tsx", type: "registry:block" },
       { path: "blocks/design-system-deck/slides/component-showcase-slide.tsx", type: "registry:block" },
       { path: "blocks/design-system-deck/slides/closing-slide.tsx", type: "registry:block" },
+      { path: "blocks/design-system-deck/slides/spacing-slide.tsx", type: "registry:block" },
+      { path: "blocks/design-system-deck/slides/status-colors-slide.tsx", type: "registry:block" },
+      { path: "blocks/design-system-deck/slides/theme-colors-slide.tsx", type: "registry:block" },
     ],
   },
   {
