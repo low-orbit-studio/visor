@@ -1,0 +1,29 @@
+---
+title: useCurrency
+description: Detects the user's locale and returns the appropriate currency, symbol, and price formatter.
+---
+
+## Usage
+
+```tsx
+const { currency, symbol, formatPrice } = useCurrency()
+const label = formatPrice({ usd: 99, eur: 89, gbp: 79 }) // "$99"
+```
+
+## Installation
+
+```bash
+npx visor add use-currency
+```
+
+## Parameters
+
+This hook takes no parameters.
+
+## Returns
+
+| Name | Type | Description |
+|------|------|-------------|
+| `currency` | `'usd' \| 'eur' \| 'gbp'` | Detected currency code based on browser locale. |
+| `symbol` | `string` | Currency symbol ($, EUR, or GBP). |
+| `formatPrice` | `(prices: Record<Currency, number>) => string` | Formats a price object into a localized string using the detected currency. |

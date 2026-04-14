@@ -1,0 +1,5 @@
+{
+  "title": "Hooks",
+  "description": "Utility hooks included in the Visor registry. Install any hook with npx visor add.",
+  "pages": ["use-boolean", "use-click-outside", "use-currency", "use-debounce", "use-focus-trap", "use-intersection-animation", "use-intersection-observer", "use-keyboard-nav", "use-keyboard-shortcut", "use-local-storage", "use-media-query", "use-previous", "use-slide-engine", "use-wheel-nav"]
+}

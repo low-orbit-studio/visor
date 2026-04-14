@@ -1,0 +1,29 @@
+---
+title: usePrevious
+description: Returns the previous value of a variable from the last render.
+---
+
+## Usage
+
+```tsx
+const prevCount = usePrevious(count)
+const direction = count > (prevCount ?? 0) ? "up" : "down"
+```
+
+## Installation
+
+```bash
+npx visor add use-previous
+```
+
+## Parameters
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `value` | `T` | Yes | -- | The value to track across renders. |
+
+## Returns
+
+| Name | Type | Description |
+|------|------|-------------|
+| `previousValue` | `T \| undefined` | The value from the previous render, or undefined on the first render. |

@@ -1,0 +1,32 @@
+---
+title: useBoolean
+description: Manages a boolean state with stable toggle, setTrue, and setFalse helpers.
+---
+
+## Usage
+
+```tsx
+const { value: isOpen, setTrue: open, setFalse: close, toggle } = useBoolean(false)
+```
+
+## Installation
+
+```bash
+npx visor add use-boolean
+```
+
+## Parameters
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `initialValue` | `boolean` | No | `false` | Initial boolean state value. |
+
+## Returns
+
+| Name | Type | Description |
+|------|------|-------------|
+| `value` | `boolean` | Current boolean state. |
+| `setTrue` | `() => void` | Sets state to true. |
+| `setFalse` | `() => void` | Sets state to false. |
+| `toggle` | `() => void` | Toggles state between true and false. |
+| `setValue` | `(value: boolean) => void` | Sets state to an explicit boolean value. |

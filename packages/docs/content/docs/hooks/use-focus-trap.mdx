@@ -1,0 +1,28 @@
+---
+title: useFocusTrap
+description: Traps keyboard focus within the referenced element for accessible modals and dialogs.
+---
+
+## Usage
+
+```tsx
+const ref = useRef<HTMLDivElement>(null)
+useFocusTrap(ref, isOpen)
+```
+
+## Installation
+
+```bash
+npx visor add use-focus-trap
+```
+
+## Parameters
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `ref` | `RefObject<HTMLElement \| null>` | Yes | -- | Ref to the container element that traps focus. |
+| `enabled` | `boolean` | No | `true` | Whether the focus trap is active. |
+
+## Returns
+
+This hook does not return a value.

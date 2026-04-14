@@ -1,4 +1,4 @@
 {
   "title": "Visor",
-  "pages": ["index", "adapters", "cli", "versioning", "releases", "themes", "guides", "ssr-compatibility", "accessibility", "blocks", "components"]
+  "pages": ["index", "adapters", "cli", "versioning", "releases", "themes", "guides", "ssr-compatibility", "accessibility", "hooks", "patterns", "blocks", "components"]
 }

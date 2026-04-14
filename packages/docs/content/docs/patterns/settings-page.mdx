@@ -1,0 +1,79 @@
+---
+title: Settings Page
+description: Multi-section settings page with sidebar navigation, grouped form fields, and save actions.
+---
+
+## When to Use
+
+- User profile and account settings
+- Application preferences and configuration
+- Team or organization settings
+
+## Components Used
+
+- [Card](/docs/components/card)
+- [Input](/docs/components/input)
+- [Textarea](/docs/components/textarea)
+- [Select](/docs/components/select)
+- [Switch](/docs/components/switch)
+- [Button](/docs/components/button)
+- [Field](/docs/components/field)
+- [Fieldset](/docs/components/fieldset)
+- [Separator](/docs/components/separator)
+- [Tabs](/docs/components/tabs)
+- [Avatar](/docs/components/avatar)
+
+## Structure
+
+```tsx
+<div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: "var(--spacing-8)" }}>
+  <nav>
+    <Tabs orientation="vertical" defaultValue="profile">
+      <TabsList>
+        <TabsTrigger value="profile">Profile</TabsTrigger>
+        <TabsTrigger value="notifications">Notifications</TabsTrigger>
+        <TabsTrigger value="security">Security</TabsTrigger>
+      </TabsList>
+    </Tabs>
+  </nav>
+
+  <div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Profile</CardTitle>
+        <CardDescription>Manage your public profile information.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Fieldset>
+          <Field>
+            <FieldLabel htmlFor="name">Display name</FieldLabel>
+            <Input id="name" defaultValue={user.name} />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="bio">Bio</FieldLabel>
+            <Textarea id="bio" defaultValue={user.bio} />
+          </Field>
+        </Fieldset>
+        <Separator />
+        <Fieldset legend="Notifications">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span>Email notifications</span>
+            <Switch checked={emailNotifications} onCheckedChange={setEmailNotifications} />
+          </div>
+        </Fieldset>
+      </CardContent>
+      <CardFooter>
+        <Button onClick={handleSave}>Save changes</Button>
+      </CardFooter>
+    </Card>
+  </div>
+</div>
+```
+
+## Notes
+
+- Use vertical Tabs for sidebar navigation on desktop.
+- On mobile, switch to horizontal Tabs or an accordion layout.
+- Group related fields with Fieldset and separate sections with Separator.
+- Place the save Button in CardFooter, aligned to the right.
+- Use Avatar at the top of the profile section for photo upload.

@@ -1,0 +1,28 @@
+---
+title: useClickOutside
+description: Fires a callback when a click or touch event occurs outside the referenced element.
+---
+
+## Usage
+
+```tsx
+const ref = useRef<HTMLDivElement>(null)
+useClickOutside(ref, () => setOpen(false))
+```
+
+## Installation
+
+```bash
+npx visor add use-click-outside
+```
+
+## Parameters
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `ref` | `RefObject<T extends HTMLElement>` | Yes | -- | Ref to the element that defines the "inside" boundary. |
+| `handler` | `(event: MouseEvent \| TouchEvent) => void` | Yes | -- | Callback invoked when a click/touch lands outside the ref element. |
+
+## Returns
+
+This hook does not return a value.

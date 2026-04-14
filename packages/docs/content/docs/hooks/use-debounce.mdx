@@ -1,0 +1,30 @@
+---
+title: useDebounce
+description: Debounces a value by delaying updates until after a specified delay.
+---
+
+## Usage
+
+```tsx
+const [query, setQuery] = useState("")
+const debouncedQuery = useDebounce(query, 300)
+```
+
+## Installation
+
+```bash
+npx visor add use-debounce
+```
+
+## Parameters
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `value` | `T` | Yes | -- | The value to debounce. |
+| `delay` | `number` | Yes | -- | Delay in milliseconds before the debounced value updates. |
+
+## Returns
+
+| Name | Type | Description |
+|------|------|-------------|
+| `debouncedValue` | `T` | The debounced value, updated only after the delay elapses with no new changes. |

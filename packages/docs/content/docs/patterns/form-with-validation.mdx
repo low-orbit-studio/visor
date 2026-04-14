@@ -1,0 +1,55 @@
+---
+title: Form with Validation
+description: Standard form layout with field-level validation and submission handling.
+---
+
+## When to Use
+
+- Any form collecting user input (settings, profile, onboarding)
+- Forms needing inline validation feedback
+- Multi-field forms with consistent spacing and error display
+
+## Components Used
+
+- [Field](/docs/components/field)
+- [Input](/docs/components/input)
+- [Label](/docs/components/label)
+- [Textarea](/docs/components/textarea)
+- [Button](/docs/components/button)
+- [Alert](/docs/components/alert)
+
+## Structure
+
+```tsx
+<form onSubmit={handleSubmit}>
+  <Field>
+    <FieldLabel htmlFor="email">Email</FieldLabel>
+    <Input id="email" type="email" aria-invalid={!!errors.email} required />
+    {errors.email && <FieldError>{errors.email}</FieldError>}
+  </Field>
+
+  <Field>
+    <FieldLabel htmlFor="name">Full name</FieldLabel>
+    <Input id="name" required />
+    {errors.name && <FieldError>{errors.name}</FieldError>}
+  </Field>
+
+  <Field>
+    <FieldLabel htmlFor="message">Message</FieldLabel>
+    <Textarea id="message" rows={4} />
+    <FieldDescription>Optional — tell us more about your request.</FieldDescription>
+  </Field>
+
+  {formError && <Alert variant="destructive">{formError}</Alert>}
+
+  <Button type="submit">Submit</Button>
+</form>
+```
+
+## Notes
+
+- Field component handles spacing between label, input, description, and error message.
+- Always use FieldLabel with htmlFor matching the Input id for accessibility.
+- Place Alert above the submit button for form-level errors.
+- Use aria-invalid on inputs with validation errors for screen reader support.
+- For complex forms, consider grouping related fields with fieldset and legend elements.

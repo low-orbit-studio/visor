@@ -1,0 +1,31 @@
+---
+title: useLocalStorage
+description: Persists state to localStorage with SSR safety and cross-tab synchronization.
+---
+
+## Usage
+
+```tsx
+const [theme, setTheme, removeTheme] = useLocalStorage("theme", "light")
+```
+
+## Installation
+
+```bash
+npx visor add use-local-storage
+```
+
+## Parameters
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `key` | `string` | Yes | -- | The localStorage key to read from and write to. |
+| `initialValue` | `T` | Yes | -- | Default value used when no stored value exists or localStorage is unavailable. |
+
+## Returns
+
+| Name | Type | Description |
+|------|------|-------------|
+| `storedValue` | `T` | Current value from localStorage (or the initial value as fallback). |
+| `setValue` | `(value: T \| ((prev: T) => T)) => void` | Updates the stored value. Accepts a direct value or an updater function. |
+| `removeValue` | `() => void` | Removes the key from localStorage and resets to the initial value. |
