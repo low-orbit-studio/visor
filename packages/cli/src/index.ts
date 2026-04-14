@@ -17,6 +17,7 @@ import { themeSyncCommand } from "./commands/theme-sync.js"
 import type { ThemeSyncOptions } from "./commands/theme-sync.js"
 import { fontsAddCommand } from "./commands/fonts-add.js"
 import type { FontsAddOptions } from "./commands/fonts-add.js"
+import { doctorCommand } from "./commands/doctor.js"
 
 const program = new Command()
 
@@ -74,6 +75,14 @@ program
   .option("--json", "Output as JSON")
   .action(async (component: string, options: { json?: boolean }) => {
     await infoCommand(component, process.cwd(), options)
+  })
+
+program
+  .command('doctor')
+  .description('Run diagnostics on a Visor installation')
+  .option('--json', 'Output as JSON (for AI agents)')
+  .action(async (options: { json?: boolean }) => {
+    await doctorCommand(process.cwd(), options)
   })
 
 // Theme subcommands
