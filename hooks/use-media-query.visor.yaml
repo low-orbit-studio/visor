@@ -6,7 +6,7 @@ params:
   - name: query
     type: "string"
     required: true
-    description: CSS media query string (e.g. "(min-width: 768px)").
+    description: "CSS media query string (e.g. \"(min-width: 768px)\")."
 
 returns:
   - name: matches

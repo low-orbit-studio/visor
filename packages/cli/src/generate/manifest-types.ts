@@ -77,8 +77,23 @@ export interface ManifestComponent {
   example: string
 }
 
+export interface HookParam {
+  name: string
+  type: string
+  required: boolean
+  description?: string
+}
+
+export interface HookReturn {
+  name: string
+  type?: string
+  description?: string
+}
+
 export interface ManifestHook {
   description: string
+  params?: HookParam[]
+  returns?: HookReturn[]
 }
 
 export interface ManifestBlock {
