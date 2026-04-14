@@ -19,6 +19,8 @@ import type {
   ManifestBlock,
   ManifestHook,
   ManifestPattern,
+  HookParam,
+  HookReturn,
 } from "./manifest-types.js"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -27,6 +29,7 @@ const DIST_DIR = join(__dirname, "../../dist")
 const COMPONENTS_DIR = join(REPO_ROOT, "components/ui")
 const BLOCKS_DIR = join(REPO_ROOT, "blocks")
 const PATTERNS_DIR = join(REPO_ROOT, "patterns")
+const HOOKS_DIR = join(REPO_ROOT, "hooks")
 
 const REQUIRED_COMPONENT_FIELDS = [
   "name",
@@ -166,8 +169,29 @@ async function loadHooks(): Promise<Map<string, ManifestHook>> {
   )
 
   for (const hook of hooks) {
+    const yamlPath = join(HOOKS_DIR, `${hook.name}.visor.yaml`)
+    let params: HookParam[] | undefined
+    let returns: HookReturn[] | undefined
+
+    if (existsSync(yamlPath)) {
+      const raw = readFileSync(yamlPath, "utf-8")
+      const data = parseYAML(raw) as Record<string, unknown>
+
+      if (Array.isArray(data.params) && data.params.length > 0) {
+        params = data.params as HookParam[]
+      }
+
+      if (Array.isArray(data.returns) && data.returns.length > 0) {
+        returns = data.returns as HookReturn[]
+      }
+    } else {
+      console.warn(`  Warning: No .visor.yaml for hook ${hook.name}`)
+    }
+
     hooksMap.set(hook.name, {
       description: hook.description || "",
+      ...(params !== undefined ? { params } : {}),
+      ...(returns !== undefined ? { returns } : {}),
     })
   }
 
