@@ -86,6 +86,12 @@ props:
     default: true
     description: Initial open state (SidebarProvider prop)
 
+responsive:
+  breakpoints:
+    - at: "768px"
+      behavior: "Below 768px the SidebarProvider sets isMobile=true via window.matchMedia('(max-width: 768px)'). In mobile mode, toggleSidebar() drives openMobile state instead of the desktop open state. The sidebar does not collapse to icon-only on mobile — it is hidden entirely and must be swapped out for a Sheet component by the consumer."
+  notes: "Responsive behavior is entirely JS-driven via the useSidebar hook; no CSS media queries are involved. The SIDEBAR_WIDTH_MOBILE CSS variable (18rem) is available for consumers who render a Sheet-based mobile drawer."
+
 dependencies:
   - "class-variance-authority"
   - "@phosphor-icons/react"

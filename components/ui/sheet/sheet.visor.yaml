@@ -56,6 +56,12 @@ props:
     default: true
     description: Whether to render the built-in close button
 
+responsive:
+  breakpoints:
+    - at: "768px"
+      behavior: "Commonly used as a full-screen mobile navigation drawer at small viewports, replacing a desktop Sidebar. The side='left' or side='bottom' variants are standard choices for mobile nav drawers. No built-in breakpoint logic — the responsive swap must be wired by the consumer."
+  notes: "Sheet has no internal breakpoint detection. The sidebar→sheet responsive swap must be implemented by the consumer using a useMediaQuery hook (e.g., checking window.matchMedia('(max-width: 768px)')) or CSS visibility toggling. The SheetContent for mobile drawers typically omits max-width to fill the viewport; the left/bottom variants are 75% width up to 24rem by default."
+
 dependencies:
   - "@radix-ui/react-dialog"
   - "@phosphor-icons/react"

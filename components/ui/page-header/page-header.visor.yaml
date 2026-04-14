@@ -53,6 +53,12 @@ props:
     default: "md"
     description: Controls vertical rhythm and title size.
 
+responsive:
+  breakpoints:
+    - at: "480px"
+      behavior: "Below a 480px container width the main row switches from horizontal (title left, actions right) to vertical stacking: flex-direction becomes column with align-items: flex-start, and the actions cluster expands to full width with justify-content: flex-start. Triggered by a CSS container query on the .base element (container-name: page-header)."
+  notes: "Uses CSS container queries (container-type: inline-size), so the breakpoint is relative to the PageHeader's own width, not the viewport. This means the layout collapses based on available space regardless of screen size."
+
 dependencies:
   - "class-variance-authority"
 
