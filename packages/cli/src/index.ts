@@ -20,6 +20,7 @@ import type { FontsAddOptions } from "./commands/fonts-add.js"
 import { doctorCommand } from "./commands/doctor.js"
 import { patternListCommand, patternInfoCommand } from "./commands/pattern.js"
 import { suggestCommand } from "./commands/suggest.js"
+import { tokensListCommand } from "./commands/tokens.js"
 
 const program = new Command()
 
@@ -252,6 +253,20 @@ program
   .option('--json', 'Output as JSON')
   .action(async (options: { for: string; json?: boolean }) => {
     await suggestCommand(process.cwd(), options)
+  })
+
+// Tokens subcommands
+const tokens = program
+  .command("tokens")
+  .description("Explore design tokens")
+
+tokens
+  .command("list")
+  .description("List all design tokens")
+  .option("--json", "output as JSON (for AI agents)")
+  .option("--category <category>", "filter by tier: primitives, semantic, adaptive")
+  .action(async (options: { json?: boolean; category?: string }) => {
+    await tokensListCommand(process.cwd(), options)
   })
 
 program.parse()
