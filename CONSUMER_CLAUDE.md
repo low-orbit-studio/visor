@@ -359,6 +359,158 @@ npx visor list --category form --json     # Filter by category
 
 ---
 
+## Troubleshooting
+
+Common failure modes with symptoms, causes, and fixes. Use this to self-diagnose Visor integration issues.
+
+### 1. visor-core not installed
+
+**Symptom:** Components render without any styles — layout exists but colors, spacing, and typography are missing or browser-default.
+**Cause:** `@loworbitstudio/visor-core` is not installed, so no CSS custom properties are defined.
+**Fix:**
+```sh
+npm install @loworbitstudio/visor-core
+```
+Then verify `@import "@loworbitstudio/visor-core";` is present in your global CSS entry point (e.g. `app/globals.css`).
+
+---
+
+### 2. CSS import missing
+
+**Symptom:** All CSS custom properties resolve to nothing (`var(--text-primary)` produces empty/transparent), components are unstyled even though the package is installed.
+**Cause:** `@loworbitstudio/visor-core` is installed but never imported in CSS, so no tokens are injected into the page.
+**Fix:** Add the import to your global CSS entry point:
+```css
+/* app/globals.css */
+@import "@loworbitstudio/visor-core";
+```
+This file must be imported in your root layout (Next.js: `app/layout.tsx`, Vite: `main.tsx`).
+
+---
+
+### 3. Wrong import path
+
+**Symptom:** `Module not found: Can't resolve '@/components/ui/button'` or TypeScript reports the import does not exist.
+**Cause:** Components are copied into the project by `npx visor add` and live at a local path. The path alias (`@/`) must be configured in `tsconfig.json` and match where components were installed.
+**Fix:** Confirm the actual file location, then update the import:
+```ts
+// Correct — matches where visor add copies files
+import { Button } from "@/components/ui/button/button"
+```
+If `@/` is not configured, add it to `tsconfig.json`:
+```json
+{
+  "compilerOptions": {
+    "paths": { "@/*": ["./*"] }
+  }
+}
+```
+
+---
+
+### 4. Theme class not applied
+
+**Symptom:** Dark/light theme tokens never switch — the page always renders with default (light) theme values regardless of the selected theme.
+**Cause:** Visor uses class-based theming. The theme CSS class must be present on the `<html>` element for theme tokens to activate.
+**Fix:** Apply the theme class to `<html>`:
+```html
+<html class="theme-dark">   <!-- Dark theme -->
+<html class="theme-brand">  <!-- Custom theme -->
+```
+In Next.js, set this in `app/layout.tsx`. To switch themes dynamically, toggle the class on `document.documentElement`.
+
+---
+
+### 5. Peer dependency conflict
+
+**Symptom:** `npm install` fails with `ERESOLVE` or `peer dep missing` errors mentioning `react`, `react-dom`, or Radix UI packages.
+**Cause:** Radix UI primitives (used by many Visor components) have strict React peer dependency requirements that conflict with the project's installed React version.
+**Fix:** Align React versions first:
+```sh
+npm install react@^18 react-dom@^18
+```
+If you must use `--legacy-peer-deps`, be aware this may mask runtime incompatibilities. Radix UI requires React 18+.
+
+---
+
+### 6. Registry component not added
+
+**Symptom:** `Module not found` or TypeScript `Cannot find module` for a Visor component that was never installed.
+**Cause:** Visor uses a copy-and-own registry model — components do not exist in `node_modules`. They must be explicitly copied into the project before importing.
+**Fix:**
+```sh
+npx visor add <component-name>
+# Example:
+npx visor add button
+npx visor add dialog sheet toast
+```
+Run `npx visor list` to see all available components.
+
+---
+
+### 7. TypeScript strict mode prop errors
+
+**Symptom:** TypeScript errors like `Property 'X' does not exist on type` or `Type 'Y' is not assignable to type` when passing props to Visor components.
+**Cause:** Visor components use Radix UI primitives with passthrough prop types. TypeScript strict mode may reject props that are valid at runtime but not reflected in the declared interface.
+**Fix:** Check the component's `.visor.yaml` for the `extends` field to see which HTML element props are forwarded:
+```sh
+npx visor info <component-name> --json
+```
+For Radix passthrough props, cast via the Radix type directly:
+```ts
+import type { ButtonProps } from "@radix-ui/react-primitive"
+```
+If a prop is genuinely missing from the Visor type, extend the component locally — components are owned by your project and are fully editable.
+
+---
+
+### 8. CSS Module naming collision
+
+**Symptom:** A CSS custom property override in a component's `.module.css` file has no effect, or an unrelated style unexpectedly changes when a token name is used as a local class.
+**Cause:** CSS Modules scope class names locally, but CSS custom properties (variables) are not scoped — they inherit through the cascade. Declaring `--text-primary` inside a module rule overrides the global token for that subtree.
+**Fix:** Never use CSS custom property names as local class names. Define token overrides only in global CSS (not in `.module.css` files):
+```css
+/* globals.css — correct place for token overrides */
+.theme-brand {
+  --text-primary: #1a1a2e;
+}
+```
+In `.module.css`, reference tokens but do not redefine them at unintended scopes.
+
+---
+
+### 9. visor.json missing
+
+**Symptom:** `npx visor add` or other CLI commands exit with no output, fail silently, or report `visor.json not found`.
+**Cause:** `visor.json` is the project configuration file required by the CLI. It is created by `npx visor init` and must exist at the project root.
+**Fix:**
+```sh
+npx visor init
+```
+If the project was already partially set up, run init again — it will not overwrite existing component files. Verify `visor.json` exists at the repo root after running.
+
+---
+
+### 10. SSR hydration mismatch
+
+**Symptom:** React warns `Hydration failed because the initial UI does not match what was rendered on the server`. The theme visually flickers on first load, or dark mode is applied briefly then removed.
+**Cause:** Visor applies themes via a class on `<html>`. If that class is added client-side only (e.g. from `localStorage` in a `useEffect`), the server renders with no theme class while the client hydrates with one — React detects the mismatch.
+**Fix:** Apply the initial theme class server-side. In Next.js App Router, read the theme from a cookie and set the class in the root layout:
+```tsx
+// app/layout.tsx
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const theme = cookies().get("theme")?.value ?? ""
+  return (
+    <html className={theme ? `theme-${theme}` : ""}>
+      <body>{children}</body>
+    </html>
+  )
+}
+```
+Alternatively, use `suppressHydrationWarning` on `<html>` only if you intentionally accept the client-side-only pattern and the flicker is acceptable.
+
+---
+
 ## Registry Reference
 
 - Docs: `https://visor.design`
