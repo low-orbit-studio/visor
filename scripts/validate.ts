@@ -30,6 +30,8 @@ import { registryManifestSync } from './rules/registry-manifest-sync.js';
 import { hooksDocsPageExists } from './rules/hooks-docs-page-exists.js';
 import { patternsDocsPageExists } from './rules/patterns-docs-page-exists.js';
 import { registryBuildIntegrity } from './rules/registry-build-integrity.js';
+import { discoverabilityVariantDrift } from './rules/discoverability-variant-drift.js';
+import { discoverabilitySelectionQuality } from './rules/discoverability-selection-quality.js';
 import type { Rule } from './rules/types.js';
 
 const rules: Rule[] = [
@@ -58,6 +60,8 @@ const rules: Rule[] = [
   registryEntryExists,
   registryManifestSync,
   registryBuildIntegrity,
+  discoverabilityVariantDrift,
+  discoverabilitySelectionQuality,
   hooksDocsPageExists,
   patternsDocsPageExists,
   docsPageExists,
