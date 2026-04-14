@@ -110,6 +110,14 @@ export interface ManifestPattern {
   when_to_use: string[]
 }
 
+export interface ManifestToken {
+  name: string
+  tier: "primitive" | "semantic" | "adaptive"
+  description: string
+  defaultLight: string
+  defaultDark: string
+}
+
 export interface VisorManifest {
   version: string
   generated_at: string
@@ -118,4 +126,10 @@ export interface VisorManifest {
   hooks: Record<string, ManifestHook>
   patterns: Record<string, ManifestPattern>
   categories: Record<string, string[]>
+  tokens?: {
+    primitives: ManifestToken[]
+    semantic: ManifestToken[]
+    adaptive: ManifestToken[]
+    summary: { total: number }
+  }
 }
