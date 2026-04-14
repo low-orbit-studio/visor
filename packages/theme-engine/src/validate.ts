@@ -821,6 +821,68 @@ function checkRadiusScale(
 }
 
 // ============================================================
+// Dark/Light Color Parity
+// ============================================================
+
+function checkDarkLightParity(
+  config: VisorThemeConfig,
+  issues: ValidationIssue[]
+): void {
+  if (!config.colors) return;
+
+  const colorKeys = Object.keys(config.colors).filter((k) => k !== "primary");
+  const hasDarkSection = config["colors-dark"] !== undefined;
+
+  // If custom colors beyond primary exist but no colors-dark section, warn
+  if (colorKeys.length > 0 && !hasDarkSection) {
+    issues.push(
+      issue(
+        "warning",
+        "DARK_LIGHT_PARITY",
+        "Custom colors are set but no colors-dark section exists. Dark mode will use generated defaults which may not match your brand.",
+        "colors-dark"
+      )
+    );
+    return;
+  }
+
+  // If both exist, check for key parity
+  if (colorKeys.length > 0 && hasDarkSection) {
+    const lightKeys = new Set(Object.keys(config.colors));
+    const darkKeys = new Set(Object.keys(config["colors-dark"]!));
+
+    // Check keys in light but not dark (skip primary — it's always present in light)
+    for (const key of lightKeys) {
+      if (key === "primary") continue;
+      if (!darkKeys.has(key)) {
+        issues.push(
+          issue(
+            "warning",
+            "DARK_LIGHT_PARITY",
+            `Color "${key}" is set in colors but missing from colors-dark. Dark mode will use a generated default.`,
+            "colors-dark"
+          )
+        );
+      }
+    }
+
+    // Check keys in dark but not light
+    for (const key of darkKeys) {
+      if (!lightKeys.has(key)) {
+        issues.push(
+          issue(
+            "warning",
+            "DARK_LIGHT_PARITY",
+            `Color "${key}" is set in colors-dark but missing from colors. Light mode will use a generated default.`,
+            "colors"
+          )
+        );
+      }
+    }
+  }
+}
+
+// ============================================================
 // Public API
 // ============================================================
 
@@ -893,6 +955,9 @@ export function validate(config: unknown): ThemeValidationResult {
 
     // 12. Inconsistent radius scale
     checkRadiusScale(typedConfig, warnings);
+
+    // 13. Dark/light color parity
+    checkDarkLightParity(typedConfig, warnings);
   }
 
   return {

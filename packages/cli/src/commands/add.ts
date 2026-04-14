@@ -18,6 +18,7 @@ export interface AddOptions {
   category?: string
   block?: boolean
   json?: boolean
+  dryRun?: boolean
 }
 
 export function addCommand(
@@ -26,6 +27,8 @@ export function addCommand(
   options: AddOptions = {}
 ): void {
   const json = options.json ?? false
+  const dryRun = options.dryRun ?? false
+  const prefix = dryRun ? "[dry-run] " : ""
 
   let autoInitialized = false
 
@@ -172,9 +175,12 @@ export function addCommand(
   }
 
   // Resolve all items including transitive registry dependencies
+  const circularWarnings: string[] = []
   let items: ReturnType<typeof resolveTransitiveDeps>
   try {
-    items = resolveTransitiveDeps(registry, itemNames)
+    items = resolveTransitiveDeps(registry, itemNames, (msg) => {
+      circularWarnings.push(msg)
+    })
   } catch (error) {
     if (json) {
       const message = error instanceof Error ? error.message : String(error)
@@ -182,6 +188,12 @@ export function addCommand(
       process.exit(1)
     }
     throw error
+  }
+
+  if (circularWarnings.length > 0 && !json) {
+    for (const warning of circularWarnings) {
+      logger.warn(warning)
+    }
   }
 
   if (!json) {
@@ -204,17 +216,19 @@ export function addCommand(
         cwd
       )
 
-      if (fileExists(outputPath) && !options.overwrite) {
+      if (!dryRun && fileExists(outputPath) && !options.overwrite) {
         if (!json) {
-          logger.item(`skip ${file.path} (already exists)`)
+          logger.item(`${prefix}skip ${file.path} (already exists)`)
         }
         skippedFiles.push(file.path)
         continue
       }
 
-      writeFile(outputPath, file.content)
+      if (!dryRun) {
+        writeFile(outputPath, file.content)
+      }
       if (!json) {
-        logger.success(file.path)
+        logger.success(`${prefix}${file.path}`)
       }
       writtenFiles.push(file.path)
     }
@@ -223,47 +237,63 @@ export function addCommand(
   if (!json) {
     logger.blank()
     logger.info(
-      `Files: ${writtenFiles.length} written, ${skippedFiles.length} skipped`
+      `${prefix}Files: ${writtenFiles.length} written, ${skippedFiles.length} skipped`
     )
   }
 
   // Collect and install npm dependencies
   const { dependencies, devDependencies } = collectDependencies(items)
 
-  const uninstalledDeps = getUninstalledDeps(dependencies, cwd)
-  const uninstalledDevDeps = getUninstalledDeps(devDependencies, cwd)
+  const uninstalledDeps = dryRun ? dependencies : getUninstalledDeps(dependencies, cwd)
+  const uninstalledDevDeps = dryRun ? devDependencies : getUninstalledDeps(devDependencies, cwd)
 
   const installedDeps: string[] = []
   const failedDeps: string[] = []
 
   if (uninstalledDeps.length > 0) {
-    if (!json) {
-      logger.blank()
-      logger.info("Installing dependencies...")
-    }
-    if (installPackages(uninstalledDeps, cwd)) {
+    if (dryRun) {
+      if (!json) {
+        logger.blank()
+        logger.info(`${prefix}Would install dependencies: ${uninstalledDeps.join(", ")}`)
+      }
       installedDeps.push(...uninstalledDeps)
     } else {
-      failedDeps.push(...uninstalledDeps)
       if (!json) {
-        logger.warn("Some dependencies failed to install. Install them manually:")
-        logger.info(`  npm install ${uninstalledDeps.join(" ")}`)
+        logger.blank()
+        logger.info("Installing dependencies...")
+      }
+      if (installPackages(uninstalledDeps, cwd)) {
+        installedDeps.push(...uninstalledDeps)
+      } else {
+        failedDeps.push(...uninstalledDeps)
+        if (!json) {
+          logger.warn("Some dependencies failed to install. Install them manually:")
+          logger.info(`  npm install ${uninstalledDeps.join(" ")}`)
+        }
       }
     }
   }
 
   if (uninstalledDevDeps.length > 0) {
-    if (!json) {
-      logger.blank()
-      logger.info("Installing dev dependencies...")
-    }
-    if (installPackages(uninstalledDevDeps, cwd, true)) {
+    if (dryRun) {
+      if (!json) {
+        logger.blank()
+        logger.info(`${prefix}Would install dev dependencies: ${uninstalledDevDeps.join(", ")}`)
+      }
       installedDeps.push(...uninstalledDevDeps)
     } else {
-      failedDeps.push(...uninstalledDevDeps)
       if (!json) {
-        logger.warn("Some dev dependencies failed to install. Install them manually:")
-        logger.info(`  npm install --save-dev ${uninstalledDevDeps.join(" ")}`)
+        logger.blank()
+        logger.info("Installing dev dependencies...")
+      }
+      if (installPackages(uninstalledDevDeps, cwd, true)) {
+        installedDeps.push(...uninstalledDevDeps)
+      } else {
+        failedDeps.push(...uninstalledDevDeps)
+        if (!json) {
+          logger.warn("Some dev dependencies failed to install. Install them manually:")
+          logger.info(`  npm install --save-dev ${uninstalledDevDeps.join(" ")}`)
+        }
       }
     }
   }
@@ -285,7 +315,8 @@ export function addCommand(
     console.log(
       JSON.stringify(
         {
-          success: true,
+          success: failedDeps.length === 0,
+          ...(dryRun ? { dryRun: true } : {}),
           autoInitialized,
           requested: itemNames,
           resolved: items.map((i) => i.name),
@@ -297,6 +328,10 @@ export function addCommand(
         2
       )
     )
-    process.exit(0)
+    process.exit(failedDeps.length > 0 ? 1 : 0)
+  }
+
+  if (failedDeps.length > 0) {
+    process.exit(1)
   }
 }

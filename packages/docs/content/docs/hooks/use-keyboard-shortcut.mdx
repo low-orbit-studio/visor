@@ -1,0 +1,34 @@
+---
+title: useKeyboardShortcut
+description: Fires a callback when a specific keyboard shortcut with modifier keys is pressed.
+---
+
+## Usage
+
+```tsx
+useKeyboardShortcut("k", openSearch, { meta: true, preventDefault: true })
+```
+
+## Installation
+
+```bash
+npx visor add use-keyboard-shortcut
+```
+
+## Parameters
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `key` | `string` | Yes | -- | The key to listen for (case-insensitive, e.g. "k", "Escape"). |
+| `callback` | `(event: KeyboardEvent) => void` | Yes | -- | Function invoked when the shortcut is triggered. |
+| `options` | `KeyboardShortcutOptions` | No | -- | Modifier and target configuration. |
+| `options.meta` | `boolean` | No | `false` | Whether the Meta (Cmd/Win) key must be held. |
+| `options.ctrl` | `boolean` | No | `false` | Whether the Ctrl key must be held. |
+| `options.shift` | `boolean` | No | `false` | Whether the Shift key must be held. |
+| `options.alt` | `boolean` | No | `false` | Whether the Alt/Option key must be held. |
+| `options.target` | `EventTarget \| null` | No | `document` | Element to attach the listener to. |
+| `options.preventDefault` | `boolean` | No | `false` | Whether to prevent the default browser action. |
+
+## Returns
+
+This hook does not return a value.

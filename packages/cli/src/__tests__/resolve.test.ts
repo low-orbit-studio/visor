@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest"
+import { describe, it, expect, vi } from "vitest"
 import {
   findItem,
   resolveTransitiveDeps,
@@ -99,6 +99,71 @@ describe("resolveTransitiveDeps", () => {
     expect(() =>
       resolveTransitiveDeps(testRegistry, ["nonexistent"])
     ).toThrow('Registry item "nonexistent" not found.')
+  })
+})
+
+describe("resolveTransitiveDeps circular detection", () => {
+  it("emits circular dependency warnings via onWarning callback", () => {
+    const circularRegistry: BundledRegistry = {
+      items: [
+        makeItem({
+          name: "alpha",
+          registryDependencies: ["beta"],
+          files: [{ path: "lib/alpha.ts", type: "registry:lib", content: "" }],
+        }),
+        makeItem({
+          name: "beta",
+          registryDependencies: ["alpha"],
+          files: [{ path: "lib/beta.ts", type: "registry:lib", content: "" }],
+        }),
+      ],
+    }
+
+    const warnings: string[] = []
+    const items = resolveTransitiveDeps(circularRegistry, ["alpha"], (msg) => {
+      warnings.push(msg)
+    })
+
+    expect(items).toHaveLength(2)
+    expect(warnings.length).toBeGreaterThan(0)
+    expect(warnings[0]).toContain("Circular registry dependency")
+    expect(warnings[0]).toContain("alpha")
+  })
+
+  it("does not emit warnings when no callback is provided", () => {
+    const circularRegistry: BundledRegistry = {
+      items: [
+        makeItem({
+          name: "alpha",
+          registryDependencies: ["beta"],
+          files: [{ path: "lib/alpha.ts", type: "registry:lib", content: "" }],
+        }),
+        makeItem({
+          name: "beta",
+          registryDependencies: ["alpha"],
+          files: [{ path: "lib/beta.ts", type: "registry:lib", content: "" }],
+        }),
+      ],
+    }
+
+    // Should not throw
+    const items = resolveTransitiveDeps(circularRegistry, ["alpha"])
+    expect(items).toHaveLength(2)
+  })
+
+  it("does not warn on shared (non-circular) dependencies", () => {
+    // Both button and field depend on utils — this is shared, not circular
+    const warnings: string[] = []
+    const items = resolveTransitiveDeps(testRegistry, ["button", "field"], (msg) => {
+      warnings.push(msg)
+    })
+
+    const names = items.map((i) => i.name)
+    expect(names).toContain("button")
+    expect(names).toContain("field")
+    expect(names).toContain("utils")
+    // No warnings — shared deps are not circular
+    expect(warnings).toHaveLength(0)
   })
 })
 

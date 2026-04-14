@@ -1,0 +1,38 @@
+---
+title: useSlideEngine
+description: Provides smooth-scroll navigation between sections with scroll-snap coordination and debounced locking.
+---
+
+## Usage
+
+```tsx
+const { goTo, navigateTo, isScrollingRef } = useSlideEngine({
+  containerRef,
+  sectionsRef,
+  currentIndexRef,
+  setCurrentIndex,
+})
+```
+
+## Installation
+
+```bash
+npx visor add use-slide-engine
+```
+
+## Parameters
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `containerRef` | `React.RefObject<HTMLElement \| null>` | No | -- | Container element that scrolls. Falls back to scrollIntoView if not provided. |
+| `sectionsRef` | `React.RefObject<HTMLElement[]>` | Yes | -- | Ref to an array of section elements that can be navigated. |
+| `currentIndexRef` | `React.MutableRefObject<number>` | Yes | -- | Mutable ref holding the current section index. |
+| `setCurrentIndex` | `(index: number) => void` | No | -- | State setter called when navigation occurs. |
+
+## Returns
+
+| Name | Type | Description |
+|------|------|-------------|
+| `goTo` | `(index: number) => void` | Scrolls to the section at the given index with smooth animation. |
+| `navigateTo` | `(id: string) => void` | Scrolls to a section by its DOM element id. |
+| `isScrollingRef` | `React.MutableRefObject<boolean>` | Ref indicating whether a programmatic scroll is in progress. |

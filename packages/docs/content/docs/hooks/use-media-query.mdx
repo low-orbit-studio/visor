@@ -1,0 +1,29 @@
+---
+title: useMediaQuery
+description: Subscribes to a CSS media query and returns whether it currently matches.
+---
+
+## Usage
+
+```tsx
+const isMobile = useMediaQuery("(max-width: 767px)")
+const prefersDark = useMediaQuery("(prefers-color-scheme: dark)")
+```
+
+## Installation
+
+```bash
+npx visor add use-media-query
+```
+
+## Parameters
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `query` | `string` | Yes | -- | CSS media query string (e.g. "(min-width: 768px)"). |
+
+## Returns
+
+| Name | Type | Description |
+|------|------|-------------|
+| `matches` | `boolean` | Whether the media query currently matches. SSR-safe (defaults to false). |

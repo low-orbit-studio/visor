@@ -60,8 +60,10 @@ async function main(): Promise<void> {
 
   const allItems = [...ui, ...hooks, ...lib, ...deck, ...blocks, ...visual]
   const bundledItems: BundledRegistryItem[] = []
+  const buildErrors: string[] = []
 
   for (const item of allItems) {
+    let itemHasError = false
     const bundledFiles = item.files.map(
       (file: { path: string; type: string; target?: string }) => {
         const filePath = join(REPO_ROOT, file.path)
@@ -69,7 +71,8 @@ async function main(): Promise<void> {
         try {
           content = readFileSync(filePath, "utf-8")
         } catch {
-          console.warn(`  Warning: Could not read ${file.path}`)
+          buildErrors.push(`Could not read ${file.path} (item: ${item.name})`)
+          itemHasError = true
           content = ""
         }
         return {
@@ -80,6 +83,12 @@ async function main(): Promise<void> {
         }
       }
     )
+
+    // Never include items with empty file content in the output
+    if (itemHasError) {
+      console.error(`  ✗ ${item.name} — skipped (has unreadable files)`)
+      continue
+    }
 
     // Use category from registry definition, falling back to .visor.yaml
     const category = item.category ?? categoryMap.get(item.name)
@@ -100,6 +109,14 @@ async function main(): Promise<void> {
     })
 
     console.log(`  ✓ ${item.name} (${item.files.length} files)`)
+  }
+
+  if (buildErrors.length > 0) {
+    console.error(`\n✗ Registry build failed with ${buildErrors.length} error(s):`)
+    for (const err of buildErrors) {
+      console.error(`  - ${err}`)
+    }
+    process.exit(1)
   }
 
   const registry: BundledRegistry = { items: bundledItems }

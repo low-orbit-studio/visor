@@ -1,0 +1,53 @@
+---
+title: Auth Flow
+description: Login, registration, and password recovery pages sharing a centered card layout.
+---
+
+## When to Use
+
+- Sign-in and sign-up pages
+- Forgot password and reset password flows
+- Invitation acceptance screens
+
+## Components Used
+
+- [Card](/docs/components/card)
+- [Input](/docs/components/input)
+- [Button](/docs/components/button)
+- [Field](/docs/components/field)
+- [Alert](/docs/components/alert)
+- [Tabs](/docs/components/tabs)
+
+## Structure
+
+```tsx
+<div className="auth-container">
+  <Card>
+    <CardHeader>
+      <CardTitle>Sign in</CardTitle>
+      <CardDescription>Enter your credentials to continue.</CardDescription>
+    </CardHeader>
+    <CardContent>
+      {error && <Alert variant="destructive">{error}</Alert>}
+      <form onSubmit={handleSubmit}>
+        <Field>
+          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <Input id="email" type="email" required />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="password">Password</FieldLabel>
+          <Input id="password" type="password" required />
+        </Field>
+        <Button type="submit" style={{ width: "100%" }}>Sign in</Button>
+      </form>
+    </CardContent>
+    <CardFooter>
+      <a href="/forgot-password">Forgot password?</a>
+    </CardFooter>
+  </Card>
+</div>
+```
+
+## Notes
+
+Center the Card on the page using CSS Grid or Flexbox. Use Alert above the form for login errors (invalid credentials, account locked). For multi-step flows (sign-up with email verification), use Stepper inside the Card. Tabs can switch between Sign In and Sign Up forms within the same Card.

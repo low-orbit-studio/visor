@@ -1,0 +1,34 @@
+---
+title: useKeyboardNav
+description: Handles keyboard navigation for deck-style slide presentations (Arrow keys, Home, End, Space).
+---
+
+## Usage
+
+```tsx
+useKeyboardNav({
+  containerRef,
+  goTo,
+  currentIndexRef,
+  totalSectionsRef,
+})
+```
+
+## Installation
+
+```bash
+npx visor add use-keyboard-nav
+```
+
+## Parameters
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `containerRef` | `React.RefObject<HTMLElement \| null>` | No | -- | Container element to listen on. Falls back to document if not provided. |
+| `goTo` | `(index: number) => void` | Yes | -- | Navigation function that scrolls to the given section index. |
+| `currentIndexRef` | `React.MutableRefObject<number>` | Yes | -- | Mutable ref holding the current section index. |
+| `totalSectionsRef` | `React.MutableRefObject<number>` | Yes | -- | Mutable ref holding the total number of sections. |
+
+## Returns
+
+This hook does not return a value.

@@ -18,12 +18,42 @@ export function loadConfig(cwd: string): VisorConfig {
     )
   }
   const raw = readFileSync(configPath, "utf-8")
-  const parsed = JSON.parse(raw) as Partial<VisorConfig>
+  const parsed = JSON.parse(raw) as Record<string, unknown>
+
+  // Warn on unknown top-level keys
+  const knownKeys = new Set(["paths"])
+  for (const key of Object.keys(parsed)) {
+    if (!knownKeys.has(key)) {
+      console.warn(`Warning: unknown key "${key}" in visor.json`)
+    }
+  }
+
+  // Validate paths
+  if (parsed.paths !== undefined) {
+    if (
+      typeof parsed.paths !== "object" ||
+      parsed.paths === null ||
+      Array.isArray(parsed.paths)
+    ) {
+      throw new Error(
+        `Invalid visor.json: paths must be an object, got ${Array.isArray(parsed.paths) ? "array" : typeof parsed.paths}`
+      )
+    }
+    const paths = parsed.paths as Record<string, unknown>
+    for (const [key, value] of Object.entries(paths)) {
+      if (typeof value !== "string") {
+        throw new Error(
+          `Invalid visor.json: paths.${key} must be a string, got ${typeof value}`
+        )
+      }
+    }
+  }
+
   // Merge with defaults so existing visor.json files get new fields
   return {
     paths: {
       ...DEFAULT_CONFIG.paths,
-      ...parsed.paths,
+      ...(parsed.paths as Partial<VisorConfig["paths"]>),
     },
   }
 }

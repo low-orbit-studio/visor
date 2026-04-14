@@ -1,0 +1,34 @@
+---
+title: useIntersectionObserver
+description: Tracks whether an element is visible within the viewport or a scroll container.
+---
+
+## Usage
+
+```tsx
+const { ref, isIntersecting } = useIntersectionObserver({ once: true, threshold: 0.5 })
+return <div ref={ref}>{isIntersecting ? "Visible" : "Hidden"}</div>
+```
+
+## Installation
+
+```bash
+npx visor add use-intersection-observer
+```
+
+## Parameters
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `once` | `boolean` | No | `false` | If true, stops observing after the element first intersects. |
+| `threshold` | `number \| number[]` | No | `0` | IntersectionObserver visibility threshold. |
+| `root` | `Element \| null` | No | `null` | Scroll container to use as the intersection root. |
+| `rootMargin` | `string` | No | `"0%"` | Margin around the root for expanding or shrinking the intersection area. |
+
+## Returns
+
+| Name | Type | Description |
+|------|------|-------------|
+| `ref` | `React.RefObject<Element \| null>` | Ref to attach to the element you want to observe. |
+| `isIntersecting` | `boolean` | Whether the observed element is currently intersecting. |
+| `entry` | `IntersectionObserverEntry \| null` | The raw IntersectionObserverEntry, or null before first observation. |

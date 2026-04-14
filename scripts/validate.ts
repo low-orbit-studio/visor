@@ -26,6 +26,10 @@ import { docsConsistentSections } from './rules/docs-consistent-sections.js';
 import { docsAlphabetized } from './rules/docs-alphabetized.js';
 import { docsPageExists } from './rules/docs-page-exists.js';
 import { themeFontImports } from './rules/theme-font-imports.js';
+import { registryManifestSync } from './rules/registry-manifest-sync.js';
+import { hooksDocsPageExists } from './rules/hooks-docs-page-exists.js';
+import { patternsDocsPageExists } from './rules/patterns-docs-page-exists.js';
+import { registryBuildIntegrity } from './rules/registry-build-integrity.js';
 import type { Rule } from './rules/types.js';
 
 const rules: Rule[] = [
@@ -51,6 +55,10 @@ const rules: Rule[] = [
   testFileExists,
   cssModuleExists,
   registryEntryExists,
+  registryManifestSync,
+  registryBuildIntegrity,
+  hooksDocsPageExists,
+  patternsDocsPageExists,
   docsPageExists,
   docsHasPreview,
   docsHasPropsTable,
