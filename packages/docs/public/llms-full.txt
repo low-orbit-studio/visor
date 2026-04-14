@@ -1,0 +1,562 @@
+# Visor Design System — Full AI Reference
+
+> Visor is Low Orbit Studio's shared design system. Components are distributed via a
+> shadcn-style registry (copy-and-own). Design tokens are distributed via npm
+> (`@loworbitstudio/visor-core`). Version: 0.3.0
+
+## Overview
+
+Visor uses a two-layer distribution model:
+
+1. **Components** — shadcn-style registry (copy-and-own). Run `npx visor add <name>` to copy
+   source files into your project. Full edit rights, no lock-in.
+2. **Tokens** — `@loworbitstudio/visor-core` npm package. CSS custom properties for design
+   consistency. Updates propagate automatically via `npm update`.
+
+Stack: React + TypeScript, CSS Modules + CSS custom properties, CVA (class-variance-authority),
+Radix UI primitives, @phosphor-icons/react, Vitest + React Testing Library.
+
+---
+
+## Component Catalog (81 components)
+
+Install any component: `npx visor add <name>`
+Install a whole category: `npx visor add --category <category>`
+
+### Data Display (7)
+
+| Component | Description |
+| --- | --- |
+| `accordion` | An accessible accordion for expanding and collapsing content sections with single or multiple mode. |
+| `avatar` | A circular avatar component with image display and fallback support for initials and icons. |
+| `badge` | A small label component for status indicators, counts, and tags with multiple visual variants. |
+| `card` | A compound card component for grouping related content with header, body, and footer sub-components. |
+| `chart` | A Recharts wrapper providing themed chart container, tooltip, and legend components. |
+| `table` | A presentational table component with semantic HTML sub-components and responsive overflow. |
+| `timeline` | A vertical timeline with status-based styling, optional icons, timestamps, and connector lines. |
+
+### Feedback (7)
+
+| Component | Description |
+| --- | --- |
+| `alert` | Static inline callout for important messages with semantic variants. |
+| `banner` | Full-width announcement bar with intent variants and optional sticky positioning. |
+| `popover` | Floating content panel anchored to a trigger element. |
+| `progress` | Horizontal bar indicating completion percentage of a task. |
+| `skeleton` | Placeholder loading shape with a pulse animation. |
+| `toast` | Ephemeral notification messages that appear and auto-dismiss. |
+| `tooltip` | Small text label that appears on hover or focus to describe an element. |
+
+### Form (24)
+
+| Component | Description |
+| --- | --- |
+| `button` | Primary interactive element for triggering actions. |
+| `calendar` | A date grid component for browsing and selecting dates, with range selection support. |
+| `checkbox` | An accessible checkbox component built on Radix UI Checkbox. |
+| `combobox` | A combobox/autocomplete component with filterable dropdown and keyboard navigation. |
+| `date-picker` | A date picker combining a trigger button with a popover Calendar for single-date selection. |
+| `field` | A form field wrapper composing label, description, and error components. |
+| `fieldset` | A semantic fieldset wrapper with styled legend for grouping related form fields. |
+| `file-upload` | A drag-and-drop file upload zone with file validation and keyboard activation. |
+| `form` | A form wrapper integrating Conform + Zod for schema-validated server action forms. |
+| `input` | A text input component with focus and validation states. |
+| `label` | An accessible label component built on Radix UI Label. |
+| `number-input` | A number input with increment/decrement buttons and min/max/step support. |
+| `otp-input` | A multi-digit OTP/verification code input with auto-advance and paste support. |
+| `password-input` | A password input with show/hide toggle and optional strength meter. |
+| `phone-input` | An international phone number input with country code selection and geo-IP detection. |
+| `radio-group` | An accessible radio group component built on Radix UI RadioGroup. |
+| `search-input` | A search input with magnifying glass icon and optional clear button. |
+| `select` | An accessible select component built on Radix UI Select with all sub-components. |
+| `slider` | An accessible slider component built on Radix UI Slider with single and range support. |
+| `slider-control` | A labeled slider with inline value display, composing Slider with a label and formatted output. |
+| `switch` | An accessible toggle switch component built on Radix UI Switch. |
+| `tag-input` | A multi-value tag input with removable chips, keyboard support, and max tag limit. |
+| `textarea` | A textarea component with focus and validation states. |
+| `toggle-group` | A toggle group component with single-select and multi-select modes using CVA variants. |
+
+### Layout (4)
+
+| Component | Description |
+| --- | --- |
+| `collapsible` | Simple expandable section with animated open/close transitions. |
+| `scroll-area` | Custom-styled scrollable container with thin scrollbar overlays. |
+| `separator` | Visual divider between content sections in horizontal or vertical orientation. |
+| `sidebar` | Feature-rich collapsible sidebar with provider, menus, groups, and sub-navigation. |
+
+### Media (3)
+
+| Component | Description |
+| --- | --- |
+| `carousel` | A composable slide carousel with horizontal and vertical orientations. |
+| `image` | An image component with loading skeleton, error fallback, and aspect ratio presets. |
+| `lightbox` | A full-screen image viewer with gallery navigation, keyboard and touch support. |
+
+### Navigation (6)
+
+| Component | Description |
+| --- | --- |
+| `breadcrumb` | A breadcrumb navigation component showing the user's location within a page hierarchy. |
+| `command` | A command palette with search filtering, keyboard navigation, and optional dialog mode. |
+| `navbar` | A top navigation bar with brand, content areas, links, and style variants. |
+| `pagination` | A composable pagination component with previous/next navigation and page links. |
+| `stepper` | A multi-step progress indicator with horizontal and vertical orientations. |
+| `tabs` | A tabs component for switching between content panels with default and line styles. |
+
+### Overlay (7)
+
+| Component | Description |
+| --- | --- |
+| `context-menu` | Right-click menu with actions, checkboxes, radio items, and sub-menus. |
+| `dialog` | Modal overlay that requires user attention before returning to the page. |
+| `dropdown-menu` | Menu of actions or options that opens from a trigger button. |
+| `fullscreen-overlay` | A full-viewport overlay for expanding content to fill the screen. |
+| `hover-card` | Rich content card that appears when hovering over a trigger element. |
+| `menubar` | Horizontal menu bar with dropdown menus, keyboard navigation, and full a11y support. |
+| `sheet` | Slide-over panel that enters from any edge of the screen. |
+
+### Typography (3)
+
+| Component | Description |
+| --- | --- |
+| `code-block` | A lightweight code display component with optional line numbers and copy-to-clipboard. |
+| `heading` | A semantic heading component (h1-h6) with independent size and weight variants. |
+| `text` | A body text component with size, weight, color, and line-height variants. |
+
+### Admin (10)
+
+Install as a batch: `npx visor add --category admin`
+
+| Component | Description |
+| --- | --- |
+| `activity-feed` | Admin compound for rendering a vertical list of timestamped events — dashboards and audit logs. |
+| `bulk-action-bar` | Admin bulk action bar compound — sticky or inline toolbar that appears when rows are selected. |
+| `confirm-dialog` | Admin confirmation dialog compound with severity-driven icon/color and optional confirm-text gate. |
+| `data-table` | Generic Tanstack-powered data table compound with sorting, pagination, selection, and filter. |
+| `empty-state` | Admin placeholder compound for lists, tables, search results, and dashboard regions. |
+| `filter-bar` | Admin filter bar compound — search input, filter controls slot, removable active filters, and results count. |
+| `kbd` | Tiny primitive for rendering keyboard shortcuts using the semantic `<kbd>` element. |
+| `page-header` | Admin page header compound with eyebrow, title, description, breadcrumb, and actions. |
+| `stat-card` | Admin dashboard metric card with label, value, delta, trend, and footer slots. |
+| `status-badge` | Semantic wrapper over Badge that maps admin status names to visual variants with indicator dot. |
+
+### Specimen (10)
+
+Design system documentation components (copy-and-own like any other):
+
+| Component | Description |
+| --- | --- |
+| `accessibility-specimen` | WCAG contrast pair display with color preview, ratio value, and AA/AAA pass/fail badges. |
+| `color-swatch` | Individual color swatch with hex value display, plus grid variants for color scales. |
+| `elevation-card` | Shadow level display card showing a single elevation token with its name and token value. |
+| `icon-grid` | Icon set display with names, usage descriptions, and a size scale row. |
+| `motion-specimen` | Duration and easing preview components with interactive play-animation controls. |
+| `opacity-bar` | Opacity level visualization showing bars at varying opacity values with token names. |
+| `radius-scale` | Border radius examples with labels and pixel values in a responsive grid. |
+| `spacing-scale` | Visual spacing scale displaying token names, proportional bars, and pixel/rem values. |
+| `surface-row` | Surface background variant display showing a surface token with its name and token value. |
+| `type-specimen` | A single typography row displaying sample text at a given font-size token. |
+
+---
+
+## Hooks (14)
+
+Install any hook: `npx visor add <hook-name>`
+
+| Hook | Description |
+| --- | --- |
+| `use-boolean` | Manages a boolean state with stable toggle, setTrue, and setFalse helpers. |
+| `use-click-outside` | Fires a callback when a click or touch event occurs outside the referenced element. |
+| `use-currency` | Detects user locale and returns currency symbol and price formatter for USD, EUR, and GBP. |
+| `use-debounce` | Debounces a value by delaying updates until after a specified delay. |
+| `use-focus-trap` | Traps keyboard focus within a container element. Used for accessible modals and drawers. |
+| `use-intersection-animation` | Observes section visibility via IntersectionObserver and updates the active index. |
+| `use-intersection-observer` | Tracks whether an element is visible within the viewport using IntersectionObserver. |
+| `use-keyboard-nav` | Handles Arrow Up/Down and Home/End keyboard navigation between indexed sections. |
+| `use-keyboard-shortcut` | Fires a callback when a specific keyboard shortcut is pressed, with support for modifier keys. |
+| `use-local-storage` | Persists state to localStorage with SSR safety, functional updates, and cross-tab sync. |
+| `use-media-query` | SSR-safe hook that returns whether a CSS media query matches. |
+| `use-previous` | Returns the previous value of a variable from the last render. |
+| `use-slide-engine` | Provides smooth programmatic scrolling between indexed sections. |
+| `use-wheel-nav` | Converts vertical wheel events into discrete index-based navigation with debouncing. |
+
+---
+
+## Blocks (19)
+
+Pre-composed, page-level sections built from Visor components.
+
+Install a block: `npx visor add --block <block-name>`
+
+### Admin Blocks (7)
+
+| Block | Description |
+| --- | --- |
+| `admin-dashboard` | Drop-in admin overview composition — PageHeader, responsive stat grid, optional activity feed, and empty-state fallback. |
+| `admin-detail-drawer` | Right-side slide-out panel for viewing or editing a single record. Composes Sheet, field components, and a save footer. |
+| `admin-list-page` | CRUD list archetype composing PageHeader, FilterBar, DataTable, BulkActionBar, and EmptyState. |
+| `admin-settings-page` | Long scrollable settings archetype with labeled sections and an optional sticky save footer. |
+| `admin-shell` | Foundational admin layout with sidebar, topbar, and main content area. Slot-driven for flexibility. |
+| `admin-tabbed-editor` | Full-page editor with horizontal tabs, tab-scoped content panels, and a sticky save footer. |
+| `admin-wizard` | Guided multi-step flow composing PageHeader, Stepper, and Button into a drop-in wizard pattern. |
+
+### Marketing Blocks (7)
+
+| Block | Description |
+| --- | --- |
+| `cta-section` | A centered call-to-action section composing Heading, Text, and Button. |
+| `features-grid` | A responsive grid of feature cards with icons, titles, and descriptions. |
+| `footer-section` | A multi-column responsive footer with link groups, logo area, and copyright. |
+| `hero-section` | A full-width hero section with background media support, heading, subheading, and CTA. |
+| `pricing-section` | A responsive pricing tier grid with feature lists, highlighted plan, and per-tier CTAs. |
+| `steps-section` | A numbered process section with auto-numbered steps and connector lines. |
+| `testimonial-section` | A social proof section with testimonial quotes, avatars, and attribution. |
+
+### Authentication Blocks (1)
+
+| Block | Description |
+| --- | --- |
+| `login-form` | A login form block using Visor form components (Button, Input, Label, Card). |
+
+### Interactive Blocks (2)
+
+| Block | Description |
+| --- | --- |
+| `configuration-panel` | A floating, glassmorphic configuration panel for organizing controls into labeled collapsible sections. |
+| `sphere-playground` | An interactive demo composing the Sphere visualization with a Configuration Panel for real-time controls. |
+
+### Documentation / Presentation Blocks (2)
+
+| Block | Description |
+| --- | --- |
+| `design-system-deck` | A complete, registry-driven design system presentation deck. |
+| `design-system-specimen` | Live interactive showcase of the full Visor token system and component library. |
+
+---
+
+## Composition Patterns (7)
+
+Recommended component compositions for common UI scenarios. Not installable — structural guidance only.
+
+### Auth Flow
+
+When to use: Sign-in and sign-up pages, forgot password flows, invitation acceptance screens.
+Components: card, input, button, field, alert, tabs
+
+### CRUD Table
+
+When to use: Admin pages listing resources (users, orders, products), data tables needing row-level actions and bulk operations.
+Components: table, button, dropdown-menu, dialog, alert, pagination, badge
+
+### Dashboard Layout
+
+When to use: Admin dashboards and internal tools, multi-section apps with persistent navigation.
+Components: sidebar, navbar, card, tabs, breadcrumb
+
+### Data Table with Filters
+
+When to use: Data-heavy pages where users need to find specific records, search result pages with faceted filtering.
+Components: table, input, select, button, badge, dropdown-menu, pagination
+
+### Empty State
+
+When to use: Empty lists or tables, search results with zero matches, first-time user onboarding.
+Components: card, button, heading, text
+
+### Form with Validation
+
+When to use: Any form collecting user input (settings, profile, onboarding), multi-field forms needing inline validation.
+Components: field, input, label, textarea, button, alert
+
+### Settings Page
+
+When to use: User profile and account settings, application preferences, team or organization settings.
+Components: card, input, textarea, select, switch, button, field, fieldset, separator, tabs, avatar
+
+---
+
+## Token Prefix Reference
+
+All tokens are CSS custom properties from `@loworbitstudio/visor-core`.
+
+Import once in your global CSS entry point:
+```css
+@import "@loworbitstudio/visor-core";
+```
+
+### Token Prefix Table
+
+| Prefix | Purpose | Examples |
+| --- | --- | --- |
+| `--color-*` | Primitive color values (Tailwind Gray scale) | `--color-gray-900`, `--color-blue-500` |
+| `--spacing-*` | Spacing scale (4px grid) | `--spacing-4` (1rem), `--spacing-8` (2rem) |
+| `--radius-*` | Border radius scale | `--radius-sm`, `--radius-md`, `--radius-lg`, `--radius-full` |
+| `--text-*` | Semantic text colors | `--text-primary`, `--text-secondary`, `--text-muted`, `--text-disabled` |
+| `--surface-*` | Background surfaces | `--surface-page`, `--surface-card`, `--surface-overlay`, `--surface-subtle` |
+| `--border-*` | Border colors | `--border-default`, `--border-muted`, `--border-strong` |
+| `--interactive-*` | Interactive element tokens | `--interactive-primary-bg`, `--interactive-primary-text`, `--interactive-primary-hover` |
+| `--font-size-*` | Type scale | `--font-size-xs`, `--font-size-sm`, `--font-size-base`, `--font-size-lg`, `--font-size-xl` |
+| `--font-weight-*` | Font weights | `--font-weight-normal`, `--font-weight-medium`, `--font-weight-bold` |
+| `--shadow-*` | Box shadows | `--shadow-xs`, `--shadow-sm`, `--shadow-md`, `--shadow-lg`, `--shadow-xl` |
+| `--motion-duration-*` | Animation timing | `--motion-duration-fast`, `--motion-duration-base`, `--motion-duration-slow` |
+| `--motion-easing-*` | Animation easing | `--motion-easing-default`, `--motion-easing-in`, `--motion-easing-out` |
+| `--focus-ring-*` | Focus ring dimensions | `--focus-ring-width`, `--focus-ring-offset` |
+| `--overlay-*` | Backdrop/overlay | `--overlay-bg` |
+
+### Token Architecture
+
+Visor uses a 3-tier architecture:
+1. **Primitives** — Raw values (`--color-gray-900`, `--spacing-4`)
+2. **Semantic** — Named by purpose (`--text-primary`, `--surface-card`, `--border-default`)
+3. **Adaptive** — Theme-aware tokens that switch based on active theme class
+
+### Available Package Exports
+
+| Import path | Contents |
+| --- | --- |
+| `@loworbitstudio/visor-core` | Full bundle (primitives + semantic + light + dark) |
+| `@loworbitstudio/visor-core/css` | Alias for the full bundle |
+| `@loworbitstudio/visor-core/tokens` | All tokens without theme layers |
+| `@loworbitstudio/visor-core/primitives` | Raw color/spacing/type primitives only |
+| `@loworbitstudio/visor-core/semantic` | Semantic tokens only |
+| `@loworbitstudio/visor-core/themes/light` | Light theme overrides only |
+| `@loworbitstudio/visor-core/themes/dark` | Dark theme overrides only |
+
+### Theming
+
+Apply themes by adding a class to `<html>`:
+```html
+<html>                        <!-- Light (default) -->
+<html class="theme-dark">     <!-- Dark theme -->
+<html class="theme-brand">    <!-- Custom theme -->
+```
+
+---
+
+## CLI Command Reference
+
+All commands support `--json` for structured JSON output (AI agent friendly).
+
+### `visor init`
+
+Initialize Visor in the current project.
+
+```
+visor init [options]
+
+Options:
+  --template <name>   Scaffold a themed project (nextjs)
+  --json              Output structured JSON (for AI agents)
+```
+
+### `visor list`
+
+List all available registry items.
+
+```
+visor list [options]
+
+Options:
+  --json              Output structured JSON (for AI agents)
+  --category <name>   Filter items by category
+```
+
+### `visor add`
+
+Add components, hooks, blocks, or utilities to your project.
+
+```
+visor add [items...] [options]
+
+Arguments:
+  items               Names of registry items to add (space-separated)
+
+Options:
+  --overwrite         Overwrite existing files (default: false)
+  --category <name>   Install all items from a category
+  --block             Install blocks instead of components
+  --dry-run           Preview what would be added without writing files
+  --json              Output structured JSON (for AI agents)
+
+Examples:
+  npx visor add button
+  npx visor add button input label card
+  npx visor add --category form
+  npx visor add --block admin-dashboard
+  npx visor add button --overwrite
+  npx visor add button --dry-run --json
+```
+
+### `visor diff`
+
+Show differences between local files and the registry.
+
+```
+visor diff [component] [options]
+
+Arguments:
+  component           Component name to diff (all if omitted)
+
+Options:
+  --json              Output structured JSON (for AI agents)
+```
+
+### `visor info`
+
+Show detailed metadata for a component, hook, block, or pattern.
+
+```
+visor info <component> [options]
+
+Arguments:
+  component           Name of the item to look up
+
+Options:
+  --json              Output as JSON
+
+Example:
+  npx visor info button --json
+```
+
+### `visor theme apply`
+
+Read a .visor.yaml file and generate full CSS token overrides.
+
+```
+visor theme apply <file> [options]
+
+Arguments:
+  file                Path to .visor.yaml file
+
+Options:
+  -o, --output <path>     Output CSS file path
+  --json                  Output structured JSON (for AI agents)
+  --adapter <name>        Target adapter: nextjs, fumadocs, deck
+```
+
+### `visor theme export`
+
+Read current theme tokens and produce a .visor.yaml (or other format).
+
+```
+visor theme export [file] [options]
+
+Arguments:
+  file                Path to source .visor.yaml file (optional)
+
+Options:
+  --format <format>   Output format: yaml or json (default: yaml)
+  --json              Output structured JSON (for AI agents)
+```
+
+### `visor theme validate`
+
+Run full validation ruleset on a .visor.yaml file.
+
+```
+visor theme validate <file> [options]
+
+Arguments:
+  file                Path to .visor.yaml file
+
+Options:
+  --json              Output structured JSON (for AI agents)
+```
+
+### `visor theme extract`
+
+Scan an existing project's CSS and produce a best-effort .visor.yaml theme file.
+
+```
+visor theme extract [options]
+
+Options:
+  --from <path>       Path to project directory to scan
+  -o, --output <path> Output file path (default: .visor.yaml)
+  --validate          Run validator on the extracted theme
+  --json              Output structured JSON (for AI agents)
+```
+
+### `visor theme register`
+
+Register a theme in the docs site — creates CSS, updates globals.css and theme-config.ts.
+
+```
+visor theme register <file> [options]
+
+Arguments:
+  file                Path to .visor.yaml file
+
+Options:
+  --group <name>      Theme group to register in (required, e.g. Visor, Client)
+  --dry-run           Show what would change without writing files
+  --json              Output structured JSON (for AI agents)
+```
+
+### `visor theme unregister`
+
+Remove a theme from the docs site.
+
+```
+visor theme unregister <slug> [options]
+
+Arguments:
+  slug                Theme slug to unregister (e.g. entr, kaiah)
+
+Options:
+  --json              Output structured JSON (for AI agents)
+```
+
+### `visor theme sync`
+
+Scan themes/ and custom-themes/ directories, regenerate all theme CSS, globals.css imports, and theme-config.ts.
+
+```
+visor theme sync [options]
+
+Options:
+  --dry-run           Show what would change without writing files
+  --json              Output structured JSON (for AI agents)
+```
+
+### `visor fonts add`
+
+Upload woff2 font files to the Visor Font Library on R2.
+
+```
+visor fonts add <path> [options]
+
+Arguments:
+  path                Path to a .woff2 file or directory containing .woff2 files
+
+Options:
+  --org <org>         Organization namespace (required, e.g. low-orbit)
+  --family <name>     Font family slug (auto-inferred from filename if omitted)
+  --json              Output structured JSON (for AI agents)
+```
+
+---
+
+## Styling Conventions
+
+- **CSS Modules** — All component styles live in `.module.css` files. No Tailwind, no CSS-in-JS.
+- **CSS custom properties** — Always use tokens, never hard-coded values.
+- **CVA** — Variants use `class-variance-authority` with CSS Module class references.
+- **`cn()`** — Import from `@/lib/utils` to merge class names.
+
+## Do Not
+
+- Modify files in `node_modules/@loworbitstudio/visor-core` — override tokens in CSS instead.
+- Import `@loworbitstudio/visor-core` in individual component files — global CSS entry point only.
+- Use hard-coded color values in component styles — always reference CSS custom properties.
+- Use Tailwind utility classes in `.module.css` files — CSS Modules + custom properties is the pattern.
+- Use `--color-slate-*` fallbacks — use Tailwind Gray hex values (`#111827`, not `#0f172a`).
+
+---
+
+## Registry Reference
+
+- Docs: https://visor.loworbit.studio
+- Full AI context: https://raw.githubusercontent.com/low-orbit-studio/visor/main/CONSUMER_CLAUDE.md
+- Component registry: https://visor.loworbit.studio/registry

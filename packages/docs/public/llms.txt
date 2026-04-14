@@ -1,0 +1,23 @@
+# Visor Design System
+
+> Visor is Low Orbit Studio's shared design system. Components are distributed via a shadcn-style registry (copy-and-own). Design tokens are distributed via npm (`@loworbitstudio/visor-core`).
+
+## Quick Start
+
+Install tokens: `npm install @loworbitstudio/visor-core`
+Add a component: `npx visor add button`
+List all components: `npx visor list --json`
+Get component details: `npx visor info <name> --json`
+
+## Documentation
+
+- Full AI context file: https://raw.githubusercontent.com/low-orbit-studio/visor/main/CONSUMER_CLAUDE.md
+- Component docs: https://visor.loworbit.studio/docs/components
+- CLI reference: https://visor.loworbit.studio/docs/cli
+
+## Optional
+
+- [Component catalog](https://visor.loworbit.studio/docs/components): All components with examples
+- [Pattern library](https://visor.loworbit.studio/docs/patterns): Composition patterns for common UIs
+- [Token reference](https://visor.loworbit.studio/docs/themes/token-rules): CSS custom property naming
+- [Full AI context (llms-full.txt)](https://visor.loworbit.studio/llms-full.txt): Complete catalog, patterns, token prefix table, and CLI reference
