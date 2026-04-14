@@ -97,6 +97,49 @@ npx @loworbitstudio/visor diff           # Diff all installed items
 npx @loworbitstudio/visor diff button    # Diff a specific component
 ```
 
+### `visor suggest`
+
+Suggest components, blocks, patterns, and hooks for a natural language use case. Scores all manifest entries by keyword overlap and returns the top 10 ranked results with install commands. Designed for AI agent workflows.
+
+```bash
+npx @loworbitstudio/visor suggest --for "dropdown with search"
+npx @loworbitstudio/visor suggest --for "user login form" --json
+npx @loworbitstudio/visor suggest --for "dashboard with sidebar" --json
+```
+
+#### Options
+
+| Flag | Description |
+|------|-------------|
+| `--for <useCase>` | **(Required)** Natural language description of what you want to build |
+| `--json` | Output structured JSON (for AI agents) |
+
+#### JSON output shape
+
+```json
+{
+  "success": true,
+  "query": "dropdown with search",
+  "results": [
+    {
+      "name": "combobox",
+      "type": "component",
+      "category": "form",
+      "score": 2,
+      "description": "A combobox/autocomplete component with filterable dropdown...",
+      "match_reason": "Matched: dropdown, search",
+      "install_command": "npx visor add combobox"
+    }
+  ],
+  "summary": {
+    "total_searched": 123,
+    "total_matched": 8
+  }
+}
+```
+
+`type` is one of `"component"`, `"block"`, `"pattern"`, or `"hook"`. `install_command` is `null` for patterns (no install; they are reference architectures).
+
 ### `visor theme apply`
 
 Generate CSS from a `.visor.yaml` theme file.

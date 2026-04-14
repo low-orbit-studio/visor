@@ -19,6 +19,7 @@ import { fontsAddCommand } from "./commands/fonts-add.js"
 import type { FontsAddOptions } from "./commands/fonts-add.js"
 import { doctorCommand } from "./commands/doctor.js"
 import { patternListCommand, patternInfoCommand } from "./commands/pattern.js"
+import { suggestCommand } from "./commands/suggest.js"
 
 const program = new Command()
 
@@ -242,6 +243,15 @@ pattern
   .option("--json", "Output as JSON")
   .action((name: string, options: { json?: boolean }) => {
     patternInfoCommand(name, process.cwd(), options)
+  })
+
+program
+  .command('suggest')
+  .description('Suggest components, blocks, and patterns for a use case')
+  .requiredOption('--for <useCase>', 'Use case description (e.g. "dropdown with search")')
+  .option('--json', 'Output as JSON')
+  .action(async (options: { for: string; json?: boolean }) => {
+    await suggestCommand(process.cwd(), options)
   })
 
 program.parse()
