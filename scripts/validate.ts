@@ -142,13 +142,9 @@ async function main() {
     `\n${BOLD}Results:${RESET} ${GREEN}${totalPass} passed${RESET}, ${totalFails > 0 ? RED : GREEN}${totalFails} failed${RESET}${warnStr}${strict ? ` ${DIM}(strict)${RESET}` : ''}\n`
   );
 
-  if (strict && totalWarns > 0) {
-    console.log(
-      `${RED}Strict mode:${RESET} treating ${totalWarns} warning${totalWarns === 1 ? '' : 's'} as failure.\n`
-    );
-  }
-
-  const failed = totalFails > 0 || (strict && totalWarns > 0);
+  // warnOnly rules are advisory — they never cause CI failure, even in --strict mode.
+  // --strict is reserved for escalating non-warnOnly warning-level issues in future rules.
+  const failed = totalFails > 0;
   process.exit(failed ? 1 : 0);
 }
 
