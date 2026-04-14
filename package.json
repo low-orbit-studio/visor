@@ -33,7 +33,8 @@
     "changeset:publish": "changeset publish",
     "prepare": "husky",
     "fonts:add": "varlock run -- npx visor fonts add",
-    "themes:compute-scales": "npx tsx scripts/compute-primary-scales.ts"
+    "themes:compute-scales": "npx tsx scripts/compute-primary-scales.ts",
+    "previews": "tsx scripts/generate-previews.ts"
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",

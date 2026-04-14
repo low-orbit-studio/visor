@@ -41,6 +41,8 @@ props:
 dependencies:
   - "class-variance-authority"
 
+preview_url: "https://visor.loworbit.studio/docs/components/general/button"
+
 example: |
   <Button variant="default" size="md">Save changes</Button>
 
