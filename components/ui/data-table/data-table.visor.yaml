@@ -87,6 +87,12 @@ props:
     default: "false"
     description: When true, the thead is positioned sticky at the top of the scroll container.
 
+responsive:
+  breakpoints:
+    - at: "560px"
+      behavior: "Below a 560px container width the footer stacks vertically: the info row and controls row each take full width, and footerControls uses space-between layout. Triggered by a CSS container query on the .root element (container-type: inline-size), not a viewport media query."
+  notes: "Uses CSS container queries (container-name: data-table), so the breakpoint is relative to the component's own inline size, not the viewport. The table itself does not collapse columns — consumers must define responsive column visibility in their ColumnDef configuration."
+
 dependencies:
   - "@tanstack/react-table"
   - "@phosphor-icons/react"
