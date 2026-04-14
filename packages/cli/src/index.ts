@@ -62,9 +62,10 @@ program
   .description(
     "Show differences between local files and the registry"
   )
-  .argument("[component]", "component name to diff (all if omitted)")
+  .argument("[component]", "component name to diff (all installed if omitted)")
+  .option("--all", "check all registry components for upstream changes")
   .option("--json", "output structured JSON (for AI agents)")
-  .action((component: string | undefined, options: { json?: boolean }) => {
+  .action((component: string | undefined, options: { json?: boolean; all?: boolean }) => {
     diffCommand(component, process.cwd(), options)
   })
 

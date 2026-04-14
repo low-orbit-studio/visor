@@ -301,6 +301,28 @@ async function main(): Promise<void> {
 
   console.log(`\n✓ Built manifest: ${components.size} components, ${blocksMeta.size} blocks, ${patterns.size} patterns, ${hooks.size} hooks`)
   console.log(`✓ Written to ${outputPath}`)
+
+  await buildChangelog(manifestComponents)
+}
+
+async function buildChangelog(components: Record<string, ManifestComponent>): Promise<void> {
+  const pkgJson = JSON.parse(readFileSync(join(REPO_ROOT, "package.json"), "utf-8")) as { version: string }
+  const changelog = {
+    version: pkgJson.version,
+    generated_at: new Date().toISOString(),
+    components: Object.fromEntries(
+      Object.keys(components).map((name) => [
+        name,
+        { changeType: "current", files: [], breakingChange: false, migrationNote: null },
+      ])
+    ),
+  }
+  const outPath = join(DIST_DIR, "CHANGELOG.json")
+  if (!existsSync(DIST_DIR)) {
+    mkdirSync(DIST_DIR, { recursive: true })
+  }
+  writeFileSync(outPath, JSON.stringify(changelog, null, 2), "utf-8")
+  console.log(`  ✓ CHANGELOG.json (${Object.keys(components).length} components)`)
 }
 
 main().catch((err) => {
