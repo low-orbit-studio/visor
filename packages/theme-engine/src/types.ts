@@ -84,18 +84,21 @@ export interface VisorThemeConfig {
     heading?: {
       family?: string;
       weight?: number;
+      weights?: number[];
       source?: FontSource;
       org?: string;
     };
     display?: {
       family?: string;
       weight?: number;
+      weights?: number[];
       source?: FontSource;
       org?: string;
     };
     body?: {
       family?: string;
       weight?: number;
+      weights?: number[];
       source?: FontSource;
       org?: string;
     };
@@ -158,9 +161,9 @@ export interface ResolvedThemeConfig {
   "colors-dark"?: VisorThemeConfig["colors-dark"];
   typography: {
     scale: number;
-    heading: { family: string; weight: number; source?: FontSource; org?: string };
-    display: { family: string; weight: number; source?: FontSource; org?: string };
-    body: { family: string; weight: number; source?: FontSource; org?: string };
+    heading: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string };
+    display: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string };
+    body: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string };
     mono: { family: string };
   };
   spacing: { base: number };

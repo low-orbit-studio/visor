@@ -251,8 +251,12 @@ export function resolveThemeFonts(
   // Resolve heading font
   let headingResolution: FontResolution | null = null;
   if (typography.heading?.family) {
-    const weights: number[] = [];
-    if (typography.heading.weight) weights.push(typography.heading.weight);
+    // Explicit weights array takes full precedence; otherwise derive from weight field
+    const weights: number[] = typography.heading.weights
+      ? [...typography.heading.weights]
+      : typography.heading.weight
+        ? [typography.heading.weight]
+        : [];
 
     headingResolution = resolveFont(typography.heading.family, {
       weights: weights.length > 0 ? weights : undefined,
@@ -269,11 +273,17 @@ export function resolveThemeFonts(
   // Resolve body font
   let bodyResolution: FontResolution | null = null;
   if (typography.body?.family) {
-    const bodyWeights: number[] = [];
-    if (typography.body.weight) bodyWeights.push(typography.body.weight);
-    // Always include 400 and 700 for body text
-    if (!bodyWeights.includes(400)) bodyWeights.push(400);
-    if (!bodyWeights.includes(700)) bodyWeights.push(700);
+    let bodyWeights: number[];
+    if (typography.body.weights) {
+      // Explicit weights array takes full precedence — use exactly what's specified
+      bodyWeights = [...typography.body.weights];
+    } else {
+      bodyWeights = [];
+      if (typography.body.weight) bodyWeights.push(typography.body.weight);
+      // Always include 400 and 700 for body text
+      if (!bodyWeights.includes(400)) bodyWeights.push(400);
+      if (!bodyWeights.includes(700)) bodyWeights.push(700);
+    }
 
     // Same family as heading — merge weights into a single resolution
     if (
@@ -310,26 +320,35 @@ export function resolveThemeFonts(
   // Resolve display font
   let displayResolution: FontResolution | null = null;
   if (typography.display?.family) {
-    const displayWeights: number[] = [];
-    if (typography.display.weight) displayWeights.push(typography.display.weight);
+    const displayWeights: number[] = typography.display.weights
+      ? [...typography.display.weights]
+      : typography.display.weight
+        ? [typography.display.weight]
+        : [];
 
-    // Same family as heading — merge weights into a single resolution (smart deduplication)
+    // Same family as heading — merge weights into a single resolution (smart deduplication).
+    // Skip the merge if heading has an explicit weights override; those take precedence.
     if (
       headingResolution &&
       typography.display.family.toLowerCase() ===
         headingResolution.family.toLowerCase()
     ) {
-      const mergedWeights = Array.from(
-        new Set([...headingResolution.weights, ...displayWeights])
-      ).sort((a, b) => a - b);
+      if (typography.heading?.weights) {
+        // Heading weights are explicitly locked — display piggybacks without merging
+        displayResolution = headingResolution;
+      } else {
+        const mergedWeights = Array.from(
+          new Set([...headingResolution.weights, ...displayWeights])
+        ).sort((a, b) => a - b);
 
-      headingResolution = resolveFont(typography.heading!.family, {
-        weights: mergedWeights,
-        display,
-        source: typography.heading!.source,
-        org: typography.heading!.org,
-      });
-      displayResolution = headingResolution;
+        headingResolution = resolveFont(typography.heading!.family, {
+          weights: mergedWeights,
+          display,
+          source: typography.heading!.source,
+          org: typography.heading!.org,
+        });
+        displayResolution = headingResolution;
+      }
     } else if (
       bodyResolution &&
       typography.display.family.toLowerCase() ===

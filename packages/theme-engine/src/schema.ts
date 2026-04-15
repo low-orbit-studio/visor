@@ -34,7 +34,7 @@ const KNOWN_TYPOGRAPHY_KEYS = new Set([
   "heading", "display", "body", "mono", "letter-spacing", "scale",
 ]);
 
-const KNOWN_TYPOGRAPHY_FONT_KEYS = new Set(["family", "weight", "source", "org"]);
+const KNOWN_TYPOGRAPHY_FONT_KEYS = new Set(["family", "weight", "weights", "source", "org"]);
 const KNOWN_TYPOGRAPHY_MONO_KEYS = new Set(["family"]);
 const KNOWN_LETTER_SPACING_KEYS = new Set(["tight", "normal", "wide"]);
 
@@ -270,6 +270,14 @@ export function validateConfig(config: unknown): ValidationResult {
       const font = typo[slot] as Record<string, unknown> | undefined;
       if (font && font.source === "visor-fonts" && !font.org) {
         errors.push(`'typography.${slot}.org' is required when source is 'visor-fonts'`);
+      }
+      if (font && font.weights !== undefined) {
+        if (
+          !Array.isArray(font.weights) ||
+          !(font.weights as unknown[]).every((w) => typeof w === "number" && w > 0)
+        ) {
+          errors.push(`'typography.${slot}.weights' must be an array of positive numbers (e.g., [300, 500])`);
+        }
       }
     }
   }

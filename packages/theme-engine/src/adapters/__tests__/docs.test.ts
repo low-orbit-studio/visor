@@ -200,11 +200,55 @@ describe("docsAdapter", () => {
     });
 
     it("generates @font-face for visor-fonts sources", () => {
-      // This test needs a theme with visor-fonts — use minimal which has system fonts
-      // Just verify the adapter handles it without error
-      const css = docsAdapter(makeInput(MINIMAL_YAML));
-      // Minimal theme has no visor-fonts; no @font-face expected
-      expect(css).not.toContain("@font-face");
+      const css = docsAdapter(makeInput(VISOR_FONT_YAML));
+      expect(css).toContain("@font-face");
+      expect(css).toContain('font-family: "Modern Society"');
+    });
+
+    it("emits size-adjust on visor-fonts @font-face when scale < 1", () => {
+      const scaledYaml = `
+name: Scaled Theme
+version: 1
+colors:
+  primary: "#2563EB"
+typography:
+  scale: 0.8
+  heading:
+    family: "PP Model Mono"
+    weight: 500
+    weights: [500]
+    source: visor-fonts
+    org: low-orbit-studio
+`;
+      const css = docsAdapter(makeInput(scaledYaml));
+      expect(css).toContain("size-adjust: 80%;");
+    });
+
+    it("does not emit size-adjust when scale is 1 (default)", () => {
+      const css = docsAdapter(makeInput(VISOR_FONT_YAML));
+      expect(css).not.toContain("size-adjust");
+    });
+
+    it("respects explicit weights array for visor-fonts", () => {
+      const yaml = `
+name: Custom Weights Theme
+version: 1
+colors:
+  primary: "#2563EB"
+typography:
+  heading:
+    family: "PP Model Mono"
+    weight: 400
+    weights: [300, 500]
+    source: visor-fonts
+    org: low-orbit-studio
+`;
+      const css = docsAdapter(makeInput(yaml));
+      // Should include Light (300) and Medium (500), not Regular (400) or Bold (700)
+      expect(css).toContain("PPModelMono-Light.woff2");
+      expect(css).toContain("PPModelMono-Medium.woff2");
+      expect(css).not.toContain("PPModelMono-Regular.woff2");
+      expect(css).not.toContain("PPModelMono-Bold.woff2");
     });
   });
 });

@@ -56,18 +56,24 @@ export interface VisorTypography {
   heading?: {
     family: string;
     weight?: number;
+    /** Explicit list of font weights to load (overrides engine defaults) */
+    weights?: number[];
     source?: FontSource;
     org?: string;
   };
   display?: {
     family: string;
     weight?: number;
+    /** Explicit list of font weights to load (overrides engine defaults) */
+    weights?: number[];
     source?: FontSource;
     org?: string;
   };
   body?: {
     family: string;
     weight?: number;
+    /** Explicit list of font weights to load (overrides engine defaults) */
+    weights?: number[];
     source?: FontSource;
     org?: string;
   };

@@ -8,6 +8,10 @@
 @import './space-theme.css';
 /* END visor-theme-imports */
 
+/* ── Theme-aware wordmark ── */
+.dark .wordmark-light { display: none; }
+html:not(.dark) .wordmark-dark { display: none; }
+
 /*
  * Safari border-color fix
  *

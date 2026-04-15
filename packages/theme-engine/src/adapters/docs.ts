@@ -230,6 +230,7 @@ export function docsAdapter(
     }
 
     // Visor Fonts @font-face
+    const scale = input.config.typography?.scale ?? 1;
     const seenFamilies = new Set<string>();
     for (const font of fontSlots) {
       if (font && font.source === "visor-fonts" && !seenFamilies.has(font.family)) {
@@ -242,6 +243,9 @@ export function docsAdapter(
           lines.push(`  font-weight: ${weight};`);
           lines.push(`  font-style: ${font.italic ? "italic" : "normal"};`);
           lines.push(`  font-display: ${font.display};`);
+          if (scale !== 1) {
+            lines.push(`  size-adjust: ${Math.round(scale * 100)}%;`);
+          }
           lines.push("}");
           lines.push("");
         }
