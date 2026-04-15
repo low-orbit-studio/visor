@@ -86,7 +86,7 @@ program
   .description('Run diagnostics on a Visor installation')
   .option('--json', 'Output as JSON (for AI agents)')
   .action(async (options: { json?: boolean }) => {
-    await doctorCommand(process.cwd(), options)
+    await doctorCommand(process.cwd(), options, program.version() ?? '0.0.0')
   })
 
 // Theme subcommands
