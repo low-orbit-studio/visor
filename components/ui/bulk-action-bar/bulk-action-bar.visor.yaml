@@ -60,6 +60,8 @@ registry_dependencies:
   - "utils"
   - "button"
 
+preview_url: "https://visor.loworbit.studio/docs/components/admin/bulk-action-bar"
+
 example: |
   <BulkActionBar
     count={selected.length}

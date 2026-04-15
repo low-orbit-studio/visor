@@ -55,6 +55,8 @@ dependencies:
   - "@radix-ui/react-select"
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/select"
+
 example: |
   <Select defaultValue="viewer">
     <SelectTrigger>

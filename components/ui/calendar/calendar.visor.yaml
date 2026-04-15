@@ -38,6 +38,8 @@ dependencies:
   - "date-fns"
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/calendar"
+
 example: |
   <Calendar
     mode="single"

@@ -27,6 +27,8 @@ props:
 dependencies:
   - "@radix-ui/react-label"
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/label"
+
 example: |
   <Label htmlFor="email">Email address</Label>
   <Input id="email" type="email" />

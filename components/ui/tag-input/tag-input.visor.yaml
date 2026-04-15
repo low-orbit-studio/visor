@@ -42,5 +42,7 @@ props:
 dependencies:
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/tag-input"
+
 example: |
   <TagInput placeholder="Add skills..." max={5} onChange={(tags) => console.log(tags)} />

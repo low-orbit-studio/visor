@@ -36,6 +36,8 @@ props:
 
 dependencies: []
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/input"
+
 example: |
   <Input type="email" placeholder="you@example.com" />
 

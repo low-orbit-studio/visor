@@ -68,6 +68,8 @@ dependencies:
   - "@radix-ui/react-menubar"
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/navigation/menubar"
+
 example: |
   <Menubar>
     <MenubarMenu>

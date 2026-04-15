@@ -62,6 +62,8 @@ responsive:
 dependencies:
   - "class-variance-authority"
 
+preview_url: "https://visor.loworbit.studio/docs/components/admin/page-header"
+
 example: |
   <PageHeader
     eyebrow="Blacklight Admin"

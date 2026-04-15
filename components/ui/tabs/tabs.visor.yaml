@@ -51,6 +51,8 @@ dependencies:
   - "@radix-ui/react-tabs"
   - "class-variance-authority"
 
+preview_url: "https://visor.loworbit.studio/docs/components/navigation/tabs"
+
 example: |
   <Tabs defaultValue="overview">
     <TabsList variant="default">

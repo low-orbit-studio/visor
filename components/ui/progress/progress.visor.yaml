@@ -29,5 +29,7 @@ props:
 dependencies:
   - "@radix-ui/react-progress"
 
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/progress"
+
 example: |
   <Progress value={65} />

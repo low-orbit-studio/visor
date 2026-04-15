@@ -37,6 +37,8 @@ props:
 dependencies:
   - "@radix-ui/react-scroll-area"
 
+preview_url: "https://visor.loworbit.studio/docs/components/overlay/scroll-area"
+
 example: |
   <ScrollArea className="h-[300px]">
     <div className="p-4">

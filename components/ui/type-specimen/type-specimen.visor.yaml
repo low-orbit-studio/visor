@@ -33,5 +33,7 @@ props:
 
 dependencies: []
 
+preview_url: "https://visor.loworbit.studio/docs/components/specimen/type-specimen"
+
 example: |
   <TypeSpecimen token="--font-size-xl" label="xl" sizePx={20} sampleText="Subsection heading" />

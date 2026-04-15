@@ -35,6 +35,8 @@ props:
 dependencies:
   - "sonner"
 
+preview_url: "https://visor.loworbit.studio/docs/components/feedback/toast"
+
 example: |
   import { Toaster, toast } from "@/components/ui/toast"
 

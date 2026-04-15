@@ -39,5 +39,7 @@ props:
 
 dependencies: []
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/otp-input"
+
 example: |
   <OTPInput length={6} onChange={(code) => console.log(code)} />

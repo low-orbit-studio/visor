@@ -28,6 +28,8 @@ props:
 
 dependencies: []
 
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/skeleton"
+
 example: |
   <Skeleton className="h-4 w-[200px]" />
   <Skeleton className="h-12 w-12 rounded-full" />

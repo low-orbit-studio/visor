@@ -50,6 +50,8 @@ dependencies:
   - "@radix-ui/react-accordion"
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/accordion"
+
 example: |
   <Accordion type="single" collapsible>
     <AccordionItem value="item-1">

@@ -46,6 +46,8 @@ props:
 dependencies:
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/file-upload"
+
 example: |
   <FileUpload
     accept="image/*"

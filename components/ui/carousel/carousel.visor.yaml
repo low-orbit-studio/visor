@@ -51,6 +51,8 @@ dependencies:
   - "embla-carousel-react"
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/carousel"
+
 example: |
   <Carousel>
     <CarouselContent>

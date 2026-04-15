@@ -24,6 +24,8 @@ props:
 
 dependencies: []
 
+preview_url: "https://visor.loworbit.studio/docs/components/specimen/spacing-scale"
+
 example: |
   <SpacingScale steps={[
     { token: "--spacing-1", name: "1", px: 4, rem: "0.25rem" },

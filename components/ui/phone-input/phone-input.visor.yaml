@@ -54,6 +54,8 @@ props:
 dependencies:
   - intl-tel-input
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/phone-input"
+
 example: |
   <PhoneInput
     name="phone"

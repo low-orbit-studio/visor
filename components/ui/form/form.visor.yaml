@@ -52,6 +52,8 @@ dependencies:
   - zod
   - class-variance-authority
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/form"
+
 example: |
   import { Form } from "@/components/ui/form/form";
   import { FormField } from "@/components/ui/form/form-field";

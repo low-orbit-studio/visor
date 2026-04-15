@@ -28,6 +28,8 @@ props:
 dependencies:
   - button
 
+preview_url: "https://visor.loworbit.studio/docs/components/specimen/motion-specimen"
+
 example: |
   <MotionDuration durations={[
     { token: "--motion-duration-200", name: "200", ms: 200 },

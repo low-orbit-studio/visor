@@ -69,6 +69,8 @@ dependencies:
   - three
   - "@loworbitstudio/visor-core"
 
+preview_url: "https://visor.loworbit.studio/docs/components/visual-elements/sphere"
+
 example: |
   <Sphere
     mode="sphere"

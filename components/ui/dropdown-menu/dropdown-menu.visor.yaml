@@ -68,6 +68,8 @@ dependencies:
   - "@radix-ui/react-dropdown-menu"
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/overlay/dropdown-menu"
+
 example: |
   <DropdownMenu>
     <DropdownMenuTrigger asChild>

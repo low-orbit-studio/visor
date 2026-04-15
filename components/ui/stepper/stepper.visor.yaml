@@ -48,6 +48,8 @@ sub_components:
 dependencies:
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/navigation/stepper"
+
 example: |
   <Stepper activeStep={1}>
     <StepperItem step={0}>

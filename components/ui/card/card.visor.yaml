@@ -42,6 +42,8 @@ sub_components:
 
 dependencies: []
 
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/card"
+
 example: |
   <Card>
     <CardHeader>

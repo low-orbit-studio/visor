@@ -35,6 +35,8 @@ dependencies:
   - "@radix-ui/react-checkbox"
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/checkbox"
+
 example: |
   <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
     <Checkbox id="terms" />

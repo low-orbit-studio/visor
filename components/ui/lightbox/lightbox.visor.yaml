@@ -48,6 +48,8 @@ dependencies:
   - "@radix-ui/react-dialog"
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/overlay/lightbox"
+
 example: |
   <Lightbox
     images={[

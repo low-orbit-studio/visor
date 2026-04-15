@@ -43,6 +43,8 @@ props:
 dependencies:
   - "@radix-ui/react-popover"
 
+preview_url: "https://visor.loworbit.studio/docs/components/overlay/popover"
+
 example: |
   <Popover>
     <PopoverTrigger asChild>
