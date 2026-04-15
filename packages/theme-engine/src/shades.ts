@@ -32,8 +32,8 @@ const LIGHTNESS_TARGETS: Record<ShadeStep, number> = {
   200: 0.87,
   300: 0.78,
   400: 0.65,
-  500: 0.55,
-  600: -1, // placeholder — replaced by input L at anchor
+  500: -1, // placeholder — replaced by input L at anchor (brand color lives at 500)
+  600: 0.45,
   700: 0.38,
   800: 0.3,
   900: 0.22,
@@ -55,10 +55,11 @@ const CHROMA_MULTIPLIERS: Record<ShadeStep, number> = {
   950: 0.5,
 };
 
-/** Which shade step the input color anchors to, per role. */
+/** Which shade step the input color anchors to, per role.
+ * The brand color (colors.primary) lives at step 500 — this is the contract. */
 const ANCHOR_SHADE: Record<ColorRole, ShadeStep> = {
-  primary: 600,
-  accent: 600,
+  primary: 500,
+  accent: 500,
   neutral: 500,
   success: 500,
   warning: 500,

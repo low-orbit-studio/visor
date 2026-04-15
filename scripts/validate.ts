@@ -29,6 +29,7 @@ import { themeFontImports } from './rules/theme-font-imports.js';
 import { globalsCssImportsOrder } from './rules/globals-css-imports-order.js';
 import { globalsWordmarkRules } from './rules/globals-wordmark-rules.js';
 import { themeFontScaleAdjust } from './rules/theme-font-scale-adjust.js';
+import { themePrimaryBrandAnchor } from './rules/theme-primary-brand-anchor.js';
 import { registryManifestSync } from './rules/registry-manifest-sync.js';
 import { hooksDocsPageExists } from './rules/hooks-docs-page-exists.js';
 import { patternsDocsPageExists } from './rules/patterns-docs-page-exists.js';
@@ -54,6 +55,7 @@ const rules: Rule[] = [
   themePrimaryScale,
   themeFontImports,
   themeFontScaleAdjust,
+  themePrimaryBrandAnchor,
   globalsCssImportsOrder,
   globalsWordmarkRules,
   themeYamlExists,

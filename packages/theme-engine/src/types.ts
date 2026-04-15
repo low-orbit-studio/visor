@@ -57,6 +57,10 @@ export interface VisorThemeConfig {
   version: 1;
   /** Theme group for the docs site theme switcher (e.g. 'Visor', 'Client', 'Low Orbit'). Used by `visor theme sync`. */
   group?: string;
+  /** Optional display label override for the theme switcher (e.g. 'ENTR', 'SoleSpark'). Falls back to title-cased name. */
+  label?: string;
+  /** Default color mode to force when the theme is activated ('dark' or 'light'). If unset, user/system preference applies. */
+  "default-mode"?: "dark" | "light";
   colors: {
     primary: string;
     accent?: string;

@@ -23,6 +23,7 @@ interface ThemeManifestEntry {
   slug: string
   label: string
   group: string
+  defaultMode?: "dark" | "light"
   css: string
   yamlFilename: string
   isCustom: boolean
@@ -46,6 +47,21 @@ function scanThemeDir(dir: string): string[] {
 function extractGroup(yamlContent: string): string | undefined {
   const parsed = parseYaml(yamlContent) as Record<string, unknown>
   if (typeof parsed?.group === "string") return parsed.group
+  return undefined
+}
+
+/** Extract the raw `label` field from a YAML string. */
+function extractLabel(yamlContent: string): string | undefined {
+  const parsed = parseYaml(yamlContent) as Record<string, unknown>
+  if (typeof parsed?.label === "string") return parsed.label
+  return undefined
+}
+
+/** Extract the raw `default-mode` field from a YAML string. */
+function extractDefaultMode(yamlContent: string): "dark" | "light" | undefined {
+  const parsed = parseYaml(yamlContent) as Record<string, unknown>
+  const v = parsed?.["default-mode"]
+  if (v === "dark" || v === "light") return v
   return undefined
 }
 
@@ -76,7 +92,10 @@ function generateThemeConfig(entries: ThemeManifestEntry[]): string {
   const groupsTs = sortedGroupNames.map((groupName) => {
     const groupEntries = groupMap.get(groupName)!
     const themesTs = groupEntries
-      .map((e) => `    { value: "${e.slug}", label: "${e.label}", yamlFile: "${e.yamlFilename}" },`)
+      .map((e) => {
+        const modePart = e.defaultMode ? `, defaultMode: "${e.defaultMode}"` : ""
+        return `    { value: "${e.slug}", label: "${e.label}", yamlFile: "${e.yamlFilename}"${modePart} },`
+      })
       .join("\n")
     return `  {\n    label: "${groupName}",\n    themes: [\n${themesTs}\n    ],\n  },`
   }).join("\n")
@@ -87,6 +106,8 @@ export interface ThemeEntry {
   label: string;
   /** Filename (without .visor.yaml extension) if a YAML config exists in /public/themes/ */
   yamlFile?: string;
+  /** When set, activating this theme forces the docs site into the specified color mode. */
+  defaultMode?: "dark" | "light";
 }
 
 export interface ThemeGroup {
@@ -232,13 +253,14 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
     }
 
     const slug = toSlug(data.config.name)
-    const label = toLabel(data.config.name)
+    const label = extractLabel(yamlContent) ?? toLabel(data.config.name)
     const group = extractGroup(yamlContent) ?? (isCustom ? "Custom" : "Visor")
+    const defaultMode = extractDefaultMode(yamlContent)
     const css = docsAdapter({ primitives: data.primitives, tokens: data.tokens, config: data.config })
     // yamlFilename: slug of the file (without .visor.yaml) for public/themes/ reference
     const yamlFilename = basename(filePath).replace(/\.visor\.yaml$/, "")
 
-    manifest.push({ slug, label, group, css, yamlFilename, isCustom })
+    manifest.push({ slug, label, group, defaultMode, css, yamlFilename, isCustom })
   }
 
   for (const f of stockFiles) processFile(f, false)

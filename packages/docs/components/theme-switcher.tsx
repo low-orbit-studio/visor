@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Palette } from "@phosphor-icons/react";
 import {
   Select,
@@ -31,11 +31,34 @@ function applyTheme(theme: string) {
   }
   body.classList.add(`${theme}-theme`);
   localStorage.setItem(STORAGE_KEY, theme);
+
+  // If the activated theme specifies a default mode, force it on <html>
+  const entry = THEME_GROUPS.flatMap((g) => g.themes).find((t) => t.value === theme);
+  if (entry?.defaultMode) {
+    const html = document.documentElement;
+    if (entry.defaultMode === "dark") {
+      html.classList.add("dark");
+      html.classList.remove("light");
+      html.style.colorScheme = "dark";
+    } else {
+      html.classList.add("light");
+      html.classList.remove("dark");
+      html.style.colorScheme = "light";
+    }
+  }
+
   document.dispatchEvent(new CustomEvent("visor-theme-change"));
 }
 
 export function ThemeSwitcher() {
   const [theme, setTheme] = useState<string>(getStoredTheme);
+
+  // On mount, ensure the stored theme's default-mode (if any) is applied.
+  // Without this, a refresh would leave the html color-scheme class stale.
+  useEffect(() => {
+    applyTheme(theme);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function handleChange(value: string) {
     setTheme(value);
