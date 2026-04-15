@@ -3,9 +3,10 @@ import { readFileSync, readdirSync } from "fs";
 import { resolve } from "path";
 import { parse } from "yaml";
 import { THEME_GROUPS, ALL_THEMES } from "../theme-config";
+import { customThemeGroups } from "../theme-config.custom.generated";
 
 describe("theme-config", () => {
-  it("exports THEME_GROUPS with at least 2 groups", () => {
+  it("exports THEME_GROUPS with at least one group", () => {
     expect(THEME_GROUPS.length).toBeGreaterThanOrEqual(1);
     for (const group of THEME_GROUPS) {
       expect(group.label).toBeTruthy();
@@ -26,6 +27,18 @@ describe("theme-config", () => {
   it("has no duplicate theme values", () => {
     const unique = new Set(ALL_THEMES);
     expect(unique.size).toBe(ALL_THEMES.length);
+  });
+
+  it("THEME_GROUPS merges STOCK_GROUPS with customThemeGroups", () => {
+    // Import STOCK_GROUPS indirectly: THEME_GROUPS = [...STOCK_GROUPS, ...customThemeGroups]
+    // If customThemeGroups is empty, THEME_GROUPS.length == STOCK_GROUPS.length (≥1)
+    // If customThemeGroups has groups, THEME_GROUPS.length == STOCK + CUSTOM group count
+    const expectedLength = THEME_GROUPS.length - customThemeGroups.length;
+    expect(expectedLength).toBeGreaterThanOrEqual(1); // at least one stock group
+    // All customThemeGroups must appear in THEME_GROUPS
+    for (const customGroup of customThemeGroups) {
+      expect(THEME_GROUPS.some((g) => g.label === customGroup.label)).toBe(true);
+    }
   });
 });
 
@@ -85,5 +98,13 @@ describe("globals.css wordmark rules", () => {
 
   it("hides wordmark-dark in light mode", () => {
     expect(globals).toContain("html:not(.dark) .wordmark-dark { display: none; }");
+  });
+
+  it("has overlay @import after END visor-theme-imports marker", () => {
+    const endMarker = "/* END visor-theme-imports */";
+    const endIdx = globals.indexOf(endMarker);
+    expect(endIdx).toBeGreaterThan(-1);
+    const afterMarker = globals.slice(endIdx + endMarker.length);
+    expect(afterMarker.trimStart()).toMatch(/^@import '\.\/custom-themes\.generated\.css';/);
   });
 });

@@ -89,6 +89,40 @@ packages/docs/app/entr-theme.css
 # END visor-custom-theme-css
 `
 
+/**
+ * Hand-authored theme-config.ts shape — mirrors what the repo tracks after VI-168.
+ * Sync will replace only the STOCK_GROUPS marker block.
+ */
+const THEME_CONFIG_HAND_AUTHORED = `// Hand-authored. Edit STOCK_GROUPS only by running \`visor theme sync\`.
+import { customThemeGroups } from "./theme-config.custom.generated";
+
+export interface ThemeEntry {
+  value: string;
+  label: string;
+  yamlFile?: string;
+  defaultMode?: "dark" | "light";
+}
+
+export interface ThemeGroup {
+  label: string;
+  themes: ThemeEntry[];
+}
+
+/* BEGIN visor-stock-themes — managed by \`visor theme sync\` */
+const STOCK_GROUPS: ThemeGroup[] = [
+  {
+    label: "Visor",
+    themes: [
+      { value: "blackout", label: "Blackout", yamlFile: "blackout" },
+    ],
+  },
+];
+/* END visor-stock-themes */
+
+export const THEME_GROUPS: ThemeGroup[] = [...STOCK_GROUPS, ...customThemeGroups];
+export const ALL_THEMES = THEME_GROUPS.flatMap((g) => g.themes.map((t) => t.value));
+`
+
 // ============================================================
 // Test Setup
 // ============================================================
@@ -114,11 +148,7 @@ function setupFakeRepo(root: string) {
   mkdirSync(themesDir, { recursive: true })
 
   writeFileSync(join(docsApp, "globals.css"), GLOBALS_CSS_INITIAL, "utf-8")
-  writeFileSync(
-    join(docsLib, "theme-config.ts"),
-    `export const THEME_GROUPS: any[] = [];\nexport const ALL_THEMES: string[] = [];\n`,
-    "utf-8",
-  )
+  writeFileSync(join(docsLib, "theme-config.ts"), THEME_CONFIG_HAND_AUTHORED, "utf-8")
   writeFileSync(gitignorePath, GITIGNORE_INITIAL, "utf-8")
 
   return { docsApp, docsLib, docsPublicThemes, themesDir, gitignorePath }
@@ -182,7 +212,7 @@ describe("theme sync command", () => {
       expect(css).toContain(".blackout-theme {")
     })
 
-    it("generates theme-config.ts with Visor group", () => {
+    it("updates STOCK_GROUPS marker block in theme-config.ts with stock themes", () => {
       writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
       writeStockYaml("neutral.visor.yaml", STOCK_YAML_NEUTRAL)
 
@@ -197,7 +227,7 @@ describe("theme sync command", () => {
       expect(config).toContain('value: "neutral"')
     })
 
-    it("does NOT include a Custom or Low Orbit group when no custom themes exist", () => {
+    it("preserves hand-authored code outside marker block", () => {
       writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
 
       themeSyncCommand(testDir, {})
@@ -206,11 +236,30 @@ describe("theme sync command", () => {
         join(testDir, "packages", "docs", "lib", "theme-config.ts"),
         "utf-8",
       )
-      expect(config).not.toContain('"Client"')
-      expect(config).not.toContain('"Low Orbit"')
+      // Hand-authored import and exports must be preserved
+      expect(config).toContain('import { customThemeGroups }')
+      expect(config).toContain('export const THEME_GROUPS')
+      expect(config).toContain('export const ALL_THEMES')
     })
 
-    it("updates globals.css with theme imports wrapped in marker comments", () => {
+    it("does NOT include Custom or Low Orbit groups in theme-config.ts STOCK_GROUPS", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+
+      themeSyncCommand(testDir, {})
+
+      const config = readFileSync(
+        join(testDir, "packages", "docs", "lib", "theme-config.ts"),
+        "utf-8",
+      )
+      // Custom groups belong only in the overlay, not the tracked file
+      const stockBegin = config.indexOf("BEGIN visor-stock-themes")
+      const stockEnd = config.indexOf("END visor-stock-themes")
+      const managedRegion = config.slice(stockBegin, stockEnd)
+      expect(managedRegion).not.toContain('"Client"')
+      expect(managedRegion).not.toContain('"Low Orbit"')
+    })
+
+    it("updates globals.css with stock-only theme imports wrapped in marker comments", () => {
       writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
 
       themeSyncCommand(testDir, {})
@@ -262,26 +311,7 @@ describe("theme sync command", () => {
       expect(existsSync(join(docsApp, "entr-theme.css"))).toBe(true)
     })
 
-    it("places themes in correct groups from YAML group field", () => {
-      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
-      writeCustomYaml("entr.visor.yaml", CUSTOM_YAML_ENTR)
-      writeCustomYaml("reference-app.visor.yaml", CUSTOM_YAML_REFERENCE)
-
-      themeSyncCommand(testDir, {})
-
-      const config = readFileSync(
-        join(testDir, "packages", "docs", "lib", "theme-config.ts"),
-        "utf-8",
-      )
-      expect(config).toContain('"Visor"')
-      expect(config).toContain('"Client"')
-      expect(config).toContain('"Low Orbit"')
-      expect(config).toContain('value: "blackout"')
-      expect(config).toContain('value: "entr"')
-      expect(config).toContain('value: "reference-app"')
-    })
-
-    it("Visor group appears before Client group in theme-config.ts", () => {
+    it("Visor group appears before Client group in STOCK_GROUPS region of theme-config.ts", () => {
       writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
       writeCustomYaml("entr.visor.yaml", CUSTOM_YAML_ENTR)
 
@@ -291,9 +321,12 @@ describe("theme sync command", () => {
         join(testDir, "packages", "docs", "lib", "theme-config.ts"),
         "utf-8",
       )
-      const visorIdx = config.indexOf('"Visor"')
-      const clientIdx = config.indexOf('"Client"')
-      expect(visorIdx).toBeLessThan(clientIdx)
+      // "Visor" should be in stock block; "Client" should NOT be in stock block
+      const stockBegin = config.indexOf("BEGIN visor-stock-themes")
+      const stockEnd = config.indexOf("END visor-stock-themes")
+      const stockRegion = config.slice(stockBegin, stockEnd)
+      expect(stockRegion).toContain('"Visor"')
+      expect(stockRegion).not.toContain('"Client"')
     })
 
     it("themes within each group are sorted alphabetically", () => {
@@ -313,21 +346,6 @@ describe("theme sync command", () => {
   })
 
   describe("group field handling", () => {
-    it("uses YAML group field to assign to correct group", () => {
-      writeCustomYaml("entr.visor.yaml", CUSTOM_YAML_ENTR) // group: Client
-
-      themeSyncCommand(testDir, {})
-
-      const config = readFileSync(
-        join(testDir, "packages", "docs", "lib", "theme-config.ts"),
-        "utf-8",
-      )
-      const clientIdx = config.indexOf('"Client"')
-      const entrIdx = config.indexOf('"entr"')
-      expect(clientIdx).toBeGreaterThan(-1)
-      expect(entrIdx).toBeGreaterThan(clientIdx) // entr appears after "Client" label
-    })
-
     it("defaults to 'Visor' group for stock themes without a group field", () => {
       const noGroupStock = `name: plain\nversion: 1\ncolors:\n  primary: "#ff0000"\n`
       writeStockYaml("plain.visor.yaml", noGroupStock)
@@ -341,36 +359,10 @@ describe("theme sync command", () => {
       expect(config).toContain('"Visor"')
       expect(config).toContain('value: "plain"')
     })
-
-    it("defaults to 'Custom' group for custom themes without a group field", () => {
-      writeCustomYaml("mystery.visor.yaml", CUSTOM_YAML_NO_GROUP)
-
-      themeSyncCommand(testDir, {})
-
-      const config = readFileSync(
-        join(testDir, "packages", "docs", "lib", "theme-config.ts"),
-        "utf-8",
-      )
-      expect(config).toContain('"Custom"')
-      expect(config).toContain('value: "mystery-theme"')
-    })
-
-    it("creates groups that do not exist in any current config", () => {
-      writeCustomYaml("reference-app.visor.yaml", CUSTOM_YAML_REFERENCE) // group: Low Orbit
-
-      themeSyncCommand(testDir, {})
-
-      const config = readFileSync(
-        join(testDir, "packages", "docs", "lib", "theme-config.ts"),
-        "utf-8",
-      )
-      expect(config).toContain('"Low Orbit"')
-      expect(config).toContain('value: "reference-app"')
-    })
   })
 
   describe("idempotency", () => {
-    it("produces identical output on second run", () => {
+    it("produces identical tracked file output on second run", () => {
       writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
       writeCustomYaml("entr.visor.yaml", CUSTOM_YAML_ENTR)
 
@@ -395,7 +387,7 @@ describe("theme sync command", () => {
       )).toBe(globalsAfterFirst)
     })
 
-    it("does not duplicate globals.css imports on second run", () => {
+    it("does not duplicate globals.css stock imports on second run", () => {
       writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
 
       themeSyncCommand(testDir, {})
@@ -407,6 +399,157 @@ describe("theme sync command", () => {
       )
       const matches = globals.match(/@import '\.\/blackout-theme\.css';/g)
       expect(matches).toHaveLength(1)
+    })
+
+    it("does not duplicate overlay @import line on second run", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+
+      themeSyncCommand(testDir, {})
+      themeSyncCommand(testDir, {})
+
+      const globals = readFileSync(
+        join(testDir, "packages", "docs", "app", "globals.css"),
+        "utf-8",
+      )
+      const matches = globals.match(/@import '\.\/custom-themes\.generated\.css';/g)
+      expect(matches).toHaveLength(1)
+    })
+  })
+
+  describe("overlay file generation", () => {
+    it("writes custom overlay CSS when custom-themes/ is populated", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      writeCustomYaml("entr.visor.yaml", CUSTOM_YAML_ENTR)
+
+      themeSyncCommand(testDir, {})
+
+      const overlayCss = readFileSync(
+        join(testDir, "packages", "docs", "app", "custom-themes.generated.css"),
+        "utf-8",
+      )
+      expect(overlayCss).toContain("@import './entr-theme.css';")
+      expect(overlayCss).not.toContain("@import './blackout-theme.css';")
+    })
+
+    it("writes custom overlay TS when custom-themes/ is populated", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      writeCustomYaml("entr.visor.yaml", CUSTOM_YAML_ENTR)
+      writeCustomYaml("reference-app.visor.yaml", CUSTOM_YAML_REFERENCE)
+
+      themeSyncCommand(testDir, {})
+
+      const overlayTs = readFileSync(
+        join(testDir, "packages", "docs", "lib", "theme-config.custom.generated.ts"),
+        "utf-8",
+      )
+      expect(overlayTs).toContain('value: "entr"')
+      expect(overlayTs).toContain('"Client"')
+      expect(overlayTs).toContain('value: "reference-app"')
+      expect(overlayTs).toContain('"Low Orbit"')
+    })
+
+    it("tracked files are unchanged (stock-only) when custom-themes/ is populated", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+
+      // First sync with stock only — snapshot tracked files
+      themeSyncCommand(testDir, {})
+      const configAfterStockSync = readFileSync(
+        join(testDir, "packages", "docs", "lib", "theme-config.ts"),
+        "utf-8",
+      )
+      const globalsAfterStockSync = readFileSync(
+        join(testDir, "packages", "docs", "app", "globals.css"),
+        "utf-8",
+      )
+
+      // Now add custom themes and re-sync
+      writeCustomYaml("entr.visor.yaml", CUSTOM_YAML_ENTR)
+      themeSyncCommand(testDir, {})
+
+      // Tracked files must be byte-identical — custom themes must not appear
+      expect(readFileSync(
+        join(testDir, "packages", "docs", "lib", "theme-config.ts"),
+        "utf-8",
+      )).toBe(configAfterStockSync)
+      expect(readFileSync(
+        join(testDir, "packages", "docs", "app", "globals.css"),
+        "utf-8",
+      )).toBe(globalsAfterStockSync)
+    })
+
+    it("writes empty placeholder overlay CSS when custom-themes/ is missing", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      // No custom-themes dir
+
+      themeSyncCommand(testDir, {})
+
+      const overlayCss = readFileSync(
+        join(testDir, "packages", "docs", "app", "custom-themes.generated.css"),
+        "utf-8",
+      )
+      // Empty placeholder — no @import lines, just a comment
+      expect(overlayCss).toContain("empty when no custom themes")
+      expect(overlayCss).not.toMatch(/@import '\.\/\w/)
+    })
+
+    it("writes empty array overlay TS when custom-themes/ is missing", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+
+      themeSyncCommand(testDir, {})
+
+      const overlayTs = readFileSync(
+        join(testDir, "packages", "docs", "lib", "theme-config.custom.generated.ts"),
+        "utf-8",
+      )
+      expect(overlayTs).toContain("customThemeGroups: ThemeGroup[] = []")
+    })
+
+    it("globals.css has overlay @import immediately after END visor-theme-imports marker", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+
+      themeSyncCommand(testDir, {})
+
+      const globals = readFileSync(
+        join(testDir, "packages", "docs", "app", "globals.css"),
+        "utf-8",
+      )
+      const endMarker = "/* END visor-theme-imports */"
+      const endIdx = globals.indexOf(endMarker)
+      expect(endIdx).toBeGreaterThan(-1)
+
+      const afterMarker = globals.slice(endIdx + endMarker.length)
+      // The next non-whitespace content should be the overlay @import
+      expect(afterMarker.trimStart()).toMatch(/^@import '\.\/custom-themes\.generated\.css';/)
+    })
+
+    it("stock YAML edit updates only the STOCK_GROUPS marker region, not hand-authored code", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      themeSyncCommand(testDir, {})
+
+      const configV1 = readFileSync(
+        join(testDir, "packages", "docs", "lib", "theme-config.ts"),
+        "utf-8",
+      )
+
+      // Extract the portions outside the managed region
+      const getOutsideMarkers = (content: string) => {
+        const beginIdx = content.indexOf("BEGIN visor-stock-themes")
+        const endIdx = content.indexOf("END visor-stock-themes") + "END visor-stock-themes */".length
+        return content.slice(0, beginIdx) + content.slice(endIdx)
+      }
+
+      writeStockYaml("neutral.visor.yaml", STOCK_YAML_NEUTRAL)
+      themeSyncCommand(testDir, {})
+
+      const configV2 = readFileSync(
+        join(testDir, "packages", "docs", "lib", "theme-config.ts"),
+        "utf-8",
+      )
+
+      // STOCK_GROUPS block changed (neutral added)
+      expect(configV2).toContain('value: "neutral"')
+      // Hand-authored code outside the markers is byte-identical
+      expect(getOutsideMarkers(configV1)).toBe(getOutsideMarkers(configV2))
     })
   })
 
@@ -425,7 +568,7 @@ describe("theme sync command", () => {
       expect(existsSync(join(docsApp, "neutral-theme.css"))).toBe(false)
     })
 
-    it("removes unregistered theme from theme-config.ts", () => {
+    it("removes unregistered theme from STOCK_GROUPS in theme-config.ts", () => {
       writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
       writeStockYaml("neutral.visor.yaml", STOCK_YAML_NEUTRAL)
       themeSyncCommand(testDir, {})
@@ -467,10 +610,22 @@ describe("theme sync command", () => {
 
       expect(existsSync(join(docsApp, "old-theme-theme.css"))).toBe(false)
     })
+
+    it("does not delete the overlay CSS file during stale cleanup", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      themeSyncCommand(testDir, {})
+
+      // Run again — overlay file must survive stale cleanup
+      themeSyncCommand(testDir, {})
+
+      expect(existsSync(
+        join(testDir, "packages", "docs", "app", "custom-themes.generated.css")
+      )).toBe(true)
+    })
   })
 
   describe("handles existing theme imports in globals.css", () => {
-    it("replaces existing theme import block with marked block", () => {
+    it("replaces existing theme import block with marked block (stock-only)", () => {
       writeFileSync(
         join(testDir, "packages", "docs", "app", "globals.css"),
         GLOBALS_CSS_WITH_EXISTING_IMPORTS,
@@ -486,9 +641,10 @@ describe("theme sync command", () => {
       )
       expect(globals).toContain("BEGIN visor-theme-imports")
       expect(globals).toContain("END visor-theme-imports")
-      // Only blackout should be present now (neutral and entr were removed)
+      // Only blackout should be in the managed block (neutral and entr were removed)
       expect(globals).toContain("@import './blackout-theme.css';")
       expect(globals).not.toContain("@import './neutral-theme.css';")
+      // entr is custom — should not appear in the stock block
       expect(globals).not.toContain("@import './entr-theme.css';")
     })
   })
@@ -519,7 +675,7 @@ describe("theme sync command", () => {
   })
 
   describe("theme-config.ts output", () => {
-    it("includes auto-generation header", () => {
+    it("does NOT include auto-generation header (file is now hand-authored)", () => {
       writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
 
       themeSyncCommand(testDir, {})
@@ -528,7 +684,10 @@ describe("theme sync command", () => {
         join(testDir, "packages", "docs", "lib", "theme-config.ts"),
         "utf-8",
       )
-      expect(config).toContain("auto-generated by `visor theme sync`")
+      // Old "auto-generated" header should not be present
+      expect(config).not.toContain("auto-generated by `visor theme sync`. Do not edit manually")
+      // The STOCK_GROUPS marker confirms sync still manages the block
+      expect(config).toContain("BEGIN visor-stock-themes")
     })
 
     it("includes yamlFile field for public/themes reference", () => {
@@ -541,19 +700,6 @@ describe("theme sync command", () => {
         "utf-8",
       )
       expect(config).toContain('yamlFile: "blackout"')
-    })
-
-    it("exports THEME_GROUPS and ALL_THEMES", () => {
-      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
-
-      themeSyncCommand(testDir, {})
-
-      const config = readFileSync(
-        join(testDir, "packages", "docs", "lib", "theme-config.ts"),
-        "utf-8",
-      )
-      expect(config).toContain("export const THEME_GROUPS")
-      expect(config).toContain("export const ALL_THEMES")
     })
   })
 
@@ -581,6 +727,22 @@ describe("theme sync command", () => {
         "utf-8",
       )).toBe(originalGlobals)
       expect(existsSync(join(testDir, "packages", "docs", "app", "blackout-theme.css"))).toBe(false)
+      // Overlay files should not be created in dry-run
+      expect(existsSync(join(testDir, "packages", "docs", "app", "custom-themes.generated.css"))).toBe(false)
+    })
+
+    it("reports customOverlayCss and customOverlayTs in dry-run JSON changes", () => {
+      const logs: string[] = []
+      vi.spyOn(console, "log").mockImplementation((msg) => logs.push(msg))
+
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      themeSyncCommand(testDir, { dryRun: true, json: true })
+
+      const result = JSON.parse(logs[0])
+      expect(result.success).toBe(true)
+      expect(result.dryRun).toBe(true)
+      expect(result.changes.customOverlayCss).toBeDefined()
+      expect(result.changes.customOverlayTs).toBeDefined()
     })
   })
 
@@ -642,6 +804,48 @@ describe("theme sync command", () => {
       expect(logs.length).toBeGreaterThan(0)
       const result = JSON.parse(logs[0])
       expect(result.success).toBe(false)
+    })
+  })
+
+  describe("group field handling", () => {
+    it("uses YAML group field to assign to correct group", () => {
+      writeCustomYaml("entr.visor.yaml", CUSTOM_YAML_ENTR) // group: Client
+
+      themeSyncCommand(testDir, {})
+
+      // Custom group should appear in the overlay TS, NOT in tracked theme-config.ts STOCK_GROUPS
+      const overlayTs = readFileSync(
+        join(testDir, "packages", "docs", "lib", "theme-config.custom.generated.ts"),
+        "utf-8",
+      )
+      expect(overlayTs).toContain('"Client"')
+      expect(overlayTs).toContain('"entr"')
+    })
+
+    it("defaults to 'Custom' group for custom themes without a group field", () => {
+      writeCustomYaml("mystery.visor.yaml", CUSTOM_YAML_NO_GROUP)
+
+      themeSyncCommand(testDir, {})
+
+      const overlayTs = readFileSync(
+        join(testDir, "packages", "docs", "lib", "theme-config.custom.generated.ts"),
+        "utf-8",
+      )
+      expect(overlayTs).toContain('"Custom"')
+      expect(overlayTs).toContain('value: "mystery-theme"')
+    })
+
+    it("creates groups that do not exist in any current config", () => {
+      writeCustomYaml("reference-app.visor.yaml", CUSTOM_YAML_REFERENCE) // group: Low Orbit
+
+      themeSyncCommand(testDir, {})
+
+      const overlayTs = readFileSync(
+        join(testDir, "packages", "docs", "lib", "theme-config.custom.generated.ts"),
+        "utf-8",
+      )
+      expect(overlayTs).toContain('"Low Orbit"')
+      expect(overlayTs).toContain('value: "reference-app"')
     })
   })
 })
