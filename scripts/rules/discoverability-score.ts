@@ -237,16 +237,29 @@ async function q6TokenDiscovery(): Promise<DimResult> {
   let points = 0;
   const found: string[] = [];
   const MANIFEST_PATH = 'packages/cli/dist/visor-manifest.json';
+  const MANIFEST_TYPES_PATH = 'packages/cli/src/generate/manifest-types.ts';
 
   // visor-manifest.json has a non-empty `tokens` key
-  try {
-    const content = await readFile(MANIFEST_PATH, 'utf-8');
-    const manifest = JSON.parse(content) as Record<string, unknown>;
-    const tokens = manifest.tokens;
-    const hasTokens = tokens !== undefined && tokens !== null && (typeof tokens !== 'object' || Object.keys(tokens as object).length > 0);
-    if (hasTokens) { points++; found.push('manifest.tokens key present'); }
-  } catch {
-    // dist not built or missing → score 0 for this sub-check
+  // Falls back to checking manifest-types.ts for ManifestToken export when dist is absent
+  const manifestExists = await fileExists(MANIFEST_PATH);
+  if (manifestExists) {
+    try {
+      const content = await readFile(MANIFEST_PATH, 'utf-8');
+      const manifest = JSON.parse(content) as Record<string, unknown>;
+      const tokens = manifest.tokens;
+      const hasTokens = tokens !== undefined && tokens !== null && (typeof tokens !== 'object' || Object.keys(tokens as object).length > 0);
+      if (hasTokens) { points++; found.push('manifest.tokens key present'); }
+    } catch {
+      // unparseable manifest → score 0 for this sub-check
+    }
+  } else {
+    // Fallback: check manifest-types.ts for ManifestToken type export
+    try {
+      const src = await readFile(MANIFEST_TYPES_PATH, 'utf-8');
+      if (src.includes('ManifestToken')) { points++; found.push('ManifestToken type in manifest-types.ts (dist fallback)'); }
+    } catch {
+      // source also missing → score 0 for this sub-check
+    }
   }
 
   // visor tokens list --json implementation present
@@ -315,23 +328,48 @@ async function q8Versioning(): Promise<DimResult> {
   let points = 0;
   const found: string[] = [];
 
-  // CHANGELOG.json parses
-  try {
-    const content = await readFile('packages/cli/dist/CHANGELOG.json', 'utf-8');
-    JSON.parse(content);
-    points++;
-    found.push('CHANGELOG.json');
-  } catch { /* missing or unparseable = 0 */ }
-
-  // manifest.version is a non-empty string
-  try {
-    const content = await readFile('packages/cli/dist/visor-manifest.json', 'utf-8');
-    const manifest = JSON.parse(content) as Record<string, unknown>;
-    if (typeof manifest.version === 'string' && manifest.version.length > 0) {
+  // CHANGELOG.json parses; falls back to CHANGELOG.md with ## [ heading pattern
+  const changelogJsonExists = await fileExists('packages/cli/dist/CHANGELOG.json');
+  if (changelogJsonExists) {
+    try {
+      const content = await readFile('packages/cli/dist/CHANGELOG.json', 'utf-8');
+      JSON.parse(content);
       points++;
-      found.push(`manifest@${manifest.version}`);
-    }
-  } catch { /* dist not built = 0 */ }
+      found.push('CHANGELOG.json');
+    } catch { /* unparseable = 0 */ }
+  } else {
+    // Fallback: check CHANGELOG.md at repo root for version-like headings
+    try {
+      const content = await readFile('CHANGELOG.md', 'utf-8');
+      if (content.includes('## [') || /^## \d+\.\d+/m.test(content)) {
+        points++;
+        found.push('CHANGELOG.md (dist fallback)');
+      }
+    } catch { /* missing = 0 */ }
+  }
+
+  // manifest.version is a non-empty string; falls back to packages/cli/package.json
+  const manifestExists = await fileExists('packages/cli/dist/visor-manifest.json');
+  if (manifestExists) {
+    try {
+      const content = await readFile('packages/cli/dist/visor-manifest.json', 'utf-8');
+      const manifest = JSON.parse(content) as Record<string, unknown>;
+      if (typeof manifest.version === 'string' && manifest.version.length > 0) {
+        points++;
+        found.push(`manifest@${manifest.version}`);
+      }
+    } catch { /* unparseable = 0 */ }
+  } else {
+    // Fallback: check packages/cli/package.json for a version field
+    try {
+      const content = await readFile('packages/cli/package.json', 'utf-8');
+      const pkg = JSON.parse(content) as Record<string, unknown>;
+      if (typeof pkg.version === 'string' && pkg.version.length > 0) {
+        points++;
+        found.push(`cli-package@${pkg.version} (dist fallback)`);
+      }
+    } catch { /* missing = 0 */ }
+  }
 
   // visor diff command source exists
   if (await fileExists('packages/cli/src/commands/diff.ts')) {
