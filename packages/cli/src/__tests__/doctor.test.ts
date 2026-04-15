@@ -2,9 +2,11 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { mkdirSync, rmSync, writeFileSync } from 'fs'
 import { join } from 'path'
 import { tmpdir } from 'os'
+import { execFileSync } from 'child_process'
 import { doctorCommand } from '../commands/doctor.js'
 
-// Mock child_process so no real shell-outs happen
+// Mock child_process so no real shell-outs happen.
+// Must be a top-level static import + vi.mock for Vitest's ESM hoisting to work.
 vi.mock('child_process')
 
 let testDir: string
@@ -47,7 +49,6 @@ afterEach(() => {
 
 describe('stale-global-cli check', () => {
   it('warns when global binary is older than running CLI', async () => {
-    const { execFileSync } = await import('child_process')
     vi.mocked(execFileSync).mockImplementation((cmd: unknown, args: unknown) => {
       const cmdStr = cmd as string
       const argsArr = args as string[]
@@ -71,7 +72,6 @@ describe('stale-global-cli check', () => {
   })
 
   it('passes when global binary matches running CLI version', async () => {
-    const { execFileSync } = await import('child_process')
     vi.mocked(execFileSync).mockImplementation((cmd: unknown, args: unknown) => {
       const cmdStr = cmd as string
       const argsArr = args as string[]
@@ -92,7 +92,6 @@ describe('stale-global-cli check', () => {
   })
 
   it('passes silently when which throws (no global installed)', async () => {
-    const { execFileSync } = await import('child_process')
     vi.mocked(execFileSync).mockImplementation((cmd: unknown, args: unknown) => {
       const argsArr = args as string[]
       if (argsArr[0] === 'visor') throw new Error('not found')
@@ -109,7 +108,6 @@ describe('stale-global-cli check', () => {
   })
 
   it('passes silently when global binary is unresponsive (--version throws)', async () => {
-    const { execFileSync } = await import('child_process')
     vi.mocked(execFileSync).mockImplementation((cmd: unknown, args: unknown) => {
       const cmdStr = cmd as string
       const argsArr = args as string[]
@@ -128,9 +126,7 @@ describe('stale-global-cli check', () => {
   })
 
   it('skips check entirely on Windows (process.platform === win32)', async () => {
-    const { execFileSync } = await import('child_process')
     const execSpy = vi.mocked(execFileSync)
-
     const originalPlatform = Object.getOwnPropertyDescriptor(process, 'platform')
     Object.defineProperty(process, 'platform', { value: 'win32', configurable: true })
 
