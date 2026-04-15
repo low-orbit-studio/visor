@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { mkdirSync, rmSync, writeFileSync } from 'fs'
 import { join } from 'path'
@@ -5,9 +6,10 @@ import { tmpdir } from 'os'
 import { execFileSync } from 'child_process'
 import { doctorCommand } from '../commands/doctor.js'
 
-// Mock child_process so no real shell-outs happen.
-// Must be a top-level static import + vi.mock for Vitest's ESM hoisting to work.
-vi.mock('child_process')
+// child_process is a Node.js built-in that must run in node environment.
+// The @vitest-environment node docblock above overrides the workspace-root
+// jsdom default so mocking works correctly.
+vi.mock('child_process', () => ({ execFileSync: vi.fn() }))
 
 let testDir: string
 
@@ -31,6 +33,7 @@ beforeEach(() => {
   testDir = join(tmpdir(), `visor-test-doctor-${Date.now()}`)
   mkdirSync(testDir, { recursive: true })
   makeMinimalProject(testDir)
+  vi.mocked(execFileSync).mockReset()
   vi.spyOn(console, 'log').mockImplementation(() => {})
   vi.spyOn(console, 'error').mockImplementation(() => {})
   vi.spyOn(process, 'exit').mockImplementation(((code?: number) => {
