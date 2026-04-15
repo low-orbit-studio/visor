@@ -52,6 +52,12 @@ dependencies:
   - "class-variance-authority"
   - "@phosphor-icons/react"
 
+responsive:
+  breakpoints:
+    - at: "768px"
+      behavior: "Below 768px, NavbarToggle becomes visible (it is hidden via CSS at wider viewports). The consumer is responsible for toggling a mobile menu — NavbarToggle fires an onClick but Navbar has no built-in open/close state. A common pattern is to render a Sheet or a collapsible NavbarContent that the consumer shows/hides based on toggle state."
+  notes: "Navbar has no internal breakpoint detection. The mobile menu open/close state must be managed by the consumer. NavbarToggle renders a hamburger icon (List from @phosphor-icons) and is styled to display:none at ≥768px via CSS."
+
 preview_url: "https://visor.loworbit.studio/docs/components/navigation/navbar"
 
 example: |

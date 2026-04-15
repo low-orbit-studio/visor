@@ -17,6 +17,26 @@ Components are **owned by this project**. They were copied in from the Visor reg
 
 ---
 
+## Quick Start
+
+```sh
+# 1. Install the tokens package
+npm install @loworbitstudio/visor-core
+
+# 2. Import the base CSS in your root layout
+#    e.g. app/layout.tsx or src/main.tsx
+import "@loworbitstudio/visor-core/index.css";
+
+# 3. Add components
+npx visor add button          # single component
+npx visor add button input card  # multiple at once
+```
+
+Apply a theme by adding a class to your root element (e.g. `<body class="theme-space">`).
+See **Theme Operations** below for available themes.
+
+---
+
 ## Adding Components
 
 ```sh
