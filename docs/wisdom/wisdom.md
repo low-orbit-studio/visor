@@ -23,6 +23,7 @@ For global wisdom (universal lessons): [`~/Code/low-orbit/low-orbit-playbook/roo
 | W012 | Docs MDX components require a `'use client'` re-export shim in `packages/docs/components/ui/` | docs, nextjs, mdx, imports | [W012](W012-docs-component-shims.md) |
 | W013 | R2 endpoint must not include bucket name — causes doubled path on upload | cloudflare, r2, fonts, infrastructure | [W013](W013-r2-endpoint-bucket-doubling.md) |
 | W014 | Varlock `.env.local` requires two-step bootstrap — don't redirect stdout to the file it reads from | varlock, env, bitwarden, infrastructure | [W014](W014-varlock-env-loading.md) |
+| W015 | Custom theme drift is eliminated by construction via overlay files — never manually revert tracked files after sync | themes, sync, ci, git | [W015](W015-theme-overlay-pattern.md) |
 
 ## Adding Entries
 
