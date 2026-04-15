@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
+import { execFileSync } from 'child_process'
 
 interface Check {
   name: string
@@ -14,7 +15,7 @@ interface DoctorResult {
   checks: Check[]
 }
 
-export async function doctorCommand(cwd: string, options: { json?: boolean }): Promise<void> {
+export async function doctorCommand(cwd: string, options: { json?: boolean }, cliVersion: string): Promise<void> {
   const checks: Check[] = []
 
   // Check 1: visor.json exists and is valid JSON
@@ -165,6 +166,35 @@ export async function doctorCommand(cwd: string, options: { json?: boolean }): P
     })
   }
 
+  // Check 7: Stale global visor CLI
+  if (process.platform !== 'win32') {
+    try {
+      const globalPath = execFileSync('which', ['visor'], { encoding: 'utf-8' }).trim()
+      if (globalPath) {
+        const globalVersionRaw = execFileSync(globalPath, ['--version'], { encoding: 'utf-8' }).trim()
+        const globalVersion = globalVersionRaw.split(/\s+/).pop() ?? ''
+        if (isOlder(globalVersion, cliVersion)) {
+          checks.push({
+            name: 'stale-global-cli',
+            pass: false,
+            severity: 'warning',
+            message: `Global visor ${globalVersion} is older than running CLI ${cliVersion}`,
+            fix: 'Run npm uninstall -g @loworbitstudio/visor to remove the stale global',
+          })
+        } else {
+          checks.push({
+            name: 'stale-global-cli',
+            pass: true,
+            severity: 'warning',
+            message: `Global visor ${globalVersion} matches running CLI`,
+          })
+        }
+      }
+    } catch {
+      // No global installed or binary unresponsive → silent pass (no false positives)
+    }
+  }
+
   // Calculate overall status
   const hasErrors = checks.some((c) => !c.pass && c.severity === 'error')
   const hasWarnings = checks.some((c) => !c.pass && c.severity === 'warning')
@@ -190,6 +220,19 @@ export async function doctorCommand(cwd: string, options: { json?: boolean }): P
   }
   console.log(`\nStatus: ${result.status.toUpperCase()}`)
   process.exit(hasErrors ? 1 : 0)
+}
+
+function isOlder(a: string, b: string): boolean {
+  const pa = a.split('.').map((n) => parseInt(n, 10) || 0)
+  const pb = b.split('.').map((n) => parseInt(n, 10) || 0)
+  const len = Math.max(pa.length, pb.length)
+  for (let i = 0; i < len; i++) {
+    const va = pa[i] ?? 0
+    const vb = pb[i] ?? 0
+    if (va < vb) return true
+    if (va > vb) return false
+  }
+  return false
 }
 
 function findCssFiles(dir: string, maxDepth = 3): string[] {

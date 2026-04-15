@@ -79,7 +79,8 @@ if (typeof globalThis.matchMedia === "undefined") {
 }
 
 // Mock scrollIntoView — not implemented in jsdom but required by cmdk
-// (Command Palette) for keyboard navigation.
-if (typeof Element.prototype.scrollIntoView === "undefined") {
+// (Command Palette) for keyboard navigation. Guard against node environment
+// where Element is not defined (e.g. CLI tests with @vitest-environment node).
+if (typeof Element !== "undefined" && typeof Element.prototype.scrollIntoView === "undefined") {
   Element.prototype.scrollIntoView = function () {}
 }
