@@ -71,3 +71,19 @@ describe("theme CSS contract", () => {
     }
   });
 });
+
+describe("globals.css wordmark rules", () => {
+  // The docs layout renders both wordmark-light and wordmark-dark in the DOM.
+  // These two CSS rules are what make only one visible at a time.
+  // If they go missing, BOTH wordmarks render simultaneously.
+  const globalsPath = resolve(__dirname, "../../app/globals.css");
+  const globals = readFileSync(globalsPath, "utf-8");
+
+  it("hides wordmark-light in dark mode", () => {
+    expect(globals).toContain(".dark .wordmark-light { display: none; }");
+  });
+
+  it("hides wordmark-dark in light mode", () => {
+    expect(globals).toContain("html:not(.dark) .wordmark-dark { display: none; }");
+  });
+});

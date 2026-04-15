@@ -26,6 +26,9 @@ import { docsConsistentSections } from './rules/docs-consistent-sections.js';
 import { docsAlphabetized } from './rules/docs-alphabetized.js';
 import { docsPageExists } from './rules/docs-page-exists.js';
 import { themeFontImports } from './rules/theme-font-imports.js';
+import { globalsCssImportsOrder } from './rules/globals-css-imports-order.js';
+import { globalsWordmarkRules } from './rules/globals-wordmark-rules.js';
+import { themeFontScaleAdjust } from './rules/theme-font-scale-adjust.js';
 import { registryManifestSync } from './rules/registry-manifest-sync.js';
 import { hooksDocsPageExists } from './rules/hooks-docs-page-exists.js';
 import { patternsDocsPageExists } from './rules/patterns-docs-page-exists.js';
@@ -50,6 +53,9 @@ const rules: Rule[] = [
   themeStructure,
   themePrimaryScale,
   themeFontImports,
+  themeFontScaleAdjust,
+  globalsCssImportsOrder,
+  globalsWordmarkRules,
   themeYamlExists,
   themeYamlValid,
   noHardcodedColors,
