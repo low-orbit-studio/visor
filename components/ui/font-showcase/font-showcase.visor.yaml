@@ -33,6 +33,8 @@ props:
 
 dependencies: []
 
+preview_url: "https://visor.loworbit.studio/docs/components/specimen/font-showcase"
+
 example: |
   <FontShowcase
     token="--font-heading"

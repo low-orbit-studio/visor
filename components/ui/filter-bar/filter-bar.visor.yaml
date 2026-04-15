@@ -61,6 +61,8 @@ registry_dependencies:
   - "badge"
   - "button"
 
+preview_url: "https://visor.loworbit.studio/docs/components/admin/filter-bar"
+
 example: |
   <FilterBar
     searchValue={search}

@@ -39,6 +39,8 @@ props:
 dependencies:
   - "@radix-ui/react-hover-card"
 
+preview_url: "https://visor.loworbit.studio/docs/components/overlay/hover-card"
+
 example: |
   <HoverCard>
     <HoverCardTrigger asChild>

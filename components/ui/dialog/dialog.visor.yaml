@@ -68,6 +68,8 @@ dependencies:
   - "@radix-ui/react-dialog"
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/overlay/dialog"
+
 example: |
   <Dialog>
     <DialogTrigger asChild>

@@ -47,6 +47,8 @@ props:
 dependencies:
   - "class-variance-authority"
 
+preview_url: "https://visor.loworbit.studio/docs/components/typography/text"
+
 example: |
   <Text>Default body text paragraph.</Text>
 

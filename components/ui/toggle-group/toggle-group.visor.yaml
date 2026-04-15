@@ -53,6 +53,8 @@ dependencies:
   - "@radix-ui/react-toggle-group"
   - "class-variance-authority"
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/toggle-group"
+
 example: |
   <ToggleGroup type="single" defaultValue="grid" variant="outline">
     <ToggleGroupItem value="grid">Grid</ToggleGroupItem>

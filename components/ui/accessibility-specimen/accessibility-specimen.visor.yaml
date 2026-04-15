@@ -43,6 +43,8 @@ props:
 dependencies:
   - badge
 
+preview_url: "https://visor.loworbit.studio/docs/components/specimen/accessibility-specimen"
+
 example: |
   <AccessibilitySpecimen
     fgToken="--text-primary"

@@ -39,6 +39,8 @@ props:
 dependencies:
   - "class-variance-authority"
 
+preview_url: "https://visor.loworbit.studio/docs/components/typography/heading"
+
 example: |
   <Heading level={1}>Page Title</Heading>
 

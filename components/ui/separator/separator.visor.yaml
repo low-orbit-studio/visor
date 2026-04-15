@@ -33,6 +33,8 @@ props:
 dependencies:
   - "@radix-ui/react-separator"
 
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/separator"
+
 example: |
   <div>
     <h3>Section A</h3>

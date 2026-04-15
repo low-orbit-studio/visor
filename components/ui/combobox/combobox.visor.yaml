@@ -63,6 +63,8 @@ dependencies:
   - "@radix-ui/react-popover"
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/combobox"
+
 example: |
   <Combobox onSelect={(value, label) => console.log(value, label)}>
     <ComboboxInput placeholder="Search frameworks..." />

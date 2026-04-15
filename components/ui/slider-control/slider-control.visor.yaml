@@ -44,6 +44,8 @@ props:
 dependencies:
   - "@loworbitstudio/visor-core"
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/slider-control"
+
 example: |
   <SliderControl
     label="Size"

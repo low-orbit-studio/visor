@@ -23,6 +23,8 @@ props:
 
 dependencies: []
 
+preview_url: "https://visor.loworbit.studio/docs/components/specimen/radius-scale"
+
 example: |
   <RadiusScale steps={[
     { token: "--radius-sm", name: "sm", px: 2 },

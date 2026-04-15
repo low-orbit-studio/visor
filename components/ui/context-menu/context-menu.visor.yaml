@@ -68,6 +68,8 @@ dependencies:
   - "@radix-ui/react-context-menu"
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/overlay/context-menu"
+
 example: |
   <ContextMenu>
     <ContextMenuTrigger>

@@ -46,6 +46,8 @@ sub_components:
 
 dependencies: []
 
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/timeline"
+
 example: |
   <Timeline>
     <TimelineItem status="complete">

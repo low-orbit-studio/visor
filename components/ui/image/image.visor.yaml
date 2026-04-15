@@ -44,6 +44,8 @@ props:
 dependencies:
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/image"
+
 example: |
   <Image
     src="/photos/hero.jpg"

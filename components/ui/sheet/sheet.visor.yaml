@@ -67,6 +67,8 @@ dependencies:
   - "@phosphor-icons/react"
   - "class-variance-authority"
 
+preview_url: "https://visor.loworbit.studio/docs/components/overlay/sheet"
+
 example: |
   <Sheet>
     <SheetTrigger asChild>

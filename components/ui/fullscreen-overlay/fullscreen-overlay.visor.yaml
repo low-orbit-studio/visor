@@ -47,6 +47,8 @@ dependencies:
   - "@loworbitstudio/visor-core"
 registryDependencies:
   - utils
+preview_url: "https://visor.loworbit.studio/docs/components/overlay/fullscreen-overlay"
+
 example: |
   <FullscreenOverlay>
     <FullscreenOverlayTrigger>Expand</FullscreenOverlayTrigger>

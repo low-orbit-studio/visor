@@ -36,6 +36,8 @@ sub_components:
 dependencies:
   - "@radix-ui/react-avatar"
 
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/avatar"
+
 example: |
   <Avatar size="default">
     <AvatarImage src="/avatar.jpg" alt="Jane Doe" />

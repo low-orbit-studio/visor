@@ -31,6 +31,8 @@ props:
 
 dependencies: []
 
+preview_url: "https://visor.loworbit.studio/docs/components/specimen/surface-row"
+
 example: |
   <SurfaceRow token="--surface-card" name="Card" />
   <SurfaceRow token="--surface-overlay" name="Overlay" lightText />

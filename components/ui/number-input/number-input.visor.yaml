@@ -42,5 +42,7 @@ props:
 dependencies:
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/number-input"
+
 example: |
   <NumberInput defaultValue={1} min={0} max={10} step={1} />

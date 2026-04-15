@@ -45,6 +45,8 @@ sub_components:
 
 dependencies: []
 
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/table"
+
 example: |
   <Table>
     <TableCaption>Recent invoices</TableCaption>

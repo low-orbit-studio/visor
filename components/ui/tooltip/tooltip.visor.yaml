@@ -40,6 +40,8 @@ props:
 dependencies:
   - "@radix-ui/react-tooltip"
 
+preview_url: "https://visor.loworbit.studio/docs/components/feedback/tooltip"
+
 example: |
   <TooltipProvider>
     <Tooltip>

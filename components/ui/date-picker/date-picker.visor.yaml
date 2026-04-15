@@ -43,6 +43,8 @@ dependencies:
   - "date-fns"
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/date-picker"
+
 example: |
   <DatePicker
     value={selectedDate}

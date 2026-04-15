@@ -44,6 +44,8 @@ props:
 dependencies:
   - "@radix-ui/react-slider"
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/slider"
+
 example: |
   <Slider defaultValue={[50]} max={100} step={1} />
 

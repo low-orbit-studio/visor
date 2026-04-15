@@ -47,6 +47,8 @@ sub_components:
 dependencies:
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/navigation/pagination"
+
 example: |
   <Pagination>
     <PaginationContent>

@@ -30,5 +30,7 @@ props:
 
 dependencies: []
 
+preview_url: "https://visor.loworbit.studio/docs/components/specimen/color-bar"
+
 example: |
   <ColorBar token="--interactive-primary-bg" label="Brand Color" />

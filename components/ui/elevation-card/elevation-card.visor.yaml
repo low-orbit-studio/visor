@@ -27,5 +27,7 @@ props:
 
 dependencies: []
 
+preview_url: "https://visor.loworbit.studio/docs/components/specimen/elevation-card"
+
 example: |
   <ElevationCard token="--shadow-md" name="md" />

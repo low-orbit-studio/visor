@@ -64,6 +64,8 @@ sub_components:
 dependencies:
   - "recharts"
 
+preview_url: "https://visor.loworbit.studio/docs/components/feedback/chart"
+
 example: |
   const config: ChartConfig = {
     sales: { label: "Sales", color: "var(--chart-1)" },

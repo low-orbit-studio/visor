@@ -39,6 +39,8 @@ sub_components:
 dependencies:
   - "class-variance-authority"
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/field"
+
 example: |
   <Field>
     <FieldLabel htmlFor="email">Email</FieldLabel>

@@ -45,6 +45,8 @@ dependencies:
   - "class-variance-authority"
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/feedback/banner"
+
 example: |
   <Banner intent="warning" position="sticky">
     <BannerTitle>Scheduled maintenance</BannerTitle>

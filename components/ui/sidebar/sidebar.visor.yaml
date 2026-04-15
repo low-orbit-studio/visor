@@ -96,6 +96,8 @@ dependencies:
   - "class-variance-authority"
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/general/sidebar"
+
 example: |
   <SidebarProvider>
     <Sidebar>

@@ -53,6 +53,8 @@ dependencies:
   - "cmdk"
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/navigation/command"
+
 example: |
   <CommandDialog open={open} onOpenChange={setOpen}>
     <CommandInput placeholder="Type a command..." />

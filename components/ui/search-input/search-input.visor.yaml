@@ -25,5 +25,7 @@ props:
 dependencies:
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/search-input"
+
 example: |
   <SearchInput placeholder="Search..." onClear={() => setValue('')} />

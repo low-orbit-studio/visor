@@ -37,6 +37,8 @@ props:
 
 dependencies: []
 
+preview_url: "https://visor.loworbit.studio/docs/components/specimen/color-swatch"
+
 example: |
   <ColorSwatch token="--color-blue-500" hex="#3b82f6" name="500" lightText />
   <ColorSwatchGrid label="Gray" swatches={[

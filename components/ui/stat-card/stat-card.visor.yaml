@@ -59,6 +59,8 @@ props:
 dependencies:
   - "class-variance-authority"
 
+preview_url: "https://visor.loworbit.studio/docs/components/admin/stat-card"
+
 example: |
   <StatCard
     label="Total Revenue"

@@ -61,6 +61,8 @@ subcomponents:
 
 dependencies: []
 
+preview_url: "https://visor.loworbit.studio/docs/components/admin/activity-feed"
+
 example: |
   <ActivityFeed variant="timeline">
     <ActivityFeed.Item

@@ -37,6 +37,8 @@ sub_components:
 
 dependencies: []
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/fieldset"
+
 example: |
   <Fieldset>
     <FieldsetLegend>Contact Information</FieldsetLegend>

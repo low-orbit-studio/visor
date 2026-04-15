@@ -42,6 +42,8 @@ dependencies:
   - "@radix-ui/react-radio-group"
   - "@phosphor-icons/react"
 
+preview_url: "https://visor.loworbit.studio/docs/components/form/radio-group"
+
 example: |
   <RadioGroup defaultValue="medium">
     <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
