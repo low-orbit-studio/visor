@@ -121,12 +121,12 @@ describe("lightness monotonically decreases from shade 50 to 950", () => {
 // ============================================================
 
 describe("anchor shade approximately matches input", () => {
-  it("primary anchor (shade 600) is close to input color in lightness", () => {
+  it("primary anchor (shade 500) is close to input color in lightness", () => {
     const inputHex = "#3366cc";
     const scale = generateShadeScale(inputHex, "primary") as FullShadeScale;
 
     const inputL = hexToOklch(inputHex)[0];
-    const anchorL = hexToOklch(scale[600])[0];
+    const anchorL = hexToOklch(scale[500])[0];
 
     expect(Math.abs(inputL - anchorL)).toBeLessThan(0.05);
   });

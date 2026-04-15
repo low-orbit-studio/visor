@@ -21,7 +21,7 @@ import type {
   ShadeStep,
   ColorRole,
 } from "../types.js";
-import { FULL_SHADE_STEPS, SELECTIVE_SHADE_STEPS } from "../shades.js";
+import { FULL_SHADE_STEPS, SELECTIVE_SHADE_STEPS, generateShadeScale } from "../shades.js";
 import { resolveThemeFonts } from "../fonts/pipeline.js";
 import { buildVisorFontUrl } from "../fonts/resolve.js";
 import { FUMADOCS_BRIDGE_MAP } from "./fumadocs-map.js";
@@ -303,6 +303,30 @@ export function docsAdapter(
 
   const darkDecls = generateSemanticDecls(input.tokens, "dark");
 
+  // If colors-dark specifies a dark-mode primary or accent, regenerate their
+  // shade scales from the dark brand color and emit as primitive overrides
+  // in .dark {scope}. This makes dark-first themes (e.g. ENTR) show the dark
+  // brand color at --color-primary-500 (the "brand anchor" step).
+  const colorsDark = input.config["colors-dark"];
+  const darkPrimitiveOverrides: string[] = [];
+  if (colorsDark?.primary) {
+    const darkPrimary = generateShadeScale(colorsDark.primary, "primary") as Record<number, string>;
+    for (const step of FULL_SHADE_STEPS) {
+      darkPrimitiveOverrides.push(`--color-primary-${step}: ${darkPrimary[step]};`);
+    }
+  }
+  if (colorsDark?.accent) {
+    const darkAccent = generateShadeScale(colorsDark.accent, "accent") as Record<number, string>;
+    for (const step of FULL_SHADE_STEPS) {
+      darkPrimitiveOverrides.push(`--color-accent-${step}: ${darkAccent[step]};`);
+    }
+  }
+  if (darkPrimitiveOverrides.length > 0) {
+    lines.push(sectionComment("Primitive overrides (dark) — dark brand color anchors at shade 500"));
+    lines.push(block(`.dark ${scopeClass}`, darkPrimitiveOverrides));
+    lines.push("");
+  }
+
   // Manual toggle
   const categories = ["Text", "Surface", "Border", "Interactive"];
   const categoryDecls = [
@@ -327,6 +351,14 @@ export function docsAdapter(
   for (const cat of pcsCategories) {
     lines.push(sectionComment(`Adaptive: ${cat.label} (dark) — prefers-color-scheme`));
     const inner = block(`${scopeClass}:not(.light)`, cat.entries);
+    lines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
+    lines.push("");
+  }
+
+  // Primitive overrides also apply under prefers-color-scheme when no manual toggle set
+  if (darkPrimitiveOverrides.length > 0) {
+    lines.push(sectionComment("Primitive overrides (dark) — prefers-color-scheme"));
+    const inner = block(`${scopeClass}:not(.light)`, darkPrimitiveOverrides);
     lines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
     lines.push("");
   }

@@ -21,7 +21,7 @@ export interface ValidationResult {
 // ============================================================
 
 const KNOWN_TOP_LEVEL_KEYS = new Set([
-  "name", "version", "group", "colors", "colors-dark", "typography",
+  "name", "version", "group", "label", "default-mode", "colors", "colors-dark", "typography",
   "spacing", "radius", "shadows", "motion", "overrides",
 ]);
 
@@ -197,6 +197,17 @@ export function validateConfig(config: unknown): ValidationResult {
   }
 
   // Colors
+  if (obj.label !== undefined && typeof obj.label !== "string") {
+    errors.push("'label' must be a string (optional display name override)");
+  }
+
+  if (obj["default-mode"] !== undefined) {
+    const mode = obj["default-mode"];
+    if (mode !== "dark" && mode !== "light") {
+      errors.push("'default-mode' must be either 'dark' or 'light'");
+    }
+  }
+
   if (typeof obj.colors !== "object" || obj.colors === null) {
     errors.push("'colors' is required and must be an object");
     return { valid: false, errors };

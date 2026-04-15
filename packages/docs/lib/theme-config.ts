@@ -5,6 +5,8 @@ export interface ThemeEntry {
   label: string;
   /** Filename (without .visor.yaml extension) if a YAML config exists in /public/themes/ */
   yamlFile?: string;
+  /** When set, activating this theme forces the docs site into the specified color mode. */
+  defaultMode?: "dark" | "light";
 }
 
 export interface ThemeGroup {
