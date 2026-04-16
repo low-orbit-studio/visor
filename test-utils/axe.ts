@@ -11,8 +11,24 @@
  *   expect(results).toHaveNoViolations()
  */
 
-import { run as axeRun, type RunOptions, type AxeResults } from "axe-core"
+import { run as axeRun, configure, type RunOptions, type AxeResults } from "axe-core"
+import { expect } from "vitest"
 import type { ExpectationResult } from "@vitest/expect"
+
+// Self-contained a11y setup — configures axe + registers matcher on first import.
+// Moved from vitest.setup.ts so only the ~11 *.a11y.test.tsx files pay the
+// axe-core import cost (previously loaded globally for all 222 test files).
+let axeSetupDone = false
+function ensureAxeSetup() {
+  if (axeSetupDone) return
+  axeSetupDone = true
+  configure({
+    allowedOrigins: ["<same_origin>"],
+    rules: [{ id: "color-contrast", enabled: false }],
+  })
+  expect.extend({ toHaveNoViolations })
+}
+ensureAxeSetup()
 
 /**
  * Run axe-core against an HTML element and return the results.

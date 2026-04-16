@@ -14,6 +14,10 @@ export default defineConfig({
     setupFiles: ["./vitest.setup.ts"],
     globals: true,
     exclude: ["**/node_modules/**", "**/e2e/**"],
+    // VI-171: threads pool is ~12% faster than Vitest 4's default "forks".
+    // `isolate: false` was evaluated but causes state leakage across ~107 of 222
+    // files (Radix Menu portals, table state) — see VI-179 follow-up.
+    pool: "threads",
     css: {
       modules: {
         classNameStrategy: "non-scoped",
