@@ -106,8 +106,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      # Tests only need the workspace packages resolved — they don't need the
+      # Next.js docs build (covered by `verify-docs` job). Saves ~30s/shard.
+      - name: Build (packages only, skip docs)
+        run: npm run build -w packages/theme-engine -w packages/tokens -w packages/cli
 
       - name: Test (shard ${{ matrix.shard }}/4)
         env:
