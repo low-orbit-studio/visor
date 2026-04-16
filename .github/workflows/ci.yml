@@ -84,10 +84,14 @@ jobs:
         run: npm run typecheck
 
   build-and-test:
-    name: Build & Test
+    name: Build & Test (shard ${{ matrix.shard }}/4)
     needs: changes
     if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
 
     steps:
       - name: Checkout
@@ -105,8 +109,10 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Test
-        run: npm run test
+      - name: Test (shard ${{ matrix.shard }}/4)
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: npx vitest run --shard=$SHARD/4
 
       # Visual regression tests disabled — pages not yet stable enough for baselines.
       # Re-enable when docs site pages are finalized. See roadmap.

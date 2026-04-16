@@ -1,30 +1,12 @@
 import "@testing-library/jest-dom"
-import { toHaveNoViolations } from "./test-utils/axe"
-import { expect } from "vitest"
 
-// Extend Vitest's expect with toHaveNoViolations from test-utils/axe.
-// This makes the matcher globally available in all test files without
-// requiring additional imports. Pattern for new component a11y tests:
-//
-//   import { axe } from "../../../test-utils/axe"
-//   const results = await axe(container)
-//   expect(results).toHaveNoViolations()
-expect.extend({ toHaveNoViolations })
+// axe-core + toHaveNoViolations matcher now live in test-utils/axe.ts and are
+// registered lazily on first import from an a11y test file. Removed from global
+// setup to avoid paying axe-core's ~200ms import cost on ~200 non-a11y files.
 
-// Configure axe-core for the jsdom test environment.
-// - allowedOrigins: required for axe to run against jsdom's document
-// - color-contrast disabled: jsdom has no real CSS engine, so getComputedStyle
-//   returns empty values and canvas is unimplemented. Color-contrast results are
-//   always meaningless in jsdom and generate "Not implemented" noise in CI output.
-import { configure } from "axe-core"
-configure({
-  allowedOrigins: ["<same_origin>"],
-  rules: [{ id: "color-contrast", enabled: false }],
-})
-
-// Suppress jsdom "Not implemented" stderr noise from axe-core probing
-// HTMLCanvasElement.getContext and window.getComputedStyle(elt, pseudoElt).
-// These are expected in jsdom and don't affect test correctness.
+// Suppress jsdom "Not implemented" stderr noise (axe-core probes
+// HTMLCanvasElement.getContext and window.getComputedStyle(elt, pseudoElt)).
+// Kept here because other libs can emit the same noise even without axe.
 const originalConsoleError = console.error
 console.error = (...args: unknown[]) => {
   const msg = typeof args[0] === "string" ? args[0] : ""
