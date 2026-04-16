@@ -25,6 +25,7 @@ For global wisdom (universal lessons): [`~/Code/low-orbit/low-orbit-playbook/roo
 | W014 | Varlock `.env.local` requires two-step bootstrap — don't redirect stdout to the file it reads from | varlock, env, bitwarden, infrastructure | [W014](W014-varlock-env-loading.md) |
 | W015 | Custom theme drift is eliminated by construction via overlay files — never manually revert tracked files after sync | themes, sync, ci, git | [W015](W015-theme-overlay-pattern.md) |
 | W016 | Mocking Node.js built-ins requires `@vitest-environment node` and a guarded setup file | testing, vitest, mocking, node, jsdom, child_process | [W016](W016-vitest-node-builtin-mocking.md) |
+| W017 | `npx vitest run` bypasses npm's `pretest` hook — run it explicitly in CI | testing, vitest, ci, npm, hooks | [W017](W017-npx-vitest-skips-pretest.md) |
 
 ## Adding Entries
 
