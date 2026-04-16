@@ -121,6 +121,24 @@ jobs:
       # - name: Visual regression tests
       #   run: npm run test:vr -w packages/docs
 
+  # Aggregator job: keeps the "Build & Test" check name stable for branch
+  # protection rules that predate the matrix split (VI-171).
+  build-and-test-summary:
+    name: Build & Test
+    needs: [changes, build-and-test]
+    if: always() && needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify all shards passed
+        env:
+          RESULT: ${{ needs.build-and-test.result }}
+        run: |
+          if [ "$RESULT" != "success" ]; then
+            echo "One or more test shards failed: $RESULT"
+            exit 1
+          fi
+          echo "All test shards passed."
+
   verify-docs:
     name: Verify docs build
     needs: changes
