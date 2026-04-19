@@ -61,7 +61,7 @@ describe("PricingSection", () => {
 
   it("does not render header section when heading and description are omitted", () => {
     const { container } = render(<PricingSection tiers={mockTiers} />)
-    const header = container.querySelector("[class*='header']")
+    const header = container.querySelector(".header")
     expect(header).not.toBeInTheDocument()
   })
 
