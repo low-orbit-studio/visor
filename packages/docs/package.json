@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@loworbitstudio/visor-theme-engine": "*",
+    "@phosphor-icons/react": "^2.1.10",
     "intl-tel-input": "^26.9.1",
     "fumadocs-core": "^16.7.9",
     "fumadocs-mdx": "^14.2.11",
