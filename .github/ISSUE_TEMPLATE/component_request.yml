@@ -1,0 +1,35 @@
+name: Component request
+description: Request a new component for the registry
+labels: ["component-request", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: "Requesting a component that doesn't exist yet? Fill this out."
+  - type: input
+    id: name
+    attributes:
+      label: Component name
+      placeholder: "DatePicker"
+    validations:
+      required: true
+  - type: textarea
+    id: use_case
+    attributes:
+      label: What would you use it for?
+    validations:
+      required: true
+  - type: input
+    id: prior_art
+    attributes:
+      label: Prior art / reference
+      placeholder: "shadcn DatePicker, Radix, etc."
+  - type: dropdown
+    id: priority
+    attributes:
+      label: How often do you need this?
+      options:
+        - Every project
+        - Most projects
+        - Occasionally
+    validations:
+      required: true
