@@ -32,7 +32,7 @@
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
-    "prepare": "husky || true",
+    "prepare": "husky 2>/dev/null || true",
     "fonts:add": "varlock run -- npx visor fonts add",
     "themes:compute-scales": "npx tsx scripts/compute-primary-scales.ts",
     "previews": "tsx scripts/generate-previews.ts"
@@ -56,7 +56,7 @@
     "globals": "^15.14.0",
     "happy-dom": "^20.9.0",
     "husky": "^9.1.7",
-    "jsdom": "^25.0.1",
+    "jsdom": "^29.0.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "three": "^0.183.2",
@@ -103,5 +103,8 @@
     "recharts": "^3.8.0",
     "sonner": "^2.0.7",
     "zod": "^3.25.76"
+  },
+  "overrides": {
+    "jsdom": "^29.0.2"
   }
 }
