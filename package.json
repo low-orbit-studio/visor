@@ -32,7 +32,7 @@
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "changeset publish",
-    "prepare": "husky",
+    "prepare": "husky || true",
     "fonts:add": "varlock run -- npx visor fonts add",
     "themes:compute-scales": "npx tsx scripts/compute-primary-scales.ts",
     "previews": "tsx scripts/generate-previews.ts"
