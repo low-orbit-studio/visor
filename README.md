@@ -507,6 +507,16 @@ visor/
 
 ---
 
+## Sustainability
+
+Visor is free and open-source, built and maintained by [Low Orbit Studio](https://loworbit.studio). If it's useful to you, here's how to support it:
+
+- **Use it and share it** — the best support is adoption and word of mouth.
+- **Contribute** — bug reports, PRs, and Discussions participation all help.
+- **Hire us** — Low Orbit Studio takes on product and design system work. [Get in touch](https://loworbit.studio).
+
+---
+
 ## License
 
 See [LICENSE](LICENSE) for details.
