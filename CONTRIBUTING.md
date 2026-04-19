@@ -111,6 +111,14 @@ ESLint is configured at the root. Run `npm run lint` to check and `npm run lint:
 
 For significant changes — new components, breaking token changes, architecture decisions — please open an issue first to discuss the approach before investing time in implementation.
 
+## Contributor Ladder
+
+**Contributor** — Anyone who opens a quality issue, discussion, or PR. No requirements beyond good faith engagement.
+
+**Regular Contributor** — Someone who has had 3+ PRs merged across different areas of the codebase. Gets faster review turnaround and is consulted on relevant design decisions.
+
+**Maintainer** — Invited by the lead maintainer after sustained, high-quality contribution and demonstrated judgment on API and architecture decisions. Has merge rights and participates in release decisions.
+
 ## Code of Conduct
 
 Be respectful. This is a collaborative space and everyone is expected to engage constructively and with good faith. Harassment, dismissiveness, or bad-faith behavior will not be tolerated.
