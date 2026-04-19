@@ -120,9 +120,9 @@ Prepare Visor for public adoption. Not required for internal use — do this whe
 - [x] **Proprietary theme implementation** — Stock vs custom theme separation shipped in VI-148; custom-themes gitignored, CLI discovers both
 - [ ] **Fonts CDN CORS** — Restrict `fonts.visor.design` to allowed origins via Cloudflare R2/Workers (VI-110, still open)
 - [ ] **Community infrastructure** — Issue/PR templates, FUNDING.yml, good first issue labels, GitHub Discussions
-- [ ] **Changelog & releases** — Wire up changesets auto-publish workflow, generate first CHANGELOG.md
+- [x] **Changelog & releases** — Wire up changesets auto-publish workflow, generate first CHANGELOG.md
 - [ ] **Getting-started guide** — Standalone "zero to first component" page (migration guide covers retrofits, not new projects)
-- [ ] **Competitive analysis** — Study shadcn/ui, Radix, Mantine, Park UI for gaps ✓ ([VI-122](https://linear.app/low-orbit-studio/issue/VI-122) → `docs/research/token-architecture-spike.md`)
+- [x] **Competitive analysis** — Study shadcn/ui, Radix, Mantine, Park UI for gaps ✓ ([VI-122](https://linear.app/low-orbit-studio/issue/VI-122) → `docs/research/token-architecture-spike.md`)
 - [ ] **Governance & sustainability** — Single-maintainer plan, contributor ladder, decision-making process
 - [ ] **Marketing surface** — README badges, social preview, npm README, "used by" section, GitHub topics
 
