@@ -22,7 +22,13 @@
     "visor",
     "design-system",
     "cli",
-    "components"
+    "components",
+    "react",
+    "nextjs",
+    "ui-library",
+    "typescript",
+    "css-modules",
+    "accessibility"
   ],
   "license": "MIT",
   "repository": {

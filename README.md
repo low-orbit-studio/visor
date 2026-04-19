@@ -3,7 +3,11 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@loworbitstudio/visor-core"><img src="https://img.shields.io/npm/v/@loworbitstudio/visor-core?label=%40loworbitstudio%2Fvisor-core" alt="npm version" /></a>
+  <a href="https://www.npmjs.com/package/@loworbitstudio/visor-core"><img src="https://img.shields.io/npm/v/@loworbitstudio/visor-core?label=visor-core" alt="visor-core version" /></a>
+  <a href="https://www.npmjs.com/package/@loworbitstudio/visor"><img src="https://img.shields.io/npm/v/@loworbitstudio/visor?label=visor+cli" alt="CLI version" /></a>
+  <a href="https://www.npmjs.com/package/@loworbitstudio/visor-theme-engine"><img src="https://img.shields.io/npm/v/@loworbitstudio/visor-theme-engine?label=theme-engine" alt="theme-engine version" /></a>
+  <a href="https://github.com/low-orbit-studio/visor/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/low-orbit-studio/visor/ci.yml?branch=main&label=CI" alt="CI" /></a>
+  <a href="https://github.com/low-orbit-studio/visor/blob/main/LICENSE"><img src="https://img.shields.io/github/license/low-orbit-studio/visor" alt="License" /></a>
   <a href="https://visor.loworbit.studio">Documentation</a>
 </p>
 
@@ -469,6 +473,12 @@ See [docs/ai-consumability.md](docs/ai-consumability.md) for the full spec.
 Full documentation, component previews, and a props reference are available at:
 
 **[visor.loworbit.studio](https://visor.loworbit.studio)**
+
+---
+
+## Built with Visor
+
+Using Visor in your project? [Open a PR](https://github.com/low-orbit-studio/visor/edit/main/README.md) to add it here.
 
 ---
 
