@@ -35,7 +35,12 @@
     "design-system",
     "theme",
     "oklch",
-    "tokens"
+    "tokens",
+    "react",
+    "css-variables",
+    "theming",
+    "color-system",
+    "wcag"
   ],
   "license": "MIT",
   "repository": {
