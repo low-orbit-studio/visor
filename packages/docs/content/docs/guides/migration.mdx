@@ -335,6 +335,20 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 
 ## Theme Customization
 
+### Removing Stale Local Token Overrides
+
+If you have local overrides for `--text-secondary` or `--text-tertiary` in your token CSS (e.g., Mission Control consumers who have overrides in `src/styles/tokens.css` around lines 58–61), remove them — the stock token values now meet WCAG AA and local overrides may pull contrast back below the threshold.
+
+Stock values (post-VI-180):
+- `--text-secondary`: 9.92:1 contrast against `#000` (AAA)
+- `--text-tertiary`: 6.16:1 contrast against `#000` (AA)
+
+Any local override that darkens these tokens risks failing AA compliance. Delete the local override and let the stock value from `@loworbitstudio/visor-core` take effect. Run `theme validate` after removing overrides to confirm compliance:
+
+```bash
+npx @loworbitstudio/visor theme validate .visor.yaml
+```
+
 ### Overriding Tokens
 
 Use the `overrides` section in `.visor.yaml` to override specific tokens without changing the generated color palettes:

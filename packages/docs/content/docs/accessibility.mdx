@@ -133,6 +133,19 @@ Radix UI primitives handle most keyboard interactions automatically for complex 
 
 Since components use CSS custom properties from `@loworbitstudio/visor-core`, contrast is defined at the token level. Check token values when authoring new themes.
 
+#### Text Token Contrast Reference
+
+The following table documents the contrast ratio of each text token against a black (`#000000`) background, as measured against the stock dark theme (post-VI-180 fix values):
+
+| Token | Dark bg (#000) ratio | WCAG level |
+|---|---|---|
+| `--text-primary` | 8.6:1 | AAA |
+| `--text-secondary` | 9.92:1 | AAA |
+| `--text-tertiary` | 6.16:1 | AA |
+| `--text-disabled` | 1.17:1 | Exempt (WCAG 1.4.3 Note — disabled UI) |
+
+`--text-disabled` must not be used for legible content — it intentionally falls below AA contrast and is exempt per WCAG 1.4.3 Note. Use it only for visually muted, non-interactive disabled-state labels where the disabled affordance is communicated by other means (e.g., `disabled` attribute, reduced opacity, `aria-disabled`).
+
 ### 6. Focus Management
 
 - Dialogs and sheets: focus must move to the first focusable element inside when opened
