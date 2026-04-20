@@ -37,6 +37,7 @@ import { registryBuildIntegrity } from './rules/registry-build-integrity.js';
 import { discoverabilityVariantDrift } from './rules/discoverability-variant-drift.js';
 import { discoverabilitySelectionQuality } from './rules/discoverability-selection-quality.js';
 import { discoverabilityScore } from './rules/discoverability-score.js';
+import { themeTextContrast } from './rules/theme-text-contrast.js';
 import type { Rule } from './rules/types.js';
 
 const rules: Rule[] = [
@@ -72,6 +73,7 @@ const rules: Rule[] = [
   discoverabilityVariantDrift,
   discoverabilitySelectionQuality,
   discoverabilityScore,
+  themeTextContrast,
   hooksDocsPageExists,
   patternsDocsPageExists,
   docsPageExists,
