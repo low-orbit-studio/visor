@@ -1,0 +1,58 @@
+name: DeckRenderer
+description: High-level declarative deck builder. Accepts a DeckRegistry configuration and renders the full slide stack with optional TOC slide, footer, and fullscreen mode.
+category: deck
+
+when_to_use:
+  - Building a complete presentation from a declarative registry config
+  - Decks that need auto-generated TOC slides or footer sections
+  - Presentations that should support fullscreen mode with a trigger button
+
+when_not_to_use:
+  - Decks that require fully custom slide ordering or non-registry components (use DeckLayout directly)
+  - When you need fine-grained control over every slide's position in the sequence
+
+why: >
+  DeckRenderer is the recommended entry point for most decks. It derives slide
+  titles, TOC sections, and footer columns from the registry automatically,
+  eliminating the boilerplate of wiring DeckLayout + DotNav + DeckFooter by hand.
+  The registry format also makes slide inventory machine-readable.
+
+props:
+  - name: registry
+    type: "DeckRegistry"
+    description: "Declarative slide registry: { description, slides: SlideEntry[], sections: DeckSection[] }"
+  - name: showTOC
+    type: boolean
+    default: false
+    description: Insert an auto-generated TOC slide after the first slide
+  - name: tocImage
+    type: string
+    description: Optional background image for the TOC slide
+  - name: showFooter
+    type: boolean
+    default: true
+  - name: brandName
+    type: string
+    description: Brand name for the footer (default "Low Orbit Studio")
+  - name: fullscreen
+    type: boolean
+    default: false
+    description: Wrap the deck in a FullscreenOverlay with a trigger button
+  - name: fullscreenLabel
+    type: string
+    default: "Fullscreen"
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+example: |
+  const registry: DeckRegistry = {
+    description: "Low Orbit Studio — 2026 Overview",
+    slides: [
+      { id: "s-hero",     title: "Intro",    component: HeroSlide   },
+      { id: "s-services", title: "Services", component: ServicesSlide },
+    ],
+    sections: [],
+  }
+
+  <DeckRenderer registry={registry} showTOC showFooter fullscreen />

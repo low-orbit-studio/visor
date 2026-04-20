@@ -1,0 +1,45 @@
+name: ConceptSlide
+description: Slide with a looping background video and overlay, for showcasing concepts, product demos, or motion design. Content is layered above the video.
+category: deck
+
+when_to_use:
+  - Slides where a video loop reinforces the concept being presented
+  - Product or feature showcases where motion adds context
+  - Visual storytelling slides where a static image would be insufficient
+
+when_not_to_use:
+  - Slides where the video is primary content (use Slide with an embedded player)
+  - Environments where autoplay may be blocked (the video is decorative, content still renders)
+
+why: >
+  ConceptSlide handles the z-index layering, autoplay/mute attributes, and
+  accessibility (aria-hidden on the video) so the video is decorative without
+  requiring manual composition of a video + overlay + content stack inside
+  every slide.
+
+props:
+  - name: id
+    type: string
+    description: Unique slide identifier
+  - name: theme
+    type: "'light' | 'dark'"
+    default: "light"
+  - name: video
+    type: string
+    description: Video source URL (mp4)
+  - name: poster
+    type: string
+    description: Poster image shown before video loads
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+example: |
+  <ConceptSlide
+    id="s-concept"
+    theme="dark"
+    video="/video/demo.mp4"
+    poster="/video/demo-poster.jpg"
+  >
+    <SlideHeader subtitle="Concept" title="Reimagined" />
+  </ConceptSlide>

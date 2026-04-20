@@ -1,0 +1,64 @@
+name: Slide
+description: Full-viewport slide section with theme, layout mode, hero image, and background image support. The fundamental building block of every deck.
+category: deck
+
+when_to_use:
+  - Every slide in a presentation deck
+  - Slides with dark or light themes requiring theme-scoped children
+  - Hero slides with a full-bleed background image and overlay
+  - Photo-mode slides with a full-bleed image behind content
+
+when_not_to_use:
+  - Outside of a <DeckLayout> (keyboard navigation and scroll snapping won't function)
+  - Standalone page sections not part of a deck presentation
+
+why: >
+  Slide provides the semantic <section> wrapper, data-slot marker, and
+  SlideThemeProvider that DeckLayout uses to detect and sync navigation state.
+  All layout modes (center, flush, hero, photo, bgImage) are variants of the
+  same component to avoid duplicating scroll-snap and animation logic.
+
+variants:
+  theme: [light, dark]
+  layout: [default, center, flush, hero, photo, bgImage]
+
+props:
+  - name: id
+    type: string
+    description: Unique slide identifier used for navigateTo() deep-linking
+  - name: theme
+    type: "'light' | 'dark'"
+    default: "light"
+  - name: dotNavTheme
+    type: "'light' | 'dark'"
+    description: Overrides dot-nav color detection independently of slide theme
+  - name: center
+    type: boolean
+    default: false
+    description: Center all content vertically and horizontally
+  - name: flush
+    type: boolean
+    default: false
+    description: Remove default padding
+  - name: hero
+    type: boolean
+    default: false
+    description: Enable hero image mode with content layered above
+  - name: heroImage
+    type: string
+    description: URL for the hero background image (requires hero=true)
+  - name: bgImage
+    type: string
+    description: URL for a full-bleed background image
+  - name: photo
+    type: boolean
+    default: false
+    description: Full-bleed photo mode
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+example: |
+  <Slide id="s-intro" theme="dark" hero heroImage="/hero.jpg">
+    <SlideHeader subtitle="Welcome" title="Our Vision" />
+  </Slide>

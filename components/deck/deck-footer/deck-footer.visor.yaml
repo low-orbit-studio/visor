@@ -1,0 +1,47 @@
+name: DeckFooter
+description: Dark closing footer slide with brand lockup, optional link columns, and a copyright bar. Appears as the last scrollable section in a deck.
+category: deck
+
+when_to_use:
+  - As the final section of a deck (after the last content slide or ClosingSlide)
+  - Decks that need categorized navigation links below the closing content
+  - Branded presentations requiring a footer with company identity and copyright
+
+when_not_to_use:
+  - Decks built with DeckRenderer (showFooter=true handles this automatically)
+  - Short decks where a full branded footer would feel disproportionate
+
+why: >
+  DeckFooter occupies a dedicated scroll-snap section (data-slot="deck-footer")
+  so DeckLayout counts it in section tracking without treating it as a numbered
+  slide. It uses navigateTo() for internal slide links, keeping navigation within
+  the deck rather than triggering browser scrolls.
+
+props:
+  - name: description
+    type: string
+    description: Brand tagline or short company description
+  - name: columns
+    type: "DeckFooterColumn[]"
+    description: "Optional link columns — each { title, links: { label, slide?, href?, accent? }[] }"
+  - name: brandName
+    type: string
+    default: "Low Orbit Studio"
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+example: |
+  <DeckFooter
+    description="Design systems for the modern web."
+    brandName="Low Orbit Studio"
+    columns={[
+      {
+        title: "Sections",
+        links: [
+          { label: "Vision",   slide: "s-vision" },
+          { label: "Services", slide: "s-services" },
+        ],
+      },
+    ]}
+  />

@@ -1,0 +1,37 @@
+name: DeckLayout
+description: Full-viewport scroll-snapping container that orchestrates keyboard navigation, wheel navigation, intersection-based animation, and dot-nav rendering for a deck of slides.
+category: deck
+
+when_to_use:
+  - Wrapping all <Slide> and <DeckFooter> components in a presentation
+  - Building a custom deck layout without using DeckRenderer
+
+when_not_to_use:
+  - When DeckRenderer covers your needs (it wraps DeckLayout automatically)
+  - Standard page layouts — this component is presentation-only
+
+why: >
+  DeckLayout composes useSlideEngine, useIntersectionAnimation, useKeyboardNav,
+  and useWheelNav into a single container so the orchestration logic lives in
+  one place. It also instantiates DeckProvider and DotNav so all descendants
+  can call useDeck() and see slide position.
+
+props:
+  - name: slideTitles
+    type: "string[]"
+    description: Slide titles passed to DotNav for tooltip labels
+  - name: controls
+    type: "(props: { containerRef, currentIndex, variant }) => ReactNode"
+    description: Optional render prop for custom controls (e.g., export button)
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+example: |
+  <DeckLayout slideTitles={["Intro", "Problem", "Solution", "Thank You"]}>
+    <Slide id="s-intro" theme="dark"><HeroSlide ... /></Slide>
+    <Slide id="s-problem" theme="light"><SlideHeader ... /></Slide>
+    <Slide id="s-solution" theme="light"><SlideHeader ... /></Slide>
+    <ClosingSlide />
+    <DeckFooter description="..." />
+  </DeckLayout>

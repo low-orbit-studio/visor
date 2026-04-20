@@ -1,0 +1,43 @@
+name: ClosingSlide
+description: Dark closing slide with centered tagline, subtitle, divider, and optional body text. The standard last slide for presentations.
+category: deck
+
+when_to_use:
+  - Final slide of any deck (thank-you, call-to-action, or contact information)
+  - Any deck that needs a simple, impactful closing screen
+
+when_not_to_use:
+  - Mid-deck transitions (use a standard dark Slide instead)
+  - Closing slides that require complex custom content (build from Slide directly)
+
+why: >
+  ClosingSlide standardizes the "Thank you" pattern — dark background, centered
+  tagline, animated entrance — so every deck ends with the same visual weight.
+  The extra prop accepts any ReactNode for CTAs or contact details.
+
+props:
+  - name: id
+    type: string
+    default: "s-close"
+  - name: tagline
+    type: string
+    default: "Thank you."
+  - name: subtitle
+    type: string
+    description: Short line below the tagline
+  - name: body
+    type: string
+    description: Paragraph below the divider
+  - name: extra
+    type: ReactNode
+    description: Custom content rendered below body (CTAs, links, etc.)
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+example: |
+  <ClosingSlide
+    tagline="Let's build something."
+    subtitle="We'd love to hear from you."
+    body="hello@loworbit.studio"
+  />
