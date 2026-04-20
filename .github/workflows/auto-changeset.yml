@@ -1,0 +1,69 @@
+name: Auto Changeset
+
+on:
+  pull_request:
+    types: [closed]
+
+concurrency:
+  group: auto-changeset-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  generate:
+    name: Generate Changeset
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          # Uses GITHUB_TOKEN with contents: write to push directly to main.
+          # If main has branch protection requiring PRs, replace with a PAT
+          # stored as CHANGESET_PUSH_TOKEN and add the bot to the bypass list.
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Fetch PR commits
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/commits" \
+            --paginate > /tmp/commits.json
+
+      - name: Fetch PR file list
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/files" \
+            --paginate > /tmp/files.json
+
+      - name: Generate changeset file
+        id: gen
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: node scripts/auto-changeset.mjs /tmp/commits.json /tmp/files.json
+
+      - name: Commit and push changeset
+        if: steps.gen.outputs.created == 'true'
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .changeset/
+          git commit -m "chore: add changeset for PR #$PR_NUMBER"
+          git push origin main
