@@ -181,8 +181,8 @@
 /* --- Adaptive: Text (dark) — manual toggle --- */
 .dark .blackout-theme {
   --text-primary: rgba(255, 255, 255, 0.7);
-  --text-secondary: rgba(255, 255, 255, 0.45);
-  --text-tertiary: rgba(255, 255, 255, 0.2);
+  --text-secondary: rgba(255, 255, 255, 0.70);
+  --text-tertiary: rgba(255, 255, 255, 0.55);
   --text-disabled: rgba(255, 255, 255, 0.1);
   --text-inverse: #1b1b1b;
   --text-inverse-secondary: #424242;
@@ -257,8 +257,8 @@
 @media (prefers-color-scheme: dark) {
   .blackout-theme:not(.light) {
     --text-primary: rgba(255, 255, 255, 0.7);
-    --text-secondary: rgba(255, 255, 255, 0.45);
-    --text-tertiary: rgba(255, 255, 255, 0.2);
+    --text-secondary: rgba(255, 255, 255, 0.70);
+    --text-tertiary: rgba(255, 255, 255, 0.55);
     --text-disabled: rgba(255, 255, 255, 0.1);
     --text-inverse: #1b1b1b;
     --text-inverse-secondary: #424242;
@@ -421,7 +421,7 @@ html:not(.dark) .blackout-theme {
   --color-fd-card-foreground: rgba(255, 255, 255, 0.7);
   --color-fd-border: rgba(255, 255, 255, 0.06);
   --color-fd-muted: rgba(255, 255, 255, 0.04);
-  --color-fd-muted-foreground: rgba(255, 255, 255, 0.45);
+  --color-fd-muted-foreground: rgba(255, 255, 255, 0.70);
   --color-fd-accent: #666666;
   --color-fd-accent-foreground: #ffffff;
   --color-fd-primary: #666666;
