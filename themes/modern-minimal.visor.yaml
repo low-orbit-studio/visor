@@ -55,7 +55,7 @@ overrides:
   light:
     text-primary: "rgba(0, 0, 0, 0.9)"
     text-secondary: "rgba(0, 0, 0, 0.55)"
-    text-tertiary: "rgba(0, 0, 0, 0.35)"
+    text-tertiary: "rgba(0, 0, 0, 0.55)"
   dark:
     text-primary: "rgba(255, 255, 255, 0.7)"
     text-secondary: "rgba(255, 255, 255, 0.70)"

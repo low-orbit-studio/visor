@@ -358,7 +358,7 @@
 html:not(.dark) .modern-minimal-theme {
   --text-primary: rgba(0, 0, 0, 0.9);
   --text-secondary: rgba(0, 0, 0, 0.55);
-  --text-tertiary: rgba(0, 0, 0, 0.35);
+  --text-tertiary: rgba(0, 0, 0, 0.55);
   --text-disabled: #e2e8f3;
   --text-inverse: #ffffff;
   --text-inverse-secondary: #eaeef5;
