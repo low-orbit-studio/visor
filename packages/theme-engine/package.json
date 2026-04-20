@@ -1,6 +1,6 @@
 {
   "name": "@loworbitstudio/visor-theme-engine",
-  "version": "0.1.0",
+  "version": "0.4.0",
   "description": "Theme engine for the Visor design system — shade generation, token mapping, font resolution, and import/export for .visor.yaml themes.",
   "type": "module",
   "main": "./dist/index.js",

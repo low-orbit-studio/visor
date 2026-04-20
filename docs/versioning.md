@@ -70,6 +70,25 @@ Visor uses [Changesets](https://github.com/changesets/changesets) for changelog 
 - Works with `npm workspaces` out of the box
 - Supports automated publishing via CI
 
+### Automatic changeset generation
+
+Changesets for `@loworbitstudio/visor-core` are **auto-generated on PR merge** by `.github/workflows/auto-changeset.yml`. When a qualifying PR merges to `main`, the workflow inspects the PR's commits, derives the bump type from conventional commit prefixes, and commits `.changeset/pr-<N>-<slug>.md` directly to `main` — triggering `release.yml` automatically.
+
+**Bump rules:**
+
+| Commit prefix | Bump |
+|---|---|
+| `feat!:` / `fix!:` / `BREAKING CHANGE:` in body | major |
+| `feat:` | minor |
+| `fix:` | patch |
+| `docs:` / `chore:` / `refactor:` / others | (none — no changeset) |
+
+Mixed commit types in one PR: highest bump wins. A Linear ticket prefix (`VI-184 feat:`) is tolerated. If the PR already includes a manually-authored `.changeset/*.md` file, auto-generation is skipped.
+
+### Manual changeset (optional)
+
+For custom wording or edge cases not covered by auto-generation, you can still create a changeset manually before merging:
+
 ### Workflow
 
 #### 1. When making a change that affects the tokens package
@@ -85,7 +104,7 @@ The CLI will prompt you to:
 2. Choose the bump type (`major`, `minor`, or `patch`)
 3. Write a summary of the change
 
-This creates a `.changeset/<random-id>.md` file. Commit this file alongside your code changes.
+This creates a `.changeset/<random-id>.md` file. Commit this file alongside your code changes. The auto-generation workflow detects the manual file and skips creating a duplicate.
 
 #### 2. When releasing
 
