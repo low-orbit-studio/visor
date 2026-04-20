@@ -15,10 +15,15 @@ export function bumpPatch(version) {
   return `${major}.${minor}.${patch + 1}`;
 }
 
+// Skip packages whose package.json was modified by the PR — the author
+// already handled versioning (minor, major, or dep update). Auto-bumping
+// on top of a manual version change would produce an unintended extra increment.
 export function detectChangedPackages(prFiles) {
-  return PACKAGES.filter(pkg =>
-    prFiles.some(f => f.filename.startsWith(pkg.dir + '/')),
-  );
+  return PACKAGES.filter(pkg => {
+    const hasChanges = prFiles.some(f => f.filename.startsWith(pkg.dir + '/'));
+    const alreadyVersioned = prFiles.some(f => f.filename === `${pkg.dir}/package.json`);
+    return hasChanges && !alreadyVersioned;
+  });
 }
 
 // Pure: accepts a readJson injector so it's unit-testable without touching disk.
@@ -28,6 +33,17 @@ export function computeBumps({ prFiles, readJson }) {
     const { version } = readJson(`${pkg.dir}/package.json`);
     return { ...pkg, oldVersion: version, newVersion: bumpPatch(version) };
   });
+}
+
+// Updates the workspace version entries in package-lock.json without running
+// npm install — surgical edit avoids network calls and is fast in CI.
+export function applyBumpsToLockFile(lockFile, bumps) {
+  for (const { dir, newVersion } of bumps) {
+    if (lockFile.packages?.[dir]) {
+      lockFile.packages[dir].version = newVersion;
+    }
+  }
+  return lockFile;
 }
 
 // CLI — called by auto-version.yml after a PR merges.
@@ -40,18 +56,20 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const bumps = computeBumps({ prFiles, readJson });
   if (!bumps.length) process.exit(0);
 
-  const summary = [];
   for (const { dir, name, oldVersion, newVersion } of bumps) {
     const pkgPath = `${dir}/package.json`;
     const pkgJson = readJson(pkgPath);
     pkgJson.version = newVersion;
     writeFileSync(pkgPath, JSON.stringify(pkgJson, null, 2) + '\n');
-    summary.push(`${name}: ${oldVersion} → ${newVersion}`);
     console.error(`Bumped ${name}: ${oldVersion} → ${newVersion}`);
   }
 
+  const lockPath = 'package-lock.json';
+  const lockFile = applyBumpsToLockFile(readJson(lockPath), bumps);
+  writeFileSync(lockPath, JSON.stringify(lockFile, null, 2) + '\n');
+  console.error('Updated package-lock.json');
+
   if (process.env.GITHUB_OUTPUT) {
     appendFileSync(process.env.GITHUB_OUTPUT, `bumped=true\n`);
-    appendFileSync(process.env.GITHUB_OUTPUT, `summary=${summary.join(', ')}\n`);
   }
 }
