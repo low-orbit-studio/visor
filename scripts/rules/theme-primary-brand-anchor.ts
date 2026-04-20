@@ -1,7 +1,35 @@
 import { readFile } from 'node:fs/promises';
 import { glob } from 'node:fs/promises';
 import { parse as parseYaml } from 'yaml';
+import { parseColor, rgbToHex } from '../../packages/theme-engine/src/color.js';
 import type { Rule, RuleResult } from './types.js';
+
+/** Normalize any supported CSS color string to lowercase hex for comparison. */
+function toHex(color: string): string | null {
+  const parsed = parseColor(color);
+  if (!parsed) return null;
+  return rgbToHex(parsed.rgb).toLowerCase();
+}
+
+/**
+ * Compare two CSS color strings for equality with ±1 per-channel tolerance.
+ * The shade generator does an OKLCH→RGB→OKLCH round-trip before writing step 500,
+ * which can introduce a 1-unit rounding difference vs. a direct OKLCH→hex conversion.
+ */
+function colorsMatch(a: string, b: string): boolean {
+  const hexA = toHex(a);
+  const hexB = toHex(b);
+  if (!hexA || !hexB) return a.toLowerCase() === b.toLowerCase();
+  if (hexA === hexB) return true;
+  // Allow ±1 per channel for float rounding
+  const rA = parseInt(hexA.slice(1, 3), 16);
+  const gA = parseInt(hexA.slice(3, 5), 16);
+  const bA = parseInt(hexA.slice(5, 7), 16);
+  const rB = parseInt(hexB.slice(1, 3), 16);
+  const gB = parseInt(hexB.slice(3, 5), 16);
+  const bB = parseInt(hexB.slice(5, 7), 16);
+  return Math.abs(rA - rB) <= 1 && Math.abs(gA - gB) <= 1 && Math.abs(bA - bB) <= 1;
+}
 
 /**
  * The brand color (colors.primary) must live at --color-primary-500 in the
@@ -60,9 +88,11 @@ export const themePrimaryBrandAnchor: Rule = {
         });
         continue;
       }
-      const actual500 = match[1].trim().toLowerCase();
-      const expected = primary.toLowerCase();
-      if (actual500 !== expected) {
+      const actual500 = match[1].trim();
+      // Normalize both to hex for format-independent comparison (e.g. oklch vs hex)
+      const actualHex = toHex(actual500) ?? actual500.toLowerCase();
+      const expectedHex = toHex(primary) ?? primary.toLowerCase();
+      if (!colorsMatch(actual500, primary)) {
         results.push({
           pass: false,
           message:
@@ -73,7 +103,7 @@ export const themePrimaryBrandAnchor: Rule = {
       } else {
         results.push({
           pass: true,
-          message: `"${themeName}" brand anchors at --color-primary-500 (${expected})`,
+          message: `"${themeName}" brand anchors at --color-primary-500 (${primary} → ${actualHex})`,
           file: cssPath,
         });
       }
@@ -95,9 +125,10 @@ export const themePrimaryBrandAnchor: Rule = {
             file: cssPath,
           });
         } else {
-          const actualDark500 = darkOverrideMatch[1].trim().toLowerCase();
-          const expectedDark = darkPrimary.toLowerCase();
-          if (actualDark500 !== expectedDark) {
+          const actualDark500 = darkOverrideMatch[1].trim();
+          const actualDarkHex = toHex(actualDark500) ?? actualDark500.toLowerCase();
+          const expectedDarkHex = toHex(darkPrimary) ?? darkPrimary.toLowerCase();
+          if (!colorsMatch(actualDark500, darkPrimary)) {
             results.push({
               pass: false,
               message:
@@ -108,7 +139,7 @@ export const themePrimaryBrandAnchor: Rule = {
           } else {
             results.push({
               pass: true,
-              message: `"${themeName}" dark brand anchors at --color-primary-500 (${expectedDark})`,
+              message: `"${themeName}" dark brand anchors at --color-primary-500 (${darkPrimary} → ${actualDarkHex})`,
               file: cssPath,
             });
           }

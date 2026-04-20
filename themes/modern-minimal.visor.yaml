@@ -3,7 +3,7 @@ version: 1
 group: Visor
 
 colors:
-  primary: "#6eaaa6"
+  primary: "oklch(0.71 0.21 161)"
   neutral: "#6B7280"
   background: "#FFFFFF"
   surface: "#FFFFFF"
@@ -13,6 +13,7 @@ colors:
   info: "#0EA5E9"
 
 colors-dark:
+  primary: "oklch(0.75 0.21 162)"
   background: "#000000"
   surface: "#0a0a0a"
 

@@ -12,6 +12,9 @@
 /* ── Theme-aware wordmark ── */
 .dark .wordmark-light { display: none; }
 html:not(.dark) .wordmark-dark { display: none; }
+/* Blackout: near-black in both modes — always use the dark wordmark */
+html:not(.dark) .blackout-theme .wordmark-light { display: none; }
+html:not(.dark) .blackout-theme .wordmark-dark { display: block; }
 
 /*
  * Safari border-color fix
@@ -200,6 +203,38 @@ p.preview-title {
   background: var(--surface-muted, #f3f4f6);
 }
 
+/* Space theme: starfield — must live here, not in space-theme.css, to survive visor theme sync.
+ * Without position:fixed the star divs stack in document flow, creating phantom top padding. */
+.space-theme .starfield {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.space-theme .star {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  opacity: 0;
+  animation: starTwinkle var(--d, 3s) ease-in-out infinite;
+}
+
+html:not(.dark) .space-theme .star {
+  background: var(--color-primary-500);
+}
+
+html:not(.dark) .space-theme .starfield {
+  opacity: 0.4;
+}
+
+@keyframes starTwinkle {
+  0%,
+  100% { opacity: 0; }
+  50%   { opacity: var(--o, 0.6); }
+}
+
 /* Space theme preview container overrides */
 .space-theme .preview-container {
   border-color: var(--border-strong);
@@ -295,6 +330,13 @@ p.preview-title {
 }
 
 .dark .preview-code .shiki code span {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style);
+}
+/* Blackout: near-black in both modes — always use dark Shiki token colors.
+ * Overrides both fumadocs' own .shiki rule (fumadocs-ui/style.css) and the
+ * .preview-code rule below. Must be broad enough to cover both selectors. */
+html:not(.dark) .blackout-theme .shiki code span {
   color: var(--shiki-dark);
   font-style: var(--shiki-dark-font-style);
 }

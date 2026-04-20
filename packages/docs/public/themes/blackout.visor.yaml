@@ -52,6 +52,8 @@ overrides:
     border-muted: "rgba(255, 255, 255, 0.03)"
     border-strong: "rgba(255, 255, 255, 0.1)"
   light:
+    # Blackout is always-dark — light mode uses near-black backgrounds.
+    # Every token here must work on #0a0a0a, not on white.
     text-primary: "rgba(255, 255, 255, 0.75)"
     text-secondary: "rgba(255, 255, 255, 0.5)"
     text-tertiary: "rgba(255, 255, 255, 0.55)"
@@ -60,6 +62,11 @@ overrides:
     surface-card: "rgba(255, 255, 255, 0.05)"
     surface-subtle: "rgba(255, 255, 255, 0.02)"
     surface-muted: "rgba(255, 255, 255, 0.05)"
+    # Interactive surfaces: keep dark (theme engine defaults to white in light mode)
+    surface-interactive-default: "transparent"
+    surface-interactive-hover: "rgba(255, 255, 255, 0.08)"
+    surface-interactive-active: "rgba(255, 255, 255, 0.12)"
+    surface-interactive-disabled: "rgba(255, 255, 255, 0.04)"
     border-default: "rgba(255, 255, 255, 0.08)"
     border-muted: "rgba(255, 255, 255, 0.04)"
     border-strong: "rgba(255, 255, 255, 0.12)"

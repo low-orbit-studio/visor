@@ -362,10 +362,10 @@ html:not(.dark) .blackout-theme {
   --surface-subtle: rgba(255, 255, 255, 0.02);
   --surface-muted: rgba(255, 255, 255, 0.05);
   --surface-overlay: #1b1b1b;
-  --surface-interactive-default: #ffffff;
-  --surface-interactive-hover: #f5f5f5;
-  --surface-interactive-active: #f1f1f1;
-  --surface-interactive-disabled: #f5f5f5;
+  --surface-interactive-default: transparent;
+  --surface-interactive-hover: rgba(255, 255, 255, 0.08);
+  --surface-interactive-active: rgba(255, 255, 255, 0.12);
+  --surface-interactive-disabled: rgba(255, 255, 255, 0.04);
   --surface-accent-subtle: #f5f5f5;
   --surface-accent-default: #666666;
   --surface-accent-strong: #555555;
