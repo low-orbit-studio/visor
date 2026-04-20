@@ -1,4 +1,5 @@
 import { Command } from "commander"
+import { checkCommand } from "./commands/check.js"
 import { initCommand } from "./commands/init.js"
 import { listCommand } from "./commands/list.js"
 import { addCommand } from "./commands/add.js"
@@ -27,7 +28,9 @@ const program = new Command()
 program
   .name("visor")
   .description("CLI for the Visor design system")
-  .version("0.2.0")
+  .version("0.3.0")
+
+program.addCommand(checkCommand())
 
 program
   .command("init")
