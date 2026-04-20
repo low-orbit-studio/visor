@@ -197,8 +197,8 @@
 /* --- Adaptive: Text (dark) — manual toggle --- */
 .dark .modern-minimal-theme {
   --text-primary: rgba(255, 255, 255, 0.7);
-  --text-secondary: rgba(255, 255, 255, 0.45);
-  --text-tertiary: rgba(255, 255, 255, 0.2);
+  --text-secondary: rgba(255, 255, 255, 0.70);
+  --text-tertiary: rgba(255, 255, 255, 0.55);
   --text-disabled: rgba(255, 255, 255, 0.1);
   --text-inverse: #171b22;
   --text-inverse-secondary: #3d424d;
@@ -273,8 +273,8 @@
 @media (prefers-color-scheme: dark) {
   .modern-minimal-theme:not(.light) {
     --text-primary: rgba(255, 255, 255, 0.7);
-    --text-secondary: rgba(255, 255, 255, 0.45);
-    --text-tertiary: rgba(255, 255, 255, 0.2);
+    --text-secondary: rgba(255, 255, 255, 0.70);
+    --text-tertiary: rgba(255, 255, 255, 0.55);
     --text-disabled: rgba(255, 255, 255, 0.1);
     --text-inverse: #171b22;
     --text-inverse-secondary: #3d424d;
@@ -437,7 +437,7 @@ html:not(.dark) .modern-minimal-theme {
   --color-fd-card-foreground: rgba(255, 255, 255, 0.7);
   --color-fd-border: rgba(255, 255, 255, 0.06);
   --color-fd-muted: rgba(255, 255, 255, 0.04);
-  --color-fd-muted-foreground: rgba(255, 255, 255, 0.45);
+  --color-fd-muted-foreground: rgba(255, 255, 255, 0.70);
   --color-fd-accent: #6eaaa6;
   --color-fd-accent-foreground: #ffffff;
   --color-fd-primary: #6eaaa6;
