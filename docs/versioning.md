@@ -70,41 +70,28 @@ Visor uses [Changesets](https://github.com/changesets/changesets) for changelog 
 - Works with `npm workspaces` out of the box
 - Supports automated publishing via CI
 
-### Automatic changeset generation
+### Automatic patch version bumps
 
-Changesets for `@loworbitstudio/visor-core` are **auto-generated on PR merge** by `.github/workflows/auto-changeset.yml`. When a qualifying PR merges to `main`, the workflow inspects the PR's commits, derives the bump type from conventional commit prefixes, and commits `.changeset/pr-<N>-<slug>.md` directly to `main` — triggering `release.yml` automatically.
+`.github/workflows/auto-version.yml` runs on every PR merge to `main`. It inspects which files the PR changed, maps them to their owning package, and bumps that package's `patch` version directly in `package.json`. Only packages with actual file changes are bumped — docs-only or CI-only PRs produce no version change.
 
-**Bump rules:**
+**Package mapping:**
 
-| Commit prefix | Bump |
+| Files changed | Package bumped |
 |---|---|
-| `feat!:` / `fix!:` / `BREAKING CHANGE:` in body | major |
-| `feat:` | minor |
-| `fix:` | patch |
-| `docs:` / `chore:` / `refactor:` / others | (none — no changeset) |
+| `packages/tokens/**` | `@loworbitstudio/visor-core` |
+| `packages/cli/**` | `@loworbitstudio/visor` |
+| `packages/theme-engine/**` | `@loworbitstudio/visor-theme-engine` |
+| `packages/docs/**`, root files, `components/**` | (no bump) |
 
-Mixed commit types in one PR: highest bump wins. A Linear ticket prefix (`VI-184 feat:`) is tolerated. If the PR already includes a manually-authored `.changeset/*.md` file, auto-generation is skipped.
+The commit lands directly on `main` as `chore: patch version bump for PR #N`, which triggers `release.yml` → `changeset publish` → npm publish for the bumped packages.
 
-### Manual changeset (optional)
-
-For custom wording or edge cases not covered by auto-generation, you can still create a changeset manually before merging:
+**Minor and major bumps** are made manually: edit the `version` field in the relevant `package.json`, commit, and push. `release.yml` will publish on the next push to `main`.
 
 ### Workflow
 
-#### 1. When making a change that affects the tokens package
+#### 1. When making a change that affects a published package
 
-After completing your work, run:
-
-```bash
-npm run changeset
-```
-
-The CLI will prompt you to:
-1. Select which packages are affected (`@loworbitstudio/visor-core`)
-2. Choose the bump type (`major`, `minor`, or `patch`)
-3. Write a summary of the change
-
-This creates a `.changeset/<random-id>.md` file. Commit this file alongside your code changes. The auto-generation workflow detects the manual file and skips creating a duplicate.
+No action needed — the auto-version workflow handles the patch bump on merge.
 
 #### 2. When releasing
 

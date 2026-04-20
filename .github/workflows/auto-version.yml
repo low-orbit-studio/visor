@@ -1,11 +1,12 @@
-name: Auto Changeset
+name: Auto Version
 
 on:
   pull_request:
     types: [closed]
 
 concurrency:
-  group: auto-changeset-${{ github.event.pull_request.number }}
+  # Single queue — prevents two simultaneous patch bumps racing to push to main.
+  group: auto-version
   cancel-in-progress: false
 
 permissions:
@@ -13,8 +14,8 @@ permissions:
   pull-requests: read
 
 jobs:
-  generate:
-    name: Generate Changeset
+  bump:
+    name: Bump Patch Version
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
@@ -26,21 +27,13 @@ jobs:
           fetch-depth: 0
           # Uses GITHUB_TOKEN with contents: write to push directly to main.
           # If main has branch protection requiring PRs, replace with a PAT
-          # stored as CHANGESET_PUSH_TOKEN and add the bot to the bypass list.
+          # stored as AUTO_VERSION_TOKEN and add the bot to the bypass list.
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-
-      - name: Fetch PR commits
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/commits" \
-            --paginate > /tmp/commits.json
 
       - name: Fetch PR file list
         env:
@@ -50,20 +43,17 @@ jobs:
           gh api "repos/${{ github.repository }}/pulls/$PR_NUMBER/files" \
             --paginate > /tmp/files.json
 
-      - name: Generate changeset file
-        id: gen
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          PR_TITLE: ${{ github.event.pull_request.title }}
-        run: node scripts/auto-changeset.mjs /tmp/commits.json /tmp/files.json
+      - name: Bump patch versions for changed packages
+        id: bump
+        run: node scripts/auto-version.mjs /tmp/files.json
 
-      - name: Commit and push changeset
-        if: steps.gen.outputs.created == 'true'
+      - name: Commit and push version bumps
+        if: steps.bump.outputs.bumped == 'true'
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .changeset/
-          git commit -m "chore: add changeset for PR #$PR_NUMBER"
+          git add packages/tokens/package.json packages/cli/package.json packages/theme-engine/package.json
+          git commit -m "chore: patch version bump for PR #$PR_NUMBER"
           git push origin main
