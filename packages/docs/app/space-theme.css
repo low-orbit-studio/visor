@@ -342,7 +342,7 @@
 html:not(.dark) .space-theme {
   --text-primary: #1a1630;
   --text-secondary: rgba(26, 22, 48, 0.72);
-  --text-tertiary: rgba(26, 22, 48, 0.5);
+  --text-tertiary: rgba(26, 22, 48, 0.65);
   --text-disabled: #e5e6f5;
   --text-inverse: #ffffff;
   --text-inverse-secondary: #ecedf8;

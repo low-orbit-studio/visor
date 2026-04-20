@@ -342,7 +342,7 @@
 html:not(.dark) .blackout-theme {
   --text-primary: rgba(255, 255, 255, 0.75);
   --text-secondary: rgba(255, 255, 255, 0.5);
-  --text-tertiary: rgba(255, 255, 255, 0.25);
+  --text-tertiary: rgba(255, 255, 255, 0.55);
   --text-disabled: rgba(255, 255, 255, 0.12);
   --text-inverse: #ffffff;
   --text-inverse-secondary: #eaeaea;
