@@ -1,0 +1,32 @@
+name: CardGrid
+description: CSS grid layout for decks that arranges card children in 2–5 columns with staggered entrance animations.
+category: deck
+
+when_to_use:
+  - Content slides displaying a grid of feature cards, team members, or value props
+  - Any slide where multiple items should appear in equal-width columns with staggered animation
+
+when_not_to_use:
+  - Outside of a <Slide> (stagger animation timing won't be synchronized)
+  - Grids needing unequal column widths or complex alignment
+
+why: >
+  CardGrid injects staggerDelay onto each child automatically so every card
+  animates in sequentially without manual style props. The columns prop maps
+  directly to CSS grid-template-columns, keeping layout consistent across slides.
+
+props:
+  - name: columns
+    type: "2 | 3 | 4 | 5"
+    default: 3
+    description: Number of equal-width columns
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+example: |
+  <CardGrid columns={3}>
+    <FeatureCard title="Speed" description="..." />
+    <FeatureCard title="Quality" description="..." />
+    <FeatureCard title="Scale" description="..." />
+  </CardGrid>

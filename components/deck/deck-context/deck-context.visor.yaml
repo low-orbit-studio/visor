@@ -1,0 +1,33 @@
+name: DeckContext
+description: React context provider that exposes slide navigation methods (goTo, navigateTo) to all descendants within a deck.
+category: deck
+
+when_to_use:
+  - Building custom deck controls that need to programmatically navigate slides
+  - Creating slide-aware child components that respond to navigation events
+  - Any component inside <DeckLayout> that calls useDeck()
+
+when_not_to_use:
+  - Outside of a <DeckLayout> wrapper (useDeck() will throw)
+  - Direct consumers of deck state — prefer useDeck() hook instead of referencing the context directly
+
+why: >
+  DeckContext separates navigation logic from layout, allowing any descendant
+  component to call goTo(index) or navigateTo(id) without prop-drilling.
+  It is instantiated by DeckLayout and consumed via the useDeck() hook.
+
+props:
+  - name: value
+    type: "DeckContextValue"
+    description: "{ goTo: (index: number) => void; navigateTo: (id: string) => void }"
+
+dependencies:
+  - react
+  - "@loworbitstudio/visor-core"
+
+example: |
+  // Consumed via useDeck() inside any child of <DeckLayout>
+  function MyControl() {
+    const { goTo, navigateTo } = useDeck()
+    return <button onClick={() => navigateTo("s-intro")}>Go to Intro</button>
+  }

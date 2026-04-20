@@ -1,0 +1,35 @@
+name: CarouselGallery
+description: Inline image gallery for slides that opens a full-screen lightbox on click. Renders images in an equal-width horizontal row.
+category: deck
+
+when_to_use:
+  - Slides showcasing work samples, screenshots, or photos in a horizontal strip
+  - Any slide where clicking an image should open it full-screen for closer inspection
+
+when_not_to_use:
+  - Long image sets (more than ~5 images causes the row to become too narrow)
+  - Slides where images should be decorative only with no lightbox interaction
+
+why: >
+  CarouselGallery combines a horizontal thumbnail row with Lightbox so users
+  can view details without leaving the slide. The layout is column-count-driven
+  (each image fills 1/N of the row) rather than fixed-size, adapting to however
+  many images are provided.
+
+props:
+  - name: slides
+    type: "GallerySlide[]"
+    description: "Array of { src, alt, caption? } objects"
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+  - lightbox
+
+example: |
+  <CarouselGallery
+    slides={[
+      { src: "/work/a.jpg", alt: "Project Alpha", caption: "Alpha" },
+      { src: "/work/b.jpg", alt: "Project Beta",  caption: "Beta" },
+      { src: "/work/c.jpg", alt: "Project Gamma", caption: "Gamma" },
+    ]}
+  />

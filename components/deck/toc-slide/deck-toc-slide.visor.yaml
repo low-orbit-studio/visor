@@ -1,0 +1,44 @@
+name: TOCSlide
+description: Auto-generated table of contents slide with clickable section + item links for deep navigation. Rendered automatically by DeckRenderer when showTOC is true.
+category: deck
+
+when_to_use:
+  - Decks with 3+ sections where an upfront overview helps orientation
+  - Any deck where users need to jump non-linearly to specific slides
+
+when_not_to_use:
+  - Short decks (under 6 slides) where a TOC adds noise
+  - Decks built with DeckRenderer (showTOC=true handles this automatically)
+
+why: >
+  TOCSlide wires navigateTo() from DeckContext to each item button so clicking
+  a title jumps directly to that slide without scrolling through intermediate
+  slides. DeckRenderer can inject it automatically; only use this component
+  directly when building a custom deck layout.
+
+props:
+  - name: sections
+    type: "TOCSection[]"
+    description: "Array of { section: string; items: { id: string; title: string }[] }"
+  - name: backgroundImage
+    type: string
+    description: Optional background image (activates dark theme on the slide)
+  - name: id
+    type: string
+    default: "s-toc"
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+example: |
+  <TOCSlide
+    sections={[
+      {
+        section: "Strategy",
+        items: [
+          { id: "s-vision", title: "Vision" },
+          { id: "s-goals",  title: "Goals" },
+        ],
+      },
+    ]}
+  />

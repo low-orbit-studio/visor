@@ -1,0 +1,32 @@
+name: SlideThemeContext
+description: React context provider that propagates the active slide theme ("light" | "dark") to child components within a slide.
+category: deck
+
+when_to_use:
+  - Building slide sub-components that need to adapt styling to the parent slide's theme
+  - Any component inside a <Slide> that calls useSlideTheme()
+
+when_not_to_use:
+  - Outside of a <Slide> wrapper (returns "light" as default, not an error, but context is meaningless)
+  - Choosing between light/dark themes — that is controlled by the slide's theme prop
+
+why: >
+  SlideThemeContext lets nested slide components (slide headers, cards, charts)
+  read the parent slide's theme without prop drilling. Slide sets it automatically
+  via SlideThemeProvider so consumers only need to call useSlideTheme().
+
+props:
+  - name: theme
+    type: "'light' | 'dark'"
+    description: Theme variant propagated to all slide descendants
+
+dependencies:
+  - react
+  - "@loworbitstudio/visor-core"
+
+example: |
+  // Consumed via useSlideTheme() inside any child of <Slide>
+  function SlideCard() {
+    const theme = useSlideTheme()
+    return <div data-theme={theme}>...</div>
+  }

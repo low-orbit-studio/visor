@@ -28,6 +28,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = join(__dirname, "../../../..")
 const DIST_DIR = join(__dirname, "../../dist")
 const COMPONENTS_DIR = join(REPO_ROOT, "components/ui")
+const DECK_DIR = join(REPO_ROOT, "components/deck")
+const VISUAL_DIR = join(REPO_ROOT, "components/visual")
 const BLOCKS_DIR = join(REPO_ROOT, "blocks")
 const PATTERNS_DIR = join(REPO_ROOT, "patterns")
 const HOOKS_DIR = join(REPO_ROOT, "hooks")
@@ -78,25 +80,34 @@ function validateRequiredFields(
 function loadComponentMetadata(): Map<string, ComponentMetadata> {
   const components = new Map<string, ComponentMetadata>()
 
-  if (!existsSync(COMPONENTS_DIR)) {
-    console.warn("  Warning: components/ui/ directory not found")
-    return components
-  }
+  const scanDirs = [COMPONENTS_DIR, DECK_DIR, VISUAL_DIR]
 
-  const dirs = readdirSync(COMPONENTS_DIR, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && !d.name.startsWith("__"))
+  for (const baseDir of scanDirs) {
+    if (!existsSync(baseDir)) continue
 
-  for (const dir of dirs) {
-    const yamlPath = join(COMPONENTS_DIR, dir.name, `${dir.name}.visor.yaml`)
-    if (!existsSync(yamlPath)) {
-      console.warn(`  Warning: No .visor.yaml for ${dir.name}`)
-      continue
+    const dirs = readdirSync(baseDir, { withFileTypes: true })
+      .filter((d) => d.isDirectory() && !d.name.startsWith("__"))
+
+    for (const dir of dirs) {
+      // Prefer <dir>.visor.yaml; fall back to any *.visor.yaml in the dir.
+      // This lets registry name (yaml basename) differ from directory name.
+      let yamlPath = join(baseDir, dir.name, `${dir.name}.visor.yaml`)
+      if (!existsSync(yamlPath)) {
+        const files = readdirSync(join(baseDir, dir.name))
+          .filter((f) => f.endsWith(".visor.yaml"))
+        if (files.length === 0) {
+          console.warn(`  Warning: No .visor.yaml for ${dir.name}`)
+          continue
+        }
+        yamlPath = join(baseDir, dir.name, files[0])
+      }
+
+      const registryName = basename(yamlPath, ".visor.yaml")
+      const raw = readFileSync(yamlPath, "utf-8")
+      const data = parseYAML(raw) as Record<string, unknown>
+      validateRequiredFields(data, REQUIRED_COMPONENT_FIELDS, yamlPath)
+      components.set(registryName, data as unknown as ComponentMetadata)
     }
-
-    const raw = readFileSync(yamlPath, "utf-8")
-    const data = parseYAML(raw) as Record<string, unknown>
-    validateRequiredFields(data, REQUIRED_COMPONENT_FIELDS, yamlPath)
-    components.set(dir.name, data as unknown as ComponentMetadata)
   }
 
   return components
@@ -130,12 +141,13 @@ function loadBlockMetadata(): Map<string, BlockMetadata> {
 }
 
 function loadTokensForComponent(componentName: string): string[] {
-  const cssPath = join(COMPONENTS_DIR, componentName, `${componentName}.module.css`)
-  if (!existsSync(cssPath)) {
-    return []
+  for (const baseDir of [COMPONENTS_DIR, DECK_DIR, VISUAL_DIR]) {
+    const cssPath = join(baseDir, componentName, `${componentName}.module.css`)
+    if (existsSync(cssPath)) {
+      return extractTokensFromCSS(readFileSync(cssPath, "utf-8"))
+    }
   }
-  const cssContent = readFileSync(cssPath, "utf-8")
-  return extractTokensFromCSS(cssContent)
+  return []
 }
 
 function loadPatterns(): Map<string, PatternMetadata> {

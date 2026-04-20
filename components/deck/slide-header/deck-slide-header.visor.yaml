@@ -1,0 +1,37 @@
+name: SlideHeader
+description: Slide section header with animated subtitle, title, and optional description. Used at the top of content slides to establish section context.
+category: deck
+
+when_to_use:
+  - Opening content slides where a section title and subtitle are needed
+  - Any slide that requires a consistent heading hierarchy with staggered entrance animations
+
+when_not_to_use:
+  - Hero slides (use HeroSlide which has its own heading layout)
+  - Slides where the heading needs custom layout or typography
+
+why: >
+  SlideHeader standardizes the subtitle + title + description pattern across
+  content slides and handles staggered deck animation via staggerDelay. Using
+  it keeps entrance animation timing consistent across the whole deck.
+
+props:
+  - name: subtitle
+    type: string
+    description: Section label displayed above the title
+  - name: title
+    type: string
+    description: Main heading text
+  - name: description
+    type: string
+    description: Optional paragraph below the title
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+example: |
+  <SlideHeader
+    subtitle="Phase 1"
+    title="Discovery & Research"
+    description="Understanding the problem space before committing to solutions."
+  />

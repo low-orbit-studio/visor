@@ -1,0 +1,56 @@
+name: HeroSlide
+description: Full-viewport opening slide with badge, animated title, subtitle, and divider. Supports hero image overlay and split logo layout.
+category: deck
+
+when_to_use:
+  - First slide of a presentation deck (title / opening)
+  - Any slide that functions as a visual cover with a large heading and minimal body text
+  - Brand presentations where a logo lockup is needed alongside text (split layout)
+
+when_not_to_use:
+  - Mid-deck content slides (use Slide + SlideHeader instead)
+  - Slides with more than a short tagline and subtitle
+
+why: >
+  HeroSlide encapsulates the most common opening-slide layout — badge + title +
+  subtitle + divider — with staggered entrance animations pre-wired. The split
+  mode (logo prop) provides a logo-left, text-right layout for branded decks
+  without building a custom grid inside a Slide.
+
+props:
+  - name: id
+    type: string
+    description: Unique slide identifier
+  - name: badge
+    type: string
+    description: Short label displayed above the title (e.g. company name or date)
+  - name: title
+    type: string
+    description: Main heading (mutually exclusive with titleContent)
+  - name: titleContent
+    type: ReactNode
+    description: Custom JSX heading (overrides title string)
+  - name: subtitle
+    type: string
+    description: Tagline below the title
+  - name: heroImage
+    type: string
+    description: URL for a full-bleed background image with overlay
+  - name: logo
+    type: string
+    description: Logo image URL (activates split layout when heroImage is absent)
+  - name: description
+    type: string
+    description: Optional short description paragraph
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+example: |
+  <HeroSlide
+    id="s-hero"
+    badge="Low Orbit Studio"
+    title="Building the Future"
+    subtitle="Design systems that scale."
+    heroImage="/images/hero-bg.jpg"
+  />

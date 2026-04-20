@@ -1,0 +1,45 @@
+name: DotNav
+description: Fixed-position dot navigation indicator for decks. Shows one dot per slide with hover tooltips and keyboard-accessible click targets.
+category: deck
+
+when_to_use:
+  - Inside <DeckLayout> as the primary slide position indicator
+  - Any deck that needs visible slide progress with tooltip labels
+
+when_not_to_use:
+  - Outside of a deck (dots are meaningless without a scroll-snap container)
+  - Decks with more than ~12 slides (dots become visually crowded)
+
+why: >
+  DotNav is automatically rendered by DeckLayout — you rarely instantiate it
+  directly. It adapts its color variant (light/dark) based on the active slide's
+  theme so it remains legible against any background.
+
+props:
+  - name: slideCount
+    type: number
+    description: Total number of slides
+  - name: currentIndex
+    type: number
+    description: Zero-based index of the active slide
+  - name: onDotClick
+    type: "(index: number) => void"
+    description: Callback when a dot is clicked
+  - name: variant
+    type: "'light' | 'dark'"
+    default: "light"
+  - name: titles
+    type: "string[]"
+    description: Optional slide titles shown as tooltips on hover
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+example: |
+  <DotNav
+    slideCount={5}
+    currentIndex={0}
+    onDotClick={(i) => goTo(i)}
+    variant="dark"
+    titles={["Intro", "Problem", "Solution", "Roadmap", "Thank You"]}
+  />
