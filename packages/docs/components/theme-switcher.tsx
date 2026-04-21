@@ -11,44 +11,8 @@ import {
   SelectItem,
   SelectLabel,
 } from "./ui/select";
-import { THEME_GROUPS, ALL_THEMES } from "@/lib/theme-config";
+import { THEME_GROUPS, applyTheme, getStoredTheme } from "@/lib/theme-config";
 import styles from "./theme-switcher.module.css";
-
-const STORAGE_KEY = "visor-theme";
-const DEFAULT_THEME = "blackout";
-
-function getStoredTheme(): string {
-  if (typeof window === "undefined") return DEFAULT_THEME;
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored && ALL_THEMES.includes(stored)) return stored;
-  return DEFAULT_THEME;
-}
-
-function applyTheme(theme: string) {
-  const body = document.body;
-  for (const t of ALL_THEMES) {
-    body.classList.remove(`${t}-theme`);
-  }
-  body.classList.add(`${theme}-theme`);
-  localStorage.setItem(STORAGE_KEY, theme);
-
-  // If the activated theme specifies a default mode, force it on <html>
-  const entry = THEME_GROUPS.flatMap((g) => g.themes).find((t) => t.value === theme);
-  if (entry?.defaultMode) {
-    const html = document.documentElement;
-    if (entry.defaultMode === "dark") {
-      html.classList.add("dark");
-      html.classList.remove("light");
-      html.style.colorScheme = "dark";
-    } else {
-      html.classList.add("light");
-      html.classList.remove("dark");
-      html.style.colorScheme = "light";
-    }
-  }
-
-  document.dispatchEvent(new CustomEvent("visor-theme-change"));
-}
 
 export function ThemeSwitcher() {
   const [theme, setTheme] = useState<string>(getStoredTheme);
@@ -58,6 +22,16 @@ export function ThemeSwitcher() {
   useEffect(() => {
     applyTheme(theme);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Keep in sync with other theme switchers on the page (e.g. Visual Explorer).
+  useEffect(() => {
+    const handler = () => {
+      const next = getStoredTheme();
+      setTheme((prev) => (prev === next ? prev : next));
+    };
+    document.addEventListener("visor-theme-change", handler);
+    return () => document.removeEventListener("visor-theme-change", handler);
   }, []);
 
   function handleChange(value: string) {
