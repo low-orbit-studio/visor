@@ -1,0 +1,87 @@
+name: Deploy Widgetbook
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - packages/widgetbook/**
+      - packages/visor-flutter/**
+      - components/flutter/**
+      - scripts/build-widgetbook.sh
+      - scripts/sync-widgetbook-widgets.sh
+      - examples/flutter/solespark-ui/**
+      - .github/workflows/deploy-widgetbook.yml
+  pull_request:
+    paths:
+      - packages/widgetbook/**
+      - packages/visor-flutter/**
+      - components/flutter/**
+      - scripts/build-widgetbook.sh
+      - scripts/sync-widgetbook-widgets.sh
+      - examples/flutter/solespark-ui/**
+      - .github/workflows/deploy-widgetbook.yml
+
+concurrency:
+  group: widgetbook-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build + deploy Widgetbook
+    runs-on: ubuntu-latest
+
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.35.5"
+          channel: stable
+          cache: true
+
+      - name: Build Widgetbook
+        run: bash scripts/build-widgetbook.sh
+
+      - name: Skip deploy if Vercel secrets are missing
+        if: ${{ env.VERCEL_TOKEN == '' || env.VERCEL_ORG_ID == '' || env.VERCEL_PROJECT_ID == '' }}
+        run: |
+          echo "::warning::VERCEL_TOKEN / VERCEL_ORG_ID / VERCEL_PROJECT_ID not set - skipping deploy."
+          exit 0
+
+      - name: Install Vercel CLI
+        if: ${{ env.VERCEL_TOKEN != '' }}
+        run: npm install --global vercel@latest
+
+      - name: Deploy preview (pull_request)
+        if: ${{ github.event_name == 'pull_request' && env.VERCEL_TOKEN != '' }}
+        id: deploy_preview
+        working-directory: packages/widgetbook
+        run: |
+          url=$(vercel deploy --yes --token="$VERCEL_TOKEN")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Preview: $url" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment preview URL on PR
+        if: ${{ github.event_name == 'pull_request' && steps.deploy_preview.outputs.url != '' }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: widgetbook-preview
+          message: |
+            ### Widgetbook preview
+            ${{ steps.deploy_preview.outputs.url }}
+
+            Widgets, variants, themes (light/dark). Refreshes on every push.
+
+      - name: Deploy production (push to main)
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && env.VERCEL_TOKEN != '' }}
+        working-directory: packages/widgetbook
+        run: |
+          url=$(vercel deploy --yes --prod --token="$VERCEL_TOKEN")
+          echo "Production: $url" >> "$GITHUB_STEP_SUMMARY"

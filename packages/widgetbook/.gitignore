@@ -1,0 +1,24 @@
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+pubspec.lock
+
+# Codegen — widgetbook directories are regenerated every build.
+*.g.dart
+
+# Widget source copies — synced from components/flutter/ by scripts/sync-widgetbook-widgets.sh.
+# Kept out of git so the source of truth stays at components/flutter/.
+lib/widgets/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Vercel
+.vercel

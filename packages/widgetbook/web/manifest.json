@@ -1,0 +1,12 @@
+{
+  "name": "Visor Widgetbook",
+  "short_name": "Visor",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#5B6FFF",
+  "description": "Interactive preview of Flutter widgets from the Visor design system.",
+  "orientation": "any",
+  "prefer_related_applications": false,
+  "icons": []
+}

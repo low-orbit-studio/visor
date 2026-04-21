@@ -493,11 +493,12 @@ git clone https://github.com/loworbit/visor.git
 cd visor
 npm install
 
-npm test          # Run tests
-npm run typecheck # Type check
-npm run lint      # Lint
-npm run build     # Build all packages
-npm run docs:dev  # Start docs site
+npm test               # Run tests
+npm run typecheck      # Type check
+npm run lint           # Lint
+npm run build          # Build all packages
+npm run docs:dev       # Start docs site
+npm run widgetbook:dev # Start Flutter widgetbook preview (requires Flutter SDK)
 ```
 
 ### Repository Structure
