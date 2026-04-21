@@ -193,4 +193,116 @@ describe("theme apply command", () => {
     expect(parsed.adapter).toBe("nextjs")
     expect(parsed.size).toBeGreaterThan(0)
   })
+
+  describe("flutter adapter", () => {
+    it("writes a directory tree with --adapter flutter", () => {
+      const yamlPath = join(testDir, ".visor.yaml")
+      writeFileSync(yamlPath, VALID_YAML, "utf-8")
+
+      themeApplyCommand(".visor.yaml", testDir, {
+        adapter: "flutter",
+        output: "packages/ui",
+      })
+
+      const outputDir = join(testDir, "packages/ui")
+      expect(existsSync(outputDir)).toBe(true)
+      expect(existsSync(join(outputDir, "pubspec.yaml"))).toBe(true)
+      expect(existsSync(join(outputDir, "lib/ui.dart"))).toBe(true)
+      expect(
+        existsSync(join(outputDir, "lib/src/colors/ui_colors.dart"))
+      ).toBe(true)
+      expect(
+        existsSync(join(outputDir, "lib/src/theme/ui_theme.dart"))
+      ).toBe(true)
+    })
+
+    it("generated ui_colors.dart imports visor_core and declares UIColors", () => {
+      const yamlPath = join(testDir, ".visor.yaml")
+      writeFileSync(yamlPath, VALID_YAML, "utf-8")
+
+      themeApplyCommand(".visor.yaml", testDir, {
+        adapter: "flutter",
+        output: "packages/ui",
+      })
+
+      const dart = readFileSync(
+        join(testDir, "packages/ui/lib/src/colors/ui_colors.dart"),
+        "utf-8"
+      )
+      expect(dart).toContain("import 'package:visor_core/visor_core.dart';")
+      expect(dart).toContain("sealed class UIColors")
+      expect(dart).toContain("static final VisorColors light")
+      expect(dart).toContain("static final VisorColors dark")
+    })
+
+    it("respects --tokens-only flag", () => {
+      const yamlPath = join(testDir, ".visor.yaml")
+      writeFileSync(yamlPath, VALID_YAML, "utf-8")
+
+      themeApplyCommand(".visor.yaml", testDir, {
+        adapter: "flutter",
+        output: "packages/ui",
+        tokensOnly: true,
+      })
+
+      const outputDir = join(testDir, "packages/ui")
+      expect(existsSync(join(outputDir, "lib/src/colors/ui_colors.dart"))).toBe(true)
+      expect(existsSync(join(outputDir, "pubspec.yaml"))).toBe(false)
+      expect(existsSync(join(outputDir, "lib/src/theme/ui_theme.dart"))).toBe(false)
+    })
+
+    it("respects --package-name flag", () => {
+      const yamlPath = join(testDir, ".visor.yaml")
+      writeFileSync(yamlPath, VALID_YAML, "utf-8")
+
+      themeApplyCommand(".visor.yaml", testDir, {
+        adapter: "flutter",
+        output: "packages/ui",
+        packageName: "solespark_ui",
+      })
+
+      const pubspec = readFileSync(
+        join(testDir, "packages/ui/pubspec.yaml"),
+        "utf-8"
+      )
+      expect(pubspec).toContain("name: solespark_ui")
+    })
+
+    it("uses default output directory packages/ui when none supplied", () => {
+      const yamlPath = join(testDir, ".visor.yaml")
+      writeFileSync(yamlPath, VALID_YAML, "utf-8")
+
+      themeApplyCommand(".visor.yaml", testDir, { adapter: "flutter" })
+
+      expect(existsSync(join(testDir, "packages/ui/pubspec.yaml"))).toBe(true)
+    })
+
+    it("emits structured JSON with file list when --json", () => {
+      const yamlPath = join(testDir, ".visor.yaml")
+      writeFileSync(yamlPath, VALID_YAML, "utf-8")
+
+      themeApplyCommand(".visor.yaml", testDir, {
+        adapter: "flutter",
+        output: "packages/ui",
+        json: true,
+      })
+
+      const calls = (console.log as ReturnType<typeof vi.fn>).mock.calls
+      const jsonOutput = calls.find((call: unknown[]) => {
+        try {
+          const parsed = JSON.parse(String(call[0]))
+          return parsed.success === true && parsed.adapter === "flutter"
+        } catch {
+          return false
+        }
+      })
+
+      expect(jsonOutput).toBeDefined()
+      const parsed = JSON.parse(String(jsonOutput![0]))
+      expect(parsed.directory).toContain("packages/ui")
+      expect(Array.isArray(parsed.files)).toBe(true)
+      expect(parsed.files).toContain("lib/src/colors/ui_colors.dart")
+      expect(parsed.size).toBeGreaterThan(0)
+    })
+  })
 })

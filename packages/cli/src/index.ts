@@ -100,16 +100,51 @@ const theme = program
 theme
   .command("apply")
   .description(
-    "Read a .visor.yaml file and generate full CSS token overrides"
+    "Read a .visor.yaml file and generate token overrides (CSS or Flutter)"
   )
   .argument("<file>", "path to .visor.yaml file")
-  .option("-o, --output <path>", "output CSS file path")
+  .option(
+    "-o, --output <path>",
+    "output CSS file path (or directory for --adapter flutter)"
+  )
   .option("--json", "output structured JSON (for AI agents)")
-  .option("--adapter <name>", "target adapter: nextjs, fumadocs, deck")
+  .option(
+    "--adapter <name>",
+    "target adapter: nextjs, fumadocs, deck, docs, flutter"
+  )
+  .option(
+    "--package-name <name>",
+    "(flutter) Dart package name for generated pubspec.yaml (default: ui)"
+  )
+  .option(
+    "--tokens-only",
+    "(flutter) emit only token files — skip pubspec.yaml and theme scaffolding"
+  )
+  .option(
+    "--light-only",
+    "(flutter) emit only the light-brightness theme getter"
+  )
+  .option(
+    "--dark-only",
+    "(flutter) emit only the dark-brightness theme getter"
+  )
+  .option(
+    "--theme-class-name <name>",
+    "(flutter) class name for generated theme (default: VisorAppTheme)"
+  )
   .action(
     (
       file: string,
-      options: { output?: string; json?: boolean; adapter?: string }
+      options: {
+        output?: string
+        json?: boolean
+        adapter?: string
+        packageName?: string
+        tokensOnly?: boolean
+        lightOnly?: boolean
+        darkOnly?: boolean
+        themeClassName?: string
+      }
     ) => {
       themeApplyCommand(file, process.cwd(), {
         ...options,
