@@ -1,0 +1,3 @@
+dependency_overrides:
+  visor_core:
+    path: ../../../packages/visor-flutter

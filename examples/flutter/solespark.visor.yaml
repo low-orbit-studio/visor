@@ -1,0 +1,48 @@
+name: solespark
+version: 1
+
+colors:
+  primary: "#6952D9"
+  accent: "#FF00C8"
+  neutral: "#6B7280"
+  background: "#1A1F22"
+  surface: "#242628"
+  success: "#34C759"
+  warning: "#FFCC00"
+  error: "#FF3B30"
+  info: "#5BC4FF"
+
+colors-dark:
+  background: "#1A1F22"
+  surface: "#242628"
+
+typography:
+  heading:
+    family: "Outfit"
+    weight: 700
+  body:
+    family: "Outfit"
+    weight: 400
+
+spacing:
+  base: 4
+
+radius:
+  sm: 4
+  md: 8
+  lg: 12
+  xl: 16
+  pill: 9999
+
+shadows:
+  xs: "0 1px 2px rgba(0, 0, 0, 0.2)"
+  sm: "0 2px 4px rgba(0, 0, 0, 0.25)"
+  md: "0 4px 8px rgba(0, 0, 0, 0.3)"
+  lg: "0 8px 16px rgba(0, 0, 0, 0.35)"
+  xl: "0 16px 32px rgba(0, 0, 0, 0.4)"
+
+motion:
+  duration-fast: "100ms"
+  duration-normal: "200ms"
+  duration-slow: "400ms"
+  easing: "cubic-bezier(0.4, 0, 0.2, 1)"
