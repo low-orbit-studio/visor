@@ -37,7 +37,12 @@ export const registryManifestSync: Rule = {
     }
 
     const registry = JSON.parse(registryRaw) as {
-      items: Array<{ name: string; type: string; category?: string }>;
+      items: Array<{
+        name: string;
+        type: string;
+        category?: string;
+        target?: string;
+      }>;
     };
     const manifest = JSON.parse(manifestRaw) as {
       components: Record<string, { category?: string }>;
@@ -52,6 +57,9 @@ export const registryManifestSync: Rule = {
 
     for (const item of registry.items) {
       if (!syncableTypes.has(item.type)) continue;
+      // Flutter items use their own manifest schema; the React-focused
+      // visor-manifest.json does not track them.
+      if (item.target === 'flutter') continue;
 
       const isBlock = item.type === 'registry:block';
       const manifestSection = isBlock ? manifest.blocks : manifest.components;
