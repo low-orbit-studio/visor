@@ -209,14 +209,14 @@ describe("theme apply command", () => {
       expect(existsSync(join(outputDir, "pubspec.yaml"))).toBe(true)
       expect(existsSync(join(outputDir, "lib/ui.dart"))).toBe(true)
       expect(
-        existsSync(join(outputDir, "lib/src/colors/ui_colors.dart"))
+        existsSync(join(outputDir, "lib/src/colors/visor_colors.dart"))
       ).toBe(true)
       expect(
-        existsSync(join(outputDir, "lib/src/theme/ui_theme.dart"))
+        existsSync(join(outputDir, "lib/src/theme/visor_theme.dart"))
       ).toBe(true)
     })
 
-    it("generated ui_colors.dart imports visor_core and declares UIColors", () => {
+    it("generated visor_colors.dart imports visor_core and declares VisorColors", () => {
       const yamlPath = join(testDir, ".visor.yaml")
       writeFileSync(yamlPath, VALID_YAML, "utf-8")
 
@@ -226,13 +226,13 @@ describe("theme apply command", () => {
       })
 
       const dart = readFileSync(
-        join(testDir, "packages/ui/lib/src/colors/ui_colors.dart"),
+        join(testDir, "packages/ui/lib/src/colors/visor_colors.dart"),
         "utf-8"
       )
       expect(dart).toContain("import 'package:visor_core/visor_core.dart';")
-      expect(dart).toContain("sealed class UIColors")
-      expect(dart).toContain("static final VisorColors light")
-      expect(dart).toContain("static final VisorColors dark")
+      expect(dart).toContain("sealed class VisorColors")
+      expect(dart).toContain("static final VisorColorsData light")
+      expect(dart).toContain("static final VisorColorsData dark")
     })
 
     it("respects --tokens-only flag", () => {
@@ -246,9 +246,9 @@ describe("theme apply command", () => {
       })
 
       const outputDir = join(testDir, "packages/ui")
-      expect(existsSync(join(outputDir, "lib/src/colors/ui_colors.dart"))).toBe(true)
+      expect(existsSync(join(outputDir, "lib/src/colors/visor_colors.dart"))).toBe(true)
       expect(existsSync(join(outputDir, "pubspec.yaml"))).toBe(false)
-      expect(existsSync(join(outputDir, "lib/src/theme/ui_theme.dart"))).toBe(false)
+      expect(existsSync(join(outputDir, "lib/src/theme/visor_theme.dart"))).toBe(false)
     })
 
     it("respects --package-name flag", () => {
@@ -301,7 +301,7 @@ describe("theme apply command", () => {
       const parsed = JSON.parse(String(jsonOutput![0]))
       expect(parsed.directory).toContain("packages/ui")
       expect(Array.isArray(parsed.files)).toBe(true)
-      expect(parsed.files).toContain("lib/src/colors/ui_colors.dart")
+      expect(parsed.files).toContain("lib/src/colors/visor_colors.dart")
       expect(parsed.size).toBeGreaterThan(0)
     })
   })
