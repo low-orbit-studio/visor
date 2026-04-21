@@ -39,6 +39,8 @@ import { discoverabilitySelectionQuality } from './rules/discoverability-selecti
 import { discoverabilityScore } from './rules/discoverability-score.js';
 import { themeTextContrast } from './rules/theme-text-contrast.js';
 import { crossPlatformManifestSync } from './rules/cross-platform-manifest-sync.js';
+import { widgetbookUseCaseCoverage } from './rules/widgetbook-use-case-coverage.js';
+import { widgetbookDepsFresh } from './rules/widgetbook-deps-fresh.js';
 import type { Rule } from './rules/types.js';
 
 const rules: Rule[] = [
@@ -67,6 +69,8 @@ const rules: Rule[] = [
   visorYamlComplete,
   visorYamlPreviewUrl,
   crossPlatformManifestSync,
+  widgetbookUseCaseCoverage,
+  widgetbookDepsFresh,
   testFileExists,
   cssModuleExists,
   registryEntryExists,
