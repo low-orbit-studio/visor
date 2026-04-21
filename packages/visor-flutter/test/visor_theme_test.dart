@@ -4,7 +4,7 @@ import 'package:visor_core/visor_core.dart';
 
 void main() {
   group('VisorTheme.build', () {
-    test('produces a ThemeData with ColorScheme derived from VisorColors', () {
+    test('produces a ThemeData with ColorScheme derived from VisorColorsData', () {
       final colors = _testColors();
       final theme =
           VisorTheme.build(colors: colors, brightness: Brightness.light);
@@ -17,41 +17,150 @@ void main() {
       expect(theme.scaffoldBackgroundColor, colors.surfacePage);
     });
 
-    test('registers VisorColors as a ThemeExtension', () {
+    test('registers VisorColorsData as a ThemeExtension', () {
       final colors = _testColors();
       final theme =
           VisorTheme.build(colors: colors, brightness: Brightness.light);
 
-      final resolved = theme.extension<VisorColors>();
+      final resolved = theme.extension<VisorColorsData>();
       expect(resolved, isNotNull);
       expect(resolved!.textPrimary, colors.textPrimary);
     });
 
-    test('falls back to defaults for motion/radius/shadows/spacing', () {
+    test('falls back to defaults for every token extension', () {
       final theme = VisorTheme.build(
         colors: _testColors(),
         brightness: Brightness.light,
       );
 
-      expect(theme.extension<VisorMotion>(), isNotNull);
-      expect(theme.extension<VisorRadius>(), isNotNull);
-      expect(theme.extension<VisorShadows>(), isNotNull);
-      expect(theme.extension<VisorSpacing>(), isNotNull);
+      expect(theme.extension<VisorMotionData>(), isNotNull);
+      expect(theme.extension<VisorRadiusData>(), isNotNull);
+      expect(theme.extension<VisorShadowsData>(), isNotNull);
+      expect(theme.extension<VisorSpacingData>(), isNotNull);
+      expect(theme.extension<VisorTextStylesData>(), isNotNull);
     });
 
     test('honors supplied motion/radius when provided', () {
-      const customRadius = VisorRadius(sm: 2, md: 4, lg: 8, xl: 12, pill: 999);
+      const customRadius = VisorRadiusData(sm: 2, md: 4, lg: 8, xl: 12, pill: 999);
       final theme = VisorTheme.build(
         colors: _testColors(),
         brightness: Brightness.light,
         radius: customRadius,
       );
 
-      expect(theme.extension<VisorRadius>()!.md, 4.0);
+      expect(theme.extension<VisorRadiusData>()!.md, 4.0);
+    });
+
+    test('applies VisorTextStylesData.defaults into ThemeData.textTheme', () {
+      final theme = VisorTheme.build(
+        colors: _testColors(),
+        brightness: Brightness.light,
+      );
+
+      // Material 3 2024 defaults — displayLarge is 57 / w400 / -0.25.
+      expect(theme.textTheme.displayLarge!.fontSize, 57);
+      expect(theme.textTheme.displayLarge!.fontWeight, FontWeight.w400);
+      expect(theme.textTheme.titleMedium!.fontWeight, FontWeight.w500);
+      // Body/display colors applied from VisorColorsData.textPrimary.
+      expect(theme.textTheme.bodyLarge!.color, _testColors().textPrimary);
+    });
+
+    test('honors supplied textStyles when provided', () {
+      final custom = VisorTextStylesData.defaults.copyWith(
+        displayLarge: const TextStyle(fontSize: 80, fontWeight: FontWeight.w900),
+      );
+      final theme = VisorTheme.build(
+        colors: _testColors(),
+        brightness: Brightness.light,
+        textStyles: custom,
+      );
+
+      expect(theme.textTheme.displayLarge!.fontSize, 80);
+      expect(theme.textTheme.displayLarge!.fontWeight, FontWeight.w900);
+    });
+
+    test('wires AppBar theme to surfacePage + textPrimary', () {
+      final colors = _testColors();
+      final theme =
+          VisorTheme.build(colors: colors, brightness: Brightness.light);
+
+      expect(theme.appBarTheme.backgroundColor, colors.surfacePage);
+      expect(theme.appBarTheme.foregroundColor, colors.textPrimary);
+      expect(theme.appBarTheme.elevation, 0);
+      expect(theme.appBarTheme.centerTitle, isTrue);
+    });
+
+    test('wires button shapes from radius.sm', () {
+      const customRadius =
+          VisorRadiusData(sm: 6, md: 12, lg: 16, xl: 24, pill: 9999);
+      final theme = VisorTheme.build(
+        colors: _testColors(),
+        brightness: Brightness.light,
+        radius: customRadius,
+      );
+
+      final filledShape =
+          theme.filledButtonTheme.style!.shape!.resolve(<WidgetState>{})
+              as RoundedRectangleBorder;
+      expect(
+        (filledShape.borderRadius as BorderRadius).topLeft.x,
+        6,
+      );
+    });
+
+    test('wires Card / Dialog shapes from radius.md / radius.lg', () {
+      const customRadius =
+          VisorRadiusData(sm: 6, md: 12, lg: 16, xl: 24, pill: 9999);
+      final theme = VisorTheme.build(
+        colors: _testColors(),
+        brightness: Brightness.light,
+        radius: customRadius,
+      );
+
+      final cardShape = theme.cardTheme.shape! as RoundedRectangleBorder;
+      expect((cardShape.borderRadius as BorderRadius).topLeft.x, 12);
+
+      final dialogShape = theme.dialogTheme.shape! as RoundedRectangleBorder;
+      expect((dialogShape.borderRadius as BorderRadius).topLeft.x, 16);
+    });
+
+    test('InputDecoration focused border uses borderFocus', () {
+      final colors = _testColors();
+      final theme =
+          VisorTheme.build(colors: colors, brightness: Brightness.light);
+
+      final focused =
+          theme.inputDecorationTheme.focusedBorder! as OutlineInputBorder;
+      expect(focused.borderSide.color, colors.borderFocus);
+    });
+
+    test('Checkbox fill resolves to primary when selected, transparent otherwise',
+        () {
+      final colors = _testColors();
+      final theme =
+          VisorTheme.build(colors: colors, brightness: Brightness.light);
+
+      final fill = theme.checkboxTheme.fillColor!;
+      expect(fill.resolve(<WidgetState>{WidgetState.selected}),
+          colors.interactivePrimaryBg);
+      expect(fill.resolve(<WidgetState>{}), Colors.transparent);
+    });
+
+    test('NavigationBar label uses primary for selected, tertiary otherwise',
+        () {
+      final colors = _testColors();
+      final theme =
+          VisorTheme.build(colors: colors, brightness: Brightness.light);
+
+      final label = theme.navigationBarTheme.labelTextStyle!;
+      final selected = label.resolve(<WidgetState>{WidgetState.selected})!;
+      final unselected = label.resolve(<WidgetState>{})!;
+      expect(selected.color, colors.interactivePrimaryBg);
+      expect(unselected.color, colors.textTertiary);
     });
   });
 
-  group('VisorColors lerp', () {
+  group('VisorColorsData lerp', () {
     test('interpolates colors between two instances', () {
       final a = _testColors();
       final b = _testColors(textPrimaryValue: 0xFFFFFFFF);
@@ -61,15 +170,15 @@ void main() {
       expect(mid.textPrimary.a, greaterThan(0.0));
     });
 
-    test('returns self when other is not VisorColors', () {
+    test('returns self when other is not VisorColorsData', () {
       final a = _testColors();
       expect(a.lerp(null, 0.5), same(a));
     });
   });
 }
 
-VisorColors _testColors({int textPrimaryValue = 0xFF111111}) {
-  return VisorColors(
+VisorColorsData _testColors({int textPrimaryValue = 0xFF111111}) {
+  return VisorColorsData(
     textPrimary: Color(textPrimaryValue),
     textSecondary: const Color(0xFF555555),
     textTertiary: const Color(0xFF888888),

@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 ///
 /// Mirrors the `motion.*` section of the `.visor.yaml` interchange format.
 /// Use in animation widgets via
-/// `Theme.of(context).extension<VisorMotion>()!.durationNormal`.
+/// `Theme.of(context).extension<VisorMotionData>()!.durationNormal`.
 @immutable
-class VisorMotion extends ThemeExtension<VisorMotion> {
-  const VisorMotion({
+class VisorMotionData extends ThemeExtension<VisorMotionData> {
+  const VisorMotionData({
     required this.durationFast,
     required this.durationNormal,
     required this.durationSlow,
@@ -27,13 +27,13 @@ class VisorMotion extends ThemeExtension<VisorMotion> {
   final Curve easing;
 
   @override
-  VisorMotion copyWith({
+  VisorMotionData copyWith({
     Duration? durationFast,
     Duration? durationNormal,
     Duration? durationSlow,
     Curve? easing,
   }) {
-    return VisorMotion(
+    return VisorMotionData(
       durationFast: durationFast ?? this.durationFast,
       durationNormal: durationNormal ?? this.durationNormal,
       durationSlow: durationSlow ?? this.durationSlow,
@@ -42,9 +42,9 @@ class VisorMotion extends ThemeExtension<VisorMotion> {
   }
 
   @override
-  VisorMotion lerp(ThemeExtension<VisorMotion>? other, double t) {
-    if (other is! VisorMotion) return this;
-    return VisorMotion(
+  VisorMotionData lerp(ThemeExtension<VisorMotionData>? other, double t) {
+    if (other is! VisorMotionData) return this;
+    return VisorMotionData(
       durationFast: _lerpDuration(durationFast, other.durationFast, t),
       durationNormal: _lerpDuration(durationNormal, other.durationNormal, t),
       durationSlow: _lerpDuration(durationSlow, other.durationSlow, t),

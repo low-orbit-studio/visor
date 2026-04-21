@@ -19,19 +19,42 @@ colors-dark:
 typography:
   heading:
     family: "Outfit"
-    weight: 700
+    weight: 600
   body:
     family: "Outfit"
     weight: 400
+  # Per-slot overrides matching SoleSpark's Figma type scale.
+  # (`height` is not yet part of the schema — slot heights stay at
+  # Material defaults until Visor adds line-height support.)
+  slots:
+    displayLarge:  { size: 56, weight: 500, letter-spacing: -0.5 }
+    displayMedium: { size: 32, weight: 600, letter-spacing: -0.25 }
+    displaySmall:  { size: 28, weight: 500, letter-spacing: 0 }
+    headlineLarge: { size: 26, weight: 500, letter-spacing: 0 }
+    headlineMedium: { size: 22, weight: 500, letter-spacing: 0 }
+    headlineSmall: { size: 18, weight: 600, letter-spacing: 0 }
+    titleLarge:    { size: 16, weight: 600, letter-spacing: 0 }
+    titleMedium:   { size: 14, weight: 600, letter-spacing: 0.1 }
+    titleSmall:    { size: 13, weight: 600, letter-spacing: 0.1 }
+    bodyLarge:     { size: 16, weight: 300, letter-spacing: 0.15 }
+    bodyMedium:    { size: 14, weight: 400, letter-spacing: 0.25 }
+    bodySmall:     { size: 12, weight: 300, letter-spacing: 0.4 }
+    labelLarge:    { size: 17, weight: 500, letter-spacing: 0.1 }
+    labelMedium:   { size: 15, weight: 600, letter-spacing: 0.5 }
+    labelSmall:    { size: 12, weight: 500, letter-spacing: 0.5 }
+    labelXSmall:   { size: 10, weight: 500, letter-spacing: 0.5 }
 
 spacing:
   base: 4
 
+# SoleSpark's existing radius scale uses 6pt for buttons, 8pt for inputs,
+# 12pt for cards, 16pt for dialogs, 24pt for bottom sheets (`topXlg`).
+# Visor's 5-step scale maps those one-to-one: sm/md/lg/xl/pill.
 radius:
-  sm: 4
+  sm: 6
   md: 8
-  lg: 12
-  xl: 16
+  lg: 16
+  xl: 24
   pill: 9999
 
 shadows:

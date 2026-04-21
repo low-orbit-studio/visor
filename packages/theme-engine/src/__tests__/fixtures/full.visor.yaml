@@ -22,6 +22,15 @@ typography:
     weight: 400
   mono:
     family: JetBrains Mono
+  slots:
+    displayLarge:
+      size: 56
+      weight: 500
+      letter-spacing: -0.5
+    titleMedium:
+      weight: 600
+    bodyLarge:
+      letter-spacing: 0.15
 spacing:
   base: 4
 radius:

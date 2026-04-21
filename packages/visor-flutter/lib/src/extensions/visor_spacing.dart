@@ -9,15 +9,15 @@ import 'package:flutter/material.dart';
 /// across a theme.
 ///
 /// ```dart
-/// final spacing = Theme.of(context).extension<VisorSpacing>()!;
+/// final spacing = Theme.of(context).extension<VisorSpacingData>()!;
 /// Padding(
 ///   padding: EdgeInsets.all(spacing.md),
 ///   child: ...,
 /// );
 /// ```
 @immutable
-class VisorSpacing extends ThemeExtension<VisorSpacing> {
-  const VisorSpacing({
+class VisorSpacingData extends ThemeExtension<VisorSpacingData> {
+  const VisorSpacingData({
     required this.xs,
     required this.sm,
     required this.md,
@@ -49,7 +49,7 @@ class VisorSpacing extends ThemeExtension<VisorSpacing> {
   final double xxxl;
 
   @override
-  VisorSpacing copyWith({
+  VisorSpacingData copyWith({
     double? xs,
     double? sm,
     double? md,
@@ -58,7 +58,7 @@ class VisorSpacing extends ThemeExtension<VisorSpacing> {
     double? xxl,
     double? xxxl,
   }) {
-    return VisorSpacing(
+    return VisorSpacingData(
       xs: xs ?? this.xs,
       sm: sm ?? this.sm,
       md: md ?? this.md,
@@ -70,9 +70,9 @@ class VisorSpacing extends ThemeExtension<VisorSpacing> {
   }
 
   @override
-  VisorSpacing lerp(ThemeExtension<VisorSpacing>? other, double t) {
-    if (other is! VisorSpacing) return this;
-    return VisorSpacing(
+  VisorSpacingData lerp(ThemeExtension<VisorSpacingData>? other, double t) {
+    if (other is! VisorSpacingData) return this;
+    return VisorSpacingData(
       xs: _lerpDouble(xs, other.xs, t),
       sm: _lerpDouble(sm, other.sm, t),
       md: _lerpDouble(md, other.md, t),

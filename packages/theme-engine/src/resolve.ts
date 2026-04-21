@@ -136,6 +136,7 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
         family:
           config.typography?.mono?.family ?? DEFAULTS.typography.mono.family,
       },
+      slots: config.typography?.slots ?? {},
     },
     spacing: {
       base: config.spacing?.base ?? DEFAULTS.spacing.base,

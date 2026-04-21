@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 /// [BorderRadius.only] at call sites for flexibility.
 ///
 /// ```dart
-/// final radius = Theme.of(context).extension<VisorRadius>()!;
+/// final radius = Theme.of(context).extension<VisorRadiusData>()!;
 /// Container(
 ///   decoration: BoxDecoration(
 ///     borderRadius: BorderRadius.circular(radius.md),
@@ -17,8 +17,8 @@ import 'package:flutter/material.dart';
 /// );
 /// ```
 @immutable
-class VisorRadius extends ThemeExtension<VisorRadius> {
-  const VisorRadius({
+class VisorRadiusData extends ThemeExtension<VisorRadiusData> {
+  const VisorRadiusData({
     required this.sm,
     required this.md,
     required this.lg,
@@ -42,14 +42,14 @@ class VisorRadius extends ThemeExtension<VisorRadius> {
   final double pill;
 
   @override
-  VisorRadius copyWith({
+  VisorRadiusData copyWith({
     double? sm,
     double? md,
     double? lg,
     double? xl,
     double? pill,
   }) {
-    return VisorRadius(
+    return VisorRadiusData(
       sm: sm ?? this.sm,
       md: md ?? this.md,
       lg: lg ?? this.lg,
@@ -59,9 +59,9 @@ class VisorRadius extends ThemeExtension<VisorRadius> {
   }
 
   @override
-  VisorRadius lerp(ThemeExtension<VisorRadius>? other, double t) {
-    if (other is! VisorRadius) return this;
-    return VisorRadius(
+  VisorRadiusData lerp(ThemeExtension<VisorRadiusData>? other, double t) {
+    if (other is! VisorRadiusData) return this;
+    return VisorRadiusData(
       sm: _lerpDouble(sm, other.sm, t),
       md: _lerpDouble(md, other.md, t),
       lg: _lerpDouble(lg, other.lg, t),

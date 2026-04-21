@@ -7,6 +7,7 @@
 
 import visorThemeSchema from "./visor-theme.schema.json";
 import { isValidHex, isValidColor } from "./color.js";
+import { MATERIAL_TEXT_SLOTS } from "./types.js";
 import type { VisorThemeConfig } from "./types.js";
 
 export { visorThemeSchema };
@@ -31,12 +32,14 @@ const KNOWN_COLOR_KEYS = new Set([
 ]);
 
 const KNOWN_TYPOGRAPHY_KEYS = new Set([
-  "heading", "display", "body", "mono", "letter-spacing", "scale",
+  "heading", "display", "body", "mono", "letter-spacing", "scale", "slots",
 ]);
 
 const KNOWN_TYPOGRAPHY_FONT_KEYS = new Set(["family", "weight", "weights", "source", "org"]);
 const KNOWN_TYPOGRAPHY_MONO_KEYS = new Set(["family"]);
 const KNOWN_LETTER_SPACING_KEYS = new Set(["tight", "normal", "wide"]);
+const KNOWN_SLOT_NAMES = new Set<string>(MATERIAL_TEXT_SLOTS);
+const KNOWN_SLOT_OVERRIDE_KEYS = new Set(["size", "weight", "letter-spacing"]);
 
 const KNOWN_SPACING_KEYS = new Set(["base"]);
 const KNOWN_RADIUS_KEYS = new Set(["sm", "md", "lg", "xl", "pill"]);
@@ -119,6 +122,32 @@ function checkUnknownKeys(obj: Record<string, unknown>, errors: string[]): void 
       for (const key of Object.keys(typo["letter-spacing"] as Record<string, unknown>)) {
         if (!KNOWN_LETTER_SPACING_KEYS.has(key)) {
           errors.push(`Unknown key 'typography.letter-spacing.${key}'. Valid keys: ${[...KNOWN_LETTER_SPACING_KEYS].join(", ")}`);
+        }
+      }
+    }
+    // typography.slots — Material-slot-keyed overrides for the generated TextTheme
+    if (typeof typo.slots === "object" && typo.slots !== null) {
+      const slots = typo.slots as Record<string, unknown>;
+      for (const slotName of Object.keys(slots)) {
+        if (!KNOWN_SLOT_NAMES.has(slotName)) {
+          errors.push(
+            `Unknown key 'typography.slots.${slotName}'. Valid keys: ${[...MATERIAL_TEXT_SLOTS].join(", ")}`,
+          );
+          continue;
+        }
+        const override = slots[slotName];
+        if (typeof override !== "object" || override === null) {
+          errors.push(
+            `'typography.slots.${slotName}' must be an object with optional size/weight/letter-spacing fields`,
+          );
+          continue;
+        }
+        for (const key of Object.keys(override as Record<string, unknown>)) {
+          if (!KNOWN_SLOT_OVERRIDE_KEYS.has(key)) {
+            errors.push(
+              `Unknown key 'typography.slots.${slotName}.${key}'. Valid keys: ${[...KNOWN_SLOT_OVERRIDE_KEYS].join(", ")}`,
+            );
+          }
         }
       }
     }
@@ -288,6 +317,31 @@ export function validateConfig(config: unknown): ValidationResult {
           !(font.weights as unknown[]).every((w) => typeof w === "number" && w > 0)
         ) {
           errors.push(`'typography.${slot}.weights' must be an array of positive numbers (e.g., [300, 500])`);
+        }
+      }
+    }
+
+    // Validate typography.slots.<slot> override values
+    if (typeof typo.slots === "object" && typo.slots !== null) {
+      const slots = typo.slots as Record<string, unknown>;
+      for (const slotName of Object.keys(slots)) {
+        const override = slots[slotName];
+        if (typeof override !== "object" || override === null) continue;
+        const o = override as Record<string, unknown>;
+        if (o.size !== undefined && (typeof o.size !== "number" || o.size <= 0)) {
+          errors.push(`'typography.slots.${slotName}.size' must be a positive number (logical pixels)`);
+        }
+        if (
+          o.weight !== undefined &&
+          (typeof o.weight !== "number" || o.weight < 100 || o.weight > 900)
+        ) {
+          errors.push(`'typography.slots.${slotName}.weight' must be between 100 and 900`);
+        }
+        if (
+          o["letter-spacing"] !== undefined &&
+          typeof o["letter-spacing"] !== "number"
+        ) {
+          errors.push(`'typography.slots.${slotName}.letter-spacing' must be a number (Flutter logical pixels)`);
         }
       }
     }
