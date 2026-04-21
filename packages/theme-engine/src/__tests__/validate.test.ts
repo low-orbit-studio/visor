@@ -779,6 +779,70 @@ describe("validate — multi-format colors", () => {
 // Letter-Spacing Validation
 // ============================================================
 
+describe("validate — typography.slots", () => {
+  it("accepts partial Material-slot overrides", () => {
+    const result = validate({
+      name: "Slots Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      typography: {
+        slots: {
+          displayLarge: { size: 56, weight: 500, "letter-spacing": -0.5 },
+          titleMedium: { weight: 600 },
+          bodyLarge: { "letter-spacing": 0.15 },
+        },
+      },
+    });
+    expect(result.valid).toBe(true);
+  });
+
+  it("rejects unknown slot names", () => {
+    const result = validate({
+      name: "Slots Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      typography: { slots: { displayHuge: { size: 72 } } },
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors[0]?.message).toMatch(/typography\.slots\.displayHuge/);
+  });
+
+  it("rejects unknown override fields", () => {
+    const result = validate({
+      name: "Slots Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      // @ts-expect-error — exercising schema rejection
+      typography: { slots: { bodyLarge: { lineHeight: 1.4 } } },
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors[0]?.message).toMatch(/lineHeight/);
+  });
+
+  it("rejects out-of-range weight", () => {
+    const result = validate({
+      name: "Slots Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      typography: { slots: { titleMedium: { weight: 950 } } },
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors[0]?.message).toMatch(/between 100 and 900/);
+  });
+
+  it("rejects non-numeric size", () => {
+    const result = validate({
+      name: "Slots Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      // @ts-expect-error — exercising schema rejection
+      typography: { slots: { bodyLarge: { size: "16px" } } },
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors[0]?.message).toMatch(/positive number/);
+  });
+});
+
 describe("validate — letter-spacing", () => {
   it("accepts valid em values", () => {
     const result = validate({

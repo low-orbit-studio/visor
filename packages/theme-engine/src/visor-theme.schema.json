@@ -184,6 +184,29 @@
             "normal": { "type": "string" },
             "wide": { "type": "string" }
           }
+        },
+        "slots": {
+          "type": "object",
+          "description": "Per-slot overrides for the generated Flutter Material TextTheme. Any subset of the 16 slots may be specified; omitted slots fall through to the Material 3 2024 defaults shipped in visor_core.",
+          "additionalProperties": false,
+          "properties": {
+            "displayLarge": { "$ref": "#/$defs/textSlotOverride" },
+            "displayMedium": { "$ref": "#/$defs/textSlotOverride" },
+            "displaySmall": { "$ref": "#/$defs/textSlotOverride" },
+            "headlineLarge": { "$ref": "#/$defs/textSlotOverride" },
+            "headlineMedium": { "$ref": "#/$defs/textSlotOverride" },
+            "headlineSmall": { "$ref": "#/$defs/textSlotOverride" },
+            "titleLarge": { "$ref": "#/$defs/textSlotOverride" },
+            "titleMedium": { "$ref": "#/$defs/textSlotOverride" },
+            "titleSmall": { "$ref": "#/$defs/textSlotOverride" },
+            "bodyLarge": { "$ref": "#/$defs/textSlotOverride" },
+            "bodyMedium": { "$ref": "#/$defs/textSlotOverride" },
+            "bodySmall": { "$ref": "#/$defs/textSlotOverride" },
+            "labelLarge": { "$ref": "#/$defs/textSlotOverride" },
+            "labelMedium": { "$ref": "#/$defs/textSlotOverride" },
+            "labelSmall": { "$ref": "#/$defs/textSlotOverride" },
+            "labelXSmall": { "$ref": "#/$defs/textSlotOverride" }
+          }
         }
       }
     },
@@ -277,6 +300,28 @@
         { "pattern": "^hsla?\\(" },
         { "pattern": "^oklch\\(" }
       ]
+    },
+    "textSlotOverride": {
+      "type": "object",
+      "description": "Per-slot override for one Material TextTheme entry.",
+      "additionalProperties": false,
+      "properties": {
+        "size": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Font size in logical pixels (Flutter TextStyle.fontSize)."
+        },
+        "weight": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 900,
+          "description": "Font weight."
+        },
+        "letter-spacing": {
+          "type": "number",
+          "description": "Letter spacing in logical pixels (Flutter TextStyle.letterSpacing). Material defaults include negative values, e.g. -0.25 for displayLarge."
+        }
+      }
     }
   }
 }

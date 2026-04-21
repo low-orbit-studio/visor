@@ -54,6 +54,15 @@ typography:
     tight: "-0.02em"
     normal: "0"
     wide: "0.05em"
+  # --- Flutter-only: per-slot Material TextTheme overrides (optional) ---
+  # Any subset of the 16 slots; omitted slots use the Material 3 2024
+  # defaults shipped in `visor_core` (VisorTextStylesData.defaults).
+  slots:
+    displayLarge:  { size: 56, weight: 500, letter-spacing: -0.5 }
+    displayMedium: { size: 32, weight: 600, letter-spacing: -0.25 }
+    titleMedium:   { weight: 600 }
+    # ...plus headline{Large,Medium,Small}, title{Large,Small},
+    # body{Large,Medium,Small}, label{Large,Medium,Small,XSmall}
 
 # --- Spacing (optional) ---
 spacing:
@@ -108,6 +117,7 @@ overrides:
 | `colors-dark` | No | All dark values derived from shade generation |
 | `typography` | No | System font stacks |
 | `typography.display` | No | Falls back to heading family |
+| `typography.slots` | No | Flutter-only; overrides individual Material type-scale slots (size/weight/letter-spacing). Omitted → Material 3 2024 defaults from `visor_core`. |
 | `spacing` | No | 4px base unit |
 | `radius` | No | Visor defaults (sm:2, md:4, lg:8, xl:12, pill:9999) |
 | `shadows` | No | Visor defaults (5-step scale) |

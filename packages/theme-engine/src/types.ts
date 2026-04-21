@@ -52,6 +52,61 @@ export interface ParsedColor {
 // Config Types (.visor.yaml)
 // ============================================================
 
+/**
+ * The 15 Material 3 type-scale slots plus Visor's `labelXSmall` extension.
+ *
+ * Per-slot size / weight / letter-spacing can be overridden in
+ * `typography.slots` to tune the generated Flutter `TextTheme` without
+ * touching the global font families.
+ */
+export type MaterialTextSlot =
+  | "displayLarge"
+  | "displayMedium"
+  | "displaySmall"
+  | "headlineLarge"
+  | "headlineMedium"
+  | "headlineSmall"
+  | "titleLarge"
+  | "titleMedium"
+  | "titleSmall"
+  | "bodyLarge"
+  | "bodyMedium"
+  | "bodySmall"
+  | "labelLarge"
+  | "labelMedium"
+  | "labelSmall"
+  | "labelXSmall";
+
+/** Ordered list of every valid `typography.slots.*` key. */
+export const MATERIAL_TEXT_SLOTS: readonly MaterialTextSlot[] = [
+  "displayLarge",
+  "displayMedium",
+  "displaySmall",
+  "headlineLarge",
+  "headlineMedium",
+  "headlineSmall",
+  "titleLarge",
+  "titleMedium",
+  "titleSmall",
+  "bodyLarge",
+  "bodyMedium",
+  "bodySmall",
+  "labelLarge",
+  "labelMedium",
+  "labelSmall",
+  "labelXSmall",
+];
+
+/** Per-slot override in `typography.slots.<slot>`. All fields optional. */
+export interface TextSlotOverride {
+  /** Font size in logical pixels (Flutter `TextStyle.fontSize`). */
+  size?: number;
+  /** Font weight (100–900, matching Flutter `FontWeight.w100..w900`). */
+  weight?: number;
+  /** Letter spacing in logical pixels (Flutter `TextStyle.letterSpacing`). */
+  "letter-spacing"?: number;
+}
+
 export interface VisorThemeConfig {
   name: string;
   version: 1;
@@ -117,6 +172,13 @@ export interface VisorThemeConfig {
       normal?: string;
       wide?: string;
     };
+    /**
+     * Per-slot overrides for the generated Flutter `TextTheme`. Any subset
+     * of the 16 Material slots may be specified; omitted slots fall
+     * through to `VisorTextStylesData.defaults` (Material 3 2024 scale).
+     * Flutter-only — ignored by CSS/NextJS adapters.
+     */
+    slots?: Partial<Record<MaterialTextSlot, TextSlotOverride>>;
   };
   spacing?: {
     base?: number;
@@ -169,6 +231,12 @@ export interface ResolvedThemeConfig {
     display: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string };
     body: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string };
     mono: { family: string };
+    /**
+     * Per-slot Material `TextTheme` overrides, passed through from the
+     * raw config. Empty object when none supplied. Flutter adapter
+     * consumes these; other adapters may ignore them.
+     */
+    slots: Partial<Record<MaterialTextSlot, TextSlotOverride>>;
   };
   spacing: { base: number };
   radius: { sm: number; md: number; lg: number; xl: number; pill: number };

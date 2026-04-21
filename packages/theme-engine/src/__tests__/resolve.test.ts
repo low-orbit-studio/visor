@@ -103,6 +103,31 @@ describe("resolveConfig", () => {
     expect(resolved.spacing.base).toBe(8);
   });
 
+  it("passes typography.slots through as-is (empty object default)", () => {
+    const minimal: VisorThemeConfig = {
+      name: "Slots Passthrough",
+      version: 1,
+      colors: { primary: "#2563EB" },
+    };
+    expect(resolveConfig(minimal).typography.slots).toEqual({});
+
+    const withSlots: VisorThemeConfig = {
+      name: "Slots Passthrough",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      typography: {
+        slots: {
+          displayLarge: { size: 56, weight: 500, "letter-spacing": -0.5 },
+          titleMedium: { weight: 600 },
+        },
+      },
+    };
+    expect(resolveConfig(withSlots).typography.slots).toEqual({
+      displayLarge: { size: 56, weight: 500, "letter-spacing": -0.5 },
+      titleMedium: { weight: 600 },
+    });
+  });
+
   it("passes colors-dark through as-is", () => {
     const config: VisorThemeConfig = {
       name: "Dark Override",
