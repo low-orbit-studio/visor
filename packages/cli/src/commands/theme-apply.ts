@@ -1,22 +1,37 @@
 import { readFileSync, writeFileSync, mkdirSync } from "fs"
-import { resolve, dirname } from "path"
+import { resolve, dirname, join } from "path"
 import { generateTheme, generateThemeData } from "@loworbitstudio/visor-theme-engine"
 import {
   nextjsAdapter,
   fumadocsAdapter,
   deckAdapter,
   docsAdapter,
+  flutterAdapter,
 } from "@loworbitstudio/visor-theme-engine/adapters"
-import type { AdapterName } from "@loworbitstudio/visor-theme-engine/adapters"
+import type {
+  AdapterFileMap,
+  AdapterName,
+  FlutterAdapterOptions,
+} from "@loworbitstudio/visor-theme-engine/adapters"
 import { logger } from "../utils/logger.js"
 
 export interface ThemeApplyOptions {
   output?: string
   json?: boolean
   adapter?: AdapterName
+  /** Flutter adapter: package name. */
+  packageName?: string
+  /** Flutter adapter: skip scaffolding, emit only token files. */
+  tokensOnly?: boolean
+  /** Flutter adapter: emit only light-brightness getter. */
+  lightOnly?: boolean
+  /** Flutter adapter: emit only dark-brightness getter. */
+  darkOnly?: boolean
+  /** Flutter adapter: generated theme class name. */
+  themeClassName?: string
 }
 
-/** Default output filename per adapter. */
+/** Default output path per adapter. Directory for flutter; file otherwise. */
 function defaultOutputPath(adapter: AdapterName | undefined, themeName?: string): string {
   switch (adapter) {
     case "nextjs":
@@ -31,6 +46,8 @@ function defaultOutputPath(adapter: AdapterName | undefined, themeName?: string)
       const slug = (themeName ?? "theme").toLowerCase().replace(/\s+/g, "-")
       return `${slug}-theme.css`
     }
+    case "flutter":
+      return "packages/ui"
     default:
       return "visor-theme.css"
   }
@@ -63,7 +80,8 @@ export function themeApplyCommand(
   }
 
   // Generate the theme
-  let css: string
+  let css: string | null = null
+  let fileMap: AdapterFileMap | null = null
   let themeName: string | undefined
   let sections: Record<string, number> | undefined
 
@@ -91,6 +109,17 @@ export function themeApplyCommand(
         case "docs":
           css = docsAdapter(adapterInput)
           break
+        case "flutter": {
+          const flutterOptions: FlutterAdapterOptions = {
+            packageName: options.packageName,
+            tokensOnly: options.tokensOnly,
+            lightOnly: options.lightOnly,
+            darkOnly: options.darkOnly,
+            themeClassName: options.themeClassName,
+          }
+          fileMap = flutterAdapter(adapterInput, flutterOptions)
+          break
+        }
         default:
           throw new Error(`Unknown adapter: ${options.adapter}`)
       }
@@ -118,10 +147,59 @@ export function themeApplyCommand(
   }
 
   // Write the output
-  const outputFile = options.output ?? defaultOutputPath(options.adapter, themeName)
-  const outputPath = resolve(cwd, outputFile)
-  const outputDir = dirname(outputPath)
+  const outputTarget = options.output ?? defaultOutputPath(options.adapter, themeName)
+  const outputPath = resolve(cwd, outputTarget)
 
+  // File-map adapters (flutter) write a directory tree.
+  if (fileMap) {
+    try {
+      mkdirSync(outputPath, { recursive: true })
+      let totalBytes = 0
+      for (const [relPath, content] of Object.entries(fileMap.files)) {
+        const filePath = join(outputPath, relPath)
+        mkdirSync(dirname(filePath), { recursive: true })
+        writeFileSync(filePath, content, "utf-8")
+        totalBytes += content.length
+      }
+
+      if (options.json) {
+        console.log(
+          JSON.stringify({
+            success: true,
+            directory: outputPath,
+            adapter: options.adapter,
+            files: Object.keys(fileMap.files),
+            size: totalBytes,
+          })
+        )
+      } else {
+        logger.success(`Flutter theme package generated: ${outputPath}`)
+        logger.info(`Adapter: ${options.adapter}`)
+        logger.item(`Files: ${Object.keys(fileMap.files).length}`)
+        logger.item(`Size: ${formatSize(totalBytes)}`)
+      }
+    } catch {
+      if (options.json) {
+        console.log(
+          JSON.stringify({
+            success: false,
+            error: `Could not write package to: ${outputPath}`,
+          })
+        )
+      } else {
+        logger.error(`Could not write package to: ${outputPath}`)
+      }
+      process.exit(2)
+    }
+    return
+  }
+
+  // Single-file adapters write one file.
+  if (css === null) {
+    // Unreachable — either fileMap or css is set.
+    process.exit(1)
+  }
+  const outputDir = dirname(outputPath)
   try {
     mkdirSync(outputDir, { recursive: true })
     writeFileSync(outputPath, css, "utf-8")

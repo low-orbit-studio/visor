@@ -1,0 +1,63 @@
+import 'package:flutter/material.dart';
+
+/// Visor's motion tokens as a Flutter [ThemeExtension].
+///
+/// Mirrors the `motion.*` section of the `.visor.yaml` interchange format.
+/// Use in animation widgets via
+/// `Theme.of(context).extension<VisorMotion>()!.durationNormal`.
+@immutable
+class VisorMotion extends ThemeExtension<VisorMotion> {
+  const VisorMotion({
+    required this.durationFast,
+    required this.durationNormal,
+    required this.durationSlow,
+    required this.easing,
+  });
+
+  /// Short transitions (hover states, micro-interactions).
+  final Duration durationFast;
+
+  /// Default transition duration (most state changes).
+  final Duration durationNormal;
+
+  /// Long transitions (page changes, large element reveals).
+  final Duration durationSlow;
+
+  /// Default easing curve for transitions.
+  final Curve easing;
+
+  @override
+  VisorMotion copyWith({
+    Duration? durationFast,
+    Duration? durationNormal,
+    Duration? durationSlow,
+    Curve? easing,
+  }) {
+    return VisorMotion(
+      durationFast: durationFast ?? this.durationFast,
+      durationNormal: durationNormal ?? this.durationNormal,
+      durationSlow: durationSlow ?? this.durationSlow,
+      easing: easing ?? this.easing,
+    );
+  }
+
+  @override
+  VisorMotion lerp(ThemeExtension<VisorMotion>? other, double t) {
+    if (other is! VisorMotion) return this;
+    return VisorMotion(
+      durationFast: _lerpDuration(durationFast, other.durationFast, t),
+      durationNormal: _lerpDuration(durationNormal, other.durationNormal, t),
+      durationSlow: _lerpDuration(durationSlow, other.durationSlow, t),
+      // Curves don't lerp — snap at t=0.5.
+      easing: t < 0.5 ? easing : other.easing,
+    );
+  }
+
+  static Duration _lerpDuration(Duration a, Duration b, double t) {
+    return Duration(
+      microseconds:
+          (a.inMicroseconds + (b.inMicroseconds - a.inMicroseconds) * t)
+              .round(),
+    );
+  }
+}

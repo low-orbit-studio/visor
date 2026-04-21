@@ -1,0 +1,21 @@
+name: visor_core
+description: Flutter tokens and theme builder for the Visor design system. ThemeExtension classes and VisorTheme.build() paired with CLI-generated token files.
+version: 0.1.0
+homepage: https://visor.design
+repository: https://github.com/low-orbit-studio/visor
+issue_tracker: https://github.com/low-orbit-studio/visor/issues
+
+environment:
+  sdk: ^3.5.0
+  flutter: ^3.24.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
