@@ -1,0 +1,14 @@
+# Flutter/Dart build artifacts
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+
+# Library packages do not commit lockfiles
+pubspec.lock
+
+# IDE
+.idea/
+*.iml
+.vscode/
