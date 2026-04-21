@@ -1,0 +1,32 @@
+name: visor_widgetbook
+description: Widgetbook preview app for Visor's Flutter widgets (VisorButton, VisorStatCard, VisorEmptyState, VisorSectionHeader).
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ^3.5.0
+  flutter: ^3.24.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  widgetbook: ^3.14.0
+  widgetbook_annotation: ^3.5.0
+  # visor_core is on pub.dev post-M4.B; until then pubspec_overrides.yaml
+  # forces the local path. Keep the `^0.1.0` constraint here so the
+  # widgetbook app stays compatible with the eventual published version.
+  visor_core: ^0.1.0
+  # Demo tokens: the Visor-generated SoleSpark example. Reused as the
+  # Widgetbook theme source so the preview app has a real ThemeData
+  # without hand-maintained VisorColorsData boilerplate. Future: add
+  # a theme-switcher addon that loads arbitrary .visor.yaml sets.
+  ui:
+    path: ../../examples/flutter/solespark-ui
+
+dev_dependencies:
+  build_runner: ^2.4.13
+  widgetbook_generator: ^3.14.0
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
