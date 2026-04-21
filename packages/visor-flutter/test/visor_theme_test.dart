@@ -78,6 +78,86 @@ void main() {
       expect(theme.textTheme.displayLarge!.fontSize, 80);
       expect(theme.textTheme.displayLarge!.fontWeight, FontWeight.w900);
     });
+
+    test('wires AppBar theme to surfacePage + textPrimary', () {
+      final colors = _testColors();
+      final theme =
+          VisorTheme.build(colors: colors, brightness: Brightness.light);
+
+      expect(theme.appBarTheme.backgroundColor, colors.surfacePage);
+      expect(theme.appBarTheme.foregroundColor, colors.textPrimary);
+      expect(theme.appBarTheme.elevation, 0);
+      expect(theme.appBarTheme.centerTitle, isTrue);
+    });
+
+    test('wires button shapes from radius.sm', () {
+      const customRadius =
+          VisorRadiusData(sm: 6, md: 12, lg: 16, xl: 24, pill: 9999);
+      final theme = VisorTheme.build(
+        colors: _testColors(),
+        brightness: Brightness.light,
+        radius: customRadius,
+      );
+
+      final filledShape =
+          theme.filledButtonTheme.style!.shape!.resolve(<WidgetState>{})
+              as RoundedRectangleBorder;
+      expect(
+        (filledShape.borderRadius as BorderRadius).topLeft.x,
+        6,
+      );
+    });
+
+    test('wires Card / Dialog shapes from radius.md / radius.lg', () {
+      const customRadius =
+          VisorRadiusData(sm: 6, md: 12, lg: 16, xl: 24, pill: 9999);
+      final theme = VisorTheme.build(
+        colors: _testColors(),
+        brightness: Brightness.light,
+        radius: customRadius,
+      );
+
+      final cardShape = theme.cardTheme.shape! as RoundedRectangleBorder;
+      expect((cardShape.borderRadius as BorderRadius).topLeft.x, 12);
+
+      final dialogShape = theme.dialogTheme.shape! as RoundedRectangleBorder;
+      expect((dialogShape.borderRadius as BorderRadius).topLeft.x, 16);
+    });
+
+    test('InputDecoration focused border uses borderFocus', () {
+      final colors = _testColors();
+      final theme =
+          VisorTheme.build(colors: colors, brightness: Brightness.light);
+
+      final focused =
+          theme.inputDecorationTheme.focusedBorder! as OutlineInputBorder;
+      expect(focused.borderSide.color, colors.borderFocus);
+    });
+
+    test('Checkbox fill resolves to primary when selected, transparent otherwise',
+        () {
+      final colors = _testColors();
+      final theme =
+          VisorTheme.build(colors: colors, brightness: Brightness.light);
+
+      final fill = theme.checkboxTheme.fillColor!;
+      expect(fill.resolve(<WidgetState>{WidgetState.selected}),
+          colors.interactivePrimaryBg);
+      expect(fill.resolve(<WidgetState>{}), Colors.transparent);
+    });
+
+    test('NavigationBar label uses primary for selected, tertiary otherwise',
+        () {
+      final colors = _testColors();
+      final theme =
+          VisorTheme.build(colors: colors, brightness: Brightness.light);
+
+      final label = theme.navigationBarTheme.labelTextStyle!;
+      final selected = label.resolve(<WidgetState>{WidgetState.selected})!;
+      final unselected = label.resolve(<WidgetState>{})!;
+      expect(selected.color, colors.interactivePrimaryBg);
+      expect(unselected.color, colors.textTertiary);
+    });
   });
 
   group('VisorColorsData lerp', () {
