@@ -35,7 +35,10 @@
     "prepare": "husky 2>/dev/null || true",
     "fonts:add": "varlock run -- npx visor fonts add",
     "themes:compute-scales": "npx tsx scripts/compute-primary-scales.ts",
-    "previews": "tsx scripts/generate-previews.ts"
+    "previews": "tsx scripts/generate-previews.ts",
+    "widgetbook:sync": "bash scripts/sync-widgetbook-widgets.sh",
+    "widgetbook:build": "bash scripts/build-widgetbook.sh",
+    "widgetbook:dev": "bash -c 'bash scripts/sync-widgetbook-widgets.sh && cd packages/widgetbook && ${FLUTTER:-$HOME/fvm/versions/3.35.5/bin/flutter} pub get && ${FLUTTER:-$HOME/fvm/versions/3.35.5/bin/flutter} pub run build_runner build --delete-conflicting-outputs && ${FLUTTER:-$HOME/fvm/versions/3.35.5/bin/flutter} run -d chrome'"
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
