@@ -7,6 +7,9 @@ import {
   opacityVariants,
   alphaToByte,
 } from "../flutter/color-to-dart.js";
+import { emitSpacingDart } from "../flutter/emit-spacing.js";
+import { emitRadiusDart } from "../flutter/emit-radius.js";
+import { emitTypographyDart } from "../flutter/emit-typography.js";
 
 const MINIMAL_YAML = `
 name: Test Theme
@@ -176,5 +179,141 @@ describe("flutterAdapter", () => {
     for (const [, literal] of colorLiterals) {
       expect(literal).toMatch(/^0x[0-9A-F]{8}$/);
     }
+  });
+});
+
+// ============================================================
+// Token emitters (typography / spacing / radius)
+// ============================================================
+
+const FULL_YAML = `
+name: Full Token Test
+version: 1
+colors:
+  primary: "#2563EB"
+typography:
+  heading: { family: Inter, weight: 600 }
+  body: { family: Inter, weight: 400 }
+  slots:
+    displayLarge:
+      size: 56
+      weight: 500
+      letter-spacing: -0.5
+    titleMedium:
+      weight: 600
+    bodyLarge:
+      letter-spacing: 0.15
+spacing:
+  base: 4
+radius:
+  sm: 4
+  md: 8
+  lg: 12
+  xl: 16
+  pill: 9999
+`.trim();
+
+function fullAdapterInput() {
+  const data = generateThemeData(FULL_YAML);
+  return {
+    primitives: data.primitives,
+    tokens: data.tokens,
+    config: data.config,
+  };
+}
+
+describe("emitSpacingDart", () => {
+  it("derives the 7-step scale from config.spacing.base", () => {
+    const dart = emitSpacingDart(fullAdapterInput());
+    expect(dart).toContain("sealed class VisorSpacing");
+    expect(dart).toContain("static final VisorSpacingData instance =");
+    // Base 4 → xs=4, sm=8, md=12, lg=16, xl=24, xxl=32, xxxl=48
+    expect(dart).toContain("xs: 4,");
+    expect(dart).toContain("sm: 8,");
+    expect(dart).toContain("md: 12,");
+    expect(dart).toContain("lg: 16,");
+    expect(dart).toContain("xl: 24,");
+    expect(dart).toContain("xxl: 32,");
+    expect(dart).toContain("xxxl: 48,");
+  });
+
+  it("scales proportionally when base changes", () => {
+    const data = generateThemeData(
+      `name: Big\nversion: 1\ncolors:\n  primary: "#000"\nspacing:\n  base: 8`,
+    );
+    const dart = emitSpacingDart({
+      primitives: data.primitives,
+      tokens: data.tokens,
+      config: data.config,
+    });
+    expect(dart).toContain("xs: 8,");
+    expect(dart).toContain("md: 24,");
+    expect(dart).toContain("xxxl: 96,");
+  });
+});
+
+describe("emitRadiusDart", () => {
+  it("emits identity mapping from config.radius", () => {
+    const dart = emitRadiusDart(fullAdapterInput());
+    expect(dart).toContain("sealed class VisorRadius");
+    expect(dart).toContain("static final VisorRadiusData instance =");
+    expect(dart).toContain("sm: 4,");
+    expect(dart).toContain("md: 8,");
+    expect(dart).toContain("lg: 12,");
+    expect(dart).toContain("xl: 16,");
+    expect(dart).toContain("pill: 9999,");
+  });
+});
+
+describe("emitTypographyDart", () => {
+  it("returns defaults-only when no slot overrides are supplied", () => {
+    const data = generateThemeData(
+      `name: Minimal\nversion: 1\ncolors:\n  primary: "#000"`,
+    );
+    const dart = emitTypographyDart({
+      primitives: data.primitives,
+      tokens: data.tokens,
+      config: data.config,
+    });
+    expect(dart).toContain("sealed class VisorTextStyles");
+    expect(dart).toContain(
+      "static final VisorTextStylesData instance =",
+    );
+    expect(dart).toContain("VisorTextStylesData.defaults");
+    expect(dart).not.toContain("copyWith(");
+  });
+
+  it("emits copyWith with merged slot overrides", () => {
+    const dart = emitTypographyDart(fullAdapterInput());
+    expect(dart).toContain("VisorTextStylesData.defaults.copyWith(");
+    // displayLarge: user overrides all three fields
+    expect(dart).toContain("displayLarge: const TextStyle(");
+    expect(dart).toContain("fontSize: 56,");
+    expect(dart).toContain("fontWeight: FontWeight.w500,");
+    expect(dart).toContain("letterSpacing: -0.5,");
+    // titleMedium: only weight overridden — size + letterSpacing inherit from defaults
+    expect(dart).toContain("titleMedium: const TextStyle(");
+    expect(dart).toContain("fontSize: 16,"); // default
+    expect(dart).toContain("fontWeight: FontWeight.w600,"); // override
+    expect(dart).toContain("letterSpacing: 0.15,"); // default for titleMedium
+    // bodyLarge: only letter-spacing overridden (0.15 happens to equal titleMedium default)
+    expect(dart).toContain("bodyLarge: const TextStyle(");
+  });
+
+  it("omits letterSpacing when neither user nor Material 3 defines one", () => {
+    const data = generateThemeData(
+      `name: Omit\nversion: 1\ncolors:\n  primary: "#000"\ntypography:\n  slots:\n    displayMedium: { size: 40 }`,
+    );
+    const dart = emitTypographyDart({
+      primitives: data.primitives,
+      tokens: data.tokens,
+      config: data.config,
+    });
+    // displayMedium has no default letterSpacing; user didn't set one — omit the field
+    const displayMediumBlock = dart.match(
+      /displayMedium: const TextStyle\([\s\S]*?\),/,
+    )![0];
+    expect(displayMediumBlock).not.toContain("letterSpacing");
+    expect(displayMediumBlock).toContain("fontSize: 40,");
   });
 });
