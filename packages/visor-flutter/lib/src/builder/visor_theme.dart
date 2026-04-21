@@ -5,6 +5,7 @@ import '../extensions/visor_motion.dart';
 import '../extensions/visor_radius.dart';
 import '../extensions/visor_shadows.dart';
 import '../extensions/visor_spacing.dart';
+import '../extensions/visor_text_styles.dart';
 
 /// Builds a Material 3 [ThemeData] from Visor tokens.
 ///
@@ -45,6 +46,7 @@ sealed class VisorTheme {
     VisorRadiusData? radius,
     VisorShadowsData? shadows,
     VisorSpacingData? spacing,
+    VisorTextStylesData? textStyles,
     String? fontFamily,
     String? fontFamilyPackage,
   }) {
@@ -52,13 +54,24 @@ sealed class VisorTheme {
     final resolvedRadius = radius ?? _defaultRadius;
     final resolvedShadows = shadows ?? _defaultShadows;
     final resolvedSpacing = spacing ?? _defaultSpacing;
+    final resolvedTextStyles = textStyles ?? VisorTextStylesData.defaults;
 
     final colorScheme = _colorSchemeFrom(colors, brightness);
+    final textTheme = resolvedTextStyles
+        .toTextTheme()
+        .apply(
+          bodyColor: colors.textPrimary,
+          displayColor: colors.textPrimary,
+          fontFamily: fontFamily,
+          fontFamilyFallback:
+              fontFamilyPackage == null ? null : <String>[fontFamily ?? ''],
+        );
 
     return ThemeData(
       useMaterial3: true,
       brightness: brightness,
       colorScheme: colorScheme,
+      textTheme: textTheme,
       scaffoldBackgroundColor: colors.surfacePage,
       canvasColor: colors.surfacePage,
       dividerColor: colors.borderMuted,
@@ -72,6 +85,7 @@ sealed class VisorTheme {
         resolvedRadius,
         resolvedShadows,
         resolvedSpacing,
+        resolvedTextStyles,
       ],
     );
   }

@@ -27,7 +27,7 @@ void main() {
       expect(resolved!.textPrimary, colors.textPrimary);
     });
 
-    test('falls back to defaults for motion/radius/shadows/spacing', () {
+    test('falls back to defaults for every token extension', () {
       final theme = VisorTheme.build(
         colors: _testColors(),
         brightness: Brightness.light,
@@ -37,6 +37,7 @@ void main() {
       expect(theme.extension<VisorRadiusData>(), isNotNull);
       expect(theme.extension<VisorShadowsData>(), isNotNull);
       expect(theme.extension<VisorSpacingData>(), isNotNull);
+      expect(theme.extension<VisorTextStylesData>(), isNotNull);
     });
 
     test('honors supplied motion/radius when provided', () {
@@ -48,6 +49,34 @@ void main() {
       );
 
       expect(theme.extension<VisorRadiusData>()!.md, 4.0);
+    });
+
+    test('applies VisorTextStylesData.defaults into ThemeData.textTheme', () {
+      final theme = VisorTheme.build(
+        colors: _testColors(),
+        brightness: Brightness.light,
+      );
+
+      // Material 3 2024 defaults — displayLarge is 57 / w400 / -0.25.
+      expect(theme.textTheme.displayLarge!.fontSize, 57);
+      expect(theme.textTheme.displayLarge!.fontWeight, FontWeight.w400);
+      expect(theme.textTheme.titleMedium!.fontWeight, FontWeight.w500);
+      // Body/display colors applied from VisorColorsData.textPrimary.
+      expect(theme.textTheme.bodyLarge!.color, _testColors().textPrimary);
+    });
+
+    test('honors supplied textStyles when provided', () {
+      final custom = VisorTextStylesData.defaults.copyWith(
+        displayLarge: const TextStyle(fontSize: 80, fontWeight: FontWeight.w900),
+      );
+      final theme = VisorTheme.build(
+        colors: _testColors(),
+        brightness: Brightness.light,
+        textStyles: custom,
+      );
+
+      expect(theme.textTheme.displayLarge!.fontSize, 80);
+      expect(theme.textTheme.displayLarge!.fontWeight, FontWeight.w900);
     });
   });
 
