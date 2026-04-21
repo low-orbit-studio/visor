@@ -12,6 +12,23 @@ End-to-end sample of the Visor Flutter token pipeline:
       --output examples/flutter/solespark-ui
     ```
 
+## Generated layout
+
+```
+solespark-ui/
+├── pubspec.yaml
+├── pubspec_overrides.yaml          # path dep on packages/visor-flutter
+└── lib/
+    ├── ui.dart                     # barrel (re-exports visor_core)
+    └── src/
+        ├── colors/visor_colors.dart   # sealed VisorColors wrapper + light/dark data
+        └── theme/visor_theme.dart     # sealed VisorAppTheme wrapper
+```
+
+`VisorColors` (generated wrapper) exposes `.light` / `.dark` static getters
+returning `VisorColorsData` instances — the [ThemeExtension] type from
+`visor_core`.
+
 ## Testing the generated package
 
 `solespark-ui/pubspec_overrides.yaml` points `visor_core` at the in-repo

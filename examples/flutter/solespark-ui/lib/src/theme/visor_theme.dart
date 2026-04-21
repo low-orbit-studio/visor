@@ -4,7 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:visor_core/visor_core.dart';
 
-import '../colors/ui_colors.dart';
+import '../colors/visor_colors.dart';
 
 /// Assembled Material 3 [ThemeData] for this project.
 ///
@@ -17,12 +17,12 @@ import '../colors/ui_colors.dart';
 /// ```
 sealed class VisorAppTheme {
   static ThemeData get light => VisorTheme.build(
-        colors: UIColors.light,
+        colors: VisorColors.light,
         brightness: Brightness.light,
       );
 
   static ThemeData get dark => VisorTheme.build(
-        colors: UIColors.dark,
+        colors: VisorColors.dark,
         brightness: Brightness.dark,
       );
 

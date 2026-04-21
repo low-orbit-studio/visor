@@ -4,7 +4,7 @@ import 'package:visor_core/visor_core.dart';
 
 void main() {
   group('VisorTheme.build', () {
-    test('produces a ThemeData with ColorScheme derived from VisorColors', () {
+    test('produces a ThemeData with ColorScheme derived from VisorColorsData', () {
       final colors = _testColors();
       final theme =
           VisorTheme.build(colors: colors, brightness: Brightness.light);
@@ -17,12 +17,12 @@ void main() {
       expect(theme.scaffoldBackgroundColor, colors.surfacePage);
     });
 
-    test('registers VisorColors as a ThemeExtension', () {
+    test('registers VisorColorsData as a ThemeExtension', () {
       final colors = _testColors();
       final theme =
           VisorTheme.build(colors: colors, brightness: Brightness.light);
 
-      final resolved = theme.extension<VisorColors>();
+      final resolved = theme.extension<VisorColorsData>();
       expect(resolved, isNotNull);
       expect(resolved!.textPrimary, colors.textPrimary);
     });
@@ -33,25 +33,25 @@ void main() {
         brightness: Brightness.light,
       );
 
-      expect(theme.extension<VisorMotion>(), isNotNull);
-      expect(theme.extension<VisorRadius>(), isNotNull);
-      expect(theme.extension<VisorShadows>(), isNotNull);
-      expect(theme.extension<VisorSpacing>(), isNotNull);
+      expect(theme.extension<VisorMotionData>(), isNotNull);
+      expect(theme.extension<VisorRadiusData>(), isNotNull);
+      expect(theme.extension<VisorShadowsData>(), isNotNull);
+      expect(theme.extension<VisorSpacingData>(), isNotNull);
     });
 
     test('honors supplied motion/radius when provided', () {
-      const customRadius = VisorRadius(sm: 2, md: 4, lg: 8, xl: 12, pill: 999);
+      const customRadius = VisorRadiusData(sm: 2, md: 4, lg: 8, xl: 12, pill: 999);
       final theme = VisorTheme.build(
         colors: _testColors(),
         brightness: Brightness.light,
         radius: customRadius,
       );
 
-      expect(theme.extension<VisorRadius>()!.md, 4.0);
+      expect(theme.extension<VisorRadiusData>()!.md, 4.0);
     });
   });
 
-  group('VisorColors lerp', () {
+  group('VisorColorsData lerp', () {
     test('interpolates colors between two instances', () {
       final a = _testColors();
       final b = _testColors(textPrimaryValue: 0xFFFFFFFF);
@@ -61,15 +61,15 @@ void main() {
       expect(mid.textPrimary.a, greaterThan(0.0));
     });
 
-    test('returns self when other is not VisorColors', () {
+    test('returns self when other is not VisorColorsData', () {
       final a = _testColors();
       expect(a.lerp(null, 0.5), same(a));
     });
   });
 }
 
-VisorColors _testColors({int textPrimaryValue = 0xFF111111}) {
-  return VisorColors(
+VisorColorsData _testColors({int textPrimaryValue = 0xFF111111}) {
+  return VisorColorsData(
     textPrimary: Color(textPrimaryValue),
     textSecondary: const Color(0xFF555555),
     textTertiary: const Color(0xFF888888),

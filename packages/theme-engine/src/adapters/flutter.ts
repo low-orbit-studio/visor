@@ -8,10 +8,10 @@
  * packages/ui/
  * ├── pubspec.yaml
  * ├── lib/
- * │   ├── ui.dart                        # barrel
+ * │   ├── ui.dart                             # barrel
  * │   └── src/
- * │       ├── colors/ui_colors.dart      # primitives + VisorColors.light/dark
- * │       └── theme/ui_theme.dart        # VisorAppTheme.{light,dark}
+ * │       ├── colors/visor_colors.dart        # primitives + VisorColors.light/dark
+ * │       └── theme/visor_theme.dart          # VisorAppTheme.{light,dark}
  * ```
  *
  * Token categories not yet emitted (typography, spacing, radius, shadows,
@@ -46,13 +46,13 @@ export function flutterAdapter(
   const files: Record<string, string> = {};
 
   // Always emit the colors token file.
-  files["lib/src/colors/ui_colors.dart"] = emitColorsDart(input);
+  files["lib/src/colors/visor_colors.dart"] = emitColorsDart(input);
 
   // Skip the package scaffolding when --tokens-only.
   if (!tokensOnly) {
     files["pubspec.yaml"] = emitPubspec(packageName, visorCoreVersion);
     files["lib/ui.dart"] = emitBarrel();
-    files["lib/src/theme/ui_theme.dart"] = emitThemeDart(
+    files["lib/src/theme/visor_theme.dart"] = emitThemeDart(
       themeClassName,
       { lightOnly, darkOnly },
     );
@@ -92,8 +92,8 @@ function emitBarrel(): string {
     `/// Generated barrel for the Visor tokens package.`,
     `library;`,
     ``,
-    `export 'src/colors/ui_colors.dart';`,
-    `export 'src/theme/ui_theme.dart';`,
+    `export 'src/colors/visor_colors.dart';`,
+    `export 'src/theme/visor_theme.dart';`,
     ``,
     `// Re-export visor_core so consumers can access ThemeExtensions with a`,
     `// single import of this package.`,
@@ -116,7 +116,7 @@ function emitThemeDart(
     `import 'package:flutter/material.dart';`,
     `import 'package:visor_core/visor_core.dart';`,
     ``,
-    `import '../colors/ui_colors.dart';`,
+    `import '../colors/visor_colors.dart';`,
     ``,
     `/// Assembled Material 3 [ThemeData] for this project.`,
     `///`,
@@ -133,7 +133,7 @@ function emitThemeDart(
   if (emitLight) {
     lines.push(
       `  static ThemeData get light => VisorTheme.build(`,
-      `        colors: UIColors.light,`,
+      `        colors: VisorColors.light,`,
       `        brightness: Brightness.light,`,
       `      );`,
       ``,
@@ -143,7 +143,7 @@ function emitThemeDart(
   if (emitDark) {
     lines.push(
       `  static ThemeData get dark => VisorTheme.build(`,
-      `        colors: UIColors.dark,`,
+      `        colors: VisorColors.dark,`,
       `        brightness: Brightness.dark,`,
       `      );`,
       ``,

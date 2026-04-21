@@ -90,24 +90,28 @@ describe("flutterAdapter", () => {
     const result = flutterAdapter(adapterInput);
     expect(result.files).toHaveProperty("pubspec.yaml");
     expect(result.files).toHaveProperty("lib/ui.dart");
-    expect(result.files).toHaveProperty("lib/src/colors/ui_colors.dart");
-    expect(result.files).toHaveProperty("lib/src/theme/ui_theme.dart");
+    expect(result.files).toHaveProperty("lib/src/colors/visor_colors.dart");
+    expect(result.files).toHaveProperty("lib/src/theme/visor_theme.dart");
   });
 
-  it("ui_colors.dart imports visor_core and declares UIColors", () => {
+  it("visor_colors.dart imports visor_core and declares VisorColors wrapper", () => {
     const { files } = flutterAdapter(adapterInput);
-    const colors = files["lib/src/colors/ui_colors.dart"];
+    const colors = files["lib/src/colors/visor_colors.dart"];
     expect(colors).toContain("import 'package:visor_core/visor_core.dart';");
-    expect(colors).toContain("sealed class UIColors");
+    expect(colors).toContain("sealed class VisorColors");
     expect(colors).toContain("static const Color primary500 =");
     expect(colors).toContain("static const Color neutral50 =");
   });
 
-  it("emits VisorColors.light and VisorColors.dark instances", () => {
+  it("emits VisorColorsData light and dark instances", () => {
     const { files } = flutterAdapter(adapterInput);
-    const colors = files["lib/src/colors/ui_colors.dart"];
-    expect(colors).toContain("static final VisorColors light = VisorColors(");
-    expect(colors).toContain("static final VisorColors dark = VisorColors(");
+    const colors = files["lib/src/colors/visor_colors.dart"];
+    expect(colors).toContain(
+      "static final VisorColorsData light = VisorColorsData(",
+    );
+    expect(colors).toContain(
+      "static final VisorColorsData dark = VisorColorsData(",
+    );
     expect(colors).toContain("textPrimary:");
     expect(colors).toContain("surfacePage:");
     expect(colors).toContain("interactivePrimaryBg:");
@@ -115,20 +119,20 @@ describe("flutterAdapter", () => {
 
   it("emits opacity variants for primary/accent anchors", () => {
     const { files } = flutterAdapter(adapterInput);
-    const colors = files["lib/src/colors/ui_colors.dart"];
+    const colors = files["lib/src/colors/visor_colors.dart"];
     expect(colors).toContain("primary500_50o");
     expect(colors).toContain("white_10o");
     expect(colors).toContain("black_40o");
   });
 
-  it("ui_theme.dart wires Visor builder correctly", () => {
+  it("visor_theme.dart wires Visor builder correctly", () => {
     const { files } = flutterAdapter(adapterInput);
-    const theme = files["lib/src/theme/ui_theme.dart"];
+    const theme = files["lib/src/theme/visor_theme.dart"];
     expect(theme).toContain("import 'package:visor_core/visor_core.dart';");
     expect(theme).toContain("sealed class VisorAppTheme");
     expect(theme).toContain("VisorTheme.build(");
-    expect(theme).toContain("colors: UIColors.light");
-    expect(theme).toContain("colors: UIColors.dark");
+    expect(theme).toContain("colors: VisorColors.light");
+    expect(theme).toContain("colors: VisorColors.dark");
   });
 
   it("pubspec.yaml declares visor_core dependency", () => {
@@ -146,26 +150,26 @@ describe("flutterAdapter", () => {
 
   it("skips scaffolding with tokensOnly=true", () => {
     const { files } = flutterAdapter(adapterInput, { tokensOnly: true });
-    expect(files).toHaveProperty("lib/src/colors/ui_colors.dart");
+    expect(files).toHaveProperty("lib/src/colors/visor_colors.dart");
     expect(files).not.toHaveProperty("pubspec.yaml");
-    expect(files).not.toHaveProperty("lib/src/theme/ui_theme.dart");
+    expect(files).not.toHaveProperty("lib/src/theme/visor_theme.dart");
   });
 
   it("emits only light getter when lightOnly=true", () => {
     const { files } = flutterAdapter(adapterInput, { lightOnly: true });
-    const theme = files["lib/src/theme/ui_theme.dart"];
+    const theme = files["lib/src/theme/visor_theme.dart"];
     expect(theme).toContain("static ThemeData get light");
     expect(theme).not.toContain("static ThemeData get dark");
   });
 
   it("honors custom themeClassName", () => {
     const { files } = flutterAdapter(adapterInput, { themeClassName: "AppTheme" });
-    expect(files["lib/src/theme/ui_theme.dart"]).toContain("sealed class AppTheme");
+    expect(files["lib/src/theme/visor_theme.dart"]).toContain("sealed class AppTheme");
   });
 
-  it("produces valid Dart colors (all have 0x prefix and correct length)", () => {
+  it("produces valid Dart colors with 0x prefix and 8 hex digits", () => {
     const { files } = flutterAdapter(adapterInput);
-    const colors = files["lib/src/colors/ui_colors.dart"];
+    const colors = files["lib/src/colors/visor_colors.dart"];
     // Every Color() literal should be 0x + 8 hex digits
     const colorLiterals = [...colors.matchAll(/Color\((0x[0-9A-F]+)\)/g)];
     expect(colorLiterals.length).toBeGreaterThan(50);

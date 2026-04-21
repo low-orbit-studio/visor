@@ -14,7 +14,9 @@ import '../extensions/visor_spacing.dart';
 ///
 /// ## Usage
 ///
-/// In your generated `ui_theme.dart`:
+/// In your generated `visor_theme.dart`, `VisorColors` is the sealed
+/// wrapper that exposes `.light` / `.dark` getters returning
+/// [VisorColorsData] instances:
 ///
 /// ```dart
 /// sealed class VisorAppTheme {
@@ -37,12 +39,12 @@ sealed class VisorTheme {
   /// emitted by your generator fall back to sensible defaults, so you can
   /// adopt Visor incrementally.
   static ThemeData build({
-    required VisorColors colors,
+    required VisorColorsData colors,
     required Brightness brightness,
-    VisorMotion? motion,
-    VisorRadius? radius,
-    VisorShadows? shadows,
-    VisorSpacing? spacing,
+    VisorMotionData? motion,
+    VisorRadiusData? radius,
+    VisorShadowsData? shadows,
+    VisorSpacingData? spacing,
     String? fontFamily,
     String? fontFamilyPackage,
   }) {
@@ -74,20 +76,20 @@ sealed class VisorTheme {
     );
   }
 
-  /// Map a [VisorColors] instance into a Material 3 [ColorScheme].
+  /// Map a [VisorColorsData] instance into a Material 3 [ColorScheme].
   ///
   /// Callers rarely need this directly — [build] does it internally — but
   /// it's exposed for consumers who want to customize [ThemeData] beyond
   /// what [build] provides.
   static ColorScheme colorSchemeFrom(
-    VisorColors colors,
+    VisorColorsData colors,
     Brightness brightness,
   ) {
     return _colorSchemeFrom(colors, brightness);
   }
 }
 
-ColorScheme _colorSchemeFrom(VisorColors c, Brightness brightness) {
+ColorScheme _colorSchemeFrom(VisorColorsData c, Brightness brightness) {
   return ColorScheme(
     brightness: brightness,
     // Primary
@@ -132,14 +134,14 @@ ColorScheme _colorSchemeFrom(VisorColors c, Brightness brightness) {
   );
 }
 
-const VisorMotion _defaultMotion = VisorMotion(
+const VisorMotionData _defaultMotion = VisorMotionData(
   durationFast: Duration(milliseconds: 100),
   durationNormal: Duration(milliseconds: 200),
   durationSlow: Duration(milliseconds: 400),
   easing: Curves.easeInOut,
 );
 
-const VisorRadius _defaultRadius = VisorRadius(
+const VisorRadiusData _defaultRadius = VisorRadiusData(
   sm: 4,
   md: 8,
   lg: 12,
@@ -147,7 +149,7 @@ const VisorRadius _defaultRadius = VisorRadius(
   pill: 9999,
 );
 
-const VisorShadows _defaultShadows = VisorShadows(
+const VisorShadowsData _defaultShadows = VisorShadowsData(
   xs: <BoxShadow>[
     BoxShadow(color: Color(0x0A000000), blurRadius: 1, offset: Offset(0, 1)),
   ],
@@ -168,7 +170,7 @@ const VisorShadows _defaultShadows = VisorShadows(
   ],
 );
 
-const VisorSpacing _defaultSpacing = VisorSpacing(
+const VisorSpacingData _defaultSpacing = VisorSpacingData(
   xs: 4,
   sm: 8,
   md: 12,

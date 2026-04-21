@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 /// Each shadow is a list of [BoxShadow] (since CSS allows multi-layer
 /// shadows, e.g. `0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06)`).
 @immutable
-class VisorShadows extends ThemeExtension<VisorShadows> {
-  const VisorShadows({
+class VisorShadowsData extends ThemeExtension<VisorShadowsData> {
+  const VisorShadowsData({
     required this.xs,
     required this.sm,
     required this.md,
@@ -22,14 +22,14 @@ class VisorShadows extends ThemeExtension<VisorShadows> {
   final List<BoxShadow> xl;
 
   @override
-  VisorShadows copyWith({
+  VisorShadowsData copyWith({
     List<BoxShadow>? xs,
     List<BoxShadow>? sm,
     List<BoxShadow>? md,
     List<BoxShadow>? lg,
     List<BoxShadow>? xl,
   }) {
-    return VisorShadows(
+    return VisorShadowsData(
       xs: xs ?? this.xs,
       sm: sm ?? this.sm,
       md: md ?? this.md,
@@ -39,9 +39,9 @@ class VisorShadows extends ThemeExtension<VisorShadows> {
   }
 
   @override
-  VisorShadows lerp(ThemeExtension<VisorShadows>? other, double t) {
-    if (other is! VisorShadows) return this;
-    return VisorShadows(
+  VisorShadowsData lerp(ThemeExtension<VisorShadowsData>? other, double t) {
+    if (other is! VisorShadowsData) return this;
+    return VisorShadowsData(
       xs: _lerpShadows(xs, other.xs, t),
       sm: _lerpShadows(sm, other.sm, t),
       md: _lerpShadows(md, other.md, t),
