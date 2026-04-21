@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { flutterAdapter } from "../adapters/flutter.js";
 import { generateThemeData } from "../pipeline.js";
 import {
@@ -14,6 +14,11 @@ import {
   emitShadowsDart,
   parseShadowListToDart,
 } from "../flutter/emit-shadows.js";
+import {
+  emitMotionDart,
+  parseDurationToDart,
+  parseEasingToDart,
+} from "../flutter/emit-motion.js";
 
 const MINIMAL_YAML = `
 name: Test Theme
@@ -391,5 +396,70 @@ describe("emitShadowsDart / parseShadowListToDart", () => {
     for (const key of ["xs:", "sm:", "md:", "lg:", "xl:"]) {
       expect(dart).toContain(key);
     }
+  });
+});
+
+describe("emitMotionDart / duration + easing parsers", () => {
+  describe("parseDurationToDart", () => {
+    it("parses ms", () => {
+      expect(parseDurationToDart("200ms")).toBe(
+        "Duration(milliseconds: 200)",
+      );
+    });
+    it("parses fractional seconds", () => {
+      expect(parseDurationToDart("0.4s")).toBe(
+        "Duration(milliseconds: 400)",
+      );
+    });
+    it("rounds fractional ms", () => {
+      expect(parseDurationToDart("166.7ms")).toBe(
+        "Duration(milliseconds: 167)",
+      );
+    });
+    it("rejects unitless values", () => {
+      expect(() => parseDurationToDart("200")).toThrow();
+    });
+    it("rejects negative", () => {
+      expect(() => parseDurationToDart("-100ms")).toThrow();
+    });
+  });
+
+  describe("parseEasingToDart", () => {
+    it("maps CSS keywords to Curves.*", () => {
+      expect(parseEasingToDart("linear")).toBe("Curves.linear");
+      expect(parseEasingToDart("ease-in-out")).toBe("Curves.easeInOut");
+      expect(parseEasingToDart("ease-in")).toBe("Curves.easeIn");
+    });
+    it("parses cubic-bezier arguments", () => {
+      expect(parseEasingToDart("cubic-bezier(0.4, 0, 0.2, 1)")).toBe(
+        "Cubic(0.4, 0, 0.2, 1)",
+      );
+    });
+    it("accepts negative args (anticipate/overshoot curves)", () => {
+      expect(parseEasingToDart("cubic-bezier(0.68, -0.55, 0.27, 1.55)")).toBe(
+        "Cubic(0.68, -0.55, 0.27, 1.55)",
+      );
+    });
+    it("falls back to Curves.easeInOut on unknown input", () => {
+      const spy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      expect(parseEasingToDart("bouncy")).toBe("Curves.easeInOut");
+      expect(spy).toHaveBeenCalled();
+      spy.mockRestore();
+    });
+  });
+
+  it("emitMotionDart wires all four motion fields", () => {
+    const data = generateThemeData(FULL_YAML);
+    const dart = emitMotionDart({
+      primitives: data.primitives,
+      tokens: data.tokens,
+      config: data.config,
+    });
+    expect(dart).toContain("sealed class VisorMotion");
+    expect(dart).toContain("static final VisorMotionData instance =");
+    expect(dart).toContain("durationFast: Duration(");
+    expect(dart).toContain("durationNormal: Duration(");
+    expect(dart).toContain("durationSlow: Duration(");
+    expect(dart).toContain("easing: Cubic(0.4, 0, 0.2, 1)");
   });
 });
