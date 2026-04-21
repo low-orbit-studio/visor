@@ -4,6 +4,8 @@ import { fileURLToPath } from "url"
 import type {
   BundledRegistry,
   BundledRegistryItem,
+  PubDependency,
+  RegistryTarget,
 } from "./types.js"
 import type { VisorManifest } from "../generate/manifest-types.js"
 
@@ -83,9 +85,14 @@ export function resolveTransitiveDeps(
 
 export function collectDependencies(
   items: BundledRegistryItem[]
-): { dependencies: string[]; devDependencies: string[] } {
+): {
+  dependencies: string[]
+  devDependencies: string[]
+  pubDependencies: PubDependency[]
+} {
   const deps = new Set<string>()
   const devDeps = new Set<string>()
+  const pubDeps = new Map<string, PubDependency>()
 
   for (const item of items) {
     if (item.dependencies) {
@@ -98,10 +105,51 @@ export function collectDependencies(
         devDeps.add(dep)
       }
     }
+    if (item.pubDependencies) {
+      for (const dep of item.pubDependencies) {
+        pubDeps.set(dep.pub, dep)
+      }
+    }
   }
 
   return {
     dependencies: Array.from(deps).sort(),
     devDependencies: Array.from(devDeps).sort(),
+    pubDependencies: Array.from(pubDeps.values()).sort((a, b) =>
+      a.pub.localeCompare(b.pub)
+    ),
   }
+}
+
+export function filterItemsByTarget(
+  items: BundledRegistryItem[],
+  target: RegistryTarget
+): BundledRegistryItem[] {
+  return items.filter(
+    (item) => item.target === target || item.target === undefined
+  )
+}
+
+/** Normalize a name to a slug: lowercase + strip non-alphanumerics. Lets us
+ * match "section-header", "SectionHeader", and "section_header" as the same
+ * canonical component across registries with different naming conventions. */
+function slug(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]/g, "")
+}
+
+export function findItemForTarget(
+  registry: BundledRegistry,
+  name: string,
+  target: RegistryTarget
+): BundledRegistryItem | undefined {
+  const needle = slug(name)
+  // Prefer exact target match; fall back to untargeted (shared) items.
+  return (
+    registry.items.find(
+      (item) => slug(item.name) === needle && item.target === target
+    ) ??
+    registry.items.find(
+      (item) => slug(item.name) === needle && item.target === undefined
+    )
+  )
 }
