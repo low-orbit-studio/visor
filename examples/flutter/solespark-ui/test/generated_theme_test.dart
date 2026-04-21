@@ -75,5 +75,38 @@ void main() {
       expect(materialApp.theme, isNotNull);
       expect(materialApp.theme!.brightness, Brightness.light);
     });
+
+    test('SoleSpark type scale propagates to textTheme', () {
+      final theme = VisorAppTheme.light;
+      // SoleSpark's displayLarge is 56 / w500 / -0.5 (vs Material default 57 / w400 / -0.25)
+      expect(theme.textTheme.displayLarge!.fontSize, 56);
+      expect(theme.textTheme.displayLarge!.fontWeight, FontWeight.w500);
+      expect(theme.textTheme.displayLarge!.letterSpacing, -0.5);
+      // SoleSpark's labelMedium is 15 / w600 (vs Material default 12 / w500)
+      expect(theme.textTheme.labelMedium!.fontSize, 15);
+      expect(theme.textTheme.labelMedium!.fontWeight, FontWeight.w600);
+    });
+
+    test('SoleSpark radius scale wires into Material slot shapes', () {
+      final theme = VisorAppTheme.light;
+      // Button shape uses radius.sm (=6 in SoleSpark's YAML).
+      final buttonShape = theme.filledButtonTheme.style!.shape!
+          .resolve(<WidgetState>{})! as RoundedRectangleBorder;
+      expect((buttonShape.borderRadius as BorderRadius).topLeft.x, 6);
+
+      // Card shape uses radius.md (=8).
+      final cardShape = theme.cardTheme.shape! as RoundedRectangleBorder;
+      expect((cardShape.borderRadius as BorderRadius).topLeft.x, 8);
+    });
+
+    test('VisorTextStylesData is attached as a ThemeExtension', () {
+      final theme = VisorAppTheme.light;
+      expect(theme.extension<VisorTextStylesData>(), isNotNull);
+      // labelXSmall is Visor-specific; confirm the override lands.
+      expect(
+        theme.extension<VisorTextStylesData>()!.labelXSmall.fontSize,
+        10,
+      );
+    });
   });
 }

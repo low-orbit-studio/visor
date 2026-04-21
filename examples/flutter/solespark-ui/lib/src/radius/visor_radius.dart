@@ -6,10 +6,10 @@ import 'package:visor_core/visor_core.dart';
 /// Generated border-radius tokens (raw pixel values).
 sealed class VisorRadius {
   static final VisorRadiusData instance = VisorRadiusData(
-    sm: 4,
+    sm: 6,
     md: 8,
-    lg: 12,
-    xl: 16,
+    lg: 16,
+    xl: 24,
     pill: 9999,
   );
 }
