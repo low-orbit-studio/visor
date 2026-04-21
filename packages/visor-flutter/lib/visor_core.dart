@@ -13,6 +13,7 @@
 /// getters returning the `*Data` instances defined here.
 library;
 
+export 'src/extensions/build_context_extensions.dart';
 export 'src/extensions/visor_colors.dart';
 export 'src/extensions/visor_motion.dart';
 export 'src/extensions/visor_radius.dart';

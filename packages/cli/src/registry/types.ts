@@ -7,6 +7,13 @@ export type RegistryItemType =
   | "registry:theme"
   | "registry:style"
 
+export type RegistryTarget = "react" | "flutter"
+
+export interface PubDependency {
+  pub: string
+  version: string
+}
+
 export interface BundledFile {
   path: string
   type: RegistryItemType
@@ -19,8 +26,10 @@ export interface BundledRegistryItem {
   type: RegistryItemType
   description?: string
   category?: string
+  target?: RegistryTarget
   dependencies?: string[]
   devDependencies?: string[]
+  pubDependencies?: PubDependency[]
   registryDependencies?: string[]
   files: BundledFile[]
 }

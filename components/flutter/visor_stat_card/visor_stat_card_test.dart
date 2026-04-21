@@ -1,0 +1,70 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:visor_core/visor_core.dart';
+
+import '../_fixtures.dart';
+import 'visor_stat_card.dart';
+
+Widget _wrap(Widget child) {
+  return MaterialApp(
+    theme: VisorTheme.build(
+      colors: testColors(),
+      brightness: Brightness.light,
+    ),
+    home: Scaffold(body: Center(child: child)),
+  );
+}
+
+void main() {
+  group('VisorStatCard', () {
+    testWidgets('renders title and value', (tester) async {
+      await tester.pumpWidget(_wrap(const VisorStatCard(
+        title: 'Revenue',
+        value: r'$12,430',
+      )));
+      expect(find.text('Revenue'), findsOneWidget);
+      expect(find.text(r'$12,430'), findsOneWidget);
+    });
+
+    testWidgets('omits delta row when delta is null', (tester) async {
+      await tester.pumpWidget(_wrap(const VisorStatCard(
+        title: 'Users',
+        value: '1,204',
+      )));
+      expect(find.byIcon(Icons.arrow_upward), findsNothing);
+      expect(find.byIcon(Icons.arrow_downward), findsNothing);
+      expect(find.byIcon(Icons.horizontal_rule), findsNothing);
+    });
+
+    testWidgets('shows up arrow for VisorDeltaDirection.up', (tester) async {
+      await tester.pumpWidget(_wrap(const VisorStatCard(
+        title: 'Revenue',
+        value: r'$12,430',
+        delta: '+8.2%',
+        deltaDirection: VisorDeltaDirection.up,
+      )));
+      expect(find.text('+8.2%'), findsOneWidget);
+      expect(find.byIcon(Icons.arrow_upward), findsOneWidget);
+    });
+
+    testWidgets('shows down arrow for VisorDeltaDirection.down',
+        (tester) async {
+      await tester.pumpWidget(_wrap(const VisorStatCard(
+        title: 'Churn',
+        value: '2.4%',
+        delta: '-0.3pp',
+        deltaDirection: VisorDeltaDirection.down,
+      )));
+      expect(find.byIcon(Icons.arrow_downward), findsOneWidget);
+    });
+
+    testWidgets('renders leading icon when provided', (tester) async {
+      await tester.pumpWidget(_wrap(const VisorStatCard(
+        title: 'Revenue',
+        value: r'$12,430',
+        icon: Icons.trending_up,
+      )));
+      expect(find.byIcon(Icons.trending_up), findsOneWidget);
+    });
+  });
+}

@@ -1,0 +1,21 @@
+name: Button
+description: Primary interactive element for triggering actions.
+category: form
+
+when_to_use:
+  - Triggering an action (submit, save, delete, confirm)
+  - Primary and secondary CTAs on a page
+  - Form submission
+  - Destructive actions requiring visual emphasis
+
+when_not_to_use:
+  - Navigation to another page (use a link or NextJS Link)
+  - Toggling state on/off (use Switch or Toggle Group)
+  - Selecting from options (use Select or Radio Group)
+
+files:
+  - components/flutter/visor_button/visor_button.dart
+  - components/flutter/visor_button/visor_button_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }

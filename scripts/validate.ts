@@ -38,6 +38,7 @@ import { discoverabilityVariantDrift } from './rules/discoverability-variant-dri
 import { discoverabilitySelectionQuality } from './rules/discoverability-selection-quality.js';
 import { discoverabilityScore } from './rules/discoverability-score.js';
 import { themeTextContrast } from './rules/theme-text-contrast.js';
+import { crossPlatformManifestSync } from './rules/cross-platform-manifest-sync.js';
 import type { Rule } from './rules/types.js';
 
 const rules: Rule[] = [
@@ -65,6 +66,7 @@ const rules: Rule[] = [
   visorYamlExists,
   visorYamlComplete,
   visorYamlPreviewUrl,
+  crossPlatformManifestSync,
   testFileExists,
   cssModuleExists,
   registryEntryExists,

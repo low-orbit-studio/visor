@@ -26,6 +26,7 @@ async function main(): Promise<void> {
   const { deck } = await import(join(REPO_ROOT, "registry/registry-deck.ts"))
   const { blocks } = await import(join(REPO_ROOT, "registry/registry-blocks.ts"))
   const { visual } = await import(join(REPO_ROOT, "registry/registry-visual.ts"))
+  const { flutter } = await import(join(REPO_ROOT, "registry/registry-flutter.ts"))
 
   // Build a map of categories from .visor.yaml files
   const categoryMap = new Map<string, string>()
@@ -58,7 +59,15 @@ async function main(): Promise<void> {
     }
   }
 
-  const allItems = [...ui, ...hooks, ...lib, ...deck, ...blocks, ...visual]
+  const allItems = [
+    ...ui,
+    ...hooks,
+    ...lib,
+    ...deck,
+    ...blocks,
+    ...visual,
+    ...flutter,
+  ]
   const bundledItems: BundledRegistryItem[] = []
   const buildErrors: string[] = []
 
@@ -98,9 +107,13 @@ async function main(): Promise<void> {
       type: item.type,
       ...(item.description ? { description: item.description } : {}),
       ...(category ? { category } : {}),
+      ...(item.target ? { target: item.target } : {}),
       ...(item.dependencies ? { dependencies: item.dependencies } : {}),
       ...(item.devDependencies
         ? { devDependencies: item.devDependencies }
+        : {}),
+      ...(item.pubDependencies
+        ? { pubDependencies: item.pubDependencies }
         : {}),
       ...(item.registryDependencies
         ? { registryDependencies: item.registryDependencies }

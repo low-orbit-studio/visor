@@ -1,0 +1,22 @@
+name: SectionHeader
+description: >-
+  Section heading with title, optional subtitle, and optional trailing slot
+  for secondary actions like "View all" links, filters, or count badges.
+category: layout
+
+when_to_use:
+  - Dividing a screen into labeled groups of content
+  - Introducing a list or card grid with context
+  - Pairing a title with a secondary action (filter, view-all)
+
+when_not_to_use:
+  - Page-level titles — use AppBar instead
+  - Table column headers — use the table's built-in headers
+  - Dialogs and sheets — use their built-in titles
+
+files:
+  - components/flutter/visor_section_header/visor_section_header.dart
+  - components/flutter/visor_section_header/visor_section_header_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }

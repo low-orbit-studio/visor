@@ -36,6 +36,11 @@ export function resolveOutputPath(
       relativePath = registryPath.replace(/^components\/deck\//, "")
       return join(cwd, config.paths.deckComponents, relativePath)
     }
+    // Flutter components installed via --target flutter
+    if (registryPath.startsWith("components/flutter/")) {
+      relativePath = registryPath.replace(/^components\/flutter\//, "")
+      return join(cwd, config.paths.flutterComponents, relativePath)
+    }
     // Strip "components/ui/" prefix
     relativePath = registryPath.replace(/^components\/ui\//, "")
     return join(cwd, config.paths.components, relativePath)

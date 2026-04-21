@@ -1,0 +1,21 @@
+name: EmptyState
+description: Admin placeholder compound for lists, tables, search results, and dashboard regions with no data.
+category: admin
+
+when_to_use:
+  - Rendering a placeholder for an empty list, table, or search result
+  - Communicating that a user has not yet created their first item
+  - Providing a clear CTA to unblock an empty state
+  - Filling dashboard regions that temporarily have no data
+
+when_not_to_use:
+  - Full-screen error or 404 pages (use a dedicated error surface)
+  - Loading states (use Skeleton or a spinner)
+  - Inline validation messages (use Field or Alert)
+
+files:
+  - components/flutter/visor_empty_state/visor_empty_state.dart
+  - components/flutter/visor_empty_state/visor_empty_state_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }

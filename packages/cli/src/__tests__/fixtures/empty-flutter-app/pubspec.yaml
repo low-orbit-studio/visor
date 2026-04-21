@@ -1,0 +1,16 @@
+name: sample_flutter_app
+description: Minimal pubspec used by add-flutter.test.ts as an install target.
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.5.0
+  flutter: ^3.24.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
