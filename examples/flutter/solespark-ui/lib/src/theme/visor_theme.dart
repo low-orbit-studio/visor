@@ -5,6 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:visor_core/visor_core.dart';
 
 import '../colors/visor_colors.dart';
+import '../typography/visor_text_styles.dart';
+import '../spacing/visor_spacing.dart';
+import '../radius/visor_radius.dart';
+import '../shadows/visor_shadows.dart';
+import '../motion/visor_motion.dart';
 
 /// Assembled Material 3 [ThemeData] for this project.
 ///
@@ -19,11 +24,21 @@ sealed class VisorAppTheme {
   static ThemeData get light => VisorTheme.build(
         colors: VisorColors.light,
         brightness: Brightness.light,
+        textStyles: VisorTextStyles.instance,
+        spacing: VisorSpacing.instance,
+        radius: VisorRadius.instance,
+        shadows: VisorShadows.instance,
+        motion: VisorMotion.instance,
       );
 
   static ThemeData get dark => VisorTheme.build(
         colors: VisorColors.dark,
         brightness: Brightness.dark,
+        textStyles: VisorTextStyles.instance,
+        spacing: VisorSpacing.instance,
+        radius: VisorRadius.instance,
+        shadows: VisorShadows.instance,
+        motion: VisorMotion.instance,
       );
 
 }

@@ -98,11 +98,18 @@ describe("flutterAdapter", () => {
     config: data.config,
   };
 
-  it("returns a file map with expected entries", () => {
+  it("returns a file map with a file per token category plus the scaffold", () => {
     const result = flutterAdapter(adapterInput);
     expect(result.files).toHaveProperty("pubspec.yaml");
     expect(result.files).toHaveProperty("lib/ui.dart");
     expect(result.files).toHaveProperty("lib/src/colors/visor_colors.dart");
+    expect(result.files).toHaveProperty(
+      "lib/src/typography/visor_text_styles.dart",
+    );
+    expect(result.files).toHaveProperty("lib/src/spacing/visor_spacing.dart");
+    expect(result.files).toHaveProperty("lib/src/radius/visor_radius.dart");
+    expect(result.files).toHaveProperty("lib/src/shadows/visor_shadows.dart");
+    expect(result.files).toHaveProperty("lib/src/motion/visor_motion.dart");
     expect(result.files).toHaveProperty("lib/src/theme/visor_theme.dart");
   });
 
@@ -137,14 +144,25 @@ describe("flutterAdapter", () => {
     expect(colors).toContain("black_40o");
   });
 
-  it("visor_theme.dart wires Visor builder correctly", () => {
+  it("visor_theme.dart wires every token instance into VisorTheme.build", () => {
     const { files } = flutterAdapter(adapterInput);
     const theme = files["lib/src/theme/visor_theme.dart"];
     expect(theme).toContain("import 'package:visor_core/visor_core.dart';");
+    expect(theme).toContain("import '../colors/visor_colors.dart';");
+    expect(theme).toContain("import '../typography/visor_text_styles.dart';");
+    expect(theme).toContain("import '../spacing/visor_spacing.dart';");
+    expect(theme).toContain("import '../radius/visor_radius.dart';");
+    expect(theme).toContain("import '../shadows/visor_shadows.dart';");
+    expect(theme).toContain("import '../motion/visor_motion.dart';");
     expect(theme).toContain("sealed class VisorAppTheme");
     expect(theme).toContain("VisorTheme.build(");
     expect(theme).toContain("colors: VisorColors.light");
     expect(theme).toContain("colors: VisorColors.dark");
+    expect(theme).toContain("textStyles: VisorTextStyles.instance");
+    expect(theme).toContain("spacing: VisorSpacing.instance");
+    expect(theme).toContain("radius: VisorRadius.instance");
+    expect(theme).toContain("shadows: VisorShadows.instance");
+    expect(theme).toContain("motion: VisorMotion.instance");
   });
 
   it("pubspec.yaml declares visor_core dependency", () => {
@@ -160,10 +178,16 @@ describe("flutterAdapter", () => {
     expect(files["pubspec.yaml"]).toContain("name: solespark_ui");
   });
 
-  it("skips scaffolding with tokensOnly=true", () => {
+  it("skips scaffolding but still emits all token files with tokensOnly=true", () => {
     const { files } = flutterAdapter(adapterInput, { tokensOnly: true });
     expect(files).toHaveProperty("lib/src/colors/visor_colors.dart");
+    expect(files).toHaveProperty("lib/src/typography/visor_text_styles.dart");
+    expect(files).toHaveProperty("lib/src/spacing/visor_spacing.dart");
+    expect(files).toHaveProperty("lib/src/radius/visor_radius.dart");
+    expect(files).toHaveProperty("lib/src/shadows/visor_shadows.dart");
+    expect(files).toHaveProperty("lib/src/motion/visor_motion.dart");
     expect(files).not.toHaveProperty("pubspec.yaml");
+    expect(files).not.toHaveProperty("lib/ui.dart");
     expect(files).not.toHaveProperty("lib/src/theme/visor_theme.dart");
   });
 
