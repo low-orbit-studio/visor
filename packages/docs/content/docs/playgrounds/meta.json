@@ -1,0 +1,5 @@
+{
+  "title": "Playgrounds",
+  "description": "Interactive explorers for poking at the design system — browse any section under any theme, or play with a live block.",
+  "pages": ["visual-explorer", "sphere-playground"]
+}
