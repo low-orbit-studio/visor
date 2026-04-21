@@ -10,6 +10,10 @@ import {
 import { emitSpacingDart } from "../flutter/emit-spacing.js";
 import { emitRadiusDart } from "../flutter/emit-radius.js";
 import { emitTypographyDart } from "../flutter/emit-typography.js";
+import {
+  emitShadowsDart,
+  parseShadowListToDart,
+} from "../flutter/emit-shadows.js";
 
 const MINIMAL_YAML = `
 name: Test Theme
@@ -315,5 +319,77 @@ describe("emitTypographyDart", () => {
     )![0];
     expect(displayMediumBlock).not.toContain("letterSpacing");
     expect(displayMediumBlock).toContain("fontSize: 40,");
+  });
+});
+
+describe("emitShadowsDart / parseShadowListToDart", () => {
+  it("parses single x/y/blur/color shadows", () => {
+    const dart = parseShadowListToDart("0 4px 12px rgba(0, 0, 0, 0.1)");
+    expect(dart).toContain("BoxShadow(");
+    expect(dart).toContain("offset: Offset(0, 4)");
+    expect(dart).toContain("blurRadius: 12");
+    expect(dart).toContain("color: Color(0x1A000000)");
+    // No spread → spreadRadius omitted
+    expect(dart).not.toContain("spreadRadius");
+  });
+
+  it("handles x/y offsets with and without 'px'", () => {
+    const dart = parseShadowListToDart("-2px 3 4 0 rgba(0,0,0,0.5)");
+    expect(dart).toContain("offset: Offset(-2, 3)");
+    expect(dart).toContain("blurRadius: 4");
+    // spread=0 → omitted
+    expect(dart).not.toContain("spreadRadius");
+  });
+
+  it("emits spreadRadius when non-zero", () => {
+    const dart = parseShadowListToDart("0 2px 6px 2px rgba(0,0,0,0.1)");
+    expect(dart).toContain("spreadRadius: 2");
+  });
+
+  it("splits multi-layer shadows at top-level commas", () => {
+    const dart = parseShadowListToDart(
+      "0 1px 2px rgba(0,0,0,0.05), 0 4px 8px rgba(0,0,0,0.1)",
+    );
+    const shadows = dart.match(/BoxShadow\(/g)!;
+    expect(shadows.length).toBe(2);
+    expect(dart).toContain("Color(0x0D000000)"); // 5% black
+    expect(dart).toContain("Color(0x1A000000)"); // 10% black
+  });
+
+  it("keeps commas inside rgba() from splitting the list", () => {
+    const dart = parseShadowListToDart("0 1px 3px rgba(0, 0, 0, 0.04)");
+    const shadows = dart.match(/BoxShadow\(/g)!;
+    expect(shadows.length).toBe(1);
+  });
+
+  it("accepts hex color", () => {
+    const dart = parseShadowListToDart("0 0 4px #00000080");
+    expect(dart).toContain("color: Color(0x80000000)");
+  });
+
+  it("rejects 'inset' shadows", () => {
+    expect(() =>
+      parseShadowListToDart("inset 0 0 4px rgba(0,0,0,0.5)"),
+    ).toThrow(/inset/);
+  });
+
+  it("rejects shadows missing a color", () => {
+    expect(() => parseShadowListToDart("0 4px 12px")).toThrow(
+      /missing trailing color/,
+    );
+  });
+
+  it("emitShadowsDart wires all 5 token keys", () => {
+    const data = generateThemeData(FULL_YAML);
+    const dart = emitShadowsDart({
+      primitives: data.primitives,
+      tokens: data.tokens,
+      config: data.config,
+    });
+    expect(dart).toContain("sealed class VisorShadows");
+    expect(dart).toContain("static final VisorShadowsData instance =");
+    for (const key of ["xs:", "sm:", "md:", "lg:", "xl:"]) {
+      expect(dart).toContain(key);
+    }
   });
 });
