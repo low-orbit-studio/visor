@@ -1,0 +1,6 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  errors:
+    # Test-only helpers are fine to leave without library names.
+    library_private_types_in_public_api: ignore

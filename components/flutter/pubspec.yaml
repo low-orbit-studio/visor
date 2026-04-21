@@ -1,0 +1,22 @@
+name: visor_flutter_components
+description: >-
+  Source-of-truth Flutter widgets for the Visor design system. Consumer
+  projects receive copies of these files via `visor add <component> --target
+  flutter`; this package itself exists only so the widgets can be analyzed
+  and tested in the monorepo before they ship to consumers.
+publish_to: "none"
+
+environment:
+  sdk: ^3.5.0
+  flutter: ^3.24.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  visor_core:
+    path: ../../packages/visor-flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0

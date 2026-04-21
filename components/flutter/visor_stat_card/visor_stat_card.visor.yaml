@@ -1,0 +1,22 @@
+name: StatCard
+description: Admin dashboard metric card with label, value, delta, trend, and footer slots.
+category: admin
+
+when_to_use:
+  - Rendering a single key metric on an admin dashboard or summary row
+  - Displaying a numeric KPI alongside a period-over-period delta
+  - Pairing a metric with a sparkline, icon, or small chart
+  - Building the upcoming admin-dashboard block
+
+when_not_to_use:
+  - Marketing feature tiles (use a marketing card pattern instead)
+  - Long-form content cards with titles and descriptions (use a generic Card)
+  - Tabular data — prefer DataTable for multiple metrics in rows
+  - Showing a single value inline in body copy (use plain text)
+
+files:
+  - components/flutter/visor_stat_card/visor_stat_card.dart
+  - components/flutter/visor_stat_card/visor_stat_card_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }
