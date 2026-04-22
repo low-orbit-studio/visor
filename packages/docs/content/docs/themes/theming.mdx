@@ -26,6 +26,32 @@ That's it. The bundle includes:
 - Light theme applied to `:root`
 - Dark theme applied via `@media (prefers-color-scheme: dark)` and manual selectors
 
+## Using Stock Themes
+
+Four stock themes ship with `@loworbitstudio/visor-core` as CSS subpath exports. Import the one you want and apply its class to your root element:
+
+```css
+@import '@loworbitstudio/visor-core';
+@import '@loworbitstudio/visor-core/themes/blackout';
+```
+
+```html
+<body class="blackout-theme">
+  <!-- your app -->
+</body>
+```
+
+Available themes:
+
+| Import | Class |
+|---|---|
+| `@loworbitstudio/visor-core/themes/blackout` | `.blackout-theme` |
+| `@loworbitstudio/visor-core/themes/modern-minimal` | `.modern-minimal-theme` |
+| `@loworbitstudio/visor-core/themes/neutral` | `.neutral-theme` |
+| `@loworbitstudio/visor-core/themes/space` | `.space-theme` |
+
+Each stock theme is class-scoped — it only activates within elements that carry the theme class. Import the base `@loworbitstudio/visor-core` first; the stock theme import adds color, typography, and spacing overrides on top.
+
 ## Automatic Dark Mode
 
 No setup required. When a user's OS is set to dark mode, `prefers-color-scheme: dark` applies the dark token values automatically.

@@ -10,9 +10,12 @@
  *   dist/index.css — full bundle (imports all above)
  */
 
-import { writeFileSync, mkdirSync, existsSync } from "fs";
+import { writeFileSync, readFileSync, mkdirSync, existsSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
+
+import { generateThemeData } from "@loworbitstudio/visor-theme-engine";
+import { docsAdapter } from "@loworbitstudio/visor-theme-engine/adapters";
 
 import {
   primitiveColors,
@@ -61,6 +64,10 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST_DIR = join(__dirname, "../../dist");
 const THEMES_DIR = join(DIST_DIR, "themes");
+// Repo-root themes dir (packages/tokens/src/generate → ../../../../themes)
+const STOCK_THEMES_DIR = join(__dirname, "../../../../themes");
+
+const STOCK_THEMES = ["blackout", "modern-minimal", "neutral", "space"] as const;
 
 // ============================================================
 // Helpers
@@ -588,6 +595,24 @@ function generateIndexCSS(): string {
 }
 
 // ============================================================
+// Stock theme CSS generation
+// ============================================================
+
+function generateStockThemes(): void {
+  for (const slug of STOCK_THEMES) {
+    const yamlPath = join(STOCK_THEMES_DIR, `${slug}.visor.yaml`);
+    if (!existsSync(yamlPath)) {
+      throw new Error(`Stock theme YAML not found: ${yamlPath}`);
+    }
+    const yaml = readFileSync(yamlPath, "utf-8");
+    const data = generateThemeData(yaml);
+    const css = docsAdapter({ primitives: data.primitives, tokens: data.tokens, config: data.config });
+    writeFileSync(join(THEMES_DIR, `${slug}.css`), css, "utf-8");
+    console.log(`✓ dist/themes/${slug}.css`);
+  }
+}
+
+// ============================================================
 // Main
 // ============================================================
 
@@ -625,6 +650,9 @@ function main(): void {
   const indexCSS = generateIndexCSS();
   writeFileSync(join(DIST_DIR, "index.css"), indexCSS, "utf-8");
   console.log("✓ dist/index.css");
+
+  // Generate stock themes
+  generateStockThemes();
 
   console.log("\nToken counts:");
   console.log(

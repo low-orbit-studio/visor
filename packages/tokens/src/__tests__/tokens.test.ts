@@ -889,3 +889,51 @@ describe("Theme utilities", () => {
     window.matchMedia = originalMatchMedia;
   });
 });
+
+// ============================================================
+// Stock theme CSS generation
+// ============================================================
+
+import { readFileSync } from "fs";
+import { join } from "path";
+import { generateThemeData } from "@loworbitstudio/visor-theme-engine";
+import { docsAdapter } from "@loworbitstudio/visor-theme-engine/adapters";
+
+// process.cwd() is packages/tokens when running `npm run test -w packages/tokens`
+const REPO_ROOT = join(process.cwd(), "../..");
+
+describe("Stock theme CSS generation", () => {
+  const STOCK_SLUGS = ["blackout", "modern-minimal", "neutral", "space"] as const;
+
+  it("generates class-scoped CSS for blackout theme", () => {
+    const yaml = readFileSync(join(REPO_ROOT, "themes/blackout.visor.yaml"), "utf-8");
+    const data = generateThemeData(yaml);
+    const css = docsAdapter({ primitives: data.primitives, tokens: data.tokens, config: data.config });
+
+    expect(css).toContain(".blackout-theme {");
+    expect(css).toContain(".dark .blackout-theme {");
+    expect(css).toContain("html:not(.dark) .blackout-theme {");
+    expect(css).toContain("--color-primary-500:");
+    expect(css).toContain("--text-primary:");
+  });
+
+  it.each(STOCK_SLUGS)("generates non-empty CSS for %s theme", (slug) => {
+    const yaml = readFileSync(join(REPO_ROOT, `themes/${slug}.visor.yaml`), "utf-8");
+    const data = generateThemeData(yaml);
+    const css = docsAdapter({ primitives: data.primitives, tokens: data.tokens, config: data.config });
+
+    expect(css.length).toBeGreaterThan(1000);
+    expect(css).toContain(`.${slug}-theme {`);
+  });
+
+  it("packaged dist themes match docs CSS byte-for-byte", () => {
+    const distDir = join(REPO_ROOT, "packages/tokens/dist/themes");
+    const docsDir = join(REPO_ROOT, "packages/docs/app");
+
+    for (const slug of STOCK_SLUGS) {
+      const distCss = readFileSync(join(distDir, `${slug}.css`), "utf-8");
+      const docsCss = readFileSync(join(docsDir, `${slug}-theme.css`), "utf-8");
+      expect(distCss).toBe(docsCss);
+    }
+  });
+});
