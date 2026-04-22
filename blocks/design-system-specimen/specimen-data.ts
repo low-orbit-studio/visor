@@ -339,7 +339,7 @@ export const CONTRAST_PAIRS: ContrastPairData[] = [
   { fgToken: "--text-primary", bgToken: "--surface-page", fgLabel: "text-primary", bgLabel: "surface-page", ratio: 15.4, wcagAA: true, wcagAAA: true },
   { fgToken: "--text-primary", bgToken: "--surface-card", fgLabel: "text-primary", bgLabel: "surface-card", ratio: 15.4, wcagAA: true, wcagAAA: true },
   { fgToken: "--text-secondary", bgToken: "--surface-page", fgLabel: "text-secondary", bgLabel: "surface-page", ratio: 5.74, wcagAA: true, wcagAAA: false },
-  { fgToken: "--text-tertiary", bgToken: "--surface-page", fgLabel: "text-tertiary", bgLabel: "surface-page", ratio: 3.94, wcagAA: false, wcagAAA: false },
+  { fgToken: "--text-tertiary", bgToken: "--surface-page", fgLabel: "text-tertiary", bgLabel: "surface-page", ratio: 4.75, wcagAA: true, wcagAAA: false },
   { fgToken: "--text-link", bgToken: "--surface-page", fgLabel: "text-link", bgLabel: "surface-page", ratio: 4.62, wcagAA: true, wcagAAA: false },
   { fgToken: "--text-inverse", bgToken: "--surface-overlay", fgLabel: "text-inverse", bgLabel: "surface-overlay", ratio: 14.7, wcagAA: true, wcagAAA: true },
   { fgToken: "--text-success", bgToken: "--surface-page", fgLabel: "text-success", bgLabel: "surface-page", ratio: 4.49, wcagAA: true, wcagAAA: false },
