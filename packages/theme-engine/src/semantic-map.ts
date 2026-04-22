@@ -107,6 +107,8 @@ export const SEMANTIC_SURFACE_MAP: Record<string, SemanticMapping> = {
     light: { constant: CONFIG_SURFACE },
     dark: { constant: CONFIG_DARK_SURFACE },
   },
+  // Distinct from card: glass themes (Blackout, Modern Minimal dark) set surface-card translucent.
+  // Floating panels rendered over arbitrary page content must be opaque — override this token there.
   popover: {
     light: { constant: CONFIG_SURFACE },
     dark: { constant: CONFIG_DARK_SURFACE },
