@@ -86,11 +86,10 @@ packages/docs/app/solespark-theme.css
 packages/docs/app/veronica-theme.css
 # END visor-custom-theme-css
 
-# Custom theme YAML copies in docs public folder
-packages/docs/public/themes/blacklight.visor.yaml
-packages/docs/public/themes/entr.visor.yaml
-packages/docs/public/themes/kaiah.visor.yaml
-packages/docs/public/themes/reference-app.visor.yaml
-packages/docs/public/themes/solespark.visor.yaml
-packages/docs/public/themes/veronica.visor.yaml
+# Custom theme YAML copies in docs public folder (stock themes re-included)
+packages/docs/public/themes/*.visor.yaml
+!packages/docs/public/themes/blackout.visor.yaml
+!packages/docs/public/themes/modern-minimal.visor.yaml
+!packages/docs/public/themes/neutral.visor.yaml
+!packages/docs/public/themes/space.visor.yaml
 .vercel
