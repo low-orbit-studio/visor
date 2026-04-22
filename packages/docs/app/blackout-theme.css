@@ -255,7 +255,7 @@
 
 /* --- Adaptive: Text (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .blackout-theme:not(.light) {
+  html:not(.light) .blackout-theme {
     --text-primary: rgba(255, 255, 255, 0.7);
     --text-secondary: rgba(255, 255, 255, 0.70);
     --text-tertiary: rgba(255, 255, 255, 0.55);
@@ -274,7 +274,7 @@
 
 /* --- Adaptive: Surface (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .blackout-theme:not(.light) {
+  html:not(.light) .blackout-theme {
     --surface-page: #000000;
     --surface-card: rgba(255, 255, 255, 0.04);
     --surface-subtle: rgba(255, 255, 255, 0.02);
@@ -301,7 +301,7 @@
 
 /* --- Adaptive: Border (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .blackout-theme:not(.light) {
+  html:not(.light) .blackout-theme {
     --border-default: rgba(255, 255, 255, 0.06);
     --border-muted: rgba(255, 255, 255, 0.03);
     --border-strong: rgba(255, 255, 255, 0.1);
@@ -317,7 +317,7 @@
 
 /* --- Adaptive: Interactive (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .blackout-theme:not(.light) {
+  html:not(.light) .blackout-theme {
     --interactive-primary-bg: #666666;
     --interactive-primary-bg-hover: #dcdcdc;
     --interactive-primary-bg-active: #e6e6e6;

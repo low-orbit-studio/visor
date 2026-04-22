@@ -287,7 +287,7 @@
 
 /* --- Adaptive: Text (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .modern-minimal-theme:not(.light) {
+  html:not(.light) .modern-minimal-theme {
     --text-primary: rgba(255, 255, 255, 0.7);
     --text-secondary: rgba(255, 255, 255, 0.70);
     --text-tertiary: rgba(255, 255, 255, 0.55);
@@ -306,7 +306,7 @@
 
 /* --- Adaptive: Surface (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .modern-minimal-theme:not(.light) {
+  html:not(.light) .modern-minimal-theme {
     --surface-page: #000000;
     --surface-card: rgba(255, 255, 255, 0.04);
     --surface-subtle: rgba(255, 255, 255, 0.02);
@@ -333,7 +333,7 @@
 
 /* --- Adaptive: Border (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .modern-minimal-theme:not(.light) {
+  html:not(.light) .modern-minimal-theme {
     --border-default: rgba(255, 255, 255, 0.06);
     --border-muted: rgba(255, 255, 255, 0.03);
     --border-strong: rgba(255, 255, 255, 0.1);
@@ -349,7 +349,7 @@
 
 /* --- Adaptive: Interactive (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .modern-minimal-theme:not(.light) {
+  html:not(.light) .modern-minimal-theme {
     --interactive-primary-bg: #02cd8d;
     --interactive-primary-bg-hover: #aaffd5;
     --interactive-primary-bg-active: #c0ffde;
@@ -370,7 +370,7 @@
 
 /* --- Primitive overrides (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .modern-minimal-theme:not(.light) {
+  html:not(.light) .modern-minimal-theme {
     --color-primary-50: #e7fbf0;
     --color-primary-100: #dcfdeb;
     --color-primary-200: #ceffe5;

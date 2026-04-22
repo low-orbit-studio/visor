@@ -266,7 +266,7 @@
 
 /* --- Adaptive: Text (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .space-theme:not(.light) {
+  html:not(.light) .space-theme {
     --text-primary: #e8e8f0;
     --text-secondary: rgba(232, 232, 240, 0.72);
     --text-tertiary: rgba(232, 232, 240, 0.5);
@@ -285,7 +285,7 @@
 
 /* --- Adaptive: Surface (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .space-theme:not(.light) {
+  html:not(.light) .space-theme {
     --surface-page: #080810;
     --surface-card: #0e0e18;
     --surface-subtle: #2d2d38;
@@ -312,7 +312,7 @@
 
 /* --- Adaptive: Border (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .space-theme:not(.light) {
+  html:not(.light) .space-theme {
     --border-default: #41414d;
     --border-muted: #2d2d38;
     --border-strong: #545460;
@@ -328,7 +328,7 @@
 
 /* --- Adaptive: Interactive (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .space-theme:not(.light) {
+  html:not(.light) .space-theme {
     --interactive-primary-bg: #5b6fff;
     --interactive-primary-bg-hover: #d8e1ff;
     --interactive-primary-bg-active: #e2e9ff;
@@ -349,7 +349,7 @@
 
 /* --- Primitive overrides (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .space-theme:not(.light) {
+  html:not(.light) .space-theme {
     --color-error-50: #fff2f1;
     --color-error-100: #ffefee;
     --color-error-500: #f87171;
