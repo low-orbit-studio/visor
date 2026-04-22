@@ -10,8 +10,12 @@
     "./tokens": "./dist/tokens.css",
     "./primitives": "./dist/primitives.css",
     "./semantic": "./dist/semantic.css",
-    "./themes/light": "./dist/themes/light.css",
+    "./themes/blackout": "./dist/themes/blackout.css",
     "./themes/dark": "./dist/themes/dark.css",
+    "./themes/light": "./dist/themes/light.css",
+    "./themes/modern-minimal": "./dist/themes/modern-minimal.css",
+    "./themes/neutral": "./dist/themes/neutral.css",
+    "./themes/space": "./dist/themes/space.css",
     "./types": "./src/types.ts"
   },
   "scripts": {
@@ -43,6 +47,7 @@
     "access": "public"
   },
   "devDependencies": {
+    "@loworbitstudio/visor-theme-engine": "^0.4.0",
     "@types/node": "^22.0.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",

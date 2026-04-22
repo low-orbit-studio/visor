@@ -889,3 +889,59 @@ describe("Theme utilities", () => {
     window.matchMedia = originalMatchMedia;
   });
 });
+
+// ============================================================
+// Stock theme CSS generation
+// ============================================================
+
+import { readFileSync, existsSync } from "fs";
+import { join, dirname } from "path";
+import { generateThemeData } from "@loworbitstudio/visor-theme-engine";
+import { docsAdapter } from "@loworbitstudio/visor-theme-engine/adapters";
+
+function findRepoRoot(): string {
+  let dir = process.cwd();
+  while (dir !== dirname(dir)) {
+    if (existsSync(join(dir, "themes/blackout.visor.yaml"))) return dir;
+    dir = dirname(dir);
+  }
+  throw new Error("Could not locate repo root (no themes/blackout.visor.yaml found)");
+}
+
+const REPO_ROOT = process.env.VISOR_REPO_ROOT ?? findRepoRoot();
+
+describe("Stock theme CSS generation", () => {
+  const STOCK_SLUGS = ["blackout", "modern-minimal", "neutral", "space"] as const;
+
+  it("generates class-scoped CSS for blackout theme", () => {
+    const yaml = readFileSync(join(REPO_ROOT, "themes/blackout.visor.yaml"), "utf-8");
+    const data = generateThemeData(yaml);
+    const css = docsAdapter({ primitives: data.primitives, tokens: data.tokens, config: data.config });
+
+    expect(css).toContain(".blackout-theme {");
+    expect(css).toContain(".dark .blackout-theme {");
+    expect(css).toContain("html:not(.dark) .blackout-theme {");
+    expect(css).toContain("--color-primary-500:");
+    expect(css).toContain("--text-primary:");
+  });
+
+  it.each(STOCK_SLUGS)("generates non-empty CSS for %s theme", (slug) => {
+    const yaml = readFileSync(join(REPO_ROOT, `themes/${slug}.visor.yaml`), "utf-8");
+    const data = generateThemeData(yaml);
+    const css = docsAdapter({ primitives: data.primitives, tokens: data.tokens, config: data.config });
+
+    expect(css.length).toBeGreaterThan(1000);
+    expect(css).toContain(`.${slug}-theme {`);
+  });
+
+  it("packaged dist themes match docs CSS byte-for-byte", () => {
+    const distDir = join(REPO_ROOT, "packages/tokens/dist/themes");
+    const docsDir = join(REPO_ROOT, "packages/docs/app");
+
+    for (const slug of STOCK_SLUGS) {
+      const distCss = readFileSync(join(distDir, `${slug}.css`), "utf-8");
+      const docsCss = readFileSync(join(docsDir, `${slug}-theme.css`), "utf-8");
+      expect(distCss).toBe(docsCss);
+    }
+  });
+});
