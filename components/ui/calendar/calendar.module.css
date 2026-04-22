@@ -166,7 +166,7 @@
 
 /* Range styles */
 .rangeMiddle .dayButton {
-  background-color: color-mix(in srgb, var(--interactive-primary-bg, #3b82f6) 20%, transparent);
+  background-color: color-mix(in srgb, var(--interactive-primary-bg, #3b82f6) 50%, transparent);
   color: var(--text-primary, #111827);
   border-radius: 0;
 }
