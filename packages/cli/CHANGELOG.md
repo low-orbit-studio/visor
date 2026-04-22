@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+## [0.3.0] - Initial release
+
+### Added
+- Initial release of the Visor CLI for managing design system components and themes.
+
 ## 0.2.0 — AI Consumability & Theme Sync
 
 ### CLI Commands
