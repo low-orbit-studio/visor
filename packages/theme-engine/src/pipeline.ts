@@ -34,7 +34,7 @@ import type {
 // ============================================================
 
 /**
- * Generate all shade scales from a resolved config.
+ * Generate all shade scales from a resolved config (light-mode colors).
  * If neutral is null, uses Tailwind Gray verbatim.
  */
 export function generatePrimitives(
@@ -51,6 +51,43 @@ export function generatePrimitives(
     warning: generateShadeScale(config.colors.warning, "warning") as GeneratedPrimitives["warning"],
     error: generateShadeScale(config.colors.error, "error") as GeneratedPrimitives["error"],
     info: generateShadeScale(config.colors.info, "info") as GeneratedPrimitives["info"],
+  };
+}
+
+/**
+ * Generate dark-mode shade scales, overlaying colors-dark overrides onto the
+ * light primitives. Any role present in colors-dark gets its own dark scale;
+ * all others inherit from the light primitives.
+ */
+export function generateDarkPrimitives(
+  config: ResolvedThemeConfig,
+  lightPrimitives: GeneratedPrimitives
+): GeneratedPrimitives {
+  const cd = config["colors-dark"];
+  return {
+    primary: cd?.primary
+      ? (generateShadeScale(cd.primary, "primary") as GeneratedPrimitives["primary"])
+      : lightPrimitives.primary,
+    accent: cd?.accent
+      ? (generateShadeScale(cd.accent, "accent") as GeneratedPrimitives["accent"])
+      : lightPrimitives.accent,
+    neutral: cd?.neutral
+      ? config.colors.neutral === null
+        ? TAILWIND_GRAY
+        : (generateShadeScale(cd.neutral, "neutral") as GeneratedPrimitives["neutral"])
+      : lightPrimitives.neutral,
+    success: cd?.success
+      ? (generateShadeScale(cd.success, "success") as GeneratedPrimitives["success"])
+      : lightPrimitives.success,
+    warning: cd?.warning
+      ? (generateShadeScale(cd.warning, "warning") as GeneratedPrimitives["warning"])
+      : lightPrimitives.warning,
+    error: cd?.error
+      ? (generateShadeScale(cd.error, "error") as GeneratedPrimitives["error"])
+      : lightPrimitives.error,
+    info: cd?.info
+      ? (generateShadeScale(cd.info, "info") as GeneratedPrimitives["info"])
+      : lightPrimitives.info,
   };
 }
 
@@ -125,11 +162,12 @@ export function generateThemeDataFromConfig(
   // Resolve defaults
   const resolved = resolveConfig(config);
 
-  // Stage 1: Generate shade scales
+  // Stage 1: Generate shade scales (light and dark)
   const primitives = generatePrimitives(resolved);
+  const darkPrimitives = generateDarkPrimitives(resolved, primitives);
 
-  // Stage 2: Assign semantic tokens
-  let tokens = assignSemanticTokens(primitives, resolved);
+  // Stage 2: Assign semantic tokens using mode-specific shade scales
+  let tokens = assignSemanticTokens(primitives, darkPrimitives, resolved);
 
   // Stage 4: Apply overrides (before CSS generation)
   tokens = applyOverrides(tokens, resolved.overrides);

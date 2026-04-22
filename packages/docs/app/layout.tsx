@@ -20,6 +20,16 @@ export const metadata: Metadata = {
   description: 'Low Orbit Studio\'s shared design system. Components, tokens, and theming for modern apps.',
 };
 
+// Inline init script — restores body theme class and html color-mode class before React hydrates.
+// Content is 100% static; no user data is interpolated here.
+const INIT_SCRIPT = `(function(){` +
+  `var t=localStorage.getItem("visor-theme")||"blackout";` +
+  `document.body.classList.add(t+"-theme");` +
+  `var m=localStorage.getItem("visor-color-mode");` +
+  `if(m==="dark"){document.documentElement.classList.add("dark");document.documentElement.classList.remove("light");document.documentElement.style.colorScheme="dark";}` +
+  `else if(m==="light"){document.documentElement.classList.add("light");document.documentElement.classList.remove("dark");document.documentElement.style.colorScheme="light";}` +
+`})()`;
+
 export default function RootLayout({
   children,
 }: {
@@ -28,11 +38,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={spaceMono.variable} suppressHydrationWarning>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){var t=localStorage.getItem("visor-theme")||"blackout";document.body.classList.add(t+"-theme")})()`,
-          }}
-        />
+        {/* eslint-disable-next-line react/no-danger */}
+        <script dangerouslySetInnerHTML={{ __html: INIT_SCRIPT }} />
         <ConditionalStarfield />
         <div style={{ position: 'relative', zIndex: 1 }}>
           <RootProvider>{children}</RootProvider>

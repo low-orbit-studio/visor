@@ -36,6 +36,7 @@ export const THEME_GROUPS: ThemeGroup[] = [...STOCK_GROUPS, ...customThemeGroups
 export const ALL_THEMES = THEME_GROUPS.flatMap((g) => g.themes.map((t) => t.value));
 
 export const THEME_STORAGE_KEY = "visor-theme";
+export const COLOR_MODE_STORAGE_KEY = "visor-color-mode";
 export const DEFAULT_THEME = "blackout";
 export type ColorMode = "light" | "dark";
 
@@ -43,7 +44,7 @@ export function findThemeEntry(theme: string): ThemeEntry | undefined {
   return THEME_GROUPS.flatMap((g) => g.themes).find((t) => t.value === theme);
 }
 
-/** Flip the <html> color-mode class and color-scheme without touching the theme class. */
+/** Flip the <html> color-mode class and color-scheme without touching the theme class. Persists to localStorage. */
 export function applyMode(mode: ColorMode) {
   if (typeof document === "undefined") return;
   const html = document.documentElement;
@@ -56,6 +57,7 @@ export function applyMode(mode: ColorMode) {
     html.classList.remove("dark");
     html.style.colorScheme = "light";
   }
+  try { localStorage.setItem(COLOR_MODE_STORAGE_KEY, mode); } catch {}
 }
 
 /**
@@ -75,7 +77,13 @@ export function applyTheme(theme: string) {
   } catch {}
 
   const entry = findThemeEntry(theme);
-  if (entry?.defaultMode) applyMode(entry.defaultMode);
+  // Only apply defaultMode when the user has no stored color mode preference.
+  // This prevents overriding a manually-chosen mode on navigation.
+  if (entry?.defaultMode) {
+    let storedMode: string | null = null;
+    try { storedMode = localStorage.getItem(COLOR_MODE_STORAGE_KEY); } catch {}
+    if (!storedMode) applyMode(entry.defaultMode);
+  }
 
   document.dispatchEvent(new CustomEvent("visor-theme-change"));
 }

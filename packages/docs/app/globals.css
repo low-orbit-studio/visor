@@ -9,6 +9,15 @@
 /* END visor-theme-imports */
 @import './custom-themes.generated.css';
 
+/* ── Custom theme: font-heading overrides ── */
+/* The theme engine hardcodes --font-heading: var(--font-sans); this overrides it per-theme. */
+.blacklight-underground-theme {
+  --font-heading: PP Model Plastic;
+}
+.blacklight-underground-theme :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-heading);
+}
+
 /* ── Theme-aware wordmark ── */
 .dark .wordmark-light { display: none; }
 html:not(.dark) .wordmark-dark { display: none; }

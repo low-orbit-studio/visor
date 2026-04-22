@@ -303,26 +303,29 @@ export function docsAdapter(
 
   const darkDecls = generateSemanticDecls(input.tokens, "dark");
 
-  // If colors-dark specifies a dark-mode primary or accent, regenerate their
-  // shade scales from the dark brand color and emit as primitive overrides
-  // in .dark {scope}. This makes dark-first themes (e.g. ENTR) show the dark
-  // brand color at --color-primary-500 (the "brand anchor" step).
+  // For any role present in colors-dark, regenerate its shade scale and emit
+  // as primitive overrides in .dark {scope} so --color-{role}-* CSS variables
+  // reflect the dark brand color (e.g. --color-primary-500 = dark primary).
   const colorsDark = input.config["colors-dark"];
   const darkPrimitiveOverrides: string[] = [];
-  if (colorsDark?.primary) {
-    const darkPrimary = generateShadeScale(colorsDark.primary, "primary") as Record<number, string>;
-    for (const step of FULL_SHADE_STEPS) {
-      darkPrimitiveOverrides.push(`--color-primary-${step}: ${darkPrimary[step]};`);
+  for (const role of FULL_SCALE_ROLES) {
+    if (colorsDark?.[role]) {
+      const scale = generateShadeScale(colorsDark[role]!, role) as Record<number, string>;
+      for (const step of FULL_SHADE_STEPS) {
+        darkPrimitiveOverrides.push(`--color-${role}-${step}: ${scale[step]};`);
+      }
     }
   }
-  if (colorsDark?.accent) {
-    const darkAccent = generateShadeScale(colorsDark.accent, "accent") as Record<number, string>;
-    for (const step of FULL_SHADE_STEPS) {
-      darkPrimitiveOverrides.push(`--color-accent-${step}: ${darkAccent[step]};`);
+  for (const role of SELECTIVE_SCALE_ROLES) {
+    if (colorsDark?.[role]) {
+      const scale = generateShadeScale(colorsDark[role]!, role) as Record<number, string>;
+      for (const step of SELECTIVE_SHADE_STEPS) {
+        darkPrimitiveOverrides.push(`--color-${role}-${step}: ${scale[step]};`);
+      }
     }
   }
   if (darkPrimitiveOverrides.length > 0) {
-    lines.push(sectionComment("Primitive overrides (dark) — dark brand color anchors at shade 500"));
+    lines.push(sectionComment("Primitive overrides (dark) — dark color anchors at shade 500"));
     lines.push(block(`.dark ${scopeClass}`, darkPrimitiveOverrides));
     lines.push("");
   }
@@ -348,9 +351,12 @@ export function docsAdapter(
     { label: "Border", entries: Object.entries(input.tokens.border).map(([n, v]) => `--border-${n}: ${v.dark};`) },
     { label: "Interactive", entries: Object.entries(input.tokens.interactive).map(([n, v]) => `--interactive-${n}: ${v.dark};`) },
   ];
+  // .light is toggled on <html>, not on the scope element (<body>), so the
+  // :not(.light) guard must be on html — not on scopeClass — otherwise it
+  // always matches and dark primitives bleed into manual light mode.
   for (const cat of pcsCategories) {
     lines.push(sectionComment(`Adaptive: ${cat.label} (dark) — prefers-color-scheme`));
-    const inner = block(`${scopeClass}:not(.light)`, cat.entries);
+    const inner = block(`html:not(.light) ${scopeClass}`, cat.entries);
     lines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
     lines.push("");
   }
@@ -358,7 +364,7 @@ export function docsAdapter(
   // Primitive overrides also apply under prefers-color-scheme when no manual toggle set
   if (darkPrimitiveOverrides.length > 0) {
     lines.push(sectionComment("Primitive overrides (dark) — prefers-color-scheme"));
-    const inner = block(`${scopeClass}:not(.light)`, darkPrimitiveOverrides);
+    const inner = block(`html:not(.light) ${scopeClass}`, darkPrimitiveOverrides);
     lines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
     lines.push("");
   }

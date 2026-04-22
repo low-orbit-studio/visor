@@ -178,6 +178,17 @@
 
 /* ── Section 2: Dark mode overrides ── */
 
+/* --- Primitive overrides (dark) — dark color anchors at shade 500 --- */
+.dark .space-theme {
+  --color-error-50: #fff2f1;
+  --color-error-100: #ffefee;
+  --color-error-500: #f87171;
+  --color-error-600: #9d1727;
+  --color-error-700: #810018;
+  --color-error-900: #3a0006;
+}
+
+
 /* --- Adaptive: Text (dark) — manual toggle --- */
 .dark .space-theme {
   --text-primary: #e8e8f0;
@@ -190,7 +201,7 @@
   --text-link-hover: #e2e9ff;
   --text-success: #22c55e;
   --text-warning: #f59e0b;
-  --text-error: #ef4444;
+  --text-error: #f87171;
   --text-info: #0ea5e9;
 }
 
@@ -213,8 +224,8 @@
   --surface-success-default: #22c55e;
   --surface-warning-subtle: #281600;
   --surface-warning-default: #f59e0b;
-  --surface-error-subtle: #3a0003;
-  --surface-error-default: #ef4444;
+  --surface-error-subtle: #3a0006;
+  --surface-error-default: #f87171;
   --surface-info-subtle: #001d2e;
   --surface-info-default: #0ea5e9;
 }
@@ -229,7 +240,7 @@
   --border-disabled: #2d2d38;
   --border-success: #22c55e;
   --border-warning: #f59e0b;
-  --border-error: #ef4444;
+  --border-error: #f87171;
   --border-info: #0ea5e9;
 }
 
@@ -245,8 +256,8 @@
   --interactive-secondary-bg-active: #545460;
   --interactive-secondary-text: #f5f5f8;
   --interactive-secondary-border: #545460;
-  --interactive-destructive-bg: #ef4444;
-  --interactive-destructive-bg-hover: #a30016;
+  --interactive-destructive-bg: #f87171;
+  --interactive-destructive-bg-hover: #9d1727;
   --interactive-destructive-text: #ffffff;
   --interactive-ghost-bg: #2d2d38;
   --interactive-ghost-bg-hover: #41414d;
@@ -255,7 +266,7 @@
 
 /* --- Adaptive: Text (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .space-theme:not(.light) {
+  html:not(.light) .space-theme {
     --text-primary: #e8e8f0;
     --text-secondary: rgba(232, 232, 240, 0.72);
     --text-tertiary: rgba(232, 232, 240, 0.5);
@@ -266,7 +277,7 @@
     --text-link-hover: #e2e9ff;
     --text-success: #22c55e;
     --text-warning: #f59e0b;
-    --text-error: #ef4444;
+    --text-error: #f87171;
     --text-info: #0ea5e9;
   }
 }
@@ -274,7 +285,7 @@
 
 /* --- Adaptive: Surface (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .space-theme:not(.light) {
+  html:not(.light) .space-theme {
     --surface-page: #080810;
     --surface-card: #0e0e18;
     --surface-subtle: #2d2d38;
@@ -291,8 +302,8 @@
     --surface-success-default: #22c55e;
     --surface-warning-subtle: #281600;
     --surface-warning-default: #f59e0b;
-    --surface-error-subtle: #3a0003;
-    --surface-error-default: #ef4444;
+    --surface-error-subtle: #3a0006;
+    --surface-error-default: #f87171;
     --surface-info-subtle: #001d2e;
     --surface-info-default: #0ea5e9;
   }
@@ -301,7 +312,7 @@
 
 /* --- Adaptive: Border (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .space-theme:not(.light) {
+  html:not(.light) .space-theme {
     --border-default: #41414d;
     --border-muted: #2d2d38;
     --border-strong: #545460;
@@ -309,7 +320,7 @@
     --border-disabled: #2d2d38;
     --border-success: #22c55e;
     --border-warning: #f59e0b;
-    --border-error: #ef4444;
+    --border-error: #f87171;
     --border-info: #0ea5e9;
   }
 }
@@ -317,7 +328,7 @@
 
 /* --- Adaptive: Interactive (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .space-theme:not(.light) {
+  html:not(.light) .space-theme {
     --interactive-primary-bg: #5b6fff;
     --interactive-primary-bg-hover: #d8e1ff;
     --interactive-primary-bg-active: #e2e9ff;
@@ -327,11 +338,24 @@
     --interactive-secondary-bg-active: #545460;
     --interactive-secondary-text: #f5f5f8;
     --interactive-secondary-border: #545460;
-    --interactive-destructive-bg: #ef4444;
-    --interactive-destructive-bg-hover: #a30016;
+    --interactive-destructive-bg: #f87171;
+    --interactive-destructive-bg-hover: #9d1727;
     --interactive-destructive-text: #ffffff;
     --interactive-ghost-bg: #2d2d38;
     --interactive-ghost-bg-hover: #41414d;
+  }
+}
+
+
+/* --- Primitive overrides (dark) — prefers-color-scheme --- */
+@media (prefers-color-scheme: dark) {
+  html:not(.light) .space-theme {
+    --color-error-50: #fff2f1;
+    --color-error-100: #ffefee;
+    --color-error-500: #f87171;
+    --color-error-600: #9d1727;
+    --color-error-700: #810018;
+    --color-error-900: #3a0006;
   }
 }
 

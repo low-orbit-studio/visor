@@ -4,14 +4,16 @@ import type { Rule, RuleResult } from './types.js';
 
 function extractCssClasses(cssContent: string): string[] {
   const classes: string[] = [];
+  // Strip :global(...) blocks — those are not module-local classes
+  const stripped = cssContent.replace(/:global\([^)]*\)/g, "");
   // Match class selectors like .className or .className:hover
   const classRegex = /\.([a-zA-Z_][\w-]*)\b/g;
-  let m = classRegex.exec(cssContent);
+  let m = classRegex.exec(stripped);
   while (m !== null) {
     if (!classes.includes(m[1])) {
       classes.push(m[1]);
     }
-    m = classRegex.exec(cssContent);
+    m = classRegex.exec(stripped);
   }
   return classes;
 }
