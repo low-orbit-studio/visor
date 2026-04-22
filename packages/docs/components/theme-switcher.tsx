@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
 import { Palette } from "@phosphor-icons/react";
 import {
   Select,
@@ -11,18 +12,25 @@ import {
   SelectItem,
   SelectLabel,
 } from "./ui/select";
-import { THEME_GROUPS, applyTheme, getStoredTheme } from "@/lib/theme-config";
+import {
+  THEME_GROUPS,
+  applyTheme,
+  getStoredTheme,
+  findThemeEntry,
+  COLOR_MODE_STORAGE_KEY,
+} from "@/lib/theme-config";
 import styles from "./theme-switcher.module.css";
 
 export function ThemeSwitcher() {
   const [theme, setTheme] = useState<string>(getStoredTheme);
+  const { resolvedTheme, setTheme: setColorMode } = useTheme();
 
-  // On mount, ensure the stored theme's default-mode (if any) is applied.
-  // Without this, a refresh would leave the html color-scheme class stale.
+  // Keep visor-color-mode in sync when the user toggles via the fumadocs mode button.
   useEffect(() => {
-    applyTheme(theme);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (resolvedTheme === "dark" || resolvedTheme === "light") {
+      try { localStorage.setItem(COLOR_MODE_STORAGE_KEY, resolvedTheme); } catch {}
+    }
+  }, [resolvedTheme]);
 
   // Keep in sync with other theme switchers on the page (e.g. Visual Explorer).
   useEffect(() => {
@@ -36,6 +44,13 @@ export function ThemeSwitcher() {
 
   function handleChange(value: string) {
     setTheme(value);
+    const entry = findThemeEntry(value);
+    if (entry?.defaultMode) {
+      // Clear stored mode so applyTheme applies the theme's intended default,
+      // and tell next-themes so it stays in sync.
+      try { localStorage.removeItem(COLOR_MODE_STORAGE_KEY); } catch {}
+      setColorMode(entry.defaultMode);
+    }
     applyTheme(value);
   }
 
