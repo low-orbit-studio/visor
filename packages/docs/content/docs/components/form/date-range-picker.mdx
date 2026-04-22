@@ -1,0 +1,95 @@
+---
+title: Date Range Picker
+description: A date range picker combining a dual-month Calendar with a Radix Popover trigger showing the formatted start–end label.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { DateRangePicker } from '@/components/ui/date-range-picker';
+
+## Default
+
+<ComponentPreview
+  title="Date Range Picker"
+  code={"import { DateRangePicker } from '@/components/ui/date-range-picker/date-range-picker';\n\n<DateRangePicker placeholder=\"Pick a date range\" />"}
+>
+  <DateRangePicker placeholder="Pick a date range" />
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={"<DateRangePicker placeholder=\"Pick a date range\" disabled />"}
+>
+  <DateRangePicker placeholder="Pick a date range" disabled />
+</ComponentPreview>
+
+## Custom Format
+
+<ComponentPreview
+  title="Custom Date Format"
+  code={"<DateRangePicker placeholder=\"Select range\" dateFormat=\"MM/dd/yyyy\" />"}
+>
+  <DateRangePicker placeholder="Select range" dateFormat="MM/dd/yyyy" />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add date-range-picker
+```
+
+This copies two files into your project:
+
+- `components/ui/date-range-picker/date-range-picker.tsx` — the component
+- `components/ui/date-range-picker/date-range-picker.module.css` — the styles
+
+**Note:** Date Range Picker depends on the Calendar component. Install it too:
+
+```bash
+npx visor add calendar
+```
+
+## Usage
+
+```tsx
+import { DateRangePicker } from '@/components/ui/date-range-picker/date-range-picker';
+import type { DateRange } from 'react-day-picker';
+import { useState } from 'react';
+
+export default function Example() {
+  const [range, setRange] = useState<DateRange>();
+
+  return (
+    <DateRangePicker
+      value={range}
+      onChange={setRange}
+      placeholder="Pick a date range"
+    />
+  );
+}
+```
+
+## API Reference
+
+<PropsTable component="date-range-picker" />
+
+## Sub-components
+
+Date Range Picker exports a single component that internally composes a Radix Popover and the Calendar component:
+
+| Component | Element | Purpose |
+| --- | --- | --- |
+| `DateRangePicker` | `<button>` (trigger) | Trigger button displaying the selected range or placeholder |
+| Internal popover panel | `<div>` (portal) | Radix PopoverContent containing the two-month calendar |
+| `Calendar` | `<div>` | Dual-month calendar for range selection (installed separately) |
+
+## Accessibility
+
+- The trigger button has descriptive text showing either the selected range or placeholder
+- When no range is selected, a `<CalendarIcon>` provides visual context alongside the placeholder
+- The popover calendar inherits full keyboard navigation from the Calendar component
+- Focus is trapped in the calendar popover when open; Escape closes it and returns focus to the trigger
+- The popover remains open after selecting the start date so users can complete the range without reopening
+- Pair with a `<Label>` and matching `htmlFor`/`id` in a form context for proper labeling

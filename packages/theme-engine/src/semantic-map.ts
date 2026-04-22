@@ -107,6 +107,10 @@ export const SEMANTIC_SURFACE_MAP: Record<string, SemanticMapping> = {
     light: { constant: CONFIG_SURFACE },
     dark: { constant: CONFIG_DARK_SURFACE },
   },
+  popover: {
+    light: { constant: CONFIG_SURFACE },
+    dark: { constant: CONFIG_DARK_SURFACE },
+  },
   subtle: {
     light: { role: "neutral", shade: 50 },
     dark: { role: "neutral", shade: 800 },

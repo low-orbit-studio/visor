@@ -5,6 +5,7 @@ import { sourceConfigSpreadOrder } from './rules/source-config-spread-order.js';
 import { cssModuleTypesSync } from './rules/css-module-types-sync.js';
 import { tokenFallbackGray } from './rules/token-fallback-gray.js';
 import { noInlineShadows } from './rules/no-inline-shadows.js';
+import { floatingPanelOpaqueBg } from './rules/floating-panel-opaque-bg.js';
 import { spacingGrid } from './rules/spacing-grid.js';
 import { noHardcodedMotion } from './rules/no-hardcoded-motion.js';
 import { noHardcodedOverlay } from './rules/no-hardcoded-overlay.js';
@@ -51,6 +52,7 @@ const rules: Rule[] = [
   cssModuleTypesSync,
   tokenFallbackGray,
   noInlineShadows,
+  floatingPanelOpaqueBg,
   spacingGrid,
   noHardcodedMotion,
   noHardcodedOverlay,

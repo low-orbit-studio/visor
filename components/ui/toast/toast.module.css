@@ -7,7 +7,7 @@
    Sonner renders toasts as children of its container element. */
 .toaster :global([data-sonner-toast]) {
   font-family: var(--font-family-sans, system-ui, sans-serif);
-  background-color: var(--surface-card, #ffffff);
+  background-color: var(--surface-popover, var(--surface-card, #ffffff));
   color: var(--text-primary, #111827);
   border-radius: var(--radius-lg, 0.5rem);
   box-shadow: var(--shadow-lg);

@@ -77,13 +77,9 @@
   min-width: 9rem;
   overflow: hidden;
   border-radius: var(--radius-lg, 0.5rem);
-  background-color: color-mix(in srgb, var(--surface-card, #ffffff) 95%, black);
+  background-color: var(--surface-popover, var(--surface-card, #ffffff));
   color: var(--text-primary, #111827);
   box-shadow: var(--shadow-lg);
-}
-
-:global(.dark) .content {
-  background-color: color-mix(in srgb, var(--surface-card, #111827) 92%, white);
 }
 
 /* Select Viewport */
@@ -161,11 +157,7 @@
   align-items: center;
   justify-content: center;
   padding: var(--spacing-1, 0.25rem);
-  background-color: color-mix(in srgb, var(--surface-card, #ffffff) 95%, black);
-}
-
-:global(.dark) .scrollButton {
-  background-color: color-mix(in srgb, var(--surface-card, #111827) 92%, white);
+  background-color: var(--surface-popover, var(--surface-card, #ffffff));
 }
 
 .scrollButtonIcon {

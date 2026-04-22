@@ -1,4 +1,4 @@
-/* Date Picker Trigger */
+/* Date Range Picker Trigger */
 .trigger {
   display: inline-flex;
   align-items: center;
@@ -44,6 +44,7 @@
 /* Popover Content */
 .content {
   z-index: 50;
+  width: max-content; /* two-month calendar needs room to expand */
   background-color: var(--surface-popover, var(--surface-card, #ffffff));
   border: 1px solid var(--border-default, #e5e7eb);
   border-radius: var(--radius-lg, 0.5rem);

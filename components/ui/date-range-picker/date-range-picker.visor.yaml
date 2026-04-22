@@ -1,0 +1,61 @@
+name: DateRangePicker
+description: A date range picker combining a trigger button with a two-month popover Calendar for start–end date selection.
+extends: HTMLButtonElement
+category: form
+
+when_to_use:
+  - Date range input in forms (check-in/check-out, travel dates, billing period)
+  - Any field where users need to select both a start and end date from a calendar popup
+  - Compact range selection that doesn't take up inline space
+
+when_not_to_use:
+  - Single date selection (use DatePicker)
+  - Always-visible range calendar display (use Calendar with mode="range" inline)
+  - Date and time together (use a dedicated datetime picker)
+  - Free-form date text entry (use Input with date validation)
+
+why: >
+  DateRangePicker composes Calendar in range mode with a Radix Popover trigger,
+  handling open/close state, date-fns formatting for both endpoints, and the
+  two-phase selection UX (popover stays open until 'to' is set). The trigger
+  displays a calendar icon and the formatted start–end label, providing a
+  familiar date range input pattern without manual wiring.
+
+props:
+  - name: value
+    type: "DateRange | undefined"
+    description: Currently selected date range ({ from, to })
+  - name: onChange
+    type: "(range: DateRange) => void"
+    description: Called when the range changes
+  - name: placeholder
+    type: string
+    default: '"Pick a date range"'
+  - name: dateFormat
+    type: string
+    default: '"PPP"'
+    description: date-fns format string for displaying both endpoints
+  - name: disabled
+    type: boolean
+    default: "false"
+
+dependencies:
+  - "@radix-ui/react-popover"
+  - "date-fns"
+  - "@phosphor-icons/react"
+
+preview_url: "https://visor.design/docs/components/form/date-range-picker"
+
+example: |
+  <DateRangePicker
+    value={range}
+    onChange={setRange}
+    placeholder="Select date range"
+  />
+
+  <DateRangePicker
+    value={travelDates}
+    onChange={setTravelDates}
+    dateFormat="MM/dd/yyyy"
+    disabled={isReadOnly}
+  />
