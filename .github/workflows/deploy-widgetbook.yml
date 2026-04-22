@@ -29,6 +29,8 @@ jobs:
   deploy:
     name: Build + deploy Widgetbook
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
 
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}

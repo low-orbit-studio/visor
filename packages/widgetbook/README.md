@@ -52,7 +52,8 @@ FVM version isn't installed (CI case).
 
 Vercel via GitHub Actions — see `.github/workflows/deploy-widgetbook.yml`.
 The workflow installs Flutter via `subosito/flutter-action@v2`, runs
-`scripts/build-widgetbook.sh`, then `vercel deploy --prebuilt`.
+`scripts/build-widgetbook.sh`, then `vercel deploy --yes` (preview) or
+`vercel deploy --yes --prod` (production).
 
 Required GitHub secrets:
 - `VERCEL_TOKEN` — account-scoped token
