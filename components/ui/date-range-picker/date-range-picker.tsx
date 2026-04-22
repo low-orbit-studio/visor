@@ -93,7 +93,6 @@ const DateRangePicker = React.forwardRef<HTMLButtonElement, DateRangePickerProps
                     : raw
                 setInternalRange(next)
                 onChange?.(next)
-                if (next.from && next.to) setOpen(false)
               }}
               numberOfMonths={2}
               autoFocus
