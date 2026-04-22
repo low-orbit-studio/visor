@@ -894,13 +894,21 @@ describe("Theme utilities", () => {
 // Stock theme CSS generation
 // ============================================================
 
-import { readFileSync } from "fs";
-import { join } from "path";
+import { readFileSync, existsSync } from "fs";
+import { join, dirname } from "path";
 import { generateThemeData } from "@loworbitstudio/visor-theme-engine";
 import { docsAdapter } from "@loworbitstudio/visor-theme-engine/adapters";
 
-// VISOR_REPO_ROOT is injected by vitest.config.ts (reliable across all run modes)
-const REPO_ROOT = process.env.VISOR_REPO_ROOT ?? join(process.cwd(), "../..");
+function findRepoRoot(): string {
+  let dir = process.cwd();
+  while (dir !== dirname(dir)) {
+    if (existsSync(join(dir, "themes/blackout.visor.yaml"))) return dir;
+    dir = dirname(dir);
+  }
+  throw new Error("Could not locate repo root (no themes/blackout.visor.yaml found)");
+}
+
+const REPO_ROOT = process.env.VISOR_REPO_ROOT ?? findRepoRoot();
 
 describe("Stock theme CSS generation", () => {
   const STOCK_SLUGS = ["blackout", "modern-minimal", "neutral", "space"] as const;
