@@ -53,6 +53,7 @@ html:not(.dark) .blackout-theme .wordmark-dark { display: block; }
   border-radius: 0.5rem;
   overflow: hidden;
   margin: 1.5rem 0;
+  box-shadow: var(--shadow-xs);
 }
 
 /* Fullscreen mode — same DOM, CSS-only toggle
@@ -305,6 +306,68 @@ html:not(.dark) .space-theme .starfield {
 .blackout-theme .preview-toggle:hover,
 .blackout-theme .preview-copy:hover {
   background: rgba(255, 255, 255, 0.08);
+}
+
+/* Neutral theme preview container overrides */
+.neutral-theme .preview-container {
+  border-color: var(--border-default);
+  background: var(--surface-page);
+}
+
+.neutral-theme .preview-render {
+  background: var(--surface-page);
+}
+
+.neutral-theme .preview-footer {
+  background: var(--surface-muted);
+  border-top-color: var(--border-default);
+}
+
+.neutral-theme .preview-title {
+  color: var(--text-primary);
+}
+
+.neutral-theme .preview-toggle,
+.neutral-theme .preview-copy {
+  border-color: var(--border-default);
+  background: var(--surface-page);
+  color: var(--text-secondary);
+}
+
+.neutral-theme .preview-toggle:hover,
+.neutral-theme .preview-copy:hover {
+  background: var(--surface-muted);
+}
+
+/* Modern-minimal theme preview container overrides */
+.modern-minimal-theme .preview-container {
+  border-color: var(--border-default);
+  background: var(--surface-page);
+}
+
+.modern-minimal-theme .preview-render {
+  background: var(--surface-page);
+}
+
+.modern-minimal-theme .preview-footer {
+  background: var(--surface-muted);
+  border-top-color: var(--border-default);
+}
+
+.modern-minimal-theme .preview-title {
+  color: var(--text-primary);
+}
+
+.modern-minimal-theme .preview-toggle,
+.modern-minimal-theme .preview-copy {
+  border-color: var(--border-default);
+  background: var(--surface-page);
+  color: var(--text-secondary);
+}
+
+.modern-minimal-theme .preview-toggle:hover,
+.modern-minimal-theme .preview-copy:hover {
+  background: var(--surface-muted);
 }
 
 /* Code area inside preview — inherit the theme's glass treatment, no extra border/radius */
