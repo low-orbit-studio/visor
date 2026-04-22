@@ -56,22 +56,38 @@ export function generatePrimitives(
 
 /**
  * Generate dark-mode shade scales, overlaying colors-dark overrides onto the
- * light primitives. Only primary and accent have dark-mode brand overrides in
- * the schema; all other roles inherit from the light scale.
+ * light primitives. Any role present in colors-dark gets its own dark scale;
+ * all others inherit from the light primitives.
  */
 export function generateDarkPrimitives(
   config: ResolvedThemeConfig,
   lightPrimitives: GeneratedPrimitives
 ): GeneratedPrimitives {
-  const colorsDark = config["colors-dark"];
+  const cd = config["colors-dark"];
   return {
-    ...lightPrimitives,
-    primary: colorsDark?.primary
-      ? (generateShadeScale(colorsDark.primary, "primary") as GeneratedPrimitives["primary"])
+    primary: cd?.primary
+      ? (generateShadeScale(cd.primary, "primary") as GeneratedPrimitives["primary"])
       : lightPrimitives.primary,
-    accent: colorsDark?.accent
-      ? (generateShadeScale(colorsDark.accent, "accent") as GeneratedPrimitives["accent"])
+    accent: cd?.accent
+      ? (generateShadeScale(cd.accent, "accent") as GeneratedPrimitives["accent"])
       : lightPrimitives.accent,
+    neutral: cd?.neutral
+      ? config.colors.neutral === null
+        ? TAILWIND_GRAY
+        : (generateShadeScale(cd.neutral, "neutral") as GeneratedPrimitives["neutral"])
+      : lightPrimitives.neutral,
+    success: cd?.success
+      ? (generateShadeScale(cd.success, "success") as GeneratedPrimitives["success"])
+      : lightPrimitives.success,
+    warning: cd?.warning
+      ? (generateShadeScale(cd.warning, "warning") as GeneratedPrimitives["warning"])
+      : lightPrimitives.warning,
+    error: cd?.error
+      ? (generateShadeScale(cd.error, "error") as GeneratedPrimitives["error"])
+      : lightPrimitives.error,
+    info: cd?.info
+      ? (generateShadeScale(cd.info, "info") as GeneratedPrimitives["info"])
+      : lightPrimitives.info,
   };
 }
 

@@ -194,7 +194,7 @@
 
 /* ── Section 2: Dark mode overrides ── */
 
-/* --- Primitive overrides (dark) — dark brand color anchors at shade 500 --- */
+/* --- Primitive overrides (dark) — dark color anchors at shade 500 --- */
 .dark .modern-minimal-theme {
   --color-primary-50: #e7fbf0;
   --color-primary-100: #dcfdeb;
