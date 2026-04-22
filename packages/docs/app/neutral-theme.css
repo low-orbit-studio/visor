@@ -210,6 +210,7 @@
 .dark .neutral-theme {
   --surface-page: #09090b;
   --surface-card: #18181b;
+  --surface-popover: #18181b;
   --surface-subtle: #2d2d34;
   --surface-muted: #41414a;
   --surface-overlay: #09090c;
@@ -288,6 +289,7 @@
   html:not(.light) .neutral-theme {
     --surface-page: #09090b;
     --surface-card: #18181b;
+    --surface-popover: #18181b;
     --surface-subtle: #2d2d34;
     --surface-muted: #41414a;
     --surface-overlay: #09090c;
@@ -383,6 +385,7 @@ html:not(.dark) .neutral-theme {
 html:not(.dark) .neutral-theme {
   --surface-page: #ffffff;
   --surface-card: #ffffff;
+  --surface-popover: #ffffff;
   --surface-subtle: #f5f5f6;
   --surface-muted: #f2f2f4;
   --surface-overlay: #1a1a1f;

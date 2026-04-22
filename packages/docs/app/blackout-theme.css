@@ -199,6 +199,7 @@
 .dark .blackout-theme {
   --surface-page: #000000;
   --surface-card: rgba(255, 255, 255, 0.04);
+  --surface-popover: #141414;
   --surface-subtle: rgba(255, 255, 255, 0.02);
   --surface-muted: rgba(255, 255, 255, 0.04);
   --surface-overlay: #090909;
@@ -277,6 +278,7 @@
   html:not(.light) .blackout-theme {
     --surface-page: #000000;
     --surface-card: rgba(255, 255, 255, 0.04);
+    --surface-popover: #141414;
     --surface-subtle: rgba(255, 255, 255, 0.02);
     --surface-muted: rgba(255, 255, 255, 0.04);
     --surface-overlay: #090909;
@@ -359,6 +361,7 @@ html:not(.dark) .blackout-theme {
 html:not(.dark) .blackout-theme {
   --surface-page: #0a0a0a;
   --surface-card: rgba(255, 255, 255, 0.05);
+  --surface-popover: #141414;
   --surface-subtle: rgba(255, 255, 255, 0.02);
   --surface-muted: rgba(255, 255, 255, 0.05);
   --surface-overlay: #1b1b1b;
@@ -428,7 +431,7 @@ html:not(.dark) .blackout-theme {
   --color-fd-primary-foreground: #ffffff;
   --color-fd-secondary: rgba(255, 255, 255, 0.04);
   --color-fd-secondary-foreground: rgba(255, 255, 255, 0.7);
-  --color-fd-popover: rgba(255, 255, 255, 0.04);
+  --color-fd-popover: #141414;
   --color-fd-popover-foreground: rgba(255, 255, 255, 0.7);
   --color-fd-ring: #dcdcdc;
 }
@@ -449,7 +452,7 @@ html:not(.dark) .blackout-theme {
   --color-fd-primary-foreground: #ffffff;
   --color-fd-secondary: rgba(255, 255, 255, 0.05);
   --color-fd-secondary-foreground: rgba(255, 255, 255, 0.75);
-  --color-fd-popover: rgba(255, 255, 255, 0.05);
+  --color-fd-popover: #141414;
   --color-fd-popover-foreground: rgba(255, 255, 255, 0.75);
   --color-fd-ring: #666666;
 }

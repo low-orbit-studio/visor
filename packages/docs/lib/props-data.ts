@@ -843,6 +843,37 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'date-range-picker': [
+    {
+      name: 'value',
+      type: 'DateRange',
+      description: 'The selected date range ({ from, to }).',
+    },
+    {
+      name: 'onChange',
+      type: '(range: DateRange) => void',
+      description: 'Callback when the range changes.',
+    },
+    {
+      name: 'placeholder',
+      type: 'string',
+      default: "'Pick a date range'",
+      description: 'Text shown when no range is selected.',
+    },
+    {
+      name: 'dateFormat',
+      type: 'string',
+      default: "'PPP'",
+      description: 'Date format string (date-fns format) used for both endpoints.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables the date range picker.',
+    },
+  ],
+
   'file-upload': [
     {
       name: 'accept',

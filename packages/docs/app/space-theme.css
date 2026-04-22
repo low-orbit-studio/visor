@@ -210,6 +210,7 @@
 .dark .space-theme {
   --surface-page: #080810;
   --surface-card: #0e0e18;
+  --surface-popover: #0e0e18;
   --surface-subtle: #2d2d38;
   --surface-muted: #41414d;
   --surface-overlay: #080810;
@@ -288,6 +289,7 @@
   html:not(.light) .space-theme {
     --surface-page: #080810;
     --surface-card: #0e0e18;
+    --surface-popover: #0e0e18;
     --surface-subtle: #2d2d38;
     --surface-muted: #41414d;
     --surface-overlay: #080810;
@@ -383,6 +385,7 @@ html:not(.dark) .space-theme {
 html:not(.dark) .space-theme {
   --surface-page: #e0ddef;
   --surface-card: #f2f0f8;
+  --surface-popover: #f2f0f8;
   --surface-subtle: #f5f5f8;
   --surface-muted: #f1f1f8;
   --surface-overlay: #191924;

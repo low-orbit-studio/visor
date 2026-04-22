@@ -38,7 +38,7 @@ export const FUMADOCS_BRIDGE_MAP: Record<string, FumadocsBridgeEntry> = {
   },
   "fd-secondary": { visorToken: "muted", category: "surface" },
   "fd-secondary-foreground": { visorToken: "primary", category: "text" },
-  "fd-popover": { visorToken: "card", category: "surface" },
+  "fd-popover": { visorToken: "popover", category: "surface" },
   "fd-popover-foreground": { visorToken: "primary", category: "text" },
   "fd-ring": { visorToken: "focus", category: "border" },
 };

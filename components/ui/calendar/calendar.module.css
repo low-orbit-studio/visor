@@ -166,7 +166,8 @@
 
 /* Range styles */
 .rangeMiddle .dayButton {
-  background-color: var(--surface-muted, #f3f4f6);
+  /* Brand-tinted band — color-mix keeps it theme-aware; surface-muted was an unrelated grey */
+  background-color: color-mix(in srgb, var(--interactive-primary-bg, #3b82f6) 40%, transparent);
   color: var(--text-primary, #111827);
   border-radius: 0;
 }

@@ -974,6 +974,29 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "date-range-picker",
+    type: "registry:ui",
+    description:
+      "A date range picker combining a dual-month Calendar with a Radix Popover trigger, showing the formatted start–end label.",
+    dependencies: [
+      "@radix-ui/react-popover",
+      "date-fns",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["calendar", "utils"],
+    files: [
+      {
+        path: "components/ui/date-range-picker/date-range-picker.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/date-range-picker/date-range-picker.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "fullscreen-overlay",
     type: "registry:ui",
     description:
