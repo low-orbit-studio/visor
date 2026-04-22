@@ -4,6 +4,8 @@
   align-items: center;
   gap: var(--spacing-2, 0.5rem);
   height: 2.25rem;
+  /* 7 day columns × 2.25rem + calendar's left+right padding + popover border */
+  min-width: calc(7 * 2.25rem + 2 * var(--spacing-3, 0.75rem) + 2px);
   padding: 0 var(--spacing-3, 0.75rem);
   border: 1px solid var(--border-default, #e5e7eb);
   border-radius: var(--radius-md, 0.375rem);
