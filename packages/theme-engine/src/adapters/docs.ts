@@ -351,9 +351,12 @@ export function docsAdapter(
     { label: "Border", entries: Object.entries(input.tokens.border).map(([n, v]) => `--border-${n}: ${v.dark};`) },
     { label: "Interactive", entries: Object.entries(input.tokens.interactive).map(([n, v]) => `--interactive-${n}: ${v.dark};`) },
   ];
+  // .light is toggled on <html>, not on the scope element (<body>), so the
+  // :not(.light) guard must be on html — not on scopeClass — otherwise it
+  // always matches and dark primitives bleed into manual light mode.
   for (const cat of pcsCategories) {
     lines.push(sectionComment(`Adaptive: ${cat.label} (dark) — prefers-color-scheme`));
-    const inner = block(`${scopeClass}:not(.light)`, cat.entries);
+    const inner = block(`html:not(.light) ${scopeClass}`, cat.entries);
     lines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
     lines.push("");
   }
@@ -361,7 +364,7 @@ export function docsAdapter(
   // Primitive overrides also apply under prefers-color-scheme when no manual toggle set
   if (darkPrimitiveOverrides.length > 0) {
     lines.push(sectionComment("Primitive overrides (dark) — prefers-color-scheme"));
-    const inner = block(`${scopeClass}:not(.light)`, darkPrimitiveOverrides);
+    const inner = block(`html:not(.light) ${scopeClass}`, darkPrimitiveOverrides);
     lines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
     lines.push("");
   }
