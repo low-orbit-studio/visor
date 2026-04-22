@@ -34,7 +34,7 @@ import type {
 // ============================================================
 
 /**
- * Generate all shade scales from a resolved config.
+ * Generate all shade scales from a resolved config (light-mode colors).
  * If neutral is null, uses Tailwind Gray verbatim.
  */
 export function generatePrimitives(
@@ -51,6 +51,27 @@ export function generatePrimitives(
     warning: generateShadeScale(config.colors.warning, "warning") as GeneratedPrimitives["warning"],
     error: generateShadeScale(config.colors.error, "error") as GeneratedPrimitives["error"],
     info: generateShadeScale(config.colors.info, "info") as GeneratedPrimitives["info"],
+  };
+}
+
+/**
+ * Generate dark-mode shade scales, overlaying colors-dark overrides onto the
+ * light primitives. Only primary and accent have dark-mode brand overrides in
+ * the schema; all other roles inherit from the light scale.
+ */
+export function generateDarkPrimitives(
+  config: ResolvedThemeConfig,
+  lightPrimitives: GeneratedPrimitives
+): GeneratedPrimitives {
+  const colorsDark = config["colors-dark"];
+  return {
+    ...lightPrimitives,
+    primary: colorsDark?.primary
+      ? (generateShadeScale(colorsDark.primary, "primary") as GeneratedPrimitives["primary"])
+      : lightPrimitives.primary,
+    accent: colorsDark?.accent
+      ? (generateShadeScale(colorsDark.accent, "accent") as GeneratedPrimitives["accent"])
+      : lightPrimitives.accent,
   };
 }
 
@@ -125,11 +146,12 @@ export function generateThemeDataFromConfig(
   // Resolve defaults
   const resolved = resolveConfig(config);
 
-  // Stage 1: Generate shade scales
+  // Stage 1: Generate shade scales (light and dark)
   const primitives = generatePrimitives(resolved);
+  const darkPrimitives = generateDarkPrimitives(resolved, primitives);
 
-  // Stage 2: Assign semantic tokens
-  let tokens = assignSemanticTokens(primitives, resolved);
+  // Stage 2: Assign semantic tokens using mode-specific shade scales
+  let tokens = assignSemanticTokens(primitives, darkPrimitives, resolved);
 
   // Stage 4: Apply overrides (before CSS generation)
   tokens = applyOverrides(tokens, resolved.overrides);

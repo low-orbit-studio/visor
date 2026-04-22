@@ -34,7 +34,8 @@ describe("assignSemanticTokens", () => {
 
   const config = resolveConfig(minimalInput);
   const primitives = buildTestPrimitives(config);
-  const tokens = assignSemanticTokens(primitives, config);
+  // No colors-dark in minimalInput, so light and dark primitives are identical
+  const tokens = assignSemanticTokens(primitives, primitives, config);
 
   it("returns all 4 categories", () => {
     expect(tokens).toHaveProperty("text");

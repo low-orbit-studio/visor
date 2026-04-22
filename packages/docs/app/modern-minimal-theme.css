@@ -218,8 +218,8 @@
   --text-disabled: rgba(255, 255, 255, 0.1);
   --text-inverse: #171b22;
   --text-inverse-secondary: #3d424d;
-  --text-link: #a0ffcf;
-  --text-link-hover: #bbffdb;
+  --text-link: #aaffd5;
+  --text-link-hover: #c0ffde;
   --text-success: #22c55e;
   --text-warning: #f59e0b;
   --text-error: #ef4444;
@@ -239,8 +239,8 @@
   --surface-interactive-active: #505561;
   --surface-interactive-disabled: #292e38;
   --surface-accent-subtle: #002113;
-  --surface-accent-default: #04bf81;
-  --surface-accent-strong: #a0ffcf;
+  --surface-accent-default: #02cd8d;
+  --surface-accent-strong: #aaffd5;
   --surface-success-subtle: #002209;
   --surface-success-default: #22c55e;
   --surface-warning-subtle: #281600;
@@ -257,7 +257,7 @@
   --border-default: rgba(255, 255, 255, 0.06);
   --border-muted: rgba(255, 255, 255, 0.03);
   --border-strong: rgba(255, 255, 255, 0.1);
-  --border-focus: #a0ffcf;
+  --border-focus: #aaffd5;
   --border-disabled: #292e38;
   --border-success: #22c55e;
   --border-warning: #f59e0b;
@@ -268,9 +268,9 @@
 
 /* --- Adaptive: Interactive (dark) — manual toggle --- */
 .dark .modern-minimal-theme {
-  --interactive-primary-bg: #04bf81;
-  --interactive-primary-bg-hover: #a0ffcf;
-  --interactive-primary-bg-active: #bbffdb;
+  --interactive-primary-bg: #02cd8d;
+  --interactive-primary-bg-hover: #aaffd5;
+  --interactive-primary-bg-active: #c0ffde;
   --interactive-primary-text: #ffffff;
   --interactive-secondary-bg: #292e38;
   --interactive-secondary-bg-hover: #3d424d;
@@ -294,8 +294,8 @@
     --text-disabled: rgba(255, 255, 255, 0.1);
     --text-inverse: #171b22;
     --text-inverse-secondary: #3d424d;
-    --text-link: #a0ffcf;
-    --text-link-hover: #bbffdb;
+    --text-link: #aaffd5;
+    --text-link-hover: #c0ffde;
     --text-success: #22c55e;
     --text-warning: #f59e0b;
     --text-error: #ef4444;
@@ -317,8 +317,8 @@
     --surface-interactive-active: #505561;
     --surface-interactive-disabled: #292e38;
     --surface-accent-subtle: #002113;
-    --surface-accent-default: #04bf81;
-    --surface-accent-strong: #a0ffcf;
+    --surface-accent-default: #02cd8d;
+    --surface-accent-strong: #aaffd5;
     --surface-success-subtle: #002209;
     --surface-success-default: #22c55e;
     --surface-warning-subtle: #281600;
@@ -337,7 +337,7 @@
     --border-default: rgba(255, 255, 255, 0.06);
     --border-muted: rgba(255, 255, 255, 0.03);
     --border-strong: rgba(255, 255, 255, 0.1);
-    --border-focus: #a0ffcf;
+    --border-focus: #aaffd5;
     --border-disabled: #292e38;
     --border-success: #22c55e;
     --border-warning: #f59e0b;
@@ -350,9 +350,9 @@
 /* --- Adaptive: Interactive (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
   .modern-minimal-theme:not(.light) {
-    --interactive-primary-bg: #04bf81;
-    --interactive-primary-bg-hover: #a0ffcf;
-    --interactive-primary-bg-active: #bbffdb;
+    --interactive-primary-bg: #02cd8d;
+    --interactive-primary-bg-hover: #aaffd5;
+    --interactive-primary-bg-active: #c0ffde;
     --interactive-primary-text: #ffffff;
     --interactive-secondary-bg: #292e38;
     --interactive-secondary-bg-hover: #3d424d;
@@ -472,15 +472,15 @@ html:not(.dark) .modern-minimal-theme {
   --color-fd-border: rgba(255, 255, 255, 0.06);
   --color-fd-muted: rgba(255, 255, 255, 0.04);
   --color-fd-muted-foreground: rgba(255, 255, 255, 0.70);
-  --color-fd-accent: #04bf81;
+  --color-fd-accent: #02cd8d;
   --color-fd-accent-foreground: #ffffff;
-  --color-fd-primary: #04bf81;
+  --color-fd-primary: #02cd8d;
   --color-fd-primary-foreground: #ffffff;
   --color-fd-secondary: rgba(255, 255, 255, 0.04);
   --color-fd-secondary-foreground: rgba(255, 255, 255, 0.7);
   --color-fd-popover: rgba(255, 255, 255, 0.04);
   --color-fd-popover-foreground: rgba(255, 255, 255, 0.7);
-  --color-fd-ring: #a0ffcf;
+  --color-fd-ring: #aaffd5;
 }
 
 

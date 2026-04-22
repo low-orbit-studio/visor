@@ -78,12 +78,13 @@ function resolveRef(
 /** Resolve a single mapping entry to a SemanticTokenValue. */
 function resolveMapping(
   mapping: SemanticMapping,
-  primitives: GeneratedPrimitives,
+  lightPrimitives: GeneratedPrimitives,
+  darkPrimitives: GeneratedPrimitives,
   config: ResolvedThemeConfig
 ): SemanticTokenValue {
   return {
-    light: resolveRef(mapping.light, primitives, config),
-    dark: resolveRef(mapping.dark, primitives, config),
+    light: resolveRef(mapping.light, lightPrimitives, config),
+    dark: resolveRef(mapping.dark, darkPrimitives, config),
   };
 }
 
@@ -92,11 +93,14 @@ function resolveMapping(
 // ============================================================
 
 /**
- * Assign semantic tokens from generated shade scales and resolved config.
- * Returns concrete hex values for all ~55 tokens in both light and dark modes.
+ * Assign semantic tokens from mode-specific shade scales and resolved config.
+ * lightPrimitives drives light-mode token values; darkPrimitives drives dark-mode
+ * values — allowing themes with colors-dark overrides to produce correct dark
+ * semantic tokens (e.g. surface-accent-default uses the dark brand color).
  */
 export function assignSemanticTokens(
-  primitives: GeneratedPrimitives,
+  lightPrimitives: GeneratedPrimitives,
+  darkPrimitives: GeneratedPrimitives,
   config: ResolvedThemeConfig
 ): SemanticTokens {
   const text: Record<string, SemanticTokenValue> = {};
@@ -105,19 +109,19 @@ export function assignSemanticTokens(
   const interactive: Record<string, SemanticTokenValue> = {};
 
   for (const [name, mapping] of Object.entries(SEMANTIC_MAP.text)) {
-    text[name] = resolveMapping(mapping, primitives, config);
+    text[name] = resolveMapping(mapping, lightPrimitives, darkPrimitives, config);
   }
 
   for (const [name, mapping] of Object.entries(SEMANTIC_MAP.surface)) {
-    surface[name] = resolveMapping(mapping, primitives, config);
+    surface[name] = resolveMapping(mapping, lightPrimitives, darkPrimitives, config);
   }
 
   for (const [name, mapping] of Object.entries(SEMANTIC_MAP.border)) {
-    border[name] = resolveMapping(mapping, primitives, config);
+    border[name] = resolveMapping(mapping, lightPrimitives, darkPrimitives, config);
   }
 
   for (const [name, mapping] of Object.entries(SEMANTIC_MAP.interactive)) {
-    interactive[name] = resolveMapping(mapping, primitives, config);
+    interactive[name] = resolveMapping(mapping, lightPrimitives, darkPrimitives, config);
   }
 
   return { text, surface, border, interactive };
