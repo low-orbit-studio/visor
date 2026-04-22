@@ -899,8 +899,8 @@ import { join } from "path";
 import { generateThemeData } from "@loworbitstudio/visor-theme-engine";
 import { docsAdapter } from "@loworbitstudio/visor-theme-engine/adapters";
 
-// process.cwd() is packages/tokens when running `npm run test -w packages/tokens`
-const REPO_ROOT = join(process.cwd(), "../..");
+// VISOR_REPO_ROOT is injected by vitest.config.ts (reliable across all run modes)
+const REPO_ROOT = process.env.VISOR_REPO_ROOT ?? join(process.cwd(), "../..");
 
 describe("Stock theme CSS generation", () => {
   const STOCK_SLUGS = ["blackout", "modern-minimal", "neutral", "space"] as const;
