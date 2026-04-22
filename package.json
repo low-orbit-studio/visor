@@ -4,6 +4,17 @@
   "private": true,
   "type": "module",
   "description": "Low Orbit Studio's shared design system",
+  "keywords": [
+    "design-system",
+    "component-library",
+    "react",
+    "nextjs",
+    "oklch",
+    "theming",
+    "css-modules",
+    "shadcn-style",
+    "visor"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",

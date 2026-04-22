@@ -14,7 +14,15 @@
     "test:vr:ui": "playwright test --ui",
     "test:vr:update": "playwright test --update-snapshots"
   },
-  "keywords": [],
+  "keywords": [
+    "design-system",
+    "component-library",
+    "react",
+    "nextjs",
+    "theming",
+    "css-modules",
+    "visor"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
