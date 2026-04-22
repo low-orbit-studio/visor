@@ -1,0 +1,1 @@
+{"rules":[{"allowed":{"origins":["*"],"methods":["GET"],"headers":["*"]}}]}
