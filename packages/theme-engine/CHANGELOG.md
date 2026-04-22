@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+## [0.3.0] - Initial release
+
+### Added
+- Initial release of the Visor theme engine for building and distributing design system themes.
+
 ## 0.1.0 — Initial Release
 
 ### Themes
