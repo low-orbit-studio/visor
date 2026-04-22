@@ -121,7 +121,7 @@ Prepare Visor for public adoption. Not required for internal use — do this whe
 - [ ] **Fonts CDN CORS** — Restrict `fonts.visor.design` to allowed origins via Cloudflare R2/Workers (VI-110, still open)
 - [ ] **Community infrastructure** — Issue/PR templates, FUNDING.yml, good first issue labels, GitHub Discussions
 - [x] **Changelog & releases** — Wire up changesets auto-publish workflow, generate first CHANGELOG.md
-- [ ] **Getting-started guide** — Standalone "zero to first component" page (migration guide covers retrofits, not new projects)
+- [x] **Getting-started guide** — Standalone "zero to first component" page (migration guide covers retrofits, not new projects)
 - [x] **Competitive analysis** — Study shadcn/ui, Radix, Mantine, Park UI for gaps ✓ ([VI-122](https://linear.app/low-orbit-studio/issue/VI-122) → `docs/research/token-architecture-spike.md`)
 - [ ] **Governance & sustainability** — Single-maintainer plan, contributor ladder, decision-making process
 - [ ] **Marketing surface** — README badges, social preview, npm README, "used by" section, GitHub topics
