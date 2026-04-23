@@ -503,7 +503,8 @@ npm run typecheck      # Type check
 npm run lint           # Lint
 npm run build          # Build all packages
 npm run docs:dev       # Start docs site
-npm run widgetbook:dev # Start Flutter widgetbook preview (requires Flutter SDK)
+npm run widgetbook:dev         # Start Flutter widgetbook preview (requires Flutter SDK)
+npm run themes:apply-flutter  # Regenerate packages/visor_themes/ for all 11 themes
 ```
 
 ### Repository Structure
@@ -518,6 +519,9 @@ visor/
 └── packages/
     ├── cli/           # @loworbitstudio/visor CLI + manifest builder
     ├── tokens/        # @loworbitstudio/visor-core npm package
+    ├── visor-flutter/ # visor_core Flutter package (pub.dev)
+    ├── visor_themes/  # All 11 Visor ThemeData — generated, do not edit
+    ├── widgetbook/    # Flutter widgetbook preview app
     └── docs/          # fumadocs documentation site
 ```
 

@@ -45,8 +45,11 @@ export function emitShadowsDart(input: AdapterInput): string {
 /**
  * Parse a CSS box-shadow string (possibly multi-layer) into a Dart
  * `const <BoxShadow>[...]` list literal.
+ *
+ * The special keyword `none` (case-insensitive) maps to an empty list.
  */
 export function parseShadowListToDart(css: string): string {
+  if (css.trim().toLowerCase() === "none") return "const <BoxShadow>[]";
   const shadows = splitTopLevelCommas(css);
   if (shadows.length === 0) return "const <BoxShadow>[]";
   const parts = shadows.map(parseSingleShadow);

@@ -1,0 +1,21 @@
+name: visor_themes
+description: All Visor-generated Flutter ThemeData packages — 4 stock + 7 custom themes. GENERATED — regenerate with `npm run themes:apply-flutter`.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.5.0
+  flutter: ^3.24.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  visor_core: ^0.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

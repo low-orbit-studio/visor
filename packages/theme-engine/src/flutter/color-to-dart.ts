@@ -35,6 +35,12 @@ export function cssColorToDart(
   css: string,
   alphaOverride?: number,
 ): string {
+  // Handle CSS keyword `transparent` (= rgba(0,0,0,0)).
+  if (css.trim().toLowerCase() === "transparent") {
+    const alpha = alphaOverride !== undefined ? alphaOverride : 0;
+    const aByte = alphaToByte(alpha);
+    return `Color(0x${byteHex(aByte)}000000)`;
+  }
   const parsed = parseColor(css);
   if (!parsed) {
     throw new Error(`Invalid CSS color: ${css}`);

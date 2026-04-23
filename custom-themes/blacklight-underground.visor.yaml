@@ -1,0 +1,40 @@
+name: blacklight-underground
+version: 1
+group: Low Orbit
+
+colors:
+  primary: "#7C3AED"
+  accent: "#F59E0B"
+  neutral: "#6B7280"
+  background: "#000000"
+  surface: "#0A0A0A"
+
+colors-dark:
+  background: "#000000"
+  surface: "#0A0A0A"
+
+typography:
+  heading:
+    family: Inter
+    weight: 800
+  body:
+    family: Inter
+    weight: 400
+
+radius:
+  sm: 2
+  md: 4
+  lg: 8
+  xl: 12
+
+shadows:
+  xs: "none"
+  sm: "none"
+  md: "none"
+  lg: "none"
+  xl: "none"
+
+motion:
+  duration-fast: "80ms"
+  duration-normal: "150ms"
+  duration-slow: "300ms"

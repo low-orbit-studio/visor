@@ -53,6 +53,35 @@ npx @loworbitstudio/visor theme apply .visor.yaml --adapter deck
 
 All tokens are nested under the scope class — no `:root` selectors. Dark mode uses `.dark .deck--{name}` selectors.
 
+### Flutter
+
+Generates a complete Dart package with `ThemeData` for a `.visor.yaml` theme. Output includes token files (`visor_colors.dart`, `visor_text_styles.dart`, etc.) and a `VisorAppTheme.light` / `.dark` wrapper.
+
+```bash
+# Single theme
+npx @loworbitstudio/visor theme apply .visor.yaml --adapter flutter --output packages/my-ui/
+
+# All 11 Visor themes at once (stock + custom) → packages/visor_themes/
+npm run themes:apply-flutter
+```
+
+The `packages/visor_themes/` package aggregates all themes via the `VisorThemes` sealed class:
+
+```dart
+import 'package:visor_themes/visor_themes.dart';
+
+MaterialApp(
+  theme: VisorThemes.blackout.light,
+  darkTheme: VisorThemes.blackout.dark,
+);
+```
+
+Available theme getters: `blackout`, `modernMinimal`, `neutral`, `space`, `blacklight`, `blacklightUnderground`, `entr`, `kaiah`, `referenceApp`, `solespark`, `veronica`.
+
+Each getter returns a `VisorThemePair` with `.light` and `.dark` `ThemeData` properties.
+
+See [Flutter Theme Consumption](/docs/guides/flutter-themes) for full setup instructions.
+
 ## CSS @layer Strategy
 
 Adapter output uses CSS `@layer` declarations for specificity ordering:
