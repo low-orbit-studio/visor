@@ -1,5 +1,13 @@
 # Visor Roadmap
 
+> **Roadmap has moved to Linear.** Active roadmap tracking is now in Linear Projects
+> under the Visor (VI) team — see https://linear.app/low-orbit-studio/team/VI/projects
+>
+> This file is a historical snapshot kept for context. For current status, progress,
+> and upcoming work, use Linear.
+
+---
+
 Phases are sequential but may overlap. Status is updated as work progresses.
 
 ## Phase 1a: Core Expansion + Theme Architecture Validation — COMPLETE
@@ -41,11 +49,9 @@ See [ai-consumability.md](./ai-consumability.md) for the full spec.
 **Completed (initially deferred, now done):**
 - [x] Agent-first CLI enhancements — `--json` flag on ALL commands, rich `--help` via Commander, `--category` filtering
 - [x] `CONSUMER_CLAUDE.md` — comprehensive AI agent context file for downstream project consumers
-
-**Remaining (deferred to Phase 5.5b or later):**
-- `visor info <component> --json` — single-component metadata query
-- `visor pattern list` / `visor pattern info` — pattern discovery CLI commands
-- `visor suggest --for "use case"` — AI-driven component suggestion
+- [x] `visor info <component> --json` — single-component metadata query
+- [x] `visor pattern list` / `visor pattern info` — pattern discovery CLI commands
+- [x] `visor suggest --for "use case"` — AI-driven component suggestion
 
 ## Phase 2.5: Foundation Hardening — COMPLETE
 
@@ -118,13 +124,13 @@ Prepare Visor for public adoption. Not required for internal use — do this whe
 
 **Key work:**
 - [x] **Proprietary theme implementation** — Stock vs custom theme separation shipped in VI-148; custom-themes gitignored, CLI discovers both
-- [ ] **Fonts CDN CORS** — Restrict `fonts.visor.design` to allowed origins via Cloudflare R2/Workers (VI-110, still open)
-- [ ] **Community infrastructure** — Issue/PR templates, FUNDING.yml, good first issue labels, GitHub Discussions
+- [x] **Fonts CDN CORS** — Restrict `fonts.visor.design` to allowed origins via Cloudflare R2/Workers (VI-175)
+- [ ] **Community infrastructure** — FUNDING.yml, GitHub Discussions, good-first-issue labels still pending (VI-176); issue/PR templates already done
 - [x] **Changelog & releases** — Wire up changesets auto-publish workflow, generate first CHANGELOG.md
 - [x] **Getting-started guide** — Standalone "zero to first component" page (migration guide covers retrofits, not new projects)
 - [x] **Competitive analysis** — Study shadcn/ui, Radix, Mantine, Park UI for gaps ✓ ([VI-122](https://linear.app/low-orbit-studio/issue/VI-122) → `docs/research/token-architecture-spike.md`)
-- [ ] **Governance & sustainability** — Single-maintainer plan, contributor ladder, decision-making process
-- [ ] **Marketing surface** — README badges, social preview, npm README, "used by" section, GitHub topics
+- [x] **Governance & sustainability** — GOVERNANCE.md, CONTRIBUTING.md, MAINTAINERS.md all at repo root (VI-177)
+- [x] **Marketing surface** — README badges, social preview, npm README, "used by" section, GitHub topics (VI-178)
 
 ## Phase 6: Admin UI Category — COMPLETE
 
@@ -141,22 +147,22 @@ See [component-inventory.md](./component-inventory.md) for the full list.
 - [x] Admin UI section added to `docs/component-inventory.md`
 - [x] VI-138 epic closed by VI-142
 
-## Phase 7: Visual Theme Creator
+## Phase 7: Visual Theme Creator — COMPLETE
 
 A visual theme creation experience in the docs site with harmonious color generation and clone-to-modify workflow.
 
-**Key work:**
-- Lives in the docs site at `/create` (or `/theme/create`)
-- Color picker with shade generation: pick base primary + accent colors, OKLCH algorithm generates full shade palettes
-- Typography section: Google Fonts API selector, weight picker, scale preview
-- Spacing/radius/shadow controls with sensible defaults
-- "Start from" dropdown: blank theme, or clone any existing theme (loads `.visor.yaml` as starting state)
-- Real-time preview panel showing actual Visor components (button, card, input, badge, alert, dialog) with in-progress theme applied via CSS custom property injection
-- Light/dark mode toggle in preview
-- Live validation: runs Phase 3 validator continuously, shows warnings/errors inline
-- Export button: downloads `.visor.yaml` file
-- "Apply to project" shortcut: copies CLI command to clipboard
-- Depends on `packages/theme-engine/` (shade generator, validator, mapper)
+**Completed work:**
+- [x] Lives in the docs site at `/create`
+- [x] Color picker with shade generation: pick base primary + accent colors, OKLCH algorithm generates full shade palettes
+- [x] Typography section: Google Fonts API selector, weight picker, scale preview
+- [x] Spacing/radius/shadow controls with sensible defaults
+- [x] "Start from" dropdown: blank theme, or clone any existing theme (loads `.visor.yaml` as starting state)
+- [x] Real-time preview panel showing actual Visor components (button, card, input, badge, alert, dialog) with in-progress theme applied via CSS custom property injection
+- [x] Light/dark mode toggle in preview
+- [x] Live validation: runs Phase 3 validator continuously, shows warnings/errors inline
+- [x] Export button: downloads `.visor.yaml` file
+- [x] "Apply to project" shortcut: copies CLI command to clipboard
+- [x] Depends on `packages/theme-engine/` (shade generator, validator, mapper)
 
 ## Phase 8: Advanced Font Infrastructure
 
@@ -166,7 +172,6 @@ Blacklight font library and font pairing intelligence. Basic font resolution (Go
 - ~~Visor Fonts CDN support (`visor-fonts` source type in .visor.yaml): R2-hosted fonts with @font-face generation~~ **DONE** (VI-81) — see `packages/theme-engine/src/fonts/`
 - ~~Font upload CLI (`visor fonts add`): upload woff2 files to R2 CDN~~ **DONE** (VI-80) — see `packages/cli/src/commands/fonts-add.ts`
 - ~~R2 CDN setup (fonts.visor.design)~~ **DONE** (VI-79) — Cloudflare R2 bucket with custom domain
-- **Fonts CDN CORS policy** — Restrict `fonts.visor.design` to allowed origins via Cloudflare R2/Workers (VI-110)
 - Font pairing with mood tags (leverage Blacklight's `epk_theme_font_pairing` system)
 - Advanced font loading optimizations (subsetting, variable font support)
 - Font weight/variant discovery from CDN (manifest-based)
@@ -182,9 +187,11 @@ Blacklight font library and font pairing intelligence. Basic font resolution (Go
 - `docs` — Documentation site (fumadocs-based)
 - `deck` — Pitch deck with slide framework
 
-## Phase 10: Flutter Token Distribution
+## Phase 10: Flutter Token Distribution — IN PROGRESS (Phase 10a)
 
 Generate Dart `ThemeData` from `.visor.yaml` so Flutter projects consume the same design system.
+
+Active execution underway: VI-185 (M2: Full Token Emission), VI-202 (visor add --target flutter), VI-203 (Widgetbook preview app), VI-205 (Flutter docs), VI-206 (pub.dev publish), VI-216–219 (theme foundation, widget survey).
 
 **Key work:**
 - Build `visor-adapter-flutter` (reference: Blacklight's `generate-flutter.ts`)
