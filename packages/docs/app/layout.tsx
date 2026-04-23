@@ -12,12 +12,53 @@ const spaceMono = Space_Mono({
   display: 'swap',
 });
 
+const CANONICAL_URL = 'https://visor.design';
+const DESCRIPTION = "Low Orbit Studio's shared design system. Components, tokens, and theming for modern apps.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(CANONICAL_URL),
+  applicationName: 'Visor',
   title: {
     default: 'Visor — Design System',
     template: '%s | Visor',
   },
-  description: 'Low Orbit Studio\'s shared design system. Components, tokens, and theming for modern apps.',
+  description: DESCRIPTION,
+  authors: [{ name: 'Low Orbit Studio', url: CANONICAL_URL }],
+  creator: 'Low Orbit Studio',
+  keywords: ['design system', 'components', 'tokens', 'theming', 'react', 'css', 'shadcn'],
+  openGraph: {
+    type: 'website',
+    url: CANONICAL_URL,
+    siteName: 'Visor',
+    title: 'Visor — Design System',
+    description: DESCRIPTION,
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@loworbitstudio',
+    creator: '@loworbitstudio',
+    title: 'Visor — Design System',
+    description: DESCRIPTION,
+  },
+  icons: {
+    icon: '/icon.png',
+    apple: '/apple-icon.png',
+  },
+  alternates: {
+    canonical: CANONICAL_URL,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 // Inline init script — restores body theme class and html color-mode class before React hydrates.
