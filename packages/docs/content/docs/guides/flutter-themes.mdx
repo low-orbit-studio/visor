@@ -1,0 +1,116 @@
+---
+title: Flutter Theme Consumption
+description: Use Visor's generated ThemeData in your Flutter app via the visor_themes package.
+---
+
+Visor generates Material 3 `ThemeData` for all 11 themes (4 stock + 7 custom) into a single
+`packages/visor_themes/` package. Each theme exposes a `.light` and `.dark` `ThemeData` via the
+`VisorThemes` sealed class.
+
+## Setup
+
+Add `visor_themes` as a path dependency in your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  visor_themes:
+    path: ../visor_themes   # adjust relative path as needed
+```
+
+If `visor_core` is not yet on pub.dev, add a path override in `pubspec_overrides.yaml`:
+
+```yaml
+dependency_overrides:
+  visor_core:
+    path: ../visor-flutter
+```
+
+Run `flutter pub get` to resolve.
+
+## Basic Usage
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:visor_themes/visor_themes.dart';
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: VisorThemes.blackout.light,
+      darkTheme: VisorThemes.blackout.dark,
+      home: const HomePage(),
+    );
+  }
+}
+```
+
+## Available Themes
+
+| Getter | Theme |
+|--------|-------|
+| `VisorThemes.blackout` | Blackout (stock) |
+| `VisorThemes.modernMinimal` | Modern Minimal (stock) |
+| `VisorThemes.neutral` | Neutral (stock) |
+| `VisorThemes.space` | Space (stock) |
+| `VisorThemes.blacklight` | Blacklight |
+| `VisorThemes.blacklightUnderground` | Blacklight Underground |
+| `VisorThemes.entr` | ENTR |
+| `VisorThemes.kaiah` | Kaiah |
+| `VisorThemes.referenceApp` | Reference App |
+| `VisorThemes.solespark` | SoleSpark |
+| `VisorThemes.veronica` | Veronica Home |
+
+## VisorThemePair
+
+Each getter returns a `VisorThemePair`:
+
+```dart
+class VisorThemePair {
+  final ThemeData light;
+  final ThemeData dark;
+}
+```
+
+## Accessing VisorColorsData
+
+The `VisorColorsData` `ThemeExtension` is automatically attached to every `ThemeData`:
+
+```dart
+final colors = Theme.of(context).extension<VisorColorsData>()!;
+Text('Hello', style: TextStyle(color: colors.textPrimary));
+```
+
+## Regenerating Themes
+
+Themes are generated from `.visor.yaml` files in `themes/` (stock) and `custom-themes/` (custom).
+To regenerate after changing a YAML:
+
+```bash
+npm run themes:apply-flutter
+```
+
+This runs `visor theme batch-apply-flutter` which:
+1. Discovers all `.visor.yaml` files in `themes/` and `custom-themes/`
+2. Calls the flutter adapter for each
+3. Writes token files to `packages/visor_themes/lib/src/<slug>/`
+4. Regenerates the `lib/visor_themes.dart` meta-barrel
+
+The script is idempotent — re-running produces identical output.
+
+## Custom Themes
+
+Add a new `.visor.yaml` to `custom-themes/` with at minimum `name` and `colors.primary`:
+
+```yaml
+name: my-app
+version: 1
+group: Custom
+
+colors:
+  primary: "#6366F1"
+```
+
+Then run `npm run themes:apply-flutter`. A new `VisorThemes.myApp` getter will appear.

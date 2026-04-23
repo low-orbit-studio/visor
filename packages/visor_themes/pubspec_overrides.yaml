@@ -1,0 +1,5 @@
+# Path overrides for in-monorepo development.
+# visor_core is not yet published to pub.dev; this forces the local copy.
+dependency_overrides:
+  visor_core:
+    path: ../visor-flutter

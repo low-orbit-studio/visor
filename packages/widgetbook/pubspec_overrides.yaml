@@ -1,8 +1,7 @@
 # Path overrides for in-monorepo development.
 # visor_core is not yet published to pub.dev (blocked on M4.B); this forces
-# the path-local version. Applied to ALL transitive deps — including the
-# `ui` demo-theme package — so version resolution doesn't split on hosted
-# vs path variants.
+# the path-local version. Applied to ALL transitive deps so version resolution
+# doesn't split on hosted vs path variants.
 dependency_overrides:
   visor_core:
     path: ../visor-flutter

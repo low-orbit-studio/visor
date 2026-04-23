@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:ui/ui.dart' as demo;
+import 'package:visor_themes/visor_themes.dart';
 
 /// Demo [ThemeData] used by the Widgetbook preview app.
 ///
-/// Sourced from the Visor-generated SoleSpark example (`examples/flutter/
-/// solespark-ui/`) because that package already carries a full, tested
-/// `VisorColorsData` / `VisorTextStylesData` / etc. token set. Re-using it
-/// here avoids ~200 lines of hand-maintained token boilerplate for a dev
-/// preview app that doesn't need its own brand.
-///
-/// When Visor supports live theme switching (future Widgetbook addon), this
-/// file will change to load arbitrary `.visor.yaml` token sets at runtime.
+/// Sourced from the Visor-generated SoleSpark theme in the `visor_themes`
+/// package (`packages/visor_themes/`), which aggregates all 11 Visor themes.
+/// Uses SoleSpark because it carries a complete, tested token set that matches
+/// the existing widget use-cases. Future: expose a theme-switcher addon that
+/// lets the reviewer pick any VisorThemes getter.
 sealed class VisorDemoTheme {
-  static ThemeData get light => demo.VisorAppTheme.light;
-  static ThemeData get dark => demo.VisorAppTheme.dark;
+  static ThemeData get light => VisorThemes.solespark.light;
+  static ThemeData get dark => VisorThemes.solespark.dark;
 }

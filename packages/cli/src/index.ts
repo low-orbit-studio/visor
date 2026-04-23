@@ -16,6 +16,8 @@ import type { ThemeRegisterOptions } from "./commands/theme-register.js"
 import { themeUnregisterCommand } from "./commands/theme-unregister.js"
 import { themeSyncCommand } from "./commands/theme-sync.js"
 import type { ThemeSyncOptions } from "./commands/theme-sync.js"
+import { themeBatchApplyFlutterCommand } from "./commands/theme-batch-apply-flutter.js"
+import type { ThemeBatchApplyFlutterOptions } from "./commands/theme-batch-apply-flutter.js"
 import { fontsAddCommand } from "./commands/fonts-add.js"
 import type { FontsAddOptions } from "./commands/fonts-add.js"
 import { doctorCommand } from "./commands/doctor.js"
@@ -243,6 +245,19 @@ theme
   .action(
     (options: ThemeSyncOptions) => {
       themeSyncCommand(process.cwd(), options)
+    }
+  )
+
+theme
+  .command("batch-apply-flutter")
+  .description(
+    "Batch-generate Dart ThemeData for all .visor.yaml themes (themes/ + custom-themes/) into packages/visor_themes/"
+  )
+  .option("--dry-run", "show what would be generated without writing files")
+  .option("--json", "output structured JSON (for AI agents)")
+  .action(
+    (options: ThemeBatchApplyFlutterOptions) => {
+      themeBatchApplyFlutterCommand(process.cwd(), options)
     }
   )
 

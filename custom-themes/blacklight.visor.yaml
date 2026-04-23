@@ -1,0 +1,40 @@
+name: blacklight
+version: 1
+group: Low Orbit
+
+colors:
+  primary: "#A855F7"
+  accent: "#EC4899"
+  neutral: "#6B7280"
+  background: "#030712"
+  surface: "#0F172A"
+
+colors-dark:
+  background: "#030712"
+  surface: "#0F172A"
+
+typography:
+  heading:
+    family: Inter
+    weight: 700
+  body:
+    family: Inter
+    weight: 400
+
+radius:
+  sm: 4
+  md: 6
+  lg: 12
+  xl: 16
+
+shadows:
+  xs: "none"
+  sm: "none"
+  md: "none"
+  lg: "none"
+  xl: "none"
+
+motion:
+  duration-fast: "100ms"
+  duration-normal: "200ms"
+  duration-slow: "400ms"
