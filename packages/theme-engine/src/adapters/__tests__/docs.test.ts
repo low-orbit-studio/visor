@@ -161,7 +161,7 @@ describe("docsAdapter", () => {
     it("includes prefers-color-scheme dark media query", () => {
       const css = docsAdapter(makeInput(MINIMAL_YAML));
       expect(css).toContain("@media (prefers-color-scheme: dark)");
-      expect(css).toContain("html:not(.light) .minimal-theme");
+      expect(css).toContain(".minimal-theme:not(.light)");
     });
   });
 

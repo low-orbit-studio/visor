@@ -15,7 +15,6 @@ colors:
 colors-dark:
   background: "#080810"
   surface: "#0e0e18"
-  error: "#F87171"
 
 typography:
   heading:
