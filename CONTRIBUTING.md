@@ -113,6 +113,8 @@ For significant changes — new components, breaking token changes, architecture
 
 ## Contributor Ladder
 
+The contributor ladder describes how involvement can grow over time. See [GOVERNANCE.md](./GOVERNANCE.md) for the full governance model and decision-making process.
+
 **Contributor** — Anyone who opens a quality issue, discussion, or PR. No requirements beyond good faith engagement.
 
 **Regular Contributor** — Someone who has had 3+ PRs merged across different areas of the codebase. Gets faster review turnaround and is consulted on relevant design decisions.
