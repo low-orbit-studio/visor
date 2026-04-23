@@ -178,17 +178,6 @@
 
 /* ── Section 2: Dark mode overrides ── */
 
-/* --- Primitive overrides (dark) — dark color anchors at shade 500 --- */
-.dark .neutral-theme {
-  --color-error-50: #fff2f1;
-  --color-error-100: #ffefee;
-  --color-error-500: #f87171;
-  --color-error-600: #9d1727;
-  --color-error-700: #810018;
-  --color-error-900: #3a0006;
-}
-
-
 /* --- Adaptive: Text (dark) — manual toggle --- */
 .dark .neutral-theme {
   --text-primary: #fafafa;
@@ -201,7 +190,7 @@
   --text-link-hover: #c3f4ff;
   --text-success: #22c55e;
   --text-warning: #f59e0b;
-  --text-error: #f87171;
+  --text-error: #ef4444;
   --text-info: #0ea5e9;
 }
 
@@ -225,8 +214,8 @@
   --surface-success-default: #22c55e;
   --surface-warning-subtle: #281600;
   --surface-warning-default: #f59e0b;
-  --surface-error-subtle: #3a0006;
-  --surface-error-default: #f87171;
+  --surface-error-subtle: #3a0003;
+  --surface-error-default: #ef4444;
   --surface-info-subtle: #001d2e;
   --surface-info-default: #0ea5e9;
 }
@@ -241,7 +230,7 @@
   --border-disabled: #2d2d34;
   --border-success: #22c55e;
   --border-warning: #f59e0b;
-  --border-error: #f87171;
+  --border-error: #ef4444;
   --border-info: #0ea5e9;
 }
 
@@ -257,8 +246,8 @@
   --interactive-secondary-bg-active: #54545d;
   --interactive-secondary-text: #f5f5f6;
   --interactive-secondary-border: #54545d;
-  --interactive-destructive-bg: #f87171;
-  --interactive-destructive-bg-hover: #9d1727;
+  --interactive-destructive-bg: #ef4444;
+  --interactive-destructive-bg-hover: #a30016;
   --interactive-destructive-text: #ffffff;
   --interactive-ghost-bg: #2d2d34;
   --interactive-ghost-bg-hover: #41414a;
@@ -267,7 +256,7 @@
 
 /* --- Adaptive: Text (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  html:not(.light) .neutral-theme {
+  .neutral-theme:not(.light) {
     --text-primary: #fafafa;
     --text-secondary: #a1a1aa;
     --text-tertiary: #808080;
@@ -278,7 +267,7 @@
     --text-link-hover: #c3f4ff;
     --text-success: #22c55e;
     --text-warning: #f59e0b;
-    --text-error: #f87171;
+    --text-error: #ef4444;
     --text-info: #0ea5e9;
   }
 }
@@ -286,7 +275,7 @@
 
 /* --- Adaptive: Surface (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  html:not(.light) .neutral-theme {
+  .neutral-theme:not(.light) {
     --surface-page: #09090b;
     --surface-card: #18181b;
     --surface-popover: #18181b;
@@ -304,8 +293,8 @@
     --surface-success-default: #22c55e;
     --surface-warning-subtle: #281600;
     --surface-warning-default: #f59e0b;
-    --surface-error-subtle: #3a0006;
-    --surface-error-default: #f87171;
+    --surface-error-subtle: #3a0003;
+    --surface-error-default: #ef4444;
     --surface-info-subtle: #001d2e;
     --surface-info-default: #0ea5e9;
   }
@@ -314,7 +303,7 @@
 
 /* --- Adaptive: Border (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  html:not(.light) .neutral-theme {
+  .neutral-theme:not(.light) {
     --border-default: #41414a;
     --border-muted: #2d2d34;
     --border-strong: #54545d;
@@ -322,7 +311,7 @@
     --border-disabled: #2d2d34;
     --border-success: #22c55e;
     --border-warning: #f59e0b;
-    --border-error: #f87171;
+    --border-error: #ef4444;
     --border-info: #0ea5e9;
   }
 }
@@ -330,7 +319,7 @@
 
 /* --- Adaptive: Interactive (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  html:not(.light) .neutral-theme {
+  .neutral-theme:not(.light) {
     --interactive-primary-bg: #1798ad;
     --interactive-primary-bg-hover: #abf0ff;
     --interactive-primary-bg-active: #c3f4ff;
@@ -340,24 +329,11 @@
     --interactive-secondary-bg-active: #54545d;
     --interactive-secondary-text: #f5f5f6;
     --interactive-secondary-border: #54545d;
-    --interactive-destructive-bg: #f87171;
-    --interactive-destructive-bg-hover: #9d1727;
+    --interactive-destructive-bg: #ef4444;
+    --interactive-destructive-bg-hover: #a30016;
     --interactive-destructive-text: #ffffff;
     --interactive-ghost-bg: #2d2d34;
     --interactive-ghost-bg-hover: #41414a;
-  }
-}
-
-
-/* --- Primitive overrides (dark) — prefers-color-scheme --- */
-@media (prefers-color-scheme: dark) {
-  html:not(.light) .neutral-theme {
-    --color-error-50: #fff2f1;
-    --color-error-100: #ffefee;
-    --color-error-500: #f87171;
-    --color-error-600: #9d1727;
-    --color-error-700: #810018;
-    --color-error-900: #3a0006;
   }
 }
 
