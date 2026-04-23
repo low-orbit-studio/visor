@@ -53,8 +53,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!page) notFound();
 
+  const url = `https://visor.design${page.url}`;
+
   return {
     title: page.data.title,
     description: page.data.description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: 'article',
+      url,
+      title: page.data.title,
+      description: page.data.description,
+      siteName: 'Visor',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: page.data.title,
+      description: page.data.description,
+    },
   };
 }
