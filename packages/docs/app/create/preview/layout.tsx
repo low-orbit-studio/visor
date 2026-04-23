@@ -5,6 +5,6 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function PanelLayout({ children }: { children: ReactNode }) {
+export default function PreviewLayout({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
