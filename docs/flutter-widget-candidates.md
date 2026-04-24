@@ -1,5 +1,7 @@
 # Flutter Widget Candidates
 
+> **Scope:** This doc is **Phase 1 — code-mined candidates** from existing Flutter codebases (SoleSpark, ENTR, Veronica). Tracked in [VI-219](https://linear.app/low-orbit-studio/issue/VI-219). **Phase 2 — Figma-mined candidates** (SoleSpark Figma → AI vision → SQLite dedup pipeline) is deferred and tracked in [VI-240](https://linear.app/low-orbit-studio/issue/VI-240); its results will be appended as a new section below.
+
 ## Priority Rubric
 
 Candidates are ranked by:
