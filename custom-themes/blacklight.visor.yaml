@@ -3,15 +3,15 @@ version: 1
 group: Low Orbit
 
 colors:
-  primary: "#A855F7"
+  primary: "#F46C00"
   accent: "#EC4899"
   neutral: "#6B7280"
-  background: "#030712"
-  surface: "#0F172A"
+  background: "#020214"
+  surface: "#12122A"
 
 colors-dark:
-  background: "#030712"
-  surface: "#0F172A"
+  background: "#020214"
+  surface: "#12122A"
 
 typography:
   heading:

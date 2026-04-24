@@ -144,9 +144,9 @@ sealed class VisorColors {
   // Semantic — Light
   // ========================================================================
   static final VisorColorsData light = VisorColorsData(
-    textPrimary: Color(0xFF000000),
-    textSecondary: Color(0xFF000000),
-    textTertiary: Color(0xFF000000),
+    textPrimary: Color(0xE6000000),
+    textSecondary: Color(0x8C000000),
+    textTertiary: Color(0x8C000000),
     textDisabled: Color(0xFFE2E8F3),
     textInverse: Color(0xFFFFFFFF),
     textInverseSecondary: Color(0xFFEAEEF5),
@@ -205,10 +205,10 @@ sealed class VisorColors {
   // Semantic — Dark
   // ========================================================================
   static final VisorColorsData dark = VisorColorsData(
-    textPrimary: Color(0xFFFFFFFF),
-    textSecondary: Color(0xFFFFFFFF),
-    textTertiary: Color(0xFFFFFFFF),
-    textDisabled: Color(0xFFFFFFFF),
+    textPrimary: Color(0xB3FFFFFF),
+    textSecondary: Color(0xB3FFFFFF),
+    textTertiary: Color(0x8CFFFFFF),
+    textDisabled: Color(0x1AFFFFFF),
     textInverse: Color(0xFF171B22),
     textInverseSecondary: Color(0xFF3D424D),
     textLink: Color(0xFFA0FFCF),
@@ -218,9 +218,9 @@ sealed class VisorColors {
     textError: Color(0xFFEF4444),
     textInfo: Color(0xFF0EA5E9),
     surfacePage: Color(0xFF000000),
-    surfaceCard: Color(0xFFFFFFFF),
-    surfaceSubtle: Color(0xFFFFFFFF),
-    surfaceMuted: Color(0xFFFFFFFF),
+    surfaceCard: Color(0x0AFFFFFF),
+    surfaceSubtle: Color(0x05FFFFFF),
+    surfaceMuted: Color(0x0AFFFFFF),
     surfaceOverlay: Color(0xFF07090E),
     surfaceInteractiveDefault: Color(0xFF292E38),
     surfaceInteractiveHover: Color(0xFF3D424D),
@@ -237,9 +237,9 @@ sealed class VisorColors {
     surfaceErrorDefault: Color(0xFFEF4444),
     surfaceInfoSubtle: Color(0xFF001D2E),
     surfaceInfoDefault: Color(0xFF0EA5E9),
-    borderDefault: Color(0xFFFFFFFF),
-    borderMuted: Color(0xFFFFFFFF),
-    borderStrong: Color(0xFFFFFFFF),
+    borderDefault: Color(0x0FFFFFFF),
+    borderMuted: Color(0x08FFFFFF),
+    borderStrong: Color(0x1AFFFFFF),
     borderFocus: Color(0xFFA0FFCF),
     borderDisabled: Color(0xFF292E38),
     borderSuccess: Color(0xFF22C55E),

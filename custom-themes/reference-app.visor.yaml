@@ -10,8 +10,14 @@ colors:
   surface: "#FFFFFF"
 
 colors-dark:
-  background: "#111827"
-  surface: "#1F2937"
+  background: "#1E1F21"
+  surface: "#2A2B2D"
+
+overrides:
+  dark:
+    interactive-primary-bg: "#1a5f7a"
+  light:
+    interactive-primary-bg: "#175d78"
 
 typography:
   heading:
