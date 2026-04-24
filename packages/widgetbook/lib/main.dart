@@ -126,14 +126,25 @@ class _VisorWidgetbookAppState extends State<VisorWidgetbookApp> {
 
         return Widgetbook(
           directories: directories,
-          // appBuilder wraps each preview in a MaterialApp using the same
-          // notifiers — single source of truth for both chrome and preview.
-          appBuilder: (_, child) => MaterialApp(
-            debugShowCheckedModeBanner: false,
-            theme: buildPreviewTheme(pair.light),
-            darkTheme: buildPreviewTheme(pair.dark),
-            themeMode: mode,
-            home: VisorPreviewShell(child: child),
+          // Widgetbook captures `appBuilder` once in initState, so closing over
+          // pair/mode here would freeze the preview theme on the first value.
+          // Re-read both notifiers via ValueListenableBuilder so the body
+          // tracks the active theme on every change.
+          appBuilder: (_, child) => ValueListenableBuilder<String>(
+            valueListenable: _themeLabel,
+            builder: (_, __, ___) => ValueListenableBuilder<ThemeMode>(
+              valueListenable: _brightness,
+              builder: (_, currentMode, ____) {
+                final livePair = _activePair();
+                return MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  theme: buildPreviewTheme(livePair.light),
+                  darkTheme: buildPreviewTheme(livePair.dark),
+                  themeMode: currentMode,
+                  home: VisorPreviewShell(child: child),
+                );
+              },
+            ),
           ),
           lightTheme: chromeTheme,
           darkTheme: chromeTheme,
