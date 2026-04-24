@@ -1,0 +1,21 @@
+name: OTP Input
+description: A one-time-password input composed of individual digit boxes with auto-advance, backspace-to-previous, web platform branch, and full theming support.
+category: form
+
+when_to_use:
+  - Entering a one-time password or verification code
+  - SMS/email verification flows
+  - Two-factor authentication screens
+  - PIN entry where digit count is fixed and known
+
+when_not_to_use:
+  - Free-form numeric input (use TextField)
+  - Variable-length codes (use TextField with maxLength)
+  - Long passcodes or passwords (use TextField with obscureText)
+
+files:
+  - components/flutter/visor_otp_input/visor_otp_input.dart
+  - components/flutter/visor_otp_input/visor_otp_input_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }
