@@ -33,6 +33,10 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/visor-logo.png
+    - assets/visor-wordmark-light.png
+    - assets/visor-wordmark-dark.png
   fonts:
     - family: Satoshi
       fonts:
