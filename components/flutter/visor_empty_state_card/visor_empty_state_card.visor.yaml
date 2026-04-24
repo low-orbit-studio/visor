@@ -1,0 +1,50 @@
+name: EmptyStateCard
+description: Card-chrome wrapper around EmptyState for drop-in use inside lists, panels, and slotted containers. Always uses the compact horizontal layout.
+category: admin
+
+when_to_use:
+  - Inserting an empty state directly into a scrollable list slot
+  - Height-constrained panels (bottom sheets, half-height drawers, inline dashboard cards)
+  - Any context where the card surface should be self-contained and draggable
+
+when_not_to_use:
+  - Full-page empty states where a standard vertical VisorEmptyState reads better
+  - Inside an existing card surface (nested card chrome looks wrong)
+  - Loading states (use Skeleton or a spinner)
+
+api:
+  - name: icon
+    type: IconData
+    required: true
+    description: Icon rendered to the left of the text content.
+  - name: headline
+    type: String
+    required: true
+    description: Primary label — short, imperative, scannable.
+  - name: body
+    type: String?
+    required: false
+    description: Supporting copy explaining why the state is empty or what to do next.
+  - name: action
+    type: Widget?
+    required: false
+    description: Primary call-to-action widget.
+  - name: secondaryAction
+    type: Widget?
+    required: false
+    description: Optional secondary call-to-action. Rendered beside action in a Wrap when present.
+  - name: iconSize
+    type: double
+    required: false
+    default: "48"
+    description: Logical pixel size of the icon (scaled to 62.5% in compact layout).
+
+files:
+  - components/flutter/visor_empty_state_card/visor_empty_state_card.dart
+  - components/flutter/visor_empty_state_card/visor_empty_state_card_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }
+
+componentDependencies:
+  - visor_empty_state
