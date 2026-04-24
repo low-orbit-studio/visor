@@ -33,3 +33,10 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: Satoshi
+      fonts:
+        - asset: fonts/Satoshi-Regular.ttf
+          weight: 400
+        - asset: fonts/Satoshi-Bold.ttf
+          weight: 700

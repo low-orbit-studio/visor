@@ -6,6 +6,7 @@ import 'package:visor_themes/visor_themes.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import 'chrome/visor_chrome.dart';
 import 'persistence.dart';
 import 'theme/widgetbook_theme.dart';
 import 'main.directories.g.dart';
@@ -66,6 +67,7 @@ class _VisorWidgetbookAppState extends State<VisorWidgetbookApp> {
   late final WidgetbookTheme<VisorThemePair> _initialPair;
   late final VisorThemePersistenceIntegration _persistence;
   late final ValueNotifier<ThemeMode> _brightnessNotifier;
+  late final ThemeData _chromeTheme;
 
   @override
   void initState() {
@@ -80,6 +82,7 @@ class _VisorWidgetbookAppState extends State<VisorWidgetbookApp> {
       initialLabel: _initialPair.name,
     );
     _brightnessNotifier = ValueNotifier<ThemeMode>(widget.initialBrightness);
+    _chromeTheme = buildChromeTheme();
   }
 
   @override
@@ -92,6 +95,11 @@ class _VisorWidgetbookAppState extends State<VisorWidgetbookApp> {
   Widget build(BuildContext context) => Widgetbook(
         directories: directories,
         appBuilder: (_, child) => child,
+        // Chrome stays Blackout-dark regardless of preview theme — the nav
+        // surface is the constant the user navigates against.
+        lightTheme: _chromeTheme,
+        darkTheme: _chromeTheme,
+        themeMode: ThemeMode.dark,
         integrations: [_persistence],
         addons: [
           ThemeAddon<VisorThemePair>(
@@ -102,23 +110,13 @@ class _VisorWidgetbookAppState extends State<VisorWidgetbookApp> {
               valueListenable: _brightnessNotifier,
               builder: (ctx, mode, _) => MaterialApp(
                 debugShowCheckedModeBanner: false,
-                theme: pair.light,
-                darkTheme: pair.dark,
+                theme: buildPreviewTheme(pair.light),
+                darkTheme: buildPreviewTheme(pair.dark),
                 themeMode: mode,
-                home: Material(
-                  child: Stack(
-                    children: [
-                      Positioned.fill(child: child),
-                      Positioned(
-                        top: 8,
-                        right: 8,
-                        child: _BrightnessToggle(
-                          notifier: _brightnessNotifier,
-                          prefs: widget.prefs,
-                        ),
-                      ),
-                    ],
-                  ),
+                home: VisorPreviewShell(
+                  brightnessNotifier: _brightnessNotifier,
+                  prefs: widget.prefs,
+                  child: child,
                 ),
               ),
             ),
@@ -127,6 +125,45 @@ class _VisorWidgetbookAppState extends State<VisorWidgetbookApp> {
       );
 }
 
+/// Wraps each preview in a theme-aware [Scaffold] whose backdrop reads the
+/// active theme's `VisorColorsData.surfacePage`, with a low-key brightness
+/// toggle anchored bottom-left to mirror the docs site's mode switcher.
+class VisorPreviewShell extends StatelessWidget {
+  const VisorPreviewShell({
+    super.key,
+    required this.brightnessNotifier,
+    required this.prefs,
+    required this.child,
+  });
+
+  final ValueNotifier<ThemeMode> brightnessNotifier;
+  final SharedPreferences prefs;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: resolveBackdrop(context),
+      body: Stack(
+        children: [
+          Positioned.fill(child: child),
+          Positioned(
+            left: 16,
+            bottom: 16,
+            child: _BrightnessToggle(
+              notifier: brightnessNotifier,
+              prefs: prefs,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Sun/moon pair anchored bottom-left, matching the docs site's mode toggle
+/// position and visual weight. Both icons render at the same time; the
+/// inactive one fades to a tertiary text color so the active mode reads.
 class _BrightnessToggle extends StatelessWidget {
   const _BrightnessToggle({
     required this.notifier,
@@ -136,9 +173,8 @@ class _BrightnessToggle extends StatelessWidget {
   final ValueNotifier<ThemeMode> notifier;
   final SharedPreferences prefs;
 
-  void _toggle() {
-    final next =
-        notifier.value == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+  void _setMode(ThemeMode next) {
+    if (notifier.value == next) return;
     notifier.value = next;
     unawaited(prefs.setString(
       kVisorWidgetbookBrightnessPrefsKey,
@@ -148,15 +184,80 @@ class _BrightnessToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = notifier.value == ThemeMode.dark;
-    return Material(
-      color: Colors.transparent,
-      child: Tooltip(
-        message: isDark ? 'Switch to light mode' : 'Switch to dark mode',
-        child: IconButton(
-          icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
-          onPressed: _toggle,
-        ),
+    final colors = Theme.of(context).extension<VisorColorsData>();
+    final activeColor = colors?.textPrimary ?? Colors.white;
+    final inactiveColor = colors?.textTertiary ?? Colors.white54;
+    final surface = colors?.surfaceCard ?? Colors.white10;
+    final border = colors?.borderDefault ?? Colors.white12;
+
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: notifier,
+      builder: (ctx, mode, _) {
+        final isLight = mode == ThemeMode.light;
+        return Material(
+          color: surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(999),
+            side: BorderSide(color: border, width: 1),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(2),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _ToggleIcon(
+                  icon: Icons.light_mode_outlined,
+                  tooltip: 'Light mode',
+                  active: isLight,
+                  activeColor: activeColor,
+                  inactiveColor: inactiveColor,
+                  onPressed: () => _setMode(ThemeMode.light),
+                ),
+                _ToggleIcon(
+                  icon: Icons.dark_mode_outlined,
+                  tooltip: 'Dark mode',
+                  active: !isLight,
+                  activeColor: activeColor,
+                  inactiveColor: inactiveColor,
+                  onPressed: () => _setMode(ThemeMode.dark),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ToggleIcon extends StatelessWidget {
+  const _ToggleIcon({
+    required this.icon,
+    required this.tooltip,
+    required this.active,
+    required this.activeColor,
+    required this.inactiveColor,
+    required this.onPressed,
+  });
+
+  final IconData icon;
+  final String tooltip;
+  final bool active;
+  final Color activeColor;
+  final Color inactiveColor;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: IconButton(
+        icon: Icon(icon, size: 16),
+        color: active ? activeColor : inactiveColor,
+        visualDensity: VisualDensity.compact,
+        constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+        padding: EdgeInsets.zero,
+        onPressed: onPressed,
       ),
     );
   }
