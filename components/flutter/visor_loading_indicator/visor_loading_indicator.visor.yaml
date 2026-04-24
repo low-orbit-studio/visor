@@ -1,0 +1,22 @@
+name: LoadingIndicator
+description: Themed loading spinner with optional delay gate and reduce-motion support.
+category: feedback
+
+when_to_use:
+  - Indicating background work is in progress (data fetch, save, upload)
+  - Delay-gated feedback — pass `delay` to suppress a flash-of-spinner on fast operations
+  - Inline loading slots inside buttons, cards, or list items (default 24 dp size)
+  - Any context where a spinner must respect the system reduce-motion preference
+
+when_not_to_use:
+  - Full-page loading states where a skeleton screen better preserves layout
+  - Determinate progress (known completion percentage) — use LinearProgressIndicator with a value
+  - Overlay/modal blocking spinners — consider a dedicated loading overlay widget
+  - Replacing button content during loading — use VisorButton's isLoading prop instead
+
+files:
+  - components/flutter/visor_loading_indicator/visor_loading_indicator.dart
+  - components/flutter/visor_loading_indicator/visor_loading_indicator_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }
