@@ -1,0 +1,20 @@
+name: text-input
+description: Animated floating-label text input covering five validation states (default, focused, error, valid, disabled).
+category: form
+
+when_to_use:
+  - Single-line text entry in forms (name, email, address, search)
+  - Any field that benefits from a floating label to save vertical space
+  - Fields requiring inline validation feedback (error/success states)
+
+when_not_to_use:
+  - Multi-line text entry (use a textarea/expandable variant instead)
+  - Password fields with a visibility toggle (use visor_password_input)
+  - Selecting from a fixed list (use Select or Dropdown)
+
+files:
+  - components/flutter/visor_text_input/visor_text_input.dart
+  - components/flutter/visor_text_input/visor_text_input_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }
