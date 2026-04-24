@@ -13,6 +13,38 @@ when_not_to_use:
   - Loading states (use Skeleton or a spinner)
   - Inline validation messages (use Field or Alert)
 
+api:
+  - name: icon
+    type: IconData
+    required: true
+    description: Icon rendered above (standard) or beside (compact) the text content.
+  - name: headline
+    type: String
+    required: true
+    description: Primary label — short, imperative, scannable.
+  - name: body
+    type: String?
+    required: false
+    description: Supporting copy explaining why the state is empty or what to do next.
+  - name: action
+    type: Widget?
+    required: false
+    description: Primary call-to-action widget.
+  - name: secondaryAction
+    type: Widget?
+    required: false
+    description: Optional secondary call-to-action. Rendered beside action in a Wrap when present.
+  - name: iconSize
+    type: double
+    required: false
+    default: "48"
+    description: Logical pixel size of the icon. Compact layout scales this to 62.5%.
+  - name: forceCompact
+    type: bool
+    required: false
+    default: "false"
+    description: When true, always renders the compact horizontal layout regardless of available height. Used internally by VisorEmptyStateCard.
+
 files:
   - components/flutter/visor_empty_state/visor_empty_state.dart
   - components/flutter/visor_empty_state/visor_empty_state_test.dart

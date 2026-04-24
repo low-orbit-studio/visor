@@ -47,3 +47,36 @@ Widget longCopyUseCase(BuildContext context) => const VisorEmptyState(
       body:
           "We couldn't reach the server. Check your internet connection and try again. If the problem persists, contact support with the error code VSR-NET-001.",
     );
+
+@widgetbook.UseCase(name: 'Compact Layout', type: VisorEmptyState)
+Widget compactUseCase(BuildContext context) => VisorEmptyState(
+      icon: Icons.inbox_outlined,
+      headline:
+          context.knobs.string(label: 'Headline', initialValue: 'No messages'),
+      body: context.knobs.stringOrNull(
+        label: 'Body',
+        initialValue: "You're all caught up.",
+      ),
+      forceCompact: true,
+    );
+
+@widgetbook.UseCase(name: 'Dual Action', type: VisorEmptyState)
+Widget dualActionUseCase(BuildContext context) => VisorEmptyState(
+      icon: Icons.folder_open,
+      headline:
+          context.knobs.string(label: 'Headline', initialValue: 'No projects'),
+      body: context.knobs.stringOrNull(
+        label: 'Body',
+        initialValue: 'Create your first project or import an existing one.',
+      ),
+      action: VisorButton(
+        label: 'Create project',
+        leadingIcon: const Icon(Icons.add),
+        onPressed: _noop,
+      ),
+      secondaryAction: VisorButton(
+        label: 'Import existing',
+        style: VisorButtonStyle.secondary,
+        onPressed: _noop,
+      ),
+    );
