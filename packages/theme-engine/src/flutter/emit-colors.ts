@@ -131,7 +131,7 @@ function semanticInstance(
         `Missing semantic token: ${String(category)}.${tokenName}`,
       );
     }
-    parts.push(`    ${field}: ${cssColorToOpaqueDart(token[mode])},`);
+    parts.push(`    ${field}: ${cssColorToDart(token[mode])},`);
   };
 
   // text

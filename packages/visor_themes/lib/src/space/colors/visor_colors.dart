@@ -145,8 +145,8 @@ sealed class VisorColors {
   // ========================================================================
   static final VisorColorsData light = VisorColorsData(
     textPrimary: Color(0xFF1A1630),
-    textSecondary: Color(0xFF1A1630),
-    textTertiary: Color(0xFF1A1630),
+    textSecondary: Color(0xB81A1630),
+    textTertiary: Color(0xA61A1630),
     textDisabled: Color(0xFFE5E6F5),
     textInverse: Color(0xFFFFFFFF),
     textInverseSecondary: Color(0xFFECEDF8),
@@ -206,8 +206,8 @@ sealed class VisorColors {
   // ========================================================================
   static final VisorColorsData dark = VisorColorsData(
     textPrimary: Color(0xFFE8E8F0),
-    textSecondary: Color(0xFFE8E8F0),
-    textTertiary: Color(0xFFE8E8F0),
+    textSecondary: Color(0xB8E8E8F0),
+    textTertiary: Color(0x80E8E8F0),
     textDisabled: Color(0xFF545460),
     textInverse: Color(0xFF191924),
     textInverseSecondary: Color(0xFF41414D),
