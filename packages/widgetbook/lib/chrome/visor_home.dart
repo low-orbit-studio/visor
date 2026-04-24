@@ -19,7 +19,9 @@ class VisorHome extends StatelessWidget {
     final surfaceCard = colors?.surfaceCard ?? Colors.white10;
     final borderDefault = colors?.borderDefault ?? Colors.white12;
 
-    return Container(
+    // Wrap in Material so Flutter web doesn't render unmaterialized text with
+    // yellow underline indicators (the "no Material ancestor" warning).
+    return Material(
       color: colors?.surfacePage ?? Colors.black,
       child: Center(
         child: SingleChildScrollView(
@@ -127,6 +129,7 @@ class VisorHome extends StatelessWidget {
     );
   }
 }
+
 
 class _SectionHeading extends StatelessWidget {
   const _SectionHeading(this.text, {required this.color});

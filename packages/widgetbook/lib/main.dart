@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:visor_themes/visor_themes.dart';
@@ -7,7 +9,6 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 import 'chrome/visor_chrome.dart';
 import 'chrome/visor_header.dart';
 import 'chrome/visor_home.dart';
-import 'persistence.dart';
 import 'theme/widgetbook_theme.dart';
 import 'main.directories.g.dart';
 
@@ -64,76 +65,93 @@ class VisorWidgetbookApp extends StatefulWidget {
 
 class _VisorWidgetbookAppState extends State<VisorWidgetbookApp> {
   late final List<WidgetbookTheme<VisorThemePair>> _pairs;
-  late final WidgetbookTheme<VisorThemePair> _initialPair;
-  late final VisorThemePersistenceIntegration _persistence;
-  late final ValueNotifier<ThemeMode> _brightnessNotifier;
-  late final ThemeData _chromeTheme;
+  late final ValueNotifier<String> _themeLabel;
+  late final ValueNotifier<ThemeMode> _brightness;
 
   @override
   void initState() {
     super.initState();
     _pairs = buildVisorThemePairs();
-    _initialPair = _pairs.firstWhere(
-      (e) => e.name == widget.initialThemeLabel,
+    final initial = _pairs.firstWhere(
+      (p) => p.name == widget.initialThemeLabel,
       orElse: () => _pairs.first,
     );
-    _persistence = VisorThemePersistenceIntegration(
-      prefs: widget.prefs,
-      initialLabel: _initialPair.name,
-    );
-    _brightnessNotifier = ValueNotifier<ThemeMode>(widget.initialBrightness);
-    _chromeTheme = buildChromeTheme();
+    _themeLabel = ValueNotifier<String>(initial.name);
+    _brightness = ValueNotifier<ThemeMode>(widget.initialBrightness);
+
+    _themeLabel.addListener(_persistTheme);
+    _brightness.addListener(_persistBrightness);
   }
 
   @override
   void dispose() {
-    _brightnessNotifier.dispose();
+    _themeLabel.removeListener(_persistTheme);
+    _brightness.removeListener(_persistBrightness);
+    _themeLabel.dispose();
+    _brightness.dispose();
     super.dispose();
   }
 
+  void _persistTheme() {
+    unawaited(
+      widget.prefs.setString(kVisorWidgetbookThemePrefsKey, _themeLabel.value),
+    );
+  }
+
+  void _persistBrightness() {
+    unawaited(widget.prefs.setString(
+      kVisorWidgetbookBrightnessPrefsKey,
+      _brightness.value == ThemeMode.dark ? 'dark' : 'light',
+    ));
+  }
+
+  VisorThemePair _activePair() => _pairs
+      .firstWhere(
+        (p) => p.name == _themeLabel.value,
+        orElse: () => _pairs.first,
+      )
+      .data;
+
   @override
-  Widget build(BuildContext context) => Widgetbook(
-        directories: directories,
-        appBuilder: (_, child) => child,
-        // Chrome stays Blackout-dark regardless of preview theme — the nav
-        // surface is the constant the user navigates against.
-        lightTheme: _chromeTheme,
-        darkTheme: _chromeTheme,
-        themeMode: ThemeMode.dark,
-        // Branded sidebar header — surfaces theme switcher + brightness toggle
-        // as first-class chrome instead of burying them in the Addons tab.
-        header: VisorHeader(
-          pairs: _pairs,
-          brightnessNotifier: _brightnessNotifier,
-          prefs: widget.prefs,
-        ),
-        // Intro screen for the empty-state view (no use case selected).
-        home: const VisorHome(),
-        integrations: [_persistence],
-        addons: [
-          ThemeAddon<VisorThemePair>(
-            themes: _pairs,
-            initialTheme: _initialPair,
-            themeBuilder: (context, pair, child) =>
-                ValueListenableBuilder<ThemeMode>(
-              valueListenable: _brightnessNotifier,
-              builder: (ctx, mode, _) => MaterialApp(
-                debugShowCheckedModeBanner: false,
-                theme: buildPreviewTheme(pair.light),
-                darkTheme: buildPreviewTheme(pair.dark),
-                themeMode: mode,
-                home: VisorPreviewShell(child: child),
-              ),
-            ),
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: Listenable.merge([_themeLabel, _brightness]),
+      builder: (ctx, _) {
+        final pair = _activePair();
+        final mode = _brightness.value;
+        // Chrome adapts to the active theme + brightness — sidebar, header,
+        // nav tree, and addon panels all reflect the user's selection.
+        final chromeBase = mode == ThemeMode.light ? pair.light : pair.dark;
+        final chromeTheme = applySatoshi(chromeBase);
+
+        return Widgetbook(
+          directories: directories,
+          // appBuilder wraps each preview in a MaterialApp using the same
+          // notifiers — single source of truth for both chrome and preview.
+          appBuilder: (_, child) => MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: buildPreviewTheme(pair.light),
+            darkTheme: buildPreviewTheme(pair.dark),
+            themeMode: mode,
+            home: VisorPreviewShell(child: child),
           ),
-        ],
-      );
+          lightTheme: chromeTheme,
+          darkTheme: chromeTheme,
+          themeMode: mode,
+          header: VisorHeader(
+            pairs: _pairs,
+            themeLabel: _themeLabel,
+            brightness: _brightness,
+          ),
+          home: const VisorHome(),
+        );
+      },
+    );
+  }
 }
 
 /// Wraps each preview in a theme-aware [Scaffold] whose backdrop reads the
-/// active theme's `VisorColorsData.surfacePage`. Chrome controls (theme
-/// dropdown, brightness toggle) live in [VisorHeader], so this shell stays
-/// focused on the preview canvas.
+/// active theme's `VisorColorsData.surfacePage`.
 class VisorPreviewShell extends StatelessWidget {
   const VisorPreviewShell({super.key, required this.child});
 

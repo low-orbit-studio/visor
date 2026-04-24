@@ -1,11 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:visor_themes/visor_themes.dart';
 import 'package:widgetbook/widgetbook.dart';
-
-import '../theme/widgetbook_theme.dart';
 
 /// Branded sidebar header — logo + wordmark + brightness toggle stacked
 /// above a full-width theme dropdown. Surfaces the theme switcher as
@@ -14,13 +9,13 @@ class VisorHeader extends StatelessWidget {
   const VisorHeader({
     super.key,
     required this.pairs,
-    required this.brightnessNotifier,
-    required this.prefs,
+    required this.themeLabel,
+    required this.brightness,
   });
 
   final List<WidgetbookTheme<VisorThemePair>> pairs;
-  final ValueNotifier<ThemeMode> brightnessNotifier;
-  final SharedPreferences prefs;
+  final ValueNotifier<String> themeLabel;
+  final ValueNotifier<ThemeMode> brightness;
 
   @override
   Widget build(BuildContext context) {
@@ -40,76 +35,86 @@ class VisorHeader extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Expanded(child: _Wordmark()),
-              _BrightnessToggle(
-                notifier: brightnessNotifier,
-                prefs: prefs,
-              ),
+              const Expanded(child: _HomeWordmark()),
+              _BrightnessToggle(notifier: brightness),
             ],
           ),
           const SizedBox(height: 18),
-          _ThemeDropdown(pairs: pairs),
+          _ThemeDropdown(pairs: pairs, themeLabel: themeLabel),
         ],
       ),
     );
   }
 }
 
-/// Logo + "Visor." wordmark.
-class _Wordmark extends StatelessWidget {
-  const _Wordmark();
+/// Logo + "Visor." wordmark — clickable, navigates back to the home view
+/// (clears the active use-case path so the intro screen is shown).
+class _HomeWordmark extends StatelessWidget {
+  const _HomeWordmark();
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<VisorColorsData>();
     final textColor = colors?.textPrimary ?? Colors.white;
+    final state = WidgetbookState.maybeOf(context);
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Image.asset(
-          'assets/visor-logo.png',
-          width: 28,
-          height: 28,
-          filterQuality: FilterQuality.medium,
-        ),
-        const SizedBox(width: 10),
-        Text(
-          'Visor.',
-          style: TextStyle(
-            fontFamily: 'Satoshi',
-            fontWeight: FontWeight.w700,
-            fontSize: 20,
-            letterSpacing: -0.5,
-            color: textColor,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(6),
+        onTap: state == null ? null : () => _goHome(state),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                'assets/visor-logo.png',
+                width: 28,
+                height: 28,
+                filterQuality: FilterQuality.medium,
+              ),
+              const SizedBox(width: 10),
+              Text(
+                'Visor.',
+                style: TextStyle(
+                  fontFamily: 'Satoshi',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 20,
+                  letterSpacing: -0.5,
+                  color: textColor,
+                ),
+              ),
+            ],
           ),
         ),
-      ],
+      ),
     );
+  }
+
+  void _goHome(WidgetbookState state) {
+    // Clearing the path makes WidgetbookState.useCase resolve to null, which
+    // surfaces the configured home widget (VisorHome). updatePath is marked
+    // @internal but is the only public lever the package exposes for path
+    // navigation; using it from chrome code is the documented escape hatch.
+    // ignore: invalid_use_of_internal_member
+    state.updatePath('');
   }
 }
 
-/// Full-width dropdown that drives the [ThemeAddon] via
-/// [WidgetbookState.updateQueryField]. Items grouped by Visor stock vs
-/// Custom themes with disabled section headers.
+/// Full-width dropdown that reads from + writes to the [themeLabel] notifier.
+/// Items grouped by Visor stock vs Custom themes via disabled section headers.
 class _ThemeDropdown extends StatelessWidget {
-  const _ThemeDropdown({required this.pairs});
+  const _ThemeDropdown({required this.pairs, required this.themeLabel});
 
   final List<WidgetbookTheme<VisorThemePair>> pairs;
-
-  String _currentLabel(WidgetbookState state) {
-    final raw = state.queryParams['theme'];
-    if (raw == null) return pairs.first.name;
-    final group = FieldCodec.decodeQueryGroup(raw);
-    return group['name'] ?? pairs.first.name;
-  }
+  final ValueNotifier<String> themeLabel;
 
   /// Strips "Visor / " or "Custom / " prefix to get the display name.
   String _displayName(String fullName) => fullName.split(' / ').last;
 
   @override
   Widget build(BuildContext context) {
-    final state = WidgetbookState.of(context);
     final colors = Theme.of(context).extension<VisorColorsData>();
     final textColor = colors?.textPrimary ?? Colors.white;
     final tertiaryColor = colors?.textTertiary ?? Colors.white60;
@@ -117,10 +122,9 @@ class _ThemeDropdown extends StatelessWidget {
     final borderColor = colors?.borderDefault ?? Colors.white12;
     final overlayColor = colors?.surfaceOverlay ?? Colors.black;
 
-    return ListenableBuilder(
-      listenable: state,
-      builder: (ctx, _) {
-        final current = _currentLabel(state);
+    return ValueListenableBuilder<String>(
+      valueListenable: themeLabel,
+      builder: (ctx, current, _) {
         final selected = pairs.any((p) => p.name == current)
             ? current
             : pairs.first.name;
@@ -147,33 +151,10 @@ class _ThemeDropdown extends StatelessWidget {
                 fontSize: 14,
                 color: textColor,
               ),
-              // Closed-state rendering: show only the display name. The
-              // groupless presentation reads cleanly in a narrow sidebar
-              // and keeps long names from being clipped by a prefix column.
-              selectedItemBuilder: (ctx) => pairs
-                  .map((p) => Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          _displayName(p.name),
-                          style: TextStyle(
-                            fontFamily: 'Satoshi',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: textColor,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      ))
-                  .toList(),
               items: _buildItems(textColor, tertiaryColor),
               onChanged: (value) {
                 if (value == null) return;
-                state.updateQueryField(
-                  group: 'theme',
-                  field: 'name',
-                  value: value,
-                );
+                themeLabel.value = value;
               },
             ),
           ),
@@ -182,11 +163,13 @@ class _ThemeDropdown extends StatelessWidget {
     );
   }
 
-  /// Builds dropdown items with disabled section headers between Visor
-  /// stock and Custom themes — modeled on the docs site sidebar grouping.
+  /// Items list with disabled "VISOR" and "CUSTOM" section headers between
+  /// stock and custom themes — modeled on the docs site sidebar grouping.
   List<DropdownMenuItem<String>> _buildItems(Color text, Color tertiary) {
-    final visorPairs = pairs.where((p) => p.name.startsWith('Visor / ')).toList();
-    final customPairs = pairs.where((p) => p.name.startsWith('Custom / ')).toList();
+    final visorPairs =
+        pairs.where((p) => p.name.startsWith('Visor / ')).toList();
+    final customPairs =
+        pairs.where((p) => p.name.startsWith('Custom / ')).toList();
 
     DropdownMenuItem<String> sectionHeader(String label) =>
         DropdownMenuItem<String>(
@@ -236,22 +219,9 @@ class _ThemeDropdown extends StatelessWidget {
 /// Sun + moon ghost icons, separated by a small gap. No surrounding pill —
 /// keeps visual weight low so the wordmark stays the focal point.
 class _BrightnessToggle extends StatelessWidget {
-  const _BrightnessToggle({
-    required this.notifier,
-    required this.prefs,
-  });
+  const _BrightnessToggle({required this.notifier});
 
   final ValueNotifier<ThemeMode> notifier;
-  final SharedPreferences prefs;
-
-  void _setMode(ThemeMode next) {
-    if (notifier.value == next) return;
-    notifier.value = next;
-    unawaited(prefs.setString(
-      kVisorWidgetbookBrightnessPrefsKey,
-      next == ThemeMode.dark ? 'dark' : 'light',
-    ));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -272,7 +242,11 @@ class _BrightnessToggle extends StatelessWidget {
               active: isLight,
               activeColor: activeColor,
               inactiveColor: inactiveColor,
-              onPressed: () => _setMode(ThemeMode.light),
+              onPressed: () {
+                if (notifier.value != ThemeMode.light) {
+                  notifier.value = ThemeMode.light;
+                }
+              },
             ),
             const SizedBox(width: 4),
             _ToggleIcon(
@@ -281,7 +255,11 @@ class _BrightnessToggle extends StatelessWidget {
               active: !isLight,
               activeColor: activeColor,
               inactiveColor: inactiveColor,
-              onPressed: () => _setMode(ThemeMode.dark),
+              onPressed: () {
+                if (notifier.value != ThemeMode.dark) {
+                  notifier.value = ThemeMode.dark;
+                }
+              },
             ),
           ],
         );
