@@ -1,0 +1,24 @@
+name: SettingsTile
+description: >-
+  List-tile navigation primitive for settings screens and sidebar navigation.
+  Provides a leading icon, label, optional subtitle, flexible trailing slot
+  (defaults to a chevron caret), destructive variant, and selected state.
+category: navigation
+
+when_to_use:
+  - Settings screen rows (account, notifications, privacy, etc.)
+  - Sidebar navigation items
+  - Any list-style navigation where a label, icon, and tap action are needed
+  - Destructive actions that need visual emphasis in a list (sign out, delete)
+
+when_not_to_use:
+  - Data-dense tables — use a table component
+  - Selectable list items with checkboxes — use a list with CheckboxListTile
+  - Top-level navigation tabs — use NavigationBar or TabBar
+
+files:
+  - components/flutter/visor_settings_tile/visor_settings_tile.dart
+  - components/flutter/visor_settings_tile/visor_settings_tile_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }
