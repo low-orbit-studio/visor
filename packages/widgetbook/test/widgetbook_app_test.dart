@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:visor_themes/visor_themes.dart';
 import 'package:visor_widgetbook/persistence.dart';
 import 'package:visor_widgetbook/theme/widgetbook_theme.dart';
 import 'package:widgetbook/widgetbook.dart';
@@ -11,10 +12,14 @@ const Key _probeKey = Key('theme-probe');
 /// Builds a minimal [Widgetbook] harness with the same ThemeAddon wiring as
 /// [VisorWidgetbookApp] but with a single stub use case (the "probe") so tests
 /// stay hermetic and avoid depending on generated directories.
+///
+/// [themeMode] is fixed to [ThemeMode.dark] by default so tests that compare
+/// primary colors work deterministically without a brightness toggle.
 Widgetbook _buildHarness({
-  required List<WidgetbookTheme<ThemeData>> entries,
+  required List<WidgetbookTheme<VisorThemePair>> entries,
   required String initialLabel,
   List<WidgetbookIntegration>? integrations,
+  ThemeMode themeMode = ThemeMode.dark,
 }) {
   final initial = entries.firstWhere(
     (e) => e.name == initialLabel,
@@ -37,12 +42,14 @@ Widgetbook _buildHarness({
     appBuilder: (_, child) => child,
     integrations: integrations,
     addons: [
-      ThemeAddon<ThemeData>(
+      ThemeAddon<VisorThemePair>(
         themes: entries,
         initialTheme: initial,
-        themeBuilder: (context, theme, child) => MaterialApp(
+        themeBuilder: (context, pair, child) => MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: theme,
+          theme: pair.light,
+          darkTheme: pair.dark,
+          themeMode: themeMode,
           home: Material(child: child),
         ),
       ),
@@ -68,9 +75,9 @@ void main() {
     testWidgets(
         'selecting a different theme changes ColorScheme.primary in the use case',
         (tester) async {
-      final entries = buildVisorThemeEntries();
-      const labelA = 'Visor / Blackout — Dark';
-      const labelB = 'Visor / Neutral — Light';
+      final entries = buildVisorThemePairs();
+      const labelA = 'Visor / Blackout';
+      const labelB = 'Visor / Neutral';
 
       await tester.pumpWidget(_buildHarness(
         entries: entries,
@@ -104,25 +111,25 @@ void main() {
     testWidgets(
         'initialTheme from persisted label sets first-frame theme independently '
         'of reorderForInitial', (tester) async {
-      const persistedLabel = 'Custom / Veronica — Light';
-      final entries = buildVisorThemeEntries();
+      const persistedLabel = 'Custom / Veronica';
+      final entries = buildVisorThemePairs();
 
-      // Derive the expected primary color directly from the entry's ThemeData.
+      // Derive the expected primary color directly from the entry's pair.
       final veronicaEntry =
           entries.firstWhere((e) => e.name == persistedLabel);
       final defaultEntry =
           entries.firstWhere((e) => e.name == kDefaultVisorWidgetbookTheme);
 
-      // Sanity: these two themes must have different primaries for the test to
-      // be meaningful.
+      // Sanity: these two themes must have different dark primaries for the test
+      // to be meaningful.
       expect(
-        veronicaEntry.data.colorScheme.primary,
-        isNot(equals(defaultEntry.data.colorScheme.primary)),
+        veronicaEntry.data.dark.colorScheme.primary,
+        isNot(equals(defaultEntry.data.dark.colorScheme.primary)),
         reason: 'Veronica and Blackout must differ in primary for this test '
             'to be meaningful',
       );
 
-      // Pump with initialLabel = Veronica Light; the probe must show its primary.
+      // Pump with initialLabel = Veronica; the probe must show its dark primary.
       await tester.pumpWidget(_buildHarness(
         entries: entries,
         initialLabel: persistedLabel,
@@ -134,10 +141,10 @@ void main() {
 
       expect(
         actualPrimary,
-        equals(veronicaEntry.data.colorScheme.primary),
+        equals(veronicaEntry.data.dark.colorScheme.primary),
         reason:
             'First-frame theme was not driven by initialTheme — '
-            'MaterialApp.theme did not reflect the persisted label',
+            'MaterialApp.darkTheme did not reflect the persisted label',
       );
     });
   });
@@ -147,9 +154,9 @@ void main() {
         'onChange persists new theme label to SharedPreferences when selection changes',
         (tester) async {
       final prefs = await SharedPreferences.getInstance();
-      final entries = buildVisorThemeEntries();
-      const initialLabel = 'Visor / Blackout — Dark';
-      const newLabel = 'Custom / Veronica — Light';
+      final entries = buildVisorThemePairs();
+      const initialLabel = kDefaultVisorWidgetbookTheme;
+      const newLabel = 'Custom / Veronica';
 
       final integration = VisorThemePersistenceIntegration(
         prefs: prefs,

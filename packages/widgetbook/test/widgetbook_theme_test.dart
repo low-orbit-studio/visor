@@ -14,12 +14,8 @@ void main() {
       expect(buildVisorThemeEntries(), hasLength(22));
     });
 
-    test('first entry is the default: Visor / Blackout — Dark', () {
-      expect(
-        buildVisorThemeEntries().first.name,
-        kDefaultVisorWidgetbookTheme,
-      );
-      expect(kDefaultVisorWidgetbookTheme, 'Visor / Blackout — Dark');
+    test('first entry is Visor / Blackout — Dark', () {
+      expect(buildVisorThemeEntries().first.name, 'Visor / Blackout — Dark');
     });
 
     test('all stock (Visor /) entries precede all custom (Custom /) entries',
@@ -104,6 +100,37 @@ void main() {
     });
   });
 
+  group('buildVisorThemePairs()', () {
+    test('produces exactly 11 entries (one per theme)', () {
+      expect(buildVisorThemePairs(), hasLength(11));
+    });
+
+    test('first entry matches kDefaultVisorWidgetbookTheme', () {
+      expect(buildVisorThemePairs().first.name, kDefaultVisorWidgetbookTheme);
+      expect(kDefaultVisorWidgetbookTheme, 'Visor / Blackout');
+    });
+
+    test('labels follow the "{Group} / {Name}" format (no mode suffix)', () {
+      final pattern = RegExp(r'^(Visor|Custom) \/ .+$');
+      for (final entry in buildVisorThemePairs()) {
+        expect(pattern.hasMatch(entry.name), isTrue,
+            reason: 'Label "${entry.name}" does not match format');
+        expect(entry.name.contains(' — '), isFalse,
+            reason: 'Pair label must not include a mode suffix');
+      }
+    });
+
+    test('all stock (Visor /) entries precede all custom (Custom /) entries',
+        () {
+      final names = buildVisorThemePairs().map((e) => e.name).toList();
+      final lastVisor = names.lastIndexWhere((n) => n.startsWith('Visor / '));
+      final firstCustom = names.indexWhere((n) => n.startsWith('Custom / '));
+      expect(lastVisor, greaterThanOrEqualTo(0));
+      expect(firstCustom, greaterThanOrEqualTo(0));
+      expect(lastVisor, lessThan(firstCustom));
+    });
+  });
+
   group('persistence', () {
     test('SharedPreferences round-trips the theme label', () async {
       final prefs = await SharedPreferences.getInstance();
@@ -143,9 +170,10 @@ void main() {
 
     test('is a no-op when the label is already at index 0', () {
       final entries = buildVisorThemeEntries();
-      final reordered =
-          reorderForInitial(entries, kDefaultVisorWidgetbookTheme);
-      expect(reordered.first.name, kDefaultVisorWidgetbookTheme);
+      // 'Visor / Blackout — Dark' is always the first entry.
+      const firstLabel = 'Visor / Blackout — Dark';
+      final reordered = reorderForInitial(entries, firstLabel);
+      expect(reordered.first.name, firstLabel);
       expect(reordered, hasLength(entries.length));
     });
   });

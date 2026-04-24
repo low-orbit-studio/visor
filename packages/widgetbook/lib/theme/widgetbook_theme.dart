@@ -5,9 +5,12 @@ import 'package:widgetbook/widgetbook.dart';
 /// SharedPreferences key for the persisted widgetbook theme selection.
 const String kVisorWidgetbookThemePrefsKey = 'visor-widgetbook-theme';
 
+/// SharedPreferences key for the persisted widgetbook brightness mode.
+const String kVisorWidgetbookBrightnessPrefsKey = 'visor-widgetbook-brightness';
+
 /// Default theme label used on first load and when a persisted label
 /// no longer exists in the current entry list.
-const String kDefaultVisorWidgetbookTheme = 'Visor / Blackout — Dark';
+const String kDefaultVisorWidgetbookTheme = 'Visor / Blackout';
 
 /// Theme slugs classified as "stock" (shipped with Visor core).
 /// Mirrors STOCK_THEMES in packages/tokens/src/generate/generate-css.ts.
@@ -81,6 +84,42 @@ List<WidgetbookTheme<ThemeData>> buildVisorThemeEntries() {
     ));
   }
   return entries;
+}
+
+/// Builds the 11-entry theme pair list for the widgetbook addon.
+///
+/// Each entry holds a [VisorThemePair] so a separate brightness toggle can
+/// switch between light and dark without changing the selected theme.
+///
+/// Ordering:
+///   1. Stock themes (group "Visor") before custom themes (group "Custom")
+///   2. Alphabetical by display name within each group
+///
+/// Labels follow the format `"{Group} / {DisplayName}"`, e.g.
+/// `"Visor / Blackout"` or `"Custom / Veronica"`.
+List<WidgetbookTheme<VisorThemePair>> buildVisorThemePairs() {
+  final List<_ThemeRow> rows = <_ThemeRow>[];
+  _allThemes.forEach((slug, meta) {
+    final bool isStock = _stockThemeSlugs.contains(slug);
+    rows.add(_ThemeRow(
+      group: isStock ? 'Visor' : 'Custom',
+      isStock: isStock,
+      displayName: meta.displayName,
+      pair: meta.pair,
+    ));
+  });
+
+  rows.sort((a, b) {
+    if (a.isStock != b.isStock) return a.isStock ? -1 : 1;
+    return a.displayName.compareTo(b.displayName);
+  });
+
+  return rows
+      .map((row) => WidgetbookTheme<VisorThemePair>(
+            name: '${row.group} / ${row.displayName}',
+            data: row.pair,
+          ))
+      .toList();
 }
 
 /// Returns a copy of [entries] with the entry matching [label] moved to index 0,
