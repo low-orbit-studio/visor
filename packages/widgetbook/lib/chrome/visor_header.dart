@@ -7,12 +7,9 @@ import 'package:widgetbook/widgetbook.dart';
 
 import '../theme/widgetbook_theme.dart';
 
-/// Branded sidebar header — logo, "Visor." wordmark, theme dropdown, and
-/// brightness toggle. Surfaces the theme switcher as first-class chrome
-/// instead of leaving it buried in the Addons tab.
-///
-/// Mirrors the docs site sidebar treatment: logo+wordmark up top, theme
-/// selector immediately below, brightness toggle inline.
+/// Branded sidebar header — logo + wordmark + brightness toggle stacked
+/// above a full-width theme dropdown. Surfaces the theme switcher as
+/// first-class chrome instead of leaving it buried in the Addons tab.
 class VisorHeader extends StatelessWidget {
   const VisorHeader({
     super.key,
@@ -21,13 +18,8 @@ class VisorHeader extends StatelessWidget {
     required this.prefs,
   });
 
-  /// All available theme pairs — drives the dropdown contents.
   final List<WidgetbookTheme<VisorThemePair>> pairs;
-
-  /// Brightness toggle state — light/dark/system.
   final ValueNotifier<ThemeMode> brightnessNotifier;
-
-  /// SharedPreferences for persisting brightness changes.
   final SharedPreferences prefs;
 
   @override
@@ -36,30 +28,34 @@ class VisorHeader extends StatelessWidget {
     final borderColor = colors?.borderDefault ?? const Color(0x14FFFFFF);
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+      padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(color: borderColor, width: 1),
         ),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const _Wordmark(),
-          const SizedBox(height: 16),
-          _ThemeRow(
-            pairs: pairs,
-            brightnessNotifier: brightnessNotifier,
-            prefs: prefs,
+          Row(
+            children: [
+              const Expanded(child: _Wordmark()),
+              _BrightnessToggle(
+                notifier: brightnessNotifier,
+                prefs: prefs,
+              ),
+            ],
           ),
+          const SizedBox(height: 18),
+          _ThemeDropdown(pairs: pairs),
         ],
       ),
     );
   }
 }
 
-/// Logo + "Visor." wordmark stacked horizontally.
+/// Logo + "Visor." wordmark.
 class _Wordmark extends StatelessWidget {
   const _Wordmark();
 
@@ -69,6 +65,7 @@ class _Wordmark extends StatelessWidget {
     final textColor = colors?.textPrimary ?? Colors.white;
 
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Image.asset(
           'assets/visor-logo.png',
@@ -92,39 +89,9 @@ class _Wordmark extends StatelessWidget {
   }
 }
 
-/// Row containing the theme dropdown (left, fills) and brightness toggle (right).
-class _ThemeRow extends StatelessWidget {
-  const _ThemeRow({
-    required this.pairs,
-    required this.brightnessNotifier,
-    required this.prefs,
-  });
-
-  final List<WidgetbookTheme<VisorThemePair>> pairs;
-  final ValueNotifier<ThemeMode> brightnessNotifier;
-  final SharedPreferences prefs;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(child: _ThemeDropdown(pairs: pairs)),
-        const SizedBox(width: 8),
-        _BrightnessToggle(
-          notifier: brightnessNotifier,
-          prefs: prefs,
-        ),
-      ],
-    );
-  }
-}
-
-/// Dropdown that drives the [ThemeAddon] via [WidgetbookState.updateQueryField].
-///
-/// Single source of truth is `WidgetbookState.queryParams['theme']`, decoded
-/// via [FieldCodec]. Listening through [ListenableBuilder] keeps the dropdown
-/// in sync regardless of which surface (this dropdown, the Addons tab, or
-/// persistence restoration) drove the change.
+/// Full-width dropdown that drives the [ThemeAddon] via
+/// [WidgetbookState.updateQueryField]. Items grouped by Visor stock vs
+/// Custom themes with disabled section headers.
 class _ThemeDropdown extends StatelessWidget {
   const _ThemeDropdown({required this.pairs});
 
@@ -137,6 +104,9 @@ class _ThemeDropdown extends StatelessWidget {
     return group['name'] ?? pairs.first.name;
   }
 
+  /// Strips "Visor / " or "Custom / " prefix to get the display name.
+  String _displayName(String fullName) => fullName.split(' / ').last;
+
   @override
   Widget build(BuildContext context) {
     final state = WidgetbookState.of(context);
@@ -145,14 +115,19 @@ class _ThemeDropdown extends StatelessWidget {
     final tertiaryColor = colors?.textTertiary ?? Colors.white60;
     final fillColor = colors?.surfaceCard ?? Colors.white10;
     final borderColor = colors?.borderDefault ?? Colors.white12;
+    final overlayColor = colors?.surfaceOverlay ?? Colors.black;
 
     return ListenableBuilder(
       listenable: state,
       builder: (ctx, _) {
         final current = _currentLabel(state);
+        final selected = pairs.any((p) => p.name == current)
+            ? current
+            : pairs.first.name;
+
         return Container(
-          height: 36,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
+          height: 40,
+          padding: const EdgeInsets.symmetric(horizontal: 14),
           decoration: BoxDecoration(
             color: fillColor,
             borderRadius: BorderRadius.circular(8),
@@ -160,16 +135,37 @@ class _ThemeDropdown extends StatelessWidget {
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
-              value: pairs.any((p) => p.name == current) ? current : pairs.first.name,
+              value: selected,
               isExpanded: true,
               isDense: true,
               icon: Icon(Icons.expand_more, size: 18, color: tertiaryColor),
-              dropdownColor: colors?.surfaceOverlay ?? Colors.black,
+              dropdownColor: overlayColor,
+              borderRadius: BorderRadius.circular(8),
+              menuMaxHeight: 480,
               style: TextStyle(
                 fontFamily: 'Satoshi',
                 fontSize: 14,
                 color: textColor,
               ),
+              // Closed-state rendering: show only the display name. The
+              // groupless presentation reads cleanly in a narrow sidebar
+              // and keeps long names from being clipped by a prefix column.
+              selectedItemBuilder: (ctx) => pairs
+                  .map((p) => Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          _displayName(p.name),
+                          style: TextStyle(
+                            fontFamily: 'Satoshi',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: textColor,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ))
+                  .toList(),
               items: _buildItems(textColor, tertiaryColor),
               onChanged: (value) {
                 if (value == null) return;
@@ -186,53 +182,59 @@ class _ThemeDropdown extends StatelessWidget {
     );
   }
 
-  /// Builds dropdown items grouped by Visor / Custom with subtle group headers.
+  /// Builds dropdown items with disabled section headers between Visor
+  /// stock and Custom themes — modeled on the docs site sidebar grouping.
   List<DropdownMenuItem<String>> _buildItems(Color text, Color tertiary) {
-    final items = <DropdownMenuItem<String>>[];
-    String? lastGroup;
-    for (final pair in pairs) {
-      final group = pair.name.startsWith('Visor / ') ? 'Visor' : 'Custom';
-      final display = pair.name.split(' / ').last;
-      if (group != lastGroup) {
-        lastGroup = group;
-      }
-      items.add(DropdownMenuItem<String>(
-        value: pair.name,
-        child: Row(
-          children: [
-            SizedBox(
-              width: 56,
-              child: Text(
-                group,
-                style: TextStyle(
-                  fontFamily: 'Satoshi',
-                  fontSize: 11,
-                  color: tertiary,
-                  letterSpacing: 0.5,
-                ),
+    final visorPairs = pairs.where((p) => p.name.startsWith('Visor / ')).toList();
+    final customPairs = pairs.where((p) => p.name.startsWith('Custom / ')).toList();
+
+    DropdownMenuItem<String> sectionHeader(String label) =>
+        DropdownMenuItem<String>(
+          enabled: false,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 4),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontFamily: 'Satoshi',
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.2,
+                color: tertiary,
               ),
             ),
-            Expanded(
-              child: Text(
-                display,
-                style: TextStyle(
-                  fontFamily: 'Satoshi',
-                  fontSize: 14,
-                  color: text,
-                ),
-                overflow: TextOverflow.ellipsis,
+          ),
+        );
+
+    DropdownMenuItem<String> themeItem(WidgetbookTheme<VisorThemePair> p) =>
+        DropdownMenuItem<String>(
+          value: p.name,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: Text(
+              _displayName(p.name),
+              style: TextStyle(
+                fontFamily: 'Satoshi',
+                fontSize: 14,
+                color: text,
               ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             ),
-          ],
-        ),
-      ));
-    }
-    return items;
+          ),
+        );
+
+    return [
+      if (visorPairs.isNotEmpty) sectionHeader('VISOR'),
+      ...visorPairs.map(themeItem),
+      if (customPairs.isNotEmpty) sectionHeader('CUSTOM'),
+      ...customPairs.map(themeItem),
+    ];
   }
 }
 
-/// Sun/moon pill — same control that previously lived bottom-left, now inline
-/// with the theme dropdown so all chrome controls cluster in the header.
+/// Sun + moon ghost icons, separated by a small gap. No surrounding pill —
+/// keeps visual weight low so the wordmark stays the focal point.
 class _BrightnessToggle extends StatelessWidget {
   const _BrightnessToggle({
     required this.notifier,
@@ -256,41 +258,32 @@ class _BrightnessToggle extends StatelessWidget {
     final colors = Theme.of(context).extension<VisorColorsData>();
     final activeColor = colors?.textPrimary ?? Colors.white;
     final inactiveColor = colors?.textTertiary ?? Colors.white54;
-    final fillColor = colors?.surfaceCard ?? Colors.white10;
-    final borderColor = colors?.borderDefault ?? Colors.white12;
 
     return ValueListenableBuilder<ThemeMode>(
       valueListenable: notifier,
       builder: (ctx, mode, _) {
         final isLight = mode == ThemeMode.light;
-        return Container(
-          height: 36,
-          decoration: BoxDecoration(
-            color: fillColor,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: borderColor, width: 1),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _ToggleIcon(
-                icon: Icons.light_mode_outlined,
-                tooltip: 'Light mode',
-                active: isLight,
-                activeColor: activeColor,
-                inactiveColor: inactiveColor,
-                onPressed: () => _setMode(ThemeMode.light),
-              ),
-              _ToggleIcon(
-                icon: Icons.dark_mode_outlined,
-                tooltip: 'Dark mode',
-                active: !isLight,
-                activeColor: activeColor,
-                inactiveColor: inactiveColor,
-                onPressed: () => _setMode(ThemeMode.dark),
-              ),
-            ],
-          ),
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _ToggleIcon(
+              icon: Icons.light_mode_outlined,
+              tooltip: 'Light mode',
+              active: isLight,
+              activeColor: activeColor,
+              inactiveColor: inactiveColor,
+              onPressed: () => _setMode(ThemeMode.light),
+            ),
+            const SizedBox(width: 4),
+            _ToggleIcon(
+              icon: Icons.dark_mode_outlined,
+              tooltip: 'Dark mode',
+              active: !isLight,
+              activeColor: activeColor,
+              inactiveColor: inactiveColor,
+              onPressed: () => _setMode(ThemeMode.dark),
+            ),
+          ],
         );
       },
     );
@@ -318,13 +311,17 @@ class _ToggleIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tooltip(
       message: tooltip,
-      child: IconButton(
-        icon: Icon(icon, size: 16),
-        color: active ? activeColor : inactiveColor,
-        visualDensity: VisualDensity.compact,
-        constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-        padding: EdgeInsets.zero,
-        onPressed: onPressed,
+      child: SizedBox(
+        width: 32,
+        height: 32,
+        child: IconButton(
+          icon: Icon(icon, size: 18),
+          color: active ? activeColor : inactiveColor,
+          padding: EdgeInsets.zero,
+          splashRadius: 18,
+          hoverColor: active ? Colors.transparent : null,
+          onPressed: onPressed,
+        ),
       ),
     );
   }
