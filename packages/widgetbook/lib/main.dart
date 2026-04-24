@@ -1,10 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
 
+import 'persistence.dart';
 import 'theme/widgetbook_theme.dart';
 import 'main.directories.g.dart';
 
@@ -36,43 +35,39 @@ class VisorWidgetbookApp extends StatefulWidget {
 
 class _VisorWidgetbookAppState extends State<VisorWidgetbookApp> {
   late final List<WidgetbookTheme<ThemeData>> _entries;
-  String? _lastPersisted;
+  late final WidgetbookTheme<ThemeData> _initialEntry;
+  late final VisorThemePersistenceIntegration _persistence;
 
   @override
   void initState() {
     super.initState();
-    _entries = reorderForInitial(
-      buildVisorThemeEntries(),
-      widget.initialThemeLabel,
+    _entries = buildVisorThemeEntries();
+    _initialEntry = _entries.firstWhere(
+      (e) => e.name == widget.initialThemeLabel,
+      orElse: () => _entries.first,
     );
-    _lastPersisted = widget.initialThemeLabel;
+    _persistence = VisorThemePersistenceIntegration(
+      prefs: widget.prefs,
+      initialLabel: _initialEntry.name,
+    );
   }
 
   @override
-  Widget build(BuildContext context) => Widgetbook.material(
+  Widget build(BuildContext context) => Widgetbook(
         directories: directories,
+        appBuilder: (_, child) => child,
+        integrations: [_persistence],
         addons: [
           ThemeAddon<ThemeData>(
             themes: _entries,
-            themeBuilder: (context, theme, child) {
-              _persistActiveTheme(theme);
-              return Theme(data: theme, child: child);
-            },
+            initialTheme: _initialEntry,
+            themeBuilder: (context, theme, child) => MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: theme,
+              home: Material(child: child),
+            ),
           ),
         ],
       );
-
-  void _persistActiveTheme(ThemeData active) {
-    // Match by value equality: ThemeData overrides `==`, and identity is fragile
-    // if any VisorThemes getter returns a fresh instance per call.
-    final match = _entries.firstWhere(
-      (entry) => entry.data == active,
-      orElse: () => _entries.first,
-    );
-    if (match.name == _lastPersisted) return;
-    _lastPersisted = match.name;
-    unawaited(
-      widget.prefs.setString(kVisorWidgetbookThemePrefsKey, match.name),
-    );
-  }
 }
+
