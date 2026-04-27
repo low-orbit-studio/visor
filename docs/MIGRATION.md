@@ -5,6 +5,8 @@ This guide covers migrating to Visor from two common starting points:
 1. [From shadcn/ui](#migrating-from-shadcnui)
 2. [From kaiah-app's `@kaiah/ui`](#migrating-from-kaiah-apps-kaihui)
 
+For Flutter consumer-code migrations (SoleSpark, ENTR, Veronica `packages/ui/`), see the [Flutter UI ↔ Visor Rosetta Stone](./migration/flutter-ui-rosetta-stone.md) — a token-by-token translation reference.
+
 ---
 
 ## Migrating from shadcn/ui

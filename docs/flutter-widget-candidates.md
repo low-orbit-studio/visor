@@ -69,3 +69,5 @@ All three source repos are represented with ≥ 3 candidates each.
 - **ENTR** uses `Theme.of(context).colorScheme.*` — Material 3 token-aligned but not Visor-specific. Light refactor to `context.visorColors` pattern.
 - **Veronica** uses `context.colorway` extensions from its `ui` package — closest to Visor's `context.visorColors` extension pattern. Veronica candidates are the easiest to port.
 - **Visor target pattern** (per `visor_button.dart`): `context.visorColors`, `context.visorSpacing`, `context.visorTextStyles` extensions from `visor_core`.
+
+For exhaustive identifier-level mappings (every `UIColors.*`, `UISpacing.*`, etc. across all three repos → Visor equivalents), see the [Flutter UI ↔ Visor Rosetta Stone](./migration/flutter-ui-rosetta-stone.md). Use it during widget porting to skip per-file translation judgment calls.
