@@ -207,4 +207,8 @@ jobs:
           # discovers every `*_test.dart` file. Goldens are CI-only (Ahem font),
           # configured in flutter_test_config.dart.
           dirs=$(find . -maxdepth 1 -mindepth 1 -type d -name 'visor_*' | sort)
+          if [ -z "$dirs" ]; then
+            echo "::error::No visor_* widget directories found under components/flutter/"
+            exit 1
+          fi
           flutter test $dirs
