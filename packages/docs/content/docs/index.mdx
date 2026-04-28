@@ -29,15 +29,28 @@ All components reference CSS custom properties, never hard-coded values. Themes 
 
 ## Getting Started
 
-### Option A: Next.js (recommended)
+### One command. Runnable Next.js app. Borealis-native.
 
-Initialize Visor with the Next.js template — this creates `visor.json`, `.visor.yaml`, and `app/globals.css` with all design tokens generated inline. No npm token package required.
+In an empty directory, run:
 
 ```bash
 npx @loworbitstudio/visor init --template nextjs
 ```
 
-Then add your first component:
+That single command scaffolds a complete, runnable Next.js App Router project with:
+
+- `package.json` plus `@loworbitstudio/visor-core` and `@loworbitstudio/visor-theme-engine` already installed
+- `app/layout.tsx` wired with FOWT prevention and `globals.css` import
+- `app/globals.css` generated from `.visor.yaml` via the Next.js adapter
+- `.lo/borealis.json` stamp with the Visor version that initialized the project
+
+Then start the dev server:
+
+```bash
+cd my-app && npm run dev
+```
+
+Add your first component:
 
 ```bash
 npx visor add button
@@ -45,9 +58,11 @@ npx visor add button
 
 That's it. The component source lands in your project and you own it.
 
-### Option B: Manual setup
+> **Heads up:** `--template nextjs` only scaffolds into empty directories. For an existing app, use Manual Setup below.
 
-For non-Next.js projects or custom token management:
+### Manual setup (non-Next.js or retrofit)
+
+For non-Next.js projects, or to retrofit Visor into an existing app:
 
 ```bash
 npx @loworbitstudio/visor init

@@ -21,18 +21,39 @@ npx @loworbitstudio/visor init
 
 | Flag | Description |
 |------|-------------|
-| `--template nextjs` | Scaffold a themed Next.js project (creates `.visor.yaml` + `app/globals.css`) |
+| `--template nextjs` | Scaffold a complete runnable Borealis-native Next.js app in one command |
+| `--json` | Emit structured JSON for AI agents — `success`, `files.created`, `nextSteps` |
 
-**Template scaffolding:**
+**Template scaffolding (one-command flow):**
+
+In an empty directory:
 
 ```bash
 npx @loworbitstudio/visor init --template nextjs
 ```
 
-This creates:
-- `visor.json` — path configuration
-- `.visor.yaml` — starter theme (customize your brand colors here)
-- `app/globals.css` — generated theme CSS via the NextJS adapter
+This shells out to `create-next-app` with pinned flags, then layers Visor on top to produce a runnable app:
+
+| File | Source | Purpose |
+|------|--------|---------|
+| `package.json` | create-next-app + visor deps | `next`, `react`, TypeScript, plus `@loworbitstudio/visor-core` and `@loworbitstudio/visor-theme-engine` |
+| `app/page.tsx` | create-next-app | Default page |
+| `app/layout.tsx` | Visor (overwrites default) | Imports `globals.css` and injects `FOWT_SCRIPT` inline in `<head>` |
+| `app/globals.css` | Visor adapter | CSS custom properties generated from `.visor.yaml` |
+| `.visor.yaml` | Visor starter | Editable theme — colors, typography, radius, shadows |
+| `tsconfig.json`, `next.config.ts`, `.gitignore` | create-next-app | Standard scaffolding |
+| `.lo/borealis.json` | Visor | Stamp recording the Visor version that initialized the project |
+| `visor.json` | Visor | CLI path configuration |
+
+After it finishes:
+
+```bash
+cd my-app && npm run dev
+```
+
+The dev server starts immediately — no FOWT flash on hard reload, no missing tokens, no extra setup steps.
+
+> `--template nextjs` refuses if `package.json` already exists in the target directory. To retrofit an existing app, see the [Migration Guide](/docs/guides/migration).
 
 Default config:
 
@@ -211,18 +232,21 @@ npx @loworbitstudio/visor theme export .visor.yaml
 ## Typical Workflow
 
 ```bash
-# 1. Set up (Next.js — generates tokens inline)
+# 1. Scaffold a complete runnable Borealis-native Next.js app
 npx @loworbitstudio/visor init --template nextjs
 
-# 2. Add components
+# 2. Start the dev server
+npm run dev
+
+# 3. Add components
 npx @loworbitstudio/visor add button card input
 
-# 3. Customize freely — you own the files
+# 4. Customize freely — you own the files
 
-# 4. Later, check for upstream updates
+# 5. Later, check for upstream updates
 npx @loworbitstudio/visor diff
 
-# 5. Pull updates for specific components
+# 6. Pull updates for specific components
 npx @loworbitstudio/visor add button --overwrite
 ```
 
@@ -236,7 +260,7 @@ of `@loworbitstudio/visor-core`.
 
 **Workarounds:**
 
-1. **Use `--template nextjs` (recommended)** — generates all tokens inline in `app/globals.css`. No package import required.
+1. **Use `--template nextjs` (recommended)** — the scaffolded `app/globals.css` is generated inline by the Next.js adapter. No CSS `@import` of `@loworbitstudio/visor-core` is required, so Turbopack's symlink resolver never enters the picture.
 
    ```bash
    npx @loworbitstudio/visor init --template nextjs

@@ -36,8 +36,8 @@ program.addCommand(checkCommand())
 
 program
   .command("init")
-  .description("Initialize Visor in the current project")
-  .option("--template <name>", "scaffold a themed project (nextjs)")
+  .description("Initialize Visor — with --template nextjs, scaffolds a complete runnable Borealis-native Next.js app in one command")
+  .option("--template <name>", "scaffold a complete runnable app (templates: nextjs)")
   .option("--json", "output structured JSON (for AI agents)")
   .action((options: { template?: string; json?: boolean }) => {
     initCommand(process.cwd(), options)
