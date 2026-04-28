@@ -1,0 +1,22 @@
+name: LoadingDots
+description: Three-dot animated loading indicator with staggered wave pulse and reduce-motion support.
+category: feedback
+
+when_to_use:
+  - Soft, brand-friendly loading state as an alternative to a spinner
+  - Inline loading indicators inside chat bubbles, text areas, or compact UI slots
+  - Processing states where a gentle animation conveys progress without urgency
+  - Any context where animation must respect the system reduce-motion preference
+
+when_not_to_use:
+  - Full-page loading states where a skeleton screen better preserves layout
+  - Determinate progress (known completion percentage) — use LinearProgressIndicator with a value
+  - Contexts where a spinner (VisorLoadingIndicator) is more conventional (e.g. async buttons)
+  - Replacing button content during loading — use VisorButton's isLoading prop instead
+
+files:
+  - components/flutter/visor_loading_dots/visor_loading_dots.dart
+  - components/flutter/visor_loading_dots/visor_loading_dots_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }
