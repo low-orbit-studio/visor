@@ -161,5 +161,81 @@ void main() {
       );
       expect(find.byType(VisorOtpInput), findsOneWidget);
     });
+
+    // R6 — per-cell + container Semantics (VI-253)
+
+    testWidgets('row Semantics container has default label including digit count',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorOtpInput(onCodeComplete: (_) {})),
+      );
+      expect(find.bySemanticsLabel('OTP code, 6 digits'), findsOneWidget);
+      handle.dispose();
+    });
+
+    testWidgets('per-digit Semantics labels include position and value',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorOtpInput(onCodeComplete: (_) {})),
+      );
+
+      // All cells start empty with position-aware labels.
+      expect(
+        find.bySemanticsLabel('OTP digit 1 of 6, empty'),
+        findsOneWidget,
+      );
+      expect(
+        find.bySemanticsLabel('OTP digit 6 of 6, empty'),
+        findsOneWidget,
+      );
+
+      // Fill digit at index 2 with '7'; label should reflect the value.
+      final fields = find.byType(TextField);
+      await tester.tap(fields.at(2));
+      await tester.pump();
+      await tester.enterText(fields.at(2), '7');
+      await tester.pump();
+
+      expect(
+        find.bySemanticsLabel('OTP digit 3 of 6, 7'),
+        findsOneWidget,
+      );
+      // Untouched cells still report empty with their position.
+      expect(
+        find.bySemanticsLabel('OTP digit 1 of 6, empty'),
+        findsOneWidget,
+      );
+      handle.dispose();
+    });
+
+    testWidgets('semanticLabel param overrides container label',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorOtpInput(
+          semanticLabel: 'Two-factor code',
+          onCodeComplete: (_) {},
+        )),
+      );
+      expect(find.bySemanticsLabel('Two-factor code'), findsOneWidget);
+      expect(find.bySemanticsLabel('OTP code, 6 digits'), findsNothing);
+      handle.dispose();
+    });
+
+    // R11 — meetsGuideline tap-target + labeled-tap-target (VI-253)
+
+    testWidgets(
+        'default 6-digit input meets Android tap-target + labeled-tap-target guidelines',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorOtpInput(onCodeComplete: (_) {})),
+      );
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      handle.dispose();
+    });
   });
 }
