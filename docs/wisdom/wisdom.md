@@ -28,6 +28,7 @@ For global wisdom (universal lessons): [`~/Code/low-orbit/low-orbit-playbook/roo
 | W017 | `npx vitest run` bypasses npm's `pretest` hook — run it explicitly in CI | testing, vitest, ci, npm, hooks | [W017](W017-npx-vitest-skips-pretest.md) |
 | W018 | Flutter widget quality baseline — use built-in `meetsGuideline()`; never adopt `golden_toolkit` (discontinued); use `alchemist` for goldens | flutter, testing, a11y, golden, contract | [W018](W018-flutter-widget-contract-baseline.md) |
 | W019 | Alchemist CI goldens must be baselined on Linux (Docker workaround for macOS contributors) | flutter, testing, golden, alchemist, ci, docker | [W019](W019-alchemist-goldens-must-baseline-on-linux.md) |
+| W020 | Workspace symlinks mask publish-coordination drift — `^X.Y.Z` doesn't pin to local source | monorepo, npm, publish, changesets, semver, workspaces | [W020](W020-publish-coordination-drift.md) |
 
 ## Adding Entries
 
