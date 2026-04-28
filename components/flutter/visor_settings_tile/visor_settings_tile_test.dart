@@ -155,5 +155,54 @@ void main() {
         findsOneWidget,
       );
     });
+
+    // R11 — tap-target size (meetsGuideline)
+    testWidgets('default tile meets Android tap target guideline',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorSettingsTile(
+          icon: Icons.person_outline,
+          label: 'Account',
+          onTap: () {},
+        )),
+      );
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('tile with subtitle meets Android tap target guideline',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorSettingsTile(
+          icon: Icons.person_outline,
+          label: 'Account',
+          subtitle: 'Manage your profile',
+          onTap: () {},
+        )),
+      );
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      handle.dispose();
+    });
+
+    testWidgets(
+        'tile with custom Switch trailing meets Android tap target guideline',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorSettingsTile(
+          icon: Icons.notifications_outlined,
+          label: 'Push notifications',
+          trailing: Switch(value: true, onChanged: (_) {}),
+          onTap: null,
+        )),
+      );
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      handle.dispose();
+    });
   });
 }
