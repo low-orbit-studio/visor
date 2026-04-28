@@ -1,0 +1,24 @@
+name: Avatar
+description: A circular avatar component with image display and fallback support for initials or icons.
+category: data-display
+
+when_to_use:
+  - User profile pictures in headers, comments, or lists
+  - Participant indicators in collaborative interfaces
+  - Contact or team member thumbnails
+  - Any place a person or entity needs a visual representation
+
+when_not_to_use:
+  - Decorative illustrations or product images (use a plain img element)
+  - Logo display (use NavbarBrand or a dedicated logo component)
+  - Icon buttons (use Button with an icon)
+  - Large hero images or banners (use a custom image layout)
+
+files:
+  - components/flutter/visor_avatar/visor_avatar.dart
+  - components/flutter/visor_avatar/visor_avatar_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }
+  - { pub: cached_network_image, version: "^3.4.1" }
+  - { pub: phosphor_flutter, version: "^2.1.0" }
