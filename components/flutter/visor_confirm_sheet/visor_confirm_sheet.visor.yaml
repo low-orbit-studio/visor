@@ -1,0 +1,22 @@
+name: ConfirmSheet
+description: Adaptive confirmation surface — bottom sheet on mobile, dialog on wider viewports — with standard and destructive variants.
+category: feedback
+
+when_to_use:
+  - Confirming a user-initiated action before it executes (e.g. archive, submit, publish)
+  - Gating irreversible or destructive actions behind an explicit confirmation step (e.g. delete, revoke, remove)
+  - Presenting a short confirmation on mobile as a bottom sheet and on tablet/desktop as a dialog automatically
+
+when_not_to_use:
+  - Simple one-tap notifications or status updates (use VisorSnackBar instead)
+  - Multi-step forms or flows requiring more than a title + message (use a full modal form)
+  - Blocking errors or system-level interruptions (use an alert dialog)
+  - Any scenario where the user cannot cancel — confirmations must always be cancellable
+
+files:
+  - components/flutter/visor_confirm_sheet/visor_confirm_sheet.dart
+  - components/flutter/visor_confirm_sheet/visor_confirm_sheet_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }
+  - { pub: phosphor_flutter, version: "^2.1.0" }
