@@ -1,0 +1,22 @@
+name: Chip
+description: Selectable chip primitive for suggestion, tag, and filter patterns with selected/unselected states and size variants. Maps to React ToggleGroup.
+category: form
+
+when_to_use:
+  - Displaying filterable tag or category options the user can toggle on/off
+  - Suggestion rows (search autocomplete, style recommendations)
+  - Multi-select filter bars where individual options are toggled independently
+  - Any UI pattern that maps to a "toggle group" of labelled options
+
+when_not_to_use:
+  - Single binary toggle (use Switch or Checkbox)
+  - Navigation tabs or route selectors (use TabBar)
+  - Dismissible labels that can be removed from a list (use a deletable tag/badge)
+  - Triggering an action rather than selecting a state (use Button)
+
+files:
+  - components/flutter/visor_chip/visor_chip.dart
+  - components/flutter/visor_chip/visor_chip_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }
