@@ -17,6 +17,9 @@ dependencies:
     path: ../../packages/visor-flutter
   cached_network_image: ^3.4.1
   phosphor_flutter: ^2.1.0
+  # Required by visor_phone_input — country picker UI + libphonenumber parsing.
+  country_code_picker: ^3.0.0
+  flutter_libphonenumber: ^2.4.0
 
 dev_dependencies:
   flutter_test:

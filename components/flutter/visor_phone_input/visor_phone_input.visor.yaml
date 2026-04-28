@@ -1,0 +1,25 @@
+name: phone-input
+description: International phone-number input with country picker, libphonenumber-backed formatting, and validation states matching visor_text_input.
+category: form
+
+when_to_use:
+  - Capturing an international phone number with country code
+  - Forms where formatted entry (e.g. "(555) 123-4567") aids comprehension
+  - Sign-up / verification flows that need a parsed, validated phone number
+
+when_not_to_use:
+  - Generic numeric entry (use visor_text_input with TextInputType.number)
+  - Single-country apps that don't need a country picker (use visor_text_input)
+  - When the consumer cannot accept the country_code_picker / flutter_libphonenumber dependencies
+
+files:
+  - components/flutter/visor_phone_input/visor_phone_input.dart
+  - components/flutter/visor_phone_input/visor_phone_input_test.dart
+
+dependencies:
+  - visor_text_input
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }
+  - { pub: country_code_picker, version: "^3.0.0" }
+  - { pub: flutter_libphonenumber, version: "^2.4.0" }

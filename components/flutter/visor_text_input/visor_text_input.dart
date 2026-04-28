@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:visor_core/visor_core.dart';
 
 /// Animated floating-label text input for Visor's Flutter component registry.
@@ -61,6 +62,7 @@ class VisorTextInput extends StatefulWidget {
     this.autovalidateMode,
     this.isValid,
     this.obscureText = false,
+    this.inputFormatters,
     this.semanticLabel,
     super.key,
   });
@@ -130,6 +132,12 @@ class VisorTextInput extends StatefulWidget {
 
   /// When to run validation. Defaults to [AutovalidateMode.onUserInteraction].
   final AutovalidateMode? autovalidateMode;
+
+  /// Optional input formatters forwarded to the underlying [TextFormField].
+  ///
+  /// Use for digit-only filters, phone-number formatters, length limits, or
+  /// any other [TextInputFormatter] that needs to intercept keystrokes.
+  final List<TextInputFormatter>? inputFormatters;
 
   /// Explicit valid/invalid override for async validation scenarios.
   ///
@@ -439,6 +447,7 @@ class _VisorTextInputState extends State<VisorTextInput> {
             autocorrect: widget.autocorrect,
             enableSuggestions: widget.enableSuggestions,
             textCapitalization: widget.textCapitalization,
+            inputFormatters: widget.inputFormatters,
             obscureText: widget.obscureText,
             autovalidateMode: AutovalidateMode.disabled,
             // Validation is handled externally by our custom error display.
