@@ -197,6 +197,12 @@ export interface VisorThemeConfig {
     lg?: string;
     xl?: string;
   };
+  strokeWidths?: {
+    thin?: number;
+    regular?: number;
+    medium?: number;
+    thick?: number;
+  };
   motion?: {
     "duration-fast"?: string;
     "duration-normal"?: string;
@@ -241,6 +247,7 @@ export interface ResolvedThemeConfig {
   spacing: { base: number };
   radius: { sm: number; md: number; lg: number; xl: number; pill: number };
   shadows: { xs: string; sm: string; md: string; lg: string; xl: string };
+  strokeWidths: { thin: number; regular: number; medium: number; thick: number };
   motion: {
     "duration-fast": string;
     "duration-normal": string;

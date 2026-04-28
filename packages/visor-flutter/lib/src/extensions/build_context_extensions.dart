@@ -5,6 +5,7 @@ import 'visor_motion.dart';
 import 'visor_radius.dart';
 import 'visor_shadows.dart';
 import 'visor_spacing.dart';
+import 'visor_stroke_widths.dart';
 import 'visor_text_styles.dart';
 
 /// Convenience getters for reading Visor token ThemeExtensions off a
@@ -25,7 +26,7 @@ import 'visor_text_styles.dart';
 /// ```
 ///
 /// Each getter asserts the corresponding [ThemeExtension] is attached to the
-/// current [Theme]. `VisorTheme.build()` always attaches all six, so the
+/// current [Theme]. `VisorTheme.build()` always attaches all seven, so the
 /// non-null assertion is safe for any consumer using the Visor builder.
 extension VisorThemeContext on BuildContext {
   /// Semantic color tokens (text, surface, border, interactive).
@@ -89,6 +90,17 @@ extension VisorThemeContext on BuildContext {
     assert(
       ext != null,
       'VisorMotionData is not attached to the current Theme. '
+      'Make sure your MaterialApp uses VisorTheme.build().',
+    );
+    return ext!;
+  }
+
+  /// Stroke-width scale (thin, regular, medium, thick).
+  VisorStrokeWidthsData get visorStrokeWidths {
+    final ext = Theme.of(this).extension<VisorStrokeWidthsData>();
+    assert(
+      ext != null,
+      'VisorStrokeWidthsData is not attached to the current Theme. '
       'Make sure your MaterialApp uses VisorTheme.build().',
     );
     return ext!;

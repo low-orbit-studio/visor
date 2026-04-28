@@ -15,6 +15,7 @@
  * │       ├── spacing/visor_spacing.dart
  * │       ├── radius/visor_radius.dart
  * │       ├── shadows/visor_shadows.dart
+ * │       ├── strokes/visor_stroke_widths.dart
  * │       ├── motion/visor_motion.dart
  * │       └── theme/visor_theme.dart          # VisorAppTheme.{light,dark}
  * ```
@@ -30,6 +31,7 @@ import { emitTypographyDart } from "../flutter/emit-typography.js";
 import { emitSpacingDart } from "../flutter/emit-spacing.js";
 import { emitRadiusDart } from "../flutter/emit-radius.js";
 import { emitShadowsDart } from "../flutter/emit-shadows.js";
+import { emitStrokesDart } from "../flutter/emit-strokes.js";
 import { emitMotionDart } from "../flutter/emit-motion.js";
 import { emitThemeDart } from "../flutter/emit-theme.js";
 
@@ -57,6 +59,7 @@ export function flutterAdapter(
   files["lib/src/spacing/visor_spacing.dart"] = emitSpacingDart(input);
   files["lib/src/radius/visor_radius.dart"] = emitRadiusDart(input);
   files["lib/src/shadows/visor_shadows.dart"] = emitShadowsDart(input);
+  files["lib/src/strokes/visor_stroke_widths.dart"] = emitStrokesDart(input);
   files["lib/src/motion/visor_motion.dart"] = emitMotionDart(input);
 
   // Skip the package scaffolding (pubspec, barrel, theme wrapper) when
@@ -74,6 +77,7 @@ export function flutterAdapter(
         "../spacing/visor_spacing.dart",
         "../radius/visor_radius.dart",
         "../shadows/visor_shadows.dart",
+        "../strokes/visor_stroke_widths.dart",
         "../motion/visor_motion.dart",
       ],
     });
@@ -118,6 +122,7 @@ function emitBarrel(): string {
     `export 'src/spacing/visor_spacing.dart';`,
     `export 'src/radius/visor_radius.dart';`,
     `export 'src/shadows/visor_shadows.dart';`,
+    `export 'src/strokes/visor_stroke_widths.dart';`,
     `export 'src/motion/visor_motion.dart';`,
     `export 'src/theme/visor_theme.dart';`,
     ``,

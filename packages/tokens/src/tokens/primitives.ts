@@ -104,6 +104,19 @@ export const primitiveBorderWidths = {
   "4": 4,
 } as const;
 
+// Stroke widths — semantic 4-slot scale for borders, outlines, dividers,
+// and progress-indicator strokes. Slot names match the existing semantic
+// scales (xs/sm/md/lg/xl on shadows, sm/md/lg/xl/pill on radius) — no
+// numeric extensions in the system. Values cover every current Visor
+// hardcoded site without rounding (VisorButton 2 → medium,
+// VisorLoadingIndicator 2.5 → thick).
+export const primitiveStrokeWidths = {
+  thin: 1,
+  regular: 1.5,
+  medium: 2,
+  thick: 2.5,
+} as const;
+
 // Font sizes (pixel values, converted to rem in CSS)
 export const primitiveFontSizes = {
   xs: 12,

@@ -69,13 +69,18 @@ class VisorButton extends StatelessWidget {
     final colors = context.visorColors;
     final spacing = context.visorSpacing;
     final textStyles = context.visorTextStyles;
+    final strokeWidths = context.visorStrokeWidths;
 
     final palette = _palette(colors, style, brand);
     final padding = _padding(size, spacing);
     final labelStyle = _labelStyle(size, textStyles, palette.foreground);
 
     final effectiveOnPressed = isLoading ? null : onPressed;
-    final child = _buildChild(labelStyle, palette.foreground);
+    final child = _buildChild(
+      labelStyle,
+      palette.foreground,
+      strokeWidths.medium,
+    );
 
     final button = _buildButton(
       style: style,
@@ -97,13 +102,17 @@ class VisorButton extends StatelessWidget {
     );
   }
 
-  Widget _buildChild(TextStyle labelStyle, Color foreground) {
+  Widget _buildChild(
+    TextStyle labelStyle,
+    Color foreground,
+    double loadingStrokeWidth,
+  ) {
     if (isLoading) {
       return SizedBox(
         width: 16,
         height: 16,
         child: CircularProgressIndicator(
-          strokeWidth: 2,
+          strokeWidth: loadingStrokeWidth,
           valueColor: AlwaysStoppedAnimation<Color>(foreground),
         ),
       );

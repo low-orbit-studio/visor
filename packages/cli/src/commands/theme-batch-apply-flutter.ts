@@ -24,6 +24,7 @@
  *           │   ├── spacing/visor_spacing.dart
  *           │   ├── radius/visor_radius.dart
  *           │   ├── shadows/visor_shadows.dart
+ *           │   ├── strokes/visor_stroke_widths.dart
  *           │   ├── motion/visor_motion.dart
  *           │   └── theme/visor_theme.dart
  *           ├── modern-minimal/
@@ -341,6 +342,7 @@ export function themeBatchApplyFlutterCommand(
         .replace(/import '\.\.\/spacing\/visor_spacing\.dart';/g, "import '../spacing/visor_spacing.dart';")
         .replace(/import '\.\.\/radius\/visor_radius\.dart';/g, "import '../radius/visor_radius.dart';")
         .replace(/import '\.\.\/shadows\/visor_shadows\.dart';/g, "import '../shadows/visor_shadows.dart';")
+        .replace(/import '\.\.\/strokes\/visor_stroke_widths\.dart';/g, "import '../strokes/visor_stroke_widths.dart';")
         .replace(/import '\.\.\/motion\/visor_motion\.dart';/g, "import '../motion/visor_motion.dart';")
     }
 

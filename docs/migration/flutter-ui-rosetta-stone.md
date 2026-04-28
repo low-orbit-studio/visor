@@ -26,7 +26,7 @@
 
 ## Visor target surface
 
-Six consumer-facing extensions on `BuildContext`:
+Seven consumer-facing extensions on `BuildContext`:
 
 | Extension | Surface |
 |---|---|
@@ -35,6 +35,7 @@ Six consumer-facing extensions on `BuildContext`:
 | `context.visorTextStyles` | Material 3 + `labelXSmall` — 16 tokens |
 | `context.visorRadius` | `sm`, `md`, `lg`, `xl`, `pill` — 5 tokens |
 | `context.visorShadows` | `xs`, `sm`, `md`, `lg`, `xl` — 5 tokens (multi-layer) |
+| `context.visorStrokeWidths` | `thin`, `regular`, `medium`, `thick` — 4 tokens |
 | `context.visorMotion` | `durationFast`, `durationNormal`, `durationSlow`, `easing` — 4 tokens |
 
 Tokens are the only consumer-facing surface. `context.visor*` accessors reflect the active theme — components stay theme-agnostic.
@@ -281,6 +282,39 @@ This is a known idiom but not a gap — it's Flutter's standard composition patt
 
 ---
 
+## Stroke widths
+
+| Visor (`context.visorStrokeWidths`) | Default value | Common source-repo literal | Use case |
+|---|---|---|---|
+| `thin` | 1px | `width: 1` (dividers, hairline borders) | Hairline borders, dividers |
+| `regular` | 1.5px | (rare in source repos) | Default emphasized borders |
+| `medium` | 2px | `width: 2` (focus rings, button progress) | Focus rings, button progress indicators |
+| `thick` | 2.5px | `width: 2.5` (Veronica spinner: `4`) | Large spinners, prominent outlines |
+
+**Canonical translation:** any literal stroke value in source code (`width: 1`, `strokeWidth: 2`, `thickness: 2.5`) maps to a `context.visorStrokeWidths.{slot}` lookup. Pick the slot whose default value matches the literal; if a source repo uses `4`, choose `thick` and let the consuming theme override `strokeWidths.thick: 4` in its `.visor.yaml` rather than introducing a fifth slot.
+
+```dart
+// Before — any source repo
+Border.all(color: someColor, width: 1)
+CircularProgressIndicator(strokeWidth: 2)
+Container(height: 1, color: divider)
+
+// After — Visor
+Border.all(
+  color: someColor,
+  width: context.visorStrokeWidths.thin,
+)
+CircularProgressIndicator(
+  strokeWidth: context.visorStrokeWidths.medium,
+)
+Container(
+  height: context.visorStrokeWidths.thin,
+  color: context.visorColors.borderMuted,
+)
+```
+
+---
+
 ## Motion
 
 | Visor (`context.visorMotion`) | SoleSpark (`UIDurations`) | ENTR | Veronica (`UIDurations`) | Notes |
@@ -380,8 +414,10 @@ Border.all(color: UIColors.primary, width: 2)
 Border.all(color: context.colorway.border.focus, width: 2)
 
 // After — Visor
-Border.all(color: context.visorColors.borderFocus, width: 2)
-// Note: stroke width still hardcoded — see GAP VI-244
+Border.all(
+  color: context.visorColors.borderFocus,
+  width: context.visorStrokeWidths.medium,
+)
 ```
 
 ### 5. Divider
@@ -409,7 +445,7 @@ Gaps surfaced during the Rosetta Stone audit. Each row links to a follow-up tick
 | Gap | Description | Ticket | Status |
 |---|---|---|---|
 | `surfaceSelected` | Persistent selected-row surface (used by `visor_settings_tile`, future sidebar nav) | [VI-242](https://linear.app/low-orbit-studio/issue/VI-242) | Todo |
-| Stroke-width tokens | Border / outline / spinner-stroke widths are hardcoded across `VisorButton`, `VisorLoadingIndicator`, focus rings, dividers; no token scale | [VI-244](https://linear.app/low-orbit-studio/issue/VI-244) | Todo |
+| Stroke-width tokens | Border / outline / spinner-stroke widths surfaced as `context.visorStrokeWidths.{thin,regular,medium,thick}` (4-slot semantic scale, themable per `.visor.yaml`) | [VI-244](https://linear.app/low-orbit-studio/issue/VI-244) | Done |
 | Opacity scale | All three source repos ship rich opacity palettes (`*10o`–`*90o`); Visor has none — consumers use `.withValues(alpha: N)` literals | [VI-245](https://linear.app/low-orbit-studio/issue/VI-245) | Todo |
 
 ### Gaps that don't need tickets

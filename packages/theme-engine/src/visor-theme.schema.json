@@ -246,6 +246,17 @@
         "xl": { "type": "string" }
       }
     },
+    "strokeWidths": {
+      "type": "object",
+      "description": "Stroke-width scale in pixels — used for borders, outlines, dividers, progress-indicator strokes. Defaults: thin=1, regular=1.5, medium=2, thick=2.5.",
+      "additionalProperties": false,
+      "properties": {
+        "thin": { "type": "number", "minimum": 0 },
+        "regular": { "type": "number", "minimum": 0 },
+        "medium": { "type": "number", "minimum": 0 },
+        "thick": { "type": "number", "minimum": 0 }
+      }
+    },
     "motion": {
       "type": "object",
       "description": "Motion/animation configuration.",

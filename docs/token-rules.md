@@ -53,9 +53,47 @@ box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 
 Available shadow tokens: `xs`, `sm`, `md`, `lg`, `xl`.
 
-**Exception:** Focus ring shadows using the `color-mix()` pattern are acceptable when implementing the box-shadow-based focus ring variant (see Rule 6).
+**Exception:** Focus ring shadows using the `color-mix()` pattern are acceptable when implementing the box-shadow-based focus ring variant (see Rule 7).
 
-### 3. Spacing Rule
+### 3. Stroke-Width Rule
+
+All border, outline, divider, and progress-indicator stroke values must use stroke-width tokens. The scale is exposed as both CSS custom properties (`var(--stroke-width-*)`) and a Flutter `context.visorStrokeWidths` extension. No hardcoded `1px` / `2px` border or outline widths.
+
+```css
+/* Correct */
+border: var(--stroke-width-thin) solid var(--border-default);
+outline: var(--stroke-width-medium) solid var(--border-focus);
+
+/* Wrong */
+border: 1px solid var(--border-default);
+outline: 2px solid var(--border-focus);
+```
+
+```dart
+// Correct (Flutter)
+Border.all(color: context.visorColors.borderDefault,
+           width: context.visorStrokeWidths.thin)
+CircularProgressIndicator(
+  strokeWidth: context.visorStrokeWidths.medium,
+)
+
+// Wrong (Flutter)
+Border.all(color: ..., width: 1)
+CircularProgressIndicator(strokeWidth: 2)
+```
+
+Scale reference:
+
+| Token | Value | Use case |
+|-------|-------|----------|
+| `--stroke-width-thin` / `strokeWidths.thin` | 1px | Hairline borders, dividers |
+| `--stroke-width-regular` / `strokeWidths.regular` | 1.5px | Default emphasized borders |
+| `--stroke-width-medium` / `strokeWidths.medium` | 2px | Focus rings, button progress indicators |
+| `--stroke-width-thick` / `strokeWidths.thick` | 2.5px | Large progress spinners, prominent outlines |
+
+**Exception:** Themes may override stroke widths in their `.visor.yaml` to tune density. Components must consume the tokens, not the underlying values.
+
+### 4. Spacing Rule
 
 All `padding`, `gap`, and `margin` values must use spacing tokens on the 4px grid: `var(--spacing-N)` where N maps to the primitive scale.
 
@@ -93,7 +131,7 @@ Scale reference:
 
 **Exception:** `height`, `width`, and sidebar-specific sizing values are deferred and may use explicit values until component sizing tokens are introduced.
 
-### 4. Motion Rule
+### 5. Motion Rule
 
 All transitions must use `var(--motion-duration-*)` for timing and `var(--motion-easing-*)` for easing. No hard-coded duration or easing values.
 
@@ -129,7 +167,7 @@ transition: opacity 200ms;
 | `--motion-easing-exit` | ease-in | Elements leaving |
 | `--motion-easing-spring` | cubic-bezier(0.34, 1.56, 0.64, 1) | Bouncy/playful |
 
-### 5. Overlay Rule
+### 6. Overlay Rule
 
 Modal and dialog backdrops must use `var(--overlay-bg)` for the translucent background. Themes can override this token to customize overlay appearance.
 
@@ -142,7 +180,7 @@ background: rgba(0, 0, 0, 0.5);
 background: hsla(0, 0%, 0%, 0.5);
 ```
 
-### 6. Focus Ring Rule
+### 7. Focus Ring Rule
 
 Focus rings must use `var(--focus-ring-width)` for ring width and `var(--focus-ring-offset)` for offset. Two patterns are supported:
 
@@ -166,7 +204,7 @@ Focus rings must use `var(--focus-ring-width)` for ring width and `var(--focus-r
 
 Components must use one of these two patterns. Do not invent custom focus ring implementations.
 
-### 7. Color Format Rule
+### 8. Color Format Rule
 
 Use the following color formats in the designated contexts:
 
@@ -188,7 +226,7 @@ color: var(--text-primary, #111827);
 --text-primary: hsl(222, 47%, 11%);
 ```
 
-### 8. Theme Structure Rule
+### 9. Theme Structure Rule
 
 All themes must follow the 5-section template (see [Theme Template](#5-section-theme-template) below):
 
@@ -200,7 +238,7 @@ All themes must follow the 5-section template (see [Theme Template](#5-section-t
 
 Sections 1-3 are required for all themes. Section 4 is required when the theme is used with a specific framework that needs bridged values. Section 5 is only present in creative themes.
 
-### 9. No Magic Numbers Rule
+### 10. No Magic Numbers Rule
 
 Every value in component CSS must trace to a token or be documented as intentional. No unexplained pixel values, rem values, or percentages.
 

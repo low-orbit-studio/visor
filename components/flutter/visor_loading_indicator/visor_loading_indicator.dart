@@ -28,9 +28,8 @@ import 'package:visor_core/visor_core.dart';
 /// ```
 ///
 /// ## Stroke width
-/// Fixed at `2.5` dp — between ENTR's implicit default and Veronica's 4.0.
-/// No token slot exists yet for spinner stroke width; documented as
-/// intentional until the token system adds one.
+/// Reads `context.visorStrokeWidths.thick` (`2.5` dp on the default scale).
+/// Themes may override stroke widths in their `.visor.yaml` to tune density.
 class VisorLoadingIndicator extends StatelessWidget {
   /// Creates an immediate-render spinner (no delay gate).
   ///
@@ -131,14 +130,10 @@ class _VisorSpinner extends StatelessWidget {
   final double size;
   final Color color;
 
-  // Stroke width is intentionally not tokenized — no token slot exists yet.
-  // Value of 2.5 was chosen as a midpoint between ENTR (default ~2.0) and
-  // Veronica (4.0). Document here so future token adoption is trivial.
-  static const double _strokeWidth = 2.5;
-
   @override
   Widget build(BuildContext context) {
     final disableAnimations = MediaQuery.of(context).disableAnimations;
+    final strokeWidth = context.visorStrokeWidths.thick;
 
     if (disableAnimations) {
       // Reduce-motion: static circular border — fully absent of animation,
@@ -149,7 +144,7 @@ class _VisorSpinner extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: color, width: _strokeWidth),
+            border: Border.all(color: color, width: strokeWidth),
           ),
         ),
       );
@@ -159,7 +154,7 @@ class _VisorSpinner extends StatelessWidget {
       width: size,
       height: size,
       child: CircularProgressIndicator(
-        strokeWidth: _strokeWidth,
+        strokeWidth: strokeWidth,
         strokeCap: StrokeCap.round,
         valueColor: AlwaysStoppedAnimation<Color>(color),
       ),
