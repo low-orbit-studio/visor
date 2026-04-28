@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:visor_core/visor_core.dart';
 
-/// Builds a minimal [VisorColorsData] suitable for widget tests. The values
-/// here are not meaningful — they cover the required constructor surface so
-/// `VisorTheme.build()` can produce a working theme.
+/// Builds a minimal [VisorColorsData] suitable for light-theme widget tests.
+/// The values here are not meaningful — they cover the required constructor
+/// surface so `VisorTheme.build()` can produce a working theme.
 VisorColorsData testColors({int textPrimaryValue = 0xFF111111}) {
   return VisorColorsData(
     textPrimary: Color(textPrimaryValue),
@@ -23,6 +23,7 @@ VisorColorsData testColors({int textPrimaryValue = 0xFF111111}) {
     surfaceSubtle: const Color(0xFFF9FAFB),
     surfaceMuted: const Color(0xFFF3F4F6),
     surfaceOverlay: const Color(0xFF111827),
+    surfaceSelected: const Color(0xFFDBEAFE),
     surfaceInteractiveDefault: const Color(0xFFFFFFFF),
     surfaceInteractiveHover: const Color(0xFFF9FAFB),
     surfaceInteractiveActive: const Color(0xFFF3F4F6),
@@ -61,5 +62,69 @@ VisorColorsData testColors({int textPrimaryValue = 0xFF111111}) {
     interactiveDestructiveText: const Color(0xFFFFFFFF),
     interactiveGhostBg: const Color(0xFFFFFFFF),
     interactiveGhostBgHover: const Color(0xFFF3F4F6),
+  );
+}
+
+/// Dark-theme companion to [testColors]. Used by golden tests to verify
+/// widgets render correctly in dark mode. Values mirror Tailwind Gray + Blue
+/// at higher tones — token-faithful but not tied to any shipped Visor theme.
+VisorColorsData testColorsDark() {
+  return const VisorColorsData(
+    textPrimary: Color(0xFFF9FAFB),
+    textSecondary: Color(0xFFD1D5DB),
+    textTertiary: Color(0xFF9CA3AF),
+    textDisabled: Color(0xFF4B5563),
+    textInverse: Color(0xFF111827),
+    textInverseSecondary: Color(0xFF374151),
+    textLink: Color(0xFF60A5FA),
+    textLinkHover: Color(0xFF93C5FD),
+    textSuccess: Color(0xFF4ADE80),
+    textWarning: Color(0xFFFBBF24),
+    textError: Color(0xFFF87171),
+    textInfo: Color(0xFF38BDF8),
+    surfacePage: Color(0xFF0B0F19),
+    surfaceCard: Color(0xFF111827),
+    surfaceSubtle: Color(0xFF1F2937),
+    surfaceMuted: Color(0xFF374151),
+    surfaceOverlay: Color(0xFFE5E7EB),
+    surfaceSelected: Color(0xFF1E3A8A),
+    surfaceInteractiveDefault: Color(0xFF1F2937),
+    surfaceInteractiveHover: Color(0xFF374151),
+    surfaceInteractiveActive: Color(0xFF4B5563),
+    surfaceInteractiveDisabled: Color(0xFF1F2937),
+    surfaceAccentSubtle: Color(0xFF1E3A8A),
+    surfaceAccentDefault: Color(0xFF3B82F6),
+    surfaceAccentStrong: Color(0xFF60A5FA),
+    surfaceSuccessSubtle: Color(0xFF052E16),
+    surfaceSuccessDefault: Color(0xFF22C55E),
+    surfaceWarningSubtle: Color(0xFF422006),
+    surfaceWarningDefault: Color(0xFFF59E0B),
+    surfaceErrorSubtle: Color(0xFF450A0A),
+    surfaceErrorDefault: Color(0xFFEF4444),
+    surfaceInfoSubtle: Color(0xFF082F49),
+    surfaceInfoDefault: Color(0xFF0EA5E9),
+    borderDefault: Color(0xFF374151),
+    borderMuted: Color(0xFF1F2937),
+    borderStrong: Color(0xFF4B5563),
+    borderFocus: Color(0xFF60A5FA),
+    borderDisabled: Color(0xFF1F2937),
+    borderSuccess: Color(0xFF22C55E),
+    borderWarning: Color(0xFFF59E0B),
+    borderError: Color(0xFFEF4444),
+    borderInfo: Color(0xFF0EA5E9),
+    interactivePrimaryBg: Color(0xFF60A5FA),
+    interactivePrimaryBgHover: Color(0xFF93C5FD),
+    interactivePrimaryBgActive: Color(0xFFBFDBFE),
+    interactivePrimaryText: Color(0xFF0B0F19),
+    interactiveSecondaryBg: Color(0xFF1F2937),
+    interactiveSecondaryBgHover: Color(0xFF374151),
+    interactiveSecondaryBgActive: Color(0xFF4B5563),
+    interactiveSecondaryText: Color(0xFFF9FAFB),
+    interactiveSecondaryBorder: Color(0xFF4B5563),
+    interactiveDestructiveBg: Color(0xFFF87171),
+    interactiveDestructiveBgHover: Color(0xFFFCA5A5),
+    interactiveDestructiveText: Color(0xFF0B0F19),
+    interactiveGhostBg: Color(0xFF111827),
+    interactiveGhostBgHover: Color(0xFF1F2937),
   );
 }
