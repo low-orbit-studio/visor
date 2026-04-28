@@ -1,0 +1,58 @@
+name: ErrorView
+description: Error-state surface with icon, message, optional body copy, and a retry button. Supports an optional Scaffold wrap for full-screen error routes.
+category: feedback
+
+when_to_use:
+  - Replacing a loading region when a data fetch fails
+  - Full-screen error routes (network errors, server failures) — set wrapWithScaffold true
+  - Recoverable failures where a retry action is available
+  - Informational error states where no retry is possible (omit retryCallback)
+
+when_not_to_use:
+  - Inline validation messages next to a form field (use a text helper or visor_text_input error state)
+  - Toast/snackbar notifications for transient, auto-dismissing errors
+  - Empty states where there is no error (use visor_empty_state)
+
+api:
+  - name: message
+    type: String
+    required: true
+    description: Primary error message shown below the icon. Keep to one sentence.
+  - name: body
+    type: String?
+    required: false
+    description: Optional supporting copy shown below message. Explains recovery steps or next actions.
+  - name: icon
+    type: IconData
+    required: false
+    default: "Icons.error_outline"
+    description: Icon rendered above the message. Override with a domain-specific icon for context clarity.
+  - name: retryCallback
+    type: VoidCallback?
+    required: false
+    description: Called when the retry button is tapped. When null the retry button is not rendered.
+  - name: retryLabel
+    type: String?
+    required: false
+    default: "'Try again'"
+    description: Label for the retry button. Defaults to 'Try again'. No effect when retryCallback is null.
+  - name: wrapWithScaffold
+    type: bool
+    required: false
+    default: "false"
+    description: When true wraps content in a Scaffold with an AppBar back button. Use for full-screen error routes.
+  - name: scaffoldTitle
+    type: String?
+    required: false
+    description: Title text for the AppBar when wrapWithScaffold is true. No title bar is shown when null.
+  - name: semanticLabel
+    type: String?
+    required: false
+    description: Optional override for the accessibility label announced by screen readers. Defaults to message.
+
+files:
+  - components/flutter/visor_error_view/visor_error_view.dart
+  - components/flutter/visor_error_view/visor_error_view_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }
