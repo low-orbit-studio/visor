@@ -259,6 +259,7 @@ class _VisorTextInputState extends State<VisorTextInput> {
   @override
   Widget build(BuildContext context) {
     final colors = context.visorColors;
+    final opacity = context.visorOpacity;
     final spacing = context.visorSpacing;
     final textStyles = context.visorTextStyles;
     final radius = context.visorRadius;
@@ -281,7 +282,7 @@ class _VisorTextInputState extends State<VisorTextInput> {
       enabled: widget.enabled,
       textField: true,
       child: Opacity(
-        opacity: widget.enabled ? 1.0 : 0.5,
+        opacity: widget.enabled ? 1.0 : opacity.alpha50,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -32,6 +32,7 @@ import { emitSpacingDart } from "../flutter/emit-spacing.js";
 import { emitRadiusDart } from "../flutter/emit-radius.js";
 import { emitShadowsDart } from "../flutter/emit-shadows.js";
 import { emitStrokesDart } from "../flutter/emit-strokes.js";
+import { emitOpacityDart } from "../flutter/emit-opacity.js";
 import { emitMotionDart } from "../flutter/emit-motion.js";
 import { emitThemeDart } from "../flutter/emit-theme.js";
 
@@ -60,6 +61,7 @@ export function flutterAdapter(
   files["lib/src/radius/visor_radius.dart"] = emitRadiusDart(input);
   files["lib/src/shadows/visor_shadows.dart"] = emitShadowsDart(input);
   files["lib/src/strokes/visor_stroke_widths.dart"] = emitStrokesDart(input);
+  files["lib/src/opacity/visor_opacity.dart"] = emitOpacityDart();
   files["lib/src/motion/visor_motion.dart"] = emitMotionDart(input);
 
   // Skip the package scaffolding (pubspec, barrel, theme wrapper) when
@@ -78,6 +80,7 @@ export function flutterAdapter(
         "../radius/visor_radius.dart",
         "../shadows/visor_shadows.dart",
         "../strokes/visor_stroke_widths.dart",
+        "../opacity/visor_opacity.dart",
         "../motion/visor_motion.dart",
       ],
     });
@@ -123,6 +126,7 @@ function emitBarrel(): string {
     `export 'src/radius/visor_radius.dart';`,
     `export 'src/shadows/visor_shadows.dart';`,
     `export 'src/strokes/visor_stroke_widths.dart';`,
+    `export 'src/opacity/visor_opacity.dart';`,
     `export 'src/motion/visor_motion.dart';`,
     `export 'src/theme/visor_theme.dart';`,
     ``,

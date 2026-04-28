@@ -67,11 +67,12 @@ class VisorButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.visorColors;
+    final opacity = context.visorOpacity;
     final spacing = context.visorSpacing;
     final textStyles = context.visorTextStyles;
     final strokeWidths = context.visorStrokeWidths;
 
-    final palette = _palette(colors, style, brand);
+    final palette = _palette(colors, opacity, style, brand);
     final padding = _padding(size, spacing);
     final labelStyle = _labelStyle(size, textStyles, palette.foreground);
 
@@ -214,6 +215,7 @@ class VisorButton extends StatelessWidget {
 
   _ButtonPalette _palette(
     VisorColorsData colors,
+    VisorOpacityData opacity,
     VisorButtonStyle style,
     VisorButtonBrand brand,
   ) {
@@ -233,7 +235,7 @@ class VisorButton extends StatelessWidget {
         return _ButtonPalette(
           background: bg,
           foreground: onBg,
-          overlay: bgHover.withValues(alpha: 0.12),
+          overlay: bgHover.withValues(alpha: opacity.alpha12),
         );
       case VisorButtonStyle.secondary:
         return _ButtonPalette(
@@ -246,7 +248,7 @@ class VisorButton extends StatelessWidget {
           overlay: (brand == VisorButtonBrand.primary
                   ? colors.interactiveSecondaryBgHover
                   : colors.surfaceAccentDefault)
-              .withValues(alpha: 0.12),
+              .withValues(alpha: opacity.alpha12),
         );
       case VisorButtonStyle.ghost:
         return _ButtonPalette(
@@ -254,13 +256,14 @@ class VisorButton extends StatelessWidget {
           foreground: brand == VisorButtonBrand.primary
               ? colors.interactivePrimaryBg
               : colors.surfaceAccentStrong,
-          overlay: bg.withValues(alpha: 0.08),
+          overlay: bg.withValues(alpha: opacity.alpha10),
         );
       case VisorButtonStyle.destructive:
         return _ButtonPalette(
           background: colors.interactiveDestructiveBg,
           foreground: colors.interactiveDestructiveText,
-          overlay: colors.interactiveDestructiveBgHover.withValues(alpha: 0.12),
+          overlay: colors.interactiveDestructiveBgHover
+              .withValues(alpha: opacity.alpha12),
         );
     }
   }

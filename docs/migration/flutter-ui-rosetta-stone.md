@@ -124,18 +124,39 @@ Rows are organized by **Visor target token** (destination-keyed). For ENTR, axis
 
 ### Opacity variants
 
-All three source repos ship rich opacity palettes — SoleSpark `accentPrimary{10,20,50}o` / `white{5,10,20,40,60,80}o` / `black{10,20,40,60}o`; ENTR `light{0..90}o` / `dark{0..90}o` / `black{0..90}o` / `white{0..90}o` / `primary{10..90}o`; Veronica `graphite{4,5,8,10,30,40,70,80}o`. Visor has no opacity-scale tokens.
+All three source repos ship rich opacity palettes — SoleSpark `accentPrimary{10,20,50}o` / `white{5,10,20,40,60,80}o` / `black{10,20,40,60}o`; ENTR `light{0..90}o` / `dark{0..90}o` / `black{0..90}o` / `white{0..90}o` / `primary{10..90}o`; Veronica `graphite{4,5,8,10,30,40,70,80}o`.
 
-**Translation rule:** look up the base color in the relevant Visor cluster (Text / Surface / Border / Interactive), then apply opacity via `.withValues(alpha: N)`:
+Visor's canonical scale is the 8-slot `context.visorOpacity` extension: `alpha5, alpha10, alpha12, alpha20, alpha40, alpha50, alpha60, alpha80` (CSS: `--opacity-{5,10,12,20,40,50,60,80}`). The scale is fixed across themes — opacity is a math primitive, not a brand decision.
+
+**Translation rule:** look up the base color in the relevant Visor cluster (Text / Surface / Border / Interactive), then apply the matching opacity slot via `context.visorOpacity.alphaN`:
 
 ```dart
+final colors = context.visorColors;
+final opacity = context.visorOpacity;
+
 // SoleSpark: UIColors.white40o
 // ENTR:      UIColors.light40o
 // Veronica:  UIPrimaryColors.offWhitePure.withOpacity(0.4)
-context.visorColors.textPrimary.withValues(alpha: 0.4)
+colors.textPrimary.withValues(alpha: opacity.alpha40);
 ```
 
-This is a **GAP → [VI-245](https://linear.app/low-orbit-studio/issue/VI-245)**. A future opacity scale (token slots or documented helpers) will replace the inline literal.
+**Source-suffix → Visor slot mapping:**
+
+| Source suffix | Visor slot | Notes |
+|---|---|---|
+| `5o` | `alpha5` | Barely-there overlays |
+| `10o` | `alpha10` | Subtle hover/pressed, M3 splash base |
+| `12o` (rare) | `alpha12` | M3 state-overlay standard |
+| `20o` | `alpha20` | Emphasized overlays |
+| `30o` (Veronica) | `alpha20` or `alpha40` | Pick closest by visual intent — no exact match |
+| `40o` | `alpha40` | Disabled-state blends |
+| `50o` | `alpha50` | Half-tone scrim |
+| `60o` | `alpha60` | Heavy overlay |
+| `70o` (Veronica) | `alpha60` or `alpha80` | Pick closest by visual intent — no exact match |
+| `80o` | `alpha80` | Strong scrim |
+| `0o`, `90o` (ENTR edges) | — | Fully transparent / near-opaque; use `Colors.transparent` or solid color |
+
+Source `8o` (Veronica) and any other off-scale value → round to nearest slot. Visor decision D3 (VI-245): the scale is fixed, not extended per migration.
 
 ### Brand-specific / non-portable colors
 
@@ -446,7 +467,7 @@ Gaps surfaced during the Rosetta Stone audit. Each row links to a follow-up tick
 |---|---|---|---|
 | `surfaceSelected` | Persistent selected-row surface (used by `visor_settings_tile`, future sidebar nav) | [VI-242](https://linear.app/low-orbit-studio/issue/VI-242) | Todo |
 | Stroke-width tokens | Border / outline / spinner-stroke widths surfaced as `context.visorStrokeWidths.{thin,regular,medium,thick}` (4-slot semantic scale, themable per `.visor.yaml`) | [VI-244](https://linear.app/low-orbit-studio/issue/VI-244) | Done |
-| Opacity scale | All three source repos ship rich opacity palettes (`*10o`–`*90o`); Visor has none — consumers use `.withValues(alpha: N)` literals | [VI-245](https://linear.app/low-orbit-studio/issue/VI-245) | Todo |
+| Opacity scale | 8-slot scale `context.visorOpacity.alpha{5,10,12,20,40,50,60,80}` + CSS `--opacity-*`; canonical translation pattern in [Opacity variants](#opacity-variants) above | [VI-245](https://linear.app/low-orbit-studio/issue/VI-245) | Done |
 
 ### Gaps that don't need tickets
 

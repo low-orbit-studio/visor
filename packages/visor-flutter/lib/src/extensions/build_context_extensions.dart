@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'visor_colors.dart';
 import 'visor_motion.dart';
+import 'visor_opacity.dart';
 import 'visor_radius.dart';
 import 'visor_shadows.dart';
 import 'visor_spacing.dart';
@@ -26,7 +27,7 @@ import 'visor_text_styles.dart';
 /// ```
 ///
 /// Each getter asserts the corresponding [ThemeExtension] is attached to the
-/// current [Theme]. `VisorTheme.build()` always attaches all seven, so the
+/// current [Theme]. `VisorTheme.build()` always attaches all eight, so the
 /// non-null assertion is safe for any consumer using the Visor builder.
 extension VisorThemeContext on BuildContext {
   /// Semantic color tokens (text, surface, border, interactive).
@@ -101,6 +102,17 @@ extension VisorThemeContext on BuildContext {
     assert(
       ext != null,
       'VisorStrokeWidthsData is not attached to the current Theme. '
+      'Make sure your MaterialApp uses VisorTheme.build().',
+    );
+    return ext!;
+  }
+
+  /// Opacity scale (alpha5/10/12/20/40/50/60/80) — fixed across themes.
+  VisorOpacityData get visorOpacity {
+    final ext = Theme.of(this).extension<VisorOpacityData>();
+    assert(
+      ext != null,
+      'VisorOpacityData is not attached to the current Theme. '
       'Make sure your MaterialApp uses VisorTheme.build().',
     );
     return ext!;

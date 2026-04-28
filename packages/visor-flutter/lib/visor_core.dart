@@ -2,9 +2,9 @@
 ///
 /// This package provides:
 /// - [ThemeExtension] data classes for Visor's semantic token categories
-///   ([VisorColorsData], [VisorMotionData], [VisorShadowsData],
-///   [VisorRadiusData], [VisorSpacingData], [VisorStrokeWidthsData],
-///   [VisorTextStylesData]).
+///   ([VisorColorsData], [VisorMotionData], [VisorOpacityData],
+///   [VisorShadowsData], [VisorRadiusData], [VisorSpacingData],
+///   [VisorStrokeWidthsData], [VisorTextStylesData]).
 /// - A [VisorTheme] builder that assembles a Material 3 [ThemeData] from a
 ///   set of Visor tokens.
 ///
@@ -17,6 +17,7 @@ library;
 export 'src/extensions/build_context_extensions.dart';
 export 'src/extensions/visor_colors.dart';
 export 'src/extensions/visor_motion.dart';
+export 'src/extensions/visor_opacity.dart';
 export 'src/extensions/visor_radius.dart';
 export 'src/extensions/visor_shadows.dart';
 export 'src/extensions/visor_spacing.dart';
