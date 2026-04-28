@@ -9,6 +9,7 @@ import '../typography/visor_text_styles.dart';
 import '../spacing/visor_spacing.dart';
 import '../radius/visor_radius.dart';
 import '../shadows/visor_shadows.dart';
+import '../strokes/visor_stroke_widths.dart';
 import '../motion/visor_motion.dart';
 
 /// Assembled Material 3 [ThemeData] for this project.
@@ -28,6 +29,7 @@ sealed class VisorAppTheme {
         spacing: VisorSpacing.instance,
         radius: VisorRadius.instance,
         shadows: VisorShadows.instance,
+        strokeWidths: VisorStrokeWidths.instance,
         motion: VisorMotion.instance,
       );
 
@@ -38,6 +40,7 @@ sealed class VisorAppTheme {
         spacing: VisorSpacing.instance,
         radius: VisorRadius.instance,
         shadows: VisorShadows.instance,
+        strokeWidths: VisorStrokeWidths.instance,
         motion: VisorMotion.instance,
       );
 
