@@ -23,6 +23,8 @@ dependencies:
   # Required by visor_phone_input — country picker UI + libphonenumber parsing.
   country_code_picker: ^3.0.0
   flutter_libphonenumber: ^2.4.0
+  # Required by visor_rich_text — launches inline URLs in the system browser.
+  url_launcher: ^6.3.0
   # All 11 Visor-generated ThemeData objects — regenerate with
   # `npm run themes:apply-flutter`. Provides VisorThemes.blackout,
   # .modernMinimal, .solespark, etc. for the Widgetbook theme switcher.

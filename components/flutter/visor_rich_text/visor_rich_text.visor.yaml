@@ -1,0 +1,21 @@
+name: RichText
+description: Rich text with auto-detected, tappable URLs that launch externally via url_launcher.
+category: typography
+
+when_to_use:
+  - Rendering terms / privacy / disclosure copy with inline clickable links
+  - Help text or hints that may include URLs the user might want to open
+  - Any prose where embedded http(s) URLs should be tappable without manual span construction
+
+when_not_to_use:
+  - Authoring rich content with bold/italic/headings (use a Markdown widget)
+  - Custom span behavior beyond URL launching — build a TextSpan tree directly
+  - When you do not control the input string and cannot trust regex-based URL detection
+
+files:
+  - components/flutter/visor_rich_text/visor_rich_text.dart
+  - components/flutter/visor_rich_text/visor_rich_text_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }
+  - { pub: url_launcher, version: "^6.3.0" }
