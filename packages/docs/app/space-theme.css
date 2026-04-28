@@ -207,6 +207,7 @@
   --surface-interactive-hover: #41414d;
   --surface-interactive-active: #545460;
   --surface-interactive-disabled: #2d2d38;
+  --surface-selected: #1b0b86;
   --surface-accent-subtle: #0e005a;
   --surface-accent-default: #5b6fff;
   --surface-accent-strong: #d8e1ff;
@@ -286,6 +287,7 @@
     --surface-interactive-hover: #41414d;
     --surface-interactive-active: #545460;
     --surface-interactive-disabled: #2d2d38;
+    --surface-selected: #1b0b86;
     --surface-accent-subtle: #0e005a;
     --surface-accent-default: #5b6fff;
     --surface-accent-strong: #d8e1ff;
@@ -369,6 +371,7 @@ html:not(.dark) .space-theme {
   --surface-interactive-hover: #f5f5f8;
   --surface-interactive-active: #f1f1f8;
   --surface-interactive-disabled: #f5f5f8;
+  --surface-selected: #eef2ff;
   --surface-accent-subtle: #f2f5ff;
   --surface-accent-default: #5b6fff;
   --surface-accent-strong: #353ac8;

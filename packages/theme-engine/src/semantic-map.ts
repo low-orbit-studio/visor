@@ -141,6 +141,12 @@ export const SEMANTIC_SURFACE_MAP: Record<string, SemanticMapping> = {
     light: { role: "neutral", shade: 50 },
     dark: { role: "neutral", shade: 800 },
   },
+  // Persistent selected-state surface (active nav item, currently-selected list row).
+  // Distinct from interactive-active (transient press) and from accent-subtle (broader brand surface).
+  selected: {
+    light: { role: "primary", shade: 100 },
+    dark: { role: "primary", shade: 800 },
+  },
   "accent-subtle": {
     light: { role: "primary", shade: 50 },
     dark: { role: "primary", shade: 900 },
