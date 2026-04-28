@@ -30,7 +30,7 @@ void main() {
       expect(captured.interactivePrimaryBg, colors.interactivePrimaryBg);
     });
 
-    testWidgets('all six token extensions resolve via context',
+    testWidgets('all seven token extensions resolve via context',
         (tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -48,11 +48,38 @@ void main() {
               expect(context.visorRadius, isA<VisorRadiusData>());
               expect(context.visorShadows, isA<VisorShadowsData>());
               expect(context.visorMotion, isA<VisorMotionData>());
+              expect(context.visorStrokeWidths, isA<VisorStrokeWidthsData>());
               return const SizedBox.shrink();
             },
           ),
         ),
       );
+    });
+
+    testWidgets('visorStrokeWidths returns default scale from visor_core',
+        (tester) async {
+      late VisorStrokeWidthsData strokes;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: VisorTheme.build(
+            colors: testColors(),
+            brightness: Brightness.light,
+          ),
+          home: Builder(
+            builder: (context) {
+              strokes = context.visorStrokeWidths;
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      );
+
+      // Default scale: 1.0 / 1.5 / 2.0 / 2.5
+      expect(strokes.thin, 1.0);
+      expect(strokes.regular, 1.5);
+      expect(strokes.medium, 2.0);
+      expect(strokes.thick, 2.5);
     });
 
     testWidgets('visorSpacing returns default scale from visor_core',
