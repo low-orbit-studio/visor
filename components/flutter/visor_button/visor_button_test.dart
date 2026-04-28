@@ -150,5 +150,53 @@ void main() {
       );
       expect(semantics, isNotNull);
     });
+
+    // R11 — meetsGuideline tap-target + labeled-tap-target tests (VI-252)
+
+    testWidgets('md size meets Android tap-target + labeled-tap-target guidelines',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorButton(label: 'Save', onPressed: () {})),
+      );
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('lg size meets Android tap-target + labeled-tap-target guidelines',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorButton(
+          label: 'Save',
+          onPressed: () {},
+          size: VisorButtonSize.lg,
+        )),
+      );
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      handle.dispose();
+    });
+
+    testWidgets(
+        'semanticLabel override still passes labeledTapTargetGuideline',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorButton(
+          label: 'OK',
+          onPressed: () {},
+          semanticLabel: 'Confirm deletion',
+        )),
+      );
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      handle.dispose();
+    });
+
+    // not-applicable: sm is a compact non-primary tap-target variant — see VI-252
+    // sm uses vertical: spacing.xs padding and may yield a height under 48dp by
+    // design. Bumping vertical padding would defeat the purpose of the variant.
+    // R11 is satisfied by md + lg above; sm is documented as explicitly compact.
   });
 }

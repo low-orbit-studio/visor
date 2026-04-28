@@ -174,7 +174,7 @@ Legend: ✅ pass · ⚠️ partial · ❌ fail · — not applicable
 
 | Widget | R1 tokens | R3 named-API | R4 single-resp | R5 doc | R6 Semantics | R7 48dp | R8 reduce-motion | R9 RTL | R10 tests | R11 a11y matcher | R12 yaml | R13 deps |
 |--------|----|----|----|----|----|----|----|----|----|----|----|----|
-| `visor_button` | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ size=sm padding may fall under 48dp | ⚠️ spinner uses `CircularProgressIndicator` without `disableAnimations` short-circuit | ✅ | ✅ | ❌ no `meetsGuideline` calls | ✅ | ✅ |
+| `visor_button` | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ size=sm is a compact non-primary tap-target variant (VI-252 D2) — md + lg ✅ via `meetsGuideline`; sm intentionally compact | ⚠️ spinner uses `CircularProgressIndicator` without `disableAnimations` short-circuit | ✅ | ✅ | ✅ md + lg pass `androidTapTargetGuideline` + `labeledTapTargetGuideline`; semanticLabel override passes `labeledTapTargetGuideline`; sm documented as compact variant (VI-252) | ✅ | ✅ |
 | `visor_empty_state` | ✅ | ✅ | ✅ | ✅ | ❌ no Semantics on container; relies on child text | — non-interactive at root (action slot is caller-owned) | — | ⚠️ uses `EdgeInsets.symmetric` (mirrors safely); no explicit RTL test | ✅ | — non-interactive | ⚠️ yaml lacks `pubDependencies` declaration mismatch — verify | ✅ |
 | `visor_empty_state_card` | ✅ | ✅ | ✅ | ✅ | ❌ inherits from `VisorEmptyState`; same gap | — | — | ⚠️ same as parent | ✅ | — | ⚠️ verify yaml | ✅ |
 | `visor_loading_indicator` | ✅ | ✅ | ✅ | ✅ | ❌ no `Semantics(label: 'Loading')` or `liveRegion` | — non-interactive | ✅ checks `disableAnimations`, returns static border | ✅ | ✅ | — non-interactive | ✅ | ✅ |
