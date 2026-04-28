@@ -55,6 +55,7 @@ class VisorOtpInput extends StatefulWidget {
     this.onCodeChanged,
     this.enabled = true,
     this.autofocus = false,
+    this.semanticLabel,
   }) : assert(digitCount > 0, 'digitCount must be at least 1');
 
   /// Number of digit boxes to render. Defaults to 6.
@@ -72,6 +73,13 @@ class VisorOtpInput extends StatefulWidget {
 
   /// Whether to request focus when the widget first mounts.
   final bool autofocus;
+
+  /// Optional override for the row-level Semantics container label.
+  ///
+  /// Defaults to `'OTP code, $digitCount digits'`. Pass a domain-specific
+  /// label (e.g. `'Two-factor authentication code, 6 digits'`) when the
+  /// generic label would lack context for screen-reader users.
+  final String? semanticLabel;
 
   @override
   VisorOtpInputState createState() => VisorOtpInputState();
@@ -289,27 +297,34 @@ class VisorOtpInputState extends State<VisorOtpInput> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final sizes = _calculateSizing(constraints.maxWidth, spacing);
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (var i = 0; i < widget.digitCount; i++) ...[
-              if (i > 0) SizedBox(width: sizes.gap),
-              KeyboardListener(
-                focusNode: FocusNode(skipTraversal: true),
-                onKeyEvent: (event) => _onNativeKeyEvent(i, event),
-                child: _VisorOtpDigit(
-                  controller: _controllers[i],
-                  focusNode: _focusNodes[i],
-                  digit: _digits[i],
-                  isFocused: _focusedIndex == i && _focusNodes[i].hasFocus,
-                  enabled: widget.enabled,
-                  size: sizes.digitSize,
-                  onChanged: (text) => _onNativeTextChanged(i, text),
-                  autofocus: widget.autofocus && i == 0,
+        return Semantics(
+          container: true,
+          label: widget.semanticLabel ??
+              'OTP code, ${widget.digitCount} digits',
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (var i = 0; i < widget.digitCount; i++) ...[
+                if (i > 0) SizedBox(width: sizes.gap),
+                KeyboardListener(
+                  focusNode: FocusNode(skipTraversal: true),
+                  onKeyEvent: (event) => _onNativeKeyEvent(i, event),
+                  child: _VisorOtpDigit(
+                    controller: _controllers[i],
+                    focusNode: _focusNodes[i],
+                    digit: _digits[i],
+                    isFocused: _focusedIndex == i && _focusNodes[i].hasFocus,
+                    enabled: widget.enabled,
+                    size: sizes.digitSize,
+                    onChanged: (text) => _onNativeTextChanged(i, text),
+                    autofocus: widget.autofocus && i == 0,
+                    index: i,
+                    length: widget.digitCount,
+                  ),
                 ),
-              ),
+              ],
             ],
-          ],
+          ),
         );
       },
     );
@@ -322,31 +337,41 @@ class VisorOtpInputState extends State<VisorOtpInput> {
         return Stack(
           alignment: Alignment.center,
           children: [
-            // Visible digit row.
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (var i = 0; i < widget.digitCount; i++) ...[
-                  if (i > 0) SizedBox(width: sizes.gap),
-                  GestureDetector(
-                    onTap: widget.enabled
-                        ? () {
-                            setState(() => _focusedIndex = i);
-                            _webFocusNode.requestFocus();
-                          }
-                        : null,
-                    child: _VisorOtpDigit(
-                      controller: _controllers[i],
-                      focusNode: FocusNode(skipTraversal: true),
-                      digit: _digits[i],
-                      isFocused: _webFocusNode.hasFocus && _focusedIndex == i,
-                      enabled: widget.enabled,
-                      size: sizes.digitSize,
-                      onChanged: (_) {},
+            // Visible digit row. The hidden capture TextField sits OUTSIDE
+            // this Semantics container so its own textField semantics don't
+            // leak into the OTP code group announcement.
+            Semantics(
+              container: true,
+              label: widget.semanticLabel ??
+                  'OTP code, ${widget.digitCount} digits',
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (var i = 0; i < widget.digitCount; i++) ...[
+                    if (i > 0) SizedBox(width: sizes.gap),
+                    GestureDetector(
+                      onTap: widget.enabled
+                          ? () {
+                              setState(() => _focusedIndex = i);
+                              _webFocusNode.requestFocus();
+                            }
+                          : null,
+                      child: _VisorOtpDigit(
+                        controller: _controllers[i],
+                        focusNode: FocusNode(skipTraversal: true),
+                        digit: _digits[i],
+                        isFocused:
+                            _webFocusNode.hasFocus && _focusedIndex == i,
+                        enabled: widget.enabled,
+                        size: sizes.digitSize,
+                        onChanged: (_) {},
+                        index: i,
+                        length: widget.digitCount,
+                      ),
                     ),
-                  ),
+                  ],
                 ],
-              ],
+              ),
             ),
             // Transparent hidden TextField that captures all keyboard input.
             Positioned.fill(
@@ -425,6 +450,8 @@ class _VisorOtpDigit extends StatelessWidget {
     required this.enabled,
     required this.size,
     required this.onChanged,
+    required this.index,
+    required this.length,
     this.autofocus = false,
   });
 
@@ -435,6 +462,8 @@ class _VisorOtpDigit extends StatelessWidget {
   final bool enabled;
   final double size;
   final ValueChanged<String> onChanged;
+  final int index;
+  final int length;
   final bool autofocus;
 
   @override
@@ -458,33 +487,40 @@ class _VisorOtpDigit extends StatelessWidget {
       border = colors.borderDefault;
     }
 
-    return SizedBox(
-      width: size,
-      height: size,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: bg,
-          border: Border.all(color: border),
-          borderRadius: BorderRadius.circular(radius.sm),
-        ),
-        child: Center(
-          child: TextField(
-            controller: controller,
-            focusNode: focusNode,
-            enabled: enabled,
-            autofocus: autofocus,
-            textAlign: TextAlign.center,
-            keyboardType: TextInputType.number,
-            maxLength: 1,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            onChanged: onChanged,
-            style: textStyles.titleMedium.copyWith(
-              color: enabled ? colors.textPrimary : colors.textDisabled,
-            ),
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-              counterText: '',
-              contentPadding: EdgeInsets.zero,
+    final semanticLabel =
+        'OTP digit ${index + 1} of $length, ${digit.isEmpty ? 'empty' : digit}';
+
+    return Semantics(
+      label: semanticLabel,
+      textField: true,
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: bg,
+            border: Border.all(color: border),
+            borderRadius: BorderRadius.circular(radius.sm),
+          ),
+          child: Center(
+            child: TextField(
+              controller: controller,
+              focusNode: focusNode,
+              enabled: enabled,
+              autofocus: autofocus,
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.number,
+              maxLength: 1,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              onChanged: onChanged,
+              style: textStyles.titleMedium.copyWith(
+                color: enabled ? colors.textPrimary : colors.textDisabled,
+              ),
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                counterText: '',
+                contentPadding: EdgeInsets.zero,
+              ),
             ),
           ),
         ),
