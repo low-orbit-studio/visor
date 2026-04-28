@@ -16,6 +16,10 @@ dependencies:
   # forces the local path. Keep the `^0.1.0` constraint here so the
   # widgetbook app stays compatible with the eventual published version.
   visor_core: ^0.1.0
+  # Required by visor_avatar — cached network image support.
+  cached_network_image: ^3.4.1
+  # Required by visor_avatar — Phosphor icon set for the default user icon.
+  phosphor_flutter: ^2.1.0
   # All 11 Visor-generated ThemeData objects — regenerate with
   # `npm run themes:apply-flutter`. Provides VisorThemes.blackout,
   # .modernMinimal, .solespark, etc. for the Widgetbook theme switcher.
