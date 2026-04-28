@@ -525,6 +525,10 @@ visor/
     └── docs/          # fumadocs documentation site
 ```
 
+### Flutter widget quality
+
+Every `visor_*` Flutter widget is audited against the [Flutter Widget Quality Contract](./docs/flutter-widget-quality-contract.md) — a tiered checklist (Required / Recommended / Stretch) covering tokens, semantics, touch targets, reduce-motion, RTL, tests, and a11y matchers. Required-tier compliance gates a widget being marked production-ready.
+
 ---
 
 ## Sustainability
