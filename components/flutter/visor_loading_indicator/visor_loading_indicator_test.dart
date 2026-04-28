@@ -172,5 +172,47 @@ void main() {
       // testColors() sets interactivePrimaryBg = 0xFF2563EB
       expect(animated.value, const Color(0xFF2563EB));
     });
+
+    // -----------------------------------------------------------------------
+    // Semantics
+    // -----------------------------------------------------------------------
+
+    testWidgets('no Semantics label by default', (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(const VisorLoadingIndicator()),
+      );
+      expect(find.bySemanticsLabel('Loading'), findsNothing);
+      handle.dispose();
+    });
+
+    testWidgets('renders Semantics label when semanticLabel is provided',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(const VisorLoadingIndicator(semanticLabel: 'Loading')),
+      );
+      expect(find.bySemanticsLabel('Loading'), findsOneWidget);
+      handle.dispose();
+    });
+
+    testWidgets(
+        'delayed path: no Semantics label before delay, label visible after',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(const VisorLoadingIndicator(
+          delay: Duration(milliseconds: 300),
+          semanticLabel: 'Loading',
+        )),
+      );
+      // Before delay fires — no semantics node
+      expect(find.bySemanticsLabel('Loading'), findsNothing);
+
+      // Advance past the delay
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.bySemanticsLabel('Loading'), findsOneWidget);
+      handle.dispose();
+    });
   });
 }

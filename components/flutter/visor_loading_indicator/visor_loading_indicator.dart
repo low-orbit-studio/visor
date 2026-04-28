@@ -25,7 +25,17 @@ import 'package:visor_core/visor_core.dart';
 ///
 /// // Custom size + color:
 /// VisorLoadingIndicator(size: 48, color: Colors.white)
+///
+/// // With accessibility label (screen-level, not inline):
+/// VisorLoadingIndicator(semanticLabel: 'Loading')
 /// ```
+///
+/// ## Semantics
+/// [semanticLabel] is opt-in (default `null`). When provided, the spinner is
+/// wrapped in a leaf `Semantics` node so TalkBack/VoiceOver can announce the
+/// loading state. Set this at the *top* of an async screen — not on every
+/// inline spinner — to avoid repeated "Loading… Loading…" announcements when
+/// multiple spinners are on screen simultaneously.
 ///
 /// ## Stroke width
 /// Reads `context.visorStrokeWidths.thick` (`2.5` dp on the default scale).
@@ -42,6 +52,7 @@ class VisorLoadingIndicator extends StatelessWidget {
     this.size,
     this.color,
     this.delay,
+    this.semanticLabel,
   });
 
   /// Logical-pixel diameter of the spinner. Defaults to `24.0` dp.
@@ -60,6 +71,24 @@ class VisorLoadingIndicator extends StatelessWidget {
   /// path; passing `Duration.zero` explicitly is therefore a no-op.
   final Duration? delay;
 
+  /// Optional accessibility label announced by TalkBack and VoiceOver.
+  ///
+  /// When non-null, the spinner is wrapped in a leaf [Semantics] node with
+  /// this label. When `null` (the default), no [Semantics] node is added —
+  /// this avoids "Loading… Loading…" announcement loops when multiple
+  /// spinners are visible or when the caller does not need a screen-reader
+  /// announcement.
+  ///
+  /// **Guidance:** set this at the top of an async screen (e.g. the primary
+  /// full-screen loader), not on every small inline spinner. Use the
+  /// localized equivalent of `'Loading'` rather than a hard-coded string.
+  final String? semanticLabel;
+
+  Widget _wrapSemantics(Widget child) {
+    if (semanticLabel == null) return child;
+    return Semantics(label: semanticLabel, child: child);
+  }
+
   @override
   Widget build(BuildContext context) {
     final effectiveDelay = delay;
@@ -69,12 +98,15 @@ class VisorLoadingIndicator extends StatelessWidget {
         size: size ?? 24.0,
         color: color ?? context.visorColors.interactivePrimaryBg,
         delay: effectiveDelay,
+        semanticLabel: semanticLabel,
       );
     }
 
-    return _VisorSpinner(
-      size: size ?? 24.0,
-      color: color ?? context.visorColors.interactivePrimaryBg,
+    return _wrapSemantics(
+      _VisorSpinner(
+        size: size ?? 24.0,
+        color: color ?? context.visorColors.interactivePrimaryBg,
+      ),
     );
   }
 }
@@ -88,11 +120,13 @@ class _DelayedVisorLoadingIndicator extends StatefulWidget {
     required this.size,
     required this.color,
     required this.delay,
+    this.semanticLabel,
   });
 
   final double size;
   final Color color;
   final Duration delay;
+  final String? semanticLabel;
 
   @override
   State<_DelayedVisorLoadingIndicator> createState() =>
@@ -116,7 +150,9 @@ class _DelayedVisorLoadingIndicatorState
   @override
   Widget build(BuildContext context) {
     if (!_showIndicator) return const SizedBox.shrink();
-    return _VisorSpinner(size: widget.size, color: widget.color);
+    final spinner = _VisorSpinner(size: widget.size, color: widget.color);
+    if (widget.semanticLabel == null) return spinner;
+    return Semantics(label: widget.semanticLabel, child: spinner);
   }
 }
 
