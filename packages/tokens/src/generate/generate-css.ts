@@ -22,6 +22,7 @@ import {
   primitiveSpacing,
   primitiveRadius,
   primitiveBorderWidths,
+  primitiveStrokeWidths,
   primitiveFontSizes,
   primitiveFontWeights,
   primitiveLineHeights,
@@ -151,6 +152,14 @@ function generatePrimitivesCSS(): string {
     borderWidthDecls.push(`--border-width-${name}: ${px}px;`);
   }
   lines.push(block(":root", borderWidthDecls));
+
+  // Stroke Widths
+  lines.push(sectionComment("Primitive: Stroke Widths"));
+  const strokeWidthDecls: string[] = [];
+  for (const [name, px] of Object.entries(primitiveStrokeWidths)) {
+    strokeWidthDecls.push(`--stroke-width-${name}: ${px}px;`);
+  }
+  lines.push(block(":root", strokeWidthDecls));
 
   // Font Families
   lines.push(sectionComment("Primitive: Font Families"));
@@ -660,6 +669,7 @@ function main(): void {
   );
   console.log(`  Spacing steps: ${Object.keys(primitiveSpacing).length}`);
   console.log(`  Radius steps: ${Object.keys(primitiveRadius).length}`);
+  console.log(`  Stroke-width steps: ${Object.keys(primitiveStrokeWidths).length}`);
   console.log(`  Shadow steps: ${Object.keys(primitiveShadows).length}`);
   console.log(`  Motion durations: ${Object.keys(primitiveMotionDurations).length}`);
   console.log(`  Motion easings: ${Object.keys(primitiveMotionEasings).length}`);
