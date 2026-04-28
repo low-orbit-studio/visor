@@ -1,0 +1,21 @@
+name: BackButton
+description: Semantic navigation back button with RTL-aware icon, minimum tap target, and accessibility label.
+category: navigation
+
+when_to_use:
+  - Navigating back in a stack-based routing flow
+  - Custom AppBar leading widget with consistent styling
+  - Any surface that requires a "back" affordance
+  - Screens that use go_router, Navigator, or any navigation package
+
+when_not_to_use:
+  - Tab-based navigation (use BottomNavigationBar or TabBar)
+  - Closing dialogs or bottom sheets (use IconButton with Icons.close)
+  - Destructive actions requiring confirmation
+
+files:
+  - components/flutter/visor_back_button/visor_back_button.dart
+  - components/flutter/visor_back_button/visor_back_button_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }
