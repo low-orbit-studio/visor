@@ -93,7 +93,45 @@ Scale reference:
 
 **Exception:** Themes may override stroke widths in their `.visor.yaml` to tune density. Components must consume the tokens, not the underlying values.
 
-### 4. Spacing Rule
+### 4. Opacity Rule
+
+All opacity / alpha-blend values must use opacity tokens. The scale is exposed as both CSS custom properties (`var(--opacity-*)`) and a Flutter `context.visorOpacity` extension. No hardcoded `.withValues(alpha: 0.N)` literals or inline `opacity: 0.N` declarations.
+
+```css
+/* Correct */
+background: rgb(0 0 0 / var(--opacity-50));
+opacity: var(--opacity-12);
+
+/* Wrong */
+background: rgba(0, 0, 0, 0.5);
+opacity: 0.12;
+```
+
+```dart
+// Correct (Flutter)
+final opacity = context.visorOpacity;
+final overlay = colors.interactivePrimaryBg.withValues(alpha: opacity.alpha12);
+
+// Wrong (Flutter)
+final overlay = colors.interactivePrimaryBg.withValues(alpha: 0.12);
+```
+
+Scale reference:
+
+| Token | Value | Use case |
+|-------|-------|----------|
+| `--opacity-5` / `alpha5` | 0.05 | Barely-there overlays, M3 highlight base |
+| `--opacity-10` / `alpha10` | 0.10 | Subtle hover/pressed overlays, M3 splash base |
+| `--opacity-12` / `alpha12` | 0.12 | Material Design state-overlay standard (button/input hover) |
+| `--opacity-20` / `alpha20` | 0.20 | Emphasized overlays, ghost surfaces |
+| `--opacity-40` / `alpha40` | 0.40 | Disabled-state foreground/background blends |
+| `--opacity-50` / `alpha50` | 0.50 | Material `highlightColor` strength, scrim half-tone |
+| `--opacity-60` / `alpha60` | 0.60 | Heavy overlay, near-solid scrim |
+| `--opacity-80` / `alpha80` | 0.80 | Strong scrim, near-opaque masking |
+
+**No exception.** Opacity is a math primitive, not a brand decision — themes do **not** override the scale. If a needed value is missing, file a token request rather than dropping back to a literal.
+
+### 5. Spacing Rule
 
 All `padding`, `gap`, and `margin` values must use spacing tokens on the 4px grid: `var(--spacing-N)` where N maps to the primitive scale.
 
@@ -131,7 +169,7 @@ Scale reference:
 
 **Exception:** `height`, `width`, and sidebar-specific sizing values are deferred and may use explicit values until component sizing tokens are introduced.
 
-### 5. Motion Rule
+### 6. Motion Rule
 
 All transitions must use `var(--motion-duration-*)` for timing and `var(--motion-easing-*)` for easing. No hard-coded duration or easing values.
 
@@ -167,7 +205,7 @@ transition: opacity 200ms;
 | `--motion-easing-exit` | ease-in | Elements leaving |
 | `--motion-easing-spring` | cubic-bezier(0.34, 1.56, 0.64, 1) | Bouncy/playful |
 
-### 6. Overlay Rule
+### 7. Overlay Rule
 
 Modal and dialog backdrops must use `var(--overlay-bg)` for the translucent background. Themes can override this token to customize overlay appearance.
 
@@ -180,7 +218,7 @@ background: rgba(0, 0, 0, 0.5);
 background: hsla(0, 0%, 0%, 0.5);
 ```
 
-### 7. Focus Ring Rule
+### 8. Focus Ring Rule
 
 Focus rings must use `var(--focus-ring-width)` for ring width and `var(--focus-ring-offset)` for offset. Two patterns are supported:
 
@@ -204,7 +242,7 @@ Focus rings must use `var(--focus-ring-width)` for ring width and `var(--focus-r
 
 Components must use one of these two patterns. Do not invent custom focus ring implementations.
 
-### 8. Color Format Rule
+### 9. Color Format Rule
 
 Use the following color formats in the designated contexts:
 
@@ -226,7 +264,7 @@ color: var(--text-primary, #111827);
 --text-primary: hsl(222, 47%, 11%);
 ```
 
-### 9. Theme Structure Rule
+### 10. Theme Structure Rule
 
 All themes must follow the 5-section template (see [Theme Template](#5-section-theme-template) below):
 
@@ -238,7 +276,7 @@ All themes must follow the 5-section template (see [Theme Template](#5-section-t
 
 Sections 1-3 are required for all themes. Section 4 is required when the theme is used with a specific framework that needs bridged values. Section 5 is only present in creative themes.
 
-### 10. No Magic Numbers Rule
+### 11. No Magic Numbers Rule
 
 Every value in component CSS must trace to a token or be documented as intentional. No unexplained pixel values, rem values, or percentages.
 

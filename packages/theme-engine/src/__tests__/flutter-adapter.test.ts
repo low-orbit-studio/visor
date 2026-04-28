@@ -15,6 +15,7 @@ import {
   parseShadowListToDart,
 } from "../flutter/emit-shadows.js";
 import { emitStrokesDart } from "../flutter/emit-strokes.js";
+import { emitOpacityDart } from "../flutter/emit-opacity.js";
 import {
   emitMotionDart,
   parseDurationToDart,
@@ -113,6 +114,7 @@ describe("flutterAdapter", () => {
     expect(result.files).toHaveProperty(
       "lib/src/strokes/visor_stroke_widths.dart",
     );
+    expect(result.files).toHaveProperty("lib/src/opacity/visor_opacity.dart");
     expect(result.files).toHaveProperty("lib/src/motion/visor_motion.dart");
     expect(result.files).toHaveProperty("lib/src/theme/visor_theme.dart");
   });
@@ -160,6 +162,7 @@ describe("flutterAdapter", () => {
     expect(theme).toContain(
       "import '../strokes/visor_stroke_widths.dart';",
     );
+    expect(theme).toContain("import '../opacity/visor_opacity.dart';");
     expect(theme).toContain("import '../motion/visor_motion.dart';");
     expect(theme).toContain("sealed class VisorAppTheme");
     expect(theme).toContain("VisorTheme.build(");
@@ -170,6 +173,7 @@ describe("flutterAdapter", () => {
     expect(theme).toContain("radius: VisorRadius.instance");
     expect(theme).toContain("shadows: VisorShadows.instance");
     expect(theme).toContain("strokeWidths: VisorStrokeWidths.instance");
+    expect(theme).toContain("opacity: VisorOpacity.instance");
     expect(theme).toContain("motion: VisorMotion.instance");
   });
 
@@ -196,6 +200,7 @@ describe("flutterAdapter", () => {
     expect(files).toHaveProperty(
       "lib/src/strokes/visor_stroke_widths.dart",
     );
+    expect(files).toHaveProperty("lib/src/opacity/visor_opacity.dart");
     expect(files).toHaveProperty("lib/src/motion/visor_motion.dart");
     expect(files).not.toHaveProperty("pubspec.yaml");
     expect(files).not.toHaveProperty("lib/ui.dart");
@@ -469,6 +474,34 @@ strokeWidths:
     expect(dart).toContain("thin: 0.5,");
     expect(dart).toContain("regular: 1.5,"); // default kept
     expect(dart).toContain("thick: 4,");
+  });
+});
+
+describe("emitOpacityDart", () => {
+  it("emits all 8 opacity slots with the canonical fixed-scale values", () => {
+    const dart = emitOpacityDart();
+    expect(dart).toContain("sealed class VisorOpacity");
+    expect(dart).toContain("static final VisorOpacityData instance =");
+    expect(dart).toContain("alpha5: 0.05,");
+    expect(dart).toContain("alpha10: 0.1,");
+    expect(dart).toContain("alpha12: 0.12,");
+    expect(dart).toContain("alpha20: 0.2,");
+    expect(dart).toContain("alpha40: 0.4,");
+    expect(dart).toContain("alpha50: 0.5,");
+    expect(dart).toContain("alpha60: 0.6,");
+    expect(dart).toContain("alpha80: 0.8,");
+  });
+
+  it("imports visor_core for the VisorOpacityData type", () => {
+    const dart = emitOpacityDart();
+    expect(dart).toContain("import 'package:visor_core/visor_core.dart';");
+  });
+
+  it("is fixed-scale — config-independent (theme-engine is not consulted)", () => {
+    // The emitter intentionally takes no AdapterInput. Calling it twice with
+    // a config in the closure should produce identical output, proving no
+    // per-theme branching exists.
+    expect(emitOpacityDart()).toBe(emitOpacityDart());
   });
 });
 

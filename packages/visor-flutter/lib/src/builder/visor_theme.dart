@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../extensions/visor_colors.dart';
 import '../extensions/visor_motion.dart';
+import '../extensions/visor_opacity.dart';
 import '../extensions/visor_radius.dart';
 import '../extensions/visor_shadows.dart';
 import '../extensions/visor_spacing.dart';
@@ -48,6 +49,7 @@ sealed class VisorTheme {
     required VisorColorsData colors,
     required Brightness brightness,
     VisorMotionData? motion,
+    VisorOpacityData? opacity,
     VisorRadiusData? radius,
     VisorShadowsData? shadows,
     VisorSpacingData? spacing,
@@ -57,6 +59,7 @@ sealed class VisorTheme {
     String? fontFamilyPackage,
   }) {
     final resolvedMotion = motion ?? _defaultMotion;
+    final resolvedOpacity = opacity ?? _defaultOpacity;
     final resolvedRadius = radius ?? _defaultRadius;
     final resolvedShadows = shadows ?? _defaultShadows;
     final resolvedSpacing = spacing ?? _defaultSpacing;
@@ -121,14 +124,16 @@ sealed class VisorTheme {
     );
 
     // Opacity variants of the primary bg — indicators, overlays, tracks.
-    // `.withValues` is acceptable here: this is ThemeData construction,
-    // not widget-build hot path.
-    final primary20 = colors.interactivePrimaryBg.withValues(alpha: 0.2);
-    final primary50 = colors.interactivePrimaryBg.withValues(alpha: 0.5);
+    final primary20 =
+        colors.interactivePrimaryBg.withValues(alpha: resolvedOpacity.alpha20);
+    final primary50 =
+        colors.interactivePrimaryBg.withValues(alpha: resolvedOpacity.alpha50);
 
     // Splash/highlight feedback — surface-on-surface, brightness-agnostic.
-    final splashColor = colors.textPrimary.withValues(alpha: 0.1);
-    final highlightColor = colors.textPrimary.withValues(alpha: 0.05);
+    final splashColor =
+        colors.textPrimary.withValues(alpha: resolvedOpacity.alpha10);
+    final highlightColor =
+        colors.textPrimary.withValues(alpha: resolvedOpacity.alpha5);
 
     return ThemeData(
       useMaterial3: true,
@@ -380,6 +385,7 @@ sealed class VisorTheme {
       extensions: <ThemeExtension<dynamic>>[
         colors,
         resolvedMotion,
+        resolvedOpacity,
         resolvedRadius,
         resolvedShadows,
         resolvedSpacing,
@@ -452,6 +458,17 @@ const VisorMotionData _defaultMotion = VisorMotionData(
   durationNormal: Duration(milliseconds: 200),
   durationSlow: Duration(milliseconds: 400),
   easing: Curves.easeInOut,
+);
+
+const VisorOpacityData _defaultOpacity = VisorOpacityData(
+  alpha5: 0.05,
+  alpha10: 0.1,
+  alpha12: 0.12,
+  alpha20: 0.2,
+  alpha40: 0.4,
+  alpha50: 0.5,
+  alpha60: 0.6,
+  alpha80: 0.8,
 );
 
 const VisorRadiusData _defaultRadius = VisorRadiusData(

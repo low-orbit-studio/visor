@@ -30,6 +30,7 @@ import {
   primitiveShadowsDark,
   primitiveZIndex,
   primitiveFontFamilies,
+  primitiveOpacity,
   primitiveOverlay,
   primitiveFocusRing,
   primitiveMotionDurations,
@@ -208,6 +209,16 @@ function generatePrimitivesCSS(): string {
     zIndexDecls.push(`--z-${name}: ${value};`);
   }
   lines.push(block(":root", zIndexDecls));
+
+  // Opacity
+  lines.push(sectionComment("Primitive: Opacity"));
+  const opacityDecls: string[] = [];
+  for (const [name, value] of Object.entries(primitiveOpacity)) {
+    // alpha5 → --opacity-5, alpha12 → --opacity-12
+    const slot = name.replace(/^alpha/, "");
+    opacityDecls.push(`--opacity-${slot}: ${value};`);
+  }
+  lines.push(block(":root", opacityDecls));
 
   // Overlay
   lines.push(sectionComment("Primitive: Overlay"));
@@ -671,6 +682,7 @@ function main(): void {
   console.log(`  Radius steps: ${Object.keys(primitiveRadius).length}`);
   console.log(`  Stroke-width steps: ${Object.keys(primitiveStrokeWidths).length}`);
   console.log(`  Shadow steps: ${Object.keys(primitiveShadows).length}`);
+  console.log(`  Opacity steps: ${Object.keys(primitiveOpacity).length}`);
   console.log(`  Motion durations: ${Object.keys(primitiveMotionDurations).length}`);
   console.log(`  Motion easings: ${Object.keys(primitiveMotionEasings).length}`);
   console.log(

@@ -182,6 +182,21 @@ export const primitiveFontFamilies = {
   mono: '"SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace',
 } as const;
 
+// Opacity scale — fixed across themes (math primitive, not a brand decision).
+// Values cover every current Visor hardcoded opacity site without rounding;
+// 12% is the Material Design state-overlay standard and recurs in widgets.
+// Surfaced to consumers as `var(--opacity-N)` and `context.visorOpacity.alphaN`.
+export const primitiveOpacity = {
+  alpha5: 0.05,
+  alpha10: 0.1,
+  alpha12: 0.12,
+  alpha20: 0.2,
+  alpha40: 0.4,
+  alpha50: 0.5,
+  alpha60: 0.6,
+  alpha80: 0.8,
+} as const;
+
 // Overlay
 export const primitiveOverlay = {
   bg: "rgba(0, 0, 0, 0.5)",

@@ -440,6 +440,7 @@ class _VisorOtpDigit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.visorColors;
+    final opacity = context.visorOpacity;
     final radius = context.visorRadius;
     final textStyles = context.visorTextStyles;
 
@@ -447,7 +448,7 @@ class _VisorOtpDigit extends StatelessWidget {
     final Color border;
 
     if (isFocused && enabled) {
-      bg = colors.borderFocus.withValues(alpha: 0.12);
+      bg = colors.borderFocus.withValues(alpha: opacity.alpha12);
       border = colors.borderFocus;
     } else if (digit.isNotEmpty) {
       bg = colors.surfaceAccentSubtle;

@@ -63,13 +63,14 @@ Full rules: [`docs/token-rules.md`](./docs/token-rules.md). Key enforcement poin
 1. **Fallbacks use Gray, not Slate** — `var()` fallbacks must use Tailwind Gray hex values (`#111827`, not `#0f172a`)
 2. **Shadows are tokenized** — Use `var(--shadow-xs|sm|md|lg|xl)`, never inline `rgba()` shadows
 3. **Strokes are tokenized** — Use `var(--stroke-width-thin|regular|medium|thick)` (Flutter: `context.visorStrokeWidths`); never hardcode border/outline/divider widths
-4. **Spacing on 4px grid** — Padding/gap/margin use `var(--spacing-N)` tokens
-5. **Motion is tokenized** — Transitions use `var(--motion-duration-*)` + `var(--motion-easing-*)`
-6. **Focus rings are tokenized** — Use `var(--focus-ring-width)` and `var(--focus-ring-offset)`
-7. **Overlay uses token** — Backdrops use `var(--overlay-bg)`
-8. **Themes follow 5-section template** — shared → dark → light → framework bridge → creative extensions
-9. **Theme-specific tokens are namespaced** — `--space-glass`, `--veronica-warmth`, never bare `--glass`
-10. **No magic numbers** — Every value traces to a token or is documented as intentional
+4. **Opacity is tokenized** — Use `var(--opacity-{5|10|12|20|40|50|60|80})` (Flutter: `context.visorOpacity.alphaN`); never hardcode `.withValues(alpha: 0.N)` literals or inline `opacity: 0.N`
+5. **Spacing on 4px grid** — Padding/gap/margin use `var(--spacing-N)` tokens
+6. **Motion is tokenized** — Transitions use `var(--motion-duration-*)` + `var(--motion-easing-*)`
+7. **Focus rings are tokenized** — Use `var(--focus-ring-width)` and `var(--focus-ring-offset)`
+8. **Overlay uses token** — Backdrops use `var(--overlay-bg)`
+9. **Themes follow 5-section template** — shared → dark → light → framework bridge → creative extensions
+10. **Theme-specific tokens are namespaced** — `--space-glass`, `--veronica-warmth`, never bare `--glass`
+11. **No magic numbers** — Every value traces to a token or is documented as intentional
 
 ## Playbook Reference
 

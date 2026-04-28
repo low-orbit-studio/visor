@@ -30,7 +30,7 @@ void main() {
       expect(captured.interactivePrimaryBg, colors.interactivePrimaryBg);
     });
 
-    testWidgets('all seven token extensions resolve via context',
+    testWidgets('all eight token extensions resolve via context',
         (tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -49,6 +49,7 @@ void main() {
               expect(context.visorShadows, isA<VisorShadowsData>());
               expect(context.visorMotion, isA<VisorMotionData>());
               expect(context.visorStrokeWidths, isA<VisorStrokeWidthsData>());
+              expect(context.visorOpacity, isA<VisorOpacityData>());
               return const SizedBox.shrink();
             },
           ),
@@ -104,6 +105,36 @@ void main() {
       // VisorSpacingData.defaults uses a 4px base — xs = 4, md = 12.
       expect(spacing.xs, 4.0);
       expect(spacing.md, 12.0);
+    });
+
+    testWidgets('visorOpacity returns the canonical 8-slot scale',
+        (tester) async {
+      late VisorOpacityData opacity;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: VisorTheme.build(
+            colors: testColors(),
+            brightness: Brightness.light,
+          ),
+          home: Builder(
+            builder: (context) {
+              opacity = context.visorOpacity;
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      );
+
+      // Fixed scale: 0.05 / 0.10 / 0.12 / 0.20 / 0.40 / 0.50 / 0.60 / 0.80
+      expect(opacity.alpha5, 0.05);
+      expect(opacity.alpha10, 0.10);
+      expect(opacity.alpha12, 0.12);
+      expect(opacity.alpha20, 0.20);
+      expect(opacity.alpha40, 0.40);
+      expect(opacity.alpha50, 0.50);
+      expect(opacity.alpha60, 0.60);
+      expect(opacity.alpha80, 0.80);
     });
   });
 }
