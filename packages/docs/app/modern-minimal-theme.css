@@ -239,6 +239,7 @@
   --surface-interactive-hover: #3d424d;
   --surface-interactive-active: #505561;
   --surface-interactive-disabled: #292e38;
+  --surface-selected: #003823;
   --surface-accent-subtle: #002113;
   --surface-accent-default: #04bf81;
   --surface-accent-strong: #a0ffcf;
@@ -318,6 +319,7 @@
     --surface-interactive-hover: #3d424d;
     --surface-interactive-active: #505561;
     --surface-interactive-disabled: #292e38;
+    --surface-selected: #003823;
     --surface-accent-subtle: #002113;
     --surface-accent-default: #04bf81;
     --surface-accent-strong: #a0ffcf;
@@ -419,6 +421,7 @@ html:not(.dark) .modern-minimal-theme {
   --surface-interactive-hover: #f4f5f7;
   --surface-interactive-active: #f0f2f6;
   --surface-interactive-disabled: #f4f5f7;
+  --surface-selected: #ddfceb;
   --surface-accent-subtle: #e8faf0;
   --surface-accent-default: #04bf81;
   --surface-accent-strong: #016643;

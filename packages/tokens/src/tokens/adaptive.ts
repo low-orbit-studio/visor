@@ -109,6 +109,10 @@ export const adaptiveSurface: Record<string, AdaptiveTokenValue> = {
     light: "color-neutral-50",
     dark: "color-neutral-800",
   },
+  selected: {
+    light: "color-primary-100",
+    dark: "color-primary-800",
+  },
   "accent-subtle": {
     light: "color-primary-50",
     dark: "color-primary-900",

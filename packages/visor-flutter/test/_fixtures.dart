@@ -27,6 +27,7 @@ VisorColorsData testColors({int textPrimaryValue = 0xFF111111}) {
     surfaceInteractiveHover: const Color(0xFFF9FAFB),
     surfaceInteractiveActive: const Color(0xFFF3F4F6),
     surfaceInteractiveDisabled: const Color(0xFFF9FAFB),
+    surfaceSelected: const Color(0xFFDBEAFE),
     surfaceAccentSubtle: const Color(0xFFEFF6FF),
     surfaceAccentDefault: const Color(0xFF3B82F6),
     surfaceAccentStrong: const Color(0xFF2563EB),

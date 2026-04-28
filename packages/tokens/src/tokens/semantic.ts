@@ -45,6 +45,9 @@ export const semanticSurface = {
   "interactive-active": "color-neutral-100",
   "interactive-disabled": "color-neutral-50",
 
+  // Persistent selected-state surface (active nav item, currently-selected list row)
+  selected: "color-primary-100",
+
   // Brand/accent surfaces
   "accent-subtle": "color-primary-50",
   "accent-default": "color-primary-500",

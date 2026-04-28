@@ -21,6 +21,7 @@ describe("integration: minimum viable theme", () => {
   it("light CSS contains all expected adaptive tokens", () => {
     expect(output.lightCss).toContain("--text-primary");
     expect(output.lightCss).toContain("--surface-page");
+    expect(output.lightCss).toContain("--surface-selected");
     expect(output.lightCss).toContain("--border-default");
     expect(output.lightCss).toContain("--interactive-primary-bg");
   });
@@ -28,6 +29,7 @@ describe("integration: minimum viable theme", () => {
   it("dark CSS contains all expected adaptive tokens", () => {
     expect(output.darkCss).toContain("--text-primary");
     expect(output.darkCss).toContain("--surface-page");
+    expect(output.darkCss).toContain("--surface-selected");
     expect(output.darkCss).toContain("--border-default");
     expect(output.darkCss).toContain("--interactive-primary-bg");
   });

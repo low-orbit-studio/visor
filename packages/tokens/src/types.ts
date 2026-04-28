@@ -153,6 +153,7 @@ export const TOKEN_SURFACE_INTERACTIVE_DEFAULT = "--surface-interactive-default"
 export const TOKEN_SURFACE_INTERACTIVE_HOVER = "--surface-interactive-hover" as const;
 export const TOKEN_SURFACE_INTERACTIVE_ACTIVE = "--surface-interactive-active" as const;
 export const TOKEN_SURFACE_INTERACTIVE_DISABLED = "--surface-interactive-disabled" as const;
+export const TOKEN_SURFACE_SELECTED = "--surface-selected" as const;
 export const TOKEN_SURFACE_ACCENT_SUBTLE = "--surface-accent-subtle" as const;
 export const TOKEN_SURFACE_ACCENT_DEFAULT = "--surface-accent-default" as const;
 export const TOKEN_SURFACE_ACCENT_STRONG = "--surface-accent-strong" as const;
@@ -261,6 +262,7 @@ export type SurfaceToken =
   | typeof TOKEN_SURFACE_INTERACTIVE_HOVER
   | typeof TOKEN_SURFACE_INTERACTIVE_ACTIVE
   | typeof TOKEN_SURFACE_INTERACTIVE_DISABLED
+  | typeof TOKEN_SURFACE_SELECTED
   | typeof TOKEN_SURFACE_ACCENT_SUBTLE
   | typeof TOKEN_SURFACE_ACCENT_DEFAULT
   | typeof TOKEN_SURFACE_ACCENT_STRONG

@@ -45,8 +45,8 @@ overrides:
     text-tertiary: "rgba(255, 255, 255, 0.55)"
     text-disabled: "rgba(255, 255, 255, 0.1)"
     surface-page: "#000000"
-    surface-card: "rgba(255, 255, 255, 0.04)"
-    surface-popover: "#141414"
+    surface-card: "rgba(255, 255, 255, 0.04)" # glass — intentional translucency for ambient inline surfaces (cards, nav)
+    surface-popover: "#141414" # opaque — floating panels over arbitrary content must not be see-through
     surface-subtle: "rgba(255, 255, 255, 0.02)"
     surface-muted: "rgba(255, 255, 255, 0.04)"
     border-default: "rgba(255, 255, 255, 0.06)"
@@ -60,8 +60,8 @@ overrides:
     text-tertiary: "rgba(255, 255, 255, 0.55)"
     text-disabled: "rgba(255, 255, 255, 0.12)"
     surface-page: "#0a0a0a"
-    surface-card: "rgba(255, 255, 255, 0.05)"
-    surface-popover: "#141414"
+    surface-card: "rgba(255, 255, 255, 0.05)" # glass — intentional translucency for ambient inline surfaces (cards, nav)
+    surface-popover: "#141414" # opaque — floating panels over arbitrary content must not be see-through
     surface-subtle: "rgba(255, 255, 255, 0.02)"
     surface-muted: "rgba(255, 255, 255, 0.05)"
     # Interactive surfaces: keep dark (theme engine defaults to white in light mode)

@@ -139,6 +139,7 @@ describe("flutterAdapter", () => {
     );
     expect(colors).toContain("textPrimary:");
     expect(colors).toContain("surfacePage:");
+    expect(colors).toContain("surfaceSelected:");
     expect(colors).toContain("interactivePrimaryBg:");
   });
 

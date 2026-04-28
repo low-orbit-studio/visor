@@ -157,6 +157,7 @@ function semanticInstance(
   emit("surfaceInteractiveHover", "surface", "interactive-hover");
   emit("surfaceInteractiveActive", "surface", "interactive-active");
   emit("surfaceInteractiveDisabled", "surface", "interactive-disabled");
+  emit("surfaceSelected", "surface", "selected");
   emit("surfaceAccentSubtle", "surface", "accent-subtle");
   emit("surfaceAccentDefault", "surface", "accent-default");
   emit("surfaceAccentStrong", "surface", "accent-strong");

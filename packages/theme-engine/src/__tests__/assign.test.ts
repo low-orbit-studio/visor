@@ -100,4 +100,35 @@ describe("assignSemanticTokens", () => {
     expect(tokens.interactive["primary-text"].light).toBe("#ffffff");
     expect(tokens.interactive["primary-text"].dark).toBe("#ffffff");
   });
+
+  describe("surface.selected (VI-242)", () => {
+    it("surface.selected resolves for both modes", () => {
+      expect(tokens.surface.selected).toBeDefined();
+      expect(tokens.surface.selected.light).toMatch(/^#[0-9a-fA-F]{6}$/);
+      expect(tokens.surface.selected.dark).toMatch(/^#[0-9a-fA-F]{6}$/);
+    });
+
+    it("surface.selected light is primary-100, dark is primary-800", () => {
+      expect(tokens.surface.selected.light).toBe(primitives.primary[100]);
+      expect(tokens.surface.selected.dark).toBe(primitives.primary[800]);
+    });
+
+    it("surface.selected is distinct from surface.accent-subtle in both modes", () => {
+      expect(tokens.surface.selected.light).not.toBe(
+        tokens.surface["accent-subtle"].light,
+      );
+      expect(tokens.surface.selected.dark).not.toBe(
+        tokens.surface["accent-subtle"].dark,
+      );
+    });
+
+    it("surface.selected is distinct from surface.interactive-active in both modes", () => {
+      expect(tokens.surface.selected.light).not.toBe(
+        tokens.surface["interactive-active"].light,
+      );
+      expect(tokens.surface.selected.dark).not.toBe(
+        tokens.surface["interactive-active"].dark,
+      );
+    });
+  });
 });

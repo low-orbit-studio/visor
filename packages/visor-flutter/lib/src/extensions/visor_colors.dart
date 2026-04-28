@@ -39,6 +39,7 @@ class VisorColorsData extends ThemeExtension<VisorColorsData> {
     required this.surfaceInteractiveHover,
     required this.surfaceInteractiveActive,
     required this.surfaceInteractiveDisabled,
+    required this.surfaceSelected,
     required this.surfaceAccentSubtle,
     required this.surfaceAccentDefault,
     required this.surfaceAccentStrong,
@@ -105,6 +106,7 @@ class VisorColorsData extends ThemeExtension<VisorColorsData> {
   final Color surfaceInteractiveHover;
   final Color surfaceInteractiveActive;
   final Color surfaceInteractiveDisabled;
+  final Color surfaceSelected;
   final Color surfaceAccentSubtle;
   final Color surfaceAccentDefault;
   final Color surfaceAccentStrong;
@@ -171,6 +173,7 @@ class VisorColorsData extends ThemeExtension<VisorColorsData> {
     Color? surfaceInteractiveHover,
     Color? surfaceInteractiveActive,
     Color? surfaceInteractiveDisabled,
+    Color? surfaceSelected,
     Color? surfaceAccentSubtle,
     Color? surfaceAccentDefault,
     Color? surfaceAccentStrong,
@@ -232,6 +235,7 @@ class VisorColorsData extends ThemeExtension<VisorColorsData> {
           surfaceInteractiveActive ?? this.surfaceInteractiveActive,
       surfaceInteractiveDisabled:
           surfaceInteractiveDisabled ?? this.surfaceInteractiveDisabled,
+      surfaceSelected: surfaceSelected ?? this.surfaceSelected,
       surfaceAccentSubtle: surfaceAccentSubtle ?? this.surfaceAccentSubtle,
       surfaceAccentDefault: surfaceAccentDefault ?? this.surfaceAccentDefault,
       surfaceAccentStrong: surfaceAccentStrong ?? this.surfaceAccentStrong,
@@ -325,6 +329,8 @@ class VisorColorsData extends ThemeExtension<VisorColorsData> {
         other.surfaceInteractiveDisabled,
         t,
       )!,
+      surfaceSelected:
+          Color.lerp(surfaceSelected, other.surfaceSelected, t)!,
       surfaceAccentSubtle:
           Color.lerp(surfaceAccentSubtle, other.surfaceAccentSubtle, t)!,
       surfaceAccentDefault:
