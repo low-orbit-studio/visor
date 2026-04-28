@@ -29,12 +29,26 @@ This model is inspired by shadcn/ui's copy-and-own approach, combined with a sha
 
 ## Quick Start
 
-### Option A: Next.js (recommended)
+### One command. Runnable Next.js app. Borealis-native.
 
-Initialize Visor with the Next.js template — this creates `visor.json`, `.visor.yaml`, and `app/globals.css` with all design tokens generated inline. No npm token package required.
+In an empty directory, run:
 
 ```sh
 npx @loworbitstudio/visor init --template nextjs
+```
+
+That single command scaffolds a complete, runnable Next.js App Router project pre-wired with Visor:
+
+- `package.json` with `next`, `react`, TypeScript, and `@loworbitstudio/visor-core` + `@loworbitstudio/visor-theme-engine` already installed.
+- `app/layout.tsx` with the FOWT (Flash of Wrong Theme) prevention script inline in `<head>` and `globals.css` imported.
+- `app/globals.css` generated from `.visor.yaml` via the Visor Next.js adapter.
+- `app/page.tsx`, `tsconfig.json`, `next.config.ts`, `.gitignore` — the full create-next-app baseline.
+- `.lo/borealis.json` stamp recording the Visor version that initialized the project.
+
+Then start the dev server:
+
+```sh
+cd my-app && npm run dev
 ```
 
 Add your first component:
@@ -43,11 +57,13 @@ Add your first component:
 npx visor add button
 ```
 
-That's it. The component source lands in your project and you own it.
+That's it. The component source lands in your project and you own it. No FOWT flash, no missing config, no second setup step.
 
-### Option B: Manual setup
+> **Heads up:** `visor init --template nextjs` only scaffolds into empty directories — it refuses if `package.json` already exists so it never destructively overwrites in-flight work. For an existing app, use the manual setup below.
 
-For non-Next.js projects or custom token management:
+### Manual setup (non-Next.js or retrofit)
+
+For non-Next.js projects, or to retrofit Visor into an existing app:
 
 **1. Initialize Visor**
 
@@ -354,6 +370,8 @@ npx @loworbitstudio/visor init --template nextjs
 ```
 
 ### FOWT Prevention
+
+> Already wired automatically when you use `npx @loworbitstudio/visor init --template nextjs`. The steps below are only needed for manual setups or non-Next.js apps.
 
 Prevent flash of wrong theme by adding a blocking script to your `<head>`:
 

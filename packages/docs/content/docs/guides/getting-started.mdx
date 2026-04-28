@@ -8,21 +8,32 @@ description: Set up Visor in your project — from zero to first component in un
 - **Node.js 18+** — required by the Visor CLI
 - **npm** — the CLI runs via npx, no global install needed
 
-## Quick Start (Next.js)
+## Quick Start (Next.js — one command)
 
-Scaffold a themed Next.js project in one command:
+In an empty directory, run:
 
 ```bash
 npx @loworbitstudio/visor init --template nextjs
 ```
 
-This creates three files:
+That single command scaffolds a complete, runnable Next.js App Router project pre-wired with Visor — no second setup step:
 
-| File | Purpose |
-|------|---------|
-| `visor.json` | Path config — where components, hooks, and utilities are placed |
-| `.visor.yaml` | Your theme file — brand colors, typography, radius, shadows |
-| `app/globals.css` | Generated theme CSS via the NextJS adapter |
+| What you get | Why it matters |
+|--------------|----------------|
+| Full `package.json` with `next`, `react`, TypeScript | Run `npm run dev` immediately |
+| `@loworbitstudio/visor-core` + `@loworbitstudio/visor-theme-engine` installed | Tokens and FOWT helpers are already there |
+| `.visor.yaml` | Your theme — edit colors, typography, radius, shadows |
+| `app/globals.css` | Generated from `.visor.yaml` by the Next.js adapter |
+| `app/layout.tsx` with FOWT script + globals.css imported | No flash of wrong theme on hard reload |
+| `.lo/borealis.json` | Stamp recording the Visor version that initialized the project |
+
+Then start the dev server:
+
+```bash
+cd my-app && npm run dev
+```
+
+> **Heads up:** `visor init --template nextjs` only scaffolds into empty directories — it refuses if `package.json` already exists. To retrofit an existing app, use the Manual Setup section below.
 
 ## Customize Your Theme
 
@@ -78,7 +89,7 @@ Use `--dry-run` to see what a command would do without writing files:
 npx visor add button --dry-run
 ```
 
-## Manual Setup (Non-Next.js)
+## Manual Setup (non-Next.js)
 
 If you are not using Next.js:
 
