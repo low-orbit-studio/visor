@@ -46,6 +46,7 @@ class VisorTextInput extends StatefulWidget {
     this.controller,
     this.focusNode,
     this.prefixIcon,
+    this.suffixWidget,
     this.errorText,
     this.onChanged,
     this.onFieldSubmitted,
@@ -59,6 +60,7 @@ class VisorTextInput extends StatefulWidget {
     this.textCapitalization = TextCapitalization.none,
     this.autovalidateMode,
     this.isValid,
+    this.obscureText = false,
     this.semanticLabel,
     super.key,
   });
@@ -75,6 +77,21 @@ class VisorTextInput extends StatefulWidget {
 
   /// Optional icon shown at the leading edge of the field.
   final Widget? prefixIcon;
+
+  /// Optional widget shown at the trailing edge of the field. Rendered after
+  /// the checkmark when the field is valid. Use this slot for custom controls
+  /// such as a password-visibility toggle.
+  ///
+  /// When [isValid] resolves to true, the checkmark is shown first and
+  /// [suffixWidget] is placed immediately after it.
+  final Widget? suffixWidget;
+
+  /// Whether to obscure the field's text (for password inputs).
+  ///
+  /// When true, the entered characters are replaced with bullet characters
+  /// and the field opts out of autocorrect and suggestions automatically.
+  /// Defaults to false.
+  final bool obscureText;
 
   /// Overrides the error message shown below the field. When non-null this
   /// takes precedence over the string returned by [validator].
@@ -333,16 +350,19 @@ class _VisorTextInputState extends State<VisorTextInput> {
                       ),
                     ),
                   ),
-                  // Suffix: checkmark when valid, nothing otherwise
+                  // Suffix: checkmark when valid + optional suffixWidget
                   if (widget.enabled && _isValid)
                     Padding(
-                      padding: EdgeInsets.only(right: spacing.md),
+                      padding: EdgeInsets.only(
+                        right: widget.suffixWidget != null ? 0 : spacing.md,
+                      ),
                       child: Icon(
                         Icons.check_circle_outline,
                         color: colors.textSuccess,
                         size: 20,
                       ),
                     ),
+                  if (widget.suffixWidget != null) widget.suffixWidget!,
                 ],
               ),
             ),
@@ -419,6 +439,7 @@ class _VisorTextInputState extends State<VisorTextInput> {
             autocorrect: widget.autocorrect,
             enableSuggestions: widget.enableSuggestions,
             textCapitalization: widget.textCapitalization,
+            obscureText: widget.obscureText,
             autovalidateMode: AutovalidateMode.disabled,
             // Validation is handled externally by our custom error display.
             // We still forward the validator so Form.validate() works.
