@@ -14,6 +14,7 @@ import {
   emitShadowsDart,
   parseShadowListToDart,
 } from "../flutter/emit-shadows.js";
+import { emitStrokesDart } from "../flutter/emit-strokes.js";
 import {
   emitMotionDart,
   parseDurationToDart,
@@ -109,6 +110,9 @@ describe("flutterAdapter", () => {
     expect(result.files).toHaveProperty("lib/src/spacing/visor_spacing.dart");
     expect(result.files).toHaveProperty("lib/src/radius/visor_radius.dart");
     expect(result.files).toHaveProperty("lib/src/shadows/visor_shadows.dart");
+    expect(result.files).toHaveProperty(
+      "lib/src/strokes/visor_stroke_widths.dart",
+    );
     expect(result.files).toHaveProperty("lib/src/motion/visor_motion.dart");
     expect(result.files).toHaveProperty("lib/src/theme/visor_theme.dart");
   });
@@ -153,6 +157,9 @@ describe("flutterAdapter", () => {
     expect(theme).toContain("import '../spacing/visor_spacing.dart';");
     expect(theme).toContain("import '../radius/visor_radius.dart';");
     expect(theme).toContain("import '../shadows/visor_shadows.dart';");
+    expect(theme).toContain(
+      "import '../strokes/visor_stroke_widths.dart';",
+    );
     expect(theme).toContain("import '../motion/visor_motion.dart';");
     expect(theme).toContain("sealed class VisorAppTheme");
     expect(theme).toContain("VisorTheme.build(");
@@ -162,6 +169,7 @@ describe("flutterAdapter", () => {
     expect(theme).toContain("spacing: VisorSpacing.instance");
     expect(theme).toContain("radius: VisorRadius.instance");
     expect(theme).toContain("shadows: VisorShadows.instance");
+    expect(theme).toContain("strokeWidths: VisorStrokeWidths.instance");
     expect(theme).toContain("motion: VisorMotion.instance");
   });
 
@@ -185,6 +193,9 @@ describe("flutterAdapter", () => {
     expect(files).toHaveProperty("lib/src/spacing/visor_spacing.dart");
     expect(files).toHaveProperty("lib/src/radius/visor_radius.dart");
     expect(files).toHaveProperty("lib/src/shadows/visor_shadows.dart");
+    expect(files).toHaveProperty(
+      "lib/src/strokes/visor_stroke_widths.dart",
+    );
     expect(files).toHaveProperty("lib/src/motion/visor_motion.dart");
     expect(files).not.toHaveProperty("pubspec.yaml");
     expect(files).not.toHaveProperty("lib/ui.dart");
@@ -420,6 +431,44 @@ describe("emitShadowsDart / parseShadowListToDart", () => {
     for (const key of ["xs:", "sm:", "md:", "lg:", "xl:"]) {
       expect(dart).toContain(key);
     }
+  });
+});
+
+describe("emitStrokesDart", () => {
+  it("wires all 4 stroke-width slots with default values", () => {
+    const data = generateThemeData(MINIMAL_YAML);
+    const dart = emitStrokesDart({
+      primitives: data.primitives,
+      tokens: data.tokens,
+      config: data.config,
+    });
+    expect(dart).toContain("sealed class VisorStrokeWidths");
+    expect(dart).toContain("static final VisorStrokeWidthsData instance =");
+    expect(dart).toContain("thin: 1,");
+    expect(dart).toContain("regular: 1.5,");
+    expect(dart).toContain("medium: 2,");
+    expect(dart).toContain("thick: 2.5,");
+  });
+
+  it("respects strokeWidths overrides from .visor.yaml", () => {
+    const yaml = `
+name: Stroke Override
+version: 1
+colors:
+  primary: "#2563EB"
+strokeWidths:
+  thin: 0.5
+  thick: 4
+`.trim();
+    const data = generateThemeData(yaml);
+    const dart = emitStrokesDart({
+      primitives: data.primitives,
+      tokens: data.tokens,
+      config: data.config,
+    });
+    expect(dart).toContain("thin: 0.5,");
+    expect(dart).toContain("regular: 1.5,"); // default kept
+    expect(dart).toContain("thick: 4,");
   });
 });
 

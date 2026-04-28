@@ -41,6 +41,12 @@ const DEFAULTS = {
     lg: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)",
     xl: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
   },
+  strokeWidths: {
+    thin: 1,
+    regular: 1.5,
+    medium: 2,
+    thick: 2.5,
+  },
   motion: {
     "duration-fast": "100ms",
     "duration-normal": "200ms",
@@ -154,6 +160,12 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
       md: config.shadows?.md ?? DEFAULTS.shadows.md,
       lg: config.shadows?.lg ?? DEFAULTS.shadows.lg,
       xl: config.shadows?.xl ?? DEFAULTS.shadows.xl,
+    },
+    strokeWidths: {
+      thin: config.strokeWidths?.thin ?? DEFAULTS.strokeWidths.thin,
+      regular: config.strokeWidths?.regular ?? DEFAULTS.strokeWidths.regular,
+      medium: config.strokeWidths?.medium ?? DEFAULTS.strokeWidths.medium,
+      thick: config.strokeWidths?.thick ?? DEFAULTS.strokeWidths.thick,
     },
     motion: {
       "duration-fast":

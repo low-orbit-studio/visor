@@ -5,7 +5,7 @@
  * calls `VisorTheme.build()` with the emitted token instances
  * (`VisorColors.light/dark`, `VisorTextStyles.instance`,
  * `VisorSpacing.instance`, `VisorRadius.instance`, `VisorShadows.instance`,
- * `VisorMotion.instance`).
+ * `VisorStrokeWidths.instance`, `VisorMotion.instance`).
  */
 
 export interface EmitThemeOptions {
@@ -52,6 +52,7 @@ export function emitThemeDart(options: EmitThemeOptions): string {
       `        spacing: VisorSpacing.instance,`,
       `        radius: VisorRadius.instance,`,
       `        shadows: VisorShadows.instance,`,
+      `        strokeWidths: VisorStrokeWidths.instance,`,
       `        motion: VisorMotion.instance,`,
       `      );`,
       ``,
@@ -67,6 +68,7 @@ export function emitThemeDart(options: EmitThemeOptions): string {
       `        spacing: VisorSpacing.instance,`,
       `        radius: VisorRadius.instance,`,
       `        shadows: VisorShadows.instance,`,
+      `        strokeWidths: VisorStrokeWidths.instance,`,
       `        motion: VisorMotion.instance,`,
       `      );`,
       ``,

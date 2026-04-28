@@ -23,7 +23,7 @@ export interface ValidationResult {
 
 const KNOWN_TOP_LEVEL_KEYS = new Set([
   "name", "version", "group", "label", "default-mode", "colors", "colors-dark", "typography",
-  "spacing", "radius", "shadows", "motion", "overrides",
+  "spacing", "radius", "shadows", "strokeWidths", "motion", "overrides",
 ]);
 
 const KNOWN_COLOR_KEYS = new Set([
@@ -44,6 +44,7 @@ const KNOWN_SLOT_OVERRIDE_KEYS = new Set(["size", "weight", "letter-spacing"]);
 const KNOWN_SPACING_KEYS = new Set(["base"]);
 const KNOWN_RADIUS_KEYS = new Set(["sm", "md", "lg", "xl", "pill"]);
 const KNOWN_SHADOW_KEYS = new Set(["xs", "sm", "md", "lg", "xl"]);
+const KNOWN_STROKE_WIDTH_KEYS = new Set(["thin", "regular", "medium", "thick"]);
 const KNOWN_MOTION_KEYS = new Set(["duration-fast", "duration-normal", "duration-slow", "easing"]);
 const KNOWN_OVERRIDES_KEYS = new Set(["light", "dark"]);
 
@@ -176,6 +177,15 @@ function checkUnknownKeys(obj: Record<string, unknown>, errors: string[]): void 
     for (const key of Object.keys(obj.shadows as Record<string, unknown>)) {
       if (!KNOWN_SHADOW_KEYS.has(key)) {
         errors.push(`Unknown key 'shadows.${key}'. Valid keys: ${[...KNOWN_SHADOW_KEYS].join(", ")}`);
+      }
+    }
+  }
+
+  // strokeWidths
+  if (typeof obj.strokeWidths === "object" && obj.strokeWidths !== null) {
+    for (const key of Object.keys(obj.strokeWidths as Record<string, unknown>)) {
+      if (!KNOWN_STROKE_WIDTH_KEYS.has(key)) {
+        errors.push(`Unknown key 'strokeWidths.${key}'. Valid keys: ${[...KNOWN_STROKE_WIDTH_KEYS].join(", ")}`);
       }
     }
   }
