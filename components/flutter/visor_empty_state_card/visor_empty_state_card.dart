@@ -10,6 +10,15 @@ import '../visor_empty_state/visor_empty_state.dart';
 /// [VisorEmptyState] pinned to compact (horizontal) layout and internal
 /// horizontal padding neutralized so the card's own padding governs spacing.
 ///
+/// ## Accessibility
+///
+/// The Semantics container is provided by the inner [VisorEmptyState] (added
+/// in VI-247) — the card adds visual chrome only and intentionally does not
+/// wrap its decorated `Container` in a second `Semantics(container: true)`.
+/// This keeps screen readers (TalkBack / VoiceOver) from announcing the card
+/// twice. Pass [semanticLabel] to override the announced label at the card
+/// boundary; it is forwarded to [VisorEmptyState.semanticLabel].
+///
 /// ```dart
 /// VisorEmptyStateCard(
 ///   icon: Icons.inbox_outlined,
@@ -27,6 +36,7 @@ class VisorEmptyStateCard extends StatelessWidget {
     this.action,
     this.secondaryAction,
     this.iconSize = 48,
+    this.semanticLabel,
   });
 
   final IconData icon;
@@ -35,6 +45,11 @@ class VisorEmptyStateCard extends StatelessWidget {
   final Widget? action;
   final Widget? secondaryAction;
   final double iconSize;
+
+  /// Optional override for the Semantics container label announced by screen
+  /// readers. Forwarded to [VisorEmptyState.semanticLabel]; defaults to
+  /// [headline] when `null`.
+  final String? semanticLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +77,7 @@ class VisorEmptyStateCard extends StatelessWidget {
         secondaryAction: secondaryAction,
         iconSize: iconSize,
         forceCompact: true,
+        semanticLabel: semanticLabel,
       ),
     );
   }

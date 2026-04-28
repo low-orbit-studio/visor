@@ -99,5 +99,65 @@ void main() {
       expect(find.text('Create new'), findsOneWidget);
       expect(find.text('Import existing'), findsOneWidget);
     });
+
+    // ──────────────────────────────────────────────────────────────────────
+    // Semantics — inherited from inner VisorEmptyState (VI-247 / VI-249)
+    // ──────────────────────────────────────────────────────────────────────
+
+    testWidgets('announces as a single Semantics container with headline as default label',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+
+      await tester.pumpWidget(_wrap(const VisorEmptyStateCard(
+        icon: Icons.inbox_outlined,
+        headline: 'No messages',
+      )));
+
+      // The container is provided by the inner VisorEmptyState; the card
+      // chrome must NOT add a second Semantics(container: true). The inner
+      // node's label defaults to the headline.
+      final node = tester.getSemantics(find.byType(VisorEmptyState));
+      expect(node.label, 'No messages');
+
+      // Single-announcement invariant: exactly one container Semantics in
+      // the card's subtree. A second one (e.g., on the card's outer
+      // Container) would cause double announcements on TalkBack/VoiceOver.
+      final containerSemantics = tester
+          .widgetList<Semantics>(find.descendant(
+            of: find.byType(VisorEmptyStateCard),
+            matching: find.byType(Semantics),
+          ))
+          .where((s) => s.container)
+          .toList();
+      expect(containerSemantics, hasLength(1));
+
+      handle.dispose();
+    });
+
+    testWidgets('semanticLabel param overrides the announced label', (tester) async {
+      final handle = tester.ensureSemantics();
+
+      await tester.pumpWidget(_wrap(const VisorEmptyStateCard(
+        icon: Icons.inbox_outlined,
+        headline: 'No messages',
+        semanticLabel: 'Inbox is empty',
+      )));
+
+      final node = tester.getSemantics(find.byType(VisorEmptyState));
+      expect(node.label, 'Inbox is empty');
+
+      handle.dispose();
+    });
+
+    testWidgets('forwards semanticLabel to inner VisorEmptyState', (tester) async {
+      await tester.pumpWidget(_wrap(const VisorEmptyStateCard(
+        icon: Icons.inbox_outlined,
+        headline: 'No messages',
+        semanticLabel: 'custom card label',
+      )));
+
+      final inner = tester.widget<VisorEmptyState>(find.byType(VisorEmptyState));
+      expect(inner.semanticLabel, 'custom card label');
+    });
   });
 }
