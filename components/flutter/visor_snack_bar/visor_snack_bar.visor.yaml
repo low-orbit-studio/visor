@@ -1,0 +1,22 @@
+name: SnackBar
+description: Token-driven feedback toast with success, error, and standard variants. Static helper-method API — no constructor call required.
+category: feedback
+
+when_to_use:
+  - Confirming a completed action (save, submit, delete)
+  - Reporting a transient error that does not block the current screen
+  - Displaying a brief neutral status message (syncing, loading complete)
+  - Providing an optional undo or retry action alongside the message
+
+when_not_to_use:
+  - Persistent errors that require user action to resolve (use an inline error state or dialog)
+  - Long messages with multiple actions (use a dialog or bottom sheet)
+  - Blocking flows that must halt user interaction (use a modal dialog)
+  - Content that should remain visible indefinitely (use a banner or alert card)
+
+files:
+  - components/flutter/visor_snack_bar/visor_snack_bar.dart
+  - components/flutter/visor_snack_bar/visor_snack_bar_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }
