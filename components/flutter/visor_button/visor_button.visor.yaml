@@ -16,6 +16,7 @@ when_not_to_use:
 files:
   - components/flutter/visor_button/visor_button.dart
   - components/flutter/visor_button/visor_button_test.dart
+  - components/flutter/visor_button/visor_button_golden_test.dart
 
 pubDependencies:
   - { pub: visor_core, version: "^0.1.0" }

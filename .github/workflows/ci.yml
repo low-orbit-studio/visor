@@ -12,6 +12,7 @@ jobs:
     outputs:
       code: ${{ steps.filter.outputs.code }}
       docs: ${{ steps.filter.outputs.docs }}
+      flutter: ${{ steps.filter.outputs.flutter }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,6 +33,10 @@ jobs:
             docs:
               - 'packages/docs/**'
               - 'components/**'
+            flutter:
+              - 'components/flutter/**'
+              - 'packages/visor-flutter/**'
+              - '.github/workflows/ci.yml'
 
   lint-and-validate:
     name: Lint & Validate
@@ -167,3 +172,39 @@ jobs:
 
       - name: Build docs site
         run: npm run docs:build
+
+  flutter-test:
+    name: Flutter analyze + test (CI goldens)
+    needs: changes
+    if: needs.changes.outputs.flutter == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.35.5"
+          channel: stable
+          cache: true
+
+      - name: Resolve dependencies
+        working-directory: components/flutter
+        run: flutter pub get
+
+      - name: Analyze
+        working-directory: components/flutter
+        run: flutter analyze
+
+      - name: Test (each widget directory)
+        working-directory: components/flutter
+        run: |
+          # `flutter test` requires a `test/` directory at the package root, but
+          # this package keeps tests next to source (`<widget>/<widget>_test.dart`).
+          # Pass each widget directory explicitly so the package test runner
+          # discovers every `*_test.dart` file. Goldens are CI-only (Ahem font),
+          # configured in flutter_test_config.dart.
+          dirs=$(find . -maxdepth 1 -mindepth 1 -type d -name 'visor_*' | sort)
+          flutter test $dirs
