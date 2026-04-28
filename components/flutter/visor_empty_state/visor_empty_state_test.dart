@@ -186,5 +186,42 @@ void main() {
       // With surfaceSize height=800 (standard), size should be 32.
       expect(icon.size, 32);
     });
+
+    // ──────────────────────────────────────────────────────────────────────
+    // Semantics
+    // ──────────────────────────────────────────────────────────────────────
+
+    testWidgets('wraps content in a Semantics container with headline as default label',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+
+      await tester.pumpWidget(_wrap(const VisorEmptyState(
+        icon: Icons.inbox_outlined,
+        headline: 'No messages',
+      )));
+
+      final semanticsNode =
+          tester.getSemantics(find.byType(VisorEmptyState));
+      // The Semantics container label defaults to headline.
+      expect(semanticsNode.label, 'No messages');
+
+      handle.dispose();
+    });
+
+    testWidgets('semanticLabel param overrides the default label', (tester) async {
+      final handle = tester.ensureSemantics();
+
+      await tester.pumpWidget(_wrap(const VisorEmptyState(
+        icon: Icons.inbox_outlined,
+        headline: 'No messages',
+        semanticLabel: 'Inbox is empty',
+      )));
+
+      final semanticsNode =
+          tester.getSemantics(find.byType(VisorEmptyState));
+      expect(semanticsNode.label, 'Inbox is empty');
+
+      handle.dispose();
+    });
   });
 }

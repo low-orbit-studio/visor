@@ -11,6 +11,17 @@ import 'package:visor_core/visor_core.dart';
 /// the compact layout — useful when the caller knows the container is
 /// height-constrained (e.g., `VisorEmptyStateCard`).
 ///
+/// ## Accessibility
+///
+/// The widget is wrapped in a `Semantics` container so screen readers
+/// (TalkBack / VoiceOver) announce the empty state as a single coherent
+/// region. By default the container label equals [headline]. Pass
+/// [semanticLabel] to override — useful when the headline alone lacks
+/// enough context (e.g. `semanticLabel: 'Inbox is empty'`). The
+/// headline + body subtree is merged via `MergeSemantics` so they are
+/// read as one phrase; action widgets remain independently focusable
+/// nodes outside the merge.
+///
 /// ```dart
 /// // Standard vertical layout
 /// VisorEmptyState(
@@ -39,6 +50,13 @@ import 'package:visor_core/visor_core.dart';
 ///   headline: 'No messages',
 ///   forceCompact: true,
 /// )
+///
+/// // Custom semantic label
+/// VisorEmptyState(
+///   icon: Icons.inbox_outlined,
+///   headline: 'No messages',
+///   semanticLabel: 'Inbox is empty',
+/// )
 /// ```
 class VisorEmptyState extends StatelessWidget {
   const VisorEmptyState({
@@ -50,6 +68,7 @@ class VisorEmptyState extends StatelessWidget {
     this.secondaryAction,
     this.iconSize = 48,
     this.forceCompact = false,
+    this.semanticLabel,
   });
 
   final IconData icon;
@@ -71,18 +90,28 @@ class VisorEmptyState extends StatelessWidget {
   /// and other height-constrained containers.
   final bool forceCompact;
 
+  /// Optional override for the Semantics container label announced by screen
+  /// readers (TalkBack / VoiceOver). Defaults to [headline] when `null`.
+  /// Use this when the headline alone lacks sufficient context, e.g.
+  /// `semanticLabel: 'Inbox is empty'`.
+  final String? semanticLabel;
+
   /// Available-height threshold below which the adaptive layout switches to
   /// the compact (horizontal) variant.
   static const double _kCompactThreshold = 400;
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final compact =
-            forceCompact || constraints.maxHeight < _kCompactThreshold;
-        return compact ? _buildCompact(context) : _buildStandard(context);
-      },
+    return Semantics(
+      container: true,
+      label: semanticLabel ?? headline,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final compact =
+              forceCompact || constraints.maxHeight < _kCompactThreshold;
+          return compact ? _buildCompact(context) : _buildStandard(context);
+        },
+      ),
     );
   }
 
@@ -99,21 +128,29 @@ class VisorEmptyState extends StatelessWidget {
         children: [
           Icon(icon, size: iconSize, color: colors.textTertiary),
           SizedBox(height: spacing.lg),
-          Text(
-            headline,
-            textAlign: TextAlign.center,
-            style: textStyles.headlineSmall
-                .copyWith(color: colors.textPrimary),
-          ),
-          if (body != null) ...[
-            SizedBox(height: spacing.sm),
-            Text(
-              body!,
-              textAlign: TextAlign.center,
-              style: textStyles.bodyMedium
-                  .copyWith(color: colors.textSecondary),
+          MergeSemantics(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  headline,
+                  textAlign: TextAlign.center,
+                  style: textStyles.headlineSmall
+                      .copyWith(color: colors.textPrimary),
+                ),
+                if (body != null) ...[
+                  SizedBox(height: spacing.sm),
+                  Text(
+                    body!,
+                    textAlign: TextAlign.center,
+                    style: textStyles.bodyMedium
+                        .copyWith(color: colors.textSecondary),
+                  ),
+                ],
+              ],
             ),
-          ],
+          ),
           if (action != null) ...[
             SizedBox(height: spacing.xl),
             _buildActions(context),
@@ -143,19 +180,27 @@ class VisorEmptyState extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  headline,
-                  style: textStyles.titleMedium
-                      .copyWith(color: colors.textPrimary),
-                ),
-                if (body != null) ...[
-                  SizedBox(height: spacing.xs),
-                  Text(
-                    body!,
-                    style: textStyles.bodySmall
-                        .copyWith(color: colors.textSecondary),
+                MergeSemantics(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        headline,
+                        style: textStyles.titleMedium
+                            .copyWith(color: colors.textPrimary),
+                      ),
+                      if (body != null) ...[
+                        SizedBox(height: spacing.xs),
+                        Text(
+                          body!,
+                          style: textStyles.bodySmall
+                              .copyWith(color: colors.textSecondary),
+                        ),
+                      ],
+                    ],
                   ),
-                ],
+                ),
                 if (action != null) ...[
                   SizedBox(height: spacing.sm),
                   _buildActions(context),
