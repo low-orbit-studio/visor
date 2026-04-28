@@ -267,4 +267,52 @@ void main() {
       expect(find.byType(VisorTextInput), findsOneWidget);
     });
   });
+
+  // -------------------------------------------------------------------------
+  // meetsGuideline (R11) — tap-target + labeled-tap coverage
+  // -------------------------------------------------------------------------
+
+  group('meetsGuideline (R11)', () {
+    testWidgets(
+        'default text input meets Android tap target + label guidelines',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(const VisorTextInput(labelText: 'Email')),
+      );
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      handle.dispose();
+    });
+
+    testWidgets(
+        'input with prefixIcon meets Android tap target + label guidelines',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(const VisorTextInput(
+          labelText: 'Email',
+          prefixIcon: Icon(Icons.email),
+        )),
+      );
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      handle.dispose();
+    });
+
+    testWidgets(
+        'input in error state meets Android tap target + label guidelines',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(const VisorTextInput(
+          labelText: 'Email',
+          errorText: 'Invalid email address',
+        )),
+      );
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      handle.dispose();
+    });
+  });
 }
