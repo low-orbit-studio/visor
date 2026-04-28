@@ -1,0 +1,20 @@
+name: ChipSearchInput
+description: A search input that holds selected items as inline chip pills. Generic type parameter lets consumers supply their own item shape. Animated clear button and reduce-motion aware. Maps to the React search-input + tag-input combined pattern.
+category: form
+
+when_to_use:
+  - Multi-select search surfaces (filter pickers, recipient pickers, tag entry)
+  - Any UI where the user builds a query by adding and removing labelled tokens
+  - Search bars that need to show active filter chips inline with the text input
+
+when_not_to_use:
+  - Simple single-value search (use a plain TextField or VisorTextInput)
+  - Static chip groups where no typing is involved (use VisorChip)
+  - Forms that need full validation support (use VisorTextInput)
+
+files:
+  - components/flutter/visor_chip_search_input/visor_chip_search_input.dart
+  - components/flutter/visor_chip_search_input/visor_chip_search_input_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }
