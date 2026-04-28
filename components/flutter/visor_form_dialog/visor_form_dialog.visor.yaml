@@ -1,0 +1,20 @@
+name: FormDialog
+description: Minimal Dialog + ConstrainedBox wrapper that provides consistent maxWidth and padding for inline form surfaces.
+category: forms
+
+when_to_use:
+  - Presenting a form inside a modal dialog (login, edit, confirm)
+  - Constraining a form surface to a readable max-width on wide screens
+  - Standardizing the padding and layout frame for dialog-hosted forms
+
+when_not_to_use:
+  - Full-screen sheets or bottom sheets (use a sheet widget instead)
+  - Non-form content dialogs — alerts, confirms (use AlertDialog directly)
+  - Dialogs that need custom chrome, headers, or action bars
+
+files:
+  - components/flutter/visor_form_dialog/visor_form_dialog.dart
+  - components/flutter/visor_form_dialog/visor_form_dialog_test.dart
+
+pubDependencies:
+  - { pub: visor_core, version: "^0.1.0" }
