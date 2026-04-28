@@ -1,5 +1,11 @@
 # @loworbitstudio/visor-core
 
+## 0.5.0
+
+### Minor Changes
+
+- 7ec9229: Ship stock themes (blackout, modern-minimal, neutral, space) as npm subpath exports. Consumers can now `import '@loworbitstudio/visor-core/themes/blackout'` and apply the matching `.{slug}-theme` class.
+
 ## 0.4.1
 
 ### Patch Changes
