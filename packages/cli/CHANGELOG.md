@@ -1,10 +1,17 @@
 # Changelog
 
+## 0.5.0
+
+### Minor Changes
+
+- e08e93b: Add DateRangePicker component. Two-month popover range picker built on Calendar + Radix Popover. Install via `npx visor add date-range-picker`.
+
 ## [Unreleased]
 
 ## [0.3.0] - Initial release
 
 ### Added
+
 - Initial release of the Visor CLI for managing design system components and themes.
 
 ## 0.2.0 — AI Consumability & Theme Sync
