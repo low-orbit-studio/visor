@@ -6,6 +6,13 @@ enum VisorDeltaDirection { up, down, flat }
 /// A rectangular card displaying a single metric: a title, a large value,
 /// an optional change indicator, and an optional leading icon.
 ///
+/// Screen readers announce the card as a single logical unit via a
+/// `Semantics(container: true)` wrapper. The default label is
+/// `'<title>: <value>'` when no delta is present, or
+/// `'<title>: <value>, <delta>'` when a delta string is provided.
+/// Pass [semanticLabel] to override the composed label entirely (e.g. for
+/// translations or custom verbalizations).
+///
 /// ```dart
 /// VisorStatCard(
 ///   title: 'Revenue',
@@ -23,6 +30,7 @@ class VisorStatCard extends StatelessWidget {
     this.delta,
     this.deltaDirection,
     this.icon,
+    this.semanticLabel,
   });
 
   final String title;
@@ -30,6 +38,12 @@ class VisorStatCard extends StatelessWidget {
   final String? delta;
   final VisorDeltaDirection? deltaDirection;
   final IconData? icon;
+
+  /// Optional override for the accessibility label announced by screen readers.
+  ///
+  /// When null, the label is composed as `'<title>: <value>'` (no delta) or
+  /// `'<title>: <value>, <delta>'` (with delta).
+  final String? semanticLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -40,56 +54,66 @@ class VisorStatCard extends StatelessWidget {
 
     final deltaColor = _deltaColor(colors, deltaDirection);
 
-    return Container(
-      padding: EdgeInsets.all(spacing.lg),
-      decoration: BoxDecoration(
-        color: colors.surfaceCard,
-        borderRadius: BorderRadius.circular(radius.md),
-        border: Border.all(color: colors.borderDefault),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              if (icon != null) ...[
-                Icon(icon, size: 20, color: colors.textSecondary),
-                SizedBox(width: spacing.sm),
-              ],
-              Expanded(
-                child: Text(
-                  title,
-                  style: textStyles.titleMedium
-                      .copyWith(color: colors.textSecondary),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: spacing.sm),
-          Text(
-            value,
-            style: textStyles.displaySmall
-                .copyWith(color: colors.textPrimary),
-          ),
-          if (delta != null) ...[
-            SizedBox(height: spacing.xs),
+    final label = semanticLabel ??
+        (delta != null ? '$title: $value, ${delta!}' : '$title: $value');
+
+    return Semantics(
+      container: true,
+      label: label,
+      excludeSemantics: true,
+      child: Container(
+        padding: EdgeInsets.all(spacing.lg),
+        decoration: BoxDecoration(
+          color: colors.surfaceCard,
+          borderRadius: BorderRadius.circular(radius.md),
+          border: Border.all(color: colors.borderDefault),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
             Row(
               children: [
-                Icon(
-                  _deltaIcon(deltaDirection),
-                  size: 16,
-                  color: deltaColor,
-                ),
-                SizedBox(width: spacing.xs),
-                Text(
-                  delta!,
-                  style: textStyles.labelMedium.copyWith(color: deltaColor),
+                if (icon != null) ...[
+                  Icon(icon, size: 20, color: colors.textSecondary),
+                  SizedBox(width: spacing.sm),
+                ],
+                Expanded(
+                  child: Text(
+                    title,
+                    style: textStyles.titleMedium
+                        .copyWith(color: colors.textSecondary),
+                  ),
                 ),
               ],
             ),
+            SizedBox(height: spacing.sm),
+            Text(
+              value,
+              style: textStyles.displaySmall
+                  .copyWith(color: colors.textPrimary),
+            ),
+            if (delta != null) ...[
+              SizedBox(height: spacing.xs),
+              Row(
+                children: [
+                  ExcludeSemantics(
+                    child: Icon(
+                      _deltaIcon(deltaDirection),
+                      size: 16,
+                      color: deltaColor,
+                    ),
+                  ),
+                  SizedBox(width: spacing.xs),
+                  Text(
+                    delta!,
+                    style: textStyles.labelMedium.copyWith(color: deltaColor),
+                  ),
+                ],
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

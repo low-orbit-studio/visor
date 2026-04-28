@@ -66,5 +66,45 @@ void main() {
       )));
       expect(find.byIcon(Icons.trending_up), findsOneWidget);
     });
+
+    testWidgets("default Semantics label is '<title>: <value>' when no delta",
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(_wrap(const VisorStatCard(
+        title: 'Revenue',
+        value: r'$12,430',
+      )));
+      expect(find.bySemanticsLabel(r'Revenue: $12,430'), findsOneWidget);
+      handle.dispose();
+    });
+
+    testWidgets('default Semantics label includes delta when present',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(_wrap(const VisorStatCard(
+        title: 'Revenue',
+        value: r'$12,430',
+        delta: '+8.2%',
+        deltaDirection: VisorDeltaDirection.up,
+      )));
+      expect(
+        find.bySemanticsLabel(r'Revenue: $12,430, +8.2%'),
+        findsOneWidget,
+      );
+      handle.dispose();
+    });
+
+    testWidgets('semanticLabel param overrides default composition',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(_wrap(const VisorStatCard(
+        title: 'Revenue',
+        value: r'$12,430',
+        semanticLabel: 'Custom override',
+      )));
+      expect(find.bySemanticsLabel('Custom override'), findsOneWidget);
+      expect(find.bySemanticsLabel(r'Revenue: $12,430'), findsNothing);
+      handle.dispose();
+    });
   });
 }
