@@ -100,14 +100,30 @@ flutter test $(find . -maxdepth 1 -mindepth 1 -type d -name 'visor_*' | sort)
 
 Visor uses [`alchemist`](https://pub.dev/packages/alchemist) for golden image tests. CI goldens use the Ahem font for cross-OS determinism — every glyph renders as a solid square — so they produce byte-identical output on macOS, Linux, and Windows. The configuration lives in `components/flutter/flutter_test_config.dart`. Platform goldens (real fonts, host-dependent) are disabled; Widgetbook is the canonical place for human-eyes visual review.
 
-To **regenerate** golden baselines after intentional visual changes:
+To **regenerate** golden baselines after intentional visual changes, **run on Linux**. CI goldens use the Ahem font for character shape, but rasterisation/anti-aliasing still differs subtly between macOS and Linux — baselines generated on macOS will fail with ~1% pixel diffs on CI.
+
+If you have Docker, run inside a Linux container:
+
+```bash
+# From the repo root
+docker run --rm \
+  -v "$PWD:$PWD" \
+  -w "$PWD/components/flutter" \
+  -e CI=true \
+  ghcr.io/cirruslabs/flutter:3.35.5 \
+  bash -c "git config --global --add safe.directory '*' \
+    && flutter pub get \
+    && flutter test --update-goldens visor_button/"
+```
+
+If you're already on Linux:
 
 ```bash
 cd components/flutter
 flutter test --update-goldens visor_button/
 ```
 
-This works on macOS or Linux because CI goldens render the Ahem font identically. After regenerating, commit the updated PNGs in `<widget>/goldens/ci/`. **Always inspect the diff** before committing — golden churn from unrelated changes is a smell.
+After regenerating, commit the updated PNGs in `<widget>/goldens/ci/`. **Always inspect the diff** before committing — golden churn from unrelated changes is a smell.
 
 To **verify** without regenerating (the CI behavior):
 
