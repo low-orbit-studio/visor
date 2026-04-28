@@ -68,6 +68,72 @@ visor/
 - Use **Phosphor Icons** (`@phosphor-icons/react`) for any icon needs.
 - Components must be fully **theme-agnostic** — they should look correct under any theme class without modification.
 
+## Flutter Components
+
+Flutter widgets live in `components/flutter/<widget>/` and follow the same copy-and-own model as the React components.
+
+### Prerequisites
+
+- Flutter 3.32+ (the CI lane pins `3.35.5`). Either install via [FVM](https://fvm.app/) (recommended — `fvm install 3.35.5`) or have `flutter` on your `PATH`.
+- The token package `visor_core` resolves via a relative `path:` dependency in `components/flutter/pubspec.yaml`. No extra setup needed beyond `flutter pub get`.
+
+### Running the Flutter test suite
+
+Tests live next to source (e.g., `components/flutter/visor_button/visor_button_test.dart`). Run them per-directory:
+
+```bash
+cd components/flutter
+flutter pub get
+flutter test visor_button/
+```
+
+To run all widget tests at once:
+
+```bash
+cd components/flutter
+flutter test $(find . -maxdepth 1 -mindepth 1 -type d -name 'visor_*' | sort)
+```
+
+`flutter analyze` should be clean before opening a PR.
+
+### Golden tests (alchemist)
+
+Visor uses [`alchemist`](https://pub.dev/packages/alchemist) for golden image tests. CI goldens use the Ahem font for cross-OS determinism — every glyph renders as a solid square — so they produce byte-identical output on macOS, Linux, and Windows. The configuration lives in `components/flutter/flutter_test_config.dart`. Platform goldens (real fonts, host-dependent) are disabled; Widgetbook is the canonical place for human-eyes visual review.
+
+To **regenerate** golden baselines after intentional visual changes, **run on Linux**. CI goldens use the Ahem font for character shape, but rasterisation/anti-aliasing still differs subtly between macOS and Linux — baselines generated on macOS will fail with ~1% pixel diffs on CI.
+
+If you have Docker, run inside a Linux container:
+
+```bash
+# From the repo root
+docker run --rm \
+  -v "$PWD:$PWD" \
+  -w "$PWD/components/flutter" \
+  -e CI=true \
+  ghcr.io/cirruslabs/flutter:3.35.5 \
+  bash -c "git config --global --add safe.directory '*' \
+    && flutter pub get \
+    && flutter test --update-goldens visor_button/"
+```
+
+If you're already on Linux:
+
+```bash
+cd components/flutter
+flutter test --update-goldens visor_button/
+```
+
+After regenerating, commit the updated PNGs in `<widget>/goldens/ci/`. **Always inspect the diff** before committing — golden churn from unrelated changes is a smell.
+
+To **verify** without regenerating (the CI behavior):
+
+```bash
+cd components/flutter
+flutter test visor_button/
+```
+
+A failed golden produces a `*_testImage.png` and a `*_masterImage.png` next to the failing test for visual diffing. See [`docs/flutter-widget-quality-contract.md`](./docs/flutter-widget-quality-contract.md) (Rec1, S16) and [W018](./docs/wisdom/W018-flutter-widget-contract-baseline.md) for the rationale.
+
 ## Adding or Modifying Tokens
 
 Tokens live in `packages/tokens/src/` and follow a 3-tier architecture:
