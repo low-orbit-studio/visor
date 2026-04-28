@@ -188,7 +188,7 @@ Legend: ✅ pass · ⚠️ partial · ❌ fail · — not applicable
 
 | Widget | Rec1 alchemist | Rec2 focus ring | Rec3 widgetbook | Rec4 iOS tap | Rec5 contrast | Rec6 RTL test | Rec7 liveRegion | Rec8 MDX page |
 |--------|----|----|----|----|----|----|----|----|
-| `visor_button` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ❌ | ❌ | — | ❌ |
+| `visor_button` | ✅ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ❌ | ❌ | — | ❌ |
 | `visor_empty_state` | ❌ | — | ⚠️ confirm | — | ❌ | ❌ | — | ❌ |
 | `visor_empty_state_card` | ❌ | — | ⚠️ confirm | — | ❌ | ❌ | — | ❌ |
 | `visor_loading_indicator` | ❌ | — | ⚠️ confirm | — | — | ❌ | ⚠️ candidate for `liveRegion` when status changes | ❌ |
@@ -202,7 +202,7 @@ Legend: ✅ pass · ⚠️ partial · ❌ fail · — not applicable
 
 - **Required-tier failures** (❌ cells, must spawn a follow-up ticket): 9 across 5 widgets — see [Follow-up tickets](#follow-up-tickets).
 - **Required-tier partials** (⚠️ cells, judgment-call): 16 — listed below; reviewer decides whether to spawn a ticket per item.
-- **Recommended-tier failures**: pervasive — every widget fails Rec1 (alchemist), Rec5 (contrast guideline), Rec6 (RTL test), and Rec8 (MDX page). These are batched per-tier follow-ups, not per-widget.
+- **Recommended-tier failures**: pervasive — every widget except `visor_button` fails Rec1 (alchemist); every widget fails Rec5 (contrast guideline), Rec6 (RTL test), and Rec8 (MDX page). These are batched per-tier follow-ups, not per-widget. **VI-256 lands the alchemist scaffolding** (dev_dependency, project-wide `flutter_test_config.dart`, CI lane, contributor docs) plus one example golden test on `visor_button` covering the style × size × theme matrix; subsequent per-widget golden coverage rolls into each Wave 2 widget's PR.
 
 ---
 
@@ -259,3 +259,4 @@ Tickets get the labels: `Flutter`, `Improvement`, `quality:audit-gap`. The latte
 | Date | Change | Driver |
 |------|--------|--------|
 | Initial draft | First version: 13 Required, 8 Recommended, 5 Stretch items; audit of 9 widgets; D5 resolved. | VI-246 |
+| Rec1 scaffolding lands | `alchemist` dev_dependency, `flutter_test_config.dart` (CI goldens only — Ahem font), Linux CI lane, `flutter test --update-goldens` workflow documented in `CONTRIBUTING.md`, exemplar golden suite on `visor_button` (style × size × theme = 24 button cells across 6 PNGs). | VI-256 |
