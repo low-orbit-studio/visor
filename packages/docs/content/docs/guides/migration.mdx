@@ -178,15 +178,27 @@ npx @loworbitstudio/visor theme apply my-brand.visor.yaml --adapter deck
 npx @loworbitstudio/visor theme apply my-brand.visor.yaml --output src/styles/theme.css
 ```
 
-Import the generated CSS in your app's root layout:
+The adapter output is **self-contained** — it emits the full set of primitive and adaptive tokens (`--text-*`, `--surface-*`, `--border-*`, `--interactive-*` for both light and dark) inside `@layer visor-primitives` and `@layer visor-adaptive`. You do **not** need to `@import '@loworbitstudio/visor-core'` on top of it. Doing so duplicates every token at `:root` (0,1,0) specificity, beats the `@layer`-wrapped rules, and can stomp the theme.
 
-```css
-/* app/globals.css is already imported via layout.tsx in most Next.js projects */
-@import '@loworbitstudio/visor-core';
-/* ...rest of your globals.css */
+Just confirm `app/globals.css` is imported from `app/layout.tsx`, which is the Next.js default:
+
+```tsx
+// app/layout.tsx
+import './globals.css';
 ```
 
-Or import `@loworbitstudio/visor-core` at the top of your generated `globals.css` — the adapter output assumes this import exists.
+That is everything for Path A. The adapter handles the tokens; `layout.tsx` handles the import.
+
+#### Alternative: skip the adapter, use the package CSS directly
+
+If you would rather skip the adapter and ship the package's prebuilt CSS as-is, import it from `app/layout.tsx`:
+
+```tsx
+// app/layout.tsx
+import '@loworbitstudio/visor-core/css';
+```
+
+This is a separate consumption path. Use **either** the adapter-generated `app/globals.css` (Path A) **or** the direct package import (Path B) — never both. Combining them duplicates tokens at conflicting specificities and produces unpredictable theme behavior.
 
 ### Step 5 — Add Components and Update Imports
 
@@ -492,19 +504,27 @@ src: url("/fonts/CustomBrand-Regular.woff2") format("woff2");
 
 **Symptom:** Components appear unstyled or fall back to browser defaults.
 
-**Check:** Make sure `@loworbitstudio/visor-core` is imported before your theme CSS:
+**Check (Path A — adapter):** Confirm `app/layout.tsx` imports the adapter-generated CSS:
 
-```css
-/* globals.css */
-@import '@loworbitstudio/visor-core';
-/* ... generated theme CSS below ... */
+```tsx
+// app/layout.tsx
+import './globals.css';
 ```
 
-**Check:** Confirm the package is installed:
+The adapter output is self-contained — do not `@import '@loworbitstudio/visor-core'` on top of it.
+
+**Check (Path B — direct):** Confirm `app/layout.tsx` imports the package CSS, and that the package is installed:
+
+```tsx
+// app/layout.tsx
+import '@loworbitstudio/visor-core/css';
+```
 
 ```bash
 npm install @loworbitstudio/visor-core
 ```
+
+**Check (both paths):** Make sure you are not combining Path A and Path B. Pick one.
 
 ### Dark Mode Not Working
 
