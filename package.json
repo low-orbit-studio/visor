@@ -62,7 +62,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.183.1",
-    "@varlock/bitwarden-plugin": "^0.0.5",
+    "@varlock/bitwarden-plugin": "0.0.6",
     "@vitejs/plugin-react": "^5.2.0",
     "axe-core": "^4.11.1",
     "eslint": "^9.18.0",
@@ -77,7 +77,7 @@
     "three": "^0.183.2",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.20.0",
-    "varlock": "^0.6.0",
+    "varlock": "0.7.4",
     "vitest": "^4.1.2"
   },
   "dependencies": {
