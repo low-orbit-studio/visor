@@ -1,0 +1,7 @@
+{
+  "title": "Devtools",
+  "description": "Development-only registry components that ship as no-ops in production builds. Pages alphabetized.",
+  "pages": [
+    "source-inspector"
+  ]
+}

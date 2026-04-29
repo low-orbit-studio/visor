@@ -6,6 +6,7 @@ export type RegistryItemType =
   | "registry:page"
   | "registry:theme"
   | "registry:style"
+  | "registry:devtool"
 
 export type RegistryTarget = "react" | "flutter"
 

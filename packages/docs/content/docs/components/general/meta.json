@@ -4,6 +4,7 @@
   "defaultOpen": true,
   "pages": [
     "button",
-    "sidebar"
+    "sidebar",
+    "theme-switcher"
   ]
 }

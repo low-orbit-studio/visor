@@ -1,0 +1,90 @@
+---
+title: ThemeSwitcher
+description: Fixed-position pill switcher for theme and dark/light mode, with an extras slot for hosting devtools chrome. Built with CSS Modules — copy it into your project and own it completely.
+---
+
+import { PropsTable } from '@/components/props-table';
+
+`ThemeSwitcher` is a fixed bottom-right pill that toggles between configured themes and dark/light mode. It owns the `visor-theme` and `visor-color-mode` localStorage keys so a no-flash script in the host layout can restore selections before paint. The optional `extras` slot lets host apps mount dev-only chrome (e.g., `<SourceInspectorToggle />`) without coupling Visor to dev dependencies.
+
+## Installation
+
+```bash
+npx visor add theme-switcher
+```
+
+This copies two files into your project:
+
+- `components/ui/theme-switcher/theme-switcher.tsx` — the component
+- `components/ui/theme-switcher/theme-switcher.module.css` — the styles
+
+## Usage
+
+```tsx
+import { ThemeSwitcher } from '@/components/ui/theme-switcher/theme-switcher';
+
+const themes = [
+  { id: 'default', label: 'Default', bodyClass: '' },
+  { id: 'blackout', label: 'Blackout', bodyClass: 'blackout-theme' },
+];
+
+export function AppShell({ children }) {
+  return (
+    <>
+      {children}
+      <ThemeSwitcher themes={themes} />
+    </>
+  );
+}
+```
+
+Pass an empty list (or omit the `themes` prop entirely) when only the dark/light Mode segment is needed:
+
+```tsx
+<ThemeSwitcher />
+```
+
+## Extras slot
+
+The `extras` slot renders inside the pill, after the Mode segment. Use it to mount dev-only chrome:
+
+```tsx
+import { ThemeSwitcher } from '@/components/ui/theme-switcher/theme-switcher';
+import { SourceInspectorToggle } from '@/components/devtools/source-inspector/source-inspector-toggle';
+
+<ThemeSwitcher
+  themes={themes}
+  extras={<SourceInspectorToggle />}
+/>;
+```
+
+## Avoiding theme flash
+
+`ThemeSwitcher` reads localStorage on mount, which means the very first paint shows the default theme before React hydrates. To prevent the flash, run a tiny inline script in the host layout that reads the same `visor-theme` and `visor-color-mode` keys and applies the corresponding `body`/`html` classes before React boots. The pattern is framework-specific; libraries like `next-themes` ship one for Next.js.
+
+## Props
+
+<PropsTable
+  data={[
+    { prop: 'themes', type: 'ThemeOption[]', default: '[]', description: 'List of themes available in the Theme segment. Empty list hides the Theme segment and only renders Mode.' },
+    { prop: 'defaultThemeId', type: 'string', default: 'themes[0]?.id', description: 'Initial theme id when nothing is stored.' },
+    { prop: 'defaultMode', type: "'dark' | 'light'", default: 'dark', description: 'Initial color mode when nothing is stored.' },
+    { prop: 'themeStorageKey', type: 'string', default: "'visor-theme'", description: 'localStorage key for the active theme id.' },
+    { prop: 'modeStorageKey', type: 'string', default: "'visor-color-mode'", description: 'localStorage key for the active color mode.' },
+    { prop: 'extras', type: 'React.ReactNode', default: '—', description: 'Rendered after the Mode segment, inside the wrapper. Intended for dev chrome (e.g., SourceInspectorToggle).' },
+    { prop: 'className', type: 'string', default: '—', description: 'Additional className merged onto the root wrapper.' },
+  ]}
+/>
+
+### `ThemeOption`
+
+```ts
+interface ThemeOption {
+  /** Stable id used in localStorage. */
+  id: string;
+  /** Label rendered in the Theme segment. */
+  label: string;
+  /** Body class applied for this theme. Empty → no class (Visor stock). */
+  bodyClass: string;
+}
+```

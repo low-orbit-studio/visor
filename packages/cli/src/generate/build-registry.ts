@@ -26,27 +26,44 @@ async function main(): Promise<void> {
   const { deck } = await import(join(REPO_ROOT, "registry/registry-deck.ts"))
   const { blocks } = await import(join(REPO_ROOT, "registry/registry-blocks.ts"))
   const { visual } = await import(join(REPO_ROOT, "registry/registry-visual.ts"))
+  const { devtools } = await import(join(REPO_ROOT, "registry/registry-devtools.ts"))
   const { flutter } = await import(join(REPO_ROOT, "registry/registry-flutter.ts"))
 
   // Build a map of categories from .visor.yaml files
   const categoryMap = new Map<string, string>()
   const yamlDirs = [
     { base: join(REPO_ROOT, "components/ui"), suffix: ".visor.yaml" },
+    { base: join(REPO_ROOT, "components/devtools"), suffix: ".visor.yaml", multi: true },
     { base: join(REPO_ROOT, "hooks"), suffix: ".visor.yaml" },
   ]
-  for (const { base, suffix } of yamlDirs) {
+  const { readdirSync: readdirSyncTop, statSync: statSyncTop } = await import("fs")
+  for (const { base, suffix, multi } of yamlDirs) {
     if (!existsSync(base)) continue
-    const { readdirSync, statSync } = await import("fs")
-    for (const entry of readdirSync(base)) {
+    for (const entry of readdirSyncTop(base)) {
       const entryPath = join(base, entry)
-      if (statSync(entryPath).isDirectory()) {
-        // Component: components/ui/{name}/{name}.visor.yaml
-        const yamlPath = join(entryPath, `${entry}${suffix}`)
-        if (existsSync(yamlPath)) {
-          try {
-            const data = parseYAML(readFileSync(yamlPath, "utf-8")) as Record<string, unknown>
-            if (data.category) categoryMap.set(entry, String(data.category))
-          } catch { /* skip unparseable */ }
+      if (statSyncTop(entryPath).isDirectory()) {
+        if (multi) {
+          // Component dir may host multiple registry items in one folder
+          // (e.g. source-inspector + source-inspector-toggle).
+          for (const file of readdirSyncTop(entryPath)) {
+            if (!file.endsWith(suffix)) continue
+            const name = file.replace(suffix, "")
+            try {
+              const data = parseYAML(
+                readFileSync(join(entryPath, file), "utf-8"),
+              ) as Record<string, unknown>
+              if (data.category) categoryMap.set(name, String(data.category))
+            } catch { /* skip unparseable */ }
+          }
+        } else {
+          // Component: components/ui/{name}/{name}.visor.yaml
+          const yamlPath = join(entryPath, `${entry}${suffix}`)
+          if (existsSync(yamlPath)) {
+            try {
+              const data = parseYAML(readFileSync(yamlPath, "utf-8")) as Record<string, unknown>
+              if (data.category) categoryMap.set(entry, String(data.category))
+            } catch { /* skip unparseable */ }
+          }
         }
       } else if (entry.endsWith(suffix)) {
         // Hook: hooks/{name}.visor.yaml
@@ -66,6 +83,7 @@ async function main(): Promise<void> {
     ...deck,
     ...blocks,
     ...visual,
+    ...devtools,
     ...flutter,
   ]
   const bundledItems: BundledRegistryItem[] = []

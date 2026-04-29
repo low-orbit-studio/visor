@@ -1,0 +1,61 @@
+name: ThemeSwitcher
+description: Fixed-position pill switcher for theme and dark/light mode, with an extras slot for hosting devtools chrome.
+extends: HTMLDivElement
+category: general
+
+when_to_use:
+  - Hosts apps that ship multiple Visor themes and need a runtime switcher
+  - Dark/light mode toggle persisted across sessions
+  - Mounting devtools chrome (e.g., SourceInspectorToggle) into a stable host
+
+when_not_to_use:
+  - Production-only chrome with no dev affordances (use a tighter custom switcher)
+  - Single-theme apps that only need a mode toggle (build a leaner control)
+
+why: >
+  ThemeSwitcher is the canonical hook for runtime theme/mode switching in Visor
+  apps. It owns the localStorage keys (visor-theme, visor-color-mode) so the
+  no-flash script in the host layout can restore selections before paint. The
+  extras slot is the seam through which apps mount dev-only chrome without
+  Visor depending on dev tools.
+
+props:
+  - name: themes
+    type: ThemeOption[]
+    default: "[]"
+    description: List of themes available in the Theme segment. Empty list hides the Theme segment and only renders Mode.
+  - name: defaultThemeId
+    type: string
+    default: themes[0]?.id
+    description: Initial theme id when nothing is stored.
+  - name: defaultMode
+    type: "'dark' | 'light'"
+    default: "dark"
+  - name: themeStorageKey
+    type: string
+    default: "visor-theme"
+  - name: modeStorageKey
+    type: string
+    default: "visor-color-mode"
+  - name: extras
+    type: React.ReactNode
+    description: Rendered after the Mode segment, inside the wrapper. For dev chrome (e.g., SourceInspectorToggle).
+  - name: className
+    type: string
+    description: Additional className merged onto the root wrapper.
+
+dependencies: []
+
+preview_url: "https://visor.loworbit.studio/docs/components/general/theme-switcher"
+
+example: |
+  import { ThemeSwitcher } from "@/components/ui/theme-switcher/theme-switcher"
+  import { SourceInspectorToggle } from "@/components/devtools/source-inspector/source-inspector-toggle"
+
+  <ThemeSwitcher
+    themes={[
+      { id: "default", label: "Default", bodyClass: "" },
+      { id: "blackout", label: "Blackout", bodyClass: "blackout-theme" },
+    ]}
+    extras={<SourceInspectorToggle />}
+  />
