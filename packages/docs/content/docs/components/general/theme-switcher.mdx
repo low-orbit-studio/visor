@@ -3,9 +3,32 @@ title: ThemeSwitcher
 description: Fixed-position pill switcher for theme and dark/light mode, with an extras slot for hosting devtools chrome. Built with CSS Modules — copy it into your project and own it completely.
 ---
 
+import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
+import { ThemeSwitcher } from '@/components/ui/theme-switcher';
 
 `ThemeSwitcher` is a fixed bottom-right pill that toggles between configured themes and dark/light mode. It owns the `visor-theme` and `visor-color-mode` localStorage keys so a no-flash script in the host layout can restore selections before paint. The optional `extras` slot lets host apps mount dev-only chrome (e.g., `<SourceInspectorToggle />`) without coupling Visor to dev dependencies.
+
+## Preview
+
+The component is normally fixed to the bottom-right of the viewport. The preview below uses an inline `style` override (`position: relative`) so it stays inside the demo frame.
+
+<ComponentPreview
+  title="Theme + Mode segmented pill"
+  code={"import { ThemeSwitcher } from '@/components/ui/theme-switcher/theme-switcher';\n\nconst themes = [\n  { id: 'default', label: 'Default', bodyClass: '' },\n  { id: 'blackout', label: 'Blackout', bodyClass: 'blackout-theme' },\n];\n\n<ThemeSwitcher themes={themes} />"}
+>
+  <div style={{ minHeight: '4rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <ThemeSwitcher
+      themes={[
+        { id: 'docs-preview-default', label: 'Default', bodyClass: '' },
+        { id: 'docs-preview-blackout', label: 'Blackout', bodyClass: '' },
+      ]}
+      themeStorageKey="docs-preview-theme-switcher-theme"
+      modeStorageKey="docs-preview-theme-switcher-mode"
+      style={{ position: 'relative', bottom: 'auto', right: 'auto' }}
+    />
+  </div>
+</ComponentPreview>
 
 ## Installation
 

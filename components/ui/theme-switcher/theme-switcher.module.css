@@ -42,8 +42,8 @@
 .segment {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
-  padding: 2px;
+  gap: calc(var(--spacing-1, 0.25rem) / 2);
+  padding: calc(var(--spacing-1, 0.25rem) / 2);
   background: color-mix(in srgb, var(--text-tertiary, #9ca3af) 14%, transparent);
   border-radius: var(--radius-full, 9999px);
 }
@@ -52,7 +52,7 @@
   appearance: none;
   background: transparent;
   border: 0;
-  padding: 3px var(--spacing-2, 0.5rem);
+  padding: calc(var(--spacing-1, 0.25rem) * 0.75) var(--spacing-2, 0.5rem);
   border-radius: var(--radius-full, 9999px);
   font-size: var(--font-size-xs, 0.75rem);
   font-weight: var(--font-weight-medium, 500);

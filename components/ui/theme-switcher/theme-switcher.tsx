@@ -19,6 +19,7 @@ export interface ThemeSwitcherProps {
   modeStorageKey?: string
   extras?: React.ReactNode
   className?: string
+  style?: React.CSSProperties
 }
 
 const DEFAULT_THEME_KEY = "visor-theme"
@@ -58,6 +59,7 @@ export function ThemeSwitcher({
   modeStorageKey = DEFAULT_MODE_KEY,
   extras,
   className,
+  style,
 }: ThemeSwitcherProps) {
   const initialThemeId = defaultThemeId ?? themes[0]?.id ?? null
   const [themeId, setThemeId] = React.useState<string | null>(initialThemeId)
@@ -90,7 +92,7 @@ export function ThemeSwitcher({
   const wrapperClass = className ? `${styles.root} ${className}` : styles.root
 
   return (
-    <div className={wrapperClass} role="group" aria-label="Theme and mode switcher">
+    <div className={wrapperClass} style={style} role="group" aria-label="Theme and mode switcher">
       {themes.length > 0 ? (
         <>
           <span className={styles.label}>Theme</span>
