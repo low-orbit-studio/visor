@@ -1,0 +1,107 @@
+---
+title: SourceInspector
+description: Borealis pre-flight x-ray overlay. Walks the React Fiber tree, classifies each rendered DOM node by source file, and tints regions to surface Visor coverage and gaps.
+---
+
+import { PropsTable } from '@/components/props-table';
+
+`SourceInspector` is a development-only overlay that turns Borealis pre-flight from a discipline ("did I check Visor first?") into an instrument ("the screen is mostly red — file `VI-` tickets for those regions"). It walks the React Fiber tree post-render, reads `_debugSource.fileName` from each fiber, and stamps the corresponding DOM element with `data-source="visor" | "local" | "third-party" | "dom"`. CSS rules paint outlines and tinted backgrounds for the active mode.
+
+The component is a no-op in production builds (`NODE_ENV === 'production'`). Tree-shaking is guaranteed by the copy-and-own model: apps that do not run `npx visor add source-inspector` never include it.
+
+## Installation
+
+```bash
+npx visor add source-inspector
+npx visor add source-inspector-toggle
+```
+
+Both files are devtools — they live under `components/devtools/source-inspector/` rather than `components/ui/`.
+
+## Mount
+
+Mount `SourceInspector` once near the app root and `SourceInspectorToggle` anywhere in development chrome (e.g., inside `ThemeSwitcher`'s `extras` slot):
+
+```tsx
+import { SourceInspector } from '@/components/devtools/source-inspector/source-inspector';
+import { SourceInspectorToggle } from '@/components/devtools/source-inspector/source-inspector-toggle';
+import { ThemeSwitcher } from '@/components/ui/theme-switcher/theme-switcher';
+
+export function App({ children }) {
+  return (
+    <>
+      <SourceInspector />
+      {children}
+      <ThemeSwitcher extras={<SourceInspectorToggle />} />
+    </>
+  );
+}
+```
+
+The toggle mounts a default `SourceInspectorProvider` lazily if no provider is in scope — it can be used standalone without explicit wiring.
+
+## Modes
+
+| Mode                    | What it paints                                                      |
+| ----------------------- | ------------------------------------------------------------------- |
+| `off`                   | No overlay; `data-source` attributes cleared.                        |
+| `highlight-visor`       | Mint outline + 30% mint background on every Visor-sourced element.   |
+| `highlight-non-visor`   | Coral outline + 30% coral background on every locally-sourced element. This is the workhorse pre-flight mode. |
+
+Click the toggle button or press `Ctrl+Shift+X` to cycle. Override the hotkey via the `hotkey` prop on `SourceInspector` (e.g., `hotkey="ctrl+shift+i"`), or pass `null` to disable.
+
+## Classifiers
+
+A classifier is a predicate over the source file path. The defaults match Visor's package layout:
+
+```tsx
+const DEFAULT_CLASSIFIERS = {
+  visor: (path) => path.includes('node_modules/@loworbitstudio/visor'),
+  local: (path) => !path.includes('node_modules'),
+  thirdParty: (path) => path.includes('node_modules') && !path.includes('@loworbitstudio/visor'),
+};
+```
+
+Override them when the host has a non-standard layout (monorepo with workspace packages, custom registry path, etc.):
+
+```tsx
+<SourceInspector
+  classifiers={{
+    visor: (path) =>
+      path.includes('packages/visor-components') ||
+      path.includes('node_modules/@loworbitstudio/visor'),
+    local: (path) => path.startsWith('/Users/me/work/my-app/src/'),
+  }}
+/>
+```
+
+The classifier order is fixed: `visor` wins, then `local`, then `thirdParty`, then `dom` for any DOM node whose owning fiber has no debug source.
+
+## Why per-element, not per-tree
+
+Detection runs on every DOM element, not on whole component subtrees. A local component that composes Visor primitives renders with mixed regions: the wrapper (local) shows red, but its `Button` children (visor) show mint. That is the desired behavior — it surfaces exactly the seams where bespoke markup wraps shared primitives.
+
+## React 19 caveat
+
+`_debugSource` is populated by the React JSX dev runtime. If the host build configuration disables the dev runtime, the inspector falls back to labeling all DOM nodes as `dom`. The component itself never throws.
+
+## SourceInspector props
+
+<PropsTable
+  data={[
+    { prop: 'classifiers', type: 'Classifiers', default: 'DEFAULT_CLASSIFIERS', description: "Predicates classifying a file path as 'visor' | 'local' | 'third-party'." },
+    { prop: 'mode', type: "'off' | 'highlight-visor' | 'highlight-non-visor'", default: '—', description: 'Controlled mode. Omit to use uncontrolled state via context.' },
+    { prop: 'defaultMode', type: "'off' | 'highlight-visor' | 'highlight-non-visor'", default: 'off', description: 'Initial mode in uncontrolled mode.' },
+    { prop: 'onModeChange', type: '(mode: Mode) => void', default: '—', description: 'Called whenever the mode changes (useful for analytics or external state mirrors).' },
+    { prop: 'hotkey', type: 'string | null', default: "'ctrl+shift+x'", description: 'Global hotkey that cycles modes. Set to null to disable.' },
+    { prop: 'debounceMs', type: 'number', default: '100', description: 'MutationObserver re-stamp debounce.' },
+  ]}
+/>
+
+## SourceInspectorToggle props
+
+<PropsTable
+  data={[
+    { prop: 'className', type: 'string', default: '—', description: 'Additional className merged onto the button.' },
+  ]}
+/>

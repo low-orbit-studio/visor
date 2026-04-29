@@ -1,0 +1,79 @@
+.root {
+  position: fixed;
+  bottom: var(--spacing-3, 0.75rem);
+  right: var(--spacing-3, 0.75rem);
+  z-index: 1000;
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+
+  padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
+  border-radius: var(--radius-full, 9999px);
+  background: var(--surface-popover, var(--surface-card, #111827));
+  color: var(--text-secondary, #4b5563);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: var(--font-size-xs, 0.75rem);
+  letter-spacing: 0.04em;
+
+  outline: var(--stroke-width-thin, 1px) solid color-mix(in srgb, var(--text-tertiary, #9ca3af) 30%, transparent);
+  outline-offset: 0;
+  box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+}
+
+.label {
+  font-size: var(--font-size-xs, 0.75rem);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-tertiary, #9ca3af);
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.divider {
+  display: inline-block;
+  width: var(--stroke-width-thin, 1px);
+  height: 14px;
+  background: color-mix(in srgb, var(--text-tertiary, #9ca3af) 35%, transparent);
+}
+
+.segment {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--spacing-1, 0.25rem) / 2);
+  padding: calc(var(--spacing-1, 0.25rem) / 2);
+  background: color-mix(in srgb, var(--text-tertiary, #9ca3af) 14%, transparent);
+  border-radius: var(--radius-full, 9999px);
+}
+
+.option {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: calc(var(--spacing-1, 0.25rem) * 0.75) var(--spacing-2, 0.5rem);
+  border-radius: var(--radius-full, 9999px);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-secondary, #4b5563);
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: background-color var(--motion-duration-100, 100ms) var(--motion-easing-default, ease-in-out),
+    color var(--motion-duration-100, 100ms) var(--motion-easing-default, ease-in-out);
+}
+
+.option:hover {
+  color: var(--text-primary, #111827);
+}
+
+.option[data-active="true"] {
+  background: var(--surface-card, #ffffff);
+  color: var(--text-primary, #111827);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text-tertiary, #9ca3af) 25%, transparent);
+}
+
+.option:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+}

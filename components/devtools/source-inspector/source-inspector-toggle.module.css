@@ -1,0 +1,49 @@
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--spacing-7, 1.75rem);
+  height: var(--spacing-7, 1.75rem);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full, 9999px);
+  background: transparent;
+  color: var(--text-secondary, #4b5563);
+  cursor: pointer;
+  transition: background-color var(--motion-duration-100, 100ms) var(--motion-easing-default, ease-in-out),
+    color var(--motion-duration-100, 100ms) var(--motion-easing-default, ease-in-out);
+}
+
+.button:hover {
+  background-color: color-mix(in srgb, var(--text-tertiary, #9ca3af) 14%, transparent);
+  color: var(--text-primary, #111827);
+}
+
+.button:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+.button[data-mode="highlight-visor"],
+.button[data-mode="highlight-non-visor"] {
+  color: var(--text-primary, #111827);
+}
+
+.dot {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full, 9999px);
+}
+
+.dotVisor {
+  background-color: var(--surface-success-default, #22c55e);
+}
+
+.dotNonVisor {
+  background-color: var(--surface-warning-default, #f59e0b);
+}

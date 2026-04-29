@@ -1,0 +1,33 @@
+name: SourceInspectorToggle
+description: Phosphor `Scan` icon button that cycles the SourceInspector overlay through off → highlight-visor → highlight-non-visor → off.
+extends: HTMLButtonElement
+category: devtools
+
+when_to_use:
+  - Mounted into ThemeSwitcher's `extras` slot for one-click overlay control
+  - Standalone in an admin shell when the consumer has no theme switcher
+  - Anywhere a single icon-button is preferable to a settings menu entry
+
+when_not_to_use:
+  - Production builds (returns null when NODE_ENV === 'production')
+
+why: >
+  The toggle is the human affordance for the inspector. It mounts a default
+  SourceInspectorProvider lazily if none is in scope, so consumers can drop it
+  into a host without wiring state.
+
+props:
+  - name: className
+    type: string
+    description: Additional className merged onto the button.
+
+dependencies:
+  - "@phosphor-icons/react"
+
+preview_url: "https://visor.loworbit.studio/docs/devtools/source-inspector"
+
+example: |
+  import { SourceInspectorToggle } from "@/components/devtools/source-inspector/source-inspector-toggle"
+  import { ThemeSwitcher } from "@/components/ui/theme-switcher/theme-switcher"
+
+  <ThemeSwitcher extras={<SourceInspectorToggle />} />

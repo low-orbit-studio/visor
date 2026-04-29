@@ -3,6 +3,7 @@ import { ui } from "../registry-ui"
 import { hooks } from "../registry-hooks"
 import { lib } from "../registry-lib"
 import { blocks } from "../registry-blocks"
+import { devtools } from "../registry-devtools"
 
 describe("Registry", () => {
   describe("ui registry", () => {
@@ -92,6 +93,44 @@ describe("Registry", () => {
       expect(placeholder).toBeDefined()
       expect(placeholder?.category).toBe("authentication")
       expect(placeholder?.registryDependencies).toContain("utils")
+    })
+  })
+
+  describe("devtools registry", () => {
+    it("has at least one item", () => {
+      expect(devtools.length).toBeGreaterThan(0)
+    })
+
+    it("all items use registry:devtool type and have files", () => {
+      for (const item of devtools) {
+        expect(item.name).toBeTruthy()
+        expect(item.type).toBe("registry:devtool")
+        expect(Array.isArray(item.files)).toBe(true)
+        expect(item.files.length).toBeGreaterThan(0)
+        for (const file of item.files) {
+          expect(file.type).toBe("registry:devtool")
+        }
+      }
+    })
+
+    it("source-inspector and source-inspector-toggle are registered", () => {
+      const inspector = devtools.find((item) => item.name === "source-inspector")
+      const toggle = devtools.find(
+        (item) => item.name === "source-inspector-toggle"
+      )
+      expect(inspector).toBeDefined()
+      expect(toggle).toBeDefined()
+      expect(toggle?.registryDependencies).toContain("source-inspector")
+    })
+  })
+
+  describe("theme-switcher", () => {
+    it("is registered as a registry:ui component with category general", () => {
+      const item = ui.find((entry) => entry.name === "theme-switcher")
+      expect(item).toBeDefined()
+      expect(item?.type).toBe("registry:ui")
+      expect(item?.category).toBe("general")
+      expect(item?.files.length).toBe(2)
     })
   })
 })

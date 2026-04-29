@@ -1,0 +1,53 @@
+name: SourceInspector
+description: Borealis pre-flight x-ray overlay. Walks the React Fiber tree, classifies each rendered DOM node by source file, and tints regions to surface Visor coverage and gaps.
+extends: HTMLElement
+category: devtools
+
+when_to_use:
+  - Pre-flight: spot regions of an app that bypass Visor primitives before shipping
+  - Reviewing PRs: see whether new UI is composed from Visor or hand-rolled markup
+  - Onboarding new contributors: visualize what Visor owns versus what each app owns
+
+when_not_to_use:
+  - Production builds (component is a no-op when NODE_ENV === 'production')
+  - Inspecting third-party libraries separately (initial classifier returns 'third-party' but no mode highlights it)
+
+why: >
+  Borealis substrate adherence has historically been policed by manual code-reads.
+  SourceInspector flips pre-flight from a discipline ("did I check Visor first?")
+  into an instrument ("the screen is mostly red — file VI- tickets for those
+  regions"). The classifier is host-supplied so each app describes its own
+  Visor-vs-local boundary.
+
+props:
+  - name: classifiers
+    type: Classifiers
+    description: Predicates classifying a file path as 'visor' | 'local' | 'third-party'. Defaults match Visor's package layout.
+  - name: mode
+    type: "'off' | 'highlight-visor' | 'highlight-non-visor'"
+    description: Controlled mode. Omit to use uncontrolled state via context.
+  - name: defaultMode
+    type: "'off' | 'highlight-visor' | 'highlight-non-visor'"
+    default: "off"
+  - name: hotkey
+    type: string | null
+    default: "ctrl+shift+x"
+    description: Global hotkey that cycles modes. Set null to disable.
+  - name: debounceMs
+    type: number
+    default: 100
+    description: MutationObserver re-stamp debounce.
+
+dependencies: []
+
+preview_url: "https://visor.loworbit.studio/docs/devtools/source-inspector"
+
+example: |
+  import { SourceInspector } from "@/components/devtools/source-inspector/source-inspector"
+
+  <SourceInspector
+    classifiers={{
+      visor: (path) => path.includes("node_modules/@loworbitstudio/visor"),
+      local: (path) => !path.includes("node_modules"),
+    }}
+  />

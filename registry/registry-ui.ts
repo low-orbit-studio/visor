@@ -1675,4 +1675,22 @@ export const ui: Registry = [
       },
     ],
   },
+  {
+    name: "theme-switcher",
+    type: "registry:ui",
+    category: "general",
+    description:
+      "A fixed-position pill switcher for theme and dark/light mode. Persists selections to localStorage; exposes an extras slot for hosting devtools chrome (e.g., SourceInspectorToggle). Generalized from the admin-v7-r1 reference; apps pass their own ThemeOption[] list.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    files: [
+      {
+        path: "components/ui/theme-switcher/theme-switcher.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/theme-switcher/theme-switcher.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
 ]
