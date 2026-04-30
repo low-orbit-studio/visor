@@ -55,6 +55,18 @@ props:
     type: "'sm' | 'md'"
     default: "md"
     description: Dimensional density. Use sm for dense rows of compact cards; md is the default dashboard size.
+  - name: valueAs
+    type: "'default' | 'hero' | 'compact'"
+    default: "default"
+    description: >
+      Typography treatment for the value element.
+      "default" preserves the standard semibold heading-font value (3xl / 1.875rem).
+      "hero" applies a marquee display-font treatment (display font, 3.5rem, weight 400, letter-spacing 0, line-height 1) — ideal for KPI hero cards.
+      "compact" tightens font size to 2xl (1.5rem) for dense dashboards.
+      The hero font and size can be overridden via the --stat-card-value-font and --stat-card-value-size CSS custom properties on the card root.
+  - name: valueClassName
+    type: string
+    description: Optional className forwarded to the value element. Escape hatch for fully custom value typography.
 
 dependencies:
   - "class-variance-authority"

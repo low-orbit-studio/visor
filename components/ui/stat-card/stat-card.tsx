@@ -33,6 +33,8 @@ export interface StatCardDelta {
 
 type StatCardElement = "article" | "section" | "div"
 
+export type StatCardValueAs = "default" | "hero" | "compact"
+
 export interface StatCardProps
   extends React.HTMLAttributes<HTMLElement>,
     VariantProps<typeof statCardVariants> {
@@ -48,6 +50,15 @@ export interface StatCardProps
   footer?: React.ReactNode
   /** Root element tag. Defaults to `article` for landmark semantics. */
   as?: StatCardElement
+  /**
+   * Typography treatment for the value element.
+   * - `"default"` — standard semibold heading-font value (3xl, 1.875rem).
+   * - `"hero"` — marquee display-font treatment (display font, 3.5rem, weight 400, letter-spacing 0, line-height 1).
+   * - `"compact"` — tighter than default for dense dashboards (2xl, 1.5rem).
+   */
+  valueAs?: StatCardValueAs
+  /** Optional className forwarded to the value element for custom styling. */
+  valueClassName?: string
 }
 
 const DELTA_GLYPH: Record<StatCardDeltaDirection, string> = {
@@ -74,6 +85,8 @@ const StatCard = React.forwardRef<HTMLElement, StatCardProps>(
       trend,
       footer,
       as = "article",
+      valueAs,
+      valueClassName,
       ...props
     },
     ref
@@ -104,7 +117,13 @@ const StatCard = React.forwardRef<HTMLElement, StatCardProps>(
           ) : null}
         </div>
 
-        <p data-slot="stat-card-value" className={styles.value}>
+        <p
+          data-slot="stat-card-value"
+          data-value-as={
+            valueAs === "hero" || valueAs === "compact" ? valueAs : undefined
+          }
+          className={cn(styles.value, valueClassName)}
+        >
           {value}
         </p>
 

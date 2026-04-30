@@ -151,4 +151,78 @@ describe("StatCard", () => {
     expect(ref.current).not.toBeNull()
     expect(ref.current?.tagName).toBe("ARTICLE")
   })
+
+  describe("valueAs prop", () => {
+    it("does not set data-value-as when valueAs is not provided", () => {
+      const { container } = render(<StatCard label="Revenue" value="$10k" />)
+      const valueEl = container.querySelector('[data-slot="stat-card-value"]')
+      expect(valueEl).not.toHaveAttribute("data-value-as")
+    })
+
+    it("sets data-value-as='hero' when valueAs='hero'", () => {
+      const { container } = render(
+        <StatCard label="MRR" value="$82,400" valueAs="hero" />
+      )
+      const valueEl = container.querySelector('[data-slot="stat-card-value"]')
+      expect(valueEl).toHaveAttribute("data-value-as", "hero")
+    })
+
+    it("sets data-value-as='compact' when valueAs='compact'", () => {
+      const { container } = render(
+        <StatCard label="Sessions" value="2,340" valueAs="compact" />
+      )
+      const valueEl = container.querySelector('[data-slot="stat-card-value"]')
+      expect(valueEl).toHaveAttribute("data-value-as", "compact")
+    })
+
+    it("does not set data-value-as when valueAs='default'", () => {
+      const { container } = render(
+        <StatCard label="Revenue" value="$10k" valueAs="default" />
+      )
+      const valueEl = container.querySelector('[data-slot="stat-card-value"]')
+      // valueAs="default" is the explicit default; still no data-value-as attribute
+      expect(valueEl).not.toHaveAttribute("data-value-as")
+    })
+  })
+
+  describe("valueClassName prop", () => {
+    it("forwards valueClassName to the value element", () => {
+      const { container } = render(
+        <StatCard
+          label="Revenue"
+          value="$10k"
+          valueClassName="custom-value-class"
+        />
+      )
+      const valueEl = container.querySelector('[data-slot="stat-card-value"]')
+      expect(valueEl).toHaveClass("custom-value-class")
+    })
+
+    it("merges valueClassName with the base value styles", () => {
+      const { container } = render(
+        <StatCard
+          label="Revenue"
+          value="$10k"
+          valueClassName="extra-class another-class"
+        />
+      )
+      const valueEl = container.querySelector('[data-slot="stat-card-value"]')
+      expect(valueEl).toHaveClass("extra-class")
+      expect(valueEl).toHaveClass("another-class")
+    })
+
+    it("works in combination with valueAs", () => {
+      const { container } = render(
+        <StatCard
+          label="MRR"
+          value="$82,400"
+          valueAs="hero"
+          valueClassName="hero-override"
+        />
+      )
+      const valueEl = container.querySelector('[data-slot="stat-card-value"]')
+      expect(valueEl).toHaveAttribute("data-value-as", "hero")
+      expect(valueEl).toHaveClass("hero-override")
+    })
+  })
 })

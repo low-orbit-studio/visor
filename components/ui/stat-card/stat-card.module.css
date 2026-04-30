@@ -13,6 +13,13 @@
  * the container query buys nothing and costs the natural sizing behavior.
  */
 .base {
+  /* Override hooks for value typography. Set on the consumer side to customise
+   * the value element without touching component internals.
+   * --stat-card-value-font: swap font family (e.g. a brand display font).
+   * --stat-card-value-size: swap font size (e.g. for hero at non-standard scale). */
+  --stat-card-value-font: var(--font-display, var(--font-family-heading, inherit));
+  --stat-card-value-size: var(--font-size-3xl, 1.875rem);
+
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2, 0.5rem);
@@ -114,6 +121,20 @@
   letter-spacing: var(--letter-spacing-tight, -0.02em);
   color: var(--text-primary, #111827);
   font-variant-numeric: tabular-nums;
+}
+
+/* Hero value treatment — marquee display-font scale */
+.value[data-value-as="hero"] {
+  font-family: var(--stat-card-value-font);
+  font-size: var(--stat-card-value-size, 3.5rem);
+  font-weight: var(--font-weight-normal, 400);
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+/* Compact value treatment — tighter than default for dense dashboards */
+.value[data-value-as="compact"] {
+  font-size: var(--font-size-2xl, 1.5rem);
 }
 
 .sizeSm .value {
