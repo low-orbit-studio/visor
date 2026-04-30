@@ -103,7 +103,7 @@
   position: absolute;
   bottom: -1px;
   height: 2px;
-  background-color: var(--text-primary, #111827);
+  background-color: var(--tabs-indicator-color, var(--text-primary, #111827));
   border-radius: var(--radius-full, 9999px);
   transition: left var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease-in-out),
               width var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease-in-out);
