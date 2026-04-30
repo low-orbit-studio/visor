@@ -1,9 +1,11 @@
 /**
  * CSS @layer utilities for adapter output.
  *
- * Establishes a specificity ordering so theme overrides work
- * without !important. Layers are adapter-only — the base
- * generateFullBundleCss output is not wrapped in layers.
+ * Establishes a specificity ordering so theme overrides work without
+ * !important. Both adapter output (here) and visor-core's emitted CSS
+ * (packages/tokens/src/generate/generate-css.ts) declare this same layer
+ * order — defense in depth, so whichever stylesheet loads first establishes
+ * the cascade.
  */
 
 /** Layer order declaration — must appear before any @layer blocks. */

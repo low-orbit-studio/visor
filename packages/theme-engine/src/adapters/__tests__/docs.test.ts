@@ -73,9 +73,25 @@ describe("docsAdapter", () => {
       expect(css).not.toMatch(/\n:root\s*\{/);
     });
 
-    it("does not wrap in @layer", () => {
+    it("declares the visor layer order", () => {
       const css = docsAdapter(makeInput(MINIMAL_YAML));
-      expect(css).not.toContain("@layer");
+      expect(css).toContain(
+        "@layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;",
+      );
+    });
+
+    it("wraps theme rule content in @layer visor-adaptive", () => {
+      const css = docsAdapter(makeInput(MINIMAL_YAML));
+      expect(css).toContain("@layer visor-adaptive {");
+    });
+
+    it("keeps @import statements outside the @layer block (CSS spec)", () => {
+      const css = docsAdapter(makeInput(FULL_YAML));
+      const importIdx = css.indexOf("@import url(");
+      const layerIdx = css.indexOf("@layer visor-adaptive {");
+      expect(importIdx).toBeGreaterThan(-1);
+      expect(layerIdx).toBeGreaterThan(-1);
+      expect(importIdx).toBeLessThan(layerIdx);
     });
 
     it("produces deterministic output", () => {

@@ -391,6 +391,29 @@ import { FOWT_SCRIPT } from '@loworbitstudio/visor-theme-engine/fowt';
 @import "@loworbitstudio/visor-core/themes/dark";  /* Tier 3: dark theme */
 ```
 
+### CSS Layer Architecture
+
+Visor's distributed CSS uses [CSS Cascade Layers](https://developer.mozilla.org/en-US/docs/Web/CSS/@layer) so generated themes win the cascade without consumer intervention.
+
+Every shipped `dist/*.css` file declares the same layer order and wraps its content in the matching tier:
+
+```css
+@layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;
+```
+
+| Layer | Source | Purpose |
+| --- | --- | --- |
+| `visor-primitives` | `@loworbitstudio/visor-core/primitives` | Raw token values (colors, spacing, type) |
+| `visor-semantic` | `@loworbitstudio/visor-core/semantic` | Purpose-named tokens (`--text-primary`, `--surface-card`) |
+| `visor-adaptive` | `@loworbitstudio/visor-core/themes/*`, generated themes (`visor theme apply --adapter nextjs`) | Light/dark-aware tokens, generated theme overrides |
+| `visor-bridge` | Framework integrations (e.g. fumadocs) | Maps Visor tokens onto framework-native variables |
+
+**Cascade rules at a glance:**
+
+- Per the CSS spec, **unlayered styles always beat layered styles**. So your bare `:root { ... }` overrides written after `@import "@loworbitstudio/visor-core"` continue to win — that pattern still works as documented above.
+- **Generated themes win over visor-core defaults.** Both sit in `@layer visor-adaptive`, and last-loaded wins within a layer, so importing a generated theme after visor-core gives the theme its expected priority.
+- **Stock themes ship layered too.** When you import `@loworbitstudio/visor-core/themes/blackout` (or any other stock theme), the `.{slug}-theme` class still wins on selector specificity but its rules participate in `visor-adaptive` so they coexist cleanly with generated themes.
+
 ---
 
 ## Updating

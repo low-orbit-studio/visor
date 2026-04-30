@@ -955,3 +955,89 @@ describe("Stock theme CSS generation", () => {
     }
   });
 });
+
+// ============================================================
+// Layered CSS output (VI-312)
+// ============================================================
+//
+// Every shipped dist/*.css file must be wrapped in matching @layer blocks
+// so generated themes win the cascade without consumer intervention.
+
+describe("Layered CSS output (VI-312)", () => {
+  const DIST = join(REPO_ROOT, "packages/tokens/dist");
+  const LAYER_ORDER =
+    "@layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;";
+
+  const fileLayerMap: Array<{ path: string; layer: string }> = [
+    { path: "primitives.css", layer: "visor-primitives" },
+    { path: "semantic.css", layer: "visor-semantic" },
+    { path: "themes/light.css", layer: "visor-adaptive" },
+    { path: "themes/dark.css", layer: "visor-adaptive" },
+    { path: "themes/blackout.css", layer: "visor-adaptive" },
+    { path: "themes/modern-minimal.css", layer: "visor-adaptive" },
+    { path: "themes/neutral.css", layer: "visor-adaptive" },
+    { path: "themes/space.css", layer: "visor-adaptive" },
+    { path: "utilities.css", layer: "visor-adaptive" },
+  ];
+
+  it.each(fileLayerMap)(
+    "$path declares the layer order",
+    ({ path }) => {
+      const css = readFileSync(join(DIST, path), "utf-8");
+      expect(css).toContain(LAYER_ORDER);
+    },
+  );
+
+  it.each(fileLayerMap)(
+    "$path wraps content in @layer $layer",
+    ({ path, layer }) => {
+      const css = readFileSync(join(DIST, path), "utf-8");
+      expect(css).toContain(`@layer ${layer} {`);
+    },
+  );
+
+  it("tokens.css splits content across all three tier layers", () => {
+    const css = readFileSync(join(DIST, "tokens.css"), "utf-8");
+    expect(css).toContain(LAYER_ORDER);
+    expect(css).toContain("@layer visor-primitives {");
+    expect(css).toContain("@layer visor-semantic {");
+    expect(css).toContain("@layer visor-adaptive {");
+  });
+
+  it("index.css declares layer order before importing tokens.css", () => {
+    const css = readFileSync(join(DIST, "index.css"), "utf-8");
+    const layerIdx = css.indexOf(LAYER_ORDER);
+    const importIdx = css.indexOf("@import './tokens.css';");
+    expect(layerIdx).toBeGreaterThan(-1);
+    expect(importIdx).toBeGreaterThan(-1);
+    expect(layerIdx).toBeLessThan(importIdx);
+  });
+
+  it("primitives layer contains primitive declarations", () => {
+    const css = readFileSync(join(DIST, "primitives.css"), "utf-8");
+    // Crude but effective: extract content between visor-primitives { and the
+    // matching closing brace at file end. Since each file has exactly one
+    // top-level @layer block, slicing from the layer keyword to EOF is safe.
+    const start = css.indexOf("@layer visor-primitives {");
+    const layerBody = css.slice(start);
+    expect(layerBody).toContain("--color-neutral-50:");
+    expect(layerBody).toContain("--spacing-4:");
+  });
+
+  it("semantic layer contains semantic declarations", () => {
+    const css = readFileSync(join(DIST, "semantic.css"), "utf-8");
+    const start = css.indexOf("@layer visor-semantic {");
+    const layerBody = css.slice(start);
+    expect(layerBody).toContain("--text-primary:");
+    expect(layerBody).toContain("--surface-page:");
+  });
+
+  it("adaptive layer in tokens.css contains both light and dark theme rules", () => {
+    const css = readFileSync(join(DIST, "tokens.css"), "utf-8");
+    const start = css.indexOf("@layer visor-adaptive {");
+    const layerBody = css.slice(start);
+    expect(layerBody).toContain(":root {");
+    expect(layerBody).toContain(".dark");
+    expect(layerBody).toContain("prefers-color-scheme: dark");
+  });
+});

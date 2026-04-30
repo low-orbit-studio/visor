@@ -25,6 +25,7 @@ import { FULL_SHADE_STEPS, SELECTIVE_SHADE_STEPS, generateShadeScale } from "../
 import { resolveThemeFonts } from "../fonts/pipeline.js";
 import { buildVisorFontUrl } from "../fonts/resolve.js";
 import { FUMADOCS_BRIDGE_MAP } from "./fumadocs-map.js";
+import { LAYER_ORDER, wrapInLayer } from "./layers.js";
 import type { AdapterInput, DocsAdapterOptions } from "./types.js";
 
 /** Color roles that produce full scales vs. selective scales. */
@@ -201,8 +202,10 @@ function sectionComment(label: string): string {
 /**
  * Generate docs-site CSS for a theme.
  *
- * Output is class-scoped (.{slug}-theme) with no @layer wrapping,
- * matching the hand-written theme files in packages/docs/app/.
+ * Output is class-scoped (.{slug}-theme) and wrapped in @layer visor-adaptive
+ * so consumer overrides (unlayered) and visor-core's own visor-adaptive layer
+ * cascade correctly. Font @import / @font-face statements stay outside the
+ * layer block per CSS spec (VI-312).
  */
 export function docsAdapter(
   input: AdapterInput,
@@ -211,9 +214,12 @@ export function docsAdapter(
   const slug = toKebabCase(input.config.name);
   const scopeClass = `.${slug}-theme`;
   const includeFontImports = options?.includeFontImports ?? true;
+  const fontLines: string[] = [];
   const lines: string[] = [];
 
   // ─── Font imports ─────────────────────────────────────────────────────────
+  // Per CSS spec, @import and @font-face must precede any @layer block; they
+  // remain in fontLines and are emitted before the layer wrap below.
 
   if (includeFontImports && input.config.typography) {
     const fontResult = resolveThemeFonts(input.config.typography);
@@ -224,8 +230,8 @@ export function docsAdapter(
     for (const font of fontSlots) {
       if (font && font.source === "google-fonts" && font.cssUrl && !seenUrls.has(font.cssUrl)) {
         seenUrls.add(font.cssUrl);
-        lines.push(`@import url("${font.cssUrl}");`);
-        lines.push("");
+        fontLines.push(`@import url("${font.cssUrl}");`);
+        fontLines.push("");
       }
     }
 
@@ -237,17 +243,17 @@ export function docsAdapter(
         seenFamilies.add(font.family);
         for (const weight of font.weights) {
           const url = buildVisorFontUrl(font.org ?? "", font.family, weight);
-          lines.push("@font-face {");
-          lines.push(`  font-family: "${font.family}";`);
-          lines.push(`  src: url("${url}") format("woff2");`);
-          lines.push(`  font-weight: ${weight};`);
-          lines.push(`  font-style: ${font.italic ? "italic" : "normal"};`);
-          lines.push(`  font-display: ${font.display};`);
+          fontLines.push("@font-face {");
+          fontLines.push(`  font-family: "${font.family}";`);
+          fontLines.push(`  src: url("${url}") format("woff2");`);
+          fontLines.push(`  font-weight: ${weight};`);
+          fontLines.push(`  font-style: ${font.italic ? "italic" : "normal"};`);
+          fontLines.push(`  font-display: ${font.display};`);
           if (scale !== 1) {
-            lines.push(`  size-adjust: ${Math.round(scale * 100)}%;`);
+            fontLines.push(`  size-adjust: ${Math.round(scale * 100)}%;`);
           }
-          lines.push("}");
-          lines.push("");
+          fontLines.push("}");
+          fontLines.push("");
         }
       }
     }
@@ -392,5 +398,7 @@ export function docsAdapter(
   lines.push(block(`html:not(.dark) ${scopeClass}`, generateFumadocsBridgeDecls(input.tokens, "light")));
   lines.push("");
 
-  return lines.join("\n") + "\n";
+  const layered = wrapInLayer("visor-adaptive", lines.join("\n").trim());
+  const head = fontLines.length > 0 ? fontLines.join("\n") + "\n" : "";
+  return head + LAYER_ORDER + "\n\n" + layered + "\n";
 }

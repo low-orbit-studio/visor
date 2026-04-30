@@ -1,4 +1,6 @@
+@layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;
 
+@layer visor-adaptive {
 /* ── Section 1: Shared tokens (mode-independent) ── */
 
 /* --- Primitive: Colors --- */
@@ -474,4 +476,4 @@ html:not(.dark) .space-theme {
   --color-fd-popover-foreground: #1a1630;
   --color-fd-ring: #5b6fff;
 }
-
+}
