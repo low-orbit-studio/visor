@@ -120,7 +120,7 @@ export const ui: Registry = [
     type: "registry:ui",
     description: "A text input component with focus and validation states.",
     dependencies: ["@loworbitstudio/visor-core"],
-    registryDependencies: ["utils"],
+    registryDependencies: ["utils", "password-managers-context"],
     files: [
       {
         path: "components/ui/input/input.tsx",
@@ -154,7 +154,7 @@ export const ui: Registry = [
     type: "registry:ui",
     description: "A textarea component with auto-resize and validation states.",
     dependencies: ["@loworbitstudio/visor-core"],
-    registryDependencies: ["utils"],
+    registryDependencies: ["utils", "password-managers-context"],
     files: [
       {
         path: "components/ui/textarea/textarea.tsx",
@@ -1112,7 +1112,13 @@ export const ui: Registry = [
       "class-variance-authority",
       "@loworbitstudio/visor-core",
     ],
-    registryDependencies: ["utils", "field", "input", "button"],
+    registryDependencies: [
+      "utils",
+      "field",
+      "input",
+      "button",
+      "password-managers-context",
+    ],
     files: [
       {
         path: "components/ui/form/form.tsx",

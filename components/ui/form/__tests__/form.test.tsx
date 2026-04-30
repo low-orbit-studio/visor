@@ -3,6 +3,8 @@ import userEvent from "@testing-library/user-event"
 import { describe, it, expect, vi } from "vitest"
 import { z } from "zod"
 import { Form } from "../form"
+import { Input } from "../../input/input"
+import { Textarea } from "../../textarea/textarea"
 import { checkA11y } from "../../../../test-utils/a11y"
 
 const testSchema = z.object({
@@ -124,6 +126,72 @@ describe("Form", () => {
     )
 
     expect(screen.getByDisplayValue("Jane")).toBeInTheDocument()
+  })
+})
+
+describe("Form passwordManagers context", () => {
+  it("propagates 'allow' to descendant Input fields", () => {
+    render(
+      <Form schema={testSchema} action={mockAction} passwordManagers="allow">
+        {() => (
+          <>
+            <Input aria-label="Email" />
+            <Input aria-label="Password" />
+          </>
+        )}
+      </Form>
+    )
+
+    const inputs = screen.getAllByRole("textbox")
+    expect(inputs).toHaveLength(2)
+    inputs.forEach((input) => {
+      expect(input).not.toHaveAttribute("data-1p-ignore")
+      expect(input).not.toHaveAttribute("data-bwignore")
+      expect(input).not.toHaveAttribute("data-lpignore")
+      expect(input).not.toHaveAttribute("data-form-type")
+    })
+  })
+
+  it("propagates 'allow' to descendant Textarea fields", () => {
+    render(
+      <Form schema={testSchema} action={mockAction} passwordManagers="allow">
+        {() => <Textarea aria-label="Notes" />}
+      </Form>
+    )
+
+    const textarea = screen.getByRole("textbox")
+    expect(textarea).not.toHaveAttribute("data-1p-ignore")
+  })
+
+  it("field-level prop overrides Form context", () => {
+    render(
+      <Form schema={testSchema} action={mockAction} passwordManagers="allow">
+        {() => (
+          <>
+            <Input aria-label="Email" />
+            <Input aria-label="Honeypot" passwordManagers="ignore" />
+          </>
+        )}
+      </Form>
+    )
+
+    const [email, honeypot] = screen.getAllByRole("textbox")
+    expect(email).not.toHaveAttribute("data-1p-ignore")
+    expect(honeypot).toHaveAttribute("data-1p-ignore", "true")
+  })
+
+  it("descendant fields fall back to 'ignore' when Form prop is omitted", () => {
+    render(
+      <Form schema={testSchema} action={mockAction}>
+        {() => <Input aria-label="Email" />}
+      </Form>
+    )
+
+    const input = screen.getByRole("textbox")
+    expect(input).toHaveAttribute("data-1p-ignore", "true")
+    expect(input).toHaveAttribute("data-bwignore", "true")
+    expect(input).toHaveAttribute("data-lpignore", "true")
+    expect(input).toHaveAttribute("data-form-type", "other")
   })
 })
 

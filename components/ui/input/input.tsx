@@ -1,6 +1,7 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "../../../lib/utils"
+import { usePasswordManagersValue } from "../../../lib/password-managers-context"
 import styles from "./input.module.css"
 
 const inputVariants = cva(styles.base, {
@@ -30,7 +31,9 @@ export interface InputProps
    * offer to autofill this field. Defaults to `"ignore"` because most
    * Visor inputs live on non-auth forms (contact, marketing, settings)
    * where autofill icons are visual noise. Set to `"allow"` on login
-   * and credential fields. Browsers ignore `autocomplete="off"` on
+   * and credential fields, or wrap the form in `<Form passwordManagers="allow">`
+   * to opt every descendant input in at once. The field-level prop always
+   * wins over the form context. Browsers ignore `autocomplete="off"` on
    * individual inputs, so `"ignore"` emits the per-manager data-*
    * attributes (`data-1p-ignore`, `data-bwignore`, `data-lpignore`,
    * `data-form-type="other"`) that each manager respects.
@@ -45,13 +48,14 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       type,
       size,
       leadingIcon,
-      passwordManagers = "ignore",
+      passwordManagers,
       ...props
     },
     ref
   ) => {
+    const resolved = usePasswordManagersValue(passwordManagers)
     const ignoreAttrs =
-      passwordManagers === "ignore"
+      resolved === "ignore"
         ? {
             "data-1p-ignore": "true",
             "data-bwignore": "true",

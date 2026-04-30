@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Input } from "../input"
+import { PasswordManagersProvider } from "../../../../lib/password-managers-context"
 import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Input", () => {
@@ -62,6 +63,58 @@ describe("Input", () => {
 
     it("emits no ignore data-* attrs when set to 'allow'", () => {
       render(<Input aria-label="Password" passwordManagers="allow" />)
+      const input = screen.getByRole("textbox")
+      expect(input).not.toHaveAttribute("data-1p-ignore")
+      expect(input).not.toHaveAttribute("data-bwignore")
+      expect(input).not.toHaveAttribute("data-lpignore")
+      expect(input).not.toHaveAttribute("data-form-type")
+    })
+
+    it("inherits 'allow' from PasswordManagersProvider context", () => {
+      render(
+        <PasswordManagersProvider value="allow">
+          <Input aria-label="Email" />
+        </PasswordManagersProvider>
+      )
+      const input = screen.getByRole("textbox")
+      expect(input).not.toHaveAttribute("data-1p-ignore")
+      expect(input).not.toHaveAttribute("data-bwignore")
+      expect(input).not.toHaveAttribute("data-lpignore")
+      expect(input).not.toHaveAttribute("data-form-type")
+    })
+
+    it("inherits 'ignore' from PasswordManagersProvider context", () => {
+      render(
+        <PasswordManagersProvider value="ignore">
+          <Input aria-label="Email" />
+        </PasswordManagersProvider>
+      )
+      const input = screen.getByRole("textbox")
+      expect(input).toHaveAttribute("data-1p-ignore", "true")
+      expect(input).toHaveAttribute("data-bwignore", "true")
+      expect(input).toHaveAttribute("data-lpignore", "true")
+      expect(input).toHaveAttribute("data-form-type", "other")
+    })
+
+    it("field-level prop overrides context (ignore beats allow)", () => {
+      render(
+        <PasswordManagersProvider value="allow">
+          <Input aria-label="Honey" passwordManagers="ignore" />
+        </PasswordManagersProvider>
+      )
+      const input = screen.getByRole("textbox")
+      expect(input).toHaveAttribute("data-1p-ignore", "true")
+      expect(input).toHaveAttribute("data-bwignore", "true")
+      expect(input).toHaveAttribute("data-lpignore", "true")
+      expect(input).toHaveAttribute("data-form-type", "other")
+    })
+
+    it("field-level prop overrides context (allow beats ignore)", () => {
+      render(
+        <PasswordManagersProvider value="ignore">
+          <Input aria-label="Email" passwordManagers="allow" />
+        </PasswordManagersProvider>
+      )
       const input = screen.getByRole("textbox")
       expect(input).not.toHaveAttribute("data-1p-ignore")
       expect(input).not.toHaveAttribute("data-bwignore")

@@ -151,6 +151,51 @@ import { Button } from "@/components/ui/button/button"
 </Form>
 ```
 
+## Password managers
+
+By default, `Input` and `Textarea` opt out of password-manager autofill
+(1Password, Bitwarden, LastPass) so contact, marketing, and settings forms don't
+render autofill icon overlays. On login, signup, or other credential forms,
+flip the default once at the form level:
+
+```tsx
+<Form schema={loginSchema} action={loginAction} passwordManagers="allow">
+  {({ fields }) => (
+    <>
+      <Input {...getInputProps(fields.email, { type: "email" })} />
+      <Input {...getInputProps(fields.password, { type: "password" })} />
+      <Button type="submit">Sign in</Button>
+    </>
+  )}
+</Form>
+```
+
+Every descendant `Input` and `Textarea` inherits the form-level value, so you
+don't need to repeat `passwordManagers="allow"` on every credential field. A
+field-level `passwordManagers` prop always wins over the form-level value, which
+makes single-field overrides easy:
+
+```tsx
+<Form schema={loginSchema} action={loginAction} passwordManagers="allow">
+  {({ fields }) => (
+    <>
+      <Input {...getInputProps(fields.email, { type: "email" })} />
+      <Input {...getInputProps(fields.password, { type: "password" })} />
+      {/* honeypot — manager should never autofill this one */}
+      <Input
+        {...getInputProps(fields.honey, { type: "text" })}
+        passwordManagers="ignore"
+        tabIndex={-1}
+        autoComplete="off"
+      />
+    </>
+  )}
+</Form>
+```
+
+When the `passwordManagers` prop is omitted on `Form`, fields fall back to their
+own default of `"ignore"` — existing forms keep working unchanged.
+
 ## Radix UI Recipes
 
 Visor uses Radix UI for complex controls. These render custom DOM elements (not native `<select>` or `<input type="checkbox">`), so they need special wiring with Conform.
