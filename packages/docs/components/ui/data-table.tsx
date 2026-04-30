@@ -6,4 +6,7 @@ export type {
   SortingState,
   RowSelectionState,
   PaginationState,
+  DataTableGroupRow,
+  DataTableDataRow,
+  DataTableRow,
 } from '../../../../components/ui/data-table/data-table';
