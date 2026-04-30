@@ -79,6 +79,16 @@
   flex: 0 0 auto;
 }
 
+/* Group separator in the top chip bar — 1px vertical hairline between clusters. */
+.topNavSeparator {
+  flex: 0 0 auto;
+  width: var(--stroke-width-thin, 1px);
+  align-self: stretch;
+  background-color: var(--border-muted, #e5e7eb);
+  margin: 0 var(--spacing-2, 0.5rem);
+  list-style: none;
+}
+
 .topNavLink {
   display: inline-flex;
   align-items: center;
@@ -136,6 +146,35 @@
 .sideNavList {
   display: flex;
   flex-direction: column;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Group container — wraps the optional eyebrow label + a list of nav items. */
+.sideNavGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Categorical eyebrow label above a group's nav items.
+ * Reuses the same token set as PageHeader.eyebrow for visual consistency. */
+.navGroupLabel {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-semibold, 600);
+  letter-spacing: var(--letter-spacing-wide, 0.05em);
+  text-transform: uppercase;
+  color: var(--text-tertiary, #6b7280);
+  padding: var(--spacing-5, 1.25rem) var(--spacing-3, 0.75rem)
+    var(--spacing-2, 0.5rem);
+  line-height: var(--line-height-tight, 1.25);
+}
+
+/* Nested list of sections within a group — no bullet, no extra padding. */
+.sideNavGroupList {
+  display: flex;
+  flex-direction: column;
   gap: var(--spacing-1, 0.25rem);
   margin: 0;
   padding: 0;
@@ -144,6 +183,20 @@
 
 .sideNavItem {
   display: block;
+}
+
+/* Muted nav item — dim text for "add" / utility actions. */
+.navItemMuted.sideNavLink {
+  color: var(--text-tertiary, #6b7280);
+}
+
+/* Trailing badge inside a side-nav link — e.g. member count or status. */
+.navItemMeta {
+  margin-left: auto;
+  flex: 0 0 auto;
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-tertiary, #6b7280);
+  line-height: 1;
 }
 
 .sideNavLink {
@@ -304,10 +357,33 @@
   .sideNavList {
     flex-direction: row;
     gap: var(--spacing-2, 0.5rem);
+    align-items: center;
+  }
+
+  /* Groups collapse into an inline row — no visible grouping at narrow width. */
+  .sideNavGroup {
+    flex-direction: row;
+    gap: var(--spacing-2, 0.5rem);
+    align-items: center;
+  }
+
+  /* Hide eyebrow labels in collapsed horizontal strip — no room for them. */
+  .navGroupLabel {
+    display: none;
+  }
+
+  .sideNavGroupList {
+    flex-direction: row;
+    gap: var(--spacing-2, 0.5rem);
   }
 
   .sideNavItem {
     flex: 0 0 auto;
+  }
+
+  /* Hide meta badges in collapsed strip — space is too constrained. */
+  .navItemMeta {
+    display: none;
   }
 
   .footer {

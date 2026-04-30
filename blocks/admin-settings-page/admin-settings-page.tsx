@@ -38,6 +38,21 @@ export interface AdminSettingsSection {
   saveLabel?: React.ReactNode
   /** Override the per-section revert button label. Defaults to "Revert". */
   revertLabel?: React.ReactNode
+
+  // ── Grouped nav extras ─────────────────────────────────────────────────
+  /** Trailing badge in the nav item — e.g. member count "8" or status "default".
+   *  Rendered as a dim trailing element in the side rail; suppressed in the top chip bar. */
+  meta?: React.ReactNode
+  /** Mutes the nav item's text color via `--text-tertiary` — used for "add" / utility actions. */
+  muted?: boolean
+}
+
+export interface AdminSettingsSectionGroup {
+  /** Categorical eyebrow label rendered above this group's nav items.
+   *  Omit to render an ungrouped cluster (no label). */
+  label?: React.ReactNode
+  /** Ordered list of settings sections that belong to this group. */
+  sections: AdminSettingsSection[]
 }
 
 export interface AdminSettingsPageProps
@@ -55,8 +70,12 @@ export interface AdminSettingsPageProps
   headerActions?: React.ReactNode
 
   // ── Sections ────────────────────────────────────────────────────────────
-  /** Ordered list of settings sections. */
-  sections: AdminSettingsSection[]
+  /** Flat ordered list of settings sections. Use when grouping is not needed. */
+  sections?: AdminSettingsSection[]
+  /** Grouped sections with categorical eyebrow labels.
+   *  Mutually exclusive with `sections` — if both are passed, `sectionGroups` wins
+   *  and a dev-mode console.warn fires. */
+  sectionGroups?: AdminSettingsSectionGroup[]
 
   // ── Navigation ──────────────────────────────────────────────────────────
   /** Show the section nav. Defaults to true when there is more than one section. */
@@ -103,6 +122,17 @@ export interface AdminSettingsPageProps
 const DEFAULT_UNSAVED_DESCRIPTION =
   "You have unsaved changes that will be lost if you leave this page."
 
+/** Internal helper: returns the flat section list used by the observer, refs,
+ *  and main-column renderer. When `sectionGroups` is provided it wins; `sections`
+ *  is the flat fallback. */
+function flattenSections(
+  sections: AdminSettingsSection[] | undefined,
+  sectionGroups: AdminSettingsSectionGroup[] | undefined
+): AdminSettingsSection[] {
+  if (sectionGroups) return sectionGroups.flatMap((g) => g.sections)
+  return sections ?? []
+}
+
 const AdminSettingsPage = React.forwardRef<
   HTMLDivElement,
   AdminSettingsPageProps
@@ -114,6 +144,7 @@ const AdminSettingsPage = React.forwardRef<
     breadcrumb,
     headerActions,
     sections,
+    sectionGroups,
     showNav,
     navPosition = "left",
     perSectionSave = false,
@@ -134,8 +165,22 @@ const AdminSettingsPage = React.forwardRef<
   },
   ref
 ) {
-  const shouldShowNav = showNav ?? sections.length > 1
-  const firstSectionId = sections[0]?.id
+  // Dev-mode warning when both props are provided.
+  if (
+    process.env.NODE_ENV !== "production" &&
+    sections !== undefined &&
+    sectionGroups !== undefined
+  ) {
+    console.warn(
+      "[AdminSettingsPage] Both `sections` and `sectionGroups` were provided. " +
+        "`sectionGroups` takes precedence and `sections` is ignored. " +
+        "Pass only one of these props."
+    )
+  }
+
+  const flatSections = flattenSections(sections, sectionGroups)
+  const shouldShowNav = showNav ?? flatSections.length > 1
+  const firstSectionId = flatSections[0]?.id
   const [activeId, setActiveId] = React.useState<string | undefined>(
     firstSectionId
   )
@@ -177,7 +222,7 @@ const AdminSettingsPage = React.forwardRef<
 
     elements.forEach((el) => observer.observe(el))
     return () => observer.disconnect()
-  }, [shouldShowNav, sections])
+  }, [shouldShowNav, flatSections])
 
   const registerSectionRef = React.useCallback(
     (id: string) => (node: HTMLElement | null) => {
@@ -281,34 +326,46 @@ const AdminSettingsPage = React.forwardRef<
             data-slot="admin-settings-page-nav"
           >
             <ul className={styles.topNavList}>
-              {sections.map((section) => {
-                const isActive = section.id === activeId
-                return (
-                  <li key={section.id} className={styles.topNavItem}>
-                    <a
-                      href={`#${section.id}`}
-                      className={cn(
-                        styles.topNavLink,
-                        isActive && styles.navLinkActive
-                      )}
-                      aria-current={isActive ? "true" : undefined}
-                      onClick={(e) => handleNavClick(e, section.id)}
-                    >
-                      {section.icon ? (
-                        <span
-                          className={styles.navIcon}
-                          aria-hidden="true"
+              {(sectionGroups ?? (flatSections.length > 0 ? [{ sections: flatSections }] : [])).map((group, gi) => (
+                <React.Fragment key={gi}>
+                  {gi > 0 ? (
+                    <li
+                      role="separator"
+                      aria-orientation="vertical"
+                      aria-label={typeof group.label === "string" ? group.label : undefined}
+                      className={styles.topNavSeparator}
+                    />
+                  ) : null}
+                  {group.sections.map((section) => {
+                    const isActive = section.id === activeId
+                    return (
+                      <li key={section.id} className={styles.topNavItem}>
+                        <a
+                          href={`#${section.id}`}
+                          className={cn(
+                            styles.topNavLink,
+                            isActive && styles.navLinkActive
+                          )}
+                          aria-current={isActive ? "true" : undefined}
+                          onClick={(e) => handleNavClick(e, section.id)}
                         >
-                          {section.icon}
-                        </span>
-                      ) : null}
-                      <span className={styles.navLabel}>
-                        {section.label}
-                      </span>
-                    </a>
-                  </li>
-                )
-              })}
+                          {section.icon ? (
+                            <span
+                              className={styles.navIcon}
+                              aria-hidden="true"
+                            >
+                              {section.icon}
+                            </span>
+                          ) : null}
+                          <span className={styles.navLabel}>
+                            {section.label}
+                          </span>
+                        </a>
+                      </li>
+                    )
+                  })}
+                </React.Fragment>
+              ))}
             </ul>
           </nav>
         ) : null}
@@ -321,34 +378,58 @@ const AdminSettingsPage = React.forwardRef<
               data-slot="admin-settings-page-nav"
             >
               <ul className={styles.sideNavList}>
-                {sections.map((section) => {
-                  const isActive = section.id === activeId
-                  return (
-                    <li key={section.id} className={styles.sideNavItem}>
-                      <a
-                        href={`#${section.id}`}
-                        className={cn(
-                          styles.sideNavLink,
-                          isActive && styles.navLinkActive
-                        )}
-                        aria-current={isActive ? "true" : undefined}
-                        onClick={(e) => handleNavClick(e, section.id)}
+                {(sectionGroups ?? (flatSections.length > 0 ? [{ sections: flatSections }] : [])).map((group, gi) => (
+                  <li key={gi} className={styles.sideNavGroup}>
+                    {group.label ? (
+                      <div
+                        className={styles.navGroupLabel}
+                        aria-hidden="true"
                       >
-                        {section.icon ? (
-                          <span
-                            className={styles.navIcon}
-                            aria-hidden="true"
-                          >
-                            {section.icon}
-                          </span>
-                        ) : null}
-                        <span className={styles.navLabel}>
-                          {section.label}
-                        </span>
-                      </a>
-                    </li>
-                  )
-                })}
+                        {group.label}
+                      </div>
+                    ) : null}
+                    <ul
+                      className={styles.sideNavGroupList}
+                      role="list"
+                      aria-label={typeof group.label === "string" ? group.label : undefined}
+                    >
+                      {group.sections.map((section) => {
+                        const isActive = section.id === activeId
+                        return (
+                          <li key={section.id} className={styles.sideNavItem}>
+                            <a
+                              href={`#${section.id}`}
+                              className={cn(
+                                styles.sideNavLink,
+                                isActive && styles.navLinkActive,
+                                section.muted && styles.navItemMuted
+                              )}
+                              aria-current={isActive ? "true" : undefined}
+                              onClick={(e) => handleNavClick(e, section.id)}
+                            >
+                              {section.icon ? (
+                                <span
+                                  className={styles.navIcon}
+                                  aria-hidden="true"
+                                >
+                                  {section.icon}
+                                </span>
+                              ) : null}
+                              <span className={styles.navLabel}>
+                                {section.label}
+                              </span>
+                              {section.meta !== undefined ? (
+                                <span className={styles.navItemMeta}>
+                                  {section.meta}
+                                </span>
+                              ) : null}
+                            </a>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </li>
+                ))}
               </ul>
             </nav>
           ) : null}
@@ -357,7 +438,7 @@ const AdminSettingsPage = React.forwardRef<
             className={styles.main}
             data-slot="admin-settings-page-main"
           >
-            {sections.map((section, index) => {
+            {flatSections.map((section, index) => {
               const titleId = `${section.id}-title`
               const showSectionFooter =
                 perSectionSave && (section.onSave || section.onRevert)
