@@ -5,13 +5,16 @@ import 'package:visor_core/visor_core.dart';
 import '../_fixtures.dart';
 import 'visor_section_header.dart';
 
-Widget _wrap(Widget child) {
+Widget _wrap(Widget child, {TextDirection textDirection = TextDirection.ltr}) {
   return MaterialApp(
     theme: VisorTheme.build(
       colors: testColors(),
       brightness: Brightness.light,
     ),
-    home: Scaffold(body: child),
+    home: Directionality(
+      textDirection: textDirection,
+      child: Scaffold(body: child),
+    ),
   );
 }
 
@@ -77,6 +80,45 @@ void main() {
       ));
       await expectLater(tester, meetsGuideline(textContrastGuideline));
       handle.dispose();
+    });
+
+    // -------------------------------------------------------------------------
+    // R9 — Directionality respect
+    // -------------------------------------------------------------------------
+
+    testWidgets('renders without overflow or exception under RTL',
+        (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          const VisorSectionHeader(title: 'Recent activity'),
+          textDirection: TextDirection.rtl,
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.byType(VisorSectionHeader), findsOneWidget);
+      // VisorSectionHeader is text-only by default; no trailing icons present.
+      // The Row lays out title (and optional trailing widget) with Directionality
+      // awareness — in RTL, trailing content moves to the left end. No icon
+      // mirroring required since there are no directional glyphs in the default
+      // configuration.
+    });
+
+    testWidgets('renders trailing widget without overflow under RTL',
+        (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          VisorSectionHeader(
+            title: 'Recent activity',
+            trailing: TextButton(
+              onPressed: () {},
+              child: const Text('View all'),
+            ),
+          ),
+          textDirection: TextDirection.rtl,
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.byType(TextButton), findsOneWidget);
     });
   });
 }

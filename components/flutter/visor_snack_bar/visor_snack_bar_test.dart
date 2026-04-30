@@ -8,13 +8,16 @@ import 'visor_snack_bar.dart';
 /// Pumps a full [MaterialApp] + [Scaffold] shell so that
 /// [ScaffoldMessenger.maybeOf] resolves correctly and snack bars
 /// appear in the widget tree when triggered.
-Widget _shell(Widget body) {
+Widget _shell(Widget body, {TextDirection textDirection = TextDirection.ltr}) {
   return MaterialApp(
     theme: VisorTheme.build(
       colors: testColors(),
       brightness: Brightness.light,
     ),
-    home: Scaffold(body: Center(child: body)),
+    home: Directionality(
+      textDirection: textDirection,
+      child: Scaffold(body: Center(child: body)),
+    ),
   );
 }
 
@@ -343,6 +346,28 @@ void main() {
       await tester.pump();
       await expectLater(tester, meetsGuideline(textContrastGuideline));
       handle.dispose();
+    });
+
+    // -------------------------------------------------------------------------
+    // R9 — Directionality respect
+    // -------------------------------------------------------------------------
+
+    testWidgets('renders without overflow or exception under RTL',
+        (tester) async {
+      await tester.pumpWidget(
+        _shell(
+          Builder(
+            builder: (ctx) => _TriggerButton(
+              onTap: () => VisorSnackBar.success(ctx, 'Saved'),
+            ),
+          ),
+          textDirection: TextDirection.rtl,
+        ),
+      );
+      await tester.tap(find.text('trigger'));
+      await tester.pump();
+      expect(tester.takeException(), isNull);
+      expect(find.text('Saved'), findsOneWidget);
     });
   });
 }

@@ -6,20 +6,23 @@ import '../_fixtures.dart';
 import '../visor_empty_state/visor_empty_state.dart';
 import 'visor_empty_state_card.dart';
 
-Widget _wrap(Widget child) {
+Widget _wrap(Widget child, {TextDirection textDirection = TextDirection.ltr}) {
   return MaterialApp(
     theme: VisorTheme.build(
       colors: testColors(),
       brightness: Brightness.light,
     ),
-    home: Scaffold(
-      body: Center(
-        child: SizedBox(
-          width: 360,
-          // Give plenty of height so the card itself has room; the inner
-          // VisorEmptyState forces compact via forceCompact regardless.
-          height: 800,
-          child: child,
+    home: Directionality(
+      textDirection: textDirection,
+      child: Scaffold(
+        body: Center(
+          child: SizedBox(
+            width: 360,
+            // Give plenty of height so the card itself has room; the inner
+            // VisorEmptyState forces compact via forceCompact regardless.
+            height: 800,
+            child: child,
+          ),
         ),
       ),
     ),
@@ -158,6 +161,25 @@ void main() {
 
       final inner = tester.widget<VisorEmptyState>(find.byType(VisorEmptyState));
       expect(inner.semanticLabel, 'custom card label');
+    });
+
+    // -------------------------------------------------------------------------
+    // R9 — Directionality respect
+    // -------------------------------------------------------------------------
+
+    testWidgets('renders without overflow or exception under RTL',
+        (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          const VisorEmptyStateCard(
+            icon: Icons.inbox_outlined,
+            headline: 'No messages',
+          ),
+          textDirection: TextDirection.rtl,
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.byType(VisorEmptyStateCard), findsOneWidget);
     });
   });
 }

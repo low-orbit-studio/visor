@@ -5,7 +5,7 @@ import 'package:visor_core/visor_core.dart';
 import '../_fixtures.dart';
 import 'visor_loading_dots.dart';
 
-Widget _wrap(Widget child, {bool disableAnimations = false}) {
+Widget _wrap(Widget child, {bool disableAnimations = false, TextDirection textDirection = TextDirection.ltr}) {
   return MediaQuery(
     data: MediaQueryData(disableAnimations: disableAnimations),
     child: MaterialApp(
@@ -13,7 +13,10 @@ Widget _wrap(Widget child, {bool disableAnimations = false}) {
         colors: testColors(),
         brightness: Brightness.light,
       ),
-      home: Scaffold(body: Center(child: child)),
+      home: Directionality(
+        textDirection: textDirection,
+        child: Scaffold(body: Center(child: child)),
+      ),
     ),
   );
 }
@@ -168,6 +171,22 @@ void main() {
       await tester.pumpWidget(_wrap(const SizedBox()));
       await tester.pump(const Duration(milliseconds: 500));
       // No error = test passes.
+    });
+
+    // -------------------------------------------------------------------------
+    // R9 — Directionality respect
+    // -------------------------------------------------------------------------
+
+    testWidgets('renders without overflow or exception under RTL',
+        (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          const VisorLoadingDots(),
+          textDirection: TextDirection.rtl,
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.byType(VisorLoadingDots), findsOneWidget);
     });
   });
 }

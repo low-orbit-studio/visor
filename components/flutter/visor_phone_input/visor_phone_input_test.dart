@@ -7,13 +7,16 @@ import '../_fixtures.dart';
 import '../visor_text_input/visor_text_input.dart';
 import 'visor_phone_input.dart';
 
-Widget _wrap(Widget child) {
+Widget _wrap(Widget child, {TextDirection textDirection = TextDirection.ltr}) {
   return MaterialApp(
     theme: VisorTheme.build(
       colors: testColors(),
       brightness: Brightness.light,
     ),
-    home: Scaffold(body: Center(child: child)),
+    home: Directionality(
+      textDirection: textDirection,
+      child: Scaffold(body: Center(child: child)),
+    ),
   );
 }
 
@@ -296,6 +299,30 @@ void main() {
       );
       await expectLater(tester, meetsGuideline(textContrastGuideline));
       handle.dispose();
+    });
+
+    // -------------------------------------------------------------------------
+    // R9 — Directionality respect
+    // -------------------------------------------------------------------------
+
+    testWidgets('renders without overflow or exception under RTL',
+        (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          const VisorPhoneInput(labelText: 'Phone number'),
+          textDirection: TextDirection.rtl,
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.byType(VisorPhoneInput), findsOneWidget);
+      // The country picker prefix (flag + dial code + keyboard_arrow_down
+      // chevron) is laid out inside VisorTextInput's prefixIcon slot, which
+      // respects Directionality. The chevron glyph (keyboard_arrow_down) is
+      // a vertical arrow and is not direction-sensitive; no semantic flip
+      // follow-up required. The Row inside the prefix widget does not reverse
+      // because it is a horizontal layout that simply shifts to the opposing
+      // side of the text field in RTL via the InputDecoration prefix slot.
+      expect(find.byIcon(Icons.keyboard_arrow_down), findsOneWidget);
     });
   });
 }
