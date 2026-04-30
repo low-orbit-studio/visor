@@ -7,6 +7,7 @@ full: true
 import { BlockPreview } from '@/components/block-preview';
 import {
   AdminSettingsPageGlobalDemo,
+  AdminSettingsPageGroupedDemo,
   AdminSettingsPagePerSectionDemo,
 } from '@/components/blocks/admin-settings-page-demo';
 
@@ -17,6 +18,15 @@ import {
   code={"<AdminSettingsPage\n  title=\"Workspace settings\"\n  description=\"Manage workspace-level configuration.\"\n  sections={[\n    { id: 'general', label: 'General', title: 'General', content: <GeneralPanel /> },\n    { id: 'branding', label: 'Branding', title: 'Branding', content: <BrandingPanel /> },\n    { id: 'team', label: 'Team', title: 'Team', content: <TeamPanel /> },\n    { id: 'integrations', label: 'Integrations', title: 'Integrations', content: <IntegrationsPanel /> },\n    { id: 'danger', label: 'Danger zone', title: 'Danger zone', content: <DangerPanel /> },\n  ]}\n  dirty={dirty}\n  onSave={async () => { await saveWorkspace(draft); }}\n  onCancel={() => setDraft(saved)}\n  footerStatus={dirty ? 'Unsaved changes' : 'All changes saved'}\n/>"}
 >
   <AdminSettingsPageGlobalDemo />
+</BlockPreview>
+
+## Preview — grouped nav
+
+<BlockPreview
+  title="Admin Settings Page — grouped nav"
+  code={"<AdminSettingsPage\n  title=\"Settings\"\n  sectionGroups={[\n    {\n      label: 'Account',\n      sections: [\n        { id: 'profile', label: 'Profile', title: 'Profile', content: <ProfilePanel /> },\n        { id: 'security', label: 'Security', title: 'Security', content: <SecurityPanel /> },\n        { id: 'notifications', label: 'Notifications', title: 'Notifications', content: <NotificationsPanel /> },\n        { id: 'tokens', label: 'Personal access', title: 'Personal access tokens', content: <TokensPanel /> },\n      ],\n    },\n    {\n      label: 'Workspace',\n      sections: [\n        { id: 'general', label: 'General', title: 'General', content: <GeneralPanel /> },\n        { id: 'members', label: 'Members', meta: '8', title: 'Members', content: <MembersPanel /> },\n        { id: 'billing', label: 'Billing', title: 'Billing', content: <BillingPanel /> },\n        { id: 'integrations', label: 'Integrations', title: 'Integrations', content: <IntegrationsPanel /> },\n        { id: 'api', label: 'API & webhooks', title: 'API & webhooks', content: <ApiPanel /> },\n        { id: 'audit', label: 'Audit log', title: 'Audit log', content: <AuditPanel /> },\n      ],\n    },\n    {\n      label: 'Venue',\n      sections: [\n        { id: 'venue-default', label: 'House of Yes', meta: 'default', title: 'House of Yes', content: <VenuePanel /> },\n        { id: 'venue-moodering', label: 'Mood Ring', title: 'Mood Ring', content: <VenuePanel /> },\n        { id: 'venue-add', label: '+ Add venue', muted: true, title: 'Add a venue', content: <AddVenuePanel /> },\n      ],\n    },\n  ]}\n  hideFooter\n/>"}
+>
+  <AdminSettingsPageGroupedDemo />
 </BlockPreview>
 
 ## Preview — per-section save mode
@@ -125,7 +135,7 @@ export function WorkspaceSettings({ workspace }: { workspace: Workspace }) {
 The block renders four zones:
 
 1. **PageHeader** — title, eyebrow, description, breadcrumb, and header actions slot.
-2. **Optional nav** — either a sticky left-side rail (`navPosition="left"`, default) or a horizontal chip bar rendered below the header (`navPosition="top"`). Hidden entirely when there is only one section, or when `showNav={false}`.
+2. **Optional nav** — either a sticky left-side rail (`navPosition="left"`, default) or a horizontal chip bar rendered below the header (`navPosition="top"`). Hidden entirely when there is only one section, or when `showNav={false}`. In grouped mode the side rail renders categorical eyebrow labels above each cluster of nav items; the top chip bar renders hairline `role="separator"` dividers between clusters.
 3. **Main column** — stacked `<section>` elements with `Heading`, optional description, content, and an optional per-section save/revert row. `Separator` rules visually divide sections.
 4. **Sticky global footer** — only rendered in global save mode (the default). Sticky to the bottom of the scroll container with cancel, optional status slot, and save button.
 
@@ -162,7 +172,9 @@ At narrow container widths (`max-width: 48rem`) the left nav collapses into a ho
 See `AdminSettingsPageProps` in `blocks/admin-settings-page/admin-settings-page.tsx` for the full list. In summary:
 
 - **Header** — `title` (required), `eyebrow`, `description`, `breadcrumb`, `headerActions`.
-- **Sections** — `sections` (required). Each section is `{ id, label, title, description?, icon?, content, dirty?, busy?, onSave?, onRevert?, saveLabel?, revertLabel? }`.
+- **Sections (flat)** — `sections` (optional). Each section is `{ id, label, title, description?, icon?, content, dirty?, busy?, onSave?, onRevert?, saveLabel?, revertLabel?, meta?, muted? }`.
+- **Sections (grouped)** — `sectionGroups` (optional). Each group is `{ label?, sections: AdminSettingsSection[] }`. Mutually exclusive with `sections` — if both are provided `sectionGroups` wins and a dev-mode `console.warn` fires. Group `label` is optional; omitting it renders an ungrouped cluster.
+- **Per-section extras** — `meta` (trailing badge in side rail, suppressed in top bar) and `muted` (dims nav text via `--text-tertiary`).
 - **Navigation** — `showNav`, `navPosition`.
 - **Mode** — `perSectionSave`.
 - **Global actions** — `onSave`, `onCancel`, `saveLabel`, `cancelLabel`, `dirty`, `busy`, `footerStatus`, `hideFooter`.

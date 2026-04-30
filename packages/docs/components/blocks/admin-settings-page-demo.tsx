@@ -4,6 +4,7 @@ import * as React from 'react';
 import {
   AdminSettingsPage,
   type AdminSettingsSection,
+  type AdminSettingsSectionGroup,
 } from '../../../../blocks/admin-settings-page/admin-settings-page';
 import { Input } from '../../../../components/ui/input/input';
 import { Label } from '../../../../components/ui/label/label';
@@ -230,6 +231,244 @@ export function AdminSettingsPageGlobalDemo() {
         onSave={handleSave}
         onCancel={handleCancel}
         footerStatus={dirty ? 'Unsaved changes' : 'All changes saved'}
+      />
+    </div>
+  );
+}
+
+export function AdminSettingsPageGroupedDemo() {
+  const sectionGroups: AdminSettingsSectionGroup[] = [
+    {
+      label: 'Account',
+      sections: [
+        {
+          id: 'grouped-profile',
+          label: 'Profile',
+          title: 'Profile',
+          description: 'Your personal information and public presence.',
+          content: (
+            <div style={sectionStyles}>
+              <div style={fieldStyles}>
+                <label
+                  htmlFor="grouped-display-name"
+                  style={{ fontSize: 'var(--font-size-sm, 0.875rem)', fontWeight: 500 }}
+                >
+                  Display name
+                </label>
+                <input
+                  id="grouped-display-name"
+                  defaultValue="Ada Lovelace"
+                  style={{
+                    padding: 'var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem)',
+                    border: '1px solid var(--border-default, #d1d5db)',
+                    borderRadius: 'var(--radius-md, 0.5rem)',
+                    fontSize: 'var(--font-size-sm, 0.875rem)',
+                    background: 'var(--surface-input, #ffffff)',
+                    color: 'var(--text-primary, #111827)',
+                  }}
+                />
+              </div>
+            </div>
+          ),
+        },
+        {
+          id: 'grouped-security',
+          label: 'Security',
+          title: 'Security',
+          description: 'Password, two-factor authentication, and active sessions.',
+          content: (
+            <div style={sectionStyles}>
+              <p style={{ margin: 0, fontSize: 'var(--font-size-sm, 0.875rem)', color: 'var(--text-secondary, #6b7280)' }}>
+                Two-factor authentication is enabled.
+              </p>
+            </div>
+          ),
+        },
+        {
+          id: 'grouped-notifications',
+          label: 'Notifications',
+          title: 'Notifications',
+          description: 'Email, push, and in-app notification preferences.',
+          content: (
+            <div style={sectionStyles}>
+              <p style={{ margin: 0, fontSize: 'var(--font-size-sm, 0.875rem)', color: 'var(--text-secondary, #6b7280)' }}>
+                You are subscribed to all notifications.
+              </p>
+            </div>
+          ),
+        },
+        {
+          id: 'grouped-tokens',
+          label: 'Personal access',
+          title: 'Personal access tokens',
+          description: 'API tokens scoped to your user account.',
+          content: (
+            <div style={sectionStyles}>
+              <p style={{ margin: 0, fontSize: 'var(--font-size-sm, 0.875rem)', color: 'var(--text-secondary, #6b7280)' }}>
+                No personal access tokens yet.
+              </p>
+            </div>
+          ),
+        },
+      ],
+    },
+    {
+      label: 'Workspace',
+      sections: [
+        {
+          id: 'grouped-general',
+          label: 'General',
+          title: 'General',
+          description: 'Basic information about your workspace.',
+          content: (
+            <div style={sectionStyles}>
+              <div style={fieldStyles}>
+                <label
+                  htmlFor="grouped-workspace-name"
+                  style={{ fontSize: 'var(--font-size-sm, 0.875rem)', fontWeight: 500 }}
+                >
+                  Workspace name
+                </label>
+                <input
+                  id="grouped-workspace-name"
+                  defaultValue="Acme Rocketry"
+                  style={{
+                    padding: 'var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem)',
+                    border: '1px solid var(--border-default, #d1d5db)',
+                    borderRadius: 'var(--radius-md, 0.5rem)',
+                    fontSize: 'var(--font-size-sm, 0.875rem)',
+                    background: 'var(--surface-input, #ffffff)',
+                    color: 'var(--text-primary, #111827)',
+                  }}
+                />
+              </div>
+            </div>
+          ),
+        },
+        {
+          id: 'grouped-members',
+          label: 'Members',
+          meta: '8',
+          title: 'Members',
+          description: 'Manage who has access to this workspace.',
+          content: (
+            <div style={sectionStyles}>
+              <p style={{ margin: 0, fontSize: 'var(--font-size-sm, 0.875rem)', color: 'var(--text-secondary, #6b7280)' }}>
+                8 members with access to this workspace.
+              </p>
+            </div>
+          ),
+        },
+        {
+          id: 'grouped-billing',
+          label: 'Billing',
+          title: 'Billing',
+          description: 'Subscription plan and payment details.',
+          content: (
+            <div style={sectionStyles}>
+              <p style={{ margin: 0, fontSize: 'var(--font-size-sm, 0.875rem)', color: 'var(--text-secondary, #6b7280)' }}>
+                Pro plan · Renews Jan 1, 2027.
+              </p>
+            </div>
+          ),
+        },
+        {
+          id: 'grouped-integrations',
+          label: 'Integrations',
+          title: 'Integrations',
+          description: 'Third-party services connected to this workspace.',
+          content: (
+            <div style={sectionStyles}>
+              <p style={{ margin: 0, fontSize: 'var(--font-size-sm, 0.875rem)', color: 'var(--text-secondary, #6b7280)' }}>
+                GitHub and Slack connected.
+              </p>
+            </div>
+          ),
+        },
+        {
+          id: 'grouped-api',
+          label: 'API & webhooks',
+          title: 'API & webhooks',
+          description: 'Workspace API keys and outbound webhook endpoints.',
+          content: (
+            <div style={sectionStyles}>
+              <p style={{ margin: 0, fontSize: 'var(--font-size-sm, 0.875rem)', color: 'var(--text-secondary, #6b7280)' }}>
+                2 active API keys.
+              </p>
+            </div>
+          ),
+        },
+        {
+          id: 'grouped-audit',
+          label: 'Audit log',
+          title: 'Audit log',
+          description: 'A tamper-evident record of all actions in this workspace.',
+          content: (
+            <div style={sectionStyles}>
+              <p style={{ margin: 0, fontSize: 'var(--font-size-sm, 0.875rem)', color: 'var(--text-secondary, #6b7280)' }}>
+                Showing the last 30 days of activity.
+              </p>
+            </div>
+          ),
+        },
+      ],
+    },
+    {
+      label: 'Venue',
+      sections: [
+        {
+          id: 'grouped-venue-default',
+          label: 'House of Yes',
+          meta: 'default',
+          title: 'House of Yes',
+          description: 'Settings for the House of Yes venue.',
+          content: (
+            <div style={sectionStyles}>
+              <p style={{ margin: 0, fontSize: 'var(--font-size-sm, 0.875rem)', color: 'var(--text-secondary, #6b7280)' }}>
+                Default venue · Brooklyn, NY.
+              </p>
+            </div>
+          ),
+        },
+        {
+          id: 'grouped-venue-moodering',
+          label: 'Mood Ring',
+          title: 'Mood Ring',
+          description: 'Settings for the Mood Ring venue.',
+          content: (
+            <div style={sectionStyles}>
+              <p style={{ margin: 0, fontSize: 'var(--font-size-sm, 0.875rem)', color: 'var(--text-secondary, #6b7280)' }}>
+                Brooklyn, NY.
+              </p>
+            </div>
+          ),
+        },
+        {
+          id: 'grouped-venue-add',
+          label: '+ Add venue',
+          muted: true,
+          title: 'Add a venue',
+          description: 'Connect another venue to your workspace.',
+          content: (
+            <div style={sectionStyles}>
+              <p style={{ margin: 0, fontSize: 'var(--font-size-sm, 0.875rem)', color: 'var(--text-secondary, #6b7280)' }}>
+                Add a new venue to manage its settings here.
+              </p>
+            </div>
+          ),
+        },
+      ],
+    },
+  ];
+
+  return (
+    <div style={shellStyles}>
+      <AdminSettingsPage
+        title="Settings"
+        eyebrow="Acme Rocketry"
+        description="Account, workspace, and venue settings grouped by context."
+        sectionGroups={sectionGroups}
+        hideFooter
       />
     </div>
   );
