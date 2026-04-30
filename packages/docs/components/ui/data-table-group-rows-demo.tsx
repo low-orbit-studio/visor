@@ -34,7 +34,7 @@ function badgeGroupRowRenderer(group: DataTableGroupRow) {
         gap: 'var(--spacing-2, 0.5rem)',
         padding: '0 var(--spacing-4, 1rem)',
         height: '28px',
-        background: 'var(--surface-alt, #f3f4f6)',
+        background: 'var(--surface-subtle, #f3f4f6)',
         fontSize: 'var(--font-size-xs, 0.6875rem)',
         fontWeight: 'var(--font-weight-semibold, 600)',
         color: 'var(--text-secondary, #6b7280)',

@@ -42,7 +42,7 @@ props:
       full-width via colSpan and are excluded from selection state.
   - name: groupRowRenderer
     type: "(group: DataTableGroupRow) => React.ReactNode"
-    description: Optional render slot for custom group-head content. When omitted, the default renderer shows label + optional count using the eyebrow type scale and `--surface-alt` background.
+    description: Optional render slot for custom group-head content. When omitted, the default renderer shows label + optional count using the eyebrow type scale and `--surface-subtle` background.
   - name: sorting
     type: SortingState
     description: Controlled sorting state.
