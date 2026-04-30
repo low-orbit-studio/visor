@@ -47,6 +47,7 @@
     "prepare": "husky 2>/dev/null || true",
     "fonts:add": "varlock run -- npx visor fonts add",
     "themes:compute-scales": "npx tsx scripts/compute-primary-scales.ts",
+    "theme:sync": "npm run build -w packages/theme-engine && npm run build -w packages/cli && visor theme sync",
     "previews": "tsx scripts/generate-previews.ts",
     "widgetbook:sync": "bash scripts/sync-widgetbook-widgets.sh",
     "widgetbook:build": "bash scripts/build-widgetbook.sh",

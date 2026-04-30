@@ -29,6 +29,7 @@ For global wisdom (universal lessons): [`~/Code/low-orbit/low-orbit-playbook/roo
 | W018 | Flutter widget quality baseline — use built-in `meetsGuideline()`; never adopt `golden_toolkit` (discontinued); use `alchemist` for goldens | flutter, testing, a11y, golden, contract | [W018](W018-flutter-widget-contract-baseline.md) |
 | W019 | Alchemist CI goldens must be baselined on Linux (Docker workaround for macOS contributors) | flutter, testing, golden, alchemist, ci, docker | [W019](W019-alchemist-goldens-must-baseline-on-linux.md) |
 | W020 | Workspace symlinks mask publish-coordination drift — `^X.Y.Z` doesn't pin to local source | monorepo, npm, publish, changesets, semver, workspaces | [W020](W020-publish-coordination-drift.md) |
+| W021 | Always use `npm run theme:sync` — bare `visor` hits the global install with stale engine | cli, themes, sync, dev-environment | [W021](W021-visor-cli-global-vs-workspace.md) |
 
 ## Adding Entries
 
