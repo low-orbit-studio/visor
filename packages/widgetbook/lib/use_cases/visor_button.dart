@@ -82,16 +82,6 @@ Widget fullWidthUseCase(BuildContext context) => Padding(
       ),
     );
 
-@widgetbook.UseCase(name: 'Secondary Brand', type: VisorButton)
-Widget secondaryBrandUseCase(BuildContext context) => Center(
-      child: VisorButton(
-        label: context.knobs
-            .string(label: 'Label', initialValue: 'Seller action'),
-        brand: VisorButtonBrand.secondary,
-        onPressed: _noop,
-      ),
-    );
-
 @widgetbook.UseCase(name: 'Disabled', type: VisorButton)
 Widget disabledUseCase(BuildContext context) => const Center(
       child: VisorButton(
