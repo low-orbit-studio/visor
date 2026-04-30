@@ -194,7 +194,7 @@
   gap: var(--spacing-2, 0.5rem);
   height: 28px;
   padding: 0 var(--spacing-4, 1rem);
-  background: var(--surface-alt, #f3f4f6);
+  background: var(--surface-subtle, #f3f4f6);
   font-size: var(--font-size-xs, 0.6875rem);
   font-weight: var(--font-weight-medium, 500);
   letter-spacing: 0.14em;
