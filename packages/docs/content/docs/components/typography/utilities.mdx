@@ -1,0 +1,114 @@
+---
+title: Typography Utilities
+description: Opt-in CSS utility classes for compact metadata labels — eyebrow section headers and tiny inline text — generated from Visor design tokens.
+---
+
+## Overview
+
+Visor ships two opt-in CSS utility classes — `.eyebrow` and `.label-tiny` — for compact metadata text at 11px. These are global CSS utility classes generated from design tokens, not React components. They are useful for sidebar group headers, KPI section labels, table column headers, keyboard shortcut hints, and captions.
+
+Both classes are distributed via `@loworbitstudio/visor-core/utilities` and must be imported explicitly. They are **not** bundled into `index.css`.
+
+## Import
+
+```ts
+import "@loworbitstudio/visor-core/utilities";
+```
+
+Add this import once at your app's entry point (e.g. `app/layout.tsx` or `globals.css`).
+
+## `.eyebrow`
+
+An uppercase, wide-tracked label for section and group headers.
+
+```tsx
+<span className="eyebrow">Active Users</span>
+```
+
+**Token values:**
+
+| Property | Token |
+|----------|-------|
+| `font-size` | `var(--font-size-2xs)` (11px / 0.6875rem) |
+| `font-weight` | `var(--font-weight-medium)` (500) |
+| `letter-spacing` | `0.16em` |
+| `text-transform` | `uppercase` |
+| `color` | `var(--text-tertiary)` |
+
+## `.label-tiny`
+
+A compact inline label for metadata, captions, and keyboard hints. Does not apply uppercase or extra letter-spacing.
+
+```tsx
+<span className="label-tiny">Last updated 2 min ago</span>
+```
+
+**Token values:**
+
+| Property | Token |
+|----------|-------|
+| `font-size` | `var(--font-size-2xs)` (11px / 0.6875rem) |
+| `font-weight` | `var(--font-weight-medium)` (500) |
+| `color` | `var(--text-tertiary)` |
+
+## CSS Output
+
+The generated `utilities.css` contains:
+
+```css
+.eyebrow {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.label-tiny {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-tertiary);
+}
+```
+
+## Token Dependency
+
+Both classes depend on `--font-size-2xs`, a new 11px primitive added to `@loworbitstudio/visor-core`. This token is available in `dist/primitives.css` and `dist/tokens.css` as:
+
+```css
+--font-size-2xs: 0.6875rem; /* 11px */
+```
+
+Ensure `@loworbitstudio/visor-core` (or `@loworbitstudio/visor-core/tokens`) is imported before `utilities.css` so the custom property resolves correctly.
+
+## Usage Examples
+
+```tsx
+// Sidebar group header
+<div>
+  <span className="eyebrow">Workspace</span>
+  <nav>...</nav>
+</div>
+
+// KPI section label
+<div>
+  <span className="eyebrow">Monthly Revenue</span>
+  <p>$42,000</p>
+</div>
+
+// Inline metadata
+<span className="label-tiny">Updated 3 hours ago</span>
+
+// Table column header
+<th><span className="eyebrow">Status</span></th>
+```
+
+## Theming
+
+Both classes use `var(--text-tertiary)`, which is an adaptive token that switches between light and dark theme values automatically. No additional configuration is needed.
+
+## Accessibility
+
+- Both classes render at 11px — below WCAG's recommended minimum of 14px for body text. Use them only for supplementary, non-critical information where users do not rely solely on this text to complete a task.
+- Avoid using `.eyebrow` or `.label-tiny` for interactive elements or primary call-to-action text.
+- If the content carries important meaning (e.g. status labels), supplement with an icon or ensure sufficient contrast with `var(--text-tertiary)` in the active theme.

@@ -120,6 +120,16 @@ describe("Primitive tokens", () => {
     }
   });
 
+  it("font-size-2xs renders as 0.6875rem (11px)", () => {
+    // 11 / 16 = 0.6875rem — new primitive added for eyebrow/label-tiny utilities
+    const px = primitiveFontSizes["2xs"];
+    expect(px).toBe(11);
+    const rem = px / 16;
+    expect(rem).toBe(0.6875);
+    const cssValue = `${rem}rem`;
+    expect(cssValue).toBe("0.6875rem");
+  });
+
   it("font weights are standard CSS values", () => {
     const validWeights = [100, 200, 300, 400, 500, 600, 700, 800, 900];
     for (const [name, value] of Object.entries(primitiveFontWeights)) {

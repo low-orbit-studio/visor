@@ -16,7 +16,8 @@
     "./themes/modern-minimal": "./dist/themes/modern-minimal.css",
     "./themes/neutral": "./dist/themes/neutral.css",
     "./themes/space": "./dist/themes/space.css",
-    "./types": "./src/types.ts"
+    "./types": "./src/types.ts",
+    "./utilities": "./dist/utilities.css"
   },
   "scripts": {
     "build": "tsx src/generate/generate-css.ts",

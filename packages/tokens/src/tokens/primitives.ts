@@ -119,6 +119,7 @@ export const primitiveStrokeWidths = {
 
 // Font sizes (pixel values, converted to rem in CSS)
 export const primitiveFontSizes = {
+  "2xs": 11,
   xs: 12,
   sm: 14,
   base: 16,
