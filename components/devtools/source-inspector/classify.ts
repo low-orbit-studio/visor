@@ -1,26 +1,34 @@
 /**
- * Pure classification of a source file path against host-supplied
- * predicates. Extracted from the SourceInspector runtime so the logic
- * is testable without instantiating React.
+ * Pure classification of a source identifier (file path or bundler chunk
+ * URL) against host-supplied predicates. Extracted from the
+ * SourceInspector runtime so the logic is testable without React.
  */
 
 export type SourceLabel = "visor" | "local" | "third-party" | "dom"
 
 export interface Classifiers {
-  visor?: (filePath: string) => boolean
-  local?: (filePath: string) => boolean
-  thirdParty?: (filePath: string) => boolean
+  visor?: (source: string) => boolean
+  local?: (source: string) => boolean
+  thirdParty?: (source: string) => boolean
+}
+
+// Underscore form (`loworbitstudio_visor`) covers Turbopack chunk URLs that
+// flatten path separators; slash form covers plain file paths and Webpack
+// chunks that preserve `node_modules/@loworbitstudio/visor`.
+const VISOR_MARKERS = ["@loworbitstudio/visor", "loworbitstudio_visor"]
+
+function matchesVisor(source: string): boolean {
+  return VISOR_MARKERS.some((marker) => source.includes(marker))
 }
 
 export const DEFAULT_CLASSIFIERS: Classifiers = {
-  visor: (path) => path.includes("node_modules/@loworbitstudio/visor"),
-  local: (path) =>
-    !path.includes("node_modules") &&
-    !path.includes("/.pnpm/") &&
-    !path.startsWith("<"),
-  thirdParty: (path) =>
-    path.includes("node_modules") &&
-    !path.includes("@loworbitstudio/visor"),
+  visor: (source) => matchesVisor(source),
+  local: (source) =>
+    !source.includes("node_modules") &&
+    !source.includes("/.pnpm/") &&
+    !source.startsWith("<"),
+  thirdParty: (source) =>
+    source.includes("node_modules") && !matchesVisor(source),
 }
 
 export function classifyFile(
