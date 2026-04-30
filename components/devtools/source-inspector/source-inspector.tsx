@@ -97,6 +97,8 @@ interface FiberLike {
   sibling?: FiberLike | null
   stateNode?: unknown
   _debugSource?: { fileName?: string } | null
+  _debugOwner?: FiberLike | null
+  _debugStack?: unknown
   return?: FiberLike | null
 }
 
@@ -109,11 +111,81 @@ function getFiberFromNode(node: Element): FiberLike | null {
   return null
 }
 
-function findOwningFileName(fiber: FiberLike | null): string | undefined {
+// React 19's JSX dev runtime hangs an Error on `_debugOwner._debugStack`.
+// Older runtimes set `_debugSource.fileName` directly on the fiber. Some
+// builds expose the stack as a plain string. Normalize all of those.
+function readStackString(stack: unknown): string | undefined {
+  if (!stack) return undefined
+  if (typeof stack === "string") return stack
+  if (stack instanceof Error) return stack.stack ?? undefined
+  if (typeof stack === "object" && "stack" in stack) {
+    const s = (stack as { stack?: unknown }).stack
+    if (typeof s === "string") return s
+  }
+  return undefined
+}
+
+// Frames whose URL or function name match these are the JSX dev runtime
+// itself, React's reconciler bottom frame, or the server-component runtime.
+// They appear above the user JSX call in `_debugStack` traces and must be
+// skipped to reach the meaningful source frame.
+const REACT_INTERNAL_FRAME_PATTERN =
+  /(react-stack-bottom-frame|react-server-dom|react-jsx-dev-runtime|react-jsx-runtime|\bjsxDEV\b|\bjsxs?\b)/
+
+/**
+ * Parse a captured Error stack and return the URL of the first frame that
+ * looks like user code. Returns undefined if every frame is a React-internal
+ * frame, the stack is empty, or no URL is parseable.
+ *
+ * Exported for unit testing — not part of the SourceInspector public API.
+ */
+export function extractFirstUserUrl(stack: string): string | undefined {
+  const lines = stack.split("\n")
+  for (const rawLine of lines) {
+    const line = rawLine.trim()
+    if (!line.startsWith("at ")) continue
+
+    let fnName = ""
+    let location = ""
+
+    const parenMatch = line.match(/^at\s+(.+?)\s+\((.+)\)\s*$/)
+    if (parenMatch) {
+      fnName = parenMatch[1]
+      location = parenMatch[2]
+    } else {
+      const bareMatch = line.match(/^at\s+(.+)$/)
+      if (!bareMatch) continue
+      location = bareMatch[1]
+    }
+
+    if (!location) continue
+    const url = location.replace(/:\d+:\d+$/, "")
+    if (!url) continue
+    if (REACT_INTERNAL_FRAME_PATTERN.test(fnName)) continue
+    if (REACT_INTERNAL_FRAME_PATTERN.test(url)) continue
+
+    return url
+  }
+  return undefined
+}
+
+function findOwningSource(fiber: FiberLike | null): string | undefined {
   let current: FiberLike | null | undefined = fiber
   while (current) {
-    const fileName = current._debugSource?.fileName
-    if (fileName) return fileName
+    const legacyFileName = current._debugSource?.fileName
+    if (legacyFileName) return legacyFileName
+
+    const owner: FiberLike | null | undefined = current._debugOwner
+    if (owner) {
+      const stackString = readStackString(owner._debugStack)
+      if (stackString) {
+        const url = extractFirstUserUrl(stackString)
+        if (url) return url
+      }
+      current = owner
+      continue
+    }
+
     current = current.return
   }
   return undefined
@@ -121,8 +193,8 @@ function findOwningFileName(fiber: FiberLike | null): string | undefined {
 
 function stampNode(el: Element, classifiers: Classifiers) {
   const fiber = getFiberFromNode(el)
-  const fileName = findOwningFileName(fiber)
-  const label: SourceLabel = classifyFile(fileName, classifiers)
+  const source = findOwningSource(fiber)
+  const label: SourceLabel = classifyFile(source, classifiers)
   if (el.getAttribute(DATA_ATTR) !== label) {
     el.setAttribute(DATA_ATTR, label)
   }

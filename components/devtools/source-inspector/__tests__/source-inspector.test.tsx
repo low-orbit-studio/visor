@@ -7,6 +7,7 @@ import {
   SourceInspector,
   SourceInspectorProvider,
   SourceInspectorContext,
+  extractFirstUserUrl,
   type Mode,
 } from "../source-inspector"
 import { SourceInspectorToggle } from "../source-inspector-toggle"
@@ -59,6 +60,89 @@ describe("classifyFile", () => {
     expect(DEFAULT_CLASSIFIERS.local!("/repo/node_modules/react/index.js")).toBe(
       false,
     )
+  })
+
+  // VI-310 — bundler chunk URLs (React 19 / Next 16 dev): inputs are URLs,
+  // not file paths. Default classifiers must handle both forms.
+  it("labels webpack chunk URLs containing visor as visor", () => {
+    expect(
+      classifyFile(
+        "http://localhost:4124/_next/static/chunks/node_modules/@loworbitstudio/visor/dist/index.js",
+      ),
+    ).toBe("visor")
+  })
+
+  it("labels turbopack underscore-mangled visor chunk URLs as visor", () => {
+    expect(
+      classifyFile(
+        "http://localhost:4124/_next/static/chunks/node_modules_loworbitstudio_visor_dist_index_js.js",
+      ),
+    ).toBe("visor")
+  })
+
+  it("labels project chunk URLs as local", () => {
+    expect(
+      classifyFile("http://localhost:4124/_next/static/chunks/_03lt5v7._.js"),
+    ).toBe("local")
+  })
+
+  it("labels third-party chunk URLs as third-party", () => {
+    expect(
+      classifyFile(
+        "http://localhost:4124/_next/static/chunks/node_modules_react-dom_index_js.js",
+      ),
+    ).toBe("third-party")
+  })
+})
+
+describe("extractFirstUserUrl", () => {
+  it("returns the first non-React frame URL", () => {
+    const stack = [
+      "Error",
+      "    at exports.jsxDEV (http://localhost:4124/_next/static/chunks/node_modules_loworbitstudio_visor.js:211:33)",
+      "    at WorkspaceSwitcher (http://localhost:4124/_next/static/chunks/_03lt5v7._.js:636:214)",
+      "    at AppShell (http://localhost:4124/_next/static/chunks/_03lt5v7._.js:2695:215)",
+    ].join("\n")
+    expect(extractFirstUserUrl(stack)).toBe(
+      "http://localhost:4124/_next/static/chunks/_03lt5v7._.js",
+    )
+  })
+
+  it("strips :line:col suffix", () => {
+    const stack = "Error\n    at user (http://localhost/x.js:10:20)"
+    expect(extractFirstUserUrl(stack)).toBe("http://localhost/x.js")
+  })
+
+  it("skips react-stack-bottom-frame frames", () => {
+    const stack = [
+      "Error",
+      "    at react-stack-bottom-frame (http://localhost/react-dom.js:99:1)",
+      "    at MyComponent (http://localhost/app.js:5:5)",
+    ].join("\n")
+    expect(extractFirstUserUrl(stack)).toBe("http://localhost/app.js")
+  })
+
+  it("returns undefined when every frame is React-internal", () => {
+    const stack = [
+      "Error",
+      "    at jsxDEV (http://localhost/react-jsx-dev-runtime.js:1:1)",
+      "    at react-stack-bottom-frame (http://localhost/react-dom.js:2:2)",
+    ].join("\n")
+    expect(extractFirstUserUrl(stack)).toBeUndefined()
+  })
+
+  it("returns undefined for an empty or stack-less input", () => {
+    expect(extractFirstUserUrl("")).toBeUndefined()
+    expect(extractFirstUserUrl("Error: something broke")).toBeUndefined()
+  })
+
+  it("parses bare 'at URL:L:C' frames without parens", () => {
+    const stack = [
+      "Error",
+      "    at jsxDEV http://localhost/react.js:1:1",
+      "    at http://localhost/app.js:5:5",
+    ].join("\n")
+    expect(extractFirstUserUrl(stack)).toBe("http://localhost/app.js")
   })
 })
 
@@ -346,6 +430,39 @@ describe("SourceInspector runtime", () => {
       window.dispatchEvent(event)
     })
     expect(onModeChange).toHaveBeenCalledWith("highlight-visor")
+  })
+
+  // VI-310 — verifies the React 19 resolver path: walk `_debugOwner` →
+  // parse `_debugStack` → extract first user URL → classify. If the resolver
+  // ever returns undefined, every element classifies as "dom" and this test
+  // fails. Uses a permissive classifier so any user URL labels as visor.
+  it("resolves a source URL from the React 19 owner stack", async () => {
+    const calls: Array<string | null | undefined> = []
+    const captureClassifier = {
+      visor: (source: string) => {
+        calls.push(source)
+        return Boolean(source)
+      },
+      local: () => false,
+      thirdParty: () => false,
+    }
+    function ProbeChild() {
+      return <span data-testid="probe">probe</span>
+    }
+    render(
+      <SourceInspector
+        defaultMode="highlight-visor"
+        debounceMs={0}
+        classifiers={captureClassifier}
+      >
+        <ProbeChild />
+      </SourceInspector>,
+    )
+    const probe = screen.getByTestId("probe")
+    // Resolver fed at least one non-empty source string into the classifier.
+    const usableCall = calls.find((c) => typeof c === "string" && c.length > 0)
+    expect(usableCall).toBeDefined()
+    expect(probe).toHaveAttribute("data-source", "visor")
   })
 
   it("disables the hotkey when null is passed", () => {
