@@ -990,6 +990,13 @@ export const propsData: Record<string, PropDef[]> = {
         'Optional leading glyph rendered inside the field (e.g. a Phosphor icon). The input reserves enough left padding to clear it.',
     },
     {
+      name: 'passwordManagers',
+      type: "'ignore' | 'allow'",
+      default: "'ignore'",
+      description:
+        'Whether 1Password / Bitwarden / LastPass should offer to autofill this field. Defaults to "ignore"; set to "allow" on credential fields, or set once at the parent <Form passwordManagers="allow">. Field-level prop wins over Form context.',
+    },
+    {
       name: 'placeholder',
       type: 'string',
       description: 'Placeholder text shown when the input is empty.',
@@ -1119,6 +1126,13 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'Disables the textarea.',
     },
     {
+      name: 'passwordManagers',
+      type: "'ignore' | 'allow'",
+      default: "'ignore'",
+      description:
+        'Whether 1Password / Bitwarden / LastPass should offer to autofill this field. Defaults to "ignore"; set to "allow" on credential fields, or set once at the parent <Form passwordManagers="allow">. Field-level prop wins over Form context.',
+    },
+    {
       name: 'className',
       type: 'string',
       description: 'Additional CSS class names to merge onto the element.',
@@ -1186,6 +1200,12 @@ export const propsData: Record<string, PropDef[]> = {
       type: '"onSubmit" | "onBlur" | "onInput"',
       default: '"onBlur"',
       description: 'When Conform triggers client-side validation.',
+    },
+    {
+      name: 'passwordManagers',
+      type: "'ignore' | 'allow'",
+      description:
+        'Form-level default for password-manager autofill on descendant Input and Textarea fields. Field-level passwordManagers prop always wins. When omitted, fields fall back to their own default of "ignore".',
     },
     {
       name: 'className',

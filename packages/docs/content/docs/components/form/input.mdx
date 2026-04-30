@@ -105,6 +105,24 @@ autofill, opt back in with `passwordManagers="allow"`:
   </div>
 </ComponentPreview>
 
+### Inheriting from Form
+
+For forms with multiple credential fields, set `passwordManagers` once on the
+parent `<Form>` and every descendant `Input` inherits the value — no need to
+repeat the prop on each field. The field-level prop still wins when it's set,
+so honeypots or other ignore-only fields can override the form-level setting.
+
+```tsx
+<Form schema={loginSchema} action={loginAction} passwordManagers="allow">
+  {({ fields }) => (
+    <>
+      <Input {...getInputProps(fields.email, { type: "email" })} />
+      <Input {...getInputProps(fields.password, { type: "password" })} />
+    </>
+  )}
+</Form>
+```
+
 ## With Field
 
 <ComponentPreview

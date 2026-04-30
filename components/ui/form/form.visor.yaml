@@ -41,6 +41,12 @@ props:
     type: "'onSubmit' | 'onBlur' | 'onInput'"
     default: "onBlur"
     description: When to trigger client-side validation
+  - name: passwordManagers
+    type: "'ignore' | 'allow'"
+    description: >
+      Form-level default for password-manager autofill on descendant Input
+      and Textarea fields. Field-level passwordManagers prop always wins.
+      When omitted, fields fall back to their own default of "ignore".
 
 sub_components:
   - name: FormField

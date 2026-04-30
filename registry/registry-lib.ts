@@ -27,4 +27,16 @@ export const lib: Registry = [
       },
     ],
   },
+  {
+    name: "password-managers-context",
+    type: "registry:lib",
+    description:
+      "React context that lets Form set a passwordManagers default for descendant Input and Textarea fields.",
+    files: [
+      {
+        path: "lib/password-managers-context.tsx",
+        type: "registry:lib",
+      },
+    ],
+  },
 ]

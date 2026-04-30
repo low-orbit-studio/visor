@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Textarea } from "../textarea"
+import { PasswordManagersProvider } from "../../../../lib/password-managers-context"
 import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Textarea", () => {
@@ -62,6 +63,45 @@ describe("Textarea", () => {
 
     it("emits no ignore data-* attrs when set to 'allow'", () => {
       render(<Textarea aria-label="Message" passwordManagers="allow" />)
+      const textarea = screen.getByRole("textbox")
+      expect(textarea).not.toHaveAttribute("data-1p-ignore")
+      expect(textarea).not.toHaveAttribute("data-bwignore")
+      expect(textarea).not.toHaveAttribute("data-lpignore")
+      expect(textarea).not.toHaveAttribute("data-form-type")
+    })
+
+    it("inherits 'allow' from PasswordManagersProvider context", () => {
+      render(
+        <PasswordManagersProvider value="allow">
+          <Textarea aria-label="Notes" />
+        </PasswordManagersProvider>
+      )
+      const textarea = screen.getByRole("textbox")
+      expect(textarea).not.toHaveAttribute("data-1p-ignore")
+      expect(textarea).not.toHaveAttribute("data-bwignore")
+      expect(textarea).not.toHaveAttribute("data-lpignore")
+      expect(textarea).not.toHaveAttribute("data-form-type")
+    })
+
+    it("field-level prop overrides context (ignore beats allow)", () => {
+      render(
+        <PasswordManagersProvider value="allow">
+          <Textarea aria-label="Honey" passwordManagers="ignore" />
+        </PasswordManagersProvider>
+      )
+      const textarea = screen.getByRole("textbox")
+      expect(textarea).toHaveAttribute("data-1p-ignore", "true")
+      expect(textarea).toHaveAttribute("data-bwignore", "true")
+      expect(textarea).toHaveAttribute("data-lpignore", "true")
+      expect(textarea).toHaveAttribute("data-form-type", "other")
+    })
+
+    it("field-level prop overrides context (allow beats ignore)", () => {
+      render(
+        <PasswordManagersProvider value="ignore">
+          <Textarea aria-label="Notes" passwordManagers="allow" />
+        </PasswordManagersProvider>
+      )
       const textarea = screen.getByRole("textbox")
       expect(textarea).not.toHaveAttribute("data-1p-ignore")
       expect(textarea).not.toHaveAttribute("data-bwignore")

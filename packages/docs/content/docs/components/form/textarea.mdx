@@ -81,6 +81,14 @@ with `passwordManagers="allow"`:
 <Textarea passwordManagers="allow" />
 ```
 
+### Inheriting from Form
+
+When wrapped in a `<Form passwordManagers="allow">`, `Textarea` inherits the
+form-level value automatically, so credential-bearing notes fields don't need
+the prop set individually. The field-level prop always wins, so a single
+"private notes" textarea inside an otherwise-allow form can still opt out with
+`passwordManagers="ignore"`.
+
 ## With Field
 
 <ComponentPreview
