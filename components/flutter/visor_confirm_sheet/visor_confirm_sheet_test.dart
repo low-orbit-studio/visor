@@ -286,5 +286,33 @@ void main() {
       // announce. We verify it's in the tree (semantic accessibility).
       expect(find.text('Dangerous action'), findsOneWidget);
     });
+
+    // Rec5 — textContrastGuideline (VI-257)
+
+    testWidgets('standard variant renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(_sheet(
+        variant: VisorConfirmSheetVariant.standard,
+        title: 'Archive item',
+        message: 'This will archive the item.',
+        confirmLabel: 'Archive',
+      ));
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('destructive variant renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(_sheet(
+        variant: VisorConfirmSheetVariant.destructive,
+        title: 'Delete item',
+        message: 'This cannot be undone.',
+        confirmLabel: 'Delete',
+      ));
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
   });
 }
