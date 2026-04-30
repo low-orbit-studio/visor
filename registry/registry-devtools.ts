@@ -20,6 +20,10 @@ export const devtools: Registry = [
         path: "components/devtools/source-inspector/classify.ts",
         type: "registry:devtool",
       },
+      {
+        path: "components/devtools/source-inspector/visor-component-names.generated.ts",
+        type: "registry:devtool",
+      },
     ],
   },
   {
