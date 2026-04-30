@@ -602,6 +602,34 @@ function generateTokensCSS(): string {
 }
 
 // ============================================================
+// Utilities CSS generation
+// ============================================================
+
+function generateUtilitiesCSS(): string {
+  const lines: string[] = [];
+
+  lines.push(sectionComment("Typography Utilities"));
+  lines.push(
+    block(".eyebrow", [
+      "font-size: var(--font-size-2xs);",
+      "font-weight: var(--font-weight-medium);",
+      "letter-spacing: 0.16em;",
+      "text-transform: uppercase;",
+      "color: var(--text-tertiary);",
+    ])
+  );
+  lines.push(
+    block(".label-tiny", [
+      "font-size: var(--font-size-2xs);",
+      "font-weight: var(--font-weight-medium);",
+      "color: var(--text-tertiary);",
+    ])
+  );
+
+  return header("Visor Design Tokens — Utilities") + lines.join("\n");
+}
+
+// ============================================================
 // Index CSS (entry point)
 // ============================================================
 
@@ -670,6 +698,11 @@ function main(): void {
   const indexCSS = generateIndexCSS();
   writeFileSync(join(DIST_DIR, "index.css"), indexCSS, "utf-8");
   console.log("✓ dist/index.css");
+
+  // Generate utilities.css (opt-in — NOT bundled into index.css)
+  const utilitiesCSS = generateUtilitiesCSS();
+  writeFileSync(join(DIST_DIR, "utilities.css"), utilitiesCSS, "utf-8");
+  console.log("✓ dist/utilities.css");
 
   // Generate stock themes
   generateStockThemes();
