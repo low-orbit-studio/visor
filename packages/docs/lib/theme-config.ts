@@ -23,6 +23,7 @@ const STOCK_GROUPS: ThemeGroup[] = [
     label: "Visor",
     themes: [
       { value: "blackout", label: "Blackout", yamlFile: "blackout" },
+      { value: "borderless", label: "Borderless", yamlFile: "borderless" },
       { value: "modern-minimal", label: "Modern Minimal", yamlFile: "modern-minimal" },
       { value: "neutral", label: "Neutral", yamlFile: "neutral" },
       { value: "space", label: "Space", yamlFile: "space" },

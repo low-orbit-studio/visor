@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 export 'package:visor_core/visor_core.dart';
 
 import 'src/blackout/theme/visor_theme.dart' as blackout_t;
+import 'src/borderless/theme/visor_theme.dart' as borderless_t;
 import 'src/modern-minimal/theme/visor_theme.dart' as modern_minimal_t;
 import 'src/neutral/theme/visor_theme.dart' as neutral_t;
 import 'src/space/theme/visor_theme.dart' as space_t;
@@ -42,6 +43,10 @@ sealed class VisorThemes {
   static VisorThemePair get blackout => VisorThemePair(
     light: blackout_t.VisorAppTheme.light,
     dark: blackout_t.VisorAppTheme.dark,
+  );
+  static VisorThemePair get borderless => VisorThemePair(
+    light: borderless_t.VisorAppTheme.light,
+    dark: borderless_t.VisorAppTheme.dark,
   );
   static VisorThemePair get modernMinimal => VisorThemePair(
     light: modern_minimal_t.VisorAppTheme.light,
