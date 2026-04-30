@@ -40,6 +40,35 @@ describe("Input", () => {
     render(<Input ref={ref} />)
     expect(ref.current).not.toBeNull()
   })
+
+  describe("passwordManagers", () => {
+    it("emits ignore data-* attrs by default", () => {
+      render(<Input aria-label="Email" />)
+      const input = screen.getByRole("textbox")
+      expect(input).toHaveAttribute("data-1p-ignore", "true")
+      expect(input).toHaveAttribute("data-bwignore", "true")
+      expect(input).toHaveAttribute("data-lpignore", "true")
+      expect(input).toHaveAttribute("data-form-type", "other")
+    })
+
+    it("emits ignore data-* attrs when set explicitly to 'ignore'", () => {
+      render(<Input aria-label="Email" passwordManagers="ignore" />)
+      const input = screen.getByRole("textbox")
+      expect(input).toHaveAttribute("data-1p-ignore", "true")
+      expect(input).toHaveAttribute("data-bwignore", "true")
+      expect(input).toHaveAttribute("data-lpignore", "true")
+      expect(input).toHaveAttribute("data-form-type", "other")
+    })
+
+    it("emits no ignore data-* attrs when set to 'allow'", () => {
+      render(<Input aria-label="Password" passwordManagers="allow" />)
+      const input = screen.getByRole("textbox")
+      expect(input).not.toHaveAttribute("data-1p-ignore")
+      expect(input).not.toHaveAttribute("data-bwignore")
+      expect(input).not.toHaveAttribute("data-lpignore")
+      expect(input).not.toHaveAttribute("data-form-type")
+    })
+  })
 })
 
 describe("accessibility", () => {
