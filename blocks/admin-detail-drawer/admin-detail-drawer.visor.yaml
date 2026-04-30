@@ -1,5 +1,5 @@
 name: Admin Detail Drawer
-description: Right-side slide-out panel for viewing or editing a single record. Composes Sheet with a sticky save/cancel footer, async save handler with pending state, an unsaved-changes guard powered by ConfirmDialog, and sm/md/lg/xl width variants.
+description: Right-side slide-out panel for viewing or editing a single record. Composes Sheet with a sticky save/cancel footer, async save handler with pending state, an unsaved-changes guard powered by ConfirmDialog, sm/md/lg/xl width variants, and optional header customization via hideHeader and customHeader props.
 category: admin
 components_used:
   - sheet

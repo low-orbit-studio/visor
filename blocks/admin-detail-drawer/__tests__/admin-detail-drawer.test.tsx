@@ -137,15 +137,113 @@ describe("AdminDetailDrawer", () => {
     expect(screen.getByText("Discard unsaved changes?")).toBeInTheDocument()
   })
 
+  // ─── Header rendering modes ─────────────────────────────────────────
+
+  it("renders default SheetHeader with title and description when neither hideHeader nor customHeader is set", () => {
+    render(
+      <AdminDetailDrawer
+        {...defaultProps}
+        description="Some description"
+      />
+    )
+    // Title is visibly rendered
+    expect(screen.getByText("Edit User")).toBeInTheDocument()
+    expect(screen.getByText("Some description")).toBeInTheDocument()
+  })
+
+  it("hideHeader suppresses the default SheetHeader but title is still present for a11y", () => {
+    const { container } = render(
+      <AdminDetailDrawer {...defaultProps} hideHeader />
+    )
+    // The visually-hidden title must exist in the DOM
+    expect(screen.getByText("Edit User")).toBeInTheDocument()
+    // The SheetHeader (data-slot) should not be rendered
+    expect(container.querySelector('[data-slot="sheet-header"]')).not.toBeInTheDocument()
+  })
+
+  it("hideHeader does not render SheetDescription even if description is provided", () => {
+    render(
+      <AdminDetailDrawer
+        {...defaultProps}
+        hideHeader
+        description="Should not appear"
+      />
+    )
+    expect(screen.queryByText("Should not appear")).not.toBeInTheDocument()
+  })
+
+  it("customHeader replaces the default SheetHeader with custom content", () => {
+    const { container } = render(
+      <AdminDetailDrawer
+        {...defaultProps}
+        customHeader={<div data-testid="custom-chrome">Custom Chrome</div>}
+      />
+    )
+    expect(screen.getByTestId("custom-chrome")).toBeInTheDocument()
+    expect(screen.getByText("Custom Chrome")).toBeInTheDocument()
+    // Default SheetHeader should not be rendered
+    expect(container.querySelector('[data-slot="sheet-header"]')).not.toBeInTheDocument()
+  })
+
+  it("customHeader mounts a visually-hidden SheetTitle wrapping title for a11y", () => {
+    render(
+      <AdminDetailDrawer
+        {...defaultProps}
+        customHeader={<div>Custom Chrome</div>}
+      />
+    )
+    // title value is in the DOM (visually hidden)
+    expect(screen.getByText("Edit User")).toBeInTheDocument()
+  })
+
+  it("customHeader wins over hideHeader when both are set", () => {
+    render(
+      <AdminDetailDrawer
+        {...defaultProps}
+        hideHeader
+        customHeader={<div data-testid="custom-chrome">Custom Chrome</div>}
+      />
+    )
+    expect(screen.getByTestId("custom-chrome")).toBeInTheDocument()
+  })
+
   // ─── A11y ───────────────────────────────────────────────────────────
 
-  it("passes accessibility checks when open", async () => {
+  it("passes accessibility checks when open (default header)", async () => {
     const { container } = render(
       <AdminDetailDrawer
         open={true}
         onOpenChange={vi.fn()}
         title="Edit User"
         description="Update the user's profile information."
+      >
+        <p>Form fields go here.</p>
+      </AdminDetailDrawer>
+    )
+    await checkA11y(container)
+  })
+
+  it("passes accessibility checks when hideHeader=true", async () => {
+    const { container } = render(
+      <AdminDetailDrawer
+        open={true}
+        onOpenChange={vi.fn()}
+        title="Edit User"
+        hideHeader
+      >
+        <p>Form fields go here.</p>
+      </AdminDetailDrawer>
+    )
+    await checkA11y(container)
+  })
+
+  it("passes accessibility checks when customHeader is set", async () => {
+    const { container } = render(
+      <AdminDetailDrawer
+        open={true}
+        onOpenChange={vi.fn()}
+        title="Edit User"
+        customHeader={<div role="banner">Custom header chrome</div>}
       >
         <p>Form fields go here.</p>
       </AdminDetailDrawer>
