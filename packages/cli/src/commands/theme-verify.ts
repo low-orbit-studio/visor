@@ -1,4 +1,4 @@
-import { spawnSync } from "child_process"
+import { spawnSync as _spawnSync } from "child_process"
 import { existsSync } from "fs"
 import { resolve } from "path"
 import { findFlutterBin } from "../utils/flutter.js"
@@ -9,10 +9,12 @@ export interface ThemeVerifyOptions {
   json?: boolean
 }
 
+// _spawnFn is injectable for testing; defaults to the real spawnSync
 export function themeVerifyCommand(
   dir: string,
   cwd: string,
-  options: ThemeVerifyOptions
+  options: ThemeVerifyOptions,
+  _spawnFn: typeof _spawnSync = _spawnSync
 ): void {
   const target = options.target ?? "flutter"
 
@@ -94,7 +96,7 @@ export function themeVerifyCommand(
   }
 
   // Run dart analyze via flutter
-  const result = spawnSync(flutterBin, ["analyze", "--no-pub"], {
+  const result = _spawnFn(flutterBin, ["analyze", "--no-pub"], {
     cwd: dirPath,
     stdio: options.json ? "pipe" : "inherit",
     encoding: "utf-8",

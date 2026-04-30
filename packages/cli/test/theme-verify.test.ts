@@ -8,21 +8,22 @@ vi.mock("../src/utils/flutter.js", () => ({
   findFlutterBin: vi.fn(),
 }))
 
-// Mock child_process.spawnSync to avoid actually running dart analyze
-vi.mock("child_process", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("child_process")>()
-  return {
-    ...actual,
-    spawnSync: vi.fn(),
-  }
-})
-
 import { themeVerifyCommand } from "../src/commands/theme-verify.js"
 import { findFlutterBin } from "../src/utils/flutter.js"
-import { spawnSync } from "child_process"
+import type { SpawnSyncReturns } from "child_process"
 
 const mockFindFlutterBin = vi.mocked(findFlutterBin)
-const mockSpawnSync = vi.mocked(spawnSync)
+
+function makeSpawnResult(status: number, stdout: string, stderr: string): SpawnSyncReturns<string> {
+  return {
+    status,
+    stdout,
+    stderr,
+    pid: 1,
+    output: [],
+    signal: null,
+  }
+}
 
 describe("themeVerifyCommand", () => {
   let tmpDir: string
@@ -46,17 +47,10 @@ describe("themeVerifyCommand", () => {
 
   it("exits 0 when dart analyze succeeds", () => {
     mockFindFlutterBin.mockReturnValue("/usr/bin/flutter")
-    mockSpawnSync.mockReturnValue({
-      status: 0,
-      stdout: "No issues found!",
-      stderr: "",
-      pid: 1,
-      output: [],
-      signal: null,
-    })
+    const mockSpawn = vi.fn().mockReturnValue(makeSpawnResult(0, "No issues found!", ""))
 
     expect(() =>
-      themeVerifyCommand(tmpDir, "/", { target: "flutter", json: false })
+      themeVerifyCommand(tmpDir, "/", { target: "flutter", json: false }, mockSpawn)
     ).toThrow("process.exit(0)")
 
     expect(exitSpy).toHaveBeenCalledWith(0)
@@ -64,17 +58,10 @@ describe("themeVerifyCommand", () => {
 
   it("exits 1 when dart analyze fails", () => {
     mockFindFlutterBin.mockReturnValue("/usr/bin/flutter")
-    mockSpawnSync.mockReturnValue({
-      status: 1,
-      stdout: "",
-      stderr: "error: undefined class 'VisorColors'",
-      pid: 1,
-      output: [],
-      signal: null,
-    })
+    const mockSpawn = vi.fn().mockReturnValue(makeSpawnResult(1, "", "error: undefined class 'VisorColors'"))
 
     expect(() =>
-      themeVerifyCommand(tmpDir, "/", { target: "flutter", json: false })
+      themeVerifyCommand(tmpDir, "/", { target: "flutter", json: false }, mockSpawn)
     ).toThrow("process.exit(1)")
 
     expect(exitSpy).toHaveBeenCalledWith(1)
@@ -82,17 +69,10 @@ describe("themeVerifyCommand", () => {
 
   it("outputs JSON on success when --json flag is set", () => {
     mockFindFlutterBin.mockReturnValue("/usr/bin/flutter")
-    mockSpawnSync.mockReturnValue({
-      status: 0,
-      stdout: "No issues found!",
-      stderr: "",
-      pid: 1,
-      output: [],
-      signal: null,
-    })
+    const mockSpawn = vi.fn().mockReturnValue(makeSpawnResult(0, "No issues found!", ""))
 
     expect(() =>
-      themeVerifyCommand(tmpDir, "/", { target: "flutter", json: true })
+      themeVerifyCommand(tmpDir, "/", { target: "flutter", json: true }, mockSpawn)
     ).toThrow("process.exit(0)")
 
     const output = JSON.parse(consoleSpy.mock.calls[0][0])
@@ -103,17 +83,10 @@ describe("themeVerifyCommand", () => {
 
   it("outputs JSON with errors on failure when --json flag is set", () => {
     mockFindFlutterBin.mockReturnValue("/usr/bin/flutter")
-    mockSpawnSync.mockReturnValue({
-      status: 1,
-      stdout: "",
-      stderr: "error: undefined class",
-      pid: 1,
-      output: [],
-      signal: null,
-    })
+    const mockSpawn = vi.fn().mockReturnValue(makeSpawnResult(1, "", "error: undefined class"))
 
     expect(() =>
-      themeVerifyCommand(tmpDir, "/", { target: "flutter", json: true })
+      themeVerifyCommand(tmpDir, "/", { target: "flutter", json: true }, mockSpawn)
     ).toThrow("process.exit(1)")
 
     const output = JSON.parse(consoleSpy.mock.calls[0][0])
