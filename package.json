@@ -30,7 +30,8 @@
   "scripts": {
     "build": "npm run build -w packages/theme-engine && npm run build -w packages/tokens && npm run build -w packages/cli && npm run build -w packages/docs",
     "build:tokens": "npm run build -w packages/tokens",
-    "pretest": "node packages/docs/scripts/ensure-theme-overlays.mjs",
+    "pretest": "node packages/docs/scripts/ensure-theme-overlays.mjs && npx tsx scripts/generate-visor-component-names.ts",
+    "generate:component-names": "npx tsx scripts/generate-visor-component-names.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit && npm run typecheck --workspaces --if-present",

@@ -4,6 +4,8 @@
  * SourceInspector runtime so the logic is testable without React.
  */
 
+import { VISOR_COMPONENT_NAMES } from "./visor-component-names.generated"
+
 export type SourceLabel = "visor" | "local" | "third-party" | "dom"
 
 export interface Classifiers {
@@ -45,4 +47,22 @@ export function classifyFile(
   if (merged.local(fileName)) return "local"
   if (merged.thirdParty(fileName)) return "third-party"
   return "dom"
+}
+
+/**
+ * Bundler-independent fast path. Returns "visor" when the React component
+ * name (from `_debugOwner.type.displayName ?? _debugOwner.type.name`) is in
+ * the registry-derived set, otherwise undefined so callers can fall back to
+ * URL-based classification.
+ *
+ * Turbopack hashes away `@loworbitstudio/visor` from chunk URLs, so URL
+ * substring matching cannot identify Visor renders under Next 16 dev. The
+ * component name is stable across bundlers; this set is regenerated from
+ * the registry by `scripts/generate-visor-component-names.ts`.
+ */
+export function classifyByVisorName(
+  name: string | undefined | null,
+): "visor" | undefined {
+  if (!name) return undefined
+  return VISOR_COMPONENT_NAMES.has(name) ? "visor" : undefined
 }

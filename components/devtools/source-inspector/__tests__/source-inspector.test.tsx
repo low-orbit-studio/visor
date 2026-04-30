@@ -2,15 +2,17 @@ import * as React from "react"
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
 import { render, screen, act } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { classifyFile, DEFAULT_CLASSIFIERS } from "../classify"
+import { classifyByVisorName, classifyFile, DEFAULT_CLASSIFIERS } from "../classify"
 import {
   SourceInspector,
   SourceInspectorProvider,
   SourceInspectorContext,
   extractFirstUserUrl,
+  findOwnerName,
   type Mode,
 } from "../source-inspector"
 import { SourceInspectorToggle } from "../source-inspector-toggle"
+import { VISOR_COMPONENT_NAMES } from "../visor-component-names.generated"
 
 describe("classifyFile", () => {
   it("labels Visor package files as visor", () => {
@@ -92,6 +94,85 @@ describe("classifyFile", () => {
         "http://localhost:4124/_next/static/chunks/node_modules_react-dom_index_js.js",
       ),
     ).toBe("third-party")
+  })
+})
+
+// VI-311 — name-based classifier path. Turbopack flattens chunk URLs so
+// `@loworbitstudio/visor` is no longer present, but the React component name
+// in `_debugOwner.type.name` survives. The set is generated from the
+// registry by `scripts/generate-visor-component-names.ts`.
+describe("classifyByVisorName", () => {
+  it("returns 'visor' for known registry component names", () => {
+    expect(classifyByVisorName("AdminShell")).toBe("visor")
+    expect(classifyByVisorName("Avatar")).toBe("visor")
+    expect(classifyByVisorName("Kbd")).toBe("visor")
+    expect(classifyByVisorName("ThemeSwitcher")).toBe("visor")
+  })
+
+  it("returns 'visor' for sub-components exported from a registry file", () => {
+    // Sub-components like MenubarItem and DropdownMenuItem are exported
+    // alongside their parent and need to match too — owner fibers can land
+    // on any of them, not just the top-level export.
+    expect(classifyByVisorName("MenubarItem")).toBe("visor")
+    expect(classifyByVisorName("DropdownMenuItem")).toBe("visor")
+    expect(classifyByVisorName("AvatarFallback")).toBe("visor")
+  })
+
+  it("returns undefined for names not in the registry-derived set", () => {
+    expect(classifyByVisorName("AppShell")).toBeUndefined()
+    expect(classifyByVisorName("WorkspaceSwitcher")).toBeUndefined()
+    expect(classifyByVisorName("CommandPalette")).toBeUndefined()
+  })
+
+  it("returns undefined for empty/missing input", () => {
+    expect(classifyByVisorName(undefined)).toBeUndefined()
+    expect(classifyByVisorName(null)).toBeUndefined()
+    expect(classifyByVisorName("")).toBeUndefined()
+  })
+
+  it("registry-derived set contains the canonical names from the live diagnostic", () => {
+    // Sentinel against accidental regen drops — these specific names were
+    // observed misclassified in admin-v7-r2 and motivated the fix.
+    for (const name of ["AdminShell", "ThemeSwitcher", "Avatar", "Kbd"]) {
+      expect(VISOR_COMPONENT_NAMES.has(name)).toBe(true)
+    }
+  })
+})
+
+describe("findOwnerName", () => {
+  it("walks the owner chain to the first non-empty type.name", () => {
+    const fiber = {
+      _debugOwner: {
+        type: { name: "Avatar" },
+      },
+    }
+    expect(findOwnerName(fiber)).toBe("Avatar")
+  })
+
+  it("prefers displayName over name", () => {
+    const fiber = {
+      _debugOwner: {
+        type: { name: "_internal", displayName: "Avatar" },
+      },
+    }
+    expect(findOwnerName(fiber)).toBe("Avatar")
+  })
+
+  it("skips owners without a type.name and continues up the chain", () => {
+    const fiber = {
+      _debugOwner: {
+        type: {},
+        _debugOwner: {
+          type: { name: "AdminShell" },
+        },
+      },
+    }
+    expect(findOwnerName(fiber)).toBe("AdminShell")
+  })
+
+  it("returns undefined for a fiber with no debug owner", () => {
+    expect(findOwnerName(null)).toBeUndefined()
+    expect(findOwnerName({})).toBeUndefined()
   })
 })
 
@@ -463,6 +544,69 @@ describe("SourceInspector runtime", () => {
     const usableCall = calls.find((c) => typeof c === "string" && c.length > 0)
     expect(usableCall).toBeDefined()
     expect(probe).toHaveAttribute("data-source", "visor")
+  })
+
+  // VI-311 — Turbopack hashes `@loworbitstudio/visor` out of chunk URLs, so
+  // URL classification cannot identify Visor renders under Next 16. The
+  // name-based fast path consults `_debugOwner.type.name` against the
+  // registry-derived set BEFORE URL classification.
+  it("labels Visor-named components as 'visor' via name match", () => {
+    // `AdminShell` is in VISOR_COMPONENT_NAMES; the function name flows to
+    // `_debugOwner.type.name` so the runner can see it without parsing URLs.
+    function AdminShell() {
+      return <span data-testid="visor-probe">probe</span>
+    }
+    render(
+      <SourceInspector defaultMode="highlight-visor" debounceMs={0}>
+        <AdminShell />
+      </SourceInspector>,
+    )
+    expect(screen.getByTestId("visor-probe")).toHaveAttribute(
+      "data-source",
+      "visor",
+    )
+  })
+
+  it("falls through to URL classification when the owner name is not in the set", () => {
+    function NotAVisorBlock() {
+      return <span data-testid="non-visor-probe">probe</span>
+    }
+    render(
+      <SourceInspector defaultMode="highlight-visor" debounceMs={0}>
+        <NotAVisorBlock />
+      </SourceInspector>,
+    )
+    // Default URL classifier on a non-node_modules path → "local". The
+    // exact label is bundler-dependent; assert it is NOT a name-match win.
+    const probe = screen.getByTestId("non-visor-probe")
+    expect(probe.getAttribute("data-source")).not.toBe("visor")
+  })
+
+  it("custom visor classifier disables the name-based fast path", () => {
+    function AdminShell() {
+      return <span data-testid="override-probe">probe</span>
+    }
+    const customClassifiers = {
+      visor: () => false,
+      local: () => true,
+      thirdParty: () => false,
+    }
+    render(
+      <SourceInspector
+        defaultMode="highlight-visor"
+        debounceMs={0}
+        classifiers={customClassifiers}
+      >
+        <AdminShell />
+      </SourceInspector>,
+    )
+    // Name path is bypassed (custom visor predicate present), URL path runs,
+    // custom `local` returns true → "local". Without the bypass this would
+    // be "visor" via name match.
+    expect(screen.getByTestId("override-probe")).toHaveAttribute(
+      "data-source",
+      "local",
+    )
   })
 
   it("disables the hotkey when null is passed", () => {

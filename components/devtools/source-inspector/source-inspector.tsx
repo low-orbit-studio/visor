@@ -3,6 +3,7 @@
 import * as React from "react"
 import styles from "./source-inspector.module.css"
 import {
+  classifyByVisorName,
   classifyFile,
   DEFAULT_CLASSIFIERS,
   type Classifiers,
@@ -10,7 +11,7 @@ import {
 } from "./classify"
 
 export type { Classifiers, SourceLabel } from "./classify"
-export { classifyFile, DEFAULT_CLASSIFIERS } from "./classify"
+export { classifyByVisorName, classifyFile, DEFAULT_CLASSIFIERS } from "./classify"
 
 export type Mode = "off" | "highlight-visor" | "highlight-non-visor"
 
@@ -96,6 +97,7 @@ interface FiberLike {
   child?: FiberLike | null
   sibling?: FiberLike | null
   stateNode?: unknown
+  type?: unknown
   _debugSource?: { fileName?: string } | null
   _debugOwner?: FiberLike | null
   _debugStack?: unknown
@@ -191,8 +193,63 @@ function findOwningSource(fiber: FiberLike | null): string | undefined {
   return undefined
 }
 
-function stampNode(el: Element, classifiers: Classifiers) {
+// Walk the owner chain to find the nearest React component name. `displayName`
+// wins over `name` when both are present (matches React DevTools). Returns
+// undefined when we hit a host element with no component owner.
+function readOwnerName(owner: FiberLike): string | undefined {
+  const type = owner.type as
+    | { displayName?: unknown; name?: unknown }
+    | null
+    | undefined
+  if (!type) return undefined
+  const display = type.displayName
+  if (typeof display === "string" && display) return display
+  const name = type.name
+  if (typeof name === "string" && name) return name
+  return undefined
+}
+
+/**
+ * Exported for unit testing — not part of the SourceInspector public API.
+ * Walks the owner chain returning the first non-empty component name.
+ */
+export function findOwnerName(fiber: FiberLike | null): string | undefined {
+  let current: FiberLike | null | undefined = fiber
+  while (current) {
+    const owner: FiberLike | null | undefined = current._debugOwner
+    if (owner) {
+      const name = readOwnerName(owner)
+      if (name) return name
+      current = owner
+      continue
+    }
+    current = current.return
+  }
+  return undefined
+}
+
+function stampNode(
+  el: Element,
+  classifiers: Classifiers,
+  hasCustomVisorClassifier: boolean,
+) {
   const fiber = getFiberFromNode(el)
+
+  // Bundler-independent fast path: match the owning React component name
+  // against the registry-derived set. Skipped when the host supplied a
+  // custom `visor` predicate so consumer overrides win over both built-in
+  // signals (the URL fallback already honors custom classifiers).
+  if (!hasCustomVisorClassifier) {
+    const ownerName = findOwnerName(fiber)
+    const nameLabel = classifyByVisorName(ownerName)
+    if (nameLabel) {
+      if (el.getAttribute(DATA_ATTR) !== nameLabel) {
+        el.setAttribute(DATA_ATTR, nameLabel)
+      }
+      return
+    }
+  }
+
   const source = findOwningSource(fiber)
   const label: SourceLabel = classifyFile(source, classifiers)
   if (el.getAttribute(DATA_ATTR) !== label) {
@@ -200,11 +257,15 @@ function stampNode(el: Element, classifiers: Classifiers) {
   }
 }
 
-function stampSubtree(root: Element, classifiers: Classifiers) {
-  stampNode(root, classifiers)
+function stampSubtree(
+  root: Element,
+  classifiers: Classifiers,
+  hasCustomVisorClassifier: boolean,
+) {
+  stampNode(root, classifiers, hasCustomVisorClassifier)
   const all = root.querySelectorAll("*")
   for (let i = 0; i < all.length; i++) {
-    stampNode(all[i], classifiers)
+    stampNode(all[i], classifiers, hasCustomVisorClassifier)
   }
 }
 
@@ -259,8 +320,17 @@ function SourceInspectorRunner({
         ? styles.modeHighlightNonVisor
         : null
 
+  // Detect a host-supplied visor predicate so the name-based fast path can
+  // step aside. `Classifiers` is a permissive shape — equality against the
+  // default sentinel is the only signal that the host did NOT override it.
+  const hasCustomVisorClassifier =
+    classifiers.visor !== undefined &&
+    classifiers.visor !== DEFAULT_CLASSIFIERS.visor
+
   const classifiersRef = React.useRef(classifiers)
   classifiersRef.current = classifiers
+  const hasCustomVisorRef = React.useRef(hasCustomVisorClassifier)
+  hasCustomVisorRef.current = hasCustomVisorClassifier
 
   // Stamp + observe whenever overlay is enabled.
   React.useEffect(() => {
@@ -274,11 +344,19 @@ function SourceInspectorRunner({
       if (scheduled !== null) return
       scheduled = setTimeout(() => {
         scheduled = null
-        stampSubtree(document.body, classifiersRef.current)
+        stampSubtree(
+          document.body,
+          classifiersRef.current,
+          hasCustomVisorRef.current,
+        )
       }, debounceMs)
     }
 
-    stampSubtree(document.body, classifiersRef.current)
+    stampSubtree(
+      document.body,
+      classifiersRef.current,
+      hasCustomVisorRef.current,
+    )
 
     const observer = new MutationObserver(() => {
       scheduleStamp()
