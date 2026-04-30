@@ -4,6 +4,7 @@
   "defaultOpen": true,
   "pages": [
     "heading",
+    "section-header",
     "text"
   ]
 }

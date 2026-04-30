@@ -6,6 +6,44 @@ description: A versatile button component with multiple variants and sizes. Buil
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+
+<Tabs defaultValue="react">
+  <TabsList>
+    <TabsTrigger value="react">React</TabsTrigger>
+    <TabsTrigger value="flutter">Flutter</TabsTrigger>
+  </TabsList>
+  <TabsContent value="react">
+
+```bash
+npx visor add button
+```
+
+  </TabsContent>
+  <TabsContent value="flutter">
+
+```bash
+npx visor add button --target flutter
+```
+
+```dart
+import 'package:ui/ui.dart';
+
+VisorButton(
+  label: 'Save',
+  onPressed: _save,
+  style: VisorButtonStyle.primary,
+  size: VisorButtonSize.md,
+  width: VisorButtonWidth.full,
+)
+```
+
+See the [Flutter Button](/docs/flutter/widgets/button) page for the full API reference.
+
+{/* Widgetbook iframe — deferred until VI-204 (widgetbook deploy) lands */}
+
+  </TabsContent>
+</Tabs>
 
 ## Variants
 

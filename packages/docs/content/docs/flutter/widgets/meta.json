@@ -1,0 +1,5 @@
+{
+  "title": "Widgets",
+  "description": "Flutter widget docs are alphabetized A-Z. Insert new entries in order.",
+  "pages": ["button", "empty-state", "section-header", "stat-card"]
+}

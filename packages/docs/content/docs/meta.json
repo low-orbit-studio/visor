@@ -1,4 +1,4 @@
 {
   "title": "Visor",
-  "pages": ["index", "adapters", "cli", "versioning", "releases", "themes", "guides", "ssr-compatibility", "accessibility", "hooks", "patterns", "playgrounds", "blocks", "components", "devtools"]
+  "pages": ["index", "adapters", "cli", "versioning", "releases", "themes", "guides", "ssr-compatibility", "accessibility", "hooks", "patterns", "playgrounds", "blocks", "components", "flutter", "devtools"]
 }

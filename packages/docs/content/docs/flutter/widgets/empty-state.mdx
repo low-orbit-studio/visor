@@ -1,0 +1,110 @@
+---
+title: VisorEmptyState
+description: Flutter empty-state widget for lists, tables, and dashboard regions with no data. Adaptive vertical/compact layout with icon, headline, body, and dual-action slots.
+---
+
+`VisorEmptyState` is a centered placeholder widget for lists, tables, search
+results, and dashboard regions when there is no data to display. Layout adapts
+automatically to available vertical space.
+
+## Installation
+
+```bash
+npx visor add empty-state --target flutter
+```
+
+Or copy `components/flutter/visor_empty_state/visor_empty_state.dart` into
+your project.
+
+## Basic Usage
+
+```dart
+import 'package:ui/ui.dart';
+
+VisorEmptyState(
+  icon: Icons.inbox_outlined,
+  headline: 'No messages yet',
+)
+```
+
+## With Body Copy
+
+```dart
+VisorEmptyState(
+  icon: Icons.inbox_outlined,
+  headline: 'No messages yet',
+  body: "You're all caught up. New messages will appear here.",
+)
+```
+
+## With Action
+
+```dart
+VisorEmptyState(
+  icon: Icons.folder_open,
+  headline: 'No projects',
+  body: 'Create your first project to get started.',
+  action: VisorButton(
+    label: 'Create project',
+    onPressed: _createProject,
+  ),
+)
+```
+
+## With Dual Actions
+
+```dart
+VisorEmptyState(
+  icon: Icons.folder_open,
+  headline: 'No projects',
+  body: 'Create your first project to get started.',
+  action: VisorButton(
+    label: 'Create project',
+    onPressed: _createProject,
+  ),
+  secondaryAction: VisorButton(
+    label: 'Import existing',
+    style: VisorButtonStyle.secondary,
+    onPressed: _importProject,
+  ),
+)
+```
+
+## Compact Layout
+
+The widget automatically uses a compact (icon-left / text-right) layout when
+the available height is below the threshold. Force compact layout:
+
+```dart
+VisorEmptyState(
+  icon: Icons.inbox_outlined,
+  headline: 'No messages',
+  forceCompact: true,
+)
+```
+
+## Custom Accessibility Label
+
+```dart
+VisorEmptyState(
+  icon: Icons.inbox_outlined,
+  headline: 'No messages',
+  semanticLabel: 'Inbox is empty',
+)
+```
+
+## API Reference
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `icon` | `IconData` | required | Icon displayed above the headline |
+| `headline` | `String` | required | Primary message |
+| `body` | `String?` | `null` | Supporting description |
+| `action` | `Widget?` | `null` | Primary CTA widget |
+| `secondaryAction` | `Widget?` | `null` | Secondary CTA widget |
+| `forceCompact` | `bool` | `false` | Always use compact layout |
+| `semanticLabel` | `String?` | `null` | Override accessibility label |
+
+## Source
+
+`components/flutter/visor_empty_state/visor_empty_state.dart`

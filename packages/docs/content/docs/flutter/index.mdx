@@ -1,0 +1,82 @@
+---
+title: Flutter
+description: Visor's Flutter component library — a two-layer distribution model using visor_core (pub.dev) for tokens and copy-and-own widgets for components.
+---
+
+Visor ships a first-class Flutter library alongside its React registry. The
+same design token system that powers React components is available in Dart via
+the `visor_core` pub.dev package, keeping design consistency across platforms
+effortless.
+
+## Two-Layer Distribution Model
+
+Visor Flutter uses the same philosophy as the React registry:
+
+1. **Tokens → `visor_core` (pub.dev).** CSS custom properties are mirrored as
+   strongly-typed Dart token classes (`VisorColors`, `VisorTextStyles`,
+   `VisorSpacing`, and more). Add `visor_core` to your `pubspec.yaml` and run
+   `flutter pub get` — token updates propagate automatically via `pub upgrade`.
+
+2. **Widgets → copy-and-own.** Run `visor init` and `visor theme apply
+   --target flutter` to scaffold a `packages/ui/` directory in your Flutter
+   project. Each widget file is fully yours to edit — no lock-in, no
+   black-box packages.
+
+## Installation
+
+### 1. Add `visor_core`
+
+```yaml
+dependencies:
+  visor_core: ^0.1.0
+```
+
+```bash
+flutter pub get
+```
+
+### 2. Scaffold your UI package
+
+```bash
+npx visor init
+npx visor theme apply --target flutter
+```
+
+This generates a `packages/ui/` directory containing:
+
+- Token extension files (`visor_colors.dart`, `visor_text_styles.dart`, etc.)
+- A `VisorTheme` widget that seeds Material 3 `ThemeData` from Visor tokens
+- Stub widget files for each component you opted into during `visor init`
+
+### 3. Wrap your app
+
+```dart
+import 'package:ui/ui.dart';
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return VisorTheme(
+      child: MaterialApp(
+        home: const HomePage(),
+      ),
+    );
+  }
+}
+```
+
+## What's Included
+
+| Layer | Distribution | Updated via |
+|-------|-------------|-------------|
+| Design tokens | `visor_core` on pub.dev | `flutter pub upgrade` |
+| Widget source | Copy-and-own in your project | `visor theme apply` (re-run) |
+| Theme output | Generated `packages/ui/` | `visor theme apply` |
+
+## Next Steps
+
+- [Getting Started](/docs/flutter/getting-started) — step-by-step walkthrough
+- [Theming](/docs/flutter/theming) — customize tokens with `.visor.yaml`
+- [Token Reference](/docs/flutter/tokens) — all available token classes

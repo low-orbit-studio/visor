@@ -1,0 +1,151 @@
+---
+title: Theming
+description: Customize Visor's Flutter output by editing .visor.yaml — change palettes, swap fonts, and re-generate your packages/ui/ with visor theme apply.
+---
+
+Visor's theming system for Flutter is driven by `.visor.yaml` — a single
+config file that describes your active theme, color overrides, typography, and
+more. Running `visor theme apply --target flutter` re-generates your
+`packages/ui/` directory from this config.
+
+## How it Works
+
+```
+.visor.yaml  →  visor theme apply --target flutter  →  packages/ui/
+```
+
+The generated `packages/ui/` contains strongly-typed Dart token classes that
+your app's widgets reference at runtime via `BuildContext` extensions provided
+by `visor_core`.
+
+## `.visor.yaml` Structure
+
+A minimal Flutter-targeted config:
+
+```yaml
+theme: visor-default
+target: flutter
+output: packages/ui
+
+colors:
+  primary: "#6366f1"
+  primaryForeground: "#ffffff"
+
+typography:
+  fontFamily: "Inter"
+  scale: 1.0
+```
+
+### `theme`
+
+The base theme to build on. Built-in options:
+
+| Value | Description |
+|-------|-------------|
+| `visor-default` | Light mode, neutral palette |
+| `visor-dark` | Dark mode, neutral palette |
+| `visor-space` | Dark mode, deep space palette |
+
+### `target`
+
+Set to `flutter` to generate Dart output. The same `.visor.yaml` can target
+`css` (React) and `flutter` simultaneously via separate runs or a batch
+command.
+
+### `output`
+
+Path to the generated package directory relative to project root. Defaults to
+`packages/ui`.
+
+### `colors`
+
+Override individual semantic color tokens. Keys map directly to
+`VisorColorsData` fields:
+
+```yaml
+colors:
+  interactivePrimaryBg: "#6366f1"
+  interactivePrimaryBgHover: "#4f46e5"
+  interactivePrimaryText: "#ffffff"
+  surfaceDefault: "#ffffff"
+  surfaceCard: "#f8fafc"
+  textPrimary: "#111827"
+  textSecondary: "#4b5563"
+```
+
+### `typography`
+
+Control the font family and scale factor:
+
+```yaml
+typography:
+  fontFamily: "Inter"
+  scale: 1.0
+```
+
+## Re-generating after Changes
+
+After editing `.visor.yaml`:
+
+```bash
+npx visor theme apply --target flutter
+```
+
+Verify the output compiles:
+
+```bash
+npx visor theme verify --target flutter packages/ui
+```
+
+## Theming Multiple Flavors
+
+For apps with separate light/dark or brand-specific builds, use separate
+`.visor.yaml` files and pass the config path explicitly:
+
+```bash
+npx visor theme apply --target flutter --config .visor.light.yaml
+npx visor theme apply --target flutter --config .visor.dark.yaml
+```
+
+## Consuming Tokens at Runtime
+
+The generated `packages/ui/` registers all tokens as `InheritedWidget` data
+via `visor_core`'s `BuildContext` extensions. Access any token in any widget:
+
+```dart
+@override
+Widget build(BuildContext context) {
+  final colors = context.visorColors;
+  final textStyles = context.visorTextStyles;
+  final spacing = context.visorSpacing;
+
+  return Container(
+    color: colors.surfaceCard,
+    padding: EdgeInsets.all(spacing.md),
+    child: Text(
+      'Hello',
+      style: textStyles.bodyMedium.copyWith(color: colors.textPrimary),
+    ),
+  );
+}
+```
+
+All theme changes flow through `VisorTheme` — no `setState`, no Provider
+boilerplate required.
+
+## Validating your Config
+
+Before applying, validate the YAML against Visor's schema:
+
+```bash
+npx visor theme validate .visor.yaml
+```
+
+This catches unknown keys, type mismatches, and missing required fields
+before any code is generated.
+
+## See Also
+
+- [Token Reference](/docs/flutter/tokens) — full list of token classes and their fields
+- [Getting Started](/docs/flutter/getting-started) — initial setup walkthrough
+- [CLI Reference](/docs/cli) — full command documentation

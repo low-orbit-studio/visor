@@ -1,0 +1,82 @@
+---
+title: VisorSectionHeader
+description: Flutter section heading with title, optional subtitle, and optional trailing slot (e.g. "View all" link, filter button, count badge).
+---
+
+`VisorSectionHeader` renders a section heading row with a title, an optional
+subtitle, and an optional trailing slot. It reads all styling from Visor's
+`BuildContext` extensions.
+
+## Installation
+
+```bash
+npx visor add section-header --target flutter
+```
+
+Or copy `components/flutter/visor_section_header/visor_section_header.dart`
+into your project.
+
+## Basic Usage
+
+```dart
+import 'package:ui/ui.dart';
+
+VisorSectionHeader(
+  title: 'Recent activity',
+)
+```
+
+## With Subtitle
+
+```dart
+VisorSectionHeader(
+  title: 'Recent activity',
+  subtitle: 'Last 30 days',
+)
+```
+
+## With Trailing Action
+
+```dart
+VisorSectionHeader(
+  title: 'Recent activity',
+  subtitle: 'Last 30 days',
+  trailing: TextButton(
+    onPressed: _viewAll,
+    child: const Text('View all'),
+  ),
+)
+```
+
+## With Count Badge
+
+```dart
+VisorSectionHeader(
+  title: 'Notifications',
+  trailing: Container(
+    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+    decoration: BoxDecoration(
+      color: context.visorColors.surfaceAccentSubtle,
+      borderRadius: BorderRadius.circular(context.visorRadius.pill),
+    ),
+    child: Text(
+      '$count',
+      style: context.visorTextStyles.labelSmall.copyWith(
+        color: context.visorColors.surfaceAccentStrong,
+      ),
+    ),
+  ),
+)
+```
+
+## API Reference
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `title` | `String` | required | Section heading text |
+| `subtitle` | `String?` | `null` | Supporting label below title |
+| `trailing` | `Widget?` | `null` | Right-aligned slot (button, badge, etc.) |
+
+## Source
+
+`components/flutter/visor_section_header/visor_section_header.dart`
