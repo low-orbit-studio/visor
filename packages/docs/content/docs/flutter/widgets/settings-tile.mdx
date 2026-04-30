@@ -1,0 +1,115 @@
+---
+title: VisorSettingsTile
+description: List-tile navigation primitive for settings screens and sidebar navigation, with destructive variant and selected state.
+---
+
+`VisorSettingsTile` is a list-tile primitive optimised for settings screens
+and sidebar navigation. The leading slot takes an icon, the centre takes a
+label and optional subtitle, and the trailing slot defaults to a chevron caret
+(or any custom widget). A `destructive` flag and a `selected` flag cover the
+two non-default states.
+
+## Preview
+
+<iframe
+  src="https://widgetbook.visor.design/?path=use-cases/visor-settings-tile/default"
+  title="VisorSettingsTile — Widgetbook"
+  loading="lazy"
+  style={{ width: '100%', height: '480px', border: 'none', borderRadius: '8px' }}
+/>
+
+## When to Use
+
+- Settings screen rows (account, notifications, privacy, etc.)
+- Sidebar navigation items
+- Any list-style navigation where label, icon, and tap action are needed
+- Destructive list rows (sign out, delete account)
+
+## When Not to Use
+
+- Data-dense tables — use a table component
+- Selectable list items with checkboxes (use a list with `CheckboxListTile`)
+- Top-level navigation tabs (use `NavigationBar` or `TabBar`)
+
+## Installation
+
+```bash
+npx visor add settings-tile --target flutter
+```
+
+Or copy `components/flutter/visor_settings_tile/visor_settings_tile.dart`
+into your project.
+
+## Basic Usage
+
+```dart
+import 'package:ui/ui.dart';
+
+VisorSettingsTile(
+  icon: Icons.notifications_outlined,
+  label: 'Notifications',
+  subtitle: 'Push, email, and in-app',
+  onTap: () => Navigator.pushNamed(context, '/notifications'),
+)
+```
+
+## Variants
+
+```dart
+// Default — chevron caret in the trailing slot
+VisorSettingsTile(
+  icon: Icons.lock_outline,
+  label: 'Privacy',
+  onTap: _openPrivacy,
+)
+
+// With custom trailing widget
+VisorSettingsTile(
+  icon: Icons.dark_mode_outlined,
+  label: 'Dark mode',
+  trailing: Switch(value: _dark, onChanged: _setDark),
+  onTap: _toggleDark,
+)
+
+// Selected — for sidebar nav highlighting the active route
+VisorSettingsTile(
+  icon: Icons.dashboard_outlined,
+  label: 'Dashboard',
+  selected: true,
+  onTap: () {},
+)
+
+// Destructive — for sign-out / delete-account rows
+VisorSettingsTile(
+  icon: Icons.logout,
+  label: 'Sign out',
+  destructive: true,
+  onTap: _signOut,
+)
+```
+
+## API Reference
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `icon` | `IconData` | required | Leading icon |
+| `label` | `String` | required | Primary text label |
+| `subtitle` | `String?` | `null` | Optional supporting label |
+| `trailing` | `Widget?` | `null` | Right-aligned slot; defaults to a chevron caret |
+| `onTap` | `VoidCallback?` | `null` | Tap handler; `null` disables interaction |
+| `destructive` | `bool` | `false` | Renders the row in the error / destructive palette |
+| `selected` | `bool` | `false` | Highlights the row with `surfaceSelected` background |
+| `semanticLabel` | `String?` | `null` | Override the announced label (defaults to `label`) |
+
+## Accessibility
+
+- Wrapped in `Semantics(button: true, label: …)`. `ExcludeSemantics` is
+  applied to the inner `Text` when a custom `semanticLabel` is provided.
+- Chevron is documented as locale-neutral — it does not auto-mirror
+  in RTL because in this product it represents "drill in", not "next".
+- Layout uses `EdgeInsetsDirectional` for paddings that should mirror.
+
+## Source
+
+- `components/flutter/visor_settings_tile/visor_settings_tile.dart`
+- Quality contract audit row: `docs/flutter-widget-quality-contract.md` (Rec8)

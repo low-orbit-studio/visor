@@ -1,0 +1,98 @@
+---
+title: VisorErrorView
+description: Error-state surface with icon, message, optional body copy, and a retry button. Supports an optional Scaffold wrap for full-screen error routes.
+---
+
+`VisorErrorView` is the recoverable-error counterpart to `VisorEmptyState`.
+It renders an icon, a one-sentence message, optional body copy, and a retry
+button when a callback is provided. Set `wrapWithScaffold: true` to use it
+as a full-screen error route with an `AppBar` back button.
+
+## Preview
+
+<iframe
+  src="https://widgetbook.visor.design/?path=use-cases/visor-error-view/default"
+  title="VisorErrorView — Widgetbook"
+  loading="lazy"
+  style={{ width: '100%', height: '480px', border: 'none', borderRadius: '8px' }}
+/>
+
+## When to Use
+
+- Replacing a loading region when a data fetch fails
+- Full-screen error routes (network errors, server failures) — set `wrapWithScaffold: true`
+- Recoverable failures where a retry action is available
+- Informational error states where no retry is possible (omit `retryCallback`)
+
+## When Not to Use
+
+- Inline validation messages next to a form field (use `VisorTextInput`'s error state)
+- Toast notifications for transient errors (use `VisorSnackBar`)
+- Empty states where there is no error (use `VisorEmptyState`)
+
+## Installation
+
+```bash
+npx visor add error-view --target flutter
+```
+
+Or copy `components/flutter/visor_error_view/visor_error_view.dart` into
+your project.
+
+## Basic Usage
+
+```dart
+import 'package:ui/ui.dart';
+
+VisorErrorView(
+  message: "Couldn't load your projects.",
+  body: 'Check your connection and try again.',
+  retryCallback: _refetch,
+)
+```
+
+## Full-Screen Variant
+
+```dart
+VisorErrorView(
+  message: 'Server unreachable.',
+  body: 'We tried 3 times and gave up. Sorry about that.',
+  retryCallback: _refetch,
+  wrapWithScaffold: true,
+  scaffoldTitle: 'Connection error',
+)
+```
+
+## Without Retry
+
+```dart
+VisorErrorView(
+  message: 'This project no longer exists.',
+  icon: Icons.delete_outline,
+)
+```
+
+## API Reference
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `message` | `String` | required | Primary error message — keep to one sentence |
+| `body` | `String?` | `null` | Optional supporting copy explaining recovery |
+| `icon` | `IconData` | `Icons.error_outline` | Icon rendered above the message |
+| `retryCallback` | `VoidCallback?` | `null` | When `null`, the retry button is not shown |
+| `retryLabel` | `String?` | `'Try again'` | Override the retry button label |
+| `wrapWithScaffold` | `bool` | `false` | Wrap content in a `Scaffold` with an `AppBar` back button |
+| `scaffoldTitle` | `String?` | `null` | Title for the `AppBar` when `wrapWithScaffold` is `true` |
+| `semanticLabel` | `String?` | `null` | Override the announced label (defaults to `message`) |
+
+## Accessibility
+
+- `Semantics(liveRegion: true, container: true)` — screen readers announce
+  the error when the view appears.
+- Retry button meets the 48 dp tap target and carries an explicit label.
+- Layout uses `EdgeInsetsDirectional` for RTL support.
+
+## Source
+
+- `components/flutter/visor_error_view/visor_error_view.dart`
+- Quality contract audit row: `docs/flutter-widget-quality-contract.md` (Rec8)

@@ -7,6 +7,27 @@ description: Flutter section heading with title, optional subtitle, and optional
 subtitle, and an optional trailing slot. It reads all styling from Visor's
 `BuildContext` extensions.
 
+## Preview
+
+<iframe
+  src="https://widgetbook.visor.design/?path=use-cases/visor-section-header/default"
+  title="VisorSectionHeader — Widgetbook"
+  loading="lazy"
+  style={{ width: '100%', height: '480px', border: 'none', borderRadius: '8px' }}
+/>
+
+## When to Use
+
+- Dividing a screen into labeled groups of content
+- Introducing a list or card grid with context
+- Pairing a title with a secondary action (filter, view-all)
+
+## When Not to Use
+
+- Page-level titles — use AppBar instead
+- Table column headers — use the table's built-in headers
+- Dialogs and sheets — use their built-in titles
+
 ## Installation
 
 ```bash
@@ -79,4 +100,5 @@ VisorSectionHeader(
 
 ## Source
 
-`components/flutter/visor_section_header/visor_section_header.dart`
+- `components/flutter/visor_section_header/visor_section_header.dart`
+- Quality contract audit row: `docs/flutter-widget-quality-contract.md` (Rec8)

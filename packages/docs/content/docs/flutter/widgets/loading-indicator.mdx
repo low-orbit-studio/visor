@@ -1,0 +1,86 @@
+---
+title: VisorLoadingIndicator
+description: Themed loading spinner with optional delay gate and reduce-motion support.
+---
+
+`VisorLoadingIndicator` is a token-driven spinner. Pass `delay` to suppress a
+flash-of-spinner on operations that usually complete quickly. When the system
+requests reduced motion, the spinner short-circuits to a static circular border
+of the same diameter — preserving the layout slot.
+
+## Preview
+
+<iframe
+  src="https://widgetbook.visor.design/?path=use-cases/visor-loading-indicator/immediate"
+  title="VisorLoadingIndicator — Widgetbook"
+  loading="lazy"
+  style={{ width: '100%', height: '480px', border: 'none', borderRadius: '8px' }}
+/>
+
+## When to Use
+
+- Indicating background work is in progress (data fetch, save, upload)
+- Delay-gated feedback — pass `delay` to suppress flash-of-spinner on fast operations
+- Inline loading slots inside cards or list items (default 24 dp size)
+- Any context where a spinner must respect the system reduce-motion preference
+
+## When Not to Use
+
+- Full-page loading where a skeleton screen better preserves layout
+- Determinate progress (use `LinearProgressIndicator` with a value)
+- Overlay/modal blocking spinners (use a dedicated overlay widget)
+- Replacing button content during loading (use `VisorButton`'s `isLoading`)
+
+## Installation
+
+```bash
+npx visor add loading-indicator --target flutter
+```
+
+Or copy `components/flutter/visor_loading_indicator/visor_loading_indicator.dart`
+into your project.
+
+## Basic Usage
+
+```dart
+import 'package:ui/ui.dart';
+
+const VisorLoadingIndicator()
+```
+
+## Variants
+
+```dart
+// Custom size
+VisorLoadingIndicator(size: 32)
+
+// Delay gate — suppresses spinner for fast loads
+VisorLoadingIndicator(delay: const Duration(milliseconds: 200))
+
+// Custom color (e.g. on a dark surface)
+VisorLoadingIndicator(color: context.visorColors.textInverse)
+
+// With announced label
+VisorLoadingIndicator(semanticLabel: 'Loading…')
+```
+
+## API Reference
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `size` | `double?` | `24.0` | Logical-pixel diameter of the spinner |
+| `color` | `Color?` | `interactivePrimaryBg` | Spinner color |
+| `delay` | `Duration?` | `null` | Wait before showing — avoids flash-of-spinner |
+| `semanticLabel` | `String?` | `null` | When provided, wraps the widget in `Semantics(label: …)` |
+
+## Accessibility
+
+- Reduce-motion aware — when `MediaQuery.disableAnimations` is true,
+  the spinner becomes a static circular border with the same bounding box.
+- `semanticLabel` is opt-in. Add it when the spinner is the only signal
+  the user has that work is happening.
+
+## Source
+
+- `components/flutter/visor_loading_indicator/visor_loading_indicator.dart`
+- Quality contract audit row: `docs/flutter-widget-quality-contract.md` (Rec8)

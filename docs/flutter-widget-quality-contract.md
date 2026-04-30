@@ -188,33 +188,33 @@ Legend: ✅ pass · ⚠️ partial · ❌ fail · — not applicable
 
 | Widget | Rec1 alchemist | Rec2 focus ring | Rec3 widgetbook | Rec4 iOS tap | Rec5 contrast | Rec6 RTL test | Rec7 liveRegion | Rec8 MDX page |
 |--------|----|----|----|----|----|----|----|----|
-| `visor_avatar` | ❌ | — | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ❌ |
-| `visor_back_button` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ pre-existing | — | ❌ |
-| `visor_button` | ✅ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ❌ |
-| `visor_chip` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ❌ |
-| `visor_chip_search_input` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ❌ |
-| `visor_confirm_sheet` | ❌ | — | ⚠️ confirm | — | ✅ VI-257 | ✅ VI-258 | — | ❌ |
-| `visor_empty_state` | ❌ | — | ⚠️ confirm | — | ✅ VI-257 | ✅ VI-258 | — | ❌ |
-| `visor_empty_state_card` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
-| `visor_error_view` | ❌ | — | ⚠️ confirm | — | ✅ VI-257 | ✅ pre-existing | ⚠️ candidate for error-text `liveRegion` | ❌ |
-| `visor_form_dialog` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
-| `visor_loading_dots` | ❌ | — | ⚠️ confirm | — | — | ✅ VI-258 | — | ❌ |
-| `visor_loading_indicator` | ❌ | — | ⚠️ confirm | — | — | ✅ VI-258 | ⚠️ candidate for `liveRegion` when status changes | ❌ |
-| `visor_otp_input` | ❌ | ⚠️ relies on Material focus default | ⚠️ confirm | ❌ | ❌ | ✅ VI-258 | — | ❌ |
-| `visor_password_input` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ❌ |
-| `visor_phone_input` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ❌ |
-| `visor_rich_text` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
-| `visor_section_header` | ❌ | — | ⚠️ confirm | — | ✅ VI-257 | ✅ VI-258 | — | ❌ |
-| `visor_settings_tile` | ❌ | ⚠️ Material `InkWell` default | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ❌ |
-| `visor_snack_bar` | ❌ | — | ⚠️ confirm | — | ✅ VI-257 | ✅ VI-258 | ✅ | ❌ |
-| `visor_stat_card` | ❌ | — | ⚠️ confirm | — | ✅ VI-257 | ✅ VI-258 | — | ❌ |
-| `visor_text_input` | ❌ | ⚠️ has token-driven border-focus color but no token-driven outer focus ring | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | ⚠️ candidate for error-text `liveRegion` | ❌ |
+| `visor_avatar` | ❌ | — | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ✅ VI-259 |
+| `visor_back_button` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ pre-existing | — | ✅ VI-259 |
+| `visor_button` | ✅ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ✅ VI-259 |
+| `visor_chip` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ✅ VI-259 |
+| `visor_chip_search_input` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ✅ VI-259 |
+| `visor_confirm_sheet` | ❌ | — | ⚠️ confirm | — | ✅ VI-257 | ✅ VI-258 | — | ✅ VI-259 |
+| `visor_empty_state` | ❌ | — | ⚠️ confirm | — | ✅ VI-257 | ✅ VI-258 | — | ✅ VI-259 |
+| `visor_empty_state_card` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ✅ VI-259 |
+| `visor_error_view` | ❌ | — | ⚠️ confirm | — | ✅ VI-257 | ✅ pre-existing | ⚠️ candidate for error-text `liveRegion` | ✅ VI-259 |
+| `visor_form_dialog` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ✅ VI-259 |
+| `visor_loading_dots` | ❌ | — | ⚠️ confirm | — | — | ✅ VI-258 | — | ✅ VI-259 |
+| `visor_loading_indicator` | ❌ | — | ⚠️ confirm | — | — | ✅ VI-258 | ⚠️ candidate for `liveRegion` when status changes | ✅ VI-259 |
+| `visor_otp_input` | ❌ | ⚠️ relies on Material focus default | ⚠️ confirm | ❌ | ❌ | ✅ VI-258 | — | ✅ VI-259 |
+| `visor_password_input` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ✅ VI-259 |
+| `visor_phone_input` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ✅ VI-259 |
+| `visor_rich_text` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ✅ VI-259 |
+| `visor_section_header` | ❌ | — | ⚠️ confirm | — | ✅ VI-257 | ✅ VI-258 | — | ✅ VI-259 |
+| `visor_settings_tile` | ❌ | ⚠️ Material `InkWell` default | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ✅ VI-259 |
+| `visor_snack_bar` | ❌ | — | ⚠️ confirm | — | ✅ VI-257 | ✅ VI-258 | ✅ | ✅ VI-259 |
+| `visor_stat_card` | ❌ | — | ⚠️ confirm | — | ✅ VI-257 | ✅ VI-258 | — | ✅ VI-259 |
+| `visor_text_input` | ❌ | ⚠️ has token-driven border-focus color but no token-driven outer focus ring | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | ⚠️ candidate for error-text `liveRegion` | ✅ VI-259 |
 
 ### Audit summary
 
 - **Required-tier failures** (❌ cells, must spawn a follow-up ticket): 9 across 5 widgets — see [Follow-up tickets](#follow-up-tickets).
 - **Required-tier partials** (⚠️ cells, judgment-call): 16 — listed below; reviewer decides whether to spawn a ticket per item.
-- **Recommended-tier failures**: pervasive — every widget except `visor_button` fails Rec1 (alchemist); every widget fails Rec5 (contrast guideline), Rec6 (RTL test), and Rec8 (MDX page). These are batched per-tier follow-ups, not per-widget. **VI-256 lands the alchemist scaffolding** (dev_dependency, project-wide `flutter_test_config.dart`, CI lane, contributor docs) plus one example golden test on `visor_button` covering the style × size × theme matrix; subsequent per-widget golden coverage rolls into each Wave 2 widget's PR.
+- **Recommended-tier failures**: pervasive — every widget except `visor_button` fails Rec1 (alchemist); every widget fails Rec5 (contrast guideline) and Rec6 (RTL test). These are batched per-tier follow-ups, not per-widget. **VI-256 lands the alchemist scaffolding** (dev_dependency, project-wide `flutter_test_config.dart`, CI lane, contributor docs) plus one example golden test on `visor_button` covering the style × size × theme matrix; subsequent per-widget golden coverage rolls into each Wave 2 widget's PR. **VI-259 (this PR) closes Rec8** — every widget now has a canonical MDX page on `visor.design`.
 
 ---
 
@@ -240,7 +240,7 @@ Plus four Recommended-tier batch tickets (one per cross-cutting Rec item):
 | [VI-256](https://linear.app/low-orbit-studio/issue/VI-256) — Rec1: introduce `alchemist` golden test scaffolding | Add `alchemist` dev_dependency; one example golden test on `visor_button`; CI lane. |
 | [VI-257](https://linear.app/low-orbit-studio/issue/VI-257) — Rec5: contrast guideline tests for text-on-token widgets | Add `meetsGuideline(textContrastGuideline)` to button, empty_state, settings_tile, stat_card, text_input. |
 | [VI-258](https://linear.app/low-orbit-studio/issue/VI-258) — Rec6: RTL widget tests across all 21 widgets | ✅ Done — One `Directionality.rtl` test per widget; assert no overflow/exception. All 19 widgets received explicit RTL tests (2 already had coverage). |
-| [VI-259](https://linear.app/low-orbit-studio/issue/VI-259) — Rec8: per-widget MDX docs | Blocked by [VI-205](https://linear.app/low-orbit-studio/issue/VI-205) (Flutter docs section). |
+| [VI-259](https://linear.app/low-orbit-studio/issue/VI-259) — Rec8: per-widget MDX docs | ✅ Done — 17 new MDX pages plus iframe-and-when-to-use backfill on the 4 existing pages (`button`, `empty-state`, `section-header`, `stat-card`). All 21 widgets now satisfy Rec8. |
 
 Tickets get the labels: `Flutter`, `Improvement`, `quality:audit-gap`. The latter is created if it does not yet exist.
 

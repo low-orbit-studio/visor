@@ -1,0 +1,112 @@
+---
+title: VisorChip
+description: Selectable chip primitive for suggestion, tag, and filter patterns with selected/unselected states and size variants.
+---
+
+`VisorChip` is a single toggleable label. It maps to the React `ToggleGroup`
+primitive — render a list of chips and drive selection state from the parent.
+Two visual variants (`suggestion`, `filter`) and two sizes (`sm`, `md`) cover
+the common patterns.
+
+## Preview
+
+<iframe
+  src="https://widgetbook.visor.design/?path=use-cases/visor-chip/suggestion-unselected"
+  title="VisorChip — Widgetbook"
+  loading="lazy"
+  style={{ width: '100%', height: '480px', border: 'none', borderRadius: '8px' }}
+/>
+
+## When to Use
+
+- Filterable tag or category options the user can toggle on/off
+- Suggestion rows (search autocomplete, style recommendations)
+- Multi-select filter bars where individual options toggle independently
+- Any UI pattern that maps to a "toggle group" of labelled options
+
+## When Not to Use
+
+- Single binary toggle (use Switch or Checkbox)
+- Navigation tabs or route selectors (use `TabBar`)
+- Dismissible labels removable from a list (use a deletable tag/badge)
+- Triggering an action rather than selecting a state (use `VisorButton`)
+
+## Installation
+
+```bash
+npx visor add chip --target flutter
+```
+
+Or copy `components/flutter/visor_chip/visor_chip.dart` into your project.
+
+## Basic Usage
+
+```dart
+import 'package:ui/ui.dart';
+
+VisorChip(
+  label: 'Vegetarian',
+  isSelected: filters.contains('vegetarian'),
+  onPressed: () => _toggle('vegetarian'),
+)
+```
+
+## Variants
+
+```dart
+// Suggestion (pill, default) — unselected vs selected
+VisorChip(label: 'New', onPressed: _toggle)
+VisorChip(label: 'New', isSelected: true, onPressed: _toggle)
+
+// Filter (rectangular)
+VisorChip(
+  label: 'Under \$50',
+  variant: VisorChipVariant.filter,
+  isSelected: true,
+  onPressed: _toggle,
+)
+```
+
+## Sizes
+
+```dart
+VisorChip(label: 'Small',  size: VisorChipSize.sm, onPressed: () {})
+VisorChip(label: 'Medium', size: VisorChipSize.md, onPressed: () {})
+```
+
+## API Reference
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `label` | `String` | required | Text label rendered inside the chip |
+| `onPressed` | `VoidCallback?` | required | Tap handler; `null` disables interaction |
+| `isSelected` | `bool` | `false` | Whether the chip is currently selected |
+| `variant` | `VisorChipVariant` | `.suggestion` | Visual style: `.suggestion` (pill) or `.filter` (rectangular) |
+| `size` | `VisorChipSize` | `.md` | Size preset controlling padding and typography |
+| `semanticLabel` | `String?` | `null` | Override the announced label (defaults to the label text) |
+
+### `VisorChipVariant`
+
+| Value | Description |
+|-------|-------------|
+| `.suggestion` | Rounded pill chip — best for tag clouds and autocomplete |
+| `.filter` | Rectangular chip — best for filter bars |
+
+### `VisorChipSize`
+
+| Value | Description |
+|-------|-------------|
+| `.sm` | Compact — for inline contexts |
+| `.md` | Default — meets the 48 dp tap target |
+
+## Accessibility
+
+- Wraps the tap surface in a 48 dp `Semantics` container with
+  `selected: isSelected` and `button: true`.
+- `ExcludeSemantics` wraps the inner `Text` to avoid duplicate
+  screen-reader announcements when `semanticLabel` is provided.
+
+## Source
+
+- `components/flutter/visor_chip/visor_chip.dart`
+- Quality contract audit row: `docs/flutter-widget-quality-contract.md` (Rec8)

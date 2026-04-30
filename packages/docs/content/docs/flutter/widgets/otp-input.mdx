@@ -1,0 +1,98 @@
+---
+title: VisorOtpInput
+description: A one-time-password input composed of individual digit boxes with auto-advance, backspace-to-previous, and full theming support.
+---
+
+`VisorOtpInput` renders a row of fixed-width digit boxes for one-time
+codes. Typing a digit advances focus; backspace on an empty digit returns
+focus to the previous one. On Web a single hidden `TextField` collects
+input; native uses per-digit focus nodes with a `KeyboardListener`.
+
+## Preview
+
+<iframe
+  src="https://widgetbook.visor.design/?path=use-cases/visor-otp-input/default"
+  title="VisorOtpInput — Widgetbook"
+  loading="lazy"
+  style={{ width: '100%', height: '480px', border: 'none', borderRadius: '8px' }}
+/>
+
+## When to Use
+
+- Entering a one-time password or verification code
+- SMS / email verification flows
+- Two-factor authentication screens
+- PIN entry where digit count is fixed and known
+
+## When Not to Use
+
+- Free-form numeric input (use `VisorTextInput`)
+- Variable-length codes (use `VisorTextInput` with `maxLength`)
+- Long passcodes or passwords (use `VisorPasswordInput`)
+
+## Installation
+
+```bash
+npx visor add otp-input --target flutter
+```
+
+Or copy `components/flutter/visor_otp_input/visor_otp_input.dart` into
+your project.
+
+## Basic Usage
+
+```dart
+import 'package:ui/ui.dart';
+
+VisorOtpInput(
+  digitCount: 6,
+  onCodeComplete: _verifyCode,
+)
+```
+
+## With Live Validation
+
+```dart
+VisorOtpInput(
+  digitCount: 6,
+  autofocus: true,
+  onCodeChanged: (partial) => setState(() => _code = partial),
+  onCodeComplete: (full) => _verify(full),
+)
+```
+
+## Programmatic Reset
+
+```dart
+final _otpKey = GlobalKey<VisorOtpInputState>();
+
+VisorOtpInput(key: _otpKey, digitCount: 4, onCodeComplete: _verify);
+
+// Later:
+_otpKey.currentState?.clear();
+```
+
+## API Reference
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `digitCount` | `int` | `6` | Number of digit boxes to render |
+| `onCodeComplete` | `ValueChanged<String>?` | `null` | Fires once when all digits are filled |
+| `onCodeChanged` | `ValueChanged<String>?` | `null` | Fires on every keystroke with the partial code |
+| `enabled` | `bool` | `true` | When `false`, all input is ignored |
+| `autofocus` | `bool` | `false` | Request focus on first build |
+| `semanticLabel` | `String?` | `null` | Override the announced label (defaults to `'OTP code, N digits'`) |
+
+## Accessibility
+
+- The digit row is wrapped in `Semantics(container: true, label: …)` so
+  screen readers announce the field as a single OTP control.
+- Each digit box carries `Semantics(textField: true, label: 'OTP digit X of N')`.
+- Auto-advance and backspace-to-previous work consistently across platforms.
+- Layout uses `EdgeInsetsDirectional` so the digit row mirrors in RTL,
+  but the visual digit order is documented as locale-neutral (left-to-right).
+
+## Source
+
+- `components/flutter/visor_otp_input/visor_otp_input.dart`
+- Quality contract audit row: `docs/flutter-widget-quality-contract.md` (Rec8)

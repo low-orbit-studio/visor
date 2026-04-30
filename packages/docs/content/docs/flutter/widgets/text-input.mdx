@@ -1,0 +1,127 @@
+---
+title: VisorTextInput
+description: Animated floating-label text input covering five validation states (default, focused, error, valid, disabled).
+---
+
+`VisorTextInput` is the Flutter form-field primitive. A floating label
+animates above the field on focus or when content is present; the surface
+moves through five validation states (default, focused, error, valid,
+disabled) using semantic tokens. `VisorPasswordInput` and `VisorPhoneInput`
+build on top of it.
+
+## Preview
+
+<iframe
+  src="https://widgetbook.visor.design/?path=use-cases/visor-text-input/default"
+  title="VisorTextInput — Widgetbook"
+  loading="lazy"
+  style={{ width: '100%', height: '480px', border: 'none', borderRadius: '8px' }}
+/>
+
+## When to Use
+
+- Single-line text entry in forms (name, email, address, search)
+- Any field that benefits from a floating label to save vertical space
+- Fields requiring inline validation feedback (error / valid states)
+
+## When Not to Use
+
+- Multi-line text entry (use a textarea / expandable variant)
+- Password fields with a visibility toggle (use `VisorPasswordInput`)
+- Selecting from a fixed list (use Select or Dropdown)
+
+## Installation
+
+```bash
+npx visor add text-input --target flutter
+```
+
+Or copy `components/flutter/visor_text_input/visor_text_input.dart` into
+your project.
+
+## Basic Usage
+
+```dart
+import 'package:ui/ui.dart';
+
+VisorTextInput(
+  labelText: 'Email',
+  controller: _email,
+  keyboardType: TextInputType.emailAddress,
+  textInputAction: TextInputAction.next,
+)
+```
+
+## With Validation
+
+```dart
+VisorTextInput(
+  labelText: 'Email',
+  controller: _email,
+  validator: (value) {
+    if (value == null || value.isEmpty) return 'Required';
+    if (!value.contains('@')) return 'Enter a valid email';
+    return null;
+  },
+  autovalidateMode: AutovalidateMode.onUserInteraction,
+)
+```
+
+## With Prefix Icon
+
+```dart
+VisorTextInput(
+  labelText: 'Search',
+  prefixIcon: const Icon(Icons.search),
+  onChanged: _runSearch,
+)
+```
+
+## Async Valid State
+
+```dart
+VisorTextInput(
+  labelText: 'Username',
+  controller: _username,
+  isValid: _usernameAvailable,
+  errorText: _usernameAvailable == false ? 'Already taken' : null,
+)
+```
+
+## API Reference
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `labelText` | `String` | required | Floating label text |
+| `controller` | `TextEditingController?` | `null` | Optional external text controller |
+| `focusNode` | `FocusNode?` | `null` | Optional external focus node |
+| `prefixIcon` | `Widget?` | `null` | Leading icon |
+| `suffixWidget` | `Widget?` | `null` | Trailing widget (rendered after the valid checkmark when both are present) |
+| `errorText` | `String?` | `null` | Override the error message |
+| `onChanged` | `ValueChanged<String>?` | `null` | Fires on every keystroke |
+| `onFieldSubmitted` | `ValueChanged<String>?` | `null` | Fires on keyboard submit |
+| `validator` | `String? Function(String?)?` | `null` | Synchronous validator |
+| `keyboardType` | `TextInputType?` | `null` | Keyboard type hint |
+| `textInputAction` | `TextInputAction?` | `null` | Keyboard action button type |
+| `autofocus` | `bool` | `false` | Request focus on first build |
+| `enabled` | `bool` | `true` | When `false`, reduces opacity and ignores input |
+| `autocorrect` | `bool` | `true` | Enable autocorrect |
+| `enableSuggestions` | `bool` | `true` | Enable keyboard suggestions |
+| `textCapitalization` | `TextCapitalization` | `.none` | Text capitalization mode |
+| `autovalidateMode` | `AutovalidateMode?` | `.onUserInteraction` | When the validator runs |
+| `obscureText` | `bool` | `false` | When `true`, replaces typed characters with bullets |
+| `inputFormatters` | `List<TextInputFormatter>?` | `null` | Optional input formatters |
+| `isValid` | `bool?` | `null` | Explicit valid/invalid override (`null` = derive from validator) |
+| `semanticLabel` | `String?` | `null` | Override the announced label (defaults to `labelText`) |
+
+## Accessibility
+
+- `Semantics(label: …, enabled: …, textField: true)` wraps the field.
+- Reduce-motion aware — when `MediaQuery.disableAnimations` is true the
+  label-float animation duration collapses to zero.
+- Layout uses `EdgeInsetsDirectional` so paddings mirror in RTL.
+
+## Source
+
+- `components/flutter/visor_text_input/visor_text_input.dart`
+- Quality contract audit row: `docs/flutter-widget-quality-contract.md` (Rec8)

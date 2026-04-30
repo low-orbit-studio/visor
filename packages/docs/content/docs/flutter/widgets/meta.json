@@ -1,5 +1,27 @@
 {
   "title": "Widgets",
   "description": "Flutter widget docs are alphabetized A-Z. Insert new entries in order.",
-  "pages": ["button", "empty-state", "section-header", "stat-card"]
+  "pages": [
+    "avatar",
+    "back-button",
+    "button",
+    "chip",
+    "chip-search-input",
+    "confirm-sheet",
+    "empty-state",
+    "empty-state-card",
+    "error-view",
+    "form-dialog",
+    "loading-dots",
+    "loading-indicator",
+    "otp-input",
+    "password-input",
+    "phone-input",
+    "rich-text",
+    "section-header",
+    "settings-tile",
+    "snack-bar",
+    "stat-card",
+    "text-input"
+  ]
 }

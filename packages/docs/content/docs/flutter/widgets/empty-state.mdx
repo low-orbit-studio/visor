@@ -7,6 +7,28 @@ description: Flutter empty-state widget for lists, tables, and dashboard regions
 results, and dashboard regions when there is no data to display. Layout adapts
 automatically to available vertical space.
 
+## Preview
+
+<iframe
+  src="https://widgetbook.visor.design/?path=use-cases/visor-empty-state/default"
+  title="VisorEmptyState — Widgetbook"
+  loading="lazy"
+  style={{ width: '100%', height: '480px', border: 'none', borderRadius: '8px' }}
+/>
+
+## When to Use
+
+- Rendering a placeholder for an empty list, table, or search result
+- Communicating that a user has not yet created their first item
+- Providing a clear CTA to unblock an empty state
+- Filling dashboard regions that temporarily have no data
+
+## When Not to Use
+
+- Full-screen error or 404 pages (use a dedicated error surface)
+- Loading states (use Skeleton or a spinner)
+- Inline validation messages (use Field or Alert)
+
 ## Installation
 
 ```bash
@@ -107,4 +129,5 @@ VisorEmptyState(
 
 ## Source
 
-`components/flutter/visor_empty_state/visor_empty_state.dart`
+- `components/flutter/visor_empty_state/visor_empty_state.dart`
+- Quality contract audit row: `docs/flutter-widget-quality-contract.md` (Rec8)
