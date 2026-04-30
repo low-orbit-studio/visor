@@ -26,11 +26,22 @@ Command.displayName = "Command"
 
 function CommandDialog({
   children,
+  contentClassName,
+  contentProps,
   ...props
-}: React.ComponentProps<typeof Dialog>) {
+}: React.ComponentProps<typeof Dialog> & {
+  contentClassName?: string;
+  contentProps?: Omit<
+    React.ComponentProps<typeof DialogContent>,
+    "className" | "children"
+  >;
+}) {
   return (
     <Dialog {...props}>
-      <DialogContent className={styles.dialogContent}>
+      <DialogContent
+        className={cn(styles.dialogContent, contentClassName)}
+        {...contentProps}
+      >
         <DialogTitle className={styles.srOnly}>Command Palette</DialogTitle>
         <Command className={styles.dialogCommand}>{children}</Command>
       </DialogContent>

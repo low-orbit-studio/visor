@@ -28,6 +28,12 @@ props:
   - name: onOpenChange
     type: "(open: boolean) => void"
     description: "Callback when CommandDialog open state changes"
+  - name: contentClassName
+    type: "string"
+    description: "Additional class name merged onto DialogContent via cn(). Use for width, padding, or elevation overrides (e.g. the V7 640 px / 540 px palette spec)."
+  - name: contentProps
+    type: "Omit<React.ComponentProps<typeof DialogContent>, 'className' | 'children'>"
+    description: "Spread of any remaining DialogContent props (e.g. onOpenAutoFocus, onCloseAutoFocus, onPointerDownOutside, onEscapeKeyDown). className and children are excluded to prevent conflicts."
 
 sub_components:
   - name: CommandDialog

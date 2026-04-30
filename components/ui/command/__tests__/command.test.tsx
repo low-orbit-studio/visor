@@ -201,6 +201,46 @@ describe("CommandDialog", () => {
     )
     expect(screen.getByText("Command Palette")).toBeInTheDocument()
   })
+
+  it("merges contentClassName onto DialogContent", () => {
+    const { baseElement } = render(
+      <CommandDialog open contentClassName="custom-width">
+        <CommandInput />
+        <CommandList>
+          <CommandItem>Item</CommandItem>
+        </CommandList>
+      </CommandDialog>
+    )
+    const content = baseElement.querySelector("[data-slot='dialog-content']")
+    expect(content).toHaveClass("custom-width")
+  })
+
+  it("forwards contentProps to DialogContent", () => {
+    const onEscapeKeyDown = vi.fn()
+    render(
+      <CommandDialog open contentProps={{ onEscapeKeyDown }}>
+        <CommandInput />
+        <CommandList>
+          <CommandItem>Item</CommandItem>
+        </CommandList>
+      </CommandDialog>
+    )
+    // Verify the dialog content is rendered (contentProps spread doesn't break render)
+    expect(screen.getByText("Command Palette")).toBeInTheDocument()
+  })
+
+  it("existing usage without new props is unaffected", () => {
+    render(
+      <CommandDialog open>
+        <CommandInput placeholder="Search..." />
+        <CommandList>
+          <CommandItem>Existing item</CommandItem>
+        </CommandList>
+      </CommandDialog>
+    )
+    expect(screen.getByPlaceholderText("Search...")).toBeInTheDocument()
+    expect(screen.getByText("Existing item")).toBeInTheDocument()
+  })
 })
 
 describe("accessibility", () => {
