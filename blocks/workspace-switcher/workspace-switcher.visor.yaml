@@ -1,0 +1,15 @@
+name: Workspace Switcher
+description: Sidebar-header workspace switcher composing a button trigger and a DropdownMenu of available workspaces. The trigger displays the current workspace's avatar, name, optional plan/role line, and a caret. Used in the AdminShell's `logo` slot for multi-tenant admin apps.
+category: admin
+components_used:
+  - avatar
+  - dropdown-menu
+when_to_use:
+  - Multi-tenant admin apps where users belong to multiple workspaces or organizations
+  - Sidebar header (`logo` slot) of `AdminShell` to swap the active workspace context
+  - Any UI where the active org/team is part of the user's mental address bar
+when_not_to_use:
+  - Single-tenant apps with no concept of switching context
+  - Search-to-filter pickers (use a combobox or command palette instead)
+  - Workspace creation flows (consumer composes those above or below the switcher)
+  - Loading or skeleton states (consumer renders their own skeleton until data is ready)

@@ -1,0 +1,136 @@
+---
+title: Workspace Switcher
+description: Sidebar-header workspace switcher composing a button trigger and a DropdownMenu of available workspaces. Drop-in for the AdminShell logo slot in multi-tenant admin apps.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { WorkspaceSwitcherDemo } from '@/components/blocks/workspace-switcher-demo';
+
+## Preview
+
+### Full trigger
+
+<BlockPreview
+  title="Workspace Switcher — full"
+  code={"<WorkspaceSwitcher\n  current={{ id: 'empire-room', name: 'Empire Room', plan: 'Pro · NYC', initials: 'ER' }}\n  workspaces={[\n    { id: 'empire-room', name: 'Empire Room', plan: 'Pro · NYC', initials: 'ER' },\n    { id: 'house-of-yes', name: 'House of Yes', plan: 'Free · Brooklyn', initials: 'HY' },\n    { id: 'elsewhere', name: 'Elsewhere', plan: 'Pro · Bushwick', initials: 'EL' },\n  ]}\n  onSelect={(id) => router.push(`/?w=${id}`)}\n/>"}
+>
+  <WorkspaceSwitcherDemo trigger="full" />
+</BlockPreview>
+
+### Compact trigger
+
+<BlockPreview
+  title="Workspace Switcher — compact"
+  code={"<WorkspaceSwitcher\n  trigger=\"compact\"\n  current={current}\n  workspaces={workspaces}\n  onSelect={(id) => router.push(`/?w=${id}`)}\n/>"}
+>
+  <WorkspaceSwitcherDemo trigger="compact" />
+</BlockPreview>
+
+### Empty state
+
+<BlockPreview
+  title="Workspace Switcher — empty"
+  code={"<WorkspaceSwitcher\n  current={current}\n  workspaces={[]}\n  onSelect={(id) => router.push(`/?w=${id}`)}\n/>"}
+>
+  <WorkspaceSwitcherDemo trigger="full" empty />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block workspace-switcher
+```
+
+This copies files into your project:
+
+- `blocks/workspace-switcher/workspace-switcher.tsx` — the block component
+- `blocks/workspace-switcher/workspace-switcher.module.css` — the styles
+
+It also installs the `avatar` and `dropdown-menu` primitives if they aren't already present.
+
+## Usage
+
+Drop the switcher into the `logo` slot of `AdminShell`:
+
+```tsx
+'use client';
+
+import { AdminShell } from '@/blocks/admin-shell/admin-shell';
+import { WorkspaceSwitcher } from '@/blocks/workspace-switcher/workspace-switcher';
+import { useRouter } from 'next/navigation';
+
+const workspaces = [
+  { id: 'empire-room', name: 'Empire Room', plan: 'Pro · NYC', initials: 'ER' },
+  { id: 'house-of-yes', name: 'House of Yes', plan: 'Free · Brooklyn', initials: 'HY' },
+];
+
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const current = workspaces[0];
+
+  return (
+    <AdminShell
+      logo={
+        <WorkspaceSwitcher
+          current={current}
+          workspaces={workspaces}
+          onSelect={(id) => router.push(`/?w=${id}`)}
+        />
+      }
+      sidebarNav={<nav>…</nav>}
+    >
+      {children}
+    </AdminShell>
+  );
+}
+```
+
+The `current` prop is **fully controlled** by the parent — after `onSelect` fires, the parent re-renders the block with the new `current` value.
+
+## Trigger variants
+
+| Variant | Layout | Use when |
+|---------|--------|----------|
+| `full` (default) | Avatar + name + plan + caret | The sidebar is expanded and you have horizontal space. |
+| `compact` | Avatar + caret only | The sidebar is collapsed. The accessible label still announces the current workspace name. |
+
+The block does not derive its variant from the sidebar's collapsed state — the consumer (typically `AdminShell` or its parent) decides when to flip the prop.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `current` | `WorkspaceItem` | — | **Required.** The currently active workspace. Fully controlled by the parent. |
+| `workspaces` | `WorkspaceItem[]` | — | **Required.** All workspaces available to the user. May include `current`; may be empty. |
+| `onSelect` | `(id: string) => void` | — | **Required.** Fires when a workspace item is activated. The parent decides what to do (route change, mutation, etc.). |
+| `trigger` | `"full" \| "compact"` | `"full"` | Trigger presentation. |
+| `className` | `string` | — | Forwarded to the trigger button's root element. |
+
+### `WorkspaceItem`
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | `string` | Yes | Stable id passed to `onSelect`. |
+| `name` | `string` | Yes | Display name. Single line; CSS-truncated with ellipsis. |
+| `plan` | `string` | No | Secondary line — plan, region, role, etc. CSS-truncated. |
+| `initials` | `string` | Yes | Avatar fallback. Caller controls derivation rules (e.g. first letter of each word). |
+| `imageUrl` | `string` | No | Optional org logo. Rendered via `AvatarImage`; falls back to `initials` if the image fails to load. |
+
+## Empty / single-workspace state
+
+When the user belongs to only one workspace (or the `workspaces` array is empty), the dropdown still opens and renders a disabled "No other workspaces" item so the affordance remains in place. Consumers who want a different behavior — for example, hiding the trigger entirely on single-tenant accounts — can simply not render the block.
+
+## Accessibility
+
+- The trigger is a plain `<button type="button">` wrapped in `DropdownMenuTrigger`. Radix applies `aria-haspopup="menu"` and `aria-expanded` automatically.
+- The accessible name on the trigger is `Switch workspace · current: {name}`. This carries the current workspace's name in `compact` mode where the visual text is hidden.
+- The current workspace is indicated by a `CheckIcon` on its `DropdownMenuItem` — not by `aria-selected`. Menu items use `CheckIcon` (not listbox/combobox semantics).
+- Caret, avatar fallback, and check icons are all `aria-hidden="true"` — they're decorative; the announced text comes from the item label and the trigger's `aria-label`.
+- Radix `DropdownMenu` returns focus to the trigger on close.
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI — such as admin shells, login forms, or dashboard panels.
+
+Blocks are copy-and-own, just like components. Install them into your project and customize freely.

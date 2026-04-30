@@ -19,6 +19,7 @@
     "login-form",
     "pricing-section",
     "steps-section",
-    "testimonial-section"
+    "testimonial-section",
+    "workspace-switcher"
   ]
 }
