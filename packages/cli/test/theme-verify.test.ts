@@ -9,9 +9,13 @@ vi.mock("../src/utils/flutter.js", () => ({
 }))
 
 // Mock child_process.spawnSync to avoid actually running dart analyze
-vi.mock("child_process", () => ({
-  spawnSync: vi.fn(),
-}))
+vi.mock("child_process", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("child_process")>()
+  return {
+    ...actual,
+    spawnSync: vi.fn(),
+  }
+})
 
 import { themeVerifyCommand } from "../src/commands/theme-verify.js"
 import { findFlutterBin } from "../src/utils/flutter.js"
