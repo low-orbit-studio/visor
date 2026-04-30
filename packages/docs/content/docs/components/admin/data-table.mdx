@@ -6,6 +6,7 @@ description: A generic Tanstack-powered data table compound that composes Visor'
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { DataTable } from '@/components/ui/data-table';
+import { DataTableGroupRowsDemo } from '@/components/ui/data-table-group-rows-demo';
 
 export const sampleUsers = [
   { id: '1', name: 'Ada Lovelace', email: 'ada@example.com', role: 'Admin' },
@@ -28,6 +29,16 @@ export const sampleColumns = [
   { accessorKey: 'role', header: 'Role' },
 ];
 
+export const sampleGroupedRows = [
+  { kind: 'group', id: 'g1', label: 'Tonight · Sat Apr 27', count: 2 },
+  { kind: 'data', id: 'u1', row: { id: '1', name: 'Ada Lovelace', email: 'ada@example.com', role: 'Admin' } },
+  { kind: 'data', id: 'u2', row: { id: '2', name: 'Bjarne Stroustrup', email: 'bjarne@example.com', role: 'Editor' } },
+  { kind: 'group', id: 'g2', label: 'This week · Apr 28 — May 4', count: 3 },
+  { kind: 'data', id: 'u3', row: { id: '3', name: 'Carmack', email: 'carmack@example.com', role: 'Viewer' } },
+  { kind: 'data', id: 'u4', row: { id: '4', name: 'Dennis Ritchie', email: 'dennis@example.com', role: 'Admin' } },
+  { kind: 'data', id: 'u5', row: { id: '5', name: 'Edsger Dijkstra', email: 'edsger@example.com', role: 'Editor' } },
+];
+
 ## Basic
 
 <ComponentPreview
@@ -44,6 +55,26 @@ export const sampleColumns = [
   code={"<DataTable columns={columns} data={users} enableRowSelection />"}
 >
   <DataTable columns={sampleColumns} data={sampleUsers} enableRowSelection pageSize={5} />
+</ComponentPreview>
+
+## Group Rows
+
+Use `rows` instead of `data` when the server pre-groups results — calendar-grouped events, status-grouped tasks, date-ranged admin logs. Each entry is either a data row (`{ kind: "data", id, row }`) or a group-head separator (`{ kind: "group", id, label, count? }`). When `rows` is provided, column sort controls and the pagination footer are suppressed — the caller owns grouping and windowing.
+
+<ComponentPreview
+  title="Default group-head rendering"
+  code={"<DataTable columns={columns} rows={groupedRows} />"}
+>
+  <DataTable columns={sampleColumns} rows={sampleGroupedRows} />
+</ComponentPreview>
+
+Pass `groupRowRenderer` to replace the default eyebrow-style header with custom content — a badge, an icon, or any React node.
+
+<ComponentPreview
+  title="Custom groupRowRenderer slot"
+  code={"<DataTable\n  columns={columns}\n  rows={groupedRows}\n  groupRowRenderer={(group) => (\n    <span className={styles.customGroupHead}>\n      <span className={styles.dot} />\n      {group.label}\n      {group.count != null && <span>({group.count})</span>}\n    </span>\n  )}\n/>"}
+>
+  <DataTableGroupRowsDemo />
 </ComponentPreview>
 
 ## Loading State
