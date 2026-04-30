@@ -4,7 +4,7 @@ import * as React from "react"
 import { Scan } from "@phosphor-icons/react"
 import styles from "./source-inspector-toggle.module.css"
 import {
-  SourceInspectorProvider,
+  SourceInspector,
   SourceInspectorContext,
   type Mode,
 } from "./source-inspector"
@@ -54,10 +54,14 @@ function ToggleButton({ className, ...props }: SourceInspectorToggleProps) {
 function ToggleDevImpl(props: SourceInspectorToggleProps) {
   const ctx = React.useContext(SourceInspectorContext)
   if (ctx) return <ToggleButton {...props} />
+  // Use <SourceInspector> (not just the Provider) so the lazy mount path
+  // also includes the Runner — DOM stamping, MutationObserver, and
+  // body-class effects. Provider alone would cycle mode without applying
+  // the overlay (VI-309).
   return (
-    <SourceInspectorProvider>
+    <SourceInspector>
       <ToggleButton {...props} />
-    </SourceInspectorProvider>
+    </SourceInspector>
   )
 }
 
@@ -66,8 +70,9 @@ const IS_PRODUCTION = process.env.NODE_ENV === "production"
 /**
  * Phosphor `Scan` icon button that cycles the SourceInspector overlay through
  * off → highlight-visor → highlight-non-visor → off. Mounts a default
- * SourceInspectorProvider lazily if no provider is in scope, so apps can
- * mount this widget standalone without wiring up state explicitly.
+ * `<SourceInspector>` (provider + runner) lazily if none is in scope, so
+ * apps can mount this widget standalone and get the full overlay behavior
+ * without wiring up state explicitly.
  */
 export function SourceInspectorToggle(props: SourceInspectorToggleProps) {
   if (IS_PRODUCTION) return null

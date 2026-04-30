@@ -157,6 +157,54 @@ describe("SourceInspectorToggle", () => {
     await user.click(btn)
     expect(btn).toHaveAttribute("data-mode", "highlight-visor")
   })
+
+  it("standalone mount applies overlay on first click (body class + data-source stamps)", async () => {
+    const user = userEvent.setup()
+    render(
+      <div>
+        <SourceInspectorToggle />
+        <p>hello</p>
+      </div>,
+    )
+    const btn = screen.getByRole("button")
+    await user.click(btn)
+    expect(document.body.className).toMatch(/modeHighlightVisor/)
+    expect(document.querySelectorAll("[data-source]").length).toBeGreaterThan(0)
+  })
+
+  it("standalone mount clears overlay when cycled back to off", async () => {
+    const user = userEvent.setup()
+    render(
+      <div>
+        <SourceInspectorToggle />
+        <p>hello</p>
+      </div>,
+    )
+    const btn = screen.getByRole("button")
+    await user.click(btn) // off → highlight-visor
+    await user.click(btn) // → highlight-non-visor
+    await user.click(btn) // → off
+    expect(btn).toHaveAttribute("data-mode", "off")
+    expect(document.body.className).not.toMatch(/modeHighlight/)
+    expect(document.querySelectorAll("[data-source]").length).toBe(0)
+  })
+
+  it("when nested inside <SourceInspector>, uses parent context and does not double-mount", async () => {
+    const onModeChange = vi.fn()
+    const user = userEvent.setup()
+    render(
+      <SourceInspector defaultMode="off" onModeChange={onModeChange}>
+        <SourceInspectorToggle />
+      </SourceInspector>,
+    )
+    const btn = screen.getByRole("button")
+    await user.click(btn)
+    // Parent's onModeChange fires — proves toggle uses the existing context
+    expect(onModeChange).toHaveBeenCalledWith("highlight-visor")
+    // Body class appears exactly once — no nested Runner re-applying the class
+    const matches = document.body.className.match(/modeHighlightVisor/g) ?? []
+    expect(matches.length).toBe(1)
+  })
 })
 
 describe("SourceInspector runtime", () => {

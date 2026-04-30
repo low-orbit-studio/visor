@@ -27,7 +27,7 @@ export function App({ children }) {
 
 ## Toggle
 
-`SourceInspectorToggle` is a Phosphor `Scan` icon button that cycles the overlay through `off → highlight-visor → highlight-non-visor → off`. Mount it anywhere in development chrome — the toggle creates a default provider lazily if none is in scope.
+`SourceInspectorToggle` is a Phosphor `Scan` icon button that cycles the overlay through `off → highlight-visor → highlight-non-visor → off`. Mount it anywhere in development chrome — the toggle lazily mounts a full `<SourceInspector>` (provider + runner) if none is in scope, so the overlay applies whether the toggle is used standalone or nested inside an existing `<SourceInspector>`.
 
 ```tsx
 import { SourceInspectorToggle } from "@/components/devtools/source-inspector/source-inspector-toggle"
