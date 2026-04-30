@@ -7,13 +7,16 @@ import 'package:visor_core/visor_core.dart';
 import '../_fixtures.dart';
 import 'visor_avatar.dart';
 
-Widget _wrap(Widget child) {
+Widget _wrap(Widget child, {TextDirection textDirection = TextDirection.ltr}) {
   return MaterialApp(
     theme: VisorTheme.build(
       colors: testColors(),
       brightness: Brightness.light,
     ),
-    home: Scaffold(body: Center(child: child)),
+    home: Directionality(
+      textDirection: textDirection,
+      child: Scaffold(body: Center(child: child)),
+    ),
   );
 }
 
@@ -337,6 +340,19 @@ void main() {
         meetsGuideline(labeledTapTargetGuideline),
       );
       handle.dispose();
+    });
+
+    // -------------------------------------------------------------------------
+    // R9 — Directionality respect
+    // -------------------------------------------------------------------------
+
+    testWidgets('renders without overflow or exception under RTL',
+        (tester) async {
+      await tester.pumpWidget(
+        _wrap(const VisorAvatar(), textDirection: TextDirection.rtl),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.byType(VisorAvatar), findsOneWidget);
     });
   });
 }

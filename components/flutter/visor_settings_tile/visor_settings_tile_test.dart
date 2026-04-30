@@ -5,13 +5,16 @@ import 'package:visor_core/visor_core.dart';
 import '../_fixtures.dart';
 import 'visor_settings_tile.dart';
 
-Widget _wrap(Widget child) {
+Widget _wrap(Widget child, {TextDirection textDirection = TextDirection.ltr}) {
   return MaterialApp(
     theme: VisorTheme.build(
       colors: testColors(),
       brightness: Brightness.light,
     ),
-    home: Scaffold(body: child),
+    home: Directionality(
+      textDirection: textDirection,
+      child: Scaffold(body: child),
+    ),
   );
 }
 
@@ -203,6 +206,32 @@ void main() {
       await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
       await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
       handle.dispose();
+    });
+
+    // -------------------------------------------------------------------------
+    // R9 — Directionality respect
+    // -------------------------------------------------------------------------
+
+    testWidgets('renders without overflow or exception under RTL',
+        (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          const VisorSettingsTile(
+            icon: Icons.person_outline,
+            label: 'Account',
+          ),
+          textDirection: TextDirection.rtl,
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.byType(VisorSettingsTile), findsOneWidget);
+      // The default trailing chevron (Icons.chevron_right) is laid out by the
+      // ambient Directionality and the Row's textDirection, so leading icon and
+      // label swap sides correctly. Flutter's Icon widget does NOT auto-mirror
+      // non-directional icons — the chevron_right glyph itself does not flip.
+      // Semantic directional mirroring (chevron_left in RTL) is a follow-up:
+      // see VI-259 (RTL chevron semantic flip for VisorSettingsTile).
+      expect(find.byIcon(Icons.chevron_right), findsOneWidget);
     });
   });
 }

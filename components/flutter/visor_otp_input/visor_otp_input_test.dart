@@ -5,15 +5,18 @@ import 'package:visor_core/visor_core.dart';
 import '../_fixtures.dart';
 import 'visor_otp_input.dart';
 
-Widget _wrap(Widget child) {
+Widget _wrap(Widget child, {TextDirection textDirection = TextDirection.ltr}) {
   return MaterialApp(
     theme: VisorTheme.build(
       colors: testColors(),
       brightness: Brightness.light,
     ),
-    home: Scaffold(
-      body: Center(
-        child: SizedBox(width: 400, child: child),
+    home: Directionality(
+      textDirection: textDirection,
+      child: Scaffold(
+        body: Center(
+          child: SizedBox(width: 400, child: child),
+        ),
       ),
     ),
   );
@@ -236,6 +239,28 @@ void main() {
       await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
       await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
       handle.dispose();
+    });
+
+    // -------------------------------------------------------------------------
+    // R9 — Directionality respect
+    // -------------------------------------------------------------------------
+
+    testWidgets('renders without overflow or exception under RTL',
+        (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          VisorOtpInput(onCodeComplete: (_) {}),
+          textDirection: TextDirection.rtl,
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.byType(VisorOtpInput), findsOneWidget);
+      // OTP digit boxes are displayed in a Row. In RTL, the Row reverses
+      // visual order so digit 1 appears at the right end. The digit boxes
+      // themselves are index-keyed and symmetric, so visual reversal does
+      // not break entry — the cursor still moves to the next logical field.
+      // No semantic reordering follow-up required; OTP codes are locale-neutral.
+      expect(find.byType(TextField), findsNWidgets(6));
     });
   });
 }

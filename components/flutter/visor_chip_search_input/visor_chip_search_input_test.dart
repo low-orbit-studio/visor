@@ -22,13 +22,16 @@ const _item1 = _TestItem(id: 'a', label: 'Flutter');
 const _item2 = _TestItem(id: 'b', label: 'Dart');
 const _item3 = _TestItem(id: 'c', label: 'Visor');
 
-Widget _wrap(Widget child) {
+Widget _wrap(Widget child, {TextDirection textDirection = TextDirection.ltr}) {
   return MaterialApp(
     theme: VisorTheme.build(
       colors: testColors(),
       brightness: Brightness.light,
     ),
-    home: Scaffold(body: Center(child: child)),
+    home: Directionality(
+      textDirection: textDirection,
+      child: Scaffold(body: Center(child: child)),
+    ),
   );
 }
 
@@ -459,6 +462,27 @@ void main() {
           reason: '$label not found',
         );
       }
+    });
+
+    // -------------------------------------------------------------------------
+    // R9 — Directionality respect
+    // -------------------------------------------------------------------------
+
+    testWidgets('renders without overflow or exception under RTL',
+        (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          VisorChipSearchInput<_TestItem>(
+            selectedItems: const [_item1],
+            labelBuilder: (item) => item.label,
+            hintText: 'Search',
+            onQueryChanged: (_) {},
+            onItemRemoved: (_) {},
+          ),
+          textDirection: TextDirection.rtl,
+        ),
+      );
+      expect(tester.takeException(), isNull);
     });
   });
 }

@@ -5,13 +5,16 @@ import 'package:visor_core/visor_core.dart';
 import '../_fixtures.dart';
 import 'visor_button.dart';
 
-Widget _wrap(Widget child) {
+Widget _wrap(Widget child, {TextDirection textDirection = TextDirection.ltr}) {
   return MaterialApp(
     theme: VisorTheme.build(
       colors: testColors(),
       brightness: Brightness.light,
     ),
-    home: Scaffold(body: Center(child: child)),
+    home: Directionality(
+      textDirection: textDirection,
+      child: Scaffold(body: Center(child: child)),
+    ),
   );
 }
 
@@ -198,5 +201,21 @@ void main() {
     // sm uses vertical: spacing.xs padding and may yield a height under 48dp by
     // design. Bumping vertical padding would defeat the purpose of the variant.
     // R11 is satisfied by md + lg above; sm is documented as explicitly compact.
+
+    // -------------------------------------------------------------------------
+    // R9 — Directionality respect
+    // -------------------------------------------------------------------------
+
+    testWidgets('renders without overflow or exception under RTL',
+        (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          VisorButton(label: 'Save', onPressed: () {}),
+          textDirection: TextDirection.rtl,
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.byType(VisorButton), findsOneWidget);
+    });
   });
 }

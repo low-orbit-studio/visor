@@ -6,13 +6,16 @@ import '../_fixtures.dart';
 import 'visor_confirm_sheet.dart';
 
 /// Wraps [child] in a [MaterialApp] + [Scaffold] with the test Visor theme.
-Widget _wrap(Widget child) {
+Widget _wrap(Widget child, {TextDirection textDirection = TextDirection.ltr}) {
   return MaterialApp(
     theme: VisorTheme.build(
       colors: testColors(),
       brightness: Brightness.light,
     ),
-    home: Scaffold(body: Center(child: child)),
+    home: Directionality(
+      textDirection: textDirection,
+      child: Scaffold(body: Center(child: child)),
+    ),
   );
 }
 
@@ -285,6 +288,28 @@ void main() {
       // The title is rendered as a Text widget that screen readers can
       // announce. We verify it's in the tree (semantic accessibility).
       expect(find.text('Dangerous action'), findsOneWidget);
+    });
+
+    // -------------------------------------------------------------------------
+    // R9 — Directionality respect
+    // -------------------------------------------------------------------------
+
+    testWidgets('renders without overflow or exception under RTL',
+        (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          VisorConfirmSheet(
+            title: 'Confirm action',
+            message: 'Are you sure?',
+            confirmLabel: 'Confirm',
+            cancelLabel: 'Cancel',
+            onConfirm: () {},
+          ),
+          textDirection: TextDirection.rtl,
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.byType(VisorConfirmSheet), findsOneWidget);
     });
   });
 }

@@ -175,28 +175,40 @@ Legend: ✅ pass · ⚠️ partial · ❌ fail · — not applicable
 | Widget | R1 tokens | R3 named-API | R4 single-resp | R5 doc | R6 Semantics | R7 48dp | R8 reduce-motion | R9 RTL | R10 tests | R11 a11y matcher | R12 yaml | R13 deps |
 |--------|----|----|----|----|----|----|----|----|----|----|----|----|
 | `visor_button` | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ size=sm is a compact non-primary tap-target variant (VI-252 D2) — md + lg ✅ via `meetsGuideline`; sm intentionally compact | ⚠️ spinner uses `CircularProgressIndicator` without `disableAnimations` short-circuit | ✅ | ✅ | ✅ md + lg pass `androidTapTargetGuideline` + `labeledTapTargetGuideline`; semanticLabel override passes `labeledTapTargetGuideline`; sm documented as compact variant (VI-252) | ✅ | ✅ |
-| `visor_empty_state` | ✅ | ✅ | ✅ | ✅ | ❌ no Semantics on container; relies on child text | — non-interactive at root (action slot is caller-owned) | — | ⚠️ uses `EdgeInsets.symmetric` (mirrors safely); no explicit RTL test | ✅ | — non-interactive | ⚠️ yaml lacks `pubDependencies` declaration mismatch — verify | ✅ |
-| `visor_empty_state_card` | ✅ | ✅ | ✅ | ✅ | ✅ inherits Semantics container from `VisorEmptyState` (VI-247); `semanticLabel` pass-through (VI-249) | — | — | ⚠️ same as parent | ✅ | — | ⚠️ verify yaml | ✅ |
-| `visor_loading_indicator` | ✅ | ✅ | ✅ | ✅ | ❌ no `Semantics(label: 'Loading')` or `liveRegion` | — non-interactive | ✅ checks `disableAnimations`, returns static border | ✅ | ✅ | — non-interactive | ✅ | ✅ |
-| `visor_otp_input` | ✅ | ✅ | ✅ | ✅ | ⚠️ verify per-digit Semantics labels and `MergeSemantics` | ⚠️ digit boxes likely exceed 48dp; needs `meetsGuideline` proof | ⚠️ no explicit reduce-motion path for auto-advance focus | ⚠️ no explicit RTL test (digit order in RTL is non-trivial) | ✅ | ❌ no `meetsGuideline` calls | ✅ | ✅ |
-| `visor_section_header` | ✅ | ✅ | ✅ | ✅ | — non-interactive (text only) | — | — | ✅ | ✅ | — non-interactive | ⚠️ verify yaml | ✅ |
-| `visor_settings_tile` | ✅ | ✅ | ✅ | ✅ | ✅ has `Semantics(button: true, label: …)` and `excludeSemantics` for child | ⚠️ vertical=`spacing.lg` + content height; verify ≥ 48dp | — no animations | ⚠️ uses `EdgeInsets.symmetric` (mirrors safely); no explicit RTL test | ✅ | ❌ no `meetsGuideline` calls | ⚠️ verify yaml | ✅ |
-| `visor_stat_card` | ✅ | ✅ | ✅ | ✅ | ❌ no Semantics; relies on Text Semantics | — non-interactive | — | ⚠️ no explicit RTL test (delta arrows) | ✅ | — non-interactive | ⚠️ verify yaml | ✅ |
-| `visor_text_input` | ✅ | ✅ | ✅ | ✅ | ✅ wraps in `Semantics`; `semanticLabel` param | ⚠️ verify field height ≥ 48dp at all sizes | ⚠️ floating-label animation does not short-circuit on `disableAnimations` | ⚠️ uses `EdgeInsets.symmetric`; no explicit RTL test | ✅ | ❌ no `meetsGuideline` calls | ✅ | ✅ |
+| `visor_empty_state` | ✅ | ✅ | ✅ | ✅ | ❌ no Semantics on container; relies on child text | — non-interactive at root (action slot is caller-owned) | — | ✅ VI-258 explicit RTL test added | ✅ | — non-interactive | ⚠️ yaml lacks `pubDependencies` declaration mismatch — verify | ✅ |
+| `visor_empty_state_card` | ✅ | ✅ | ✅ | ✅ | ✅ inherits Semantics container from `VisorEmptyState` (VI-247); `semanticLabel` pass-through (VI-249) | — | — | ✅ VI-258 explicit RTL test added | ✅ | — | ⚠️ verify yaml | ✅ |
+| `visor_loading_indicator` | ✅ | ✅ | ✅ | ✅ | ❌ no `Semantics(label: 'Loading')` or `liveRegion` | — non-interactive | ✅ checks `disableAnimations`, returns static border | ✅ VI-258 explicit RTL test added | ✅ | — non-interactive | ✅ | ✅ |
+| `visor_otp_input` | ✅ | ✅ | ✅ | ✅ | ⚠️ verify per-digit Semantics labels and `MergeSemantics` | ⚠️ digit boxes likely exceed 48dp; needs `meetsGuideline` proof | ⚠️ no explicit reduce-motion path for auto-advance focus | ✅ VI-258 explicit RTL test added; digit row reverses in RTL; documented as locale-neutral | ✅ | ❌ no `meetsGuideline` calls | ✅ | ✅ |
+| `visor_section_header` | ✅ | ✅ | ✅ | ✅ | — non-interactive (text only) | — | — | ✅ VI-258 explicit RTL tests added (default + trailing) | ✅ | — non-interactive | ⚠️ verify yaml | ✅ |
+| `visor_settings_tile` | ✅ | ✅ | ✅ | ✅ | ✅ has `Semantics(button: true, label: …)` and `excludeSemantics` for child | ⚠️ vertical=`spacing.lg` + content height; verify ≥ 48dp | — no animations | ✅ VI-258 explicit RTL test added; chevron glyph does not auto-mirror (documented, see VI-259) | ✅ | ❌ no `meetsGuideline` calls | ⚠️ verify yaml | ✅ |
+| `visor_stat_card` | ✅ | ✅ | ✅ | ✅ | ❌ no Semantics; relies on Text Semantics | — non-interactive | — | ✅ VI-258 explicit RTL test added; delta arrows are semantic (not layout-directional) | ✅ | — non-interactive | ⚠️ verify yaml | ✅ |
+| `visor_text_input` | ✅ | ✅ | ✅ | ✅ | ✅ wraps in `Semantics`; `semanticLabel` param | ⚠️ verify field height ≥ 48dp at all sizes | ⚠️ floating-label animation does not short-circuit on `disableAnimations` | ✅ VI-258 explicit RTL test added | ✅ | ❌ no `meetsGuideline` calls | ✅ | ✅ |
 
 ### Recommended-tier audit
 
 | Widget | Rec1 alchemist | Rec2 focus ring | Rec3 widgetbook | Rec4 iOS tap | Rec5 contrast | Rec6 RTL test | Rec7 liveRegion | Rec8 MDX page |
 |--------|----|----|----|----|----|----|----|----|
-| `visor_button` | ✅ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ❌ | ❌ | — | ❌ |
-| `visor_empty_state` | ❌ | — | ⚠️ confirm | — | ❌ | ❌ | — | ❌ |
-| `visor_empty_state_card` | ❌ | — | ⚠️ confirm | — | ❌ | ❌ | — | ❌ |
-| `visor_loading_indicator` | ❌ | — | ⚠️ confirm | — | — | ❌ | ⚠️ candidate for `liveRegion` when status changes | ❌ |
-| `visor_otp_input` | ❌ | ⚠️ relies on Material focus default | ⚠️ confirm | ❌ | ❌ | ❌ | — | ❌ |
-| `visor_section_header` | ❌ | — | ⚠️ confirm | — | ❌ | ❌ | — | ❌ |
-| `visor_settings_tile` | ❌ | ⚠️ Material `InkWell` default | ⚠️ confirm | ❌ | ❌ | ❌ | — | ❌ |
-| `visor_stat_card` | ❌ | — | ⚠️ confirm | — | ❌ | ❌ | — | ❌ |
-| `visor_text_input` | ❌ | ⚠️ has token-driven border-focus color but no token-driven outer focus ring | ⚠️ confirm | ❌ | ❌ | ❌ | ⚠️ candidate for error-text `liveRegion` | ❌ |
+| `visor_avatar` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_back_button` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ pre-existing | — | ❌ |
+| `visor_button` | ✅ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_chip` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_chip_search_input` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_confirm_sheet` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_empty_state` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_empty_state_card` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_error_view` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ pre-existing | — | ❌ |
+| `visor_form_dialog` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_loading_dots` | ❌ | — | ⚠️ confirm | — | — | ✅ VI-258 | — | ❌ |
+| `visor_loading_indicator` | ❌ | — | ⚠️ confirm | — | — | ✅ VI-258 | ⚠️ candidate for `liveRegion` when status changes | ❌ |
+| `visor_otp_input` | ❌ | ⚠️ relies on Material focus default | ⚠️ confirm | ❌ | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_password_input` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_phone_input` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_rich_text` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_section_header` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_settings_tile` | ❌ | ⚠️ Material `InkWell` default | ⚠️ confirm | ❌ | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_snack_bar` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_stat_card` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_text_input` | ❌ | ⚠️ has token-driven border-focus color but no token-driven outer focus ring | ⚠️ confirm | ❌ | ❌ | ✅ VI-258 | ⚠️ candidate for error-text `liveRegion` | ❌ |
 
 ### Audit summary
 
@@ -227,7 +239,7 @@ Plus four Recommended-tier batch tickets (one per cross-cutting Rec item):
 |--------------|-------|
 | [VI-256](https://linear.app/low-orbit-studio/issue/VI-256) — Rec1: introduce `alchemist` golden test scaffolding | Add `alchemist` dev_dependency; one example golden test on `visor_button`; CI lane. |
 | [VI-257](https://linear.app/low-orbit-studio/issue/VI-257) — Rec5: contrast guideline tests for text-on-token widgets | Add `meetsGuideline(textContrastGuideline)` to button, empty_state, settings_tile, stat_card, text_input. |
-| [VI-258](https://linear.app/low-orbit-studio/issue/VI-258) — Rec6: RTL widget tests across all 9 widgets | One `Directionality.rtl` test per widget; assert no overflow/exception. |
+| [VI-258](https://linear.app/low-orbit-studio/issue/VI-258) — Rec6: RTL widget tests across all 21 widgets | ✅ Done — One `Directionality.rtl` test per widget; assert no overflow/exception. All 19 widgets received explicit RTL tests (2 already had coverage). |
 | [VI-259](https://linear.app/low-orbit-studio/issue/VI-259) — Rec8: per-widget MDX docs | Blocked by [VI-205](https://linear.app/low-orbit-studio/issue/VI-205) (Flutter docs section). |
 
 Tickets get the labels: `Flutter`, `Improvement`, `quality:audit-gap`. The latter is created if it does not yet exist.

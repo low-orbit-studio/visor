@@ -5,14 +5,15 @@ import 'package:visor_core/visor_core.dart';
 import '../_fixtures.dart';
 import 'visor_form_dialog.dart';
 
-Widget _wrap(Widget child) {
+Widget _wrap(Widget child, {TextDirection textDirection = TextDirection.ltr}) {
   return MaterialApp(
     theme: VisorTheme.build(
       colors: testColors(),
       brightness: Brightness.light,
     ),
-    home: Scaffold(
-      body: child,
+    home: Directionality(
+      textDirection: textDirection,
+      child: Scaffold(body: child),
     ),
   );
 }
@@ -134,6 +135,33 @@ void main() {
         const VisorFormDialog(child: Text('Dialog content')),
       );
       expect(find.byType(Dialog), findsOneWidget);
+    });
+
+    // -------------------------------------------------------------------------
+    // R9 — Directionality respect
+    // -------------------------------------------------------------------------
+
+    testWidgets('renders without overflow or exception under RTL',
+        (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          Builder(
+            builder: (context) => TextButton(
+              onPressed: () => showDialog<void>(
+                context: context,
+                builder: (_) =>
+                    const VisorFormDialog(child: Text('RTL content')),
+              ),
+              child: const Text('open'),
+            ),
+          ),
+          textDirection: TextDirection.rtl,
+        ),
+      );
+      await tester.tap(find.text('open'));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(find.byType(VisorFormDialog), findsOneWidget);
     });
   });
 }

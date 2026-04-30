@@ -5,18 +5,21 @@ import 'package:visor_core/visor_core.dart';
 import '../_fixtures.dart';
 import 'visor_empty_state.dart';
 
-Widget _wrap(Widget child, {Size surfaceSize = const Size(400, 800)}) {
+Widget _wrap(Widget child, {Size surfaceSize = const Size(400, 800), TextDirection textDirection = TextDirection.ltr}) {
   return MaterialApp(
     theme: VisorTheme.build(
       colors: testColors(),
       brightness: Brightness.light,
     ),
-    home: Scaffold(
-      body: Center(
-        child: SizedBox(
-          width: surfaceSize.width,
-          height: surfaceSize.height,
-          child: child,
+    home: Directionality(
+      textDirection: textDirection,
+      child: Scaffold(
+        body: Center(
+          child: SizedBox(
+            width: surfaceSize.width,
+            height: surfaceSize.height,
+            child: child,
+          ),
         ),
       ),
     ),
@@ -222,6 +225,25 @@ void main() {
       expect(semanticsNode.label, 'Inbox is empty');
 
       handle.dispose();
+    });
+
+    // -------------------------------------------------------------------------
+    // R9 — Directionality respect
+    // -------------------------------------------------------------------------
+
+    testWidgets('renders without overflow or exception under RTL',
+        (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          const VisorEmptyState(
+            icon: Icons.inbox_outlined,
+            headline: 'No messages',
+          ),
+          textDirection: TextDirection.rtl,
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.byType(VisorEmptyState), findsOneWidget);
     });
   });
 }

@@ -5,13 +5,16 @@ import 'package:visor_core/visor_core.dart';
 import '../_fixtures.dart';
 import 'visor_stat_card.dart';
 
-Widget _wrap(Widget child) {
+Widget _wrap(Widget child, {TextDirection textDirection = TextDirection.ltr}) {
   return MaterialApp(
     theme: VisorTheme.build(
       colors: testColors(),
       brightness: Brightness.light,
     ),
-    home: Scaffold(body: Center(child: child)),
+    home: Directionality(
+      textDirection: textDirection,
+      child: Scaffold(body: Center(child: child)),
+    ),
   );
 }
 
@@ -105,6 +108,32 @@ void main() {
       expect(find.bySemanticsLabel('Custom override'), findsOneWidget);
       expect(find.bySemanticsLabel(r'Revenue: $12,430'), findsNothing);
       handle.dispose();
+    });
+
+    // -------------------------------------------------------------------------
+    // R9 — Directionality respect
+    // -------------------------------------------------------------------------
+
+    testWidgets('renders without overflow or exception under RTL',
+        (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          const VisorStatCard(
+            title: 'Revenue',
+            value: r'$12,430',
+            delta: '+8.2%',
+            deltaDirection: VisorDeltaDirection.up,
+          ),
+          textDirection: TextDirection.rtl,
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.byType(VisorStatCard), findsOneWidget);
+      // Delta arrows (arrow_upward / arrow_downward) are semantic direction
+      // indicators, not layout-directional icons — they convey trend, not
+      // pointing direction. They remain unchanged in RTL (up arrow still means
+      // "went up"). No semantic mirroring follow-up required.
+      expect(find.byIcon(Icons.arrow_upward), findsOneWidget);
     });
   });
 }
