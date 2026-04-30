@@ -122,7 +122,7 @@ describe("classifyByVisorName", () => {
 
   it("returns undefined for names not in the registry-derived set", () => {
     expect(classifyByVisorName("AppShell")).toBeUndefined()
-    expect(classifyByVisorName("WorkspaceSwitcher")).toBeUndefined()
+    expect(classifyByVisorName("OrgSwitcher")).toBeUndefined()
     expect(classifyByVisorName("CommandPalette")).toBeUndefined()
   })
 
