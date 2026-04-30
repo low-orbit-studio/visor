@@ -15,8 +15,8 @@
 .base {
   /* Override hooks for value typography. Set on the consumer side to customise
    * the value element without touching component internals.
-   * --stat-card-value-font: swap font family (e.g. a brand display font).
-   * --stat-card-value-size: swap font size (e.g. for hero at non-standard scale). */
+   * --stat-card-value-font: swap font family (example: a brand display font).
+   * --stat-card-value-size: swap font size (example: for hero at non-standard scale). */
   --stat-card-value-font: var(--font-display, var(--font-family-heading, inherit));
   --stat-card-value-size: var(--font-size-3xl, 1.875rem);
 
