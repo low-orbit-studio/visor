@@ -174,6 +174,25 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "workspace-switcher",
+    type: "registry:block",
+    category: "admin",
+    description:
+      "Sidebar-header workspace switcher composing a button trigger and a DropdownMenu of available workspaces. Displays the current workspace's avatar, name, optional plan/role line, and a caret; opens to a list with the current workspace indicated by a check. Drop-in for the AdminShell logo slot in multi-tenant admin apps.",
+    dependencies: ["@loworbitstudio/visor-core", "@phosphor-icons/react"],
+    registryDependencies: ["utils", "avatar", "dropdown-menu"],
+    files: [
+      {
+        path: "blocks/workspace-switcher/workspace-switcher.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/workspace-switcher/workspace-switcher.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "configuration-panel",
     type: "registry:block",
     category: "configuration",
