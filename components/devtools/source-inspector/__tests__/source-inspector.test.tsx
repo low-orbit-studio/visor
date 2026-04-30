@@ -9,6 +9,8 @@ import {
   SourceInspectorContext,
   extractFirstUserUrl,
   findOwnerName,
+  inheritStamps,
+  stampSubtree,
   type Mode,
 } from "../source-inspector"
 import { SourceInspectorToggle } from "../source-inspector-toggle"
@@ -224,6 +226,59 @@ describe("extractFirstUserUrl", () => {
       "    at http://localhost/app.js:5:5",
     ].join("\n")
     expect(extractFirstUserUrl(stack)).toBe("http://localhost/app.js")
+  })
+
+  // VI-314 — Issue 2: Turbopack-bundled visor jsxDEV shim shows up as a
+  // bare `at https://…` line with no function name. The function-name
+  // pattern can't catch it; the URL alone identifies it as runtime.
+  it("skips unnamed frames at /_next/static/chunks/node_modules URLs", () => {
+    const stack = [
+      "Error",
+      "    at http://localhost:4124/_next/static/chunks/node_modules_0y4365v._.js:211:33",
+      "    at AppShell (http://localhost:4124/_next/static/chunks/_0w5vjw_._.js:3205:225)",
+    ].join("\n")
+    expect(extractFirstUserUrl(stack)).toBe(
+      "http://localhost:4124/_next/static/chunks/_0w5vjw_._.js",
+    )
+  })
+
+  it("skips unnamed frames at react-dom URLs", () => {
+    const stack = [
+      "Error",
+      "    at http://localhost/react-dom-client.development.js:5:5",
+      "    at MyComp (http://localhost/app.js:10:10)",
+    ].join("\n")
+    expect(extractFirstUserUrl(stack)).toBe("http://localhost/app.js")
+  })
+
+  it("skips unnamed frames at react-server-dom URLs", () => {
+    const stack = [
+      "Error",
+      "    at http://localhost/react-server-dom-webpack-client.js:1:1",
+      "    at MyComp (http://localhost/app.js:5:5)",
+    ].join("\n")
+    expect(extractFirstUserUrl(stack)).toBe("http://localhost/app.js")
+  })
+
+  it("skips unnamed frames at /_next/dist/ URLs", () => {
+    const stack = [
+      "Error",
+      "    at http://localhost/_next/dist/compiled/react/jsx-runtime.js:1:1",
+      "    at MyComp (http://localhost/app.js:5:5)",
+    ].join("\n")
+    expect(extractFirstUserUrl(stack)).toBe("http://localhost/app.js")
+  })
+
+  // Guards against over-aggressive filtering: an unnamed frame at a user
+  // app chunk (no node_modules in the URL) must NOT be skipped.
+  it("keeps unnamed frames at user-app chunk URLs", () => {
+    const stack = [
+      "Error",
+      "    at http://localhost:4124/_next/static/chunks/_03lt5v7._.js:5:5",
+    ].join("\n")
+    expect(extractFirstUserUrl(stack)).toBe(
+      "http://localhost:4124/_next/static/chunks/_03lt5v7._.js",
+    )
   })
 })
 
@@ -627,6 +682,162 @@ describe("SourceInspector runtime", () => {
       window.dispatchEvent(event)
     })
     expect(onModeChange).not.toHaveBeenCalled()
+  })
+})
+
+// VI-314 — Issue 1: server-component leaves and document body produce
+// fibers with no `_debugOwner`, falling through to `data-source="dom"`.
+// `inheritStamps` walks the DOM ancestry as a coverage fallback so leaves
+// inherit the nearest stamped ancestor's label. Driven via direct DOM
+// manipulation against `inheritStamps` / `stampSubtree` so the assertions
+// don't depend on jsdom fiber wiring.
+describe("inheritStamps (DOM ancestry fallback)", () => {
+  let root: HTMLElement
+
+  beforeEach(() => {
+    root = document.createElement("div")
+    document.body.appendChild(root)
+  })
+
+  afterEach(() => {
+    if (root.parentNode) root.parentNode.removeChild(root)
+  })
+
+  it("inherits 'visor' from nearest stamped ancestor when leaf is dom", () => {
+    root.setAttribute("data-source", "visor")
+    const child = document.createElement("span")
+    child.setAttribute("data-source", "dom")
+    root.appendChild(child)
+    inheritStamps(root)
+    expect(child.getAttribute("data-source")).toBe("visor")
+  })
+
+  it("inherits 'local' across an unrelated dom intermediate", () => {
+    const visorAncestor = document.createElement("section")
+    visorAncestor.setAttribute("data-source", "local")
+    const intermediate = document.createElement("div")
+    intermediate.setAttribute("data-source", "dom")
+    const leaf = document.createElement("span")
+    leaf.setAttribute("data-source", "dom")
+    intermediate.appendChild(leaf)
+    visorAncestor.appendChild(intermediate)
+    root.appendChild(visorAncestor)
+    inheritStamps(root)
+    // Both the intermediate and leaf inherit 'local' from the section.
+    expect(intermediate.getAttribute("data-source")).toBe("local")
+    expect(leaf.getAttribute("data-source")).toBe("local")
+  })
+
+  it("does not inherit 'third-party'", () => {
+    root.setAttribute("data-source", "third-party")
+    const child = document.createElement("span")
+    child.setAttribute("data-source", "dom")
+    root.appendChild(child)
+    inheritStamps(root)
+    expect(child.getAttribute("data-source")).toBe("dom")
+  })
+
+  it("does not inherit 'dom'", () => {
+    root.setAttribute("data-source", "dom")
+    const child = document.createElement("span")
+    child.setAttribute("data-source", "dom")
+    root.appendChild(child)
+    inheritStamps(root)
+    expect(child.getAttribute("data-source")).toBe("dom")
+  })
+
+  it("leaves elements with no stamped ancestor as dom", () => {
+    // Leaf attached directly to root with no labeled ancestors above it.
+    const leaf = document.createElement("span")
+    leaf.setAttribute("data-source", "dom")
+    root.appendChild(leaf)
+    inheritStamps(root)
+    expect(leaf.getAttribute("data-source")).toBe("dom")
+  })
+
+  it("stops walking at root — does not cross root boundary", () => {
+    // An ancestor labeled outside the stamping root must not bleed into
+    // children inside the root. Mirrors the real case where `document.body`
+    // is the stamping root.
+    const outerVisor = document.createElement("div")
+    outerVisor.setAttribute("data-source", "visor")
+    const leaf = document.createElement("span")
+    leaf.setAttribute("data-source", "dom")
+    root.appendChild(leaf)
+    document.body.removeChild(root)
+    outerVisor.appendChild(root)
+    document.body.appendChild(outerVisor)
+    inheritStamps(root)
+    expect(leaf.getAttribute("data-source")).toBe("dom")
+  })
+
+  it("does not overwrite already-classified labels", () => {
+    root.setAttribute("data-source", "visor")
+    const local = document.createElement("div")
+    local.setAttribute("data-source", "local")
+    root.appendChild(local)
+    inheritStamps(root)
+    expect(local.getAttribute("data-source")).toBe("local")
+  })
+})
+
+// VI-314 integration — drive `stampSubtree` end-to-end against a fabricated
+// React fiber chain to prove the per-element classifier + ancestry pass
+// land on the expected labels for the canonical "Search ⌘K under
+// AdminShell" trace.
+describe("stampSubtree integration", () => {
+  let root: HTMLElement
+
+  beforeEach(() => {
+    root = document.createElement("div")
+    document.body.appendChild(root)
+  })
+
+  afterEach(() => {
+    if (root.parentNode) root.parentNode.removeChild(root)
+  })
+
+  it("server-component leaves inside a Visor shell inherit 'visor'", () => {
+    // Mock fiber where the root has an AdminShell owner (matches registry
+    // → name-based path → "visor"). The button inside has no _debugOwner.
+    const adminShellOwner = { type: { name: "AdminShell" } }
+    type Mock = {
+      _debugOwner?: typeof adminShellOwner | null
+      return?: Mock | null
+    }
+    const rootFiber: Mock = { _debugOwner: adminShellOwner }
+    const leafFiber: Mock = { _debugOwner: null, return: null }
+    // Wire fibers to elements via the magic React property.
+    const fiberKey = "__reactFiber$test"
+    Object.defineProperty(root, fiberKey, {
+      value: rootFiber,
+      configurable: true,
+      enumerable: true,
+    })
+    const button = document.createElement("button")
+    button.textContent = "Search ⌘K"
+    Object.defineProperty(button, fiberKey, {
+      value: leafFiber,
+      configurable: true,
+      enumerable: true,
+    })
+    root.appendChild(button)
+
+    stampSubtree(root, DEFAULT_CLASSIFIERS, false)
+
+    expect(root.getAttribute("data-source")).toBe("visor")
+    expect(button.getAttribute("data-source")).toBe("visor")
+  })
+
+  it("body-level orphans without a stamped ancestor stay 'dom'", () => {
+    // No fiber attached → fast path returns no name → URL fallback fails →
+    // labels as dom. With no stamped ancestor inside `root`, ancestry pass
+    // is a no-op and the label remains dom.
+    const orphan = document.createElement("p")
+    orphan.textContent = "orphan"
+    root.appendChild(orphan)
+    stampSubtree(root, DEFAULT_CLASSIFIERS, false)
+    expect(orphan.getAttribute("data-source")).toBe("dom")
   })
 })
 

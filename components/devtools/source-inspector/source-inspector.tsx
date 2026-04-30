@@ -134,6 +134,14 @@ function readStackString(stack: unknown): string | undefined {
 const REACT_INTERNAL_FRAME_PATTERN =
   /(react-stack-bottom-frame|react-server-dom|react-jsx-dev-runtime|react-jsx-runtime|\bjsxDEV\b|\bjsxs?\b)/
 
+// Turbopack/webpack-bundled runtime shims (Visor's `jsxDEV` shim, vendor
+// chunks) often appear in stacks as bare `at https://…` lines with no
+// function name, so REACT_INTERNAL_FRAME_PATTERN can't catch them. Match the
+// URL alone when the frame has no function name. Narrow on purpose: only
+// URLs that unambiguously point at a runtime/vendor chunk.
+const RUNTIME_URL_PATTERN =
+  /(react-server-dom|react-dom|react-jsx(?:-dev)?-runtime|\/_next\/dist\/|\/node_modules[_/])/
+
 /**
  * Parse a captured Error stack and return the URL of the first frame that
  * looks like user code. Returns undefined if every frame is a React-internal
@@ -165,6 +173,9 @@ export function extractFirstUserUrl(stack: string): string | undefined {
     if (!url) continue
     if (REACT_INTERNAL_FRAME_PATTERN.test(fnName)) continue
     if (REACT_INTERNAL_FRAME_PATTERN.test(url)) continue
+    // Unnamed frame at a known runtime URL — bundled jsxDEV shim or a
+    // vendor chunk reaching us as a bare `at https://…` line. Skip.
+    if (!fnName && RUNTIME_URL_PATTERN.test(url)) continue
 
     return url
   }
@@ -257,7 +268,34 @@ function stampNode(
   }
 }
 
-function stampSubtree(
+// React 19 server components and the document body itself produce fibers
+// with no `_debugOwner`, so per-element classification can't reach a
+// component name or source URL — every such element falls through to "dom".
+// Inherit the nearest stamped ancestor's label as a coverage fallback. Only
+// "visor" and "local" propagate; "third-party" and "dom" do not (the former
+// would mask gaps; the latter is a no-op). Stops at `root` so BODY-near
+// elements with no useful ancestor stay "dom".
+//
+// Exported for unit testing — not part of the SourceInspector public API.
+export function inheritStamps(root: Element) {
+  const dom = root.querySelectorAll(`[${DATA_ATTR}="dom"]`)
+  for (let i = 0; i < dom.length; i++) {
+    const el = dom[i]
+    let parent: Element | null = el.parentElement
+    while (parent) {
+      const parentLabel = parent.getAttribute(DATA_ATTR)
+      if (parentLabel === "visor" || parentLabel === "local") {
+        el.setAttribute(DATA_ATTR, parentLabel)
+        break
+      }
+      if (parent === root) break
+      parent = parent.parentElement
+    }
+  }
+}
+
+// Exported for unit testing — not part of the SourceInspector public API.
+export function stampSubtree(
   root: Element,
   classifiers: Classifiers,
   hasCustomVisorClassifier: boolean,
@@ -267,6 +305,7 @@ function stampSubtree(
   for (let i = 0; i < all.length; i++) {
     stampNode(all[i], classifiers, hasCustomVisorClassifier)
   }
+  inheritStamps(root)
 }
 
 function clearStamps(root: Element) {
