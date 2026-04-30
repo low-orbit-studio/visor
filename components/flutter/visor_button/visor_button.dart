@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:visor_core/visor_core.dart';
 
-/// Which brand palette the button draws from.
-///
-/// Most apps use a single brand — leave this at [primary]. Apps that ship
-/// with dual brands (e.g. user-facing vs. operator-facing personas) can set
-/// [secondary] to route through the `surfaceAccent*` token slots.
-enum VisorButtonBrand { primary, secondary }
-
 /// The button's visual role.
 ///
 /// - [primary] — solid filled button (Material `FilledButton`).
@@ -43,7 +36,6 @@ class VisorButton extends StatelessWidget {
     super.key,
     required this.label,
     required this.onPressed,
-    this.brand = VisorButtonBrand.primary,
     this.style = VisorButtonStyle.primary,
     this.size = VisorButtonSize.md,
     this.width = VisorButtonWidth.hug,
@@ -55,7 +47,6 @@ class VisorButton extends StatelessWidget {
 
   final String label;
   final VoidCallback? onPressed;
-  final VisorButtonBrand brand;
   final VisorButtonStyle style;
   final VisorButtonSize size;
   final VisorButtonWidth width;
@@ -72,7 +63,7 @@ class VisorButton extends StatelessWidget {
     final textStyles = context.visorTextStyles;
     final strokeWidths = context.visorStrokeWidths;
 
-    final palette = _palette(colors, opacity, style, brand);
+    final palette = _palette(colors, opacity, style);
     final padding = _padding(size, spacing);
     final labelStyle = _labelStyle(size, textStyles, palette.foreground);
 
@@ -217,46 +208,27 @@ class VisorButton extends StatelessWidget {
     VisorColorsData colors,
     VisorOpacityData opacity,
     VisorButtonStyle style,
-    VisorButtonBrand brand,
   ) {
-    // Pick the brand palette first, then apply the style role on top.
-    final bg = brand == VisorButtonBrand.primary
-        ? colors.interactivePrimaryBg
-        : colors.surfaceAccentStrong;
-    final bgHover = brand == VisorButtonBrand.primary
-        ? colors.interactivePrimaryBgHover
-        : colors.surfaceAccentDefault;
-    final onBg = brand == VisorButtonBrand.primary
-        ? colors.interactivePrimaryText
-        : colors.textInverse;
-
     switch (style) {
       case VisorButtonStyle.primary:
         return _ButtonPalette(
-          background: bg,
-          foreground: onBg,
-          overlay: bgHover.withValues(alpha: opacity.alpha12),
+          background: colors.interactivePrimaryBg,
+          foreground: colors.interactivePrimaryText,
+          overlay: colors.interactivePrimaryBgHover
+              .withValues(alpha: opacity.alpha12),
         );
       case VisorButtonStyle.secondary:
         return _ButtonPalette(
-          background: brand == VisorButtonBrand.primary
-              ? colors.interactiveSecondaryBg
-              : colors.surfaceAccentSubtle,
-          foreground: brand == VisorButtonBrand.primary
-              ? colors.interactiveSecondaryText
-              : colors.surfaceAccentStrong,
-          overlay: (brand == VisorButtonBrand.primary
-                  ? colors.interactiveSecondaryBgHover
-                  : colors.surfaceAccentDefault)
+          background: colors.interactiveSecondaryBg,
+          foreground: colors.interactiveSecondaryText,
+          overlay: colors.interactiveSecondaryBgHover
               .withValues(alpha: opacity.alpha12),
         );
       case VisorButtonStyle.ghost:
         return _ButtonPalette(
           background: Colors.transparent,
-          foreground: brand == VisorButtonBrand.primary
-              ? colors.interactivePrimaryBg
-              : colors.surfaceAccentStrong,
-          overlay: bg.withValues(alpha: opacity.alpha10),
+          foreground: colors.interactivePrimaryBg,
+          overlay: colors.interactivePrimaryBg.withValues(alpha: opacity.alpha10),
         );
       case VisorButtonStyle.destructive:
         return _ButtonPalette(
