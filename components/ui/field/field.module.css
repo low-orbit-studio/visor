@@ -24,7 +24,7 @@
 
 /* Field Description */
 .fieldDescription {
-  font-size: var(--font-size-sm, 0.875rem);
+  font-size: var(--font-size-xs, 0.75rem);
   font-weight: var(--font-weight-normal, 400);
   color: var(--text-secondary, #9ca3af);
   line-height: 1.5;
