@@ -47,6 +47,12 @@ describe("FieldLabel", () => {
     const label = screen.getByText("Email")
     expect(label.tagName.toLowerCase()).toBe("label")
   })
+
+  it("applies fieldLabel CSS class (which sets --font-size-sm / 14px)", () => {
+    render(<FieldLabel>Label</FieldLabel>)
+    const label = screen.getByText("Label")
+    expect(label).toHaveClass("fieldLabel")
+  })
 })
 
 describe("FieldDescription", () => {
@@ -59,6 +65,12 @@ describe("FieldDescription", () => {
     render(<FieldDescription>Help text</FieldDescription>)
     const p = screen.getByText("Help text")
     expect(p.tagName.toLowerCase()).toBe("p")
+  })
+
+  it("applies fieldDescription CSS class (which sets --font-size-xs / 12px, smaller than FieldLabel)", () => {
+    render(<FieldDescription>Description</FieldDescription>)
+    const description = screen.getByText("Description")
+    expect(description).toHaveClass("fieldDescription")
   })
 })
 
