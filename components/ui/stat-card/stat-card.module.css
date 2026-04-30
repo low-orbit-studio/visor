@@ -1,4 +1,4 @@
-/* Stat Card base: self-contained dashboard metric card
+/* stat-card — self-contained dashboard metric card
  *
  * Sizing strategy: hug content by default. Place stat cards in a grid
  * (`grid-template-columns: repeat(N, 1fr)`) or a flex row with `flex: 1`
