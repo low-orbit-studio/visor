@@ -973,6 +973,10 @@ describe("Layered CSS output (VI-312)", () => {
     { path: "semantic.css", layer: "visor-semantic" },
     { path: "themes/light.css", layer: "visor-adaptive" },
     { path: "themes/dark.css", layer: "visor-adaptive" },
+    { path: "themes/blackout.css", layer: "visor-adaptive" },
+    { path: "themes/modern-minimal.css", layer: "visor-adaptive" },
+    { path: "themes/neutral.css", layer: "visor-adaptive" },
+    { path: "themes/space.css", layer: "visor-adaptive" },
     { path: "utilities.css", layer: "visor-adaptive" },
   ];
 

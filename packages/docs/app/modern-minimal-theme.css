@@ -14,7 +14,9 @@
   font-display: swap;
 }
 
+@layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;
 
+@layer visor-adaptive {
 /* ── Section 1: Shared tokens (mode-independent) ── */
 
 /* --- Primitive: Colors --- */
@@ -524,4 +526,4 @@ html:not(.dark) .modern-minimal-theme {
   --color-fd-popover-foreground: rgba(0, 0, 0, 0.9);
   --color-fd-ring: #04bf81;
 }
-
+}
