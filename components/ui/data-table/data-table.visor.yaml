@@ -31,8 +31,18 @@ props:
     description: Tanstack column definitions. Each entry drives the header, cell renderer, sort behavior, and id.
   - name: data
     type: "TData[]"
-    required: true
-    description: Array of row records.
+    description: Array of row records. Optional when `rows` is provided — DataTable derives the data array from row entries internally.
+  - name: rows
+    type: "DataTableRow<TData>[]"
+    description: >
+      Mixed render order with group-head separators. Each entry is either
+      `{ kind: "group", id, label, count? }` or `{ kind: "data", id, row }`.
+      When provided, the caller owns sort/grouping/windowing — column header
+      sort UI and the pagination footer are suppressed. Group rows render
+      full-width via colSpan and are excluded from selection state.
+  - name: groupRowRenderer
+    type: "(group: DataTableGroupRow) => React.ReactNode"
+    description: Optional render slot for custom group-head content. When omitted, the default renderer shows label + optional count using the eyebrow type scale and `--surface-alt` background.
   - name: sorting
     type: SortingState
     description: Controlled sorting state.

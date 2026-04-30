@@ -2,7 +2,11 @@ import * as React from "react"
 import { render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, it, expect, vi } from "vitest"
-import { DataTable, type ColumnDef } from "../data-table"
+import {
+  DataTable,
+  type ColumnDef,
+  type DataTableRow,
+} from "../data-table"
 
 interface Row {
   id: string
@@ -182,5 +186,149 @@ describe("DataTable", () => {
     expect(root).toHaveAttribute("id", "table-root")
     expect(root).toHaveAttribute("aria-label", "Users table")
     expect(root).toHaveClass("custom-class")
+  })
+
+  describe("group rows (rows prop)", () => {
+    const groupedRows: DataTableRow<Row>[] = [
+      {
+        kind: "group",
+        id: "tonight",
+        label: "Tonight · Sat Apr 27",
+        count: 2,
+      },
+      { kind: "data", id: "1", row: { id: "1", name: "Alice", email: "a@e.com" } },
+      { kind: "data", id: "2", row: { id: "2", name: "Bob", email: "b@e.com" } },
+      {
+        kind: "group",
+        id: "this-week",
+        label: "This Week · Apr 28 — May 4",
+      },
+      {
+        kind: "data",
+        id: "3",
+        row: { id: "3", name: "Charlie", email: "c@e.com" },
+      },
+    ]
+
+    it("renders group-head rows interspersed with data rows", () => {
+      const { container } = render(
+        <DataTable columns={columns} rows={groupedRows} />
+      )
+      // Group labels visible
+      expect(screen.getByText(/Tonight · Sat Apr 27/)).toBeInTheDocument()
+      expect(
+        screen.getByText(/This Week · Apr 28 — May 4/)
+      ).toBeInTheDocument()
+      // Group count rendered
+      expect(screen.getByText("2")).toBeInTheDocument()
+      // Data rows rendered
+      expect(screen.getByText("Alice")).toBeInTheDocument()
+      expect(screen.getByText("Bob")).toBeInTheDocument()
+      expect(screen.getByText("Charlie")).toBeInTheDocument()
+      // Group rows tagged with data-slot
+      const groupRows = container.querySelectorAll(
+        '[data-slot="data-table-group-row"]'
+      )
+      expect(groupRows).toHaveLength(2)
+    })
+
+    it("excludes group rows from row selection", () => {
+      const { container } = render(
+        <DataTable
+          columns={columns}
+          rows={groupedRows}
+          enableRowSelection
+        />
+      )
+      // Group rows have no per-row checkbox
+      const groupRows = container.querySelectorAll(
+        '[data-slot="data-table-group-row"]'
+      )
+      groupRows.forEach((row) => {
+        expect(
+          row.querySelector('[role="checkbox"]')
+        ).not.toBeInTheDocument()
+      })
+      // Per-row checkboxes match data-row count (3), not group-row count
+      const rowBoxes = screen.getAllByRole("checkbox", { name: /select row/i })
+      expect(rowBoxes).toHaveLength(3)
+    })
+
+    it("select-all only counts data rows", async () => {
+      const user = userEvent.setup()
+      render(
+        <DataTable
+          columns={columns}
+          rows={groupedRows}
+          enableRowSelection
+        />
+      )
+      const selectAll = screen.getByRole("checkbox", {
+        name: /select all rows/i,
+      })
+      await user.click(selectAll)
+      const rowBoxes = screen.getAllByRole("checkbox", { name: /select row/i })
+      for (const box of rowBoxes) {
+        expect(box).toHaveAttribute("data-state", "checked")
+      }
+    })
+
+    it("suppresses sort UI when rows is provided", () => {
+      render(<DataTable columns={columns} rows={groupedRows} />)
+      // No sort buttons should render
+      expect(
+        screen.queryByRole("button", { name: /name.*sort/i })
+      ).not.toBeInTheDocument()
+      expect(
+        screen.queryByRole("button", { name: /email.*sort/i })
+      ).not.toBeInTheDocument()
+    })
+
+    it("suppresses pagination footer when rows is provided", () => {
+      const { container } = render(
+        <DataTable columns={columns} rows={groupedRows} />
+      )
+      expect(
+        container.querySelector('[data-slot="data-table-footer"]')
+      ).not.toBeInTheDocument()
+      expect(
+        screen.queryByRole("button", { name: /next page/i })
+      ).not.toBeInTheDocument()
+    })
+
+    it("uses groupRowRenderer for custom group-head content", () => {
+      const groupRowRenderer = vi.fn((g) => (
+        <span data-testid={`custom-${g.id}`}>CUSTOM: {g.label}</span>
+      ))
+      render(
+        <DataTable
+          columns={columns}
+          rows={groupedRows}
+          groupRowRenderer={groupRowRenderer}
+        />
+      )
+      expect(screen.getByTestId("custom-tonight")).toHaveTextContent(
+        "CUSTOM: Tonight · Sat Apr 27"
+      )
+      expect(screen.getByTestId("custom-this-week")).toBeInTheDocument()
+      expect(groupRowRenderer).toHaveBeenCalledTimes(2)
+    })
+
+    it("preserves backwards compatibility — sort/pagination still work without rows", async () => {
+      const user = userEvent.setup()
+      const data = makeRows(15)
+      render(<DataTable columns={columns} data={data} pageSize={5} />)
+
+      // Footer renders
+      const nextBtn = screen.getByRole("button", { name: /next page/i })
+      expect(nextBtn).toBeInTheDocument()
+      // Sort button renders
+      expect(
+        screen.getByRole("button", { name: /name.*sort/i })
+      ).toBeInTheDocument()
+
+      await user.click(nextBtn)
+      expect(screen.getByText(data[5].email)).toBeInTheDocument()
+    })
   })
 })

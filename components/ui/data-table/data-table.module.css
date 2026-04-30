@@ -177,6 +177,41 @@
   white-space: nowrap;
 }
 
+/* Group-head row — full-width separator inside the table body. The colSpan
+   cell carries the visual; the inner span owns the sticky positioning so it
+   pins to the top of the scroll container as data rows scroll beneath. */
+.groupRow {
+  /* No hover highlight — group rows are structural, not interactive */
+}
+
+.groupCell {
+  padding: 0;
+}
+
+.groupLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  height: 28px;
+  padding: 0 var(--spacing-4, 1rem);
+  background: var(--surface-alt, #f3f4f6);
+  font-size: var(--font-size-xs, 0.6875rem);
+  font-weight: var(--font-weight-medium, 500);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-tertiary, #6b7280);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.groupCount {
+  font-size: var(--font-size-xs, 0.6875rem);
+  color: var(--text-quaternary, #9ca3af);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
 /* Narrow containers — stack footer sections */
 @container data-table (max-width: 560px) {
   .footer {
