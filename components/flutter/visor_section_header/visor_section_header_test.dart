@@ -54,5 +54,29 @@ void main() {
       expect(find.byType(TextButton), findsOneWidget);
       expect(find.text('View all'), findsOneWidget);
     });
+
+    // Rec5 — textContrastGuideline (VI-257)
+
+    testWidgets('title renders with sufficient text contrast', (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(_wrap(
+        const VisorSectionHeader(title: 'Recent activity'),
+      ));
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('title + subtitle render with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(_wrap(
+        const VisorSectionHeader(
+          title: 'Recent activity',
+          subtitle: 'Last 30 days',
+        ),
+      ));
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
   });
 }

@@ -288,5 +288,29 @@ void main() {
       expect(tester.takeException(), isNull);
       expect(find.text('حدث خطأ ما.'), findsOneWidget);
     });
+
+    // Rec5 — textContrastGuideline (VI-257)
+
+    testWidgets('static error view renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(_wrap(const VisorErrorView(
+        message: 'Something went wrong.',
+        body: 'Please try again.',
+      )));
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('error view with retry button renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(_wrap(VisorErrorView(
+        message: 'Something went wrong.',
+        retryCallback: () {},
+      )));
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
   });
 }

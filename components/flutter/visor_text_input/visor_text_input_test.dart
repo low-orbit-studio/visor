@@ -314,5 +314,30 @@ void main() {
       await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
       handle.dispose();
     });
+
+    // Rec5 — textContrastGuideline (VI-257)
+
+    testWidgets('default input renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(const VisorTextInput(labelText: 'Email')),
+      );
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('input in error state renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(const VisorTextInput(
+          labelText: 'Email',
+          errorText: 'Invalid email address',
+        )),
+      );
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
   });
 }

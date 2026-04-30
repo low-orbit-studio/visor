@@ -106,5 +106,44 @@ void main() {
       expect(find.bySemanticsLabel(r'Revenue: $12,430'), findsNothing);
       handle.dispose();
     });
+
+    // Rec5 — textContrastGuideline (VI-257)
+
+    testWidgets('renders with sufficient text contrast (no delta)',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(_wrap(const VisorStatCard(
+        title: 'Revenue',
+        value: r'$12,430',
+      )));
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('renders with sufficient text contrast (with delta up)',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(_wrap(const VisorStatCard(
+        title: 'Revenue',
+        value: r'$12,430',
+        delta: '+8.2%',
+        deltaDirection: VisorDeltaDirection.up,
+      )));
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('renders with sufficient text contrast (with delta down)',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(_wrap(const VisorStatCard(
+        title: 'Churn',
+        value: '2.4%',
+        delta: '-0.3pp',
+        deltaDirection: VisorDeltaDirection.down,
+      )));
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
   });
 }

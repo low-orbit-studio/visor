@@ -316,5 +316,65 @@ void main() {
     // not-applicable: sm is a compact non-primary variant — similar to
     // VisorButton.sm, it may yield a height under 48dp by design.
     // R11 is satisfied by md above; sm is documented as explicitly compact.
+
+    // Rec5 — textContrastGuideline (VI-257)
+
+    testWidgets('suggestion variant (unselected) renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorChip(
+          label: 'Modern',
+          variant: VisorChipVariant.suggestion,
+          onPressed: () {},
+        )),
+      );
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('suggestion variant (selected) renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorChip(
+          label: 'Modern',
+          variant: VisorChipVariant.suggestion,
+          isSelected: true,
+          onPressed: () {},
+        )),
+      );
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('filter variant (unselected) renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorChip(
+          label: 'Tag',
+          variant: VisorChipVariant.filter,
+          onPressed: () {},
+        )),
+      );
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('filter variant (selected) renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorChip(
+          label: 'Tag',
+          variant: VisorChipVariant.filter,
+          isSelected: true,
+          onPressed: () {},
+        )),
+      );
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
   });
 }
