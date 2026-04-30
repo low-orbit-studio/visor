@@ -24,10 +24,23 @@ export interface AdminDetailDrawerProps {
   onOpenChange: (open: boolean) => void
 
   // ── Header ──────────────────────────────────────────────────────────────
-  /** Drawer title — rendered inside SheetTitle. */
+  /** Drawer title — always required; used as a11y label when header is hidden. */
   title: React.ReactNode
   /** Optional supporting copy rendered below the title. */
   description?: React.ReactNode
+  /**
+   * Replace the default SheetHeader with custom chrome content.
+   * A visually-hidden SheetTitle wrapping `title` is still mounted to satisfy
+   * Radix's DialogTitle a11y requirement.
+   * Takes precedence over `hideHeader` when both are set.
+   */
+  customHeader?: React.ReactNode
+  /**
+   * Suppress the default SheetHeader entirely.
+   * A visually-hidden SheetTitle wrapping `title` is still mounted to satisfy
+   * Radix's DialogTitle a11y requirement.
+   */
+  hideHeader?: boolean
 
   // ── Body ────────────────────────────────────────────────────────────────
   /** Form or detail content rendered inside the scrollable body region. */
@@ -96,6 +109,8 @@ const AdminDetailDrawer = React.forwardRef<
     onOpenChange,
     title,
     description,
+    customHeader,
+    hideHeader = false,
     children,
     onSave,
     onCancel,
@@ -196,12 +211,21 @@ const AdminDetailDrawer = React.forwardRef<
           className={cn(styles.content, WIDTH_CLASS[width], className)}
           data-slot="admin-detail-drawer"
         >
-          <SheetHeader className={styles.header}>
-            <SheetTitle>{title}</SheetTitle>
-            {description ? (
-              <SheetDescription>{description}</SheetDescription>
-            ) : null}
-          </SheetHeader>
+          {customHeader ? (
+            <>
+              <SheetTitle className={styles.srOnly}>{title}</SheetTitle>
+              {customHeader}
+            </>
+          ) : hideHeader ? (
+            <SheetTitle className={styles.srOnly}>{title}</SheetTitle>
+          ) : (
+            <SheetHeader className={styles.header}>
+              <SheetTitle>{title}</SheetTitle>
+              {description ? (
+                <SheetDescription>{description}</SheetDescription>
+              ) : null}
+            </SheetHeader>
+          )}
 
           <div
             className={styles.body}
