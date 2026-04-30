@@ -3,6 +3,7 @@
 @import '../../../components/ui/phone-input/phone-input.css';
 /* BEGIN visor-theme-imports — managed by `visor theme sync` */
 @import './blackout-theme.css';
+@import './borderless-theme.css';
 @import './modern-minimal-theme.css';
 @import './neutral-theme.css';
 @import './space-theme.css';

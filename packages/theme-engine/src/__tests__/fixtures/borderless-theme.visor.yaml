@@ -1,0 +1,44 @@
+name: borderless
+version: 1
+group: Visor
+
+colors:
+  primary: "#6beba5"
+  neutral: "#333333"
+  background: "#0a0a0c"
+  surface: "#111115"
+
+colors-dark:
+  background: "#0a0a0c"
+  surface: "#111115"
+
+typography:
+  heading:
+    family: Satoshi
+    weight: 700
+  body:
+    family: Satoshi
+    weight: 400
+
+radius:
+  sm: 4
+  md: 6
+  lg: 8
+  xl: 12
+
+shadows:
+  xs: "none"
+  sm: "none"
+  md: "none"
+  lg: "none"
+  xl: "none"
+
+overrides:
+  dark:
+    border-default: "transparent"
+    border-muted: "transparent"
+    border-strong: "transparent"
+  light:
+    border-default: "transparent"
+    border-muted: "transparent"
+    border-strong: "transparent"
