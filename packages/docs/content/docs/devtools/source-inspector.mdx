@@ -38,7 +38,7 @@ export function App({ children }) {
 }
 ```
 
-The toggle mounts a default `SourceInspectorProvider` lazily if no provider is in scope — it can be used standalone without explicit wiring.
+The toggle mounts a default `<SourceInspector>` (provider + runner) lazily if none is in scope — it can be used standalone and the overlay will apply correctly without explicit wiring.
 
 ## Modes
 
