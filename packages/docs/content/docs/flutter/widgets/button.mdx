@@ -6,6 +6,28 @@ description: Flutter button widget with variants, sizes, width modes, loading st
 `VisorButton` is Visor's primary interactive button for Flutter. It wraps
 Material 3 button types with Visor's semantic color tokens and spacing scale.
 
+## Preview
+
+<iframe
+  src="https://widgetbook.visor.design/?path=use-cases/visor-button/primary"
+  title="VisorButton — Widgetbook"
+  loading="lazy"
+  style={{ width: '100%', height: '480px', border: 'none', borderRadius: '8px' }}
+/>
+
+## When to Use
+
+- Triggering an action (submit, save, delete, confirm)
+- Primary and secondary CTAs on a page
+- Form submission
+- Destructive actions requiring visual emphasis
+
+## When Not to Use
+
+- Navigation to another page (use `go_router` or `Navigator.pushNamed`)
+- Toggling state on/off (use Switch or Toggle Group)
+- Selecting from options (use Select or Radio Group)
+
 ## Installation
 
 ```bash
@@ -148,4 +170,5 @@ VisorButton(
 
 ## Source
 
-`components/flutter/visor_button/visor_button.dart`
+- `components/flutter/visor_button/visor_button.dart`
+- Quality contract audit row: `docs/flutter-widget-quality-contract.md` (Rec8)

@@ -1,0 +1,109 @@
+---
+title: VisorPhoneInput
+description: International phone-number input with country picker, libphonenumber-backed formatting, and validation states matching VisorTextInput.
+---
+
+`VisorPhoneInput` extends `VisorTextInput` with a country picker in the prefix
+slot and a `flutter_libphonenumber`-backed validator. Selecting a country sets
+the formatter and per-country digit limit; entry auto-formats as the user
+types.
+
+## Preview
+
+<iframe
+  src="https://widgetbook.visor.design/?path=use-cases/visor-phone-input/default"
+  title="VisorPhoneInput — Widgetbook"
+  loading="lazy"
+  style={{ width: '100%', height: '480px', border: 'none', borderRadius: '8px' }}
+/>
+
+## When to Use
+
+- Capturing an international phone number with country code
+- Forms where formatted entry (e.g. `(555) 123-4567`) aids comprehension
+- Sign-up / verification flows that need a parsed, validated phone number
+
+## When Not to Use
+
+- Generic numeric entry (use `VisorTextInput` with `TextInputType.number`)
+- Single-country apps that don't need a picker (use `VisorTextInput`)
+- When the consumer cannot accept the `country_code_picker` and
+  `flutter_libphonenumber` dependencies
+
+## Installation
+
+```bash
+npx visor add phone-input --target flutter
+```
+
+Or copy `components/flutter/visor_phone_input/visor_phone_input.dart` into
+your project. Note: `phone-input` depends on `text-input` plus the pub
+packages `country_code_picker ^3.0.0` and `flutter_libphonenumber ^2.4.0`.
+
+## Basic Usage
+
+```dart
+import 'package:ui/ui.dart';
+
+VisorPhoneInput(
+  labelText: 'Mobile number',
+  controller: _phone,
+)
+```
+
+## With Country Override
+
+```dart
+VisorPhoneInput(
+  labelText: 'Mobile number',
+  controller: _phone,
+  initialCountryCode: 'GB',
+  onCountryChanged: (country) => _selectedCountry = country,
+)
+```
+
+## With Validation
+
+```dart
+VisorPhoneInput(
+  labelText: 'Mobile number',
+  controller: _phone,
+  validator: (value) {
+    if (value == null || value.isEmpty) return 'Required';
+    return null;
+  },
+  autovalidateMode: AutovalidateMode.onUserInteraction,
+)
+```
+
+## API Reference
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `labelText` | `String` | required | Floating label text |
+| `controller` | `TextEditingController?` | `null` | Optional external text controller |
+| `focusNode` | `FocusNode?` | `null` | Optional external focus node |
+| `errorText` | `String?` | `null` | Override the error message |
+| `onChanged` | `ValueChanged<String>?` | `null` | Fires on every keystroke |
+| `onCountryChanged` | `ValueChanged<CountryCode>?` | `null` | Fires when the user picks a different country |
+| `onFieldSubmitted` | `ValueChanged<String>?` | `null` | Fires on keyboard submit |
+| `validator` | `String? Function(String?)?` | `null` | Synchronous validator |
+| `initialCountryCode` | `String` | `'US'` | ISO country code to seed the picker |
+| `textInputAction` | `TextInputAction?` | `null` | Keyboard action button type |
+| `autofocus` | `bool` | `false` | Request focus on first build |
+| `enabled` | `bool` | `true` | When `false`, reduces opacity and ignores input |
+| `autovalidateMode` | `AutovalidateMode?` | `null` | When the validator runs |
+| `semanticLabel` | `String?` | `null` | Override the announced label (defaults to `labelText`) |
+
+## Accessibility
+
+- Country picker carries
+  `Semantics(button: true, label: 'Country code, [name] [dial code]. Tap to change.')`.
+- `libphonenumber` validation is treated as the canonical "is valid" signal —
+  it overrides the `validator` when libphonenumber accepts.
+- All `VisorTextInput` a11y properties carry through.
+
+## Source
+
+- `components/flutter/visor_phone_input/visor_phone_input.dart`
+- Quality contract audit row: `docs/flutter-widget-quality-contract.md` (Rec8)

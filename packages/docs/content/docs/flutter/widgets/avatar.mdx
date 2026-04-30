@@ -1,0 +1,102 @@
+---
+title: VisorAvatar
+description: A circular avatar component with image display and fallback support for initials or icons.
+---
+
+`VisorAvatar` renders a circular profile image, deriving initials from a name
+when no photo URL is provided and falling back to a person icon when neither
+is available. Optional tap target turns it into a button; an `isLoading`
+overlay covers the image during async work like uploads.
+
+## Preview
+
+<iframe
+  src="https://widgetbook.visor.design/?path=use-cases/visor-avatar/default-user-icon"
+  title="VisorAvatar — Widgetbook"
+  loading="lazy"
+  style={{ width: '100%', height: '480px', border: 'none', borderRadius: '8px' }}
+/>
+
+## When to Use
+
+- User profile pictures in headers, comments, or lists
+- Participant indicators in collaborative interfaces
+- Contact or team member thumbnails
+- Any place a person or entity needs a visual representation
+
+## When Not to Use
+
+- Decorative illustrations or product images (use a plain `Image`)
+- Logo display (use a dedicated brand component)
+- Icon buttons (use `VisorButton` with an icon)
+- Large hero images or banners (use a custom image layout)
+
+## Installation
+
+```bash
+npx visor add avatar --target flutter
+```
+
+Or copy `components/flutter/visor_avatar/visor_avatar.dart` into your project.
+
+## Basic Usage
+
+```dart
+import 'package:ui/ui.dart';
+
+VisorAvatar(
+  photoUrl: user.photoUrl,
+  name: user.fullName,
+  radius: 22,
+)
+```
+
+## Variants
+
+```dart
+// Photo
+VisorAvatar(photoUrl: 'https://…/jordan.jpg', radius: 28)
+
+// Initials fallback
+VisorAvatar(name: 'Jordan Smith', radius: 28)
+
+// Icon-only fallback
+VisorAvatar(radius: 28)
+
+// Tappable (renders as a button)
+VisorAvatar(
+  photoUrl: user.photoUrl,
+  onTap: _editAvatar,
+  semanticLabel: 'Change photo',
+)
+
+// With loading overlay (e.g. during upload)
+VisorAvatar(
+  photoUrl: user.photoUrl,
+  isLoading: _isUploading,
+  onTap: _editAvatar,
+)
+```
+
+## API Reference
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `photoUrl` | `String?` | `null` | URL of user photo; loaded via `CachedNetworkImage` |
+| `name` | `String?` | `null` | User name; derives initials when no photo is available |
+| `radius` | `double` | `22.0` | Avatar radius in logical pixels |
+| `onTap` | `VoidCallback?` | `null` | When set, the avatar becomes tappable |
+| `isLoading` | `bool` | `false` | Shows a progress overlay over the image |
+| `semanticLabel` | `String?` | `null` | Override the announced label (defaults to `'Avatar'`) |
+
+## Accessibility
+
+- Wrapped in `Semantics(button: true)` when `onTap` is provided.
+- Loading overlay short-circuits to a static circular border when
+  `MediaQuery.disableAnimations` is true.
+- Initial-derivation respects RTL via `Directionality`.
+
+## Source
+
+- `components/flutter/visor_avatar/visor_avatar.dart`
+- Quality contract audit row: `docs/flutter-widget-quality-contract.md` (Rec8)

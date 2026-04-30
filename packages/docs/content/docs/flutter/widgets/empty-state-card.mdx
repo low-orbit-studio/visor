@@ -1,0 +1,93 @@
+---
+title: VisorEmptyStateCard
+description: Card-chrome wrapper around VisorEmptyState for drop-in use inside lists, panels, and slotted containers. Always uses the compact horizontal layout.
+---
+
+`VisorEmptyStateCard` wraps `VisorEmptyState` in a card surface and forces
+the compact horizontal layout. It's the right choice when an empty state
+needs to live inline — inside a list slot, a half-height bottom sheet, or
+a dashboard panel — instead of taking over the full viewport.
+
+## Preview
+
+<iframe
+  src="https://widgetbook.visor.design/?path=use-cases/visor-empty-state-card/default"
+  title="VisorEmptyStateCard — Widgetbook"
+  loading="lazy"
+  style={{ width: '100%', height: '480px', border: 'none', borderRadius: '8px' }}
+/>
+
+## When to Use
+
+- Inserting an empty state directly into a scrollable list slot
+- Height-constrained panels (bottom sheets, half-height drawers, inline dashboard cards)
+- Any context where the card surface should be self-contained and draggable
+
+## When Not to Use
+
+- Full-page empty states where a standard vertical `VisorEmptyState` reads better
+- Inside an existing card surface (nested card chrome looks wrong)
+- Loading states (use Skeleton or a spinner)
+
+## Installation
+
+```bash
+npx visor add empty-state-card --target flutter
+```
+
+Or copy `components/flutter/visor_empty_state_card/visor_empty_state_card.dart`
+into your project.
+
+## Basic Usage
+
+```dart
+import 'package:ui/ui.dart';
+
+VisorEmptyStateCard(
+  icon: Icons.inbox_outlined,
+  headline: 'No messages yet',
+  body: "You're all caught up.",
+)
+```
+
+## With Actions
+
+```dart
+VisorEmptyStateCard(
+  icon: Icons.folder_open,
+  headline: 'No projects',
+  body: 'Create your first project to get started.',
+  action: VisorButton(
+    label: 'Create project',
+    onPressed: _createProject,
+  ),
+  secondaryAction: VisorButton(
+    label: 'Import',
+    style: VisorButtonStyle.secondary,
+    onPressed: _importProject,
+  ),
+)
+```
+
+## API Reference
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `icon` | `IconData` | required | Icon rendered to the left of the text content |
+| `headline` | `String` | required | Primary label — short, imperative, scannable |
+| `body` | `String?` | `null` | Supporting copy explaining why the state is empty |
+| `action` | `Widget?` | `null` | Primary call-to-action widget |
+| `secondaryAction` | `Widget?` | `null` | Optional secondary action |
+| `iconSize` | `double` | `48` | Logical-pixel size of the icon (scaled to 62.5% in compact layout) |
+| `semanticLabel` | `String?` | `null` | Override the announced label, forwarded to inner `VisorEmptyState` |
+
+## Accessibility
+
+- Semantics are provided by the inner `VisorEmptyState` — the card chrome
+  itself does not duplicate the announcement.
+- Layout uses `EdgeInsetsDirectional` so RTL locales mirror correctly.
+
+## Source
+
+- `components/flutter/visor_empty_state_card/visor_empty_state_card.dart`
+- Quality contract audit row: `docs/flutter-widget-quality-contract.md` (Rec8)

@@ -1,0 +1,84 @@
+---
+title: VisorBackButton
+description: Semantic navigation back button with RTL-aware icon, minimum tap target, and accessibility label.
+---
+
+`VisorBackButton` is a drop-in replacement for the platform back affordance.
+The chevron icon mirrors automatically in RTL locales, the touch target meets
+the 48 dp Material 3 floor, and the announced label defaults to `'Back'`. By
+default it calls `Navigator.maybePop` — pass `onPressed` to customise.
+
+## Preview
+
+<iframe
+  src="https://widgetbook.visor.design/?path=use-cases/visor-back-button/default"
+  title="VisorBackButton — Widgetbook"
+  loading="lazy"
+  style={{ width: '100%', height: '480px', border: 'none', borderRadius: '8px' }}
+/>
+
+## When to Use
+
+- Navigating back in a stack-based routing flow
+- Custom `AppBar` leading widget with consistent styling
+- Any surface that requires a "back" affordance
+- Screens that use go_router, Navigator, or any navigation package
+
+## When Not to Use
+
+- Tab-based navigation (use `BottomNavigationBar` or `TabBar`)
+- Closing dialogs or bottom sheets (use `IconButton` with `Icons.close`)
+- Destructive actions requiring confirmation (use `VisorConfirmSheet`)
+
+## Installation
+
+```bash
+npx visor add back-button --target flutter
+```
+
+Or copy `components/flutter/visor_back_button/visor_back_button.dart` into
+your project.
+
+## Basic Usage
+
+```dart
+import 'package:ui/ui.dart';
+
+AppBar(
+  leading: const VisorBackButton(),
+)
+```
+
+## Variants
+
+```dart
+// Default — calls Navigator.maybePop
+const VisorBackButton()
+
+// Custom handler — e.g. confirm before popping
+VisorBackButton(onPressed: _confirmAndPop)
+
+// Custom announced label
+VisorBackButton(
+  onPressed: _close,
+  semanticLabel: 'Close editor',
+)
+```
+
+## API Reference
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `onPressed` | `VoidCallback?` | `null` | Tap handler; defaults to `Navigator.maybePop` |
+| `semanticLabel` | `String?` | `null` | Override the announced label (defaults to `'Back'`) |
+
+## Accessibility
+
+- Labeled `'Back'` with `Semantics(button: true)`.
+- 48 × 48 dp minimum tap target.
+- Chevron icon respects `Directionality.of(context)` and mirrors in RTL.
+
+## Source
+
+- `components/flutter/visor_back_button/visor_back_button.dart`
+- Quality contract audit row: `docs/flutter-widget-quality-contract.md` (Rec8)

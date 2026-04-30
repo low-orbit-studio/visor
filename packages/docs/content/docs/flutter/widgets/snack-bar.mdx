@@ -1,0 +1,117 @@
+---
+title: VisorSnackBar
+description: Token-driven feedback toast with success, error, and standard variants. Static helper-method API — no constructor call required.
+---
+
+`VisorSnackBar` exposes a static-helper API for showing transient feedback
+toasts. Three variants — `success`, `error`, and `standard` — colour the
+surface from the semantic feedback palette. An optional action label and
+callback render an inline button.
+
+## Preview
+
+<iframe
+  src="https://widgetbook.visor.design/?path=use-cases/visor-snack-bar/success"
+  title="VisorSnackBar — Widgetbook"
+  loading="lazy"
+  style={{ width: '100%', height: '480px', border: 'none', borderRadius: '8px' }}
+/>
+
+## When to Use
+
+- Confirming a completed action (save, submit, delete)
+- Reporting a transient error that does not block the current screen
+- Displaying a brief neutral status message (syncing, loading complete)
+- Providing an optional undo or retry action alongside the message
+
+## When Not to Use
+
+- Persistent errors that require user action (use an inline error or `VisorErrorView`)
+- Long messages with multiple actions (use a dialog or bottom sheet)
+- Blocking flows that must halt user interaction (use a modal dialog)
+- Content that should remain visible indefinitely (use a banner or alert card)
+
+## Installation
+
+```bash
+npx visor add snack-bar --target flutter
+```
+
+Or copy `components/flutter/visor_snack_bar/visor_snack_bar.dart` into your
+project.
+
+## Basic Usage
+
+```dart
+import 'package:ui/ui.dart';
+
+VisorSnackBar.success(context, 'Project saved');
+```
+
+## Variants
+
+```dart
+// Success — green surface
+VisorSnackBar.success(context, 'Invitation sent');
+
+// Error — red surface
+VisorSnackBar.error(context, 'Could not save changes');
+
+// Standard — neutral surface
+VisorSnackBar.standard(context, 'Syncing…');
+```
+
+## With Action
+
+```dart
+VisorSnackBar.standard(
+  context,
+  'Project archived',
+  actionLabel: 'Undo',
+  onAction: _undoArchive,
+);
+```
+
+## With Custom Duration
+
+```dart
+VisorSnackBar.error(
+  context,
+  'Network error — retrying in 5s',
+  duration: const Duration(seconds: 5),
+);
+```
+
+## API Reference
+
+`VisorSnackBar` exposes three static helpers — `success`, `error`, and
+`standard` — each with the same signature:
+
+```dart
+static void <variant>(
+  BuildContext context,
+  String message, {
+  Duration? duration,
+  String? actionLabel,
+  VoidCallback? onAction,
+});
+```
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `context` | `BuildContext` | required | Build context — used to find ancestor `ScaffoldMessenger` |
+| `message` | `String` | required | Toast body text |
+| `duration` | `Duration?` | platform default | How long the toast stays visible |
+| `actionLabel` | `String?` | `null` | Optional label for the inline action button |
+| `onAction` | `VoidCallback?` | `null` | Fires when the action button is tapped |
+
+## Accessibility
+
+- The toast surface is wrapped in `Semantics(liveRegion: true)` —
+  TalkBack and VoiceOver announce the message on appearance (WCAG 4.1.3).
+- Action button (when present) meets the 48 dp tap-target floor.
+
+## Source
+
+- `components/flutter/visor_snack_bar/visor_snack_bar.dart`
+- Quality contract audit row: `docs/flutter-widget-quality-contract.md` (Rec8)

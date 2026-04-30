@@ -1,0 +1,113 @@
+---
+title: VisorConfirmSheet
+description: Adaptive confirmation surface — bottom sheet on mobile, dialog on wider viewports — with standard and destructive variants.
+---
+
+`VisorConfirmSheet` shows a confirmation surface that adapts to viewport
+width: a bottom sheet under 600 dp wide, a centered dialog above. The static
+helper `VisorConfirmSheet.show` returns a `Future<bool?>` resolving to `true`
+on confirm, `false` on cancel, and `null` if dismissed by tapping outside.
+
+## Preview
+
+<iframe
+  src="https://widgetbook.visor.design/?path=use-cases/visor-confirm-sheet/standard"
+  title="VisorConfirmSheet — Widgetbook"
+  loading="lazy"
+  style={{ width: '100%', height: '480px', border: 'none', borderRadius: '8px' }}
+/>
+
+## When to Use
+
+- Confirming a user-initiated action before it executes
+- Gating irreversible or destructive actions behind explicit confirmation
+- Presenting a short confirmation that adapts mobile vs desktop automatically
+
+## When Not to Use
+
+- Simple one-tap notifications (use `VisorSnackBar`)
+- Multi-step forms or flows requiring more than a title + message
+- Blocking errors or system-level interruptions (use an alert dialog)
+- Any scenario where the user cannot cancel — confirmations must always be cancellable
+
+## Installation
+
+```bash
+npx visor add confirm-sheet --target flutter
+```
+
+Or copy `components/flutter/visor_confirm_sheet/visor_confirm_sheet.dart`
+into your project.
+
+## Basic Usage
+
+```dart
+import 'package:ui/ui.dart';
+
+final confirmed = await VisorConfirmSheet.show(
+  context: context,
+  title: 'Archive project?',
+  message: 'You can restore it from the archive at any time.',
+  confirmLabel: 'Archive',
+  onConfirm: _archive,
+);
+```
+
+## Variants
+
+```dart
+// Destructive — red palette + warning icon
+await VisorConfirmSheet.show(
+  context: context,
+  title: 'Delete account?',
+  message: 'This cannot be undone. All your data will be erased.',
+  confirmLabel: 'Delete account',
+  variant: VisorConfirmSheetVariant.destructive,
+  onConfirm: _deleteAccount,
+);
+
+// Custom icon
+await VisorConfirmSheet.show(
+  context: context,
+  title: 'Sign out?',
+  message: 'You will need to log back in to continue.',
+  confirmLabel: 'Sign out',
+  icon: PhosphorIcons.signOut(),
+  onConfirm: _signOut,
+);
+```
+
+## API Reference
+
+`VisorConfirmSheet.show` static helper:
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `context` | `BuildContext` | required | Build context used to find ancestor `Navigator` |
+| `title` | `String` | required | Heading text shown at the top of the surface |
+| `message` | `String` | required | Explanatory body text |
+| `confirmLabel` | `String` | required | Primary confirm button label |
+| `onConfirm` | `VoidCallback` | required | Fires when the user confirms |
+| `cancelLabel` | `String` | `'Cancel'` | Secondary cancel button label |
+| `variant` | `VisorConfirmSheetVariant` | `.standard` | `.standard` or `.destructive` |
+| `icon` | `IconData?` | `null` | Override the leading icon on the confirm button |
+| `onCancel` | `VoidCallback?` | `null` | Fires when the user cancels |
+
+### `VisorConfirmSheetVariant`
+
+| Value | Description |
+|-------|-------------|
+| `.standard` | Neutral palette — for routine confirmations |
+| `.destructive` | Error palette — for irreversible / destructive actions |
+
+## Accessibility
+
+- The surface is wrapped in `Semantics(container: true, label: title)` so
+  screen readers announce the heading on appearance.
+- Confirm and cancel buttons share the 48 dp tap-target floor.
+- The future resolves on Android back / iOS swipe-dismiss with `null`.
+
+## Source
+
+- `components/flutter/visor_confirm_sheet/visor_confirm_sheet.dart`
+- Quality contract audit row: `docs/flutter-widget-quality-contract.md` (Rec8)

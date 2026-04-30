@@ -1,0 +1,98 @@
+---
+title: VisorRichText
+description: Rich text with auto-detected, tappable URLs that launch externally via url_launcher.
+---
+
+`VisorRichText` renders a paragraph of text with `http`/`https` URLs detected
+by regex and converted into tappable spans. By default, taps launch the URL
+in the platform browser via `url_launcher`; pass `onLinkTap` to handle
+navigation in-app.
+
+## Preview
+
+<iframe
+  src="https://widgetbook.visor.design/?path=use-cases/visor-rich-text/default"
+  title="VisorRichText — Widgetbook"
+  loading="lazy"
+  style={{ width: '100%', height: '480px', border: 'none', borderRadius: '8px' }}
+/>
+
+## When to Use
+
+- Rendering terms / privacy / disclosure copy with inline clickable links
+- Help text or hints that may include URLs the user might want to open
+- Any prose where embedded URLs should be tappable without manual span
+  construction
+
+## When Not to Use
+
+- Authoring rich content with bold / italic / headings (use a Markdown widget)
+- Custom span behaviour beyond URL launching — build a `TextSpan` tree directly
+- When you do not control the input string and cannot trust regex-based URL
+  detection
+
+## Installation
+
+```bash
+npx visor add rich-text --target flutter
+```
+
+Or copy `components/flutter/visor_rich_text/visor_rich_text.dart` into your
+project. Adds a dependency on `url_launcher ^6.3.0`.
+
+## Basic Usage
+
+```dart
+import 'package:ui/ui.dart';
+
+VisorRichText(
+  text: 'By continuing you agree to our Terms https://example.com/terms '
+        'and Privacy Policy https://example.com/privacy.',
+)
+```
+
+## With In-App Handler
+
+```dart
+VisorRichText(
+  text: 'See https://example.com/help for more.',
+  onLinkTap: (url) => Navigator.of(context).pushNamed('/in-app-browser', arguments: url),
+)
+```
+
+## Custom Styles
+
+```dart
+VisorRichText(
+  text: 'Read the docs at https://visor.design.',
+  style: context.visorTextStyles.bodySmall,
+  linkStyle: context.visorTextStyles.bodySmall.copyWith(
+    decoration: TextDecoration.underline,
+  ),
+)
+```
+
+## API Reference
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `text` | `String` | required | Source string with auto-detected `http(s)` URLs |
+| `style` | `TextStyle?` | `bodyMedium + textPrimary` | Base style for non-link runs |
+| `linkStyle` | `TextStyle?` | `null` | Override style for URL spans (defaults to `textLink` color over the base style) |
+| `textAlign` | `TextAlign?` | `TextAlign.start` | Horizontal text alignment |
+| `selectable` | `bool` | `true` | When `true`, text is selectable via long-press |
+| `onLinkTap` | `ValueChanged<String>?` | `null` | Override the default external launch |
+| `semanticLabel` | `String?` | `null` | Wrap the rendered text in `Semantics(label: …)` |
+
+## Accessibility
+
+- When `selectable: true`, uses `SelectableText.rich`.
+- Each URL span carries `semanticsLabel: <url>` so screen readers announce
+  the link target.
+- URL detection trims trailing punctuation (`.`, `,`, `;`, `:`) so prose
+  flows naturally.
+
+## Source
+
+- `components/flutter/visor_rich_text/visor_rich_text.dart`
+- Quality contract audit row: `docs/flutter-widget-quality-contract.md` (Rec8)

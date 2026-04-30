@@ -1,0 +1,89 @@
+---
+title: VisorLoadingDots
+description: Three-dot animated loading indicator with staggered wave pulse and reduce-motion support.
+---
+
+`VisorLoadingDots` is a soft, brand-friendly alternative to a spinner. Three
+dots pulse in a staggered wave using semantic accent colors. When the system
+requests reduced motion, the animation halts and all dots snap to the lightest
+color — preserving the visual but removing the movement.
+
+## Preview
+
+<iframe
+  src="https://widgetbook.visor.design/?path=use-cases/visor-loading-dots/default"
+  title="VisorLoadingDots — Widgetbook"
+  loading="lazy"
+  style={{ width: '100%', height: '480px', border: 'none', borderRadius: '8px' }}
+/>
+
+## When to Use
+
+- Soft, brand-friendly loading state as an alternative to a spinner
+- Inline loading inside chat bubbles, text areas, or compact UI slots
+- Processing states where a gentle animation conveys progress without urgency
+- Any context where animation must respect the system reduce-motion preference
+
+## When Not to Use
+
+- Full-page loading states where a skeleton screen better preserves layout
+- Determinate progress (use `LinearProgressIndicator` with a value)
+- Contexts where a spinner (`VisorLoadingIndicator`) is more conventional
+- Replacing button content during loading (use `VisorButton`'s `isLoading`)
+
+## Installation
+
+```bash
+npx visor add loading-dots --target flutter
+```
+
+Or copy `components/flutter/visor_loading_dots/visor_loading_dots.dart`
+into your project.
+
+## Basic Usage
+
+```dart
+import 'package:ui/ui.dart';
+
+const VisorLoadingDots()
+```
+
+## Customising Size and Colors
+
+```dart
+VisorLoadingDots(
+  dotSize: 8,
+  colorStart: context.visorColors.surfaceAccentSubtle,
+  colorMid: context.visorColors.surfaceAccentDefault,
+  colorEnd: context.visorColors.surfaceAccentStrong,
+)
+```
+
+## With Accessibility Label
+
+```dart
+VisorLoadingDots(semanticLabel: 'Loading messages')
+```
+
+## API Reference
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `dotSize` | `double?` | `10.0` | Diameter of each dot in logical pixels |
+| `colorStart` | `Color?` | `surfaceAccentSubtle` | Lightest animation color |
+| `colorMid` | `Color?` | `surfaceAccentDefault` | Middle animation color |
+| `colorEnd` | `Color?` | `surfaceAccentStrong` | Darkest animation color |
+| `semanticLabel` | `String?` | `null` | When provided, wraps the widget in `Semantics(label: …)` |
+
+## Accessibility
+
+- Reduce-motion aware — when `MediaQuery.disableAnimations` is true, all
+  dots snap to `colorStart` and the animation controller pauses.
+- `semanticLabel` is opt-in. When omitted, the widget is purely decorative
+  to screen readers; use `liveRegion` higher in the tree to announce
+  state transitions when the indicator is the only feedback signal.
+
+## Source
+
+- `components/flutter/visor_loading_dots/visor_loading_dots.dart`
+- Quality contract audit row: `docs/flutter-widget-quality-contract.md` (Rec8)
