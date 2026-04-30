@@ -95,4 +95,20 @@ describe("StatCard a11y (vitest-axe)", () => {
     const results = await axe(container)
     expect(results).toHaveNoViolations()
   })
+
+  it("has no WCAG 2.1 AA violations (valueAs hero)", async () => {
+    const { container } = render(
+      <StatCard label="RSVPs Tonight" value="1,248" valueAs="hero" />
+    )
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
+  })
+
+  it("has no WCAG 2.1 AA violations (valueAs compact)", async () => {
+    const { container } = render(
+      <StatCard label="Signups" value="412" valueAs="compact" />
+    )
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
+  })
 })

@@ -24,6 +24,7 @@ why: >
 variants:
   variant: [default, highlight]
   size: [sm, md]
+  valueAs: [default, hero, compact]
 
 props:
   - name: label
@@ -55,6 +56,17 @@ props:
     type: "'sm' | 'md'"
     default: "md"
     description: Dimensional density. Use sm for dense rows of compact cards; md is the default dashboard size.
+  - name: valueAs
+    type: "'default' | 'hero' | 'compact'"
+    default: "default"
+    description: >
+      Typography scale for the value. "hero" applies a marquee display treatment
+      (large font, display weight, tabular-nums, letter-spacing 0). "compact" uses
+      a tighter 2xl size. Override the font and size via --stat-card-value-font and
+      --stat-card-value-size CSS custom properties.
+  - name: valueClassName
+    type: string
+    description: Additional class names forwarded to the value element for fully custom value rendering.
 
 dependencies:
   - "class-variance-authority"
