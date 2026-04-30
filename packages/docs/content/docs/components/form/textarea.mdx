@@ -65,6 +65,22 @@ import { Field, FieldLabel, FieldError } from '@/components/ui/field';
   </div>
 </ComponentPreview>
 
+## Password managers
+
+By default, `Textarea` opts out of password-manager autofill (1Password,
+Bitwarden, LastPass) so contact, message, and notes forms don't render autofill
+icon overlays. Browsers ignore `autocomplete="off"` on individual fields, so
+Visor emits the four per-manager `data-*` attributes (`data-1p-ignore`,
+`data-bwignore`, `data-lpignore`, `data-form-type="other"`) that each manager
+respects.
+
+On the rare textarea where you *want* the manager to offer autofill, opt back in
+with `passwordManagers="allow"`:
+
+```tsx
+<Textarea passwordManagers="allow" />
+```
+
 ## With Field
 
 <ComponentPreview

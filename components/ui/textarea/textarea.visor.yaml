@@ -29,6 +29,11 @@ props:
     description: Number of visible text lines
   - name: placeholder
     type: string
+  - name: passwordManagers
+    type: "'ignore' | 'allow'"
+    default: "ignore"
+    description: >
+      Controls password-manager autofill behavior. Defaults to "ignore" so contact, marketing, and settings forms don't render 1Password/Bitwarden/LastPass autofill icons. Set to "allow" on the rare credential field where autofill is desired. When "ignore", emits data-1p-ignore, data-bwignore, data-lpignore, and data-form-type="other" — the four per-manager opt-out attributes browsers honor where autocomplete="off" is ignored.
 
 dependencies: []
 

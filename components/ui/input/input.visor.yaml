@@ -33,6 +33,11 @@ props:
   - name: leadingIcon
     type: React.ReactNode
     description: Optional leading glyph rendered inside the field (e.g. a Phosphor icon). The input reserves enough left padding to clear it.
+  - name: passwordManagers
+    type: "'ignore' | 'allow'"
+    default: "ignore"
+    description: >
+      Controls password-manager autofill behavior. Defaults to "ignore" so contact, marketing, and settings forms don't render 1Password/Bitwarden/LastPass autofill icons. Set to "allow" on login and credential fields. When "ignore", emits data-1p-ignore, data-bwignore, data-lpignore, and data-form-type="other" — the four per-manager opt-out attributes browsers honor where autocomplete="off" is ignored.
 
 dependencies: []
 
@@ -41,4 +46,4 @@ preview_url: "https://visor.loworbit.studio/docs/components/form/input"
 example: |
   <Input type="email" placeholder="you@example.com" />
 
-  <Input type="password" aria-invalid="true" />
+  <Input type="password" passwordManagers="allow" aria-invalid="true" />

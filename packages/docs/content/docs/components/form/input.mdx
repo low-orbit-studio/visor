@@ -83,6 +83,28 @@ field's font-size.
   </div>
 </ComponentPreview>
 
+## Password managers
+
+By default, `Input` opts out of password-manager autofill (1Password, Bitwarden,
+LastPass) so contact, marketing, and settings forms don't render autofill icon
+overlays. Browsers ignore `autocomplete="off"` on individual inputs, so Visor
+emits the four per-manager `data-*` attributes (`data-1p-ignore`,
+`data-bwignore`, `data-lpignore`, `data-form-type="other"`) that each manager
+respects.
+
+On login, signup, or credential fields where you *want* the manager to offer
+autofill, opt back in with `passwordManagers="allow"`:
+
+<ComponentPreview
+  title="Login field opts back in"
+  code={"<Input type=\"email\" placeholder=\"you@example.com\" passwordManagers=\"allow\" />\n<Input type=\"password\" passwordManagers=\"allow\" />"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%', maxWidth: '20rem' }}>
+    <Input type="email" placeholder="you@example.com" passwordManagers="allow" />
+    <Input type="password" passwordManagers="allow" />
+  </div>
+</ComponentPreview>
+
 ## With Field
 
 <ComponentPreview
