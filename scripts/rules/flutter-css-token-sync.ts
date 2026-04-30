@@ -11,6 +11,13 @@ const TOKENS: Array<{ cssVar: string; dartField: string }> = [
   { cssVar: '--interactive-primary-text', dartField: 'interactivePrimaryText' },
 ];
 
+// Web-only themes — exempt from Flutter Dart parity. Add a slug here when the
+// theme has no Flutter consumer (e.g. client website themes shipped only via
+// the web docs / NextJS registry).
+const WEB_ONLY_THEMES = new Set<string>([
+  'animal',
+]);
+
 /** Normalize any CSS color to an 8-char lowercase hex string like "ff020214". */
 function normalizeCssColor(css: string): string | null {
   const trimmed = css.trim();
@@ -88,6 +95,16 @@ export const flutterCssTokenSync: Rule = {
     for await (const cssPath of glob('packages/docs/app/*-theme.css')) {
       const filename = cssPath.split('/').pop() ?? '';
       const slug = filename.replace(/-theme\.css$/, '');
+
+      if (WEB_ONLY_THEMES.has(slug)) {
+        results.push({
+          pass: true,
+          message: `${slug}: web-only theme, exempt from Flutter parity`,
+          file: cssPath,
+        });
+        continue;
+      }
+
       const dartPath = join(
         'packages/visor_themes/lib/src',
         slug,

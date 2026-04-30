@@ -77,6 +77,7 @@ packages/docs/app/custom-themes.generated.css
 packages/docs/lib/theme-config.custom.generated.ts
 
 # BEGIN visor-custom-theme-css (managed by `visor theme sync` — do not edit manually)
+packages/docs/app/animal-theme.css
 packages/docs/app/blacklight-theme.css
 packages/docs/app/blacklight-underground-theme.css
 packages/docs/app/entr-theme.css
