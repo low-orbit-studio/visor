@@ -17,6 +17,19 @@ import { fileURLToPath } from "url";
 import { generateThemeData } from "@loworbitstudio/visor-theme-engine";
 import { docsAdapter } from "@loworbitstudio/visor-theme-engine/adapters";
 
+// Layer-order declaration — must precede any @layer blocks. Mirrors LAYER_ORDER
+// in @loworbitstudio/visor-theme-engine/adapters/layers so adapter and core
+// agree regardless of import order. See VI-312.
+const LAYER_ORDER =
+  "@layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;";
+
+/** Wrap CSS body in a named @layer block. */
+function wrapInLayer(layerName: string, css: string): string {
+  const trimmed = css.trim();
+  if (!trimmed) return "";
+  return `@layer ${layerName} {\n${trimmed}\n}`;
+}
+
 import {
   primitiveColors,
   primitiveSpacing,
@@ -112,7 +125,7 @@ function toVar(ref: string): string {
 // Primitive CSS generation
 // ============================================================
 
-function generatePrimitivesCSS(): string {
+function buildPrimitivesBody(): string {
   const lines: string[] = [];
 
   // Colors
@@ -252,14 +265,24 @@ function generatePrimitivesCSS(): string {
   }
   lines.push(block(":root", motionEasingDecls));
 
-  return header("Visor Design Tokens — Primitives") + lines.join("\n");
+  return lines.join("\n");
+}
+
+function generatePrimitivesCSS(): string {
+  return (
+    header("Visor Design Tokens — Primitives") +
+    LAYER_ORDER +
+    "\n\n" +
+    wrapInLayer("visor-primitives", buildPrimitivesBody()) +
+    "\n"
+  );
 }
 
 // ============================================================
 // Semantic CSS generation
 // ============================================================
 
-function generateSemanticCSS(): string {
+function buildSemanticBody(): string {
   const lines: string[] = [];
 
   // Text
@@ -366,7 +389,17 @@ function generateSemanticCSS(): string {
   }
   lines.push(block(":root", sidebarDecls));
 
-  return header("Visor Design Tokens — Semantic") + lines.join("\n");
+  return lines.join("\n");
+}
+
+function generateSemanticCSS(): string {
+  return (
+    header("Visor Design Tokens — Semantic") +
+    LAYER_ORDER +
+    "\n\n" +
+    wrapInLayer("visor-semantic", buildSemanticBody()) +
+    "\n"
+  );
 }
 
 // ============================================================
@@ -429,8 +462,7 @@ function buildAdaptiveDecls(theme: "light" | "dark"): {
   return { textDecls, surfaceDecls, borderDecls, interactiveDecls, skeletonDecls, shadowDecls, chartDecls, sidebarDecls };
 }
 
-function generateThemeCSS(theme: "light" | "dark"): string {
-  const themeLabel = theme === "light" ? "Light Theme" : "Dark Theme";
+function buildThemeBody(theme: "light" | "dark"): string {
   const lines: string[] = [];
   const { textDecls, surfaceDecls, borderDecls, interactiveDecls, skeletonDecls, shadowDecls, chartDecls, sidebarDecls } = buildAdaptiveDecls(theme);
 
@@ -528,7 +560,18 @@ function generateThemeCSS(theme: "light" | "dark"): string {
     lines.push("");
   }
 
-  return header(`Visor Design Tokens — ${themeLabel}`) + lines.join("\n");
+  return lines.join("\n");
+}
+
+function generateThemeCSS(theme: "light" | "dark"): string {
+  const themeLabel = theme === "light" ? "Light Theme" : "Dark Theme";
+  return (
+    header(`Visor Design Tokens — ${themeLabel}`) +
+    LAYER_ORDER +
+    "\n\n" +
+    wrapInLayer("visor-adaptive", buildThemeBody(theme)) +
+    "\n"
+  );
 }
 
 // ============================================================
@@ -539,48 +582,26 @@ function generateTokensCSS(): string {
   const lines: string[] = [
     header("Visor Design Tokens — Full Bundle"),
     "/* Import order: primitives → semantic → adaptive */",
+    LAYER_ORDER,
     "",
     "/* ============================================",
-    "   Tier 1: Primitives",
+    "   Tier 1: Primitives → @layer visor-primitives",
     "   ============================================ */",
+    wrapInLayer("visor-primitives", buildPrimitivesBody()),
+    "",
+    "/* ============================================",
+    "   Tier 2: Semantic → @layer visor-semantic",
+    "   ============================================ */",
+    wrapInLayer("visor-semantic", buildSemanticBody()),
+    "",
+    "/* ============================================",
+    "   Tier 3: Adaptive — Light + Dark → @layer visor-adaptive",
+    "   ============================================ */",
+    wrapInLayer(
+      "visor-adaptive",
+      buildThemeBody("light") + "\n\n" + buildThemeBody("dark"),
+    ),
   ];
-
-  // Primitives inlined
-  const primitivesContent = generatePrimitivesCSS();
-  // Strip the header from the primitives content (first 6 lines are header)
-  const primitivesBody = primitivesContent
-    .split("\n")
-    .slice(6)
-    .join("\n");
-  lines.push(primitivesBody);
-
-  lines.push(
-    "/* ============================================",
-    "   Tier 2: Semantic",
-    "   ============================================ */"
-  );
-  const semanticContent = generateSemanticCSS();
-  const semanticBody = semanticContent.split("\n").slice(6).join("\n");
-  lines.push(semanticBody);
-
-  lines.push(
-    "/* ============================================",
-    "   Tier 3: Adaptive — Light Theme (:root)",
-    "   ============================================ */"
-  );
-  const lightContent = generateThemeCSS("light");
-  const lightBody = lightContent.split("\n").slice(6).join("\n");
-  lines.push(lightBody);
-
-  lines.push(
-    "/* ============================================",
-    "   Tier 3: Adaptive — Dark Theme (.dark, .theme-dark, [data-theme=\"dark\"])",
-    "   and @media (prefers-color-scheme: dark)",
-    "   ============================================ */"
-  );
-  const darkContent = generateThemeCSS("dark");
-  const darkBody = darkContent.split("\n").slice(6).join("\n");
-  lines.push(darkBody);
 
   lines.push(
     "/* ============================================",
@@ -626,7 +647,13 @@ function generateUtilitiesCSS(): string {
     ])
   );
 
-  return header("Visor Design Tokens — Utilities") + lines.join("\n");
+  return (
+    header("Visor Design Tokens — Utilities") +
+    LAYER_ORDER +
+    "\n\n" +
+    wrapInLayer("visor-adaptive", lines.join("\n")) +
+    "\n"
+  );
 }
 
 // ============================================================
@@ -637,6 +664,8 @@ function generateIndexCSS(): string {
   return [
     header("Visor Design Tokens — Index"),
     "/* Full design token bundle */",
+    LAYER_ORDER,
+    "",
     "@import './tokens.css';",
     "",
   ].join("\n");
