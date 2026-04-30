@@ -464,6 +464,44 @@ void main() {
       }
     });
 
+    // Rec5 — textContrastGuideline (VI-257)
+
+    testWidgets('empty state renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(
+          VisorChipSearchInput<_TestItem>(
+            selectedItems: const [],
+            labelBuilder: (item) => item.label,
+            hintText: 'Search...',
+            onQueryChanged: (_) {},
+            onItemRemoved: (_) {},
+          ),
+        ),
+      );
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('with selected chips renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(
+          VisorChipSearchInput<_TestItem>(
+            selectedItems: const [_item1, _item2],
+            labelBuilder: (item) => item.label,
+            hintText: 'Search...',
+            onQueryChanged: (_) {},
+            onItemRemoved: (_) {},
+          ),
+        ),
+      );
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
     // -------------------------------------------------------------------------
     // R9 — Directionality respect
     // -------------------------------------------------------------------------

@@ -276,6 +276,31 @@ void main() {
       handle.dispose();
     });
 
+    // Rec5 — textContrastGuideline (VI-257)
+
+    testWidgets('default phone input renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(const VisorPhoneInput(labelText: 'Phone number')),
+      );
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('phone input in error state renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(const VisorPhoneInput(
+          labelText: 'Phone',
+          errorText: 'Invalid phone number',
+        )),
+      );
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
     // -------------------------------------------------------------------------
     // R9 — Directionality respect
     // -------------------------------------------------------------------------

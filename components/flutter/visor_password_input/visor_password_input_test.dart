@@ -364,6 +364,31 @@ void main() {
       handle.dispose();
     });
 
+    // Rec5 — textContrastGuideline (VI-257)
+
+    testWidgets('default password input renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(const VisorPasswordInput(labelText: 'Password')),
+      );
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('password input in error state renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(const VisorPasswordInput(
+          labelText: 'Password',
+          errorText: 'Incorrect password',
+        )),
+      );
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
     // -------------------------------------------------------------------------
     // R9 — Directionality respect
     // -------------------------------------------------------------------------

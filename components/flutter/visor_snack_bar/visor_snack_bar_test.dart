@@ -292,6 +292,62 @@ void main() {
       expect(find.text('Quick toast'), findsNothing);
     });
 
+    // Rec5 — textContrastGuideline (VI-257)
+
+    testWidgets('success variant renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _shell(
+          Builder(
+            builder: (ctx) => _TriggerButton(
+              onTap: () => VisorSnackBar.success(ctx, 'Saved successfully'),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('trigger'));
+      await tester.pump();
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('error variant renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _shell(
+          Builder(
+            builder: (ctx) => _TriggerButton(
+              onTap: () => VisorSnackBar.error(ctx, 'Upload failed'),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('trigger'));
+      await tester.pump();
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('standard variant renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _shell(
+          Builder(
+            builder: (ctx) => _TriggerButton(
+              onTap: () => VisorSnackBar.standard(ctx, 'Syncing…'),
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('trigger'));
+      await tester.pump();
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
     // -------------------------------------------------------------------------
     // R9 — Directionality respect
     // -------------------------------------------------------------------------

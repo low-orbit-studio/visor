@@ -342,6 +342,19 @@ void main() {
       handle.dispose();
     });
 
+    // Rec5 — textContrastGuideline (VI-257)
+
+    testWidgets('initials fallback renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(_wrap(const VisorAvatar(
+        name: 'John Doe',
+        radius: 32,
+      )));
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
     // -------------------------------------------------------------------------
     // R9 — Directionality respect
     // -------------------------------------------------------------------------

@@ -202,6 +202,46 @@ void main() {
     // design. Bumping vertical padding would defeat the purpose of the variant.
     // R11 is satisfied by md + lg above; sm is documented as explicitly compact.
 
+    // Rec5 — textContrastGuideline (VI-257)
+
+    testWidgets('primary style renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorButton(label: 'Save', onPressed: () {})),
+      );
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('secondary style renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorButton(
+          label: 'Save',
+          onPressed: () {},
+          style: VisorButtonStyle.secondary,
+        )),
+      );
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('ghost style renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorButton(
+          label: 'Cancel',
+          onPressed: () {},
+          style: VisorButtonStyle.ghost,
+        )),
+      );
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
     // -------------------------------------------------------------------------
     // R9 — Directionality respect
     // -------------------------------------------------------------------------

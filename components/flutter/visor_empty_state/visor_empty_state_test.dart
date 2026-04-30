@@ -227,6 +227,36 @@ void main() {
       handle.dispose();
     });
 
+    // ──────────────────────────────────────────────────────────────────────
+    // Rec5 — textContrastGuideline (VI-257)
+    // ──────────────────────────────────────────────────────────────────────
+
+    testWidgets('renders with sufficient text contrast (standard layout)',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(_wrap(const VisorEmptyState(
+        icon: Icons.inbox_outlined,
+        headline: 'No messages',
+        body: 'You are all caught up.',
+      )));
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('renders with sufficient text contrast (compact layout)',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(_wrap(
+        const VisorEmptyState(
+          icon: Icons.inbox_outlined,
+          headline: 'No messages',
+          forceCompact: true,
+        ),
+      ));
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
     // -------------------------------------------------------------------------
     // R9 — Directionality respect
     // -------------------------------------------------------------------------

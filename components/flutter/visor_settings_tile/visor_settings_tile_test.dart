@@ -208,6 +208,52 @@ void main() {
       handle.dispose();
     });
 
+    // Rec5 — textContrastGuideline (VI-257)
+
+    testWidgets('default tile renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorSettingsTile(
+          icon: Icons.person_outline,
+          label: 'Account',
+          onTap: () {},
+        )),
+      );
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('tile with subtitle renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorSettingsTile(
+          icon: Icons.person_outline,
+          label: 'Account',
+          subtitle: 'Manage your profile',
+          onTap: () {},
+        )),
+      );
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
+    testWidgets('destructive tile renders with sufficient text contrast',
+        (tester) async {
+      final handle = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _wrap(VisorSettingsTile(
+          icon: Icons.logout,
+          label: 'Sign out',
+          destructive: true,
+          onTap: () {},
+        )),
+      );
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+      handle.dispose();
+    });
+
     // -------------------------------------------------------------------------
     // R9 — Directionality respect
     // -------------------------------------------------------------------------

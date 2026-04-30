@@ -188,27 +188,27 @@ Legend: ✅ pass · ⚠️ partial · ❌ fail · — not applicable
 
 | Widget | Rec1 alchemist | Rec2 focus ring | Rec3 widgetbook | Rec4 iOS tap | Rec5 contrast | Rec6 RTL test | Rec7 liveRegion | Rec8 MDX page |
 |--------|----|----|----|----|----|----|----|----|
-| `visor_avatar` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_avatar` | ❌ | — | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ❌ |
 | `visor_back_button` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ pre-existing | — | ❌ |
-| `visor_button` | ✅ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ❌ | ✅ VI-258 | — | ❌ |
-| `visor_chip` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ❌ | ✅ VI-258 | — | ❌ |
-| `visor_chip_search_input` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ❌ | ✅ VI-258 | — | ❌ |
-| `visor_confirm_sheet` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
-| `visor_empty_state` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_button` | ✅ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ❌ |
+| `visor_chip` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ❌ |
+| `visor_chip_search_input` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ❌ |
+| `visor_confirm_sheet` | ❌ | — | ⚠️ confirm | — | ✅ VI-257 | ✅ VI-258 | — | ❌ |
+| `visor_empty_state` | ❌ | — | ⚠️ confirm | — | ✅ VI-257 | ✅ VI-258 | — | ❌ |
 | `visor_empty_state_card` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
-| `visor_error_view` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ pre-existing | — | ❌ |
+| `visor_error_view` | ❌ | — | ⚠️ confirm | — | ✅ VI-257 | ✅ pre-existing | ⚠️ candidate for error-text `liveRegion` | ❌ |
 | `visor_form_dialog` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
 | `visor_loading_dots` | ❌ | — | ⚠️ confirm | — | — | ✅ VI-258 | — | ❌ |
 | `visor_loading_indicator` | ❌ | — | ⚠️ confirm | — | — | ✅ VI-258 | ⚠️ candidate for `liveRegion` when status changes | ❌ |
 | `visor_otp_input` | ❌ | ⚠️ relies on Material focus default | ⚠️ confirm | ❌ | ❌ | ✅ VI-258 | — | ❌ |
-| `visor_password_input` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ❌ | ✅ VI-258 | — | ❌ |
-| `visor_phone_input` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ❌ | ✅ VI-258 | — | ❌ |
+| `visor_password_input` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ❌ |
+| `visor_phone_input` | ❌ | ⚠️ relies on Material default | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ❌ |
 | `visor_rich_text` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
-| `visor_section_header` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
-| `visor_settings_tile` | ❌ | ⚠️ Material `InkWell` default | ⚠️ confirm | ❌ | ❌ | ✅ VI-258 | — | ❌ |
-| `visor_snack_bar` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
-| `visor_stat_card` | ❌ | — | ⚠️ confirm | — | ❌ | ✅ VI-258 | — | ❌ |
-| `visor_text_input` | ❌ | ⚠️ has token-driven border-focus color but no token-driven outer focus ring | ⚠️ confirm | ❌ | ❌ | ✅ VI-258 | ⚠️ candidate for error-text `liveRegion` | ❌ |
+| `visor_section_header` | ❌ | — | ⚠️ confirm | — | ✅ VI-257 | ✅ VI-258 | — | ❌ |
+| `visor_settings_tile` | ❌ | ⚠️ Material `InkWell` default | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | — | ❌ |
+| `visor_snack_bar` | ❌ | — | ⚠️ confirm | — | ✅ VI-257 | ✅ VI-258 | ✅ | ❌ |
+| `visor_stat_card` | ❌ | — | ⚠️ confirm | — | ✅ VI-257 | ✅ VI-258 | — | ❌ |
+| `visor_text_input` | ❌ | ⚠️ has token-driven border-focus color but no token-driven outer focus ring | ⚠️ confirm | ❌ | ✅ VI-257 | ✅ VI-258 | ⚠️ candidate for error-text `liveRegion` | ❌ |
 
 ### Audit summary
 
@@ -272,3 +272,4 @@ Tickets get the labels: `Flutter`, `Improvement`, `quality:audit-gap`. The latte
 |------|--------|--------|
 | Initial draft | First version: 13 Required, 8 Recommended, 5 Stretch items; audit of 9 widgets; D5 resolved. | VI-246 |
 | Rec1 scaffolding lands | `alchemist` dev_dependency, `flutter_test_config.dart` (CI goldens only — Ahem font), Linux CI lane, `flutter test --update-goldens` workflow documented in `CONTRIBUTING.md`, exemplar golden suite on `visor_button` (style × size × theme = 24 button cells across 6 PNGs). | VI-256 |
+| Rec5 contrast tests land | `meetsGuideline(textContrastGuideline)` added to 14 widget test files: visor_avatar, visor_button (3 style variants), visor_chip (4 variant/selection combos), visor_chip_search_input, visor_confirm_sheet (2 variants), visor_empty_state (2 layouts), visor_error_view, visor_password_input, visor_phone_input, visor_section_header, visor_settings_tile (3 variants), visor_snack_bar (3 variants), visor_stat_card (3 delta combos), visor_text_input. All pass under default light theme. Audit table Rec5 column updated to ✅ for covered widgets. | VI-257 |
