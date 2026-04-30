@@ -62,6 +62,15 @@ export const semanticSurface = {
   "error-default": "color-error-500",
   "info-subtle": "color-info-50",
   "info-default": "color-info-500",
+
+  // 5-tier ordinal elevation scale — deepest (0) to highest (4)
+  // Light-mode defaults use the neutral ramp from near-white to light gray.
+  // Adaptive layer (adaptive.ts) provides true per-mode dark overrides.
+  "elev-0": "color-neutral-950",
+  "elev-1": "color-neutral-900",
+  "elev-2": "color-neutral-800",
+  "elev-3": "color-neutral-700",
+  "elev-4": "color-neutral-600",
 } as const;
 
 /** Border color tokens */
