@@ -1,9 +1,14 @@
+import { readFileSync } from "fs";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
 import {
   generateTheme,
   generateThemeFromConfig,
   parseConfig,
 } from "../pipeline.js";
 import type { VisorThemeConfig } from "../types.js";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const MINIMAL_YAML = `
 name: Test Theme
@@ -83,5 +88,59 @@ describe("ThemeOutput content", () => {
 
   it("lightCss contains --text-primary", () => {
     expect(output.lightCss).toContain("--text-primary");
+  });
+});
+
+describe("borderless theme integration", () => {
+  const fixtureYaml = readFileSync(
+    resolve(__dirname, "fixtures/borderless-theme.visor.yaml"),
+    "utf-8"
+  );
+  const output = generateTheme(fixtureYaml);
+
+  it("parses the borderless fixture without error", () => {
+    expect(output).toHaveProperty("lightCss");
+    expect(output).toHaveProperty("darkCss");
+  });
+
+  it("lightCss emits --border-default: transparent", () => {
+    expect(output.lightCss).toContain("--border-default: transparent");
+  });
+
+  it("lightCss emits --border-muted: transparent", () => {
+    expect(output.lightCss).toContain("--border-muted: transparent");
+  });
+
+  it("lightCss emits --border-strong: transparent", () => {
+    expect(output.lightCss).toContain("--border-strong: transparent");
+  });
+
+  it("darkCss emits --border-default: transparent", () => {
+    expect(output.darkCss).toContain("--border-default: transparent");
+  });
+
+  it("darkCss emits --border-muted: transparent", () => {
+    expect(output.darkCss).toContain("--border-muted: transparent");
+  });
+
+  it("darkCss emits --border-strong: transparent", () => {
+    expect(output.darkCss).toContain("--border-strong: transparent");
+  });
+
+  it("lightCss still emits --border-focus (not overridden)", () => {
+    expect(output.lightCss).toContain("--border-focus");
+  });
+
+  it("lightCss still emits --border-error (not overridden)", () => {
+    expect(output.lightCss).toContain("--border-error");
+  });
+
+  it("lightCss still emits --border-disabled (not overridden)", () => {
+    expect(output.lightCss).toContain("--border-disabled");
+  });
+
+  it("shadows are suppressed to none in both modes", () => {
+    expect(output.fullBundleCss).toContain("--shadow-xs: none");
+    expect(output.fullBundleCss).toContain("--shadow-sm: none");
   });
 });

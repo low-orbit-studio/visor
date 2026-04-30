@@ -1,0 +1,48 @@
+name: borderless
+version: 1
+group: Visor
+
+colors:
+  primary: "#6beba5"
+  neutral: "#333333"
+  background: "#0a0a0c"
+  surface: "#111115"
+
+colors-dark:
+  background: "#0a0a0c"
+  surface: "#111115"
+
+typography:
+  heading:
+    family: Satoshi
+    weight: 700
+  body:
+    family: Satoshi
+    weight: 400
+
+radius:
+  sm: 4
+  md: 6
+  lg: 8
+  xl: 12
+
+shadows:
+  xs: "none"
+  sm: "none"
+  md: "none"
+  lg: "none"
+  xl: "none"
+
+overrides:
+  dark:
+    # Structural borders collapse to transparent — elevation carries hierarchy
+    border-default: "transparent"
+    border-muted: "transparent"
+    border-strong: "transparent"
+    # Focus, error, warning, success, info, input, and disabled borders are NOT overridden
+    # — they remain visible for accessibility and feedback.
+  light:
+    # Light mode mirrors dark: borderless in both modes for consistent V7-style admin UX
+    border-default: "transparent"
+    border-muted: "transparent"
+    border-strong: "transparent"
