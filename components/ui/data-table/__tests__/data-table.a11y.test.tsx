@@ -2,7 +2,11 @@ import * as React from "react"
 import { render } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { axe } from "../../../../test-utils/axe"
-import { DataTable, type ColumnDef } from "../data-table"
+import {
+  DataTable,
+  type ColumnDef,
+  type DataTableRow,
+} from "../data-table"
 
 interface Row {
   id: string
@@ -70,6 +74,26 @@ describe("DataTable a11y (vitest-axe)", () => {
         data={[]}
         loading
         pageSize={3}
+        aria-label="Users"
+      />
+    )
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
+  })
+
+  it("has no violations with group-head rows interspersed", async () => {
+    const rows: DataTableRow<Row>[] = [
+      { kind: "group", id: "g1", label: "Tonight", count: 2 },
+      { kind: "data", id: "1", row: { id: "1", name: "Alice", email: "a@e.com" } },
+      { kind: "data", id: "2", row: { id: "2", name: "Bob", email: "b@e.com" } },
+      { kind: "group", id: "g2", label: "This Week" },
+      { kind: "data", id: "3", row: { id: "3", name: "Charlie", email: "c@e.com" } },
+    ]
+    const { container } = render(
+      <DataTable
+        columns={columns}
+        rows={rows}
+        enableRowSelection
         aria-label="Users"
       />
     )

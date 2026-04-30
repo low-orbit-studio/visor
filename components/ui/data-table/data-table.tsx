@@ -46,10 +46,31 @@ export type {
   OnChangeFn,
 }
 
+export interface DataTableGroupRow {
+  kind: "group"
+  id: string
+  label: string
+  count?: number
+}
+
+export interface DataTableDataRow<TData> {
+  kind: "data"
+  id: string
+  row: TData
+}
+
+export type DataTableRow<TData> = DataTableGroupRow | DataTableDataRow<TData>
+
 export interface DataTableProps<TData, TValue = unknown>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
   columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  data?: TData[]
+
+  // Mixed render order with group-head separators. When provided, the caller
+  // owns sort/grouping/windowing — sort UI and pagination footer are
+  // suppressed. Group rows are excluded from selection state.
+  rows?: DataTableRow<TData>[]
+  groupRowRenderer?: (group: DataTableGroupRow) => React.ReactNode
 
   // Sorting
   sorting?: SortingState
@@ -89,6 +110,8 @@ function DataTableInner<TData, TValue = unknown>(
   const {
     columns: userColumns,
     data,
+    rows,
+    groupRowRenderer,
     sorting: controlledSorting,
     onSortingChange,
     defaultSorting,
@@ -108,6 +131,30 @@ function DataTableInner<TData, TValue = unknown>(
     className,
     ...rest
   } = props
+
+  // When rows is provided, the caller owns sort/grouping/windowing. We bypass
+  // TanStack pagination and column sort UI, but keep the table instance for
+  // selection state and cell rendering on data rows.
+  const hasRows = rows != null
+  const dataItems = React.useMemo(() => {
+    if (hasRows) {
+      return rows!.flatMap((item) =>
+        item.kind === "data" ? [item.row] : []
+      )
+    }
+    return data ?? []
+  }, [hasRows, rows, data])
+
+  const internalGetRowId = React.useMemo(() => {
+    if (getRowId) return getRowId
+    if (hasRows) {
+      const ids = rows!.flatMap((item) =>
+        item.kind === "data" ? [item.id] : []
+      )
+      return (_row: TData, index: number) => ids[index] ?? String(index)
+    }
+    return undefined
+  }, [getRowId, hasRows, rows])
 
   // Uncontrolled sorting state
   const [internalSorting, setInternalSorting] = React.useState<SortingState>(
@@ -205,7 +252,7 @@ function DataTableInner<TData, TValue = unknown>(
   }, [enableRowSelection, userColumns])
 
   const table: TanstackTable<TData> = useReactTable<TData>({
-    data,
+    data: dataItems,
     columns,
     state: {
       sorting,
@@ -214,7 +261,7 @@ function DataTableInner<TData, TValue = unknown>(
       globalFilter,
     },
     enableRowSelection,
-    getRowId,
+    getRowId: internalGetRowId,
     onSortingChange: handleSortingChange,
     onPaginationChange: handlePaginationChange,
     onRowSelectionChange: handleRowSelectionChange,
@@ -234,8 +281,17 @@ function DataTableInner<TData, TValue = unknown>(
   const firstRow = totalRows === 0 ? 0 : pageIndex * currentPageSize + 1
   const lastRow = Math.min((pageIndex + 1) * currentPageSize, totalRows)
 
-  const isEmpty = !loading && data.length === 0
+  const isEmpty = !loading && dataItems.length === 0 && !hasRows
   const defaultEmpty = <EmptyState heading="No results" tone="subtle" />
+
+  const defaultGroupRowContent = (group: DataTableGroupRow) => (
+    <span data-slot="data-table-group-label" className={styles.groupLabel}>
+      {group.label}
+      {group.count != null && (
+        <span className={styles.groupCount}>{group.count}</span>
+      )}
+    </span>
+  )
 
   return (
     <div
@@ -252,10 +308,11 @@ function DataTableInner<TData, TValue = unknown>(
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
-                const canSort = header.column.getCanSort()
+                const canSort = header.column.getCanSort() && !hasRows
                 const sortDir = header.column.getIsSorted()
-                const ariaSort: React.AriaAttributes["aria-sort"] =
-                  sortDir === "asc"
+                const ariaSort: React.AriaAttributes["aria-sort"] = hasRows
+                  ? undefined
+                  : sortDir === "asc"
                     ? "ascending"
                     : sortDir === "desc"
                       ? "descending"
@@ -333,6 +390,43 @@ function DataTableInner<TData, TValue = unknown>(
                 {emptyState ?? defaultEmpty}
               </TableCell>
             </TableRow>
+          ) : hasRows ? (
+            rows!.map((item) => {
+              if (item.kind === "group") {
+                return (
+                  <TableRow
+                    key={`group-${item.id}`}
+                    data-slot="data-table-group-row"
+                    className={styles.groupRow}
+                  >
+                    <TableCell
+                      colSpan={colCount}
+                      className={styles.groupCell}
+                    >
+                      {groupRowRenderer
+                        ? groupRowRenderer(item)
+                        : defaultGroupRowContent(item)}
+                    </TableCell>
+                  </TableRow>
+                )
+              }
+              const tsRow = table.getRow(item.id)
+              return (
+                <TableRow
+                  key={item.id}
+                  data-state={tsRow.getIsSelected() ? "selected" : undefined}
+                >
+                  {tsRow.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              )
+            })
           ) : pageRows.length === 0 ? (
             <TableRow data-slot="data-table-empty-row">
               <TableCell colSpan={colCount} className={styles.emptyCell}>
@@ -356,7 +450,8 @@ function DataTableInner<TData, TValue = unknown>(
         </TableBody>
       </Table>
 
-      <div className={styles.footer} data-slot="data-table-footer">
+      {!hasRows && (
+        <div className={styles.footer} data-slot="data-table-footer">
         <div className={styles.footerInfo} aria-live="polite">
           {totalRows === 0
             ? "No results"
@@ -405,6 +500,7 @@ function DataTableInner<TData, TValue = unknown>(
           </div>
         </div>
       </div>
+      )}
     </div>
   )
 }

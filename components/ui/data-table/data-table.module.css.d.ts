@@ -14,6 +14,10 @@ declare const styles: {
   readonly pageSizeSelect: string
   readonly pageNav: string
   readonly pageCounter: string
+  readonly groupRow: string
+  readonly groupCell: string
+  readonly groupLabel: string
+  readonly groupCount: string
 }
 
 export default styles
