@@ -9,6 +9,7 @@ import {
 import {
   StatCard,
   type StatCardDelta,
+  type StatCardProps,
 } from "../../components/ui/stat-card/stat-card"
 import {
   ActivityFeed,
@@ -25,6 +26,7 @@ export interface AdminDashboardStat {
   trend?: React.ReactNode
   variant?: "default" | "highlight"
   size?: "sm" | "md"
+  valueAs?: StatCardProps["valueAs"]
 }
 
 export interface AdminDashboardActivity {
@@ -117,6 +119,7 @@ export function AdminDashboard({
               trend={stat.trend}
               variant={stat.variant}
               size={stat.size}
+              valueAs={stat.valueAs}
             />
           ))}
         </div>

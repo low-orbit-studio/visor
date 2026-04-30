@@ -48,6 +48,10 @@ export interface StatCardProps
   footer?: React.ReactNode
   /** Root element tag. Defaults to `article` for landmark semantics. */
   as?: StatCardElement
+  /** Typography scale for the value. "hero" = marquee display treatment. Defaults to "default". */
+  valueAs?: "default" | "hero" | "compact"
+  /** Additional class names forwarded to the value element. */
+  valueClassName?: string
 }
 
 const DELTA_GLYPH: Record<StatCardDeltaDirection, string> = {
@@ -74,6 +78,8 @@ const StatCard = React.forwardRef<HTMLElement, StatCardProps>(
       trend,
       footer,
       as = "article",
+      valueAs,
+      valueClassName,
       ...props
     },
     ref
@@ -104,7 +110,11 @@ const StatCard = React.forwardRef<HTMLElement, StatCardProps>(
           ) : null}
         </div>
 
-        <p data-slot="stat-card-value" className={styles.value}>
+        <p
+          data-slot="stat-card-value"
+          data-value-as={valueAs}
+          className={cn(styles.value, valueClassName)}
+        >
           {value}
         </p>
 

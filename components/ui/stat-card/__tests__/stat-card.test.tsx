@@ -151,4 +151,60 @@ describe("StatCard", () => {
     expect(ref.current).not.toBeNull()
     expect(ref.current?.tagName).toBe("ARTICLE")
   })
+
+  describe("valueAs prop", () => {
+    it("does not set data-value-as when valueAs is not provided", () => {
+      const { container } = render(<StatCard label="Revenue" value="$48k" />)
+      const el = container.querySelector('[data-slot="stat-card-value"]')
+      expect(el).not.toHaveAttribute("data-value-as")
+    })
+
+    it("sets data-value-as='hero' when valueAs='hero'", () => {
+      const { container } = render(
+        <StatCard label="Revenue" value="$48k" valueAs="hero" />
+      )
+      const el = container.querySelector('[data-slot="stat-card-value"]')
+      expect(el).toHaveAttribute("data-value-as", "hero")
+    })
+
+    it("sets data-value-as='compact' when valueAs='compact'", () => {
+      const { container } = render(
+        <StatCard label="Revenue" value="$48k" valueAs="compact" />
+      )
+      const el = container.querySelector('[data-slot="stat-card-value"]')
+      expect(el).toHaveAttribute("data-value-as", "compact")
+    })
+
+    it("sets data-value-as='default' when valueAs='default'", () => {
+      const { container } = render(
+        <StatCard label="Revenue" value="$48k" valueAs="default" />
+      )
+      const el = container.querySelector('[data-slot="stat-card-value"]')
+      expect(el).toHaveAttribute("data-value-as", "default")
+    })
+  })
+
+  describe("valueClassName prop", () => {
+    it("forwards valueClassName to the value element", () => {
+      const { container } = render(
+        <StatCard label="Revenue" value="$48k" valueClassName="custom-value" />
+      )
+      const el = container.querySelector('[data-slot="stat-card-value"]')
+      expect(el).toHaveClass("custom-value")
+    })
+
+    it("merges valueClassName with the base value class", () => {
+      const { container } = render(
+        <StatCard
+          label="Revenue"
+          value="$48k"
+          valueAs="hero"
+          valueClassName="hero-override"
+        />
+      )
+      const el = container.querySelector('[data-slot="stat-card-value"]')
+      expect(el).toHaveClass("hero-override")
+      expect(el).toHaveAttribute("data-value-as", "hero")
+    })
+  })
 })
