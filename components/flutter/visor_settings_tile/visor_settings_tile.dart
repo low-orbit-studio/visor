@@ -64,7 +64,7 @@ class VisorSettingsTile extends StatelessWidget {
   /// When true, renders the icon and label in the error/destructive palette.
   final bool destructive;
 
-  /// When true, highlights the tile background with `surfaceAccentSubtle`.
+  /// When true, highlights the tile background with `surfaceSelected`.
   final bool selected;
 
   /// Overrides the accessibility label. Defaults to [label] when null.
@@ -79,7 +79,7 @@ class VisorSettingsTile extends StatelessWidget {
     final Color foreground =
         destructive ? colors.textError : colors.textPrimary;
     final Color subtitleColor = colors.textSecondary;
-    final Color? background = selected ? colors.surfaceAccentSubtle : null;
+    final Color? background = selected ? colors.surfaceSelected : null;
 
     final Widget defaultTrailing = Icon(
       Icons.chevron_right,
