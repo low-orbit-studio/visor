@@ -6,6 +6,43 @@ description: Compact admin dashboard metric card with label, value, delta, trend
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { StatCard } from '@/components/ui/stat-card';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+
+<Tabs defaultValue="react">
+  <TabsList>
+    <TabsTrigger value="react">React</TabsTrigger>
+    <TabsTrigger value="flutter">Flutter</TabsTrigger>
+  </TabsList>
+  <TabsContent value="react">
+
+```bash
+npx visor add stat-card
+```
+
+  </TabsContent>
+  <TabsContent value="flutter">
+
+```bash
+npx visor add stat-card --target flutter
+```
+
+```dart
+import 'package:ui/ui.dart';
+
+VisorStatCard(
+  title: 'Total Revenue',
+  value: '\$48,120',
+  delta: '+12.4%',
+  deltaDirection: VisorDeltaDirection.up,
+)
+```
+
+See the [Flutter Stat Card](/docs/flutter/widgets/stat-card) page for the full API reference.
+
+{/* Widgetbook iframe — deferred until VI-204 (widgetbook deploy) lands */}
+
+  </TabsContent>
+</Tabs>
 
 ## Basic
 

@@ -9,6 +9,8 @@ import { themeApplyCommand } from "./commands/theme-apply.js"
 import type { ThemeApplyOptions } from "./commands/theme-apply.js"
 import { themeExportCommand } from "./commands/theme-export.js"
 import { themeValidateCommand } from "./commands/theme-validate.js"
+import { themeVerifyCommand } from "./commands/theme-verify.js"
+import type { ThemeVerifyOptions } from "./commands/theme-verify.js"
 import { themeExtractCommand } from "./commands/theme-extract.js"
 import type { ThemeExtractOptions } from "./commands/theme-extract.js"
 import { themeRegisterCommand } from "./commands/theme-register.js"
@@ -186,6 +188,18 @@ theme
   .action(
     (file: string, options: { json?: boolean }) => {
       themeValidateCommand(file, process.cwd(), options)
+    }
+  )
+
+theme
+  .command("verify")
+  .description("Verify generated theme output for a target platform")
+  .argument("<dir>", "path to generated output directory")
+  .option("--target <platform>", "target platform (flutter)", "flutter")
+  .option("--json", "output structured JSON (for AI agents)")
+  .action(
+    (dir: string, options: ThemeVerifyOptions) => {
+      themeVerifyCommand(dir, process.cwd(), options)
     }
   )
 

@@ -1,0 +1,5 @@
+{
+  "title": "Flutter",
+  "description": "Flutter docs are alphabetized A-Z. Insert new entries in order.",
+  "pages": ["index", "getting-started", "theming", "tokens", "widgets"]
+}

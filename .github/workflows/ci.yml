@@ -198,6 +198,25 @@ jobs:
         working-directory: components/flutter
         run: flutter analyze
 
+      - name: Setup Node.js (for visor CLI)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build CLI
+        run: npm run build -w packages/theme-engine -w packages/tokens -w packages/cli
+
+      - name: Resolve solespark-ui example dependencies
+        working-directory: examples/flutter/solespark-ui
+        run: flutter pub get
+
+      - name: Verify Flutter theme output (visor theme verify)
+        run: node packages/cli/dist/index.js theme verify --target flutter examples/flutter/solespark-ui
+
       - name: Test (each widget directory)
         working-directory: components/flutter
         run: |

@@ -1,0 +1,151 @@
+---
+title: VisorButton
+description: Flutter button widget with variants, sizes, width modes, loading state, and icon slots. Reads all styling from visor_core BuildContext extensions.
+---
+
+`VisorButton` is Visor's primary interactive button for Flutter. It wraps
+Material 3 button types with Visor's semantic color tokens and spacing scale.
+
+## Installation
+
+```bash
+npx visor add button --target flutter
+```
+
+Or copy `components/flutter/visor_button/visor_button.dart` into your project.
+
+## Basic Usage
+
+```dart
+import 'package:ui/ui.dart';
+
+VisorButton(
+  label: 'Save',
+  onPressed: _save,
+)
+```
+
+## Variants
+
+```dart
+// Primary — solid filled (default)
+VisorButton(
+  label: 'Primary',
+  onPressed: () {},
+  style: VisorButtonStyle.primary,
+)
+
+// Secondary — tonal filled
+VisorButton(
+  label: 'Secondary',
+  onPressed: () {},
+  style: VisorButtonStyle.secondary,
+)
+
+// Ghost — text-only
+VisorButton(
+  label: 'Ghost',
+  onPressed: () {},
+  style: VisorButtonStyle.ghost,
+)
+
+// Destructive — filled in error palette
+VisorButton(
+  label: 'Delete',
+  onPressed: _delete,
+  style: VisorButtonStyle.destructive,
+)
+```
+
+## Sizes
+
+```dart
+VisorButton(label: 'Small',  onPressed: () {}, size: VisorButtonSize.sm)
+VisorButton(label: 'Medium', onPressed: () {}, size: VisorButtonSize.md)
+VisorButton(label: 'Large',  onPressed: () {}, size: VisorButtonSize.lg)
+```
+
+## Width
+
+```dart
+// Hug — wraps label content (default)
+VisorButton(label: 'Hug', onPressed: () {}, width: VisorButtonWidth.hug)
+
+// Full — expands to parent width
+VisorButton(label: 'Full width', onPressed: () {}, width: VisorButtonWidth.full)
+```
+
+## With Icons
+
+```dart
+import 'package:phosphor_flutter/phosphor_flutter.dart';
+
+// Leading icon
+VisorButton(
+  label: 'Upload',
+  onPressed: _upload,
+  leadingIcon: const PhosphorIcon(PhosphorIcons.upload),
+)
+
+// Trailing icon
+VisorButton(
+  label: 'Next',
+  onPressed: _next,
+  trailingIcon: const PhosphorIcon(PhosphorIcons.arrowRight),
+)
+```
+
+## Loading State
+
+Pass `isLoading: true` to show a spinner and disable interaction:
+
+```dart
+VisorButton(
+  label: 'Saving...',
+  onPressed: _save,
+  isLoading: _isSaving,
+)
+```
+
+## Disabled State
+
+Pass `onPressed: null` to disable the button:
+
+```dart
+VisorButton(
+  label: 'Disabled',
+  onPressed: null,
+)
+```
+
+## Accessibility
+
+`VisorButton` wraps itself in a `Semantics(button: true)` container. Override
+the announced label via `semanticLabel`:
+
+```dart
+VisorButton(
+  label: 'X',
+  onPressed: _dismiss,
+  semanticLabel: 'Dismiss notification',
+)
+```
+
+## API Reference
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `label` | `String` | required | Button label text |
+| `onPressed` | `VoidCallback?` | required | Tap handler; `null` disables |
+| `style` | `VisorButtonStyle` | `.primary` | Visual variant |
+| `brand` | `VisorButtonBrand` | `.primary` | Color palette source |
+| `size` | `VisorButtonSize` | `.md` | Padding + text size preset |
+| `width` | `VisorButtonWidth` | `.hug` | `.hug` or `.full` |
+| `leadingIcon` | `Widget?` | `null` | Icon before label |
+| `trailingIcon` | `Widget?` | `null` | Icon after label |
+| `isLoading` | `bool` | `false` | Show spinner, disable tap |
+| `semanticLabel` | `String?` | `null` | Override accessibility label |
+
+## Source
+
+`components/flutter/visor_button/visor_button.dart`

@@ -1,0 +1,176 @@
+---
+title: Getting Started
+description: Install visor_core, run visor init, apply a theme to your Flutter project, and render your first Visor widget.
+---
+
+This guide walks you through getting a Flutter project wired to Visor from
+scratch. You'll install `visor_core`, scaffold your UI package, and render a
+`VisorButton` — all in under five minutes.
+
+## Prerequisites
+
+- Flutter 3.19+ (Material 3 stable)
+- Node.js 18+ (for the Visor CLI)
+- A Flutter project with a `pubspec.yaml`
+
+## Step 1: Install the Visor CLI
+
+```bash
+npm install -g visor
+```
+
+Or use `npx visor` without a global install — all commands work the same.
+
+## Step 2: Add `visor_core` to your Flutter project
+
+In your Flutter project root, open `pubspec.yaml` and add:
+
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  visor_core: ^0.1.0
+```
+
+Then fetch dependencies:
+
+```bash
+flutter pub get
+```
+
+## Step 3: Run `visor init`
+
+From your Flutter project root:
+
+```bash
+npx visor init
+```
+
+This creates a `.visor.yaml` configuration file. You'll be prompted to choose:
+- Your active theme (e.g. `visor-default`, `visor-dark`)
+- Which widget components to include
+
+## Step 4: Apply the theme
+
+```bash
+npx visor theme apply --target flutter
+```
+
+Visor reads your `.visor.yaml` and generates a `packages/ui/` directory
+containing:
+
+```
+packages/ui/
+  lib/
+    src/
+      colors/visor_colors.dart
+      typography/visor_text_styles.dart
+      spacing/visor_spacing.dart
+      radius/visor_radius.dart
+      shadows/visor_shadows.dart
+      motion/visor_motion.dart
+      theme/visor_theme.dart
+    ui.dart
+  pubspec.yaml
+```
+
+Add `ui` as a path dependency in your app's `pubspec.yaml`:
+
+```yaml
+dependencies:
+  ui:
+    path: packages/ui
+```
+
+```bash
+flutter pub get
+```
+
+## Step 5: Wrap your app with `VisorTheme`
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:ui/ui.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return VisorTheme(
+      child: MaterialApp(
+        title: 'My App',
+        home: const HomePage(),
+      ),
+    );
+  }
+}
+```
+
+## Step 6: Use a Visor widget
+
+Copy a widget into your project (or use the scaffold from `visor init`):
+
+```bash
+npx visor add button --target flutter
+```
+
+Then use it in your UI:
+
+```dart
+import 'package:ui/ui.dart';
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: VisorButton(
+          label: 'Get started',
+          onPressed: () {},
+          style: VisorButtonStyle.primary,
+          size: VisorButtonSize.lg,
+          width: VisorButtonWidth.full,
+        ),
+      ),
+    );
+  }
+}
+```
+
+## Keeping tokens up to date
+
+When Visor ships a token update, run:
+
+```bash
+flutter pub upgrade visor_core
+```
+
+When you update your `.visor.yaml` theme config, re-run:
+
+```bash
+npx visor theme apply --target flutter
+```
+
+## Verify generated output
+
+After applying a theme, verify the Dart output compiles cleanly:
+
+```bash
+npx visor theme verify --target flutter packages/ui
+```
+
+This runs `dart analyze` against your generated package and exits 0 on
+success, 1 on any analyzer errors.
+
+## Next Steps
+
+- [Theming](/docs/flutter/theming) — customize `.visor.yaml` to match your brand
+- [Token Reference](/docs/flutter/tokens) — full list of Dart token classes
+- [Button](/docs/flutter/widgets/button) — first widget walkthrough

@@ -1,0 +1,107 @@
+---
+title: VisorStatCard
+description: Flutter metric card with title, value, optional delta indicator, and optional leading icon. Reads all styling from visor_core BuildContext extensions.
+---
+
+`VisorStatCard` displays a single metric in a card container: a title, a
+large value, an optional change indicator, and an optional leading icon.
+
+## Installation
+
+```bash
+npx visor add stat-card --target flutter
+```
+
+Or copy `components/flutter/visor_stat_card/visor_stat_card.dart` into your
+project.
+
+## Basic Usage
+
+```dart
+import 'package:ui/ui.dart';
+
+VisorStatCard(
+  title: 'Revenue',
+  value: '\$12,430',
+)
+```
+
+## With Delta
+
+```dart
+// Positive change
+VisorStatCard(
+  title: 'Revenue',
+  value: '\$12,430',
+  delta: '+8.2%',
+  deltaDirection: VisorDeltaDirection.up,
+)
+
+// Negative change
+VisorStatCard(
+  title: 'Churn',
+  value: '3.1%',
+  delta: '-0.4%',
+  deltaDirection: VisorDeltaDirection.down,
+)
+
+// Flat / neutral
+VisorStatCard(
+  title: 'Active users',
+  value: '1,204',
+  delta: '0%',
+  deltaDirection: VisorDeltaDirection.flat,
+)
+```
+
+## With Icon
+
+```dart
+import 'package:material_icons_extended/material_icons_extended.dart';
+
+VisorStatCard(
+  title: 'Revenue',
+  value: '\$12,430',
+  delta: '+8.2%',
+  deltaDirection: VisorDeltaDirection.up,
+  icon: Icons.trending_up,
+)
+```
+
+## Custom Accessibility Label
+
+By default the accessibility label is composed as `"Revenue: $12,430"` (no
+delta) or `"Revenue: $12,430, +8.2%"` (with delta). Override it:
+
+```dart
+VisorStatCard(
+  title: 'Revenue',
+  value: '\$12,430',
+  delta: '+8.2%',
+  deltaDirection: VisorDeltaDirection.up,
+  semanticLabel: 'Revenue is twelve thousand four hundred thirty, up 8.2 percent',
+)
+```
+
+## API Reference
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `title` | `String` | required | Metric label |
+| `value` | `String` | required | Metric value |
+| `delta` | `String?` | `null` | Change indicator text |
+| `deltaDirection` | `VisorDeltaDirection?` | `null` | `.up`, `.down`, or `.flat` |
+| `icon` | `IconData?` | `null` | Optional leading icon |
+| `semanticLabel` | `String?` | `null` | Override accessibility label |
+
+### `VisorDeltaDirection`
+
+| Value | Color | Description |
+|-------|-------|-------------|
+| `.up` | Feedback success | Positive change |
+| `.down` | Feedback error | Negative change |
+| `.flat` | Text secondary | No change |
+
+## Source
+
+`components/flutter/visor_stat_card/visor_stat_card.dart`
