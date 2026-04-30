@@ -157,6 +157,29 @@ export const adaptiveSurface: Record<string, AdaptiveTokenValue> = {
     light: "color-info-500",
     dark: "color-info-500",
   },
+
+  // 5-tier ordinal elevation scale — deepest (0) to highest (4)
+  // Light mode uses BO-10 near-white ramp; dark mode uses deep neutral ramp.
+  "elev-0": {
+    light: "color-white",
+    dark: "color-neutral-950",
+  },
+  "elev-1": {
+    light: "color-neutral-50",
+    dark: "color-neutral-900",
+  },
+  "elev-2": {
+    light: "color-neutral-100",
+    dark: "color-neutral-800",
+  },
+  "elev-3": {
+    light: "color-neutral-200",
+    dark: "color-neutral-700",
+  },
+  "elev-4": {
+    light: "color-neutral-300",
+    dark: "color-neutral-600",
+  },
 };
 
 /** Adaptive border tokens */

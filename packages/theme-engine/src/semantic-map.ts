@@ -191,6 +191,30 @@ export const SEMANTIC_SURFACE_MAP: Record<string, SemanticMapping> = {
     light: { role: "info", shade: 500 },
     dark: { role: "info", shade: 500 },
   },
+
+  // 5-tier ordinal elevation scale — deepest (0) to highest (4)
+  // Light mode: BO-10 near-white ramp (white → neutral-300).
+  // Dark mode: deep neutral ramp (neutral-950 → neutral-600).
+  "elev-0": {
+    light: { constant: "#ffffff" },
+    dark: { role: "neutral", shade: 950 },
+  },
+  "elev-1": {
+    light: { role: "neutral", shade: 50 },
+    dark: { role: "neutral", shade: 900 },
+  },
+  "elev-2": {
+    light: { role: "neutral", shade: 100 },
+    dark: { role: "neutral", shade: 800 },
+  },
+  "elev-3": {
+    light: { role: "neutral", shade: 200 },
+    dark: { role: "neutral", shade: 700 },
+  },
+  "elev-4": {
+    light: { role: "neutral", shade: 300 },
+    dark: { role: "neutral", shade: 600 },
+  },
 };
 
 export const SEMANTIC_BORDER_MAP: Record<string, SemanticMapping> = {
