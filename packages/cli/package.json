@@ -1,6 +1,6 @@
 {
   "name": "@loworbitstudio/visor",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "CLI for the Visor design system — add components, hooks, and utilities to your project.",
   "type": "module",
   "bin": {
