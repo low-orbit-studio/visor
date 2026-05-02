@@ -4,9 +4,9 @@
   "private": true,
   "description": "Visor design system documentation site — built with fumadocs.",
   "scripts": {
-    "predev": "node scripts/ensure-theme-overlays.mjs",
+    "predev": "node scripts/ensure-theme-overlays.mjs && node scripts/generate-private-themes.mjs",
     "dev": "next dev --turbopack -p 4050",
-    "prebuild": "node scripts/ensure-theme-overlays.mjs",
+    "prebuild": "node scripts/ensure-theme-overlays.mjs && node scripts/generate-private-themes.mjs",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
@@ -75,5 +75,8 @@
     "@types/react-dom": "^19.2.3",
     "@types/three": "^0.183.1",
     "typescript": "^5.7.2"
+  },
+  "optionalDependencies": {
+    "@low-orbit-studio/visor-themes-private": "^0.1.1"
   }
 }
