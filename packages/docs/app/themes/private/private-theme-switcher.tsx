@@ -11,25 +11,37 @@ import {
   SelectItem,
   SelectLabel,
 } from "@/components/ui/select";
+import { THEME_GROUPS } from "@/lib/theme-config";
 import type { PrivateThemeEntry } from "@/lib/private-themes";
 
 const ALL_THEME_CLASS_PATTERN = /(^|\s)[\w-]+-theme(?=\s|$)/g;
 
+interface SwitcherEntry {
+  slug: string;
+  label: string;
+  group: string;
+}
+
 export function PrivateThemeSwitcher({ themes }: { themes: PrivateThemeEntry[] }) {
-  const initial = themes[0]?.slug ?? "";
+  const stockEntries: SwitcherEntry[] = THEME_GROUPS.flatMap((g) =>
+    g.themes.map((t) => ({ slug: t.value, label: t.label, group: g.label })),
+  );
+  const merged: SwitcherEntry[] = [...stockEntries, ...themes];
+
+  const initial = themes[0]?.slug ?? stockEntries[0]?.slug ?? "";
   const [active, setActive] = useState<string>(initial);
 
   useEffect(() => {
     if (!initial) return;
-    applyPrivateTheme(initial);
+    applyTheme(initial);
   }, [initial]);
 
   function handleChange(value: string) {
     setActive(value);
-    applyPrivateTheme(value);
+    applyTheme(value);
   }
 
-  const groups = groupThemes(themes);
+  const groups = groupEntries(merged);
 
   return (
     <Select value={active} onValueChange={handleChange}>
@@ -55,21 +67,26 @@ export function PrivateThemeSwitcher({ themes }: { themes: PrivateThemeEntry[] }
   );
 }
 
-function applyPrivateTheme(slug: string) {
+function applyTheme(slug: string) {
   if (typeof document === "undefined") return;
   const body = document.body;
   body.className = body.className.replace(ALL_THEME_CLASS_PATTERN, "").trim();
   body.classList.add(`${slug}-theme`);
 }
 
-function groupThemes(themes: PrivateThemeEntry[]) {
-  const map = new Map<string, PrivateThemeEntry[]>();
-  for (const t of themes) {
-    if (!map.has(t.group)) map.set(t.group, []);
-    map.get(t.group)!.push(t);
+function groupEntries(entries: SwitcherEntry[]) {
+  const map = new Map<string, SwitcherEntry[]>();
+  for (const e of entries) {
+    if (!map.has(e.group)) map.set(e.group, []);
+    map.get(e.group)!.push(e);
   }
   return [...map.entries()]
-    .sort(([a], [b]) => a.localeCompare(b))
+    .sort(([a], [b]) => {
+      // "Visor" (stock) first; rest alphabetical.
+      if (a === "Visor") return -1;
+      if (b === "Visor") return 1;
+      return a.localeCompare(b);
+    })
     .map(([label, list]) => ({
       label,
       themes: list.slice().sort((a, b) => a.label.localeCompare(b.label)),

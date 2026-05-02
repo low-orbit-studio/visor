@@ -36,8 +36,11 @@ describe("PrivateThemeSwitcher", () => {
     expect(document.body.classList.contains("some-other-class")).toBe(true);
   });
 
-  it("renders nothing in the trigger when given an empty list", () => {
+  it("falls back to a stock theme when given an empty private list", () => {
     render(<PrivateThemeSwitcher themes={[]} />);
-    expect(document.body.classList.length).toBe(0);
+    // Stock themes are still available — the first stock theme should be applied.
+    const classes = Array.from(document.body.classList);
+    const themeClass = classes.find((c) => c.endsWith("-theme"));
+    expect(themeClass).toBeDefined();
   });
 });
