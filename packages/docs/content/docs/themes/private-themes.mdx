@@ -1,0 +1,70 @@
+---
+title: Private theme gallery
+description: Operator howto for the auth-gated /themes/private route on visor.design.
+---
+
+The `/themes/private` route renders every theme from `@low-orbit-studio/visor-themes-private` for live preview on the deployed docs site. The gallery is gated behind Cloudflare Access — only authorized identities can view it. Public visor.design visitors and self-hosters of the open-source repo see no private content.
+
+## How it works
+
+- The docs build attempts to import `@low-orbit-studio/visor-themes-private`. The package is listed as an optional dependency, so install succeeds even when the registry returns 401.
+- `scripts/generate-private-themes.mjs` runs in `prebuild` (and `predev`). When the package is present, it materializes per-theme CSS and a manifest at `app/private-themes.generated.css` and `lib/private-themes.generated.ts`. When the package is absent, both files are empty stubs.
+- The `/themes/private` route reads `PRIVATE_THEMES`. When the array is empty, the route returns 404 — that's the public-build behavior.
+- When `PRIVATE_THEMES` is non-empty, the page renders a switcher and a representative component preview. Cloudflare Access enforces who can reach the route in the first place.
+
+## One-time infrastructure setup
+
+These steps must be performed manually by an operator with access to the relevant dashboards. They are not driven by application code.
+
+### 1. Vercel project secret
+
+Add `GITHUB_PACKAGES_TOKEN` to the visor.design Vercel project as an environment variable (Production + Preview).
+
+The token must be a GitHub fine-grained personal access token with:
+
+- **Repository access:** scoped to `low-orbit-studio/visor-themes-private` only.
+- **Permissions:** Repository → Contents (read-only) and Repository → Metadata (read-only). The package read scope is implicitly granted by repository read access for GitHub Packages.
+
+### 2. Cloudflare Access policy
+
+Put visor.design behind Cloudflare as a proxied origin (orange cloud), then create an Access application:
+
+1. **Application type:** Self-hosted
+2. **Application domain:** `visor.design/themes/private*` — the trailing wildcard covers any sub-paths.
+3. **Identity providers:** GitHub (preferred — restrict to the `low-orbit-studio` GitHub org) or one-time PIN over email.
+4. **Policy:** Allow → membership in the `low-orbit-studio` GitHub org, OR an explicit allowlist of email addresses.
+5. **Session duration:** 24 hours is a reasonable default.
+
+Confirm the policy by visiting `/themes/private` from an unauthorized identity (incognito, no auth) — Cloudflare Access should return its login page, never the route's HTML.
+
+### 3. Adding a new authorized identity
+
+To grant a new operator access:
+
+1. In the Cloudflare Zero Trust dashboard, open the visor.design Access application.
+2. Edit the Allow policy and add the operator's email or GitHub identity.
+3. Save. The operator can now sign in via the configured identity provider on the next visit.
+
+To revoke access, remove the identity from the policy. Active sessions expire at the configured session duration.
+
+## Local development
+
+Set `GITHUB_PACKAGES_TOKEN` in your shell (or in an untracked `.env.local`) before running `npm install`:
+
+```bash
+export GITHUB_PACKAGES_TOKEN=ghp_xxxxxxxxxxxxxxxxxx
+npm install
+npm run dev -w packages/docs
+```
+
+`/themes/private` will be available at `http://localhost:4050/themes/private`. Without the token, the route returns 404 — same behavior as the production public-build path.
+
+## Adding a new private theme
+
+Private themes live in [`low-orbit-studio/visor-themes-private`](https://github.com/low-orbit-studio/visor-themes-private). Follow the publish flow in that repo's `docs/howto/HOWTO_UPDATE_AND_PUBLISH_THEMES.md`, bump the version, and push the tag. After the package publishes, bump the dep version in `packages/docs/package.json` and redeploy. The generator picks up new themes on the next build with no docs-site code change.
+
+## Troubleshooting
+
+- **`/themes/private` returns 404 in production.** Check Vercel build logs — the generator logs `[generate-private-themes] generated N theme(s)` when the package was found. If it logs `empty stubs written (package not installed)`, the `GITHUB_PACKAGES_TOKEN` env var is missing or invalid for the build environment.
+- **`/themes/private` is reachable without sign-in.** Cloudflare Access policy is missing or misconfigured. Verify the application domain pattern includes the trailing wildcard and that the proxied (orange-cloud) DNS record is in place.
+- **Build fails with `404 Not Found` from npm.** The token has no read access to the `low-orbit-studio/visor-themes-private` repo. Re-issue the token with the correct repository scope.

@@ -6,6 +6,7 @@
     "creating-themes",
     "token-rules",
     "theme-creator",
-    "theme-comparator"
+    "theme-comparator",
+    "private-themes"
   ]
 }
