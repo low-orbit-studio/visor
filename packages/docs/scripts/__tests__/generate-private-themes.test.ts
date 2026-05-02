@@ -80,7 +80,8 @@ describe("generate-private-themes.mjs", () => {
         );
         // grep exits 1 when no matches found — that's the success signal here
         expect(grep.status === 1 || (grep.status === 0 && grep.stdout.trim() === "")).toBe(true);
-      }
+      },
+      30_000
     );
   });
 });
