@@ -213,6 +213,21 @@ export interface VisorThemeConfig {
     light?: Record<string, string>;
     dark?: Record<string, string>;
   };
+  /**
+   * Migration metadata — optional, additive, consumed by `visor migrate` commands.
+   * Does not affect CSS generation or theme application.
+   */
+  migrate?: {
+    /**
+     * §3.1 V7-primitive → Visor-semantic substitution table.
+     * Maps V7 CSS custom property names (without `var()`) to Visor semantic
+     * token names. Consumed by `visor migrate token-substitution`.
+     *
+     * @example
+     *   { "--panel": "--surface-card", "--text": "--text-primary" }
+     */
+    "token-substitution"?: Record<string, string>;
+  };
 }
 
 /** Config with all defaults resolved */

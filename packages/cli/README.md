@@ -21,6 +21,7 @@ npx visor init
 | `visor doctor` | Check your Visor installation health |
 | `visor diff` | See what's changed since you last updated |
 | `visor suggest --for <context>` | Get component suggestions for a use case |
+| `visor migrate token-substitution [path]` | Apply the §3.1 V7-primitive → Visor-semantic substitution table (dry-run by default; use `--apply` to commit) |
 
 ## Target platforms
 
