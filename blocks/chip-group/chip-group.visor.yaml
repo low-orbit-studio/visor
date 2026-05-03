@@ -1,0 +1,75 @@
+name: ChipGroup
+description: A composable container managing selection state for ChoiceChip (single-select) and FilterChip (multi-select) chips. Mirrors Flutter Material's chip selection model.
+category: form
+components_used:
+  - chip
+
+when_to_use:
+  - Filter bars where users toggle multiple category chips
+  - Settings pickers for density, theme, or display preferences (radio-style)
+  - Tag filters on events, content, or data list pages
+
+when_not_to_use:
+  - Plain visual chip lists without selection (use Chip directly)
+  - Large option lists with search (use Select or Combobox)
+
+why: >
+  ChipGroup encapsulates selection state and manages value propagation so individual
+  chips don't need to manage state themselves. type="single" provides radio semantics
+  (one selection), type="multiple" provides checkbox semantics (many selections).
+  ChipGroupItem clones its child chip and injects selected/onPressed/value automatically.
+
+props:
+  - name: type
+    type: '"single" | "multiple"'
+    required: true
+    description: Selection mode. "single" = radio-style, "multiple" = checkbox-style.
+  - name: value
+    type: string[]
+    optional: true
+    description: Controlled value array.
+  - name: defaultValue
+    type: string[]
+    optional: true
+    description: Uncontrolled default value.
+  - name: onValueChange
+    type: "(value: string[]) => void"
+    optional: true
+  - name: direction
+    type: '"horizontal" | "vertical"'
+    default: '"horizontal"'
+  - name: aria-label
+    type: string
+    optional: true
+  - name: aria-labelledby
+    type: string
+    optional: true
+
+sub_components:
+  - name: ChipGroupItem
+    description: Wraps a ChoiceChip or FilterChip and connects it to the group's state.
+    props:
+      - name: value
+        type: string
+        required: true
+      - name: disabled
+        type: boolean
+        optional: true
+
+dependencies:
+  - chip
+
+preview_url: "https://visor.design/docs/blocks/chip-group"
+
+example: |
+  <ChipGroup type="single" defaultValue={["compact"]} onValueChange={setDensity}>
+    <ChipGroupItem value="compact"><ChoiceChip label="Compact" /></ChipGroupItem>
+    <ChipGroupItem value="comfortable"><ChoiceChip label="Comfortable" /></ChipGroupItem>
+    <ChipGroupItem value="spacious"><ChoiceChip label="Spacious" /></ChipGroupItem>
+  </ChipGroup>
+
+  <ChipGroup type="multiple" defaultValue={[]} onValueChange={setFilters}>
+    <ChipGroupItem value="events"><FilterChip label="Events" /></ChipGroupItem>
+    <ChipGroupItem value="releases"><FilterChip label="Releases" /></ChipGroupItem>
+    <ChipGroupItem value="updates"><FilterChip label="Updates" /></ChipGroupItem>
+  </ChipGroup>

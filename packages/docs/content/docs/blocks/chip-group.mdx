@@ -1,0 +1,103 @@
+---
+title: Chip Group
+description: A composable container managing selection state for ChoiceChip (single-select) and FilterChip (multi-select) chips.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { ChoiceChipGroupDemo, FilterChipGroupDemo } from '@/components/ui/chip-demo';
+
+## Single Select
+
+Use `type="single"` with `ChoiceChip` for radio-style selection (e.g. density, theme, view mode). Selecting one chip automatically deselects the others.
+
+<ComponentPreview
+  title="Single Select (ChoiceChip)"
+  code={"import { ChipGroup, ChipGroupItem } from '@/blocks/chip-group/chip-group';\nimport { ChoiceChip } from '@/components/ui/chip/chip';\n\n<ChipGroup type=\"single\" defaultValue={['compact']} aria-label=\"Display density\">\n  <ChipGroupItem value=\"compact\"><ChoiceChip label=\"Compact\" /></ChipGroupItem>\n  <ChipGroupItem value=\"comfortable\"><ChoiceChip label=\"Comfortable\" /></ChipGroupItem>\n  <ChipGroupItem value=\"spacious\"><ChoiceChip label=\"Spacious\" /></ChipGroupItem>\n</ChipGroup>"}
+>
+  <ChoiceChipGroupDemo />
+</ComponentPreview>
+
+## Multiple Select
+
+Use `type="multiple"` with `FilterChip` for toggle-style multi-selection (e.g. event category filters). Each chip toggles independently.
+
+<ComponentPreview
+  title="Multiple Select (FilterChip)"
+  code={"import { ChipGroup, ChipGroupItem } from '@/blocks/chip-group/chip-group';\nimport { FilterChip } from '@/components/ui/chip/chip';\n\n<ChipGroup type=\"multiple\" defaultValue={['events']} aria-label=\"Category filters\">\n  <ChipGroupItem value=\"events\"><FilterChip label=\"Events\" /></ChipGroupItem>\n  <ChipGroupItem value=\"releases\"><FilterChip label=\"Releases\" /></ChipGroupItem>\n  <ChipGroupItem value=\"updates\"><FilterChip label=\"Updates\" /></ChipGroupItem>\n  <ChipGroupItem value=\"announcements\"><FilterChip label=\"Announcements\" /></ChipGroupItem>\n</ChipGroup>"}
+>
+  <FilterChipGroupDemo />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add --block chip-group
+```
+
+This copies files into your project:
+
+- `blocks/chip-group/chip-group.tsx` — the block
+- `blocks/chip-group/chip-group.module.css` — the styles
+
+It also installs the `chip` primitive if it isn't already present.
+
+## Usage
+
+```tsx
+'use client';
+
+import { ChipGroup, ChipGroupItem } from '@/blocks/chip-group/chip-group';
+import { ChoiceChip, FilterChip } from '@/components/ui/chip/chip';
+
+// Uncontrolled single-select
+<ChipGroup type="single" defaultValue={['compact']} aria-label="Display density"
+  onValueChange={(v) => console.log(v)}>
+  <ChipGroupItem value="compact"><ChoiceChip label="Compact" /></ChipGroupItem>
+  <ChipGroupItem value="comfortable"><ChoiceChip label="Comfortable" /></ChipGroupItem>
+</ChipGroup>
+
+// Controlled multi-select
+const [filters, setFilters] = useState<string[]>([]);
+
+<ChipGroup type="multiple" value={filters} onValueChange={setFilters} aria-label="Filters">
+  <ChipGroupItem value="events"><FilterChip label="Events" /></ChipGroupItem>
+  <ChipGroupItem value="releases"><FilterChip label="Releases" /></ChipGroupItem>
+</ChipGroup>
+```
+
+## Props
+
+### ChipGroupProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `type` | `"single" \| "multiple"` | — | **Required.** Selection mode. |
+| `value` | `string[]` | — | Controlled value. |
+| `defaultValue` | `string[]` | — | Uncontrolled default value. |
+| `onValueChange` | `(value: string[]) => void` | — | Fires on selection change. |
+| `direction` | `"horizontal" \| "vertical"` | `"horizontal"` | Layout direction. |
+| `aria-label` | `string` | — | Accessible label for the group. |
+| `aria-labelledby` | `string` | — | Points to a labelling element. |
+
+### ChipGroupItemProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | — | **Required.** Unique value for this item. |
+| `disabled` | `boolean` | `false` | Disables this item independently. |
+
+## How ChipGroupItem works
+
+`ChipGroupItem` wraps any chip and injects `selected`, `onPressed`, and `value` props via `React.cloneElement`. This means you can pass any chip variant as the child — `ChoiceChip`, `FilterChip`, or a customized version of either — without changing any child API.
+
+## Accessibility
+
+- The group root renders with `role="group"` and an `aria-label` (required).
+- Each `ChoiceChip` has `role="radio" aria-checked`.
+- Each `FilterChip` has `role="checkbox" aria-checked`.
+- Disabled items use the native `disabled` attribute.
+- Keyboard: `Tab` navigates between chips; `Space` / `Enter` toggles.
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI. Blocks are copy-and-own — install them and customize freely.

@@ -441,6 +441,25 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "chip-group",
+    type: "registry:block",
+    category: "form",
+    description:
+      "A composable container managing selection state for ChoiceChip (single-select) and FilterChip (multi-select) chips. Mirrors Flutter Material's chip selection model with type=\"single\" (radio) and type=\"multiple\" (checkbox) modes.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "chip"],
+    files: [
+      {
+        path: "blocks/chip-group/chip-group.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/chip-group/chip-group.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "cta-section",
     type: "registry:block",
     category: "marketing",
