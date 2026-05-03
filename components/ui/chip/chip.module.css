@@ -1,0 +1,162 @@
+/* Chip base */
+.base {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+  width: fit-content;
+  flex-shrink: 0;
+  border-radius: var(--radius-full, 9999px);
+  border: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
+  background-color: var(--surface-card, #ffffff);
+  color: var(--text-primary, #111827);
+  font-family: var(--font-body, inherit);
+  font-weight: var(--font-weight-medium, 500);
+  white-space: nowrap;
+  user-select: none;
+  transition:
+    background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+/* Variant: default (filled/tonal surface) */
+.variantDefault {
+  background-color: var(--surface-muted, #f3f4f6);
+  border-color: transparent;
+  color: var(--text-primary, #111827);
+}
+
+/* Variant: outlined */
+.variantOutlined {
+  background-color: transparent;
+  border-color: var(--border-default, #e5e7eb);
+  color: var(--text-primary, #111827);
+}
+
+/* Sizes */
+.sizeSm {
+  height: 1.5rem;
+  padding: 0 var(--spacing-2, 0.5rem);
+  font-size: var(--font-size-xs, 0.75rem);
+  gap: var(--spacing-1, 0.25rem);
+}
+
+.sizeMd {
+  height: 2rem;
+  padding: 0 var(--spacing-3, 0.75rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  gap: var(--spacing-1, 0.25rem);
+}
+
+.sizeLg {
+  height: 2.5rem;
+  padding: 0 var(--spacing-4, 1rem);
+  font-size: var(--font-size-base, 1rem);
+  gap: var(--spacing-2, 0.5rem);
+}
+
+/* Sub-parts */
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.leadingIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deleteButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--text-secondary, #6b7280);
+  border-radius: var(--radius-full, 9999px);
+  transition: color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+  width: 1rem;
+  height: 1rem;
+}
+
+@media (hover: hover) {
+  .deleteButton:hover {
+    color: var(--text-primary, #111827);
+    background-color: color-mix(in srgb, var(--surface-interactive-hover, #f3f4f6) 60%, transparent);
+  }
+}
+
+.deleteButton:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #6b7280);
+  outline-offset: var(--focus-ring-offset, 1px);
+}
+
+.deleteIcon {
+  display: block;
+}
+
+/* Interactive chips (ChoiceChip, FilterChip) */
+.interactive {
+  cursor: pointer;
+  border: var(--stroke-width-thin, 1px) solid transparent;
+}
+
+button.base,
+.interactive {
+  /* Inherit base layout; add button-specific resets */
+  text-align: left;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.interactive:disabled {
+  cursor: not-allowed;
+  opacity: var(--opacity-40, 0.4);
+  pointer-events: none;
+}
+
+.interactive:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #6b7280);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+@media (hover: hover) {
+  .interactive:hover:not(:disabled):not([data-selected="true"]) {
+    background-color: var(--surface-interactive-hover, #f3f4f6);
+    border-color: var(--border-default, #e5e7eb);
+  }
+}
+
+.interactive:active:not(:disabled) {
+  transform: translateY(1px);
+  transition: none;
+}
+
+/* Selected state */
+.selected {
+  background-color: var(--surface-accent-subtle, #eff6ff);
+  border-color: var(--surface-accent-default, #3b82f6);
+  color: var(--text-link, #2563eb);
+}
+
+@media (hover: hover) {
+  .interactive.selected:hover:not(:disabled) {
+    background-color: color-mix(in srgb, var(--surface-accent-subtle, #eff6ff) 80%, var(--surface-interactive-hover, #f3f4f6) 20%);
+  }
+}

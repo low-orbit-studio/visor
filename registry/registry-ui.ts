@@ -307,6 +307,28 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "chip",
+    type: "registry:ui",
+    description:
+      "A chip family — Chip (display), ChoiceChip (radio-style single-select), and FilterChip (toggle-style multi-select) — modeled on Flutter Material's Chip API.",
+    dependencies: [
+      "class-variance-authority",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/chip/chip.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/chip/chip.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "avatar",
     type: "registry:ui",
     description:

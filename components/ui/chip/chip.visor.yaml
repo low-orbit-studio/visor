@@ -1,0 +1,94 @@
+name: Chip
+description: Selectable chip primitive for suggestion, tag, and filter patterns with selected/unselected states and size variants. Maps to React ToggleGroup.
+extends: HTMLDivElement
+category: form
+
+when_to_use:
+  - Displaying filterable tag or category options the user can toggle on/off
+  - Suggestion rows (search autocomplete, style recommendations)
+  - Multi-select filter bars where individual options are toggled independently
+  - Any UI pattern that maps to a "toggle group" of labelled options
+
+when_not_to_use:
+  - Single binary toggle (use Switch or Checkbox)
+  - Navigation tabs or route selectors (use TabBar)
+  - Dismissible labels that can be removed from a list (use a deletable tag/badge)
+  - Triggering an action rather than selecting a state (use Button)
+
+why: >
+  Chip provides three specialized primitives that map to Flutter Material's Chip family:
+  Chip (display), ChoiceChip (radio-style), and FilterChip (toggle-style). All three
+  share consistent sizing, token-driven theming, and the chip shape — enabling chip
+  reuse across filter bars, settings density pickers, event category selectors, and
+  deletable tag inputs.
+
+variants:
+  variant: [default, outlined]
+  size: [sm, md, lg]
+
+props:
+  - name: variant
+    type: '"default" | "outlined"'
+    default: '"default"'
+  - name: size
+    type: '"sm" | "md" | "lg"'
+    default: '"md"'
+  - name: avatar
+    type: React.ReactNode
+    optional: true
+  - name: leadingIcon
+    type: React.ReactNode
+    optional: true
+  - name: label
+    type: React.ReactNode
+    optional: true
+  - name: onDeleted
+    type: "() => void"
+    optional: true
+  - name: deleteIcon
+    type: React.ReactNode
+    optional: true
+  - name: deleteLabel
+    type: string
+    default: '"Remove"'
+
+sub_components:
+  - name: ChoiceChip
+    element: button
+    description: Radio-style single-select chip. Renders with role="radio" and aria-checked. Use inside a ChipGroup with type="single".
+    props:
+      - name: selected
+        type: boolean
+        default: "false"
+      - name: onPressed
+        type: "() => void"
+        optional: true
+      - name: value
+        type: string
+        optional: true
+
+  - name: FilterChip
+    element: button
+    description: Toggle-style multi-select chip. Renders with role="checkbox" and aria-checked. Use inside a ChipGroup with type="multiple".
+    props:
+      - name: selected
+        type: boolean
+        default: "false"
+      - name: onPressed
+        type: "() => void"
+        optional: true
+      - name: value
+        type: string
+        optional: true
+
+dependencies:
+  - "class-variance-authority"
+  - "@phosphor-icons/react"
+
+preview_url: "https://visor.design/docs/components/data-display/chip"
+
+example: |
+  <Chip label="React" />
+  <Chip label="Featured" onDeleted={() => removeTag("featured")} />
+  <ChoiceChip label="Compact" selected={density === "compact"} onPressed={() => setDensity("compact")} />
+  <FilterChip label="Events" selected={filters.includes("events")} onPressed={() => toggleFilter("events")} />

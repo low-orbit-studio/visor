@@ -1,0 +1,163 @@
+---
+title: Chip
+description: A chip family — Chip (display), ChoiceChip (radio-style single-select), and FilterChip (toggle-style multi-select). Modeled on Flutter Material's Chip API.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Chip, ChoiceChip, FilterChip } from '@/components/ui/chip';
+import { DeletableChipDemo, ChoiceChipGroupDemo, FilterChipGroupDemo } from '@/components/ui/chip-demo';
+
+## Chip (display)
+
+The base `Chip` renders a static label with optional avatar, leading icon, and delete button.
+
+<ComponentPreview
+  title="Chip — display"
+  code={"import { Chip } from '@/components/ui/chip/chip';\n\n<Chip label=\"React\" />\n<Chip label=\"TypeScript\" variant=\"outlined\" />"}
+>
+  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+    <Chip label="React" />
+    <Chip label="TypeScript" variant="outlined" />
+  </div>
+</ComponentPreview>
+
+### Deletable chip
+
+<ComponentPreview
+  title="Chip — deletable"
+  code={"import { Chip } from '@/components/ui/chip/chip';\n\n// manage tags in state and call onDeleted to remove\n<Chip label=\"React\" onDeleted={() => removeTag('react')} />\n<Chip label=\"TypeScript\" onDeleted={() => removeTag('typescript')} />"}
+>
+  <DeletableChipDemo />
+</ComponentPreview>
+
+## ChoiceChip (single-select)
+
+`ChoiceChip` renders a `<button role="radio">` for radio-style selection. Use inside `ChipGroup type="single"` or manage `selected` / `onPressed` yourself.
+
+<ComponentPreview
+  title="ChoiceChip — density picker"
+  code={"import { ChipGroup, ChipGroupItem } from '@/blocks/chip-group/chip-group';\nimport { ChoiceChip } from '@/components/ui/chip/chip';\n\n<ChipGroup type=\"single\" defaultValue={['compact']} aria-label=\"Display density\">\n  <ChipGroupItem value=\"compact\"><ChoiceChip label=\"Compact\" /></ChipGroupItem>\n  <ChipGroupItem value=\"comfortable\"><ChoiceChip label=\"Comfortable\" /></ChipGroupItem>\n  <ChipGroupItem value=\"spacious\"><ChoiceChip label=\"Spacious\" /></ChipGroupItem>\n</ChipGroup>"}
+>
+  <ChoiceChipGroupDemo />
+</ComponentPreview>
+
+## FilterChip (multi-select)
+
+`FilterChip` renders a `<button role="checkbox">` for toggle-style multi-selection. Use inside `ChipGroup type="multiple"` or manage state directly.
+
+<ComponentPreview
+  title="FilterChip — category filters"
+  code={"import { ChipGroup, ChipGroupItem } from '@/blocks/chip-group/chip-group';\nimport { FilterChip } from '@/components/ui/chip/chip';\n\n<ChipGroup type=\"multiple\" defaultValue={['events']} aria-label=\"Category filters\">\n  <ChipGroupItem value=\"events\"><FilterChip label=\"Events\" /></ChipGroupItem>\n  <ChipGroupItem value=\"releases\"><FilterChip label=\"Releases\" /></ChipGroupItem>\n  <ChipGroupItem value=\"updates\"><FilterChip label=\"Updates\" /></ChipGroupItem>\n  <ChipGroupItem value=\"announcements\"><FilterChip label=\"Announcements\" /></ChipGroupItem>\n</ChipGroup>"}
+>
+  <FilterChipGroupDemo />
+</ComponentPreview>
+
+## Sizes
+
+All three chip types share `sm`, `md` (default), and `lg` sizes.
+
+<ComponentPreview
+  title="Sizes"
+  code={"<Chip label=\"Small\" size=\"sm\" />\n<Chip label=\"Medium\" size=\"md\" />\n<Chip label=\"Large\" size=\"lg\" />"}
+>
+  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+    <Chip label="Small" size="sm" />
+    <Chip label="Medium" size="md" />
+    <Chip label="Large" size="lg" />
+  </div>
+</ComponentPreview>
+
+## Variants
+
+<ComponentPreview
+  title="Variants"
+  code={"<Chip label=\"Default\" variant=\"default\" />\n<Chip label=\"Outlined\" variant=\"outlined\" />"}
+>
+  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+    <Chip label="Default" variant="default" />
+    <Chip label="Outlined" variant="outlined" />
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add chip
+```
+
+This copies two files into your project:
+
+- `components/ui/chip/chip.tsx` — Chip, ChoiceChip, and FilterChip components
+- `components/ui/chip/chip.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Chip, ChoiceChip, FilterChip } from '@/components/ui/chip/chip';
+
+// Static display chip
+<Chip label="React" />
+
+// Deletable chip
+<Chip label="Featured" onDeleted={() => removeTag('featured')} />
+
+// Single-select (manage state yourself, or use ChipGroup)
+<ChoiceChip
+  label="Compact"
+  selected={density === 'compact'}
+  onPressed={() => setDensity('compact')}
+/>
+
+// Multi-select toggle (manage state yourself, or use ChipGroup)
+<FilterChip
+  label="Events"
+  selected={filters.includes('events')}
+  onPressed={() => toggleFilter('events')}
+/>
+```
+
+For managed selection state across a group, use the `chip-group` block.
+
+## API Reference
+
+### ChipProps
+
+<PropsTable component="chip" />
+
+The component accepts all standard `<div>` HTML attributes.
+
+### ChoiceChipProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `selected` | `boolean` | `false` | Whether this chip is selected. |
+| `onPressed` | `() => void` | — | Called when the chip is pressed. |
+| `value` | `string` | — | Value identifier (used by ChipGroup). |
+| `avatar` | `ReactNode` | — | Optional avatar before the label. |
+| `leadingIcon` | `ReactNode` | — | Optional icon before the label. |
+| `label` | `ReactNode` | — | Label content (or use `children`). |
+| `variant` | `"default" \| "outlined"` | `"default"` | Visual variant. |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Size. |
+| `disabled` | `boolean` | `false` | Disables the chip. |
+
+### FilterChipProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `selected` | `boolean` | `false` | Whether this chip is active. |
+| `onPressed` | `() => void` | — | Called when the chip is toggled. |
+| `value` | `string` | — | Value identifier (used by ChipGroup). |
+| `leadingIcon` | `ReactNode` | — | Optional icon before the label. |
+| `label` | `ReactNode` | — | Label content (or use `children`). |
+| `variant` | `"default" \| "outlined"` | `"default"` | Visual variant. |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Size. |
+| `disabled` | `boolean` | `false` | Disables the chip. |
+
+## Accessibility
+
+- `Chip` (display) renders as a `<div>`. The delete button is a `<button>` with `aria-label` (defaults to `"Remove"`).
+- `ChoiceChip` renders as `<button role="radio" aria-checked>`. Wrap in a `role="radiogroup"` container (or use `ChipGroup type="single"`) to provide group semantics.
+- `FilterChip` renders as `<button role="checkbox" aria-checked>`. `ChipGroup type="multiple"` wraps items in `role="group"`.
+- Keyboard: `Tab` focuses each interactive chip; `Space` / `Enter` toggles or activates.
+- Disabled chips use `disabled` attribute and `opacity` — not hidden from screen readers.
