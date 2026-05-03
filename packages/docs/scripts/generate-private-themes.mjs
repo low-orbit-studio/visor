@@ -57,9 +57,12 @@ function tryInstallPrivatePackage() {
     return false
   }
   console.log(`[generate-private-themes] GITHUB_PACKAGES_TOKEN present — installing ${PRIVATE_PKG}@${PRIVATE_PKG_VERSION}`)
+  // --include=dev: Vercel sets NODE_ENV=production during the build, which would
+  // make `npm install` prune devDependencies (typescript, @types/*). Force dev
+  // deps to stay so the next-build step that follows still has its toolchain.
   const result = spawnSync(
     "npm",
-    ["install", "--no-save", `${PRIVATE_PKG}@${PRIVATE_PKG_VERSION}`],
+    ["install", "--no-save", "--include=dev", `${PRIVATE_PKG}@${PRIVATE_PKG_VERSION}`],
     { cwd: docsRoot, stdio: "inherit", env: process.env },
   )
   if (result.status !== 0) {
