@@ -19,6 +19,10 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs"
 import { resolve, dirname } from "node:path"
 import { fileURLToPath } from "node:url"
+import { spawnSync } from "node:child_process"
+
+const PRIVATE_PKG = "@low-orbit-studio/visor-themes-private"
+const PRIVATE_PKG_VERSION = "0.1.1"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const docsRoot = resolve(__dirname, "..")
@@ -43,13 +47,48 @@ function writeEmpty(reason) {
   console.log(`[generate-private-themes] empty stubs written (${reason})`)
 }
 
+function tryInstallPrivatePackage() {
+  // Install on-the-fly when the token is set. We deliberately avoid declaring
+  // the package as an optionalDependency in package.json — npm in workspace
+  // mode struggles to lockfile a missing optional package cleanly, and the
+  // resulting stub entry breaks subsequent `npm install` invocations on Vercel.
+  // Installing here with --no-save keeps package.json/package-lock.json clean.
+  if (!process.env.GITHUB_PACKAGES_TOKEN) {
+    return false
+  }
+  console.log(`[generate-private-themes] GITHUB_PACKAGES_TOKEN present — installing ${PRIVATE_PKG}@${PRIVATE_PKG_VERSION}`)
+  // --include=dev: Vercel sets NODE_ENV=production during the build, which would
+  // make `npm install` prune devDependencies (typescript, @types/*). Force dev
+  // deps to stay so the next-build step that follows still has its toolchain.
+  const result = spawnSync(
+    "npm",
+    ["install", "--no-save", "--include=dev", `${PRIVATE_PKG}@${PRIVATE_PKG_VERSION}`],
+    { cwd: docsRoot, stdio: "inherit", env: process.env },
+  )
+  if (result.status !== 0) {
+    console.warn(`[generate-private-themes] npm install of ${PRIVATE_PKG} failed (exit ${result.status}) — falling back to empty stubs`)
+    return false
+  }
+  return true
+}
+
 async function main() {
   let pkg
   try {
-    pkg = await import("@low-orbit-studio/visor-themes-private")
+    pkg = await import(PRIVATE_PKG)
   } catch {
-    writeEmpty("package not installed")
-    return
+    if (tryInstallPrivatePackage()) {
+      try {
+        pkg = await import(PRIVATE_PKG)
+      } catch (err) {
+        console.warn(`[generate-private-themes] import after install failed: ${err.message}`)
+        writeEmpty("import failed after install")
+        return
+      }
+    } else {
+      writeEmpty("package not installed")
+      return
+    }
   }
 
   let engine, adapters
