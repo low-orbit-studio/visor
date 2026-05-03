@@ -20,10 +20,15 @@ These steps must be performed manually by an operator with access to the relevan
 
 Add `GITHUB_PACKAGES_TOKEN` to the visor.design Vercel project as an environment variable (Production + Preview).
 
-The token must be a GitHub fine-grained personal access token with:
+Use a **classic** GitHub personal access token with only the `read:packages` scope. Create one at https://github.com/settings/tokens/new. Fine-grained PATs are not reliably accepted by the GitHub Packages npm registry — they return `403 The token provided does not match expected scopes` even when the repository permissions appear correct.
 
-- **Repository access:** scoped to `low-orbit-studio/visor-themes-private` only.
-- **Permissions:** Repository → Contents (read-only) and Repository → Metadata (read-only). The package read scope is implicitly granted by repository read access for GitHub Packages.
+The classic PAT is broader than ideal (it has `read:packages` access across every org and user the creator can see, not just `low-orbit-studio/visor-themes-private`). Mitigate by:
+
+- Granting only the `read:packages` scope — no `repo`, no `admin`, nothing else.
+- Setting an expiration (1 year is reasonable for an internal preview gallery).
+- Storing only in Vercel and Bitwarden — never commit it.
+
+The `.npmrc` that consumes the token lives at the **repo root**, not inside `packages/docs/`. npm in workspace mode silently ignores `.npmrc` files inside workspace packages with the warning `ignoring workspace config at .../packages/docs/.npmrc` — only the root `.npmrc` is read during a workspace install.
 
 ### 2. Cloudflare Access policy
 
@@ -66,5 +71,7 @@ Private themes live in [`low-orbit-studio/visor-themes-private`](https://github.
 ## Troubleshooting
 
 - **`/themes/private` returns 404 in production.** Check Vercel build logs — the generator logs `[generate-private-themes] generated N theme(s)` when the package was found. If it logs `empty stubs written (package not installed)`, the `GITHUB_PACKAGES_TOKEN` env var is missing or invalid for the build environment.
+- **Vercel build log warns `npm warn config ignoring workspace config at .../packages/docs/.npmrc`.** The `.npmrc` is in the wrong place. It must live at the repo root — npm refuses to read `.npmrc` files inside workspace packages during a workspace install.
+- **Build fails or token is rejected with `403 The token provided does not match expected scopes`.** Fine-grained PATs are not reliably accepted by GitHub Packages. Re-issue as a classic PAT with only the `read:packages` scope.
 - **`/themes/private` is reachable without sign-in.** Cloudflare Access policy is missing or misconfigured. Verify the application domain pattern includes the trailing wildcard and that the proxied (orange-cloud) DNS record is in place.
-- **Build fails with `404 Not Found` from npm.** The token has no read access to the `low-orbit-studio/visor-themes-private` repo. Re-issue the token with the correct repository scope.
+- **Build fails with `404 Not Found` from npm.** The token has no read access to the `low-orbit-studio/visor-themes-private` repo. Re-issue the token with read:packages scope as the repo's owner.
