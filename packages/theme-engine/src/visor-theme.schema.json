@@ -299,6 +299,18 @@
           "additionalProperties": { "type": "string" }
         }
       }
+    },
+    "migrate": {
+      "type": "object",
+      "description": "Migration metadata consumed by `visor migrate` commands. Does not affect CSS generation or theme application.",
+      "additionalProperties": false,
+      "properties": {
+        "token-substitution": {
+          "type": "object",
+          "description": "§3.1 V7-primitive → Visor-semantic substitution table. Maps V7 CSS custom property names (with -- prefix) to Visor semantic token names. Consumed by `visor migrate token-substitution`.",
+          "additionalProperties": { "type": "string" }
+        }
+      }
     }
   },
   "$defs": {

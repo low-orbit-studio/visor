@@ -229,6 +229,107 @@ Export a minimal `.visor.yaml` from an existing theme.
 npx @loworbitstudio/visor theme export .visor.yaml
 ```
 
+### `visor migrate token-substitution`
+
+Mechanically apply the §3.1 V7-primitive → Visor-semantic substitution table across a target directory or file. This is the codemod that makes theme portability automatic — the single highest-leverage step in porting V7-primitive components to Visor-semantic tokens.
+
+**Dry-run by default.** Use `--apply` to commit changes to disk. Running twice is a no-op (idempotent).
+
+```bash
+# Preview proposed changes (dry-run)
+npx @loworbitstudio/visor migrate token-substitution components/local/
+
+# Apply changes
+npx @loworbitstudio/visor migrate token-substitution components/local/ --apply
+
+# Target a single file
+npx @loworbitstudio/visor migrate token-substitution components/local/KpiCard.module.css --apply
+
+# Apply for a specific theme (default: entr)
+npx @loworbitstudio/visor migrate token-substitution --theme-id entr --apply
+
+# Machine-readable output for AI agents / CI
+npx @loworbitstudio/visor migrate token-substitution components/ --json
+```
+
+#### Options
+
+| Flag | Description |
+|------|-------------|
+| `[path]` | Path to a file or directory to migrate (default: current directory) |
+| `--theme-id <id>` | Theme whose substitution map to apply (default: `entr`) |
+| `--dry-run` | Preview proposed changes without writing files (this is the default when `--apply` is omitted) |
+| `--apply` | Write changes to disk |
+| `--json` | Output structured JSON (for AI agents) |
+
+#### The §3.1 substitution table (V7 ENTR → Visor semantic)
+
+This table encodes the single highest-leverage round-2 refactor from the Borealis prototype-to-Visor exercise. Applying it at component-build time makes theme swaps produce visibly distinct, structurally correct repaints with zero shim CSS.
+
+| V7 primitive | Visor semantic | Notes |
+|---|---|---|
+| `--panel` | `--surface-card` | Primary surface tier |
+| `--panel-2` | `--surface-interactive-default` | Interactive resting state; use `--surface-subtle` for decorative areas |
+| `--panel-3` | `--surface-interactive-active` | Pressed/active state; use `--surface-interactive-hover` for hover |
+| `--text` | `--text-primary` | Primary text |
+| `--text-2` | `--text-secondary` | Secondary/muted text |
+| `--text-3` | `--text-tertiary` | Tertiary/dimmed text |
+| `--text-4` | `--text-tertiary` | No dedicated Visor equivalent; maps to tertiary |
+| `--mint` | `--accent-primary` | Brand accent (fills, icons); for text use `--text-success` |
+| `--mint-soft` | `--surface-accent-subtle` | Accent tint; use `--surface-selected` for selected-row highlights |
+| `--warn` | `--text-warning` | Warning text and icons |
+| `--warn-soft` | `--surface-warning-subtle` | Warning background tint |
+
+**Brand-local tokens excluded (intentional):** `--screen` (deepest surface tier), `--font-marquee`, and the discrete type scale (`--text-11` through `--text-72`) have no Visor semantic equivalent and must remain brand-local.
+
+#### Adding a theme's substitution map to its `.visor.yaml`
+
+Themes can declare their own substitution table in the `migrate` section of their `.visor.yaml`. The CLI reads from this file first (if found), then falls back to the built-in registry:
+
+```yaml
+name: my-theme
+version: 1
+colors:
+  primary: "#10B981"
+# ... other theme fields ...
+
+migrate:
+  token-substitution:
+    --brand-surface: --surface-card
+    --brand-text: --text-primary
+    --brand-accent: --accent-primary
+```
+
+#### JSON output shape
+
+```json
+{
+  "success": true,
+  "dryRun": true,
+  "themeId": "entr",
+  "targetPath": "/path/to/components",
+  "filesScanned": 10,
+  "filesChanged": 3,
+  "totalSubstitutions": 12,
+  "files": [
+    {
+      "file": "/path/to/components/KpiCard.module.css",
+      "substitutions": [
+        {
+          "line": 2,
+          "column": 14,
+          "from": "--panel",
+          "to": "--surface-card",
+          "originalLine": "  background: var(--panel);",
+          "replacedLine": "  background: var(--surface-card);"
+        }
+      ],
+      "newContent": "..."
+    }
+  ]
+}
+```
+
 ## Typical Workflow
 
 ```bash

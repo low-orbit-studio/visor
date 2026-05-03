@@ -26,6 +26,8 @@ import { doctorCommand } from "./commands/doctor.js"
 import { patternListCommand, patternInfoCommand } from "./commands/pattern.js"
 import { suggestCommand } from "./commands/suggest.js"
 import { tokensListCommand } from "./commands/tokens.js"
+import { migrateTokenSubstitutionCommand } from "./commands/migrate-token-substitution.js"
+import type { MigrateTokenSubstitutionOptions } from "./commands/migrate-token-substitution.js"
 
 const program = new Command()
 
@@ -337,5 +339,34 @@ tokens
   .action(async (options: { json?: boolean; category?: string }) => {
     await tokensListCommand(process.cwd(), options)
   })
+
+// Migrate subcommands
+const migrate = program
+  .command("migrate")
+  .description("Migration helpers — mechanically transform source files during design-system adoption")
+
+migrate
+  .command("token-substitution")
+  .description(
+    "Apply the §3.1 V7-primitive → Visor-semantic substitution table across a target directory. " +
+    "Dry-run by default; use --apply to commit changes. Idempotent — running twice is a no-op."
+  )
+  .argument("[path]", "path to file or directory to migrate (default: current directory)")
+  .option("--theme-id <id>", "theme whose substitution map to apply (default: entr)", "entr")
+  .option("--dry-run", "preview proposed changes without writing files (default when --apply is omitted)")
+  .option("--apply", "write changes to disk")
+  .option("--json", "output structured JSON (for AI agents)")
+  .action(
+    (
+      pathArg: string | undefined,
+      options: MigrateTokenSubstitutionOptions & { dryRun?: boolean }
+    ) => {
+      migrateTokenSubstitutionCommand(pathArg, process.cwd(), {
+        themeId: options.themeId,
+        apply: options.apply,
+        json: options.json,
+      })
+    }
+  )
 
 program.parse()
