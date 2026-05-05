@@ -1,0 +1,55 @@
+name: StatHero
+description: Hero-scale animated metric banner for flagship KPI display on admin dashboards. A 35/65 grid banner with a large headline value on the left and a full-height animated trendline on the right.
+extends: HTMLElement
+category: admin
+
+when_to_use:
+  - Displaying a single flagship KPI at the top of an admin dashboard
+  - Showing a headline metric (e.g. total revenue, active users) with an animated trendline
+  - Anchoring a dashboard page with a visually dominant, brand-colored data visualization
+  - Providing a "marquee" number that sets the tone for the rest of the dashboard
+
+when_not_to_use:
+  - Dense metric grids where multiple KPIs share equal visual weight (use stat-card instead)
+  - Narrow sidebars or compact panels where the 35/65 layout cannot breathe
+  - Marketing or landing pages (use a marketing hero pattern instead)
+  - When you need more than one metric in the same banner (compose multiple stat-cards instead)
+
+why: >
+  Dashboards need a flagship headline KPI that dwarfs the compact stat-card grid. Reshaping
+  stat-card to support hero-scale and draw animations would muddy its hug-content API. A
+  separate component preserves stat-card's role as the dense KPI tile and gives admin templates
+  a clean banner primitive with its own visual language.
+
+props:
+  - name: label
+    type: React.ReactNode
+    required: true
+    description: Small uppercase label describing the metric, e.g. "Monthly Recurring Revenue".
+  - name: value
+    type: React.ReactNode
+    required: true
+    description: Hero-scale metric value, e.g. "$1,240,000".
+  - name: delta
+    type: StatHeroDelta
+    description: Change indicator with value and direction. Drives color and accessible glyph.
+  - name: values
+    type: number[]
+    required: true
+    description: Array of numeric data points (min 2) driving the animated trendline SVG.
+  - name: caption
+    type: React.ReactNode
+    description: Optional caption rendered beneath the delta row, e.g. "vs same period last year".
+
+dependencies: []
+
+preview_url: "https://visor.design/docs/components/admin/stat-hero"
+
+example: |
+  <StatHero
+    label="Monthly Recurring Revenue"
+    value="$1,240,000"
+    delta={{ value: "+18.2%", direction: "up" }}
+    values={[820000, 910000, 870000, 980000, 1050000, 1120000, 1240000]}
+    caption="vs same period last year"
+  />

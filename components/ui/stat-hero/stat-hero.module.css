@@ -1,0 +1,163 @@
+/* Stat Hero: hero-scale animated metric banner
+ *
+ * Layout strategy: full-width banner with a 35/65 CSS grid split.
+ * The left column holds the metric copy (label, value, delta, caption);
+ * the right column holds a full-height animated trendline SVG.
+ *
+ * The trendline draw animation uses stroke-dasharray + stroke-dashoffset
+ * so no JS animation loop is required. The SVG polyline uses
+ * stroke="currentColor" and color: var(--interactive-primary-bg) on the
+ * chart region so the trendline color updates live when the theme class
+ * swaps on :root.
+ *
+ * prefers-reduced-motion: reduce — animation is disabled; the trendline
+ * is drawn at its full length instantly (stroke-dashoffset: 0, no transition).
+ */
+
+.base {
+  --stat-hero-value-size: 6rem; /* ~96px — overridable per consumer */
+
+  display: grid;
+  grid-template-columns: 35fr 65fr;
+  gap: var(--spacing-8, 2rem);
+  align-items: center;
+
+  padding: var(--spacing-8, 2rem);
+  background-color: var(--surface-card, #ffffff);
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-lg, 0.75rem);
+  color: var(--text-primary, #111827);
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgb(0 0 0 / 0.05));
+  overflow: hidden;
+}
+
+/* ── Left column: label, value, delta, caption ─────────────────────────── */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+  min-width: 0;
+}
+
+.label {
+  margin: 0;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-semibold, 600);
+  letter-spacing: var(--letter-spacing-wide, 0.05em);
+  text-transform: uppercase;
+  color: var(--text-tertiary, #6b7280);
+  line-height: var(--line-height-tight, 1.25);
+}
+
+.value {
+  margin: 0;
+  font-family: var(--font-family-heading, inherit);
+  font-size: var(--stat-hero-value-size, 6rem);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1;
+  letter-spacing: var(--letter-spacing-tight, -0.02em);
+  color: var(--text-primary, #111827);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Delta row — change indicator */
+.delta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-tight, 1.25);
+  color: var(--text-secondary, #6b7280);
+}
+
+.delta[data-direction="up"] {
+  color: var(--text-success, #15803d);
+}
+
+.delta[data-direction="down"] {
+  color: var(--text-danger, #b91c1c);
+}
+
+.delta[data-direction="flat"] {
+  color: var(--text-tertiary, #6b7280);
+}
+
+.deltaGlyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1em;
+  line-height: 1;
+}
+
+.deltaValue {
+  font-variant-numeric: tabular-nums;
+}
+
+.caption {
+  margin: 0;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-tertiary, #6b7280);
+  line-height: var(--line-height-normal, 1.5);
+}
+
+/* Visually hidden but announced to screen readers */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Right column: animated trendline ──────────────────────────────────── */
+
+.chart {
+  /* Drive trendline color via currentColor so theme swaps propagate. */
+  color: var(--interactive-primary-bg, #2563eb);
+  height: 100%;
+  min-height: var(--spacing-20, 5rem);
+  display: flex;
+  align-items: stretch;
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  min-height: var(--spacing-20, 5rem);
+}
+
+/* Trendline draw animation:
+ * stroke-dasharray is set to a large value that covers any polyline length.
+ * stroke-dashoffset starts at that value (hidden) and transitions to 0
+ * (fully drawn). Uses the slowest available motion token for a dramatic
+ * flagship reveal effect.
+ */
+.trendline {
+  stroke-width: var(--stroke-width-medium, 2);
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  animation: draw-trendline var(--motion-duration-800, 800ms)
+    var(--motion-easing-ease-out, cubic-bezier(0, 0, 0.2, 1)) forwards;
+}
+
+@keyframes draw-trendline {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Respect reduced motion — disable animation, show at full length instantly */
+@media (prefers-reduced-motion: reduce) {
+  .trendline {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
