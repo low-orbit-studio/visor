@@ -1685,6 +1685,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "stat-hero",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "Hero-scale animated metric banner with a 35/65 grid layout, large headline value, and an animated trendline (CSS stroke-dasharray). Respects prefers-reduced-motion and updates trendline color live via theme class swap.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/stat-hero/stat-hero.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/stat-hero/stat-hero.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "status-badge",
     type: "registry:ui",
     category: "admin",

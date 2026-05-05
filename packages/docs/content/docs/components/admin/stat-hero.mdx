@@ -1,0 +1,161 @@
+---
+title: Stat Hero
+description: Hero-scale animated metric banner for flagship KPI display. A 35/65 grid banner with a large headline value on the left and a full-height animated trendline on the right — copy it into your project and own it completely.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { StatHero } from '@/components/ui/stat-hero';
+
+```bash
+npx visor add stat-hero
+```
+
+## Basic
+
+<ComponentPreview
+  title="Label, value, and trendline"
+  code={"import { StatHero } from '@/components/ui/stat-hero/stat-hero';\n\n<StatHero\n  label=\"Monthly Recurring Revenue\"\n  value=\"$1,240,000\"\n  values={[820000, 910000, 870000, 980000, 1050000, 1120000, 1240000]}\n/>"}
+>
+  <StatHero
+    label="Monthly Recurring Revenue"
+    value="$1,240,000"
+    values={[820000, 910000, 870000, 980000, 1050000, 1120000, 1240000]}
+  />
+</ComponentPreview>
+
+## With Delta (Up)
+
+<ComponentPreview
+  title="Positive change"
+  code={"<StatHero\n  label=\"Monthly Recurring Revenue\"\n  value=\"$1,240,000\"\n  values={[820000, 910000, 870000, 980000, 1050000, 1120000, 1240000]}\n  delta={{ value: '+18.2%', direction: 'up' }}\n/>"}
+>
+  <StatHero
+    label="Monthly Recurring Revenue"
+    value="$1,240,000"
+    values={[820000, 910000, 870000, 980000, 1050000, 1120000, 1240000]}
+    delta={{ value: '+18.2%', direction: 'up' }}
+  />
+</ComponentPreview>
+
+## With Delta (Down)
+
+<ComponentPreview
+  title="Negative change"
+  code={"<StatHero\n  label=\"Churn Rate\"\n  value=\"3.2%\"\n  values={[5.1, 4.8, 4.5, 4.2, 3.8, 3.5, 3.2]}\n  delta={{ value: '-0.4%', direction: 'down' }}\n/>"}
+>
+  <StatHero
+    label="Churn Rate"
+    value="3.2%"
+    values={[5.1, 4.8, 4.5, 4.2, 3.8, 3.5, 3.2]}
+    delta={{ value: '-0.4%', direction: 'down' }}
+  />
+</ComponentPreview>
+
+## With Delta (Flat)
+
+<ComponentPreview
+  title="No change"
+  code={"<StatHero\n  label=\"Active Users\"\n  value=\"12,400\"\n  values={[12200, 12350, 12300, 12400, 12380, 12390, 12400]}\n  delta={{ value: '0%', direction: 'flat' }}\n/>"}
+>
+  <StatHero
+    label="Active Users"
+    value="12,400"
+    values={[12200, 12350, 12300, 12400, 12380, 12390, 12400]}
+    delta={{ value: '0%', direction: 'flat' }}
+  />
+</ComponentPreview>
+
+## With Caption
+
+<ComponentPreview
+  title="Delta with context caption"
+  code={"<StatHero\n  label=\"Monthly Recurring Revenue\"\n  value=\"$1,240,000\"\n  values={[820000, 910000, 870000, 980000, 1050000, 1120000, 1240000]}\n  delta={{ value: '+18.2%', direction: 'up' }}\n  caption=\"vs same period last year\"\n/>"}
+>
+  <StatHero
+    label="Monthly Recurring Revenue"
+    value="$1,240,000"
+    values={[820000, 910000, 870000, 980000, 1050000, 1120000, 1240000]}
+    delta={{ value: '+18.2%', direction: 'up' }}
+    caption="vs same period last year"
+  />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add stat-hero
+```
+
+This copies two files into your project:
+
+- `components/ui/stat-hero/stat-hero.tsx` — the component
+- `components/ui/stat-hero/stat-hero.module.css` — the styles
+
+## Usage
+
+```tsx
+import { StatHero } from '@/components/ui/stat-hero/stat-hero';
+
+export default function Dashboard() {
+  return (
+    <StatHero
+      label="Monthly Recurring Revenue"
+      value="$1,240,000"
+      values={[820000, 910000, 870000, 980000, 1050000, 1120000, 1240000]}
+      delta={{ value: '+18.2%', direction: 'up' }}
+      caption="vs same period last year"
+    />
+  );
+}
+```
+
+## API Reference
+
+### StatHeroProps
+
+<PropsTable component="stat-hero" />
+
+The component also accepts all standard HTML attributes for the root `<article>` element.
+
+### StatHeroDelta
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `value` | `React.ReactNode` | Display value, e.g. `"+18.2%"` or `"-$2.1K"`. |
+| `direction` | `'up' \| 'down' \| 'flat'` | Semantic direction — drives color and glyph. |
+
+## Animation
+
+The trendline is drawn using CSS `stroke-dasharray` + `stroke-dashoffset` — no JavaScript animation loop required. On mount the polyline transitions from hidden to fully drawn over 800ms using `--motion-easing-ease-out`.
+
+The trendline color is driven by `color: var(--interactive-primary-bg)` on the chart container. Because the SVG polyline uses `stroke="currentColor"`, toggling the theme class on `:root` updates the trendline color live without any JavaScript.
+
+### Reduced Motion
+
+When the user has enabled **Reduce Motion** in their OS accessibility settings, the draw animation is disabled. The trendline appears at its full length instantly (`stroke-dashoffset: 0`, no transition).
+
+## Accessibility
+
+The chart container is marked `aria-hidden="true"` — it is decorative. Screen readers hear only the label, value, delta, and caption. Delta direction is announced via visually-hidden text alongside the visible glyph and value (the glyph itself is `aria-hidden`).
+
+## Customization
+
+After copying the component, you own it completely. Common customizations:
+
+- Override `--stat-hero-value-size` on a wrapping element to scale the headline value up or down.
+- Replace the Unicode arrow glyphs with Phosphor icons (`ArrowUp`, `ArrowDown`, `Minus`).
+- Adjust the grid split by overriding `grid-template-columns` on the `.base` class.
+- Add a loading state that renders skeleton placeholders for the value and trendline.
+
+## Source Files
+
+After running `npx visor add stat-hero`, you'll have:
+
+### `stat-hero.tsx`
+
+A `forwardRef` component with an embedded SVG trendline. Points are computed from the `values` prop using a normalized coordinate mapper. Renders nothing for the SVG when `values.length < 2`.
+
+### `stat-hero.module.css`
+
+All styles use CSS custom properties from `@loworbitstudio/visor-core`. The 35/65 grid, hero value font size, trendline color, animation duration, stroke width, and spacing all reference Visor tokens — no hardcoded values.
