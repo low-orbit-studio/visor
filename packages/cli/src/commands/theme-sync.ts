@@ -7,12 +7,25 @@ import {
   unlinkSync,
   copyFileSync,
 } from "fs"
-import { join, basename } from "path"
+import { join, basename, resolve } from "path"
 import { parse as parseYaml } from "yaml"
 import { generateThemeData } from "@loworbitstudio/visor-theme-engine"
 import { docsAdapter } from "@loworbitstudio/visor-theme-engine/adapters"
 import { logger } from "../utils/logger.js"
-import { toSlug, toLabel, findRepoRoot } from "../utils/theme-helpers.js"
+import {
+  toSlug,
+  toLabel,
+  findRepoRoot,
+  findMainRepoRoot,
+  scanNestedThemeDir,
+  assertNoBrokenSymlinks,
+  detectVisorWorkspace,
+  isLocalVisorBinary,
+  BrokenSymlinkError,
+} from "../utils/theme-helpers.js"
+
+const PRIVATE_THEMES_REPO_URL = "git@github.com:low-orbit-studio/visor-themes-private.git"
+const PRIVATE_THEMES_ENV_VAR = "VISOR_THEMES_PRIVATE_PATH"
 
 export interface ThemeSyncOptions {
   dryRun?: boolean
@@ -40,12 +53,154 @@ const CUSTOM_OVERLAY_CSS_PATH = "packages/docs/app/custom-themes.generated.css"
 const CUSTOM_OVERLAY_TS_PATH = "packages/docs/lib/theme-config.custom.generated.ts"
 const CUSTOM_OVERLAY_IMPORT_LINE = "@import './custom-themes.generated.css';"
 
-/** Scan a directory for .visor.yaml files. Returns empty array if dir doesn't exist. */
+/** Scan a directory for .visor.yaml files. Returns empty array if dir doesn't exist.
+ *  Throws BrokenSymlinkError if a dangling symlink is encountered. */
 function scanThemeDir(dir: string): string[] {
   if (!existsSync(dir)) return []
+  assertNoBrokenSymlinks(dir)
   return readdirSync(dir)
     .filter((f) => f.endsWith(".visor.yaml"))
     .map((f) => join(dir, f))
+}
+
+interface CustomThemeFile {
+  filePath: string
+  /** Slug derived from layout (nested = parent dirname, flat = filename). */
+  slug: string
+  /** Origin of the file — drives merge precedence and warnings. */
+  origin: "env" | "sibling" | "legacy"
+}
+
+/**
+ * Resolve custom theme sources in priority order: env var → sibling checkout
+ * → legacy `custom-themes/`. Each origin contributes only when the prior one
+ * resolves zero files. Returns the merged file list with first-write-wins
+ * precedence; same-slug duplicates from later sources are dropped (with a
+ * warning logged) per D8.
+ */
+function resolveCustomSources(
+  repoRoot: string,
+  mainRepoRoot: string,
+  warn: (msg: string) => void,
+): { files: CustomThemeFile[]; deprecationWarnings: string[] } {
+  const merged = new Map<string, CustomThemeFile>()
+  const deprecationWarnings: string[] = []
+
+  const addNested = (dir: string, origin: "env" | "sibling"): void => {
+    const entries = scanNestedThemeDir(dir)
+    for (const entry of entries) {
+      const existing = merged.get(entry.slug)
+      if (existing) {
+        warn(
+          `Duplicate theme slug "${entry.slug}" — keeping ${existing.origin} source (${existing.filePath}); ignoring ${origin} source (${entry.filePath}).`,
+        )
+        continue
+      }
+      merged.set(entry.slug, {
+        filePath: entry.filePath,
+        slug: entry.slug,
+        origin,
+      })
+    }
+  }
+
+  // 1. Env var override
+  const envPath = process.env[PRIVATE_THEMES_ENV_VAR]
+  if (envPath && envPath.trim() !== "") {
+    const resolved = resolve(envPath)
+    if (!existsSync(resolved)) {
+      throw new Error(
+        `${PRIVATE_THEMES_ENV_VAR} is set to "${envPath}" but the path does not exist. ` +
+          `Expected a directory containing {slug}/theme.visor.yaml entries.`,
+      )
+    }
+    addNested(resolved, "env")
+  }
+
+  // 2. Sibling checkout — convention default
+  const siblingPath = join(mainRepoRoot, "..", "visor-themes-private", "themes")
+  if (existsSync(siblingPath)) {
+    addNested(siblingPath, "sibling")
+  }
+
+  // 3. Legacy flat layout — backwards-compat with deprecation warning
+  const legacyDir = join(repoRoot, "custom-themes")
+  const legacyFiles = scanThemeDir(legacyDir)
+  for (const legacyFile of legacyFiles) {
+    const slug = basename(legacyFile).replace(/\.visor\.yaml$/, "")
+    const existing = merged.get(slug)
+    if (existing) {
+      warn(
+        `Duplicate theme slug "${slug}" — keeping ${existing.origin} source (${existing.filePath}); ignoring legacy source (${legacyFile}).`,
+      )
+      continue
+    }
+    deprecationWarnings.push(
+      `Deprecated legacy custom-themes/ source: ${legacyFile} — migrate to visor-themes-private (see docs).`,
+    )
+    merged.set(slug, {
+      filePath: legacyFile,
+      slug,
+      origin: "legacy",
+    })
+  }
+
+  return { files: [...merged.values()], deprecationWarnings }
+}
+
+/** Print a broken-symlink error in the appropriate output format. */
+function reportBrokenSymlink(err: BrokenSymlinkError, options: ThemeSyncOptions): void {
+  const msg = `Broken symlink in theme source: ${err.path} → ${err.target}`
+  if (options.json) {
+    console.log(JSON.stringify({ success: false, error: msg, path: err.path, target: err.target }))
+  } else {
+    logger.error(msg)
+  }
+}
+
+/** Build the actionable D5 message shown when no theme source produces any files. */
+function buildEmptySourcesMessage(mainRepoRoot: string): string {
+  const expectedSibling = join(mainRepoRoot, "..", "visor-themes-private")
+  return [
+    "No theme sources discovered. Cannot proceed — refusing to wipe generated CSS.",
+    "",
+    "Resolution order checked:",
+    `  1. Env var ${PRIVATE_THEMES_ENV_VAR} (unset or empty)`,
+    `  2. Sibling checkout at ${expectedSibling}/themes/ (not found)`,
+    "  3. Legacy custom-themes/ (no .visor.yaml files)",
+    "",
+    "To fix, clone the private themes repo as a sibling:",
+    `  git clone ${PRIVATE_THEMES_REPO_URL} ${expectedSibling}`,
+    "",
+    `Or set ${PRIVATE_THEMES_ENV_VAR} to a directory containing {slug}/theme.visor.yaml entries.`,
+  ].join("\n")
+}
+
+/**
+ * D10: refuse to run when invoked from inside a Visor workspace via a
+ * non-workspace binary (e.g. the global `visor` CLI bundles a published
+ * theme-engine that lags HEAD and can regress stock CSS).
+ */
+function enforceWorkspaceGuard(cwd: string): string | null {
+  // Skip when running under vitest — tests drive themeSyncCommand directly via tmpdir
+  if (process.env.VITEST) return null
+  // Allow opt-out for advanced users
+  if (process.env.VISOR_SKIP_WORKSPACE_GUARD) return null
+
+  const workspaceRoot = detectVisorWorkspace(cwd)
+  if (!workspaceRoot) return null
+
+  if (isLocalVisorBinary(workspaceRoot, process.argv[1])) return null
+
+  return [
+    `Detected Visor workspace at ${workspaceRoot}.`,
+    "The global `visor` CLI bundles a published theme-engine that lags HEAD and",
+    "can regress stock theme CSS files. Run the workspace command instead:",
+    "",
+    "  npm run theme:sync",
+    "",
+    `(Override with VISOR_SKIP_WORKSPACE_GUARD=1 if you really know what you're doing.)`,
+  ].join("\n")
 }
 
 /** Extract the raw `group` field from a YAML string without running the full theme pipeline. */
@@ -285,6 +440,18 @@ function updateGitignoreBlock(content: string, customSlugs: string[]): string {
 }
 
 export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
+  // D10: workspace guard — refuse to run global CLI from inside a Visor checkout
+  const guardError = enforceWorkspaceGuard(cwd)
+  if (guardError) {
+    if (options.json) {
+      console.log(JSON.stringify({ success: false, error: guardError }))
+    } else {
+      logger.error(guardError)
+    }
+    process.exit(1)
+    return
+  }
+
   const repoRoot = findRepoRoot(cwd)
   if (!repoRoot) {
     const msg = "Could not locate repo root (packages/docs/ not found). Run from within the visor repo."
@@ -297,8 +464,9 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
     return
   }
 
+  const mainRepoRoot = findMainRepoRoot(cwd) ?? repoRoot
+
   const themesDir = join(repoRoot, "themes")
-  const customThemesDir = join(repoRoot, "custom-themes")
   const docsAppDir = join(repoRoot, "packages", "docs", "app")
   const docsLibDir = join(repoRoot, "packages", "docs", "lib")
   const docsPublicThemesDir = join(repoRoot, "packages", "docs", "public", "themes")
@@ -308,25 +476,68 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
   const customOverlayCssPath = join(repoRoot, CUSTOM_OVERLAY_CSS_PATH)
   const customOverlayTsPath = join(repoRoot, CUSTOM_OVERLAY_TS_PATH)
 
-  // Discover theme YAMLs
-  const stockFiles = scanThemeDir(themesDir)
-  const customFiles = scanThemeDir(customThemesDir)
+  // Discover stock theme YAMLs (unchanged: flat layout, in-repo)
+  let stockFiles: string[]
+  try {
+    stockFiles = scanThemeDir(themesDir)
+  } catch (err) {
+    if (err instanceof BrokenSymlinkError) {
+      reportBrokenSymlink(err, options)
+      process.exit(1)
+      return
+    }
+    throw err
+  }
 
-  if (stockFiles.length === 0 && customFiles.length === 0) {
-    const msg = `No .visor.yaml files found in themes/ or custom-themes/. Nothing to sync.`
+  // Discover custom themes via D1 fallback chain
+  let customSources: CustomThemeFile[] = []
+  let deprecationWarnings: string[] = []
+  const discoveryWarnings: string[] = []
+  try {
+    const result = resolveCustomSources(repoRoot, mainRepoRoot, (msg) =>
+      discoveryWarnings.push(msg),
+    )
+    customSources = result.files
+    deprecationWarnings = result.deprecationWarnings
+  } catch (err) {
+    if (err instanceof BrokenSymlinkError) {
+      reportBrokenSymlink(err, options)
+      process.exit(1)
+      return
+    }
+    const msg = err instanceof Error ? err.message : "Custom theme discovery failed"
     if (options.json) {
       console.log(JSON.stringify({ success: false, error: msg }))
     } else {
-      logger.warn(msg)
+      logger.error(msg)
     }
+    process.exit(1)
     return
+  }
+
+  // D5/D6: empty manifest → hard fail with actionable message; remove zero files
+  if (stockFiles.length === 0 && customSources.length === 0) {
+    const msg = buildEmptySourcesMessage(mainRepoRoot)
+    if (options.json) {
+      console.log(JSON.stringify({ success: false, error: msg }))
+    } else {
+      logger.error(msg)
+    }
+    process.exit(1)
+    return
+  }
+
+  // Emit text-mode warnings now (JSON mode surfaces them in the result envelope)
+  if (!options.json) {
+    for (const w of deprecationWarnings) logger.warn(w)
+    for (const w of discoveryWarnings) logger.warn(w)
   }
 
   // Build manifest
   const manifest: ThemeManifestEntry[] = []
   const errors: string[] = []
 
-  const processFile = (filePath: string, isCustom: boolean) => {
+  const processFile = (filePath: string, isCustom: boolean, slugOverride?: string) => {
     let yamlContent: string
     try {
       yamlContent = readFileSync(filePath, "utf-8")
@@ -343,18 +554,24 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
       return
     }
 
-    const slug = toSlug(data.config.name)
+    const slug = slugOverride ?? toSlug(data.config.name)
     const label = extractLabel(yamlContent) ?? toLabel(data.config.name)
     const group = extractGroup(yamlContent) ?? (isCustom ? "Custom" : "Visor")
     const defaultMode = extractDefaultMode(yamlContent)
     const css = docsAdapter({ primitives: data.primitives, tokens: data.tokens, config: data.config })
-    const yamlFilename = basename(filePath).replace(/\.visor\.yaml$/, "")
+    // Nested custom themes use the slug as the public yamlFilename so the
+    // generated CSS/import path stays predictable. Flat layout keeps its
+    // historical filename so existing public/themes/ entries don't churn.
+    const yamlFilename = slugOverride ?? basename(filePath).replace(/\.visor\.yaml$/, "")
 
     manifest.push({ slug, label, group, defaultMode, css, yamlFilename, isCustom })
   }
 
   for (const f of stockFiles) processFile(f, false)
-  for (const f of customFiles) processFile(f, true)
+  for (const c of customSources) {
+    const isNested = c.origin !== "legacy"
+    processFile(c.filePath, true, isNested ? c.slug : undefined)
+  }
 
   if (errors.length > 0) {
     if (options.json) {
@@ -474,10 +691,17 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
     }
 
     // Copy YAMLs to public/themes/
-    const allSourceFiles = [...stockFiles, ...customFiles]
-    for (const srcFile of allSourceFiles) {
-      const filename = basename(srcFile)
-      copyFileSync(srcFile, join(docsPublicThemesDir, filename))
+    // Stock files use their on-disk filename. Custom files: nested layout
+    // uses `<slug>.visor.yaml` (so `theme.visor.yaml` doesn't collide); legacy
+    // flat layout uses the on-disk filename for backwards-compat.
+    for (const srcFile of stockFiles) {
+      copyFileSync(srcFile, join(docsPublicThemesDir, basename(srcFile)))
+    }
+    for (const c of customSources) {
+      const targetName = c.origin === "legacy"
+        ? basename(c.filePath)
+        : `${c.slug}.visor.yaml`
+      copyFileSync(c.filePath, join(docsPublicThemesDir, targetName))
     }
 
     // Delete stale public/themes/ copies
@@ -496,6 +720,7 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
   }
 
   if (options.json) {
+    const warnings = [...deprecationWarnings, ...discoveryWarnings]
     console.log(JSON.stringify({
       success: true,
       themes: manifest.length,
@@ -504,6 +729,7 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
       staleCssDeleted: staleCssFiles.length,
       staleYamlsDeleted: stalePublicYamls.length,
       slugs: allSlugs,
+      ...(warnings.length > 0 ? { warnings } : {}),
     }))
   } else {
     logger.success(`Theme sync complete — ${manifest.length} themes registered`)

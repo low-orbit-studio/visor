@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
-import { mkdirSync, rmSync, writeFileSync, readFileSync, existsSync, readdirSync } from "fs"
+import { mkdirSync, rmSync, writeFileSync, readFileSync, existsSync, readdirSync, symlinkSync } from "fs"
 import { join } from "path"
 import { tmpdir } from "os"
 import { themeSyncCommand } from "../commands/theme-sync.js"
@@ -783,11 +783,11 @@ describe("theme sync command", () => {
   })
 
   describe("error handling", () => {
-    it("warns and returns when no YAMLs found", () => {
-      // themes/ dir exists but is empty — should not throw, just warn
-      expect(() => themeSyncCommand(testDir, {})).not.toThrow()
+    it("hard-fails with actionable D5 message when no theme sources discovered", () => {
+      // themes/ exists but is empty, no env var, no sibling, no custom-themes/
+      expect(() => themeSyncCommand(testDir, {})).toThrow("process.exit(1)")
 
-      // No CSS should be generated
+      // No CSS should be generated and any pre-existing CSS must survive (D6)
       const docsApp = join(testDir, "packages", "docs", "app")
       const cssFiles = readdirSync(docsApp).filter((f) => f.endsWith("-theme.css"))
       expect(cssFiles).toHaveLength(0)
@@ -846,6 +846,227 @@ describe("theme sync command", () => {
       )
       expect(overlayTs).toContain('"Low Orbit"')
       expect(overlayTs).toContain('value: "reference-app"')
+    })
+  })
+
+  // ============================================================
+  // VI-321 — external visor-themes-private discovery
+  // ============================================================
+
+  describe("D1 — external source discovery", () => {
+    function writeNestedTheme(rootDir: string, slug: string, yaml: string): string {
+      const themeDir = join(rootDir, slug)
+      mkdirSync(themeDir, { recursive: true })
+      const filePath = join(themeDir, "theme.visor.yaml")
+      writeFileSync(filePath, yaml, "utf-8")
+      return filePath
+    }
+
+    it("VISOR_THEMES_PRIVATE_PATH env var: discovers nested-layout themes", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      const externalDir = join(testDir, "external-themes")
+      mkdirSync(externalDir, { recursive: true })
+      writeNestedTheme(externalDir, "entr", CUSTOM_YAML_ENTR)
+
+      const previousEnv = process.env.VISOR_THEMES_PRIVATE_PATH
+      process.env.VISOR_THEMES_PRIVATE_PATH = externalDir
+      try {
+        themeSyncCommand(testDir, {})
+      } finally {
+        if (previousEnv === undefined) delete process.env.VISOR_THEMES_PRIVATE_PATH
+        else process.env.VISOR_THEMES_PRIVATE_PATH = previousEnv
+      }
+
+      const docsApp = join(testDir, "packages", "docs", "app")
+      expect(existsSync(join(docsApp, "entr-theme.css"))).toBe(true)
+    })
+
+    it("nested layout uses parent dirname as slug, ignoring legacy filename", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      const externalDir = join(testDir, "external-themes")
+      mkdirSync(externalDir, { recursive: true })
+      // The yaml's `name` field is "entr" but the dir name is "strata"
+      writeNestedTheme(externalDir, "strata", CUSTOM_YAML_ENTR)
+
+      const previousEnv = process.env.VISOR_THEMES_PRIVATE_PATH
+      process.env.VISOR_THEMES_PRIVATE_PATH = externalDir
+      try {
+        themeSyncCommand(testDir, {})
+      } finally {
+        if (previousEnv === undefined) delete process.env.VISOR_THEMES_PRIVATE_PATH
+        else process.env.VISOR_THEMES_PRIVATE_PATH = previousEnv
+      }
+
+      const overlayTs = readFileSync(
+        join(testDir, "packages", "docs", "lib", "theme-config.custom.generated.ts"),
+        "utf-8",
+      )
+      // Slug must come from the dirname, not the YAML name field
+      expect(overlayTs).toContain('value: "strata"')
+      expect(overlayTs).not.toContain('value: "entr"')
+
+      // Public YAML copy uses the slug as filename (avoids `theme.visor.yaml` collisions)
+      const publicYaml = join(testDir, "packages", "docs", "public", "themes", "strata.visor.yaml")
+      expect(existsSync(publicYaml)).toBe(true)
+    })
+
+    it("env var pointing at non-existent path: hard-fail with actionable error", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+
+      const previousEnv = process.env.VISOR_THEMES_PRIVATE_PATH
+      process.env.VISOR_THEMES_PRIVATE_PATH = join(testDir, "does-not-exist")
+
+      const errors: string[] = []
+      vi.spyOn(console, "error").mockImplementation((msg) => errors.push(String(msg)))
+
+      try {
+        expect(() => themeSyncCommand(testDir, {})).toThrow("process.exit(1)")
+      } finally {
+        if (previousEnv === undefined) delete process.env.VISOR_THEMES_PRIVATE_PATH
+        else process.env.VISOR_THEMES_PRIVATE_PATH = previousEnv
+      }
+
+      expect(errors.join("\n")).toContain("VISOR_THEMES_PRIVATE_PATH")
+      expect(errors.join("\n")).toContain("does not exist")
+    })
+
+    it("legacy custom-themes/ still works and emits a deprecation warning", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      writeCustomYaml("entr.visor.yaml", CUSTOM_YAML_ENTR)
+
+      const warnings: string[] = []
+      vi.spyOn(console, "log").mockImplementation((msg) => warnings.push(String(msg)))
+
+      themeSyncCommand(testDir, {})
+
+      const docsApp = join(testDir, "packages", "docs", "app")
+      expect(existsSync(join(docsApp, "entr-theme.css"))).toBe(true)
+      expect(warnings.join("\n")).toMatch(/Deprecated legacy custom-themes\//)
+    })
+
+    it("env var wins over legacy custom-themes/ for the same slug (D8)", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+
+      // Legacy entry
+      writeCustomYaml("entr.visor.yaml", CUSTOM_YAML_ENTR)
+      // External entry with the SAME slug, different content (different group label)
+      const externalDir = join(testDir, "external-themes")
+      mkdirSync(externalDir, { recursive: true })
+      writeNestedTheme(
+        externalDir,
+        "entr",
+        `name: entr\nversion: 1\ngroup: Sibling-Wins\ncolors:\n  primary: "#22C56D"\n`,
+      )
+
+      const warnings: string[] = []
+      vi.spyOn(console, "log").mockImplementation((msg) => warnings.push(String(msg)))
+
+      const previousEnv = process.env.VISOR_THEMES_PRIVATE_PATH
+      process.env.VISOR_THEMES_PRIVATE_PATH = externalDir
+      try {
+        themeSyncCommand(testDir, {})
+      } finally {
+        if (previousEnv === undefined) delete process.env.VISOR_THEMES_PRIVATE_PATH
+        else process.env.VISOR_THEMES_PRIVATE_PATH = previousEnv
+      }
+
+      // Sibling-Wins group must appear in overlay (env source won)
+      const overlayTs = readFileSync(
+        join(testDir, "packages", "docs", "lib", "theme-config.custom.generated.ts"),
+        "utf-8",
+      )
+      expect(overlayTs).toContain('"Sibling-Wins"')
+      expect(overlayTs).not.toContain('"Client"')
+
+      // Duplicate-slug warning must name the suppressed legacy file
+      expect(warnings.join("\n")).toMatch(/Duplicate theme slug "entr"/)
+      expect(warnings.join("\n")).toContain("ignoring legacy")
+    })
+  })
+
+  describe("D6 — guarded stale CSS removal", () => {
+    it("never removes CSS files when total manifest is empty", () => {
+      const docsApp = join(testDir, "packages", "docs", "app")
+      // Pre-existing custom CSS that would be wiped by a naive empty-manifest sync
+      writeFileSync(join(docsApp, "private-theme-theme.css"), ".private {}", "utf-8")
+      writeFileSync(join(docsApp, "another-theme.css"), ".another {}", "utf-8")
+
+      // No themes/, no custom-themes/, no env var, no sibling
+      expect(() => themeSyncCommand(testDir, {})).toThrow("process.exit(1)")
+
+      // Both pre-existing CSS files must survive the failed run
+      expect(existsSync(join(docsApp, "private-theme-theme.css"))).toBe(true)
+      expect(existsSync(join(docsApp, "another-theme.css"))).toBe(true)
+    })
+
+    it("with one theme present, removes only stale slugs (does not wipe everything)", () => {
+      const docsApp = join(testDir, "packages", "docs", "app")
+      writeFileSync(join(docsApp, "old-theme-theme.css"), ".old-theme {}", "utf-8")
+
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      themeSyncCommand(testDir, {})
+
+      // Stale slug removed; current slug present
+      expect(existsSync(join(docsApp, "old-theme-theme.css"))).toBe(false)
+      expect(existsSync(join(docsApp, "blackout-theme.css"))).toBe(true)
+    })
+  })
+
+  describe("D7 — broken symlink detection", () => {
+    it("hard-fails with the symlink path AND target reported", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+
+      // Create a dangling symlink inside themes/ pointing at a non-existent target
+      const themesDir = join(testDir, "themes")
+      const linkPath = join(themesDir, "dangling.visor.yaml")
+      const linkTarget = join(testDir, "this-target-does-not-exist", "phantom.visor.yaml")
+      symlinkSync(linkTarget, linkPath)
+
+      const errors: string[] = []
+      vi.spyOn(console, "error").mockImplementation((msg) => errors.push(String(msg)))
+
+      expect(() => themeSyncCommand(testDir, {})).toThrow("process.exit(1)")
+
+      const combined = errors.join("\n")
+      expect(combined).toContain("Broken symlink")
+      expect(combined).toContain(linkPath)
+      expect(combined).toContain(linkTarget)
+    })
+
+    it("dangling symlink in custom-themes/ also fails loudly", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      const customDir = join(testDir, "custom-themes")
+      mkdirSync(customDir, { recursive: true })
+      const linkPath = join(customDir, "ghost.visor.yaml")
+      const linkTarget = join(testDir, "phantom-target.visor.yaml")
+      symlinkSync(linkTarget, linkPath)
+
+      expect(() => themeSyncCommand(testDir, {})).toThrow("process.exit(1)")
+    })
+  })
+
+  describe("D5 — empty-source actionable message", () => {
+    it("error message includes env var name, sibling path, and clone command", () => {
+      const errors: string[] = []
+      vi.spyOn(console, "error").mockImplementation((msg) => errors.push(String(msg)))
+
+      expect(() => themeSyncCommand(testDir, {})).toThrow("process.exit(1)")
+
+      const combined = errors.join("\n")
+      expect(combined).toContain("VISOR_THEMES_PRIVATE_PATH")
+      expect(combined).toContain("visor-themes-private")
+      expect(combined).toContain("git clone git@github.com:low-orbit-studio/visor-themes-private.git")
+    })
+
+    it("JSON mode emits the actionable error in success:false envelope", () => {
+      const logs: string[] = []
+      vi.spyOn(console, "log").mockImplementation((msg) => logs.push(String(msg)))
+
+      expect(() => themeSyncCommand(testDir, { json: true })).toThrow("process.exit(1)")
+
+      const result = JSON.parse(logs[0])
+      expect(result.success).toBe(false)
+      expect(result.error).toContain("VISOR_THEMES_PRIVATE_PATH")
     })
   })
 })

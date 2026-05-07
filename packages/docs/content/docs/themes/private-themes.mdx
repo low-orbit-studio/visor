@@ -59,6 +59,68 @@ npm run dev -w packages/docs
 
 `/themes/private` will be available at `http://localhost:4050/themes/private`. Without the token, the route returns 404 — same behavior as the production public-build path.
 
+## Local development with a sibling checkout
+
+The published-package flow above is the right model for the deployed `/themes/private` route. For fast iteration on private themes — editing YAML, regenerating CSS, and seeing the result in the docs site without a publish-and-install round trip — use the sibling-checkout flow with `visor theme sync`.
+
+### One-time setup
+
+Clone `visor-themes-private` as a sibling of the visor repo:
+
+```bash
+cd ~/Code   # or wherever your visor checkout lives
+git clone git@github.com:low-orbit-studio/visor-themes-private.git
+```
+
+The expected layout:
+
+```
+~/Code/
+├── visor/                       # this repo
+└── visor-themes-private/        # sibling checkout
+    └── themes/
+        ├── strata/
+        │   ├── theme.visor.yaml
+        │   └── meta.json
+        ├── entr/
+        └── ...
+```
+
+### Running the sync
+
+From inside the `visor` repo:
+
+```bash
+npm run theme:sync
+```
+
+That builds the local theme-engine and CLI, then runs `visor theme sync`. The sync command discovers private themes in this order:
+
+1. **`VISOR_THEMES_PRIVATE_PATH` env var** — explicit override; must point at a directory containing `{slug}/theme.visor.yaml` entries
+2. **Sibling checkout** — `<visor>/../visor-themes-private/themes/` (the convention default)
+3. **Legacy `custom-themes/` flat layout** — backwards-compat only; emits a deprecation warning per file
+
+Override the convention default for non-standard layouts:
+
+```bash
+VISOR_THEMES_PRIVATE_PATH=/path/to/themes npm run theme:sync
+```
+
+### Always use the workspace command
+
+**Run `npm run theme:sync`, never bare `visor theme sync`, from inside a Visor checkout.**
+
+The bare `visor` command resolves to whatever `visor` binary is on your `PATH` — typically the globally installed published package, which bundles a snapshot of `@loworbitstudio/visor-theme-engine` that lags HEAD. Running it against the working tree silently regresses generated stock theme CSS to whatever the published engine produced.
+
+The sync command refuses to run when invoked through the global binary inside a Visor workspace — it prints a redirect message pointing at `npm run theme:sync` and exits non-zero. Override with `VISOR_SKIP_WORKSPACE_GUARD=1` only if you really know what you're doing.
+
+### Adding a new private theme
+
+1. Add the theme directory under `visor-themes-private/themes/{slug}/` (with `theme.visor.yaml` + `meta.json`)
+2. Run `npm run theme:sync` from the visor repo
+3. `npm run dev -w packages/docs` and confirm the new theme appears in the switcher
+4. When ready to ship, follow the publish flow in `visor-themes-private/docs/howto/HOWTO_UPDATE_AND_PUBLISH_THEMES.md`
+
 ## Adding a new private theme
 
 Private themes live in [`low-orbit-studio/visor-themes-private`](https://github.com/low-orbit-studio/visor-themes-private). Follow the publish flow in that repo's `docs/howto/HOWTO_UPDATE_AND_PUBLISH_THEMES.md`, bump the version, and push the tag. After the package publishes, bump the dep version in `packages/docs/package.json` and redeploy. The generator picks up new themes on the next build with no docs-site code change.
