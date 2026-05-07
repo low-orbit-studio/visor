@@ -783,11 +783,11 @@ describe("theme sync command", () => {
   })
 
   describe("error handling", () => {
-    it("warns and returns when no YAMLs found", () => {
-      // themes/ dir exists but is empty — should not throw, just warn
-      expect(() => themeSyncCommand(testDir, {})).not.toThrow()
+    it("hard-fails with actionable D5 message when no theme sources discovered", () => {
+      // themes/ exists but is empty, no env var, no sibling, no custom-themes/
+      expect(() => themeSyncCommand(testDir, {})).toThrow("process.exit(1)")
 
-      // No CSS should be generated
+      // No CSS should be generated and any pre-existing CSS must survive (D6)
       const docsApp = join(testDir, "packages", "docs", "app")
       const cssFiles = readdirSync(docsApp).filter((f) => f.endsWith("-theme.css"))
       expect(cssFiles).toHaveLength(0)
