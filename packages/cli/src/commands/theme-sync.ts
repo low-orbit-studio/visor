@@ -69,8 +69,6 @@ interface CustomThemeFile {
   slug: string
   /** Origin of the file — drives merge precedence and warnings. */
   origin: "env" | "sibling" | "legacy"
-  /** Source path the user can act on (the directory we discovered from). */
-  sourcePath: string
 }
 
 /**
@@ -88,7 +86,7 @@ function resolveCustomSources(
   const merged = new Map<string, CustomThemeFile>()
   const deprecationWarnings: string[] = []
 
-  const addNested = (dir: string, origin: "env" | "sibling") => {
+  const addNested = (dir: string, origin: "env" | "sibling"): void => {
     const entries = scanNestedThemeDir(dir)
     for (const entry of entries) {
       const existing = merged.get(entry.slug)
@@ -102,10 +100,8 @@ function resolveCustomSources(
         filePath: entry.filePath,
         slug: entry.slug,
         origin,
-        sourcePath: dir,
       })
     }
-    return entries.length
   }
 
   // 1. Env var override
@@ -146,7 +142,6 @@ function resolveCustomSources(
       filePath: legacyFile,
       slug,
       origin: "legacy",
-      sourcePath: legacyDir,
     })
   }
 
@@ -204,7 +199,7 @@ function enforceWorkspaceGuard(cwd: string): string | null {
     "",
     "  npm run theme:sync",
     "",
-    `(Override with ${"VISOR_SKIP_WORKSPACE_GUARD"}=1 if you really know what you're doing.)`,
+    `(Override with VISOR_SKIP_WORKSPACE_GUARD=1 if you really know what you're doing.)`,
   ].join("\n")
 }
 
