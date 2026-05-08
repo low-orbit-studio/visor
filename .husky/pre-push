@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+# .husky/pre-push
+#
+# Automatically generates a .changeset/<slug>.md for the current branch
+# before every push to a remote feature branch.
+#
+# Skip with:  git push --no-verify
+#
+# Requirements:
+#   - claude CLI must be on PATH (installed via npm i -g @anthropic-ai/claude-code)
+#   - If claude is not available, a warning is printed and the push proceeds.
+
+node scripts/generate-changeset.mjs

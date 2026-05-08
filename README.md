@@ -548,6 +548,40 @@ npm run widgetbook:dev         # Start Flutter widgetbook preview (requires Flut
 npm run themes:apply-flutter  # Regenerate packages/visor_themes/ for all 11 themes
 ```
 
+### Changesets (minor and major version bumps)
+
+Patch-level publishes happen automatically on PR merge via `auto-version.yml`. For minor or major bumps, a changeset file is required.
+
+**Automatic generation (recommended).** The pre-push git hook runs `scripts/generate-changeset.mjs` before every push. If the diff touches a published package (`packages/tokens/`, `packages/cli/`, or `packages/theme-engine/`) and no operator-authored changeset exists yet, Claude will write `.changeset/<branch-slug>.md` and stage it automatically.
+
+Requirements: `claude` CLI must be installed globally (`npm install -g @anthropic-ai/claude-code`). If it's not available, the hook prints a warning and the push proceeds normally.
+
+**Manual generation.** Run at any time:
+
+```sh
+node scripts/generate-changeset.mjs
+# or the standard interactive way:
+npm run changeset
+```
+
+**On-demand via Claude Code.** The `/lo-changeset` skill at `.claude/skills/lo-changeset/SKILL.md` wraps the same script:
+
+```
+/lo-changeset
+```
+
+**Bypass the hook.** Skip changeset generation for a push:
+
+```sh
+git push --no-verify
+```
+
+**Auto-generated marker.** Generated changesets include `# generated-by: lo-changeset` in their YAML frontmatter. If you edit the changeset and remove that marker, it becomes operator-authored — the hook will not overwrite it on subsequent pushes. Operator overrides always win.
+
+**Failure handling.** If `claude` fails for any reason, the hook exits 0 and the push proceeds. Run `npm run changeset` manually if you need a minor/major bump and the auto-generation failed.
+
+**Prompt source.** `scripts/changeset-prompt.md` contains the bump-type rules and output format. Edit it to tune the AI's behavior.
+
 ### Repository Structure
 
 ```

@@ -50,8 +50,14 @@ venv/
 # Cloudflare
 .wrangler/
 
-# Claude Code
-.claude/
+# Claude Code — ignore session/runtime data but track committed skills
+.claude/agents/
+.claude/plans/
+.claude/research/
+.claude/settings.json
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
+.claude/worktrees/
 .claire/
 
 # Testing
