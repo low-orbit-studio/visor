@@ -56,8 +56,34 @@ visor/
 1. **Implement the component** in `components/ui/<component-name>/`.
 2. **Register it** in `registry/registry-ui.ts` following the existing pattern.
 3. **Write tests** in `components/__tests__/` using Vitest + React Testing Library.
-4. **Document it** by adding an MDX page under `packages/docs/content/docs/components/`.
-5. Run `npm test` and `npm run typecheck` before opening a PR.
+4. **Add the docs proxy file** at `packages/docs/components/ui/<component-name>.tsx` (see [Docs proxy file](#docs-proxy-file) below). Required — CI fails without it.
+5. **Document it** by adding an MDX page under `packages/docs/content/docs/components/`.
+6. Run `npm test`, `npm run typecheck`, and `npm run validate` before opening a PR.
+
+### Docs proxy file
+
+Every component shipped to the docs site needs a `'use client'` re-export at `packages/docs/components/ui/<component-name>.tsx`. The docs site's `@/` alias resolves to `packages/docs/`, not the repo root, so MDX pages cannot import from `components/ui/<name>` directly — they need a proxy.
+
+The `'use client'` directive is mandatory at the top of the proxy. Without it, components that use hooks fail at prerender (RSC boundary violation).
+
+Two locations are valid (the `docs-proxy-exists` validator accepts either):
+
+- **Flat:** `packages/docs/components/ui/<name>.tsx` — used when MDX imports via `@/components/ui/<name>`.
+- **Subdirectory:** `packages/docs/components/ui/<name>/<name>.tsx` — used when MDX imports via `@/components/ui/<name>/<name>`.
+
+Example proxy (`packages/docs/components/ui/station-spectrum.tsx`):
+
+```tsx
+'use client';
+
+export { StationSpectrum } from '../../../../components/ui/station-spectrum/station-spectrum';
+export type {
+  StationSpectrumProps,
+  Station,
+} from '../../../../components/ui/station-spectrum/station-spectrum';
+```
+
+Re-export every public type (`Props`, sub-component prop types, named tuple/union types) so MDX pages can reference them from the same proxy path. The `docs-proxy-exists` rule (run as part of `npm run validate`) verifies both presence and the `'use client'` directive. See also [W012](./docs/wisdom/W012-docs-component-shims.md).
 
 > **If the component takes function props** (`renderItem`, `renderSeparator`, render callbacks, etc.), the MDX demo cannot pass an inline arrow function — MDX is a React Server Component by default and functions cannot cross the RSC boundary. Wrap the live preview in a `'use client'` demo at `packages/docs/components/ui/<component>-demo.tsx`, then import and render it from the MDX page. See [W022](./docs/wisdom/W022-rsc-boundary-mdx-function-props.md) for the pattern, error message, and canonical example (Marquee, VI-325).
 

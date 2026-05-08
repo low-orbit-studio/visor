@@ -26,6 +26,7 @@ import { docsHasInstallCommand } from './rules/docs-has-install-command.js';
 import { docsConsistentSections } from './rules/docs-consistent-sections.js';
 import { docsAlphabetized } from './rules/docs-alphabetized.js';
 import { docsPageExists } from './rules/docs-page-exists.js';
+import { docsProxyExists } from './rules/docs-proxy-exists.js';
 import { themeFontImports } from './rules/theme-font-imports.js';
 import { globalsCssImportsOrder } from './rules/globals-css-imports-order.js';
 import { globalsWordmarkRules } from './rules/globals-wordmark-rules.js';
@@ -87,6 +88,7 @@ const rules: Rule[] = [
   hooksDocsPageExists,
   patternsDocsPageExists,
   docsPageExists,
+  docsProxyExists,
   docsHasPreview,
   docsHasPropsTable,
   docsHasInstallCommand,

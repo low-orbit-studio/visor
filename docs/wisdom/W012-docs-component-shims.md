@@ -21,7 +21,13 @@ import { ColorBar } from '@/components/ui/color-bar';
 
 ## Pattern
 
-The shim file must include `'use client'` since all specimen components use hooks.
+The shim file must include `'use client'` since all specimen components use hooks. This is the difference between RSC-compatible and broken at prerender.
+
+Both flat (`packages/docs/components/ui/<name>.tsx`) and subdirectory (`packages/docs/components/ui/<name>/<name>.tsx`) variants are valid — match the import path used by the MDX page.
+
+## Enforcement
+
+The `docs-proxy-exists` rule in `scripts/rules/` runs as part of `npm run validate` and CI. It fails when a component at `components/ui/<name>/<name>.tsx` is missing both proxy variants, or when the existing proxy is missing the `'use client'` directive. See `CONTRIBUTING.md` ("Docs proxy file") for the scaffolding checklist.
 
 ## Tags
 
