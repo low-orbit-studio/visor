@@ -1723,6 +1723,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "station-spectrum",
+    type: "registry:ui",
+    category: "visual-elements",
+    description:
+      "Animated N-station progress diagram with a hairline rail that draws on scroll-entry and dots that illuminate sequentially via CSS transition delays. Designed for 'process / phases / pipeline' marketing diagrams.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/station-spectrum/station-spectrum.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/station-spectrum/station-spectrum.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "theme-switcher",
     type: "registry:ui",
     category: "general",
