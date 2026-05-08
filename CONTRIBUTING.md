@@ -59,6 +59,8 @@ visor/
 4. **Document it** by adding an MDX page under `packages/docs/content/docs/components/`.
 5. Run `npm test` and `npm run typecheck` before opening a PR.
 
+> **If the component takes function props** (`renderItem`, `renderSeparator`, render callbacks, etc.), the MDX demo cannot pass an inline arrow function — MDX is a React Server Component by default and functions cannot cross the RSC boundary. Wrap the live preview in a `'use client'` demo at `packages/docs/components/ui/<component>-demo.tsx`, then import and render it from the MDX page. See [W022](./docs/wisdom/W022-rsc-boundary-mdx-function-props.md) for the pattern, error message, and canonical example (Marquee, VI-325).
+
 ### Component conventions
 
 - Use **CSS Modules** for all styles — no Tailwind, no CSS-in-JS.
