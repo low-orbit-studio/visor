@@ -200,10 +200,58 @@ ESLint is configured at the root. Run `npm run lint` to check and `npm run lint:
 1. Fork the repo and create a branch with a descriptive name (e.g., `feat/button-loading-state` or `fix/input-focus-ring`).
 2. Make your changes — one concern per PR is strongly preferred.
 3. Run `npm test`, `npm run typecheck`, and `npm run lint` before pushing.
-4. Open a pull request against `main` with a clear title and description of what changed and why.
-5. A maintainer will review and may request changes. We aim to respond within a few business days.
+4. **Add a changeset** if your PR touches shipping-package source (see [Changesets](#changesets) below). CI will block the merge otherwise.
+5. Open a pull request against `main` with a clear title and description of what changed and why.
+6. A maintainer will review and may request changes. We aim to respond within a few business days.
 
 For significant changes — new components, breaking token changes, architecture decisions — please open an issue first to discuss the approach before investing time in implementation.
+
+## Changesets
+
+Visor uses [changesets](https://github.com/changesets/changesets) to manage versioning and changelogs for its published npm packages.
+
+**When you need a changeset:** Any PR that touches shipping-package source — components, blocks, hooks, lib, registry, themes, patterns, assets, or any file under `packages/cli/src/`, `packages/theme-engine/src/`, `packages/tokens/src/`, or `packages/visor-flutter/lib/` — must include a `.changeset/*.md` entry. A CI check blocks merge if one is missing.
+
+**Exempt paths:** `docs/`, `packages/docs/`, `**/*.mdx`, `**/*.md`, `widgetbook/`, and other tooling/infra paths do not require a changeset.
+
+### Adding a changeset
+
+**Option 1 — CLI (recommended):**
+
+```bash
+npm run changeset
+```
+
+Follow the interactive prompts to choose the affected packages and bump type (`patch`, `minor`, or `major`), then write a brief description.
+
+**Option 2 — lo-changeset skill (if installed):**
+
+```bash
+/lo-changeset
+```
+
+This uses Claude to analyze your diff and auto-generate a changeset, which is committed to `.changeset/`.
+
+**Option 3 — Manual:** Create a file at `.changeset/<your-slug>.md` with the following format:
+
+```md
+---
+"@loworbitstudio/visor-core": patch
+---
+
+Brief description of what changed and why.
+```
+
+Replace `patch` with `minor` (new feature, backward-compatible) or `major` (breaking change) as appropriate.
+
+### Skip mechanism
+
+Some PRs legitimately don't need a changeset — CI tooling refactors, revert-of-reverts, or internal changes with no consumer impact. To bypass the gate:
+
+- **Add `[skip-changeset]` to the PR title** — e.g., `fix: revert broken golden [skip-changeset]`
+- **OR apply the `skip-changeset` label** to the PR
+
+Both methods are logged by the CI check for audit purposes. Use them sparingly.
 
 ## Contributor Ladder
 
