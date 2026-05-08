@@ -179,38 +179,32 @@ The skill is a thin operator surface — it does not contain publish logic, it j
 
 Each is concrete enough to file directly. Priority and estimates are suggestions; tune at intake.
 
-### VI — `feat: auto-version visor-themes-private on PR merge`
+### [VI-336](https://linear.app/low-orbit-studio/issue/VI-336) — `feat: auto-version visor-themes-private on PR merge`
 
 - **Goal:** Port `scripts/auto-version.mjs` and `auto-version.yml` from Visor to `low-orbit-studio/visor-themes-private`. Change `publish.yml` trigger from tag push to push-to-main. After this lands, a merged PR in visor-themes-private auto-bumps the patch version and publishes — zero operator action.
 - **Estimate:** S (3 points). Lift-and-shift with single-package simplification.
 - **Priority:** Medium. Closes the largest manual gap surfaced by this audit.
+- **Bundled:** the original "post-publish git tag for visor-themes-private" follow-up is folded in as D5 stretch goal.
 
-### VI — `feat: minor/major bump automation for npm packages`
+### [VI-338](https://linear.app/low-orbit-studio/issue/VI-338) — `feat: local AI-written changesets via /lo-changeset skill + git pre-push hook`
 
-- **Goal:** Eliminate the manual `npm run changeset` step. Either:
-  - **Option A:** Resurrect commit-prefix-driven changeset generation (`feat:` → minor, `feat!:` → major), with the lessons learned from VI-184's revert.
-  - **Option B:** Linear-label-driven changeset generation. Operator sets `bump:minor` / `bump:major` on the Linear ticket; a workflow reads the label on PR merge and writes the changeset.
-- **Estimate:** M (5 points). Includes the "why was VI-184 reverted" investigation.
-- **Priority:** Medium. The remaining material manual step on the public side; only kicks in for non-patch releases (less frequent than patches).
+- **Goal:** Eliminate the manual `npm run changeset` step using a local `claude -p`-powered script that generates the changeset from the diff. Wired into a husky pre-push hook (auto-fires on any push) and exposed as a `/lo-changeset` skill (manual invocation, lo-land integration).
+- **Estimate:** M (5 points).
+- **Priority:** Medium. The remaining material manual step on the public side; only kicks in for non-patch releases.
+- **Note:** This supersedes both the originally-sketched commit-prefix / Linear-label approach AND the cancelled cloud-hosted spike at [VI-335](https://linear.app/low-orbit-studio/issue/VI-335). Local approach has no per-PR API cost, runs on the operator's existing Claude Code install, and avoids GitHub Actions secrets management.
 
-### VI — `feat: pre-publish workspace export-surface drift gate (W020)`
+### [VI-337](https://linear.app/low-orbit-studio/issue/VI-337) — `feat: pre-publish workspace export-surface drift gate (W020)`
 
 - **Goal:** Add a CI step in `release.yml` that, for each package about to publish, statically analyses imports from sibling workspace packages, resolves their `^X.Y.Z` constraints against npm metadata, and fails the publish if any imported symbol is missing from the resolved upstream tarball.
 - **Estimate:** M–L (5–8 points). Static analysis + npm metadata fetch + d.ts parsing.
 - **Priority:** Medium. Already cost us once (Visor 0.5.0 → 0.5.1 patch republish). Will cost us again at some point if not gated.
 
-### VI — `feat: /lo-visor-publish operator skill (status + coordinate)`
+### [VI-340](https://linear.app/low-orbit-studio/issue/VI-340) — `feat: /lo-visor-publish operator skill (status + coordinate)`
 
 - **Goal:** Build the skill sketched above. Status mode + coordinate mode.
 - **Estimate:** M (5 points).
-- **Priority:** Low-Medium. Defer until follow-ups #1 and #2 are landed; the skill's value depends on the underlying flows being individually fully-auto.
-- **Dependency:** Blocked by follow-up #1 (themes-private auto-version) and #2 (minor/major automation).
-
-### VI — `chore: post-publish git tag for visor-themes-private`
-
-- **Goal:** After the trigger swap in follow-up #1, optionally have the publish workflow create a `v0.1.3` tag post-publish for git archaeology. Strictly cosmetic — npm registry is the source of truth for what was published.
-- **Estimate:** S (1 point). Nice-to-have, can be bundled into follow-up #1.
-- **Priority:** Low.
+- **Priority:** Low. Defer until VI-336 and VI-338 are landed; the skill's value depends on the underlying flows being individually fully-auto.
+- **Dependency:** Blocked by [VI-336](https://linear.app/low-orbit-studio/issue/VI-336) (themes-private auto-version) and [VI-338](https://linear.app/low-orbit-studio/issue/VI-338) (local AI changesets).
 
 ---
 
