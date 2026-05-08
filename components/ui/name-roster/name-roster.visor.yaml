@@ -1,0 +1,71 @@
+name: NameRoster
+description: A column-flow alphabetical list of named items with a dot-prefix indicator and a highlighted-row variant for featured or owned entries.
+extends: HTMLUListElement
+category: data-display
+
+when_to_use:
+  - Displaying a flat list of clients, contributors, alumni, or team members
+  - Marketing pages where names need to flow across responsive column counts (1→2→3→4)
+  - Any list where some entries should be visually distinguished (e.g. LO-owned products, featured clients)
+  - Directory-style lists where column-flow balance is preferred over strict grid alignment
+
+when_not_to_use:
+  - Lists that require click handlers, selection, or filter/search (different primitive)
+  - Grouped lists with alphabetical separators (extend with a heading layer)
+  - Lists that need two-letter avatars or icons next to names
+  - Short single-item or two-item lists where layout overhead isn't worth it
+
+why: >
+  NameRoster handles the recurring "flat list of names" pattern across marketing sites.
+  Multi-column CSS flow (column-count + column-fill: balance) distributes items naturally
+  across uneven counts without the alignment issues of flex or grid. The dot-prefix
+  pseudo-element is decorative and CSS-only — no markup overhead. The highlighted variant
+  uses a data attribute so themes can target it freely. The items shorthand covers the 90%
+  case while children mode allows arbitrary nodes (links, tooltips, etc.).
+
+props:
+  - name: columns
+    type: 'number | { base?: number; sm?: number; md?: number; lg?: number; xl?: number }'
+    default: '1'
+    description: Number of CSS columns. Pass a plain number or a breakpoint map for responsive layouts.
+  - name: sort
+    type: '"alpha" | "none"'
+    default: '"none"'
+    description: Sort order. "alpha" applies localeCompare client-side; "none" preserves insertion order.
+  - name: items
+    type: 'NameRosterItemData[]'
+    default: undefined
+    description: Shorthand array of { name, highlighted? } items. Takes precedence over children when provided.
+  - name: dot
+    type: boolean
+    default: 'true'
+    description: Show the dot-prefix indicator on each item.
+  - name: as
+    type: '"ul" | "ol"'
+    default: '"ul"'
+    description: HTML list element to render.
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/data-display/name-roster"
+
+example: |
+  {/* Shorthand with responsive columns and highlighted rows */}
+  <NameRoster
+    columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+    sort="alpha"
+    items={[
+      { name: 'ANIMAL' },
+      { name: 'Blacklight', highlighted: true },
+      { name: 'Knowmentum', highlighted: true },
+      { name: 'SCRUFF' },
+      { name: 'Visor', highlighted: true },
+    ]}
+  />
+
+  {/* Children mode with anchor nodes */}
+  <NameRoster columns={{ base: 1, md: 3 }}>
+    <NameRosterItem><a href="/clients/scruff">SCRUFF</a></NameRosterItem>
+    <NameRosterItem highlighted><a href="/products/visor">Visor</a></NameRosterItem>
+  </NameRoster>

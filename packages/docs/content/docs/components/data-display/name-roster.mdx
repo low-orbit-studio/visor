@@ -1,0 +1,138 @@
+---
+title: Name Roster
+description: A column-flow alphabetical list of named items with a dot-prefix indicator and a highlighted-row variant.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { NameRoster, NameRosterItem } from '@/components/ui/name-roster/name-roster';
+
+## Default (4-column)
+
+A 1→2→3→4 responsive column roster using the `columns` breakpoint map and the `items` shorthand. Items are sorted alphabetically via `sort="alpha"`.
+
+<ComponentPreview
+  title="4-Column Alphabetical Roster"
+  code={"import { NameRoster } from '@/components/ui/name-roster/name-roster';\n\n<NameRoster\n  columns={{ base: 1, sm: 2, md: 3, lg: 4 }}\n  sort=\"alpha\"\n  items={[\n    { name: 'ANIMAL' },\n    { name: 'Blacklight', highlighted: true },\n    { name: 'Delta Airlines' },\n    { name: 'ENTR' },\n    { name: 'Fidelity' },\n    { name: 'JD Power' },\n    { name: 'Knowmentum', highlighted: true },\n    { name: 'Marriott' },\n    { name: 'QNCC' },\n    { name: 'SCRUFF' },\n    { name: 'Sked' },\n    { name: 'Verizon' },\n    { name: 'Veronica Home' },\n    { name: 'Visor', highlighted: true },\n    { name: 'Wells Fargo' },\n    { name: 'XPrize' },\n  ]}\n/>"}
+>
+  <NameRoster
+    columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+    sort="alpha"
+    items={[
+      { name: 'ANIMAL' },
+      { name: 'Blacklight', highlighted: true },
+      { name: 'Delta Airlines' },
+      { name: 'ENTR' },
+      { name: 'Fidelity' },
+      { name: 'JD Power' },
+      { name: 'Knowmentum', highlighted: true },
+      { name: 'Marriott' },
+      { name: 'QNCC' },
+      { name: 'SCRUFF' },
+      { name: 'Sked' },
+      { name: 'Verizon' },
+      { name: 'Veronica Home' },
+      { name: 'Visor', highlighted: true },
+      { name: 'Wells Fargo' },
+      { name: 'XPrize' },
+    ]}
+  />
+</ComponentPreview>
+
+## With Highlighted Rows
+
+The `highlighted` prop marks items as featured or owned. Highlighted rows use a different dot color and medium font weight — both driven by CSS custom properties so they adapt to any theme.
+
+<ComponentPreview
+  title="Highlighted Rows"
+  code={"import { NameRoster, NameRosterItem } from '@/components/ui/name-roster/name-roster';\n\n<NameRoster columns={{ base: 1, md: 2 }}>\n  <NameRosterItem>ANIMAL</NameRosterItem>\n  <NameRosterItem highlighted>Blacklight</NameRosterItem>\n  <NameRosterItem>Delta Airlines</NameRosterItem>\n  <NameRosterItem highlighted>Knowmentum</NameRosterItem>\n  <NameRosterItem>SCRUFF</NameRosterItem>\n  <NameRosterItem highlighted>Visor</NameRosterItem>\n</NameRoster>"}
+>
+  <NameRoster columns={{ base: 1, md: 2 }}>
+    <NameRosterItem>ANIMAL</NameRosterItem>
+    <NameRosterItem highlighted>Blacklight</NameRosterItem>
+    <NameRosterItem>Delta Airlines</NameRosterItem>
+    <NameRosterItem highlighted>Knowmentum</NameRosterItem>
+    <NameRosterItem>SCRUFF</NameRosterItem>
+    <NameRosterItem highlighted>Visor</NameRosterItem>
+  </NameRoster>
+</ComponentPreview>
+
+## With Anchor Children
+
+`NameRosterItem` accepts arbitrary children — link names to detail pages without losing the dot treatment.
+
+<ComponentPreview
+  title="Anchor Children"
+  code={"import { NameRoster, NameRosterItem } from '@/components/ui/name-roster/name-roster';\n\n<NameRoster columns={{ base: 1, md: 3 }}>\n  <NameRosterItem><a href=\"/clients/scruff\">SCRUFF</a></NameRosterItem>\n  <NameRosterItem><a href=\"/clients/animal\">ANIMAL</a></NameRosterItem>\n  <NameRosterItem highlighted><a href=\"/products/visor\">Visor</a></NameRosterItem>\n  <NameRosterItem highlighted><a href=\"/products/blacklight\">Blacklight</a></NameRosterItem>\n  <NameRosterItem><a href=\"/clients/wells-fargo\">Wells Fargo</a></NameRosterItem>\n  <NameRosterItem><a href=\"/clients/xprize\">XPrize</a></NameRosterItem>\n</NameRoster>"}
+>
+  <NameRoster columns={{ base: 1, md: 3 }}>
+    <NameRosterItem><a href="/clients/scruff">SCRUFF</a></NameRosterItem>
+    <NameRosterItem><a href="/clients/animal">ANIMAL</a></NameRosterItem>
+    <NameRosterItem highlighted><a href="/products/visor">Visor</a></NameRosterItem>
+    <NameRosterItem highlighted><a href="/products/blacklight">Blacklight</a></NameRosterItem>
+    <NameRosterItem><a href="/clients/wells-fargo">Wells Fargo</a></NameRosterItem>
+    <NameRosterItem><a href="/clients/xprize">XPrize</a></NameRosterItem>
+  </NameRoster>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add name-roster
+```
+
+This copies two files into your project:
+
+- `components/ui/name-roster/name-roster.tsx` — the component
+- `components/ui/name-roster/name-roster.module.css` — the styles
+
+## Usage
+
+```tsx
+import { NameRoster, NameRosterItem } from '@/components/ui/name-roster/name-roster';
+
+{/* Shorthand with items array */}
+<NameRoster
+  columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+  sort="alpha"
+  items={[
+    { name: 'ANIMAL' },
+    { name: 'Blacklight', highlighted: true },
+    { name: 'SCRUFF' },
+  ]}
+/>
+
+{/* Children mode — allows arbitrary nodes */}
+<NameRoster columns={{ base: 1, md: 3 }}>
+  <NameRosterItem>SCRUFF</NameRosterItem>
+  <NameRosterItem highlighted>Visor</NameRosterItem>
+</NameRoster>
+```
+
+## API Reference
+
+### NameRoster
+
+<PropsTable component="name-roster" />
+
+The component also accepts all standard `<ul>` / `<ol>` HTML attributes.
+
+### NameRosterItem
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `highlighted` | `boolean` | `false` | Render with highlighted dot color and medium weight. |
+| `children` | `ReactNode` | — | Item content — text, links, or any inline node. |
+
+The component also accepts all standard `<li>` HTML attributes.
+
+### NameRosterItemData
+
+Type used with the `items` shorthand prop:
+
+```ts
+interface NameRosterItemData {
+  name: string
+  highlighted?: boolean
+}
+```
