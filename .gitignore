@@ -96,3 +96,6 @@ packages/docs/public/themes/*.visor.yaml
 !packages/docs/public/themes/neutral.visor.yaml
 !packages/docs/public/themes/space.visor.yaml
 .vercel
+
+# Claude Code session artifacts
+.env*
