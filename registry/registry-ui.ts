@@ -1105,6 +1105,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "marquee",
+    type: "registry:ui",
+    description:
+      "A multi-band counter-flow infinite-scroll primitive for continuous animated content strips. Pure CSS animation with pause-on-hover and prefers-reduced-motion support.",
+    category: "data-display",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/marquee/marquee.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/marquee/marquee.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "fieldset",
     type: "registry:ui",
     description:

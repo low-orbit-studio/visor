@@ -1,0 +1,150 @@
+/* Marquee: multi-band counter-flow infinite-scroll primitive
+ *
+ * Layout strategy:
+ *   Each band is a masked overflow container. Inside sits a `track` which
+ *   contains two identical `set` elements laid out side-by-side. The
+ *   animation moves the track left by 50% (= one set width), then loops.
+ *
+ * Animation strategy:
+ *   @keyframes marquee-scroll: translateX(0) → translateX(-50%)
+ *   Direction reverses (right→left) via animation-direction: reverse.
+ *   Duration and gap are injected as CSS custom properties per-band.
+ *   pause-on-hover: .pauseOnHover:hover .track { animation-play-state: paused }
+ *
+ * prefers-reduced-motion:
+ *   Animation is disabled — items appear statically with no motion.
+ */
+
+/* ── Keyframe ────────────────────────────────────────────────────────────── */
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ── Root ────────────────────────────────────────────────────────────────── */
+
+.root {
+  --marquee-gap: var(--spacing-6, 1.5rem);
+  --marquee-duration: 25s;
+  --marquee-fade-width: var(--spacing-12, 3rem);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 1rem);
+  width: 100%;
+  overflow: hidden;
+}
+
+/* ── Band ────────────────────────────────────────────────────────────────── */
+
+.band {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  /* Fade edges for polished infinite-scroll effect */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black var(--marquee-fade-width),
+    black calc(100% - var(--marquee-fade-width)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black var(--marquee-fade-width),
+    black calc(100% - var(--marquee-fade-width)),
+    transparent 100%
+  );
+}
+
+/* ── Track ────────────────────────────────────────────────────────────────── */
+
+/*
+ * The track contains two `.set` elements (first copy + second copy) so the
+ * total width equals 2× one set. Animating translateX(-50%) scrolls exactly
+ * one set-width, creating a seamless loop.
+ */
+.track {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: max-content;
+  animation: marquee-scroll var(--marquee-duration, 25s) var(--motion-easing-linear, linear) infinite;
+  will-change: transform;
+  gap: var(--marquee-gap);
+}
+
+/* ── Item set ─────────────────────────────────────────────────────────────── */
+
+.set {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--marquee-gap);
+  flex-shrink: 0;
+}
+
+/* ── Item ─────────────────────────────────────────────────────────────────── */
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--text-primary, #111827);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-tight, 1.25);
+  white-space: nowrap;
+}
+
+/* ── Separator ─────────────────────────────────────────────────────────────── */
+
+.separator {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--text-tertiary, #9ca3af);
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: var(--line-height-tight, 1.25);
+  user-select: none;
+}
+
+/* ── Pause on hover ─────────────────────────────────────────────────────── */
+
+.pauseOnHover:hover .track {
+  animation-play-state: paused;
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    /* Disable animation entirely — items appear statically */
+    animation: none;
+    /* Show only the first set; overflow hidden on band clips the rest */
+    transform: none;
+  }
+
+  /* Remove the fade mask when static to avoid clipping visible items */
+  .band {
+    -webkit-mask-image: none;
+    mask-image: none;
+    overflow: auto;
+  }
+
+  /* Wrap items for readability in static/accessible mode */
+  .track {
+    flex-wrap: wrap;
+  }
+
+  .set:last-child {
+    /* Hide the duplicate set in reduced-motion mode */
+    display: none;
+  }
+}

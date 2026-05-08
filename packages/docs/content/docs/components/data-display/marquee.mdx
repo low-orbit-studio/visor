@@ -1,0 +1,138 @@
+---
+title: Marquee
+description: A multi-band counter-flow infinite-scroll primitive for continuous animated content strips.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Marquee } from '@/components/ui/marquee';
+
+## Single Band
+
+The simplest usage: pass `items` and optionally a `separator` glyph. Items are duplicated internally for a seamless loop.
+
+<ComponentPreview
+  title="Single Band Marquee"
+  code={"import { Marquee } from '@/components/ui/marquee/marquee';\n\n<Marquee\n  items={['Acme Corp', 'Vercel', 'Low Orbit Studio', 'Figma', 'Notion', 'Linear']}\n  durationSec={20}\n  separator=\"·\"\n/>"}
+>
+  <Marquee
+    items={['Acme Corp', 'Vercel', 'Low Orbit Studio', 'Figma', 'Notion', 'Linear']}
+    durationSec={20}
+    separator="·"
+  />
+</ComponentPreview>
+
+## Counter-Flow Dual Band
+
+Pass a `bands` array with per-band `direction`, `durationSec`, and `separator`. Opposite directions create the counter-flow pattern common in "trusted by" sections.
+
+<ComponentPreview
+  title="Counter-Flow Dual Band"
+  code={"import { Marquee } from '@/components/ui/marquee/marquee';\n\nconst clients = ['Acme Corp', 'Vercel', 'Low Orbit Studio', 'Figma', 'Notion', 'Linear'];\n\n<Marquee\n  bands={[\n    { items: clients, direction: 'left', durationSec: 25, separator: '●' },\n    { items: [...clients].reverse(), direction: 'right', durationSec: 30, separator: '○' },\n  ]}\n  pauseOnHover\n  gap=\"2.5rem\"\n/>"}
+>
+  <Marquee
+    bands={[
+      {
+        items: ['Acme Corp', 'Vercel', 'Low Orbit Studio', 'Figma', 'Notion', 'Linear'],
+        direction: 'left',
+        durationSec: 25,
+        separator: '●',
+      },
+      {
+        items: ['Linear', 'Notion', 'Figma', 'Low Orbit Studio', 'Vercel', 'Acme Corp'],
+        direction: 'right',
+        durationSec: 30,
+        separator: '○',
+      },
+    ]}
+    pauseOnHover
+    gap="2.5rem"
+  />
+</ComponentPreview>
+
+## Custom Render
+
+Use `renderItem` to render rich nodes — logos, avatar groups, or styled cards — instead of plain text.
+
+<ComponentPreview
+  title="Custom renderItem"
+  code={"import { Marquee } from '@/components/ui/marquee/marquee';\n\nconst logos = ['AC', 'VR', 'LO', 'FG', 'NT'];\n\n<Marquee\n  items={logos}\n  separator=\"·\"\n  renderItem={(item) => (\n    <span\n      style={{\n        display: 'inline-flex',\n        alignItems: 'center',\n        justifyContent: 'center',\n        width: '2.5rem',\n        height: '2.5rem',\n        borderRadius: 'var(--radius-md)',\n        background: 'var(--surface-muted)',\n        color: 'var(--text-secondary)',\n        fontSize: 'var(--font-size-xs)',\n        fontWeight: 'var(--font-weight-semibold)',\n      }}\n    >\n      {item}\n    </span>\n  )}\n/>"}
+>
+  <Marquee
+    items={['AC', 'VR', 'LO', 'FG', 'NT', 'LN']}
+    separator="·"
+    renderItem={(item) => (
+      <span
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '2.5rem',
+          height: '2.5rem',
+          borderRadius: 'var(--radius-md)',
+          background: 'var(--surface-muted)',
+          color: 'var(--text-secondary)',
+          fontSize: 'var(--font-size-xs)',
+          fontWeight: 'var(--font-weight-semibold)',
+        }}
+      >
+        {item}
+      </span>
+    )}
+  />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add marquee
+```
+
+This copies two files into your project:
+
+- `components/ui/marquee/marquee.tsx` — the component
+- `components/ui/marquee/marquee.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Marquee } from '@/components/ui/marquee/marquee';
+
+// Single-band shorthand
+<Marquee
+  items={['Acme Corp', 'Vercel', 'Figma']}
+  durationSec={20}
+  separator="·"
+/>
+
+// Multi-band counter-flow
+<Marquee
+  bands={[
+    { items: clientNames, direction: 'left',  durationSec: 25, separator: '●' },
+    { items: clientNamesReversed, direction: 'right', durationSec: 30, separator: '○' },
+  ]}
+  pauseOnHover
+  gap="2.5rem"
+/>
+```
+
+## Accessibility
+
+- All tracks are wrapped in `aria-hidden="true"` — the scrolling content is decorative. Add meaningful context via `aria-label` on the root element.
+- Pause-on-hover (`pauseOnHover`, default `true`) lets users read content without time pressure.
+- `prefers-reduced-motion: reduce` disables the animation entirely, rendering items statically.
+
+## API Reference
+
+### MarqueeProps
+
+<PropsTable component="marquee" />
+
+### MarqueeBand
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | `ReactNode[]` | — | Items to display in this band |
+| `direction` | `"left" \| "right"` | `"left"` | Scroll direction |
+| `durationSec` | `number` | `25` | Duration of one full cycle in seconds |
+| `separator` | `ReactNode \| string` | — | Separator rendered between items |

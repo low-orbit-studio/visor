@@ -1,0 +1,80 @@
+name: Marquee
+description: A multi-band counter-flow infinite-scroll primitive for continuous animated content strips.
+extends: HTMLDivElement
+category: data-display
+
+when_to_use:
+  - Trusted-by logo strips on marketing / landing pages
+  - News tickers or announcement banners that cycle continuously
+  - Tag clouds or label lists that benefit from animated browsing
+  - Feature highlights that need ambient motion without user interaction
+  - Counter-flow dual-band patterns that convey momentum and volume
+
+when_not_to_use:
+  - Paginated or interactive content browsing (use Carousel)
+  - Content that users need to read or click (pause-on-hover helps, but prefer static lists)
+  - Environments where animation is not appropriate (prefers-reduced-motion renders static)
+  - Primary navigation or critical actions (animation reduces discoverability)
+
+why: >
+  Marquee provides a pure-CSS infinite-scroll loop without JavaScript scroll loops.
+  Items are duplicated internally so the animation seamlessly transitions from the
+  last item back to the first. Per-band direction config makes counter-flow patterns
+  (one band scrolling left, one right) first-class. The prefers-reduced-motion guard
+  ensures accessibility, and pause-on-hover lets users read content. All tokens
+  reference visor-core CSS custom properties — spacing, motion, and typography.
+
+props:
+  - name: bands
+    type: MarqueeBand[]
+    description: Multi-band configuration array. When provided, top-level items/durationSec/separator are ignored.
+    default: undefined
+  - name: items
+    type: ReactNode[]
+    description: 'Single-band shorthand: items to scroll. Used when bands is not provided.'
+    default: undefined
+  - name: durationSec
+    type: number
+    description: Duration of one full scroll cycle in seconds (single-band shorthand).
+    default: 25
+  - name: separator
+    type: ReactNode | string
+    description: Separator rendered between items (single-band shorthand).
+    default: undefined
+  - name: pauseOnHover
+    type: boolean
+    description: When true, scrolling pauses on hover.
+    default: true
+  - name: gap
+    type: CSSProperties['gap']
+    description: Gap between items. Accepts any CSS gap value.
+    default: "var(--spacing-6, 1.5rem)"
+  - name: renderItem
+    type: (item, index) => ReactNode
+    description: Custom render function for each item.
+    default: undefined
+  - name: renderSeparator
+    type: (separator, index) => ReactNode
+    description: Custom render function for the separator.
+    default: undefined
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/data-display/marquee"
+
+example: |
+  <Marquee
+    items={['Acme Corp', 'Vercel', 'Low Orbit Studio', 'Figma', 'Notion']}
+    durationSec={20}
+    separator="·"
+  />
+
+  <Marquee
+    bands={[
+      { items: clients, direction: 'left', durationSec: 25, separator: '●' },
+      { items: clientsReversed, direction: 'right', durationSec: 30, separator: '○' },
+    ]}
+    pauseOnHover
+    gap="2.5rem"
+  />
