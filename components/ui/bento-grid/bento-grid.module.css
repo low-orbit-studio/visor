@@ -1,0 +1,155 @@
+/* ============================================================
+   BentoGrid — asymmetric tile grid layout component
+   ============================================================ */
+
+/* ---------------------------------------------------------------------------
+   Grid container
+   --------------------------------------------------------------------------- */
+
+.bentoGrid {
+  display: grid;
+  grid-template-columns: repeat(var(--bento-cols, 2), 1fr);
+  gap: var(--bento-gap, var(--spacing-4, 1rem));
+}
+
+/* Responsive breakpoints — only apply when the CSS variable is set */
+@media (min-width: 640px) {
+  .bentoGrid {
+    grid-template-columns: repeat(
+      var(--bento-cols-sm, var(--bento-cols, 2)),
+      1fr
+    );
+  }
+}
+
+@media (min-width: 768px) {
+  .bentoGrid {
+    grid-template-columns: repeat(
+      var(--bento-cols-md, var(--bento-cols-sm, var(--bento-cols, 2))),
+      1fr
+    );
+  }
+}
+
+@media (min-width: 1024px) {
+  .bentoGrid {
+    grid-template-columns: repeat(
+      var(--bento-cols-lg, var(--bento-cols-md, var(--bento-cols-sm, var(--bento-cols, 2)))),
+      1fr
+    );
+  }
+}
+
+@media (min-width: 1280px) {
+  .bentoGrid {
+    grid-template-columns: repeat(
+      var(--bento-cols-xl, var(--bento-cols-lg, var(--bento-cols-md, var(--bento-cols-sm, var(--bento-cols, 2))))),
+      1fr
+    );
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Tile base
+   --------------------------------------------------------------------------- */
+
+.bentoTile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-xl, 1rem);
+  background-color: var(--surface-card, #ffffff);
+  color: var(--text-primary, #111827);
+  box-shadow: var(--shadow-sm);
+
+  /* Aspect ratio — applied per tile via inline CSS custom property */
+  aspect-ratio: var(--bento-tile-aspect, auto);
+}
+
+/* Clickable tiles — anchor root */
+a.bentoTile {
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    box-shadow var(--motion-duration-fast, 150ms) var(--motion-easing-standard, ease),
+    transform var(--motion-duration-fast, 150ms) var(--motion-easing-standard, ease);
+}
+
+a.bentoTile:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+a.bentoTile:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #6366f1);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* ---------------------------------------------------------------------------
+   Span variants
+   --------------------------------------------------------------------------- */
+
+/* Full width — spans all columns */
+.bentoTileFull {
+  grid-column: 1 / -1;
+}
+
+/* Half — default 1-column span (no extra rule needed; grid auto-places it) */
+.bentoTileHalf {
+  grid-column: span 1;
+}
+
+/* Numeric span — uses --bento-tile-span custom property */
+.bentoTileNumeric {
+  grid-column: span var(--bento-tile-span, 1);
+}
+
+/* Collapse all spans to single column on narrow viewports */
+@media (max-width: 639px) {
+  .bentoTileFull,
+  .bentoTileHalf,
+  .bentoTileNumeric {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Fit variants
+   --------------------------------------------------------------------------- */
+
+/* contain — natural-fit media with surface-card background plate */
+.bentoTileContain {
+  background-color: var(--surface-card, #ffffff);
+}
+
+/* ---------------------------------------------------------------------------
+   Media element
+   --------------------------------------------------------------------------- */
+
+.bentoTileMedia {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* default; overridden by contain modifier below */
+}
+
+/* When the parent tile is contain mode, media uses object-fit: contain */
+.bentoTileContain .bentoTileMedia {
+  object-fit: contain;
+}
+
+/* ---------------------------------------------------------------------------
+   Tile body
+   --------------------------------------------------------------------------- */
+
+.bentoTileBody {
+  position: relative; /* stacks above absolute media */
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+  padding: var(--spacing-4, 1rem);
+  margin-top: auto; /* push body to bottom when media is present */
+}
