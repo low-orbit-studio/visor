@@ -1,0 +1,113 @@
+name: BentoGrid
+description: An asymmetric tile grid primitive with full/half span variants, per-tile aspect ratios, and contain/cover media fit modes. Designed for portfolio, case-study, and showcase layouts.
+extends: HTMLDivElement
+category: data-display
+
+when_to_use:
+  - Asymmetric portfolio or case-study grids where tiles have different visual weights
+  - Hero-style layouts mixing full-width feature tiles with paired half-width tiles
+  - Showcase grids with varied aspect ratios (21:9, 2:1, 4:3) and image fit modes
+  - Marketing pages using Apple-style "bento" layouts
+  - Any grid where tiles intentionally have different sizes or spans
+
+when_not_to_use:
+  - Symmetric uniform grids where all tiles are the same size (use card-grid instead)
+  - Simple two-column content layouts (use CSS grid or flexbox directly)
+  - List-style data displays (use Table or DataTable)
+  - Pinterest-style masonry layouts where tile heights vary based on content
+
+why: >
+  BentoGrid fills the gap between card-grid (uniform tile sizes) and fully custom CSS grids.
+  It provides a structured API for asymmetric layouts while keeping consumer code readable —
+  span="full" for hero tiles, span="half" for paired tiles, aspect per tile for mixed ratios.
+  All tiles collapse to single-column on narrow viewports automatically. The compound primitive
+  pattern (Grid + Tile + TileMedia + TileBody) mirrors the Card pattern for consistency.
+
+props:
+  - name: cols
+    type: "number | { base: number; sm?: number; md?: number; lg?: number; xl?: number }"
+    default: "2"
+    description: "Number of grid columns. Accepts a plain number or a responsive breakpoint map."
+  - name: gap
+    type: string
+    default: '"4"'
+    description: "Gap between tiles as a spacing token suffix. E.g. '4' resolves to var(--spacing-4)."
+
+sub_components:
+  - name: BentoTile
+    description: Individual grid tile. Renders as <article> by default, or <a> when href is provided.
+    props:
+      - name: span
+        type: '"full" | "half" | number'
+        default: '"half"'
+        description: "Column span: full (1/-1), half (1 col), or a numeric span count."
+      - name: aspect
+        type: '"21/9" | "2/1" | "4/3" | "1/1" | string'
+        description: "Aspect ratio for the tile. Maps directly to CSS aspect-ratio."
+      - name: fit
+        type: '"cover" | "contain"'
+        default: '"cover"'
+        description: "Media fit mode. contain adds a surface-card background plate for logos/portraits."
+      - name: href
+        type: string
+        description: "When provided, renders the tile root as an anchor element."
+      - name: target
+        type: string
+        description: "Link target (e.g. _blank). Only relevant when href is set."
+      - name: rel
+        type: string
+        description: "Link rel attribute. Defaults to 'noopener noreferrer' when target is _blank."
+  - name: BentoTileMedia
+    description: Full-bleed media image absolutely positioned within the tile.
+    props:
+      - name: src
+        type: string
+        required: true
+        description: "Image source URL."
+      - name: alt
+        type: string
+        required: true
+        description: "Image alt text for accessibility."
+      - name: loading
+        type: '"lazy" | "eager"'
+        default: '"lazy"'
+        description: "Native image loading strategy."
+  - name: BentoTileBody
+    description: Content overlay for text and metadata, positioned above media.
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/data-display/bento-grid"
+
+example: |
+  <BentoGrid cols={{ base: 1, md: 2 }} gap="4">
+    <BentoTile span="full" aspect="21/9">
+      <BentoTileMedia src="/projects/knowmentum.jpg" alt="Knowmentum project hero" />
+      <BentoTileBody>
+        <h3>Knowmentum</h3>
+        <p>Knowledge platform for high-performers.</p>
+      </BentoTileBody>
+    </BentoTile>
+
+    <BentoTile span="half" aspect="2/1" href="https://animal.nyc/" target="_blank">
+      <BentoTileMedia src="/projects/animal-nyc.jpg" alt="Animal NYC" />
+      <BentoTileBody>
+        <h3>Animal NYC</h3>
+      </BentoTileBody>
+    </BentoTile>
+
+    <BentoTile span="half" aspect="2/1" href="https://animal.la/" target="_blank">
+      <BentoTileMedia src="/projects/animal-la.jpg" alt="Animal LA" />
+      <BentoTileBody>
+        <h3>Animal LA</h3>
+      </BentoTileBody>
+    </BentoTile>
+
+    <BentoTile span="half" aspect="4/3" fit="contain">
+      <BentoTileMedia src="/logos/client-logo.png" alt="Client logo" />
+      <BentoTileBody>
+        <p>Natural-fit logo tile</p>
+      </BentoTileBody>
+    </BentoTile>
+  </BentoGrid>

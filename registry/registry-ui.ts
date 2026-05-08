@@ -638,6 +638,33 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "bento-grid",
+    type: "registry:ui",
+    description:
+      "An asymmetric tile grid primitive with full/half span variants, per-tile aspect ratios, and contain/cover media fit modes. Designed for portfolio, case-study, and showcase layouts.",
+    category: "data-display",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/bento-grid/bento-grid.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/bento-grid/bento-grid.module.css",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/bento-grid/bento-grid.module.css.d.ts",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/bento-grid/bento-grid.visor.yaml",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "banner",
     type: "registry:ui",
     description:
