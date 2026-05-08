@@ -6,6 +6,7 @@ description: A multi-band counter-flow infinite-scroll primitive for continuous 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Marquee } from '@/components/ui/marquee';
+import { MarqueeRenderItemDemo } from '@/components/ui/marquee-demo';
 
 ## Single Band
 
@@ -58,28 +59,7 @@ Use `renderItem` to render rich nodes — logos, avatar groups, or styled cards 
   title="Custom renderItem"
   code={"import { Marquee } from '@/components/ui/marquee/marquee';\n\nconst logos = ['AC', 'VR', 'LO', 'FG', 'NT'];\n\n<Marquee\n  items={logos}\n  separator=\"·\"\n  renderItem={(item) => (\n    <span\n      style={{\n        display: 'inline-flex',\n        alignItems: 'center',\n        justifyContent: 'center',\n        width: '2.5rem',\n        height: '2.5rem',\n        borderRadius: 'var(--radius-md)',\n        background: 'var(--surface-muted)',\n        color: 'var(--text-secondary)',\n        fontSize: 'var(--font-size-xs)',\n        fontWeight: 'var(--font-weight-semibold)',\n      }}\n    >\n      {item}\n    </span>\n  )}\n/>"}
 >
-  <Marquee
-    items={['AC', 'VR', 'LO', 'FG', 'NT', 'LN']}
-    separator="·"
-    renderItem={(item) => (
-      <span
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '2.5rem',
-          height: '2.5rem',
-          borderRadius: 'var(--radius-md)',
-          background: 'var(--surface-muted)',
-          color: 'var(--text-secondary)',
-          fontSize: 'var(--font-size-xs)',
-          fontWeight: 'var(--font-weight-semibold)',
-        }}
-      >
-        {item}
-      </span>
-    )}
-  />
+  <MarqueeRenderItemDemo />
 </ComponentPreview>
 
 ## Installation
