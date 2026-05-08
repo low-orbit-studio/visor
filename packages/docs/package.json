@@ -33,6 +33,7 @@
     "url": "https://github.com/low-orbit-studio/visor/issues"
   },
   "dependencies": {
+    "@conform-to/react": "^1.17.1",
     "@loworbitstudio/visor-theme-engine": "*",
     "@phosphor-icons/react": "^2.1.10",
     "@radix-ui/react-avatar": "^1.1.11",
