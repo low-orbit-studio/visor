@@ -1,0 +1,130 @@
+name: Changeset Gate
+
+# Block PRs that touch shipping-package source but have no .changeset/*.md entry.
+# Background: on 2026-04-30, 17 of 22 merged PRs lacked changesets, causing
+# silent version-skip bugs for npm consumers (VI-317).
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+      - unlabeled
+
+concurrency:
+  group: changeset-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Changeset presence
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # -----------------------------------------------------------------------
+      # Skip if PR title contains [skip-changeset] or label 'skip-changeset'
+      # -----------------------------------------------------------------------
+      - name: Check for skip signal
+        id: skip
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
+        run: |
+          if echo "$PR_TITLE" | grep -qF '[skip-changeset]'; then
+            echo "reason=PR title contains [skip-changeset]" >> "$GITHUB_OUTPUT"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          elif echo "$PR_LABELS" | grep -qF '"skip-changeset"'; then
+            echo "reason=PR has skip-changeset label" >> "$GITHUB_OUTPUT"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Log skip reason
+        if: steps.skip.outputs.skip == 'true'
+        env:
+          SKIP_REASON: ${{ steps.skip.outputs.reason }}
+        run: echo "Changeset gate bypassed — $SKIP_REASON"
+
+      # -----------------------------------------------------------------------
+      # Detect whether any shipping-package paths were touched
+      # -----------------------------------------------------------------------
+      - name: Check for shipping-package changes
+        id: shipping
+        if: steps.skip.outputs.skip == 'false'
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            source:
+              - 'components/**'
+              - 'blocks/**'
+              - 'hooks/**'
+              - 'lib/**'
+              - 'registry/**'
+              - 'themes/**'
+              - 'patterns/**'
+              - 'assets/**'
+              - 'packages/cli/src/**'
+              - 'packages/theme-engine/src/**'
+              - 'packages/visor-flutter/lib/**'
+              - 'packages/tokens/src/**'
+
+      # -----------------------------------------------------------------------
+      # Detect whether the PR adds a .changeset/*.md file
+      # -----------------------------------------------------------------------
+      - name: Check for changeset file
+        id: changeset
+        if: steps.skip.outputs.skip == 'false' && steps.shipping.outputs.source == 'true'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          # Count .changeset/*.md files added in this PR (not README.md)
+          COUNT=$(git diff --name-only --diff-filter=A \
+            "origin/${BASE_REF}"...HEAD \
+            -- '.changeset/*.md' \
+            | grep -v 'README\.md' \
+            | wc -l | tr -d ' ')
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          echo "Changeset files added in this PR: $COUNT"
+
+      # -----------------------------------------------------------------------
+      # Fail with an actionable message if no changeset was found
+      # -----------------------------------------------------------------------
+      - name: Require changeset
+        if: |
+          steps.skip.outputs.skip == 'false' &&
+          steps.shipping.outputs.source == 'true' &&
+          steps.changeset.outputs.count == '0'
+        run: |
+          echo "::error::This PR modifies shipping-package source but contains no .changeset/*.md entry."
+          echo ""
+          echo "Add a changeset before merging:"
+          echo ""
+          echo "  npm run changeset"
+          echo ""
+          echo "If you have the lo-changeset skill installed:"
+          echo ""
+          echo "  /lo-changeset"
+          echo ""
+          echo "The generated file will be committed alongside your changes."
+          echo ""
+          echo "Legitimate exemptions (CI tooling refactors, revert-of-reverts, etc.):"
+          echo "  * Add [skip-changeset] to the PR title, OR"
+          echo "  * Apply the 'skip-changeset' label to the PR."
+          echo ""
+          echo "See CONTRIBUTING.md for full details."
+          exit 1
+
+      - name: Changeset gate passed
+        if: |
+          steps.skip.outputs.skip == 'true' ||
+          steps.shipping.outputs.source == 'false' ||
+          steps.changeset.outputs.count != '0'
+        run: echo "Changeset gate passed."
