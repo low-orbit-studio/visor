@@ -159,13 +159,23 @@ describe("neutral role produces low-chroma shades", () => {
     }
   });
 
-  it("neutral with a tinted input still caps chroma", () => {
+  it("neutral with a tinted input caps chroma at non-anchor shades", () => {
     const scale = generateShadeScale("#8888aa", "neutral") as FullShadeScale;
 
     for (const step of FULL_SHADE_STEPS) {
       const [, C] = hexToOklch(scale[step]);
+      if (step === 500) continue; // anchor exempt — brand color preserved exactly
       expect(C).toBeLessThan(0.03);
     }
+  });
+
+  it("neutral preserves the input color at the anchor shade (500)", () => {
+    const scale = generateShadeScale("#8888aa", "neutral") as FullShadeScale;
+    const [L, C, H] = hexToOklch(scale[500]);
+    const [inL, inC, inH] = hexToOklch("#8888aa");
+    expect(L).toBeCloseTo(inL, 2);
+    expect(C).toBeCloseTo(inC, 2);
+    expect(H).toBeCloseTo(inH, 0);
   });
 });
 

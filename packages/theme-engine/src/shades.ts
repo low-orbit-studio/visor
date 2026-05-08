@@ -167,8 +167,9 @@ export function generateShadeScale(
     const targetL = computeLightness(step, inputL, anchorShade);
     let targetC = inputC * CHROMA_MULTIPLIERS[step];
 
-    // Neutral: cap chroma for gray appearance
-    if (role === "neutral") {
+    // Neutral: cap chroma for gray appearance, except at the anchor shade
+    // where the brand color must be preserved exactly (brand-at-500 contract).
+    if (role === "neutral" && step !== anchorShade) {
       targetC = Math.min(targetC, maxNeutralChroma);
     }
 
