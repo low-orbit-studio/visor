@@ -1,0 +1,152 @@
+---
+title: Station Spectrum
+description: Animated N-station progress diagram with a hairline rail that draws on scroll-entry and dots that illuminate sequentially via CSS transition delays.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { StationSpectrum } from '@/components/ui/station-spectrum';
+
+## Preview
+
+<ComponentPreview
+  title="Station Spectrum — 5-station default"
+  code={"import { StationSpectrum } from '@/components/ui/station-spectrum/station-spectrum';\n\n<StationSpectrum\n  stations={[\n    { num: '01', title: 'Discovery', description: 'Goals, audience, constraints, what success looks like.' },\n    { num: '02', title: 'Brand',     description: 'Name, identity, voice, and a design system that scales.' },\n    { num: '03', title: 'Product design', description: 'Wireframes, screens, interactions, prototypes you can hold.' },\n    { num: '04', title: 'Engineering',    description: 'Apps, websites, APIs. Built, shipped, and live in production.' },\n    { num: '05', title: 'Infrastructure', description: 'Logs, metrics, deploys, on-call. The boring parts.' },\n  ]}\n  autoTrigger={false}\n  inView={true}\n/>"}
+>
+  <StationSpectrum
+    stations={[
+      { num: '01', title: 'Discovery', description: 'Goals, audience, constraints, what success looks like.' },
+      { num: '02', title: 'Brand',     description: 'Name, identity, voice, and a design system that scales.' },
+      { num: '03', title: 'Product design', description: 'Wireframes, screens, interactions, prototypes you can hold.' },
+      { num: '04', title: 'Engineering',    description: 'Apps, websites, APIs. Built, shipped, and live in production.' },
+      { num: '05', title: 'Infrastructure', description: 'Logs, metrics, deploys, on-call. The boring parts.' },
+    ]}
+    autoTrigger={false}
+    inView={true}
+  />
+</ComponentPreview>
+
+## Compact Density
+
+The `compact` density reduces dot size and hides descriptions — useful for tight horizontal spaces or secondary diagrams.
+
+<ComponentPreview
+  title="Station Spectrum — 3-station compact"
+  code={"import { StationSpectrum } from '@/components/ui/station-spectrum/station-spectrum';\n\n<StationSpectrum\n  stations={[\n    { num: '01', title: 'Plan', description: 'Scope, timeline, and constraints.' },\n    { num: '02', title: 'Build', description: 'Engineering and design in lockstep.' },\n    { num: '03', title: 'Ship', description: 'Deploy, monitor, iterate.' },\n  ]}\n  density=\"compact\"\n  autoTrigger={false}\n  inView={true}\n/>"}
+>
+  <StationSpectrum
+    stations={[
+      { num: '01', title: 'Plan', description: 'Scope, timeline, and constraints.' },
+      { num: '02', title: 'Build', description: 'Engineering and design in lockstep.' },
+      { num: '03', title: 'Ship', description: 'Deploy, monitor, iterate.' },
+    ]}
+    density="compact"
+    autoTrigger={false}
+    inView={true}
+  />
+</ComponentPreview>
+
+## Manual Trigger Control
+
+By default, `StationSpectrum` auto-wires an `IntersectionObserver` to animate when it enters the viewport (`autoTrigger={true}`). To control the trigger manually — for example, when you want to coordinate the animation with other elements — set `autoTrigger={false}` and pass your own `inView` state.
+
+<ComponentPreview
+  title="Station Spectrum — autoTrigger=false manual control"
+  code={"import { useIntersectionObserver } from '@/hooks/use-intersection-observer';\nimport { StationSpectrum } from '@/components/ui/station-spectrum/station-spectrum';\n\nfunction ProcessSection() {\n  const { ref, isIntersecting } = useIntersectionObserver({ threshold: 0.3, once: true });\n\n  return (\n    <section ref={ref as React.RefObject<HTMLElement>}>\n      <StationSpectrum\n        stations={[\n          { num: '01', title: 'Discovery' },\n          { num: '02', title: 'Brand' },\n          { num: '03', title: 'Engineering' },\n          { num: '04', title: 'Launch' },\n        ]}\n        autoTrigger={false}\n        inView={isIntersecting}\n      />\n    </section>\n  );\n}"}
+>
+  <StationSpectrum
+    stations={[
+      { num: '01', title: 'Discovery' },
+      { num: '02', title: 'Brand' },
+      { num: '03', title: 'Engineering' },
+      { num: '04', title: 'Launch' },
+    ]}
+    autoTrigger={false}
+    inView={false}
+  />
+  <p style={{ marginTop: '1rem', fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
+    Animation not triggered — pass <code>inView={"{true}"}</code> to activate.
+  </p>
+</ComponentPreview>
+
+## Animation Strategy
+
+The animation is driven entirely by CSS — no JavaScript animation loop is needed.
+
+**Rail:** `transform: scaleX(0)` → `scaleX(1)` with `transform-origin: left center`, transitioned via `--motion-duration-slow` and `--motion-easing-enter`. Applied when the `.inView` class is present on the root element.
+
+**Dots:** Each dot transitions its `background-color` from transparent to `--interactive-primary-bg` with a staggered `transition-delay`:
+
+```css
+transition-delay: calc(var(--idx) * 80ms + 200ms);
+```
+
+The `--idx` CSS custom property is set per-station via inline style, creating a sequential left-to-right illumination effect.
+
+## Reduced Motion
+
+When `prefers-reduced-motion: reduce` is active, all transitions are suppressed. The rail appears at full width and all dots appear illuminated instantly — the diagram remains readable with no animation.
+
+## Trigger Mechanism
+
+The animation is controlled by the `inView` CSS module class on the root. From the component API perspective:
+
+| `autoTrigger` | `inView` | Behavior |
+|---|---|---|
+| `true` (default) | (ignored) | IntersectionObserver fires at 30% threshold; animation triggers once |
+| `false` | `true` | Rail draws and dots illuminate |
+| `false` | `false` | No animation — pre-trigger state |
+
+## Installation
+
+```bash
+npx visor add station-spectrum
+```
+
+## Usage
+
+```tsx
+import { StationSpectrum } from '@/components/ui/station-spectrum/station-spectrum';
+
+<StationSpectrum
+  stations={[
+    { num: '01', title: 'Discovery', description: 'Goals, audience, constraints.' },
+    { num: '02', title: 'Brand',     description: 'Identity and design system.' },
+    { num: '03', title: 'Engineering', description: 'Built and shipped.' },
+  ]}
+/>
+```
+
+## API Reference
+
+### StationSpectrumProps
+
+<PropsTable component="station-spectrum" />
+
+### Station
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `num` | `string` | Yes | Numeric label displayed above the dot, e.g. `"01"`. |
+| `title` | `string` | Yes | Station title displayed beneath the dot. |
+| `description` | `string` | No | Optional description text shown beneath the title. Hidden in `compact` density. |
+
+## Accessibility
+
+- The stations are rendered as a semantic `<ol>` (ordered list) with `aria-label="Process stages"`.
+- Decorative elements (the rail, dot rows) are marked `aria-hidden="true"` — the station titles and descriptions are the accessible content.
+- `prefers-reduced-motion` is respected: animation is suppressed and the diagram renders in its final illuminated state instantly.
+- Do not rely solely on color to convey stage completion — pair with text labels (always required in this component).
+
+## When to Use
+
+- Illustrating a multi-step process, pipeline, or phased journey on a marketing or landing page
+- Showing the stages of an engagement model (discovery → brand → engineering → infrastructure)
+- Animating a sequential workflow diagram that reveals on scroll
+
+## When Not to Use
+
+- When the user needs to navigate between steps — use `stepper` instead
+- When stations need icons or custom rendering per dot
+- In compact admin layouts where a horizontal rail cannot breathe (use a text list or `timeline` instead)
+- For vertical orientation — `StationSpectrum` is horizontal-only in v1

@@ -323,6 +323,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "SpherePlayground",
   "StatCard",
   "StatHero",
+  "StationSpectrum",
   "StatusBadge",
   "StatusColorsSlide",
   "Stepper",

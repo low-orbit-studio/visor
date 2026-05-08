@@ -1,0 +1,226 @@
+/* StationSpectrum: animated N-station progress diagram
+ *
+ * Layout strategy:
+ *   A single-row CSS grid where each station cell is an equal-width flex
+ *   column. The hairline rail is positioned absolutely behind the dots,
+ *   spanning from the center of the first dot to the center of the last.
+ *
+ * Animation strategy:
+ *   Rail: transform: scaleX(0) → scaleX(1) with transform-origin: left.
+ *         Triggered by the `.inView` class on the root.
+ *   Dots: background-color transitions from transparent to the accent color.
+ *         Each dot uses a CSS custom property `--idx` to stagger its
+ *         transition-delay: calc(var(--idx) * 100ms + var(--rail-delay)).
+ *
+ * prefers-reduced-motion:
+ *   Animation is suppressed — rail and dots appear at their final state
+ *   instantly, no transitions.
+ */
+
+/* ── Root ──────────────────────────────────────────────────────────────── */
+
+.base {
+  --station-spectrum-dot-size: var(--spacing-3, 0.75rem); /* 12px */
+  --station-spectrum-dot-size-compact: var(--spacing-2, 0.5rem); /* 8px */
+  --station-spectrum-rail-thickness: var(--stroke-width-thin, 1px);
+  --station-spectrum-rail-color: var(--border-default, #e5e7eb);
+  --station-spectrum-dot-color-off: var(--surface-card, #ffffff);
+  --station-spectrum-dot-color-on: var(--interactive-primary-bg, #2563eb);
+  --station-spectrum-dot-border-color: var(--border-default, #e5e7eb);
+  --station-spectrum-dot-border-color-on: var(--interactive-primary-bg, #2563eb);
+  --station-spectrum-num-color: var(--text-tertiary, #6b7280);
+  --station-spectrum-title-color: var(--text-primary, #111827);
+  --station-spectrum-desc-color: var(--text-secondary, #6b7280);
+
+  /* Rail animation timing */
+  --rail-duration: var(--motion-duration-slow, 500ms);
+  --rail-easing: var(--motion-easing-enter, cubic-bezier(0, 0, 0.2, 1));
+  --dot-delay-step: 80ms; /* per-dot stagger: not tokenized — intentional constant */
+  --rail-delay: 200ms; /* head-start for rail before dots begin: intentional constant */
+
+  position: relative;
+  width: 100%;
+}
+
+/* ── Station list (primary semantic structure) ─────────────────────────── */
+
+.stationList {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 1; /* above the rail */
+}
+
+/* Equal-width columns */
+.station {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+/* ── Dot row (num + dot, stacked) ─────────────────────────────────────── */
+
+.dotRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+/* Last station: align content to the right so it doesn't overflow */
+.station:last-child .dotRow {
+  align-items: flex-end;
+}
+
+.num {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-semibold, 600);
+  letter-spacing: var(--letter-spacing-wide, 0.05em);
+  color: var(--station-spectrum-num-color);
+  line-height: var(--line-height-tight, 1.25);
+  font-variant-numeric: tabular-nums;
+  /* Transition to accent color when illuminated */
+  transition: color var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease)
+    calc(var(--idx, 0) * var(--dot-delay-step) + var(--rail-delay));
+}
+
+.dot {
+  width: var(--station-spectrum-dot-size);
+  height: var(--station-spectrum-dot-size);
+  border-radius: 50%;
+  background-color: var(--station-spectrum-dot-color-off);
+  border: var(--station-spectrum-rail-thickness) solid var(--station-spectrum-dot-border-color);
+  /* Per-dot illumination via staggered transition-delay */
+  transition:
+    background-color var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease)
+      calc(var(--idx, 0) * var(--dot-delay-step) + var(--rail-delay)),
+    border-color var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease)
+      calc(var(--idx, 0) * var(--dot-delay-step) + var(--rail-delay));
+}
+
+/* ── Labels ────────────────────────────────────────────────────────────── */
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+  padding-right: var(--spacing-4, 1rem); /* breathing room between stations */
+}
+
+.station:last-child .label {
+  padding-right: 0;
+  padding-left: var(--spacing-1, 0.25rem); /* last station: slight left pad */
+}
+
+.title {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--station-spectrum-title-color);
+  line-height: var(--line-height-tight, 1.25);
+}
+
+.description {
+  display: block;
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--station-spectrum-desc-color);
+  line-height: var(--line-height-normal, 1.5);
+}
+
+/* ── Rail ──────────────────────────────────────────────────────────────── */
+/*
+ * The rail sits at the vertical midpoint of the dot row.
+ * Positioned to span from left-edge of first dot to right-edge of last dot.
+ * Uses transform: scaleX(0) → scaleX(1) for the draw animation.
+ */
+
+.rail {
+  position: absolute;
+  /* Align to the vertical center of the dot (num row + gap + half dot height) */
+  top: calc(
+    var(--font-size-xs, 0.75rem) * var(--line-height-tight, 1.25) +
+    var(--spacing-2, 0.5rem) +
+    calc(var(--station-spectrum-dot-size) / 2)
+  );
+  left: calc(var(--station-spectrum-dot-size) / 2);
+  right: calc(var(--station-spectrum-dot-size) / 2);
+  height: var(--station-spectrum-rail-thickness);
+  pointer-events: none;
+  z-index: 0; /* behind the station list */
+}
+
+.railLine {
+  width: 100%;
+  height: 100%;
+  background-color: var(--station-spectrum-rail-color);
+  transform-origin: left center;
+  transform: scaleX(0);
+  /* Rail draw animation — triggered by .inView on root */
+  transition: transform var(--rail-duration) var(--rail-easing);
+}
+
+/* ── inView state — animation active ──────────────────────────────────── */
+
+.inView .railLine {
+  transform: scaleX(1);
+}
+
+.inView .dot {
+  background-color: var(--station-spectrum-dot-color-on);
+  border-color: var(--station-spectrum-dot-border-color-on);
+}
+
+.inView .num {
+  color: var(--interactive-primary-bg, #2563eb);
+}
+
+/* ── Density variant: compact ─────────────────────────────────────────── */
+
+.base[data-density="compact"] {
+  --station-spectrum-dot-size: var(--station-spectrum-dot-size-compact);
+}
+
+.base[data-density="compact"] .label {
+  padding-right: var(--spacing-2, 0.5rem);
+}
+
+.base[data-density="compact"] .title {
+  font-size: var(--font-size-xs, 0.75rem);
+}
+
+.base[data-density="compact"] .description {
+  display: none; /* descriptions hidden in compact mode */
+}
+
+/* ── Reduced motion ────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .railLine {
+    /* Appear instantly at full width — no transition */
+    transition: none;
+    transform: scaleX(1);
+  }
+
+  .dot {
+    /* Remove staggered transitions — appear instantly */
+    transition: none;
+  }
+
+  .num {
+    transition: none;
+  }
+
+  /* Immediately illuminate all dots */
+  .dot {
+    background-color: var(--station-spectrum-dot-color-on);
+    border-color: var(--station-spectrum-dot-border-color-on);
+  }
+
+  .num {
+    color: var(--interactive-primary-bg, #2563eb);
+  }
+}
