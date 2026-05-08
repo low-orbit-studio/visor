@@ -202,6 +202,8 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "LightboxContext",
   "LightboxTrigger",
   "LoginForm",
+  "Marquee",
+  "MarqueeBandRenderer",
   "Menubar",
   "MenubarCheckboxItem",
   "MenubarContent",
