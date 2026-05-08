@@ -7,7 +7,7 @@ import {
   unlinkSync,
   copyFileSync,
 } from "fs"
-import { join, basename, resolve } from "path"
+import { join, basename, resolve, sep } from "path"
 import { parse as parseYaml } from "yaml"
 import { generateThemeData } from "@loworbitstudio/visor-theme-engine"
 import { docsAdapter } from "@loworbitstudio/visor-theme-engine/adapters"
@@ -18,6 +18,7 @@ import {
   findRepoRoot,
   findMainRepoRoot,
   scanNestedThemeDir,
+  scanParentForPrivateThemes,
   assertNoBrokenSymlinks,
   detectVisorWorkspace,
   isLocalVisorBinary,
@@ -46,8 +47,6 @@ const GLOBALS_BEGIN_MARKER = "/* BEGIN visor-theme-imports — managed by `visor
 const GLOBALS_END_MARKER = "/* END visor-theme-imports */"
 const STOCK_GROUPS_BEGIN_MARKER = "/* BEGIN visor-stock-themes — managed by `visor theme sync` */"
 const STOCK_GROUPS_END_MARKER = "/* END visor-stock-themes */"
-const GITIGNORE_BEGIN_MARKER = "# BEGIN visor-custom-theme-css (managed by `visor theme sync` — do not edit manually)"
-const GITIGNORE_END_MARKER = "# END visor-custom-theme-css"
 
 const CUSTOM_OVERLAY_CSS_PATH = "packages/docs/app/custom-themes.generated.css"
 const CUSTOM_OVERLAY_TS_PATH = "packages/docs/lib/theme-config.custom.generated.ts"
@@ -68,15 +67,21 @@ interface CustomThemeFile {
   /** Slug derived from layout (nested = parent dirname, flat = filename). */
   slug: string
   /** Origin of the file — drives merge precedence and warnings. */
-  origin: "env" | "sibling" | "legacy"
+  origin: "env" | "sibling" | "parent-glob" | "legacy"
 }
 
 /**
- * Resolve custom theme sources in priority order: env var → sibling checkout
- * → legacy `custom-themes/`. Each origin contributes only when the prior one
- * resolves zero files. Returns the merged file list with first-write-wins
- * precedence; same-slug duplicates from later sources are dropped (with a
- * warning logged) per D8.
+ * Resolve custom theme sources in priority order:
+ *   1. env var override
+ *   2. true sibling — `<visor>/../visor-themes-private/themes/`
+ *   3. parent-glob — `<visor>/../<any-dir>/visor-themes-private/themes/` (LO convention)
+ *   4. legacy `custom-themes/` flat layout
+ *
+ * Returns the merged file list with first-write-wins precedence; same-slug
+ * duplicates from later sources are dropped (with a warning) per D8. Multi-match
+ * across sibling and parent-glob is resolved by D2: prefer sibling, warn naming
+ * suppressed parent-glob path(s); if multiple parent-glob candidates exist
+ * without a sibling, pick alphabetically first and warn naming the rest.
  */
 function resolveCustomSources(
   repoRoot: string,
@@ -86,7 +91,7 @@ function resolveCustomSources(
   const merged = new Map<string, CustomThemeFile>()
   const deprecationWarnings: string[] = []
 
-  const addNested = (dir: string, origin: "env" | "sibling"): void => {
+  const addNested = (dir: string, origin: "env" | "sibling" | "parent-glob"): void => {
     const entries = scanNestedThemeDir(dir)
     for (const entry of entries) {
       const existing = merged.get(entry.slug)
@@ -117,13 +122,41 @@ function resolveCustomSources(
     addNested(resolved, "env")
   }
 
-  // 2. Sibling checkout — convention default
+  // 2. Sibling checkout — convention default at <visor>/../visor-themes-private/themes/
   const siblingPath = join(mainRepoRoot, "..", "visor-themes-private", "themes")
-  if (existsSync(siblingPath)) {
+  const siblingExists = existsSync(siblingPath)
+  if (siblingExists) {
     addNested(siblingPath, "sibling")
   }
 
-  // 3. Legacy flat layout — backwards-compat with deprecation warning
+  // 3. Parent-glob — LO convention default at <visor>/../<parent>/visor-themes-private/themes/
+  // Defensive: filter out any candidate inside the Visor checkout itself (e.g., a stray
+  // visor-themes-private/ checkout placed inside <visor>/) — those are never the intent.
+  const parentDir = join(mainRepoRoot, "..")
+  const parentGlobMatches = scanParentForPrivateThemes(parentDir).filter(
+    (path) => !path.startsWith(mainRepoRoot + sep),
+  )
+  if (parentGlobMatches.length > 0) {
+    if (siblingExists) {
+      // D2: sibling wins; warn naming each suppressed parent-glob path
+      for (const path of parentGlobMatches) {
+        warn(
+          `Found one-level-deeper theme source ${path} but using true-sibling at ${siblingPath} (preferred per BO-29 D2).`,
+        )
+      }
+    } else {
+      // No sibling — pick the alphabetically first parent-glob match; warn naming the rest
+      const [first, ...rest] = parentGlobMatches
+      addNested(first, "parent-glob")
+      for (const other of rest) {
+        warn(
+          `Multiple one-level-deeper theme sources found; using ${first} and ignoring ${other}. Set ${PRIVATE_THEMES_ENV_VAR} to override.`,
+        )
+      }
+    }
+  }
+
+  // 4. Legacy flat layout — backwards-compat with deprecation warning
   const legacyDir = join(repoRoot, "custom-themes")
   const legacyFiles = scanThemeDir(legacyDir)
   for (const legacyFile of legacyFiles) {
@@ -167,7 +200,8 @@ function buildEmptySourcesMessage(mainRepoRoot: string): string {
     "Resolution order checked:",
     `  1. Env var ${PRIVATE_THEMES_ENV_VAR} (unset or empty)`,
     `  2. Sibling checkout at ${expectedSibling}/themes/ (not found)`,
-    "  3. Legacy custom-themes/ (no .visor.yaml files)",
+    `  3. One-level-deeper at ${join(mainRepoRoot, "..")}/<parent>/visor-themes-private/themes/ (not found)`,
+    "  4. Legacy custom-themes/ (no .visor.yaml files)",
     "",
     "To fix, clone the private themes repo as a sibling:",
     `  git clone ${PRIVATE_THEMES_REPO_URL} ${expectedSibling}`,
@@ -416,29 +450,6 @@ function generateCustomOverlayTs(customEntries: ThemeManifestEntry[]): string {
   return `import type { ThemeGroup } from "./theme-config";\n// generated by \`visor theme sync\` — do not edit manually\nexport const customThemeGroups: ThemeGroup[] = [\n${groupsTs}\n];\n`
 }
 
-/** Update the visor-custom-theme-css block in .gitignore. */
-function updateGitignoreBlock(content: string, customSlugs: string[]): string {
-  const cssLines = customSlugs
-    .sort()
-    .map((slug) => `packages/docs/app/${slug}-theme.css`)
-    .join("\n")
-  const newBlock = `${GITIGNORE_BEGIN_MARKER}\n${cssLines}\n${GITIGNORE_END_MARKER}`
-
-  const beginIdx = content.indexOf(GITIGNORE_BEGIN_MARKER)
-  const endIdx = content.indexOf(GITIGNORE_END_MARKER)
-
-  if (beginIdx !== -1 && endIdx !== -1) {
-    return (
-      content.slice(0, beginIdx) +
-      newBlock +
-      content.slice(endIdx + GITIGNORE_END_MARKER.length)
-    )
-  }
-
-  // Block not present — append it
-  return content.trimEnd() + "\n\n" + newBlock + "\n"
-}
-
 export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
   // D10: workspace guard — refuse to run global CLI from inside a Visor checkout
   const guardError = enforceWorkspaceGuard(cwd)
@@ -472,7 +483,6 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
   const docsPublicThemesDir = join(repoRoot, "packages", "docs", "public", "themes")
   const themeConfigPath = join(repoRoot, "packages", "docs", "lib", "theme-config.ts")
   const globalsPath = join(docsAppDir, "globals.css")
-  const gitignorePath = join(repoRoot, ".gitignore")
   const customOverlayCssPath = join(repoRoot, CUSTOM_OVERLAY_CSS_PATH)
   const customOverlayTsPath = join(repoRoot, CUSTOM_OVERLAY_TS_PATH)
 
@@ -587,17 +597,14 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
   const stockManifest = manifest.filter((e) => !e.isCustom)
   const customManifest = manifest.filter((e) => e.isCustom)
   const stockSlugs = stockManifest.map((e) => e.slug)
-  const customSlugs = customManifest.map((e) => e.slug)
   const allSlugs = manifest.map((e) => e.slug)
 
   // Read existing tracked files
   let globalsContent: string
   let themeConfigContent: string
-  let gitignoreContent: string
   try {
     globalsContent = readFileSync(globalsPath, "utf-8")
     themeConfigContent = readFileSync(themeConfigPath, "utf-8")
-    gitignoreContent = existsSync(gitignorePath) ? readFileSync(gitignorePath, "utf-8") : ""
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Could not read docs files"
     if (options.json) {
@@ -612,9 +619,6 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
   // Compute updated tracked file content (stock-only changes)
   const newGlobals = updateGlobalsImports(globalsContent, stockSlugs)
   const newThemeConfig = updateStockThemeConfigBlock(themeConfigContent, stockManifest)
-  const newGitignore = customSlugs.length > 0
-    ? updateGitignoreBlock(gitignoreContent, customSlugs)
-    : gitignoreContent
 
   // Compute overlay file content (always written)
   const newCustomOverlayCss = generateCustomOverlayCss(customManifest)
@@ -645,7 +649,6 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
       globalsCSS: globalsPath,
       customOverlayCss: CUSTOM_OVERLAY_CSS_PATH,
       customOverlayTs: CUSTOM_OVERLAY_TS_PATH,
-      gitignore: gitignorePath,
       publicYamlsCopied: manifest.map((e) => `packages/docs/public/themes/${e.yamlFilename}.visor.yaml`),
       publicYamlsDeleted: stalePublicYamls.map((f) => `packages/docs/public/themes/${f}`),
     }
@@ -684,11 +687,6 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
     // Update tracked files (stock-only; no-op if content unchanged)
     writeFileSync(themeConfigPath, newThemeConfig, "utf-8")
     writeFileSync(globalsPath, newGlobals, "utf-8")
-
-    // Update .gitignore
-    if (existsSync(gitignorePath)) {
-      writeFileSync(gitignorePath, newGitignore, "utf-8")
-    }
 
     // Copy YAMLs to public/themes/
     // Stock files use their on-disk filename. Custom files: nested layout

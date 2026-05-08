@@ -649,28 +649,28 @@ describe("theme sync command", () => {
     })
   })
 
-  describe("gitignore management", () => {
-    it("adds custom theme CSS to gitignore block", () => {
+  describe("gitignore (no-op assertion — D7)", () => {
+    it("does not modify .gitignore when custom themes are added (D7)", () => {
       writeCustomYaml("entr.visor.yaml", CUSTOM_YAML_ENTR)
 
+      const before = readFileSync(join(testDir, ".gitignore"), "utf-8")
       themeSyncCommand(testDir, {})
+      const after = readFileSync(join(testDir, ".gitignore"), "utf-8")
 
-      const gitignore = readFileSync(join(testDir, ".gitignore"), "utf-8")
-      expect(gitignore).toContain("BEGIN visor-custom-theme-css")
-      expect(gitignore).toContain("packages/docs/app/entr-theme.css")
-      expect(gitignore).toContain("END visor-custom-theme-css")
+      // .gitignore must be byte-identical — sync no longer touches it (per BO-29 D7)
+      expect(after).toBe(before)
     })
 
-    it("updates existing gitignore block on re-sync", () => {
+    it("preserves a legacy managed block exactly when present (D7)", () => {
+      // Legacy managed block from before BO-29 — sync must NOT touch it
       writeFileSync(join(testDir, ".gitignore"), GITIGNORE_WITH_BLOCK, "utf-8")
       writeCustomYaml("reference-app.visor.yaml", CUSTOM_YAML_REFERENCE)
 
       themeSyncCommand(testDir, {})
 
       const gitignore = readFileSync(join(testDir, ".gitignore"), "utf-8")
-      expect(gitignore).toContain("packages/docs/app/reference-app-theme.css")
-      // Old entry (entr) should be replaced with new content
-      expect(gitignore).not.toContain("packages/docs/app/entr-theme.css")
+      // Legacy block content survives unchanged — sync no longer manages it
+      expect(gitignore).toBe(GITIGNORE_WITH_BLOCK)
     })
   })
 
@@ -981,6 +981,267 @@ describe("theme sync command", () => {
       // Duplicate-slug warning must name the suppressed legacy file
       expect(warnings.join("\n")).toMatch(/Duplicate theme slug "entr"/)
       expect(warnings.join("\n")).toContain("ignoring legacy")
+    })
+  })
+
+  // ============================================================
+  // BO-29 — parent-glob discovery (one-level-deeper)
+  // ============================================================
+
+  describe("BO-29 D1/D2 — parent-glob discovery (one-level-deeper)", () => {
+    /**
+     * Build an isolated parent tree containing a Visor checkout at
+     * `<parent>/visor/`. The parent dir is the scope the parent-glob scan
+     * walks — keeping it scoped to a unique tmpdir avoids picking up real
+     * `visor-themes-private/` directories on the developer's machine.
+     */
+    function setupIsolatedParent(): { parentDir: string; visorRoot: string } {
+      const parentDir = join(tmpdir(), `visor-test-parentglob-${Date.now()}-${Math.random().toString(36).slice(2)}`)
+      const visorRoot = join(parentDir, "visor")
+      mkdirSync(visorRoot, { recursive: true })
+      setupFakeRepo(visorRoot)
+      // Stock theme so empty-manifest hard-fail doesn't trigger
+      writeFileSync(join(visorRoot, "themes", "blackout.visor.yaml"), STOCK_YAML_BLACKOUT, "utf-8")
+      return { parentDir, visorRoot }
+    }
+
+    function writeNestedTheme(rootDir: string, slug: string, yaml: string): string {
+      const themeDir = join(rootDir, slug)
+      mkdirSync(themeDir, { recursive: true })
+      const filePath = join(themeDir, "theme.visor.yaml")
+      writeFileSync(filePath, yaml, "utf-8")
+      return filePath
+    }
+
+    function writeParentGlobSource(parentDir: string, parentName: string, slug: string, yaml: string): string {
+      const themesDir = join(parentDir, parentName, "visor-themes-private", "themes")
+      mkdirSync(themesDir, { recursive: true })
+      writeNestedTheme(themesDir, slug, yaml)
+      return themesDir
+    }
+
+    function writeSiblingSource(parentDir: string, slug: string, yaml: string): string {
+      const themesDir = join(parentDir, "visor-themes-private", "themes")
+      mkdirSync(themesDir, { recursive: true })
+      writeNestedTheme(themesDir, slug, yaml)
+      return themesDir
+    }
+
+    let parentDir: string
+    let visorRoot: string
+
+    beforeEach(() => {
+      const setup = setupIsolatedParent()
+      parentDir = setup.parentDir
+      visorRoot = setup.visorRoot
+    })
+
+    afterEach(() => {
+      rmSync(parentDir, { recursive: true, force: true })
+    })
+
+    it("only one-level-deeper exists → discovery uses it (LO convention)", () => {
+      writeParentGlobSource(parentDir, "low-orbit", "entr", CUSTOM_YAML_ENTR)
+
+      themeSyncCommand(visorRoot, {})
+
+      const docsApp = join(visorRoot, "packages", "docs", "app")
+      expect(existsSync(join(docsApp, "entr-theme.css"))).toBe(true)
+    })
+
+    it("only true-sibling exists → discovery uses it (regression cover)", () => {
+      writeSiblingSource(parentDir, "entr", CUSTOM_YAML_ENTR)
+
+      themeSyncCommand(visorRoot, {})
+
+      const docsApp = join(visorRoot, "packages", "docs", "app")
+      expect(existsSync(join(docsApp, "entr-theme.css"))).toBe(true)
+    })
+
+    it("both true-sibling and one-level-deeper exist → prefers true-sibling and warns naming the suppressed path (D2)", () => {
+      const siblingDir = writeSiblingSource(
+        parentDir,
+        "entr",
+        `name: entr\nversion: 1\ngroup: SiblingWins\ncolors:\n  primary: "#22C56D"\n`,
+      )
+      const parentGlobDir = writeParentGlobSource(
+        parentDir,
+        "low-orbit",
+        "entr",
+        `name: entr\nversion: 1\ngroup: ParentGlobLoses\ncolors:\n  primary: "#22C56D"\n`,
+      )
+
+      const warnings: string[] = []
+      vi.spyOn(console, "log").mockImplementation((msg) => warnings.push(String(msg)))
+
+      themeSyncCommand(visorRoot, {})
+
+      const overlayTs = readFileSync(
+        join(visorRoot, "packages", "docs", "lib", "theme-config.custom.generated.ts"),
+        "utf-8",
+      )
+      // True-sibling group wins
+      expect(overlayTs).toContain('"SiblingWins"')
+      expect(overlayTs).not.toContain('"ParentGlobLoses"')
+
+      // Warning names the suppressed parent-glob path
+      const combined = warnings.join("\n")
+      expect(combined).toContain("one-level-deeper")
+      expect(combined).toContain(parentGlobDir)
+      expect(combined).toContain(siblingDir)
+    })
+
+    it("multiple one-level-deeper candidates → picks alphabetically first and warns naming the rest (D2)", () => {
+      // Create three candidates — alphabetical order: alpha-org, low-orbit, zulu-org
+      const alphaDir = writeParentGlobSource(parentDir, "alpha-org", "entr", CUSTOM_YAML_ENTR)
+      const loDir = writeParentGlobSource(
+        parentDir,
+        "low-orbit",
+        "entr",
+        `name: entr\nversion: 1\ngroup: LoLoses\ncolors:\n  primary: "#22C56D"\n`,
+      )
+      const zuluDir = writeParentGlobSource(
+        parentDir,
+        "zulu-org",
+        "entr",
+        `name: entr\nversion: 1\ngroup: ZuluLoses\ncolors:\n  primary: "#22C56D"\n`,
+      )
+
+      const warnings: string[] = []
+      vi.spyOn(console, "log").mockImplementation((msg) => warnings.push(String(msg)))
+
+      themeSyncCommand(visorRoot, {})
+
+      const overlayTs = readFileSync(
+        join(visorRoot, "packages", "docs", "lib", "theme-config.custom.generated.ts"),
+        "utf-8",
+      )
+      // alpha-org is first alphabetically — its CUSTOM_YAML_ENTR has group: Client
+      expect(overlayTs).toContain('"Client"')
+      expect(overlayTs).not.toContain('"LoLoses"')
+      expect(overlayTs).not.toContain('"ZuluLoses"')
+
+      // Warnings name the suppressed candidates and reference the chosen one
+      const combined = warnings.join("\n")
+      expect(combined).toContain("Multiple one-level-deeper")
+      expect(combined).toContain(alphaDir)
+      expect(combined).toContain(loDir)
+      expect(combined).toContain(zuluDir)
+    })
+
+    it("D2 warning surfaces in JSON mode result.warnings array when sibling suppresses parent-glob", () => {
+      const siblingDir = writeSiblingSource(
+        parentDir,
+        "entr",
+        `name: entr\nversion: 1\ngroup: SiblingWins\ncolors:\n  primary: "#22C56D"\n`,
+      )
+      const parentGlobDir = writeParentGlobSource(
+        parentDir,
+        "low-orbit",
+        "entr",
+        `name: entr\nversion: 1\ngroup: ParentGlobLoses\ncolors:\n  primary: "#22C56D"\n`,
+      )
+
+      const logs: string[] = []
+      vi.spyOn(console, "log").mockImplementation((msg) => logs.push(String(msg)))
+
+      themeSyncCommand(visorRoot, { json: true })
+
+      expect(logs.length).toBe(1)
+      const result = JSON.parse(logs[0])
+      expect(result.success).toBe(true)
+      expect(result.warnings).toBeDefined()
+      const warningsText = (result.warnings as string[]).join("\n")
+      expect(warningsText).toContain("one-level-deeper")
+      expect(warningsText).toContain(parentGlobDir)
+      expect(warningsText).toContain(siblingDir)
+    })
+
+    it("scanNestedThemeDir picks up symlinked theme subdirectories (consistency with parent-glob)", () => {
+      // Real theme directory at <parent>/source-themes/entr/theme.visor.yaml
+      const sourceDir = join(parentDir, "source-themes")
+      mkdirSync(sourceDir, { recursive: true })
+      writeNestedTheme(sourceDir, "entr", CUSTOM_YAML_ENTR)
+
+      // Sibling layout, but the entr slug dir is a symlink to source-themes/entr/
+      const siblingThemes = join(parentDir, "visor-themes-private", "themes")
+      mkdirSync(siblingThemes, { recursive: true })
+      symlinkSync(join(sourceDir, "entr"), join(siblingThemes, "entr"))
+
+      themeSyncCommand(visorRoot, {})
+
+      const docsApp = join(visorRoot, "packages", "docs", "app")
+      // The symlinked theme should be picked up — silent skip would mean no entr-theme.css
+      expect(existsSync(join(docsApp, "entr-theme.css"))).toBe(true)
+    })
+
+    it("defensive: a stray visor-themes-private/ inside the Visor checkout is NOT picked up", () => {
+      // Place a visor-themes-private dir inside the Visor checkout itself —
+      // this would match the parent-glob pattern but should be filtered out.
+      const insideVisorDir = join(visorRoot, "visor-themes-private", "themes")
+      mkdirSync(insideVisorDir, { recursive: true })
+      writeNestedTheme(insideVisorDir, "entr", CUSTOM_YAML_ENTR)
+
+      // No real sibling and no real parent-glob source — should hard-fail
+      // (proving the inside-visor candidate was filtered, not used as a fallback).
+      // Strip the stock YAML so empty-manifest D5 hard-fail triggers.
+      rmSync(join(visorRoot, "themes", "blackout.visor.yaml"))
+
+      expect(() => themeSyncCommand(visorRoot, {})).toThrow("process.exit(1)")
+    })
+
+    it("env var overrides both true-sibling and one-level-deeper (regression cover)", () => {
+      const externalDir = join(parentDir, "external-themes")
+      mkdirSync(externalDir, { recursive: true })
+      writeNestedTheme(
+        externalDir,
+        "entr",
+        `name: entr\nversion: 1\ngroup: EnvWins\ncolors:\n  primary: "#22C56D"\n`,
+      )
+
+      writeSiblingSource(
+        parentDir,
+        "entr",
+        `name: entr\nversion: 1\ngroup: SiblingLoses\ncolors:\n  primary: "#22C56D"\n`,
+      )
+      writeParentGlobSource(
+        parentDir,
+        "low-orbit",
+        "entr",
+        `name: entr\nversion: 1\ngroup: ParentGlobLoses\ncolors:\n  primary: "#22C56D"\n`,
+      )
+
+      const previousEnv = process.env.VISOR_THEMES_PRIVATE_PATH
+      process.env.VISOR_THEMES_PRIVATE_PATH = externalDir
+      try {
+        themeSyncCommand(visorRoot, {})
+      } finally {
+        if (previousEnv === undefined) delete process.env.VISOR_THEMES_PRIVATE_PATH
+        else process.env.VISOR_THEMES_PRIVATE_PATH = previousEnv
+      }
+
+      const overlayTs = readFileSync(
+        join(visorRoot, "packages", "docs", "lib", "theme-config.custom.generated.ts"),
+        "utf-8",
+      )
+      expect(overlayTs).toContain('"EnvWins"')
+      expect(overlayTs).not.toContain('"SiblingLoses"')
+      expect(overlayTs).not.toContain('"ParentGlobLoses"')
+    })
+
+    it("neither sibling nor parent-glob present + no env var → hard-fails per D5 (no regression)", () => {
+      const errors: string[] = []
+      vi.spyOn(console, "error").mockImplementation((msg) => errors.push(String(msg)))
+
+      // Strip the stock blackout YAML so empty-manifest D5 hard-fail triggers.
+      // The isolated parent has no sibling, no parent-glob, no env var, no legacy.
+      rmSync(join(visorRoot, "themes", "blackout.visor.yaml"))
+
+      expect(() => themeSyncCommand(visorRoot, {})).toThrow("process.exit(1)")
+
+      const combined = errors.join("\n")
+      expect(combined).toContain("VISOR_THEMES_PRIVATE_PATH")
+      expect(combined).toContain("One-level-deeper")
     })
   })
 

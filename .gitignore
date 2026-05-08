@@ -80,17 +80,13 @@ packages/docs/lib/theme-config.custom.generated.ts
 packages/docs/app/private-themes.generated.css
 packages/docs/lib/private-themes.generated.ts
 
-# BEGIN visor-custom-theme-css (managed by `visor theme sync` — do not edit manually)
-packages/docs/app/animal-theme.css
-packages/docs/app/blacklight-theme.css
-packages/docs/app/blacklight-underground-theme.css
-packages/docs/app/entr-theme.css
-packages/docs/app/kaiah-theme.css
-packages/docs/app/reference-app-theme.css
-packages/docs/app/solespark-theme.css
-packages/docs/app/strata-theme.css
-packages/docs/app/veronica-theme.css
-# END visor-custom-theme-css
+# All custom theme CSS files are generated; stock themes are explicit re-includes
+packages/docs/app/*-theme.css
+!packages/docs/app/blackout-theme.css
+!packages/docs/app/borderless-theme.css
+!packages/docs/app/modern-minimal-theme.css
+!packages/docs/app/neutral-theme.css
+!packages/docs/app/space-theme.css
 
 # Custom theme YAML copies in docs public folder (stock themes re-included)
 packages/docs/public/themes/*.visor.yaml
