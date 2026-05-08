@@ -54,8 +54,22 @@ The check should run on `main` before `changeset publish` — i.e., as a step in
 - Any cross-package change where the downstream's `^X.Y.Z` range does not already include the new upstream version.
 - Whenever you see a `Version Packages` PR that bumps only the downstream — pause and verify the upstream actually exposes everything the downstream uses.
 
+## Prevention: gate is active
+
+The pre-publish export-surface drift gate described above is now implemented and active in CI.
+
+**Script:** `scripts/check-export-drift.mjs` — static analysis of workspace imports vs. resolved upstream tarball exports.
+
+**Where it runs:** `.github/workflows/release.yml`, as the "Check export-surface drift" step between "Build packages" and "Create Release Pull Request or Publish". The gate only runs on `main` (publish path) — not in `ci.yml` for PRs, where workspace symlinks mask the issue anyway.
+
+**What it does:** For each workspace package that depends on a sibling `@loworbitstudio/*` package, it parses all TS source imports, resolves the upstream's `^X.Y.Z` range against the npm registry, downloads that tarball, and compares the imported symbols against the tarball's named export surface. Subpath imports (`/adapters`, `/fowt`, `/schema`) are correctly resolved via the upstream `package.json` exports field.
+
+**Ticket:** [VI-337](https://linear.app/low-orbit-studio/issue/VI-337/)
+
 ## References
 
 - [PR #308](https://github.com/low-orbit-studio/visor/pull/308) — the patch-bump fix.
 - `packages/theme-engine/src/adapters/index.ts` — the file whose export surface drifted.
-- `.github/workflows/release.yml` — where the prevention gate would live.
+- `.github/workflows/release.yml` — where the prevention gate lives.
+- `scripts/check-export-drift.mjs` — the gate implementation.
+- `scripts/__tests__/check-export-drift.test.mjs` — unit tests.
