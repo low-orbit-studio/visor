@@ -1199,6 +1199,27 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "name-roster",
+    type: "registry:ui",
+    description:
+      "A column-flow alphabetical list of named items with a dot-prefix indicator and a highlighted-row variant for featured or owned entries.",
+    dependencies: [
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    category: "data-display",
+    files: [
+      {
+        path: "components/ui/name-roster/name-roster.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/name-roster/name-roster.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "number-input",
     type: "registry:ui",
     description:

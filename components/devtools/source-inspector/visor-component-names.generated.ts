@@ -222,6 +222,8 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "MotionEasing",
   "MotionEasingSection",
   "MotionSlide",
+  "NameRoster",
+  "NameRosterItem",
   "Navbar",
   "NavbarBrand",
   "NavbarContent",
