@@ -205,8 +205,7 @@ BentoTileMedia.displayName = "BentoTileMedia"
 // BentoTileBody
 // ---------------------------------------------------------------------------
 
-export interface BentoTileBodyProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+export type BentoTileBodyProps = React.HTMLAttributes<HTMLDivElement>
 
 const BentoTileBody = React.forwardRef<HTMLDivElement, BentoTileBodyProps>(
   ({ className, ...props }, ref) => {
