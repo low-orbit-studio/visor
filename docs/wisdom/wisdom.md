@@ -30,6 +30,7 @@ For global wisdom (universal lessons): [`~/Code/low-orbit/low-orbit-playbook/roo
 | W019 | Alchemist CI goldens must be baselined on Linux (Docker workaround for macOS contributors) | flutter, testing, golden, alchemist, ci, docker | [W019](W019-alchemist-goldens-must-baseline-on-linux.md) |
 | W020 | Workspace symlinks mask publish-coordination drift — `^X.Y.Z` doesn't pin to local source | monorepo, npm, publish, changesets, semver, workspaces | [W020](W020-publish-coordination-drift.md) |
 | W021 | Always use `npm run theme:sync` — bare `visor` hits the global install with stale engine | cli, themes, sync, dev-environment | [W021](W021-visor-cli-global-vs-workspace.md) |
+| W022 | MDX demos for components with function props need a `'use client'` wrapper file | docs, nextjs, mdx, rsc, fumadocs, function-props | [W022](W022-rsc-boundary-mdx-function-props.md) |
 
 ## Adding Entries
 
