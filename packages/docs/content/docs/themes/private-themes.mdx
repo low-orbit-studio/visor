@@ -111,13 +111,16 @@ The two resulting layouts:
 
 ### Running the sync
 
-From inside the `visor` repo:
+The docs site syncs themes automatically on `npm run dev -w packages/docs` — the predev hook calls `theme:sync:fast`, which skips the package rebuild when `packages/cli/dist/` and `packages/theme-engine/dist/` already exist. After a fresh clone, `git clean`, or branch switch, the next `npm run dev` regenerates all theme files without manual intervention.
+
+You only need the manual command in two cases — after editing `packages/cli/` or `packages/theme-engine/` source (to force a rebuild before the next sync), or for a one-off sync without starting the dev server. From inside the `visor` repo:
 
 ```bash
-npm run theme:sync
+npm run theme:sync          # full rebuild + sync
+npm run theme:sync:fast     # sync only, reuses existing dist
 ```
 
-That builds the local theme-engine and CLI, then runs `visor theme sync`. The sync command discovers private themes in this order:
+The full `theme:sync` builds the local theme-engine and CLI, then runs `visor theme sync`. The sync command discovers private themes in this order:
 
 1. **`VISOR_THEMES_PRIVATE_PATH` env var** — explicit override; must point at a directory containing `{slug}/theme.visor.yaml` entries
 2. **True-sibling checkout** — `<visor>/../visor-themes-private/themes/` (the convention default)
@@ -143,9 +146,8 @@ The sync command refuses to run when invoked through the global binary inside a 
 ### Adding a new private theme
 
 1. Add the theme directory under `visor-themes-private/themes/{slug}/` (with `theme.visor.yaml` + `meta.json`)
-2. Run `npm run theme:sync` from the visor repo
-3. `npm run dev -w packages/docs` and confirm the new theme appears in the switcher
-4. When ready to ship, follow the publish flow in `visor-themes-private/docs/howto/HOWTO_UPDATE_AND_PUBLISH_THEMES.md`
+2. Run `npm run dev -w packages/docs` from the visor repo — the predev step syncs automatically and the new theme appears in the switcher
+3. When ready to ship, follow the publish flow in `visor-themes-private/docs/howto/HOWTO_UPDATE_AND_PUBLISH_THEMES.md`
 
 ## Publishing a new private theme
 
