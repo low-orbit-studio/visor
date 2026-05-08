@@ -53,6 +53,12 @@ jobs:
           } >> "$GITHUB_OUTPUT"
           echo "Computed title: $TITLE"
 
+      - name: Check export-surface drift
+        # Gate: fail before publish if a workspace downstream imports a symbol
+        # that the resolved upstream tarball does not export.
+        # See: docs/wisdom/W020-publish-coordination-drift.md (VI-337)
+        run: node scripts/check-export-drift.mjs
+
       - name: Create Release Pull Request or Publish
         uses: changesets/action@v1
         with:
