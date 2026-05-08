@@ -43,7 +43,7 @@
   font-family: var(--font-mono, monospace);
   font-size: var(--font-size-xs, 0.625rem);
   line-height: 1;
-  color: var(--text-tertiary, #9ca3af);
+  color: var(--text-secondary, #4b5563);
   background: var(--surface-muted, #f3f4f6);
   padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
   border-radius: var(--radius-sm, 0.25rem);
@@ -104,7 +104,7 @@
   font-family: var(--font-mono, monospace);
   font-size: var(--font-size-xs, 0.625rem);
   line-height: 1;
-  color: var(--text-tertiary, #9ca3af);
+  color: var(--text-secondary, #4b5563);
 }
 
 /* ─── Grid ────────────────────────────────────────────────────────────────── */
