@@ -92,6 +92,32 @@ export function assertNoBrokenSymlinks(dir: string): void {
 }
 
 /**
+ * Scan `parentDir` one level deep for any subdirectory containing
+ * `visor-themes-private/themes/`. Returns the absolute paths to those `themes/`
+ * directories, sorted alphabetically by candidate dir name. Catches the LO
+ * convention `~/Code/low-orbit/visor-themes-private/themes/` and any other
+ * parent-org layout when the visor checkout is at `~/Code/visor/`.
+ *
+ * Does not throw for missing `parentDir`. Symlinked subdirs are followed
+ * (existsSync resolves them), so a working symlink to a private themes
+ * checkout is also picked up.
+ */
+export function scanParentForPrivateThemes(parentDir: string): string[] {
+  if (!existsSync(parentDir)) return []
+  const entries = readdirSync(parentDir, { withFileTypes: true })
+  const matches: string[] = []
+  for (const entry of entries) {
+    // Accept directories AND symlinks pointing at directories
+    if (!entry.isDirectory() && !entry.isSymbolicLink()) continue
+    const candidate = join(parentDir, entry.name, "visor-themes-private", "themes")
+    if (existsSync(candidate)) {
+      matches.push(candidate)
+    }
+  }
+  return matches.sort()
+}
+
+/**
  * Discover themes in a nested directory layout: `{dir}/{slug}/theme.visor.yaml`.
  * The slug is taken from the parent dirname. Throws `BrokenSymlinkError` for
  * any dangling symlink encountered while scanning.
@@ -102,7 +128,9 @@ export function scanNestedThemeDir(dir: string): { filePath: string; slug: strin
   const entries = readdirSync(dir, { withFileTypes: true })
   const out: { filePath: string; slug: string }[] = []
   for (const entry of entries) {
-    if (!entry.isDirectory()) continue
+    // Accept directories AND symlinks pointing at directories — matches the
+    // symlink-aware behavior of scanParentForPrivateThemes one tier up.
+    if (!entry.isDirectory() && !entry.isSymbolicLink()) continue
     const themeFile = join(dir, entry.name, "theme.visor.yaml")
     if (existsSync(themeFile)) {
       out.push({ filePath: themeFile, slug: entry.name })

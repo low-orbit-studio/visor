@@ -70,25 +70,43 @@ The published-package flow above is the right model for the deployed `/themes/pr
 
 ### One-time setup
 
-Clone `visor-themes-private` as a sibling of the visor repo:
+Clone `visor-themes-private` as a sibling of the visor repo, or under any sibling parent — both layouts are supported. Pick whichever matches how your other repos are organized.
+
+True-sibling layout (simplest):
 
 ```bash
 cd ~/Code   # or wherever your visor checkout lives
 git clone git@github.com:low-orbit-studio/visor-themes-private.git
 ```
 
-The expected layout:
+LO-convention one-level-deeper layout (when LO repos already live under `~/Code/low-orbit/`):
+
+```bash
+cd ~/Code/low-orbit
+git clone git@github.com:low-orbit-studio/visor-themes-private.git
+```
+
+The two resulting layouts:
 
 ```
 ~/Code/
 ├── visor/                       # this repo
-└── visor-themes-private/        # sibling checkout
+└── visor-themes-private/        # true-sibling layout
     └── themes/
         ├── strata/
         │   ├── theme.visor.yaml
         │   └── meta.json
         ├── entr/
         └── ...
+```
+
+```
+~/Code/
+├── visor/                       # this repo
+└── low-orbit/                   # any sibling parent dir
+    └── visor-themes-private/    # one-level-deeper layout (LO convention)
+        └── themes/
+            └── ...
 ```
 
 ### Running the sync
@@ -102,8 +120,11 @@ npm run theme:sync
 That builds the local theme-engine and CLI, then runs `visor theme sync`. The sync command discovers private themes in this order:
 
 1. **`VISOR_THEMES_PRIVATE_PATH` env var** — explicit override; must point at a directory containing `{slug}/theme.visor.yaml` entries
-2. **Sibling checkout** — `<visor>/../visor-themes-private/themes/` (the convention default)
-3. **Legacy `custom-themes/` flat layout** — backwards-compat only; emits a deprecation warning per file
+2. **True-sibling checkout** — `<visor>/../visor-themes-private/themes/` (the convention default)
+3. **One-level-deeper checkout** — `<visor>/../<any-dir>/visor-themes-private/themes/` (covers the LO convention `~/Code/low-orbit/visor-themes-private/`)
+4. **Legacy `custom-themes/` flat layout** — backwards-compat only; emits a deprecation warning per file
+
+If both true-sibling and one-level-deeper checkouts exist, true-sibling wins and a warning names the suppressed path. If multiple one-level-deeper candidates exist, the alphabetically first wins and a warning names the others. Set `VISOR_THEMES_PRIVATE_PATH` to override either case.
 
 Override the convention default for non-standard layouts:
 
@@ -126,7 +147,7 @@ The sync command refuses to run when invoked through the global binary inside a 
 3. `npm run dev -w packages/docs` and confirm the new theme appears in the switcher
 4. When ready to ship, follow the publish flow in `visor-themes-private/docs/howto/HOWTO_UPDATE_AND_PUBLISH_THEMES.md`
 
-## Adding a new private theme
+## Publishing a new private theme
 
 Private themes live in [`low-orbit-studio/visor-themes-private`](https://github.com/low-orbit-studio/visor-themes-private). Follow the publish flow in that repo's `docs/howto/HOWTO_UPDATE_AND_PUBLISH_THEMES.md`, bump the version, and push the tag. After the package publishes, bump the dep version in `packages/docs/package.json` and redeploy. The generator picks up new themes on the next build with no docs-site code change.
 
