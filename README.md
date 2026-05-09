@@ -606,6 +606,28 @@ Every `visor_*` Flutter widget is audited against the [Flutter Widget Quality Co
 
 ---
 
+## Operator workflows
+
+Day-to-day publishing is fully automatic — patch bumps for `@loworbitstudio/visor-core`, `@loworbitstudio/visor`, and `@loworbitstudio/visor-theme-engine` happen on PR merge, and `@low-orbit-studio/visor-themes-private` auto-versions on its own merges. These commands surface only for the rare cases where a human is in the loop: health checks and cross-repo coordinated releases.
+
+### Publishing health and coordinated releases
+
+`/lo-visor-publish` (see [`.claude/skills/lo-visor-publish/SKILL.md`](./.claude/skills/lo-visor-publish/SKILL.md)) has two modes:
+
+- **`status`** — read-only drift report across all 4 publishable artifacts. Non-zero exit on drift, so it can gate other workflows.
+  ```bash
+  node scripts/visor-publish-status.mjs
+  ```
+- **`coordinate <visor-PR> <themes-PR>`** — single-confirmation cross-repo release for the case where a feature spans Visor + visor-themes-private and both must ship together.
+  ```bash
+  node scripts/visor-publish-coordinate.mjs 369 2 --dry-run   # preview only
+  node scripts/visor-publish-coordinate.mjs 369 2             # live
+  ```
+
+The skill itself contains no publish logic. Each repo's existing CI (`release.yml`, `auto-version.yml`, themes-private's `publish.yml`) remains the source of truth for what publishes. See [`docs/audits/publish-automation.md`](./docs/audits/publish-automation.md) for the full audit.
+
+---
+
 ## Sustainability
 
 Visor is free and open-source, built and maintained by [Low Orbit Studio](https://loworbit.studio). If it's useful to you, here's how to support it:
