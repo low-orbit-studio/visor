@@ -33,6 +33,18 @@
   --marquee-duration: 40s;
   --marquee-fade-width: var(--spacing-12, 3rem);
 
+  /* Item typography slots — override on the root to scale up for marketing
+     surfaces. Defaults resolve to the body-text size used by ticker strips. */
+  --marquee-item-color: var(--text-primary, #111827);
+  --marquee-item-font-size: var(--font-size-sm, 0.875rem);
+  --marquee-item-font-weight: var(--font-weight-medium, 500);
+  --marquee-item-line-height: var(--line-height-normal, 1.5);
+  --marquee-item-letter-spacing: normal;
+
+  /* Separator slots */
+  --marquee-separator-color: var(--text-tertiary, #9ca3af);
+  --marquee-separator-font-size: var(--marquee-item-font-size);
+
   display: flex;
   flex-direction: column;
   gap: var(--spacing-4, 1rem);
@@ -100,11 +112,12 @@
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
-  color: var(--text-primary, #111827);
-  font-size: var(--font-size-sm, 0.875rem);
-  font-weight: var(--font-weight-medium, 500);
+  color: var(--marquee-item-color);
+  font-size: var(--marquee-item-font-size);
+  font-weight: var(--marquee-item-font-weight);
+  letter-spacing: var(--marquee-item-letter-spacing);
   /* line-height: normal (not tight) so descenders (g, y, p, q, j) clear the band's overflow boundary at marketing-display font sizes */
-  line-height: var(--line-height-normal, 1.5);
+  line-height: var(--marquee-item-line-height);
   white-space: nowrap;
 }
 
@@ -114,9 +127,9 @@
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
-  color: var(--text-tertiary, #9ca3af);
-  font-size: var(--font-size-sm, 0.875rem);
-  line-height: var(--line-height-normal, 1.5);
+  color: var(--marquee-separator-color);
+  font-size: var(--marquee-separator-font-size);
+  line-height: var(--marquee-item-line-height);
   user-select: none;
 }
 
