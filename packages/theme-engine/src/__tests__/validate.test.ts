@@ -438,6 +438,233 @@ describe("validate — warning rules", () => {
       );
       expect(textContrastWarnings.length).toBe(0);
     });
+
+    // VI-347: Expanded text-level coverage. Tertiary/secondary/status text
+    // tokens are now validated against bg + surface in both modes (28 checks
+    // per theme). Use overrides to force specific failure modes.
+
+    it("warns when text-tertiary fails AA against light background", () => {
+      const result = validate({
+        name: "Bad Tertiary Light",
+        version: 1,
+        colors: { primary: "#2563EB", background: "#FFFFFF" },
+        overrides: {
+          light: { "text-tertiary": "#CCCCCC" }, // ~1.6:1 on white
+        },
+      });
+      expect(result.valid).toBe(true);
+      expect(
+        result.warnings.some(
+          (w) =>
+            w.code === "WCAG_CONTRAST" &&
+            w.message.includes("Light mode") &&
+            w.message.includes("text-tertiary") &&
+            w.message.includes("background")
+        )
+      ).toBe(true);
+    });
+
+    it("warns when text-secondary fails AA against light surface", () => {
+      const result = validate({
+        name: "Bad Secondary Surface",
+        version: 1,
+        colors: { primary: "#2563EB", surface: "#FFFFFF" },
+        overrides: {
+          light: { "text-secondary": "#DDDDDD" }, // ~1.4:1 on white
+        },
+      });
+      expect(result.valid).toBe(true);
+      expect(
+        result.warnings.some(
+          (w) =>
+            w.code === "WCAG_CONTRAST" &&
+            w.message.includes("Light mode") &&
+            w.message.includes("text-secondary") &&
+            w.message.includes("surface")
+        )
+      ).toBe(true);
+    });
+
+    it("warns when text-error fails AA against light surface", () => {
+      const result = validate({
+        name: "Bad Error Surface",
+        version: 1,
+        colors: { primary: "#2563EB", surface: "#FFFFFF" },
+        overrides: {
+          light: { "text-error": "#FFAAAA" }, // light red, fails AA on white
+        },
+      });
+      expect(result.valid).toBe(true);
+      expect(
+        result.warnings.some(
+          (w) =>
+            w.code === "WCAG_CONTRAST" &&
+            w.message.includes("Light mode") &&
+            w.message.includes("text-error") &&
+            w.message.includes("surface")
+        )
+      ).toBe(true);
+    });
+
+    it("warns when text-warning fails AA against light background", () => {
+      const result = validate({
+        name: "Bad Warning Bg",
+        version: 1,
+        colors: { primary: "#2563EB", background: "#FFFFFF" },
+        overrides: {
+          light: { "text-warning": "#FFDD00" }, // bright yellow on white, very low contrast
+        },
+      });
+      expect(result.valid).toBe(true);
+      expect(
+        result.warnings.some(
+          (w) =>
+            w.code === "WCAG_CONTRAST" &&
+            w.message.includes("Light mode") &&
+            w.message.includes("text-warning") &&
+            w.message.includes("background")
+        )
+      ).toBe(true);
+    });
+
+    it("warns when text-success fails AA in dark mode against surface", () => {
+      const result = validate({
+        name: "Bad Success Dark Surface",
+        version: 1,
+        colors: { primary: "#2563EB" },
+        "colors-dark": { background: "#0a0a0a", surface: "#171717" },
+        overrides: {
+          dark: { "text-success": "#1a3a1a" }, // very dark green on dark surface
+        },
+      });
+      expect(result.valid).toBe(true);
+      expect(
+        result.warnings.some(
+          (w) =>
+            w.code === "WCAG_CONTRAST" &&
+            w.message.includes("Dark mode") &&
+            w.message.includes("text-success") &&
+            w.message.includes("surface")
+        )
+      ).toBe(true);
+    });
+
+    it("warns when text-info fails AA in dark mode against background", () => {
+      const result = validate({
+        name: "Bad Info Dark Bg",
+        version: 1,
+        colors: { primary: "#2563EB" },
+        "colors-dark": { background: "#0a0a0a", surface: "#171717" },
+        overrides: {
+          dark: { "text-info": "#1a1a3a" }, // very dark blue on dark bg
+        },
+      });
+      expect(result.valid).toBe(true);
+      expect(
+        result.warnings.some(
+          (w) =>
+            w.code === "WCAG_CONTRAST" &&
+            w.message.includes("Dark mode") &&
+            w.message.includes("text-info") &&
+            w.message.includes("background")
+        )
+      ).toBe(true);
+    });
+
+    it("does NOT validate text-disabled (WCAG 1.4.3 exempt)", () => {
+      // Override text-disabled to a deliberately low-contrast value.
+      // The validator must not emit a WCAG_CONTRAST warning for text-disabled.
+      const result = validate({
+        name: "Disabled Exempt",
+        version: 1,
+        colors: { primary: "#2563EB", background: "#FFFFFF", surface: "#FFFFFF" },
+        overrides: {
+          light: { "text-disabled": "#FAFAFA" }, // ~1.04:1 on white
+          dark: { "text-disabled": "#0b0b0b" }, // ~1.04:1 on dark bg
+        },
+      });
+      expect(result.valid).toBe(true);
+      const disabledWarnings = result.warnings.filter(
+        (w) =>
+          w.code === "WCAG_CONTRAST" && w.message.includes("text-disabled")
+      );
+      expect(disabledWarnings).toHaveLength(0);
+    });
+
+    it("does NOT validate text-link / text-inverse (out of scope per VI-347)", () => {
+      // Override link/inverse to deliberately low contrast.
+      // These are explicitly out of scope — link sits on different surfaces
+      // contextually, inverse sits on inverted backgrounds.
+      const result = validate({
+        name: "Link Inverse Exempt",
+        version: 1,
+        colors: { primary: "#2563EB", background: "#FFFFFF", surface: "#FFFFFF" },
+        overrides: {
+          light: {
+            "text-link": "#F0F0F0",
+            "text-inverse": "#FFFFFF",
+            "text-inverse-secondary": "#FAFAFA",
+            "text-link-hover": "#EEEEEE",
+          },
+        },
+      });
+      expect(result.valid).toBe(true);
+      const linkWarnings = result.warnings.filter(
+        (w) =>
+          w.code === "WCAG_CONTRAST" &&
+          (w.message.includes("text-link") ||
+            w.message.includes("text-inverse"))
+      );
+      expect(linkWarnings).toHaveLength(0);
+    });
+
+    it("emits 4 distinct checks per failing token (bg + surface, light + dark)", () => {
+      // text-tertiary set to a value that fails AA on white, but the dark
+      // value is left to derive from neutral-400 (which passes AA against
+      // the default dark bg/surface). Expect exactly 2 warnings (light bg + light surface).
+      const result = validate({
+        name: "Tertiary Quad Check",
+        version: 1,
+        colors: { primary: "#2563EB", background: "#FFFFFF", surface: "#FFFFFF" },
+        overrides: {
+          light: { "text-tertiary": "#DDDDDD" },
+        },
+      });
+      const tertiaryWarnings = result.warnings.filter(
+        (w) =>
+          w.code === "WCAG_CONTRAST" && w.message.includes("text-tertiary")
+      );
+      expect(tertiaryWarnings).toHaveLength(2);
+      expect(
+        tertiaryWarnings.some((w) => w.message.includes("background"))
+      ).toBe(true);
+      expect(
+        tertiaryWarnings.some((w) => w.message.includes("surface"))
+      ).toBe(true);
+      expect(
+        tertiaryWarnings.every((w) => w.message.includes("Light mode"))
+      ).toBe(true);
+    });
+
+    it("all stock-style text levels pass AA for a well-configured theme", () => {
+      // VI-346 rebalanced text-secondary/tertiary to fixed-L shades so AA
+      // holds by default. DEFAULT_THEME should produce zero text-* contrast
+      // warnings across all 7 in-scope tokens (28 checks).
+      const result = validate(DEFAULT_THEME);
+      expect(result.valid).toBe(true);
+      const textWarnings = result.warnings.filter(
+        (w) =>
+          w.code === "WCAG_CONTRAST" &&
+          (w.message.includes("text-primary") ||
+            w.message.includes("text-secondary") ||
+            w.message.includes("text-tertiary") ||
+            w.message.includes("text-error") ||
+            w.message.includes("text-warning") ||
+            w.message.includes("text-success") ||
+            w.message.includes("text-info"))
+      );
+      expect(textWarnings).toHaveLength(0);
+    });
   });
 
   describe("primary/accent similarity", () => {
