@@ -10,8 +10,9 @@
   display: grid;
   grid-template-columns: repeat(var(--bento-cols, 2), 1fr);
   gap: var(--bento-gap, var(--spacing-4, 1rem));
-  /* Default `align-items: stretch` (grid) — tiles in the same row share height
-     regardless of body content length (Flutter IntrinsicHeight equivalent). */
+  /* Tiles hug their content vertically — they do NOT stretch to share row
+     height. Mirrors the strata-v1 prototype's .work__grid { align-items: start }. */
+  align-items: start;
 }
 
 /* Responsive breakpoints — only apply when the CSS variable is set */
@@ -58,8 +59,9 @@
 .bentoTile {
   /* Customization slots — defaults match the strata-v1 marketing prototype.
      Override per-grid via a parent token-override scope or per-tile via style. */
-  --bento-tile-body-padding: clamp(var(--spacing-4, 1rem), 2vw, var(--spacing-7, 1.75rem));
-  --bento-tile-body-gap: var(--spacing-3, 0.75rem);
+  --bento-tile-body-padding-y: var(--spacing-3, 0.75rem); /* 12px — tight vertical rhythm */
+  --bento-tile-body-padding-x: clamp(var(--spacing-3, 0.75rem), 1.6vw, var(--spacing-5, 1.25rem));
+  --bento-tile-body-gap: var(--spacing-2, 0.5rem); /* 8px between meta / title / description */
   --bento-tile-radius: var(--radius-lg, 0.75rem);
   --bento-tile-media-scale-hover: 1.04;
   --bento-tile-lift-hover: -3px;
@@ -143,6 +145,7 @@ a.bentoTile:focus-visible {
    --------------------------------------------------------------------------- */
 
 .bentoTileMedia {
+  display: block; /* Drop inline baseline space — avoids a hairline gap above/below the image. */
   width: 100%;
   object-fit: cover; /* default; overridden by contain modifier below */
   /* Slow ease-out zoom on tile hover — applied here so any tile (anchor or article) gets the effect. */
@@ -186,23 +189,29 @@ a.bentoTile:focus-visible {
 .bentoTileBody {
   display: grid;
   gap: var(--bento-tile-body-gap);
-  padding: var(--bento-tile-body-padding);
+  padding-block: var(--bento-tile-body-padding-y);
+  padding-inline: var(--bento-tile-body-padding-x);
   align-content: start;
 }
 
-/* Stacked: body fills the remaining vertical space so tiles in the same row
-   share height (the empty space lands below the content in the shorter tile,
-   matching Flutter IntrinsicHeight). */
+/* Stacked: body sits below the media in normal flow at its natural height —
+   no flex-grow, so the tile hugs its content. */
 .bentoTileStacked .bentoTileBody {
   position: static;
-  flex: 1;
 }
 
-/* Overlay: body floats on top, pushed to bottom of the tile. */
+/* Overlay: body floats on top, pushed to bottom of the tile. A subtle
+   bottom-anchored gradient keeps text legible against any image. */
 .bentoTileOverlay .bentoTileBody {
   position: relative;
   z-index: 1;
   margin-top: auto;
+  background: linear-gradient(
+    to top,
+    var(--overlay-bg) 0%,
+    var(--overlay-bg) 60%,
+    transparent 100%
+  );
 }
 
 /* ---------------------------------------------------------------------------
@@ -214,7 +223,7 @@ a.bentoTile:focus-visible {
   flex-wrap: wrap;
   gap: var(--spacing-3, 0.75rem);
   font-size: 0.6875rem; /* 11px — intentional tracking-display size */
-  font-weight: var(--font-weight-semibold, 600);
+  font-weight: var(--font-weight-medium, 500);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-tertiary, #6b7280);
@@ -257,6 +266,7 @@ a.bentoTile:focus-visible {
   margin: 0;
   color: var(--text-secondary, #6b7280);
   font-size: 0.9375rem;
+  font-weight: var(--font-weight-normal, 400);
   line-height: 1.5;
   max-width: 56ch;
 }

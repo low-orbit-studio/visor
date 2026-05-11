@@ -1,26 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1680 720" preserveAspectRatio="xMidYMid slice">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2100 900" preserveAspectRatio="xMidYMid slice">
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0f172a"/>
-      <stop offset="55%" stop-color="#1e3a8a"/>
-      <stop offset="100%" stop-color="#7c3aed"/>
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="35%" stop-color="#3730a3"/>
+      <stop offset="70%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#db2777"/>
     </linearGradient>
-    <radialGradient id="glow" cx="0.78" cy="0.25" r="0.55">
-      <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.7"/>
-      <stop offset="100%" stop-color="#a78bfa" stop-opacity="0"/>
+    <radialGradient id="glow1" cx="0.78" cy="0.22" r="0.55">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="0.2" cy="0.75" r="0.55">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
     </radialGradient>
   </defs>
-  <rect width="1680" height="720" fill="url(#g)"/>
-  <rect width="1680" height="720" fill="url(#glow)"/>
+  <rect width="2100" height="900" fill="url(#g)"/>
+  <rect width="2100" height="900" fill="url(#glow1)"/>
+  <rect width="2100" height="900" fill="url(#glow2)"/>
   <g fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="1">
-    <line x1="0" y1="120" x2="1680" y2="120"/>
-    <line x1="0" y1="240" x2="1680" y2="240"/>
-    <line x1="0" y1="360" x2="1680" y2="360"/>
-    <line x1="0" y1="480" x2="1680" y2="480"/>
-    <line x1="0" y1="600" x2="1680" y2="600"/>
+    <line x1="0" y1="180" x2="2100" y2="180"/>
+    <line x1="0" y1="360" x2="2100" y2="360"/>
+    <line x1="0" y1="540" x2="2100" y2="540"/>
+    <line x1="0" y1="720" x2="2100" y2="720"/>
   </g>
-  <g font-family="system-ui, -apple-system, Helvetica, Arial, sans-serif" fill="#e2e8f0">
-    <text x="64" y="500" font-size="120" font-weight="700" letter-spacing="-3">Knowmentum</text>
-    <text x="64" y="570" font-size="28" font-weight="500" fill="#94a3b8" letter-spacing="1">Hero · 21 / 9</text>
+  <g font-family="system-ui, -apple-system, Helvetica, Arial, sans-serif" fill="#f8fafc">
+    <text x="80" y="640" font-size="160" font-weight="700" letter-spacing="-4">Knowmentum</text>
+    <text x="84" y="720" font-size="28" font-weight="500" fill="#c4b5fd" letter-spacing="4">KNOWLEDGE · PLATFORM · 2026</text>
   </g>
 </svg>
