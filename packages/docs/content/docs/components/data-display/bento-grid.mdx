@@ -12,6 +12,32 @@ import {
   BentoTileBody,
 } from '@/components/ui/bento-grid/bento-grid';
 
+## Stacked vs Overlay Layout
+
+`BentoTile` ships two layouts. **Stacked** (default) is the classic portfolio bento — media on top with its own aspect ratio, body sits below as a sibling block. **Overlay** is the "modern card" style where the tile carries the aspect ratio, the media fills it, and the body floats over the lower portion.
+
+<ComponentPreview
+  title="Stacked vs Overlay"
+  code={"<BentoGrid cols={2}>\n  {/* Stacked (default): media on top, body below. */}\n  <BentoTile span=\"half\" aspect=\"4/3\">\n    <BentoTileMedia src=\"/placeholder.jpg\" alt=\"Stacked example\" />\n    <BentoTileBody>\n      <h3>Stacked</h3>\n      <p>Media on top, body below as a sibling.</p>\n    </BentoTileBody>\n  </BentoTile>\n\n  {/* Overlay: media fills the tile, body floats over it. */}\n  <BentoTile span=\"half\" aspect=\"4/3\" layout=\"overlay\">\n    <BentoTileMedia src=\"/placeholder.jpg\" alt=\"Overlay example\" />\n    <BentoTileBody>\n      <h3>Overlay</h3>\n      <p>Body floats over the media.</p>\n    </BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
+>
+  <BentoGrid cols={2}>
+    <BentoTile span="half" aspect="4/3">
+      <BentoTileBody>
+        <h3>Stacked</h3>
+        <p>Media on top, body below as a sibling.</p>
+      </BentoTileBody>
+    </BentoTile>
+    <BentoTile span="half" aspect="4/3" layout="overlay">
+      <BentoTileBody>
+        <h3>Overlay</h3>
+        <p>Body floats over the media.</p>
+      </BentoTileBody>
+    </BentoTile>
+  </BentoGrid>
+</ComponentPreview>
+
+> **Breaking change in v0.5.0:** Default `BentoTile.layout` is now `"stacked"`. Tiles that previously rendered body-over-media must explicitly pass `layout="overlay"` to retain that behavior.
+
 ## 2-Column Default
 
 A standard two-column grid with half-width tiles and consistent aspect ratios.
@@ -197,8 +223,9 @@ Also accepts all standard `<div>` HTML attributes.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
+| `layout` | `"stacked" \| "overlay"` | `"stacked"` | Visual layout. `stacked` places media on top with its own aspect ratio; `overlay` makes the tile carry the aspect ratio with the body floating over the media. |
 | `span` | `"full" \| "half" \| number` | `"half"` | Column span: `full` (1/-1), `half` (1 col), or a numeric span count. |
-| `aspect` | `"21/9" \| "2/1" \| "4/3" \| "1/1" \| string` | — | Aspect ratio for the tile. Maps to CSS `aspect-ratio`. |
+| `aspect` | `"21/9" \| "2/1" \| "4/3" \| "1/1" \| string` | — | Aspect ratio. Applied to the media in `stacked` mode, to the tile root in `overlay` mode. |
 | `fit` | `"cover" \| "contain"` | `"cover"` | Media fit mode. `contain` adds a `surface-card` background plate for logos/portraits. |
 | `href` | `string` | — | When provided, renders the tile root as an `<a>` element. |
 | `target` | `string` | — | Link target. Only used when `href` is set. |

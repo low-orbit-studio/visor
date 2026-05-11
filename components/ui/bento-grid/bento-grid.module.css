@@ -62,8 +62,16 @@
   background-color: var(--surface-card, #ffffff);
   color: var(--text-primary, #111827);
   box-shadow: var(--shadow-sm);
+  /* Aspect ratio lives on the layout modifier — overlay applies it to the tile root, stacked applies it to the media. */
+}
 
-  /* Aspect ratio — applied per tile via inline CSS custom property */
+/* Stacked (default): media on top with its own aspect ratio, body as a sibling block below. Total tile height = media height + body height. */
+.bentoTileStacked {
+  /* No aspect-ratio on the tile root — height comes from media + body. */
+}
+
+/* Overlay: the tile root carries the aspect ratio. Media fills it absolutely; body floats over the lower portion. */
+.bentoTileOverlay {
   aspect-ratio: var(--bento-tile-aspect, auto);
 }
 
@@ -124,15 +132,26 @@ a.bentoTile:focus-visible {
 }
 
 /* ---------------------------------------------------------------------------
-   Media element
+   Media element — layout-scoped positioning
    --------------------------------------------------------------------------- */
 
 .bentoTileMedia {
+  width: 100%;
+  object-fit: cover; /* default; overridden by contain modifier below */
+}
+
+/* Stacked: media is a normal block sized by its own aspect ratio. */
+.bentoTileStacked .bentoTileMedia {
+  position: relative;
+  aspect-ratio: var(--bento-tile-aspect, 16 / 9);
+  height: auto;
+}
+
+/* Overlay: media absolutely fills the tile (which carries the aspect ratio). */
+.bentoTileOverlay .bentoTileMedia {
   position: absolute;
   inset: 0;
-  width: 100%;
   height: 100%;
-  object-fit: cover; /* default; overridden by contain modifier below */
 }
 
 /* When the parent tile is contain mode, media uses object-fit: contain */
@@ -141,15 +160,24 @@ a.bentoTile:focus-visible {
 }
 
 /* ---------------------------------------------------------------------------
-   Tile body
+   Tile body — layout-scoped positioning
    --------------------------------------------------------------------------- */
 
 .bentoTileBody {
-  position: relative; /* stacks above absolute media */
-  z-index: 1;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2, 0.5rem);
   padding: var(--spacing-4, 1rem);
+}
+
+/* Stacked: body sits below media in normal flow. */
+.bentoTileStacked .bentoTileBody {
+  position: static;
+}
+
+/* Overlay: body floats on top, pushed to bottom of the tile. */
+.bentoTileOverlay .bentoTileBody {
+  position: relative;
+  z-index: 1;
   margin-top: auto; /* push body to bottom when media is present */
 }

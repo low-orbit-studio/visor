@@ -20,6 +20,8 @@ export type BentoAspect = "21/9" | "2/1" | "4/3" | "1/1" | (string & {})
 
 export type BentoFit = "cover" | "contain"
 
+export type BentoLayout = "stacked" | "overlay"
+
 // ---------------------------------------------------------------------------
 // BentoGrid
 // ---------------------------------------------------------------------------
@@ -74,13 +76,22 @@ BentoGrid.displayName = "BentoGrid"
 
 export interface BentoTileProps extends React.HTMLAttributes<HTMLElement> {
   /**
+   * Visual layout of the tile.
+   * - "stacked" (default): media renders on top with its own aspect ratio,
+   *   body is a sibling block below in document flow. Tile height = media + body.
+   * - "overlay": the tile carries the aspect ratio, media fills it absolutely,
+   *   body floats over the lower portion.
+   * @default "stacked"
+   */
+  layout?: BentoLayout
+  /**
    * Column span: "full" (1/-1), "half" (1 col), or a numeric span count.
    * Defaults to "half".
    */
   span?: BentoSpan
   /**
    * Aspect ratio for the tile (e.g. "21/9", "2/1", "4/3", "1/1").
-   * Maps directly to CSS `aspect-ratio`.
+   * Applied to the media in "stacked" mode, and to the tile root in "overlay" mode.
    */
   aspect?: BentoAspect
   /**
@@ -107,6 +118,7 @@ const BentoTile = React.forwardRef<HTMLElement, BentoTileProps>(
   (
     {
       className,
+      layout = "stacked",
       span = "half",
       aspect,
       fit = "cover",
@@ -126,6 +138,7 @@ const BentoTile = React.forwardRef<HTMLElement, BentoTileProps>(
 
     const spanClass = cn(
       styles.bentoTile,
+      layout === "stacked" ? styles.bentoTileStacked : styles.bentoTileOverlay,
       span === "full" && styles.bentoTileFull,
       span === "half" && styles.bentoTileHalf,
       typeof span === "number" && styles.bentoTileNumeric,
@@ -145,6 +158,7 @@ const BentoTile = React.forwardRef<HTMLElement, BentoTileProps>(
           data-slot="bento-tile"
           data-span={span}
           data-fit={fit}
+          data-layout={layout}
           href={href}
           target={target}
           rel={rel ?? (target === "_blank" ? "noopener noreferrer" : undefined)}
@@ -163,6 +177,7 @@ const BentoTile = React.forwardRef<HTMLElement, BentoTileProps>(
         data-slot="bento-tile"
         data-span={span}
         data-fit={fit}
+        data-layout={layout}
         className={spanClass}
         style={combinedStyle}
         {...props}

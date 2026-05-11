@@ -164,6 +164,52 @@ describe("BentoTile fit variants", () => {
 })
 
 // ---------------------------------------------------------------------------
+// BentoTile — layout variants
+// ---------------------------------------------------------------------------
+
+describe("BentoTile layout variants", () => {
+  it('applies data-layout="stacked" by default', () => {
+    render(<BentoTile>tile</BentoTile>)
+    const tile = screen.getByText("tile").closest("[data-slot='bento-tile']")
+    expect(tile).toHaveAttribute("data-layout", "stacked")
+  })
+
+  it('applies data-layout="overlay" when layout="overlay"', () => {
+    render(<BentoTile layout="overlay">tile</BentoTile>)
+    const tile = screen.getByText("tile").closest("[data-slot='bento-tile']")
+    expect(tile).toHaveAttribute("data-layout", "overlay")
+  })
+
+  it('applies data-layout="stacked" when layout="stacked"', () => {
+    render(<BentoTile layout="stacked">tile</BentoTile>)
+    const tile = screen.getByText("tile").closest("[data-slot='bento-tile']")
+    expect(tile).toHaveAttribute("data-layout", "stacked")
+  })
+
+  it('exposes data-layout on anchor tiles', () => {
+    const { container } = render(
+      <BentoTile href="https://example.com" layout="overlay">tile</BentoTile>
+    )
+    const anchor = container.querySelector("a[data-slot='bento-tile']")
+    expect(anchor).toHaveAttribute("data-layout", "overlay")
+  })
+
+  it('combines layout="stacked" with fit="contain" without breaking either attribute', () => {
+    render(<BentoTile layout="stacked" fit="contain">tile</BentoTile>)
+    const tile = screen.getByText("tile").closest("[data-slot='bento-tile']")
+    expect(tile).toHaveAttribute("data-layout", "stacked")
+    expect(tile).toHaveAttribute("data-fit", "contain")
+  })
+
+  it('combines layout="overlay" with fit="contain" without breaking either attribute', () => {
+    render(<BentoTile layout="overlay" fit="contain">tile</BentoTile>)
+    const tile = screen.getByText("tile").closest("[data-slot='bento-tile']")
+    expect(tile).toHaveAttribute("data-layout", "overlay")
+    expect(tile).toHaveAttribute("data-fit", "contain")
+  })
+})
+
+// ---------------------------------------------------------------------------
 // BentoTile — polymorphic root (article vs anchor)
 // ---------------------------------------------------------------------------
 

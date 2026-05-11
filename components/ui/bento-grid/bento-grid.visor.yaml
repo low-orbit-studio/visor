@@ -37,13 +37,17 @@ sub_components:
   - name: BentoTile
     description: Individual grid tile. Renders as <article> by default, or <a> when href is provided.
     props:
+      - name: layout
+        type: '"stacked" | "overlay"'
+        default: '"stacked"'
+        description: "Visual layout. stacked (default): media on top with its own aspect ratio, body below as a sibling. overlay: media fills the tile (which carries the aspect ratio), body floats over the lower portion."
       - name: span
         type: '"full" | "half" | number'
         default: '"half"'
         description: "Column span: full (1/-1), half (1 col), or a numeric span count."
       - name: aspect
         type: '"21/9" | "2/1" | "4/3" | "1/1" | string'
-        description: "Aspect ratio for the tile. Maps directly to CSS aspect-ratio."
+        description: "Aspect ratio. In stacked mode it shapes the media; in overlay mode it shapes the entire tile root."
       - name: fit
         type: '"cover" | "contain"'
         default: '"cover"'
