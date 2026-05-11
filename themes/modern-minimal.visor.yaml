@@ -54,10 +54,15 @@ motion:
 
 overrides:
   light:
+    # VI-346: text-* overrides retained — modern-minimal uses alpha-blended
+    # neutrals (rgba over white/black) for its signature flat-hierarchy
+    # aesthetic. Derived fixed-L shades from #6B7280 would pass AA, but the
+    # alpha pattern is intentional brand language, not an accessibility patch.
     text-primary: "rgba(0, 0, 0, 0.9)"
     text-secondary: "rgba(0, 0, 0, 0.55)"
     text-tertiary: "rgba(0, 0, 0, 0.55)"
   dark:
+    # VI-346: see light-mode note above — alpha-blended neutrals are stylistic.
     text-primary: "rgba(255, 255, 255, 0.7)"
     text-secondary: "rgba(255, 255, 255, 0.70)"
     text-tertiary: "rgba(255, 255, 255, 0.55)"

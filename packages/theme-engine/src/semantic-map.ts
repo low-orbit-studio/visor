@@ -52,13 +52,17 @@ export const SEMANTIC_TEXT_MAP: Record<string, SemanticMapping> = {
     light: { role: "neutral", shade: 900 },
     dark: { role: "neutral", shade: 50 },
   },
+  // VI-346: rebalanced to fixed-L shades (700/300, 600/400) so AA contrast holds
+  // by default for any reasonable input neutral. Shade 500 is brand-anchored
+  // (variable L = input itself) and therefore forbidden for any text level that
+  // must clear AA. See docs/token-rules.md and SEMANTIC_TEXT_MAP rationale.
   secondary: {
-    light: { role: "neutral", shade: 600 },
-    dark: { role: "neutral", shade: 400 },
+    light: { role: "neutral", shade: 700 },
+    dark: { role: "neutral", shade: 300 },
   },
   tertiary: {
-    light: { role: "neutral", shade: 400 },
-    dark: { role: "neutral", shade: 500 },
+    light: { role: "neutral", shade: 600 },
+    dark: { role: "neutral", shade: 400 },
   },
   disabled: {
     light: { role: "neutral", shade: 300 },

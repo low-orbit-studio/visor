@@ -50,18 +50,15 @@ motion:
   easing: "cubic-bezier(0.4, 0, 0.2, 1)"
 
 overrides:
+  # VI-346: text-primary/secondary/tertiary overrides removed — derived values
+  # from neutral (#71717a) now hit AA-by-default via SEMANTIC_TEXT_MAP fixed-L
+  # shades (900/50, 700/300, 600/400).
   light:
-    text-primary: "#18181b"
-    text-secondary: "#52525b"
-    text-tertiary: "#737373"
     text-link: "#0891b2"
     interactive-primary-bg: "#1798ad"
     interactive-primary-text: "#ffffff"
     border-focus: "#1798ad"
   dark:
-    text-primary: "#fafafa"
-    text-secondary: "#a1a1aa"
-    text-tertiary: "#808080"
     text-link: "#67e8f9"
     interactive-primary-bg: "#1798ad"
     interactive-primary-text: "#ffffff"

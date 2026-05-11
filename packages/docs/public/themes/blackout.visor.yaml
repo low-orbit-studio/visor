@@ -40,6 +40,10 @@ motion:
 
 overrides:
   dark:
+    # VI-346: text-* overrides retained — blackout is an always-dark glass
+    # theme with neutral=#333333 (intentionally dark for flattened elevation).
+    # Derived shades from that anchor would not clear AA on near-black bg;
+    # alpha-blended whites are the stylistic + a11y solution here.
     text-primary: "rgba(255, 255, 255, 0.7)"
     text-secondary: "rgba(255, 255, 255, 0.70)"
     text-tertiary: "rgba(255, 255, 255, 0.55)"
@@ -55,6 +59,7 @@ overrides:
   light:
     # Blackout is always-dark — light mode uses near-black backgrounds.
     # Every token here must work on #0a0a0a, not on white.
+    # VI-346: text-* overrides retained (stylistic) — always-dark theme.
     text-primary: "rgba(255, 255, 255, 0.75)"
     text-secondary: "rgba(255, 255, 255, 0.5)"
     text-tertiary: "rgba(255, 255, 255, 0.55)"

@@ -182,9 +182,9 @@
 
 /* --- Adaptive: Text (dark) — manual toggle --- */
 .dark .neutral-theme {
-  --text-primary: #fafafa;
-  --text-secondary: #a1a1aa;
-  --text-tertiary: #808080;
+  --text-primary: #f5f5f6;
+  --text-secondary: #b6b7bd;
+  --text-tertiary: #8e8e97;
   --text-disabled: #54545d;
   --text-inverse: #1a1a1f;
   --text-inverse-secondary: #41414a;
@@ -265,9 +265,9 @@
 /* --- Adaptive: Text (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
   .neutral-theme:not(.light) {
-    --text-primary: #fafafa;
-    --text-secondary: #a1a1aa;
-    --text-tertiary: #808080;
+    --text-primary: #f5f5f6;
+    --text-secondary: #b6b7bd;
+    --text-tertiary: #8e8e97;
     --text-disabled: #54545d;
     --text-inverse: #1a1a1f;
     --text-inverse-secondary: #41414a;
@@ -356,9 +356,9 @@
 
 /* --- Adaptive: Text (light) --- */
 html:not(.dark) .neutral-theme {
-  --text-primary: #18181b;
-  --text-secondary: #52525b;
-  --text-tertiary: #737373;
+  --text-primary: #1a1a1f;
+  --text-secondary: #41414a;
+  --text-tertiary: #54545d;
   --text-disabled: #b6b7bd;
   --text-inverse: #ffffff;
   --text-inverse-secondary: #d4d4d8;
@@ -439,20 +439,20 @@ html:not(.dark) .neutral-theme {
 /* --- Fumadocs bridge: dark --- */
 .dark .neutral-theme {
   --color-fd-background: #09090b;
-  --color-fd-foreground: #fafafa;
+  --color-fd-foreground: #f5f5f6;
   --color-fd-card: #18181b;
-  --color-fd-card-foreground: #fafafa;
+  --color-fd-card-foreground: #f5f5f6;
   --color-fd-border: #41414a;
   --color-fd-muted: #41414a;
-  --color-fd-muted-foreground: #a1a1aa;
+  --color-fd-muted-foreground: #b6b7bd;
   --color-fd-accent: #1798ad;
   --color-fd-accent-foreground: #ffffff;
   --color-fd-primary: #1798ad;
   --color-fd-primary-foreground: #ffffff;
   --color-fd-secondary: #41414a;
-  --color-fd-secondary-foreground: #fafafa;
+  --color-fd-secondary-foreground: #f5f5f6;
   --color-fd-popover: #18181b;
-  --color-fd-popover-foreground: #fafafa;
+  --color-fd-popover-foreground: #f5f5f6;
   --color-fd-ring: #1798ad;
 }
 
@@ -460,20 +460,20 @@ html:not(.dark) .neutral-theme {
 /* --- Fumadocs bridge: light --- */
 html:not(.dark) .neutral-theme {
   --color-fd-background: #ffffff;
-  --color-fd-foreground: #18181b;
+  --color-fd-foreground: #1a1a1f;
   --color-fd-card: #ffffff;
-  --color-fd-card-foreground: #18181b;
+  --color-fd-card-foreground: #1a1a1f;
   --color-fd-border: #d4d4d8;
   --color-fd-muted: #e7e7ea;
-  --color-fd-muted-foreground: #52525b;
+  --color-fd-muted-foreground: #41414a;
   --color-fd-accent: #1798ad;
   --color-fd-accent-foreground: #ffffff;
   --color-fd-primary: #1798ad;
   --color-fd-primary-foreground: #ffffff;
   --color-fd-secondary: #e7e7ea;
-  --color-fd-secondary-foreground: #18181b;
+  --color-fd-secondary-foreground: #1a1a1f;
   --color-fd-popover: #ffffff;
-  --color-fd-popover-foreground: #18181b;
+  --color-fd-popover-foreground: #1a1a1f;
   --color-fd-ring: #1798ad;
 }
 }

@@ -50,6 +50,10 @@ motion:
   easing: "cubic-bezier(0.4, 0, 0.2, 1)"
 
 overrides:
+  # VI-346: text-* overrides retained — space uses purple-tinted neutrals
+  # (rgba(26,22,48,*) and rgba(232,232,240,*)) for its signature "cosmic"
+  # palette. Derived greys from neutral=#6b6b80 would clear AA, but the
+  # purple tint is intentional brand language. All overrides verified ≥ AA.
   light:
     text-primary: "#1a1630"
     text-secondary: "rgba(26, 22, 48, 0.72)"
