@@ -66,9 +66,12 @@
 /* ── Track ────────────────────────────────────────────────────────────────── */
 
 /*
- * The track contains two `.set` elements (first copy + second copy) so the
- * total width equals 2× one set. Animating translateX(-50%) scrolls exactly
- * one set-width, creating a seamless loop.
+ * The track contains two `.set` elements (first copy + second copy) sitting
+ * flush against each other. Each .set carries a trailing margin equal to the
+ * inter-item gap, so the total track width is exactly 2 × (set + gap). The
+ * translateX(-50%) wrap then lands at the exact start of the second set —
+ * seamless. Putting a `gap` on .track itself would land the wrap mid-gap and
+ * cause a visible jump every cycle.
  */
 .track {
   display: flex;
@@ -77,7 +80,6 @@
   width: max-content;
   animation: marquee-scroll var(--marquee-duration, 40s) var(--motion-easing-linear, linear) infinite;
   will-change: transform;
-  gap: var(--marquee-gap);
 }
 
 /* ── Item set ─────────────────────────────────────────────────────────────── */
@@ -88,6 +90,8 @@
   align-items: center;
   gap: var(--marquee-gap);
   flex-shrink: 0;
+  /* Trailing gap that bridges this set's last item to the next set's first item — required for a seamless -50% wrap. See `.track` comment above. */
+  margin-right: var(--marquee-gap);
 }
 
 /* ── Item ─────────────────────────────────────────────────────────────────── */
