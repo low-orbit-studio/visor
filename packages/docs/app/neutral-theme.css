@@ -203,7 +203,7 @@
   --surface-card: #18181b;
   --surface-popover: #18181b;
   --surface-subtle: #2d2d34;
-  --surface-muted: #41414a;
+  --surface-muted: #1f1f23;
   --surface-overlay: #09090c;
   --surface-interactive-default: #2d2d34;
   --surface-interactive-hover: #41414a;
@@ -288,7 +288,7 @@
     --surface-card: #18181b;
     --surface-popover: #18181b;
     --surface-subtle: #2d2d34;
-    --surface-muted: #41414a;
+    --surface-muted: #1f1f23;
     --surface-overlay: #09090c;
     --surface-interactive-default: #2d2d34;
     --surface-interactive-hover: #41414a;
@@ -443,13 +443,13 @@ html:not(.dark) .neutral-theme {
   --color-fd-card: #18181b;
   --color-fd-card-foreground: #f5f5f6;
   --color-fd-border: #41414a;
-  --color-fd-muted: #41414a;
+  --color-fd-muted: #1f1f23;
   --color-fd-muted-foreground: #b6b7bd;
   --color-fd-accent: #1798ad;
   --color-fd-accent-foreground: #ffffff;
   --color-fd-primary: #1798ad;
   --color-fd-primary-foreground: #ffffff;
-  --color-fd-secondary: #41414a;
+  --color-fd-secondary: #1f1f23;
   --color-fd-secondary-foreground: #f5f5f6;
   --color-fd-popover: #18181b;
   --color-fd-popover-foreground: #f5f5f6;

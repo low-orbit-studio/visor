@@ -41,8 +41,24 @@ overrides:
     border-strong: "transparent"
     # Focus, error, warning, success, info, input, and disabled borders are NOT overridden
     # — they remain visible for accessibility and feedback.
+    # VI-348: borderless uses neutral=#333333 (outside VI-346's tested range),
+    # so palette-derived text-tertiary (#5c5c5c) and surface-muted (#212121)
+    # fail AA against each other (2.41:1). Explicit overrides hit AA cleanly.
+    text-primary: "#f5f5f5"
+    text-secondary: "#c2c2c2"
+    text-tertiary: "#999999"
+    surface-muted: "#191919"
   light:
-    # Light mode mirrors dark: borderless in both modes for consistent V7-style admin UX
+    # Light mode mirrors dark: borderless in both modes for consistent V7-style admin UX.
+    # The whole theme is intentionally always-dark; light text/surfaces must mirror
+    # dark to preserve AA contrast (palette-derived light values would be dark-on-dark).
     border-default: "transparent"
     border-muted: "transparent"
     border-strong: "transparent"
+    text-primary: "#f5f5f5"
+    text-secondary: "#c2c2c2"
+    text-tertiary: "#999999"
+    surface-page: "#0a0a0c"
+    surface-card: "#111115"
+    surface-popover: "#111115"
+    surface-muted: "#191919"
