@@ -1,0 +1,5 @@
+---
+"@loworbitstudio/visor-theme-engine": patch
+---
+
+Expand the runtime contrast validator (`checkContrastWarnings` in `validate.ts`) to check WCAG AA contrast for all standard text levels (`text-primary`, `text-secondary`, `text-tertiary`) and status text levels (`text-error`, `text-warning`, `text-success`, `text-info`) against `bg` and `surface` in both light and dark modes. Coverage expanded from 4 checks to 28 per theme. The validator now drives token values through the same semantic pipeline consumers render (`generatePrimitives` + `assignSemanticTokens` + `applyOverrides`), so theme-specific neutrals and overrides are respected instead of hardcoded `#111827` / `#f9fafb` proxies. `text-disabled` remains exempt per WCAG 1.4.3 Note; `text-link`, `text-link-hover`, `text-inverse`, `text-inverse-secondary` are out of scope (rendered on contextual / inverted surfaces). Theme authors iterating on `.visor.yaml` will now catch tertiary/secondary/status text contrast failures during validation instead of in production.
