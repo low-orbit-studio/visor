@@ -30,7 +30,7 @@
 
 .root {
   --marquee-gap: var(--spacing-6, 1.5rem);
-  --marquee-duration: 25s;
+  --marquee-duration: 40s;
   --marquee-fade-width: var(--spacing-12, 3rem);
 
   display: flex;
@@ -75,7 +75,7 @@
   flex-direction: row;
   align-items: center;
   width: max-content;
-  animation: marquee-scroll var(--marquee-duration, 25s) var(--motion-easing-linear, linear) infinite;
+  animation: marquee-scroll var(--marquee-duration, 40s) var(--motion-easing-linear, linear) infinite;
   will-change: transform;
   gap: var(--marquee-gap);
 }
@@ -99,7 +99,8 @@
   color: var(--text-primary, #111827);
   font-size: var(--font-size-sm, 0.875rem);
   font-weight: var(--font-weight-medium, 500);
-  line-height: var(--line-height-tight, 1.25);
+  /* line-height: normal (not tight) so descenders (g, y, p, q, j) clear the band's overflow boundary at marketing-display font sizes */
+  line-height: var(--line-height-normal, 1.5);
   white-space: nowrap;
 }
 
@@ -111,7 +112,7 @@
   flex-shrink: 0;
   color: var(--text-tertiary, #9ca3af);
   font-size: var(--font-size-sm, 0.875rem);
-  line-height: var(--line-height-tight, 1.25);
+  line-height: var(--line-height-normal, 1.5);
   user-select: none;
 }
 

@@ -29,25 +29,40 @@ Pass a `bands` array with per-band `direction`, `durationSec`, and `separator`. 
 
 <ComponentPreview
   title="Counter-Flow Dual Band"
-  code={"import { Marquee } from '@/components/ui/marquee/marquee';\n\nconst clients = ['Acme Corp', 'Vercel', 'Low Orbit Studio', 'Figma', 'Notion', 'Linear'];\n\n<Marquee\n  bands={[\n    { items: clients, direction: 'left', durationSec: 25, separator: '●' },\n    { items: [...clients].reverse(), direction: 'right', durationSec: 30, separator: '○' },\n  ]}\n  pauseOnHover\n  gap=\"2.5rem\"\n/>"}
+  code={"import { Marquee } from '@/components/ui/marquee/marquee';\n\nconst clients = ['Acme Corp', 'Vercel', 'Low Orbit Studio', 'Figma', 'Notion', 'Linear'];\n\n<Marquee\n  bands={[\n    { items: clients, direction: 'left', durationSec: 40, separator: '●' },\n    { items: [...clients].reverse(), direction: 'right', durationSec: 50, separator: '○' },\n  ]}\n  pauseOnHover\n  gap=\"2.5rem\"\n/>"}
 >
   <Marquee
     bands={[
       {
         items: ['Acme Corp', 'Vercel', 'Low Orbit Studio', 'Figma', 'Notion', 'Linear'],
         direction: 'left',
-        durationSec: 25,
+        durationSec: 40,
         separator: '●',
       },
       {
         items: ['Linear', 'Notion', 'Figma', 'Low Orbit Studio', 'Vercel', 'Acme Corp'],
         direction: 'right',
-        durationSec: 30,
+        durationSec: 50,
         separator: '○',
       },
     ]}
     pauseOnHover
     gap="2.5rem"
+  />
+</ComponentPreview>
+
+## Marketing-Display Scale (Descenders + Calm Speed)
+
+At marketing-display font sizes (≥ 1.5rem), items with descender glyphs (`g`, `y`, `p`, `q`, `j`) require the default `line-height: var(--line-height-normal)` to clear the band's overflow boundary. The default `durationSec` of `40` provides a calm, readable scroll at display scale — pass a lower value for body-text tickers.
+
+<ComponentPreview
+  title="Marketing-Display Scale"
+  code={"<Marquee\n  items={['Bentley', 'Delta Airlines', 'Fidelity', 'JD Power', 'Verizon', 'XPrize']}\n  separator=\"·\"\n  style={{ fontSize: '1.75rem' }}\n/>"}
+>
+  <Marquee
+    items={['Bentley', 'Delta Airlines', 'Fidelity', 'JD Power', 'Verizon', 'XPrize']}
+    separator="·"
+    style={{ fontSize: '1.75rem' }}
   />
 </ComponentPreview>
 
@@ -114,5 +129,5 @@ import { Marquee } from '@/components/ui/marquee/marquee';
 |------|------|---------|-------------|
 | `items` | `ReactNode[]` | — | Items to display in this band |
 | `direction` | `"left" \| "right"` | `"left"` | Scroll direction |
-| `durationSec` | `number` | `25` | Duration of one full cycle in seconds |
+| `durationSec` | `number` | `40` | Duration of one full cycle in seconds. Tuned for marketing-display sizes; pass a lower value (e.g. `20`) for ticker-style strips. |
 | `separator` | `ReactNode \| string` | — | Separator rendered between items |

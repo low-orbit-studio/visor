@@ -35,8 +35,8 @@ props:
     default: undefined
   - name: durationSec
     type: number
-    description: Duration of one full scroll cycle in seconds (single-band shorthand).
-    default: 25
+    description: Duration of one full scroll cycle in seconds (single-band shorthand). Defaults to 40s so descender-rich items at marketing-display sizes have a calm, readable scroll. For ticker-style strips at body-text size, pass a lower value (e.g. 20).
+    default: 40
   - name: separator
     type: ReactNode | string
     description: Separator rendered between items (single-band shorthand).
@@ -72,8 +72,8 @@ example: |
 
   <Marquee
     bands={[
-      { items: clients, direction: 'left', durationSec: 25, separator: '●' },
-      { items: clientsReversed, direction: 'right', durationSec: 30, separator: '○' },
+      { items: clients, direction: 'left', durationSec: 40, separator: '●' },
+      { items: clientsReversed, direction: 'right', durationSec: 50, separator: '○' },
     ]}
     pauseOnHover
     gap="2.5rem"
