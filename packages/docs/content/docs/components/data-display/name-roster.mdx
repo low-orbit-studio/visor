@@ -57,6 +57,42 @@ The `highlighted` prop marks items as featured or owned. Highlighted rows use a 
   </NameRoster>
 </ComponentPreview>
 
+## Marketing Variant — Customization Slots
+
+The roster exposes a per-component CSS variable surface. Override any of the `--roster-*` slots in a parent token-override scope (an inline `style` here for demo purposes) to rebuild a marketing-grade row without forking the component.
+
+<ComponentPreview
+  title="Marketing variant — large items, dramatic hover"
+  code={"<NameRoster\n  columns={{ base: 1, sm: 2, md: 3, lg: 4 }}\n  sort=\"alpha\"\n  items={clientList}\n  style={{\n    '--roster-item-font-size': '1.5rem',\n    '--roster-item-font-weight': '500',\n    '--roster-item-letter-spacing': '-0.01em',\n    '--roster-item-color-hover': 'var(--interactive-primary-bg)',\n    '--roster-item-hover-transform': 'translateX(6px)',\n    '--roster-dot-size': '0.5rem',\n    '--roster-dot-color-hover': 'var(--interactive-primary-bg)',\n    '--roster-dot-glow-hover': '0 0 0 5px color-mix(in srgb, var(--interactive-primary-bg) 18%, transparent)',\n  }}\n/>"}
+>
+  <NameRoster
+    columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+    sort="alpha"
+    items={[
+      { name: 'ANIMAL' },
+      { name: 'Blacklight', highlighted: true },
+      { name: 'Delta Airlines' },
+      { name: 'Fidelity' },
+      { name: 'JD Power' },
+      { name: 'Knowmentum', highlighted: true },
+      { name: 'SCRUFF' },
+      { name: 'Verizon' },
+      { name: 'Visor', highlighted: true },
+      { name: 'XPrize' },
+    ]}
+    style={{
+      '--roster-item-font-size': '1.5rem',
+      '--roster-item-font-weight': '500',
+      '--roster-item-letter-spacing': '-0.01em',
+      '--roster-item-color-hover': 'var(--interactive-primary-bg)',
+      '--roster-item-hover-transform': 'translateX(6px)',
+      '--roster-dot-size': '0.5rem',
+      '--roster-dot-color-hover': 'var(--interactive-primary-bg)',
+      '--roster-dot-glow-hover': '0 0 0 5px color-mix(in srgb, var(--interactive-primary-bg) 18%, transparent)',
+    } as React.CSSProperties}
+  />
+</ComponentPreview>
+
 ## With Anchor Children
 
 `NameRosterItem` accepts arbitrary children — link names to detail pages without losing the dot treatment.
@@ -136,3 +172,24 @@ interface NameRosterItemData {
   highlighted?: boolean
 }
 ```
+
+## Customization Slots
+
+The roster root (`.roster`) exposes the following CSS custom properties. Defaults resolve to the current visual output — override any of them in a parent token-override scope to retheme.
+
+| Slot | Default | Purpose |
+|------|---------|---------|
+| `--roster-item-font-size` | `var(--font-size-sm)` | Font size of each item |
+| `--roster-item-font-weight` | `var(--font-weight-normal)` | Font weight of non-highlighted items |
+| `--roster-item-letter-spacing` | `normal` | Letter spacing of each item |
+| `--roster-item-line-height` | `var(--line-height-normal)` | Line height of each item |
+| `--roster-item-color` | `var(--text-primary)` | Default text color |
+| `--roster-item-color-hover` | `var(--text-secondary)` | Text color on hover |
+| `--roster-item-color-highlighted` | `var(--text-primary)` | Text color for highlighted items |
+| `--roster-item-font-weight-highlighted` | `var(--font-weight-medium)` | Font weight for highlighted items |
+| `--roster-item-hover-transform` | `none` | Transform on hover (e.g. `translateX(6px)`) |
+| `--roster-dot-size` | `0.375rem` | Diameter of the dot prefix |
+| `--roster-dot-color` | `var(--surface-accent-strong)` | Dot background color |
+| `--roster-dot-color-hover` | `var(--roster-dot-color)` | Dot color on hover; defaults to no change |
+| `--roster-dot-color-highlighted` | `var(--surface-accent-default)` | Dot color for highlighted items |
+| `--roster-dot-glow-hover` | `none` | Optional `box-shadow` ring on the dot when hovered |

@@ -45,6 +45,55 @@ props:
     default: '"ul"'
     description: HTML list element to render.
 
+customization:
+  description: >
+    NameRoster exposes a token-override surface on the .roster root.
+    Override any of these CSS custom properties in a parent token-override
+    scope to retheme the roster without touching component source.
+  properties:
+    - name: --roster-item-font-size
+      default: var(--font-size-sm, 0.875rem)
+      description: Font size for each name item.
+    - name: --roster-item-font-weight
+      default: var(--font-weight-normal, 400)
+      description: Font weight for each name item.
+    - name: --roster-item-letter-spacing
+      default: normal
+      description: Letter spacing for each name item.
+    - name: --roster-item-line-height
+      default: var(--line-height-normal, 1.5)
+      description: Line height for each name item.
+    - name: --roster-item-color
+      default: var(--text-primary)
+      description: Default text color for non-highlighted items.
+    - name: --roster-item-color-hover
+      default: var(--text-secondary)
+      description: Text color on hover for both highlighted and non-highlighted items.
+    - name: --roster-item-color-highlighted
+      default: var(--text-primary)
+      description: Text color for highlighted items.
+    - name: --roster-item-font-weight-highlighted
+      default: var(--font-weight-medium, 500)
+      description: Font weight for highlighted items.
+    - name: --roster-item-hover-transform
+      default: none
+      description: Optional transform applied on hover (e.g. translateX(6px)).
+    - name: --roster-dot-size
+      default: 0.375rem
+      description: Diameter of the dot prefix indicator.
+    - name: --roster-dot-color
+      default: var(--surface-accent-strong)
+      description: Background color of the dot for non-highlighted items.
+    - name: --roster-dot-color-hover
+      default: var(--roster-dot-color)
+      description: Dot background color on hover. Defaults to no change; override (or use color-mix) to brighten or recolor.
+    - name: --roster-dot-color-highlighted
+      default: var(--surface-accent-default)
+      description: Dot background color for highlighted items.
+    - name: --roster-dot-glow-hover
+      default: none
+      description: Optional box-shadow on the dot when hovered (e.g. a soft accent ring).
+
 dependencies:
   - "@loworbitstudio/visor-core"
 
