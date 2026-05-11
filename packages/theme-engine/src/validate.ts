@@ -19,6 +19,9 @@ import {
   SEMANTIC_BORDER_MAP,
   SEMANTIC_INTERACTIVE_MAP,
 } from "./semantic-map.js";
+import { generatePrimitives, generateDarkPrimitives } from "./pipeline.js";
+import { assignSemanticTokens } from "./assign.js";
+import { applyOverrides } from "./overrides.js";
 
 // ============================================================
 // Types
@@ -591,6 +594,19 @@ function colorToRgb(color: string): RGB {
   return parsed ? parsed.rgb : [0, 0, 0];
 }
 
+/**
+ * Standard text tokens validated for AA contrast on bg + surface in both modes.
+ * VI-347: expanded from text-primary only.
+ *
+ * Out of scope: text-link, text-link-hover (covered separately), text-inverse,
+ * text-inverse-secondary (sit on inverted backgrounds, not bg/surface),
+ * text-disabled (exempt per WCAG 1.4.3 Note).
+ */
+const STANDARD_TEXT_TOKENS = ["primary", "secondary", "tertiary"] as const;
+
+/** Status text tokens validated for AA contrast on bg + surface in both modes. */
+const STATUS_TEXT_TOKENS = ["error", "warning", "success", "info"] as const;
+
 function checkContrastWarnings(
   config: VisorThemeConfig,
   issues: ValidationIssue[]
@@ -598,43 +614,98 @@ function checkContrastWarnings(
   // Resolve the config so we have defaults for missing values
   const resolved = resolveConfig(config);
 
-  // --- Light mode checks ---
+  // Run Stages 1+2+4 of the pipeline to get the actual resolved text-* token
+  // values (including overrides and theme-specific neutral scales). This is
+  // what consumers actually render, so it's what we must validate.
+  const lightPrimitives = generatePrimitives(resolved);
+  const darkPrimitives = generateDarkPrimitives(resolved, lightPrimitives);
+  const tokens = applyOverrides(
+    assignSemanticTokens(lightPrimitives, darkPrimitives, resolved),
+    resolved.overrides
+  );
+
+  // --- Light mode surfaces ---
   const lightBg = resolved.colors.background;
   const lightSurface = resolved.colors.surface;
   const primary = resolved.colors.primary;
-
-  // Resolve background RGB for alpha compositing
   const lightBgRgb = colorToRgb(lightBg);
   const lightSurfaceRgb = colorToRgb(lightSurface);
 
-  // Text on background: use neutral-900 proxy (dark text on light bg).
-  const textDark = "#111827"; // neutral-900 equivalent
+  // --- Dark mode surfaces ---
+  const darkBg = resolved["colors-dark"]?.background ?? "#0a0a0a";
+  const darkSurface = resolved["colors-dark"]?.surface ?? "#171717";
+  const darkPrimary = resolved["colors-dark"]?.primary ?? primary;
+  const darkBgRgb = colorToRgb(darkBg);
+  const darkSurfaceRgb = colorToRgb(darkSurface);
 
-  // Text contrast on background (composite against bg for alpha colors)
-  const textOnBg = getContrastRatio(textDark, lightBg, lightBgRgb);
-  if (textOnBg < CONTRAST_TEXT_AA) {
-    issues.push(
-      issue(
-        "warning",
-        "WCAG_CONTRAST",
-        `Light mode: text-primary on background has contrast ratio ${textOnBg.toFixed(2)}:1 (needs >= ${CONTRAST_TEXT_AA}:1)`,
-        "colors.background"
-      )
-    );
+  // --- Text contrast checks ---
+  // Loop over standard text levels + status text levels. Each token gets 4 checks
+  // (bg + surface, light + dark). text-disabled is intentionally excluded per
+  // WCAG 1.4.3 Note (disabled controls are exempt from contrast requirements).
+  const textTokensToCheck = [...STANDARD_TEXT_TOKENS, ...STATUS_TEXT_TOKENS];
+  for (const tokenName of textTokensToCheck) {
+    const tokenValue = tokens.text[tokenName];
+    // Defensive: assignSemanticTokens always populates these keys, but guard
+    // anyway so a future schema change doesn't crash the validator.
+    if (!tokenValue) continue;
+
+    const fullName = `text-${tokenName}`;
+
+    // Light mode: token on background
+    const lightOnBg = getContrastRatio(tokenValue.light, lightBg, lightBgRgb);
+    if (lightOnBg < CONTRAST_TEXT_AA) {
+      issues.push(
+        issue(
+          "warning",
+          "WCAG_CONTRAST",
+          `Light mode: ${fullName} on background has contrast ratio ${lightOnBg.toFixed(2)}:1 (needs >= ${CONTRAST_TEXT_AA}:1)`,
+          "colors.background"
+        )
+      );
+    }
+
+    // Light mode: token on surface
+    const lightOnSurface = getContrastRatio(tokenValue.light, lightSurface, lightSurfaceRgb);
+    if (lightOnSurface < CONTRAST_TEXT_AA) {
+      issues.push(
+        issue(
+          "warning",
+          "WCAG_CONTRAST",
+          `Light mode: ${fullName} on surface has contrast ratio ${lightOnSurface.toFixed(2)}:1 (needs >= ${CONTRAST_TEXT_AA}:1)`,
+          "colors.surface"
+        )
+      );
+    }
+
+    // Dark mode: token on background
+    const darkOnBg = getContrastRatio(tokenValue.dark, darkBg, darkBgRgb);
+    if (darkOnBg < CONTRAST_TEXT_AA) {
+      issues.push(
+        issue(
+          "warning",
+          "WCAG_CONTRAST",
+          `Dark mode: ${fullName} on background has contrast ratio ${darkOnBg.toFixed(2)}:1 (needs >= ${CONTRAST_TEXT_AA}:1)`,
+          "colors-dark.background"
+        )
+      );
+    }
+
+    // Dark mode: token on surface
+    const darkOnSurface = getContrastRatio(tokenValue.dark, darkSurface, darkSurfaceRgb);
+    if (darkOnSurface < CONTRAST_TEXT_AA) {
+      issues.push(
+        issue(
+          "warning",
+          "WCAG_CONTRAST",
+          `Dark mode: ${fullName} on surface has contrast ratio ${darkOnSurface.toFixed(2)}:1 (needs >= ${CONTRAST_TEXT_AA}:1)`,
+          "colors-dark.surface"
+        )
+      );
+    }
   }
 
-  // Text contrast on surface
-  const textOnSurface = getContrastRatio(textDark, lightSurface, lightSurfaceRgb);
-  if (textOnSurface < CONTRAST_TEXT_AA) {
-    issues.push(
-      issue(
-        "warning",
-        "WCAG_CONTRAST",
-        `Light mode: text-primary on surface has contrast ratio ${textOnSurface.toFixed(2)}:1 (needs >= ${CONTRAST_TEXT_AA}:1)`,
-        "colors.surface"
-      )
-    );
-  }
+  // --- Interactive color (primary) contrast checks ---
+  // Brand primary on bg/surface — AA Large threshold (3:1) for non-text UI.
 
   // Interactive color (primary) on background
   const primaryOnBg = getContrastRatio(primary, lightBg, lightBgRgb);
@@ -658,41 +729,6 @@ function checkContrastWarnings(
         "WCAG_CONTRAST",
         `Light mode: primary color on surface has contrast ratio ${primaryOnSurface.toFixed(2)}:1 (needs >= ${CONTRAST_INTERACTIVE_AA}:1)`,
         "colors.primary"
-      )
-    );
-  }
-
-  // --- Dark mode checks ---
-  const darkBg = resolved["colors-dark"]?.background ?? "#0a0a0a";
-  const darkSurface = resolved["colors-dark"]?.surface ?? "#171717";
-  const darkPrimary = resolved["colors-dark"]?.primary ?? primary;
-
-  const darkBgRgb = colorToRgb(darkBg);
-  const darkSurfaceRgb = colorToRgb(darkSurface);
-
-  // Light text on dark backgrounds
-  const textLight = "#f9fafb"; // neutral-50 equivalent
-
-  const textOnDarkBg = getContrastRatio(textLight, darkBg, darkBgRgb);
-  if (textOnDarkBg < CONTRAST_TEXT_AA) {
-    issues.push(
-      issue(
-        "warning",
-        "WCAG_CONTRAST",
-        `Dark mode: text-primary on background has contrast ratio ${textOnDarkBg.toFixed(2)}:1 (needs >= ${CONTRAST_TEXT_AA}:1)`,
-        "colors-dark.background"
-      )
-    );
-  }
-
-  const textOnDarkSurface = getContrastRatio(textLight, darkSurface, darkSurfaceRgb);
-  if (textOnDarkSurface < CONTRAST_TEXT_AA) {
-    issues.push(
-      issue(
-        "warning",
-        "WCAG_CONTRAST",
-        `Dark mode: text-primary on surface has contrast ratio ${textOnDarkSurface.toFixed(2)}:1 (needs >= ${CONTRAST_TEXT_AA}:1)`,
-        "colors-dark.surface"
       )
     );
   }
