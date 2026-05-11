@@ -108,6 +108,16 @@
   box-shadow: var(--roster-dot-glow-hover);
 }
 
+/* Anchor children inherit item color and drop the underline — the dot is the only visual affordance the roster needs. Consumers wanting underlines can re-add them via global CSS. */
+.item a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.item a:hover {
+  color: inherit;
+}
+
 /* ---- No-dot modifier ---- */
 .rosterNoDot .item::before {
   display: none;
