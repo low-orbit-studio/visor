@@ -233,6 +233,63 @@ describe("TAILWIND_GRAY", () => {
 // Non-Hex Input Formats
 // ============================================================
 
+// ============================================================
+// Regression — Neutral-Ramp Lightness Interpolation (VI-344)
+// ============================================================
+
+describe("neutral-ramp lightness interpolation (VI-344 regression)", () => {
+  it("neutral.400 from #7A8285 lands in proper gray territory (not near-white)", () => {
+    // Strata neutral input has OKLCH L ≈ 0.55, near the new reference midpoint.
+    // Before the fix the placeholder LIGHTNESS_TARGETS[500] = -1 corrupted the
+    // interpolation range, pushing neutral.400 toward L ≈ 0.89 (#dbe3e6, near white).
+    // After the fix it should land in proper gray-400 territory (L between 0.55 and 0.78).
+    const scale = generateShadeScale("#7A8285", "neutral") as FullShadeScale;
+    const [L400] = hexToOklch(scale[400]);
+    expect(L400).toBeGreaterThan(0.55);
+    expect(L400).toBeLessThan(0.78);
+  });
+
+  it("shades 300/400/500 from a mid-tone input are well-spaced (each step's L drops by > 0.05)", () => {
+    const scale = generateShadeScale("#7A8285", "neutral") as FullShadeScale;
+    const [L300] = hexToOklch(scale[300]);
+    const [L400] = hexToOklch(scale[400]);
+    const [L500] = hexToOklch(scale[500]);
+    expect(L300 - L400).toBeGreaterThan(0.05);
+    expect(L400 - L500).toBeGreaterThan(0.05);
+  });
+
+  it("generated shades from #6b7280 (Tailwind gray-500) match Tailwind gray-200 through gray-700 within tolerance", () => {
+    // When the input lightness equals the reference midpoint (Tailwind gray-500's
+    // L ≈ 0.55), the early-return in computeLightness fires and shades track the
+    // raw LIGHTNESS_TARGETS table. The generated ramp won't be hex-identical to
+    // Tailwind's hand-tuned gray scale, but it should land in the same lightness
+    // territory at each step.
+    const scale = generateShadeScale("#6b7280", "neutral") as FullShadeScale;
+
+    // Exact anchor match: input L is used directly at 500
+    expect(scale[500]).toBe("#6b7280");
+
+    // Darker shades (500-700) track Tailwind very closely (interpolation toward
+    // 0.14 is short and shared with Tailwind's tuned values).
+    const tightTolerance = 0.02;
+    for (const step of [500, 600, 700] as ShadeStep[]) {
+      const [genL] = hexToOklch(scale[step]);
+      const [tailwindL] = hexToOklch(TAILWIND_GRAY[step]);
+      expect(Math.abs(genL - tailwindL)).toBeLessThan(tightTolerance);
+    }
+
+    // Lighter shades (200-400) drift more from Tailwind because Tailwind's
+    // hand-tuned scale doesn't precisely follow our LIGHTNESS_TARGETS curve.
+    // Still well within "proper gray territory" (not pushed toward white).
+    const looseTolerance = 0.1;
+    for (const step of [200, 300, 400] as ShadeStep[]) {
+      const [genL] = hexToOklch(scale[step]);
+      const [tailwindL] = hexToOklch(TAILWIND_GRAY[step]);
+      expect(Math.abs(genL - tailwindL)).toBeLessThan(looseTolerance);
+    }
+  });
+});
+
 describe("generateShadeScale — non-hex input", () => {
   it("generates shades from rgb() input", () => {
     const scale = generateShadeScale("rgb(37, 99, 235)", "primary");

@@ -32,7 +32,11 @@ const LIGHTNESS_TARGETS: Record<ShadeStep, number> = {
   200: 0.87,
   300: 0.78,
   400: 0.65,
-  500: -1, // placeholder — replaced by input L at anchor (brand color lives at 500)
+  // 500 is the reference midpoint (Tailwind gray-500's OKLCH L ≈ 0.55).
+  // At the anchor shade the input L is used directly; this value seeds the
+  // interpolation math in computeLightness() for inputs that don't land at
+  // the reference midpoint.
+  500: 0.55,
   600: 0.45,
   700: 0.38,
   800: 0.3,
@@ -107,8 +111,7 @@ function computeLightness(
     return inputL;
   }
 
-  const anchorTarget =
-    anchorShade === 600 ? inputL : LIGHTNESS_TARGETS[anchorShade];
+  const anchorTarget = LIGHTNESS_TARGETS[anchorShade];
   const stepTarget = LIGHTNESS_TARGETS[step];
 
   // If the anchor target matches the input, use raw targets
@@ -119,8 +122,7 @@ function computeLightness(
   // Interpolate to adjust for input L not matching expected anchor L
   if (step < anchorShade) {
     // Lighter shade: interpolate between inputL and 0.97
-    const anchorDefaultL =
-      anchorShade === 600 ? 0.45 : LIGHTNESS_TARGETS[anchorShade];
+    const anchorDefaultL = LIGHTNESS_TARGETS[anchorShade];
     const rawRange = 0.97 - anchorDefaultL;
     const newRange = 0.97 - inputL;
     if (rawRange <= 0) return stepTarget;
@@ -128,8 +130,7 @@ function computeLightness(
     return inputL + t * newRange;
   } else {
     // Darker shade: interpolate between inputL and 0.14
-    const anchorDefaultL =
-      anchorShade === 600 ? 0.45 : LIGHTNESS_TARGETS[anchorShade];
+    const anchorDefaultL = LIGHTNESS_TARGETS[anchorShade];
     const rawRange = anchorDefaultL - 0.14;
     const newRange = inputL - 0.14;
     if (rawRange <= 0) return stepTarget;
