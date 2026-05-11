@@ -9,6 +9,10 @@ declare const styles: {
   readonly bentoTileContain: string
   readonly bentoTileMedia: string
   readonly bentoTileBody: string
+  readonly bentoTileMeta: string
+  readonly bentoTileTitle: string
+  readonly bentoTileTitleArrow: string
+  readonly bentoTileDescription: string
 }
 
 export default styles

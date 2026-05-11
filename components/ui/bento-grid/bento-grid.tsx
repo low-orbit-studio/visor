@@ -237,7 +237,105 @@ const BentoTileBody = React.forwardRef<HTMLDivElement, BentoTileBodyProps>(
 BentoTileBody.displayName = "BentoTileBody"
 
 // ---------------------------------------------------------------------------
+// BentoTileMeta — eyebrow row (e.g. "WEB · LOW ORBIT · 2026")
+// ---------------------------------------------------------------------------
+
+export interface BentoTileMetaProps extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * Shorthand: provide an array of strings, each rendered as a span with a
+   * `·` separator between siblings. When omitted, children are used as-is.
+   */
+  items?: React.ReactNode[]
+}
+
+const BentoTileMeta = React.forwardRef<HTMLDivElement, BentoTileMetaProps>(
+  ({ className, items, children, ...props }, ref) => {
+    const content = items
+      ? items.map((item, idx) => <span key={idx}>{item}</span>)
+      : children
+    return (
+      <div
+        ref={ref}
+        data-slot="bento-tile-meta"
+        className={cn(styles.bentoTileMeta, className)}
+        {...props}
+      >
+        {content}
+      </div>
+    )
+  }
+)
+BentoTileMeta.displayName = "BentoTileMeta"
+
+// ---------------------------------------------------------------------------
+// BentoTileTitle — large display heading with optional hover arrow
+// ---------------------------------------------------------------------------
+
+export interface BentoTileTitleProps
+  extends React.HTMLAttributes<HTMLHeadingElement> {
+  /** Heading level. @default "h3" */
+  as?: "h2" | "h3" | "h4"
+  /**
+   * Render a ↗ arrow after the title that nudges on tile hover. Useful when
+   * the tile is a link.
+   * @default false
+   */
+  showArrow?: boolean
+}
+
+const BentoTileTitle = React.forwardRef<HTMLHeadingElement, BentoTileTitleProps>(
+  ({ className, as: Tag = "h3", showArrow = false, children, ...props }, ref) => {
+    return (
+      <Tag
+        ref={ref}
+        data-slot="bento-tile-title"
+        className={cn(styles.bentoTileTitle, className)}
+        {...props}
+      >
+        {children}
+        {showArrow ? (
+          <span className={styles.bentoTileTitleArrow} aria-hidden="true">
+            {"↗"}
+          </span>
+        ) : null}
+      </Tag>
+    )
+  }
+)
+BentoTileTitle.displayName = "BentoTileTitle"
+
+// ---------------------------------------------------------------------------
+// BentoTileDescription — muted body text under the title
+// ---------------------------------------------------------------------------
+
+export type BentoTileDescriptionProps =
+  React.HTMLAttributes<HTMLParagraphElement>
+
+const BentoTileDescription = React.forwardRef<
+  HTMLParagraphElement,
+  BentoTileDescriptionProps
+>(({ className, ...props }, ref) => {
+  return (
+    <p
+      ref={ref}
+      data-slot="bento-tile-description"
+      className={cn(styles.bentoTileDescription, className)}
+      {...props}
+    />
+  )
+})
+BentoTileDescription.displayName = "BentoTileDescription"
+
+// ---------------------------------------------------------------------------
 // Exports
 // ---------------------------------------------------------------------------
 
-export { BentoGrid, BentoTile, BentoTileMedia, BentoTileBody }
+export {
+  BentoGrid,
+  BentoTile,
+  BentoTileMedia,
+  BentoTileBody,
+  BentoTileMeta,
+  BentoTileTitle,
+  BentoTileDescription,
+}
