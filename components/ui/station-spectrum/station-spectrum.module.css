@@ -68,13 +68,9 @@
 .dotRow {
   display: flex;
   flex-direction: column;
+  /* All dots align to the left of their column so num + dot + label form one visually-grouped stack. The rail's right offset compensates for the last dot also being left-aligned (see `.rail` below). */
   align-items: flex-start;
   gap: var(--spacing-2, 0.5rem);
-}
-
-/* Last station: align content to the right so it doesn't overflow */
-.station:last-child .dotRow {
-  align-items: flex-end;
 }
 
 .num {
@@ -112,9 +108,9 @@
   padding-right: var(--spacing-4, 1rem); /* breathing room between stations */
 }
 
+/* Last station: drop the right gutter so the title doesn't overflow its column. */
 .station:last-child .label {
   padding-right: 0;
-  padding-left: var(--spacing-1, 0.25rem); /* last station: slight left pad */
 }
 
 .title {
@@ -146,8 +142,12 @@
     var(--spacing-2, 0.5rem) +
     calc(var(--station-spectrum-dot-size) / 2)
   );
+  /* All dots are flex-start within equal-width columns. The first dot's
+     center sits at `dot-size / 2` from the container's left edge. The last
+     dot's center sits at `(N-1)/N` of the width plus `dot-size / 2`, i.e.
+     `100% / N - dot-size / 2` inset from the right edge. */
   left: calc(var(--station-spectrum-dot-size) / 2);
-  right: calc(var(--station-spectrum-dot-size) / 2);
+  right: calc(100% / var(--station-count, 1) - var(--station-spectrum-dot-size) / 2);
   height: var(--station-spectrum-rail-thickness);
   pointer-events: none;
   z-index: 0; /* behind the station list */

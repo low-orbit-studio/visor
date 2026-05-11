@@ -46,6 +46,29 @@ The `compact` density reduces dot size and hides descriptions — useful for tig
   />
 </ComponentPreview>
 
+## 7-Station Layout
+
+Verifies even distribution when station count is large. Rail endpoints align with the first and last dot centers regardless of `N`.
+
+<ComponentPreview
+  title="Station Spectrum — 7 stations"
+  code={"<StationSpectrum\n  stations={[\n    { num: '01', title: 'Plan' },\n    { num: '02', title: 'Research' },\n    { num: '03', title: 'Brand' },\n    { num: '04', title: 'Design' },\n    { num: '05', title: 'Build' },\n    { num: '06', title: 'Test' },\n    { num: '07', title: 'Ship' },\n  ]}\n  autoTrigger={false}\n  inView={true}\n/>"}
+>
+  <StationSpectrum
+    stations={[
+      { num: '01', title: 'Plan' },
+      { num: '02', title: 'Research' },
+      { num: '03', title: 'Brand' },
+      { num: '04', title: 'Design' },
+      { num: '05', title: 'Build' },
+      { num: '06', title: 'Test' },
+      { num: '07', title: 'Ship' },
+    ]}
+    autoTrigger={false}
+    inView={true}
+  />
+</ComponentPreview>
+
 ## Manual Trigger Control
 
 By default, `StationSpectrum` auto-wires an `IntersectionObserver` to animate when it enters the viewport (`autoTrigger={true}`). To control the trigger manually — for example, when you want to coordinate the animation with other elements — set `autoTrigger={false}` and pass your own `inView` state.

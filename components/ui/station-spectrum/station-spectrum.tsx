@@ -102,13 +102,18 @@ const StationSpectrum = React.forwardRef<HTMLElement, StationSpectrumProps>(
     // Determine whether the animation should be active
     const isActive = autoTrigger ? autoInView : (inView ?? false)
 
+    const { style: userStyle, ...restProps } = props
     return (
       <section
         ref={setRef}
         data-slot="station-spectrum"
         data-density={density}
         className={cn(styles.base, isActive && styles.inView, className)}
-        {...props}
+        style={{
+          ...(userStyle ?? {}),
+          "--station-count": stations.length,
+        } as React.CSSProperties}
+        {...restProps}
       >
         {/* Accessible ordered list — primary semantic structure */}
         <ol
