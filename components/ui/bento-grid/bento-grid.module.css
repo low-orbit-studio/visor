@@ -11,7 +11,7 @@
   grid-template-columns: repeat(var(--bento-cols, 2), 1fr);
   gap: var(--bento-gap, var(--spacing-4, 1rem));
   /* Tiles hug their content vertically — they do NOT stretch to share row
-     height. Mirrors the strata-v1 prototype's .work__grid { align-items: start }. */
+     height. Matches the strata-v1 prototype's work-grid alignment. */
   align-items: start;
 }
 
