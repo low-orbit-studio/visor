@@ -18,18 +18,20 @@ import {
 
 <ComponentPreview
   title="Stacked vs Overlay"
-  code={"<BentoGrid cols={2}>\n  {/* Stacked (default): media on top, body below. */}\n  <BentoTile span=\"half\" aspect=\"4/3\">\n    <BentoTileMedia src=\"/placeholder.jpg\" alt=\"Stacked example\" />\n    <BentoTileBody>\n      <h3>Stacked</h3>\n      <p>Media on top, body below as a sibling.</p>\n    </BentoTileBody>\n  </BentoTile>\n\n  {/* Overlay: media fills the tile, body floats over it. */}\n  <BentoTile span=\"half\" aspect=\"4/3\" layout=\"overlay\">\n    <BentoTileMedia src=\"/placeholder.jpg\" alt=\"Overlay example\" />\n    <BentoTileBody>\n      <h3>Overlay</h3>\n      <p>Body floats over the media.</p>\n    </BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
+  code={"<BentoGrid cols={2}>\n  {/* Stacked (default): media on top, body below. */}\n  <BentoTile span=\"half\" aspect=\"4/3\">\n    <BentoTileMedia src=\"/previews/bento-tile-a.svg\" alt=\"Animal NYC project\" />\n    <BentoTileBody>\n      <h3>Animal NYC</h3>\n      <p>Media sits on top with its own aspect; body flows below.</p>\n    </BentoTileBody>\n  </BentoTile>\n\n  {/* Overlay: media fills the tile, body floats over it. */}\n  <BentoTile span=\"half\" aspect=\"4/3\" layout=\"overlay\">\n    <BentoTileMedia src=\"/previews/bento-tile-a.svg\" alt=\"Animal NYC project\" />\n    <BentoTileBody>\n      <h3>Animal NYC</h3>\n      <p>Body floats over the media.</p>\n    </BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
 >
   <BentoGrid cols={2}>
     <BentoTile span="half" aspect="4/3">
+      <BentoTileMedia src="/previews/bento-tile-a.svg" alt="Animal NYC project" />
       <BentoTileBody>
-        <h3>Stacked</h3>
-        <p>Media on top, body below as a sibling.</p>
+        <h3>Animal NYC</h3>
+        <p>Media sits on top with its own aspect; body flows below.</p>
       </BentoTileBody>
     </BentoTile>
     <BentoTile span="half" aspect="4/3" layout="overlay">
+      <BentoTileMedia src="/previews/bento-tile-a.svg" alt="Animal NYC project" />
       <BentoTileBody>
-        <h3>Overlay</h3>
+        <h3>Animal NYC</h3>
         <p>Body floats over the media.</p>
       </BentoTileBody>
     </BentoTile>
@@ -44,19 +46,21 @@ A standard two-column grid with half-width tiles and consistent aspect ratios.
 
 <ComponentPreview
   title="2-Column Default"
-  code={"import {\n  BentoGrid, BentoTile, BentoTileMedia, BentoTileBody,\n} from '@/components/ui/bento-grid/bento-grid';\n\n<BentoGrid cols={2}>\n  <BentoTile span=\"half\" aspect=\"4/3\">\n    <BentoTileMedia src=\"/placeholder.jpg\" alt=\"Project A\" />\n    <BentoTileBody>\n      <h3>Project A</h3>\n      <p>Web design and development.</p>\n    </BentoTileBody>\n  </BentoTile>\n  <BentoTile span=\"half\" aspect=\"4/3\">\n    <BentoTileMedia src=\"/placeholder.jpg\" alt=\"Project B\" />\n    <BentoTileBody>\n      <h3>Project B</h3>\n      <p>Mobile app experience.</p>\n    </BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
+  code={"import {\n  BentoGrid, BentoTile, BentoTileMedia, BentoTileBody,\n} from '@/components/ui/bento-grid/bento-grid';\n\n<BentoGrid cols={2}>\n  <BentoTile span=\"half\" aspect=\"4/3\">\n    <BentoTileMedia src=\"/previews/bento-tile-a.svg\" alt=\"Animal NYC\" />\n    <BentoTileBody>\n      <h3>Animal NYC</h3>\n      <p>Creative direction across surfaces.</p>\n    </BentoTileBody>\n  </BentoTile>\n  <BentoTile span=\"half\" aspect=\"4/3\">\n    <BentoTileMedia src=\"/previews/bento-tile-b.svg\" alt=\"Animal LA\" />\n    <BentoTileBody>\n      <h3>Animal LA</h3>\n      <p>West-coast studio extension.</p>\n    </BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
 >
   <BentoGrid cols={2}>
     <BentoTile span="half" aspect="4/3">
+      <BentoTileMedia src="/previews/bento-tile-a.svg" alt="Animal NYC" />
       <BentoTileBody>
-        <h3>Project A</h3>
-        <p>Web design and development.</p>
+        <h3>Animal NYC</h3>
+        <p>Creative direction across surfaces.</p>
       </BentoTileBody>
     </BentoTile>
     <BentoTile span="half" aspect="4/3">
+      <BentoTileMedia src="/previews/bento-tile-b.svg" alt="Animal LA" />
       <BentoTileBody>
-        <h3>Project B</h3>
-        <p>Mobile app experience.</p>
+        <h3>Animal LA</h3>
+        <p>West-coast studio extension.</p>
       </BentoTileBody>
     </BentoTile>
   </BentoGrid>
@@ -68,22 +72,25 @@ A hero-style layout with a full-width feature tile paired with half-width tiles 
 
 <ComponentPreview
   title="Full + Half Span Mix"
-  code={"<BentoGrid cols={2}>\n  <BentoTile span=\"full\" aspect=\"21/9\">\n    <BentoTileMedia src=\"/hero.jpg\" alt=\"Hero project\" />\n    <BentoTileBody>\n      <h2>Knowmentum</h2>\n      <p>Knowledge platform for high-performers.</p>\n    </BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"half\" aspect=\"2/1\" href=\"https://animal.nyc/\" target=\"_blank\">\n    <BentoTileMedia src=\"/nyc.jpg\" alt=\"Animal NYC\" />\n    <BentoTileBody><h3>Animal NYC</h3></BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"half\" aspect=\"2/1\" href=\"https://animal.la/\" target=\"_blank\">\n    <BentoTileMedia src=\"/la.jpg\" alt=\"Animal LA\" />\n    <BentoTileBody><h3>Animal LA</h3></BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
+  code={"<BentoGrid cols={2}>\n  <BentoTile span=\"full\" aspect=\"21/9\">\n    <BentoTileMedia src=\"/previews/bento-hero.svg\" alt=\"Knowmentum hero\" />\n    <BentoTileBody>\n      <h2>Knowmentum</h2>\n      <p>Knowledge platform for high-performers.</p>\n    </BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"half\" aspect=\"2/1\" href=\"https://animal.nyc/\" target=\"_blank\">\n    <BentoTileMedia src=\"/previews/bento-tile-a.svg\" alt=\"Animal NYC\" />\n    <BentoTileBody><h3>Animal NYC</h3></BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"half\" aspect=\"2/1\" href=\"https://animal.la/\" target=\"_blank\">\n    <BentoTileMedia src=\"/previews/bento-tile-b.svg\" alt=\"Animal LA\" />\n    <BentoTileBody><h3>Animal LA</h3></BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
 >
   <BentoGrid cols={2}>
-    <BentoTile span="full" aspect="2/1">
+    <BentoTile span="full" aspect="21/9">
+      <BentoTileMedia src="/previews/bento-hero.svg" alt="Knowmentum hero" />
       <BentoTileBody>
         <h2>Knowmentum</h2>
         <p>Knowledge platform for high-performers.</p>
       </BentoTileBody>
     </BentoTile>
-    <BentoTile span="half" aspect="4/3">
+    <BentoTile span="half" aspect="2/1">
+      <BentoTileMedia src="/previews/bento-tile-a.svg" alt="Animal NYC" />
       <BentoTileBody>
         <h3>Animal NYC</h3>
         <p>Creative agency.</p>
       </BentoTileBody>
     </BentoTile>
-    <BentoTile span="half" aspect="4/3">
+    <BentoTile span="half" aspect="2/1">
+      <BentoTileMedia src="/previews/bento-tile-b.svg" alt="Animal LA" />
       <BentoTileBody>
         <h3>Animal LA</h3>
         <p>West coast studio.</p>
@@ -98,16 +105,18 @@ A hero-style layout with a full-width feature tile paired with half-width tiles 
 
 <ComponentPreview
   title="Contain vs Cover"
-  code={"<BentoGrid cols={2}>\n  <BentoTile span=\"half\" aspect=\"4/3\" fit=\"cover\">\n    <BentoTileMedia src=\"/photo.jpg\" alt=\"Photo project\" />\n    <BentoTileBody>\n      <h3>Cover (default)</h3>\n      <p>Image fills the tile.</p>\n    </BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"half\" aspect=\"4/3\" fit=\"contain\">\n    <BentoTileMedia src=\"/logo.png\" alt=\"Client logo\" />\n    <BentoTileBody>\n      <h3>Contain</h3>\n      <p>Image fits inside a background plate.</p>\n    </BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
+  code={"<BentoGrid cols={2}>\n  <BentoTile span=\"half\" aspect=\"4/3\" fit=\"cover\">\n    <BentoTileMedia src=\"/previews/bento-tile-c.svg\" alt=\"SoleSpark\" />\n    <BentoTileBody>\n      <h3>Cover (default)</h3>\n      <p>Image fills the tile.</p>\n    </BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"half\" aspect=\"4/3\" fit=\"contain\">\n    <BentoTileMedia src=\"/previews/bento-logo.svg\" alt=\"Visor logo mark\" />\n    <BentoTileBody>\n      <h3>Contain</h3>\n      <p>Image fits inside a background plate.</p>\n    </BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
 >
   <BentoGrid cols={2}>
     <BentoTile span="half" aspect="4/3" fit="cover">
+      <BentoTileMedia src="/previews/bento-tile-c.svg" alt="SoleSpark" />
       <BentoTileBody>
         <h3>Cover (default)</h3>
         <p>Image fills the tile.</p>
       </BentoTileBody>
     </BentoTile>
     <BentoTile span="half" aspect="4/3" fit="contain">
+      <BentoTileMedia src="/previews/bento-logo.svg" alt="Visor logo mark" />
       <BentoTileBody>
         <h3>Contain</h3>
         <p>Image fits inside a background plate.</p>
@@ -116,43 +125,36 @@ A hero-style layout with a full-width feature tile paired with half-width tiles 
   </BentoGrid>
 </ComponentPreview>
 
-## Responsive 17-Tile Layout
+## Responsive Asymmetric Layout
 
 A fully responsive asymmetric grid that collapses to 1 column on mobile and expands to 2 on medium+ viewports — mirroring the strata-v1 portfolio pattern.
 
 <ComponentPreview
-  title="Responsive 17-Tile Layout"
-  code={"<BentoGrid cols={{ base: 1, md: 2 }} gap=\"4\">\n  <BentoTile span=\"full\" aspect=\"21/9\">\n    <BentoTileBody>\n      <h2>Featured Project</h2>\n      <p>Full-width hero tile spanning all columns.</p>\n    </BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"half\" aspect=\"2/1\">\n    <BentoTileBody><h3>Project 1</h3></BentoTileBody>\n  </BentoTile>\n  <BentoTile span=\"half\" aspect=\"2/1\">\n    <BentoTileBody><h3>Project 2</h3></BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"full\" aspect=\"21/9\">\n    <BentoTileBody>\n      <h2>Second Feature</h2>\n    </BentoTileBody>\n  </BentoTile>\n\n  {/* ... more tiles */}\n</BentoGrid>"}
+  title="Responsive Asymmetric Layout"
+  code={"<BentoGrid cols={{ base: 1, md: 2 }} gap=\"4\">\n  <BentoTile span=\"full\" aspect=\"21/9\">\n    <BentoTileMedia src=\"/previews/bento-hero.svg\" alt=\"Featured project\" />\n    <BentoTileBody>\n      <h2>Featured Project</h2>\n      <p>Full-width hero tile spanning all columns.</p>\n    </BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"half\" aspect=\"2/1\">\n    <BentoTileMedia src=\"/previews/bento-tile-a.svg\" alt=\"Project 1\" />\n    <BentoTileBody><h3>Project 1</h3></BentoTileBody>\n  </BentoTile>\n  <BentoTile span=\"half\" aspect=\"2/1\">\n    <BentoTileMedia src=\"/previews/bento-tile-b.svg\" alt=\"Project 2\" />\n    <BentoTileBody><h3>Project 2</h3></BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"half\" aspect=\"1/1\" fit=\"contain\">\n    <BentoTileMedia src=\"/previews/bento-logo.svg\" alt=\"Logo mark\" />\n    <BentoTileBody><h3>Logo Tile</h3></BentoTileBody>\n  </BentoTile>\n  <BentoTile span=\"half\" aspect=\"1/1\">\n    <BentoTileMedia src=\"/previews/bento-tile-c.svg\" alt=\"Square tile\" />\n    <BentoTileBody><h3>Square Tile</h3></BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
 >
   <BentoGrid cols={{ base: 1, md: 2 }} gap="4">
-    <BentoTile span="full" aspect="2/1">
+    <BentoTile span="full" aspect="21/9">
+      <BentoTileMedia src="/previews/bento-hero.svg" alt="Featured project" />
       <BentoTileBody>
         <h2>Featured Project</h2>
         <p>Full-width hero tile spanning all columns.</p>
       </BentoTileBody>
     </BentoTile>
-    <BentoTile span="half" aspect="4/3">
+    <BentoTile span="half" aspect="2/1">
+      <BentoTileMedia src="/previews/bento-tile-a.svg" alt="Project 1" />
       <BentoTileBody><h3>Project 1</h3></BentoTileBody>
     </BentoTile>
-    <BentoTile span="half" aspect="4/3">
+    <BentoTile span="half" aspect="2/1">
+      <BentoTileMedia src="/previews/bento-tile-b.svg" alt="Project 2" />
       <BentoTileBody><h3>Project 2</h3></BentoTileBody>
     </BentoTile>
-    <BentoTile span="half" aspect="4/3">
-      <BentoTileBody><h3>Project 3</h3></BentoTileBody>
-    </BentoTile>
-    <BentoTile span="half" aspect="4/3">
-      <BentoTileBody><h3>Project 4</h3></BentoTileBody>
-    </BentoTile>
-    <BentoTile span="full" aspect="2/1">
-      <BentoTileBody>
-        <h2>Second Feature</h2>
-        <p>Another full-width tile breaking the rhythm.</p>
-      </BentoTileBody>
-    </BentoTile>
     <BentoTile span="half" aspect="1/1" fit="contain">
+      <BentoTileMedia src="/previews/bento-logo.svg" alt="Logo mark" />
       <BentoTileBody><h3>Logo Tile</h3></BentoTileBody>
     </BentoTile>
     <BentoTile span="half" aspect="1/1">
+      <BentoTileMedia src="/previews/bento-tile-c.svg" alt="Square tile" />
       <BentoTileBody><h3>Square Tile</h3></BentoTileBody>
     </BentoTile>
   </BentoGrid>

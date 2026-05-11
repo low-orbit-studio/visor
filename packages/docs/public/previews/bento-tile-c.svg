@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.5" cy="0.6" r="0.6">
+      <stop offset="0%" stop-color="#fde68a" stop-opacity="0.9"/>
+      <stop offset="40%" stop-color="#f59e0b" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#g)"/>
+  <g opacity="0.9">
+    <circle cx="120" cy="80" r="1.5" fill="#fde68a"/>
+    <circle cx="280" cy="60" r="1" fill="#fde68a"/>
+    <circle cx="640" cy="100" r="1.5" fill="#fde68a"/>
+    <circle cx="720" cy="160" r="1" fill="#fde68a"/>
+    <circle cx="200" cy="200" r="1" fill="#fde68a"/>
+    <circle cx="500" cy="60" r="1.5" fill="#fde68a"/>
+    <circle cx="60" cy="180" r="1" fill="#fde68a"/>
+    <circle cx="380" cy="160" r="1.5" fill="#fde68a"/>
+  </g>
+  <rect x="0" y="380" width="800" height="220" fill="url(#sun)"/>
+  <ellipse cx="400" cy="420" rx="220" ry="44" fill="#fde68a" fill-opacity="0.85"/>
+  <g font-family="system-ui, -apple-system, Helvetica, Arial, sans-serif" fill="#f8fafc">
+    <text x="48" y="540" font-size="48" font-weight="700" letter-spacing="-1">SoleSpark</text>
+    <text x="48" y="572" font-size="16" font-weight="500" fill="#fde68a" letter-spacing="1.5">CONSUMER · MOBILE</text>
+  </g>
+</svg>
