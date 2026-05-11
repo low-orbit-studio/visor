@@ -203,7 +203,7 @@
   --surface-card: #0e0e18;
   --surface-popover: #0e0e18;
   --surface-subtle: #2b2b36;
-  --surface-muted: #3f3f4b;
+  --surface-muted: #0b0b14;
   --surface-overlay: #080810;
   --surface-interactive-default: #2b2b36;
   --surface-interactive-hover: #3f3f4b;
@@ -288,7 +288,7 @@
     --surface-card: #0e0e18;
     --surface-popover: #0e0e18;
     --surface-subtle: #2b2b36;
-    --surface-muted: #3f3f4b;
+    --surface-muted: #0b0b14;
     --surface-overlay: #080810;
     --surface-interactive-default: #2b2b36;
     --surface-interactive-hover: #3f3f4b;
@@ -443,13 +443,13 @@ html:not(.dark) .space-theme {
   --color-fd-card: #0e0e18;
   --color-fd-card-foreground: #e8e8f0;
   --color-fd-border: #3f3f4b;
-  --color-fd-muted: #3f3f4b;
+  --color-fd-muted: #0b0b14;
   --color-fd-muted-foreground: rgba(232, 232, 240, 0.72);
   --color-fd-accent: #5b6fff;
   --color-fd-accent-foreground: #ffffff;
   --color-fd-primary: #5b6fff;
   --color-fd-primary-foreground: #ffffff;
-  --color-fd-secondary: #3f3f4b;
+  --color-fd-secondary: #0b0b14;
   --color-fd-secondary-foreground: #e8e8f0;
   --color-fd-popover: #0e0e18;
   --color-fd-popover-foreground: #e8e8f0;

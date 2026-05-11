@@ -63,3 +63,7 @@ overrides:
     interactive-primary-bg: "#1798ad"
     interactive-primary-text: "#ffffff"
     border-focus: "#1798ad"
+    # VI-348: surface-muted dark sits between page (#09090b) and card (#18181b)
+    # so text-tertiary (neutral-400 = #8e8e97) clears AA against it. Default
+    # palette derivation would produce neutral-700 (#41414a, ratio 3.11:1).
+    surface-muted: "#1f1f23"

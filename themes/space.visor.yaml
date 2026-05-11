@@ -70,3 +70,7 @@ overrides:
     interactive-primary-bg: "#5b6fff"
     interactive-primary-text: "#ffffff"
     border-focus: "#5b6fff"
+    # VI-348: surface-muted dark slots between page (#080810) and card (#0e0e18)
+    # so text-tertiary (rgba 0.5 composited) clears AA. Palette-derived
+    # neutral-700 (#3f3f4b) would yield 3.45:1 against text-tertiary.
+    surface-muted: "#0b0b14"
