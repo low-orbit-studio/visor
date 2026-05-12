@@ -44,6 +44,12 @@ const GENERIC_FAMILIES = new Set([
   "unset",
   "revert",
   "none",
+  // Apple / Chromium-on-Mac system keywords. These behave like
+  // CSS-engine-level aliases, not real font families — `local()` can
+  // never resolve them, so they never need an @font-face.
+  "-apple-system",
+  "-webkit-system-font",
+  "BlinkMacSystemFont",
 ]);
 
 /**
