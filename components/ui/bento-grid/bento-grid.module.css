@@ -238,10 +238,14 @@ a.bentoTile:focus-visible {
   gap: var(--spacing-3, 0.75rem);
   font-size: 0.6875rem; /* 11px — intentional tracking-display size */
   font-weight: var(--font-weight-medium, 500);
+  /* Tight line-height so when items wrap to a second line, the wrapped row sits close to the first instead of leaving a body-text-sized gap. */
+  line-height: var(--line-height-tight, 1.25);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-tertiary, #6b7280);
   font-variant-numeric: tabular-nums;
+  /* When wrapping, give each row a small vertical breathing space. */
+  row-gap: var(--spacing-1, 0.25rem);
 }
 
 .bentoTileMeta > * + *::before {
@@ -264,6 +268,25 @@ a.bentoTile:focus-visible {
   gap: var(--spacing-2, 0.5rem);
 }
 
+/* Headline tile variant — for tiles whose primary content IS the headline (manifesto, big-idea moment, statement). Bigger than .bentoTileTitle. */
+.bentoTileHeadline {
+  margin: 0;
+  font-size: clamp(2rem, 3.6vw, 3.5rem);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--text-primary, #111827);
+}
+
+/* Figure tile slot — non-image hero (chart, large number, custom SVG). Inherits .bentoTileMedia's hover-scale + layout-mode positioning; adds a flex centering pass so any child sits centered in the slot by default. */
+.bentoTileFigure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--surface-subtle, var(--surface-card, #ffffff));
+  color: var(--text-primary, #111827);
+}
+
 .bentoTileTitleArrow {
   opacity: 0.45;
   transition:
@@ -279,14 +302,33 @@ a.bentoTile:focus-visible {
 .bentoTileDescription {
   margin: 0;
   color: var(--text-secondary, #6b7280);
-  font-size: 0.9375rem;
+  /* One notch down from the previous 0.9375rem — sits on the visor `sm` token. */
+  font-size: var(--font-size-sm, 0.875rem);
   font-weight: var(--font-weight-normal, 400);
   line-height: 1.5;
   max-width: 56ch;
 }
 
 /* ---------------------------------------------------------------------------
-   Reduced motion — disable the hover zoom and arrow nudge.
+   Reveal cascade — fade + 24px rise on viewport entry, staggered by DOM order.
+   --------------------------------------------------------------------------- */
+
+.bentoGrid[data-reveal] > .bentoTile {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition:
+    opacity var(--motion-duration-slow, 800ms) var(--motion-easing-enter, cubic-bezier(0.19, 1, 0.22, 1)),
+    transform var(--motion-duration-slow, 800ms) var(--motion-easing-enter, cubic-bezier(0.19, 1, 0.22, 1));
+  transition-delay: calc(var(--reveal-index, 0) * var(--bento-reveal-step, 110ms));
+}
+
+.bentoGrid[data-reveal][data-revealed] > .bentoTile {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion — disable hover zoom, arrow nudge, and reveal cascade.
    --------------------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -301,5 +343,11 @@ a.bentoTile:focus-visible {
   .bentoTile:hover .bentoTileTitleArrow,
   a.bentoTile:hover {
     transform: none;
+  }
+
+  .bentoGrid[data-reveal] > .bentoTile {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }

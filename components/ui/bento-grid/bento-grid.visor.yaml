@@ -32,6 +32,18 @@ props:
     type: string
     default: '"4"'
     description: "Gap between tiles as a spacing token suffix. E.g. '4' resolves to var(--spacing-4)."
+  - name: reveal
+    type: boolean
+    default: 'false'
+    description: "Fade + rise each tile on viewport entry, staggered by DOM order. Suppressed under prefers-reduced-motion."
+  - name: revealStepMs
+    type: number
+    default: '110'
+    description: "Per-tile delay in milliseconds. Each tile's actual delay is revealStepMs × index."
+  - name: revealThreshold
+    type: number
+    default: '0.2'
+    description: "IntersectionObserver threshold for the entrance trigger."
 
 sub_components:
   - name: BentoTile
@@ -96,7 +108,16 @@ sub_components:
         default: 'false'
         description: "Render a ↗ arrow after the title; nudges on tile hover."
   - name: BentoTileDescription
-    description: Muted body text with max-width 56ch for comfortable reading.
+    description: Muted body text with max-width 56ch for comfortable reading. Renders as <div> (not <p>) so MDX-authored multi-line children don't create invalid <p>-in-<p> nesting.
+  - name: BentoTileFigure
+    description: Non-image hero slot — drop-in replacement for BentoTileMedia when the tile's hero is a chart, large number, or custom JSX. Inherits the same hover scale + layout-mode positioning as the media slot.
+  - name: BentoTileHeadline
+    description: Larger display heading (clamp 2rem → 3.5rem) for tiles where the heading is the primary content (manifesto / statement / headline tiles).
+    props:
+      - name: as
+        type: '"h1" | "h2" | "h3"'
+        default: '"h2"'
+        description: "Heading element."
 
 customization:
   description: >

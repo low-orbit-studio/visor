@@ -37,10 +37,71 @@ export interface BentoGridProps extends React.HTMLAttributes<HTMLDivElement> {
    * Defaults to "4" which resolves to `--spacing-4`.
    */
   gap?: string
+  /**
+   * When true, tiles fade + rise from 24px on viewport entry. Children are
+   * staggered by their DOM order — left-to-right on a row, row-by-row down
+   * the grid. Respects `prefers-reduced-motion`. Defaults to false.
+   */
+  reveal?: boolean
+  /**
+   * Per-tile reveal delay in milliseconds. Each tile's actual delay is
+   * `revealStepMs × index`. Defaults to 110ms.
+   */
+  revealStepMs?: number
+  /**
+   * IntersectionObserver threshold for the entrance trigger. Defaults to 0.2.
+   */
+  revealThreshold?: number
 }
 
 const BentoGrid = React.forwardRef<HTMLDivElement, BentoGridProps>(
-  ({ className, cols = 2, gap = "4", style, ...props }, ref) => {
+  (
+    {
+      className,
+      cols = 2,
+      gap = "4",
+      style,
+      reveal = false,
+      revealStepMs = 110,
+      revealThreshold = 0.2,
+      children,
+      ...props
+    },
+    forwardedRef
+  ) => {
+    const innerRef = React.useRef<HTMLDivElement | null>(null)
+    const [inView, setInView] = React.useState(false)
+
+    const setRef = React.useCallback(
+      (node: HTMLDivElement | null) => {
+        innerRef.current = node
+        if (typeof forwardedRef === "function") {
+          forwardedRef(node)
+        } else if (forwardedRef) {
+          forwardedRef.current = node
+        }
+      },
+      [forwardedRef]
+    )
+
+    React.useEffect(() => {
+      if (!reveal) return
+      const element = innerRef.current
+      if (!element || typeof IntersectionObserver === "undefined") return
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setInView(true)
+            observer.disconnect()
+          }
+        },
+        { threshold: revealThreshold }
+      )
+      observer.observe(element)
+      return () => observer.disconnect()
+    }, [reveal, revealThreshold])
+
     const colCount = typeof cols === "number" ? cols : cols.base
     const smCols = typeof cols === "object" ? cols.sm : undefined
     const mdCols = typeof cols === "object" ? cols.md : undefined
@@ -54,17 +115,37 @@ const BentoGrid = React.forwardRef<HTMLDivElement, BentoGridProps>(
       ...(mdCols !== undefined ? { "--bento-cols-md": mdCols } : {}),
       ...(lgCols !== undefined ? { "--bento-cols-lg": lgCols } : {}),
       ...(xlCols !== undefined ? { "--bento-cols-xl": xlCols } : {}),
+      ...(reveal ? { "--bento-reveal-step": `${revealStepMs}ms` } : {}),
       ...style,
     }
 
+    // When reveal is on, walk children and inject a per-tile --reveal-index so
+    // the cascade stagger reads in DOM order.
+    const decoratedChildren = reveal
+      ? React.Children.map(children, (child, idx) => {
+          if (!React.isValidElement(child)) return child
+          const childProps = child.props as React.HTMLAttributes<HTMLElement>
+          return React.cloneElement(child, {
+            style: {
+              ...(childProps.style ?? {}),
+              "--reveal-index": idx,
+            },
+          } as Partial<React.HTMLAttributes<HTMLElement>>)
+        })
+      : children
+
     return (
       <div
-        ref={ref}
+        ref={setRef}
         data-slot="bento-grid"
+        data-reveal={reveal ? "true" : undefined}
+        data-revealed={reveal && inView ? "true" : undefined}
         className={cn(styles.bentoGrid, className)}
         style={cssVars}
         {...props}
-      />
+      >
+        {decoratedChildren}
+      </div>
     )
   }
 )
@@ -305,6 +386,62 @@ const BentoTileTitle = React.forwardRef<HTMLHeadingElement, BentoTileTitleProps>
 BentoTileTitle.displayName = "BentoTileTitle"
 
 // ---------------------------------------------------------------------------
+// BentoTileFigure — non-image figure slot (charts, large numbers, custom SVG)
+// ---------------------------------------------------------------------------
+//
+// Drop-in replacement for BentoTileMedia when the tile's hero element is not
+// a photographic image — typical use cases: data charts, large statistic
+// numbers, illustrated SVGs, or any composed JSX. Inherits the same hover
+// scale behavior as BentoTileMedia (suppressed in fit="contain" mode) and the
+// same layout-mode positioning (relative in stacked, absolute in overlay).
+
+export type BentoTileFigureProps = React.HTMLAttributes<HTMLDivElement>
+
+const BentoTileFigure = React.forwardRef<HTMLDivElement, BentoTileFigureProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        data-slot="bento-tile-figure"
+        className={cn(styles.bentoTileMedia, styles.bentoTileFigure, className)}
+        {...props}
+      />
+    )
+  }
+)
+BentoTileFigure.displayName = "BentoTileFigure"
+
+// ---------------------------------------------------------------------------
+// BentoTileHeadline — large display heading for headline-only tiles
+// ---------------------------------------------------------------------------
+//
+// Use BentoTileHeadline (not BentoTileTitle) when the tile's primary content
+// is the headline itself — manifesto pages, big-idea moments, statement
+// tiles. Scales from 2rem → 3.5rem and pairs naturally with BentoTileMeta or
+// BentoTileDescription as supporting copy.
+
+export interface BentoTileHeadlineProps
+  extends React.HTMLAttributes<HTMLHeadingElement> {
+  /** Heading level. @default "h2" */
+  as?: "h1" | "h2" | "h3"
+}
+
+const BentoTileHeadline = React.forwardRef<
+  HTMLHeadingElement,
+  BentoTileHeadlineProps
+>(({ className, as: Tag = "h2", ...props }, ref) => {
+  return (
+    <Tag
+      ref={ref}
+      data-slot="bento-tile-headline"
+      className={cn(styles.bentoTileHeadline, className)}
+      {...props}
+    />
+  )
+})
+BentoTileHeadline.displayName = "BentoTileHeadline"
+
+// ---------------------------------------------------------------------------
 // BentoTileDescription — muted body text under the title
 // ---------------------------------------------------------------------------
 //
@@ -339,8 +476,10 @@ export {
   BentoGrid,
   BentoTile,
   BentoTileMedia,
+  BentoTileFigure,
   BentoTileBody,
   BentoTileMeta,
   BentoTileTitle,
+  BentoTileHeadline,
   BentoTileDescription,
 }

@@ -32,6 +32,7 @@ For global wisdom (universal lessons): [`~/Code/low-orbit/low-orbit-playbook/roo
 | W021 | Always use `npm run theme:sync` — bare `visor` hits the global install with stale engine | cli, themes, sync, dev-environment | [W021](W021-visor-cli-global-vs-workspace.md) |
 | W022 | MDX demos for components with function props need a `'use client'` wrapper file | docs, nextjs, mdx, rsc, fumadocs, function-props | [W022](W022-rsc-boundary-mdx-function-props.md) |
 | W023 | Design checker: use regex over PostCSS for string-match rules; track CSS selector context for multi-line property rules | cli, design-checker, css, regex, postcss, static-analysis | [W023](W023-design-checker-regex-vs-postcss.md) |
+| W024 | fumadocs `.prose` injects `:where(img/p/h3)` margins that stomp component styles — reset them defensively in component CSS | docs, mdx, fumadocs, css, prose, tailwind-typography, debugging | [W024](W024-fumadocs-prose-stomps-component-styles.md) |
 
 ## Adding Entries
 

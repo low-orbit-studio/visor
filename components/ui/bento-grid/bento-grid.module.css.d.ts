@@ -8,10 +8,12 @@ declare const styles: {
   readonly bentoTileNumeric: string
   readonly bentoTileContain: string
   readonly bentoTileMedia: string
+  readonly bentoTileFigure: string
   readonly bentoTileBody: string
   readonly bentoTileMeta: string
   readonly bentoTileTitle: string
   readonly bentoTileTitleArrow: string
+  readonly bentoTileHeadline: string
   readonly bentoTileDescription: string
 }
 
