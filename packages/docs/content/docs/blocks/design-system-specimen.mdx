@@ -64,6 +64,25 @@ The specimen block includes 12 interactive sections:
 
 The specimen is fully theme-responsive. Use the theme switcher in the docs header to see every section update in real-time. This makes it useful for validating that a theme covers all design tokens completely.
 
+### Theme-Derived Font Weights
+
+The Typography → Font Families section reads the active theme's declared weights (from `typography.{display,body,heading}.weights` in the theme's `.visor.yaml`) so the rendered weight rows match what the theme actually loads. A theme that loads Light/Regular/Medium/Bold/Extra Bold shows five rows; a theme that loads only Regular and Bold shows two. When the active theme has no weights declared, the specimen falls back to the standard 400/500/600/700 + 400/500/700 grid.
+
+Pass a `themeManifest` prop (typed `DesignSystemSpecimenThemeEntry[]`) to wire in your own typography metadata. The docs site auto-injects its `PRIVATE_THEMES` manifest — call sites in MDX don't need to pass it manually.
+
+```tsx
+<DesignSystemSpecimen
+  themeManifest={[
+    {
+      slug: "blacklight",
+      typography: {
+        body: { family: "PP Model Mono", weights: [300, 400, 500, 700, 800] },
+      },
+    },
+  ]}
+/>
+```
+
 ## About Blocks
 
 Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI. Blocks are copy-and-own, just like components — install them into your project and customize freely.

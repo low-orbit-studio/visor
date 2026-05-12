@@ -227,6 +227,101 @@ export const SEMANTIC_COLORS: SemanticColorData[] = [
 
 // ─── Typography ──────────────────────────────────────────────────────────────
 
+/**
+ * Canonical CSS weight labels keyed by numeric weight. Used to label specimen
+ * rows derived from a theme's actual loaded weights (VI-356, D2). Uses the
+ * standard CSS Fonts Module names — "Regular" not "Book", "Semibold" not
+ * "Demibold" — so the operator sees one consistent vocabulary regardless of
+ * what a foundry calls the cut.
+ */
+export const WEIGHT_LABELS: Record<number, string> = {
+  100: "Thin",
+  200: "Extra Light",
+  300: "Light",
+  400: "Regular",
+  500: "Medium",
+  600: "Semibold",
+  700: "Bold",
+  800: "Extra Bold",
+  900: "Black",
+}
+
+export function labelForWeight(weight: number): string {
+  return WEIGHT_LABELS[weight] ?? `W${weight}`
+}
+
+/** Typography slot data — matches the manifest shape emitted by the docs site for private themes (VI-356). */
+export interface ThemeTypographySlot {
+  family: string
+  weights: number[]
+}
+
+export interface ThemeTypographyManifest {
+  heading?: ThemeTypographySlot
+  display?: ThemeTypographySlot
+  body?: ThemeTypographySlot
+  mono?: ThemeTypographySlot
+}
+
+/**
+ * Derive Font Families specimen rows from a theme's typography manifest.
+ *
+ * - `--font-heading` row uses the body slot's weights when present (the theme's
+ *   --font-heading variable resolves to body family in the engine), falling
+ *   back to display or heading slot weights if body is absent.
+ * - `--font-mono` row uses the mono slot's weights when present, falling back
+ *   to body weights, then the default.
+ *
+ * Any slot the manifest doesn't cover gets the corresponding fallback row from
+ * `defaults`. This keeps stock themes (no `weights` in YAML) on the existing
+ * 4+3 grid while themes like Blacklight render their five actual weights.
+ */
+export function deriveFontFamiliesFromTypography(
+  manifest: ThemeTypographyManifest | undefined,
+  defaults: FontFamilyData[],
+): FontFamilyData[] {
+  if (!manifest) return defaults
+
+  const headingDefault = defaults.find((f) => f.token === "--font-heading")
+  const monoDefault = defaults.find((f) => f.token === "--font-mono")
+
+  const headingSlot = manifest.body ?? manifest.display ?? manifest.heading
+  const monoSlot = manifest.mono ?? manifest.body ?? manifest.display ?? manifest.heading
+
+  const next: FontFamilyData[] = []
+  if (headingDefault) {
+    next.push(
+      headingSlot
+        ? {
+            token: "--font-heading",
+            role: headingDefault.role,
+            familyName: headingSlot.family || headingDefault.familyName,
+            weights: headingSlot.weights.map((w) => ({ label: labelForWeight(w), value: w })),
+          }
+        : headingDefault,
+    )
+  }
+  if (monoDefault) {
+    next.push(
+      monoSlot
+        ? {
+            token: "--font-mono",
+            role: monoDefault.role,
+            familyName: monoSlot.family || monoDefault.familyName,
+            weights: monoSlot.weights.map((w) => ({ label: labelForWeight(w), value: w })),
+          }
+        : monoDefault,
+    )
+  }
+  return next
+}
+
+/**
+ * Fallback weight rows for the Font Families specimen, used when a theme does
+ * not declare per-slot `weights` in its `.visor.yaml`. Stock public themes
+ * (Blackout, Borderless, Modern Minimal, Neutral, Space) all fall through to
+ * these defaults since they rely on system-ui / default weights.
+ */
 export const FONT_FAMILIES: FontFamilyData[] = [
   {
     token: "--font-heading",
