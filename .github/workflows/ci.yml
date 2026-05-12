@@ -152,28 +152,22 @@ jobs:
       - name: Install Playwright browsers (chromium only)
         run: npx playwright install --with-deps chromium
 
-      # Generate the theme overlay + private-theme manifest BEFORE Playwright
-      # parses the test files. The VR spec imports `lib/private-themes` at
-      # module-load time, so the generated TS must exist on disk first. The
-      # docs predev hook will re-run inside Playwright's webServer, but by
-      # then it's too late for the import.
+      # Generate the theme overlay manifest BEFORE Playwright parses the test
+      # files. The VR spec imports `lib/theme-config` at module-load time, so
+      # the generated overlays need to exist on disk first. The docs predev
+      # hook will re-run inside Playwright's webServer, but by then it's too
+      # late for the import.
+      #
+      # No GITHUB_PACKAGES_TOKEN here: this public-repo VR suite snapshots
+      # stock themes only. Private-theme VR lives in visor-themes-private so
+      # client/internal visual identity stays out of the public repo, which
+      # also frees community PRs and forks to run the suite with zero secrets.
       - name: Generate theme manifests
-        env:
-          # When set, install @low-orbit-studio/visor-themes-private and
-          # snapshot private themes too. On community PRs the secret is empty
-          # and only stock themes are exercised — still a meaningful gate.
-          # The env var name stays `GITHUB_PACKAGES_TOKEN` because `.npmrc`
-          # and `generate-private-themes.mjs` read it under that name; the
-          # GitHub-side secret has to use a non-`GITHUB_`-prefixed name per
-          # Actions' reserved-prefix rule, hence LO_PACKAGES_READ_TOKEN.
-          GITHUB_PACKAGES_TOKEN: ${{ secrets.LO_PACKAGES_READ_TOKEN }}
         run: |
           node packages/docs/scripts/ensure-theme-overlays.mjs
           node packages/docs/scripts/generate-private-themes.mjs
 
       - name: Run per-theme VR suite
-        env:
-          GITHUB_PACKAGES_TOKEN: ${{ secrets.LO_PACKAGES_READ_TOKEN }}
         run: npm run test:vr -w packages/docs
 
       - name: Upload Playwright report on failure

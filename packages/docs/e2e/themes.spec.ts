@@ -8,10 +8,10 @@
  * because a human happened to be looking. This suite makes the docs specimen
  * the actual gate.
  *
- * The theme list is built dynamically at test-load time:
- *   - stock themes come from `lib/theme-config.ts` (STOCK_GROUPS)
- *   - private themes come from `lib/private-themes.generated.ts`
- *     (empty stub when @low-orbit-studio/visor-themes-private is absent)
+ * Scope: stock themes only. Private themes (visor-themes-private) have their
+ * own VR suite in that repo — keeping private-theme baselines out of this
+ * public repo avoids exposing client/internal visual identity. The public
+ * suite still gates every stock-theme rendering change.
  *
  * Each theme produces two snapshots — light and dark mode — captured against
  * `/compare/panel?theme=<slug>&mode=<mode>`. The panel route renders the full
@@ -22,7 +22,6 @@
  */
 import { test, expect, type Page } from "@playwright/test";
 import { STOCK_GROUPS } from "../lib/theme-config";
-import { PRIVATE_THEMES } from "../lib/private-themes";
 
 type ThemeMode = "light" | "dark";
 
@@ -51,16 +50,6 @@ function buildThemeTargets(): ThemeTarget[] {
         modes,
       });
     }
-  }
-
-  for (const theme of PRIVATE_THEMES) {
-    // The private manifest carries no mode metadata today — assume both.
-    targets.push({
-      slug: theme.slug,
-      label: theme.label,
-      group: theme.group,
-      modes: ["light", "dark"],
-    });
   }
 
   return targets;
