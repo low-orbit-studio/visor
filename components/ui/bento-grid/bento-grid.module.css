@@ -81,7 +81,7 @@
     transform var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease);
 }
 
-/* Prose reset — when the tile renders inside a fumadocs `.prose` (or any
+/* Prose reset — when the tile renders inside a fumadocs prose (or any
    Tailwind-Typography) container, default img/p/h3 margins of ~2em swamp
    the tile's own spacing. Reset every child element we render to margin: 0;
    the tile's own padding + gap tokens become the only source of spacing. */
