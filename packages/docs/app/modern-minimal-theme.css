@@ -124,7 +124,7 @@
 .modern-minimal-theme {
   --font-display: "Product Sans [modern-minimal]", "Product Sans";
   --font-sans: "Product Sans [modern-minimal]", "Product Sans";
-  --font-heading: var(--font-sans);
+  --font-heading: "Product Sans [modern-minimal]", "Product Sans";
   --font-body: "Product Sans [modern-minimal]", "Product Sans";
   --font-mono: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
   --font-size-xs: 0.75rem; /* 12px */

@@ -118,7 +118,7 @@
 .space-theme {
   --font-display: Satoshi;
   --font-sans: Satoshi;
-  --font-heading: var(--font-sans);
+  --font-heading: Satoshi;
   --font-body: Satoshi;
   --font-mono: "Monaspace Neon [space]", "Monaspace Neon";
   --font-size-xs: 0.75rem; /* 12px */
