@@ -24,6 +24,7 @@ import type {
 import { FULL_SHADE_STEPS, SELECTIVE_SHADE_STEPS, generateShadeScale } from "../shades.js";
 import { resolveThemeFonts } from "../fonts/pipeline.js";
 import { buildVisorFontUrl } from "../fonts/resolve.js";
+import { aliasFamily, fontStack, type AliasedFamilies } from "../fonts/theme-alias.js";
 import { FUMADOCS_BRIDGE_MAP } from "./fumadocs-map.js";
 import { LAYER_ORDER, wrapInLayer } from "./layers.js";
 import type { AdapterInput, DocsAdapterOptions } from "./types.js";
@@ -77,15 +78,19 @@ function generateRadiusDecls(config: ResolvedThemeConfig): string[] {
   ];
 }
 
-function generateTypographyDecls(config: ResolvedThemeConfig): string[] {
+function generateTypographyDecls(
+  config: ResolvedThemeConfig,
+  aliases: AliasedFamilies,
+): string[] {
   const decls: string[] = [];
 
-  // Font families
-  decls.push(`--font-display: ${config.typography.display.family};`);
-  decls.push(`--font-sans: ${config.typography.body.family};`);
+  // Font families — layer the aliased name before the bare family for any
+  // family that this theme emits as a per-theme @font-face.
+  decls.push(`--font-display: ${fontStack(config.typography.display.family, aliases)};`);
+  decls.push(`--font-sans: ${fontStack(config.typography.body.family, aliases)};`);
   decls.push(`--font-heading: var(--font-sans);`);
-  decls.push(`--font-body: ${config.typography.body.family};`);
-  decls.push(`--font-mono: ${config.typography.mono.family};`);
+  decls.push(`--font-body: ${fontStack(config.typography.body.family, aliases)};`);
+  decls.push(`--font-mono: ${fontStack(config.typography.mono.family, aliases)};`);
 
   // Font sizes
   const fontSizes: Record<string, number> = {
@@ -217,13 +222,30 @@ export function docsAdapter(
   const fontLines: string[] = [];
   const lines: string[] = [];
 
-  // ─── Font imports ─────────────────────────────────────────────────────────
-  // Per CSS spec, @import and @font-face must precede any @layer block; they
-  // remain in fontLines and are emitted before the layer wrap below.
+  // ─── Font resolution ──────────────────────────────────────────────────────
+  // Resolve once and reuse for both @font-face emission and the `--font-*`
+  // alias map. Resolving outside `includeFontImports` would force consumers
+  // who suppress font imports to also lose the alias chain — but those
+  // consumers don't render visor-fonts @font-face declarations either, so
+  // the alias would be unused. Keeping aliases gated on includeFontImports
+  // preserves the current behavior exactly when imports are off.
+
+  const aliasedFamilies = new Map<string, string>();
 
   if (includeFontImports && input.config.typography) {
     const fontResult = resolveThemeFonts(input.config.typography);
     const fontSlots = [fontResult.heading, fontResult.display, fontResult.body, fontResult.mono];
+
+    // Build the family → alias map. Every family emitted as a per-theme
+    // visor-fonts @font-face gets one entry. Keying by family (not by
+    // slot) means a --font-* whose own slot doesn't carry the visor-fonts
+    // source still picks up the alias if its family matches an emitted
+    // family — the bug repro in VI-354 hinges on this for --font-mono.
+    for (const font of fontSlots) {
+      if (font && font.source === "visor-fonts" && !aliasedFamilies.has(font.family)) {
+        aliasedFamilies.set(font.family, aliasFamily(font.family, slug));
+      }
+    }
 
     // Google Fonts @import
     const seenUrls = new Set<string>();
@@ -235,16 +257,20 @@ export function docsAdapter(
       }
     }
 
-    // Visor Fonts @font-face
+    // Visor Fonts @font-face — emitted with a per-theme aliased family name
+    // so co-loaded themes that share a family don't overwrite each other's
+    // per-theme properties (e.g. `size-adjust`). The theme's `--font-*` vars
+    // reference this aliased name first, with the bare family as fallback.
     const scale = input.config.typography?.scale ?? 1;
-    const seenFamilies = new Set<string>();
+    const emittedFamilies = new Set<string>();
     for (const font of fontSlots) {
-      if (font && font.source === "visor-fonts" && !seenFamilies.has(font.family)) {
-        seenFamilies.add(font.family);
+      if (font && font.source === "visor-fonts" && !emittedFamilies.has(font.family)) {
+        emittedFamilies.add(font.family);
+        const aliased = aliasedFamilies.get(font.family)!;
         for (const weight of font.weights) {
           const url = buildVisorFontUrl(font.org ?? "", font.family, weight);
           fontLines.push("@font-face {");
-          fontLines.push(`  font-family: "${font.family}";`);
+          fontLines.push(`  font-family: "${aliased}";`);
           fontLines.push(`  src: url("${url}") format("woff2");`);
           fontLines.push(`  font-weight: ${weight};`);
           fontLines.push(`  font-style: ${font.italic ? "italic" : "normal"};`);
@@ -288,7 +314,7 @@ export function docsAdapter(
   lines.push("");
 
   lines.push(sectionComment("Primitive: Typography"));
-  lines.push(block(scopeClass, generateTypographyDecls(input.config)));
+  lines.push(block(scopeClass, generateTypographyDecls(input.config, aliasedFamilies)));
   lines.push("");
 
   lines.push(sectionComment("Primitive: Shadows"));

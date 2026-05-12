@@ -10,6 +10,7 @@
 
 import { resolveThemeFonts } from "../fonts/pipeline.js";
 import { buildVisorFontUrl } from "../fonts/resolve.js";
+import { aliasFamily } from "../fonts/theme-alias.js";
 import {
   generatePrimitivesCss,
   generateLightCss,
@@ -18,6 +19,10 @@ import {
 } from "../generate-css.js";
 import { LAYER_ORDER, wrapInLayer } from "./layers.js";
 import type { AdapterInput, NextJSAdapterOptions } from "./types.js";
+
+function toKebabCase(name: string): string {
+  return name.toLowerCase().replace(/\s+/g, "-");
+}
 
 /**
  * Generate Next.js-formatted CSS from theme engine output.
@@ -35,12 +40,26 @@ export function nextjsAdapter(
   const includeFontImports = options?.includeFontImports ?? true;
   const includeFowt = options?.includeFowt ?? true;
   const lines: string[] = [];
+  const slug = toKebabCase(input.config.name);
+  const aliasedFamilies = new Map<string, string>();
 
   lines.push(header("Visor Theme — NextJS Adapter"));
 
   // 1. Google Fonts @import + Visor Fonts @font-face (must come before @layer per CSS spec)
   if (includeFontImports && input.config.typography) {
     const fontResult = resolveThemeFonts(input.config.typography);
+    const fontSlots = [fontResult.heading, fontResult.display, fontResult.body, fontResult.mono];
+
+    // Build the family → alias map. Every family emitted as a per-theme
+    // visor-fonts @font-face gets one entry. Keying by family (not by
+    // slot) means a --font-* whose own slot doesn't carry the visor-fonts
+    // source still picks up the alias if its family matches — see VI-354.
+    for (const font of fontSlots) {
+      if (font && font.source === "visor-fonts" && !aliasedFamilies.has(font.family)) {
+        aliasedFamilies.set(font.family, aliasFamily(font.family, slug));
+      }
+    }
+
     const googleFonts = [fontResult.heading, fontResult.display, fontResult.body, fontResult.mono].filter(
       (r): r is NonNullable<typeof r> => r !== null && r.source === "google-fonts",
     );
@@ -66,7 +85,9 @@ export function nextjsAdapter(
       lines.push("");
     }
 
-    // Visor Fonts @font-face declarations (CDN-hosted fonts)
+    // Visor Fonts @font-face declarations (CDN-hosted fonts) — aliased per
+    // theme so co-loaded themes sharing a family don't collide on shared
+    // weights. See VI-354.
     const visorFonts = [fontResult.heading, fontResult.display, fontResult.body, fontResult.mono].filter(
       (r): r is NonNullable<typeof r> => r !== null && r.source === "visor-fonts",
     );
@@ -74,10 +95,11 @@ export function nextjsAdapter(
     for (const font of visorFonts) {
       if (seenVisorFamilies.has(font.family)) continue;
       seenVisorFamilies.add(font.family);
+      const aliased = aliasedFamilies.get(font.family)!;
       for (const weight of font.weights) {
         const url = buildVisorFontUrl(font.org ?? "", font.family, weight);
         lines.push(`@font-face {`);
-        lines.push(`  font-family: "${font.family}";`);
+        lines.push(`  font-family: "${aliased}";`);
         lines.push(`  src: url("${url}") format("woff2");`);
         lines.push(`  font-weight: ${weight};`);
         lines.push(`  font-style: ${font.italic ? "italic" : "normal"};`);
@@ -94,7 +116,7 @@ export function nextjsAdapter(
 
   // 3. Primitives layer
   const primitivesBody = stripHeader(
-    generatePrimitivesCss(input.primitives, input.config),
+    generatePrimitivesCss(input.primitives, input.config, { aliasedFamilies }),
   );
   lines.push(wrapInLayer("visor-primitives", primitivesBody));
   lines.push("");

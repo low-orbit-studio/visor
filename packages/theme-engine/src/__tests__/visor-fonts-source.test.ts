@@ -117,7 +117,12 @@ describe("visor-fonts source — @font-face generation", () => {
     const themeData = generateThemeDataFromConfig(config);
     const css = nextjsAdapter(themeData);
     expect(css).toContain("@font-face");
-    expect(css).toContain('font-family: "Modern Society"');
+    // VI-354: @font-face family is aliased per theme to prevent cross-theme
+    // size-adjust collisions when multiple themes are co-loaded.
+    expect(css).toContain('font-family: "Modern Society [test]"');
+    // The bare family stays in the `--font-display` stack as a fallback so
+    // consumer code that references the bare family still resolves.
+    expect(css).toContain('--font-display: "Modern Society [test]", "Modern Society"');
     expect(css).toContain("fonts.visor.design/low-orbit-studio/modern-society/ModernSociety-Regular.woff2");
   });
 
