@@ -1,5 +1,51 @@
 # Changelog
 
+## 0.6.0
+
+### Minor Changes
+
+- 74627cc: VI-354 fix: scope cross-theme `@font-face` declarations by aliasing the family name per theme so co-loaded themes don't overwrite each other's per-theme properties (e.g. `size-adjust`).
+
+  When two themes that share a visor-fonts family (e.g. both reference `PP Model Mono`) declared different `typography.scale` values, the generated `@font-face` blocks collided globally — the later-declared theme's `size-adjust` silently overrode the earlier theme's for shared weights, corrupting typography rendering in the earlier theme without warning.
+
+  The fix aliases each theme's visor-fonts `@font-face` family as `"{family} [{theme-slug}]"` in both the docs and nextjs adapters. The theme's `--font-*` CSS vars now list the aliased name first with the bare family as a fallback, so DevTools surface the alias for debugging and the cascade has a graceful-degradation hint. No `.visor.yaml` changes required — the fix is contained in the engine's CSS emitter.
+
+  **Consumer migration note:** The engine no longer emits an `@font-face` block for the bare family name. Consumer CSS that hardcodes `font-family: "PP Model Mono"` (or any bare visor-fonts family name) will no longer load that font — the browser falls through to system fonts. **Always reference fonts through `var(--font-heading)` / `var(--font-sans)` / `var(--font-mono)` / etc.** The bare family in those stacks is a fallback hint, not a registered font.
+
+  Affects: themes that share a visor-fonts family across multiple co-loaded themes will start emitting aliased `@font-face` family names. Themes using only Google Fonts or local fonts are unaffected.
+
+- 821c491: VI-355 fix: respect `typography.heading.family` in the docs adapter.
+
+  The docs adapter previously hard-aliased `--font-heading: var(--font-sans);`, silently overriding the theme's heading slot. Every other adapter (`generate-css.ts`, `adapters/deck.ts`, `fonts/pipeline.ts`) already read from `config.typography.heading.family`; the docs adapter — the one operators actually visually verify themes against — was the lone outlier. Themes like Blacklight that intentionally pair a display family for headings with a different body family rendered the wrong font in the docs Typography specimen as a result.
+
+  The docs adapter now emits `--font-heading` from `config.typography.heading.family` (falling back to `body.family` when no heading slot is defined), routed through the same alias-aware `fontStack()` helper used elsewhere so VI-354's per-theme `@font-face` aliasing still applies. Themes without an explicit heading slot keep the previous behavior because the engine's defaults resolve heading and body to the same family.
+
+- 167860f: VI-358 fix: route Satoshi (and Monaspace Neon for Space) through the visor-fonts CDN for stock themes that were shipping `--font-*` overrides without matching `@font-face` blocks. Adds a build-time `validateFontCoverage` validator that catches future drift.
+
+  Stock themes Blackout, Borderless, and Space declared `--font-*: Satoshi` (and Space also `--font-mono: Monaspace Neon`) with no matching `@font-face` because neither font is in the Google Fonts catalog, so the resolver fell through to `source: local` which emits a commented-out placeholder instead of a real `@font-face`. On any machine without Satoshi installed locally — i.e. every visitor to visor.design who isn't the operator — the browser silently fell back to system-ui.
+
+  The `.visor.yaml` files now carry `source: visor-fonts` + `org: low-orbit-studio` annotations on the affected slots, so the engine emits real `@font-face` URLs pointing at `fonts.visor.design`. The schema and resolver were extended so `typography.mono` accepts the same `weight | weights | source | org` fields as the other slots; previously only `family` was allowed, which forced custom mono fonts into the same broken fall-through path.
+
+  New `validateFontCoverage(css)` in `@loworbitstudio/visor-theme-engine` scans emitted CSS and errors when any `--font-*` declaration names a custom family with no matching `@font-face` (or Google Fonts `@import`). Wired into `visor theme sync` and `generate-private-themes.mjs` so any new theme that drifts back into the broken state fails the build immediately.
+
+  Operator follow-up (out of this changeset):
+
+  - Upload Satoshi (Regular/Bold) and Monaspace Neon (Regular) to R2 under `low-orbit-studio/{satoshi,monaspace-neon}/` via `npm run fonts:add`. Until then the new `@font-face` URLs return 404 and browsers still fall back — but the structural fix is correct and the validator passes.
+  - Satoshi license check for public CDN distribution.
+
+- cb3c72e: VI-359 feat: add `fontshare` source type for typography slots, and migrate Blackout, Borderless, and Space (heading + body) to it. Resolves the license blocker on the VI-358 follow-up: Indian Type Foundry's Fontshare EULA (the license shipped with Satoshi) forbids public CDN re-hosting in §02, so the visor-fonts CDN path was not a viable distribution channel for Satoshi. Fontshare's own hosted API is the licensor-controlled channel and is explicitly permitted by the EULA.
+
+  The new `source: fontshare` (no `org:` required) emits `@import url("https://api.fontshare.com/v2/css?f[]=<slug>@<weights>&display=swap")` at the top of the theme's CSS — Fontshare's response ships the real `@font-face` blocks, so the engine doesn't need to fabricate them. The `validateFontCoverage` validator was extended to recognize Fontshare `@import` URLs (alongside Google Fonts `@import`) as legitimate font-face coverage, mapping the lowercase-hyphenated slug back to the title-cased CSS family.
+
+  Behavior is additive: themes still on `source: visor-fonts` (e.g. Space's Monaspace Neon) are unchanged; the new source type is opt-in per slot. Per-theme `@font-face` aliasing (VI-354) is not applied to fontshare sources because all themes sharing a family share Fontshare's hosted `@font-face` blocks — the browser dedupes by URL and the weights union naturally across themes.
+
+  Wisdom captured at `docs/wisdom/W026-satoshi-license-forbids-public-cdn.md` for the license reading and the generalizable rule: read the EULA before adding a font to a CDN namespace under `npm run fonts:add`.
+
+  Operator follow-up:
+
+  - Companion PR in `visor-themes-private` migrates Strata's Satoshi slots from `source: visor-fonts` to `source: fontshare`.
+  - Monaspace Neon (OFL-licensed) remains a candidate for the visor-fonts CDN; the upload (and any cross-machine smoke retest) is independent of this change.
+
 ## 0.5.0
 
 ### Minor Changes
