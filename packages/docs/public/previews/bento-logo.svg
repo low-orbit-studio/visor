@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
+  <g transform="translate(200 200)">
+    <circle r="120" fill="none" stroke="currentColor" stroke-width="6" opacity="0.25"/>
+    <circle r="80" fill="none" stroke="currentColor" stroke-width="6" opacity="0.5"/>
+    <circle r="40" fill="currentColor"/>
+  </g>
+</svg>

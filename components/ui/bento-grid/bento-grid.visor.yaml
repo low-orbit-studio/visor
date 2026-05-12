@@ -32,18 +32,34 @@ props:
     type: string
     default: '"4"'
     description: "Gap between tiles as a spacing token suffix. E.g. '4' resolves to var(--spacing-4)."
+  - name: reveal
+    type: boolean
+    default: 'false'
+    description: "Fade + rise each tile on viewport entry, staggered by DOM order. Suppressed under prefers-reduced-motion."
+  - name: revealStepMs
+    type: number
+    default: '110'
+    description: "Per-tile delay in milliseconds. Each tile's actual delay is revealStepMs × index."
+  - name: revealThreshold
+    type: number
+    default: '0.2'
+    description: "IntersectionObserver threshold for the entrance trigger."
 
 sub_components:
   - name: BentoTile
     description: Individual grid tile. Renders as <article> by default, or <a> when href is provided.
     props:
+      - name: layout
+        type: '"stacked" | "overlay"'
+        default: '"stacked"'
+        description: "Visual layout. stacked (default): media on top with its own aspect ratio, body below as a sibling. overlay: media fills the tile (which carries the aspect ratio), body floats over the lower portion."
       - name: span
         type: '"full" | "half" | number'
         default: '"half"'
         description: "Column span: full (1/-1), half (1 col), or a numeric span count."
       - name: aspect
         type: '"21/9" | "2/1" | "4/3" | "1/1" | string'
-        description: "Aspect ratio for the tile. Maps directly to CSS aspect-ratio."
+        description: "Aspect ratio. In stacked mode it shapes the media; in overlay mode it shapes the entire tile root."
       - name: fit
         type: '"cover" | "contain"'
         default: '"cover"'
@@ -58,7 +74,7 @@ sub_components:
         type: string
         description: "Link rel attribute. Defaults to 'noopener noreferrer' when target is _blank."
   - name: BentoTileMedia
-    description: Full-bleed media image absolutely positioned within the tile.
+    description: Image element. Zooms 1.04× on tile hover (suppressed in fit="contain" mode).
     props:
       - name: src
         type: string
@@ -73,7 +89,56 @@ sub_components:
         default: '"lazy"'
         description: "Native image loading strategy."
   - name: BentoTileBody
-    description: Content overlay for text and metadata, positioned above media.
+    description: Body container. Stretches to fill the tile in stacked mode so tiles in the same row share height.
+  - name: BentoTileMeta
+    description: Eyebrow row — uppercase, tracked, with · separators between items. Accepts an `items` array shorthand or arbitrary children.
+    props:
+      - name: items
+        type: ReactNode[]
+        description: "Array of items rendered as spans with `·` separators between siblings. When omitted, children are used as-is."
+  - name: BentoTileTitle
+    description: Display heading with optional hover arrow that nudges on tile hover.
+    props:
+      - name: as
+        type: '"h2" | "h3" | "h4"'
+        default: '"h3"'
+        description: "Heading element."
+      - name: showArrow
+        type: boolean
+        default: 'false'
+        description: "Render a ↗ arrow after the title; nudges on tile hover."
+  - name: BentoTileDescription
+    description: Muted body text with max-width 56ch for comfortable reading. Renders as <div> (not <p>) so MDX-authored multi-line children don't create invalid <p>-in-<p> nesting.
+  - name: BentoTileFigure
+    description: Non-image hero slot — drop-in replacement for BentoTileMedia when the tile's hero is a chart, large number, or custom JSX. Inherits the same hover scale + layout-mode positioning as the media slot.
+  - name: BentoTileHeadline
+    description: Larger display heading (clamp 2rem → 3.5rem) for tiles where the heading is the primary content (manifesto / statement / headline tiles).
+    props:
+      - name: as
+        type: '"h1" | "h2" | "h3"'
+        default: '"h2"'
+        description: "Heading element."
+
+customization:
+  description: >
+    Each tile (.bentoTile) exposes the following CSS custom properties.
+    Override per-tile via style, or per-grid via a parent token-override scope.
+  properties:
+    - name: --bento-tile-radius
+      default: var(--radius-lg)
+      description: Tile corner radius.
+    - name: --bento-tile-body-padding
+      default: clamp(1rem, 2vw, 1.75rem)
+      description: Body padding (responsive clamp).
+    - name: --bento-tile-body-gap
+      default: var(--spacing-3, 0.75rem)
+      description: Gap between meta / title / description.
+    - name: --bento-tile-media-scale-hover
+      default: '1.04'
+      description: Image scale on tile hover. Set to 1 to disable.
+    - name: --bento-tile-lift-hover
+      default: '0px'
+      description: Optional vertical translate on anchor-tile hover. Default is 0 — the canonical hover affordance is the image scale and box-shadow bump. Consumers can opt in to a tile lift by overriding this slot (e.g. -3px).
 
 dependencies:
   - "@loworbitstudio/visor-core"

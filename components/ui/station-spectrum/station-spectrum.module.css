@@ -1,20 +1,20 @@
 /* StationSpectrum: animated N-station progress diagram
  *
  * Layout strategy:
- *   A single-row CSS grid where each station cell is an equal-width flex
- *   column. The hairline rail is positioned absolutely behind the dots,
- *   spanning from the center of the first dot to the center of the last.
+ *   Two stacked bands share the same N-column grid:
+ *   - `.dotsBand` contains the num+dot pairs and the rail. The rail is
+ *     positioned `bottom: dot-size/2` from the band, so the line threads
+ *     through the vertical centers of the dots without depending on font
+ *     metrics or magic offsets.
+ *   - `.labelsBand` is the accessible <ol> with titles and descriptions.
  *
  * Animation strategy:
  *   Rail: transform: scaleX(0) → scaleX(1) with transform-origin: left.
- *         Triggered by the `.inView` class on the root.
- *   Dots: background-color transitions from transparent to the accent color.
- *         Each dot uses a CSS custom property `--idx` to stagger its
- *         transition-delay: calc(var(--idx) * 100ms + var(--rail-delay)).
+ *   Dots: background-color transitions staggered via `--idx` * delay-step.
+ *   Triggered by `.inView` on the root.
  *
  * prefers-reduced-motion:
- *   Animation is suppressed — rail and dots appear at their final state
- *   instantly, no transitions.
+ *   All transitions suppressed; rail and dots render in their final state.
  */
 
 /* ── Root ──────────────────────────────────────────────────────────────── */
@@ -35,46 +35,35 @@
   /* Rail animation timing */
   --rail-duration: var(--motion-duration-slow, 500ms);
   --rail-easing: var(--motion-easing-enter, cubic-bezier(0, 0, 0.2, 1));
-  --dot-delay-step: 80ms; /* per-dot stagger: not tokenized — intentional constant */
-  --rail-delay: 200ms; /* head-start for rail before dots begin: intentional constant */
+  --dot-delay-step: 80ms; /* per-dot stagger: intentional constant */
+  --rail-delay: 200ms; /* head-start for rail before dots begin */
 
   position: relative;
   width: 100%;
 }
 
-/* ── Station list (primary semantic structure) ─────────────────────────── */
+/* ── Dots band (num + dot + rail) ──────────────────────────────────────── */
 
-.stationList {
-  display: flex;
-  flex-direction: row;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.dotsBand {
+  position: relative;
+  width: 100%;
+}
+
+.dotsRow {
+  display: grid;
+  grid-template-columns: repeat(var(--station-count, 1), 1fr);
   position: relative;
   z-index: 1; /* above the rail */
 }
 
-/* Equal-width columns */
-.station {
-  flex: 1 1 0;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-3, 0.75rem);
-}
-
-/* ── Dot row (num + dot, stacked) ─────────────────────────────────────── */
-
-.dotRow {
+.dotCell {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--spacing-2, 0.5rem);
-}
-
-/* Last station: align content to the right so it doesn't overflow */
-.station:last-child .dotRow {
-  align-items: flex-end;
+  /* The last dotCell drops its right padding so its dot aligns flex-start
+     inside an equal-width column — the rail's right offset (computed from
+     station count) takes care of meeting the last dot's center. */
 }
 
 .num {
@@ -84,7 +73,6 @@
   color: var(--station-spectrum-num-color);
   line-height: var(--line-height-tight, 1.25);
   font-variant-numeric: tabular-nums;
-  /* Transition to accent color when illuminated */
   transition: color var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease)
     calc(var(--idx, 0) * var(--dot-delay-step) + var(--rail-delay));
 }
@@ -95,7 +83,6 @@
   border-radius: 50%;
   background-color: var(--station-spectrum-dot-color-off);
   border: var(--station-spectrum-rail-thickness) solid var(--station-spectrum-dot-border-color);
-  /* Per-dot illumination via staggered transition-delay */
   transition:
     background-color var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease)
       calc(var(--idx, 0) * var(--dot-delay-step) + var(--rail-delay)),
@@ -103,18 +90,61 @@
       calc(var(--idx, 0) * var(--dot-delay-step) + var(--rail-delay));
 }
 
-/* ── Labels ────────────────────────────────────────────────────────────── */
+/* ── Rail ──────────────────────────────────────────────────────────────── */
+/*
+ * The rail threads through the vertical center of the dots. Because the
+ * dot sits at the bottom of each .dotCell (after the num row), and the
+ * .dotsBand wraps only the dots row, positioning the rail by `bottom`
+ * with an offset of `dot-size/2` puts the line exactly at the dots'
+ * vertical center — no font-metric-dependent math required.
+ *
+ * Horizontally: dots are flex-start within equal-width columns, so the
+ * first dot's center is `dot-size/2` from the band's left edge and the
+ * last dot's center is `100% / N - dot-size/2` inset from the right edge.
+ */
 
-.label {
+.rail {
+  position: absolute;
+  left: calc(var(--station-spectrum-dot-size) / 2);
+  right: calc(100% / var(--station-count, 1) - var(--station-spectrum-dot-size) / 2);
+  bottom: calc(var(--station-spectrum-dot-size) / 2);
+  /* Subtract half the rail's own thickness so the LINE's center (not its
+     top edge) lands at the dots' vertical center. */
+  margin-bottom: calc(var(--station-spectrum-rail-thickness) / -2);
+  height: var(--station-spectrum-rail-thickness);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.railLine {
+  width: 100%;
+  height: 100%;
+  background-color: var(--station-spectrum-rail-color);
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform var(--rail-duration) var(--rail-easing);
+}
+
+/* ── Labels band (titles + descriptions) ───────────────────────────────── */
+
+.labelsBand {
+  display: grid;
+  grid-template-columns: repeat(var(--station-count, 1), 1fr);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-top: var(--spacing-3, 0.75rem);
+}
+
+.labelCell {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-1, 0.25rem);
-  padding-right: var(--spacing-4, 1rem); /* breathing room between stations */
+  padding-right: var(--spacing-4, 1rem);
 }
 
-.station:last-child .label {
+.labelCell:last-child {
   padding-right: 0;
-  padding-left: var(--spacing-1, 0.25rem); /* last station: slight left pad */
 }
 
 .title {
@@ -129,38 +159,6 @@
   font-size: var(--font-size-xs, 0.75rem);
   color: var(--station-spectrum-desc-color);
   line-height: var(--line-height-normal, 1.5);
-}
-
-/* ── Rail ──────────────────────────────────────────────────────────────── */
-/*
- * The rail sits at the vertical midpoint of the dot row.
- * Positioned to span from left-edge of first dot to right-edge of last dot.
- * Uses transform: scaleX(0) → scaleX(1) for the draw animation.
- */
-
-.rail {
-  position: absolute;
-  /* Align to the vertical center of the dot (num row + gap + half dot height) */
-  top: calc(
-    var(--font-size-xs, 0.75rem) * var(--line-height-tight, 1.25) +
-    var(--spacing-2, 0.5rem) +
-    calc(var(--station-spectrum-dot-size) / 2)
-  );
-  left: calc(var(--station-spectrum-dot-size) / 2);
-  right: calc(var(--station-spectrum-dot-size) / 2);
-  height: var(--station-spectrum-rail-thickness);
-  pointer-events: none;
-  z-index: 0; /* behind the station list */
-}
-
-.railLine {
-  width: 100%;
-  height: 100%;
-  background-color: var(--station-spectrum-rail-color);
-  transform-origin: left center;
-  transform: scaleX(0);
-  /* Rail draw animation — triggered by .inView on root */
-  transition: transform var(--rail-duration) var(--rail-easing);
 }
 
 /* ── inView state — animation active ──────────────────────────────────── */
@@ -184,7 +182,7 @@
   --station-spectrum-dot-size: var(--station-spectrum-dot-size-compact);
 }
 
-.base[data-density="compact"] .label {
+.base[data-density="compact"] .labelCell {
   padding-right: var(--spacing-2, 0.5rem);
 }
 
@@ -200,21 +198,15 @@
 
 @media (prefers-reduced-motion: reduce) {
   .railLine {
-    /* Appear instantly at full width — no transition */
     transition: none;
     transform: scaleX(1);
   }
 
-  .dot {
-    /* Remove staggered transitions — appear instantly */
-    transition: none;
-  }
-
+  .dot,
   .num {
     transition: none;
   }
 
-  /* Immediately illuminate all dots */
   .dot {
     background-color: var(--station-spectrum-dot-color-on);
     border-color: var(--station-spectrum-dot-border-color-on);

@@ -30,8 +30,20 @@
 
 .root {
   --marquee-gap: var(--spacing-6, 1.5rem);
-  --marquee-duration: 25s;
+  --marquee-duration: 40s;
   --marquee-fade-width: var(--spacing-12, 3rem);
+
+  /* Item typography slots — override on the root to scale up for marketing
+     surfaces. Defaults resolve to the body-text size used by ticker strips. */
+  --marquee-item-color: var(--text-primary, #111827);
+  --marquee-item-font-size: var(--font-size-sm, 0.875rem);
+  --marquee-item-font-weight: var(--font-weight-medium, 500);
+  --marquee-item-line-height: var(--line-height-normal, 1.5);
+  --marquee-item-letter-spacing: normal;
+
+  /* Separator slots */
+  --marquee-separator-color: var(--text-tertiary, #9ca3af);
+  --marquee-separator-font-size: var(--marquee-item-font-size);
 
   display: flex;
   flex-direction: column;
@@ -66,18 +78,20 @@
 /* ── Track ────────────────────────────────────────────────────────────────── */
 
 /*
- * The track contains two `.set` elements (first copy + second copy) so the
- * total width equals 2× one set. Animating translateX(-50%) scrolls exactly
- * one set-width, creating a seamless loop.
+ * The track contains two `.set` elements (first copy + second copy) sitting
+ * flush against each other. Each .set carries a trailing margin equal to the
+ * inter-item gap, so the total track width is exactly 2 × (set + gap). The
+ * translateX(-50%) wrap then lands at the exact start of the second set —
+ * seamless. Putting a `gap` on .track itself would land the wrap mid-gap and
+ * cause a visible jump every cycle.
  */
 .track {
   display: flex;
   flex-direction: row;
   align-items: center;
   width: max-content;
-  animation: marquee-scroll var(--marquee-duration, 25s) var(--motion-easing-linear, linear) infinite;
+  animation: marquee-scroll var(--marquee-duration, 40s) var(--motion-easing-linear, linear) infinite;
   will-change: transform;
-  gap: var(--marquee-gap);
 }
 
 /* ── Item set ─────────────────────────────────────────────────────────────── */
@@ -88,6 +102,8 @@
   align-items: center;
   gap: var(--marquee-gap);
   flex-shrink: 0;
+  /* Trailing gap that bridges this set's last item to the next set's first item — required for a seamless -50% wrap. See `.track` comment above. */
+  margin-right: var(--marquee-gap);
 }
 
 /* ── Item ─────────────────────────────────────────────────────────────────── */
@@ -96,10 +112,12 @@
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
-  color: var(--text-primary, #111827);
-  font-size: var(--font-size-sm, 0.875rem);
-  font-weight: var(--font-weight-medium, 500);
-  line-height: var(--line-height-tight, 1.25);
+  color: var(--marquee-item-color);
+  font-size: var(--marquee-item-font-size);
+  font-weight: var(--marquee-item-font-weight);
+  letter-spacing: var(--marquee-item-letter-spacing);
+  /* line-height: normal (not tight) so descenders (g, y, p, q, j) clear the band's overflow boundary at marketing-display font sizes */
+  line-height: var(--marquee-item-line-height);
   white-space: nowrap;
 }
 
@@ -109,9 +127,9 @@
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
-  color: var(--text-tertiary, #9ca3af);
-  font-size: var(--font-size-sm, 0.875rem);
-  line-height: var(--line-height-tight, 1.25);
+  color: var(--marquee-separator-color);
+  font-size: var(--marquee-separator-font-size);
+  line-height: var(--marquee-item-line-height);
   user-select: none;
 }
 

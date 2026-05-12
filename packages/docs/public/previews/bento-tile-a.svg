@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#451a03"/>
+      <stop offset="50%" stop-color="#9a3412"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.45" r="0.55">
+      <stop offset="0%" stop-color="#fed7aa" stop-opacity="0.7"/>
+      <stop offset="60%" stop-color="#f97316" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#g)"/>
+  <rect width="1600" height="1000" fill="url(#halo)"/>
+  <circle cx="800" cy="450" r="240" fill="none" stroke="#fdba74" stroke-width="3" stroke-opacity="0.5"/>
+  <circle cx="800" cy="450" r="170" fill="none" stroke="#fdba74" stroke-width="3" stroke-opacity="0.75"/>
+  <circle cx="800" cy="450" r="100" fill="#fed7aa"/>
+  <g font-family="system-ui, -apple-system, Helvetica, Arial, sans-serif" fill="#fff7ed">
+    <text x="80" y="900" font-size="64" font-weight="700" letter-spacing="-1.5">Animal NYC</text>
+    <text x="84" y="950" font-size="20" font-weight="500" fill="#fed7aa" letter-spacing="3">BROOKLYN · NIGHTLIFE</text>
+  </g>
+</svg>

@@ -9,7 +9,7 @@ export interface MarqueeBand {
   items: React.ReactNode[]
   /** Scroll direction. @default "left" */
   direction?: "left" | "right"
-  /** Duration of one full scroll cycle in seconds. @default 25 */
+  /** Duration of one full scroll cycle in seconds. @default 40 */
   durationSec?: number
   /** Separator rendered between items. String or ReactNode. */
   separator?: React.ReactNode | string
@@ -26,7 +26,7 @@ export interface MarqueeProps extends React.HTMLAttributes<HTMLDivElement> {
    * Used when `bands` is not provided.
    */
   items?: React.ReactNode[]
-  /** Duration of one full scroll cycle in seconds. @default 25 */
+  /** Duration of one full scroll cycle in seconds. @default 40 */
   durationSec?: number
   /** Separator rendered between items. String or ReactNode. @default undefined */
   separator?: React.ReactNode | string
@@ -62,7 +62,7 @@ function MarqueeBandRenderer({
   renderSeparator,
   bandIndex,
 }: BandProps) {
-  const { items, direction = "left", durationSec = 25, separator } = band
+  const { items, direction = "left", durationSec = 40, separator } = band
 
   const animationDirection = direction === "right" ? "reverse" : "normal"
 
@@ -135,7 +135,7 @@ const Marquee = React.forwardRef<HTMLDivElement, MarqueeProps>(
       className,
       bands,
       items,
-      durationSec = 25,
+      durationSec = 40,
       separator,
       pauseOnHover = true,
       gap = "var(--spacing-6, 1.5rem)",

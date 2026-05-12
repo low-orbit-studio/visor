@@ -10,6 +10,9 @@
   display: grid;
   grid-template-columns: repeat(var(--bento-cols, 2), 1fr);
   gap: var(--bento-gap, var(--spacing-4, 1rem));
+  /* Tiles hug their content vertically — they do NOT stretch to share row
+     height. Matches the strata-v1 prototype's work-grid alignment. */
+  align-items: start;
 }
 
 /* Responsive breakpoints — only apply when the CSS variable is set */
@@ -54,16 +57,53 @@
    --------------------------------------------------------------------------- */
 
 .bentoTile {
+  /* Customization slots — defaults match the strata-v1 marketing prototype.
+     Override per-grid via a parent token-override scope or per-tile via style. */
+  --bento-tile-body-padding-y: var(--spacing-3, 0.75rem); /* 12px — tight vertical rhythm */
+  --bento-tile-body-padding-x: clamp(var(--spacing-3, 0.75rem), 1.6vw, var(--spacing-5, 1.25rem));
+  --bento-tile-body-gap: var(--spacing-2, 0.5rem); /* 8px between meta / title / description */
+  --bento-tile-radius: var(--radius-lg, 0.75rem);
+  --bento-tile-media-scale-hover: 1.04;
+  /* Default is no lift — hover affordance is the media scale + shadow bump.
+     Consumers can opt in by overriding this slot (for example -3px). */
+  --bento-tile-lift-hover: 0px;
+
   position: relative;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-radius: var(--radius-xl, 1rem);
+  isolation: isolate;
+  border-radius: var(--bento-tile-radius);
   background-color: var(--surface-card, #ffffff);
   color: var(--text-primary, #111827);
   box-shadow: var(--shadow-sm);
+  /* Aspect ratio lives on the layout modifier — overlay applies it to the tile root, stacked applies it to the media. */
+  transition:
+    box-shadow var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease),
+    transform var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease);
+}
 
-  /* Aspect ratio — applied per tile via inline CSS custom property */
+/* Prose reset — when the tile renders inside a fumadocs prose (or any
+   Tailwind-Typography) container, default img/p/h3 margins of ~2em swamp
+   the tile's own spacing. Reset every child element we render to margin: 0;
+   the tile's own padding + gap tokens become the only source of spacing. */
+.bentoTile :where(img),
+.bentoTile :where(p),
+.bentoTile :where(h2),
+.bentoTile :where(h3),
+.bentoTile :where(h4),
+.bentoTile :where(ul),
+.bentoTile :where(ol) {
+  margin: 0;
+}
+
+/* Stacked (default): media on top with its own aspect ratio, body as a sibling block below. Total tile height = media height + body height. */
+.bentoTileStacked {
+  /* No aspect-ratio on the tile root — height comes from media + body. */
+}
+
+/* Overlay: the tile root carries the aspect ratio. Media fills it absolutely; body floats over the lower portion. */
+.bentoTileOverlay {
   aspect-ratio: var(--bento-tile-aspect, auto);
 }
 
@@ -71,14 +111,14 @@
 a.bentoTile {
   text-decoration: none;
   cursor: pointer;
-  transition:
-    box-shadow var(--motion-duration-fast, 150ms) var(--motion-easing-standard, ease),
-    transform var(--motion-duration-fast, 150ms) var(--motion-easing-standard, ease);
 }
 
+/* The hover affordance is the image scale (on .bentoTileMedia) and the
+   box-shadow bump here. Tile lift is opt-in via the --bento-tile-lift-hover
+   slot, default 0 — text and eyebrow do NOT shift by default. */
 a.bentoTile:hover {
   box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
+  transform: translateY(var(--bento-tile-lift-hover, 0px));
 }
 
 a.bentoTile:focus-visible {
@@ -90,17 +130,14 @@ a.bentoTile:focus-visible {
    Span variants
    --------------------------------------------------------------------------- */
 
-/* Full width — spans all columns */
 .bentoTileFull {
   grid-column: 1 / -1;
 }
 
-/* Half — default 1-column span (no extra rule needed; grid auto-places it) */
 .bentoTileHalf {
   grid-column: span 1;
 }
 
-/* Numeric span — uses --bento-tile-span custom property */
 .bentoTileNumeric {
   grid-column: span var(--bento-tile-span, 1);
 }
@@ -118,38 +155,209 @@ a.bentoTile:focus-visible {
    Fit variants
    --------------------------------------------------------------------------- */
 
-/* contain — natural-fit media with surface-card background plate */
 .bentoTileContain {
   background-color: var(--surface-card, #ffffff);
 }
 
 /* ---------------------------------------------------------------------------
-   Media element
+   Media — layout-scoped positioning + Ken-Burns-style hover zoom
    --------------------------------------------------------------------------- */
 
 .bentoTileMedia {
-  position: absolute;
-  inset: 0;
+  display: block; /* Drop inline baseline space — avoids a hairline gap above/below the image. */
   width: 100%;
-  height: 100%;
   object-fit: cover; /* default; overridden by contain modifier below */
+  /* Slow ease-out zoom on tile hover — applied here so any tile (anchor or article) gets the effect. */
+  transition: transform var(--motion-duration-slow, 600ms)
+    var(--motion-easing-enter, cubic-bezier(0.19, 1, 0.22, 1));
+  transform-origin: center center;
 }
 
-/* When the parent tile is contain mode, media uses object-fit: contain */
-.bentoTileContain .bentoTileMedia {
+.bentoTile:hover .bentoTileMedia {
+  transform: scale(var(--bento-tile-media-scale-hover));
+}
+
+/* Stacked: media is a normal block sized by its own aspect ratio. */
+.bentoTileStacked .bentoTileMedia {
+  position: relative;
+  aspect-ratio: var(--bento-tile-aspect, 16 / 10);
+  height: auto;
+}
+
+/* Overlay: media absolutely fills the tile (which carries the aspect ratio). */
+.bentoTileOverlay .bentoTileMedia {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+
+/* Contain mode in stacked layout — the media slot drops its aspect-ratio
+   enforcement so the image's natural dimensions dictate the slot height.
+   No letterboxing; the body sits directly under the image. */
+.bentoTileStacked.bentoTileContain .bentoTileMedia {
+  aspect-ratio: auto;
+  height: auto;
+  object-fit: initial;
+}
+
+/* Contain in overlay mode keeps the tile's aspect ratio (the tile is the
+   container), so we still need object-fit: contain to letterbox inside. */
+.bentoTileOverlay.bentoTileContain .bentoTileMedia {
   object-fit: contain;
 }
 
 /* ---------------------------------------------------------------------------
-   Tile body
+   Tile body — layout-scoped positioning
    --------------------------------------------------------------------------- */
 
 .bentoTileBody {
-  position: relative; /* stacks above absolute media */
+  display: grid;
+  gap: var(--bento-tile-body-gap);
+  padding-block: var(--bento-tile-body-padding-y);
+  padding-inline: var(--bento-tile-body-padding-x);
+  align-content: start;
+}
+
+/* Stacked: body sits below the media in normal flow at its natural height —
+   no flex-grow, so the tile hugs its content. */
+.bentoTileStacked .bentoTileBody {
+  position: static;
+}
+
+/* Overlay: body floats on top, pushed to bottom of the tile. A subtle
+   bottom-anchored gradient keeps text legible against any image. */
+.bentoTileOverlay .bentoTileBody {
+  position: relative;
   z-index: 1;
+  margin-top: auto;
+  background: linear-gradient(
+    to top,
+    var(--overlay-bg) 0%,
+    var(--overlay-bg) 60%,
+    transparent 100%
+  );
+}
+
+/* ---------------------------------------------------------------------------
+   Body content typography: meta (eyebrow), title, description
+   --------------------------------------------------------------------------- */
+
+.bentoTileMeta {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  gap: var(--spacing-3, 0.75rem);
+  font-size: 0.6875rem; /* 11px — intentional tracking-display size */
+  font-weight: var(--font-weight-medium, 500);
+  /* Tight line-height so when items wrap to a second line, the wrapped row sits close to the first instead of leaving a body-text-sized gap. */
+  line-height: var(--line-height-tight, 1.25);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary, #6b7280);
+  font-variant-numeric: tabular-nums;
+  /* When wrapping, give each row a small vertical breathing space. */
+  row-gap: var(--spacing-1, 0.25rem);
+}
+
+.bentoTileMeta > * + *::before {
+  content: "·";
+  margin-right: var(--spacing-3, 0.75rem);
+  margin-left: calc(var(--spacing-2, 0.5rem) * -1);
+  color: var(--text-tertiary, #6b7280);
+  opacity: 0.6;
+}
+
+.bentoTileTitle {
+  margin: 0;
+  font-size: clamp(1.125rem, 1.6vw, 1.5rem);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text-primary, #111827);
+  display: inline-flex;
+  align-items: center;
   gap: var(--spacing-2, 0.5rem);
-  padding: var(--spacing-4, 1rem);
-  margin-top: auto; /* push body to bottom when media is present */
+}
+
+/* Headline tile variant — for tiles whose primary content IS the headline (manifesto, big-idea moment, statement). Bigger than .bentoTileTitle. */
+.bentoTileHeadline {
+  margin: 0;
+  font-size: clamp(2rem, 3.6vw, 3.5rem);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--text-primary, #111827);
+}
+
+/* Figure tile slot — non-image hero (chart, large number, custom SVG). Inherits .bentoTileMedia's hover-scale + layout-mode positioning; adds a flex centering pass so any child sits centered in the slot by default. */
+.bentoTileFigure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--surface-subtle, var(--surface-card, #ffffff));
+  color: var(--text-primary, #111827);
+}
+
+.bentoTileTitleArrow {
+  opacity: 0.45;
+  transition:
+    opacity var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease),
+    transform var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease);
+}
+
+.bentoTile:hover .bentoTileTitleArrow {
+  opacity: 1;
+  transform: translate(4px, -4px);
+}
+
+.bentoTileDescription {
+  margin: 0;
+  color: var(--text-secondary, #6b7280);
+  /* One notch down from the previous 0.9375rem — sits on the visor `sm` token. */
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-normal, 400);
+  line-height: 1.5;
+  max-width: 56ch;
+}
+
+/* ---------------------------------------------------------------------------
+   Reveal cascade — fade + 24px rise on viewport entry, staggered by DOM order.
+   --------------------------------------------------------------------------- */
+
+.bentoGrid[data-reveal] > .bentoTile {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition:
+    opacity var(--motion-duration-slow, 800ms) var(--motion-easing-enter, cubic-bezier(0.19, 1, 0.22, 1)),
+    transform var(--motion-duration-slow, 800ms) var(--motion-easing-enter, cubic-bezier(0.19, 1, 0.22, 1));
+  transition-delay: calc(var(--reveal-index, 0) * var(--bento-reveal-step, 110ms));
+}
+
+.bentoGrid[data-reveal][data-revealed] > .bentoTile {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion — disable hover zoom, arrow nudge, and reveal cascade.
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .bentoTileMedia,
+  .bentoTileTitleArrow,
+  .bentoTile,
+  a.bentoTile {
+    transition: none;
+  }
+
+  .bentoTile:hover .bentoTileMedia,
+  .bentoTile:hover .bentoTileTitleArrow,
+  a.bentoTile:hover {
+    transform: none;
+  }
+
+  .bentoGrid[data-reveal] > .bentoTile {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

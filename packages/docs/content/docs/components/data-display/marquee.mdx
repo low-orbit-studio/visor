@@ -29,25 +29,45 @@ Pass a `bands` array with per-band `direction`, `durationSec`, and `separator`. 
 
 <ComponentPreview
   title="Counter-Flow Dual Band"
-  code={"import { Marquee } from '@/components/ui/marquee/marquee';\n\nconst clients = ['Acme Corp', 'Vercel', 'Low Orbit Studio', 'Figma', 'Notion', 'Linear'];\n\n<Marquee\n  bands={[\n    { items: clients, direction: 'left', durationSec: 25, separator: '●' },\n    { items: [...clients].reverse(), direction: 'right', durationSec: 30, separator: '○' },\n  ]}\n  pauseOnHover\n  gap=\"2.5rem\"\n/>"}
+  code={"import { Marquee } from '@/components/ui/marquee/marquee';\n\nconst clients = ['Acme Corp', 'Vercel', 'Low Orbit Studio', 'Figma', 'Notion', 'Linear'];\n\n<Marquee\n  bands={[\n    { items: clients, direction: 'left', durationSec: 40, separator: '●' },\n    { items: [...clients].reverse(), direction: 'right', durationSec: 50, separator: '○' },\n  ]}\n  pauseOnHover\n  gap=\"2.5rem\"\n/>"}
 >
   <Marquee
     bands={[
       {
         items: ['Acme Corp', 'Vercel', 'Low Orbit Studio', 'Figma', 'Notion', 'Linear'],
         direction: 'left',
-        durationSec: 25,
+        durationSec: 40,
         separator: '●',
       },
       {
         items: ['Linear', 'Notion', 'Figma', 'Low Orbit Studio', 'Vercel', 'Acme Corp'],
         direction: 'right',
-        durationSec: 30,
+        durationSec: 50,
         separator: '○',
       },
     ]}
     pauseOnHover
     gap="2.5rem"
+  />
+</ComponentPreview>
+
+## Marketing-Display Scale (Descenders + Calm Speed)
+
+At marketing-display font sizes, items with descender glyphs (`g`, `y`, `p`, `q`, `j`) require the default `line-height: var(--line-height-normal)` to clear the band's overflow boundary. The default `durationSec` of `40` provides a calm, readable scroll at display scale — pass a lower value for body-text tickers. Scale typography via the `--marquee-item-font-size` / `--marquee-item-font-weight` slots.
+
+<ComponentPreview
+  title="Marketing-Display Scale"
+  code={"<Marquee\n  items={['Bentley', 'Delta Airlines', 'Fidelity', 'JD Power', 'Verizon', 'XPrize']}\n  separator=\"·\"\n  style={{\n    '--marquee-item-font-size': '3rem',\n    '--marquee-item-font-weight': '600',\n    '--marquee-item-letter-spacing': '-0.01em',\n    '--marquee-separator-font-size': '2rem',\n  }}\n/>"}
+>
+  <Marquee
+    items={['Bentley', 'Delta Airlines', 'Fidelity', 'JD Power', 'Verizon', 'XPrize']}
+    separator="·"
+    style={{
+      '--marquee-item-font-size': '3rem',
+      '--marquee-item-font-weight': '600',
+      '--marquee-item-letter-spacing': '-0.01em',
+      '--marquee-separator-font-size': '2rem',
+    }}
   />
 </ComponentPreview>
 
@@ -114,5 +134,19 @@ import { Marquee } from '@/components/ui/marquee/marquee';
 |------|------|---------|-------------|
 | `items` | `ReactNode[]` | — | Items to display in this band |
 | `direction` | `"left" \| "right"` | `"left"` | Scroll direction |
-| `durationSec` | `number` | `25` | Duration of one full cycle in seconds |
+| `durationSec` | `number` | `40` | Duration of one full cycle in seconds. Tuned for marketing-display sizes; pass a lower value (e.g. `20`) for ticker-style strips. |
 | `separator` | `ReactNode \| string` | — | Separator rendered between items |
+
+## Customization Slots
+
+The marquee root (`.root`) exposes the following CSS custom properties. Defaults resolve to the body-text style used by ticker strips — override any of them in the root `style` (or a parent token-override scope) to retheme without forking the component.
+
+| Slot | Default | Purpose |
+|------|---------|---------|
+| `--marquee-item-color` | `var(--text-primary)` | Item text color |
+| `--marquee-item-font-size` | `var(--font-size-sm)` | Item font size |
+| `--marquee-item-font-weight` | `var(--font-weight-medium)` | Item font weight |
+| `--marquee-item-line-height` | `var(--line-height-normal)` | Item line-height (also applied to separator) |
+| `--marquee-item-letter-spacing` | `normal` | Item letter-spacing |
+| `--marquee-separator-color` | `var(--text-tertiary)` | Separator color |
+| `--marquee-separator-font-size` | `var(--marquee-item-font-size)` | Separator font size — defaults to item size |

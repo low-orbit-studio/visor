@@ -35,8 +35,8 @@ props:
     default: undefined
   - name: durationSec
     type: number
-    description: Duration of one full scroll cycle in seconds (single-band shorthand).
-    default: 25
+    description: Duration of one full scroll cycle in seconds (single-band shorthand). Defaults to 40s so descender-rich items at marketing-display sizes have a calm, readable scroll. For ticker-style strips at body-text size, pass a lower value (e.g. 20).
+    default: 40
   - name: separator
     type: ReactNode | string
     description: Separator rendered between items (single-band shorthand).
@@ -58,6 +58,36 @@ props:
     description: Custom render function for the separator.
     default: undefined
 
+customization:
+  description: >
+    Marquee exposes a CSS custom property surface on its root for item +
+    separator typography. Override these slots inline or via a parent
+    token-override scope to scale up for marketing-display surfaces. The
+    inline `style` prop's `font-size` does NOT cascade into items because
+    .item carries an explicit font-size — use the slot instead.
+  properties:
+    - name: --marquee-item-color
+      default: var(--text-primary)
+      description: Item text color.
+    - name: --marquee-item-font-size
+      default: var(--font-size-sm, 0.875rem)
+      description: Item font size.
+    - name: --marquee-item-font-weight
+      default: var(--font-weight-medium, 500)
+      description: Item font weight.
+    - name: --marquee-item-line-height
+      default: var(--line-height-normal, 1.5)
+      description: Item line-height (also drives the separator).
+    - name: --marquee-item-letter-spacing
+      default: normal
+      description: Item letter-spacing.
+    - name: --marquee-separator-color
+      default: var(--text-tertiary)
+      description: Separator color.
+    - name: --marquee-separator-font-size
+      default: var(--marquee-item-font-size)
+      description: Separator font size. Defaults to the item size.
+
 dependencies:
   - "@loworbitstudio/visor-core"
 
@@ -72,8 +102,8 @@ example: |
 
   <Marquee
     bands={[
-      { items: clients, direction: 'left', durationSec: 25, separator: '●' },
-      { items: clientsReversed, direction: 'right', durationSec: 30, separator: '○' },
+      { items: clients, direction: 'left', durationSec: 40, separator: '●' },
+      { items: clientsReversed, direction: 'right', durationSec: 50, separator: '○' },
     ]}
     pauseOnHover
     gap="2.5rem"

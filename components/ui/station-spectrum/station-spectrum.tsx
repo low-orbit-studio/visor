@@ -40,11 +40,14 @@ export interface StationSpectrumProps extends React.HTMLAttributes<HTMLElement> 
 /**
  * StationSpectrum — animated N-station progress diagram.
  *
- * Renders a hairline horizontal rail with numbered dots and station labels.
- * The rail draws left-to-right via `transform: scaleX()` and dots illuminate
- * sequentially via per-dot CSS transition delays.
+ * Layout is two stacked bands sharing the same N-column grid:
+ *  - `.dotsBand` holds the per-station num + dot pair and the animated rail.
+ *    The rail is positioned `bottom: dot-size/2` from the band so it threads
+ *    through the dots' vertical centers regardless of font metrics.
+ *  - `.labelsBand` is the canonical `<ol>` exposing titles and descriptions
+ *    to assistive tech (the dotsBand is decorative, marked aria-hidden).
  *
- * Animation is triggered by the `inView` CSS module class on the root:
+ * Animation is triggered by the `inView` class on the root:
  *  - `autoTrigger=true` (default): wired via IntersectionObserver
  *  - `autoTrigger=false`: driven by the `inView` prop
  *
@@ -66,7 +69,6 @@ const StationSpectrum = React.forwardRef<HTMLElement, StationSpectrumProps>(
     const innerRef = React.useRef<HTMLElement | null>(null)
     const [autoInView, setAutoInView] = React.useState(false)
 
-    // Merge forwardedRef with innerRef so we can both expose it and use it internally
     const setRef = React.useCallback(
       (node: HTMLElement | null) => {
         innerRef.current = node
@@ -79,7 +81,6 @@ const StationSpectrum = React.forwardRef<HTMLElement, StationSpectrumProps>(
       [forwardedRef]
     )
 
-    // Auto-trigger via IntersectionObserver when autoTrigger=true
     React.useEffect(() => {
       if (!autoTrigger) return
       const element = innerRef.current
@@ -99,8 +100,9 @@ const StationSpectrum = React.forwardRef<HTMLElement, StationSpectrumProps>(
       return () => observer.disconnect()
     }, [autoTrigger])
 
-    // Determine whether the animation should be active
     const isActive = autoTrigger ? autoInView : (inView ?? false)
+
+    const { style: userStyle, ...restProps } = props
 
     return (
       <section
@@ -108,37 +110,46 @@ const StationSpectrum = React.forwardRef<HTMLElement, StationSpectrumProps>(
         data-slot="station-spectrum"
         data-density={density}
         className={cn(styles.base, isActive && styles.inView, className)}
-        {...props}
+        style={{
+          ...(userStyle ?? {}),
+          "--station-count": stations.length,
+        } as React.CSSProperties}
+        {...restProps}
       >
-        {/* Accessible ordered list — primary semantic structure */}
-        <ol
-          className={styles.stationList}
-          aria-label="Process stages"
-        >
-          {stations.map((station, idx) => (
-            <li
-              key={station.num}
-              className={styles.station}
-              style={{ "--idx": idx } as React.CSSProperties}
-            >
-              <div className={styles.dotRow} aria-hidden="true">
+        {/* Decorative band: nums, dots, and the animated rail. */}
+        <div className={styles.dotsBand} aria-hidden="true">
+          <div className={styles.dotsRow}>
+            {stations.map((station, idx) => (
+              <div
+                key={station.num}
+                className={styles.dotCell}
+                style={{ "--idx": idx } as React.CSSProperties}
+              >
                 <span className={styles.num}>{station.num}</span>
                 <span className={styles.dot} />
               </div>
-              <div className={styles.label}>
-                <span className={styles.title}>{station.title}</span>
-                {station.description ? (
-                  <span className={styles.description}>{station.description}</span>
-                ) : null}
-              </div>
+            ))}
+          </div>
+          <div className={styles.rail} aria-hidden="true">
+            <div className={styles.railLine} />
+          </div>
+        </div>
+
+        {/* Accessible ordered list — titles and descriptions. */}
+        <ol className={styles.labelsBand} aria-label="Process stages">
+          {stations.map((station, idx) => (
+            <li
+              key={station.num}
+              className={styles.labelCell}
+              style={{ "--idx": idx } as React.CSSProperties}
+            >
+              <span className={styles.title}>{station.title}</span>
+              {station.description ? (
+                <span className={styles.description}>{station.description}</span>
+              ) : null}
             </li>
           ))}
         </ol>
-
-        {/* Hairline rail — decorative, positioned behind dots */}
-        <div className={styles.rail} aria-hidden="true">
-          <div className={styles.railLine} />
-        </div>
       </section>
     )
   }

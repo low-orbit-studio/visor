@@ -1,6 +1,6 @@
 ---
 title: Bento Grid
-description: An asymmetric tile grid primitive with full/half span variants, per-tile aspect ratios, and contain/cover media fit modes.
+description: An asymmetric tile grid primitive with full/half span variants, per-tile aspect ratios, contain/cover media fit modes, and marketing-grade typography sub-components.
 ---
 
 import { ComponentPreview } from '@/components/preview';
@@ -9,128 +9,240 @@ import {
   BentoGrid,
   BentoTile,
   BentoTileMedia,
+  BentoTileFigure,
   BentoTileBody,
+  BentoTileMeta,
+  BentoTileTitle,
+  BentoTileHeadline,
+  BentoTileDescription,
 } from '@/components/ui/bento-grid/bento-grid';
 
-## 2-Column Default
+## Marketing Layout
 
-A standard two-column grid with half-width tiles and consistent aspect ratios.
+The canonical layout for portfolio and showcase grids: media on top with its own aspect ratio, then an eyebrow → title → description body. Equal-height side-by-sides via CSS Grid's default `align-items: stretch`. Hover the tile to lift it `-3px`, zoom the image `1.04×`, and nudge the title arrow.
 
 <ComponentPreview
-  title="2-Column Default"
-  code={"import {\n  BentoGrid, BentoTile, BentoTileMedia, BentoTileBody,\n} from '@/components/ui/bento-grid/bento-grid';\n\n<BentoGrid cols={2}>\n  <BentoTile span=\"half\" aspect=\"4/3\">\n    <BentoTileMedia src=\"/placeholder.jpg\" alt=\"Project A\" />\n    <BentoTileBody>\n      <h3>Project A</h3>\n      <p>Web design and development.</p>\n    </BentoTileBody>\n  </BentoTile>\n  <BentoTile span=\"half\" aspect=\"4/3\">\n    <BentoTileMedia src=\"/placeholder.jpg\" alt=\"Project B\" />\n    <BentoTileBody>\n      <h3>Project B</h3>\n      <p>Mobile app experience.</p>\n    </BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
+  title="Marketing Layout"
+  code={"<BentoGrid cols={2} gap=\"4\" reveal>\n  <BentoTile span=\"half\" aspect=\"16/10\" href=\"https://animal.nyc/\" target=\"_blank\">\n    <BentoTileMedia src=\"/previews/bento-tile-a.svg\" alt=\"Animal NYC\" />\n    <BentoTileBody>\n      <BentoTileMeta items={['Web', 'Brooklyn', '2025']} />\n      <BentoTileTitle showArrow>Animal NYC</BentoTileTitle>\n      <BentoTileDescription>\n        Williamsburg's late-night bar. Live underground DJs five nights a week, programmed for the people who actually show up.\n      </BentoTileDescription>\n    </BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"half\" aspect=\"16/10\" href=\"https://animal.la/\" target=\"_blank\">\n    <BentoTileMedia src=\"/previews/bento-tile-b.svg\" alt=\"Animal LA\" />\n    <BentoTileBody>\n      <BentoTileMeta items={['Web', 'Arts District', 'Summer 2026']} />\n      <BentoTileTitle showArrow>Animal LA</BentoTileTitle>\n      <BentoTileDescription>\n        Same animal, west coast. Coming summer 2026 to the LA Arts District.\n      </BentoTileDescription>\n    </BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
 >
-  <BentoGrid cols={2}>
-    <BentoTile span="half" aspect="4/3">
+  <BentoGrid cols={2} gap="4" reveal>
+    <BentoTile span="half" aspect="16/10" href="https://animal.nyc/" target="_blank">
+      <BentoTileMedia src="/previews/bento-tile-a.svg" alt="Animal NYC" />
       <BentoTileBody>
-        <h3>Project A</h3>
-        <p>Web design and development.</p>
+        <BentoTileMeta items={['Web', 'Brooklyn', '2025']} />
+        <BentoTileTitle showArrow>Animal NYC</BentoTileTitle>
+        <BentoTileDescription>
+          Williamsburg's late-night bar. Live underground DJs five nights a week, programmed for the people who actually show up.
+        </BentoTileDescription>
       </BentoTileBody>
     </BentoTile>
-    <BentoTile span="half" aspect="4/3">
+    <BentoTile span="half" aspect="16/10" href="https://animal.la/" target="_blank">
+      <BentoTileMedia src="/previews/bento-tile-b.svg" alt="Animal LA" />
       <BentoTileBody>
-        <h3>Project B</h3>
-        <p>Mobile app experience.</p>
+        <BentoTileMeta items={['Web', 'Arts District', 'Summer 2026']} />
+        <BentoTileTitle showArrow>Animal LA</BentoTileTitle>
+        <BentoTileDescription>
+          Same animal, west coast. Coming summer 2026 to the LA Arts District.
+        </BentoTileDescription>
       </BentoTileBody>
     </BentoTile>
   </BentoGrid>
 </ComponentPreview>
 
-## Full + Half Span Mix
+## Full-Width Hero Tile
 
-A hero-style layout with a full-width feature tile paired with half-width tiles below.
+A `span="full"` tile at `21/9` carries a single project across the row — the eyebrow, title (with hover arrow), and a longer description give the row weight.
 
 <ComponentPreview
-  title="Full + Half Span Mix"
-  code={"<BentoGrid cols={2}>\n  <BentoTile span=\"full\" aspect=\"21/9\">\n    <BentoTileMedia src=\"/hero.jpg\" alt=\"Hero project\" />\n    <BentoTileBody>\n      <h2>Knowmentum</h2>\n      <p>Knowledge platform for high-performers.</p>\n    </BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"half\" aspect=\"2/1\" href=\"https://animal.nyc/\" target=\"_blank\">\n    <BentoTileMedia src=\"/nyc.jpg\" alt=\"Animal NYC\" />\n    <BentoTileBody><h3>Animal NYC</h3></BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"half\" aspect=\"2/1\" href=\"https://animal.la/\" target=\"_blank\">\n    <BentoTileMedia src=\"/la.jpg\" alt=\"Animal LA\" />\n    <BentoTileBody><h3>Animal LA</h3></BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
+  title="Full-Width Hero"
+  code={"<BentoGrid cols={2}>\n  <BentoTile span=\"full\" aspect=\"21/9\" href=\"https://blacklight.fm\" target=\"_blank\">\n    <BentoTileMedia src=\"/previews/bento-hero.svg\" alt=\"Knowmentum\" />\n    <BentoTileBody>\n      <BentoTileMeta items={['Web', 'iOS', 'Android', 'Low Orbit']} />\n      <BentoTileTitle showArrow>Knowmentum</BentoTileTitle>\n      <BentoTileDescription>\n        Knowledge platform for high-performers. A Low Orbit owned product, in build for Q3 2026.\n      </BentoTileDescription>\n    </BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
 >
   <BentoGrid cols={2}>
-    <BentoTile span="full" aspect="2/1">
+    <BentoTile span="full" aspect="21/9" href="https://blacklight.fm" target="_blank">
+      <BentoTileMedia src="/previews/bento-hero.svg" alt="Knowmentum" />
       <BentoTileBody>
-        <h2>Knowmentum</h2>
-        <p>Knowledge platform for high-performers.</p>
-      </BentoTileBody>
-    </BentoTile>
-    <BentoTile span="half" aspect="4/3">
-      <BentoTileBody>
-        <h3>Animal NYC</h3>
-        <p>Creative agency.</p>
-      </BentoTileBody>
-    </BentoTile>
-    <BentoTile span="half" aspect="4/3">
-      <BentoTileBody>
-        <h3>Animal LA</h3>
-        <p>West coast studio.</p>
+        <BentoTileMeta items={['Web', 'iOS', 'Android', 'Low Orbit']} />
+        <BentoTileTitle showArrow>Knowmentum</BentoTileTitle>
+        <BentoTileDescription>
+          Knowledge platform for high-performers. A Low Orbit owned product, in build for Q3 2026.
+        </BentoTileDescription>
       </BentoTileBody>
     </BentoTile>
   </BentoGrid>
 </ComponentPreview>
+
+## Stacked vs Overlay
+
+Two layout modes. **Stacked** (default) keeps media and body in normal document flow; total tile height = media + body. **Overlay** makes the tile carry the aspect ratio, the media fills it absolutely, and the body floats over the lower portion.
+
+<ComponentPreview
+  title="Stacked vs Overlay"
+  code={"<BentoGrid cols={2}>\n  <BentoTile span=\"half\" aspect=\"16/10\">\n    <BentoTileMedia src=\"/previews/bento-tile-c.svg\" alt=\"SoleSpark\" />\n    <BentoTileBody>\n      <BentoTileMeta items={['Stacked', 'Default']} />\n      <BentoTileTitle>Stacked</BentoTileTitle>\n      <BentoTileDescription>\n        Media on top with its own aspect ratio; body flows below as a sibling block.\n      </BentoTileDescription>\n    </BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"half\" aspect=\"16/10\" layout=\"overlay\">\n    <BentoTileMedia src=\"/previews/bento-tile-c.svg\" alt=\"SoleSpark\" />\n    <BentoTileBody>\n      <BentoTileMeta items={['Overlay']} />\n      <BentoTileTitle>Overlay</BentoTileTitle>\n      <BentoTileDescription>\n        Body floats over the lower portion of the media.\n      </BentoTileDescription>\n    </BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
+>
+  <BentoGrid cols={2}>
+    <BentoTile span="half" aspect="16/10">
+      <BentoTileMedia src="/previews/bento-tile-c.svg" alt="SoleSpark" />
+      <BentoTileBody>
+        <BentoTileMeta items={['Stacked', 'Default']} />
+        <BentoTileTitle>Stacked</BentoTileTitle>
+        <BentoTileDescription>
+          Media on top with its own aspect ratio; body flows below as a sibling block.
+        </BentoTileDescription>
+      </BentoTileBody>
+    </BentoTile>
+    <BentoTile span="half" aspect="16/10" layout="overlay">
+      <BentoTileMedia src="/previews/bento-tile-c.svg" alt="SoleSpark" />
+      <BentoTileBody>
+        <BentoTileMeta items={['Overlay']} />
+        <BentoTileTitle>Overlay</BentoTileTitle>
+        <BentoTileDescription>
+          Body floats over the lower portion of the media.
+        </BentoTileDescription>
+      </BentoTileBody>
+    </BentoTile>
+  </BentoGrid>
+</ComponentPreview>
+
+> **Breaking change in v0.5.0:** Default `BentoTile.layout` is now `"stacked"`. Tiles that previously rendered body-over-media must explicitly pass `layout="overlay"` to retain that behavior.
 
 ## Contain vs Cover
 
-`fit="cover"` (default) fills the tile with the image; `fit="contain"` fits the image inside a surface-card background — ideal for logos, portraits, or artwork with transparent backgrounds.
+`fit="cover"` (default) fills the tile with the image; `fit="contain"` fits the image inside a surface-card background — ideal for logos, portraits, or artwork with transparent backgrounds. The hover zoom is suppressed in `contain` mode (letterboxed media doesn't benefit from a scale effect).
 
 <ComponentPreview
   title="Contain vs Cover"
-  code={"<BentoGrid cols={2}>\n  <BentoTile span=\"half\" aspect=\"4/3\" fit=\"cover\">\n    <BentoTileMedia src=\"/photo.jpg\" alt=\"Photo project\" />\n    <BentoTileBody>\n      <h3>Cover (default)</h3>\n      <p>Image fills the tile.</p>\n    </BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"half\" aspect=\"4/3\" fit=\"contain\">\n    <BentoTileMedia src=\"/logo.png\" alt=\"Client logo\" />\n    <BentoTileBody>\n      <h3>Contain</h3>\n      <p>Image fits inside a background plate.</p>\n    </BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
+  code={"// Same image on both tiles so the difference is clearly comparable.\n<BentoGrid cols={2}>\n  <BentoTile span=\"half\" aspect=\"4/3\" fit=\"cover\">\n    <BentoTileMedia src=\"/previews/bento-tile-a.svg\" alt=\"Reference artwork\" />\n    <BentoTileBody>\n      <BentoTileMeta items={['Cover', 'Default']} />\n      <BentoTileTitle>Cover</BentoTileTitle>\n      <BentoTileDescription>\n        Image fills the tile, cropping whichever dimension overflows.\n      </BentoTileDescription>\n    </BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"half\" aspect=\"4/3\" fit=\"contain\">\n    <BentoTileMedia src=\"/previews/bento-tile-a.svg\" alt=\"Reference artwork\" />\n    <BentoTileBody>\n      <BentoTileMeta items={['Contain']} />\n      <BentoTileTitle>Contain</BentoTileTitle>\n      <BentoTileDescription>\n        Image fits inside the tile; the surrounding plate fills the slack.\n      </BentoTileDescription>\n    </BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
 >
   <BentoGrid cols={2}>
     <BentoTile span="half" aspect="4/3" fit="cover">
+      <BentoTileMedia src="/previews/bento-tile-a.svg" alt="Reference artwork" />
       <BentoTileBody>
-        <h3>Cover (default)</h3>
-        <p>Image fills the tile.</p>
+        <BentoTileMeta items={['Cover', 'Default']} />
+        <BentoTileTitle>Cover</BentoTileTitle>
+        <BentoTileDescription>
+          Image fills the tile, cropping whichever dimension overflows.
+        </BentoTileDescription>
       </BentoTileBody>
     </BentoTile>
     <BentoTile span="half" aspect="4/3" fit="contain">
+      <BentoTileMedia src="/previews/bento-tile-a.svg" alt="Reference artwork" />
       <BentoTileBody>
-        <h3>Contain</h3>
-        <p>Image fits inside a background plate.</p>
+        <BentoTileMeta items={['Contain']} />
+        <BentoTileTitle>Contain</BentoTileTitle>
+        <BentoTileDescription>
+          Image fits inside the tile; the surrounding plate fills the slack.
+        </BentoTileDescription>
       </BentoTileBody>
     </BentoTile>
   </BentoGrid>
 </ComponentPreview>
 
-## Responsive 17-Tile Layout
+## Responsive Asymmetric Layout
 
-A fully responsive asymmetric grid that collapses to 1 column on mobile and expands to 2 on medium+ viewports — mirroring the strata-v1 portfolio pattern.
+A fully responsive asymmetric grid — collapses to 1 column on mobile, 2 on medium+. Tiles in the same row share height regardless of body content length.
 
 <ComponentPreview
-  title="Responsive 17-Tile Layout"
-  code={"<BentoGrid cols={{ base: 1, md: 2 }} gap=\"4\">\n  <BentoTile span=\"full\" aspect=\"21/9\">\n    <BentoTileBody>\n      <h2>Featured Project</h2>\n      <p>Full-width hero tile spanning all columns.</p>\n    </BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"half\" aspect=\"2/1\">\n    <BentoTileBody><h3>Project 1</h3></BentoTileBody>\n  </BentoTile>\n  <BentoTile span=\"half\" aspect=\"2/1\">\n    <BentoTileBody><h3>Project 2</h3></BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"full\" aspect=\"21/9\">\n    <BentoTileBody>\n      <h2>Second Feature</h2>\n    </BentoTileBody>\n  </BentoTile>\n\n  {/* ... more tiles */}\n</BentoGrid>"}
+  title="Responsive Asymmetric Layout"
+  code={"<BentoGrid cols={{ base: 1, md: 2 }} gap=\"4\">\n  <BentoTile span=\"full\" aspect=\"21/9\" href=\"#\">\n    <BentoTileMedia src=\"/previews/bento-hero.svg\" alt=\"Featured\" />\n    <BentoTileBody>\n      <BentoTileMeta items={['Web', 'Featured']} />\n      <BentoTileTitle showArrow>Featured Project</BentoTileTitle>\n      <BentoTileDescription>\n        Full-width hero tile spanning all columns.\n      </BentoTileDescription>\n    </BentoTileBody>\n  </BentoTile>\n\n  <BentoTile span=\"half\" aspect=\"16/10\" href=\"#\">\n    <BentoTileMedia src=\"/previews/bento-tile-a.svg\" alt=\"Project 1\" />\n    <BentoTileBody>\n      <BentoTileMeta items={['Web']} />\n      <BentoTileTitle showArrow>Project 1</BentoTileTitle>\n      <BentoTileDescription>\n        A short blurb keeps this tile compact.\n      </BentoTileDescription>\n    </BentoTileBody>\n  </BentoTile>\n  <BentoTile span=\"half\" aspect=\"16/10\" href=\"#\">\n    <BentoTileMedia src=\"/previews/bento-tile-b.svg\" alt=\"Project 2\" />\n    <BentoTileBody>\n      <BentoTileMeta items={['Mobile', 'iOS', 'Android']} />\n      <BentoTileTitle showArrow>Project 2</BentoTileTitle>\n      <BentoTileDescription>\n        A longer description stretches this tile — its sibling keeps pace because the grid row stretches both to match.\n      </BentoTileDescription>\n    </BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
 >
   <BentoGrid cols={{ base: 1, md: 2 }} gap="4">
-    <BentoTile span="full" aspect="2/1">
+    <BentoTile span="full" aspect="21/9" href="#">
+      <BentoTileMedia src="/previews/bento-hero.svg" alt="Featured" />
       <BentoTileBody>
-        <h2>Featured Project</h2>
-        <p>Full-width hero tile spanning all columns.</p>
+        <BentoTileMeta items={['Web', 'Featured']} />
+        <BentoTileTitle showArrow>Featured Project</BentoTileTitle>
+        <BentoTileDescription>
+          Full-width hero tile spanning all columns.
+        </BentoTileDescription>
       </BentoTileBody>
     </BentoTile>
-    <BentoTile span="half" aspect="4/3">
-      <BentoTileBody><h3>Project 1</h3></BentoTileBody>
-    </BentoTile>
-    <BentoTile span="half" aspect="4/3">
-      <BentoTileBody><h3>Project 2</h3></BentoTileBody>
-    </BentoTile>
-    <BentoTile span="half" aspect="4/3">
-      <BentoTileBody><h3>Project 3</h3></BentoTileBody>
-    </BentoTile>
-    <BentoTile span="half" aspect="4/3">
-      <BentoTileBody><h3>Project 4</h3></BentoTileBody>
-    </BentoTile>
-    <BentoTile span="full" aspect="2/1">
+    <BentoTile span="half" aspect="16/10" href="#">
+      <BentoTileMedia src="/previews/bento-tile-a.svg" alt="Project 1" />
       <BentoTileBody>
-        <h2>Second Feature</h2>
-        <p>Another full-width tile breaking the rhythm.</p>
+        <BentoTileMeta items={['Web']} />
+        <BentoTileTitle showArrow>Project 1</BentoTileTitle>
+        <BentoTileDescription>
+          A short blurb keeps this tile compact.
+        </BentoTileDescription>
       </BentoTileBody>
     </BentoTile>
-    <BentoTile span="half" aspect="1/1" fit="contain">
-      <BentoTileBody><h3>Logo Tile</h3></BentoTileBody>
-    </BentoTile>
-    <BentoTile span="half" aspect="1/1">
-      <BentoTileBody><h3>Square Tile</h3></BentoTileBody>
+    <BentoTile span="half" aspect="16/10" href="#">
+      <BentoTileMedia src="/previews/bento-tile-b.svg" alt="Project 2" />
+      <BentoTileBody>
+        <BentoTileMeta items={['Mobile', 'iOS', 'Android']} />
+        <BentoTileTitle showArrow>Project 2</BentoTileTitle>
+        <BentoTileDescription>
+          A longer description stretches this tile — its sibling keeps pace because the grid row stretches both to match.
+        </BentoTileDescription>
+      </BentoTileBody>
     </BentoTile>
   </BentoGrid>
 </ComponentPreview>
+
+## Tile Variants
+
+`BentoTile` is a flexible container. Compose the sub-components inside to build distinct tile patterns:
+
+- **Project tile** — `BentoTileMedia` + `BentoTileBody` with meta / title / description (the default pattern shown above).
+- **Headline tile** — `BentoTileBody` with `BentoTileHeadline` plus optional supporting copy. No media slot — the tile *is* the statement.
+- **Text tile** — `BentoTileBody` with meta + title + description, no media.
+- **Figure tile** — `BentoTileFigure` (chart, large number, custom SVG) replacing `BentoTileMedia`. Useful for infographics or stat callouts.
+
+<ComponentPreview
+  title="Mixed tile variants on one grid"
+  code={"<BentoGrid cols={{ base: 1, md: 2 }} gap=\"4\" reveal>\n  {/* Headline tile — gradient-only media, headline IS the content */}\n  <BentoTile span=\"full\" aspect=\"21/9\" layout=\"overlay\">\n    <BentoTileMedia src=\"/previews/bento-gradient.svg\" alt=\"\" />\n    <BentoTileBody>\n      <BentoTileMeta items={['Manifesto']} />\n      <BentoTileHeadline>The fastest way to ship marketing-grade UI.</BentoTileHeadline>\n    </BentoTileBody>\n  </BentoTile>\n\n  {/* Figure tile — large number instead of an image */}\n  <BentoTile span=\"half\" aspect=\"4/3\">\n    <BentoTileFigure>\n      <span style={{ fontSize: '6rem', fontWeight: 700, letterSpacing: '-0.04em', color: 'var(--interactive-primary-bg)' }}>+92%</span>\n    </BentoTileFigure>\n    <BentoTileBody>\n      <BentoTileMeta items={['Conversion', 'Q1 2026']} />\n      <BentoTileTitle>Hero CTR uplift</BentoTileTitle>\n      <BentoTileDescription>\n        Marketing-grade primitives lifted the homepage click-through rate from 4.1% to 7.9%.\n      </BentoTileDescription>\n    </BentoTileBody>\n  </BentoTile>\n\n  {/* Project tile — media + meta + title (with arrow) + description */}\n  <BentoTile span=\"half\" aspect=\"4/3\" href=\"https://animal.la/\" target=\"_blank\">\n    <BentoTileMedia src=\"/previews/bento-tile-b.svg\" alt=\"Animal LA\" />\n    <BentoTileBody>\n      <BentoTileMeta items={['Web', 'Arts District']} />\n      <BentoTileTitle showArrow>Animal LA</BentoTileTitle>\n      <BentoTileDescription>\n        Same animal, west coast. Coming summer 2026 to the LA Arts District.\n      </BentoTileDescription>\n    </BentoTileBody>\n  </BentoTile>\n\n  {/* Text tile — no media, body-only */}\n  <BentoTile span=\"full\">\n    <BentoTileBody>\n      <BentoTileMeta items={['Note', '2026']} />\n      <BentoTileTitle>What's a bento?</BentoTileTitle>\n      <BentoTileDescription>\n        Asymmetric tile grids descended from the Apple WWDC 2022 design language — mixed weights, aspect ratios, and spans inside a single grid scaffolding.\n      </BentoTileDescription>\n    </BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
+>
+  <BentoGrid cols={{ base: 1, md: 2 }} gap="4" reveal>
+    <BentoTile span="full" aspect="21/9" layout="overlay">
+      <BentoTileMedia src="/previews/bento-gradient.svg" alt="" />
+      <BentoTileBody>
+        <BentoTileMeta items={['Manifesto']} />
+        <BentoTileHeadline>The fastest way to ship marketing-grade UI.</BentoTileHeadline>
+      </BentoTileBody>
+    </BentoTile>
+    <BentoTile span="half" aspect="4/3">
+      <BentoTileFigure>
+        <span style={{ fontSize: '6rem', fontWeight: 700, letterSpacing: '-0.04em', color: 'var(--interactive-primary-bg)' }}>+92%</span>
+      </BentoTileFigure>
+      <BentoTileBody>
+        <BentoTileMeta items={['Conversion', 'Q1 2026']} />
+        <BentoTileTitle>Hero CTR uplift</BentoTileTitle>
+        <BentoTileDescription>
+          Marketing-grade primitives lifted the homepage click-through rate from 4.1% to 7.9%.
+        </BentoTileDescription>
+      </BentoTileBody>
+    </BentoTile>
+    <BentoTile span="half" aspect="4/3" href="https://animal.la/" target="_blank">
+      <BentoTileMedia src="/previews/bento-tile-b.svg" alt="Animal LA" />
+      <BentoTileBody>
+        <BentoTileMeta items={['Web', 'Arts District']} />
+        <BentoTileTitle showArrow>Animal LA</BentoTileTitle>
+        <BentoTileDescription>
+          Same animal, west coast. Coming summer 2026 to the LA Arts District.
+        </BentoTileDescription>
+      </BentoTileBody>
+    </BentoTile>
+    <BentoTile span="full">
+      <BentoTileBody>
+        <BentoTileMeta items={['Note', '2026']} />
+        <BentoTileTitle>What's a bento?</BentoTileTitle>
+        <BentoTileDescription>
+          Asymmetric tile grids descended from the Apple WWDC 2022 design language — mixed weights, aspect ratios, and spans inside a single grid scaffolding.
+        </BentoTileDescription>
+      </BentoTileBody>
+    </BentoTile>
+  </BentoGrid>
+</ComponentPreview>
+
+## Entrance Animation
+
+Pass `reveal` to `BentoGrid` to fade and rise each tile on viewport entry, staggered left-to-right by DOM order. Configure the per-tile delay with `revealStepMs` (default 110ms) and the trigger threshold with `revealThreshold` (default 0.2). The cascade is suppressed under `prefers-reduced-motion: reduce`.
+
+```tsx
+<BentoGrid cols={2} reveal revealStepMs={140}>
+  {/* tiles */}
+</BentoGrid>
+```
 
 ## Installation
 
@@ -153,28 +265,20 @@ import {
   BentoTile,
   BentoTileMedia,
   BentoTileBody,
+  BentoTileMeta,
+  BentoTileTitle,
+  BentoTileDescription,
 } from '@/components/ui/bento-grid/bento-grid';
 
 <BentoGrid cols={{ base: 1, md: 2 }} gap="4">
-  <BentoTile span="full" aspect="21/9">
-    <BentoTileMedia src="/projects/hero.jpg" alt="Hero project" />
+  <BentoTile span="full" aspect="21/9" href="https://blacklight.fm">
+    <BentoTileMedia src="/projects/hero.jpg" alt="Blacklight hero" />
     <BentoTileBody>
-      <h2>Knowmentum</h2>
-      <p>Knowledge platform for high-performers.</p>
-    </BentoTileBody>
-  </BentoTile>
-
-  <BentoTile span="half" aspect="2/1" href="https://animal.nyc/" target="_blank">
-    <BentoTileMedia src="/projects/nyc.jpg" alt="Animal NYC" />
-    <BentoTileBody>
-      <h3>Animal NYC</h3>
-    </BentoTileBody>
-  </BentoTile>
-
-  <BentoTile span="half" aspect="4/3" fit="contain">
-    <BentoTileMedia src="/logos/client.png" alt="Client logo" />
-    <BentoTileBody>
-      <p>Logo tile</p>
+      <BentoTileMeta items={['Web', 'Low Orbit', 'Live']} />
+      <BentoTileTitle showArrow>Blacklight</BentoTileTitle>
+      <BentoTileDescription>
+        Electronic press kits with an attitude, built for working artists.
+      </BentoTileDescription>
     </BentoTileBody>
   </BentoTile>
 </BentoGrid>
@@ -190,6 +294,9 @@ import {
 |------|------|---------|-------------|
 | `cols` | `number \| ResponsiveValue<number>` | `2` | Number of grid columns. Accepts a plain number or a responsive breakpoint map `{ base, sm?, md?, lg?, xl? }`. |
 | `gap` | `string` | `"4"` | Gap between tiles as a spacing token suffix. `"4"` resolves to `var(--spacing-4)`. |
+| `reveal` | `boolean` | `false` | Fade + rise each tile on viewport entry, staggered by DOM order. Suppressed under `prefers-reduced-motion`. |
+| `revealStepMs` | `number` | `110` | Per-tile delay in milliseconds. Each tile's actual delay is `revealStepMs × index`. |
+| `revealThreshold` | `number` | `0.2` | IntersectionObserver threshold for the entrance trigger. |
 
 Also accepts all standard `<div>` HTML attributes.
 
@@ -197,9 +304,10 @@ Also accepts all standard `<div>` HTML attributes.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
+| `layout` | `"stacked" \| "overlay"` | `"stacked"` | Visual layout. `stacked` places media on top with its own aspect ratio; `overlay` makes the tile carry the aspect ratio with the body floating over the media. |
 | `span` | `"full" \| "half" \| number` | `"half"` | Column span: `full` (1/-1), `half` (1 col), or a numeric span count. |
-| `aspect` | `"21/9" \| "2/1" \| "4/3" \| "1/1" \| string` | — | Aspect ratio for the tile. Maps to CSS `aspect-ratio`. |
-| `fit` | `"cover" \| "contain"` | `"cover"` | Media fit mode. `contain` adds a `surface-card` background plate for logos/portraits. |
+| `aspect` | `"21/9" \| "2/1" \| "16/10" \| "4/3" \| "1/1" \| string` | — | Aspect ratio. Applied to the media in `stacked` mode, to the tile root in `overlay` mode. |
+| `fit` | `"cover" \| "contain"` | `"cover"` | Media fit mode. `contain` adds a `surface-card` background plate for logos/portraits. Hover zoom is suppressed in this mode. |
 | `href` | `string` | — | When provided, renders the tile root as an `<a>` element. |
 | `target` | `string` | — | Link target. Only used when `href` is set. |
 | `rel` | `string` | Auto-set when `target="_blank"` | Link rel. Defaults to `"noopener noreferrer"` when target is `_blank`. |
@@ -214,16 +322,62 @@ Also accepts all standard `<div>` HTML attributes.
 
 ### BentoTileBody
 
-Accepts all standard `<div>` HTML attributes. Renders as a positioned overlay above the media.
+Accepts all standard `<div>` HTML attributes. In `stacked` mode the body sits at its natural content height (tiles hug content); in `overlay` mode it's pushed to the bottom with `margin-top: auto` and carries a translucent backdrop gradient for legibility against the image.
+
+### BentoTileFigure
+
+Drop-in replacement for `BentoTileMedia` when the tile's hero element is not a photographic image — typical use cases: data charts, large statistic numbers, illustrated SVGs, or any composed JSX. Accepts all standard `<div>` HTML attributes. Inherits the same hover scale + layout-mode positioning as `BentoTileMedia`.
+
+### BentoTileHeadline
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `as` | `"h1" \| "h2" \| "h3"` | `"h2"` | Heading element. |
+
+A larger display heading than `BentoTileTitle` — `clamp(2rem, 3.6vw, 3.5rem)`, weight 700, tight tracking. Use for headline tiles where the heading IS the tile's primary content.
+
+### BentoTileMeta (eyebrow row)
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `items` | `ReactNode[]` | — | Array of items rendered as spans with `·` separators between siblings. When omitted, children are used as-is. |
+
+### BentoTileTitle
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `as` | `"h2" \| "h3" \| "h4"` | `"h3"` | Heading level. |
+| `showArrow` | `boolean` | `false` | Render a `↗` arrow after the title; the arrow nudges on tile hover. Useful when the tile is a link. |
+
+### BentoTileDescription
+
+Renders a styled `<p>` with `max-width: 56ch` for comfortable reading.
+
+## Customization Slots
+
+Each tile (`.bentoTile`) exposes the following CSS custom properties. Override per-tile via `style` or per-grid via a parent token-override scope.
+
+| Slot | Default | Purpose |
+|------|---------|---------|
+| `--bento-tile-radius` | `var(--radius-lg)` | Tile corner radius |
+| `--bento-tile-body-padding` | `clamp(1rem, 2vw, 1.75rem)` | Body padding |
+| `--bento-tile-body-gap` | `var(--spacing-3)` | Gap between meta / title / description |
+| `--bento-tile-media-scale-hover` | `1.04` | Image scale on tile hover (set to `1` to disable) |
+| `--bento-tile-lift-hover` | `0px` | Optional vertical translate on anchor-tile hover. Default `0` — canonical affordance is the image scale + shadow bump. Override to e.g. `-3px` to opt in. |
 
 ## Sub-components
 
 | Component | Element | Purpose |
 |-----------|---------|---------|
-| `BentoGrid` | `<div>` | CSS Grid container. Controls columns, gap, and responsive breakpoints. |
+| `BentoGrid` | `<div>` | CSS Grid container. Controls columns, gap, responsive breakpoints, and the entrance cascade. |
 | `BentoTile` | `<article>` or `<a>` | Individual tile. Polymorphic: renders as `<article>` by default, `<a>` when `href` is set. |
-| `BentoTileMedia` | `<img>` | Full-bleed image absolutely positioned within the tile. |
-| `BentoTileBody` | `<div>` | Text/metadata overlay, positioned above the media layer. |
+| `BentoTileMedia` | `<img>` | Image element. Zooms `1.04×` on tile hover (suppressed in `fit="contain"` mode). |
+| `BentoTileFigure` | `<div>` | Non-image hero slot — charts, numbers, custom SVGs. Inherits the same hover + layout behavior as `BentoTileMedia`. |
+| `BentoTileBody` | `<div>` | Body container. Hugs content in stacked mode; pushed to bottom in overlay mode. |
+| `BentoTileMeta` | `<div>` | Eyebrow row — uppercase, tracked, with `·` separators. Wraps tight when content overflows. |
+| `BentoTileTitle` | `<h3>` (or `as`) | Display heading. Optional hover arrow. |
+| `BentoTileHeadline` | `<h2>` (or `as`) | Larger display heading for headline-style tiles. |
+| `BentoTileDescription` | `<div>` | Muted body text at `var(--font-size-sm)`, `max-width: 56ch`. |
 
 ## Responsive Cols
 
@@ -241,4 +395,6 @@ All tiles collapse to a single column on narrow viewports (`< 640px`) regardless
 - Clickable tiles use an `<a>` element with `href` — never a div with an onClick handler.
 - `BentoTileMedia` requires a meaningful `alt` attribute. Use `alt=""` only for decorative images that are redundant with surrounding text.
 - External links (`target="_blank"`) automatically receive `rel="noopener noreferrer"` unless overridden.
+- The `↗` hover arrow is `aria-hidden` — it's a visual affordance only.
 - Focus rings use `var(--focus-ring-width)` and `var(--border-focus)` tokens for theme consistency.
+- All hover transforms (image zoom, tile lift, arrow nudge) are suppressed under `prefers-reduced-motion: reduce`.
