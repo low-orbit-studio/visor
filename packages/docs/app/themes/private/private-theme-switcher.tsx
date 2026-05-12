@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Palette } from "@phosphor-icons/react";
 import {
   Select,
@@ -11,30 +11,47 @@ import {
   SelectItem,
   SelectLabel,
 } from "@/components/ui/select";
-import { THEME_GROUPS } from "@/lib/theme-config";
+import { STOCK_GROUPS, applyTheme, THEME_STORAGE_KEY, type ThemeGroup } from "@/lib/theme-config";
 import type { PrivateThemeEntry } from "@/lib/private-themes";
 
-const ALL_THEME_CLASS_PATTERN = /(^|\s)[\w-]+-theme(?=\s|$)/g;
-
-interface SwitcherEntry {
+export interface SwitcherEntry {
   slug: string;
   label: string;
   group: string;
 }
 
-export function PrivateThemeSwitcher({ themes }: { themes: PrivateThemeEntry[] }) {
-  const stockEntries: SwitcherEntry[] = THEME_GROUPS.flatMap((g) =>
+export function buildSwitcherEntries(
+  stockGroups: ThemeGroup[],
+  themes: PrivateThemeEntry[],
+): SwitcherEntry[] {
+  const stockEntries = stockGroups.flatMap((g) =>
     g.themes.map((t) => ({ slug: t.value, label: t.label, group: g.label })),
   );
-  const merged: SwitcherEntry[] = [...stockEntries, ...themes];
+  return [...stockEntries, ...themes];
+}
 
-  const initial = themes[0]?.slug ?? stockEntries[0]?.slug ?? "";
-  const [active, setActive] = useState<string>(initial);
+export function PrivateThemeSwitcher({ themes }: { themes: PrivateThemeEntry[] }) {
+  const merged: SwitcherEntry[] = useMemo(
+    () => buildSwitcherEntries(STOCK_GROUPS, themes),
+    [themes],
+  );
+
+  // Initialize with an SSR-safe fallback. localStorage is read in an effect
+  // after mount so server and first-client renders match (no hydration mismatch).
+  const fallback = themes[0]?.slug ?? merged[0]?.slug ?? "";
+  const [active, setActive] = useState<string>(fallback);
 
   useEffect(() => {
-    if (!initial) return;
-    applyTheme(initial);
-  }, [initial]);
+    let next = fallback;
+    try {
+      const stored = localStorage.getItem(THEME_STORAGE_KEY);
+      if (stored && merged.some((e) => e.slug === stored)) next = stored;
+    } catch {}
+    if (!next) return;
+    setActive(next);
+    applyTheme(next);
+    // Only re-run when the candidate set or fallback changes.
+  }, [merged, fallback]);
 
   function handleChange(value: string) {
     setActive(value);
@@ -65,13 +82,6 @@ export function PrivateThemeSwitcher({ themes }: { themes: PrivateThemeEntry[] }
       </SelectContent>
     </Select>
   );
-}
-
-function applyTheme(slug: string) {
-  if (typeof document === "undefined") return;
-  const body = document.body;
-  body.className = body.className.replace(ALL_THEME_CLASS_PATTERN, "").trim();
-  body.classList.add(`${slug}-theme`);
 }
 
 function groupEntries(entries: SwitcherEntry[]) {

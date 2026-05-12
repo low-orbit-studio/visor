@@ -248,7 +248,7 @@ sealed class VisorColors {
     borderWarning: Color(0xFFF59E0B),
     borderError: Color(0xFFEF4444),
     borderInfo: Color(0xFF0EA5E9),
-    interactivePrimaryBg: Color(0xFFF46C00),
+    interactivePrimaryBg: Color(0xFFE4591F),
     interactivePrimaryBgHover: Color(0xFFFFDECF),
     interactivePrimaryBgActive: Color(0xFFFFE6DB),
     interactivePrimaryText: Color(0xFFFFFFFF),
