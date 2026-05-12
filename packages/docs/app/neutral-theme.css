@@ -108,7 +108,7 @@
 .neutral-theme {
   --font-display: system-ui;
   --font-sans: system-ui;
-  --font-heading: var(--font-sans);
+  --font-heading: system-ui;
   --font-body: system-ui;
   --font-mono: ui-monospace;
   --font-size-xs: 0.75rem; /* 12px */

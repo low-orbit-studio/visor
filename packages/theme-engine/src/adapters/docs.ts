@@ -86,9 +86,17 @@ function generateTypographyDecls(
 
   // Font families — layer the aliased name before the bare family for any
   // family that this theme emits as a per-theme @font-face.
+  //
+  // VI-355: respect typography.heading.family. The previous hard alias
+  // (`--font-heading: var(--font-sans)`) silently overrode the theme's
+  // intent — e.g. Blacklight maps heading to PP Model Plastic but body
+  // to PP Model Mono, so the docs typography specimen rendered the wrong
+  // font. Fallback to body.family preserves back-compat for themes whose
+  // resolved heading.family happens to match body.family (default state).
+  const headingFamily = config.typography.heading?.family ?? config.typography.body.family;
   decls.push(`--font-display: ${fontStack(config.typography.display.family, aliases)};`);
   decls.push(`--font-sans: ${fontStack(config.typography.body.family, aliases)};`);
-  decls.push(`--font-heading: var(--font-sans);`);
+  decls.push(`--font-heading: ${fontStack(headingFamily, aliases)};`);
   decls.push(`--font-body: ${fontStack(config.typography.body.family, aliases)};`);
   decls.push(`--font-mono: ${fontStack(config.typography.mono.family, aliases)};`);
 
