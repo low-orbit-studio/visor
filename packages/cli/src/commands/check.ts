@@ -1,8 +1,12 @@
 import { Command } from "commander"
+import { statSync } from "fs"
+import { resolve, dirname } from "path"
 import { loadManifest } from "../registry/resolve.js"
 import { getAllCatalogItems, findByName, fuzzyFind } from "../check/catalog.js"
 import { scanJsx } from "../check/jsx-scan.js"
+import { scanDesign, loadVisorRc } from "../check/design.js"
 import { logger } from "../utils/logger.js"
+import pc from "picocolors"
 
 type ItemType = "ui" | "blocks" | "hooks" | "patterns" | "all"
 
@@ -159,6 +163,84 @@ async function checkDiffCommand(
   if (options.failOnHits) process.exit(1)
 }
 
+interface DesignCheckCommandOptions {
+  format?: "json" | "human"
+  errorsOnly?: boolean
+  noFail?: boolean
+  json?: boolean
+}
+
+function checkDesignCommand(
+  pathArg: string,
+  options: DesignCheckCommandOptions
+): void {
+  const absPath = resolve(pathArg)
+
+  // Load per-project .visorrc.json rule toggles from the scanned directory
+  const rcDir = statSync(absPath).isDirectory() ? absPath : dirname(absPath)
+  const rc = loadVisorRc(rcDir)
+
+  const result = scanDesign(absPath, {
+    disabledRules: rc.disabledRules ?? [],
+    errorsOnly: options.errorsOnly ?? false,
+  })
+
+  // Determine output format: --json or --format json → JSON; otherwise human
+  const useJson = options.json || options.format === "json"
+
+  if (useJson) {
+    console.log(JSON.stringify({ success: true, ...result }, null, 2))
+    if (!options.noFail && result.summary.errorCount > 0) process.exit(1)
+    process.exit(0)
+    return
+  }
+
+  // Human output
+  const { errors, warnings, summary } = result
+
+  if (summary.errorCount === 0 && summary.warningCount === 0) {
+    logger.success(`No design anti-patterns found — ${summary.filesScanned} file(s) scanned.`)
+    process.exit(0)
+    return
+  }
+
+  logger.blank()
+  logger.heading(`visor check design — ${summary.filesScanned} file(s) scanned`)
+  logger.blank()
+
+  // Group by file
+  const byFile = new Map<string, typeof errors>()
+  const allFindings = [...errors, ...warnings]
+  for (const f of allFindings) {
+    if (!byFile.has(f.file)) byFile.set(f.file, [])
+    byFile.get(f.file)!.push(f)
+  }
+
+  for (const [file, fileFindings] of byFile) {
+    logger.heading(`  ${file}`)
+    for (const f of fileFindings) {
+      const loc = pc.dim(`${f.line}:`)
+      const badge = f.severity === "error" ? pc.red("error") : pc.yellow("warn ")
+      const ruleName = pc.dim(`[${f.rule}]`)
+      console.log(`    ${loc} ${badge}  ${f.message}  ${ruleName}`)
+      if (f.fix) {
+        console.log(`           ${pc.dim("fix:")} ${pc.cyan(f.fix)}`)
+      }
+    }
+    logger.blank()
+  }
+
+  logger.blank()
+  if (summary.errorCount > 0) {
+    logger.error(`${summary.errorCount} error(s), ${summary.warningCount} warning(s)`)
+  } else {
+    logger.warn(`${summary.warningCount} warning(s) (0 errors)`)
+  }
+  logger.blank()
+
+  if (!options.noFail && summary.errorCount > 0) process.exit(1)
+}
+
 export function checkCommand(): Command {
   const check = new Command("check")
     .description("Check Visor catalog — list items, test existence, scan JSX for native HTML")
@@ -190,6 +272,18 @@ export function checkCommand(): Command {
     .option("--json", "output structured JSON (for AI agents)")
     .action(async (pathArg: string, options: { failOnHits?: boolean; json?: boolean }) => {
       await checkDiffCommand(pathArg, options)
+    })
+
+  check
+    .command("design")
+    .description("Scan frontend code for Borealis design anti-patterns (deterministic, no LLM)")
+    .argument("<path>", "file path or directory to scan")
+    .option("--format <format>", "output format: json or human (default: human when TTY, json otherwise)")
+    .option("--errors-only", "report only error-severity rules (skip warnings)")
+    .option("--no-fail", "do not exit 1 on errors (advisory mode)")
+    .option("--json", "shorthand for --format json")
+    .action((pathArg: string, options: DesignCheckCommandOptions) => {
+      checkDesignCommand(pathArg, options)
     })
 
   return check

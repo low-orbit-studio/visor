@@ -1,0 +1,16 @@
+.card {
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  padding: var(--space-4);
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.card:hover {
+  background: var(--color-surface-hover);
+}
+
+@media (prefers-color-scheme: dark) {
+  .card {
+    background: var(--color-surface-dark);
+  }
+}

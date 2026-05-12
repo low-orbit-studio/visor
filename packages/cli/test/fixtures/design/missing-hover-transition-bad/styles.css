@@ -1,0 +1,11 @@
+.btn {
+  background: var(--color-primary);
+}
+
+.btn:hover {
+  background: var(--color-primary-hover);
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn { background: var(--color-primary-dark); }
+}

@@ -1,0 +1,7 @@
+.text {
+  font-family: Inter, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  .text { color: var(--color-text); }
+}

@@ -1,0 +1,7 @@
+.hero {
+  background: linear-gradient(135deg, purple, white);
+}
+
+@media (prefers-color-scheme: dark) {
+  .hero { background: var(--color-surface); }
+}

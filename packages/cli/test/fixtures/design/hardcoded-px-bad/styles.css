@@ -1,0 +1,8 @@
+.bad {
+  padding: 16px;
+  margin: 24px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .bad { color: var(--color-text); }
+}

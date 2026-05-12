@@ -1,0 +1,11 @@
+.heading {
+  background: linear-gradient(90deg, blue, purple);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  .heading { color: var(--color-text); }
+}
