@@ -22,7 +22,6 @@ import { fileURLToPath } from "node:url"
 import { spawnSync } from "node:child_process"
 
 const PRIVATE_PKG = "@low-orbit-studio/visor-themes-private"
-const PRIVATE_PKG_VERSION = "0.1.1"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const docsRoot = resolve(__dirname, "..")
@@ -56,13 +55,13 @@ function tryInstallPrivatePackage() {
   if (!process.env.GITHUB_PACKAGES_TOKEN) {
     return false
   }
-  console.log(`[generate-private-themes] GITHUB_PACKAGES_TOKEN present — installing ${PRIVATE_PKG}@${PRIVATE_PKG_VERSION}`)
+  console.log(`[generate-private-themes] GITHUB_PACKAGES_TOKEN present — installing ${PRIVATE_PKG}@latest`)
   // --include=dev: Vercel sets NODE_ENV=production during the build, which would
   // make `npm install` prune devDependencies (typescript, @types/*). Force dev
   // deps to stay so the next-build step that follows still has its toolchain.
   const result = spawnSync(
     "npm",
-    ["install", "--no-save", "--include=dev", `${PRIVATE_PKG}@${PRIVATE_PKG_VERSION}`],
+    ["install", "--no-save", "--include=dev", `${PRIVATE_PKG}@latest`],
     { cwd: docsRoot, stdio: "inherit", env: process.env },
   )
   if (result.status !== 0) {
