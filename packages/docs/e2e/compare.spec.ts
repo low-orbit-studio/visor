@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test.describe("Theme Comparator", () => {
   test("/compare page renders without errors", async ({ page }) => {
     await page.goto("/compare");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
 
     // Page title should be visible
     await expect(page.locator("h1")).toContainText("Theme Comparator");
@@ -15,7 +15,7 @@ test.describe("Theme Comparator", () => {
 
   test("changing theme dropdowns updates iframe src", async ({ page }) => {
     await page.goto("/compare");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
 
     // Get initial iframe srcs
     const firstIframe = page.locator("iframe").first();
@@ -33,18 +33,19 @@ test.describe("Theme Comparator", () => {
   });
 
   test("URL params round-trip correctly", async ({ page }) => {
-    // Navigate with specific params
+    // Navigate with specific params. Stock-theme slugs only so the test works
+    // against the public docs build with no private-themes package installed.
     await page.goto(
-      "/compare?tl=kaiah&tlMode=dark&tr=blackout&trMode=light&bl=neutral&blMode=dark&br=space&brMode=light"
+      "/compare?tl=borderless&tlMode=dark&tr=blackout&trMode=light&bl=neutral&blMode=dark&br=space&brMode=light"
     );
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
 
     const iframes = page.locator("iframe");
 
     // Check each iframe has the correct theme/mode
     await expect(iframes.nth(0)).toHaveAttribute(
       "src",
-      "/compare/panel?theme=kaiah&mode=dark"
+      "/compare/panel?theme=borderless&mode=dark"
     );
     await expect(iframes.nth(1)).toHaveAttribute(
       "src",
@@ -63,17 +64,17 @@ test.describe("Theme Comparator", () => {
   test("panel route renders specimen with correct theme class on body", async ({
     page,
   }) => {
-    await page.goto("/compare/panel?theme=kaiah&mode=dark");
-    await page.waitForLoadState("networkidle");
+    await page.goto("/compare/panel?theme=borderless&mode=dark");
+    await page.waitForLoadState("domcontentloaded");
 
     // Wait for the client-side effect to apply the theme class
     await page.waitForFunction(
-      () => document.body.classList.contains("kaiah-theme"),
+      () => document.body.classList.contains("borderless-theme"),
       { timeout: 10000 }
     );
 
     const bodyClass = await page.evaluate(() => document.body.className);
-    expect(bodyClass).toContain("kaiah-theme");
+    expect(bodyClass).toContain("borderless-theme");
 
     // Check html has dark class
     const htmlClass = await page.evaluate(
