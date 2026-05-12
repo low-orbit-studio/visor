@@ -17,7 +17,7 @@ export default function PrivateThemesPage() {
   }
 
   return (
-    <div className={`${styles.page} ${PRIVATE_THEMES[0].slug}-theme`}>
+    <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.titleGroup}>
           <h1 className={styles.title}>Private theme gallery</h1>

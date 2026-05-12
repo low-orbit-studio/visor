@@ -32,6 +32,12 @@ const STOCK_GROUPS: ThemeGroup[] = [
 ];
 /* END visor-stock-themes */
 
+// Re-exported outside the managed block so `visor theme sync` (which rewrites
+// the block above) doesn't strip the export. Consumers like /themes/private
+// import STOCK_GROUPS directly to avoid the customThemeGroups overlap with
+// PRIVATE_THEMES.
+export { STOCK_GROUPS };
+
 export const THEME_GROUPS: ThemeGroup[] = [...STOCK_GROUPS, ...customThemeGroups];
 
 export const ALL_THEMES = THEME_GROUPS.flatMap((g) => g.themes.map((t) => t.value));
@@ -61,6 +67,11 @@ export function applyMode(mode: ColorMode) {
   try { localStorage.setItem(COLOR_MODE_STORAGE_KEY, mode); } catch {}
 }
 
+// Strips any `*-theme` class, including private-only slugs (animal, blacklight,
+// etc.) that aren't in ALL_THEMES. Without this, switching from a private theme
+// to a stock theme on /themes/private leaves both classes co-applied (VI-351).
+const THEME_CLASS_PATTERN = /(^|\s)[\w-]+-theme(?=\s|$)/g;
+
 /**
  * Apply a theme by swapping the `*-theme` class on <body>. Persists to localStorage
  * and dispatches a `visor-theme-change` event so listeners can react. If the theme
@@ -69,9 +80,7 @@ export function applyMode(mode: ColorMode) {
 export function applyTheme(theme: string) {
   if (typeof document === "undefined") return;
   const body = document.body;
-  for (const t of ALL_THEMES) {
-    body.classList.remove(`${t}-theme`);
-  }
+  body.className = body.className.replace(THEME_CLASS_PATTERN, "").trim();
   body.classList.add(`${theme}-theme`);
   try {
     localStorage.setItem(THEME_STORAGE_KEY, theme);

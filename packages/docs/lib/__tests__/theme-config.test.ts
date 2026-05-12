@@ -1,8 +1,14 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { readFileSync, readdirSync } from "fs";
 import { resolve } from "path";
 import { parse } from "yaml";
-import { THEME_GROUPS, ALL_THEMES } from "../theme-config";
+import {
+  THEME_GROUPS,
+  ALL_THEMES,
+  STOCK_GROUPS,
+  applyTheme,
+  THEME_STORAGE_KEY,
+} from "../theme-config";
 import { customThemeGroups } from "../theme-config.custom.generated";
 
 describe("theme-config", () => {
@@ -29,6 +35,16 @@ describe("theme-config", () => {
     expect(unique.size).toBe(ALL_THEMES.length);
   });
 
+  it("exports STOCK_GROUPS as the prefix of THEME_GROUPS (no custom groups)", () => {
+    // STOCK_GROUPS must be the stock-only prefix so callers (like /themes/private)
+    // can avoid the overlap between customThemeGroups and PRIVATE_THEMES (VI-351).
+    expect(STOCK_GROUPS.length).toBeGreaterThanOrEqual(1);
+    expect(STOCK_GROUPS.length).toBe(THEME_GROUPS.length - customThemeGroups.length);
+    for (let i = 0; i < STOCK_GROUPS.length; i++) {
+      expect(THEME_GROUPS[i]).toBe(STOCK_GROUPS[i]);
+    }
+  });
+
   it("THEME_GROUPS merges STOCK_GROUPS with customThemeGroups", () => {
     // Import STOCK_GROUPS indirectly: THEME_GROUPS = [...STOCK_GROUPS, ...customThemeGroups]
     // If customThemeGroups is empty, THEME_GROUPS.length == STOCK_GROUPS.length (≥1)
@@ -39,6 +55,63 @@ describe("theme-config", () => {
     for (const customGroup of customThemeGroups) {
       expect(THEME_GROUPS.some((g) => g.label === customGroup.label)).toBe(true);
     }
+  });
+});
+
+describe("applyTheme", () => {
+  beforeEach(() => {
+    document.body.className = "";
+    try { localStorage.removeItem(THEME_STORAGE_KEY); } catch {}
+  });
+
+  afterEach(() => {
+    document.body.className = "";
+    try { localStorage.removeItem(THEME_STORAGE_KEY); } catch {}
+  });
+
+  it("adds the new theme class to body", () => {
+    applyTheme("blackout");
+    expect(document.body.classList.contains("blackout-theme")).toBe(true);
+  });
+
+  it("removes the prior theme class when switching", () => {
+    document.body.classList.add("blackout-theme");
+    applyTheme("space");
+    expect(document.body.classList.contains("blackout-theme")).toBe(false);
+    expect(document.body.classList.contains("space-theme")).toBe(true);
+  });
+
+  it("persists the active theme to localStorage", () => {
+    applyTheme("neutral");
+    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe("neutral");
+  });
+
+  it("dispatches a visor-theme-change event", () => {
+    const handler = vi.fn();
+    document.addEventListener("visor-theme-change", handler);
+    applyTheme("borderless");
+    expect(handler).toHaveBeenCalledTimes(1);
+    document.removeEventListener("visor-theme-change", handler);
+  });
+
+  it("preserves unrelated body classes that do not end in -theme", () => {
+    document.body.classList.add("some-app-class", "dark", "fonts-loaded");
+    applyTheme("blackout");
+    expect(document.body.classList.contains("some-app-class")).toBe(true);
+    expect(document.body.classList.contains("dark")).toBe(true);
+    expect(document.body.classList.contains("fonts-loaded")).toBe(true);
+    expect(document.body.classList.contains("blackout-theme")).toBe(true);
+  });
+
+  it("strips any *-theme class, including unknown private slugs", () => {
+    // Regression guard (VI-351): private theme slugs aren't in ALL_THEMES,
+    // so applyTheme must use a class-shape match (not a known-slug iterator)
+    // to avoid leaving stale private theme classes on body.
+    document.body.classList.add("animal-theme", "some-future-theme");
+    applyTheme("blackout");
+    expect(document.body.classList.contains("animal-theme")).toBe(false);
+    expect(document.body.classList.contains("some-future-theme")).toBe(false);
+    expect(document.body.classList.contains("blackout-theme")).toBe(true);
   });
 });
 
