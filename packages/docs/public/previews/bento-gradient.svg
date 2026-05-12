@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2100 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="35%" stop-color="#3730a3"/>
+      <stop offset="70%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#db2777"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="0.78" cy="0.22" r="0.55">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="0.2" cy="0.75" r="0.55">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="2100" height="900" fill="url(#g)"/>
+  <rect width="2100" height="900" fill="url(#glow1)"/>
+  <rect width="2100" height="900" fill="url(#glow2)"/>
+  <g fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1">
+    <line x1="0" y1="180" x2="2100" y2="180"/>
+    <line x1="0" y1="360" x2="2100" y2="360"/>
+    <line x1="0" y1="540" x2="2100" y2="540"/>
+    <line x1="0" y1="720" x2="2100" y2="720"/>
+  </g>
+</svg>

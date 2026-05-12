@@ -137,8 +137,8 @@ customization:
       default: '1.04'
       description: Image scale on tile hover. Set to 1 to disable.
     - name: --bento-tile-lift-hover
-      default: '-3px'
-      description: Vertical translate on anchor-tile hover.
+      default: '0px'
+      description: Optional vertical translate on anchor-tile hover. Default is 0 — the canonical hover affordance is the image scale and box-shadow bump. Consumers can opt in to a tile lift by overriding this slot (e.g. -3px).
 
 dependencies:
   - "@loworbitstudio/visor-core"

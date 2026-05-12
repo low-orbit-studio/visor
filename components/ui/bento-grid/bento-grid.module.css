@@ -64,7 +64,9 @@
   --bento-tile-body-gap: var(--spacing-2, 0.5rem); /* 8px between meta / title / description */
   --bento-tile-radius: var(--radius-lg, 0.75rem);
   --bento-tile-media-scale-hover: 1.04;
-  --bento-tile-lift-hover: -3px;
+  /* Default is no lift — hover affordance is the media scale + shadow bump.
+     Consumers can opt in by overriding this slot (e.g. -3px). */
+  --bento-tile-lift-hover: 0px;
 
   position: relative;
   display: flex;
@@ -111,9 +113,12 @@ a.bentoTile {
   cursor: pointer;
 }
 
+/* The hover affordance is the image scale (on .bentoTileMedia) and the
+   box-shadow bump here. Tile lift is opt-in via the --bento-tile-lift-hover
+   slot, default 0 — text and eyebrow do NOT shift by default. */
 a.bentoTile:hover {
   box-shadow: var(--shadow-md);
-  transform: translateY(var(--bento-tile-lift-hover));
+  transform: translateY(var(--bento-tile-lift-hover, 0px));
 }
 
 a.bentoTile:focus-visible {
@@ -186,14 +191,19 @@ a.bentoTile:focus-visible {
   height: 100%;
 }
 
-/* When the parent tile is contain mode, media uses object-fit: contain. The
-   hover zoom is suppressed because contain media has letterboxed margins. */
-.bentoTileContain .bentoTileMedia {
-  object-fit: contain;
+/* Contain mode in stacked layout — the media slot drops its aspect-ratio
+   enforcement so the image's natural dimensions dictate the slot height.
+   No letterboxing; the body sits directly under the image. */
+.bentoTileStacked.bentoTileContain .bentoTileMedia {
+  aspect-ratio: auto;
+  height: auto;
+  object-fit: initial;
 }
 
-.bentoTileContain:hover .bentoTileMedia {
-  transform: none;
+/* Contain in overlay mode keeps the tile's aspect ratio (the tile is the
+   container), so we still need object-fit: contain to letterbox inside. */
+.bentoTileOverlay.bentoTileContain .bentoTileMedia {
+  object-fit: contain;
 }
 
 /* ---------------------------------------------------------------------------

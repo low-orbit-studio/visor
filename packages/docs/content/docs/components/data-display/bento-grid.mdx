@@ -190,11 +190,11 @@ A fully responsive asymmetric grid — collapses to 1 column on mobile, 2 on med
 
 <ComponentPreview
   title="Mixed tile variants on one grid"
-  code={"<BentoGrid cols={{ base: 1, md: 2 }} gap=\"4\" reveal>\n  {/* Headline tile — no media, just statement copy */}\n  <BentoTile span=\"full\" aspect=\"21/9\" layout=\"overlay\">\n    <BentoTileMedia src=\"/previews/bento-hero.svg\" alt=\"\" />\n    <BentoTileBody>\n      <BentoTileMeta items={['Manifesto']} />\n      <BentoTileHeadline>The fastest way to ship marketing-grade UI.</BentoTileHeadline>\n    </BentoTileBody>\n  </BentoTile>\n\n  {/* Figure tile — large number instead of an image */}\n  <BentoTile span=\"half\" aspect=\"4/3\">\n    <BentoTileFigure>\n      <span style={{ fontSize: '6rem', fontWeight: 700, letterSpacing: '-0.04em', color: 'var(--interactive-primary-bg)' }}>+92%</span>\n    </BentoTileFigure>\n    <BentoTileBody>\n      <BentoTileMeta items={['Conversion', 'Q1 2026']} />\n      <BentoTileTitle>Hero CTR uplift</BentoTileTitle>\n      <BentoTileDescription>\n        Marketing-grade primitives lifted the homepage click-through rate from 4.1% to 7.9%.\n      </BentoTileDescription>\n    </BentoTileBody>\n  </BentoTile>\n\n  {/* Text tile — no media, body-only */}\n  <BentoTile span=\"half\" aspect=\"4/3\">\n    <BentoTileBody>\n      <BentoTileMeta items={['Note', '2026']} />\n      <BentoTileTitle>What's a bento?</BentoTileTitle>\n      <BentoTileDescription>\n        Asymmetric tile grids descended from the Apple WWDC 2022 design language — mixed weights, aspect ratios, and spans inside a single grid scaffolding.\n      </BentoTileDescription>\n    </BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
+  code={"<BentoGrid cols={{ base: 1, md: 2 }} gap=\"4\" reveal>\n  {/* Headline tile — gradient-only media, headline IS the content */}\n  <BentoTile span=\"full\" aspect=\"21/9\" layout=\"overlay\">\n    <BentoTileMedia src=\"/previews/bento-gradient.svg\" alt=\"\" />\n    <BentoTileBody>\n      <BentoTileMeta items={['Manifesto']} />\n      <BentoTileHeadline>The fastest way to ship marketing-grade UI.</BentoTileHeadline>\n    </BentoTileBody>\n  </BentoTile>\n\n  {/* Figure tile — large number instead of an image */}\n  <BentoTile span=\"half\" aspect=\"4/3\">\n    <BentoTileFigure>\n      <span style={{ fontSize: '6rem', fontWeight: 700, letterSpacing: '-0.04em', color: 'var(--interactive-primary-bg)' }}>+92%</span>\n    </BentoTileFigure>\n    <BentoTileBody>\n      <BentoTileMeta items={['Conversion', 'Q1 2026']} />\n      <BentoTileTitle>Hero CTR uplift</BentoTileTitle>\n      <BentoTileDescription>\n        Marketing-grade primitives lifted the homepage click-through rate from 4.1% to 7.9%.\n      </BentoTileDescription>\n    </BentoTileBody>\n  </BentoTile>\n\n  {/* Project tile — media + meta + title (with arrow) + description */}\n  <BentoTile span=\"half\" aspect=\"4/3\" href=\"https://animal.la/\" target=\"_blank\">\n    <BentoTileMedia src=\"/previews/bento-tile-b.svg\" alt=\"Animal LA\" />\n    <BentoTileBody>\n      <BentoTileMeta items={['Web', 'Arts District']} />\n      <BentoTileTitle showArrow>Animal LA</BentoTileTitle>\n      <BentoTileDescription>\n        Same animal, west coast. Coming summer 2026 to the LA Arts District.\n      </BentoTileDescription>\n    </BentoTileBody>\n  </BentoTile>\n\n  {/* Text tile — no media, body-only */}\n  <BentoTile span=\"full\">\n    <BentoTileBody>\n      <BentoTileMeta items={['Note', '2026']} />\n      <BentoTileTitle>What's a bento?</BentoTileTitle>\n      <BentoTileDescription>\n        Asymmetric tile grids descended from the Apple WWDC 2022 design language — mixed weights, aspect ratios, and spans inside a single grid scaffolding.\n      </BentoTileDescription>\n    </BentoTileBody>\n  </BentoTile>\n</BentoGrid>"}
 >
   <BentoGrid cols={{ base: 1, md: 2 }} gap="4" reveal>
     <BentoTile span="full" aspect="21/9" layout="overlay">
-      <BentoTileMedia src="/previews/bento-hero.svg" alt="" />
+      <BentoTileMedia src="/previews/bento-gradient.svg" alt="" />
       <BentoTileBody>
         <BentoTileMeta items={['Manifesto']} />
         <BentoTileHeadline>The fastest way to ship marketing-grade UI.</BentoTileHeadline>
@@ -212,7 +212,17 @@ A fully responsive asymmetric grid — collapses to 1 column on mobile, 2 on med
         </BentoTileDescription>
       </BentoTileBody>
     </BentoTile>
-    <BentoTile span="half" aspect="4/3">
+    <BentoTile span="half" aspect="4/3" href="https://animal.la/" target="_blank">
+      <BentoTileMedia src="/previews/bento-tile-b.svg" alt="Animal LA" />
+      <BentoTileBody>
+        <BentoTileMeta items={['Web', 'Arts District']} />
+        <BentoTileTitle showArrow>Animal LA</BentoTileTitle>
+        <BentoTileDescription>
+          Same animal, west coast. Coming summer 2026 to the LA Arts District.
+        </BentoTileDescription>
+      </BentoTileBody>
+    </BentoTile>
+    <BentoTile span="full">
       <BentoTileBody>
         <BentoTileMeta items={['Note', '2026']} />
         <BentoTileTitle>What's a bento?</BentoTileTitle>
@@ -353,7 +363,7 @@ Each tile (`.bentoTile`) exposes the following CSS custom properties. Override p
 | `--bento-tile-body-padding` | `clamp(1rem, 2vw, 1.75rem)` | Body padding |
 | `--bento-tile-body-gap` | `var(--spacing-3)` | Gap between meta / title / description |
 | `--bento-tile-media-scale-hover` | `1.04` | Image scale on tile hover (set to `1` to disable) |
-| `--bento-tile-lift-hover` | `-3px` | Vertical translate on anchor-tile hover |
+| `--bento-tile-lift-hover` | `0px` | Optional vertical translate on anchor-tile hover. Default `0` — canonical affordance is the image scale + shadow bump. Override to e.g. `-3px` to opt in. |
 
 ## Sub-components
 
