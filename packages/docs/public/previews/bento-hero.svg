@@ -24,8 +24,4 @@
     <line x1="0" y1="540" x2="2100" y2="540"/>
     <line x1="0" y1="720" x2="2100" y2="720"/>
   </g>
-  <g font-family="system-ui, -apple-system, Helvetica, Arial, sans-serif" fill="#f8fafc">
-    <text x="80" y="640" font-size="160" font-weight="700" letter-spacing="-4">Knowmentum</text>
-    <text x="84" y="720" font-size="28" font-weight="500" fill="#c4b5fd" letter-spacing="4">KNOWLEDGE · PLATFORM · 2026</text>
-  </g>
 </svg>
