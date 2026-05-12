@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test.describe("Theme Comparator", () => {
   test("/compare page renders without errors", async ({ page }) => {
     await page.goto("/compare");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
 
     // Page title should be visible
     await expect(page.locator("h1")).toContainText("Theme Comparator");
@@ -15,7 +15,7 @@ test.describe("Theme Comparator", () => {
 
   test("changing theme dropdowns updates iframe src", async ({ page }) => {
     await page.goto("/compare");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
 
     // Get initial iframe srcs
     const firstIframe = page.locator("iframe").first();
@@ -38,7 +38,7 @@ test.describe("Theme Comparator", () => {
     await page.goto(
       "/compare?tl=borderless&tlMode=dark&tr=blackout&trMode=light&bl=neutral&blMode=dark&br=space&brMode=light"
     );
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
 
     const iframes = page.locator("iframe");
 
@@ -65,7 +65,7 @@ test.describe("Theme Comparator", () => {
     page,
   }) => {
     await page.goto("/compare/panel?theme=borderless&mode=dark");
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState("domcontentloaded");
 
     // Wait for the client-side effect to apply the theme class
     await page.waitForFunction(
