@@ -1,5 +1,5 @@
 @font-face {
-  font-family: "Product Sans";
+  font-family: "Product Sans [modern-minimal]";
   src: url("https://fonts.visor.design/low-orbit-studio/product-sans/ProductSans-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
@@ -7,7 +7,7 @@
 }
 
 @font-face {
-  font-family: "Product Sans";
+  font-family: "Product Sans [modern-minimal]";
   src: url("https://fonts.visor.design/low-orbit-studio/product-sans/ProductSans-Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
@@ -122,10 +122,10 @@
 
 /* --- Primitive: Typography --- */
 .modern-minimal-theme {
-  --font-display: Product Sans;
-  --font-sans: Product Sans;
+  --font-display: "Product Sans [modern-minimal]", "Product Sans";
+  --font-sans: "Product Sans [modern-minimal]", "Product Sans";
   --font-heading: var(--font-sans);
-  --font-body: Product Sans;
+  --font-body: "Product Sans [modern-minimal]", "Product Sans";
   --font-mono: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
   --font-size-xs: 0.75rem; /* 12px */
   --font-size-sm: 0.875rem; /* 14px */

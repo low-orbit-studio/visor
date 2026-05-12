@@ -13,6 +13,15 @@ import type {
   ColorRole,
 } from "./types.js";
 import { FULL_SHADE_STEPS, SELECTIVE_SHADE_STEPS } from "./shades.js";
+import {
+  EMPTY_ALIASES,
+  fontStack,
+  type AliasedFamilies,
+} from "./fonts/theme-alias.js";
+
+// Re-export so `nextjsAdapter` and other consumers can keep importing the
+// `AliasedFamilies` type alongside `generatePrimitivesCss` from this module.
+export type { AliasedFamilies } from "./fonts/theme-alias.js";
 
 // ============================================================
 // Helpers
@@ -124,19 +133,23 @@ function generateShadowPrimitives(config: ResolvedThemeConfig): string[] {
   ];
 }
 
-function generateTypographyPrimitives(config: ResolvedThemeConfig): string[] {
+function generateTypographyPrimitives(
+  config: ResolvedThemeConfig,
+  aliases: AliasedFamilies = EMPTY_ALIASES,
+): string[] {
   const decls: string[] = [];
 
   // Font-size scale — applied to wrapper/root, cascades to em-relative elements
   const scale = config.typography.scale;
   decls.push(`font-size: ${scale === 1 ? "1rem" : `${scale}rem`};`);
 
-  // Font families
-  decls.push(`--font-heading: ${config.typography.heading.family};`);
-  decls.push(`--font-display: ${config.typography.display.family};`);
-  decls.push(`--font-sans: ${config.typography.body.family};`);
-  decls.push(`--font-body: ${config.typography.body.family};`);
-  decls.push(`--font-mono: ${config.typography.mono.family};`);
+  // Font families — layer the aliased name before the bare family for any
+  // family the theme emits as a per-theme @font-face (see VI-354).
+  decls.push(`--font-heading: ${fontStack(config.typography.heading.family, aliases)};`);
+  decls.push(`--font-display: ${fontStack(config.typography.display.family, aliases)};`);
+  decls.push(`--font-sans: ${fontStack(config.typography.body.family, aliases)};`);
+  decls.push(`--font-body: ${fontStack(config.typography.body.family, aliases)};`);
+  decls.push(`--font-mono: ${fontStack(config.typography.mono.family, aliases)};`);
 
   // Font sizes (matching Visor defaults — not configurable via .visor.yaml yet)
   const fontSizes: Record<string, number> = {
@@ -224,7 +237,8 @@ function generateMiscPrimitives(): string[] {
 
 export function generatePrimitivesCss(
   primitives: GeneratedPrimitives,
-  config: ResolvedThemeConfig
+  config: ResolvedThemeConfig,
+  options?: { aliasedFamilies?: AliasedFamilies },
 ): string {
   const lines: string[] = [];
 
@@ -240,7 +254,7 @@ export function generatePrimitivesCss(
   lines.push(block(":root", generateRadiusPrimitives(config)));
 
   lines.push(sectionComment("Primitive: Typography"));
-  lines.push(block(":root", generateTypographyPrimitives(config)));
+  lines.push(block(":root", generateTypographyPrimitives(config, options?.aliasedFamilies)));
 
   lines.push(sectionComment("Primitive: Shadows"));
   lines.push(block(":root", generateShadowPrimitives(config)));
