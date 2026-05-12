@@ -141,6 +141,10 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
       mono: {
         family:
           config.typography?.mono?.family ?? DEFAULTS.typography.mono.family,
+        ...(config.typography?.mono?.weight && { weight: config.typography.mono.weight }),
+        ...(config.typography?.mono?.weights && { weights: config.typography.mono.weights }),
+        ...(config.typography?.mono?.source && { source: config.typography.mono.source }),
+        ...(config.typography?.mono?.org && { org: config.typography.mono.org }),
       },
       slots: config.typography?.slots ?? {},
     },
