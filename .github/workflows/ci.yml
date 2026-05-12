@@ -123,12 +123,70 @@ jobs:
           npm run pretest
           npx vitest run --shard=$SHARD/4
 
-      # Visual regression tests disabled — pages not yet stable enough for baselines.
-      # Re-enable when docs site pages are finalized. See roadmap.
-      # - name: Install Playwright browsers
-      #   run: npx playwright install --with-deps
-      # - name: Visual regression tests
-      #   run: npm run test:vr -w packages/docs
+      # Per-theme visual regression runs in its own job — see
+      # `visual-regression` below. Keeping it out of the shard matrix avoids
+      # paying the Playwright browser install cost on every shard.
+
+  visual-regression:
+    name: Visual regression (per-theme)
+    needs: changes
+    if: needs.changes.outputs.docs == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build workspace packages
+        run: npm run build -w packages/theme-engine -w packages/tokens
+
+      - name: Install Playwright browsers (chromium only)
+        run: npx playwright install --with-deps chromium
+
+      # Generate the theme overlay + private-theme manifest BEFORE Playwright
+      # parses the test files. The VR spec imports `lib/private-themes` at
+      # module-load time, so the generated TS must exist on disk first. The
+      # docs predev hook will re-run inside Playwright's webServer, but by
+      # then it's too late for the import.
+      - name: Generate theme manifests
+        env:
+          # When set, install @low-orbit-studio/visor-themes-private and
+          # snapshot private themes too. On community PRs the secret is empty
+          # and only stock themes are exercised — still a meaningful gate.
+          GITHUB_PACKAGES_TOKEN: ${{ secrets.GITHUB_PACKAGES_TOKEN }}
+        run: |
+          node packages/docs/scripts/ensure-theme-overlays.mjs
+          node packages/docs/scripts/generate-private-themes.mjs
+
+      - name: Run per-theme VR suite
+        env:
+          GITHUB_PACKAGES_TOKEN: ${{ secrets.GITHUB_PACKAGES_TOKEN }}
+        run: npm run test:vr -w packages/docs
+
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: packages/docs/playwright-report/
+          retention-days: 14
+
+      - name: Upload test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: packages/docs/test-results/
+          retention-days: 14
 
   # Aggregator job: keeps the "Build & Test" check name stable for branch
   # protection rules that predate the matrix split (VI-171).
