@@ -60,13 +60,15 @@ export function nextjsAdapter(
       }
     }
 
-    const googleFonts = [fontResult.heading, fontResult.display, fontResult.body, fontResult.mono].filter(
-      (r): r is NonNullable<typeof r> => r !== null && r.source === "google-fonts",
+    const hostedCssFonts = [fontResult.heading, fontResult.display, fontResult.body, fontResult.mono].filter(
+      (r): r is NonNullable<typeof r> =>
+        r !== null && (r.source === "google-fonts" || r.source === "fontshare"),
     );
 
-    // Deduplicate by CSS URL
+    // Deduplicate by CSS URL — both google-fonts and fontshare resolutions
+    // carry a cssUrl that adapters render as @import.
     const seenUrls = new Set<string>();
-    for (const font of googleFonts) {
+    for (const font of hostedCssFonts) {
       if (font?.cssUrl && !seenUrls.has(font.cssUrl)) {
         seenUrls.add(font.cssUrl);
         lines.push(`@import url("${font.cssUrl}");`);

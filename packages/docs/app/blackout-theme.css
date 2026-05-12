@@ -1,18 +1,4 @@
-@font-face {
-  font-family: "Satoshi [blackout]";
-  src: url("https://fonts.visor.design/low-orbit-studio/satoshi/Satoshi-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Satoshi [blackout]";
-  src: url("https://fonts.visor.design/low-orbit-studio/satoshi/Satoshi-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
+@import url("https://api.fontshare.com/v2/css?f[]=satoshi@400,700&display=swap");
 
 @layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;
 
@@ -122,10 +108,10 @@
 
 /* --- Primitive: Typography --- */
 .blackout-theme {
-  --font-display: "Satoshi [blackout]", "Satoshi";
-  --font-sans: "Satoshi [blackout]", "Satoshi";
+  --font-display: Satoshi;
+  --font-sans: Satoshi;
   --font-heading: var(--font-sans);
-  --font-body: "Satoshi [blackout]", "Satoshi";
+  --font-body: Satoshi;
   --font-mono: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
   --font-size-xs: 0.75rem; /* 12px */
   --font-size-sm: 0.875rem; /* 14px */

@@ -5,7 +5,12 @@
  * and preloading critical font files.
  */
 
-import { VISOR_FONTS_CDN, buildVisorFontUrl } from "./resolve.js";
+import {
+  VISOR_FONTS_CDN,
+  FONTSHARE_API_ORIGIN,
+  FONTSHARE_CDN_ORIGIN,
+  buildVisorFontUrl,
+} from "./resolve.js";
 import type { FontResolution } from "./types.js";
 
 const GOOGLE_FONTS_ORIGIN = "https://fonts.googleapis.com";
@@ -67,6 +72,23 @@ export function generatePreloadLinks(
     }
   }
 
+  // Fontshare preconnect + preload
+  const hasFontshare = resolutions.some((r) => r.source === "fontshare");
+  if (hasFontshare) {
+    links.push(`<link rel="preconnect" href="${FONTSHARE_API_ORIGIN}">`);
+    links.push(
+      `<link rel="preconnect" href="${FONTSHARE_CDN_ORIGIN}" crossorigin>`
+    );
+
+    for (const resolution of resolutions) {
+      if (resolution.source === "fontshare" && resolution.cssUrl) {
+        links.push(
+          `<link rel="preload" as="style" href="${resolution.cssUrl}">`
+        );
+      }
+    }
+  }
+
   // Local font file preloads
   if (customFontPaths) {
     for (const resolution of resolutions) {
@@ -96,7 +118,10 @@ export function generateStylesheetLinks(
   const links: string[] = [];
 
   for (const resolution of resolutions) {
-    if (resolution.source === "google-fonts" && resolution.cssUrl) {
+    if (
+      (resolution.source === "google-fonts" || resolution.source === "fontshare") &&
+      resolution.cssUrl
+    ) {
       links.push(
         `<link rel="stylesheet" href="${resolution.cssUrl}">`
       );

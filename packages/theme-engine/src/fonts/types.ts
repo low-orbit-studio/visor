@@ -3,7 +3,7 @@
  */
 
 /** Where a font is loaded from */
-export type FontSource = "google-fonts" | "visor-fonts" | "local";
+export type FontSource = "google-fonts" | "visor-fonts" | "fontshare" | "local";
 
 /** CSS font-display strategy */
 export type FontDisplayStrategy =
@@ -19,7 +19,7 @@ export interface FontResolution {
   family: string;
   /** Where this font comes from */
   source: FontSource;
-  /** Google Fonts CSS URL (only for google-fonts source) */
+  /** Hosted CSS URL (only for google-fonts or fontshare sources) */
   cssUrl: string | null;
   /** Weights available/requested for this font */
   weights: number[];

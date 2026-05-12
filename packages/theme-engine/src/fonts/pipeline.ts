@@ -46,6 +46,23 @@ function generateFontCSS(
     lines.push("");
   }
 
+  // Fontshare stylesheet imports (as CSS comments for reference). Adapters
+  // emit the real @import; this block parallels google-fonts so a raw
+  // pipeline consumer can see which Fontshare endpoints to load.
+  const fontshareFonts = allSlots.filter(
+    (r): r is FontResolution => r !== null && r.source === "fontshare"
+  );
+  const seenFontshareUrls = new Set<string>();
+  if (fontshareFonts.length > 0) {
+    lines.push("/* Fontshare — load these stylesheets in your HTML <head> */");
+    for (const font of fontshareFonts) {
+      if (!font.cssUrl || seenFontshareUrls.has(font.cssUrl)) continue;
+      seenFontshareUrls.add(font.cssUrl);
+      lines.push(`/* ${font.cssUrl} */`);
+    }
+    lines.push("");
+  }
+
   // Visor Fonts @font-face declarations (real, not placeholders)
   const visorFonts = allSlots.filter(
     (r): r is FontResolution => r !== null && r.source === "visor-fonts"
