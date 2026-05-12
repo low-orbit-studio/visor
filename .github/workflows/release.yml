@@ -53,10 +53,27 @@ jobs:
           } >> "$GITHUB_OUTPUT"
           echo "Computed title: $TITLE"
 
+      - name: Detect pending changesets
+        # Discriminator between the publish path and the PR-refresh path.
+        # Pending `.changeset/*.md` files on main mean Changesets has work to
+        # consume into a Version Packages PR — that path doesn't publish, so
+        # the drift gate below is skipped. Zero pending changesets means the
+        # Version Packages PR just merged and we're about to publish — gate runs.
+        # No untrusted input is read here; `find` only inspects repo filesystem state.
+        # See: VI-361
+        id: changesets
+        run: |
+          PENDING=$(find .changeset -maxdepth 1 -name '*.md' ! -name 'README.md' 2>/dev/null | wc -l | tr -d ' ')
+          echo "pending=$PENDING" >> "$GITHUB_OUTPUT"
+          echo "Pending changesets: $PENDING"
+
       - name: Check export-surface drift
         # Gate: fail before publish if a workspace downstream imports a symbol
         # that the resolved upstream tarball does not export.
-        # See: docs/wisdom/W020-publish-coordination-drift.md (VI-337)
+        # Runs only on the publish path (no pending changesets) — the
+        # PR-refresh path doesn't push to npm and shouldn't be gated.
+        # See: docs/wisdom/W020-publish-coordination-drift.md (VI-337, VI-361)
+        if: steps.changesets.outputs.pending == '0'
         run: node scripts/check-export-drift.mjs
 
       - name: Create Release Pull Request or Publish
