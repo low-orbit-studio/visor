@@ -121,6 +121,71 @@ typography:
     expect(validateFontCoverage(css).errors).toEqual([]);
   });
 
+  it("treats Fontshare @import as coverage for the imported family", () => {
+    const css = `
+      @import url("https://api.fontshare.com/v2/css?f[]=satoshi@400,700&display=swap");
+
+      .theme {
+        --font-heading: "Satoshi", sans-serif;
+        --font-body: Satoshi, sans-serif;
+      }
+    `;
+    expect(validateFontCoverage(css).errors).toEqual([]);
+  });
+
+  it("decodes hyphenated Fontshare slugs back to multi-word families", () => {
+    const css = `
+      @import url("https://api.fontshare.com/v2/css?f[]=clash-display@400,700&display=swap");
+      .theme { --font-heading: "Clash Display", sans-serif; }
+    `;
+    expect(validateFontCoverage(css).errors).toEqual([]);
+  });
+
+  it("treats Fontshare @import as coverage even when the URL uses %5B%5D encoding", () => {
+    const css = `
+      @import url("https://api.fontshare.com/v2/css?f%5B%5D=satoshi@400&display=swap");
+      .theme { --font-heading: "Satoshi", sans-serif; }
+    `;
+    expect(validateFontCoverage(css).errors).toEqual([]);
+  });
+
+  it("flags a Satoshi declaration with no Fontshare @import (negative case)", () => {
+    const css = `
+      .theme { --font-heading: "Satoshi", sans-serif; }
+    `;
+    const result = validateFontCoverage(css);
+    expect(result.errors.some((e) => e.family === "Satoshi")).toBe(true);
+  });
+
+  it("passes after the VI-359 fix via docsAdapter (source: fontshare)", () => {
+    const yaml = `
+name: blackout-fontshare
+version: 1
+group: Visor
+colors:
+  primary: "#666666"
+  neutral: "#333333"
+typography:
+  heading:
+    family: Satoshi
+    weight: 700
+    source: fontshare
+  body:
+    family: Satoshi
+    weight: 400
+    source: fontshare
+`;
+    const data = generateThemeData(yaml);
+    const css = docsAdapter({
+      primitives: data.primitives,
+      tokens: data.tokens,
+      config: data.config,
+    });
+    const result = validateFontCoverage(css);
+    expect(result.errors).toEqual([]);
+    expect(css).toMatch(/@import url\("https:\/\/api\.fontshare\.com\/v2\/css\?f\[\]=satoshi@/);
+  });
+
   it("passes after the VI-358 fix via docsAdapter (source: visor-fonts)", () => {
     const yaml = `
 name: blackout-fixed

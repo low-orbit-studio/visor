@@ -23,6 +23,11 @@ const FONT_FACE_RE = /@font-face\s*\{[^}]*\}/g;
 const FONT_FAMILY_DECL_RE = /font-family\s*:\s*([^;]+);/;
 const GOOGLE_FONTS_IMPORT_RE =
   /@import\s+url\(["']?https:\/\/fonts\.googleapis\.com\/css2?\?family=([^:&"')]+)/g;
+// Fontshare CSS endpoint: https://api.fontshare.com/v2/css?f[]={slug}@...
+// The `[]` in the param key URL-encodes to `%5B%5D`; accept both raw and
+// encoded forms since URL emitters may produce either.
+const FONTSHARE_IMPORT_RE =
+  /@import\s+url\(["']?https:\/\/api\.fontshare\.com\/v2\/css\?f(?:\[\]|%5B%5D)=([a-z0-9-]+)/gi;
 
 /** CSS generic family keywords + system-* keywords. Never need @font-face. */
 const GENERIC_FAMILIES = new Set([
@@ -172,6 +177,33 @@ function extractGoogleFontsImports(css: string): Set<string> {
   return families;
 }
 
+/**
+ * Map a Fontshare slug back to its CSS family name. Fontshare slugs are
+ * lowercase, hyphen-separated: `satoshi` → "Satoshi", `clash-display` →
+ * "Clash Display". The CSS family name Fontshare publishes in its hosted
+ * @font-face blocks matches the title-cased form.
+ */
+function fontshareSlugToFamily(slug: string): string {
+  return slug
+    .split("-")
+    .filter((p) => p.length > 0)
+    .map((p) => p[0].toUpperCase() + p.slice(1))
+    .join(" ");
+}
+
+/**
+ * Families covered by `@import url(...)` to api.fontshare.com. Like Google
+ * Fonts, the imported stylesheet ships @font-face blocks, so the validator
+ * treats a Fontshare `@import` as coverage.
+ */
+function extractFontshareImports(css: string): Set<string> {
+  const families = new Set<string>();
+  for (const match of css.matchAll(FONTSHARE_IMPORT_RE)) {
+    families.add(fontshareSlugToFamily(match[1]));
+  }
+  return families;
+}
+
 function extractFontVarDeclarations(
   css: string,
 ): Array<{ slot: string; family: string }> {
@@ -188,6 +220,7 @@ function extractFontVarDeclarations(
 export function validateFontCoverage(css: string): FontCoverageResult {
   const declaredFamilies = extractFontFaceFamilies(css);
   for (const f of extractGoogleFontsImports(css)) declaredFamilies.add(f);
+  for (const f of extractFontshareImports(css)) declaredFamilies.add(f);
   const declarations = extractFontVarDeclarations(css);
 
   const errors: FontCoverageError[] = [];

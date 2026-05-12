@@ -247,10 +247,16 @@ export function docsAdapter(
       }
     }
 
-    // Google Fonts @import
+    // Hosted-CSS @import — google-fonts and fontshare both resolve to a
+    // cssUrl that adapters render as @import. Deduplicate by URL.
     const seenUrls = new Set<string>();
     for (const font of fontSlots) {
-      if (font && font.source === "google-fonts" && font.cssUrl && !seenUrls.has(font.cssUrl)) {
+      if (
+        font &&
+        (font.source === "google-fonts" || font.source === "fontshare") &&
+        font.cssUrl &&
+        !seenUrls.has(font.cssUrl)
+      ) {
         seenUrls.add(font.cssUrl);
         fontLines.push(`@import url("${font.cssUrl}");`);
         fontLines.push("");

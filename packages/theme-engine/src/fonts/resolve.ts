@@ -62,6 +62,9 @@ function buildGoogleFontsCssUrl(
  */
 export const VISOR_FONTS_CDN = "https://fonts.visor.design";
 
+export const FONTSHARE_API_ORIGIN = "https://api.fontshare.com";
+export const FONTSHARE_CDN_ORIGIN = "https://cdn.fontshare.com";
+
 function buildFamilySlug(family: string): string {
   return family.toLowerCase().replace(/ /g, "-");
 }
@@ -97,6 +100,31 @@ export function buildVisorFontUrl(
 }
 
 /**
+ * Construct a Fontshare CSS URL for a given family.
+ *
+ * URL pattern: https://api.fontshare.com/v2/css?f[]={slug}@{weights}&display={display}
+ *
+ * Fontshare slugs are the lowercase, hyphenated family name — "Satoshi" →
+ * "satoshi", "Clash Display" → "clash-display". Italic is encoded inline
+ * by Fontshare via the `i` suffix on a weight (e.g. `@400i,400,700`).
+ */
+export function buildFontshareCssUrl(
+  family: string,
+  weights: number[],
+  italic: boolean,
+  display: FontDisplayStrategy
+): string {
+  const slug = buildFamilySlug(family);
+  const sortedWeights = [...weights].sort((a, b) => a - b);
+  const tokens: string[] = [];
+  if (italic) {
+    for (const w of sortedWeights) tokens.push(`${w}i`);
+  }
+  for (const w of sortedWeights) tokens.push(`${w}`);
+  return `${FONTSHARE_API_ORIGIN}/v2/css?f[]=${slug}@${tokens.join(",")}&display=${display}`;
+}
+
+/**
  * Resolve a font family name to a FontResolution.
  *
  * Resolution order:
@@ -126,6 +154,22 @@ export function resolveFont(
       category: options.category ?? "sans-serif",
       guidance: null,
       org: options.org ?? null,
+    };
+  }
+
+  // Explicit fontshare source — build Fontshare CSS URL
+  if (explicitSource === "fontshare") {
+    const cssUrl = buildFontshareCssUrl(family, requestedWeights, italic, display);
+    return {
+      family,
+      source: "fontshare",
+      cssUrl,
+      weights: requestedWeights,
+      italic,
+      display,
+      category: options.category ?? "sans-serif",
+      guidance: null,
+      org: null,
     };
   }
 
