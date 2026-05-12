@@ -66,6 +66,19 @@ The pre-publish export-surface drift gate described above is now implemented and
 
 **Ticket:** [VI-337](https://linear.app/low-orbit-studio/issue/VI-337/)
 
+## Workflow gate: publish path only
+
+The drift check belongs on the **publish** path — the moment we're about to push a CLI tarball that pins an upstream tarball. It must **not** block the **PR-refresh** path, where Changesets just consumes pending `.changeset/*.md` files into the Version Packages PR. The refresh action doesn't touch npm, so there's nothing to gate; gating it deadlocks the Version Packages PR every time any feature PR adds an import of a symbol that isn't in the published upstream tarball yet.
+
+The discriminator is whether pending changesets exist on `main`:
+
+- **Pending changesets present** → refresh path → drift check **skipped**, Changesets runs, Version Packages PR updates.
+- **No pending changesets** → publish path (the Version Packages PR just merged) → drift check **runs**, then Changesets publishes (or hits the warn-skip resolution-fails branch).
+
+Implemented in `.github/workflows/release.yml` as a `Detect pending changesets` step (`id: changesets`, outputs `pending`) followed by `if: steps.changesets.outputs.pending == '0'` on `Check export-surface drift`.
+
+**Ticket:** [VI-361](https://linear.app/low-orbit-studio/issue/VI-361/)
+
 ## References
 
 - [PR #308](https://github.com/low-orbit-studio/visor/pull/308) — the patch-bump fix.
