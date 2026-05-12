@@ -307,16 +307,21 @@ BentoTileTitle.displayName = "BentoTileTitle"
 // ---------------------------------------------------------------------------
 // BentoTileDescription — muted body text under the title
 // ---------------------------------------------------------------------------
+//
+// Renders as <div> rather than <p> so MDX-authored children (which MDX
+// auto-wraps in <p>) don't create invalid <p>-in-<p> nesting and hydration
+// errors. The semantic loss is minor — the body content is still readable
+// prose, just hosted in a styled container.
 
 export type BentoTileDescriptionProps =
-  React.HTMLAttributes<HTMLParagraphElement>
+  React.HTMLAttributes<HTMLDivElement>
 
 const BentoTileDescription = React.forwardRef<
-  HTMLParagraphElement,
+  HTMLDivElement,
   BentoTileDescriptionProps
 >(({ className, ...props }, ref) => {
   return (
-    <p
+    <div
       ref={ref}
       data-slot="bento-tile-description"
       className={cn(styles.bentoTileDescription, className)}
