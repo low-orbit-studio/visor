@@ -71,6 +71,13 @@ const INIT_SCRIPT = `(function(){` +
   `else if(m==="light"){document.documentElement.classList.add("light");document.documentElement.classList.remove("dark");document.documentElement.style.colorScheme="light";}` +
 `})()`;
 
+// Fontshare CSS — loaded via <link> rather than the engine's @import emission
+// because Next.js strips external @import statements from bundled CSS. See
+// docs/wisdom/W027 and VI-360. Weights cover Blackout/Borderless/Space (400, 700)
+// plus Strata's display slot (900).
+const FONTSHARE_SATOSHI_URL =
+  'https://api.fontshare.com/v2/css?f[]=satoshi@400,700,900&display=swap';
+
 export default function RootLayout({
   children,
 }: {
@@ -78,6 +85,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://api.fontshare.com" />
+        <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
+        <link rel="stylesheet" href={FONTSHARE_SATOSHI_URL} />
+      </head>
       <body className={spaceMono.variable} suppressHydrationWarning>
         {/* eslint-disable-next-line react/no-danger */}
         <script dangerouslySetInnerHTML={{ __html: INIT_SCRIPT }} />
