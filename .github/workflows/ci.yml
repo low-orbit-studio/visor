@@ -162,14 +162,18 @@ jobs:
           # When set, install @low-orbit-studio/visor-themes-private and
           # snapshot private themes too. On community PRs the secret is empty
           # and only stock themes are exercised — still a meaningful gate.
-          GITHUB_PACKAGES_TOKEN: ${{ secrets.GITHUB_PACKAGES_TOKEN }}
+          # The env var name stays `GITHUB_PACKAGES_TOKEN` because `.npmrc`
+          # and `generate-private-themes.mjs` read it under that name; the
+          # GitHub-side secret has to use a non-`GITHUB_`-prefixed name per
+          # Actions' reserved-prefix rule, hence LO_PACKAGES_READ_TOKEN.
+          GITHUB_PACKAGES_TOKEN: ${{ secrets.LO_PACKAGES_READ_TOKEN }}
         run: |
           node packages/docs/scripts/ensure-theme-overlays.mjs
           node packages/docs/scripts/generate-private-themes.mjs
 
       - name: Run per-theme VR suite
         env:
-          GITHUB_PACKAGES_TOKEN: ${{ secrets.GITHUB_PACKAGES_TOKEN }}
+          GITHUB_PACKAGES_TOKEN: ${{ secrets.LO_PACKAGES_READ_TOKEN }}
         run: npm run test:vr -w packages/docs
 
       - name: Upload Playwright report on failure
