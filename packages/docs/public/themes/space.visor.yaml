@@ -20,11 +20,20 @@ typography:
   heading:
     family: "Satoshi"
     weight: 700
+    weights: [400, 700]
+    source: visor-fonts
+    org: low-orbit-studio
   body:
     family: "Satoshi"
     weight: 400
+    weights: [400, 700]
+    source: visor-fonts
+    org: low-orbit-studio
   mono:
     family: "Monaspace Neon"
+    weight: 400
+    source: visor-fonts
+    org: low-orbit-studio
 
 spacing:
   base: 4

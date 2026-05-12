@@ -1,3 +1,19 @@
+@font-face {
+  font-family: "Satoshi [borderless]";
+  src: url("https://fonts.visor.design/low-orbit-studio/satoshi/Satoshi-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Satoshi [borderless]";
+  src: url("https://fonts.visor.design/low-orbit-studio/satoshi/Satoshi-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;
 
 @layer visor-adaptive {
@@ -106,10 +122,10 @@
 
 /* --- Primitive: Typography --- */
 .borderless-theme {
-  --font-display: Satoshi;
-  --font-sans: Satoshi;
+  --font-display: "Satoshi [borderless]", "Satoshi";
+  --font-sans: "Satoshi [borderless]", "Satoshi";
   --font-heading: var(--font-sans);
-  --font-body: Satoshi;
+  --font-body: "Satoshi [borderless]", "Satoshi";
   --font-mono: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
   --font-size-xs: 0.75rem; /* 12px */
   --font-size-sm: 0.875rem; /* 14px */

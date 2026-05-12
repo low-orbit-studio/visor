@@ -70,7 +70,8 @@ Full rules: [`docs/token-rules.md`](./docs/token-rules.md). Key enforcement poin
 8. **Overlay uses token** — Backdrops use `var(--overlay-bg)`
 9. **Themes follow 5-section template** — shared → dark → light → framework bridge → creative extensions
 10. **Theme-specific tokens are namespaced** — `--space-glass`, `--veronica-warmth`, never bare `--glass`
-11. **No magic numbers** — Every value traces to a token or is documented as intentional
+11. **Font coverage** — Every `--font-*` quoted family must have a matching `@font-face` or Google Fonts `@import` in the same emitted CSS. Set `typography.<slot>.source: visor-fonts|google-fonts`; the build-time `validateFontCoverage` validator catches drift.
+12. **No magic numbers** — Every value traces to a token or is documented as intentional
 
 ## Playbook Reference
 

@@ -16,9 +16,15 @@ typography:
   heading:
     family: Satoshi
     weight: 700
+    weights: [400, 700]
+    source: visor-fonts
+    org: low-orbit-studio
   body:
     family: Satoshi
     weight: 400
+    weights: [400, 700]
+    source: visor-fonts
+    org: low-orbit-studio
 
 radius:
   sm: 2

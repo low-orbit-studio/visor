@@ -276,7 +276,21 @@ All themes must follow the 5-section template (see [Theme Template](#5-section-t
 
 Sections 1-3 are required for all themes. Section 4 is required when the theme is used with a specific framework that needs bridged values. Section 5 is only present in creative themes.
 
-### 11. No Magic Numbers Rule
+### 11. Font Coverage Rule
+
+Every `--font-*` declaration in a theme's emitted CSS that references a quoted family name **must** be backed by either a real `@font-face` block in the same CSS or a `@import url("https://fonts.googleapis.com/css2?family=…")` to Google Fonts. Declaring `--font-heading: "Satoshi"` without an accompanying `@font-face` makes the browser silently fall through to system-ui — the theme renders correctly only on machines that happen to have the font installed locally.
+
+Set `typography.<slot>.source` in `.visor.yaml` to control which `@font-face` (or `@import`) the engine emits:
+
+| `source` | Emitted | When to use |
+|----------|---------|-------------|
+| `google-fonts` (default for catalog families) | `@import url(fonts.googleapis.com/…)` | Family is on Google Fonts |
+| `visor-fonts` | `@font-face` pointing at `fonts.visor.design/{org}/{family}/…` | Family is hosted on the Visor Fonts CDN. Requires `org:`. |
+| `local` | Nothing — declaration becomes a "use whatever the visitor has installed" hint | Only when every theme consumer ships the font files themselves. Will fail validation. |
+
+The validator (`validateFontCoverage`) runs inside `visor theme sync` and `generate-private-themes.mjs`. Any theme whose emitted CSS names a custom family with no matching `@font-face` aborts the build with a pointer to the offending slot. Generic CSS keywords (`system-ui`, `sans-serif`, …) and well-known platform fonts (`SF Mono`, `Helvetica`, …) are skipped — those are intentional fallback-stack entries.
+
+### 12. No Magic Numbers Rule
 
 Every value in component CSS must trace to a token or be documented as intentional. No unexplained pixel values, rem values, or percentages.
 

@@ -143,6 +143,20 @@ async function main() {
       config: themeData.config,
     })
 
+    // VI-358: every theme's emitted CSS must declare an @font-face for every
+    // quoted family it names in `--font-*`, or the browser silently falls
+    // back to system-ui on machines without the font installed locally.
+    const coverage = engine.validateFontCoverage(css)
+    if (coverage.errors.length > 0) {
+      for (const e of coverage.errors) {
+        console.error(
+          `[generate-private-themes] ${slug}: ${e.declaredAt} declares "${e.family}" with no matching @font-face. ` +
+          `Set typography.<slot>.source: visor-fonts (with org:) or google-fonts, or pick a system font.`,
+        )
+      }
+      process.exit(1)
+    }
+
     // Hoist @import rules — PostCSS requires them at the top of the file.
     // The pattern matches a full line that starts with `@import` and ends with
     // a trailing `;` — robust against semicolons embedded in URL query strings.

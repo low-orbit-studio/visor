@@ -36,7 +36,7 @@ const KNOWN_TYPOGRAPHY_KEYS = new Set([
 ]);
 
 const KNOWN_TYPOGRAPHY_FONT_KEYS = new Set(["family", "weight", "weights", "source", "org"]);
-const KNOWN_TYPOGRAPHY_MONO_KEYS = new Set(["family"]);
+const KNOWN_TYPOGRAPHY_MONO_KEYS = new Set(["family", "weight", "weights", "source", "org"]);
 const KNOWN_LETTER_SPACING_KEYS = new Set(["tight", "normal", "wide"]);
 const KNOWN_SLOT_NAMES = new Set<string>(MATERIAL_TEXT_SLOTS);
 const KNOWN_SLOT_OVERRIDE_KEYS = new Set(["size", "weight", "letter-spacing"]);

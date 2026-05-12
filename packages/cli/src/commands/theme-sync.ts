@@ -9,7 +9,7 @@ import {
 } from "fs"
 import { join, basename, resolve, sep } from "path"
 import { parse as parseYaml } from "yaml"
-import { generateThemeData } from "@loworbitstudio/visor-theme-engine"
+import { generateThemeData, validateFontCoverage } from "@loworbitstudio/visor-theme-engine"
 import { docsAdapter } from "@loworbitstudio/visor-theme-engine/adapters"
 import { logger } from "../utils/logger.js"
 import {
@@ -569,6 +569,21 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
     const group = extractGroup(yamlContent) ?? (isCustom ? "Custom" : "Visor")
     const defaultMode = extractDefaultMode(yamlContent)
     const css = docsAdapter({ primitives: data.primitives, tokens: data.tokens, config: data.config })
+
+    // VI-358: every theme's emitted CSS must declare an @font-face for every
+    // quoted family it names in `--font-*`, or the browser silently falls
+    // back to system-ui on machines without the font installed locally.
+    const coverage = validateFontCoverage(css)
+    if (coverage.errors.length > 0) {
+      for (const e of coverage.errors) {
+        errors.push(
+          `${basename(filePath)}: ${e.declaredAt} declares "${e.family}" with no matching @font-face. ` +
+          `Set typography.<slot>.source: visor-fonts (with org:) or google-fonts, or pick a system font.`,
+        )
+      }
+      return
+    }
+
     // Nested custom themes use the slug as the public yamlFilename so the
     // generated CSS/import path stays predictable. Flat layout keeps its
     // historical filename so existing public/themes/ entries don't churn.

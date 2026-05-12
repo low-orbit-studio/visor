@@ -164,6 +164,7 @@ export interface VisorThemeConfig {
     mono?: {
       family?: string;
       weight?: number;
+      weights?: number[];
       source?: FontSource;
       org?: string;
     };
@@ -251,7 +252,7 @@ export interface ResolvedThemeConfig {
     heading: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string };
     display: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string };
     body: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string };
-    mono: { family: string };
+    mono: { family: string; weight?: number; weights?: number[]; source?: FontSource; org?: string };
     /**
      * Per-slot Material `TextTheme` overrides, passed through from the
      * raw config. Empty object when none supplied. Flutter adapter
