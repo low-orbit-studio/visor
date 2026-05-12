@@ -65,7 +65,7 @@
   --bento-tile-radius: var(--radius-lg, 0.75rem);
   --bento-tile-media-scale-hover: 1.04;
   /* Default is no lift — hover affordance is the media scale + shadow bump.
-     Consumers can opt in by overriding this slot (e.g. -3px). */
+     Consumers can opt in by overriding this slot (for example -3px). */
   --bento-tile-lift-hover: 0px;
 
   position: relative;
