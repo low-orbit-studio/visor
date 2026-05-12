@@ -1,0 +1,7 @@
+.prose {
+  max-width: 90ch;
+}
+
+@media (prefers-color-scheme: dark) {
+  .prose { color: var(--color-text); }
+}

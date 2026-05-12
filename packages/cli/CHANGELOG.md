@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.8.0
+
+### Minor Changes
+
+- Add `visor check design <path>` — deterministic static analysis for Borealis design anti-patterns. No LLM required. Scans `.tsx`, `.jsx`, `.ts`, `.js`, `.css`, and `.module.css` files for 16 rules across two severity tiers.
+
+  **Error rules (Borealis non-negotiables):**
+  - `tier-1-token-direct-usage` — flags direct use of `--primitive-*` / `--raw-*` / `--palette-*` tokens in component code
+  - `hardcoded-hex` — catches raw hex color literals that bypass the token system
+  - `hardcoded-px` — catches hardcoded pixel values in spacing/sizing properties
+  - `missing-dark-mode-block` — CSS files must include a dark mode block (`@media (prefers-color-scheme: dark)` or `[data-theme="dark"]`)
+  - `missing-hover-transition` — CSS with `:hover` must include a `transition` property
+  - `div-as-input` — catches `<div onClick>` without `role=` (div-as-button anti-pattern)
+  - `setstate-hover` — catches `useState` used to track hover state instead of CSS `:hover`
+  - `missing-aria-pressed` — toggle buttons with active/selected state must have `aria-pressed`
+
+  **Warn rules (general anti-patterns):**
+  - `banned-fonts` — Inter, Roboto, Arial, system-ui are not Borealis fonts
+  - `purple-gradient-on-white` — generic SaaS gradient cliché
+  - `pure-black-untinted` — `#000` / `black` without tinting
+  - `bounce-easing` — overshoot cubic-bezier / bounce keywords in transitions
+  - `sub-44px-touch-target` — interactive elements below 44px minimum
+  - `line-length-over-75ch` — text containers exceeding 75ch max-width
+  - `gradient-text` — `background-clip: text` gradient text patterns
+  - `excessive-card-nesting` — Card/Panel components nested 3+ levels deep
+
+  **Output modes:** `--format json` (default for programmatic consumers) and `--format human` (colored, file-grouped terminal report). `--errors-only` filters to error severity. `--no-fail` suppresses exit code 1 for advisory-only use. `--json` is shorthand for `--format json`.
+
+  **Per-project toggles:** add a `.visorrc.json` with `{ "disabledRules": ["gradient-text"] }` to opt specific rules out project-wide.
+
+  **CI usage:** `npx visor check design ./src --json` exits 0 when clean, 1 on any error-severity finding.
+
 ## 0.7.0
 
 ### Minor Changes

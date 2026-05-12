@@ -1,0 +1,8 @@
+.icon-button {
+  width: 32px;
+  height: 32px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .icon-button { color: var(--color-text); }
+}
