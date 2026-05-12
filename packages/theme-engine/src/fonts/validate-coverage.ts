@@ -21,6 +21,8 @@
 const FONT_VAR_RE = /--font-(heading|display|body|sans|mono)\s*:\s*([^;]+);/g;
 const FONT_FACE_RE = /@font-face\s*\{[^}]*\}/g;
 const FONT_FAMILY_DECL_RE = /font-family\s*:\s*([^;]+);/;
+const GOOGLE_FONTS_IMPORT_RE =
+  /@import\s+url\(["']?https:\/\/fonts\.googleapis\.com\/css2?\?family=([^:&"')]+)/g;
 
 /** CSS generic family keywords + system-* keywords. Never need @font-face. */
 const GENERIC_FAMILIES = new Set([
@@ -146,6 +148,24 @@ function extractFontFaceFamilies(css: string): Set<string> {
   return families;
 }
 
+/**
+ * Families covered by `@import url(...)` to fonts.googleapis.com. The
+ * imported stylesheet ships its own @font-face blocks, so a Google Fonts
+ * `@import` is equivalent coverage to a local @font-face — the validator
+ * should not flag it as missing.
+ *
+ * Google's CSS2 URL puts the family in `?family=Font+Name:...` — pluses
+ * decode back to spaces.
+ */
+function extractGoogleFontsImports(css: string): Set<string> {
+  const families = new Set<string>();
+  for (const match of css.matchAll(GOOGLE_FONTS_IMPORT_RE)) {
+    const family = decodeURIComponent(match[1]).replace(/\+/g, " ");
+    families.add(family);
+  }
+  return families;
+}
+
 function extractFontVarDeclarations(
   css: string,
 ): Array<{ slot: string; family: string }> {
@@ -161,6 +181,7 @@ function extractFontVarDeclarations(
 
 export function validateFontCoverage(css: string): FontCoverageResult {
   const declaredFamilies = extractFontFaceFamilies(css);
+  for (const f of extractGoogleFontsImports(css)) declaredFamilies.add(f);
   const declarations = extractFontVarDeclarations(css);
 
   const errors: FontCoverageError[] = [];

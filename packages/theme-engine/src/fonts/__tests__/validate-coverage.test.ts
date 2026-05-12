@@ -101,6 +101,26 @@ typography:
     expect(result.errors.some((e) => e.family === "Satoshi")).toBe(true);
   });
 
+  it("treats Google Fonts @import as coverage for the imported family", () => {
+    const css = `
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
+
+      .theme {
+        --font-heading: "Inter", sans-serif;
+        --font-body: Inter, sans-serif;
+      }
+    `;
+    expect(validateFontCoverage(css).errors).toEqual([]);
+  });
+
+  it("handles multi-word Google Fonts families (plus-encoded URLs)", () => {
+    const css = `
+      @import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400&display=swap");
+      .theme { --font-mono: "Source Code Pro", monospace; }
+    `;
+    expect(validateFontCoverage(css).errors).toEqual([]);
+  });
+
   it("passes after the VI-358 fix via docsAdapter (source: visor-fonts)", () => {
     const yaml = `
 name: blackout-fixed
