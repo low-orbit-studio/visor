@@ -221,10 +221,10 @@ describe("docsAdapter", () => {
       // VI-354: @font-face family is aliased per theme so co-loaded themes
       // sharing a family don't overwrite each other's @font-face properties.
       expect(css).toContain('font-family: "Modern Society [custom-font-theme]"');
-      // --font-heading falls back to the bare family for consumer code
-      // that references it directly. (Heading slot uses visor-fonts here;
-      // body slot is Inter, which is not visor-fonts so stays bare.)
-      expect(css).toContain('--font-heading: var(--font-sans);');
+      // VI-355: --font-heading respects typography.heading.family. The
+      // heading slot here uses visor-fonts ("Modern Society"), so the stack
+      // lists the aliased family first with the bare family as fallback.
+      expect(css).toContain('--font-heading: "Modern Society [custom-font-theme]", "Modern Society";');
     });
 
     it("emits size-adjust on visor-fonts @font-face when scale < 1", () => {
@@ -432,6 +432,73 @@ typography:
       expect(css).toMatch(/--font-sans: Inter;/);
       // mono.family has no `source`, so it's treated as bare (not visor-fonts).
       expect(css).toMatch(/--font-mono: PP Model Mono;/);
+    });
+  });
+
+  describe("typography.heading slot (VI-355)", () => {
+    // Before VI-355 the docs adapter hard-aliased
+    //   --font-heading: var(--font-sans);
+    // which silently overrode `typography.heading.family` from the theme
+    // YAML. Blacklight (heading = PP Model Plastic, body = PP Model Mono)
+    // rendered the wrong font in the docs Typography specimen for months
+    // because operator-facing CSS was the only adapter that didn't honor
+    // the heading slot. These tests pin the corrected behavior.
+
+    it("emits --font-heading from heading.family when an explicit slot is provided", () => {
+      const yaml = `
+name: Blacklight Stub
+version: 1
+colors:
+  primary: "#2563EB"
+typography:
+  heading:
+    family: "PP Model Plastic"
+    weight: 400
+    weights: [400]
+    source: visor-fonts
+    org: low-orbit-studio
+  body:
+    family: "PP Model Mono"
+    weight: 400
+    weights: [400]
+    source: visor-fonts
+    org: low-orbit-studio
+`;
+      const css = docsAdapter(makeInput(yaml));
+      // Heading uses the aliased PP Model Plastic family (VI-354 aliasing
+      // applies because the heading slot is visor-fonts).
+      expect(css).toContain('--font-heading: "PP Model Plastic [blacklight-stub]", "PP Model Plastic";');
+      // Body is a different family (PP Model Mono), aliased separately.
+      expect(css).toContain('--font-body: "PP Model Mono [blacklight-stub]", "PP Model Mono";');
+      // Heading and body must NOT collapse to the same family — that was
+      // the bug.
+      expect(css).not.toContain('--font-heading: "PP Model Mono');
+      expect(css).not.toContain('--font-heading: var(--font-sans);');
+    });
+
+    it("falls back to body.family when no heading slot is present", () => {
+      // No `typography.heading` key in the YAML → resolve.ts populates
+      // heading.family with the engine's default sans stack, and body.family
+      // also defaults to the same stack. The emitted --font-heading therefore
+      // matches body, preserving the pre-VI-355 default-theme behavior.
+      const yaml = `
+name: No Heading Slot
+version: 1
+colors:
+  primary: "#2563EB"
+`;
+      const css = docsAdapter(makeInput(yaml));
+      const DEFAULT_SANS =
+        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+      // Both heading and body resolve to the default sans stack, which is
+      // not a visor-fonts family — stays bare in the stack.
+      expect(css).toContain(`--font-heading: ${DEFAULT_SANS};`);
+      expect(css).toContain(`--font-body: ${DEFAULT_SANS};`);
+      // The whole point of the back-compat assertion: heading and body emit
+      // the same value when no explicit heading slot is present.
+      const headingMatch = css.match(/--font-heading: ([^\n;]+);/);
+      const bodyMatch = css.match(/--font-body: ([^\n;]+);/);
+      expect(headingMatch?.[1]).toBe(bodyMatch?.[1]);
     });
   });
 });
