@@ -6,6 +6,7 @@
  */
 
 import { lookupGoogleFont } from "./google-fonts-catalog.js";
+import { lookupFontWeightAlias } from "./font-aliases.js";
 import type {
   FontResolution,
   FontResolveOptions,
@@ -88,7 +89,10 @@ export function buildVisorFontUrl(
 ): string {
   const slug = buildFamilySlug(family);
   const prefix = buildFamilyPrefix(family);
-  const weightName = WEIGHT_NAMES[weight] ?? `W${weight}`;
+  const weightName =
+    lookupFontWeightAlias(family, weight) ??
+    WEIGHT_NAMES[weight] ??
+    `W${weight}`;
   return `${VISOR_FONTS_CDN}/${org}/${slug}/${prefix}-${weightName}.woff2`;
 }
 

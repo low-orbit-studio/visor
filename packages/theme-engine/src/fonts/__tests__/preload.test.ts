@@ -124,8 +124,9 @@ describe("generatePreloadLinks", () => {
       makeVisorFont("PP Model Plastic", "low-orbit", [400, 700]),
     ]);
 
+    // PP Model Plastic 400 is aliased to "Book"; 700 falls through to standard "Bold".
     expect(links).toContainEqual(
-      expect.stringContaining("fonts.visor.design/low-orbit/pp-model-plastic/PPModelPlastic-Regular.woff2")
+      expect.stringContaining("fonts.visor.design/low-orbit/pp-model-plastic/PPModelPlastic-Book.woff2")
     );
     expect(links).toContainEqual(
       expect.stringContaining("fonts.visor.design/low-orbit/pp-model-plastic/PPModelPlastic-Bold.woff2")
