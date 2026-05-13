@@ -266,9 +266,11 @@ export interface ThemeTypographyManifest {
 /**
  * Derive Font Families specimen rows from a theme's typography manifest.
  *
- * - `--font-heading` row uses the body slot's weights when present (the theme's
- *   --font-heading variable resolves to body family in the engine), falling
- *   back to display or heading slot weights if body is absent.
+ * - `--font-heading` row uses the heading slot's family and weights when
+ *   present, falling back to display, then body. Post-VI-355 the engine
+ *   resolves `--font-heading` from `typography.heading.family` directly;
+ *   earlier the docs adapter aliased it to `var(--font-sans)` (body),
+ *   which is why this used to read body first.
  * - `--font-mono` row uses the mono slot's weights when present, falling back
  *   to body weights, then the default.
  *
@@ -285,7 +287,7 @@ export function deriveFontFamiliesFromTypography(
   const headingDefault = defaults.find((f) => f.token === "--font-heading")
   const monoDefault = defaults.find((f) => f.token === "--font-mono")
 
-  const headingSlot = manifest.body ?? manifest.display ?? manifest.heading
+  const headingSlot = manifest.heading ?? manifest.display ?? manifest.body
   const monoSlot = manifest.mono ?? manifest.body ?? manifest.display ?? manifest.heading
 
   const next: FontFamilyData[] = []

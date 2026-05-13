@@ -48,8 +48,9 @@ describe("deriveFontFamiliesFromTypography (VI-356)", () => {
     expect(deriveFontFamiliesFromTypography(undefined, FONT_FAMILIES)).toBe(FONT_FAMILIES)
   })
 
-  it("derives Blacklight's five-weight grid from a body slot", () => {
+  it("derives Blacklight's five-weight grid from the heading slot (post-VI-355)", () => {
     const manifest: ThemeTypographyManifest = {
+      heading: { family: "PP Model Plastic", weights: [300, 400, 500, 700, 800] },
       display: { family: "PP Model Plastic", weights: [300, 400, 500, 700, 800] },
       body: { family: "PP Model Mono", weights: [300, 400, 500, 700, 800] },
     }
@@ -57,7 +58,7 @@ describe("deriveFontFamiliesFromTypography (VI-356)", () => {
     expect(result).toHaveLength(2)
 
     const heading = result.find((f) => f.token === "--font-heading")
-    expect(heading?.familyName).toBe("PP Model Mono")
+    expect(heading?.familyName).toBe("PP Model Plastic")
     expect(heading?.weights.map((w) => w.value)).toEqual([300, 400, 500, 700, 800])
     expect(heading?.weights.map((w) => w.label)).toEqual([
       "Light",
@@ -101,15 +102,25 @@ describe("deriveFontFamiliesFromTypography (VI-356)", () => {
     expect(mono?.familyName).toBe("Acme Mono")
   })
 
-  it("prefers body over display when both are present (matches engine: body drives --font-heading)", () => {
-    const manifest: ThemeTypographyManifest = {
+  it("prefers heading over display over body (post-VI-355: --font-heading resolves from heading slot)", () => {
+    const allThree: ThemeTypographyManifest = {
+      heading: { family: "Heading Face", weights: [500, 900] },
       display: { family: "Display Face", weights: [400, 800] },
       body: { family: "Body Face", weights: [300, 700] },
     }
-    const result = deriveFontFamiliesFromTypography(manifest, FONT_FAMILIES)
-    const heading = result.find((f) => f.token === "--font-heading")
-    expect(heading?.familyName).toBe("Body Face")
-    expect(heading?.weights.map((w) => w.value)).toEqual([300, 700])
+    const r1 = deriveFontFamiliesFromTypography(allThree, FONT_FAMILIES)
+    const h1 = r1.find((f) => f.token === "--font-heading")
+    expect(h1?.familyName).toBe("Heading Face")
+    expect(h1?.weights.map((w) => w.value)).toEqual([500, 900])
+
+    const noHeading: ThemeTypographyManifest = {
+      display: { family: "Display Face", weights: [400, 800] },
+      body: { family: "Body Face", weights: [300, 700] },
+    }
+    const r2 = deriveFontFamiliesFromTypography(noHeading, FONT_FAMILIES)
+    const h2 = r2.find((f) => f.token === "--font-heading")
+    expect(h2?.familyName).toBe("Display Face")
+    expect(h2?.weights.map((w) => w.value)).toEqual([400, 800])
   })
 })
 
