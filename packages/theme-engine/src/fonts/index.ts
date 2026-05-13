@@ -7,7 +7,10 @@ export { FONT_WEIGHT_ALIASES, lookupFontWeightAlias } from "./font-aliases.js";
 export { generatePreloadLinks, generateStylesheetLinks } from "./preload.js";
 export { resolveThemeFonts } from "./pipeline.js";
 export { lookupGoogleFont, googleFontsCatalog } from "./google-fonts-catalog.js";
-export { validateFontCoverage } from "./validate-coverage.js";
+export {
+  validateFontCoverage,
+  formatFontCoverageError,
+} from "./validate-coverage.js";
 export type { FontCoverageError, FontCoverageResult } from "./validate-coverage.js";
 
 export type {

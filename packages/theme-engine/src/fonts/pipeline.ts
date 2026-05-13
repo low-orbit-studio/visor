@@ -12,6 +12,7 @@ import { resolveFont, buildVisorFontUrl } from "./resolve.js";
 import { generatePreloadLinks, generateStylesheetLinks } from "./preload.js";
 import type {
   FontResolution,
+  FontSource,
   ThemeFontResult,
   VisorTypography,
   FontDisplayStrategy,
@@ -398,16 +399,53 @@ export function resolveThemeFonts(
   }
 
   // Resolve mono font
+  //
+  // VI-367: when mono.family matches another slot's already-resolved family
+  // (case-insensitive) and mono.source is unset, inherit source/org from
+  // that slot. Mirrors the body/display-vs-heading dedup above. Covers the
+  // common case of mono using the same font as body (e.g. Blacklight's
+  // PP Model Mono in both slots) without forcing every theme to repeat
+  // source/org on the mono slot. Match precedence: heading → display →
+  // body (deterministic; matches the existing dedup precedence). Themes
+  // that explicitly set mono.source/org keep full control — inheritance
+  // only kicks in when mono.source is absent.
   let monoResolution: FontResolution | null = null;
   if (typography.mono?.family) {
     const monoWeights: number[] = [];
     if (typography.mono.weight) monoWeights.push(typography.mono.weight);
 
+    let monoSource = typography.mono.source;
+    let monoOrg = typography.mono.org;
+
+    if (!monoSource) {
+      const monoFamilyLower = typography.mono.family.toLowerCase();
+      const candidates: Array<{
+        resolution: FontResolution | null;
+        configSource: FontSource | undefined;
+        configOrg: string | undefined;
+      }> = [
+        { resolution: headingResolution, configSource: typography.heading?.source, configOrg: typography.heading?.org },
+        { resolution: displayResolution, configSource: typography.display?.source, configOrg: typography.display?.org },
+        { resolution: bodyResolution, configSource: typography.body?.source, configOrg: typography.body?.org },
+      ];
+      for (const candidate of candidates) {
+        if (
+          candidate.resolution &&
+          candidate.configSource &&
+          candidate.resolution.family.toLowerCase() === monoFamilyLower
+        ) {
+          monoSource = candidate.configSource;
+          monoOrg = candidate.configOrg;
+          break;
+        }
+      }
+    }
+
     monoResolution = resolveFont(typography.mono.family, {
       weights: monoWeights.length > 0 ? monoWeights : undefined,
       display,
-      source: typography.mono.source,
-      org: typography.mono.org,
+      source: monoSource,
+      org: monoOrg,
       category: "monospace",
     });
 
