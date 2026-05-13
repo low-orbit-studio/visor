@@ -36,6 +36,7 @@ For global wisdom (universal lessons): [`~/Code/low-orbit/low-orbit-playbook/roo
 | W025 | Themes that declare a custom font must emit `@font-face` for it, or they silently fall back on visitor machines | fonts, theming, cross-machine, validation, visor-fonts-cdn | [W025](W025-font-coverage-cross-machine.md) |
 | W026 | "Free" font licenses (e.g. ITF Fontshare FFL) often forbid public CDN re-hosting — read the EULA before `npm run fonts:add` | fonts, licensing, cdn, legal, satoshi | [W026](W026-satoshi-license-forbids-public-cdn.md) |
 | W027 | Next.js strips external `@import` from bundled CSS — inject `<link rel="stylesheet">` in layout instead | nextjs, css, bundling, fonts, fontshare | [W027](W027-nextjs-strips-external-css-imports.md) |
+| W028 | husky 9's `.husky/_/` wrapper doesn't propagate to git worktrees — set `core.hooksPath = .husky` (relative) in `prepare` | husky, git-hooks, worktree, changeset, pre-push, tooling | [W028](W028-husky-hookspath-worktree-propagation.md) |
 
 ## Adding Entries
 
