@@ -28,10 +28,8 @@ typography:
     weights: [400, 700]
     source: fontshare
   mono:
-    family: "Monaspace Neon"
+    family: "Source Code Pro"
     weight: 400
-    source: visor-fonts
-    org: low-orbit-studio
 
 spacing:
   base: 4

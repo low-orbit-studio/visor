@@ -1,12 +1,6 @@
 @import url("https://api.fontshare.com/v2/css?f[]=satoshi@400,700&display=swap");
 
-@font-face {
-  font-family: "Monaspace Neon [space]";
-  src: url("https://fonts.visor.design/low-orbit-studio/monaspace-neon/MonaspaceNeon-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
+@import url("https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400&display=swap");
 
 @layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;
 
@@ -120,7 +114,7 @@
   --font-sans: Satoshi;
   --font-heading: Satoshi;
   --font-body: Satoshi;
-  --font-mono: "Monaspace Neon [space]", "Monaspace Neon";
+  --font-mono: Source Code Pro;
   --font-size-xs: 0.75rem; /* 12px */
   --font-size-sm: 0.875rem; /* 14px */
   --font-size-base: 1rem; /* 16px */
