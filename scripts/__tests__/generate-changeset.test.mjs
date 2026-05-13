@@ -1,6 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   PACKAGES,
+  SHIPPING_PATHS,
   GENERATED_MARKER,
   hasPublishedPackageChanges,
   hasOperatorChangeset,
@@ -9,21 +13,82 @@ import {
   run,
 } from '../generate-changeset.mjs';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = join(__dirname, '..', '..');
+
 // ---------------------------------------------------------------------------
 // hasPublishedPackageChanges
 // ---------------------------------------------------------------------------
 
 describe('hasPublishedPackageChanges', () => {
-  it('returns true when tokens package file changes', () => {
+  // -- Published-package src trees (4 entries from changeset-paths.json) --
+
+  it('returns true when tokens package src file changes', () => {
     expect(hasPublishedPackageChanges(['packages/tokens/src/index.ts'])).toBe(true);
   });
 
-  it('returns true when cli package file changes', () => {
+  it('returns true when cli package src file changes', () => {
     expect(hasPublishedPackageChanges(['packages/cli/src/commands/add.ts'])).toBe(true);
   });
 
-  it('returns true when theme-engine package file changes', () => {
+  it('returns true when theme-engine package src file changes', () => {
     expect(hasPublishedPackageChanges(['packages/theme-engine/src/index.ts'])).toBe(true);
+  });
+
+  it('returns true when visor-flutter lib file changes', () => {
+    expect(hasPublishedPackageChanges(['packages/visor-flutter/lib/visor.dart'])).toBe(true);
+  });
+
+  // -- Registry copy-and-own surfaces (8 entries) --
+
+  it('returns true when a components/ file changes', () => {
+    expect(hasPublishedPackageChanges(['components/ui/button.tsx'])).toBe(true);
+  });
+
+  it('returns true when a blocks/ file changes', () => {
+    expect(
+      hasPublishedPackageChanges(['blocks/design-system-specimen/specimen-data.ts']),
+    ).toBe(true);
+  });
+
+  it('returns true when a hooks/ file changes', () => {
+    expect(hasPublishedPackageChanges(['hooks/use-theme.ts'])).toBe(true);
+  });
+
+  it('returns true when a lib/ file changes', () => {
+    expect(hasPublishedPackageChanges(['lib/utils.ts'])).toBe(true);
+  });
+
+  it('returns true when a registry/ file changes', () => {
+    expect(hasPublishedPackageChanges(['registry/styles/default/ui/button.ts'])).toBe(true);
+  });
+
+  it('returns true when a themes/ file changes', () => {
+    expect(hasPublishedPackageChanges(['themes/nimbus.css'])).toBe(true);
+  });
+
+  it('returns true when a patterns/ file changes', () => {
+    expect(hasPublishedPackageChanges(['patterns/dialog-with-form.tsx'])).toBe(true);
+  });
+
+  it('returns true when an assets/ file changes', () => {
+    expect(hasPublishedPackageChanges(['assets/logo.svg'])).toBe(true);
+  });
+
+  // -- Tooling-only paths that must NOT flag (regressions from the old impl) --
+
+  it('returns false when only packages/cli tooling (non-src) changed', () => {
+    // Regression: the old impl matched all of packages/cli/**.
+    expect(hasPublishedPackageChanges(['packages/cli/scripts/release.ts'])).toBe(false);
+  });
+
+  it('returns false when only packages/cli/package.json changed', () => {
+    expect(hasPublishedPackageChanges(['packages/cli/package.json'])).toBe(false);
+  });
+
+  it('returns false when only packages/visor-flutter test files changed', () => {
+    // visor-flutter ships lib/**, not test/**.
+    expect(hasPublishedPackageChanges(['packages/visor-flutter/test/visor_test.dart'])).toBe(false);
   });
 
   it('returns false when only docs changed', () => {
@@ -42,7 +107,7 @@ describe('hasPublishedPackageChanges', () => {
     expect(hasPublishedPackageChanges([])).toBe(false);
   });
 
-  it('returns true for mixed list with at least one package file', () => {
+  it('returns true for mixed list with at least one shipping-path file', () => {
     expect(
       hasPublishedPackageChanges([
         'docs/roadmap.md',
@@ -50,6 +115,66 @@ describe('hasPublishedPackageChanges', () => {
         'README.md',
       ]),
     ).toBe(true);
+  });
+
+  // -- Prefix-boundary regressions --
+
+  it('does not confuse "lib/" with prefix-extended directories like "libfoo/"', () => {
+    expect(hasPublishedPackageChanges(['libfoo/index.ts'])).toBe(false);
+    expect(hasPublishedPackageChanges(['library/index.ts'])).toBe(false);
+  });
+
+  it('does not confuse "themes/" with "themes-private/" or "themes.css"', () => {
+    expect(hasPublishedPackageChanges(['themes-private/index.ts'])).toBe(false);
+    expect(hasPublishedPackageChanges(['themes.css'])).toBe(false);
+  });
+
+  it('does not match a file at the exact prefix boundary (no trailing slash)', () => {
+    // `themes` (a hypothetical file) is not `themes/...`.
+    expect(hasPublishedPackageChanges(['themes'])).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// SHIPPING_PATHS — single source of truth for the changeset gate
+// ---------------------------------------------------------------------------
+
+describe('SHIPPING_PATHS', () => {
+  it('exposes the list from changeset-paths.json', () => {
+    const raw = JSON.parse(
+      readFileSync(join(REPO_ROOT, 'changeset-paths.json'), 'utf8'),
+    );
+    expect(SHIPPING_PATHS).toEqual(raw.shippingPaths);
+  });
+
+  it('every pattern ends in "/**" so prefix-matching is sound', () => {
+    for (const pattern of SHIPPING_PATHS) {
+      expect(pattern.endsWith('/**')).toBe(true);
+    }
+  });
+
+  it('contains all path families called out in the ticket', () => {
+    const required = [
+      'components/**',
+      'blocks/**',
+      'hooks/**',
+      'lib/**',
+      'registry/**',
+      'themes/**',
+      'patterns/**',
+      'assets/**',
+      'packages/cli/src/**',
+      'packages/theme-engine/src/**',
+      'packages/visor-flutter/lib/**',
+      'packages/tokens/src/**',
+    ];
+    for (const pattern of required) {
+      expect(SHIPPING_PATHS).toContain(pattern);
+    }
+  });
+
+  it('is non-empty', () => {
+    expect(SHIPPING_PATHS.length).toBeGreaterThan(0);
   });
 });
 
@@ -239,6 +364,26 @@ Add foo export to tokens.`;
   it('skips when no published-package files changed (docs-only)', async () => {
     const result = await run(
       makeDefaults({ getChangedFiles: () => ['packages/docs/content/button.mdx'] }),
+    );
+    expect(result.skipped).toBe(true);
+    expect(result.reason).toBe('no-published-changes');
+  });
+
+  it('flags as requiring a changeset when only a blocks/ file changed', async () => {
+    // [auto] verification: editing a file in blocks/ must flag (matches CI gate).
+    const result = await run(
+      makeDefaults({
+        getChangedFiles: () => ['blocks/design-system-specimen/specimen-data.ts'],
+      }),
+    );
+    expect(result.skipped).toBe(false);
+    expect(result.bumpType).toBe('minor');
+  });
+
+  it('does NOT flag when only packages/cli/scripts/ (tooling) changed', async () => {
+    // [auto] verification: tooling-only edits must not flag (CI scopes to /src/**).
+    const result = await run(
+      makeDefaults({ getChangedFiles: () => ['packages/cli/scripts/release.ts'] }),
     );
     expect(result.skipped).toBe(true);
     expect(result.reason).toBe('no-published-changes');

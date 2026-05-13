@@ -56,6 +56,33 @@ jobs:
         run: echo "Changeset gate bypassed — $SKIP_REASON"
 
       # -----------------------------------------------------------------------
+      # Build paths-filter input from changeset-paths.json (single source of
+      # truth shared with scripts/generate-changeset.mjs — the local pre-push
+      # hook). Update the JSON file, not this workflow, when paths change.
+      # -----------------------------------------------------------------------
+      - name: Build paths-filter from changeset-paths.json
+        id: build-filter
+        if: steps.skip.outputs.skip == 'false'
+        run: |
+          # Fail loudly if the JSON is missing/empty rather than silently passing
+          # every PR (a silent pass would be the VI-317 regression class).
+          if [ ! -f changeset-paths.json ]; then
+            echo "::error::changeset-paths.json not found at repo root. The changeset gate cannot determine shipping paths without it."
+            exit 1
+          fi
+          PATHS=$(jq -r '.shippingPaths[] | "  - \"" + . + "\""' changeset-paths.json)
+          if [ -z "$PATHS" ]; then
+            echo "::error::changeset-paths.json contains no .shippingPaths entries. Refusing to silently bypass the changeset gate."
+            exit 1
+          fi
+          {
+            echo 'filter<<EOF'
+            echo 'source:'
+            echo "$PATHS"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      # -----------------------------------------------------------------------
       # Detect whether any shipping-package paths were touched
       # -----------------------------------------------------------------------
       - name: Check for shipping-package changes
@@ -63,20 +90,7 @@ jobs:
         if: steps.skip.outputs.skip == 'false'
         uses: dorny/paths-filter@v3
         with:
-          filters: |
-            source:
-              - 'components/**'
-              - 'blocks/**'
-              - 'hooks/**'
-              - 'lib/**'
-              - 'registry/**'
-              - 'themes/**'
-              - 'patterns/**'
-              - 'assets/**'
-              - 'packages/cli/src/**'
-              - 'packages/theme-engine/src/**'
-              - 'packages/visor-flutter/lib/**'
-              - 'packages/tokens/src/**'
+          filters: ${{ steps.build-filter.outputs.filter }}
 
       # -----------------------------------------------------------------------
       # Detect whether the PR adds a .changeset/*.md file
