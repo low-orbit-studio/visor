@@ -272,6 +272,39 @@ typography:
       expect(css).not.toContain("PPModelMono-Regular.woff2");
       expect(css).not.toContain("PPModelMono-Bold.woff2");
     });
+
+    it("respects explicit weights array for mono slot visor-fonts (VI-372)", () => {
+      // Regression for VI-372: resolveThemeFonts previously dropped
+      // typography.mono.weights, emitting only one @font-face for the
+      // singular weight. Mono slot must honor weights[] like heading/body.
+      const yaml = `
+name: Mono Weights Theme
+version: 1
+colors:
+  primary: "#2563EB"
+typography:
+  mono:
+    family: "PP Model Mono"
+    weight: 500
+    weights: [300, 400, 500, 700, 800]
+    source: visor-fonts
+    org: low-orbit-studio
+`;
+      const css = docsAdapter(makeInput(yaml));
+      // All 5 weights should emit @font-face blocks. PP Model Mono uses
+      // foundry-specific aliases for 400 (Book) and 800 (Super) per
+      // FONT_WEIGHT_ALIASES; 300/500/700 use standard PostScript names.
+      expect(css).toContain("PPModelMono-Light.woff2");
+      expect(css).toContain("PPModelMono-Book.woff2");
+      expect(css).toContain("PPModelMono-Medium.woff2");
+      expect(css).toContain("PPModelMono-Bold.woff2");
+      expect(css).toContain("PPModelMono-Super.woff2");
+      // 5 @font-face blocks scoped to the aliased mono family
+      const monoFaceBlocks = css.match(
+        /@font-face \{\s*\n\s*font-family: "PP Model Mono \[mono-weights-theme\]";/g,
+      );
+      expect(monoFaceBlocks).toHaveLength(5);
+    });
   });
 
   describe("cross-theme @font-face scoping (VI-354)", () => {
