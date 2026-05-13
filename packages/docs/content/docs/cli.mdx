@@ -168,6 +168,7 @@ Generate CSS from a `.visor.yaml` theme file.
 ```bash
 npx @loworbitstudio/visor theme apply .visor.yaml
 npx @loworbitstudio/visor theme apply .visor.yaml --adapter nextjs
+npx @loworbitstudio/visor theme apply .visor.yaml --adapter nextjs --scope-prefix 'body.my-theme'
 npx @loworbitstudio/visor theme apply .visor.yaml --adapter fumadocs
 npx @loworbitstudio/visor theme apply .visor.yaml --adapter deck
 ```
@@ -177,7 +178,8 @@ npx @loworbitstudio/visor theme apply .visor.yaml --adapter deck
 | Flag | Description |
 |------|-------------|
 | `-o, --output <path>` | Custom output file path |
-| `--adapter <name>` | Target adapter: `nextjs`, `fumadocs`, `deck`, `docs` |
+| `--adapter <name>` | Target adapter: `nextjs`, `fumadocs`, `deck`, `docs`, `flutter` |
+| `--scope-prefix <selector>` | (nextjs) Wrap all rules under a CSS selector (e.g. `body.blacklight-theme`) so multiple themes can coexist via body-class repaint. Dark-mode block scopes to `<selector>.dark`. Default: `:root`. |
 | `--json` | Output structured JSON (for AI agents) |
 
 See [Adapters](/docs/adapters) for details on each adapter's output.

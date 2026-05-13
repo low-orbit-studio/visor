@@ -148,6 +148,33 @@ describe("theme apply command", () => {
     expect(css).toContain("@layer visor-primitives")
   })
 
+  it("nextjs adapter with --scope-prefix wraps rules in the supplied selector (VI-368)", () => {
+    const yamlPath = join(testDir, ".visor.yaml")
+    writeFileSync(yamlPath, VALID_YAML, "utf-8")
+
+    themeApplyCommand(".visor.yaml", testDir, {
+      adapter: "nextjs",
+      scopePrefix: "body.blacklight-theme",
+    })
+
+    const outputPath = join(testDir, "globals.css")
+    const css = readFileSync(outputPath, "utf-8")
+    expect(css).toContain("body.blacklight-theme {")
+    expect(css).toContain("body.blacklight-theme.dark")
+    expect(css).not.toMatch(/\n:root \{/)
+  })
+
+  it("nextjs adapter without --scope-prefix keeps :root output (backward compat)", () => {
+    const yamlPath = join(testDir, ".visor.yaml")
+    writeFileSync(yamlPath, VALID_YAML, "utf-8")
+
+    themeApplyCommand(".visor.yaml", testDir, { adapter: "nextjs" })
+
+    const outputPath = join(testDir, "globals.css")
+    const css = readFileSync(outputPath, "utf-8")
+    expect(css).toContain(":root")
+  })
+
   it("generates fumadocs adapter output with --adapter fumadocs", () => {
     const yamlPath = join(testDir, ".visor.yaml")
     writeFileSync(yamlPath, VALID_YAML, "utf-8")

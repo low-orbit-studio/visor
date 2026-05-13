@@ -19,6 +19,12 @@ export interface ThemeApplyOptions {
   output?: string
   json?: boolean
   adapter?: AdapterName
+  /**
+   * NextJS adapter: CSS selector to scope all generated rules under, enabling
+   * the body-class repaint pattern (e.g. `body.blacklight-theme`). When
+   * omitted, the adapter emits its default `:root` selectors. See VI-368.
+   */
+  scopePrefix?: string
   /** Flutter adapter: package name. */
   packageName?: string
   /** Flutter adapter: skip scaffolding, emit only token files. */
@@ -98,7 +104,9 @@ export function themeApplyCommand(
 
       switch (options.adapter) {
         case "nextjs":
-          css = nextjsAdapter(adapterInput)
+          css = nextjsAdapter(adapterInput, {
+            scopePrefix: options.scopePrefix,
+          })
           break
         case "fumadocs":
           css = fumadocsAdapter(adapterInput)

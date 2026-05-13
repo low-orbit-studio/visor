@@ -28,6 +28,16 @@ export interface AdapterOptions {
 export interface NextJSAdapterOptions extends AdapterOptions {
   /** Include Google Fonts @import statements (default: true) */
   includeFontImports?: boolean;
+  /**
+   * Optional CSS selector that replaces `:root` in the generated output,
+   * enabling the body-class repaint pattern (e.g. `body.blacklight-theme`).
+   * When set, the dark-mode block scopes to `<scopePrefix>.dark`,
+   * `<scopePrefix>.theme-dark`, and `<scopePrefix>[data-theme="dark"]`;
+   * the `prefers-color-scheme: dark` media query composes the prefix with
+   * the existing `:not(.light)` guards. When omitted, output is unchanged
+   * (`:root`) for backward compatibility. See VI-368.
+   */
+  scopePrefix?: string;
 }
 
 /** Options specific to the Deck adapter. */

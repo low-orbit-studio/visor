@@ -24,6 +24,35 @@ Output includes:
 
 **next/font integration:** If you use `next/font` for font loading, remove the `@import` lines from the generated CSS to avoid double-loading fonts. Configure fonts in your `layout.tsx` instead.
 
+#### `--scope-prefix` (body-class theme swap)
+
+By default, the nextjs adapter emits rules under `:root`, which works for whole-document theming. To let multiple themes coexist and switch via a body class (the body-class repaint pattern), pass `--scope-prefix`:
+
+```bash
+npx @loworbitstudio/visor theme apply themes/blacklight/theme.visor.yaml \
+  --adapter nextjs \
+  --scope-prefix 'body.blacklight-theme'
+```
+
+Generated output:
+
+```css
+body.blacklight-theme {
+  --surface-page: ...;
+  /* primitives + light tokens */
+}
+
+body.blacklight-theme.dark,
+body.blacklight-theme.theme-dark,
+body.blacklight-theme[data-theme="dark"] {
+  /* dark-mode overrides */
+}
+```
+
+The dark-mode block composes the prefix with the standard `.dark` / `.theme-dark` / `[data-theme="dark"]` selectors, matching the body-class + `html.dark` dual-toggle pattern. The `prefers-color-scheme: dark` media query likewise composes the prefix with the existing `:not(.light)` guards.
+
+When `--scope-prefix` is omitted, output is unchanged (`:root` selectors), so existing setups continue to work.
+
 ### Fumadocs
 
 Generates a bridge CSS file that maps Visor semantic tokens to fumadocs `--color-fd-*` custom properties.

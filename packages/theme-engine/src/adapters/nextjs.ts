@@ -39,6 +39,9 @@ export function nextjsAdapter(
 ): string {
   const includeFontImports = options?.includeFontImports ?? true;
   const includeFowt = options?.includeFowt ?? true;
+  // Optional body-class scope prefix (e.g. `body.blacklight-theme`). When
+  // unset, output preserves the legacy `:root` selectors. See VI-368.
+  const scopePrefix = options?.scopePrefix;
   const lines: string[] = [];
   const slug = toKebabCase(input.config.name);
   const aliasedFamilies = new Map<string, string>();
@@ -118,14 +121,17 @@ export function nextjsAdapter(
 
   // 3. Primitives layer
   const primitivesBody = stripHeader(
-    generatePrimitivesCss(input.primitives, input.config, { aliasedFamilies }),
+    generatePrimitivesCss(input.primitives, input.config, {
+      aliasedFamilies,
+      scopePrefix,
+    }),
   );
   lines.push(wrapInLayer("visor-primitives", primitivesBody));
   lines.push("");
 
   // 4. Adaptive layer (light + dark)
-  const lightBody = stripHeader(generateLightCss(input.tokens));
-  const darkBody = stripHeader(generateDarkCss(input.tokens));
+  const lightBody = stripHeader(generateLightCss(input.tokens, { scopePrefix }));
+  const darkBody = stripHeader(generateDarkCss(input.tokens, { scopePrefix }));
   lines.push(
     wrapInLayer("visor-adaptive", lightBody + "\n\n" + darkBody),
   );
