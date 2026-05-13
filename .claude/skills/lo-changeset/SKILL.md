@@ -38,8 +38,8 @@ node scripts/generate-changeset.mjs
 ```
 
 2. The script will:
-   - Detect which published packages (`packages/tokens/`, `packages/cli/`, `packages/theme-engine/`) were changed
-   - Skip if no published packages were touched
+   - Detect whether any shipping path was touched (the list lives in `changeset-paths.json` at repo root — the same file the CI changeset gate reads)
+   - Skip if no shipping paths were touched
    - Skip if an operator-authored changeset already exists (operator override wins)
    - If `claude` is not on PATH, print a warning and exit cleanly
    - Otherwise, invoke `claude -p` with the diff and the system prompt at `scripts/changeset-prompt.md`

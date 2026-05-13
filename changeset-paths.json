@@ -1,0 +1,17 @@
+{
+  "_comment": "Single source of truth for the changeset gate. Both scripts/generate-changeset.mjs (local pre-push hook) and .github/workflows/changeset-gate.yml (CI gate) read this file. When this list changes, both consumers pick it up automatically. Patterns use minimatch syntax; every entry must end in '/**'.",
+  "shippingPaths": [
+    "components/**",
+    "blocks/**",
+    "hooks/**",
+    "lib/**",
+    "registry/**",
+    "themes/**",
+    "patterns/**",
+    "assets/**",
+    "packages/cli/src/**",
+    "packages/theme-engine/src/**",
+    "packages/visor-flutter/lib/**",
+    "packages/tokens/src/**"
+  ]
+}

@@ -26,25 +26,80 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, '..');
 const CHANGESET_DIR = join(REPO_ROOT, '.changeset');
 const PROMPT_FILE = join(__dirname, 'changeset-prompt.md');
+const SHIPPING_PATHS_FILE = join(REPO_ROOT, 'changeset-paths.json');
 export const GENERATED_MARKER = '# generated-by: lo-changeset';
 
-// -- Published packages -- single source of truth shared with auto-version.mjs --
+// -- Published packages -- single source of truth shared with auto-version.mjs.
+// Used for the dir→npm-name mapping in version-bumping. Distinct from
+// SHIPPING_PATHS below (which covers the broader "what requires a changeset"
+// surface, including copy-and-own registry paths like blocks/ and themes/).
 export const PACKAGES = [
   { dir: 'packages/tokens', name: '@loworbitstudio/visor-core' },
   { dir: 'packages/cli', name: '@loworbitstudio/visor' },
   { dir: 'packages/theme-engine', name: '@loworbitstudio/visor-theme-engine' },
 ];
 
+// -- Shipping paths -- single source of truth shared with .github/workflows/changeset-gate.yml.
+// Loaded from changeset-paths.json at repo root. Every pattern must end in '/**'
+// so we can match with a simple prefix check (no glob dependency).
+function _loadShippingPaths() {
+  let raw;
+  try {
+    raw = readFileSync(SHIPPING_PATHS_FILE, 'utf8');
+  } catch (err) {
+    throw new Error(
+      `[generate-changeset] could not read ${SHIPPING_PATHS_FILE}: ${err.message}. ` +
+      `This file is the single source of truth for the changeset gate — it must exist at repo root.`,
+    );
+  }
+  let parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (err) {
+    throw new Error(`[generate-changeset] ${SHIPPING_PATHS_FILE} is not valid JSON: ${err.message}`);
+  }
+  if (!Array.isArray(parsed.shippingPaths) || parsed.shippingPaths.length === 0) {
+    throw new Error(
+      `[generate-changeset] ${SHIPPING_PATHS_FILE} must define a non-empty "shippingPaths" array.`,
+    );
+  }
+  for (const pattern of parsed.shippingPaths) {
+    if (typeof pattern !== 'string' || !pattern.endsWith('/**')) {
+      throw new Error(
+        `[generate-changeset] changeset-paths.json pattern ${JSON.stringify(pattern)} must be a string ending in "/**". ` +
+        `If you need a non-recursive pattern, update hasPublishedPackageChanges to use a real glob matcher.`,
+      );
+    }
+  }
+  return parsed.shippingPaths;
+}
+
+// Load at module-import time, but never throw — the local pre-push hook is
+// contractually "never block the push" (D7). Surface any error via run()'s
+// log channel instead. CI has its own loud check in the workflow.
+let _shippingLoadError = null;
+function _safeLoadShippingPaths() {
+  try {
+    return _loadShippingPaths();
+  } catch (err) {
+    _shippingLoadError = err;
+    return [];
+  }
+}
+export const SHIPPING_PATHS = _safeLoadShippingPaths();
+const SHIPPING_PREFIXES = SHIPPING_PATHS.map(p => p.slice(0, -2)); // strip trailing '**', keep trailing '/'
+
 // -- Pure helpers (exported for testing) --
 
 /**
- * Returns true if any file in changedFiles touches a published package directory.
+ * Returns true if any file in changedFiles matches a shipping-path pattern
+ * from changeset-paths.json. Patterns are `prefix/**` and matched by prefix.
  * @param {string[]} changedFiles - list of repo-relative file paths
  * @returns {boolean}
  */
 export function hasPublishedPackageChanges(changedFiles) {
-  return PACKAGES.some(pkg =>
-    changedFiles.some(f => f.startsWith(pkg.dir + '/')),
+  return SHIPPING_PREFIXES.some(prefix =>
+    changedFiles.some(f => f.startsWith(prefix)),
   );
 }
 
@@ -203,6 +258,14 @@ export async function run({
   readFile = readFileSync,
   log = console.error,
 } = {}) {
+  // 0. If shipping-paths config failed to load at module import, warn and skip.
+  // D7: never block the push.
+  if (_shippingLoadError) {
+    log(`[lo-changeset] WARNING: ${_shippingLoadError.message}`);
+    log('[lo-changeset] Skipping changeset generation. Push will proceed.');
+    return { skipped: true, reason: 'shipping-paths-load-error' };
+  }
+
   // 1. Check if any published packages were touched
   let changedFiles;
   try {

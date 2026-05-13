@@ -553,7 +553,7 @@ npm run themes:apply-flutter  # Regenerate packages/visor_themes/ for all 11 the
 
 Patch-level publishes happen automatically on PR merge via `auto-version.yml`. For minor or major bumps, a changeset file is required.
 
-**Automatic generation (recommended).** The pre-push git hook runs `scripts/generate-changeset.mjs` before every push. If the diff touches a published package (`packages/tokens/`, `packages/cli/`, or `packages/theme-engine/`) and no operator-authored changeset exists yet, Claude will write `.changeset/<branch-slug>.md` and stage it automatically.
+**Automatic generation (recommended).** The pre-push git hook runs `scripts/generate-changeset.mjs` before every push. If the diff touches a shipping path (any directory listed in `changeset-paths.json` — `components/`, `blocks/`, `hooks/`, `lib/`, `registry/`, `themes/`, `patterns/`, `assets/`, or the `src/`/`lib/` trees of the published packages) and no operator-authored changeset exists yet, Claude will write `.changeset/<branch-slug>.md` and stage it automatically. The same `changeset-paths.json` drives the CI changeset gate, so the local hook and CI stay in sync.
 
 Requirements: `claude` CLI must be installed globally (`npm install -g @anthropic-ai/claude-code`). If it's not available, the hook prints a warning and the push proceeds normally.
 
