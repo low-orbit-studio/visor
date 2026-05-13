@@ -121,6 +121,10 @@ theme
     "target adapter: nextjs, fumadocs, deck, docs, flutter"
   )
   .option(
+    "--scope-prefix <selector>",
+    "(nextjs) CSS selector to wrap all rules under (e.g. 'body.blacklight-theme'); enables body-class theme swap. Default: :root"
+  )
+  .option(
     "--package-name <name>",
     "(flutter) Dart package name for generated pubspec.yaml (default: ui)"
   )
@@ -147,6 +151,7 @@ theme
         output?: string
         json?: boolean
         adapter?: string
+        scopePrefix?: string
         packageName?: string
         tokensOnly?: boolean
         lightOnly?: boolean

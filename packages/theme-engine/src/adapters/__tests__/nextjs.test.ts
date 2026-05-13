@@ -102,6 +102,62 @@ describe("nextjsAdapter", () => {
     expect(layerIdx).toBeGreaterThan(importIdx);
   });
 
+  describe("scopePrefix option (VI-368)", () => {
+    it("without scopePrefix, output preserves :root selectors (backward compat)", () => {
+      const css = nextjsAdapter(makeInput(MINIMAL_YAML));
+      expect(css).toContain(":root");
+      // Default dark selectors are NOT prefixed.
+      expect(css).toMatch(/\n\.dark,\n\.theme-dark,\n\[data-theme="dark"\]/);
+    });
+
+    it("with scopePrefix, all :root rules are wrapped in the supplied selector", () => {
+      const css = nextjsAdapter(makeInput(MINIMAL_YAML), {
+        scopePrefix: "body.blacklight-theme",
+      });
+      // Primitives + light blocks open with the supplied selector.
+      expect(css).toContain("body.blacklight-theme {");
+      // The default :root selector should NOT appear as a block opener.
+      // (`:root` may still appear inside comments, so check selector form.)
+      expect(css).not.toMatch(/\n:root \{/);
+    });
+
+    it("dark-mode manual-toggle block scopes to <prefix>.dark, <prefix>.theme-dark, <prefix>[data-theme]", () => {
+      const css = nextjsAdapter(makeInput(MINIMAL_YAML), {
+        scopePrefix: "body.blacklight-theme",
+      });
+      expect(css).toContain("body.blacklight-theme.dark");
+      expect(css).toContain("body.blacklight-theme.theme-dark");
+      expect(css).toContain('body.blacklight-theme[data-theme="dark"]');
+      // Bare `.dark,` (the unprefixed selector list) must not appear.
+      expect(css).not.toMatch(/\n\.dark,\n\.theme-dark,\n\[data-theme="dark"\]/);
+    });
+
+    it("prefers-color-scheme block composes the prefix with the :not(.light) guards", () => {
+      const css = nextjsAdapter(makeInput(MINIMAL_YAML), {
+        scopePrefix: "body.blacklight-theme",
+      });
+      expect(css).toContain("@media (prefers-color-scheme: dark)");
+      expect(css).toContain(
+        'body.blacklight-theme:not(.light):not(.theme-light):not([data-theme="light"])',
+      );
+    });
+
+    it("accepts arbitrary caller-supplied selectors (not just body.*)", () => {
+      const css = nextjsAdapter(makeInput(MINIMAL_YAML), {
+        scopePrefix: ".scoped-theme",
+      });
+      expect(css).toContain(".scoped-theme {");
+      expect(css).toContain(".scoped-theme.dark");
+    });
+
+    it("scoped output is deterministic", () => {
+      const input = makeInput(MINIMAL_YAML);
+      const css1 = nextjsAdapter(input, { scopePrefix: "body.x-theme" });
+      const css2 = nextjsAdapter(input, { scopePrefix: "body.x-theme" });
+      expect(css1).toBe(css2);
+    });
+  });
+
   describe("cross-theme @font-face scoping (VI-354)", () => {
     // The nextjs adapter doesn't emit `size-adjust` on @font-face today, so
     // the literal VI-354 corruption (size-adjust override) can't manifest

@@ -468,6 +468,7 @@ npx @loworbitstudio/visor suggest --for "<use case>" --json # JSON output (for A
 # Themes
 npx @loworbitstudio/visor theme apply <file>                # Generate CSS from .visor.yaml
 npx @loworbitstudio/visor theme apply <file> --adapter nextjs     # Next.js adapter
+npx @loworbitstudio/visor theme apply <file> --adapter nextjs --scope-prefix 'body.my-theme'  # Body-class scoped output
 npx @loworbitstudio/visor theme apply <file> --adapter fumadocs   # fumadocs adapter
 npx @loworbitstudio/visor theme apply <file> --adapter deck       # Deck adapter
 npx @loworbitstudio/visor theme validate <file>             # Validate a .visor.yaml theme

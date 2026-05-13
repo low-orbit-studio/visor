@@ -238,32 +238,36 @@ function generateMiscPrimitives(): string[] {
 export function generatePrimitivesCss(
   primitives: GeneratedPrimitives,
   config: ResolvedThemeConfig,
-  options?: { aliasedFamilies?: AliasedFamilies },
+  options?: { aliasedFamilies?: AliasedFamilies; scopePrefix?: string },
 ): string {
   const lines: string[] = [];
+  // Replace the default `:root` host selector when a scope prefix is
+  // supplied (e.g. `body.blacklight-theme`) so the same CSS works under
+  // the body-class repaint pattern. See VI-368.
+  const host = options?.scopePrefix ?? ":root";
 
   lines.push(sectionComment("Primitive: Colors"));
   lines.push(
-    block(":root", [generateColorPrimitives(primitives)])
+    block(host, [generateColorPrimitives(primitives)])
   );
 
   lines.push(sectionComment("Primitive: Spacing"));
-  lines.push(block(":root", generateSpacingPrimitives(config)));
+  lines.push(block(host, generateSpacingPrimitives(config)));
 
   lines.push(sectionComment("Primitive: Border Radius"));
-  lines.push(block(":root", generateRadiusPrimitives(config)));
+  lines.push(block(host, generateRadiusPrimitives(config)));
 
   lines.push(sectionComment("Primitive: Typography"));
-  lines.push(block(":root", generateTypographyPrimitives(config, options?.aliasedFamilies)));
+  lines.push(block(host, generateTypographyPrimitives(config, options?.aliasedFamilies)));
 
   lines.push(sectionComment("Primitive: Shadows"));
-  lines.push(block(":root", generateShadowPrimitives(config)));
+  lines.push(block(host, generateShadowPrimitives(config)));
 
   lines.push(sectionComment("Primitive: Motion"));
-  lines.push(block(":root", generateMotionPrimitives(config)));
+  lines.push(block(host, generateMotionPrimitives(config)));
 
   lines.push(sectionComment("Primitive: Miscellaneous"));
-  lines.push(block(":root", generateMiscPrimitives()));
+  lines.push(block(host, generateMiscPrimitives()));
 
   return header("Visor Theme — Primitives") + lines.join("\n");
 }
@@ -335,35 +339,51 @@ function buildAdaptiveDecls(
   return { textDecls, surfaceDecls, borderDecls, interactiveDecls };
 }
 
-export function generateLightCss(tokens: SemanticTokens): string {
+export function generateLightCss(
+  tokens: SemanticTokens,
+  options?: { scopePrefix?: string },
+): string {
   const lines: string[] = [];
   const { textDecls, surfaceDecls, borderDecls, interactiveDecls } =
     buildAdaptiveDecls(tokens, "light");
+  // Same body-class scoping rationale as generatePrimitivesCss — see VI-368.
+  const host = options?.scopePrefix ?? ":root";
 
   lines.push(sectionComment("Adaptive: Text (light)"));
-  lines.push(block(":root", textDecls));
+  lines.push(block(host, textDecls));
 
   lines.push(sectionComment("Adaptive: Surface (light)"));
-  lines.push(block(":root", surfaceDecls));
+  lines.push(block(host, surfaceDecls));
 
   lines.push(sectionComment("Adaptive: Border (light)"));
-  lines.push(block(":root", borderDecls));
+  lines.push(block(host, borderDecls));
 
   lines.push(sectionComment("Adaptive: Interactive (light)"));
-  lines.push(block(":root", interactiveDecls));
+  lines.push(block(host, interactiveDecls));
 
   return header("Visor Theme — Light") + lines.join("\n");
 }
 
-export function generateDarkCss(tokens: SemanticTokens): string {
+export function generateDarkCss(
+  tokens: SemanticTokens,
+  options?: { scopePrefix?: string },
+): string {
   const lines: string[] = [];
   const { textDecls, surfaceDecls, borderDecls, interactiveDecls } =
     buildAdaptiveDecls(tokens, "dark");
 
-  const darkSelectors = [".dark", ".theme-dark", '[data-theme="dark"]'];
+  // When scoped (e.g. `body.blacklight-theme`), the manual-toggle dark
+  // selectors compose with the prefix as `<prefix>.dark`,
+  // `<prefix>.theme-dark`, `<prefix>[data-theme="dark"]` — matching the
+  // body-class + html.dark dual-toggle pattern. See VI-368.
+  const prefix = options?.scopePrefix;
+  const darkSelectors = prefix
+    ? [`${prefix}.dark`, `${prefix}.theme-dark`, `${prefix}[data-theme="dark"]`]
+    : [".dark", ".theme-dark", '[data-theme="dark"]'];
   const darkSelector = darkSelectors.join(",\n");
-  const prefersSelector =
-    ':root:not(.light):not(.theme-light):not([data-theme="light"])';
+  const prefersSelector = prefix
+    ? `${prefix}:not(.light):not(.theme-light):not([data-theme="light"])`
+    : ':root:not(.light):not(.theme-light):not([data-theme="light"])';
 
   // Manual toggle selectors
   lines.push(sectionComment("Adaptive: Text (dark) — manual toggle"));
