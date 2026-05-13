@@ -80,6 +80,8 @@ export interface VisorTypography {
   mono?: {
     family: string;
     weight?: number;
+    /** Explicit list of font weights to load (overrides engine defaults) */
+    weights?: number[];
     source?: FontSource;
     org?: string;
   };

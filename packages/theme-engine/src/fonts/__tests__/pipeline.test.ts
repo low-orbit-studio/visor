@@ -260,4 +260,52 @@ describe("resolveThemeFonts", () => {
     const matches = result.css.match(/font-family: "Inter Fallback"/g);
     expect(matches).toHaveLength(1);
   });
+
+  it("resolves mono weights from typography.mono.weights array", () => {
+    const typography: VisorTypography = {
+      mono: {
+        family: "PP Model Mono",
+        weights: [300, 400, 500, 700, 800],
+        source: "visor-fonts",
+        org: "low-orbit-studio",
+      },
+    };
+
+    const result = resolveThemeFonts(typography);
+
+    expect(result.mono).not.toBeNull();
+    expect(result.mono!.weights).toEqual([300, 400, 500, 700, 800]);
+  });
+
+  it("falls back to typography.mono.weight singular when weights is absent", () => {
+    const typography: VisorTypography = {
+      mono: {
+        family: "PP Model Mono",
+        weight: 500,
+        source: "visor-fonts",
+        org: "low-orbit-studio",
+      },
+    };
+
+    const result = resolveThemeFonts(typography);
+
+    expect(result.mono).not.toBeNull();
+    expect(result.mono!.weights).toEqual([500]);
+  });
+
+  it("falls through to engine defaults when neither mono.weights nor mono.weight is set", () => {
+    const typography: VisorTypography = {
+      mono: {
+        family: "PP Model Mono",
+        source: "visor-fonts",
+        org: "low-orbit-studio",
+      },
+    };
+
+    const result = resolveThemeFonts(typography);
+
+    // No weights specified → resolveFont injects engine defaults [400, 700]
+    expect(result.mono).not.toBeNull();
+    expect(result.mono!.weights).toEqual([400, 700]);
+  });
 });

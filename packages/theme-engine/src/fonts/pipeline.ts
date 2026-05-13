@@ -411,8 +411,12 @@ export function resolveThemeFonts(
   // only kicks in when mono.source is absent.
   let monoResolution: FontResolution | null = null;
   if (typography.mono?.family) {
-    const monoWeights: number[] = [];
-    if (typography.mono.weight) monoWeights.push(typography.mono.weight);
+    // Explicit weights array takes full precedence; otherwise derive from weight field
+    const monoWeights: number[] = typography.mono.weights
+      ? [...typography.mono.weights]
+      : typography.mono.weight
+        ? [typography.mono.weight]
+        : [];
 
     let monoSource = typography.mono.source;
     let monoOrg = typography.mono.org;
