@@ -17,6 +17,10 @@ export const FONT_WEIGHT_ALIASES: Record<string, Record<number, string>> = {
     400: "Book",
     800: "Super",
   },
+  "PP Model Sans": {
+    400: "Book",
+    800: "Super",
+  },
   "PP Model Plastic": {
     400: "Book",
     800: "Super",
