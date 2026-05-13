@@ -234,6 +234,8 @@ export interface VisorThemeConfig {
 /** Config with all defaults resolved */
 export interface ResolvedThemeConfig {
   name: string;
+  /** Optional display label override forwarded from VisorThemeConfig.label. */
+  label?: string;
   version: 1;
   colors: {
     primary: string;

@@ -166,7 +166,7 @@ async function main() {
 
     manifest.push({
       slug,
-      label: toLabel(slug),
+      label: themeData.config.label ?? toLabel(slug),
       group: meta.group ?? "Private",
       typography: extractTypographySlots(themeData.config),
     })
