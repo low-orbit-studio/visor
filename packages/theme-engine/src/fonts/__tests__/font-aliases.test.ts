@@ -15,6 +15,8 @@ describe("lookupFontWeightAlias", () => {
   it("returns the aliased PostScript suffix for an aliased family + weight", () => {
     expect(lookupFontWeightAlias("PP Model Mono", 400)).toBe("Book");
     expect(lookupFontWeightAlias("PP Model Mono", 800)).toBe("Super");
+    expect(lookupFontWeightAlias("PP Model Sans", 400)).toBe("Book");
+    expect(lookupFontWeightAlias("PP Model Sans", 800)).toBe("Super");
     expect(lookupFontWeightAlias("PP Model Plastic", 400)).toBe("Book");
     expect(lookupFontWeightAlias("PP Model Plastic", 800)).toBe("Super");
   });
@@ -30,8 +32,12 @@ describe("lookupFontWeightAlias", () => {
     expect(lookupFontWeightAlias("PP Model Mono", 700)).toBeNull();
   });
 
-  it("seeds the registry with PP Model Mono and PP Model Plastic", () => {
+  it("seeds the registry with all three PP Model families (VI-373)", () => {
     expect(FONT_WEIGHT_ALIASES["PP Model Mono"]).toEqual({
+      400: "Book",
+      800: "Super",
+    });
+    expect(FONT_WEIGHT_ALIASES["PP Model Sans"]).toEqual({
       400: "Book",
       800: "Super",
     });
@@ -54,6 +60,20 @@ describe("buildVisorFontUrl — alias resolution", () => {
     const url = buildVisorFontUrl("low-orbit-studio", "PP Model Mono", 800);
     expect(url).toBe(
       "https://fonts.visor.design/low-orbit-studio/pp-model-mono/PPModelMono-Super.woff2"
+    );
+  });
+
+  it("uses the alias for PP Model Sans weight 400 (Book, not Regular)", () => {
+    const url = buildVisorFontUrl("low-orbit-studio", "PP Model Sans", 400);
+    expect(url).toBe(
+      "https://fonts.visor.design/low-orbit-studio/pp-model-sans/PPModelSans-Book.woff2"
+    );
+  });
+
+  it("uses the alias for PP Model Sans weight 800 (Super, not ExtraBold)", () => {
+    const url = buildVisorFontUrl("low-orbit-studio", "PP Model Sans", 800);
+    expect(url).toBe(
+      "https://fonts.visor.design/low-orbit-studio/pp-model-sans/PPModelSans-Super.woff2"
     );
   });
 
