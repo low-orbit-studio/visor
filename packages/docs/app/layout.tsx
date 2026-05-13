@@ -78,6 +78,13 @@ const INIT_SCRIPT = `(function(){` +
 const FONTSHARE_SATOSHI_URL =
   'https://api.fontshare.com/v2/css?f[]=satoshi@400,700,900&display=swap';
 
+// Google Fonts Source Code Pro for Space's mono slot — same W027/VI-360
+// reasoning as Fontshare above: the engine emits an `@import` in the bundled
+// theme CSS that Next.js strips, so the font must be loaded via an explicit
+// <link>. VI-362.
+const GOOGLE_FONTS_SOURCE_CODE_PRO_URL =
+  'https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400&display=swap';
+
 export default function RootLayout({
   children,
 }: {
@@ -89,6 +96,9 @@ export default function RootLayout({
         <link rel="preconnect" href="https://api.fontshare.com" />
         <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
         <link rel="stylesheet" href={FONTSHARE_SATOSHI_URL} />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="stylesheet" href={GOOGLE_FONTS_SOURCE_CODE_PRO_URL} />
       </head>
       <body className={spaceMono.variable} suppressHydrationWarning>
         {/* eslint-disable-next-line react/no-danger */}
