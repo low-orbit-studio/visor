@@ -1,3 +1,6 @@
+import { readFileSync } from "fs"
+import { dirname, join } from "path"
+import { fileURLToPath } from "url"
 import { Command } from "commander"
 import { checkCommand } from "./commands/check.js"
 import { initCommand } from "./commands/init.js"
@@ -29,12 +32,20 @@ import { tokensListCommand } from "./commands/tokens.js"
 import { migrateTokenSubstitutionCommand } from "./commands/migrate-token-substitution.js"
 import type { MigrateTokenSubstitutionOptions } from "./commands/migrate-token-substitution.js"
 
+// Resolve CLI version from the package's own package.json so `visor --version`
+// matches the installed npm version. After tsup bundles into dist/index.js,
+// __dirname is dist/ and package.json lives at ../package.json.
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const pkg = JSON.parse(
+  readFileSync(join(__dirname, "..", "package.json"), "utf-8")
+) as { version: string }
+
 const program = new Command()
 
 program
   .name("visor")
   .description("CLI for the Visor design system")
-  .version("0.3.0")
+  .version(pkg.version)
 
 program.addCommand(checkCommand())
 
