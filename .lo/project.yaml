@@ -1,0 +1,20 @@
+schema_version: 1
+project:
+  name: Visor
+  slug: visor
+  org: visor
+linear:
+  team_key: VI
+  default_ticket_state: Todo
+stack:
+  nextjs: true
+  flutter: false
+  fastapi: false
+  supabase: false
+  docs: true
+varlock:
+  installed: false
+github:
+  auto_merge: true
+git:
+  main_branch_write_policy: pr_required
