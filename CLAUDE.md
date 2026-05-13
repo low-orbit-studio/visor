@@ -95,6 +95,23 @@ Visor's long-term goals, phased roadmap, and detailed specs live in `/docs/`. Re
 
 **Current focus:** Phase 1a — Core Expansion + Theme Architecture Validation (~15 priority components, second standard theme, interactive adaptive tokens, docs theme switcher).
 
+## Publish Gate
+
+The Borealis publish gate prevents drift between the source in this repo and the registry that powers `npx visor add`. Symptom of drift: a VI- ticket is marked Done, the source file ships a new feature (e.g. `valueAs="hero"` on `stat-card`), but `npx visor add stat-card` writes the older version because the CLI hasn't been re-published.
+
+**The check:** [`scripts/visor-publish-smoke.mjs`](./scripts/visor-publish-smoke.mjs) compares this repo's locally-built `packages/cli/dist/registry.json` against the `dist/registry.json` shipped in the latest published `@loworbitstudio/visor` tarball. Any per-file content drift fails the job and names the drifted primitives.
+
+**Run it locally:**
+
+```bash
+npm run build -w packages/cli
+npm run smoke:publish
+```
+
+**In CI:** [`.github/workflows/visor-publish-smoke.yml`](./.github/workflows/visor-publish-smoke.yml) runs the smoke daily at 06:00 UTC, on `workflow_dispatch`, and after every successful `Release` workflow run.
+
+**When it fails:** cut a new `@loworbitstudio/visor` release that includes the drifted primitives. See [`docs/wisdom/W020-publish-coordination-drift.md`](./docs/wisdom/W020-publish-coordination-drift.md) for the failure-class background.
+
 ## Environment
 
 - `.env.local` at repo root — contains API keys (if needed)

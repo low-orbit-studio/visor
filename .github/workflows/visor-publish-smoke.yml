@@ -1,0 +1,68 @@
+name: Visor Publish Smoke
+
+# Borealis publish gate: VI- ticket "Done" should require that the artifact
+# is reachable via `npx visor add <name>`. The smoke compares this repo's
+# locally-built registry against the registry shipped in the latest
+# published @loworbitstudio/visor tarball. Any per-file content drift
+# fails the job.
+#
+# No untrusted inputs are interpolated into run: steps — only the GitHub-
+# controlled event_name and workflow_run.conclusion fields are referenced,
+# both inside `if:` conditionals (never in shell).
+#
+# See: scripts/visor-publish-smoke.mjs, VI-305
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Daily at 06:00 UTC — drift surfaces within ~24h of a missed publish.
+    - cron: "0 6 * * *"
+  workflow_run:
+    # Run immediately after a successful Release. The release workflow has
+    # already published to npm by this point; we wait a beat for npm's CDN
+    # to index the new version before querying it.
+    workflows: ["Release"]
+    types:
+      - completed
+
+concurrency:
+  group: visor-publish-smoke
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    name: Compare local registry against latest published
+    # Skip the workflow_run trigger if the upstream Release didn't succeed.
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          # Always check main — drift is a property of (main vs npm), not
+          # of an arbitrary branch.
+          ref: main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build CLI (produces packages/cli/dist/registry.json)
+        run: npm run build -w packages/cli
+
+      - name: Wait for npm CDN to index new publish
+        if: github.event_name == 'workflow_run'
+        run: sleep 60
+
+      - name: Run publish smoke
+        run: npm run smoke:publish
