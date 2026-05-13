@@ -217,6 +217,38 @@ function extractFontVarDeclarations(
   return decls;
 }
 
+/**
+ * Format a font coverage error for surfacing through the CLI / private-themes
+ * generator. The mono slot gets an additional sentence calling out the engine
+ * version requirement and the CLI/engine version coupling (VI-367 / BO-37):
+ * bumping the engine alone is silently insufficient because the visor CLI
+ * transitively pins its own engine copy.
+ *
+ * Filename is included so multi-theme runs surface which theme is failing.
+ */
+export function formatFontCoverageError(
+  filename: string,
+  declaredAt: string,
+  family: string,
+): string {
+  const base =
+    `${filename}: ${declaredAt} declares "${family}" with no matching @font-face. `;
+  if (declaredAt === "--font-mono") {
+    return (
+      base +
+      `Set typography.mono.source: visor-fonts (with org:), google-fonts, or fontshare; ` +
+      `or pick a system mono font. The mono slot's source/org keys require ` +
+      `@loworbitstudio/visor-theme-engine ≥ 0.5.0 and @loworbitstudio/visor ≥ 0.10.0 — ` +
+      `bump both, since the CLI bundles its own engine copy.`
+    );
+  }
+  return (
+    base +
+    `Set typography.<slot>.source: visor-fonts (with org:), google-fonts, or fontshare; ` +
+    `or pick a system font.`
+  );
+}
+
 export function validateFontCoverage(css: string): FontCoverageResult {
   const declaredFamilies = extractFontFaceFamilies(css);
   for (const f of extractGoogleFontsImports(css)) declaredFamilies.add(f);

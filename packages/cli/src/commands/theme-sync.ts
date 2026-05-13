@@ -9,7 +9,7 @@ import {
 } from "fs"
 import { join, basename, resolve, sep } from "path"
 import { parse as parseYaml } from "yaml"
-import { generateThemeData, validateFontCoverage } from "@loworbitstudio/visor-theme-engine"
+import { generateThemeData, validateFontCoverage, formatFontCoverageError } from "@loworbitstudio/visor-theme-engine"
 import { docsAdapter } from "@loworbitstudio/visor-theme-engine/adapters"
 import { logger } from "../utils/logger.js"
 import {
@@ -576,10 +576,7 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
     const coverage = validateFontCoverage(css)
     if (coverage.errors.length > 0) {
       for (const e of coverage.errors) {
-        errors.push(
-          `${basename(filePath)}: ${e.declaredAt} declares "${e.family}" with no matching @font-face. ` +
-          `Set typography.<slot>.source: visor-fonts (with org:) or google-fonts, or pick a system font.`,
-        )
+        errors.push(formatFontCoverageError(basename(filePath), e.declaredAt, e.family))
       }
       return
     }

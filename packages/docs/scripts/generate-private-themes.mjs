@@ -149,10 +149,7 @@ async function main() {
     const coverage = engine.validateFontCoverage(css)
     if (coverage.errors.length > 0) {
       for (const e of coverage.errors) {
-        console.error(
-          `[generate-private-themes] ${slug}: ${e.declaredAt} declares "${e.family}" with no matching @font-face. ` +
-          `Set typography.<slot>.source: visor-fonts (with org:) or google-fonts, or pick a system font.`,
-        )
+        console.error(`[generate-private-themes] ${engine.formatFontCoverageError(slug, e.declaredAt, e.family)}`)
       }
       process.exit(1)
     }
