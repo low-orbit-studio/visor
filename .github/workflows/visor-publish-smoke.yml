@@ -41,11 +41,14 @@ jobs:
 
     steps:
       - name: Checkout main
+        # Fetch full history so the audit step can walk `git log` per drifted
+        # file. Shallow clones would mask the touching commits.
         uses: actions/checkout@v4
         with:
           # Always check main — drift is a property of (main vs npm), not
           # of an arbitrary branch.
           ref: main
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -65,4 +68,47 @@ jobs:
         run: sleep 60
 
       - name: Run publish smoke
+        id: smoke
+        continue-on-error: true
         run: npm run smoke:publish
+
+      - name: Audit drifted VI- tickets
+        # When smoke detects drift, map each drifted primitive back to its
+        # most recent touching commit, extract VI-N refs, and (if
+        # LINEAR_API_KEY is configured) post a Linear comment per ticket.
+        # Closes the governance loop from VI-306. Only GitHub-controlled
+        # inputs (steps.smoke.outcome) are referenced in `if:`. The
+        # LINEAR_API_KEY secret is passed via env, never interpolated into
+        # the run: shell — no injection surface.
+        if: steps.smoke.outcome == 'failure'
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+        run: |
+          if [ -n "$LINEAR_API_KEY" ]; then
+            # --post-comments runs the report AND posts to Linear. Tolerate
+            # exit 1 (drift detected — expected here) but let other failures
+            # surface in the logs so we don't silently lose audit errors.
+            set +e
+            node scripts/visor-publish-audit.mjs --post-comments
+            EXIT=$?
+            set -e
+            if [ "$EXIT" -ne 0 ] && [ "$EXIT" -ne 1 ]; then
+              exit "$EXIT"
+            fi
+          else
+            # Report-only path: exit 1 is the expected "drift detected"
+            # signal — surface anything else.
+            set +e
+            node scripts/visor-publish-audit.mjs
+            EXIT=$?
+            set -e
+            if [ "$EXIT" -ne 0 ] && [ "$EXIT" -ne 1 ]; then
+              exit "$EXIT"
+            fi
+            echo "::warning::LINEAR_API_KEY secret not configured — audit report emitted to logs but no Linear comments posted. Configure the secret to enable the governance signal."
+          fi
+
+      - name: Surface smoke outcome
+        # Re-raise the smoke step's exit code so the job still fails on drift.
+        if: steps.smoke.outcome == 'failure'
+        run: exit 1

@@ -627,6 +627,10 @@ Day-to-day publishing is fully automatic — patch bumps for `@loworbitstudio/vi
 
 The skill itself contains no publish logic. Each repo's existing CI (`release.yml`, `auto-version.yml`, themes-private's `publish.yml`) remains the source of truth for what publishes. See [`docs/audits/publish-automation.md`](./docs/audits/publish-automation.md) for the full audit.
 
+### Publish-gate audit (Linear governance)
+
+When the `visor-publish-smoke` workflow detects drift between the source on `main` and the latest published `@loworbitstudio/visor` tarball, the audit step maps each drifted primitive back to the VI- ticket that introduced it and posts a Linear comment so "Done" eventually catches up with "shipped." Run it locally with `npm run audit:publish`. Full background in [`CLAUDE.md` § Publish Gate](./CLAUDE.md#publish-gate) and [`docs/wisdom/W029-vi-ticket-publish-governance.md`](./docs/wisdom/W029-vi-ticket-publish-governance.md).
+
 ---
 
 ## Sustainability

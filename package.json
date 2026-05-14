@@ -38,6 +38,7 @@
     "validate": "npx tsx scripts/validate.ts",
     "validate:strict": "npx tsx scripts/validate.ts --strict",
     "smoke:publish": "node scripts/visor-publish-smoke.mjs",
+    "audit:publish": "node scripts/visor-publish-audit.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "docs:dev": "npm run dev -w packages/docs",
