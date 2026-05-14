@@ -16,7 +16,14 @@ const TOKENS: Array<{ cssVar: string; dartField: string }> = [
 // the web docs / NextJS registry).
 const WEB_ONLY_THEMES = new Set<string>([
   'animal',
+  'blacklight',
+  'blacklight-underground',
+  'entr',
+  'kaiah',
+  'reference-app',
+  'solespark',
   'strata',
+  'veronica',
 ]);
 
 /** Normalize any CSS color to an 8-char lowercase hex string like "ff020214". */

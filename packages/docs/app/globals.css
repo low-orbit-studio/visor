@@ -147,8 +147,18 @@ html:not(.dark) .blackout-theme .wordmark-dark { display: block; }
   gap: 0.75rem;
   flex-wrap: wrap;
   padding: 2rem;
-  background: var(--surface-page, #ffffff);
+  /* Subtle "inset" overlay so the preview reads as distinct from the page even
+     for themes with transparent borders. Light: 3% black; dark: 20% black. */
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.03)),
+    var(--surface-page, #ffffff);
   min-height: 120px;
+}
+
+.dark .preview-render {
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0.20)),
+    var(--surface-page, #ffffff);
 }
 
 .preview-footer {
