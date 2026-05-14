@@ -5,17 +5,20 @@
  * When `visor-publish-smoke` detects drift between the locally-built registry
  * and the latest published `@loworbitstudio/visor` tarball, this script maps
  * each drifted file back to the most recent commit that touched it, extracts
- * the `VI-N` references from those commits, and (optionally) posts a Linear
- * comment on each affected ticket.
+ * the `VI-N` reference and PR number from that commit subject, and
+ * (optionally) posts a GitHub comment on each affected PR.
  *
  * Closes the loop on the failure pattern documented in VI-306 — Linear "Done"
  * tickets whose code shipped to `main` but never made it into the published
- * registry. See also: docs/wisdom/W020-publish-coordination-drift.md
+ * registry. The PR is the durable, public artifact that connects a commit on
+ * `main` to the reviewer who landed it; commenting there keeps the governance
+ * signal on the same public surface as the change itself, with no extra
+ * secrets in CI. See also: docs/wisdom/W020-publish-coordination-drift.md
  *
  * Usage:
  *   node scripts/visor-publish-audit.mjs                 human report against latest published
  *   node scripts/visor-publish-audit.mjs --json          machine-readable output
- *   node scripts/visor-publish-audit.mjs --post-comments post a Linear comment per VI-N
+ *   node scripts/visor-publish-audit.mjs --post-comments post a GitHub comment on each affected PR
  *   node scripts/visor-publish-audit.mjs --version <semver>
  *   node scripts/visor-publish-audit.mjs --local <path>
  *
@@ -66,10 +69,32 @@ export function extractVIRefs(message) {
 }
 
 /**
- * Map drifted primitives to the Linear tickets that introduced them.
+ * Extract the trailing GitHub PR number from a squash-merge commit subject.
+ * Visor commits all land via squash merge, which appends ` (#N)` to the
+ * subject — so the trailing form is the reliable indicator. Returns `null`
+ * when the subject doesn't follow the convention (direct pushes, manual
+ * commits, etc).
+ */
+export function extractPRNumber(message) {
+  if (!message) return null
+  const m = /\(#(\d+)\)\s*$/.exec(message)
+  return m ? Number(m[1]) : null
+}
+
+/**
+ * Map drifted primitives to the Linear tickets and GitHub PRs that
+ * introduced them. Each primitive's "touching commit" is the most recent
+ * commit that touched any of its drifted files.
  *
  * @param {Array<{ name: string, files: string[] }>} drifts
  * @param {Array<{ sha: string, subject: string, files: string[] }>} commits
+ * @returns {{
+ *   findings: Array<{
+ *     ticketId: string,
+ *     primitives: Array<{ name: string, sha: string, subject: string, prNumber: number | null }>
+ *   }>,
+ *   orphans: Array<{ name: string, reason: 'no-touching-commit' | 'no-vi-ref' }>
+ * }}
  */
 export function mapDriftToTickets(drifts, commits) {
   const findingsByTicket = new Map()
@@ -93,6 +118,7 @@ export function mapDriftToTickets(drifts, commits) {
       orphans.push({ name: drift.name, reason: "no-vi-ref" })
       continue
     }
+    const prNumber = extractPRNumber(touchingCommit.subject)
     for (const ref of refs) {
       if (!findingsByTicket.has(ref)) {
         findingsByTicket.set(ref, { ticketId: ref, primitives: [] })
@@ -101,6 +127,7 @@ export function mapDriftToTickets(drifts, commits) {
         name: drift.name,
         sha: touchingCommit.sha.slice(0, 7),
         subject: touchingCommit.subject,
+        prNumber,
       })
     }
   }
@@ -109,6 +136,39 @@ export function mapDriftToTickets(drifts, commits) {
     a.ticketId.localeCompare(b.ticketId, undefined, { numeric: true }),
   )
   return { findings, orphans }
+}
+
+/**
+ * Re-group findings by PR number, dropping anything that lacks one. This is
+ * the structure the GitHub comment poster iterates over — one comment per
+ * affected PR, listing every primitive that drifted via that PR.
+ */
+export function groupByPR(findings) {
+  const byPR = new Map()
+  for (const f of findings) {
+    for (const p of f.primitives) {
+      if (p.prNumber == null) continue
+      if (!byPR.has(p.prNumber)) {
+        byPR.set(p.prNumber, {
+          prNumber: p.prNumber,
+          ticketIds: new Set(),
+          primitives: [],
+        })
+      }
+      const entry = byPR.get(p.prNumber)
+      entry.ticketIds.add(f.ticketId)
+      entry.primitives.push(p)
+    }
+  }
+  return [...byPR.values()]
+    .map((e) => ({
+      prNumber: e.prNumber,
+      ticketIds: [...e.ticketIds].sort((a, b) =>
+        a.localeCompare(b, undefined, { numeric: true }),
+      ),
+      primitives: e.primitives,
+    }))
+    .sort((a, b) => a.prNumber - b.prNumber)
 }
 
 export function formatAuditReport({ findings, orphans, publishedVersion }) {
@@ -127,7 +187,8 @@ export function formatAuditReport({ findings, orphans, publishedVersion }) {
       lines.push("")
       lines.push(`  ${f.ticketId}`)
       for (const p of f.primitives) {
-        lines.push(`    • ${p.name}  (${p.sha})  ${p.subject}`)
+        const prSuffix = p.prNumber != null ? `  PR #${p.prNumber}` : ""
+        lines.push(`    • ${p.name}  (${p.sha})${prSuffix}  ${p.subject}`)
       }
     }
   }
@@ -154,26 +215,27 @@ export function formatAuditReport({ findings, orphans, publishedVersion }) {
 }
 
 /**
- * Render the Linear comment body for a single VI- ticket finding.
- * Plain-text traceability marker (`Publish-audit marker: <name>@<sha>`) for
+ * Render the GitHub PR comment body for a single affected PR. Plain-text
+ * traceability marker (`Publish-audit marker: <name>@<sha>`) included for
  * grep-ability — idempotency is not enforced.
  */
-export function formatLinearComment(finding, publishedVersion) {
+export function formatGitHubPRComment(prFinding, publishedVersion) {
   const lines = []
+  const ticketList = prFinding.ticketIds.join(", ")
   lines.push(
-    `**Publish-audit signal** — this ticket is marked Done in Linear, but ${finding.primitives.length === 1 ? "its primitive is" : "its primitives are"} not present in the latest published \`@loworbitstudio/visor@${publishedVersion}\`.`,
+    `**Publish-audit signal** — this PR landed (closing ${ticketList}), but its ${prFinding.primitives.length === 1 ? "primitive is" : "primitives are"} not present in the latest published \`@loworbitstudio/visor@${publishedVersion}\`.`,
   )
   lines.push("")
   lines.push("Drifted primitives:")
-  for (const p of finding.primitives) {
-    lines.push(`- \`${p.name}\` — ${p.subject} (\`${p.sha}\`)`)
+  for (const p of prFinding.primitives) {
+    lines.push(`- \`${p.name}\` — \`${p.sha}\` (${p.subject})`)
   }
   lines.push("")
   lines.push(
     `Consumers of \`npx visor add <name>\` will still receive the older source until a new release ships. See [W020](https://github.com/low-orbit-studio/visor/blob/main/docs/wisdom/W020-publish-coordination-drift.md) for the resolution path.`,
   )
   lines.push("")
-  for (const p of finding.primitives) {
+  for (const p of prFinding.primitives) {
     lines.push(`Publish-audit marker: ${p.name}@${p.sha}`)
   }
   return lines.join("\n")
@@ -199,21 +261,38 @@ export function parseArgs(argv) {
   return out
 }
 
-const HELP_TEXT = `visor-publish-audit — map drifted registry primitives back to VI- Linear tickets
+/**
+ * Parse owner/repo from `git remote get-url origin`. Supports both HTTPS and
+ * SSH URLs. Returns `null` if the remote doesn't resolve to a GitHub repo.
+ */
+export function parseRepoFromRemoteUrl(remoteUrl) {
+  if (!remoteUrl) return null
+  const trimmed = remoteUrl.trim()
+  // https://github.com/owner/repo(.git)?
+  const https = /^https?:\/\/[^/]+\/([^/]+)\/([^/]+?)(?:\.git)?$/.exec(trimmed)
+  if (https) return { owner: https[1], repo: https[2] }
+  // git@github.com:owner/repo(.git)?
+  const ssh = /^[^:]+:([^/]+)\/([^/]+?)(?:\.git)?$/.exec(trimmed)
+  if (ssh) return { owner: ssh[1], repo: ssh[2] }
+  return null
+}
+
+const HELP_TEXT = `visor-publish-audit — map drifted registry primitives back to the PRs that landed them
 
 Usage:
   node scripts/visor-publish-audit.mjs [options]
 
 Options:
   --json                Emit a JSON report instead of human-readable text.
-  --post-comments       Post a Linear comment per affected VI- ticket (requires LINEAR_API_KEY).
+  --post-comments       Post a GitHub comment on each affected PR (requires GITHUB_TOKEN
+                        with pull-requests:write).
   --version <semver>    Audit against a specific published version (default: latest).
   --local <path>        Read published registry from <path>/dist/registry.json (no npm fetch).
   -h, --help            Show this help.
 
 Exit codes:
   0  No drift detected — nothing to audit.
-  1  Drift detected — audit findings emitted (and Linear comments posted if --post-comments).
+  1  Drift detected — audit findings emitted (and GitHub PR comments posted if --post-comments).
   2  Invocation or environment error.
 `
 
@@ -280,10 +359,6 @@ function fetchPublishedRegistry(version) {
   }
 }
 
-/**
- * For each drifted file, find the most recent commit that touched it and
- * return its SHA + subject + the list of files it touched.
- */
 function loadTouchingCommits(drifts) {
   const driftFiles = new Set()
   for (const d of drifts) {
@@ -331,55 +406,37 @@ function loadTouchingCommits(drifts) {
   return [...commits.values()]
 }
 
-const LINEAR_GRAPHQL_ENDPOINT = "https://api.linear.app/graphql"
+function resolveRepo() {
+  // Prefer the GitHub Actions env vars when present (always set in CI), fall
+  // back to `git remote get-url origin` for local invocations.
+  if (process.env.GITHUB_REPOSITORY) {
+    const [owner, repo] = process.env.GITHUB_REPOSITORY.split("/")
+    if (owner && repo) return { owner, repo }
+  }
+  const r = spawnSync("git", ["remote", "get-url", "origin"], {
+    encoding: "utf8",
+    cwd: REPO_ROOT,
+  })
+  if (r.status !== 0) return null
+  return parseRepoFromRemoteUrl(r.stdout)
+}
 
-async function linearGraphQL(query, variables) {
-  const r = await fetch(LINEAR_GRAPHQL_ENDPOINT, {
+async function postGitHubPRComment({ owner, repo, prNumber, body, token }) {
+  const url = `https://api.github.com/repos/${owner}/${repo}/issues/${prNumber}/comments`
+  const r = await fetch(url, {
     method: "POST",
     headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28",
       "Content-Type": "application/json",
-      Authorization: process.env.LINEAR_API_KEY,
+      "User-Agent": "visor-publish-audit",
     },
-    body: JSON.stringify({ query, variables }),
+    body: JSON.stringify({ body }),
   })
   if (!r.ok) {
     const text = await r.text().catch(() => "")
     return { ok: false, error: `HTTP ${r.status}: ${text}` }
-  }
-  const json = await r.json()
-  if (json.errors) {
-    return { ok: false, error: JSON.stringify(json.errors) }
-  }
-  return { ok: true, data: json.data }
-}
-
-async function postLinearComment(ticketIdentifier, body) {
-  // Linear's commentCreate requires the issue's UUID, not the human
-  // identifier. The `issue(id:)` query accepts either, so we resolve first.
-  const lookup = await linearGraphQL(
-    `query($id: String!) { issue(id: $id) { id } }`,
-    { id: ticketIdentifier },
-  )
-  if (!lookup.ok) return lookup
-  const uuid = lookup.data?.issue?.id
-  if (!uuid) {
-    return {
-      ok: false,
-      error: `Issue ${ticketIdentifier} not found in Linear.`,
-    }
-  }
-  const create = await linearGraphQL(
-    `mutation($input: CommentCreateInput!) {
-       commentCreate(input: $input) { success }
-     }`,
-    { input: { issueId: uuid, body } },
-  )
-  if (!create.ok) return create
-  if (!create.data?.commentCreate?.success) {
-    return {
-      ok: false,
-      error: `commentCreate returned success=false for ${ticketIdentifier}`,
-    }
   }
   return { ok: true }
 }
@@ -447,22 +504,37 @@ async function main() {
 
   const commits = loadTouchingCommits(drifts)
   const { findings, orphans } = mapDriftToTickets(drifts, commits)
+  const prGroups = groupByPR(findings)
 
   if (opts.postComments) {
-    if (!process.env.LINEAR_API_KEY) {
+    const token = process.env.GITHUB_TOKEN
+    if (!token) {
       process.stderr.write(
-        `LINEAR_API_KEY not set — refusing to --post-comments.\n`,
+        `GITHUB_TOKEN not set — refusing to --post-comments.\n`,
       )
       process.exit(2)
     }
-    for (const finding of findings) {
-      const body = formatLinearComment(finding, publishedVersion)
-      const r = await postLinearComment(finding.ticketId, body)
+    const repo = resolveRepo()
+    if (!repo) {
+      process.stderr.write(
+        `Could not resolve owner/repo from GITHUB_REPOSITORY or origin remote.\n`,
+      )
+      process.exit(2)
+    }
+    for (const group of prGroups) {
+      const body = formatGitHubPRComment(group, publishedVersion)
+      const r = await postGitHubPRComment({
+        owner: repo.owner,
+        repo: repo.repo,
+        prNumber: group.prNumber,
+        body,
+        token,
+      })
       if (r.ok) {
-        process.stderr.write(`  posted comment on ${finding.ticketId}\n`)
+        process.stderr.write(`  posted comment on PR #${group.prNumber}\n`)
       } else {
         process.stderr.write(
-          `  failed to post on ${finding.ticketId}: ${r.error}\n`,
+          `  failed to post on PR #${group.prNumber}: ${r.error}\n`,
         )
       }
     }
@@ -476,6 +548,7 @@ async function main() {
           publishedVersion,
           findings,
           orphans,
+          prGroups,
           status: "drift",
         },
         null,

@@ -112,9 +112,11 @@ npm run smoke:publish
 
 **When it fails:** cut a new `@loworbitstudio/visor` release that includes the drifted primitives. See [`docs/wisdom/W020-publish-coordination-drift.md`](./docs/wisdom/W020-publish-coordination-drift.md) for the failure-class background.
 
-### Governance signal — Linear audit (VI-306)
+### Governance signal — GitHub PR audit (VI-306)
 
-The smoke detects drift; the audit closes the loop back to Linear. When the smoke fails in CI, [`scripts/visor-publish-audit.mjs`](./scripts/visor-publish-audit.mjs) walks `git log` per drifted file, finds the most recent commit that touched it, extracts the `VI-N` reference from the commit subject, and (when `LINEAR_API_KEY` is configured) posts a Linear comment on each affected ticket — flagging that the ticket is marked Done but its primitive is still missing from the published registry.
+The smoke detects drift; the audit closes the loop on the **PR** that landed the drifted primitive. When the smoke fails in CI, [`scripts/visor-publish-audit.mjs`](./scripts/visor-publish-audit.mjs) walks `git log` per drifted file, finds the most recent commit that touched it, extracts the `VI-N` reference and PR number from the commit subject (squash-merge `(#N)` suffix), and posts a comment on each affected PR via the built-in `GITHUB_TOKEN` — flagging that the PR landed but its primitive is still missing from the published registry.
+
+The PR is the durable, public artifact connecting a commit to the change that introduced the drift, so this is the right place for the signal. No external API keys live in repo secrets — Linear and other private surfaces stay out of public-repo CI.
 
 **Run the audit locally:**
 
@@ -122,12 +124,12 @@ The smoke detects drift; the audit closes the loop back to Linear. When the smok
 npm run build -w packages/cli
 npm run audit:publish               # human report
 npm run audit:publish -- --json     # machine-readable
-LINEAR_API_KEY=... npm run audit:publish -- --post-comments
+GITHUB_TOKEN=... npm run audit:publish -- --post-comments
 ```
 
-**In CI:** the audit step in [`.github/workflows/visor-publish-smoke.yml`](./.github/workflows/visor-publish-smoke.yml) runs only when the smoke step fails. If the `LINEAR_API_KEY` repository secret is configured, comments are posted automatically; otherwise the report is emitted to the workflow log with a warning.
+**In CI:** the audit step in [`.github/workflows/visor-publish-smoke.yml`](./.github/workflows/visor-publish-smoke.yml) runs only when the smoke step fails, uses the built-in `GITHUB_TOKEN`, and requires no operator setup. The workflow holds `pull-requests: write` scope only.
 
-**When you see an audit comment on a VI- ticket:** treat it as a signal that "Done" doesn't yet mean "shipped." Cut a coordinated release per [`docs/wisdom/W020-publish-coordination-drift.md`](./docs/wisdom/W020-publish-coordination-drift.md); the next smoke run will clear the drift and no further audit comments will fire. See [`docs/wisdom/W029-vi-ticket-publish-governance.md`](./docs/wisdom/W029-vi-ticket-publish-governance.md) for the full governance pattern.
+**When you see an audit comment on a PR:** treat it as a signal that the change merged but never made it into the published registry. Cut a coordinated release per [`docs/wisdom/W020-publish-coordination-drift.md`](./docs/wisdom/W020-publish-coordination-drift.md); the next smoke run will clear the drift and no further audit comments will fire. See [`docs/wisdom/W029-vi-ticket-publish-governance.md`](./docs/wisdom/W029-vi-ticket-publish-governance.md) for the full governance pattern.
 
 ## Environment
 

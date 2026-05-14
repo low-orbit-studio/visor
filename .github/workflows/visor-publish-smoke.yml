@@ -37,7 +37,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
+      # The audit step posts a comment on each PR that landed a drifted
+      # primitive — pull-requests:write is the minimum scope for that.
       contents: read
+      pull-requests: write
 
     steps:
       - name: Checkout main
@@ -74,38 +77,25 @@ jobs:
 
       - name: Audit drifted VI- tickets
         # When smoke detects drift, map each drifted primitive back to its
-        # most recent touching commit, extract VI-N refs, and (if
-        # LINEAR_API_KEY is configured) post a Linear comment per ticket.
-        # Closes the governance loop from VI-306. Only GitHub-controlled
-        # inputs (steps.smoke.outcome) are referenced in `if:`. The
-        # LINEAR_API_KEY secret is passed via env, never interpolated into
+        # most recent touching commit, extract VI-N refs + PR number, and
+        # post a comment on each affected PR via the built-in GITHUB_TOKEN.
+        # Closes the governance loop from VI-306 without putting any
+        # external API keys (Linear, Slack) into a public repo's secrets.
+        # Only GitHub-controlled inputs (steps.smoke.outcome) are referenced
+        # in `if:`. GITHUB_TOKEN is passed via env, never interpolated into
         # the run: shell — no injection surface.
         if: steps.smoke.outcome == 'failure'
         env:
-          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [ -n "$LINEAR_API_KEY" ]; then
-            # --post-comments runs the report AND posts to Linear. Tolerate
-            # exit 1 (drift detected — expected here) but let other failures
-            # surface in the logs so we don't silently lose audit errors.
-            set +e
-            node scripts/visor-publish-audit.mjs --post-comments
-            EXIT=$?
-            set -e
-            if [ "$EXIT" -ne 0 ] && [ "$EXIT" -ne 1 ]; then
-              exit "$EXIT"
-            fi
-          else
-            # Report-only path: exit 1 is the expected "drift detected"
-            # signal — surface anything else.
-            set +e
-            node scripts/visor-publish-audit.mjs
-            EXIT=$?
-            set -e
-            if [ "$EXIT" -ne 0 ] && [ "$EXIT" -ne 1 ]; then
-              exit "$EXIT"
-            fi
-            echo "::warning::LINEAR_API_KEY secret not configured — audit report emitted to logs but no Linear comments posted. Configure the secret to enable the governance signal."
+          # Tolerate exit 1 (drift detected — expected here) but surface
+          # anything else so genuine audit errors don't get masked.
+          set +e
+          node scripts/visor-publish-audit.mjs --post-comments
+          EXIT=$?
+          set -e
+          if [ "$EXIT" -ne 0 ] && [ "$EXIT" -ne 1 ]; then
+            exit "$EXIT"
           fi
 
       - name: Surface smoke outcome

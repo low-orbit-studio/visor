@@ -37,7 +37,7 @@ For global wisdom (universal lessons): [`~/Code/low-orbit/low-orbit-playbook/roo
 | W026 | "Free" font licenses (e.g. ITF Fontshare FFL) often forbid public CDN re-hosting — read the EULA before `npm run fonts:add` | fonts, licensing, cdn, legal, satoshi | [W026](W026-satoshi-license-forbids-public-cdn.md) |
 | W027 | Next.js strips external `@import` from bundled CSS — inject `<link rel="stylesheet">` in layout instead | nextjs, css, bundling, fonts, fontshare | [W027](W027-nextjs-strips-external-css-imports.md) |
 | W028 | husky 9's `.husky/_/` wrapper doesn't propagate to git worktrees — set `core.hooksPath = .husky` (relative) in `prepare` | husky, git-hooks, worktree, changeset, pre-push, tooling | [W028](W028-husky-hookspath-worktree-propagation.md) |
-| W029 | Linear "Done" ≠ published registry — close the loop with a post-smoke audit that posts Linear comments per drifted VI- ticket | governance, linear, publish, registry, ci | [W029](W029-vi-ticket-publish-governance.md) |
+| W029 | Linear "Done" ≠ published registry — close the loop with a post-smoke audit that comments on the GitHub PR that landed each drifted primitive (no Linear keys in public-repo secrets) | governance, github, publish, registry, ci, public-repo | [W029](W029-vi-ticket-publish-governance.md) |
 
 ## Adding Entries
 
