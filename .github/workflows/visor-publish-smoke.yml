@@ -37,15 +37,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
+      # The audit step posts a comment on each PR that landed a drifted
+      # primitive — pull-requests:write is the minimum scope for that.
       contents: read
+      pull-requests: write
 
     steps:
       - name: Checkout main
+        # Fetch full history so the audit step can walk `git log` per drifted
+        # file. Shallow clones would mask the touching commits.
         uses: actions/checkout@v4
         with:
           # Always check main — drift is a property of (main vs npm), not
           # of an arbitrary branch.
           ref: main
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -65,4 +71,34 @@ jobs:
         run: sleep 60
 
       - name: Run publish smoke
+        id: smoke
+        continue-on-error: true
         run: npm run smoke:publish
+
+      - name: Audit drifted VI- tickets
+        # When smoke detects drift, map each drifted primitive back to its
+        # most recent touching commit, extract VI-N refs + PR number, and
+        # post a comment on each affected PR via the built-in GITHUB_TOKEN.
+        # Closes the governance loop from VI-306 without putting any
+        # external API keys (Linear, Slack) into a public repo's secrets.
+        # Only GitHub-controlled inputs (steps.smoke.outcome) are referenced
+        # in `if:`. GITHUB_TOKEN is passed via env, never interpolated into
+        # the run: shell — no injection surface.
+        if: steps.smoke.outcome == 'failure'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Tolerate exit 1 (drift detected — expected here) but surface
+          # anything else so genuine audit errors don't get masked.
+          set +e
+          node scripts/visor-publish-audit.mjs --post-comments
+          EXIT=$?
+          set -e
+          if [ "$EXIT" -ne 0 ] && [ "$EXIT" -ne 1 ]; then
+            exit "$EXIT"
+          fi
+
+      - name: Surface smoke outcome
+        # Re-raise the smoke step's exit code so the job still fails on drift.
+        if: steps.smoke.outcome == 'failure'
+        run: exit 1
