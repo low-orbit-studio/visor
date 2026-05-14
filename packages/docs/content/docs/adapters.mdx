@@ -31,20 +31,20 @@ By default, the nextjs adapter emits rules under `:root`, which works for whole-
 ```bash
 npx @loworbitstudio/visor theme apply themes/blacklight/theme.visor.yaml \
   --adapter nextjs \
-  --scope-prefix 'body.blacklight-theme'
+  --scope-prefix 'body.mybrand-theme'
 ```
 
 Generated output:
 
 ```css
-body.blacklight-theme {
+body.mybrand-theme {
   --surface-page: ...;
   /* primitives + light tokens */
 }
 
-body.blacklight-theme.dark,
-body.blacklight-theme.theme-dark,
-body.blacklight-theme[data-theme="dark"] {
+body.mybrand-theme.dark,
+body.mybrand-theme.theme-dark,
+body.mybrand-theme[data-theme="dark"] {
   /* dark-mode overrides */
 }
 ```
