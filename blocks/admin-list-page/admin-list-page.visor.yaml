@@ -15,6 +15,42 @@ when_not_to_use:
   - Overview dashboards with KPIs and activity feeds (use admin-dashboard)
   - Single-record detail or edit screens (use admin-detail-drawer)
   - Settings or preferences forms (use admin-settings-page)
+props:
+  data:
+    type: TData[]
+    optional: true
+    description: >
+      Flat row data forwarded to DataTable. Optional — omit when supplying
+      `rows` (the discriminated-union grouped API) or when rendering a fully
+      custom table via a non-table body. Defaults to [] when omitted.
+  rows:
+    type: "DataTableRow<TData>[]"
+    optional: true
+    description: >
+      Mixed-order discriminated-union row list forwarded to DataTable for
+      interleaved group headers + data rows ({kind:"group"|"data"}). When
+      supplied, `data` is ignored — dev-mode console.warn fires if both are
+      passed. Use for sectioned list views like "Tonight / This week / Later".
+  groupRowRenderer:
+    type: "(group: DataTableGroupRow) => ReactNode"
+    optional: true
+    description: >
+      Optional renderer for group rows when using the `rows` prop. Forwarded
+      as-is to DataTable.
+  rowTone:
+    type: "(row: TData) => DataTableRowTone | undefined"
+    optional: true
+    description: >
+      Map each data row to a semantic tone (live / warn / scheduled / sold /
+      draft / danger / info) for a subtle background tint. Forwarded as-is
+      to DataTable; tones resolve to Visor surface tokens at the CSS layer.
+  onRowClick:
+    type: "(row: TData) => void"
+    optional: true
+    description: >
+      When supplied, every data row becomes a keyboard-activatable target
+      (click + Enter/Space). Forwarded as-is to DataTable. Typical use: open
+      a detail drawer for the clicked row.
 slots:
   customFilterBar:
     type: ReactNode

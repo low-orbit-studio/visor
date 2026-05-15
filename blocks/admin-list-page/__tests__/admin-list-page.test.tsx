@@ -326,4 +326,148 @@ describe("AdminListPage", () => {
     )
     await checkA11y(container)
   })
+
+  // ─── rows / rowTone / onRowClick passthrough (VI-390) ───────────────
+
+  it("renders grouped rows when `rows` prop is provided", () => {
+    const { container } = render(
+      <AdminListPage<RowData>
+        title="Users"
+        columns={columns}
+        rows={[
+          { kind: "group", id: "admins", label: "Admins", count: 1 },
+          { kind: "data", id: "1", row: data[0]! },
+          { kind: "group", id: "editors", label: "Editors", count: 1 },
+          { kind: "data", id: "2", row: data[1]! },
+        ]}
+      />
+    )
+    // Group rows render via data-table's group slot.
+    expect(
+      container.querySelectorAll("[data-slot='data-table-group-row']")
+    ).toHaveLength(2)
+    expect(screen.getByText("Admins")).toBeInTheDocument()
+    expect(screen.getByText("Editors")).toBeInTheDocument()
+    // Data rows from the discriminated union still render.
+    expect(screen.getByText("Alice")).toBeInTheDocument()
+    expect(screen.getByText("Bob")).toBeInTheDocument()
+  })
+
+  it("forwards `rowTone` to DataTable", () => {
+    const rowTone = (row: RowData) =>
+      row.role === "Admin" ? ("live" as const) : undefined
+    const { container } = render(
+      <AdminListPage<RowData>
+        title="Users"
+        columns={columns}
+        data={data}
+        rowTone={rowTone}
+      />
+    )
+    const tonedRow = container.querySelector("tr[data-tone='live']")
+    expect(tonedRow).not.toBeNull()
+    expect(tonedRow?.textContent).toContain("Alice")
+  })
+
+  it("forwards `onRowClick` to DataTable and fires on click", async () => {
+    const user = userEvent.setup()
+    const onRowClick = vi.fn()
+    render(
+      <AdminListPage<RowData>
+        title="Users"
+        columns={columns}
+        data={data}
+        onRowClick={onRowClick}
+      />
+    )
+    await user.click(screen.getByText("Alice"))
+    expect(onRowClick).toHaveBeenCalledTimes(1)
+    expect(onRowClick).toHaveBeenCalledWith(data[0])
+  })
+
+  it("dev-mode warns when both `rows` and `data` are supplied and `rows` wins", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
+    const { container } = render(
+      <AdminListPage<RowData>
+        title="Users"
+        columns={columns}
+        data={data}
+        rows={[
+          { kind: "group", id: "g", label: "Group A" },
+          { kind: "data", id: "1", row: data[0]! },
+        ]}
+      />
+    )
+    expect(warnSpy).toHaveBeenCalled()
+    const message = warnSpy.mock.calls[0]?.[0] as string
+    expect(message).toMatch(/rows/)
+    expect(message).toMatch(/data/)
+    // `rows` wins — only one data row from the union renders, not all three.
+    expect(screen.getByText("Alice")).toBeInTheDocument()
+    expect(screen.queryByText("Bob")).not.toBeInTheDocument()
+    expect(screen.queryByText("Carol")).not.toBeInTheDocument()
+    // Group row from `rows` is present.
+    expect(
+      container.querySelectorAll("[data-slot='data-table-group-row']")
+    ).toHaveLength(1)
+    warnSpy.mockRestore()
+  })
+
+  it("does not warn when only `rows` is supplied", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
+    render(
+      <AdminListPage<RowData>
+        title="Users"
+        columns={columns}
+        rows={[{ kind: "data", id: "1", row: data[0]! }]}
+      />
+    )
+    expect(warnSpy).not.toHaveBeenCalled()
+    warnSpy.mockRestore()
+  })
+
+  it("passes accessibility checks with grouped rows + tones + clickable rows", async () => {
+    const { container } = render(
+      <AdminListPage<RowData>
+        title="Users"
+        columns={columns}
+        rows={[
+          { kind: "group", id: "admins", label: "Admins" },
+          { kind: "data", id: "1", row: data[0]! },
+          { kind: "data", id: "2", row: data[1]! },
+        ]}
+        rowTone={(row) => (row.role === "Admin" ? "live" : undefined)}
+        onRowClick={vi.fn()}
+      />
+    )
+    await checkA11y(container)
+  })
+
+  // ─── data prop optional (VI-392) ────────────────────────────────────
+
+  it("renders without crashing when `data` is omitted", () => {
+    const { container } = render(
+      <AdminListPage<RowData> title="Users" columns={columns} />
+    )
+    expect(container.firstChild).toBeInTheDocument()
+    // Empty state surfaces from DataTable.
+    expect(
+      container.querySelector("[data-slot='data-table-empty-row']")
+    ).toBeInTheDocument()
+  })
+
+  it("renders without crashing when `data` is omitted but customFilterBar is supplied", () => {
+    render(
+      <AdminListPage<RowData>
+        title="Users"
+        columns={columns}
+        customFilterBar={
+          <div role="toolbar" aria-label="Filters">
+            <button type="button">Chip A</button>
+          </div>
+        }
+      />
+    )
+    expect(screen.getByRole("button", { name: "Chip A" })).toBeInTheDocument()
+  })
 })

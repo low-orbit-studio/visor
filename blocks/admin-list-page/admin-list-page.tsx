@@ -15,7 +15,12 @@ import {
   type PageHeaderProps,
 } from "../../components/ui/page-header/page-header"
 import { FilterBar } from "../../components/ui/filter-bar/filter-bar"
-import { DataTable } from "../../components/ui/data-table/data-table"
+import {
+  DataTable,
+  type DataTableGroupRow,
+  type DataTableRow,
+  type DataTableRowTone,
+} from "../../components/ui/data-table/data-table"
 import { BulkActionBar } from "../../components/ui/bulk-action-bar/bulk-action-bar"
 import styles from "./admin-list-page.module.css"
 
@@ -78,7 +83,47 @@ export interface AdminListPageProps<TData>
 
   // ── Data table ───────────────────────────────────────────────────────────
   columns: ColumnDef<TData, unknown>[]
-  data: TData[]
+  /**
+   * Flat row data forwarded to DataTable. Optional — omit when supplying
+   * `rows` (the discriminated-union grouped API) or when rendering a fully
+   * custom table via `customFilterBar` + a non-table body. Defaults to `[]`
+   * when omitted, which yields DataTable's empty state.
+   */
+  data?: TData[]
+  /**
+   * Mixed-order discriminated-union row list forwarded to DataTable. Use
+   * this to interleave group headers and data rows (e.g., "Tonight",
+   * "This week" sections). When `rows` is supplied, `data` is ignored —
+   * dev-mode `console.warn` fires if both are passed.
+   *
+   * @example
+   * <AdminListPage
+   *   rows={[
+   *     { kind: "group", id: "tonight", label: "Tonight" },
+   *     { kind: "data",  id: "evt-1",   row: event1 },
+   *     { kind: "group", id: "week",    label: "This week", count: 3 },
+   *     { kind: "data",  id: "evt-2",   row: event2 },
+   *   ]}
+   * />
+   */
+  rows?: DataTableRow<TData>[]
+  /**
+   * Optional renderer for group rows. Receives the group descriptor and
+   * returns the cell contents. Forwarded as-is to DataTable.
+   */
+  groupRowRenderer?: (group: DataTableGroupRow) => React.ReactNode
+  /**
+   * Map each data row to a semantic tone for a subtle background tint.
+   * Forwarded as-is to DataTable — tones resolve to Visor surface tokens at
+   * the CSS layer (see `data-table.module.css`).
+   */
+  rowTone?: (row: TData) => DataTableRowTone | undefined
+  /**
+   * When supplied, every data row becomes a keyboard-activatable target
+   * (click + Enter/Space dispatch the handler). Forwarded as-is to
+   * DataTable. Typical use: open a detail drawer for the clicked row.
+   */
+  onRowClick?: (row: TData) => void
   getRowId?: (row: TData, index: number) => string
 
   sorting?: SortingState
@@ -151,6 +196,10 @@ function AdminListPageInner<TData>(
     // Data table
     columns,
     data,
+    rows,
+    groupRowRenderer,
+    rowTone,
+    onRowClick,
     getRowId,
     sorting,
     onSortingChange,
@@ -173,6 +222,20 @@ function AdminListPageInner<TData>(
     className,
     ...rest
   } = props
+
+  // Dev-mode warning when both `rows` and `data` are supplied. `rows` wins
+  // silently inside DataTable; the warning surfaces the mistake without
+  // breaking render output.
+  if (
+    process.env.NODE_ENV !== "production" &&
+    rows !== undefined &&
+    data !== undefined
+  ) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      "AdminListPage: both `rows` and `data` were supplied. The `rows` prop replaces `data` and wins; the `data` prop is ignored. Pass only one."
+    )
+  }
 
   // Dev-mode warning when customFilterBar is mixed with FilterBar-specific props.
   // The custom bar wins silently; the warning surfaces the mistake without
@@ -264,7 +327,11 @@ function AdminListPageInner<TData>(
       >
         <DataTable<TData>
           columns={columns}
-          data={data}
+          data={data ?? []}
+          rows={rows}
+          groupRowRenderer={groupRowRenderer}
+          rowTone={rowTone}
+          onRowClick={onRowClick}
           getRowId={getRowId}
           sorting={sorting}
           onSortingChange={onSortingChange}
