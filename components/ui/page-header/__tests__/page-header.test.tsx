@@ -120,4 +120,116 @@ describe("PageHeader", () => {
     expect(heading).not.toBeNull()
     expect(heading?.textContent).toBe("Customers")
   })
+
+  describe("titleSize", () => {
+    it("does not set data-title-size when prop is omitted (byte-for-byte default)", () => {
+      const { container } = render(<PageHeader title="Dashboard" />)
+      const title = container.querySelector(
+        '[data-slot="page-header-title"]'
+      ) as HTMLElement
+      expect(title).not.toBeNull()
+      expect(title.hasAttribute("data-title-size")).toBe(false)
+      // No inline style should be present for the custom property either.
+      expect(title.style.getPropertyValue("--page-header-title-size")).toBe("")
+    })
+
+    it("sets data-title-size='marquee' when titleSize='marquee'", () => {
+      const { container } = render(
+        <PageHeader title="Tonight" titleSize="marquee" />
+      )
+      const title = container.querySelector(
+        '[data-slot="page-header-title"]'
+      ) as HTMLElement
+      expect(title).toHaveAttribute("data-title-size", "marquee")
+      // No raw-string override leaks into inline style for token cases.
+      expect(title.style.getPropertyValue("--page-header-title-size")).toBe("")
+    })
+
+    it("sets data-title-size='default' when titleSize='default'", () => {
+      const { container } = render(
+        <PageHeader title="Customers" titleSize="default" />
+      )
+      const title = container.querySelector(
+        '[data-slot="page-header-title"]'
+      ) as HTMLElement
+      expect(title).toHaveAttribute("data-title-size", "default")
+    })
+
+    it("forwards a raw string as inline --page-header-title-size", () => {
+      const { container } = render(
+        <PageHeader title="Events" titleSize="3rem" />
+      )
+      const title = container.querySelector(
+        '[data-slot="page-header-title"]'
+      ) as HTMLElement
+      expect(title.style.getPropertyValue("--page-header-title-size")).toBe(
+        "3rem"
+      )
+      // Raw-string mode also flips the title into the marquee rule so the
+      // custom property actually applies.
+      expect(title).toHaveAttribute("data-title-size", "marquee")
+    })
+  })
+
+  describe("titleFamily", () => {
+    it("does not set data-title-family when prop is omitted", () => {
+      const { container } = render(<PageHeader title="Dashboard" />)
+      const title = container.querySelector(
+        '[data-slot="page-header-title"]'
+      ) as HTMLElement
+      expect(title.hasAttribute("data-title-family")).toBe(false)
+      expect(title.style.getPropertyValue("--page-header-title-family")).toBe(
+        ""
+      )
+    })
+
+    it("sets data-title-family='display' when titleFamily='display'", () => {
+      const { container } = render(
+        <PageHeader title="Tonight" titleFamily="display" />
+      )
+      const title = container.querySelector(
+        '[data-slot="page-header-title"]'
+      ) as HTMLElement
+      expect(title).toHaveAttribute("data-title-family", "display")
+    })
+
+    it("sets data-title-family='heading' when titleFamily='heading'", () => {
+      const { container } = render(
+        <PageHeader title="Customers" titleFamily="heading" />
+      )
+      const title = container.querySelector(
+        '[data-slot="page-header-title"]'
+      ) as HTMLElement
+      expect(title).toHaveAttribute("data-title-family", "heading")
+    })
+
+    it("forwards a raw string as inline --page-header-title-family", () => {
+      const { container } = render(
+        <PageHeader title="Events" titleFamily="'ModernSociety', serif" />
+      )
+      const title = container.querySelector(
+        '[data-slot="page-header-title"]'
+      ) as HTMLElement
+      expect(title.style.getPropertyValue("--page-header-title-family")).toBe(
+        "'ModernSociety', serif"
+      )
+      expect(title).toHaveAttribute("data-title-family", "display")
+    })
+  })
+
+  it("combines titleSize='marquee' and titleFamily='display' (editorial admin)", () => {
+    const { container } = render(
+      <PageHeader
+        eyebrow="Sat · Apr 27"
+        title="Tonight"
+        titleSize="marquee"
+        titleFamily="display"
+      />
+    )
+    const title = container.querySelector(
+      '[data-slot="page-header-title"]'
+    ) as HTMLElement
+    expect(title).toHaveAttribute("data-title-size", "marquee")
+    expect(title).toHaveAttribute("data-title-family", "display")
+  })
 })

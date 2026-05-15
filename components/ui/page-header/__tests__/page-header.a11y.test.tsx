@@ -48,4 +48,26 @@ describe("PageHeader a11y (vitest-axe)", () => {
     const results = await axe(container)
     expect(results).toHaveNoViolations()
   })
+
+  it("has no WCAG 2.1 AA violations (titleSize='marquee', titleFamily='display')", async () => {
+    const { container } = render(
+      <PageHeader
+        eyebrow="Sat · Apr 27 · 22:00 — 04:00 · Two events"
+        title="Tonight"
+        description="Two events on the floor."
+        titleSize="marquee"
+        titleFamily="display"
+      />
+    )
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
+  })
+
+  it("has no WCAG 2.1 AA violations (raw-string titleSize)", async () => {
+    const { container } = render(
+      <PageHeader title="Events" titleSize="3rem" titleFamily="display" />
+    )
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
+  })
 })
