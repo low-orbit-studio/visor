@@ -94,6 +94,30 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "command-dialog",
+    type: "registry:block",
+    category: "navigation",
+    description:
+      "⌘K command palette composing Command + Dialog primitives. Exposes named slots for scope chip, grouped results with hit-highlighting, per-item meta + Kbd shortcut, and a footer hint row with derived result count. Binds ⌘K / Ctrl+K to toggle open by default.",
+    dependencies: [
+      "cmdk",
+      "@radix-ui/react-dialog",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils", "command", "dialog", "kbd"],
+    files: [
+      {
+        path: "blocks/command-dialog/command-dialog.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/command-dialog/command-dialog.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "admin-tabbed-editor",
     type: "registry:block",
     category: "admin",

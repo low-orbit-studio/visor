@@ -1,0 +1,16 @@
+name: Command Dialog
+description: ⌘K command palette block composing Visor's Command + Dialog primitives. Exposes named slots for a scope chip, grouped results with hit-highlighting, per-item meta + Kbd shortcut, and a footer hint row with result count. Binds ⌘K / Ctrl+K to toggle open by default.
+category: navigation
+components_used:
+  - command
+  - dialog
+  - kbd
+when_to_use:
+  - App-wide quick-search palette opened with ⌘K / Ctrl+K
+  - Grouped, keyboard-driven action menus (Events / Guests / Actions)
+  - Replacing multi-level menus with one searchable list
+when_not_to_use:
+  - Simple dropdown selection from a short list (use Select or Combobox)
+  - Form field autocomplete with free text input (use Combobox)
+  - Modal confirmations or destructive prompts (use Dialog or ConfirmDialog)
+  - Persistent inline search (use Input + filtered list directly)
