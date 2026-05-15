@@ -1,0 +1,12 @@
+name: Right Rail List
+description: Compact vertical list block tuned for admin dashboard side rails. Each row pairs an optional leading slot (short label, avatar, badge, status dot), a primary label (typically a link), and an optional trailing meta value (count, value, tone-tinted status word). Trailing accepts default / mint / muted / warn tones that bind to the shared semantic text tokens. Supports compact density and ul / ol / div root element variants.
+category: data-display
+components_used: []
+when_to_use:
+  - Side-rail summary panels in dashboards (this-week digests, top-N rankings, status callouts)
+  - Stacking multiple short list panels in a single column
+  - Any compact label-plus-value row pattern where each row carries an optional leading stamp
+when_not_to_use:
+  - Timestamped activity streams (use activity-feed)
+  - Sortable / paginated tabular data (use data-table)
+  - Long-form ranked lists with rich row content (use a full table or card grid)
