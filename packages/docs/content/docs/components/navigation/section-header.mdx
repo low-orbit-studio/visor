@@ -1,0 +1,105 @@
+---
+title: Section Header
+description: Compact section-divider primitive with an uppercase title and optional right-aligned meta label. Sized for in-page content sectioning, distinct from the page-level PageHeader.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { SectionHeader } from '@/components/ui/section-header';
+
+## Basic
+
+<ComponentPreview
+  title="Title only"
+  code={"import { SectionHeader } from '@/components/ui/section-header/section-header';\n\n<SectionHeader title=\"Top promoters · 30d\" />"}
+>
+  <SectionHeader title="Top promoters · 30d" />
+</ComponentPreview>
+
+## With Meta
+
+<ComponentPreview
+  title="Title and right-aligned meta"
+  code={"<SectionHeader title=\"Tonight's events\" meta=\"2 events\" />"}
+>
+  <SectionHeader title="Tonight's events" meta="2 events" />
+</ComponentPreview>
+
+## Dashboard Composition
+
+Stack `SectionHeader` between content blocks to divide a page body into clearly labelled
+sections. The compact 36px row, surface-subtle background, and uppercase tracking
+establish a consistent rhythm across 3-8 sections per page.
+
+<ComponentPreview
+  title="Four stacked section headers"
+  code={"<SectionHeader title=\"Tonight's events\" meta=\"2 events\" />\n<SectionHeader title=\"Activity\" meta=\"last hour\" />\n<SectionHeader title=\"This week\" />\n<SectionHeader title=\"Top promoters · 30d\" />"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}>
+    <SectionHeader title="Tonight's events" meta="2 events" />
+    <SectionHeader title="Activity" meta="last hour" />
+    <SectionHeader title="This week" />
+    <SectionHeader title="Top promoters · 30d" />
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add section-header
+```
+
+This copies two files into your project:
+
+- `components/ui/section-header/section-header.tsx` — the component
+- `components/ui/section-header/section-header.module.css` — the styles
+
+## Usage
+
+```tsx
+import { SectionHeader } from '@/components/ui/section-header/section-header';
+
+export default function Dashboard() {
+  return (
+    <>
+      <SectionHeader title="Tonight's events" meta="2 events" />
+      {/* ...section content... */}
+      <SectionHeader title="Activity" meta="last hour" />
+      {/* ...section content... */}
+    </>
+  );
+}
+```
+
+## API Reference
+
+### SectionHeaderProps
+
+<PropsTable component="section-header" />
+
+The component also accepts all standard HTML attributes for the root element (defaults to `<header>`).
+
+## Accessibility
+
+`SectionHeader` is a **visual divider, not a semantic heading**. The title renders as a
+`<span>` by default — it intentionally does not contribute a heading level to the
+document outline. If you need real heading semantics, wrap your heading element inside
+the `title` slot:
+
+```tsx
+<SectionHeader title={<h2>This week</h2>} />
+```
+
+This keeps the markup accessible while preserving the compact visual rhythm.
+
+## When to Use
+
+- Dividing a page body into stacked sections inside a dashboard or admin surface
+- Pairing a small uppercase label with a count, timestamp, or status on the right
+- Establishing visual rhythm across 3-8 sections on a single page
+
+## When Not to Use
+
+- Page-level hero with title, description, breadcrumb, and actions — use [`PageHeader`](/docs/components/admin/page-header)
+- In-content typographic headings (h2 / h3 inside an article) — use [`Heading`](/docs/components/typography/heading)
+- Action-bearing headers with buttons or menus — use [`PageHeader`](/docs/components/admin/page-header)

@@ -1,18 +1,18 @@
 name: SectionHeader
-description: >-
-  Section heading with title, optional subtitle, and optional trailing slot
-  for secondary actions like "View all" links, filters, or count badges.
-category: layout
+description: Compact section-divider primitive with an uppercase title and optional right-aligned meta label. Sized for in-page content sectioning, distinct from the page-level PageHeader.
+category: navigation
 
 when_to_use:
-  - Dividing a screen into labeled groups of content
-  - Introducing a list or card grid with context
-  - Pairing a title with a secondary action (filter, view-all)
+  - Dividing a page body into stacked sections (dashboard "Tonight's events", "Activity", "This week")
+  - Pairing a small uppercase label with a count, timestamp, or status on the right
+  - Establishing visual rhythm across 3-8 sections on a single page
+  - Replacing repeated inline eyebrow-row markup with a single primitive
 
 when_not_to_use:
-  - Page-level titles — use AppBar instead
-  - Table column headers — use the table's built-in headers
-  - Dialogs and sheets — use their built-in titles
+  - Page-level hero with title, description, breadcrumb, and actions (use PageHeader)
+  - In-content typographic headings — h2 / h3 inside an article (use Heading)
+  - Action-bearing headers with buttons or menus (use PageHeader)
+  - Sticky table-section headers with sorting controls
 
 files:
   - components/flutter/visor_section_header/visor_section_header.dart

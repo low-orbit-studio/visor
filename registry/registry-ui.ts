@@ -1769,6 +1769,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "section-header",
+    type: "registry:ui",
+    category: "navigation",
+    description:
+      "A compact section-divider primitive with an uppercase title and optional right-aligned meta label. Sized for in-page content sectioning, distinct from the page-level PageHeader.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/section-header/section-header.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/section-header/section-header.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "stat-card",
     type: "registry:ui",
     category: "admin",
