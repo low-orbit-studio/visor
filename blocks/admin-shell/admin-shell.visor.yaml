@@ -1,6 +1,7 @@
 name: Admin Shell
 description: Foundational admin layout with sidebar, topbar, and main content area. Slot-driven for logo, navigation, breadcrumbs, user menu, and status indicators.
 category: admin
+preview_url: /docs/blocks/admin-shell-showcase
 components_used:
   - breadcrumb
   - dropdown-menu
