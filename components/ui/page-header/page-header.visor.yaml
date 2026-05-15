@@ -52,6 +52,38 @@ props:
     type: "'sm' | 'md' | 'lg'"
     default: "md"
     description: Controls vertical rhythm and title size.
+  - name: titleSize
+    type: "'default' | 'marquee' | string"
+    description: >
+      Title font-size override, orthogonal to `size`. `"default"` and
+      `"marquee"` are tokens that map to `data-title-size` attributes
+      (marquee renders at the `--page-header-title-size` custom property,
+      defaulting to 3.5rem). Any other string is forwarded as a raw CSS
+      length on an inline `--page-header-title-size` declaration and
+      rendered with the marquee rule.
+  - name: titleFamily
+    type: "'heading' | 'display' | string"
+    description: >
+      Title font-family override. `"heading"` and `"display"` are tokens
+      that map to `data-title-family` attributes; `"display"` resolves to
+      `var(--font-display, var(--font-family-heading, inherit))` so themes
+      without a display font degrade to the heading family. Any other
+      string is forwarded as a raw CSS family on an inline
+      `--page-header-title-family` declaration.
+
+css_custom_properties:
+  - name: "--page-header-title-size"
+    description: >
+      Override hook for the title font-size used by `titleSize="marquee"`.
+      Defaults to `3.5rem`. Themes can override per-page via a wrapping
+      className; the `titleSize` prop is sugar over this property.
+  - name: "--page-header-title-family"
+    description: >
+      Override hook for the title font-family used by
+      `titleFamily="display"`. Defaults to
+      `var(--font-display, var(--font-family-heading, inherit))`. Themes
+      can override per-page via a wrapping className; the `titleFamily`
+      prop is sugar over this property.
 
 responsive:
   breakpoints:
@@ -75,4 +107,12 @@ example: |
         <Button>New customer</Button>
       </>
     }
+  />
+
+  // Marquee title, display font (editorial admin hero)
+  <PageHeader
+    eyebrow="Sat · Apr 27 · 22:00 — 04:00 · Two events"
+    title="Tonight"
+    titleSize="marquee"
+    titleFamily="display"
   />

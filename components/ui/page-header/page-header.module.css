@@ -1,5 +1,11 @@
 /* Page Header base: container query wrapper */
 .base {
+  /* Override hooks for title typography. Themes (or consumers via a wrapping
+     className) can set these to retune the marquee title without forking the
+     component. Props are sugar over the same custom properties. */
+  --page-header-title-size: 3.5rem;
+  --page-header-title-family: var(--font-display, var(--font-family-heading, inherit));
+
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -83,6 +89,22 @@
 
 .sizeLg .title {
   font-size: var(--font-size-3xl, 1.875rem);
+}
+
+/* Title typography overrides (orthogonal to size variants).
+   `data-title-size="marquee"` pulls the title up to a hero scale via the
+   `--page-header-title-size` custom property. Raw-string consumers pass an
+   inline `--page-header-title-size` and rely on the same rule. */
+.title[data-title-size="marquee"] {
+  font-size: var(--page-header-title-size, 3.5rem);
+  line-height: 1;
+  letter-spacing: var(--letter-spacing-tight, -0.01em);
+}
+
+/* `data-title-family="display"` switches to the display family with a
+   graceful fallback to the heading family when no display font is themed. */
+.title[data-title-family="display"] {
+  font-family: var(--page-header-title-family, var(--font-display, var(--font-family-heading, inherit)));
 }
 
 /* Description */
