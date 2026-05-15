@@ -7,6 +7,7 @@ when_to_use:
   - Communicating operational state in admin tables, detail pages, and dashboards
   - Labeling service health (healthy, degraded, down)
   - Labeling job or task lifecycle (queued, running, pending, complete, failed, idle)
+  - Labeling admin-ui event state (live, warn, scheduled, sold, draft)
   - Any place you want a consistent "Status: X" accessible announcement
 
 when_not_to_use:
@@ -33,6 +34,11 @@ variants:
     - queued
     - idle
     - complete
+    - live
+    - warn
+    - scheduled
+    - sold
+    - draft
   tone: [subtle, filled]
 
 props:

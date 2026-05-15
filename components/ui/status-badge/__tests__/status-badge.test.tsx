@@ -12,6 +12,19 @@ const STATUSES: StatusBadgeStatus[] = [
   "queued",
   "idle",
   "complete",
+  "live",
+  "warn",
+  "scheduled",
+  "sold",
+  "draft",
+]
+
+const NEW_ADMIN_EVENT_STATUSES: StatusBadgeStatus[] = [
+  "live",
+  "warn",
+  "scheduled",
+  "sold",
+  "draft",
 ]
 
 describe("StatusBadge", () => {
@@ -75,6 +88,12 @@ describe("StatusBadge", () => {
       ["running", "info"],
       ["queued", "secondary"],
       ["idle", "secondary"],
+      // Admin-ui event tones
+      ["live", "success"],
+      ["warn", "warning"],
+      ["scheduled", "info"],
+      ["sold", "success"],
+      ["draft", "secondary"],
     ]
     for (const [status, expectedVariant] of cases) {
       const { container, unmount } = render(<StatusBadge status={status} />)
@@ -97,6 +116,12 @@ describe("StatusBadge", () => {
       // No filled-secondary exists — neutral statuses fall back to secondary.
       ["queued", "secondary"],
       ["idle", "secondary"],
+      // Admin-ui event tones
+      ["live", "filled-success"],
+      ["warn", "filled-warning"],
+      ["scheduled", "filled-info"],
+      ["sold", "filled-success"],
+      ["draft", "secondary"],
     ]
     for (const [status, expectedVariant] of cases) {
       const { container, unmount } = render(
@@ -140,5 +165,15 @@ describe("StatusBadge", () => {
     render(<StatusBadge ref={ref} status="healthy" />)
     expect(ref.current).not.toBeNull()
     expect(ref.current?.tagName).toBe("SPAN")
+  })
+
+  it("renders each admin-ui event tone with the correct data-status attribute", () => {
+    for (const status of NEW_ADMIN_EVENT_STATUSES) {
+      const { container, unmount } = render(<StatusBadge status={status} />)
+      const root = container.querySelector('[data-slot="status-badge"]')
+      expect(root).toHaveAttribute("data-status", status)
+      expect(container.textContent).toContain(statusBadgeLabels[status])
+      unmount()
+    }
   })
 })
