@@ -19,7 +19,7 @@ import { StatusBadge } from '@/components/ui/status-badge';
 ## All Statuses (Subtle)
 
 <ComponentPreview
-  title="All nine admin statuses"
+  title="All admin statuses"
   code={"<StatusBadge status=\"healthy\" />\n<StatusBadge status=\"degraded\" />\n<StatusBadge status=\"down\" />\n<StatusBadge status=\"running\" />\n<StatusBadge status=\"pending\" />\n<StatusBadge status=\"queued\" />\n<StatusBadge status=\"idle\" />\n<StatusBadge status=\"failed\" />\n<StatusBadge status=\"complete\" />"}
 >
   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -32,6 +32,26 @@ import { StatusBadge } from '@/components/ui/status-badge';
     <StatusBadge status="idle" />
     <StatusBadge status="failed" />
     <StatusBadge status="complete" />
+  </div>
+</ComponentPreview>
+
+## Admin-UI Event Tones
+
+A second vocabulary covers admin-ui event lifecycle states — useful for events
+tables, ticket listings, and any content that moves through a publish /
+schedule / live / sold-out / archived flow. Each tone maps to an existing
+semantic color group, so no new tokens are introduced.
+
+<ComponentPreview
+  title="Admin-ui event tones"
+  code={"<StatusBadge status=\"live\" />\n<StatusBadge status=\"warn\" />\n<StatusBadge status=\"scheduled\" />\n<StatusBadge status=\"sold\" />\n<StatusBadge status=\"draft\" />"}
+>
+  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+    <StatusBadge status="live" />
+    <StatusBadge status="warn" />
+    <StatusBadge status="scheduled" />
+    <StatusBadge status="sold" />
+    <StatusBadge status="draft" />
   </div>
 </ComponentPreview>
 
@@ -131,6 +151,11 @@ export default function Example() {
 | `running` | info | `info` | `filled-info` |
 | `queued` | neutral | `secondary` | `secondary` |
 | `idle` | neutral | `secondary` | `secondary` |
+| `live` | success | `success` | `filled-success` |
+| `warn` | warning | `warning` | `filled-warning` |
+| `scheduled` | info | `info` | `filled-info` |
+| `sold` | success | `success` | `filled-success` |
+| `draft` | neutral | `secondary` | `secondary` |
 
 Neutral statuses fall through to `secondary` in both tones because Badge
 does not expose a `filled-secondary` variant.

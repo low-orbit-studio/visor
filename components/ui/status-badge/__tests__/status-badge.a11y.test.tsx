@@ -13,6 +13,11 @@ const STATUSES: StatusBadgeStatus[] = [
   "queued",
   "idle",
   "complete",
+  "live",
+  "warn",
+  "scheduled",
+  "sold",
+  "draft",
 ]
 
 describe("StatusBadge a11y (vitest-axe)", () => {

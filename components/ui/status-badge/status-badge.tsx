@@ -14,6 +14,11 @@ export type StatusBadgeStatus =
   | "queued"
   | "idle"
   | "complete"
+  | "live"
+  | "warn"
+  | "scheduled"
+  | "sold"
+  | "draft"
 
 export type StatusBadgeTone = "subtle" | "filled"
 
@@ -45,6 +50,11 @@ export const statusBadgeLabels: Record<StatusBadgeStatus, string> = {
   queued: "Queued",
   idle: "Idle",
   complete: "Complete",
+  live: "Live",
+  warn: "Warn",
+  scheduled: "Scheduled",
+  sold: "Sold",
+  draft: "Draft",
 }
 
 type BadgeVariant = NonNullable<BadgeProps["variant"]>
@@ -70,6 +80,17 @@ const STATUS_COLOR_GROUP: Record<StatusBadgeStatus, StatusColorGroup> = {
   running: "info",
   queued: "neutral",
   idle: "neutral",
+  // Admin-ui event tones — map to existing semantic groups.
+  // live: active/in-progress positive event → success accent
+  // warn: needs attention but not failing → warning
+  // scheduled: upcoming/planned → info
+  // sold: positive completed outcome → success
+  // draft: unpublished/muted → neutral
+  live: "success",
+  warn: "warning",
+  scheduled: "info",
+  sold: "success",
+  draft: "neutral",
 }
 
 const SUBTLE_VARIANT: Record<StatusColorGroup, BadgeVariant> = {
