@@ -5,6 +5,7 @@
   "pages": [
     "activity-feed",
     "bulk-action-bar",
+    "chrome-button",
     "confirm-dialog",
     "data-table",
     "empty-state",

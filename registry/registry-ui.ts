@@ -1602,6 +1602,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "chrome-button",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "A 28px-tall button primitive for topbar and chrome contexts with an optional leading icon and trailing Kbd shortcut hint. Two variants (default, primary). Composes Button-like behavior at chrome density — not a fork of Button.",
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "kbd"],
+    files: [
+      {
+        path: "components/ui/chrome-button/chrome-button.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/chrome-button/chrome-button.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "confirm-dialog",
     type: "registry:ui",
     category: "admin",

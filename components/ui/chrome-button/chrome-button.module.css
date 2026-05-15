@@ -1,0 +1,94 @@
+/* ChromeButton — 28px topbar/chrome button primitive.
+ *
+ * Compact dimensions for admin chrome contexts (topbar, toolbar). Composes a
+ * leading icon, a label, and a trailing Kbd hint at chrome density. Fully
+ * theme-portable — all colors, motion, and radius bind to Visor tokens.
+ */
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  height: 1.75rem; /* 28px */
+  padding: 0 var(--spacing-3, 0.75rem);
+  border-radius: var(--radius-md, 0.375rem);
+  border: 1px solid transparent;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 1;
+  cursor: pointer;
+  outline: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--motion-duration-150, 150ms)
+      var(--motion-easing-default, ease-in-out),
+    color var(--motion-duration-150, 150ms)
+      var(--motion-easing-default, ease-in-out),
+    border-color var(--motion-duration-150, 150ms)
+      var(--motion-easing-default, ease-in-out),
+    opacity var(--motion-duration-150, 150ms)
+      var(--motion-easing-default, ease-in-out);
+}
+
+.root:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid
+    var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+.root:active:not(:disabled) {
+  transform: translateY(1px);
+  transition: none;
+}
+
+.root:disabled {
+  pointer-events: none;
+  opacity: var(--opacity-50, 0.5);
+}
+
+/* Variants */
+.variantDefault {
+  background-color: var(--surface-interactive-default, #f3f4f6);
+  color: var(--text-primary, #111827);
+}
+
+.variantPrimary {
+  background-color: var(--interactive-primary-bg, #111827);
+  color: var(--interactive-primary-text, #f9fafb);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+@media (hover: hover) {
+  .variantDefault:hover {
+    background-color: var(--surface-interactive-hover, #e5e7eb);
+  }
+
+  .variantPrimary:hover {
+    background-color: var(--interactive-primary-bg-hover, #1f2937);
+  }
+}
+
+/* Slots */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1;
+}
+
+.icon svg {
+  display: block;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.keys {
+  display: inline-flex;
+  align-items: center;
+  margin-left: calc(var(--spacing-1, 0.25rem) / 2);
+}
