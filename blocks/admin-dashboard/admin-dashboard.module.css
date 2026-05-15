@@ -1,4 +1,15 @@
 .root {
+  /* Tunable knobs — themes (and one-off pages) can override these without
+     reaching into block internals. Defaults match the r3 reference build.
+
+     Note: --admin-dashboard-stack-bp is exposed as a custom property for
+     theme/documentation discoverability, but CSS @container queries cannot
+     dereference custom properties today, so the breakpoint below is the
+     hard-coded fallback. Override the @container rule in a theme layer if
+     you need a different stack point. */
+  --admin-dashboard-side-col-width: 320px;
+  --admin-dashboard-stack-bp: 960px;
+
   display: flex;
   flex-direction: column;
   gap: var(--spacing-8, 2rem);
@@ -40,6 +51,40 @@
   flex-direction: column;
   gap: var(--spacing-4, 1rem);
   min-width: 0;
+}
+
+/* ─── Split body layout ─────────────────────────────────────────────────────
+   When layout="split", the activity / secondaryRegion flow is replaced by a
+   2-column grid below the KPI strip. Defaults below mirror the r3 dashboard
+   reference (1fr | 320px, 20px gutter). Sub-960px stacks side-col below. */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5, 1.25rem);
+  min-width: 0;
+}
+
+.body[data-layout="split"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--admin-dashboard-side-col-width);
+  gap: var(--spacing-5, 1.25rem);
+}
+
+.mainCol,
+.sideCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5, 1.25rem);
+  min-width: 0;
+}
+
+@container admin-dashboard (max-width: 60rem) {
+  /* Default stack breakpoint = 960px (60rem). Override the rule in a theme
+     layer if --admin-dashboard-stack-bp is retuned. */
+  .body[data-layout="split"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .activitySection {
