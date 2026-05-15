@@ -337,6 +337,20 @@
   margin-left: 0;
 }
 
+/* Custom footer slot — replaces the default footer entirely. Pinned to the
+ * bottom of the scroll container with the same surface treatment as the default
+ * footer; layout inside is fully owned by the consumer. */
+.customFooter {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  flex: 0 0 auto;
+  width: 100%;
+  border-top: 1px solid var(--border-muted, #e5e7eb);
+  background-color: var(--surface-page, #ffffff);
+  box-shadow: var(--shadow-sm);
+}
+
 /* Narrow container — collapse left nav above the main column and let the
  * footer wrap the status below the action buttons. */
 @container (max-width: 48rem) {
