@@ -1,0 +1,46 @@
+name: SectionHeader
+description: Compact section-divider primitive with an uppercase title and optional right-aligned meta label. Sized for in-page content sectioning, distinct from the page-level PageHeader.
+extends: HTMLElement
+category: navigation
+
+when_to_use:
+  - Dividing a page body into stacked sections (dashboard "Tonight's events", "Activity", "This week")
+  - Pairing a small uppercase label with a count, timestamp, or status on the right
+  - Establishing visual rhythm across 3-8 sections on a single page
+  - Replacing repeated inline eyebrow-row markup with a single primitive
+
+when_not_to_use:
+  - Page-level hero with title, description, breadcrumb, and actions (use PageHeader)
+  - In-content typographic headings — h2 / h3 inside an article (use Heading)
+  - Action-bearing headers with buttons or menus (use PageHeader)
+  - Sticky table-section headers with sorting controls
+
+why: >
+  The r3 dashboard repeats the same section-divider pattern four-plus times — small
+  uppercase label on the left, optional meta on the right. Before this primitive Visor
+  had PageHeader (page-level, large) and Heading (typographic only) — nothing in the
+  middle. A first-class primitive enforces the 36px height, uppercase letter-spacing,
+  surface-subtle background, and tabular-num meta alignment in one place so every
+  section reads consistently across the app.
+
+props:
+  - name: title
+    type: React.ReactNode
+    required: true
+    description: Uppercase tracking label rendered on the left.
+  - name: meta
+    type: React.ReactNode
+    description: Optional right-aligned meta — count, timestamp, status.
+  - name: as
+    type: "'header' | 'div' | 'section'"
+    default: "header"
+    description: Root element tag.
+
+dependencies: []
+
+preview_url: "https://visor.loworbit.studio/docs/components/navigation/section-header"
+
+example: |
+  <SectionHeader title="Tonight's events" meta="2 events" />
+  <SectionHeader title="Activity" meta="last hour" />
+  <SectionHeader title="Top promoters · 30d" />

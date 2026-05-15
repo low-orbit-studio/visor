@@ -1,0 +1,29 @@
+/* Section divider header — 36px row, surface-subtle background.
+   Sits between PageHeader (page-level hero) and Heading (in-content h2/h3). */
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3, 0.75rem);
+  height: 36px;
+  padding: 0 var(--spacing-4, 1rem);
+  background: var(--surface-subtle, #f9fafb);
+}
+
+/* Left: uppercase eyebrow-style label. */
+.title {
+  font-size: var(--font-size-xs, 0.6875rem);
+  font-weight: var(--font-weight-medium, 500);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-tertiary, #6b7280);
+  min-width: 0;
+}
+
+/* Right: optional meta — count, timestamp, status. */
+.meta {
+  font-size: var(--font-size-sm, 0.8125rem);
+  color: var(--text-tertiary, #6b7280);
+  font-variant-numeric: tabular-nums;
+  flex: 0 0 auto;
+}
