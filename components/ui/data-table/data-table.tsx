@@ -61,6 +61,21 @@ export interface DataTableDataRow<TData> {
 
 export type DataTableRow<TData> = DataTableGroupRow | DataTableDataRow<TData>
 
+/**
+ * Semantic per-row tone keys. Map to subtle background tints via CSS — see
+ * `data-table.module.css`. Mirrors the tone vocabulary used by `StatusBadge`
+ * / `StatusDot` so a row tagged "live" reads as one signal with a "live"
+ * badge inside the row.
+ */
+export type DataTableRowTone =
+  | "live"
+  | "warn"
+  | "scheduled"
+  | "sold"
+  | "draft"
+  | "danger"
+  | "info"
+
 export interface DataTableProps<TData, TValue = unknown>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
   columns: ColumnDef<TData, TValue>[]
@@ -71,6 +86,23 @@ export interface DataTableProps<TData, TValue = unknown>
   // suppressed. Group rows are excluded from selection state.
   rows?: DataTableRow<TData>[]
   groupRowRenderer?: (group: DataTableGroupRow) => React.ReactNode
+
+  /**
+   * Map each data row to a semantic tone for a subtle background tint. When
+   * the callback returns `undefined`, the row renders on the default surface.
+   * Tones resolve to Visor surface tokens at the CSS layer — see
+   * `data-table.module.css`.
+   */
+  rowTone?: (row: TData) => DataTableRowTone | undefined
+
+  /**
+   * When supplied, every data row becomes a keyboard-activatable target:
+   * `role="button"`, `tabIndex={0}`, click + Enter/Space dispatch the
+   * handler, and a `data-clickable="true"` attribute drives the hover/focus
+   * affordance. The injected selection checkbox cell stops propagation, so
+   * clicking it does not trigger `onRowClick`.
+   */
+  onRowClick?: (row: TData) => void
 
   // Sorting
   sorting?: SortingState
@@ -128,6 +160,8 @@ function DataTableInner<TData, TValue = unknown>(
     loading = false,
     emptyState,
     stickyHeader = false,
+    rowTone,
+    onRowClick,
     className,
     ...rest
   } = props
@@ -240,12 +274,24 @@ function DataTableInner<TData, TValue = unknown>(
         />
       ),
       cell: ({ row }) => (
-        <Checkbox
-          aria-label="Select row"
-          checked={row.getIsSelected()}
-          disabled={!row.getCanSelect()}
-          onCheckedChange={(value) => row.toggleSelected(value === true)}
-        />
+        // Stop click/keydown from bubbling to the parent <tr>, otherwise
+        // toggling the checkbox would also fire `onRowClick`. The wrapper
+        // is presentational — focus and ARIA continue to live on the
+        // underlying Checkbox.
+        <div
+          data-slot="data-table-selection-cell"
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") e.stopPropagation()
+          }}
+        >
+          <Checkbox
+            aria-label="Select row"
+            checked={row.getIsSelected()}
+            disabled={!row.getCanSelect()}
+            onCheckedChange={(value) => row.toggleSelected(value === true)}
+          />
+        </div>
       ),
     }
     return [selectionColumn, ...userColumns]
@@ -292,6 +338,43 @@ function DataTableInner<TData, TValue = unknown>(
       )}
     </span>
   )
+
+  // Build the per-data-row props (tone, clickable affordance, keyboard
+  // activation). Shared between the `rows`-driven path and the standard
+  // pageRows path so the two stay in lockstep.
+  //
+  // Note on role="button": axe flags nested-interactive when a `<tr>` carries
+  // `role="button"` and also contains an interactive control (the selection
+  // checkbox cell). When selection is enabled, the row stays semantically a
+  // table row — click + keyboard activation still work via the explicit
+  // handlers, but the role override is dropped to keep `<tr>` semantics and
+  // satisfy WCAG nested-interactive. When selection is off, the row is a
+  // pure click target and `role="button"` is safe.
+  const getDataRowProps = (rowData: TData) => {
+    const tone = rowTone?.(rowData)
+    const clickable = onRowClick != null
+    const handleClick = clickable
+      ? () => onRowClick!(rowData)
+      : undefined
+    const handleKeyDown = clickable
+      ? (e: React.KeyboardEvent<HTMLTableRowElement>) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault()
+            onRowClick!(rowData)
+          }
+        }
+      : undefined
+    const useButtonRole = clickable && !enableRowSelection
+    return {
+      className: styles.dataRow,
+      "data-tone": tone,
+      "data-clickable": clickable ? "true" : undefined,
+      role: useButtonRole ? ("button" as const) : undefined,
+      tabIndex: clickable ? 0 : undefined,
+      onClick: handleClick,
+      onKeyDown: handleKeyDown,
+    }
+  }
 
   return (
     <div
@@ -411,10 +494,12 @@ function DataTableInner<TData, TValue = unknown>(
                 )
               }
               const tsRow = table.getRow(item.id)
+              const rowProps = getDataRowProps(item.row)
               return (
                 <TableRow
                   key={item.id}
                   data-state={tsRow.getIsSelected() ? "selected" : undefined}
+                  {...rowProps}
                 >
                   {tsRow.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -434,18 +519,25 @@ function DataTableInner<TData, TValue = unknown>(
               </TableCell>
             </TableRow>
           ) : (
-            pageRows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() ? "selected" : undefined}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
+            pageRows.map((row) => {
+              const rowProps = getDataRowProps(row.original)
+              return (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() ? "selected" : undefined}
+                  {...rowProps}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              )
+            })
           )}
         </TableBody>
       </Table>

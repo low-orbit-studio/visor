@@ -96,6 +96,44 @@ props:
     type: boolean
     default: "false"
     description: When true, the thead is positioned sticky at the top of the scroll container.
+  - name: rowTone
+    type: "(row: TData) => \"live\" | \"warn\" | \"scheduled\" | \"sold\" | \"draft\" | \"danger\" | \"info\" | undefined"
+    description: >
+      Map each data row to a semantic tone for a subtle background tint.
+      `live` and `sold` resolve to `--surface-success-subtle`, `warn` to
+      `--surface-warning-subtle`, `danger` to `--surface-error-subtle`, `info`
+      to `--surface-info-subtle`. `scheduled` and `draft` render on the
+      default surface (no tint) to keep visual signal focused on actionable
+      rows. Tone names mirror StatusBadge / StatusDot so a row tagged "live"
+      reads consistently with a "live" badge inside the row.
+  - name: onRowClick
+    type: "(row: TData) => void"
+    description: >
+      When supplied, every data row becomes a keyboard-activatable target:
+      `role="button"` (only when `enableRowSelection` is off — see below),
+      `tabIndex={0}`, click + Enter/Space dispatch the handler, and a
+      `data-clickable="true"` attribute drives the hover and focus
+      affordance. The injected selection-checkbox cell stops propagation, so
+      clicking the checkbox does not trigger the row click. When selection
+      is enabled, the row keeps its semantic `tr` role to avoid the
+      nested-interactive accessibility violation — click/keyboard still
+      work via the explicit handlers.
+
+row_states:
+  - state: "data-state=\"selected\""
+    description: >
+      Selected data rows carry `data-state="selected"` (emitted by TanStack
+      via `row.getIsSelected()`). The DataTable CSS paints them with
+      `var(--surface-selected)` so selection has a visible affordance without
+      consumers wiring custom styling.
+  - state: "data-tone=\"<tone>\""
+    description: >
+      Set on data rows when `rowTone` returns a tone key. Drives the row's
+      background tint via per-tone CSS rules in `data-table.module.css`.
+  - state: "data-clickable=\"true\""
+    description: >
+      Set on data rows when `onRowClick` is supplied. Drives the hover and
+      focus-visible affordance and pairs with `role="button"` / `tabIndex=0`.
 
 responsive:
   breakpoints:
