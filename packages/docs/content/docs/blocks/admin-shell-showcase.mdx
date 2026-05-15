@@ -1,0 +1,96 @@
+---
+title: Admin Shell — Editorial Density Showcase
+description: Hardening showcase composing AdminShell in the admin-v7-r3 editorial-density pattern — WorkspaceSwitcher in the logo slot, ChromeButton cluster in topbarEnd, eyebrow-grouped nav, sidebar footer with Avatar + Kbd.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { AdminShellShowcaseDemo } from '@/components/blocks/admin-shell-showcase-demo';
+
+## Preview
+
+<BlockPreview
+  title="Admin Shell — editorial density"
+  code={"<AdminShell\n  sidebarWidth={228}\n  mainPadding=\"lg\"\n  logo={\n    <WorkspaceSwitcher\n      current={current}\n      workspaces={workspaces}\n      onSelect={setCurrentWorkspaceId}\n    />\n  }\n  sidebarNav={\n    <div>\n      <NavList items={PRIMARY_NAV} />\n      <div className=\"eyebrow\">Workspace</div>\n      <NavList items={WORKSPACE_NAV} />\n    </div>\n  }\n  sidebarFooter={\n    <button onClick={() => setCommandOpen(true)} aria-label=\"Open command palette\">\n      <Avatar size=\"sm\"><AvatarFallback>JS</AvatarFallback></Avatar>\n      <div className=\"user-meta\">\n        <span>Justin S.</span>\n        <span>justin@empire.nyc</span>\n      </div>\n      <Kbd keys={[\"⌘\", \"K\"]} size=\"sm\" />\n    </button>\n  }\n  topbarStart={<div>Dashboard</div>}\n  topbarEnd={\n    <div className=\"chrome-cluster\">\n      <ChromeButton icon={<MagnifyingGlass />} keys={[\"⌘\", \"K\"]}>Search</ChromeButton>\n      <ChromeButton icon={<SlidersHorizontal />}>Density</ChromeButton>\n      <ChromeButton variant=\"primary\" icon={<Plus />}>New event</ChromeButton>\n    </div>\n  }\n>\n  <h2>Tonight's lineup</h2>\n</AdminShell>"}
+>
+  <AdminShellShowcaseDemo />
+</BlockPreview>
+
+## What this showcase proves
+
+The admin-v7-r3 reference shell composes Visor primitives into a single, dense
+editorial chrome:
+
+- `WorkspaceSwitcher` in the `logo` slot — multi-tenant identity at the top of
+  the sidebar
+- `ChromeButton` cluster in `topbarEnd` — 28px buttons with inline `Kbd`
+  shortcut hints, sized for chrome (not body)
+- Eyebrow-grouped nav inside `sidebarNav` — primary nav, then a small caps
+  group label, then a second nav cluster
+- `sidebarFooter` row pairing `Avatar` + identity meta + a trailing `Kbd`
+  hint — acts as the cmd-K opener
+
+This page is a **verification harness**: every slot used here belongs to the
+public API of `AdminShell` and its primitives. No code changes to
+`admin-shell` were required to reach this composition.
+
+## Slot map
+
+| Slot | Composition |
+|------|-------------|
+| `logo` | `<WorkspaceSwitcher current={…} workspaces={[…]} onSelect={…} />` |
+| `sidebarNav` | Two `<NavList>` clusters separated by a small-caps eyebrow label |
+| `sidebarFooter` | `<button>` containing `<Avatar>` + identity meta + `<Kbd keys={["⌘","K"]} />` |
+| `topbarStart` | Page section title (`"Dashboard"`) |
+| `topbarEnd` | Three `<ChromeButton>` — Search (with `keys`), Density, primary New event |
+
+## Composition notes
+
+### `logo` accepts any node — including blocks
+
+The `WorkspaceSwitcher` block drops straight into `AdminShell`'s `logo` slot
+with no adapter. The slot has no opinion about content; the block contributes
+its own sidebar-header-shaped trigger.
+
+### `topbarEnd` carries the chrome density
+
+`ChromeButton` (28px) is the right scale for topbar chrome. `Button` (32/36/40px)
+is body-scale and would dominate the bar. The trailing `keys` prop renders an
+inline `Kbd size="sm"` so the ⌘K hint sits inside the button without ad-hoc
+markup.
+
+### Eyebrow group labels live inside `sidebarNav`
+
+`AdminShell` does not have a per-group slot — instead, the consumer composes
+the whole nav region (lists + eyebrows) and passes it as one node to
+`sidebarNav`. This keeps the block neutral about how many groups exist and how
+they're labeled.
+
+### `sidebarFooter` is one row, not three slots
+
+Pairing `Avatar` + identity meta + trailing `Kbd` into a single button row
+keeps the footer compact and reinforces the cmd-K affordance. The
+sidebar-footer slot is a freeform region, so a real app wires this to its
+command-palette dialog.
+
+## Theming
+
+This composition relies only on Visor's semantic tokens (`--text-primary`,
+`--text-secondary`, `--surface-muted`, `--radius-sm`). Drop the showcase under
+any theme that provides those tokens — default Visor, ENTR, Mission Control —
+and the layout adapts. No hard-coded color values.
+
+## Known gaps
+
+None surfaced. `AdminShell`'s public API supports the full r3 editorial-density
+composition without changes. If a gap is discovered in a downstream app, file
+a separate `VI-` ticket — do not extend `admin-shell` directly inside this
+showcase.
+
+## See also
+
+- [`AdminShell`](./admin-shell) — block reference
+- [`WorkspaceSwitcher`](./workspace-switcher) — sidebar-header tenant switcher
+- [`ChromeButton`](../components/chrome-button) — 28px topbar/chrome button primitive
+- [`Kbd`](../components/kbd) — keyboard shortcut primitive
+- [`Avatar`](../components/avatar) — identity primitive
