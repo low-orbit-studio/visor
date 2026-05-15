@@ -307,6 +307,23 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "sparkline",
+    type: "registry:ui",
+    description:
+      "A decorative inline SVG mini-trend chart for stat-card trend slots and dense data contexts. Renders a single polyline from a numeric series with zero dependencies; defaults to 96×22, accent-primary stroke.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    files: [
+      {
+        path: "components/ui/sparkline/sparkline.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/sparkline/sparkline.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "chip",
     type: "registry:ui",
     description:

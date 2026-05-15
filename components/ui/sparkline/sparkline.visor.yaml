@@ -1,0 +1,59 @@
+name: Sparkline
+description: A decorative inline SVG mini-trend chart for stat-card trend slots and dense data contexts. Renders a single polyline from a numeric series with zero dependencies.
+extends: SVGSVGElement
+category: data-display
+
+when_to_use:
+  - Trend slot inside a StatCard or KpiCard (e.g. "RSVPs tonight" with a 12-point series)
+  - Compact at-a-glance trend cues in dense tables, dashboards, or admin surfaces
+  - Multi-card KPI strips where each card needs a tiny visual trend hint
+  - Anywhere a 50-line decorative trend SVG would otherwise be rebuilt locally
+
+when_not_to_use:
+  - Interactive charts with tooltips, hover state, or axis labels (use the `chart` primitive)
+  - Multi-series overlays or stacked datasets
+  - Standalone data visualizations that need to be independently navigable by assistive tech
+  - Area fills, sparkbars, sparkdots — these are separate primitives
+
+why: >
+  The math is trivial — min/max normalization across N points to an SVG polyline — but
+  every admin surface ends up rebuilding it locally. Sparkline ships a tiny, dependency-free
+  primitive that defaults to a 96×22 trend slot, pulls its stroke from `var(--accent-primary)`
+  so it theme-shifts automatically, and stays decorative by default (semantic data is delivered
+  by the surrounding label and delta). When a sparkline needs to be announced on its own,
+  pass `aria-label` and it becomes a labeled image.
+
+props:
+  - name: values
+    type: "number[]"
+    required: true
+    description: Numeric series. Minimum 2 values required — anything shorter renders nothing.
+  - name: width
+    type: number
+    default: 96
+    description: SVG width in px.
+  - name: height
+    type: number
+    default: 22
+    description: SVG height in px.
+  - name: color
+    type: string
+    default: "var(--accent-primary)"
+    description: Stroke color. Accepts any CSS color string — token, hex, hsl, oklch.
+  - name: strokeWidth
+    type: number
+    default: 1.5
+    description: Stroke width in px.
+  - name: aria-label
+    type: string
+    description: When supplied, the SVG becomes a labeled image and is announced. Omit for decorative use.
+
+dependencies: []
+
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/sparkline"
+
+example: |
+  <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} />
+  <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} width={120} height={32} />
+  <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} color="var(--text-success)" />
+  <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} aria-label="RSVPs over the last 12 weeks" />
