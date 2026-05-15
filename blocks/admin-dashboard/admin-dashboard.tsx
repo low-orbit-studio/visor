@@ -53,9 +53,25 @@ export interface AdminDashboardProps
   /** Stat cards rendered in the responsive grid. */
   stats: AdminDashboardStat[]
 
+  /**
+   * Body layout mode.
+   * - `"single"` (default) renders the existing flow: stat grid → optional
+   *   `secondaryRegion` → activity section. Backwards-compatible — every
+   *   existing consumer renders unchanged when `layout` is omitted.
+   * - `"split"` renders a 2-column body grid (`mainCol` left, `sideCol` right)
+   *   below the stat strip. In split mode you compose the body yourself —
+   *   the default activity feed and `secondaryRegion` are not rendered.
+   */
+  layout?: "single" | "split"
+
+  /** Left column content. Only rendered when `layout="split"`. */
+  mainCol?: React.ReactNode
+  /** Right column content. Only rendered when `layout="split"`. */
+  sideCol?: React.ReactNode
+
   /** Heading rendered above the activity feed. Defaults to "Recent activity". */
   activityTitle?: React.ReactNode
-  /** Activity events rendered in the feed. */
+  /** Activity events rendered in the feed. Ignored when `layout="split"`. */
   activities: AdminDashboardActivity[]
   /** If provided, renders a "View all" link in the activity section header. */
   activityViewAllHref?: string
@@ -64,7 +80,10 @@ export interface AdminDashboardProps
   /** Variant forwarded to the underlying ActivityFeed. */
   activityVariant?: "default" | "compact" | "timeline"
 
-  /** Optional region rendered below the stat grid and above the activity feed. */
+  /**
+   * Optional region rendered below the stat grid and above the activity feed.
+   * Ignored when `layout="split"` — compose body content via `mainCol`/`sideCol`.
+   */
   secondaryRegion?: React.ReactNode
 
   /** Heading level used for the PageHeader title. Defaults to `h1`. */
@@ -77,6 +96,9 @@ export function AdminDashboard({
   description,
   actions,
   stats,
+  layout = "single",
+  mainCol,
+  sideCol,
   activityTitle = "Recent activity",
   activities,
   activityViewAllHref,
@@ -89,11 +111,29 @@ export function AdminDashboard({
 }: AdminDashboardProps) {
   const activityHeadingId = React.useId()
   const hasActivities = activities.length > 0
+  const isSplit = layout === "split"
+
+  // Dev-mode warning: in split mode the caller composes the body via mainCol /
+  // sideCol, so any `activities` / `secondaryRegion` props are silently dropped.
+  // Flag the mismatch loudly during development so consumers notice before
+  // shipping. Suppressed in production to avoid noisy logs.
+  if (
+    isSplit &&
+    process.env.NODE_ENV !== "production" &&
+    (activities.length > 0 || secondaryRegion !== undefined)
+  ) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      "[AdminDashboard] layout=\"split\" ignores `activities` and `secondaryRegion`. " +
+        "Compose body content inside `mainCol` / `sideCol` instead."
+    )
+  }
 
   return (
     <div
       className={cn(styles.root, className)}
       data-slot="admin-dashboard"
+      data-layout={layout}
       {...props}
     >
       <PageHeader
@@ -125,59 +165,82 @@ export function AdminDashboard({
         </div>
       ) : null}
 
-      {secondaryRegion ? (
+      {isSplit ? (
         <div
-          className={styles.secondaryRegion}
-          data-slot="admin-dashboard-secondary"
+          className={styles.body}
+          data-slot="admin-dashboard-body"
+          data-layout="split"
         >
-          {secondaryRegion}
+          <div
+            className={styles.mainCol}
+            data-slot="admin-dashboard-main-col"
+          >
+            {mainCol}
+          </div>
+          <aside
+            className={styles.sideCol}
+            data-slot="admin-dashboard-side-col"
+          >
+            {sideCol}
+          </aside>
         </div>
-      ) : null}
-
-      <section
-        className={styles.activitySection}
-        data-slot="admin-dashboard-activity"
-        aria-labelledby={activityHeadingId}
-      >
-        <header className={styles.activityHeader}>
-          <h2 id={activityHeadingId} className={styles.activityTitle}>
-            {activityTitle}
-          </h2>
-          {activityViewAllHref ? (
-            <a
-              href={activityViewAllHref}
-              className={styles.activityViewAll}
-              data-slot="admin-dashboard-activity-view-all"
+      ) : (
+        <>
+          {secondaryRegion ? (
+            <div
+              className={styles.secondaryRegion}
+              data-slot="admin-dashboard-secondary"
             >
-              View all
-            </a>
+              {secondaryRegion}
+            </div>
           ) : null}
-        </header>
 
-        {hasActivities ? (
-          <ActivityFeed variant={activityVariant}>
-            {activities.map((activity) => (
-              <ActivityFeedItem
-                key={activity.id}
-                leading={activity.leading}
-                title={activity.title}
-                description={activity.description}
-                actor={activity.actor}
-                timestamp={activity.timestamp}
-                trailing={activity.trailing}
+          <section
+            className={styles.activitySection}
+            data-slot="admin-dashboard-activity"
+            aria-labelledby={activityHeadingId}
+          >
+            <header className={styles.activityHeader}>
+              <h2 id={activityHeadingId} className={styles.activityTitle}>
+                {activityTitle}
+              </h2>
+              {activityViewAllHref ? (
+                <a
+                  href={activityViewAllHref}
+                  className={styles.activityViewAll}
+                  data-slot="admin-dashboard-activity-view-all"
+                >
+                  View all
+                </a>
+              ) : null}
+            </header>
+
+            {hasActivities ? (
+              <ActivityFeed variant={activityVariant}>
+                {activities.map((activity) => (
+                  <ActivityFeedItem
+                    key={activity.id}
+                    leading={activity.leading}
+                    title={activity.title}
+                    description={activity.description}
+                    actor={activity.actor}
+                    timestamp={activity.timestamp}
+                    trailing={activity.trailing}
+                  />
+                ))}
+              </ActivityFeed>
+            ) : activityEmptyState !== undefined ? (
+              activityEmptyState
+            ) : (
+              <EmptyState
+                heading="No recent activity"
+                description="New events will show up here as they happen."
+                tone="subtle"
               />
-            ))}
-          </ActivityFeed>
-        ) : activityEmptyState !== undefined ? (
-          activityEmptyState
-        ) : (
-          <EmptyState
-            heading="No recent activity"
-            description="New events will show up here as they happen."
-            tone="subtle"
-          />
-        )}
-      </section>
+            )}
+          </section>
+        </>
+      )}
     </div>
   )
 }

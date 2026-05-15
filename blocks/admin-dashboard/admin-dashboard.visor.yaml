@@ -1,5 +1,5 @@
 name: Admin Dashboard
-description: Drop-in admin overview composition — PageHeader, responsive stat grid, optional secondary region, and ActivityFeed with empty-state fallback. Composes existing admin compounds, nothing to configure.
+description: Drop-in admin overview composition — PageHeader, responsive stat grid, optional secondary region, and ActivityFeed with empty-state fallback. Supports a 2-column body layout via `layout="split"` (mainCol + sideCol slots) for density-rich operator screens.
 category: admin
 components_used:
   - page-header
@@ -10,7 +10,42 @@ when_to_use:
   - Landing page for an admin or back-office app
   - Overview-at-a-glance screens mixing KPIs and recent events
   - Any dashboard needing a title, metrics, and a recent-activity feed
+  - Operator screens needing a main column + right rail below the KPI strip (use `layout="split"`)
 when_not_to_use:
   - Data-heavy list or table pages (use admin-list-page)
   - Detail / edit screens for a single record (use admin-detail-drawer)
   - Settings forms (use admin-settings-page)
+layout_modes:
+  single:
+    description: Default. PageHeader → stat grid → optional secondaryRegion → activity feed. Backwards-compatible with every existing consumer.
+  split:
+    description: PageHeader → stat grid → 2-column body grid (`mainCol` left, `sideCol` right). Caller composes the body — the default activity feed and `secondaryRegion` are ignored in this mode (a dev-mode warning fires if either is supplied).
+    tunable_tokens:
+      - "--admin-dashboard-side-col-width (default 320px) — right-rail width"
+      - "--admin-dashboard-stack-bp (default 960px) — container-query breakpoint at which sideCol stacks below mainCol"
+example: |
+  <AdminDashboard
+    title="Tonight"
+    eyebrow="Sat · Apr 27 · 22:00 — 04:00"
+    stats={KPI_CARDS}
+    layout="split"
+    mainCol={
+      <>
+        <SectionHeader title="Tonight's events" meta="2 events" />
+        <EventsTable rows={TONIGHT} />
+        <SectionHeader title="Activity" meta="last hour" />
+        <ActivityFeed variant="compact">{...}</ActivityFeed>
+      </>
+    }
+    sideCol={
+      <>
+        <SectionHeader title="This week" />
+        <RightRailList rows={WEEK_ROWS} />
+        <SectionHeader title="Top promoters · 30d" />
+        <RightRailList rows={PROMOTER_ROWS} />
+        <SectionHeader title="Quick" />
+        <QuickActions actions={QUICK_ACTIONS} />
+      </>
+    }
+    activities={[]}
+  />
