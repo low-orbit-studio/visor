@@ -1,0 +1,91 @@
+---
+title: Sparkline
+description: A decorative inline SVG mini-trend chart for stat-card trend slots and dense data contexts. Zero dependencies, theme-portable stroke.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Sparkline } from '@/components/ui/sparkline';
+
+## Default
+
+Sparkline renders a single polyline from a numeric series. By default it ships at 96×22 — sized for a stat-card trend slot — and pulls its stroke from `var(--accent-primary)` so it adapts automatically across themes.
+
+<ComponentPreview
+  title="Default Sparkline"
+  code={"import { Sparkline } from '@/components/ui/sparkline/sparkline';\n\n<Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} />"}
+>
+  <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} />
+</ComponentPreview>
+
+## Custom Dimensions
+
+Pass `width` and `height` to size the sparkline for a larger slot, a sidebar widget, or a dense table cell.
+
+<ComponentPreview
+  title="Custom dimensions"
+  code={"<Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} width={160} height={48} />"}
+>
+  <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} width={160} height={48} />
+</ComponentPreview>
+
+## Color Override
+
+The default stroke is `var(--accent-primary)`. Override `color` with any CSS color string — a token, hex, or hsl — to express direction (success vs. warning) or to match a card's accent.
+
+<ComponentPreview
+  title="Color override"
+  code={"<Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} color=\"var(--text-success)\" />\n<Sparkline values={[84, 71, 62, 54, 48, 41, 36, 27, 19, 22, 18, 12]} color=\"var(--text-error)\" />"}
+>
+  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+    <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} color="var(--text-success)" />
+    <Sparkline values={[84, 71, 62, 54, 48, 41, 36, 27, 19, 22, 18, 12]} color="var(--text-error)" />
+  </div>
+</ComponentPreview>
+
+## Decorative vs. Labeled
+
+By default the SVG is marked `aria-hidden="true"` — the surrounding label and delta deliver the semantic data. Pass `aria-label` to promote it to a labeled image that assistive tech will announce.
+
+<ComponentPreview
+  title="Decorative vs labeled"
+  code={"<Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} />\n<Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} aria-label=\"RSVPs over the last 12 weeks\" />"}
+>
+  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+    <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} />
+    <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} aria-label="RSVPs over the last 12 weeks" />
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add sparkline
+```
+
+This copies two files into your project:
+
+- `components/ui/sparkline/sparkline.tsx` — the component
+- `components/ui/sparkline/sparkline.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Sparkline } from '@/components/ui/sparkline/sparkline';
+
+<StatCard
+  label="RSVPs tonight"
+  value="847"
+  trend={<Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} />}
+/>
+```
+
+A minimum of two values is required — anything shorter renders nothing.
+
+## API Reference
+
+### SparklineProps
+
+<PropsTable component="sparkline" />
+
+The component also accepts all standard SVG attributes except `viewBox`, which is computed from `width` and `height`.
