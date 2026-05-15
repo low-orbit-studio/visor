@@ -1,0 +1,80 @@
+---
+title: Admin Detail Drawer — Admin UI Density
+description: Editorial-density composition of admin-detail-drawer demonstrating customHeader chrome row, hero section with KPI grid, line-variant Tabs with meta counts, and Kbd hints inside footerStatus. Built entirely from Visor primitives.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { AdminDetailDrawerAdminUiDensityDemo } from '@/components/blocks/admin-detail-drawer-admin-ui-density-demo';
+
+## Preview
+
+<BlockPreview
+  title="Admin Detail Drawer — admin-ui density"
+  code={"<AdminDetailDrawer\n  open={open}\n  onOpenChange={setOpen}\n  width=\"lg\"\n  className={styles.drawer}\n  title=\"Eris Drew — Resolute presents\"\n  customHeader={\n    <div className={styles.chrome}>\n      <button aria-label=\"Previous event\">‹</button>\n      <button aria-label=\"Next event\">›</button>\n      <span>2 of 128</span>\n      <div className={styles.chromeSpacer} />\n      <button>Edit</button>\n      <button aria-label=\"More actions\"><DotsThreeVerticalIcon /></button>\n      <button aria-label=\"Close drawer\" onClick={() => setOpen(false)}><XIcon /></button>\n    </div>\n  }\n  footerStatus={\n    <span className={styles.footerHints}>\n      <span><Kbd size=\"sm\">⌘S</Kbd> save</span>\n      <span><Kbd size=\"sm\">Esc</Kbd> close</span>\n    </span>\n  }\n>\n  <div className={styles.hero}>\n    {/* badges + eyebrow + title + meta + KPI grid */}\n  </div>\n  <Tabs defaultValue=\"overview\">\n    <TabsList variant=\"line\">\n      <TabsTrigger value=\"overview\">Overview</TabsTrigger>\n      <TabsTrigger value=\"door\">Door list <span data-meta=\"true\">512</span></TabsTrigger>\n      {/* ... */}\n    </TabsList>\n    <TabsContent value=\"overview\">{/* lineup, door list, notes */}</TabsContent>\n  </Tabs>\n</AdminDetailDrawer>"}
+>
+  <AdminDetailDrawerAdminUiDensityDemo />
+</BlockPreview>
+
+## What this showcases
+
+This is a **composition-only** showcase. It does not extend `admin-detail-drawer` — it
+proves the block's existing public API can carry the editorial-density admin-ui pattern
+(originally explored in `admin-v7-r3/components/local/EventDetailDrawer.tsx`) using only:
+
+- `customHeader` — chrome row with prev/next, counter, Edit, more, and a custom close X
+- `children` — hero section (status badges, eyebrow, marquee title, meta row, 4-cell KPI grid) followed by a `Tabs` (line variant) with meta-number badges on each trigger and tab content (lineup list, recent door list, internal notes)
+- `footerStatus` — `Kbd` hint cluster for ⌘S / Esc
+
+`hideHeader` and `customHeader` shipped in [VI-292](https://linear.app/low-orbit-studio/issue/VI-292) — this is the first
+Visor-native composition validating that work end-to-end.
+
+## Composition shape
+
+```tsx
+<AdminDetailDrawer
+  open={open}
+  onOpenChange={setOpen}
+  width="lg"
+  className={styles.drawer}
+  title="Eris Drew — Resolute presents"
+  customHeader={<ChromeRow onClose={() => setOpen(false)} />}
+  footerStatus={<KbdHints />}
+>
+  <Hero />
+  <Tabs defaultValue="overview">
+    <TabsList variant="line">{/* triggers w/ meta counts */}</TabsList>
+    <TabsContent value="overview">{/* lineup / door / notes */}</TabsContent>
+    {/* ... */}
+  </Tabs>
+</AdminDetailDrawer>
+```
+
+## Theming
+
+The showcase styles all reference semantic token names (`--text-primary`,
+`--surface-card`, `--accent-primary`, `--font-marquee`, etc.) with safe fallbacks.
+When wrapped in a theme that defines those tokens — ENTR, Borealis default, custom —
+the surfaces, type, and accent cascade cleanly. Without a theme, the fallbacks render
+a neutral light-mode treatment.
+
+## Slot map
+
+| Block API | Showcase content |
+| -- | -- |
+| `customHeader` | Chrome row — prev/next icon buttons, "2 of 128" counter, spacer, Edit button, more-actions menu button, close X. Replaces the default SheetHeader. |
+| `children` (body slot) | Hero block (badges, eyebrow, title, meta, KPI grid) + `Tabs` with line variant and meta-number badges. |
+| `footerStatus` | Two `Kbd` hint clusters separated by a small gap. Renders inside the sticky footer's middle region. |
+| Footer save/cancel | Block defaults — kept visible to demonstrate that the chrome row coexists with the standard save/cancel actions. |
+
+## Accessibility
+
+- The block keeps the visually-hidden `SheetTitle` mounted (Radix requirement) when `customHeader` is used — assistive tech still announces `title`.
+- The chrome row's close button calls `onOpenChange(false)` directly, matching the keyboard `Escape` and overlay-click paths.
+- `Tabs` composes inside the body without focus-trap conflict — the drawer dialog's focus trap and the tabs' internal roving tabindex don't compete.
+- Each chrome icon button has an `aria-label`; decorative icons inside use the parent label.
+
+## See also
+
+- [admin-detail-drawer](./admin-detail-drawer) — the base block, with the standard
+  header/body/footer chrome.

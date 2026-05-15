@@ -1,0 +1,463 @@
+/*
+ * AdminDetailDrawer admin-ui editorial-density showcase.
+ *
+ * Ports the admin-v7-r3 EventDetailDrawer composition into Visor primitives
+ * via the block's customHeader + children + footerStatus slots. VI-292 shipped
+ * customHeader/hideHeader — this composition validates the slot against a
+ * full editorial pattern. Any gap surfaces as a follow-up VI- ticket.
+ */
+
+/* Width override — exact 680px from the V7 spec. */
+.drawer {
+  max-width: min(42.5rem, 100vw);
+}
+
+/* Suppress the Sheet's default close X — chrome row provides its own close.
+   AdminDetailDrawer doesn't pass `showCloseButton` through to SheetContent,
+   so we hide the rendered close button via :global. */
+.drawer :global([data-slot="sheet-close"]) {
+  display: none;
+}
+
+/* Repaint sheet content surface to a deeper panel + drop block padding. */
+.drawer :global([data-slot="sheet-content"]) {
+  background-color: var(--surface-card, var(--surface, #fff));
+  padding: 0;
+  gap: 0;
+}
+
+/* Block body — manage padding ourselves. */
+.drawer :global([data-slot="admin-detail-drawer-body"]) {
+  padding: 0;
+}
+
+/* Footer — panel chrome over the block's default. */
+.drawer :global([data-slot="admin-detail-drawer-footer"]) {
+  background-color: var(--surface-interactive-default, var(--surface-subtle, #f5f5f5));
+  border-top: 0;
+  box-shadow: none;
+  padding: 0 1.25rem;
+  height: 3rem;
+  gap: 0.75rem;
+}
+
+.drawer :global([data-slot="admin-detail-drawer-status"]) {
+  text-align: left;
+  margin-right: auto;
+}
+
+/* ─── Chrome row (prev/next + count + actions + close) ─── */
+.chrome {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  height: 3rem;
+  padding: 0 1.25rem;
+  background: var(--surface-interactive-default, var(--surface-subtle, #f5f5f5));
+  flex: 0 0 auto;
+}
+
+.iconBtn {
+  width: 1.75rem;
+  height: 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm, 0.25rem);
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.iconBtn:hover {
+  color: var(--text-primary, #111827);
+  background: var(--surface-interactive-active, var(--surface-hover, #ececec));
+}
+
+.iconGlyph {
+  width: 1rem;
+  height: 1rem;
+}
+
+.chromeBtn {
+  height: 1.75rem;
+  padding: 0 0.625rem;
+  border-radius: var(--radius-sm, 0.25rem);
+  font-size: var(--text-13, 0.8125rem);
+  color: var(--text-secondary, #6b7280);
+  background: var(--surface-interactive-active, var(--surface-hover, #ececec));
+  border: 0;
+  cursor: pointer;
+}
+
+.chromeBtn:hover {
+  color: var(--text-primary, #111827);
+}
+
+.counter {
+  font-size: var(--text-13, 0.8125rem);
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.chromeSpacer {
+  flex: 1;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.figure {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── Hero ─── */
+.hero {
+  padding: 1.75rem 1.5rem 1.25rem;
+}
+
+.badges {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  height: 1.5rem;
+  padding: 0 0.625rem;
+  border-radius: var(--radius-sm, 0.25rem);
+  font-size: var(--text-11, 0.6875rem);
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+  background: var(--surface-interactive-default, var(--surface-subtle, #f5f5f5));
+}
+
+.badgeMint {
+  color: var(--text-success, #047857);
+  background: var(--surface-success-subtle, #d1fae5);
+}
+
+.dot {
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  background: var(--accent-primary, var(--primary, #10b981));
+}
+
+.dotMuted {
+  background: var(--text-tertiary, #9ca3af);
+}
+
+.eyebrow {
+  font-size: var(--text-11, 0.6875rem);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary, #9ca3af);
+  font-weight: 500;
+}
+
+.title {
+  font-family: var(--font-marquee, var(--font-display, inherit));
+  font-size: var(--text-48, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+  margin: 0.625rem 0 0.75rem;
+  color: var(--text-primary, #111827);
+}
+
+.meta {
+  font-size: var(--text-14, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+  margin: 0;
+}
+
+/* ─── KPI grid ─── */
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin-top: 1.25rem;
+  background: var(--surface-interactive-default, var(--surface-subtle, #f5f5f5));
+  border-radius: var(--radius-md, 0.375rem);
+  overflow: hidden;
+}
+
+.kpiCell {
+  background: var(--surface-interactive-default, var(--surface-subtle, #f5f5f5));
+  padding: 0.875rem 1rem;
+}
+
+.kpiLabel {
+  font-size: var(--text-11, 0.6875rem);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary, #9ca3af);
+  margin-bottom: 0.25rem;
+}
+
+.kpiValue {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  font-family: var(--font-marquee, var(--font-display, inherit));
+  font-size: var(--text-32, 2rem);
+  color: var(--text-primary, #111827);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+.kpiAux {
+  font-family: var(--font-body, inherit);
+  font-size: var(--text-13, 0.8125rem);
+  color: var(--text-tertiary, #9ca3af);
+  font-weight: 400;
+}
+
+/* ─── Tabs ─── */
+.tabs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Higher specificity (.tabs descendant) + data-slot attribute combine to
+   override TabsList's pill default (which otherwise wins on equal specificity
+   and collapses the row to fit-content with a 9999px radius). */
+.tabs .tabsList[data-slot="tabs-list"] {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1.25rem;
+  width: 100%;
+  height: 2.5rem;
+  padding: 0 1.5rem;
+  background: var(--surface-interactive-default, var(--surface-subtle, #f5f5f5));
+  border-bottom: 0;
+  border-radius: 0;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.tabsTrigger {
+  flex: 0 0 auto;
+  height: 100%;
+  padding: 0;
+  font-size: var(--text-13, 0.8125rem);
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.tabsTrigger:hover {
+  color: var(--text-primary, #111827);
+}
+
+.tabsTrigger[data-state="active"] {
+  color: var(--text-primary, #111827);
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Repaint the animated indicator to the accent — note: VI-291 shipped a
+   token hook, but the registry source still uses --text-primary fallback.
+   This override targets the slot directly. */
+.tabs :global([data-slot="tabs-indicator"]) {
+  background-color: var(--accent-primary, var(--primary, #10b981));
+}
+
+.tabMeta {
+  margin-left: 0.25rem;
+  color: var(--text-tertiary, #9ca3af);
+  font-variant-numeric: tabular-nums;
+}
+
+.tabsContent {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.tabsContentEmpty {
+  padding: 2.5rem 1.5rem;
+  color: var(--text-tertiary, #9ca3af);
+  font-size: var(--text-13, 0.8125rem);
+}
+
+/* ─── Sections (Lineup, Door list, Notes) ─── */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sectionRule {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sectionLabel {
+  font-size: var(--text-13, 0.8125rem);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.rule {
+  flex: 1;
+  height: 1px;
+  background: var(--surface-interactive-active, var(--border, #e5e7eb));
+}
+
+.sectionMeta {
+  font-size: var(--text-13, 0.8125rem);
+  color: var(--text-tertiary, #9ca3af);
+}
+
+/* Lineup */
+.lineupList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lineupRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatarAccent :global([data-slot="avatar-fallback"]) {
+  background: var(--surface-success-subtle, #d1fae5);
+  color: var(--text-success, #047857);
+}
+
+.lineupText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.lineupName {
+  font-size: var(--text-14, 0.875rem);
+  font-weight: 500;
+  color: var(--text-primary, #111827);
+}
+
+.lineupMeta {
+  font-size: var(--text-13, 0.8125rem);
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.lineupDuration {
+  font-size: var(--text-13, 0.8125rem);
+  color: var(--text-tertiary, #9ca3af);
+}
+
+/* Door list */
+.doorList {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-interactive-default, var(--surface-subtle, #f5f5f5));
+  border-radius: var(--radius-md, 0.375rem);
+  overflow: hidden;
+}
+
+.doorRow {
+  display: grid;
+  grid-template-columns: 1.75rem 1fr 5.625rem 3.75rem 5rem;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.875rem;
+  background: var(--surface-card, var(--surface, #fff));
+}
+
+.doorRow + .doorRow {
+  margin-top: 1px;
+}
+
+.doorName {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+  font-size: var(--text-13, 0.8125rem);
+  color: var(--text-primary, #111827);
+}
+
+.doorPlus {
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.doorSource {
+  font-size: var(--text-13, 0.8125rem);
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.doorBadge {
+  display: inline-flex;
+  align-items: center;
+  height: 1.125rem;
+  padding: 0 0.375rem;
+  border-radius: var(--radius-sm, 0.25rem);
+  font-size: var(--text-11, 0.6875rem);
+  color: var(--text-secondary, #6b7280);
+  background: var(--surface-interactive-active, var(--surface-hover, #ececec));
+  width: fit-content;
+}
+
+.doorBadgeMint {
+  color: var(--text-success, #047857);
+  background: var(--surface-success-subtle, #d1fae5);
+}
+
+.doorTime {
+  font-size: var(--text-13, 0.8125rem);
+  color: var(--text-tertiary, #9ca3af);
+  text-align: right;
+}
+
+/* Notes */
+.notes {
+  font-size: var(--text-13, 0.8125rem);
+  line-height: 1.55;
+  color: var(--text-secondary, #6b7280);
+  background: var(--surface-interactive-default, var(--surface-subtle, #f5f5f5));
+  border-radius: var(--radius-md, 0.375rem);
+  padding: 0.75rem;
+  margin: 0;
+}
+
+/* Footer hints */
+.footerHints {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: var(--text-13, 0.8125rem);
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.hintLabel {
+  color: var(--text-tertiary, #9ca3af);
+}
