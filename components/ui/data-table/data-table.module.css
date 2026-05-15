@@ -177,6 +177,70 @@
   white-space: nowrap;
 }
 
+/* Data row — base layer for the per-row data-state / data-tone / data-clickable
+   variants below. The selectors are scoped to `.dataRow` so the tone/selected
+   tints never bleed onto group-head rows or skeleton/empty rows. */
+.dataRow {
+  transition: background-color var(--motion-duration-fast, 150ms)
+    var(--motion-easing-standard, ease);
+}
+
+/* Selected row — wires the latent `data-state="selected"` attribute (already
+   emitted by TanStack on selected rows) to a subtle accent fill. Fixes a
+   latent bug where selection had no visual feedback. */
+.dataRow[data-state="selected"] {
+  background-color: var(
+    --surface-selected,
+    var(--surface-interactive-active, #e5e7eb)
+  );
+}
+
+/* Per-row tone tints — semantic background hints for editorial status.
+   Mirrors the tone token mapping used by StatusBadge / StatusDot so a
+   row tinted "live" reads consistently with a "live" badge inline.
+   `scheduled` and `draft` intentionally have no tint — they render on
+   the default surface to keep visual signal focused on actionable rows. */
+.dataRow[data-tone="live"],
+.dataRow[data-tone="sold"] {
+  background-color: var(--surface-success-subtle, #ecfdf5);
+}
+
+.dataRow[data-tone="warn"] {
+  background-color: var(--surface-warning-subtle, #fffbeb);
+}
+
+.dataRow[data-tone="danger"] {
+  background-color: var(--surface-error-subtle, #fef2f2);
+}
+
+.dataRow[data-tone="info"] {
+  background-color: var(--surface-info-subtle, #eff6ff);
+}
+
+/* Selected state should win over tone tint — selection is a stronger
+   signal than editorial status. */
+.dataRow[data-state="selected"][data-tone] {
+  background-color: var(
+    --surface-selected,
+    var(--surface-interactive-active, #e5e7eb)
+  );
+}
+
+/* Clickable rows — opt-in affordance when `onRowClick` is supplied. */
+.dataRow[data-clickable="true"] {
+  cursor: pointer;
+}
+
+.dataRow[data-clickable="true"]:hover {
+  background-color: var(--surface-interactive-default, #f3f4f6);
+}
+
+.dataRow[data-clickable="true"]:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid
+    var(--focus-ring-color, #2563eb);
+  outline-offset: calc(var(--focus-ring-offset, 2px) * -1);
+}
+
 /* Group-head row — full-width separator inside the table body. The colSpan
    cell carries the visual; the inner span owns the sticky positioning so it
    pins to the top of the scroll container as data rows scroll beneath. */

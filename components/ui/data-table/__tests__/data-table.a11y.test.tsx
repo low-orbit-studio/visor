@@ -100,4 +100,59 @@ describe("DataTable a11y (vitest-axe)", () => {
     const results = await axe(container)
     expect(results).toHaveNoViolations()
   })
+
+  it("has no violations with rowTone applied to every tone variant", async () => {
+    const tones = [
+      "live",
+      "warn",
+      "scheduled",
+      "sold",
+      "draft",
+      "danger",
+      "info",
+    ] as const
+    const tonedData: Row[] = tones.map((t, i) => ({
+      id: String(i),
+      name: t,
+      email: `${t}@e.com`,
+    }))
+    const { container } = render(
+      <DataTable
+        columns={columns}
+        data={tonedData}
+        rowTone={(r) => r.name as (typeof tones)[number]}
+        aria-label="Users"
+      />
+    )
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
+  })
+
+  it("has no violations when rows are clickable (role=button)", async () => {
+    const { container } = render(
+      <DataTable
+        columns={columns}
+        data={data}
+        onRowClick={() => {}}
+        aria-label="Users"
+      />
+    )
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
+  })
+
+  it("has no violations when clickable + selectable + toned simultaneously", async () => {
+    const { container } = render(
+      <DataTable
+        columns={columns}
+        data={data}
+        enableRowSelection
+        onRowClick={() => {}}
+        rowTone={(r) => (r.name === "Alice" ? "live" : "warn")}
+        aria-label="Users"
+      />
+    )
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
+  })
 })

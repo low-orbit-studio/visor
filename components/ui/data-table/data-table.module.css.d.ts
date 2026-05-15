@@ -18,6 +18,7 @@ declare const styles: {
   readonly groupCell: string
   readonly groupLabel: string
   readonly groupCount: string
+  readonly dataRow: string
 }
 
 export default styles

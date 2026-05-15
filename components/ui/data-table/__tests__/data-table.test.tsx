@@ -331,4 +331,268 @@ describe("DataTable", () => {
       expect(screen.getByText(data[5].email)).toBeInTheDocument()
     })
   })
+
+  describe("rowTone", () => {
+    const data: Row[] = [
+      { id: "1", name: "Alice", email: "a@e.com" },
+      { id: "2", name: "Bob", email: "b@e.com" },
+      { id: "3", name: "Charlie", email: "c@e.com" },
+      { id: "4", name: "Dana", email: "d@e.com" },
+    ]
+
+    it("stamps data-tone on each data row from the rowTone callback", () => {
+      const rowTone = (row: Row) =>
+        row.name === "Alice"
+          ? ("live" as const)
+          : row.name === "Bob"
+            ? ("warn" as const)
+            : row.name === "Charlie"
+              ? ("sold" as const)
+              : undefined
+      render(<DataTable columns={columns} data={data} rowTone={rowTone} />)
+
+      const tableRows = screen.getAllByRole("row")
+      // tableRows[0] is the header
+      expect(tableRows[1]).toHaveAttribute("data-tone", "live")
+      expect(tableRows[2]).toHaveAttribute("data-tone", "warn")
+      expect(tableRows[3]).toHaveAttribute("data-tone", "sold")
+      expect(tableRows[4]).not.toHaveAttribute("data-tone")
+    })
+
+    it("omits data-tone entirely when rowTone is not supplied (backwards compat)", () => {
+      render(<DataTable columns={columns} data={data} />)
+      const tableRows = screen.getAllByRole("row")
+      for (const row of tableRows.slice(1)) {
+        expect(row).not.toHaveAttribute("data-tone")
+      }
+    })
+
+    it("supports all five tone keys plus danger and info", () => {
+      const tones = [
+        "live",
+        "warn",
+        "scheduled",
+        "sold",
+        "draft",
+        "danger",
+        "info",
+      ] as const
+      const toneData: Row[] = tones.map((t, i) => ({
+        id: String(i),
+        name: t,
+        email: `${t}@e.com`,
+      }))
+      render(
+        <DataTable
+          columns={columns}
+          data={toneData}
+          pageSize={20}
+          rowTone={(r) =>
+            tones.includes(r.name as (typeof tones)[number])
+              ? (r.name as (typeof tones)[number])
+              : undefined
+          }
+        />
+      )
+      const tableRows = screen.getAllByRole("row").slice(1)
+      tones.forEach((tone, idx) => {
+        expect(tableRows[idx]).toHaveAttribute("data-tone", tone)
+      })
+    })
+
+    it("applies rowTone to rows in the grouped `rows` path", () => {
+      const grouped: DataTableRow<Row>[] = [
+        { kind: "group", id: "g1", label: "Group A" },
+        { kind: "data", id: "1", row: data[0] },
+        { kind: "data", id: "2", row: data[1] },
+      ]
+      const { container } = render(
+        <DataTable
+          columns={columns}
+          rows={grouped}
+          rowTone={(r) => (r.name === "Alice" ? "live" : undefined)}
+        />
+      )
+      // Group row should NOT carry data-tone
+      const groupRow = container.querySelector(
+        '[data-slot="data-table-group-row"]'
+      )
+      expect(groupRow).not.toHaveAttribute("data-tone")
+      // Data rows reflect the tone callback
+      const tableRows = screen.getAllByRole("row")
+      const aliceRow = tableRows.find((r) =>
+        within(r).queryByText("Alice")
+      )
+      const bobRow = tableRows.find((r) => within(r).queryByText("Bob"))
+      expect(aliceRow).toHaveAttribute("data-tone", "live")
+      expect(bobRow).not.toHaveAttribute("data-tone")
+    })
+  })
+
+  describe("data-state=\"selected\" row styling", () => {
+    it("data-state=\"selected\" appears on selected rows after toggling the checkbox", async () => {
+      const user = userEvent.setup()
+      const data: Row[] = [
+        { id: "1", name: "Alice", email: "a@e.com" },
+        { id: "2", name: "Bob", email: "b@e.com" },
+      ]
+      render(<DataTable columns={columns} data={data} enableRowSelection />)
+      const rowBoxes = screen.getAllByRole("checkbox", { name: /select row/i })
+      await user.click(rowBoxes[0])
+
+      const tableRows = screen.getAllByRole("row")
+      // tableRows[0] is the header; data row order matches data[]
+      expect(tableRows[1]).toHaveAttribute("data-state", "selected")
+      expect(tableRows[2]).not.toHaveAttribute("data-state", "selected")
+    })
+  })
+
+  describe("onRowClick", () => {
+    const data: Row[] = [
+      { id: "1", name: "Alice", email: "a@e.com" },
+      { id: "2", name: "Bob", email: "b@e.com" },
+    ]
+
+    it("renders rows with role=\"button\", tabIndex=0, data-clickable when onRowClick is set without selection", () => {
+      const { container } = render(
+        <DataTable columns={columns} data={data} onRowClick={() => {}} />
+      )
+      // role="button" on <tr> overrides the implicit row role, so query by
+      // the data attribute we control.
+      const clickable = container.querySelectorAll<HTMLTableRowElement>(
+        'tr[data-clickable="true"]'
+      )
+      expect(clickable).toHaveLength(2)
+      for (const row of clickable) {
+        expect(row).toHaveAttribute("role", "button")
+        expect(row).toHaveAttribute("tabindex", "0")
+      }
+    })
+
+    it("drops role=\"button\" when selection is also enabled to avoid nested-interactive (a11y)", () => {
+      const { container } = render(
+        <DataTable
+          columns={columns}
+          data={data}
+          enableRowSelection
+          onRowClick={() => {}}
+        />
+      )
+      const clickable = container.querySelectorAll<HTMLTableRowElement>(
+        'tr[data-clickable="true"]'
+      )
+      expect(clickable).toHaveLength(2)
+      for (const row of clickable) {
+        // tabIndex + click + keyboard handlers still apply; role stays as
+        // the implicit "row" so axe nested-interactive stays clean.
+        expect(row).not.toHaveAttribute("role", "button")
+        expect(row).toHaveAttribute("tabindex", "0")
+      }
+    })
+
+    it("does NOT render row affordance when onRowClick is omitted (backwards compat)", () => {
+      const { container } = render(
+        <DataTable columns={columns} data={data} />
+      )
+      const clickable = container.querySelectorAll(
+        'tr[data-clickable="true"]'
+      )
+      expect(clickable).toHaveLength(0)
+      const buttonRows = container.querySelectorAll('tr[role="button"]')
+      expect(buttonRows).toHaveLength(0)
+    })
+
+    it("fires onRowClick when the row is clicked", async () => {
+      const user = userEvent.setup()
+      const onRowClick = vi.fn()
+      const { container } = render(
+        <DataTable columns={columns} data={data} onRowClick={onRowClick} />
+      )
+      const aliceRow = container.querySelector<HTMLTableRowElement>(
+        'tr[data-clickable="true"]'
+      )!
+      await user.click(within(aliceRow).getByText("Alice"))
+      expect(onRowClick).toHaveBeenCalledTimes(1)
+      expect(onRowClick).toHaveBeenCalledWith(data[0])
+    })
+
+    it("fires onRowClick on Enter and Space keypress", async () => {
+      const user = userEvent.setup()
+      const onRowClick = vi.fn()
+      const { container } = render(
+        <DataTable columns={columns} data={data} onRowClick={onRowClick} />
+      )
+      const aliceRow = container.querySelector<HTMLTableRowElement>(
+        'tr[data-clickable="true"]'
+      )!
+      aliceRow.focus()
+      await user.keyboard("{Enter}")
+      expect(onRowClick).toHaveBeenCalledTimes(1)
+      expect(onRowClick).toHaveBeenLastCalledWith(data[0])
+
+      await user.keyboard(" ")
+      expect(onRowClick).toHaveBeenCalledTimes(2)
+      expect(onRowClick).toHaveBeenLastCalledWith(data[0])
+    })
+
+    it("checkbox click does NOT propagate to onRowClick", async () => {
+      const user = userEvent.setup()
+      const onRowClick = vi.fn()
+      render(
+        <DataTable
+          columns={columns}
+          data={data}
+          enableRowSelection
+          onRowClick={onRowClick}
+        />
+      )
+      const rowBoxes = screen.getAllByRole("checkbox", {
+        name: /select row/i,
+      })
+      await user.click(rowBoxes[0])
+      expect(onRowClick).not.toHaveBeenCalled()
+    })
+
+    it("works on rows in the grouped `rows` path", async () => {
+      const user = userEvent.setup()
+      const onRowClick = vi.fn()
+      const grouped: DataTableRow<Row>[] = [
+        { kind: "group", id: "g1", label: "Group A" },
+        { kind: "data", id: "1", row: data[0] },
+        { kind: "data", id: "2", row: data[1] },
+      ]
+      const { container } = render(
+        <DataTable
+          columns={columns}
+          rows={grouped}
+          onRowClick={onRowClick}
+        />
+      )
+      const aliceRow = container.querySelector<HTMLTableRowElement>(
+        'tr[data-clickable="true"]'
+      )!
+      await user.click(within(aliceRow).getByText("Alice"))
+      expect(onRowClick).toHaveBeenCalledTimes(1)
+      expect(onRowClick).toHaveBeenCalledWith(data[0])
+    })
+
+    it("group rows do NOT receive role=button or data-clickable", () => {
+      const grouped: DataTableRow<Row>[] = [
+        { kind: "group", id: "g1", label: "Group A" },
+        { kind: "data", id: "1", row: data[0] },
+      ]
+      const { container } = render(
+        <DataTable
+          columns={columns}
+          rows={grouped}
+          onRowClick={() => {}}
+        />
+      )
+      const groupRow = container.querySelector(
+        '[data-slot="data-table-group-row"]'
+      )
+      expect(groupRow).not.toHaveAttribute("role", "button")
+      expect(groupRow).not.toHaveAttribute("data-clickable")
+    })
+  })
 })
