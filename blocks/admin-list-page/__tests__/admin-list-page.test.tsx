@@ -129,6 +129,166 @@ describe("AdminListPage", () => {
     expect(container.firstChild).toHaveClass("custom")
   })
 
+  // ─── customFilterBar slot ───────────────────────────────────────────
+
+  it("renders customFilterBar in place of FilterBar when provided", () => {
+    const { container } = render(
+      <AdminListPage
+        title="Users"
+        columns={columns}
+        data={data}
+        customFilterBar={
+          <div data-testid="custom-bar">Custom filter UI</div>
+        }
+      />
+    )
+    expect(screen.getByTestId("custom-bar")).toBeInTheDocument()
+    // The default FilterBar's searchbox should not render.
+    expect(screen.queryByRole("searchbox")).not.toBeInTheDocument()
+    // Wrapper slot exists for CSS hooks.
+    expect(
+      container.querySelector(
+        "[data-slot='admin-list-page-custom-filter-bar']"
+      )
+    ).toBeInTheDocument()
+  })
+
+  it("renders default FilterBar when customFilterBar is omitted (backwards compat)", () => {
+    const { container } = render(
+      <AdminListPage
+        title="Users"
+        columns={columns}
+        data={data}
+        searchValue=""
+        onSearchChange={vi.fn()}
+      />
+    )
+    // FilterBar still drives the searchbox.
+    expect(screen.getByRole("searchbox")).toBeInTheDocument()
+    // Custom slot wrapper is absent.
+    expect(
+      container.querySelector(
+        "[data-slot='admin-list-page-custom-filter-bar']"
+      )
+    ).not.toBeInTheDocument()
+  })
+
+  it("hideFilterBar wins over customFilterBar", () => {
+    render(
+      <AdminListPage
+        title="Users"
+        columns={columns}
+        data={data}
+        hideFilterBar
+        customFilterBar={
+          <div data-testid="custom-bar">Custom filter UI</div>
+        }
+      />
+    )
+    expect(screen.queryByTestId("custom-bar")).not.toBeInTheDocument()
+  })
+
+  it("dev-mode warns when customFilterBar is mixed with FilterBar-specific props", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
+    render(
+      <AdminListPage
+        title="Users"
+        columns={columns}
+        data={data}
+        searchValue=""
+        onSearchChange={vi.fn()}
+        customFilterBar={<div>Custom</div>}
+      />
+    )
+    expect(warnSpy).toHaveBeenCalled()
+    const message = warnSpy.mock.calls[0]?.[0] as string
+    expect(message).toMatch(/customFilterBar/)
+    expect(message).toMatch(/searchValue/)
+    warnSpy.mockRestore()
+  })
+
+  it("does not warn when customFilterBar is used without FilterBar props", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
+    render(
+      <AdminListPage
+        title="Users"
+        columns={columns}
+        data={data}
+        customFilterBar={<div>Custom</div>}
+      />
+    )
+    expect(warnSpy).not.toHaveBeenCalled()
+    warnSpy.mockRestore()
+  })
+
+  // ─── footerStatus slot ──────────────────────────────────────────────
+
+  it("renders footerStatus below the table when provided", () => {
+    const { container } = render(
+      <AdminListPage
+        title="Users"
+        columns={columns}
+        data={data}
+        footerStatus={
+          <div data-testid="footer-status">1 selected · 3 of 3</div>
+        }
+      />
+    )
+    expect(screen.getByTestId("footer-status")).toBeInTheDocument()
+    const wrapper = container.querySelector(
+      "[data-slot='admin-list-page-footer-status']"
+    )
+    expect(wrapper).toBeInTheDocument()
+    // Footer wrapper lives inside the table section, not the header.
+    const tableSection = container.querySelector(
+      "[data-slot='admin-list-page-table']"
+    )
+    expect(tableSection?.contains(wrapper)).toBe(true)
+  })
+
+  it("does not render footerStatus wrapper when omitted (backwards compat)", () => {
+    const { container } = render(
+      <AdminListPage title="Users" columns={columns} data={data} />
+    )
+    expect(
+      container.querySelector("[data-slot='admin-list-page-footer-status']")
+    ).not.toBeInTheDocument()
+  })
+
+  it("renders footerStatus + bulkActions together without collision", () => {
+    const { container } = render(
+      <AdminListPage
+        title="Users"
+        columns={columns}
+        data={data}
+        enableRowSelection
+        rowSelection={{ "1": true }}
+        bulkActions={<button type="button">Archive</button>}
+        footerStatus={
+          <div data-testid="footer-status">1 selected · 3 of 3</div>
+        }
+      />
+    )
+    expect(screen.getByTestId("footer-status")).toBeInTheDocument()
+    expect(
+      screen.getByRole("button", { name: "Archive" })
+    ).toBeInTheDocument()
+    // Footer is the last child of the table section (sits below BulkActionBar).
+    const tableSection = container.querySelector(
+      "[data-slot='admin-list-page-table']"
+    )
+    const footerWrapper = container.querySelector(
+      "[data-slot='admin-list-page-footer-status']"
+    )
+    expect(tableSection).not.toBeNull()
+    expect(footerWrapper).not.toBeNull()
+    if (tableSection && footerWrapper) {
+      const children = Array.from(tableSection.children)
+      const footerIndex = children.indexOf(footerWrapper)
+      expect(footerIndex).toBe(children.length - 1)
+    }
+  })
+
   // ─── A11y ───────────────────────────────────────────────────────────
 
   it("passes accessibility checks", async () => {
@@ -140,6 +300,28 @@ describe("AdminListPage", () => {
         data={data}
         searchValue=""
         onSearchChange={vi.fn()}
+      />
+    )
+    await checkA11y(container)
+  })
+
+  it("passes accessibility checks with customFilterBar and footerStatus", async () => {
+    const { container } = render(
+      <AdminListPage
+        title="Users"
+        description="Manage your team members."
+        columns={columns}
+        data={data}
+        customFilterBar={
+          <div role="toolbar" aria-label="Filters">
+            <button type="button">Add filter</button>
+          </div>
+        }
+        footerStatus={
+          <div>
+            <span>0 selected · 3 of 3</span>
+          </div>
+        }
       />
     )
     await checkA11y(container)

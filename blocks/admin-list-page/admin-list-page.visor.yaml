@@ -15,3 +15,21 @@ when_not_to_use:
   - Overview dashboards with KPIs and activity feeds (use admin-dashboard)
   - Single-record detail or edit screens (use admin-detail-drawer)
   - Settings or preferences forms (use admin-settings-page)
+slots:
+  customFilterBar:
+    type: ReactNode
+    description: >
+      Replaces the default FilterBar entirely. When provided, all FilterBar-
+      specific props (searchValue, onSearchChange, searchPlaceholder, filters,
+      activeFilters, onClearFilters, resultsCount) are ignored. Renders inside
+      the header region with a data-slot="admin-list-page-custom-filter-bar"
+      wrapper. hideFilterBar still wins over both default and custom bars.
+      Dev-mode console.warn fires when mixed with FilterBar-specific props.
+  footerStatus:
+    type: ReactNode
+    description: >
+      Always-on info row rendered below the table, inside the table section.
+      Independent of BulkActionBar — the two can coexist (footerStatus appears
+      below BulkActionBar). Typical content is a selection count, total, and
+      Kbd hint cluster. Wrapped in a
+      data-slot="admin-list-page-footer-status" element for CSS hooks.
