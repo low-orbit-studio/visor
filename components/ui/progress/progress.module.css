@@ -18,3 +18,14 @@
   background-color: var(--interactive-primary-bg, #111827);
   transition: transform var(--motion-duration-300, 300ms) var(--motion-easing-default, ease-in-out);
 }
+
+/* Thin static-chrome variant — 4px capacity bar for admin KPI strips */
+.root[data-size="thin"] {
+  height: 4px;
+  background-color: var(--surface-interactive-active, #e5e7eb);
+}
+
+/* animate={false} — drop the indicator transition for static chrome */
+.root[data-animate="false"] .indicator {
+  transition: none;
+}
