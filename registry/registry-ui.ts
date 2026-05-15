@@ -1845,6 +1845,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "status-dot",
+    type: "registry:ui",
+    category: "data-display",
+    description:
+      "A 6×6px tone-tinted indicator dot. Five tones (mint, warn, muted, danger, info) resolve from Visor semantic tokens. Composes inside badges, table rows, activity feed items, and inline status text. Decorative by default; supplying aria-label flips it into a labeled image.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/status-dot/status-dot.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/status-dot/status-dot.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "station-spectrum",
     type: "registry:ui",
     category: "visual-elements",

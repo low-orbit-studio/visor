@@ -1,0 +1,37 @@
+/*
+ * StatusDot — a 6×6px tone-tinted indicator dot.
+ *
+ * The dot mirrors StatusBadge's indicator CSS pattern (size, radius, fill
+ * sourced from saturated surface tokens) but stands on its own as a
+ * reusable primitive that composes inside Badge, ActivityFeed items, and
+ * table status cells. Tone colors resolve from the same semantic tokens
+ * StatusBadge uses for its leading indicator so the two read as one
+ * coherent system across surfaces.
+ */
+.dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full, 9999px);
+}
+
+.dot[data-tone="mint"] {
+  background-color: var(--surface-success-default, #22c55e);
+}
+
+.dot[data-tone="warn"] {
+  background-color: var(--surface-warning-default, #f59e0b);
+}
+
+.dot[data-tone="muted"] {
+  background-color: var(--text-tertiary, #6b7280);
+}
+
+.dot[data-tone="danger"] {
+  background-color: var(--surface-error-default, #ef4444);
+}
+
+.dot[data-tone="info"] {
+  background-color: var(--surface-info-default, #0ea5e9);
+}
