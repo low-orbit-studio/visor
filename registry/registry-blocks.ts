@@ -198,6 +198,25 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "right-rail-list",
+    type: "registry:block",
+    category: "data-display",
+    description:
+      "Compact vertical list block tuned for admin dashboard side rails. Each row pairs an optional leading slot (label / avatar / badge / status dot), a primary label (typically a link), and an optional trailing meta value (count, value, tone-tinted status word). Trailing accepts default / mint / muted / warn / danger / info tones bound to shared semantic text tokens. Supports compact density and ul / ol / div root element variants.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "blocks/right-rail-list/right-rail-list.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/right-rail-list/right-rail-list.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "workspace-switcher",
     type: "registry:block",
     category: "admin",

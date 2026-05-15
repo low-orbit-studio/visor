@@ -267,6 +267,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "RadiusScale",
   "RadiusSection",
   "RadiusSlide",
+  "RightRailList",
   "ScrollArea",
   "ScrollBar",
   "SearchInput",

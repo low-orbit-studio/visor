@@ -1,0 +1,114 @@
+/* Right Rail List
+ * Compact vertical list block tuned for dashboard side rails.
+ * Each row pairs an optional leading stamp (label / avatar / badge),
+ * a primary label (typically a link), and an optional trailing meta
+ * value (count / value / tone-tinted status word).
+ *
+ * Ports the r3 admin-v7-r3 RightRailList component into a theme-portable
+ * block — every color, size, and spacing value binds to a Visor token so
+ * the block adopts the active theme without modification.
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-card);
+  /* Reset list semantics chrome when root is a <ul> / <ol>. */
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3, 0.75rem);
+  padding: var(--spacing-2-5, 0.625rem) var(--spacing-4, 1rem);
+  font-size: var(--font-size-sm, 0.8125rem);
+  /* Hairline divider between rows — matches the subtle separator pattern
+   * used in the r3 reference. The first row has no top border so the
+   * block sits flush against any panel chrome above it. */
+  border-top: var(--stroke-width-thin, 1px) solid var(--border-subtle, transparent);
+}
+
+.row:first-child {
+  border-top: 0;
+}
+
+/* Subtle hover affordance — rows are not always interactive, but a
+ * gentle background shift signals where focus would land if a primary
+ * link is present. */
+.row:hover {
+  background-color: var(--surface-hover, transparent);
+}
+
+/* Compact density — shaves vertical padding for tighter rails. */
+.rootCompact .row {
+  padding: var(--spacing-2, 0.5rem) var(--spacing-4, 1rem);
+}
+
+.leading {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--font-size-xs, 0.6875rem);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  min-width: var(--spacing-9, 2.25rem);
+}
+
+.primary {
+  flex: 1;
+  min-width: 0;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trailing {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary);
+}
+
+/* Tone variants — each tone binds to a Visor semantic text token so the
+ * block adopts the active theme's color palette without modification.
+ * Pattern mirrors status-badge.module.css. */
+.trailing[data-tone="mint"] {
+  color: var(--text-success);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: var(--font-size-xs, 0.6875rem);
+}
+
+.trailing[data-tone="muted"] {
+  color: var(--text-tertiary);
+}
+
+.trailing[data-tone="warn"] {
+  color: var(--text-warning);
+  font-weight: 500;
+}
+
+.trailing[data-tone="danger"] {
+  color: var(--text-danger, var(--text-error));
+  font-weight: 500;
+}
+
+.trailing[data-tone="info"] {
+  color: var(--text-info);
+  font-weight: 500;
+}
+
+/* Respect users who prefer reduced motion — the hover transition is
+ * cosmetic, but we omit it under the preference. */
+@media (prefers-reduced-motion: no-preference) {
+  .row {
+    transition: background-color var(--motion-duration-100, 120ms)
+      var(--motion-easing-standard, ease-out);
+  }
+}
