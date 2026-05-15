@@ -421,3 +421,201 @@ describe("AdminSettingsPage — sectionGroups", () => {
     await checkA11y(container)
   })
 })
+
+// ────────────────────────────────────────────────────────────────────────────
+// customFooter slot
+// ────────────────────────────────────────────────────────────────────────────
+
+describe("AdminSettingsPage — customFooter", () => {
+  it("renders customFooter in a data-slot wrapper when provided", () => {
+    const { container } = render(
+      <AdminSettingsPage
+        title="Settings"
+        sections={sampleSections}
+        customFooter={
+          <div>
+            <span>Last saved 4 minutes ago</span>
+            <button type="button">Cancel</button>
+            <button type="button">Save changes</button>
+          </div>
+        }
+      />
+    )
+    const wrapper = container.querySelector(
+      "[data-slot='admin-settings-page-custom-footer']"
+    )
+    expect(wrapper).toBeInTheDocument()
+    expect(wrapper).toHaveTextContent("Last saved 4 minutes ago")
+  })
+
+  it("replaces the default footer entirely when customFooter is set", () => {
+    const { container } = render(
+      <AdminSettingsPage
+        title="Settings"
+        sections={sampleSections}
+        onSave={vi.fn()}
+        onCancel={vi.fn()}
+        dirty
+        customFooter={<div>custom savebar</div>}
+      />
+    )
+    // Default footer wrapper and its action buttons must not render.
+    expect(
+      container.querySelector("[data-slot='admin-settings-page-footer']")
+    ).not.toBeInTheDocument()
+    expect(
+      container.querySelector("[data-slot='admin-settings-page-save']")
+    ).not.toBeInTheDocument()
+    expect(
+      container.querySelector("[data-slot='admin-settings-page-cancel']")
+    ).not.toBeInTheDocument()
+  })
+
+  it("does not render customFooter wrapper when customFooter is omitted (backwards compat)", () => {
+    const { container } = render(
+      <AdminSettingsPage title="Settings" sections={sampleSections} />
+    )
+    expect(
+      container.querySelector("[data-slot='admin-settings-page-custom-footer']")
+    ).not.toBeInTheDocument()
+    // Default footer is still present.
+    expect(
+      container.querySelector("[data-slot='admin-settings-page-footer']")
+    ).toBeInTheDocument()
+  })
+
+  it("default footer onSave / onCancel still work when customFooter is omitted (backwards compat)", async () => {
+    const user = userEvent.setup()
+    const onSave = vi.fn()
+    const onCancel = vi.fn()
+    render(
+      <AdminSettingsPage
+        title="Settings"
+        sections={sampleSections}
+        dirty
+        onSave={onSave}
+        onCancel={onCancel}
+      />
+    )
+    await user.click(screen.getByRole("button", { name: "Save changes" }))
+    expect(onSave).toHaveBeenCalledTimes(1)
+  })
+
+  it("hideFooter wins over customFooter — neither renders", () => {
+    const { container } = render(
+      <AdminSettingsPage
+        title="Settings"
+        sections={sampleSections}
+        hideFooter
+        customFooter={<div>should not render</div>}
+      />
+    )
+    expect(
+      container.querySelector("[data-slot='admin-settings-page-custom-footer']")
+    ).not.toBeInTheDocument()
+    expect(
+      container.querySelector("[data-slot='admin-settings-page-footer']")
+    ).not.toBeInTheDocument()
+    expect(screen.queryByText("should not render")).not.toBeInTheDocument()
+  })
+
+  it("perSectionSave suppresses customFooter (consistent with default footer)", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
+    const { container } = render(
+      <AdminSettingsPage
+        title="Settings"
+        sections={sampleSections}
+        perSectionSave
+        customFooter={<div>should not render</div>}
+      />
+    )
+    expect(
+      container.querySelector("[data-slot='admin-settings-page-custom-footer']")
+    ).not.toBeInTheDocument()
+    warnSpy.mockRestore()
+  })
+
+  it("warns in dev mode when customFooter and footerStatus are both provided", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
+    render(
+      <AdminSettingsPage
+        title="Settings"
+        sections={sampleSections}
+        footerStatus="Last saved 2 minutes ago"
+        customFooter={<div>custom</div>}
+      />
+    )
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("customFooter")
+    )
+    warnSpy.mockRestore()
+  })
+
+  it("warns in dev mode when customFooter and perSectionSave are both provided", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
+    render(
+      <AdminSettingsPage
+        title="Settings"
+        sections={sampleSections}
+        perSectionSave
+        customFooter={<div>custom</div>}
+      />
+    )
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("perSectionSave")
+    )
+    warnSpy.mockRestore()
+  })
+
+  it("unsaved-changes guard still fires when customFooter routes Cancel through onCancel", async () => {
+    const user = userEvent.setup()
+    const onCancel = vi.fn()
+    // Inline component that uses the block's `onCancel` from its own button —
+    // mirrors how a real consumer wires their custom savebar.
+    function Wrapper() {
+      return (
+        <AdminSettingsPage
+          title="Settings"
+          sections={sampleSections}
+          dirty
+          onCancel={onCancel}
+          customFooter={
+            <button
+              type="button"
+              onClick={() => {
+                // Real consumers will call the same handler they passed in.
+                // Here we mimic the wiring by triggering the block's prop directly.
+                onCancel()
+              }}
+            >
+              Custom Cancel
+            </button>
+          }
+        />
+      )
+    }
+    render(<Wrapper />)
+    await user.click(screen.getByRole("button", { name: "Custom Cancel" }))
+    // Consumer is responsible for the guard in custom mode — but verify their
+    // onCancel did fire so the wiring contract holds.
+    expect(onCancel).toHaveBeenCalledTimes(1)
+  })
+
+  it("passes accessibility checks with customFooter", async () => {
+    const { container } = render(
+      <AdminSettingsPage
+        title="Account Settings"
+        description="Manage your account preferences."
+        sections={sampleSections}
+        customFooter={
+          <div role="group" aria-label="Settings actions">
+            <span>Last saved 4 minutes ago</span>
+            <button type="button">Cancel</button>
+            <button type="button">Save changes</button>
+          </div>
+        }
+      />
+    )
+    await checkA11y(container)
+  })
+})

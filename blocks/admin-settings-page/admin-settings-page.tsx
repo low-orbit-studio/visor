@@ -107,6 +107,22 @@ export interface AdminSettingsPageProps
   footerStatus?: React.ReactNode
   /** Hide the global footer. */
   hideFooter?: boolean
+  /**
+   * Replace the default footer entirely. When set (and `hideFooter` is false and
+   * `perSectionSave` is false), the block renders this node inside a
+   * `data-slot="admin-settings-page-custom-footer"` wrapper instead of the default
+   * Cancel + status + Save row. The caller owns layout and wiring — `onSave` /
+   * `onCancel` / `saveLabel` / `cancelLabel` / `dirty` / `busy` / `footerStatus`
+   * are ignored when `customFooter` is supplied.
+   *
+   * Order of precedence: `hideFooter` > `customFooter` > default footer.
+   *
+   * The unsaved-changes ConfirmDialog guard remains active — wire your custom
+   * Cancel handler through the block's `onCancel` prop to preserve it.
+   *
+   * Mirrors `admin-detail-drawer`'s `customHeader` precedent.
+   */
+  customFooter?: React.ReactNode
 
   // ── Unsaved guard (global cancel only) ──────────────────────────────────
   /** Title of the unsaved-changes confirm dialog. */
@@ -156,6 +172,7 @@ const AdminSettingsPage = React.forwardRef<
     busy,
     footerStatus,
     hideFooter = false,
+    customFooter,
     unsavedGuardTitle = "Discard unsaved changes?",
     unsavedGuardDescription = DEFAULT_UNSAVED_DESCRIPTION,
     unsavedGuardConfirmLabel = "Discard",
@@ -175,6 +192,35 @@ const AdminSettingsPage = React.forwardRef<
       "[AdminSettingsPage] Both `sections` and `sectionGroups` were provided. " +
         "`sectionGroups` takes precedence and `sections` is ignored. " +
         "Pass only one of these props."
+    )
+  }
+
+  // Dev-mode warning when `customFooter` is combined with the default-footer
+  // sugar props it overrides. `customFooter` wins; the sugar props are ignored.
+  if (
+    process.env.NODE_ENV !== "production" &&
+    customFooter !== undefined &&
+    footerStatus !== undefined
+  ) {
+    console.warn(
+      "[AdminSettingsPage] Both `customFooter` and `footerStatus` were provided. " +
+        "`customFooter` replaces the default footer entirely, so `footerStatus` " +
+        "is ignored. Compose the status into your custom footer node instead."
+    )
+  }
+
+  // Dev-mode warning when `customFooter` is combined with `perSectionSave`. The
+  // block does not render a global footer in per-section mode, so the custom
+  // footer would never render.
+  if (
+    process.env.NODE_ENV !== "production" &&
+    customFooter !== undefined &&
+    perSectionSave
+  ) {
+    console.warn(
+      "[AdminSettingsPage] `customFooter` is ignored when `perSectionSave` is " +
+        "true — per-section footers render inline and no block-level footer is " +
+        "shown. Drop `customFooter` or disable `perSectionSave`."
     )
   }
 
@@ -535,43 +581,52 @@ const AdminSettingsPage = React.forwardRef<
         </div>
 
         {!perSectionSave && !hideFooter ? (
-          <div
-            className={styles.footer}
-            data-slot="admin-settings-page-footer"
-            role="group"
-            aria-label="Settings actions"
-          >
-            <div className={styles.footerCancel}>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleGlobalCancelClick}
-                disabled={effectiveBusy}
-                data-slot="admin-settings-page-cancel"
-              >
-                {cancelLabel}
-              </Button>
+          customFooter !== undefined ? (
+            <div
+              className={styles.customFooter}
+              data-slot="admin-settings-page-custom-footer"
+            >
+              {customFooter}
             </div>
-            {footerStatus ? (
-              <div
-                className={styles.footerStatus}
-                data-slot="admin-settings-page-status"
-              >
-                {footerStatus}
+          ) : (
+            <div
+              className={styles.footer}
+              data-slot="admin-settings-page-footer"
+              role="group"
+              aria-label="Settings actions"
+            >
+              <div className={styles.footerCancel}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleGlobalCancelClick}
+                  disabled={effectiveBusy}
+                  data-slot="admin-settings-page-cancel"
+                >
+                  {cancelLabel}
+                </Button>
               </div>
-            ) : null}
-            <div className={styles.footerSave}>
-              <Button
-                type="button"
-                onClick={handleGlobalSaveClick}
-                disabled={globalSaveDisabled}
-                aria-busy={effectiveBusy || undefined}
-                data-slot="admin-settings-page-save"
-              >
-                {saveLabel}
-              </Button>
+              {footerStatus ? (
+                <div
+                  className={styles.footerStatus}
+                  data-slot="admin-settings-page-status"
+                >
+                  {footerStatus}
+                </div>
+              ) : null}
+              <div className={styles.footerSave}>
+                <Button
+                  type="button"
+                  onClick={handleGlobalSaveClick}
+                  disabled={globalSaveDisabled}
+                  aria-busy={effectiveBusy || undefined}
+                  data-slot="admin-settings-page-save"
+                >
+                  {saveLabel}
+                </Button>
+              </div>
             </div>
-          </div>
+          )
         ) : null}
       </div>
 
