@@ -84,6 +84,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "ChipGroupContext",
   "ChipGroupItem",
   "ChoiceChip",
+  "ChromeButton",
   "ClosingSlide",
   "CodeBlock",
   "Collapsible",

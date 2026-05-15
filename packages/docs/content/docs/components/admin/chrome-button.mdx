@@ -1,0 +1,116 @@
+---
+title: ChromeButton
+description: A 28px-tall button primitive for topbar and chrome contexts with an optional leading icon and trailing Kbd shortcut hint. Built with CSS Modules — copy it into your project and own it completely.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ChromeButton } from '@/components/ui/chrome-button';
+import { MagnifyingGlass, Plus } from '@phosphor-icons/react/dist/ssr';
+
+## Default
+
+<ComponentPreview
+  title="Label-only default variant"
+  code={"<ChromeButton>Group</ChromeButton>"}
+>
+  <ChromeButton>Group</ChromeButton>
+</ComponentPreview>
+
+## With Leading Icon
+
+<ComponentPreview
+  title="Leading icon + label"
+  code={"<ChromeButton icon={<MagnifyingGlass size={14} weight=\"regular\" />}>Search</ChromeButton>"}
+>
+  <ChromeButton icon={<MagnifyingGlass size={14} weight="regular" />}>Search</ChromeButton>
+</ComponentPreview>
+
+## With Trailing Kbd Hint
+
+<ComponentPreview
+  title="Icon + label + keyboard shortcut hint"
+  code={"<ChromeButton icon={<MagnifyingGlass size={14} weight=\"regular\" />} keys={['⌘', 'K']}>Search</ChromeButton>"}
+>
+  <ChromeButton icon={<MagnifyingGlass size={14} weight="regular" />} keys={["⌘", "K"]}>Search</ChromeButton>
+</ComponentPreview>
+
+## Primary Variant
+
+<ComponentPreview
+  title="Accent-surface primary action"
+  code={"<ChromeButton variant=\"primary\" icon={<Plus size={14} weight=\"bold\" />}>New event</ChromeButton>"}
+>
+  <ChromeButton variant="primary" icon={<Plus size={14} weight="bold" />}>New event</ChromeButton>
+</ComponentPreview>
+
+## Topbar Composition
+
+<ComponentPreview
+  title="A typical admin topbar row"
+  code={"<div style={{ display: 'flex', gap: '0.5rem' }}>\n  <ChromeButton icon={<MagnifyingGlass size={14} />} keys={['⌘', 'K']}>Search</ChromeButton>\n  <ChromeButton variant=\"primary\" icon={<Plus size={14} weight=\"bold\" />}>New event</ChromeButton>\n</div>"}
+>
+  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+    <ChromeButton icon={<MagnifyingGlass size={14} weight="regular" />} keys={["⌘", "K"]}>Search</ChromeButton>
+    <ChromeButton variant="primary" icon={<Plus size={14} weight="bold" />}>New event</ChromeButton>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add chrome-button
+```
+
+This copies two files into your project:
+
+- `components/ui/chrome-button/chrome-button.tsx` — the component
+- `components/ui/chrome-button/chrome-button.module.css` — the styles
+
+ChromeButton depends on `Kbd`, which the CLI will install automatically if missing.
+
+## Usage
+
+```tsx
+import { ChromeButton } from '@/components/ui/chrome-button/chrome-button';
+import { MagnifyingGlass, Plus } from '@phosphor-icons/react';
+
+export default function Topbar() {
+  return (
+    <div>
+      <ChromeButton
+        icon={<MagnifyingGlass size={14} weight="regular" />}
+        keys={['⌘', 'K']}
+        onClick={() => openCommandPalette()}
+      >
+        Search
+      </ChromeButton>
+      <ChromeButton
+        variant="primary"
+        icon={<Plus size={14} weight="bold" />}
+        onClick={() => createEvent()}
+      >
+        New event
+      </ChromeButton>
+    </div>
+  );
+}
+```
+
+## When to Use
+
+- Topbar actions in admin shells (Search, Filter, Group, Density, primary "New X")
+- Toolbar rows where Button at 32px is too tall for the chrome density
+- Any chrome row that pairs an action with a keyboard-shortcut hint inline
+
+## When Not to Use
+
+- Primary body-content CTAs — use [Button](/docs/components/general/button) at default 40px or `size="sm"` (32px)
+- Standalone keyboard-shortcut display without an action — use [Kbd](/docs/components/admin/kbd) directly
+- Destructive confirmations — use [Button](/docs/components/general/button) `variant="destructive"`
+
+## API Reference
+
+<PropsTable component="chrome-button" />
+
+The component also accepts all standard HTML `<button>` attributes (e.g. `aria-label` for icon-only usage, `disabled`, `onClick`).
