@@ -63,6 +63,18 @@ export interface AdminListPageProps<TData>
   resultsCount?: React.ReactNode
   /** Hide the FilterBar entirely. Defaults to `false`. */
   hideFilterBar?: boolean
+  /**
+   * Replaces the default `<FilterBar>` entirely. When provided, all FilterBar-
+   * specific props (`searchValue`, `onSearchChange`, `searchPlaceholder`,
+   * `filters`, `activeFilters`, `onClearFilters`, `resultsCount`) are ignored.
+   * Renders inside the header region with a
+   * `data-slot="admin-list-page-custom-filter-bar"` wrapper. `hideFilterBar`
+   * still wins over both default and custom bars.
+   *
+   * Dev-mode `console.warn` fires if `customFilterBar` is supplied alongside
+   * any FilterBar-specific prop.
+   */
+  customFilterBar?: React.ReactNode
 
   // ── Data table ───────────────────────────────────────────────────────────
   columns: ColumnDef<TData, unknown>[]
@@ -93,6 +105,17 @@ export interface AdminListPageProps<TData>
   bulkActionBarInline?: boolean
   /** Selection label renderer. Defaults to `(n) => `${n} selected``. */
   bulkActionLabel?: (count: number) => React.ReactNode
+
+  // ── Footer status ────────────────────────────────────────────────────────
+  /**
+   * Always-on info row rendered below the table, inside the table section.
+   * Independent of `BulkActionBar` — the two can coexist. Typical content is
+   * a selection count, total, and Kbd hint cluster.
+   *
+   * Wrapped in a `data-slot="admin-list-page-footer-status"` element for CSS
+   * hooks. Consumer composes the row layout (flat slot, not structured).
+   */
+  footerStatus?: React.ReactNode
 }
 
 function countSelectedRows(state: RowSelectionState): number {
@@ -124,6 +147,7 @@ function AdminListPageInner<TData>(
     onClearFilters,
     resultsCount,
     hideFilterBar = false,
+    customFilterBar,
     // Data table
     columns,
     data,
@@ -143,10 +167,32 @@ function AdminListPageInner<TData>(
     bulkActions,
     bulkActionBarInline = false,
     bulkActionLabel,
+    // Footer status
+    footerStatus,
     // Root
     className,
     ...rest
   } = props
+
+  // Dev-mode warning when customFilterBar is mixed with FilterBar-specific props.
+  // The custom bar wins silently; the warning surfaces the mistake without
+  // breaking render output.
+  if (process.env.NODE_ENV !== "production" && customFilterBar !== undefined) {
+    const conflicting: string[] = []
+    if (searchValue !== undefined) conflicting.push("searchValue")
+    if (onSearchChange !== undefined) conflicting.push("onSearchChange")
+    if (searchPlaceholder !== undefined) conflicting.push("searchPlaceholder")
+    if (filters !== undefined) conflicting.push("filters")
+    if (activeFilters !== undefined) conflicting.push("activeFilters")
+    if (onClearFilters !== undefined) conflicting.push("onClearFilters")
+    if (resultsCount !== undefined) conflicting.push("resultsCount")
+    if (conflicting.length > 0) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        `AdminListPage: \`customFilterBar\` was supplied alongside FilterBar-specific prop(s): ${conflicting.join(", ")}. The custom filter bar replaces the default FilterBar entirely; the FilterBar-specific props are ignored.`
+      )
+    }
+  }
 
   // Uncontrolled row selection state, mirroring DataTable's pattern so the
   // block can drive the BulkActionBar without requiring consumers to lift state.
@@ -193,7 +239,11 @@ function AdminListPageInner<TData>(
           titleAs={titleAs}
         />
 
-        {hideFilterBar ? null : (
+        {hideFilterBar ? null : customFilterBar !== undefined ? (
+          <div data-slot="admin-list-page-custom-filter-bar">
+            {customFilterBar}
+          </div>
+        ) : (
           <FilterBar
             searchValue={searchValue}
             onSearchChange={onSearchChange}
@@ -238,6 +288,15 @@ function AdminListPageInner<TData>(
           >
             {bulkActions}
           </BulkActionBar>
+        ) : null}
+
+        {footerStatus !== undefined ? (
+          <div
+            data-slot="admin-list-page-footer-status"
+            className={styles.footerStatus}
+          >
+            {footerStatus}
+          </div>
         ) : null}
       </section>
     </div>

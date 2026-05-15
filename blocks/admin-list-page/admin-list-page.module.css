@@ -22,6 +22,20 @@
   min-width: 0;
 }
 
+.footerStatus {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3, 0.75rem);
+  padding: var(--spacing-3, 0.75rem) 0;
+  border-top: var(--stroke-width-thin, 1px) solid
+    var(--border-subtle, var(--border-default, #e5e7eb));
+  color: var(--text-tertiary, var(--text-muted, #6b7280));
+  font-size: var(--text-xs, 0.6875rem);
+  line-height: var(--leading-snug, 1.4);
+  min-width: 0;
+}
+
 @container admin-list-page (min-width: 56rem) {
   .root {
     gap: var(--spacing-8, 2rem);
