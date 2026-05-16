@@ -223,7 +223,7 @@ describe("AdminListPage", () => {
 
   // ─── footerStatus slot ──────────────────────────────────────────────
 
-  it("renders footerStatus below the table when provided", () => {
+  it("renders footerStatus below the table as a sibling of the table section", () => {
     const { container } = render(
       <AdminListPage
         title="Users"
@@ -239,11 +239,23 @@ describe("AdminListPage", () => {
       "[data-slot='admin-list-page-footer-status']"
     )
     expect(wrapper).toBeInTheDocument()
-    // Footer wrapper lives inside the table section, not the header.
+    // VI-404: footer wrapper is a sibling of the table section, NOT a child.
     const tableSection = container.querySelector(
       "[data-slot='admin-list-page-table']"
     )
-    expect(tableSection?.contains(wrapper)).toBe(true)
+    expect(tableSection?.contains(wrapper)).toBe(false)
+    // Both live as direct children of the block root.
+    const root = container.querySelector("[data-slot='admin-list-page']")
+    expect(root).not.toBeNull()
+    if (root && wrapper && tableSection) {
+      expect(wrapper.parentElement).toBe(root)
+      expect(tableSection.parentElement).toBe(root)
+      // Footer renders AFTER the table section in document order.
+      const rootChildren = Array.from(root.children)
+      expect(rootChildren.indexOf(wrapper)).toBeGreaterThan(
+        rootChildren.indexOf(tableSection)
+      )
+    }
   })
 
   it("does not render footerStatus wrapper when omitted (backwards compat)", () => {
@@ -273,19 +285,28 @@ describe("AdminListPage", () => {
     expect(
       screen.getByRole("button", { name: "Archive" })
     ).toBeInTheDocument()
-    // Footer is the last child of the table section (sits below BulkActionBar).
+    // VI-404: footer wrapper is a sibling of the table section (direct child
+    // of the block root), rendered AFTER it. BulkActionBar stays inside the
+    // table section as its last child.
+    const root = container.querySelector("[data-slot='admin-list-page']")
     const tableSection = container.querySelector(
       "[data-slot='admin-list-page-table']"
     )
     const footerWrapper = container.querySelector(
       "[data-slot='admin-list-page-footer-status']"
     )
+    expect(root).not.toBeNull()
     expect(tableSection).not.toBeNull()
     expect(footerWrapper).not.toBeNull()
-    if (tableSection && footerWrapper) {
-      const children = Array.from(tableSection.children)
-      const footerIndex = children.indexOf(footerWrapper)
-      expect(footerIndex).toBe(children.length - 1)
+    if (root && tableSection && footerWrapper) {
+      // Footer is a sibling of the section, not a descendant.
+      expect(tableSection.contains(footerWrapper)).toBe(false)
+      expect(footerWrapper.parentElement).toBe(root)
+      // Footer renders AFTER the table section in document order.
+      const rootChildren = Array.from(root.children)
+      expect(rootChildren.indexOf(footerWrapper)).toBeGreaterThan(
+        rootChildren.indexOf(tableSection)
+      )
     }
   })
 

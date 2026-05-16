@@ -153,12 +153,18 @@ export interface AdminListPageProps<TData>
 
   // ── Footer status ────────────────────────────────────────────────────────
   /**
-   * Always-on info row rendered below the table, inside the table section.
-   * Independent of `BulkActionBar` — the two can coexist. Typical content is
-   * a selection count, total, and Kbd hint cluster.
+   * Always-on info row rendered below the table, as a sibling of the table
+   * section (direct child of the block root). Independent of `BulkActionBar`
+   * — the two can coexist. Typical content is a selection count, total, and
+   * Kbd hint cluster.
    *
    * Wrapped in a `data-slot="admin-list-page-footer-status"` element for CSS
    * hooks. Consumer composes the row layout (flat slot, not structured).
+   *
+   * BREAKING (VI-404): previously rendered inside the table section; now
+   * rendered as a sibling. Consumers using descendant selectors of the form
+   * `[data-slot="admin-list-page-table"] [data-slot="admin-list-page-footer-status"]`
+   * will silently stop matching — drop the `admin-list-page-table` ancestor.
    */
   footerStatus?: React.ReactNode
 }
@@ -356,16 +362,16 @@ function AdminListPageInner<TData>(
             {bulkActions}
           </BulkActionBar>
         ) : null}
-
-        {footerStatus !== undefined ? (
-          <div
-            data-slot="admin-list-page-footer-status"
-            className={styles.footerStatus}
-          >
-            {footerStatus}
-          </div>
-        ) : null}
       </section>
+
+      {footerStatus !== undefined ? (
+        <div
+          data-slot="admin-list-page-footer-status"
+          className={styles.footerStatus}
+        >
+          {footerStatus}
+        </div>
+      ) : null}
     </div>
   )
 }
