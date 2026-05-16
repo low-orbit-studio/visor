@@ -18,6 +18,17 @@ export interface AdminSettingsSection {
   label: React.ReactNode
   /** Section heading rendered above the content. */
   title: React.ReactNode
+  /** Optional small uppercase label rendered above the section title.
+   *  Mirrors PageHeader's eyebrow (VI-303) — same token contract. */
+  eyebrow?: React.ReactNode
+  /** Section title font-size override. `"default"` preserves the current h2
+   *  scale; `"lg" | "xl" | "marquee"` step up to display sizes. Mirrors
+   *  PageHeader's `titleSize` token presets (VI-303). */
+  titleSize?: "default" | "lg" | "xl" | "marquee"
+  /** Section title font-family override. `"body"` (default) inherits the body
+   *  family; `"marquee"` binds to the display family with a graceful fallback
+   *  to the heading family. Mirrors PageHeader's `titleFamily` (VI-303). */
+  titleFamily?: "body" | "marquee"
   /** Optional supporting copy rendered below the heading. */
   description?: React.ReactNode
   /** Optional leading icon rendered before the label in the nav. */
@@ -503,11 +514,25 @@ const AdminSettingsPage = React.forwardRef<
                     className={styles.section}
                     data-slot="admin-settings-page-section"
                   >
-                    <header className={styles.sectionHeader}>
+                    <header
+                      className={styles.sectionHeader}
+                      data-slot="admin-settings-section-header"
+                    >
+                      {section.eyebrow ? (
+                        <p
+                          data-slot="admin-settings-section-eyebrow"
+                          className={styles.sectionEyebrow}
+                        >
+                          {section.eyebrow}
+                        </p>
+                      ) : null}
                       <Heading
                         level={2}
                         size="lg"
                         id={titleId}
+                        data-slot="admin-settings-section-title"
+                        data-title-size={section.titleSize}
+                        data-title-family={section.titleFamily}
                         className={styles.sectionTitle}
                       >
                         {section.title}
