@@ -1,6 +1,7 @@
 name: Admin Tabbed Editor
 description: Full-page editor with horizontal tabs, tab-scoped content panels, and a sticky save/cancel footer. Composes PageHeader, Tabs, Button, and ConfirmDialog. Tab switching and cancel are protected by an unsaved-changes guard, save supports async with pending state.
 category: admin
+preview_url: "https://visor.design/docs/blocks/admin-tabbed-editor"
 components_used:
   - page-header
   - tabs
@@ -14,3 +15,5 @@ when_not_to_use:
   - Inline single-record edits (use admin-detail-drawer)
   - Multi-step forms with a linear progression (use admin-wizard)
   - Pages without meaningful grouping (use a plain form)
+tab_switching_state: |
+  Each TabsContent stays mounted between switches (Radix Tabs default), so per-tab React state is preserved when switching tabs. The block does not unmount tab bodies. Consumers own their draft state and are responsible for resyncing after save.

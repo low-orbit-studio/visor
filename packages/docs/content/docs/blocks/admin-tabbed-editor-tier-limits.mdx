@@ -1,0 +1,87 @@
+---
+title: Tier-limits editor (admin-tabbed-editor showcase)
+description: Showcase composing admin-tabbed-editor as a tier-limits editor — Free / Pro / Enterprise tabs, Field-built form rows per tier, single savebar. Verifies editorial density and unsaved-changes guard against a real admin use case.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { AdminTabbedEditorTierLimitsDemo } from '@/components/blocks/admin-tabbed-editor-tier-limits-demo';
+
+This showcase composes [`admin-tabbed-editor`](./admin-tabbed-editor) as a
+tier-limits editor — the canonical multi-tab admin pattern where each tab
+configures one tier (Free / Pro / Enterprise) and a single savebar commits
+the whole editor at once.
+
+It exists to prove the block lands cleanly at editorial density: rows of
+Field + Input / Select / Switch inside each tab, with the dirty flag spanning
+every tier.
+
+## Preview
+
+<BlockPreview
+  title="Tier limits editor"
+  code={"<AdminTabbedEditor\n  title=\"Tier limits\"\n  eyebrow=\"Monetization\"\n  description=\"Configure quotas and entitlements per pricing tier.\"\n  tabs={[\n    { id: 'free', label: 'Free', content: <TierForm tier=\"free\" /> },\n    { id: 'pro', label: 'Pro', content: <TierForm tier=\"pro\" /> },\n    { id: 'enterprise', label: 'Enterprise', content: <TierForm tier=\"enterprise\" /> },\n  ]}\n  dirty={dirty}\n  onSave={async () => { await saveTierLimits(draft); }}\n  onCancel={() => setDraft(committed)}\n  saveLabel=\"Save tier limits\"\n  cancelLabel=\"Discard changes\"\n  footerStatus={dirty ? 'Unsaved changes across one or more tiers' : 'All tiers saved'}\n/>"}
+>
+  <AdminTabbedEditorTierLimitsDemo />
+</BlockPreview>
+
+## What this validates
+
+This showcase intentionally targets a use case the base block docs don't
+already cover — the r3 reference admin doesn't ship a tier-limits page, so
+the composition is built directly against the inferred block API rather than
+ported from existing art. The point is to surface friction *before* a client
+admin builds on top of it.
+
+The composition exercises:
+
+- **Three tabs with distinct form bodies.** Each tier has its own draft slice
+  and renders the same form schema (member limit, event limit, storage,
+  support tier, custom branding).
+- **`Field` family at editorial density.** Each row uses `Field` + `FieldLabel`
+  + `FieldDescription` over the appropriate primitive (`Input`, `Select`, or
+  `Switch`). Spacing within a tab comes from `var(--spacing-5)` between fields.
+- **Single savebar across all tabs.** `dirty` is the union across all tiers;
+  the savebar commits every tier in one call. `footerStatus` reflects that.
+- **Unsaved-changes guard on tab switch.** Editing the Free tier and switching
+  to Pro fires the guard — confirming dirty state is editor-level, not tab-level.
+
+## Tab switching preserves per-tab state
+
+Radix Tabs keeps each `TabsContent` mounted, so per-tier inputs hold their
+local React state when you flip between Free, Pro, and Enterprise. The block
+contract is therefore: **the consumer owns per-tab state, the block guarantees
+it isn't unmounted between switches**. After save, the consumer is responsible
+for resyncing the draft against the committed record.
+
+## Theme cascade
+
+The showcase uses only Visor tokens (`--spacing-*`, `--text-secondary`,
+`--border-muted`, `--radius-md`). Apply the ENTR theme or any other to confirm
+nothing is hard-coded — the only literal colors are fallback values for
+preview environments without theme tokens loaded.
+
+## Composition gaps surfaced
+
+None blocking. The block's public API (`tabs`, `dirty`, `busy`, `onSave`,
+`onCancel`, `saveLabel`, `cancelLabel`, `footerStatus`) was sufficient to
+build the tier-limits editor end to end with no source changes to
+`admin-tabbed-editor`.
+
+Minor observations worth a follow-up if they recur:
+
+- The block doesn't expose a `formId` / `onSubmit` hook for wiring Enter-to-save
+  from inside the active tab. Current behavior: pressing Enter inside an `Input`
+  is inert. Consumers wanting Enter-to-save have to render their own `<form
+  onSubmit>` wrapper inside each tab body. Worth a tracked ticket if a second
+  showcase needs it.
+- The `Field` family has no built-in horizontal "label left, control right"
+  layout for switch rows — the showcase hand-rolls a flex row inside `Field`.
+  If two more showcases need it, file a follow-up for a switch-row variant on
+  `Field`.
+
+## Related
+
+- [`admin-tabbed-editor`](./admin-tabbed-editor) — base block + props.
+- [`field`](../components/field) — `Field` / `FieldLabel` / `FieldDescription`
+  primitives used per row.
