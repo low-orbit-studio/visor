@@ -1,0 +1,67 @@
+/* QuickActions — vertical list of label + Kbd rows.
+ * Ported from admin-v7-r3 reference: 6px gap, 12-16px padding,
+ * 13-14px label sized off --font-size-sm, --text-secondary color.
+ *
+ * No --spacing-1.5 token exists, so the 6px gap uses
+ * calc(--spacing-1 + --spacing-1/2) — mirrors the pattern used in kbd. */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing-1, 0.25rem) + var(--spacing-1, 0.25rem) / 2);
+  padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
+  background-color: var(--surface-card, #ffffff);
+  margin: 0;
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3, 0.75rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1.25;
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+.label {
+  color: var(--text-secondary, #6b7280);
+  min-width: 0;
+}
+
+.keys {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Interactive mode — rows opt in via the onActivate prop, which adds
+ * data-interactive="true" and role="button". Adds hover/focus affordances
+ * and a tap target boost so a click feels like a button. */
+.row[data-interactive="true"] {
+  cursor: pointer;
+  padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
+  margin: calc(-1 * var(--spacing-1, 0.25rem))
+    calc(-1 * var(--spacing-2, 0.5rem));
+  transition:
+    background-color var(--motion-duration-150, 150ms)
+      var(--motion-easing-default, ease-in-out),
+    color var(--motion-duration-150, 150ms)
+      var(--motion-easing-default, ease-in-out);
+}
+
+@media (hover: hover) {
+  .row[data-interactive="true"]:hover {
+    background-color: var(--surface-muted, #f3f4f6);
+  }
+
+  .row[data-interactive="true"]:hover .label {
+    color: var(--text-primary, #111827);
+  }
+}
+
+.row[data-interactive="true"]:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid
+    var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+}

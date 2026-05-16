@@ -1769,6 +1769,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "quick-actions",
+    type: "registry:ui",
+    category: "navigation",
+    description:
+      "A vertical list of action rows pairing a left-aligned label with a right-aligned Kbd shortcut. Display-only by default; opt-in interactive mode via onActivate makes rows activatable buttons with click, Enter, and Space activation.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "kbd"],
+    files: [
+      {
+        path: "components/ui/quick-actions/quick-actions.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/quick-actions/quick-actions.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "section-header",
     type: "registry:ui",
     category: "navigation",

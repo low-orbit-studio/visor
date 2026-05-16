@@ -1,0 +1,61 @@
+name: QuickActions
+description: Vertical list of action rows pairing a left-aligned label with a right-aligned Kbd shortcut.
+extends: HTMLUListElement
+category: navigation
+
+when_to_use:
+  - Dashboard side-rail "quick" panels surfacing keyboard discoverability
+  - Inline help cards beneath a section header ("What can I do here")
+  - Command-palette preview lists showing the top shortcuts
+  - Anywhere a short list of label + hotkey pairs needs consistent alignment
+
+when_not_to_use:
+  - Rows with leading icons, counts, or trailing meta data (use RightRailList)
+  - Modal command palette with filtering (use the Command primitive)
+  - Single-key shortcut chrome inline with text (use Kbd directly)
+  - Long lists where keyboard activation is the primary affordance (use a menu)
+
+why: >
+  The "Quick" panel pattern appears in every admin shell that surfaces keyboard
+  discoverability — a short list where each row pairs a label with a right-aligned
+  Kbd. The pattern is not a list-row primitive (no leading slot, no truncation)
+  and not a button (no chrome, display-only by default). A first-class primitive
+  keeps the Kbd alignment, row gap, and label color consistent across consumers.
+
+  Display-only by default keeps the API honest about the common case — the user
+  reads the label and presses the actual key. Supplying onActivate flips rows
+  into role="button" with click and keyboard activation, mirroring the opt-in
+  interactive pattern used elsewhere in Visor.
+
+props:
+  - name: actions
+    type: "QuickAction[]"
+    description: >
+      Array of { id, label, keys } entries. Each row renders the label on the
+      left and a Kbd composed from `keys` on the right.
+  - name: onActivate
+    type: "(id: string) => void"
+    description: >
+      When supplied, rows render as activatable buttons. Click, Enter, and Space
+      all fire the handler with the row's id. When omitted, rows are display-only
+      list items.
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+registry_dependencies:
+  - "kbd"
+  - "utils"
+
+preview_url: "https://visor.loworbit.studio/docs/components/navigation/quick-actions"
+
+example: |
+  <QuickActions
+    aria-label="Quick actions"
+    actions={[
+      { id: "new", label: "New event", keys: ["N"] },
+      { id: "cmd", label: "Open command", keys: ["⌘", "K"] },
+      { id: "switch", label: "Switch venue", keys: ["⌘", "O"] },
+      { id: "help", label: "Help", keys: ["?"] },
+    ]}
+  />

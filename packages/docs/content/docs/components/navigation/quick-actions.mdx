@@ -1,0 +1,134 @@
+---
+title: QuickActions
+description: A vertical list of action rows pairing a left-aligned label with a right-aligned Kbd shortcut. Display-only by default; opt-in interactive mode makes rows activatable buttons. Built with CSS Modules — copy it into your project and own it completely.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { QuickActions } from '@/components/ui/quick-actions';
+
+## Default (Display-Only)
+
+By default the rows are plain list items — the user reads the label and presses the actual key. Use this for help panels, side-rail "Quick" digests, and shortcut documentation.
+
+<ComponentPreview
+  title="r3 dashboard 'Quick' panel composition"
+  code={"<QuickActions\n  aria-label=\"Quick actions\"\n  actions={[\n    { id: \"new\", label: \"New event\", keys: [\"N\"] },\n    { id: \"cmd\", label: \"Open command\", keys: [\"⌘\", \"K\"] },\n    { id: \"switch\", label: \"Switch venue\", keys: [\"⌘\", \"O\"] },\n    { id: \"help\", label: \"Help\", keys: [\"?\"] },\n  ]}\n/>"}
+>
+  <QuickActions
+    aria-label="Quick actions"
+    actions={[
+      { id: "new", label: "New event", keys: ["N"] },
+      { id: "cmd", label: "Open command", keys: ["⌘", "K"] },
+      { id: "switch", label: "Switch venue", keys: ["⌘", "O"] },
+      { id: "help", label: "Help", keys: ["?"] },
+    ]}
+  />
+</ComponentPreview>
+
+## Single-Key Shortcuts
+
+<ComponentPreview
+  title="Letter and symbol keys"
+  code={"<QuickActions\n  aria-label=\"Single key shortcuts\"\n  actions={[\n    { id: \"search\", label: \"Search\", keys: [\"/\"] },\n    { id: \"new\", label: \"New\", keys: [\"N\"] },\n    { id: \"help\", label: \"Help\", keys: [\"?\"] },\n  ]}\n/>"}
+>
+  <QuickActions
+    aria-label="Single key shortcuts"
+    actions={[
+      { id: "search", label: "Search", keys: ["/"] },
+      { id: "new", label: "New", keys: ["N"] },
+      { id: "help", label: "Help", keys: ["?"] },
+    ]}
+  />
+</ComponentPreview>
+
+## Empty State
+
+An empty `actions` array renders an empty `<ul>` — safe to render with zero rows while data is loading.
+
+<ComponentPreview
+  title="Empty actions array"
+  code={"<QuickActions aria-label=\"Quick actions\" actions={[]} />"}
+>
+  <QuickActions aria-label="Quick actions" actions={[]} />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add quick-actions
+```
+
+This copies two files into your project:
+
+- `components/ui/quick-actions/quick-actions.tsx` — the component
+- `components/ui/quick-actions/quick-actions.module.css` — the styles
+
+The `kbd` primitive is installed as a registry dependency.
+
+## Usage
+
+```tsx
+import { QuickActions } from '@/components/ui/quick-actions/quick-actions';
+
+export default function SideRail() {
+  return (
+    <QuickActions
+      aria-label="Quick actions"
+      actions={[
+        { id: 'new', label: 'New event', keys: ['N'] },
+        { id: 'cmd', label: 'Open command', keys: ['⌘', 'K'] },
+      ]}
+    />
+  );
+}
+```
+
+To make rows activatable, supply `onActivate`:
+
+```tsx
+<QuickActions
+  aria-label="Quick actions"
+  actions={[
+    { id: 'new', label: 'New event', keys: ['N'] },
+    { id: 'cmd', label: 'Open command', keys: ['⌘', 'K'] },
+  ]}
+  onActivate={(id) => runShortcut(id)}
+/>
+```
+
+When `onActivate` is supplied, each row renders as `role="button"` with `tabIndex={0}` and responds to click, Enter, and Space.
+
+## API Reference
+
+### QuickActionsProps
+
+<PropsTable component="quick-actions" />
+
+### QuickAction
+
+| Field | Type | Description |
+| -- | -- | -- |
+| `id` | `string` | Stable identifier passed to `onActivate` when the row fires. |
+| `label` | `React.ReactNode` | Left-aligned row label. |
+| `keys` | `string[]` | Shortcut keys forwarded to `<Kbd keys={...} size="sm" />`. |
+
+## Source Files
+
+After running `npx visor add quick-actions`, you'll have:
+
+### `quick-actions.tsx`
+
+A forwardRef component that renders a `<ul role="list">` of rows. Each row pairs a label `<span>` with a `Kbd` primitive composed from the action's `keys`. When `onActivate` is supplied, rows render as `role="button"` with `tabIndex={0}` and keyboard handlers for Enter and Space.
+
+### `quick-actions.module.css`
+
+CSS Module styles. All values use CSS custom properties from `@loworbitstudio/visor-core` — the 6px row gap, 12-16px panel padding, secondary label color, and the interactive hover/focus chrome all resolve via theme tokens.
+
+## Customization
+
+After copying the component, you own it completely. Common customizations:
+
+- Add a leading icon slot on each `QuickAction` for visual scanning.
+- Render section dividers between groups by composing multiple `QuickActions` blocks under separate `SectionHeader` titles.
+- Swap the row chrome for a tabular layout with three columns (label, description, kbd).
