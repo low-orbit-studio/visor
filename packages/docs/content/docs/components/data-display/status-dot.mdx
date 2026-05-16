@@ -1,0 +1,149 @@
+---
+title: Status Dot
+description: A 6×6px tone-tinted indicator dot. Five tones resolve from Visor semantic tokens — composes inside badges, table rows, activity feed items, and inline status text.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { StatusDot } from '@/components/ui/status-dot';
+import { Badge } from '@/components/ui/badge';
+
+## Basic
+
+<ComponentPreview
+  title="Default status dot"
+  code={"import { StatusDot } from '@/components/ui/status-dot/status-dot';\n\n<StatusDot tone=\"mint\" />"}
+>
+  <StatusDot tone="mint" />
+</ComponentPreview>
+
+## All Tones
+
+<ComponentPreview
+  title="All five tones"
+  code={"<StatusDot tone=\"mint\" />\n<StatusDot tone=\"warn\" />\n<StatusDot tone=\"muted\" />\n<StatusDot tone=\"danger\" />\n<StatusDot tone=\"info\" />"}
+>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+    <StatusDot tone="mint" />
+    <StatusDot tone="warn" />
+    <StatusDot tone="muted" />
+    <StatusDot tone="danger" />
+    <StatusDot tone="info" />
+  </div>
+</ComponentPreview>
+
+## Inside a Badge
+
+<ComponentPreview
+  title="Composed inside a Badge"
+  code={"<Badge>\n  <StatusDot tone=\"warn\" />\n  96% capacity\n</Badge>"}
+>
+  <Badge>
+    <StatusDot tone="warn" />
+    <span style={{ marginLeft: '0.375rem' }}>96% capacity</span>
+  </Badge>
+</ComponentPreview>
+
+## Inline With Text
+
+<ComponentPreview
+  title="Inline with status text"
+  code={"<span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>\n  <StatusDot tone=\"mint\" />\n  All systems nominal\n</span>"}
+>
+  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+    <StatusDot tone="mint" />
+    All systems nominal
+  </span>
+</ComponentPreview>
+
+## Standalone, Announced
+
+When the dot stands alone with no adjacent label — e.g. as a cell in a dense
+table where the column header carries the meaning — supply `aria-label` to
+make the dot announce itself as a labeled image.
+
+<ComponentPreview
+  title="Standalone with aria-label"
+  code={"<StatusDot tone=\"danger\" aria-label=\"Service down\" />"}
+>
+  <StatusDot tone="danger" aria-label="Service down" />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add status-dot
+```
+
+This copies the component into your project:
+
+- `components/ui/status-dot/status-dot.tsx` — the component
+- `components/ui/status-dot/status-dot.module.css` — the styles
+
+## Usage
+
+```tsx
+import { StatusDot } from '@/components/ui/status-dot/status-dot';
+
+export default function Example() {
+  return <StatusDot tone="mint" />;
+}
+```
+
+## API Reference
+
+### StatusDotProps
+
+<PropsTable component="status-dot" />
+
+### Tone → Token Mapping
+
+| Tone     | Token                       |
+| -------- | --------------------------- |
+| `mint`   | `--surface-success-default` |
+| `warn`   | `--surface-warning-default` |
+| `muted`  | `--text-tertiary`           |
+| `danger` | `--surface-error-default`   |
+| `info`   | `--surface-info-default`    |
+
+The dot reuses the same saturated semantic tokens
+[`StatusBadge`](/docs/components/admin/status-badge) uses for its leading
+indicator, so the two read as one coherent system across admin surfaces.
+
+## Accessibility
+
+The dot is decorative by default — `aria-hidden="true"` is set so assistive
+tech ignores it, and the surrounding label is expected to carry the
+semantic meaning. When the dot stands alone with no adjacent label, supply
+`aria-label`; this flips the element into a labeled image (`role="img"`)
+that screen readers announce.
+
+Color alone is never sufficient to communicate status. When using
+`StatusDot` inline, always pair it with a text label, or — for the
+standalone case — use the `aria-label` prop.
+
+## Source Files
+
+After running `npx visor add status-dot`, you'll have:
+
+### `status-dot.tsx`
+
+A forwardRef component that renders a single `<span>` with `data-slot` and
+`data-tone` attributes. No state, no behaviour — purely visual.
+
+### `status-dot.module.css`
+
+A single base rule and five tone rules keyed by `data-tone`. The 6px size
+and circular radius are intentional and fixed — for larger callouts, use
+[`StatusBadge`](/docs/components/admin/status-badge) instead.
+
+## Customization
+
+After copying the component, you own it completely. Common customizations:
+
+- Add a new tone (e.g. `accent`) by adding a `data-tone="accent"` rule that
+  references the desired semantic token.
+- Swap the size by editing the `width`/`height` values — the
+  `border-radius: 9999px` handles any square size as a circle.
+- Add a pulse animation for in-flight states by porting the keyframes from
+  [`StatusBadge`](/docs/components/admin/status-badge).

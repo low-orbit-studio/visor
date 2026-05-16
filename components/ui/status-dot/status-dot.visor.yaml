@@ -1,0 +1,50 @@
+name: StatusDot
+description: A 6×6px tone-tinted indicator dot — composes inside badges, table rows, activity feed items, and inline status text.
+extends: HTMLSpanElement
+category: data-display
+
+when_to_use:
+  - As the leading slot of an ActivityFeed item to convey activity tone
+  - Inside a Badge to add a colored status indicator without StatusBadge's chrome
+  - In table cells to mark row status without a full label
+  - Inline with status text where the surrounding label already announces meaning
+
+when_not_to_use:
+  - Standalone status without an adjacent label — prefer StatusBadge for a full labelled control
+  - Larger callouts or hero-scale indicators — single 6px size is intentional
+  - As an interactive affordance — StatusDot is a pure indicator with no behaviour
+
+why: >
+  The admin reference build rebuilds this dot inline in every status surface
+  — typically as a 6px span with hand-set background — losing tone-token
+  consistency across activity feeds, status badges, and table rows. A
+  first-class primitive enforces a fixed size, a fixed shape, and a fixed
+  tone-to-token mapping so every status surface reads as one system.
+
+variants:
+  tone: [mint, warn, muted, danger, info]
+
+props:
+  - name: tone
+    type: '"mint" | "warn" | "muted" | "danger" | "info"'
+    default: '"muted"'
+    description: Tone. Drives the dot fill via a Visor semantic token.
+  - name: aria-label
+    type: string
+    optional: true
+    description: >
+      When supplied, the dot is announced as a labeled image (role="img").
+      Omit when the dot is paired with adjacent status text — surrounding
+      labels carry the semantic meaning and the dot stays decorative.
+
+dependencies: []
+
+preview_url: "https://visor.design/docs/components/data-display/status-dot"
+
+example: |
+  <StatusDot tone="mint" />
+  <Badge>
+    <StatusDot tone="warn" />
+    96% capacity
+  </Badge>
+  <StatusDot tone="danger" aria-label="Service down" />
