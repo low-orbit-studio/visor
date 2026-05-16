@@ -173,6 +173,140 @@ describe("AdminSettingsPage", () => {
     )
     await checkA11y(container)
   })
+
+  // ─── Section header: eyebrow + titleSize + titleFamily (VI-402) ─────
+
+  describe("section header eyebrow + title overrides", () => {
+    it("does not render the section eyebrow slot by default", () => {
+      const { container } = render(
+        <AdminSettingsPage title="Settings" sections={sampleSections} />
+      )
+      expect(
+        container.querySelector(
+          "[data-slot='admin-settings-section-eyebrow']"
+        )
+      ).not.toBeInTheDocument()
+    })
+
+    it("does not set data-title-size / data-title-family by default", () => {
+      const { container } = render(
+        <AdminSettingsPage title="Settings" sections={sampleSections} />
+      )
+      const title = container.querySelector(
+        "[data-slot='admin-settings-section-title']"
+      )
+      expect(title).toBeInTheDocument()
+      expect(title).not.toHaveAttribute("data-title-size")
+      expect(title).not.toHaveAttribute("data-title-family")
+    })
+
+    it("renders the eyebrow above the section title when provided", () => {
+      const { container } = render(
+        <AdminSettingsPage
+          title="Settings"
+          sections={[
+            {
+              id: "profile",
+              label: "Profile",
+              eyebrow: "ACCOUNT · PROFILE",
+              title: "Profile",
+              content: <div>Profile content</div>,
+            },
+          ]}
+        />
+      )
+      const eyebrow = container.querySelector(
+        "[data-slot='admin-settings-section-eyebrow']"
+      )
+      expect(eyebrow).toBeInTheDocument()
+      expect(eyebrow).toHaveTextContent("ACCOUNT · PROFILE")
+    })
+
+    it("forwards titleSize and titleFamily to the title as data attributes", () => {
+      const { container } = render(
+        <AdminSettingsPage
+          title="Settings"
+          sections={[
+            {
+              id: "profile",
+              label: "Profile",
+              eyebrow: "ACCOUNT · PROFILE",
+              title: "Profile",
+              titleSize: "marquee",
+              titleFamily: "marquee",
+              content: <div>Profile content</div>,
+            },
+          ]}
+        />
+      )
+      const title = container.querySelector(
+        "[data-slot='admin-settings-section-title']"
+      )
+      expect(title).toHaveAttribute("data-title-size", "marquee")
+      expect(title).toHaveAttribute("data-title-family", "marquee")
+    })
+
+    it("supports titleSize='lg' and titleSize='xl' tokens", () => {
+      const { container } = render(
+        <AdminSettingsPage
+          title="Settings"
+          sections={[
+            {
+              id: "a",
+              label: "A",
+              title: "A",
+              titleSize: "lg",
+              content: <div>A</div>,
+            },
+            {
+              id: "b",
+              label: "B",
+              title: "B",
+              titleSize: "xl",
+              content: <div>B</div>,
+            },
+          ]}
+        />
+      )
+      const titles = container.querySelectorAll(
+        "[data-slot='admin-settings-section-title']"
+      )
+      expect(titles[0]).toHaveAttribute("data-title-size", "lg")
+      expect(titles[1]).toHaveAttribute("data-title-size", "xl")
+    })
+
+    it("tags the section header with data-slot='admin-settings-section-header'", () => {
+      const { container } = render(
+        <AdminSettingsPage title="Settings" sections={sampleSections} />
+      )
+      expect(
+        container.querySelectorAll(
+          "[data-slot='admin-settings-section-header']"
+        ).length
+      ).toBe(sampleSections.length)
+    })
+
+    it("passes accessibility checks with eyebrow + marquee title", async () => {
+      const { container } = render(
+        <AdminSettingsPage
+          title="Account Settings"
+          sections={[
+            {
+              id: "profile",
+              label: "Profile",
+              eyebrow: "ACCOUNT · PROFILE",
+              title: "Profile",
+              titleSize: "marquee",
+              titleFamily: "marquee",
+              description: "Update your personal information.",
+              content: <div>Profile form content</div>,
+            },
+          ]}
+        />
+      )
+      await checkA11y(container)
+    })
+  })
 })
 
 // ────────────────────────────────────────────────────────────────────────────

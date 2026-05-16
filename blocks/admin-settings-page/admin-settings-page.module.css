@@ -268,13 +268,64 @@
 }
 
 .sectionHeader {
+  /* Override hooks for section-title typography. Themes (or consumers via a
+     wrapping className) can set these to retune the marquee title without
+     forking the block. Props are sugar over the same custom properties. */
+  --admin-settings-section-title-size: 3rem;
+  --admin-settings-section-title-family: var(
+    --font-family-display,
+    var(--font-family-heading, inherit)
+  );
+
   display: flex;
   flex-direction: column;
   gap: var(--spacing-1, 0.25rem);
 }
 
+/* Eyebrow: small uppercase label above the section title.
+ * Reuses the same token set as PageHeader.eyebrow (VI-303) for visual
+ * consistency — no new theme tokens. */
+.sectionEyebrow {
+  margin: 0;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-semibold, 600);
+  letter-spacing: var(--letter-spacing-wide, 0.05em);
+  text-transform: uppercase;
+  color: var(--text-tertiary, #6b7280);
+  line-height: var(--line-height-tight, 1.25);
+}
+
 .sectionTitle {
   margin: 0;
+}
+
+/* Section title typography overrides (orthogonal to the default h2 scale).
+   `data-title-size="lg" | "xl" | "marquee"` step the title up through the
+   display scale; `data-title-size="default"` is a no-op preserving the
+   current h2 lg size. Mirrors PageHeader's pattern (VI-303). */
+.sectionTitle[data-title-size="lg"] {
+  font-size: var(--font-size-2xl, 1.5rem);
+  line-height: var(--line-height-tight, 1.2);
+}
+
+.sectionTitle[data-title-size="xl"] {
+  font-size: var(--font-size-3xl, 1.875rem);
+  line-height: var(--line-height-tight, 1.2);
+}
+
+.sectionTitle[data-title-size="marquee"] {
+  font-size: var(--admin-settings-section-title-size, 3rem);
+  line-height: 1;
+  letter-spacing: var(--letter-spacing-tight, -0.01em);
+}
+
+/* `data-title-family="marquee"` switches to the display family with a
+   graceful fallback to the heading family when no display font is themed. */
+.sectionTitle[data-title-family="marquee"] {
+  font-family: var(
+    --admin-settings-section-title-family,
+    var(--font-family-display, var(--font-family-heading, inherit))
+  );
 }
 
 .sectionDescription {
