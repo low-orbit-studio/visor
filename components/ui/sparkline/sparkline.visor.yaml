@@ -47,7 +47,11 @@ props:
   - name: fluid
     type: boolean
     default: false
-    description: When true, the rendered `<svg>` omits its `width` attribute so it fills its container (the `viewBox` preserves the aspect ratio). A CSS class forces `width: 100%; height: auto; display: block;`. Use inside flexible cards where the consumer would otherwise force `width: 100%` via CSS.
+    description: >
+      When true, the rendered `<svg>` omits its `width` attribute so it fills its container
+      (the `viewBox` preserves the aspect ratio). A CSS class forces
+      `width 100%`, `height auto`, `display block`. Use inside flexible cards
+      where the consumer would otherwise force `width 100%` via CSS.
   - name: aria-label
     type: string
     description: When supplied, the SVG becomes a labeled image and is announced. Omit for decorative use.
