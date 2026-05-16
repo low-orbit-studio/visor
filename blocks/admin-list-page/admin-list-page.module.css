@@ -16,6 +16,8 @@
 }
 
 .tableSection {
+  background-color: var(--admin-list-page-table-bg, transparent);
+  border-radius: var(--admin-list-page-table-radius, 0);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-4, 1rem);
@@ -23,13 +25,18 @@
 }
 
 .footerStatus {
+  background-color: var(--admin-list-page-footer-bg, transparent);
+  border-radius: var(--admin-list-page-footer-radius, 0);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-3, 0.75rem);
-  padding: var(--spacing-3, 0.75rem) 0;
-  border-top: var(--stroke-width-thin, 1px) solid
-    var(--border-subtle, var(--border-default, #e5e7eb));
+  padding: var(--admin-list-page-footer-padding, var(--spacing-3, 0.75rem) 0);
+  border-top: var(
+    --admin-list-page-footer-border-top,
+    var(--stroke-width-thin, 1px) solid
+      var(--border-subtle, var(--border-default, #e5e7eb))
+  );
   color: var(--text-tertiary, var(--text-muted, #6b7280));
   font-size: var(--text-xs, 0.6875rem);
   line-height: var(--leading-snug, 1.4);
