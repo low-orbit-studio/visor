@@ -83,12 +83,12 @@ const STATUS_COLOR_GROUP: Record<StatusBadgeStatus, StatusColorGroup> = {
   // Admin-ui event tones — map to existing semantic groups.
   // live: active/in-progress positive event → success accent
   // warn: needs attention but not failing → warning
-  // scheduled: upcoming/planned → info
+  // scheduled: upcoming/planned, visually grouped with draft → neutral
   // sold: positive completed outcome → success
   // draft: unpublished/muted → neutral
   live: "success",
   warn: "warning",
-  scheduled: "info",
+  scheduled: "neutral",
   sold: "success",
   draft: "neutral",
 }

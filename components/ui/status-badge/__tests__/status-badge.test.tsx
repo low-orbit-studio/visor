@@ -91,7 +91,7 @@ describe("StatusBadge", () => {
       // Admin-ui event tones
       ["live", "success"],
       ["warn", "warning"],
-      ["scheduled", "info"],
+      ["scheduled", "secondary"],
       ["sold", "success"],
       ["draft", "secondary"],
     ]
@@ -119,7 +119,7 @@ describe("StatusBadge", () => {
       // Admin-ui event tones
       ["live", "filled-success"],
       ["warn", "filled-warning"],
-      ["scheduled", "filled-info"],
+      ["scheduled", "secondary"],
       ["sold", "filled-success"],
       ["draft", "secondary"],
     ]
