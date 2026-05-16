@@ -150,6 +150,46 @@ describe("Sparkline", () => {
     )
     expect(container.querySelector("svg")).toHaveClass("custom-spark")
   })
+
+  it("renders the width attribute by default (fluid=false)", () => {
+    const { container } = render(<Sparkline values={SAMPLE} />)
+    const svg = container.querySelector("svg")
+    expect(svg).toHaveAttribute("width", "96")
+  })
+
+  it("omits the width attribute when fluid is true", () => {
+    const { container } = render(<Sparkline values={SAMPLE} fluid />)
+    const svg = container.querySelector("svg")
+    expect(svg).not.toHaveAttribute("width")
+  })
+
+  it("keeps the height attribute when fluid is true", () => {
+    const { container } = render(<Sparkline values={SAMPLE} fluid />)
+    const svg = container.querySelector("svg")
+    expect(svg).toHaveAttribute("height", "22")
+  })
+
+  it("preserves the viewBox when fluid is true", () => {
+    const { container } = render(<Sparkline values={SAMPLE} fluid />)
+    const svg = container.querySelector("svg")
+    expect(svg).toHaveAttribute("viewBox", "0 0 96 22")
+  })
+
+  it("applies the svgFluid class when fluid is true", () => {
+    const { container } = render(<Sparkline values={SAMPLE} fluid />)
+    const svg = container.querySelector("svg")
+    // CSS modules hash class names; assert presence of a class whose name
+    // starts with our local identifier `svgFluid` (e.g. `svgFluid_abc123`).
+    const classes = Array.from(svg?.classList ?? [])
+    expect(classes.some((c) => c.includes("svgFluid"))).toBe(true)
+  })
+
+  it("does not apply the svgFluid class when fluid is false (default)", () => {
+    const { container } = render(<Sparkline values={SAMPLE} />)
+    const svg = container.querySelector("svg")
+    const classes = Array.from(svg?.classList ?? [])
+    expect(classes.some((c) => c.includes("svgFluid"))).toBe(false)
+  })
 })
 
 describe("Sparkline accessibility", () => {

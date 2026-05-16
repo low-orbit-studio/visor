@@ -13,6 +13,12 @@ export interface SparklineProps
   color?: string
   /** Stroke width in px. Defaults to 1.5. */
   strokeWidth?: number
+  /**
+   * When true, the rendered `<svg>` omits its `width` attribute so it fills its
+   * container (the `viewBox` preserves the aspect ratio). A CSS class forces
+   * `width: 100%; height: auto; display: block;`. Defaults to `false`.
+   */
+  fluid?: boolean
   /** When supplied, the sparkline becomes a labeled image instead of decorative. */
   "aria-label"?: string
 }
@@ -25,6 +31,7 @@ const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
       height = 22,
       color = "var(--accent-primary)",
       strokeWidth = 1.5,
+      fluid = false,
       className,
       "aria-label": ariaLabel,
       ...props
@@ -51,8 +58,10 @@ const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
       <svg
         ref={ref}
         data-slot="sparkline"
-        className={[styles.svg, className].filter(Boolean).join(" ")}
-        width={width}
+        className={[styles.svg, fluid && styles.svgFluid, className]
+          .filter(Boolean)
+          .join(" ")}
+        {...(fluid ? {} : { width })}
         height={height}
         viewBox={`0 0 ${width} ${height}`}
         role="img"
