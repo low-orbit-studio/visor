@@ -15,6 +15,7 @@
 .base {
   --stat-card-value-font: var(--font-display, var(--font-family-heading, inherit));
   --stat-card-value-size: var(--font-size-3xl, 1.875rem);
+  --stat-card-value-size-hero: var(--font-size-6xl, 3.5rem);
 
   display: flex;
   flex-direction: column;
@@ -122,7 +123,7 @@
 /* valueAs="hero" — marquee display treatment */
 .value[data-value-as="hero"] {
   font-family: var(--stat-card-value-font);
-  font-size: var(--stat-card-value-size, 3.5rem);
+  font-size: var(--stat-card-value-size-hero, var(--stat-card-value-size, 3.5rem));
   font-weight: var(--font-weight-normal, 400);
   letter-spacing: 0;
   line-height: 1;
