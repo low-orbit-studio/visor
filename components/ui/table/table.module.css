@@ -44,7 +44,7 @@
   transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
-.row:hover {
+.row:not([data-slot="data-table-group-row"]):hover {
   background-color: var(--surface-muted, #f3f4f6);
 }
 
