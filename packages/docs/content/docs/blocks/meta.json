@@ -4,6 +4,7 @@
   "pages": [
     "admin-dashboard",
     "admin-detail-drawer",
+    "admin-detail-drawer-admin-ui-density",
     "admin-list-page",
     "admin-settings-page",
     "admin-shell",
