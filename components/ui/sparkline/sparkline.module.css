@@ -2,3 +2,9 @@
 .svg {
   display: block;
 }
+
+.svgFluid {
+  width: 100%;
+  height: auto;
+  display: block;
+}

@@ -44,6 +44,10 @@ props:
     type: number
     default: 1.5
     description: Stroke width in px.
+  - name: fluid
+    type: boolean
+    default: false
+    description: When true, the rendered `<svg>` omits its `width` attribute so it fills its container (the `viewBox` preserves the aspect ratio). A CSS class forces `width: 100%; height: auto; display: block;`. Use inside flexible cards where the consumer would otherwise force `width: 100%` via CSS.
   - name: aria-label
     type: string
     description: When supplied, the SVG becomes a labeled image and is announced. Omit for decorative use.
@@ -56,4 +60,5 @@ example: |
   <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} />
   <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} width={120} height={32} />
   <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} color="var(--text-success)" />
+  <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} fluid />
   <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} aria-label="RSVPs over the last 12 weeks" />
