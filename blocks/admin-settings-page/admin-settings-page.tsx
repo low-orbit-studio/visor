@@ -434,60 +434,65 @@ const AdminSettingsPage = React.forwardRef<
               className={styles.sideNav}
               data-slot="admin-settings-page-nav"
             >
-              <ul className={styles.sideNavList}>
-                {(sectionGroups ?? (flatSections.length > 0 ? [{ sections: flatSections }] : [])).map((group, gi) => (
-                  <li key={gi} className={styles.sideNavGroup}>
-                    {group.label ? (
-                      <div
-                        className={styles.navGroupLabel}
-                        aria-hidden="true"
+              <div
+                className={styles.sideNavSticky}
+                data-slot="admin-settings-page-side-nav-sticky"
+              >
+                <ul className={styles.sideNavList}>
+                  {(sectionGroups ?? (flatSections.length > 0 ? [{ sections: flatSections }] : [])).map((group, gi) => (
+                    <li key={gi} className={styles.sideNavGroup}>
+                      {group.label ? (
+                        <div
+                          className={styles.navGroupLabel}
+                          aria-hidden="true"
+                        >
+                          {group.label}
+                        </div>
+                      ) : null}
+                      <ul
+                        className={styles.sideNavGroupList}
+                        role="list"
+                        aria-label={typeof group.label === "string" ? group.label : undefined}
                       >
-                        {group.label}
-                      </div>
-                    ) : null}
-                    <ul
-                      className={styles.sideNavGroupList}
-                      role="list"
-                      aria-label={typeof group.label === "string" ? group.label : undefined}
-                    >
-                      {group.sections.map((section) => {
-                        const isActive = section.id === activeId
-                        return (
-                          <li key={section.id} className={styles.sideNavItem}>
-                            <a
-                              href={`#${section.id}`}
-                              className={cn(
-                                styles.sideNavLink,
-                                isActive && styles.navLinkActive,
-                                section.muted && styles.navItemMuted
-                              )}
-                              aria-current={isActive ? "true" : undefined}
-                              onClick={(e) => handleNavClick(e, section.id)}
-                            >
-                              {section.icon ? (
-                                <span
-                                  className={styles.navIcon}
-                                  aria-hidden="true"
-                                >
-                                  {section.icon}
+                        {group.sections.map((section) => {
+                          const isActive = section.id === activeId
+                          return (
+                            <li key={section.id} className={styles.sideNavItem}>
+                              <a
+                                href={`#${section.id}`}
+                                className={cn(
+                                  styles.sideNavLink,
+                                  isActive && styles.navLinkActive,
+                                  section.muted && styles.navItemMuted
+                                )}
+                                aria-current={isActive ? "true" : undefined}
+                                onClick={(e) => handleNavClick(e, section.id)}
+                              >
+                                {section.icon ? (
+                                  <span
+                                    className={styles.navIcon}
+                                    aria-hidden="true"
+                                  >
+                                    {section.icon}
+                                  </span>
+                                ) : null}
+                                <span className={styles.navLabel}>
+                                  {section.label}
                                 </span>
-                              ) : null}
-                              <span className={styles.navLabel}>
-                                {section.label}
-                              </span>
-                              {section.meta !== undefined ? (
-                                <span className={styles.navItemMeta}>
-                                  {section.meta}
-                                </span>
-                              ) : null}
-                            </a>
-                          </li>
-                        )
-                      })}
-                    </ul>
-                  </li>
-                ))}
-              </ul>
+                                {section.meta !== undefined ? (
+                                  <span className={styles.navItemMeta}>
+                                    {section.meta}
+                                  </span>
+                                ) : null}
+                              </a>
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </nav>
           ) : null}
 

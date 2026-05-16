@@ -131,14 +131,24 @@
   grid-template-columns: var(--admin-settings-page-nav-width, minmax(12rem, 16rem)) 1fr;
 }
 
-/* Side nav — sticky rail pinned to the top of the scroll container. */
+/* Side nav — stretching grid track. The outer rail fills the grid track so
+ * its surface (border-right, background) extends to the bottom of the body.
+ * The inner `.sideNavSticky` div carries the sticky scroll-anchor behavior. */
 .sideNav {
+  align-self: stretch;
+  min-height: 100%;
+  border-right: 1px solid var(--border-muted, #e5e7eb);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Inner sticky pane — pinned to the top of the scroll container, scrolls
+ * internally when the nav contents exceed the viewport height. */
+.sideNavSticky {
   position: sticky;
   top: 0;
-  align-self: start;
   padding: var(--spacing-6, 1.5rem) var(--spacing-4, 1rem)
     var(--spacing-6, 1.5rem) var(--spacing-6, 1.5rem);
-  border-right: 1px solid var(--border-muted, #e5e7eb);
   max-height: 100vh;
   overflow-y: auto;
 }
@@ -410,13 +420,22 @@
   }
 
   .sideNav {
+    align-self: auto;
+    min-height: 0;
+    border-right: none;
+    border-bottom: 1px solid var(--border-muted, #e5e7eb);
+    display: block;
+  }
+
+  /* Drop the inner sticky pane back to static flow at narrow widths so the
+   * collapsed horizontal strip scrolls with the page. Be explicit — don't
+   * rely on inheritance from `.sideNav`. */
+  .sideNavSticky {
     position: static;
     max-height: none;
     padding: var(--spacing-3, 0.75rem) var(--spacing-6, 1.5rem);
-    border-right: none;
-    border-bottom: 1px solid var(--border-muted, #e5e7eb);
     overflow-x: auto;
-    overflow-y: hidden;
+    overflow-y: visible;
   }
 
   .sideNavList {
