@@ -1,11 +1,21 @@
 name: Admin Wizard
 description: Guided multi-step flow composing PageHeader, Stepper, and Button into a drop-in wizard with per-step async validation, final submit handler, horizontal or vertical stepper orientation, optional click-to-jump stepper navigation to completed steps, and a cancel guard via ConfirmDialog. Only the active step's content is mounted.
+preview_url: "https://visor.design/showcases/admin-wizard"
 category: admin
 components_used:
   - page-header
   - stepper
   - button
   - confirm-dialog
+state_persistence: |
+  Form state lives in the consumer, not the block. Each step's `content`
+  is mounted only while active, but inputs are controlled by the consumer's
+  state — values persist across step navigation in both directions.
+validation_gating: |
+  Per-step `validate` is invoked only on forward navigation (Next / stepper
+  click-to-jump beyond current). Back navigation, Cancel, and click-to-jump
+  to completed steps never call validate. Returning false (or a rejected
+  Promise) cancels the advance and keeps the user on the current step.
 when_to_use:
   - Multi-step create flows — onboarding, account setup, content creation
   - Guided configuration where each step depends on decisions made earlier
