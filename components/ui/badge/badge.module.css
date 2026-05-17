@@ -24,14 +24,14 @@
 
 /* Variants */
 .variantDefault {
-  background-color: var(--interactive-primary-bg, #111827);
-  color: var(--interactive-primary-text, #f9fafb);
+  background-color: var(--interactive-primary-bg, currentColor);
+  color: var(--interactive-primary-text, var(--text-inverse, #f9fafb));
   border-color: transparent;
 }
 
 .variantSecondary {
-  background-color: var(--interactive-secondary-bg, #f3f4f6);
-  color: var(--interactive-secondary-text, #111827);
+  background-color: var(--interactive-secondary-bg, var(--surface-subtle, transparent));
+  color: var(--interactive-secondary-text, var(--text-primary, currentColor));
   border-color: transparent;
 }
 
@@ -42,50 +42,50 @@
 }
 
 .variantDestructive {
-  background-color: var(--surface-error-subtle, #fef2f2);
-  color: var(--text-error, #b91c1c);
+  background-color: var(--surface-error-subtle, transparent);
+  color: var(--text-error, currentColor);
   border-color: transparent;
 }
 
 .variantSuccess {
-  background-color: var(--surface-success-subtle, #f0fdf4);
-  color: var(--text-success, #15803d);
+  background-color: var(--surface-success-subtle, transparent);
+  color: var(--text-success, currentColor);
   border-color: transparent;
 }
 
 .variantWarning {
-  background-color: var(--surface-warning-subtle, #fffbeb);
-  color: var(--text-warning, #b45309);
+  background-color: var(--surface-warning-subtle, transparent);
+  color: var(--text-warning, currentColor);
   border-color: transparent;
 }
 
 .variantInfo {
-  background-color: var(--surface-info-subtle, #f0f9ff);
-  color: var(--text-info, #0369a1);
+  background-color: var(--surface-info-subtle, transparent);
+  color: var(--text-info, currentColor);
   border-color: transparent;
 }
 
 /* Filled variants — step 9 bg + contrast text */
 .variantFilledDestructive {
-  background-color: var(--surface-error-default, #ef4444);
-  color: var(--text-inverse, #ffffff);
+  background-color: var(--surface-error-default, transparent);
+  color: var(--text-inverse, currentColor);
   border-color: transparent;
 }
 
 .variantFilledSuccess {
-  background-color: var(--surface-success-default, #22c55e);
-  color: var(--text-inverse, #ffffff);
+  background-color: var(--surface-success-default, transparent);
+  color: var(--text-inverse, currentColor);
   border-color: transparent;
 }
 
 .variantFilledWarning {
-  background-color: var(--surface-warning-default, #f59e0b);
-  color: var(--text-inverse, #ffffff);
+  background-color: var(--surface-warning-default, transparent);
+  color: var(--text-inverse, currentColor);
   border-color: transparent;
 }
 
 .variantFilledInfo {
-  background-color: var(--surface-info-default, #0ea5e9);
-  color: var(--text-inverse, #ffffff);
+  background-color: var(--surface-info-default, transparent);
+  color: var(--text-inverse, currentColor);
   border-color: transparent;
 }
