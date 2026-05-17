@@ -44,6 +44,17 @@ export interface StatCardProps
   delta?: StatCardDelta
   /** Optional slot for a sparkline, chart, or icon. */
   trend?: React.ReactNode
+  /**
+   * Where to render the `trend` slot.
+   * - `"footer"` (default) — direct child of the card root, after value/delta and
+   *   before the `footer` slot. Full card width, padded above. Best for
+   *   Progress bars, full-width sparklines, and anything that competes with the
+   *   label for header space.
+   * - `"header"` — inside the header row, right-aligned next to the label.
+   *   Legacy layout, useful for compact icons or thumbnail-sized sparklines.
+   * Defaults to `"footer"`.
+   */
+  trendPosition?: "header" | "footer"
   /** Optional sublabel or link rendered beneath the value. */
   footer?: React.ReactNode
   /** Root element tag. Defaults to `article` for landmark semantics. */
@@ -76,6 +87,7 @@ const StatCard = React.forwardRef<HTMLElement, StatCardProps>(
       value,
       delta,
       trend,
+      trendPosition = "footer",
       footer,
       as = "article",
       valueAs,
@@ -99,9 +111,10 @@ const StatCard = React.forwardRef<HTMLElement, StatCardProps>(
           <p data-slot="stat-card-label" className={styles.label}>
             {label}
           </p>
-          {trend ? (
+          {trend && trendPosition === "header" ? (
             <div
               data-slot="stat-card-trend"
+              data-trend-position="header"
               className={styles.trend}
               aria-hidden="true"
             >
@@ -135,6 +148,17 @@ const StatCard = React.forwardRef<HTMLElement, StatCardProps>(
               {DELTA_WORD[delta.direction]}
               {delta.label ? ` ${delta.label}` : ""}
             </span>
+          </div>
+        ) : null}
+
+        {trend && trendPosition === "footer" ? (
+          <div
+            data-slot="stat-card-trend"
+            data-trend-position="footer"
+            className={styles.trendFooter}
+            aria-hidden="true"
+          >
+            {trend}
           </div>
         ) : null}
 
