@@ -99,13 +99,29 @@
   min-width: 0;
 }
 
-/* Trend slot — sparkline / icon container */
+/* Trend slot — header position (legacy): right-aligned sparkline / icon container */
 .trend {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   color: var(--text-tertiary, #6b7280);
   flex: 0 0 auto;
+}
+
+/* Trend slot — footer position (default): full-width, padded above the value row.
+ *
+ * Rendered as a direct child of the card root after the value/delta and before the
+ * footer slot. Full card width, no fixed flex sizing — so Progress bars, full-width
+ * sparklines, and anything that competes with the label for header space have room
+ * to breathe. The `--stat-card-trend-padding-top` hook lets consumers tune the gap
+ * to the value row without touching internal CSS.
+ */
+.trendFooter {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding-top: var(--stat-card-trend-padding-top, var(--spacing-3, 0.75rem));
+  color: var(--text-tertiary, #6b7280);
 }
 
 /* Value — big numeric display */

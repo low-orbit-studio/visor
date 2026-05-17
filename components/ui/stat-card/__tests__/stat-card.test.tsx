@@ -73,6 +73,85 @@ describe("StatCard", () => {
     expect(screen.getByTestId("sparkline")).toBeInTheDocument()
   })
 
+  describe("trendPosition prop", () => {
+    it("defaults to footer position — trend is a direct child of the card root", () => {
+      const { container } = render(
+        <StatCard
+          label="Sessions"
+          value="2,340"
+          trend={<svg data-testid="sparkline" />}
+        />
+      )
+      const root = container.querySelector('[data-slot="stat-card"]')
+      const trend = container.querySelector('[data-slot="stat-card-trend"]')
+      const header = container.querySelector('[data-slot="stat-card-header"]')
+      expect(trend).not.toBeNull()
+      expect(trend?.parentElement).toBe(root)
+      expect(header?.contains(trend)).toBe(false)
+      expect(trend).toHaveAttribute("data-trend-position", "footer")
+    })
+
+    it("renders trend inside the header when trendPosition='header'", () => {
+      const { container } = render(
+        <StatCard
+          label="Sessions"
+          value="2,340"
+          trend={<svg data-testid="sparkline" />}
+          trendPosition="header"
+        />
+      )
+      const trend = container.querySelector('[data-slot="stat-card-trend"]')
+      const header = container.querySelector('[data-slot="stat-card-header"]')
+      expect(trend).not.toBeNull()
+      expect(trend?.parentElement).toBe(header)
+      expect(trend).toHaveAttribute("data-trend-position", "header")
+    })
+
+    it("renders trend as direct child of root when trendPosition='footer' (explicit)", () => {
+      const { container } = render(
+        <StatCard
+          label="Sessions"
+          value="2,340"
+          trend={<svg data-testid="sparkline" />}
+          trendPosition="footer"
+        />
+      )
+      const root = container.querySelector('[data-slot="stat-card"]')
+      const trend = container.querySelector('[data-slot="stat-card-trend"]')
+      expect(trend?.parentElement).toBe(root)
+      expect(trend).toHaveAttribute("data-trend-position", "footer")
+    })
+
+    it("renders the footer-position trend after the value/delta and before the footer slot", () => {
+      const { container } = render(
+        <StatCard
+          label="Revenue"
+          value="$10k"
+          delta={{ value: "+12%", direction: "up" }}
+          trend={<svg data-testid="sparkline" />}
+          footer={<a href="/r">More</a>}
+        />
+      )
+      const root = container.querySelector('[data-slot="stat-card"]')
+      const children = Array.from(root?.children ?? [])
+      const valueIdx = children.findIndex(
+        (el) => el.getAttribute("data-slot") === "stat-card-value"
+      )
+      const deltaIdx = children.findIndex(
+        (el) => el.getAttribute("data-slot") === "stat-card-delta"
+      )
+      const trendIdx = children.findIndex(
+        (el) => el.getAttribute("data-slot") === "stat-card-trend"
+      )
+      const footerIdx = children.findIndex(
+        (el) => el.getAttribute("data-slot") === "stat-card-footer"
+      )
+      expect(trendIdx).toBeGreaterThan(valueIdx)
+      expect(trendIdx).toBeGreaterThan(deltaIdx)
+      expect(trendIdx).toBeLessThan(footerIdx)
+    })
+  })
+
   it("renders the footer slot", () => {
     const { container } = render(
       <StatCard

@@ -7,6 +7,7 @@ declare const styles: {
   readonly header: string
   readonly label: string
   readonly trend: string
+  readonly trendFooter: string
   readonly value: string
   readonly delta: string
   readonly deltaGlyph: string
