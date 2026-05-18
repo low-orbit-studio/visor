@@ -1,6 +1,12 @@
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve as resolvePath } from "node:path";
 import { validate } from "../validate.js";
+import { parseConfig } from "../pipeline.js";
 import type { VisorThemeConfig } from "../types.js";
 import type { ThemeValidationResult } from "../validate.js";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // ============================================================
 // Test Fixtures
@@ -1573,5 +1579,198 @@ describe("validate — dark/light color parity", () => {
     expect(
       result.warnings.some((w) => w.code === "DARK_LIGHT_PARITY")
     ).toBe(false);
+  });
+});
+
+// ============================================================
+// Override Completeness (VI-420)
+// ============================================================
+
+describe("validate — override completeness (INCOMPLETE_OVERRIDE)", () => {
+  it("D4-1: full override set produces no INCOMPLETE_OVERRIDE warnings", () => {
+    // Surface trigger + every required token in every family present.
+    const result = validate({
+      name: "Full Overrides",
+      version: 1,
+      colors: { primary: "#666666", neutral: "#333333", background: "#000", surface: "#0a0a0a" },
+      overrides: {
+        light: {
+          // text required: primary, secondary, tertiary, disabled
+          "text-primary": "#fff",
+          "text-secondary": "#ccc",
+          "text-tertiary": "#aaa",
+          "text-disabled": "#555",
+          // surface required: 20 tokens
+          "surface-page": "#0a0a0a",
+          "surface-card": "#111",
+          "surface-popover": "#141414",
+          "surface-subtle": "#151515",
+          "surface-muted": "#181818",
+          "surface-interactive-default": "transparent",
+          "surface-interactive-hover": "#202020",
+          "surface-interactive-active": "#282828",
+          "surface-interactive-disabled": "#151515",
+          "surface-selected": "#303030",
+          "surface-accent-subtle": "#1f1f1f",
+          "surface-success-subtle": "#003814",
+          "surface-warning-subtle": "#432600",
+          "surface-error-subtle": "#4e0006",
+          "surface-info-subtle": "#002e44",
+          "surface-elev-0": "#101011",
+          "surface-elev-1": "#181818",
+          "surface-elev-2": "#212121",
+          "surface-elev-3": "#282828",
+          "surface-elev-4": "#303030",
+          // border required: default, muted, strong, disabled
+          "border-default": "#222",
+          "border-muted": "#181818",
+          "border-strong": "#333",
+          "border-disabled": "#212121",
+          // interactive required: secondary-{5}, ghost-{2}
+          "interactive-secondary-bg": "#212121",
+          "interactive-secondary-bg-hover": "#282828",
+          "interactive-secondary-bg-active": "#303030",
+          "interactive-secondary-text": "#fff",
+          "interactive-secondary-border": "#303030",
+          "interactive-ghost-bg": "#212121",
+          "interactive-ghost-bg-hover": "#282828",
+        },
+      },
+    });
+    expect(result.warnings.filter((w) => w.code === "INCOMPLETE_OVERRIDE")).toHaveLength(0);
+  });
+
+  it("D4-2: partial overrides.light (only surface-page) warns for missing required tokens", () => {
+    // surface-page override is the trigger; everything else missing = warned.
+    const result = validate({
+      name: "Partial Overrides",
+      version: 1,
+      colors: { primary: "#666666" },
+      overrides: {
+        light: { "surface-page": "#0a0a0a" },
+      },
+    });
+    const warns = result.warnings.filter((w) => w.code === "INCOMPLETE_OVERRIDE");
+    // Required minus surface-page = 4 text + 19 surface + 4 border + 7 interactive = 34
+    expect(warns).toHaveLength(34);
+    expect(warns.every((w) => w.path?.startsWith("overrides.light."))).toBe(true);
+    expect(warns.some((w) => w.path === "overrides.light.surface-card")).toBe(true);
+    expect(warns.some((w) => w.path === "overrides.light.text-primary")).toBe(true);
+    expect(warns.some((w) => w.path === "overrides.light.border-default")).toBe(true);
+    expect(warns.some((w) => w.path === "overrides.light.interactive-secondary-bg")).toBe(true);
+  });
+
+  it("D4-3: no overrides block produces no INCOMPLETE_OVERRIDE warnings", () => {
+    const result = validate({
+      name: "No Overrides",
+      version: 1,
+      colors: { primary: "#2563EB" },
+    });
+    expect(result.warnings.filter((w) => w.code === "INCOMPLETE_OVERRIDE")).toHaveLength(0);
+  });
+
+  it("D4-4: colors-dark shorthand only (no overrides) produces no warnings", () => {
+    const result = validate({
+      name: "Dark Shorthand",
+      version: 1,
+      colors: { primary: "#2563EB", background: "#ffffff" },
+      "colors-dark": { background: "#000000", surface: "#0a0a0a" },
+    });
+    expect(result.warnings.filter((w) => w.code === "INCOMPLETE_OVERRIDE")).toHaveLength(0);
+  });
+
+  it("border-only overrides (no surface-page/card trigger) produce no warnings", () => {
+    // Trigger requires surface-page or surface-card override (inverted-surface
+    // signal). A pure border tweak isn't an inversion.
+    const result = validate({
+      name: "Border Tweak",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      overrides: {
+        light: { "border-default": "#cccccc" },
+      },
+    });
+    expect(result.warnings.filter((w) => w.code === "INCOMPLETE_OVERRIDE")).toHaveLength(0);
+  });
+
+  it("text-only stylistic tweak (no surface inversion) produces no warnings", () => {
+    // Light-bg themes (modern-minimal, neutral, space) tweak text alphas
+    // stylistically without inverting surfaces. The trigger must not fire on
+    // these, or the validator spams real themes with false positives.
+    const result = validate({
+      name: "Text Tweak",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      overrides: {
+        light: { "text-primary": "rgba(0, 0, 0, 0.9)" },
+      },
+    });
+    expect(result.warnings.filter((w) => w.code === "INCOMPLETE_OVERRIDE")).toHaveLength(0);
+  });
+
+  it("surface-card alone triggers completeness check", () => {
+    // surface-card override is an equally-strong inversion signal as surface-page.
+    const result = validate({
+      name: "Surface Card Only",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      overrides: {
+        light: { "surface-card": "#0a0a0a" },
+      },
+    });
+    const warns = result.warnings.filter((w) => w.code === "INCOMPLETE_OVERRIDE");
+    expect(warns.length).toBeGreaterThan(0);
+    expect(warns.every((w) => w.path?.startsWith("overrides.light."))).toBe(true);
+  });
+
+  it("dark-mode overrides are out of scope — no warnings even when incomplete", () => {
+    // Engine dark defaults are already dark; symmetric "always-light leak" case
+    // is intentionally deferred (not part of VI-420 / VI-417 class).
+    const result = validate({
+      name: "Dark Only Partial",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      overrides: {
+        dark: { "surface-card": "#0d0d0d" },
+      },
+    });
+    expect(result.warnings.filter((w) => w.code === "INCOMPLETE_OVERRIDE")).toHaveLength(0);
+  });
+
+  it("post-VI-417 Blackout (themes/blackout.visor.yaml) is clean", () => {
+    // Loads the actual repo theme — guards against regressions in either the
+    // validator or Blackout's coverage. If Blackout grows new gaps or the
+    // required-token set drifts, this test fails loudly.
+    const path = resolvePath(__dirname, "..", "..", "..", "..", "themes", "blackout.visor.yaml");
+    const yaml = readFileSync(path, "utf-8");
+    const config = parseConfig(yaml);
+    const result = validate(config);
+    const warns = result.warnings.filter((w) => w.code === "INCOMPLETE_OVERRIDE");
+    expect(warns).toHaveLength(0);
+  });
+
+  it("pre-VI-417 Blackout fixture warns about the tokens VI-417 added", () => {
+    // The reverse-baseline fixture proves the validator catches the exact
+    // class of bug VI-417 fixed. Counts: surface (11 missing: selected,
+    // accent-subtle, 4 status-subtle, 5 elev-*), border (1 missing: disabled),
+    // interactive (7 missing: secondary-*, ghost-*). Total 19 in light mode.
+    const path = resolvePath(__dirname, "fixtures", "blackout-pre-vi-417.visor.yaml");
+    const yaml = readFileSync(path, "utf-8");
+    const config = parseConfig(yaml);
+    const result = validate(config);
+    const lightWarns = result.warnings.filter(
+      (w) => w.code === "INCOMPLETE_OVERRIDE" && w.path?.startsWith("overrides.light.")
+    );
+    expect(lightWarns).toHaveLength(19);
+    // Spot-check the specific tokens VI-417 added
+    const missingPaths = new Set(lightWarns.map((w) => w.path));
+    expect(missingPaths.has("overrides.light.surface-selected")).toBe(true);
+    expect(missingPaths.has("overrides.light.surface-accent-subtle")).toBe(true);
+    expect(missingPaths.has("overrides.light.surface-success-subtle")).toBe(true);
+    expect(missingPaths.has("overrides.light.surface-elev-0")).toBe(true);
+    expect(missingPaths.has("overrides.light.surface-elev-4")).toBe(true);
+    expect(missingPaths.has("overrides.light.border-disabled")).toBe(true);
+    expect(missingPaths.has("overrides.light.interactive-secondary-bg")).toBe(true);
+    expect(missingPaths.has("overrides.light.interactive-ghost-bg")).toBe(true);
   });
 });
