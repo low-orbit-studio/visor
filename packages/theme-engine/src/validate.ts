@@ -73,6 +73,60 @@ const KNOWN_SEMANTIC_TOKENS: Set<string> = new Set([
   ...Object.keys(SEMANTIC_INTERACTIVE_MAP).map((k) => `interactive-${k}`),
 ]);
 
+/**
+ * Tokens whose engine defaults leak on an inverted (always-dark) light-mode
+ * treatment. Three classes of leak-prone tokens are listed:
+ *
+ * 1. **Flipping tokens** — light default is bright (white, neutral-50..300) or
+ *    dark-coded (neutral-900 for text-primary), and inverts in dark mode.
+ *    Examples: text-primary, surface-subtle, surface-elev-*, border-default.
+ *
+ * 2. **CONFIG-anchored surfaces** (`surface-page`, `surface-card`, `surface-popover`)
+ *    — resolve to `colors.background` / `colors.surface`. For an always-dark
+ *    theme, these are dark in both modes, so they don't strictly "flip". They
+ *    are still listed because operators commonly override `surface-card` to a
+ *    translucent glass value, which forces a paired override of `surface-popover`
+ *    (must remain opaque for floating panels). The check enforces this pairing.
+ *
+ * 3. **Brand-pastel surfaces** (`surface-accent-subtle`, `surface-{status}-subtle`)
+ *    — light defaults are pastel-50 (very light) and flip to pastel-900 in dark.
+ *
+ * **Excluded** (engine defaults render correctly without override):
+ * - `text-inverse`, `text-inverse-secondary` — light defaults (`#ffffff`,
+ *   `neutral-200`) are bright. On an always-dark theme they render on dark
+ *   surfaces and stay visible (white-on-near-black is exactly the inverse
+ *   contract — same rationale as `STANDARD_TEXT_TOKENS` exclusions at line ~605).
+ * - `text-link*`, `text-{status}` — saturated brand/status colors, contrast
+ *   acceptable on both light and dark surfaces.
+ * - `surface-overlay` — `neutral-900` / `neutral-950`, both dark in both modes.
+ * - `surface-accent-default`, `surface-accent-strong`,
+ *   `surface-{status}-default` — saturated brand/status, work on any bg.
+ * - `border-focus`, `border-{status}` — saturated, same in both modes.
+ * - `interactive-primary-*`, `interactive-destructive-*`,
+ *   `interactive-{primary,destructive}-text` — saturated brand/error or
+ *   constant white, work across modes.
+ *
+ * Verified against post-VI-417 Blackout — the live theme overrides exactly
+ * this required set with no false positives.
+ */
+const REQUIRED_OVERRIDE_TOKENS: Record<string, string[]> = {
+  text: ["primary", "secondary", "tertiary", "disabled"],
+  surface: [
+    "page", "card", "popover", "subtle", "muted",
+    "interactive-default", "interactive-hover", "interactive-active", "interactive-disabled",
+    "selected",
+    "accent-subtle",
+    "success-subtle", "warning-subtle", "error-subtle", "info-subtle",
+    "elev-0", "elev-1", "elev-2", "elev-3", "elev-4",
+  ],
+  border: ["default", "muted", "strong", "disabled"],
+  interactive: [
+    "secondary-bg", "secondary-bg-hover", "secondary-bg-active",
+    "secondary-text", "secondary-border",
+    "ghost-bg", "ghost-bg-hover",
+  ],
+};
+
 // ============================================================
 // Helpers
 // ============================================================
@@ -509,6 +563,60 @@ function checkOverrides(
             "UNKNOWN_OVERRIDE_KEY",
             `'overrides.${mode}.${key}' does not match any known semantic token. Valid tokens include: text-primary, surface-page, border-default, interactive-primary-bg, etc.`,
             `overrides.${mode}.${key}`
+          )
+        );
+      }
+    }
+  }
+}
+
+/**
+ * Override-completeness check (VI-420).
+ *
+ * Catches the class of bug shipped in VI-417: an always-dark theme declares
+ * `overrides.light` but omits semantic tokens that the engine then resolves
+ * to its bright light-mode defaults, leaking across the theme contract.
+ *
+ * Scoped to `overrides.light` only — the ticket targets the light-mode leak
+ * class. Engine dark defaults are already dark and rarely leak symmetrically.
+ *
+ * Trigger: `overrides.light` overrides `surface-page` or `surface-card`. That
+ * is the strongest signal of an inverted (always-dark) light-mode treatment:
+ * by default `surface-page` resolves to `colors.background` and `surface-card`
+ * to `colors.surface`, so operators only override them when they want a value
+ * that diverges from the standard light-bg expectation. D1's literal "text-*
+ * or surface-*" trigger produced false positives on light-bg themes that
+ * stylistically tweak text alphas (e.g., modern-minimal, neutral, space).
+ *
+ * Severity: WARNING (D3) — operator may have intentional reasons for partial
+ * overrides, and emerging themes shouldn't be blocked.
+ */
+function checkOverrideCompleteness(
+  config: VisorThemeConfig,
+  issues: ValidationIssue[]
+): void {
+  const lightOverrides = config.overrides?.light;
+  if (!lightOverrides) return;
+
+  const presentKeys = Object.keys(lightOverrides);
+  if (presentKeys.length === 0) return;
+
+  // Trigger: surface-page or surface-card override = inverted light treatment.
+  const hasTriggerKey =
+    "surface-page" in lightOverrides || "surface-card" in lightOverrides;
+  if (!hasTriggerKey) return;
+
+  const present = new Set(presentKeys);
+  for (const [family, tokens] of Object.entries(REQUIRED_OVERRIDE_TOKENS)) {
+    for (const token of tokens) {
+      const fullKey = `${family}-${token}`;
+      if (!present.has(fullKey)) {
+        issues.push(
+          issue(
+            "warning",
+            "INCOMPLETE_OVERRIDE",
+            `'overrides.light' inverts the light-mode surface (overrides 'surface-page' or 'surface-card') but is missing '${fullKey}'. The engine's light-mode default for this token may leak (bright/light-natural values on inverted always-dark themes like Blackout).`,
+            `overrides.light.${fullKey}`
           )
         );
       }
@@ -970,6 +1078,9 @@ export function validate(config: unknown): ThemeValidationResult {
   for (const iss of overrideIssues) {
     (iss.severity === "error" ? errors : warnings).push(iss);
   }
+
+  // 7b. Override completeness (VI-420, warnings only)
+  checkOverrideCompleteness(typedConfig, warnings);
 
   // 8. Resolved completeness contract (errors)
   if (errors.length === 0) {
