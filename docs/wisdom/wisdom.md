@@ -38,6 +38,7 @@ For global wisdom (universal lessons): [`~/Code/low-orbit/low-orbit-playbook/roo
 | W027 | Next.js strips external `@import` from bundled CSS — inject `<link rel="stylesheet">` in layout instead | nextjs, css, bundling, fonts, fontshare | [W027](W027-nextjs-strips-external-css-imports.md) |
 | W028 | husky 9's `.husky/_/` wrapper doesn't propagate to git worktrees — set `core.hooksPath = .husky` (relative) in `prepare` | husky, git-hooks, worktree, changeset, pre-push, tooling | [W028](W028-husky-hookspath-worktree-propagation.md) |
 | W029 | Linear "Done" ≠ published registry — close the loop with a post-smoke audit that comments on the GitHub PR that landed each drifted primitive (no Linear keys in public-repo secrets) | governance, github, publish, registry, ci, public-repo | [W029](W029-vi-ticket-publish-governance.md) |
+| W030 | `npx changeset status` silently passes unknown package names — use `@changesets/get-release-plan` directly for non-destructive validation in CI gates | changesets, ci, validation, release, monorepo, publish | [W030](W030-changeset-status-silent-pass.md) |
 
 ## Adding Entries
 
