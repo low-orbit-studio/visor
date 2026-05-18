@@ -219,40 +219,21 @@ describe('computeBumpPreview', () => {
     ]);
   });
 
-  it('falls back to auto-patch when no changesets are present', () => {
-    const readJsonWithVisor = path => {
-      if (path.endsWith('packages/tokens/package.json')) return { version: '0.6.0' };
-      if (path.endsWith('package.json')) return { version: '0.1.4' };
-      throw new Error(`unexpected read: ${path}`);
-    };
+  it('returns empty Visor packages when no changesets are present', () => {
+    // VI-419: auto-version was deleted, so a shipping-package PR with no
+    // changeset produces no Visor-side bump in the coordinated-release preview.
+    // The changeset-gate workflow blocks the PR from merging in that state,
+    // so a real coordinated release never reaches this code path with empty
+    // changesets unless the operator intends a no-Visor-bump preview.
     const preview = computeBumpPreview({
       visorPRFiles: [{ filename: 'packages/tokens/src/index.ts' }],
       themesPRFiles: [],
       changesetReleases: [],
-      readJson: readJsonWithVisor,
+      readJson,
     });
-    expect(preview.visor.source).toBe('auto-patch');
-    expect(preview.visor.packages).toEqual([
-      expect.objectContaining({ name: '@loworbitstudio/visor-core', from: '0.6.0', to: '0.6.1', type: 'patch' }),
-    ]);
-  });
-
-  it('skips Visor packages whose package.json was bumped manually in the PR', () => {
-    const readJsonWithVisor = path => {
-      if (path.endsWith('packages/tokens/package.json')) return { version: '0.6.0' };
-      if (path.endsWith('package.json')) return { version: '0.1.4' };
-      throw new Error(`unexpected read: ${path}`);
-    };
-    const preview = computeBumpPreview({
-      visorPRFiles: [
-        { filename: 'packages/tokens/src/index.ts' },
-        { filename: 'packages/tokens/package.json' },
-      ],
-      themesPRFiles: [],
-      changesetReleases: [],
-      readJson: readJsonWithVisor,
-    });
+    expect(preview.visor.source).toBe('changeset');
     expect(preview.visor.packages).toEqual([]);
+    expect(preview.visor.detail).toMatch(/no pending changesets/);
   });
 
   it('produces a themes patch bump when published surface is touched', () => {
@@ -321,10 +302,10 @@ describe('formatPreview', () => {
 
   it('renders no-bump notes when packages array is empty', () => {
     const out = formatPreview({
-      visor: { source: 'auto-patch', packages: [], detail: 'no published packages touched' },
+      visor: { source: 'changeset', packages: [], detail: 'no pending changesets — add one via `npx changeset add`' },
       themes: { source: 'auto-patch', packages: [], detail: 'no published surface touched' },
     });
-    expect(out).toMatch(/no published packages touched/);
+    expect(out).toMatch(/no pending changesets/);
     expect(out).toMatch(/no published surface touched/);
   });
 });
