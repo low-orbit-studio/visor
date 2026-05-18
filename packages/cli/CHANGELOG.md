@@ -1,5 +1,187 @@
 # Changelog
 
+## 1.0.0
+
+### Major Changes
+
+- dd096c9: VI-399 BREAKING: `StatCard` `trend` slot defaults to footer position.
+
+  `<StatCard trend={…}>` now renders the trend as a direct child of the card root (after value/delta, before footer), full card width — NOT inside the header. The previous header-position layout, which collapsed thin Progress bars and competed with the label for header space, is opt-in via `trendPosition="header"`.
+
+  **Migration:** consumers wanting the prior layout pass `trendPosition="header"`. Consumers not using `trend` are byte-for-byte unchanged. New `data-trend-position={position}` attribute on the wrapper for CSS targeting; new `--stat-card-trend-padding-top` hook (default `var(--spacing-3)`) for tuning the gap above the trend.
+
+  This is the BIG default change — it visually shifts every existing StatCard consumer that uses the `trend` slot. Pairs with VI-398's hero-scale default change.
+
+- f827fcc: VI-404 BREAKING: `AdminListPage` `footerStatus` now renders as a sibling of the table section, not a child.
+
+  The `footerStatus` slot moves from inside `<section data-slot="admin-list-page-table">` to a top-level child of the block root. This makes the footer float below the table card on the page background — matching the editorial admin baseline.
+
+  **Migration:** consumers targeting `[data-slot="admin-list-page-footer-status"]` directly keep working. Consumers using descendant selectors of the form `[data-slot="admin-list-page-table"] [data-slot="admin-list-page-footer-status"]` will silently stop matching — drop the `admin-list-page-table` ancestor.
+
+  Pairs with VI-405 (CSS hooks for the freshly-extracted footer node).
+
+### Minor Changes
+
+- 154ecb7: VI-303 feat: `PageHeader` exposes `titleSize` and `titleFamily` props for marquee-scale title typography.
+
+  Editorial admin surfaces hero a single page title at a much larger scale than the existing `size: "sm" | "md" | "lg"` axis allows (e.g., 56px display-font "Tonight"). `size` conflated three axes (gap rhythm, title size, description size); adding an `xl` variant would compound the conflation. This ticket follows the VI-288 `StatCard.valueAs` precedent and splits title typography off as its own orthogonal axis.
+
+  **New props (both optional, additive — no breaking changes):**
+
+  - `titleSize?: "default" | "marquee" | string` — Token presets map to `data-title-size` on the title slot. Any other string is forwarded as a raw CSS length on an inline `--page-header-title-size` declaration and rendered via the marquee rule.
+  - `titleFamily?: "heading" | "display" | string` — Token presets map to `data-title-family`. `"display"` resolves to `var(--font-display, var(--font-family-heading, inherit))` so themes without a display font degrade to the heading family.
+
+  **New CSS custom properties on `.base` (override hooks for themes):**
+
+  - `--page-header-title-size` — defaults to `3.5rem`. Used by `titleSize="marquee"`.
+  - `--page-header-title-family` — defaults to `var(--font-display, var(--font-family-heading, inherit))`. Used by `titleFamily="display"`.
+
+  When both props are omitted no `data-title-*` attributes are added and the rendered markup is byte-for-byte identical to the previous output. The `size` variant rules continue to drive the default sizing cascade.
+
+- 927de52: VI-304 feat: add `ChromeButton` — 28px topbar/chrome button primitive.
+
+  Admin topbars across r3 (dashboard + events), ENTR admin, Mission Control, and Studio CRM all repeat the same compact button + inline `Kbd` hint pattern. Visor's `Button` is sized for body content (40px / 36px / 32px) and lacks the `Kbd` slot, so every admin shell either reaches for `Button size="sm"` (wrong density) or rebuilds the row inline.
+
+  `ChromeButton` makes the chrome-scale pattern first-class:
+
+  - 28px height, compact paddings, theme-portable (binds to Visor tokens — no hardcoded colors)
+  - Optional leading icon slot (`data-slot="chrome-button-icon"`)
+  - Optional trailing `keys: string[]` slot rendered as `<Kbd keys={keys} size="sm" />` (`data-slot="chrome-button-kbd"`)
+  - Two variants: `default` (muted interactive surface) and `primary` (accent surface)
+  - All standard `<button>` HTML attributes pass through; `aria-label` supported for icon-only usage
+
+  Net-new primitive — zero risk to existing components. Install via `npx visor add chrome-button`.
+
+- 2854a9b: VI-379 feat: add `Sparkline` primitive — decorative inline SVG mini-trend chart.
+
+  New `components/ui/sparkline/` primitive for the stat-card trend slot and dense data contexts. Renders a single SVG polyline from a numeric series with zero dependencies (no Recharts, no charting library). Default dimensions 96×22, stroke from `var(--accent-primary)` for theme portability. Returns `null` when `values.length < 2`.
+
+  Props: `values: number[]` (required, min 2), `width` (default 96), `height` (default 22), `color` (default `var(--accent-primary)`), `strokeWidth` (default 1.5). Decorative (`aria-hidden="true"`) by default; pass `aria-label` to promote to a labeled image.
+
+  Registered in `registry/registry-ui.ts` so `npx visor add sparkline` resolves. Docs proxy + MDX page added under `data-display`.
+
+- 5776fb8: VI-381 feat: add `SectionHeader` primitive — compact section-divider with uppercase title and optional right-aligned meta.
+
+  New `components/ui/section-header/` primitive that fills the gap between `PageHeader` (page-level hero) and `Heading` (in-content h2/h3). 36px row with `--surface-subtle` background, 11px uppercase title at 0.14em letter-spacing, optional 13px tabular-num meta slot — sized for stacking 3-8 sections inside a page body.
+
+  Props: `title: React.ReactNode` (required), `meta?: React.ReactNode` (optional, right-aligned), `as?: "header" | "div" | "section"` (default `"header"`). Title renders as `<span>` so the primitive intentionally adds no heading semantics — wrap your own heading element in the title slot if you need a real h2/h3. Root carries `data-slot="section-header"`; sub-slots `section-header-title` and `section-header-meta`.
+
+  Registered in `registry/registry-ui.ts` so `npx visor add section-header` resolves. Docs proxy + MDX page added under `navigation`. Tokens used: `--surface-subtle`, `--text-tertiary`, `--font-size-xs`, `--font-size-sm`, `--font-weight-medium`, `--spacing-3`, `--spacing-4` — fully theme-portable.
+
+- cb6e0cc: VI-383 feat: extend `Progress` with `animate` flag and `size="thin"` variant.
+
+  `Progress` now accepts two additive optional props:
+
+  - `animate?: boolean` (default `true`) — when `false`, the indicator drops its CSS transition for instant paint. Use for static admin chrome where the bar mounts at its final value.
+  - `size?: "default" | "thin"` (default `"default"`) — `"thin"` renders a 4px-tall capacity bar styled with `--surface-interactive-active`, intended for KPI strips and time-until indicators inside admin chrome.
+
+  Existing consumers render byte-for-byte identically: no `data-*` attributes are emitted when both props are omitted, and the existing 12px animated track remains the default. The thin variant is the same primitive — not a fork — opted into at the call site with `<Progress value={…} size="thin" animate={false} aria-label="…" />`.
+
+- 2e665bf: VI-386 feat: add `CommandDialog` block — drop-in ⌘K palette composing the `command` + `dialog` primitives.
+
+  New `blocks/command-dialog/` block that ports the r3 admin-ui palette visual contract onto Visor tokens. Composes existing primitives (`Command`, `CommandInput`, `CommandList`, `CommandGroup`, `CommandItem`, `CommandEmpty`, `Dialog`, `DialogContent`, `DialogTitle`, `Kbd`) — does not fork any of them — and exposes named slots for the parts every admin shell re-implements by hand: scope chip, group heading with optional count, item meta, item Kbd shortcut, footer hint row, and result count.
+
+  Props: `open` + `onOpenChange` (controlled), `placeholder?`, `scope?` (string → "in {scope}" or full ReactNode), `groups: CommandDialogGroup[]`, `footerHints?: CommandDialogFooterHint[]`, `resultCount?` (derived from groups when omitted), `hideResultCount?`, `enableShortcut?` (default `true`; binds ⌘K / Ctrl+K to toggle open, cleans up on unmount), `className?` (forwarded to `DialogContent`).
+
+  Data slots on every meaningful node: `command-dialog`, `command-dialog-input-row`, `command-dialog-scope-chip`, `command-dialog-scope-label`, `command-dialog-group-heading`, `command-dialog-item-icon`, `command-dialog-item-label`, `command-dialog-item-meta`, `command-dialog-item-kbd`, `command-dialog-footer`, `command-dialog-footer-hints`, `command-dialog-footer-hint`, `command-dialog-result-count`.
+
+  Hit-highlighting is pass-through — callers wrap matched substrings in `<span data-hit>` inside item labels and the block's CSS paints them with the accent token. No auto-highlighting; consumers wire their own search.
+
+  Registered in `registry/registry-blocks.ts` so `npx visor add block command-dialog` resolves. Docs proxy + demo added under `packages/docs/components/blocks/`.
+
+- fff18e1: Add `customFooter` slot to `admin-settings-page` block, letting consumers replace the default footer entirely.
+- d02ab62: VI-398 feat: stat-card `hero` variant defaults to 56px (editorial admin density).
+
+  Adds `--stat-card-value-size-hero` (default `var(--font-size-6xl, 3.5rem)`) as a separate hook from `--stat-card-value-size`. `.value[data-value-as="hero"]` reads through the new hook with the previous size as a chained fallback. Default `valueAs="hero"` cards now render at 56px instead of ~30px — matches the editorial admin baseline (admin-v7-r3). Consumers binding either custom property override the new default; non-hero variants are byte-for-byte unchanged.
+
+- 480aded: VI-400 feat: Sparkline gains a `fluid` prop that drops the SVG `width` attribute so the chart fills its container.
+
+  When `fluid={true}`, the rendered `<svg>` omits its `width` attribute (the `viewBox` preserves the aspect ratio), keeps the `height` attribute, and applies a `.svgFluid` class that forces `width: 100%; height: auto; display: block;` via CSS. When `fluid={false}` (default), the component is byte-for-byte unchanged — 96px × 22px SVG. Cleans up the common consumer pattern of forcing `width: 100%` via CSS overrides.
+
+- 74874db: VI-401 feat: `admin-settings-page` exposes `--admin-settings-page-nav-width` so consumers can pin the left-rail width without forking the block CSS.
+
+  `.withLeftNav .body`'s `grid-template-columns` now reads through `var(--admin-settings-page-nav-width, minmax(12rem, 16rem))`. Default preserves the current responsive rail (clamped between `12rem` and `16rem`). Consumers can override per-instance with any valid `<grid-track-size>` value (e.g. `220px`, `15rem`).
+
+- dadfd94: VI-402 feat: `AdminSettingsSection` gains `eyebrow`, `titleSize`, and `titleFamily` props for editorial section headers.
+
+  Sections can now render an uppercase eyebrow label (e.g. "ACCOUNT · PROFILE") above the title, plus tune the title scale (`"default" | "lg" | "xl" | "marquee"`) and font family (`"body" | "marquee"`). Mirrors PageHeader's existing API (VI-303). Sections without the new props are byte-for-byte unchanged.
+
+- 524dc5c: VI-403 feat: `admin-settings-page` sideNav now stretches to fill its grid track via an inner-sticky-stretch pattern.
+
+  Previously `.sideNav` was `position: sticky; align-self: start;` which collapsed the rail to content height — so the rail's surface didn't extend to the bottom of the viewport. The block now wraps the sideNav children in a `data-slot="admin-settings-page-side-nav-sticky"` inner div that carries the sticky positioning, while the outer `.sideNav` becomes a stretching grid track. Net: rail surface visible to the bottom of the body; scroll-anchor sticky behavior preserved.
+
+  Behavior change: consumers that relied on the rail collapsing to content height need to opt back in via CSS overrides. New `data-slot` hook is additive.
+
+- 8ebf584: VI-405 feat: `admin-list-page` exposes CSS hooks for table card boundary + footer styling.
+
+  Five new CSS custom properties make the table card + footer pill independently themable without forking the block CSS:
+
+  - `--admin-list-page-table-bg` (default `transparent`)
+  - `--admin-list-page-table-radius` (default `0`)
+  - `--admin-list-page-footer-bg` (default `transparent`)
+  - `--admin-list-page-footer-radius` (default `0`)
+  - `--admin-list-page-footer-padding` (default current `var(--spacing-3, 0.75rem) 0`)
+  - `--admin-list-page-footer-border-top` (default current `1px solid var(--border-subtle, …)`)
+
+  All defaults preserve current behavior. Pairs with VI-404 (which moved the footer to a sibling of the table section) — consumers wanting the standalone-pill treatment can now compose these hooks instead of overriding via `:global` selectors.
+
+- c1e5759: VI-407 feat: Checkbox primitive gains a 6-hook token contract for theme-portable styling.
+
+  Borderless themes (those that zero `--border-default`) lost the Checkbox hairline. The primitive now exposes a full state-machine surface that falls back through existing semantic tokens — byte-for-byte unchanged for themes that don't bind any of the new hooks:
+
+  - `--checkbox-border` / `--checkbox-bg` — unchecked
+  - `--checkbox-border-hover` / `--checkbox-bg-hover` — hover (unchecked)
+  - `--checkbox-border-checked` / `--checkbox-bg-checked` — checked + indeterminate
+
+  A new `.root[data-state="indeterminate"]` rule mirrors `[data-state="checked"]` so the partial-selection state tracks the checked treatment via the same hooks. Themes that need a different look (e.g. ENTR's borderless-but-visible mint chip) can now override on `body.<theme>` with a 6-line token rebind instead of forking the component CSS.
+
+- 16e082b: VI-408 fix: Badge variants degrade gracefully when semantic tokens are unbound.
+
+  Variant CSS used hardcoded light-mode hex fallbacks (e.g. `background-color: var(--surface-info-subtle, #f0f9ff)`). When a theme bound success/warning but not info/secondary/destructive, Badges rendered in bright light-mode against a dark surface.
+
+  This change replaces every hardcoded light-mode fallback with `currentColor` / `transparent` / chained semantic fallbacks (e.g. `var(--surface-X-subtle, transparent)`, `var(--text-X, currentColor)`). When a theme is missing a token, the Badge degrades to a transparent/outline-style appearance rather than a bright chip — a less-broken failure mode that surfaces theme gaps without polluting the UI.
+
+  **Visual regression possible** for any theme that relied on the light-mode fallback being visible. The fix is to bind the missing semantic tokens in your theme (theme-best-practice has always been to bind the full semantic contract; this change just makes the failure mode less catastrophic).
+
+### Patch Changes
+
+- 3b2622c: VI-393 docs: add `admin-shell` editorial-density showcase.
+
+  Adds a new docs page at `/docs/blocks/admin-shell-showcase` that composes
+  `AdminShell` in the admin-v7-r3 pattern — `WorkspaceSwitcher` in the `logo`
+  slot, a `ChromeButton` cluster in `topbarEnd`, eyebrow-grouped nav, and a
+  sidebar footer pairing `Avatar` with a trailing `Kbd` shortcut hint.
+
+  Verification harness — no source changes to `admin-shell`. The showcase
+  proves `AdminShell`'s public API already supports the full r3 editorial-density
+  composition. The block's `admin-shell.visor.yaml` now carries a `preview_url`
+  pointing at the showcase so the registry surfaces it.
+
+- b9112eb: VI-397 fix: chrome-button `primary` variant falls back to `--accent-primary` before the bare hex.
+
+  `.variantPrimary` background, color, and `:hover` background now read through a documented fallback chain:
+
+  - `background-color: var(--interactive-primary-bg, var(--accent-primary, #111827))`
+  - `color: var(--interactive-primary-text, var(--text-inverse, #f9fafb))`
+  - `:hover background: var(--interactive-primary-bg-hover, color-mix(in srgb, var(--accent-primary, #111827) 85%, white))`
+
+  Themes that bind only `--accent-primary` (not the full `--interactive-primary-*` set) now correctly inherit the brand accent on primary chrome-buttons instead of falling through to a hardcoded `#111827`. Byte-for-byte unchanged for themes that bind `--interactive-primary-bg` explicitly.
+
+- 6b760c2: VI-406 fix: `data-table` group rows are non-hoverable by default.
+
+  Group rows (`data-slot="data-table-group-row"`) are visual separators, not interactive — but the underlying `table` primitive's `tr.row:hover` rule was leaking onto them. This change does two things in coordination:
+
+  - `components/ui/data-table/data-table.module.css` — `.groupRow` explicitly sets `background-color: transparent; cursor: default;` and overrides `:hover` to the same.
+  - `components/ui/table/table.module.css` — `tr.row:hover` narrows to `tr.row:not([data-slot="data-table-group-row"]):hover` so the rule no longer applies to group rows.
+
+  Data-row hover is byte-for-byte unchanged. Consumers no longer need `!important` overrides to suppress hover on group rows.
+
+- abd602c: VI-409 fix: StatusBadge `scheduled` tone maps to `neutral` (was `info`).
+
+  `STATUS_COLOR_GROUP["scheduled"]` flipped from `"info"` to `"neutral"` so the default `scheduled` rendering groups visually with `draft` under a muted treatment, matching the editorial admin baseline (admin-v7-r3). Previously rendered as a blue `info` pill, which conflicted with the typical event-status grouping where `live` is the active/colored signal and `scheduled` / `draft` are quieter.
+
+  Consumers passing `tone="info"` explicitly to StatusBadge are unaffected. Only the default mapping for the literal string `"scheduled"` changes.
+
 ## 0.10.2
 
 ### Patch Changes
