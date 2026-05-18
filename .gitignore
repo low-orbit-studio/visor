@@ -74,8 +74,9 @@ blob-report/
 !.lo/project.yaml
 *.bak.*
 
-# Git worktrees
+# Git worktrees (lo-swarm / lo-autopilot)
 .worktrees/
+/worktrees/
 
 # Custom themes (proprietary — not committed to public repo)
 custom-themes/
