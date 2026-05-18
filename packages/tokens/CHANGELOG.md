@@ -1,5 +1,98 @@
 # @loworbitstudio/visor-core
 
+## 0.8.0
+
+### Minor Changes
+
+- fd2741c: VI-380 feat: add `right-rail-list` block — compact vertical list tuned for admin dashboard side rails.
+
+  Each row pairs an optional `leading` slot (short label, avatar, badge, status dot), a `primary` label (typically a link), and an optional `trailing` meta value (count, value, or tone-tinted status word). Trailing carries a `data-tone` attribute and accepts `default | mint | muted | warn | danger | info` — extends r3's two-tone palette so the block pairs cleanly with the StatusDot tones landing alongside it.
+
+  Supports `compact` density for tighter rails and an `as` prop (`ul | ol | div`) for the root element. Theme-portable: every color, size, and spacing value binds to a Visor semantic token, so the block adopts the active theme without modification. Net-new block; zero impact on existing components. Registered as `category: data-display` so `npx visor add right-rail-list` works.
+
+- ce98322: VI-382 feat: add `StatusDot` primitive — a 6×6px tone-tinted indicator dot.
+
+  Ships a new `components/ui/status-dot/` primitive with five tones (`mint`, `warn`, `muted`, `danger`, `info`) that resolve from Visor's saturated semantic surface tokens (`--surface-success-default`, `--surface-warning-default`, `--text-tertiary`, `--surface-error-default`, `--surface-info-default`). Reuses the same fill tokens as `StatusBadge`'s leading indicator so the two read as one coherent system across admin surfaces.
+
+  The dot is decorative by default (`aria-hidden="true"`) — semantic status is expected to live in the adjacent label. Supplying `aria-label` flips it into a labeled image (`role="img"`) for standalone usage where no adjacent text carries the meaning.
+
+  Composes inside `Badge`, `ActivityFeed` leading slots, and table status cells. The 6px size and circular radius are intentional and fixed — for larger callouts, use `StatusBadge` instead.
+
+- 2149a78: VI-384 feat: `DataTable` row tone, clickable rows, and selected-row styling.
+
+  Three additive extensions to the existing `DataTable` primitive — group rows + sticky group headers already shipped, so this ticket focuses on per-row affordances:
+
+  1. **Selected-row CSS rule.** Wires the latent `data-state="selected"` attribute (already emitted by TanStack via `row.getIsSelected()` but unstyled) to `var(--surface-selected)`. Closes a latent bug where toggling the selection checkbox left the row visually unchanged.
+
+  2. **`rowTone` prop.** New `(row) => "live" | "warn" | "scheduled" | "sold" | "draft" | "danger" | "info" | undefined` callback. Returns a tone key per data row; the table stamps `data-tone="<tone>"` on the `<tr>` and the CSS layer maps each tone to a Visor surface token (`--surface-success-subtle`, `--surface-warning-subtle`, `--surface-error-subtle`, `--surface-info-subtle`). `scheduled` and `draft` render on the default surface — no tint — to keep visual signal focused on actionable rows. Tone vocabulary mirrors `StatusBadge` / `StatusDot` so a row tagged `live` reads as one signal with a `live` badge inside it.
+
+  3. **`onRowClick` prop.** Opt-in clickable-row affordance. When supplied, data rows become keyboard-activatable: `role="button"`, `tabIndex={0}`, click + Enter/Space dispatch the handler, and `data-clickable="true"` drives a hover and focus-visible affordance. The injected selection-checkbox cell stops propagation so toggling the checkbox does not also trigger the row click. When `enableRowSelection` is also on, the row keeps its semantic `tr` role (and drops `role="button"`) to satisfy WCAG nested-interactive — click and keyboard handlers still fire.
+
+  No breaking changes. All new props are optional and inert by default. The newly-styled `data-state="selected"` rows will visually change for existing consumers using `enableRowSelection`, but the attribute was always emitted — the fix simply adds the style that was missing.
+
+- 3c80397: VI-385 feat: add `quick-actions` primitive — vertical list of action rows pairing a left-aligned label with a right-aligned `Kbd` shortcut.
+
+  Ports the r3 admin dashboard's "Quick" panel composition into a first-class Visor primitive. Sized for dashboard side-rail digests and command-palette previews. Display-only by default: rows render as plain `<li>` with semantic `<kbd>` chrome. Supplying `onActivate` flips rows into `role="button"` with `tabIndex={0}` and click + Enter/Space activation — mirroring the opt-in interactive pattern used elsewhere in Visor.
+
+  Composes the existing `Kbd` primitive at `size="sm"` for each row. No new tokens — relies on `--surface-card`, `--text-secondary`, and standard spacing/font-size tokens. Registered as `category: navigation` so `npx visor add quick-actions` works.
+
+- d79c98d: VI-387 feat: `admin-dashboard` `layout="split"` mode with `mainCol` + `sideCol` slots.
+
+  Adds an additive 2-column body layout to the `admin-dashboard` block. The existing single-column flow (PageHeader → stat grid → optional `secondaryRegion` → activity feed) is preserved as `layout="single"` and remains the default — every current consumer renders byte-for-byte unchanged.
+
+  When `layout="split"` is set, the block renders a 2-column body grid below the KPI strip: `mainCol` (left, primary content) and `sideCol` (right rail). The caller composes both columns — the default activity feed and `secondaryRegion` are not rendered in split mode (a dev-only `console.warn` fires if either is supplied alongside `layout="split"`).
+
+  Two tunable CSS custom properties on the block root let themes retune the layout without touching block internals:
+
+  - `--admin-dashboard-side-col-width` (default `320px`) — right-rail width
+  - `--admin-dashboard-stack-bp` (default `960px`) — container-query breakpoint at which `sideCol` stacks below `mainCol`
+
+  The body element exposes `data-layout="split"` for downstream styling hooks; columns expose `data-slot="admin-dashboard-main-col"` / `data-slot="admin-dashboard-side-col"`. No breaking changes — `mainCol` and `sideCol` are optional and only consulted when `layout="split"`.
+
+- 3795ac6: VI-389 feat: `admin-list-page` adds `customFilterBar` and `footerStatus` slots.
+
+  Two optional, additive slot props for the `admin-list-page` block:
+
+  1. **`customFilterBar?: ReactNode`** — replaces the default `<FilterBar>` entirely. When supplied, the block renders the supplied node inside the header region (wrapped in `data-slot="admin-list-page-custom-filter-bar"`) and ignores the FilterBar-specific props (`searchValue`, `onSearchChange`, `searchPlaceholder`, `filters`, `activeFilters`, `onClearFilters`, `resultsCount`). Mixing the custom bar with any of those props logs a dev-mode `console.warn`. `hideFilterBar` still wins over both default and custom bars. Unblocks editorial-density compositions (removable chip clusters, "Add filter" pills, trailing icon buttons) that the rigid FilterBar shape cannot express.
+
+  2. **`footerStatus?: ReactNode`** — always-on info row rendered below the table, inside the table section, wrapped in `data-slot="admin-list-page-footer-status"`. Independent of `BulkActionBar` (selection-gated, sticky/inline) — the two can coexist; `footerStatus` renders below `BulkActionBar` so the always-on info anchors the bottom of the table chrome. Typical content is a selection count, total, and Kbd hint cluster.
+
+  No breaking changes. Both new props default to `undefined`; render output is byte-for-byte identical for any consumer not using them.
+
+- e2431d4: VI-390 + VI-392 feat: `admin-list-page` forwards DataTable `rows` / `rowTone` / `onRowClick` and makes `data` optional.
+
+  Three new optional pass-through props for the `admin-list-page` block plus one signature relaxation:
+
+  1. **`rows?: DataTableRow<TData>[]`** — discriminated-union row list (`{kind:"group"|"data"}`) forwarded as-is to DataTable. Lets the block carry interleaved group headers and data rows (e.g., "Tonight / This week / Later" sections) without dropping to bare data-table. When `rows` is supplied, `data` is ignored; dev-mode `console.warn` fires if both are passed. Also forwards an optional `groupRowRenderer?: (group: DataTableGroupRow) => ReactNode` for custom group cell content.
+
+  2. **`rowTone?: (row: TData) => DataTableRowTone | undefined`** — per-row semantic tone callback (live / warn / scheduled / sold / draft / danger / info) forwarded as-is to DataTable. Tones resolve to Visor surface tokens at the CSS layer for subtle background tinting.
+
+  3. **`onRowClick?: (row: TData) => void`** — per-row click handler forwarded as-is to DataTable. When supplied, every data row becomes a keyboard-activatable target (click + Enter/Space). Typical use: open a detail drawer for the clicked row.
+
+  4. **`data?: TData[]` is now optional** — the prop was previously required even when consumers supplied `rows` or rendered a custom table body. Defaults to `[]` when omitted, which yields DataTable's empty state.
+
+  No breaking changes. All new props default to `undefined`; existing consumers that pass `data` unchanged render byte-for-byte identical output.
+
+- c048baa: VI-391 feat: `status-badge` adds 5 admin-ui event tones — `live`, `warn`, `scheduled`, `sold`, `draft`.
+
+  Extends the `status` prop enum with the admin-v7-r3 event vocabulary so consumers can use `StatusBadge` directly for events tables and content lifecycle UIs without rolling their own local status chips. Each new tone maps to an existing Visor semantic color group — no new tokens are introduced and existing tones are unchanged:
+
+  - `live` → success (active/positive event)
+  - `warn` → warning (needs attention)
+  - `scheduled` → info (upcoming/planned)
+  - `sold` → success (positive completed outcome)
+  - `draft` → neutral (unpublished/muted)
+
+  Backwards-compatible. The existing 9 statuses (`healthy`, `degraded`, `down`, `failed`, `running`, `pending`, `queued`, `idle`, `complete`) render identically.
+
+### Patch Changes
+
+- e8398a6: VI-417 fix: Blackout/light covers all surface/interactive/border tokens — fixes events-route white-on-white.
+
+  `themes/blackout.visor.yaml`'s `overrides.light` block previously covered ~16 tokens; the theme engine emitted ~19 additional surface/interactive/border tokens with bright defaults (`#ffffff`, `#f5f5f5`, etc.), so any surface bound to `surface-elev-0/1/2`, `surface-selected`, status `-subtle`, `interactive-secondary-*`, `interactive-ghost-*`, or `border-disabled` rendered with bright backgrounds — and Blackout's near-white text became invisible (events-route white-on-white).
+
+  Blackout/light now renders as a near-identical sibling of Blackout/dark — just barely lighter — across every route, honoring the always-dark contract. Status `-default` colors stay vivid in both modes. No primitive changes; no API surface change; Blackout/dark untouched; other themes unaffected.
+
 ## 0.7.0
 
 ### Minor Changes
