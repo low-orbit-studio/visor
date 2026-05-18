@@ -64,6 +64,9 @@ overrides:
     # Blackout is always-dark — light mode uses near-black backgrounds.
     # Every token here must work on #0a0a0a, not on white.
     # VI-346: text-* overrides retained (stylistic) — always-dark theme.
+    # VI-417: extended overrides.light to cover all surface/interactive/border
+    # tokens the engine would otherwise emit with bright defaults. Values are
+    # shifted one step up from their dark-mode counterparts ("barely lighter").
     text-primary: "rgba(255, 255, 255, 0.75)"
     text-secondary: "rgba(255, 255, 255, 0.5)"
     text-tertiary: "rgba(255, 255, 255, 0.55)"
@@ -78,6 +81,29 @@ overrides:
     surface-interactive-hover: "rgba(255, 255, 255, 0.08)"
     surface-interactive-active: "rgba(255, 255, 255, 0.12)"
     surface-interactive-disabled: "rgba(255, 255, 255, 0.04)"
+    # Selected + accent-subtle: near-black raised surfaces
+    surface-selected: "#303030"
+    surface-accent-subtle: "#1f1f1f"
+    # Status -subtle: tinted near-black (engine default emits bright pastel tints)
+    surface-success-subtle: "#003814"
+    surface-warning-subtle: "#432600"
+    surface-error-subtle: "#4e0006"
+    surface-info-subtle: "#002e44"
+    # Elevation ladder: near-black, shifted one step up from dark counterparts
+    surface-elev-0: "#101011"
+    surface-elev-1: "#181818"
+    surface-elev-2: "#212121"
+    surface-elev-3: "#282828"
+    surface-elev-4: "#303030"
     border-default: "rgba(255, 255, 255, 0.08)"
     border-muted: "rgba(255, 255, 255, 0.04)"
     border-strong: "rgba(255, 255, 255, 0.12)"
+    border-disabled: "#212121"
+    # Interactive secondary + ghost: near-black surfaces, near-white text
+    interactive-secondary-bg: "#212121"
+    interactive-secondary-bg-hover: "#282828"
+    interactive-secondary-bg-active: "#303030"
+    interactive-secondary-text: "#ffffff"
+    interactive-secondary-border: "#303030"
+    interactive-ghost-bg: "#212121"
+    interactive-ghost-bg-hover: "#282828"
