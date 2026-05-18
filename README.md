@@ -549,9 +549,9 @@ npm run widgetbook:dev         # Start Flutter widgetbook preview (requires Flut
 npm run themes:apply-flutter  # Regenerate packages/visor_themes/ for all 11 themes
 ```
 
-### Changesets (minor and major version bumps)
+### Changesets (every shipping-package change)
 
-Patch-level publishes happen automatically on PR merge via `auto-version.yml`. For minor or major bumps, a changeset file is required.
+Every PR that touches shipping-package source needs a `.changeset/*.md` file. The `Changeset Gate` workflow blocks merge if one is missing or malformed.
 
 **Automatic generation (recommended).** The pre-push git hook runs `scripts/generate-changeset.mjs` before every push. If the diff touches a shipping path (any directory listed in `changeset-paths.json` — `components/`, `blocks/`, `hooks/`, `lib/`, `registry/`, `themes/`, `patterns/`, `assets/`, or the `src/`/`lib/` trees of the published packages) and no operator-authored changeset exists yet, Claude will write `.changeset/<branch-slug>.md` and stage it automatically. The same `changeset-paths.json` drives the CI changeset gate, so the local hook and CI stay in sync.
 
@@ -609,7 +609,7 @@ Every `visor_*` Flutter widget is audited against the [Flutter Widget Quality Co
 
 ## Operator workflows
 
-Day-to-day publishing is fully automatic — patch bumps for `@loworbitstudio/visor-core`, `@loworbitstudio/visor`, and `@loworbitstudio/visor-theme-engine` happen on PR merge, and `@low-orbit-studio/visor-themes-private` auto-versions on its own merges. These commands surface only for the rare cases where a human is in the loop: health checks and cross-repo coordinated releases.
+Day-to-day publishing is automatic for the three public npm packages — `.changeset/*.md` files written on each PR drive the bumps, and `release.yml` opens a "Version Packages" PR that publishes on merge. `@low-orbit-studio/visor-themes-private` still auto-versions on its own merges. The commands below surface only for the rare cases where a human is in the loop: health checks and cross-repo coordinated releases.
 
 ### Publishing health and coordinated releases
 
@@ -625,7 +625,7 @@ Day-to-day publishing is fully automatic — patch bumps for `@loworbitstudio/vi
   node scripts/visor-publish-coordinate.mjs 369 2             # live
   ```
 
-The skill itself contains no publish logic. Each repo's existing CI (`release.yml`, `auto-version.yml`, themes-private's `publish.yml`) remains the source of truth for what publishes. See [`docs/audits/publish-automation.md`](./docs/audits/publish-automation.md) for the full audit.
+The skill itself contains no publish logic. Each repo's existing CI (`release.yml` on the Visor side, themes-private's `publish.yml`) remains the source of truth for what publishes. See [`docs/audits/publish-automation.md`](./docs/audits/publish-automation.md) for the full audit.
 
 ### Publish-gate audit (PR comment governance)
 

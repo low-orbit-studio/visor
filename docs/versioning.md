@@ -70,28 +70,25 @@ Visor uses [Changesets](https://github.com/changesets/changesets) for changelog 
 - Works with `npm workspaces` out of the box
 - Supports automated publishing via CI
 
-### Automatic patch version bumps
+### Patch, minor, and major version bumps
 
-`.github/workflows/auto-version.yml` runs on every PR merge to `main`. It inspects which files the PR changed, maps them to their owning package, and bumps that package's `patch` version directly in `package.json`. Only packages with actual file changes are bumped — docs-only or CI-only PRs produce no version change.
+All version bumps go through changesets — a `.changeset/*.md` file on the PR encodes the intent (patch, minor, or major) and the changesets-action workflow consumes it on merge.
 
-**Package mapping:**
+The repo's pre-push hook (`scripts/generate-changeset.mjs`) auto-writes a changeset for PRs that touch shipping-package source so you don't have to think about it most of the time. `npx changeset add` (or the `/lo-changeset` skill) gives an interactive override when you want to author one explicitly.
 
-| Files changed | Package bumped |
-|---|---|
-| `packages/tokens/**` | `@loworbitstudio/visor-core` |
-| `packages/cli/**` | `@loworbitstudio/visor` |
-| `packages/theme-engine/**` | `@loworbitstudio/visor-theme-engine` |
-| `packages/docs/**`, root files, `components/**` | (no bump) |
-
-The commit lands directly on `main` as `chore: patch version bump for PR #N`, which triggers `release.yml` → `changeset publish` → npm publish for the bumped packages.
-
-**Minor and major bumps** are made manually: edit the `version` field in the relevant `package.json`, commit, and push. `release.yml` will publish on the next push to `main`.
+**Validity gate.** `.github/workflows/changeset-gate.yml` runs `scripts/validate-changesets.mjs` on every PR. Frontmatter that references a package not in the workspace (e.g. `"visor"` — the private workspace root — instead of `"@loworbitstudio/visor"`) fails the PR rather than landing and breaking `release.yml` on `main`. See VI-418 / VI-419 for the failure-class background.
 
 ### Workflow
 
 #### 1. When making a change that affects a published package
 
-No action needed — the auto-version workflow handles the patch bump on merge.
+Author the changeset. The pre-push hook will typically do this automatically. To author one manually:
+
+```bash
+npx changeset add
+```
+
+Pick the affected packages and bump type (`patch`, `minor`, or `major`), write a one-line summary, and commit the resulting `.changeset/*.md` file with the rest of the change.
 
 #### 2. When releasing
 

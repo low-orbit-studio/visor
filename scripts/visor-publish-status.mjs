@@ -38,10 +38,10 @@ export const ARTIFACTS = [
   },
 ];
 
-// Strict 3-part numeric semver (no prerelease/build tags). Visor's auto-version
-// and changesets emit only major.minor.patch — a prerelease tag here means
-// either a manual publish slipped through or upstream changed convention, both
-// of which warrant a loud failure rather than silent NaN comparison.
+// Strict 3-part numeric semver (no prerelease/build tags). Changesets emits
+// only major.minor.patch — a prerelease tag here means either a manual
+// publish slipped through or upstream changed convention, both of which
+// warrant a loud failure rather than silent NaN comparison.
 export function compareVersions(a, b) {
   const parse = v => {
     const parts = String(v).split('.');
