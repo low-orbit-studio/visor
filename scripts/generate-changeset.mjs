@@ -29,8 +29,8 @@ const PROMPT_FILE = join(__dirname, 'changeset-prompt.md');
 const SHIPPING_PATHS_FILE = join(REPO_ROOT, 'changeset-paths.json');
 export const GENERATED_MARKER = '# generated-by: lo-changeset';
 
-// -- Published packages -- single source of truth shared with auto-version.mjs.
-// Used for the dir→npm-name mapping in version-bumping. Distinct from
+// -- Published packages -- dir→npm-name mapping. Used to render changeset
+// frontmatter (`"@loworbitstudio/visor-core": patch`). Distinct from
 // SHIPPING_PATHS below (which covers the broader "what requires a changeset"
 // surface, including copy-and-own registry paths like blocks/ and themes/).
 export const PACKAGES = [

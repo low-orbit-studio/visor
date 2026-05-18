@@ -481,14 +481,4 @@ describe('PACKAGES', () => {
     expect(pkg).toBeDefined();
     expect(pkg.dir).toBe('packages/theme-engine');
   });
-
-  it('matches the PACKAGES list in auto-version.mjs (no drift)', async () => {
-    const { PACKAGES: autoVersionPackages } = await import('../auto-version.mjs');
-    expect(PACKAGES.map(p => p.name).sort()).toEqual(
-      autoVersionPackages.map(p => p.name).sort(),
-    );
-    expect(PACKAGES.map(p => p.dir).sort()).toEqual(
-      autoVersionPackages.map(p => p.dir).sort(),
-    );
-  });
 });
