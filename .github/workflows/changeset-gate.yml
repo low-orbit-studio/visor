@@ -143,4 +143,28 @@ jobs:
           steps.skip.outputs.skip == 'true' ||
           steps.shipping.outputs.source == 'false' ||
           steps.changeset.outputs.count != '0'
-        run: echo "Changeset gate passed."
+        run: echo "Changeset presence gate passed."
+
+      # -----------------------------------------------------------------------
+      # Validity gate — runs scripts/validate-changesets.mjs so a malformed
+      # .changeset/*.md (frontmatter pointing at a package not in the workspace,
+      # bad bump type, etc.) fails PR review instead of breaking release.yml.
+      # Background: VI-418 — 3 changesets referenced "visor" (the workspace
+      # root) instead of "@loworbitstudio/visor", merged, then blocked all
+      # releases for 6 days. `npx changeset status` silently ignores unknown
+      # package names, so we call get-release-plan directly (same code path
+      # `changeset version` uses for validation) without mutating files.
+      # Runs unconditionally — skip-changeset bypasses presence, but a
+      # malformed changeset is always wrong. See VI-419.
+      # -----------------------------------------------------------------------
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate changeset frontmatter
+        run: node scripts/validate-changesets.mjs

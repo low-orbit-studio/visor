@@ -1,6 +1,6 @@
 # Visor Publish Automation Audit
 
-> **Spike output for VI-334.** Findings only — no implementation. This document enumerates every step in the current Visor publish flow, classifies each step, and recommends a path to zero-touch publishing across all artifacts.
+> **Historical document.** Originally written as the VI-334 spike output. Since publication, **VI-419 deleted `auto-version.yml` and `scripts/auto-version.mjs`** in favor of a changesets-only flow on the Visor side. The sections below referencing `auto-version` describe the *prior* state of the Visor public pipeline and should be read as history. The themes-private repo still uses its own auto-version setup — those mentions remain current.
 
 ## TL;DR
 

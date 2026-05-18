@@ -208,9 +208,9 @@ For significant changes — new components, breaking token changes, architecture
 
 ## Changesets
 
-Visor uses [changesets](https://github.com/changesets/changesets) to manage versioning and changelogs for its published npm packages.
+Visor uses [changesets](https://github.com/changesets/changesets) to manage versioning and changelogs for its published npm packages. **This is the only version-bump mechanism** — there is no auto-version workflow, no implicit patch bump on merge. Every version bump for a published package starts as a `.changeset/*.md` file on a PR.
 
-**When you need a changeset:** Any PR that touches shipping-package source — components, blocks, hooks, lib, registry, themes, patterns, assets, or any file under `packages/cli/src/`, `packages/theme-engine/src/`, `packages/tokens/src/`, or `packages/visor-flutter/lib/` — must include a `.changeset/*.md` entry. A CI check blocks merge if one is missing.
+**When you need a changeset:** Any PR that touches shipping-package source — components, blocks, hooks, lib, registry, themes, patterns, assets, or any file under `packages/cli/src/`, `packages/theme-engine/src/`, `packages/tokens/src/`, or `packages/visor-flutter/lib/` — must include a `.changeset/*.md` entry. The `Changeset Gate` CI check blocks merge if one is missing or malformed (e.g. frontmatter pointing at a package not in the workspace).
 
 **Exempt paths:** `docs/`, `packages/docs/`, `**/*.mdx`, `**/*.md`, `widgetbook/`, and other tooling/infra paths do not require a changeset.
 

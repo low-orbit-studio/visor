@@ -11,13 +11,14 @@ import {
   resolveArtifactPath,
   compareVersions,
 } from './visor-publish-status.mjs';
-import {
-  computeBumps as computeVisorAutoBumps,
-  bumpPatch,
-  PACKAGES as VISOR_PACKAGES,
-} from './auto-version.mjs';
 
-export { bumpPatch };
+// themes-private still publishes via a patch bump on every merge (per the
+// publish-automation audit). Inlined here after VI-419 removed Visor's
+// auto-version.mjs — bumpPatch had no other home.
+export function bumpPatch(version) {
+  const [major, minor, patch] = version.split('.').map(Number);
+  return `${major}.${minor}.${patch + 1}`;
+}
 
 export const VISOR_REPO = 'low-orbit-studio/visor';
 export const THEMES_REPO = 'low-orbit-studio/visor-themes-private';
@@ -74,7 +75,11 @@ export function computeBumpPreview({
   return { visor, themes };
 }
 
-function computeVisorSidePreview({ visorPRFiles, changesetReleases, readJson }) {
+// Visor's release pipeline is changesets-only (VI-419 deleted auto-version).
+// No changesets → no Visor-side bump in a coordinated release. The PR author
+// is expected to add a changeset via `npx changeset add`; the changeset-gate
+// workflow blocks merge of shipping-package PRs that don't.
+function computeVisorSidePreview({ visorPRFiles: _visorPRFiles, changesetReleases, readJson: _readJson }) {
   const releases = (changesetReleases || []).filter(
     r => r.type !== 'none' && r.newVersion !== r.oldVersion
   );
@@ -90,16 +95,10 @@ function computeVisorSidePreview({ visorPRFiles, changesetReleases, readJson }) 
       detail: `${releases.length} changeset${releases.length === 1 ? '' : 's'} pending`,
     };
   }
-  const autoBumps = computeVisorAutoBumps({ prFiles: visorPRFiles, readJson });
   return {
-    source: 'auto-patch',
-    packages: autoBumps.map(b => ({
-      name: b.name,
-      from: b.oldVersion,
-      to: b.newVersion,
-      type: 'patch',
-    })),
-    detail: autoBumps.length === 0 ? 'no published packages touched' : 'auto-version patch bump',
+    source: 'changeset',
+    packages: [],
+    detail: 'no pending changesets — add one via `npx changeset add`',
   };
 }
 
@@ -277,12 +276,12 @@ async function promptYesNo(question) {
 
 // Locate the workflow run triggered by (or after) a given merge.
 //
-// On the Visor side, auto-version.yml may push an intermediate bump commit
-// before release.yml fires — so release.yml's headSha will NOT equal the PR's
+// On themes-private, an auto-version bump commit may push between the PR merge
+// and release.yml firing — so release.yml's headSha will NOT equal the PR's
 // merge_commit_sha. Falling back to "newest run" is unsafe (could be an
 // unrelated push). Strategy:
-//   1. Exact SHA match — happens on themes-private and on Visor when no bump
-//      was needed.
+//   1. Exact SHA match — happens on Visor (which is now changesets-only) and
+//      on themes-private when no bump was needed.
 //   2. Otherwise pick runs created at or after the merge commit's timestamp,
 //      newest first. This excludes any pre-existing runs from earlier merges.
 //   3. If still nothing, return null and surface a clear warning. The caller
