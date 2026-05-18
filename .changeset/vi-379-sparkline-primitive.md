@@ -1,5 +1,5 @@
 ---
-"visor": minor
+"@loworbitstudio/visor": minor
 ---
 
 VI-379 feat: add `Sparkline` primitive — decorative inline SVG mini-trend chart.

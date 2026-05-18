@@ -1,5 +1,5 @@
 ---
-"visor": minor
+"@loworbitstudio/visor": minor
 ---
 
 VI-386 feat: add `CommandDialog` block — drop-in ⌘K palette composing the `command` + `dialog` primitives.

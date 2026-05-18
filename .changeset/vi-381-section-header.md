@@ -1,5 +1,5 @@
 ---
-"visor": minor
+"@loworbitstudio/visor": minor
 ---
 
 VI-381 feat: add `SectionHeader` primitive — compact section-divider with uppercase title and optional right-aligned meta.
