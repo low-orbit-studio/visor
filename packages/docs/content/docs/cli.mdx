@@ -332,6 +332,53 @@ migrate:
 }
 ```
 
+### `visor sandbox`
+
+Scaffold a Next.js app for **in-vivo primitive iteration** — populated with real Visor primitives (via `visor add`) plus visible placeholder stubs for primitives not yet shipped. Used by the Low Orbit pattern-build pipeline to iterate on new primitives in their target composition before they're approved and implementation work begins.
+
+The CLI itself doesn't bundle Playwright — the sandbox scaffold declares `@playwright/test` in its own devDependencies, so `sandbox approve` runs inside the sandbox and the published `@loworbitstudio/visor` package stays light.
+
+#### `visor sandbox init <name>`
+
+```bash
+npx @loworbitstudio/visor sandbox init org-mgmt \
+  --handoff ~/path/to/design-handoff.md \
+  --theme entr
+```
+
+Reads a Low Orbit `design-handoff.md` manifest, scaffolds a Next.js app at `.lo/sandbox/<name>/`, runs `visor add` for every shipped primitive declared in the manifest, generates a visible dashed-border stub at `components/stubs/<name>.tsx` for each gap primitive (each carrying a `GAP: VI-<NNN>` overlay), applies the named theme, and writes `sandbox.json` recording the port, primitives, and screens.
+
+| Flag | Description |
+|------|-------------|
+| `--handoff <path>` (required) | Path to a Low Orbit `design-handoff.md` manifest |
+| `--theme <slug-or-path>` (required) | Theme slug (looked up in `themes/` then `custom-themes/`) or path to a `.visor.yaml` |
+| `--overwrite` | Replace an existing sandbox at this name |
+| `--skip-install` | Skip `npm install` (test fixture mode) |
+| `--json` | Emit structured JSON for AI agents |
+
+#### `visor sandbox dev`
+
+```bash
+npx @loworbitstudio/visor sandbox dev --name org-mgmt
+```
+
+Boots `next dev` for the sandbox on its allocated port. Auto-allocated ports start at 4060 and **never** use port 3000 (reserved per the Low Orbit convention). Prints the base URL and one URL per route (`/`, `/primitives/<name>`, `/screens/<name>`) before spawning.
+
+#### `visor sandbox approve`
+
+```bash
+npx @loworbitstudio/visor sandbox approve --name org-mgmt
+npx @loworbitstudio/visor sandbox approve --name org-mgmt --diff
+```
+
+Shells out to a sandbox-local Playwright install and captures full-page screenshots of every route into `captures/approved/<route-slug>.png`. With `--diff`, captures land in `captures/pending/` first; only routes that pixel-differ from their approved baseline produce a diff PNG in `captures/diffs/`. Iterations stay traceable — operators see only what changed.
+
+| Flag | Description |
+|------|-------------|
+| `--name <name>` (required) | Sandbox name (from a prior `sandbox init`) |
+| `--diff` | Pixel-diff against the prior approved baseline instead of overwriting |
+| `--json` | Emit structured JSON for AI agents |
+
 ## Typical Workflow
 
 ```bash

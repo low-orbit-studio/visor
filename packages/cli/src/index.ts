@@ -31,6 +31,9 @@ import { suggestCommand } from "./commands/suggest.js"
 import { tokensListCommand } from "./commands/tokens.js"
 import { migrateTokenSubstitutionCommand } from "./commands/migrate-token-substitution.js"
 import type { MigrateTokenSubstitutionOptions } from "./commands/migrate-token-substitution.js"
+import { sandboxInitCommand } from "./commands/sandbox/init.js"
+import { sandboxDevCommand } from "./commands/sandbox/dev.js"
+import { sandboxApproveCommand } from "./commands/sandbox/approve.js"
 
 // Resolve CLI version from the package's own package.json so `visor --version`
 // matches the installed npm version. After tsup bundles into dist/index.js,
@@ -384,5 +387,55 @@ migrate
       })
     }
   )
+
+// Sandbox subcommands — scaffold a Next.js app for in-vivo primitive iteration
+const sandbox = program
+  .command("sandbox")
+  .description("Scaffold and iterate on a Next.js sandbox for new primitives")
+
+sandbox
+  .command("init")
+  .description(
+    "Scaffold a Next.js sandbox at .lo/sandbox/<name>/ from a design-handoff manifest"
+  )
+  .argument("<name>", "sandbox name (used as directory and pattern slug)")
+  .requiredOption("--handoff <path>", "path to design-handoff.md manifest")
+  .requiredOption("--theme <theme>", "theme slug (e.g. 'space') or path to .visor.yaml")
+  .option("--overwrite", "replace an existing sandbox at this name", false)
+  .option("--skip-install", "skip npm install (test fixture mode)", false)
+  .option("--json", "output structured JSON (for AI agents)")
+  .action(
+    async (
+      name: string,
+      options: {
+        handoff: string
+        theme: string
+        overwrite?: boolean
+        skipInstall?: boolean
+        json?: boolean
+      }
+    ) => {
+      await sandboxInitCommand(name, process.cwd(), options)
+    }
+  )
+
+sandbox
+  .command("dev")
+  .description("Boot the Next.js dev server for a sandbox on its allocated port")
+  .requiredOption("--name <name>", "sandbox name (created via 'sandbox init')")
+  .option("--json", "output structured JSON (for AI agents)")
+  .action((options: { name: string; json?: boolean }) => {
+    sandboxDevCommand(process.cwd(), options)
+  })
+
+sandbox
+  .command("approve")
+  .description("Capture Playwright screenshots of every sandbox route as the visual spec")
+  .requiredOption("--name <name>", "sandbox name (created via 'sandbox init')")
+  .option("--diff", "pixel-diff against the prior approved baseline", false)
+  .option("--json", "output structured JSON (for AI agents)")
+  .action((options: { name: string; diff?: boolean; json?: boolean }) => {
+    sandboxApproveCommand(process.cwd(), options)
+  })
 
 program.parse()

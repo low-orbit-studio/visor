@@ -23,6 +23,42 @@ npx visor init
 | `visor suggest --for <context>` | Get component suggestions for a use case |
 | `visor migrate token-substitution [path]` | Apply the §3.1 V7-primitive → Visor-semantic substitution table (dry-run by default; use `--apply` to commit) |
 | `visor check design <path>` | Scan frontend code for Borealis design anti-patterns (deterministic, no LLM) |
+| `visor sandbox init <name>` | Scaffold a Next.js sandbox for in-vivo primitive iteration from a design-handoff manifest |
+| `visor sandbox dev --name <name>` | Boot the sandbox dev server on its allocated port (port 3000 reserved) |
+| `visor sandbox approve --name <name>` | Capture Playwright screenshots of every sandbox route as the visual spec (use `--diff` to pixel-diff vs prior approved) |
+
+## Sandbox
+
+The `sandbox` subcommand scaffolds a Next.js app at `.lo/sandbox/<name>/`
+populated with real Visor primitives (via `visor add`) plus visible gap stubs
+for primitives not yet shipped. Operators iterate visually in a real Next.js
+dev server; on approval, captures become the `visual_spec` attached to the
+gap primitive's VI ticket.
+
+```bash
+# 1. Init from a design-handoff manifest
+npx visor sandbox init org-mgmt \
+  --handoff ~/Code/playbook/.lo/pattern-builds/organization-management/design-handoff.md \
+  --theme entr
+
+# 2. Iterate visually
+npx visor sandbox dev --name org-mgmt
+# → prints per-route URLs on a port >= 4060 (never 3000)
+
+# 3. Approve captures
+npx visor sandbox approve --name org-mgmt           # writes captures/approved/*.png
+npx visor sandbox approve --name org-mgmt --diff    # pixel-diff vs prior approved
+```
+
+Pass `--theme <slug>` to look up a theme by name in `themes/` or
+`custom-themes/`, or `--theme /path/to/theme.visor.yaml` for an arbitrary
+location. Pass `--overwrite` to replace an existing sandbox; `--skip-install`
+skips `npm install` (useful for test fixtures).
+
+Gap primitives appear as visible dashed-border placeholders containing
+`GAP: VI-<NNN>` plus the primitive name. Hand-edit the stub at
+`components/stubs/<primitive>.tsx` to sketch the design in place; the operator
+edits propagate into the captures and become the visual spec downstream.
 
 ## Target platforms
 
