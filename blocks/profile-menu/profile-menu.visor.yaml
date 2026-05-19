@@ -1,0 +1,15 @@
+name: Profile Menu
+description: Sidebar-footer profile menu — avatar + identity row + upward-opening dropdown of account, notifications, appearance, keyboard, help, and sign-out items. Drop-in for the AdminShell sidebarFooter slot.
+category: admin
+components_used:
+  - avatar
+  - dropdown-menu
+when_to_use:
+  - Admin and dashboard apps with persistent sidebar navigation
+  - The sidebar footer area of `AdminShell` — drop into the `sidebarFooter` prop
+  - Anywhere you need a Mac-style user menu with shortcuts, badges, and a destructive sign-out
+when_not_to_use:
+  - Public marketing pages (no signed-in user context)
+  - Topbar user menus where downward opening is the convention (compose `DropdownMenu` + `Avatar` directly)
+  - Single-action sign-out buttons (use `Button` with `variant="ghost"` instead)
+  - Loading or skeleton states (consumer renders their own skeleton until user data is ready)
