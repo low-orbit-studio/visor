@@ -131,6 +131,20 @@ export interface DataTableProps<TData, TValue = unknown>
 
   // Layout
   stickyHeader?: boolean
+
+  /**
+   * Vertical row padding step. Maps to a `data-density` attribute on the root
+   * which drives the `--dt-row-py` custom property the table's `<td>` cells
+   * consume. Themes can override per-density values without forking the
+   * component — see `data-table.module.css`.
+   *
+   * - `"compact"` — 8px (sub-content density: long lists, narrow viewports)
+   * - `"default"` — 12px (current behaviour; no visual regression for existing
+   *   consumers)
+   * - `"editorial"` — 20px (generous; each row reads as a card; high-design
+   *   admin patterns)
+   */
+  density?: "compact" | "default" | "editorial"
 }
 
 const DEFAULT_PAGE_SIZE_OPTIONS = [10, 25, 50, 100]
@@ -162,6 +176,7 @@ function DataTableInner<TData, TValue = unknown>(
     stickyHeader = false,
     rowTone,
     onRowClick,
+    density = "default",
     className,
     ...rest
   } = props
@@ -380,6 +395,7 @@ function DataTableInner<TData, TValue = unknown>(
     <div
       ref={ref}
       data-slot="data-table"
+      data-density={density}
       className={cn(styles.root, className)}
       {...rest}
     >
