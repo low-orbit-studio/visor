@@ -1919,4 +1919,102 @@ export const ui: Registry = [
       },
     ],
   },
+  // -------------------------------------------------------------------------
+  // VI-427 layout primitives — Box, Stack, Inline, Grid, Container
+  // -------------------------------------------------------------------------
+  {
+    name: "box",
+    type: "registry:ui",
+    category: "layout",
+    description:
+      "Universal layout wrapper for padding, margin, background, border, and border-radius via Visor design tokens. Token-typed props enforce design-system values; off-system literals are TypeScript errors.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/box/box.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/box/box.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "stack",
+    type: "registry:ui",
+    category: "layout",
+    description:
+      "Vertical flex container with token-driven gap, alignment, and `as` polymorphism. Supports responsive gap via the `{ base, sm, md, lg, xl }` map.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/stack/stack.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/stack/stack.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "inline",
+    type: "registry:ui",
+    category: "layout",
+    description:
+      "Horizontal flex container with token-driven gap, alignment, optional wrap, and `as` polymorphism. Horizontal counterpart to Stack.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/inline/inline.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/inline/inline.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "grid",
+    type: "registry:ui",
+    category: "layout",
+    description:
+      "CSS Grid wrapper with token-driven gap, responsive column count, and explicit `grid-template-columns` escape hatch.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/grid/grid.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/grid/grid.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "container",
+    type: "registry:ui",
+    category: "layout",
+    description:
+      "Max-width centered wrapper for page content with token-driven horizontal padding. Sizes map to Visor responsive breakpoints (sm 640, md 768, lg 1024, xl 1280, full no limit).",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/container/container.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/container/container.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
 ]

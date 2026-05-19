@@ -1,0 +1,59 @@
+name: Grid
+description: CSS Grid wrapper with token-driven gap, responsive column count, and explicit `grid-template-columns` escape hatch.
+extends: HTMLElement
+category: layout
+
+when_to_use:
+  - Equal-width column layouts (2-col, 3-col, 4-col, etc.)
+  - Responsive column counts that change at breakpoints
+  - Asymmetric layouts via a `grid-template-columns` string (e.g. `"1fr 2fr"`)
+
+when_not_to_use:
+  - Single-axis arrangements (use Stack or Inline)
+  - Asymmetric tile grids with explicit spans (use BentoGrid)
+  - Form field layouts (use Stack with Field)
+
+why: >
+  Grid encapsulates the CSS Grid pattern most apps actually use — equal
+  fractional columns with a token-spaced gap — and ramps to the full
+  template-columns escape hatch for the 20% of cases that need it. Both
+  columns and gap accept the responsive `{ base, sm, md, lg, xl }` map.
+
+props:
+  - name: as
+    type: "keyof JSX.IntrinsicElements"
+    default: "'div'"
+    description: HTML element to render
+  - name: columns
+    type: "number | ResponsiveProp<number> | string"
+    default: "1"
+    description: Column count (number or responsive map) or explicit `grid-template-columns` string
+  - name: gap
+    type: "GridSpacing | ResponsiveProp<GridSpacing>"
+    default: "'md'"
+    description: Space between cells
+  - name: align
+    type: "'start' | 'center' | 'end' | 'stretch'"
+    description: Block-axis (vertical) alignment within cells
+  - name: justify
+    type: "'start' | 'center' | 'end' | 'stretch'"
+    description: Inline-axis (horizontal) alignment within cells
+
+dependencies: []
+
+preview_url: "https://visor.loworbit.studio/docs/components/layout/grid"
+
+example: |
+  <Grid columns={3} gap="md">
+    <Card>One</Card>
+    <Card>Two</Card>
+    <Card>Three</Card>
+  </Grid>
+
+  <Grid columns={{ base: 1, md: 2, lg: 4 }} gap={{ base: "sm", md: "md" }}>
+    Responsive grid
+  </Grid>
+
+  <Grid columns="1fr 2fr" gap="lg">
+    Sidebar + main
+  </Grid>

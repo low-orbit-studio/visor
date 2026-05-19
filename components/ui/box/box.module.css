@@ -1,0 +1,35 @@
+/* ============================================================
+   Box — universal token-driven layout wrapper.
+
+   Every modifier prop maps to a single CSS custom property which
+   the consumer-facing prop API sets via inline style. The class
+   list below only declares the property → CSS-variable wiring.
+   ============================================================ */
+
+.box {
+  /* Padding — picked up from --box-p / per-axis fallbacks. */
+  padding-top: var(--box-pt, var(--box-py, var(--box-p, 0)));
+  padding-right: var(--box-pr, var(--box-px, var(--box-p, 0)));
+  padding-bottom: var(--box-pb, var(--box-py, var(--box-p, 0)));
+  padding-left: var(--box-pl, var(--box-px, var(--box-p, 0)));
+
+  /* Margin — picked up from --box-m / per-axis fallbacks. */
+  margin-top: var(--box-mt, var(--box-my, var(--box-m, 0)));
+  margin-right: var(--box-mr, var(--box-mx, var(--box-m, 0)));
+  margin-bottom: var(--box-mb, var(--box-my, var(--box-m, 0)));
+  margin-left: var(--box-ml, var(--box-mx, var(--box-m, 0)));
+
+  /* Surface + border tokens fall back to "no styling" so Box can be
+     used purely for spacing without inheriting visual chrome. */
+  background-color: var(--box-bg, transparent);
+  border-radius: var(--box-radius, 0);
+  color: var(--box-color, inherit);
+}
+
+/* Border presence is opt-in — when --box-border-color is set, we use
+   the tokenized stroke-width-regular as the default width. */
+.box[data-border="true"] {
+  border-width: var(--box-border-width, var(--stroke-width-regular, 1.5px));
+  border-style: solid;
+  border-color: var(--box-border-color, var(--border-default, #e5e7eb));
+}

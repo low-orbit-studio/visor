@@ -1,0 +1,49 @@
+name: Container
+description: Max-width centered wrapper for page content with token-driven horizontal padding.
+extends: HTMLElement
+category: layout
+
+when_to_use:
+  - Constraining page content to a comfortable reading width
+  - Wrapping marketing or documentation section content
+  - Anywhere you would write `mx-auto max-w-screen-lg px-4` in Tailwind
+
+when_not_to_use:
+  - Arranging children (use Stack, Inline, or Grid as the inner content)
+  - Adding background or border chrome (compose with Box inside)
+  - Full-bleed sections (use `size="full"` or skip the Container entirely)
+
+why: >
+  Container centralizes the "centered column with horizontal padding"
+  pattern so every page route shares the same max-width vocabulary.
+  Sizes map to the standard Visor responsive breakpoints, keeping
+  page content widths consistent with the breakpoint system used
+  elsewhere in the library.
+
+props:
+  - name: as
+    type: "keyof JSX.IntrinsicElements"
+    default: "'div'"
+    description: HTML element to render
+  - name: size
+    type: "'sm' | 'md' | 'lg' | 'xl' | 'full'"
+    default: "'lg'"
+    description: Max-width preset (sm 640, md 768, lg 1024, xl 1280, full no limit)
+  - name: padding
+    type: "ContainerSpacing"
+    default: "'md'"
+    description: Horizontal padding token
+
+dependencies: []
+
+preview_url: "https://visor.loworbit.studio/docs/components/layout/container"
+
+example: |
+  <Container>
+    <Heading>Page Title</Heading>
+    <Text>Body content constrained to lg (1024px).</Text>
+  </Container>
+
+  <Container size="md" padding="lg" as="article">
+    Narrow reading column with extra horizontal padding.
+  </Container>
