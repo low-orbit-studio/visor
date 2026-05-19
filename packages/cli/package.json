@@ -1,6 +1,6 @@
 {
   "name": "@loworbitstudio/visor",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "CLI for the Visor design system — add components, hooks, and utilities to your project.",
   "type": "module",
   "bin": {
@@ -45,7 +45,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1021.0",
     "@babel/parser": "^7.26.0",
-    "@loworbitstudio/visor-theme-engine": "^0.8.0",
+    "@loworbitstudio/visor-theme-engine": "^0.8.1",
     "commander": "^13.1.0",
     "diff": "^8.0.4",
     "picocolors": "^1.1.1",

@@ -1,6 +1,6 @@
 {
   "name": "@loworbitstudio/visor-tailwind-preset",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Tailwind CSS preset for the Visor design system — exposes every Visor CSS custom property as a Tailwind theme key so consumers never re-declare hex values, spacing scales, or motion tokens.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -67,7 +67,7 @@
     }
   },
   "devDependencies": {
-    "@loworbitstudio/visor-core": "^0.8.0",
+    "@loworbitstudio/visor-core": "^0.8.1",
     "@types/node": "^22.0.0",
     "tsup": "^8.4.0",
     "tsx": "^4.19.2",
