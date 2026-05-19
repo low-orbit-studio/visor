@@ -56,13 +56,49 @@ overrides:
     # Light mode mirrors dark: borderless in both modes for consistent V7-style admin UX.
     # The whole theme is intentionally always-dark; light text/surfaces must mirror
     # dark to preserve AA contrast (palette-derived light values would be dark-on-dark).
-    border-default: "transparent"
-    border-muted: "transparent"
-    border-strong: "transparent"
+    # VI-421: extended overrides.light to cover all surface/interactive/border
+    # tokens the engine would otherwise emit with bright defaults — same fix
+    # shape as VI-417 (Blackout). Solid hex values preserve borderless's flat
+    # palette (Blackout uses rgba whites for glass; borderless does not).
+    # border-* and *-border stay transparent to honor the theme contract.
     text-primary: "#f5f5f5"
     text-secondary: "#c2c2c2"
     text-tertiary: "#999999"
+    text-disabled: "#595959"
     surface-page: "#0a0a0c"
     surface-card: "#111115"
     surface-popover: "#111115"
+    surface-subtle: "#0e0e10"
     surface-muted: "#191919"
+    # Interactive surfaces: transparent at rest, near-black on hover/active
+    surface-interactive-default: "transparent"
+    surface-interactive-hover: "#191919"
+    surface-interactive-active: "#212124"
+    surface-interactive-disabled: "#0e0e10"
+    # Selected + accent-subtle: near-black raised surfaces
+    surface-selected: "#212124"
+    surface-accent-subtle: "#1a1a1d"
+    # Status -subtle: tinted near-black (engine default emits bright pastel tints)
+    surface-success-subtle: "#003814"
+    surface-warning-subtle: "#432600"
+    surface-error-subtle: "#4e0006"
+    surface-info-subtle: "#002e44"
+    # Elevation ladder: near-black, monotonically lifted
+    surface-elev-0: "#0e0e10"
+    surface-elev-1: "#161618"
+    surface-elev-2: "#1c1c1f"
+    surface-elev-3: "#222226"
+    surface-elev-4: "#2a2a2e"
+    border-default: "transparent"
+    border-muted: "transparent"
+    border-strong: "transparent"
+    border-disabled: "transparent"
+    # Interactive secondary + ghost: near-black surfaces, near-white text,
+    # transparent borders (borderless contract)
+    interactive-secondary-bg: "#191919"
+    interactive-secondary-bg-hover: "#212124"
+    interactive-secondary-bg-active: "#2a2a2e"
+    interactive-secondary-text: "#f5f5f5"
+    interactive-secondary-border: "transparent"
+    interactive-ghost-bg: "transparent"
+    interactive-ghost-bg-hover: "#191919"
