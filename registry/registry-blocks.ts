@@ -484,6 +484,25 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "avatar-stack",
+    type: "registry:block",
+    category: "data-display",
+    description:
+      "Overlapping avatar group with `+N more` overflow indicator. Pure composition of the Avatar primitive — supports sm / default / lg sizes, configurable max, server-truncated counts, and an overridable accessible label.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "avatar"],
+    files: [
+      {
+        path: "blocks/avatar-stack/avatar-stack.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/avatar-stack/avatar-stack.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "chip-group",
     type: "registry:block",
     category: "form",

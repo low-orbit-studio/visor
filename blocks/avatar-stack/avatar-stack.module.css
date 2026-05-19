@@ -1,0 +1,21 @@
+/* AvatarStack root */
+.root {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  isolation: isolate;
+}
+
+/* Each avatar gets a ring matching the parent surface so adjacent avatars
+   read as separate circles. Avatar's own `overflow: hidden` clips inner
+   shadows, so the ring is projected outward via box-shadow. */
+.avatar {
+  box-shadow: 0 0 0 var(--stroke-width-medium, 2px) var(--surface-default, #ffffff);
+}
+
+/* Overlap every avatar except the first. Later siblings stack on top of
+   earlier ones because `isolation: isolate` establishes a single stacking
+   context and DOM order wins inside it. */
+.avatar:not(:first-child) {
+  margin-inline-start: calc(-1 * var(--spacing-2, 0.5rem));
+}
