@@ -1,0 +1,199 @@
+/* Trigger button */
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3, 0.75rem);
+  width: 100%;
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  background: transparent;
+  color: var(--text-primary, #111827);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md, 0.375rem);
+  font-family: inherit;
+  font-size: var(--font-size-sm, 0.875rem);
+  text-align: start;
+  cursor: pointer;
+  min-width: 0;
+  transition:
+    background-color var(--motion-duration-fast, 150ms)
+      var(--motion-easing-standard, ease),
+    border-color var(--motion-duration-fast, 150ms)
+      var(--motion-easing-standard, ease);
+}
+
+.trigger:hover {
+  background: var(--surface-interactive-hover, var(--surface-hover, #f3f4f6));
+}
+
+.trigger:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid
+    var(--focus-ring-color, var(--accent-primary, #3b82f6));
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+.trigger[data-state="open"] {
+  background: var(--surface-interactive-hover, var(--surface-hover, #f3f4f6));
+}
+
+.triggerAvatarWrap {
+  position: relative;
+  flex-shrink: 0;
+  display: inline-flex;
+}
+
+.triggerAvatar {
+  flex-shrink: 0;
+}
+
+.statusDot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: var(--spacing-2-5, 0.625rem);
+  height: var(--spacing-2-5, 0.625rem);
+  border-radius: 999px;
+  border: var(--stroke-width-medium, 2px) solid
+    var(--surface-card, #ffffff);
+  background: var(--text-tertiary, #6b7280);
+}
+
+.statusDot[data-status="online"] {
+  background: var(--status-success, #10b981);
+}
+
+.statusDot[data-status="away"] {
+  background: var(--status-warning, #f59e0b);
+}
+
+.statusDot[data-status="busy"] {
+  background: var(--status-error, #ef4444);
+}
+
+.statusDot[data-status="offline"] {
+  background: var(--text-tertiary, #6b7280);
+}
+
+.triggerIdentity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1 1 auto;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.triggerName {
+  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-primary, #111827);
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.triggerContext {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+  font-weight: var(--font-weight-regular, 400);
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-tertiary, var(--text-secondary, #6b7280));
+  width: 100%;
+  min-width: 0;
+  margin-top: var(--spacing-0-5, 0.125rem);
+}
+
+.triggerContextIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.triggerContextLabel {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.triggerCaret {
+  flex-shrink: 0;
+  margin-inline-start: auto;
+  color: var(--text-tertiary, var(--text-secondary, #6b7280));
+}
+
+/* Menu content */
+.content {
+  min-width: 14rem;
+}
+
+.menuHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-0-5, 0.125rem);
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+}
+
+.menuHeaderHint {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-tertiary, var(--text-secondary, #6b7280));
+}
+
+.menuHeaderEmail {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-primary, #111827);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Item rows */
+.item {
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.itemIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: var(--text-secondary, #6b7280);
+}
+
+.itemLabel {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.itemBadge {
+  margin-inline-start: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  padding: 0 var(--spacing-1-5, 0.375rem);
+  border-radius: 999px;
+  background: var(--accent-subtle, color-mix(in srgb, var(--accent-primary, #3b82f6) 18%, transparent));
+  color: var(--accent-primary, #3b82f6);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1.4;
+}
+
+/* When both badge and shortcut are present, keep shortcut after badge. */
+.itemBadge + .itemShortcut {
+  margin-inline-start: var(--spacing-2, 0.5rem);
+}
+
+.itemShortcut {
+  /* DropdownMenuShortcut already aligns to the end via margin-left: auto.
+     When a badge precedes it, we override margin-left above to keep spacing. */
+}

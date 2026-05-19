@@ -1,0 +1,170 @@
+---
+title: Profile Menu
+description: Sidebar-footer profile menu — avatar + identity row + upward-opening dropdown of account, notifications, appearance, keyboard, help, and sign-out items. Drop-in for the AdminShell sidebarFooter slot.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { ProfileMenuDemo } from '@/components/blocks/profile-menu-demo';
+
+## Preview
+
+### Default — full identity row
+
+<BlockPreview
+  title="Profile Menu — default"
+  code={"<ProfileMenu\n  user={{ name: 'Justin Schier', email: 'justin@loworbit.studio', initials: 'JS', status: 'online' }}\n  context={{ label: 'ENTR · Owner', icon: <BuildingsIcon weight=\"bold\" /> }}\n  items={defaultProfileMenuItems(user, { onSignOut: () => signOut() })}\n/>"}
+>
+  <ProfileMenuDemo />
+</BlockPreview>
+
+### With notification badge
+
+<BlockPreview
+  title="Profile Menu — with badge"
+  code={"<ProfileMenu\n  user={user}\n  context={context}\n  items={defaultProfileMenuItems(user, { onSignOut, notificationCount: 3 })}\n/>"}
+>
+  <ProfileMenuDemo variant="with-badge" />
+</BlockPreview>
+
+### No context line
+
+<BlockPreview
+  title="Profile Menu — no context"
+  code={"<ProfileMenu\n  user={user}\n  items={defaultProfileMenuItems(user, { onSignOut })}\n/>"}
+>
+  <ProfileMenuDemo variant="no-context" />
+</BlockPreview>
+
+### No email header
+
+<BlockPreview
+  title="Profile Menu — no email header"
+  code={"<ProfileMenu\n  user={{ name: 'Justin Schier', initials: 'JS', status: 'online' }}\n  context={context}\n  items={items}\n/>"}
+>
+  <ProfileMenuDemo variant="no-email" />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block profile-menu
+```
+
+This copies files into your project:
+
+- `blocks/profile-menu/profile-menu.tsx` — the block component
+- `blocks/profile-menu/profile-menu.module.css` — the styles
+
+It also installs the `avatar` and `dropdown-menu` primitives if they aren't already present.
+
+## Usage
+
+Drop the menu into the `sidebarFooter` slot of `AdminShell`:
+
+```tsx
+'use client';
+
+import { AdminShell } from '@/blocks/admin-shell/admin-shell';
+import {
+  ProfileMenu,
+  defaultProfileMenuItems,
+} from '@/blocks/profile-menu/profile-menu';
+import { BuildingsIcon } from '@phosphor-icons/react';
+import { useRouter } from 'next/navigation';
+
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const user = {
+    name: 'Justin Schier',
+    email: 'justin@loworbit.studio',
+    initials: 'JS',
+    status: 'online' as const,
+  };
+  const handleSignOut = () => router.push('/sign-out');
+  const items = defaultProfileMenuItems(user, { onSignOut: handleSignOut, notificationCount: 3 });
+
+  return (
+    <AdminShell
+      sidebarNav={<nav>…</nav>}
+      sidebarFooter={
+        <ProfileMenu
+          user={user}
+          context={{ label: 'ENTR · Owner', icon: <BuildingsIcon weight="bold" /> }}
+          items={items}
+          onSignOut={handleSignOut}
+          enableGlobalShortcuts
+        />
+      }
+    >
+      {children}
+    </AdminShell>
+  );
+}
+```
+
+`<AdminShell>` already exposes a `sidebarFooter` prop — no shell modifications are required. The menu opens **upward** by default because the slot is bottom-anchored.
+
+## Composing items
+
+`items` is a composable array. Use `defaultProfileMenuItems(user, opts)` for the canonical Low Orbit baseline, then splice, replace, or extend:
+
+```tsx
+import {
+  defaultProfileMenuItems,
+  type ProfileMenuItem,
+} from '@/blocks/profile-menu/profile-menu';
+
+const items: ProfileMenuItem[] = [
+  ...defaultProfileMenuItems(user, { onSignOut }).slice(0, 5),
+  { type: 'separator' },
+  { type: 'label', text: 'Workspace' },
+  { type: 'item', label: 'Switch organization', onSelect: () => router.push('/orgs') },
+  ...defaultProfileMenuItems(user, { onSignOut }).slice(5),
+];
+```
+
+### `ProfileMenuItem` shapes
+
+| Type | Renders | Required fields | Optional fields |
+|------|---------|-----------------|-----------------|
+| `item` | `DropdownMenuItem` | `label` | `icon`, `shortcut`, `badge`, `variant`, `onSelect` |
+| `separator` | `DropdownMenuSeparator` | — | — |
+| `label` | `DropdownMenuLabel` | `text` | — |
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `user` | `ProfileMenuUser` | — | **Required.** Identity shown in the trigger and (if `email` is set) in the menu header. |
+| `context` | `ProfileMenuContext` | — | Secondary line under the user's name in the trigger (e.g. `"ENTR · Owner"`). |
+| `items` | `ProfileMenuItem[]` | — | **Required.** Menu entries. Use `defaultProfileMenuItems` for the Low Orbit baseline. |
+| `onSignOut` | `() => void` | — | Used by the global keyboard shortcut. The default item list also wires this to the Sign out entry. |
+| `enableGlobalShortcuts` | `boolean` | `false` | When `true`, registers a window-level `⌘⇧Q` / `Ctrl+⇧+Q` handler that calls `onSignOut`. |
+| `side` | `"top" \| "bottom" \| "auto"` | `"top"` | Direction the menu opens. `"top"` matches the bottom-anchored sidebar footer; `"auto"` lets Radix decide. |
+| `className` | `string` | — | Forwarded to the trigger button. |
+
+### `ProfileMenuUser`
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | `string` | Yes | Display name. Truncated in the trigger. |
+| `email` | `string` | No | Shown in the menu header (`Signed in as …`). Omit to hide the header. |
+| `avatarUrl` | `string` | No | Avatar image. Falls back to initials. |
+| `initials` | `string` | No | Avatar fallback text. If omitted, derived from `name`. |
+| `status` | `"online" \| "away" \| "busy" \| "offline"` | No | Renders a colored dot overlay on the avatar with the corresponding accessible label. |
+
+## Accessibility
+
+- The trigger is a `<button type="button">` wrapped in `DropdownMenuTrigger`. Radix applies `aria-haspopup="menu"` and `aria-expanded` automatically.
+- The trigger's accessible name combines name + context — e.g. `Account menu · Justin Schier · ENTR · Owner` — so the affordance still announces correctly when the visible text is truncated.
+- The status dot has an explicit `aria-label` (`"Online"`, `"Away"`, `"Busy"`, `"Offline"`).
+- Caret, avatar fallback, and item icons are all `aria-hidden="true"` — the announced text comes from the item label and the trigger's `aria-label`.
+- Menu items use Radix's `role="menuitem"` semantics. Arrow keys navigate, Enter activates, Escape closes; Radix returns focus to the trigger on close.
+- The Sign out item uses `variant="destructive"` and is the only destructive item in the baseline list.
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI — such as admin shells, login forms, or dashboard panels.
+
+Blocks are copy-and-own, just like components. Install them into your project and customize freely.

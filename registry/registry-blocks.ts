@@ -236,6 +236,25 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "profile-menu",
+    type: "registry:block",
+    category: "admin",
+    description:
+      "Sidebar-footer profile menu composing an avatar + identity row trigger and an upward-opening DropdownMenu of account, notifications, appearance, keyboard shortcut, help, and sign-out items. Supports status dots, badges, and per-item shortcuts. Drop-in for the AdminShell sidebarFooter slot.",
+    dependencies: ["@loworbitstudio/visor-core", "@phosphor-icons/react"],
+    registryDependencies: ["utils", "avatar", "dropdown-menu"],
+    files: [
+      {
+        path: "blocks/profile-menu/profile-menu.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/profile-menu/profile-menu.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "configuration-panel",
     type: "registry:block",
     category: "configuration",
