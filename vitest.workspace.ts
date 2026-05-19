@@ -12,6 +12,7 @@ export default defineWorkspace([
         "scripts/**/*.test.ts",
         "packages/cli/**/*.test.ts",
         "packages/theme-engine/**/*.test.ts",
+        "packages/tailwind-preset/**/*.test.ts",
       ],
     },
   },
