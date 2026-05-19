@@ -96,6 +96,18 @@ props:
     type: boolean
     default: "false"
     description: When true, the thead is positioned sticky at the top of the scroll container.
+  - name: density
+    type: '"compact" | "default" | "editorial"'
+    default: '"default"'
+    description: >
+      Vertical row padding step. Maps to a `data-density` attribute on the
+      root, which sets the `--dt-row-py` custom property the table's cells
+      consume. `"compact"` = 8px (sub-content density: long lists, narrow
+      viewports). `"default"` = 12px (current behaviour; backward-compatible
+      with consumers that don't pass the prop). `"editorial"` = 20px (generous;
+      each row reads as a card; high-design admin patterns). Themes can
+      override per-density values without forking the component by targeting
+      `[data-density="…"]` from their own selector.
   - name: rowTone
     type: "(row: TData) => \"live\" | \"warn\" | \"scheduled\" | \"sold\" | \"draft\" | \"danger\" | \"info\" | undefined"
     description: >

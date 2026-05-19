@@ -10,6 +10,23 @@
   color: var(--text-primary, #111827);
 }
 
+/* Density — vertical row padding step driven by `data-density` on the root.
+   Cells consume `--dt-row-py` via the `.root td` rule below. Horizontal cell
+   padding stays at TableCell's `padding: var(--spacing-3)` shorthand cascade
+   — we only override the top/bottom longhand properties here, so `default`
+   density renders identically to pre-VI-425 markup.
+
+   Themes can override per-density values via their own selectors, e.g.
+     [data-theme="entr"] [data-density="editorial"] { --dt-row-py: var(--spacing-6); } */
+.root[data-density="compact"]   { --dt-row-py: var(--spacing-2, 0.5rem); }
+.root[data-density="default"]   { --dt-row-py: var(--spacing-3, 0.75rem); }
+.root[data-density="editorial"] { --dt-row-py: var(--spacing-5, 1.25rem); }
+
+.root td {
+  padding-top: var(--dt-row-py, var(--spacing-3, 0.75rem));
+  padding-bottom: var(--dt-row-py, var(--spacing-3, 0.75rem));
+}
+
 /* Sticky header wrapper — toggled when stickyHeader prop is true */
 .stickyHeader {
   position: sticky;

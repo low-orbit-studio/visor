@@ -188,6 +188,30 @@ describe("DataTable", () => {
     expect(root).toHaveClass("custom-class")
   })
 
+  describe("density prop", () => {
+    it("defaults to data-density=\"default\" when no prop is passed (backward compat)", () => {
+      const { container } = render(<DataTable columns={columns} data={[]} />)
+      const root = container.querySelector('[data-slot="data-table"]')
+      expect(root).toHaveAttribute("data-density", "default")
+    })
+
+    it("threads density=\"compact\" through to data-density on the root", () => {
+      const { container } = render(
+        <DataTable columns={columns} data={[]} density="compact" />
+      )
+      const root = container.querySelector('[data-slot="data-table"]')
+      expect(root).toHaveAttribute("data-density", "compact")
+    })
+
+    it("threads density=\"editorial\" through to data-density on the root", () => {
+      const { container } = render(
+        <DataTable columns={columns} data={[]} density="editorial" />
+      )
+      const root = container.querySelector('[data-slot="data-table"]')
+      expect(root).toHaveAttribute("data-density", "editorial")
+    })
+  })
+
   describe("group rows (rows prop)", () => {
     const groupedRows: DataTableRow<Row>[] = [
       {

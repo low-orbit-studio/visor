@@ -48,6 +48,31 @@ export const sampleGroupedRows = [
   <DataTable columns={sampleColumns} data={sampleUsers} pageSize={5} />
 </ComponentPreview>
 
+## Density
+
+Use `density` to step row vertical padding. The default matches existing behaviour (12px); `compact` (8px) packs more rows into a narrow viewport; `editorial` (20px) makes each row read as a card for high-design admin patterns. Horizontal cell padding is unchanged across densities. Themes can override per-density values by targeting `[data-density="…"]` from their own selectors.
+
+<ComponentPreview
+  title="Compact — 8px vertical row padding"
+  code={"<DataTable columns={columns} data={users} density=\"compact\" />"}
+>
+  <DataTable columns={sampleColumns} data={sampleUsers} density="compact" pageSize={5} />
+</ComponentPreview>
+
+<ComponentPreview
+  title="Default — 12px vertical row padding (current behaviour)"
+  code={"<DataTable columns={columns} data={users} />"}
+>
+  <DataTable columns={sampleColumns} data={sampleUsers} density="default" pageSize={5} />
+</ComponentPreview>
+
+<ComponentPreview
+  title="Editorial — 20px vertical row padding"
+  code={"<DataTable columns={columns} data={users} density=\"editorial\" />"}
+>
+  <DataTable columns={sampleColumns} data={sampleUsers} density="editorial" pageSize={5} />
+</ComponentPreview>
+
 ## Row Selection
 
 <ComponentPreview
