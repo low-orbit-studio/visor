@@ -25,6 +25,11 @@ export const FONT_WEIGHT_ALIASES: Record<string, Record<number, string>> = {
     400: "Book",
     800: "Super",
   },
+  // Hoefler's Gotham uses "Book" instead of "Regular" at weight 400.
+  // Light (300) and Medium (500) match WEIGHT_NAMES defaults.
+  Gotham: {
+    400: "Book",
+  },
 };
 
 export function lookupFontWeightAlias(
