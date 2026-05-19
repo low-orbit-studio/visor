@@ -16,7 +16,7 @@
    — we only override the top/bottom longhand properties here, so `default`
    density renders identically to pre-VI-425 markup.
 
-   Themes can override per-density values via their own selectors, e.g.
+   Themes can override per-density values via their own selectors. Example:
      [data-theme="entr"] [data-density="editorial"] { --dt-row-py: var(--spacing-6); } */
 .root[data-density="compact"]   { --dt-row-py: var(--spacing-2, 0.5rem); }
 .root[data-density="default"]   { --dt-row-py: var(--spacing-3, 0.75rem); }
