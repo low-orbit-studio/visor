@@ -1,6 +1,6 @@
 {
   "name": "@loworbitstudio/visor-core",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Design tokens for the Visor design system — CSS custom properties for theming.",
   "type": "module",
   "main": "./dist/index.css",
@@ -48,7 +48,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@loworbitstudio/visor-theme-engine": "^0.8.0",
+    "@loworbitstudio/visor-theme-engine": "^0.8.1",
     "@types/node": "^22.0.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",

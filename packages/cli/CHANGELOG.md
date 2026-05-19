@@ -1,5 +1,39 @@
 # Changelog
 
+## 1.1.0
+
+### Minor Changes
+
+- cc3b501: VI-423 feat: `visor sandbox` subcommand — scaffolded Next.js app for in-vivo primitive iteration with gap stubs.
+
+  A new `sandbox` subcommand group (`init`, `dev`, `approve`) bridges the gap between standalone-HTML prototypes and the production Visor scaffold in the `/lo-play pattern-build` pipeline. `visor sandbox init <name> --handoff <path> --theme <theme>` reads a Low Orbit design-handoff manifest, scaffolds a Next.js 16 app at `.lo/sandbox/<name>/`, runs `visor add` for every shipped primitive declared in the manifest, and generates visible dashed-border stub components for each declared gap primitive (`components/stubs/<name>.tsx`, each containing a `GAP: VI-<NNN>` marker).
+
+  `visor sandbox dev --name <name>` boots the dev server on an auto-allocated port (port 3000 is reserved per the Low Orbit convention; the allocator probes from port 4060 upward). The scaffolded app exposes one route per primitive (`/primitives/<name>`), one per screen declared in the recipe (`/screens/<name>`), plus an index at `/` linking to all of them.
+
+  `visor sandbox approve --name <name>` shells out to a sandbox-local Playwright install and captures full-page screenshots of every route into `captures/approved/`. `--diff` pixel-diffs the new capture against the approved baseline and writes only changed routes to `captures/diffs/<route>.diff.png`, so operator iterations stay traceable.
+
+  The CLI itself does not bundle Playwright — the sandbox scaffold declares `@playwright/test`, `pixelmatch`, and `pngjs` in its own devDependencies, keeping the published `@loworbitstudio/visor` package light. Unknown primitives in the handoff (declared shipped but missing from the registry) are skipped with a warning rather than aborting the scaffold.
+
+- 0342b87: VI-424 feat: `avatar-stack` block — overlapping avatars with `+N more` overflow indicator.
+
+  A new `data-display` block composes the existing `Avatar`, `AvatarImage`, and `AvatarFallback` primitives into an overlapping cluster — no new primitive, no new tokens, no new ARIA pattern. `npx visor add --block avatar-stack` auto-pulls the `avatar` primitive. Each avatar carries an outward ring (`box-shadow` against `--surface-default`) so the stack reads cleanly against any tone; `Avatar`'s `overflow: hidden` makes outward projection the safe choice. Avatars after the first overlap by `calc(-1 * var(--spacing-2))` with `isolation: isolate` on the root keeping the stacking context contained. The `+N more` indicator is itself an `Avatar` with a `+N` fallback so it inherits size and ring. `total` may exceed `avatars.length` to support server-truncated data — the block computes `overflow = total - visible.length`. `role="img"` plus a `label`-overridable `aria-label` (defaulting to `` `${total} members` ``) announces the cluster as a single image rather than each fallback character.
+
+- 176f6c4: VI-428 feat: `profile-menu` block — sidebar-footer profile menu with composable items and `AdminShell` footer-slot integration.
+
+  A new `admin` block composes the existing `Avatar`, `AvatarImage`, `AvatarFallback`, and `DropdownMenu*` primitives into a Mac-style profile menu — no new primitive, no new tokens. `npx visor add --block profile-menu` auto-pulls the `avatar` and `dropdown-menu` primitives. The trigger renders an avatar + optional status dot, name, optional context line (e.g. `ENTR · Owner`), and an end-aligned `CaretUpDownIcon`; the menu opens upward by default (`side="top"`) so it sits cleanly above a bottom-anchored sidebar footer. Items are a composable `ProfileMenuItem[]` array — `{ type: "item" }` with optional `icon`, `shortcut`, `badge`, and `variant: "default" | "destructive"`; `{ type: "separator" }`; and `{ type: "label" }` — letting consumers splice, replace, or extend without forking. `defaultProfileMenuItems(user, opts)` exports the Low Orbit baseline (Account / Notifications / Appearance / Keyboard shortcuts / Help & docs / separator / destructive Sign out with `⌘⇧Q`), and `opts.notificationCount` populates the badge on the Notifications item. `enableGlobalShortcuts` is opt-in: when true, a window-level `⌘⇧Q` / `Ctrl+⇧+Q` keydown handler calls `onSignOut`. `AdminShell` already exposes `sidebarFooter` — no shell modifications are required; the block drops straight into that slot. Status dots carry per-state `aria-label`s (`"Online"`, `"Away"`, `"Busy"`, `"Offline"`) and the trigger's accessible name combines name + context so the affordance still announces correctly when text is truncated.
+
+### Patch Changes
+
+- 7c35718: VI-422 feat: `theme sync` continues past broken themes and summarizes failures at the end.
+
+  Previously, `visor theme sync` aborted on the first per-theme failure (e.g. a font-coverage error in one private theme), blocking every healthy theme from syncing. Now each theme is processed in isolation: failures are collected, every healthy theme syncs, and a structured summary names the failed themes at the end. Exit code is non-zero iff any theme failed. The D6 contract is preserved — when every theme fails, the sync bails before the write phase so pre-existing CSS is never wiped.
+
+  JSON envelope adds a `failures: Array<{filePath, error}>` field when per-theme failures occur. The legacy `errors: string[]` field is removed; consumers should switch to `failures`. All-healthy runs are unchanged.
+
+- Updated dependencies [8bd7a00]
+- Updated dependencies [98d6a9b]
+  - @loworbitstudio/visor-theme-engine@0.8.1
+
 ## 1.0.0
 
 ### Major Changes
