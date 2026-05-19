@@ -2539,4 +2539,173 @@ export const propsData: Record<string, PropDef[]> = {
         'All standard HTML attributes (except children) are forwarded to the underlying Badge element.',
     },
   ],
+
+  // -------------------------------------------------------------------------
+  // VI-427 layout primitives
+  // -------------------------------------------------------------------------
+
+  box: [
+    {
+      name: 'as',
+      type: 'keyof React.JSX.IntrinsicElements',
+      default: "'div'",
+      description: 'HTML element to render.',
+    },
+    {
+      name: 'padding',
+      type: 'SpacingToken | ResponsiveProp<SpacingToken>',
+      description:
+        'Shorthand padding on all sides. Token-named — off-system values are TypeScript errors.',
+    },
+    {
+      name: 'paddingX',
+      type: 'SpacingToken | ResponsiveProp<SpacingToken>',
+      description: 'Padding on the X axis (overrides padding for left/right).',
+    },
+    {
+      name: 'paddingY',
+      type: 'SpacingToken | ResponsiveProp<SpacingToken>',
+      description: 'Padding on the Y axis (overrides padding for top/bottom).',
+    },
+    {
+      name: 'paddingTop / paddingRight / paddingBottom / paddingLeft',
+      type: 'SpacingToken | ResponsiveProp<SpacingToken>',
+      description: 'Padding on a single edge.',
+    },
+    {
+      name: 'margin / marginX / marginY / margin{Top,Right,Bottom,Left}',
+      type: 'SpacingToken | ResponsiveProp<SpacingToken>',
+      description: 'Margin shorthand and per-axis/edge overrides.',
+    },
+    {
+      name: 'bg',
+      type: 'SurfaceToken',
+      description:
+        "Token-named background surface (e.g. 'card', 'subtle', 'muted', 'popover', 'accent-subtle').",
+    },
+    {
+      name: 'border',
+      type: 'boolean | BorderToken',
+      description:
+        "When true uses --border-default; when a token name (e.g. 'error', 'strong') uses that border color.",
+    },
+    {
+      name: 'borderRadius',
+      type: 'RadiusToken',
+      description: "Token-named border radius ('none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full').",
+    },
+  ],
+
+  stack: [
+    {
+      name: 'as',
+      type: 'keyof React.JSX.IntrinsicElements',
+      default: "'div'",
+      description: 'HTML element to render.',
+    },
+    {
+      name: 'gap',
+      type: 'StackSpacing | ResponsiveProp<StackSpacing>',
+      default: "'md'",
+      description:
+        "Space between children. Token-named. Accepts a responsive { base, sm, md, lg, xl } map.",
+    },
+    {
+      name: 'align',
+      type: "'start' | 'center' | 'end' | 'stretch'",
+      description: 'Cross-axis alignment (horizontal in a column flex).',
+    },
+    {
+      name: 'justify',
+      type: "'start' | 'center' | 'end' | 'between' | 'around' | 'evenly'",
+      description: 'Main-axis alignment (vertical in a column flex).',
+    },
+  ],
+
+  inline: [
+    {
+      name: 'as',
+      type: 'keyof React.JSX.IntrinsicElements',
+      default: "'div'",
+      description: 'HTML element to render.',
+    },
+    {
+      name: 'gap',
+      type: 'InlineSpacing | ResponsiveProp<InlineSpacing>',
+      default: "'md'",
+      description:
+        "Space between children. Token-named. Accepts a responsive { base, sm, md, lg, xl } map.",
+    },
+    {
+      name: 'align',
+      type: "'start' | 'center' | 'end' | 'stretch' | 'baseline'",
+      default: "'center'",
+      description: 'Cross-axis alignment (vertical in a row flex).',
+    },
+    {
+      name: 'justify',
+      type: "'start' | 'center' | 'end' | 'between' | 'around' | 'evenly'",
+      description: 'Main-axis alignment (horizontal in a row flex).',
+    },
+    {
+      name: 'wrap',
+      type: 'boolean',
+      default: 'false',
+      description: 'Allow children to wrap onto multiple lines.',
+    },
+  ],
+
+  grid: [
+    {
+      name: 'as',
+      type: 'keyof React.JSX.IntrinsicElements',
+      default: "'div'",
+      description: 'HTML element to render.',
+    },
+    {
+      name: 'columns',
+      type: 'number | ResponsiveProp<number> | string',
+      default: '1',
+      description:
+        'Column count (number or responsive map), or an explicit grid-template-columns string (e.g. "1fr 2fr").',
+    },
+    {
+      name: 'gap',
+      type: 'GridSpacing | ResponsiveProp<GridSpacing>',
+      default: "'md'",
+      description: 'Space between cells. Token-named. Accepts a responsive map.',
+    },
+    {
+      name: 'align',
+      type: "'start' | 'center' | 'end' | 'stretch'",
+      description: 'Block-axis (vertical) alignment of items within their cells.',
+    },
+    {
+      name: 'justify',
+      type: "'start' | 'center' | 'end' | 'stretch'",
+      description: 'Inline-axis (horizontal) alignment of items within their cells.',
+    },
+  ],
+
+  container: [
+    {
+      name: 'as',
+      type: 'keyof React.JSX.IntrinsicElements',
+      default: "'div'",
+      description: 'HTML element to render.',
+    },
+    {
+      name: 'size',
+      type: "'sm' | 'md' | 'lg' | 'xl' | 'full'",
+      default: "'lg'",
+      description:
+        'Max-width preset (sm 640px, md 768px, lg 1024px, xl 1280px, full no limit).',
+    },
+    {
+      name: 'padding',
+      type: 'ContainerSpacing',
+      default: "'md'",
+      description: 'Horizontal padding token.',
+    },
+  ],
 };
