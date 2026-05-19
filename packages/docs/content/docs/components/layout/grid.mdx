@@ -1,0 +1,61 @@
+---
+title: Grid
+description: CSS Grid wrapper with token-driven gap, responsive column count, and explicit `grid-template-columns` escape hatch.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { Grid } from '@/components/ui/grid';
+import { Box } from '@/components/ui/box';
+
+```bash
+npx visor add grid
+```
+
+## Why Grid?
+
+`Grid` covers the CSS Grid pattern most apps actually use — equal fractional columns with a token-spaced gap — and ramps to the full `grid-template-columns` escape hatch for asymmetric layouts. Both `columns` and `gap` accept the responsive `{ base, sm, md, lg, xl }` map.
+
+## Equal Columns
+
+<ComponentPreview
+  title="3-column grid"
+  code={"<Grid columns={3} gap=\"md\">\n  <Box padding=\"md\" bg=\"subtle\" borderRadius=\"md\">One</Box>\n  <Box padding=\"md\" bg=\"subtle\" borderRadius=\"md\">Two</Box>\n  <Box padding=\"md\" bg=\"subtle\" borderRadius=\"md\">Three</Box>\n</Grid>"}
+>
+  <Grid columns={3} gap="md">
+    <Box padding="md" bg="subtle" borderRadius="md">One</Box>
+    <Box padding="md" bg="subtle" borderRadius="md">Two</Box>
+    <Box padding="md" bg="subtle" borderRadius="md">Three</Box>
+  </Grid>
+</ComponentPreview>
+
+## Responsive Columns
+
+```tsx
+<Grid columns={{ base: 1, md: 2, lg: 4 }} gap={{ base: "sm", md: "md" }}>
+  Tiles
+</Grid>
+```
+
+## Template-String Escape Hatch
+
+```tsx
+<Grid columns="1fr 2fr" gap="lg">
+  <aside>Sidebar</aside>
+  <main>Main content</main>
+</Grid>
+```
+
+## Polymorphic `as`
+
+```tsx
+<Grid as="ul" columns={2} gap="sm">
+  <li>One</li>
+  <li>Two</li>
+</Grid>
+```
+
+## Installation
+
+```bash
+npx visor add grid
+```

@@ -1,0 +1,64 @@
+---
+title: Box
+description: Universal layout wrapper for padding, margin, background, border, and border-radius via Visor design tokens.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { Box } from '@/components/ui/box';
+
+```bash
+npx visor add box
+```
+
+## Why Box?
+
+`Box` closes the gap between Visor's typed token system and ad-hoc Tailwind utility classes like `p-4 bg-white rounded-lg`. Every spacing, surface, border, and radius prop accepts only Visor token names — off-system values like `padding="17px"` are TypeScript errors. Token changes propagate automatically.
+
+Reach for `Box` whenever you'd otherwise write inline padding/margin/background utilities. For arranging children, compose `Stack`, `Inline`, or `Grid` inside.
+
+## Padding
+
+<ComponentPreview
+  title="Padding token"
+  code={"<Box padding=\"md\" bg=\"card\" borderRadius=\"md\">Padding md</Box>"}
+>
+  <Box padding="md" bg="card" borderRadius="md">Padding md</Box>
+</ComponentPreview>
+
+## Background + Border
+
+<ComponentPreview
+  title="Background surface and border"
+  code={"<Box padding=\"md\" bg=\"subtle\" border borderRadius=\"lg\">Subtle surface with default border</Box>"}
+>
+  <Box padding="md" bg="subtle" border borderRadius="lg">Subtle surface with default border</Box>
+</ComponentPreview>
+
+## Responsive Padding
+
+The `padding`, `paddingX`, `paddingY`, edge-padding, and margin props all accept a responsive `{ base, sm, md, lg, xl }` map for breakpoint-aware spacing.
+
+```tsx
+<Box padding={{ base: "sm", md: "lg", xl: "2xl" }}>
+  Responsive padding
+</Box>
+```
+
+## Polymorphic `as`
+
+```tsx
+<Box as="section" padding="lg" bg="card">
+  Renders a <section>
+</Box>
+```
+
+## Installation
+
+```bash
+npx visor add box
+```
+
+This copies two files into your project:
+
+- `components/ui/box/box.tsx` — the component
+- `components/ui/box/box.module.css` — the styles

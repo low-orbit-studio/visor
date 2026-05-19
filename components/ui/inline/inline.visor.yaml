@@ -1,0 +1,55 @@
+name: Inline
+description: Horizontal flex container with token-driven gap, alignment, optional wrap, and `as` polymorphism.
+extends: HTMLElement
+category: layout
+
+when_to_use:
+  - Laying out a row of buttons, chips, badges, or icons
+  - Toolbar-style horizontal groupings
+  - Anywhere you would write `flex items-center gap-N` in Tailwind
+
+when_not_to_use:
+  - Vertical arrangements (use Stack)
+  - Two-dimensional grids (use Grid)
+  - Layouts that need to align to a specific column count (use Grid)
+
+why: >
+  Inline is the horizontal counterpart to Stack — the same token-typed gap
+  prop, plus alignment helpers and an opt-in `wrap` for items that should
+  flow onto multiple lines. Default `align="center"` matches the most
+  common case of icon-plus-text rows.
+
+props:
+  - name: as
+    type: "keyof JSX.IntrinsicElements"
+    default: "'div'"
+    description: HTML element to render
+  - name: gap
+    type: "InlineSpacing | ResponsiveProp<InlineSpacing>"
+    default: "'md'"
+    description: Space between children
+  - name: align
+    type: "'start' | 'center' | 'end' | 'stretch' | 'baseline'"
+    default: "'center'"
+    description: Cross-axis alignment
+  - name: justify
+    type: "'start' | 'center' | 'end' | 'between' | 'around' | 'evenly'"
+    description: Main-axis alignment
+  - name: wrap
+    type: "boolean"
+    default: "false"
+    description: Allow children to wrap onto multiple lines
+
+dependencies: []
+
+preview_url: "https://visor.loworbit.studio/docs/components/layout/inline"
+
+example: |
+  <Inline gap="sm">
+    <Button>Save</Button>
+    <Button variant="secondary">Cancel</Button>
+  </Inline>
+
+  <Inline gap="xs" wrap>
+    {tags.map(t => <Badge key={t}>{t}</Badge>)}
+  </Inline>

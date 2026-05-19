@@ -1,0 +1,64 @@
+---
+title: Container
+description: Max-width centered wrapper for page content with token-driven horizontal padding.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { Container } from '@/components/ui/container';
+import { Box } from '@/components/ui/box';
+
+```bash
+npx visor add container
+```
+
+## Why Container?
+
+`Container` centralizes the "centered column with horizontal padding" pattern so every page route shares the same max-width vocabulary. Sizes map to the standard Visor responsive breakpoints, keeping page content widths consistent with the breakpoint system used elsewhere in the library.
+
+Default size is `"lg"` (1024px). Default padding is `"md"` (1rem).
+
+## Sizes
+
+| Size | Max-width |
+|------|-----------|
+| `sm`   | 640px |
+| `md`   | 768px |
+| `lg`   | 1024px (default) |
+| `xl`   | 1280px |
+| `full` | no limit |
+
+## Default Container
+
+<ComponentPreview
+  title="Default lg container"
+  code={"<Container>\n  <Box padding=\"md\" bg=\"card\" borderRadius=\"md\">\n    Page content\n  </Box>\n</Container>"}
+>
+  <Container>
+    <Box padding="md" bg="card" borderRadius="md">
+      Page content
+    </Box>
+  </Container>
+</ComponentPreview>
+
+## Narrow Reading Column
+
+```tsx
+<Container size="md" padding="lg" as="article">
+  Narrow reading column with extra horizontal padding.
+</Container>
+```
+
+## Polymorphic `as`
+
+```tsx
+<Container as="main">
+  <h1>Page</h1>
+  <p>Content</p>
+</Container>
+```
+
+## Installation
+
+```bash
+npx visor add container
+```

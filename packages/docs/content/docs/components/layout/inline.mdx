@@ -1,0 +1,60 @@
+---
+title: Inline
+description: Horizontal flex container with token-driven gap, alignment, optional wrap, and `as` polymorphism.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { Inline } from '@/components/ui/inline';
+import { Box } from '@/components/ui/box';
+
+```bash
+npx visor add inline
+```
+
+## Why Inline?
+
+`Inline` is the horizontal counterpart to `Stack` — the same token-typed gap prop, plus an optional `wrap` for items that should flow onto multiple lines. Default `align="center"` matches the most common case of icon-plus-text rows.
+
+## Default Layout
+
+<ComponentPreview
+  title="Inline with default center alignment"
+  code={"<Inline>\n  <Box padding=\"sm\" bg=\"subtle\" borderRadius=\"md\">One</Box>\n  <Box padding=\"sm\" bg=\"subtle\" borderRadius=\"md\">Two</Box>\n  <Box padding=\"sm\" bg=\"subtle\" borderRadius=\"md\">Three</Box>\n</Inline>"}
+>
+  <Inline>
+    <Box padding="sm" bg="subtle" borderRadius="md">One</Box>
+    <Box padding="sm" bg="subtle" borderRadius="md">Two</Box>
+    <Box padding="sm" bg="subtle" borderRadius="md">Three</Box>
+  </Inline>
+</ComponentPreview>
+
+## Wrap
+
+```tsx
+<Inline gap="xs" wrap>
+  {tags.map(t => <Badge key={t}>{t}</Badge>)}
+</Inline>
+```
+
+## Responsive Gap
+
+```tsx
+<Inline gap={{ base: "sm", lg: "xl" }}>
+  Tighter on mobile, breathier on desktop.
+</Inline>
+```
+
+## Polymorphic `as`
+
+```tsx
+<Inline as="nav" gap="sm">
+  <a href="/one">One</a>
+  <a href="/two">Two</a>
+</Inline>
+```
+
+## Installation
+
+```bash
+npx visor add inline
+```

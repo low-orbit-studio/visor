@@ -1,0 +1,53 @@
+/* ============================================================
+   Inline — horizontal flex container with token-driven gap.
+
+   Default direction is `row`. When `wrap` is enabled, items wrap
+   onto multiple lines; gap applies to both row and column gaps.
+   ============================================================ */
+
+.inline {
+  display: flex;
+  flex-direction: row;
+  gap: var(--inline-gap, var(--spacing-4, 1rem));
+}
+
+.wrap {
+  flex-wrap: wrap;
+}
+
+/* Alignment — cross-axis (vertical in a row flex) */
+.alignStart { align-items: flex-start; }
+.alignCenter { align-items: center; }
+.alignEnd { align-items: flex-end; }
+.alignStretch { align-items: stretch; }
+.alignBaseline { align-items: baseline; }
+
+/* Justify — main-axis (horizontal in a row flex) */
+.justifyStart { justify-content: flex-start; }
+.justifyCenter { justify-content: center; }
+.justifyEnd { justify-content: flex-end; }
+.justifyBetween { justify-content: space-between; }
+.justifyAround { justify-content: space-around; }
+.justifyEvenly { justify-content: space-evenly; }
+
+/* Responsive gap — picked up from CSS variables set by the consumer. */
+@media (min-width: 640px) {
+  .inline {
+    gap: var(--inline-gap-sm, var(--inline-gap, var(--spacing-4, 1rem)));
+  }
+}
+@media (min-width: 768px) {
+  .inline {
+    gap: var(--inline-gap-md, var(--inline-gap-sm, var(--inline-gap, var(--spacing-4, 1rem))));
+  }
+}
+@media (min-width: 1024px) {
+  .inline {
+    gap: var(--inline-gap-lg, var(--inline-gap-md, var(--inline-gap-sm, var(--inline-gap, var(--spacing-4, 1rem)))));
+  }
+}
+@media (min-width: 1280px) {
+  .inline {
+    gap: var(--inline-gap-xl, var(--inline-gap-lg, var(--inline-gap-md, var(--inline-gap-sm, var(--inline-gap, var(--spacing-4, 1rem))))));
+  }
+}

@@ -1,0 +1,49 @@
+/* ============================================================
+   Stack — vertical flex container with token-driven gap.
+
+   Responsive gap is supported via `--stack-gap-sm/md/lg/xl` CSS
+   variables that the component sets on the inline style when the
+   consumer passes a breakpoint map.
+   ============================================================ */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stack-gap, var(--spacing-4, 1rem));
+}
+
+/* Alignment — cross-axis (horizontal in a column flex) */
+.alignStart { align-items: flex-start; }
+.alignCenter { align-items: center; }
+.alignEnd { align-items: flex-end; }
+.alignStretch { align-items: stretch; }
+
+/* Justify — main-axis (vertical in a column flex) */
+.justifyStart { justify-content: flex-start; }
+.justifyCenter { justify-content: center; }
+.justifyEnd { justify-content: flex-end; }
+.justifyBetween { justify-content: space-between; }
+.justifyAround { justify-content: space-around; }
+.justifyEvenly { justify-content: space-evenly; }
+
+/* Responsive gap — picked up from CSS variables set by the consumer. */
+@media (min-width: 640px) {
+  .stack {
+    gap: var(--stack-gap-sm, var(--stack-gap, var(--spacing-4, 1rem)));
+  }
+}
+@media (min-width: 768px) {
+  .stack {
+    gap: var(--stack-gap-md, var(--stack-gap-sm, var(--stack-gap, var(--spacing-4, 1rem))));
+  }
+}
+@media (min-width: 1024px) {
+  .stack {
+    gap: var(--stack-gap-lg, var(--stack-gap-md, var(--stack-gap-sm, var(--stack-gap, var(--spacing-4, 1rem)))));
+  }
+}
+@media (min-width: 1280px) {
+  .stack {
+    gap: var(--stack-gap-xl, var(--stack-gap-lg, var(--stack-gap-md, var(--stack-gap-sm, var(--stack-gap, var(--spacing-4, 1rem))))));
+  }
+}

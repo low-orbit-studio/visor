@@ -110,7 +110,7 @@ npx visor add button input label card
 
 ### Available Components
 
-The registry ships 83+ UI components across 6 categories, plus admin compounds, blocks, and hooks.
+The registry ships 88+ UI components across 6 categories, plus admin compounds, blocks, and hooks.
 
 **Form (24)**
 `button` · `calendar` · `checkbox` · `combobox` · `date-picker` · `field` · `fieldset` · `file-upload` · `form` · `input` · `label` · `number-input` · `otp-input` · `password-input` · `phone-input` · `radio-group` · `search-input` · `select` · `slider` · `slider-control` · `switch` · `tag-input` · `textarea` · `toggle-group`
@@ -127,8 +127,10 @@ The registry ships 83+ UI components across 6 categories, plus admin compounds, 
 **Feedback (6)**
 `alert` · `banner` · `chart` · `table` · `toast` · `tooltip`
 
-**Layout (4)**
-`badge` · `card` · `sheet` · `sidebar`
+**Layout (9)**
+`badge` · `box` · `card` · `container` · `grid` · `inline` · `sheet` · `sidebar` · `stack`
+
+The five primitives `box`, `container`, `grid`, `inline`, and `stack` are token-typed layout building blocks: all spacing, surface, and radius props accept only Visor token names — off-system values are TypeScript errors. Pair them with `Card`, `Sheet`, and `Sidebar` for full-page chrome.
 
 Add an entire category at once:
 

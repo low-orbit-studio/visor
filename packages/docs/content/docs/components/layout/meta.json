@@ -1,0 +1,12 @@
+{
+  "title": "Layout",
+  "description": "Token-driven layout primitives. Insert new entries in A-Z order.",
+  "defaultOpen": true,
+  "pages": [
+    "box",
+    "container",
+    "grid",
+    "inline",
+    "stack"
+  ]
+}

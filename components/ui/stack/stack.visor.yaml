@@ -1,0 +1,50 @@
+name: Stack
+description: Vertical flex container with token-driven gap, alignment, and `as` polymorphism.
+extends: HTMLElement
+category: layout
+
+when_to_use:
+  - Stacking content vertically with a consistent token-spaced gap
+  - Form sections, card bodies, page content blocks
+  - Anywhere you would write `flex flex-col gap-N` in Tailwind
+
+when_not_to_use:
+  - Horizontal arrangements (use Inline)
+  - Two-dimensional grids (use Grid)
+  - When you need centered max-width chrome (use Container)
+
+why: >
+  Stack provides a token-typed gap prop so spacing across an app stays
+  consistent and propagates automatically when tokens update. Responsive
+  gap is supported via the `{ base, sm, md, lg, xl }` map.
+
+props:
+  - name: as
+    type: "keyof JSX.IntrinsicElements"
+    default: "'div'"
+    description: HTML element to render
+  - name: gap
+    type: "StackSpacing | ResponsiveProp<StackSpacing>"
+    default: "'md'"
+    description: Space between children
+  - name: align
+    type: "'start' | 'center' | 'end' | 'stretch'"
+    description: Cross-axis alignment
+  - name: justify
+    type: "'start' | 'center' | 'end' | 'between' | 'around' | 'evenly'"
+    description: Main-axis alignment
+
+dependencies: []
+
+preview_url: "https://visor.loworbit.studio/docs/components/layout/stack"
+
+example: |
+  <Stack gap="md">
+    <Heading>Title</Heading>
+    <Text>Body copy</Text>
+    <Button>Action</Button>
+  </Stack>
+
+  <Stack gap={{ base: "sm", md: "lg" }} align="center">
+    Responsive gap, centered
+  </Stack>

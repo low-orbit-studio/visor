@@ -53,6 +53,11 @@ import {
 import { Input } from "../input/input"
 import { Skeleton } from "../skeleton/skeleton"
 import { Textarea } from "../textarea/textarea"
+import { Box } from "../box/box"
+import { Stack } from "../stack/stack"
+import { Inline } from "../inline/inline"
+import { Grid } from "../grid/grid"
+import { Container } from "../container/container"
 
 // ─── Client-only components ───────────────────────────────────────────────────
 
@@ -225,6 +230,59 @@ describe("SSR: server-safe components render to string without error", () => {
     )
     expect(html).toContain("Step 1")
     expect(html).toContain("First step")
+  })
+
+  // VI-427 layout primitives — server-safe by construction (no client hooks).
+  it("Box renders to string", () => {
+    const html = renderToString(
+      <Box padding="md" bg="card" borderRadius="lg" border>
+        Content
+      </Box>
+    )
+    expect(html).toContain("Content")
+    expect(html).toContain('data-slot="box"')
+  })
+
+  it("Stack renders to string", () => {
+    const html = renderToString(
+      <Stack gap="md">
+        <span>One</span>
+        <span>Two</span>
+      </Stack>
+    )
+    expect(html).toContain("One")
+    expect(html).toContain('data-slot="stack"')
+  })
+
+  it("Inline renders to string", () => {
+    const html = renderToString(
+      <Inline gap="sm" wrap>
+        <span>One</span>
+        <span>Two</span>
+      </Inline>
+    )
+    expect(html).toContain("One")
+    expect(html).toContain('data-slot="inline"')
+  })
+
+  it("Grid renders to string", () => {
+    const html = renderToString(
+      <Grid columns={3} gap="md">
+        <span>cell</span>
+      </Grid>
+    )
+    expect(html).toContain("cell")
+    expect(html).toContain('data-slot="grid"')
+  })
+
+  it("Container renders to string", () => {
+    const html = renderToString(
+      <Container size="lg" padding="md" as="main">
+        Page
+      </Container>
+    )
+    expect(html).toContain("Page")
+    expect(html).toContain('data-slot="container"')
   })
 })
 

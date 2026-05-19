@@ -1,0 +1,62 @@
+name: Box
+description: Universal layout wrapper for padding, margin, background, border, and border-radius via Visor design tokens.
+extends: HTMLElement
+category: layout
+
+when_to_use:
+  - Wrapping a region of content to apply padding, margin, or a surface background
+  - Adding a tokenized border or border-radius to an arbitrary container
+  - Building the outermost wrapper of a Stack, Inline, or Grid layout when you also need spacing/surface chrome
+  - Any place you would otherwise reach for raw Tailwind utility classes like `p-4 bg-white rounded-lg`
+
+when_not_to_use:
+  - Arranging children with consistent gap (use Stack, Inline, or Grid)
+  - Centering content with a max-width (use Container)
+  - As a stylistic Card replacement — Card carries elevation + interaction affordances
+
+why: >
+  Box closes the gap between Visor's typed token system and ad-hoc Tailwind
+  utility classes for one-off layout. All padding/margin/surface props accept
+  only token names — off-system values are TypeScript errors — so token
+  changes propagate automatically and structural intent is expressible in
+  the design system.
+
+props:
+  - name: as
+    type: "keyof JSX.IntrinsicElements"
+    default: "'div'"
+    description: HTML element to render
+  - name: padding
+    type: "SpacingToken | ResponsiveProp<SpacingToken>"
+    description: Shorthand padding on all sides
+  - name: paddingX
+    type: "SpacingToken | ResponsiveProp<SpacingToken>"
+    description: Padding on the X axis (overrides `padding`)
+  - name: paddingY
+    type: "SpacingToken | ResponsiveProp<SpacingToken>"
+    description: Padding on the Y axis (overrides `padding`)
+  - name: margin
+    type: "SpacingToken | ResponsiveProp<SpacingToken>"
+    description: Shorthand margin on all sides
+  - name: bg
+    type: "SurfaceToken"
+    description: Token-named background surface (e.g. `'card'`, `'subtle'`)
+  - name: border
+    type: "boolean | BorderToken"
+    description: When true uses `--border-default`; when a token name uses that border color
+  - name: borderRadius
+    type: "RadiusToken"
+    description: Token-named border radius
+
+dependencies: []
+
+preview_url: "https://visor.loworbit.studio/docs/components/layout/box"
+
+example: |
+  <Box padding="md" bg="card" borderRadius="lg" border>
+    Anything
+  </Box>
+
+  <Box padding={{ base: "sm", md: "lg" }} as="section">
+    Responsive padding
+  </Box>

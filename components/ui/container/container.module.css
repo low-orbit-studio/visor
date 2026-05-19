@@ -1,0 +1,24 @@
+/* ============================================================
+   Container — max-width centered wrapper for page content.
+
+   Sizes map to common page-content widths. `full` is no
+   max-width — useful when you want only the padding affordance.
+   Padding uses the standard `--spacing-*` tokens.
+   ============================================================ */
+
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding, var(--spacing-4, 1rem));
+  padding-right: var(--container-padding, var(--spacing-4, 1rem));
+  max-width: var(--container-max-width, 1024px);
+}
+
+/* Size variants — chosen to match the Visor responsive breakpoints so
+   consumers can pair them with media-query layouts naturally. */
+.sizeSm { --container-max-width: 640px; }
+.sizeMd { --container-max-width: 768px; }
+.sizeLg { --container-max-width: 1024px; }
+.sizeXl { --container-max-width: 1280px; }
+.sizeFull { max-width: none; }

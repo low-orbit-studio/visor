@@ -1,0 +1,59 @@
+/* ============================================================
+   Grid — CSS Grid wrapper with token-driven gap and responsive
+   column count.
+
+   Columns and gap are both responsive — the component sets the
+   `--grid-cols-*` and `--grid-gap-*` CSS variables on the inline
+   style and the media queries below pick them up at each
+   breakpoint.
+   ============================================================ */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols, 1), minmax(0, 1fr));
+  gap: var(--grid-gap, var(--spacing-4, 1rem));
+}
+
+/* Alignment */
+.alignStart { align-items: start; }
+.alignCenter { align-items: center; }
+.alignEnd { align-items: end; }
+.alignStretch { align-items: stretch; }
+
+.justifyStart { justify-items: start; }
+.justifyCenter { justify-items: center; }
+.justifyEnd { justify-items: end; }
+.justifyStretch { justify-items: stretch; }
+
+/* Responsive columns + gap */
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(var(--grid-cols-sm, var(--grid-cols, 1)), minmax(0, 1fr));
+    gap: var(--grid-gap-sm, var(--grid-gap, var(--spacing-4, 1rem)));
+  }
+}
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(var(--grid-cols-md, var(--grid-cols-sm, var(--grid-cols, 1))), minmax(0, 1fr));
+    gap: var(--grid-gap-md, var(--grid-gap-sm, var(--grid-gap, var(--spacing-4, 1rem))));
+  }
+}
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(var(--grid-cols-lg, var(--grid-cols-md, var(--grid-cols-sm, var(--grid-cols, 1)))), minmax(0, 1fr));
+    gap: var(--grid-gap-lg, var(--grid-gap-md, var(--grid-gap-sm, var(--grid-gap, var(--spacing-4, 1rem)))));
+  }
+}
+@media (min-width: 1280px) {
+  .grid {
+    grid-template-columns: repeat(var(--grid-cols-xl, var(--grid-cols-lg, var(--grid-cols-md, var(--grid-cols-sm, var(--grid-cols, 1))))), minmax(0, 1fr));
+    gap: var(--grid-gap-xl, var(--grid-gap-lg, var(--grid-gap-md, var(--grid-gap-sm, var(--grid-gap, var(--spacing-4, 1rem))))));
+  }
+}
+
+/* Custom template string mode — when consumer passes a string template,
+   the inline style sets `--grid-template-columns` directly and the
+   override below wins over the column-count rules above. */
+.grid[data-template="true"] {
+  grid-template-columns: var(--grid-template-columns);
+}

@@ -1,0 +1,63 @@
+---
+title: Stack
+description: Vertical flex container with token-driven gap, alignment, and `as` polymorphism.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { Stack } from '@/components/ui/stack';
+import { Box } from '@/components/ui/box';
+
+```bash
+npx visor add stack
+```
+
+## Why Stack?
+
+`Stack` is the token-typed replacement for `flex flex-col gap-N` Tailwind utility chains. The `gap` prop accepts only Visor spacing tokens (`xs`, `sm`, `md`, `lg`, `xl`, `2xl`, `3xl`) so spacing across an app stays consistent.
+
+Default gap is `"md"` — the value of `--spacing-4` (1rem).
+
+## Default Gap
+
+<ComponentPreview
+  title="Stack with default gap"
+  code={"<Stack>\n  <Box padding=\"sm\" bg=\"subtle\" borderRadius=\"md\">One</Box>\n  <Box padding=\"sm\" bg=\"subtle\" borderRadius=\"md\">Two</Box>\n  <Box padding=\"sm\" bg=\"subtle\" borderRadius=\"md\">Three</Box>\n</Stack>"}
+>
+  <Stack>
+    <Box padding="sm" bg="subtle" borderRadius="md">One</Box>
+    <Box padding="sm" bg="subtle" borderRadius="md">Two</Box>
+    <Box padding="sm" bg="subtle" borderRadius="md">Three</Box>
+  </Stack>
+</ComponentPreview>
+
+## Alignment
+
+```tsx
+<Stack gap="md" align="center">
+  <Box>centered horizontally</Box>
+  <Box>centered horizontally</Box>
+</Stack>
+```
+
+## Responsive Gap
+
+```tsx
+<Stack gap={{ base: "sm", md: "lg", xl: "2xl" }}>
+  Tighter on mobile, breathier on desktop.
+</Stack>
+```
+
+## Polymorphic `as`
+
+```tsx
+<Stack as="section" gap="lg">
+  <h2>Heading</h2>
+  <p>Body</p>
+</Stack>
+```
+
+## Installation
+
+```bash
+npx visor add stack
+```
