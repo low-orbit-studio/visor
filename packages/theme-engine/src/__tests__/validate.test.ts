@@ -1749,6 +1749,18 @@ describe("validate — override completeness (INCOMPLETE_OVERRIDE)", () => {
     expect(warns).toHaveLength(0);
   });
 
+  it("post-VI-421 Borderless (themes/borderless.visor.yaml) is clean", () => {
+    // Loads the actual repo theme — guards against regressions in either the
+    // validator or Borderless's coverage. VI-421 closed the loop on VI-420's
+    // 25-warning first-run signal; this test pins it.
+    const path = resolvePath(__dirname, "..", "..", "..", "..", "themes", "borderless.visor.yaml");
+    const yaml = readFileSync(path, "utf-8");
+    const config = parseConfig(yaml);
+    const result = validate(config);
+    const warns = result.warnings.filter((w) => w.code === "INCOMPLETE_OVERRIDE");
+    expect(warns).toHaveLength(0);
+  });
+
   it("pre-VI-417 Blackout fixture warns about the tokens VI-417 added", () => {
     // The reverse-baseline fixture proves the validator catches the exact
     // class of bug VI-417 fixed. Counts: surface (11 missing: selected,
