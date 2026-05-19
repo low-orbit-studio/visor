@@ -7,7 +7,7 @@ import {
   unlinkSync,
   copyFileSync,
 } from "fs"
-import { join, basename, resolve, sep } from "path"
+import { join, basename, resolve, sep, relative } from "path"
 import { parse as parseYaml } from "yaml"
 import { generateThemeData, validateFontCoverage, formatFontCoverageError } from "@loworbitstudio/visor-theme-engine"
 import { docsAdapter } from "@loworbitstudio/visor-theme-engine/adapters"
@@ -41,6 +41,11 @@ interface ThemeManifestEntry {
   css: string
   yamlFilename: string
   isCustom: boolean
+}
+
+interface ThemeFailure {
+  filePath: string
+  error: string
 }
 
 const GLOBALS_BEGIN_MARKER = "/* BEGIN visor-theme-imports — managed by `visor theme sync` */"
@@ -179,6 +184,42 @@ function resolveCustomSources(
   }
 
   return { files: [...merged.values()], deprecationWarnings }
+}
+
+/** Format per-theme failures for the operator. Used by both the
+ *  manifest-empty bail-out and the partial-success tail. JSON mode is
+ *  emitted by the caller because the envelope shape differs between the two
+ *  call sites (with vs without manifest stats). */
+function emitFailureSummary({
+  failures,
+  succeeded,
+  options,
+  cwd,
+}: {
+  failures: ThemeFailure[]
+  succeeded: number
+  options: ThemeSyncOptions
+  cwd: string
+}): void {
+  if (options.json) {
+    console.log(
+      JSON.stringify({
+        success: false,
+        themes: succeeded,
+        failures: failures.map((f) => ({ filePath: f.filePath, error: f.error })),
+      }),
+    )
+    return
+  }
+  const lines = [
+    `Theme sync: ${succeeded} succeeded, ${failures.length} failed.`,
+    "",
+    "Failed:",
+    ...failures.map((f) => `  ${relative(cwd, f.filePath)} — ${f.error}`),
+    "",
+    "Re-run after fixing the failed themes.",
+  ]
+  logger.error(lines.join("\n"))
 }
 
 /** Print a broken-symlink error in the appropriate output format. */
@@ -543,16 +584,17 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
     for (const w of discoveryWarnings) logger.warn(w)
   }
 
-  // Build manifest
+  // Build manifest. VI-422: per-theme errors are collected and reported in a
+  // summary at the end; one broken theme does not abort the sync of others.
   const manifest: ThemeManifestEntry[] = []
-  const errors: string[] = []
+  const failures: ThemeFailure[] = []
 
   const processFile = (filePath: string, isCustom: boolean, slugOverride?: string) => {
     let yamlContent: string
     try {
       yamlContent = readFileSync(filePath, "utf-8")
     } catch {
-      errors.push(`Could not read: ${filePath}`)
+      failures.push({ filePath, error: `Could not read: ${filePath}` })
       return
     }
 
@@ -560,7 +602,10 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
     try {
       data = generateThemeData(yamlContent)
     } catch (err) {
-      errors.push(`Failed to parse ${basename(filePath)}: ${err instanceof Error ? err.message : "Unknown error"}`)
+      failures.push({
+        filePath,
+        error: `Failed to parse ${basename(filePath)}: ${err instanceof Error ? err.message : "Unknown error"}`,
+      })
       return
     }
 
@@ -576,7 +621,10 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
     const coverage = validateFontCoverage(css)
     if (coverage.errors.length > 0) {
       for (const e of coverage.errors) {
-        errors.push(formatFontCoverageError(basename(filePath), e.declaredAt, e.family))
+        failures.push({
+          filePath,
+          error: formatFontCoverageError(basename(filePath), e.declaredAt, e.family),
+        })
       }
       return
     }
@@ -595,12 +643,10 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
     processFile(c.filePath, true, isNested ? c.slug : undefined)
   }
 
-  if (errors.length > 0) {
-    if (options.json) {
-      console.log(JSON.stringify({ success: false, errors }))
-    } else {
-      errors.forEach((e) => logger.error(e))
-    }
+  // D6 guard: if no theme succeeded, do not proceed to writes — never wipe
+  // pre-existing CSS on a fully failed run. Emit summary, exit non-zero.
+  if (manifest.length === 0) {
+    emitFailureSummary({ failures, succeeded: 0, options, cwd })
     process.exit(1)
     return
   }
@@ -653,6 +699,7 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
   const stalePublicYamls = existingPublicYamls.filter((f) => !newPublicYamlSet.has(f))
 
   if (options.dryRun) {
+    const dryRunHasFailures = failures.length > 0
     const changes = {
       themesDiscovered: manifest.map((e) => ({ slug: e.slug, group: e.group, isCustom: e.isCustom })),
       cssFilesGenerated: allSlugs.map((s) => `packages/docs/app/${s}-theme.css`),
@@ -665,13 +712,27 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
       publicYamlsDeleted: stalePublicYamls.map((f) => `packages/docs/public/themes/${f}`),
     }
     if (options.json) {
-      console.log(JSON.stringify({ success: true, dryRun: true, changes }))
+      console.log(JSON.stringify({
+        success: !dryRunHasFailures,
+        dryRun: true,
+        changes,
+        ...(dryRunHasFailures
+          ? { failures: failures.map((f) => ({ filePath: f.filePath, error: f.error })) }
+          : {}),
+      }))
     } else {
       logger.info("Dry run — no files written")
       logger.item(`Themes discovered: ${manifest.length} (${stockManifest.length} stock, ${customManifest.length} custom)`)
       manifest.forEach((e) => logger.item(`  ${e.slug} — group: ${e.group}`))
       if (staleCssFiles.length > 0) logger.item(`CSS files to delete: ${staleCssFiles.join(", ")}`)
       if (stalePublicYamls.length > 0) logger.item(`Public YAMLs to delete: ${stalePublicYamls.join(", ")}`)
+      if (dryRunHasFailures) {
+        emitFailureSummary({ failures, succeeded: manifest.length, options, cwd })
+      }
+    }
+    if (dryRunHasFailures) {
+      process.exit(1)
+      return
     }
     return
   }
@@ -729,10 +790,12 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
     return
   }
 
+  const hasFailures = failures.length > 0
+
   if (options.json) {
     const warnings = [...deprecationWarnings, ...discoveryWarnings]
     console.log(JSON.stringify({
-      success: true,
+      success: !hasFailures,
       themes: manifest.length,
       stock: stockManifest.length,
       custom: customManifest.length,
@@ -740,9 +803,18 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
       staleYamlsDeleted: stalePublicYamls.length,
       slugs: allSlugs,
       ...(warnings.length > 0 ? { warnings } : {}),
+      ...(hasFailures
+        ? {
+            failures: failures.map((f) => ({ filePath: f.filePath, error: f.error })),
+          }
+        : {}),
     }))
   } else {
-    logger.success(`Theme sync complete — ${manifest.length} themes registered`)
+    if (hasFailures) {
+      logger.info(`Theme sync partial — ${manifest.length} themes registered`)
+    } else {
+      logger.success(`Theme sync complete — ${manifest.length} themes registered`)
+    }
     logger.item(`Stock: ${stockManifest.map((e) => e.slug).join(", ")}`)
     if (customManifest.length > 0) {
       logger.item(`Custom: ${customManifest.map((e) => e.slug).join(", ")}`)
@@ -750,5 +822,13 @@ export function themeSyncCommand(cwd: string, options: ThemeSyncOptions): void {
     if (staleCssFiles.length > 0) {
       logger.item(`Removed stale CSS: ${staleCssFiles.join(", ")}`)
     }
+    if (hasFailures) {
+      emitFailureSummary({ failures, succeeded: manifest.length, options, cwd })
+    }
+  }
+
+  if (hasFailures) {
+    process.exit(1)
+    return
   }
 }

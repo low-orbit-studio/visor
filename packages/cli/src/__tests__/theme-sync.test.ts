@@ -1306,6 +1306,139 @@ describe("theme sync command", () => {
     })
   })
 
+  // ============================================================
+  // VI-422 — per-theme error isolation (continue past broken themes)
+  // ============================================================
+
+  describe("VI-422 — per-theme error isolation", () => {
+    const BROKEN_YAML = "name: broken\nversion: 1\n# missing colors\n"
+
+    it("syncs healthy themes when one stock theme has malformed YAML (exit non-zero)", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      writeStockYaml("broken.visor.yaml", BROKEN_YAML)
+
+      expect(() => themeSyncCommand(testDir, {})).toThrow("process.exit(1)")
+
+      const docsApp = join(testDir, "packages", "docs", "app")
+      expect(existsSync(join(docsApp, "blackout-theme.css"))).toBe(true)
+      expect(existsSync(join(docsApp, "broken-theme.css"))).toBe(false)
+    })
+
+    it("JSON mode reports failures alongside succeeded themes with success:false", () => {
+      const logs: string[] = []
+      vi.spyOn(console, "log").mockImplementation((msg) => logs.push(String(msg)))
+
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      writeStockYaml("broken.visor.yaml", BROKEN_YAML)
+
+      expect(() => themeSyncCommand(testDir, { json: true })).toThrow("process.exit(1)")
+
+      expect(logs.length).toBe(1)
+      const result = JSON.parse(logs[0])
+      expect(result.success).toBe(false)
+      expect(result.themes).toBe(1)
+      expect(result.slugs).toContain("blackout")
+      expect(result.failures).toBeDefined()
+      expect(result.failures.length).toBeGreaterThanOrEqual(1)
+      expect(result.failures[0].filePath).toContain("broken.visor.yaml")
+      expect(result.failures[0].error).toBeTruthy()
+    })
+
+    it("text mode emits structured summary with succeeded/failed counts and file path", () => {
+      const errors: string[] = []
+      vi.spyOn(console, "error").mockImplementation((msg) => errors.push(String(msg)))
+
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      writeStockYaml("broken.visor.yaml", BROKEN_YAML)
+
+      expect(() => themeSyncCommand(testDir, {})).toThrow("process.exit(1)")
+
+      const combined = errors.join("\n")
+      expect(combined).toMatch(/1 succeeded, 1 failed/)
+      expect(combined).toContain("broken.visor.yaml")
+      expect(combined).toContain("Failed:")
+    })
+
+    it("registers only successful themes in theme-config.ts when one fails", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      writeStockYaml("broken.visor.yaml", BROKEN_YAML)
+
+      expect(() => themeSyncCommand(testDir, {})).toThrow("process.exit(1)")
+
+      const config = readFileSync(
+        join(testDir, "packages", "docs", "lib", "theme-config.ts"),
+        "utf-8",
+      )
+      expect(config).toContain('value: "blackout"')
+      expect(config).not.toContain('value: "broken"')
+    })
+
+    it("registers only successful themes in globals.css when one fails", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      writeStockYaml("broken.visor.yaml", BROKEN_YAML)
+
+      expect(() => themeSyncCommand(testDir, {})).toThrow("process.exit(1)")
+
+      const globals = readFileSync(
+        join(testDir, "packages", "docs", "app", "globals.css"),
+        "utf-8",
+      )
+      expect(globals).toContain("@import './blackout-theme.css';")
+      expect(globals).not.toContain("@import './broken-theme.css';")
+    })
+
+    it("isolates a broken custom theme; healthy stock theme still syncs", () => {
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      writeCustomYaml("broken.visor.yaml", BROKEN_YAML)
+
+      expect(() => themeSyncCommand(testDir, {})).toThrow("process.exit(1)")
+
+      const docsApp = join(testDir, "packages", "docs", "app")
+      expect(existsSync(join(docsApp, "blackout-theme.css"))).toBe(true)
+      expect(existsSync(join(docsApp, "broken-theme.css"))).toBe(false)
+    })
+
+    it("manifest-empty guard: when every theme fails, exits non-zero and preserves pre-existing CSS (D6)", () => {
+      const docsApp = join(testDir, "packages", "docs", "app")
+      // Pre-existing CSS that must survive a fully failed run
+      writeFileSync(join(docsApp, "survivor-theme.css"), ".survivor {}", "utf-8")
+
+      writeStockYaml("broken.visor.yaml", BROKEN_YAML)
+
+      expect(() => themeSyncCommand(testDir, {})).toThrow("process.exit(1)")
+
+      expect(existsSync(join(docsApp, "survivor-theme.css"))).toBe(true)
+    })
+
+    it("dry-run with partial failures reports failures in JSON and exits non-zero", () => {
+      const logs: string[] = []
+      vi.spyOn(console, "log").mockImplementation((msg) => logs.push(String(msg)))
+
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      writeStockYaml("broken.visor.yaml", BROKEN_YAML)
+
+      expect(() => themeSyncCommand(testDir, { dryRun: true, json: true })).toThrow("process.exit(1)")
+
+      const result = JSON.parse(logs[0])
+      expect(result.success).toBe(false)
+      expect(result.dryRun).toBe(true)
+      expect(result.failures).toBeDefined()
+      expect(result.failures.length).toBeGreaterThanOrEqual(1)
+    })
+
+    it("all-healthy run is unchanged: exit 0, no failure summary", () => {
+      const errors: string[] = []
+      vi.spyOn(console, "error").mockImplementation((msg) => errors.push(String(msg)))
+
+      writeStockYaml("blackout.visor.yaml", STOCK_YAML_BLACKOUT)
+      writeStockYaml("neutral.visor.yaml", STOCK_YAML_NEUTRAL)
+
+      // Should not throw — exit 0 path is the default no-op for the spy
+      expect(() => themeSyncCommand(testDir, {})).not.toThrow()
+      expect(errors.join("\n")).not.toMatch(/succeeded, \d+ failed/)
+    })
+  })
+
   describe("D5 — empty-source actionable message", () => {
     it("error message includes env var name, sibling path, and clone command", () => {
       const errors: string[] = []
