@@ -12,6 +12,7 @@
     "packages/cli/src/**",
     "packages/theme-engine/src/**",
     "packages/visor-flutter/lib/**",
-    "packages/tokens/src/**"
+    "packages/tokens/src/**",
+    "packages/tailwind-preset/src/**"
   ]
 }
