@@ -1,0 +1,112 @@
+---
+title: Avatar Stack
+description: Overlapping avatar group with a "+N more" overflow indicator. Pure composition of the Avatar primitive.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import {
+  AvatarStackSmallDemo,
+  AvatarStackMaxDemo,
+  AvatarStackOverflowDemo,
+  AvatarStackSizesDemo,
+} from '@/components/blocks/avatar-stack';
+
+## Small Group
+
+Up to `max` avatars (default `6`) render in a row with each subsequent avatar overlapping its predecessor.
+
+<ComponentPreview
+  title="3 avatars"
+  code={"import { AvatarStack } from '@/blocks/avatar-stack/avatar-stack';\n\n<AvatarStack avatars={[a, b, c]} total={3} size=\"sm\" />"}
+>
+  <AvatarStackSmallDemo />
+</ComponentPreview>
+
+## At the Default Cap
+
+When `total === max` the overflow indicator is omitted.
+
+<ComponentPreview
+  title="6 avatars (max default)"
+  code={"<AvatarStack avatars={six} total={6} size=\"sm\" />"}
+>
+  <AvatarStackMaxDemo />
+</ComponentPreview>
+
+## With Overflow
+
+When `total` exceeds `avatars.length` or `max`, the stack appends a `+N more` chip rendered as another Avatar with a fallback. The overflow can absorb either client-side truncation (`total > max`) or server-truncated data (`total > avatars.length`).
+
+<ComponentPreview
+  title="6 avatars + 6 overflow"
+  code={"<AvatarStack avatars={six} total={12} size=\"sm\" />"}
+>
+  <AvatarStackOverflowDemo />
+</ComponentPreview>
+
+## Sizes
+
+`size` is passed through to every rendered Avatar, including the overflow chip.
+
+<ComponentPreview
+  title="sm / default / lg"
+  code={"<AvatarStack avatars={six} total={9} size=\"sm\" />\n<AvatarStack avatars={six} total={9} size=\"default\" />\n<AvatarStack avatars={six} total={9} size=\"lg\" />"}
+>
+  <AvatarStackSizesDemo />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add --block avatar-stack
+```
+
+This copies files into your project:
+
+- `blocks/avatar-stack/avatar-stack.tsx` — the block
+- `blocks/avatar-stack/avatar-stack.module.css` — the styles
+
+It also installs the `avatar` primitive if it isn't already present.
+
+## Usage
+
+```tsx
+'use client';
+
+import { AvatarStack } from '@/blocks/avatar-stack/avatar-stack';
+
+<AvatarStack
+  avatars={['/users/ana.jpg', '/users/ben.jpg', '/users/cam.jpg']}
+  total={12}
+  max={6}
+  size="sm"
+  label="12 team members"
+/>;
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `avatars` | `(string \| undefined)[]` | — | **Required.** Avatar image sources in display order. `undefined` renders the default fallback. |
+| `total` | `number` | — | **Required.** Total member count. May exceed `avatars.length` for server-truncated data. |
+| `max` | `number` | `6` | Maximum avatar slots rendered before the `+N` overflow indicator. |
+| `size` | `"sm" \| "default" \| "lg"` | `"sm"` | Avatar size passed through to every rendered Avatar. |
+| `label` | `string` | `` `${total} members` `` | Accessible label override. |
+
+## How It Works
+
+- The block composes the existing `Avatar`, `AvatarImage`, and `AvatarFallback` primitives — no new primitive, no new tokens, no new ARIA pattern.
+- Each avatar carries an outward ring (`box-shadow: 0 0 0 var(--stroke-width-medium) var(--surface-default)`) so the stack reads cleanly against any surface tone. Because `Avatar` uses `overflow: hidden`, the ring is projected outward rather than inset.
+- Avatars after the first overlap by `calc(-1 * var(--spacing-2))` (`-0.5rem`). `isolation: isolate` on the root keeps the stacking context contained so later avatars naturally render on top of earlier ones.
+- The overflow indicator is itself an `Avatar` with a `+N` fallback, inheriting the same size and ring treatment.
+
+## Accessibility
+
+- The stack root renders with `role="img"` so screen readers treat the cluster as a single image rather than reading each fallback character individually.
+- The `aria-label` defaults to `` `${total} members` ``; pass `label` for richer context (`"12 team members"`, `"3 reviewers assigned"`, etc.).
+- Individual `AvatarImage` children pass `alt=""` because the group label already describes the cluster.
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Blocks are copy-and-own — install them and customize freely.

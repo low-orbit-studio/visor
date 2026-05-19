@@ -1,0 +1,59 @@
+name: AvatarStack
+description: Overlapping avatar group with a `+N more` overflow indicator. Pure composition of the Avatar primitive, no new tokens or ARIA pattern.
+category: data-display
+components_used:
+  - avatar
+
+when_to_use:
+  - Compact summary of multiple members on a card or facts row
+  - Member presence indicators on org-detail, project, or workspace summaries
+  - Server-truncated lists where the total count is known but only the first
+    few avatar URLs were sent down
+
+when_not_to_use:
+  - Single-user contexts (use Avatar directly)
+  - Full member directories (use a paginated list or table)
+  - Interactive selection of members (use a list block with checkboxes)
+
+why: >
+  AvatarStack composes existing Avatar primitives with a negative-margin
+  overlap and an outward ring that matches the parent surface. The "+N more"
+  cap is rendered as a fallback-only Avatar so it inherits the same size and
+  ring treatment. The whole stack is announced as a single image with an
+  aria-label summarising the total count.
+
+props:
+  - name: avatars
+    type: "(string | undefined)[]"
+    required: true
+    description: Avatar image sources in display order. `undefined` renders the default fallback.
+  - name: total
+    type: number
+    required: true
+    description: Total member count. May exceed `avatars.length` (server-truncated case).
+  - name: max
+    type: number
+    default: "6"
+    description: Maximum avatar slots rendered before the `+N` overflow indicator.
+  - name: size
+    type: '"sm" | "default" | "lg"'
+    default: '"sm"'
+    description: Avatar size passed through to each rendered Avatar.
+  - name: label
+    type: string
+    optional: true
+    description: Accessible label override. Defaults to "${total} members".
+
+dependencies:
+  - avatar
+
+preview_url: "https://visor.design/docs/blocks/avatar-stack"
+
+example: |
+  <AvatarStack
+    avatars={["/a.jpg", "/b.jpg", "/c.jpg"]}
+    total={12}
+    max={6}
+    size="sm"
+    label="12 team members"
+  />
