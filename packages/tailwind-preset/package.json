@@ -1,0 +1,77 @@
+{
+  "name": "@loworbitstudio/visor-tailwind-preset",
+  "version": "0.1.0",
+  "description": "Tailwind CSS preset for the Visor design system — exposes every Visor CSS custom property as a Tailwind theme key so consumers never re-declare hex values, spacing scales, or motion tokens.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./v3": {
+      "types": "./dist/v3.d.ts",
+      "import": "./dist/v3.js",
+      "require": "./dist/v3.cjs"
+    },
+    "./v4": {
+      "types": "./dist/v4.d.ts",
+      "import": "./dist/v4.js",
+      "require": "./dist/v4.cjs"
+    },
+    "./v4.css": "./dist/v4.css",
+    "./tokens": {
+      "types": "./dist/tokens.d.ts",
+      "import": "./dist/tokens.js",
+      "require": "./dist/tokens.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup && node scripts/copy-css.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "files": [
+    "dist/",
+    "README.md"
+  ],
+  "keywords": [
+    "tailwindcss",
+    "tailwind",
+    "preset",
+    "design-tokens",
+    "design-system",
+    "visor"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/low-orbit-studio/visor.git"
+  },
+  "homepage": "https://visor.loworbit.studio",
+  "bugs": {
+    "url": "https://github.com/low-orbit-studio/visor/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "tailwindcss": ">=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "tailwindcss": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@loworbitstudio/visor-core": "^0.8.0",
+    "@types/node": "^22.0.0",
+    "tsup": "^8.4.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^4.1.2"
+  }
+}
