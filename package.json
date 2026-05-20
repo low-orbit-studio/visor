@@ -44,7 +44,7 @@
     "docs:dev": "npm run dev -w packages/docs",
     "docs:build": "npm run build -w packages/docs",
     "changeset": "changeset",
-    "changeset:version": "changeset version",
+    "changeset:version": "changeset version && npm install --package-lock-only --ignore-scripts",
     "changeset:publish": "changeset publish",
     "prepare": "husky 2>/dev/null; git config core.hooksPath .husky 2>/dev/null || true",
     "fonts:add": "varlock run -- npx visor fonts add",
