@@ -1,5 +1,43 @@
 # Changelog
 
+## 1.2.0
+
+### Minor Changes
+
+- dda261b: VI-425 feat: `data-table` `density` prop — `compact` / `default` / `editorial` row padding.
+
+  Adds an optional `density` prop to `data-table` (default `"default"`) that maps to a `data-density` attribute on the root and drives a `--dt-row-py` custom property the cells consume. `compact` = 8px, `default` = 12px (unchanged from previous behaviour — no visual regression for existing consumers), `editorial` = 20px (generous, each row reads as a card). Implementation only overrides cell `padding-top` / `padding-bottom` via a scoped `.root td` rule, leaving the existing `TableCell` shorthand to govern horizontal padding. Themes can override per-density values by targeting `[data-density="…"]` from their own selector. Driven by the `organization-management` pattern build (PL-1490 / PL-1498) where the editorial direction calls for more vertical breathing room than the default density allows.
+
+- ad13ae2: VI-427 feat: layout primitives — `Box`, `Stack`, `Inline`, `Grid`, `Container`.
+
+  Five token-driven layout primitives, each at `components/ui/{name}/`, available via `npx visor add box stack inline grid container`. Token-named props (`SpacingToken`, `SurfaceToken`, `RadiusToken`, `BorderToken`) are enforced by TypeScript so off-system values are compile errors. Responsive `{ base, sm, md, lg, xl }` maps are wired through per-breakpoint CSS variables. Stack defaults to `gap="md"`, Container defaults to `size="lg" padding="md"`. All primitives ref-forward and support `as` prop polymorphism, defaulting to `<div>`. Total bundle weight is 1.8 KB gzipped (target was &lt; 5 KB). 58 unit tests + 16 snapshot/token-coverage tests + 5 SSR tests; docs site has a new `components/layout` group with MDX pages and `PropsTable` API references.
+
+- 612ed7e: VI-429 feat: `score-indicator` Visor primitive — compact circular ring for percentage / ratio metrics.
+
+  Ships a new admin primitive installable via `npx visor add score-indicator` for health-score / uptime / engagement style metrics. Renders an SVG ring (track + indicator) with the value centered inside, an optional `/ N` denominator (trailing or below), and an auto-toned color mapping (`>=85%` success, `60-85%` info, `40-60%` warning, `<40%` destructive) that can be overridden with an explicit `tone`. Destructive and warning tones add a small phosphor icon overlay at the top-right of the ring as a non-color cue. Three sizes (24 / 36 / 56 px ring), `role="img"` with a default `"X out of Y"` aria-label, and theme integration via CSS custom properties so consumers can tune ring + value colors without forking.
+
+  Codifies the inline custom HTML in the organization-management Phase 1.5 prototype as a first-class primitive. Adjacent primitives consulted: `stat-card`, `stat-hero`, `badge`, `progress` — none cover circular / ratio rendering. Replaces the inline HTML in admin dashboards built on Visor.
+
+- ffd1e47: VI-430 feat: `prototype-review` Visor block — drop-in chrome for BL-193-style design-review prototypes.
+
+  Ships a theme-agnostic block that renders the full review SPA: theme switcher, light/dark mode toggle, brand color picker, treatment tabs, viewport switcher, and a multi-viewport iframe grid. Zero hex literals in the CSS module and zero `theme ===` conditionals in the TSX — every surface, border, and focus ring references Visor semantic tokens. Implements a postMessage protocol (`{ type: "prototype-theme", themeClass, mode, brand }`) for cross-iframe theme/mode/brand propagation, with URL params (`?theme=…&mode=…&brand=…`) as the deep-link fallback. Exposes a `usePrototypeReview()` hook for advanced consumers; default consumers pass props. Block API: `ticketId`, `reviewLabel`, `statusPills`, `treatments[]`, `landing{}`, `viewports{}`, `brand{}`, `themes[]`, `footer{}`.
+
+- a8a3525: VI-432 feat: `color-picker` Visor primitive — first-class OKLCH color picker installable via `npx visor add color-picker`.
+
+  Ships a theme-agnostic OKLCH-based color picker that reuses the validated math from `@loworbitstudio/visor-theme-engine`. Two surfaces — `popover` and `inline` — both built on the same engine. Registered under the `form` category with a docs page (4 live previews), a locked design recipe + HiFi mockup under `design-prototypes/color-picker/`, and 33 passing tests including WCAG 2.1 AA axe coverage. The `isOutOfGamut` helper is kept as a stable seam for a future engine release that exposes unclamped linear RGB. Replaces the simple hex picker in the `prototype-review` block at the consumer's option (the simple picker stays as the sensible default; `ColorPicker` is a drop-in upgrade).
+
+- 75c665a: VI-433 feat: `export-menu` Visor admin block — Export button + format-picker popover + scope toggles.
+
+  New admin block installable via `npx visor add export-menu --block` that standardizes the Export affordance across every admin list. Composes a `<Button>` trigger (with `aria-haspopup="dialog"`) into a `<Popover>` containing a header, a format-picker `<RadioGroup>` (CSV / JSON / PDF baseline via `defaultExportFormats()`, or any custom set), an optional scope checkbox section (Include archived, Include suspended, …), and a Cancel/Export footer. Async-aware: when `onExport` returns a `Promise`, the submit button shows a spinner with `aria-busy`, both buttons disable, and the popover stays open until the promise resolves; on rejection, state clears and the popover stays open so the user can retry. Disabled formats render a Radix tooltip with the `disabledReason` on hover/focus. Enter inside the popover (on any non-button element) submits the selected format. Trigger variant is mappable to the Button's default/secondary/ghost via `triggerVariant`.
+
+  Codifies the recurring "Export" pattern surfaced from the organization-management Phase 1.5 prototype audit (PL-1548) — previously every admin list (org list, members, invitations, roles, audit logs, …) reinvented this popover with subtly different formats and scope-toggle naming. Adjacent primitives consulted: `dropdown-menu`, `popover`, `quick-actions`, `command-dialog` — none cover format-picker + scope-toggle composition. Composes existing Visor primitives: `button`, `popover`, `radio-group`, `checkbox`, `label`, `tooltip`.
+
+### Patch Changes
+
+- 46bc6ba: VI-431 fix: `npx visor add` now installs all transitive peer dependencies of the added component.
+
+  Fixes a silent partial-install bug where the CLI reported success after writing component files but skipped peer dependencies referenced by their imports (e.g. `@radix-ui/react-slot` for `button`, `class-variance-authority` for `input` and `textarea`), causing the consumer's next `next build` to fail with `Cannot find module`. Audits every React-target registry item against its source-file imports and adds a self-validating regression test (`auditRegistryDependencies`) that runs against the built `dist/registry.json` so future drift fails CI before reaching consumers. Treats `react` and `react-dom` as assumed peer deps per shadcn convention.
+
 ## 1.1.0
 
 ### Minor Changes
