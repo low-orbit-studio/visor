@@ -1,0 +1,213 @@
+/* Score Indicator
+ *
+ * Compact circular score visualization for percentage / ratio metrics
+ * (health, uptime, engagement, etc.). Renders an SVG track + indicator
+ * ring with the value centered inside and an optional denominator label.
+ *
+ * All colors flow through CSS custom properties so themes (or consumers)
+ * can tune per-tone ring + value colors without forking the component.
+ */
+
+.base {
+  --score-indicator-track-color: color-mix(
+    in srgb,
+    var(--border-default, #e5e7eb) 100%,
+    transparent
+  );
+  --score-indicator-stroke-color: var(--text-primary, #111827);
+  --score-indicator-value-color: var(--text-primary, #111827);
+  --score-indicator-center-bg: transparent;
+  --score-indicator-icon-color: var(--text-primary, #111827);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  color: var(--text-primary, #111827);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--line-height-tight, 1.1);
+}
+
+/* Below denominator: stack ring on top of the "/ N" label */
+.denominatorBelow {
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+}
+
+.denominatorNone,
+.denominatorTrailing {
+  /* default flex-row layout */
+}
+
+/* Ring container — holds the SVG + centered value text */
+.ring {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full, 9999px);
+  background-color: var(--score-indicator-center-bg);
+  flex-shrink: 0;
+}
+
+.svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+/* Track — full ring at low opacity */
+.track {
+  stroke: var(--score-indicator-track-color);
+  transition: stroke var(--motion-duration-150, 150ms)
+    var(--motion-easing-default, ease-in-out);
+}
+
+/* Indicator — arc proportional to value/max */
+.indicator {
+  stroke: var(--score-indicator-stroke-color);
+  transition:
+    stroke-dashoffset var(--motion-duration-500, 500ms)
+      var(--motion-easing-default, ease-in-out),
+    stroke var(--motion-duration-150, 150ms)
+      var(--motion-easing-default, ease-in-out);
+}
+
+/* Centered value text — sits above the SVG */
+.value {
+  position: relative;
+  z-index: 1;
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--score-indicator-value-color);
+  line-height: 1;
+}
+
+/* Trailing or below denominator label */
+.denominator {
+  color: var(--text-tertiary, #6b7280);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-regular, 400);
+  white-space: nowrap;
+}
+
+/* Icon overlay for destructive / warning tones — sits at top-right of ring */
+.iconOverlay {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--score-indicator-icon-color);
+  background-color: var(--surface-card, #ffffff);
+  border-radius: var(--radius-full, 9999px);
+  line-height: 0;
+  z-index: 2;
+}
+
+/* Size sm — 24px ring, 11px value */
+.sizeSm .value {
+  font-size: 11px;
+}
+
+.sizeSm .denominator {
+  font-size: var(--font-size-xs, 0.75rem);
+}
+
+.sizeSm .iconOverlay {
+  font-size: 10px;
+}
+
+/* Size md — 36px ring, 14px value (default) */
+.sizeMd .value {
+  font-size: 14px;
+}
+
+.sizeMd .denominator {
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+.sizeMd .iconOverlay {
+  font-size: 12px;
+}
+
+/* Size lg — 56px ring, 20px value */
+.sizeLg .value {
+  font-size: 20px;
+}
+
+.sizeLg .denominator {
+  font-size: var(--font-size-base, 1rem);
+}
+
+.sizeLg .iconOverlay {
+  font-size: 14px;
+}
+
+/* Tone bindings: each maps the local custom properties to semantic theme
+ * tokens. Consumers override by setting any of the --score-indicator-* hooks
+ * on the wrapper. Each tone tints the center subtly via color-mix over the
+ * matching semantic surface so the value sits on a hint of color.
+ */
+
+.toneSuccess {
+  --score-indicator-stroke-color: var(--text-success, #16a34a);
+  --score-indicator-value-color: var(--text-success, #16a34a);
+  --score-indicator-icon-color: var(--text-success, #16a34a);
+  --score-indicator-center-bg: color-mix(
+    in srgb,
+    var(--surface-success-subtle, var(--text-success, #16a34a)) 35%,
+    transparent
+  );
+}
+
+.toneInfo {
+  --score-indicator-stroke-color: var(--text-info, #2563eb);
+  --score-indicator-value-color: var(--text-info, #2563eb);
+  --score-indicator-icon-color: var(--text-info, #2563eb);
+  --score-indicator-center-bg: color-mix(
+    in srgb,
+    var(--surface-info-subtle, var(--text-info, #2563eb)) 35%,
+    transparent
+  );
+}
+
+.toneWarning {
+  --score-indicator-stroke-color: var(--text-warning, #d97706);
+  --score-indicator-value-color: var(--text-warning, #d97706);
+  --score-indicator-icon-color: var(--text-warning, #d97706);
+  --score-indicator-center-bg: color-mix(
+    in srgb,
+    var(--surface-warning-subtle, var(--text-warning, #d97706)) 35%,
+    transparent
+  );
+}
+
+.toneDestructive {
+  --score-indicator-stroke-color: var(--text-error, #dc2626);
+  --score-indicator-value-color: var(--text-error, #dc2626);
+  --score-indicator-icon-color: var(--text-error, #dc2626);
+  --score-indicator-center-bg: color-mix(
+    in srgb,
+    var(--surface-error-subtle, var(--text-error, #dc2626)) 35%,
+    transparent
+  );
+}
+
+.toneNeutral {
+  --score-indicator-stroke-color: var(--text-tertiary, #6b7280);
+  --score-indicator-value-color: var(--text-primary, #111827);
+  --score-indicator-icon-color: var(--text-tertiary, #6b7280);
+  --score-indicator-center-bg: transparent;
+}
+
+/* Respect reduced motion — disable transitions */
+@media (prefers-reduced-motion: reduce) {
+  .indicator,
+  .track {
+    transition: none;
+  }
+}
