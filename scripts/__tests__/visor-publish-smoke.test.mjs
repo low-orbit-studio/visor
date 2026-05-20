@@ -3,6 +3,7 @@ import {
   computeDrift,
   formatReport,
   parseArgs,
+  detectStaleRegistry,
 } from "../visor-publish-smoke.mjs"
 
 const item = (name, files) => ({
@@ -224,6 +225,7 @@ describe("parseArgs", () => {
       version: null,
       localTarballDir: null,
       help: false,
+      skipStalenessCheck: false,
     })
   })
 
@@ -239,6 +241,10 @@ describe("parseArgs", () => {
     expect(parseArgs(["--local", "/tmp/pkg"]).localTarballDir).toBe("/tmp/pkg")
   })
 
+  it("parses --skip-staleness-check", () => {
+    expect(parseArgs(["--skip-staleness-check"]).skipStalenessCheck).toBe(true)
+  })
+
   it("parses -h and --help", () => {
     expect(parseArgs(["--help"]).help).toBe(true)
     expect(parseArgs(["-h"]).help).toBe(true)
@@ -246,5 +252,53 @@ describe("parseArgs", () => {
 
   it("throws on unknown args", () => {
     expect(() => parseArgs(["--nope"])).toThrow(/Unknown argument: --nope/)
+  })
+})
+
+describe("detectStaleRegistry", () => {
+  it("is fresh when no source files exist", () => {
+    expect(detectStaleRegistry(1000, [])).toEqual({
+      stale: false,
+      newerFile: null,
+      newerMtimeMs: null,
+    })
+  })
+
+  it("is fresh when every source file is older than the registry", () => {
+    const result = detectStaleRegistry(1000, [
+      { path: "a.tsx", mtimeMs: 900 },
+      { path: "b.tsx", mtimeMs: 999 },
+    ])
+    expect(result).toEqual({ stale: false, newerFile: null, newerMtimeMs: null })
+  })
+
+  it("is fresh when source files match the registry mtime exactly (tie favors fresh)", () => {
+    // Build that completed in the same millisecond as a source touch is
+    // indistinguishable from a build that happened after — don't false-flag.
+    const result = detectStaleRegistry(1000, [
+      { path: "a.tsx", mtimeMs: 1000 },
+    ])
+    expect(result.stale).toBe(false)
+  })
+
+  it("flags stale when any single source file is newer", () => {
+    const result = detectStaleRegistry(1000, [
+      { path: "a.tsx", mtimeMs: 900 },
+      { path: "b.tsx", mtimeMs: 2000 },
+      { path: "c.tsx", mtimeMs: 1500 },
+    ])
+    expect(result.stale).toBe(true)
+    expect(result.newerFile).toBe("b.tsx")
+    expect(result.newerMtimeMs).toBe(2000)
+  })
+
+  it("reports the newest source file (not the first newer one) when multiple are newer", () => {
+    const result = detectStaleRegistry(1000, [
+      { path: "older-but-newer.tsx", mtimeMs: 1100 },
+      { path: "newest.tsx", mtimeMs: 5000 },
+      { path: "middle.tsx", mtimeMs: 3000 },
+    ])
+    expect(result.newerFile).toBe("newest.tsx")
+    expect(result.newerMtimeMs).toBe(5000)
   })
 })

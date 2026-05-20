@@ -24,7 +24,14 @@
  *   2  invocation / environment error
  */
 
-import { readFileSync, existsSync, mkdtempSync, rmSync } from "node:fs"
+import {
+  readFileSync,
+  existsSync,
+  mkdtempSync,
+  rmSync,
+  statSync,
+  readdirSync,
+} from "node:fs"
 import { spawnSync } from "node:child_process"
 import { tmpdir } from "node:os"
 import { fileURLToPath } from "node:url"
@@ -136,14 +143,46 @@ export function formatReport({ drifts, warnings, publishedVersion, localItemCoun
   return lines.join("\n")
 }
 
+/**
+ * Decide whether the local registry is stale relative to source files.
+ *
+ * Pure function — caller does the stat work and passes mtimes in. Returns
+ * the newest source file (by mtime) if it's newer than the registry, else
+ * null. Ties (== mtime) are treated as fresh: a build that completes in
+ * the same millisecond as a source touch is indistinguishable from a
+ * build that happened after.
+ *
+ * @param {number} registryMtimeMs
+ * @param {Array<{ path: string, mtimeMs: number }>} sources
+ * @returns {{ stale: boolean, newerFile: string | null, newerMtimeMs: number | null }}
+ */
+export function detectStaleRegistry(registryMtimeMs, sources) {
+  let newerFile = null
+  let newerMtimeMs = null
+  for (const { path: p, mtimeMs } of sources) {
+    if (mtimeMs > registryMtimeMs && (newerMtimeMs === null || mtimeMs > newerMtimeMs)) {
+      newerFile = p
+      newerMtimeMs = mtimeMs
+    }
+  }
+  return { stale: newerFile !== null, newerFile, newerMtimeMs }
+}
+
 export function parseArgs(argv) {
-  const out = { json: false, version: null, localTarballDir: null, help: false }
+  const out = {
+    json: false,
+    version: null,
+    localTarballDir: null,
+    help: false,
+    skipStalenessCheck: false,
+  }
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]
     if (a === "--json") out.json = true
     else if (a === "--help" || a === "-h") out.help = true
     else if (a === "--version") out.version = argv[++i]
     else if (a === "--local") out.localTarballDir = argv[++i]
+    else if (a === "--skip-staleness-check") out.skipStalenessCheck = true
     else throw new Error(`Unknown argument: ${a}`)
   }
   return out
@@ -155,15 +194,18 @@ Usage:
   node scripts/visor-publish-smoke.mjs [options]
 
 Options:
-  --json                Emit a JSON report instead of human-readable text.
-  --version <semver>    Compare against a specific published version (default: latest).
-  --local <path>        Read published registry from <path>/dist/registry.json (no npm fetch).
-  -h, --help            Show this help.
+  --json                     Emit a JSON report instead of human-readable text.
+  --version <semver>         Compare against a specific published version (default: latest).
+  --local <path>             Read published registry from <path>/dist/registry.json (no npm fetch).
+  --skip-staleness-check     Skip the local-registry staleness check. CI sets this after
+                             running \`npm run build -w packages/cli\` in the prior step;
+                             local invocations should not pass it.
+  -h, --help                 Show this help.
 
 Exit codes:
   0  No drift detected (warnings allowed).
   1  Drift detected.
-  2  Invocation or environment error.
+  2  Invocation or environment error (includes stale local registry).
 `
 
 // ─── I/O (not unit-tested; smoke-tested in CI) ────────────────────────────────
@@ -231,6 +273,54 @@ function loadLocalRegistry() {
   return JSON.parse(readFileSync(LOCAL_REGISTRY, "utf8"))
 }
 
+/**
+ * Stat the source files that gate registry freshness:
+ *   - every `files[].path` referenced inside the registry (the actual primitive
+ *     source — if any of these change, registry content drifts)
+ *   - every `.ts` file under `registry/` at repo root (the registry definitions
+ *     — if any of these change, the set of items can drift)
+ *   - the build-registry script itself
+ *
+ * @param {{ items: Array<{ files: Array<{ path: string }> }> }} registry
+ * @returns {Array<{ path: string, mtimeMs: number }>}
+ */
+function collectRegistrySourceMtimes(registry) {
+  const sources = []
+  const seen = new Set()
+
+  const pushPath = (relPath) => {
+    if (seen.has(relPath)) return
+    seen.add(relPath)
+    const abs = path.join(REPO_ROOT, relPath)
+    try {
+      const s = statSync(abs)
+      sources.push({ path: relPath, mtimeMs: s.mtimeMs })
+    } catch {
+      // Missing source files are reported by the build step, not here — staleness
+      // check only cares about files that exist AND are newer than the registry.
+    }
+  }
+
+  for (const item of registry.items ?? []) {
+    for (const f of item.files ?? []) {
+      if (f?.path) pushPath(f.path)
+    }
+  }
+
+  const registryDefsDir = path.join(REPO_ROOT, "registry")
+  try {
+    for (const entry of readdirSync(registryDefsDir)) {
+      if (entry.endsWith(".ts")) pushPath(path.join("registry", entry))
+    }
+  } catch {
+    // No registry/ dir is itself an error, but it'll surface in the build step.
+  }
+
+  pushPath("packages/cli/src/generate/build-registry.ts")
+
+  return sources
+}
+
 async function main() {
   let opts
   try {
@@ -250,6 +340,20 @@ async function main() {
   let publishedVersion
   try {
     local = loadLocalRegistry()
+
+    if (!opts.skipStalenessCheck) {
+      const registryMtimeMs = statSync(LOCAL_REGISTRY).mtimeMs
+      const sources = collectRegistrySourceMtimes(local)
+      const { stale, newerFile } = detectStaleRegistry(registryMtimeMs, sources)
+      if (stale) {
+        throw new Error(
+          `Local registry is stale: ${path.relative(REPO_ROOT, LOCAL_REGISTRY)} is older than ${newerFile}.\n` +
+            `Run \`npm run build -w packages/cli\` to refresh it, then re-run the smoke.\n` +
+            `(Pass --skip-staleness-check only if you just built the registry in the prior CI step.)`,
+        )
+      }
+    }
+
     if (opts.localTarballDir) {
       published = JSON.parse(
         readFileSync(
