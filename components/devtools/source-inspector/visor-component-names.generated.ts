@@ -179,6 +179,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "ElevationCard",
   "ElevationSlide",
   "EmptyState",
+  "ExportMenu",
   "FeaturesGrid",
   "Field",
   "FieldDescription",

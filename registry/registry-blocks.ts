@@ -255,6 +255,33 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "export-menu",
+    type: "registry:block",
+    category: "admin",
+    description:
+      "Export button composing a Popover that hosts a format-picker RadioGroup (CSV / JSON / PDF / custom), optional scope toggles (Include archived, Include suspended, …), and an async-aware Cancel/Export footer. Standardizes the export affordance across every admin list.",
+    dependencies: ["@loworbitstudio/visor-core", "@phosphor-icons/react"],
+    registryDependencies: [
+      "utils",
+      "button",
+      "popover",
+      "radio-group",
+      "checkbox",
+      "label",
+      "tooltip",
+    ],
+    files: [
+      {
+        path: "blocks/export-menu/export-menu.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/export-menu/export-menu.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "configuration-panel",
     type: "registry:block",
     category: "configuration",
