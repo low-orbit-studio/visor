@@ -102,7 +102,11 @@ export const ui: Registry = [
     type: "registry:ui",
     description:
       "A button component with multiple variants and sizes using CVA.",
-    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    dependencies: [
+      "@radix-ui/react-slot",
+      "class-variance-authority",
+      "@loworbitstudio/visor-core",
+    ],
     registryDependencies: ["utils"],
     files: [
       {
@@ -119,7 +123,7 @@ export const ui: Registry = [
     name: "input",
     type: "registry:ui",
     description: "A text input component with focus and validation states.",
-    dependencies: ["@loworbitstudio/visor-core"],
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
     registryDependencies: ["utils", "password-managers-context"],
     files: [
       {
@@ -153,7 +157,7 @@ export const ui: Registry = [
     name: "textarea",
     type: "registry:ui",
     description: "A textarea component with auto-resize and validation states.",
-    dependencies: ["@loworbitstudio/visor-core"],
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
     registryDependencies: ["utils", "password-managers-context"],
     files: [
       {
