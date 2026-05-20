@@ -1,0 +1,115 @@
+---
+title: Color Picker
+description: An OKLCH-based color picker with a 2D lightness/chroma plane, hue slider, hex input, and optional preset chips. Renders inline or in a Radix Popover.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ColorPicker } from '@/components/ui/color-picker';
+
+## Default (popover)
+
+The default `mode="popover"` renders a small trigger swatch that opens the picker on click. Use this for inline form fields and tight layouts.
+
+<ComponentPreview
+  title="Color Picker (popover)"
+  code={"import { ColorPicker } from '@/components/ui/color-picker/color-picker';\n\n<ColorPicker defaultValue=\"#3b82f6\" aria-label=\"Brand color\" />"}
+>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+    <ColorPicker defaultValue="#3b82f6" aria-label="Brand color" />
+    <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Brand color</span>
+  </div>
+</ComponentPreview>
+
+## Inline
+
+`mode="inline"` renders the full picker in place — useful in side panels, theme creators, and any UI that wants the picker permanently visible.
+
+<ComponentPreview
+  title="Color Picker (inline)"
+  code={"<ColorPicker mode=\"inline\" defaultValue=\"#3b82f6\" aria-label=\"Brand color\" />"}
+>
+  <div style={{ maxWidth: '20rem' }}>
+    <ColorPicker mode="inline" defaultValue="#3b82f6" aria-label="Brand color" />
+  </div>
+</ComponentPreview>
+
+## With presets
+
+Provide a `presets` array of hex strings to render quick-pick chips below the hex input.
+
+<ComponentPreview
+  title="Color Picker with presets"
+  code={"<ColorPicker\n  mode=\"inline\"\n  defaultValue=\"#3b82f6\"\n  presets={[\n    '#ef4444', '#f59e0b', '#10b981',\n    '#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899',\n  ]}\n  aria-label=\"Brand color\"\n/>"}
+>
+  <div style={{ maxWidth: '20rem' }}>
+    <ColorPicker
+      mode="inline"
+      defaultValue="#3b82f6"
+      presets={["#ef4444", "#f59e0b", "#10b981", "#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899"]}
+      aria-label="Brand color"
+    />
+  </div>
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={"<ColorPicker mode=\"inline\" defaultValue=\"#3b82f6\" disabled aria-label=\"Brand color\" />"}
+>
+  <div style={{ maxWidth: '20rem' }}>
+    <ColorPicker mode="inline" defaultValue="#3b82f6" disabled aria-label="Brand color" />
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add color-picker
+```
+
+This copies three files into your project:
+
+- `components/ui/color-picker/color-picker.tsx` — the component
+- `components/ui/color-picker/color-picker.module.css` — the styles
+- `components/ui/color-picker/oklch.ts` — OKLCH math wrappers that re-export the validated engine from `@loworbitstudio/visor-theme-engine`
+
+## Usage
+
+```tsx
+import { ColorPicker } from '@/components/ui/color-picker/color-picker';
+
+<ColorPicker
+  defaultValue="#3b82f6"
+  onChange={(hex) => console.log('preview:', hex)}
+  onCommit={(hex) => console.log('committed:', hex)}
+  aria-label="Brand color"
+/>
+```
+
+`onChange` fires on every continuous interaction (pointer drag, keyboard nudge, hex typing). `onCommit` fires on pointer-up, popover close, and Enter — use it to debounce expensive consumers (theme regeneration, network writes).
+
+The component is theme-agnostic: every surface, border, focus ring, and shadow resolves through Visor semantic tokens. Canvas pixels (the lightness/chroma plane and hue strip) are computed colors, not theme surfaces.
+
+## API Reference
+
+### ColorPickerProps
+
+<PropsTable component="color-picker" />
+
+## Accessibility
+
+- Root is a `role="group"` with an `aria-label` (defaults to `"Color picker"`)
+- The lightness/chroma plane is `role="slider"` with an `aria-valuetext` describing L and C
+- The hue track is `role="slider"` with `aria-valuemin=0`, `aria-valuemax=360`, and `aria-valuenow`
+- Keyboard support:
+  - **Plane:** Arrow keys nudge L/C by 0.01; Shift+Arrow by 0.05; PgUp/PgDn jump by 0.1
+  - **Hue:** Arrow keys nudge H by 1°; Shift+Arrow by 15°; Home/End jump to 0°/360°
+- The hex input is a labeled `<input type="text">` and marks `aria-invalid` while a parse failure is pending
+- The popover trigger renders as a `<button>` with `aria-haspopup="dialog"`, `aria-expanded`, and a value-aware `aria-label`
+- `prefers-reduced-motion: reduce` disables the crosshair-position animation
+
+## OKLCH engine
+
+The picker presents [OKLCH](https://oklch.com) internally — a perceptually-uniform color space — while reading and writing hex strings to the consumer. Out-of-gamut OKLCH triples (chromas above what sRGB can represent) are rendered dimmed toward neutral grey to signal "this hue/lightness can't be displayed exactly". The math itself is exported from `@loworbitstudio/visor-theme-engine`, the same engine that powers the docs theme creator.

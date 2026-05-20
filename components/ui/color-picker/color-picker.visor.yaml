@@ -1,0 +1,85 @@
+name: Color Picker
+description: An OKLCH-based color picker with a 2D lightness/chroma plane, hue slider, hex input, and optional preset chips. Renders inline or in a Radix Popover.
+extends: HTMLDivElement
+category: form
+
+when_to_use:
+  - Letting users pick a brand color in theme creators or EPK customizers
+  - Building color-exploration UIs (palettes, swatches, theme tuning)
+  - Replacing the simple hex picker in the `prototype-review` block when richer selection is needed
+  - Any form that needs a production-grade color input (not a native browser picker)
+
+when_not_to_use:
+  - Picking from a small fixed list of brand colors (use Radio Group or Toggle Group with color chips)
+  - Display-only color swatches (use ColorSwatch from the specimen group)
+  - Picking system tokens — use the theme-creator tooling, not this primitive
+
+why: >
+  ColorPicker reuses the validated OKLCH math from
+  `@loworbitstudio/visor-theme-engine` (the same engine that powers the docs
+  theme creator) and ships it as a copy-and-own primitive. The picker
+  presents OKLCH internally — a perceptually-uniform color space — while
+  reading and writing hex strings to the consumer, so it slots into existing
+  forms without changing the data model. It is fully theme-agnostic: zero
+  hex literals on theme surfaces, all borders / focus rings / shadows
+  resolve through semantic tokens.
+
+props:
+  - name: value
+    type: string
+    description: Controlled hex value (e.g. "#3b82f6")
+  - name: defaultValue
+    type: string
+    default: '"#3b82f6"'
+    description: Uncontrolled initial value
+  - name: onChange
+    type: "(hex: string) => void"
+    description: Fired on every continuous interaction
+  - name: onCommit
+    type: "(hex: string) => void"
+    description: Fired on pointer-up / popover-close — for debounced consumers
+  - name: mode
+    type: '"popover" | "inline"'
+    default: '"popover"'
+    description: Render in a Radix Popover (default) or inline
+  - name: size
+    type: '"sm" | "md" | "lg"'
+    default: '"md"'
+    description: Affects trigger swatch size in popover mode
+  - name: showHex
+    type: boolean
+    default: "true"
+    description: Show the hex input row
+  - name: showReadout
+    type: boolean
+    default: "true"
+    description: Show the L/C/H readout row
+  - name: presets
+    type: "string[]"
+    description: Optional hex preset chips
+  - name: disabled
+    type: boolean
+    default: "false"
+    description: Disables all interaction
+  - name: name
+    type: string
+    description: Forwarded to a hidden input for form submission
+
+dependencies:
+  - "@radix-ui/react-popover"
+  - "@loworbitstudio/visor-theme-engine"
+
+preview_url: "https://visor.loworbit.studio/docs/components/form/color-picker"
+
+example: |
+  // Default (popover trigger)
+  <ColorPicker defaultValue="#3b82f6" onChange={(hex) => console.log(hex)} />
+
+  // Inline mode
+  <ColorPicker mode="inline" defaultValue="#3b82f6" />
+
+  // With presets
+  <ColorPicker
+    mode="inline"
+    presets={["#ef4444", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6"]}
+  />
