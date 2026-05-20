@@ -96,19 +96,18 @@ Hide, trail, or stack the `/ N` denominator label.
 
 ## Custom format
 
-The default formatter renders a rounded integer. Pass `format` to render percentages, decimals, or any custom string.
+The default formatter renders a rounded integer. Pass `format` to render percentages, decimals, or any custom string. The `format` callback runs on the client — pass it from a client component or inline inside a `'use client'` boundary.
 
-<ComponentPreview
-  title="Percent formatter"
-  code={"<ScoreIndicator\n  value={86}\n  max={100}\n  format={(v) => `${v}%`}\n/>"}
->
-  <ScoreIndicator
-    value={86}
-    max={100}
-    format={(v) => `${v}%`}
-    size="lg"
-  />
-</ComponentPreview>
+```tsx
+<ScoreIndicator value={86} max={100} format={(v) => `${v}%`} size="lg" />
+
+<ScoreIndicator
+  value={99.95}
+  max={100}
+  ariaLabel="Uptime 99.95 percent"
+  format={(v) => `${v.toFixed(2)}%`}
+/>
+```
 
 ## In a dashboard facts row
 
