@@ -1,0 +1,19 @@
+name: Export Menu
+description: Export button + popover composing a format-picker radio group, optional scope checkboxes, and an async-aware Cancel/Export footer. Drop-in for any admin list's export affordance.
+category: admin
+components_used:
+  - button
+  - popover
+  - radio-group
+  - checkbox
+  - label
+  - tooltip
+when_to_use:
+  - Admin list pages with an Export button (org lists, member tables, invitation tables, roles tables, audit logs)
+  - Anywhere a single button needs to surface format choice (CSV / JSON / PDF / XLSX) and optional scope toggles (Include archived, Include suspended) before kicking off an export
+  - When async export work needs a built-in loading state on the submit button and a popover that stays open until the work resolves
+when_not_to_use:
+  - Single-format exports without scope or option choices — use a plain `<Button>` instead
+  - Scheduled / recurring exports — out of scope; needs a dedicated scheduled-export block
+  - Email-the-export workflows where the popover needs an email recipient input (extend on the consumer side, or file a new ticket)
+  - Public marketing pages — this is an admin-only affordance

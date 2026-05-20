@@ -1,0 +1,161 @@
+---
+title: Export Menu
+description: Export button + popover composing a format-picker radio group, optional scope checkboxes, and an async-aware Cancel/Export footer. Drop-in for any admin list's export affordance.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { ExportMenuDemo } from '@/components/blocks/export-menu-demo';
+
+## Preview
+
+### Default — CSV / JSON / PDF baseline
+
+<BlockPreview
+  title="Export Menu — default"
+  code={"<ExportMenu\n  formats={defaultExportFormats()}\n  onExport={(format, scopes) => runExport(format, scopes)}\n/>"}
+>
+  <ExportMenuDemo variant="default" />
+</BlockPreview>
+
+### Custom formats with icons
+
+<BlockPreview
+  title="Export Menu — custom formats"
+  code={"<ExportMenu\n  label=\"Download report\"\n  formats={[\n    { value: 'csv', label: 'CSV', description: '...', icon: <FileCsvIcon /> },\n    { value: 'json', label: 'JSON', description: '...', icon: <FileTextIcon /> },\n    { value: 'pdf', label: 'PDF', description: '...', icon: <FilePdfIcon /> },\n  ]}\n  onExport={runExport}\n/>"}
+>
+  <ExportMenuDemo variant="custom-formats" />
+</BlockPreview>
+
+### With scope toggles
+
+<BlockPreview
+  title="Export Menu — with scope toggles"
+  code={"<ExportMenu\n  formats={defaultExportFormats()}\n  scopes={[\n    { key: 'archived', label: 'Include archived organizations' },\n    { key: 'suspended', label: 'Include suspended', defaultChecked: true },\n  ]}\n  heading=\"Export 24 organizations\"\n  onExport={runExport}\n/>"}
+>
+  <ExportMenuDemo variant="with-scopes" />
+</BlockPreview>
+
+### Async loading state
+
+`onExport` may return a `Promise`. While it's pending, the Export button shows a spinner, both buttons are disabled, and the popover stays open until the promise resolves.
+
+<BlockPreview
+  title="Export Menu — loading"
+  code={"<ExportMenu\n  formats={defaultExportFormats()}\n  onExport={async (format, scopes) => {\n    await fetch('/api/exports', { method: 'POST', body: JSON.stringify({ format, scopes }) });\n  }}\n/>"}
+>
+  <ExportMenuDemo variant="loading" />
+</BlockPreview>
+
+### Disabled format with tooltip
+
+Mark a format `disabled` and provide a `disabledReason` — hovering the row surfaces the reason in a tooltip.
+
+<BlockPreview
+  title="Export Menu — disabled format"
+  code={"<ExportMenu\n  formats={[\n    { value: 'csv', label: 'CSV', description: '...' },\n    { value: 'json', label: 'JSON', description: '...' },\n    { value: 'xlsx', label: 'XLSX', description: '...', disabled: true, disabledReason: 'Upgrade to Pro to enable XLSX export.' },\n  ]}\n  onExport={runExport}\n/>"}
+>
+  <ExportMenuDemo variant="disabled-format" />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add export-menu --block
+```
+
+This copies files into your project:
+
+- `blocks/export-menu/export-menu.tsx` — the block component
+- `blocks/export-menu/export-menu.module.css` — the styles
+
+It also installs the `button`, `popover`, `radio-group`, `checkbox`, `label`, and `tooltip` primitives if they aren't already present.
+
+## Usage
+
+```tsx
+'use client';
+
+import {
+  ExportMenu,
+  defaultExportFormats,
+} from '@/blocks/export-menu/export-menu';
+
+export function OrganizationsPageHeader({ count }: { count: number }) {
+  async function handleExport(
+    format: string,
+    scopes: Record<string, boolean>
+  ) {
+    const res = await fetch('/api/organizations/export', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ format, scopes }),
+    });
+    if (!res.ok) throw new Error('Export failed');
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+  }
+
+  return (
+    <ExportMenu
+      formats={defaultExportFormats()}
+      scopes={[
+        { key: 'archived', label: 'Include archived organizations' },
+        { key: 'suspended', label: 'Include suspended', defaultChecked: true },
+      ]}
+      heading={`Export ${count} organizations`}
+      onExport={handleExport}
+    />
+  );
+}
+```
+
+`defaultExportFormats()` returns the Low Orbit baseline: CSV, JSON, PDF — extend or replace as needed.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `formats` | `ExportFormat[]` | — | **Required.** The list of available export formats. First non-disabled format is preselected. |
+| `onExport` | `(format, scopes) => void \| Promise<void>` | — | **Required.** Called with the selected format value and current scope state. Returning a Promise puts the submit button in a loading state until resolution. |
+| `label` | `ReactNode` | `"Export"` | Trigger label. |
+| `icon` | `ReactNode` | `<DownloadSimple />` | Trigger icon. Pass `null` to hide. |
+| `scopes` | `ExportScope[]` | — | Optional scope toggles rendered as a checkbox section. |
+| `triggerVariant` | `"primary" \| "secondary" \| "ghost"` | `"secondary"` | Visual emphasis on the trigger button. `primary` maps to the default filled Button variant. |
+| `heading` | `ReactNode` | `label` | Override the popover header text (e.g. `"Export 24 organizations"`). |
+| `className` | `string` | — | Forwarded to the trigger button. |
+
+### `ExportFormat`
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `value` | `string` | Yes | Identifier passed to `onExport`. |
+| `label` | `ReactNode` | Yes | Display name shown in the radio row. |
+| `description` | `ReactNode` | No | Secondary line under the label. |
+| `icon` | `ReactNode` | No | Icon shown to the left of the label text. |
+| `disabled` | `boolean` | No | Greys out the radio and prevents selection. |
+| `disabledReason` | `string` | No | When set together with `disabled`, hovering the row shows a tooltip with this reason. |
+
+### `ExportScope`
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `key` | `string` | Yes | Identifier used in the `scopes` map passed to `onExport`. |
+| `label` | `ReactNode` | Yes | Checkbox label. |
+| `description` | `ReactNode` | No | Secondary line under the label. |
+| `defaultChecked` | `boolean` | No | Initial checked state. State resets each time the popover opens. |
+
+## Accessibility
+
+- The trigger is a `<Button>` with `aria-haspopup="dialog"` so screen readers announce the affordance correctly.
+- The popover content uses `role="dialog"` with an `aria-label` derived from the heading.
+- Radix Popover traps focus inside the content while open, returns focus to the trigger on close, and closes on Escape.
+- The submit button uses `aria-busy={true}` during async submission and is disabled until the Promise resolves; Cancel is also disabled during pending so the user can't dismiss mid-export.
+- Enter on any non-button element inside the popover submits the selected format. Native Enter on the Cancel / Export buttons still does the expected thing.
+- Disabled formats render with `data-disabled` and a `disabledReason` tooltip — the reason is announced via the Radix tooltip on hover and focus.
+- The spinner respects `prefers-reduced-motion`: under that preference the rotation slows from 800ms to 2.4s so the indicator is still legible but no longer rapidly animated.
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI — such as admin shells, login forms, or export menus.
