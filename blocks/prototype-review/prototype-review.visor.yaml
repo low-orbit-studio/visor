@@ -1,0 +1,48 @@
+name: Prototype Review
+description: Drop-in chrome for design-review prototypes — theme switcher, light/dark mode toggle, brand color picker, treatment tabs, viewport switcher, and a multi-viewport iframe grid. Replaces hand-rolled review HTML (BL-193 style) with a Visor-native block.
+category: documentation
+preview_url: /docs/blocks/prototype-review-showcase
+components_used: []
+when_to_use:
+  - Phase 2+ design-review prototypes that need to evaluate one or more iframe-loaded treatments
+  - Any UI exploration where reviewers must compare treatments across themes, modes, brand colors, and viewports
+  - Internal "design spike" docs where 3-4 candidate UIs must render side-by-side with shared chrome
+  - As the visual entry point for a Linear ticket's prototype directory (replaces hand-rolled static HTML)
+when_not_to_use:
+  - Production user-facing pages (use marketing or admin blocks)
+  - Prototypes that already live inside a richer doc system with its own chrome (e.g. Storybook, fumadocs MDX pages)
+  - Single-treatment reviews with no need for per-treatment switching (just embed the iframe directly)
+postmessage_protocol:
+  message:
+    type: prototype-theme
+    payload:
+      themeClass: "string — class to apply to the iframe's documentElement"
+      mode: "light | dark"
+      brand: "string — hex color, e.g. #FFBE26"
+  notes: |
+    The block emits a postMessage to every iframe inside its viewport grid
+    whenever theme / mode / brand changes. Iframes that opt in should:
+
+    1. Listen for `window.addEventListener("message", handler)`.
+    2. Filter for `event.data?.type === "prototype-theme"`.
+    3. Apply the `themeClass` to their own `<html>`, set `data-mode`, and
+       expose `brand` as a CSS variable (e.g. `--brand-primary`).
+
+    URL params (`?theme=...&mode=...&brand=...`) are also appended to the
+    iframe `src` as a fallback for deep-link loads where the message has
+    not yet arrived.
+api:
+  ticketId: "Linear ticket id (e.g. BL-193)"
+  reviewLabel: "Optional sub-heading after the ticket id"
+  subLabel: "Optional context line under the title"
+  statusPills: "Optional array of pill labels (e.g. [{ label: 'type:spike' }])"
+  treatments: "Required array of treatments to evaluate"
+  landing: "Landing page content (eyebrow, title, lede, contextCards)"
+  viewports: "Viewport definitions + default + allEnabled toggle"
+  brand: "Brand picker config (default hex, swatches, hexInput, reset)"
+  themes: "Array of available themes shown in the theme switcher"
+  defaultThemeId: "Default theme id"
+  defaultMode: "light | dark — default dark"
+  defaultTreatmentId: "Skip the landing and open straight into a treatment"
+  footer: "Footer slot config (left, right)"
+  onStateChange: "Imperative callback for advanced consumers"

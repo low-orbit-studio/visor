@@ -634,4 +634,23 @@ export const blocks: Registry = [
       },
     ],
   },
+  {
+    name: "prototype-review",
+    type: "registry:block",
+    category: "documentation",
+    description:
+      "Drop-in chrome for design-review prototypes — theme switcher, light/dark mode toggle, brand color picker, treatment tabs, viewport switcher, and a multi-viewport iframe grid. Replaces hand-rolled review HTML (BL-193 style) with a Visor-native block. Implements a postMessage protocol so nested iframes can re-theme in sync.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "blocks/prototype-review/prototype-review.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/prototype-review/prototype-review.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
 ]
