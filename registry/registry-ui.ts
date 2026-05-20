@@ -2017,4 +2017,30 @@ export const ui: Registry = [
       },
     ],
   },
+  {
+    name: "color-picker",
+    type: "registry:ui",
+    category: "form",
+    description:
+      "An OKLCH-based color picker with a 2D lightness/chroma plane, hue slider, hex input, and optional preset chips. Renders inline or in a Radix Popover. Reuses the validated OKLCH engine from `@loworbitstudio/visor-theme-engine`.",
+    dependencies: [
+      "@radix-ui/react-popover",
+      "@loworbitstudio/visor-theme-engine",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/color-picker/color-picker.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/color-picker/color-picker.module.css",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/color-picker/oklch.ts",
+        type: "registry:ui",
+      },
+    ],
+  },
 ]

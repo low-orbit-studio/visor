@@ -1,0 +1,332 @@
+/* ColorPicker — theme-agnostic OKLCH picker.
+ *
+ * All surface, border, focus, shadow, and motion declarations use semantic
+ * tokens via var() with Tailwind Gray fallbacks. Canvas pixels are computed
+ * colors — outputs of the picker, not theme surfaces — so they reference no
+ * tokens. The indicator dimensions (crosshair 12px, hue indicator 4px) are
+ * documented as intentional pixel values for pointing precision per
+ * the token-rules doc, rule 12.
+ */
+
+/* ─── Root container ──────────────────────────────────────────────────── */
+
+.root {
+  display: inline-block;
+}
+
+.root[data-mode="inline"] {
+  display: block;
+  width: 100%;
+}
+
+/* ─── Trigger (popover mode) ──────────────────────────────────────────── */
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background-color: transparent;
+  border: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-sm, 0.5rem);
+  cursor: pointer;
+  transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+  outline: none;
+  overflow: hidden;
+}
+
+@media (hover: hover) {
+  .trigger:hover:not(:focus-visible):not(:disabled) {
+    border-color: var(--border-strong, #d1d5db);
+  }
+}
+
+.trigger:focus-visible {
+  border-color: var(--border-focus, #111827);
+  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
+}
+
+.trigger:disabled {
+  cursor: not-allowed;
+  opacity: var(--opacity-40, 0.4);
+}
+
+.triggerSm {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.triggerMd {
+  width: 2rem;
+  height: 2rem;
+}
+
+.triggerLg {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.triggerSwatch {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ─── Popover content ─────────────────────────────────────────────────── */
+
+.popoverContent {
+  z-index: 50;
+  min-width: 16rem;
+  padding: var(--spacing-4, 1rem);
+  background-color: var(--surface-popover, var(--surface-card, #ffffff));
+  color: var(--text-primary, #111827);
+  border: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-sm, 0.5rem);
+  box-shadow: var(--shadow-md);
+}
+
+.popoverContent[data-state="open"] {
+  animation: contentShow var(--motion-duration-fast, 100ms) var(--motion-easing-enter, ease-out);
+}
+
+.popoverContent[data-state="closed"] {
+  animation: contentHide var(--motion-duration-fast, 100ms) var(--motion-easing-exit, ease-in);
+}
+
+@keyframes contentShow {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes contentHide {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+/* ─── Picker surface (the actual picker UI) ───────────────────────────── */
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+  min-width: 16rem;
+}
+
+.picker[data-disabled] {
+  opacity: var(--opacity-40, 0.4);
+  pointer-events: none;
+}
+
+/* ─── 2D Lightness × Chroma plane ─────────────────────────────────────── */
+
+.planeWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.4;
+  border-radius: var(--radius-sm, 0.25rem);
+  overflow: hidden;
+  cursor: crosshair;
+  border: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
+  outline: none;
+}
+
+.planeWrapper:focus-visible {
+  border-color: var(--border-focus, #111827);
+  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
+}
+
+.planeCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.crosshair {
+  /* Crosshair is a floating overlay on top of the computed-color canvas, not
+   * a theme surface. The 12px diameter is an intentional pixel value chosen
+   * for pointing precision (documented under token-rules rule 12). The white
+   * stroke + dark micro-shadow give the indicator legibility against any
+   * underlying canvas color regardless of theme — that's the whole point of
+   * the marker. Themes can opt to override these via the color-picker tokens
+   * declared in the planeWrapper rule above. */
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: var(--stroke-width-medium, 2px) solid var(--color-picker-indicator, #ffffff);
+  border-radius: 50%;
+  box-shadow: var(
+      --color-picker-indicator-shadow,
+      0 0 0 var(--stroke-width-thin, 1px) rgba(0, 0, 0, 0.3)
+    ),
+    inset 0 0 0 var(--stroke-width-thin, 1px) var(--color-picker-indicator-shadow-color, rgba(0, 0, 0, 0.3));
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: left var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out),
+    top var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crosshair {
+    transition: none;
+  }
+}
+
+/* ─── Hue slider ──────────────────────────────────────────────────────── */
+
+.hueWrapper {
+  position: relative;
+  width: 100%;
+  height: var(--spacing-4, 1rem);
+  border-radius: var(--radius-sm, 0.25rem);
+  overflow: hidden;
+  cursor: crosshair;
+  border: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
+  outline: none;
+}
+
+.hueWrapper:focus-visible {
+  border-color: var(--border-focus, #111827);
+  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
+}
+
+.hueCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hueIndicator {
+  /* Hue indicator is a floating overlay on top of the computed-color hue
+   * canvas, not a theme surface. The 4px width is an intentional pixel value
+   * chosen for pointing precision (documented under token-rules rule 12).
+   * The white stroke + dark micro-shadow give the indicator legibility
+   * against any underlying hue regardless of theme. Themes can opt to
+   * override via the color-picker tokens declared in the planeWrapper rule
+   * above. */
+  position: absolute;
+  top: calc(-1 * var(--stroke-width-thin, 1px));
+  bottom: calc(-1 * var(--stroke-width-thin, 1px));
+  width: 4px;
+  border: var(--stroke-width-medium, 2px) solid var(--color-picker-indicator, #ffffff);
+  border-radius: 1px;
+  box-shadow: var(
+    --color-picker-indicator-shadow,
+    0 0 0 var(--stroke-width-thin, 1px) rgba(0, 0, 0, 0.3)
+  );
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition: left var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hueIndicator {
+    transition: none;
+  }
+}
+
+/* ─── Readout (L / C / H) ─────────────────────────────────────────────── */
+
+.readout {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-tertiary, #9ca3af);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── Hex row (chip + input) ──────────────────────────────────────────── */
+
+.hexRow {
+  display: flex;
+  gap: var(--spacing-2, 0.5rem);
+  align-items: center;
+}
+
+.hexChip {
+  width: 2rem;
+  height: 2rem;
+  border: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-sm, 0.5rem);
+  flex-shrink: 0;
+}
+
+.hexInput {
+  flex: 1;
+  min-width: 0;
+  height: 2.25rem;
+  padding: var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem);
+  border: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-sm, 0.5rem);
+  background-color: var(--surface-interactive-default, #f9fafb);
+  color: var(--text-primary, #111827);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.hexInput:focus-visible {
+  border-color: var(--border-focus, #111827);
+  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
+}
+
+.hexInput[aria-invalid="true"] {
+  border-color: var(--border-error, #ef4444);
+  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-error, #ef4444) 15%, transparent);
+}
+
+.hexInput:disabled {
+  cursor: not-allowed;
+  opacity: var(--opacity-40, 0.4);
+}
+
+/* ─── Preset chips ────────────────────────────────────────────────────── */
+
+.presets {
+  display: flex;
+  gap: var(--spacing-2, 0.5rem);
+  flex-wrap: wrap;
+}
+
+.presetChip {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-sm, 0.25rem);
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+@media (hover: hover) {
+  .presetChip:hover:not(:focus-visible):not(:disabled) {
+    border-color: var(--border-strong, #d1d5db);
+  }
+}
+
+.presetChip:focus-visible {
+  border-color: var(--border-focus, #111827);
+  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
+}
+
+.presetChip:disabled {
+  cursor: not-allowed;
+  opacity: var(--opacity-40, 0.4);
+}
