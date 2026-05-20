@@ -1,0 +1,70 @@
+name: ScoreIndicator
+description: Compact circular ring visualization for percentage or ratio metrics — health score, uptime, engagement, capacity.
+extends: HTMLSpanElement
+category: admin
+
+when_to_use:
+  - Rendering a percentage / ratio metric inside an admin dashboard facts row
+  - Health, uptime, engagement, capacity, and other "x out of y" indicators
+  - Compact placement next to a value where a full Progress bar would be too tall
+  - Auto-toned status display where the color should track the underlying ratio
+
+when_not_to_use:
+  - Long-form completion progress (use Progress)
+  - Multi-segment pie / donut breakdowns (use a chart primitive)
+  - Animated count-up reveals (out of scope — wrap with your own animation)
+  - Linear capacity bars (use Progress with size="thin")
+
+why: >
+  The organization-management admin pattern surfaced a recurring need for a
+  circular score visualization next to dashboard facts. Existing primitives
+  (stat-card, badge, progress) don't cover this shape, so every admin
+  dashboard would reinvent inline custom HTML. Codifying it as a primitive
+  standardizes the visual treatment, the auto-tone color mapping
+  (>=85% success, 60-85% info, 40-60% warning, <40% destructive), and the
+  accessibility contract (role="img" with "X out of Y" aria-label).
+
+variants:
+  size: [sm, md, lg]
+  tone: [success, warning, destructive, info, neutral]
+  denominator: [none, trailing, below]
+
+props:
+  - name: value
+    type: number
+    required: true
+    description: Current value.
+  - name: max
+    type: number
+    default: '100'
+    description: Maximum value the score can reach.
+  - name: size
+    type: '"sm" | "md" | "lg"'
+    default: '"md"'
+    description: Ring size. sm=24px, md=36px, lg=56px.
+  - name: tone
+    type: '"auto" | "success" | "warning" | "destructive" | "info" | "neutral"'
+    default: '"auto"'
+    description: Color treatment. "auto" derives from the value/max ratio.
+  - name: ariaLabel
+    type: string
+    description: Override the default "X out of Y" aria-label.
+  - name: denominator
+    type: '"none" | "trailing" | "below"'
+    default: '"trailing"'
+    description: Where to render the "/ N" denominator label.
+  - name: format
+    type: "(value: number, max: number) => string"
+    description: Custom formatter for the displayed value. Defaults to rounded integer.
+
+dependencies:
+  - "class-variance-authority"
+  - "@phosphor-icons/react"
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.loworbit.studio/docs/components/admin/score-indicator"
+
+example: |
+  <ScoreIndicator value={98} max={100} />
+  <ScoreIndicator value={42} max={100} size="lg" />
+  <ScoreIndicator value={86} max={100} tone="success" denominator="below" />

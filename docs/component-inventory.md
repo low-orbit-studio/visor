@@ -1,6 +1,6 @@
 # Component Inventory
 
-## Current Components (83)
+## Current Components (84)
 
 ### Form (22)
 - button, calendar, checkbox, combobox, date-picker, field, fieldset, file-upload, input, label, number-input, otp-input, password-input, phone-input, radio-group, search-input, select, slider, switch, tag-input, textarea, toggle-group
@@ -87,7 +87,7 @@ Accessible via `npx visor add --category deck` or individually.
 
 Admin-flavored compounds and blocks for building internal tools fast. Installable via `npx visor add --category admin`. See [docs/roadmap.md](./roadmap.md) Phase 6 — Admin UI Category.
 
-### Compounds (10)
+### Compounds (11)
 
 - **activity-feed** — vertical list of timestamped events for dashboards, audit logs, and notification views
 - **bulk-action-bar** — sticky or inline toolbar that appears when rows are selected, with live-announced selection count and dismiss affordance
@@ -97,6 +97,7 @@ Admin-flavored compounds and blocks for building internal tools fast. Installabl
 - **filter-bar** — search input, filter controls slot, removable active-filter chips, results count, and clear-all affordance above a data-table
 - **kbd** — tiny primitive for rendering keyboard shortcuts using the semantic `<kbd>` element
 - **page-header** — eyebrow, title, description, breadcrumb, and actions slots with container-query responsive collapse
+- **score-indicator** — compact circular ring for percentage / ratio metrics (health, uptime, engagement) with auto-toned color mapping
 - **stat-card** — dashboard metric card with label, value, delta, trend, and footer slots
 - **status-badge** — semantic wrapper over Badge mapping admin status names (healthy, degraded, down, running, pending, failed, etc.) to visual variants with optional indicator dot
 

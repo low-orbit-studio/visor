@@ -1,0 +1,182 @@
+---
+title: Score Indicator
+description: Compact circular ring visualization for percentage or ratio metrics — health score, uptime, engagement, capacity. Auto-toned color mapping derived from the value/max ratio.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ScoreIndicator } from '@/components/ui/score-indicator';
+import { StatCard } from '@/components/ui/stat-card';
+
+```bash
+npx visor add score-indicator
+```
+
+## Basic
+
+A score indicator pairs a value with a max (defaulting to `100`) and renders a circular ring filled proportionally to the ratio. The default `tone="auto"` picks a semantic color from the ratio.
+
+<ComponentPreview
+  title="Health score 98 / 100"
+  code={"import { ScoreIndicator } from '@/components/ui/score-indicator/score-indicator';\n\n<ScoreIndicator value={98} max={100} />"}
+>
+  <ScoreIndicator value={98} max={100} />
+</ComponentPreview>
+
+## Auto-toned ramp
+
+With `tone="auto"` (the default), the ring picks a semantic color from the value-to-max ratio:
+
+| Ratio range | Tone | Use case |
+| --- | --- | --- |
+| `>= 0.85` | `success` | Healthy / on-target |
+| `0.60 – 0.85` | `info` | Trending well |
+| `0.40 – 0.60` | `warning` | Watch closely |
+| `< 0.40` | `destructive` | Needs attention |
+
+<ComponentPreview
+  title="Auto-toned values across the ramp"
+  code={"<ScoreIndicator value={10} />\n<ScoreIndicator value={25} />\n<ScoreIndicator value={50} />\n<ScoreIndicator value={75} />\n<ScoreIndicator value={95} />"}
+>
+  <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', flexWrap: 'wrap' }}>
+    <ScoreIndicator value={10} />
+    <ScoreIndicator value={25} />
+    <ScoreIndicator value={50} />
+    <ScoreIndicator value={75} />
+    <ScoreIndicator value={95} />
+  </div>
+</ComponentPreview>
+
+## Tones
+
+Pass an explicit `tone` to bypass the auto mapping — useful when the visual intent should not track the underlying ratio (a low-but-intentional value, a fixed status color, etc.).
+
+<ComponentPreview
+  title="All tones at the same value"
+  code={"<ScoreIndicator value={86} tone=\"success\" />\n<ScoreIndicator value={86} tone=\"info\" />\n<ScoreIndicator value={86} tone=\"warning\" />\n<ScoreIndicator value={86} tone=\"destructive\" />\n<ScoreIndicator value={86} tone=\"neutral\" />"}
+>
+  <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', flexWrap: 'wrap' }}>
+    <ScoreIndicator value={86} tone="success" />
+    <ScoreIndicator value={86} tone="info" />
+    <ScoreIndicator value={86} tone="warning" />
+    <ScoreIndicator value={86} tone="destructive" />
+    <ScoreIndicator value={86} tone="neutral" />
+  </div>
+</ComponentPreview>
+
+## Sizes
+
+Three sizes for different placement densities. `md` is the default for dashboard facts rows; `sm` fits inline next to body text; `lg` is for feature placement.
+
+<ComponentPreview
+  title="sm, md, lg"
+  code={"<ScoreIndicator value={98} size=\"sm\" />\n<ScoreIndicator value={98} size=\"md\" />\n<ScoreIndicator value={98} size=\"lg\" />"}
+>
+  <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+    <ScoreIndicator value={98} size="sm" />
+    <ScoreIndicator value={98} size="md" />
+    <ScoreIndicator value={98} size="lg" />
+  </div>
+</ComponentPreview>
+
+## Denominator placement
+
+Hide, trail, or stack the `/ N` denominator label.
+
+<ComponentPreview
+  title="none, trailing, below"
+  code={"<ScoreIndicator value={98} denominator=\"none\" />\n<ScoreIndicator value={98} denominator=\"trailing\" />\n<ScoreIndicator value={98} denominator=\"below\" />"}
+>
+  <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+    <ScoreIndicator value={98} denominator="none" />
+    <ScoreIndicator value={98} denominator="trailing" />
+    <ScoreIndicator value={98} denominator="below" />
+  </div>
+</ComponentPreview>
+
+## Custom format
+
+The default formatter renders a rounded integer. Pass `format` to render percentages, decimals, or any custom string. The `format` callback runs on the client — pass it from a client component or inline inside a `'use client'` boundary.
+
+```tsx
+<ScoreIndicator value={86} max={100} format={(v) => `${v}%`} size="lg" />
+
+<ScoreIndicator
+  value={99.95}
+  max={100}
+  ariaLabel="Uptime 99.95 percent"
+  format={(v) => `${v.toFixed(2)}%`}
+/>
+```
+
+## In a dashboard facts row
+
+The score indicator is purpose-built for admin dashboard "facts" rows where a numeric KPI sits next to a quick visual cue.
+
+<ComponentPreview
+  title="Stat card composing a score indicator"
+  code={"<StatCard\n  label=\"Health score\"\n  value={<><ScoreIndicator value={98} max={100} /></>}\n  footer=\"Last checked 2 minutes ago\"\n/>"}
+>
+  <StatCard
+    label="Health score"
+    value={<ScoreIndicator value={98} max={100} size="lg" />}
+    footer="Last checked 2 minutes ago"
+  />
+</ComponentPreview>
+
+## Accessibility
+
+The ring container is `role="img"` with a default `aria-label` of `"{value} out of {max}"`. Override `ariaLabel` to add semantic context (e.g. `"Organization health score: 98 out of 100"`).
+
+When the resolved tone is `destructive` or `warning`, a small filled phosphor icon is positioned at the top-right of the ring as an additional non-color cue. The icon is `aria-hidden` — the surrounding context (label or `ariaLabel`) is responsible for conveying the meaning.
+
+The denominator label is `aria-hidden` because it is already announced inside the default aria-label.
+
+Transitions on the indicator arc are disabled under `prefers-reduced-motion`.
+
+## Installation
+
+```bash
+npx visor add score-indicator
+```
+
+This copies two files into your project:
+
+- `components/ui/score-indicator/score-indicator.tsx` — the component
+- `components/ui/score-indicator/score-indicator.module.css` — the styles
+
+## Usage
+
+```tsx
+import { ScoreIndicator } from '@/components/ui/score-indicator/score-indicator';
+
+<ScoreIndicator value={organization.healthScore} max={100} />
+
+// Explicit tone, denominator below
+<ScoreIndicator value={86} tone="success" denominator="below" size="lg" />
+
+// Percent formatter, custom aria-label
+<ScoreIndicator
+  value={99.95}
+  max={100}
+  ariaLabel="Uptime 99.95 percent"
+  format={(v) => `${v.toFixed(2)}%`}
+/>
+```
+
+## API Reference
+
+### ScoreIndicatorProps
+
+<PropsTable component="score-indicator" />
+
+The component also accepts all standard `<span>` HTML attributes.
+
+## Customization
+
+After copying the component, you own it completely. Common customizations:
+
+- Tune the ring track + arc colors per tone by overriding the `--score-indicator-*` custom properties on the wrapper.
+- Replace the phosphor `WarningCircle` / `Warning` icons with a different glyph for the destructive / warning tone overlay.
+- Add an animated count-up by wrapping the value in your own animation primitive — this is intentionally out of scope here.
+- Swap the SVG ring for a `conic-gradient` background if your design system prefers a solid wedge over a stroke arc.

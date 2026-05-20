@@ -1811,6 +1811,29 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "score-indicator",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "Compact circular ring visualization for percentage / ratio metrics — health score, uptime, engagement. Auto-toned color mapping from the value/max ratio, three sizes, optional trailing or below denominator label, and an icon overlay for destructive / warning tones.",
+    dependencies: [
+      "class-variance-authority",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/score-indicator/score-indicator.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/score-indicator/score-indicator.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "stat-card",
     type: "registry:ui",
     category: "admin",
