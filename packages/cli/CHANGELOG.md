@@ -1,5 +1,52 @@
 # Changelog
 
+## 1.3.0
+
+### Minor Changes
+
+- 4923865: VI-437 feat(sandbox): `visor sandbox init` accepts a `--from-html-prototype <path>` flag that imports a Phase 1.5 HTML prototype directory into the generated sandbox.
+
+  The flag copies the prototype tree into the sandbox's `public/prototype/` directory and pairs each numerically-prefixed `screen-N-*.html` source file with the matching screen in the design-handoff manifest, in order. The generated `app/screens/[name]/page.tsx` swaps the operator-edit placeholder for an iframe that loads the paired HTML — so the sandbox boots with the real Phase 1.5 composition as the baseline, not a placeholder. `sandbox.json` records the source directory and the resolved screen-to-html map so downstream tooling can re-pull when the prototype changes.
+
+  Unblocks the retro-fit pattern for pattern builds whose Phase 1.5 cleared before the sandbox CLI shipped (PL-1570, organization-management). Greenfield Phase 1.5 runs without an HTML prototype still hand-build sandbox compositions; the flag is opt-in.
+
+- 17fd70e: VI-438 feat(sandbox): when `--from-html-prototype` is set, `visor sandbox init` now auto-discovers state-coverage screens — any `screen-N-*.html` files beyond the manifest's named-screen count are appended to the sandbox as `state-coverage` screens with predictable slugs derived from the filename suffix.
+
+  Example: a prototype directory with `screen-1-list.html`, `screen-2-detail.html`, `screen-3-menus.html`, `screen-4-feedback.html`, `screen-5-edge-states.html` and a handoff that names two screens produces the two named routes plus `state-coverage-menus`, `state-coverage-feedback`, `state-coverage-edge-states`. Each state-coverage screen iframes its source HTML and is recorded in `sandbox.json` under `fromHtmlPrototype.stateCoverageScreens`, restoring per-state baseline coverage for the Phase 4 state-coverage diff gate. `ScreenEntry` gains an optional `kind: 'named' | 'state-coverage'` field that surfaces in the runtime `sandbox-manifest.ts` module so downstream tooling can filter by category.
+
+- 560a929: VI-439 feat(sandbox): `visor sandbox init` now resolves brand themes from a private themes directory via `VISOR_THEMES_PRIVATE_PATH` env var, and accepts an explicit `--theme-file <path>` override.
+
+  When the operator passes `--theme entr`, the CLI now walks a layered candidate list before falling back to the placeholder `globals.css`: `--theme-file <path>` wins if set, then `theme` interpreted as a direct path on disk, then `${VISOR_THEMES_PRIVATE_PATH}/themes/${theme}/theme.visor.yaml` when the env var is set (the canonical path for brand themes kept in `visor-themes-private`), then the existing `cwd/themes/${theme}.visor.yaml` and `cwd/custom-themes/${theme}.visor.yaml` fallback. If every candidate misses, the warning now lists the exact paths searched and prints the `npx visor theme apply` command the operator should run, instead of a generic "leaving placeholder" message that pointed at the wrong docs. Closes PL-1570 finding #3 — operators no longer have to run a second CLI invocation pointing at a private repo path after `init`.
+
+- 149b6da: VI-441 feat(sandbox): `visor sandbox approve` now writes captures to `captures/pending/` by default and adds an `--approve` flag that promotes pending → approved after operator review.
+
+  The capture flow becomes a three-state review loop — capture into pending (auto-diffed against any existing approved baseline), eyeball pending + diffs, promote with `--approve` once the captures look right. Approved captures are no longer overwritten on every run; the baseline only changes via a deliberate operator action.
+
+  The legacy `--diff` flag becomes a deprecated no-op since the default capture already pixel-diffs against the approved baseline. Pending and diff directories are cleared at the start of each capture run so stale artifacts can't sneak into the review set.
+
+  Fixes the auto-approve foot-gun from PL-1570 where first-run captures landed straight in `captures/approved/` (documentary chrome included) and required manual deletion to re-capture cleanly.
+
+- 79cf443: VI-443 feat(sandbox): `visor sandbox init` now accepts `--strip-chrome` and `--strip-chrome-additional` to remove Phase 1.5 documentary chrome (state callouts, section headers, proto-nav, mint-styled annotation chips) from imported prototype HTML.
+
+  Bare `--strip-chrome` enables stripping with a default selector list shipped by the CLI: `.state-callout`, `.state-section__header`, `.proto-nav`, `[data-documentary-chrome]`, and inline-styled mint chips matching `[style*="mint"]`. Pass `--strip-chrome "<selectors>"` (comma-separated) to REPLACE the defaults with a custom list, or `--strip-chrome-additional "<selectors>"` to MERGE extras with the chosen base. The stripper runs over each `.html` file copied into `public/prototype/` before the sandbox boots, so the resulting screen routes — and any Phase 4 captures — never render those labels. The resolved selector list is recorded in `sandbox.json` under `fromHtmlPrototype.stripChromeSelectors` for traceability. Closes PL-1570 post-mortem finding #7 (operators had been hand-rolling `strip-chrome.mjs` in each sandbox dir).
+
+### Patch Changes
+
+- d4326c6: VI-440 fix(sandbox): generated `next.config.ts` now bakes `turbopack: { root: __dirname }` so Next.js doesn't misdetect the workspace root in multi-lockfile setups.
+
+  When `visor sandbox init` scaffolded `.lo/sandbox/{name}/` inside a parent repo that already had its own `package-lock.json`, Next.js 16.2.6 chose the parent repo as the turbopack root and broke `@/lib/...` module resolution — routes 500'd on first request. The generated config now anchors `turbopack.root` to the sandbox dir via `fileURLToPath(import.meta.url)`, matching the manual workaround from PL-1570 finding #4.
+
+- d0b82fa: VI-442 fix(sandbox): the auto-generated `playwright.capture.mjs` now sets `deviceScaleFactor: 2` so retina captures look crisp on review.
+
+  File size cost is roughly 4x but PNGs stay in the low-megabyte range. Pixel-diff is unaffected (compares per-pixel either way).
+
+- 88f818f: VI-444 fix(sandbox): handoff entries declared "shipped" but missing from the Visor registry are now auto-reclassified as `compose-recipe` (consumer-side compositions of existing primitives) instead of being skipped with a warning.
+
+  `visor sandbox init` now treats a Gate 3 miss on a `shipped` or `gap-inflight` entry as a signal that the handoff is describing a consumer-side composition. The entry's `status` is rewritten to `compose-recipe` and its `viTicket` is cleared before the scaffold runs, so both `sandbox.json` and `lib/sandbox-manifest.ts` surface the correct classification, no stub is generated, and `npx visor add` is not invoked for it. A softer informational warning (`'X' declared shipped in the handoff but absent from the registry — reclassified as compose-recipe`) is emitted in place of the prior skip warning. Mirrors PL-1570 finding #8.
+
+- Updated dependencies [36b4b26]
+  - @loworbitstudio/visor-theme-engine@0.9.0
+
 ## 1.2.1
 
 ### Patch Changes
