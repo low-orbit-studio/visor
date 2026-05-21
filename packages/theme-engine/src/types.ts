@@ -219,6 +219,12 @@ export interface VisorThemeConfig {
     "duration-normal"?: string;
     "duration-slow"?: string;
     easing?: string;
+    /**
+     * VI-451 (drive-by): opt-in tier-2 easing for bouncy entrances
+     * (marker pops, scale-in entrances). Emitted as `--motion-easing-overshoot`
+     * when set; absent themes fall through to the default `--motion-easing-spring`.
+     */
+    "easing-overshoot"?: string;
   };
   overrides?: {
     light?: Record<string, string>;
@@ -289,6 +295,8 @@ export interface ResolvedThemeConfig {
     "duration-normal": string;
     "duration-slow": string;
     easing: string;
+    /** VI-451 (drive-by): opt-in bouncy easing for marker pops / scale-in entrances. */
+    "easing-overshoot"?: string;
   };
   overrides?: {
     light?: Record<string, string>;
@@ -324,6 +332,10 @@ export interface SemanticTokens {
   surface: Record<string, SemanticTokenValue>;
   border: Record<string, SemanticTokenValue>;
   interactive: Record<string, SemanticTokenValue>;
+  // VI-451: bare-name intent aliases (--primary, --accent, --success, ...)
+  intent: Record<string, SemanticTokenValue>;
+  // VI-451: alpha-based hairline aliases (--hairline, --hairline-strong)
+  hairline: Record<string, SemanticTokenValue>;
 }
 
 export interface ThemeOutput {

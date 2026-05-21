@@ -208,6 +208,12 @@ function generateMotionPrimitives(config: ResolvedThemeConfig): string[] {
   decls.push(
     "--motion-easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);"
   );
+  // VI-451 (drive-by): opt-in --motion-easing-overshoot — only emit when the
+  // theme explicitly sets it, to avoid changing the default token surface for
+  // themes that don't opt in.
+  if (config.motion["easing-overshoot"]) {
+    decls.push(`--motion-easing-overshoot: ${config.motion["easing-overshoot"]};`);
+  }
 
   return decls;
 }
@@ -276,6 +282,15 @@ export function generatePrimitivesCss(
 // Semantic CSS
 // ============================================================
 
+/**
+ * Build CSS decl name for a hairline token.
+ * `default` → `--hairline`; everything else → `--hairline-${name}`.
+ * (VI-451: matches the bare-name shadcn convention used by admin-ui chrome.)
+ */
+function hairlineDeclName(name: string): string {
+  return name === "default" ? "--hairline" : `--hairline-${name}`;
+}
+
 export function generateSemanticCss(tokens: SemanticTokens): string {
   const lines: string[] = [];
 
@@ -307,7 +322,83 @@ export function generateSemanticCss(tokens: SemanticTokens): string {
   );
   lines.push(block(":root", interactiveDecls));
 
+  // Intent (VI-451) — bare-name aliases (--primary, --accent, ...)
+  lines.push(sectionComment("Semantic: Intent (aliases)"));
+  const intentDecls = Object.entries(tokens.intent).map(
+    ([name, { light }]) => `--${name}: ${light};`
+  );
+  lines.push(block(":root", intentDecls));
+
+  // Hairline (VI-451)
+  lines.push(sectionComment("Semantic: Hairline (aliases)"));
+  const hairlineDecls = Object.entries(tokens.hairline).map(
+    ([name, { light }]) => `${hairlineDeclName(name)}: ${light};`
+  );
+  lines.push(block(":root", hairlineDecls));
+
   return header("Visor Theme — Semantic") + lines.join("\n");
+}
+
+// ============================================================
+// Discrete-scale aliases (VI-451)
+// ============================================================
+
+/**
+ * Pixel-named font-size aliases used by admin-ui chrome (e.g. `--text-14`).
+ * Distinct value space from `--text-primary` (color) — emitted alongside
+ * without conflict because they're used in different CSS properties.
+ *
+ * Values are hardcoded px; admin-ui scale is intentionally not derived from
+ * `typography.scale` (the discrete scale is a typographic vocabulary, not a
+ * scaled rhythm).
+ */
+export const TEXT_SCALE_ALIASES: ReadonlyArray<number> = [
+  11, 13, 14, 16, 20, 24, 32, 40, 48,
+];
+
+export function generateTextScaleAliasDecls(): string[] {
+  return TEXT_SCALE_ALIASES.map((px) => `--text-${px}: ${px}px;`);
+}
+
+/**
+ * Short-form spacing aliases (`--space-1` etc.) using the same 4px-grid
+ * multipliers as `--spacing-N`. Values derive from `spacing.base` so a theme
+ * that bumps the base to 5 still gets a proportional `--space-N` scale.
+ *
+ * Multipliers chosen to match the admin-ui chrome scale (1..6, 8, 10, 12, 16).
+ */
+export const SPACE_ALIAS_MULTIPLIERS: ReadonlyArray<number> = [
+  1, 2, 3, 4, 5, 6, 8, 10, 12, 16,
+];
+
+export function generateSpaceAliasDecls(config: ResolvedThemeConfig): string[] {
+  const base = config.spacing.base;
+  return SPACE_ALIAS_MULTIPLIERS.map((m) => {
+    const px = base * m;
+    return `--space-${m}: ${px}px;`;
+  });
+}
+
+/**
+ * Adaptive (light/dark) decls for the new bare-name aliases. Used by the docs
+ * adapter to emit each into the visor-semantic layer with mode-scoped selectors.
+ */
+export function generateIntentDecls(
+  tokens: SemanticTokens,
+  mode: "light" | "dark"
+): string[] {
+  return Object.entries(tokens.intent).map(
+    ([name, value]) => `--${name}: ${value[mode]};`
+  );
+}
+
+export function generateHairlineDecls(
+  tokens: SemanticTokens,
+  mode: "light" | "dark"
+): string[] {
+  return Object.entries(tokens.hairline).map(
+    ([name, value]) => `${hairlineDeclName(name)}: ${value[mode]};`
+  );
 }
 
 // ============================================================
@@ -322,6 +413,8 @@ function buildAdaptiveDecls(
   surfaceDecls: string[];
   borderDecls: string[];
   interactiveDecls: string[];
+  intentDecls: string[];
+  hairlineDecls: string[];
 } {
   const textDecls = Object.entries(tokens.text).map(
     ([name, values]) => `--text-${name}: ${values[theme]};`
@@ -335,8 +428,10 @@ function buildAdaptiveDecls(
   const interactiveDecls = Object.entries(tokens.interactive).map(
     ([name, values]) => `--interactive-${name}: ${values[theme]};`
   );
+  const intentDecls = generateIntentDecls(tokens, theme);
+  const hairlineDecls = generateHairlineDecls(tokens, theme);
 
-  return { textDecls, surfaceDecls, borderDecls, interactiveDecls };
+  return { textDecls, surfaceDecls, borderDecls, interactiveDecls, intentDecls, hairlineDecls };
 }
 
 export function generateLightCss(
@@ -344,7 +439,7 @@ export function generateLightCss(
   options?: { scopePrefix?: string },
 ): string {
   const lines: string[] = [];
-  const { textDecls, surfaceDecls, borderDecls, interactiveDecls } =
+  const { textDecls, surfaceDecls, borderDecls, interactiveDecls, intentDecls, hairlineDecls } =
     buildAdaptiveDecls(tokens, "light");
   // Same body-class scoping rationale as generatePrimitivesCss — see VI-368.
   const host = options?.scopePrefix ?? ":root";
@@ -361,6 +456,12 @@ export function generateLightCss(
   lines.push(sectionComment("Adaptive: Interactive (light)"));
   lines.push(block(host, interactiveDecls));
 
+  lines.push(sectionComment("Adaptive: Intent aliases (light)"));
+  lines.push(block(host, intentDecls));
+
+  lines.push(sectionComment("Adaptive: Hairline aliases (light)"));
+  lines.push(block(host, hairlineDecls));
+
   return header("Visor Theme — Light") + lines.join("\n");
 }
 
@@ -369,7 +470,7 @@ export function generateDarkCss(
   options?: { scopePrefix?: string },
 ): string {
   const lines: string[] = [];
-  const { textDecls, surfaceDecls, borderDecls, interactiveDecls } =
+  const { textDecls, surfaceDecls, borderDecls, interactiveDecls, intentDecls, hairlineDecls } =
     buildAdaptiveDecls(tokens, "dark");
 
   // When scoped (e.g. `body.blacklight-theme`), the manual-toggle dark
@@ -397,6 +498,12 @@ export function generateDarkCss(
 
   lines.push(sectionComment("Adaptive: Interactive (dark) — manual toggle"));
   lines.push(block(darkSelector, interactiveDecls));
+
+  lines.push(sectionComment("Adaptive: Intent aliases (dark) — manual toggle"));
+  lines.push(block(darkSelector, intentDecls));
+
+  lines.push(sectionComment("Adaptive: Hairline aliases (dark) — manual toggle"));
+  lines.push(block(darkSelector, hairlineDecls));
 
   // prefers-color-scheme: dark
   lines.push(
@@ -428,6 +535,22 @@ export function generateDarkCss(
   );
   lines.push(
     `@media (prefers-color-scheme: dark) {\n${block(prefersSelector, interactiveDecls)}}`
+  );
+  lines.push("");
+
+  lines.push(
+    sectionComment("Adaptive: Intent aliases (dark) — prefers-color-scheme")
+  );
+  lines.push(
+    `@media (prefers-color-scheme: dark) {\n${block(prefersSelector, intentDecls)}}`
+  );
+  lines.push("");
+
+  lines.push(
+    sectionComment("Adaptive: Hairline aliases (dark) — prefers-color-scheme")
+  );
+  lines.push(
+    `@media (prefers-color-scheme: dark) {\n${block(prefersSelector, hairlineDecls)}}`
   );
   lines.push("");
 

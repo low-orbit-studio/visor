@@ -4,6 +4,99 @@
 
 @layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;
 
+@layer visor-semantic {
+/* ── Section 5: Semantic aliases (VI-451) ── */
+
+/* --- Discrete: Text size aliases (--text-N) --- */
+.space-theme {
+  --text-11: 11px;
+  --text-13: 13px;
+  --text-14: 14px;
+  --text-16: 16px;
+  --text-20: 20px;
+  --text-24: 24px;
+  --text-32: 32px;
+  --text-40: 40px;
+  --text-48: 48px;
+}
+
+
+/* --- Discrete: Space aliases (--space-N) --- */
+.space-theme {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+}
+
+
+/* --- Intent aliases (light) --- */
+html:not(.dark) .space-theme {
+  --primary: #5b6fff;
+  --primary-text: #ffffff;
+  --accent: #5b6fff;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --destructive: #ef4444;
+  --info: #0ea5e9;
+}
+
+
+/* --- Hairline aliases (light) --- */
+html:not(.dark) .space-theme {
+  --hairline: rgba(0, 0, 0, 0.06);
+  --hairline-strong: rgba(0, 0, 0, 0.10);
+}
+
+
+/* --- Intent aliases (dark) — manual toggle --- */
+.dark .space-theme {
+  --primary: #5b6fff;
+  --primary-text: #ffffff;
+  --accent: #5b6fff;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --destructive: #ef4444;
+  --info: #0ea5e9;
+}
+
+
+/* --- Hairline aliases (dark) — manual toggle --- */
+.dark .space-theme {
+  --hairline: rgba(255, 255, 255, 0.06);
+  --hairline-strong: rgba(255, 255, 255, 0.10);
+}
+
+
+/* --- Intent aliases (dark) — prefers-color-scheme --- */
+@media (prefers-color-scheme: dark) {
+  .space-theme:not(.light) {
+    --primary: #5b6fff;
+    --primary-text: #ffffff;
+    --accent: #5b6fff;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --destructive: #ef4444;
+    --info: #0ea5e9;
+  }
+}
+
+
+/* --- Hairline aliases (dark) — prefers-color-scheme --- */
+@media (prefers-color-scheme: dark) {
+  .space-theme:not(.light) {
+    --hairline: rgba(255, 255, 255, 0.06);
+    --hairline-strong: rgba(255, 255, 255, 0.10);
+  }
+}
+}
+
 @layer visor-adaptive {
 /* ── Section 1: Shared tokens (mode-independent) ── */
 
@@ -189,6 +282,7 @@
   --text-primary: #e8e8f0;
   --text-secondary: rgba(232, 232, 240, 0.72);
   --text-tertiary: rgba(232, 232, 240, 0.5);
+  --text-muted: #6b6b80;
   --text-disabled: #51515d;
   --text-inverse: #191923;
   --text-inverse-secondary: #3f3f4b;
@@ -208,6 +302,8 @@
   --surface-popover: #0e0e18;
   --surface-subtle: #2b2b36;
   --surface-muted: #0b0b14;
+  --surface-screen: #080810;
+  --surface-elev: #2b2b36;
   --surface-overlay: #080810;
   --surface-interactive-default: #2b2b36;
   --surface-interactive-hover: #3f3f4b;
@@ -272,6 +368,7 @@
     --text-primary: #e8e8f0;
     --text-secondary: rgba(232, 232, 240, 0.72);
     --text-tertiary: rgba(232, 232, 240, 0.5);
+    --text-muted: #6b6b80;
     --text-disabled: #51515d;
     --text-inverse: #191923;
     --text-inverse-secondary: #3f3f4b;
@@ -293,6 +390,8 @@
     --surface-popover: #0e0e18;
     --surface-subtle: #2b2b36;
     --surface-muted: #0b0b14;
+    --surface-screen: #080810;
+    --surface-elev: #2b2b36;
     --surface-overlay: #080810;
     --surface-interactive-default: #2b2b36;
     --surface-interactive-hover: #3f3f4b;
@@ -363,6 +462,7 @@ html:not(.dark) .space-theme {
   --text-primary: #1a1630;
   --text-secondary: rgba(26, 22, 48, 0.72);
   --text-tertiary: rgba(26, 22, 48, 0.65);
+  --text-muted: #6b6b80;
   --text-disabled: #b4b4c2;
   --text-inverse: #ffffff;
   --text-inverse-secondary: #d2d2dd;
@@ -382,6 +482,8 @@ html:not(.dark) .space-theme {
   --surface-popover: #f2f0f8;
   --surface-subtle: #f5f5f8;
   --surface-muted: #e7e7ed;
+  --surface-screen: #f5f5f8;
+  --surface-elev: #e7e7ed;
   --surface-overlay: #191923;
   --surface-interactive-default: #ffffff;
   --surface-interactive-hover: #f5f5f8;

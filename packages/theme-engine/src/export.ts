@@ -191,9 +191,13 @@ export function exportTheme(
   const motion: Record<string, string> = {};
   for (const [key, defaultVal] of Object.entries(DEFAULT_MOTION)) {
     const val = config.motion[key as keyof typeof config.motion];
-    if (val !== defaultVal) {
+    if (val !== undefined && val !== defaultVal) {
       motion[key] = val;
     }
+  }
+  // VI-451 (drive-by): export easing-overshoot when set (no default — opt-in only).
+  if (config.motion["easing-overshoot"] !== undefined) {
+    motion["easing-overshoot"] = config.motion["easing-overshoot"];
   }
   if (Object.keys(motion).length > 0) {
     output.motion = motion as VisorThemeConfig["motion"];

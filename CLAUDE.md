@@ -71,7 +71,8 @@ Full rules: [`docs/token-rules.md`](./docs/token-rules.md). Key enforcement poin
 9. **Themes follow 5-section template** — shared → dark → light → framework bridge → creative extensions
 10. **Theme-specific tokens are namespaced** — `--space-glass`, `--veronica-warmth`, never bare `--glass`
 11. **Font coverage** — Every `--font-*` quoted family must have a matching `@font-face` or Google Fonts `@import` in the same emitted CSS. Set `typography.<slot>.source: visor-fonts|google-fonts`; the build-time `validateFontCoverage` validator catches drift.
-12. **No magic numbers** — Every value traces to a token or is documented as intentional
+12. **Semantic alias surface (VI-451)** — Bare-name intent (`--primary`, `--accent`, `--destructive`, ...), hairline (`--hairline`, `--hairline-strong`), and discrete scales (`--text-N`, `--space-N`) emit in the `visor-semantic` cascade layer. Themes pin per-mode values via flat-key overrides (`primary: "#..."`); bare `primary` resolves to the intent group, prefixed `text-primary` continues to route to the text group.
+13. **No magic numbers** — Every value traces to a token or is documented as intentional
 
 ## Playbook Reference
 

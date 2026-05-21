@@ -107,6 +107,8 @@ export function assignSemanticTokens(
   const surface: Record<string, SemanticTokenValue> = {};
   const border: Record<string, SemanticTokenValue> = {};
   const interactive: Record<string, SemanticTokenValue> = {};
+  const intent: Record<string, SemanticTokenValue> = {};
+  const hairline: Record<string, SemanticTokenValue> = {};
 
   for (const [name, mapping] of Object.entries(SEMANTIC_MAP.text)) {
     text[name] = resolveMapping(mapping, lightPrimitives, darkPrimitives, config);
@@ -124,5 +126,13 @@ export function assignSemanticTokens(
     interactive[name] = resolveMapping(mapping, lightPrimitives, darkPrimitives, config);
   }
 
-  return { text, surface, border, interactive };
+  for (const [name, mapping] of Object.entries(SEMANTIC_MAP.intent)) {
+    intent[name] = resolveMapping(mapping, lightPrimitives, darkPrimitives, config);
+  }
+
+  for (const [name, mapping] of Object.entries(SEMANTIC_MAP.hairline)) {
+    hairline[name] = resolveMapping(mapping, lightPrimitives, darkPrimitives, config);
+  }
+
+  return { text, surface, border, interactive, intent, hairline };
 }

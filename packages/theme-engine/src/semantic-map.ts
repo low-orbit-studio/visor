@@ -64,6 +64,11 @@ export const SEMANTIC_TEXT_MAP: Record<string, SemanticMapping> = {
     light: { role: "neutral", shade: 600 },
     dark: { role: "neutral", shade: 400 },
   },
+  // VI-451: deemphasized but readable — slots between tertiary and disabled.
+  muted: {
+    light: { role: "neutral", shade: 500 },
+    dark: { role: "neutral", shade: 500 },
+  },
   disabled: {
     light: { role: "neutral", shade: 300 },
     dark: { role: "neutral", shade: 600 },
@@ -124,6 +129,16 @@ export const SEMANTIC_SURFACE_MAP: Record<string, SemanticMapping> = {
   muted: {
     light: { role: "neutral", shade: 100 },
     dark: { role: "neutral", shade: 700 },
+  },
+  // VI-451: deeper than page — used by admin-ui chrome (deepest backdrop).
+  screen: {
+    light: { role: "neutral", shade: 50 },
+    dark: { role: "neutral", shade: 950 },
+  },
+  // VI-451: singular elevation alias, distinct from elev-0..4. Defaults to mid (elev-2).
+  elev: {
+    light: { role: "neutral", shade: 100 },
+    dark: { role: "neutral", shade: 800 },
   },
   overlay: {
     light: { role: "neutral", shade: 900 },
@@ -326,10 +341,78 @@ export const SEMANTIC_INTERACTIVE_MAP: Record<string, SemanticMapping> = {
   },
 };
 
+// ============================================================
+// Intent aliases (VI-451)
+// ============================================================
+
+/**
+ * Bare-name intent aliases — shadcn-style flat namespace.
+ * Emit as `--primary`, `--accent`, `--success`, etc. into the visor-semantic
+ * layer so consumers can reference brand/feedback colors without a category
+ * prefix. Themes pin per-mode values via `overrides.{light,dark}` using the
+ * same bare key (e.g. `primary: "#6BEBA5"`).
+ */
+export const SEMANTIC_INTENT_MAP: Record<string, SemanticMapping> = {
+  primary: {
+    light: { role: "primary", shade: 500 },
+    dark: { role: "primary", shade: 500 },
+  },
+  // Text color paired with --primary backgrounds. Default white; themes whose
+  // primary fails AA on white pin to a graphite via overrides (entr does this).
+  "primary-text": {
+    light: { constant: "#ffffff" },
+    dark: { constant: "#ffffff" },
+  },
+  accent: {
+    light: { role: "accent", shade: 500 },
+    dark: { role: "accent", shade: 500 },
+  },
+  success: {
+    light: { role: "success", shade: 500 },
+    dark: { role: "success", shade: 500 },
+  },
+  warning: {
+    light: { role: "warning", shade: 500 },
+    dark: { role: "warning", shade: 500 },
+  },
+  // shadcn naming — aliases the `error` role.
+  destructive: {
+    light: { role: "error", shade: 500 },
+    dark: { role: "error", shade: 500 },
+  },
+  info: {
+    light: { role: "info", shade: 500 },
+    dark: { role: "info", shade: 500 },
+  },
+};
+
+// ============================================================
+// Hairline aliases (VI-451)
+// ============================================================
+
+/**
+ * Alpha-based hairline tokens for subtle dividers and structural strokes.
+ * Distinct from `--border-*` (which derives from neutral shades) — hairlines
+ * are translucent on the underlying surface, so they read consistently
+ * across cards stacked on different backgrounds.
+ */
+export const SEMANTIC_HAIRLINE_MAP: Record<string, SemanticMapping> = {
+  default: {
+    light: { constant: "rgba(0, 0, 0, 0.06)" },
+    dark: { constant: "rgba(255, 255, 255, 0.06)" },
+  },
+  strong: {
+    light: { constant: "rgba(0, 0, 0, 0.10)" },
+    dark: { constant: "rgba(255, 255, 255, 0.10)" },
+  },
+};
+
 /** All semantic maps grouped together. */
 export const SEMANTIC_MAP = {
   text: SEMANTIC_TEXT_MAP,
   surface: SEMANTIC_SURFACE_MAP,
   border: SEMANTIC_BORDER_MAP,
   interactive: SEMANTIC_INTERACTIVE_MAP,
+  intent: SEMANTIC_INTENT_MAP,
+  hairline: SEMANTIC_HAIRLINE_MAP,
 };

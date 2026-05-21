@@ -35,6 +35,52 @@ describe("integration: minimum viable theme", () => {
   });
 });
 
+describe("VI-451 — alias overrides flow through pipeline", () => {
+  const YAML_WITH_INTENT_OVERRIDES = `
+name: Intent Override Theme
+version: 1
+colors:
+  primary: "#2563EB"
+overrides:
+  dark:
+    primary: "#6BEBA5"
+    primary-text: "#1E1F21"
+    accent: "#38C7E0"
+    destructive: "#FE5D8B"
+    hairline: "rgba(255, 255, 255, 0.06)"
+    hairline-strong: "rgba(255, 255, 255, 0.10)"
+`.trim();
+
+  it("bare-key intent overrides reach the dark CSS output", () => {
+    const output = generateTheme(YAML_WITH_INTENT_OVERRIDES);
+    expect(output.darkCss).toContain("--primary: #6BEBA5;");
+    expect(output.darkCss).toContain("--primary-text: #1E1F21;");
+    expect(output.darkCss).toContain("--accent: #38C7E0;");
+    expect(output.darkCss).toContain("--destructive: #FE5D8B;");
+  });
+
+  it("hairline overrides reach the dark CSS output", () => {
+    const output = generateTheme(YAML_WITH_INTENT_OVERRIDES);
+    expect(output.darkCss).toContain("--hairline: rgba(255, 255, 255, 0.06);");
+    expect(output.darkCss).toContain("--hairline-strong: rgba(255, 255, 255, 0.10);");
+  });
+
+  it("bare `primary` override does NOT clobber --text-primary in light CSS", () => {
+    const output = generateTheme(YAML_WITH_INTENT_OVERRIDES);
+    // text-primary is unaffected by `primary` flat-namespace override
+    expect(output.lightCss).toContain("--text-primary:");
+    expect(output.lightCss).not.toContain("--text-primary: #6BEBA5;");
+  });
+
+  it("intent + hairline aliases emit in semantic CSS regardless of overrides", () => {
+    const output = generateTheme(MINIMAL_YAML);
+    expect(output.semanticCss).toContain("--primary:");
+    expect(output.semanticCss).toContain("--accent:");
+    expect(output.semanticCss).toContain("--hairline:");
+    expect(output.semanticCss).toContain("--hairline-strong:");
+  });
+});
+
 describe("integration: full config", () => {
   it("produces complete output with all color fields", () => {
     const fullConfig: VisorThemeConfig = {
