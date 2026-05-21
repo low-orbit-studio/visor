@@ -401,6 +401,10 @@ sandbox
   .argument("<name>", "sandbox name (used as directory and pattern slug)")
   .requiredOption("--handoff <path>", "path to design-handoff.md manifest")
   .requiredOption("--theme <theme>", "theme slug (e.g. 'space') or path to .visor.yaml")
+  .option(
+    "--from-html-prototype <path>",
+    "import a Phase 1.5 HTML prototype directory (its screen-N-*.html files become screen routes via iframe)"
+  )
   .option("--overwrite", "replace an existing sandbox at this name", false)
   .option("--skip-install", "skip npm install (test fixture mode)", false)
   .option("--json", "output structured JSON (for AI agents)")
@@ -410,6 +414,7 @@ sandbox
       options: {
         handoff: string
         theme: string
+        fromHtmlPrototype?: string
         overwrite?: boolean
         skipInstall?: boolean
         json?: boolean

@@ -194,4 +194,90 @@ describe("sandbox init", () => {
     expect(manifestSource).toContain("widget-stack")
     expect(manifestSource).toContain("list-view")
   })
+
+  describe("--from-html-prototype", () => {
+    const PROTOTYPE_FIXTURE = join(HERE, "fixtures", "prototype-org-mgmt")
+
+    it("copies prototype files into public/prototype/ and pairs them with manifest screens", async () => {
+      await sandboxInitCommand("test-pattern", testDir, {
+        handoff: FIXTURE,
+        theme: "space",
+        fromHtmlPrototype: PROTOTYPE_FIXTURE,
+        skipInstall: true,
+      })
+
+      const sandboxDir = join(testDir, ".lo", "sandbox", "test-pattern")
+      expect(existsSync(join(sandboxDir, "public", "prototype", "screen-1-list.html"))).toBe(true)
+      expect(existsSync(join(sandboxDir, "public", "prototype", "screen-2-detail.html"))).toBe(true)
+      expect(existsSync(join(sandboxDir, "public", "prototype", "styles.css"))).toBe(true)
+    })
+
+    it("emits an iframe-loading screen route with the screen-to-html map baked in", async () => {
+      await sandboxInitCommand("test-pattern", testDir, {
+        handoff: FIXTURE,
+        theme: "space",
+        fromHtmlPrototype: PROTOTYPE_FIXTURE,
+        skipInstall: true,
+      })
+
+      const routeSource = readFileSync(
+        join(testDir, ".lo", "sandbox", "test-pattern", "app", "screens", "[name]", "page.tsx"),
+        "utf-8"
+      )
+      expect(routeSource).toContain("SCREEN_HTML")
+      expect(routeSource).toContain("screen-1-list.html")
+      expect(routeSource).toContain("screen-2-detail.html")
+      expect(routeSource).toContain("<iframe")
+      expect(routeSource).toContain("/prototype/")
+    })
+
+    it("records fromHtmlPrototype in sandbox.json", async () => {
+      await sandboxInitCommand("test-pattern", testDir, {
+        handoff: FIXTURE,
+        theme: "space",
+        fromHtmlPrototype: PROTOTYPE_FIXTURE,
+        skipInstall: true,
+      })
+
+      const config = JSON.parse(
+        readFileSync(join(testDir, ".lo", "sandbox", "test-pattern", "sandbox.json"), "utf-8")
+      ) as { fromHtmlPrototype: { sourceDir: string; screenMap: Record<string, string> } | null }
+      expect(config.fromHtmlPrototype).not.toBeNull()
+      expect(config.fromHtmlPrototype?.sourceDir).toBe(PROTOTYPE_FIXTURE)
+      expect(config.fromHtmlPrototype?.screenMap["list-view"]).toBe("screen-1-list.html")
+      expect(config.fromHtmlPrototype?.screenMap["detail-view"]).toBe("screen-2-detail.html")
+    })
+
+    it("errors when the prototype directory does not exist", async () => {
+      const exitSpy = vi.spyOn(process, "exit").mockImplementation(((code?: number) => {
+        throw new Error(`process.exit(${code})`)
+      }) as never)
+
+      await expect(
+        sandboxInitCommand("test-pattern", testDir, {
+          handoff: FIXTURE,
+          theme: "space",
+          fromHtmlPrototype: join(testDir, "does-not-exist"),
+          skipInstall: true,
+        })
+      ).rejects.toThrow(/process.exit/)
+
+      exitSpy.mockRestore()
+    })
+
+    it("leaves the placeholder screen route alone when --from-html-prototype is not passed", async () => {
+      await sandboxInitCommand("test-pattern", testDir, {
+        handoff: FIXTURE,
+        theme: "space",
+        skipInstall: true,
+      })
+      const routeSource = readFileSync(
+        join(testDir, ".lo", "sandbox", "test-pattern", "app", "screens", "[name]", "page.tsx"),
+        "utf-8"
+      )
+      expect(routeSource).not.toContain("SCREEN_HTML")
+      expect(routeSource).not.toContain("<iframe")
+      expect(routeSource).toContain("ScreenSample")
+    })
+  })
 })

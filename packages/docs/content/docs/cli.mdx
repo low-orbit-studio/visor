@@ -352,9 +352,12 @@ Reads a Low Orbit `design-handoff.md` manifest, scaffolds a Next.js app at `.lo/
 |------|-------------|
 | `--handoff <path>` (required) | Path to a Low Orbit `design-handoff.md` manifest |
 | `--theme <slug-or-path>` (required) | Theme slug (looked up in `themes/` then `custom-themes/`) or path to a `.visor.yaml` |
+| `--from-html-prototype <path>` | Import a Phase 1.5 HTML prototype directory: copies its files into `public/prototype/` and pairs each numerically-prefixed `screen-N-*.html` with the matching manifest screen, rendering it via an iframe in the screen route |
 | `--overwrite` | Replace an existing sandbox at this name |
 | `--skip-install` | Skip `npm install` (test fixture mode) |
 | `--json` | Emit structured JSON for AI agents |
+
+When `--from-html-prototype` is set, the sandbox boots with the real Phase 1.5 composition as the baseline — useful for pattern builds whose Phase 1.5 cleared before this CLI shipped. The mapping is order-based: the Nth manifest screen pairs with the Nth `screen-*.html` file (sorted by numeric prefix). The resolved map is recorded in `sandbox.json` under `fromHtmlPrototype.screenMap`.
 
 #### `visor sandbox dev`
 

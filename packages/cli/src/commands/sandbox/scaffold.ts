@@ -1,6 +1,7 @@
 import { mkdirSync, writeFileSync, existsSync, readdirSync } from "fs"
 import { join } from "path"
 import type { HandoffManifest } from "./parse-handoff.js"
+import type { PrototypeImport } from "./html-prototype.js"
 import {
   captureScriptTemplate,
   gitignoreTemplate,
@@ -10,6 +11,7 @@ import {
   nextEnvDtsTemplate,
   packageJsonTemplate,
   primitiveRouteTemplate,
+  prototypeScreenRouteTemplate,
   readmeTemplate,
   rootLayoutTemplate,
   sandboxManifestModule,
@@ -24,6 +26,10 @@ export interface ScaffoldResult {
   created: string[]
 }
 
+export interface ScaffoldOptions {
+  prototypeImport?: PrototypeImport
+}
+
 /**
  * Write the Next.js sandbox scaffold into `sandboxDir`. Caller is responsible
  * for ensuring `sandboxDir` is empty (or that overwrite is intentional).
@@ -31,7 +37,8 @@ export interface ScaffoldResult {
 export function writeScaffold(
   sandboxDir: string,
   manifest: HandoffManifest,
-  port: number
+  port: number,
+  options: ScaffoldOptions = {}
 ): ScaffoldResult {
   mkdirSync(sandboxDir, { recursive: true })
   const created: string[] = []
@@ -54,7 +61,12 @@ export function writeScaffold(
   writeIfNew("app/globals.css", globalsCssPlaceholder())
   writeIfNew("app/page.tsx", indexPageTemplate())
   writeIfNew("app/primitives/[name]/page.tsx", primitiveRouteTemplate())
-  writeIfNew("app/screens/[name]/page.tsx", screenRouteTemplate())
+  writeIfNew(
+    "app/screens/[name]/page.tsx",
+    options.prototypeImport
+      ? prototypeScreenRouteTemplate(options.prototypeImport.screenMap)
+      : screenRouteTemplate()
+  )
 
   writeIfNew("components/sandbox-sample.tsx", sandboxSampleComponent())
 
@@ -87,7 +99,12 @@ export function writeSandboxConfig(
   sandboxDir: string,
   manifest: HandoffManifest,
   port: number,
-  options: { handoffPath: string; theme: string; visorVersion: string }
+  options: {
+    handoffPath: string
+    theme: string
+    visorVersion: string
+    prototypeImport?: PrototypeImport
+  }
 ): void {
   const config = {
     pattern: manifest.pattern,
@@ -102,6 +119,12 @@ export function writeSandboxConfig(
       viTicket: p.viTicket ?? null,
     })),
     screens: manifest.screens.map((s) => ({ name: s.name, title: s.title, route: s.route ?? null })),
+    fromHtmlPrototype: options.prototypeImport
+      ? {
+          sourceDir: options.prototypeImport.sourceDir,
+          screenMap: options.prototypeImport.screenMap,
+        }
+      : null,
   }
   writeFileSync(join(sandboxDir, "sandbox.json"), JSON.stringify(config, null, 2) + "\n", "utf-8")
 }

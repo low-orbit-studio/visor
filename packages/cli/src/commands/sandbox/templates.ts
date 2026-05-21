@@ -109,6 +109,13 @@ export function screenRouteTemplate(): string {
   return `import { notFound } from "next/navigation"\nimport { manifest } from "@/lib/sandbox-manifest"\nimport { ScreenSample } from "@/components/sandbox-sample"\n\ninterface Params { name: string }\n\nexport function generateStaticParams() {\n  return manifest.screens.map((s) => ({ name: s.name }))\n}\n\nexport default async function ScreenPage({ params }: { params: Promise<Params> }) {\n  const { name } = await params\n  const entry = manifest.screens.find((s) => s.name === name)\n  if (!entry) notFound()\n  return (\n    <main style={{ padding: "32px", maxWidth: "1280px", margin: "0 auto" }}>\n      <h1>{entry.title}</h1>\n      {entry.route ? <p style={{ color: "var(--text-secondary, #555)" }}><code>{entry.route}</code></p> : null}\n      <ScreenSample name={entry.name} />\n    </main>\n  )\n}\n`
 }
 
+// Iframe-loading variant used when `visor sandbox init --from-html-prototype` imported
+// a Phase 1.5 HTML prototype. Each screen iframes the matching public/prototype/*.html.
+export function prototypeScreenRouteTemplate(screenMap: Record<string, string>): string {
+  const mapLiteral = JSON.stringify(screenMap, null, 2)
+  return `import { notFound } from "next/navigation"\nimport { manifest } from "@/lib/sandbox-manifest"\nimport { ScreenSample } from "@/components/sandbox-sample"\n\nconst SCREEN_HTML: Record<string, string> = ${mapLiteral}\n\ninterface Params { name: string }\n\nexport function generateStaticParams() {\n  return manifest.screens.map((s) => ({ name: s.name }))\n}\n\nexport default async function ScreenPage({ params }: { params: Promise<Params> }) {\n  const { name } = await params\n  const entry = manifest.screens.find((s) => s.name === name)\n  if (!entry) notFound()\n  const htmlFile = SCREEN_HTML[entry.name]\n  return (\n    <main style={{ padding: "32px", maxWidth: "1440px", margin: "0 auto" }}>\n      <h1>{entry.title}</h1>\n      {entry.route ? <p style={{ color: "var(--text-secondary, #555)" }}><code>{entry.route}</code></p> : null}\n      {htmlFile ? (\n        <iframe\n          src={\`/prototype/\${htmlFile}\`}\n          title={entry.title}\n          style={{ width: "100%", height: "calc(100vh - 160px)", border: "1px solid var(--border-default, #e5e7eb)", borderRadius: "8px", background: "var(--bg-surface, #f7f7f8)" }}\n        />\n      ) : (\n        <ScreenSample name={entry.name} />\n      )}\n    </main>\n  )\n}\n`
+}
+
 export function sandboxManifestModule(manifest: HandoffManifest): string {
   const payload = {
     pattern: manifest.pattern,
