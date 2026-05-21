@@ -15,6 +15,7 @@ import { loadRegistry, filterItemsByTarget } from "../../registry/resolve.js"
 export interface SandboxInitOptions {
   handoff: string
   theme: string
+  themeFile?: string
   fromHtmlPrototype?: string
   overwrite?: boolean
   skipInstall?: boolean
@@ -138,7 +139,14 @@ async function runInit(
     runNpmInstall(sandboxDir, options.json ?? false)
   }
 
-  applyThemeIfPossible(sandboxDir, manifest, options.theme, cwd, options.json ?? false)
+  applyThemeIfPossible(
+    sandboxDir,
+    manifest,
+    options.theme,
+    cwd,
+    options.json ?? false,
+    options.themeFile
+  )
 
   const shipped: string[] = []
   for (const p of manifest.primitives) {
@@ -170,23 +178,46 @@ function applyThemeIfPossible(
   manifest: HandoffManifest,
   theme: string,
   cwd: string,
-  json: boolean
+  json: boolean,
+  themeFile?: string
 ): void {
-  // Resolve the theme yaml. If `theme` is a path that exists, use it directly.
-  // Otherwise lookup by name in cwd/themes/ and cwd/custom-themes/.
-  const directPath = isAbsolute(theme) ? theme : resolve(cwd, theme)
-  const candidates = [
-    directPath,
+  // Resolve the theme yaml in this order:
+  //   1. Explicit --theme-file <path> (absolute or relative to cwd).
+  //   2. `theme` arg as a direct path that exists on disk.
+  //   3. ${VISOR_THEMES_PRIVATE_PATH}/themes/${theme}/theme.visor.yaml — for
+  //      operators who keep brand themes in a private repo (e.g.
+  //      ~/Code/low-orbit/visor-themes-private).
+  //   4. Fallback: cwd/themes/${theme}.visor.yaml and cwd/custom-themes/${theme}.visor.yaml.
+  const candidates: string[] = []
+  if (themeFile) {
+    candidates.push(isAbsolute(themeFile) ? themeFile : resolve(cwd, themeFile))
+  }
+  candidates.push(isAbsolute(theme) ? theme : resolve(cwd, theme))
+  const privateRoot = process.env.VISOR_THEMES_PRIVATE_PATH
+  if (privateRoot && privateRoot.length > 0) {
+    candidates.push(join(privateRoot, "themes", theme, "theme.visor.yaml"))
+  }
+  candidates.push(
     join(cwd, "themes", `${theme}.visor.yaml`),
-    join(cwd, "custom-themes", `${theme}.visor.yaml`),
-  ]
+    join(cwd, "custom-themes", `${theme}.visor.yaml`)
+  )
+
   const yamlPath = candidates.find((p) => existsSync(p))
   if (!yamlPath) {
+    const searched = candidates.join(", ")
     manifest.warnings.push(
-      `Theme '${theme}' not found in themes/ or custom-themes/ — sandbox uses placeholder globals.css. Run 'visor theme apply <path> --adapter nextjs -o app/globals.css' manually.`
+      `Theme '${theme}' not found (searched: ${searched}) — sandbox uses placeholder globals.css. ` +
+        `Run 'npx visor theme apply <path-to-theme.visor.yaml> --adapter nextjs -o ${join(sandboxDir, "app", "globals.css")}' manually, ` +
+        `or re-run with --theme-file <path>, or set VISOR_THEMES_PRIVATE_PATH to a directory containing themes/${theme}/theme.visor.yaml.`
     )
     if (!json) {
       logger.warn(`Theme '${theme}' not found — leaving placeholder globals.css.`)
+      logger.item(
+        `Re-run with --theme-file <path>, or set VISOR_THEMES_PRIVATE_PATH=<dir-containing-themes/${theme}/theme.visor.yaml>.`
+      )
+      logger.item(
+        `Or apply manually: npx visor theme apply <path> --adapter nextjs -o ${join(sandboxDir, "app", "globals.css")}`
+      )
     }
     return
   }

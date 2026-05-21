@@ -30,6 +30,7 @@ vi.mock("../registry/resolve.js", async () => {
 
 import { sandboxInitCommand } from "../commands/sandbox/init.js"
 import { addCommand } from "../commands/add.js"
+import { themeApplyCommand } from "../commands/theme-apply.js"
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const FIXTURE = join(HERE, "fixtures", "sandbox-handoff.md")
@@ -483,6 +484,127 @@ describe("sandbox init", () => {
       expect(manifestSource).toContain('"state-coverage-menus"')
       expect(manifestSource).toContain('"kind": "state-coverage"')
       expect(manifestSource).toContain('"kind": "named"')
+    })
+  })
+
+  describe("theme resolution", () => {
+    const ORIGINAL_PRIVATE_PATH = process.env.VISOR_THEMES_PRIVATE_PATH
+
+    afterEach(() => {
+      if (ORIGINAL_PRIVATE_PATH === undefined) {
+        delete process.env.VISOR_THEMES_PRIVATE_PATH
+      } else {
+        process.env.VISOR_THEMES_PRIVATE_PATH = ORIGINAL_PRIVATE_PATH
+      }
+    })
+
+    it("resolves themes via VISOR_THEMES_PRIVATE_PATH when set", async () => {
+      const { writeFileSync, mkdirSync: mkdirSyncFs } = await import("fs")
+      const privateRoot = join(testDir, "themes-private")
+      const themeDir = join(privateRoot, "themes", "entr")
+      mkdirSyncFs(themeDir, { recursive: true })
+      const themePath = join(themeDir, "theme.visor.yaml")
+      writeFileSync(themePath, "name: entr\n")
+
+      process.env.VISOR_THEMES_PRIVATE_PATH = privateRoot
+
+      await sandboxInitCommand("test-pattern", testDir, {
+        handoff: FIXTURE,
+        theme: "entr",
+        skipInstall: true,
+      })
+
+      const calls = vi.mocked(themeApplyCommand).mock.calls
+      expect(calls.length).toBe(1)
+      expect(calls[0]?.[0]).toBe(themePath)
+    })
+
+    it("--theme-file overrides everything else, even without the env var", async () => {
+      delete process.env.VISOR_THEMES_PRIVATE_PATH
+      const { writeFileSync } = await import("fs")
+      const explicitThemePath = join(testDir, "explicit.visor.yaml")
+      writeFileSync(explicitThemePath, "name: explicit\n")
+
+      await sandboxInitCommand("test-pattern", testDir, {
+        handoff: FIXTURE,
+        theme: "entr",
+        themeFile: explicitThemePath,
+        skipInstall: true,
+      })
+
+      const calls = vi.mocked(themeApplyCommand).mock.calls
+      expect(calls.length).toBe(1)
+      expect(calls[0]?.[0]).toBe(explicitThemePath)
+    })
+
+    it("--theme-file wins over VISOR_THEMES_PRIVATE_PATH when both resolve", async () => {
+      const { writeFileSync, mkdirSync: mkdirSyncFs } = await import("fs")
+      const privateRoot = join(testDir, "themes-private")
+      const themeDir = join(privateRoot, "themes", "entr")
+      mkdirSyncFs(themeDir, { recursive: true })
+      const envThemePath = join(themeDir, "theme.visor.yaml")
+      writeFileSync(envThemePath, "name: entr-env\n")
+
+      const explicitThemePath = join(testDir, "explicit.visor.yaml")
+      writeFileSync(explicitThemePath, "name: entr-explicit\n")
+
+      process.env.VISOR_THEMES_PRIVATE_PATH = privateRoot
+
+      await sandboxInitCommand("test-pattern", testDir, {
+        handoff: FIXTURE,
+        theme: "entr",
+        themeFile: explicitThemePath,
+        skipInstall: true,
+      })
+
+      const calls = vi.mocked(themeApplyCommand).mock.calls
+      expect(calls.length).toBe(1)
+      expect(calls[0]?.[0]).toBe(explicitThemePath)
+    })
+
+    it("falls back to themes/ when env var and --theme-file are absent", async () => {
+      delete process.env.VISOR_THEMES_PRIVATE_PATH
+      const { writeFileSync, mkdirSync: mkdirSyncFs } = await import("fs")
+      const themesDir = join(testDir, "themes")
+      mkdirSyncFs(themesDir, { recursive: true })
+      const fallbackPath = join(themesDir, "space.visor.yaml")
+      writeFileSync(fallbackPath, "name: space\n")
+
+      await sandboxInitCommand("test-pattern", testDir, {
+        handoff: FIXTURE,
+        theme: "space",
+        skipInstall: true,
+      })
+
+      const calls = vi.mocked(themeApplyCommand).mock.calls
+      expect(calls.length).toBe(1)
+      expect(calls[0]?.[0]).toBe(fallbackPath)
+    })
+
+    it("warns with an actionable command when no theme path resolves", async () => {
+      delete process.env.VISOR_THEMES_PRIVATE_PATH
+
+      const logSpy = vi.spyOn(console, "log")
+
+      await sandboxInitCommand("test-pattern", testDir, {
+        handoff: FIXTURE,
+        theme: "missing-theme",
+        json: true,
+        skipInstall: true,
+      })
+
+      expect(vi.mocked(themeApplyCommand)).not.toHaveBeenCalled()
+
+      // With json: true the entire result is JSON-stringified to stdout (the
+      // last console.log call). Its `warnings` array carries the theme miss.
+      const lastCall = logSpy.mock.calls.at(-1)
+      const jsonOutput = lastCall?.[0] as string
+      const result = JSON.parse(jsonOutput) as { warnings: string[] }
+      const themeWarning = result.warnings.find((w) => w.includes("missing-theme"))
+      expect(themeWarning).toBeTruthy()
+      expect(themeWarning).toContain("--theme-file")
+      expect(themeWarning).toContain("VISOR_THEMES_PRIVATE_PATH")
+      expect(themeWarning).toContain("visor theme apply")
     })
   })
 })
