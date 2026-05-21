@@ -102,7 +102,7 @@ export function nextjsAdapter(
       seenVisorFamilies.add(font.family);
       const aliased = aliasedFamilies.get(font.family)!;
       for (const weight of font.weights) {
-        const url = buildVisorFontUrl(font.org ?? "", font.family, weight);
+        const url = buildVisorFontUrl(font.org ?? "", font.family, weight, font.cdnBase);
         lines.push(`@font-face {`);
         lines.push(`  font-family: "${aliased}";`);
         lines.push(`  src: url("${url}") format("woff2");`);
