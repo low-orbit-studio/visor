@@ -70,7 +70,7 @@ export function tsconfigTemplate(): string {
 }
 
 export function nextConfigTemplate(): string {
-  return `import type { NextConfig } from "next"\n\nconst nextConfig: NextConfig = {\n  reactStrictMode: true,\n  // Sandbox is local-only — disable production telemetry and image opt to keep startup fast.\n  images: { unoptimized: true },\n}\n\nexport default nextConfig\n`
+  return `import type { NextConfig } from "next"\nimport path from "node:path"\nimport { fileURLToPath } from "node:url"\n\nconst __dirname = path.dirname(fileURLToPath(import.meta.url))\n\nconst nextConfig: NextConfig = {\n  reactStrictMode: true,\n  // Sandbox is local-only — disable production telemetry and image opt to keep startup fast.\n  images: { unoptimized: true },\n  // Anchor turbopack root to the sandbox dir so a parent-repo package-lock.json\n  // doesn't pull the workspace root upstream (VI-440).\n  turbopack: { root: __dirname },\n}\n\nexport default nextConfig\n`
 }
 
 export function nextEnvDtsTemplate(): string {

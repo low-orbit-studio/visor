@@ -70,6 +70,24 @@ describe("sandbox init", () => {
     expect(existsSync(join(sandboxDir, "playwright.capture.mjs"))).toBe(true)
   })
 
+  it("bakes turbopack.root into the generated next.config.ts (VI-440)", async () => {
+    await sandboxInitCommand("test-pattern", testDir, {
+      handoff: FIXTURE,
+      theme: "space",
+      skipInstall: true,
+    })
+
+    const nextConfigSource = readFileSync(
+      join(testDir, ".lo", "sandbox", "test-pattern", "next.config.ts"),
+      "utf-8"
+    )
+    // Anchors turbopack root to the sandbox dir so a parent-repo package-lock.json
+    // doesn't pull the workspace root upstream.
+    expect(nextConfigSource).toContain('import { fileURLToPath } from "node:url"')
+    expect(nextConfigSource).toContain("const __dirname = path.dirname(fileURLToPath(import.meta.url))")
+    expect(nextConfigSource).toContain("turbopack: { root: __dirname }")
+  })
+
   it("writes sandbox.json with handoff path, theme, port and primitives", async () => {
     await sandboxInitCommand("test-pattern", testDir, {
       handoff: FIXTURE,
