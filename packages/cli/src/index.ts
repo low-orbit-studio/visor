@@ -430,12 +430,25 @@ sandbox
 
 sandbox
   .command("approve")
-  .description("Capture Playwright screenshots of every sandbox route as the visual spec")
+  .description(
+    "Capture sandbox routes into captures/pending/ (with auto-diff vs the approved baseline). Pass --approve to promote pending → approved."
+  )
   .requiredOption("--name <name>", "sandbox name (created via 'sandbox init')")
-  .option("--diff", "pixel-diff against the prior approved baseline", false)
+  .option(
+    "--approve",
+    "promote captures/pending/ → captures/approved/ (skips capture; assumes prior run populated pending)",
+    false
+  )
+  .option(
+    "--diff",
+    "[deprecated, no-op] default behavior already captures to pending and diffs against approved",
+    false
+  )
   .option("--json", "output structured JSON (for AI agents)")
-  .action((options: { name: string; diff?: boolean; json?: boolean }) => {
-    sandboxApproveCommand(process.cwd(), options)
-  })
+  .action(
+    (options: { name: string; approve?: boolean; diff?: boolean; json?: boolean }) => {
+      sandboxApproveCommand(process.cwd(), options)
+    }
+  )
 
 program.parse()

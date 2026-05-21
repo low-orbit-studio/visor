@@ -1,11 +1,29 @@
-import { existsSync, readFileSync, writeFileSync, readdirSync } from "fs"
-import { join } from "path"
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from "fs"
+import { basename, join } from "path"
 import * as childProcess from "child_process"
 import { logger } from "../../utils/logger.js"
 import { captureScriptTemplate } from "./templates.js"
 
 export interface SandboxApproveOptions {
   name: string
+  /**
+   * Promote `captures/pending/` → `captures/approved/`. Skips the capture
+   * run entirely; the assumption is that a prior `visor sandbox approve`
+   * (without this flag) populated pending and the operator has reviewed it.
+   */
+  approve?: boolean
+  /**
+   * Deprecated. Default behavior is now pending + diff already; the flag is
+   * accepted for backwards compatibility and is a no-op.
+   */
   diff?: boolean
   json?: boolean
 }
@@ -26,6 +44,21 @@ export function sandboxApproveCommand(cwd: string, options: SandboxApproveOption
     )
     return
   }
+
+  if (options.approve) {
+    runPromotion(sandboxDir, options.name, json)
+    return
+  }
+
+  runCapture(sandboxDir, configPath, options.name, json)
+}
+
+function runCapture(
+  sandboxDir: string,
+  configPath: string,
+  sandboxName: string,
+  json: boolean
+): void {
   const config = JSON.parse(readFileSync(configPath, "utf-8")) as SandboxConfig
 
   // Rewrite the capture script each run so script updates ship without
@@ -35,15 +68,16 @@ export function sandboxApproveCommand(cwd: string, options: SandboxApproveOption
 
   ensurePlaywrightInstalled(sandboxDir, json)
 
-  const args = ["--no-install", "node", "playwright.capture.mjs"]
-  if (options.diff) args.push("--diff")
-
-  const result = childProcess.spawnSync("npx", args, {
-    cwd: sandboxDir,
-    stdio: "pipe",
-    env: { ...process.env, SANDBOX_PORT: String(config.port) },
-    encoding: "utf-8",
-  })
+  const result = childProcess.spawnSync(
+    "npx",
+    ["--no-install", "node", "playwright.capture.mjs"],
+    {
+      cwd: sandboxDir,
+      stdio: "pipe",
+      env: { ...process.env, SANDBOX_PORT: String(config.port) },
+      encoding: "utf-8",
+    }
+  )
 
   if (result.error) {
     fail(json, `Capture failed to start: ${result.error.message}`)
@@ -54,21 +88,25 @@ export function sandboxApproveCommand(cwd: string, options: SandboxApproveOption
     return
   }
 
-  const approvedDir = join(sandboxDir, "captures", "approved")
+  const pendingDir = join(sandboxDir, "captures", "pending")
   const diffsDir = join(sandboxDir, "captures", "diffs")
-  const approvedFiles = safeListPngs(approvedDir)
-  const diffFiles = options.diff ? safeListPngs(diffsDir) : []
+  const approvedDir = join(sandboxDir, "captures", "approved")
+  const pendingFiles = safeListPngs(pendingDir)
+  const diffFiles = safeListPngs(diffsDir)
+  const hasBaseline = safeListPngs(approvedDir).length > 0
 
   if (json) {
     console.log(
       JSON.stringify(
         {
           success: true,
-          mode: options.diff ? "diff" : "approve",
+          mode: "pending",
+          pendingDir,
+          diffsDir,
           approvedDir,
-          diffsDir: options.diff ? diffsDir : null,
-          approved: approvedFiles,
+          pending: pendingFiles,
           diffs: diffFiles,
+          hasBaseline,
           captureOutput: tryParseJson(result.stdout),
         },
         null,
@@ -77,15 +115,62 @@ export function sandboxApproveCommand(cwd: string, options: SandboxApproveOption
     )
   } else {
     logger.success(
-      options.diff
-        ? `Pixel-diff complete. ${diffFiles.length} diff PNGs in ${diffsDir}`
-        : `Captured ${approvedFiles.length} PNGs in ${approvedDir}`
+      `Captured ${pendingFiles.length} PNGs in ${pendingDir}` +
+        (hasBaseline
+          ? ` (${diffFiles.length} differ from approved baseline)`
+          : " (no prior baseline — first capture)")
     )
-    if (options.diff && diffFiles.length > 0) {
-      logger.blank()
+    logger.blank()
+    if (diffFiles.length > 0) {
       logger.info("Changed routes:")
       for (const f of diffFiles) logger.item(f)
+      logger.blank()
     }
+    logger.info("Review captures/pending/ (and captures/diffs/), then promote with:")
+    logger.item(`npx visor sandbox approve --name ${sandboxName} --approve`)
+  }
+}
+
+/**
+ * Promote `captures/pending/` → `captures/approved/`. Clears pending and
+ * diffs after promotion. Pure (no Playwright/child-process dependency)
+ * so it can be unit-tested directly without spawning a browser.
+ */
+export function runPromotion(sandboxDir: string, sandboxName: string, json: boolean): void {
+  const pendingDir = join(sandboxDir, "captures", "pending")
+  const approvedDir = join(sandboxDir, "captures", "approved")
+  const diffsDir = join(sandboxDir, "captures", "diffs")
+
+  const pendingFiles = safeListPngs(pendingDir)
+  if (pendingFiles.length === 0) {
+    fail(
+      json,
+      `No pending captures found at ${pendingDir}. Run 'visor sandbox approve --name ${sandboxName}' (without --approve) first to capture and review.`
+    )
+    return
+  }
+
+  mkdirSync(approvedDir, { recursive: true })
+  const promoted: string[] = []
+  for (const src of pendingFiles) {
+    const dest = join(approvedDir, basename(src))
+    copyFileSync(src, dest)
+    promoted.push(dest)
+  }
+  rmSync(pendingDir, { recursive: true, force: true })
+  rmSync(diffsDir, { recursive: true, force: true })
+
+  if (json) {
+    console.log(
+      JSON.stringify(
+        { success: true, mode: "approve", approvedDir, promoted },
+        null,
+        2
+      )
+    )
+  } else {
+    logger.success(`Promoted ${promoted.length} pending captures → ${approvedDir}`)
+    logger.info("Pending and diff directories cleared.")
   }
 }
 
@@ -94,10 +179,14 @@ function ensurePlaywrightInstalled(sandboxDir: string, json: boolean): void {
   if (existsSync(markerPath)) return
 
   if (!json) logger.info("Installing Playwright Chromium (one-time)...")
-  const result = childProcess.spawnSync("npx", ["--no-install", "playwright", "install", "chromium"], {
-    cwd: sandboxDir,
-    stdio: json ? "ignore" : "inherit",
-  })
+  const result = childProcess.spawnSync(
+    "npx",
+    ["--no-install", "playwright", "install", "chromium"],
+    {
+      cwd: sandboxDir,
+      stdio: json ? "ignore" : "inherit",
+    }
+  )
   if (result.error) {
     throw new Error(`playwright install failed to start: ${result.error.message}`)
   }
