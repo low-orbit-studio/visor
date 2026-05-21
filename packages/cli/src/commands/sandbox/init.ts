@@ -116,6 +116,22 @@ async function runInit(
     for (const w of prototypeImport.warnings) manifest.warnings.push(w)
   }
 
+  // Gate 3 reclassification: any handoff entry declared `shipped` or
+  // `gap-inflight` that the registry doesn't know about is a consumer-side
+  // composition of existing primitives, not a net-new Visor artifact. Reclassify
+  // before we scaffold so `lib/sandbox-manifest.ts` and `sandbox.json` both
+  // surface the correct `compose-recipe` kind. See VI-444 and PL-1570 finding #8.
+  const known = loadKnownPrimitives()
+  for (const p of manifest.primitives) {
+    if (p.status !== "shipped" && p.status !== "gap-inflight") continue
+    if (known.has(p.name)) continue
+    p.status = "compose-recipe"
+    p.viTicket = undefined
+    manifest.warnings.push(
+      `'${p.name}' declared shipped in the handoff but absent from the registry — reclassified as compose-recipe`
+    )
+  }
+
   writeScaffold(sandboxDir, manifest, port, { prototypeImport })
 
   if (!options.skipInstall) {
@@ -124,16 +140,9 @@ async function runInit(
 
   applyThemeIfPossible(sandboxDir, manifest, options.theme, cwd, options.json ?? false)
 
-  const known = loadKnownPrimitives()
   const shipped: string[] = []
   for (const p of manifest.primitives) {
     if (p.status !== "shipped" && p.status !== "gap-inflight") continue
-    if (!known.has(p.name)) {
-      manifest.warnings.push(
-        `'${p.name}' is declared shipped in the handoff but is not in the registry — skipped`
-      )
-      continue
-    }
     const ok = tryAddPrimitive(p, sandboxDir, options.json ?? false)
     if (ok) shipped.push(p.name)
   }

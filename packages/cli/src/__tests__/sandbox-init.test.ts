@@ -33,6 +33,7 @@ import { addCommand } from "../commands/add.js"
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const FIXTURE = join(HERE, "fixtures", "sandbox-handoff.md")
+const COMPOSE_FIXTURE = join(HERE, "fixtures", "sandbox-handoff-compose.md")
 
 let testDir: string
 
@@ -193,6 +194,115 @@ describe("sandbox init", () => {
     expect(manifestSource).toContain("button")
     expect(manifestSource).toContain("widget-stack")
     expect(manifestSource).toContain("list-view")
+  })
+
+  describe("Gate 3 reclassification — shipped primitives missing from registry", () => {
+    it("reclassifies shipped entries absent from the registry as compose-recipe in sandbox.json", async () => {
+      await sandboxInitCommand("compose-pattern", testDir, {
+        handoff: COMPOSE_FIXTURE,
+        theme: "space",
+        skipInstall: true,
+      })
+
+      const config = JSON.parse(
+        readFileSync(join(testDir, ".lo", "sandbox", "compose-pattern", "sandbox.json"), "utf-8")
+      ) as {
+        primitives: Array<{ name: string; status: string; viTicket: string | null }>
+      }
+
+      const roleCell = config.primitives.find((p) => p.name === "role-cell")
+      const inviteChip = config.primitives.find((p) => p.name === "invite-status-chip")
+      expect(roleCell?.status).toBe("compose-recipe")
+      expect(roleCell?.viTicket).toBeNull()
+      expect(inviteChip?.status).toBe("compose-recipe")
+      expect(inviteChip?.viTicket).toBeNull()
+    })
+
+    it("records reclassified entries in sandbox-manifest.ts", async () => {
+      await sandboxInitCommand("compose-pattern", testDir, {
+        handoff: COMPOSE_FIXTURE,
+        theme: "space",
+        skipInstall: true,
+      })
+
+      const manifestSource = readFileSync(
+        join(testDir, ".lo", "sandbox", "compose-pattern", "lib", "sandbox-manifest.ts"),
+        "utf-8"
+      )
+      expect(manifestSource).toContain("role-cell")
+      expect(manifestSource).toContain("invite-status-chip")
+      expect(manifestSource).toContain('"status": "compose-recipe"')
+    })
+
+    it("does not invoke addCommand for reclassified compose-recipe entries", async () => {
+      await sandboxInitCommand("compose-pattern", testDir, {
+        handoff: COMPOSE_FIXTURE,
+        theme: "space",
+        skipInstall: true,
+      })
+
+      const called = vi.mocked(addCommand).mock.calls
+      const names = called.map((c) => c[0][0])
+      expect(names).toContain("button")
+      expect(names).toContain("badge")
+      expect(names).not.toContain("role-cell")
+      expect(names).not.toContain("invite-status-chip")
+    })
+
+    it("leaves gap-new entries untouched after reclassification", async () => {
+      await sandboxInitCommand("compose-pattern", testDir, {
+        handoff: COMPOSE_FIXTURE,
+        theme: "space",
+        skipInstall: true,
+      })
+
+      const config = JSON.parse(
+        readFileSync(join(testDir, ".lo", "sandbox", "compose-pattern", "sandbox.json"), "utf-8")
+      ) as {
+        primitives: Array<{ name: string; status: string; viTicket: string | null }>
+      }
+
+      const widgetStack = config.primitives.find((p) => p.name === "widget-stack")
+      const statusPill = config.primitives.find((p) => p.name === "status-pill")
+      expect(widgetStack?.status).toBe("gap-new")
+      expect(statusPill?.status).toBe("gap-new")
+      expect(statusPill?.viTicket).toBe("VI-999")
+
+      const stubsDir = join(testDir, ".lo", "sandbox", "compose-pattern", "components", "stubs")
+      expect(existsSync(join(stubsDir, "widget-stack.tsx"))).toBe(true)
+      expect(existsSync(join(stubsDir, "status-pill.tsx"))).toBe(true)
+      expect(existsSync(join(stubsDir, "role-cell.tsx"))).toBe(false)
+      expect(existsSync(join(stubsDir, "invite-status-chip.tsx"))).toBe(false)
+    })
+
+    it("emits an informational warning naming the reclassified primitives", async () => {
+      await sandboxInitCommand("compose-pattern", testDir, {
+        handoff: COMPOSE_FIXTURE,
+        theme: "space",
+        skipInstall: true,
+      })
+
+      const config = JSON.parse(
+        readFileSync(join(testDir, ".lo", "sandbox", "compose-pattern", "sandbox.json"), "utf-8")
+      ) as { primitives: Array<{ name: string; status: string }> }
+      // The warning is emitted via manifest.warnings — surfaced through
+      // SandboxInitJsonResult.warnings. Re-run with --json to inspect.
+      const logSpy = vi.spyOn(console, "log").mockImplementation(() => {})
+      await sandboxInitCommand("compose-pattern-json", testDir, {
+        handoff: COMPOSE_FIXTURE,
+        theme: "space",
+        skipInstall: true,
+        json: true,
+      })
+      const lastJson = logSpy.mock.calls.flat().join("\n")
+      logSpy.mockRestore()
+      expect(lastJson).toMatch(/reclassified as compose-recipe/)
+      expect(lastJson).toMatch(/role-cell/)
+      // The original sandbox.json is consistent with the JSON-mode run.
+      expect(config.primitives.find((p) => p.name === "role-cell")?.status).toBe(
+        "compose-recipe"
+      )
+    })
   })
 
   describe("--from-html-prototype", () => {

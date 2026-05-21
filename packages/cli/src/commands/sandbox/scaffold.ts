@@ -117,6 +117,7 @@ export function writeSandboxConfig(
       name: p.name,
       status: p.status,
       viTicket: p.viTicket ?? null,
+      kind: p.kind ?? null,
     })),
     screens: manifest.screens.map((s) => ({
       name: s.name,

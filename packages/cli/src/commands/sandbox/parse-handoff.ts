@@ -1,7 +1,7 @@
 import { readFileSync, existsSync } from "fs"
 import { dirname, resolve, isAbsolute } from "path"
 
-export type PrimitiveStatus = "shipped" | "gap-new" | "gap-inflight"
+export type PrimitiveStatus = "shipped" | "gap-new" | "gap-inflight" | "compose-recipe"
 
 export interface PrimitiveEntry {
   name: string
