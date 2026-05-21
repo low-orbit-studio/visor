@@ -444,18 +444,23 @@ export function docsAdapter(
   lines.push(block(`html:not(.dark) ${scopeClass}`, generateFumadocsBridgeDecls(input.tokens, "light")));
   lines.push("");
 
-  // ─── Section 5: Semantic aliases (VI-451) — visor-semantic layer ──────────
+  // ─── Layer: Semantic aliases (VI-451) — visor-semantic cascade layer ─────
   //
   // Bare-name intent (--primary, --accent, ...), hairline (--hairline,
   // --hairline-strong), and discrete pixel-named scales (--text-N, --space-N)
   // emit into a separate `visor-semantic` cascade layer so consumer overrides
   // in app-globals can still take precedence. Layer order:
   //   visor-primitives < visor-semantic < visor-adaptive < visor-bridge
+  //
+  // Distinct from the 5-section template (Sections 1-4 + optional Section 5
+  // "Creative extensions") — those live in the visor-adaptive layer. The
+  // theme-structure validation rule recognizes "Section N" markers; this
+  // block uses a "Layer:" prefix instead to avoid collision.
 
   const semanticLines: string[] = [];
 
-  // 5a — Discrete-scale aliases: mode-agnostic, attach to the scope class.
-  semanticLines.push("\n/* ── Section 5: Semantic aliases (VI-451) ── */");
+  // Discrete-scale aliases: mode-agnostic, attach to the scope class.
+  semanticLines.push("\n/* ── Layer: Semantic aliases (VI-451) ── */");
   semanticLines.push(sectionComment("Discrete: Text size aliases (--text-N)"));
   semanticLines.push(block(scopeClass, generateTextScaleAliasDecls()));
   semanticLines.push("");

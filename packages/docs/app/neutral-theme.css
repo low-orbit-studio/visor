@@ -1,7 +1,7 @@
 @layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;
 
 @layer visor-semantic {
-/* ── Section 5: Semantic aliases (VI-451) ── */
+/* ── Layer: Semantic aliases (VI-451) ── */
 
 /* --- Discrete: Text size aliases (--text-N) --- */
 .neutral-theme {
