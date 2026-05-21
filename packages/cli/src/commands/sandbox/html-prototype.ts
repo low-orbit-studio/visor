@@ -1,6 +1,7 @@
 import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "fs"
 import { join } from "path"
 import type { HandoffManifest, ScreenEntry } from "./parse-handoff.js"
+import { stripDocumentaryChrome } from "./strip-chrome.js"
 
 export interface PrototypeImport {
   /** Absolute path to the prototype source directory. */
@@ -17,7 +18,23 @@ export interface PrototypeImport {
   screenMap: Record<string, string>
   /** State-coverage screens auto-discovered from the prototype dir (slugs only). */
   stateCoverageScreens: string[]
+  /**
+   * If non-empty, every `.html` file copied into `public/prototype/` had
+   * elements matching these CSS-ish selectors stripped before being written.
+   * See `strip-chrome.ts` for the supported selector grammar.
+   */
+  stripChromeSelectors: string[]
   warnings: string[]
+}
+
+export interface CopyHtmlPrototypeOptions {
+  /**
+   * Selector list to strip from each `.html` file before it lands in
+   * `public/prototype/`. Resolve via `resolveStripSelectors()` in `strip-chrome.ts`
+   * so the `--strip-chrome` / `--strip-chrome-additional` flag semantics stay
+   * encapsulated.
+   */
+  stripChromeSelectors?: string[]
 }
 
 const SCREEN_FILE_PATTERN = /^screen-(\d+)-([^/.]+)\.html$/i
@@ -34,13 +51,15 @@ const SCREEN_FILE_PATTERN = /^screen-(\d+)-([^/.]+)\.html$/i
 export function copyHtmlPrototype(
   sourceDir: string,
   sandboxDir: string,
-  manifest: HandoffManifest
+  manifest: HandoffManifest,
+  options: CopyHtmlPrototypeOptions = {}
 ): PrototypeImport {
   const warnings: string[] = []
   const destAbs = join(sandboxDir, "public", "prototype")
   mkdirSync(destAbs, { recursive: true })
 
-  const copiedFiles = copyTreeRelative(sourceDir, destAbs)
+  const stripChromeSelectors = options.stripChromeSelectors ?? []
+  const copiedFiles = copyTreeRelative(sourceDir, destAbs, "", stripChromeSelectors)
   const screenFiles = listOrderedScreenFiles(sourceDir)
 
   if (screenFiles.length === 0) {
@@ -80,6 +99,7 @@ export function copyHtmlPrototype(
     copiedFiles,
     screenMap,
     stateCoverageScreens,
+    stripChromeSelectors,
     warnings,
   }
 }
@@ -104,7 +124,12 @@ function deriveStateCoverageScreen(
   return { name: slug, title, kind: "state-coverage" }
 }
 
-function copyTreeRelative(srcDir: string, destDir: string, relDir = ""): string[] {
+function copyTreeRelative(
+  srcDir: string,
+  destDir: string,
+  relDir = "",
+  stripChromeSelectors: string[] = []
+): string[] {
   const out: string[] = []
   const entries = readdirSync(join(srcDir, relDir))
   for (const name of entries) {
@@ -114,9 +139,15 @@ function copyTreeRelative(srcDir: string, destDir: string, relDir = ""): string[
     const stat = statSync(srcPath)
     if (stat.isDirectory()) {
       mkdirSync(destPath, { recursive: true })
-      out.push(...copyTreeRelative(srcDir, destDir, join(relDir, name)))
+      out.push(...copyTreeRelative(srcDir, destDir, join(relDir, name), stripChromeSelectors))
     } else if (stat.isFile()) {
-      writeFileSync(destPath, readFileSync(srcPath))
+      if (stripChromeSelectors.length > 0 && name.toLowerCase().endsWith(".html")) {
+        const html = readFileSync(srcPath, "utf-8")
+        const stripped = stripDocumentaryChrome(html, stripChromeSelectors)
+        writeFileSync(destPath, stripped)
+      } else {
+        writeFileSync(destPath, readFileSync(srcPath))
+      }
       out.push(join("public", "prototype", relDir, name).replace(/\\/g, "/"))
     }
   }
