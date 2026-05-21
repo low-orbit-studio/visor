@@ -75,7 +75,7 @@ function generateFontCSS(
       if (seenVisorFonts.has(font.family)) continue;
       seenVisorFonts.add(font.family);
       for (const weight of font.weights) {
-        const url = buildVisorFontUrl(font.org ?? "", font.family, weight);
+        const url = buildVisorFontUrl(font.org ?? "", font.family, weight, font.cdnBase);
         lines.push(`@font-face {`);
         lines.push(`  font-family: "${font.family}";`);
         lines.push(`  src: url("${url}") format("woff2");`);
@@ -265,6 +265,11 @@ export function resolveThemeFonts(
 ): ThemeFontResult {
   const display = options?.display ?? "swap";
   const warnings: string[] = [];
+  // Theme-level CDN overrides, keyed by source token. Only `visor-fonts`
+  // routes through a CDN that themes might want to redirect (Google/Fontshare
+  // serve hosted CSS, which has no equivalent EULA-bucket use case).
+  const cdnOverrides = typography["cdn-overrides"];
+  const visorFontsCdnBase = cdnOverrides?.["visor-fonts"];
 
   // Resolve heading font
   let headingResolution: FontResolution | null = null;
@@ -281,6 +286,7 @@ export function resolveThemeFonts(
       display,
       source: typography.heading.source,
       org: typography.heading.org,
+      cdnBase: visorFontsCdnBase,
     });
 
     if (headingResolution.guidance) {
@@ -319,6 +325,7 @@ export function resolveThemeFonts(
         display,
         source: typography.heading!.source,
         org: typography.heading!.org,
+        cdnBase: visorFontsCdnBase,
       });
       bodyResolution = headingResolution;
     } else {
@@ -327,6 +334,7 @@ export function resolveThemeFonts(
         display,
         source: typography.body.source,
         org: typography.body.org,
+        cdnBase: visorFontsCdnBase,
       });
 
       if (bodyResolution.guidance) {
@@ -364,6 +372,7 @@ export function resolveThemeFonts(
           display,
           source: typography.heading!.source,
           org: typography.heading!.org,
+          cdnBase: visorFontsCdnBase,
         });
         displayResolution = headingResolution;
       }
@@ -382,6 +391,7 @@ export function resolveThemeFonts(
         display,
         source: typography.body!.source,
         org: typography.body!.org,
+        cdnBase: visorFontsCdnBase,
       });
       displayResolution = bodyResolution;
     } else {
@@ -390,6 +400,7 @@ export function resolveThemeFonts(
         display,
         source: typography.display.source,
         org: typography.display.org,
+        cdnBase: visorFontsCdnBase,
       });
 
       if (displayResolution.guidance) {
@@ -450,6 +461,7 @@ export function resolveThemeFonts(
       display,
       source: monoSource,
       org: monoOrg,
+      cdnBase: visorFontsCdnBase,
       category: "monospace",
     });
 

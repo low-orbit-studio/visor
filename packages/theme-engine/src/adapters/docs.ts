@@ -282,7 +282,7 @@ export function docsAdapter(
         emittedFamilies.add(font.family);
         const aliased = aliasedFamilies.get(font.family)!;
         for (const weight of font.weights) {
-          const url = buildVisorFontUrl(font.org ?? "", font.family, weight);
+          const url = buildVisorFontUrl(font.org ?? "", font.family, weight, font.cdnBase);
           fontLines.push("@font-face {");
           fontLines.push(`  font-family: "${aliased}";`);
           fontLines.push(`  src: url("${url}") format("woff2");`);

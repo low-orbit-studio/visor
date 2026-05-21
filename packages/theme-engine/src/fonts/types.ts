@@ -33,6 +33,8 @@ export interface FontResolution {
   guidance: string | null;
   /** Organization namespace (only for visor-fonts source) */
   org: string | null;
+  /** CDN base URL override (only for visor-fonts source; null = default fonts.visor.design) */
+  cdnBase: string | null;
 }
 
 /** Options for resolving a single font */
@@ -47,8 +49,10 @@ export interface FontResolveOptions {
   category?: string;
   /** Font source override — skips Google Fonts lookup when set */
   source?: FontSource;
-  /** Organization namespace for visor-fonts CDN (required when source is "visor-fonts") */
+  /** Organization namespace for visor-fonts CDN (required when source is "visor-fonts" unless a cdnBase override is provided) */
   org?: string;
+  /** CDN base URL override for visor-fonts (e.g., "https://fonts.knowmentum.ai"); defaults to VISOR_FONTS_CDN */
+  cdnBase?: string;
 }
 
 /** Typography section from a .visor.yaml file */
@@ -89,6 +93,15 @@ export interface VisorTypography {
     tight?: string;
     normal?: string;
     wide?: string;
+  };
+  /**
+   * Per-source CDN base URL overrides. When a slot's `source` matches a key,
+   * URL resolution uses the override base instead of the default CDN.
+   * Currently only `visor-fonts` is supported; Google/Fontshare have no
+   * analogous need.
+   */
+  "cdn-overrides"?: {
+    "visor-fonts"?: string;
   };
 }
 

@@ -174,6 +174,16 @@ export interface VisorThemeConfig {
       wide?: string;
     };
     /**
+     * Per-source CDN base URL overrides for font URL resolution. Only
+     * `visor-fonts` is currently supported. When set, the override CDN
+     * replaces `fonts.visor.design` for every slot whose `source: visor-fonts`.
+     * The per-slot `org` may be empty when the override CDN already encodes
+     * the project namespace (e.g., `fonts.knowmentum.ai`).
+     */
+    "cdn-overrides"?: {
+      "visor-fonts"?: string;
+    };
+    /**
      * Per-slot overrides for the generated Flutter `TextTheme`. Any subset
      * of the 16 Material slots may be specified; omitted slots fall
      * through to `VisorTextStylesData.defaults` (Material 3 2024 scale).
@@ -255,6 +265,14 @@ export interface ResolvedThemeConfig {
     display: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string };
     body: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string };
     mono: { family: string; weight?: number; weights?: number[]; source?: FontSource; org?: string };
+    /**
+     * Per-source CDN base URL overrides (e.g., `visor-fonts:
+     * https://fonts.knowmentum.ai`). Passed through from raw config so
+     * adapters can route font URLs to per-theme buckets.
+     */
+    "cdn-overrides"?: {
+      "visor-fonts"?: string;
+    };
     /**
      * Per-slot Material `TextTheme` overrides, passed through from the
      * raw config. Empty object when none supplied. Flutter adapter

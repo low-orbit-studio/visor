@@ -32,8 +32,10 @@ const KNOWN_COLOR_KEYS = new Set([
 ]);
 
 const KNOWN_TYPOGRAPHY_KEYS = new Set([
-  "heading", "display", "body", "mono", "letter-spacing", "scale", "slots",
+  "heading", "display", "body", "mono", "letter-spacing", "scale", "slots", "cdn-overrides",
 ]);
+
+const KNOWN_CDN_OVERRIDE_KEYS = new Set(["visor-fonts"]);
 
 const KNOWN_TYPOGRAPHY_FONT_KEYS = new Set(["family", "weight", "weights", "source", "org"]);
 const KNOWN_TYPOGRAPHY_MONO_KEYS = new Set(["family", "weight", "weights", "source", "org"]);
@@ -115,6 +117,14 @@ function checkUnknownKeys(obj: Record<string, unknown>, errors: string[]): void 
       for (const key of Object.keys(typo.mono as Record<string, unknown>)) {
         if (!KNOWN_TYPOGRAPHY_MONO_KEYS.has(key)) {
           errors.push(`Unknown key 'typography.mono.${key}'. Valid keys: ${[...KNOWN_TYPOGRAPHY_MONO_KEYS].join(", ")}`);
+        }
+      }
+    }
+    // typography.cdn-overrides
+    if (typeof typo["cdn-overrides"] === "object" && typo["cdn-overrides"] !== null) {
+      for (const key of Object.keys(typo["cdn-overrides"] as Record<string, unknown>)) {
+        if (!KNOWN_CDN_OVERRIDE_KEYS.has(key)) {
+          errors.push(`Unknown key 'typography.cdn-overrides.${key}'. Valid keys: ${[...KNOWN_CDN_OVERRIDE_KEYS].join(", ")}`);
         }
       }
     }
@@ -316,10 +326,24 @@ export function validateConfig(config: unknown): ValidationResult {
   // Validate typography font source/org cross-field constraints
   if (typeof obj.typography === "object" && obj.typography !== null) {
     const typo = obj.typography as Record<string, unknown>;
+    // When a theme declares `cdn-overrides.visor-fonts`, the override CDN
+    // typically already encodes a project namespace (e.g.,
+    // fonts.knowmentum.ai already implies "knowmentum"), so the per-slot
+    // `org` segment may be omitted (empty string). Without an override,
+    // org remains required so default visor-fonts URLs stay well-formed.
+    const cdnOverrides = typo["cdn-overrides"] as Record<string, unknown> | undefined;
+    const visorFontsOverride = cdnOverrides?.["visor-fonts"];
+    if (visorFontsOverride !== undefined && typeof visorFontsOverride !== "string") {
+      errors.push(`'typography.cdn-overrides.visor-fonts' must be a string URL`);
+    }
+    if (typeof visorFontsOverride === "string" && visorFontsOverride.length === 0) {
+      errors.push(`'typography.cdn-overrides.visor-fonts' must not be empty`);
+    }
+    const orgOptional = typeof visorFontsOverride === "string" && visorFontsOverride.length > 0;
     for (const slot of ["heading", "display", "body"]) {
       const font = typo[slot] as Record<string, unknown> | undefined;
-      if (font && font.source === "visor-fonts" && !font.org) {
-        errors.push(`'typography.${slot}.org' is required when source is 'visor-fonts'`);
+      if (font && font.source === "visor-fonts" && !orgOptional && !font.org) {
+        errors.push(`'typography.${slot}.org' is required when source is 'visor-fonts' (unless typography.cdn-overrides.visor-fonts is set)`);
       }
       if (font && font.weights !== undefined) {
         if (

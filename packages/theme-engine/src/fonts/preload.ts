@@ -53,21 +53,37 @@ export function generatePreloadLinks(
     }
   }
 
-  // Visor Fonts preconnect + preload
-  const hasVisorFonts = resolutions.some((r) => r.source === "visor-fonts");
-  if (hasVisorFonts) {
-    links.push(
-      `<link rel="preconnect" href="${VISOR_FONTS_CDN}" crossorigin>`
-    );
+  // Visor Fonts preconnect + preload. Themes may override the default CDN
+  // via `typography.cdn-overrides.visor-fonts` — preconnect once per unique
+  // base so EULA-scoped buckets (e.g., fonts.knowmentum.ai) get their own
+  // hint without duplicating the default fonts.visor.design preconnect.
+  const visorFontResolutions = resolutions.filter(
+    (r) => r.source === "visor-fonts"
+  );
+  if (visorFontResolutions.length > 0) {
+    const cdnBases = new Set<string>();
+    for (const resolution of visorFontResolutions) {
+      cdnBases.add(resolution.cdnBase ?? VISOR_FONTS_CDN);
+    }
+    for (const base of cdnBases) {
+      links.push(`<link rel="preconnect" href="${base}" crossorigin>`);
+    }
 
-    for (const resolution of resolutions) {
-      if (resolution.source === "visor-fonts" && resolution.org) {
-        for (const weight of resolution.weights) {
-          const url = buildVisorFontUrl(resolution.org, resolution.family, weight);
-          links.push(
-            `<link rel="preload" as="font" type="font/woff2" href="${url}" crossorigin>`
-          );
-        }
+    for (const resolution of visorFontResolutions) {
+      // Skip only when org AND cdnBase are both absent — without one, the
+      // visor-fonts path can't form a useful URL. When cdnBase is set, an
+      // empty org is fine (the override CDN encodes the project namespace).
+      if (resolution.org === null && resolution.cdnBase === null) continue;
+      for (const weight of resolution.weights) {
+        const url = buildVisorFontUrl(
+          resolution.org ?? "",
+          resolution.family,
+          weight,
+          resolution.cdnBase
+        );
+        links.push(
+          `<link rel="preload" as="font" type="font/woff2" href="${url}" crossorigin>`
+        );
       }
     }
   }

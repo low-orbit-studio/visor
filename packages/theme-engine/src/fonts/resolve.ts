@@ -85,18 +85,31 @@ const WEIGHT_NAMES: Record<number, string> = {
   900: "Black",
 };
 
+/**
+ * Build a visor-fonts URL.
+ *
+ * Default pattern: `https://fonts.visor.design/{org}/{slug}/{prefix}-{weight}.woff2`
+ *
+ * When `cdnBase` is provided, that base replaces `VISOR_FONTS_CDN`. When
+ * `org` is empty (theme-level CDN override already encodes the namespace,
+ * e.g. `https://fonts.knowmentum.ai`), the org segment is dropped:
+ * `{cdnBase}/{slug}/{prefix}-{weight}.woff2`.
+ */
 export function buildVisorFontUrl(
   org: string,
   family: string,
-  weight: number
+  weight: number,
+  cdnBase?: string | null
 ): string {
+  const base = cdnBase ?? VISOR_FONTS_CDN;
   const slug = buildFamilySlug(family);
   const prefix = buildFamilyPrefix(family);
   const weightName =
     lookupFontWeightAlias(family, weight) ??
     WEIGHT_NAMES[weight] ??
     `W${weight}`;
-  return `${VISOR_FONTS_CDN}/${org}/${slug}/${prefix}-${weightName}.woff2`;
+  const orgSegment = org ? `/${org}` : "";
+  return `${base}${orgSegment}/${slug}/${prefix}-${weightName}.woff2`;
 }
 
 /**
@@ -154,6 +167,7 @@ export function resolveFont(
       category: options.category ?? "sans-serif",
       guidance: null,
       org: options.org ?? null,
+      cdnBase: options.cdnBase ?? null,
     };
   }
 
@@ -170,6 +184,7 @@ export function resolveFont(
       category: options.category ?? "sans-serif",
       guidance: null,
       org: null,
+      cdnBase: null,
     };
   }
 
@@ -189,6 +204,7 @@ export function resolveFont(
         `  2. Create @font-face declarations in your theme CSS\n` +
         `  3. Reference the font family in your theme's --font-display or --font-body token`,
       org: null,
+      cdnBase: null,
     };
   }
 
@@ -225,6 +241,7 @@ export function resolveFont(
       category: catalogEntry.category,
       guidance: null,
       org: null,
+      cdnBase: null,
     };
   }
 
@@ -243,5 +260,6 @@ export function resolveFont(
       `  2. Create @font-face declarations in your theme CSS\n` +
       `  3. Reference the font family in your theme's --font-display or --font-body token`,
     org: null,
+    cdnBase: null,
   };
 }

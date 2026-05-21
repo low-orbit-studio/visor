@@ -16,6 +16,7 @@ function makeGoogleFont(
     category: "sans-serif",
     guidance: null,
     org: null,
+    cdnBase: null,
   };
 }
 
@@ -30,10 +31,16 @@ function makeLocalFont(family: string): FontResolution {
     category: "sans-serif",
     guidance: `"${family}" is not available on Google Fonts.`,
     org: null,
+    cdnBase: null,
   };
 }
 
-function makeVisorFont(family: string, org: string, weights: number[] = [400, 700]): FontResolution {
+function makeVisorFont(
+  family: string,
+  org: string,
+  weights: number[] = [400, 700],
+  cdnBase: string | null = null,
+): FontResolution {
   return {
     family,
     source: "visor-fonts",
@@ -44,6 +51,7 @@ function makeVisorFont(family: string, org: string, weights: number[] = [400, 70
     category: "sans-serif",
     guidance: null,
     org,
+    cdnBase,
   };
 }
 

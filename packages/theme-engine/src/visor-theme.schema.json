@@ -185,6 +185,18 @@
             "wide": { "type": "string" }
           }
         },
+        "cdn-overrides": {
+          "type": "object",
+          "description": "Per-source CDN base URL overrides. When set, the override CDN replaces the default for every slot whose source matches the key. The per-slot org may be empty when the override CDN already encodes the project namespace (e.g., https://fonts.knowmentum.ai).",
+          "additionalProperties": false,
+          "properties": {
+            "visor-fonts": {
+              "type": "string",
+              "minLength": 1,
+              "description": "CDN base URL that replaces fonts.visor.design for source: visor-fonts slots (e.g., https://fonts.knowmentum.ai)."
+            }
+          }
+        },
         "slots": {
           "type": "object",
           "description": "Per-slot overrides for the generated Flutter Material TextTheme. Any subset of the 16 slots may be specified; omitted slots fall through to the Material 3 2024 defaults shipped in visor_core.",

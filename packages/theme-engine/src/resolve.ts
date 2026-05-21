@@ -147,6 +147,9 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
         ...(config.typography?.mono?.source && { source: config.typography.mono.source }),
         ...(config.typography?.mono?.org && { org: config.typography.mono.org }),
       },
+      ...(config.typography?.["cdn-overrides"] && {
+        "cdn-overrides": config.typography["cdn-overrides"],
+      }),
       slots: config.typography?.slots ?? {},
     },
     spacing: {
