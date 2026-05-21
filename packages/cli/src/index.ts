@@ -402,6 +402,10 @@ sandbox
   .requiredOption("--handoff <path>", "path to design-handoff.md manifest")
   .requiredOption("--theme <theme>", "theme slug (e.g. 'space') or path to .visor.yaml")
   .option(
+    "--theme-file <path>",
+    "explicit path to a theme.visor.yaml — bypasses name resolution and the VISOR_THEMES_PRIVATE_PATH env var"
+  )
+  .option(
     "--from-html-prototype <path>",
     "import a Phase 1.5 HTML prototype directory (its screen-N-*.html files become screen routes via iframe)"
   )
@@ -414,6 +418,7 @@ sandbox
       options: {
         handoff: string
         theme: string
+        themeFile?: string
         fromHtmlPrototype?: string
         overwrite?: boolean
         skipInstall?: boolean

@@ -351,11 +351,14 @@ Reads a Low Orbit `design-handoff.md` manifest, scaffolds a Next.js app at `.lo/
 | Flag | Description |
 |------|-------------|
 | `--handoff <path>` (required) | Path to a Low Orbit `design-handoff.md` manifest |
-| `--theme <slug-or-path>` (required) | Theme slug (looked up in `themes/` then `custom-themes/`) or path to a `.visor.yaml` |
+| `--theme <slug-or-path>` (required) | Theme slug or path to a `.visor.yaml`. Resolution order: `--theme-file` if set → `<slug>` as a direct path → `${VISOR_THEMES_PRIVATE_PATH}/themes/<slug>/theme.visor.yaml` if the env var is set → `themes/<slug>.visor.yaml` → `custom-themes/<slug>.visor.yaml` |
+| `--theme-file <path>` | Explicit path to a `theme.visor.yaml` — bypasses name resolution and the `VISOR_THEMES_PRIVATE_PATH` env var |
 | `--from-html-prototype <path>` | Import a Phase 1.5 HTML prototype directory: copies its files into `public/prototype/` and pairs each numerically-prefixed `screen-N-*.html` with the matching manifest screen, rendering it via an iframe in the screen route |
 | `--overwrite` | Replace an existing sandbox at this name |
 | `--skip-install` | Skip `npm install` (test fixture mode) |
 | `--json` | Emit structured JSON for AI agents |
+
+**Resolving brand themes from a private repo.** Set `VISOR_THEMES_PRIVATE_PATH` to the root of your private themes directory (e.g. `~/Code/low-orbit/visor-themes-private`) and `--theme <slug>` will resolve to `${VISOR_THEMES_PRIVATE_PATH}/themes/<slug>/theme.visor.yaml` automatically. For one-off overrides, pass `--theme-file <path>` to point at any `.visor.yaml` directly — useful when the theme lives outside the conventional layout.
 
 When `--from-html-prototype` is set, the sandbox boots with the real Phase 1.5 composition as the baseline — useful for pattern builds whose Phase 1.5 cleared before this CLI shipped. The mapping is order-based: the Nth manifest screen pairs with the Nth `screen-*.html` file (sorted by numeric prefix). The resolved map is recorded in `sandbox.json` under `fromHtmlPrototype.screenMap`.
 
