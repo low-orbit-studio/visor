@@ -118,11 +118,17 @@ export function writeSandboxConfig(
       status: p.status,
       viTicket: p.viTicket ?? null,
     })),
-    screens: manifest.screens.map((s) => ({ name: s.name, title: s.title, route: s.route ?? null })),
+    screens: manifest.screens.map((s) => ({
+      name: s.name,
+      title: s.title,
+      route: s.route ?? null,
+      kind: s.kind ?? "named",
+    })),
     fromHtmlPrototype: options.prototypeImport
       ? {
           sourceDir: options.prototypeImport.sourceDir,
           screenMap: options.prototypeImport.screenMap,
+          stateCoverageScreens: options.prototypeImport.stateCoverageScreens,
         }
       : null,
   }

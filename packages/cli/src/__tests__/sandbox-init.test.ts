@@ -279,5 +279,82 @@ describe("sandbox init", () => {
       expect(routeSource).not.toContain("<iframe")
       expect(routeSource).toContain("ScreenSample")
     })
+
+    it("auto-discovers state-coverage screens beyond the manifest's named screens", async () => {
+      await sandboxInitCommand("test-pattern", testDir, {
+        handoff: FIXTURE,
+        theme: "space",
+        fromHtmlPrototype: PROTOTYPE_FIXTURE,
+        skipInstall: true,
+      })
+
+      const config = JSON.parse(
+        readFileSync(join(testDir, ".lo", "sandbox", "test-pattern", "sandbox.json"), "utf-8")
+      ) as {
+        screens: Array<{ name: string; kind: string }>
+        fromHtmlPrototype: {
+          screenMap: Record<string, string>
+          stateCoverageScreens: string[]
+        } | null
+      }
+
+      // The fixture handoff declares 2 named screens; the prototype dir has 5
+      // `screen-N-*.html` files. Screens 3/4/5 should become state-coverage.
+      const named = config.screens.filter((s) => s.kind === "named")
+      const stateCov = config.screens.filter((s) => s.kind === "state-coverage")
+      expect(named.map((s) => s.name)).toEqual(["list-view", "detail-view"])
+      expect(stateCov.map((s) => s.name)).toEqual([
+        "state-coverage-menus",
+        "state-coverage-feedback",
+        "state-coverage-edge-states",
+      ])
+
+      expect(config.fromHtmlPrototype?.stateCoverageScreens).toEqual([
+        "state-coverage-menus",
+        "state-coverage-feedback",
+        "state-coverage-edge-states",
+      ])
+      expect(config.fromHtmlPrototype?.screenMap["state-coverage-menus"]).toBe(
+        "screen-3-menus.html"
+      )
+      expect(config.fromHtmlPrototype?.screenMap["state-coverage-edge-states"]).toBe(
+        "screen-5-edge-states.html"
+      )
+    })
+
+    it("includes state-coverage screens in the iframe-loading screen route map", async () => {
+      await sandboxInitCommand("test-pattern", testDir, {
+        handoff: FIXTURE,
+        theme: "space",
+        fromHtmlPrototype: PROTOTYPE_FIXTURE,
+        skipInstall: true,
+      })
+
+      const routeSource = readFileSync(
+        join(testDir, ".lo", "sandbox", "test-pattern", "app", "screens", "[name]", "page.tsx"),
+        "utf-8"
+      )
+      expect(routeSource).toContain('"state-coverage-menus"')
+      expect(routeSource).toContain('"screen-3-menus.html"')
+      expect(routeSource).toContain('"state-coverage-feedback"')
+      expect(routeSource).toContain('"state-coverage-edge-states"')
+    })
+
+    it("records kind: 'state-coverage' in the runtime sandbox-manifest.ts module", async () => {
+      await sandboxInitCommand("test-pattern", testDir, {
+        handoff: FIXTURE,
+        theme: "space",
+        fromHtmlPrototype: PROTOTYPE_FIXTURE,
+        skipInstall: true,
+      })
+
+      const manifestSource = readFileSync(
+        join(testDir, ".lo", "sandbox", "test-pattern", "lib", "sandbox-manifest.ts"),
+        "utf-8"
+      )
+      expect(manifestSource).toContain('"state-coverage-menus"')
+      expect(manifestSource).toContain('"kind": "state-coverage"')
+      expect(manifestSource).toContain('"kind": "named"')
+    })
   })
 })

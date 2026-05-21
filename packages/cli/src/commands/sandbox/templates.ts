@@ -130,6 +130,7 @@ export function sandboxManifestModule(manifest: HandoffManifest): string {
       name: s.name,
       title: s.title,
       route: s.route ?? null,
+      kind: s.kind ?? "named",
     })),
   }
   return `export const manifest = ${JSON.stringify(payload, null, 2)} as const\n\nexport type ManifestPrimitive = (typeof manifest)["primitives"][number]\nexport type ManifestScreen = (typeof manifest)["screens"][number]\n`

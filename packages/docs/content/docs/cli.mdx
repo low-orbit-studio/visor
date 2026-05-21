@@ -359,6 +359,8 @@ Reads a Low Orbit `design-handoff.md` manifest, scaffolds a Next.js app at `.lo/
 
 When `--from-html-prototype` is set, the sandbox boots with the real Phase 1.5 composition as the baseline — useful for pattern builds whose Phase 1.5 cleared before this CLI shipped. The mapping is order-based: the Nth manifest screen pairs with the Nth `screen-*.html` file (sorted by numeric prefix). The resolved map is recorded in `sandbox.json` under `fromHtmlPrototype.screenMap`.
 
+**State-coverage screens** are auto-discovered. Any `screen-N-*.html` files beyond the manifest's named-screen count are appended to the sandbox manifest as `state-coverage` screens with predictable slugs derived from the filename suffix (e.g., `screen-5-menus.html` → `state-coverage-menus`, `screen-7-edge-states.html` → `state-coverage-edge-states`). Each gets its own iframe-loading route at `/screens/<slug>` and a recorded entry in `sandbox.json` under `fromHtmlPrototype.stateCoverageScreens`. This powers the Phase 4 state-coverage diff gate (`states_prototyped: { menu, feedback, edge }`).
+
 #### `visor sandbox dev`
 
 ```bash

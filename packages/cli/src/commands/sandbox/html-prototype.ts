@@ -1,6 +1,6 @@
 import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "fs"
 import { join } from "path"
-import type { HandoffManifest } from "./parse-handoff.js"
+import type { HandoffManifest, ScreenEntry } from "./parse-handoff.js"
 
 export interface PrototypeImport {
   /** Absolute path to the prototype source directory. */
@@ -11,19 +11,25 @@ export interface PrototypeImport {
   copiedFiles: string[]
   /**
    * Screen-slug → prototype HTML filename, in the order screens appear in the
-   * manifest. Used by the screen route template to render an iframe.
+   * manifest (including any auto-discovered state-coverage screens). Used by
+   * the screen route template to render an iframe.
    */
   screenMap: Record<string, string>
+  /** State-coverage screens auto-discovered from the prototype dir (slugs only). */
+  stateCoverageScreens: string[]
   warnings: string[]
 }
 
-const SCREEN_FILE_PATTERN = /^screen-(\d+)-[^/]*\.html$/i
+const SCREEN_FILE_PATTERN = /^screen-(\d+)-([^/.]+)\.html$/i
 
 /**
  * Copy a Phase 1.5 HTML prototype tree into the sandbox's `public/prototype/`
  * directory and pair each manifest screen with a numerically-ordered
- * `screen-N-*.html` source file. Returns metadata that the scaffold step uses
- * to generate iframe-loading screen routes.
+ * `screen-N-*.html` source file. Any extra `screen-N-*.html` files beyond
+ * the manifest's named-screen count are appended to the manifest as
+ * `state-coverage` screens (powering the Phase 4 state-coverage diff gate).
+ * Returns metadata that the scaffold step uses to generate iframe-loading
+ * screen routes.
  */
 export function copyHtmlPrototype(
   sourceDir: string,
@@ -55,11 +61,17 @@ export function copyHtmlPrototype(
     }
   })
 
+  const stateCoverageScreens: string[] = []
   if (screenFiles.length > manifest.screens.length) {
-    const extras = screenFiles.slice(manifest.screens.length).join(", ")
-    warnings.push(
-      `Prototype has ${screenFiles.length} screens but manifest declares ${manifest.screens.length} — these files are copied to public/prototype but unrouted: ${extras}`
-    )
+    const extras = screenFiles.slice(manifest.screens.length)
+    const existingNames = new Set(manifest.screens.map((s) => s.name))
+    for (const file of extras) {
+      const entry = deriveStateCoverageScreen(file, existingNames)
+      manifest.screens.push(entry)
+      existingNames.add(entry.name)
+      screenMap[entry.name] = file
+      stateCoverageScreens.push(entry.name)
+    }
   }
 
   return {
@@ -67,8 +79,29 @@ export function copyHtmlPrototype(
     destDir: "public/prototype",
     copiedFiles,
     screenMap,
+    stateCoverageScreens,
     warnings,
   }
+}
+
+/**
+ * Derive a sandbox screen entry for a `screen-N-*.html` file that has no
+ * matching named-screen in the manifest. Uses the filename suffix as the
+ * source of the slug — `screen-5-menus.html` → `state-coverage-menus`,
+ * `screen-7-edge-states.html` → `state-coverage-edge-states`. If the derived
+ * slug collides with an existing screen, the numeric prefix is appended.
+ */
+function deriveStateCoverageScreen(
+  file: string,
+  existingNames: Set<string>
+): ScreenEntry {
+  const m = file.match(SCREEN_FILE_PATTERN)
+  const idx = m ? m[1] : "0"
+  const suffix = m ? m[2].toLowerCase() : "extra"
+  let slug = `state-coverage-${suffix}`
+  if (existingNames.has(slug)) slug = `${slug}-${idx}`
+  const title = `State coverage: ${suffix.replace(/-/g, " ")}`
+  return { name: slug, title, kind: "state-coverage" }
 }
 
 function copyTreeRelative(srcDir: string, destDir: string, relDir = ""): string[] {

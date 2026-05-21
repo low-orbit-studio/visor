@@ -10,10 +10,20 @@ export interface PrimitiveEntry {
   kind?: string
 }
 
+export type ScreenKind = "named" | "state-coverage"
+
 export interface ScreenEntry {
   name: string
   title: string
   route?: string
+  /**
+   * `named` for screens declared in the recipe (the default).
+   * `state-coverage` for screens auto-discovered from a Phase 1.5 HTML
+   * prototype beyond the recipe's named-screen count (e.g. menus, feedback,
+   * edge-state screens). Sandbox baselines for these power the Phase 4
+   * state-coverage diff gate.
+   */
+  kind?: ScreenKind
 }
 
 export interface MockField {
