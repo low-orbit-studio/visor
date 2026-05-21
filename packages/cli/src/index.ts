@@ -409,6 +409,14 @@ sandbox
     "--from-html-prototype <path>",
     "import a Phase 1.5 HTML prototype directory (its screen-N-*.html files become screen routes via iframe)"
   )
+  .option(
+    "--strip-chrome [selectors]",
+    "strip Phase 1.5 documentary chrome from imported prototype HTML (no arg = defaults; comma list = replace defaults)"
+  )
+  .option(
+    "--strip-chrome-additional <selectors>",
+    "extra selectors to merge with the strip-chrome base list (comma-separated)"
+  )
   .option("--overwrite", "replace an existing sandbox at this name", false)
   .option("--skip-install", "skip npm install (test fixture mode)", false)
   .option("--json", "output structured JSON (for AI agents)")
@@ -420,6 +428,8 @@ sandbox
         theme: string
         themeFile?: string
         fromHtmlPrototype?: string
+        stripChrome?: boolean | string
+        stripChromeAdditional?: string
         overwrite?: boolean
         skipInstall?: boolean
         json?: boolean

@@ -130,6 +130,7 @@ export function writeSandboxConfig(
           sourceDir: options.prototypeImport.sourceDir,
           screenMap: options.prototypeImport.screenMap,
           stateCoverageScreens: options.prototypeImport.stateCoverageScreens,
+          stripChromeSelectors: options.prototypeImport.stripChromeSelectors,
         }
       : null,
   }

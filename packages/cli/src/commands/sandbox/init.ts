@@ -8,6 +8,7 @@ import type { HandoffManifest, PrimitiveEntry } from "./parse-handoff.js"
 import { findOpenPort } from "./ports.js"
 import { sandboxIsEmpty, writeSandboxConfig, writeScaffold } from "./scaffold.js"
 import { copyHtmlPrototype, type PrototypeImport } from "./html-prototype.js"
+import { resolveStripSelectors } from "./strip-chrome.js"
 import { addCommand } from "../add.js"
 import { themeApplyCommand } from "../theme-apply.js"
 import { loadRegistry, filterItemsByTarget } from "../../registry/resolve.js"
@@ -17,6 +18,21 @@ export interface SandboxInitOptions {
   theme: string
   themeFile?: string
   fromHtmlPrototype?: string
+  /**
+   * When set, strip Phase 1.5 documentary chrome from each `.html` file
+   * imported via `--from-html-prototype` before it lands in `public/prototype/`.
+   *
+   *   - `true` / `""` — use the default selector list (see `strip-chrome.ts`).
+   *   - string `"a,b"` — REPLACE defaults with the parsed comma list.
+   *
+   * Ignored when `--from-html-prototype` is not set.
+   */
+  stripChrome?: boolean | string
+  /**
+   * Extra selectors to MERGE with the chosen base list (defaults or the
+   * replacement from `stripChrome`). Comma-separated.
+   */
+  stripChromeAdditional?: string
   overwrite?: boolean
   skipInstall?: boolean
   json?: boolean
@@ -113,7 +129,13 @@ async function runInit(
     if (!existsSync(prototypeDir)) {
       throw new Error(`HTML prototype directory not found: ${prototypeDir}`)
     }
-    prototypeImport = copyHtmlPrototype(prototypeDir, sandboxDir, manifest)
+    const stripChromeSelectors = resolveStripSelectors(
+      options.stripChrome,
+      options.stripChromeAdditional
+    )
+    prototypeImport = copyHtmlPrototype(prototypeDir, sandboxDir, manifest, {
+      stripChromeSelectors,
+    })
     for (const w of prototypeImport.warnings) manifest.warnings.push(w)
   }
 

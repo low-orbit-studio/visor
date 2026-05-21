@@ -607,4 +607,136 @@ describe("sandbox init", () => {
       expect(themeWarning).toContain("visor theme apply")
     })
   })
+
+  describe("--strip-chrome", () => {
+    const CHROME_FIXTURE = join(HERE, "fixtures", "prototype-with-chrome")
+
+    function readCopiedHtml(name = "screen-1-list.html"): string {
+      return readFileSync(
+        join(testDir, ".lo", "sandbox", "test-pattern", "public", "prototype", name),
+        "utf-8"
+      )
+    }
+
+    it("with no flag, copies prototype HTML unmodified", async () => {
+      await sandboxInitCommand("test-pattern", testDir, {
+        handoff: FIXTURE,
+        theme: "space",
+        fromHtmlPrototype: CHROME_FIXTURE,
+        skipInstall: true,
+      })
+      const html = readCopiedHtml()
+      // Every documentary-chrome variant survives.
+      expect(html).toContain('class="proto-nav"')
+      expect(html).toContain("state-section__header")
+      expect(html).toContain("state-callout")
+      expect(html).toContain("data-documentary-chrome")
+      expect(html).toContain('style="background: mint;')
+      expect(html).toContain("custom-chip")
+      expect(html).toContain("List screen prototype body")
+    })
+
+    it("with bare --strip-chrome, removes all 5 default chrome variants and keeps real content", async () => {
+      await sandboxInitCommand("test-pattern", testDir, {
+        handoff: FIXTURE,
+        theme: "space",
+        fromHtmlPrototype: CHROME_FIXTURE,
+        stripChrome: true,
+        skipInstall: true,
+      })
+      const html = readCopiedHtml()
+      expect(html).not.toContain("proto-nav")
+      expect(html).not.toContain("state-section__header")
+      expect(html).not.toContain("state-callout")
+      expect(html).not.toContain("data-documentary-chrome")
+      expect(html).not.toContain("background: mint")
+      // Real content survives.
+      expect(html).toContain("List screen prototype body")
+      expect(html).toContain("content-keep")
+      // Non-default chrome survives.
+      expect(html).toContain("custom-chip")
+    })
+
+    it('with --strip-chrome "selectors" REPLACES defaults — defaults survive, custom is stripped', async () => {
+      await sandboxInitCommand("test-pattern", testDir, {
+        handoff: FIXTURE,
+        theme: "space",
+        fromHtmlPrototype: CHROME_FIXTURE,
+        stripChrome: ".custom-chip",
+        skipInstall: true,
+      })
+      const html = readCopiedHtml()
+      // Defaults are NOT stripped (override semantics).
+      expect(html).toContain("proto-nav")
+      expect(html).toContain("state-callout")
+      expect(html).toContain("data-documentary-chrome")
+      expect(html).toContain("background: mint")
+      // The custom selector IS stripped.
+      expect(html).not.toContain("custom-chip")
+      expect(html).not.toContain("custom chrome that defaults do not strip")
+    })
+
+    it("with --strip-chrome-additional, MERGES extras with defaults — both stripped", async () => {
+      await sandboxInitCommand("test-pattern", testDir, {
+        handoff: FIXTURE,
+        theme: "space",
+        fromHtmlPrototype: CHROME_FIXTURE,
+        stripChrome: true,
+        stripChromeAdditional: ".custom-chip",
+        skipInstall: true,
+      })
+      const html = readCopiedHtml()
+      // Defaults stripped.
+      expect(html).not.toContain("proto-nav")
+      expect(html).not.toContain("state-callout")
+      expect(html).not.toContain("data-documentary-chrome")
+      expect(html).not.toContain("background: mint")
+      // The additional selector is also stripped.
+      expect(html).not.toContain("custom-chip")
+      // Real content survives.
+      expect(html).toContain("List screen prototype body")
+      expect(html).toContain("content-keep")
+    })
+
+    it("records the resolved selector list in sandbox.json under fromHtmlPrototype.stripChromeSelectors", async () => {
+      await sandboxInitCommand("test-pattern", testDir, {
+        handoff: FIXTURE,
+        theme: "space",
+        fromHtmlPrototype: CHROME_FIXTURE,
+        stripChrome: true,
+        stripChromeAdditional: ".custom-chip",
+        skipInstall: true,
+      })
+      const config = JSON.parse(
+        readFileSync(join(testDir, ".lo", "sandbox", "test-pattern", "sandbox.json"), "utf-8")
+      ) as {
+        fromHtmlPrototype: { stripChromeSelectors: string[] } | null
+      }
+      expect(config.fromHtmlPrototype?.stripChromeSelectors).toEqual([
+        ".state-callout",
+        ".state-section__header",
+        ".proto-nav",
+        "[data-documentary-chrome]",
+        '[style*="mint"]',
+        ".custom-chip",
+      ])
+    })
+
+    it("strips only .html files — sibling assets (css, js) are copied byte-for-byte", async () => {
+      const ORG_FIXTURE = join(HERE, "fixtures", "prototype-org-mgmt")
+      await sandboxInitCommand("test-pattern", testDir, {
+        handoff: FIXTURE,
+        theme: "space",
+        fromHtmlPrototype: ORG_FIXTURE,
+        stripChrome: ".state-callout",
+        skipInstall: true,
+      })
+      const copiedCss = readFileSync(
+        join(testDir, ".lo", "sandbox", "test-pattern", "public", "prototype", "styles.css"),
+        "utf-8"
+      )
+      const originalCss = readFileSync(join(ORG_FIXTURE, "styles.css"), "utf-8")
+      expect(copiedCss).toBe(originalCss)
+    })
+  })
 })
