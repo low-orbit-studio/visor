@@ -92,4 +92,12 @@ describe("captureScriptTemplate", () => {
     // Diffs are always computed when an approved baseline exists.
     expect(script).toContain('"captures", "diffs"')
   })
+
+  it("creates the Playwright context with deviceScaleFactor: 2 so retina captures look crisp", async () => {
+    const { captureScriptTemplate } = await import("../commands/sandbox/templates.js")
+    const script = captureScriptTemplate()
+    expect(script).toContain("deviceScaleFactor: 2")
+    // Viewport stays at 1280×800 logical pixels; 2x scale yields 2560×1600 effective pixels.
+    expect(script).toContain("width: 1280, height: 800")
+  })
 })
