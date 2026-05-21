@@ -37,15 +37,34 @@ describe("assignSemanticTokens", () => {
   // No colors-dark in minimalInput, so light and dark primitives are identical
   const tokens = assignSemanticTokens(primitives, primitives, config);
 
-  it("returns all 4 categories", () => {
+  it("returns all 6 categories", () => {
     expect(tokens).toHaveProperty("text");
     expect(tokens).toHaveProperty("surface");
     expect(tokens).toHaveProperty("border");
     expect(tokens).toHaveProperty("interactive");
+    expect(tokens).toHaveProperty("intent");
+    expect(tokens).toHaveProperty("hairline");
   });
 
-  it("text has 12 tokens", () => {
-    expect(Object.keys(tokens.text)).toHaveLength(12);
+  it("text has 13 tokens (VI-451 added `muted`)", () => {
+    expect(Object.keys(tokens.text)).toHaveLength(13);
+  });
+
+  it("intent has 7 bare-name tokens (VI-451)", () => {
+    const keys = Object.keys(tokens.intent);
+    expect(keys).toHaveLength(7);
+    expect(keys).toContain("primary");
+    expect(keys).toContain("primary-text");
+    expect(keys).toContain("accent");
+    expect(keys).toContain("success");
+    expect(keys).toContain("warning");
+    expect(keys).toContain("destructive");
+    expect(keys).toContain("info");
+  });
+
+  it("hairline has 2 alpha-based tokens (VI-451)", () => {
+    const keys = Object.keys(tokens.hairline);
+    expect(keys).toEqual(["default", "strong"]);
   });
 
   it("surface has the expected number of tokens", () => {

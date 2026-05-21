@@ -183,6 +183,11 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
       "duration-slow":
         config.motion?.["duration-slow"] ?? DEFAULTS.motion["duration-slow"],
       easing: config.motion?.easing ?? DEFAULTS.motion.easing,
+      // VI-451 (drive-by): pass through opt-in bouncy easing when set; absent
+      // themes leave this undefined and fall through to --motion-easing-spring.
+      ...(config.motion?.["easing-overshoot"] !== undefined
+        ? { "easing-overshoot": config.motion["easing-overshoot"] }
+        : {}),
     },
     overrides: config.overrides,
     originalColors,

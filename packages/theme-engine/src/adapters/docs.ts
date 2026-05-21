@@ -25,6 +25,12 @@ import { FULL_SHADE_STEPS, SELECTIVE_SHADE_STEPS, generateShadeScale } from "../
 import { resolveThemeFonts } from "../fonts/pipeline.js";
 import { buildVisorFontUrl } from "../fonts/resolve.js";
 import { aliasFamily, fontStack, type AliasedFamilies } from "../fonts/theme-alias.js";
+import {
+  generateIntentDecls,
+  generateHairlineDecls,
+  generateTextScaleAliasDecls,
+  generateSpaceAliasDecls,
+} from "../generate-css.js";
 import { FUMADOCS_BRIDGE_MAP } from "./fumadocs-map.js";
 import { LAYER_ORDER, wrapInLayer } from "./layers.js";
 import type { AdapterInput, DocsAdapterOptions } from "./types.js";
@@ -438,7 +444,62 @@ export function docsAdapter(
   lines.push(block(`html:not(.dark) ${scopeClass}`, generateFumadocsBridgeDecls(input.tokens, "light")));
   lines.push("");
 
-  const layered = wrapInLayer("visor-adaptive", lines.join("\n").trim());
+  // ─── Layer: Semantic aliases (VI-451) — visor-semantic cascade layer ─────
+  //
+  // Bare-name intent (--primary, --accent, ...), hairline (--hairline,
+  // --hairline-strong), and discrete pixel-named scales (--text-N, --space-N)
+  // emit into a separate `visor-semantic` cascade layer so consumer overrides
+  // in app-globals can still take precedence. Layer order:
+  //   visor-primitives < visor-semantic < visor-adaptive < visor-bridge
+  //
+  // Distinct from the 5-section template (Sections 1-4 + optional Section 5
+  // "Creative extensions") — those live in the visor-adaptive layer. The
+  // theme-structure validation rule recognizes "Section N" markers; this
+  // block uses a "Layer:" prefix instead to avoid collision.
+
+  const semanticLines: string[] = [];
+
+  // Discrete-scale aliases: mode-agnostic, attach to the scope class.
+  semanticLines.push("\n/* ── Layer: Semantic aliases (VI-451) ── */");
+  semanticLines.push(sectionComment("Discrete: Text size aliases (--text-N)"));
+  semanticLines.push(block(scopeClass, generateTextScaleAliasDecls()));
+  semanticLines.push("");
+  semanticLines.push(sectionComment("Discrete: Space aliases (--space-N)"));
+  semanticLines.push(block(scopeClass, generateSpaceAliasDecls(input.config)));
+  semanticLines.push("");
+
+  // 5b — Light mode intent + hairline (default cascade, html:not(.dark)).
+  semanticLines.push(sectionComment("Intent aliases (light)"));
+  semanticLines.push(block(`html:not(.dark) ${scopeClass}`, generateIntentDecls(input.tokens, "light")));
+  semanticLines.push("");
+  semanticLines.push(sectionComment("Hairline aliases (light)"));
+  semanticLines.push(block(`html:not(.dark) ${scopeClass}`, generateHairlineDecls(input.tokens, "light")));
+  semanticLines.push("");
+
+  // 5c — Dark mode intent + hairline (manual toggle + prefers-color-scheme).
+  semanticLines.push(sectionComment("Intent aliases (dark) — manual toggle"));
+  semanticLines.push(block(`.dark ${scopeClass}`, generateIntentDecls(input.tokens, "dark")));
+  semanticLines.push("");
+  semanticLines.push(sectionComment("Hairline aliases (dark) — manual toggle"));
+  semanticLines.push(block(`.dark ${scopeClass}`, generateHairlineDecls(input.tokens, "dark")));
+  semanticLines.push("");
+
+  semanticLines.push(sectionComment("Intent aliases (dark) — prefers-color-scheme"));
+  {
+    const inner = block(`${scopeClass}:not(.light)`, generateIntentDecls(input.tokens, "dark"));
+    semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
+  }
+  semanticLines.push("");
+
+  semanticLines.push(sectionComment("Hairline aliases (dark) — prefers-color-scheme"));
+  {
+    const inner = block(`${scopeClass}:not(.light)`, generateHairlineDecls(input.tokens, "dark"));
+    semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
+  }
+  semanticLines.push("");
+
+  const adaptiveLayer = wrapInLayer("visor-adaptive", lines.join("\n").trim());
+  const semanticLayer = wrapInLayer("visor-semantic", semanticLines.join("\n").trim());
   const head = fontLines.length > 0 ? fontLines.join("\n") + "\n" : "";
-  return head + LAYER_ORDER + "\n\n" + layered + "\n";
+  return head + LAYER_ORDER + "\n\n" + semanticLayer + "\n\n" + adaptiveLayer + "\n";
 }

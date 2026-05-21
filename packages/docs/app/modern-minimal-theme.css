@@ -16,6 +16,99 @@
 
 @layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;
 
+@layer visor-semantic {
+/* ── Layer: Semantic aliases (VI-451) ── */
+
+/* --- Discrete: Text size aliases (--text-N) --- */
+.modern-minimal-theme {
+  --text-11: 11px;
+  --text-13: 13px;
+  --text-14: 14px;
+  --text-16: 16px;
+  --text-20: 20px;
+  --text-24: 24px;
+  --text-32: 32px;
+  --text-40: 40px;
+  --text-48: 48px;
+}
+
+
+/* --- Discrete: Space aliases (--space-N) --- */
+.modern-minimal-theme {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+}
+
+
+/* --- Intent aliases (light) --- */
+html:not(.dark) .modern-minimal-theme {
+  --primary: #04bf81;
+  --primary-text: #ffffff;
+  --accent: #04bf81;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --destructive: #ef4444;
+  --info: #0ea5e9;
+}
+
+
+/* --- Hairline aliases (light) --- */
+html:not(.dark) .modern-minimal-theme {
+  --hairline: rgba(0, 0, 0, 0.06);
+  --hairline-strong: rgba(0, 0, 0, 0.10);
+}
+
+
+/* --- Intent aliases (dark) — manual toggle --- */
+.dark .modern-minimal-theme {
+  --primary: #02cd8d;
+  --primary-text: #ffffff;
+  --accent: #04bf81;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --destructive: #ef4444;
+  --info: #0ea5e9;
+}
+
+
+/* --- Hairline aliases (dark) — manual toggle --- */
+.dark .modern-minimal-theme {
+  --hairline: rgba(255, 255, 255, 0.06);
+  --hairline-strong: rgba(255, 255, 255, 0.10);
+}
+
+
+/* --- Intent aliases (dark) — prefers-color-scheme --- */
+@media (prefers-color-scheme: dark) {
+  .modern-minimal-theme:not(.light) {
+    --primary: #02cd8d;
+    --primary-text: #ffffff;
+    --accent: #04bf81;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --destructive: #ef4444;
+    --info: #0ea5e9;
+  }
+}
+
+
+/* --- Hairline aliases (dark) — prefers-color-scheme --- */
+@media (prefers-color-scheme: dark) {
+  .modern-minimal-theme:not(.light) {
+    --hairline: rgba(255, 255, 255, 0.06);
+    --hairline-strong: rgba(255, 255, 255, 0.10);
+  }
+}
+}
+
 @layer visor-adaptive {
 /* ── Section 1: Shared tokens (mode-independent) ── */
 
@@ -217,6 +310,7 @@
   --text-primary: rgba(255, 255, 255, 0.7);
   --text-secondary: rgba(255, 255, 255, 0.70);
   --text-tertiary: rgba(255, 255, 255, 0.55);
+  --text-muted: #6b7280;
   --text-disabled: rgba(255, 255, 255, 0.1);
   --text-inverse: #171b22;
   --text-inverse-secondary: #3d424d;
@@ -236,6 +330,8 @@
   --surface-popover: #141414;
   --surface-subtle: rgba(255, 255, 255, 0.02);
   --surface-muted: rgba(255, 255, 255, 0.04);
+  --surface-screen: #07090e;
+  --surface-elev: #292e38;
   --surface-overlay: #07090e;
   --surface-interactive-default: #292e38;
   --surface-interactive-hover: #3d424d;
@@ -300,6 +396,7 @@
     --text-primary: rgba(255, 255, 255, 0.7);
     --text-secondary: rgba(255, 255, 255, 0.70);
     --text-tertiary: rgba(255, 255, 255, 0.55);
+    --text-muted: #6b7280;
     --text-disabled: rgba(255, 255, 255, 0.1);
     --text-inverse: #171b22;
     --text-inverse-secondary: #3d424d;
@@ -321,6 +418,8 @@
     --surface-popover: #141414;
     --surface-subtle: rgba(255, 255, 255, 0.02);
     --surface-muted: rgba(255, 255, 255, 0.04);
+    --surface-screen: #07090e;
+    --surface-elev: #292e38;
     --surface-overlay: #07090e;
     --surface-interactive-default: #292e38;
     --surface-interactive-hover: #3d424d;
@@ -409,6 +508,7 @@ html:not(.dark) .modern-minimal-theme {
   --text-primary: rgba(0, 0, 0, 0.9);
   --text-secondary: rgba(0, 0, 0, 0.55);
   --text-tertiary: rgba(0, 0, 0, 0.55);
+  --text-muted: #6b7280;
   --text-disabled: #b2b7c2;
   --text-inverse: #ffffff;
   --text-inverse-secondary: #d1d4db;
@@ -428,6 +528,8 @@ html:not(.dark) .modern-minimal-theme {
   --surface-popover: #FFFFFF;
   --surface-subtle: #f4f5f7;
   --surface-muted: #e6e8ec;
+  --surface-screen: #f4f5f7;
+  --surface-elev: #e6e8ec;
   --surface-overlay: #171b22;
   --surface-interactive-default: #ffffff;
   --surface-interactive-hover: #f4f5f7;

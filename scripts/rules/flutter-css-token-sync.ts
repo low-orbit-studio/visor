@@ -20,6 +20,7 @@ const WEB_ONLY_THEMES = new Set<string>([
   'blacklight-underground',
   'entr',
   'kaiah',
+  'knowmentum',
   'reference-app',
   'solespark',
   'strata',

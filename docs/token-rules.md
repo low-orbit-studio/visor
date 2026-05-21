@@ -169,6 +169,66 @@ Scale reference:
 
 **Exception:** `height`, `width`, and sidebar-specific sizing values are deferred and may use explicit values until component sizing tokens are introduced.
 
+### 5b. Semantic Alias Surface (VI-451)
+
+In addition to the prefixed semantic tokens (`--text-*`, `--surface-*`, `--border-*`, `--interactive-*`), Visor's theme generator emits a bare-name alias surface in the `visor-semantic` cascade layer. These aliases match the shadcn convention and the admin-ui chrome vocabulary so consumers can reference brand/feedback colors, alpha-based hairlines, and discrete pixel-named scales without redeclaring a parallel token surface.
+
+**Intent aliases (bare names):**
+
+| Token | Default mapping | Notes |
+|-------|-----------------|-------|
+| `--primary` | `primary-500` | Brand primary action color |
+| `--primary-text` | `#ffffff` | Text color paired with `--primary` backgrounds |
+| `--accent` | `accent-500` | Secondary brand color |
+| `--success` | `success-500` | |
+| `--warning` | `warning-500` | |
+| `--destructive` | `error-500` | shadcn naming — aliases the `error` role |
+| `--info` | `info-500` | |
+
+**Hairline aliases (alpha-based):**
+
+| Token | Light default | Dark default |
+|-------|---------------|--------------|
+| `--hairline` | `rgba(0,0,0,0.06)` | `rgba(255,255,255,0.06)` |
+| `--hairline-strong` | `rgba(0,0,0,0.10)` | `rgba(255,255,255,0.10)` |
+
+**Surface extensions:**
+
+| Token | Use |
+|-------|-----|
+| `--surface-screen` | Deepest backdrop, below `--surface-page` (admin-ui chrome) |
+| `--surface-elev` | Singular mid-elevation alias (distinct from `--surface-elev-0..4`) |
+
+**Text extension:**
+
+| Token | Use |
+|-------|-----|
+| `--text-muted` | Deemphasized but readable — slots between `--text-tertiary` and `--text-disabled` |
+
+**Discrete pixel scales (engine-wide, mode-agnostic):**
+
+- `--text-N` font sizes: `11`, `13`, `14`, `16`, `20`, `24`, `32`, `40`, `48` (px). Distinct value space from `--text-primary` etc. (color tokens); used in `font-size`, not `color`.
+- `--space-N` 4px-grid aliases: `1`, `2`, `3`, `4`, `5`, `6`, `8`, `10`, `12`, `16`. Derive from `spacing.base` so non-default bases get a proportional scale.
+
+**Override convention:**
+
+Themes pin per-mode alias values via `overrides.{light,dark}` using flat keys (no prefix) for intent, and `hairline` / `hairline-strong` for hairlines:
+
+```yaml
+overrides:
+  dark:
+    primary: "#6BEBA5"
+    primary-text: "#1E1F21"
+    destructive: "#FE5D8B"
+    hairline: "rgba(255, 255, 255, 0.06)"
+    hairline-strong: "rgba(255, 255, 255, 0.10)"
+    surface-screen: "#0B0C0D"
+    surface-elev: "#2E3134"
+    text-muted: "rgba(250, 252, 254, 0.32)"
+```
+
+Bare `primary` resolves to the intent group, not `--text-primary` (prefixed `text-primary` continues to route to the text group).
+
 ### 6. Motion Rule
 
 All transitions must use `var(--motion-duration-*)` for timing and `var(--motion-easing-*)` for easing. No hard-coded duration or easing values.
