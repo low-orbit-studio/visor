@@ -7,6 +7,7 @@ import { parseHandoff } from "./parse-handoff.js"
 import type { HandoffManifest, PrimitiveEntry } from "./parse-handoff.js"
 import { findOpenPort } from "./ports.js"
 import { sandboxIsEmpty, writeSandboxConfig, writeScaffold } from "./scaffold.js"
+import { copyHtmlPrototype, type PrototypeImport } from "./html-prototype.js"
 import { addCommand } from "../add.js"
 import { themeApplyCommand } from "../theme-apply.js"
 import { loadRegistry, filterItemsByTarget } from "../../registry/resolve.js"
@@ -14,6 +15,7 @@ import { loadRegistry, filterItemsByTarget } from "../../registry/resolve.js"
 export interface SandboxInitOptions {
   handoff: string
   theme: string
+  fromHtmlPrototype?: string
   overwrite?: boolean
   skipInstall?: boolean
   json?: boolean
@@ -24,6 +26,7 @@ export interface SandboxInitJsonResult {
   sandboxDir?: string
   port?: number
   primitives?: { shipped: string[]; gaps: string[] }
+  prototypeImport?: PrototypeImport
   warnings?: string[]
   error?: string
 }
@@ -101,7 +104,19 @@ async function runInit(
 
   const port = await findOpenPort()
 
-  writeScaffold(sandboxDir, manifest, port)
+  let prototypeImport: PrototypeImport | undefined
+  if (options.fromHtmlPrototype) {
+    const prototypeDir = isAbsolute(options.fromHtmlPrototype)
+      ? options.fromHtmlPrototype
+      : resolve(cwd, options.fromHtmlPrototype)
+    if (!existsSync(prototypeDir)) {
+      throw new Error(`HTML prototype directory not found: ${prototypeDir}`)
+    }
+    prototypeImport = copyHtmlPrototype(prototypeDir, sandboxDir, manifest)
+    for (const w of prototypeImport.warnings) manifest.warnings.push(w)
+  }
+
+  writeScaffold(sandboxDir, manifest, port, { prototypeImport })
 
   if (!options.skipInstall) {
     runNpmInstall(sandboxDir, options.json ?? false)
@@ -128,6 +143,7 @@ async function runInit(
     handoffPath,
     theme: options.theme,
     visorVersion: readCliVersion(),
+    prototypeImport,
   })
 
   return {
@@ -135,6 +151,7 @@ async function runInit(
     sandboxDir,
     port,
     primitives: { shipped, gaps },
+    prototypeImport,
     warnings: manifest.warnings,
   }
 }
