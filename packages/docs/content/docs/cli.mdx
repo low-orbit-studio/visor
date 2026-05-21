@@ -370,16 +370,26 @@ Boots `next dev` for the sandbox on its allocated port. Auto-allocated ports sta
 #### `visor sandbox approve`
 
 ```bash
+# 1. Capture into pending (auto-diff vs approved if a baseline exists)
 npx @loworbitstudio/visor sandbox approve --name org-mgmt
-npx @loworbitstudio/visor sandbox approve --name org-mgmt --diff
+
+# 2. Review captures/pending/ and captures/diffs/
+
+# 3. Promote pending → approved once the captures look right
+npx @loworbitstudio/visor sandbox approve --name org-mgmt --approve
 ```
 
-Shells out to a sandbox-local Playwright install and captures full-page screenshots of every route into `captures/approved/<route-slug>.png`. With `--diff`, captures land in `captures/pending/` first; only routes that pixel-differ from their approved baseline produce a diff PNG in `captures/diffs/`. Iterations stay traceable — operators see only what changed.
+Sandbox captures use a **three-state review flow**:
+
+1. **Default capture** — Shells out to a sandbox-local Playwright install and captures full-page screenshots of every route into `captures/pending/<route-slug>.png`. If `captures/approved/` already contains a baseline, every pending capture is pixel-diffed against it and any differences land in `captures/diffs/`. The approved baseline is never touched.
+2. **Operator review** — Eyeball `captures/pending/` and `captures/diffs/`. Re-run capture to iterate until the pending set is correct.
+3. **Promotion** — `--approve` copies `captures/pending/` → `captures/approved/` and clears the pending + diffs directories. Captures live in the approved baseline only after a deliberate operator action.
 
 | Flag | Description |
 |------|-------------|
 | `--name <name>` (required) | Sandbox name (from a prior `sandbox init`) |
-| `--diff` | Pixel-diff against the prior approved baseline instead of overwriting |
+| `--approve` | Promote `captures/pending/` → `captures/approved/`. Fails with a hint if pending is empty — run the default capture first. |
+| `--diff` | **Deprecated.** No-op; default capture already pixel-diffs against the approved baseline. Kept for backwards compatibility. |
 | `--json` | Emit structured JSON for AI agents |
 
 ## Typical Workflow
