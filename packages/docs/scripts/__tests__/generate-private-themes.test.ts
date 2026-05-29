@@ -140,7 +140,7 @@ describe("generate-private-themes.mjs", () => {
       const css = readFileSync(CSS_PATH, "utf-8");
       const ts = readFileSync(TS_PATH, "utf-8");
       const knownPrivateSlugs = [
-        "animal", "blacklight", "blacklight-underground", "entr",
+        "animal", "blacklight", "blacklight-pro", "entr",
         "kaiah", "reference-app", "solespark", "veronica",
       ];
       for (const slug of knownPrivateSlugs) {
@@ -154,7 +154,7 @@ describe("generate-private-themes.mjs", () => {
   describe("public bundle leak guard (build artifact)", () => {
     const NEXT_DIR = resolve(__dirname, "../../.next");
     const KNOWN_PRIVATE_SLUGS = [
-      "animal", "blacklight", "blacklight-underground", "entr",
+      "animal", "blacklight", "blacklight-pro", "entr",
       "kaiah", "reference-app", "solespark", "veronica",
     ];
 
