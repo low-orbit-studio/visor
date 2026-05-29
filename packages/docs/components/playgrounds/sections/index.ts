@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import { BrandSection } from "./brand";
 import { ColorSignalsSection } from "./color-signals";
 import { FeedbackSection } from "./feedback";
 import { FormSection } from "./form";
@@ -17,6 +18,7 @@ export interface Section {
 }
 
 export const SECTIONS: Section[] = [
+  { id: "brand", label: "Brand", Component: BrandSection },
   { id: "color-signals", label: "Color Signals", Component: ColorSignalsSection },
   { id: "feedback", label: "Feedback", Component: FeedbackSection },
   { id: "form", label: "Form", Component: FormSection },

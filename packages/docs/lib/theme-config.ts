@@ -3,6 +3,26 @@
 
 import { customThemeGroups } from "./theme-config.custom.generated";
 
+/** Light- and dark-surface asset URLs for one brand variant. Single-file marks set both to the same URL. */
+export interface BrandVariantAsset {
+  /** Asset for light surfaces (dark ink). */
+  light: string;
+  /** Asset for dark surfaces (light ink). */
+  dark: string;
+}
+
+/** A theme's resolved brand asset set. Mirrors the standard variant slots from the branding spike (§4.F). */
+export interface ThemeBrand {
+  /** Full lockup. */
+  logo: BrandVariantAsset;
+  /** Symbol only. */
+  brandmark: BrandVariantAsset;
+  /** Type only. */
+  wordmark: BrandVariantAsset;
+  /** Single-color mark, tinted via `mask-image` + `currentColor`. */
+  monochrome: string;
+}
+
 export interface ThemeEntry {
   value: string;
   label: string;
@@ -10,6 +30,8 @@ export interface ThemeEntry {
   yamlFile?: string;
   /** When set, activating this theme forces the docs site into the specified color mode. */
   defaultMode?: "dark" | "light";
+  /** Brand asset overrides. Omitted → the shared Visor default ({@link VISOR_DEFAULT_BRAND}). */
+  brand?: ThemeBrand;
 }
 
 export interface ThemeGroup {
@@ -49,6 +71,33 @@ export type ColorMode = "light" | "dark";
 
 export function findThemeEntry(theme: string): ThemeEntry | undefined {
   return THEME_GROUPS.flatMap((g) => g.themes).find((t) => t.value === theme);
+}
+
+/**
+ * The shared Visor brand (VI-469 SVG variants). Stock themes are not logo-less —
+ * they inherit this default unless they declare their own `brand` (§4.E). Phase 1
+ * reads the local assets in `public/themes/visor/brand/`; the CDN path lands in Phase 2.
+ * These mirror the `--brand-*` vars the theme engine emits (VI-470).
+ */
+export const VISOR_DEFAULT_BRAND: ThemeBrand = {
+  logo: {
+    light: "/themes/visor/brand/visor-logo-light.svg",
+    dark: "/themes/visor/brand/visor-logo-dark.svg",
+  },
+  brandmark: {
+    light: "/themes/visor/brand/visor-brandmark.svg",
+    dark: "/themes/visor/brand/visor-brandmark.svg",
+  },
+  wordmark: {
+    light: "/themes/visor/brand/visor-wordmark-light.svg",
+    dark: "/themes/visor/brand/visor-wordmark-dark.svg",
+  },
+  monochrome: "/themes/visor/brand/visor-monochrome.svg",
+};
+
+/** Resolve a theme's brand, falling back to the shared Visor default. */
+export function resolveBrand(theme: string): ThemeBrand {
+  return findThemeEntry(theme)?.brand ?? VISOR_DEFAULT_BRAND;
 }
 
 /** Flip the <html> color-mode class and color-scheme without touching the theme class. Persists to localStorage. */
