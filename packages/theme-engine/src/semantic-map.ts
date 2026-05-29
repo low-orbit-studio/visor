@@ -214,7 +214,7 @@ export const SEMANTIC_SURFACE_MAP: Record<string, SemanticMapping> = {
   // VI-478: status soft tints (BL-193) — alpha overlays, semantically distinct
   // from the OPAQUE `surface-{status}-subtle` above (do NOT alias them together).
   // Default to a color-mix of the status color so they track the theme; themes
-  // pin exact values via overrides (blacklight-underground: success @10%,
+  // pin exact values via overrides (blacklight-pro: success @10%,
   // warning/error @12%).
   "success-soft": {
     light: { constant: "color-mix(in srgb, var(--color-success-500) 10%, transparent)" },
@@ -314,7 +314,7 @@ export const SEMANTIC_INTERACTIVE_MAP: Record<string, SemanticMapping> = {
   // VI-478: brand-derived alpha-overlay helpers (BL-193). `soft`/`glow` are
   // alpha overlays that track the theme's primary via color-mix (distinct from
   // any opaque surface); `strong` is a solid lightened-brand emphasis color.
-  // Themes pin exact values via overrides — e.g. blacklight-underground sets
+  // Themes pin exact values via overrides — e.g. blacklight-pro sets
   // soft @12% / glow @32% / strong #FFD050.
   "primary-soft": {
     light: { constant: "color-mix(in srgb, var(--color-primary-500) 12%, transparent)" },
