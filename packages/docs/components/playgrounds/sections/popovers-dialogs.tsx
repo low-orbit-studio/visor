@@ -7,7 +7,7 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/h
 import { Button } from "@/components/ui/button";
 import styles from "./section.module.css";
 
-export function OverlaySection() {
+export function PopoversDialogsSection() {
   return (
     <TooltipProvider>
       <div className={styles.root}>

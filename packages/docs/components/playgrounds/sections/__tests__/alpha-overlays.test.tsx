@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import { SECTIONS, findSection } from "../index";
-import { OverlaysSection } from "../overlays";
+import { AlphaOverlaysSection } from "../alpha-overlays";
 
 const NEW_TOKENS = [
   "--interactive-primary-soft",
@@ -12,28 +12,28 @@ const NEW_TOKENS = [
   "--surface-error-soft",
 ];
 
-describe("Overlays section registration", () => {
-  it("is registered in SECTIONS with id 'overlays' and label 'Overlays'", () => {
-    const overlays = SECTIONS.find((s) => s.id === "overlays");
-    expect(overlays).toBeDefined();
-    expect(overlays?.label).toBe("Overlays");
-    expect(overlays?.Component).toBe(OverlaysSection);
+describe("Alpha Overlays section registration", () => {
+  it("is registered in SECTIONS with id 'alpha-overlays' and label 'Alpha Overlays'", () => {
+    const section = SECTIONS.find((s) => s.id === "alpha-overlays");
+    expect(section).toBeDefined();
+    expect(section?.label).toBe("Alpha Overlays");
+    expect(section?.Component).toBe(AlphaOverlaysSection);
   });
 
   it("is selectable via findSection", () => {
-    expect(findSection("overlays").id).toBe("overlays");
+    expect(findSection("alpha-overlays").id).toBe("alpha-overlays");
   });
 });
 
-describe("OverlaysSection swatches", () => {
+describe("AlphaOverlaysSection swatches", () => {
   it("renders a dynamic ColorSwatch for all six new alpha-overlay tokens", () => {
-    const { container } = render(<OverlaysSection />);
+    const { container } = render(<AlphaOverlaysSection />);
     const swatches = container.querySelectorAll('[data-slot="color-swatch"]');
     expect(swatches).toHaveLength(6);
   });
 
   it("drives each swatch background off the live token (no hardcoded fills)", () => {
-    const { container } = render(<OverlaysSection />);
+    const { container } = render(<AlphaOverlaysSection />);
     const previews = Array.from(container.querySelectorAll('[data-slot="color-swatch"] > div'));
     const backgrounds = previews.map((p) => (p as HTMLElement).getAttribute("style") ?? "");
     NEW_TOKENS.forEach((token) => {
@@ -42,35 +42,35 @@ describe("OverlaysSection swatches", () => {
   });
 });
 
-describe("OverlaysSection treatments", () => {
+describe("AlphaOverlaysSection treatments", () => {
   it("brand soft — renders a selected/active table row tinted by the soft token", () => {
-    render(<OverlaysSection />);
+    render(<AlphaOverlaysSection />);
     const table = screen.getByTestId("overlays-soft-table");
     const activeRow = within(table).getByRole("row", { selected: true });
     expect(activeRow).toBeInTheDocument();
   });
 
   it("brand soft — renders a current nav item with soft tint + brand left edge", () => {
-    render(<OverlaysSection />);
+    render(<AlphaOverlaysSection />);
     const nav = screen.getByTestId("overlays-soft-nav");
     const current = within(nav).getByText("Bookings");
     expect(current.getAttribute("aria-current")).toBe("page");
   });
 
   it("brand glow — renders a marker dot carrying the halo treatment", () => {
-    render(<OverlaysSection />);
+    render(<AlphaOverlaysSection />);
     expect(screen.getByTestId("overlays-glow-marker")).toBeInTheDocument();
   });
 
   it("brand strong — renders a segmented control with a selected segment", () => {
-    render(<OverlaysSection />);
+    render(<AlphaOverlaysSection />);
     const control = screen.getByTestId("overlays-strong");
     const selected = within(control).getByText("Week");
     expect(selected.getAttribute("data-selected")).toBe("true");
   });
 
   it("status soft — renders status-tinted table rows for success / warning / error", () => {
-    render(<OverlaysSection />);
+    render(<AlphaOverlaysSection />);
     const table = screen.getByTestId("overlays-status-table");
     expect(within(table).getByText("Available")).toBeInTheDocument();
     expect(within(table).getByText("Tentative")).toBeInTheDocument();
@@ -78,7 +78,7 @@ describe("OverlaysSection treatments", () => {
   });
 
   it("status soft — renders three inline status pills", () => {
-    render(<OverlaysSection />);
+    render(<AlphaOverlaysSection />);
     const pills = screen.getByTestId("overlays-status-pills");
     expect(within(pills).getByText("Available")).toBeInTheDocument();
     expect(within(pills).getByText("Tentative")).toBeInTheDocument();

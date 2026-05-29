@@ -4,8 +4,8 @@ import { ColorSignalsSection } from "./color-signals";
 import { FeedbackSection } from "./feedback";
 import { FormSection } from "./form";
 import { NavigationSection } from "./navigation";
-import { OverlaySection } from "./overlay";
-import { OverlaysSection } from "./overlays";
+import { PopoversDialogsSection } from "./popovers-dialogs";
+import { AlphaOverlaysSection } from "./alpha-overlays";
 import { DataDisplaySection } from "./data-display";
 import { TypographySection } from "./typography";
 import { GeneralSection } from "./general";
@@ -24,8 +24,8 @@ export const SECTIONS: Section[] = [
   { id: "feedback", label: "Feedback", Component: FeedbackSection },
   { id: "form", label: "Form", Component: FormSection },
   { id: "navigation", label: "Navigation", Component: NavigationSection },
-  { id: "overlay", label: "Overlay", Component: OverlaySection },
-  { id: "overlays", label: "Overlays", Component: OverlaysSection },
+  { id: "popovers-dialogs", label: "Popovers & Dialogs", Component: PopoversDialogsSection },
+  { id: "alpha-overlays", label: "Alpha Overlays", Component: AlphaOverlaysSection },
   { id: "data-display", label: "Data Display", Component: DataDisplaySection },
   { id: "typography", label: "Typography", Component: TypographySection },
   { id: "general", label: "General", Component: GeneralSection },
@@ -36,6 +36,6 @@ export const SECTIONS: Section[] = [
 export const DEFAULT_SECTION_ID = "color-signals";
 
 export function findSection(id: string | null | undefined): Section {
-  if (!id) return SECTIONS[0];
-  return SECTIONS.find((s) => s.id === id) ?? SECTIONS[0];
+  if (!id) return findSection(DEFAULT_SECTION_ID);
+  return SECTIONS.find((s) => s.id === id) ?? SECTIONS.find((s) => s.id === DEFAULT_SECTION_ID) ?? SECTIONS[0];
 }
