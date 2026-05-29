@@ -19,9 +19,10 @@ import { docsAdapter } from "@loworbitstudio/visor-theme-engine/adapters";
 
 // Layer-order declaration — must precede any @layer blocks. Mirrors LAYER_ORDER
 // in @loworbitstudio/visor-theme-engine/adapters/layers so adapter and core
-// agree regardless of import order. See VI-312.
+// agree regardless of import order. See VI-312. visor-brand (VI-470) sits
+// after visor-semantic.
 const LAYER_ORDER =
-  "@layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;";
+  "@layer visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;";
 
 /** Wrap CSS body in a named @layer block. */
 function wrapInLayer(layerName: string, css: string): string {

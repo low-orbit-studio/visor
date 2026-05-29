@@ -8,6 +8,9 @@
 // Font resolution (from VI-51)
 export * from "./fonts/index.js";
 
+// Brand-asset resolution (VI-470)
+export * from "./brand/index.js";
+
 // Primary pipeline
 export {
   generateTheme,

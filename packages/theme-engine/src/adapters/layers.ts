@@ -8,9 +8,16 @@
  * the cascade.
  */
 
-/** Layer order declaration — must appear before any @layer blocks. */
+/**
+ * Layer order declaration — must appear before any @layer blocks.
+ *
+ * `visor-brand` (VI-470) is ordered immediately after `visor-semantic`: brand
+ * asset vars (`--brand-*`) sit above semantic tokens so brand overrides stay
+ * cleanly separable, while still below `visor-adaptive` chrome and the
+ * `visor-bridge` framework layer.
+ */
 export const LAYER_ORDER =
-  "@layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;";
+  "@layer visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;";
 
 /**
  * Wrap CSS content in a named @layer block.

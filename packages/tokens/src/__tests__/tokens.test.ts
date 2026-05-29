@@ -966,7 +966,7 @@ describe("Stock theme CSS generation", () => {
 describe("Layered CSS output (VI-312)", () => {
   const DIST = join(REPO_ROOT, "packages/tokens/dist");
   const LAYER_ORDER =
-    "@layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;";
+    "@layer visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;";
 
   const fileLayerMap: Array<{ path: string; layer: string }> = [
     { path: "primitives.css", layer: "visor-primitives" },

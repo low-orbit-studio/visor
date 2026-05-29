@@ -1,6 +1,6 @@
 @import url("https://api.fontshare.com/v2/css?f[]=satoshi@400,700&display=swap");
 
-@layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;
+@layer visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;
 
 @layer visor-semantic {
 /* ── Layer: Semantic aliases (VI-451) ── */
@@ -91,6 +91,60 @@ html:not(.dark) .blackout-theme {
   .blackout-theme:not(.light) {
     --hairline: rgba(255, 255, 255, 0.06);
     --hairline-strong: rgba(255, 255, 255, 0.10);
+  }
+}
+}
+
+@layer visor-brand {
+/* --- Brand: forced-mode aliases + tokens --- */
+.blackout-theme {
+  --brand-logo-light: url("/themes/visor/brand/logo.svg");
+  --brand-logo-dark: url("/themes/visor/brand/logo-dark.svg");
+  --brand-logo-clear-space: 0.5rem;
+  --brand-logo-aspect-ratio: 3 / 1;
+  --brand-brandmark-light: url("/themes/visor/brand/brandmark.svg");
+  --brand-brandmark-dark: url("/themes/visor/brand/brandmark-dark.svg");
+  --brand-brandmark-clear-space: 0.25rem;
+  --brand-brandmark-aspect-ratio: 1 / 1;
+  --brand-wordmark-light: url("/themes/visor/brand/wordmark.svg");
+  --brand-wordmark-dark: url("/themes/visor/brand/wordmark-dark.svg");
+  --brand-wordmark-clear-space: 0.5rem;
+  --brand-wordmark-aspect-ratio: 4 / 1;
+  --brand-monochrome-light: url("/themes/visor/brand/monochrome.svg");
+  --brand-monochrome-dark: url("/themes/visor/brand/monochrome.svg");
+  --brand-monochrome-clear-space: 0.25rem;
+  --brand-monochrome-aspect-ratio: 1 / 1;
+  --brand-favicon-light: url("/themes/visor/brand/favicon.svg");
+  --brand-favicon-dark: url("/themes/visor/brand/favicon.svg");
+  --brand-favicon-aspect-ratio: 1 / 1;
+}
+
+/* --- Brand: variants (light) --- */
+html:not(.dark) .blackout-theme {
+  --brand-logo: url("/themes/visor/brand/logo.svg");
+  --brand-brandmark: url("/themes/visor/brand/brandmark.svg");
+  --brand-wordmark: url("/themes/visor/brand/wordmark.svg");
+  --brand-monochrome: url("/themes/visor/brand/monochrome.svg");
+  --brand-favicon: url("/themes/visor/brand/favicon.svg");
+}
+
+/* --- Brand: variants (dark) — manual toggle --- */
+.dark .blackout-theme {
+  --brand-logo: url("/themes/visor/brand/logo-dark.svg");
+  --brand-brandmark: url("/themes/visor/brand/brandmark-dark.svg");
+  --brand-wordmark: url("/themes/visor/brand/wordmark-dark.svg");
+  --brand-monochrome: url("/themes/visor/brand/monochrome.svg");
+  --brand-favicon: url("/themes/visor/brand/favicon.svg");
+}
+
+/* --- Brand: variants (dark) — prefers-color-scheme --- */
+@media (prefers-color-scheme: dark) {
+  .blackout-theme:not(.light) {
+    --brand-logo: url("/themes/visor/brand/logo-dark.svg");
+    --brand-brandmark: url("/themes/visor/brand/brandmark-dark.svg");
+    --brand-wordmark: url("/themes/visor/brand/wordmark-dark.svg");
+    --brand-monochrome: url("/themes/visor/brand/monochrome.svg");
+    --brand-favicon: url("/themes/visor/brand/favicon.svg");
   }
 }
 }

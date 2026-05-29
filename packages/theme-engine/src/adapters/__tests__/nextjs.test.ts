@@ -24,7 +24,7 @@ describe("nextjsAdapter", () => {
   it("outputs @layer order declaration", () => {
     const css = nextjsAdapter(makeInput(MINIMAL_YAML));
     expect(css).toContain(
-      "@layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;",
+      "@layer visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;",
     );
   });
 

@@ -73,16 +73,39 @@ describe("docsAdapter", () => {
       expect(css).not.toMatch(/\n:root\s*\{/);
     });
 
-    it("declares the visor layer order", () => {
+    it("declares the visor layer order with visor-brand after visor-semantic", () => {
       const css = docsAdapter(makeInput(MINIMAL_YAML));
       expect(css).toContain(
-        "@layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;",
+        "@layer visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;",
       );
     });
 
     it("wraps theme rule content in @layer visor-adaptive", () => {
       const css = docsAdapter(makeInput(MINIMAL_YAML));
       expect(css).toContain("@layer visor-adaptive {");
+    });
+
+    it("emits a visor-brand layer ordered after visor-semantic and before visor-adaptive (VI-470)", () => {
+      const css = docsAdapter(makeInput(MINIMAL_YAML));
+      const semanticIdx = css.indexOf("@layer visor-semantic {");
+      const brandIdx = css.indexOf("@layer visor-brand {");
+      const adaptiveIdx = css.indexOf("@layer visor-adaptive {");
+      expect(semanticIdx).toBeGreaterThan(-1);
+      expect(brandIdx).toBeGreaterThan(-1);
+      expect(adaptiveIdx).toBeGreaterThan(-1);
+      expect(semanticIdx).toBeLessThan(brandIdx);
+      expect(brandIdx).toBeLessThan(adaptiveIdx);
+    });
+
+    it("emits the Visor default brand vars for a theme with no brand block (D3)", () => {
+      const css = docsAdapter(makeInput(MINIMAL_YAML));
+      // Mode-scoped logo var + forced-mode aliases, scoped to the theme class.
+      expect(css).toContain('--brand-logo: url("/themes/visor/brand/logo.svg");');
+      expect(css).toContain('--brand-logo-light: url("/themes/visor/brand/logo.svg");');
+      expect(css).toContain('--brand-logo-dark: url("/themes/visor/brand/logo-dark.svg");');
+      // Tokenized clear-space + aspect ratio (Q6).
+      expect(css).toContain("--brand-logo-clear-space: 0.5rem;");
+      expect(css).toContain("--brand-logo-aspect-ratio: 3 / 1;");
     });
 
     it("keeps @import statements outside the @layer block (CSS spec)", () => {
