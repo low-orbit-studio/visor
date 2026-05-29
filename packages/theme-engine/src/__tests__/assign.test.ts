@@ -68,22 +68,30 @@ describe("assignSemanticTokens", () => {
   });
 
   it("surface has the expected number of tokens", () => {
-    // 20 tokens: page, card, subtle, muted, overlay, interactive-*,
-    // accent-*, success-*, warning-*, error-*, info-*
-    expect(Object.keys(tokens.surface).length).toBeGreaterThanOrEqual(19);
+    // page, card, subtle, muted, overlay, interactive-*, accent-*,
+    // success-*, warning-*, error-*, info-*, elev-*, and the VI-478
+    // status-soft alpha overlays.
+    const keys = Object.keys(tokens.surface);
+    expect(keys.length).toBeGreaterThanOrEqual(19);
+    expect(keys).toContain("success-soft");
+    expect(keys).toContain("warning-soft");
+    expect(keys).toContain("error-soft");
   });
 
   it("border has 9 tokens", () => {
     expect(Object.keys(tokens.border)).toHaveLength(9);
   });
 
-  it("interactive has 14 tokens", () => {
+  it("interactive has 17 tokens (VI-478 added primary soft/glow/strong)", () => {
     const keys = Object.keys(tokens.interactive);
-    expect(keys).toHaveLength(14);
+    expect(keys).toHaveLength(17);
     expect(keys).toContain("primary-bg");
     expect(keys).toContain("primary-bg-hover");
     expect(keys).toContain("primary-bg-active");
     expect(keys).toContain("primary-text");
+    expect(keys).toContain("primary-soft");
+    expect(keys).toContain("primary-glow");
+    expect(keys).toContain("primary-strong");
     expect(keys).toContain("secondary-bg");
     expect(keys).toContain("secondary-bg-hover");
     expect(keys).toContain("secondary-bg-active");
@@ -98,11 +106,21 @@ describe("assignSemanticTokens", () => {
 
   it("each token has light and dark hex values", () => {
     const hexPattern = /^#[0-9a-fA-F]{6}$/;
+    // VI-478: alpha-overlay tokens (soft/glow) default to a color-mix() of the
+    // theme color rather than a solid hex — the same kind of exemption the
+    // hairline map already gets (it isn't in the tested categories). They still
+    // resolve to a valid CSS color and themes may pin them to rgba via overrides.
+    const alphaOverlayPattern = /^(color-mix\(|rgba?\(|#[0-9a-fA-F]{6})/;
+    const ALPHA_OVERLAY_TOKENS = new Set([
+      "success-soft", "warning-soft", "error-soft",
+      "primary-soft", "primary-glow",
+    ]);
 
     for (const category of ["text", "surface", "border", "interactive"] as const) {
       for (const [name, value] of Object.entries(tokens[category])) {
-        expect(value.light, `${category}.${name}.light`).toMatch(hexPattern);
-        expect(value.dark, `${category}.${name}.dark`).toMatch(hexPattern);
+        const pattern = ALPHA_OVERLAY_TOKENS.has(name) ? alphaOverlayPattern : hexPattern;
+        expect(value.light, `${category}.${name}.light`).toMatch(pattern);
+        expect(value.dark, `${category}.${name}.dark`).toMatch(pattern);
       }
     }
   });

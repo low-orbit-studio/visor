@@ -81,6 +81,49 @@ overrides:
   });
 });
 
+describe("VI-478 — brand soft/glow/strong + status-soft alpha overlays", () => {
+  const YAML_WITH_SOFT_OVERRIDES = `
+name: Soft Override Theme
+version: 1
+colors:
+  primary: "#FFBE26"
+overrides:
+  dark:
+    interactive-primary-soft: "rgba(255, 190, 38, 0.12)"
+    interactive-primary-glow: "rgba(255, 190, 38, 0.32)"
+    interactive-primary-strong: "#FFD050"
+    surface-success-soft: "rgba(26, 255, 143, 0.10)"
+    surface-warning-soft: "rgba(255, 179, 0, 0.12)"
+    surface-error-soft: "rgba(230, 0, 0, 0.12)"
+`.trim();
+
+  it("brand soft/glow/strong overrides reach the dark CSS output", () => {
+    const output = generateTheme(YAML_WITH_SOFT_OVERRIDES);
+    expect(output.darkCss).toContain("--interactive-primary-soft: rgba(255, 190, 38, 0.12);");
+    expect(output.darkCss).toContain("--interactive-primary-glow: rgba(255, 190, 38, 0.32);");
+    expect(output.darkCss).toContain("--interactive-primary-strong: #FFD050;");
+  });
+
+  it("status-soft overrides (prefixed surface-*-soft) reach the dark CSS output", () => {
+    const output = generateTheme(YAML_WITH_SOFT_OVERRIDES);
+    expect(output.darkCss).toContain("--surface-success-soft: rgba(26, 255, 143, 0.10);");
+    expect(output.darkCss).toContain("--surface-warning-soft: rgba(255, 179, 0, 0.12);");
+    expect(output.darkCss).toContain("--surface-error-soft: rgba(230, 0, 0, 0.12);");
+  });
+
+  it("alpha-overlay tokens emit color-mix defaults even with no overrides", () => {
+    const output = generateTheme(MINIMAL_YAML);
+    // soft/glow default to a color-mix() of the theme color (theme-tracking)
+    expect(output.darkCss).toContain("--interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);");
+    expect(output.darkCss).toContain("--interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);");
+    expect(output.darkCss).toContain("--surface-success-soft: color-mix(in srgb, var(--color-success-500) 10%, transparent);");
+    expect(output.darkCss).toContain("--surface-warning-soft: color-mix(in srgb, var(--color-warning-500) 12%, transparent);");
+    expect(output.darkCss).toContain("--surface-error-soft: color-mix(in srgb, var(--color-error-500) 12%, transparent);");
+    // strong is a solid lightened-brand emphasis (resolves to a hex shade)
+    expect(output.darkCss).toMatch(/--interactive-primary-strong: #[0-9a-fA-F]{6};/);
+  });
+});
+
 describe("integration: full config", () => {
   it("produces complete output with all color fields", () => {
     const fullConfig: VisorThemeConfig = {
