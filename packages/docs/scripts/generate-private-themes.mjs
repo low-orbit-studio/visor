@@ -10,19 +10,25 @@
  *   - app/private-themes.generated.css   — one block per theme, scoped to `.{slug}-theme`
  *   - lib/private-themes.generated.ts    — `export const PRIVATE_THEMES = [...]`
  *
- * When the package is not installed (public self-hosters, no token), writes
- * empty stubs so the build continues. The /themes/private route reads the
- * empty manifest and returns 404.
+ * When the package is not installed but a local `visor-themes-private/themes/`
+ * checkout is reachable (Low Orbit dev machines — VISOR_THEMES_PRIVATE_PATH,
+ * a true sibling, or the `~/Code/low-orbit/` parent-glob convention that
+ * `visor theme sync` also uses), materializes from that checkout instead.
+ *
+ * When neither the package nor a local checkout is available (public
+ * self-hosters, no token), writes empty stubs so the build continues. The
+ * /themes/private route reads the empty manifest and returns 404.
  *
  * Idempotent — safe to run repeatedly.
  */
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs"
-import { resolve, dirname } from "node:path"
+import { existsSync, readdirSync, readFileSync, writeFileSync, mkdirSync } from "node:fs"
+import { resolve, dirname, join, sep } from "node:path"
 import { fileURLToPath } from "node:url"
-import { spawnSync } from "node:child_process"
+import { spawnSync, execFileSync } from "node:child_process"
 import { extractTypographySlots } from "./extract-typography-slots.mjs"
 
 const PRIVATE_PKG = "@low-orbit-studio/visor-themes-private"
+const PRIVATE_THEMES_ENV_VAR = "VISOR_THEMES_PRIVATE_PATH"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const docsRoot = resolve(__dirname, "..")
@@ -72,6 +78,97 @@ function tryInstallPrivatePackage() {
   return true
 }
 
+/**
+ * Resolve the canonical main checkout's repo root. In a git worktree,
+ * `--git-common-dir` points at the main checkout's `.git`, so its parent is the
+ * main repo. Mirrors `findMainRepoRoot` in packages/cli — sibling lookups must
+ * converge to the same `visor-themes-private/` regardless of which worktree
+ * the generator runs from. Falls back to the docs repo root (two levels up
+ * from packages/docs) when git is unavailable.
+ */
+function findMainRepoRoot() {
+  const repoRootFromDocs = resolve(docsRoot, "..", "..")
+  try {
+    const commonDir = execFileSync("git", ["rev-parse", "--git-common-dir"], {
+      cwd: docsRoot,
+      encoding: "utf-8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim()
+    if (commonDir) {
+      const candidate = dirname(resolve(docsRoot, commonDir))
+      if (existsSync(join(candidate, "packages", "docs"))) return candidate
+    }
+  } catch {
+    // git not available — fall through to the docs-relative root
+  }
+  return repoRootFromDocs
+}
+
+/**
+ * Scan `parentDir` one level deep for any `<dir>/visor-themes-private/themes/`
+ * directory. Mirrors `scanParentForPrivateThemes` in packages/cli — catches the
+ * LO convention `~/Code/low-orbit/visor-themes-private/themes/` when the visor
+ * checkout is at `~/Code/visor/`. Returns absolute paths sorted alphabetically.
+ */
+function scanParentForPrivateThemes(parentDir) {
+  if (!existsSync(parentDir)) return []
+  const matches = []
+  for (const entry of readdirSync(parentDir, { withFileTypes: true })) {
+    if (!entry.isDirectory() && !entry.isSymbolicLink()) continue
+    const candidate = join(parentDir, entry.name, "visor-themes-private", "themes")
+    if (existsSync(candidate)) matches.push(candidate)
+  }
+  return matches.sort()
+}
+
+/**
+ * Locate a local private-themes `themes/` directory using the same precedence
+ * as `visor theme sync` (packages/cli/src/commands/theme-sync.ts):
+ *   1. VISOR_THEMES_PRIVATE_PATH env var (points at the package root or themes/)
+ *   2. true sibling — `<main-repo>/../visor-themes-private/themes/`
+ *   3. parent-glob — `<main-repo>/../<any-dir>/visor-themes-private/themes/`
+ * Returns the absolute path to a `{slug}/theme.visor.yaml` layout, or null.
+ */
+function findLocalThemesDir() {
+  const envPath = process.env[PRIVATE_THEMES_ENV_VAR]
+  if (envPath && envPath.trim() !== "") {
+    const resolved = resolve(envPath)
+    // Accept either the package root (…/themes lives under it) or themes/ itself.
+    const withThemes = join(resolved, "themes")
+    if (existsSync(withThemes)) return withThemes
+    if (existsSync(resolved)) return resolved
+  }
+
+  const mainRepoRoot = findMainRepoRoot()
+  const siblingPath = join(mainRepoRoot, "..", "visor-themes-private", "themes")
+  if (existsSync(siblingPath)) return siblingPath
+
+  const parentDir = join(mainRepoRoot, "..")
+  // Defensive: never pick a stray checkout placed inside the Visor repo itself.
+  const matches = scanParentForPrivateThemes(parentDir).filter(
+    (path) => !path.startsWith(mainRepoRoot + sep),
+  )
+  return matches.length > 0 ? matches[0] : null
+}
+
+/**
+ * Build a source object matching the @low-orbit-studio/visor-themes-private
+ * package API (`listThemes`/`readTheme`/`themePath`) from a local `themes/`
+ * directory laid out as `{slug}/theme.visor.yaml`. Lets `main()` consume the
+ * local checkout and the installed npm package through one interface.
+ */
+function localPrivateSource(themesDir) {
+  const slugs = readdirSync(themesDir, { withFileTypes: true })
+    .filter((e) => e.isDirectory() || e.isSymbolicLink())
+    .map((e) => e.name)
+    .filter((slug) => existsSync(join(themesDir, slug, "theme.visor.yaml")))
+  return {
+    listThemes: () => slugs,
+    themePath: (slug) => join(themesDir, slug, "theme.visor.yaml"),
+    readTheme: (slug) => readFileSync(join(themesDir, slug, "theme.visor.yaml"), "utf-8"),
+  }
+}
+
 async function main() {
   let pkg
   try {
@@ -86,8 +183,18 @@ async function main() {
         return
       }
     } else {
-      writeEmpty("package not installed")
-      return
+      // Package not installed (no GITHUB_PACKAGES_TOKEN). On a Low Orbit dev
+      // machine the themes live in a sibling checkout — resolve them the same
+      // way `visor theme sync` does (env var → sibling → parent-glob) so the
+      // /themes/private gallery renders locally without publishing to npm.
+      const themesDir = findLocalThemesDir()
+      if (themesDir) {
+        console.log(`[generate-private-themes] using local private themes at ${themesDir}`)
+        pkg = localPrivateSource(themesDir)
+      } else {
+        writeEmpty("package not installed and no local themes checkout found")
+        return
+      }
     }
   }
 
