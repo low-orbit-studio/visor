@@ -16,15 +16,17 @@ export function VisualElementsSection() {
           <ColorSwatch token="--text-primary" hex="" name="Primary" dynamic />
           <ColorSwatch token="--text-secondary" hex="" name="Secondary" dynamic />
           <ColorSwatch token="--text-tertiary" hex="" name="Tertiary" dynamic />
+          <ColorSwatch token="--text-disabled" hex="" name="Disabled" dynamic />
         </div>
       </section>
 
       <section className={styles.group}>
         <h3 className={styles.groupHeading}>Surface tokens</h3>
         <div className={styles.stack}>
-          <SurfaceRow token="--surface-primary" name="Primary" />
-          <SurfaceRow token="--surface-secondary" name="Secondary" />
-          <SurfaceRow token="--surface-tertiary" name="Tertiary" />
+          <SurfaceRow token="--surface-page" name="Page" />
+          <SurfaceRow token="--surface-muted" name="Muted" />
+          <SurfaceRow token="--surface-card" name="Card" />
+          <SurfaceRow token="--surface-elev" name="Elevated" />
         </div>
       </section>
 
