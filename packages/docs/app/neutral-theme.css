@@ -317,6 +317,9 @@ html:not(.dark) .neutral-theme {
   --surface-error-default: #ef4444;
   --surface-info-subtle: #002437;
   --surface-info-default: #0ea5e9;
+  --surface-success-soft: color-mix(in srgb, var(--color-success-500) 10%, transparent);
+  --surface-warning-soft: color-mix(in srgb, var(--color-warning-500) 12%, transparent);
+  --surface-error-soft: color-mix(in srgb, var(--color-error-500) 12%, transparent);
   --surface-elev-0: #09090c;
   --surface-elev-1: #1a1a1f;
   --surface-elev-2: #2d2d34;
@@ -345,6 +348,9 @@ html:not(.dark) .neutral-theme {
   --interactive-primary-bg-hover: #4fb0c3;
   --interactive-primary-bg-active: #89cfde;
   --interactive-primary-text: #ffffff;
+  --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
+  --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
+  --interactive-primary-strong: #4fb0c3;
   --interactive-secondary-bg: #2d2d34;
   --interactive-secondary-bg-hover: #41414a;
   --interactive-secondary-bg-active: #54545d;
@@ -405,6 +411,9 @@ html:not(.dark) .neutral-theme {
     --surface-error-default: #ef4444;
     --surface-info-subtle: #002437;
     --surface-info-default: #0ea5e9;
+    --surface-success-soft: color-mix(in srgb, var(--color-success-500) 10%, transparent);
+    --surface-warning-soft: color-mix(in srgb, var(--color-warning-500) 12%, transparent);
+    --surface-error-soft: color-mix(in srgb, var(--color-error-500) 12%, transparent);
     --surface-elev-0: #09090c;
     --surface-elev-1: #1a1a1f;
     --surface-elev-2: #2d2d34;
@@ -437,6 +446,9 @@ html:not(.dark) .neutral-theme {
     --interactive-primary-bg-hover: #4fb0c3;
     --interactive-primary-bg-active: #89cfde;
     --interactive-primary-text: #ffffff;
+    --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
+    --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
+    --interactive-primary-strong: #4fb0c3;
     --interactive-secondary-bg: #2d2d34;
     --interactive-secondary-bg-hover: #41414a;
     --interactive-secondary-bg-active: #54545d;
@@ -497,6 +509,9 @@ html:not(.dark) .neutral-theme {
   --surface-error-default: #ef4444;
   --surface-info-subtle: #ecf7ff;
   --surface-info-default: #0ea5e9;
+  --surface-success-soft: color-mix(in srgb, var(--color-success-500) 10%, transparent);
+  --surface-warning-soft: color-mix(in srgb, var(--color-warning-500) 12%, transparent);
+  --surface-error-soft: color-mix(in srgb, var(--color-error-500) 12%, transparent);
   --surface-elev-0: #ffffff;
   --surface-elev-1: #f5f5f6;
   --surface-elev-2: #e7e7ea;
@@ -525,6 +540,9 @@ html:not(.dark) .neutral-theme {
   --interactive-primary-bg-hover: #015866;
   --interactive-primary-bg-active: #013d46;
   --interactive-primary-text: #ffffff;
+  --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
+  --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
+  --interactive-primary-strong: #037283;
   --interactive-secondary-bg: #ffffff;
   --interactive-secondary-bg-hover: #f5f5f6;
   --interactive-secondary-bg-active: #e7e7ea;

@@ -319,6 +319,9 @@ html:not(.dark) .blackout-theme {
   --surface-error-default: #ef4444;
   --surface-info-subtle: #002437;
   --surface-info-default: #0ea5e9;
+  --surface-success-soft: color-mix(in srgb, var(--color-success-500) 10%, transparent);
+  --surface-warning-soft: color-mix(in srgb, var(--color-warning-500) 12%, transparent);
+  --surface-error-soft: color-mix(in srgb, var(--color-error-500) 12%, transparent);
   --surface-elev-0: #090909;
   --surface-elev-1: #101011;
   --surface-elev-2: #181818;
@@ -347,6 +350,9 @@ html:not(.dark) .blackout-theme {
   --interactive-primary-bg-hover: #868686;
   --interactive-primary-bg-active: #b2b2b2;
   --interactive-primary-text: #ffffff;
+  --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
+  --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
+  --interactive-primary-strong: #868686;
   --interactive-secondary-bg: #181818;
   --interactive-secondary-bg-hover: #212121;
   --interactive-secondary-bg-active: #282828;
@@ -407,6 +413,9 @@ html:not(.dark) .blackout-theme {
     --surface-error-default: #ef4444;
     --surface-info-subtle: #002437;
     --surface-info-default: #0ea5e9;
+    --surface-success-soft: color-mix(in srgb, var(--color-success-500) 10%, transparent);
+    --surface-warning-soft: color-mix(in srgb, var(--color-warning-500) 12%, transparent);
+    --surface-error-soft: color-mix(in srgb, var(--color-error-500) 12%, transparent);
     --surface-elev-0: #090909;
     --surface-elev-1: #101011;
     --surface-elev-2: #181818;
@@ -439,6 +448,9 @@ html:not(.dark) .blackout-theme {
     --interactive-primary-bg-hover: #868686;
     --interactive-primary-bg-active: #b2b2b2;
     --interactive-primary-text: #ffffff;
+    --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
+    --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
+    --interactive-primary-strong: #868686;
     --interactive-secondary-bg: #181818;
     --interactive-secondary-bg-hover: #212121;
     --interactive-secondary-bg-active: #282828;
@@ -499,6 +511,9 @@ html:not(.dark) .blackout-theme {
   --surface-error-default: #ef4444;
   --surface-info-subtle: #002e44;
   --surface-info-default: #0ea5e9;
+  --surface-success-soft: color-mix(in srgb, var(--color-success-500) 10%, transparent);
+  --surface-warning-soft: color-mix(in srgb, var(--color-warning-500) 12%, transparent);
+  --surface-error-soft: color-mix(in srgb, var(--color-error-500) 12%, transparent);
   --surface-elev-0: #101011;
   --surface-elev-1: #181818;
   --surface-elev-2: #212121;
@@ -527,6 +542,9 @@ html:not(.dark) .blackout-theme {
   --interactive-primary-bg-hover: #3c3c3c;
   --interactive-primary-bg-active: #2a2a2a;
   --interactive-primary-text: #ffffff;
+  --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
+  --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
+  --interactive-primary-strong: #4d4d4d;
   --interactive-secondary-bg: #212121;
   --interactive-secondary-bg-hover: #282828;
   --interactive-secondary-bg-active: #303030;
