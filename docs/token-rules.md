@@ -205,6 +205,21 @@ In addition to the prefixed semantic tokens (`--text-*`, `--surface-*`, `--borde
 |-------|-----|
 | `--text-muted` | Deemphasized but readable — slots between `--text-tertiary` and `--text-disabled` |
 
+**Brand & status alpha overlays (VI-478):**
+
+Alpha-overlay tints derived from the brand and feedback colors. These are **transparent overlays**, semantically distinct from the OPAQUE `--surface-*-subtle` tokens (`success-50`/`success-900` etc.) — do not alias them together. Each defaults to a `color-mix()` of the corresponding theme color so the overlay tracks the active theme; themes pin exact `rgba()` values via `overrides`.
+
+| Token | Default | Use |
+|-------|---------|-----|
+| `--interactive-primary-soft` | `color-mix(in srgb, var(--color-primary-500) 12%, transparent)` | Subtle row tints, active-state backgrounds |
+| `--interactive-primary-glow` | `color-mix(in srgb, var(--color-primary-500) 32%, transparent)` | Marker halos, focus glows |
+| `--interactive-primary-strong` | `primary-600` (light) / `primary-400` (dark) | Solid lightened-brand emphasis (hover/pressed, selected fills) |
+| `--surface-success-soft` | `color-mix(in srgb, var(--color-success-500) 10%, transparent)` | Availability / OK-state backgrounds |
+| `--surface-warning-soft` | `color-mix(in srgb, var(--color-warning-500) 12%, transparent)` | Caution / tentative backgrounds |
+| `--surface-error-soft` | `color-mix(in srgb, var(--color-error-500) 12%, transparent)` | Conflict / blocked-state backgrounds |
+
+Status-soft keys are **prefixed** (`surface-success-soft`, not bare `success-soft`) so they route through the surface map, consistent with `surface-*-subtle`.
+
 **Discrete pixel scales (engine-wide, mode-agnostic):**
 
 - `--text-N` font sizes: `11`, `13`, `14`, `16`, `20`, `24`, `32`, `40`, `48` (px). Distinct value space from `--text-primary` etc. (color tokens); used in `font-size`, not `color`.
@@ -225,6 +240,13 @@ overrides:
     surface-screen: "#0B0C0D"
     surface-elev: "#2E3134"
     text-muted: "rgba(250, 252, 254, 0.32)"
+    # VI-478 brand + status alpha overlays (prefixed; transparent)
+    interactive-primary-soft: "rgba(255, 190, 38, 0.12)"
+    interactive-primary-glow: "rgba(255, 190, 38, 0.32)"
+    interactive-primary-strong: "#FFD050"
+    surface-success-soft: "rgba(26, 255, 143, 0.10)"
+    surface-warning-soft: "rgba(255, 179, 0, 0.12)"
+    surface-error-soft: "rgba(230, 0, 0, 0.12)"
 ```
 
 Bare `primary` resolves to the intent group, not `--text-primary` (prefixed `text-primary` continues to route to the text group).

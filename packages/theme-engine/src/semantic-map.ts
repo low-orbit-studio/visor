@@ -211,6 +211,24 @@ export const SEMANTIC_SURFACE_MAP: Record<string, SemanticMapping> = {
     dark: { role: "info", shade: 500 },
   },
 
+  // VI-478: status soft tints (BL-193) — alpha overlays, semantically distinct
+  // from the OPAQUE `surface-{status}-subtle` above (do NOT alias them together).
+  // Default to a color-mix of the status color so they track the theme; themes
+  // pin exact values via overrides (blacklight-underground: success @10%,
+  // warning/error @12%).
+  "success-soft": {
+    light: { constant: "color-mix(in srgb, var(--color-success-500) 10%, transparent)" },
+    dark: { constant: "color-mix(in srgb, var(--color-success-500) 10%, transparent)" },
+  },
+  "warning-soft": {
+    light: { constant: "color-mix(in srgb, var(--color-warning-500) 12%, transparent)" },
+    dark: { constant: "color-mix(in srgb, var(--color-warning-500) 12%, transparent)" },
+  },
+  "error-soft": {
+    light: { constant: "color-mix(in srgb, var(--color-error-500) 12%, transparent)" },
+    dark: { constant: "color-mix(in srgb, var(--color-error-500) 12%, transparent)" },
+  },
+
   // 5-tier ordinal elevation scale — deepest (0) to highest (4)
   // Light mode: BO-10 near-white ramp (white → neutral-300).
   // Dark mode: deep neutral ramp (neutral-950 → neutral-600).
@@ -292,6 +310,23 @@ export const SEMANTIC_INTERACTIVE_MAP: Record<string, SemanticMapping> = {
   "primary-text": {
     light: { constant: "#ffffff" },
     dark: { constant: "#ffffff" },
+  },
+  // VI-478: brand-derived alpha-overlay helpers (BL-193). `soft`/`glow` are
+  // alpha overlays that track the theme's primary via color-mix (distinct from
+  // any opaque surface); `strong` is a solid lightened-brand emphasis color.
+  // Themes pin exact values via overrides — e.g. blacklight-underground sets
+  // soft @12% / glow @32% / strong #FFD050.
+  "primary-soft": {
+    light: { constant: "color-mix(in srgb, var(--color-primary-500) 12%, transparent)" },
+    dark: { constant: "color-mix(in srgb, var(--color-primary-500) 12%, transparent)" },
+  },
+  "primary-glow": {
+    light: { constant: "color-mix(in srgb, var(--color-primary-500) 32%, transparent)" },
+    dark: { constant: "color-mix(in srgb, var(--color-primary-500) 32%, transparent)" },
+  },
+  "primary-strong": {
+    light: { role: "primary", shade: 600 },
+    dark: { role: "primary", shade: 400 },
   },
 
   // Secondary action

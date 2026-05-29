@@ -321,6 +321,9 @@ html:not(.dark) .space-theme {
   --surface-error-default: #ef4444;
   --surface-info-subtle: #002437;
   --surface-info-default: #0ea5e9;
+  --surface-success-soft: color-mix(in srgb, var(--color-success-500) 10%, transparent);
+  --surface-warning-soft: color-mix(in srgb, var(--color-warning-500) 12%, transparent);
+  --surface-error-soft: color-mix(in srgb, var(--color-error-500) 12%, transparent);
   --surface-elev-0: #080810;
   --surface-elev-1: #191923;
   --surface-elev-2: #2b2b36;
@@ -349,6 +352,9 @@ html:not(.dark) .space-theme {
   --interactive-primary-bg-hover: #7b93ff;
   --interactive-primary-bg-active: #aabcff;
   --interactive-primary-text: #ffffff;
+  --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
+  --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
+  --interactive-primary-strong: #7b93ff;
   --interactive-secondary-bg: #2b2b36;
   --interactive-secondary-bg-hover: #3f3f4b;
   --interactive-secondary-bg-active: #51515d;
@@ -409,6 +415,9 @@ html:not(.dark) .space-theme {
     --surface-error-default: #ef4444;
     --surface-info-subtle: #002437;
     --surface-info-default: #0ea5e9;
+    --surface-success-soft: color-mix(in srgb, var(--color-success-500) 10%, transparent);
+    --surface-warning-soft: color-mix(in srgb, var(--color-warning-500) 12%, transparent);
+    --surface-error-soft: color-mix(in srgb, var(--color-error-500) 12%, transparent);
     --surface-elev-0: #080810;
     --surface-elev-1: #191923;
     --surface-elev-2: #2b2b36;
@@ -441,6 +450,9 @@ html:not(.dark) .space-theme {
     --interactive-primary-bg-hover: #7b93ff;
     --interactive-primary-bg-active: #aabcff;
     --interactive-primary-text: #ffffff;
+    --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
+    --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
+    --interactive-primary-strong: #7b93ff;
     --interactive-secondary-bg: #2b2b36;
     --interactive-secondary-bg-hover: #3f3f4b;
     --interactive-secondary-bg-active: #51515d;
@@ -501,6 +513,9 @@ html:not(.dark) .space-theme {
   --surface-error-default: #ef4444;
   --surface-info-subtle: #ecf7ff;
   --surface-info-default: #0ea5e9;
+  --surface-success-soft: color-mix(in srgb, var(--color-success-500) 10%, transparent);
+  --surface-warning-soft: color-mix(in srgb, var(--color-warning-500) 12%, transparent);
+  --surface-error-soft: color-mix(in srgb, var(--color-error-500) 12%, transparent);
   --surface-elev-0: #ffffff;
   --surface-elev-1: #f5f5f8;
   --surface-elev-2: #e7e7ed;
@@ -529,6 +544,9 @@ html:not(.dark) .space-theme {
   --interactive-primary-bg-hover: #2e2dbc;
   --interactive-primary-bg-active: #1e168d;
   --interactive-primary-text: #ffffff;
+  --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
+  --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
+  --interactive-primary-strong: #3f49d7;
   --interactive-secondary-bg: #ffffff;
   --interactive-secondary-bg-hover: #f5f5f8;
   --interactive-secondary-bg-active: #e7e7ed;
