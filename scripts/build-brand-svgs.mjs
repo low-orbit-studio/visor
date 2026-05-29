@@ -4,10 +4,15 @@
  *
  * Asset prep only — no new logo design. The Visor mark is an existing set of
  * heavy PNGs (`assets/visor-logo*.png`, `packages/docs/public/visor-wordmark-*.png`).
- * The brandmark (astronaut illustration) and full lockup are photographic raster
- * art that cannot be losslessly redrawn as clean vector paths, so those variants
- * embed an SVGO-friendly, size-reduced raster inside an `<svg><image>` wrapper —
- * a genuine, scalable, self-describing SVG with a viewBox and locked aspect ratio.
+ * The brandmark (astronaut illustration) is photographic raster art that cannot be
+ * losslessly redrawn as clean vector paths, so it embeds an SVGO-friendly,
+ * size-reduced raster inside an `<svg><image>` wrapper — a genuine, scalable,
+ * self-describing SVG with a viewBox and locked aspect ratio.
+ *
+ * The `logo` (full lockup) is COMPOSED from the brandmark + wordmark marks rather
+ * than wrapping a marketing hero PNG: the astronaut sits beside the "Visor."
+ * wordmark (per-mode), with no tagline or attribution baked in (VI-469 review
+ * decision). Both `-dark` (white type) and `-light` (dark type) are emitted.
  *
  * The `wordmark` ("Visor.") is geometric type, so the `monochrome` variant is a
  * true single-color vector: the wordmark silhouette is traced with potrace and
@@ -22,7 +27,7 @@
  *   node scripts/build-brand-svgs.mjs --stage <dir> [--out <dir>]
  *
  *   --stage <dir>   directory of pre-sized PNGs:
- *                     brandmark.png, logo-dark.png, wordmark-light.png, wordmark-dark.png
+ *                     brandmark.png, wordmark-light.png, wordmark-dark.png, wordmark-mono-src.png
  *   --out <dir>     output directory for SVGs (default: assets/brand)
  */
 
@@ -84,6 +89,34 @@ async function rasterSvg(srcFile, title) {
 }
 
 /**
+ * Compose a clean horizontal lockup — the astronaut brandmark beside the
+ * "Visor." wordmark — from two staged PNGs, each embedded as an <image> in one
+ * scalable SVG. No tagline/attribution (VI-469 review decision). Layout ratios
+ * are relative to the (square) brandmark so the lockup scales with the source.
+ */
+async function composeLockupSvg(brandmarkFile, wordmarkFile, title) {
+  const bm = await pngSize(brandmarkFile);
+  const wm = await pngSize(wordmarkFile);
+  const BM = r2(bm.width); // brandmark box (square)
+  const WM_H = r2(BM * (212 / 512)); // wordmark height relative to brandmark
+  const WM_W = r2(WM_H * (wm.width / wm.height));
+  const GAP = r2(BM * (-8 / 512)); // gap; negative trims the marks' internal padding
+  const PAD = r2(BM * (14 / 512)); // canvas padding
+  const wmX = r2(PAD + BM + GAP);
+  const wmY = r2(PAD + (BM - WM_H) / 2);
+  const W = r2(wmX + WM_W + PAD);
+  const H = r2(BM + 2 * PAD);
+  const bmB64 = bm.buf.toString("base64");
+  const wmB64 = wm.buf.toString("base64");
+  return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${title}">
+  <title>${title}</title>
+  <image width="${BM}" height="${BM}" x="${PAD}" y="${PAD}" preserveAspectRatio="xMidYMid meet" xlink:href="data:image/png;base64,${bmB64}"/>
+  <image width="${WM_W}" height="${WM_H}" x="${wmX}" y="${wmY}" preserveAspectRatio="xMidYMid meet" xlink:href="data:image/png;base64,${wmB64}"/>
+</svg>
+`;
+}
+
+/**
  * Trace a high-contrast (dark-on-white) PNG of the wordmark into a single
  * vector path, then rewrite the fill to currentColor so it tints with the
  * surrounding token color. Threshold is tuned to capture both the dark
@@ -117,7 +150,6 @@ async function main() {
 
   const need = [
     "brandmark.png",
-    "logo-dark.png",
     "wordmark-light.png",
     "wordmark-dark.png",
     "wordmark-mono-src.png",
@@ -138,10 +170,22 @@ async function main() {
     await rasterSvg(path.join(stageDir, "brandmark.png"), "Visor brandmark"),
   ]);
 
-  // logo — full lockup (exists only on dark background)
+  // logo — clean full lockup composed from brandmark + wordmark (no tagline), per-mode
   writes.push([
     "visor-logo-dark.svg",
-    await rasterSvg(path.join(stageDir, "logo-dark.png"), "Visor logo"),
+    await composeLockupSvg(
+      path.join(stageDir, "brandmark.png"),
+      path.join(stageDir, "wordmark-dark.png"),
+      "Visor logo",
+    ),
+  ]);
+  writes.push([
+    "visor-logo-light.svg",
+    await composeLockupSvg(
+      path.join(stageDir, "brandmark.png"),
+      path.join(stageDir, "wordmark-light.png"),
+      "Visor logo",
+    ),
   ]);
 
   // wordmark — per-mode type
