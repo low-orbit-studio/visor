@@ -25,6 +25,7 @@ import { FULL_SHADE_STEPS, SELECTIVE_SHADE_STEPS, generateShadeScale } from "../
 import { resolveThemeFonts } from "../fonts/pipeline.js";
 import { buildVisorFontUrl } from "../fonts/resolve.js";
 import { aliasFamily, fontStack, type AliasedFamilies } from "../fonts/theme-alias.js";
+import { resolveThemeBrand } from "../brand/pipeline.js";
 import {
   generateIntentDecls,
   generateHairlineDecls,
@@ -498,8 +499,18 @@ export function docsAdapter(
   }
   semanticLines.push("");
 
+  // ─── Layer: Brand assets (VI-470) — visor-brand cascade layer ─────────────
+  //
+  // Mode-scoped `--brand-{variant}` vars (+ explicit `-light`/`-dark` forced-mode
+  // aliases) and per-variant `clearSpace`/`aspectRatio` tokens. Scoped to the
+  // theme class and ordered immediately after visor-semantic (Q1). Themes with
+  // no `brand` block fall back to the Visor default brand (D3).
+  const brandResult = resolveThemeBrand(input.config.brand, { scope: scopeClass });
+
   const adaptiveLayer = wrapInLayer("visor-adaptive", lines.join("\n").trim());
   const semanticLayer = wrapInLayer("visor-semantic", semanticLines.join("\n").trim());
+  const brandLayer = wrapInLayer("visor-brand", brandResult.css);
   const head = fontLines.length > 0 ? fontLines.join("\n") + "\n" : "";
-  return head + LAYER_ORDER + "\n\n" + semanticLayer + "\n\n" + adaptiveLayer + "\n";
+  const layerBlocks = [semanticLayer, brandLayer, adaptiveLayer].filter(Boolean);
+  return head + LAYER_ORDER + "\n\n" + layerBlocks.join("\n\n") + "\n";
 }

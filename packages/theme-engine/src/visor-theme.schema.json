@@ -222,6 +222,54 @@
         }
       }
     },
+    "brand": {
+      "type": "object",
+      "description": "Brand-asset declarations (VI-470). Per-slot logo/brandmark/wordmark/etc. entries resolved to asset URLs and emitted as mode-scoped --brand-* CSS variables in a dedicated visor-brand cascade layer. Omitted → the Visor default brand (stock themes are not logo-less).",
+      "additionalProperties": false,
+      "properties": {
+        "org": {
+          "type": "string",
+          "description": "CDN namespace for brand assets. Required when source is \"visor-brands\" (unless cdn-overrides.visor-brands is set)."
+        },
+        "source": {
+          "type": "string",
+          "enum": ["visor-brands", "local"],
+          "description": "Where assets resolve from. Default: \"visor-brands\". Phase 1 supports \"local\" (resolves to public/ paths); CDN resolution lands later."
+        },
+        "cdn-overrides": {
+          "type": "object",
+          "description": "Per-source CDN base URL override. Only visor-brands is supported.",
+          "additionalProperties": false,
+          "properties": {
+            "visor-brands": {
+              "type": "string",
+              "minLength": 1,
+              "description": "CDN base URL that replaces brands.visor.design for source: visor-brands slots."
+            }
+          }
+        },
+        "logo": { "$ref": "#/$defs/brandSlot" },
+        "brandmark": { "$ref": "#/$defs/brandSlot" },
+        "wordmark": { "$ref": "#/$defs/brandSlot" },
+        "monochrome": { "$ref": "#/$defs/brandSlot" },
+        "favicon": { "$ref": "#/$defs/brandSlot" },
+        "custom": {
+          "type": "object",
+          "description": "Operator-defined slots, addressed by key.",
+          "additionalProperties": { "$ref": "#/$defs/brandSlot" }
+        }
+      },
+      "if": {
+        "properties": { "source": { "const": "visor-brands" } },
+        "required": ["source"]
+      },
+      "then": {
+        "anyOf": [
+          { "required": ["org"] },
+          { "required": ["cdn-overrides"] }
+        ]
+      }
+    },
     "spacing": {
       "type": "object",
       "description": "Spacing configuration.",
@@ -335,6 +383,38 @@
         { "pattern": "^hsla?\\(" },
         { "pattern": "^oklch\\(" }
       ]
+    },
+    "brandSlot": {
+      "type": "object",
+      "description": "A single brand-variant declaration. Resolves to light + dark asset URLs; clearSpace and aspectRatio are tokenized per variant (VI-470, Q6).",
+      "additionalProperties": false,
+      "properties": {
+        "slug": {
+          "type": "string",
+          "description": "CDN/asset-set slug. Required when source is visor-brands (Phase 2+)."
+        },
+        "formats": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Preferred asset formats, first wins (e.g. [\"svg\"], [\"svg\", \"png\"])."
+        },
+        "light": {
+          "type": "string",
+          "description": "Explicit light-mode asset filename or public/-relative path (overrides the inferred name)."
+        },
+        "dark": {
+          "type": "string",
+          "description": "Explicit dark-mode asset filename or public/-relative path (overrides the inferred name)."
+        },
+        "clearSpace": {
+          "type": "string",
+          "description": "Tokenized safe-zone padding enforced by <Logo> (e.g. \"0.5rem\"). Emitted as --brand-{variant}-clear-space."
+        },
+        "aspectRatio": {
+          "type": "string",
+          "description": "Tokenized locked aspect ratio (e.g. \"3 / 1\"); else derived from the SVG viewBox. Emitted as --brand-{variant}-aspect-ratio."
+        }
+      }
     },
     "textSlotOverride": {
       "type": "object",

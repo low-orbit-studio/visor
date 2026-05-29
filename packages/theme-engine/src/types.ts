@@ -5,6 +5,7 @@
  */
 
 import type { FontSource } from "./fonts/types.js";
+import type { VisorBrand } from "./brand/types.js";
 
 // ============================================================
 // Shade Generation Types
@@ -191,6 +192,13 @@ export interface VisorThemeConfig {
      */
     slots?: Partial<Record<MaterialTextSlot, TextSlotOverride>>;
   };
+  /**
+   * Brand-asset declarations (VI-470). Structured like `typography` — per-slot
+   * logo/brandmark/wordmark/etc. entries resolved to asset URLs and emitted as
+   * mode-scoped `--brand-*` CSS vars in a dedicated `visor-brand` cascade layer.
+   * Omitted → the Visor default brand (stock themes are not logo-less).
+   */
+  brand?: VisorBrand;
   spacing?: {
     base?: number;
   };
@@ -286,6 +294,11 @@ export interface ResolvedThemeConfig {
      */
     slots: Partial<Record<MaterialTextSlot, TextSlotOverride>>;
   };
+  /**
+   * Resolved brand block (VI-470). Always present — falls back to the Visor
+   * default brand when the source config omits `brand` (D3).
+   */
+  brand: VisorBrand;
   spacing: { base: number };
   radius: { sm: number; md: number; lg: number; xl: number; pill: number };
   shadows: { xs: string; sm: string; md: string; lg: string; xl: string };

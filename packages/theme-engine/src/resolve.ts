@@ -6,6 +6,8 @@
  */
 
 import { parseColor } from "./color.js";
+import { DEFAULT_VISOR_BRAND } from "./brand/resolve.js";
+import type { VisorBrand } from "./brand/types.js";
 import type { VisorThemeConfig, ResolvedThemeConfig, ColorFormat } from "./types.js";
 
 // ============================================================
@@ -58,6 +60,29 @@ const DEFAULTS = {
 // ============================================================
 // Resolution
 // ============================================================
+
+/**
+ * Fill brand defaults (VI-470). When a theme omits `brand`, fall back to the
+ * Visor default brand (D3) so stock themes are never logo-less. When a theme
+ * supplies `brand`, merge it over the default per-slot: the theme's `org` /
+ * `source` / `cdn-overrides` and any declared slots win, undeclared slots
+ * inherit the Visor default. A theme that fully re-declares brand simply
+ * overrides every slot.
+ */
+function resolveBrand(brand: VisorThemeConfig["brand"]): VisorBrand {
+  if (!brand) return DEFAULT_VISOR_BRAND;
+  return {
+    org: brand.org ?? DEFAULT_VISOR_BRAND.org,
+    source: brand.source ?? DEFAULT_VISOR_BRAND.source,
+    ...(brand["cdn-overrides"] && { "cdn-overrides": brand["cdn-overrides"] }),
+    logo: brand.logo ?? DEFAULT_VISOR_BRAND.logo,
+    brandmark: brand.brandmark ?? DEFAULT_VISOR_BRAND.brandmark,
+    wordmark: brand.wordmark ?? DEFAULT_VISOR_BRAND.wordmark,
+    monochrome: brand.monochrome ?? DEFAULT_VISOR_BRAND.monochrome,
+    favicon: brand.favicon ?? DEFAULT_VISOR_BRAND.favicon,
+    ...(brand.custom && { custom: brand.custom }),
+  };
+}
 
 export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
   const colors = config.colors;
@@ -152,6 +177,7 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
       }),
       slots: config.typography?.slots ?? {},
     },
+    brand: resolveBrand(config.brand),
     spacing: {
       base: config.spacing?.base ?? DEFAULTS.spacing.base,
     },

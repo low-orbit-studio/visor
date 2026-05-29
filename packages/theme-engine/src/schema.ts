@@ -23,7 +23,7 @@ export interface ValidationResult {
 
 const KNOWN_TOP_LEVEL_KEYS = new Set([
   "name", "version", "group", "label", "default-mode", "colors", "colors-dark", "typography",
-  "spacing", "radius", "shadows", "strokeWidths", "motion", "overrides",
+  "brand", "spacing", "radius", "shadows", "strokeWidths", "motion", "overrides",
 ]);
 
 const KNOWN_COLOR_KEYS = new Set([
@@ -55,6 +55,16 @@ const KNOWN_STROKE_WIDTH_KEYS = new Set(["thin", "regular", "medium", "thick"]);
 // only a schema unblock so the theme YAML validates.
 const KNOWN_MOTION_KEYS = new Set(["duration-fast", "duration-normal", "duration-slow", "easing", "easing-overshoot"]);
 const KNOWN_OVERRIDES_KEYS = new Set(["light", "dark"]);
+
+// VI-470: brand block. Shared org/source/cdn-overrides defaults plus the
+// standard variant slots and an optional `custom` map of operator-defined slots.
+const KNOWN_BRAND_KEYS = new Set([
+  "org", "source", "cdn-overrides", "logo", "brandmark", "wordmark", "monochrome", "favicon", "custom",
+]);
+const KNOWN_BRAND_STANDARD_SLOTS = ["logo", "brandmark", "wordmark", "monochrome", "favicon"] as const;
+const KNOWN_BRAND_SLOT_KEYS = new Set(["slug", "formats", "light", "dark", "clearSpace", "aspectRatio"]);
+const KNOWN_BRAND_SOURCES = new Set(["visor-brands", "local"]);
+const KNOWN_BRAND_CDN_OVERRIDE_KEYS = new Set(["visor-brands"]);
 
 /**
  * Check for unknown keys at every nesting level.
@@ -164,6 +174,51 @@ function checkUnknownKeys(obj: Record<string, unknown>, errors: string[]): void 
             errors.push(
               `Unknown key 'typography.slots.${slotName}.${key}'. Valid keys: ${[...KNOWN_SLOT_OVERRIDE_KEYS].join(", ")}`,
             );
+          }
+        }
+      }
+    }
+  }
+
+  // brand (VI-470)
+  if (typeof obj.brand === "object" && obj.brand !== null) {
+    const brand = obj.brand as Record<string, unknown>;
+    for (const key of Object.keys(brand)) {
+      if (!KNOWN_BRAND_KEYS.has(key)) {
+        errors.push(`Unknown key 'brand.${key}'. Valid keys: ${[...KNOWN_BRAND_KEYS].join(", ")}`);
+      }
+    }
+    // brand.cdn-overrides
+    if (typeof brand["cdn-overrides"] === "object" && brand["cdn-overrides"] !== null) {
+      for (const key of Object.keys(brand["cdn-overrides"] as Record<string, unknown>)) {
+        if (!KNOWN_BRAND_CDN_OVERRIDE_KEYS.has(key)) {
+          errors.push(`Unknown key 'brand.cdn-overrides.${key}'. Valid keys: ${[...KNOWN_BRAND_CDN_OVERRIDE_KEYS].join(", ")}`);
+        }
+      }
+    }
+    // standard slots
+    for (const slot of KNOWN_BRAND_STANDARD_SLOTS) {
+      const slotObj = brand[slot];
+      if (typeof slotObj === "object" && slotObj !== null) {
+        for (const key of Object.keys(slotObj as Record<string, unknown>)) {
+          if (!KNOWN_BRAND_SLOT_KEYS.has(key)) {
+            errors.push(`Unknown key 'brand.${slot}.${key}'. Valid keys: ${[...KNOWN_BRAND_SLOT_KEYS].join(", ")}`);
+          }
+        }
+      }
+    }
+    // custom slots
+    if (typeof brand.custom === "object" && brand.custom !== null) {
+      const custom = brand.custom as Record<string, unknown>;
+      for (const slotName of Object.keys(custom)) {
+        const slotObj = custom[slotName];
+        if (typeof slotObj !== "object" || slotObj === null) {
+          errors.push(`'brand.custom.${slotName}' must be an object with optional slug/formats/light/dark/clearSpace/aspectRatio fields`);
+          continue;
+        }
+        for (const key of Object.keys(slotObj as Record<string, unknown>)) {
+          if (!KNOWN_BRAND_SLOT_KEYS.has(key)) {
+            errors.push(`Unknown key 'brand.custom.${slotName}.${key}'. Valid keys: ${[...KNOWN_BRAND_SLOT_KEYS].join(", ")}`);
           }
         }
       }
@@ -382,6 +437,53 @@ export function validateConfig(config: unknown): ValidationResult {
           typeof o["letter-spacing"] !== "number"
         ) {
           errors.push(`'typography.slots.${slotName}.letter-spacing' must be a number (Flutter logical pixels)`);
+        }
+      }
+    }
+  }
+
+  // Validate brand block (VI-470)
+  if (obj.brand !== undefined) {
+    if (typeof obj.brand !== "object" || obj.brand === null) {
+      errors.push("'brand' must be an object");
+    } else {
+      const brand = obj.brand as Record<string, unknown>;
+      // source enum
+      if (brand.source !== undefined && !KNOWN_BRAND_SOURCES.has(brand.source as string)) {
+        errors.push(`'brand.source' must be one of: ${[...KNOWN_BRAND_SOURCES].join(", ")}`);
+      }
+      // cdn-overrides.visor-brands must be a non-empty string URL when present
+      const brandCdn = brand["cdn-overrides"] as Record<string, unknown> | undefined;
+      const visorBrandsOverride = brandCdn?.["visor-brands"];
+      if (visorBrandsOverride !== undefined && typeof visorBrandsOverride !== "string") {
+        errors.push("'brand.cdn-overrides.visor-brands' must be a string URL");
+      }
+      if (typeof visorBrandsOverride === "string" && visorBrandsOverride.length === 0) {
+        errors.push("'brand.cdn-overrides.visor-brands' must not be empty");
+      }
+      // org is required when source is visor-brands (unless a cdn-override base
+      // already encodes the namespace) — mirrors the typography visor-fonts rule.
+      const orgOptional = typeof visorBrandsOverride === "string" && visorBrandsOverride.length > 0;
+      if (brand.source === "visor-brands" && !orgOptional && !brand.org) {
+        errors.push("'brand.org' is required when brand.source is 'visor-brands' (unless brand.cdn-overrides.visor-brands is set)");
+      }
+      // per-slot field types (formats must be a string array when present)
+      const allSlots: Record<string, unknown>[] = [];
+      for (const slot of KNOWN_BRAND_STANDARD_SLOTS) {
+        if (typeof brand[slot] === "object" && brand[slot] !== null) {
+          allSlots.push(brand[slot] as Record<string, unknown>);
+        }
+      }
+      if (typeof brand.custom === "object" && brand.custom !== null) {
+        for (const slot of Object.values(brand.custom as Record<string, unknown>)) {
+          if (typeof slot === "object" && slot !== null) allSlots.push(slot as Record<string, unknown>);
+        }
+      }
+      for (const slot of allSlots) {
+        if (slot.formats !== undefined) {
+          if (!Array.isArray(slot.formats) || !(slot.formats as unknown[]).every((f) => typeof f === "string")) {
+            errors.push("'brand.<slot>.formats' must be an array of format strings (e.g., [\"svg\", \"png\"])");
+          }
         }
       }
     }
