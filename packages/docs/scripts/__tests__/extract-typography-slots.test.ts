@@ -41,7 +41,7 @@ describe("extractTypographySlots (VI-356)", () => {
     });
   });
 
-  it("emits the Blacklight Underground shape — heading/display/body, two weights for the loaded slots", () => {
+  it("emits the Blacklight Pro shape — heading/display/body, two weights for the loaded slots", () => {
     const config = {
       typography: {
         display: { family: "PP Model Plastic", weight: 500, weights: [500] },

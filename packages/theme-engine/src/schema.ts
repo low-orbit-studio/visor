@@ -48,7 +48,7 @@ const KNOWN_RADIUS_KEYS = new Set(["sm", "md", "lg", "xl", "pill"]);
 const KNOWN_SHADOW_KEYS = new Set(["xs", "sm", "md", "lg", "xl"]);
 const KNOWN_STROKE_WIDTH_KEYS = new Set(["thin", "regular", "medium", "thick"]);
 // VI-451 (drive-by): allow `easing-overshoot` as a tier-2 motion field for
-// themes that opt into bouncy entrances (e.g. blacklight-underground marker
+// themes that opt into bouncy entrances (e.g. marker
 // pops). Engine emits `--motion-easing-overshoot` when present; absent themes
 // fall through to the existing `--motion-easing-spring` default. The CLI
 // design-check rule still flags bouncy easings in component CSS — this is

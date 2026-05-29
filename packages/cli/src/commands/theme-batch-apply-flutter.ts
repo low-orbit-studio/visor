@@ -69,7 +69,7 @@ function scanThemeDir(dir: string): string[] {
 
 /** kebab-case slug → lowerCamelCase Dart getter name.
  *  "modern-minimal" → "modernMinimal"
- *  "blacklight-underground" → "blacklightUnderground"
+ *  "blacklight-pro" → "blacklightPro"
  *  "reference-app" → "referenceApp"
  */
 function slugToCamel(slug: string): string {
@@ -150,7 +150,7 @@ function emitAnalysisOptions(): string {
 /**
  * Dart-safe snake_case prefix alias for import `as` clause.
  * "modern-minimal" → "modern_minimal_t"
- * "blacklight-underground" → "blacklight_underground_t"
+ * "blacklight-pro" → "blacklight_pro_t"
  * Suffix "_t" ensures no collision with class/variable names.
  */
 function slugToDartPrefix(slug: string): string {
