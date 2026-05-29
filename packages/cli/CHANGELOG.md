@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.3
+
+### Patch Changes
+
+- Updated dependencies [fe490fd]
+- Updated dependencies [c7a06c2]
+  - @loworbitstudio/visor-theme-engine@0.12.0
+
 ## 1.3.2
 
 ### Patch Changes
