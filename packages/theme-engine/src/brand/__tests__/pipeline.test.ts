@@ -9,8 +9,8 @@ describe("resolveThemeBrand — defaults (D3)", () => {
     const variantNames = result.variants.map((v) => v.variant);
     expect(variantNames).toEqual(["logo", "brandmark", "wordmark", "monochrome", "favicon"]);
     const logo = result.variants.find((v) => v.variant === "logo")!;
-    expect(logo.light).toBe(`${VISOR_DEFAULT_BRAND_PATH}/logo.svg`);
-    expect(logo.dark).toBe(`${VISOR_DEFAULT_BRAND_PATH}/logo-dark.svg`);
+    expect(logo.light).toBe(`${VISOR_DEFAULT_BRAND_PATH}/visor-logo-light.svg`);
+    expect(logo.dark).toBe(`${VISOR_DEFAULT_BRAND_PATH}/visor-logo-dark.svg`);
   });
 
   it("emits no custom variants by default", () => {

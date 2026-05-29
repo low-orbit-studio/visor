@@ -100,12 +100,12 @@ describe("docsAdapter", () => {
     it("emits the Visor default brand vars for a theme with no brand block (D3)", () => {
       const css = docsAdapter(makeInput(MINIMAL_YAML));
       // Mode-scoped logo var + forced-mode aliases, scoped to the theme class.
-      expect(css).toContain('--brand-logo: url("/themes/visor/brand/logo.svg");');
-      expect(css).toContain('--brand-logo-light: url("/themes/visor/brand/logo.svg");');
-      expect(css).toContain('--brand-logo-dark: url("/themes/visor/brand/logo-dark.svg");');
+      expect(css).toContain('--brand-logo: url("/themes/visor/brand/visor-logo-light.svg");');
+      expect(css).toContain('--brand-logo-light: url("/themes/visor/brand/visor-logo-light.svg");');
+      expect(css).toContain('--brand-logo-dark: url("/themes/visor/brand/visor-logo-dark.svg");');
       // Tokenized clear-space + aspect ratio (Q6).
       expect(css).toContain("--brand-logo-clear-space: 0.5rem;");
-      expect(css).toContain("--brand-logo-aspect-ratio: 3 / 1;");
+      expect(css).toContain("--brand-logo-aspect-ratio: 1269.97 / 540;");
     });
 
     it("keeps @import statements outside the @layer block (CSS spec)", () => {

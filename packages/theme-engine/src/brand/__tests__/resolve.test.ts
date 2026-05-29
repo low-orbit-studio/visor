@@ -117,12 +117,12 @@ describe("DEFAULT_VISOR_BRAND", () => {
   it("is a local-source brand pointing at the canonical public/ path", () => {
     expect(DEFAULT_VISOR_BRAND.source).toBe("local");
     expect(DEFAULT_VISOR_BRAND.org).toBe("low-orbit-studio");
-    expect(DEFAULT_VISOR_BRAND.logo?.light).toBe(`${VISOR_DEFAULT_BRAND_PATH}/logo.svg`);
-    expect(DEFAULT_VISOR_BRAND.logo?.dark).toBe(`${VISOR_DEFAULT_BRAND_PATH}/logo-dark.svg`);
+    expect(DEFAULT_VISOR_BRAND.logo?.light).toBe(`${VISOR_DEFAULT_BRAND_PATH}/visor-logo-light.svg`);
+    expect(DEFAULT_VISOR_BRAND.logo?.dark).toBe(`${VISOR_DEFAULT_BRAND_PATH}/visor-logo-dark.svg`);
   });
 
   it("pins clearSpace + aspectRatio on the standard lockups (Q6)", () => {
-    expect(DEFAULT_VISOR_BRAND.logo?.aspectRatio).toBe("3 / 1");
+    expect(DEFAULT_VISOR_BRAND.logo?.aspectRatio).toBe("1269.97 / 540");
     expect(DEFAULT_VISOR_BRAND.logo?.clearSpace).toBe("0.5rem");
     expect(DEFAULT_VISOR_BRAND.brandmark?.aspectRatio).toBe("1 / 1");
   });
