@@ -107,7 +107,7 @@ describe("resolveConfig — brand defaults", () => {
   it("fills the Visor default brand when brand is omitted (D3)", () => {
     const resolved = resolveConfig(base);
     expect(resolved.brand).toEqual(DEFAULT_VISOR_BRAND);
-    expect(resolved.brand.logo?.light).toBe(`${VISOR_DEFAULT_BRAND_PATH}/logo.svg`);
+    expect(resolved.brand.logo?.light).toBe(`${VISOR_DEFAULT_BRAND_PATH}/visor-logo-light.svg`);
   });
 
   it("merges a partial brand over the default per-slot", () => {

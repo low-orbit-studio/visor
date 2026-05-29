@@ -45,40 +45,45 @@ export const DEFAULT_VISOR_BRAND: VisorBrand = {
   logo: {
     slug: "visor",
     formats: ["svg"],
-    light: `${VISOR_DEFAULT_BRAND_PATH}/logo.svg`,
-    dark: `${VISOR_DEFAULT_BRAND_PATH}/logo-dark.svg`,
-    aspectRatio: "3 / 1",
+    light: `${VISOR_DEFAULT_BRAND_PATH}/visor-logo-light.svg`,
+    dark: `${VISOR_DEFAULT_BRAND_PATH}/visor-logo-dark.svg`,
+    // Aspect ratios are the real SVG viewBoxes from the VI-469 asset set.
+    aspectRatio: "1269.97 / 540",
     clearSpace: "0.5rem",
   },
   brandmark: {
     slug: "visor",
     formats: ["svg"],
-    light: `${VISOR_DEFAULT_BRAND_PATH}/brandmark.svg`,
-    dark: `${VISOR_DEFAULT_BRAND_PATH}/brandmark-dark.svg`,
+    // Single-file mark — same asset on light and dark surfaces.
+    light: `${VISOR_DEFAULT_BRAND_PATH}/visor-brandmark.svg`,
+    dark: `${VISOR_DEFAULT_BRAND_PATH}/visor-brandmark.svg`,
     aspectRatio: "1 / 1",
     clearSpace: "0.25rem",
   },
   wordmark: {
     slug: "visor",
     formats: ["svg"],
-    light: `${VISOR_DEFAULT_BRAND_PATH}/wordmark.svg`,
-    dark: `${VISOR_DEFAULT_BRAND_PATH}/wordmark-dark.svg`,
-    aspectRatio: "4 / 1",
+    light: `${VISOR_DEFAULT_BRAND_PATH}/visor-wordmark-light.svg`,
+    dark: `${VISOR_DEFAULT_BRAND_PATH}/visor-wordmark-dark.svg`,
+    aspectRatio: "1100 / 316",
     clearSpace: "0.5rem",
   },
   monochrome: {
     slug: "visor",
     formats: ["svg"],
-    light: `${VISOR_DEFAULT_BRAND_PATH}/monochrome.svg`,
-    dark: `${VISOR_DEFAULT_BRAND_PATH}/monochrome.svg`,
-    aspectRatio: "1 / 1",
+    // Single-file mark, tinted via mask-image + currentColor.
+    light: `${VISOR_DEFAULT_BRAND_PATH}/visor-monochrome.svg`,
+    dark: `${VISOR_DEFAULT_BRAND_PATH}/visor-monochrome.svg`,
+    aspectRatio: "2210 / 636",
     clearSpace: "0.25rem",
   },
   favicon: {
     slug: "visor",
     formats: ["svg", "png"],
-    light: `${VISOR_DEFAULT_BRAND_PATH}/favicon.svg`,
-    dark: `${VISOR_DEFAULT_BRAND_PATH}/favicon.svg`,
+    // The Visor symbol (brandmark) doubles as the favicon source; Phase 2's
+    // build step generates the sized .ico/.png set from it (§4.D).
+    light: `${VISOR_DEFAULT_BRAND_PATH}/visor-favicon.svg`,
+    dark: `${VISOR_DEFAULT_BRAND_PATH}/visor-favicon.svg`,
     aspectRatio: "1 / 1",
   },
 };
