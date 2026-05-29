@@ -3,10 +3,10 @@
 import { ColorSwatch } from "@/components/ui/color-swatch";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import sectionStyles from "./section.module.css";
-import styles from "./overlays.module.css";
+import styles from "./alpha-overlays.module.css";
 
 /*
- * Overlays — applied demos of the BL-193 alpha-overlay tokens.
+ * Alpha Overlays — applied demos of the BL-193 alpha-overlay tokens.
  *
  * Swatches show a token's value; these demos show the token doing its job and
  * re-resolving on theme switch. Treatments follow the operator-approved VI-466
@@ -41,7 +41,7 @@ const STATUS_ROWS: Array<{
   { booking: "Double-booked", status: "Conflict", rowClass: styles.statusRowError, textClass: styles.statusErrorText },
 ];
 
-export function OverlaysSection() {
+export function AlphaOverlaysSection() {
   return (
     <div className={sectionStyles.root}>
       <p className={sectionStyles.lede}>

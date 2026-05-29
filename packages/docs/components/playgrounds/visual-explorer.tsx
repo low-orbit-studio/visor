@@ -55,7 +55,15 @@ export function VisualExplorer() {
     const initialSection = getStoredSection();
     const initialTheme = getStoredTheme();
     const initialMode = getStoredMode();
-    setSectionId(initialSection);
+    // Resolve through findSection so stale localStorage ids (e.g. pre-VI-482 "overlay"/"overlays")
+    // map back to a real section — otherwise the Select trigger renders empty for unknown values.
+    const resolvedSection = findSection(initialSection).id;
+    setSectionId(resolvedSection);
+    if (resolvedSection !== initialSection) {
+      try {
+        localStorage.setItem(SECTION_STORAGE_KEY, resolvedSection);
+      } catch {}
+    }
     setTheme(initialTheme);
     setMode(initialMode);
     applyTheme(initialTheme);
