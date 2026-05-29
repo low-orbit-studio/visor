@@ -5,6 +5,7 @@ import { FeedbackSection } from "./feedback";
 import { FormSection } from "./form";
 import { NavigationSection } from "./navigation";
 import { OverlaySection } from "./overlay";
+import { OverlaysSection } from "./overlays";
 import { DataDisplaySection } from "./data-display";
 import { TypographySection } from "./typography";
 import { GeneralSection } from "./general";
@@ -24,6 +25,7 @@ export const SECTIONS: Section[] = [
   { id: "form", label: "Form", Component: FormSection },
   { id: "navigation", label: "Navigation", Component: NavigationSection },
   { id: "overlay", label: "Overlay", Component: OverlaySection },
+  { id: "overlays", label: "Overlays", Component: OverlaysSection },
   { id: "data-display", label: "Data Display", Component: DataDisplaySection },
   { id: "typography", label: "Typography", Component: TypographySection },
   { id: "general", label: "General", Component: GeneralSection },
