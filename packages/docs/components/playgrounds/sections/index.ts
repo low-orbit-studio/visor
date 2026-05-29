@@ -7,6 +7,7 @@ import { OverlaySection } from "./overlay";
 import { DataDisplaySection } from "./data-display";
 import { TypographySection } from "./typography";
 import { GeneralSection } from "./general";
+import { MotionSection } from "./motion";
 import { VisualElementsSection } from "./visual-elements";
 
 export interface Section {
@@ -24,6 +25,7 @@ export const SECTIONS: Section[] = [
   { id: "data-display", label: "Data Display", Component: DataDisplaySection },
   { id: "typography", label: "Typography", Component: TypographySection },
   { id: "general", label: "General", Component: GeneralSection },
+  { id: "motion", label: "Motion", Component: MotionSection },
   { id: "visual-elements", label: "Visual Elements", Component: VisualElementsSection },
 ];
 
