@@ -10,6 +10,10 @@
   background-color: var(--surface-interactive-default, #f9fafb);
   padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
   font-size: var(--font-size-sm, 0.875rem);
+  /* Match Input's line-height so the trigger's height tracks the text field at
+     the same size. Without this the trigger inherited line-height 2.0, rendering
+     ~7px taller than a same-size Input. */
+  line-height: 1.5;
   white-space: nowrap;
   color: var(--text-primary, #111827);
   transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
