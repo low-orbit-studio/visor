@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Sun, Moon, Palette, SquaresFour } from "@phosphor-icons/react";
+import { Sun, Moon, Palette, SquaresFour, ArrowsOut } from "@phosphor-icons/react";
 import {
   Select,
   SelectTrigger,
@@ -14,7 +14,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/toast";
 import {
+  FullscreenOverlay,
+  FullscreenOverlayContent,
+} from "@/components/ui/fullscreen-overlay";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   THEME_GROUPS,
+  ALL_THEMES,
   applyTheme,
   applyMode,
   getStoredTheme,
@@ -22,6 +33,7 @@ import {
   type ColorMode,
 } from "@/lib/theme-config";
 import { SECTIONS, DEFAULT_SECTION_ID, findSection } from "./sections";
+import { DualPaneView } from "./visual-explorer-pane";
 import styles from "./visual-explorer.module.css";
 
 const SECTION_STORAGE_KEY = "visor-explorer-section";
@@ -45,11 +57,45 @@ function getStoredMode(): ColorMode {
   return document.documentElement.classList.contains("light") ? "light" : "dark";
 }
 
+/** The theme to seed the second pane with — the next theme in the list, so the
+ *  dual-pane opens on an actual cross-theme comparison rather than two identical sides. */
+function nextThemeAfter(theme: string): string {
+  if (ALL_THEMES.length < 2) return theme;
+  const idx = ALL_THEMES.indexOf(theme);
+  return ALL_THEMES[(idx + 1) % ALL_THEMES.length] ?? theme;
+}
+
+/** Track whether the viewport is below the dual-pane comfort width (D7). SSR/first
+ *  render reports false; jsdom (no matchMedia) stays false. Updates live on resize. */
+function useIsNarrow(maxWidth = 1200): boolean {
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const mq = window.matchMedia(`(max-width: ${maxWidth}px)`);
+    const update = () => setNarrow(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, [maxWidth]);
+  return narrow;
+}
+
 export function VisualExplorer() {
   const [sectionId, setSectionId] = useState<string>(DEFAULT_SECTION_ID);
   const [theme, setTheme] = useState<string>("blackout");
   const [mode, setMode] = useState<ColorMode>("dark");
   const [hydrated, setHydrated] = useState(false);
+
+  // Dual-pane fullscreen state. The module is shared across both panes; only the
+  // theme is per-pane (D2), so the comparison is always the same section under two
+  // themes. State is ephemeral (no localStorage — out of scope) and re-seeded from
+  // the single-pane state each time fullscreen opens, so exiting leaves the single
+  // pane untouched (D5).
+  const [fullscreen, setFullscreen] = useState(false);
+  const [syncScroll, setSyncScroll] = useState(true);
+  const [dualSectionId, setDualSectionId] = useState<string>(DEFAULT_SECTION_ID);
+  const [paneThemes, setPaneThemes] = useState<[string, string]>(["blackout", "blackout"]);
+  const isNarrow = useIsNarrow();
 
   useEffect(() => {
     const initialSection = getStoredSection();
@@ -107,6 +153,21 @@ export function VisualExplorer() {
     } catch {}
   }, [mode]);
 
+  const openFullscreen = useCallback(() => {
+    // Seed the shared module from the current single-pane section; seed the left
+    // pane on the current theme and the right on the next theme, so the comparison
+    // opens on two different themes (the primary use case).
+    setDualSectionId(sectionId);
+    setPaneThemes([theme, nextThemeAfter(theme)]);
+    setFullscreen(true);
+  }, [sectionId, theme]);
+
+  const handlePaneTheme = useCallback((index: 0 | 1, value: string) => {
+    setPaneThemes((prev) => (index === 0 ? [value, prev[1]] : [prev[0], value]));
+  }, []);
+
+  const toggleSyncScroll = useCallback(() => setSyncScroll((prev) => !prev), []);
+
   const section = findSection(sectionId);
   const SectionComponent = section.Component;
 
@@ -150,6 +211,26 @@ export function VisualExplorer() {
           </Select>
         </div>
 
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={openFullscreen}
+                aria-label="Open dual-pane compare"
+                className={styles.fullscreenButton}
+              >
+                <ArrowsOut size={16} weight="duotone" />
+                <span>Compare</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {isNarrow ? "Best on widescreen" : "Compare two themes side by side"}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
         <Button
           variant="outline"
           size="sm"
@@ -172,6 +253,21 @@ export function VisualExplorer() {
       <div className={styles.canvas}>
         <SectionComponent />
       </div>
+
+      <FullscreenOverlay open={fullscreen} onOpenChange={setFullscreen}>
+        <FullscreenOverlayContent fullbleed>
+          <DualPaneView
+            sectionId={dualSectionId}
+            themes={paneThemes}
+            mode={mode}
+            syncScroll={syncScroll}
+            onSectionChange={setDualSectionId}
+            onThemeChange={handlePaneTheme}
+            onToggleMode={toggleMode}
+            onToggleSyncScroll={toggleSyncScroll}
+          />
+        </FullscreenOverlayContent>
+      </FullscreenOverlay>
 
       <Toaster />
     </div>
