@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.4
+
+### Patch Changes
+
+- 0772700: Select: the trigger height now matches a same-size Input. The trigger was inheriting `line-height: 2.0`, rendering the dropdown ~7px taller than text fields across every theme; it now pins `line-height: 1.5` to track the field height.
+- Updated dependencies [4d5de2d]
+  - @loworbitstudio/visor-theme-engine@0.13.0
+
 ## 1.3.3
 
 ### Patch Changes
