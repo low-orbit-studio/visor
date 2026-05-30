@@ -64,6 +64,19 @@ describe("DualPaneView", () => {
       .forEach((el) => {
         el.replaceChildren();
       });
+    // Radix selects embed React useId values (e.g. aria-controls="radix-_r_3r_")
+    // whose counter depends on prior renders in the test worker — so they differ
+    // between a local run and CI's sharded run. Normalize the id-bearing attributes
+    // so the snapshot captures structure, not environment-specific ids.
+    for (const attr of [
+      "id",
+      "aria-controls",
+      "aria-labelledby",
+      "aria-describedby",
+      "aria-activedescendant",
+    ]) {
+      container.querySelectorAll(`[${attr}]`).forEach((el) => el.setAttribute(attr, "[id]"));
+    }
     expect(container.firstChild).toMatchSnapshot();
   });
 

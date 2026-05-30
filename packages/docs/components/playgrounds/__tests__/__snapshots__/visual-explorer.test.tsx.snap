@@ -28,7 +28,7 @@ exports[`DualPaneView > matches the dual-pane chrome snapshot 1`] = `
       </svg>
       <button
         aria-autocomplete="none"
-        aria-controls="radix-_r_3r_"
+        aria-controls="[id]"
         aria-expanded="false"
         aria-label="Comparison module (both panes)"
         class="trigger triggerSizeSm select"
@@ -143,7 +143,7 @@ exports[`DualPaneView > matches the dual-pane chrome snapshot 1`] = `
           </svg>
           <button
             aria-autocomplete="none"
-            aria-controls="radix-_r_3s_"
+            aria-controls="[id]"
             aria-expanded="false"
             aria-label="Left pane theme"
             class="trigger triggerSizeSm select"
@@ -223,7 +223,7 @@ exports[`DualPaneView > matches the dual-pane chrome snapshot 1`] = `
           </svg>
           <button
             aria-autocomplete="none"
-            aria-controls="radix-_r_3t_"
+            aria-controls="[id]"
             aria-expanded="false"
             aria-label="Right pane theme"
             class="trigger triggerSizeSm select"
