@@ -1,6 +1,18 @@
 import { render, screen, fireEvent, within } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
+
+// Partial-mock theme-config so individual tests can drive `resolveBrand`'s
+// return value. The default is a passthrough to the real resolver, so the
+// existing suite below (which relies on the Visor default brand) is unaffected.
+vi.mock("@/lib/theme-config", async (importOriginal) => {
+  const actual = (await importOriginal()) as typeof import("@/lib/theme-config");
+  return { ...actual, resolveBrand: vi.fn(actual.resolveBrand) };
+});
+
 import { BrandSection } from "../brand";
+import { resolveBrand, VISOR_DEFAULT_BRAND } from "@/lib/theme-config";
+
+const mockedResolveBrand = vi.mocked(resolveBrand);
 
 describe("BrandSection", () => {
   it("renders all four brand variants by default", () => {
@@ -54,5 +66,29 @@ describe("BrandSection", () => {
     const brandmark = container.querySelector('[data-variant="brandmark"]') as HTMLElement;
     const img = within(brandmark).getAllByRole("img")[0] as HTMLImageElement;
     expect(img.getAttribute("src")).toContain("/themes/visor/brand/visor-");
+  });
+});
+
+describe("BrandSection — animated slot (VI-488)", () => {
+  it("renders the animated variant via <img> when the theme declares one", () => {
+    mockedResolveBrand.mockReturnValue({
+      ...VISOR_DEFAULT_BRAND,
+      animated: {
+        light: "/themes/test/brand/animated-light.svg",
+        dark: "/themes/test/brand/animated-dark.svg",
+      },
+    });
+    const { container } = render(<BrandSection />);
+    const section = container.querySelector('[data-variant="animated"]');
+    expect(section).not.toBeNull();
+    const img = section?.querySelector("img") as HTMLImageElement;
+    expect(img).not.toBeNull();
+    expect(img.getAttribute("src")).toContain("animated-light.svg");
+  });
+
+  it("omits the animated variant when the theme declares none (optional, D2)", () => {
+    mockedResolveBrand.mockReturnValue(VISOR_DEFAULT_BRAND);
+    const { container } = render(<BrandSection />);
+    expect(container.querySelector('[data-variant="animated"]')).toBeNull();
   });
 });

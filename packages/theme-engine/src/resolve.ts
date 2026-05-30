@@ -80,6 +80,9 @@ function resolveBrand(brand: VisorThemeConfig["brand"]): VisorBrand {
     wordmark: brand.wordmark ?? DEFAULT_VISOR_BRAND.wordmark,
     monochrome: brand.monochrome ?? DEFAULT_VISOR_BRAND.monochrome,
     favicon: brand.favicon ?? DEFAULT_VISOR_BRAND.favicon,
+    // animated is optional with no Visor default (D2): pass through only when a
+    // theme declares it, so undeclared themes emit no --brand-animated.
+    ...(brand.animated && { animated: brand.animated }),
     ...(brand.custom && { custom: brand.custom }),
   };
 }

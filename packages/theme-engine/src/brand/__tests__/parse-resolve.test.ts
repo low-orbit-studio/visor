@@ -93,6 +93,42 @@ describe("validateConfig — brand block", () => {
     expect(result.errors.some((e) => e.includes("formats"))).toBe(true);
   });
 
+  it("accepts an SVG-only animated slot (VI-488)", () => {
+    const result = validateConfig({
+      ...base,
+      brand: {
+        source: "local",
+        animated: { slug: "x", formats: ["svg"], light: "/a.svg", dark: "/a-dark.svg" },
+      },
+    });
+    expect(result.valid).toBe(true);
+    expect(result.errors).toEqual([]);
+  });
+
+  it("rejects a non-SVG animated format (SVG-only, D3)", () => {
+    const result = validateConfig({
+      ...base,
+      brand: {
+        source: "local",
+        animated: { slug: "x", formats: ["png"], light: "/a.png", dark: "/a.png" },
+      },
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.includes("brand.animated"))).toBe(true);
+  });
+
+  it("rejects a non-.svg animated path (SVG-only, D3)", () => {
+    const result = validateConfig({
+      ...base,
+      brand: {
+        source: "local",
+        animated: { slug: "x", light: "/a.png", dark: "/a.svg" },
+      },
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.includes("brand.animated.light"))).toBe(true);
+  });
+
   it("validates custom slots", () => {
     const result = validateConfig({
       ...base,

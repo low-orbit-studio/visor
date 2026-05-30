@@ -59,9 +59,9 @@ const KNOWN_OVERRIDES_KEYS = new Set(["light", "dark"]);
 // VI-470: brand block. Shared org/source/cdn-overrides defaults plus the
 // standard variant slots and an optional `custom` map of operator-defined slots.
 const KNOWN_BRAND_KEYS = new Set([
-  "org", "source", "cdn-overrides", "logo", "brandmark", "wordmark", "monochrome", "favicon", "custom",
+  "org", "source", "cdn-overrides", "logo", "brandmark", "wordmark", "monochrome", "favicon", "animated", "custom",
 ]);
-const KNOWN_BRAND_STANDARD_SLOTS = ["logo", "brandmark", "wordmark", "monochrome", "favicon"] as const;
+const KNOWN_BRAND_STANDARD_SLOTS = ["logo", "brandmark", "wordmark", "monochrome", "favicon", "animated"] as const;
 const KNOWN_BRAND_SLOT_KEYS = new Set(["slug", "formats", "light", "dark", "clearSpace", "aspectRatio"]);
 const KNOWN_BRAND_SOURCES = new Set(["visor-brands", "local"]);
 const KNOWN_BRAND_CDN_OVERRIDE_KEYS = new Set(["visor-brands"]);
@@ -483,6 +483,26 @@ export function validateConfig(config: unknown): ValidationResult {
         if (slot.formats !== undefined) {
           if (!Array.isArray(slot.formats) || !(slot.formats as unknown[]).every((f) => typeof f === "string")) {
             errors.push("'brand.<slot>.formats' must be an array of format strings (e.g., [\"svg\", \"png\"])");
+          }
+        }
+      }
+      // animated is SVG-only (D3): an animated brand asset must be a
+      // self-contained animated SVG — it animates inside <img>, which raster
+      // formats cannot do. Reject any non-svg format or explicit non-.svg path.
+      if (typeof brand.animated === "object" && brand.animated !== null) {
+        const animated = brand.animated as Record<string, unknown>;
+        if (
+          Array.isArray(animated.formats) &&
+          !(animated.formats as unknown[]).every(
+            (f) => typeof f === "string" && f.toLowerCase() === "svg",
+          )
+        ) {
+          errors.push("'brand.animated.formats' must be SVG-only (the animated slot accepts self-contained animated SVGs only)");
+        }
+        for (const mode of ["light", "dark"] as const) {
+          const p = animated[mode];
+          if (typeof p === "string" && !p.toLowerCase().endsWith(".svg")) {
+            errors.push(`'brand.animated.${mode}' must be an .svg path (the animated slot is SVG-only)`);
           }
         }
       }

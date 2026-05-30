@@ -139,3 +139,36 @@ describe("resolveThemeBrand — warnings", () => {
     expect(result.warnings).toEqual([]);
   });
 });
+
+describe("resolveThemeBrand — animated slot (VI-488)", () => {
+  it("emits --brand-animated + forced-mode aliases when declared", () => {
+    const brand: VisorBrand = {
+      source: "local",
+      animated: {
+        slug: "blacklight",
+        formats: ["svg"],
+        light: "/themes/blacklight/brand/animated.svg",
+        dark: "/themes/blacklight/brand/animated-dark.svg",
+      },
+    };
+    const result = resolveThemeBrand(brand, { scope: ".blacklight-theme" });
+    expect(result.variants.map((v) => v.variant)).toContain("animated");
+    expect(result.css).toContain('--brand-animated: url("/themes/blacklight/brand/animated.svg");');
+    expect(result.css).toContain('--brand-animated-light: url("/themes/blacklight/brand/animated.svg");');
+    expect(result.css).toContain('--brand-animated-dark: url("/themes/blacklight/brand/animated-dark.svg");');
+  });
+
+  it("emits no --brand-animated when the theme omits it (optional, D2)", () => {
+    const brand: VisorBrand = {
+      source: "local",
+      logo: { slug: "x", light: "/themes/x/brand/logo.svg", dark: "/themes/x/brand/logo-dark.svg" },
+    };
+    const result = resolveThemeBrand(brand, { scope: ".x-theme" });
+    expect(result.css).not.toContain("--brand-animated");
+  });
+
+  it("does not add animated to the Visor default brand (D2)", () => {
+    const result = resolveThemeBrand(undefined);
+    expect(result.variants.map((v) => v.variant)).not.toContain("animated");
+  });
+});

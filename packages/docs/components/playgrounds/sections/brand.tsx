@@ -11,9 +11,9 @@ import {
 } from "@/lib/theme-config";
 import styles from "./brand.module.css";
 
-type VariantKey = "logo" | "brandmark" | "wordmark" | "monochrome";
+type VariantKey = "logo" | "brandmark" | "wordmark" | "monochrome" | "animated";
 
-const VARIANTS: Array<{ key: VariantKey; label: string }> = [
+const BASE_VARIANTS: Array<{ key: VariantKey; label: string }> = [
   { key: "logo", label: "Logo" },
   { key: "brandmark", label: "Brandmark" },
   { key: "wordmark", label: "Wordmark" },
@@ -42,16 +42,37 @@ function useActiveTheme(): string {
   return theme;
 }
 
+/** Track `prefers-reduced-motion` so the animated mark falls back to a static frame (D4). */
+function useReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  return reduced;
+}
+
 export function BrandSection() {
   const theme = useActiveTheme();
+  const reducedMotion = useReducedMotion();
   const brand = resolveBrand(theme);
   const themeLabel = findThemeEntry(theme)?.label ?? theme;
+
+  // The animated slot is optional — only surface it when the active theme
+  // declares one (D2). Stock themes render the four standard variants.
+  const variants: Array<{ key: VariantKey; label: string }> = brand.animated
+    ? [...BASE_VARIANTS, { key: "animated", label: "Animated" }]
+    : BASE_VARIANTS;
 
   const [enabled, setEnabled] = useState<Record<VariantKey, boolean>>({
     logo: true,
     brandmark: true,
     wordmark: true,
     monochrome: true,
+    animated: true,
   });
 
   const toggle = (key: VariantKey) =>
@@ -65,7 +86,7 @@ export function BrandSection() {
       </p>
 
       <div className={styles.toggleRow} role="group" aria-label="Toggle brand variants">
-        {VARIANTS.map((v) => (
+        {variants.map((v) => (
           <Button
             key={v.key}
             variant={enabled[v.key] ? "default" : "outline"}
@@ -78,7 +99,7 @@ export function BrandSection() {
         ))}
       </div>
 
-      {VARIANTS.filter((v) => enabled[v.key]).map((v) => (
+      {variants.filter((v) => enabled[v.key]).map((v) => (
         <section key={v.key} className={styles.variant} data-slot="brand-variant" data-variant={v.key}>
           <h3 className={styles.variantHeading}>{v.label}</h3>
 
@@ -105,7 +126,11 @@ export function BrandSection() {
           ) : (
             <div className={styles.surfaceRow}>
               {(["light", "dark"] as const).map((ground) => {
-                const asset = brand[v.key] as BrandVariantAsset;
+                // Animated falls back to the static logo under reduced motion (D4).
+                const asset =
+                  v.key === "animated" && reducedMotion
+                    ? brand.logo
+                    : (brand[v.key] as BrandVariantAsset);
                 return (
                   <div
                     key={ground}

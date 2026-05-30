@@ -253,6 +253,7 @@
         "wordmark": { "$ref": "#/$defs/brandSlot" },
         "monochrome": { "$ref": "#/$defs/brandSlot" },
         "favicon": { "$ref": "#/$defs/brandSlot" },
+        "animated": { "$ref": "#/$defs/brandSlot" },
         "custom": {
           "type": "object",
           "description": "Operator-defined slots, addressed by key.",

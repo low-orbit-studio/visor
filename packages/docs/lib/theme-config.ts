@@ -21,6 +21,12 @@ export interface ThemeBrand {
   wordmark: BrandVariantAsset;
   /** Single-color mark, tinted via `mask-image` + `currentColor`. */
   monochrome: string;
+  /**
+   * Animated lockup (optional, SVG-only). Self-contained animated SVG rendered
+   * via `<img>` so it plays; omitted by stock themes. Reduced-motion consumers
+   * fall back to the static {@link ThemeBrand.logo}.
+   */
+  animated?: BrandVariantAsset;
 }
 
 export interface ThemeEntry {
