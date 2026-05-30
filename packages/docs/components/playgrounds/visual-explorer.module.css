@@ -73,3 +73,111 @@
     margin-left: 0;
   }
 }
+
+/* ── Dual-pane fullscreen (VI-486) ── */
+
+.fullscreenButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.dualPane {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.dualHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  flex: 0 0 auto;
+  padding: var(--spacing-3) var(--spacing-6);
+  /* Leave room for the overlay's absolutely-positioned close (X) at top-right. */
+  padding-right: var(--spacing-16);
+  background: var(--surface-page, transparent);
+  border-bottom: 1px solid var(--border-default, #e5e7eb);
+}
+
+.dualTitle {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+}
+
+.dualControls {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.dualControlButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.panes {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Each pane carries its own `${theme}-theme` class. These layout rules are
+   unlayered (CSS Module), so they win over the theme CSS's layered
+   `.{theme}-theme { min-height: 100vh }` — the pane sizes to the split, not the
+   viewport — while still inheriting the theme's surface/text tokens. */
+.pane {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 50%;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.pane + .pane {
+  border-left: 1px solid var(--border-default, #e5e7eb);
+}
+
+.paneToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-3);
+  flex: 0 0 auto;
+  padding: var(--spacing-3) var(--spacing-6);
+}
+
+/* The pane reuses the shared .sectionHeader, which carries no horizontal padding
+   (single-pane inherits it from the page gutters). Inset it here so the left
+   pane's meta and the right pane's title don't collide across the divider. */
+.pane .sectionHeader {
+  padding-left: var(--spacing-6);
+  padding-right: var(--spacing-6);
+}
+
+.paneCanvas {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--spacing-2) var(--spacing-6) var(--spacing-8);
+}
+
+/* D7: below the comfort width, stack the panes instead of splitting horizontally. */
+@media (max-width: 1200px) {
+  .panes {
+    flex-direction: column;
+  }
+
+  .pane + .pane {
+    border-left: none;
+    border-top: 1px solid var(--border-default, #e5e7eb);
+  }
+}
