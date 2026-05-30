@@ -220,8 +220,8 @@ typography:
 
 describe("formatFontCoverageError", () => {
   it("appends the engine + CLI version requirement when the failing slot is mono", () => {
-    const msg = formatFontCoverageError("blacklight-underground.visor.yaml", "--font-mono", "PP Model Mono");
-    expect(msg).toContain("blacklight-underground.visor.yaml");
+    const msg = formatFontCoverageError("blacklight-pro.visor.yaml", "--font-mono", "PP Model Mono");
+    expect(msg).toContain("blacklight-pro.visor.yaml");
     expect(msg).toContain("--font-mono");
     expect(msg).toContain("PP Model Mono");
     expect(msg).toContain("typography.mono.source");

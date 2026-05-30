@@ -108,9 +108,9 @@ void main() {
       expect(VisorThemes.blacklight.dark, isNotNull);
     });
 
-    test('blacklightUnderground is accessible', () {
-      expect(VisorThemes.blacklightUnderground.light, isNotNull);
-      expect(VisorThemes.blacklightUnderground.dark, isNotNull);
+    test('blacklightPro is accessible', () {
+      expect(VisorThemes.blacklightPro.light, isNotNull);
+      expect(VisorThemes.blacklightPro.dark, isNotNull);
     });
 
     test('entr is accessible', () {

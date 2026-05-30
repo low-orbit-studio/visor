@@ -15,7 +15,7 @@ import 'src/borderless/theme/visor_theme.dart' as borderless_t;
 import 'src/modern-minimal/theme/visor_theme.dart' as modern_minimal_t;
 import 'src/neutral/theme/visor_theme.dart' as neutral_t;
 import 'src/space/theme/visor_theme.dart' as space_t;
-import 'src/blacklight-underground/theme/visor_theme.dart' as blacklight_underground_t;
+import 'src/blacklight-pro/theme/visor_theme.dart' as blacklight_pro_t;
 import 'src/blacklight/theme/visor_theme.dart' as blacklight_t;
 import 'src/entr/theme/visor_theme.dart' as entr_t;
 import 'src/kaiah/theme/visor_theme.dart' as kaiah_t;
@@ -60,9 +60,9 @@ sealed class VisorThemes {
     light: space_t.VisorAppTheme.light,
     dark: space_t.VisorAppTheme.dark,
   );
-  static VisorThemePair get blacklightUnderground => VisorThemePair(
-    light: blacklight_underground_t.VisorAppTheme.light,
-    dark: blacklight_underground_t.VisorAppTheme.dark,
+  static VisorThemePair get blacklightPro => VisorThemePair(
+    light: blacklight_pro_t.VisorAppTheme.light,
+    dark: blacklight_pro_t.VisorAppTheme.dark,
   );
   static VisorThemePair get blacklight => VisorThemePair(
     light: blacklight_t.VisorAppTheme.light,

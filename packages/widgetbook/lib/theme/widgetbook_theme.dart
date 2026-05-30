@@ -30,8 +30,8 @@ final Map<String, _ThemeMeta> _allThemes = <String, _ThemeMeta>{
   'neutral': _ThemeMeta(VisorThemes.neutral, 'Neutral'),
   'space': _ThemeMeta(VisorThemes.space, 'Space'),
   'blacklight': _ThemeMeta(VisorThemes.blacklight, 'Blacklight'),
-  'blacklight-underground':
-      _ThemeMeta(VisorThemes.blacklightUnderground, 'Blacklight Underground'),
+  'blacklight-pro':
+      _ThemeMeta(VisorThemes.blacklightPro, 'Blacklight Pro'),
   'entr': _ThemeMeta(VisorThemes.entr, 'Entr'),
   'kaiah': _ThemeMeta(VisorThemes.kaiah, 'Kaiah'),
   'reference-app': _ThemeMeta(VisorThemes.referenceApp, 'Reference App'),
