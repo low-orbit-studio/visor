@@ -24,7 +24,8 @@ export type BrandVariant =
   | "brandmark"
   | "wordmark"
   | "monochrome"
-  | "favicon";
+  | "favicon"
+  | "animated";
 
 /** Ordered list of the standard brand variant slots. */
 export const BRAND_VARIANTS: readonly BrandVariant[] = [
@@ -33,6 +34,7 @@ export const BRAND_VARIANTS: readonly BrandVariant[] = [
   "wordmark",
   "monochrome",
   "favicon",
+  "animated",
 ];
 
 /**
@@ -80,6 +82,13 @@ export interface VisorBrand {
   monochrome?: BrandSlot;
   /** Favicon source. */
   favicon?: BrandSlot;
+  /**
+   * Animated lockup. Optional and SVG-only (D2/D3): the asset must be a
+   * self-contained animated SVG (inlined `<style>`/@keyframes or SMIL) so it
+   * animates inside `<img>`. Stock themes omit this — absent → no
+   * `--brand-animated` emitted. Reduced-motion consumers fall back to `logo`.
+   */
+  animated?: BrandSlot;
   /** Operator-defined slots, addressed by key. */
   custom?: Record<string, BrandSlot>;
 }
