@@ -1,0 +1,265 @@
+/*
+ * Showcase — a curated composite that exercises the design system's key
+ * components together as a cross-theme cohesion test (VI-487). Every color is
+ * driven by a live CSS custom property — no hardcoded values — so the whole
+ * composition re-resolves on theme/mode switch. The structural scaffold
+ * (root / group / groupHeading / row / stack / lede) is reused from
+ * `section.module.css`; this module holds only the showcase-specific layout and
+ * the alpha-overlay treatments, which mirror the operator-approved VI-466 spec
+ * already shipped in `alpha-overlays.module.css`.
+ *
+ * Structural fallbacks use Tailwind Gray per Token Rule #1; brand/alpha tokens
+ * stay bare (engine color-mix defaults) per the alpha-overlays precedent.
+ */
+
+/* ── §1 Hero — brand-anchored region on a recessed backdrop (D5) ───────────── */
+
+.hero {
+  padding: var(--spacing-6, 1.5rem);
+  background: var(--surface-subtle, #f9fafb);
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-lg, 0.75rem);
+}
+
+.heroCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-4, 1rem);
+  /* Card base supplies top/bottom padding; match it left/right so the inner
+     content inset equals the hero backdrop's own spacing-6 inset. */
+  padding-left: var(--spacing-6, 1.5rem);
+  padding-right: var(--spacing-6, 1.5rem);
+}
+
+.heroBody {
+  max-width: 52ch;
+}
+
+/* Brand-tinted interior element — soft wash + brand left edge inside the card. */
+.heroHighlight {
+  padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
+  background: var(--interactive-primary-soft);
+  box-shadow: inset 3px 0 0 var(--interactive-primary);
+  border-radius: var(--radius-md, 0.5rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #4b5563);
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+/* ── §2 Typography + link ─────────────────────────────────────────────────── */
+
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+  max-width: 60ch;
+}
+
+.link {
+  color: var(--text-link, var(--interactive-primary));
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: var(--stroke-width-thin, 1px);
+}
+
+.link:hover {
+  text-decoration-thickness: var(--stroke-width-regular, 2px);
+}
+
+/* ── §4 intensity-vs-soft badge pairs ─────────────────────────────────────── */
+
+.badgePair {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  border: 1px solid var(--border-muted, rgba(0, 0, 0, 0.06));
+  border-radius: var(--radius-md, 0.5rem);
+}
+
+.badgePairLabel {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-tertiary, #6b7280);
+}
+
+/* ── §5 Messaging — soft Alert + intensity Banner per status ───────────────── */
+
+.messaging {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-4, 1rem);
+}
+
+/* ── §6 Form preview (BL-227) ─────────────────────────────────────────────── */
+
+.formCard {
+  max-width: 480px;
+}
+
+/* Reset the native <fieldset> chrome — it lives inside a Card. */
+.formFieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-inline-size: 0;
+}
+
+/* Legend: left-align with the field labels (drop the component's horizontal
+   inset) and give it breathing room above the first field. The descendant
+   selector outranks the component's single-class `.legend` padding regardless
+   of stylesheet order. */
+.formFieldset legend {
+  padding-inline: 0;
+  margin: 0 0 var(--spacing-4, 1rem) 0;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 1rem);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+/* ── §7 Data table ────────────────────────────────────────────────────────── */
+
+.tableWrap {
+  max-width: 640px;
+}
+
+/* ── §8 Token accents (D6 — interactive-primary-soft / -glow / -strong, surface-*-soft) ── */
+
+.accents {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--spacing-5, 1.25rem);
+  align-items: start;
+}
+
+.accent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.accentLabel {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-tertiary, #6b7280);
+}
+
+/* §8a — interactive-primary-glow → marker dot + soft halo ring */
+.markerStage {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-6, 1.5rem);
+  padding: var(--spacing-4, 1rem) 0;
+}
+
+.marker {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--interactive-primary);
+  flex: none;
+}
+
+.markerHalo {
+  box-shadow: 0 0 0 6px var(--interactive-primary-glow);
+}
+
+/* §8b — interactive-primary-strong → segmented control, selected segment fill */
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--border-strong, #4d4d4d);
+  border-radius: var(--radius-md, 0.5rem);
+  overflow: hidden;
+}
+
+.segment {
+  padding: var(--spacing-2, 0.5rem) var(--spacing-4, 1rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  background: transparent;
+  color: var(--text-primary, #111827);
+  border: 0;
+  border-right: 1px solid var(--border-muted, rgba(0, 0, 0, 0.06));
+  cursor: default;
+}
+
+.segment:last-child {
+  border-right: 0;
+}
+
+.segmentStrong {
+  background: var(--interactive-primary-strong);
+  color: var(--interactive-primary-text, #000);
+  font-weight: 600;
+}
+
+/* §8c — interactive-primary-soft → soft active list row + brand left edge */
+.softList {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-md, 0.5rem);
+  overflow: hidden;
+}
+
+.softItem {
+  padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  border-bottom: 1px solid var(--border-muted, rgba(0, 0, 0, 0.06));
+}
+
+.softItem:last-child {
+  border-bottom: 0;
+}
+
+.softItemActive {
+  background: var(--interactive-primary-soft);
+  box-shadow: inset 3px 0 0 var(--interactive-primary);
+  font-weight: 600;
+}
+
+/* §8d — surface-*-soft → status-tinted rows */
+.statusSoftList {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-md, 0.5rem);
+  overflow: hidden;
+}
+
+.statusSoftRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3, 0.75rem);
+  padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+.statusSoftSuccess {
+  background: var(--surface-success-soft);
+  color: var(--text-success, var(--color-success-600, #15803d));
+}
+
+.statusSoftWarning {
+  background: var(--surface-warning-soft);
+  color: var(--text-warning, var(--color-warning-600, #b45309));
+}
+
+.statusSoftError {
+  background: var(--surface-error-soft);
+  color: var(--text-error, var(--color-error-600, #b91c1c));
+}

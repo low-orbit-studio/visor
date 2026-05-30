@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import { ShowcaseSection } from "./showcase";
 import { BrandSection } from "./brand";
 import { ColorSignalsSection } from "./color-signals";
 import { FeedbackSection } from "./feedback";
@@ -19,6 +20,7 @@ export interface Section {
 }
 
 export const SECTIONS: Section[] = [
+  { id: "showcase", label: "Showcase", Component: ShowcaseSection },
   { id: "brand", label: "Brand", Component: BrandSection },
   { id: "color-signals", label: "Color Signals", Component: ColorSignalsSection },
   { id: "feedback", label: "Feedback", Component: FeedbackSection },
