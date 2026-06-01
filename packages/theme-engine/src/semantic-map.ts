@@ -392,11 +392,14 @@ export const SEMANTIC_INTENT_MAP: Record<string, SemanticMapping> = {
     light: { role: "primary", shade: 500 },
     dark: { role: "primary", shade: 500 },
   },
-  // Text color paired with --primary backgrounds. Default white; themes whose
-  // primary fails AA on white pin to a graphite via overrides (entr does this).
+  // Single-source alias of --interactive-primary-text. Default white (same value
+  // as the interactive group); themes that need a different value (e.g. entr)
+  // override via overrides.{light,dark}["primary-text"] which replaces this alias
+  // with the explicit override value. Hand-authored static CSS (blackout-theme.css,
+  // neutral-theme.css) should consume --primary-text via this alias path.
   "primary-text": {
-    light: { constant: "#ffffff" },
-    dark: { constant: "#ffffff" },
+    light: { constant: "var(--interactive-primary-text)" },
+    dark: { constant: "var(--interactive-primary-text)" },
   },
   accent: {
     light: { role: "accent", shade: 500 },

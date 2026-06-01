@@ -11,13 +11,14 @@ import {
   SelectItem,
   SelectLabel,
 } from "@/components/ui/select";
-import { STOCK_GROUPS, applyTheme, THEME_STORAGE_KEY, type ThemeGroup } from "@/lib/theme-config";
+import { STOCK_GROUPS, applyTheme, applyMode, THEME_STORAGE_KEY, COLOR_MODE_STORAGE_KEY, type ThemeGroup } from "@/lib/theme-config";
 import type { PrivateThemeEntry } from "@/lib/private-themes";
 
 export interface SwitcherEntry {
   slug: string;
   label: string;
   group: string;
+  defaultMode?: "dark" | "light";
 }
 
 export function buildSwitcherEntries(
@@ -25,9 +26,15 @@ export function buildSwitcherEntries(
   themes: PrivateThemeEntry[],
 ): SwitcherEntry[] {
   const stockEntries = stockGroups.flatMap((g) =>
-    g.themes.map((t) => ({ slug: t.value, label: t.label, group: g.label })),
+    g.themes.map((t) => ({ slug: t.value, label: t.label, group: g.label, defaultMode: t.defaultMode })),
   );
-  return [...stockEntries, ...themes];
+  const privateEntries = themes.map((t) => ({
+    slug: t.slug,
+    label: t.label,
+    group: t.group,
+    defaultMode: t.defaultMode,
+  }));
+  return [...stockEntries, ...privateEntries];
 }
 
 export function PrivateThemeSwitcher({ themes }: { themes: PrivateThemeEntry[] }) {
@@ -50,12 +57,28 @@ export function PrivateThemeSwitcher({ themes }: { themes: PrivateThemeEntry[] }
     if (!next) return;
     setActive(next);
     applyTheme(next);
+    // applyTheme can't look up defaultMode for private themes (not in THEME_GROUPS).
+    // Apply it here when the user has no stored color mode preference.
+    const entry = merged.find((e) => e.slug === next);
+    if (entry?.defaultMode) {
+      let storedMode: string | null = null;
+      try { storedMode = localStorage.getItem(COLOR_MODE_STORAGE_KEY); } catch {}
+      if (!storedMode) applyMode(entry.defaultMode);
+    }
     // Only re-run when the candidate set or fallback changes.
   }, [merged, fallback]);
 
   function handleChange(value: string) {
     setActive(value);
     applyTheme(value);
+    // applyTheme can't look up defaultMode for private themes (not in THEME_GROUPS).
+    // Apply it here when the user has no stored color mode preference.
+    const entry = merged.find((e) => e.slug === value);
+    if (entry?.defaultMode) {
+      let storedMode: string | null = null;
+      try { storedMode = localStorage.getItem(COLOR_MODE_STORAGE_KEY); } catch {}
+      if (!storedMode) applyMode(entry.defaultMode);
+    }
   }
 
   const groups = groupEntries(merged);

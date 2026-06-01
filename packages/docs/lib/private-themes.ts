@@ -42,6 +42,13 @@ export interface PrivateThemeEntry {
    * `resolveBrand()` falls back to the shared Visor default.
    */
   brand?: ThemeBrand;
+  /**
+   * Default color mode for this theme. When set, the docs site forces this mode
+   * on theme switch (unless the user has a stored mode preference). Omitted →
+   * the current mode is preserved. Populated from `default-mode` in the theme
+   * YAML by `scripts/generate-private-themes.mjs`.
+   */
+  defaultMode?: "dark" | "light";
 }
 
 export { PRIVATE_THEMES } from "./private-themes.generated";
