@@ -56,6 +56,62 @@ function findToken(
 }
 
 /**
+ * Whether an override key maps to a recognized semantic/intent/hairline token.
+ * Mirrors `findToken` — kept as a thin wrapper so the passthrough collector and
+ * the override applier never drift on what counts as "recognized".
+ */
+function isRecognizedOverrideKey(key: string, tokens: SemanticTokens): boolean {
+  return findToken(key, tokens) !== null;
+}
+
+/** Pass-through brand tokens collected per mode (VI-493). */
+export interface BrandPassthrough {
+  light: Record<string, string>;
+  dark: Record<string, string>;
+}
+
+/**
+ * Collect unrecognized override keys into a brand-passthrough map (VI-493).
+ *
+ * Any `overrides.{light,dark}` key that does NOT map to a recognized semantic,
+ * intent, or hairline token is captured here verbatim (key + value). These were
+ * previously DROPPED silently by `applyOverrides`; the adapters now emit them as
+ * bare `--<key>` custom properties inside `@layer visor-brand`, ending the
+ * dual-source-of-truth between `.visor.yaml` and hand-maintained `:root` blocks.
+ *
+ * Recognized tokens are excluded — they continue to flow through the normal
+ * semantic pipeline. Pass-through tokens are legitimately mode-asymmetric (a key
+ * may appear in `light` only, `dark` only, or both); no both-modes rule applies.
+ */
+export function collectBrandPassthrough(
+  tokens: SemanticTokens,
+  overrides?: { light?: Record<string, string>; dark?: Record<string, string> },
+): BrandPassthrough {
+  const passthrough: BrandPassthrough = { light: {}, dark: {} };
+  if (!overrides) return passthrough;
+
+  for (const mode of ["light", "dark"] as const) {
+    const modeOverrides = overrides[mode];
+    if (!modeOverrides) continue;
+    for (const [key, value] of Object.entries(modeOverrides)) {
+      if (!isRecognizedOverrideKey(key, tokens)) {
+        passthrough[mode][key] = value;
+      }
+    }
+  }
+
+  return passthrough;
+}
+
+/** True when the passthrough map carries at least one token in either mode. */
+export function hasBrandPassthrough(passthrough: BrandPassthrough): boolean {
+  return (
+    Object.keys(passthrough.light).length > 0 ||
+    Object.keys(passthrough.dark).length > 0
+  );
+}
+
+/**
  * Apply override values to semantic tokens.
  * Returns a new SemanticTokens with overrides applied (does not mutate input).
  */

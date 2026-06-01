@@ -555,13 +555,15 @@ function checkOverrides(
         continue;
       }
 
-      // Warn on keys that don't match any known semantic token
+      // Inform on keys that don't match any known semantic token (VI-493).
+      // These are no longer dropped — they pass through to @layer visor-brand
+      // as bare `--${key}` custom properties (the brand-passthrough path).
       if (!KNOWN_SEMANTIC_TOKENS.has(key)) {
         issues.push(
           issue(
             "warning",
             "UNKNOWN_OVERRIDE_KEY",
-            `'overrides.${mode}.${key}' does not match any known semantic token. Valid tokens include: text-primary, surface-page, border-default, interactive-primary-bg, etc.`,
+            `'overrides.${mode}.${key}' does not match any known semantic token; it will be emitted as a bare '--${key}' custom property in @layer visor-brand (brand pass-through). If you meant to override a semantic token, valid tokens include: text-primary, surface-page, border-default, interactive-primary-bg, etc.`,
             `overrides.${mode}.${key}`
           )
         );

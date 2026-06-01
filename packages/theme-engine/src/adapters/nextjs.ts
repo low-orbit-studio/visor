@@ -17,6 +17,8 @@ import {
   generateDarkCss,
   header,
 } from "../generate-css.js";
+import { collectBrandPassthrough } from "../overrides.js";
+import { generateBrandPassthroughCss } from "./brand-passthrough.js";
 import { LAYER_ORDER, wrapInLayer } from "./layers.js";
 import type { AdapterInput, NextJSAdapterOptions } from "./types.js";
 
@@ -128,6 +130,26 @@ export function nextjsAdapter(
   );
   lines.push(wrapInLayer("visor-primitives", primitivesBody));
   lines.push("");
+
+  // 3b. Brand pass-through layer (VI-493) — unrecognized `overrides` keys emit
+  // as bare `--<key>` custom properties in @layer visor-brand. Light-mode keys
+  // attach to the host selector; dark-mode keys to the dark toggle selectors +
+  // prefers-color-scheme media query (mirrors generateDarkCss).
+  const passthrough = collectBrandPassthrough(input.tokens, input.config.overrides);
+  const darkSelectors = scopePrefix
+    ? [`${scopePrefix}.dark`, `${scopePrefix}.theme-dark`, `${scopePrefix}[data-theme="dark"]`]
+    : [".dark", ".theme-dark", '[data-theme="dark"]'];
+  const passthroughCss = generateBrandPassthroughCss(passthrough, {
+    light: scopePrefix ?? ":root",
+    dark: darkSelectors.join(",\n"),
+    prefers: scopePrefix
+      ? `${scopePrefix}:not(.light):not(.theme-light):not([data-theme="light"])`
+      : ':root:not(.light):not(.theme-light):not([data-theme="light"])',
+  });
+  if (passthroughCss) {
+    lines.push(wrapInLayer("visor-brand", passthroughCss));
+    lines.push("");
+  }
 
   // 4. Adaptive layer (light + dark)
   const lightBody = stripHeader(generateLightCss(input.tokens, { scopePrefix }));

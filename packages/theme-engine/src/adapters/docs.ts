@@ -26,12 +26,14 @@ import { resolveThemeFonts } from "../fonts/pipeline.js";
 import { buildVisorFontUrl } from "../fonts/resolve.js";
 import { aliasFamily, fontStack, type AliasedFamilies } from "../fonts/theme-alias.js";
 import { resolveThemeBrand } from "../brand/pipeline.js";
+import { collectBrandPassthrough } from "../overrides.js";
 import {
   generateIntentDecls,
   generateHairlineDecls,
   generateTextScaleAliasDecls,
   generateSpaceAliasDecls,
 } from "../generate-css.js";
+import { generateBrandPassthroughCss } from "./brand-passthrough.js";
 import { FUMADOCS_BRIDGE_MAP } from "./fumadocs-map.js";
 import { LAYER_ORDER, wrapInLayer } from "./layers.js";
 import type { AdapterInput, DocsAdapterOptions } from "./types.js";
@@ -507,9 +509,23 @@ export function docsAdapter(
   // no `brand` block fall back to the Visor default brand (D3).
   const brandResult = resolveThemeBrand(input.config.brand, { scope: scopeClass });
 
+  // Brand pass-through (VI-493) — unrecognized `overrides` keys emit as bare
+  // `--<key>` custom properties, appended to the visor-brand layer. Mirrors the
+  // intent/hairline mode scoping used above (light: html:not(.dark), dark: .dark
+  // manual toggle + prefers-color-scheme media query).
+  const passthroughCss = generateBrandPassthroughCss(
+    collectBrandPassthrough(input.tokens, input.config.overrides),
+    {
+      light: `html:not(.dark) ${scopeClass}`,
+      dark: `.dark ${scopeClass}`,
+      prefers: `${scopeClass}:not(.light)`,
+    },
+  );
+
   const adaptiveLayer = wrapInLayer("visor-adaptive", lines.join("\n").trim());
   const semanticLayer = wrapInLayer("visor-semantic", semanticLines.join("\n").trim());
-  const brandLayer = wrapInLayer("visor-brand", brandResult.css);
+  const brandLayerBody = [brandResult.css, passthroughCss].filter(Boolean).join("\n\n");
+  const brandLayer = wrapInLayer("visor-brand", brandLayerBody);
   const head = fontLines.length > 0 ? fontLines.join("\n") + "\n" : "";
   const layerBlocks = [semanticLayer, brandLayer, adaptiveLayer].filter(Boolean);
   return head + LAYER_ORDER + "\n\n" + layerBlocks.join("\n\n") + "\n";
