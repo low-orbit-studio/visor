@@ -3,8 +3,8 @@
   display: flex;
   width: 100%;
   resize: none;
-  border: 1px solid var(--border-default, #e5e7eb);
-  background-color: var(--surface-interactive-default, #f9fafb);
+  border: 1px solid var(--textarea-border, var(--border-default, #e5e7eb));
+  background-color: var(--textarea-bg, var(--surface-interactive-default, #f9fafb));
   line-height: 1.5;
   color: var(--text-primary, #111827);
   transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);

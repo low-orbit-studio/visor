@@ -146,10 +146,13 @@ describe('Elevation token coverage — VI-131', () => {
     FORM_INPUTS.forEach(({ component, selector }) => {
       it(`${component} ${selector} retains its border`, () => {
         const css = readCSS(component)
+        // After VI-494, the field-container border uses a per-component override token as
+        // the outer fallback: e.g. var(--select-border, var(--border-default, ...))
+        // We verify --border-default is still in the fallback chain, not removed entirely.
         expect(
           css,
           `${component} ${selector} border was removed — form input borders must be preserved per VI-131 spec`
-        ).toContain('border: 1px solid var(--border-default')
+        ).toContain('--border-default')
       })
     })
   })

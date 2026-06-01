@@ -6,7 +6,7 @@
   align-items: center;
   border-radius: 9999px;
   border: 1px solid transparent;
-  background-color: var(--border-default, #e5e7eb);
+  background-color: var(--switch-track-bg, var(--border-default, #e5e7eb));
   transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
   outline: none;
   cursor: pointer;
