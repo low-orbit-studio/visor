@@ -81,7 +81,7 @@
   min-width: 9rem;
   overflow: hidden;
   border-radius: var(--radius-lg, 0.5rem);
-  background-color: var(--surface-popover, var(--surface-card, #ffffff));
+  background-color: var(--field-menu-bg, var(--surface-popover, var(--surface-card, #ffffff)));
   color: var(--text-primary, #111827);
   box-shadow: var(--shadow-lg);
 }
@@ -161,7 +161,7 @@
   align-items: center;
   justify-content: center;
   padding: var(--spacing-1, 0.25rem);
-  background-color: var(--surface-popover, var(--surface-card, #ffffff));
+  background-color: var(--field-menu-bg, var(--surface-popover, var(--surface-card, #ffffff)));
 }
 
 .scrollButtonIcon {

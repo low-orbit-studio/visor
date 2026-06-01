@@ -90,3 +90,14 @@ describe("DateRangePicker accessibility", () => {
     await checkA11y(container)
   })
 })
+
+describe("field-menu-bg token (VI-497)", () => {
+  it("DateRangePicker popover content renders with content CSS class (--field-menu-bg applied via .content)", () => {
+    render(<DateRangePicker />)
+    const trigger = screen.getByRole("button")
+    fireEvent.click(trigger)
+    const content = document.querySelector("[data-slot='date-range-picker-content']")
+    expect(content).not.toBeNull()
+    expect(content?.classList.contains("content")).toBe(true)
+  })
+})

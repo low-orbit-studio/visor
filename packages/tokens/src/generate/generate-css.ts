@@ -65,6 +65,7 @@ import {
   semanticSkeleton,
   semanticChart,
   semanticSidebar,
+  semanticField,
 } from "../tokens/semantic.js";
 
 import {
@@ -389,6 +390,20 @@ function buildSemanticBody(): string {
     sidebarDecls.push(`--sidebar-${name}: ${toVar(ref)};`);
   }
   lines.push(block(":root", sidebarDecls));
+
+  // Field-panel alignment tokens (VI-497)
+  // These are semantic aliases — they reference other semantic tokens, not
+  // primitives, so they are emitted as explicit var() chains rather than
+  // going through toVar(primitiveRef).
+  lines.push(sectionComment("Semantic: Field"));
+  const fieldDecls: string[] = [
+    // --field-menu-bg: background for field-attached floating panels.
+    // Default chains through surface-popover → surface-card → white so that
+    // existing rendering is unchanged. Themes override this token to match the
+    // field fill (--surface-interactive-default) for visual cohesion.
+    `--field-menu-bg: ${toVar(semanticField["menu-bg"])};`,
+  ];
+  lines.push(block(":root", fieldDecls));
 
   return lines.join("\n");
 }

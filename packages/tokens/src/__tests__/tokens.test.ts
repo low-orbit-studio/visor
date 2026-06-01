@@ -41,6 +41,7 @@ import {
   semanticMotionEasing,
   semanticChart,
   semanticSidebar,
+  semanticField,
 } from "../tokens/semantic.js";
 
 import {
@@ -1039,5 +1040,63 @@ describe("Layered CSS output (VI-312)", () => {
     expect(layerBody).toContain(":root {");
     expect(layerBody).toContain(".dark");
     expect(layerBody).toContain("prefers-color-scheme: dark");
+  });
+});
+
+// ============================================================
+// Field-panel alignment tokens (VI-497)
+// ============================================================
+
+describe("Field-panel alignment tokens (VI-497)", () => {
+  it("semanticField has menu-bg key", () => {
+    expect(semanticField).toHaveProperty("menu-bg");
+  });
+
+  it("semanticField.menu-bg references surface-popover", () => {
+    expect(semanticField["menu-bg"]).toBe("surface-popover");
+  });
+
+  it("--field-menu-bg is emitted in semantic.css within the visor-semantic layer", () => {
+    const css = readFileSync(join(REPO_ROOT, "packages/tokens/dist/semantic.css"), "utf-8");
+    expect(css).toContain("--field-menu-bg:");
+    expect(css).toContain("var(--surface-popover)");
+  });
+
+  it("--field-menu-bg is emitted in tokens.css", () => {
+    const css = readFileSync(join(REPO_ROOT, "packages/tokens/dist/tokens.css"), "utf-8");
+    expect(css).toContain("--field-menu-bg:");
+  });
+
+  it("--field-menu-bg does not appear in out-of-scope panel CSS (Popover, DropdownMenu, Command, ContextMenu, Menubar)", () => {
+    const fs = require("fs");
+    const outOfScope = [
+      "components/ui/popover/popover.module.css",
+      "components/ui/dropdown-menu/dropdown-menu.module.css",
+      "components/ui/command/command.module.css",
+      "components/ui/context-menu/context-menu.module.css",
+      "components/ui/menubar/menubar.module.css",
+    ];
+    for (const relPath of outOfScope) {
+      const fullPath = join(REPO_ROOT, relPath);
+      if (fs.existsSync(fullPath)) {
+        const css = readFileSync(fullPath, "utf-8");
+        expect(css, relPath + " must not use --field-menu-bg").not.toContain("--field-menu-bg");
+      }
+    }
+  });
+
+  it("--field-menu-bg appears in all 4 in-scope field-panel CSS modules", () => {
+    const fs = require("fs");
+    const inScope = [
+      "components/ui/select/select.module.css",
+      "components/ui/combobox/combobox.module.css",
+      "components/ui/date-picker/date-picker.module.css",
+      "components/ui/date-range-picker/date-range-picker.module.css",
+    ];
+    for (const relPath of inScope) {
+      const fullPath = join(REPO_ROOT, relPath);
+      const css = readFileSync(fullPath, "utf-8");
+      expect(css, relPath + " must use --field-menu-bg").toContain("--field-menu-bg");
+    }
   });
 });

@@ -44,7 +44,7 @@
 /* Popover Content */
 .content {
   z-index: 50;
-  background-color: var(--surface-popover, var(--surface-card, #ffffff));
+  background-color: var(--field-menu-bg, var(--surface-popover, var(--surface-card, #ffffff)));
   border: 1px solid var(--border-default, #e5e7eb);
   border-radius: var(--radius-lg, 0.5rem);
   box-shadow: var(
