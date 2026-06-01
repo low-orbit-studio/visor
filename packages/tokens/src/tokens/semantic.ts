@@ -220,3 +220,29 @@ export const semanticSidebar = {
   ring: "color-primary-500",
   "text-muted": "color-neutral-500",
 } as const;
+
+/**
+ * Field-panel alignment tokens (VI-497)
+ *
+ * When a field-attached floating panel opens (Select, Combobox, DatePicker,
+ * DateRangePicker), its surface must track the field's fill so the open menu
+ * reads as part of the same field, not a disconnected card.
+ *
+ * --field-menu-bg defaults to var(--surface-popover) so existing rendering is
+ * unchanged. Themes override --field-menu-bg to match the field fill
+ * (--surface-interactive-default) when they want the unified look.
+ *
+ * Note: These tokens reference semantic tokens, not primitives — they are
+ * semantic aliases and are not validated against the primitive lookup.
+ * This is consistent with semanticSkeleton which also references semantic
+ * surface tokens.
+ */
+export const semanticField = {
+  /**
+   * Background for field-attached floating panels (Select content, Combobox
+   * listbox, DatePicker / DateRangePicker popovers).
+   * Default: var(--surface-popover) — preserves current rendering.
+   * Override to match var(--surface-interactive-default) in tinted/dark themes.
+   */
+  "menu-bg": "surface-popover",
+} as const;

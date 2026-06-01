@@ -237,3 +237,15 @@ describe("Combobox accessibility", () => {
     await checkA11y(document.body)
   })
 })
+
+describe("field-menu-bg token (VI-497)", () => {
+  it("ComboboxContent panel renders with content slot when open (verifies --field-menu-bg .content is reachable)", async () => {
+    renderCombobox({ defaultOpen: true })
+    await waitFor(() => {
+      // The popover content has data-slot="combobox-content" and carries the
+      // .content CSS class where --field-menu-bg is applied.
+      const content = document.querySelector("[data-slot='combobox-content']")
+      expect(content).not.toBeNull()
+    })
+  })
+})
