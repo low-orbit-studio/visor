@@ -42,6 +42,22 @@ export interface ThemeValidationResult {
   warnings: ValidationIssue[];
 }
 
+/**
+ * Options for the validate() function.
+ */
+export interface ValidateOptions {
+  /**
+   * When true, promote DARK_LIGHT_PARITY warnings and the
+   * "colors.neutral present without colors-dark.neutral" check
+   * from warning to error. Use this in CI to enforce the
+   * "always both modes" authoring convention.
+   *
+   * Opt-in today; flip to the default after all convergent
+   * themes add their dark neutral (see VI-495 docs).
+   */
+  strictDark?: boolean;
+}
+
 // ============================================================
 // Constants
 // ============================================================
@@ -972,18 +988,20 @@ function checkRadiusScale(
 
 function checkDarkLightParity(
   config: VisorThemeConfig,
-  issues: ValidationIssue[]
+  issues: ValidationIssue[],
+  opts: ValidateOptions
 ): void {
   if (!config.colors) return;
 
   const colorKeys = Object.keys(config.colors).filter((k) => k !== "primary");
   const hasDarkSection = config["colors-dark"] !== undefined;
 
-  // If custom colors beyond primary exist but no colors-dark section, warn
+  // If custom colors beyond primary exist but no colors-dark section, warn (or error under --strict-dark)
   if (colorKeys.length > 0 && !hasDarkSection) {
+    const severity = opts.strictDark ? "error" : "warning";
     issues.push(
       issue(
-        "warning",
+        severity,
         "DARK_LIGHT_PARITY",
         "Custom colors are set but no colors-dark section exists. Dark mode will use generated defaults which may not match your brand.",
         "colors-dark"
@@ -1001,9 +1019,11 @@ function checkDarkLightParity(
     for (const key of lightKeys) {
       if (key === "primary") continue;
       if (!darkKeys.has(key)) {
+        // Under --strict-dark, flag missing dark neutral as an error
+        const severity = opts.strictDark ? "error" : "warning";
         issues.push(
           issue(
-            "warning",
+            severity,
             "DARK_LIGHT_PARITY",
             `Color "${key}" is set in colors but missing from colors-dark. Dark mode will use a generated default.`,
             "colors-dark"
@@ -1039,9 +1059,11 @@ function checkDarkLightParity(
  * Results are JSON-serializable for CLI `--json` output.
  *
  * @param config - A parsed theme config object (from YAML or programmatic)
+ * @param options - Optional validator flags (e.g. strictDark)
  * @returns ThemeValidationResult with errors[], warnings[], and valid boolean
  */
-export function validate(config: unknown): ThemeValidationResult {
+export function validate(config: unknown, options?: ValidateOptions): ThemeValidationResult {
+  const opts: ValidateOptions = options || {};
   const errors: ValidationIssue[] = [];
   const warnings: ValidationIssue[] = [];
 
@@ -1105,8 +1127,12 @@ export function validate(config: unknown): ThemeValidationResult {
     // 12. Inconsistent radius scale
     checkRadiusScale(typedConfig, warnings);
 
-    // 13. Dark/light color parity
-    checkDarkLightParity(typedConfig, warnings);
+    // 13. Dark/light color parity (can emit errors under --strict-dark)
+    const parityIssues: ValidationIssue[] = [];
+    checkDarkLightParity(typedConfig, parityIssues, opts);
+    for (const iss of parityIssues) {
+      (iss.severity === "error" ? errors : warnings).push(iss);
+    }
   }
 
   return {

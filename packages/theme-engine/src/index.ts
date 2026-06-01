@@ -33,6 +33,7 @@ export type {
   ThemeValidationResult,
   ValidationIssue,
   ValidationSeverity,
+  ValidateOptions,
 } from "./validate.js";
 
 // Lower-level utilities (for docs site preview, advanced consumers)

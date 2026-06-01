@@ -176,6 +176,43 @@ Creative themes include section 5 — visual effects, animations, and custom CSS
 
 **Distinguishing rule:** If a theme needs anything in section 5, it is creative. If sections 1-4 fully describe it, it is standard.
 
+## Always Both Modes
+
+**Rule:** Every theme that sets `colors.neutral` must also set `colors-dark.neutral`.
+
+The theme engine derives `surface.muted` and `surface.elev` in dark mode from the `neutral` role at shades 700 and 800. If `colors.neutral` is set in the light palette but no `colors-dark.neutral` override exists, the engine falls back to its default neutral (`#6B7280` — Tailwind Gray 500), meaning every brand that skips the dark override produces _identical_ dark mid-surfaces regardless of brand color.
+
+This is a first-class authoring contract: **any theme that defines a custom `neutral` must define its dark-mode counterpart.**
+
+### In your theme YAML
+
+```yaml
+colors:
+  primary: "#6366f1"
+  neutral: "#7c6f9b"   # brand-tinted neutral
+
+colors-dark:
+  neutral: "#3d3554"   # darkened + desaturated variant
+```
+
+A good dark neutral is typically the light neutral shifted toward lower lightness (L 20–35%) and reduced chroma — not pure gray. Start with 70% lower luminance and 60% of the original chroma as a baseline, then adjust for contrast.
+
+### Enforcing the rule in CI
+
+Use `--strict-dark` with `visor theme validate` to promote the `DARK_LIGHT_PARITY` warning to a hard error:
+
+```bash
+npx @loworbitstudio/visor theme validate .visor.yaml --strict-dark
+```
+
+**Migration path — opt-in to default:**
+
+1. Add `colors-dark.neutral` to all themes that set `colors.neutral`.
+2. Verify locally: `npx @loworbitstudio/visor theme validate .visor.yaml --strict-dark` exits 0.
+3. Add `--strict-dark` to your CI validate step — once all themes pass, the flag is effectively the default.
+
+Without `--strict-dark`, missing dark neutrals emit a `DARK_LIGHT_PARITY` warning (non-blocking). With it, they block CI until resolved.
+
 ## Tips
 
 - Use `color-mix()` to derive surfaces from your accent color — this creates cohesive tinted surfaces.

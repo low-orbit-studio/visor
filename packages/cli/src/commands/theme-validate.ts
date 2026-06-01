@@ -8,6 +8,7 @@ import pc from "picocolors"
 
 export interface ThemeValidateOptions {
   json?: boolean
+  strictDark?: boolean
 }
 
 export function themeValidateCommand(
@@ -72,7 +73,7 @@ export function themeValidateCommand(
   }
 
   // Run validation
-  const result: ThemeValidationResult = validate(parsed)
+  const result: ThemeValidationResult = validate(parsed, { strictDark: options.strictDark })
 
   if (options.json) {
     console.log(JSON.stringify(result))
