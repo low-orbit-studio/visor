@@ -123,6 +123,7 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
   return {
     name: config.name,
     ...(config.label !== undefined && { label: config.label }),
+    ...(config["default-mode"] !== undefined && { "default-mode": config["default-mode"] }),
     version: 1,
     colors: {
       primary: colors.primary,

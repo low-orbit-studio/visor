@@ -260,6 +260,8 @@ export interface ResolvedThemeConfig {
   name: string;
   /** Optional display label override forwarded from VisorThemeConfig.label. */
   label?: string;
+  /** Default color mode forwarded from VisorThemeConfig["default-mode"]. */
+  "default-mode"?: "dark" | "light";
   version: 1;
   colors: {
     primary: string;

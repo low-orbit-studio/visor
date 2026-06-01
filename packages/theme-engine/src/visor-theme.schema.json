@@ -20,6 +20,15 @@
       "type": "string",
       "description": "Theme group for the docs site theme switcher (e.g. 'Visor', 'Client', 'Low Orbit'). Used by `visor theme sync`. Defaults to folder-based grouping when omitted."
     },
+    "label": {
+      "type": "string",
+      "description": "Human-readable display name for the theme (e.g. 'Blacklight Pro'). Overrides the name-derived label in the docs theme switcher. Optional."
+    },
+    "default-mode": {
+      "type": "string",
+      "enum": ["light", "dark"],
+      "description": "Default color mode when activating this theme. When set, the docs site forces this mode on theme switch (unless the user has a stored mode preference). Optional."
+    },
     "colors": {
       "type": "object",
       "description": "Color definitions for light mode. Only primary is required — all others have sensible defaults.",

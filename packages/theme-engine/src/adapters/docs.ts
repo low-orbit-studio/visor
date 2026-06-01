@@ -408,7 +408,7 @@ export function docsAdapter(
   ];
   for (const cat of pcsCategories) {
     lines.push(sectionComment(`Adaptive: ${cat.label} (dark) — prefers-color-scheme`));
-    const inner = block(`${scopeClass}:not(.light)`, cat.entries);
+    const inner = block(`${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`, cat.entries);
     lines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
     lines.push("");
   }
@@ -416,7 +416,7 @@ export function docsAdapter(
   // Primitive overrides also apply under prefers-color-scheme when no manual toggle set
   if (darkPrimitiveOverrides.length > 0) {
     lines.push(sectionComment("Primitive overrides (dark) — prefers-color-scheme"));
-    const inner = block(`${scopeClass}:not(.light)`, darkPrimitiveOverrides);
+    const inner = block(`${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`, darkPrimitiveOverrides);
     lines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
     lines.push("");
   }
@@ -489,14 +489,14 @@ export function docsAdapter(
 
   semanticLines.push(sectionComment("Intent aliases (dark) — prefers-color-scheme"));
   {
-    const inner = block(`${scopeClass}:not(.light)`, generateIntentDecls(input.tokens, "dark"));
+    const inner = block(`${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`, generateIntentDecls(input.tokens, "dark"));
     semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
   }
   semanticLines.push("");
 
   semanticLines.push(sectionComment("Hairline aliases (dark) — prefers-color-scheme"));
   {
-    const inner = block(`${scopeClass}:not(.light)`, generateHairlineDecls(input.tokens, "dark"));
+    const inner = block(`${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`, generateHairlineDecls(input.tokens, "dark"));
     semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
   }
   semanticLines.push("");
@@ -518,7 +518,7 @@ export function docsAdapter(
     {
       light: `html:not(.dark) ${scopeClass}`,
       dark: `.dark ${scopeClass}`,
-      prefers: `${scopeClass}:not(.light)`,
+      prefers: `${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`,
     },
   );
 

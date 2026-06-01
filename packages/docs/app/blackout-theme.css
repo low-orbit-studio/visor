@@ -37,7 +37,7 @@
 /* --- Intent aliases (light) --- */
 html:not(.dark) .blackout-theme {
   --primary: #666666;
-  --primary-text: #ffffff;
+  --primary-text: var(--interactive-primary-text);
   --accent: #666666;
   --success: #22c55e;
   --warning: #f59e0b;
@@ -56,7 +56,7 @@ html:not(.dark) .blackout-theme {
 /* --- Intent aliases (dark) — manual toggle --- */
 .dark .blackout-theme {
   --primary: #666666;
-  --primary-text: #ffffff;
+  --primary-text: var(--interactive-primary-text);
   --accent: #666666;
   --success: #22c55e;
   --warning: #f59e0b;
@@ -74,9 +74,9 @@ html:not(.dark) .blackout-theme {
 
 /* --- Intent aliases (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .blackout-theme:not(.light) {
+  .blackout-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --primary: #666666;
-    --primary-text: #ffffff;
+    --primary-text: var(--interactive-primary-text);
     --accent: #666666;
     --success: #22c55e;
     --warning: #f59e0b;
@@ -88,7 +88,7 @@ html:not(.dark) .blackout-theme {
 
 /* --- Hairline aliases (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .blackout-theme:not(.light) {
+  .blackout-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --hairline: rgba(255, 255, 255, 0.06);
     --hairline-strong: rgba(255, 255, 255, 0.10);
   }
@@ -422,7 +422,7 @@ html:not(.dark) .blackout-theme {
 
 /* --- Adaptive: Text (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .blackout-theme:not(.light) {
+  .blackout-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --text-primary: rgba(255, 255, 255, 0.7);
     --text-secondary: rgba(255, 255, 255, 0.70);
     --text-tertiary: rgba(255, 255, 255, 0.55);
@@ -442,7 +442,7 @@ html:not(.dark) .blackout-theme {
 
 /* --- Adaptive: Surface (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .blackout-theme:not(.light) {
+  .blackout-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --surface-page: #000000;
     --surface-card: rgba(255, 255, 255, 0.04);
     --surface-popover: #141414;
@@ -481,7 +481,7 @@ html:not(.dark) .blackout-theme {
 
 /* --- Adaptive: Border (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .blackout-theme:not(.light) {
+  .blackout-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --border-default: rgba(255, 255, 255, 0.06);
     --border-muted: rgba(255, 255, 255, 0.03);
     --border-strong: rgba(255, 255, 255, 0.1);
@@ -497,7 +497,7 @@ html:not(.dark) .blackout-theme {
 
 /* --- Adaptive: Interactive (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .blackout-theme:not(.light) {
+  .blackout-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --interactive-primary-bg: #666666;
     --interactive-primary-bg-hover: #868686;
     --interactive-primary-bg-active: #b2b2b2;

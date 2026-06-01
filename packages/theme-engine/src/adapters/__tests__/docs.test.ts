@@ -200,7 +200,9 @@ describe("docsAdapter", () => {
     it("includes prefers-color-scheme dark media query", () => {
       const css = docsAdapter(makeInput(MINIMAL_YAML));
       expect(css).toContain("@media (prefers-color-scheme: dark)");
-      expect(css).toContain(".minimal-theme:not(.light)");
+      // D2: triple-negation selector so .light / .theme-light / data-theme="light"
+      // all act as escape-hatches (single negation was inert on the scope class).
+      expect(css).toContain('.minimal-theme:not(.light):not(.theme-light):not([data-theme="light"])');
     });
   });
 
