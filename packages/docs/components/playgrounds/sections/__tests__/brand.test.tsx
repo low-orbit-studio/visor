@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, within } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 
 // Partial-mock theme-config so individual tests can drive `resolveBrand`'s
 // return value. The default is a passthrough to the real resolver, so the
@@ -10,7 +10,7 @@ vi.mock("@/lib/theme-config", async (importOriginal) => {
 });
 
 import { BrandSection } from "../brand";
-import { resolveBrand, VISOR_DEFAULT_BRAND } from "@/lib/theme-config";
+import { resolveBrand, VISOR_DEFAULT_BRAND, DEFAULT_THEME, THEME_STORAGE_KEY } from "@/lib/theme-config";
 
 const mockedResolveBrand = vi.mocked(resolveBrand);
 
@@ -90,5 +90,46 @@ describe("BrandSection — animated slot (VI-488)", () => {
     mockedResolveBrand.mockReturnValue(VISOR_DEFAULT_BRAND);
     const { container } = render(<BrandSection />);
     expect(container.querySelector('[data-variant="animated"]')).toBeNull();
+  });
+});
+
+describe("BrandSection — private themes (VI-489)", () => {
+  afterEach(() => {
+    localStorage.clear();
+    mockedResolveBrand.mockClear();
+  });
+
+  it("follows a private slug and renders that theme's marks when passed via privateThemes", () => {
+    mockedResolveBrand.mockImplementation((t) =>
+      t === "blacklight"
+        ? {
+            ...VISOR_DEFAULT_BRAND,
+            logo: {
+              light: "/themes/blacklight/brand/bl-logo-light.svg",
+              dark: "/themes/blacklight/brand/bl-logo-dark.svg",
+            },
+          }
+        : VISOR_DEFAULT_BRAND,
+    );
+    localStorage.setItem(THEME_STORAGE_KEY, "blacklight");
+
+    const { container } = render(
+      <BrandSection privateThemes={[{ slug: "blacklight", label: "Blacklight", group: "Low Orbit" }]} />,
+    );
+
+    expect(mockedResolveBrand).toHaveBeenCalledWith("blacklight");
+    const logo = container.querySelector('[data-variant="logo"]') as HTMLElement;
+    const lightImg = logo.querySelector('[data-ground="light"] img') as HTMLImageElement;
+    expect(lightImg.getAttribute("src")).toContain("/themes/blacklight/brand/bl-logo-light.svg");
+  });
+
+  it("ignores a private slug in storage when privateThemes is omitted (route-scoped CSS, D5)", () => {
+    mockedResolveBrand.mockImplementation(() => VISOR_DEFAULT_BRAND);
+    localStorage.setItem(THEME_STORAGE_KEY, "blacklight");
+
+    render(<BrandSection />);
+
+    expect(mockedResolveBrand).not.toHaveBeenCalledWith("blacklight");
+    expect(mockedResolveBrand).toHaveBeenCalledWith(DEFAULT_THEME);
   });
 });

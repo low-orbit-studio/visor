@@ -9,6 +9,7 @@ import {
   resolveBrand,
   type BrandVariantAsset,
 } from "@/lib/theme-config";
+import type { PrivateThemeEntry } from "@/lib/private-themes";
 import styles from "./brand.module.css";
 
 type VariantKey = "logo" | "brandmark" | "wordmark" | "monochrome" | "animated";
@@ -30,15 +31,22 @@ const SIZES = [
 // These re-resolve when the mode toggle flips the <html> class (per-mode swap, for free).
 const TINT_TOKENS = ["--text-primary", "--text-secondary", "--primary"];
 
-/** Track the active theme via the same `visor-theme-change` event the explorer dispatches. */
-function useActiveTheme(): string {
+/**
+ * Track the active theme via the same `visor-theme-change` event the explorer
+ * dispatches. `extraSlugs` widens the accepted set to private-gallery slugs
+ * (VI-489) so the section follows the private switcher; the effect keys on the
+ * joined slug string so it stays stable across renders of the slug array.
+ */
+function useActiveTheme(extraSlugs: string[]): string {
   const [theme, setTheme] = useState<string>(DEFAULT_THEME);
+  const slugsKey = extraSlugs.join(",");
   useEffect(() => {
-    setTheme(getStoredTheme());
-    const handler = () => setTheme(getStoredTheme());
-    document.addEventListener("visor-theme-change", handler);
-    return () => document.removeEventListener("visor-theme-change", handler);
-  }, []);
+    const allowed = slugsKey ? slugsKey.split(",") : [];
+    const read = () => setTheme(getStoredTheme(allowed));
+    read();
+    document.addEventListener("visor-theme-change", read);
+    return () => document.removeEventListener("visor-theme-change", read);
+  }, [slugsKey]);
   return theme;
 }
 
@@ -55,8 +63,13 @@ function useReducedMotion(): boolean {
   return reduced;
 }
 
-export function BrandSection() {
-  const theme = useActiveTheme();
+/**
+ * `privateThemes` is supplied by the private gallery (VI-489) so the section can
+ * follow the private switcher and resolve those themes' brand marks. Omitted on
+ * the main Explorer, where only stock/custom themes are active.
+ */
+export function BrandSection({ privateThemes = [] }: { privateThemes?: PrivateThemeEntry[] } = {}) {
+  const theme = useActiveTheme(privateThemes.map((t) => t.slug));
   const reducedMotion = useReducedMotion();
   const brand = resolveBrand(theme);
   const themeLabel = findThemeEntry(theme)?.label ?? theme;

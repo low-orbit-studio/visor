@@ -2,6 +2,8 @@
 // on every `predev`/`prebuild` by `scripts/generate-private-themes.mjs` based
 // on whether `@low-orbit-studio/visor-themes-private` is installed.
 
+import type { ThemeBrand } from "./theme-config";
+
 /**
  * Typography slot data for a private theme. Mirrors the `weights` arrays
  * declared in the theme's `typography.{heading|display|body}` slot in its
@@ -32,6 +34,14 @@ export interface PrivateThemeEntry {
   group: string;
   /** Typography slot data — present only when the YAML declares `weights` for any slot. */
   typography?: PrivateThemeTypography;
+  /**
+   * Resolved brand asset set — present only when the theme ships a `brand/`
+   * directory (BO-47 `source: local` marks). Populated by
+   * `scripts/generate-private-themes.mjs`; consumed by `resolveBrand()` so the
+   * Explorer's Brand cohesion view renders the theme's real marks. Omitted →
+   * `resolveBrand()` falls back to the shared Visor default.
+   */
+  brand?: ThemeBrand;
 }
 
 export { PRIVATE_THEMES } from "./private-themes.generated";

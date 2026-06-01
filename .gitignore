@@ -89,6 +89,12 @@ packages/docs/lib/theme-config.custom.generated.ts
 packages/docs/app/private-themes.generated.css
 packages/docs/lib/private-themes.generated.ts
 
+# Private theme brand SVGs — copied at build time from visor-themes-private by
+# scripts/generate-private-themes.mjs (proprietary; never committed to this
+# public repo). The committed Visor default brand under visor/brand/ is re-included.
+packages/docs/public/themes/*/brand/
+!packages/docs/public/themes/visor/brand/
+
 # All custom theme CSS files are generated; stock themes are explicit re-includes
 packages/docs/app/*-theme.css
 !packages/docs/app/blackout-theme.css

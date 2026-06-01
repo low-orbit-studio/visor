@@ -151,6 +151,110 @@ describe("generate-private-themes.mjs", () => {
     });
   });
 
+  describe("brand assets (VI-489)", () => {
+    let fixtureRoot: string;
+    // A branded theme (logo/brandmark/wordmark, no monochrome — mirrors BO-47)
+    // plus a plain theme, so we can assert brand is emitted only when a `brand/`
+    // dir ships and that a brandless theme omits the field.
+    const BRANDED = "vi489brandfix";
+    const PLAIN = "vi489plainfix";
+    const publicThemesDir = resolve(__dirname, "../../public/themes");
+    const SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"></svg>`;
+
+    const BRANDED_YAML = `name: ${BRANDED}
+version: 1
+group: Test
+colors:
+  primary: "#6366F1"
+  accent: "#F472B6"
+  neutral: "#6B7280"
+  background: "#F9FAFB"
+  surface: "#FFFFFF"
+brand:
+  org: low-orbit-studio
+  source: local
+  logo:
+    formats: [svg]
+    light: /themes/${BRANDED}/brand/${BRANDED}-logo-light.svg
+    dark: /themes/${BRANDED}/brand/${BRANDED}-logo-dark.svg
+  brandmark:
+    formats: [svg]
+    light: /themes/${BRANDED}/brand/${BRANDED}-brandmark-light.svg
+    dark: /themes/${BRANDED}/brand/${BRANDED}-brandmark-dark.svg
+  wordmark:
+    formats: [svg]
+    light: /themes/${BRANDED}/brand/${BRANDED}-wordmark-light.svg
+    dark: /themes/${BRANDED}/brand/${BRANDED}-wordmark-dark.svg
+`;
+    const PLAIN_YAML = `name: ${PLAIN}
+version: 1
+group: Test
+colors:
+  primary: "#10B981"
+  accent: "#F59E0B"
+  neutral: "#6B7280"
+  background: "#F9FAFB"
+  surface: "#FFFFFF"
+`;
+
+    beforeAll(() => {
+      fixtureRoot = mkdtempSync(join(tmpdir(), "vi489-brand-"));
+      const brandedDir = join(fixtureRoot, "themes", BRANDED);
+      const brandAssetsDir = join(brandedDir, "brand");
+      mkdirSync(brandAssetsDir, { recursive: true });
+      writeFileSync(join(brandedDir, "theme.visor.yaml"), BRANDED_YAML, "utf-8");
+      writeFileSync(join(brandedDir, "meta.json"), JSON.stringify({ name: BRANDED, group: "Test", private: true }), "utf-8");
+      for (const variant of ["logo", "brandmark", "wordmark"]) {
+        for (const mode of ["light", "dark"]) {
+          writeFileSync(join(brandAssetsDir, `${BRANDED}-${variant}-${mode}.svg`), SVG, "utf-8");
+        }
+      }
+      const plainDir = join(fixtureRoot, "themes", PLAIN);
+      mkdirSync(plainDir, { recursive: true });
+      writeFileSync(join(plainDir, "theme.visor.yaml"), PLAIN_YAML, "utf-8");
+      writeFileSync(join(plainDir, "meta.json"), JSON.stringify({ name: PLAIN, group: "Test", private: true }), "utf-8");
+    });
+
+    afterAll(() => {
+      rmSync(fixtureRoot, { recursive: true, force: true });
+      // Build artifacts the generator copies into the (gitignored) public dir.
+      rmSync(join(publicThemesDir, BRANDED), { recursive: true, force: true });
+      rmSync(join(publicThemesDir, PLAIN), { recursive: true, force: true });
+    });
+
+    it("emits a brand entry only for the theme that ships a brand/ dir", () => {
+      const result = runGenerator(fixtureRoot);
+      expect(result.status).toBe(0);
+      expect(result.stdout).toContain("generated 2 theme(s)");
+
+      const ts = readFileSync(TS_PATH, "utf-8");
+      const brandedLine = ts.split("\n").find((l) => l.includes(`slug: "${BRANDED}"`)) ?? "";
+      const plainLine = ts.split("\n").find((l) => l.includes(`slug: "${PLAIN}"`)) ?? "";
+
+      // Branded theme carries its declared marks…
+      expect(brandedLine).toContain("brand: {");
+      expect(brandedLine).toContain(`/themes/${BRANDED}/brand/${BRANDED}-logo-light.svg`);
+      // …and the undeclared monochrome slot falls back to the Visor default (D2).
+      expect(brandedLine).toContain("/themes/visor/brand/visor-monochrome.svg");
+      // Plain theme is present but carries no brand field.
+      expect(plainLine).not.toBe("");
+      expect(plainLine).not.toContain("brand:");
+    });
+
+    it("copies the branded theme's SVGs into public/themes/{slug}/brand/", () => {
+      runGenerator(fixtureRoot);
+      for (const variant of ["logo", "brandmark", "wordmark"]) {
+        for (const mode of ["light", "dark"]) {
+          expect(
+            existsSync(join(publicThemesDir, BRANDED, "brand", `${BRANDED}-${variant}-${mode}.svg`)),
+          ).toBe(true);
+        }
+      }
+      // The plain theme gets no public brand dir.
+      expect(existsSync(join(publicThemesDir, PLAIN))).toBe(false);
+    });
+  });
+
   describe("public bundle leak guard (build artifact)", () => {
     const NEXT_DIR = resolve(__dirname, "../../.next");
     const KNOWN_PRIVATE_SLUGS = [
