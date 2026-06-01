@@ -223,6 +223,24 @@ Validate a `.visor.yaml` file against the schema and run WCAG contrast checks.
 npx @loworbitstudio/visor theme validate .visor.yaml
 ```
 
+#### Options
+
+| Flag | Description |
+|------|-------------|
+| `--json` | Output structured JSON (for AI agents) |
+| `--strict-dark` | Promote `DARK_LIGHT_PARITY` warnings and missing dark-neutral to errors (enforces the "always both modes" convention — see [Creating Themes](/docs/themes/creating-themes#always-both-modes)) |
+
+**`--strict-dark` in CI:**
+
+Add `--strict-dark` to your CI validate step to enforce the "always both modes" rule as a hard gate:
+
+```bash
+# Fail CI if any theme is missing its dark neutral
+npx @loworbitstudio/visor theme validate .visor.yaml --strict-dark
+```
+
+This flag is opt-in today. Once all themes in your project supply `colors-dark.neutral`, you can make it the default by adding `--strict-dark` to every validate call in CI.
+
 ### `visor theme export`
 
 Export a minimal `.visor.yaml` from an existing theme.

@@ -206,8 +206,9 @@ theme
   .description("Run full validation ruleset on a .visor.yaml file")
   .argument("<file>", "path to .visor.yaml file")
   .option("--json", "output structured JSON (for AI agents)")
+  .option("--strict-dark", "promote DARK_LIGHT_PARITY and missing dark neutral from warning to error (enforces the 'always both modes' convention)")
   .action(
-    (file: string, options: { json?: boolean }) => {
+    (file: string, options: { json?: boolean; strictDark?: boolean }) => {
       themeValidateCommand(file, process.cwd(), options)
     }
   )

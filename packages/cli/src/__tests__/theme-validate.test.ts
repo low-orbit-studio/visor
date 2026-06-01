@@ -236,3 +236,95 @@ describe("theme validate command", () => {
     expect(String(jsonCalls[0]![0])).toBe(String(jsonCalls[1]![0]))
   })
 })
+
+// ============================================================
+// --strict-dark flag tests (VI-495)
+// ============================================================
+
+const YAML_NEUTRAL_NO_DARK = `
+name: brand-theme
+version: 1
+colors:
+  primary: "#6366f1"
+  neutral: "#6B7280"
+`
+
+const YAML_NEUTRAL_WITH_DARK = `
+name: brand-theme-compliant
+version: 1
+colors:
+  primary: "#6366f1"
+  neutral: "#7c6f9b"
+colors-dark:
+  neutral: "#3d3554"
+`
+
+describe("theme validate command — --strict-dark flag", () => {
+  it("exits 1 under --strict-dark when neutral is missing from colors-dark", () => {
+    const yamlPath = join(testDir, "theme.yaml")
+    writeFileSync(yamlPath, YAML_NEUTRAL_NO_DARK, "utf-8")
+
+    expect(() => {
+      themeValidateCommand("theme.yaml", testDir, { json: true, strictDark: true })
+    }).toThrow("process.exit(1)")
+
+    const calls = (console.log as ReturnType<typeof vi.fn>).mock.calls
+    const jsonOutput = calls.find((call: unknown[]) => {
+      try {
+        const parsed = JSON.parse(String(call[0]))
+        return parsed.valid === false
+      } catch {
+        return false
+      }
+    })
+    expect(jsonOutput).toBeDefined()
+    const parsed = JSON.parse(String(jsonOutput![0]))
+    expect(parsed.valid).toBe(false)
+    expect(parsed.errors.some((e: { code: string }) => e.code === "DARK_LIGHT_PARITY")).toBe(true)
+  })
+
+  it("exits 0 under --strict-dark when colors-dark.neutral is provided", () => {
+    const yamlPath = join(testDir, "theme.yaml")
+    writeFileSync(yamlPath, YAML_NEUTRAL_WITH_DARK, "utf-8")
+
+    expect(() => {
+      themeValidateCommand("theme.yaml", testDir, { json: true, strictDark: true })
+    }).toThrow("process.exit(0)")
+
+    const calls = (console.log as ReturnType<typeof vi.fn>).mock.calls
+    const jsonOutput = calls.find((call: unknown[]) => {
+      try {
+        const parsed = JSON.parse(String(call[0]))
+        return parsed.valid === true
+      } catch {
+        return false
+      }
+    })
+    expect(jsonOutput).toBeDefined()
+    const parsed = JSON.parse(String(jsonOutput![0]))
+    expect(parsed.valid).toBe(true)
+  })
+
+  it("without --strict-dark, neutral-without-dark is a warning (exits 0)", () => {
+    const yamlPath = join(testDir, "theme.yaml")
+    writeFileSync(yamlPath, YAML_NEUTRAL_NO_DARK, "utf-8")
+
+    expect(() => {
+      themeValidateCommand("theme.yaml", testDir, { json: true })
+    }).toThrow("process.exit(0)")
+
+    const calls = (console.log as ReturnType<typeof vi.fn>).mock.calls
+    const jsonOutput = calls.find((call: unknown[]) => {
+      try {
+        const parsed = JSON.parse(String(call[0]))
+        return parsed.valid === true && parsed.warnings !== undefined
+      } catch {
+        return false
+      }
+    })
+    expect(jsonOutput).toBeDefined()
+    const parsed = JSON.parse(String(jsonOutput![0]))
+    expect(parsed.valid).toBe(true)
+    expect(parsed.warnings.some((w: { code: string }) => w.code === "DARK_LIGHT_PARITY")).toBe(true)
+  })
+})
