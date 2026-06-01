@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.14.0
+
+### Minor Changes
+
+- b256dd9: Pass-through brand tokens (VI-493). Unrecognized `overrides` keys are no longer
+  silently dropped — they now emit as bare `--<key>` custom properties inside
+  `@layer visor-brand` in both the nextjs and docs adapters, with mode-specific
+  values (light keys under the light selector, dark keys under the dark toggle +
+  `prefers-color-scheme` media query). This ends the dual-source-of-truth between
+  `.visor.yaml` and hand-maintained `:root` blocks. New public API:
+  `collectBrandPassthrough`, `hasBrandPassthrough`, and the `BrandPassthrough`
+  type. Dev builds emit a fail-loud sentinel comment naming every pass-through
+  token and render any unresolved (empty) value as a bright `#ff00ff` sentinel
+  color. The `UNKNOWN_OVERRIDE_KEY` validation message now describes the
+  pass-through behavior.
+- cb9a6dc: Adds a `--strict-dark` flag to `visor theme validate` that promotes `DARK_LIGHT_PARITY` warnings and missing `colors-dark.neutral` entries from non-blocking warnings to blocking errors. This enforces the "always both modes" authoring convention — every theme that sets `colors.neutral` must also set `colors-dark.neutral` to prevent brand-identical dark mid-surfaces across unrelated themes. The flag is opt-in today; flip to default in CI after all convergent themes supply their dark neutral. Documentation added to the theme authoring guide and CLI reference.
+
+### Patch Changes
+
+- cec4a8d: Four independent correctness fixes from the architecture audit: `visor-theme.schema.json` (both copies) now declares `label` and `default-mode` properties so themes using these fields pass JSON Schema linting; the docs adapter's `prefers-color-scheme: dark` media queries now use the correct triple-negation selector (`:not(.light):not(.theme-light):not([data-theme="light"])`) so the light-mode escape-hatch actually works; the private-theme generator threads `defaultMode` from the YAML `default-mode` field through `PrivateThemeEntry` so the switcher can force a theme's preferred color mode on activation; and `--primary-text` in the intent group is now a single-source alias of `var(--interactive-primary-text)` eliminating the duplicated constant while preserving per-theme overrides.
+
 ## 0.13.0
 
 ### Minor Changes
