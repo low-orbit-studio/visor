@@ -2,9 +2,9 @@
 .wrapper {
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--border-default, #e5e7eb);
+  border: 1px solid var(--number-input-border, var(--border-default, #e5e7eb));
   border-radius: var(--radius-md, 0.375rem);
-  background-color: var(--surface-interactive-default, #f9fafb);
+  background-color: var(--number-input-bg, var(--surface-interactive-default, #f9fafb));
   overflow: hidden;
   transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
     box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);

@@ -15,7 +15,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  border: 1px solid var(--border-default, #e5e7eb);
+  border: 1px solid var(--radio-border, var(--border-default, #e5e7eb));
   background-color: transparent;
   transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
     background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
