@@ -2,6 +2,7 @@
 // The merge below and the interface declarations are hand-authored — safe to edit.
 
 import { customThemeGroups } from "./theme-config.custom.generated";
+import { PRIVATE_THEMES } from "./private-themes";
 
 /** Light- and dark-surface asset URLs for one brand variant. Single-file marks set both to the same URL. */
 export interface BrandVariantAsset {
@@ -101,9 +102,18 @@ export const VISOR_DEFAULT_BRAND: ThemeBrand = {
   monochrome: "/themes/visor/brand/visor-monochrome.svg",
 };
 
-/** Resolve a theme's brand, falling back to the shared Visor default. */
+/**
+ * Resolve a theme's brand, falling back to the shared Visor default. Stock and
+ * custom themes resolve via {@link findThemeEntry}; private themes (VI-489) carry
+ * their resolved brand in the {@link PRIVATE_THEMES} manifest, so the Explorer's
+ * Brand cohesion view renders their real marks instead of the default.
+ */
 export function resolveBrand(theme: string): ThemeBrand {
-  return findThemeEntry(theme)?.brand ?? VISOR_DEFAULT_BRAND;
+  return (
+    findThemeEntry(theme)?.brand ??
+    PRIVATE_THEMES.find((t) => t.slug === theme)?.brand ??
+    VISOR_DEFAULT_BRAND
+  );
 }
 
 /** Flip the <html> color-mode class and color-scheme without touching the theme class. Persists to localStorage. */
@@ -153,11 +163,18 @@ export function applyTheme(theme: string) {
   document.dispatchEvent(new CustomEvent("visor-theme-change"));
 }
 
-export function getStoredTheme(): string {
+/**
+ * Read the persisted theme. Only stock/custom slugs (`ALL_THEMES`) are accepted
+ * by default; the private gallery passes its slugs via `extraSlugs` so the Brand
+ * cohesion view can follow the private switcher (VI-489). Private slugs are not
+ * accepted globally — their CSS is route-scoped, so applying one elsewhere would
+ * leave the page unstyled.
+ */
+export function getStoredTheme(extraSlugs: string[] = []): string {
   if (typeof window === "undefined") return DEFAULT_THEME;
   try {
     const stored = localStorage.getItem(THEME_STORAGE_KEY);
-    if (stored && ALL_THEMES.includes(stored)) return stored;
+    if (stored && (ALL_THEMES.includes(stored) || extraSlugs.includes(stored))) return stored;
   } catch {}
   return DEFAULT_THEME;
 }

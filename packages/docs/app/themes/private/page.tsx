@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { PRIVATE_THEMES } from "@/lib/private-themes";
+import { BrandSection } from "@/components/playgrounds/sections/brand";
 import { PrivateThemeSwitcher } from "./private-theme-switcher";
 import { ThemePreview } from "./preview";
 import styles from "./page.module.css";
@@ -34,6 +35,10 @@ export default function PrivateThemesPage() {
         </div>
       </header>
       <ThemePreview />
+      <section className={styles.brandBlock} aria-label="Brand">
+        <h2 className={styles.brandHeading}>Brand</h2>
+        <BrandSection privateThemes={PRIVATE_THEMES} />
+      </section>
     </div>
   );
 }
