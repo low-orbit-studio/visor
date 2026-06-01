@@ -107,7 +107,7 @@ describe('Form-field override tokens — VI-494', () => {
     it('tag-input chip (line ~43) still uses bare --border-default', () => {
       const css = readCSS('tag-input')
       // Tag chip: border: 1px solid var(--border-default, ...)
-      expect(css).toMatch(/\.tag\s*\{[^}]*border:\s*1px solid var\(--border-default/s)
+      expect(css).toMatch(/\.tag\s*\{[^}]*border:\s*1px solid var\(--border-default/)
     })
   })
 })
