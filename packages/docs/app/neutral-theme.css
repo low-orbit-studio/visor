@@ -35,7 +35,7 @@
 /* --- Intent aliases (light) --- */
 html:not(.dark) .neutral-theme {
   --primary: #1798ad;
-  --primary-text: #ffffff;
+  --primary-text: var(--interactive-primary-text);
   --accent: #1798ad;
   --success: #22c55e;
   --warning: #f59e0b;
@@ -54,7 +54,7 @@ html:not(.dark) .neutral-theme {
 /* --- Intent aliases (dark) — manual toggle --- */
 .dark .neutral-theme {
   --primary: #1798ad;
-  --primary-text: #ffffff;
+  --primary-text: var(--interactive-primary-text);
   --accent: #1798ad;
   --success: #22c55e;
   --warning: #f59e0b;
@@ -72,9 +72,9 @@ html:not(.dark) .neutral-theme {
 
 /* --- Intent aliases (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .neutral-theme:not(.light) {
+  .neutral-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --primary: #1798ad;
-    --primary-text: #ffffff;
+    --primary-text: var(--interactive-primary-text);
     --accent: #1798ad;
     --success: #22c55e;
     --warning: #f59e0b;
@@ -86,7 +86,7 @@ html:not(.dark) .neutral-theme {
 
 /* --- Hairline aliases (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .neutral-theme:not(.light) {
+  .neutral-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --hairline: rgba(255, 255, 255, 0.06);
     --hairline-strong: rgba(255, 255, 255, 0.10);
   }
@@ -420,7 +420,7 @@ html:not(.dark) .neutral-theme {
 
 /* --- Adaptive: Text (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .neutral-theme:not(.light) {
+  .neutral-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --text-primary: #f5f5f6;
     --text-secondary: #b6b7bd;
     --text-tertiary: #8e8e97;
@@ -440,7 +440,7 @@ html:not(.dark) .neutral-theme {
 
 /* --- Adaptive: Surface (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .neutral-theme:not(.light) {
+  .neutral-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --surface-page: #09090b;
     --surface-card: #18181b;
     --surface-popover: #18181b;
@@ -479,7 +479,7 @@ html:not(.dark) .neutral-theme {
 
 /* --- Adaptive: Border (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .neutral-theme:not(.light) {
+  .neutral-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --border-default: #41414a;
     --border-muted: #2d2d34;
     --border-strong: #54545d;
@@ -495,7 +495,7 @@ html:not(.dark) .neutral-theme {
 
 /* --- Adaptive: Interactive (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .neutral-theme:not(.light) {
+  .neutral-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --interactive-primary-bg: #1798ad;
     --interactive-primary-bg-hover: #4fb0c3;
     --interactive-primary-bg-active: #89cfde;

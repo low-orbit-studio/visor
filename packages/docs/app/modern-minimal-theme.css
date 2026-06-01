@@ -51,7 +51,7 @@
 /* --- Intent aliases (light) --- */
 html:not(.dark) .modern-minimal-theme {
   --primary: #04bf81;
-  --primary-text: #ffffff;
+  --primary-text: var(--interactive-primary-text);
   --accent: #04bf81;
   --success: #22c55e;
   --warning: #f59e0b;
@@ -70,7 +70,7 @@ html:not(.dark) .modern-minimal-theme {
 /* --- Intent aliases (dark) — manual toggle --- */
 .dark .modern-minimal-theme {
   --primary: #02cd8d;
-  --primary-text: #ffffff;
+  --primary-text: var(--interactive-primary-text);
   --accent: #04bf81;
   --success: #22c55e;
   --warning: #f59e0b;
@@ -88,9 +88,9 @@ html:not(.dark) .modern-minimal-theme {
 
 /* --- Intent aliases (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .modern-minimal-theme:not(.light) {
+  .modern-minimal-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --primary: #02cd8d;
-    --primary-text: #ffffff;
+    --primary-text: var(--interactive-primary-text);
     --accent: #04bf81;
     --success: #22c55e;
     --warning: #f59e0b;
@@ -102,7 +102,7 @@ html:not(.dark) .modern-minimal-theme {
 
 /* --- Hairline aliases (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .modern-minimal-theme:not(.light) {
+  .modern-minimal-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --hairline: rgba(255, 255, 255, 0.06);
     --hairline-strong: rgba(255, 255, 255, 0.10);
   }
@@ -452,7 +452,7 @@ html:not(.dark) .modern-minimal-theme {
 
 /* --- Adaptive: Text (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .modern-minimal-theme:not(.light) {
+  .modern-minimal-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --text-primary: rgba(255, 255, 255, 0.7);
     --text-secondary: rgba(255, 255, 255, 0.70);
     --text-tertiary: rgba(255, 255, 255, 0.55);
@@ -472,7 +472,7 @@ html:not(.dark) .modern-minimal-theme {
 
 /* --- Adaptive: Surface (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .modern-minimal-theme:not(.light) {
+  .modern-minimal-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --surface-page: #000000;
     --surface-card: rgba(255, 255, 255, 0.04);
     --surface-popover: #141414;
@@ -511,7 +511,7 @@ html:not(.dark) .modern-minimal-theme {
 
 /* --- Adaptive: Border (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .modern-minimal-theme:not(.light) {
+  .modern-minimal-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --border-default: rgba(255, 255, 255, 0.06);
     --border-muted: rgba(255, 255, 255, 0.03);
     --border-strong: rgba(255, 255, 255, 0.1);
@@ -527,7 +527,7 @@ html:not(.dark) .modern-minimal-theme {
 
 /* --- Adaptive: Interactive (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .modern-minimal-theme:not(.light) {
+  .modern-minimal-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --interactive-primary-bg: #04bf81;
     --interactive-primary-bg-hover: #a0ffcf;
     --interactive-primary-bg-active: #bbffdb;
@@ -551,7 +551,7 @@ html:not(.dark) .modern-minimal-theme {
 
 /* --- Primitive overrides (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .modern-minimal-theme:not(.light) {
+  .modern-minimal-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --color-primary-50: #e7fbf0;
     --color-primary-100: #d7f7e6;
     --color-primary-200: #b8f4d5;
