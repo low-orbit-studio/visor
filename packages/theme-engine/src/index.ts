@@ -57,7 +57,12 @@ export {
 } from "./color.js";
 export { resolveConfig } from "./resolve.js";
 export { assignSemanticTokens } from "./assign.js";
-export { applyOverrides } from "./overrides.js";
+export {
+  applyOverrides,
+  collectBrandPassthrough,
+  hasBrandPassthrough,
+  type BrandPassthrough,
+} from "./overrides.js";
 export { SEMANTIC_MAP } from "./semantic-map.js";
 export {
   generatePrimitivesCss,

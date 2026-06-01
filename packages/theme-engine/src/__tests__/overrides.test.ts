@@ -1,4 +1,8 @@
-import { applyOverrides } from "../overrides.js";
+import {
+  applyOverrides,
+  collectBrandPassthrough,
+  hasBrandPassthrough,
+} from "../overrides.js";
 import type { SemanticTokens } from "../types.js";
 
 function buildMockTokens(): SemanticTokens {
@@ -195,5 +199,69 @@ describe("applyOverrides", () => {
     expect(result.border.focus.dark).toBe("#3b82f6");
     expect(result.border.error.light).toBe("#ef4444");
     expect(result.border.error.dark).toBe("#f87171");
+  });
+});
+
+describe("collectBrandPassthrough (VI-493)", () => {
+  it("returns empty maps when no overrides provided", () => {
+    const tokens = buildMockTokens();
+    const result = collectBrandPassthrough(tokens);
+    expect(result).toEqual({ light: {}, dark: {} });
+    expect(hasBrandPassthrough(result)).toBe(false);
+  });
+
+  it("captures unrecognized keys in both modes", () => {
+    const tokens = buildMockTokens();
+    const result = collectBrandPassthrough(tokens, {
+      light: { "strata-abyss": "#0a1a2f", "strata-tide": "#16324a" },
+      dark: { "strata-abyss": "#04101c", "strata-tide": "#0c2233" },
+    });
+    expect(result.light).toEqual({
+      "strata-abyss": "#0a1a2f",
+      "strata-tide": "#16324a",
+    });
+    expect(result.dark).toEqual({
+      "strata-abyss": "#04101c",
+      "strata-tide": "#0c2233",
+    });
+    expect(hasBrandPassthrough(result)).toBe(true);
+  });
+
+  it("excludes recognized semantic, intent, and hairline keys", () => {
+    const tokens = buildMockTokens();
+    const result = collectBrandPassthrough(tokens, {
+      light: {
+        "text-primary": "#000000", // recognized (text group)
+        primary: "#2563eb", // recognized (intent flat key)
+        hairline: "rgba(0,0,0,0.06)", // recognized (hairline.default)
+        "strata-abyss": "#0a1a2f", // unrecognized → passthrough
+      },
+    });
+    expect(result.light).toEqual({ "strata-abyss": "#0a1a2f" });
+    expect(result.dark).toEqual({});
+  });
+
+  it("supports mode-asymmetric pass-through tokens (light-only)", () => {
+    const tokens = buildMockTokens();
+    const result = collectBrandPassthrough(tokens, {
+      light: { "strata-deep-tide": "#0e2740" },
+    });
+    expect(result.light).toEqual({ "strata-deep-tide": "#0e2740" });
+    expect(result.dark).toEqual({});
+    expect(hasBrandPassthrough(result)).toBe(true);
+  });
+
+  it("does not affect applyOverrides — recognized tokens still flow through", () => {
+    const tokens = buildMockTokens();
+    const applied = applyOverrides(tokens, {
+      light: { "text-primary": "#000000", "strata-abyss": "#0a1a2f" },
+    });
+    // Recognized override applied; unrecognized one ignored by applyOverrides.
+    expect(applied.text.primary.light).toBe("#000000");
+    // And captured separately for brand passthrough.
+    const passthrough = collectBrandPassthrough(tokens, {
+      light: { "text-primary": "#000000", "strata-abyss": "#0a1a2f" },
+    });
+    expect(passthrough.light).toEqual({ "strata-abyss": "#0a1a2f" });
   });
 });
