@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.4.0
+
+### Minor Changes
+
+- ec76c47: Form-field override token fallbacks (VI-494). Every form-field component now
+  exposes a per-component CSS override token as the outer fallback so themes can
+  retune fill and border without editing component CSS: `--{cmp}-bg` /
+  `--{cmp}-border` on input, textarea, select, number-input, otp-input, combobox,
+  and tag-input; `--switch-track-bg` on the switch track; `--radio-border` on the
+  radio-group border. The full semantic fallback chain is preserved — a theme that
+  sets none of the new tokens renders byte-for-byte identically to today, so the
+  change is backward-compatible. Unblocks BL-227 (Blacklight solid field
+  treatment).
+- cb9a6dc: Adds a `--strict-dark` flag to `visor theme validate` that promotes `DARK_LIGHT_PARITY` warnings and missing `colors-dark.neutral` entries from non-blocking warnings to blocking errors. This enforces the "always both modes" authoring convention — every theme that sets `colors.neutral` must also set `colors-dark.neutral` to prevent brand-identical dark mid-surfaces across unrelated themes. The flag is opt-in today; flip to default in CI after all convergent themes supply their dark neutral. Documentation added to the theme authoring guide and CLI reference.
+- ef8e057: Introduces the `--field-menu-bg` semantic token (default `var(--surface-popover)`) and wires the four field-attached floating panels — Select content, Combobox listbox, DatePicker popover, and DateRangePicker popover — to use it. When `--field-menu-bg` is unset the fallback chain (`var(--surface-popover, var(--surface-card, #ffffff))`) preserves existing rendering identically. Themes that want the open menu to read as a continuation of the field trigger can override `--field-menu-bg` to match `--surface-interactive-default`. Non-field panels (DropdownMenu, ContextMenu, Menubar, Popover, Command) are untouched.
+
+### Patch Changes
+
+- cec4a8d: Four independent correctness fixes from the architecture audit: `visor-theme.schema.json` (both copies) now declares `label` and `default-mode` properties so themes using these fields pass JSON Schema linting; the docs adapter's `prefers-color-scheme: dark` media queries now use the correct triple-negation selector (`:not(.light):not(.theme-light):not([data-theme="light"])`) so the light-mode escape-hatch actually works; the private-theme generator threads `defaultMode` from the YAML `default-mode` field through `PrivateThemeEntry` so the switcher can force a theme's preferred color mode on activation; and `--primary-text` in the intent group is now a single-source alias of `var(--interactive-primary-text)` eliminating the duplicated constant while preserving per-theme overrides.
+- Updated dependencies [b256dd9]
+- Updated dependencies [cb9a6dc]
+- Updated dependencies [cec4a8d]
+  - @loworbitstudio/visor-theme-engine@0.14.0
+
 ## 1.3.4
 
 ### Patch Changes
