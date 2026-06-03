@@ -1,0 +1,265 @@
+name: Stale Version Packages PR Alert
+
+# Hourly check: if main has more than N pending changesets that
+# changeset-release/main has NOT yet consumed, post a Slack alert pointing
+# at the Version Packages PR so it doesn't silently rot.
+#
+# Algorithm (D2):
+#   - main's pending set  = .changeset/*.md files on main
+#   - consumed set        = .changeset/*.md files that exist on main but
+#                           are ABSENT on changeset-release/main (branch
+#                           deleted them when it applied them)
+#   - unconsumed drift    = pending set MINUS consumed set
+#                         = .changeset/*.md present on main AND also
+#                           still present on changeset-release/main
+#   Wait — actually the inverse: files on main that changeset-release/main
+#   has already consumed are DELETED from the branch. So:
+#   - unconsumed by branch = files on main that are ALSO on the branch
+#     (not yet consumed)   = the set that hasn't been pulled into the bump
+#
+# Idempotency (D5): a tiny state file caches the last-alerted drift
+# fingerprint (sorted SHA of unconsumed file names). A new alert fires only
+# when the fingerprint changes (new changesets added) or clears (drift→0).
+# The same pending set does not fire again every hour.
+#
+# Slack secret: secrets.SLACK_WEBHOOK_URL
+# No existing Slack integration was found in .github/workflows/ — operator
+# must set this secret. Channel is configured via the webhook itself.
+#
+# See: VI-365
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Hourly at :00
+    - cron: "0 * * * *"
+
+concurrency:
+  group: stale-version-packages-pr
+  cancel-in-progress: false
+
+jobs:
+  check-drift:
+    name: Check changeset drift
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Checkout main (full history)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Fetch changeset-release/main
+        # Fetch the branch so we can inspect its tree without checking it out.
+        # The branch may not exist if no changesets have ever been accumulated —
+        # in that case we treat it as "no changesets consumed", which means
+        # drift equals the full pending set on main.
+        run: |
+          git fetch origin changeset-release/main:changeset-release/main 2>/dev/null \
+            && echo "BRANCH_EXISTS=true" >> "$GITHUB_ENV" \
+            || echo "BRANCH_EXISTS=false" >> "$GITHUB_ENV"
+
+      - name: Compute unconsumed changesets
+        id: drift
+        run: |
+          # Files pending on main (exclude README.md which is static)
+          mapfile -t MAIN_FILES < <(
+            find .changeset -maxdepth 1 -name '*.md' ! -name 'README.md' \
+              -printf '%f\n' 2>/dev/null | sort
+          )
+          MAIN_COUNT=${#MAIN_FILES[@]}
+          echo "Pending changesets on main: $MAIN_COUNT"
+
+          if [ "$MAIN_COUNT" -eq 0 ]; then
+            echo "No pending changesets on main — nothing to check."
+            echo "drift_count=0" >> "$GITHUB_OUTPUT"
+            echo "drift_names=" >> "$GITHUB_OUTPUT"
+            echo "fingerprint=empty" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "$BRANCH_EXISTS" = "false" ]; then
+            # Branch doesn't exist yet → none consumed → all pending = all unconsumed
+            UNCONSUMED=("${MAIN_FILES[@]}")
+          else
+            # Files that exist on changeset-release/main (still unconsumed by it)
+            # git ls-tree lists the blob entries; we capture just the filenames.
+            mapfile -t BRANCH_FILES < <(
+              git ls-tree --name-only changeset-release/main .changeset/ 2>/dev/null \
+                | grep '\.md$' | grep -v 'README\.md' | xargs -I{} basename {} | sort
+            )
+
+            # Unconsumed = files on main that are ALSO still on the branch
+            # (the branch hasn't bumped them yet).  When the branch consumes a
+            # changeset it deletes the file, so presence on both = unconsumed.
+            UNCONSUMED=()
+            for f in "${MAIN_FILES[@]}"; do
+              if printf '%s\n' "${BRANCH_FILES[@]}" | grep -qxF "$f"; then
+                UNCONSUMED+=("$f")
+              fi
+            done
+          fi
+
+          DRIFT_COUNT=${#UNCONSUMED[@]}
+          echo "Unconsumed changesets (drift): $DRIFT_COUNT"
+          printf '  %s\n' "${UNCONSUMED[@]}"
+
+          # Build a stable fingerprint from the sorted list
+          FINGERPRINT=$(printf '%s\n' "${UNCONSUMED[@]}" | sha256sum | cut -d' ' -f1)
+
+          echo "drift_count=$DRIFT_COUNT" >> "$GITHUB_OUTPUT"
+          echo "fingerprint=$FINGERPRINT" >> "$GITHUB_OUTPUT"
+          # Newline-separated list for the Slack message (safe: filenames have no newlines)
+          printf -v NAMES '%s\n' "${UNCONSUMED[@]}"
+          {
+            echo "drift_names<<DRIFT_EOF"
+            printf '%s' "$NAMES"
+            echo "DRIFT_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Restore alert state cache
+        id: cache
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/vp-alert-state
+          # Key includes repo so forks don't share state
+          key: vp-alert-state-${{ github.repository }}
+
+      - name: Read last-alerted fingerprint
+        id: last_state
+        run: |
+          if [ -f /tmp/vp-alert-state/fingerprint ]; then
+            LAST=$(cat /tmp/vp-alert-state/fingerprint)
+          else
+            LAST=""
+          fi
+          echo "last_fingerprint=$LAST" >> "$GITHUB_OUTPUT"
+
+      - name: Decide whether to alert
+        id: should_alert
+        env:
+          DRIFT_COUNT: ${{ steps.drift.outputs.drift_count }}
+          FINGERPRINT: ${{ steps.drift.outputs.fingerprint }}
+          LAST_FINGERPRINT: ${{ steps.last_state.outputs.last_fingerprint }}
+        run: |
+          THRESHOLD=2
+          SHOULD_ALERT=false
+
+          if [ "$DRIFT_COUNT" -gt "$THRESHOLD" ]; then
+            # Drift exceeds threshold — only alert if the fingerprint changed
+            # (new changesets added or previously cleared state)
+            if [ "$FINGERPRINT" != "$LAST_FINGERPRINT" ]; then
+              SHOULD_ALERT=true
+              echo "New drift detected (count=$DRIFT_COUNT, fingerprint=$FINGERPRINT)"
+            else
+              echo "Drift persists but fingerprint unchanged — skipping re-alert."
+            fi
+          elif [ "$LAST_FINGERPRINT" != "" ] && [ "$LAST_FINGERPRINT" != "empty" ] && [ "$LAST_FINGERPRINT" != "resolved" ]; then
+            # Previously alerted; drift is now at or below threshold → auto-resolve
+            echo "Drift resolved (count=$DRIFT_COUNT ≤ $THRESHOLD) — will post resolution."
+            SHOULD_ALERT=true
+          else
+            echo "Drift within threshold (count=$DRIFT_COUNT ≤ $THRESHOLD) — no action."
+          fi
+
+          echo "should_alert=$SHOULD_ALERT" >> "$GITHUB_OUTPUT"
+
+      - name: Look up Version Packages PR number
+        if: steps.should_alert.outputs.should_alert == 'true'
+        id: vp_pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          GH_REPO_OWNER: ${{ github.repository_owner }}
+        run: |
+          PR_DATA=$(gh api \
+            "repos/${GH_REPO}/pulls?state=open&head=${GH_REPO_OWNER}:changeset-release/main&per_page=1" \
+            --jq '.[0] | {number: .number, url: .html_url}' 2>/dev/null || echo '{"number":null,"url":null}')
+          PR_NUM=$(echo "$PR_DATA" | jq -r '.number // "unknown"')
+          PR_URL=$(echo "$PR_DATA" | jq -r ".url // \"https://github.com/${GH_REPO}/pulls\"")
+          echo "pr_number=$PR_NUM" >> "$GITHUB_OUTPUT"
+          echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
+          echo "Version Packages PR: #$PR_NUM ($PR_URL)"
+
+      - name: Build Slack payload
+        if: steps.should_alert.outputs.should_alert == 'true'
+        id: slack_payload
+        env:
+          DRIFT_COUNT: ${{ steps.drift.outputs.drift_count }}
+          DRIFT_NAMES: ${{ steps.drift.outputs.drift_names }}
+          PR_NUMBER: ${{ steps.vp_pr.outputs.pr_number }}
+          PR_URL: ${{ steps.vp_pr.outputs.pr_url }}
+          THRESHOLD: "2"
+          REPO: ${{ github.repository }}
+        run: |
+          if [ "$DRIFT_COUNT" -le "$THRESHOLD" ]; then
+            # Auto-resolve message
+            PAYLOAD=$(jq -n \
+              --arg repo "$REPO" \
+              '{
+                text: (":white_check_mark: *Version Packages PR is back on track* — " + $repo + "\nChangeset drift has returned to ≤ 2. No further alerts until it grows again.")
+              }')
+          else
+            # Alert message — build file list
+            FILE_LIST=""
+            while IFS= read -r line; do
+              [ -z "$line" ] && continue
+              FILE_LIST+="• \`${line}\`\n"
+            done <<< "$DRIFT_NAMES"
+
+            PAYLOAD=$(jq -n \
+              --arg repo "$REPO" \
+              --arg pr_url "$PR_URL" \
+              --arg pr_num "$PR_NUMBER" \
+              --arg count "$DRIFT_COUNT" \
+              --arg files "$FILE_LIST" \
+              '{
+                text: (":warning: *Version Packages PR is " + $count + " changesets behind main* — " + $repo + "\nThe Version Packages PR (head: `changeset-release/main`) has not consumed " + $count + " pending changeset(s).\n\n*Unconsumed changesets:*\n" + $files + "\n*PR:* <" + $pr_url + "|#" + $pr_num + " Version Packages>")
+              }')
+          fi
+          echo "payload=$PAYLOAD" >> "$GITHUB_OUTPUT"
+
+      - name: Post Slack alert
+        if: steps.should_alert.outputs.should_alert == 'true'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          PAYLOAD: ${{ steps.slack_payload.outputs.payload }}
+        run: |
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST \
+            -H 'Content-type: application/json' \
+            --data "$PAYLOAD" \
+            "$SLACK_WEBHOOK_URL")
+          if [ "$HTTP_STATUS" -ne 200 ]; then
+            echo "::error::Slack webhook returned HTTP $HTTP_STATUS"
+            exit 1
+          fi
+          echo "Slack alert posted (HTTP $HTTP_STATUS)."
+
+      - name: Update alert state
+        if: steps.should_alert.outputs.should_alert == 'true'
+        env:
+          DRIFT_COUNT: ${{ steps.drift.outputs.drift_count }}
+          FINGERPRINT: ${{ steps.drift.outputs.fingerprint }}
+          THRESHOLD: "2"
+        run: |
+          mkdir -p /tmp/vp-alert-state
+          if [ "$DRIFT_COUNT" -le "$THRESHOLD" ]; then
+            # Drift resolved — clear the stored fingerprint so future drift
+            # can fire again from a clean slate.
+            echo "resolved" > /tmp/vp-alert-state/fingerprint
+          else
+            echo "$FINGERPRINT" > /tmp/vp-alert-state/fingerprint
+          fi
+
+      - name: Save alert state cache
+        if: steps.should_alert.outputs.should_alert == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/vp-alert-state
+          key: vp-alert-state-${{ github.repository }}-${{ github.run_id }}
