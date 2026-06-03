@@ -380,6 +380,30 @@ Add foo export to tokens.`;
     expect(result.bumpType).toBe('minor');
   });
 
+  it('emits a @loworbitstudio/visor patch changeset for a components-only CSS edit', async () => {
+    // VI-342 verification: a registry-only edit (e.g. CSS fix in components/ui/<x>/)
+    // must trip the gate AND have the generator emit a @loworbitstudio/visor patch
+    // changeset. No live test PR was opened; this unit test simulates the scenario.
+    const visorPatchOutput = `---
+# generated-by: lo-changeset
+"@loworbitstudio/visor": patch
+---
+
+Fix CSS layout in components/ui/button.`;
+    const written = [];
+    const result = await run(
+      makeDefaults({
+        getChangedFiles: () => ['components/ui/button/button.module.css'],
+        invokeClaudeImpl: () => visorPatchOutput,
+        writeOutput: (p, c) => written.push({ p, c }),
+      }),
+    );
+    expect(result.skipped).toBe(false);
+    expect(result.bumpType).toBe('patch');
+    expect(written).toHaveLength(1);
+    expect(written[0].c).toContain('"@loworbitstudio/visor": patch');
+  });
+
   it('does NOT flag when only packages/cli/scripts/ (tooling) changed', async () => {
     // [auto] verification: tooling-only edits must not flag (CI scopes to /src/**).
     const result = await run(

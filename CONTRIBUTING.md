@@ -214,6 +214,8 @@ Visor uses [changesets](https://github.com/changesets/changesets) to manage vers
 
 **Exempt paths:** `docs/`, `packages/docs/`, `**/*.mdx`, `**/*.md`, `widgetbook/`, and other tooling/infra paths do not require a changeset.
 
+**Registry path → package mapping (VI-342, Option A):** Changes under `components/`, `blocks/`, `hooks/`, `lib/`, `registry/`, `themes/`, `patterns/`, and `assets/` belong to the `@loworbitstudio/visor` CLI/registry package (not `@loworbitstudio/visor-core`). A registry-only edit such as a CSS fix in `components/ui/button/` should produce a `@loworbitstudio/visor` `patch` changeset. The `/lo-changeset` skill and the `Changeset Gate` CI check share a single source of truth — `changeset-paths.json` at the repo root — so both stay aligned automatically when the path list changes. Token/CLI/theme-engine edits continue to use their existing package names as before.
+
 ### Adding a changeset
 
 **Option 1 — CLI (recommended):**
