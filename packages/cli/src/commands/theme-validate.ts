@@ -111,6 +111,9 @@ export function themeValidateCommand(
     logger.error("Validation failed. Fix the errors above before applying this theme.")
     process.exit(1)
   }
+
+  // Valid theme with warnings — terminate with success (warnings are non-blocking).
+  process.exit(0)
 }
 
 function printIssue(issue: ValidationIssue): void {

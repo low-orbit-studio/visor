@@ -424,7 +424,7 @@ html:not(.dark) .space-theme {
   --interactive-secondary-border: #51515d;
   --interactive-destructive-bg: #ef4444;
   --interactive-destructive-bg-hover: #c3041e;
-  --interactive-destructive-text: #ffffff;
+  --interactive-destructive-text: #FFFFFF;
   --interactive-ghost-bg: #2b2b36;
   --interactive-ghost-bg-hover: #3f3f4b;
 }
@@ -522,7 +522,7 @@ html:not(.dark) .space-theme {
     --interactive-secondary-border: #51515d;
     --interactive-destructive-bg: #ef4444;
     --interactive-destructive-bg-hover: #c3041e;
-    --interactive-destructive-text: #ffffff;
+    --interactive-destructive-text: #FFFFFF;
     --interactive-ghost-bg: #2b2b36;
     --interactive-ghost-bg-hover: #3f3f4b;
   }
@@ -616,7 +616,7 @@ html:not(.dark) .space-theme {
   --interactive-secondary-border: #b4b4c2;
   --interactive-destructive-bg: #c3041e;
   --interactive-destructive-bg-hover: #990015;
-  --interactive-destructive-text: #ffffff;
+  --interactive-destructive-text: #FFFFFF;
   --interactive-ghost-bg: #ffffff;
   --interactive-ghost-bg-hover: #e7e7ed;
 }

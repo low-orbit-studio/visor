@@ -411,7 +411,7 @@ html:not(.dark) .borderless-theme {
   --interactive-primary-bg: #6beba5;
   --interactive-primary-bg-hover: #83f2b2;
   --interactive-primary-bg-active: #a6f9c7;
-  --interactive-primary-text: #ffffff;
+  --interactive-primary-text: #FFFFFF;
   --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
   --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
   --interactive-primary-strong: #83f2b2;
@@ -422,7 +422,7 @@ html:not(.dark) .borderless-theme {
   --interactive-secondary-border: #282828;
   --interactive-destructive-bg: #ef4444;
   --interactive-destructive-bg-hover: #c3041e;
-  --interactive-destructive-text: #ffffff;
+  --interactive-destructive-text: #FFFFFF;
   --interactive-ghost-bg: #181818;
   --interactive-ghost-bg-hover: #212121;
 }
@@ -509,7 +509,7 @@ html:not(.dark) .borderless-theme {
     --interactive-primary-bg: #6beba5;
     --interactive-primary-bg-hover: #83f2b2;
     --interactive-primary-bg-active: #a6f9c7;
-    --interactive-primary-text: #ffffff;
+    --interactive-primary-text: #FFFFFF;
     --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
     --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
     --interactive-primary-strong: #83f2b2;
@@ -520,7 +520,7 @@ html:not(.dark) .borderless-theme {
     --interactive-secondary-border: #282828;
     --interactive-destructive-bg: #ef4444;
     --interactive-destructive-bg-hover: #c3041e;
-    --interactive-destructive-text: #ffffff;
+    --interactive-destructive-text: #FFFFFF;
     --interactive-ghost-bg: #181818;
     --interactive-ghost-bg-hover: #212121;
   }
@@ -603,7 +603,7 @@ html:not(.dark) .borderless-theme {
   --interactive-primary-bg: #23b270;
   --interactive-primary-bg-hover: #008952;
   --interactive-primary-bg-active: #005c35;
-  --interactive-primary-text: #ffffff;
+  --interactive-primary-text: #FFFFFF;
   --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
   --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
   --interactive-primary-strong: #23b270;
@@ -614,7 +614,7 @@ html:not(.dark) .borderless-theme {
   --interactive-secondary-border: transparent;
   --interactive-destructive-bg: #c3041e;
   --interactive-destructive-bg-hover: #990015;
-  --interactive-destructive-text: #ffffff;
+  --interactive-destructive-text: #FFFFFF;
   --interactive-ghost-bg: transparent;
   --interactive-ghost-bg-hover: #191919;
 }
@@ -630,9 +630,9 @@ html:not(.dark) .borderless-theme {
   --color-fd-muted: #191919;
   --color-fd-muted-foreground: #c2c2c2;
   --color-fd-accent: #6beba5;
-  --color-fd-accent-foreground: #ffffff;
+  --color-fd-accent-foreground: #FFFFFF;
   --color-fd-primary: #6beba5;
-  --color-fd-primary-foreground: #ffffff;
+  --color-fd-primary-foreground: #FFFFFF;
   --color-fd-secondary: #191919;
   --color-fd-secondary-foreground: #f5f5f5;
   --color-fd-popover: #111115;
@@ -651,9 +651,9 @@ html:not(.dark) .borderless-theme {
   --color-fd-muted: #191919;
   --color-fd-muted-foreground: #c2c2c2;
   --color-fd-accent: #6beba5;
-  --color-fd-accent-foreground: #ffffff;
+  --color-fd-accent-foreground: #FFFFFF;
   --color-fd-primary: #6beba5;
-  --color-fd-primary-foreground: #ffffff;
+  --color-fd-primary-foreground: #FFFFFF;
   --color-fd-secondary: #191919;
   --color-fd-secondary-foreground: #f5f5f5;
   --color-fd-popover: #111115;
