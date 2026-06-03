@@ -99,6 +99,17 @@ describe("Badge", () => {
     expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "filled-info")
   })
 
+  it("applies data-variant for neutral variant", () => {
+    render(<Badge variant="neutral">Badge</Badge>)
+    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "neutral")
+  })
+
+  it("applies variantNeutral CSS class for neutral variant", () => {
+    render(<Badge variant="neutral">Draft</Badge>)
+    const el = screen.getByText("Draft")
+    expect(el.className).toMatch(/variantNeutral/)
+  })
+
   it("forwards ref", () => {
     const ref = { current: null }
     render(<Badge ref={ref}>Badge</Badge>)

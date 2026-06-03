@@ -16,19 +16,19 @@ when_not_to_use:
   - Decorative icons without text meaning (use an icon directly)
 
 why: >
-  Badge provides eleven semantic variants across tonal and filled styles — default,
-  secondary, outline, destructive, success, warning, info, and filled versions of
+  Badge provides twelve semantic variants across tonal and filled styles — default,
+  secondary, outline, neutral, destructive, success, warning, info, and filled versions of
   the semantic states. The consistent pill shape, font sizing, and color tokens keep
   badges readable at small sizes. Focus ring support means badges can be interactive
   when wrapped in buttons or links.
 
 variants:
-  variant: [default, secondary, outline, destructive, success, warning, info, filled-destructive, filled-success, filled-warning, filled-info]
+  variant: [default, secondary, outline, neutral, destructive, success, warning, info, filled-destructive, filled-success, filled-warning, filled-info]
   size: [sm, md, lg]
 
 props:
   - name: variant
-    type: '"default" | "secondary" | "outline" | "destructive" | "success" | "warning" | "info" | "filled-destructive" | "filled-success" | "filled-warning" | "filled-info"'
+    type: '"default" | "secondary" | "outline" | "neutral" | "destructive" | "success" | "warning" | "info" | "filled-destructive" | "filled-success" | "filled-warning" | "filled-info"'
     default: '"default"'
   - name: size
     type: '"sm" | "md" | "lg"'
@@ -47,8 +47,9 @@ preview_url: "https://visor.loworbit.studio/docs/components/data-display/badge"
 
 example: |
   <Badge variant="default">Active</Badge>
-  <Badge variant="secondary">Draft</Badge>
+  <Badge variant="secondary">Secondary</Badge>
   <Badge variant="outline">v2.1.0</Badge>
+  <Badge variant="neutral">Draft</Badge>
   <Badge variant="destructive">Error</Badge>
   <Badge variant="success">Published</Badge>
   <Badge variant="warning">Pending</Badge>

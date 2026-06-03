@@ -7,6 +7,7 @@ declare const styles: {
   readonly variantSuccess: string
   readonly variantWarning: string
   readonly variantInfo: string
+  readonly variantNeutral: string
   readonly variantFilledDestructive: string
   readonly variantFilledSuccess: string
   readonly variantFilledWarning: string
