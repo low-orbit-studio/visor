@@ -13,32 +13,32 @@
 
 /* Variants */
 .variantDefault {
-  background-color: var(--surface-card, #ffffff);
-  color: var(--text-primary, #111827);
+  background-color: var(--surface-card, transparent);
+  color: var(--text-primary, currentColor);
 }
 
 .variantDestructive {
-  background-color: var(--surface-error-subtle, #fef2f2);
-  color: var(--text-error, #b91c1c);
-  border: 1px solid var(--border-error, #ef4444);
+  background-color: var(--surface-error-subtle, transparent);
+  color: var(--text-error, currentColor);
+  border: 1px solid var(--border-error, currentColor);
 }
 
 .variantSuccess {
-  background-color: var(--surface-success-subtle, #f0fdf4);
-  color: var(--text-success, #15803d);
-  border: 1px solid var(--border-success, #22c55e);
+  background-color: var(--surface-success-subtle, transparent);
+  color: var(--text-success, currentColor);
+  border: 1px solid var(--border-success, currentColor);
 }
 
 .variantWarning {
-  background-color: var(--surface-warning-subtle, #fffbeb);
-  color: var(--text-warning, #b45309);
-  border: 1px solid var(--border-warning, #f59e0b);
+  background-color: var(--surface-warning-subtle, transparent);
+  color: var(--text-warning, currentColor);
+  border: 1px solid var(--border-warning, currentColor);
 }
 
 .variantInfo {
-  background-color: var(--surface-info-subtle, #f0f9ff);
-  color: var(--text-info, #0369a1);
-  border: 1px solid var(--border-info, #0ea5e9);
+  background-color: var(--surface-info-subtle, transparent);
+  color: var(--text-info, currentColor);
+  border: 1px solid var(--border-info, currentColor);
 }
 
 /* AlertTitle */
@@ -51,7 +51,7 @@
 /* AlertDescription */
 .description {
   font-size: var(--font-size-sm, 0.875rem);
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary, currentColor);
   line-height: 1.5;
 }
 
@@ -66,17 +66,17 @@
 }
 
 .variantDestructive .description {
-  color: color-mix(in srgb, var(--text-error, #b91c1c) 90%, transparent);
+  color: color-mix(in srgb, var(--text-error, currentColor) 90%, transparent);
 }
 
 .variantSuccess .description {
-  color: color-mix(in srgb, var(--text-success, #15803d) 90%, transparent);
+  color: color-mix(in srgb, var(--text-success, currentColor) 90%, transparent);
 }
 
 .variantWarning .description {
-  color: color-mix(in srgb, var(--text-warning, #b45309) 90%, transparent);
+  color: color-mix(in srgb, var(--text-warning, currentColor) 90%, transparent);
 }
 
 .variantInfo .description {
-  color: color-mix(in srgb, var(--text-info, #0369a1) 90%, transparent);
+  color: color-mix(in srgb, var(--text-info, currentColor) 90%, transparent);
 }
