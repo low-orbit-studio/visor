@@ -190,7 +190,7 @@
 
 .tab:focus-visible {
   outline: var(--focus-ring-width, 2px) solid
-    var(--focus-ring-color, var(--prototype-review-brand, var(--accent-primary)));
+    var(--focus-ring-color, var(--prototype-review-brand, var(--primary)));
   outline-offset: calc(var(--focus-ring-offset, 2px) * -1);
 }
 
@@ -229,7 +229,7 @@
 
 .themeSelect:focus-visible {
   outline: var(--focus-ring-width, 2px) solid
-    var(--focus-ring-color, var(--prototype-review-brand, var(--accent-primary)));
+    var(--focus-ring-color, var(--prototype-review-brand, var(--primary)));
   outline-offset: var(--focus-ring-offset, 2px);
 }
 
@@ -278,7 +278,7 @@
 
 .toggleButton:focus-visible {
   outline: var(--focus-ring-width, 2px) solid
-    var(--focus-ring-color, var(--prototype-review-brand, var(--accent-primary)));
+    var(--focus-ring-color, var(--prototype-review-brand, var(--primary)));
   outline-offset: calc(var(--focus-ring-offset, 2px) * -1);
 }
 
@@ -322,7 +322,7 @@
 
 .swatch:focus-visible {
   outline: var(--focus-ring-width, 2px) solid
-    var(--focus-ring-color, var(--prototype-review-brand, var(--accent-primary)));
+    var(--focus-ring-color, var(--prototype-review-brand, var(--primary)));
   outline-offset: var(--focus-ring-offset, 2px);
 }
 
@@ -346,7 +346,7 @@
 
 .hexInput:focus-visible {
   outline: var(--focus-ring-width, 2px) solid
-    var(--focus-ring-color, var(--prototype-review-brand, var(--accent-primary)));
+    var(--focus-ring-color, var(--prototype-review-brand, var(--primary)));
   outline-offset: var(--focus-ring-offset, 2px);
 }
 
@@ -375,7 +375,7 @@
 
 .resetButton:focus-visible {
   outline: var(--focus-ring-width, 2px) solid
-    var(--focus-ring-color, var(--prototype-review-brand, var(--accent-primary)));
+    var(--focus-ring-color, var(--prototype-review-brand, var(--primary)));
   outline-offset: var(--focus-ring-offset, 2px);
 }
 
@@ -414,7 +414,7 @@
 
 .stageTitle em {
   font-style: normal;
-  color: var(--prototype-review-brand, var(--accent-primary));
+  color: var(--prototype-review-brand, var(--primary));
 }
 
 .stageSummary {
@@ -500,7 +500,7 @@
   font-size: var(--font-size-sm);
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--prototype-review-brand, var(--accent-primary));
+  color: var(--prototype-review-brand, var(--primary));
   margin-bottom: var(--spacing-4);
 }
 
@@ -518,7 +518,7 @@
 
 .landingTitle em {
   font-style: normal;
-  color: var(--prototype-review-brand, var(--accent-primary));
+  color: var(--prototype-review-brand, var(--primary));
 }
 
 .landingLede {
@@ -531,7 +531,7 @@
 
 .landingLede code {
   font-family: var(--font-mono, var(--font-family-mono, monospace));
-  color: var(--prototype-review-brand, var(--accent-primary));
+  color: var(--prototype-review-brand, var(--primary));
   font-size: 0.95em;
 }
 
@@ -568,7 +568,7 @@
 
 .protoCard:focus-visible {
   outline: var(--focus-ring-width, 2px) solid
-    var(--focus-ring-color, var(--prototype-review-brand, var(--accent-primary)));
+    var(--focus-ring-color, var(--prototype-review-brand, var(--primary)));
   outline-offset: var(--focus-ring-offset, 2px);
 }
 
@@ -577,7 +577,7 @@
   font-size: var(--font-size-xs);
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--prototype-review-brand, var(--accent-primary));
+  color: var(--prototype-review-brand, var(--primary));
 }
 
 .protoCardTitle {
@@ -619,7 +619,7 @@
   font-size: var(--font-size-sm);
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--prototype-review-brand, var(--accent-primary));
+  color: var(--prototype-review-brand, var(--primary));
   margin-bottom: var(--spacing-2);
 }
 

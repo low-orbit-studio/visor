@@ -27,7 +27,7 @@
 
 .trigger:focus-visible {
   outline: var(--focus-ring-width, 2px) solid
-    var(--focus-ring-color, var(--accent-primary, #3b82f6));
+    var(--focus-ring-color, var(--primary, #3b82f6));
   outline-offset: var(--focus-ring-offset, 2px);
 }
 

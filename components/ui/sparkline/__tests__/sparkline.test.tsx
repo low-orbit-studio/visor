@@ -74,11 +74,11 @@ describe("Sparkline", () => {
     expect(svg).toHaveAttribute("viewBox", "0 0 160 48")
   })
 
-  it("defaults stroke to var(--accent-primary)", () => {
+  it("defaults stroke to the theme brand color with a currentColor fallback", () => {
     const { container } = render(<Sparkline values={SAMPLE} />)
     expect(container.querySelector("polyline")).toHaveAttribute(
       "stroke",
-      "var(--accent-primary)"
+      "var(--primary, currentColor)"
     )
   })
 
@@ -207,19 +207,22 @@ describe("Sparkline animation", () => {
     expect(classes.some((c) => c.includes("animatedPolyline"))).toBe(false)
   })
 
-  it("sets stroke-dasharray and stroke-dashoffset when animate=true", () => {
+  it("sets stroke-dasharray and --sparkline-length when animate=true", () => {
     const { container } = render(<Sparkline values={SAMPLE} />)
-    const polyline = container.querySelector("polyline")
-    // Before the rAF fires in JSDOM, dashoffset equals dasharray (not yet drawn)
+    const polyline = container.querySelector("polyline") as SVGPolylineElement
+    // The dash geometry is set inline (SSR-safe); the draw is a CSS keyframe whose
+    // resting state is stroke-dashoffset:0, so dashoffset is NOT set inline.
     expect(polyline?.style.strokeDasharray).not.toBe("")
-    expect(polyline?.style.strokeDashoffset).not.toBe("")
+    expect(polyline?.style.getPropertyValue("--sparkline-length")).not.toBe("")
+    expect(polyline?.style.strokeDashoffset).toBe("")
   })
 
-  it("does NOT set stroke-dasharray or stroke-dashoffset when animate={false}", () => {
+  it("does NOT set dash geometry when animate={false}", () => {
     const { container } = render(<Sparkline values={SAMPLE} animate={false} />)
-    const polyline = container.querySelector("polyline")
+    const polyline = container.querySelector("polyline") as SVGPolylineElement
     expect(polyline?.style.strokeDasharray).toBe("")
     expect(polyline?.style.strokeDashoffset).toBe("")
+    expect(polyline?.style.getPropertyValue("--sparkline-length")).toBe("")
   })
 
   it("applies custom duration via CSS custom property when animate=true", () => {

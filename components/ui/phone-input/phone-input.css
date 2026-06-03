@@ -139,7 +139,7 @@
 
 /* Selected/active country — match interactive primary */
 .iti__country.iti__active {
-  background-color: var(--interactive-primary-bg, var(--accent-primary, #111827)) !important;
+  background-color: var(--interactive-primary-bg, var(--primary, #111827)) !important;
   color: var(--text-inverse, #ffffff) !important;
 }
 

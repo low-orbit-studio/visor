@@ -9,13 +9,13 @@ import { Sparkline } from '@/components/ui/sparkline';
 
 ## Default
 
-Sparkline renders a single polyline from a numeric series. By default it ships at 96×22 — sized for a stat-card trend slot — and pulls its stroke from `var(--accent-primary)` so it adapts automatically across themes.
+Sparkline renders a single polyline from a numeric series. By default it ships at 96×22 — sized for a stat-card trend slot — and pulls its stroke from `var(--primary, currentColor)` so it adapts automatically across themes.
 
 <ComponentPreview
   title="Default Sparkline"
-  code={"import { Sparkline } from '@/components/ui/sparkline/sparkline';\n\n<Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} />"}
+  code={"import { Sparkline } from '@/components/ui/sparkline/sparkline';\n\n<Sparkline values={[18, 32, 24, 45, 38, 60, 41, 72, 55, 48, 78, 64]} />"}
 >
-  <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} />
+  <Sparkline values={[18, 32, 24, 45, 38, 60, 41, 72, 55, 48, 78, 64]} />
 </ComponentPreview>
 
 ## Custom Dimensions
@@ -24,22 +24,22 @@ Pass `width` and `height` to size the sparkline for a larger slot, a sidebar wid
 
 <ComponentPreview
   title="Custom dimensions"
-  code={"<Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} width={160} height={48} />"}
+  code={"<Sparkline values={[30, 55, 38, 70, 48, 82, 60, 45, 75, 58, 90, 72]} width={160} height={48} />"}
 >
-  <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} width={160} height={48} />
+  <Sparkline values={[30, 55, 38, 70, 48, 82, 60, 45, 75, 58, 90, 72]} width={160} height={48} />
 </ComponentPreview>
 
 ## Color Override
 
-The default stroke is `var(--accent-primary)`. Override `color` with any CSS color string — a token, hex, or hsl — to express direction (success vs. warning) or to match a card's accent.
+The default stroke is `var(--primary, currentColor)`. Override `color` with any CSS color string — a token, hex, or hsl — to express direction (success vs. warning) or to match a card's accent.
 
 <ComponentPreview
   title="Color override"
-  code={"<Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} color=\"var(--text-success)\" />\n<Sparkline values={[84, 71, 62, 54, 48, 41, 36, 27, 19, 22, 18, 12]} color=\"var(--text-error)\" />"}
+  code={"<Sparkline values={[22, 18, 34, 28, 46, 40, 58, 52, 70, 66, 84, 92]} color=\"var(--text-success)\" />\n<Sparkline values={[92, 84, 66, 70, 52, 58, 40, 46, 28, 34, 18, 12]} color=\"var(--text-error)\" />"}
 >
   <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-    <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} color="var(--text-success)" />
-    <Sparkline values={[84, 71, 62, 54, 48, 41, 36, 27, 19, 22, 18, 12]} color="var(--text-error)" />
+    <Sparkline values={[22, 18, 34, 28, 46, 40, 58, 52, 70, 66, 84, 92]} color="var(--text-success)" />
+    <Sparkline values={[92, 84, 66, 70, 52, 58, 40, 46, 28, 34, 18, 12]} color="var(--text-error)" />
   </div>
 </ComponentPreview>
 
@@ -49,11 +49,11 @@ By default the SVG is marked `aria-hidden="true"` — the surrounding label and 
 
 <ComponentPreview
   title="Decorative vs labeled"
-  code={"<Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} />\n<Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} aria-label=\"RSVPs over the last 12 weeks\" />"}
+  code={"<Sparkline values={[12, 20, 16, 34, 48, 42, 66, 58, 80, 72, 54, 62]} />\n<Sparkline values={[12, 20, 16, 34, 48, 42, 66, 58, 80, 72, 54, 62]} aria-label=\"RSVPs over the last 12 weeks\" />"}
 >
   <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-    <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} />
-    <Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} aria-label="RSVPs over the last 12 weeks" />
+    <Sparkline values={[12, 20, 16, 34, 48, 42, 66, 58, 80, 72, 54, 62]} />
+    <Sparkline values={[12, 20, 16, 34, 48, 42, 66, 58, 80, 72, 54, 62]} aria-label="RSVPs over the last 12 weeks" />
   </div>
 </ComponentPreview>
 
@@ -76,7 +76,7 @@ import { Sparkline } from '@/components/ui/sparkline/sparkline';
 <StatCard
   label="RSVPs tonight"
   value="847"
-  trend={<Sparkline values={[12, 18, 22, 19, 27, 36, 41, 48, 54, 62, 71, 84]} />}
+  trend={<Sparkline values={[18, 32, 24, 45, 38, 60, 41, 72, 55, 48, 78, 64]} />}
 />
 ```
 

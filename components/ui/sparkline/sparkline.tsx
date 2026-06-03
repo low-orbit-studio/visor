@@ -9,7 +9,11 @@ export interface SparklineProps
   width?: number
   /** SVG height in px. Defaults to 22. */
   height?: number
-  /** Stroke color — accepts CSS var, hex, hsl. Defaults to `var(--accent-primary)`. */
+  /**
+   * Stroke color — accepts CSS var, hex, hsl. Defaults to the theme brand color
+   * (`var(--primary, currentColor)`); `currentColor` is the can't-go-invisible
+   * fallback if a theme omits `--primary`.
+   */
   color?: string
   /** Stroke width in px. Defaults to 1.5. */
   strokeWidth?: number
@@ -51,7 +55,7 @@ const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
       values,
       width = 96,
       height = 22,
-      color = "var(--accent-primary)",
+      color = "var(--primary, currentColor)",
       strokeWidth = 1.5,
       fluid = false,
       animate = true,
@@ -62,54 +66,37 @@ const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
     },
     ref
   ) => {
-    // Animation state: track whether the draw has been triggered.
-    // Hooks must be called unconditionally before any early return.
-    const [drawn, setDrawn] = React.useState(false)
+    if (values == null || values.length < 2) return null
 
-    const hasEnoughValues = values != null && values.length >= 2
-
-    const min = hasEnoughValues ? Math.min(...values) : 0
-    const max = hasEnoughValues ? Math.max(...values) : 0
+    const min = Math.min(...values)
+    const max = Math.max(...values)
     const range = max - min || 1
-    const stepX = hasEnoughValues ? width / (values.length - 1) : 0
+    const stepX = width / (values.length - 1)
 
-    const pointPairs: [number, number][] = hasEnoughValues
-      ? values.map((v, i) => [
-          i * stepX,
-          height - ((v - min) / range) * height,
-        ])
-      : []
+    const pointPairs: [number, number][] = values.map((v, i) => [
+      i * stepX,
+      height - ((v - min) / range) * height,
+    ])
     const points = pointPairs
       .map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`)
       .join(" ")
 
-    const totalLength = React.useMemo(
-      () => (animate ? polylineLength(pointPairs) : 0),
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [animate, points]
-    )
-
-    React.useEffect(() => {
-      if (!animate) return
-      // Trigger transition on next frame so the browser has painted the initial
-      // dashoffset state before we flip to 0.
-      const raf = requestAnimationFrame(() => {
-        setDrawn(true)
-      })
-      return () => cancelAnimationFrame(raf)
-    }, [animate])
-
-    if (!hasEnoughValues) return null
-
     const isLabeled = typeof ariaLabel === "string" && ariaLabel.length > 0
 
+    // Entrance animation is driven entirely by CSS (`@keyframes sparkline-draw`).
+    // The polyline's resting state is fully drawn (`stroke-dashoffset: 0`), so the
+    // line is always visible — even during SSR or if JS never runs. The keyframe
+    // animates from `--sparkline-length` (fully undrawn) to 0 on mount. This is
+    // SSR-safe and behaves identically on reload and client navigation; there is
+    // no JS state to race against hydration.
+    const totalLength = animate ? polylineLength(pointPairs) : 0
     const polylineProps = animate
       ? {
           className: styles.animatedPolyline,
           style: {
             "--sparkline-animation-duration": `${duration}ms`,
+            "--sparkline-length": `${totalLength}`,
             strokeDasharray: totalLength,
-            strokeDashoffset: drawn ? 0 : totalLength,
           } as React.CSSProperties,
         }
       : {}

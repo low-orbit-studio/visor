@@ -1,4 +1,4 @@
-import { render, screen, act, waitFor } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import { describe, it, expect, vi, afterEach } from "vitest"
 import { Progress } from "../progress"
 import { checkA11y } from "../../../../test-utils/a11y"
@@ -102,29 +102,27 @@ describe("Progress entrance animation", () => {
     vi.restoreAllMocks()
   })
 
-  it("starts at translateX(-100%) before rAF fires (default animate=true)", () => {
+  it("renders the indicator at its real value immediately (no empty-bar flash)", () => {
+    // The indicator's resting transform is always the real value — SSR-safe and
+    // visible before/without hydration. The entrance sweep is a pure CSS keyframe.
     const { container } = render(<Progress value={75} />)
     const indicator = container.querySelector("[data-slot='progress-indicator']")
-    // Before rAF: displayValue is 0 → indicator at 0% fill
-    expect((indicator as HTMLElement).style.transform).toBe("translateX(-100%)")
+    expect((indicator as HTMLElement).style.transform).toBe("translateX(-25%)")
   })
 
-  it("animates to target value after rAF fires", async () => {
-    // jsdom's requestAnimationFrame does not auto-fire callbacks; mock it to
-    // invoke the callback synchronously so we can assert the post-animation state.
-    const rafSpy = vi
-      .spyOn(window, "requestAnimationFrame")
-      .mockImplementation((cb) => { cb(0); return 1 })
-
+  it("applies the entrance-animation class by default (animate=true)", () => {
     const { container } = render(<Progress value={75} />)
     const indicator = container.querySelector("[data-slot='progress-indicator']")
+    const classes = Array.from((indicator as HTMLElement).classList)
+    expect(classes.some((c) => c.includes("indicatorAnimated"))).toBe(true)
+  })
 
-    await act(async () => {
-      // rAF was called synchronously in the mock, so state is already updated.
-    })
-
-    expect((indicator as HTMLElement).style.transform).toBe("translateX(-25%)")
-    rafSpy.mockRestore()
+  it("renders at value and omits the entrance class when animate={false}", () => {
+    const { container } = render(<Progress value={50} animate={false} />)
+    const indicator = container.querySelector("[data-slot='progress-indicator']")
+    expect((indicator as HTMLElement).style.transform).toBe("translateX(-50%)")
+    const classes = Array.from((indicator as HTMLElement).classList)
+    expect(classes.some((c) => c.includes("indicatorAnimated"))).toBe(false)
   })
 
   it("sets --progress-animation-duration to default 1500ms", async () => {
@@ -146,30 +144,9 @@ describe("Progress entrance animation", () => {
     expect((indicator as HTMLElement).style.getPropertyValue("--progress-animation-duration")).toBe("")
   })
 
-  it("fills instantly when prefers-reduced-motion is set", async () => {
-    // Override the global matchMedia mock to return matches: true for reduced motion
-    vi.spyOn(window, "matchMedia").mockImplementation((query: string) => ({
-      matches: query === "(prefers-reduced-motion: reduce)",
-      media: query,
-      onchange: null,
-      addListener: () => {},
-      removeListener: () => {},
-      addEventListener: () => {},
-      removeEventListener: () => {},
-      dispatchEvent: () => false,
-    }))
-
-    const { container } = render(<Progress value={60} />)
-    const indicator = container.querySelector("[data-slot='progress-indicator']")
-
-    // With reduced motion, setDisplayValue is called synchronously (no rAF),
-    // so after useEffect flushes the value should be set.
-    await act(async () => {
-      await waitFor(() => {
-        expect((indicator as HTMLElement).style.transform).toBe("translateX(-40%)")
-      })
-    })
-  })
+  // Reduced-motion handling is now CSS-only (`@media (prefers-reduced-motion: reduce)`
+  // disables the keyframe + transition). The indicator already renders at its real
+  // value, so there is no JS branch left to unit-test in jsdom.
 })
 
 describe("accessibility", () => {

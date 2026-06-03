@@ -33,7 +33,7 @@
 
 /* Variants */
 .variantDefault {
-  background-color: var(--interactive-primary-bg, var(--accent-primary, #111827));
+  background-color: var(--interactive-primary-bg, var(--primary, #111827));
   color: var(--interactive-primary-text, #f9fafb);
 }
 

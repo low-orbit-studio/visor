@@ -26,45 +26,16 @@ const Progress = React.forwardRef<
     { className, value, size = "default", animate = true, duration = 1500, ...props },
     ref
   ) => {
-    // Entrance animation: start at 0, sweep to value on first mount.
-    // When animate=false, skip state entirely — render value directly.
-    const isFirstRender = React.useRef(true)
-    const [displayValue, setDisplayValue] = React.useState(0)
-
-    React.useEffect(() => {
-      if (!animate) return
-
-      if (isFirstRender.current) {
-        isFirstRender.current = false
-
-        const prefersReduced =
-          typeof window !== "undefined" &&
-          window.matchMedia("(prefers-reduced-motion: reduce)").matches
-
-        if (prefersReduced) {
-          setDisplayValue(value ?? 0)
-          return
-        }
-
-        // One rAF defers the state update until after the first painted frame,
-        // ensuring the browser sees the 0% position before animating to value%.
-        const raf = requestAnimationFrame(() => {
-          setDisplayValue(value ?? 0)
-        })
-        return () => cancelAnimationFrame(raf)
-      }
-
-      // Subsequent value changes — update immediately (CSS transition handles it)
-      setDisplayValue(value ?? 0)
-    }, [animate, value])
-
-    const resolvedValue = animate ? displayValue : (value ?? 0)
-    const indicatorStyle: React.CSSProperties = {
-      transform: `translateX(-${100 - resolvedValue}%)`,
-      ...(animate
-        ? ({ "--progress-animation-duration": `${duration}ms` } as React.CSSProperties)
-        : {}),
-    }
+    // The indicator always renders at its real value (`translateX`), so the bar is
+    // visible immediately — during SSR and before/without hydration. The entrance
+    // sweep is a pure CSS keyframe (`@keyframes progress-fill`) that animates from
+    // 0% to the resting value on mount; subsequent value changes are handled by the
+    // indicator's `transition`. No JS state, so it is SSR-safe and behaves the same
+    // on full reload and client navigation.
+    const resolvedValue = value ?? 0
+    const indicatorStyle: React.CSSProperties = animate
+      ? ({ transform: `translateX(-${100 - resolvedValue}%)`, "--progress-animation-duration": `${duration}ms` } as React.CSSProperties)
+      : { transform: `translateX(-${100 - resolvedValue}%)` }
 
     return (
       <ProgressPrimitive.Root
@@ -77,7 +48,7 @@ const Progress = React.forwardRef<
       >
         <ProgressPrimitive.Indicator
           data-slot="progress-indicator"
-          className={styles.indicator}
+          className={cn(styles.indicator, animate && styles.indicatorAnimated)}
           style={indicatorStyle}
         />
       </ProgressPrimitive.Root>

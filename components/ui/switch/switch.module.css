@@ -34,7 +34,7 @@
 }
 
 .root[data-state="checked"] {
-  background-color: var(--interactive-primary-bg, var(--accent-primary, #111827));
+  background-color: var(--interactive-primary-bg, var(--primary, #111827));
 }
 
 /* Size variants */

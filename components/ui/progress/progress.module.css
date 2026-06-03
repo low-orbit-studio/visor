@@ -15,8 +15,26 @@
   width: 100%;
   height: 100%;
   flex: 1;
-  background-color: var(--interactive-primary-bg, var(--accent-primary, #111827));
+  background-color: var(--interactive-primary-bg, var(--primary, #111827));
   transition: transform var(--progress-animation-duration, var(--motion-duration-1500, 1500ms)) var(--motion-easing-default, ease-in-out);
+}
+
+/*
+ * Entrance sweep — pure CSS keyframe, runs once on mount. The indicator's resting
+ * transform is its real value (set inline), so the bar is visible immediately (SSR
+ * and pre-hydration); the keyframe only animates the sweep FROM empty (-100%) TO
+ * that resting value. SSR-safe and identical on reload vs. client navigation.
+ */
+.indicatorAnimated {
+  animation: progress-fill
+    var(--progress-animation-duration, var(--motion-duration-1500, 1500ms))
+    var(--motion-easing-default, ease-in-out) both;
+}
+
+@keyframes progress-fill {
+  from {
+    transform: translateX(-100%);
+  }
 }
 
 /* Thin static-chrome variant — 4px capacity bar for admin KPI strips */
@@ -30,9 +48,12 @@
   transition: none;
 }
 
-/* Reduced motion — instant fill, no entrance sweep */
+/* Reduced motion — instant fill, no entrance sweep, no transition */
 @media (prefers-reduced-motion: reduce) {
   .indicator {
     transition: none;
+  }
+  .indicatorAnimated {
+    animation: none;
   }
 }
