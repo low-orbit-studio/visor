@@ -21,11 +21,13 @@ Only include packages that were actually touched in the diff. Omit packages with
 
 Only these three packages should ever appear in a changeset:
 
-| npm package                              | source dir          |
-|------------------------------------------|---------------------|
-| `@loworbitstudio/visor-core`             | `packages/tokens/`  |
-| `@loworbitstudio/visor`                  | `packages/cli/`     |
-| `@loworbitstudio/visor-theme-engine`     | `packages/theme-engine/` |
+| npm package                              | source dirs                                                                  |
+|------------------------------------------|------------------------------------------------------------------------------|
+| `@loworbitstudio/visor-core`             | `packages/tokens/`                                                           |
+| `@loworbitstudio/visor`                  | `packages/cli/src/`, `components/`, `blocks/`, `hooks/`, `lib/`, `registry/`, `themes/`, `patterns/`, `assets/` |
+| `@loworbitstudio/visor-theme-engine`     | `packages/theme-engine/`                                                     |
+
+**Registry paths belong to `@loworbitstudio/visor`.** The CLI package ships the copy-and-own registry, so any change under `components/`, `blocks/`, `hooks/`, `lib/`, `registry/`, `themes/`, `patterns/`, or `assets/` is a change to `@loworbitstudio/visor`. A registry-only edit (e.g. a CSS fix in `components/ui/button/`) should produce a `patch` bump against `@loworbitstudio/visor` unless the change adds new API (use `minor`) or breaks existing consumers (use `major`).
 
 The `packages/docs/` package is intentionally excluded from changesets.
 
