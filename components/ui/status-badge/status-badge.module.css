@@ -41,13 +41,19 @@
 
 /* In filled tone, the dot sits on top of a saturated brand fill —
  * paint it with the same inverse token the Badge uses for its text
- * so it's visible in every theme. Neutral is excluded: it maps to
- * the secondary Badge variant, which is not a saturated fill. */
+ * so it's visible in every theme. */
 [data-tone="filled"] .indicatorSuccess,
 [data-tone="filled"] .indicatorWarning,
 [data-tone="filled"] .indicatorDestructive,
 [data-tone="filled"] .indicatorInfo {
   background-color: var(--text-inverse, #ffffff);
+}
+
+/* Neutral's filled fill (filled-neutral) is a fixed dark gray in both modes,
+ * so its dot stays white rather than following --text-inverse (which flips
+ * dark in dark mode). */
+[data-tone="filled"] .indicatorNeutral {
+  background-color: var(--color-white, #ffffff);
 }
 
 /* Pulse animation — soft opacity + scale.

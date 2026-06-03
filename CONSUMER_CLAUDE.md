@@ -188,7 +188,7 @@ Installable as a batch: `npx visor add --category admin`
 | `kbd` | Inline keyboard shortcut rendered with semantic `<kbd>` elements |
 | `page-header` | Eyebrow, title, description, breadcrumb, and actions with responsive collapse |
 | `stat-card` | Dashboard metric card with label, value, delta, trend, and footer |
-| `status-badge` | Semantic badge mapping admin statuses to visual variants with indicator dot |
+| `status-badge` | Semantic badge mapping admin, event, and CRM pipeline statuses to visual variants with indicator dot |
 
 ---
 

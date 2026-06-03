@@ -19,6 +19,13 @@ export type StatusBadgeStatus =
   | "scheduled"
   | "sold"
   | "draft"
+  | "prospect"
+  | "pitched"
+  | "contracted"
+  | "active"
+  | "paused"
+  | "completed"
+  | "archived"
 
 export type StatusBadgeTone = "subtle" | "filled"
 
@@ -55,6 +62,13 @@ export const statusBadgeLabels: Record<StatusBadgeStatus, string> = {
   scheduled: "Scheduled",
   sold: "Sold",
   draft: "Draft",
+  prospect: "Prospect",
+  pitched: "Pitched",
+  contracted: "Contracted",
+  active: "Active",
+  paused: "Paused",
+  completed: "Completed",
+  archived: "Archived",
 }
 
 type BadgeVariant = NonNullable<BadgeProps["variant"]>
@@ -91,6 +105,20 @@ const STATUS_COLOR_GROUP: Record<StatusBadgeStatus, StatusColorGroup> = {
   scheduled: "neutral",
   sold: "success",
   draft: "neutral",
+  // CRM / pipeline stages (VI-492) — bind to existing semantic groups.
+  // No new tokens: stages that share a meaning share a color.
+  // prospect: new informational lead → info
+  // pitched: awaiting response, needs attention → warning
+  // contracted / active / completed: positive, in-good-standing → success
+  // paused: temporarily on hold, needs attention → warning
+  // archived: closed/muted, grouped with draft → neutral
+  prospect: "info",
+  pitched: "warning",
+  contracted: "success",
+  active: "success",
+  paused: "warning",
+  completed: "success",
+  archived: "neutral",
 }
 
 const SUBTLE_VARIANT: Record<StatusColorGroup, BadgeVariant> = {
@@ -106,8 +134,7 @@ const FILLED_VARIANT: Record<StatusColorGroup, BadgeVariant> = {
   warning: "filled-warning",
   destructive: "filled-destructive",
   info: "filled-info",
-  // No `filled-secondary` exists on Badge — fall back to secondary.
-  neutral: "secondary",
+  neutral: "filled-neutral",
 }
 
 const INDICATOR_CLASS: Record<StatusColorGroup, string> = {

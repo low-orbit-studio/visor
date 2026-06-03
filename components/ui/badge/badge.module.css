@@ -132,3 +132,13 @@
   color: var(--text-inverse, currentColor);
   border-color: transparent;
 }
+
+/* filled-neutral — the saturated counterpart to `neutral`. Neutral has no
+ * brand `-default` surface, so it uses a fixed neutral-600 fill. Because that
+ * fill is dark in BOTH modes, text must stay white (not `--text-inverse`,
+ * which flips to a dark value in dark mode). */
+.variantFilledNeutral {
+  background-color: var(--color-neutral-600, #4b5563);
+  color: var(--color-white, #ffffff);
+  border-color: transparent;
+}
