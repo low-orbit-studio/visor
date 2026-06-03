@@ -15,6 +15,12 @@ import {
   generatePrimitivesCss,
   generateLightCss,
   generateDarkCss,
+  generateIntentDecls,
+  generateHairlineDecls,
+  generateTextScaleAliasDecls,
+  generateSpaceAliasDecls,
+  sectionComment,
+  block,
   header,
 } from "../generate-css.js";
 import { collectBrandPassthrough } from "../overrides.js";
@@ -148,6 +154,70 @@ export function nextjsAdapter(
   });
   if (passthroughCss) {
     lines.push(wrapInLayer("visor-brand", passthroughCss));
+    lines.push("");
+  }
+
+  // 3c. Semantic layer (VI-453) — visor-semantic cascade layer.
+  //
+  // Bare-name intent (--primary, --accent, ...), hairline (--hairline,
+  // --hairline-strong), and discrete pixel-named scales (--text-N, --space-N)
+  // emit into a separate `visor-semantic` cascade layer so consumer overrides
+  // in app-globals can still take precedence.
+  //
+  // D3: nextjs adapter uses :root for intent/hairline selectors (single-theme
+  // bundle) and html:not(.dark)/html.dark for mode scoping. Discrete scales
+  // (D4) are mode-agnostic and attach to :root unconditionally.
+  const hostSelector = scopePrefix ?? ":root";
+  const lightModeSelector = `html:not(.dark) ${scopePrefix ?? ""}`.trim();
+  const darkModeSelector = `html.dark ${scopePrefix ?? ""}`.trim();
+  const prefersSelector = scopePrefix
+    ? `${scopePrefix}:not(.light):not(.theme-light):not([data-theme="light"])`
+    : ':root:not(.light):not(.theme-light):not([data-theme="light"])';
+
+  const semanticLines: string[] = [];
+  semanticLines.push("/* ── Layer: Semantic aliases (VI-453) ── */");
+
+  // Discrete-scale aliases: mode-agnostic.
+  semanticLines.push(sectionComment("Discrete: Text size aliases (--text-N)"));
+  semanticLines.push(block(hostSelector, generateTextScaleAliasDecls()));
+  semanticLines.push("");
+  semanticLines.push(sectionComment("Discrete: Space aliases (--space-N)"));
+  semanticLines.push(block(hostSelector, generateSpaceAliasDecls(input.config)));
+  semanticLines.push("");
+
+  // Light mode intent + hairline.
+  semanticLines.push(sectionComment("Intent aliases (light)"));
+  semanticLines.push(block(lightModeSelector, generateIntentDecls(input.tokens, "light")));
+  semanticLines.push("");
+  semanticLines.push(sectionComment("Hairline aliases (light)"));
+  semanticLines.push(block(lightModeSelector, generateHairlineDecls(input.tokens, "light")));
+  semanticLines.push("");
+
+  // Dark mode intent + hairline — manual toggle.
+  semanticLines.push(sectionComment("Intent aliases (dark) — manual toggle"));
+  semanticLines.push(block(darkModeSelector, generateIntentDecls(input.tokens, "dark")));
+  semanticLines.push("");
+  semanticLines.push(sectionComment("Hairline aliases (dark) — manual toggle"));
+  semanticLines.push(block(darkModeSelector, generateHairlineDecls(input.tokens, "dark")));
+  semanticLines.push("");
+
+  // Dark mode intent + hairline — prefers-color-scheme.
+  semanticLines.push(sectionComment("Intent aliases (dark) — prefers-color-scheme"));
+  {
+    const inner = block(prefersSelector, generateIntentDecls(input.tokens, "dark"));
+    semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
+  }
+  semanticLines.push("");
+  semanticLines.push(sectionComment("Hairline aliases (dark) — prefers-color-scheme"));
+  {
+    const inner = block(prefersSelector, generateHairlineDecls(input.tokens, "dark"));
+    semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
+  }
+  semanticLines.push("");
+
+  const semanticLayer = wrapInLayer("visor-semantic", semanticLines.join("\n").trim());
+  if (semanticLayer) {
+    lines.push(semanticLayer);
     lines.push("");
   }
 

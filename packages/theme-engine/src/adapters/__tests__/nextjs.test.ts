@@ -102,6 +102,164 @@ describe("nextjsAdapter", () => {
     expect(layerIdx).toBeGreaterThan(importIdx);
   });
 
+  describe("visor-semantic layer (VI-453)", () => {
+    it("emits @layer visor-semantic block", () => {
+      const css = nextjsAdapter(makeInput(MINIMAL_YAML));
+      expect(css).toContain("@layer visor-semantic {");
+    });
+
+    it("visor-semantic appears before visor-adaptive in output", () => {
+      const css = nextjsAdapter(makeInput(MINIMAL_YAML));
+      const semanticIdx = css.indexOf("@layer visor-semantic {");
+      const adaptiveIdx = css.indexOf("@layer visor-adaptive {");
+      expect(semanticIdx).toBeGreaterThan(-1);
+      expect(adaptiveIdx).toBeGreaterThan(-1);
+      expect(semanticIdx).toBeLessThan(adaptiveIdx);
+    });
+
+    it("emits all 7 intent aliases in light mode (html:not(.dark) { })", () => {
+      const css = nextjsAdapter(makeInput(MINIMAL_YAML));
+      // Locate the visor-semantic layer block (ends before visor-brand)
+      const semanticStart = css.indexOf("@layer visor-semantic {");
+      const adaptiveStart = css.indexOf("@layer visor-adaptive {");
+      const semanticBlock = css.slice(semanticStart, adaptiveStart);
+      expect(semanticBlock).toContain("html:not(.dark) {");
+      expect(semanticBlock).toContain("--primary:");
+      expect(semanticBlock).toContain("--primary-text:");
+      expect(semanticBlock).toContain("--accent:");
+      expect(semanticBlock).toContain("--success:");
+      expect(semanticBlock).toContain("--warning:");
+      expect(semanticBlock).toContain("--destructive:");
+      expect(semanticBlock).toContain("--info:");
+    });
+
+    it("emits all 7 intent aliases in dark mode — manual toggle (html.dark { })", () => {
+      const css = nextjsAdapter(makeInput(MINIMAL_YAML));
+      const semanticStart = css.indexOf("@layer visor-semantic {");
+      const adaptiveStart = css.indexOf("@layer visor-adaptive {");
+      const semanticBlock = css.slice(semanticStart, adaptiveStart);
+      expect(semanticBlock).toContain("html.dark {");
+      // Verify intent aliases appear in the dark block
+      const darkIdx = semanticBlock.indexOf("html.dark {");
+      const darkBlock = semanticBlock.slice(darkIdx);
+      expect(darkBlock).toContain("--primary:");
+      expect(darkBlock).toContain("--accent:");
+      expect(darkBlock).toContain("--success:");
+      expect(darkBlock).toContain("--warning:");
+      expect(darkBlock).toContain("--destructive:");
+      expect(darkBlock).toContain("--info:");
+    });
+
+    it("emits both hairline aliases in light mode", () => {
+      const css = nextjsAdapter(makeInput(MINIMAL_YAML));
+      const semanticStart = css.indexOf("@layer visor-semantic {");
+      const adaptiveStart = css.indexOf("@layer visor-adaptive {");
+      const semanticBlock = css.slice(semanticStart, adaptiveStart);
+      expect(semanticBlock).toContain("--hairline:");
+      expect(semanticBlock).toContain("--hairline-strong:");
+    });
+
+    it("emits dark mode hairlines under prefers-color-scheme media query", () => {
+      const css = nextjsAdapter(makeInput(MINIMAL_YAML));
+      // Extract only the visor-semantic layer (before visor-adaptive which has many more media queries)
+      const semanticStart = css.indexOf("@layer visor-semantic {");
+      const adaptiveStart = css.indexOf("@layer visor-adaptive {");
+      const semanticBlock = css.slice(semanticStart, adaptiveStart);
+      expect(semanticBlock).toContain("@media (prefers-color-scheme: dark)");
+      // Should appear exactly twice — once for intent, once for hairline
+      const prefersMatches = semanticBlock.match(/@media \(prefers-color-scheme: dark\)/g);
+      expect(prefersMatches).toHaveLength(2);
+    });
+
+    it("emits all 9 discrete text-size aliases (--text-N) unconditionally in :root", () => {
+      const css = nextjsAdapter(makeInput(MINIMAL_YAML));
+      const semanticStart = css.indexOf("@layer visor-semantic {");
+      const adaptiveStart = css.indexOf("@layer visor-adaptive {");
+      const semanticBlock = css.slice(semanticStart, adaptiveStart);
+      for (const px of [11, 13, 14, 16, 20, 24, 32, 40, 48]) {
+        expect(semanticBlock).toContain(`--text-${px}:`);
+      }
+    });
+
+    it("emits all 10 discrete space aliases (--space-N) unconditionally in :root", () => {
+      const css = nextjsAdapter(makeInput(MINIMAL_YAML));
+      const semanticStart = css.indexOf("@layer visor-semantic {");
+      const adaptiveStart = css.indexOf("@layer visor-adaptive {");
+      const semanticBlock = css.slice(semanticStart, adaptiveStart);
+      for (const n of [1, 2, 3, 4, 5, 6, 8, 10, 12, 16]) {
+        expect(semanticBlock).toContain(`--space-${n}:`);
+      }
+    });
+
+    it("discrete scales attach to :root (not mode-scoped)", () => {
+      const css = nextjsAdapter(makeInput(MINIMAL_YAML));
+      // --text-14 must appear inside visor-semantic before any html.dark or html:not(.dark) block
+      const semanticStart = css.indexOf("@layer visor-semantic {");
+      const firstModeSelector = Math.min(
+        css.indexOf("html:not(.dark)"),
+        css.indexOf("html.dark"),
+      );
+      // text-11 must be declared before the first mode-scoped selector
+      const text11Idx = css.indexOf("--text-11:", semanticStart);
+      expect(text11Idx).toBeGreaterThan(-1);
+      expect(text11Idx).toBeLessThan(firstModeSelector);
+    });
+
+    it("covers all 38 aliases: 7 intent + 2 hairline + 9 text-scale + 10 space (light scope)", () => {
+      const css = nextjsAdapter(makeInput(MINIMAL_YAML));
+      const semanticStart = css.indexOf("@layer visor-semantic {");
+      const adaptiveStart = css.indexOf("@layer visor-adaptive {");
+      const semanticBlock = css.slice(semanticStart, adaptiveStart);
+
+      // 7 intent
+      const intentAliases = ["--primary:", "--primary-text:", "--accent:", "--success:", "--warning:", "--destructive:", "--info:"];
+      for (const alias of intentAliases) {
+        expect(semanticBlock).toContain(alias);
+      }
+      // 2 hairline
+      expect(semanticBlock).toContain("--hairline:");
+      expect(semanticBlock).toContain("--hairline-strong:");
+      // 9 text-scale
+      for (const px of [11, 13, 14, 16, 20, 24, 32, 40, 48]) {
+        expect(semanticBlock).toContain(`--text-${px}:`);
+      }
+      // 10 space
+      for (const n of [1, 2, 3, 4, 5, 6, 8, 10, 12, 16]) {
+        expect(semanticBlock).toContain(`--space-${n}:`);
+      }
+    });
+
+    it("covers all 38 aliases in dark scope (html.dark + prefers-color-scheme)", () => {
+      const css = nextjsAdapter(makeInput(MINIMAL_YAML));
+      const semanticStart = css.indexOf("@layer visor-semantic {");
+      const adaptiveStart = css.indexOf("@layer visor-adaptive {");
+      const semanticBlock = css.slice(semanticStart, adaptiveStart);
+
+      // Find dark mode section — starts at first html.dark occurrence
+      const darkSectionIdx = semanticBlock.indexOf("html.dark {");
+      expect(darkSectionIdx).toBeGreaterThan(-1);
+      const darkSection = semanticBlock.slice(darkSectionIdx);
+
+      // Intent in dark
+      for (const alias of ["--primary:", "--accent:", "--success:", "--warning:", "--destructive:", "--info:"]) {
+        expect(darkSection).toContain(alias);
+      }
+      // Hairline in dark
+      expect(darkSection).toContain("--hairline:");
+      expect(darkSection).toContain("--hairline-strong:");
+    });
+
+    it("with scopePrefix, mode selectors compose prefix into html:not(.dark) <prefix> and html.dark <prefix>", () => {
+      const css = nextjsAdapter(makeInput(MINIMAL_YAML), { scopePrefix: "body.entr-theme" });
+      const semanticStart = css.indexOf("@layer visor-semantic {");
+      const adaptiveStart = css.indexOf("@layer visor-adaptive {");
+      const semanticBlock = css.slice(semanticStart, adaptiveStart);
+      expect(semanticBlock).toContain("html:not(.dark) body.entr-theme {");
+      expect(semanticBlock).toContain("html.dark body.entr-theme {");
+      expect(semanticBlock).toContain("body.entr-theme:not(.light):not(.theme-light)");
+    });
+  });
+
   describe("scopePrefix option (VI-368)", () => {
     it("without scopePrefix, output preserves :root selectors (backward compat)", () => {
       const css = nextjsAdapter(makeInput(MINIMAL_YAML));
