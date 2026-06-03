@@ -587,9 +587,17 @@ export const blocks: Registry = [
     type: "registry:block",
     category: "authentication",
     description:
-      "A login form block using Visor form components (Button, Input, Label, Card).",
+      "A login form block using Visor form components (Button, Input, Label, Card), with optional OAuth provider buttons.",
     dependencies: ["@loworbitstudio/visor-core"],
-    registryDependencies: ["utils", "button", "input", "field", "card"],
+    registryDependencies: [
+      "utils",
+      "button",
+      "input",
+      "field",
+      "card",
+      "separator",
+      "alert",
+    ],
     files: [
       {
         path: "blocks/login-form/login-form.tsx",
