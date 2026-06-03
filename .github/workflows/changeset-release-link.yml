@@ -1,0 +1,107 @@
+name: Changeset Release Link
+
+# Post a comment on PRs that add/modify .changeset/*.md files, linking to the
+# open Version Packages PR (changeset-release/main) or noting one will be
+# created on merge. Idempotent — updates the existing comment in place.
+# Background: VI-364.
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+permissions:
+  pull-requests: write
+
+concurrency:
+  group: changeset-release-link-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  link:
+    name: Link to Version Packages PR
+    runs-on: ubuntu-latest
+
+    # Skip on the Version Packages PR itself to avoid self-reference loops.
+    if: github.head_ref != 'changeset-release/main'
+
+    steps:
+      - name: Post or update release link comment
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const MARKER = '<!-- visor-release-link -->';
+            const prNumber = context.payload.pull_request.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            // ---------------------------------------------------------------
+            // 1. Detect whether this PR touches .changeset/*.md
+            // ---------------------------------------------------------------
+            const files = await github.paginate(
+              github.rest.pulls.listFiles,
+              { owner, repo, pull_number: prNumber, per_page: 100 }
+            );
+
+            const touchesChangeset = files.some(
+              f =>
+                /^\.changeset\/.+\.md$/.test(f.filename) &&
+                (f.status === 'added' || f.status === 'modified')
+            );
+
+            if (!touchesChangeset) {
+              core.info('PR does not touch .changeset/*.md — no comment needed.');
+              return;
+            }
+
+            // ---------------------------------------------------------------
+            // 2. Look up the open Version Packages PR (head: changeset-release/main)
+            // ---------------------------------------------------------------
+            const versionPRs = await github.rest.pulls.list({
+              owner,
+              repo,
+              state: 'open',
+              head: `${owner}:changeset-release/main`,
+              per_page: 1,
+            });
+
+            let body;
+            if (versionPRs.data.length > 0) {
+              const vpr = versionPRs.data[0];
+              body = `${MARKER}\n📦 This change will be consumed by Version Packages PR [#${vpr.number}](${vpr.html_url}).`;
+            } else {
+              body = `${MARKER}\n📦 A new Version Packages PR will be opened when this lands.`;
+            }
+
+            // ---------------------------------------------------------------
+            // 3. Find an existing bot comment with the marker (idempotent)
+            // ---------------------------------------------------------------
+            const comments = await github.paginate(
+              github.rest.issues.listComments,
+              { owner, repo, issue_number: prNumber, per_page: 100 }
+            );
+
+            const existing = comments.find(c => c.body && c.body.includes(MARKER));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body,
+              });
+              core.info(`Updated existing release-link comment #${existing.id}.`);
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body,
+              });
+              core.info('Created new release-link comment.');
+            }
