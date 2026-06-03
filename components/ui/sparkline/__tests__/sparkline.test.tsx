@@ -226,7 +226,7 @@ describe("Sparkline animation", () => {
     const { container } = render(
       <Sparkline values={SAMPLE} duration={800} />
     )
-    const polyline = container.querySelector("polyline") as HTMLElement
+    const polyline = container.querySelector("polyline") as SVGPolylineElement
     expect(
       polyline?.style.getPropertyValue("--sparkline-animation-duration")
     ).toBe("800ms")
@@ -234,7 +234,7 @@ describe("Sparkline animation", () => {
 
   it("uses default 1500ms duration", () => {
     const { container } = render(<Sparkline values={SAMPLE} />)
-    const polyline = container.querySelector("polyline") as HTMLElement
+    const polyline = container.querySelector("polyline") as SVGPolylineElement
     expect(
       polyline?.style.getPropertyValue("--sparkline-animation-duration")
     ).toBe("1500ms")

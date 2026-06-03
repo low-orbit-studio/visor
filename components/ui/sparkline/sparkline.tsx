@@ -62,25 +62,27 @@ const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
     },
     ref
   ) => {
-    if (!values || values.length < 2) return null
+    // Animation state: track whether the draw has been triggered.
+    // Hooks must be called unconditionally before any early return.
+    const [drawn, setDrawn] = React.useState(false)
 
-    const min = Math.min(...values)
-    const max = Math.max(...values)
+    const hasEnoughValues = values != null && values.length >= 2
+
+    const min = hasEnoughValues ? Math.min(...values) : 0
+    const max = hasEnoughValues ? Math.max(...values) : 0
     const range = max - min || 1
-    const stepX = width / (values.length - 1)
+    const stepX = hasEnoughValues ? width / (values.length - 1) : 0
 
-    const pointPairs: [number, number][] = values.map((v, i) => [
-      i * stepX,
-      height - ((v - min) / range) * height,
-    ])
+    const pointPairs: [number, number][] = hasEnoughValues
+      ? values.map((v, i) => [
+          i * stepX,
+          height - ((v - min) / range) * height,
+        ])
+      : []
     const points = pointPairs
       .map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`)
       .join(" ")
 
-    const isLabeled = typeof ariaLabel === "string" && ariaLabel.length > 0
-
-    // Animation state: track whether the draw has been triggered.
-    const [drawn, setDrawn] = React.useState(false)
     const totalLength = React.useMemo(
       () => (animate ? polylineLength(pointPairs) : 0),
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -96,6 +98,10 @@ const Sparkline = React.forwardRef<SVGSVGElement, SparklineProps>(
       })
       return () => cancelAnimationFrame(raf)
     }, [animate])
+
+    if (!hasEnoughValues) return null
+
+    const isLabeled = typeof ariaLabel === "string" && ariaLabel.length > 0
 
     const polylineProps = animate
       ? {
