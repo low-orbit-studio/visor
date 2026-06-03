@@ -292,7 +292,14 @@ html:not(.dark) .modern-minimal-theme {
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.625;
   --line-height-loose: 2;
+  --letter-spacing-xl: 0.16em;
+  --letter-spacing-lg: 0.1em;
+  --letter-spacing-md: 0.05em;
+  --letter-spacing-sm: 0.025em;
+  --letter-spacing-xs: 0.01em;
+  --letter-spacing-tight: -0.01em;
   --letter-spacing-normal: 0.05em;
+  --letter-spacing-wide: 0.1em;
 }
 
 

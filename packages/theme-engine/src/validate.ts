@@ -431,7 +431,8 @@ function checkLetterSpacing(
   const ls = config.typography?.["letter-spacing"];
   if (!ls) return;
 
-  for (const key of ["tight", "normal", "wide"] as const) {
+  // VI-447: 6-tier ramp keys + legacy triad aliases (`normal`, `wide`).
+  for (const key of ["xl", "lg", "md", "sm", "xs", "tight", "normal", "wide"] as const) {
     const value = ls[key];
     if (value !== undefined) {
       if (typeof value !== "string" || !CSS_LENGTH_RE.test(value.trim())) {

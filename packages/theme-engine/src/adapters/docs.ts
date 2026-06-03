@@ -131,8 +131,19 @@ function generateTypographyDecls(
     decls.push(`--line-height-${name}: ${value};`);
   }
 
-  // Letter spacing
-  decls.push("--letter-spacing-normal: 0.05em;");
+  // Letter spacing — VI-447 6-tier ramp (xl | lg | md | sm | xs | tight),
+  // resolved per-theme. `--letter-spacing-normal` (= md) and
+  // `--letter-spacing-wide` (= lg) are retained as back-compat aliases for
+  // consumers that referenced the legacy triad var names.
+  const ls = config.typography["letter-spacing"];
+  decls.push(`--letter-spacing-xl: ${ls.xl};`);
+  decls.push(`--letter-spacing-lg: ${ls.lg};`);
+  decls.push(`--letter-spacing-md: ${ls.md};`);
+  decls.push(`--letter-spacing-sm: ${ls.sm};`);
+  decls.push(`--letter-spacing-xs: ${ls.xs};`);
+  decls.push(`--letter-spacing-tight: ${ls.tight};`);
+  decls.push(`--letter-spacing-normal: ${ls.md};`);
+  decls.push(`--letter-spacing-wide: ${ls.lg};`);
 
   return decls;
 }
