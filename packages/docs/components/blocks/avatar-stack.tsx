@@ -1,10 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import { AvatarStack } from '../../../../blocks/avatar-stack/avatar-stack';
+import { AvatarStack } from '../../../../components/ui/avatar/avatar';
 
-export { AvatarStack } from '../../../../blocks/avatar-stack/avatar-stack';
-export type { AvatarStackProps } from '../../../../blocks/avatar-stack/avatar-stack';
+export { AvatarStack } from '../../../../components/ui/avatar/avatar';
+export type { AvatarStackProps } from '../../../../components/ui/avatar/avatar';
 
 const DEMO_AVATARS_SHORT: (string | undefined)[] = [undefined, undefined, undefined];
 const DEMO_AVATARS_FULL: (string | undefined)[] = [

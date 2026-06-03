@@ -17,7 +17,7 @@ Up to `max` avatars (default `6`) render in a row with each subsequent avatar ov
 
 <ComponentPreview
   title="3 avatars"
-  code={"import { AvatarStack } from '@/blocks/avatar-stack/avatar-stack';\n\n<AvatarStack avatars={[a, b, c]} total={3} size=\"sm\" />"}
+  code={"import { AvatarStack } from '@/components/ui/avatar/avatar';\n\n<AvatarStack avatars={[a, b, c]} total={3} size=\"sm\" />"}
 >
   <AvatarStackSmallDemo />
 </ComponentPreview>
@@ -58,22 +58,20 @@ When `total` exceeds `avatars.length` or `max`, the stack appends a `+N more` ch
 ## Installation
 
 ```bash
-npx visor add --block avatar-stack
+npx visor add avatar
 ```
 
-This copies files into your project:
+This copies two files into your project:
 
-- `blocks/avatar-stack/avatar-stack.tsx` — the block
-- `blocks/avatar-stack/avatar-stack.module.css` — the styles
-
-It also installs the `avatar` primitive if it isn't already present.
+- `components/ui/avatar/avatar.tsx` — the component (includes `AvatarStack`)
+- `components/ui/avatar/avatar.module.css` — the styles
 
 ## Usage
 
 ```tsx
 'use client';
 
-import { AvatarStack } from '@/blocks/avatar-stack/avatar-stack';
+import { AvatarStack } from '@/components/ui/avatar/avatar';
 
 <AvatarStack
   avatars={['/users/ana.jpg', '/users/ben.jpg', '/users/cam.jpg']}
