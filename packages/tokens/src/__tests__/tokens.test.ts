@@ -51,6 +51,7 @@ import {
   adaptiveInteractive,
   adaptiveChart,
   adaptiveSidebar,
+  isCssExpression,
 } from "../tokens/adaptive.js";
 
 import {
@@ -462,12 +463,30 @@ describe("Adaptive tokens", () => {
     }
   });
 
-  it("all adaptive surface dark values reference valid primitives", () => {
+  it("all adaptive surface dark values reference valid primitives or are CSS expressions", () => {
     for (const [name, values] of Object.entries(adaptiveSurface)) {
+      // CSS-expression values (e.g. VI-500 color-mix blends) are emitted
+      // verbatim and may reference semantic tokens, so they are exempt.
+      if (isCssExpression(values.dark)) continue;
       expect(
         primitives.has(values.dark),
         `adaptiveSurface.${name}.dark references "${values.dark}"`
       ).toBe(true);
+    }
+  });
+
+  // VI-500: dark status `-subtle` surfaces blend the `-900` shade toward the
+  // card surface so tinted Alert/Banner/Toast read as gentle placards in dark
+  // mode. Light values stay on the gentle `-50` shade.
+  it("dark status -subtle surfaces blend toward --surface-card; light stays -50", () => {
+    for (const status of ["success", "warning", "error", "info"]) {
+      const token = adaptiveSurface[`${status}-subtle`];
+      expect(token, `adaptiveSurface.${status}-subtle`).toBeTruthy();
+      expect(token.light).toBe(`color-${status}-50`);
+      expect(isCssExpression(token.dark)).toBe(true);
+      expect(token.dark).toBe(
+        `color-mix(in srgb, var(--color-${status}-900) 12%, var(--surface-card))`
+      );
     }
   });
 
@@ -669,6 +688,9 @@ describe("Dark mode tokens", () => {
     ];
     for (const { name, tokens } of groups) {
       for (const [tokenName, values] of Object.entries(tokens)) {
+        // CSS-expression values (e.g. VI-500 color-mix blends) are emitted
+        // verbatim and may reference semantic tokens, so they are exempt.
+        if (isCssExpression(values.dark)) continue;
         expect(
           primitives.has(values.dark),
           `${name}.${tokenName}.dark references "${values.dark}" which must be a valid primitive`

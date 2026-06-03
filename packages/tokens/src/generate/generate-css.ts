@@ -76,6 +76,7 @@ import {
   adaptiveSkeleton,
   adaptiveChart,
   adaptiveSidebar,
+  isCssExpression,
 } from "../tokens/adaptive.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -118,8 +119,13 @@ function block(selector: string, declarations: string[]): string {
   );
 }
 
-/** Convert a token name reference like "color-gray-900" to "var(--color-gray-900)" */
+/**
+ * Convert a token name reference like "color-gray-900" to "var(--color-gray-900)".
+ * Values that are already full CSS expressions (e.g. a `color-mix()` blend that
+ * embeds its own `var()` references) are emitted verbatim — see `isCssExpression`.
+ */
 function toVar(ref: string): string {
+  if (isCssExpression(ref)) return ref;
   return `var(--${ref})`;
 }
 

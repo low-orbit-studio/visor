@@ -43,6 +43,7 @@ import {
   adaptiveSurface,
   adaptiveBorder,
   adaptiveInteractive,
+  isCssExpression,
 } from "../tokens/adaptive.js";
 
 interface ValidationError {
@@ -228,14 +229,16 @@ function validateAdaptiveTokens(
         });
       }
 
-      // Validate references
-      if (values.light && !primitives.has(values.light)) {
+      // Validate references. CSS-expression values (e.g. color-mix blends) are
+      // emitted verbatim and may reference semantic/adaptive tokens, so they are
+      // exempt from the primitive-name check.
+      if (values.light && !isCssExpression(values.light) && !primitives.has(values.light)) {
         errors.push({
           location: `${groupName}.${name}.light`,
           message: `References unknown primitive: "${values.light}"`,
         });
       }
-      if (values.dark && !primitives.has(values.dark)) {
+      if (values.dark && !isCssExpression(values.dark) && !primitives.has(values.dark)) {
         errors.push({
           location: `${groupName}.${name}.dark`,
           message: `References unknown primitive: "${values.dark}"`,
