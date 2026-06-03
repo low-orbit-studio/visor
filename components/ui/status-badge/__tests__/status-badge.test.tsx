@@ -86,14 +86,14 @@ describe("StatusBadge", () => {
       ["down", "destructive"],
       ["failed", "destructive"],
       ["running", "info"],
-      ["queued", "secondary"],
-      ["idle", "secondary"],
+      ["queued", "neutral"],
+      ["idle", "neutral"],
       // Admin-ui event tones
       ["live", "success"],
       ["warn", "warning"],
-      ["scheduled", "secondary"],
+      ["scheduled", "neutral"],
       ["sold", "success"],
-      ["draft", "secondary"],
+      ["draft", "neutral"],
     ]
     for (const [status, expectedVariant] of cases) {
       const { container, unmount } = render(<StatusBadge status={status} />)

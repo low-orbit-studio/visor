@@ -102,6 +102,12 @@
   border-color: transparent;
 }
 
+.variantNeutral {
+  background-color: var(--surface-muted, #f3f4f6);
+  color: var(--text-secondary, var(--text-primary, #374151));
+  border-color: transparent;
+}
+
 /* Filled variants — step 9 bg + contrast text */
 .variantFilledDestructive {
   background-color: var(--surface-error-default, transparent);

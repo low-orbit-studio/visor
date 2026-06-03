@@ -13,6 +13,7 @@ const badgeVariants = cva(styles.base, {
       success: styles.variantSuccess,
       warning: styles.variantWarning,
       info: styles.variantInfo,
+      neutral: styles.variantNeutral,
       "filled-destructive": styles.variantFilledDestructive,
       "filled-success": styles.variantFilledSuccess,
       "filled-warning": styles.variantFilledWarning,

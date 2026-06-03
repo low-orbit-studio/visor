@@ -98,7 +98,7 @@ const SUBTLE_VARIANT: Record<StatusColorGroup, BadgeVariant> = {
   warning: "warning",
   destructive: "destructive",
   info: "info",
-  neutral: "secondary",
+  neutral: "neutral",
 }
 
 const FILLED_VARIANT: Record<StatusColorGroup, BadgeVariant> = {
