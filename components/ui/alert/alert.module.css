@@ -55,6 +55,16 @@
   line-height: 1.5;
 }
 
+/* AlertActions — right-aligned, gap-aware row for inline action buttons */
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-2, 0.5rem);
+  flex-wrap: wrap;
+  margin-top: var(--spacing-2, 0.5rem);
+}
+
 .variantDestructive .description {
   color: color-mix(in srgb, var(--text-error, #b91c1c) 90%, transparent);
 }
