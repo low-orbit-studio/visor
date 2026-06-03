@@ -10,6 +10,22 @@
   box-shadow: var(--shadow-lg);
 }
 
+/* Footer — right-aligned action row separated from the body by a top border.
+   Negative horizontal margins let the border span the full popover width while
+   the action row stays aligned with body content (offsets PopoverContent's
+   padding: var(--spacing-4)). */
+.footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: var(--spacing-2, 0.5rem);
+  margin-top: var(--spacing-3, 0.75rem);
+  padding-top: var(--spacing-3, 0.75rem);
+  margin-inline: calc(-1 * var(--spacing-4, 1rem));
+  padding-inline: var(--spacing-4, 1rem);
+  border-top: 1px solid var(--border-default, #e5e7eb);
+}
+
 .content[data-state="open"] {
   animation: contentShow var(--motion-duration-fast, 100ms) var(--motion-easing-enter, ease-out);
 }
