@@ -18,9 +18,15 @@ const badgeVariants = cva(styles.base, {
       "filled-warning": styles.variantFilledWarning,
       "filled-info": styles.variantFilledInfo,
     },
+    size: {
+      sm: styles.sizeSm,
+      md: styles.sizeMd,
+      lg: styles.sizeLg,
+    },
   },
   defaultVariants: {
     variant: "default",
+    size: "md",
   },
 })
 
@@ -29,13 +35,14 @@ export interface BadgeProps
     VariantProps<typeof badgeVariants> {}
 
 const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
-  ({ className, variant, ...props }, ref) => {
+  ({ className, variant, size, ...props }, ref) => {
     return (
       <span
         ref={ref}
         data-slot="badge"
         data-variant={variant ?? "default"}
-        className={cn(badgeVariants({ variant }), className)}
+        data-size={size ?? "md"}
+        className={cn(badgeVariants({ variant, size }), className)}
         {...props}
       />
     )
