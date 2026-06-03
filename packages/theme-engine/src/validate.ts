@@ -20,7 +20,7 @@ import {
   SEMANTIC_INTERACTIVE_MAP,
 } from "./semantic-map.js";
 import { generatePrimitives, generateDarkPrimitives } from "./pipeline.js";
-import { assignSemanticTokens } from "./assign.js";
+import { assignSemanticTokens, reapplyInteractiveTextDerivation } from "./assign.js";
 import { applyOverrides } from "./overrides.js";
 
 // ============================================================
@@ -734,6 +734,27 @@ const STANDARD_TEXT_TOKENS = ["primary", "secondary", "tertiary"] as const;
 /** Status text tokens validated for AA contrast on bg + surface in both modes. */
 const STATUS_TEXT_TOKENS = ["error", "warning", "success", "info"] as const;
 
+/**
+ * VI-375: interactive `*-text` → `*-bg` pairs validated for button-label
+ * contrast. Built from SEMANTIC_INTERACTIVE_MAP: every `*-text` token whose
+ * `*-bg` sibling also exists. This is a SUPERSET of the derive-driven pairs
+ * (INTERACTIVE_TEXT_BG_PAIRS) — it also covers `secondary-text`/`secondary-bg`,
+ * which derives from a neutral shade rather than the on-light/on-dark default
+ * but still must clear AA against its own button bg. (ghost has a bg but no
+ * paired text token, so it's naturally excluded.)
+ */
+const INTERACTIVE_PAIRS_TO_VALIDATE: Record<string, string> = (() => {
+  const pairs: Record<string, string> = {};
+  for (const name of Object.keys(SEMANTIC_INTERACTIVE_MAP)) {
+    if (!name.endsWith("-text")) continue;
+    const bgToken = `${name.slice(0, -"-text".length)}-bg`;
+    if (bgToken in SEMANTIC_INTERACTIVE_MAP) {
+      pairs[name] = bgToken;
+    }
+  }
+  return pairs;
+})();
+
 function checkContrastWarnings(
   config: VisorThemeConfig,
   issues: ValidationIssue[]
@@ -746,8 +767,15 @@ function checkContrastWarnings(
   // what consumers actually render, so it's what we must validate.
   const lightPrimitives = generatePrimitives(resolved);
   const darkPrimitives = generateDarkPrimitives(resolved, lightPrimitives);
-  const tokens = applyOverrides(
-    assignSemanticTokens(lightPrimitives, darkPrimitives, resolved),
+  // VI-375: mirror the emit pipeline — apply overrides, then re-derive any
+  // interactive `*-text` whose paired `*-bg` was overridden. This is what
+  // consumers actually render, so it's what the contrast checks must see.
+  const tokens = reapplyInteractiveTextDerivation(
+    applyOverrides(
+      assignSemanticTokens(lightPrimitives, darkPrimitives, resolved),
+      resolved.overrides
+    ),
+    resolved,
     resolved.overrides
   );
 
@@ -832,10 +860,17 @@ function checkContrastWarnings(
   }
 
   // --- Interactive color (primary) contrast checks ---
-  // Brand primary on bg/surface — AA Large threshold (3:1) for non-text UI.
+  // Brand primary button bg on page bg/surface — AA Large threshold (3:1) for
+  // non-text UI. VI-375 (Layer 3): read the POST-OVERRIDE interactive-primary-bg,
+  // not the raw colors[-dark].primary, so a brand bg override (e.g. ENTR mint)
+  // is the value actually evaluated. Falls back to raw primary if the token is
+  // somehow absent (defensive — assignSemanticTokens always populates it).
+  const primaryBgToken = tokens.interactive["primary-bg"];
+  const lightPrimaryBg = primaryBgToken?.light ?? primary;
+  const darkPrimaryBg = primaryBgToken?.dark ?? darkPrimary;
 
-  // Interactive color (primary) on background
-  const primaryOnBg = getContrastRatio(primary, lightBg, lightBgRgb);
+  // Interactive primary bg on light background
+  const primaryOnBg = getContrastRatio(lightPrimaryBg, lightBg, lightBgRgb);
   if (primaryOnBg < CONTRAST_INTERACTIVE_AA) {
     issues.push(
       issue(
@@ -847,8 +882,8 @@ function checkContrastWarnings(
     );
   }
 
-  // Interactive color (primary) on surface
-  const primaryOnSurface = getContrastRatio(primary, lightSurface, lightSurfaceRgb);
+  // Interactive primary bg on light surface
+  const primaryOnSurface = getContrastRatio(lightPrimaryBg, lightSurface, lightSurfaceRgb);
   if (primaryOnSurface < CONTRAST_INTERACTIVE_AA) {
     issues.push(
       issue(
@@ -860,8 +895,8 @@ function checkContrastWarnings(
     );
   }
 
-  // Interactive color (primary) on dark background
-  const darkPrimaryOnBg = getContrastRatio(darkPrimary, darkBg, darkBgRgb);
+  // Interactive primary bg on dark background
+  const darkPrimaryOnBg = getContrastRatio(darkPrimaryBg, darkBg, darkBgRgb);
   if (darkPrimaryOnBg < CONTRAST_INTERACTIVE_AA) {
     issues.push(
       issue(
@@ -873,8 +908,8 @@ function checkContrastWarnings(
     );
   }
 
-  // Interactive color on dark surface
-  const darkPrimaryOnSurface = getContrastRatio(darkPrimary, darkSurface, darkSurfaceRgb);
+  // Interactive primary bg on dark surface
+  const darkPrimaryOnSurface = getContrastRatio(darkPrimaryBg, darkSurface, darkSurfaceRgb);
   if (darkPrimaryOnSurface < CONTRAST_INTERACTIVE_AA) {
     issues.push(
       issue(
@@ -884,6 +919,46 @@ function checkContrastWarnings(
         "colors-dark.primary"
       )
     );
+  }
+
+  // --- Interactive button-pair contrast checks (VI-375) ---
+  // The core blind-spot fix: for every interactive role whose `*-text` derives
+  // from a paired `*-bg`, check the actual text-on-button-bg contrast in BOTH
+  // modes against AA 4.5:1. Button labels are real text (not incidental UI
+  // graphics), so AA 4.5:1 — not AA-Large 3:1 — is the correct threshold: WCAG
+  // 1.4.3 only relaxes to 3:1 for text >= 18pt/14pt-bold, which buttons aren't
+  // guaranteed to be. Reads the post-override + re-derived values (`tokens`),
+  // so a brand bg override with an unreadable text color is caught here.
+  for (const [textToken, bgToken] of Object.entries(INTERACTIVE_PAIRS_TO_VALIDATE)) {
+    const text = tokens.interactive[textToken];
+    const bg = tokens.interactive[bgToken];
+    if (!text || !bg) continue;
+
+    // Button bg may be a hex; the text token is opaque. Composite text over bg
+    // is unnecessary (text tokens are opaque), so a direct ratio is correct.
+    const lightRatio = getContrastRatio(text.light, bg.light, colorToRgb(bg.light));
+    if (lightRatio < CONTRAST_TEXT_AA) {
+      issues.push(
+        issue(
+          "warning",
+          "WCAG_CONTRAST",
+          `Light mode: interactive-${textToken} on interactive-${bgToken} has contrast ratio ${lightRatio.toFixed(2)}:1 (needs >= ${CONTRAST_TEXT_AA}:1)`,
+          `interactive.${textToken}`
+        )
+      );
+    }
+
+    const darkRatio = getContrastRatio(text.dark, bg.dark, colorToRgb(bg.dark));
+    if (darkRatio < CONTRAST_TEXT_AA) {
+      issues.push(
+        issue(
+          "warning",
+          "WCAG_CONTRAST",
+          `Dark mode: interactive-${textToken} on interactive-${bgToken} has contrast ratio ${darkRatio.toFixed(2)}:1 (needs >= ${CONTRAST_TEXT_AA}:1)`,
+          `interactive.${textToken}`
+        )
+      );
+    }
   }
 }
 

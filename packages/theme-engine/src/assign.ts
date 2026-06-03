@@ -11,8 +11,10 @@ import {
   CONFIG_SURFACE,
   CONFIG_DARK_BACKGROUND,
   CONFIG_DARK_SURFACE,
+  INTERACTIVE_TEXT_BG_PAIRS,
   isShadeRef,
 } from "./semantic-map.js";
+import { parseColor, getLuminance } from "./color.js";
 import type {
   GeneratedPrimitives,
   ResolvedThemeConfig,
@@ -75,6 +77,118 @@ function resolveRef(
   }
 }
 
+/**
+ * VI-375: pick the theme's configured text color for a given interactive bg.
+ * WCAG relative luminance threshold of 0.5 splits "light enough that near-black
+ * reads best" from "dark enough that white reads best". Falls through to
+ * text-on-dark on an unparseable bg (defensive; bg is always a resolved hex).
+ */
+export function pickTextForBg(bgValue: string, config: ResolvedThemeConfig): string {
+  const parsed = parseColor(bgValue);
+  const luminance = parsed ? getLuminance(...parsed.rgb) : 0;
+  return luminance > 0.5
+    ? config.typography["text-on-light"]
+    : config.typography["text-on-dark"];
+}
+
+/**
+ * VI-375: derive each interactive `*-text` token from the luminance of its
+ * paired `*-bg`, per mode. Mutates `interactive` in place.
+ *
+ * The `skipTokens` set lets the post-override pass leave user-overridden text
+ * tokens untouched (per-token override is the final escape hatch). The set is
+ * empty at assignment time. The `mode` param scopes which side(s) to derive —
+ * the post-override pass only re-derives the mode(s) whose bg was overridden.
+ */
+export function deriveInteractiveTextColors(
+  interactive: Record<string, SemanticTokenValue>,
+  config: ResolvedThemeConfig,
+  opts: {
+    skipTokens?: Set<string>;
+    modes?: ReadonlyArray<"light" | "dark">;
+  } = {}
+): void {
+  const skip = opts.skipTokens ?? new Set<string>();
+  const modes = opts.modes ?? (["light", "dark"] as const);
+  for (const [textToken, bgToken] of Object.entries(INTERACTIVE_TEXT_BG_PAIRS)) {
+    if (skip.has(textToken)) continue;
+    const textValue = interactive[textToken];
+    const bgValue = interactive[bgToken];
+    if (!textValue || !bgValue) continue;
+    const next: SemanticTokenValue = { ...textValue };
+    for (const mode of modes) {
+      next[mode] = pickTextForBg(bgValue[mode], config);
+    }
+    interactive[textToken] = next;
+  }
+}
+
+/**
+ * VI-375 (Layer 3 fix): after `applyOverrides`, re-derive interactive `*-text`
+ * tokens whose paired `*-bg` was overridden, so a brand-overridden button bg
+ * (e.g. ENTR dark mint) auto-picks the readable text color. Returns a new
+ * SemanticTokens with the `interactive` group updated; does not mutate input.
+ *
+ * Precedence: a per-token text override (e.g. `interactive-primary-text`) always
+ * wins — those tokens are added to the skip set and left as the override set
+ * them. Only the mode(s) whose bg was overridden are re-derived; an unchanged
+ * mode keeps the value already derived at assignment time.
+ */
+export function reapplyInteractiveTextDerivation(
+  tokens: SemanticTokens,
+  config: ResolvedThemeConfig,
+  overrides?: { light?: Record<string, string>; dark?: Record<string, string> }
+): SemanticTokens {
+  if (!overrides) return tokens;
+
+  // Which text tokens did the user explicitly override (any mode)? Skip those.
+  const skip = new Set<string>();
+  // Which bg tokens were overridden, and in which modes?
+  const bgOverriddenModes = new Map<string, Set<"light" | "dark">>();
+
+  for (const mode of ["light", "dark"] as const) {
+    const modeOverrides = overrides[mode];
+    if (!modeOverrides) continue;
+    for (const key of Object.keys(modeOverrides)) {
+      if (!key.startsWith("interactive-")) continue;
+      const tokenName = key.slice("interactive-".length);
+      if (tokenName in INTERACTIVE_TEXT_BG_PAIRS) {
+        skip.add(tokenName);
+      }
+      // Did this override target a paired bg token?
+      for (const [textToken, bgToken] of Object.entries(INTERACTIVE_TEXT_BG_PAIRS)) {
+        if (tokenName === bgToken) {
+          if (!bgOverriddenModes.has(textToken)) {
+            bgOverriddenModes.set(textToken, new Set());
+          }
+          bgOverriddenModes.get(textToken)!.add(mode);
+        }
+      }
+    }
+  }
+
+  if (bgOverriddenModes.size === 0) return tokens;
+
+  // Clone the interactive group (shallow per-token clone) before re-deriving.
+  const interactive: Record<string, SemanticTokenValue> = {};
+  for (const [name, value] of Object.entries(tokens.interactive)) {
+    interactive[name] = { ...value };
+  }
+
+  for (const [textToken, modes] of bgOverriddenModes) {
+    if (skip.has(textToken)) continue;
+    deriveInteractiveTextColors(interactive, config, {
+      // Re-derive only this token by skipping the others.
+      skipTokens: new Set(
+        Object.keys(INTERACTIVE_TEXT_BG_PAIRS).filter((t) => t !== textToken)
+      ),
+      modes: [...modes],
+    });
+  }
+
+  return { ...tokens, interactive };
+}
+
 /** Resolve a single mapping entry to a SemanticTokenValue. */
 function resolveMapping(
   mapping: SemanticMapping,
@@ -125,6 +239,11 @@ export function assignSemanticTokens(
   for (const [name, mapping] of Object.entries(SEMANTIC_MAP.interactive)) {
     interactive[name] = resolveMapping(mapping, lightPrimitives, darkPrimitives, config);
   }
+  // VI-375: second pass — resolve `*-text` derive-on-bg sentinels against the
+  // now-resolved paired `*-bg` values (e.g. primary-text picks text-on-light vs
+  // text-on-dark from primary-bg luminance). A later post-override pass
+  // re-derives any pair whose `*-bg` was overridden (Layer 3 fix).
+  deriveInteractiveTextColors(interactive, config);
 
   for (const [name, mapping] of Object.entries(SEMANTIC_MAP.intent)) {
     intent[name] = resolveMapping(mapping, lightPrimitives, darkPrimitives, config);

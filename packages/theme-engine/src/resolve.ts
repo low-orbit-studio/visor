@@ -30,6 +30,15 @@ const DEFAULTS = {
   },
   typography: {
     scale: 1,
+    // VI-375: default text colors for interactive backgrounds. Auto-picked for
+    // `*-text` tokens by the paired `*-bg` luminance. The defaults preserve the
+    // historical white-on-button behavior (both default to white), so a theme
+    // that only overrides a bright button bg STILL fails AA and raises a
+    // WCAG_CONTRAST warning — the operator must opt into a readable on-light
+    // color (e.g. ENTR's `text-on-light: "#1E1F21"`) to clear it. This keeps the
+    // fix loud rather than silently flipping every theme's button text.
+    "text-on-light": "#FFFFFF",
+    "text-on-dark": "#FFFFFF",
     heading: { family: DEFAULT_FONT_SANS, weight: 600 },
     body: { family: DEFAULT_FONT_SANS, weight: 400 },
     mono: { family: DEFAULT_FONT_MONO },
@@ -170,6 +179,10 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
     "colors-dark": config["colors-dark"],
     typography: {
       scale: config.typography?.scale ?? DEFAULTS.typography.scale,
+      "text-on-light":
+        config.typography?.["text-on-light"] ?? DEFAULTS.typography["text-on-light"],
+      "text-on-dark":
+        config.typography?.["text-on-dark"] ?? DEFAULTS.typography["text-on-dark"],
       heading: {
         family:
           config.typography?.heading?.family ?? DEFAULTS.typography.heading.family,

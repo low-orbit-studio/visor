@@ -43,6 +43,22 @@ export const CONFIG_SURFACE = "__CONFIG_SURFACE__";
 export const CONFIG_DARK_BACKGROUND = "__CONFIG_DARK_BACKGROUND__";
 export const CONFIG_DARK_SURFACE = "__CONFIG_DARK_SURFACE__";
 
+/**
+ * VI-375: derive an interactive `*-text` color from the luminance of its paired
+ * `*-bg` token. The sentinel prefix carries the paired bg token name within the
+ * same `interactive` group (e.g. `__DERIVE_ON_BG__primary-bg`). At assignment
+ * time the resolver reads the already-resolved bg value per mode, then picks the
+ * theme's configured `text-on-light` / `text-on-dark` based on relative
+ * luminance. Per-token overrides (`overrides.dark.interactive-primary-text`)
+ * still replace the derived value downstream.
+ */
+export const DERIVE_ON_BG_PREFIX = "__DERIVE_ON_BG__";
+
+/** Build a derive-on-bg sentinel for a paired interactive bg token. */
+export function deriveOnBg(pairedBgToken: string): string {
+  return `${DERIVE_ON_BG_PREFIX}${pairedBgToken}`;
+}
+
 // ============================================================
 // Mapping Table
 // ============================================================
@@ -307,9 +323,13 @@ export const SEMANTIC_INTERACTIVE_MAP: Record<string, SemanticMapping> = {
     light: { role: "primary", shade: 800 },
     dark: { role: "primary", shade: 300 },
   },
+  // VI-375: was a hardcoded #ffffff constant in both modes — a blind spot that
+  // let a bright brand bg (ENTR dark mint) render white text at ~1.6:1. Now
+  // derives from the paired `primary-bg` luminance: light bg → text-on-light,
+  // dark bg → text-on-dark. Per-token override still wins.
   "primary-text": {
-    light: { constant: "#ffffff" },
-    dark: { constant: "#ffffff" },
+    light: { constant: deriveOnBg("primary-bg") },
+    dark: { constant: deriveOnBg("primary-bg") },
   },
   // VI-478: brand-derived alpha-overlay helpers (BL-193). `soft`/`glow` are
   // alpha overlays that track the theme's primary via color-mix (distinct from
@@ -360,9 +380,11 @@ export const SEMANTIC_INTERACTIVE_MAP: Record<string, SemanticMapping> = {
     light: { role: "error", shade: 700 },
     dark: { role: "error", shade: 600 },
   },
+  // VI-375: derive from the paired `destructive-bg` luminance (was hardcoded
+  // #ffffff). Per-token override still wins.
   "destructive-text": {
-    light: { constant: "#ffffff" },
-    dark: { constant: "#ffffff" },
+    light: { constant: deriveOnBg("destructive-bg") },
+    dark: { constant: deriveOnBg("destructive-bg") },
   },
 
   // Ghost action
@@ -444,6 +466,24 @@ export const SEMANTIC_HAIRLINE_MAP: Record<string, SemanticMapping> = {
     dark: { constant: "rgba(255, 255, 255, 0.10)" },
   },
 };
+
+/**
+ * VI-375: the interactive `*-text` tokens that derive from a paired `*-bg`,
+ * extracted from SEMANTIC_INTERACTIVE_MAP so the list never drifts from the
+ * map. Maps `textToken → pairedBgToken` (e.g. `primary-text → primary-bg`).
+ * Both the assignment derivation and the post-override re-derivation consume
+ * this, and the contrast validator iterates the same pairs.
+ */
+export const INTERACTIVE_TEXT_BG_PAIRS: Record<string, string> = (() => {
+  const pairs: Record<string, string> = {};
+  for (const [name, mapping] of Object.entries(SEMANTIC_INTERACTIVE_MAP)) {
+    const light = mapping.light;
+    if ("constant" in light && light.constant.startsWith(DERIVE_ON_BG_PREFIX)) {
+      pairs[name] = light.constant.slice(DERIVE_ON_BG_PREFIX.length);
+    }
+  }
+  return pairs;
+})();
 
 /** All semantic maps grouped together. */
 export const SEMANTIC_MAP = {
