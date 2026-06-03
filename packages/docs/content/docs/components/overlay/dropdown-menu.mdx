@@ -60,6 +60,27 @@ Group items under a label and display keyboard shortcut hints.
   </DropdownMenu>
 </ComponentPreview>
 
+## Breakout variant
+
+Use `variant="breakout"` on `DropdownMenuContent` when the menu is inside a scroll-clipped container (e.g. a DataTable row, sticky toolbar, or any `overflow: hidden` ancestor). The breakout variant raises z-index to 200 and applies a deeper shadow so the menu escapes the stacking context without consumer-side CSS overrides.
+
+<ComponentPreview
+  title="Breakout Variant"
+  code={"<DropdownMenu>\n  <DropdownMenuTrigger asChild>\n    <Button variant=\"outline\">Row Actions</Button>\n  </DropdownMenuTrigger>\n  <DropdownMenuContent variant=\"breakout\">\n    <DropdownMenuItem>View details</DropdownMenuItem>\n    <DropdownMenuItem>Edit</DropdownMenuItem>\n    <DropdownMenuSeparator />\n    <DropdownMenuItem variant=\"destructive\">Delete</DropdownMenuItem>\n  </DropdownMenuContent>\n</DropdownMenu>"}
+>
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="outline">Row Actions</Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent variant="breakout">
+      <DropdownMenuItem>View details</DropdownMenuItem>
+      <DropdownMenuItem>Edit</DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+</ComponentPreview>
+
 ## Installation
 
 ```bash

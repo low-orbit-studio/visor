@@ -28,7 +28,7 @@ sub_components:
   - name: DropdownMenuTrigger
     description: Button that opens the menu.
   - name: DropdownMenuContent
-    description: The floating menu container.
+    description: The floating menu container. Accepts variant="breakout" for scroll-clipped contexts.
   - name: DropdownMenuItem
     description: A clickable menu action.
   - name: DropdownMenuCheckboxItem
@@ -50,7 +50,7 @@ sub_components:
   - name: DropdownMenuSubTrigger
     description: Item that opens a sub-menu on hover.
   - name: DropdownMenuSubContent
-    description: The nested sub-menu container.
+    description: The nested sub-menu container. Accepts variant="breakout" for scroll-clipped contexts.
   - name: DropdownMenuPortal
     description: Portal wrapper for rendering outside the DOM tree.
 
@@ -62,7 +62,16 @@ props:
   - name: variant
     type: "'default' | 'destructive'"
     default: "default"
-    description: Visual style for the menu item
+    description: Visual style for the menu item (DropdownMenuItem)
+  - name: variant (DropdownMenuContent / DropdownMenuSubContent)
+    type: "'default' | 'breakout'"
+    default: "default"
+    description: >
+      Elevation variant for the menu container. Use "breakout" inside scroll-clipped
+      containers like DataTable rows, sticky toolbars, or any overflow:hidden ancestor.
+      The breakout variant raises z-index to 200 and deepens the shadow so the menu
+      escapes the stacking context. The "default" value is byte-identical to
+      pre-variant rendering — no consumer migration required.
 
 dependencies:
   - "@radix-ui/react-dropdown-menu"
