@@ -32,6 +32,13 @@ sub_components:
     description: The image element that fills the avatar circle with object-fit cover.
   - name: AvatarFallback
     description: Centered fallback content (initials or icon) shown when image is unavailable.
+  - name: AvatarStack
+    description: >
+      Compound primitive for overlapping avatar groups with a `+N` overflow indicator.
+      Accepts an array of image sources (`avatars`), a `total` count (supports
+      server-truncated lists), a `max` cap (default 6), a `size` pass-through
+      (`"sm" | "default" | "lg"`, default `"sm"`), and an optional accessible
+      `label` override. Renders `role="img"` with `data-slot="avatar-stack"`.
 
 dependencies:
   - "@radix-ui/react-avatar"

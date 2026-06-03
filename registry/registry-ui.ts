@@ -353,7 +353,7 @@ export const ui: Registry = [
     name: "avatar",
     type: "registry:ui",
     description:
-      "An avatar component with image and fallback support, built on Radix UI Avatar.",
+      "An avatar component with image and fallback support, built on Radix UI Avatar. Includes the AvatarStack compound primitive for overlapping avatar groups with a +N overflow indicator.",
     dependencies: ["@radix-ui/react-avatar", "@loworbitstudio/visor-core"],
     registryDependencies: ["utils"],
     files: [
@@ -363,6 +363,10 @@ export const ui: Registry = [
       },
       {
         path: "components/ui/avatar/avatar.module.css",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/avatar/avatar-stack.module.css",
         type: "registry:ui",
       },
     ],
