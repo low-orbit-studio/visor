@@ -649,7 +649,7 @@ export const ui: Registry = [
     type: "registry:ui",
     description:
       "A popover component for floating content panels, built on Radix UI Popover.",
-    dependencies: ["@radix-ui/react-popover", "@loworbitstudio/visor-core"],
+    dependencies: ["@radix-ui/react-popover", "@phosphor-icons/react", "@loworbitstudio/visor-core"],
     registryDependencies: ["utils"],
     files: [
       {
