@@ -65,4 +65,18 @@ const AlertDescription = React.forwardRef<HTMLDivElement, React.HTMLAttributes<H
 )
 AlertDescription.displayName = "AlertDescription"
 
-export { Alert, AlertTitle, AlertDescription, alertVariants }
+const AlertActions = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        data-slot="alert-actions"
+        className={cn(styles.actions, className)}
+        {...props}
+      />
+    )
+  }
+)
+AlertActions.displayName = "AlertActions"
+
+export { Alert, AlertTitle, AlertDescription, AlertActions, alertVariants }

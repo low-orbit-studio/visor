@@ -26,6 +26,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "AdminTabbedEditor",
   "AdminWizard",
   "Alert",
+  "AlertActions",
   "AlertDescription",
   "AlertTitle",
   "Avatar",

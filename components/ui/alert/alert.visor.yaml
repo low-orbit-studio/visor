@@ -29,6 +29,8 @@ sub_components:
     description: Bold heading text for the alert message.
   - name: AlertDescription
     description: Secondary descriptive text below the title.
+  - name: AlertActions
+    description: Right-aligned, gap-aware row for inline action buttons (e.g. retry/dismiss).
 
 props:
   - name: variant

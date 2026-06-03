@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
-import { Alert, AlertTitle, AlertDescription } from "../alert"
+import { Alert, AlertTitle, AlertDescription, AlertActions } from "../alert"
 import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Alert", () => {
@@ -70,6 +70,40 @@ describe("AlertDescription", () => {
   })
 })
 
+describe("AlertActions", () => {
+  it("renders action content", () => {
+    render(<AlertActions>Retry</AlertActions>)
+    expect(screen.getByText("Retry")).toBeInTheDocument()
+  })
+
+  it("applies data-slot attribute", () => {
+    render(<AlertActions>Actions</AlertActions>)
+    expect(screen.getByText("Actions")).toHaveAttribute("data-slot", "alert-actions")
+  })
+
+  it("renders with custom className", () => {
+    render(<AlertActions className="custom-actions">Actions</AlertActions>)
+    expect(screen.getByText("Actions")).toHaveClass("custom-actions")
+  })
+
+  it("renders multiple right-aligned actions in a single slot", () => {
+    render(
+      <AlertActions>
+        <button>Dismiss</button>
+        <button>Retry</button>
+      </AlertActions>
+    )
+    expect(screen.getByRole("button", { name: "Dismiss" })).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Retry" })).toBeInTheDocument()
+  })
+
+  it("forwards ref", () => {
+    const ref = { current: null }
+    render(<AlertActions ref={ref}>Actions</AlertActions>)
+    expect(ref.current).not.toBeNull()
+  })
+})
+
 describe("Alert compound usage", () => {
   it("renders full alert structure", () => {
     render(
@@ -80,6 +114,21 @@ describe("Alert compound usage", () => {
     )
     expect(screen.getByText("Heads up!")).toBeInTheDocument()
     expect(screen.getByText("You can add components.")).toBeInTheDocument()
+  })
+
+  it("renders an alert with a right-aligned actions slot", () => {
+    render(
+      <Alert variant="destructive">
+        <AlertTitle>Could not load data</AlertTitle>
+        <AlertDescription>The request timed out.</AlertDescription>
+        <AlertActions>
+          <button>Dismiss</button>
+          <button>Retry</button>
+        </AlertActions>
+      </Alert>
+    )
+    expect(screen.getByText("Could not load data")).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Retry" })).toBeInTheDocument()
   })
 })
 
@@ -99,6 +148,20 @@ describe("accessibility", () => {
       <Alert variant="destructive">
         <AlertTitle>Error</AlertTitle>
         <AlertDescription>Something went wrong.</AlertDescription>
+      </Alert>
+    )
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (with actions)", async () => {
+    const { container } = render(
+      <Alert variant="destructive">
+        <AlertTitle>Could not load data</AlertTitle>
+        <AlertDescription>The request timed out.</AlertDescription>
+        <AlertActions>
+          <button type="button">Dismiss</button>
+          <button type="button">Retry</button>
+        </AlertActions>
       </Alert>
     )
     await checkA11y(container)

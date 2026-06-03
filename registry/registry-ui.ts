@@ -425,7 +425,7 @@ export const ui: Registry = [
     name: "alert",
     type: "registry:ui",
     description:
-      "An alert component with title and description sub-components, supporting default, destructive, success, and warning variants.",
+      "An alert component with title, description, and right-aligned actions sub-components, supporting default, destructive, success, and warning variants.",
     dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
     registryDependencies: ["utils"],
     files: [

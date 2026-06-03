@@ -5,7 +5,8 @@ description: Static inline callout for important messages with semantic variants
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertTitle, AlertDescription, AlertActions } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 
 ## Variants
 
@@ -50,6 +51,26 @@ AlertTitle is optional. Use AlertDescription alone for simpler inline messages.
   </div>
 </ComponentPreview>
 
+## With Actions
+
+Use `AlertActions` to add a right-aligned, gap-aware row of action buttons — ideal for inline error placards with retry or dismiss controls. The slot sits below the description and right-aligns its children with consistent spacing.
+
+<ComponentPreview
+  title="Alert With Actions"
+  code={"import { Alert, AlertTitle, AlertDescription, AlertActions } from '@/components/ui/alert/alert';\nimport { Button } from '@/components/ui/button/button';\n\n<Alert variant=\"destructive\">\n  <AlertTitle>Could not load data</AlertTitle>\n  <AlertDescription>The request timed out. Check your connection and try again.</AlertDescription>\n  <AlertActions>\n    <Button variant=\"ghost\" size=\"sm\">Dismiss</Button>\n    <Button variant=\"outline\" size=\"sm\">Retry</Button>\n  </AlertActions>\n</Alert>"}
+>
+  <div style={{ width: '100%' }}>
+    <Alert variant="destructive">
+      <AlertTitle>Could not load data</AlertTitle>
+      <AlertDescription>The request timed out. Check your connection and try again.</AlertDescription>
+      <AlertActions>
+        <Button variant="ghost" size="sm">Dismiss</Button>
+        <Button variant="outline" size="sm">Retry</Button>
+      </AlertActions>
+    </Alert>
+  </div>
+</ComponentPreview>
+
 ## Installation
 
 ```bash
@@ -84,6 +105,7 @@ The component also accepts all standard `<div>` HTML attributes.
 
 - **`AlertTitle`** — Bold heading text for the alert message. Accepts all `<div>` attributes.
 - **`AlertDescription`** — Secondary descriptive text below the title. Accepts all `<div>` attributes.
+- **`AlertActions`** — Right-aligned, gap-aware row for inline action buttons (e.g. retry/dismiss). Accepts all `<div>` attributes.
 
 ## Accessibility
 
