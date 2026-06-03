@@ -11,6 +11,9 @@ declare const styles: {
   readonly variantFilledSuccess: string
   readonly variantFilledWarning: string
   readonly variantFilledInfo: string
+  readonly sizeSm: string
+  readonly sizeMd: string
+  readonly sizeLg: string
 }
 
 export default styles

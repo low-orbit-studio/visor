@@ -24,11 +24,21 @@ why: >
 
 variants:
   variant: [default, secondary, outline, destructive, success, warning, info, filled-destructive, filled-success, filled-warning, filled-info]
+  size: [sm, md, lg]
 
 props:
   - name: variant
     type: '"default" | "secondary" | "outline" | "destructive" | "success" | "warning" | "info" | "filled-destructive" | "filled-success" | "filled-warning" | "filled-info"'
     default: '"default"'
+  - name: size
+    type: '"sm" | "md" | "lg"'
+    default: '"md"'
+    description: >
+      Controls token-driven padding, font-size, gap, and embedded-icon scaling.
+      `md` (the default) reproduces the original badge sizing exactly — existing
+      call sites are unchanged. `sm` is tighter for dense inline data contexts;
+      `lg` is larger for editorial contexts like page headers and stat-card
+      status pills. Icons inside the badge scale with the size step.
 
 dependencies:
   - "class-variance-authority"
@@ -44,3 +54,8 @@ example: |
   <Badge variant="warning">Pending</Badge>
   <Badge variant="info">Beta</Badge>
   <Badge variant="filled-destructive">Critical</Badge>
+
+  {/* Sizes — sm for dense inline data, md (default) inline, lg for headers/pills */}
+  <Badge size="sm" variant="secondary">v2.1.0</Badge>
+  <Badge size="md" variant="success">Published</Badge>
+  <Badge size="lg" variant="info">Beta</Badge>

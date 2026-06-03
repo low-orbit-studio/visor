@@ -1,17 +1,16 @@
-/* Badge base */
+/* Badge base — sizing (height, padding, font-size, gap) is driven by the
+ * size classes below. Height is intrinsic (padding + line-height) so badges
+ * stay correct when text wraps or icon slots are introduced. */
 .base {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 1.25rem;
   width: fit-content;
   flex-shrink: 0;
-  gap: var(--spacing-1, 0.25rem);
   overflow: hidden;
   border-radius: var(--radius-full, 9999px);
   border: 1px solid transparent;
-  padding: calc(var(--spacing-1, 0.25rem) / 2) var(--spacing-2, 0.5rem);
-  font-size: var(--font-size-xs, 0.75rem);
+  line-height: 1;
   font-weight: var(--font-weight-medium, 500);
   white-space: nowrap;
   transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
@@ -20,6 +19,44 @@
 .base:focus-visible {
   outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
   outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* Sizes — token-driven padding + font-size + gap on the 4px grid.
+ * No --spacing-1.5 token exists, so the 6px step uses
+ * calc(--spacing-1 + --spacing-1/2) — mirrors the pattern used in kbd. */
+.sizeSm {
+  gap: var(--spacing-1, 0.25rem);
+  padding: 0 calc(var(--spacing-1, 0.25rem) + var(--spacing-1, 0.25rem) / 2);
+  font-size: var(--font-size-xs, 0.75rem);
+}
+
+/* md — matches today's rendering byte-for-byte (1.25rem total height). */
+.sizeMd {
+  gap: var(--spacing-1, 0.25rem);
+  padding: calc(var(--spacing-1, 0.25rem) / 2) var(--spacing-2, 0.5rem);
+  font-size: var(--font-size-xs, 0.75rem);
+}
+
+.sizeLg {
+  gap: calc(var(--spacing-1, 0.25rem) + var(--spacing-1, 0.25rem) / 2);
+  padding: var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem);
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+/* Icon scaling — leading glyphs track the per-size font-size step. */
+.sizeSm > svg {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.sizeMd > svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.sizeLg > svg {
+  width: 1rem;
+  height: 1rem;
 }
 
 /* Variants */
