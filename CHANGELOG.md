@@ -1,11 +1,5 @@
 # Changelog
 
-## Unreleased
-
-### Input
-
-- **`[aria-invalid="true"]` visual upgrade (minor, non-breaking)** — Replaced the outset border-color swap with an inset 1.5px destructive box-shadow (`--border-error`), a tinted background (`--surface-error-subtle` with `color-mix` fallback), and a destructive-tinted focus halo when focused (`[aria-invalid="true"]:focus-visible`). The neutral focus halo no longer shows when the field is invalid. Consumers not passing `aria-invalid` are unaffected; consumers passing their own invalid styles via `className` continue to win the cascade.
-
 ## 0.3.0 — Sphere Playground & Live Code
 
 The Sphere Playground is now a fully interactive showcase with real-time code generation, a complete control panel matching the source sandbox, and a new CSS-based fullscreen mode that preserves all state.
