@@ -7,38 +7,49 @@
   container-name: confirm-dialog;
 }
 
-/* Title row with leading severity icon */
-.titleRow {
+/* Header layout — plate stacked above title/description */
+.headerStack {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-2, 0.5rem);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-3, 0.75rem);
 }
 
-/* Severity icon — sized via svg to respect Phosphor sizing contract */
-.icon {
+/* Tinted circular icon plate (~2.5rem) stacked above the dialog title */
+.iconPlate {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  line-height: 1;
+  width: var(--spacing-10, 2.5rem);
+  height: var(--spacing-10, 2.5rem);
+  border-radius: 9999px;
 }
 
-.icon svg {
+.iconPlate svg {
   width: var(--spacing-5, 1.25rem);
   height: var(--spacing-5, 1.25rem);
 }
 
-.iconInfo {
+.plateInfo {
+  background: var(--surface-info-subtle, #f0f9ff);
   color: var(--text-info, #0369a1);
 }
 
-.iconWarning {
+.plateWarning {
+  background: var(--surface-warning-subtle, #fffbeb);
   color: var(--text-warning, #b45309);
 }
 
-.iconDanger {
+.plateDestructive {
+  background: var(--surface-error-subtle, #fef2f2);
   color: var(--text-error, #b91c1c);
 }
+
+/* Legacy aliases — kept for theme overrides targeting the old class names */
+.iconInfo { color: var(--text-info, #0369a1); }
+.iconWarning { color: var(--text-warning, #b45309); }
+.iconDanger { color: var(--text-error, #b91c1c); }
 
 /* Body slot — description paragraph or richer children */
 .body {

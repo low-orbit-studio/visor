@@ -18,7 +18,21 @@ import {
 import { Button } from "../button/button"
 import styles from "./confirm-dialog.module.css"
 
-export type ConfirmDialogSeverity = "info" | "warning" | "danger"
+export type ConfirmDialogSeverity =
+  | "info"
+  | "warning"
+  | "destructive"
+  /**
+   * @deprecated Use `"destructive"` instead. `"danger"` will be removed in the next major version.
+   */
+  | "danger"
+
+/** Internal normalized severity — `"danger"` is collapsed to `"destructive"`. */
+type NormalizedSeverity = "info" | "warning" | "destructive"
+
+function normalizeSeverity(s: ConfirmDialogSeverity): NormalizedSeverity {
+  return s === "danger" ? "destructive" : s
+}
 
 export interface ConfirmDialogProps {
   /** Controlled open state. */
@@ -63,11 +77,11 @@ export interface ConfirmDialogProps {
   className?: string
 }
 
-function getSeverityIcon(severity: ConfirmDialogSeverity): React.ReactNode {
+function getSeverityIcon(severity: NormalizedSeverity): React.ReactNode {
   switch (severity) {
     case "info":
       return <InfoIcon weight="fill" aria-hidden="true" />
-    case "danger":
+    case "destructive":
       return <WarningOctagonIcon weight="fill" aria-hidden="true" />
     case "warning":
     default:
@@ -75,26 +89,26 @@ function getSeverityIcon(severity: ConfirmDialogSeverity): React.ReactNode {
   }
 }
 
-function getSeverityIconClass(severity: ConfirmDialogSeverity): string {
+function getSeverityPlateClass(severity: NormalizedSeverity): string {
   switch (severity) {
     case "info":
-      return styles.iconInfo
-    case "danger":
-      return styles.iconDanger
+      return styles.plateInfo
+    case "destructive":
+      return styles.plateDestructive
     case "warning":
     default:
-      return styles.iconWarning
+      return styles.plateWarning
   }
 }
 
 function getConfirmButtonVariant(
-  severity: ConfirmDialogSeverity
+  severity: NormalizedSeverity
 ): "default" | "destructive" {
-  return severity === "danger" ? "destructive" : "default"
+  return severity === "destructive" ? "destructive" : "default"
 }
 
-function getDefaultConfirmLabel(severity: ConfirmDialogSeverity): string {
-  return severity === "danger" ? "Delete" : "Confirm"
+function getDefaultConfirmLabel(severity: NormalizedSeverity): string {
+  return severity === "destructive" ? "Delete" : "Confirm"
 }
 
 const ConfirmDialog = React.forwardRef<
@@ -133,6 +147,8 @@ const ConfirmDialog = React.forwardRef<
 
     const cancelButtonRef = React.useRef<HTMLButtonElement | null>(null)
 
+    const normalizedSeverity = normalizeSeverity(severity)
+
     const handleOpenChange = React.useCallback(
       (next: boolean) => {
         if (!isControlled) {
@@ -148,7 +164,7 @@ const ConfirmDialog = React.forwardRef<
     )
 
     const resolvedConfirmLabel =
-      confirmLabel ?? getDefaultConfirmLabel(severity)
+      confirmLabel ?? getDefaultConfirmLabel(normalizedSeverity)
     const effectiveBusy = busy ?? isPending
     const gateSatisfied =
       confirmText == null || confirmText.length === 0 || typed === confirmText
@@ -187,17 +203,17 @@ const ConfirmDialog = React.forwardRef<
 
     const handleOpenAutoFocus = React.useCallback(
       (event: Event) => {
-        if (severity === "danger" && cancelButtonRef.current) {
+        if (normalizedSeverity === "destructive" && cancelButtonRef.current) {
           event.preventDefault()
           cancelButtonRef.current.focus()
         }
       },
-      [severity]
+      [normalizedSeverity]
     )
 
-    const severityIcon = getSeverityIcon(severity)
-    const severityIconClass = getSeverityIconClass(severity)
-    const confirmVariant = getConfirmButtonVariant(severity)
+    const severityIcon = getSeverityIcon(normalizedSeverity)
+    const severityPlateClass = getSeverityPlateClass(normalizedSeverity)
+    const confirmVariant = getConfirmButtonVariant(normalizedSeverity)
 
     // Generate stable id for confirm gate input
     const generatedId = React.useId()
@@ -216,24 +232,24 @@ const ConfirmDialog = React.forwardRef<
         <DialogContent
           ref={ref}
           data-slot="confirm-dialog"
-          data-severity={severity}
+          data-severity={normalizedSeverity}
           className={cn(styles.root, className)}
           onOpenAutoFocus={handleOpenAutoFocus}
         >
           <DialogHeader>
-            <div className={styles.titleRow}>
+            <div className={styles.headerStack}>
               <span
-                data-slot="confirm-dialog-icon"
+                data-slot="confirm-dialog-icon-plate"
                 aria-hidden="true"
-                className={cn(styles.icon, severityIconClass)}
+                className={cn(styles.iconPlate, severityPlateClass)}
               >
                 {severityIcon}
               </span>
               <DialogTitle>{title}</DialogTitle>
+              {hasDescriptionForAria ? (
+                <DialogDescription>{description}</DialogDescription>
+              ) : null}
             </div>
-            {hasDescriptionForAria ? (
-              <DialogDescription>{description}</DialogDescription>
-            ) : null}
           </DialogHeader>
 
           {children ? (
