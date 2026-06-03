@@ -74,6 +74,31 @@ These have sensible defaults from visor-core. Override them to customize accent 
 
 Includes: `--surface-accent-subtle`, `--surface-accent-default`, `--surface-accent-strong`, all status surfaces (`success`, `warning`, `error`, `info` in `subtle` and `default` variants), and status borders.
 
+### Letter-spacing ramp
+
+The engine emits a 6-tier letter-spacing ramp from the theme's `typography.letter-spacing`
+YAML block, falling back to the Visor default ramp per tier:
+
+| Token | Default | Notes |
+| --- | --- | --- |
+| `--letter-spacing-xl` | `0.16em` | Widest — eyebrows / overlines, uppercase |
+| `--letter-spacing-lg` | `0.1em` | |
+| `--letter-spacing-md` | `0.05em` | Anchor — body / default |
+| `--letter-spacing-sm` | `0.025em` | |
+| `--letter-spacing-xs` | `0.01em` | |
+| `--letter-spacing-tight` | `-0.01em` | Tightest — large display headings |
+
+```yaml
+typography:
+  letter-spacing:
+    xl: "3.5rem" # any subset of tiers; omitted tiers use the default ramp
+    tight: "0.03rem"
+```
+
+The legacy triad keys stay valid for back-compat and fold onto the ramp (`normal`→`md`,
+`wide`→`lg`, `tight`→`tight`). The engine also emits `--letter-spacing-normal` (= `md`) and
+`--letter-spacing-wide` (= `lg`) as aliases so older consumers keep resolving.
+
 ### Extension Tokens (Namespaced)
 
 Theme-specific tokens use a `--{theme-name}-*` prefix. Components must **never** depend on these — they are consumed only by theme-specific CSS.

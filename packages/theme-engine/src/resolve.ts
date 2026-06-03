@@ -33,6 +33,17 @@ const DEFAULTS = {
     heading: { family: DEFAULT_FONT_SANS, weight: 600 },
     body: { family: DEFAULT_FONT_SANS, weight: 400 },
     mono: { family: DEFAULT_FONT_MONO },
+    // VI-447: default 6-tier letter-spacing ramp. em-based so it scales with
+    // type size; `md` is anchored at the historical `--letter-spacing-normal`
+    // value (0.05em) so existing themes emit byte-identical output.
+    "letter-spacing": {
+      xl: "0.16em",
+      lg: "0.1em",
+      md: "0.05em",
+      sm: "0.025em",
+      xs: "0.01em",
+      tight: "-0.01em",
+    },
   },
   spacing: { base: 4 },
   radius: { sm: 2, md: 4, lg: 8, xl: 12, pill: 9999 },
@@ -84,6 +95,26 @@ function resolveBrand(brand: VisorThemeConfig["brand"]): VisorBrand {
     // theme declares it, so undeclared themes emit no --brand-animated.
     ...(brand.animated && { animated: brand.animated }),
     ...(brand.custom && { custom: brand.custom }),
+  };
+}
+
+/**
+ * VI-447: resolve the 6-tier letter-spacing ramp. Explicit new-key values win
+ * over the legacy aliases (`normal`→md, `wide`→lg, `tight`→tight), which win
+ * over the Visor default ramp. Always returns all six tiers so adapters can
+ * emit a complete ramp regardless of what the theme declared.
+ */
+function resolveLetterSpacing(
+  ls: NonNullable<VisorThemeConfig["typography"]>["letter-spacing"],
+): ResolvedThemeConfig["typography"]["letter-spacing"] {
+  const d = DEFAULTS.typography["letter-spacing"];
+  return {
+    xl: ls?.xl ?? d.xl,
+    lg: ls?.lg ?? ls?.wide ?? d.lg,
+    md: ls?.md ?? ls?.normal ?? d.md,
+    sm: ls?.sm ?? d.sm,
+    xs: ls?.xs ?? d.xs,
+    tight: ls?.tight ?? d.tight,
   };
 }
 
@@ -180,6 +211,7 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
         "cdn-overrides": config.typography["cdn-overrides"],
       }),
       slots: config.typography?.slots ?? {},
+      "letter-spacing": resolveLetterSpacing(config.typography?.["letter-spacing"]),
     },
     brand: resolveBrand(config.brand),
     spacing: {

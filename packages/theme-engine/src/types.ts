@@ -169,9 +169,22 @@ export interface VisorThemeConfig {
       source?: FontSource;
       org?: string;
     };
+    /**
+     * VI-447: 6-tier letter-spacing ramp (`xl | lg | md | sm | xs | tight`).
+     * Each value is a CSS length (e.g. `"0.1em"`, `"0.44rem"`, `"-0.01em"`).
+     * The legacy triad keys (`normal`, `wide`) stay valid for back-compat and
+     * map onto the ramp at resolve time (`normal`→md, `wide`→lg, `tight`→tight).
+     */
     "letter-spacing"?: {
+      xl?: string;
+      lg?: string;
+      md?: string;
+      sm?: string;
+      xs?: string;
       tight?: string;
+      /** @deprecated legacy alias — maps to `md`. */
       normal?: string;
+      /** @deprecated legacy alias — maps to `lg`. */
       wide?: string;
     };
     /**
@@ -295,6 +308,19 @@ export interface ResolvedThemeConfig {
      * consumes these; other adapters may ignore them.
      */
     slots: Partial<Record<MaterialTextSlot, TextSlotOverride>>;
+    /**
+     * VI-447: resolved 6-tier letter-spacing ramp. Always present — legacy
+     * triad input is folded onto the ramp and missing tiers fall back to the
+     * Visor default ramp, so every tier carries a CSS length.
+     */
+    "letter-spacing": {
+      xl: string;
+      lg: string;
+      md: string;
+      sm: string;
+      xs: string;
+      tight: string;
+    };
   };
   /**
    * Resolved brand block (VI-470). Always present — falls back to the Visor

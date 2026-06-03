@@ -39,7 +39,12 @@ const KNOWN_CDN_OVERRIDE_KEYS = new Set(["visor-fonts"]);
 
 const KNOWN_TYPOGRAPHY_FONT_KEYS = new Set(["family", "weight", "weights", "source", "org"]);
 const KNOWN_TYPOGRAPHY_MONO_KEYS = new Set(["family", "weight", "weights", "source", "org"]);
-const KNOWN_LETTER_SPACING_KEYS = new Set(["tight", "normal", "wide"]);
+// VI-447: 6-tier letter-spacing ramp (`xl | lg | md | sm | xs | tight`). The
+// legacy triad keys (`normal`, `wide`) remain valid input for back-compat —
+// they map onto the ramp at resolve time (`normal`→md, `wide`→lg, `tight`→tight).
+const KNOWN_LETTER_SPACING_KEYS = new Set([
+  "xl", "lg", "md", "sm", "xs", "tight", "normal", "wide",
+]);
 const KNOWN_SLOT_NAMES = new Set<string>(MATERIAL_TEXT_SLOTS);
 const KNOWN_SLOT_OVERRIDE_KEYS = new Set(["size", "weight", "letter-spacing"]);
 
