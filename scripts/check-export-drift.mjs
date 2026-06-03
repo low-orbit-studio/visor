@@ -447,6 +447,84 @@ function collectExportsFromDts(pkgDir, filePath, source, acc, visited) {
   }
 }
 
+// ─── Workspace Fallback Resolution ───────────────────────────────────────────
+
+/**
+ * Attempt to resolve a package from the local workspace when the npm registry
+ * returns null (e.g., a version is in-flight and not yet published).
+ *
+ * Decisions implemented (VI-363):
+ *  D1: Only used when registry resolution returns null AND the package exists locally.
+ *  D2: The local package.json `version` must satisfy (>=) the failing constraint.
+ *  D3: `packages/{pkg}/dist/**\/*.d.ts` must exist before falling back.
+ *
+ * Returns { localVersion, pkgDir } on success, or throws with a clear error message.
+ */
+function resolveExportSurfaceFromWorkspace(packageName, constraintRange) {
+  // D1: Find the local package directory by scanning packages/ for a matching name.
+  // Directory names do not always match package names (e.g., "theme-engine" vs
+  // "visor-theme-engine"), so we resolve by reading each package.json.
+  let localPkgDir = null;
+  if (existsSync(PACKAGES_DIR)) {
+    for (const entry of readdirSync(PACKAGES_DIR)) {
+      const candidate = join(PACKAGES_DIR, entry);
+      const pkgJsonPath = join(candidate, "package.json");
+      if (!existsSync(pkgJsonPath)) continue;
+      const pkgJson = readJson(pkgJsonPath);
+      if (pkgJson && pkgJson.name === packageName) {
+        localPkgDir = candidate;
+        break;
+      }
+    }
+  }
+
+  if (!localPkgDir) {
+    throw new Error(
+      `Workspace fallback failed: ${packageName} not found locally in ${PACKAGES_DIR}.\n` +
+        `  Fix: ensure the package exists in packages/ or republish the upstream so the constraint resolves from npm.`,
+    );
+  }
+
+  const localPkgJsonPath = join(localPkgDir, "package.json");
+  const localPkgJson = readJson(localPkgJsonPath);
+  if (!localPkgJson || !localPkgJson.version) {
+    throw new Error(
+      `Workspace fallback failed: could not read version from ${localPkgJsonPath}.`,
+    );
+  }
+  const localVersion = localPkgJson.version;
+
+  // D2: Local version must satisfy the constraint.
+  const satisfies = spawnSync(
+    "node",
+    [
+      "-e",
+      `const semver = require('semver'); const ok = semver.satisfies(${JSON.stringify(localVersion)}, ${JSON.stringify(constraintRange)}); process.stdout.write(ok ? 'yes' : 'no');`,
+    ],
+    { encoding: "utf8" },
+  );
+  if (satisfies.stdout.trim() !== "yes") {
+    throw new Error(
+      `Workspace fallback failed: local ${packageName}@${localVersion} does NOT satisfy constraint ${constraintRange}.\n` +
+        `  The local version is too old to satisfy the in-flight constraint.\n` +
+        `  Fix: bump the local package version to satisfy ${constraintRange}, or update the downstream constraint.`,
+    );
+  }
+
+  // D3: dist/**/*.d.ts must exist.
+  const localDistDir = join(localPkgDir, "dist");
+  const dtsFiles = [...walkFiles(localDistDir, (p) => p.endsWith(".d.ts"))];
+  if (dtsFiles.length === 0) {
+    throw new Error(
+      `Workspace fallback failed: no .d.ts files found in ${localDistDir}.\n` +
+        `  The package must be built before the drift check can use the workspace fallback.\n` +
+        `  Fix: run 'npm run build' (or build just ${packageName}) first.`,
+    );
+  }
+
+  return { localVersion, pkgDir: localPkgDir };
+}
+
 // ─── Workspace Discovery ──────────────────────────────────────────────────────
 
 /**
@@ -562,23 +640,37 @@ async function main() {
 
       // 2. Resolve the semver range to an actual published version
       const resolvedVersion = resolveVersionFromNpm(upstreamName, versionRange);
-      if (!resolvedVersion) {
-        console.warn(
-          `    WARNING: Could not resolve ${upstreamName}@${versionRange} from npm registry. Skipping.`,
-        );
-        continue;
-      }
-      console.log(`    Resolved ${upstreamName}@${versionRange} → ${resolvedVersion}`);
 
-      // 3. Download and extract the resolved tarball
       let pkgDir;
-      try {
-        pkgDir = await downloadAndExtractTarball(upstreamName, resolvedVersion);
-      } catch (err) {
-        console.warn(
-          `    WARNING: Could not download tarball for ${upstreamName}@${resolvedVersion}: ${err.message}. Skipping.`,
+      if (!resolvedVersion) {
+        // Registry resolution failed — attempt workspace fallback (D1-D3, VI-363).
+        // This handles the in-flight case: Version Packages PR merged, bumped constraint
+        // not yet published, but local dist is the about-to-publish build.
+        let workspaceFallback;
+        try {
+          workspaceFallback = resolveExportSurfaceFromWorkspace(upstreamName, versionRange);
+        } catch (fallbackErr) {
+          console.error(
+            `\n  ERROR: Could not resolve ${upstreamName}@${versionRange} from npm registry`,
+            `and workspace fallback also failed:\n  ${fallbackErr.message}`,
+          );
+          process.exit(1);
+        }
+        console.log(
+          `    Resolved ${upstreamName}@${versionRange} → ${workspaceFallback.localVersion} (workspace)`,
         );
-        continue;
+        pkgDir = workspaceFallback.pkgDir;
+      } else {
+        console.log(`    Resolved ${upstreamName}@${versionRange} → ${resolvedVersion}`);
+        // 3. Download and extract the resolved tarball
+        try {
+          pkgDir = await downloadAndExtractTarball(upstreamName, resolvedVersion);
+        } catch (err) {
+          console.warn(
+            `    WARNING: Could not download tarball for ${upstreamName}@${resolvedVersion}: ${err.message}. Skipping.`,
+          );
+          continue;
+        }
       }
 
       // 4. Check each specifier's import symbols against the tarball's export surface
@@ -662,6 +754,7 @@ export {
   resolveTypesFromEntry,
   collectExportsFromDts,
   resolveExportSurface,
+  resolveExportSurfaceFromWorkspace,
   collectDownstreamImports,
   buildDepGraph,
   discoverWorkspacePackages,
