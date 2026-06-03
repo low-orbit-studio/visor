@@ -8,6 +8,7 @@ when_to_use:
   - Rich content previews that need more space than a tooltip
   - Non-modal floating panels for settings or options
   - Date pickers or color pickers anchored to an input
+  - Single-select or multi-select option lists inside a filter popover (use PopoverSelectionList)
 
 when_not_to_use:
   - Simple text hints on hover (use Tooltip)
@@ -20,6 +21,8 @@ why: >
   correct focus management, dismiss-on-click-outside, and keyboard handling.
   It supports alignment and offset props for precise positioning, and its
   CSS Module styles use Visor tokens for consistent theming and animations.
+  The SelectionList compound adds WAI-ARIA listbox semantics, roving-tabindex
+  keyboard navigation, and checkbox/radio indicator plates for filter-control patterns.
 
 sub_components:
   - name: Popover
@@ -35,6 +38,22 @@ sub_components:
       Right-aligned action row separated from the body by a top border. Hosts a
       primary/secondary button pair (e.g. Apply/Cancel) for filter popovers,
       inline editors, and lightweight confirms.
+  - name: PopoverSelectionList
+    description: >
+      WAI-ARIA listbox container for single- or multi-select option lists.
+      Takes a mode prop ("checkbox" | "radio", default "checkbox") that propagates
+      to all child PopoverSelectionItem elements via context. Implements roving-tabindex
+      keyboard navigation (Arrow Up/Down, Home/End, Enter/Space, Esc closes via Radix).
+  - name: PopoverSelectionItem
+    description: >
+      A selectable option row inside PopoverSelectionList. Renders role="option"
+      with aria-selected, aria-disabled, and an always-rendered indicator plate
+      (checkbox: filled square on selection; radio: ring with dot on selection).
+      Accepts selected, onSelect, disabled, count, and leadingIcon props.
+  - name: PopoverSelectionLabel
+    description: >
+      A non-interactive label heading row for a PopoverSelectionList, styled
+      as a small-caps section header.
 
 props:
   - name: align
@@ -47,6 +66,7 @@ props:
 
 dependencies:
   - "@radix-ui/react-popover"
+  - "@phosphor-icons/react"
 
 preview_url: "https://visor.loworbit.studio/docs/components/overlay/popover"
 
@@ -74,3 +94,73 @@ notes: >
   and the slot bakes in no autoFocus override. Responsive: popovers are floating
   panels; actions do not stack at breakpoints — if they don't fit on one row,
   widen the popover rather than wrapping the buttons.
+
+examples:
+  - title: Multi-select filter (checkbox mode)
+    code: |
+      function RoleFilter() {
+        const [selected, setSelected] = React.useState<string[]>([])
+        const toggle = (role: string) =>
+          setSelected((prev) =>
+            prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
+          )
+        return (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">Filter by role</Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <PopoverSelectionLabel>Role</PopoverSelectionLabel>
+              <PopoverSelectionList mode="checkbox" aria-label="Filter by role">
+                <PopoverSelectionItem
+                  selected={selected.includes("admin")}
+                  onSelect={() => toggle("admin")}
+                  count={3}
+                >
+                  Admin
+                </PopoverSelectionItem>
+                <PopoverSelectionItem
+                  selected={selected.includes("editor")}
+                  onSelect={() => toggle("editor")}
+                  count={12}
+                >
+                  Editor
+                </PopoverSelectionItem>
+                <PopoverSelectionItem
+                  selected={selected.includes("viewer")}
+                  onSelect={() => toggle("viewer")}
+                  count={47}
+                >
+                  Viewer
+                </PopoverSelectionItem>
+              </PopoverSelectionList>
+            </PopoverContent>
+          </Popover>
+        )
+      }
+
+  - title: Single-select (radio mode)
+    code: |
+      function StatusPicker() {
+        const [status, setStatus] = React.useState("active")
+        return (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline">Status</Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <PopoverSelectionList mode="radio" aria-label="Select status">
+                {["active", "paused", "archived"].map((s) => (
+                  <PopoverSelectionItem
+                    key={s}
+                    selected={status === s}
+                    onSelect={() => setStatus(s)}
+                  >
+                    {s.charAt(0).toUpperCase() + s.slice(1)}
+                  </PopoverSelectionItem>
+                ))}
+              </PopoverSelectionList>
+            </PopoverContent>
+          </Popover>
+        )
+      }
