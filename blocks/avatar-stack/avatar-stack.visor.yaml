@@ -1,4 +1,6 @@
 name: AvatarStack
+deprecated: true
+superseded_by: avatar
 description: Overlapping avatar group with a `+N more` overflow indicator. Pure composition of the Avatar primitive, no new tokens or ARIA pattern.
 category: data-display
 components_used:

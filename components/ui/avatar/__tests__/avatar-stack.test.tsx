@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
-import { AvatarStack } from "../avatar-stack"
-import { checkA11y } from "../../../test-utils/a11y"
+import { AvatarStack } from "../avatar"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("AvatarStack", () => {
   it("renders N avatars when total === avatars.length and <= max", () => {
