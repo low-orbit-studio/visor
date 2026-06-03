@@ -80,6 +80,46 @@
   box-shadow: var(--shadow-sm);
 }
 
+/* Trigger label — wraps children to allow count pill alongside */
+.label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Count pill */
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: var(--radius-full, 9999px);
+  padding: 0 var(--spacing-2, 0.5rem);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-medium, 500);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
+  vertical-align: baseline;
+}
+
+.countNeutral {
+  background-color: var(--surface-muted, #f3f4f6);
+  color: var(--text-secondary, #6b7280);
+}
+
+.countPrimary {
+  background-color: var(--surface-accent-subtle, #eff6ff);
+  color: var(--text-link, #2563eb);
+}
+
+/* Active-state re-tone: regardless of countTone, re-tone to primary on active */
+.trigger[data-state="active"] .count {
+  background-color: var(--surface-accent-subtle, #eff6ff);
+  color: var(--text-link, #2563eb);
+}
+
 /* Tabs content */
 .content {
   flex: 1;
