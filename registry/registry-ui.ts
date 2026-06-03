@@ -1815,6 +1815,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "key-value-list",
+    type: "registry:ui",
+    category: "data-display",
+    description:
+      "Definition-list display primitive for one record's attributes — label/value pairs in a responsive grid. Values accept any node (Badge, AvatarStack, StatHero, ScoreIndicator, text); stacked or horizontal orientation, 1–4 columns, three densities.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/key-value-list/key-value-list.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/key-value-list/key-value-list.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "score-indicator",
     type: "registry:ui",
     category: "admin",

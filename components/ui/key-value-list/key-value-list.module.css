@@ -1,0 +1,116 @@
+/* Key-value list — a definition-list display primitive for one record's
+   attributes (the "key facts" panel). Label/value pairs in a responsive grid.
+   Values accept any node: Badge, AvatarStack, StatHero, ScoreIndicator, text. */
+.root {
+  display: grid;
+  grid-template-columns: 1fr;
+  margin: 0;
+}
+
+.root[data-columns="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.root[data-columns="3"] {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.root[data-columns="4"] {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.item {
+  min-width: 0;
+}
+
+/* Label — uppercase eyebrow. */
+.label {
+  margin: 0;
+  font-size: var(--font-size-xs, 0.6875rem);
+  font-weight: var(--font-weight-medium, 500);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary, #6b7280);
+  line-height: 1.4;
+}
+
+/* Value — primary text; resets the native <dd> indent. */
+.value {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--spacing-2, 0.5rem);
+  min-width: 0;
+  color: var(--text-primary, #111827);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hint — secondary trailing text ("/ 100", "142 total"). */
+.hint {
+  font-size: var(--font-size-sm, 0.8125rem);
+  font-weight: var(--font-weight-normal, 400);
+  color: var(--text-tertiary, #6b7280);
+}
+
+/* ── Orientation ──────────────────────────────────────────────── */
+/* Stacked (default) — label above value. */
+.root[data-orientation="stacked"] .item {
+  display: flex;
+  flex-direction: column;
+}
+.root[data-orientation="stacked"] .label {
+  margin-bottom: var(--spacing-2, 0.5rem);
+}
+
+/* Horizontal — label beside value. */
+.root[data-orientation="horizontal"] .item {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.4fr) 1fr;
+  align-items: baseline;
+  gap: var(--spacing-4, 1rem);
+}
+.root[data-orientation="horizontal"] .label {
+  letter-spacing: 0.06em;
+}
+
+/* ── Density ──────────────────────────────────────────────────── */
+.root[data-density="editorial"] {
+  column-gap: var(--spacing-8, 2rem);
+  row-gap: var(--spacing-6, 1.5rem);
+}
+.root[data-density="editorial"] .value {
+  font-size: var(--font-size-lg, 1.125rem);
+}
+
+.root[data-density="default"] {
+  column-gap: var(--spacing-6, 1.5rem);
+  row-gap: var(--spacing-4, 1rem);
+}
+.root[data-density="default"] .value {
+  font-size: var(--font-size-base, 1rem);
+}
+
+.root[data-density="compact"] {
+  column-gap: var(--spacing-4, 1rem);
+  row-gap: var(--spacing-3, 0.75rem);
+}
+.root[data-density="compact"] .value {
+  font-size: var(--font-size-sm, 0.8125rem);
+}
+.root[data-density="compact"][data-orientation="stacked"] .label {
+  margin-bottom: var(--spacing-1, 0.25rem);
+}
+
+/* ── Responsive collapse ──────────────────────────────────────── */
+@media (max-width: 900px) {
+  .root[data-columns="3"],
+  .root[data-columns="4"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .root[data-columns="2"],
+  .root[data-columns="3"],
+  .root[data-columns="4"] {
+    grid-template-columns: 1fr;
+  }
+}
