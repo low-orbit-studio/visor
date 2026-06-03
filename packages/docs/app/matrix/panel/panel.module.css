@@ -1,0 +1,6 @@
+/* The matrix row panel: the chosen section rendered chromeless on the theme's
+   page surface (the `*-theme` scope on <body> paints --surface-page + text).
+   Sized to content so the parent matrix page can auto-height the iframe. */
+.panel {
+  padding: var(--spacing-5, 1.25rem) var(--spacing-6, 1.5rem);
+}

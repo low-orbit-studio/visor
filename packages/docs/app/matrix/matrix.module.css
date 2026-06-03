@@ -1,0 +1,169 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: var(--spacing-4, 1rem);
+  gap: var(--spacing-4, 1rem);
+  background: var(--surface-page, #ffffff);
+  color: var(--text-primary, #111827);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.title {
+  font-size: var(--font-size-xl, 1.25rem);
+  font-weight: 600;
+  font-family: var(--font-heading, inherit);
+  margin: 0;
+}
+
+.subtitle {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+  margin: var(--spacing-1, 0.25rem) 0 0;
+}
+
+.backLink {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.backLink:hover {
+  color: var(--text-primary, #111827);
+}
+
+/* ─── Controls ────────────────────────────────────────────────────────────── */
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3, 0.75rem);
+  align-items: center;
+  padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
+  background: var(--surface-card, transparent);
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-md, 0.5rem);
+  position: sticky;
+  top: var(--spacing-2, 0.5rem);
+  z-index: 10;
+  backdrop-filter: blur(8px);
+}
+
+.controlItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.controlIcon {
+  color: var(--text-secondary, #6b7280);
+  flex: 0 0 auto;
+}
+
+.select {
+  min-width: 11rem;
+}
+
+/* ─── Matrix rows ─────────────────────────────────────────────────────────── */
+
+.matrix {
+  display: flex;
+  flex-direction: column;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+}
+
+.groupHead {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary, #6b7280);
+  margin: var(--spacing-6, 1.5rem) 0 var(--spacing-2, 0.5rem);
+}
+
+.row {
+  display: flex;
+  align-items: stretch;
+  border-top: 1px solid var(--border-default, #e5e7eb);
+}
+
+/* Fixed-width identity column so every row's content starts at the same x — the
+   point of the matrix is eyedropping one component across themes. */
+.rowMeta {
+  flex: 0 0 11rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+  padding: var(--spacing-4, 1rem) var(--spacing-3, 0.75rem);
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+}
+
+.themeName {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+}
+
+.themeSlug {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-tertiary, #6b7280);
+}
+
+.themeMode {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-secondary, #6b7280);
+  text-transform: capitalize;
+}
+
+.themeMode[data-locked="true"] {
+  color: var(--text-tertiary, #9ca3af);
+  font-style: italic;
+}
+
+/* Each row's panel is its own document (own theme scope + mode class), so the
+   theme's surface, fonts and prefers-proof mode never bleed across rows. Height
+   is set inline from the panel's reported content height. */
+.rowFrame {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 7.5rem;
+  border: 0;
+  display: block;
+  background: var(--surface-muted, #f3f4f6);
+  border-left: 1px solid var(--border-default, #e5e7eb);
+}
+
+.empty {
+  padding: var(--spacing-8, 2rem) 0;
+  color: var(--text-secondary, #6b7280);
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+@media (max-width: 720px) {
+  .row {
+    flex-direction: column;
+  }
+  .rowMeta {
+    flex-basis: auto;
+    position: static;
+  }
+  .rowFrame {
+    border-left: 0;
+    border-top: 1px solid var(--border-default, #e5e7eb);
+  }
+}
