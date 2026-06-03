@@ -38,14 +38,14 @@
 }
 
 .root[data-state="checked"] {
-  border-color: var(--checkbox-border-checked, var(--interactive-primary-bg, #111827));
-  background-color: var(--checkbox-bg-checked, var(--interactive-primary-bg, #111827));
+  border-color: var(--checkbox-border-checked, var(--interactive-primary-bg, var(--accent-primary, #111827)));
+  background-color: var(--checkbox-bg-checked, var(--interactive-primary-bg, var(--accent-primary, #111827)));
   color: var(--interactive-primary-text, #f9fafb);
 }
 
 .root[data-state="indeterminate"] {
-  border-color: var(--checkbox-border-checked, var(--interactive-primary-bg, #111827));
-  background-color: var(--checkbox-bg-checked, var(--interactive-primary-bg, #111827));
+  border-color: var(--checkbox-border-checked, var(--interactive-primary-bg, var(--accent-primary, #111827)));
+  background-color: var(--checkbox-bg-checked, var(--interactive-primary-bg, var(--accent-primary, #111827)));
   color: var(--interactive-primary-text, #f9fafb);
 }
 
