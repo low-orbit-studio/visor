@@ -20,23 +20,23 @@
 /* Per-color-group fills. Use brand surface default tokens so the dot
  * reads as a saturated status color independent of the Badge subtle bg. */
 .indicatorSuccess {
-  background-color: var(--surface-success-default, #22c55e);
+  background-color: var(--surface-success-default, transparent);
 }
 
 .indicatorWarning {
-  background-color: var(--surface-warning-default, #f59e0b);
+  background-color: var(--surface-warning-default, transparent);
 }
 
 .indicatorDestructive {
-  background-color: var(--surface-error-default, #ef4444);
+  background-color: var(--surface-error-default, transparent);
 }
 
 .indicatorInfo {
-  background-color: var(--surface-info-default, #0ea5e9);
+  background-color: var(--surface-info-default, transparent);
 }
 
 .indicatorNeutral {
-  background-color: var(--text-tertiary, #6b7280);
+  background-color: var(--text-tertiary, currentColor);
 }
 
 /* In filled tone, the dot sits on top of a saturated brand fill —
@@ -46,7 +46,7 @@
 [data-tone="filled"] .indicatorWarning,
 [data-tone="filled"] .indicatorDestructive,
 [data-tone="filled"] .indicatorInfo {
-  background-color: var(--text-inverse, #ffffff);
+  background-color: var(--text-inverse, currentColor);
 }
 
 /* Neutral's filled fill (filled-neutral) is a fixed dark gray in both modes,
