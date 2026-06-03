@@ -1,4 +1,6 @@
 name: Input
+version: minor
+changeset: "aria-invalid=\"true\" now renders an inset 1.5px destructive border (box-shadow), tinted background (--surface-error-subtle / color-mix fallback), and a destructive-tinted focus halo when focused. Non-breaking: consumers not passing aria-invalid are unaffected."
 description: A text input component with focus and validation states.
 extends: HTMLInputElement
 category: form

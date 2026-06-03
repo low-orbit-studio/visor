@@ -140,3 +140,42 @@ describe("accessibility", () => {
     await checkA11y(container)
   })
 })
+
+describe("aria-invalid styling", () => {
+  it("sets aria-invalid=true when passed", () => {
+    render(<Input aria-label="Email" aria-invalid="true" />)
+    const input = screen.getByRole("textbox")
+    expect(input).toHaveAttribute("aria-invalid", "true")
+  })
+
+  it("does not set aria-invalid when not passed", () => {
+    render(<Input aria-label="Email" />)
+    const input = screen.getByRole("textbox")
+    expect(input).not.toHaveAttribute("aria-invalid")
+  })
+
+  it("renders disabled + aria-invalid together without error", () => {
+    render(<Input aria-label="Email" aria-invalid="true" disabled />)
+    const input = screen.getByRole("textbox")
+    expect(input).toHaveAttribute("aria-invalid", "true")
+    expect(input).toBeDisabled()
+  })
+
+  it("has no WCAG 2.1 AA violations when aria-invalid=true (with associated label)", async () => {
+    const { container } = render(
+      <div>
+        <label htmlFor="invalid-input">Email</label>
+        <Input id="invalid-input" type="email" aria-invalid="true" aria-describedby="invalid-input-error" />
+        <span id="invalid-input-error" role="alert">Please enter a valid email address</span>
+      </div>
+    )
+    await checkA11y(container)
+  })
+
+  it("renders aria-invalid=false without aria-invalid attribute behavior", () => {
+    render(<Input aria-label="Email" aria-invalid={false} />)
+    const input = screen.getByRole("textbox")
+    // aria-invalid=false is valid HTML — just confirms no crash and attribute value
+    expect(input).toHaveAttribute("aria-invalid", "false")
+  })
+})
