@@ -192,6 +192,55 @@ describe("Sparkline", () => {
   })
 })
 
+describe("Sparkline animation", () => {
+  it("applies animatedPolyline class by default (animate=true)", () => {
+    const { container } = render(<Sparkline values={SAMPLE} />)
+    const polyline = container.querySelector("polyline")
+    const classes = Array.from(polyline?.classList ?? [])
+    expect(classes.some((c) => c.includes("animatedPolyline"))).toBe(true)
+  })
+
+  it("does NOT apply animatedPolyline class when animate={false}", () => {
+    const { container } = render(<Sparkline values={SAMPLE} animate={false} />)
+    const polyline = container.querySelector("polyline")
+    const classes = Array.from(polyline?.classList ?? [])
+    expect(classes.some((c) => c.includes("animatedPolyline"))).toBe(false)
+  })
+
+  it("sets stroke-dasharray and stroke-dashoffset when animate=true", () => {
+    const { container } = render(<Sparkline values={SAMPLE} />)
+    const polyline = container.querySelector("polyline")
+    // Before the rAF fires in JSDOM, dashoffset equals dasharray (not yet drawn)
+    expect(polyline?.style.strokeDasharray).not.toBe("")
+    expect(polyline?.style.strokeDashoffset).not.toBe("")
+  })
+
+  it("does NOT set stroke-dasharray or stroke-dashoffset when animate={false}", () => {
+    const { container } = render(<Sparkline values={SAMPLE} animate={false} />)
+    const polyline = container.querySelector("polyline")
+    expect(polyline?.style.strokeDasharray).toBe("")
+    expect(polyline?.style.strokeDashoffset).toBe("")
+  })
+
+  it("applies custom duration via CSS custom property when animate=true", () => {
+    const { container } = render(
+      <Sparkline values={SAMPLE} duration={800} />
+    )
+    const polyline = container.querySelector("polyline") as SVGPolylineElement
+    expect(
+      polyline?.style.getPropertyValue("--sparkline-animation-duration")
+    ).toBe("800ms")
+  })
+
+  it("uses default 1500ms duration", () => {
+    const { container } = render(<Sparkline values={SAMPLE} />)
+    const polyline = container.querySelector("polyline") as SVGPolylineElement
+    expect(
+      polyline?.style.getPropertyValue("--sparkline-animation-duration")
+    ).toBe("1500ms")
+  })
+})
+
 describe("Sparkline accessibility", () => {
   it("has no WCAG 2.1 AA violations when decorative", async () => {
     const { container } = render(<Sparkline values={SAMPLE} />)

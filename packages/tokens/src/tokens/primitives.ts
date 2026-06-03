@@ -217,6 +217,7 @@ export const primitiveMotionDurations = {
   "300": "300ms",
   "500": "500ms",
   "800": "800ms",
+  "1500": "1500ms",
 } as const;
 
 // Motion easing curves

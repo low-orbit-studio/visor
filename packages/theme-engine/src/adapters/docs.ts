@@ -166,6 +166,7 @@ function generateMotionDecls(config: ResolvedThemeConfig): string[] {
     "--motion-duration-300: 300ms;",
     `--motion-duration-500: ${config.motion["duration-slow"]};`,
     "--motion-duration-800: 800ms;",
+    "--motion-duration-1500: 1500ms;",
     "--motion-easing-linear: linear;",
     "--motion-easing-ease-in: cubic-bezier(0.4, 0, 1, 1);",
     "--motion-easing-ease-out: cubic-bezier(0, 0, 0.2, 1);",
