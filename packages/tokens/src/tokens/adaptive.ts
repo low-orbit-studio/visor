@@ -15,6 +15,19 @@ export interface AdaptiveTokenValue {
   dark: string;
 }
 
+/**
+ * An adaptive value is normally a bare primitive token reference (e.g.
+ * `"color-error-900"`) that the generator wraps in `var(--…)`. A value may
+ * instead be a full CSS expression (e.g. a `color-mix()` blend) when it already
+ * carries its own `var()` references — detected by a `(` in the string. Such
+ * values are emitted verbatim by the generator and are exempt from
+ * primitive-name validation, because they may reference semantic/adaptive tokens
+ * (e.g. `var(--surface-card)`), not just primitives.
+ */
+export function isCssExpression(value: string): boolean {
+  return value.includes("(");
+}
+
 /** Adaptive text tokens */
 export const adaptiveText: Record<string, AdaptiveTokenValue> = {
   primary: {
@@ -125,9 +138,16 @@ export const adaptiveSurface: Record<string, AdaptiveTokenValue> = {
     light: "color-primary-600",
     dark: "color-primary-400",
   },
+  // VI-500: dark status `-subtle` surfaces blend the `-900` shade toward the
+  // card surface so tinted Alert/Banner/Toast backgrounds read as gentle
+  // placards instead of saturated fills. The raw `-900` (e.g. #7f1d1d) reads
+  // heavy on dark; a 12% blend toward `--surface-card` keeps a faint hue cue
+  // while letting the surface read through — mirroring how `-50` sits gently on
+  // white in light mode (12% matches the `-soft` status tints). Light values are
+  // unchanged. (See ticket D1.)
   "success-subtle": {
     light: "color-success-50",
-    dark: "color-success-900",
+    dark: "color-mix(in srgb, var(--color-success-900) 12%, var(--surface-card))",
   },
   "success-default": {
     light: "color-success-500",
@@ -135,7 +155,7 @@ export const adaptiveSurface: Record<string, AdaptiveTokenValue> = {
   },
   "warning-subtle": {
     light: "color-warning-50",
-    dark: "color-warning-900",
+    dark: "color-mix(in srgb, var(--color-warning-900) 12%, var(--surface-card))",
   },
   "warning-default": {
     light: "color-warning-500",
@@ -143,7 +163,7 @@ export const adaptiveSurface: Record<string, AdaptiveTokenValue> = {
   },
   "error-subtle": {
     light: "color-error-50",
-    dark: "color-error-900",
+    dark: "color-mix(in srgb, var(--color-error-900) 12%, var(--surface-card))",
   },
   "error-default": {
     light: "color-error-500",
@@ -151,7 +171,7 @@ export const adaptiveSurface: Record<string, AdaptiveTokenValue> = {
   },
   "info-subtle": {
     light: "color-info-50",
-    dark: "color-info-900",
+    dark: "color-mix(in srgb, var(--color-info-900) 12%, var(--surface-card))",
   },
   "info-default": {
     light: "color-info-500",
