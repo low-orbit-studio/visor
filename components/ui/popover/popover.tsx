@@ -37,4 +37,9 @@ const PopoverContent = React.forwardRef<
 ))
 PopoverContent.displayName = "PopoverContent"
 
-export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor }
+function PopoverFooter({ className, ...props }: React.ComponentProps<"div">) {
+  return <div data-slot="popover-footer" className={cn(styles.footer, className)} {...props} />
+}
+PopoverFooter.displayName = "PopoverFooter"
+
+export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor, PopoverFooter }

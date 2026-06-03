@@ -30,6 +30,11 @@ sub_components:
     description: The floating content panel rendered in a portal.
   - name: PopoverAnchor
     description: Optional custom anchor element for positioning.
+  - name: PopoverFooter
+    description: >
+      Right-aligned action row separated from the body by a top border. Hosts a
+      primary/secondary button pair (e.g. Apply/Cancel) for filter popovers,
+      inline editors, and lightweight confirms.
 
 props:
   - name: align
@@ -48,9 +53,24 @@ preview_url: "https://visor.loworbit.studio/docs/components/overlay/popover"
 example: |
   <Popover>
     <PopoverTrigger asChild>
-      <Button variant="outline">Open settings</Button>
+      <Button variant="outline">Filter</Button>
     </PopoverTrigger>
     <PopoverContent>
-      <p>Popover content here</p>
+      <p>Filter options here</p>
+      <PopoverFooter>
+        <Button variant="ghost">Cancel</Button>
+        <Button>Apply</Button>
+      </PopoverFooter>
     </PopoverContent>
   </Popover>
+
+notes: >
+  PopoverFooter is a structural slot — button rendering stays the consumer's
+  responsibility (mirrors SheetFooter). Button-variant convention: the primary
+  action uses the default <Button> variant; the secondary action uses
+  <Button variant="ghost"> (or variant="outline">). DOM-order convention: place
+  the primary action LAST so it sits at the right edge of the right-aligned row
+  and is last in tab order — Radix focuses the first focusable element on open,
+  and the slot bakes in no autoFocus override. Responsive: popovers are floating
+  panels; actions do not stack at breakpoints — if they don't fit on one row,
+  widen the popover rather than wrapping the buttons.
