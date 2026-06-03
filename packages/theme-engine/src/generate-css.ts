@@ -199,6 +199,7 @@ function generateMotionPrimitives(config: ResolvedThemeConfig): string[] {
   decls.push("--motion-duration-300: 300ms;");
   decls.push(`--motion-duration-500: ${config.motion["duration-slow"]};`);
   decls.push("--motion-duration-800: 800ms;");
+  decls.push("--motion-duration-1500: 1500ms;");
 
   // Easings
   decls.push("--motion-easing-linear: linear;");

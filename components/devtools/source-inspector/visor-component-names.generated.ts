@@ -272,6 +272,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "Popover",
   "PopoverAnchor",
   "PopoverContent",
+  "PopoverFooter",
   "PopoverSelectionItem",
   "PopoverSelectionLabel",
   "PopoverSelectionList",
