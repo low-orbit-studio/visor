@@ -1,5 +1,5 @@
-import { render, screen } from "@testing-library/react"
-import { describe, it, expect } from "vitest"
+import { render, screen, act, waitFor } from "@testing-library/react"
+import { describe, it, expect, vi, afterEach } from "vitest"
 import { Progress } from "../progress"
 import { checkA11y } from "../../../../test-utils/a11y"
 
@@ -26,15 +26,16 @@ describe("Progress", () => {
     expect(bar).toHaveAttribute("aria-valuemax", "100")
   })
 
-  it("renders with value 0", () => {
-    const { container } = render(<Progress value={0} />)
+  // animate={false} — skip entrance animation, verify transform directly
+  it("renders with value 0 (animate=false)", () => {
+    const { container } = render(<Progress value={0} animate={false} />)
     const indicator = container.querySelector("[data-slot='progress-indicator']")
     expect(indicator).toBeInTheDocument()
     expect((indicator as HTMLElement).style.transform).toBe("translateX(-100%)")
   })
 
-  it("renders with value 100", () => {
-    const { container } = render(<Progress value={100} />)
+  it("renders with value 100 (animate=false)", () => {
+    const { container } = render(<Progress value={100} animate={false} />)
     const indicator = container.querySelector("[data-slot='progress-indicator']")
     expect(indicator).toBeInTheDocument()
     expect((indicator as HTMLElement).style.transform).toBe("translateX(-0%)")
@@ -46,8 +47,8 @@ describe("Progress", () => {
     expect(ref.current).not.toBeNull()
   })
 
-  it("renders indicator with correct transform", () => {
-    const { container } = render(<Progress value={40} />)
+  it("renders indicator with correct transform (animate=false)", () => {
+    const { container } = render(<Progress value={40} animate={false} />)
     const indicator = container.querySelector("[data-slot='progress-indicator']")
     expect(indicator).toBeInTheDocument()
     expect((indicator as HTMLElement).style.transform).toBe("translateX(-60%)")
@@ -93,6 +94,81 @@ describe("Progress", () => {
     expect(bar).toHaveAttribute("data-size", "thin")
     expect(bar).toHaveAttribute("data-animate", "false")
     expect(bar).toHaveAttribute("aria-label", "Time until door opens")
+  })
+})
+
+describe("Progress entrance animation", () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it("starts at translateX(-100%) before rAF fires (default animate=true)", () => {
+    const { container } = render(<Progress value={75} />)
+    const indicator = container.querySelector("[data-slot='progress-indicator']")
+    // Before rAF: displayValue is 0 → indicator at 0% fill
+    expect((indicator as HTMLElement).style.transform).toBe("translateX(-100%)")
+  })
+
+  it("animates to target value after rAF fires", async () => {
+    // jsdom's requestAnimationFrame does not auto-fire callbacks; mock it to
+    // invoke the callback synchronously so we can assert the post-animation state.
+    const rafSpy = vi
+      .spyOn(window, "requestAnimationFrame")
+      .mockImplementation((cb) => { cb(0); return 1 })
+
+    const { container } = render(<Progress value={75} />)
+    const indicator = container.querySelector("[data-slot='progress-indicator']")
+
+    await act(async () => {
+      // rAF was called synchronously in the mock, so state is already updated.
+    })
+
+    expect((indicator as HTMLElement).style.transform).toBe("translateX(-25%)")
+    rafSpy.mockRestore()
+  })
+
+  it("sets --progress-animation-duration to default 1500ms", async () => {
+    const { container } = render(<Progress value={50} />)
+    const indicator = container.querySelector("[data-slot='progress-indicator']")
+    // Custom property is set immediately (always present when animate=true)
+    expect((indicator as HTMLElement).style.getPropertyValue("--progress-animation-duration")).toBe("1500ms")
+  })
+
+  it("sets --progress-animation-duration to custom duration", () => {
+    const { container } = render(<Progress value={50} duration={300} />)
+    const indicator = container.querySelector("[data-slot='progress-indicator']")
+    expect((indicator as HTMLElement).style.getPropertyValue("--progress-animation-duration")).toBe("300ms")
+  })
+
+  it("does not set --progress-animation-duration when animate=false", () => {
+    const { container } = render(<Progress value={50} animate={false} />)
+    const indicator = container.querySelector("[data-slot='progress-indicator']")
+    expect((indicator as HTMLElement).style.getPropertyValue("--progress-animation-duration")).toBe("")
+  })
+
+  it("fills instantly when prefers-reduced-motion is set", async () => {
+    // Override the global matchMedia mock to return matches: true for reduced motion
+    vi.spyOn(window, "matchMedia").mockImplementation((query: string) => ({
+      matches: query === "(prefers-reduced-motion: reduce)",
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }))
+
+    const { container } = render(<Progress value={60} />)
+    const indicator = container.querySelector("[data-slot='progress-indicator']")
+
+    // With reduced motion, setDisplayValue is called synchronously (no rAF),
+    // so after useEffect flushes the value should be set.
+    await act(async () => {
+      await waitFor(() => {
+        expect((indicator as HTMLElement).style.transform).toBe("translateX(-40%)")
+      })
+    })
   })
 })
 

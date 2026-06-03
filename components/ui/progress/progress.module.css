@@ -16,7 +16,7 @@
   height: 100%;
   flex: 1;
   background-color: var(--interactive-primary-bg, var(--accent-primary, #111827));
-  transition: transform var(--motion-duration-300, 300ms) var(--motion-easing-default, ease-in-out);
+  transition: transform var(--progress-animation-duration, var(--motion-duration-1500, 1500ms)) var(--motion-easing-default, ease-in-out);
 }
 
 /* Thin static-chrome variant — 4px capacity bar for admin KPI strips */
@@ -28,4 +28,11 @@
 /* animate={false} — drop the indicator transition for static chrome */
 .root[data-animate="false"] .indicator {
   transition: none;
+}
+
+/* Reduced motion — instant fill, no entrance sweep */
+@media (prefers-reduced-motion: reduce) {
+  .indicator {
+    transition: none;
+  }
 }
