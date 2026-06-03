@@ -18,7 +18,7 @@
   animation: contentHide var(--motion-duration-fast, 100ms) var(--motion-easing-exit, ease-in);
 }
 
-/* Breakout variant — use inside scroll-clipped containers (e.g. DataTable rows) */
+/* Breakout variant — use inside scroll-clipped containers (ex: DataTable rows) */
 .contentBreakout {
   z-index: 200;
   box-shadow: var(--shadow-xl, 0 28px 64px rgba(0, 0, 0, 0.55), 0 8px 16px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.06));
