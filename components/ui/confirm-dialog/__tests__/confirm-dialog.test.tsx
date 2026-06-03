@@ -73,7 +73,8 @@ describe("ConfirmDialog", () => {
     root = container.ownerDocument.querySelector(
       '[data-slot="confirm-dialog"]'
     )
-    expect(root).toHaveAttribute("data-severity", "danger")
+    // "danger" normalizes to "destructive" — data-severity reflects the normalized value
+    expect(root).toHaveAttribute("data-severity", "destructive")
     confirm = container.ownerDocument.querySelector(
       '[data-slot="confirm-dialog-confirm"]'
     )
@@ -215,6 +216,89 @@ describe("ConfirmDialog", () => {
     )
     expect(screen.getByRole("button", { name: /^confirm$/i })).toBeDisabled()
     expect(screen.getByRole("button", { name: /^cancel$/i })).toBeDisabled()
+  })
+
+  describe("severity icon plate", () => {
+    it("renders plateInfo class for severity='info'", () => {
+      const { unmount, container } = render(
+        <ConfirmDialog open title="Archive?" severity="info" />
+      )
+      const plate = container.ownerDocument.querySelector(
+        '[data-slot="confirm-dialog-icon-plate"]'
+      )
+      expect(plate).toBeInTheDocument()
+      expect(plate?.className).toMatch(/plateInfo/)
+      const root = container.ownerDocument.querySelector(
+        '[data-slot="confirm-dialog"]'
+      )
+      expect(root).toHaveAttribute("data-severity", "info")
+      unmount()
+    })
+
+    it("renders plateWarning class for severity='warning' (default)", () => {
+      const { unmount, container } = render(
+        <ConfirmDialog open title="Cancel subscription?" severity="warning" />
+      )
+      const plate = container.ownerDocument.querySelector(
+        '[data-slot="confirm-dialog-icon-plate"]'
+      )
+      expect(plate).toBeInTheDocument()
+      expect(plate?.className).toMatch(/plateWarning/)
+      const root = container.ownerDocument.querySelector(
+        '[data-slot="confirm-dialog"]'
+      )
+      expect(root).toHaveAttribute("data-severity", "warning")
+      unmount()
+    })
+
+    it("renders plateDestructive class for severity='destructive'", () => {
+      const { unmount, container } = render(
+        <ConfirmDialog open title="Delete project?" severity="destructive" />
+      )
+      const plate = container.ownerDocument.querySelector(
+        '[data-slot="confirm-dialog-icon-plate"]'
+      )
+      expect(plate).toBeInTheDocument()
+      expect(plate?.className).toMatch(/plateDestructive/)
+      const root = container.ownerDocument.querySelector(
+        '[data-slot="confirm-dialog"]'
+      )
+      expect(root).toHaveAttribute("data-severity", "destructive")
+      const confirm = container.ownerDocument.querySelector(
+        '[data-slot="confirm-dialog-confirm"]'
+      )
+      expect(confirm?.className).toMatch(/variantDestructive/)
+      unmount()
+    })
+
+    it("danger alias normalizes to destructive — same plate class, data-severity, and button variant", () => {
+      // Render danger, query via ownerDocument (portal), then unmount before rendering destructive
+      const { unmount: unmountDanger, container: cDanger } = render(
+        <ConfirmDialog open title="Delete?" severity="danger" />
+      )
+      const dangerPlate = cDanger.ownerDocument.querySelector(
+        '[data-slot="confirm-dialog-icon-plate"]'
+      )
+      const dangerRoot = cDanger.ownerDocument.querySelector(
+        '[data-slot="confirm-dialog"]'
+      )
+      expect(dangerPlate?.className).toMatch(/plateDestructive/)
+      expect(dangerRoot).toHaveAttribute("data-severity", "destructive")
+      unmountDanger()
+
+      // Now verify destructive renders identically
+      const { container: cDestructive } = render(
+        <ConfirmDialog open title="Delete?" severity="destructive" />
+      )
+      const destructivePlate = cDestructive.ownerDocument.querySelector(
+        '[data-slot="confirm-dialog-icon-plate"]'
+      )
+      const destructiveRoot = cDestructive.ownerDocument.querySelector(
+        '[data-slot="confirm-dialog"]'
+      )
+      expect(destructivePlate?.className).toMatch(/plateDestructive/)
+      expect(destructiveRoot).toHaveAttribute("data-severity", "destructive")
+    })
   })
 
   it("clears confirm-text input on close", async () => {

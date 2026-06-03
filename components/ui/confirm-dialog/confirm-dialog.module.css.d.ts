@@ -1,5 +1,11 @@
 declare const styles: {
   readonly root: string
+  readonly headerStack: string
+  readonly iconPlate: string
+  readonly plateInfo: string
+  readonly plateWarning: string
+  readonly plateDestructive: string
+  // Legacy aliases kept for theme override compatibility
   readonly titleRow: string
   readonly icon: string
   readonly iconInfo: string
