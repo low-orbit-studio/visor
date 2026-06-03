@@ -9,16 +9,36 @@
   display: block;
 }
 
-/* Path-draw entrance animation */
+/*
+ * Path-draw entrance animation.
+ *
+ * Driven by a CSS keyframe — not a JS-toggled transition — so it is SSR-safe and
+ * runs identically on full reload and client navigation. The resting state is
+ * `stroke-dashoffset: 0` (fully drawn), so the line is ALWAYS visible even if the
+ * animation never plays (no JS, hydration race, etc.). The keyframe animates from
+ * `--sparkline-length` (the polyline's total length = fully undrawn) to 0 on mount.
+ */
 .animatedPolyline {
   --sparkline-animation-duration: var(--motion-duration-1500, 1500ms);
   --sparkline-animation-easing: var(--motion-easing-ease-out, cubic-bezier(0, 0, 0.2, 1));
-  transition: stroke-dashoffset var(--sparkline-animation-duration) var(--sparkline-animation-easing);
+  stroke-dashoffset: 0;
+  animation: sparkline-draw var(--sparkline-animation-duration)
+    var(--sparkline-animation-easing) both;
 }
 
-/* Respect prefers-reduced-motion — collapse to instant */
+@keyframes sparkline-draw {
+  from {
+    stroke-dashoffset: var(--sparkline-length, 0);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Respect prefers-reduced-motion — skip the draw, render fully drawn immediately */
 @media (prefers-reduced-motion: reduce) {
   .animatedPolyline {
-    --sparkline-animation-duration: 0ms;
+    animation: none;
+    stroke-dashoffset: 0;
   }
 }

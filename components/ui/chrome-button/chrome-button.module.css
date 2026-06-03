@@ -52,7 +52,7 @@
 }
 
 .variantPrimary {
-  background-color: var(--interactive-primary-bg, var(--accent-primary, #111827));
+  background-color: var(--interactive-primary-bg, var(--primary, #111827));
   color: var(--interactive-primary-text, var(--text-inverse, #f9fafb));
   font-weight: var(--font-weight-semibold, 600);
 }
@@ -63,7 +63,7 @@
   }
 
   .variantPrimary:hover {
-    background-color: var(--interactive-primary-bg-hover, color-mix(in srgb, var(--accent-primary, #111827) 85%, white));
+    background-color: var(--interactive-primary-bg-hover, color-mix(in srgb, var(--primary, #111827) 85%, white));
   }
 }
 

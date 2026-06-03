@@ -18,7 +18,7 @@ when_not_to_use:
 why: >
   The math is trivial — min/max normalization across N points to an SVG polyline — but
   every admin surface ends up rebuilding it locally. Sparkline ships a tiny, dependency-free
-  primitive that defaults to a 96×22 trend slot, pulls its stroke from `var(--accent-primary)`
+  primitive that defaults to a 96×22 trend slot, pulls its stroke from `var(--primary, currentColor)`
   so it theme-shifts automatically, and stays decorative by default (semantic data is delivered
   by the surrounding label and delta). When a sparkline needs to be announced on its own,
   pass `aria-label` and it becomes a labeled image.
@@ -38,7 +38,7 @@ props:
     description: SVG height in px.
   - name: color
     type: string
-    default: "var(--accent-primary)"
+    default: "var(--primary, currentColor)"
     description: Stroke color. Accepts any CSS color string — token, hex, hsl, oklch.
   - name: strokeWidth
     type: number

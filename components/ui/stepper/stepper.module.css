@@ -49,15 +49,15 @@
 
 /* Trigger status variants */
 .trigger--complete {
-  background-color: var(--interactive-primary-bg, var(--accent-primary, #111827));
-  border-color: var(--interactive-primary-bg, var(--accent-primary, #111827));
+  background-color: var(--interactive-primary-bg, var(--primary, #111827));
+  border-color: var(--interactive-primary-bg, var(--primary, #111827));
   color: var(--interactive-primary-text, #f9fafb);
 }
 
 .trigger--active {
   background-color: transparent;
-  border-color: var(--interactive-primary-bg, var(--accent-primary, #111827));
-  color: var(--interactive-primary-bg, var(--accent-primary, #111827));
+  border-color: var(--interactive-primary-bg, var(--primary, #111827));
+  color: var(--interactive-primary-bg, var(--primary, #111827));
 }
 
 .trigger--upcoming {
@@ -104,7 +104,7 @@
 }
 
 .separatorComplete {
-  background-color: var(--interactive-primary-bg, var(--accent-primary, #111827));
+  background-color: var(--interactive-primary-bg, var(--primary, #111827));
 }
 
 /* Screen reader only */
