@@ -1,15 +1,17 @@
 name: Login Form
-description: A login form block using Visor form components (Button, Input, Label, Card).
+description: A login form block using Visor form components (Button, Input, Label, Card), with optional OAuth provider buttons.
 category: authentication
 components_used:
   - button
   - input
   - field
   - card
+  - separator
+  - alert
 when_to_use:
   - Authentication pages
   - Sign-in screens
+  - OAuth and social sign-in flows
   - Demo login flows
 when_not_to_use:
   - Registration forms (extend with additional fields)
-  - OAuth-only flows with no email/password fields

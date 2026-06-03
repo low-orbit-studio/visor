@@ -1,11 +1,12 @@
 ---
 title: Login Form
-description: A login form block using Visor form components (Button, Input, Label, Card).
+description: A login form block using Visor form components (Button, Input, Label, Card), with optional OAuth provider buttons.
 full: true
 ---
 
 import { BlockPreview } from '@/components/block-preview';
 import { LoginForm } from '@/components/blocks/login-form';
+import { LoginFormOAuthDemo } from '@/components/blocks/login-form-oauth-demo';
 
 ## Preview
 
@@ -14,6 +15,28 @@ import { LoginForm } from '@/components/blocks/login-form';
   code={"<LoginForm />"}
 >
   <LoginForm />
+</BlockPreview>
+
+## With OAuth providers
+
+Pass `oauthProviders` to render provider buttons above the credentials form, separated by a labeled divider. The block stays auth-agnostic — your `onOAuthSignIn` handler owns the actual sign-in call (e.g. `supabase.auth.signInWithOAuth`). Icons are caller-supplied; the block ships no provider assets.
+
+<BlockPreview
+  title="With OAuth providers"
+  code={"<LoginForm\n  oauthProviders={[\n    { id: 'google', label: 'Continue with Google', icon: <GoogleLogo size={18} weight=\"bold\" /> },\n  ]}\n  onOAuthSignIn={(id) => supabase.auth.signInWithOAuth({ provider: id })}\n/>"}
+>
+  <LoginFormOAuthDemo />
+</BlockPreview>
+
+## OAuth-only
+
+Set `hideCredentials` to drop the email/password fields and divider for OAuth-only flows.
+
+<BlockPreview
+  title="OAuth only"
+  code={"<LoginForm\n  hideCredentials\n  oauthProviders={[\n    { id: 'google', label: 'Continue with Google', icon: <GoogleLogo size={18} weight=\"bold\" /> },\n  ]}\n  onOAuthSignIn={(id) => supabase.auth.signInWithOAuth({ provider: id })}\n/>"}
+>
+  <LoginFormOAuthDemo variant="oauth-only" />
 </BlockPreview>
 
 ## Installation
@@ -37,14 +60,60 @@ export default function LoginPage() {
 }
 ```
 
+### With OAuth
+
+```tsx
+'use client';
+
+import { GoogleLogo } from '@phosphor-icons/react';
+import { createClient } from '@/lib/supabase/client';
+import { LoginForm } from '@/blocks/login-form/login-form';
+
+export default function LoginPage() {
+  const supabase = createClient();
+  return (
+    <LoginForm
+      oauthProviders={[
+        {
+          id: 'google',
+          label: 'Continue with Google',
+          icon: <GoogleLogo size={18} weight="bold" />,
+        },
+      ]}
+      onOAuthSignIn={(provider) =>
+        supabase.auth.signInWithOAuth({
+          provider,
+          options: { redirectTo: `${location.origin}/auth/callback` },
+        })
+      }
+    />
+  );
+}
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `className` | `string` | — | Merged onto the root `Card`. |
+| `oauthProviders` | `OAuthProvider[]` | — | Providers rendered as outline buttons above the form. Omit for the plain email/password form. |
+| `onOAuthSignIn` | `(id: string) => void \| Promise<void>` | — | Called with the provider `id` on click. Returning a promise toggles a per-button loading state (`disabled` + `aria-busy`). |
+| `dividerLabel` | `ReactNode` | `"or continue with"` | Label shown in the divider between OAuth and credentials. |
+| `error` | `string \| null` | — | Rendered in a destructive `Alert` above the form. |
+| `hideCredentials` | `boolean` | `false` | Hide the email/password fields and submit button for OAuth-only flows. |
+
+`OAuthProvider` is `{ id: string; label: ReactNode; icon?: ReactNode }`.
+
 ## Composition
 
-This block composes four Visor primitives:
+This block composes Visor primitives:
 
 - **Card** — Container with surface styling and border
 - **Input** — Theme-aware text inputs
-- **Label** — Accessible form labels
-- **Button** — Primary action button
+- **Field / FieldLabel** — Accessible form labels
+- **Button** — Primary action and OAuth provider buttons
+- **Separator** — Labeled divider between OAuth and credentials
+- **Alert** — Destructive error placard
 
 ## About Blocks
 

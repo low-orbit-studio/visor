@@ -37,3 +37,29 @@
 .button {
   width: 100%;
 }
+
+.oauthGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.divider > [data-slot="separator"] {
+  flex: 1;
+}
+
+.dividerLabel {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+  white-space: nowrap;
+}
+
+.error {
+  text-align: left;
+}
