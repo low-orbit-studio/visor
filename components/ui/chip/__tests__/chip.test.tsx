@@ -198,6 +198,61 @@ describe("FilterChip", () => {
     render(<FilterChip label="Events" leadingIcon={<span data-testid="icon" />} />)
     expect(screen.getByTestId("icon")).toBeInTheDocument()
   })
+
+  // count prop
+  it("does not render count span when count is absent", () => {
+    const { container } = render(<FilterChip label="Events" />)
+    expect(container.querySelector('[data-slot="filter-chip-count"]')).not.toBeInTheDocument()
+  })
+
+  it("renders count span when count is provided", () => {
+    render(<FilterChip label="Events" count={47} />)
+    expect(screen.getByText("47")).toBeInTheDocument()
+  })
+
+  it("count span has data-slot=filter-chip-count", () => {
+    const { container } = render(<FilterChip label="Events" count={47} />)
+    expect(container.querySelector('[data-slot="filter-chip-count"]')).toBeInTheDocument()
+  })
+
+  it("defaults countTone to neutral (data-tone=neutral)", () => {
+    const { container } = render(<FilterChip label="Events" count={47} />)
+    expect(container.querySelector('[data-slot="filter-chip-count"]')).toHaveAttribute("data-tone", "neutral")
+  })
+
+  it("applies data-tone=primary when countTone=primary", () => {
+    const { container } = render(<FilterChip label="Events" count={47} countTone="primary" />)
+    expect(container.querySelector('[data-slot="filter-chip-count"]')).toHaveAttribute("data-tone", "primary")
+  })
+
+  it("applies data-tone=neutral when countTone=neutral", () => {
+    const { container } = render(<FilterChip label="Events" count={47} countTone="neutral" />)
+    expect(container.querySelector('[data-slot="filter-chip-count"]')).toHaveAttribute("data-tone", "neutral")
+  })
+
+  it("count is rendered inside the button (part of accessible name)", () => {
+    render(<FilterChip label="Active" count={47} />)
+    // Count span is inside the button — screen readers include it in the accessible name.
+    // Note: happy-dom collapses inter-element whitespace so the name is "Active47";
+    // real browsers announce "Active 47". The key assertion is containment.
+    const button = screen.getByRole("checkbox")
+    expect(button.querySelector('[data-slot="filter-chip-count"]')).toBeInTheDocument()
+    expect(button.textContent).toContain("47")
+  })
+
+  it("count is part of button text content when selected and primary", () => {
+    render(<FilterChip label="Active" count={47} countTone="primary" selected />)
+    const button = screen.getByRole("checkbox")
+    expect(button.querySelector('[data-slot="filter-chip-count"]')).toBeInTheDocument()
+    expect(button.textContent).toContain("47")
+    expect(button).toHaveAttribute("aria-checked", "true")
+  })
+
+  it("renders identically without count — no breaking change", () => {
+    const { container } = render(<FilterChip label="Events" />)
+    expect(container.querySelector('[data-slot="filter-chip-count"]')).not.toBeInTheDocument()
+    expect(screen.getByRole("checkbox", { name: "Events" })).toBeInTheDocument()
+  })
 })
 
 /* ─── Accessibility ──────────────────────────────────────────────────── */
@@ -238,6 +293,26 @@ describe("accessibility", () => {
 
   it("FilterChip (selected) has no violations", async () => {
     const { container } = render(<FilterChip label="Events" selected />)
+    await checkA11y(container)
+  })
+
+  it("FilterChip with count (neutral, unselected) has no violations", async () => {
+    const { container } = render(<FilterChip label="Active" count={47} />)
+    await checkA11y(container)
+  })
+
+  it("FilterChip with count (neutral, selected) has no violations", async () => {
+    const { container } = render(<FilterChip label="Active" count={47} selected />)
+    await checkA11y(container)
+  })
+
+  it("FilterChip with count (primary, unselected) has no violations", async () => {
+    const { container } = render(<FilterChip label="Active" count={47} countTone="primary" />)
+    await checkA11y(container)
+  })
+
+  it("FilterChip with count (primary, selected) has no violations", async () => {
+    const { container } = render(<FilterChip label="Active" count={47} countTone="primary" selected />)
     await checkA11y(container)
   })
 })

@@ -69,7 +69,7 @@ sub_components:
 
   - name: FilterChip
     element: button
-    description: Toggle-style multi-select chip. Renders with role="checkbox" and aria-checked. Use inside a ChipGroup with type="multiple".
+    description: Toggle-style multi-select chip. Renders with role="checkbox" and aria-checked. Use inside a ChipGroup with type="multiple". Supports an optional count pill for quick-filter pivots (e.g. "Active 47").
     props:
       - name: selected
         type: boolean
@@ -80,6 +80,14 @@ sub_components:
       - name: value
         type: string
         optional: true
+      - name: count
+        type: React.ReactNode
+        optional: true
+        description: Count pill rendered after the label. Accepts strings, numbers, or elements. Part of the accessible button name.
+      - name: countTone
+        type: '"primary" | "neutral"'
+        default: '"neutral"'
+        description: Tone for the count pill. "neutral" uses muted surface; "primary" uses accent surface. Auto re-tones on selected state.
 
 dependencies:
   - "class-variance-authority"
@@ -92,3 +100,6 @@ example: |
   <Chip label="Featured" onDeleted={() => removeTag("featured")} />
   <ChoiceChip label="Compact" selected={density === "compact"} onPressed={() => setDensity("compact")} />
   <FilterChip label="Events" selected={filters.includes("events")} onPressed={() => toggleFilter("events")} />
+  <FilterChip label="All" count={132} onPressed={() => setFilter("all")} />
+  <FilterChip label="Active" count={47} countTone="primary" selected onPressed={() => setFilter("active")} />
+  <FilterChip label="Suspended" count={8} onPressed={() => setFilter("suspended")} />

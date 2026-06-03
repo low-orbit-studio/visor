@@ -111,6 +111,35 @@
   display: block;
 }
 
+/* Count pill (FilterChip only) */
+.count {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: var(--radius-full, 9999px);
+  padding: 0 var(--spacing-2, 0.5rem);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-medium, 500);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  align-self: baseline;
+}
+
+.countNeutral {
+  background-color: var(--surface-muted, #f3f4f6);
+  color: var(--text-primary, #111827);
+}
+
+.countPrimary {
+  background-color: var(--surface-accent-subtle, #eff6ff);
+  color: var(--text-link, #2563eb);
+}
+
+[data-selected="true"] .count {
+  background-color: var(--surface-card, #ffffff);
+  color: var(--text-link, #2563eb);
+}
+
 /* Interactive chips (ChoiceChip, FilterChip) */
 .interactive {
   cursor: pointer;

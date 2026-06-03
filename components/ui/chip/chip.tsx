@@ -201,6 +201,10 @@ export interface FilterChipProps
   onPressed?: () => void
   /** Value used when in a ChipGroup. */
   value?: string
+  /** Optional count pill rendered after the label (e.g. "47", 132). */
+  count?: React.ReactNode
+  /** Tone for the count pill. "neutral" uses muted surface; "primary" uses accent surface. Defaults to "neutral". */
+  countTone?: "primary" | "neutral"
 }
 
 const FilterChip = React.forwardRef<HTMLButtonElement, FilterChipProps>(
@@ -216,6 +220,8 @@ const FilterChip = React.forwardRef<HTMLButtonElement, FilterChipProps>(
       onPressed,
       value,
       disabled,
+      count,
+      countTone = "neutral",
       ...props
     },
     ref,
@@ -249,6 +255,19 @@ const FilterChip = React.forwardRef<HTMLButtonElement, FilterChipProps>(
           </span>
         ) : null}
         <span className={styles.label}>{content}</span>
+        {count != null ? (
+          <span
+            data-slot="filter-chip-count"
+            data-tone={countTone}
+            aria-hidden="false"
+            className={cn(
+              styles.count,
+              countTone === "primary" ? styles.countPrimary : styles.countNeutral,
+            )}
+          >
+            {count}
+          </span>
+        ) : null}
       </button>
     )
   },
