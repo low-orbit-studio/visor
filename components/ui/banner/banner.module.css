@@ -12,27 +12,27 @@
 
 /* Intent variants */
 .intentInfo {
-  background-color: var(--surface-info-subtle, #f0f9ff);
-  color: var(--text-info, #0369a1);
-  border-color: var(--border-info, #0ea5e9);
+  background-color: var(--surface-info-subtle, transparent);
+  color: var(--text-info, currentColor);
+  border-color: var(--border-info, currentColor);
 }
 
 .intentWarning {
-  background-color: var(--surface-warning-subtle, #fffbeb);
-  color: var(--text-warning, #b45309);
-  border-color: var(--border-warning, #f59e0b);
+  background-color: var(--surface-warning-subtle, transparent);
+  color: var(--text-warning, currentColor);
+  border-color: var(--border-warning, currentColor);
 }
 
 .intentError {
-  background-color: var(--surface-error-subtle, #fef2f2);
-  color: var(--text-error, #b91c1c);
-  border-color: var(--border-error, #ef4444);
+  background-color: var(--surface-error-subtle, transparent);
+  color: var(--text-error, currentColor);
+  border-color: var(--border-error, currentColor);
 }
 
 .intentSuccess {
-  background-color: var(--surface-success-subtle, #f0fdf4);
-  color: var(--text-success, #15803d);
-  border-color: var(--border-success, #22c55e);
+  background-color: var(--surface-success-subtle, transparent);
+  color: var(--text-success, currentColor);
+  border-color: var(--border-success, currentColor);
 }
 
 /* Position variants */
@@ -64,24 +64,24 @@
 /* BannerDescription */
 .description {
   font-size: var(--font-size-sm, 0.875rem);
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-secondary, currentColor);
   line-height: 1.5;
 }
 
 .intentInfo .description {
-  color: color-mix(in srgb, var(--text-info, #0369a1) 90%, transparent);
+  color: color-mix(in srgb, var(--text-info, currentColor) 90%, transparent);
 }
 
 .intentWarning .description {
-  color: color-mix(in srgb, var(--text-warning, #b45309) 90%, transparent);
+  color: color-mix(in srgb, var(--text-warning, currentColor) 90%, transparent);
 }
 
 .intentError .description {
-  color: color-mix(in srgb, var(--text-error, #b91c1c) 90%, transparent);
+  color: color-mix(in srgb, var(--text-error, currentColor) 90%, transparent);
 }
 
 .intentSuccess .description {
-  color: color-mix(in srgb, var(--text-success, #15803d) 90%, transparent);
+  color: color-mix(in srgb, var(--text-success, currentColor) 90%, transparent);
 }
 
 /* BannerAction */
