@@ -21,17 +21,22 @@ function DropdownMenuTrigger({ ...props }: React.ComponentProps<typeof DropdownM
 }
 DropdownMenuTrigger.displayName = "DropdownMenuTrigger"
 
+export interface DropdownMenuContentProps
+  extends React.ComponentProps<typeof DropdownMenuPrimitive.Content> {
+  variant?: "default" | "breakout"
+}
+
 const DropdownMenuContent = React.forwardRef<
   React.ComponentRef<typeof DropdownMenuPrimitive.Content>,
-  React.ComponentProps<typeof DropdownMenuPrimitive.Content>
->(({ className, align = "start", sideOffset = 4, ...props }, ref) => (
+  DropdownMenuContentProps
+>(({ className, align = "start", sideOffset = 4, variant = "default", ...props }, ref) => (
   <DropdownMenuPrimitive.Portal>
     <DropdownMenuPrimitive.Content
       ref={ref}
       data-slot="dropdown-menu-content"
       sideOffset={sideOffset}
       align={align}
-      className={cn(styles.content, className)}
+      className={cn(styles.content, variant === "breakout" && styles.contentBreakout, className)}
       {...props}
     />
   </DropdownMenuPrimitive.Portal>
@@ -177,14 +182,19 @@ const DropdownMenuSubTrigger = React.forwardRef<
 ))
 DropdownMenuSubTrigger.displayName = "DropdownMenuSubTrigger"
 
+export interface DropdownMenuSubContentProps
+  extends React.ComponentProps<typeof DropdownMenuPrimitive.SubContent> {
+  variant?: "default" | "breakout"
+}
+
 const DropdownMenuSubContent = React.forwardRef<
   React.ComponentRef<typeof DropdownMenuPrimitive.SubContent>,
-  React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>
->(({ className, ...props }, ref) => (
+  DropdownMenuSubContentProps
+>(({ className, variant = "default", ...props }, ref) => (
   <DropdownMenuPrimitive.SubContent
     ref={ref}
     data-slot="dropdown-menu-sub-content"
-    className={cn(styles.subContent, className)}
+    className={cn(styles.subContent, variant === "breakout" && styles.contentBreakout, className)}
     {...props}
   />
 ))

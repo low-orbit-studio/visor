@@ -1,5 +1,6 @@
 declare const styles: {
   readonly content: string
+  readonly contentBreakout: string
   readonly subContent: string
   readonly item: string
   readonly itemDestructive: string
