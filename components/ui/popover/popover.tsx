@@ -64,7 +64,7 @@ function useSelectionList() {
 
 // ─── PopoverSelectionLabel ───────────────────────────────────────────────────
 
-export interface PopoverSelectionLabelProps extends React.ComponentProps<"div"> {}
+export type PopoverSelectionLabelProps = React.ComponentProps<"div">
 
 function PopoverSelectionLabel({ className, ...props }: PopoverSelectionLabelProps) {
   return (
