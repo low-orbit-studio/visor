@@ -28,7 +28,7 @@
 .range {
   position: absolute;
   height: 100%;
-  background-color: var(--interactive-primary-bg, #111827);
+  background-color: var(--interactive-primary-bg, var(--accent-primary, #111827));
   border-radius: 9999px;
   transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
@@ -39,7 +39,7 @@
   width: 1.25rem;
   height: 1.25rem;
   border-radius: 9999px;
-  border: 2px solid var(--interactive-primary-bg, #111827);
+  border: 2px solid var(--interactive-primary-bg, var(--accent-primary, #111827));
   background-color: var(--surface-popover, var(--surface-card, #ffffff));
   box-shadow: var(--shadow-sm);
   transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
