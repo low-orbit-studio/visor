@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Sun, Moon, Palette, SquaresFour, ArrowsOut } from "@phosphor-icons/react";
+import Link from "next/link";
+import { Sun, Moon, Palette, SquaresFour, ArrowsOut, Rows } from "@phosphor-icons/react";
 import {
   Select,
   SelectTrigger,
@@ -228,6 +229,23 @@ export function VisualExplorer() {
             <TooltipContent>
               {isNarrow ? "Best on widescreen" : "Compare two themes side by side"}
             </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                className={styles.fullscreenButton}
+              >
+                <Link href="/matrix" aria-label="Open all-themes matrix">
+                  <Rows size={16} weight="duotone" />
+                  <span>Matrix</span>
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>One component across every theme, as rows</TooltipContent>
           </Tooltip>
         </TooltipProvider>
 

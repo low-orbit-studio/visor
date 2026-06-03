@@ -102,6 +102,7 @@ Made the docs site a world-class showcase with live theme previews, visual compa
 **Completed work:**
 - [x] Global theme switcher dropdown in docs header — every page is a live preview
 - [x] Four-quadrant theme comparator (`/compare`) — 2 themes × light/dark showing real components (VI-91)
+- [x] All-themes matrix (`/matrix`) — one component/block across every registered theme as rows, with section + theme-set + mode selectors (VI-490)
 - [x] Full MDX documentation for every component
 - [x] All examples respond to the active theme
 - [x] Visual regression testing — Playwright screenshots across all themes × light/dark (VI-88)
