@@ -112,16 +112,39 @@ const TabsList = React.forwardRef<
 })
 TabsList.displayName = "TabsList"
 
+export interface TabsTriggerProps
+  extends React.ComponentProps<typeof TabsPrimitive.Trigger> {
+  /** Inline count pill rendered after the label. Accepts strings, numbers, or elements. */
+  count?: React.ReactNode
+  /** Visual tone of the count pill. Defaults to "neutral". Active state re-tones automatically. */
+  countTone?: "primary" | "neutral"
+}
+
 const TabsTrigger = React.forwardRef<
   React.ComponentRef<typeof TabsPrimitive.Trigger>,
-  React.ComponentProps<typeof TabsPrimitive.Trigger>
->(({ className, ...props }, ref) => (
+  TabsTriggerProps
+>(({ className, children, count, countTone = "neutral", ...props }, ref) => (
   <TabsPrimitive.Trigger
     ref={ref}
     data-slot="tabs-trigger"
     className={cn(styles.trigger, className)}
     {...props}
-  />
+  >
+    <span className={styles.label}>{children}</span>
+    {count != null && (
+      <span
+        className={cn(
+          styles.count,
+          countTone === "primary" ? styles.countPrimary : styles.countNeutral,
+        )}
+        data-slot="tabs-trigger-count"
+        data-tone={countTone}
+        aria-hidden="false"
+      >
+        {count}
+      </span>
+    )}
+  </TabsPrimitive.Trigger>
 ))
 TabsTrigger.displayName = "TabsTrigger"
 
