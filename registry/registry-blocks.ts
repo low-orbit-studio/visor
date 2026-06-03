@@ -530,21 +530,6 @@ export const blocks: Registry = [
     ],
   },
   {
-    name: "avatar-stack",
-    type: "registry:block",
-    category: "data-display",
-    description:
-      "Deprecated: AvatarStack is now a compound primitive of the avatar family. Use `npx visor add avatar` instead. This entry is kept for back-compat and re-exports from components/ui/avatar/avatar.",
-    dependencies: ["@loworbitstudio/visor-core"],
-    registryDependencies: ["utils", "avatar"],
-    files: [
-      {
-        path: "blocks/avatar-stack/avatar-stack.tsx",
-        type: "registry:block",
-      },
-    ],
-  },
-  {
     name: "chip-group",
     type: "registry:block",
     category: "form",
