@@ -37,9 +37,33 @@ props:
   - name: disabled
     type: boolean
     default: false
+  - name: gated
+    type: boolean
+    default: false
+    description: >
+      Renders the button in an inert permission-gated state — visually dimmed,
+      cursor not-allowed, and click handlers suppressed. Uses aria-disabled
+      instead of native disabled so the button stays keyboard-focusable
+      (required for the tooltip to be reachable by keyboard and screen-reader
+      users). Works orthogonally with all variants and sizes.
+  - name: gatedReason
+    type: string
+    default: undefined
+    description: >
+      Explanation surfaced in an anchored Radix tooltip when the button is
+      gated. Only rendered when gated is also true. A TooltipProvider ancestor
+      is required whenever gatedReason is set — add one at the page or layout
+      level. Example: "You can't delete this — you're not an owner".
 
 dependencies:
   - "class-variance-authority"
+  - "@radix-ui/react-tooltip"
+
+notes: |
+  **TooltipProvider requirement:** when using `gatedReason`, a `<TooltipProvider>`
+  ancestor must exist in the React tree. The simplest setup is to wrap your app
+  root or layout with `<TooltipProvider>`. Without it, the tooltip will silently
+  fail to render. Consumers that never set `gatedReason` are not affected.
 
 preview_url: "https://visor.loworbit.studio/docs/components/general/button"
 
@@ -49,3 +73,13 @@ example: |
   <Button variant="destructive">Delete account</Button>
 
   <Button variant="ghost" size="sm">Cancel</Button>
+
+  {/* Gated — no reason (tooltip suppressed) */}
+  <Button gated>Delete organization</Button>
+
+  {/* Gated with reason — tooltip shown on hover/focus */}
+  <TooltipProvider>
+    <Button gated gatedReason="You can't delete this — you're not an owner">
+      Delete organization
+    </Button>
+  </TooltipProvider>

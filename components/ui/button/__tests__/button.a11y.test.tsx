@@ -12,10 +12,11 @@
  * no additional setup needed in individual test files.
  */
 
-import { render } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { axe } from "../../../../test-utils/axe"
 import { Button } from "../button"
+import { TooltipProvider } from "../../tooltip/tooltip"
 
 describe("Button a11y (vitest-axe)", () => {
   it("has no WCAG 2.1 AA violations (default)", async () => {
@@ -54,5 +55,32 @@ describe("Button a11y (vitest-axe)", () => {
     )
     const results = await axe(container)
     expect(results).toHaveNoViolations()
+  })
+
+  it("has no WCAG 2.1 AA violations (gated, no reason)", async () => {
+    const { container } = render(<Button gated>Delete organization</Button>)
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
+  })
+
+  it("has no WCAG 2.1 AA violations (gated with reason)", async () => {
+    const { container } = render(
+      <TooltipProvider>
+        <Button gated gatedReason="You are not an owner">Delete organization</Button>
+      </TooltipProvider>
+    )
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
+  })
+
+  it("gated button remains keyboard-focusable (no native disabled)", () => {
+    render(<Button gated>Delete organization</Button>)
+    const button = screen.getByRole("button", { name: /delete organization/i })
+    // aria-disabled must be present; native disabled must NOT be (would remove from tab order)
+    expect(button).toHaveAttribute("aria-disabled", "true")
+    expect(button).not.toBeDisabled()
+    // Button is focusable
+    button.focus()
+    expect(button).toHaveFocus()
   })
 })

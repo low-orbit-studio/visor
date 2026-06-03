@@ -80,6 +80,19 @@
   }
 }
 
+/* Gated state — orthogonal to variant, works with all variants */
+.base[data-gated="true"] {
+  opacity: var(--opacity-50, 0.5);
+  cursor: not-allowed;
+  border-color: var(--border-default, #e5e7eb);
+}
+
+/* Suppress active transform when gated */
+.base[data-gated="true"]:active {
+  transform: none;
+  transition: opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
 /* Sizes */
 .sizeSm {
   height: 2rem;
