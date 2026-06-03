@@ -198,6 +198,14 @@
             }
           }
         },
+        "text-on-light": {
+          "type": "string",
+          "description": "VI-375: text color placed on a LIGHT interactive background. Auto-picked for interactive *-text tokens whose paired *-bg has relative luminance > 0.5. Defaults to #FFFFFF (which deliberately still fails AA on a bright bg so the contrast validator flags it); set a readable near-black (e.g. #1E1F21) to clear the warning. Per-token overrides (overrides.{mode}.interactive-*-text) still win."
+        },
+        "text-on-dark": {
+          "type": "string",
+          "description": "VI-375: text color placed on a DARK interactive background. Auto-picked for interactive *-text tokens whose paired *-bg has relative luminance <= 0.5. Defaults to #FFFFFF. Per-token overrides still win."
+        },
         "letter-spacing": {
           "type": "object",
           "description": "6-tier letter-spacing ramp (xl | lg | md | sm | xs | tight). Each value is a CSS length (e.g. \"0.1em\", \"0.44rem\", \"-0.01em\"). The legacy triad keys normal and wide remain valid for back-compat and map onto the ramp (normal->md, wide->lg, tight->tight).",

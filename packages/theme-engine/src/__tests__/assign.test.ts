@@ -133,9 +133,14 @@ describe("assignSemanticTokens", () => {
     expect(tokens.surface.card.light).toBe(config.colors.surface);
   });
 
-  it("interactive-primary-text is #ffffff for both modes", () => {
-    expect(tokens.interactive["primary-text"].light).toBe("#ffffff");
-    expect(tokens.interactive["primary-text"].dark).toBe("#ffffff");
+  // VI-375: was pinned to a hardcoded #ffffff (the contrast blind spot). The
+  // text now DERIVES from the paired primary-bg luminance. For the minimal blue
+  // theme (#2563EB), both modes' primary-bg are dark enough that the auto-pick
+  // selects the `text-on-dark` default (#FFFFFF), so the value stays white —
+  // just sourced via derivation rather than a constant.
+  it("interactive-primary-text derives white for the minimal blue theme (dark button bg)", () => {
+    expect(tokens.interactive["primary-text"].light).toBe("#FFFFFF");
+    expect(tokens.interactive["primary-text"].dark).toBe("#FFFFFF");
   });
 
   describe("surface.selected (VI-242)", () => {

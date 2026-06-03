@@ -154,9 +154,14 @@ describe("D4 — --primary-text is a single-source alias of --interactive-primar
     expect(css).not.toContain("--primary-text: #ffffff;");
   });
 
-  it("--interactive-primary-text still emits #ffffff in the visor-adaptive layer", () => {
+  it("--interactive-primary-text emits white in the visor-adaptive layer (VI-375: now derived from text-on-dark default for the dark blue button bg)", () => {
     const css = docsAdapter(makeInput(MINIMAL_YAML));
-    expect(css).toContain("--interactive-primary-text: #ffffff;");
+    // VI-375: primary-text is no longer a hardcoded #ffffff constant — it now
+    // derives from the paired primary-bg luminance. The minimal blue theme's
+    // button bg is dark enough that the auto-pick selects the `text-on-dark`
+    // default (#FFFFFF, uppercase from the default), so the rendered text is
+    // still white. (Case differs from the old lowercase constant.)
+    expect(css).toContain("--interactive-primary-text: #FFFFFF;");
   });
 
   it("override replaces the alias value (ENTR-style dark override)", () => {

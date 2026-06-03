@@ -12,7 +12,7 @@ import { parse as parseYaml } from "yaml";
 import { validateConfig } from "./schema.js";
 import { resolveConfig } from "./resolve.js";
 import { generateShadeScale, TAILWIND_GRAY } from "./shades.js";
-import { assignSemanticTokens } from "./assign.js";
+import { assignSemanticTokens, reapplyInteractiveTextDerivation } from "./assign.js";
 import { applyOverrides } from "./overrides.js";
 import {
   generatePrimitivesCss,
@@ -171,6 +171,11 @@ export function generateThemeDataFromConfig(
 
   // Stage 4: Apply overrides (before CSS generation)
   tokens = applyOverrides(tokens, resolved.overrides);
+
+  // VI-375 (Layer 3): re-derive interactive `*-text` for any pair whose `*-bg`
+  // was overridden, so a brand-overridden button bg auto-picks readable text.
+  // Per-token text overrides still win (they're skipped here).
+  tokens = reapplyInteractiveTextDerivation(tokens, resolved, resolved.overrides);
 
   // Stage 3: Generate CSS
   const output: ThemeOutput = {

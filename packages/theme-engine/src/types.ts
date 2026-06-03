@@ -141,6 +141,22 @@ export interface VisorThemeConfig {
   };
   typography?: {
     scale?: number;
+    /**
+     * VI-375: text color placed on a LIGHT interactive background. Auto-picked
+     * for interactive `*-text` tokens whose paired `*-bg` resolves to a light
+     * color (relative luminance > 0.5). Defaults to `#FFFFFF` (preserving the
+     * historical white-on-button default, which deliberately still fails AA on
+     * a bright bg so the contrast validator flags it). Set a readable near-black
+     * (e.g. ENTR's `#1E1F21`) to clear the warning.
+     */
+    "text-on-light"?: string;
+    /**
+     * VI-375: text color placed on a DARK interactive background. Auto-picked
+     * for interactive `*-text` tokens whose paired `*-bg` resolves to a dark
+     * color (relative luminance <= 0.5). Theme-overridable. Defaults to
+     * `#FFFFFF`.
+     */
+    "text-on-dark"?: string;
     heading?: {
       family?: string;
       weight?: number;
@@ -290,6 +306,16 @@ export interface ResolvedThemeConfig {
   "colors-dark"?: VisorThemeConfig["colors-dark"];
   typography: {
     scale: number;
+    /**
+     * VI-375: resolved default text color for LIGHT interactive backgrounds.
+     * Always present (defaults to `#1E1F21`); theme-overridable.
+     */
+    "text-on-light": string;
+    /**
+     * VI-375: resolved default text color for DARK interactive backgrounds.
+     * Always present (defaults to `#FFFFFF`); theme-overridable.
+     */
+    "text-on-dark": string;
     heading: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string };
     display: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string };
     body: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string };

@@ -33,6 +33,9 @@ const KNOWN_COLOR_KEYS = new Set([
 
 const KNOWN_TYPOGRAPHY_KEYS = new Set([
   "heading", "display", "body", "mono", "letter-spacing", "scale", "slots", "cdn-overrides",
+  // VI-375: default text colors for interactive backgrounds (auto-picked by
+  // paired `*-bg` luminance; theme-overridable).
+  "text-on-light", "text-on-dark",
 ]);
 
 const KNOWN_CDN_OVERRIDE_KEYS = new Set(["visor-fonts"]);
@@ -139,6 +142,13 @@ function checkUnknownKeys(obj: Record<string, unknown>, errors: string[]): void 
         if (!KNOWN_TYPOGRAPHY_MONO_KEYS.has(key)) {
           errors.push(`Unknown key 'typography.mono.${key}'. Valid keys: ${[...KNOWN_TYPOGRAPHY_MONO_KEYS].join(", ")}`);
         }
+      }
+    }
+    // typography.text-on-light / text-on-dark (VI-375): must be valid colors.
+    for (const key of ["text-on-light", "text-on-dark"] as const) {
+      const value = typo[key];
+      if (value !== undefined && (typeof value !== "string" || !isValidColor(value))) {
+        errors.push(`'typography.${key}' must be a valid CSS color (hex, rgba, hsla, or oklch)`);
       }
     }
     // typography.cdn-overrides
