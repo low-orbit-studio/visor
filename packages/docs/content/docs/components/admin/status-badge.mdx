@@ -55,6 +55,30 @@ semantic color group, so no new tokens are introduced.
   </div>
 </ComponentPreview>
 
+## CRM / Pipeline Stages
+
+A third vocabulary covers CRM and sales-pipeline stages — useful for deal
+boards, client lists, and any record that moves through a prospect → pitched →
+contracted → active → completed flow (plus `paused` and `archived`). Each stage
+maps to an existing semantic color group, so no new tokens are introduced.
+Stages that share a meaning share a color: `contracted`, `active`, and
+`completed` all read as in-good-standing success.
+
+<ComponentPreview
+  title="CRM pipeline stages"
+  code={"<StatusBadge status=\"prospect\" />\n<StatusBadge status=\"pitched\" />\n<StatusBadge status=\"contracted\" />\n<StatusBadge status=\"active\" />\n<StatusBadge status=\"paused\" />\n<StatusBadge status=\"completed\" />\n<StatusBadge status=\"archived\" />"}
+>
+  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+    <StatusBadge status="prospect" />
+    <StatusBadge status="pitched" />
+    <StatusBadge status="contracted" />
+    <StatusBadge status="active" />
+    <StatusBadge status="paused" />
+    <StatusBadge status="completed" />
+    <StatusBadge status="archived" />
+  </div>
+</ComponentPreview>
+
 ## All Statuses (Filled)
 
 <ComponentPreview
@@ -149,16 +173,25 @@ export default function Example() {
 | `down` | destructive | `destructive` | `filled-destructive` |
 | `failed` | destructive | `destructive` | `filled-destructive` |
 | `running` | info | `info` | `filled-info` |
-| `queued` | neutral | `secondary` | `secondary` |
-| `idle` | neutral | `secondary` | `secondary` |
+| `queued` | neutral | `neutral` | `filled-neutral` |
+| `idle` | neutral | `neutral` | `filled-neutral` |
 | `live` | success | `success` | `filled-success` |
 | `warn` | warning | `warning` | `filled-warning` |
-| `scheduled` | info | `info` | `filled-info` |
+| `scheduled` | neutral | `neutral` | `filled-neutral` |
 | `sold` | success | `success` | `filled-success` |
-| `draft` | neutral | `secondary` | `secondary` |
+| `draft` | neutral | `neutral` | `filled-neutral` |
+| `prospect` | info | `info` | `filled-info` |
+| `pitched` | warning | `warning` | `filled-warning` |
+| `contracted` | success | `success` | `filled-success` |
+| `active` | success | `success` | `filled-success` |
+| `paused` | warning | `warning` | `filled-warning` |
+| `completed` | success | `success` | `filled-success` |
+| `archived` | neutral | `neutral` | `filled-neutral` |
 
-Neutral statuses fall through to `secondary` in both tones because Badge
-does not expose a `filled-secondary` variant.
+Neutral statuses use Badge's `neutral` variant in subtle tone (a `--surface-muted`
+background) and the `filled-neutral` variant in filled tone (a solid
+`--color-neutral-600` fill with white text and dot) — both legible in light and
+dark mode.
 
 ## Accessibility
 

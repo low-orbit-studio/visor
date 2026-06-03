@@ -23,12 +23,12 @@ why: >
   when wrapped in buttons or links.
 
 variants:
-  variant: [default, secondary, outline, neutral, destructive, success, warning, info, filled-destructive, filled-success, filled-warning, filled-info]
+  variant: [default, secondary, outline, neutral, destructive, success, warning, info, filled-destructive, filled-success, filled-warning, filled-info, filled-neutral]
   size: [sm, md, lg]
 
 props:
   - name: variant
-    type: '"default" | "secondary" | "outline" | "neutral" | "destructive" | "success" | "warning" | "info" | "filled-destructive" | "filled-success" | "filled-warning" | "filled-info"'
+    type: '"default" | "secondary" | "outline" | "neutral" | "destructive" | "success" | "warning" | "info" | "filled-destructive" | "filled-success" | "filled-warning" | "filled-info" | "filled-neutral"'
     default: '"default"'
   - name: size
     type: '"sm" | "md" | "lg"'

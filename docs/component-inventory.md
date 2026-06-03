@@ -99,7 +99,7 @@ Admin-flavored compounds and blocks for building internal tools fast. Installabl
 - **page-header** — eyebrow, title, description, breadcrumb, and actions slots with container-query responsive collapse
 - **score-indicator** — compact circular ring for percentage / ratio metrics (health, uptime, engagement) with auto-toned color mapping
 - **stat-card** — dashboard metric card with label, value, delta, trend, and footer slots
-- **status-badge** — semantic wrapper over Badge mapping admin status names (healthy, degraded, down, running, pending, failed, etc.) to visual variants with optional indicator dot
+- **status-badge** — semantic wrapper over Badge mapping admin status names (healthy, degraded, down, running, pending, failed, etc.), admin-ui event tones, and CRM pipeline stages (prospect, pitched, contracted, active, paused, completed, archived) to visual variants with optional indicator dot
 
 ### Blocks (7)
 

@@ -1880,7 +1880,7 @@ export const ui: Registry = [
     type: "registry:ui",
     category: "admin",
     description:
-      "A semantic wrapper over Badge that maps admin status names (healthy, degraded, down, running, pending, queued, idle, failed, complete) to visual variants with an optional colored indicator dot and pulse animation.",
+      "A semantic wrapper over Badge that maps status names — service health (healthy, degraded, down), job lifecycle (running, pending, queued, idle, complete, failed), admin-ui events (live, warn, scheduled, sold, draft), and CRM pipeline stages (prospect, pitched, contracted, active, paused, completed, archived) — to visual variants with an optional colored indicator dot and pulse animation.",
     dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
     registryDependencies: ["utils", "badge"],
     files: [

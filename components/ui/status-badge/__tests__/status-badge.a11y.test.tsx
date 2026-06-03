@@ -18,6 +18,13 @@ const STATUSES: StatusBadgeStatus[] = [
   "scheduled",
   "sold",
   "draft",
+  "prospect",
+  "pitched",
+  "contracted",
+  "active",
+  "paused",
+  "completed",
+  "archived",
 ]
 
 describe("StatusBadge a11y (vitest-axe)", () => {

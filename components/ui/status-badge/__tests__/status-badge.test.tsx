@@ -17,6 +17,13 @@ const STATUSES: StatusBadgeStatus[] = [
   "scheduled",
   "sold",
   "draft",
+  "prospect",
+  "pitched",
+  "contracted",
+  "active",
+  "paused",
+  "completed",
+  "archived",
 ]
 
 const NEW_ADMIN_EVENT_STATUSES: StatusBadgeStatus[] = [
@@ -25,6 +32,16 @@ const NEW_ADMIN_EVENT_STATUSES: StatusBadgeStatus[] = [
   "scheduled",
   "sold",
   "draft",
+]
+
+const CRM_STATUSES: StatusBadgeStatus[] = [
+  "prospect",
+  "pitched",
+  "contracted",
+  "active",
+  "paused",
+  "completed",
+  "archived",
 ]
 
 describe("StatusBadge", () => {
@@ -94,6 +111,14 @@ describe("StatusBadge", () => {
       ["scheduled", "neutral"],
       ["sold", "success"],
       ["draft", "neutral"],
+      // CRM / pipeline stages
+      ["prospect", "info"],
+      ["pitched", "warning"],
+      ["contracted", "success"],
+      ["active", "success"],
+      ["paused", "warning"],
+      ["completed", "success"],
+      ["archived", "neutral"],
     ]
     for (const [status, expectedVariant] of cases) {
       const { container, unmount } = render(<StatusBadge status={status} />)
@@ -113,15 +138,23 @@ describe("StatusBadge", () => {
       ["down", "filled-destructive"],
       ["failed", "filled-destructive"],
       ["running", "filled-info"],
-      // No filled-secondary exists — neutral statuses fall back to secondary.
-      ["queued", "secondary"],
-      ["idle", "secondary"],
+      // Neutral statuses use the filled-neutral variant (solid gray fill).
+      ["queued", "filled-neutral"],
+      ["idle", "filled-neutral"],
       // Admin-ui event tones
       ["live", "filled-success"],
       ["warn", "filled-warning"],
-      ["scheduled", "secondary"],
+      ["scheduled", "filled-neutral"],
       ["sold", "filled-success"],
-      ["draft", "secondary"],
+      ["draft", "filled-neutral"],
+      // CRM / pipeline stages
+      ["prospect", "filled-info"],
+      ["pitched", "filled-warning"],
+      ["contracted", "filled-success"],
+      ["active", "filled-success"],
+      ["paused", "filled-warning"],
+      ["completed", "filled-success"],
+      ["archived", "filled-neutral"],
     ]
     for (const [status, expectedVariant] of cases) {
       const { container, unmount } = render(
@@ -169,6 +202,16 @@ describe("StatusBadge", () => {
 
   it("renders each admin-ui event tone with the correct data-status attribute", () => {
     for (const status of NEW_ADMIN_EVENT_STATUSES) {
+      const { container, unmount } = render(<StatusBadge status={status} />)
+      const root = container.querySelector('[data-slot="status-badge"]')
+      expect(root).toHaveAttribute("data-status", status)
+      expect(container.textContent).toContain(statusBadgeLabels[status])
+      unmount()
+    }
+  })
+
+  it("renders each CRM pipeline status with the correct data-status attribute", () => {
+    for (const status of CRM_STATUSES) {
       const { container, unmount } = render(<StatusBadge status={status} />)
       const root = container.querySelector('[data-slot="status-badge"]')
       expect(root).toHaveAttribute("data-status", status)

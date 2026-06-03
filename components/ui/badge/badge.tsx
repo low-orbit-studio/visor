@@ -18,6 +18,7 @@ const badgeVariants = cva(styles.base, {
       "filled-success": styles.variantFilledSuccess,
       "filled-warning": styles.variantFilledWarning,
       "filled-info": styles.variantFilledInfo,
+      "filled-neutral": styles.variantFilledNeutral,
     },
     size: {
       sm: styles.sizeSm,

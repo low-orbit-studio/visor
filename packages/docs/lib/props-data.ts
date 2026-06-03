@@ -2496,7 +2496,7 @@ export const propsData: Record<string, PropDef[]> = {
   'status-badge': [
     {
       name: 'status',
-      type: "'healthy' | 'degraded' | 'down' | 'failed' | 'running' | 'pending' | 'queued' | 'idle' | 'complete'",
+      type: "'healthy' | 'degraded' | 'down' | 'failed' | 'running' | 'pending' | 'queued' | 'idle' | 'complete' | 'live' | 'warn' | 'scheduled' | 'sold' | 'draft' | 'prospect' | 'pitched' | 'contracted' | 'active' | 'paused' | 'completed' | 'archived'",
       required: true,
       description:
         'Semantic admin status. Drives the underlying Badge variant, the indicator dot color, and the default label.',

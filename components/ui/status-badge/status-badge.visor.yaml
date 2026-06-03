@@ -8,6 +8,7 @@ when_to_use:
   - Labeling service health (healthy, degraded, down)
   - Labeling job or task lifecycle (queued, running, pending, complete, failed, idle)
   - Labeling admin-ui event state (live, warn, scheduled, sold, draft)
+  - Labeling CRM / pipeline stage (prospect, pitched, contracted, active, paused, completed, archived)
   - Any place you want a consistent "Status: X" accessible announcement
 
 when_not_to_use:
@@ -39,6 +40,13 @@ variants:
     - scheduled
     - sold
     - draft
+    - prospect
+    - pitched
+    - contracted
+    - active
+    - paused
+    - completed
+    - archived
   tone: [subtle, filled]
 
 props:
