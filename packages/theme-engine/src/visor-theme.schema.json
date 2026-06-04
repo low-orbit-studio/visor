@@ -100,7 +100,7 @@
           "properties": {
             "family": {
               "type": "string",
-              "description": "Google Fonts family name or CSS font stack."
+              "description": "Font family name — Google Fonts name, Visor Fonts name, or CSS font stack."
             },
             "weight": {
               "type": "integer",
@@ -111,7 +111,7 @@
             "source": {
               "type": "string",
               "enum": ["google-fonts", "visor-fonts", "local"],
-              "description": "Font source. Defaults to Google Fonts lookup, then local."
+              "description": "Font source. Default: \"google-fonts\". Use \"visor-fonts\" for CDN-hosted fonts, \"local\" for self-hosted fonts."
             },
             "org": {
               "type": "string",
@@ -126,7 +126,7 @@
           "properties": {
             "family": {
               "type": "string",
-              "description": "Google Fonts family name or CSS font stack."
+              "description": "Font family name — Google Fonts name, Visor Fonts name, or CSS font stack."
             },
             "weight": {
               "type": "integer",
@@ -137,7 +137,7 @@
             "source": {
               "type": "string",
               "enum": ["google-fonts", "visor-fonts", "local"],
-              "description": "Font source. Defaults to Google Fonts lookup, then local."
+              "description": "Font source. Default: \"google-fonts\". Use \"visor-fonts\" for CDN-hosted fonts, \"local\" for self-hosted fonts."
             },
             "org": {
               "type": "string",
@@ -151,7 +151,7 @@
           "properties": {
             "family": {
               "type": "string",
-              "description": "Google Fonts family name or CSS font stack."
+              "description": "Font family name — Google Fonts name, Visor Fonts name, or CSS font stack."
             },
             "weight": {
               "type": "integer",
@@ -162,7 +162,7 @@
             "source": {
               "type": "string",
               "enum": ["google-fonts", "visor-fonts", "local"],
-              "description": "Font source. Defaults to Google Fonts lookup, then local."
+              "description": "Font source. Default: \"google-fonts\". Use \"visor-fonts\" for CDN-hosted fonts, \"local\" for self-hosted fonts."
             },
             "org": {
               "type": "string",
