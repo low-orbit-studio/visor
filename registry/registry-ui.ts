@@ -1589,6 +1589,24 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "type-scale-stack",
+    type: "registry:ui",
+    description:
+      "Discrete N-tier type-scale aggregator that wraps an ordered list of TypeSpecimen rows in a rounded, screen-tier, borderless vertical stack.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "type-specimen"],
+    files: [
+      {
+        path: "components/ui/type-scale-stack/type-scale-stack.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/type-scale-stack/type-scale-stack.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "type-specimen",
     type: "registry:ui",
     description:

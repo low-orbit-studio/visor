@@ -1,0 +1,17 @@
+.stack {
+  background: var(--surface-screen, #f9fafb);
+  border-radius: var(--radius-lg, 8px);
+  overflow: hidden;
+  padding: var(--spacing-4, 1rem);
+}
+
+/* Override TypeSpecimen row chrome: no inter-row borders */
+.stackRow {
+  border-bottom: none;
+  padding-bottom: var(--spacing-3, 0.75rem);
+}
+
+.stackRowLast {
+  border-bottom: none;
+  padding-bottom: 0;
+}
