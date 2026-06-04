@@ -127,6 +127,9 @@ export const semanticSpacing = {
   "layout-lg": "spacing-12",
   "layout-xl": "spacing-16",
   "layout-2xl": "spacing-24",
+  // Section-level vertical rhythm (desktop / mobile). Themes may override via flat-key in .visor.yaml.
+  "layout-section-padding": "spacing-24",
+  "layout-section-padding-mobile": "spacing-16",
 } as const;
 
 /** Motion duration tokens */
