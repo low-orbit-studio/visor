@@ -6,6 +6,7 @@
 
 import type { FontSource } from "./fonts/types.js";
 import type { VisorBrand } from "./brand/types.js";
+import type { BrandStrategy } from "./brand-strategy/types.js";
 
 // ============================================================
 // Shade Generation Types
@@ -228,6 +229,15 @@ export interface VisorThemeConfig {
    * Omitted → the Visor default brand (stock themes are not logo-less).
    */
   brand?: VisorBrand;
+  /**
+   * Brand-strategy block (VI-505) — positioning, personality, pillars, voice,
+   * and tone as validated, serializable data. SIBLING to `brand` (assets):
+   * different lifecycle and consumer. NOT expanded into derived CSS values;
+   * coherence-checked (pillars→tokens/components/surfaces; tone→UI states) and
+   * serialized to the agent manifest. Liftable into a future
+   * `@loworbitstudio/visor-brand` package (D4).
+   */
+  "brand-strategy"?: BrandStrategy;
   spacing?: {
     base?: number;
   };

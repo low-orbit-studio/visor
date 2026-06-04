@@ -118,6 +118,20 @@ One `visor-manifest.json` file that an agent can load to understand the entire c
 }
 ```
 
+The manifest also carries the project's **brand strategy** under `brand_strategy` (VI-505) — positioning, personality, pillars, voice, and tone as data. An agent reads `voice.traits` and `tone.error` the way it reads a component's `when_to_use`, so generated copy matches the brand. It is the serialized form of the `brand-strategy` block in `.visor.yaml` (sibling to the asset-only `brand` block), coherence-checked so every pillar governs a real token/component/surface and every tone key maps to a real UI state. Brands marked `visibility: private` (client work) are omitted from the public manifest.
+
+```json
+{
+  "brand_strategy": {
+    "positioning": { "onliness": "The only design system that compiles a complete brand…", "category": "design system" },
+    "pillars": [{ "id": "coherence", "statement": "Every layer derives from the one above it.", "governs": { "tokens": ["--primary", "--surface-card"], "components": ["*"] } }],
+    "voice": { "traits": [{ "name": "plainspoken", "do": "Say it in one clause. Lead with the answer.", "dont": "Bury the point under qualifiers." }] },
+    "tone": { "error": { "feeling": "warm, accountable, already holding the fix", "example": "That didn't save — the theme name's taken. Pick another…" } },
+    "visibility": "public"
+  }
+}
+```
+
 ### 3. Composition Patterns / Recipes
 
 Higher-level documentation that tells agents not just *what* components exist but *how to combine them*. Each pattern is a documented recipe.

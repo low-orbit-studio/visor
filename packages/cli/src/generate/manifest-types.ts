@@ -6,6 +6,8 @@
  * VisorManifest: the aggregated manifest output (visor-manifest.json)
  */
 
+import type { SerializedBrandStrategy } from "@loworbitstudio/visor-theme-engine"
+
 export interface ComponentProp {
   name: string
   type: string
@@ -126,6 +128,13 @@ export interface VisorManifest {
   hooks: Record<string, ManifestHook>
   patterns: Record<string, ManifestPattern>
   categories: Record<string, string[]>
+  /**
+   * The project's brand strategy (VI-505), serialized for agents — positioning,
+   * personality, pillars, voice, and tone. Present only for a PUBLIC brand
+   * record; private (client) brands are omitted. An agent reads `voice.traits`
+   * / `tone.error` the way it reads a component's `when_to_use`.
+   */
+  brand_strategy?: SerializedBrandStrategy
   tokens?: {
     primitives: ManifestToken[]
     semantic: ManifestToken[]

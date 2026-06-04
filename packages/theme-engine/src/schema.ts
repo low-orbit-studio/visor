@@ -9,6 +9,7 @@ import visorThemeSchema from "./visor-theme.schema.json";
 import { isValidHex, isValidColor } from "./color.js";
 import { MATERIAL_TEXT_SLOTS } from "./types.js";
 import type { VisorThemeConfig } from "./types.js";
+import { checkBrandStrategyStructure } from "./brand-strategy/validate.js";
 
 export { visorThemeSchema };
 
@@ -23,7 +24,7 @@ export interface ValidationResult {
 
 const KNOWN_TOP_LEVEL_KEYS = new Set([
   "name", "version", "group", "label", "default-mode", "colors", "colors-dark", "typography",
-  "brand", "spacing", "radius", "shadows", "strokeWidths", "motion", "overrides",
+  "brand", "brand-strategy", "spacing", "radius", "shadows", "strokeWidths", "motion", "overrides",
 ]);
 
 const KNOWN_COLOR_KEYS = new Set([
@@ -521,6 +522,16 @@ export function validateConfig(config: unknown): ValidationResult {
           }
         }
       }
+    }
+  }
+
+  // Validate brand-strategy block (VI-505) — structure only. The D2 coherence
+  // checks (pillars→tokens; tone→UI states) run in validate.ts, where the
+  // engine's known-token set is available; schema.ts stays browser-safe and
+  // dependency-light.
+  if (obj["brand-strategy"] !== undefined) {
+    for (const iss of checkBrandStrategyStructure(obj["brand-strategy"])) {
+      errors.push(iss.path ? `${iss.message} (at ${iss.path})` : iss.message);
     }
   }
 

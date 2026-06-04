@@ -18,7 +18,9 @@ import {
   SEMANTIC_SURFACE_MAP,
   SEMANTIC_BORDER_MAP,
   SEMANTIC_INTERACTIVE_MAP,
+  getKnownTokenRefs,
 } from "./semantic-map.js";
+import { checkBrandStrategyCoherence } from "./brand-strategy/validate.js";
 import { generatePrimitives, generateDarkPrimitives } from "./pipeline.js";
 import { assignSemanticTokens, reapplyInteractiveTextDerivation } from "./assign.js";
 import { applyOverrides } from "./overrides.js";
@@ -1186,6 +1188,20 @@ export function validate(config: unknown, options?: ValidateOptions): ThemeValid
   if (errors.length === 0) {
     const resolved = resolveConfig(typedConfig);
     checkResolvedCompleteness(resolved, errors);
+  }
+
+  // 14. Brand-strategy coherence (VI-505): every pillar governs a real token
+  // and every tone key maps to a real UI state. Structure is already validated
+  // (checkStructuralIntegrity → schema.ts), so this runs the D2 links only.
+  // Independent of color errors — coherence drift is its own failure class.
+  // Component refs aren't checked here (the engine has no registry); `"*"` is
+  // accepted and named component refs pass through. BrandStrategyIssue and
+  // ValidationIssue are the same shape, so issues map straight across.
+  const brandStrategy = typedConfig["brand-strategy"];
+  if (brandStrategy) {
+    for (const iss of checkBrandStrategyCoherence(brandStrategy, { tokens: getKnownTokenRefs() })) {
+      (iss.severity === "error" ? errors : warnings).push(iss);
+    }
   }
 
   // Only run warning checks if there are no errors

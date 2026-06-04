@@ -11,6 +11,9 @@ export * from "./fonts/index.js";
 // Brand-asset resolution (VI-470)
 export * from "./brand/index.js";
 
+// Brand-strategy block (VI-505)
+export * from "./brand-strategy/index.js";
+
 // Primary pipeline
 export {
   generateTheme,
@@ -64,7 +67,7 @@ export {
   hasBrandPassthrough,
   type BrandPassthrough,
 } from "./overrides.js";
-export { SEMANTIC_MAP } from "./semantic-map.js";
+export { SEMANTIC_MAP, getKnownTokenRefs } from "./semantic-map.js";
 export {
   generatePrimitivesCss,
   generateSemanticCss,
