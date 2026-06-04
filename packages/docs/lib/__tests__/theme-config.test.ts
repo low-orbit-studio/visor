@@ -8,6 +8,8 @@ import {
   STOCK_GROUPS,
   applyTheme,
   THEME_STORAGE_KEY,
+  resolveBrandStrategy,
+  VISOR_BRAND_STRATEGY,
 } from "../theme-config";
 import { customThemeGroups } from "../theme-config.custom.generated";
 
@@ -54,6 +56,34 @@ describe("theme-config", () => {
     // All customThemeGroups must appear in THEME_GROUPS
     for (const customGroup of customThemeGroups) {
       expect(THEME_GROUPS.some((g) => g.label === customGroup.label)).toBe(true);
+    }
+  });
+});
+
+describe("resolveBrandStrategy", () => {
+  it("returns Visor's public Brand Record for every stock theme", () => {
+    const stockThemes = STOCK_GROUPS.flatMap((g) => g.themes);
+    expect(stockThemes.length).toBeGreaterThan(0);
+    for (const t of stockThemes) {
+      expect(resolveBrandStrategy(t.value)).toBe(VISOR_BRAND_STRATEGY);
+    }
+  });
+
+  it("returns null for a non-stock (client/private) or unknown theme", () => {
+    // Strategy is brand-keyed: only Visor's own stock themes carry Visor's
+    // record. Client/private brands' strategy is private — not shipped here.
+    expect(resolveBrandStrategy("definitely-not-a-visor-theme")).toBeNull();
+  });
+
+  it("exposes the public strategy trio the Workbench surfaces render", () => {
+    expect(VISOR_BRAND_STRATEGY.visibility).toBe("public");
+    expect(VISOR_BRAND_STRATEGY.positioning.onliness).toMatch(/only/i);
+    expect(VISOR_BRAND_STRATEGY.essence.length).toBeGreaterThanOrEqual(2);
+    expect(VISOR_BRAND_STRATEGY.essence.length).toBeLessThanOrEqual(3);
+    expect(VISOR_BRAND_STRATEGY.personality.length).toBeGreaterThan(0);
+    for (const p of VISOR_BRAND_STRATEGY.personality) {
+      expect(p.trait).toBeTruthy();
+      expect(p.not).toBeTruthy();
     }
   });
 });
