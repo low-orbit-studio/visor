@@ -1,6 +1,6 @@
 ---
 title: Activity Feed
-description: Admin activity feed compound — vertical ordered list of timestamped events for dashboards, audit logs, and notification views. ActivityFeed + ActivityFeedItem with leading, title, description, actor, timestamp, and trailing slots. Default, compact, and timeline variants. Built with CSS Modules and React Context — copy it into your project and own it completely.
+description: Admin activity feed compound — vertical ordered list of timestamped events for dashboards, audit logs, and notification views. ActivityFeed + ActivityFeedItem with leading, title, description, actor, timestamp, and trailing slots. Default, compact, timeline, and compact-3col variants. Built with CSS Modules and React Context — copy it into your project and own it completely.
 ---
 
 import { ComponentPreview } from '@/components/preview';
@@ -102,6 +102,44 @@ import { ActivityFeed, ActivityFeedItem } from '@/components/ui/activity-feed';
     <ActivityFeedItem title="Promoted to production" timestamp="just now" />
   </ActivityFeed>
 </ComponentPreview>
+
+## Compact 3-Column Variant
+
+The `compact-3col` variant renders a three-column `[time][dot][text]` layout — timestamp pinned to the left, leading dot/icon in a fixed 16px center column, and the title + actor in the right column. This is the V7-style row common in admin audit logs.
+
+<ComponentPreview
+  title="[time] [dot] [text] rows"
+  code={"<ActivityFeed variant=\"compact-3col\" aria-label=\"Audit log\">\n  <ActivityFeedItem\n    leading={<span>•</span>}\n    title=\"user.login\"\n    actor=\"justin@example.com\"\n    timestamp=\"2m ago\"\n  />\n  <ActivityFeedItem\n    leading={<span>•</span>}\n    title=\"record.update\"\n    actor=\"alex@example.com\"\n    timestamp=\"5m ago\"\n  />\n  <ActivityFeedItem\n    leading={<span>•</span>}\n    title=\"record.delete\"\n    actor=\"system\"\n    timestamp=\"12m ago\"\n  />\n</ActivityFeed>"}
+>
+  <ActivityFeed variant="compact-3col" aria-label="Audit log">
+    <ActivityFeedItem
+      leading={<span>•</span>}
+      title="user.login"
+      actor="justin@example.com"
+      timestamp="2m ago"
+    />
+    <ActivityFeedItem
+      leading={<span>•</span>}
+      title="record.update"
+      actor="alex@example.com"
+      timestamp="5m ago"
+    />
+    <ActivityFeedItem
+      leading={<span>•</span>}
+      title="record.delete"
+      actor="system"
+      timestamp="12m ago"
+    />
+  </ActivityFeed>
+</ComponentPreview>
+
+The time column width defaults to `auto`. Override it via the `--af-time-col` CSS custom property on the feed root for a fixed-width column:
+
+```css
+.my-feed {
+  --af-time-col: 5rem;
+}
+```
 
 ## Installation
 

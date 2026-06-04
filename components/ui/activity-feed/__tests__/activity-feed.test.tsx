@@ -216,3 +216,133 @@ describe("ActivityFeed", () => {
     ).toHaveLength(0)
   })
 })
+
+describe("ActivityFeed compact-3col variant", () => {
+  it("applies compact-3col variant class and data-variant attribute", () => {
+    const { container } = render(
+      <ActivityFeed variant="compact-3col">
+        <ActivityFeedItem title="A" timestamp="now" />
+      </ActivityFeed>
+    )
+    const root = container.querySelector('[data-slot="activity-feed"]')
+    expect(root?.className).toMatch(/variantCompact3col/)
+    expect(root).toHaveAttribute("data-variant", "compact-3col")
+  })
+
+  it("propagates compact-3col variant to items via context", () => {
+    const { container } = render(
+      <ActivityFeed variant="compact-3col">
+        <ActivityFeedItem title="A" timestamp="now" />
+      </ActivityFeed>
+    )
+    const item = container.querySelector('[data-slot="activity-feed-item"]')
+    expect(item).toHaveAttribute("data-variant", "compact-3col")
+    expect(item?.className).toMatch(/variantCompact3col/)
+  })
+
+  it("renders timestamp in col-1 slot (timestampCol class) in compact-3col", () => {
+    const { container } = render(
+      <ActivityFeed variant="compact-3col">
+        <ActivityFeedItem title="Did a thing" timestamp="2m ago" />
+      </ActivityFeed>
+    )
+    const timestampEl = container.querySelector(
+      '[data-slot="activity-feed-timestamp"]'
+    )
+    expect(timestampEl).not.toBeNull()
+    expect(timestampEl?.className).toMatch(/timestampCol/)
+    expect(timestampEl?.textContent).toBe("2m ago")
+  })
+
+  it("renders leading in col-2 slot (leadingCol class) in compact-3col", () => {
+    const { container } = render(
+      <ActivityFeed variant="compact-3col">
+        <ActivityFeedItem
+          leading={<svg data-testid="dot" />}
+          title="Did a thing"
+          timestamp="2m ago"
+        />
+      </ActivityFeed>
+    )
+    const leadingEl = container.querySelector(
+      '[data-slot="activity-feed-leading"]'
+    )
+    expect(leadingEl).not.toBeNull()
+    expect(leadingEl?.className).toMatch(/leadingCol/)
+    expect(screen.getByTestId("dot")).toBeInTheDocument()
+  })
+
+  it("renders header in col-3 slot (headerCol class) in compact-3col", () => {
+    const { container } = render(
+      <ActivityFeed variant="compact-3col">
+        <ActivityFeedItem title="Did a thing" actor="Justin" timestamp="2m ago" />
+      </ActivityFeed>
+    )
+    const headerEl = container.querySelector(
+      '[data-slot="activity-feed-header"]'
+    )
+    expect(headerEl).not.toBeNull()
+    expect(headerEl?.className).toMatch(/headerCol/)
+  })
+
+  it("does not render the body wrapper in compact-3col", () => {
+    const { container } = render(
+      <ActivityFeed variant="compact-3col">
+        <ActivityFeedItem title="Did a thing" timestamp="2m ago" />
+      </ActivityFeed>
+    )
+    expect(
+      container.querySelector('[data-slot="activity-feed-body"]')
+    ).toBeNull()
+  })
+
+  it("renders title and actor in compact-3col header", () => {
+    render(
+      <ActivityFeed variant="compact-3col">
+        <ActivityFeedItem title="Record deleted" actor="System" timestamp="5m ago" />
+      </ActivityFeed>
+    )
+    expect(screen.getByText("Record deleted")).toBeInTheDocument()
+    expect(screen.getByText("System")).toBeInTheDocument()
+  })
+
+  it("renders trailing slot in compact-3col", () => {
+    render(
+      <ActivityFeed variant="compact-3col">
+        <ActivityFeedItem
+          title="Published"
+          timestamp="now"
+          trailing={<span data-testid="badge-3col">Live</span>}
+        />
+      </ActivityFeed>
+    )
+    expect(screen.getByTestId("badge-3col")).toBeInTheDocument()
+  })
+
+  it("does not regress default variant when compact-3col is also used", () => {
+    const { container } = render(
+      <>
+        <ActivityFeed variant="default" aria-label="default feed">
+          <ActivityFeedItem title="Default item" timestamp="1m ago" />
+        </ActivityFeed>
+        <ActivityFeed variant="compact-3col" aria-label="3col feed">
+          <ActivityFeedItem title="3col item" timestamp="2m ago" />
+        </ActivityFeed>
+      </>
+    )
+    const defaultFeed = container.querySelector(
+      '[aria-label="default feed"]'
+    )
+    const col3Feed = container.querySelector('[aria-label="3col feed"]')
+    expect(defaultFeed).toHaveAttribute("data-variant", "default")
+    expect(col3Feed).toHaveAttribute("data-variant", "compact-3col")
+    // default feed should still have body wrapper
+    expect(
+      defaultFeed?.querySelector('[data-slot="activity-feed-body"]')
+    ).not.toBeNull()
+    // 3col feed should NOT have body wrapper
+    expect(
+      col3Feed?.querySelector('[data-slot="activity-feed-body"]')
+    ).toBeNull()
+  })
+})

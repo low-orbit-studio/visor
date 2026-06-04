@@ -22,6 +22,7 @@ import type { Rule, RuleResult } from './types.js';
 /**
  * Convert a kebab-case YAML variant value to the camelCase suffix used in CSS class names.
  * "filled-destructive" → "FilledDestructive"
+ * "compact3col" → "Compact3col"
  */
 function yamlValueToCamel(value: string): string {
   return value
@@ -35,10 +36,13 @@ function yamlValueToCamel(value: string): string {
  * "FilledDestructive" → "filled-destructive"
  * "Default" → "default"
  * "Sm" → "sm"
+ * "Compact3col" → "compact-3col"
+ * "2xl" → "2xl"
  */
 function camelToKebab(camel: string): string {
   return camel
-    .replace(/([A-Z])/g, '-$1')
+    .replace(/([A-Z])/g, '-$1')       // split on uppercase letters
+    .replace(/([a-zA-Z])(\d)/g, '$1-$2') // split on letter→digit boundary
     .toLowerCase()
     .replace(/^-/, '');
 }
@@ -85,10 +89,11 @@ export const discoverabilityVariantDrift: Rule = {
         const yamlValues = yamlRaw as string[];
 
         // Extract all CSS classes for this variant axis.
-        // Pattern: .<axis><Suffix>  e.g. .variantDefault, .variantFilledDestructive, .size2xl
-        // The suffix either starts with a capital letter (word-based: Default, FilledDestructive)
+        // Pattern: .<axis><Suffix>  e.g. .variantDefault, .variantFilledDestructive, .size2xl,
+        //   .variantCompact3col (mixed letter+digit camelCase)
+        // The suffix either starts with a capital letter (word-based, may include trailing digits)
         // or a digit (numeric-prefixed: 2xl). Both forms are valid CSS class conventions in Visor.
-        const axisRegex = new RegExp(`\\.${axis}([A-Z][A-Za-z]*|[0-9][A-Za-z0-9]*)`, 'g');
+        const axisRegex = new RegExp(`\\.${axis}([A-Z][A-Za-z0-9]*|[0-9][A-Za-z0-9]*)`, 'g');
         const cssMatches = [...cssContent.matchAll(axisRegex)];
         const cssValues = [...new Set(cssMatches.map((m) => camelToKebab(m[1])))];
 

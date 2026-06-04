@@ -142,6 +142,62 @@
 }
 
 /* ============================================================
+ * Variant: compact-3col — [time] [dot] [text] row layout
+ * ============================================================ */
+.variantCompact3col.base > .item + .item {
+  border-top: 1px solid var(--border-muted, #e5e7eb);
+}
+
+.variantCompact3col.item {
+  display: grid;
+  grid-template-columns: var(--af-time-col, auto) 16px 1fr;
+  align-items: baseline;
+  gap: 0 var(--spacing-2, 0.5rem);
+  padding: var(--spacing-2, 0.5rem) 0;
+}
+
+.variantCompact3col.base > .item:first-child {
+  padding-top: 0;
+}
+
+.variantCompact3col.base > .item:last-child {
+  padding-bottom: 0;
+}
+
+/* Column 1: timestamp pinned to the left */
+.timestampCol {
+  grid-column: 1;
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-tertiary, #6b7280);
+  line-height: var(--line-height-snug, 1.375);
+  white-space: nowrap;
+}
+
+/* Column 2: leading dot/icon, centered in its fixed-width column */
+.leadingCol {
+  grid-column: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+}
+
+.leadingCol svg {
+  width: var(--spacing-4, 1rem);
+  height: var(--spacing-4, 1rem);
+}
+
+/* Column 3: header (title + actor + trailing) */
+.headerCol {
+  grid-column: 3;
+}
+
+.variantCompact3col .title,
+.variantCompact3col .actor {
+  font-size: var(--font-size-xs, 0.75rem);
+}
+
+/* ============================================================
  * Variant: timeline — left rail with connecting line
  * ============================================================ */
 .variantTimeline.base {
