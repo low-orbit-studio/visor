@@ -1,0 +1,107 @@
+# Visor Brand Record
+#
+# The structured form of docs/brand/visor-brand-strategy.md (canonical for humans;
+# this is its machine projection). DOCS FIXTURE for now: VI-505 formalizes
+# `brand-strategy` as a validated top-level block in .visor.yaml (sibling to
+# `brand`), and this content becomes that block — schema-checked — at that point.
+#
+# Shape follows the VI-498 research sketch (§5a), written as valid YAML.
+
+brand-strategy:
+  # --- Strategy: the generative core. Everything below derives from these. ---
+  positioning:
+    onliness: >-
+      The only design system that compiles a complete brand — visual and
+      verbal — from one portable file, for humans and agents alike.
+    category: design system
+    differentiation: brand strategy, visual and verbal, as derivable machine-readable data
+
+  essence: [coherent, open, yours]          # 2–3 words; internal-facing core (Aaker)
+
+  personality:                              # brand-as-person; each sharpened by its antonym
+    - trait: precise
+      not: fussy
+    - trait: candid
+      not: cold
+    - trait: generous
+      not: indulgent
+    - trait: warm
+      not: saccharine
+
+  archetype:                                # Pearson & Mark — each archetype is distinct
+    primary: sage                           # mastery, truth, expertise
+    secondary: creator                      # craft, building, tools for makers
+    tertiary: everyman                      # belonging, for-everyone — the source of the warmth
+
+  pillars:                                  # the three essence words, made operational
+    - id: coherence
+      statement: Every layer derives from the one above it.
+      governs:
+        tokens: ["--primary", "--surface-card", "--text-primary"]
+        components: ["*"]
+    - id: openness
+      statement: The whole system is open — readable by humans and agents, and free to take.
+      # NOTE (VI-505): openness governs meta-surfaces, not tokens/components.
+      # The `governs` schema must accept targets beyond token/component refs.
+      governs:
+        surfaces: [manifest, cli, component-metadata]
+    - id: ownership
+      statement: Copy-and-own. You hold the source; there's no lock-in, ever.
+      governs:
+        components: ["*"]
+
+  # --- Verbal: voice is FIXED; tone FLEXES (the mode-aware half). ---
+  voice:
+    traits:
+      - name: plainspoken
+        do: Say it in one clause. Lead with the answer.
+        dont: Bury the point under qualifiers and throat-clearing.
+        example: Copy-and-own is just that — the source is yours. Edit anything; there's no wrapper to fight.
+      - name: candid
+        do: Name the tradeoff and the cost before the reader hits it.
+        dont: Oversell, hide the sharp edges, or hedge to sound safe.
+        example: Heads up — this theme fails WCAG AA on small text. Bump the contrast a notch, or keep the warning if that's intentional.
+      - name: generous
+        do: Give the why. Show the worked example. Assume the reader will go further than you did.
+        dont: Gatekeep, wave at best practices, or make them read the source to understand.
+        example: Fallbacks use Gray, not Slate — so an un-themed component lands on a neutral that fits your palette instead of clashing. Small thing, but it's what keeps a theme feeling whole.
+      - name: warm
+        do: Greet the reader like a peer you're glad to help. A little delight is welcome.
+        dont: Go cold and transactional — or paper over it with forced cheer.
+        example: Welcome — let's get your first theme on the screen. It takes about a minute.
+
+  tone:                                     # keyed to REAL UI states the Explorer renders
+    error:
+      feeling: warm, accountable, already holding the fix
+      example: That didn't save — looks like the theme name's taken. Pick another and we'll keep everything else just as you left it.
+    success:
+      feeling: a real, small celebration — a little confetti is fine
+      example: Saved! Your theme's live across every component — go take a look.
+    empty:
+      feeling: inviting, a friendly nudge to start
+      example: Nothing here yet — let's change that. Start from a blank file, or clone one and make it yours.
+    loading:
+      feeling: unhurried and friendly, honest about the wait
+      example: Compiling your tokens — just a moment…
+    validation-warning:
+      feeling: a friend flagging a smell, never a scold
+      example: Quick one — your primary and accent are nearly twins. Themes can read a little flat this close, so nudge one if it's not on purpose.
+
+  lexicon:                                  # use / avoid
+    - use: theme
+      avoid: skin
+    - use: copy-and-own
+      avoid: fork
+    - use: compose
+      avoid: drag-and-drop
+    - use: token
+      avoid: variable
+    - use: adapter
+      avoid: plugin
+    - use: transform
+      avoid: restyle
+    - use: portable
+      avoid: exportable
+
+  core: [positioning, essence, pillars]     # Aaker core/extended: the immutable subset
+  visibility: public                        # public | private (client brands: private)
