@@ -1,0 +1,115 @@
+---
+title: Key-Value List
+description: Definition-list display primitive for one record's attributes — label/value pairs in a responsive grid. Values accept any node.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { KeyValueList } from '@/components/ui/key-value-list';
+
+## Basic
+
+<ComponentPreview
+  title="Stacked facts"
+  code={"<KeyValueList\n  items={[\n    { label: 'Plan', value: 'Enterprise' },\n    { label: 'Members', value: '142', hint: 'total' },\n  ]}\n/>"}
+>
+  <KeyValueList
+    items={[
+      { label: 'Plan', value: 'Enterprise' },
+      { label: 'Members', value: '142', hint: 'total' },
+    ]}
+  />
+</ComponentPreview>
+
+## Four-up facts panel
+
+The canonical "key facts" row atop a detail page. Each value is an arbitrary node — drop in a `Badge`, `AvatarStack`, `StatHero`, or `ScoreIndicator`.
+
+<ComponentPreview
+  title="columns=4, editorial"
+  code={"<KeyValueList\n  columns={4}\n  items={[\n    { label: 'Plan', value: <strong>Enterprise</strong> },\n    { label: 'Members', value: '142', hint: 'total' },\n    { label: 'Monthly revenue', value: '$48,200' },\n    { label: 'Health score', value: '98', hint: '/ 100' },\n  ]}\n/>"}
+>
+  <KeyValueList
+    columns={4}
+    items={[
+      { label: 'Plan', value: <strong>Enterprise</strong> },
+      { label: 'Members', value: '142', hint: 'total' },
+      { label: 'Monthly revenue', value: '$48,200' },
+      { label: 'Health score', value: '98', hint: '/ 100' },
+    ]}
+  />
+</ComponentPreview>
+
+## Horizontal inspector
+
+`orientation="horizontal"` places the label beside the value — ideal for a tighter inspector or sidebar.
+
+<ComponentPreview
+  title="orientation=horizontal"
+  code={"<KeyValueList\n  orientation=\"horizontal\"\n  items={[\n    { label: 'Slug', value: 'atlas-collective' },\n    { label: 'Created', value: 'May 11, 2024' },\n    { label: 'Owner', value: 'Alma Reyes' },\n  ]}\n/>"}
+>
+  <KeyValueList
+    orientation="horizontal"
+    items={[
+      { label: 'Slug', value: 'atlas-collective' },
+      { label: 'Created', value: 'May 11, 2024' },
+      { label: 'Owner', value: 'Alma Reyes' },
+    ]}
+  />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add key-value-list
+```
+
+This copies two files into your project:
+
+- `components/ui/key-value-list/key-value-list.tsx` — the component
+- `components/ui/key-value-list/key-value-list.module.css` — the styles
+
+## Usage
+
+```tsx
+import { KeyValueList } from '@/components/ui/key-value-list/key-value-list';
+import { Badge } from '@/components/ui/badge';
+
+export default function OrgFacts({ org, members }) {
+  return (
+    <KeyValueList
+      columns={4}
+      items={[
+        { label: 'Plan', value: <Badge tone="info">{org.plan}</Badge> },
+        { label: 'Members', value: members.length, hint: 'total' },
+        { label: 'Monthly revenue', value: formatCurrency(org.monthlyRevenue) },
+        { label: 'Health score', value: org.healthScore, hint: '/ 100' },
+      ]}
+    />
+  );
+}
+```
+
+## API Reference
+
+### KeyValueListProps
+
+<PropsTable component="key-value-list" />
+
+Each entry in `items` is a `KeyValueItem`: `{ label: ReactNode; value: ReactNode; hint?: ReactNode }`. The component also accepts all standard HTML attributes for the root element (defaults to `<dl>`).
+
+## Accessibility
+
+`KeyValueList` renders a semantic `<dl>` with `<dt>`/`<dd>` pairs by default, so assistive technology announces each label with its value. Set `as="div"` only when the surrounding markup already supplies the term/description semantics. When a value is itself a graphical or interactive element (a score ring, an avatar stack), give it an `aria-label` so the pairing stays meaningful without sight.
+
+## When to Use
+
+- The "key facts" panel atop a detail or inspector page (org detail, user detail, billing summary)
+- Rendering a single record's attributes as label/value pairs
+- A 4-up editorial facts row with rich value nodes
+
+## When Not to Use
+
+- Many records in rows and columns — use [`DataTable`](/docs/components/data-display/data-table)
+- A single large KPI figure with delta / trend — use [`StatCard`](/docs/components/admin/stat-card)
+- Editable form fields — use the [`Field`](/docs/components/form/field) family

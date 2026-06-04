@@ -1,0 +1,56 @@
+name: Key-Value List
+description: Definition-list display primitive for one record's attributes — label/value pairs in a responsive grid. Values accept any node (Badge, AvatarStack, StatHero, ScoreIndicator, text).
+extends: HTMLDListElement
+category: data-display
+
+when_to_use:
+  - The "key facts" panel atop a detail / inspector page (org detail, user detail, billing summary)
+  - Rendering a single record's attributes as label/value pairs
+  - A 4-up editorial facts row with rich value nodes (badges, avatar stacks, stat figures, score rings)
+
+when_not_to_use:
+  - Many records in rows and columns (use DataTable)
+  - A single large KPI figure with delta / trend (use StatCard or StatHero)
+  - Editable form fields (use the Field family)
+
+why: >
+  KeyValueList renders semantic <dl>/<dt>/<dd> pairs in a responsive grid. Each
+  value is an arbitrary ReactNode, so the same primitive composes plain text or
+  rich nodes. Orientation (stacked vs horizontal), column count, and density
+  adapt it from a 4-up facts panel to a tight inspector list.
+
+props:
+  - name: items
+    type: KeyValueItem[]
+    description: The label/value pairs. Each item is { label, value, hint? } with ReactNode fields.
+  - name: columns
+    type: "1 | 2 | 3 | 4"
+    default: "1"
+    description: Grid column count; collapses responsively on narrow viewports.
+  - name: orientation
+    type: '"horizontal" | "stacked"'
+    default: '"stacked"'
+    description: stacked = label above value (facts panel); horizontal = label beside value (inspector).
+  - name: density
+    type: '"compact" | "default" | "editorial"'
+    default: '"editorial"'
+    description: Row density; editorial is the admin-ui default.
+  - name: as
+    type: '"dl" | "div"'
+    default: '"dl"'
+    description: Root element; dl renders semantic <dl>/<dt>/<dd>, div opts out.
+
+dependencies: []
+
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/key-value-list"
+
+example: |
+  <KeyValueList
+    columns={4}
+    items={[
+      { label: "Plan", value: <Badge tone="info">Enterprise</Badge> },
+      { label: "Members", value: <AvatarStack avatars={avatars} total={142} />, hint: "142 total" },
+      { label: "Monthly revenue", value: <StatHero value="$48,200" /> },
+      { label: "Health score", value: <ScoreIndicator value={98} max={100} />, hint: "/ 100" },
+    ]}
+  />
