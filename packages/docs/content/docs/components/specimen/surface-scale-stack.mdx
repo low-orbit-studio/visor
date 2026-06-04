@@ -1,0 +1,76 @@
+---
+title: Surface Scale Stack
+description: Multi-tier stacked surface aggregator block. Composes ordered SurfaceRow specimens into a rounded vertical stack with an optional use-note column.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { SurfaceScaleStack } from '@/components/ui/surface-scale-stack';
+
+## Preview
+
+<ComponentPreview
+  title="Surface Scale"
+  code={"<SurfaceScaleStack\n  surfaces={[\n    { token: \"--surface-page\", name: \"Page\", note: \"Root canvas\" },\n    { token: \"--surface-screen\", name: \"Screen\", note: \"Full-bleed section\" },\n    { token: \"--surface-card\", name: \"Card\", note: \"Primary content card\" },\n    { token: \"--surface-raised\", name: \"Raised\", note: \"Elevated card\" },\n    { token: \"--surface-overlay\", name: \"Overlay\", note: \"Modal / sheet\", lightText: true },\n  ]}\n/>"}
+>
+  <SurfaceScaleStack
+    surfaces={[
+      { token: "--surface-page", name: "Page", note: "Root canvas" },
+      { token: "--surface-screen", name: "Screen", note: "Full-bleed section" },
+      { token: "--surface-card", name: "Card", note: "Primary content card" },
+      { token: "--surface-raised", name: "Raised", note: "Elevated card" },
+      { token: "--surface-overlay", name: "Overlay", note: "Modal / sheet", lightText: true },
+    ]}
+  />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add surface-scale-stack
+```
+
+This copies two files into your project:
+
+- `components/ui/surface-scale-stack/surface-scale-stack.tsx` — the component
+- `components/ui/surface-scale-stack/surface-scale-stack.module.css` — the styles
+
+`SurfaceRow` is installed automatically as a dependency.
+
+## Usage
+
+```tsx
+import { SurfaceScaleStack } from '@/components/ui/surface-scale-stack/surface-scale-stack';
+
+<SurfaceScaleStack
+  surfaces={[
+    { token: "--surface-page", name: "Page" },
+    { token: "--surface-card", name: "Card" },
+    { token: "--surface-overlay", name: "Overlay", lightText: true },
+  ]}
+/>
+```
+
+### With use-note labels
+
+The note column only appears when at least one surface item provides a `note`. Rows without a note render an empty cell.
+
+```tsx
+<SurfaceScaleStack
+  surfaces={[
+    { token: "--surface-page", name: "Page", note: "Root canvas" },
+    { token: "--surface-card", name: "Card", note: "Primary content card" },
+    { token: "--surface-overlay", name: "Overlay", note: "Modal / sheet", lightText: true },
+  ]}
+/>
+```
+
+## API Reference
+
+### SurfaceScaleStackProps
+
+<PropsTable component="surface-scale-stack" />
+
+## Accessibility
+
+SurfaceScaleStack is a documentation utility. The component composes `SurfaceRow` instances with their accessible text labels preserved. Use `lightText={true}` for dark surfaces to maintain readable contrast on the text labels.

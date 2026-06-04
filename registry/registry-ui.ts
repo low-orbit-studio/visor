@@ -1553,6 +1553,24 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "surface-scale-stack",
+    type: "registry:ui",
+    description:
+      "Multi-tier stacked surface aggregator block. Composes ordered SurfaceRow specimens into a rounded vertical stack with an optional use-note column.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "surface-row"],
+    files: [
+      {
+        path: "components/ui/surface-scale-stack/surface-scale-stack.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/surface-scale-stack/surface-scale-stack.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "font-showcase",
     type: "registry:ui",
     description:

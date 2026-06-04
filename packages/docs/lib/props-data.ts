@@ -1703,6 +1703,43 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'surface-scale-stack': [
+    {
+      name: 'surfaces',
+      type: 'SurfaceScaleItem[]',
+      required: true,
+      description: 'Ordered array of surface tiers. Each item has token (required), name (required), note (optional), and lightText (optional).',
+    },
+    {
+      name: 'surfaces[].token',
+      type: 'string',
+      required: true,
+      description: 'CSS custom property for the surface background (e.g. "--surface-page").',
+    },
+    {
+      name: 'surfaces[].name',
+      type: 'string',
+      required: true,
+      description: 'Display name for the surface tier.',
+    },
+    {
+      name: 'surfaces[].note',
+      type: 'string',
+      description: 'Optional use-note shown in the right-aligned column. The note column only renders when at least one surface has a note.',
+    },
+    {
+      name: 'surfaces[].lightText',
+      type: 'boolean',
+      default: 'false',
+      description: 'When true, text renders in light/inverse colors for dark surfaces.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the stack element.',
+    },
+  ],
+
   'type-specimen': [
     {
       name: 'token',

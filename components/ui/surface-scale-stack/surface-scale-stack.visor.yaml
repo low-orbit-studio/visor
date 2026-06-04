@@ -1,0 +1,54 @@
+name: Surface Scale Stack
+description: Multi-tier stacked surface aggregator block. Composes ordered SurfaceRow specimens into a rounded vertical stack with an optional use-note column.
+extends: HTMLDivElement
+category: specimen
+
+when_to_use:
+  - Documenting a full surface scale (e.g. page → screen → panel → panel-2 → panel-3)
+  - Design system foundation pages showing tier hierarchy
+  - Theme validation for a complete surface token set
+
+when_not_to_use:
+  - Displaying a single surface tier (use SurfaceRow)
+  - Actual page or card surfaces (use the surface tokens directly)
+
+why: >
+  SurfaceScaleStack aggregates ordered SurfaceRow specimens into a single
+  rounded block, eliminating the per-consumer wrapper CSS that was previously
+  needed every time a full surface scale was documented. The optional note
+  column provides V7-style use-note labels without coupling that data to the
+  SurfaceRow primitive.
+
+props:
+  - name: surfaces
+    type: SurfaceScaleItem[]
+    description: Ordered array of surface tiers — each with token, name, and optional note
+  - name: surfaces[].token
+    type: string
+    description: CSS custom property for the surface background (e.g. "--surface-page")
+  - name: surfaces[].name
+    type: string
+    description: Display name for the surface tier
+  - name: surfaces[].note
+    type: string
+    description: Optional use-note shown in the right-aligned column
+  - name: surfaces[].lightText
+    type: boolean
+    default: "false"
+    description: When true, text renders in light colors for dark surfaces
+
+dependencies:
+  - surface-row
+
+preview_url: "https://visor.loworbit.studio/docs/components/specimen/surface-scale-stack"
+
+example: |
+  <SurfaceScaleStack
+    surfaces={[
+      { token: "--surface-page", name: "Page", note: "Root canvas" },
+      { token: "--surface-screen", name: "Screen", note: "Full-bleed section" },
+      { token: "--surface-card", name: "Card", note: "Primary content card" },
+      { token: "--surface-raised", name: "Raised", note: "Elevated card" },
+      { token: "--surface-overlay", name: "Overlay", note: "Modal / sheet", lightText: true },
+    ]}
+  />
