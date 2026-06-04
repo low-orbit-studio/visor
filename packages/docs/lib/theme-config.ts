@@ -3,6 +3,7 @@
 
 import { customThemeGroups } from "./theme-config.custom.generated";
 import { PRIVATE_THEMES } from "./private-themes";
+import type { BrandStrategy } from "@loworbitstudio/visor-theme-engine";
 
 /** Light- and dark-surface asset URLs for one brand variant. Single-file marks set both to the same URL. */
 export interface BrandVariantAsset {
@@ -114,6 +115,140 @@ export function resolveBrand(theme: string): ThemeBrand {
     PRIVATE_THEMES.find((t) => t.slug === theme)?.brand ??
     VISOR_DEFAULT_BRAND
   );
+}
+
+/**
+ * Visor's authored Brand Record (VI-504/VI-505) — strategy + verbal identity as
+ * data. The structured projection of `docs/brand/visor-brand-record.yaml`, typed
+ * against the engine's {@link BrandStrategy} so the docs layer reads it the way an
+ * agent reads the manifest's `brand_strategy` block. Hand-kept in sync with the
+ * YAML, which is the human-canonical source. `visibility: "public"` — only Visor's
+ * own record ships in this public repo.
+ */
+export const VISOR_BRAND_STRATEGY: BrandStrategy = {
+  positioning: {
+    onliness:
+      "The only design system that compiles a complete brand — visual and verbal — from one portable file, for humans and agents alike.",
+    category: "design system",
+    differentiation:
+      "brand strategy, visual and verbal, as derivable machine-readable data",
+  },
+  essence: ["coherent", "open", "yours"],
+  personality: [
+    { trait: "precise", not: "fussy" },
+    { trait: "candid", not: "cold" },
+    { trait: "generous", not: "indulgent" },
+    { trait: "warm", not: "saccharine" },
+  ],
+  archetype: { primary: "sage", secondary: "creator", tertiary: "everyman" },
+  pillars: [
+    {
+      id: "coherence",
+      statement: "Every layer derives from the one above it.",
+      governs: {
+        tokens: ["--primary", "--surface-card", "--text-primary"],
+        components: ["*"],
+      },
+    },
+    {
+      id: "openness",
+      statement:
+        "The whole system is open — readable by humans and agents, and free to take.",
+      governs: { surfaces: ["manifest", "cli", "component-metadata"] },
+    },
+    {
+      id: "ownership",
+      statement: "Copy-and-own. You hold the source; there's no lock-in, ever.",
+      governs: { components: ["*"] },
+    },
+  ],
+  voice: {
+    traits: [
+      {
+        name: "plainspoken",
+        do: "Say it in one clause. Lead with the answer.",
+        dont: "Bury the point under qualifiers and throat-clearing.",
+        example:
+          "Copy-and-own is just that — the source is yours. Edit anything; there's no wrapper to fight.",
+      },
+      {
+        name: "candid",
+        do: "Name the tradeoff and the cost before the reader hits it.",
+        dont: "Oversell, hide the sharp edges, or hedge to sound safe.",
+        example:
+          "Heads up — this theme fails WCAG AA on small text. Bump the contrast a notch, or keep the warning if that's intentional.",
+      },
+      {
+        name: "generous",
+        do: "Give the why. Show the worked example. Assume the reader will go further than you did.",
+        dont: "Gatekeep, wave at best practices, or make them read the source to understand.",
+        example:
+          "Fallbacks use Gray, not Slate — so an un-themed component lands on a neutral that fits your palette instead of clashing. Small thing, but it's what keeps a theme feeling whole.",
+      },
+      {
+        name: "warm",
+        do: "Greet the reader like a peer you're glad to help. A little delight is welcome.",
+        dont: "Go cold and transactional — or paper over it with forced cheer.",
+        example:
+          "Welcome — let's get your first theme on the screen. It takes about a minute.",
+      },
+    ],
+  },
+  tone: {
+    error: {
+      feeling: "warm, accountable, already holding the fix",
+      example:
+        "That didn't save — looks like the theme name's taken. Pick another and we'll keep everything else just as you left it.",
+    },
+    success: {
+      feeling: "a real, small celebration — a little confetti is fine",
+      example: "Saved! Your theme's live across every component — go take a look.",
+    },
+    empty: {
+      feeling: "inviting, a friendly nudge to start",
+      example:
+        "Nothing here yet — let's change that. Start from a blank file, or clone one and make it yours.",
+    },
+    loading: {
+      feeling: "unhurried and friendly, honest about the wait",
+      example: "Compiling your tokens — just a moment…",
+    },
+    "validation-warning": {
+      feeling: "a friend flagging a smell, never a scold",
+      example:
+        "Quick one — your primary and accent are nearly twins. Themes can read a little flat this close, so nudge one if it's not on purpose.",
+    },
+  },
+  lexicon: [
+    { use: "theme", avoid: "skin" },
+    { use: "copy-and-own", avoid: "fork" },
+    { use: "compose", avoid: "drag-and-drop" },
+    { use: "token", avoid: "variable" },
+    { use: "adapter", avoid: "plugin" },
+    { use: "transform", avoid: "restyle" },
+    { use: "portable", avoid: "exportable" },
+  ],
+  core: ["positioning", "essence", "pillars"],
+  visibility: "public",
+};
+
+/**
+ * Resolve a theme's Brand Record strategy — positioning, essence, personality,
+ * pillars, voice, and tone as data. Parallel to {@link resolveBrand}, but
+ * strategy is brand-keyed, not theme-keyed: the {@link STOCK_GROUPS} themes are
+ * all variants of the one Visor brand, so they resolve to its public
+ * {@link VISOR_BRAND_STRATEGY}. Custom and private themes are other brands
+ * (clients) whose strategy is private and not shipped in this public repo, so
+ * they resolve to `null` rather than borrowing Visor's. Gating on STOCK_GROUPS
+ * (not {@link findThemeEntry}) keeps this stable whether or not client themes are
+ * registered. The first Brand Workbench surface (VI-506) introduces this reader;
+ * VI-507/508/509 reuse it.
+ */
+export function resolveBrandStrategy(theme: string): BrandStrategy | null {
+  const isVisorStockTheme = STOCK_GROUPS.some((group) =>
+    group.themes.some((t) => t.value === theme),
+  );
+  return isVisorStockTheme ? VISOR_BRAND_STRATEGY : null;
 }
 
 /** Flip the <html> color-mode class and color-scheme without touching the theme class. Persists to localStorage. */
