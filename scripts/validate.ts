@@ -44,6 +44,7 @@ import { crossPlatformManifestSync } from './rules/cross-platform-manifest-sync.
 import { flutterCssTokenSync } from './rules/flutter-css-token-sync.js';
 import { widgetbookUseCaseCoverage } from './rules/widgetbook-use-case-coverage.js';
 import { widgetbookDepsFresh } from './rules/widgetbook-deps-fresh.js';
+import { schemaCopiesSync } from './rules/schema-copies-sync.js';
 import type { Rule } from './rules/types.js';
 
 const rules: Rule[] = [
@@ -74,6 +75,7 @@ const rules: Rule[] = [
   visorYamlPreviewUrl,
   crossPlatformManifestSync,
   flutterCssTokenSync,
+  schemaCopiesSync,
   widgetbookUseCaseCoverage,
   widgetbookDepsFresh,
   testFileExists,
