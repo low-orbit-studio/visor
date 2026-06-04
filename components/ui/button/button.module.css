@@ -110,3 +110,8 @@
   padding: 0 var(--spacing-6, 1.5rem);
   font-size: var(--font-size-base, 1rem);
 }
+
+/* VI-510: form controls do not inherit font-family from the page; opt back in (matches textarea). */
+.base {
+  font-family: inherit;
+}

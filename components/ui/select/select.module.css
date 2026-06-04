@@ -168,3 +168,8 @@
   width: 1rem;
   height: 1rem;
 }
+
+/* VI-510: form controls do not inherit font-family from the page; opt back in (matches textarea). */
+.trigger {
+  font-family: inherit;
+}
