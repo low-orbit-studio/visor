@@ -1,0 +1,114 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SurfaceScaleStack > matches snapshot 1`] = `
+<div
+  class="stack withNotes"
+  data-slot="surface-scale-stack"
+>
+  <div
+    class="rowWrapper"
+  >
+    <div
+      class="rowContent"
+    >
+      <div
+        class="card"
+        data-slot="surface-row"
+        style="background: var(--surface-page);"
+      >
+        <span
+          class="label"
+          style="color: var(--text-primary, #111827);"
+        >
+          Page
+        </span>
+        <span
+          class="token"
+          style="color: var(--text-secondary, #6b7280);"
+        >
+          --surface-page
+        </span>
+      </div>
+    </div>
+    <div
+      class="noteCell"
+    >
+      <span
+        class="note"
+      >
+        Root canvas
+      </span>
+    </div>
+  </div>
+  <div
+    class="rowWrapper"
+  >
+    <div
+      class="rowContent"
+    >
+      <div
+        class="card"
+        data-slot="surface-row"
+        style="background: var(--surface-card);"
+      >
+        <span
+          class="label"
+          style="color: var(--text-primary, #111827);"
+        >
+          Card
+        </span>
+        <span
+          class="token"
+          style="color: var(--text-secondary, #6b7280);"
+        >
+          --surface-card
+        </span>
+      </div>
+    </div>
+    <div
+      class="noteCell"
+    >
+      <span
+        class="note"
+      >
+        Primary content card
+      </span>
+    </div>
+  </div>
+  <div
+    class="rowWrapper"
+  >
+    <div
+      class="rowContent"
+    >
+      <div
+        class="card"
+        data-slot="surface-row"
+        style="background: var(--surface-overlay);"
+      >
+        <span
+          class="label"
+          style="color: var(--text-inverse, #ffffff);"
+        >
+          Overlay
+        </span>
+        <span
+          class="token"
+          style="color: var(--text-inverse-secondary, #e5e7eb);"
+        >
+          --surface-overlay
+        </span>
+      </div>
+    </div>
+    <div
+      class="noteCell"
+    >
+      <span
+        class="note"
+      >
+        Modal / sheet
+      </span>
+    </div>
+  </div>
+</div>
+`;

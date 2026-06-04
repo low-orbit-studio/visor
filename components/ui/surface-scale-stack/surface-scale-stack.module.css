@@ -1,0 +1,36 @@
+.stack {
+  border-radius: var(--radius-md, 6px);
+  overflow: hidden;
+}
+
+.rowWrapper {
+  display: flex;
+  align-items: stretch;
+}
+
+/* Remove SurfaceRow's own border and radius so the stack owns the chrome */
+.rowContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.rowContent [data-slot="surface-row"] {
+  border-radius: 0;
+  border: none;
+}
+
+/* Note column — only rendered when at least one row has a note */
+.noteCell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: var(--spacing-4, 1rem);
+  min-width: 10rem;
+  flex-shrink: 0;
+}
+
+.note {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-tertiary, #9ca3af);
+  text-align: right;
+}
