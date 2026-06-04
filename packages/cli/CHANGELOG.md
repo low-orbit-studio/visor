@@ -1,5 +1,144 @@
 # Changelog
 
+## 1.5.0
+
+### Minor Changes
+
+- b70fe97: Sparkline: add an entrance path-draw animation (`animate`, default true; `duration`, default 1500ms) that draws the line left→right on mount, respecting `prefers-reduced-motion`. `animate={false}` is unchanged from the prior static render. Adds the `--motion-duration-1500` primitive to the motion-duration ladder (consumed by Progress entrance animation, VI-412).
+- f3d6872: Progress: the indicator now sweeps from 0% to its value on initial mount over a default 1500ms (new `duration` prop; consumes `var(--motion-duration-1500, 1500ms)`), respecting `prefers-reduced-motion`. Note: the default entrance timing changed from 300ms to 1500ms — pass `duration={300}` to restore the prior timing. `animate={false}` remains static.
+- 2abc170: Add `gated` + `gatedReason` props to Button (VI-454). When `gated=true` the
+  button renders inert — visually dimmed, cursor not-allowed, click handlers
+  suppressed — using `aria-disabled="true"` and `data-gated="true"` instead of
+  the native `disabled` attribute, keeping the button keyboard-focusable so the
+  anchored tooltip is reachable by keyboard and screen-reader users. When
+  `gatedReason` is also provided, the button wraps itself in a Radix `<Tooltip>`
+  that surfaces the reason on hover/focus. CSS treatment is scoped to
+  `[data-gated="true"]` and is orthogonal to all existing variants and sizes.
+  Existing call sites are unaffected — both props default to `undefined`.
+  Consumers using `gatedReason` must supply a `<TooltipProvider>` ancestor.
+- 4d6c24b: Add `count` and `countTone` props to FilterChip (VI-455). `count?: React.ReactNode`
+  renders an inline count pill after the chip label — ideal for quick-filter pivots
+  ("All 132 / Active 47 / Suspended 8"). `countTone?: "primary" | "neutral"` (default
+  `"neutral"`) controls the pill's surface treatment; `"primary"` uses the accent ramp.
+  The pill automatically re-tones when the chip is selected via a
+  `[data-selected="true"] .count` CSS rule — no consumer override required. Count is
+  rendered inside the `<button>` so screen readers announce it as part of the
+  accessible name. Existing FilterChip usages without `count` render identically.
+- 5a0b226: Add `neutral` Badge variant using `surface-muted` background + secondary text + transparent border (VI-456). Closes the gap in the tone vocabulary for Pending / Draft / Idle / Queued patterns in admin UIs.
+
+  **StatusBadge subtle-mode shift:** `SUBTLE_VARIANT.neutral` now maps to `"neutral"` instead of `"secondary"`. Consumers using `<StatusBadge status="draft|queued|idle|scheduled" />` will see `surface-muted` surface instead of the secondary surface. This is an intentional improvement — the existing `secondary` fallback was a documented workaround ("No filled-secondary exists — neutral statuses fall back to secondary"). `FILLED_VARIANT.neutral` continues to fall back to `secondary` per VI-456 D6.
+
+- 7173659: Add a `size` prop (`"sm" | "md" | "lg"`) to Badge (VI-457). Sizing is now token-driven per size — `sm` is tighter for dense inline data contexts, `md` (the default) reproduces the original badge sizing byte-for-byte, and `lg` is larger for editorial contexts like page headers and stat-card status pills. The fixed `height: 1.25rem` is dropped in favor of padding + `line-height: 1` (intrinsic height, matching Button), and embedded leading icons scale with the size step (`sm` 0.75rem / `md` 0.875rem / `lg` 1rem). `size` mirrors Button's convention exactly and defaults to `md`, so every existing `<Badge>` call site renders unchanged at the pixel level.
+- 9e885cc: Re-home `AvatarStack` as a compound primitive in the `avatar` family (VI-458). It is
+  now exported from `components/ui/avatar/avatar.tsx` alongside `Avatar`, `AvatarImage`,
+  and `AvatarFallback` (mirroring the `Tabs` / `RadioGroup` compound-export pattern),
+  with its CSS module and tests relocated into the avatar family. The VI-424
+  `blocks/avatar-stack/` entry is reduced to a one-line re-export and flagged
+  `deprecated: true` / `superseded_by: avatar`, so `npx visor add avatar-stack` keeps
+  working. Public API and DOM output are unchanged — purely additive consolidation.
+- 07e89b9: Add `count` and `countTone` props to `TabsTrigger` (VI-459). Renders an inline count
+  pill after the tab label — ideal for admin tab navs showing filtered counts
+  ("Members 12 / Pending 3 / Roles 4"). `countTone` accepts `"primary" | "neutral"`
+  (default `"neutral"`); active state (`data-state="active"`) re-tones the pill
+  automatically via CSS regardless of `countTone`. Works in both `default` and `line`
+  `TabsList` variants. Existing triggers without `count` render identically. Prop names,
+  tone values, and `data-tone` attribute match the FilterChip count slot (VI-455) exactly
+  for a single mental model across Visor.
+- 1a2b5ff: ConfirmDialog (VI-460): add tinted severity icon plate + `"destructive"` prop alias.
+
+  **Visual change:** The severity icon is now rendered inside a ~2.5rem tinted circular
+  plate (`--surface-{info|warning|error}-subtle` background, `--text-{info|warning|error}`
+  icon color) stacked above the dialog title, replacing the previous bare 1.25rem inline
+  glyph. This is a visible change for all current ConfirmDialog consumers.
+
+  **API addition:** `ConfirmDialogSeverity` now accepts `"destructive"` as the canonical
+  high-severity value, aligning with `<Alert>` and `<Button>`. The existing `"danger"`
+  value is still accepted but is JSDoc-deprecated and will be removed in the next major
+  version. Internally, `"danger"` normalizes to `"destructive"` — all rendering logic,
+  `data-severity`, and button variant flow through a single branch.
+
+- 4ef42b4: Upgrade `<Input>`'s `[aria-invalid="true"]` styling (VI-461). The quiet outset
+  border-color swap is replaced with an inset 1.5px destructive border
+  (`box-shadow: inset … var(--border-error)`), a tinted background
+  (`--surface-error-subtle` with a `color-mix` fallback), and a destructive-tinted
+  focus halo on `[aria-invalid="true"]:focus-visible` (the neutral focus halo is
+  suppressed when invalid). No prop/API changes; consumers not passing `aria-invalid`
+  are unaffected, and `className`-supplied invalid styles still win the cascade.
+- 14e519e: Add a `variant` prop (`"default" | "breakout"`) to `DropdownMenuContent` and
+  `DropdownMenuSubContent` (VI-462). The `breakout` variant raises z-index to 200 and
+  applies a deeper shadow (`var(--shadow-xl)` with a layered fallback) so dropdowns
+  escape scroll-clipped stacking contexts (data-table rows, sticky toolbars) without
+  consumer-side CSS overrides. `variant="default"` is byte-identical to the previous
+  rendering — strictly additive, no breaking changes.
+- b8aced1: Add `PopoverSelectionList` + `PopoverSelectionItem` + `PopoverSelectionLabel` compound to Popover (VI-463).
+
+  New exports provide WAI-ARIA listbox semantics, roving-tabindex keyboard navigation (Arrow Up/Down, Home/End, Enter/Space, Esc), and checkbox/radio indicator plates for single- and multi-select filter-control patterns inside a Popover. The `mode="checkbox" | "radio"` prop defaults to `"checkbox"` and propagates via context. Items support `selected`, `onSelect`, `disabled`, `count`, and `leadingIcon` props. All existing Popover exports are unaffected.
+
+- cbe7663: Add a `PopoverFooter` sub-component to Popover (VI-464). `PopoverFooter` is a
+  structural slot that renders a right-aligned action row separated from the body
+  by a full-width top border (spanned via the negative-margin technique so the
+  border reaches the popover edges while the action row stays aligned with body
+  content). It follows the `SheetFooter` convention — a plain `<div>` with
+  `data-slot="popover-footer"`, layout via CSS module, no opinionated button
+  rendering inside the slot. Button-variant convention (primary default + secondary
+  ghost/outline) and DOM-order convention (primary action last) are documented in
+  the `.visor.yaml` notes. Strictly additive — existing Popover exports and
+  `PopoverContent` padding behavior are unchanged.
+- facebf9: Add an `AlertActions` sub-component to Alert (VI-465). `AlertActions` exposes a
+  right-aligned, gap-aware row for inline action buttons — ideal for inline error
+  placards with retry/dismiss controls. It follows the existing compound pattern
+  (`AlertTitle`, `AlertDescription`), renders with `data-slot="alert-actions"`, and
+  styles its children as a `flex` row (`justify-content: flex-end`, token `gap`) that
+  sits below the description within Alert's grid stack. Existing alerts without the
+  new slot render identically.
+- 8ee35c3: Add optional OAuth support to the `login-form` block (VI-491). New optional props
+  — `oauthProviders`, `onOAuthSignIn`, `dividerLabel`, `error`, and `hideCredentials`
+  — render caller-supplied provider buttons (`Button variant="outline"`) above the
+  credentials form, separated by a labeled `Separator` divider, with errors shown in
+  a destructive `Alert`. A per-provider loading state toggles `disabled` + `aria-busy`
+  while an async handler is pending. The block stays auth-agnostic: the consumer owns
+  the sign-in call. `<LoginForm />` with no new props renders identically, so existing
+  callers are unaffected. The block now also depends on the `separator` and `alert`
+  primitives.
+- 1cef61a: Add CRM / pipeline statuses to `StatusBadge` (VI-492). The status vocabulary
+  gains seven first-class stages — `prospect` (info), `pitched` (warning),
+  `contracted` / `active` / `completed` (success), `paused` (warning), and
+  `archived` (neutral) — so CRM consumers get type-safe `<StatusBadge status={…} />`
+  instead of a hand-rolled status map. Each stage binds to an existing semantic
+  color group, so no new tokens are introduced.
+
+  Also adds a `filled-neutral` Badge variant — the saturated counterpart to the
+  subtle `neutral` variant (VI-456) — a solid `--color-neutral-600` fill with
+  white text and indicator dot. `StatusBadge` now renders neutral statuses
+  (`queued`, `idle`, `scheduled`, `draft`, `archived`) with `neutral` in subtle
+  tone and `filled-neutral` in filled tone, so they read legibly in both tones and
+  both modes (previously filled-neutral fell back to an invisible white-on-white
+  `secondary` chip in light mode). Also corrects the docs Status→Variant table,
+  which listed `scheduled` as `info` instead of its actual `neutral` group.
+
+- fdd660c: Remove the deprecated `blocks/avatar-stack/` re-export shim (VI-501, follow-up to VI-458). `AvatarStack` is now sourced solely from the `avatar` compound in `components/ui/avatar/`. The one-release migration window has elapsed; consumers should `npx visor add avatar` and import `AvatarStack` from the avatar family.
+- 74617c6: Add `key-value-list` — a definition-list display primitive for one record's attributes (the "key facts" panel on detail / inspector pages). Renders semantic `<dl>`/`<dt>`/`<dd>` pairs in a responsive grid; each value is an arbitrary `ReactNode` (Badge, AvatarStack, StatHero, ScoreIndicator, or plain text). Supports 1–4 columns, `stacked`/`horizontal` orientation, and `compact`/`default`/`editorial` density.
+
+  Fills the organization-management pattern's Screen-2 facts-row gap that previously fell back to a hand-rolled `<dl className="key-value-list">` local stub.
+
+### Patch Changes
+
+- 80b7b00: Progress: `.indicator` background-color now chains to `var(--accent-primary)` before the charcoal hardcoded fallback (VI-410), so themes that bind only `--accent-primary` (e.g. ENTR mint) get the brand accent on the progress fill without rebinding `--interactive-primary-bg`. Same chained-fallback pattern applied to any other primitive reading `--interactive-primary-bg`.
+- 000f698: Sparkline & Progress: SSR-safe entrance animations, fix invisible-by-default sparkline, and eliminate a phantom token.
+
+  - **SSR-safe entrance animations.** Both primitives drove their entrance via `useState` + `useEffect` + `requestAnimationFrame`, which only fires reliably on a fresh client mount. On a full page reload the server rendered the sparkline fully undrawn and the JS reveal lost the hydration race, leaving the line **invisible**; Progress simply didn't animate. The entrance is now a pure CSS `@keyframes` whose resting state is the final, visible state — visible even with zero JS, and identical on reload vs. client navigation. Sparkline now uses no hooks at all. `prefers-reduced-motion` still collapses to instant; `animate={false}` is unchanged.
+  - **Sparkline renders by default.** Its default stroke referenced `var(--accent-primary)`, which is emitted by **no theme**, so SVG `stroke` fell back to its initial value `none` (invisible). It now defaults to the brand color `var(--primary, currentColor)` (with a can't-go-invisible `currentColor` fallback).
+  - **Phantom-token cleanup.** `--accent-primary` (defined in no theme) was used as a dead middle fallback across ~18 components/blocks (e.g. `var(--interactive-primary-bg, var(--accent-primary, #111827))`). Replaced with the canonical brand `--primary`, so themes that bind only the brand color (e.g. ENTR mint) resolve to it instead of silently falling through to gray — making VI-410's intended accent-only-theme behavior actually work.
+
+- ac248b6: Alert: replace hardcoded light-mode hex fallbacks in variant CSS with transparent / currentColor / chained semantic fallbacks (VI-413, audit follow-up to VI-408) so Alert degrades gracefully when a theme omits semantic surface/text tokens.
+- 8acbad7: Banner: replace hardcoded light-mode hex fallbacks in variant CSS with transparent / currentColor / chained semantic fallbacks (VI-414, audit follow-up to VI-408) so Banner degrades gracefully when a theme omits semantic surface/text tokens.
+- e0c9bd7: StatusBadge: replace hardcoded light-mode hex fallbacks in variant CSS with transparent / currentColor / chained semantic fallbacks (VI-415, audit follow-up to VI-408) so status tones degrade gracefully when a theme omits semantic surface/text tokens.
+- 76a6c03: Field: replace hardcoded light-mode hex fallbacks for text tokens with currentColor (VI-416, audit follow-up to VI-408) so field labels/descriptions/errors degrade gracefully when a theme omits semantic text tokens.
+- Updated dependencies [ae20cf5]
+- Updated dependencies [0121320]
+- Updated dependencies [a356625]
+  - @loworbitstudio/visor-theme-engine@0.15.0
+
 ## 1.4.0
 
 ### Minor Changes

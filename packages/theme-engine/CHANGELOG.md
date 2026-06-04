@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.15.0
+
+### Minor Changes
+
+- ae20cf5: Theme engine: derive interactive `*-text` colors from the paired `*-bg` luminance instead of hardcoding white, with new theme-level `text-on-light` / `text-on-dark` defaults (theme-overridable; per-token overrides still win). The contrast validator now checks every interactive `*-text` vs `*-bg` pair (both modes) and reads post-override `interactive-*-bg` values, so a bright brand button bg with white text (e.g. ENTR mint) now raises a WCAG_CONTRAST warning (VI-375).
+- 0121320: Add a 6-tier letter-spacing ramp to typography tokens (VI-447). The theme schema's
+  `typography.letter-spacing` block now accepts `xl | lg | md | sm | xs | tight` and the
+  engine emits a matching `--letter-spacing-{xl,lg,md,sm,xs,tight}` ramp, resolved per
+  theme (em-based defaults: xl `0.16em` → tight `-0.01em`, with `md` anchored at `0.05em`).
+
+  Additive and back-compatible: the legacy triad keys stay valid input and fold onto the
+  ramp (`normal`→md, `wide`→lg, `tight`→tight), and the engine still emits
+  `--letter-spacing-normal` (= md) plus a new `--letter-spacing-wide` (= lg) alias, so
+  existing consumers resolve unchanged. Editorial themes can now carry a coherent rem-based
+  letter-spacing system that the previous `tight | normal | wide` triad could not express.
+
+- a356625: The `nextjs` theme adapter now emits the full `visor-semantic` cascade layer (VI-453).
+  It outputs all 38 semantic aliases — intent shortcuts (`--primary`, `--accent`,
+  `--success`, `--warning`, `--destructive`, `--info`, `--primary-text`), hairlines
+  (`--hairline`, `--hairline-strong`), surface/text extensions (`--surface-screen`,
+  `--surface-elev`, `--text-muted`), and discrete pixel scales (`--text-{11..48}`,
+  `--space-{1..16}`) — reusing the same generators the `docs` adapter consumes. Mode
+  scoping mirrors the docs adapter: `html:not(.dark)` for light, `html.dark`
+  (+ `prefers-color-scheme: dark`) for dark; discrete scales emit unconditionally in
+  `:root`.
+
+  **Consumer impact:** themes generated via `npx visor add theme` now ship a populated
+  `visor-semantic` layer. Consumers who declared a bridge `:root` block to fill these
+  aliases can delete it after regenerating their theme CSS against this release.
+
 ## 0.14.0
 
 ### Minor Changes
