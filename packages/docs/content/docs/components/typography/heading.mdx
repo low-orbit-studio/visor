@@ -89,6 +89,44 @@ The component also accepts all standard HTML heading attributes.
 - Screen readers navigate by heading structure. Meaningful, descriptive heading text improves navigation for keyboard and AT users.
 - Avoid using `Heading` purely for visual styling — use `Text` instead if semantics don't apply.
 
+## Em accent
+
+Editorial headings often accent one phrase with brand color — rendered as non-italic, colored text via `<em>`. This is a recurring pattern across Visor consumers and has a Visor-sanctioned answer: one theme-level rule, applied once.
+
+**The pattern:** Add this rule to your theme or global stylesheet:
+
+```css
+em {
+  color: var(--text-link);
+  font-style: normal;
+}
+```
+
+Then use bare `<em>` in any heading (or body text):
+
+```tsx
+<Heading level={1}>Build faster <em>with Visor</em></Heading>
+```
+
+**Why `--text-link`:** It's the most universally available accent token — all Visor themes define it, it passes contrast against typical heading backgrounds, and it maps intuitively to "highlighted" text. You can swap it for any token that fits your theme:
+
+| Token | When to use |
+|-------|-------------|
+| `--text-link` | Default recommendation — themed link/accent color |
+| `--accent` | Bare intent alias; resolves to your theme's accent hue |
+| `--primary` | Bare intent alias; resolves to your theme's primary hue |
+
+**Scope the rule to headings if needed:** If `font-style: normal` on all `<em>` would conflict with your body copy, scope it:
+
+```css
+h1 em, h2 em, h3 em, h4 em, h5 em, h6 em {
+  color: var(--text-link);
+  font-style: normal;
+}
+```
+
+This rule is intentionally **not** built into `@loworbitstudio/visor-core` — it's an opt-in convention. Visor doesn't reset `<em>` globally; you apply it once in the stylesheet that owns your theme.
+
 ## Customization
 
 After copying the component, you own it completely. Common customizations:
