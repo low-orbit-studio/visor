@@ -132,6 +132,23 @@ export const semanticSpacing = {
   "layout-section-padding-mobile": "spacing-16",
 } as const;
 
+/**
+ * Layout max-width tokens (raw pixel values, not primitive references).
+ *
+ * --layout-content-max-width: canonical inner readable column width (default 1200px).
+ * --layout-page-max-width:    outermost page chrome width (default 1440px).
+ *
+ * Themes may override these via flat-key overrides in their .visor.yaml:
+ *   layout-content-max-width: "1200px"
+ *   layout-page-max-width: "1440px"
+ *
+ * These emit as raw values (not var() references) in the visor-semantic layer.
+ */
+export const semanticLayoutMaxWidth = {
+  "layout-content-max-width": "1200px",
+  "layout-page-max-width": "1440px",
+} as const;
+
 /** Motion duration tokens */
 export const semanticMotionDuration = {
   // Micro-interactions: tooltips, hovers, small state changes

@@ -57,6 +57,7 @@ import {
   semanticBorder,
   semanticInteractive,
   semanticSpacing,
+  semanticLayoutMaxWidth,
   semanticTypography,
   semanticOverlay,
   semanticFocusRing,
@@ -332,6 +333,14 @@ function buildSemanticBody(): string {
     spacingDecls.push(`--${name}: ${toVar(ref)};`);
   }
   lines.push(block(":root", spacingDecls));
+
+  // Layout max-width tokens (raw values — not primitive references)
+  lines.push(sectionComment("Semantic: Layout Max-Width"));
+  const layoutMaxWidthDecls: string[] = [];
+  for (const [name, value] of Object.entries(semanticLayoutMaxWidth)) {
+    layoutMaxWidthDecls.push(`--${name}: ${value};`);
+  }
+  lines.push(block(":root", layoutMaxWidthDecls));
 
   // Typography
   lines.push(sectionComment("Semantic: Typography"));
