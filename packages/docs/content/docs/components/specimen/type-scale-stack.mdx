@@ -1,0 +1,82 @@
+---
+title: Type Scale Stack
+description: Discrete N-tier type-scale aggregator that wraps an ordered list of TypeSpecimen rows in a rounded, screen-tier, borderless vertical stack.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { TypeScaleStack } from '@/components/ui/type-scale-stack';
+
+## Preview
+
+<ComponentPreview
+  title="Type Scale Stack"
+  code={"<TypeScaleStack steps={[\n  { token: \"--font-size-xs\", label: \"xs\", sizePx: 12, sample: \"Caption / helper text\" },\n  { token: \"--font-size-sm\", label: \"sm\", sizePx: 14, sample: \"Small body text\" },\n  { token: \"--font-size-md\", label: \"md\", sizePx: 16, sample: \"Base body text\" },\n  { token: \"--font-size-lg\", label: \"lg\", sizePx: 18, sample: \"Large body text\" },\n  { token: \"--font-size-xl\", label: \"xl\", sizePx: 20, sample: \"Subsection heading\" },\n  { token: \"--font-size-2xl\", label: \"2xl\", sizePx: 24, sample: \"Section heading\" },\n  { token: \"--font-size-3xl\", label: \"3xl\", sizePx: 30, sample: \"Page title\" },\n]} />"}
+>
+  <TypeScaleStack steps={[
+    { token: "--font-size-xs", label: "xs", sizePx: 12, sample: "Caption / helper text" },
+    { token: "--font-size-sm", label: "sm", sizePx: 14, sample: "Small body text" },
+    { token: "--font-size-md", label: "md", sizePx: 16, sample: "Base body text" },
+    { token: "--font-size-lg", label: "lg", sizePx: 18, sample: "Large body text" },
+    { token: "--font-size-xl", label: "xl", sizePx: 20, sample: "Subsection heading" },
+    { token: "--font-size-2xl", label: "2xl", sizePx: 24, sample: "Section heading" },
+    { token: "--font-size-3xl", label: "3xl", sizePx: 30, sample: "Page title" },
+  ]} />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add type-scale-stack
+```
+
+This copies the following files into your project:
+
+- `components/ui/type-scale-stack/type-scale-stack.tsx` — the component
+- `components/ui/type-scale-stack/type-scale-stack.module.css` — the styles
+- `components/ui/type-specimen/type-specimen.tsx` — the composed primitive
+- `components/ui/type-specimen/type-specimen.module.css` — primitive styles
+
+## Usage
+
+```tsx
+import { TypeScaleStack } from '@/components/ui/type-scale-stack/type-scale-stack';
+
+<TypeScaleStack steps={[
+  { token: "--font-size-xs", label: "xs", sizePx: 12, sample: "Caption / helper text" },
+  { token: "--font-size-sm", label: "sm", sizePx: 14, sample: "Small body text" },
+  { token: "--font-size-md", label: "md", sizePx: 16, sample: "Base body text" },
+  { token: "--font-size-lg", label: "lg", sizePx: 18, sample: "Large body text" },
+  { token: "--font-size-xl", label: "xl", sizePx: 20, sample: "Subsection heading" },
+]} />
+```
+
+## V7 Example (11-tier scale)
+
+TypeScaleStack is designed for discrete multi-tier scales like the V7 admin type system:
+
+```tsx
+<TypeScaleStack steps={[
+  { token: "--font-size-11", label: "11", sizePx: 11, sample: "Micro label" },
+  { token: "--font-size-13", label: "13", sizePx: 13, sample: "Caption" },
+  { token: "--font-size-14", label: "14", sizePx: 14, sample: "Small body" },
+  { token: "--font-size-16", label: "16", sizePx: 16, sample: "Base body" },
+  { token: "--font-size-20", label: "20", sizePx: 20, sample: "Subsection heading" },
+  { token: "--font-size-24", label: "24", sizePx: 24, sample: "Section heading" },
+  { token: "--font-size-32", label: "32", sizePx: 32, sample: "Page title" },
+  { token: "--font-size-40", label: "40", sizePx: 40, sample: "Hero heading" },
+  { token: "--font-size-48", label: "48", sizePx: 48, sample: "Display heading" },
+  { token: "--font-size-56", label: "56", sizePx: 56, sample: "Large display" },
+  { token: "--font-size-72", label: "72", sizePx: 72, sample: "Giant display" },
+]} />
+```
+
+## API Reference
+
+### TypeScaleStackProps
+
+<PropsTable component="type-scale-stack" />
+
+## Accessibility
+
+TypeScaleStack is a documentation utility. Each row (rendered by TypeSpecimen) pairs its visual sample text with a token label and pixel size in text form, so the type scale is readable without relying on visual font size alone.

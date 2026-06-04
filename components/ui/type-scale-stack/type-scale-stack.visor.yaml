@@ -1,0 +1,38 @@
+name: Type Scale Stack
+description: Discrete N-tier type-scale aggregator that wraps an ordered list of TypeSpecimen rows in a rounded, screen-tier, borderless vertical stack.
+extends: HTMLDivElement
+category: specimen
+
+when_to_use:
+  - Documenting a discrete N-tier type scale on a foundation or design system page
+  - Displaying a full project type scale (e.g. 11-tier V7 scale) as a single visual block
+  - Theme validation for the complete set of font size tokens at once
+
+when_not_to_use:
+  - Rendering actual page content (use Heading or Text)
+  - Continuous or modular-scale rendering
+  - Single type scale rows (use TypeSpecimen directly)
+
+why: >
+  TypeScaleStack aggregates multiple TypeSpecimen rows into a single rounded container
+  with a screen-tier background and no inter-row borders. It is the canonical way to
+  document discrete N-tier type scales on foundation pages without app-local wrapper CSS.
+
+props:
+  - name: steps
+    type: TypeScaleStepProps[]
+    description: Ordered array of type scale steps — each with token, label, sizePx, and sample
+
+dependencies:
+  - type-specimen
+
+preview_url: "https://visor.loworbit.studio/docs/components/specimen/type-scale-stack"
+
+example: |
+  <TypeScaleStack steps={[
+    { token: "--font-size-xs", label: "xs", sizePx: 12, sample: "Caption / helper text" },
+    { token: "--font-size-sm", label: "sm", sizePx: 14, sample: "Small body text" },
+    { token: "--font-size-md", label: "md", sizePx: 16, sample: "Base body text" },
+    { token: "--font-size-lg", label: "lg", sizePx: 18, sample: "Large body text" },
+    { token: "--font-size-xl", label: "xl", sizePx: 20, sample: "Subsection heading" },
+  ]} />
