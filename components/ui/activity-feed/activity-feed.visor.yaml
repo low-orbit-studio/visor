@@ -23,13 +23,13 @@ why: >
   without forcing consumers to fork.
 
 variants:
-  variant: [default, compact, timeline]
+  variant: [default, compact, timeline, compact-3col]
 
 props:
   - name: variant
-    type: "'default' | 'compact' | 'timeline'"
+    type: "'default' | 'compact' | 'timeline' | 'compact-3col'"
     default: "default"
-    description: Display mode. Default is padded rows with borders, compact is denser, timeline adds a connecting rail between leading indicators.
+    description: Display mode. Default is padded rows with borders, compact is denser, timeline adds a connecting rail between leading indicators, compact-3col pins timestamp to the leftmost column with [time][dot][text] layout.
   - name: children
     type: React.ReactNode
     description: ActivityFeedItem children.

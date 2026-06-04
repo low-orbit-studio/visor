@@ -4,7 +4,7 @@ import * as React from "react"
 import { cn } from "../../../lib/utils"
 import styles from "./activity-feed.module.css"
 
-type ActivityFeedVariant = "default" | "compact" | "timeline"
+type ActivityFeedVariant = "default" | "compact" | "timeline" | "compact-3col"
 
 interface ActivityFeedContextValue {
   variant: ActivityFeedVariant
@@ -26,6 +26,7 @@ const variantClass: Record<ActivityFeedVariant, string> = {
   default: styles.variantDefault,
   compact: styles.variantCompact,
   timeline: styles.variantTimeline,
+  "compact-3col": styles.variantCompact3col,
 }
 
 const ActivityFeedRoot = React.forwardRef<HTMLOListElement, ActivityFeedProps>(
@@ -83,6 +84,8 @@ const ActivityFeedItem = React.forwardRef<HTMLLIElement, ActivityFeedItemProps>(
   ) => {
     const { variant } = React.useContext(ActivityFeedContext)
 
+    const is3col = variant === "compact-3col"
+
     return (
       <li
         ref={ref}
@@ -91,42 +94,87 @@ const ActivityFeedItem = React.forwardRef<HTMLLIElement, ActivityFeedItemProps>(
         className={cn(styles.item, variantClass[variant], className)}
         {...props}
       >
-        <span data-slot="activity-feed-leading" className={styles.leading}>
-          {leading}
-        </span>
-        <div data-slot="activity-feed-body" className={styles.body}>
-          <div data-slot="activity-feed-header" className={styles.header}>
-            <div data-slot="activity-feed-heading" className={styles.heading}>
-              <span data-slot="activity-feed-title" className={styles.title}>
-                {title}
-              </span>
-              {actor ? (
-                <span data-slot="activity-feed-actor" className={styles.actor}>
-                  {actor}
+        {is3col ? (
+          <>
+            <span
+              data-slot="activity-feed-timestamp"
+              className={cn(styles.timestamp, styles.timestampCol)}
+            >
+              {timestamp}
+            </span>
+            <span data-slot="activity-feed-leading" className={cn(styles.leading, styles.leadingCol)}>
+              {leading}
+            </span>
+            <div data-slot="activity-feed-header" className={cn(styles.header, styles.headerCol)}>
+              <div data-slot="activity-feed-heading" className={styles.heading}>
+                <span data-slot="activity-feed-title" className={styles.title}>
+                  {title}
+                </span>
+                {actor ? (
+                  <span
+                    data-slot="activity-feed-actor"
+                    className={styles.actor}
+                  >
+                    {actor}
+                  </span>
+                ) : null}
+              </div>
+              {trailing ? (
+                <span
+                  data-slot="activity-feed-trailing"
+                  className={styles.trailing}
+                >
+                  {trailing}
                 </span>
               ) : null}
             </div>
-            {trailing ? (
+          </>
+        ) : (
+          <>
+            <span data-slot="activity-feed-leading" className={styles.leading}>
+              {leading}
+            </span>
+            <div data-slot="activity-feed-body" className={styles.body}>
+              <div data-slot="activity-feed-header" className={styles.header}>
+                <div data-slot="activity-feed-heading" className={styles.heading}>
+                  <span data-slot="activity-feed-title" className={styles.title}>
+                    {title}
+                  </span>
+                  {actor ? (
+                    <span
+                      data-slot="activity-feed-actor"
+                      className={styles.actor}
+                    >
+                      {actor}
+                    </span>
+                  ) : null}
+                </div>
+                {trailing ? (
+                  <span
+                    data-slot="activity-feed-trailing"
+                    className={styles.trailing}
+                  >
+                    {trailing}
+                  </span>
+                ) : null}
+              </div>
+              {description ? (
+                <p
+                  data-slot="activity-feed-description"
+                  className={styles.description}
+                >
+                  {description}
+                </p>
+              ) : null}
               <span
-                data-slot="activity-feed-trailing"
-                className={styles.trailing}
+                data-slot="activity-feed-timestamp"
+                className={styles.timestamp}
               >
-                {trailing}
+                {timestamp}
               </span>
-            ) : null}
-          </div>
-          {description ? (
-            <p
-              data-slot="activity-feed-description"
-              className={styles.description}
-            >
-              {description}
-            </p>
-          ) : null}
-          <span data-slot="activity-feed-timestamp" className={styles.timestamp}>
-            {timestamp}
-          </span>
-        </div>
+            </div>
+          </>
+        )}
       </li>
     )
   }

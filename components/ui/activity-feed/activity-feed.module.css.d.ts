@@ -13,6 +13,10 @@ declare const styles: {
   readonly variantDefault: string
   readonly variantCompact: string
   readonly variantTimeline: string
+  readonly variantCompact3col: string
+  readonly timestampCol: string
+  readonly leadingCol: string
+  readonly headerCol: string
 }
 
 export default styles
