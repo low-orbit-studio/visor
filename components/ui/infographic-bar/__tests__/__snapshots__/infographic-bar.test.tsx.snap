@@ -1,0 +1,177 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`InfographicBar > matches snapshot 1`] = `
+<div
+  class="bar"
+  data-slot="infographic-bar"
+>
+  <article
+    class="base variantDefault sizeMd cell"
+    data-size="md"
+    data-slot="stat-card"
+    data-variant="default"
+  >
+    <div
+      class="header"
+      data-slot="stat-card-header"
+    >
+      <p
+        class="label"
+        data-slot="stat-card-label"
+      >
+        Total Revenue
+      </p>
+    </div>
+    <p
+      class="value"
+      data-slot="stat-card-value"
+    >
+      $48,120
+    </p>
+    <div
+      class="delta"
+      data-direction="up"
+      data-slot="stat-card-delta"
+    >
+      <span
+        aria-hidden="true"
+        class="deltaGlyph"
+      >
+        ↑
+      </span>
+      <span
+        class="deltaValue"
+      >
+        +12.4%
+      </span>
+      <span
+        class="deltaLabel"
+      >
+        vs last month
+      </span>
+      <span
+        class="srOnly"
+      >
+        up
+         vs last month
+      </span>
+    </div>
+  </article>
+  <article
+    class="base variantDefault sizeMd cell"
+    data-size="md"
+    data-slot="stat-card"
+    data-variant="default"
+  >
+    <div
+      class="header"
+      data-slot="stat-card-header"
+    >
+      <p
+        class="label"
+        data-slot="stat-card-label"
+      >
+        Active Users
+      </p>
+    </div>
+    <p
+      class="value"
+      data-slot="stat-card-value"
+    >
+      892
+    </p>
+    <div
+      class="delta"
+      data-direction="up"
+      data-slot="stat-card-delta"
+    >
+      <span
+        aria-hidden="true"
+        class="deltaGlyph"
+      >
+        ↑
+      </span>
+      <span
+        class="deltaValue"
+      >
+        +3.1%
+      </span>
+      <span
+        class="srOnly"
+      >
+        up
+      </span>
+    </div>
+  </article>
+  <article
+    class="base variantDefault sizeMd cell"
+    data-size="md"
+    data-slot="stat-card"
+    data-variant="default"
+  >
+    <div
+      class="header"
+      data-slot="stat-card-header"
+    >
+      <p
+        class="label"
+        data-slot="stat-card-label"
+      >
+        Churn Rate
+      </p>
+    </div>
+    <p
+      class="value"
+      data-slot="stat-card-value"
+    >
+      3.2%
+    </p>
+    <div
+      class="delta"
+      data-direction="down"
+      data-slot="stat-card-delta"
+    >
+      <span
+        aria-hidden="true"
+        class="deltaGlyph"
+      >
+        ↓
+      </span>
+      <span
+        class="deltaValue"
+      >
+        -0.4%
+      </span>
+      <span
+        class="srOnly"
+      >
+        down
+      </span>
+    </div>
+  </article>
+  <article
+    class="base variantHighlight sizeMd cell"
+    data-size="md"
+    data-slot="stat-card"
+    data-variant="highlight"
+  >
+    <div
+      class="header"
+      data-slot="stat-card-header"
+    >
+      <p
+        class="label"
+        data-slot="stat-card-label"
+      >
+        Signups
+      </p>
+    </div>
+    <p
+      class="value"
+      data-slot="stat-card-value"
+    >
+      412
+    </p>
+  </article>
+</div>
+`;

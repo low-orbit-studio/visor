@@ -2468,6 +2468,63 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'infographic-bar': [
+    {
+      name: 'stats',
+      type: 'InfographicBarStat[]',
+      required: true,
+      description:
+        'Ordered stat cells, rendered left-to-right as a single continuous band. Each item is a subset of StatCardProps (label, value, delta, trend, trendPosition, footer, variant, valueAs) plus an optional id.',
+    },
+    {
+      name: 'stats[].label',
+      type: 'React.ReactNode',
+      required: true,
+      description: 'Small uppercase label describing the metric.',
+    },
+    {
+      name: 'stats[].value',
+      type: 'React.ReactNode',
+      required: true,
+      description: 'Prominent metric value rendered in a large display size.',
+    },
+    {
+      name: 'stats[].delta',
+      type: 'StatCardDelta',
+      description:
+        'Change indicator with value, direction ("up" | "down" | "flat"), and optional context label.',
+    },
+    {
+      name: 'stats[].variant',
+      type: "'default' | 'highlight'",
+      default: "'default'",
+      description:
+        'Per-cell visual emphasis. Highlight tints that cell’s surface; the band frame and dividers stay continuous.',
+    },
+    {
+      name: 'stats[].id',
+      type: 'string',
+      description:
+        'Stable React key for the cell. Falls back to the array index when omitted.',
+    },
+    {
+      name: 'size',
+      type: "'sm' | 'md'",
+      default: "'md'",
+      description: 'Dimensional density forwarded to every cell.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names merged onto the band element.',
+    },
+    {
+      name: '...props',
+      type: 'React.HTMLAttributes<HTMLDivElement>',
+      description: 'All standard HTML attributes are forwarded to the band div.',
+    },
+  ],
+
   'stat-card': [
     {
       name: 'label',

@@ -141,7 +141,7 @@ npx visor add --category overlay   # Add all overlay components
 
 ### Admin Components
 
-10 compound components for data-heavy admin UIs. Add with `--category admin`:
+11 compound components for data-heavy admin UIs. Add with `--category admin`:
 
 ```sh
 npx visor add --category admin
@@ -155,6 +155,7 @@ npx visor add --category admin
 | Data Table | `data-table` | Sortable, filterable table with pagination |
 | Empty State | `empty-state` | Zero-data placeholder with CTA |
 | Filter Bar | `filter-bar` | Composable filter chip row |
+| Infographic Bar | `infographic-bar` | Continuous stat-card band with hairline dividers |
 | Kbd | `kbd` | Keyboard shortcut display |
 | Page Header | `page-header` | Title + actions header for admin pages |
 | Stat Card | `stat-card` | KPI metric card with trend |

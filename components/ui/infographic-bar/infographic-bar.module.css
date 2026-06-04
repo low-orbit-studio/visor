@@ -1,0 +1,48 @@
+/* InfographicBar: lays out N stat-cards as a single continuous band.
+ *
+ * Corner strategy: the band owns the frame, radius, and elevation. A rounded
+ * `border-radius` plus `overflow: hidden` clips the cells so the OUTER corners
+ * round and the INNER corners stay square — no per-cell :first/:last radius
+ * math, and it holds for any N. Each cell sheds its own border/radius/shadow
+ * (see `.cell`) so the band reads as one surface, not bordered cards butting
+ * together.
+ *
+ * Equal columns without knowing N: `grid-auto-flow: column` +
+ * `grid-auto-columns: minmax(0, 1fr)`. The `minmax(0, …)` floor lets long
+ * values shrink instead of forcing the band to overflow.
+ */
+.bar {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  background-color: var(--surface-card, #ffffff);
+  border: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-lg, 0.75rem);
+  box-shadow: var(--shadow-xs, 0 1px 2px 0 rgb(0 0 0 / 0.05));
+  overflow: hidden;
+}
+
+/* Cell chrome reset — the band owns the chrome, so each stat-card drops its own
+ * border, radius, and shadow. Scoped under `.bar` (a local class) to satisfy
+ * the Turbopack pure-selector rule and to out-specify stat-card's own
+ * base and variant rules. The cell BACKGROUND is left untouched so the
+ * stat-card highlight variant still tints its cell.
+ */
+.bar .cell {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Hairline divider on the leading edge of every cell after the first — this is
+ * what makes the middle cells read as continuous rather than separate. Uses
+ * `--hairline` (the house soft-separator token, softer than a full border) so
+ * it stays subtle, and exposes `--infographic-bar-divider` so a theme or
+ * consumer can retune it — including to `transparent` for a fully seamless
+ * borderless band. The outer frame above references `--border-default`, which
+ * borderless themes set to `transparent`, so the band melts into the page.
+ */
+.bar .cell + .cell {
+  border-left: var(--stroke-width-thin, 1px) solid
+    var(--infographic-bar-divider, var(--hairline, #e5e7eb));
+}
