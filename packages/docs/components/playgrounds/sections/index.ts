@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 import { ShowcaseSection } from "./showcase";
 import { BrandSection } from "./brand";
 import { StrategySection } from "./strategy";
+import { PillarsSection } from "./pillars";
 import { ColorSignalsSection } from "./color-signals";
 import { FeedbackSection } from "./feedback";
 import { FormSection } from "./form";
@@ -25,6 +26,7 @@ export const SECTIONS: Section[] = [
   // Brand Workbench cluster (VI-506+): Brand assets, then strategy/verbal surfaces.
   { id: "brand", label: "Brand", Component: BrandSection },
   { id: "strategy", label: "Strategy", Component: StrategySection },
+  { id: "pillars", label: "Pillars", Component: PillarsSection },
   { id: "color-signals", label: "Color Signals", Component: ColorSignalsSection },
   { id: "feedback", label: "Feedback", Component: FeedbackSection },
   { id: "form", label: "Form", Component: FormSection },

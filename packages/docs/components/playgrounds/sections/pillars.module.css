@@ -1,0 +1,128 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.lede {
+  max-width: 64ch;
+}
+
+.code {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.9em;
+}
+
+.pillars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.pillarContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+/* The pillar id + statement row. As a <button> for selectable pillars it resets
+   to inherit, so the Badge + Text inside keep their own styling. */
+.pillarHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.pillarButton {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+}
+
+.pillarButton:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+.statement {
+  flex: 1 1 16rem;
+}
+
+.warning {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+/* The in-card governs reveal, separated from the header by a hairline. */
+.governs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  padding-top: var(--spacing-3);
+  border-top: 1px solid var(--border-default, #e5e7eb);
+}
+
+.governsGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.governsLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.tokenList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.tokenChip {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+/* The live resolved token color. Set inline via `var(--token)` so it re-resolves
+   per theme and mode for free; the bordered box keeps light swatches legible on
+   light surfaces. */
+.swatch {
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: var(--radius-sm, 0.25rem);
+  border: 1px solid var(--border-default, #e5e7eb);
+}
+
+.tokenName {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-secondary, #4b5563);
+}
+
+/* Pushed to the row's trailing edge so values line up down the list. */
+.tokenValue {
+  margin-left: auto;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-tertiary, #6b7280);
+}
+
+.chipList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+}
