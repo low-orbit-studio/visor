@@ -293,6 +293,59 @@
         ]
       }
     },
+    "brand-strategy": {
+      "type": "object",
+      "description": "Brand-strategy block (VI-505) — positioning, personality, pillars, voice, and tone as validated, serializable data. Sibling to `brand` (assets): different lifecycle and consumer. NOT expanded into derived CSS values; coherence-checked (pillars govern real tokens/components/surfaces; tone keys map to real UI states) and serialized to the agent manifest under `brand_strategy`.",
+      "additionalProperties": false,
+      "required": ["positioning", "essence", "personality", "archetype", "pillars", "voice", "tone", "lexicon", "core", "visibility"],
+      "properties": {
+        "positioning": { "$ref": "#/$defs/brandPositioning" },
+        "essence": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "description": "2–3 internal-facing core words (Aaker essence)."
+        },
+        "personality": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/brandPersonalityTrait" },
+          "minItems": 1,
+          "description": "Brand-as-person traits, each sharpened by its antonym."
+        },
+        "archetype": { "$ref": "#/$defs/brandArchetype" },
+        "pillars": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/brandPillar" },
+          "minItems": 1,
+          "description": "Strategic pillars — essence words made operational, each governing real tokens/components/surfaces."
+        },
+        "voice": { "$ref": "#/$defs/brandVoice" },
+        "tone": {
+          "type": "object",
+          "description": "Voice flexed per UI state. Keys must be recognized UI states.",
+          "minProperties": 1,
+          "propertyNames": { "enum": ["error", "success", "warning", "info", "empty", "loading", "validation-warning"] },
+          "additionalProperties": { "$ref": "#/$defs/brandToneEntry" }
+        },
+        "lexicon": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/brandLexiconEntry" },
+          "minItems": 1,
+          "description": "Words to use and the ones to avoid."
+        },
+        "core": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "description": "Aaker core/extended — the immutable subset, as section names."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": ["public", "private"],
+          "description": "Client brands are private and are omitted from the public agent manifest."
+        }
+      }
+    },
     "spacing": {
       "type": "object",
       "description": "Spacing configuration.",
@@ -459,6 +512,101 @@
           "type": "number",
           "description": "Letter spacing in logical pixels (Flutter TextStyle.letterSpacing). Material defaults include negative values, e.g. -0.25 for displayLarge."
         }
+      }
+    },
+    "brandPositioning": {
+      "type": "object",
+      "description": "Positioning — the onliness, category, and differentiation wedge.",
+      "additionalProperties": false,
+      "required": ["onliness", "category", "differentiation"],
+      "properties": {
+        "onliness": { "type": "string", "minLength": 1, "description": "The single sentence that passes Neumeier's \"only\" test." },
+        "category": { "type": "string", "minLength": 1, "description": "The category the brand competes in (e.g. \"design system\")." },
+        "differentiation": { "type": "string", "minLength": 1, "description": "What sets the brand apart within that category." }
+      }
+    },
+    "brandPersonalityTrait": {
+      "type": "object",
+      "description": "A personality trait sharpened by its antonym (brand-as-person).",
+      "additionalProperties": false,
+      "required": ["trait", "not"],
+      "properties": {
+        "trait": { "type": "string", "minLength": 1 },
+        "not": { "type": "string", "minLength": 1, "description": "The antonym — what the trait is not." }
+      }
+    },
+    "brandArchetype": {
+      "type": "object",
+      "description": "Brand archetype assignment (Pearson & Mark). Primary required; secondary/tertiary optional.",
+      "additionalProperties": false,
+      "required": ["primary"],
+      "properties": {
+        "primary": { "type": "string", "minLength": 1 },
+        "secondary": { "type": "string", "minLength": 1 },
+        "tertiary": { "type": "string", "minLength": 1 }
+      }
+    },
+    "brandGoverns": {
+      "type": "object",
+      "description": "What a pillar governs — design tokens, registry components, and/or meta-surfaces. At least one list is expected; use \"*\" for all of a namespace.",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "tokens": { "type": "array", "items": { "type": "string" }, "minItems": 1, "description": "Semantic token refs (with or without the leading --), or \"*\"." },
+        "components": { "type": "array", "items": { "type": "string" }, "minItems": 1, "description": "Registry component names, or \"*\" for all." },
+        "surfaces": { "type": "array", "items": { "type": "string", "enum": ["manifest", "cli", "component-metadata"] }, "minItems": 1, "description": "Meta-surfaces a pillar may govern." }
+      }
+    },
+    "brandPillar": {
+      "type": "object",
+      "description": "A strategic pillar — an essence word made operational.",
+      "additionalProperties": false,
+      "required": ["id", "statement", "governs"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "statement": { "type": "string", "minLength": 1, "description": "The pillar's claim in one line." },
+        "governs": { "$ref": "#/$defs/brandGoverns" }
+      }
+    },
+    "brandVoice": {
+      "type": "object",
+      "description": "Voice — fixed across the brand; never flexes.",
+      "additionalProperties": false,
+      "required": ["traits"],
+      "properties": {
+        "traits": { "type": "array", "items": { "$ref": "#/$defs/brandVoiceTrait" }, "minItems": 1 }
+      }
+    },
+    "brandVoiceTrait": {
+      "type": "object",
+      "description": "A fixed voice trait with a worked example.",
+      "additionalProperties": false,
+      "required": ["name", "do", "dont"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "do": { "type": "string", "minLength": 1, "description": "What to do." },
+        "dont": { "type": "string", "minLength": 1, "description": "What not to do." },
+        "example": { "type": "string", "minLength": 1, "description": "A worked example sentence." }
+      }
+    },
+    "brandToneEntry": {
+      "type": "object",
+      "description": "A single tone entry, keyed (in `tone`) to a recognized UI state.",
+      "additionalProperties": false,
+      "required": ["feeling", "example"],
+      "properties": {
+        "feeling": { "type": "string", "minLength": 1, "description": "The feeling the copy should evoke in this state." },
+        "example": { "type": "string", "minLength": 1, "description": "A worked example message for this state." }
+      }
+    },
+    "brandLexiconEntry": {
+      "type": "object",
+      "description": "A lexicon pairing — the word to use and the one to avoid.",
+      "additionalProperties": false,
+      "required": ["use", "avoid"],
+      "properties": {
+        "use": { "type": "string", "minLength": 1 },
+        "avoid": { "type": "string", "minLength": 1 }
       }
     }
   }

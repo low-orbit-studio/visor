@@ -9,6 +9,8 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 
 import { join, dirname, basename } from "path"
 import { fileURLToPath } from "url"
 import { parse as parseYAML } from "yaml"
+import { validateBrandStrategy, serializeBrandStrategy, getKnownTokenRefs } from "@loworbitstudio/visor-theme-engine"
+import type { BrandStrategy, SerializedBrandStrategy } from "@loworbitstudio/visor-theme-engine"
 import { extractTokensFromCSS } from "./extract-tokens.js"
 import type {
   ComponentMetadata,
@@ -34,6 +36,7 @@ const BLOCKS_DIR = join(REPO_ROOT, "blocks")
 const PATTERNS_DIR = join(REPO_ROOT, "patterns")
 const HOOKS_DIR = join(REPO_ROOT, "hooks")
 const TOKENS_SRC_DIR = join(REPO_ROOT, "packages/tokens/src/tokens")
+const BRAND_RECORD_PATH = join(REPO_ROOT, "docs/brand/visor-brand-record.yaml")
 
 const REQUIRED_COMPONENT_FIELDS = [
   "name",
@@ -581,6 +584,40 @@ function buildCategories(
   return categories
 }
 
+/**
+ * Load Visor's brand strategy (VI-505) from the canonical Brand Record
+ * (docs/brand/visor-brand-record.yaml, authored in VI-504), validate it, and
+ * serialize it for the manifest. Coherence drift — a pillar governing a missing
+ * token, a tone key with no UI state — FAILS the build the way token drift does
+ * (D2). Returns undefined when the record is absent or `visibility: private`.
+ */
+function loadBrandStrategy(): SerializedBrandStrategy | undefined {
+  if (!existsSync(BRAND_RECORD_PATH)) {
+    console.log("  No brand record (docs/brand/visor-brand-record.yaml) — skipping brand_strategy")
+    return undefined
+  }
+  const parsed = parseYAML(readFileSync(BRAND_RECORD_PATH, "utf-8")) as Record<string, unknown>
+  const block = parsed["brand-strategy"]
+  if (block === undefined) {
+    console.log("  Brand record has no `brand-strategy` block — skipping brand_strategy")
+    return undefined
+  }
+  const result = validateBrandStrategy(block, { tokens: getKnownTokenRefs() })
+  if (!result.valid) {
+    console.error("\n✗ brand-strategy validation failed:")
+    for (const e of result.errors) {
+      console.error(`  - [${e.code}] ${e.message}${e.path ? ` (${e.path})` : ""}`)
+    }
+    process.exit(1)
+  }
+  const serialized = serializeBrandStrategy(block as BrandStrategy)
+  if (serialized === null) {
+    console.log("  brand-strategy is private — omitted from manifest")
+    return undefined
+  }
+  return serialized
+}
+
 async function main(): Promise<void> {
   console.log("Building visor-manifest.json...\n")
 
@@ -645,6 +682,12 @@ async function main(): Promise<void> {
   const tokensSection = buildTokensSection()
   console.log(`  ✓ ${tokensSection.primitives.length} primitives, ${tokensSection.semantic.length} semantic, ${tokensSection.adaptive.length} adaptive tokens`)
 
+  // Load + serialize the brand strategy (VI-505) from the canonical Brand Record
+  const brandStrategy = loadBrandStrategy()
+  if (brandStrategy) {
+    console.log(`  ✓ brand_strategy serialized (${brandStrategy.pillars.length} pillars, ${Object.keys(brandStrategy.tone).length} tone states)`)
+  }
+
   const rootPkg = JSON.parse(
     readFileSync(join(REPO_ROOT, "package.json"), "utf-8")
   ) as { version: string }
@@ -657,6 +700,7 @@ async function main(): Promise<void> {
     hooks: Object.fromEntries(hooks),
     patterns: manifestPatterns,
     categories: buildCategories(components),
+    ...(brandStrategy ? { brand_strategy: brandStrategy } : {}),
     tokens: tokensSection,
   }
 

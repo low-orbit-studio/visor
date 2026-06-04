@@ -494,3 +494,28 @@ export const SEMANTIC_MAP = {
   intent: SEMANTIC_INTENT_MAP,
   hairline: SEMANTIC_HAIRLINE_MAP,
 };
+
+/**
+ * The full set of emitted semantic token names, WITHOUT the leading `--`,
+ * spanning all six groups. The prefixed groups emit as `--{group}-{key}`; the
+ * bare intent aliases emit as `--{key}` (e.g. `--primary`); hairlines emit as
+ * `--hairline` / `--hairline-strong`.
+ *
+ * Used by brand-strategy coherence (VI-505) to verify a pillar governs a real
+ * token. Distinct from validate.ts's `KNOWN_SEMANTIC_TOKENS` (the four prefixed
+ * groups only, used for override-key validation) — this set additionally
+ * includes the bare intent aliases and hairlines, which a `brand-strategy`
+ * pillar may legitimately govern (Visor's own record governs `--primary`).
+ */
+export function getKnownTokenRefs(): Set<string> {
+  const refs = new Set<string>();
+  for (const key of Object.keys(SEMANTIC_TEXT_MAP)) refs.add(`text-${key}`);
+  for (const key of Object.keys(SEMANTIC_SURFACE_MAP)) refs.add(`surface-${key}`);
+  for (const key of Object.keys(SEMANTIC_BORDER_MAP)) refs.add(`border-${key}`);
+  for (const key of Object.keys(SEMANTIC_INTERACTIVE_MAP)) refs.add(`interactive-${key}`);
+  for (const key of Object.keys(SEMANTIC_INTENT_MAP)) refs.add(key);
+  for (const key of Object.keys(SEMANTIC_HAIRLINE_MAP)) {
+    refs.add(key === "default" ? "hairline" : `hairline-${key}`);
+  }
+  return refs;
+}
