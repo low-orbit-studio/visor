@@ -1,0 +1,117 @@
+---
+title: Infographic Bar
+description: Composable continuous stat-card band. Lays out N stat-cards as a single infographic strip — outer corners rounded, inner corners square, hairline dividers, no full per-card borders. Theme-portable across bordered and borderless palettes.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { InfographicBar } from '@/components/ui/infographic-bar';
+
+## Preview
+
+A KPI row that reads as one continuous band — not four separate cards butting together. The band owns the frame, radius, and elevation; each stat-card sheds its own chrome.
+
+<ComponentPreview
+  title="KPI band"
+  code={"<InfographicBar\n  stats={[\n    { label: \"Total Revenue\", value: \"$48,120\", delta: { value: \"+12.4%\", direction: \"up\", label: \"vs last month\" } },\n    { label: \"Active Users\", value: \"892\", delta: { value: \"+3.1%\", direction: \"up\" } },\n    { label: \"Churn Rate\", value: \"3.2%\", delta: { value: \"-0.4%\", direction: \"down\" } },\n    { label: \"Avg. Session\", value: \"4m 12s\", delta: { value: \"0%\", direction: \"flat\" } },\n  ]}\n/>"}
+>
+  <InfographicBar
+    stats={[
+      { label: 'Total Revenue', value: '$48,120', delta: { value: '+12.4%', direction: 'up', label: 'vs last month' } },
+      { label: 'Active Users', value: '892', delta: { value: '+3.1%', direction: 'up' } },
+      { label: 'Churn Rate', value: '3.2%', delta: { value: '-0.4%', direction: 'down' } },
+      { label: 'Avg. Session', value: '4m 12s', delta: { value: '0%', direction: 'flat' } },
+    ]}
+  />
+</ComponentPreview>
+
+## Highlighted cell
+
+Set `variant: "highlight"` on any cell to tint it. Only the surface changes — the band's continuous frame and dividers stay intact.
+
+<ComponentPreview
+  title="One highlighted metric"
+  code={"<InfographicBar\n  stats={[\n    { label: \"MRR\", value: \"$48,120\", variant: \"highlight\", delta: { value: \"+12.4%\", direction: \"up\" } },\n    { label: \"New Trials\", value: \"312\", delta: { value: \"+8.1%\", direction: \"up\" } },\n    { label: \"Churned\", value: \"24\", delta: { value: \"-3.0%\", direction: \"down\" } },\n  ]}\n/>"}
+>
+  <InfographicBar
+    stats={[
+      { label: 'MRR', value: '$48,120', variant: 'highlight', delta: { value: '+12.4%', direction: 'up' } },
+      { label: 'New Trials', value: '312', delta: { value: '+8.1%', direction: 'up' } },
+      { label: 'Churned', value: '24', delta: { value: '-3.0%', direction: 'down' } },
+    ]}
+  />
+</ComponentPreview>
+
+## Compact density
+
+Pass `size="sm"` to tighten every cell for dense dashboards.
+
+<ComponentPreview
+  title="Compact band (size sm)"
+  code={"<InfographicBar\n  size=\"sm\"\n  stats={[\n    { label: \"Sessions\", value: \"2,340\", delta: { value: \"+8%\", direction: \"up\" } },\n    { label: \"Signups\", value: \"412\", delta: { value: \"+2%\", direction: \"up\" } },\n    { label: \"Bounce\", value: \"28%\", delta: { value: \"-1%\", direction: \"down\" } },\n    { label: \"Revenue\", value: \"$12k\", delta: { value: \"+5%\", direction: \"up\" } },\n  ]}\n/>"}
+>
+  <InfographicBar
+    size="sm"
+    stats={[
+      { label: 'Sessions', value: '2,340', delta: { value: '+8%', direction: 'up' } },
+      { label: 'Signups', value: '412', delta: { value: '+2%', direction: 'up' } },
+      { label: 'Bounce', value: '28%', delta: { value: '-1%', direction: 'down' } },
+      { label: 'Revenue', value: '$12k', delta: { value: '+5%', direction: 'up' } },
+    ]}
+  />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add infographic-bar
+```
+
+This copies two files into your project:
+
+- `components/ui/infographic-bar/infographic-bar.tsx` — the component
+- `components/ui/infographic-bar/infographic-bar.module.css` — the styles
+
+`StatCard` is installed automatically as a dependency.
+
+## Usage
+
+```tsx
+import { InfographicBar } from '@/components/ui/infographic-bar/infographic-bar';
+
+export default function Example() {
+  return (
+    <InfographicBar
+      stats={[
+        { label: 'Total Revenue', value: '$48,120', delta: { value: '+12.4%', direction: 'up', label: 'vs last month' } },
+        { label: 'Active Users', value: '892', delta: { value: '+3.1%', direction: 'up' } },
+        { label: 'Churn Rate', value: '3.2%', delta: { value: '-0.4%', direction: 'down' } },
+      ]}
+    />
+  );
+}
+```
+
+## Theming
+
+InfographicBar is theme-agnostic and reads correctly in both bordered and borderless palettes:
+
+- **Outer frame** uses `--border-default`. Borderless themes set this to `transparent`, so the band's frame drops away and it melts into the page.
+- **Dividers** use `--hairline` — the house soft-separator token, lighter than a full border. Override `--infographic-bar-divider` to retune them, including `transparent` for a fully seamless band.
+- **Corners** round via `overflow: hidden` on the band, so outer cells round and inner cells stay square for any number of cells.
+
+## API Reference
+
+### InfographicBarProps
+
+<PropsTable component="infographic-bar" />
+
+The component also forwards all standard HTML attributes to the band `<div>`.
+
+### InfographicBarStat
+
+Each entry in `stats` is a subset of [`StatCardProps`](/docs/components/admin/stat-card): `label`, `value`, `delta`, `trend`, `trendPosition`, `footer`, `variant`, `valueAs`, plus an optional `id` used as the React key.
+
+## Accessibility
+
+Each cell is a `StatCard`, which announces its delta direction (`up`, `down`, `flat`) to screen readers via visually-hidden text alongside the visible glyph — color is never the sole signal. The cells default to `<article>` landmarks, so the band exposes one landmark per metric.

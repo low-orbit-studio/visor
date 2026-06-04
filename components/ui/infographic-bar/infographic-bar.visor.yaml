@@ -1,0 +1,86 @@
+name: InfographicBar
+description: Composable continuous stat-card band. Lays out N stat-cards as a single infographic strip — outer corners rounded, inner corners square, hairline dividers, no full per-card borders.
+extends: HTMLDivElement
+category: admin
+
+when_to_use:
+  - Rendering a KPI/metric row that should read as ONE continuous band, not separate bordered cards
+  - Admin dashboard summary strips where several metrics share a single framed surface
+  - Theme-portable metric rows that must look right in both bordered and borderless palettes
+
+when_not_to_use:
+  - Showing a single metric (use StatCard directly)
+  - Metrics that each need their own card with its own border and elevation (compose StatCards in a grid instead)
+  - Tabular metrics across many rows (use DataTable)
+  - Marketing feature tiles (use a marketing card pattern)
+
+why: >
+  Composing stat-cards in a plain grid leaves every card with its own border and
+  radius, so a KPI row reads as separate cards butting together — with visible
+  seams and doubled borders. InfographicBar lets the band own the frame, radius,
+  and elevation while each stat-card sheds its own chrome, so the row reads as one
+  continuous infographic. Outer corners round and inner corners stay square for
+  any N via overflow-clip (no per-cell radius math). The outer frame follows
+  --border-default (borderless themes drop it) and dividers follow --hairline
+  (retunable via --infographic-bar-divider), so the same band looks correct across
+  bordered and borderless themes without per-consumer override CSS.
+
+props:
+  - name: stats
+    type: InfographicBarStat[]
+    required: true
+    description: Ordered stat cells, rendered left-to-right as a single continuous band. Each item is a subset of StatCardProps.
+  - name: stats[].label
+    type: React.ReactNode
+    required: true
+    description: Small uppercase label describing the metric.
+  - name: stats[].value
+    type: React.ReactNode
+    required: true
+    description: Prominent metric value.
+  - name: stats[].delta
+    type: StatCardDelta
+    description: Change indicator with value, direction ("up" | "down" | "flat"), and optional label.
+  - name: stats[].trend
+    type: React.ReactNode
+    description: Slot for a sparkline, chart, or icon.
+  - name: stats[].trendPosition
+    type: "'header' | 'footer'"
+    default: "footer"
+    description: Where the trend slot renders within the cell.
+  - name: stats[].footer
+    type: React.ReactNode
+    description: Sublabel or link rendered beneath the value.
+  - name: stats[].variant
+    type: "'default' | 'highlight'"
+    default: "default"
+    description: Per-cell visual emphasis. Highlight tints that cell's surface.
+  - name: stats[].valueAs
+    type: "'default' | 'hero' | 'compact'"
+    default: "default"
+    description: Typography scale for the cell value.
+  - name: stats[].id
+    type: string
+    description: Stable React key for the cell. Falls back to the array index when omitted.
+  - name: size
+    type: "'sm' | 'md'"
+    default: "md"
+    description: Dimensional density forwarded to every cell.
+  - name: className
+    type: string
+    description: Additional CSS class names merged onto the band element.
+
+dependencies:
+  - stat-card
+
+preview_url: "https://visor.loworbit.studio/docs/components/admin/infographic-bar"
+
+example: |
+  <InfographicBar
+    stats={[
+      { label: "Total Revenue", value: "$48,120", delta: { value: "+12.4%", direction: "up", label: "vs last month" } },
+      { label: "Active Users", value: "892", delta: { value: "+3.1%", direction: "up" } },
+      { label: "Churn Rate", value: "3.2%", delta: { value: "-0.4%", direction: "down" } },
+      { label: "Signups", value: "412", variant: "highlight" },
+    ]}
+  />
