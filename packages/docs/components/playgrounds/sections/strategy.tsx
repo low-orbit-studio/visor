@@ -1,29 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
-import { DEFAULT_THEME, getStoredTheme, resolveBrandStrategy } from "@/lib/theme-config";
+import { resolveBrandStrategy } from "@/lib/theme-config";
+import { useActiveTheme, type SectionProps } from "./use-active-theme";
 import styles from "./strategy.module.css";
-
-/**
- * Track the active theme via the same `visor-theme-change` event the Explorer
- * dispatches — the re-resolution model established by the Brand section
- * (brand.tsx). The main Explorer, dual-pane compare, and matrix only activate
- * stock/custom themes, so no extra private slugs are accepted here.
- */
-function useActiveTheme(): string {
-  const [theme, setTheme] = useState<string>(DEFAULT_THEME);
-  useEffect(() => {
-    const read = () => setTheme(getStoredTheme());
-    read();
-    document.addEventListener("visor-theme-change", read);
-    return () => document.removeEventListener("visor-theme-change", read);
-  }, []);
-  return theme;
-}
 
 /**
  * The first/foundational Brand Workbench surface (VI-506): Visor's strategy trio
@@ -32,8 +15,8 @@ function useActiveTheme(): string {
  * re-resolves on switch via {@link useActiveTheme}, while the content stays the
  * brand's (D2). Composes existing Visor primitives only.
  */
-export function StrategySection() {
-  const theme = useActiveTheme();
+export function StrategySection({ theme: themeOverride }: SectionProps = {}) {
+  const theme = useActiveTheme(themeOverride);
   const strategy = resolveBrandStrategy(theme);
 
   // Brand strategy is brand-keyed: only Visor's own (public) record ships here.

@@ -103,6 +103,22 @@ describe("PillarsSection", () => {
     fireEvent.click(within(coherence).getByRole("button"));
     expect(coherence.querySelector('[data-slot="pillar-governs"]')).toBeNull();
   });
+
+  it("resolves brand content from the theme prop, not the stored theme (matrix row / compare pane)", () => {
+    // A multi-theme surface (matrix iframe, compare pane) threads its own theme as
+    // a prop. Even with a different theme stored globally, the prop must win — this
+    // is the VI-521 fix for row/pane-correct brand content.
+    localStorage.setItem(THEME_STORAGE_KEY, "space");
+    render(<PillarsSection theme="blackout" />);
+    expect(mockedResolveStrategy).toHaveBeenCalledWith("blackout");
+    expect(mockedResolveStrategy).not.toHaveBeenCalledWith("space");
+  });
+
+  it("falls back to the stored theme when no prop is given (single-pane unchanged)", () => {
+    localStorage.setItem(THEME_STORAGE_KEY, "space");
+    render(<PillarsSection />);
+    expect(mockedResolveStrategy).toHaveBeenCalledWith("space");
+  });
 });
 
 describe("PillarsSection — governs-nothing warning (D2)", () => {

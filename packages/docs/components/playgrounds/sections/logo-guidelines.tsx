@@ -1,36 +1,13 @@
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { type CSSProperties } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
-import {
-  DEFAULT_THEME,
-  findThemeEntry,
-  getStoredTheme,
-  resolveBrand,
-  resolveBrandStrategy,
-} from "@/lib/theme-config";
+import { findThemeEntry, resolveBrand, resolveBrandStrategy } from "@/lib/theme-config";
+import { useActiveTheme, type SectionProps } from "./use-active-theme";
 import styles from "./logo-guidelines.module.css";
-
-/**
- * Track the active theme via the same `visor-theme-change` event the Explorer
- * dispatches — the re-resolution model established by the Brand section
- * (brand.tsx) and shared by the Strategy, Pillars, and Verbal surfaces. The main
- * Explorer, dual-pane compare, and matrix only activate stock/custom themes, so
- * no extra private slugs are accepted here.
- */
-function useActiveTheme(): string {
-  const [theme, setTheme] = useState<string>(DEFAULT_THEME);
-  useEffect(() => {
-    const read = () => setTheme(getStoredTheme());
-    read();
-    document.addEventListener("visor-theme-change", read);
-    return () => document.removeEventListener("visor-theme-change", read);
-  }, []);
-  return theme;
-}
 
 /** Documented clearspace fallback when the brand declares none — a visible safe zone (spacing-5). */
 const CLEARSPACE_FALLBACK = "1.25rem";
@@ -98,8 +75,8 @@ const MISUSES: Array<{ id: string; label: string; cls: keyof typeof styles }> = 
  * has no public guidelines, so that panel shows a candid private-record notice
  * while the geometric rules persist. Composes existing Visor primitives only.
  */
-export function LogoGuidelinesSection() {
-  const theme = useActiveTheme();
+export function LogoGuidelinesSection({ theme: themeOverride }: SectionProps = {}) {
+  const theme = useActiveTheme(themeOverride);
   const brand = resolveBrand(theme);
   const strategy = resolveBrandStrategy(theme);
   const themeLabel = findThemeEntry(theme)?.label ?? theme;

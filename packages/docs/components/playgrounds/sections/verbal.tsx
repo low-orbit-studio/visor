@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Banner, BannerDescription, BannerTitle } from "@/components/ui/banner";
@@ -8,27 +7,10 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Heading } from "@/components/ui/heading";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
-import { DEFAULT_THEME, getStoredTheme, resolveBrandStrategy } from "@/lib/theme-config";
+import { resolveBrandStrategy } from "@/lib/theme-config";
 import type { BrandToneEntry } from "@loworbitstudio/visor-theme-engine";
+import { useActiveTheme, type SectionProps } from "./use-active-theme";
 import styles from "./verbal.module.css";
-
-/**
- * Track the active theme via the same `visor-theme-change` event the Explorer
- * dispatches — the re-resolution model established by the Brand section
- * (brand.tsx) and shared by the Strategy and Pillars surfaces. The main Explorer,
- * dual-pane compare, and matrix only activate stock/custom themes, so no extra
- * private slugs are accepted here.
- */
-function useActiveTheme(): string {
-  const [theme, setTheme] = useState<string>(DEFAULT_THEME);
-  useEffect(() => {
-    const read = () => setTheme(getStoredTheme());
-    read();
-    document.addEventListener("visor-theme-change", read);
-    return () => document.removeEventListener("visor-theme-change", read);
-  }, []);
-  return theme;
-}
 
 /** Humanize a tone key for display ("validation-warning" → "Validation warning"). */
 function humanizeState(key: string): string {
@@ -97,8 +79,8 @@ function ToneEntry({ stateKey, entry }: { stateKey: string; entry: BrandToneEntr
  * switch via {@link useActiveTheme} while the content stays the brand's. Composes
  * existing Visor primitives only.
  */
-export function VerbalSection() {
-  const theme = useActiveTheme();
+export function VerbalSection({ theme: themeOverride }: SectionProps = {}) {
+  const theme = useActiveTheme(themeOverride);
   const strategy = resolveBrandStrategy(theme);
 
   // Verbal identity is brand-keyed: only Visor's own (public) record ships here. A

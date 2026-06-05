@@ -83,7 +83,9 @@ export function VisualExplorerPane({
       </div>
 
       <div ref={scrollRef} className={styles.paneCanvas}>
-        <SectionComponent />
+        {/* Thread this pane's theme so brand-keyed sections resolve their content
+            per pane, not from the one global localStorage theme (VI-521). */}
+        <SectionComponent theme={theme} />
       </div>
     </section>
   );

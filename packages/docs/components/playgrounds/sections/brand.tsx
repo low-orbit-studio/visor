@@ -2,14 +2,9 @@
 
 import { useEffect, useState, type CSSProperties } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  DEFAULT_THEME,
-  findThemeEntry,
-  getStoredTheme,
-  resolveBrand,
-  type BrandVariantAsset,
-} from "@/lib/theme-config";
+import { findThemeEntry, resolveBrand, type BrandVariantAsset } from "@/lib/theme-config";
 import type { PrivateThemeEntry } from "@/lib/private-themes";
+import { useActiveTheme, type SectionProps } from "./use-active-theme";
 import styles from "./brand.module.css";
 
 type VariantKey = "logo" | "brandmark" | "wordmark" | "monochrome" | "animated";
@@ -31,25 +26,6 @@ const SIZES = [
 // These re-resolve when the mode toggle flips the <html> class (per-mode swap, for free).
 const TINT_TOKENS = ["--text-primary", "--text-secondary", "--primary"];
 
-/**
- * Track the active theme via the same `visor-theme-change` event the explorer
- * dispatches. `extraSlugs` widens the accepted set to private-gallery slugs
- * (VI-489) so the section follows the private switcher; the effect keys on the
- * joined slug string so it stays stable across renders of the slug array.
- */
-function useActiveTheme(extraSlugs: string[]): string {
-  const [theme, setTheme] = useState<string>(DEFAULT_THEME);
-  const slugsKey = extraSlugs.join(",");
-  useEffect(() => {
-    const allowed = slugsKey ? slugsKey.split(",") : [];
-    const read = () => setTheme(getStoredTheme(allowed));
-    read();
-    document.addEventListener("visor-theme-change", read);
-    return () => document.removeEventListener("visor-theme-change", read);
-  }, [slugsKey]);
-  return theme;
-}
-
 /** Track `prefers-reduced-motion` so the animated mark falls back to a static frame (D4). */
 function useReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
@@ -68,8 +44,11 @@ function useReducedMotion(): boolean {
  * follow the private switcher and resolve those themes' brand marks. Omitted on
  * the main Explorer, where only stock/custom themes are active.
  */
-export function BrandSection({ privateThemes = [] }: { privateThemes?: PrivateThemeEntry[] } = {}) {
-  const theme = useActiveTheme(privateThemes.map((t) => t.slug));
+export function BrandSection({
+  privateThemes = [],
+  theme: themeOverride,
+}: { privateThemes?: PrivateThemeEntry[] } & SectionProps = {}) {
+  const theme = useActiveTheme(themeOverride, privateThemes.map((t) => t.slug));
   const reducedMotion = useReducedMotion();
   const brand = resolveBrand(theme);
   const themeLabel = findThemeEntry(theme)?.label ?? theme;
