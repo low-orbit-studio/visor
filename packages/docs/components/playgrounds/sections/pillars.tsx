@@ -4,30 +4,13 @@ import { useEffect, useState, type CSSProperties } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Text } from "@/components/ui/text";
-import { DEFAULT_THEME, getStoredTheme, resolveBrandStrategy } from "@/lib/theme-config";
+import { DEFAULT_THEME, resolveBrandStrategy } from "@/lib/theme-config";
 import type { BrandGoverns } from "@loworbitstudio/visor-theme-engine";
+import { useActiveTheme, type SectionProps } from "./use-active-theme";
 import styles from "./pillars.module.css";
 
 /** Wildcard accepted in any `governs` list — matches all of that namespace. */
 const GOVERNS_WILDCARD = "*";
-
-/**
- * Track the active theme via the same `visor-theme-change` event the Explorer
- * dispatches — the re-resolution model established by the Brand section
- * (brand.tsx) and shared by the Strategy surface (strategy.tsx). The main
- * Explorer, dual-pane compare, and matrix only activate stock/custom themes, so
- * no extra private slugs are accepted here.
- */
-function useActiveTheme(): string {
-  const [theme, setTheme] = useState<string>(DEFAULT_THEME);
-  useEffect(() => {
-    const read = () => setTheme(getStoredTheme());
-    read();
-    document.addEventListener("visor-theme-change", read);
-    return () => document.removeEventListener("visor-theme-change", read);
-  }, []);
-  return theme;
-}
 
 /**
  * Read each governed token's live computed value off `document.body` — where the
@@ -164,8 +147,8 @@ function PillarGoverns({ governs }: { governs: BrandGoverns }) {
  * switch via {@link useActiveTheme} while the content stays the brand's. Composes
  * existing Visor primitives only.
  */
-export function PillarsSection() {
-  const theme = useActiveTheme();
+export function PillarsSection({ theme: themeOverride }: SectionProps = {}) {
+  const theme = useActiveTheme(themeOverride);
   const strategy = resolveBrandStrategy(theme);
 
   // Open the first pillar by default so the surface lands on a meaningful reveal

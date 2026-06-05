@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import type { SectionProps } from "./use-active-theme";
 import { ShowcaseSection } from "./showcase";
 import { BrandSection } from "./brand";
 import { LogoGuidelinesSection } from "./logo-guidelines";
@@ -20,7 +21,9 @@ import { VisualElementsSection } from "./visual-elements";
 export interface Section {
   id: string;
   label: string;
-  Component: ComponentType;
+  /** Sections accept the shared {@link SectionProps} so multi-theme surfaces can
+   *  thread the active `theme` per row/pane (VI-521); non-brand sections ignore it. */
+  Component: ComponentType<SectionProps>;
 }
 
 export const SECTIONS: Section[] = [

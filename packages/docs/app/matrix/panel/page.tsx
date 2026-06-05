@@ -86,7 +86,9 @@ function PanelContent() {
 
   return (
     <div ref={rootRef} className={styles.panel}>
-      <SectionComponent />
+      {/* Thread this row's theme so brand-keyed sections resolve their content
+          per row — iframes share localStorage, so the prop must win (VI-521). */}
+      <SectionComponent theme={theme} />
     </div>
   );
 }
