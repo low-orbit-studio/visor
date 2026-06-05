@@ -1,0 +1,121 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.lede {
+  max-width: 64ch;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+/* Eyebrow label for each block — uppercase/letter-spacing only, so it composes
+   over the Heading primitive without fighting its base color across modules. */
+.blockHeading {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.blockLede {
+  max-width: 64ch;
+}
+
+/* Voice — each trait's live copy (a real Banner) stacked over its do/don't guide. */
+.voiceList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+}
+
+.voiceTrait {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.voiceGuide {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  padding-inline-start: var(--spacing-1);
+}
+
+/* Inline "Do" / "Don't" lead-in — small caps so the guidance reads as a label,
+   not part of the sentence. */
+.guideLabel {
+  margin-inline-end: var(--spacing-2);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-semibold, 600);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary, #6b7280);
+}
+
+/* Tone — each context in the real component it ships in. */
+.toneList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+}
+
+.toneEntry {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.toneMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.feeling {
+  font-style: italic;
+}
+
+/* Loading state — skeleton rows in a panel with the honest "still working" caption. */
+.loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  padding: var(--spacing-4);
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-md, 0.5rem);
+}
+
+.loadingCaption {
+  margin-top: var(--spacing-1);
+}
+
+/* Lexicon — use/avoid pairs as success/destructive badges. */
+.lexiconGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: var(--spacing-3);
+}
+
+.lexiconPair {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.lexiconSep {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-style: italic;
+  color: var(--text-tertiary, #6b7280);
+}
+
+@media (max-width: 640px) {
+  .lexiconGrid {
+    grid-template-columns: 1fr;
+  }
+}
