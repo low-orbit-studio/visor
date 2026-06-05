@@ -29,6 +29,19 @@ export interface ThemeBrand {
    * fall back to the static {@link ThemeBrand.logo}.
    */
   animated?: BrandVariantAsset;
+  /**
+   * Tokenized safe-zone padding for the primary mark — the docs projection of the
+   * engine's `BrandSlot.clearSpace` (branding spike §4.F / Q6). Read by the Logo
+   * Guidelines surface (VI-509) to draw the clearspace rule as a shown guideline;
+   * omitted → that surface falls back to a documented default.
+   */
+  clearSpace?: string;
+  /**
+   * Tokenized locked aspect ratio for the primary mark — the docs projection of the
+   * engine's `BrandSlot.aspectRatio`. Read by the Logo Guidelines surface (VI-509)
+   * to lock the min-size floor's proportion; omitted → derived from the mark.
+   */
+  aspectRatio?: string;
 }
 
 export interface ThemeEntry {
@@ -101,6 +114,12 @@ export const VISOR_DEFAULT_BRAND: ThemeBrand = {
     dark: "/themes/visor/brand/visor-wordmark-dark.svg",
   },
   monochrome: "/themes/visor/brand/visor-monochrome.svg",
+  // Logo-guideline tokens (VI-509), keyed to the monochrome lockup the guidelines
+  // surface renders (viewBox `0 0 2210 636`). Read by the Logo Guidelines surface;
+  // the engine's `BrandSlot` carries the canonical form. clearSpace is spacing-5
+  // (20px) — a roomier safe zone than the 4-step default reads at preview scale.
+  clearSpace: "1.25rem",
+  aspectRatio: "2210 / 636",
 };
 
 /**

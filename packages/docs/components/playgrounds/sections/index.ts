@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
 import { ShowcaseSection } from "./showcase";
 import { BrandSection } from "./brand";
+import { LogoGuidelinesSection } from "./logo-guidelines";
 import { StrategySection } from "./strategy";
 import { PillarsSection } from "./pillars";
 import { VerbalSection } from "./verbal";
@@ -24,8 +25,9 @@ export interface Section {
 
 export const SECTIONS: Section[] = [
   { id: "showcase", label: "Showcase", Component: ShowcaseSection },
-  // Brand Workbench cluster (VI-506+): Brand assets, then strategy/verbal surfaces.
+  // Brand Workbench cluster (VI-506+): Brand assets, logo guidelines, then strategy/verbal surfaces.
   { id: "brand", label: "Brand", Component: BrandSection },
+  { id: "logo-guidelines", label: "Logo Guidelines", Component: LogoGuidelinesSection },
   { id: "strategy", label: "Strategy", Component: StrategySection },
   { id: "pillars", label: "Pillars", Component: PillarsSection },
   { id: "verbal", label: "Verbal", Component: VerbalSection },

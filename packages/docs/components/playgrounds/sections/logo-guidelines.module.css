@@ -1,0 +1,209 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.lede {
+  max-width: 64ch;
+}
+
+.code {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.9em;
+  padding: 0 var(--spacing-1);
+  border-radius: var(--radius-sm, 0.25rem);
+  background: var(--surface-card, #f3f4f6);
+  color: var(--text-primary, #111827);
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+/* Eyebrow label for each block — uppercase/letter-spacing only, so it composes
+   over the Heading primitive without fighting its base color (mirrors verbal/strategy). */
+.blockHeading {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.blockLede {
+  max-width: 64ch;
+  margin: 0;
+}
+
+/* The mark is the monochrome lockup, tinted via mask-image + currentColor
+   (mirrors brand.tsx) — text-primary keeps it legible on any theme surface in
+   either mode. Box is sized by the caller; mask-size: contain fits the lockup. */
+.markBase {
+  display: inline-block;
+  color: var(--text-primary, #111827);
+  background-color: currentColor;
+  -webkit-mask-image: var(--mono-src);
+  mask-image: var(--mono-src);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+/* ── Clearspace ─────────────────────────────────────────────────────────── */
+
+.clearspaceTile {
+  display: flex;
+  justify-content: flex-start;
+  padding: var(--spacing-6);
+  background: var(--surface-page, transparent);
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-md, 0.5rem);
+}
+
+/* The dashed ring marks the safe-zone boundary; its padding (= clearSpace, set
+   inline from the brand) is the zone that stays clear around the mark. */
+.clearspaceRing {
+  display: inline-flex;
+  background: var(--surface-card, #ffffff);
+  border: 1px dashed var(--primary, #6b7280);
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+/* Dimensions set inline (height + width derived from the lockup ratio) so the
+   masked span never collapses when a theme omits aspectRatio. */
+.clearspaceMark {
+  composes: markBase;
+}
+
+/* ── Minimum size ───────────────────────────────────────────────────────── */
+
+.minsizeRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--spacing-6);
+}
+
+.minsizeItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.minsizeStage {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 2.5rem;
+}
+
+.minsizeMark {
+  composes: markBase;
+  /* height + width applied inline (the floor sizes the lockup). */
+}
+
+.minsizeMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-1);
+}
+
+.minsizePx {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  color: var(--text-secondary, #4b5563);
+}
+
+/* ── Misuse ─────────────────────────────────────────────────────────────── */
+
+.misuseGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: var(--spacing-4);
+}
+
+.misuseCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+}
+
+/* Framing for the anti-example; overflow:hidden lets the "crop" demo bleed past
+   the frame. Position anchors the prohibition marker. */
+.misuseStage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: var(--surface-page, transparent);
+  border: 1px solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+.misuseMark {
+  composes: markBase;
+  /* height + width applied inline (derived from the lockup ratio). */
+}
+
+/* Prohibition marker — a destructive corner badge over each don't. */
+.misuseCross {
+  position: absolute;
+  top: var(--spacing-2);
+  right: var(--spacing-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--destructive, #dc2626);
+  color: var(--color-white, #ffffff);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.misuseLabel {
+  margin: 0;
+}
+
+/* Intentional "wrong" treatments — what NOT to do. transforms warp the mark;
+   recolor overrides the masked fill with a clashing token; contrast dims it via
+   the opacity token (defined after .markBase so the override wins the cascade). */
+.distortStretch {
+  transform: scaleX(1.5);
+}
+
+.distortRotate {
+  transform: rotate(15deg);
+}
+
+.distortRecolor {
+  background-color: var(--destructive, #dc2626);
+}
+
+.distortFlip {
+  transform: scaleX(-1);
+}
+
+.distortCrop {
+  transform: scale(1.85);
+}
+
+.distortContrast {
+  opacity: var(--opacity-40, 0.4);
+}
+
+@media (max-width: 640px) {
+  .misuseGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
