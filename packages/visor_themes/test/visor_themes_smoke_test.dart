@@ -1,12 +1,12 @@
 // Smoke tests for packages/visor_themes — the aggregated Visor Flutter theme package.
 //
-// Verification plan from VI-216:
+// Verification plan from VI-216 (updated in VI-528 for stock-only themes):
 // - VisorThemes.blackout.light returns non-null ThemeData with Brightness.light
 //   and VisorColorsData extension.
 // - VisorThemes.blackout.dark returns ThemeData with Brightness.dark.
 // - VisorThemes.modernMinimal.light.colorScheme.primary matches
 //   the VisorColors.light.interactivePrimaryBg for that theme.
-// - All 11 theme getters are reachable from VisorThemes.
+// - All 5 stock theme getters are reachable from VisorThemes.
 // - Regenerating (re-running themes:apply-flutter) produces identical output
 //   (idempotency check via color-value assertions).
 
@@ -18,7 +18,7 @@ import 'package:visor_themes/visor_themes.dart';
 // of visor_core which exposes VisorColorsData).
 import 'package:visor_themes/src/blackout/colors/visor_colors.dart' as blackout_colors;
 import 'package:visor_themes/src/modern-minimal/colors/visor_colors.dart' as modern_minimal_colors;
-import 'package:visor_themes/src/solespark/colors/visor_colors.dart' as solespark_colors;
+import 'package:visor_themes/src/space/colors/visor_colors.dart' as space_colors;
 
 void main() {
   // =========================================================================
@@ -73,19 +73,24 @@ void main() {
       expect(light.colorScheme.primary, modern_minimal_colors.VisorColors.light.interactivePrimaryBg);
     });
 
-    test('solespark.light colorScheme.primary matches interactivePrimaryBg', () {
-      final light = VisorThemes.solespark.light;
-      expect(light.colorScheme.primary, solespark_colors.VisorColors.light.interactivePrimaryBg);
+    test('space.light colorScheme.primary matches interactivePrimaryBg', () {
+      final light = VisorThemes.space.light;
+      expect(light.colorScheme.primary, space_colors.VisorColors.light.interactivePrimaryBg);
     });
   });
 
   // =========================================================================
-  // All 11 theme getters reachable
+  // All 5 stock theme getters reachable
   // =========================================================================
-  group('All 11 theme getters reachable', () {
+  group('All 5 stock theme getters reachable', () {
     test('blackout is accessible', () {
       expect(VisorThemes.blackout.light, isNotNull);
       expect(VisorThemes.blackout.dark, isNotNull);
+    });
+
+    test('borderless is accessible', () {
+      expect(VisorThemes.borderless.light, isNotNull);
+      expect(VisorThemes.borderless.dark, isNotNull);
     });
 
     test('modernMinimal is accessible', () {
@@ -102,41 +107,6 @@ void main() {
       expect(VisorThemes.space.light, isNotNull);
       expect(VisorThemes.space.dark, isNotNull);
     });
-
-    test('blacklight is accessible', () {
-      expect(VisorThemes.blacklight.light, isNotNull);
-      expect(VisorThemes.blacklight.dark, isNotNull);
-    });
-
-    test('blacklightPro is accessible', () {
-      expect(VisorThemes.blacklightPro.light, isNotNull);
-      expect(VisorThemes.blacklightPro.dark, isNotNull);
-    });
-
-    test('entr is accessible', () {
-      expect(VisorThemes.entr.light, isNotNull);
-      expect(VisorThemes.entr.dark, isNotNull);
-    });
-
-    test('kaiah is accessible', () {
-      expect(VisorThemes.kaiah.light, isNotNull);
-      expect(VisorThemes.kaiah.dark, isNotNull);
-    });
-
-    test('referenceApp is accessible', () {
-      expect(VisorThemes.referenceApp.light, isNotNull);
-      expect(VisorThemes.referenceApp.dark, isNotNull);
-    });
-
-    test('solespark is accessible', () {
-      expect(VisorThemes.solespark.light, isNotNull);
-      expect(VisorThemes.solespark.dark, isNotNull);
-    });
-
-    test('veronica is accessible', () {
-      expect(VisorThemes.veronica.light, isNotNull);
-      expect(VisorThemes.veronica.dark, isNotNull);
-    });
   });
 
   // =========================================================================
@@ -149,7 +119,7 @@ void main() {
     });
 
     test('light.brightness != dark.brightness', () {
-      final pair = VisorThemes.solespark;
+      final pair = VisorThemes.space;
       expect(pair.light.brightness, isNot(equals(pair.dark.brightness)));
     });
   });
@@ -164,12 +134,11 @@ void main() {
       expect(a.colorScheme.primary, equals(b.colorScheme.primary));
     });
 
-    test('solespark primary color matches expected hex #6952D9 (primary500)', () {
-      // SoleSpark primary is #6952D9 — the semantic interactivePrimaryBg in
-      // light mode maps to primary-600 (#5235BB).
+    test('space primary color matches expected hex #5B6FFF (primary500)', () {
+      // Space's primary is #5B6FFF — the stock theme's anchor shade 500.
       expect(
-        solespark_colors.VisorColors.primary500,
-        equals(const Color(0xFF6952D9)),
+        space_colors.VisorColors.primary500,
+        equals(const Color(0xFF5B6FFF)),
       );
     });
 
@@ -198,10 +167,10 @@ void main() {
       expect(app.theme?.brightness, Brightness.light);
     });
 
-    testWidgets('solespark dark applies to MaterialApp', (tester) async {
+    testWidgets('space dark applies to MaterialApp', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          darkTheme: VisorThemes.solespark.dark,
+          darkTheme: VisorThemes.space.dark,
           home: const Scaffold(body: Text('smoke')),
         ),
       );

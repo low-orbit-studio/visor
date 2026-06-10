@@ -10,7 +10,7 @@ import styles from "./alpha-overlays.module.css";
  *
  * Swatches show a token's value; these demos show the token doing its job and
  * re-resolving on theme switch. Treatments follow the operator-approved VI-466
- * spec (docs/audits/vi-466/index.html §4–7):
+ * spec (visor-themes-private docs/audits/vi-466/index.html §4–7):
  *   §4 soft   → selected/active list row tint + nav item (soft wash + 3px brand edge)
  *   §5 glow   → marker dot with a soft halo ring
  *   §6 strong → segmented control whose selected segment uses the lightened fill

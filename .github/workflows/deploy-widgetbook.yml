@@ -9,7 +9,7 @@ on:
       - components/flutter/**
       - scripts/build-widgetbook.sh
       - scripts/sync-widgetbook-widgets.sh
-      - examples/flutter/solespark-ui/**
+      - packages/visor_themes/**
       - .github/workflows/deploy-widgetbook.yml
   pull_request:
     paths:
@@ -18,7 +18,7 @@ on:
       - components/flutter/**
       - scripts/build-widgetbook.sh
       - scripts/sync-widgetbook-widgets.sh
-      - examples/flutter/solespark-ui/**
+      - packages/visor_themes/**
       - .github/workflows/deploy-widgetbook.yml
 
 concurrency:

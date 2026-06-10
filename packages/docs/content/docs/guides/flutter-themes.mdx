@@ -3,9 +3,10 @@ title: Flutter Theme Consumption
 description: Use Visor's generated ThemeData in your Flutter app via the visor_themes package.
 ---
 
-Visor generates Material 3 `ThemeData` for all 11 themes (4 stock + 7 custom) into a single
+Visor generates Material 3 `ThemeData` for every stock theme into a single
 `packages/visor_themes/` package. Each theme exposes a `.light` and `.dark` `ThemeData` via the
-`VisorThemes` sealed class.
+`VisorThemes` sealed class. Custom/private themes are generated the same way from your own
+`custom-themes/` directory — they are never committed to this public repo.
 
 ## Setup
 
@@ -52,16 +53,13 @@ class MyApp extends StatelessWidget {
 | Getter | Theme |
 |--------|-------|
 | `VisorThemes.blackout` | Blackout (stock) |
+| `VisorThemes.borderless` | Borderless (stock) |
 | `VisorThemes.modernMinimal` | Modern Minimal (stock) |
 | `VisorThemes.neutral` | Neutral (stock) |
 | `VisorThemes.space` | Space (stock) |
-| `VisorThemes.blacklight` | Blacklight |
-| `VisorThemes.blacklightPro` | Blacklight Pro |
-| `VisorThemes.entr` | ENTR |
-| `VisorThemes.kaiah` | Kaiah |
-| `VisorThemes.referenceApp` | Reference App |
-| `VisorThemes.solespark` | SoleSpark |
-| `VisorThemes.veronica` | Veronica Home |
+
+Custom themes generated from `custom-themes/` add their own getters (e.g. a
+`custom-themes/my-app.visor.yaml` produces `VisorThemes.myApp`).
 
 ## VisorThemePair
 

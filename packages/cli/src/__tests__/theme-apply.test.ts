@@ -285,14 +285,14 @@ describe("theme apply command", () => {
       themeApplyCommand(".visor.yaml", testDir, {
         adapter: "flutter",
         output: "packages/ui",
-        packageName: "solespark_ui",
+        packageName: "space_ui",
       })
 
       const pubspec = readFileSync(
         join(testDir, "packages/ui/pubspec.yaml"),
         "utf-8"
       )
-      expect(pubspec).toContain("name: solespark_ui")
+      expect(pubspec).toContain("name: space_ui")
     })
 
     it("uses default output directory packages/ui when none supplied", () => {

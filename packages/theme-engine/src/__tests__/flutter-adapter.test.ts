@@ -187,8 +187,8 @@ describe("flutterAdapter", () => {
   });
 
   it("honors packageName option", () => {
-    const { files } = flutterAdapter(adapterInput, { packageName: "solespark_ui" });
-    expect(files["pubspec.yaml"]).toContain("name: solespark_ui");
+    const { files } = flutterAdapter(adapterInput, { packageName: "space_ui" });
+    expect(files["pubspec.yaml"]).toContain("name: space_ui");
   });
 
   it("skips scaffolding but still emits all token files with tokensOnly=true", () => {

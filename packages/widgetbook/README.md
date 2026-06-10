@@ -32,10 +32,10 @@ FVM version isn't installed (CI case).
 - **`lib/use_cases/visor_*.dart`** defines `@UseCase` builders per widget
   variant. `widgetbook_generator` codegens `lib/main.directories.g.dart`
   from these annotations via `build_runner`.
-- **`lib/theme/widgetbook_theme.dart`** reuses the Visor-generated SoleSpark
-  example (`examples/flutter/solespark-ui/`) as a demo theme source. When
-  Widgetbook grows a theme-switcher addon, this file will load multiple
-  `.visor.yaml` token sets at runtime.
+- **`lib/theme/widgetbook_theme.dart`** builds the theme-switcher entries
+  from `packages/visor_themes/` (the Visor-generated stock themes). Private
+  and client themes live in `visor-themes-private` and never ship in this
+  public preview app.
 
 ## Adding a new widget
 

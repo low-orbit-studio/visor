@@ -24,8 +24,8 @@ void main() {
     test('preview theme inherits Satoshi from arbitrary input theme', () {
       for (final pair in <(String, VisorThemePair)>[
         ('blackout', VisorThemes.blackout),
-        ('veronica', VisorThemes.veronica),
-        ('solespark', VisorThemes.solespark),
+        ('neutral', VisorThemes.neutral),
+        ('space', VisorThemes.space),
       ]) {
         final preview = buildPreviewTheme(pair.$2.light);
         expect(preview.textTheme.bodyMedium?.fontFamily, 'Satoshi',

@@ -25,9 +25,9 @@ dependencies:
   flutter_libphonenumber: ^2.4.0
   # Required by visor_rich_text — launches inline URLs in the system browser.
   url_launcher: ^6.3.0
-  # All 11 Visor-generated ThemeData objects — regenerate with
+  # All Visor-generated stock ThemeData objects — regenerate with
   # `npm run themes:apply-flutter`. Provides VisorThemes.blackout,
-  # .modernMinimal, .solespark, etc. for the Widgetbook theme switcher.
+  # .modernMinimal, .space, etc. for the Widgetbook theme switcher.
   visor_themes:
     path: ../visor_themes
   # Persists the active widgetbook theme across reloads (key: visor-widgetbook-theme).

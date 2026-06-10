@@ -263,7 +263,7 @@ theme
   .description(
     "Remove a theme from the docs site — deletes CSS file, removes globals.css import and theme-config.ts entry"
   )
-  .argument("<slug>", "theme slug to unregister (e.g. entr, kaiah)")
+  .argument("<slug>", "theme slug to unregister (e.g. my-theme)")
   .option("--json", "output structured JSON (for AI agents)")
   .action(
     (slug: string, options: { json?: boolean }) => {

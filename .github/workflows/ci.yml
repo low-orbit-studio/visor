@@ -266,12 +266,12 @@ jobs:
       - name: Build CLI
         run: npm run build -w packages/theme-engine -w packages/tokens -w packages/cli
 
-      - name: Resolve solespark-ui example dependencies
-        working-directory: examples/flutter/solespark-ui
+      - name: Resolve space-ui example dependencies
+        working-directory: examples/flutter/space-ui
         run: flutter pub get
 
       - name: Verify Flutter theme output (visor theme verify)
-        run: node packages/cli/dist/index.js theme verify --target flutter examples/flutter/solespark-ui
+        run: node packages/cli/dist/index.js theme verify --target flutter examples/flutter/space-ui
 
       - name: Test (each widget directory)
         working-directory: components/flutter

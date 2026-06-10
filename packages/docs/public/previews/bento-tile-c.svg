@@ -28,7 +28,7 @@
   <ellipse cx="800" cy="680" rx="400" ry="60" fill="#fde68a" fill-opacity="0.92"/>
   <ellipse cx="800" cy="700" rx="280" ry="14" fill="#fbbf24" fill-opacity="0.75"/>
   <g font-family="system-ui, -apple-system, Helvetica, Arial, sans-serif" fill="#f8fafc">
-    <text x="80" y="900" font-size="64" font-weight="700" letter-spacing="-1.5">SoleSpark</text>
+    <text x="80" y="900" font-size="64" font-weight="700" letter-spacing="-1.5">Solstice</text>
     <text x="84" y="950" font-size="20" font-weight="500" fill="#fde68a" letter-spacing="3">CONSUMER · MOBILE · 2026</text>
   </g>
 </svg>

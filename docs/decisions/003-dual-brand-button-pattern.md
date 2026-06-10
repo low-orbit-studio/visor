@@ -6,7 +6,7 @@
 
 ## Context
 
-SoleSpark's `UIButton` carries a `userType` parameter (`user` vs `seller`) that swaps the button's brand surface and foreground based on which persona owns the surrounding screen. Before porting button improvements from SoleSpark/Veronica/ENTR into Visor, we needed to decide whether and how Visor should generalize this dual-brand pattern.
+A client app's `UIButton` carries a `userType` parameter (`user` vs `seller`) that swaps the button's brand surface and foreground based on which persona owns the surrounding screen. Before porting button improvements from the source apps into Visor, we needed to decide whether and how Visor should generalize this dual-brand pattern.
 
 The candidates doc ([`docs/flutter-widget-candidates.md`](../flutter-widget-candidates.md), Rank #6) flagged this as an "enhancement opportunity" rather than a clean port. Wrong call here forces a downstream API rewrite.
 
@@ -14,7 +14,7 @@ The candidates doc ([`docs/flutter-widget-candidates.md`](../flutter-widget-cand
 
 | Project | Widget | Dual-brand mechanism |
 |---|---|---|
-| SoleSpark | `UIButton` | `userType: UIButtonUserType { user, seller }` switches `accentPrimary` ↔ `sellerPrimary`. Only affects `primary` and `secondary` styles. |
+| Client app | `UIButton` | `userType: UIButtonUserType { user, seller }` switches `accentPrimary` ↔ `sellerPrimary`. Only affects `primary` and `secondary` styles. |
 | Veronica | `VeronicaButton` | None. Single brand via `context.colorway.button.primary`. 5 type variants, no persona switch. |
 | ENTR | `ModalActionButton` | None. Hardcoded styling, single-purpose icon+title button — not a generalized button. |
 | Visor (current) | `VisorButton` | `VisorButtonBrand { primary, secondary }` already exists. `secondary` routes through `surfaceAccent*` token slots. |
@@ -26,7 +26,7 @@ The dual-brand pattern is partially implemented in [`components/flutter/visor_bu
 - `VisorButtonBrand { primary, secondary }` enum exists and is wired through `_palette()`.
 - `secondary` brand reads from `surfaceAccent*` semantic tokens (`surfaceAccentSubtle`, `surfaceAccentDefault`, `surfaceAccentStrong`).
 - **Zero adoption:** no widget tests exercise `brand`, no golden scenarios cover it, no examples or docs reference it. The enum is effectively a ghost feature.
-- The SoleSpark Visor example theme (`examples/flutter/solespark-ui/lib/src/colors/visor_colors.dart`) maps `surfaceAccent*` to the **same primary purple scale** as `interactivePrimary*`, so `brand: primary` and `brand: secondary` render nearly identically in the only theme set up to consume them.
+- The client example theme that originally shipped in `examples/flutter/` (since replaced by the stock Space example) mapped `surfaceAccent*` to the **same primary scale** as `interactivePrimary*`, so `brand: primary` and `brand: secondary` rendered nearly identically in the only theme set up to consume them.
 
 ### The Slot-Semantics Conflict
 
@@ -35,7 +35,7 @@ The dual-brand pattern is partially implemented in [`components/flutter/visor_bu
 - **A. Accent surfaces** — emphasis variant of the same brand
 - **B. Alternate brand** — different palette for a sub-brand or persona
 
-A theme cannot serve both meanings of `surfaceAccent*` at once. SoleSpark's user/seller use case is concern B; the slot's name and existing usage point at concern A. Forcing themes to choose between the two is a footgun.
+A theme cannot serve both meanings of `surfaceAccent*` at once. The client app's user/seller use case is concern B; the slot's name and existing usage point at concern A. Forcing themes to choose between the two is a footgun.
 
 ---
 
@@ -51,7 +51,7 @@ Remove `VisorButtonBrand` from `visor_button` and recommend `Theme(data: alterna
 
 **Option 2 — Add dedicated `interactiveAlternate*` token slots.** Introduce a parallel set of brand tokens (`interactiveAlternateBg`, `interactiveAlternateText`, etc.) and route `VisorButtonBrand.secondary` through them.
 - Pros: Cleanly separates concerns A and B. Per-component switching stays cheap.
-- Cons: Bloats every theme with N more required slots for a use case currently only SoleSpark needs. Introduces "alternate" as a first-class brand concept that other components (chip, badge, link) would also need.
+- Cons: Bloats every theme with N more required slots for a use case currently only one client app needs. Introduces "alternate" as a first-class brand concept that other components (chip, badge, link) would also need.
 
 **Option 3 — Status quo + clarify.** Keep `VisorButtonBrand` mapped to `surfaceAccent*`. Document that themes must choose: use `surfaceAccent*` for accent surfaces OR for alternate brand, not both.
 - Pros: No code change.
@@ -62,7 +62,7 @@ Remove `VisorButtonBrand` from `visor_button` and recommend `Theme(data: alterna
 1. **The current implementation is unused.** No tests, no goldens, no examples, no docs reference `VisorButtonBrand`. Deleting it is a no-cost simplification.
 2. **Token slot semantics matter more than per-component convenience.** `surfaceAccent*` is for accent surfaces of one brand. Reusing it for a second brand permanently confuses the contract for every consumer.
 3. **Theme nesting is the right Flutter idiom for persona-scoped surfaces.** Wrapping a seller-context subtree with a different `VisorTheme` swaps colors, typography, spacing, and motion together — not just button colors. This matches the actual mental model of "this whole screen is a different brand context."
-4. **SoleSpark's `userType` maps cleanly to nested themes.** SoleSpark already structures screens by persona; the migration becomes "wrap seller screens with `sellerVisorTheme`" instead of "thread `brand: secondary` through every button call site."
+4. **The client app's `userType` maps cleanly to nested themes.** It already structures screens by persona; the migration becomes "wrap seller screens with `sellerVisorTheme`" instead of "thread `brand: secondary` through every button call site."
 5. **Visor stays theme-agnostic.** The component knows nothing about `user` vs `seller`. The semantic difference lives entirely in the theme.
 
 ### Trade-off Acknowledged
@@ -81,7 +81,7 @@ If a future consumer needs to mix two brands on a single surface (e.g., a side-b
 - `VisorButtonBrand` enum and `brand` parameter removed from `visor_button.dart`.
 - `_palette()` simplifies — no more brand-conditional branches.
 - No migration needed for consumers (zero adoption).
-- SoleSpark migration guidance: wrap seller-context subtrees with a separate `VisorTheme` instance.
+- Client app migration guidance: wrap seller-context subtrees with a separate `VisorTheme` instance.
 
 ### Token Contract
 

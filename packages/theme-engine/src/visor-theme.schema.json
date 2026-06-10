@@ -22,7 +22,7 @@
     },
     "label": {
       "type": "string",
-      "description": "Human-readable display name for the theme (e.g. 'Blacklight Pro'). Overrides the name-derived label in the docs theme switcher. Optional."
+      "description": "Human-readable display name for the theme (e.g. 'My Brand Pro'). Overrides the name-derived label in the docs theme switcher. Optional."
     },
     "default-mode": {
       "type": "string",

@@ -215,7 +215,7 @@ class _VisorPhoneInputState extends State<VisorPhoneInput> {
   }
 
   /// Per-country max digit count used to cap input length. Mirrors the table
-  /// from the SoleSpark/ENTR sources; default 15 covers any country not
+  /// from the source consumer apps; default 15 covers any country not
   /// listed (E.164 max).
   int _maxDigitsForCountry(String countryCode) {
     switch (countryCode.toUpperCase()) {
