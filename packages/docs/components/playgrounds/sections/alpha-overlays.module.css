@@ -2,7 +2,7 @@
  * Applied demos for the BL-193 alpha-overlay tokens. Every color below is
  * driven by a live CSS custom property — no hardcoded values — so each
  * treatment re-resolves on theme switch. Layout fidelity tracks the approved
- * VI-466 visual spec (docs/audits/vi-466/index.html §4–7).
+ * VI-466 visual spec (visor-themes-private docs/audits/vi-466/index.html §4–7).
  */
 
 /* ── Brand · soft ─────────────────────────────────────────────────────────── */

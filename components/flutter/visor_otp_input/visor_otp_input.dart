@@ -33,7 +33,7 @@ import 'package:visor_core/visor_core.dart';
 ///
 /// On web (`kIsWeb`) a single hidden [TextField] is used to capture all input.
 /// This avoids browsers intercepting backspace before Flutter sees it — a
-/// regression observed in SoleSpark and Veronica without this branch.
+/// regression observed in two consumer apps without this branch.
 ///
 /// On native, a [KeyboardListener] + per-digit [FocusNode] handles input
 /// directly.

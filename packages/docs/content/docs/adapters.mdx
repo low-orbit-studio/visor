@@ -29,7 +29,7 @@ Output includes:
 By default, the nextjs adapter emits rules under `:root`, which works for whole-document theming. To let multiple themes coexist and switch via a body class (the body-class repaint pattern), pass `--scope-prefix`:
 
 ```bash
-npx @loworbitstudio/visor theme apply themes/blacklight/theme.visor.yaml \
+npx @loworbitstudio/visor theme apply themes/mybrand/theme.visor.yaml \
   --adapter nextjs \
   --scope-prefix 'body.mybrand-theme'
 ```
@@ -105,7 +105,7 @@ MaterialApp(
 );
 ```
 
-Available theme getters: `blackout`, `modernMinimal`, `neutral`, `space`, `blacklight`, `blacklightPro`, `entr`, `kaiah`, `referenceApp`, `solespark`, `veronica`.
+Available stock theme getters: `blackout`, `borderless`, `modernMinimal`, `neutral`, `space`. Custom themes generated from `custom-themes/` add their own getters.
 
 Each getter returns a `VisorThemePair` with `.light` and `.dark` `ThemeData` properties.
 

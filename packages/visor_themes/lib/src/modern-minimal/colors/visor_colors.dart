@@ -20,41 +20,41 @@ sealed class VisorColors {
   // Primary scale
   // ========================================================================
   static const Color primary50 = Color(0xFFE8FAF0);
-  static const Color primary100 = Color(0xFFDDFCEB);
-  static const Color primary200 = Color(0xFFCCFFE3);
-  static const Color primary300 = Color(0xFFBBFFDB);
-  static const Color primary400 = Color(0xFFA0FFCF);
+  static const Color primary100 = Color(0xFFD7F6E4);
+  static const Color primary200 = Color(0xFFB8F0D2);
+  static const Color primary300 = Color(0xFF89E5B7);
+  static const Color primary400 = Color(0xFF4ED197);
   static const Color primary500 = Color(0xFF04BF81);
-  static const Color primary600 = Color(0xFF016643);
-  static const Color primary700 = Color(0xFF005033);
-  static const Color primary800 = Color(0xFF003823);
-  static const Color primary900 = Color(0xFF002113);
+  static const Color primary600 = Color(0xFF018E5F);
+  static const Color primary700 = Color(0xFF016E48);
+  static const Color primary800 = Color(0xFF004A30);
+  static const Color primary900 = Color(0xFF002A19);
   static const Color primary950 = Color(0xFF000D05);
 
   // ========================================================================
   // Accent scale
   // ========================================================================
   static const Color accent50 = Color(0xFFE8FAF0);
-  static const Color accent100 = Color(0xFFDDFCEB);
-  static const Color accent200 = Color(0xFFCCFFE3);
-  static const Color accent300 = Color(0xFFBBFFDB);
-  static const Color accent400 = Color(0xFFA0FFCF);
+  static const Color accent100 = Color(0xFFD7F6E4);
+  static const Color accent200 = Color(0xFFB8F0D2);
+  static const Color accent300 = Color(0xFF89E5B7);
+  static const Color accent400 = Color(0xFF4ED197);
   static const Color accent500 = Color(0xFF04BF81);
-  static const Color accent600 = Color(0xFF016643);
-  static const Color accent700 = Color(0xFF005033);
-  static const Color accent800 = Color(0xFF003823);
-  static const Color accent900 = Color(0xFF002113);
+  static const Color accent600 = Color(0xFF018E5F);
+  static const Color accent700 = Color(0xFF016E48);
+  static const Color accent800 = Color(0xFF004A30);
+  static const Color accent900 = Color(0xFF002A19);
   static const Color accent950 = Color(0xFF000D05);
 
   // ========================================================================
   // Neutral scale
   // ========================================================================
   static const Color neutral50 = Color(0xFFF4F5F7);
-  static const Color neutral100 = Color(0xFFF0F2F6);
-  static const Color neutral200 = Color(0xFFEAEEF5);
-  static const Color neutral300 = Color(0xFFE2E8F3);
-  static const Color neutral400 = Color(0xFFD8DFEC);
-  static const Color neutral500 = Color(0xFF6C727E);
+  static const Color neutral100 = Color(0xFFE6E8EC);
+  static const Color neutral200 = Color(0xFFD1D4DB);
+  static const Color neutral300 = Color(0xFFB2B7C2);
+  static const Color neutral400 = Color(0xFF898F9C);
+  static const Color neutral500 = Color(0xFF6B7280);
   static const Color neutral600 = Color(0xFF505561);
   static const Color neutral700 = Color(0xFF3D424D);
   static const Color neutral800 = Color(0xFF292E38);
@@ -65,41 +65,41 @@ sealed class VisorColors {
   // Success scale
   // ========================================================================
   static const Color success50 = Color(0xFFE8FBEB);
-  static const Color success100 = Color(0xFFDEFDE3);
+  static const Color success100 = Color(0xFFD8F7DC);
   static const Color success500 = Color(0xFF22C55E);
-  static const Color success600 = Color(0xFF00672B);
-  static const Color success700 = Color(0xFF005120);
-  static const Color success900 = Color(0xFF002209);
+  static const Color success600 = Color(0xFF019341);
+  static const Color success700 = Color(0xFF017231);
+  static const Color success900 = Color(0xFF002B0E);
 
   // ========================================================================
   // Warning scale
   // ========================================================================
   static const Color warning50 = Color(0xFFFFF3E6);
-  static const Color warning100 = Color(0xFFFFF1E3);
+  static const Color warning100 = Color(0xFFFFEBD5);
   static const Color warning500 = Color(0xFFF59E0B);
-  static const Color warning600 = Color(0xFF774A01);
-  static const Color warning700 = Color(0xFF5E3900);
-  static const Color warning900 = Color(0xFF281600);
+  static const Color warning600 = Color(0xFFB77401);
+  static const Color warning700 = Color(0xFF8D5800);
+  static const Color warning900 = Color(0xFF361F00);
 
   // ========================================================================
   // Error scale
   // ========================================================================
   static const Color error50 = Color(0xFFFFF2F0);
-  static const Color error100 = Color(0xFFFFEFED);
+  static const Color error100 = Color(0xFFFFE3E0);
   static const Color error500 = Color(0xFFEF4444);
-  static const Color error600 = Color(0xFFA30016);
-  static const Color error700 = Color(0xFF81000F);
-  static const Color error900 = Color(0xFF3A0003);
+  static const Color error600 = Color(0xFFC3041E);
+  static const Color error700 = Color(0xFF990015);
+  static const Color error900 = Color(0xFF410004);
 
   // ========================================================================
   // Info scale
   // ========================================================================
   static const Color info50 = Color(0xFFECF7FF);
-  static const Color info100 = Color(0xFFE8F5FF);
+  static const Color info100 = Color(0xFFDAF0FF);
   static const Color info500 = Color(0xFF0EA5E9);
-  static const Color info600 = Color(0xFF005C85);
-  static const Color info700 = Color(0xFF004869);
-  static const Color info900 = Color(0xFF001D2E);
+  static const Color info600 = Color(0xFF017BAF);
+  static const Color info700 = Color(0xFF005F88);
+  static const Color info900 = Color(0xFF002437);
 
   // ========================================================================
   // Opacity variants (pre-computed at codegen)
@@ -111,13 +111,13 @@ sealed class VisorColors {
   static const Color primary500_50o = Color(0x8004BF81);
   static const Color primary500_60o = Color(0x9904BF81);
   static const Color primary500_80o = Color(0xCC04BF81);
-  static const Color primary600_5o = Color(0x0D016643);
-  static const Color primary600_10o = Color(0x1A016643);
-  static const Color primary600_20o = Color(0x33016643);
-  static const Color primary600_40o = Color(0x66016643);
-  static const Color primary600_50o = Color(0x80016643);
-  static const Color primary600_60o = Color(0x99016643);
-  static const Color primary600_80o = Color(0xCC016643);
+  static const Color primary600_5o = Color(0x0D018E5F);
+  static const Color primary600_10o = Color(0x1A018E5F);
+  static const Color primary600_20o = Color(0x33018E5F);
+  static const Color primary600_40o = Color(0x66018E5F);
+  static const Color primary600_50o = Color(0x80018E5F);
+  static const Color primary600_60o = Color(0x99018E5F);
+  static const Color primary600_80o = Color(0xCC018E5F);
   static const Color accent500_5o = Color(0x0D04BF81);
   static const Color accent500_10o = Color(0x1A04BF81);
   static const Color accent500_20o = Color(0x3304BF81);
@@ -147,28 +147,28 @@ sealed class VisorColors {
     textPrimary: Color(0xE6000000),
     textSecondary: Color(0x8C000000),
     textTertiary: Color(0x8C000000),
-    textDisabled: Color(0xFFE2E8F3),
+    textDisabled: Color(0xFFB2B7C2),
     textInverse: Color(0xFFFFFFFF),
-    textInverseSecondary: Color(0xFFEAEEF5),
-    textLink: Color(0xFF016643),
-    textLinkHover: Color(0xFF005033),
-    textSuccess: Color(0xFF005120),
-    textWarning: Color(0xFF5E3900),
-    textError: Color(0xFF81000F),
-    textInfo: Color(0xFF004869),
+    textInverseSecondary: Color(0xFFD1D4DB),
+    textLink: Color(0xFF018E5F),
+    textLinkHover: Color(0xFF016E48),
+    textSuccess: Color(0xFF017231),
+    textWarning: Color(0xFF8D5800),
+    textError: Color(0xFF990015),
+    textInfo: Color(0xFF005F88),
     surfacePage: Color(0xFFFFFFFF),
     surfaceCard: Color(0xFFFFFFFF),
     surfaceSubtle: Color(0xFFF4F5F7),
-    surfaceMuted: Color(0xFFF0F2F6),
+    surfaceMuted: Color(0xFFE6E8EC),
     surfaceOverlay: Color(0xFF171B22),
     surfaceInteractiveDefault: Color(0xFFFFFFFF),
     surfaceInteractiveHover: Color(0xFFF4F5F7),
-    surfaceInteractiveActive: Color(0xFFF0F2F6),
+    surfaceInteractiveActive: Color(0xFFE6E8EC),
     surfaceInteractiveDisabled: Color(0xFFF4F5F7),
-    surfaceSelected: Color(0xFFDDFCEB),
+    surfaceSelected: Color(0xFFD7F6E4),
     surfaceAccentSubtle: Color(0xFFE8FAF0),
     surfaceAccentDefault: Color(0xFF04BF81),
-    surfaceAccentStrong: Color(0xFF016643),
+    surfaceAccentStrong: Color(0xFF018E5F),
     surfaceSuccessSubtle: Color(0xFFE8FBEB),
     surfaceSuccessDefault: Color(0xFF22C55E),
     surfaceWarningSubtle: Color(0xFFFFF3E6),
@@ -177,29 +177,29 @@ sealed class VisorColors {
     surfaceErrorDefault: Color(0xFFEF4444),
     surfaceInfoSubtle: Color(0xFFECF7FF),
     surfaceInfoDefault: Color(0xFF0EA5E9),
-    borderDefault: Color(0xFFEAEEF5),
-    borderMuted: Color(0xFFF0F2F6),
-    borderStrong: Color(0xFFE2E8F3),
+    borderDefault: Color(0xFFD1D4DB),
+    borderMuted: Color(0xFFE6E8EC),
+    borderStrong: Color(0xFFB2B7C2),
     borderFocus: Color(0xFF04BF81),
-    borderDisabled: Color(0xFFF0F2F6),
+    borderDisabled: Color(0xFFE6E8EC),
     borderSuccess: Color(0xFF22C55E),
     borderWarning: Color(0xFFF59E0B),
     borderError: Color(0xFFEF4444),
     borderInfo: Color(0xFF0EA5E9),
-    interactivePrimaryBg: Color(0xFF016643),
-    interactivePrimaryBgHover: Color(0xFF005033),
-    interactivePrimaryBgActive: Color(0xFF003823),
+    interactivePrimaryBg: Color(0xFF018E5F),
+    interactivePrimaryBgHover: Color(0xFF016E48),
+    interactivePrimaryBgActive: Color(0xFF004A30),
     interactivePrimaryText: Color(0xFFFFFFFF),
     interactiveSecondaryBg: Color(0xFFFFFFFF),
     interactiveSecondaryBgHover: Color(0xFFF4F5F7),
-    interactiveSecondaryBgActive: Color(0xFFF0F2F6),
+    interactiveSecondaryBgActive: Color(0xFFE6E8EC),
     interactiveSecondaryText: Color(0xFF171B22),
-    interactiveSecondaryBorder: Color(0xFFE2E8F3),
-    interactiveDestructiveBg: Color(0xFFA30016),
-    interactiveDestructiveBgHover: Color(0xFF81000F),
+    interactiveSecondaryBorder: Color(0xFFB2B7C2),
+    interactiveDestructiveBg: Color(0xFFC3041E),
+    interactiveDestructiveBgHover: Color(0xFF990015),
     interactiveDestructiveText: Color(0xFFFFFFFF),
     interactiveGhostBg: Color(0xFFFFFFFF),
-    interactiveGhostBgHover: Color(0xFFF0F2F6),
+    interactiveGhostBgHover: Color(0xFFE6E8EC),
   );
 
   // ========================================================================
@@ -227,17 +227,17 @@ sealed class VisorColors {
     surfaceInteractiveHover: Color(0xFF3D424D),
     surfaceInteractiveActive: Color(0xFF505561),
     surfaceInteractiveDisabled: Color(0xFF292E38),
-    surfaceSelected: Color(0xFF003823),
-    surfaceAccentSubtle: Color(0xFF002113),
+    surfaceSelected: Color(0xFF004F34),
+    surfaceAccentSubtle: Color(0xFF002C1B),
     surfaceAccentDefault: Color(0xFF04BF81),
     surfaceAccentStrong: Color(0xFFA0FFCF),
-    surfaceSuccessSubtle: Color(0xFF002209),
+    surfaceSuccessSubtle: Color(0xFF002B0E),
     surfaceSuccessDefault: Color(0xFF22C55E),
-    surfaceWarningSubtle: Color(0xFF281600),
+    surfaceWarningSubtle: Color(0xFF361F00),
     surfaceWarningDefault: Color(0xFFF59E0B),
-    surfaceErrorSubtle: Color(0xFF3A0003),
+    surfaceErrorSubtle: Color(0xFF410004),
     surfaceErrorDefault: Color(0xFFEF4444),
-    surfaceInfoSubtle: Color(0xFF001D2E),
+    surfaceInfoSubtle: Color(0xFF002437),
     surfaceInfoDefault: Color(0xFF0EA5E9),
     borderDefault: Color(0x0FFFFFFF),
     borderMuted: Color(0x08FFFFFF),
@@ -258,7 +258,7 @@ sealed class VisorColors {
     interactiveSecondaryText: Color(0xFFF4F5F7),
     interactiveSecondaryBorder: Color(0xFF505561),
     interactiveDestructiveBg: Color(0xFFEF4444),
-    interactiveDestructiveBgHover: Color(0xFFA30016),
+    interactiveDestructiveBgHover: Color(0xFFC3041E),
     interactiveDestructiveText: Color(0xFFFFFFFF),
     interactiveGhostBg: Color(0xFF292E38),
     interactiveGhostBgHover: Color(0xFF3D424D),

@@ -15,14 +15,14 @@ void main() {
   group('VisorWidgetbookApp boot', () {
     testWidgets('boots with the persisted theme + brightness', (tester) async {
       SharedPreferences.setMockInitialValues(<String, Object>{
-        kVisorWidgetbookThemePrefsKey: 'Custom / Veronica',
+        kVisorWidgetbookThemePrefsKey: 'Visor / Space',
         kVisorWidgetbookBrightnessPrefsKey: 'light',
       });
       final prefs = await SharedPreferences.getInstance();
 
       await tester.pumpWidget(VisorWidgetbookApp(
         prefs: prefs,
-        initialThemeLabel: 'Custom / Veronica',
+        initialThemeLabel: 'Visor / Space',
         initialBrightness: ThemeMode.light,
       ));
       await tester.pumpAndSettle();
@@ -80,17 +80,17 @@ void main() {
 
       final blackoutBg = bg();
 
-      rebuild(() => current = VisorThemes.solespark.light);
+      rebuild(() => current = VisorThemes.space.light);
       await tester.pumpAndSettle();
 
-      final solesparkBg = bg();
-      expect(solesparkBg, isNot(equals(blackoutBg)),
+      final spaceBg = bg();
+      expect(spaceBg, isNot(equals(blackoutBg)),
           reason:
               'Backdrop must change when the active theme changes — it reads '
               'VisorColorsData.surfacePage from the current Theme');
       expect(
-        solesparkBg,
-        equals(VisorThemes.solespark.light
+        spaceBg,
+        equals(VisorThemes.space.light
             .extension<VisorColorsData>()!
             .surfacePage),
       );

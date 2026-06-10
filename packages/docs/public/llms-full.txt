@@ -502,7 +502,7 @@ Remove a theme from the docs site.
 visor theme unregister <slug> [options]
 
 Arguments:
-  slug                Theme slug to unregister (e.g. entr, kaiah)
+  slug                Theme slug to unregister (e.g. my-theme)
 
 Options:
   --json              Output structured JSON (for AI agents)

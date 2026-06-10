@@ -107,7 +107,7 @@ Rows are organized by **Visor target token** (destination-keyed). For ENTR, axis
 
 | Visor (`context.visorColors`) | SoleSpark (`UIColors`) | ENTR (`UIColors` / `colorScheme`) | Veronica (`context.buttonColors`) | Notes |
 |---|---|---|---|---|
-| `interactivePrimaryBg` | `accentPrimary` (`#6952D9`) | `primary` (spring) / `primary` | `.primary` | Primary CTA bg |
+| `interactivePrimaryBg` | `accentPrimary` (brand primary) | `primary` (spring) / `primary` | `.primary` | Primary CTA bg |
 | `interactivePrimaryBgHover` | `accentSecondary` (lighter) | `primary60o` | — | Hover; theme-tuned |
 | `interactivePrimaryBgActive` | `accentPrimary50o` | `primary80o` | — | Pressed |
 | `interactivePrimaryText` | `text` (white) | `dark` (graphite) / `onPrimary` | `.colorway.text.inverse` | Label on primary bg |
@@ -162,7 +162,7 @@ Source `8o` (Veronica) and any other off-scale value → round to nearest slot. 
 
 | Source identifier | Repo | Reason non-portable |
 |---|---|---|
-| `UIColors.accentTertiary` (`#FF00C8` magenta) | SoleSpark | Brand-locked tertiary accent; consumer overrides at theme layer, not widget |
+| `UIColors.accentTertiary` (brand tertiary accent) | SoleSpark | Brand-locked tertiary accent; consumer overrides at theme layer, not widget |
 | `UIColors.sellerPrimary` / `sellerSecondary` / `sellerTertiary` | SoleSpark | Dual-mode buyer/seller branding; not a Visor concern |
 | `UIColors.hotCoralSex`, `aqua`, `apricot`, `sage` | ENTR | Brand palette; consumer maps to its own theme |
 | `UIPrimaryColors.goldenHour{3pm..7pm}` (warm gold gradient) | Veronica | Veronica brand identity |
@@ -170,7 +170,7 @@ Source `8o` (Veronica) and any other off-scale value → round to nearest slot. 
 | `BgColors.warmth{1..6}` | Veronica | Brand-specific warm-surface gradient |
 | `SpecialColors.veronicaGlow`, `swipeLike`, `swipePass`, `diagonalLight` | Veronica | App-specific feature accents |
 
-**Override pattern:** consumer projects keep brand colors in their own theme file (e.g., `solespark.visor.yaml`) and reference them via theme overrides — they do not need a Visor namespace slot.
+**Override pattern:** consumer projects keep brand colors in their own theme file (a project-local `.visor.yaml`) and reference them via theme overrides — they do not need a Visor namespace slot.
 
 ---
 

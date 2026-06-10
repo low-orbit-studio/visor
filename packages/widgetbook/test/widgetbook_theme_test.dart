@@ -10,48 +10,30 @@ void main() {
   });
 
   group('buildVisorThemeEntries()', () {
-    test('produces exactly 22 entries (11 themes × 2 modes)', () {
-      expect(buildVisorThemeEntries(), hasLength(22));
+    test('produces exactly 8 entries (4 stock themes × 2 modes)', () {
+      expect(buildVisorThemeEntries(), hasLength(8));
     });
 
     test('first entry is Visor / Blackout — Dark', () {
       expect(buildVisorThemeEntries().first.name, 'Visor / Blackout — Dark');
     });
 
-    test('all stock (Visor /) entries precede all custom (Custom /) entries',
-        () {
+    test('no custom (Custom /) entries ship in the public widgetbook', () {
+      // Private/client themes live in visor-themes-private (VI-528).
       final names = buildVisorThemeEntries().map((e) => e.name).toList();
-      final lastVisor = names.lastIndexWhere((n) => n.startsWith('Visor / '));
-      final firstCustom =
-          names.indexWhere((n) => n.startsWith('Custom / '));
-      expect(lastVisor, greaterThanOrEqualTo(0));
-      expect(firstCustom, greaterThanOrEqualTo(0));
-      expect(lastVisor, lessThan(firstCustom));
+      expect(names.where((n) => n.startsWith('Custom / ')), isEmpty);
+      expect(names.where((n) => n.startsWith('Visor / ')), hasLength(8));
     });
 
-    test('group counts: 8 stock (4×2), 14 custom (7×2)', () {
-      final names = buildVisorThemeEntries().map((e) => e.name).toList();
-      final stockCount = names.where((n) => n.startsWith('Visor / ')).length;
-      final customCount =
-          names.where((n) => n.startsWith('Custom / ')).length;
-      expect(stockCount, 8);
-      expect(customCount, 14);
-    });
-
-    test('display names are alphabetized within each group', () {
-      List<String> namesFor(String prefix) => buildVisorThemeEntries()
+    test('display names are alphabetized within the stock group', () {
+      final stock = buildVisorThemeEntries()
           .map((e) => e.name)
-          .where((n) => n.startsWith(prefix))
+          .where((n) => n.startsWith('Visor / '))
           // Strip the " — Dark|Light" suffix so sort check keys on display name.
           .map((n) => n.split(' — ').first)
           .toList();
-
-      final stock = namesFor('Visor / ');
-      final custom = namesFor('Custom / ');
       final sortedStock = [...stock]..sort();
-      final sortedCustom = [...custom]..sort();
       expect(stock, equals(sortedStock));
-      expect(custom, equals(sortedCustom));
     });
 
     test('Dark precedes Light for every theme (alphabetical within theme)',
@@ -101,8 +83,8 @@ void main() {
   });
 
   group('buildVisorThemePairs()', () {
-    test('produces exactly 11 entries (one per theme)', () {
-      expect(buildVisorThemePairs(), hasLength(11));
+    test('produces exactly 4 entries (one per stock theme)', () {
+      expect(buildVisorThemePairs(), hasLength(4));
     });
 
     test('first entry matches kDefaultVisorWidgetbookTheme', () {
@@ -120,21 +102,17 @@ void main() {
       }
     });
 
-    test('all stock (Visor /) entries precede all custom (Custom /) entries',
-        () {
+    test('no custom (Custom /) pairs ship in the public widgetbook', () {
       final names = buildVisorThemePairs().map((e) => e.name).toList();
-      final lastVisor = names.lastIndexWhere((n) => n.startsWith('Visor / '));
-      final firstCustom = names.indexWhere((n) => n.startsWith('Custom / '));
-      expect(lastVisor, greaterThanOrEqualTo(0));
-      expect(firstCustom, greaterThanOrEqualTo(0));
-      expect(lastVisor, lessThan(firstCustom));
+      expect(names.where((n) => n.startsWith('Custom / ')), isEmpty);
+      expect(names.where((n) => n.startsWith('Visor / ')), hasLength(4));
     });
   });
 
   group('persistence', () {
     test('SharedPreferences round-trips the theme label', () async {
       final prefs = await SharedPreferences.getInstance();
-      const label = 'Custom / Veronica — Light';
+      const label = 'Visor / Space — Light';
       await prefs.setString(kVisorWidgetbookThemePrefsKey, label);
       expect(prefs.getString(kVisorWidgetbookThemePrefsKey), label);
     });
@@ -142,12 +120,12 @@ void main() {
     test('setMockInitialValues seeds the persisted label for restoration',
         () async {
       SharedPreferences.setMockInitialValues(<String, Object>{
-        kVisorWidgetbookThemePrefsKey: 'Custom / Veronica — Light',
+        kVisorWidgetbookThemePrefsKey: 'Visor / Space — Light',
       });
       final prefs = await SharedPreferences.getInstance();
       expect(
         prefs.getString(kVisorWidgetbookThemePrefsKey),
-        'Custom / Veronica — Light',
+        'Visor / Space — Light',
       );
     });
   });
@@ -155,7 +133,7 @@ void main() {
   group('reorderForInitial()', () {
     test('moves the persisted label to index 0', () {
       final entries = buildVisorThemeEntries();
-      const label = 'Custom / Veronica — Light';
+      const label = 'Visor / Space — Light';
       final reordered = reorderForInitial(entries, label);
       expect(reordered.first.name, label);
       expect(reordered, hasLength(entries.length));

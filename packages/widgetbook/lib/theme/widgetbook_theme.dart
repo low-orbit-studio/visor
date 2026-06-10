@@ -24,19 +24,14 @@ const List<String> _stockThemeSlugs = <String>[
 
 /// Pretty display names for every theme exported by `visor_themes`.
 /// Maps slug → (VisorThemePair, displayName).
+///
+/// Stock themes only — private/client themes live in visor-themes-private
+/// and never ship in this public preview app (VI-528).
 final Map<String, _ThemeMeta> _allThemes = <String, _ThemeMeta>{
   'blackout': _ThemeMeta(VisorThemes.blackout, 'Blackout'),
   'modern-minimal': _ThemeMeta(VisorThemes.modernMinimal, 'Modern Minimal'),
   'neutral': _ThemeMeta(VisorThemes.neutral, 'Neutral'),
   'space': _ThemeMeta(VisorThemes.space, 'Space'),
-  'blacklight': _ThemeMeta(VisorThemes.blacklight, 'Blacklight'),
-  'blacklight-pro':
-      _ThemeMeta(VisorThemes.blacklightPro, 'Blacklight Pro'),
-  'entr': _ThemeMeta(VisorThemes.entr, 'Entr'),
-  'kaiah': _ThemeMeta(VisorThemes.kaiah, 'Kaiah'),
-  'reference-app': _ThemeMeta(VisorThemes.referenceApp, 'Reference App'),
-  'solespark': _ThemeMeta(VisorThemes.solespark, 'SoleSpark'),
-  'veronica': _ThemeMeta(VisorThemes.veronica, 'Veronica'),
 };
 
 class _ThemeMeta {
@@ -45,7 +40,7 @@ class _ThemeMeta {
   const _ThemeMeta(this.pair, this.displayName);
 }
 
-/// Builds the full 22-entry theme list for the widgetbook addon.
+/// Builds the full 8-entry theme list for the widgetbook addon.
 ///
 /// Ordering:
 ///   1. Stock themes (group "Visor") before custom themes (group "Custom")
@@ -86,7 +81,7 @@ List<WidgetbookTheme<ThemeData>> buildVisorThemeEntries() {
   return entries;
 }
 
-/// Builds the 11-entry theme pair list for the widgetbook addon.
+/// Builds the 4-entry theme pair list for the widgetbook addon.
 ///
 /// Each entry holds a [VisorThemePair] so a separate brightness toggle can
 /// switch between light and dark without changing the selected theme.
