@@ -260,7 +260,6 @@ Recommended component compositions for common UI scenarios. These are not instal
 | Dashboard Layout | sidebar, sheet, navbar, button, card, tabs, separator, scroll-area |
 | Data Table Row Actions | data-table, dropdown-menu, dialog, confirm-dialog, toast, bulk-action-bar |
 | Data Table with Filters | table, input, select, button, badge, dropdown-menu, pagination |
-| Empty State | card, button, heading, text |
 | Form with Validation | field, input, label, textarea, button, alert |
 | Modal Form | dialog, field, input, label, textarea, button, alert |
 | Notification Center | toast, command, button, badge, scroll-area |
