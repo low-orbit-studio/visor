@@ -141,6 +141,76 @@ describe("AdminTabbedEditor", () => {
     expect(screen.getByText("Discard unsaved changes?")).toBeInTheDocument()
   })
 
+  // ─── Header pass-through (VI-530) ────────────────────────────────────
+
+  it("renders PageHeader with default scale when header props are omitted", () => {
+    const { container } = render(
+      <AdminTabbedEditor title="Settings" tabs={sampleTabs} />
+    )
+    const title = container.querySelector(
+      '[data-slot="page-header-title"]'
+    ) as HTMLElement
+    expect(title).not.toBeNull()
+    // Defaults match current rendering: no override attributes/inline styles.
+    expect(title.hasAttribute("data-title-size")).toBe(false)
+    expect(title.hasAttribute("data-title-family")).toBe(false)
+    expect(title.style.getPropertyValue("--page-header-title-leading")).toBe("")
+  })
+
+  it("forwards headerSize to the PageHeader size variant", () => {
+    const { container } = render(
+      <AdminTabbedEditor title="Settings" tabs={sampleTabs} headerSize="lg" />
+    )
+    // size="lg" applies the sizeLg class on the page-header root.
+    const header = container.querySelector(
+      '[data-slot="page-header"]'
+    ) as HTMLElement
+    expect(header.className).toMatch(/sizeLg/)
+  })
+
+  it("forwards titleSize to the PageHeader title", () => {
+    const { container } = render(
+      <AdminTabbedEditor
+        title="Settings"
+        tabs={sampleTabs}
+        titleSize="marquee"
+      />
+    )
+    const title = container.querySelector(
+      '[data-slot="page-header-title"]'
+    ) as HTMLElement
+    expect(title).toHaveAttribute("data-title-size", "marquee")
+  })
+
+  it("forwards titleSize raw length and titleFamily to the PageHeader title", () => {
+    const { container } = render(
+      <AdminTabbedEditor
+        title="Settings"
+        tabs={sampleTabs}
+        titleSize="40px"
+        titleFamily="display"
+      />
+    )
+    const title = container.querySelector(
+      '[data-slot="page-header-title"]'
+    ) as HTMLElement
+    expect(title.style.getPropertyValue("--page-header-title-size")).toBe("40px")
+    expect(title).toHaveAttribute("data-title-size", "marquee")
+    expect(title).toHaveAttribute("data-title-family", "display")
+  })
+
+  it("forwards leading to the PageHeader title line-height hook", () => {
+    const { container } = render(
+      <AdminTabbedEditor title="Settings" tabs={sampleTabs} leading={1.05} />
+    )
+    const title = container.querySelector(
+      '[data-slot="page-header-title"]'
+    ) as HTMLElement
+    expect(title.style.getPropertyValue("--page-header-title-leading")).toBe(
+      "1.05"
+    )
+  })
+
   // ─── data-slot ──────────────────────────────────────────────────────
 
   it("sets data-slot on root element", () => {

@@ -3,7 +3,10 @@
 import * as React from "react"
 
 import { cn } from "../../lib/utils"
-import { PageHeader } from "../../components/ui/page-header/page-header"
+import {
+  PageHeader,
+  type PageHeaderProps,
+} from "../../components/ui/page-header/page-header"
 import {
   Tabs,
   TabsContent,
@@ -45,6 +48,28 @@ export interface AdminTabbedEditorProps
   breadcrumb?: React.ReactNode
   /** Optional actions slot rendered on the right side of the header. */
   headerActions?: React.ReactNode
+  /**
+   * Header vertical rhythm — forwarded to the internal PageHeader's `size`.
+   * Omit to keep the PageHeader default (`"md"`).
+   */
+  headerSize?: PageHeaderProps["size"]
+  /**
+   * Title font-size override — forwarded to the internal PageHeader's
+   * `titleSize` (`"default" | "marquee"` token, or a raw CSS length).
+   * Omit to keep the default title scale.
+   */
+  titleSize?: PageHeaderProps["titleSize"]
+  /**
+   * Title font-family override — forwarded to the internal PageHeader's
+   * `titleFamily` (`"heading" | "display"` token, or a raw CSS family).
+   * Omit to keep the heading family.
+   */
+  titleFamily?: PageHeaderProps["titleFamily"]
+  /**
+   * Title line-height override — forwarded to the internal PageHeader's
+   * `leading`. Omit to keep the default line-height.
+   */
+  leading?: PageHeaderProps["leading"]
 
   // ── Tabs ────────────────────────────────────────────────────────────────
   /** Ordered list of tabs. */
@@ -102,6 +127,10 @@ const AdminTabbedEditor = React.forwardRef<
     description,
     breadcrumb,
     headerActions,
+    headerSize,
+    titleSize,
+    titleFamily,
+    leading,
     tabs,
     activeTab,
     defaultActiveTab,
@@ -218,6 +247,10 @@ const AdminTabbedEditor = React.forwardRef<
           description={description}
           breadcrumb={breadcrumb}
           actions={headerActions}
+          size={headerSize}
+          titleSize={titleSize}
+          titleFamily={titleFamily}
+          leading={leading}
         />
 
         <Tabs
