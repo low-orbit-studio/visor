@@ -518,7 +518,7 @@ Visor includes structured metadata that makes it easy for AI agents to discover,
 
 **Registry manifest** — `visor-manifest.json` is auto-generated during build, aggregating all component metadata (including auto-extracted CSS tokens) into a single file an agent can load.
 
-**Composition patterns** — Pattern files in `patterns/` document how components combine for common use cases (form with validation, dashboard layout, CRUD table).
+**Composition patterns** — Pattern files in `patterns/` document how components combine for common use cases (form with validation, dashboard layout, data table with filters).
 
 See [docs/ai-consumability.md](docs/ai-consumability.md) for the full spec.
 

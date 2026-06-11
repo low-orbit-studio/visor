@@ -1,6 +1,6 @@
 ---
 title: Data Table Row Actions
-description: A data table with per-row action menus, bulk selection with a bulk action bar, confirmation dialogs, and toast feedback for destructive operations.
+description: A data table for managing collections of records (CRUD) — per-row action menus, bulk selection with a bulk action bar, confirmation dialogs, and toast feedback for destructive operations.
 ---
 
 import { BlockPreview } from '@/components/block-preview';
@@ -14,9 +14,10 @@ import { DataTableRowActionsDemo } from '@/components/patterns/data-table-row-ac
 
 ## When to Use
 
+- Admin pages listing and managing resources (users, orders, products)
 - Admin lists where rows have contextual actions (edit, archive, delete)
 - When supporting both single-row and bulk operations on the same table
-- Any CRUD interface where destructive actions require confirmation
+- Any CRUD interface (create, read, update, delete) where destructive actions require confirmation
 
 ## Components Used
 
@@ -98,3 +99,4 @@ import { DataTableRowActionsDemo } from '@/components/patterns/data-table-row-ac
 - BulkActionBar should only render when at least one row is selected; hide it otherwise.
 - Use toast to confirm the outcome of both single and bulk actions.
 - Keep the actions column fixed-width and right-aligned so it does not push other columns around.
+- For search, category filters, and sortable columns on a read-heavy list, use the [Data Table with Filters](/docs/patterns/data-table-with-filters) pattern — the two compose (filter toolbar above, row actions per row).

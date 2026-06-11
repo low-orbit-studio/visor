@@ -87,3 +87,4 @@ notes: >
   Show a Badge count on the clear-filters Button to indicate active filter count.
   Column headers with sort functionality should use cursor: pointer and an icon indicator.
   For server-side filtering, debounce the search Input with useDebounce.
+  For per-row action menus, bulk selection, and confirm-on-delete, use the data-table-row-actions pattern (the two compose — filter toolbar above, row actions per row).
