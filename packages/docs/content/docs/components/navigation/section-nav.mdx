@@ -1,0 +1,95 @@
+---
+title: Section Nav
+description: A link-based section sub-navigation strip — leading icon + label + optional count pill, with a static underline on the active item. Copy it into your project and own it completely.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { SectionNavDemo } from '@/components/ui/section-nav-demo';
+
+## Basic
+
+<ComponentPreview
+  title="Section sub-navigation with icon, label, and count pill"
+  code={"<SectionNav aria-label=\"Organization sections\">\n  <SectionNavItem href=\"/detail\" icon={UsersIcon} label=\"Detail\" isActive />\n  <SectionNavItem href=\"/roles\" icon={ShieldIcon} label=\"Roles\" count={4} />\n  <SectionNavItem href=\"/invites\" icon={EnvelopeIcon} label=\"Invites\" count={2} />\n</SectionNav>"}
+>
+  <SectionNavDemo />
+</ComponentPreview>
+
+## When to use
+
+Use `SectionNav` for a **sub-navigation strip** across the top of a detail view whose sections are real routes — for example an organization's **Detail / Roles / Invites** screens. Each item is its own URL, so navigation is link-based, and each can surface a count pill (member count, pending invites).
+
+This is structurally distinct from [`Tabs`](/docs/components/navigation/tabs): Tabs uses button triggers and in-page content panels for switching content on the same route, with no link navigation and no count slot. Reach for `SectionNav` when each section is a separate page, and `Tabs` when the panels live on the same route.
+
+## Anatomy
+
+Each `SectionNavItem` renders a leading Phosphor `icon`, a `label`, and an optional trailing `count` pill. The active item (`isActive`) gets `text-primary`, a static 2px primary underline, and a primary-tinted count pill — and is marked with `aria-current="page"` for assistive technology.
+
+## next/link navigation (asChild)
+
+By default a `SectionNavItem` renders an `<a>` and applies `href` directly. For client-side navigation, pass `asChild` and provide a `next/link` element as the single child — the item's chrome (icon, label, count) is merged onto the rendered anchor.
+
+```tsx
+import Link from 'next/link';
+import { UsersIcon, ShieldIcon, EnvelopeIcon } from '@phosphor-icons/react';
+import { SectionNav, SectionNavItem } from '@/components/ui/section-nav/section-nav';
+
+export function OrgSectionNav({ active }: { active: 'detail' | 'roles' | 'invites' }) {
+  return (
+    <SectionNav aria-label="Organization sections">
+      <SectionNavItem asChild isActive={active === 'detail'} icon={UsersIcon} label="Detail">
+        <Link href="/org/detail" />
+      </SectionNavItem>
+      <SectionNavItem asChild isActive={active === 'roles'} icon={ShieldIcon} label="Roles" count={4}>
+        <Link href="/org/roles" />
+      </SectionNavItem>
+      <SectionNavItem asChild isActive={active === 'invites'} icon={EnvelopeIcon} label="Invites" count={2}>
+        <Link href="/org/invites" />
+      </SectionNavItem>
+    </SectionNav>
+  );
+}
+```
+
+## Count pill
+
+Pass a `count` to render a trailing pill. It is neutral-toned at rest and re-tones to primary on the active item. `0` renders; omit `count` (or pass `undefined`) to hide the pill entirely.
+
+```tsx
+<SectionNavItem href="/roles" label="Roles" count={4} />   {/* neutral pill */}
+<SectionNavItem href="/roles" label="Roles" count={4} isActive /> {/* primary-tinted pill */}
+<SectionNavItem href="/detail" label="Detail" />          {/* no pill */}
+```
+
+## Installation
+
+```bash
+npx visor add section-nav
+```
+
+This copies two files into your project:
+
+- `components/ui/section-nav/section-nav.tsx` — the component
+- `components/ui/section-nav/section-nav.module.css` — the styles
+
+```tsx
+import { SectionNav, SectionNavItem } from '@/components/ui/section-nav/section-nav';
+```
+
+## API Reference
+
+### SectionNav
+
+The root element renders a `<nav>` with `aria-label="section"` (override via `aria-label`) and accepts all standard HTML nav attributes.
+
+### SectionNavItem
+
+<PropsTable component="section-nav" />
+
+## Accessibility
+
+- `SectionNav` renders a `<nav>` landmark with `aria-label="section"` by default — override it with a more specific label (e.g. `"Organization sections"`) when a page has multiple navigation regions.
+- The active item sets `aria-current="page"`, communicating the current section to screen readers.
+- Color is never the sole indicator of the active item: the active state also carries a 2px underline and `aria-current`.
+- Leading icons are decorative (`aria-hidden`) — the label carries the accessible name.

@@ -1,0 +1,99 @@
+/* SectionNav — link/anchor-based section sub-navigation.
+ *
+ * A horizontal strip of links: leading Phosphor icon + label + optional
+ * trailing count pill. The active item gets text-primary, a static 2px
+ * primary underline, and a primary-tinted count pill.
+ *
+ * Distinct from Tabs: items navigate via href (next/link asChild), there are
+ * no content panels, and the underline is static (not an animated indicator).
+ *
+ * Theme-agnostic: all values reference CSS custom property tokens.
+ */
+
+/* Root — the nav strip with a hairline baseline the active underline sits on. */
+.root {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-1, 0.25rem);
+  border-bottom: var(--stroke-width-thin, 1px) solid
+    var(--border-default, #e5e7eb);
+  overflow-x: auto;
+}
+
+/* Item — a single link: icon + label + optional count pill. */
+.item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  padding: var(--spacing-3, 0.75rem) var(--spacing-1, 0.25rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-tight, 1.25);
+  white-space: nowrap;
+  color: var(--text-secondary, #6b7280);
+  text-decoration: none;
+  cursor: pointer;
+  /* Reserve the 2px underline so resting/active items don't shift vertically. */
+  border-bottom: 2px solid transparent;
+  margin-bottom: calc(-1 * var(--stroke-width-thin, 1px));
+  background: transparent;
+  transition: color var(--motion-duration-fast, 150ms)
+      var(--motion-easing-standard, ease),
+    border-color var(--motion-duration-fast, 150ms)
+      var(--motion-easing-standard, ease);
+}
+
+.item:hover {
+  color: var(--text-primary, #111827);
+}
+
+.item:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+/* Active — text-primary + 2px primary underline. */
+.itemActive {
+  color: var(--text-primary, #111827);
+  border-bottom-color: var(--primary, #2563eb);
+}
+
+/* Leading icon. */
+.icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+/* Label text. */
+.label {
+  min-width: 0;
+}
+
+/* Trailing count pill. */
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: var(--radius-full, 9999px);
+  padding: 0 var(--spacing-2, 0.5rem);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-medium, 500);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
+}
+
+/* Neutral (resting) count pill. */
+.countNeutral {
+  background-color: var(--surface-muted, #f3f4f6);
+  color: var(--text-secondary, #6b7280);
+}
+
+/* Primary-tinted count pill — active item. */
+.countActive {
+  background-color: var(--surface-accent-subtle, #eff6ff);
+  color: var(--text-link, #2563eb);
+}
