@@ -7,7 +7,7 @@
   width: fit-content;
   border-radius: var(--radius-md, 0.375rem);
   border: 1px solid var(--select-border, var(--border-default, #e5e7eb));
-  background-color: var(--select-bg, var(--surface-interactive-default, #f9fafb));
+  background-color: var(--field-control-bg, var(--select-bg, var(--surface-interactive-default, #f9fafb)));
   padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
   font-size: var(--font-size-sm, 0.875rem);
   /* Match Input's line-height so the trigger's height tracks the text field at
@@ -72,6 +72,14 @@
 
 .triggerBorderless:focus-visible {
   border-color: transparent;
+}
+
+:global([data-density="editorial"]) .trigger {
+  background-color: var(--field-control-bg, var(--surface-card));
+}
+
+:global([data-density="editorial"]) .triggerBorderless {
+  background-color: var(--field-control-bg, var(--surface-card));
 }
 
 .triggerSizeSm {

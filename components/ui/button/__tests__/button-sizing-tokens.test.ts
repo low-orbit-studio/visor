@@ -1,16 +1,13 @@
 /**
- * Button per-size sizing hooks (CSS-only, additive, zero-regression)
+ * Button density axis (CSS-only, zero-regression)
  *
- * Reconciles canonical Button sizing against the blessed admin reference build.
- * The blessed build runs md buttons at a 34px (2.125rem) fixed height with
- * line-height:normal and sm buttons at a 13px (0.8125rem) font-size. To let a
- * consumer overlay re-drive those metrics without forking this stylesheet, the
- * divergent values are wired through CSS hooks. Each hook FALLS BACK to the
- * value canonical rendered before this pass, so an unset hook is byte-identical
- * to the prior behavior (zero-regression).
+ * Canonical defaults are inlined as plain values. Under data-density="editorial"
+ * (set on any ancestor), the editorial density axis bakes in the blessed admin
+ * values — md buttons at 2.125rem height with line-height:normal, sm buttons at
+ * 0.8125rem font-size.
  *
- * Pattern follows dropdown-menu-editorial-tokens.test.ts: readFileSync the CSS
- * and assert the exact hook strings.
+ * Default (no data-density) rendering is byte-identical to the prior fallback
+ * behavior (zero-regression).
  */
 
 import { readFileSync } from "fs"
@@ -22,22 +19,40 @@ const css = readFileSync(
   "utf-8"
 )
 
-describe("Button per-size sizing hooks (CSS-only, additive, zero-regression)", () => {
-  describe(".sizeMd hooks", () => {
-    it("height wraps --button-height-md, defaulting to canonical 2.5rem", () => {
-      expect(css).toContain("height: var(--button-height-md, 2.5rem);")
+describe("Button density axis (CSS-only, zero-regression)", () => {
+  describe(".sizeMd canonical defaults", () => {
+    it("height is inlined as canonical 2.5rem (no hook indirection)", () => {
+      expect(css).toContain("height: 2.5rem;")
     })
 
-    it("line-height wraps --button-line-height-md, defaulting to canonical 1", () => {
-      expect(css).toContain("line-height: var(--button-line-height-md, 1);")
+    it("line-height is inlined as canonical 1 (no hook indirection)", () => {
+      expect(css).toContain("line-height: 1;")
     })
   })
 
-  describe(".sizeSm hooks", () => {
-    it("font-size wraps --button-font-size-sm, defaulting to var(--font-size-xs, 0.75rem)", () => {
+  describe(".sizeSm canonical defaults", () => {
+    it("font-size is inlined as canonical var(--font-size-xs, 0.75rem) (no hook indirection)", () => {
+      expect(css).toContain("font-size: var(--font-size-xs, 0.75rem);")
+    })
+  })
+
+  describe("editorial density rules", () => {
+    it("editorial sizeMd sets height: 2.125rem", () => {
       expect(css).toContain(
-        "font-size: var(--button-font-size-sm, var(--font-size-xs, 0.75rem));"
+        ':global([data-density="editorial"]) .sizeMd'
       )
+      expect(css).toContain("height: 2.125rem;")
+    })
+
+    it("editorial sizeMd sets line-height: normal", () => {
+      expect(css).toContain("line-height: normal;")
+    })
+
+    it("editorial sizeSm sets font-size: 0.8125rem", () => {
+      expect(css).toContain(
+        ':global([data-density="editorial"]) .sizeSm'
+      )
+      expect(css).toContain("font-size: 0.8125rem;")
     })
   })
 })

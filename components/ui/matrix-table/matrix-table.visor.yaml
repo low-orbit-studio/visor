@@ -1,5 +1,5 @@
 name: MatrixTable
-description: A fixed members×roles assignment grid. Sticky-left identity column with an uppercase, tracked "MEMBER" eyebrow header; centered boolean cells rendered as a 22px filled-success disc with a check glyph (active) or a muted dash (not assigned); optional string cells render as plain text; multi-line centered role-column headers (label over count) that opt out of the uppercase header treatment; an editorial cell rhythm (spacing-5 horizontal) and hairline borders driven by the shared --dt-* table hooks (--dt-container-radius/-shadow, --dt-header-bg, --dt-row-bg, --hairline). No list machinery — no selection column, no sort buttons, no pagination footer.
+description: A fixed members×roles assignment grid. Sticky-left identity column with an uppercase, tracked "MEMBER" eyebrow header; centered boolean cells rendered as a 22px filled-success disc with a check glyph (active) or a muted dash (not assigned); optional string cells render as plain text; multi-line centered role-column headers (label over count) that opt out of the uppercase header treatment; an editorial cell rhythm (spacing-5 horizontal) and hairline borders driven by the shared --dt-* table hooks (--dt-container-radius/-shadow, --dt-header-bg, --dt-row-bg, --hairline). Participates in the density axis — placing an ancestor with data-density="editorial" activates the editorial surface treatment (flush container, page/card row mix). No list machinery — no selection column, no sort buttons, no pagination footer.
 extends: HTMLDivElement
 category: admin
 
@@ -26,7 +26,9 @@ why: >
   optional active-cell tooltip, and multi-line centered role-column headers.
   Theme-agnostic — references only CSS custom property tokens (the shared --dt-*
   table hooks plus palette/role tokens), so it reads as a sibling of the
-  editorial data-table on every palette.
+  data-table on every palette. Participates in the density axis: place
+  data-density="editorial" on any ancestor to activate the editorial surface
+  treatment (flush container, page/card row mix) without forking the component.
 
 variants: {}
 

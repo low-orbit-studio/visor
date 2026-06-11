@@ -22,22 +22,16 @@ why: >
   styling, keyboard shortcut display, and animated enter/exit transitions —
   all themed via CSS custom properties.
 
-editorial_token_hooks: >
-  PL-1626 editorial admin treatment is driven through component-local --dropdown-*
-  hooks, each falling back to the value the component rendered before the editorial
-  pass (byte-identical default rendering). A prototype tokens.css can opt in centrally.
-  Content: --dropdown-content-gap, --dropdown-content-radius, --dropdown-content-bg,
-  --dropdown-content-padding, --dropdown-content-ring, --dropdown-content-shadow.
-  Item: --dropdown-item-gap, --dropdown-item-radius, --dropdown-item-padding,
-  --dropdown-item-font-size, --dropdown-item-hover-bg, plus leading-icon
-  --dropdown-item-icon-color / --dropdown-item-icon-size (via .item > svg and
-  .subTrigger > svg). Destructive: --dropdown-item-destructive-icon-color,
-  --dropdown-item-destructive-hover-bg. Label: --dropdown-label-padding,
-  --dropdown-label-font-size, --dropdown-label-font-weight,
-  --dropdown-label-letter-spacing, --dropdown-label-text-transform,
-  --dropdown-label-color. Shortcut: --dropdown-shortcut-font-size,
-  --dropdown-shortcut-letter-spacing, --dropdown-shortcut-color (also tints
-  .subTriggerIcon). Separator: --dropdown-separator-margin, --dropdown-separator-color.
+density_axis: >
+  Editorial admin treatment is activated by placing data-density="editorial"
+  on any ancestor (typically the app root). Editorial values — Content: 1px gap,
+  radius-md, surface-elev background with color-mix fallback, 6px padding, inset
+  hairline ring. Item: 13px font, 8px 10px padding, spacing-3 gap, radius-sm,
+  text-tertiary leading icon at 16px, surface-subtle hover, color-mix 14%
+  destructive hover. Label: 11px uppercase 0.08em tracking text-tertiary
+  6px 10px 2px padding. Shortcut: 11px text-muted 0.04em tracking. Separator:
+  hairline color, 4px 2px margin. Default (no attribute) rendering is
+  byte-identical to the pre-density canonical fallbacks.
 
 sub_components:
   - name: DropdownMenu

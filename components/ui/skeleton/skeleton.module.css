@@ -11,6 +11,8 @@
 .skeleton {
   --_shimmer-duration: 1.5s;
   border-radius: var(--radius-md, 0.375rem);
+  /* Default (light) gradient — theme-tunable, falls back to the muted
+     surface ramp (Tailwind Gray) */
   background: linear-gradient(
     90deg,
     var(--skeleton-from, #f3f4f6),
@@ -19,6 +21,16 @@
   );
   background-size: 200% 100%;
   animation: shimmer var(--_shimmer-duration) var(--motion-easing-linear, linear) infinite;
+}
+
+/* Density axis — editorial: dim, text-tinted gradient for dark admin surfaces */
+:global([data-density="editorial"]) .skeleton {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--text-primary) 6%, transparent),
+    color-mix(in srgb, var(--text-primary) 10%, transparent),
+    color-mix(in srgb, var(--text-primary) 6%, transparent)
+  );
 }
 
 /* ── Shape variants (VI-516, opt-in) ─────────────────────────────────────

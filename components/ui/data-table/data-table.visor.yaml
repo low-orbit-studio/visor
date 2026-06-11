@@ -117,11 +117,13 @@ props:
       root, which sets the `--dt-row-py` custom property the table's cells
       consume. `"compact"` = 8px (sub-content density: long lists, narrow
       viewports). `"default"` = 12px (current behaviour; backward-compatible
-      with consumers that don't pass the prop). `"editorial"` = 20px (generous;
-      each row reads as a card; high-design admin patterns) — column headers
-      also receive the editorial treatment: uppercase, `--font-size-xs` (~11px),
-      `--text-tertiary` color, and `letter-spacing: 0.08em`. Themes can
-      override per-density values without forking the component by targeting
+      with consumers that don't pass the prop). `"editorial"` = 16px
+      (spacing-4; generous but compact enough for dense admin grids) — column
+      headers also receive the editorial treatment: uppercase, 11px
+      (overridable via `--dt-header-font-size`), `--text-tertiary` color, and
+      `letter-spacing: 0.08em`; the editorial surface treatment (flush
+      container, card/page row mix) is also applied. Themes can override
+      per-density values without forking the component by targeting
       `[data-density="…"]` from their own selector.
   - name: rowTone
     type: "(row: TData) => \"live\" | \"warn\" | \"scheduled\" | \"sold\" | \"draft\" | \"danger\" | \"info\" | undefined"

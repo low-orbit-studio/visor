@@ -1,14 +1,15 @@
 /**
- * PL-1626: DropdownMenu editorial token hooks (CSS-only, additive, zero-regression)
+ * DropdownMenu density axis (data-density="editorial")
  *
- * Verifies the full --dropdown-* editorial hook layer ported from the blessed
- * admin reference build is present in dropdown-menu.module.css. Every hook FALLS
- * BACK to the literal value the component rendered before the editorial pass, so
- * default rendering of any existing consumer is byte-identical until a prototype
- * tokens.css sets the editorial value centrally.
+ * Verifies that dropdown-menu.module.css carries the first-class density rules
+ * that bake in the editorial admin treatment. The old --dropdown-* hook layer
+ * (PL-1626) has been retired; values are now expressed as
+ * :global([data-density="editorial"]) .localClass { ... } rules, switched by
+ * placing data-density="editorial" on any ancestor element.
  *
- * Pattern follows table.test.tsx's "editorial token hooks" block: readFileSync
- * the CSS and assert the exact hook strings.
+ * Default (no data-density attr) rendering must be byte-identical to the
+ * pre-refactor canonical fallbacks — verified implicitly by the canonical
+ * literals present in the default rules.
  */
 
 import { readFileSync } from "fs"
@@ -20,165 +21,196 @@ const css = readFileSync(
   "utf-8"
 )
 
-describe("DropdownMenu editorial token hooks (CSS-only, additive, zero-regression)", () => {
-  describe("content / subContent hooks", () => {
-    it("gap wraps --dropdown-content-gap, defaulting to 0px", () => {
-      expect(css).toContain("gap: var(--dropdown-content-gap, 0px);")
-    })
-
-    it("radius wraps --dropdown-content-radius, defaulting to var(--radius-lg, 0.5rem)", () => {
-      expect(css).toContain(
-        "border-radius: var(--dropdown-content-radius, var(--radius-lg, 0.5rem));"
-      )
-    })
-
-    it("background wraps --dropdown-content-bg, defaulting to the popover/card chain", () => {
-      expect(css).toContain(
-        "background-color: var(--dropdown-content-bg, var(--surface-popover, var(--surface-card, #ffffff)));"
-      )
-    })
-
-    it("padding wraps --dropdown-content-padding, defaulting to var(--spacing-1, 0.25rem)", () => {
-      expect(css).toContain(
-        "padding: var(--dropdown-content-padding, var(--spacing-1, 0.25rem));"
-      )
-    })
-
-    it("box-shadow exposes --dropdown-content-ring and --dropdown-content-shadow", () => {
-      expect(css).toContain("var(--dropdown-content-ring, 0 0 #0000)")
-      expect(css).toContain("var(--dropdown-content-shadow, var(--shadow-lg))")
-    })
-  })
-
-  describe("item hooks", () => {
-    it("gap wraps --dropdown-item-gap, defaulting to the original calc()", () => {
-      expect(css).toContain(
-        "gap: var(--dropdown-item-gap, calc(var(--spacing-2, 0.5rem) + var(--spacing-1, 0.25rem) / 2));"
-      )
-    })
-
-    it("radius wraps --dropdown-item-radius, defaulting to var(--radius-md, 0.375rem)", () => {
-      expect(css).toContain(
-        "border-radius: var(--dropdown-item-radius, var(--radius-md, 0.375rem));"
-      )
-    })
-
-    it("padding wraps --dropdown-item-padding, defaulting to the original spacing", () => {
-      expect(css).toContain(
-        "padding: var(--dropdown-item-padding, var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem));"
-      )
-    })
-
-    it("font-size wraps --dropdown-item-font-size, defaulting to var(--font-size-sm, 0.875rem)", () => {
-      expect(css).toContain(
-        "font-size: var(--dropdown-item-font-size, var(--font-size-sm, 0.875rem));"
-      )
-    })
-
-    it("hover background wraps --dropdown-item-hover-bg, defaulting to var(--surface-interactive-hover, #f3f4f6)", () => {
-      expect(css).toContain(
-        "background-color: var(--dropdown-item-hover-bg, var(--surface-interactive-hover, #f3f4f6));"
-      )
-    })
-  })
-
-  describe("leading-icon hooks", () => {
-    it(".item > svg color wraps --dropdown-item-icon-color, defaulting to currentColor", () => {
-      expect(css).toMatch(/\.item > svg \{[\s\S]*?color: var\(--dropdown-item-icon-color, currentColor\);/)
-    })
-
-    it(".item > svg size wraps --dropdown-item-icon-size, defaulting to 1em", () => {
-      expect(css).toContain("width: var(--dropdown-item-icon-size, 1em);")
-      expect(css).toContain("height: var(--dropdown-item-icon-size, 1em);")
-    })
-
-    it(".subTrigger > svg leading-icon rule is present and tokenized", () => {
+describe("DropdownMenu density axis — editorial rules present", () => {
+  describe("content / subContent — editorial block", () => {
+    it("editorial content has gap: 1px", () => {
       expect(css).toMatch(
-        /\.subTrigger > svg:not\(\.subTriggerIcon\) \{[\s\S]*?color: var\(--dropdown-item-icon-color, currentColor\);/
+        /\[data-density="editorial"\][^}]*\.content[^}]*\{[^}]*gap:\s*1px/
+      )
+    })
+
+    it("editorial content has border-radius: var(--radius-md)", () => {
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.content[^}]*\{[^}]*border-radius:\s*var\(--radius-md\)/
+      )
+    })
+
+    it("editorial content background uses --surface-elev with color-mix fallback", () => {
+      expect(css).toContain("var(--surface-elev, color-mix(in srgb, var(--surface-card), var(--surface-muted, var(--surface-card))))")
+    })
+
+    it("editorial content has padding: 6px", () => {
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.content[^}]*\{[^}]*padding:\s*6px/
+      )
+    })
+
+    it("editorial content box-shadow has inset hairline ring", () => {
+      expect(css).toContain(
+        "inset 0 0 0 1px var(--hairline, var(--border-subtle, transparent))"
       )
     })
   })
 
-  describe("destructive-item hooks", () => {
-    it(".itemDestructive > svg icon color wraps --dropdown-item-destructive-icon-color", () => {
-      expect(css).toContain(
-        "color: var(--dropdown-item-destructive-icon-color, var(--text-error, var(--destructive, #ef4444)));"
+  describe("item — editorial block", () => {
+    it("editorial item has font-size: 13px", () => {
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.item[^}]*\{[^}]*font-size:\s*13px/
       )
     })
 
-    it("destructive hover background wraps --dropdown-item-destructive-hover-bg", () => {
-      expect(css).toContain(
-        "background-color: var(--dropdown-item-destructive-hover-bg, var(--surface-error-subtle, rgba(239, 68, 68, 0.1)));"
+    it("editorial item has padding: 8px 10px", () => {
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.item[^}]*\{[^}]*padding:\s*8px 10px/
+      )
+    })
+
+    it("editorial item has gap: var(--spacing-3)", () => {
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.item[^}]*\{[^}]*gap:\s*var\(--spacing-3\)/
+      )
+    })
+
+    it("editorial item has border-radius: var(--radius-sm)", () => {
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.item[^}]*\{[^}]*border-radius:\s*var\(--radius-sm\)/
+      )
+    })
+
+    it("editorial item hover uses --surface-subtle", () => {
+      expect(css).toContain("background-color: var(--surface-subtle);")
+    })
+  })
+
+  describe("leading icon — editorial block", () => {
+    it("editorial .item > svg has color: var(--text-tertiary)", () => {
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.item > svg[^}]*\{[^}]*color:\s*var\(--text-tertiary\)/
+      )
+    })
+
+    it("editorial .item > svg has width: 16px and height: 16px", () => {
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.item > svg[^}]*\{[^}]*width:\s*16px/
+      )
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.item > svg[^}]*\{[^}]*height:\s*16px/
       )
     })
   })
 
-  describe("label hooks (editorial section heading)", () => {
-    it("padding wraps --dropdown-label-padding", () => {
-      expect(css).toContain("padding: var(--dropdown-label-padding,")
-    })
-
-    it("font-size wraps --dropdown-label-font-size, defaulting to var(--font-size-xs, 0.75rem)", () => {
+  describe("destructive item — editorial block", () => {
+    it("editorial destructive hover uses color-mix 14% destructive", () => {
       expect(css).toContain(
-        "font-size: var(--dropdown-label-font-size, var(--font-size-xs, 0.75rem));"
-      )
-    })
-
-    it("font-weight wraps --dropdown-label-font-weight, defaulting to inherit", () => {
-      expect(css).toContain("font-weight: var(--dropdown-label-font-weight, inherit);")
-    })
-
-    it("letter-spacing wraps --dropdown-label-letter-spacing, defaulting to normal", () => {
-      expect(css).toContain(
-        "letter-spacing: var(--dropdown-label-letter-spacing, normal);"
-      )
-    })
-
-    it("text-transform wraps --dropdown-label-text-transform, defaulting to none", () => {
-      expect(css).toContain(
-        "text-transform: var(--dropdown-label-text-transform, none);"
-      )
-    })
-
-    it("color wraps --dropdown-label-color, defaulting to var(--text-secondary, #6b7280)", () => {
-      expect(css).toContain(
-        "color: var(--dropdown-label-color, var(--text-secondary, #6b7280));"
+        "color-mix(in srgb, var(--destructive) 14%, transparent)"
       )
     })
   })
 
-  describe("shortcut hooks", () => {
-    it("font-size wraps --dropdown-shortcut-font-size, defaulting to var(--font-size-xs, 0.75rem)", () => {
-      expect(css).toContain(
-        "font-size: var(--dropdown-shortcut-font-size, var(--font-size-xs, 0.75rem));"
+  describe("label — editorial block", () => {
+    it("editorial label has font-size: 11px", () => {
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.label[^}]*\{[^}]*font-size:\s*11px/
       )
     })
 
-    it("letter-spacing wraps --dropdown-shortcut-letter-spacing, defaulting to 0.1em", () => {
-      expect(css).toContain(
-        "letter-spacing: var(--dropdown-shortcut-letter-spacing, 0.1em);"
+    it("editorial label has text-transform: uppercase", () => {
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.label[^}]*\{[^}]*text-transform:\s*uppercase/
       )
     })
 
-    it("color wraps --dropdown-shortcut-color, defaulting to var(--text-secondary, #6b7280)", () => {
-      expect(css).toContain(
-        "color: var(--dropdown-shortcut-color, var(--text-secondary, #6b7280));"
+    it("editorial label has letter-spacing: 0.08em", () => {
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.label[^}]*\{[^}]*letter-spacing:\s*0\.08em/
       )
     })
 
-    it(".subTriggerIcon color wraps --dropdown-shortcut-color, defaulting to currentColor", () => {
-      expect(css).toContain("color: var(--dropdown-shortcut-color, currentColor);")
+    it("editorial label has color: var(--text-tertiary)", () => {
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.label[^}]*\{[^}]*color:\s*var\(--text-tertiary\)/
+      )
+    })
+
+    it("editorial label has padding: 6px 10px 2px", () => {
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.label[^}]*\{[^}]*padding:\s*6px 10px 2px/
+      )
     })
   })
 
-  describe("separator hooks", () => {
-    it("margin wraps --dropdown-separator-margin", () => {
-      expect(css).toContain("margin: var(--dropdown-separator-margin,")
+  describe("shortcut — editorial block", () => {
+    it("editorial shortcut has font-size: 11px", () => {
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.shortcut[^}]*\{[^}]*font-size:\s*11px/
+      )
     })
 
-    it("color wraps --dropdown-separator-color, defaulting to var(--border-default, #e5e7eb)", () => {
+    it("editorial shortcut has color: var(--text-muted)", () => {
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.shortcut[^}]*\{[^}]*color:\s*var\(--text-muted\)/
+      )
+    })
+
+    it("editorial shortcut has letter-spacing: 0.04em", () => {
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.shortcut[^}]*\{[^}]*letter-spacing:\s*0\.04em/
+      )
+    })
+  })
+
+  describe("separator — editorial block", () => {
+    it("editorial separator uses --hairline for background", () => {
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.separator[^}]*\{[^}]*background-color:\s*var\(--hairline/
+      )
+    })
+
+    it("editorial separator has margin: 4px 2px", () => {
+      expect(css).toMatch(
+        /\[data-density="editorial"\][^}]*\.separator[^}]*\{[^}]*margin:\s*4px 2px/
+      )
+    })
+  })
+
+  describe("default (canonical) rules still present — zero regression", () => {
+    it("default content has gap: 0px", () => {
+      expect(css).toContain("gap: 0px;")
+    })
+
+    it("default content background uses surface-popover chain", () => {
       expect(css).toContain(
-        "background-color: var(--dropdown-separator-color, var(--border-default, #e5e7eb));"
+        "background-color: var(--surface-popover, var(--surface-card, #ffffff));"
+      )
+    })
+
+    it("default content has padding: var(--spacing-1, 0.25rem)", () => {
+      expect(css).toContain("padding: var(--spacing-1, 0.25rem);")
+    })
+
+    it("default item has font-size: var(--font-size-sm, 0.875rem)", () => {
+      expect(css).toContain("font-size: var(--font-size-sm, 0.875rem);")
+    })
+
+    it("default item has padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem)", () => {
+      expect(css).toContain(
+        "padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);"
+      )
+    })
+
+    it("default hover bg uses surface-interactive-hover chain", () => {
+      expect(css).toContain(
+        "background-color: var(--surface-interactive-hover, #f3f4f6);"
+      )
+    })
+
+    it("default label color uses text-secondary chain", () => {
+      expect(css).toContain("color: var(--text-secondary, #6b7280);")
+    })
+
+    it("default separator color uses border-default chain", () => {
+      expect(css).toContain(
+        "background-color: var(--border-default, #e5e7eb);"
       )
     })
   })

@@ -182,7 +182,7 @@ describe("aria-invalid styling", () => {
   })
 })
 
-describe("editorial token hooks (CSS-only, additive, zero-regression)", () => {
+describe("editorial density axis (CSS-only, zero-regression)", () => {
   const css = readFileSync(
     resolve(__dirname, "..", "input.module.css"),
     "utf-8"
@@ -194,9 +194,22 @@ describe("editorial token hooks (CSS-only, additive, zero-regression)", () => {
     )
   })
 
+  it("editorial base background-color keeps --field-control-bg but defaults to var(--surface-card)", () => {
+    expect(css).toContain(':global([data-density="editorial"]) .base')
+    expect(css).toContain(
+      "background-color: var(--field-control-bg, var(--surface-card));"
+    )
+  })
+
   it("aria-invalid color-mix base wraps --field-control-bg, defaulting to --input-bg", () => {
     expect(css).toContain(
       "color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--input-bg, #f9fafb)))"
+    )
+  })
+
+  it("editorial aria-invalid color-mix base defaults inner fallback to var(--surface-card)", () => {
+    expect(css).toContain(
+      "color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--surface-card)))"
     )
   })
 
@@ -207,26 +220,33 @@ describe("editorial token hooks (CSS-only, additive, zero-regression)", () => {
   })
 })
 
-describe("size token hooks (CSS-only, additive, zero-regression)", () => {
+describe("size density axis (CSS-only, zero-regression)", () => {
   const css = readFileSync(
     resolve(__dirname, "..", "input.module.css"),
     "utf-8"
   )
 
-  it("sizeSm height wraps --input-height-sm, defaulting to canonical 2.25rem", () => {
-    expect(css).toContain("height: var(--input-height-sm, 2.25rem);")
+  it("sizeSm height is inlined as canonical 2.25rem (no hook indirection)", () => {
+    expect(css).toContain("height: 2.25rem;")
   })
 
-  it("sizeSm border-radius wraps --input-radius-sm, defaulting to --radius-sm 0.25rem", () => {
-    expect(css).toContain(
-      "border-radius: var(--input-radius-sm, var(--radius-sm, 0.25rem));"
-    )
+  it("sizeSm border-radius is inlined as canonical var(--radius-sm, 0.25rem) (no hook indirection)", () => {
+    expect(css).toContain("border-radius: var(--radius-sm, 0.25rem);")
   })
 
   it("sizeSm padding wraps --input-padding-sm, defaulting to the current spacing shorthand", () => {
     expect(css).toContain(
       "padding: var(--input-padding-sm, var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem));"
     )
+  })
+
+  it("editorial sizeSm sets height: 33.5px", () => {
+    expect(css).toContain(':global([data-density="editorial"]) .sizeSm')
+    expect(css).toContain("height: 33.5px;")
+  })
+
+  it("editorial sizeSm sets border-radius: var(--radius-md)", () => {
+    expect(css).toContain("border-radius: var(--radius-md);")
   })
 
   it("sizeMd height wraps --input-height-md, defaulting to auto", () => {

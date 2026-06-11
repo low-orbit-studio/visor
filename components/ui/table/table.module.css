@@ -1,5 +1,6 @@
 /* Table container — radius/shadow are theme-driven so a consumer that wraps the
-   table in its own rounded shell (e.g. with a bulk bar on top) can flatten them. */
+   table in its own rounded shell (e.g. with a bulk bar on top) can flatten them.
+   Under the editorial density axis these default to 0/none (flush admin shell). */
 .container {
   position: relative;
   width: 100%;
@@ -7,6 +8,25 @@
   overflow-y: hidden;
   border-radius: var(--dt-container-radius, var(--radius-lg, 0.5rem));
   box-shadow: var(--dt-container-shadow, var(--shadow-sm));
+}
+
+/* Editorial density — bakes the editorial-admin surface values into the density
+   axis. Ancestor [data-density="editorial"] (set by DataTable's density prop or
+   an app-root attribute) triggers these rules. The var() reads keep --dt-* hooks
+   working for per-theme overrides; the fallbacks resolve to the editorial values
+   when no hook is set.
+   Turbopack pure-selector rule: never bare :global — always paired with a local class. */
+:global([data-density="editorial"]) .container {
+  border-radius: var(--dt-container-radius, 0);
+  box-shadow: var(--dt-container-shadow, none);
+}
+
+:global([data-density="editorial"]) .head {
+  background-color: var(--dt-header-bg, var(--surface-card));
+}
+
+:global([data-density="editorial"]) .cell {
+  background-color: var(--dt-row-bg, color-mix(in srgb, var(--surface-page) 75%, var(--surface-card) 25%));
 }
 
 /* Table */

@@ -337,25 +337,26 @@ describe("FilterChip", () => {
     expect(screen.getByRole("checkbox", { name: "Events" })).toBeInTheDocument()
   })
 
-  /* Editorial token hooks (VI admin reconcile).
-     These classes carry the --chip-* hooks an overlay drives to the blessed look.
-     The hooks default to canonical's current values, so default render is unchanged. */
-  it("applies the filterChip hook class (carries --chip-resting-bg)", () => {
+  /* Density-axis class guards (VI admin editorial reconcile).
+     These classes are the attachment points for density rules — the classes
+     themselves must always be applied; density="editorial" on an ancestor
+     activates the overrides baked into the CSS. */
+  it("applies the filterChip class (density resting-bg rule target)", () => {
     render(<FilterChip label="Events" />)
     expect(screen.getByRole("checkbox")).toHaveClass(styles.filterChip)
   })
 
-  it("applies the sizeMd hook class by default (carries --chip-font-size / --chip-gap)", () => {
+  it("applies the sizeMd class by default (density font-size / gap rule target)", () => {
     render(<FilterChip label="Events" />)
     expect(screen.getByRole("checkbox")).toHaveClass(styles.sizeMd)
   })
 
-  it("selected (default accent treatment) applies the .selected hook class (carries --chip-selected-* hooks)", () => {
+  it("selected (default accent treatment) applies the .selected class (density selected rule target)", () => {
     render(<FilterChip label="Events" selected />)
     expect(screen.getByRole("checkbox")).toHaveClass(styles.selected)
   })
 
-  it("count pill carries the .count hook class (count shape/weight/align hooks)", () => {
+  it("count pill carries the .count class (density count shape/weight/align rule target)", () => {
     const { container } = render(<FilterChip label="Active" count={47} />)
     expect(container.querySelector('[data-slot="filter-chip-count"]')).toHaveClass(styles.count)
   })

@@ -15,33 +15,46 @@
 }
 
 /* Field Label
- * Type ramp is theme-tunable (VI-516 pattern): editorial admin themes can run
- * a 13px / secondary label without per-usage changes. The token defaults equal
- * canonical's current rendering byte-for-byte. */
+ * Default: canonical 14px / text-primary. Density axis: editorial tightens
+ * to 13px / text-secondary. Switch via data-density="editorial" on any ancestor. */
 .fieldLabel {
-  font-size: var(--field-label-font-size, var(--font-size-sm, 0.875rem));
+  font-size: var(--font-size-sm, 0.875rem);
   font-weight: var(--font-weight-medium, 500);
-  color: var(--field-label-color, var(--text-primary, currentColor));
+  color: var(--text-primary, currentColor);
   line-height: 1.4;
 }
 
+:global([data-density="editorial"]) .fieldLabel {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
 /* Field Description
- * Token defaults equal canonical's current rendering; editorial admin can run
- * 11px / text-tertiary via the tokens. */
+ * Default: canonical 12px / text-secondary. Density axis: editorial tightens
+ * to 11px / text-tertiary. */
 .fieldDescription {
-  font-size: var(--field-description-font-size, var(--font-size-xs, 0.75rem));
+  font-size: var(--font-size-xs, 0.75rem);
   font-weight: var(--font-weight-normal, 400);
-  color: var(--field-description-color, var(--text-secondary, currentColor));
+  color: var(--text-secondary, currentColor);
   line-height: 1.5;
   margin: 0;
 }
 
+:global([data-density="editorial"]) .fieldDescription {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
 /* Field Error
- * Token default equals canonical's current rendering; editorial admin runs 13px. */
+ * Default: canonical 14px. Density axis: editorial tightens to 13px. */
 .fieldError {
-  font-size: var(--field-error-font-size, var(--font-size-sm, 0.875rem));
+  font-size: var(--font-size-sm, 0.875rem);
   font-weight: var(--font-weight-normal, 400);
   color: var(--text-error, currentColor);
+}
+
+:global([data-density="editorial"]) .fieldError {
+  font-size: 13px;
 }
 
 /* Leading-icon layout — opt-in. Only applied when the consumer passes an

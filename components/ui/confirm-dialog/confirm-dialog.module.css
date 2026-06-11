@@ -204,15 +204,25 @@
  * content card in normal flow WITHOUT Radix DialogPortal/DialogOverlay/auto
  * X-close, so consumers can stack multiple dialogs inside one shared scrim.
  * Mirrors the dialog content card visuals (surface/radius/padding/shadow) but
- * uses static positioning instead of fixed centering. */
+ * uses static positioning instead of fixed centering.
+ * Default: 32rem max-width, radius-lg, surface-card, spacing-6, shadow-xl.
+ * Density axis: editorial uses 480px, radius-xl, surface-card, spacing-8, shadow-lg. */
 .inlineSurface {
   position: relative;
   width: 100%;
-  max-width: var(--dialog-max-width, 32rem);
-  border-radius: var(--dialog-radius, var(--radius-lg, 0.5rem));
-  background-color: var(--dialog-surface, var(--surface-card, var(--surface-page, #ffffff)));
-  padding: var(--dialog-padding, var(--spacing-6, 1.5rem));
-  box-shadow: var(--dialog-shadow, var(--shadow-xl));
+  max-width: 32rem;
+  border-radius: var(--radius-lg, 0.5rem);
+  background-color: var(--surface-card, var(--surface-page, #ffffff));
+  padding: var(--spacing-6, 1.5rem);
+  box-shadow: var(--shadow-xl);
+}
+
+:global([data-density="editorial"]) .inlineSurface {
+  background-color: var(--surface-card);
+  max-width: 480px;
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-8);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Inline header — replaces DialogHeader (which depends on dialog.module.css). */
@@ -223,19 +233,30 @@
   margin-bottom: var(--spacing-4, 1rem);
 }
 
-/* Inline title — replaces Radix DialogTitle (no Dialog context in inline mode). */
+/* Inline title — replaces Radix DialogTitle (no Dialog context in inline mode).
+ * Default: font-size-lg / semibold. Density axis: editorial uses font-size-2xl / 700. */
 .inlineTitle {
-  font-size: var(--dialog-title-size, var(--font-size-lg, 1.125rem));
-  font-weight: var(--dialog-title-weight, var(--font-weight-semibold, 600));
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: var(--font-weight-semibold, 600);
   color: var(--text-primary, #111827);
   margin: 0;
 }
 
-/* Inline description — replaces Radix DialogDescription. */
+:global([data-density="editorial"]) .inlineTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+}
+
+/* Inline description — replaces Radix DialogDescription.
+ * Default: text-secondary. Density axis: editorial uses text-tertiary. */
 .inlineDescription {
   font-size: var(--font-size-sm, 0.875rem);
-  color: var(--dialog-description-color, var(--text-secondary, #6b7280));
+  color: var(--text-secondary, #6b7280);
   margin: 0;
+}
+
+:global([data-density="editorial"]) .inlineDescription {
+  color: var(--text-tertiary);
 }
 
 /* Container query: stack actions vertically on narrow dialog widths */

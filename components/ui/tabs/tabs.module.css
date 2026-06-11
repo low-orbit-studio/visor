@@ -143,8 +143,14 @@
   position: absolute;
   bottom: -1px;
   height: 2px;
-  background-color: var(--tabs-indicator-color, var(--text-primary, #111827));
+  /* Default: text-primary */
+  background-color: var(--text-primary, #111827);
   border-radius: var(--radius-full, 9999px);
   transition: left var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease-in-out),
               width var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease-in-out);
+}
+
+/* Density axis — editorial: brand primary underline for dark admin surfaces */
+:global([data-density="editorial"]) .indicator {
+  background-color: var(--primary);
 }

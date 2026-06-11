@@ -68,15 +68,28 @@ describe('Elevation token coverage — VI-131', () => {
 
         // Every box-shadow that isn't "none" or "0 0 0..." spread trick must use var(--shadow-*)
         const suspectShadows = boxShadowMatches.filter((decl) => {
-          const value = decl.replace('box-shadow:', '').trim().replace(';', '')
+          const value = decl
+            .replace('box-shadow:', '')
+            .trim()
+            .replace(';', '')
+            .replace(/\s+/g, ' ')
           // Allow: none
           if (value === 'none') return false
+          // Allow: transparent no-op layer + shadow token (layered form, e.g.
+          // 0 0 #0000, var(--shadow-lg))
+          if (/^0 0 #0000, var\(--shadow-/.test(value)) return false
           // Allow: var(--shadow-*) tokens
           if (value.startsWith('var(--shadow-')) return false
           // Allow: focus ring color-mix pattern (token-rules.md explicitly permits this)
           // e.g. 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, ...)
           if (value.includes('color-mix')) return false
-          // Anything else (inline rgba shadows, old spread-border trick) is flagged
+          // Allow: the shared --dt-container-shadow role (table/data-table/matrix-table
+          // sibling treatment) — its fallbacks are var(--shadow-*) or none
+          if (value.startsWith('var(--dt-container-shadow')) return false
+          // Allow: hairline ring (zero-blur spread, token-colored) — not an elevation
+          // shadow, e.g. inset 0 0 0 1px var(--hairline, ...)
+          if (/^(inset\s+)?0 0 0 .*var\(--/.test(value)) return false
+          // Anything else (inline rgba shadows) is flagged
           return true
         })
 

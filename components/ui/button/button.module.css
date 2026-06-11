@@ -42,6 +42,18 @@
   color: var(--interactive-secondary-text, #111827);
 }
 
+/* Editorial density: secondary on the card tier, ghost truly transparent.
+ * Direct values — the editorial design language owns control surfaces, so the
+ * theme's --interactive-secondary-bg / --interactive-ghost-bg are deliberately
+ * bypassed (matches the blessed overlay, which out-cascaded the palette). */
+:global([data-density="editorial"]) .variantSecondary {
+  background-color: var(--surface-card, #ffffff);
+}
+
+:global([data-density="editorial"]) .variantGhost {
+  background-color: transparent;
+}
+
 .variantOutline {
   background-color: transparent;
   color: var(--text-primary, #111827);
@@ -113,19 +125,29 @@
 }
 
 /* Sizes
-   Per-size sizing hooks let a consumer overlay re-drive height / font-size /
-   line-height without forking this file. Each hook falls back to the
-   canonical value, so unset = current behavior (zero-regression). */
+   Default (no data-density attr) rendering is byte-identical to the prior
+   canonical values. Under data-density="editorial" (set on any ancestor,
+   typically the app root), the editorial density axis re-drives specific
+   metrics to the blessed admin values. */
 .sizeSm {
   height: 2rem;
   padding: 0 var(--spacing-3, 0.75rem);
-  font-size: var(--button-font-size-sm, var(--font-size-xs, 0.75rem));
+  font-size: var(--font-size-xs, 0.75rem);
 }
 
 .sizeMd {
-  height: var(--button-height-md, 2.5rem);
+  height: 2.5rem;
   padding: 0 var(--spacing-4, 1rem);
-  line-height: var(--button-line-height-md, 1);
+  line-height: 1;
+}
+
+:global([data-density="editorial"]) .sizeSm {
+  font-size: 0.8125rem;
+}
+
+:global([data-density="editorial"]) .sizeMd {
+  height: 2.125rem;
+  line-height: normal;
 }
 
 .sizeLg {

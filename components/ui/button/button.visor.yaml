@@ -72,15 +72,13 @@ notes: |
   the button is a `<Trigger asChild>` (Popover/DropdownMenu); the other two are
   manual opt-ins. Default ghost rendering is unchanged when none are set.
 
-  **Per-size sizing hooks (CSS custom properties, zero-regression):** size metrics
-  are wired through CSS hooks so a consumer overlay can re-drive them without forking
-  the stylesheet. Each falls back to the canonical default, so an unset hook renders
-  exactly as before. Available hooks:
-    - `--button-height-md`     (default `2.5rem`)  — `.sizeMd` height
-    - `--button-line-height-md`(default `1`)       — `.sizeMd` line-height
-    - `--button-font-size-sm`  (default `var(--font-size-xs, 0.75rem)`) — `.sizeSm` font-size
-  Example overlay (drives the blessed admin sizing): set `--button-height-md: 2.125rem;`
-  `--button-line-height-md: normal;` `--button-font-size-sm: 0.8125rem;`.
+  **Density axis (`data-density="editorial"`):** setting `data-density="editorial"` on
+  any ancestor (typically the app root) switches Button to the editorial density:
+    - `.sizeMd` renders at `2.125rem` height with `line-height: normal`
+    - `.sizeSm` renders with `0.8125rem` font-size
+  The canonical defaults (`2.5rem` height, `line-height: 1`, `0.75rem` font-size) are
+  always active when no `data-density` attribute is present — zero-regression for
+  default consumers.
 
 preview_url: "https://visor.loworbit.studio/docs/components/general/button"
 

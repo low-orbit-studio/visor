@@ -7,12 +7,18 @@
      role. It defaults to var(--input-bg), so default inputs are unchanged. A
      form context (e.g. an in-dialog wrapper) can set --field-control-bg:
      var(--surface-subtle) to lift controls onto a different surface without a
-     per-component prop. */
+     per-component prop. Under data-density="editorial", the fallback chain
+     defaults to var(--surface-card) while still honoring any scoped
+     --field-control-bg override from a form context. */
   background-color: var(--field-control-bg, var(--input-bg, var(--surface-interactive-default, #f9fafb)));
   line-height: 1.5;
   color: var(--text-primary, #111827);
   transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
   outline: none;
+}
+
+:global([data-density="editorial"]) .base {
+  background-color: var(--field-control-bg, var(--surface-card));
 }
 
 .base::placeholder {
@@ -40,6 +46,10 @@
   border-color: transparent;
   background-color: var(--input-bg-invalid, var(--surface-error-subtle, color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--input-bg, #f9fafb)))));
   box-shadow: inset 0 0 0 1.5px var(--border-error, #ef4444);
+}
+
+:global([data-density="editorial"]) .base[aria-invalid="true"] {
+  background-color: var(--input-bg-invalid, var(--surface-error-subtle, color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--surface-card)))));
 }
 
 .base[aria-invalid="true"]:focus-visible {
@@ -84,16 +94,20 @@
 
 /* Size variants
  *
- * Sizing (height / padding / border-radius) is wrapped in per-size token hooks
- * so a form/admin context can retune control sizing without a prop. Every hook
- * falls back to canonical's current value, so default consumers are unchanged
- * (zero-regression). The admin overlay drives --input-height-sm / --input-radius-sm
- * (etc.) to the blessed admin values. */
+ * Default rendering uses canonical values directly. Under data-density="editorial"
+ * (set on any ancestor), the editorial density axis bakes in the blessed admin
+ * values — sm inputs at 33.5px height with --radius-md corners. Padding and the
+ * md/lg sizes are not driven by the editorial treatment and remain canonical. */
 .sizeSm {
-  height: var(--input-height-sm, 2.25rem);
+  height: 2.25rem;
   padding: var(--input-padding-sm, var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem));
   font-size: var(--font-size-sm, 0.875rem);
-  border-radius: var(--input-radius-sm, var(--radius-sm, 0.25rem));
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+:global([data-density="editorial"]) .sizeSm {
+  height: 33.5px;
+  border-radius: var(--radius-md);
 }
 
 .sizeMd {

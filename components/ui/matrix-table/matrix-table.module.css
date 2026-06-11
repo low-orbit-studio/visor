@@ -8,14 +8,15 @@
  * Theme-agnostic: every value is a literal or derives from a palette/role
  * token (--surface-card, --surface-subtle, --success, --primary-text,
  * --text-tertiary, --text-muted, --hairline, --spacing-*, --radius-*), so the
- * grid renders correctly under ANY Visor theme. The surface stack mirrors the
- * data-table editorial treatment (--dt-container-radius / --dt-container-shadow
- * / --dt-header-bg / --dt-row-bg / --hairline) so the matrix reads as a sibling
- * of the list table.
+ * grid renders correctly under ANY Visor theme. Shares the density axis with
+ * DataTable/Table — the --dt-* hooks (--dt-container-radius / --dt-container-shadow
+ * / --dt-header-bg / --dt-row-bg) are consumed here so the matrix reads as a
+ * sibling of the list table under any density, including editorial.
  */
 
 /* Container — horizontal scroll for the role columns; the consumer shell owns
-   rounding, so flatten via the same --dt-container-* hooks the table uses. */
+   rounding, so flatten via the same --dt-container-* hooks the table uses.
+   Under the editorial density axis these default to 0/none. */
 .container {
   position: relative;
   width: 100%;
@@ -24,6 +25,22 @@
   border-radius: var(--dt-container-radius, var(--radius-lg, 0.5rem));
   box-shadow: var(--dt-container-shadow, var(--shadow-sm));
   color: var(--text-primary, #111827);
+}
+
+/* Editorial density — bakes the editorial-admin surface values into the density
+   axis. Ancestor [data-density="editorial"] (set by DataTable's density prop or
+   an app-root attribute) triggers these rules. Header bg editorial fallback
+   (var(--surface-card)) is identical to the canonical default so no header rule
+   is needed. Container goes flush; row bg uses the page/card mix.
+   Turbopack pure-selector rule: never bare :global — always paired with a local class. */
+:global([data-density="editorial"]) .container {
+  border-radius: var(--dt-container-radius, 0);
+  box-shadow: var(--dt-container-shadow, none);
+}
+
+:global([data-density="editorial"]) .identityCell,
+:global([data-density="editorial"]) .cell {
+  background-color: var(--dt-row-bg, color-mix(in srgb, var(--surface-page) 75%, var(--surface-card) 25%));
 }
 
 .table {

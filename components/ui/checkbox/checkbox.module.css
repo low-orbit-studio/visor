@@ -1,24 +1,42 @@
-/* Checkbox root styles */
+/* Checkbox root styles
+   Default rendering uses canonical values directly. Under data-density="editorial"
+   (set on any ancestor), the editorial density axis bakes in the blessed admin
+   values: 1.125rem box, 4px radius, var(--surface-subtle) background, and
+   var(--hairline-strong) border. */
 .root {
   position: relative;
   display: flex;
-  width: var(--checkbox-size, 1rem);
-  height: var(--checkbox-size, 1rem);
+  width: 1rem;
+  height: 1rem;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  border-radius: var(--checkbox-radius, var(--radius-sm, 0.25rem));
-  border: 1px solid var(--checkbox-border, var(--border-default, #e5e7eb));
-  background-color: var(--checkbox-bg, transparent);
+  border-radius: var(--radius-sm, 0.25rem);
+  border: 1px solid var(--border-default, #e5e7eb);
+  background-color: transparent;
   transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
   outline: none;
   cursor: pointer;
 }
 
+:global([data-density="editorial"]) .root {
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: 4px;
+  border-color: var(--hairline-strong, #e5e7eb);
+  background-color: var(--surface-subtle);
+}
+
 @media (hover: hover) {
   .root:hover:not(:focus-visible):not(:disabled):not([aria-invalid="true"]) {
-    border-color: var(--checkbox-border-hover, var(--border-strong, #d1d5db));
-    background-color: var(--checkbox-bg-hover, transparent);
+    border-color: var(--border-strong, #d1d5db);
+    background-color: transparent;
+  }
+}
+
+@media (hover: hover) {
+  :global([data-density="editorial"]) .root:hover:not(:focus-visible):not(:disabled):not([aria-invalid="true"]) {
+    background-color: var(--surface-subtle);
   }
 }
 

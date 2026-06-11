@@ -44,10 +44,14 @@
 .sizeMd {
   height: 2rem;
   padding: 0 var(--spacing-3, 0.75rem);
-  /* Editorial hooks (zero-regression): fallbacks = canonical's current md values.
-     The admin overlay drives these to the blessed values (xs font, spacing-2 gap). */
-  font-size: var(--chip-font-size, var(--font-size-sm, 0.875rem));
-  gap: var(--chip-gap, var(--spacing-1, 0.25rem));
+  font-size: var(--font-size-sm, 0.875rem);
+  gap: var(--spacing-1, 0.25rem);
+}
+
+/* Editorial density: tighter font + gap for md chips. */
+:global([data-density="editorial"]) .sizeMd {
+  font-size: var(--font-size-xs);
+  gap: var(--spacing-2);
 }
 
 .sizeLg {
@@ -113,23 +117,30 @@
   display: block;
 }
 
-/* Count pill (FilterChip only).
-   Editorial hooks (zero-regression): each fallback = canonical's current value.
-   The admin overlay drives these to the blessed circular/semibold/centered pill. */
+/* Count pill (FilterChip only). Under data-density="editorial", it renders
+   as a fixed circular semibold pill. */
 .count {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  min-width: var(--chip-count-min-width, auto);
-  height: var(--chip-count-height, auto);
+  min-width: auto;
+  height: auto;
   border-radius: var(--radius-full, 9999px);
-  padding: 0 var(--chip-count-padding-x, var(--spacing-2, 0.5rem));
+  padding: 0 var(--spacing-2, 0.5rem);
   font-size: var(--font-size-xs, 0.75rem);
-  font-weight: var(--chip-count-weight, var(--font-weight-medium, 500));
+  font-weight: var(--font-weight-medium, 500);
   font-variant-numeric: tabular-nums;
   line-height: 1;
-  align-self: var(--chip-count-align, baseline);
+  align-self: baseline;
+}
+
+:global([data-density="editorial"]) .count {
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding-inline: var(--spacing-1);
+  font-weight: var(--font-weight-semibold);
+  align-self: center;
 }
 
 .countNeutral {
@@ -142,12 +153,16 @@
   color: var(--text-link, #2563eb);
 }
 
-/* Accent selected state overrides count pill (default behaviour).
-   Editorial hooks (zero-regression): fallbacks = canonical's current selected-count
-   values. The admin overlay drives these to the blessed solid --primary pill. */
+/* Accent selected state overrides count pill (default behaviour). */
 .selected .count {
-  background-color: var(--chip-selected-count-bg, var(--surface-card, #ffffff));
-  color: var(--chip-selected-count-color, var(--text-link, #2563eb));
+  background-color: var(--surface-card, #ffffff);
+  color: var(--text-link, #2563eb);
+}
+
+/* Editorial density: selected count uses solid primary pill. */
+:global([data-density="editorial"]) .selected .count {
+  background-color: var(--primary);
+  color: var(--primary-text);
 }
 
 /* Solid mint count pill — editorial/neutral selected treatment */
@@ -204,14 +219,21 @@ button.base,
   transition: none;
 }
 
-/* Selected state.
-   Editorial hooks (zero-regression): each fallback = canonical's current accent
-   value. The admin overlay drives these to the blessed neutral-elevated treatment
-   (surface-elev bg + transparent border + primary text). */
+/* Selected state. Under data-density="editorial", switches to neutral-elevated
+   treatment (surface-elev bg + transparent border + primary text). */
 .selected {
-  background-color: var(--chip-selected-bg, var(--surface-accent-subtle, #eff6ff));
-  border-color: var(--chip-selected-border, var(--surface-accent-default, #3b82f6));
-  color: var(--chip-selected-color, var(--text-link, #2563eb));
+  background-color: var(--surface-accent-subtle, #eff6ff);
+  border-color: var(--surface-accent-default, #3b82f6);
+  color: var(--text-link, #2563eb);
+}
+
+/* Editorial density: neutral-elevated selected treatment.
+   --surface-elev is a theme role; the color-mix fallback matches how the
+   retired overlay derived it. */
+:global([data-density="editorial"]) .selected {
+  background: var(--surface-elev, color-mix(in srgb, var(--surface-card), var(--surface-muted, var(--surface-card))));
+  border-color: transparent;
+  color: var(--text-primary);
 }
 
 @media (hover: hover) {
@@ -229,7 +251,22 @@ button.base,
   color: var(--text-primary, #111827);
 }
 
+/* Re-assert selectedNeutral under editorial density: the density .selected rule
+ * is (0,2,0) and would otherwise override .selectedNeutral at (0,1,0). */
+:global([data-density="editorial"]) .selectedNeutral {
+  background-color: var(--surface-card, #ffffff);
+  border-color: var(--border-strong, #d1d5db);
+  color: var(--text-primary, #111827);
+}
+
 .selectedNeutral .count {
+  background-color: var(--surface-success-default, #22c55e);
+  color: var(--text-inverse, #ffffff);
+}
+
+/* Re-assert selectedNeutral count under editorial density: the density
+ * .selected .count rule at (0,3,0) would otherwise override at (0,2,0). */
+:global([data-density="editorial"]) .selectedNeutral .count {
   background-color: var(--surface-success-default, #22c55e);
   color: var(--text-inverse, #ffffff);
 }
@@ -240,10 +277,12 @@ button.base,
   }
 }
 
-/* FilterChip resting (unselected) surface.
-   Editorial hook (zero-regression): fallback = canonical's current resting bg
-   (--surface-muted, inherited from .variantDefault). The admin overlay drives
-   this to --surface-elev so the whole filter row reads as one consistent set. */
+/* FilterChip resting (unselected) surface. Under editorial density, uses
+   --surface-elev so the filter row reads as one consistent elevated set. */
 .filterChip[data-selected="false"] {
-  background-color: var(--chip-resting-bg, var(--surface-muted, #f3f4f6));
+  background-color: var(--surface-muted, #f3f4f6);
+}
+
+:global([data-density="editorial"]) .filterChip[data-selected="false"] {
+  background-color: var(--surface-elev, color-mix(in srgb, var(--surface-card), var(--surface-muted, var(--surface-card))));
 }

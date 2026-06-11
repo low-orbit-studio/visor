@@ -22,12 +22,13 @@ why: >
   built-in close button and animated overlay ensure a polished experience
   without any manual wiring.
 
-token_hooks: >
-  Editorial CSS variable hooks allow per-theme/per-app overrides without
-  forking the component. Each falls back to the canonical literal, so unset
-  consumers render identically: --dialog-surface, --dialog-max-width,
-  --dialog-radius, --dialog-padding, --dialog-shadow, --dialog-title-size,
-  --dialog-title-weight, --dialog-description-color, --overlay-blur.
+density_axis: >
+  Editorial admin treatment is activated by placing data-density="editorial"
+  on any ancestor (typically the app root). Editorial values: surface-card
+  background, 480px max-width, radius-xl, spacing-8 padding, shadow-lg,
+  font-size-2xl/700 title, text-tertiary description, 2px overlay blur.
+  Default (no attribute) rendering is byte-identical to the pre-density
+  canonical fallbacks.
 
 props:
   - name: open
