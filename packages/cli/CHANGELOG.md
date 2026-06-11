@@ -1,5 +1,113 @@
 # Changelog
 
+## 1.6.0
+
+### Minor Changes
+
+- f41b273: Add `surface-scale-stack` — a multi-tier stacked surface aggregator block that composes ordered `SurfaceRow` specimens into a rounded vertical stack with an optional use-note column.
+
+  Eliminates the per-consumer wrapper CSS required every time a full surface scale (page → screen → panel → panel-2 → panel-3) is documented. The note column renders only when at least one surface item provides a `note`, satisfying the V7-style use-note label pattern without coupling that data to the `SurfaceRow` primitive.
+
+- 42dd1a8: Add `type-scale-stack` — a discrete N-tier type-scale aggregator block that wraps an ordered list of `TypeSpecimen` rows in a rounded, screen-tier, borderless vertical stack. Composes the existing `type-specimen` primitive; the block's only job is the stack chrome.
+
+  Designed for foundation pages documenting discrete multi-tier type scales (e.g. the V7 admin 11-tier scale: 11·13·14·16·20·24·32·40·48·56·72px). Consumers previously wrapped `TypeSpecimen` rows in app-local CSS; this block provides the canonical, token-driven solution. (VI-296)
+
+- 7dc691a: activity-feed: add `compact-3col` variant for `[time][dot][text]` row layout
+
+  Adds `variant="compact-3col"` to `<ActivityFeed>` and surfaces timestamp in a dedicated left column (`grid-template-columns: var(--af-time-col, auto) 16px 1fr`). Default variant is unchanged — strict backwards compatibility.
+
+- 2c85833: Add the `brand-strategy` top-level block to the Visor theme schema (VI-505) — the Brand Record as validated, serializable, theme-aware data: positioning, essence, personality, archetype, pillars, voice, tone, lexicon, core, and visibility. A sibling to the asset-only `brand` block (different lifecycle and consumer), present in both hand-maintained `visor-theme.schema.json` copies.
+
+  Coherence-checked the way token drift is: every pillar `governs` a real token / component / meta-surface, and every `tone` key maps to a real UI state — invalid records fail validation. The block serializes into `visor-manifest.json` under `brand_strategy`, so an agent reads `voice.traits` / `tone.error` like a component's `when_to_use`; brands marked `visibility: private` are omitted from the public manifest. The block, its types, validators, and serializer are self-contained for a future `@loworbitstudio/visor-brand` extraction.
+
+- e484abc: Add `infographic-bar` — a composable Visor block that lays out N `stat-card`s as a single continuous infographic band instead of separate bordered cards butting together.
+
+  The band owns the frame, radius, and elevation while each `stat-card` sheds its own chrome, so a KPI row reads as one continuous surface. Outer corners round and inner corners stay square for any N via overflow-clip (no per-cell radius math). The outer frame follows `--border-default` (borderless themes drop it) and dividers follow `--hairline` — retunable via `--infographic-bar-divider`, including `transparent` for a fully seamless band — so the same band renders correctly across bordered and borderless palettes without per-consumer override CSS. Reuses `stat-card` as the cell (composition, not a fork).
+
+- 1db4cd8: right-rail-list: add `rowSize` prop for dense admin rail text sizing
+
+  Exposes a `rowSize="xs"` prop (default: `"sm"`) so consumers can opt-in to the smaller `--font-size-xs` (~11 px) row text for dense admin side-rails without forking the block. Existing callers are unaffected — `"sm"` remains the default.
+
+- 1c57d42: Add `--admin-list-page-table-header-radius` CSS hook to `admin-list-page` — pipes into the DataTable's `--data-table-sort-bar-radius` so consumers can set square top corners on the sort-bar (borderless flush-header pattern) without forking the block. Defaults to the DataTable's own default, keeping the existing rounded sort-bar unchanged.
+- bcf45d1: Complete `density="editorial"` on DataTable with column-header treatment: uppercase, `--font-size-xs` (~11px), `--text-tertiary` color, and `letter-spacing: 0.08em`.
+
+  Previously `density="editorial"` only adjusted row padding (`--dt-row-py`). Column headers still rendered at the default 14px mixed-case `--text-primary` style. Now headers automatically receive the editorial-admin treatment when `density="editorial"` is set, matching the Blessing-Law organization-management design baseline (PL-1626).
+
+  `compact` and `default` densities are unchanged.
+
+- 6b825b8: Add `uppercase` prop to Badge for editorial label rendering (ENTERPRISE, PRO, FREE).
+
+  The prop applies a `.uppercase` CSS module class that sets the new `--badge-text-transform` CSS custom property to `uppercase`. The token hook means a theme can also drive text-transform without the prop — set `--badge-text-transform: uppercase` anywhere in the theme cascade.
+
+  Default behaviour (prop omitted) is unchanged: no `text-transform` is applied and mixed-case labels render as before.
+
+- 164e2be: Add `flat` prop to BulkActionBar for embedded in-card strip rendering (no shadow, no radius, border-top only).
+
+  Pass `flat` when the bar lives inside a table card or panel where the floating rounded-card look is wrong. The existing floating/sticky and inline variants are unchanged — `flat` composes with both.
+
+- c6f6184: Add `selectedTreatment` prop to `FilterChip` for editorial/neutral-elevated selected state.
+
+  The new `selectedTreatment="neutral"` option renders selected chips with a neutral-elevated surface (`--surface-card` bg, `--border-strong` border, `--text-primary` text) instead of the default accent tint. When a count pill is present and the chip is selected, it renders as a solid mint pill (`--surface-success-default`). This prevents accent-token bleed in admin/editorial contexts (e.g. organisation-management filter bands) where the accent tokens are shared across multiple uses.
+
+  Default behaviour (`selectedTreatment="accent"`, or the prop omitted) is unchanged.
+
+- 8f6fb09: Add `SectionNav` / `SectionNavItem` — a link/anchor-based section sub-navigation strip.
+
+  Each item renders a leading Phosphor icon + label + optional trailing count pill, with a static 2px primary underline on the active item (`isActive`) and a count pill that re-tones from neutral to primary-tinted when active. Items navigate via `href`; pass `asChild` with a `next/link` element for client-side routing. Distinct from `Tabs`: no button triggers, no content panels, no animated indicator — built for sub-navigation where each section is its own route (e.g. organization Detail/Roles/Invites). Fully theme-agnostic via CSS custom property tokens.
+
+  Install with `npx visor add section-nav`.
+
+- a09cbee: Add `matrix-table` — a fixed members×roles boolean assignment grid with a sticky-left identity column (hover-tracking background, z-layered above body cells), centered 22px circular boolean cells (filled-success check when active / muted empty when inactive), and multi-line centered column headers (label over count sub-label) that opt out of the editorial uppercase header treatment. No list machinery: no selection column, no sort buttons, no pagination footer. Data-driven `columns` + `rows` API with a `renderIdentity` slot. Theme-agnostic — all values via CSS custom property tokens.
+- 345614c: Add `headerSize`, `titleSize`, `titleFamily`, and `leading` pass-through props to `AdminTabbedEditor`, forwarding straight to its internal `PageHeader` so consumers can tune editorial title scale per-recipe instead of forking the block.
+
+  Also adds a `leading` prop and matching `--page-header-title-leading` custom-property hook to `PageHeader` for tuning title line-height. All new props are optional and default-safe: omitting them keeps every existing call site pixel-identical.
+
+- 61a348e: MatrixTable cells now accept `string` values alongside `boolean`.
+
+  Each row can carry an optional `cells` map of per-column `string | boolean` values (`MatrixCellValue`). A `true`/`false` entry renders the existing checkmark/empty indicator; a `string` entry renders as plain text in the standard cell style. A `cells` entry takes precedence over `activeColumns` for that column.
+
+  This makes the standard feature-comparison matrix (rows = features, columns = plans, cells = mixed `true`/`false`/`"50GB"`) work in one composition. Existing boolean-only callers using `activeColumns` are unchanged and render pixel-identical.
+
+- eea947b: Add `gated` / `gatedReason` props to the Button primitive for permission-gated state.
+
+  A gated button is visually dimmed (`var(--opacity-40)`) and cursor not-allowed, but stays hover-able and keyboard-focusable via `aria-disabled` instead of the native `disabled` attribute. When `gatedReason` is provided, hovering the button surfaces an anchored Tooltip (background `var(--surface-elev)`) explaining why the action is unavailable. Click handlers are suppressed internally — no consumer-side guards needed. Works orthogonally across all variants and sizes.
+
+  Requires a `<TooltipProvider>` ancestor when `gatedReason` is set.
+
+- 7202616: Remove the duplicate `wizard-flow` pattern; `onboarding-flow` is now the single canonical multi-step-flow pattern.
+
+  `wizard-flow` and `onboarding-flow` described the same archetype (stepper + progress + field + input + button + alert), which split agent/author selection. Before removing it, `wizard-flow`'s broader `when_to_use` signal — checkout/multi-step sequences, "a single long form would overwhelm the user → break into steps," and "earlier steps gate or inform later steps" — was folded into `onboarding-flow`, and its `description` was broadened so the survivor covers first-run **and** checkout/generic multi-step flows. No selection signal is lost.
+
+  Consumers who already ran `npx visor add wizard-flow` keep their copy (copy-and-own); the pattern is simply no longer offered by the registry.
+
+- 5d026da: Resolve three composition-pattern overlaps so the set has one canonical pattern per archetype (15 → 11 patterns total, following the wizard-flow removal in VI-535).
+
+  - **Layout** — fold `responsive-sidebar-layout`'s mobile `Sheet`-drawer behavior into `dashboard-layout` (now responsive by default), then remove `responsive-sidebar-layout`.
+  - **Data table** — merge `crud-table`'s CRUD/record-management framing into the richer `data-table-row-actions` pattern and remove `crud-table`; keep `data-table-with-filters` as the distinct filtering concern, with the two survivors cross-linked.
+  - **Empty state** — remove the `empty-state` _pattern_; the shipped `empty-state` _component_ is canonical (card-grid + search-results already demonstrate it in context). The component and its references are unchanged.
+
+  Consumers who already ran `npx visor add` for any removed pattern keep their copy (copy-and-own); these patterns are simply no longer offered by the registry. Pattern `name:` casing standardization is deferred to VI-537.
+
+- 30b3747: Add a durable guardrail against composition-pattern duplication (closes the wizard-flow/overlap class of drift from VI-535/536).
+
+  - Every pattern now carries a `when_not_to_use` disambiguation surface (≥1 item naming its nearest-neighbor pattern), published in `visor-manifest.json` alongside `when_to_use` so agents can tell near-duplicates apart.
+  - New `pattern-overlap-detection` validate rule: any two patterns whose `components_used` are highly similar (Jaccard ≥ 0.6) must mutually reference each other in `when_not_to_use`, or the rule flags them. It runs in `npm run validate` and fails `validate:strict` (CI).
+  - `discoverability-selection-quality` now requires `when_not_to_use` on patterns (mirroring the existing component check).
+  - All pattern `name:` fields standardized to kebab-case to match their file slug (manifest keys are slug-based, so this is metadata consistency only).
+
+### Patch Changes
+
+- bb2f68f: Checkbox indeterminate state now renders a Minus/dash glyph (–) instead of a Check mark.
+
+  When `checked="indeterminate"`, the `MinusIcon` from `@phosphor-icons/react` is rendered inside the Radix `Indicator`. Checked state continues to render `CheckIcon`. Unchecked state renders nothing (Radix hides the Indicator). This fixes partial-selection header checkboxes (e.g. org-list select-all) that incorrectly showed a check mark.
+
+- 93a7fff: Remove private-brand artifacts from the public repo (VI-528). The `theme batch-apply-flutter` generator and CLI help text no longer reference private theme names, and the theme schema's display-label example is genericized. No behavior changes — `packages/visor_themes` now ships only the five stock themes, and the committed Flutter example is generated from the stock Space theme instead of a client theme.
+- dbc1075: DataTable: expose `--data-table-sort-bar-radius` custom property hook on the thead sort-bar row (VI-532). Defaults to `var(--radius-lg)` so existing rounded-top-corner behavior is unchanged. Themes can set `--data-table-sort-bar-radius: 0` to get straight corners on the header row — the borderless-admin pattern.
+- Updated dependencies [2c85833]
+- Updated dependencies [aa8f0b5]
+- Updated dependencies [93a7fff]
+  - @loworbitstudio/visor-theme-engine@0.16.0
+
 ## 1.5.1
 
 ### Patch Changes

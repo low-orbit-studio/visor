@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.16.0
+
+### Minor Changes
+
+- 2c85833: Add the `brand-strategy` top-level block to the Visor theme schema (VI-505) — the Brand Record as validated, serializable, theme-aware data: positioning, essence, personality, archetype, pillars, voice, tone, lexicon, core, and visibility. A sibling to the asset-only `brand` block (different lifecycle and consumer), present in both hand-maintained `visor-theme.schema.json` copies.
+
+  Coherence-checked the way token drift is: every pillar `governs` a real token / component / meta-surface, and every `tone` key maps to a real UI state — invalid records fail validation. The block serializes into `visor-manifest.json` under `brand_strategy`, so an agent reads `voice.traits` / `tone.error` like a component's `when_to_use`; brands marked `visibility: private` are omitted from the public manifest. The block, its types, validators, and serializer are self-contained for a future `@loworbitstudio/visor-brand` extraction.
+
+- aa8f0b5: Add `generateThemeFowtScript` to `@loworbitstudio/visor-theme-engine/fowt` (VI-527). A pre-paint script generator for the theme-identity (palette) axis, orthogonal to the dark/light `generateFowtScript` mode axis. It reads a stored theme name, validates it against a registered-theme allowlist (falling back to a default when unknown/absent/unreadable), stamps a configurable attribute (default `data-theme-name`) on `<html>`, and toggles `disabled` across inlined `style[data-theme-css]` elements. ES5-safe, mirroring the existing FOWT conventions, so both axis scripts can share one `<head>`.
+
+### Patch Changes
+
+- 93a7fff: Remove private-brand artifacts from the public repo (VI-528). The `theme batch-apply-flutter` generator and CLI help text no longer reference private theme names, and the theme schema's display-label example is genericized. No behavior changes — `packages/visor_themes` now ships only the five stock themes, and the committed Flutter example is generated from the stock Space theme instead of a client theme.
+
 ## 0.15.1
 
 ### Patch Changes
