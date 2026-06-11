@@ -673,6 +673,7 @@ async function main(): Promise<void> {
       description: meta.description,
       components_used: meta.components_used,
       when_to_use: meta.when_to_use,
+      when_not_to_use: meta.when_not_to_use ?? [],
     }
     console.log(`  ✓ pattern: ${name}`)
   }
