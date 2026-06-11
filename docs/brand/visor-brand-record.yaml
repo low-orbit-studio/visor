@@ -34,21 +34,35 @@ brand-strategy:
     tertiary: everyman                      # belonging, for-everyone — the source of the warmth
 
   pillars:                                  # the three essence words, made operational
+    # `proof[]` = the message-house foundation (RTBs): concrete, checkable
+    # evidence backing each pillar's claim (VI-540, Phase 2 wave-1).
     - id: coherence
       statement: Every layer derives from the one above it.
       governs:
         tokens: ["--primary", "--surface-card", "--text-primary"]
         components: ["*"]
+      proof:
+        - Switch theme or mode and the entire surface re-resolves — nothing is pinned to a hard-coded value.
+        - "Every component reads tokens, never literals: --primary flows to semantic, then adaptive, then the rendered pixel."
+        - Change one .visor.yaml file and the whole system follows — the file is the single source the cascade derives from.
     - id: openness
       statement: The whole system is open — readable by humans and agents, and free to take.
       # NOTE (VI-505): openness governs meta-surfaces, not tokens/components.
       # The `governs` schema must accept targets beyond token/component refs.
       governs:
         surfaces: [manifest, cli, component-metadata]
+      proof:
+        - An agent can discover, select, and compose a component from structured data alone — the manifest, when_to_use metadata, and an agent-first CLI.
+        - The source is open and free to take; the same file an engineer reads is the one an agent queries.
+        - Even brand strategy ships as readable data — this record — not a locked PDF.
     - id: ownership
       statement: Copy-and-own. You hold the source; there's no lock-in, ever.
       governs:
         components: ["*"]
+      proof:
+        - npx visor add button copies real source into your project — yours to edit, with nothing to eject from.
+        - Tokens still update via npm update, so you keep design consistency without surrendering control.
+        - Copy-and-own is the starting state, not an escape hatch — there's no wrapper to fight.
 
   # --- Verbal: voice is FIXED; tone FLEXES (the mode-aware half). ---
   voice:
@@ -102,6 +116,65 @@ brand-strategy:
       avoid: restyle
     - use: portable
       avoid: exportable
+
+  # --- Phase 2 wave-1 (VI-540): messaging house, taglines/boilerplate, color-usage. ---
+  # DRAFT field names — VI-541 formalizes these on the brand-strategy schema.
+
+  messaging:                                # message-house roof; proof points live on pillars[].proof
+    roof: Design intent as data — all the way up to brand.
+
+  taglines:                                 # permanent, brand-level signature line(s)
+    - Your entire brand system, created and encoded in one file.
+
+  boilerplate:                              # reusable "about us" copy
+    short: >-
+      Visor is an open design system that compiles a complete brand — visual and
+      verbal — from one portable file, legible to humans and agents alike.
+      Components are yours to copy and own; shared tokens keep every layer coherent.
+    long: >-
+      Visor is Low Orbit Studio's open design system, built on one idea: design
+      intent should live as data — typed, portable, and machine-readable — from a
+      single color token all the way up to a brand's voice. Components are
+      copy-and-own, so `npx visor add` drops real source into your project for you
+      to edit, while shared tokens keep design consistent across every app through
+      `npm update`. A theme is a complete design system carried in one `.visor.yaml`
+      file; change the file and the whole surface re-resolves, light to dark, one
+      brand to another. And because that same file reads cleanly to people and
+      agents alike, Visor is as legible to the engineer editing it as to the agent
+      composing against it — coherent, open, and yours.
+
+  colorUsage:                               # color-pairing rules as brand INTENT (not computed values)
+    pairings:
+      - use: "--primary"
+        with: "--surface-card / --surface-base"
+        rule: Primary is the one emphatic action per view — reserve it for the single most important action and let everything else recede to surfaces and text tokens.
+      - use: "--accent"
+        with: "--primary"
+        rule: Accent is a supporting highlight, never a second primary. Keep accent and primary visibly distinct — Visor flags them when they're near-twins, because a theme reads flat when they sit too close.
+      - use: "--text-primary / --text-secondary"
+        with: "--surface-card / --surface-base"
+        rule: Text always uses the semantic text tokens against a surface token, never raw hex, so contrast tracks the active theme instead of being pinned.
+      - use: "--destructive"
+        with: "--surface-card"
+        rule: Destructive is reserved for irreversible or error states; it is never a decorative or emphasis color.
+      - use: fallback neutral (Gray)
+        with: any un-themed surface
+        rule: Fallbacks use Gray, not Slate, so an un-themed component lands on a neutral that fits the palette instead of clashing.
+
+  accessibility:                            # WCAG 2.1 AA contrast TARGETS as intent (live computation is the render ticket's job)
+    standard: WCAG 2.1 AA
+    contrast:
+      - context: Body text and other normal-size text
+        ratio: "4.5:1"
+      - context: Large text (≥ 24px, or ≥ 18.66px bold)
+        ratio: "3:1"
+      - context: Non-text UI — icons, focus rings, control boundaries
+        ratio: "3:1"
+    intent: >-
+      Every stock Visor theme is meant to clear WCAG 2.1 AA against these targets.
+      The theme validator surfaces pairings that fall short as a candid,
+      non-blocking warning — "this theme fails AA on small text" — so the author
+      can bump the contrast or keep the warning if it's intentional.
 
   core: [positioning, essence, pillars]     # Aaker core/extended: the immutable subset
   visibility: public                        # public | private (client brands: private)
