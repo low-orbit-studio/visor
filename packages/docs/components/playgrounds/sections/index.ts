@@ -5,6 +5,7 @@ import { BrandSection } from "./brand";
 import { LogoGuidelinesSection } from "./logo-guidelines";
 import { StrategySection } from "./strategy";
 import { PillarsSection } from "./pillars";
+import { TaglinesSection } from "./taglines";
 import { VerbalSection } from "./verbal";
 import { ColorSignalsSection } from "./color-signals";
 import { FeedbackSection } from "./feedback";
@@ -34,6 +35,7 @@ export const SECTIONS: Section[] = [
   { id: "strategy", label: "Strategy", Component: StrategySection },
   { id: "pillars", label: "Pillars", Component: PillarsSection },
   { id: "verbal", label: "Verbal", Component: VerbalSection },
+  { id: "taglines", label: "Taglines & Boilerplate", Component: TaglinesSection },
   { id: "color-signals", label: "Color Signals", Component: ColorSignalsSection },
   { id: "feedback", label: "Feedback", Component: FeedbackSection },
   { id: "form", label: "Form", Component: FormSection },
