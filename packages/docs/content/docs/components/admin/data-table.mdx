@@ -174,6 +174,23 @@ A `"use client"` component that wraps `useReactTable` from `@tanstack/react-tabl
 
 All values use CSS custom properties from `@loworbitstudio/visor-core`, so the table automatically adapts to your active theme. The root uses `container-type: inline-size` so the pagination footer stacks vertically inside narrow containers without relying on viewport media queries. Sort headers use native `<button>` elements inside the `<th>` so screen readers announce them correctly; the parent `<th>` carries `aria-sort`.
 
+## Theme Tokens
+
+The DataTable exposes the following CSS custom property hooks that themes can set without modifying the component source:
+
+| Token | Default | Description |
+|---|---|---|
+| `--data-table-sort-bar-radius` | `var(--radius-lg)` | Top-corner radius of the sort-bar (thead) row. Set to `0` for the borderless-admin pattern — straight corners on the header row while the container's card shape is unchanged. |
+
+**Example — borderless-admin pattern:**
+
+```css
+/* In your theme or page-level styles */
+[data-theme="admin"] .data-table-container {
+  --data-table-sort-bar-radius: 0;
+}
+```
+
 ## Customization
 
 After copying the component, you own it completely. Common customizations:

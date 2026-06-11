@@ -1,6 +1,7 @@
 declare const styles: {
   readonly root: string
   readonly stickyHeader: string
+  readonly sortBar: string
   readonly sortButton: string
   readonly sortLabel: string
   readonly sortIcon: string
