@@ -60,6 +60,7 @@ export interface PatternMetadata {
   description: string
   components_used: string[]
   when_to_use: string[]
+  when_not_to_use: string[]
   structure: string
   notes: string
   related_blocks?: string[]
@@ -110,6 +111,7 @@ export interface ManifestPattern {
   description: string
   components_used: string[]
   when_to_use: string[]
+  when_not_to_use: string[]
 }
 
 export interface ManifestToken {

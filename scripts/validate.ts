@@ -38,6 +38,7 @@ import { patternsDocsPageExists } from './rules/patterns-docs-page-exists.js';
 import { registryBuildIntegrity } from './rules/registry-build-integrity.js';
 import { discoverabilityVariantDrift } from './rules/discoverability-variant-drift.js';
 import { discoverabilitySelectionQuality } from './rules/discoverability-selection-quality.js';
+import { patternOverlapDetection } from './rules/pattern-overlap-detection.js';
 import { discoverabilityScore } from './rules/discoverability-score.js';
 import { themeTextContrast } from './rules/theme-text-contrast.js';
 import { crossPlatformManifestSync } from './rules/cross-platform-manifest-sync.js';
@@ -85,6 +86,7 @@ const rules: Rule[] = [
   registryBuildIntegrity,
   discoverabilityVariantDrift,
   discoverabilitySelectionQuality,
+  patternOverlapDetection,
   discoverabilityScore,
   themeTextContrast,
   hooksDocsPageExists,

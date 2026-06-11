@@ -1,4 +1,4 @@
-name: Settings Page
+name: settings-page
 description: Multi-section settings page with sidebar navigation, grouped form fields, and save actions.
 
 components_used:
@@ -21,6 +21,10 @@ when_to_use:
   - User profile and account settings
   - Application preferences and configuration
   - Team or organization settings
+
+when_not_to_use:
+  - The whole app shell and navigation chrome — use dashboard-layout
+  - A single focused form rather than grouped settings sections — use form-with-validation
 
 structure: |
   <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: "var(--spacing-8)" }}>

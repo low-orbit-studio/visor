@@ -1,4 +1,4 @@
-name: Form with Validation
+name: form-with-validation
 description: Standard form layout with field-level validation and submission handling.
 
 components_used:
@@ -13,6 +13,10 @@ when_to_use:
   - Any form collecting user input (settings, profile, onboarding)
   - Forms needing inline validation feedback
   - Multi-field forms with consistent spacing and error display
+
+when_not_to_use:
+  - A form presented inside a modal or dialog overlay — use modal-form
+  - A multi-step guided flow rather than a single form — use onboarding-flow
 
 structure: |
   <form onSubmit={handleSubmit}>
