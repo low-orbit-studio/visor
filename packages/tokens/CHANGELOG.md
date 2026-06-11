@@ -1,5 +1,12 @@
 # @loworbitstudio/visor-core
 
+## 0.12.0
+
+### Minor Changes
+
+- 72d4fed: Add `--layout-content-max-width` (1200px) and `--layout-page-max-width` (1440px) semantic tokens to the `visor-semantic` cascade layer. Themes can override these via flat-key overrides in their `.visor.yaml`.
+- c76c686: Add `--layout-section-padding` (96px) and `--layout-section-padding-mobile` (64px) semantic tokens for canonical vertical section rhythm. Themes can override these via flat-key overrides in `.visor.yaml`.
+
 ## 0.11.0
 
 ### Minor Changes
