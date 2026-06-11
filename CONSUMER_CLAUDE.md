@@ -269,7 +269,6 @@ Recommended component compositions for common UI scenarios. These are not instal
 | Responsive Sidebar Layout | sidebar, sheet, navbar, button, separator, scroll-area |
 | Search Results | search-input, command, combobox, card, badge, empty-state |
 | Settings Page | card, input, textarea, select, switch, button, field, fieldset, separator, tabs, avatar |
-| Wizard Flow | stepper, field, input, button, alert, progress, separator |
 
 ---
 
