@@ -1,9 +1,11 @@
 name: Dashboard Layout
-description: App shell with collapsible sidebar navigation, top navbar, and content area with cards and tabs.
+description: Responsive app shell — a persistent sidebar on desktop that collapses to a Sheet drawer on mobile — with a top navbar and a content area of cards and tabs.
 
 components_used:
   - sidebar
+  - sheet
   - navbar
+  - button
   - card
   - tabs
   - separator
@@ -15,12 +17,14 @@ related_blocks:
 
 when_to_use:
   - Admin dashboards and internal tools
-  - Multi-section apps with persistent navigation
+  - Multi-section apps with persistent navigation that must also work on mobile
   - Content-heavy layouts needing sidebar + main area structure
+  - Any app shell where the desktop sidebar should collapse to a drawer without duplicating nav markup
 
 structure: |
   <SidebarProvider>
-    <Sidebar>
+    {/* Desktop sidebar — hidden on mobile via CSS */}
+    <Sidebar className="sidebar-desktop">
       <SidebarHeader>
         <h2>App Name</h2>
       </SidebarHeader>
@@ -28,16 +32,13 @@ structure: |
         <SidebarGroup>
           <SidebarGroupLabel>Main</SidebarGroupLabel>
           <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <a href="/dashboard">Dashboard</a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <a href="/settings">Settings</a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            {navItems.map((item) => (
+              <SidebarMenuItem key={item.href}>
+                <SidebarMenuButton asChild isActive={pathname === item.href}>
+                  <a href={item.href}>{item.label}</a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
@@ -45,7 +46,30 @@ structure: |
 
     <main>
       <Navbar>
-        <SidebarTrigger />
+        {/* Desktop: collapse the persistent sidebar */}
+        <SidebarTrigger className="sidebar-desktop-trigger" />
+
+        {/* Mobile: Sheet drawer sharing the same navItems */}
+        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+          <SheetTrigger asChild className="sidebar-mobile-trigger">
+            <Button variant="ghost" size="icon" aria-label="Open navigation">
+              <List />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left">
+            <SheetHeader>
+              <SheetTitle>Navigation</SheetTitle>
+            </SheetHeader>
+            <nav>
+              {navItems.map((item) => (
+                <a key={item.href} href={item.href} onClick={() => setMobileOpen(false)}>
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+          </SheetContent>
+        </Sheet>
+
         <Separator orientation="vertical" />
         <span>Dashboard</span>
       </Navbar>
@@ -79,7 +103,9 @@ structure: |
 
 notes: >
   SidebarProvider manages the collapsed/expanded state and provides context to child components.
-  SidebarTrigger in the Navbar toggles the sidebar on mobile and desktop.
+  On desktop the SidebarTrigger toggles the persistent Sidebar; on mobile a Sheet drawer presents
+  the same navItems — use CSS to show/hide the desktop sidebar and the mobile trigger at the
+  appropriate breakpoint, and avoid duplicating navigation markup across the two.
+  Close the Sheet when a nav link is clicked on mobile to avoid stale open state.
   Use ScrollArea for the main content area to get consistent styled scrollbars.
-  Cards in a CSS Grid layout adapt to the content area width.
-  Tabs organize different dashboard views without page navigation.
+  Cards in a CSS Grid layout adapt to the content area width; Tabs organize dashboard views without page navigation.
