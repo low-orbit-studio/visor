@@ -112,16 +112,20 @@
   transition: opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
-/* Sizes */
+/* Sizes
+   Per-size sizing hooks let a consumer overlay re-drive height / font-size /
+   line-height without forking this file. Each hook falls back to the
+   canonical value, so unset = current behavior (zero-regression). */
 .sizeSm {
   height: 2rem;
   padding: 0 var(--spacing-3, 0.75rem);
-  font-size: var(--font-size-xs, 0.75rem);
+  font-size: var(--button-font-size-sm, var(--font-size-xs, 0.75rem));
 }
 
 .sizeMd {
-  height: 2.5rem;
+  height: var(--button-height-md, 2.5rem);
   padding: 0 var(--spacing-4, 1rem);
+  line-height: var(--button-line-height-md, 1);
 }
 
 .sizeLg {

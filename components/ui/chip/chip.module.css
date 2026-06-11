@@ -44,8 +44,10 @@
 .sizeMd {
   height: 2rem;
   padding: 0 var(--spacing-3, 0.75rem);
-  font-size: var(--font-size-sm, 0.875rem);
-  gap: var(--spacing-1, 0.25rem);
+  /* Editorial hooks (zero-regression): fallbacks = canonical's current md values.
+     The admin overlay drives these to the blessed values (xs font, spacing-2 gap). */
+  font-size: var(--chip-font-size, var(--font-size-sm, 0.875rem));
+  gap: var(--chip-gap, var(--spacing-1, 0.25rem));
 }
 
 .sizeLg {
@@ -111,18 +113,23 @@
   display: block;
 }
 
-/* Count pill (FilterChip only) */
+/* Count pill (FilterChip only).
+   Editorial hooks (zero-regression): each fallback = canonical's current value.
+   The admin overlay drives these to the blessed circular/semibold/centered pill. */
 .count {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  min-width: var(--chip-count-min-width, auto);
+  height: var(--chip-count-height, auto);
   border-radius: var(--radius-full, 9999px);
-  padding: 0 var(--spacing-2, 0.5rem);
+  padding: 0 var(--chip-count-padding-x, var(--spacing-2, 0.5rem));
   font-size: var(--font-size-xs, 0.75rem);
-  font-weight: var(--font-weight-medium, 500);
+  font-weight: var(--chip-count-weight, var(--font-weight-medium, 500));
   font-variant-numeric: tabular-nums;
   line-height: 1;
-  align-self: baseline;
+  align-self: var(--chip-count-align, baseline);
 }
 
 .countNeutral {
@@ -135,10 +142,12 @@
   color: var(--text-link, #2563eb);
 }
 
-/* Accent selected state overrides count pill (default behaviour) */
+/* Accent selected state overrides count pill (default behaviour).
+   Editorial hooks (zero-regression): fallbacks = canonical's current selected-count
+   values. The admin overlay drives these to the blessed solid --primary pill. */
 .selected .count {
-  background-color: var(--surface-card, #ffffff);
-  color: var(--text-link, #2563eb);
+  background-color: var(--chip-selected-count-bg, var(--surface-card, #ffffff));
+  color: var(--chip-selected-count-color, var(--text-link, #2563eb));
 }
 
 /* Solid mint count pill — editorial/neutral selected treatment */
@@ -195,11 +204,14 @@ button.base,
   transition: none;
 }
 
-/* Selected state */
+/* Selected state.
+   Editorial hooks (zero-regression): each fallback = canonical's current accent
+   value. The admin overlay drives these to the blessed neutral-elevated treatment
+   (surface-elev bg + transparent border + primary text). */
 .selected {
-  background-color: var(--surface-accent-subtle, #eff6ff);
-  border-color: var(--surface-accent-default, #3b82f6);
-  color: var(--text-link, #2563eb);
+  background-color: var(--chip-selected-bg, var(--surface-accent-subtle, #eff6ff));
+  border-color: var(--chip-selected-border, var(--surface-accent-default, #3b82f6));
+  color: var(--chip-selected-color, var(--text-link, #2563eb));
 }
 
 @media (hover: hover) {
@@ -226,4 +238,12 @@ button.base,
   .interactive.selectedNeutral:hover:not(:disabled) {
     background-color: var(--surface-interactive-hover, #f3f4f6);
   }
+}
+
+/* FilterChip resting (unselected) surface.
+   Editorial hook (zero-regression): fallback = canonical's current resting bg
+   (--surface-muted, inherited from .variantDefault). The admin overlay drives
+   this to --surface-elev so the whole filter row reads as one consistent set. */
+.filterChip[data-selected="false"] {
+  background-color: var(--chip-resting-bg, var(--surface-muted, #f3f4f6));
 }

@@ -72,6 +72,16 @@ notes: |
   the button is a `<Trigger asChild>` (Popover/DropdownMenu); the other two are
   manual opt-ins. Default ghost rendering is unchanged when none are set.
 
+  **Per-size sizing hooks (CSS custom properties, zero-regression):** size metrics
+  are wired through CSS hooks so a consumer overlay can re-drive them without forking
+  the stylesheet. Each falls back to the canonical default, so an unset hook renders
+  exactly as before. Available hooks:
+    - `--button-height-md`     (default `2.5rem`)  — `.sizeMd` height
+    - `--button-line-height-md`(default `1`)       — `.sizeMd` line-height
+    - `--button-font-size-sm`  (default `var(--font-size-xs, 0.75rem)`) — `.sizeSm` font-size
+  Example overlay (drives the blessed admin sizing): set `--button-height-md: 2.125rem;`
+  `--button-line-height-md: normal;` `--button-font-size-sm: 0.8125rem;`.
+
 preview_url: "https://visor.loworbit.studio/docs/components/general/button"
 
 example: |

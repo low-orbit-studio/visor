@@ -206,3 +206,58 @@ describe("editorial token hooks (CSS-only, additive, zero-regression)", () => {
     )
   })
 })
+
+describe("size token hooks (CSS-only, additive, zero-regression)", () => {
+  const css = readFileSync(
+    resolve(__dirname, "..", "input.module.css"),
+    "utf-8"
+  )
+
+  it("sizeSm height wraps --input-height-sm, defaulting to canonical 2.25rem", () => {
+    expect(css).toContain("height: var(--input-height-sm, 2.25rem);")
+  })
+
+  it("sizeSm border-radius wraps --input-radius-sm, defaulting to --radius-sm 0.25rem", () => {
+    expect(css).toContain(
+      "border-radius: var(--input-radius-sm, var(--radius-sm, 0.25rem));"
+    )
+  })
+
+  it("sizeSm padding wraps --input-padding-sm, defaulting to the current spacing shorthand", () => {
+    expect(css).toContain(
+      "padding: var(--input-padding-sm, var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem));"
+    )
+  })
+
+  it("sizeMd height wraps --input-height-md, defaulting to auto", () => {
+    expect(css).toContain("height: var(--input-height-md, auto);")
+  })
+
+  it("sizeMd border-radius wraps --input-radius-md, defaulting to --radius-sm 0.5rem", () => {
+    expect(css).toContain(
+      "border-radius: var(--input-radius-md, var(--radius-sm, 0.5rem));"
+    )
+  })
+
+  it("sizeMd padding wraps --input-padding-md, defaulting to the current spacing shorthand", () => {
+    expect(css).toContain(
+      "padding: var(--input-padding-md, var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem));"
+    )
+  })
+
+  it("sizeLg height wraps --input-height-lg, defaulting to auto", () => {
+    expect(css).toContain("height: var(--input-height-lg, auto);")
+  })
+
+  it("sizeLg border-radius wraps --input-radius-lg, defaulting to --radius-sm 0.5rem", () => {
+    expect(css).toContain(
+      "border-radius: var(--input-radius-lg, var(--radius-sm, 0.5rem));"
+    )
+  })
+
+  it("sizeLg padding wraps --input-padding-lg, defaulting to the current spacing shorthand", () => {
+    expect(css).toContain(
+      "padding: var(--input-padding-lg, var(--spacing-4_5, 1.125rem) var(--spacing-5, 1.25rem));"
+    )
+  })
+})

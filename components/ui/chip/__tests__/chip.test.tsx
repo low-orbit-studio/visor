@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, it, expect, vi } from "vitest"
 import { Chip, ChoiceChip, FilterChip } from "../chip"
+import styles from "../chip.module.css"
 import { checkA11y } from "../../../../test-utils/a11y"
 
 /* ─── Chip (base) ─────────────────────────────────────────────────────── */
@@ -334,6 +335,41 @@ describe("FilterChip", () => {
   it("renders identically without trailingIcon — no breaking change", () => {
     render(<FilterChip label="Events" />)
     expect(screen.getByRole("checkbox", { name: "Events" })).toBeInTheDocument()
+  })
+
+  /* Editorial token hooks (VI admin reconcile).
+     These classes carry the --chip-* hooks an overlay drives to the blessed look.
+     The hooks default to canonical's current values, so default render is unchanged. */
+  it("applies the filterChip hook class (carries --chip-resting-bg)", () => {
+    render(<FilterChip label="Events" />)
+    expect(screen.getByRole("checkbox")).toHaveClass(styles.filterChip)
+  })
+
+  it("applies the sizeMd hook class by default (carries --chip-font-size / --chip-gap)", () => {
+    render(<FilterChip label="Events" />)
+    expect(screen.getByRole("checkbox")).toHaveClass(styles.sizeMd)
+  })
+
+  it("selected (default accent treatment) applies the .selected hook class (carries --chip-selected-* hooks)", () => {
+    render(<FilterChip label="Events" selected />)
+    expect(screen.getByRole("checkbox")).toHaveClass(styles.selected)
+  })
+
+  it("count pill carries the .count hook class (count shape/weight/align hooks)", () => {
+    const { container } = render(<FilterChip label="Active" count={47} />)
+    expect(container.querySelector('[data-slot="filter-chip-count"]')).toHaveClass(styles.count)
+  })
+
+  it("selected + primary count: count pill sits inside .selected so selected-count hooks apply", () => {
+    const { container } = render(
+      <FilterChip label="Role" count="3" countTone="primary" selected />
+    )
+    const btn = container.querySelector('[data-slot="filter-chip"]')
+    const countEl = container.querySelector('[data-slot="filter-chip-count"]')
+    expect(btn).toHaveClass(styles.selected)
+    expect(countEl).toHaveClass(styles.count)
+    // The selected wrapper + nested count is what the `.selected .count` rule targets.
+    expect(btn?.contains(countEl ?? null)).toBe(true)
   })
 })
 

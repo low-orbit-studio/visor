@@ -82,26 +82,32 @@
   line-height: 1;
 }
 
-/* Size variants */
+/* Size variants
+ *
+ * Sizing (height / padding / border-radius) is wrapped in per-size token hooks
+ * so a form/admin context can retune control sizing without a prop. Every hook
+ * falls back to canonical's current value, so default consumers are unchanged
+ * (zero-regression). The admin overlay drives --input-height-sm / --input-radius-sm
+ * (etc.) to the blessed admin values. */
 .sizeSm {
-  height: 2.25rem;
-  padding: var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem);
+  height: var(--input-height-sm, 2.25rem);
+  padding: var(--input-padding-sm, var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem));
   font-size: var(--font-size-sm, 0.875rem);
-  border-radius: var(--radius-sm, 0.25rem);
+  border-radius: var(--input-radius-sm, var(--radius-sm, 0.25rem));
 }
 
 .sizeMd {
-  height: auto;
-  padding: var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem);
+  height: var(--input-height-md, auto);
+  padding: var(--input-padding-md, var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem));
   font-size: var(--font-size-sm, 0.875rem);
-  border-radius: var(--radius-sm, 0.5rem);
+  border-radius: var(--input-radius-md, var(--radius-sm, 0.5rem));
 }
 
 .sizeLg {
-  height: auto;
-  padding: var(--spacing-4_5, 1.125rem) var(--spacing-5, 1.25rem);
+  height: var(--input-height-lg, auto);
+  padding: var(--input-padding-lg, var(--spacing-4_5, 1.125rem) var(--spacing-5, 1.25rem));
   font-size: var(--font-size-base, 1rem);
-  border-radius: var(--radius-sm, 0.5rem);
+  border-radius: var(--input-radius-lg, var(--radius-sm, 0.5rem));
 }
 
 /* Leading-icon left-padding override.

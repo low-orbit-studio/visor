@@ -33,6 +33,21 @@ theme_hooks:
   - name: --input-placeholder-color
     description: >
       Override for the ::placeholder color. Defaults to var(--text-secondary).
+  - name: --input-height-sm / --input-height-md / --input-height-lg
+    description: >
+      Per-size control height. Default to the size variant's current value
+      (2.25rem / auto / auto). A form or admin context can set these to retune
+      control height without a prop (zero-regression — unset = unchanged).
+  - name: --input-radius-sm / --input-radius-md / --input-radius-lg
+    description: >
+      Per-size border-radius. Default to var(--radius-sm) at each size's current
+      fallback (0.25rem / 0.5rem / 0.5rem). Lets a context tune corner rounding
+      independent of the global radius scale.
+  - name: --input-padding-sm / --input-padding-md / --input-padding-lg
+    description: >
+      Per-size padding (the full shorthand). Default to each size's current
+      spacing-token shorthand. Set to a full "vertical horizontal" value to
+      retune control padding per context.
 
 props:
   - name: size

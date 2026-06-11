@@ -257,6 +257,7 @@ const FilterChip = React.forwardRef<HTMLButtonElement, FilterChipProps>(
         className={cn(
           chipVariants({ variant, size }),
           styles.interactive,
+          styles.filterChip,
           selected && (isNeutral ? styles.selectedNeutral : styles.selected),
           className,
         )}

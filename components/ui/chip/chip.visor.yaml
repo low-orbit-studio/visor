@@ -103,6 +103,63 @@ sub_components:
           Orthogonal to count/selectedTreatment. Hidden from assistive tech (aria-hidden). Default render is
           unchanged when omitted.
 
+token_hooks:
+  # Editorial token hooks (zero-regression). Each fallback resolves to canonical's
+  # current value, so the default render is unchanged. A theme/design-language
+  # overlay (e.g. admin-ui) can drive these to reproduce an editorial chip look.
+  - name: --chip-font-size
+    applies_to: sizeMd
+    fallback: var(--font-size-sm)
+    description: md chip label font size.
+  - name: --chip-gap
+    applies_to: sizeMd
+    fallback: var(--spacing-1)
+    description: md chip inter-element gap.
+  - name: --chip-selected-bg
+    applies_to: .selected
+    fallback: var(--surface-accent-subtle)
+    description: selected chip background.
+  - name: --chip-selected-border
+    applies_to: .selected
+    fallback: var(--surface-accent-default)
+    description: selected chip border colour.
+  - name: --chip-selected-color
+    applies_to: .selected
+    fallback: var(--text-link)
+    description: selected chip text colour.
+  - name: --chip-resting-bg
+    applies_to: FilterChip (unselected)
+    fallback: var(--surface-muted)
+    description: FilterChip resting (unselected) background surface.
+  - name: --chip-count-min-width
+    applies_to: count pill
+    fallback: auto
+    description: count pill min-width (set equal to height for a circular pill).
+  - name: --chip-count-height
+    applies_to: count pill
+    fallback: auto
+    description: count pill height (set equal to min-width for a circular pill).
+  - name: --chip-count-padding-x
+    applies_to: count pill
+    fallback: var(--spacing-2)
+    description: count pill horizontal padding.
+  - name: --chip-count-weight
+    applies_to: count pill
+    fallback: var(--font-weight-medium)
+    description: count pill font weight.
+  - name: --chip-count-align
+    applies_to: count pill
+    fallback: baseline
+    description: count pill vertical alignment within the chip.
+  - name: --chip-selected-count-bg
+    applies_to: .selected count pill
+    fallback: var(--surface-card)
+    description: selected-state count pill background.
+  - name: --chip-selected-count-color
+    applies_to: .selected count pill
+    fallback: var(--text-link)
+    description: selected-state count pill text colour.
+
 dependencies:
   - "class-variance-authority"
   - "@phosphor-icons/react"
