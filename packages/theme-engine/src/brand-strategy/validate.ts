@@ -65,6 +65,12 @@ const TOP_LEVEL_KEYS = new Set([
   "lexicon",
   "core",
   "visibility",
+  // Phase 2 wave-1 (VI-541) — all optional.
+  "messaging",
+  "taglines",
+  "boilerplate",
+  "colorUsage",
+  "accessibility",
 ]);
 
 const GOVERNS_KEYS = new Set(["tokens", "components", "surfaces"]);
@@ -198,6 +204,88 @@ export function checkBrandStrategyStructure(block: unknown): BrandStrategyIssue[
     errors.push(error("BRAND_STRATEGY_VISIBILITY", `'brand-strategy.visibility' is required and must be one of: ${BRAND_VISIBILITIES.join(", ")}`, "brand-strategy.visibility"));
   }
 
+  // Phase 2 wave-1 (VI-541) — all optional; validated only when present.
+  errors.push(...checkPhase2Structure(block));
+
+  return errors;
+}
+
+// ============================================================
+// Phase 2 wave-1 structural validation (VI-541)
+// ============================================================
+
+/**
+ * Validate the Phase 2 wave-1 fields (`messaging`, `taglines`, `boilerplate`,
+ * `colorUsage`, `accessibility`). Each is OPTIONAL — a record may omit any of
+ * them — so a field is checked only when present. When present, its shape must
+ * be complete (mirrors the Phase 1 required-field rigor).
+ */
+function checkPhase2Structure(block: Record<string, unknown>): BrandStrategyIssue[] {
+  const errors: BrandStrategyIssue[] = [];
+
+  // messaging — { roof: non-empty string }
+  if (block.messaging !== undefined) {
+    const messaging = block.messaging;
+    if (!isObject(messaging) || !isNonEmptyString(messaging.roof)) {
+      errors.push(error("BRAND_STRATEGY_MESSAGING", "'brand-strategy.messaging' must be an object with a non-empty 'roof' string", "brand-strategy.messaging"));
+    }
+  }
+
+  // taglines — non-empty array of non-empty strings
+  if (block.taglines !== undefined) {
+    if (!isStringArray(block.taglines) || block.taglines.length === 0) {
+      errors.push(error("BRAND_STRATEGY_TAGLINES", "'brand-strategy.taglines' must be a non-empty array of strings when present", "brand-strategy.taglines"));
+    } else if (!block.taglines.every(isNonEmptyString)) {
+      errors.push(error("BRAND_STRATEGY_TAGLINES", "'brand-strategy.taglines' entries must be non-empty strings", "brand-strategy.taglines"));
+    }
+  }
+
+  // boilerplate — { short, long } both non-empty strings
+  if (block.boilerplate !== undefined) {
+    const boilerplate = block.boilerplate;
+    if (!isObject(boilerplate) || !isNonEmptyString(boilerplate.short) || !isNonEmptyString(boilerplate.long)) {
+      errors.push(error("BRAND_STRATEGY_BOILERPLATE", "'brand-strategy.boilerplate' must be an object with non-empty 'short' and 'long' strings", "brand-strategy.boilerplate"));
+    }
+  }
+
+  // colorUsage — { pairings: { use, with, rule }[] }
+  if (block.colorUsage !== undefined) {
+    const colorUsage = block.colorUsage;
+    if (!isObject(colorUsage) || !Array.isArray(colorUsage.pairings) || colorUsage.pairings.length === 0) {
+      errors.push(error("BRAND_STRATEGY_COLOR_USAGE", "'brand-strategy.colorUsage' must be an object with a non-empty 'pairings' array", "brand-strategy.colorUsage"));
+    } else {
+      colorUsage.pairings.forEach((pairing, i) => {
+        if (!isObject(pairing) || !isNonEmptyString(pairing.use) || !isNonEmptyString(pairing.with) || !isNonEmptyString(pairing.rule)) {
+          errors.push(error("BRAND_STRATEGY_COLOR_USAGE", `'brand-strategy.colorUsage.pairings[${i}]' must have non-empty 'use', 'with', and 'rule' strings`, `brand-strategy.colorUsage.pairings[${i}]`));
+        }
+      });
+    }
+  }
+
+  // accessibility — { standard, contrast: { context, ratio }[], intent }
+  if (block.accessibility !== undefined) {
+    const accessibility = block.accessibility;
+    if (!isObject(accessibility)) {
+      errors.push(error("BRAND_STRATEGY_ACCESSIBILITY", "'brand-strategy.accessibility' must be an object", "brand-strategy.accessibility"));
+    } else {
+      if (!isNonEmptyString(accessibility.standard)) {
+        errors.push(error("BRAND_STRATEGY_ACCESSIBILITY", "'brand-strategy.accessibility.standard' is required and must be a non-empty string", "brand-strategy.accessibility.standard"));
+      }
+      if (!isNonEmptyString(accessibility.intent)) {
+        errors.push(error("BRAND_STRATEGY_ACCESSIBILITY", "'brand-strategy.accessibility.intent' is required and must be a non-empty string", "brand-strategy.accessibility.intent"));
+      }
+      if (!Array.isArray(accessibility.contrast) || accessibility.contrast.length === 0) {
+        errors.push(error("BRAND_STRATEGY_ACCESSIBILITY", "'brand-strategy.accessibility.contrast' must be a non-empty array", "brand-strategy.accessibility.contrast"));
+      } else {
+        accessibility.contrast.forEach((target, i) => {
+          if (!isObject(target) || !isNonEmptyString(target.context) || !isNonEmptyString(target.ratio)) {
+            errors.push(error("BRAND_STRATEGY_ACCESSIBILITY", `'brand-strategy.accessibility.contrast[${i}]' must have non-empty 'context' and 'ratio' strings`, `brand-strategy.accessibility.contrast[${i}]`));
+          }
+        });
+      }
+    }
+  }
+
   return errors;
 }
 
@@ -236,6 +324,15 @@ function checkPillarStructure(pillar: unknown, index: number): BrandStrategyIssu
     }
     if (governs.tokens === undefined && governs.components === undefined && governs.surfaces === undefined) {
       errors.push(error("BRAND_STRATEGY_GOVERNS", `'${path}.governs' must declare at least one of: ${[...GOVERNS_KEYS].join(", ")}`, `${path}.governs`));
+    }
+  }
+  // proof (VI-541) — optional reasons-to-believe. When present it must be a
+  // non-empty array of non-empty strings.
+  if (pillar.proof !== undefined) {
+    if (!isStringArray(pillar.proof) || pillar.proof.length === 0) {
+      errors.push(error("BRAND_STRATEGY_PROOF", `'${path}.proof' must be a non-empty array of strings when present`, `${path}.proof`));
+    } else if (!pillar.proof.every(isNonEmptyString)) {
+      errors.push(error("BRAND_STRATEGY_PROOF", `'${path}.proof' entries must be non-empty strings`, `${path}.proof`));
     }
   }
   return errors;

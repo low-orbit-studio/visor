@@ -12,6 +12,7 @@
 
 import type {
   BrandGoverns,
+  BrandPillar,
   BrandStrategy,
   SerializedBrandStrategy,
 } from "./types.js";
@@ -25,11 +26,25 @@ function compactGoverns(governs: BrandGoverns): BrandGoverns {
   return out;
 }
 
+/** Project one pillar, keeping the optional `proof` list (VI-541) only when present. */
+function serializePillar(p: BrandPillar): SerializedBrandStrategy["pillars"][number] {
+  const pillar: SerializedBrandStrategy["pillars"][number] = {
+    id: p.id,
+    statement: p.statement,
+    governs: compactGoverns(p.governs),
+  };
+  if (p.proof !== undefined) pillar.proof = [...p.proof];
+  return pillar;
+}
+
 /**
  * Serialize a validated brand strategy for the manifest. Returns `null` when
  * `visibility: private`. Optional fields (`archetype.secondary`,
- * `voice.traits[].example`, absent `governs` lists) are emitted only when
- * present, so the agent reads a clean, predictable object.
+ * `voice.traits[].example`, absent `governs` lists, the Phase 2 wave-1 fields
+ * `pillars[].proof` / `messaging` / `taglines` / `boilerplate` / `colorUsage` /
+ * `accessibility`) are emitted only when present, so the agent reads a clean,
+ * predictable object. The Phase 2 fields are all PUBLIC — a private record
+ * never reaches this point, so visibility is enforced once, up top (D4).
  */
 export function serializeBrandStrategy(
   strategy: BrandStrategy,
@@ -47,7 +62,7 @@ export function serializeBrandStrategy(
     tone[state] = { feeling: entry.feeling, example: entry.example };
   }
 
-  return {
+  const serialized: SerializedBrandStrategy = {
     positioning: {
       onliness: strategy.positioning.onliness,
       category: strategy.positioning.category,
@@ -56,11 +71,7 @@ export function serializeBrandStrategy(
     essence: [...strategy.essence],
     personality: strategy.personality.map((p) => ({ trait: p.trait, not: p.not })),
     archetype,
-    pillars: strategy.pillars.map((p) => ({
-      id: p.id,
-      statement: p.statement,
-      governs: compactGoverns(p.governs),
-    })),
+    pillars: strategy.pillars.map(serializePillar),
     voice: {
       traits: strategy.voice.traits.map((t) => {
         const trait: SerializedBrandStrategy["voice"]["traits"][number] = {
@@ -77,4 +88,39 @@ export function serializeBrandStrategy(
     core: [...strategy.core],
     visibility: strategy.visibility,
   };
+
+  // Phase 2 wave-1 (VI-541) — emit each public field only when authored.
+  if (strategy.messaging !== undefined) {
+    serialized.messaging = { roof: strategy.messaging.roof };
+  }
+  if (strategy.taglines !== undefined) {
+    serialized.taglines = [...strategy.taglines];
+  }
+  if (strategy.boilerplate !== undefined) {
+    serialized.boilerplate = {
+      short: strategy.boilerplate.short,
+      long: strategy.boilerplate.long,
+    };
+  }
+  if (strategy.colorUsage !== undefined) {
+    serialized.colorUsage = {
+      pairings: strategy.colorUsage.pairings.map((p) => ({
+        use: p.use,
+        with: p.with,
+        rule: p.rule,
+      })),
+    };
+  }
+  if (strategy.accessibility !== undefined) {
+    serialized.accessibility = {
+      standard: strategy.accessibility.standard,
+      contrast: strategy.accessibility.contrast.map((c) => ({
+        context: c.context,
+        ratio: c.ratio,
+      })),
+      intent: strategy.accessibility.intent,
+    };
+  }
+
+  return serialized;
 }

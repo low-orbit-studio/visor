@@ -137,98 +137,22 @@ export function resolveBrand(theme: string): ThemeBrand {
 }
 
 /**
- * Phase 2 wave-1 DRAFT additions to the Brand Record (VI-540), authored as
- * content ahead of the schema. The engine's {@link BrandStrategy} type does not
- * yet carry these fields — the schema ticket (VI-541) formalizes them there.
- * Until then they live as this docs-local extension so {@link VISOR_BRAND_STRATEGY}
- * can carry the authored content and typecheck without touching the engine schema
- * (out of scope for VI-540). Field names are provisional; VI-541 finalizes them.
- */
-
-/** Message-house roof — the single umbrella message above the pillars. */
-export interface BrandMessaging {
-  /** One overarching statement the pillars support (message-house roof). */
-  roof: string;
-}
-
-/** Reusable "about us" copy — short and long forms. */
-export interface BrandBoilerplate {
-  short: string;
-  long: string;
-}
-
-/** A color-pairing rule expressed as brand intent (not a computed value). */
-export interface BrandColorPairing {
-  /** The token or role being used (e.g. `--primary`). */
-  use: string;
-  /** What it pairs against (token, role, or surface). */
-  with: string;
-  /** The intent — when and how the pairing is allowed. */
-  rule: string;
-}
-
-/** Color-usage intent — the brand's allowed pairings. */
-export interface BrandColorUsage {
-  pairings: BrandColorPairing[];
-}
-
-/** A contrast target expressed as brand intent (a WCAG 2.1 AA threshold). */
-export interface BrandContrastTarget {
-  /** The text/UI context the target applies to. */
-  context: string;
-  /** The minimum contrast ratio (e.g. "4.5:1"). */
-  ratio: string;
-}
-
-/** Accessibility intent — the standard and its contrast targets. */
-export interface BrandAccessibility {
-  /** The conformance standard. Visor targets "WCAG 2.1 AA". */
-  standard: string;
-  contrast: BrandContrastTarget[];
-  /** How the brand applies the standard (intent, not computed results). */
-  intent: string;
-}
-
-/**
- * Visor's Brand Record with the Phase 2 wave-1 draft additions. Extends the
- * engine {@link BrandStrategy}, overriding `pillars` to carry per-pillar proof
- * points (the message-house foundation / RTBs). See {@link BrandMessaging},
- * {@link BrandBoilerplate}, {@link BrandColorUsage}, {@link BrandAccessibility}.
- */
-export interface VisorBrandStrategyDraft extends Omit<BrandStrategy, "pillars"> {
-  /** Pillars, each with message-house proof points (RTBs) backing its claim. */
-  pillars: (BrandStrategy["pillars"][number] & { proof: string[] })[];
-  /** Message-house roof — the umbrella message above the pillars. */
-  messaging: BrandMessaging;
-  /** Permanent, brand-level signature line(s) (≈7 words or fewer). */
-  taglines: string[];
-  /** Reusable "about us" copy. */
-  boilerplate: BrandBoilerplate;
-  /** Color-usage intent — allowed pairings. */
-  colorUsage: BrandColorUsage;
-  /** Accessibility intent — WCAG 2.1 AA standard + contrast targets. */
-  accessibility: BrandAccessibility;
-}
-
-/**
- * Visor's authored Brand Record (VI-504/VI-505; Phase 2 content VI-540) —
+ * Visor's authored Brand Record (VI-504/VI-505; Phase 2 content VI-540/VI-541) —
  * strategy + verbal identity as data. The structured projection of
- * `docs/brand/visor-brand-record.yaml`, typed against {@link VisorBrandStrategyDraft}
- * (the engine's {@link BrandStrategy} plus VI-540's draft fields) so the docs layer
- * reads it the way an agent reads the manifest's `brand_strategy` block. Hand-kept
- * in sync with the YAML, which is the human-canonical source. `visibility: "public"`
- * — only Visor's own record ships in this public repo.
+ * `docs/brand/visor-brand-record.yaml`, typed against the engine's
+ * {@link BrandStrategy} (which now carries the Phase 2 wave-1 fields — `messaging`,
+ * `taglines`, `boilerplate`, `colorUsage`, `accessibility`, and per-pillar `proof`;
+ * VI-541) so the docs layer reads it the way an agent reads the manifest's
+ * `brand_strategy` block. Hand-kept in sync with the YAML, which is the
+ * human-canonical source. `visibility: "public"` — only Visor's own record ships
+ * in this public repo.
  *
- * Phase 2 caveat (VI-540): the new top-level fields below — `messaging`,
- * `taglines`, `boilerplate`, `colorUsage`, `accessibility` — live here and in the
- * narrative `.md` only, NOT yet in the YAML. The engine brand-strategy validator
- * (run by `build:manifest`) rejects unknown top-level keys, and extending it is
- * VI-541's scope. VI-541 adds these keys to the YAML + validator + engine type
- * together, at which point this projection moves off {@link VisorBrandStrategyDraft}
- * onto the real engine type and full YAML parity is restored. (Per-pillar `proof`
- * IS already valid in the YAML.)
+ * Typed via `satisfies BrandStrategy` rather than an annotation so the const keeps
+ * its precise inferred shape (every Phase 2 field present), while still being
+ * checked against the engine contract — VI-541 retired the docs-local
+ * `VisorBrandStrategyDraft` extension now that the engine type carries the fields.
  */
-export const VISOR_BRAND_STRATEGY: VisorBrandStrategyDraft = {
+export const VISOR_BRAND_STRATEGY = {
   positioning: {
     onliness:
       "The only design system that compiles a complete brand — visual and verbal — from one portable file, for humans and agents alike.",
@@ -402,7 +326,7 @@ export const VISOR_BRAND_STRATEGY: VisorBrandStrategyDraft = {
   },
   core: ["positioning", "essence", "pillars"],
   visibility: "public",
-};
+} satisfies BrandStrategy;
 
 /**
  * Resolve a theme's Brand Record strategy — positioning, essence, personality,

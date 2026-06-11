@@ -193,6 +193,109 @@ describe("serializeBrandStrategy", () => {
   });
 });
 
+// ── Phase 2 wave-1 (VI-541): messaging, taglines/boilerplate, color-usage ──
+
+describe("brand-strategy Phase 2 wave-1 fields", () => {
+  it("F1 carries the authored Phase 2 fields (proof, messaging, taglines, boilerplate, colorUsage, accessibility)", () => {
+    expect(F1.messaging?.roof.length).toBeGreaterThan(0);
+    expect(F1.taglines?.length).toBeGreaterThan(0);
+    expect(F1.boilerplate?.short.length).toBeGreaterThan(0);
+    expect(F1.boilerplate?.long.length).toBeGreaterThan(0);
+    expect(F1.colorUsage?.pairings.length).toBeGreaterThan(0);
+    expect(F1.accessibility?.standard).toBe("WCAG 2.1 AA");
+    for (const pillar of F1.pillars) {
+      expect(pillar.proof?.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("validates clean (structure + coherence) with the Phase 2 fields present", () => {
+    expect(checkBrandStrategyStructure(F1)).toEqual([]);
+    expect(checkBrandStrategyCoherence(F1, { tokens: KNOWN_TOKENS })).toEqual([]);
+  });
+
+  it("treats every Phase 2 field as OPTIONAL (a record may omit all of them)", () => {
+    const lean = clone(F1) as Record<string, unknown>;
+    delete lean.messaging;
+    delete lean.taglines;
+    delete lean.boilerplate;
+    delete lean.colorUsage;
+    delete lean.accessibility;
+    for (const pillar of (lean.pillars as { proof?: string[] }[])) delete pillar.proof;
+    expect(checkBrandStrategyStructure(lean)).toEqual([]);
+  });
+
+  it("rejects messaging without a roof", () => {
+    const bad = clone(F1);
+    (bad.messaging as Record<string, unknown>) = {};
+    const errors = checkBrandStrategyStructure(bad);
+    expect(errors.some((e) => e.code === "BRAND_STRATEGY_MESSAGING")).toBe(true);
+  });
+
+  it("rejects a non-string entry in taglines", () => {
+    const bad = clone(F1) as { taglines: unknown[] };
+    bad.taglines = ["fine", 42];
+    const errors = checkBrandStrategyStructure(bad);
+    expect(errors.some((e) => e.code === "BRAND_STRATEGY_TAGLINES")).toBe(true);
+  });
+
+  it("rejects boilerplate missing long", () => {
+    const bad = clone(F1);
+    delete (bad.boilerplate as { long?: string }).long;
+    const errors = checkBrandStrategyStructure(bad);
+    expect(errors.some((e) => e.code === "BRAND_STRATEGY_BOILERPLATE")).toBe(true);
+  });
+
+  it("rejects a colorUsage pairing missing its rule", () => {
+    const bad = clone(F1);
+    delete (bad.colorUsage!.pairings[0] as { rule?: string }).rule;
+    const errors = checkBrandStrategyStructure(bad);
+    expect(errors.some((e) => e.code === "BRAND_STRATEGY_COLOR_USAGE")).toBe(true);
+  });
+
+  it("rejects accessibility with an empty contrast array", () => {
+    const bad = clone(F1);
+    bad.accessibility!.contrast = [];
+    const errors = checkBrandStrategyStructure(bad);
+    expect(errors.some((e) => e.code === "BRAND_STRATEGY_ACCESSIBILITY")).toBe(true);
+  });
+
+  it("rejects a pillar proof that is not a non-empty string array", () => {
+    const bad = clone(F1);
+    bad.pillars[0].proof = [];
+    const errors = checkBrandStrategyStructure(bad);
+    expect(errors.some((e) => e.code === "BRAND_STRATEGY_PROOF")).toBe(true);
+  });
+
+  it("serializes the Phase 2 fields for a public record", () => {
+    const s = serializeBrandStrategy(F1) as BrandStrategy;
+    expect(s.messaging?.roof).toBe(F1.messaging?.roof);
+    expect(s.taglines).toEqual(F1.taglines);
+    expect(s.boilerplate?.short).toBe(F1.boilerplate?.short);
+    expect(s.colorUsage?.pairings.length).toBe(F1.colorUsage?.pairings.length);
+    expect(s.accessibility?.standard).toBe("WCAG 2.1 AA");
+    expect(s.pillars.find((p) => p.id === "coherence")?.proof?.length).toBeGreaterThan(0);
+  });
+
+  it("omits Phase 2 fields from serialization when absent", () => {
+    const lean = clone(F1);
+    delete lean.messaging;
+    delete lean.taglines;
+    delete lean.colorUsage;
+    lean.pillars.forEach((p) => delete p.proof);
+    const s = serializeBrandStrategy(lean) as BrandStrategy;
+    expect(s.messaging).toBeUndefined();
+    expect(s.taglines).toBeUndefined();
+    expect(s.colorUsage).toBeUndefined();
+    expect(s.pillars.every((p) => p.proof === undefined)).toBe(true);
+  });
+
+  it("drops the entire record (Phase 2 fields included) when private", () => {
+    const priv = clone(F1);
+    priv.visibility = "private";
+    expect(serializeBrandStrategy(priv)).toBeNull();
+  });
+});
+
 // ── Composed validator ──────────────────────────────────────
 
 describe("validateBrandStrategy", () => {
@@ -246,12 +349,20 @@ describe("visor-theme.schema.json brand-strategy block", () => {
     for (const path of [enginePath, docsPath]) {
       const schema = JSON.parse(readFileSync(path, "utf-8")) as {
         properties: Record<string, unknown>;
-        $defs: Record<string, unknown>;
+        $defs: Record<string, Record<string, Record<string, unknown>>>;
       };
       expect(schema.properties["brand-strategy"]).toBeDefined();
       expect(schema.$defs.brandPillar).toBeDefined();
       expect(schema.$defs.brandGoverns).toBeDefined();
       expect(schema.$defs.brandVoiceTrait).toBeDefined();
+      // Phase 2 wave-1 (VI-541): the new $defs + per-pillar proof.
+      expect(schema.$defs.brandMessaging).toBeDefined();
+      expect(schema.$defs.brandBoilerplate).toBeDefined();
+      expect(schema.$defs.brandColorUsage).toBeDefined();
+      expect(schema.$defs.brandColorPairing).toBeDefined();
+      expect(schema.$defs.brandContrastTarget).toBeDefined();
+      expect(schema.$defs.brandAccessibility).toBeDefined();
+      expect(schema.$defs.brandPillar.properties.proof).toBeDefined();
     }
   });
 

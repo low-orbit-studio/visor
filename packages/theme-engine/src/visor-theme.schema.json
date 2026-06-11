@@ -343,7 +343,17 @@
           "type": "string",
           "enum": ["public", "private"],
           "description": "Client brands are private and are omitted from the public agent manifest."
-        }
+        },
+        "messaging": { "$ref": "#/$defs/brandMessaging" },
+        "taglines": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "description": "Phase 2 wave-1 (VI-541). Permanent, brand-level signature line(s) — who the brand is, not what it sells this quarter."
+        },
+        "boilerplate": { "$ref": "#/$defs/brandBoilerplate" },
+        "colorUsage": { "$ref": "#/$defs/brandColorUsage" },
+        "accessibility": { "$ref": "#/$defs/brandAccessibility" }
       }
     },
     "spacing": {
@@ -565,7 +575,13 @@
       "properties": {
         "id": { "type": "string", "minLength": 1 },
         "statement": { "type": "string", "minLength": 1, "description": "The pillar's claim in one line." },
-        "governs": { "$ref": "#/$defs/brandGoverns" }
+        "governs": { "$ref": "#/$defs/brandGoverns" },
+        "proof": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "description": "Phase 2 wave-1 (VI-541). Reasons-to-believe — checkable evidence backing this pillar's claim (the message-house foundation)."
+        }
       }
     },
     "brandVoice": {
@@ -607,6 +623,66 @@
       "properties": {
         "use": { "type": "string", "minLength": 1 },
         "avoid": { "type": "string", "minLength": 1 }
+      }
+    },
+    "brandMessaging": {
+      "type": "object",
+      "description": "Phase 2 wave-1 (VI-541). Message-house roof — the single umbrella message above the pillars.",
+      "additionalProperties": false,
+      "required": ["roof"],
+      "properties": {
+        "roof": { "type": "string", "minLength": 1, "description": "One overarching statement the pillars support." }
+      }
+    },
+    "brandBoilerplate": {
+      "type": "object",
+      "description": "Phase 2 wave-1 (VI-541). Reusable \"about us\" copy — short and long forms.",
+      "additionalProperties": false,
+      "required": ["short", "long"],
+      "properties": {
+        "short": { "type": "string", "minLength": 1 },
+        "long": { "type": "string", "minLength": 1 }
+      }
+    },
+    "brandColorPairing": {
+      "type": "object",
+      "description": "A color-pairing rule expressed as brand intent (not a computed value).",
+      "additionalProperties": false,
+      "required": ["use", "with", "rule"],
+      "properties": {
+        "use": { "type": "string", "minLength": 1, "description": "The token or role being used (e.g. --primary)." },
+        "with": { "type": "string", "minLength": 1, "description": "What it pairs against (token, role, or surface)." },
+        "rule": { "type": "string", "minLength": 1, "description": "The intent — when and how the pairing is allowed." }
+      }
+    },
+    "brandColorUsage": {
+      "type": "object",
+      "description": "Phase 2 wave-1 (VI-541). Color-usage intent — the brand's allowed pairings.",
+      "additionalProperties": false,
+      "required": ["pairings"],
+      "properties": {
+        "pairings": { "type": "array", "items": { "$ref": "#/$defs/brandColorPairing" }, "minItems": 1 }
+      }
+    },
+    "brandContrastTarget": {
+      "type": "object",
+      "description": "A contrast target expressed as brand intent (a WCAG 2.1 AA threshold).",
+      "additionalProperties": false,
+      "required": ["context", "ratio"],
+      "properties": {
+        "context": { "type": "string", "minLength": 1, "description": "The text/UI context the target applies to." },
+        "ratio": { "type": "string", "minLength": 1, "description": "The minimum contrast ratio (e.g. \"4.5:1\")." }
+      }
+    },
+    "brandAccessibility": {
+      "type": "object",
+      "description": "Phase 2 wave-1 (VI-541). Accessibility intent — the standard and its contrast targets (authored as intent; live computation is the render surface's concern).",
+      "additionalProperties": false,
+      "required": ["standard", "contrast", "intent"],
+      "properties": {
+        "standard": { "type": "string", "minLength": 1, "description": "The conformance standard. Visor targets \"WCAG 2.1 AA\"." },
+        "contrast": { "type": "array", "items": { "$ref": "#/$defs/brandContrastTarget" }, "minItems": 1 },
+        "intent": { "type": "string", "minLength": 1, "description": "How the brand applies the standard (intent, not computed results)." }
       }
     }
   }
