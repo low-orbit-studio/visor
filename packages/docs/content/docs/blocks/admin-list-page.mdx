@@ -131,6 +131,33 @@ Consumers own the action buttons — the block just provides the slot, the count
 
 The DataTable already renders a subtle "No results" EmptyState when `data` is empty. Pass `emptyState` to replace it entirely — for example, a CTA encouraging the user to create their first record.
 
+## CSS Hooks
+
+The block exposes CSS custom property hooks so you can adjust its visual treatment without modifying the source files.
+
+| Token | Default | Description |
+|---|---|---|
+| `--admin-list-page-table-bg` | `transparent` | Background of the table section wrapper. |
+| `--admin-list-page-table-radius` | `0` | Border radius of the table section wrapper. |
+| `--admin-list-page-table-header-radius` | *(DataTable default)* | Top-corner radius of the sort-bar (column header row) inside the table. When unset, the DataTable's own `--data-table-sort-bar-radius` default (`var(--radius-lg)`) applies. Set to `0` for the **borderless flush-header pattern** — square header corners while the wrapper's card radius is unchanged. |
+| `--admin-list-page-footer-bg` | `transparent` | Background of the footer-status row. |
+| `--admin-list-page-footer-radius` | `0` | Border radius of the footer-status row. |
+| `--admin-list-page-footer-border-top` | `1px solid var(--border-subtle)` | Top border of the footer-status row. |
+| `--admin-list-page-footer-padding` | `var(--spacing-3) 0` | Padding of the footer-status row. |
+
+**Example — borderless admin card with flush (square-top) header:**
+
+```css
+/* In your page or theme styles */
+[data-slot="admin-list-page"] {
+  --admin-list-page-table-bg: var(--surface-card);
+  --admin-list-page-table-radius: var(--radius-lg);
+  --admin-list-page-table-header-radius: 0;
+}
+```
+
+This gives the table section a rounded card shape while keeping the column-header row flush (no rounded top corners). Without `--admin-list-page-table-header-radius: 0`, the sort-bar would inherit the DataTable default and round its own top corners independently — visible when the header carries a filled background (e.g. `--surface-subtle` in the borderless-admin pattern).
+
 ## Accessibility
 
 - The top region is a semantic header element; the table region is a semantic section labelled by the page title when the title is a plain string.

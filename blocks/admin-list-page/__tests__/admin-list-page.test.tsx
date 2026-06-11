@@ -491,4 +491,17 @@ describe("AdminListPage", () => {
     )
     expect(screen.getByRole("button", { name: "Chip A" })).toBeInTheDocument()
   })
+
+  // ─── CSS hook: --admin-list-page-table-header-radius (VI-514) ────────
+
+  it("renders the table section with data-slot=admin-list-page-table", () => {
+    const { container } = render(
+      <AdminListPage title="Users" columns={columns} data={data} />
+    )
+    // The table section must carry the data-slot attribute so the CSS hook
+    // --admin-list-page-table-header-radius can be targeted by consumers.
+    expect(
+      container.querySelector("[data-slot='admin-list-page-table']")
+    ).toBeInTheDocument()
+  })
 })

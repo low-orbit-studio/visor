@@ -18,6 +18,14 @@
 .tableSection {
   background-color: var(--admin-list-page-table-bg, transparent);
   border-radius: var(--admin-list-page-table-radius, 0);
+  /* Pipe the header-radius hook into the DataTable sort-bar token so
+     consumers can opt into square top corners (borderless flush pattern)
+     without forking the block.
+     Default is `initial` — DataTable's own --data-table-sort-bar-radius
+     default (var(--radius-lg)) is preserved unless the hook is set.
+     Example: set --admin-list-page-table-header-radius: 0 on the block
+     root for a flush header treatment. */
+  --data-table-sort-bar-radius: var(--admin-list-page-table-header-radius, initial);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-4, 1rem);
