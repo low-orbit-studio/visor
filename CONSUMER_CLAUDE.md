@@ -257,7 +257,6 @@ Recommended component compositions for common UI scenarios. These are not instal
 | --- | --- |
 | Auth Flow | card, input, button, field, alert, tabs |
 | Card Grid | card, badge, button, skeleton, empty-state, pagination |
-| CRUD Table | table, button, dropdown-menu, dialog, alert, pagination, badge |
 | Dashboard Layout | sidebar, sheet, navbar, button, card, tabs, separator, scroll-area |
 | Data Table Row Actions | data-table, dropdown-menu, dialog, confirm-dialog, toast, bulk-action-bar |
 | Data Table with Filters | table, input, select, button, badge, dropdown-menu, pagination |

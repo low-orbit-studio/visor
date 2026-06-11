@@ -1,5 +1,5 @@
 {
   "title": "Patterns",
   "description": "Composition patterns showing how to combine Visor components for common use cases.",
-  "pages": ["auth-flow", "card-grid", "crud-table", "dashboard-layout", "data-table-row-actions", "data-table-with-filters", "empty-state", "form-with-validation", "modal-form", "notification-center", "onboarding-flow", "search-results", "settings-page"]
+  "pages": ["auth-flow", "card-grid", "dashboard-layout", "data-table-row-actions", "data-table-with-filters", "empty-state", "form-with-validation", "modal-form", "notification-center", "onboarding-flow", "search-results", "settings-page"]
 }
