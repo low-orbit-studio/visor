@@ -214,4 +214,129 @@ describe("MatrixTable", () => {
     const root = container.querySelector("[data-slot='matrix-table']")
     expect(root).toHaveClass("my-custom-class")
   })
+
+  // ─── String cell values (VI-531) ─────────────────────────────────────────
+
+  it("renders a string cell value as plain text", () => {
+    const stringRows: MatrixRow<Identity>[] = [
+      {
+        id: "1",
+        identity: { name: "Storage", email: "" },
+        activeColumns: [],
+        cells: { admin: "50GB", editor: true, viewer: false },
+      },
+    ]
+    render(
+      <MatrixTable
+        columns={columns}
+        rows={stringRows}
+        renderIdentity={renderIdentity}
+        aria-label="Plan comparison"
+      />
+    )
+    expect(screen.getByText("50GB")).toBeInTheDocument()
+  })
+
+  it("gives a string cell an aria-label of 'column: value'", () => {
+    const stringRows: MatrixRow<Identity>[] = [
+      {
+        id: "1",
+        identity: { name: "Storage", email: "" },
+        activeColumns: [],
+        cells: { admin: "50GB" },
+      },
+    ]
+    render(
+      <MatrixTable
+        columns={columns}
+        rows={stringRows}
+        renderIdentity={renderIdentity}
+        aria-label="Plan comparison"
+      />
+    )
+    const cell = screen.getByRole("cell", { name: /Admin: 50GB/i })
+    expect(cell).toBeInTheDocument()
+  })
+
+  it("renders boolean cells from `cells` with the existing assigned/not-assigned aria-label", () => {
+    const mixedRows: MatrixRow<Identity>[] = [
+      {
+        id: "1",
+        identity: { name: "Mixed", email: "" },
+        activeColumns: [],
+        cells: { admin: true, editor: false, viewer: "Unlimited" },
+      },
+    ]
+    render(
+      <MatrixTable
+        columns={columns}
+        rows={mixedRows}
+        renderIdentity={renderIdentity}
+        aria-label="Plan comparison"
+      />
+    )
+    const row = screen.getByText("Mixed").closest("tr")!
+    expect(
+      within(row).getByRole("cell", { name: /Admin: assigned/i })
+    ).toBeInTheDocument()
+    expect(
+      within(row).getByRole("cell", { name: /Editor: not assigned/i })
+    ).toBeInTheDocument()
+    expect(
+      within(row).getByRole("cell", { name: /Viewer: Unlimited/i })
+    ).toBeInTheDocument()
+    expect(within(row).getByText("Unlimited")).toBeInTheDocument()
+  })
+
+  it("`cells` entry takes precedence over `activeColumns` for the same column", () => {
+    // admin is in activeColumns (would be 'assigned') but cells overrides to a string.
+    const overrideRows: MatrixRow<Identity>[] = [
+      {
+        id: "1",
+        identity: { name: "Override", email: "" },
+        activeColumns: ["admin", "editor"],
+        cells: { admin: "Custom" },
+      },
+    ]
+    render(
+      <MatrixTable
+        columns={columns}
+        rows={overrideRows}
+        renderIdentity={renderIdentity}
+        aria-label="Plan comparison"
+      />
+    )
+    const row = screen.getByText("Override").closest("tr")!
+    // admin overridden to string
+    expect(
+      within(row).getByRole("cell", { name: /Admin: Custom/i })
+    ).toBeInTheDocument()
+    // editor not in cells → falls back to activeColumns (assigned)
+    expect(
+      within(row).getByRole("cell", { name: /Editor: assigned/i })
+    ).toBeInTheDocument()
+    // viewer absent from both → not assigned
+    expect(
+      within(row).getByRole("cell", { name: /Viewer: not assigned/i })
+    ).toBeInTheDocument()
+  })
+
+  it("leaves boolean-only callers (no `cells`) rendering the indicator unchanged", () => {
+    const { container } = render(
+      <MatrixTable
+        columns={columns}
+        rows={rows}
+        renderIdentity={renderIdentity}
+        aria-label="Role assignments"
+      />
+    )
+    // No text cells present — every body cell is either identity or boolean indicator.
+    expect(screen.queryByText("50GB")).not.toBeInTheDocument()
+    // Ada's admin cell still uses the boolean aria-label pattern.
+    const adaRow = screen.getByText("Ada Lovelace").closest("tr")!
+    expect(
+      within(adaRow).getByRole("cell", { name: /Admin: assigned/i })
+    ).toBeInTheDocument()
+    expect(container).toBeTruthy()
+  })
 })

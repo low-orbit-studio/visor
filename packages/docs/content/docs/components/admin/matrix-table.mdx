@@ -49,6 +49,31 @@ Each row's `activeColumns` accepts either a `Set<string>` or a plain `string[]`.
 { id: '1', identity: member, activeColumns: ['admin', 'editor'] }
 ```
 
+## String cell values
+
+Most cells are boolean (does this row have this column? yes/no), but feature-comparison
+matrices often need a value cell — `"50GB"`, `"Unlimited"`. Set per-column values with the
+optional `cells` map, which accepts `string | boolean` (`MatrixCellValue`):
+
+- `true` → the active checkmark indicator
+- `false` → the empty/inactive indicator
+- `string` → plain text in the standard cell style
+
+```tsx
+// Feature row: free plan has no value, pro is included, enterprise gets a string value.
+{
+  id: 'storage',
+  identity: { name: 'Storage' },
+  activeColumns: [],
+  cells: { free: false, pro: true, enterprise: '50GB' },
+}
+```
+
+A column present in `cells` takes precedence over its `activeColumns` membership; columns
+absent from `cells` fall back to the `activeColumns` boolean model. String cells expose
+`role="cell"` with an accessible name of `"<column>: <value>"`; boolean cells keep the
+existing `assigned` / `not assigned` aria-label.
+
 ## Installation
 
 ```bash
@@ -79,7 +104,7 @@ import { MatrixTable, type MatrixColumn, type MatrixRow } from '@/components/ui/
         name: 'rows',
         type: 'MatrixRow<TIdentity>[]',
         required: true,
-        description: 'Row data. Each row has an id, an identity value passed to renderIdentity, and an activeColumns set/array of column ids that should show the active check indicator.',
+        description: 'Row data. Each row has an id, an identity value passed to renderIdentity, an activeColumns set/array of column ids that show the active check indicator, and an optional cells map of per-column string | boolean values (a cells entry overrides activeColumns for that column; strings render as plain text).',
       },
       {
         name: 'renderIdentity',
