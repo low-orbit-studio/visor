@@ -1,0 +1,78 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.lede {
+  max-width: 64ch;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+/* Eyebrow label for each block — uppercase/letter-spacing only, so it composes
+   over the Heading primitive without fighting its base color across modules. */
+.blockHeading {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Roof card — constrained width; the umbrella claim reads best in a narrower column. */
+.roofCard {
+  max-width: 64ch;
+}
+
+.roofContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.roofClaim {
+  text-wrap: balance;
+}
+
+/* Pillars stack vertically with a gap between cards. */
+.pillars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.pillarContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+/* The pillar id badge + statement row. */
+.pillarHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.statement {
+  flex: 1 1 16rem;
+}
+
+/* Proof points list — separated from the pillar statement by a hairline, each RTB
+   as a numbered item so the "reasons-to-believe" framing is legible. */
+.proofList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  padding-top: var(--spacing-3);
+  padding-left: var(--spacing-5);
+  margin: 0;
+  border-top: 1px solid var(--border-default, #e5e7eb);
+}
+
+.proofItem {
+  padding-left: var(--spacing-1);
+}
