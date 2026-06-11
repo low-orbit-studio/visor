@@ -192,6 +192,37 @@ describe("Badge size", () => {
   })
 })
 
+describe("uppercase prop", () => {
+  it("applies the uppercase CSS class when uppercase=true", () => {
+    render(<Badge uppercase>Enterprise</Badge>)
+    const badge = screen.getByText("Enterprise")
+    expect(badge.className).toMatch(/uppercase/)
+  })
+
+  it("does not apply the uppercase CSS class when uppercase is omitted", () => {
+    render(<Badge>Enterprise</Badge>)
+    const badge = screen.getByText("Enterprise")
+    expect(badge.className).not.toMatch(/\buppercase\b/)
+  })
+
+  it("does not apply the uppercase CSS class when uppercase=false", () => {
+    render(<Badge uppercase={false}>Enterprise</Badge>)
+    const badge = screen.getByText("Enterprise")
+    expect(badge.className).not.toMatch(/\buppercase\b/)
+  })
+
+  it("applies the uppercase class alongside a variant class", () => {
+    render(
+      <Badge variant="secondary" uppercase>
+        Pro
+      </Badge>
+    )
+    const badge = screen.getByText("Pro")
+    expect(badge.className).toMatch(/uppercase/)
+    expect(badge.className).toMatch(/variantSecondary/)
+  })
+})
+
 describe("accessibility", () => {
   it("has no WCAG 2.1 AA violations (default variant)", async () => {
     const { container } = render(<Badge>New</Badge>)
