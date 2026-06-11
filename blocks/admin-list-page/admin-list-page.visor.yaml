@@ -51,6 +51,20 @@ props:
       When supplied, every data row becomes a keyboard-activatable target
       (click + Enter/Space). Forwarded as-is to DataTable. Typical use: open
       a detail drawer for the clicked row.
+css_hooks:
+  --admin-list-page-table-bg:
+    default: transparent
+    description: Background of the table section wrapper.
+  --admin-list-page-table-radius:
+    default: "0"
+    description: Border radius of the table section wrapper.
+  --admin-list-page-table-header-radius:
+    default: (DataTable default — var(--radius-lg))
+    description: >
+      Top-corner radius of the sort-bar (column header row). Pipes into
+      --data-table-sort-bar-radius. Unset by default so the DataTable's own
+      default applies. Set to 0 for the borderless flush-header pattern —
+      square header corners without affecting the wrapper's card radius.
 slots:
   customFilterBar:
     type: ReactNode
