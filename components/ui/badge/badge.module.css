@@ -11,9 +11,14 @@
   border-radius: var(--radius-full, 9999px);
   border: 1px solid transparent;
   line-height: 1;
-  font-weight: var(--font-weight-medium, 500);
-  white-space: nowrap;
+  /* Typography is theme-tunable (VI-516): editorial admin themes can render
+     badges uppercase / heavier / tracked without per-usage changes. Each hook
+     defaults to canonical's current literal value, so existing consumers are
+     byte-identical. */
+  font-weight: var(--badge-font-weight, var(--font-weight-medium, 500));
   text-transform: var(--badge-text-transform, none);
+  letter-spacing: var(--badge-letter-spacing, normal);
+  white-space: nowrap;
   transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
@@ -38,17 +43,30 @@
   font-size: var(--font-size-xs, 0.75rem);
 }
 
-/* md — matches today's rendering byte-for-byte (1.25rem total height). */
+/* md — matches today's rendering byte-for-byte (1.25rem total height).
+   font-size is theme-tunable (VI-516) so editorial admin can run 11px. */
 .sizeMd {
   gap: var(--spacing-1, 0.25rem);
   padding: calc(var(--spacing-1, 0.25rem) / 2) var(--spacing-2, 0.5rem);
-  font-size: var(--font-size-xs, 0.75rem);
+  font-size: var(--badge-font-size, var(--font-size-xs, 0.75rem));
 }
 
 .sizeLg {
   gap: calc(var(--spacing-1, 0.25rem) + var(--spacing-1, 0.25rem) / 2);
   padding: var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem);
   font-size: var(--font-size-sm, 0.875rem);
+}
+
+/* Sentence case (VI-516 follow-up) — opt OUT of the editorial uppercase +
+ * tracking treatment so larger, prose-y badges (e.g. a plan name like
+ * "Enterprise") read as a label, not a tag. The large size always opts out
+ * (it is intrinsically a label, matching the prototype overlay's `.badge--lg`);
+ * the `.caseSentence` class lets sm/md opt out per-usage. Default/sm/md keep the
+ * theme-driven --badge-text-transform / --badge-letter-spacing untouched. */
+.sizeLg,
+.caseSentence {
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 /* Icon scaling — leading glyphs track the per-size font-size step. */
@@ -86,26 +104,30 @@
   border-color: var(--border-default, #e5e7eb);
 }
 
+/* Tonal variants — the per-variant --badge-*-bg token lets an editorial theme
+ * overlay drive the fill (e.g. to the admin color-mix tint) during re-vendor.
+ * The token FALLBACK is canonical's current value, so default consumers render
+ * byte-identically. Text colors are unchanged. */
 .variantDestructive {
-  background-color: var(--surface-error-subtle, transparent);
+  background-color: var(--badge-destructive-bg, var(--surface-error-subtle, transparent));
   color: var(--text-error, currentColor);
   border-color: transparent;
 }
 
 .variantSuccess {
-  background-color: var(--surface-success-subtle, transparent);
+  background-color: var(--badge-success-bg, var(--surface-success-subtle, transparent));
   color: var(--text-success, currentColor);
   border-color: transparent;
 }
 
 .variantWarning {
-  background-color: var(--surface-warning-subtle, transparent);
+  background-color: var(--badge-warning-bg, var(--surface-warning-subtle, transparent));
   color: var(--text-warning, currentColor);
   border-color: transparent;
 }
 
 .variantInfo {
-  background-color: var(--surface-info-subtle, transparent);
+  background-color: var(--badge-info-bg, var(--surface-info-subtle, transparent));
   color: var(--text-info, currentColor);
   border-color: transparent;
 }
@@ -149,4 +171,24 @@
   background-color: var(--color-neutral-600, #4b5563);
   color: var(--color-white, #ffffff);
   border-color: transparent;
+}
+
+/* Icon-only (VI-516 follow-up) — a circular chip carrying a single centered
+ * glyph (e.g. the filled-success check used by the Roles matrix active cell +
+ * legend). Fixed square so the pill collapses to a perfect circle; zero padding
+ * and a fixed glyph size keep it crisp at any density. Size is token-driven so
+ * editorial admin can tune it without touching this module. The glyph centers
+ * via the base flex; the per-size svg rules are overridden here. */
+.iconOnly {
+  width: var(--badge-icon-only-size, 1.375rem);
+  height: var(--badge-icon-only-size, 1.375rem);
+  min-width: var(--badge-icon-only-size, 1.375rem);
+  padding: 0;
+  gap: 0;
+  border-radius: var(--radius-full, 9999px);
+}
+
+.iconOnly > svg {
+  width: var(--badge-icon-only-glyph, 0.875rem);
+  height: var(--badge-icon-only-glyph, 0.875rem);
 }

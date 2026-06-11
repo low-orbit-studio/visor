@@ -7,6 +7,10 @@
   container-name: confirm-dialog;
 }
 
+/* ── Canonical default treatment (iconTreatment unset) ─────────────────────
+ * A tinted circular plate (~2.5rem, surface-*-subtle wash) stacked above the
+ * title/description. This is the unchanged default rendering. */
+
 /* Header layout — plate stacked above title/description */
 .headerStack {
   display: flex;
@@ -46,10 +50,87 @@
   color: var(--text-error, #b91c1c);
 }
 
-/* Legacy aliases — kept for theme overrides targeting the old class names */
-.iconInfo { color: var(--text-info, #0369a1); }
-.iconWarning { color: var(--text-warning, #b45309); }
-.iconDanger { color: var(--text-error, #b91c1c); }
+/* ── Blessed editorial treatments (iconTreatment="inline" | "plated") ───────
+ * Brought in from the blessed admin build's confirm-dialog. Opt-in via the
+ * iconTreatment prop; the canonical default (above) is unchanged. */
+
+/* Title row with leading severity icon — blessed inline treatment. */
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+/* Plated layout — opt-in via iconTreatment="plated". Stacks a tinted circular
+ * icon container ABOVE the title (golden organization-management Feedback
+ * screen). */
+.titleRowPlated {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+/* Plated severity icon container — ~40px tinted circle. */
+.iconPlated {
+  width: var(--confirm-dialog-plate-size, 40px);
+  height: var(--confirm-dialog-plate-size, 40px);
+  border-radius: var(--radius-full, 999px);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.iconPlated svg {
+  width: var(--confirm-dialog-plate-icon-size, 22px);
+  height: var(--confirm-dialog-plate-icon-size, 22px);
+}
+
+/* Plated severity tints — bg uses a tinted wash of the severity token;
+ * foreground uses the solid severity token. Matches prototype-overlay
+ * .dialog__icon--warning / --destructive exactly. */
+.iconPlatedInfo {
+  background: color-mix(in srgb, var(--accent, #0369a1) 18%, transparent);
+  color: var(--accent, #0369a1);
+}
+
+.iconPlatedWarning {
+  background: color-mix(in srgb, var(--warning, #b45309) 22%, transparent);
+  color: var(--warning, #b45309);
+}
+
+.iconPlatedDanger {
+  background: color-mix(in srgb, var(--destructive, #b91c1c) 18%, transparent);
+  color: var(--destructive, #b91c1c);
+}
+
+/* Inline severity icon — sized via svg to respect Phosphor sizing contract.
+ * Also serves as the legacy `.iconInfo/.iconWarning/.iconDanger` color hook for
+ * theme overrides targeting the old class names. */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.icon svg {
+  width: var(--spacing-5, 1.25rem);
+  height: var(--spacing-5, 1.25rem);
+}
+
+.iconInfo {
+  color: var(--text-info, #0369a1);
+}
+
+.iconWarning {
+  color: var(--text-warning, #b45309);
+}
+
+.iconDanger {
+  color: var(--text-error, #b91c1c);
+}
 
 /* Body slot — description paragraph or richer children */
 .body {
@@ -117,6 +198,44 @@
 
 .action {
   display: inline-flex;
+}
+
+/* Inline (non-portal) surface — opt-in via mode="inline". Renders the dialog
+ * content card in normal flow WITHOUT Radix DialogPortal/DialogOverlay/auto
+ * X-close, so consumers can stack multiple dialogs inside one shared scrim.
+ * Mirrors the dialog content card visuals (surface/radius/padding/shadow) but
+ * uses static positioning instead of fixed centering. */
+.inlineSurface {
+  position: relative;
+  width: 100%;
+  max-width: var(--dialog-max-width, 32rem);
+  border-radius: var(--dialog-radius, var(--radius-lg, 0.5rem));
+  background-color: var(--dialog-surface, var(--surface-card, var(--surface-page, #ffffff)));
+  padding: var(--dialog-padding, var(--spacing-6, 1.5rem));
+  box-shadow: var(--dialog-shadow, var(--shadow-xl));
+}
+
+/* Inline header — replaces DialogHeader (which depends on dialog.module.css). */
+.inlineHeader {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing-1, 0.25rem) * 1.5);
+  margin-bottom: var(--spacing-4, 1rem);
+}
+
+/* Inline title — replaces Radix DialogTitle (no Dialog context in inline mode). */
+.inlineTitle {
+  font-size: var(--dialog-title-size, var(--font-size-lg, 1.125rem));
+  font-weight: var(--dialog-title-weight, var(--font-weight-semibold, 600));
+  color: var(--text-primary, #111827);
+  margin: 0;
+}
+
+/* Inline description — replaces Radix DialogDescription. */
+.inlineDescription {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--dialog-description-color, var(--text-secondary, #6b7280));
+  margin: 0;
 }
 
 /* Container query: stack actions vertically on narrow dialog widths */

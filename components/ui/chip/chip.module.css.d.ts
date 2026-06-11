@@ -17,6 +17,7 @@ declare const styles: {
   readonly countNeutral: string
   readonly countPrimary: string
   readonly countSolid: string
+  readonly trailing: string
 }
 
 export default styles

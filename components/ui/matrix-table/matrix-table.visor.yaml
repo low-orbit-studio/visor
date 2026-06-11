@@ -1,11 +1,12 @@
 name: MatrixTable
-description: A fixed assignment grid component for members×roles patterns. Sticky-left identity column, centered boolean cells (22px filled-success check when active / muted empty when not), and multi-line centered column headers (label over count) that opt out of the uppercase header treatment. No list machinery — no selection column, no sort buttons, no pagination footer.
+description: A fixed members×roles assignment grid. Sticky-left identity column with an uppercase, tracked "MEMBER" eyebrow header; centered boolean cells rendered as a 22px filled-success disc with a check glyph (active) or a muted dash (not assigned); optional string cells render as plain text; multi-line centered role-column headers (label over count) that opt out of the uppercase header treatment; an editorial cell rhythm (spacing-5 horizontal) and hairline borders driven by the shared --dt-* table hooks (--dt-container-radius/-shadow, --dt-header-bg, --dt-row-bg, --hairline). No list machinery — no selection column, no sort buttons, no pagination footer.
 extends: HTMLDivElement
 category: admin
 
 when_to_use:
   - Displaying a members × roles assignment matrix in organization settings
-  - Any fixed grid where rows are identities (users, items) and columns are boolean attributes (permissions, roles, features)
+  - A plans × features monetization pricing matrix (string + boolean cells)
+  - Any fixed grid where rows are identities (users, plans) and columns are attributes (permissions, roles, features), rendered as a sibling of the editorial data-table
   - When the shape is a matrix, not a sortable/pageable list — where DataTable's list machinery would fight the layout
 
 when_not_to_use:
@@ -14,14 +15,18 @@ when_not_to_use:
   - Simple key-value tables (use the Table primitive directly)
 
 why: >
-  The roles-table screen's core is a members×roles matrix that the TanStack DataTable
-  (a sortable/paginated/selectable list) cannot reproduce without the list machinery
-  actively fighting the matrix shape. MatrixTable provides a minimal, data-driven API
-  (columns + rows + renderIdentity) with all the visual affordances the pattern needs:
-  sticky-left identity column with hover-tracking background, centered boolean
-  indicators (22px circular filled-success check / muted empty circle), and
-  multi-line centered column headers. Theme-agnostic — references only CSS custom
-  property tokens, no hard-coded values.
+  The roles-table and plans-pricing screens are members×roles / plans×features
+  matrices that the TanStack DataTable (a sortable/paginated/selectable list)
+  cannot reproduce without the list machinery actively fighting the matrix
+  shape. MatrixTable provides a minimal, data-driven API (columns + rows +
+  renderIdentity) with all the visual affordances the pattern needs: a
+  sticky-left identity column with an editorial eyebrow header and
+  hover-tracking background, centered boolean indicators (22px circular
+  filled-success check disc / muted dash), optional per-cell string values, an
+  optional active-cell tooltip, and multi-line centered role-column headers.
+  Theme-agnostic — references only CSS custom property tokens (the shared --dt-*
+  table hooks plus palette/role tokens), so it reads as a sibling of the
+  editorial data-table on every palette.
 
 variants: {}
 
@@ -29,15 +34,30 @@ props:
   - name: columns
     type: "MatrixColumn[]"
     required: true
-    description: Column definitions. Each column has an `id`, `label`, and optional `count` sub-label rendered below the label in the header.
+    description: >
+      Column (role/feature) definitions. Each column carries a `key` (stable
+      identifier indexing the per-row cell map; `id` is accepted as a compatible
+      alias), a `label`, an optional `count` sub-label rendered below the label,
+      and an optional `description` shown as a tooltip when hovering an active
+      cell in that column.
   - name: rows
     type: "MatrixRow<TIdentity>[]"
     required: true
-    description: Row data. Each row has an `id`, an `identity` value passed to `renderIdentity`, an `activeColumns` set/array of column ids that should show the active check indicator, and an optional `cells` map of per-column values. A `cells` entry (`string | boolean`) overrides `activeColumns` for that column — `true`/`false` render the boolean indicator, a `string` renders as plain text in the standard cell style.
+    description: >
+      Row data. Each row has an `id` (React key), an optional `identity` payload
+      passed through to `renderIdentity` via the row, and its truth values.
+      Truth is supplied via `cells` — a map keyed by column key whose values are
+      `string | boolean` (`true`/`false` render the boolean indicator, a
+      `string` renders as plain text). `activeColumns` (a Set/array of column
+      keys) is accepted as a compatible alias for the boolean half of `cells`; a
+      `cells` entry takes precedence for the same column.
   - name: renderIdentity
-    type: "(identity: TIdentity) => React.ReactNode"
+    type: "(row: MatrixRow<TIdentity>) => React.ReactNode"
     required: true
-    description: Render slot for the sticky-left identity cell. Receives the row's `identity` value — typically renders a name, avatar+name, or any identity compound.
+    description: Render slot for the sticky-left identity cell. Receives the whole row (blessed shape) — read `row.identity` for structured identity data.
+  - name: identityLabel
+    type: React.ReactNode
+    description: Header label for the sticky identity column. Defaults to "Member" (rendered with the uppercase, tracked eyebrow treatment).
   - name: aria-label
     type: string
     description: Accessible label for the table element.
@@ -50,21 +70,24 @@ preview_url: "https://visor.loworbit.studio/docs/components/admin/matrix-table"
 
 example: |
   const columns: MatrixColumn[] = [
-    { id: 'admin', label: 'Admin', count: 3 },
-    { id: 'editor', label: 'Editor', count: 5 },
-    { id: 'viewer', label: 'Viewer', count: 12 },
+    { key: 'admin', label: 'Admin', count: 3 },
+    { key: 'editor', label: 'Editor', count: 5, description: 'Can edit content' },
+    { key: 'viewer', label: 'Viewer', count: 12 },
   ]
 
   const rows: MatrixRow<{ name: string; email: string }>[] = [
-    { id: '1', identity: { name: 'Ada Lovelace', email: 'ada@example.com' }, activeColumns: new Set(['admin', 'editor']) },
-    { id: '2', identity: { name: 'Grace Hopper', email: 'grace@example.com' }, activeColumns: ['viewer'] },
-    // Mixed string + boolean cells via `cells` (string renders as plain text):
-    { id: '3', identity: { name: 'Storage', email: '' }, activeColumns: [], cells: { admin: '50GB', editor: true, viewer: false } },
+    { id: '1', identity: { name: 'Ada Lovelace', email: 'ada@example.com' }, cells: { admin: true, editor: true } },
+    { id: '2', identity: { name: 'Grace Hopper', email: 'grace@example.com' }, cells: { viewer: true } },
+    // Mixed string + boolean cells (string renders as plain text):
+    { id: '3', identity: { name: 'Storage', email: '' }, cells: { admin: '50GB', editor: true, viewer: false } },
+    // Compatible alias: activeColumns instead of a boolean cells map:
+    { id: '4', identity: { name: 'Legacy', email: '' }, activeColumns: ['admin'] },
   ]
 
   <MatrixTable
     columns={columns}
     rows={rows}
-    renderIdentity={(identity) => <span>{identity.name}</span>}
+    renderIdentity={(row) => <span>{row.identity?.name}</span>}
+    identityLabel="Member"
     aria-label="Member role assignments"
   />

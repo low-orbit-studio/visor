@@ -65,6 +65,13 @@ notes: |
   root or layout with `<TooltipProvider>`. Without it, the tooltip will silently
   fail to render. Consumers that never set `gatedReason` are not affected.
 
+  **Ghost held/open state (CSS-only, opt-in):** a `ghost`-variant button paints a
+  subtle held look (`--surface-subtle` bg, `--text-primary` text) when it carries
+  any one of `data-state="open"`, `data-active="true"`, or the `isActive` className.
+  No prop/API change — `data-state="open"` is forwarded automatically by Radix when
+  the button is a `<Trigger asChild>` (Popover/DropdownMenu); the other two are
+  manual opt-ins. Default ghost rendering is unchanged when none are set.
+
 preview_url: "https://visor.loworbit.studio/docs/components/general/button"
 
 example: |

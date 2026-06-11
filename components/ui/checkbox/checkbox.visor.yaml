@@ -17,7 +17,9 @@ why: >
   Checkbox wraps Radix UI Checkbox to provide correct keyboard navigation,
   focus management, and ARIA states. It renders a check icon indicator on
   selection and supports error states via aria-invalid. Pair it with Label
-  for accessible labeling.
+  for accessible labeling. Box dimensions are theme-tunable via the opt-in
+  --checkbox-size and --checkbox-radius token hooks, whose defaults equal the
+  current rendering (1rem box, --radius-sm corners) byte-for-byte.
 
 props:
   - name: checked

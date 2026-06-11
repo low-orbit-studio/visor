@@ -92,6 +92,19 @@ props:
   - name: emptyState
     type: React.ReactNode
     description: Override for the default EmptyState slot rendered when data is empty.
+  - name: loadingSkeletonCell
+    type: "(args: { rowIndex: number; colIndex: number; columnId: string }) => React.ReactNode"
+    description: >
+      Opt-in per-column skeleton shapes for the loading state. When supplied,
+      each skeleton row's cell contents come from this render prop instead of
+      the default uniform full-width bars, letting the caller mirror the real
+      row's silhouette (logo plates, badge pills, two-line id stacks). Returns
+      the cell contents; DataTable still owns the `tr`/`td` structure, key, and
+      `data-slot`. `colIndex` walks the resolved column list (the injected
+      selection column, when present, is index 0). Return `null`/`undefined` to
+      leave a cell empty. Default (prop omitted) is unchanged: every cell
+      renders a full-width Skeleton bar. Pair with the Skeleton shape classes
+      (`shapeLogo`, `shapePill`, `shapeCircle`).
   - name: stickyHeader
     type: boolean
     default: "false"

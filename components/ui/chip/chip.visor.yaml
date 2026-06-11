@@ -95,6 +95,13 @@ sub_components:
           Selected-state visual treatment. "accent" (default) uses accent-tinted bg + accent border + link text.
           "neutral" uses --surface-card bg + neutral border + primary text; the count pill renders as a solid mint
           pill (--surface-success-default) when selected. Use in editorial/admin contexts where accent bleed is undesirable.
+      - name: trailingIcon
+        type: React.ReactNode
+        optional: true
+        description: >
+          Muted trailing icon (e.g. a caret) rendered after the label/count for "filter-as-dropdown" chips.
+          Orthogonal to count/selectedTreatment. Hidden from assistive tech (aria-hidden). Default render is
+          unchanged when omitted.
 
 dependencies:
   - "class-variance-authority"

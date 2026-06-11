@@ -20,3 +20,31 @@
   background-size: 200% 100%;
   animation: shimmer var(--_shimmer-duration) var(--motion-easing-linear, linear) infinite;
 }
+
+/* ── Shape variants (VI-516, opt-in) ─────────────────────────────────────
+   Additive modifier classes layered on top of `.skeleton` via `className`.
+   They set only a default geometry (width / height / radius) so callers can
+   still override via `style`/`className`. The fill + animation are inherited
+   from `.skeleton`, so a shape never changes the base look — it only changes
+   the silhouette. Each dimension is a token-backed custom property so a theme
+   can retune the editorial admin's placeholder geometry without forking the
+   component. Defaults match the approved org-management edge capture. */
+
+/* Logo plate — ~104×24, radius-sm. The org-name cell's brand-mark placeholder. */
+.shapeLogo {
+  width: var(--skeleton-logo-width, 104px);
+  height: var(--skeleton-logo-height, 24px);
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+/* Badge pill — ~64×18, radius-full. The plan/status badge placeholder. */
+.shapePill {
+  width: var(--skeleton-pill-width, 64px);
+  height: var(--skeleton-pill-height, 18px);
+  border-radius: var(--radius-full, 999px);
+}
+
+/* Circle — square footprint, fully rounded. Avatar / icon placeholder. */
+.shapeCircle {
+  border-radius: var(--radius-full, 999px);
+}

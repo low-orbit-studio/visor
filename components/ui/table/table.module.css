@@ -1,11 +1,12 @@
-/* Table container */
+/* Table container — radius/shadow are theme-driven so a consumer that wraps the
+   table in its own rounded shell (e.g. with a bulk bar on top) can flatten them. */
 .container {
   position: relative;
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
-  border-radius: var(--radius-lg, 0.5rem);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--dt-container-radius, var(--radius-lg, 0.5rem));
+  box-shadow: var(--dt-container-shadow, var(--shadow-sm));
 }
 
 /* Table */
@@ -52,7 +53,7 @@
   background-color: var(--surface-muted, #f3f4f6);
 }
 
-/* TableHead */
+/* TableHead — bg via --dt-header-bg (theme-driven; transparent default). */
 .head {
   height: 3rem;
   padding-left: var(--spacing-3, 0.75rem);
@@ -62,13 +63,17 @@
   font-weight: var(--font-weight-medium, 500);
   white-space: nowrap;
   color: var(--text-primary, #111827);
+  background-color: var(--dt-header-bg, transparent);
 }
 
-/* TableCell */
+/* TableCell — bg via --dt-row-bg (theme-driven; transparent default). Painting
+   on the cell gives a uniform row surface regardless of tr selected/hover state. */
 .cell {
   padding: var(--spacing-3, 0.75rem);
   vertical-align: middle;
   color: var(--text-primary, #111827);
+  background-color: var(--dt-row-bg, transparent);
+  border-top: 1px solid var(--hairline, transparent);
 }
 
 /* TableCaption */

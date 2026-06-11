@@ -16,8 +16,16 @@ const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
     size?: "sm" | "md" | "lg"
+    /**
+     * Visual variant of the closed trigger. `"default"` keeps the 1px border on
+     * the standard control surface. `"borderless"` drops the border and sits on
+     * `--field-control-bg`, matching a borderless Input inside an in-dialog form
+     * context (one that sets `--field-control-bg: var(--surface-subtle)`).
+     * Opt-in — default is unchanged.
+     */
+    variant?: "default" | "borderless"
   }
->(({ className, size = "md", children, ...props }, ref) => {
+>(({ className, size = "md", variant = "default", children, ...props }, ref) => {
   const sizeClass = {
     sm: styles.triggerSizeSm,
     md: styles.triggerSizeMd,
@@ -28,9 +36,11 @@ const SelectTrigger = React.forwardRef<
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
       data-size={size}
+      data-variant={variant}
       className={cn(
         styles.trigger,
         sizeClass,
+        variant === "borderless" && styles.triggerBorderless,
         className
       )}
       ref={ref}

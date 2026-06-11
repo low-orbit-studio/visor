@@ -14,28 +14,56 @@
   align-items: center;
 }
 
-/* Field Label */
+/* Field Label
+ * Type ramp is theme-tunable (VI-516 pattern): editorial admin themes can run
+ * a 13px / secondary label without per-usage changes. The token defaults equal
+ * canonical's current rendering byte-for-byte. */
 .fieldLabel {
-  font-size: var(--font-size-sm, 0.875rem);
+  font-size: var(--field-label-font-size, var(--font-size-sm, 0.875rem));
   font-weight: var(--font-weight-medium, 500);
-  color: var(--text-primary, currentColor);
+  color: var(--field-label-color, var(--text-primary, currentColor));
   line-height: 1.4;
 }
 
-/* Field Description */
+/* Field Description
+ * Token defaults equal canonical's current rendering; editorial admin can run
+ * 11px / text-tertiary via the tokens. */
 .fieldDescription {
-  font-size: var(--font-size-xs, 0.75rem);
+  font-size: var(--field-description-font-size, var(--font-size-xs, 0.75rem));
   font-weight: var(--font-weight-normal, 400);
-  color: var(--text-secondary, currentColor);
+  color: var(--field-description-color, var(--text-secondary, currentColor));
   line-height: 1.5;
   margin: 0;
 }
 
-/* Field Error */
+/* Field Error
+ * Token default equals canonical's current rendering; editorial admin runs 13px. */
 .fieldError {
-  font-size: var(--font-size-sm, 0.875rem);
+  font-size: var(--field-error-font-size, var(--font-size-sm, 0.875rem));
   font-weight: var(--font-weight-normal, 400);
   color: var(--text-error, currentColor);
+}
+
+/* Leading-icon layout — opt-in. Only applied when the consumer passes an
+ * `icon` to FieldError, so the default (text-only) error is unchanged. Lays
+ * the icon + message out as a centered row; the icon sizes itself in em so it
+ * tracks the error's font-size (a 14px WarningCircle at the editorial 13px
+ * ramp), matching the prototype's `.field__error i { font-size: 14px }`. */
+.fieldErrorWithIcon {
+  display: flex;
+  align-items: center;
+  /* 6px gap — no --spacing-1.5 token exists, so the 6px step uses
+     calc(--spacing-1 + --spacing-1/2) (the same pattern badge/kbd use). */
+  gap: calc(var(--spacing-1, 0.25rem) + var(--spacing-1, 0.25rem) / 2);
+}
+
+.fieldErrorIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.077em;
+  line-height: 1;
 }
 
 .fieldErrorList {

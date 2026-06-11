@@ -5,6 +5,7 @@ declare const styles: {
   readonly variantOutline: string
   readonly variantGhost: string
   readonly variantDestructive: string
+  readonly isActive: string
   readonly sizeSm: string
   readonly sizeMd: string
   readonly sizeLg: string

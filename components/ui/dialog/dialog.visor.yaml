@@ -22,6 +22,13 @@ why: >
   built-in close button and animated overlay ensure a polished experience
   without any manual wiring.
 
+token_hooks: >
+  Editorial CSS variable hooks allow per-theme/per-app overrides without
+  forking the component. Each falls back to the canonical literal, so unset
+  consumers render identically: --dialog-surface, --dialog-max-width,
+  --dialog-radius, --dialog-padding, --dialog-shadow, --dialog-title-size,
+  --dialog-title-weight, --dialog-description-color, --overlay-blur.
+
 props:
   - name: open
     type: boolean
@@ -53,6 +60,8 @@ sub_components:
     description: The modal panel with overlay, close button, and animations.
   - name: DialogHeader
     description: Container for title and description at the top.
+  - name: DialogFooter
+    description: Right-aligned action row with a hairline top border, for dialog buttons.
   - name: DialogTitle
     description: Accessible dialog heading.
   - name: DialogDescription

@@ -3,7 +3,12 @@
   width: 100%;
   min-width: 0;
   border: 1px solid var(--input-border, var(--border-default, #e5e7eb));
-  background-color: var(--input-bg, var(--surface-interactive-default, #f9fafb));
+  /* --field-control-bg is the shared "what surface does a form control sit on"
+     role. It defaults to var(--input-bg), so default inputs are unchanged. A
+     form context (e.g. an in-dialog wrapper) can set --field-control-bg:
+     var(--surface-subtle) to lift controls onto a different surface without a
+     per-component prop. */
+  background-color: var(--field-control-bg, var(--input-bg, var(--surface-interactive-default, #f9fafb)));
   line-height: 1.5;
   color: var(--text-primary, #111827);
   transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
@@ -11,7 +16,7 @@
 }
 
 .base::placeholder {
-  color: var(--text-secondary, #9ca3af);
+  color: var(--input-placeholder-color, var(--text-secondary, #9ca3af));
 }
 
 @media (hover: hover) {
@@ -33,7 +38,7 @@
 
 .base[aria-invalid="true"] {
   border-color: transparent;
-  background-color: var(--input-bg-invalid, var(--surface-error-subtle, color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--input-bg, #f9fafb))));
+  background-color: var(--input-bg-invalid, var(--surface-error-subtle, color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--input-bg, #f9fafb)))));
   box-shadow: inset 0 0 0 1.5px var(--border-error, #ef4444);
 }
 

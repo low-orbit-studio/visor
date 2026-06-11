@@ -83,6 +83,34 @@ describe("Select", () => {
     )
     expect(screen.getByRole("combobox")).toBeInTheDocument()
   })
+
+  it("defaults the trigger to the default variant", () => {
+    render(
+      <Select>
+        <SelectTrigger aria-label="Choose">
+          <SelectValue placeholder="Select" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="a">A</SelectItem>
+        </SelectContent>
+      </Select>
+    )
+    expect(screen.getByRole("combobox")).toHaveAttribute("data-variant", "default")
+  })
+
+  it("renders the borderless trigger variant", () => {
+    render(
+      <Select>
+        <SelectTrigger variant="borderless" aria-label="Choose">
+          <SelectValue placeholder="Select" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="a">A</SelectItem>
+        </SelectContent>
+      </Select>
+    )
+    expect(screen.getByRole("combobox")).toHaveAttribute("data-variant", "borderless")
+  })
 })
 
 describe("accessibility", () => {

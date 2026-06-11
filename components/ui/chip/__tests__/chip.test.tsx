@@ -300,6 +300,41 @@ describe("FilterChip", () => {
     expect(btn).toHaveAttribute("data-selected-treatment", "accent")
     expect(btn).toHaveAttribute("data-selected", "true")
   })
+
+  // trailingIcon prop
+  it("does not render trailing span when trailingIcon is absent", () => {
+    const { container } = render(<FilterChip label="Events" />)
+    expect(container.querySelector('[aria-hidden="true"]')).not.toBeInTheDocument()
+  })
+
+  it("renders trailingIcon after the label", () => {
+    render(<FilterChip label="Events" trailingIcon={<span data-testid="caret" />} />)
+    expect(screen.getByTestId("caret")).toBeInTheDocument()
+  })
+
+  it("renders trailingIcon after the count (orthogonal to count)", () => {
+    const { container } = render(
+      <FilterChip label="Events" count={47} trailingIcon={<span data-testid="caret" />} />
+    )
+    const count = container.querySelector('[data-slot="filter-chip-count"]')
+    const caret = screen.getByTestId("caret")
+    expect(count).toBeInTheDocument()
+    expect(caret).toBeInTheDocument()
+    // Trailing icon's wrapper comes after the count in document order.
+    expect(
+      count!.compareDocumentPosition(caret) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy()
+  })
+
+  it("trailingIcon is hidden from assistive tech (aria-hidden)", () => {
+    render(<FilterChip label="Events" trailingIcon={<span data-testid="caret" />} />)
+    expect(screen.getByTestId("caret").parentElement).toHaveAttribute("aria-hidden", "true")
+  })
+
+  it("renders identically without trailingIcon — no breaking change", () => {
+    render(<FilterChip label="Events" />)
+    expect(screen.getByRole("checkbox", { name: "Events" })).toBeInTheDocument()
+  })
 })
 
 /* ─── Accessibility ──────────────────────────────────────────────────── */

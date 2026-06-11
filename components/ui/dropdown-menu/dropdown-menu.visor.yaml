@@ -22,6 +22,23 @@ why: >
   styling, keyboard shortcut display, and animated enter/exit transitions —
   all themed via CSS custom properties.
 
+editorial_token_hooks: >
+  PL-1626 editorial admin treatment is driven through component-local --dropdown-*
+  hooks, each falling back to the value the component rendered before the editorial
+  pass (byte-identical default rendering). A prototype tokens.css can opt in centrally.
+  Content: --dropdown-content-gap, --dropdown-content-radius, --dropdown-content-bg,
+  --dropdown-content-padding, --dropdown-content-ring, --dropdown-content-shadow.
+  Item: --dropdown-item-gap, --dropdown-item-radius, --dropdown-item-padding,
+  --dropdown-item-font-size, --dropdown-item-hover-bg, plus leading-icon
+  --dropdown-item-icon-color / --dropdown-item-icon-size (via .item > svg and
+  .subTrigger > svg). Destructive: --dropdown-item-destructive-icon-color,
+  --dropdown-item-destructive-hover-bg. Label: --dropdown-label-padding,
+  --dropdown-label-font-size, --dropdown-label-font-weight,
+  --dropdown-label-letter-spacing, --dropdown-label-text-transform,
+  --dropdown-label-color. Shortcut: --dropdown-shortcut-font-size,
+  --dropdown-shortcut-letter-spacing, --dropdown-shortcut-color (also tints
+  .subTriggerIcon). Separator: --dropdown-separator-margin, --dropdown-separator-color.
+
 sub_components:
   - name: DropdownMenu
     description: Root component managing open/close state.

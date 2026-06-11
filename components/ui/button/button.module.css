@@ -80,6 +80,25 @@
   }
 }
 
+/* Open / active state — ghost variant only. OPT-IN, strictly additive.
+   A ghost Button reads as "held" while its popover/menu is open so the
+   trigger no longer needs an inline style. Three opt-in triggers, all
+   resolving to the same held look:
+     - data-state="open"  — forwarded automatically by Radix when the
+       Button is the trigger via <Trigger asChild> (Popover/DropdownMenu).
+     - data-active="true" — manual non-Radix triggers (mirrors the
+       sidebar `data-active` convention).
+     - .isActive          — className opt-in (mirrors sidebar/section-nav).
+   Default ghost rendering is untouched: none of these match unless a
+   consumer explicitly sets them. Matches the prototype-overlay held look:
+   background var(--surface-subtle), color var(--text-primary). */
+.variantGhost[data-state="open"],
+.variantGhost[data-active="true"],
+.variantGhost.isActive {
+  background-color: var(--surface-subtle, var(--surface-muted, #f3f4f6));
+  color: var(--text-primary, #111827);
+}
+
 /* Gated state — orthogonal to variant, works with all variants */
 .base[data-gated="true"] {
   opacity: var(--opacity-40, 0.4);

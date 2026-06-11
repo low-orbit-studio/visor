@@ -46,6 +46,34 @@
   color: var(--text-secondary, #9ca3af);
 }
 
+/* Borderless trigger variant (opt-in via <SelectTrigger variant="borderless">).
+ *
+ * Closed trigger has no 1px border and sits on --field-control-bg — the same
+ * shared form-control surface role Input uses — so a borderless Select matches a
+ * borderless Input inside an in-dialog form context that sets
+ * --field-control-bg: var(--surface-subtle). Default Select is unchanged. The
+ * border is kept transparent (rather than removed) so the trigger's box size
+ * stays identical to the default trigger and the focus ring keeps its geometry.
+ * Declared after the base .trigger so these overrides win the cascade. */
+.triggerBorderless {
+  border-color: transparent;
+  background-color: var(--field-control-bg, var(--select-bg, var(--surface-interactive-default, #f9fafb)));
+  /* In-form borderless selects match the Input they sit beside: full width and
+     the same md height/padding (the prototype's .field select == .field input). */
+  width: 100%;
+  padding: var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem);
+}
+
+@media (hover: hover) {
+  .triggerBorderless:hover:not(:focus-visible):not(:disabled):not([aria-invalid="true"]) {
+    border-color: transparent;
+  }
+}
+
+.triggerBorderless:focus-visible {
+  border-color: transparent;
+}
+
 .triggerSizeSm {
   height: 2.25rem;
   border-radius: var(--radius-sm, 0.25rem);

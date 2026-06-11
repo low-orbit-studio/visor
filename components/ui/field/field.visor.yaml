@@ -34,7 +34,13 @@ sub_components:
   - name: FieldDescription
     description: Helper text below the label providing additional guidance.
   - name: FieldError
-    description: Error message display with role="alert". Accepts an errors array or children.
+    description: >
+      Error message display with role="alert". Accepts an errors array or
+      children. Optional `icon` prop renders an aria-hidden leading glyph and
+      switches to a centered icon + message row; without it the error renders
+      as plain inline text (default, unchanged). Typography is theme-tunable
+      via opt-in token hooks (--field-label-*, --field-description-*,
+      --field-error-font-size) whose defaults equal the current rendering.
 
 dependencies:
   - "class-variance-authority"

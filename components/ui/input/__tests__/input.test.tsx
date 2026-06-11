@@ -1,3 +1,5 @@
+import { readFileSync } from "fs"
+import { resolve } from "path"
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Input } from "../input"
@@ -177,5 +179,30 @@ describe("aria-invalid styling", () => {
     const input = screen.getByRole("textbox")
     // aria-invalid=false is valid HTML — just confirms no crash and attribute value
     expect(input).toHaveAttribute("aria-invalid", "false")
+  })
+})
+
+describe("editorial token hooks (CSS-only, additive, zero-regression)", () => {
+  const css = readFileSync(
+    resolve(__dirname, "..", "input.module.css"),
+    "utf-8"
+  )
+
+  it("base background-color wraps --field-control-bg, defaulting to the current --input-bg chain", () => {
+    expect(css).toContain(
+      "background-color: var(--field-control-bg, var(--input-bg, var(--surface-interactive-default, #f9fafb)));"
+    )
+  })
+
+  it("aria-invalid color-mix base wraps --field-control-bg, defaulting to --input-bg", () => {
+    expect(css).toContain(
+      "color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--input-bg, #f9fafb)))"
+    )
+  })
+
+  it("::placeholder color wraps --input-placeholder-color, defaulting to --text-secondary", () => {
+    expect(css).toContain(
+      "color: var(--input-placeholder-color, var(--text-secondary, #9ca3af));"
+    )
   })
 })

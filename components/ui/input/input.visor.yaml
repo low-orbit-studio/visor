@@ -23,6 +23,17 @@ why: >
   aria-invalid for error states and integrates with the Field component
   for labels and error messages.
 
+theme_hooks:
+  - name: --field-control-bg
+    description: >
+      Shared "what surface does a form control sit on" role. Controls the input's
+      background-color (and the inner color-mix base of the aria-invalid tint).
+      Defaults to var(--input-bg) so default inputs are unchanged; a form context
+      can set it to lift controls onto a different surface without a prop.
+  - name: --input-placeholder-color
+    description: >
+      Override for the ::placeholder color. Defaults to var(--text-secondary).
+
 props:
   - name: size
     type: "'sm' | 'md' | 'lg'"

@@ -147,6 +147,17 @@
   color: var(--text-inverse, #ffffff);
 }
 
+/* Trailing icon (FilterChip dropdown caret) — muted, after the count. */
+.trailing {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-tertiary, #9ca3af);
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
 /* Interactive chips (ChoiceChip, FilterChip) */
 .interactive {
   cursor: pointer;

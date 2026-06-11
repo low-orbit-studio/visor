@@ -21,6 +21,22 @@ why: >
   header weight, and footer background are styled via tokens. Keeps markup
   accessible while looking polished across themes.
 
+theme_hooks:
+  - name: --dt-container-radius
+    description: >
+      Container border-radius. Defaults to var(--radius-lg, 0.5rem). A consumer
+      that wraps the table in its own rounded shell can flatten it.
+  - name: --dt-container-shadow
+    description: >
+      Container box-shadow. Defaults to var(--shadow-sm).
+  - name: --dt-header-bg
+    description: >
+      TableHead background-color. Defaults to transparent.
+  - name: --dt-row-bg
+    description: >
+      TableCell background-color, painted on the cell for a uniform row surface
+      regardless of tr selected/hover state. Defaults to transparent.
+
 props:
   - name: scope
     type: '"col" | "row" | "colgroup" | "rowgroup"'

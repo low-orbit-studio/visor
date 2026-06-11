@@ -71,6 +71,14 @@ props:
       string is forwarded as a raw CSS family on an inline
       `--page-header-title-family` declaration.
   - name: leading
+    type: "React.ReactNode"
+    description: >
+      Optional media/identity node rendered to the LEFT of the title block
+      inside the title row (typically an Avatar or identity plate). When present
+      the row forms an identity lockup and the slot top-aligns against the
+      title/description stack (VI-539). Omit to keep the default text|actions
+      layout, so existing call sites render unchanged.
+  - name: titleLeading
     type: "string | number"
     description: >
       Title line-height override, forwarded as an inline
