@@ -117,17 +117,84 @@ brand-strategy:
     - use: portable
       avoid: exportable
 
-  # --- Phase 2 wave-1 (VI-540): messaging house, taglines/boilerplate, color-usage. ---
-  # The per-pillar `proof[]` above (the message-house foundation / RTBs) is valid
-  # today and lives here. The Phase 2 TOP-LEVEL fields — `messaging` (roof),
-  # `taglines`, `boilerplate`, `colorUsage`, and `accessibility` — are AUTHORED but
-  # intentionally NOT in this YAML yet: the engine brand-strategy validator
-  # (run by `build:manifest`) rejects unknown top-level keys, and extending it is
-  # VI-541's scope (the schema ticket this one blocks). Until then the authored
-  # content lives in the human-canonical narrative (visor-brand-strategy.md) and
-  # the docs typed projection VISOR_BRAND_STRATEGY (packages/docs/lib/theme-config.ts).
-  # VI-541 adds these keys here alongside the validator/serializer/type changes
-  # that admit them, restoring full YAML ↔ projection parity.
+  # --- Phase 2 wave-1 (VI-541): messaging house, taglines/boilerplate, color-usage. ---
+  # The per-pillar `proof[]` above is the message-house foundation (RTBs). The
+  # TOP-LEVEL fields below are admitted by the engine brand-strategy validator
+  # (VI-541 extended TOP_LEVEL_KEYS + deep rules + serializer + schema). They are
+  # PUBLIC and flow to the agent manifest under `brand_strategy`. Kept in content
+  # parity with the human-canonical narrative (visor-brand-strategy.md) and the
+  # docs typed projection VISOR_BRAND_STRATEGY (packages/docs/lib/theme-config.ts).
+  messaging:
+    # The umbrella message above the three pillars: Visor's "design intent as
+    # data" thesis, extended up from tokens to the whole brand.
+    roof: Design intent as data — all the way up to brand.
+
+  taglines:
+    - Your entire brand system, created and encoded in one file.
+
+  boilerplate:
+    short: >-
+      Visor is an open design system that compiles a complete brand — visual and
+      verbal — from one portable file, legible to humans and agents alike.
+      Components are yours to copy and own; shared tokens keep every layer
+      coherent.
+    long: >-
+      Visor is Low Orbit Studio's open design system, built on one idea: design
+      intent should live as data — typed, portable, and machine-readable — from a
+      single color token all the way up to a brand's voice. Components are
+      copy-and-own, so `npx visor add` drops real source into your project for
+      you to edit, while shared tokens keep design consistent across every app
+      through `npm update`. A theme is a complete design system carried in one
+      `.visor.yaml` file; change the file and the whole surface re-resolves,
+      light to dark, one brand to another. And because that same file reads
+      cleanly to people and agents alike, Visor is as legible to the engineer
+      editing it as to the agent composing against it — coherent, open, and
+      yours.
+
+  colorUsage:                               # allowed pairings, expressed as rules over semantic tokens (not fixed hex)
+    pairings:
+      - use: "--primary"
+        with: "--surface-card / --surface-base"
+        rule: >-
+          Primary is the one emphatic action per view — reserve it for the single
+          most important action and let everything else recede to surfaces and
+          text tokens.
+      - use: "--accent"
+        with: "--primary"
+        rule: >-
+          Accent is a supporting highlight, never a second primary. Keep accent
+          and primary visibly distinct — Visor flags them when they're near-twins,
+          because a theme reads flat when they sit too close.
+      - use: "--text-primary / --text-secondary"
+        with: "--surface-card / --surface-base"
+        rule: >-
+          Text always uses the semantic text tokens against a surface token, never
+          raw hex, so contrast tracks the active theme instead of being pinned.
+      - use: "--destructive"
+        with: "--surface-card"
+        rule: >-
+          Destructive is reserved for irreversible or error states; it is never a
+          decorative or emphasis color.
+      - use: fallback neutral (Gray)
+        with: any un-themed surface
+        rule: >-
+          Fallbacks use Gray, not Slate, so an un-themed component lands on a
+          neutral that fits the palette instead of clashing.
+
+  accessibility:                            # brand intent, not computed output — the contrast bar every theme commits to
+    standard: WCAG 2.1 AA
+    contrast:
+      - context: Body text and other normal-size text
+        ratio: "4.5:1"
+      - context: Large text (≥ 24px, or ≥ 18.66px bold)
+        ratio: "3:1"
+      - context: Non-text UI — icons, focus rings, control boundaries
+        ratio: "3:1"
+    intent: >-
+      Every stock Visor theme is meant to clear WCAG 2.1 AA against these targets.
+      The theme validator surfaces pairings that fall short as a candid,
+      non-blocking warning — 'this theme fails AA on small text' — so the author
+      can bump the contrast or keep the warning if it's intentional.
 
   core: [positioning, essence, pillars]     # Aaker core/extended: the immutable subset
   visibility: public                        # public | private (client brands: private)

@@ -70,6 +70,12 @@ export interface BrandPillar {
   statement: string;
   /** What the pillar governs (coherence-checked against the live system). */
   governs: BrandGoverns;
+  /**
+   * Reasons-to-believe — the message-house foundation (VI-541, Phase 2 wave-1).
+   * Concrete, checkable evidence backing this pillar's claim. Optional so a
+   * record can carry pillars without proof points.
+   */
+  proof?: string[];
 }
 
 /** A fixed voice trait with a worked example. */
@@ -103,6 +109,53 @@ export interface BrandLexiconEntry {
   avoid: string;
 }
 
+// ── Phase 2 wave-1 (VI-541): messaging house, taglines/boilerplate, color-usage. ──
+
+/** Message-house roof — the single umbrella message above the pillars. */
+export interface BrandMessaging {
+  /** One overarching statement the pillars support (message-house roof). */
+  roof: string;
+}
+
+/** Reusable "about us" copy — short and long forms. */
+export interface BrandBoilerplate {
+  short: string;
+  long: string;
+}
+
+/** A color-pairing rule expressed as brand intent (not a computed value). */
+export interface BrandColorPairing {
+  /** The token or role being used (e.g. `--primary`). */
+  use: string;
+  /** What it pairs against (token, role, or surface). */
+  with: string;
+  /** The intent — when and how the pairing is allowed. */
+  rule: string;
+}
+
+/** Color-usage intent — the brand's allowed pairings. */
+export interface BrandColorUsage {
+  pairings: BrandColorPairing[];
+}
+
+/** A contrast target expressed as brand intent (a WCAG 2.1 AA threshold). */
+export interface BrandContrastTarget {
+  /** The text/UI context the target applies to. */
+  context: string;
+  /** The minimum contrast ratio (e.g. "4.5:1"). */
+  ratio: string;
+}
+
+/** Accessibility intent — the standard and its contrast targets. */
+export interface BrandAccessibility {
+  /** The conformance standard. Visor targets "WCAG 2.1 AA". */
+  standard: string;
+  /** WCAG 2.1 AA contrast targets, authored as intent (live computation is the render surface's concern). */
+  contrast: BrandContrastTarget[];
+  /** How the brand applies the standard (intent, not computed results). */
+  intent: string;
+}
+
 /** Visibility of a brand strategy. Client brands are `private`. */
 export type BrandVisibility = "public" | "private";
 
@@ -110,9 +163,11 @@ export type BrandVisibility = "public" | "private";
  * The `brand-strategy` block — strategy + verbal identity as data.
  *
  * `tone` is keyed by UI state (`error`, `success`, …); the keys are validated
- * against the recognized UI states (coherence check D2). All ten fields are
- * required in v1 — F1 authors the full record, and the downstream Workbench
- * surfaces render each section.
+ * against the recognized UI states (coherence check D2). The ten Phase 1 fields
+ * are required in v1 — F1 authors the full record, and the downstream Workbench
+ * surfaces render each section. The Phase 2 wave-1 fields (`messaging`,
+ * `taglines`, `boilerplate`, `colorUsage`, `accessibility`; VI-541) are optional
+ * so a record — e.g. a private client brand — can omit them.
  */
 export interface BrandStrategy {
   positioning: BrandPositioning;
@@ -128,6 +183,17 @@ export interface BrandStrategy {
   /** Aaker core/extended — the immutable subset, as section names. */
   core: string[];
   visibility: BrandVisibility;
+  // ── Phase 2 wave-1 (VI-541) — optional; see the interfaces above. ──
+  /** Message-house roof — the umbrella message above the pillars. */
+  messaging?: BrandMessaging;
+  /** Permanent, brand-level signature line(s) — who the brand is, not what it sells this quarter. */
+  taglines?: string[];
+  /** Reusable "about us" copy — short and long forms. */
+  boilerplate?: BrandBoilerplate;
+  /** Color-usage intent — the brand's allowed pairings. */
+  colorUsage?: BrandColorUsage;
+  /** Accessibility intent — WCAG 2.1 AA standard + contrast targets. */
+  accessibility?: BrandAccessibility;
 }
 
 /**
