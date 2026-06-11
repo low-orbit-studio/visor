@@ -86,6 +86,34 @@ describe("resolveBrandStrategy", () => {
       expect(p.not).toBeTruthy();
     }
   });
+
+  it("carries the Phase 2 wave-1 authored content (VI-540)", () => {
+    // Messaging house: a roof + proof points (RTBs) on every pillar.
+    expect(VISOR_BRAND_STRATEGY.messaging.roof).toBeTruthy();
+    for (const pillar of VISOR_BRAND_STRATEGY.pillars) {
+      expect(pillar.proof.length).toBeGreaterThan(0);
+      for (const point of pillar.proof) expect(point).toBeTruthy();
+    }
+
+    // Taglines + boilerplate.
+    expect(VISOR_BRAND_STRATEGY.taglines.length).toBeGreaterThan(0);
+    expect(VISOR_BRAND_STRATEGY.boilerplate.short).toBeTruthy();
+    expect(VISOR_BRAND_STRATEGY.boilerplate.long).toBeTruthy();
+
+    // Color usage: at least one pairing rule, fully populated.
+    expect(VISOR_BRAND_STRATEGY.colorUsage.pairings.length).toBeGreaterThan(0);
+    for (const pairing of VISOR_BRAND_STRATEGY.colorUsage.pairings) {
+      expect(pairing.use).toBeTruthy();
+      expect(pairing.with).toBeTruthy();
+      expect(pairing.rule).toBeTruthy();
+    }
+
+    // Accessibility: the specific standard (WCAG 2.1 AA, not bare "WCAG-AA")
+    // and contrast targets as intent.
+    expect(VISOR_BRAND_STRATEGY.accessibility.standard).toBe("WCAG 2.1 AA");
+    expect(VISOR_BRAND_STRATEGY.accessibility.contrast.length).toBeGreaterThan(0);
+    expect(VISOR_BRAND_STRATEGY.accessibility.intent).toBeTruthy();
+  });
 });
 
 describe("applyTheme", () => {

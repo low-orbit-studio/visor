@@ -137,14 +137,98 @@ export function resolveBrand(theme: string): ThemeBrand {
 }
 
 /**
- * Visor's authored Brand Record (VI-504/VI-505) — strategy + verbal identity as
- * data. The structured projection of `docs/brand/visor-brand-record.yaml`, typed
- * against the engine's {@link BrandStrategy} so the docs layer reads it the way an
- * agent reads the manifest's `brand_strategy` block. Hand-kept in sync with the
- * YAML, which is the human-canonical source. `visibility: "public"` — only Visor's
- * own record ships in this public repo.
+ * Phase 2 wave-1 DRAFT additions to the Brand Record (VI-540), authored as
+ * content ahead of the schema. The engine's {@link BrandStrategy} type does not
+ * yet carry these fields — the schema ticket (VI-541) formalizes them there.
+ * Until then they live as this docs-local extension so {@link VISOR_BRAND_STRATEGY}
+ * can carry the authored content and typecheck without touching the engine schema
+ * (out of scope for VI-540). Field names are provisional; VI-541 finalizes them.
  */
-export const VISOR_BRAND_STRATEGY: BrandStrategy = {
+
+/** Message-house roof — the single umbrella message above the pillars. */
+export interface BrandMessaging {
+  /** One overarching statement the pillars support (message-house roof). */
+  roof: string;
+}
+
+/** Reusable "about us" copy — short and long forms. */
+export interface BrandBoilerplate {
+  short: string;
+  long: string;
+}
+
+/** A color-pairing rule expressed as brand intent (not a computed value). */
+export interface BrandColorPairing {
+  /** The token or role being used (e.g. `--primary`). */
+  use: string;
+  /** What it pairs against (token, role, or surface). */
+  with: string;
+  /** The intent — when and how the pairing is allowed. */
+  rule: string;
+}
+
+/** Color-usage intent — the brand's allowed pairings. */
+export interface BrandColorUsage {
+  pairings: BrandColorPairing[];
+}
+
+/** A contrast target expressed as brand intent (a WCAG 2.1 AA threshold). */
+export interface BrandContrastTarget {
+  /** The text/UI context the target applies to. */
+  context: string;
+  /** The minimum contrast ratio (e.g. "4.5:1"). */
+  ratio: string;
+}
+
+/** Accessibility intent — the standard and its contrast targets. */
+export interface BrandAccessibility {
+  /** The conformance standard. Visor targets "WCAG 2.1 AA". */
+  standard: string;
+  contrast: BrandContrastTarget[];
+  /** How the brand applies the standard (intent, not computed results). */
+  intent: string;
+}
+
+/**
+ * Visor's Brand Record with the Phase 2 wave-1 draft additions. Extends the
+ * engine {@link BrandStrategy}, overriding `pillars` to carry per-pillar proof
+ * points (the message-house foundation / RTBs). See {@link BrandMessaging},
+ * {@link BrandBoilerplate}, {@link BrandColorUsage}, {@link BrandAccessibility}.
+ */
+export interface VisorBrandStrategyDraft extends Omit<BrandStrategy, "pillars"> {
+  /** Pillars, each with message-house proof points (RTBs) backing its claim. */
+  pillars: (BrandStrategy["pillars"][number] & { proof: string[] })[];
+  /** Message-house roof — the umbrella message above the pillars. */
+  messaging: BrandMessaging;
+  /** Permanent, brand-level signature line(s) (≈7 words or fewer). */
+  taglines: string[];
+  /** Reusable "about us" copy. */
+  boilerplate: BrandBoilerplate;
+  /** Color-usage intent — allowed pairings. */
+  colorUsage: BrandColorUsage;
+  /** Accessibility intent — WCAG 2.1 AA standard + contrast targets. */
+  accessibility: BrandAccessibility;
+}
+
+/**
+ * Visor's authored Brand Record (VI-504/VI-505; Phase 2 content VI-540) —
+ * strategy + verbal identity as data. The structured projection of
+ * `docs/brand/visor-brand-record.yaml`, typed against {@link VisorBrandStrategyDraft}
+ * (the engine's {@link BrandStrategy} plus VI-540's draft fields) so the docs layer
+ * reads it the way an agent reads the manifest's `brand_strategy` block. Hand-kept
+ * in sync with the YAML, which is the human-canonical source. `visibility: "public"`
+ * — only Visor's own record ships in this public repo.
+ *
+ * Phase 2 caveat (VI-540): the new top-level fields below — `messaging`,
+ * `taglines`, `boilerplate`, `colorUsage`, `accessibility` — live here and in the
+ * narrative `.md` only, NOT yet in the YAML. The engine brand-strategy validator
+ * (run by `build:manifest`) rejects unknown top-level keys, and extending it is
+ * VI-541's scope. VI-541 adds these keys to the YAML + validator + engine type
+ * together, at which point this projection moves off {@link VisorBrandStrategyDraft}
+ * onto the real engine type and full YAML parity is restored. (Per-pillar `proof`
+ * IS already valid in the YAML.)
+ */
+export const VISOR_BRAND_STRATEGY: VisorBrandStrategyDraft = {
   positioning: {
     onliness:
       "The only design system that compiles a complete brand — visual and verbal — from one portable file, for humans and agents alike.",
@@ -168,17 +252,32 @@ export const VISOR_BRAND_STRATEGY: BrandStrategy = {
         tokens: ["--primary", "--surface-card", "--text-primary"],
         components: ["*"],
       },
+      proof: [
+        "Switch theme or mode and the entire surface re-resolves — nothing is pinned to a hard-coded value.",
+        "Every component reads tokens, never literals: --primary flows to semantic, then adaptive, then the rendered pixel.",
+        "Change one .visor.yaml file and the whole system follows — the file is the single source the cascade derives from.",
+      ],
     },
     {
       id: "openness",
       statement:
         "The whole system is open — readable by humans and agents, and free to take.",
       governs: { surfaces: ["manifest", "cli", "component-metadata"] },
+      proof: [
+        "An agent can discover, select, and compose a component from structured data alone — the manifest, when_to_use metadata, and an agent-first CLI.",
+        "The source is open and free to take; the same file an engineer reads is the one an agent queries.",
+        "Even brand strategy ships as readable data — this record — not a locked PDF.",
+      ],
     },
     {
       id: "ownership",
       statement: "Copy-and-own. You hold the source; there's no lock-in, ever.",
       governs: { components: ["*"] },
+      proof: [
+        "npx visor add button copies real source into your project — yours to edit, with nothing to eject from.",
+        "Tokens still update via npm update, so you keep design consistency without surrendering control.",
+        "Copy-and-own is the starting state, not an escape hatch — there's no wrapper to fight.",
+      ],
     },
   ],
   voice: {
@@ -247,6 +346,60 @@ export const VISOR_BRAND_STRATEGY: BrandStrategy = {
     { use: "transform", avoid: "restyle" },
     { use: "portable", avoid: "exportable" },
   ],
+  // --- Phase 2 wave-1 (VI-540): messaging house, taglines/boilerplate, color-usage. ---
+  messaging: {
+    // The umbrella message above the three pillars: Visor's "design intent as
+    // data" thesis, extended up from tokens to the whole brand.
+    roof: "Design intent as data — all the way up to brand.",
+  },
+  taglines: ["Your entire brand system, created and encoded in one file."],
+  boilerplate: {
+    short:
+      "Visor is an open design system that compiles a complete brand — visual and verbal — from one portable file, legible to humans and agents alike. Components are yours to copy and own; shared tokens keep every layer coherent.",
+    long: "Visor is Low Orbit Studio's open design system, built on one idea: design intent should live as data — typed, portable, and machine-readable — from a single color token all the way up to a brand's voice. Components are copy-and-own, so `npx visor add` drops real source into your project for you to edit, while shared tokens keep design consistent across every app through `npm update`. A theme is a complete design system carried in one `.visor.yaml` file; change the file and the whole surface re-resolves, light to dark, one brand to another. And because that same file reads cleanly to people and agents alike, Visor is as legible to the engineer editing it as to the agent composing against it — coherent, open, and yours.",
+  },
+  colorUsage: {
+    pairings: [
+      {
+        use: "--primary",
+        with: "--surface-card / --surface-base",
+        rule: "Primary is the one emphatic action per view — reserve it for the single most important action and let everything else recede to surfaces and text tokens.",
+      },
+      {
+        use: "--accent",
+        with: "--primary",
+        rule: "Accent is a supporting highlight, never a second primary. Keep accent and primary visibly distinct — Visor flags them when they're near-twins, because a theme reads flat when they sit too close.",
+      },
+      {
+        use: "--text-primary / --text-secondary",
+        with: "--surface-card / --surface-base",
+        rule: "Text always uses the semantic text tokens against a surface token, never raw hex, so contrast tracks the active theme instead of being pinned.",
+      },
+      {
+        use: "--destructive",
+        with: "--surface-card",
+        rule: "Destructive is reserved for irreversible or error states; it is never a decorative or emphasis color.",
+      },
+      {
+        use: "fallback neutral (Gray)",
+        with: "any un-themed surface",
+        rule: "Fallbacks use Gray, not Slate, so an un-themed component lands on a neutral that fits the palette instead of clashing.",
+      },
+    ],
+  },
+  accessibility: {
+    standard: "WCAG 2.1 AA",
+    contrast: [
+      { context: "Body text and other normal-size text", ratio: "4.5:1" },
+      { context: "Large text (≥ 24px, or ≥ 18.66px bold)", ratio: "3:1" },
+      {
+        context: "Non-text UI — icons, focus rings, control boundaries",
+        ratio: "3:1",
+      },
+    ],
+    intent:
+      "Every stock Visor theme is meant to clear WCAG 2.1 AA against these targets. The theme validator surfaces pairings that fall short as a candid, non-blocking warning — 'this theme fails AA on small text' — so the author can bump the contrast or keep the warning if it's intentional.",
+  },
   core: ["positioning", "essence", "pillars"],
   visibility: "public",
 };

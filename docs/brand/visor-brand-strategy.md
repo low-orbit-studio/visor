@@ -63,17 +63,34 @@ Three strategic themes — the same three as the essence, made operational. Each
 
 ### coherence — *Every layer derives from the one above it.*
 *Governs:* the derivation cascade (`--primary` → semantic → adaptive tokens) and every component (they reference tokens, never hard-coded values).
-*Proof:* switch theme or mode and the entire surface re-resolves. Nothing is pinned.
+*Proof points:*
+- Switch theme or mode and the entire surface re-resolves — nothing is pinned to a hard-coded value.
+- Every component reads tokens, never literals: `--primary` flows to semantic, then adaptive, then the rendered pixel.
+- Change one `.visor.yaml` file and the whole system follows — the file is the single source the cascade derives from.
 
 ### openness — *The whole system is open: readable by humans and agents, and free to take.*
 *Governs:* the agent manifest, component metadata (`when_to_use`), and the agent-first CLI.
-*Proof:* an agent can discover, select, and compose a component from structured data alone — and the source it reads is open to anyone.
+*Proof points:*
+- An agent can discover, select, and compose a component from structured data alone — the manifest, `when_to_use` metadata, and an agent-first CLI.
+- The source is open and free to take; the same file an engineer reads is the one an agent queries.
+- Even brand strategy ships as readable data — this record — not a locked PDF.
 
 ### ownership — *Copy-and-own. You hold the source; there's no lock-in, ever.*
 *Governs:* every component in the registry (`components: ["*"]`).
-*Proof:* `npx visor add button` copies real source into your project. You edit it freely, and tokens still update via `npm update`.
+*Proof points:*
+- `npx visor add button` copies real source into your project — yours to edit, with nothing to eject from.
+- Tokens still update via `npm update`, so you keep design consistency without surrendering control.
+- Copy-and-own is the starting state, not an escape hatch — there's no wrapper to fight.
 
 > **Schema note for VI-505:** `coherence` and `ownership` govern tokens/components; `openness` governs meta-surfaces — the manifest and CLI — which aren't tokens or components. The `governs` field will need to accept targets beyond token/component refs. Captured here as input to the schema design.
+
+## Messaging house
+
+The message house organizes *what Visor says*: one **roof** (the umbrella message), the three **pillars** beneath it, and a **foundation** of proof points under each pillar — the reasons-to-believe (RTBs) that turn a claim into evidence.
+
+> **Roof — *Design intent as data — all the way up to brand.***
+
+The roof is Visor's existing thesis carried one layer higher. Visor already treats *design intent as data* at the token level — a color, a spacing step, a motion curve are typed values, not hand-tuned CSS. The roof says that idea doesn't stop at tokens: it runs all the way up to the brand itself — positioning, voice, and tone, compiled from the same kind of file. The three pillars hold the roof up: **coherence** (it all derives), **openness** (it's all readable), **ownership** (it's all yours). The proof points are listed under each pillar above; together they are the message-house foundation.
 
 ## Voice
 
@@ -113,6 +130,43 @@ The words Visor uses, and the ones it avoids. Small choices, but they're where v
 | adapter | plugin | Adapters translate one format for many consumers; they don't bolt on. |
 | transform | restyle, reskin | One file changes the whole system, not just its surface. |
 | portable | exportable | The file *is* the format; it moves as-is, nothing to export. |
+
+## Taglines & boilerplate
+
+The **tagline** is the permanent, brand-level signature line — *who Visor is*, not what it's selling this quarter (the tagline-vs-slogan line; a slogan is tactical and rotates, a tagline endures). Essence stays internal; the tagline is the essence made sayable out loud.
+
+> **Your entire brand system, created and encoded in one file.**
+
+It names the thing only Visor does: your brand isn't *described* in a file — it's **created and encoded** in one. The portable `.visor.yaml` doesn't carry a theme or a token set; it carries the entire brand system, visual and verbal, in a single file you own.
+
+**Boilerplate** is the reusable "about us" copy — the same description, written once, used everywhere (a footer, a README, a press line).
+
+- **Short.** Visor is an open design system that compiles a complete brand — visual and verbal — from one portable file, legible to humans and agents alike. Components are yours to copy and own; shared tokens keep every layer coherent.
+- **Long.** Visor is Low Orbit Studio's open design system, built on one idea: design intent should live as data — typed, portable, and machine-readable — from a single color token all the way up to a brand's voice. Components are copy-and-own, so `npx visor add` drops real source into your project for you to edit, while shared tokens keep design consistent across every app through `npm update`. A theme is a complete design system carried in one `.visor.yaml` file; change the file and the whole surface re-resolves, light to dark, one brand to another. And because that same file reads cleanly to people and agents alike, Visor is as legible to the engineer editing it as to the agent composing against it — coherent, open, and yours.
+
+## Color usage & accessibility
+
+This is brand *intent*, not computed output: the rules for how Visor's colors pair, and the contrast bar every theme is held to. The live, per-theme contrast numbers are computed against the running tokens elsewhere; here we state the targets the brand commits to.
+
+**Color usage** — the allowed pairings, expressed as rules over the semantic tokens rather than fixed hex:
+
+| Use | With | Rule |
+|---|---|---|
+| `--primary` | `--surface-card` / `--surface-base` | Primary is the one emphatic action per view — reserve it for the single most important action and let everything else recede to surfaces and text tokens. |
+| `--accent` | `--primary` | Accent is a supporting highlight, never a second primary. Keep accent and primary visibly distinct — Visor flags them when they're near-twins, because a theme reads flat when they sit too close. |
+| `--text-primary` / `--text-secondary` | `--surface-card` / `--surface-base` | Text always uses the semantic text tokens against a surface token, never raw hex, so contrast tracks the active theme instead of being pinned. |
+| `--destructive` | `--surface-card` | Destructive is reserved for irreversible or error states; it is never a decorative or emphasis color. |
+| fallback neutral (Gray) | any un-themed surface | Fallbacks use Gray, not Slate, so an un-themed component lands on a neutral that fits the palette instead of clashing. |
+
+**Accessibility** — the standard is **WCAG 2.1 AA** (the specific version, not a bare "WCAG-AA"). The contrast targets:
+
+| Context | Minimum ratio |
+|---|---|
+| Body text and other normal-size text | 4.5:1 |
+| Large text (≥ 24px, or ≥ 18.66px bold) | 3:1 |
+| Non-text UI — icons, focus rings, control boundaries | 3:1 |
+
+Every stock Visor theme is meant to clear these targets. The theme validator surfaces pairings that fall short as a candid, non-blocking warning — *"this theme fails AA on small text"* — so the author can bump the contrast or keep the warning if it's intentional. That's the **candid** voice and the **validation-warning** tone doing real work: accessibility is enforced as a friendly nudge, not a silent failure.
 
 ## The Brand Record (structured form)
 

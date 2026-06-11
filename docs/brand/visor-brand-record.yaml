@@ -34,21 +34,35 @@ brand-strategy:
     tertiary: everyman                      # belonging, for-everyone — the source of the warmth
 
   pillars:                                  # the three essence words, made operational
+    # `proof[]` = the message-house foundation (RTBs): concrete, checkable
+    # evidence backing each pillar's claim (VI-540, Phase 2 wave-1).
     - id: coherence
       statement: Every layer derives from the one above it.
       governs:
         tokens: ["--primary", "--surface-card", "--text-primary"]
         components: ["*"]
+      proof:
+        - Switch theme or mode and the entire surface re-resolves — nothing is pinned to a hard-coded value.
+        - "Every component reads tokens, never literals: --primary flows to semantic, then adaptive, then the rendered pixel."
+        - Change one .visor.yaml file and the whole system follows — the file is the single source the cascade derives from.
     - id: openness
       statement: The whole system is open — readable by humans and agents, and free to take.
       # NOTE (VI-505): openness governs meta-surfaces, not tokens/components.
       # The `governs` schema must accept targets beyond token/component refs.
       governs:
         surfaces: [manifest, cli, component-metadata]
+      proof:
+        - An agent can discover, select, and compose a component from structured data alone — the manifest, when_to_use metadata, and an agent-first CLI.
+        - The source is open and free to take; the same file an engineer reads is the one an agent queries.
+        - Even brand strategy ships as readable data — this record — not a locked PDF.
     - id: ownership
       statement: Copy-and-own. You hold the source; there's no lock-in, ever.
       governs:
         components: ["*"]
+      proof:
+        - npx visor add button copies real source into your project — yours to edit, with nothing to eject from.
+        - Tokens still update via npm update, so you keep design consistency without surrendering control.
+        - Copy-and-own is the starting state, not an escape hatch — there's no wrapper to fight.
 
   # --- Verbal: voice is FIXED; tone FLEXES (the mode-aware half). ---
   voice:
@@ -102,6 +116,18 @@ brand-strategy:
       avoid: restyle
     - use: portable
       avoid: exportable
+
+  # --- Phase 2 wave-1 (VI-540): messaging house, taglines/boilerplate, color-usage. ---
+  # The per-pillar `proof[]` above (the message-house foundation / RTBs) is valid
+  # today and lives here. The Phase 2 TOP-LEVEL fields — `messaging` (roof),
+  # `taglines`, `boilerplate`, `colorUsage`, and `accessibility` — are AUTHORED but
+  # intentionally NOT in this YAML yet: the engine brand-strategy validator
+  # (run by `build:manifest`) rejects unknown top-level keys, and extending it is
+  # VI-541's scope (the schema ticket this one blocks). Until then the authored
+  # content lives in the human-canonical narrative (visor-brand-strategy.md) and
+  # the docs typed projection VISOR_BRAND_STRATEGY (packages/docs/lib/theme-config.ts).
+  # VI-541 adds these keys here alongside the validator/serializer/type changes
+  # that admit them, restoring full YAML ↔ projection parity.
 
   core: [positioning, essence, pillars]     # Aaker core/extended: the immutable subset
   visibility: public                        # public | private (client brands: private)
