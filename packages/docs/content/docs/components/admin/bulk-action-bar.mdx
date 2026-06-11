@@ -9,7 +9,19 @@ import {
   BulkActionBarInlineDemo,
   BulkActionBarCustomLabelDemo,
   BulkActionBarNoDismissDemo,
+  BulkActionBarFlatDemo,
 } from '@/components/ui/bulk-action-bar-demo';
+
+## Flat
+
+The flat variant strips the shadow and border-radius so the bar renders as a flush in-card strip with a top hairline only — useful inside table cards or panels where the floating card look is wrong.
+
+<ComponentPreview
+  title="Flat bulk action bar"
+  code={"const [selected, setSelected] = useState(['a', 'b']);\n\n<BulkActionBar\n  count={selected.length}\n  flat\n  inline\n  onClear={() => setSelected([])}\n>\n  <Button variant=\"outline\" size=\"sm\">Archive</Button>\n  <Button variant=\"destructive\" size=\"sm\">Delete</Button>\n</BulkActionBar>"}
+>
+  <BulkActionBarFlatDemo />
+</ComponentPreview>
 
 ## Inline
 

@@ -71,3 +71,34 @@ export function BulkActionBarNoDismissDemo() {
     </BulkActionBar>
   );
 }
+
+export function BulkActionBarFlatDemo() {
+  const [count, setCount] = useState(2);
+  const handleClear = useCallback(() => setCount(0), []);
+  const handleReset = useCallback(() => setCount(2), []);
+
+  if (count === 0) {
+    return (
+      <Button variant="outline" size="sm" onClick={handleReset}>
+        Select 2 items
+      </Button>
+    );
+  }
+
+  return (
+    <BulkActionBar
+      count={count}
+      flat
+      inline
+      autoFocus={false}
+      onClear={handleClear}
+    >
+      <Button variant="outline" size="sm">
+        Archive
+      </Button>
+      <Button variant="destructive" size="sm">
+        Delete
+      </Button>
+    </BulkActionBar>
+  );
+}

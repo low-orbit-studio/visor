@@ -167,6 +167,41 @@ describe("BulkActionBar", () => {
     expect(root).not.toHaveAttribute("data-inline")
   })
 
+  it("applies the flat class and data-flat attribute when flat is true", () => {
+    const { container } = render(
+      <BulkActionBar count={1} flat>
+        <Button>Delete</Button>
+      </BulkActionBar>
+    )
+    const root = container.querySelector('[data-slot="bulk-action-bar"]')
+    expect(root?.className).toMatch(/flat/)
+    expect(root).toHaveAttribute("data-flat", "true")
+  })
+
+  it("does not apply the flat class when flat is false", () => {
+    const { container } = render(
+      <BulkActionBar count={1}>
+        <Button>Delete</Button>
+      </BulkActionBar>
+    )
+    const root = container.querySelector('[data-slot="bulk-action-bar"]')
+    expect(root?.className).not.toMatch(/flat/)
+    expect(root).not.toHaveAttribute("data-flat")
+  })
+
+  it("can combine flat and inline variants", () => {
+    const { container } = render(
+      <BulkActionBar count={1} flat inline>
+        <Button>Delete</Button>
+      </BulkActionBar>
+    )
+    const root = container.querySelector('[data-slot="bulk-action-bar"]')
+    expect(root?.className).toMatch(/flat/)
+    expect(root?.className).toMatch(/inline/)
+    expect(root).toHaveAttribute("data-flat", "true")
+    expect(root).toHaveAttribute("data-inline", "true")
+  })
+
   it("has role=toolbar with an accessible name", () => {
     render(
       <BulkActionBar count={1}>

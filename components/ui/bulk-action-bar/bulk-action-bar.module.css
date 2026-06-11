@@ -34,6 +34,13 @@
   width: 100%;
 }
 
+/* Flat/embedded variant — no shadow, no radius, border-top hairline only.
+   Use inside table cards or panels where the floating card look is wrong. */
+.flat {
+  box-shadow: none;
+  border-radius: 0;
+}
+
 /* Selection count label */
 .count {
   font-size: var(--font-size-sm, 0.875rem);
