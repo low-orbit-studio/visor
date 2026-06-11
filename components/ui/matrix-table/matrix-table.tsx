@@ -16,6 +16,15 @@ export interface MatrixColumn {
   count?: number
 }
 
+/**
+ * A single matrix cell value.
+ *
+ * - `true` → renders the active checkmark indicator
+ * - `false` → renders the empty/inactive indicator
+ * - `string` → renders the text in the standard cell typography
+ */
+export type MatrixCellValue = string | boolean
+
 export interface MatrixRow<TIdentity = React.ReactNode> {
   /** Stable unique key for the row. */
   id: string
@@ -24,8 +33,21 @@ export interface MatrixRow<TIdentity = React.ReactNode> {
   /**
    * Set of column ids where the boolean cell is "active" (checked).
    * Columns not present in this set render as empty/inactive.
+   *
+   * For string cell values, or to set per-column values explicitly, use `cells`.
+   * When both are present, an entry in `cells` takes precedence over `activeColumns`
+   * for that column.
    */
   activeColumns: Set<string> | string[]
+  /**
+   * Optional per-column cell values keyed by column id. Each value is a
+   * {@link MatrixCellValue}: `true`/`false` render the boolean indicator,
+   * a `string` renders as plain text in the standard cell style.
+   *
+   * A column present here overrides its `activeColumns` membership; columns
+   * absent here fall back to the `activeColumns` boolean model.
+   */
+  cells?: Record<string, MatrixCellValue>
 }
 
 export interface MatrixTableProps<TIdentity = React.ReactNode>
@@ -112,9 +134,29 @@ function MatrixTableInner<TIdentity = React.ReactNode>(
                       {renderIdentity(row.identity)}
                     </div>
                   </td>
-                  {/* Boolean cells */}
+                  {/* Cells — string cells render text; boolean cells render the indicator */}
                   {columns.map((col) => {
-                    const active = activeSet.has(col.id)
+                    // A `cells` entry takes precedence over `activeColumns` for this column.
+                    const cellValue: MatrixCellValue =
+                      row.cells != null && col.id in row.cells
+                        ? row.cells[col.id]
+                        : activeSet.has(col.id)
+
+                    // String cell: render plain text with the standard cell typography.
+                    if (typeof cellValue !== "boolean") {
+                      return (
+                        <td
+                          key={col.id}
+                          className={cn(styles.td, styles.textTd)}
+                          aria-label={`${col.label}: ${cellValue}`}
+                        >
+                          <span className={styles.textCell}>{cellValue}</span>
+                        </td>
+                      )
+                    }
+
+                    // Boolean cell: render the existing active/inactive indicator.
+                    const active = cellValue
                     return (
                       <td
                         key={col.id}

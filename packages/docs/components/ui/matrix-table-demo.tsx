@@ -35,6 +35,13 @@ const sampleRows = [
     identity: { name: 'Linus Torvalds', email: 'linus@example.com' },
     activeColumns: new Set([]),
   },
+  {
+    // Mixed string + boolean cells via the `cells` map (string renders as plain text).
+    id: '6',
+    identity: { name: 'Seat allowance', email: '' },
+    activeColumns: [],
+    cells: { admin: '5', editor: 'Unlimited', viewer: true, billing: false },
+  },
 ];
 
 function renderIdentity(identity: { name: string; email: string }) {

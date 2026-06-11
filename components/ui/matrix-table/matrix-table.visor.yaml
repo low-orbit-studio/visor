@@ -33,7 +33,7 @@ props:
   - name: rows
     type: "MatrixRow<TIdentity>[]"
     required: true
-    description: Row data. Each row has an `id`, an `identity` value passed to `renderIdentity`, and an `activeColumns` set/array of column ids that should show the active check indicator.
+    description: Row data. Each row has an `id`, an `identity` value passed to `renderIdentity`, an `activeColumns` set/array of column ids that should show the active check indicator, and an optional `cells` map of per-column values. A `cells` entry (`string | boolean`) overrides `activeColumns` for that column — `true`/`false` render the boolean indicator, a `string` renders as plain text in the standard cell style.
   - name: renderIdentity
     type: "(identity: TIdentity) => React.ReactNode"
     required: true
@@ -58,6 +58,8 @@ example: |
   const rows: MatrixRow<{ name: string; email: string }>[] = [
     { id: '1', identity: { name: 'Ada Lovelace', email: 'ada@example.com' }, activeColumns: new Set(['admin', 'editor']) },
     { id: '2', identity: { name: 'Grace Hopper', email: 'grace@example.com' }, activeColumns: ['viewer'] },
+    // Mixed string + boolean cells via `cells` (string renders as plain text):
+    { id: '3', identity: { name: 'Storage', email: '' }, activeColumns: [], cells: { admin: '50GB', editor: true, viewer: false } },
   ]
 
   <MatrixTable

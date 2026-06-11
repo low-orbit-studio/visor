@@ -16,6 +16,8 @@ declare const styles: {
   readonly identityTd: string
   readonly identityCell: string
   readonly booleanTd: string
+  readonly textTd: string
+  readonly textCell: string
   readonly booleanCell: string
   readonly booleanIndicator: string
   readonly booleanIndicatorActive: string

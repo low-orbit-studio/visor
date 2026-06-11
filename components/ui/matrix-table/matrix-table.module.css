@@ -147,6 +147,17 @@
   text-align: center;
 }
 
+/* Text cells — centered like boolean cells; inherit the standard cell typography */
+.textTd {
+  text-align: center;
+}
+
+.textCell {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-primary, #111827);
+  line-height: var(--line-height-tight, 1.25);
+}
+
 .booleanCell {
   display: flex;
   align-items: center;
