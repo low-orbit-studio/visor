@@ -33,6 +33,10 @@ props:
     type: boolean
     default: "false"
     description: Render inline (non-sticky) instead of fixed to the viewport bottom.
+  - name: flat
+    type: boolean
+    default: "false"
+    description: Render flat — no shadow, no border-radius, border-top only. Use inside table cards or panels where the floating card look is wrong.
   - name: label
     type: "(count: number) => React.ReactNode"
     default: "(n) => `${n} selected`"

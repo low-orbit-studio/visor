@@ -15,6 +15,8 @@ export interface BulkActionBarProps
 
   /** Render inline (non-sticky) instead of fixed to the viewport bottom. */
   inline?: boolean
+  /** Render flat: no shadow, no radius, border-top only. Use inside table cards or panels. */
+  flat?: boolean
   /** Selection label renderer. Defaults to `(n) => `${n} selected``. */
   label?: (count: number) => React.ReactNode
   /** Aria-label and tooltip for the dismiss button. Defaults to "Clear selection". */
@@ -37,6 +39,7 @@ const BulkActionBar = React.forwardRef<HTMLDivElement, BulkActionBarProps>(
       count,
       children,
       inline = false,
+      flat = false,
       label = defaultLabel,
       clearLabel = "Clear selection",
       onClear,
@@ -85,9 +88,11 @@ const BulkActionBar = React.forwardRef<HTMLDivElement, BulkActionBarProps>(
         aria-label="Bulk actions"
         data-slot="bulk-action-bar"
         data-inline={inline ? "true" : undefined}
+        data-flat={flat ? "true" : undefined}
         className={cn(
           styles.base,
           inline ? styles.inline : styles.sticky,
+          flat && styles.flat,
           className
         )}
         {...props}
