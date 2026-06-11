@@ -88,6 +88,13 @@ sub_components:
         type: '"primary" | "neutral"'
         default: '"neutral"'
         description: Tone for the count pill. "neutral" uses muted surface; "primary" uses accent surface. Auto re-tones on selected state.
+      - name: selectedTreatment
+        type: '"accent" | "neutral"'
+        default: '"accent"'
+        description: >
+          Selected-state visual treatment. "accent" (default) uses accent-tinted bg + accent border + link text.
+          "neutral" uses --surface-card bg + neutral border + primary text; the count pill renders as a solid mint
+          pill (--surface-success-default) when selected. Use in editorial/admin contexts where accent bleed is undesirable.
 
 dependencies:
   - "class-variance-authority"

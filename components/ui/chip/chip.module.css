@@ -135,9 +135,16 @@
   color: var(--text-link, #2563eb);
 }
 
-[data-selected="true"] .count {
+/* Accent selected state overrides count pill (default behaviour) */
+.selected .count {
   background-color: var(--surface-card, #ffffff);
   color: var(--text-link, #2563eb);
+}
+
+/* Solid mint count pill — editorial/neutral selected treatment */
+.countSolid {
+  background-color: var(--surface-success-default, #22c55e);
+  color: var(--text-inverse, #ffffff);
 }
 
 /* Interactive chips (ChoiceChip, FilterChip) */
@@ -187,5 +194,25 @@ button.base,
 @media (hover: hover) {
   .interactive.selected:hover:not(:disabled) {
     background-color: color-mix(in srgb, var(--surface-accent-subtle, #eff6ff) 80%, var(--surface-interactive-hover, #f3f4f6) 20%);
+  }
+}
+
+/* Editorial / neutral-elevated selected treatment
+ * Uses --surface-card bg + neutral border instead of accent tint.
+ * Compose with .selected to override the accent colours. */
+.selectedNeutral {
+  background-color: var(--surface-card, #ffffff);
+  border-color: var(--border-strong, #d1d5db);
+  color: var(--text-primary, #111827);
+}
+
+.selectedNeutral .count {
+  background-color: var(--surface-success-default, #22c55e);
+  color: var(--text-inverse, #ffffff);
+}
+
+@media (hover: hover) {
+  .interactive.selectedNeutral:hover:not(:disabled) {
+    background-color: var(--surface-interactive-hover, #f3f4f6);
   }
 }

@@ -253,6 +253,53 @@ describe("FilterChip", () => {
     expect(container.querySelector('[data-slot="filter-chip-count"]')).not.toBeInTheDocument()
     expect(screen.getByRole("checkbox", { name: "Events" })).toBeInTheDocument()
   })
+
+  // selectedTreatment prop
+  it("defaults selectedTreatment to accent (data-selected-treatment=accent)", () => {
+    render(<FilterChip label="Events" />)
+    expect(screen.getByRole("checkbox")).toHaveAttribute("data-selected-treatment", "accent")
+  })
+
+  it("applies data-selected-treatment=neutral when selectedTreatment=neutral", () => {
+    render(<FilterChip label="Events" selectedTreatment="neutral" />)
+    expect(screen.getByRole("checkbox")).toHaveAttribute("data-selected-treatment", "neutral")
+  })
+
+  it("neutral treatment: unselected renders without selected class", () => {
+    render(<FilterChip label="Events" selectedTreatment="neutral" />)
+    const btn = screen.getByRole("checkbox")
+    expect(btn).toHaveAttribute("aria-checked", "false")
+    expect(btn).toHaveAttribute("data-selected", "false")
+  })
+
+  it("neutral treatment: selected applies data-selected=true and aria-checked=true", () => {
+    render(<FilterChip label="Events" selectedTreatment="neutral" selected />)
+    const btn = screen.getByRole("checkbox")
+    expect(btn).toHaveAttribute("aria-checked", "true")
+    expect(btn).toHaveAttribute("data-selected", "true")
+  })
+
+  it("neutral treatment: count renders as solid (countSolid class) when selected", () => {
+    const { container } = render(
+      <FilterChip label="Active" count={47} selectedTreatment="neutral" selected />
+    )
+    const countEl = container.querySelector('[data-slot="filter-chip-count"]')
+    expect(countEl).toBeInTheDocument()
+    expect(countEl?.textContent).toBe("47")
+  })
+
+  it("neutral treatment: count renders normally (not solid) when unselected", () => {
+    render(<FilterChip label="Active" count={47} selectedTreatment="neutral" />)
+    const btn = screen.getByRole("checkbox")
+    expect(btn.textContent).toContain("47")
+  })
+
+  it("accent treatment (default): does not apply neutral class when selected", () => {
+    render(<FilterChip label="Events" selected />)
+    const btn = screen.getByRole("checkbox")
+    expect(btn).toHaveAttribute("data-selected-treatment", "accent")
+    expect(btn).toHaveAttribute("data-selected", "true")
+  })
 })
 
 /* ─── Accessibility ──────────────────────────────────────────────────── */
@@ -313,6 +360,21 @@ describe("accessibility", () => {
 
   it("FilterChip with count (primary, selected) has no violations", async () => {
     const { container } = render(<FilterChip label="Active" count={47} countTone="primary" selected />)
+    await checkA11y(container)
+  })
+
+  it("FilterChip neutral treatment (unselected) has no violations", async () => {
+    const { container } = render(<FilterChip label="Active" selectedTreatment="neutral" />)
+    await checkA11y(container)
+  })
+
+  it("FilterChip neutral treatment (selected) has no violations", async () => {
+    const { container } = render(<FilterChip label="Active" selectedTreatment="neutral" selected />)
+    await checkA11y(container)
+  })
+
+  it("FilterChip neutral treatment with count (selected) has no violations", async () => {
+    const { container } = render(<FilterChip label="Active" count={47} selectedTreatment="neutral" selected />)
     await checkA11y(container)
   })
 })
