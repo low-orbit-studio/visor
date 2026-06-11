@@ -156,6 +156,26 @@ describe("RightRailList", () => {
     ).toBe("Low")
   })
 
+  // ─── Row size ───────────────────────────────────────────────────────────
+
+  it("does not set data-row-size when rowSize is default (sm)", () => {
+    const { container } = render(<RightRailList rows={weekRows} />)
+    const root = container.querySelector('[data-slot="right-rail-list"]')
+    expect(root).not.toHaveAttribute("data-row-size")
+  })
+
+  it('does not set data-row-size when rowSize="sm" is explicit', () => {
+    const { container } = render(<RightRailList rows={weekRows} rowSize="sm" />)
+    const root = container.querySelector('[data-slot="right-rail-list"]')
+    expect(root).not.toHaveAttribute("data-row-size")
+  })
+
+  it('sets data-row-size="xs" when rowSize="xs"', () => {
+    const { container } = render(<RightRailList rows={weekRows} rowSize="xs" />)
+    const root = container.querySelector('[data-slot="right-rail-list"]')
+    expect(root).toHaveAttribute("data-row-size", "xs")
+  })
+
   // ─── Compact mode ──────────────────────────────────────────────────────
 
   it("sets data-compact attribute when compact prop is true", () => {

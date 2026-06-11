@@ -46,6 +46,12 @@ export interface RightRailListProps
    */
   compact?: boolean
   /**
+   * Row text size. `"sm"` (~13 px) is the default; `"xs"` (~11 px) is
+   * recommended for dense admin side-rails where the default reads one
+   * notch too large.
+   */
+  rowSize?: "sm" | "xs"
+  /**
    * Root element. Defaults to `"ul"`. Use `"ol"` for ordered rankings
    * (e.g. top promoters) or `"div"` when the surrounding context already
    * provides list semantics.
@@ -55,7 +61,7 @@ export interface RightRailListProps
 
 const RightRailList = React.forwardRef<HTMLElement, RightRailListProps>(
   function RightRailList(
-    { rows, compact = false, as = "ul", className, ...rest },
+    { rows, compact = false, rowSize = "sm", as = "ul", className, ...rest },
     ref
   ) {
     const Root = as as React.ElementType
@@ -67,6 +73,7 @@ const RightRailList = React.forwardRef<HTMLElement, RightRailListProps>(
         className={cn(styles.root, compact && styles.rootCompact, className)}
         data-slot="right-rail-list"
         data-compact={compact ? "true" : undefined}
+        data-row-size={rowSize !== "sm" ? rowSize : undefined}
         {...rest}
       >
         {rows.map((row) => (
