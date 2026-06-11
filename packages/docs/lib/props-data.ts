@@ -500,6 +500,46 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'section-nav': [
+    {
+      name: 'label',
+      type: 'React.ReactNode',
+      required: true,
+      description: "The item's visible label text.",
+    },
+    {
+      name: 'href',
+      type: 'string',
+      description:
+        'Destination URL, applied directly when not using asChild.',
+    },
+    {
+      name: 'icon',
+      type: 'Icon',
+      description: 'Leading Phosphor icon component (e.g. UsersIcon).',
+    },
+    {
+      name: 'count',
+      type: 'number',
+      description:
+        'Optional trailing count pill value. 0 is rendered; undefined hides the pill.',
+    },
+    {
+      name: 'isActive',
+      type: 'boolean',
+      default: 'false',
+      description:
+        'Marks the item as the current section — text-primary, 2px primary underline, primary-tinted count pill, and aria-current="page".',
+    },
+    {
+      name: 'asChild',
+      type: 'boolean',
+      default: 'false',
+      description:
+        "Merge the item's chrome onto the immediate child element instead of rendering an <a>. Use with next/link.",
+    },
+  ],
+
   pagination: [
     {
       name: 'isActive',

@@ -1,0 +1,72 @@
+name: SectionNav
+description: A link/anchor-based section sub-navigation strip — a leading Phosphor icon + label + optional trailing count pill per item, with a static 2px primary underline on the active item. Items navigate via href (use `asChild` with `next/link` for client-side routing). Distinct from Tabs — no button triggers, no content panels, no animated indicator.
+extends: HTMLElement
+category: navigation
+
+when_to_use:
+  - A sub-navigation strip across the top of a detail view whose tabs are real routes (e.g. Organization → Detail / Roles / Invites)
+  - When each section is its own URL and you want client-side navigation via next/link rather than in-page panel switching
+  - When sections carry a count (member count, pending invites) you want to surface in a trailing pill
+
+when_not_to_use:
+  - In-page panel switching where the content lives on the same route (use Tabs)
+  - Top-level site navigation with brand + actions (use Navbar)
+  - Paginated record lists (use Pagination)
+
+why: >
+  The organization-management Detail/Roles/Invite screens open with a nav-tab strip
+  that Radix Tabs structurally cannot model: the items are link navigation (each is a
+  route), and each carries a count pill. Tabs uses button triggers, a rounded pill list,
+  and content panels — none of which fit link-based section navigation. SectionNav
+  provides the exact shape: icon + label + count pill (neutral → primary-tinted when
+  active) + a static 2px primary underline on the active item, all theme-agnostic via
+  CSS custom property tokens.
+
+variants: {}
+
+props:
+  - name: label
+    type: "React.ReactNode"
+    required: true
+    description: The item's visible label text. (SectionNavItem)
+  - name: href
+    type: string
+    description: Destination URL. Applied directly when not using `asChild`. (SectionNavItem)
+  - name: icon
+    type: "Icon"
+    description: Leading Phosphor icon component (e.g. `UsersIcon`). (SectionNavItem)
+  - name: count
+    type: number
+    description: Optional trailing count pill value. `0` is rendered; `undefined`/`null` hides the pill. (SectionNavItem)
+  - name: isActive
+    type: boolean
+    default: "false"
+    description: Marks the item as the current section — text-primary, 2px primary underline, primary-tinted count pill, and `aria-current="page"`. (SectionNavItem)
+  - name: asChild
+    type: boolean
+    default: "false"
+    description: Merge the item's chrome onto the immediate child element instead of rendering an `<a>`. Use with `next/link` for client-side navigation. (SectionNavItem)
+
+dependencies:
+  - "@radix-ui/react-slot"
+  - "@phosphor-icons/react"
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.loworbit.studio/docs/components/navigation/section-nav"
+
+example: |
+  import Link from 'next/link'
+  import { UsersIcon, ShieldIcon, EnvelopeIcon } from '@phosphor-icons/react'
+  import { SectionNav, SectionNavItem } from '@/components/ui/section-nav/section-nav'
+
+  <SectionNav aria-label="Organization sections">
+    <SectionNavItem asChild isActive icon={UsersIcon} label="Detail">
+      <Link href="/org/detail" />
+    </SectionNavItem>
+    <SectionNavItem asChild icon={ShieldIcon} label="Roles" count={4}>
+      <Link href="/org/roles" />
+    </SectionNavItem>
+    <SectionNavItem asChild icon={EnvelopeIcon} label="Invites" count={2}>
+      <Link href="/org/invites" />
+    </SectionNavItem>
+  </SectionNav>

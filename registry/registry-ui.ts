@@ -1873,6 +1873,29 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "section-nav",
+    type: "registry:ui",
+    category: "navigation",
+    description:
+      "A link/anchor-based section sub-navigation strip — leading Phosphor icon + label + optional trailing count pill per item, with a static 2px primary underline on the active item. Items navigate via href (asChild + next/link). Distinct from Tabs: no button triggers, no content panels, no animated indicator.",
+    dependencies: [
+      "@radix-ui/react-slot",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/section-nav/section-nav.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/section-nav/section-nav.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "key-value-list",
     type: "registry:ui",
     category: "data-display",
