@@ -377,7 +377,9 @@ npx @loworbitstudio/visor init --template nextjs
 
 > Already wired automatically when you use `npx @loworbitstudio/visor init --template nextjs`. The steps below are only needed for manual setups or non-Next.js apps.
 
-Prevent flash of wrong theme by adding a blocking script to your `<head>`:
+FOWT prevention covers two orthogonal axes. Add the script(s) you need as blocking `<script>` tags in your `<head>`, before any stylesheets.
+
+**Mode axis (dark/light).** Reads `localStorage('visor-theme')`, falls back to `prefers-color-scheme`, and sets `.dark` or `.light` on `<html>` before first paint:
 
 ```typescript
 import { FOWT_SCRIPT } from '@loworbitstudio/visor-theme-engine/fowt';
@@ -385,6 +387,24 @@ import { FOWT_SCRIPT } from '@loworbitstudio/visor-theme-engine/fowt';
 // In your layout.tsx <head>:
 <script>{FOWT_SCRIPT}</script>
 ```
+
+**Theme-identity axis (palette).** For apps that switch between N registered themes at runtime, `generateThemeFowtScript` validates the stored theme name against an allowlist (falling back to a default), stamps it on `<html>`, and enables exactly the matching inlined `<style data-theme-css>`:
+
+```typescript
+import { generateThemeFowtScript } from '@loworbitstudio/visor-theme-engine/fowt';
+
+const themeScript = generateThemeFowtScript({
+  themes: ['entr', 'space'],   // registered-theme allowlist
+  defaultTheme: 'entr',        // fallback when nothing valid is stored
+  // storageKey: 'visor-theme-name',  // optional, this is the default
+  // attribute: 'data-theme-name',    // optional, this is the default
+});
+
+// In your layout.tsx <head>, AFTER the inlined <style data-theme-css="..."> tags:
+<script>{themeScript}</script>
+```
+
+Both scripts are ES5-safe and can live in the same `<head>` — the mode axis toggles a class, the palette axis toggles which theme stylesheet is active.
 
 ### Importing Specific Token Layers
 

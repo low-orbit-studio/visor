@@ -149,7 +149,14 @@ const deckCss = deckAdapter(input, { scopeClass: '.my-deck' });
 
 ## FOWT Prevention
 
-Flash of Wrong Theme (FOWT) occurs when a page loads with the default theme before JavaScript can apply the user's preferred theme. Visor provides a blocking script to prevent this.
+Flash of Wrong Theme (FOWT) occurs when a page loads with the default theme before JavaScript can apply the user's preferred theme. Visor provides blocking scripts to prevent this across two orthogonal axes:
+
+- **Mode axis (dark/light)** — toggles a `.dark` / `.light` class on `<html>`.
+- **Theme-identity axis (palette)** — selects one of N registered themes by name.
+
+Both scripts are ES5-safe (no arrow functions, no template literals) so they run before any polyfill, and both can live in the same `<head>`.
+
+### Mode Axis (dark/light)
 
 ```typescript
 import { FOWT_SCRIPT } from '@loworbitstudio/visor-theme-engine/fowt';
@@ -166,7 +173,7 @@ Add this as a blocking script in your document `<head>` before any stylesheets:
 
 The script reads `localStorage('visor-theme')`, falls back to `prefers-color-scheme`, and sets `.dark` or `.light` on `<html>` before first paint.
 
-### Custom Configuration
+#### Custom Configuration
 
 ```typescript
 import { generateFowtScript } from '@loworbitstudio/visor-theme-engine/fowt';
@@ -177,3 +184,36 @@ const script = generateFowtScript({ storageKey: 'my-app-theme' });
 // Force dark mode default
 const darkScript = generateFowtScript({ defaultTheme: 'dark' });
 ```
+
+### Theme-Identity Axis (palette)
+
+When your app switches between several registered themes at runtime (not just dark/light), use `generateThemeFowtScript`. It reads the stored theme name, validates it against a registered-theme allowlist (falling back to a default when the value is unknown, absent, or unreadable), stamps the resolved name on `<html>`, and enables exactly the matching inlined `<style data-theme-css>` while disabling the rest.
+
+```typescript
+import { generateThemeFowtScript } from '@loworbitstudio/visor-theme-engine/fowt';
+
+const themeScript = generateThemeFowtScript({
+  themes: ['entr', 'space'],   // registered-theme allowlist
+  defaultTheme: 'entr',        // fallback when nothing valid is stored
+});
+```
+
+Inline each registered theme's CSS as its own `<style data-theme-css="...">` element, then add the script **after** them so they exist when it runs:
+
+```tsx
+// In your Next.js layout.tsx
+<head>
+  <style data-theme-css="entr" dangerouslySetInnerHTML={{ __html: entrCss }} />
+  <style data-theme-css="space" dangerouslySetInnerHTML={{ __html: spaceCss }} />
+  <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+</head>
+```
+
+#### Options
+
+| Option | Type | Default | Purpose |
+| --- | --- | --- | --- |
+| `themes` | `string[]` | — (required) | Registered-theme allowlist the stored value is validated against. |
+| `defaultTheme` | `string` | — (required) | Theme name used when no valid preference is stored. |
+| `storageKey` | `string` | `'visor-theme-name'` | localStorage key to read. |
+| `attribute` | `string` | `'data-theme-name'` | Attribute stamped on `<html>` with the resolved theme name, for the switcher and tests to read. |
