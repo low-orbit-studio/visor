@@ -150,6 +150,9 @@ The component accepts all standard `<div>` HTML attributes.
 | `value` | `string` | — | Value identifier (used by ChipGroup). |
 | `leadingIcon` | `ReactNode` | — | Optional icon before the label. |
 | `label` | `ReactNode` | — | Label content (or use `children`). |
+| `count` | `ReactNode` | — | Optional count pill after the label. |
+| `countTone` | `"neutral" \| "primary"` | `"neutral"` | Tone for the count pill. |
+| `selectedTreatment` | `"accent" \| "neutral"` | `"accent"` | Selected-state visual treatment. `"accent"` uses accent-tinted bg + link text (default). `"neutral"` uses `--surface-card` bg + neutral border + primary text; the count pill renders as a solid mint pill. Use in editorial/admin contexts to avoid accent bleed. |
 | `variant` | `"default" \| "outlined"` | `"default"` | Visual variant. |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Size. |
 | `disabled` | `boolean` | `false` | Disables the chip. |

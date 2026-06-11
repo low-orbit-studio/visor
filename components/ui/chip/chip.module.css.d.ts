@@ -12,9 +12,11 @@ declare const styles: {
   readonly deleteIcon: string
   readonly interactive: string
   readonly selected: string
+  readonly selectedNeutral: string
   readonly count: string
   readonly countNeutral: string
   readonly countPrimary: string
+  readonly countSolid: string
 }
 
 export default styles

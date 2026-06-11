@@ -205,6 +205,14 @@ export interface FilterChipProps
   count?: React.ReactNode
   /** Tone for the count pill. "neutral" uses muted surface; "primary" uses accent surface. Defaults to "neutral". */
   countTone?: "primary" | "neutral"
+  /**
+   * Selected-state visual treatment.
+   * - `"accent"` (default) — accent-tinted background + accent border + link text colour.
+   * - `"neutral"` — neutral-elevated surface (--surface-card) + neutral border + primary text;
+   *   the count pill renders as a solid mint pill (--surface-success-default) when selected.
+   *   Use for editorial / admin contexts where accent bleed across shared tokens is undesirable.
+   */
+  selectedTreatment?: "accent" | "neutral"
 }
 
 const FilterChip = React.forwardRef<HTMLButtonElement, FilterChipProps>(
@@ -222,11 +230,13 @@ const FilterChip = React.forwardRef<HTMLButtonElement, FilterChipProps>(
       disabled,
       count,
       countTone = "neutral",
+      selectedTreatment = "accent",
       ...props
     },
     ref,
   ) => {
     const content = label ?? children
+    const isNeutral = selectedTreatment === "neutral"
 
     return (
       <button
@@ -238,12 +248,13 @@ const FilterChip = React.forwardRef<HTMLButtonElement, FilterChipProps>(
         data-variant={variant ?? "default"}
         data-size={size ?? "md"}
         data-selected={selected ? "true" : "false"}
+        data-selected-treatment={selectedTreatment}
         data-value={value}
         disabled={disabled}
         className={cn(
           chipVariants({ variant, size }),
           styles.interactive,
-          selected && styles.selected,
+          selected && (isNeutral ? styles.selectedNeutral : styles.selected),
           className,
         )}
         onClick={onPressed}
@@ -262,7 +273,11 @@ const FilterChip = React.forwardRef<HTMLButtonElement, FilterChipProps>(
             aria-hidden="false"
             className={cn(
               styles.count,
-              countTone === "primary" ? styles.countPrimary : styles.countNeutral,
+              isNeutral && selected
+                ? styles.countSolid
+                : countTone === "primary"
+                  ? styles.countPrimary
+                  : styles.countNeutral,
             )}
           >
             {count}
