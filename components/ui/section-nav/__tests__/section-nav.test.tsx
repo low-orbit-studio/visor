@@ -41,14 +41,61 @@ describe("SectionNav", () => {
     expect(link).toHaveAttribute("data-slot", "section-nav-item")
   })
 
-  it("renders a leading icon when provided", () => {
+  it("renders a leading icon when provided as a component (canonical form)", () => {
     const { container } = render(
       <SectionNav>
         <SectionNavItem href="#" label="Members" icon={UsersIcon} />
       </SectionNav>
     )
     // Phosphor icons render an <svg> with aria-hidden; assert one is present.
-    expect(container.querySelector("svg[aria-hidden='true']")).toBeInTheDocument()
+    const svg = container.querySelector("svg[aria-hidden='true']")
+    expect(svg).toBeInTheDocument()
+    // Component form applies the icon slot class directly to the svg.
+    expect(svg).toHaveClass("icon")
+  })
+
+  it("renders a leading icon when provided as a rendered element (as-is)", () => {
+    render(
+      <SectionNav>
+        <SectionNavItem
+          href="#"
+          label="Members"
+          icon={<span data-testid="el-icon">★</span>}
+        />
+      </SectionNav>
+    )
+    const el = screen.getByTestId("el-icon")
+    // The exact element is rendered, preserving its content.
+    expect(el).toBeInTheDocument()
+    expect(el).toHaveTextContent("★")
+    // Wrapped in the icon slot span so styling is unchanged.
+    expect(el.parentElement).toHaveClass("icon")
+  })
+
+  it("preserves an element-style Phosphor icon's own size and weight props", () => {
+    const { container } = render(
+      <SectionNav>
+        <SectionNavItem
+          href="#"
+          label="Members"
+          icon={<UsersIcon size={16} weight="bold" />}
+        />
+      </SectionNav>
+    )
+    // The element renders as-is, wrapped in the icon slot span: the svg keeps
+    // its own size={16} (not the canonical 1rem class sizing).
+    const svg = container.querySelector("svg")
+    expect(svg).toBeInTheDocument()
+    expect(svg).toHaveAttribute("width", "16")
+    expect(svg).toHaveAttribute("height", "16")
+    expect(svg?.parentElement).toHaveClass("icon")
+
+    // The element's own `weight="bold"` flows through: a bold-weight Phosphor
+    // icon renders different path geometry than the canonical weight="regular".
+    const regular = render(<UsersIcon size={16} weight="regular" />)
+    expect(svg?.innerHTML).not.toBe(
+      regular.container.querySelector("svg")?.innerHTML
+    )
   })
 
   it("renders a trailing count pill, including zero", () => {
