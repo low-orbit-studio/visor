@@ -12,6 +12,9 @@
  *      from reaching for the wrong component when a better one exists.
  *   3. Patterns have a non-empty structure field — the JSX template is what agents
  *      actually use for composition. A pattern without one is decoration only.
+ *   4. Patterns have ≥1 when_not_to_use item — the disambiguation surface that
+ *      stops near-duplicate patterns from drifting in (mirrors the component check).
+ *      pattern-overlap-detection enforces that high-similarity pairs use it mutually.
  *
  * warnOnly: runs as a warning in standard mode, fails in strict CI mode.
  * Part of the AI-first discoverability validator. See docs/ai-consumability.md.
@@ -76,7 +79,7 @@ export const discoverabilitySelectionQuality: Rule = {
       }
     }
 
-    // === Patterns: structure field must contain real JSX ===
+    // === Patterns: structure field (real JSX) + when_not_to_use (disambiguation) ===
     for await (const patternPath of glob('patterns/*.visor-pattern.yaml')) {
       let doc: Record<string, unknown>;
 
@@ -87,20 +90,29 @@ export const discoverabilitySelectionQuality: Rule = {
         continue;
       }
 
+      const issues: string[] = [];
+
       const structure = doc.structure;
       const hasStructure =
         typeof structure === 'string' && structure.trim().length >= MIN_STRUCTURE_LENGTH;
-
       if (!hasStructure) {
-        results.push({
-          pass: false,
-          message: 'Pattern missing structure field — agents need JSX template to compose components',
-          file: patternPath,
-        });
+        issues.push('missing structure field — agents need a JSX template to compose components');
+      }
+
+      const whenNotToUse = doc.when_not_to_use;
+      if (!Array.isArray(whenNotToUse) || whenNotToUse.length < MIN_WHEN_NOT_TO_USE) {
+        const count = Array.isArray(whenNotToUse) ? whenNotToUse.length : 0;
+        issues.push(
+          `when_not_to_use has ${count} item(s), need ≥${MIN_WHEN_NOT_TO_USE} (name the nearest-neighbor pattern)`
+        );
+      }
+
+      if (issues.length > 0) {
+        results.push({ pass: false, message: issues.join('; '), file: patternPath });
       } else {
         results.push({
           pass: true,
-          message: 'Pattern has JSX structure',
+          message: 'Pattern has JSX structure + when_not_to_use disambiguation',
           file: patternPath,
         });
       }
