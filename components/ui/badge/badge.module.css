@@ -23,7 +23,9 @@
 /* Editorial density: uppercase + heavier + tracked. Any ancestor with
  * data-density="editorial" (e.g. the app root) activates this. */
 :global([data-density="editorial"]) .base {
-  font-weight: var(--font-weight-semibold, 600);
+  /* Theme-invariant: the editorial treatment runs 600 even when a theme maps
+     --font-weight-semibold heavier (entr: 700). density-literal */
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }

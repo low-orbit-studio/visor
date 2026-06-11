@@ -24,7 +24,7 @@
      [data-theme="entr"] [data-density="editorial"] { --dt-row-py: var(--spacing-6); } */
 .root[data-density="compact"]   { --dt-row-py: var(--spacing-2, 0.5rem); }
 .root[data-density="default"]   { --dt-row-py: var(--spacing-3, 0.75rem); }
-.root[data-density="editorial"] { --dt-row-py: var(--spacing-4, 1rem); }
+.root[data-density="editorial"] { --dt-row-py: var(--spacing-5, 1.25rem); }
 
 /* Editorial surface treatment — bakes the editorial-admin baseline values into
    the density axis. The var() reads keep --dt-* hooks working for per-theme
@@ -97,6 +97,16 @@
 
 .sortBar th:last-child {
   border-top-right-radius: var(--data-table-sort-bar-radius, var(--radius-lg, 0.5rem));
+}
+
+/* Editorial density: the flush admin shell has straight header corners — the
+   sort-bar radius defaults to 0 (still overridable via the hook). */
+.root[data-density="editorial"] .sortBar th:first-child {
+  border-top-left-radius: var(--data-table-sort-bar-radius, 0);
+}
+
+.root[data-density="editorial"] .sortBar th:last-child {
+  border-top-right-radius: var(--data-table-sort-bar-radius, 0);
 }
 
 /* Sort button — renders inside the <th> */

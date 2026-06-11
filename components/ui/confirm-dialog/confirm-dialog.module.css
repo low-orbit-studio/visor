@@ -217,6 +217,9 @@
   box-shadow: var(--shadow-xl);
 }
 
+/* Editorial density: the inline confirm card carries the editorial modal
+   metrics (card surface, 480px, radius-xl, spacing-8, shadow-lg) — verified
+   against the blessed user-states render. */
 :global([data-density="editorial"]) .inlineSurface {
   background-color: var(--surface-card);
   max-width: 480px;
