@@ -34,13 +34,15 @@ import { Label } from '@/components/ui/label';
 
 ## Indeterminate
 
+When `checked="indeterminate"`, the checkbox renders a **Minus/dash glyph** (–) instead of a check mark. Use this state for a "select all" header checkbox when only some items in a list are selected.
+
 <ComponentPreview
   title="Indeterminate"
-  code={"<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n  <Checkbox id=\"indeterminate\" checked=\"indeterminate\" />\n  <Label htmlFor=\"indeterminate\">Select all</Label>\n</div>"}
+  code={"<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>\n  <Checkbox id=\"indeterminate\" checked=\"indeterminate\" />\n  <Label htmlFor=\"indeterminate\">Select all (3 of 8 selected)</Label>\n</div>"}
 >
   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
     <Checkbox id="indeterminate-demo" checked="indeterminate" />
-    <Label htmlFor="indeterminate-demo">Select all</Label>
+    <Label htmlFor="indeterminate-demo">Select all (3 of 8 selected)</Label>
   </div>
 </ComponentPreview>
 

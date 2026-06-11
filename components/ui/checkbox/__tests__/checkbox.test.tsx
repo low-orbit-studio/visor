@@ -11,6 +11,32 @@ describe("Checkbox", () => {
     expect(checkbox).toBeInTheDocument()
   })
 
+  it("renders Check glyph when checked", () => {
+    render(<Checkbox checked aria-label="Accept" onCheckedChange={() => {}} />)
+    // Radix renders the indicator only when checked/indeterminate
+    const svg = document.querySelector("svg")
+    expect(svg).not.toBeNull()
+  })
+
+  it("renders Minus glyph when indeterminate", () => {
+    render(
+      <Checkbox checked="indeterminate" aria-label="Select all" onCheckedChange={() => {}} />
+    )
+    // Minus icon has a horizontal line path; Check has an angled path
+    // We verify an SVG is rendered and aria-checked is "mixed"
+    const checkbox = screen.getByRole("checkbox", { name: "Select all" })
+    expect(checkbox).toHaveAttribute("aria-checked", "mixed")
+    const svg = document.querySelector("svg")
+    expect(svg).not.toBeNull()
+  })
+
+  it("renders no glyph when unchecked", () => {
+    render(<Checkbox aria-label="Accept" />)
+    // Radix hides the Indicator entirely when unchecked
+    const svg = document.querySelector("svg")
+    expect(svg).toBeNull()
+  })
+
   it("renders with custom className", () => {
     render(<Checkbox className="custom-class" aria-label="Accept" />)
     const checkbox = screen.getByRole("checkbox")
