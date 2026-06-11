@@ -405,7 +405,7 @@ function DataTableInner<TData, TValue = unknown>(
           data-sticky={stickyHeader || undefined}
         >
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <TableRow key={headerGroup.id} className={styles.sortBar}>
               {headerGroup.headers.map((header) => {
                 const canSort = header.column.getCanSort() && !hasRows
                 const sortDir = header.column.getIsSorted()

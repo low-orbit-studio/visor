@@ -35,6 +35,22 @@
   background: var(--surface-card, #ffffff);
 }
 
+/* Sort-bar row — the thead <tr> that houses the column headers.
+   `--data-table-sort-bar-radius` controls the top-corner radius of the first
+   and last <th> cells. Defaults to the container's border-radius so the sort
+   bar visually follows the table card's rounded top corners.
+
+   Set `--data-table-sort-bar-radius: 0` on a parent scope for the
+   borderless-admin pattern — straight corners without touching the container
+   itself. */
+.sortBar th:first-child {
+  border-top-left-radius: var(--data-table-sort-bar-radius, var(--radius-lg, 0.5rem));
+}
+
+.sortBar th:last-child {
+  border-top-right-radius: var(--data-table-sort-bar-radius, var(--radius-lg, 0.5rem));
+}
+
 /* Sort button — renders inside the <th> */
 .sortButton {
   display: inline-flex;
