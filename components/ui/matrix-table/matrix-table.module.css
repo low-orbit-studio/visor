@@ -1,0 +1,185 @@
+/* MatrixTable — members×roles fixed assignment grid.
+ *
+ * Layout: sticky-left identity column + centered boolean columns.
+ * No list machinery: no selection column, no sort buttons, no pagination footer.
+ * Theme-agnostic: all values via CSS custom property tokens.
+ */
+
+/* Root wrapper — provides the scroll container context */
+.root {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  color: var(--text-primary, #111827);
+}
+
+/* Horizontal scroll container so sticky column works correctly */
+.scrollContainer {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: var(--radius-lg, 0.5rem);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-primary, #111827);
+}
+
+/* ─── Header ─────────────────────────────────────────────────────────────── */
+
+.thead {
+  border-bottom: 1px solid var(--border-default, #e5e7eb);
+}
+
+.headerRow {
+  /* no extra styles needed; border is on thead */
+}
+
+/* All header cells share base styles */
+.th {
+  padding: var(--spacing-3, 0.75rem);
+  vertical-align: middle;
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-primary, #111827);
+  background-color: var(--surface-card, #ffffff);
+}
+
+/* Identity column header — sticky-left, left-aligned, min-width to accommodate identity content */
+.identityTh {
+  position: sticky;
+  left: 0;
+  z-index: 3; /* above body cells (z-index: 1) and body identity cells (z-index: 2) */
+  text-align: left;
+  min-width: 12rem;
+  /* Match the body identity td bg so no gap shows on scroll */
+  background-color: var(--surface-card, #ffffff);
+  /* Right border to visually separate from boolean columns */
+  border-right: 1px solid var(--border-default, #e5e7eb);
+}
+
+/* Boolean column headers — centered, multi-line */
+.booleanTh {
+  text-align: center;
+  min-width: 4rem;
+  /* No uppercase treatment — explicitly normal case via token */
+  text-transform: none;
+}
+
+/* Multi-line column header: role label stacked over count */
+.colHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+}
+
+.colLabel {
+  /* Normal sentence-case, no uppercase override */
+  text-transform: none;
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-primary, #111827);
+  line-height: var(--line-height-tight, 1.25);
+  white-space: nowrap;
+}
+
+/* Count sub-label — intentional 11px (no exact token; documented as spec-literal) */
+.colCount {
+  font-size: 0.6875rem; /* 11px: spec-literal from VI-523 — closest tokens are font-size-xs=12px, no 11px token */
+  font-weight: var(--font-weight-normal, 400);
+  color: var(--text-tertiary, #6b7280);
+  line-height: var(--line-height-tight, 1.25);
+}
+
+/* ─── Body ───────────────────────────────────────────────────────────────── */
+
+.tbody tr.bodyRow:last-child {
+  border-bottom: none;
+}
+
+.bodyRow {
+  border-bottom: 1px solid var(--border-default, #e5e7eb);
+  transition: background-color var(--motion-duration-fast, 150ms)
+    var(--motion-easing-standard, ease);
+}
+
+.bodyRow:hover {
+  background-color: var(--surface-muted, #f3f4f6);
+}
+
+/* All body cells share base padding */
+.td {
+  padding: var(--spacing-3, 0.75rem);
+  vertical-align: middle;
+}
+
+/* Identity cell — sticky-left, bg tracks row hover via CSS custom property */
+.identityTd {
+  position: sticky;
+  left: 0;
+  z-index: 2; /* above boolean cells in the same row (z-index: 1 default stacking) */
+  background-color: var(--surface-card, #ffffff);
+  border-right: 1px solid var(--border-default, #e5e7eb);
+  /* Track row hover: when .bodyRow:hover, background mirrors the row bg */
+  transition: background-color var(--motion-duration-fast, 150ms)
+    var(--motion-easing-standard, ease);
+}
+
+/* When the row is hovered, the identity cell bg matches the row hover bg */
+.bodyRow:hover .identityTd {
+  background-color: var(--surface-muted, #f3f4f6);
+}
+
+.identityCell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  min-width: 0;
+}
+
+/* Boolean cells — centered */
+.booleanTd {
+  text-align: center;
+}
+
+.booleanCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Boolean indicator circle — 22px spec-literal from VI-523 (no exact --spacing token at 22px; closest are --spacing-5=20px, --spacing-6=24px; 22px is spec-literal, intentional). */
+.booleanIndicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.375rem;  /* 22px: spec-literal from VI-523 */
+  height: 1.375rem; /* 22px: spec-literal from VI-523 */
+  border-radius: var(--radius-full, 9999px);
+  flex-shrink: 0;
+}
+
+/* Active (checked) — filled success circle */
+.booleanIndicatorActive {
+  background-color: var(--surface-success-default, #16a34a);
+  color: var(--text-inverse, #f9fafb);
+}
+
+/* Inactive — muted empty circle with hairline border */
+.booleanIndicatorInactive {
+  background-color: transparent;
+  border: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
+  color: transparent;
+}
+
+/* Check icon inside the active indicator */
+.checkIcon {
+  /* 12px — proportional to the 22px container; no exact token, intentional literal */
+  width: 0.75rem;
+  height: 0.75rem;
+}

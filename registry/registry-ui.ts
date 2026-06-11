@@ -1270,6 +1270,28 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "matrix-table",
+    type: "registry:ui",
+    category: "admin",
+    description:
+      "A fixed assignment grid for members×roles patterns. Sticky-left identity column with hover-tracking background, centered 22px boolean cells (filled-success check when active / muted empty when not), and multi-line centered column headers (label over count) that opt out of uppercase treatment. No list machinery.",
+    dependencies: [
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/matrix-table/matrix-table.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/matrix-table/matrix-table.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "name-roster",
     type: "registry:ui",
     description:

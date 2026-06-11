@@ -1,0 +1,124 @@
+---
+title: Matrix Table
+description: A fixed assignment grid for members×roles patterns. Sticky-left identity column, centered boolean cells, and multi-line column headers. No list machinery — copy it into your project and own it completely.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { MatrixTable } from '@/components/ui/matrix-table';
+
+export const sampleColumns = [
+  { id: 'admin', label: 'Admin', count: 3 },
+  { id: 'editor', label: 'Editor', count: 8 },
+  { id: 'viewer', label: 'Viewer', count: 14 },
+  { id: 'billing', label: 'Billing', count: 2 },
+];
+
+export const sampleRows = [
+  {
+    id: '1',
+    identity: { name: 'Ada Lovelace', email: 'ada@example.com' },
+    activeColumns: new Set(['admin', 'editor']),
+  },
+  {
+    id: '2',
+    identity: { name: 'Grace Hopper', email: 'grace@example.com' },
+    activeColumns: new Set(['editor', 'viewer']),
+  },
+  {
+    id: '3',
+    identity: { name: 'Margaret Hamilton', email: 'margaret@example.com' },
+    activeColumns: new Set(['viewer']),
+  },
+  {
+    id: '4',
+    identity: { name: 'Dennis Ritchie', email: 'dennis@example.com' },
+    activeColumns: new Set(['admin', 'editor', 'viewer', 'billing']),
+  },
+  {
+    id: '5',
+    identity: { name: 'Linus Torvalds', email: 'linus@example.com' },
+    activeColumns: new Set([]),
+  },
+];
+
+## Basic
+
+<ComponentPreview
+  title="Members × roles assignment grid"
+  code={"<MatrixTable columns={columns} rows={rows} renderIdentity={(identity) => <span>{identity.name}</span>} aria-label=\"Member role assignments\" />"}
+>
+  <MatrixTable
+    columns={sampleColumns}
+    rows={sampleRows}
+    renderIdentity={(identity) => (
+      <span style={{ fontWeight: 500 }}>{identity.name}</span>
+    )}
+    aria-label="Member role assignments"
+  />
+</ComponentPreview>
+
+## When to use
+
+Use `MatrixTable` when the shape of your data is a **matrix** — rows are identities (users, members, items) and columns are boolean attributes (roles, permissions, features). The component is intentionally minimal: it has no selection column, no sort buttons, and no pagination footer.
+
+For sortable, paginated lists of records, use [`DataTable`](/docs/components/admin/data-table) instead.
+
+## renderIdentity slot
+
+The `renderIdentity` prop receives each row's `identity` value and renders it in the sticky-left cell. This slot is intentionally open-ended — pass an avatar+name compound, a plain string, or any identity representation your design requires.
+
+```tsx
+<MatrixTable
+  columns={columns}
+  rows={rows}
+  renderIdentity={(member) => (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <img src={member.avatarUrl} alt="" style={{ width: 24, height: 24, borderRadius: '50%' }} />
+      <span>{member.name}</span>
+    </div>
+  )}
+/>
+```
+
+## activeColumns
+
+Each row's `activeColumns` accepts either a `Set<string>` or a plain `string[]`. Column ids not present in `activeColumns` render as empty/inactive indicators.
+
+```tsx
+// Both forms are equivalent
+{ id: '1', identity: member, activeColumns: new Set(['admin', 'editor']) }
+{ id: '1', identity: member, activeColumns: ['admin', 'editor'] }
+```
+
+## API Reference
+
+<PropsTable
+  definition={{
+    props: [
+      {
+        name: 'columns',
+        type: 'MatrixColumn[]',
+        required: true,
+        description: 'Column definitions. Each column has an id, label, and optional count sub-label rendered below the label in the header.',
+      },
+      {
+        name: 'rows',
+        type: 'MatrixRow<TIdentity>[]',
+        required: true,
+        description: 'Row data. Each row has an id, an identity value passed to renderIdentity, and an activeColumns set/array of column ids that should show the active check indicator.',
+      },
+      {
+        name: 'renderIdentity',
+        type: '(identity: TIdentity) => React.ReactNode',
+        required: true,
+        description: 'Render slot for the sticky-left identity cell content.',
+      },
+      {
+        name: 'aria-label',
+        type: 'string',
+        description: 'Accessible label for the table element.',
+      },
+    ],
+  }}
+/>
