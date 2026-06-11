@@ -38,6 +38,23 @@ Additional semantic variants provide intent-specific coloring for success, warni
   </div>
 </ComponentPreview>
 
+## Uppercase Labels
+
+Set `uppercase` to render the label in all-caps — useful for plan, status, and role badges (ENTERPRISE, PRO, FREE).
+
+<ComponentPreview
+  title="Uppercase Badge"
+  code={"import { Badge } from '@/components/ui/badge/badge';\n\n<Badge variant=\"default\" uppercase>Enterprise</Badge>\n<Badge variant=\"secondary\" uppercase>Pro</Badge>\n<Badge variant=\"outline\" uppercase>Free</Badge>"}
+>
+  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+    <Badge variant="default" uppercase>Enterprise</Badge>
+    <Badge variant="secondary" uppercase>Pro</Badge>
+    <Badge variant="outline" uppercase>Free</Badge>
+  </div>
+</ComponentPreview>
+
+The `uppercase` prop applies the `.uppercase` CSS module class, which sets `--badge-text-transform: uppercase` on the element. A theme can also drive this via the CSS custom property directly — any element in the theme cascade that sets `--badge-text-transform: uppercase` will produce uppercase badges without needing the prop.
+
 ## Installation
 
 ```bash

@@ -34,17 +34,25 @@ const badgeVariants = cva(styles.base, {
 
 export interface BadgeProps
   extends React.HTMLAttributes<HTMLSpanElement>,
-    VariantProps<typeof badgeVariants> {}
+    VariantProps<typeof badgeVariants> {
+  /** Render the label in uppercase. Also controllable via the
+   *  `--badge-text-transform` CSS custom property from a theme. */
+  uppercase?: boolean
+}
 
 const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
-  ({ className, variant, size, ...props }, ref) => {
+  ({ className, variant, size, uppercase, ...props }, ref) => {
     return (
       <span
         ref={ref}
         data-slot="badge"
         data-variant={variant ?? "default"}
         data-size={size ?? "md"}
-        className={cn(badgeVariants({ variant, size }), className)}
+        className={cn(
+          badgeVariants({ variant, size }),
+          uppercase && styles.uppercase,
+          className
+        )}
         {...props}
       />
     )

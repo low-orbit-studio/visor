@@ -1,5 +1,6 @@
 declare const styles: {
   readonly base: string
+  readonly uppercase: string
   readonly variantDefault: string
   readonly variantSecondary: string
   readonly variantOutline: string
