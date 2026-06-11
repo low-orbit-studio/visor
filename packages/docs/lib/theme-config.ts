@@ -218,6 +218,15 @@ export interface VisorBrandStrategyDraft extends Omit<BrandStrategy, "pillars"> 
  * reads it the way an agent reads the manifest's `brand_strategy` block. Hand-kept
  * in sync with the YAML, which is the human-canonical source. `visibility: "public"`
  * — only Visor's own record ships in this public repo.
+ *
+ * Phase 2 caveat (VI-540): the new top-level fields below — `messaging`,
+ * `taglines`, `boilerplate`, `colorUsage`, `accessibility` — live here and in the
+ * narrative `.md` only, NOT yet in the YAML. The engine brand-strategy validator
+ * (run by `build:manifest`) rejects unknown top-level keys, and extending it is
+ * VI-541's scope. VI-541 adds these keys to the YAML + validator + engine type
+ * together, at which point this projection moves off {@link VisorBrandStrategyDraft}
+ * onto the real engine type and full YAML parity is restored. (Per-pillar `proof`
+ * IS already valid in the YAML.)
  */
 export const VISOR_BRAND_STRATEGY: VisorBrandStrategyDraft = {
   positioning: {
