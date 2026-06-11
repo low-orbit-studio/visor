@@ -27,11 +27,20 @@
    (Turbopack pure-selector rule). Overrides the TableHead default styles and
    the sort-button font-weight rule below. */
 .root[data-density="editorial"] th {
-  font-size: var(--font-size-xs, 0.6875rem);
+  font-size: var(--dt-header-font-size, var(--font-size-xs, 0.6875rem));
   font-weight: var(--font-weight-medium, 500);
   color: var(--text-tertiary, #6b7280);
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+/* Editorial density widens horizontal cell padding (spacing-5 / 20px) to match
+   the editorial-admin baseline; vertical stays driven by --dt-row-py. The
+   --dt-cell-px hook lets a theme tune it; default equals the editorial value. */
+.root[data-density="editorial"] td,
+.root[data-density="editorial"] th {
+  padding-left: var(--dt-cell-px, var(--spacing-5, 1.25rem));
+  padding-right: var(--dt-cell-px, var(--spacing-5, 1.25rem));
 }
 
 /* The sort button inherits font from its <th>, but explicitly overrides
