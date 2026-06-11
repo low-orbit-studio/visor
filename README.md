@@ -157,6 +157,7 @@ npx visor add --category admin
 | Filter Bar | `filter-bar` | Composable filter chip row |
 | Infographic Bar | `infographic-bar` | Continuous stat-card band with hairline dividers |
 | Kbd | `kbd` | Keyboard shortcut display |
+| Matrix Table | `matrix-table` | Members×roles boolean assignment grid |
 | Page Header | `page-header` | Title + actions header for admin pages |
 | Stat Card | `stat-card` | KPI metric card with trend |
 | Status Badge | `status-badge` | Semantic status indicator |
