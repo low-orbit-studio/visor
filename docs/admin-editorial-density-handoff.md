@@ -14,6 +14,9 @@ publish/bless. Operator (Justin) decided the overlay layer is a sync-prone liabi
 wants `density: compact | default | editorial` baked into the components, with **admin-ui =
 `editorial` everywhere**.
 
+**Tracking:** **VI-545** (this refactor — the work below) · **BO-50** (terminology-disambiguation,
+already filed) · **PL-1634** meta / **PL-1635** user-mgmt / **PL-1636** monetization (the bless).
+
 ## Decisions locked with the operator
 
 1. **Density axis** `compact | default | editorial` (keep these exact names — do NOT rename
@@ -35,9 +38,10 @@ wants `density: compact | default | editorial` baked into the components, with *
    consumes Visor yet, just write the editorial values directly under `[data-density=editorial]`.
    Keep the **substrate neutral**: editorial is opt-in via the density attr, never the default.
 5. **No reorg of components/blocks/patterns now.** Patterns stay as-is (they're AI composition
-   recipes, not code, from VI-41/109/155 — not an admin offshoot). File a small **terminology
+   recipes, not code, from VI-41/109/155 — not an admin offshoot). The **terminology
    disambiguation** ticket (Visor `patterns/` vs playbook `design-prototypes/.../patterns/`
-   vs `pattern-builds/` all collide on the word "pattern").
+   vs `pattern-builds/` all collide on the word "pattern") is filed as **BO-50** — no action
+   needed for the refactor; just don't reorg.
 
 ## What is DONE and committed (do not redo)
 
@@ -176,7 +180,10 @@ density fixes; bisect residuals.
   build (`tsup`); `build:manifest` fails until `packages/theme-engine` is built
   (`npm run build -w packages/tokens` then `-w packages/theme-engine`) but `build:registry` (what
   `visor add` needs) succeeds regardless. Builds need their own `npm install` (org/monetization fresh).
-- **Dev servers:** user-mgmt 4029, org 4030 — use distinct ports per build; `PORT=4030 npx next dev -p 4030`.
+- **Dev servers: SHUT DOWN at end of last session — START THEM FRESH.** Use distinct ports per build:
+  `cd <build> && npm install` (if node_modules missing) then `PORT=4029 npx next dev -p 4029 &` (user-mgmt),
+  `PORT=4030 npx next dev -p 4030 &` (org), a third port for monetization. Poll
+  `curl -s -o /dev/null -w '%{http_code}' http://localhost:<p>/screens/<a-screen>` until 200 before capturing.
   Next dev caches the `readFileSync`'d overlay/layout → **restart the server after editing tokens.css**
   (irrelevant once the overlay is gone). Component file changes hot-reload.
 - **Capture:** `cd <build> && PORT=<p> OUT_DIR=captures/<name> node scripts/capture-extra-themes.mjs`.
