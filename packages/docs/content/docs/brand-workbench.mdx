@@ -1,0 +1,34 @@
+---
+title: Brand Workbench
+description: A cluster of brand surfaces — Brand assets, Logo Guidelines, Strategy, Pillars, and Verbal — that resolve live against the active theme inside the Visual Explorer.
+---
+
+The Brand Workbench is a set of brand-keyed surfaces — Brand assets, Logo Guidelines, Strategy, Pillars, and Verbal — that render live against whichever theme is active. Each surface re-resolves on theme/mode switch while the content stays the brand's, so brand decisions stay testable in real product chrome.
+
+The surfaces ship inside the [Visual Explorer](/docs/playgrounds/visual-explorer). Open it, then pick a section from the section selector.
+
+## Surfaces
+
+### Brand
+
+Brand assets — logo, brandmark, wordmark, monochrome, and animated marks — rendered at representative sizes and tinted by token colors to prove brand-and-token cohesion.
+
+### Logo Guidelines
+
+Clearspace, minimum-size, and a Misuse panel drawn on the real mark. Reads `BrandSlot.clearSpace` and `aspectRatio` from the Brand Record, so the guideline *is* the spec, not a screenshot of it.
+
+### Strategy
+
+The strategy trio — Positioning, Essence, Personality — pulled from the Brand Record. A non-Visor theme with no public strategy says so candidly rather than borrowing Visor's.
+
+### Pillars
+
+Strategic pillars with `governs` links — selecting a pillar surfaces the tokens (live swatches + resolved values), components, and surfaces it governs. A pillar that governs nothing renders a visible warning, turning the slogan into a checkable claim.
+
+### Verbal
+
+Voice, Tone-by-context, and Lexicon. Tone-by-context is the verbal twin of light/dark mode — each message rendered in the real component it ships in, so the voice is judged in product chrome, not a spec.
+
+## How it resolves
+
+All five surfaces resolve through the same `resolveBrandStrategy` / `resolveBrand` readers against the active theme entry. Brand content is brand-keyed — only the published Brand Record for the active theme is shown. Private themes whose Brand Records aren't published render an explicit "private" message rather than falling back to Visor's content.
