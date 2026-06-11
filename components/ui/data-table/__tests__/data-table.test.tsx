@@ -210,6 +210,33 @@ describe("DataTable", () => {
       const root = container.querySelector('[data-slot="data-table"]')
       expect(root).toHaveAttribute("data-density", "editorial")
     })
+
+    it("editorial density — <th> cells are inside the root so CSS selector .root[data-density=\"editorial\"] th can apply the header treatment", () => {
+      const { container } = render(
+        <DataTable columns={columns} data={[]} density="editorial" />
+      )
+      const root = container.querySelector('[data-slot="data-table"][data-density="editorial"]')!
+      const ths = root.querySelectorAll("th")
+      // Two columns → two <th> elements inside the editorial-density root
+      expect(ths).toHaveLength(2)
+    })
+
+    it("compact and default densities have the same structural <th> layout (no header-treatment class applied)", () => {
+      const { container: compact } = render(
+        <DataTable columns={columns} data={[]} density="compact" />
+      )
+      const { container: def } = render(
+        <DataTable columns={columns} data={[]} density="default" />
+      )
+      // Both should render <th> elements without any editorial-specific markup
+      const compactThs = compact.querySelectorAll('[data-density="compact"] th')
+      const defaultThs = def.querySelectorAll('[data-density="default"] th')
+      expect(compactThs).toHaveLength(2)
+      expect(defaultThs).toHaveLength(2)
+      // No extra attribute or class injected by the editorial treatment
+      compactThs.forEach((th) => expect(th).not.toHaveAttribute("data-editorial"))
+      defaultThs.forEach((th) => expect(th).not.toHaveAttribute("data-editorial"))
+    })
   })
 
   describe("group rows (rows prop)", () => {
