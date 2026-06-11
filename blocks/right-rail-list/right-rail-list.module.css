@@ -47,6 +47,13 @@
   padding: var(--spacing-2, 0.5rem) var(--spacing-4, 1rem);
 }
 
+/* xs row size — one notch smaller than the default sm (~13 px → ~11 px).
+ * Recommended for dense admin side-rails where sm reads too large.
+ * Anchored on .root to satisfy Turbopack's pure-selector rule. */
+.root[data-row-size="xs"] .row {
+  font-size: var(--font-size-xs, 0.6875rem);
+}
+
 .leading {
   flex-shrink: 0;
   display: inline-flex;

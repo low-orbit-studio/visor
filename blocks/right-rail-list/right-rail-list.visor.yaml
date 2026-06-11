@@ -1,7 +1,24 @@
 name: Right Rail List
-description: Compact vertical list block tuned for admin dashboard side rails. Each row pairs an optional leading slot (short label, avatar, badge, status dot), a primary label (typically a link), and an optional trailing meta value (count, value, tone-tinted status word). Trailing accepts default / mint / muted / warn tones that bind to the shared semantic text tokens. Supports compact density and ul / ol / div root element variants.
+description: Compact vertical list block tuned for admin dashboard side rails. Each row pairs an optional leading slot (short label, avatar, badge, status dot), a primary label (typically a link), and an optional trailing meta value (count, value, tone-tinted status word). Trailing accepts default / mint / muted / warn tones that bind to the shared semantic text tokens. Supports compact density, xs row text size for dense rails, and ul / ol / div root element variants.
 category: data-display
 components_used: []
+props:
+  - name: rows
+    type: RightRailRow[]
+    required: true
+    description: Row data — each entry renders as a single list row.
+  - name: compact
+    type: boolean
+    default: "false"
+    description: Tighter vertical padding for high-density rails.
+  - name: rowSize
+    type: '"sm" | "xs"'
+    default: '"sm"'
+    description: Row text size. Use "xs" (~11 px) for dense admin side-rails where the default "sm" (~13 px) reads one notch too large.
+  - name: as
+    type: '"ul" | "ol" | "div"'
+    default: '"ul"'
+    description: Root element. Use "ol" for ordered rankings or "div" when the surrounding context already provides list semantics.
 when_to_use:
   - Side-rail summary panels in dashboards (this-week digests, top-N rankings, status callouts)
   - Stacking multiple short list panels in a single column
