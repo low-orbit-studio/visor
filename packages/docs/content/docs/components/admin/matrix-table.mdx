@@ -91,6 +91,21 @@ Each row's `activeColumns` accepts either a `Set<string>` or a plain `string[]`.
 { id: '1', identity: member, activeColumns: ['admin', 'editor'] }
 ```
 
+## Installation
+
+```bash
+npx visor add matrix-table
+```
+
+This copies two files into your project:
+
+- `components/ui/matrix-table/matrix-table.tsx` — the component
+- `components/ui/matrix-table/matrix-table.module.css` — the styles
+
+```tsx
+import { MatrixTable, type MatrixColumn, type MatrixRow } from '@/components/ui/matrix-table/matrix-table';
+```
+
 ## API Reference
 
 <PropsTable
