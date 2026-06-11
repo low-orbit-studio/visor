@@ -1,0 +1,115 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.lede {
+  max-width: 64ch;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+/* Eyebrow label for each block — uppercase/letter-spacing only. */
+.blockHeading {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Color pairings — each rendered as a Card. */
+.pairingList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.pairingCard {
+  overflow: hidden;
+}
+
+/* Two swatches side-by-side above the card content. */
+.swatchPair {
+  display: flex;
+  height: 3rem;
+}
+
+.swatch {
+  flex: 1;
+}
+
+/* Card body: token labels, live verdict, rule text. */
+.pairingContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.tokenLabels {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.tokenLabel {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-secondary, #4b5563);
+}
+
+.tokenSep {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-style: italic;
+  color: var(--text-tertiary, #6b7280);
+}
+
+/* Contrast ratio + AA badge inline. */
+.verdict {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.ratio {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #111827);
+}
+
+.rule {
+  max-width: 64ch;
+}
+
+/* Accessibility targets — a compact definition-list style table. */
+.contrastTable {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.contrastRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  flex-wrap: wrap;
+}
+
+.contrastContext {
+  flex: 1 1 18rem;
+}
+
+.contrastRatio {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  flex-shrink: 0;
+}
+
+.intentText {
+  max-width: 64ch;
+  margin-top: var(--spacing-2);
+}
