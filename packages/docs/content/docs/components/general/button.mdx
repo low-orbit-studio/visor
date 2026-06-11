@@ -6,6 +6,7 @@ description: A versatile button component with multiple variants and sizes. Buil
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Button } from '@/components/ui/button';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 <Tabs defaultValue="react">
@@ -89,6 +90,34 @@ See the [Flutter Button](/docs/flutter/widgets/button) page for the full API ref
     <Button variant="outline" disabled>Disabled Outline</Button>
   </div>
 </ComponentPreview>
+
+## Gated State
+
+A permission-gated button is visually dimmed but remains hover-able, surfacing a tooltip that explains why the action is unavailable. Unlike the native `disabled` state, the button stays in the tab order so assistive technology users can discover the reason.
+
+Use `gated` to apply the visual state, and `gatedReason` to provide the tooltip text. A `TooltipProvider` ancestor is required when `gatedReason` is set.
+
+<ComponentPreview
+  title="Gated (no reason)"
+  code={"<Button gated>Delete Organization</Button>"}
+>
+  <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+    <Button gated>Delete Organization</Button>
+  </div>
+</ComponentPreview>
+
+<ComponentPreview
+  title="Gated with reason tooltip"
+  code={"import { TooltipProvider } from '@/components/ui/tooltip';\n\n<TooltipProvider>\n  <Button gated gatedReason=\"You need Owner access to delete this organization\">\n    Delete Organization\n  </Button>\n</TooltipProvider>"}
+>
+  <TooltipProvider>
+    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+      <Button gated gatedReason="You need Owner access to delete this organization">Delete Organization</Button>
+    </div>
+  </TooltipProvider>
+</ComponentPreview>
+
+The `gated` prop uses `aria-disabled="true"` instead of the native `disabled` attribute, so the button stays keyboard-focusable. Click handlers are suppressed internally — no need to guard them in your code.
 
 ## Installation
 
