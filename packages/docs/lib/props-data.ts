@@ -39,6 +39,19 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'Additional CSS class names to merge onto the element.',
     },
     {
+      name: 'gated',
+      type: 'boolean',
+      default: 'false',
+      description:
+        'Renders the button in a permission-gated state: visually dimmed (opacity 0.4), cursor not-allowed, and click handlers suppressed. Uses aria-disabled instead of native disabled so the button remains keyboard-focusable (required for the tooltip to be accessible).',
+    },
+    {
+      name: 'gatedReason',
+      type: 'string',
+      description:
+        "Explanation surfaced in an anchored tooltip when the button is gated. Only rendered when gated is also true. Requires a TooltipProvider ancestor. Example: \"You can't delete this — you're not an owner\".",
+    },
+    {
       name: 'onClick',
       type: 'React.MouseEventHandler<HTMLButtonElement>',
       description: 'Click event handler.',

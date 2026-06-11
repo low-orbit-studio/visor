@@ -82,7 +82,7 @@
 
 /* Gated state — orthogonal to variant, works with all variants */
 .base[data-gated="true"] {
-  opacity: var(--opacity-50, 0.5);
+  opacity: var(--opacity-40, 0.4);
   cursor: not-allowed;
   border-color: var(--border-default, #e5e7eb);
 }
