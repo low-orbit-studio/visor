@@ -70,6 +70,14 @@ props:
       without a display font degrade to the heading family. Any other
       string is forwarded as a raw CSS family on an inline
       `--page-header-title-family` declaration.
+  - name: leading
+    type: "string | number"
+    description: >
+      Title line-height override, forwarded as an inline
+      `--page-header-title-leading` custom property (a unitless number like
+      `1.05` or any CSS length). When omitted the title keeps its default
+      line-height (tight for the standard title, `1` for the marquee scale),
+      so existing call sites render unchanged.
 
 css_custom_properties:
   - name: "--page-header-title-size"
@@ -84,6 +92,13 @@ css_custom_properties:
       `var(--font-display, var(--font-family-heading, inherit))`. Themes
       can override per-page via a wrapping className; the `titleFamily`
       prop is sugar over this property.
+  - name: "--page-header-title-leading"
+    description: >
+      Override hook for the title line-height. Left unset by default so the
+      title falls back to its per-rule value (`var(--line-height-tight, 1.2)`
+      for the standard title, `1` for the marquee scale). Themes can set it
+      per-page via a wrapping className; the `leading` prop is sugar over
+      this property.
 
 responsive:
   breakpoints:

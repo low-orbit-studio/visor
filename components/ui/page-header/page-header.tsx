@@ -64,6 +64,14 @@ export interface PageHeaderProps
    * raw CSS family on the `--page-header-title-family` custom property.
    */
   titleFamily?: "heading" | "display" | (string & {})
+  /**
+   * Title line-height override. Forwarded as a raw CSS `line-height` value
+   * on the `--page-header-title-leading` custom property (a unitless number
+   * like `1.05` or any CSS length). When omitted, the title falls back to its
+   * default line-height (tight for the standard title, `1` for the marquee
+   * scale), so existing call sites render unchanged.
+   */
+  leading?: string | number
 }
 
 const PageHeader = React.forwardRef<HTMLElement, PageHeaderProps>(
@@ -80,6 +88,7 @@ const PageHeader = React.forwardRef<HTMLElement, PageHeaderProps>(
       titleAs = "h1",
       titleSize,
       titleFamily,
+      leading,
       ...props
     },
     ref
@@ -103,8 +112,10 @@ const PageHeader = React.forwardRef<HTMLElement, PageHeaderProps>(
         ? titleFamily
         : undefined
 
+    const hasLeading = leading !== undefined && leading !== null
+
     const titleStyle: React.CSSProperties | undefined =
-      rawTitleSize || rawTitleFamily
+      rawTitleSize || rawTitleFamily || hasLeading
         ? {
             ...(rawTitleSize
               ? ({
@@ -114,6 +125,11 @@ const PageHeader = React.forwardRef<HTMLElement, PageHeaderProps>(
             ...(rawTitleFamily
               ? ({
                   "--page-header-title-family": rawTitleFamily,
+                } as React.CSSProperties)
+              : null),
+            ...(hasLeading
+              ? ({
+                  "--page-header-title-leading": String(leading),
                 } as React.CSSProperties)
               : null),
           }

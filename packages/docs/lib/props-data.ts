@@ -2510,6 +2510,24 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'Controls vertical rhythm and title size.',
     },
     {
+      name: 'titleSize',
+      type: "'default' | 'marquee' | string",
+      description:
+        'Title font-size override, orthogonal to size. The "marquee" token renders at the --page-header-title-size custom property (defaulting to 3.5rem); any other string is forwarded as a raw CSS length and rendered with the marquee rule.',
+    },
+    {
+      name: 'titleFamily',
+      type: "'heading' | 'display' | string",
+      description:
+        'Title font-family override. "display" resolves to var(--font-display, var(--font-family-heading, inherit)) so themes without a display font degrade gracefully; any other string is forwarded as a raw CSS family.',
+    },
+    {
+      name: 'leading',
+      type: 'string | number',
+      description:
+        'Title line-height override, forwarded as an inline --page-header-title-leading custom property (a unitless number like 1.05 or any CSS length). Omit to keep the default line-height.',
+    },
+    {
       name: 'className',
       type: 'string',
       description: 'Additional CSS class names to merge onto the root element.',

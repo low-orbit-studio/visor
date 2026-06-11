@@ -17,3 +17,10 @@ when_not_to_use:
   - Pages without meaningful grouping (use a plain form)
 tab_switching_state: |
   Each TabsContent stays mounted between switches (Radix Tabs default), so per-tab React state is preserved when switching tabs. The block does not unmount tab bodies. Consumers own their draft state and are responsible for resyncing after save.
+header_pass_through: |
+  The block forwards editorial-scale props straight to its internal PageHeader so consumers can tune title scale per-recipe instead of forking:
+  - headerSize → PageHeader `size` ("sm" | "md" | "lg"; vertical rhythm)
+  - titleSize → PageHeader `titleSize` ("default" | "marquee", or a raw CSS length)
+  - titleFamily → PageHeader `titleFamily` ("heading" | "display", or a raw CSS family)
+  - leading → PageHeader `leading` (title line-height; unitless number or CSS length)
+  All four are optional; omitting them keeps every existing call site pixel-identical.

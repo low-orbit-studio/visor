@@ -148,6 +148,7 @@ Dirty state is owned by the consumer — the block never clears it. After a succ
 See `AdminTabbedEditorProps` in `blocks/admin-tabbed-editor/admin-tabbed-editor.tsx` for the full list. In summary:
 
 - **Header** — `title` (required), `eyebrow`, `description`, `breadcrumb`, `headerActions`.
+- **Header scale** — `headerSize`, `titleSize`, `titleFamily`, `leading` pass straight through to the internal `PageHeader` so you can tune editorial scale per-recipe without forking. All four are optional; omitting them keeps the default header rendering.
 - **Tabs** — `tabs` (required), `activeTab`, `defaultActiveTab`, `onActiveTabChange`.
 - **Actions** — `onSave`, `onCancel`, `saveLabel`, `cancelLabel`.
 - **State** — `dirty`, `busy`, `disabled`, `footerStatus`, `hideFooter`.

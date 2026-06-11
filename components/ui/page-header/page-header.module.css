@@ -2,7 +2,10 @@
 .base {
   /* Override hooks for title typography. Themes (or consumers via a wrapping
      className) can set these to retune the marquee title without forking the
-     component. Props are sugar over the same custom properties. */
+     component. Props are sugar over the same custom properties.
+     `--page-header-title-leading` is intentionally left unset here so the
+     title falls back to its per-rule default line-height (tight for the
+     standard title, `1` for the marquee scale); the `leading` prop sets it. */
   --page-header-title-size: 3.5rem;
   --page-header-title-family: var(--font-display, var(--font-family-heading, inherit));
 
@@ -78,7 +81,7 @@
   font-family: var(--font-family-heading, inherit);
   font-size: var(--font-size-2xl, 1.5rem);
   font-weight: var(--font-weight-semibold, 600);
-  line-height: var(--line-height-tight, 1.2);
+  line-height: var(--page-header-title-leading, var(--line-height-tight, 1.2));
   color: var(--text-primary, #111827);
   letter-spacing: var(--letter-spacing-tight, -0.01em);
 }
@@ -97,7 +100,7 @@
    inline `--page-header-title-size` and rely on the same rule. */
 .title[data-title-size="marquee"] {
   font-size: var(--page-header-title-size, 3.5rem);
-  line-height: 1;
+  line-height: var(--page-header-title-leading, 1);
   letter-spacing: var(--letter-spacing-tight, -0.01em);
 }
 

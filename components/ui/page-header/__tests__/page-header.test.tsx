@@ -217,6 +217,64 @@ describe("PageHeader", () => {
     })
   })
 
+  describe("leading", () => {
+    it("does not set --page-header-title-leading when prop is omitted (byte-for-byte default)", () => {
+      const { container } = render(<PageHeader title="Dashboard" />)
+      const title = container.querySelector(
+        '[data-slot="page-header-title"]'
+      ) as HTMLElement
+      expect(title).not.toBeNull()
+      expect(title.style.getPropertyValue("--page-header-title-leading")).toBe(
+        ""
+      )
+    })
+
+    it("forwards a unitless number as inline --page-header-title-leading", () => {
+      const { container } = render(<PageHeader title="Tonight" leading={1.05} />)
+      const title = container.querySelector(
+        '[data-slot="page-header-title"]'
+      ) as HTMLElement
+      expect(title.style.getPropertyValue("--page-header-title-leading")).toBe(
+        "1.05"
+      )
+    })
+
+    it("forwards a CSS-length string as inline --page-header-title-leading", () => {
+      const { container } = render(
+        <PageHeader title="Events" leading="2.5rem" />
+      )
+      const title = container.querySelector(
+        '[data-slot="page-header-title"]'
+      ) as HTMLElement
+      expect(title.style.getPropertyValue("--page-header-title-leading")).toBe(
+        "2.5rem"
+      )
+    })
+
+    it("combines with raw titleSize/titleFamily overrides on one inline style", () => {
+      const { container } = render(
+        <PageHeader
+          title="Tonight"
+          titleSize="3rem"
+          titleFamily="'ModernSociety', serif"
+          leading={1}
+        />
+      )
+      const title = container.querySelector(
+        '[data-slot="page-header-title"]'
+      ) as HTMLElement
+      expect(title.style.getPropertyValue("--page-header-title-size")).toBe(
+        "3rem"
+      )
+      expect(title.style.getPropertyValue("--page-header-title-family")).toBe(
+        "'ModernSociety', serif"
+      )
+      expect(title.style.getPropertyValue("--page-header-title-leading")).toBe(
+        "1"
+      )
+    })
+  })
+
   it("combines titleSize='marquee' and titleFamily='display' (editorial admin)", () => {
     const { container } = render(
       <PageHeader
