@@ -142,7 +142,8 @@ export interface DataTableProps<TData, TValue = unknown>
    * - `"default"` — 12px (current behaviour; no visual regression for existing
    *   consumers)
    * - `"editorial"` — 20px (generous; each row reads as a card; high-design
-   *   admin patterns)
+   *   admin patterns); column headers also render uppercase, `--font-size-xs`,
+   *   `--text-tertiary`, `letter-spacing: 0.08em`
    */
   density?: "compact" | "default" | "editorial"
 }

@@ -22,6 +22,24 @@
 .root[data-density="default"]   { --dt-row-py: var(--spacing-3, 0.75rem); }
 .root[data-density="editorial"] { --dt-row-py: var(--spacing-5, 1.25rem); }
 
+/* Editorial column-header treatment — uppercase, xs scale, tertiary color,
+   tracked type (0.08em). Anchored on .root to avoid a bare attribute selector
+   (Turbopack pure-selector rule). Overrides the TableHead default styles and
+   the sort-button font-weight rule below. */
+.root[data-density="editorial"] th {
+  font-size: var(--font-size-xs, 0.6875rem);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-tertiary, #6b7280);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* The sort button inherits font from its <th>, but explicitly overrides
+   font-weight to semibold — reset to medium for the editorial treatment. */
+.root[data-density="editorial"] .sortButton {
+  font-weight: var(--font-weight-medium, 500);
+}
+
 .root td {
   padding-top: var(--dt-row-py, var(--spacing-3, 0.75rem));
   padding-bottom: var(--dt-row-py, var(--spacing-3, 0.75rem));
