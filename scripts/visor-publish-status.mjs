@@ -35,6 +35,11 @@ export const ARTIFACTS = [
     defaultDir: path.join(homedir(), 'Code/low-orbit/visor-themes-private'),
     relPath: 'package.json',
     registry: 'github-packages',
+    // The `.npmrc` authenticates this scope with `_authToken=${GITHUB_PACKAGES_TOKEN}`,
+    // a Bitwarden-backed secret injected by Varlock (see .env.schema). When that env
+    // var is absent (script run outside `varlock run`), npm returns 401 — a local
+    // setup issue, not publish drift. We surface that distinctly; see buildStatusReport.
+    tokenEnvVar: 'GITHUB_PACKAGES_TOKEN',
   },
 ];
 
@@ -118,6 +123,9 @@ export function resolveArtifactPath(artifact, cwd, env = process.env) {
   return path.join(baseDir, artifact.relPath);
 }
 
+// Returns { version, authError }. authError is true when npm rejected the request
+// with a 401/Unauthorized — the signature of a missing or expired registry
+// credential rather than a genuine missing package or network failure.
 function fetchPublishedVersion(name, registry, runCommand) {
   const args = ['view', name, 'version'];
   if (registry === 'github-packages') {
@@ -125,13 +133,15 @@ function fetchPublishedVersion(name, registry, runCommand) {
   }
   const result = runCommand('npm', args);
   if (result.status !== 0) {
+    const stderr = (result.stderr || '').toString();
+    const reason = stderr.trim().split('\n')[0] || 'unknown error';
+    const authError = /E401|Unauthorized/i.test(stderr);
     // Surface a brief reason on stderr so the operator can distinguish auth
     // failure / network / missing package without re-running by hand.
-    const reason = (result.stderr || '').toString().trim().split('\n')[0] || 'unknown error';
     process.stderr.write(`warn: could not read published version of ${name}: ${reason}\n`);
-    return null;
+    return { version: null, authError };
   }
-  return result.stdout.trim() || null;
+  return { version: result.stdout.trim() || null, authError: false };
 }
 
 export function buildStatusReport({ cwd, env, readJson, runCommand }) {
@@ -140,6 +150,7 @@ export function buildStatusReport({ cwd, env, readJson, runCommand }) {
   const rows = [];
   let driftFound = false;
   let errorFound = false;
+  let authMissing = false;
 
   for (const artifact of ARTIFACTS) {
     const localPath = resolveArtifactPath(artifact, cwd, env);
@@ -155,18 +166,38 @@ export function buildStatusReport({ cwd, env, readJson, runCommand }) {
       onMainErr = `MISSING`;
     }
 
-    const published = fetchPublishedVersion(artifact.name, artifact.registry, runCommand);
+    const { version: published, authError } = fetchPublishedVersion(
+      artifact.name,
+      artifact.registry,
+      runCommand
+    );
+    // A missing/expired registry credential (no token in the shell, or an npm 401)
+    // is a local-setup issue, not publish drift — classify it as `auth?` so the row
+    // never masquerades as a real drift/error and we can print a fix-it hint.
+    const credMissing =
+      Boolean(artifact.tokenEnvVar) &&
+      !published &&
+      (authError || !String(env[artifact.tokenEnvVar] ?? '').trim());
+
     const onMainCell = onMain ?? onMainErr ?? 'unknown';
-    const publishedCell = published ?? 'unknown';
-    const drift = onMain && published ? detectDrift(published, onMain) : 'error';
+    const publishedCell = published ?? (credMissing ? 'auth?' : 'unknown');
+    let drift;
+    if (onMain && published) {
+      drift = detectDrift(published, onMain);
+    } else if (credMissing) {
+      drift = 'auth?';
+    } else {
+      drift = 'error';
+    }
 
     if (drift === 'ahead') driftFound = true;
     if (drift === 'error') errorFound = true;
+    if (credMissing) authMissing = true;
 
     rows.push([artifact.name, publishedCell, onMainCell, drift]);
   }
 
-  return { rows, driftFound, errorFound };
+  return { rows, driftFound, errorFound, authMissing };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
@@ -185,12 +216,28 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
   console.log(formatStatusTable(report.rows));
   console.log('');
+  if (report.authMissing) {
+    console.log(
+      'Could not read the private @low-orbit-studio artifact — GITHUB_PACKAGES_TOKEN is not set in this shell.'
+    );
+    console.log(
+      'That token is Bitwarden-backed (see .env.schema); inject it by running the check under Varlock:'
+    );
+    console.log('  varlock run -- node scripts/visor-publish-status.mjs');
+    console.log('');
+  }
   if (report.errorFound) {
     console.log('One or more artifacts could not be checked. See rows above.');
     process.exit(1);
   }
   if (report.driftFound) {
     console.log('Drift detected — main is ahead of the registry for one or more artifacts.');
+    process.exit(1);
+  }
+  if (report.authMissing) {
+    // Public artifacts may be in sync, but the private one could not be verified
+    // due to a missing local credential — exit non-zero so this isn't read as a
+    // clean "all verified" result (and so a CI gate would catch a misconfigured run).
     process.exit(1);
   }
   console.log('All artifacts in sync. No publish needed.');
