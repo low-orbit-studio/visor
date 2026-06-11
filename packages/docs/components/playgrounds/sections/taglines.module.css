@@ -1,0 +1,65 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.lede {
+  max-width: 64ch;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+/* Eyebrow label for each block — uppercase/letter-spacing only, so it composes
+   over the Heading primitive without fighting its base color across modules. */
+.blockHeading {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.blockLede {
+  max-width: 64ch;
+}
+
+/* Taglines — displayed at a large, display-scale size. */
+.taglineList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.taglineCard {
+  max-width: 64ch;
+}
+
+.taglineContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.taglineText {
+  text-wrap: balance;
+}
+
+/* Boilerplate — labeled short + long body blocks. */
+.boilerplateBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  max-width: 72ch;
+}
+
+.boilerplateLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary, #6b7280);
+}
+
+.boilerplateText {
+  color: var(--text-secondary, #374151);
+}
