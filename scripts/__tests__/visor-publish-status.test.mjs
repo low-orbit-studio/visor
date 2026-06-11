@@ -253,4 +253,91 @@ describe('buildStatusReport', () => {
     const inSyncRows = report.rows.filter(r => r[3] === 'no');
     expect(inSyncRows.length).toBeGreaterThanOrEqual(3);
   });
+
+  it('classifies the private artifact as auth? (not error) when GITHUB_PACKAGES_TOKEN is absent', () => {
+    const actualCwd = path.resolve(
+      import.meta.dirname || path.dirname(new URL(import.meta.url).pathname),
+      '../..'
+    );
+    const readJsonReal = p => {
+      if (p === path.join(actualCwd, 'packages/tokens/package.json')) {
+        return { name: '@loworbitstudio/visor-core', version: '0.12.0' };
+      }
+      if (p === path.join(actualCwd, 'packages/cli/package.json')) {
+        return { name: '@loworbitstudio/visor', version: '1.6.0' };
+      }
+      if (p === path.join(actualCwd, 'packages/theme-engine/package.json')) {
+        return { name: '@loworbitstudio/visor-theme-engine', version: '0.16.0' };
+      }
+      throw new Error(`ENOENT: ${p}`);
+    };
+    const runCommand = (cmd, args) => {
+      if (args.includes('@loworbitstudio/visor-core')) return { status: 0, stdout: '0.12.0\n', stderr: '' };
+      if (args.includes('@loworbitstudio/visor')) return { status: 0, stdout: '1.6.0\n', stderr: '' };
+      if (args.includes('@loworbitstudio/visor-theme-engine')) return { status: 0, stdout: '0.16.0\n', stderr: '' };
+      // Private package: npm rejects with 401 because no token reached the registry.
+      if (args.includes('@low-orbit-studio/visor-themes-private')) {
+        return {
+          status: 1,
+          stdout: '',
+          stderr: 'npm error code E401\nnpm error 401 Unauthorized - GET https://npm.pkg.github.com/...',
+        };
+      }
+      return { status: 1, stdout: '', stderr: '' };
+    };
+    const report = buildStatusReport({
+      cwd: actualCwd,
+      // No GITHUB_PACKAGES_TOKEN — mirrors a bare run outside `varlock run`.
+      env: { VISOR_THEMES_PRIVATE_PATH: '/nonexistent-themes-' + Date.now() },
+      readJson: readJsonReal,
+      runCommand,
+    });
+    const themesRow = report.rows.find(r => r[0] === '@low-orbit-studio/visor-themes-private');
+    expect(themesRow[3]).toBe('auth?');
+    expect(report.authMissing).toBe(true);
+    // The missing credential must NOT masquerade as real drift/error.
+    expect(report.errorFound).toBe(false);
+    expect(report.driftFound).toBe(false);
+  });
+
+  it('classifies an npm 401 as auth? even when the token env var is set (expired token)', () => {
+    const actualCwd = path.resolve(
+      import.meta.dirname || path.dirname(new URL(import.meta.url).pathname),
+      '../..'
+    );
+    const readJsonReal = p => {
+      if (p === path.join(actualCwd, 'packages/tokens/package.json')) {
+        return { name: '@loworbitstudio/visor-core', version: '0.12.0' };
+      }
+      if (p === path.join(actualCwd, 'packages/cli/package.json')) {
+        return { name: '@loworbitstudio/visor', version: '1.6.0' };
+      }
+      if (p === path.join(actualCwd, 'packages/theme-engine/package.json')) {
+        return { name: '@loworbitstudio/visor-theme-engine', version: '0.16.0' };
+      }
+      throw new Error(`ENOENT: ${p}`);
+    };
+    const runCommand = (cmd, args) => {
+      if (args.includes('@loworbitstudio/visor-core')) return { status: 0, stdout: '0.12.0\n', stderr: '' };
+      if (args.includes('@loworbitstudio/visor')) return { status: 0, stdout: '1.6.0\n', stderr: '' };
+      if (args.includes('@loworbitstudio/visor-theme-engine')) return { status: 0, stdout: '0.16.0\n', stderr: '' };
+      if (args.includes('@low-orbit-studio/visor-themes-private')) {
+        return { status: 1, stdout: '', stderr: 'npm error code E401\nnpm error 401 Unauthorized' };
+      }
+      return { status: 1, stdout: '', stderr: '' };
+    };
+    const report = buildStatusReport({
+      cwd: actualCwd,
+      env: {
+        VISOR_THEMES_PRIVATE_PATH: '/nonexistent-themes-' + Date.now(),
+        GITHUB_PACKAGES_TOKEN: 'present-but-expired',
+      },
+      readJson: readJsonReal,
+      runCommand,
+    });
+    const themesRow = report.rows.find(r => r[0] === '@low-orbit-studio/visor-themes-private');
+    expect(themesRow[3]).toBe('auth?');
+    expect(report.authMissing).toBe(true);
+    expect(report.errorFound).toBe(false);
+  });
 });

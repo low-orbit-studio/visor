@@ -18,8 +18,10 @@ description: Publish health check and cross-repo coordinated release for the 4 V
 
 Reads the published version of each artifact from its registry and compares to the version on `main`.
 
+**Run it under Varlock.** Reading the private `@low-orbit-studio/visor-themes-private` version authenticates against GitHub Packages with `GITHUB_PACKAGES_TOKEN` (Bitwarden-backed, per `.env.schema`). Run bare and that row comes back `auth?` with a fix-it hint; run under Varlock and all four resolve:
+
 ```bash
-node scripts/visor-publish-status.mjs
+varlock run -- node scripts/visor-publish-status.mjs
 ```
 
 Output (per [VI-340 D2](https://linear.app/low-orbit-studio/issue/VI-340)):
@@ -36,6 +38,7 @@ Artifact                                     Published   On main   Drift
 - `no` — published version matches main.
 - `ahead` — main is ahead of the registry. Triggers exit code 1.
 - `behind` — registry is ahead of main (rare; means a publish happened on a different branch or the local is stale).
+- `auth?` — the private artifact could not be read because its GitHub Packages credential is missing/expired (no `GITHUB_PACKAGES_TOKEN`, or an npm 401). This is a local-setup issue, not publish drift — the report prints a `varlock run -- ...` hint. Exit code 1.
 - `error` — could not read one side (missing repo, registry unreachable). Exit code 1.
 
 **Exit codes:**
