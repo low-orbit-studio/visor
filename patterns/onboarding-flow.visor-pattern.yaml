@@ -19,6 +19,10 @@ when_to_use:
   - When a single long form would overwhelm the user — break into logical steps
   - Flows where earlier steps gate or inform later steps
 
+when_not_to_use:
+  - Login or signup itself — use auth-flow
+  - A single validated form rather than a multi-step flow — use form-with-validation
+
 structure: |
   <div className="onboarding-layout">
     <div className="onboarding-header">

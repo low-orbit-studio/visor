@@ -1,4 +1,4 @@
-name: Data Table with Filters
+name: data-table-with-filters
 description: Filterable data table with a toolbar for search, category filters, and column sorting.
 
 components_used:
@@ -17,6 +17,9 @@ when_to_use:
   - Data-heavy pages where users need to find specific records
   - Admin dashboards with sortable, filterable lists
   - Search result pages with faceted filtering
+
+when_not_to_use:
+  - Per-row action menus, bulk selection, and confirm-on-delete on the table — use data-table-row-actions
 
 structure: |
   <>

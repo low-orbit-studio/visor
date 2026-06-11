@@ -1,4 +1,4 @@
-name: Auth Flow
+name: auth-flow
 description: Login, registration, and password recovery pages sharing a centered card layout.
 
 components_used:
@@ -13,6 +13,10 @@ when_to_use:
   - Sign-in and sign-up pages
   - Forgot password and reset password flows
   - Invitation acceptance screens
+
+when_not_to_use:
+  - Collecting setup preferences after the user is already signed in — use onboarding-flow
+  - A standalone validated form that is not authentication — use form-with-validation
 
 structure: |
   <div className="auth-container">

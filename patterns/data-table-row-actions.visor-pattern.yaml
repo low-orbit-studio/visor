@@ -18,6 +18,9 @@ when_to_use:
   - When supporting both single-row and bulk operations on the same table
   - Any CRUD interface (create, read, update, delete) where destructive actions require confirmation
 
+when_not_to_use:
+  - Read-heavy lists whose main need is search, filtering, and sorting rather than row mutations — use data-table-with-filters
+
 structure: |
   <>
     {selectedRows.length > 0 && (

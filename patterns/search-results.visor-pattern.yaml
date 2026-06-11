@@ -14,6 +14,9 @@ when_to_use:
   - When combining free-text search with faceted category filters
   - Directory, catalog, or discovery interfaces with card-based result display
 
+when_not_to_use:
+  - A static grid of cards not driven by a query — use card-grid
+
 structure: |
   <div className="search-layout">
     <div className="search-controls">

@@ -1,4 +1,4 @@
-name: Dashboard Layout
+name: dashboard-layout
 description: Responsive app shell — a persistent sidebar on desktop that collapses to a Sheet drawer on mobile — with a top navbar and a content area of cards and tabs.
 
 components_used:
@@ -20,6 +20,10 @@ when_to_use:
   - Multi-section apps with persistent navigation that must also work on mobile
   - Content-heavy layouts needing sidebar + main area structure
   - Any app shell where the desktop sidebar should collapse to a drawer without duplicating nav markup
+
+when_not_to_use:
+  - A single configuration screen rather than the whole app shell — use settings-page
+  - Just the tabular data inside the shell — use data-table-with-filters or data-table-row-actions
 
 structure: |
   <SidebarProvider>

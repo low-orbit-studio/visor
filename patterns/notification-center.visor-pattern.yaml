@@ -13,6 +13,10 @@ when_to_use:
   - When users need to review, dismiss, or act on multiple notifications at once
   - Combining real-time toast feedback with a browsable notification history
 
+when_not_to_use:
+  - A single transient confirmation after one action — use a bare Toast, not the full center
+  - A command palette for navigation or search — use search-results
+
 structure: |
   <Popover open={open} onOpenChange={setOpen}>
     <PopoverTrigger asChild>
