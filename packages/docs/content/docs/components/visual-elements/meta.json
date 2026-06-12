@@ -4,6 +4,7 @@
   "defaultOpen": true,
   "pages": [
     "ambient-glow",
+    "elevation-utilities",
     "hero-glow",
     "sphere",
     "station-spectrum",

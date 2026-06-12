@@ -1,0 +1,136 @@
+---
+title: Elevation Utilities (Lit)
+description: Opt-in CSS utility classes for dark-surface elevation — .lit, .lit-soft, and .lit-strong — with a live keyed accent halo via --lit-color.
+---
+
+## Overview
+
+Visor ships three opt-in CSS utility classes — `.lit`, `.lit-soft`, and `.lit-strong` — for framed dark surfaces that need cinematic depth. Each class applies a multi-layer `box-shadow` recipe: an inset top highlight (the "lid" of the frame), deep drop shadows, and (for `.lit` and `.lit-strong`) a color-mixed accent halo whose color tracks a live CSS custom property.
+
+These are distributed via `@loworbitstudio/visor-core/utilities` and must be imported explicitly. They are **not** bundled into `index.css`.
+
+Ported from Blacklight's `.bl-lit` / `.bl-lit-soft` / `.bl-lit-strong` utilities, where they power the carousel-keyed artist color glow on every framed surface (EPK frame, pricing cards, hero).
+
+## Import
+
+```ts
+import "@loworbitstudio/visor-core/utilities";
+```
+
+Add this import once at your app's entry point (e.g. `app/layout.tsx` or `globals.css`).
+
+## The `--lit-color` variable
+
+All three classes read from `--lit-color` to determine the halo color. The default is:
+
+```css
+--lit-color: var(--accent, var(--color-primary-500, #6366f1));
+```
+
+Override it on any element — or rewrite it per-frame via JavaScript — to make the halo track a live value:
+
+```css
+/* Static per-element accent */
+.my-card {
+  --lit-color: #ff3b00;
+}
+```
+
+```ts
+// Live per-frame tracking (e.g. carousel-keyed artist color)
+element.style.setProperty("--lit-color", artistAccentColor);
+```
+
+Because `--lit-color` is a standard CSS custom property, the halo repaints immediately without layout or compositing cost.
+
+## `.lit`
+
+Standard lit surface: inset top highlight, deep drop shadows, and a 22% accent halo.
+
+```tsx
+<div className="lit">…</div>
+```
+
+**Shadow recipe:**
+
+| Layer | Value |
+|-------|-------|
+| Inset highlight | `inset 0 1px 0 rgba(255, 255, 255, 0.07)` |
+| Drop shadow 1 | `0 24px 64px -24px rgba(0, 0, 0, 0.85)` |
+| Drop shadow 2 | `0 64px 140px -48px rgba(0, 0, 0, 0.9)` |
+| Accent halo | `0 0 80px -24px color-mix(in srgb, var(--lit-color) 22%, transparent)` |
+
+## `.lit-soft`
+
+Gentle lift: inset top highlight and a single drop shadow — no accent halo. Use on secondary surfaces or when a colored glow would compete with content.
+
+```tsx
+<div className="lit-soft">…</div>
+```
+
+**Shadow recipe:**
+
+| Layer | Value |
+|-------|-------|
+| Inset highlight | `inset 0 1px 0 rgba(255, 255, 255, 0.06)` |
+| Drop shadow | `0 16px 40px -20px rgba(0, 0, 0, 0.7)` |
+
+## `.lit-strong`
+
+Dramatic elevation: inset highlight, deeper drop shadows, and a 30% accent halo. Use on hero surfaces, featured cards, or high-emphasis frames that demand maximum presence.
+
+```tsx
+<div className="lit-strong">…</div>
+```
+
+**Shadow recipe:**
+
+| Layer | Value |
+|-------|-------|
+| Inset highlight | `inset 0 1px 0 rgba(255, 255, 255, 0.08)` |
+| Drop shadow 1 | `0 30px 80px -30px rgba(0, 0, 0, 0.9)` |
+| Drop shadow 2 | `0 80px 180px -60px rgba(0, 0, 0, 0.95)` |
+| Accent halo | `0 0 120px -30px color-mix(in srgb, var(--lit-color) 30%, transparent)` |
+
+## CSS Output
+
+The generated `utilities.css` contains:
+
+```css
+:root {
+  --lit-color: var(--accent, var(--color-primary-500, #6366f1));
+}
+
+.lit {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 24px 64px -24px rgba(0, 0, 0, 0.85),
+    0 64px 140px -48px rgba(0, 0, 0, 0.9),
+    0 0 80px -24px color-mix(in srgb, var(--lit-color) 22%, transparent);
+}
+
+.lit-soft {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 16px 40px -20px rgba(0, 0, 0, 0.7);
+}
+
+.lit-strong {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 30px 80px -30px rgba(0, 0, 0, 0.9),
+    0 80px 180px -60px rgba(0, 0, 0, 0.95),
+    0 0 120px -30px color-mix(in srgb, var(--lit-color) 30%, transparent);
+}
+```
+
+## Usage Guidelines
+
+- **Dark surfaces only.** The inset highlights and deep drop shadows are tuned for dark-mode framed surfaces. On light backgrounds the depth effect will not read correctly.
+- **Combine with a `border-radius`.** The inset highlight reads cleanest on rounded-corner cards (e.g. `border-radius: var(--radius-lg)`).
+- **One lit class per element.** Do not combine `.lit`, `.lit-soft`, and `.lit-strong` on the same element — they all write `box-shadow` and the last one wins.
+- **`--lit-color` inherits.** Setting it on a parent makes all lit children share the halo color unless overridden on the child.
+
+## Browser Support
+
+`color-mix()` is supported in all modern browsers (Chrome 111+, Safari 16.2+, Firefox 113+). For environments that require broader coverage, `.lit-soft` is the fallback-safe option since it does not use `color-mix()`.

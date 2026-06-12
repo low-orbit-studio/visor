@@ -8,7 +8,7 @@ const EXCLUDED_GROUPS = ['blocks', 'deck'];
  * exempt from component-centric rules (ComponentPreview, PropsTable, install command).
  * These are CSS utilities or reference pages, not React components.
  */
-const EXCLUDED_PAGES = ['utilities'];
+const EXCLUDED_PAGES = ['utilities', 'elevation-utilities'];
 
 /**
  * Returns paths of all component MDX files, excluding blocks/ and deck/ groups
