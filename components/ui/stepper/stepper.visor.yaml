@@ -32,6 +32,20 @@ props:
     default: "'horizontal'"
 
 variants:
+  - name: variant
+    values:
+      - default
+      - prominent
+    description: >
+      Visual treatment for the entire Stepper. "default" is the standard step
+      indicator for multi-step forms and linear wizards. "prominent" is designed
+      for vertical derivation spines and primary-navigation surfaces: the active
+      row gets a primary-soft tint, the active bullet renders a concentric halo
+      and filled pulse dot (replacing the step number), and complete-to-next rails
+      render in a primary-line tint. Token surface: --interactive-primary-bg
+      (border + fill + pulse dot), --interactive-primary-soft (row tint + halo),
+      color-mix(in srgb, --interactive-primary-bg 34%, transparent) (rail tint).
+      All values are fully theme-agnostic.
   - name: status
     values:
       - complete
