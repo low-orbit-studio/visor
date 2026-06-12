@@ -1,0 +1,83 @@
+---
+title: ErrorPlacard
+description: Inline failed-load placard with a destructive icon chip, title, body, and optional recovery actions.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ErrorPlacard } from '@/components/ui/error-placard';
+import { Button } from '@/components/ui/button';
+
+## Basic Usage
+
+An inline placard for failed-load states: a destructive-tinted icon chip on the left, title and body in the middle, and an optional action cluster on the right.
+
+<ComponentPreview
+  title="ErrorPlacard"
+  code={"import { ErrorPlacard } from '@/components/ui/error-placard/error-placard';\n\n<ErrorPlacard\n  icon={<span>!</span>}\n  title=\"Could not load members\"\n  body=\"The request timed out. Check your connection and try again.\"\n/>"}
+>
+  <ErrorPlacard
+    icon={<span style={{ fontSize: '22px', lineHeight: 1 }}>⚠</span>}
+    title="Could not load members"
+    body="The request timed out. Check your connection and try again."
+  />
+</ComponentPreview>
+
+## With Recovery Actions
+
+Use the `actions` prop to provide a right-aligned cluster of recovery buttons such as retry or dismiss.
+
+<ComponentPreview
+  title="ErrorPlacard With Actions"
+  code={"import { ErrorPlacard } from '@/components/ui/error-placard/error-placard';\nimport { Button } from '@/components/ui/button/button';\n\n<ErrorPlacard\n  icon={<span>!</span>}\n  title=\"Could not load members\"\n  body=\"The request timed out. Check your connection and try again.\"\n  actions={\n    <>\n      <Button variant=\"ghost\" size=\"sm\">Dismiss</Button>\n      <Button variant=\"outline\" size=\"sm\">Retry</Button>\n    </>\n  }\n/>"}
+>
+  <ErrorPlacard
+    icon={<span style={{ fontSize: '22px', lineHeight: 1 }}>⚠</span>}
+    title="Could not load members"
+    body="The request timed out. Check your connection and try again."
+    actions={
+      <>
+        <Button variant="ghost" size="sm">Dismiss</Button>
+        <Button variant="outline" size="sm">Retry</Button>
+      </>
+    }
+  />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add error-placard
+```
+
+This copies two files into your project:
+
+- `components/ui/error-placard/error-placard.tsx` — the component
+- `components/ui/error-placard/error-placard.module.css` — the styles
+
+## Usage
+
+```tsx
+import { ErrorPlacard } from '@/components/ui/error-placard/error-placard';
+
+<ErrorPlacard
+  icon={<WarningCircle weight="fill" />}
+  title="Could not load data"
+  body="The request timed out."
+/>
+```
+
+## API Reference
+
+### ErrorPlacardProps
+
+<PropsTable component="error-placard" />
+
+The component also accepts all standard `<div>` HTML attributes except `title` (shadowed by the typed prop).
+
+## Accessibility
+
+- Renders with `role="alert"`, which announces the content to screen readers immediately upon mount.
+- The icon container carries `aria-hidden="true"` — supply meaningful `title` and `body` text so the announcement is fully descriptive.
+- When using `actions`, ensure each button has a clear accessible label.
+- For non-urgent inline messages, consider using Alert instead.
