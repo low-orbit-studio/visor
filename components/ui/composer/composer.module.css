@@ -1,0 +1,190 @@
+/* Composer
+ *
+ * AI-chat composer — a rounded card container holding a multi-line
+ * auto-growing text field and a tools row with icon buttons, an arbitrary
+ * status-chip slot, and a circular primary send button.
+ *
+ * Visual source: docs/design/brand-workbench/elicit-core (cbox selector)
+ *
+ * All values flow through CSS custom properties. No hard-coded colors or
+ * magic numbers — every value traces to a design token or is documented.
+ */
+
+/* ─── Root container ────────────────────────────────────────────────────── */
+
+.root {
+  background: var(--surface-card, #ffffff);
+  border: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
+  border-radius: var(--radius-2xl, 1.5rem);     /* ~24px, matches cbox prototype */
+  box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1));
+  padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem); /* prototype 14/16/11px, snapped to 4px grid */
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.root[data-disabled] {
+  opacity: var(--opacity-50, 0.5);
+  pointer-events: none;
+}
+
+/* ─── Field row ─────────────────────────────────────────────────────────── */
+
+.fieldWrap {
+  position: relative;
+  /* The textarea and replica share the same box; replica drives the height */
+}
+
+/* Shared typographic baseline for both field and replica */
+.field {
+  font-family: inherit;
+  font-size: var(--font-size-base, 1rem);          /* ~15px in prototype */
+  line-height: var(--line-height-normal, 1.5);
+  color: var(--text-primary, #111827);
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  display: block;
+  min-height: 22px;                                /* prototype: min-height 22px */
+  overflow: hidden;
+}
+
+/* Hidden replica — same metrics as textarea, invisible, used for auto-grow */
+.fieldReplica {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  visibility: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: hidden;
+}
+
+/* Textarea itself */
+.field:not(.fieldReplica) {
+  position: relative;
+  color: var(--text-primary, #111827);
+  caret-color: var(--primary, #111827);
+}
+
+.field:not(.fieldReplica)::placeholder {
+  color: var(--text-tertiary, #6b7280);
+}
+
+.field:not(.fieldReplica):focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--primary, #111827);
+  outline-offset: var(--focus-ring-offset, 2px);
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+/* ─── Toolbar row ───────────────────────────────────────────────────────── */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);                   /* prototype: 7px ≈ spacing-2 */
+  margin-top: var(--spacing-3, 0.75rem);            /* prototype 11px, snapped to 4px grid */
+}
+
+/* ─── Tool button ───────────────────────────────────────────────────────── */
+
+.toolBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full, 9999px);
+  border: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
+  background: transparent;
+  display: grid;
+  place-items: center;
+  color: var(--text-secondary, #374151);
+  flex: none;
+  cursor: pointer;
+  transition:
+    background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.toolBtn:hover:not(:disabled) {
+  background: var(--surface-hover, color-mix(in srgb, var(--border-default, #e5e7eb) 40%, transparent));
+  border-color: var(--border-strong, #9ca3af);
+}
+
+.toolBtn:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--primary, #111827);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+.toolBtn:disabled {
+  opacity: var(--opacity-40, 0.4);
+  cursor: not-allowed;
+}
+
+/* Icon inside tool button — 16px per prototype */
+.toolBtn > svg,
+.toolBtn > * > svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ─── Spacer ────────────────────────────────────────────────────────────── */
+
+.spacer {
+  flex: 1;
+}
+
+/* ─── Send button ───────────────────────────────────────────────────────── */
+
+.send {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--primary, #111827);
+  color: var(--primary-foreground, #ffffff);
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgb(0 0 0 / 0.05));
+  flex: none;
+  border: none;
+  cursor: pointer;
+  transition:
+    background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.send:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--primary, #111827) 88%, white);
+  box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1));
+}
+
+.send:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--primary, #111827);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+.send:disabled {
+  opacity: var(--opacity-40, 0.4);
+  cursor: not-allowed;
+}
+
+/* Icon inside send button — 17px per prototype */
+.send > svg,
+.send > * > svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* ─── Reduced motion ────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .toolBtn,
+  .send {
+    transition: none;
+  }
+}

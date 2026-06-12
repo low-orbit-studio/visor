@@ -66,8 +66,9 @@ export interface AdminTabbedEditorProps
    */
   titleFamily?: PageHeaderProps["titleFamily"]
   /**
-   * Title line-height override — forwarded to the internal PageHeader's
-   * `leading`. Omit to keep the default line-height.
+   * Optional media/identity node (typically an Avatar) rendered to the left of
+   * the title — forwarded to the internal PageHeader's `leading` slot. Omit to
+   * keep the default text|actions header layout.
    */
   leading?: PageHeaderProps["leading"]
 

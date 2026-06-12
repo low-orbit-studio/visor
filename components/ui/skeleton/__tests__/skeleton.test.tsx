@@ -1,6 +1,7 @@
 import { render } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Skeleton } from "../skeleton"
+import styles from "../skeleton.module.css"
 import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("Skeleton", () => {
@@ -37,6 +38,29 @@ describe("Skeleton", () => {
   it("renders as a div element", () => {
     const { container } = render(<Skeleton />)
     expect(container.firstChild?.nodeName).toBe("DIV")
+  })
+
+  it("applies no shape modifier class by default", () => {
+    const { container } = render(<Skeleton />)
+    const el = container.firstChild as HTMLElement
+    expect(el.className).not.toMatch(/shapePill|shapeLogo|shapeCircle/)
+  })
+
+  it("accepts shape modifier classes via className", () => {
+    // Shape variants are CSS-only — consumers opt in via className using the
+    // exported module classes. The base .skeleton class is retained.
+    const { container } = render(
+      <Skeleton className={styles.shapePill} />
+    )
+    const el = container.firstChild as HTMLElement
+    expect(el).toHaveClass(styles.skeleton)
+    expect(el).toHaveClass(styles.shapePill)
+  })
+
+  it("exposes shapeLogo, shapePill, and shapeCircle modifier classes", () => {
+    expect(styles.shapeLogo).toBeTruthy()
+    expect(styles.shapePill).toBeTruthy()
+    expect(styles.shapeCircle).toBeTruthy()
   })
 })
 

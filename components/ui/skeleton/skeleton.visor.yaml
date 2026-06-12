@@ -19,12 +19,18 @@ why: >
   Skeleton provides a simple animated placeholder that matches the muted
   surface token for any active theme. Consumers control the shape by
   applying width, height, and border-radius via className — the component
-  itself only provides the pulse animation and base color.
+  itself only provides the pulse animation and base color. Three opt-in
+  shape modifier classes (shapeLogo, shapePill, shapeCircle) ship in the
+  module for common editorial-admin silhouettes; apply them via className.
 
 props:
   - name: className
     type: string
-    description: Control dimensions and shape (e.g., "w-full h-4 rounded")
+    description: >
+      Control dimensions and shape (e.g., "w-full h-4 rounded"). Opt into a
+      preset silhouette by applying a shape modifier class from the module:
+      shapeLogo (~104x24), shapePill (~64x18), or shapeCircle (square,
+      fully rounded). These layer on top of the base .skeleton class.
 
 dependencies: []
 
