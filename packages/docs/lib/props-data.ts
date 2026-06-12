@@ -667,6 +667,30 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'structured-prompt': [
+    {
+      name: 'icon',
+      type: 'ReactNode',
+      description: 'StructuredPromptHeader: Phosphor icon rendered before the eyebrow label.',
+    },
+    {
+      name: 'filled',
+      type: 'boolean',
+      default: 'false',
+      description: 'StructuredPromptSlot: renders the filled (accent-tinted) chip treatment; otherwise the empty (dashed, muted) treatment.',
+    },
+    {
+      name: 'onClick',
+      type: '() => void',
+      description: 'StructuredPromptSlot: when provided, the slot renders as a <button> with a focus ring; without it, an inline <span>.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto any sub-component.',
+    },
+  ],
+
   stepper: [
     {
       name: 'activeStep',
