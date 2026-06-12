@@ -1,0 +1,72 @@
+name: HeroGlow
+description: Breathing radial glow band for hero media. Color is driven by a live CSS custom property (--glow-color) so the caller can rewrite it every rAF frame without triggering a React re-render.
+extends: HTMLDivElement
+category: visual-elements
+
+when_to_use:
+  - Behind hero images or carousels to cast a color-keyed ambient glow
+  - When the glow color must track a live value (e.g. current artist color, active palette)
+  - Marketing hero sections that need atmospheric depth without a heavy shader
+
+when_not_to_use:
+  - As a layout element — HeroGlow is purely decorative (aria-hidden, pointer-events none)
+  - When the parent is not position: relative (the negative inset will be clipped or invisible)
+  - When a static, non-breathing glow is preferred (use a box-shadow or plain gradient instead)
+
+why: >
+  Hand-rolled as .bl-hero-glow in Blacklight's globals.css (BL-326). Extracted to
+  Visor so other projects can drop in the same breathing glow effect with a single
+  component import. Color flows through --glow-color so Blacklight's rAF-based
+  artist-color updates work without any React state — the CSS var chain tracks live.
+  The breathing animation (7s ease-in-out) matches the carousel dwell rhythm.
+  prefers-reduced-motion disables animation while keeping the glow visible.
+
+props:
+  - name: glowColor
+    type: string
+    description: >
+      CSS color value applied as --glow-color. Accepts any CSS color (hex, oklch,
+      rgb, custom property reference). When omitted, --glow-color must be set by
+      an ancestor for the glow to appear; the fallback is transparent.
+    default: undefined
+
+customization:
+  description: >
+    Override --glow-color on the element or on any ancestor to drive color from
+    outside React. For rAF-rate updates, write directly to element.style.setProperty
+    ('--glow-color', value) each frame — no re-render needed.
+  properties:
+    - name: --glow-color
+      default: transparent
+      description: The glow hue. color-mix() blends it to 16% opacity inside the gradient.
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/visual-elements/hero-glow"
+
+example: |
+  {/* Static color */}
+  <div style={{ position: 'relative', height: 400 }}>
+    <HeroGlow glowColor="oklch(70% 0.3 145)" />
+    <img src="hero.jpg" alt="Hero" />
+  </div>
+
+  {/* Live rAF-driven color (no React re-render) */}
+  <div
+    ref={(el) => {
+      if (!el) return;
+      const glow = el.querySelector('[data-slot="hero-glow"]');
+      let frame: number;
+      const tick = () => {
+        glow?.style.setProperty('--glow-color', computeArtistColor());
+        frame = requestAnimationFrame(tick);
+      };
+      frame = requestAnimationFrame(tick);
+      return () => cancelAnimationFrame(frame);
+    }}
+    style={{ position: 'relative' }}
+  >
+    <HeroGlow />
+    <img src="hero.jpg" alt="Hero" />
+  </div>

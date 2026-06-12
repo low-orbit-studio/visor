@@ -1,0 +1,57 @@
+/* HeroGlow: breathing radial glow band for hero media
+ *
+ * Port of bl-hero-glow (blacklight-website globals-css, BL-326).
+ *
+ * Color contract:
+ *   Color is driven exclusively by --glow-color, which the consumer sets
+ *   inline or resets every rAF frame (ex. keyed to the active artist color).
+ *   No hex values are baked in. Fallback is transparent so nothing renders
+ *   when the var is unset — intentional: callers must supply a color.
+ *
+ * Layout:
+ *   position: absolute with negative inset so the glow bleeds outside the
+ *   parent's box. The parent must be position: relative. pointer-events: none
+ *   ensures the glow never captures clicks.
+ *
+ * Animation:
+ *   @keyframes hero-glow-breathe: opacity 0.75 ↔ 1, scale 1 ↔ 1.03, 7s cycle.
+ *   prefers-reduced-motion: animation is disabled — glow appears at rest state.
+ */
+
+/* ── Keyframe ────────────────────────────────────────────────────────────── */
+
+@keyframes hero-glow-breathe {
+  0%,
+  100% {
+    opacity: 0.75;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+
+/* ── Root ────────────────────────────────────────────────────────────────── */
+
+.root {
+  position: absolute;
+  inset: -6% -8% -10%;
+  pointer-events: none;
+  background: radial-gradient(
+    70% 60% at 50% 55%,
+    color-mix(in srgb, var(--glow-color, transparent) 16%, transparent),
+    transparent 72%
+  );
+  animation: hero-glow-breathe 7s ease-in-out infinite;
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    animation: none;
+    opacity: 0.75;
+    transform: scale(1);
+  }
+}

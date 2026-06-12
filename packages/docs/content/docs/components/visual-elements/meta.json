@@ -4,6 +4,7 @@
   "defaultOpen": true,
   "pages": [
     "ambient-glow",
+    "hero-glow",
     "sphere",
     "station-spectrum",
     "vignette"
