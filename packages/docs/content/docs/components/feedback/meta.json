@@ -9,6 +9,7 @@
     "chart",
     "error-placard",
     "toast",
+    "toast-card",
     "tooltip"
   ]
 }

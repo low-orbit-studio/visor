@@ -1,0 +1,75 @@
+name: ToastCard
+description: A static, server-renderable notification card for editorial display of toast anatomy. Use in state galleries and design documentation — not for imperative portal notifications.
+extends: HTMLDivElement
+category: feedback
+
+when_to_use:
+  - State gallery screens showing notification anatomy in-flow
+  - Design documentation illustrating toast variants
+  - Static editorial rendering of notification cards without portal or timer machinery
+  - Layouts that need declarative, server-rendered notification cards
+
+when_not_to_use:
+  - Imperative portal notifications that auto-dismiss (use Toast with Sonner instead)
+  - Notifications triggered by user actions at runtime (use Toast)
+  - Full-width announcement bars (use Banner)
+  - Inline contextual callouts within content (use Alert)
+
+why: >
+  ToastCard renders a notification card declaratively — no Sonner runtime, no
+  portal, no auto-dismiss timer. It mirrors the visual language of the imperative
+  Toast component so state gallery screens can statically compose a stack of
+  success/error/info/warning cards that look identical to live toasts. All colors
+  are CSS custom properties so the card adapts to any active theme.
+
+variants:
+  variant: [success, error, info, warning]
+
+sub_components:
+  - name: ToastCardStack
+    description: >
+      Fixed top-right stacking container for multiple ToastCards. Declarative and
+      server-renderable. Accepts `top` and `gap` string props that map to CSS custom
+      properties for consumer retuning without forking. Renders `data-slot="toast-card-stack"`.
+
+props:
+  - name: variant
+    type: '"success" | "error" | "info" | "warning"'
+    default: '"info"'
+    description: "Intent variant controlling the icon badge color and default glyph"
+  - name: title
+    type: React.ReactNode
+    description: "Bold one-line headline. Required."
+  - name: body
+    type: React.ReactNode
+    description: "Muted supporting line beneath the title. Optional."
+  - name: action
+    type: React.ReactNode
+    description: "Primary-colored action affordance text. Optional. Renders as a button when onAction is provided, otherwise static text."
+  - name: onAction
+    type: "React.MouseEventHandler<HTMLButtonElement>"
+    description: "Handler for the action affordance. When omitted with action, renders action as static text."
+  - name: onDismiss
+    type: "React.MouseEventHandler<HTMLButtonElement>"
+    description: "Dismiss handler. When provided, renders a muted X dismiss control."
+  - name: icon
+    type: React.ReactNode
+    description: "Override the leading glyph. Defaults to the per-variant Phosphor icon (CheckCircle / WarningCircle / Info / Warning)."
+
+dependencies:
+  - "class-variance-authority"
+  - "@phosphor-icons/react"
+
+preview_url: "https://visor.loworbit.studio/docs/components/feedback/toast-card"
+
+example: |
+  <ToastCard variant="success" title="Changes saved" body="Your profile has been updated." />
+
+  <ToastCard
+    variant="error"
+    title="Upload failed"
+    body="The file exceeds the 10MB limit."
+    action="Try again"
+    onAction={() => {}}
+    onDismiss={() => {}}
+  />
