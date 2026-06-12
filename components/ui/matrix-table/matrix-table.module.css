@@ -139,12 +139,14 @@
   text-align: center;
 }
 
-/* String cell — plain text in the standard cell typography, centered like the
-   boolean cells. */
+/* String cell — centered editorial value (e.g. "Unlimited", "Up to 5", "10").
+   Matches the blessed feature-comparison string treatment: 13px medium,
+   line-height inherited from the cell. */
 .textCell {
-  font-size: var(--font-size-sm, 0.875rem);
+  display: inline-block;
+  font-size: 13px;
+  font-weight: var(--font-weight-medium, 500);
   color: var(--text-primary, #111827);
-  line-height: 1.2;
 }
 
 /* ── Mark ─────────────────────────────────────────────────────────────────── */
