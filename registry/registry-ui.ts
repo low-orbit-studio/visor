@@ -408,6 +408,24 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "spinner",
+    type: "registry:ui",
+    description:
+      "Inline loading spinner — a rotating border ring with a subtle track and tone-colored leading edge. Three sizes (xs/sm/md), two tones (default/primary), accessible label contract, and full reduced-motion support.",
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/spinner/spinner.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/spinner/spinner.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "tooltip",
     type: "registry:ui",
     description:

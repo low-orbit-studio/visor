@@ -14,10 +14,22 @@ const emptyStateVariants = cva(styles.base, {
       default: styles.toneDefault,
       subtle: styles.toneSubtle,
     },
+    /**
+     * Surface treatment.
+     * - `default` — base placeholder (dashed/borderless per `tone`).
+     * - `editorial` — filled card on `--surface-card` with a 64px circular
+     *   icon chip; an admin-editorial composition. Opt-in; overrides the
+     *   `tone` surface and `size` icon/heading scale.
+     */
+    variant: {
+      default: undefined,
+      editorial: styles.editorial,
+    },
   },
   defaultVariants: {
     size: "md",
     tone: "default",
+    variant: "default",
   },
 })
 
@@ -46,6 +58,7 @@ const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(
       className,
       size,
       tone,
+      variant,
       icon,
       heading,
       description,
@@ -66,7 +79,8 @@ const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(
         role="status"
         data-slot="empty-state"
         data-tone={tone ?? "default"}
-        className={cn(emptyStateVariants({ size, tone }), className)}
+        data-variant={variant ?? "default"}
+        className={cn(emptyStateVariants({ size, tone, variant }), className)}
         {...props}
       >
         {icon ? (

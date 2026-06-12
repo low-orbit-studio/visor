@@ -11,12 +11,14 @@ declare const styles: {
   readonly deleteButton: string
   readonly deleteIcon: string
   readonly interactive: string
+  readonly filterChip: string
   readonly selected: string
   readonly selectedNeutral: string
   readonly count: string
   readonly countNeutral: string
   readonly countPrimary: string
   readonly countSolid: string
+  readonly trailing: string
 }
 
 export default styles

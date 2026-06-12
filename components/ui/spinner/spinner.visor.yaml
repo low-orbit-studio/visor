@@ -1,0 +1,49 @@
+name: Spinner
+description: Inline loading spinner — a rotating border ring with a subtle track and a tone-colored leading edge. Three sizes (xs/sm/md), two tones (default/primary), and full reduced-motion support.
+extends: HTMLSpanElement
+category: data-display
+
+when_to_use:
+  - Indicating an async operation is in progress within a button, form field, or inline context
+  - Replacing text or an icon while content is loading (inline, non-blocking)
+  - Decorative loading affordance inside a card or panel where a full-page skeleton would be too heavy
+
+when_not_to_use:
+  - Full-page or full-section loading states (use Skeleton instead)
+  - Progress that can be measured and communicated as a percentage (use Progress)
+  - Indicating indeterminate progress for a long-running task visible to the user (use a labeled progress bar)
+
+why: >
+  The design prototypes hand-roll CSS spinners in multiple places (9px dots,
+  16px loading ring). This primitive replaces ad-hoc implementations with a
+  single token-pure component that respects the motion token system, exposes
+  an accessible label contract, and integrates cleanly into buttons and inline
+  loading states.
+
+variants:
+  size: [xs, sm, md]
+  tone: [default, primary]
+
+props:
+  - name: size
+    type: '"xs" | "sm" | "md"'
+    default: '"md"'
+    description: Ring size. xs=12px, sm=16px, md=24px.
+  - name: tone
+    type: '"default" | "primary"'
+    default: '"default"'
+    description: Color treatment for the leading edge. default=text-tertiary, primary=primary brand token.
+  - name: label
+    type: string
+    description: Accessible label. When provided, renders role="status" with visually-hidden text. When omitted, aria-hidden="true" (decorative).
+
+dependencies:
+  - "class-variance-authority"
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/data-display/spinner"
+
+example: |
+  <Spinner />
+  <Spinner size="xs" tone="primary" />
+  <Spinner size="sm" label="Loading results…" />

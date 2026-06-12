@@ -4,6 +4,7 @@ declare const styles: {
   readonly closeButton: string
   readonly closeIcon: string
   readonly header: string
+  readonly footer: string
   readonly title: string
   readonly description: string
   readonly srOnly: string

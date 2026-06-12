@@ -34,7 +34,13 @@ sub_components:
   - name: FieldDescription
     description: Helper text below the label providing additional guidance.
   - name: FieldError
-    description: Error message display with role="alert". Accepts an errors array or children.
+    description: >
+      Error message display with role="alert". Accepts an errors array or
+      children. Optional `icon` prop renders an aria-hidden leading glyph and
+      switches to a centered icon + message row; without it the error renders
+      as plain inline text (default, unchanged). Typography follows the density
+      axis: place data-density="editorial" on any ancestor to activate the
+      13px/11px discrete ramp and tertiary color treatment.
 
 dependencies:
   - "class-variance-authority"

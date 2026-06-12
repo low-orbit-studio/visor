@@ -25,6 +25,12 @@ const badgeVariants = cva(styles.base, {
       md: styles.sizeMd,
       lg: styles.sizeLg,
     },
+    /* `case="sentence"` opts a sm/md badge OUT of the editorial uppercase +
+       tracking treatment (lg already opts out via its size class). Omit for the
+       default theme-driven casing. */
+    case: {
+      sentence: styles.caseSentence,
+    },
   },
   defaultVariants: {
     variant: "default",
@@ -38,19 +44,27 @@ export interface BadgeProps
   /** Render the label in uppercase. Also controllable via the
    *  `--badge-text-transform` CSS custom property from a theme. */
   uppercase?: boolean
+  /** Render as a circular, fixed-square chip carrying a single centered glyph
+   *  (e.g. a filled-success check). Opt-in; default badges are unaffected. */
+  iconOnly?: boolean
 }
 
 const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
-  ({ className, variant, size, uppercase, ...props }, ref) => {
+  (
+    { className, variant, size, case: textCase, uppercase, iconOnly, ...props },
+    ref
+  ) => {
     return (
       <span
         ref={ref}
         data-slot="badge"
         data-variant={variant ?? "default"}
         data-size={size ?? "md"}
+        data-icon-only={iconOnly ? "" : undefined}
         className={cn(
-          badgeVariants({ variant, size }),
+          badgeVariants({ variant, size, case: textCase }),
           uppercase && styles.uppercase,
+          iconOnly && styles.iconOnly,
           className
         )}
         {...props}

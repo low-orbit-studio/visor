@@ -14,7 +14,9 @@
   align-items: center;
 }
 
-/* Field Label */
+/* Field Label
+ * Default: canonical 14px / text-primary. Density axis: editorial tightens
+ * to 13px / text-secondary. Switch via data-density="editorial" on any ancestor. */
 .fieldLabel {
   font-size: var(--font-size-sm, 0.875rem);
   font-weight: var(--font-weight-medium, 500);
@@ -22,7 +24,14 @@
   line-height: 1.4;
 }
 
-/* Field Description */
+:global([data-density="editorial"]) .fieldLabel {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* Field Description
+ * Default: canonical 12px / text-secondary. Density axis: editorial tightens
+ * to 11px / text-tertiary. */
 .fieldDescription {
   font-size: var(--font-size-xs, 0.75rem);
   font-weight: var(--font-weight-normal, 400);
@@ -31,11 +40,43 @@
   margin: 0;
 }
 
-/* Field Error */
+:global([data-density="editorial"]) .fieldDescription {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+/* Field Error
+ * Default: canonical 14px. Density axis: editorial tightens to 13px. */
 .fieldError {
   font-size: var(--font-size-sm, 0.875rem);
   font-weight: var(--font-weight-normal, 400);
   color: var(--text-error, currentColor);
+}
+
+:global([data-density="editorial"]) .fieldError {
+  font-size: 13px;
+}
+
+/* Leading-icon layout — opt-in. Only applied when the consumer passes an
+ * `icon` to FieldError, so the default (text-only) error is unchanged. Lays
+ * the icon + message out as a centered row; the icon sizes itself in em so it
+ * tracks the error's font-size (a 14px WarningCircle at the editorial 13px
+ * ramp), matching the prototype's field-error icon sizing (14px). */
+.fieldErrorWithIcon {
+  display: flex;
+  align-items: center;
+  /* 6px gap — no --spacing-1.5 token exists, so the 6px step uses
+     calc(--spacing-1 + --spacing-1/2) (the same pattern badge/kbd use). */
+  gap: calc(var(--spacing-1, 0.25rem) + var(--spacing-1, 0.25rem) / 2);
+}
+
+.fieldErrorIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.077em;
+  line-height: 1;
 }
 
 .fieldErrorList {

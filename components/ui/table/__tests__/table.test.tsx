@@ -1,3 +1,5 @@
+import { readFileSync } from "fs"
+import { resolve } from "path"
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import {
@@ -244,5 +246,32 @@ describe("Table accessibility", () => {
       </Table>
     )
     await checkA11y(container)
+  })
+})
+
+describe("editorial token hooks (CSS-only, additive, zero-regression)", () => {
+  const css = readFileSync(
+    resolve(__dirname, "..", "table.module.css"),
+    "utf-8"
+  )
+
+  it("container radius wraps --dt-container-radius, defaulting to var(--radius-lg, 0.5rem)", () => {
+    expect(css).toContain(
+      "border-radius: var(--dt-container-radius, var(--radius-lg, 0.5rem));"
+    )
+  })
+
+  it("container shadow wraps --dt-container-shadow, defaulting to var(--shadow-sm)", () => {
+    expect(css).toContain(
+      "box-shadow: var(--dt-container-shadow, var(--shadow-sm));"
+    )
+  })
+
+  it("TableHead background-color uses --dt-header-bg, defaulting to transparent", () => {
+    expect(css).toContain("background-color: var(--dt-header-bg, transparent);")
+  })
+
+  it("TableCell background-color uses --dt-row-bg, defaulting to transparent", () => {
+    expect(css).toContain("background-color: var(--dt-row-bg, transparent);")
   })
 })

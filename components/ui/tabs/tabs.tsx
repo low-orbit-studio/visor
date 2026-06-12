@@ -130,7 +130,11 @@ const TabsTrigger = React.forwardRef<
     className={cn(styles.trigger, className)}
     {...props}
   >
-    <span className={styles.label}>{children}</span>
+    {/* The .label wrapper exists to pair the label with the count pill
+        (truncation + flex sizing). Without a count, render children directly
+        so the trigger's flex gap applies between consumer-provided icon and
+        label elements. */}
+    {count != null ? <span className={styles.label}>{children}</span> : children}
     {count != null && (
       <span
         className={cn(

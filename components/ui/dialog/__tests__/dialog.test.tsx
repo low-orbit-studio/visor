@@ -5,6 +5,7 @@ import {
   DialogTrigger,
   DialogContent,
   DialogHeader,
+  DialogFooter,
   DialogTitle,
   DialogDescription,
   DialogClose,
@@ -98,6 +99,47 @@ describe("Dialog", () => {
       </Dialog>
     )
     expect(screen.getByTestId("close-btn")).toHaveAttribute("data-slot", "dialog-close")
+  })
+
+  it("DialogFooter renders children", () => {
+    render(
+      <Dialog open>
+        <DialogContent aria-describedby={undefined}>
+          <DialogTitle>Title</DialogTitle>
+          <DialogFooter>
+            <button>Cancel</button>
+            <button>Save</button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    )
+    expect(screen.getByText("Cancel")).toBeInTheDocument()
+    expect(screen.getByText("Save")).toBeInTheDocument()
+  })
+
+  it("DialogFooter has data-slot attribute", () => {
+    render(
+      <Dialog open>
+        <DialogContent aria-describedby={undefined}>
+          <DialogTitle>Title</DialogTitle>
+          <DialogFooter data-testid="footer">Actions</DialogFooter>
+        </DialogContent>
+      </Dialog>
+    )
+    expect(screen.getByTestId("footer")).toHaveAttribute("data-slot", "dialog-footer")
+  })
+
+  it("default content render is unchanged (no footer slot when omitted)", () => {
+    render(
+      <Dialog open>
+        <DialogContent data-testid="content" aria-describedby={undefined}>
+          <DialogTitle>Title</DialogTitle>
+        </DialogContent>
+      </Dialog>
+    )
+    const content = screen.getByTestId("content")
+    expect(content).toHaveAttribute("data-slot", "dialog-content")
+    expect(content.querySelector('[data-slot="dialog-footer"]')).toBeNull()
   })
 })
 

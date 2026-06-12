@@ -213,6 +213,8 @@ export interface FilterChipProps
    *   Use for editorial / admin contexts where accent bleed across shared tokens is undesirable.
    */
   selectedTreatment?: "accent" | "neutral"
+  /** Optional trailing icon rendered after the count (e.g. a dropdown caret) for "filter-as-dropdown" chips. Muted by default. */
+  trailingIcon?: React.ReactNode
 }
 
 const FilterChip = React.forwardRef<HTMLButtonElement, FilterChipProps>(
@@ -231,6 +233,7 @@ const FilterChip = React.forwardRef<HTMLButtonElement, FilterChipProps>(
       count,
       countTone = "neutral",
       selectedTreatment = "accent",
+      trailingIcon,
       ...props
     },
     ref,
@@ -254,6 +257,7 @@ const FilterChip = React.forwardRef<HTMLButtonElement, FilterChipProps>(
         className={cn(
           chipVariants({ variant, size }),
           styles.interactive,
+          styles.filterChip,
           selected && (isNeutral ? styles.selectedNeutral : styles.selected),
           className,
         )}
@@ -281,6 +285,11 @@ const FilterChip = React.forwardRef<HTMLButtonElement, FilterChipProps>(
             )}
           >
             {count}
+          </span>
+        ) : null}
+        {trailingIcon ? (
+          <span className={styles.trailing} aria-hidden="true">
+            {trailingIcon}
           </span>
         ) : null}
       </button>
