@@ -24,14 +24,14 @@
 
 /* State: done — solid primary fill */
 .segment.segmentDone {
-  background: var(--primary, #111827);
+  background: var(--interactive-primary-bg, var(--primary, #111827));
 }
 
 /* State: current — gradient from primary into muted (~55%/45% split) */
 .segment.segmentCurrent {
   background: linear-gradient(
     90deg,
-    var(--primary, #111827) 55%,
+    var(--interactive-primary-bg, var(--primary, #111827)) 55%,
     var(--surface-muted, #e5e7eb) 55%
   );
 }
