@@ -6,6 +6,26 @@ import { cn } from "../../../lib/utils"
 import styles from "./avatar.module.css"
 import stackStyles from "./avatar-stack.module.css"
 
+// ─── AvatarStack item type ───────────────────────────────────────────────────
+
+/**
+ * Rich item form for AvatarStack. A plain string or `undefined` is also
+ * accepted (backward-compatible shorthand for an image-src-only item).
+ */
+export interface AvatarStackItem {
+  /** Initials rendered as fallback (and primary) content — e.g. "AR". */
+  initials?: React.ReactNode
+  /** Optional image source. When present, the image covers the disc. */
+  src?: string
+  /** Accessible label for the disc — e.g. the member name. */
+  alt?: string
+  /**
+   * Per-avatar style escape hatch — carries the gradient `background` + text
+   * `color` for the editorial gradient discs (see `getMemberAvatarStyle`).
+   */
+  style?: React.CSSProperties
+}
+
 export interface AvatarProps
   extends React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root> {
   size?: "sm" | "default" | "lg"
@@ -65,11 +85,12 @@ AvatarFallback.displayName = "AvatarFallback"
 export interface AvatarStackProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "role" | "aria-label"> {
   /**
-   * Avatar image sources to render, in display order. `undefined` entries
-   * render with the `·` fallback so server-truncated lists still occupy a
-   * slot.
+   * Avatars to render, in display order. Each entry is either:
+   * - A plain image URL string (backward-compatible shorthand)
+   * - `undefined` — renders the `·` fallback disc, useful for server-truncated lists
+   * - An `AvatarStackItem` object with `initials`, `src`, `alt`, and/or `style`
    */
-  avatars: (string | undefined)[]
+  avatars: (string | undefined | AvatarStackItem)[]
   /**
    * Total member count. May exceed `avatars.length` when the caller has
    * server-truncated the avatar URLs and only knows the count. The overflow
@@ -81,6 +102,12 @@ export interface AvatarStackProps
    * indicator. Defaults to `6`.
    */
   max?: number
+  /**
+   * Explicit "+N" override. When provided, this value is used verbatim
+   * instead of the value derived from `total - visible.length`. Useful
+   * when the caller has a pre-computed overflow count.
+   */
+  overflowCount?: number
   /** Avatar size. Defaults to `"sm"`. */
   size?: "sm" | "default" | "lg"
   /**
@@ -89,12 +116,20 @@ export interface AvatarStackProps
   label?: string
 }
 
+/** Normalize a raw avatar entry to an `AvatarStackItem`. */
+function toItem(entry: string | undefined | AvatarStackItem): AvatarStackItem {
+  if (entry === undefined || entry === null) return {}
+  if (typeof entry === "string") return { src: entry, alt: "" }
+  return entry
+}
+
 const AvatarStack = React.forwardRef<HTMLDivElement, AvatarStackProps>(
   function AvatarStack(
     {
       avatars,
       total,
       max = 6,
+      overflowCount,
       size = "sm",
       label,
       className,
@@ -103,7 +138,8 @@ const AvatarStack = React.forwardRef<HTMLDivElement, AvatarStackProps>(
     ref,
   ) {
     const visible = avatars.slice(0, max)
-    const overflow = Math.max(0, total - visible.length)
+    const derivedOverflow = Math.max(0, total - visible.length)
+    const overflow = overflowCount ?? derivedOverflow
     const ariaLabel = label ?? `${total} members`
 
     return (
@@ -116,20 +152,28 @@ const AvatarStack = React.forwardRef<HTMLDivElement, AvatarStackProps>(
         className={cn(stackStyles.root, className)}
         {...rest}
       >
-        {visible.map((src, index) => (
-          <Avatar
-            key={index}
-            size={size}
-            className={stackStyles.avatar}
-            data-stack-item=""
-          >
-            {src ? (
-              <AvatarImage src={src} alt="" />
-            ) : (
-              <AvatarFallback>·</AvatarFallback>
-            )}
-          </Avatar>
-        ))}
+        {visible.map((entry, index) => {
+          const item = toItem(entry)
+          return (
+            <Avatar
+              key={index}
+              size={size}
+              className={stackStyles.avatar}
+              style={item.style}
+              data-stack-item=""
+            >
+              {item.src ? (
+                <AvatarImage src={item.src} alt={item.alt ?? ""} />
+              ) : item.initials != null ? (
+                <AvatarFallback className={stackStyles.initialsDisc}>
+                  {item.initials}
+                </AvatarFallback>
+              ) : (
+                <AvatarFallback>·</AvatarFallback>
+              )}
+            </Avatar>
+          )
+        })}
         {overflow > 0 ? (
           <Avatar
             size={size}
