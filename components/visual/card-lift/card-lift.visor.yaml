@@ -1,0 +1,49 @@
+name: CardLift
+description: CSS-only hover-lift wrapper — translateY(-4px) + deep shadow + live-keyed color-mix halo on hover. Port of .bl-card-lift from blacklight-website (BL-326).
+category: visual-elements
+
+when_to_use:
+  - Adding hover-lift affordance to cards, tiles, or any clickable surface
+  - Marketing pages and showcase walls where surfaces should "catch the light" on hover
+  - Keying the halo color to a live CSS variable (e.g. artist accent color) that changes at runtime
+
+when_not_to_use:
+  - Standard admin/app UI where motion-heavy hover effects are distracting
+  - When you need the entire hover interaction (border, background, text) — CardLift is a motion-only layer
+  - Contexts where `prefers-reduced-motion` users will miss the affordance (pair with a visible focus style on the inner element)
+
+why: >
+  CardLift is a zero-JavaScript hover effect. All transitions are CSS-driven; the
+  halo color is a paint-time CSS custom property (`--lift-color`) so live rewrites
+  (e.g. swapping the artist color in a carousel) propagate immediately without a
+  React re-render. This matches the BL-326 contract exactly and makes CardLift safe
+  to use inside rapidly-cycling carousels.
+
+props:
+  - name: liftColor
+    type: string
+    default: "var(--accent, #6366f1)"
+    description: >
+      CSS color for the halo on hover. Accepts any CSS color or a `var()` reference.
+      Written to `--lift-color` inline; the halo tracks live rewrites at paint time.
+  - name: children
+    type: React.ReactNode
+    description: Content to wrap (typically a Card or BentoGrid tile).
+  - name: className
+    type: string
+    description: Additional CSS class names to merge onto the wrapper.
+  - name: style
+    type: React.CSSProperties
+    description: Inline styles merged onto the wrapper (after `--lift-color`).
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/visual-elements/card-lift"
+
+example: |
+  <CardLift liftColor="var(--accent)">
+    <Card>
+      <CardContent>Hover me</CardContent>
+    </Card>
+  </CardLift>

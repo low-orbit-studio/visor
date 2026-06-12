@@ -1,0 +1,121 @@
+---
+title: CardLift
+description: CSS-only hover-lift wrapper — translateY(-4px) + deep shadow + live-keyed color-mix halo on hover.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { CardLift as CardLiftDemo } from '@/components/ui/card-lift';
+
+## Preview
+
+<ComponentPreview
+  title="CardLift — default halo (--accent)"
+  code={"import { CardLift } from '@/components/visual/card-lift/card-lift';\n\n<CardLift style={{ display: 'inline-block' }}>\n  <div style={{ padding: '2rem', background: 'var(--surface-card)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border-default)' }}>\n    Hover me\n  </div>\n</CardLift>"}
+>
+  <CardLiftDemo>
+    <div style={{ padding: '2rem', background: 'var(--surface-card)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border-default)', cursor: 'default' }}>
+      Hover me
+    </div>
+  </CardLiftDemo>
+</ComponentPreview>
+
+<ComponentPreview
+  title="CardLift — live-keyed halo (custom color)"
+  code={"import { CardLift } from '@/components/visual/card-lift/card-lift';\n\n<CardLift liftColor=\"#ff0066\" style={{ display: 'inline-block' }}>\n  <div style={{ padding: '2rem', background: 'var(--surface-card)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border-default)' }}>\n    Hover me (pink halo)\n  </div>\n</CardLift>"}
+>
+  <CardLiftDemo liftColor="#ff0066">
+    <div style={{ padding: '2rem', background: 'var(--surface-card)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border-default)', cursor: 'default' }}>
+      Hover me (pink halo)
+    </div>
+  </CardLiftDemo>
+</ComponentPreview>
+
+## Overview
+
+`CardLift` is a zero-JavaScript hover effect: a thin wrapper `<div>` that applies a CSS-only lift when the user hovers over it. On hover the element rises 4px and gains a depth shadow plus a soft halo keyed to a CSS custom property (`--lift-color`).
+
+The halo is painted entirely in CSS — the lift color tracks any live rewrite of `--lift-color` without a React re-render. This makes `CardLift` safe to use inside carousels or showcase walls where an accent color changes frequently.
+
+Port of `.bl-card-lift` from [blacklight-website](https://github.com/loworbitstudio/blacklight) (BL-326), used on the ShowcaseCard EPK wall.
+
+## Live-Keyed Halo
+
+The halo color is controlled by the `--lift-color` CSS custom property. You can pass any CSS color value or a `var()` reference:
+
+```tsx
+// Hard-coded color
+<CardLift liftColor="#ff0066">...</CardLift>
+
+// Reference another CSS variable — updates live when that variable changes
+<CardLift liftColor="var(--color-acid)">...</CardLift>
+
+// Default: falls back to --accent if no liftColor prop is given
+<CardLift>...</CardLift>
+```
+
+The halo is rendered as a `color-mix(in srgb, var(--lift-color) 30%, transparent)` box-shadow, so it blends softly regardless of the underlying background.
+
+## Hover Behavior
+
+| State | Effect |
+|-------|--------|
+| Resting | No transform, no additional shadow |
+| Hover | `translateY(-4px)` + `box-shadow: 0 24px 60px -20px rgba(0,0,0,0.8), 0 0 60px -16px color-mix(...)` |
+| Transitions | `transform 0.3s cubic-bezier(0.22,1,0.36,1)`, `box-shadow 0.3s ease`, `border-color 0.3s ease` |
+
+## Reduced Motion
+
+When `prefers-reduced-motion: reduce` is active, all transitions and the transform are removed. The card remains in its resting position with no animation.
+
+## Installation
+
+```bash
+npx visor add card-lift
+```
+
+## Usage
+
+```tsx
+import { CardLift } from '@/components/visual/card-lift/card-lift';
+
+<CardLift>
+  <Card>
+    <CardContent>Hover me</CardContent>
+  </Card>
+</CardLift>
+```
+
+With a live-keyed halo:
+
+```tsx
+// liftColor can be a JS string with any CSS color or var() reference
+<CardLift liftColor="var(--artist-accent-color)">
+  <ShowcaseCard artist={artist} />
+</CardLift>
+```
+
+## API Reference
+
+### CardLiftProps
+
+<PropsTable component="card-lift" />
+
+## Accessibility
+
+- `CardLift` is a presentational wrapper only. It adds no ARIA roles, labels, or keyboard behavior.
+- If the wrapped content is interactive (a link, a button), the inner element already handles keyboard focus. Make sure the inner element has a visible focus style — `CardLift`'s hover effect is pointer-only.
+- `prefers-reduced-motion: reduce` is respected: the lift and transition are suppressed entirely.
+- Do not rely on the hover affordance alone to convey interactivity — pair with cursor changes, borders, or other accessible cues on the inner element.
+
+## When to Use
+
+- Adding hover-lift to cards, tiles, or showcase surfaces on marketing pages
+- Keying the halo to a live accent color that changes without a re-render (e.g. carousel artist color)
+- Porting the `.bl-card-lift` effect from Blacklight into a Visor consumer app
+
+## When Not to Use
+
+- Standard admin/app UI where motion-heavy hover effects are distracting
+- When you need the full hover treatment (background, border, text color) — `CardLift` is a motion-only layer; add other hover styles on the inner element
+- Contexts where the consumer can't guarantee `pointer` input (touch-only surfaces benefit less from hover)
