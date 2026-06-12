@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Check } from "@phosphor-icons/react"
+import { Check, Lock } from "@phosphor-icons/react"
 import { cn } from "../../../lib/utils"
 import styles from "./stepper.module.css"
 
@@ -62,7 +62,7 @@ Stepper.displayName = "Stepper"
 
 export interface StepperItemProps extends React.HTMLAttributes<HTMLDivElement> {
   step: number
-  status?: "complete" | "active" | "upcoming"
+  status?: "complete" | "active" | "upcoming" | "locked"
 }
 
 const StepperItem = React.forwardRef<HTMLDivElement, StepperItemProps>(
@@ -99,15 +99,21 @@ StepperItem.displayName = "StepperItem"
 export interface StepperTriggerProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   step: number
-  status?: "complete" | "active" | "upcoming"
+  status?: "complete" | "active" | "upcoming" | "locked"
 }
 
 const StepperTrigger = React.forwardRef<HTMLButtonElement, StepperTriggerProps>(
-  ({ className, step, status, children, ...props }, ref) => {
+  ({ className, step, status, children, onClick, ...props }, ref) => {
     const { activeStep } = useStepperContext()
 
     const resolvedStatus =
       status ?? (step < activeStep ? "complete" : step === activeStep ? "active" : "upcoming")
+
+    const isLocked = resolvedStatus === "locked"
+
+    const handleClick = isLocked
+      ? undefined
+      : onClick
 
     return (
       <button
@@ -115,20 +121,29 @@ const StepperTrigger = React.forwardRef<HTMLButtonElement, StepperTriggerProps>(
         type="button"
         data-slot="stepper-trigger"
         data-status={resolvedStatus}
+        aria-disabled={isLocked || undefined}
+        tabIndex={isLocked ? -1 : undefined}
         className={cn(
           styles.trigger,
           styles[`trigger--${resolvedStatus}`],
           className
         )}
+        onClick={handleClick}
         {...props}
       >
         {resolvedStatus === "complete" ? (
           <Check size={14} weight="bold" aria-hidden="true" />
+        ) : resolvedStatus === "locked" ? (
+          <Lock size={12} weight="bold" aria-hidden="true" />
         ) : (
           children ?? step + 1
         )}
         <span className={styles.srOnly}>
-          {resolvedStatus === "complete" ? "Completed" : `Step ${step + 1}`}
+          {resolvedStatus === "complete"
+            ? "Completed"
+            : resolvedStatus === "locked"
+              ? `Step ${step + 1}, locked`
+              : `Step ${step + 1}`}
         </span>
       </button>
     )

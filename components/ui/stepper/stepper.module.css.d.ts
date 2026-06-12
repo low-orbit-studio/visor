@@ -7,6 +7,7 @@ declare const styles: {
   readonly 'trigger--complete': string
   readonly 'trigger--active': string
   readonly 'trigger--upcoming': string
+  readonly 'trigger--locked': string
   readonly title: string
   readonly description: string
   readonly separator: string
