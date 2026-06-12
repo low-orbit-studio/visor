@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.11.0
+
+### Minor Changes
+
+- 34ca468: feat(error-placard): absorb ErrorPlacard from blessed admin builds into canonical Visor
+
+  Adds `ErrorPlacard` as a registry component (`npx visor add error-placard`). An inline failed-load placard with a destructive-tinted circular icon chip, title, body, and optional right-aligned recovery actions. Theme-agnostic — all values from design tokens. Disambiguated from Alert (passive semantic callout) and Banner (full-width page bar).
+
+- b93c9ca: feat: add ToastCard + ToastCardStack components
+
+  Absorbs ToastCard and ToastCardStack from the blessed admin-ui pattern builds into canonical Visor as `components/ui/toast-card/`. A static, server-renderable notification card for editorial display of toast anatomy in state galleries and design documentation — distinct from the imperative Toast (Sonner) component.
+
+  Variants: success | error | info | warning. Per-variant default Phosphor glyphs overridable via `icon` prop. ToastCardStack provides a fixed top-right stacking container with CSS-var-driven offset and gap.
+
+- 250729e: **AvatarStack**: extend `avatars` prop to accept `AvatarStackItem` objects alongside the existing `string | undefined` entries. Add optional `overflowCount` prop for explicit `+N` override. Zero-regression for existing string-array consumers.
+
 ## 1.10.0
 
 ### Minor Changes
