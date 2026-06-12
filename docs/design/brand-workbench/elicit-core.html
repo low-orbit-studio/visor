@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en" class="t-mm light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Visor Brand Workbench — Elicit (core screen)</title>
+
+<!-- Real theme fonts: Product Sans (modern-minimal) + Satoshi (space) -->
+<style>
+@font-face{font-family:"Product Sans [modern-minimal]";src:url("https://fonts.visor.design/low-orbit-studio/product-sans/ProductSans-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Product Sans [modern-minimal]";src:url("https://fonts.visor.design/low-orbit-studio/product-sans/ProductSans-Bold.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
+</style>
+<link rel="preconnect" href="https://api.fontshare.com" />
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet" />
+
+<style>
+/* =========================================================================
+   RESOLVED TOKEN BLOCKS — real values lifted from packages/docs/app/<theme>.css
+   (modern-minimal + space), one block per theme×mode. Component CSS below is
+   pure var(--token) refs, so this faithfully exercises the token CONTRACT.
+   ========================================================================= */
+
+/* base scales shared by all themes (from packages/tokens/dist/tokens.css) */
+html{
+  --spacing-1:4px;--spacing-2:8px;--spacing-3:12px;--spacing-4:16px;--spacing-5:20px;
+  --spacing-6:24px;--spacing-8:32px;--spacing-10:40px;--spacing-12:48px;--spacing-16:64px;
+  --radius-sm:2px;--radius-md:4px;--radius-lg:8px;--radius-xl:12px;--radius-2xl:16px;--radius-full:9999px;
+  --stroke-thin:1px;--stroke-regular:1.5px;
+  --focus-ring-width:2px;--focus-ring-offset:2px;
+  --font-mono:"SF Mono","Fira Code","Roboto Mono",monospace;
+}
+
+/* ---------- modern-minimal · LIGHT ---------- */
+html.t-mm.light{
+  --font:"Product Sans [modern-minimal]","Product Sans",-apple-system,Segoe UI,Roboto,sans-serif;
+  --radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-2xl:20px;
+  --primary:#04bf81;--accent:#04bf81;--primary-text:#ffffff;
+  --success:#22c55e;--warning:#f59e0b;--destructive:#ef4444;
+  --surface-page:#f4f5f7;--surface-card:#ffffff;--surface-raised:#ffffff;
+  --surface-subtle:#f4f5f7;--surface-muted:#e6e8ec;
+  --text-primary:rgba(0,0,0,0.9);--text-secondary:rgba(0,0,0,0.55);--text-tertiary:rgba(0,0,0,0.42);
+  --border-default:#d1d4db;--hairline:rgba(0,0,0,0.06);
+  --primary-soft:rgba(4,191,129,0.10);--primary-line:rgba(4,191,129,0.34);
+  --warn-soft:rgba(245,158,11,0.12);--warn-line:rgba(245,158,11,0.42);
+  --success-soft:rgba(34,197,94,0.12);--success-line:rgba(34,197,94,0.40);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.05);
+  --shadow-md:0 4px 6px -1px rgba(0,0,0,.08),0 2px 4px -2px rgba(0,0,0,.08);
+  --shadow-lg:0 10px 22px -6px rgba(0,0,0,.12),0 4px 8px -4px rgba(0,0,0,.08);
+}
+/* ---------- modern-minimal · DARK ---------- */
+html.t-mm.dark{
+  --font:"Product Sans [modern-minimal]","Product Sans",-apple-system,Segoe UI,Roboto,sans-serif;
+  --radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-2xl:20px;
+  --primary:#02cd8d;--accent:#04bf81;--primary-text:#04231a;
+  --success:#22c55e;--warning:#f59e0b;--destructive:#ef4444;
+  --surface-page:#000000;--surface-card:rgba(255,255,255,0.04);--surface-raised:rgba(255,255,255,0.07);
+  --surface-subtle:rgba(255,255,255,0.02);--surface-muted:rgba(255,255,255,0.05);
+  --text-primary:rgba(255,255,255,0.92);--text-secondary:rgba(255,255,255,0.62);--text-tertiary:rgba(255,255,255,0.45);
+  --border-default:rgba(255,255,255,0.10);--hairline:rgba(255,255,255,0.06);
+  --primary-soft:rgba(2,205,141,0.12);--primary-line:rgba(2,205,141,0.42);
+  --warn-soft:rgba(245,158,11,0.14);--warn-line:rgba(245,158,11,0.48);
+  --success-soft:rgba(34,197,94,0.14);--success-line:rgba(34,197,94,0.46);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.25);
+  --shadow-md:0 4px 6px -1px rgba(0,0,0,.35),0 2px 4px -2px rgba(0,0,0,.3);
+  --shadow-lg:0 14px 30px -8px rgba(0,0,0,.6),0 6px 12px -6px rgba(0,0,0,.5);
+}
+/* ---------- space · LIGHT ---------- */
+html.t-space.light{
+  --font:Satoshi,-apple-system,Segoe UI,Roboto,sans-serif;
+  --radius-md:6px;--radius-lg:8px;--radius-xl:12px;--radius-2xl:16px;
+  --primary:#5b6fff;--accent:#5b6fff;--primary-text:#ffffff;
+  --success:#22c55e;--warning:#f59e0b;--destructive:#ef4444;
+  --surface-page:#e0ddef;--surface-card:#f2f0f8;--surface-raised:#ffffff;
+  --surface-subtle:#f5f5f8;--surface-muted:#e7e7ed;
+  --text-primary:#1a1630;--text-secondary:rgba(26,22,48,0.72);--text-tertiary:rgba(26,22,48,0.55);
+  --border-default:#d2d2dd;--hairline:rgba(0,0,0,0.06);
+  --primary-soft:rgba(91,111,255,0.10);--primary-line:rgba(91,111,255,0.34);
+  --warn-soft:rgba(245,158,11,0.12);--warn-line:rgba(245,158,11,0.42);
+  --success-soft:rgba(34,197,94,0.12);--success-line:rgba(34,197,94,0.40);
+  --shadow-sm:0 1px 2px rgba(26,22,48,.06);
+  --shadow-md:0 4px 8px -2px rgba(26,22,48,.10),0 2px 4px -2px rgba(26,22,48,.08);
+  --shadow-lg:0 14px 30px -8px rgba(26,22,48,.16),0 5px 10px -5px rgba(26,22,48,.10);
+}
+/* ---------- space · DARK ---------- */
+html.t-space.dark{
+  --font:Satoshi,-apple-system,Segoe UI,Roboto,sans-serif;
+  --radius-md:6px;--radius-lg:8px;--radius-xl:12px;--radius-2xl:16px;
+  --primary:#5b6fff;--accent:#5b6fff;--primary-text:#ffffff;
+  --success:#22c55e;--warning:#f59e0b;--destructive:#ef4444;
+  --surface-page:#080810;--surface-card:#0e0e18;--surface-raised:#16161f;
+  --surface-subtle:#2b2b36;--surface-muted:#0b0b14;
+  --text-primary:#e8e8f0;--text-secondary:rgba(232,232,240,0.72);--text-tertiary:rgba(232,232,240,0.5);
+  --border-default:#3f3f4b;--hairline:rgba(255,255,255,0.06);
+  --primary-soft:rgba(91,111,255,0.16);--primary-line:rgba(91,111,255,0.5);
+  --warn-soft:rgba(245,158,11,0.15);--warn-line:rgba(245,158,11,0.5);
+  --success-soft:rgba(34,197,94,0.15);--success-line:rgba(34,197,94,0.48);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.4);
+  --shadow-md:0 4px 8px -2px rgba(0,0,0,.5),0 2px 4px -2px rgba(0,0,0,.4);
+  --shadow-lg:0 16px 34px -8px rgba(0,0,0,.7),0 6px 12px -6px rgba(0,0,0,.55);
+}
+
+/* ============================== RESET / SHELL ============================== */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--surface-page);color:var(--text-primary);
+  font-family:var(--font);font-size:15px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+
+/* icons */
+.ic{width:1em;height:1em;display:inline-block;vertical-align:-0.125em;flex:none}
+svg{stroke-width:1.6}
+
+/* ============================== TOP BAR ============================== */
+.bar{
+  height:56px;flex:none;display:flex;align-items:center;gap:var(--spacing-4);
+  padding:0 var(--spacing-5);background:var(--surface-card);
+  border-bottom:var(--stroke-thin) solid var(--hairline);
+}
+.brand{display:flex;align-items:center;gap:var(--spacing-3);min-width:0}
+.mark{
+  width:30px;height:30px;border-radius:9px;flex:none;display:grid;place-items:center;
+  background:var(--primary);color:var(--primary-text);box-shadow:var(--shadow-sm);
+}
+.mark svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2}
+.bar .title{font-weight:700;letter-spacing:-0.01em;font-size:15px}
+.bar .brand .title{flex:none}
+.bar .proj{
+  display:inline-flex;align-items:center;gap:6px;flex:none;white-space:nowrap;font-size:12.5px;color:var(--text-secondary);
+  padding:3px 9px;border-radius:var(--radius-full);background:var(--surface-subtle);
+  border:var(--stroke-thin) solid var(--hairline);
+}
+.bar .proj svg{width:13px;height:13px;flex:none}
+.bar .spacer{flex:1}
+.pill{
+  display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;
+  border-radius:var(--radius-full);background:var(--surface-subtle);
+  border:var(--stroke-thin) solid var(--border-default);
+  color:var(--text-secondary);font-size:12.5px;font-weight:500;cursor:default;
+}
+.pill .dot{width:9px;height:9px;border-radius:50%;background:var(--primary)}
+.pill svg{width:14px;height:14px;stroke:currentColor;fill:none}
+.pill.key{color:var(--text-primary)}
+.pill.key .kdot{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 0 3px var(--success-soft)}
+.btn{
+  display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 15px;border:none;
+  border-radius:var(--radius-lg);font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;
+}
+.btn svg{width:15px;height:15px;stroke:currentColor;fill:none}
+.btn-primary{background:var(--primary);color:var(--primary-text);box-shadow:var(--shadow-sm)}
+.btn-ghost{background:transparent;color:var(--text-secondary);border:var(--stroke-thin) solid var(--border-default)}
+
+/* global progress line under the top bar */
+.gprog{height:3px;flex:none;background:var(--hairline);position:relative}
+.gprog > i{position:absolute;left:0;top:0;bottom:0;width:20%;background:var(--primary)}
+
+/* ============================== 3-COLUMN GRID ============================== */
+.grid{flex:1;display:grid;grid-template-columns:256px 1fr 472px;min-height:0}
+.col{min-height:0;overflow:auto}
+.col::-webkit-scrollbar{width:9px}
+.col::-webkit-scrollbar-thumb{background:var(--border-default);border-radius:99px;border:3px solid transparent;background-clip:content-box}
+
+/* ---------- COLUMN 1 · derivation spine ---------- */
+.spine{background:var(--surface-card);border-right:var(--stroke-thin) solid var(--hairline);padding:var(--spacing-5) var(--spacing-4) var(--spacing-5) var(--spacing-5)}
+
+/* spine progress summary card — welcoming + clear */
+.sprog{padding:13px 14px;border-radius:var(--radius-lg);background:var(--surface-subtle);border:var(--stroke-thin) solid var(--hairline);margin-bottom:var(--spacing-3)}
+.sprog .r1{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.sprog .bn{font-size:14px;font-weight:700;letter-spacing:-0.01em}
+.sprog .vtag{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-tertiary);padding:2px 7px;border-radius:99px;background:var(--surface-muted)}
+.sprog .r2{display:flex;align-items:baseline;gap:6px;margin-bottom:8px}
+.sprog .big{font-size:24px;font-weight:800;letter-spacing:-0.03em;line-height:1}
+.sprog .of{font-size:12px;color:var(--text-tertiary);font-weight:600}
+.sprog .pc{margin-left:auto;font-size:13px;font-weight:800;color:var(--primary)}
+.sprog .bar{height:7px;border-radius:99px;background:var(--surface-muted);overflow:hidden}
+.sprog .bar > i{display:block;height:100%;width:20%;border-radius:99px;background:var(--primary)}
+.sprog .enc{margin:9px 1px 0;font-size:11.5px;line-height:1.45;color:var(--text-secondary)}
+.sprog .enc em{font-style:normal;font-weight:700;color:var(--primary)}
+
+.spine .eyebrow{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-tertiary);margin:var(--spacing-5) 0 var(--spacing-3) 6px}
+.spine .eyebrow .cnt{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.02em;color:var(--text-tertiary);padding:2px 7px;border-radius:99px;background:var(--surface-subtle);border:var(--stroke-thin) solid var(--hairline)}
+.spine .eyebrow .cnt.done{color:var(--primary);background:var(--primary-soft);border-color:var(--primary-line)}
+.chain{position:relative;display:flex;flex-direction:column;gap:2px}
+.node{position:relative;display:flex;align-items:flex-start;gap:11px;padding:8px 8px;border-radius:var(--radius-lg);cursor:default}
+.node .rail{position:absolute;left:18px;top:26px;bottom:-2px;width:2px;background:var(--hairline)}
+.node:last-child .rail,.node.tail .rail{display:none}
+.node .bullet{position:relative;z-index:1;width:20px;height:20px;flex:none;border-radius:50%;display:grid;place-items:center;margin-top:1px;
+  border:2px solid var(--border-default);background:var(--surface-card);color:var(--text-tertiary)}
+.node .bullet svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.4}
+.node.done .bullet{background:var(--primary);border-color:var(--primary);color:var(--primary-text)}
+.node.done .rail{background:var(--primary-line)}
+.node.active{background:var(--primary-soft)}
+.node.active .bullet{border-color:var(--primary);color:var(--primary);box-shadow:0 0 0 4px var(--primary-soft)}
+.node.active .bullet .pulse{width:8px;height:8px;border-radius:50%;background:var(--primary)}
+.node .lbl{display:flex;flex-direction:column;gap:1px;min-width:0;padding-top:1px}
+.node .lbl b{font-size:13.5px;font-weight:600;letter-spacing:-0.005em;color:var(--text-primary)}
+.node.pending .lbl b{color:var(--text-secondary);font-weight:500}
+.node .lbl span{font-size:11.5px;color:var(--text-tertiary)}
+.node.active .lbl b{color:var(--primary)}
+.node .lk{margin-left:auto;color:var(--text-tertiary);opacity:.7}
+.node .lk svg{width:12px;height:12px;stroke:currentColor;fill:none}
+
+.spine .modecard{margin-top:var(--spacing-6);padding:12px;border-radius:var(--radius-lg);background:var(--surface-subtle);border:var(--stroke-thin) solid var(--hairline)}
+.spine .modecard .seg{display:flex;background:var(--surface-muted);border-radius:var(--radius-md);padding:3px;gap:3px}
+.spine .modecard .seg button{flex:1;height:26px;border:none;border-radius:6px;background:transparent;font-family:inherit;font-size:11.5px;font-weight:600;color:var(--text-secondary);cursor:default}
+.spine .modecard .seg button.on{background:var(--surface-card);color:var(--text-primary);box-shadow:var(--shadow-sm)}
+.spine .modecard p{margin:9px 2px 0;font-size:11px;line-height:1.45;color:var(--text-tertiary)}
+
+/* ---------- COLUMN 2 · conversation (modern chat) ---------- */
+.conv{display:flex;flex-direction:column;min-height:0;background:var(--surface-page)}
+.col-inner{width:100%;max-width:684px;margin:0 auto}
+
+/* slim, progress-forward header */
+.chead{flex:none;padding:13px 0 13px;border-bottom:var(--stroke-thin) solid var(--hairline);background:var(--surface-page)}
+.chead .col-inner{padding:0 28px;display:flex;flex-direction:column;gap:10px}
+.chead .row1{display:flex;align-items:center;gap:10px}
+.chead .crumb{font-size:13px;color:var(--text-tertiary);font-weight:600;letter-spacing:.01em;display:flex;align-items:center;gap:7px}
+.chead .crumb b{color:var(--text-primary)}
+.chead .crumb svg{width:13px;height:13px;stroke:currentColor;fill:none;opacity:.6}
+.chead .stepn{margin-left:auto;font-size:13px;font-weight:700;color:var(--text-secondary);display:flex;align-items:center;gap:8px}
+.chead .stepn .pct{color:var(--primary)}
+.pseg{display:flex;gap:4px}
+.pseg > i{flex:1;height:6px;border-radius:99px;background:var(--surface-muted);transition:background .2s}
+.pseg > i.done{background:var(--primary)}
+.pseg > i.cur{background:linear-gradient(90deg,var(--primary) 55%,var(--surface-muted) 55%)}
+.chead .eta{font-size:12px;color:var(--text-tertiary);display:flex;align-items:center;gap:7px}
+.chead .eta svg{width:13px;height:13px;stroke:currentColor;fill:none;flex:none}
+
+.thread{flex:1;overflow:auto;padding:28px 28px 16px}
+.thread .col-inner{display:flex;flex-direction:column;gap:28px}
+
+/* assistant turn — plain text, no bubble (Claude/ChatGPT-style) */
+.turn{display:flex;flex-direction:column;gap:9px}
+.turn .hdr{display:flex;align-items:center;gap:9px}
+.turn .av{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:var(--primary);color:var(--primary-text);flex:none}
+.turn .av svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2}
+.turn .nm{font-size:13.5px;font-weight:700;letter-spacing:-0.01em}
+.turn .nm i{font-style:normal;font-weight:600;color:var(--warning);margin-left:7px;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+.turn .txt{font-size:15.5px;line-height:1.62;color:var(--text-primary);padding-left:35px}
+.turn .txt em{font-style:normal;font-weight:700;color:var(--primary)}
+.turn .txt strong{font-weight:700}
+.turn .sub{padding-left:35px;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+
+/* user turn — soft filled container, right aligned */
+.uturn{display:flex;justify-content:flex-end}
+.uturn .ub{max-width:80%;background:var(--surface-muted);border:var(--stroke-thin) solid var(--border-default);color:var(--text-primary);
+  border-radius:18px;border-bottom-right-radius:6px;padding:11px 15px;font-size:15px;line-height:1.5;box-shadow:var(--shadow-sm)}
+
+/* inline structured input — the onliness mad-lib */
+.tool{width:100%;border-radius:var(--radius-xl);background:var(--surface-card);border:var(--stroke-thin) solid var(--border-default);box-shadow:var(--shadow-sm);overflow:hidden}
+.tool .th{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:var(--stroke-thin) solid var(--hairline);font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-tertiary)}
+.tool .th svg{width:13px;height:13px;stroke:var(--primary);fill:none}
+.tool .tb{padding:14px 14px 14px;font-size:15px;line-height:2.05;color:var(--text-primary)}
+.slot{display:inline-flex;align-items:center;min-height:30px;padding:2px 11px;margin:0 2px;border-radius:var(--radius-md);
+  background:var(--primary-soft);border:var(--stroke-thin) solid var(--primary-line);color:var(--text-primary);font-weight:600;font-size:14px}
+.slot.empty{color:var(--text-tertiary);font-style:italic;font-weight:500;background:var(--surface-subtle);border-style:dashed;border-color:var(--border-default)}
+.tool .hint{padding:0 14px 13px;font-size:11.5px;color:var(--text-tertiary)}
+
+/* the adversarial CHALLENGE card — first-class, distinct treatment */
+.challenge{width:100%;border-radius:var(--radius-xl);background:var(--warn-soft);border:var(--stroke-thin) solid var(--warn-line);overflow:hidden}
+.challenge .ch{display:flex;align-items:center;gap:8px;padding:10px 15px;font-size:11.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--warning)}
+.challenge .ch svg{width:14px;height:14px;stroke:var(--warning);fill:none;stroke-width:2}
+.challenge .cb{padding:2px 15px 13px;font-size:14.5px;line-height:1.55;color:var(--text-primary)}
+.challenge .cb strong{font-weight:700;color:var(--text-primary)}
+.challenge .actions{display:flex;align-items:center;gap:9px;padding:0 15px 14px}
+.cbtn{height:32px;padding:0 14px;border-radius:var(--radius-lg);font-family:inherit;font-size:12.5px;font-weight:700;cursor:default;display:inline-flex;align-items:center;gap:6px}
+.cbtn svg{width:13px;height:13px;stroke:currentColor;fill:none}
+.cbtn.keep{background:var(--warning);color:#3a2600;border:none}
+.cbtn.alt{background:transparent;color:var(--text-secondary);border:var(--stroke-thin) solid var(--border-default)}
+.gate{margin-left:auto;font-size:11px;color:var(--text-tertiary);display:inline-flex;align-items:center;gap:5px}
+.gate svg{width:12px;height:12px;stroke:currentColor;fill:none}
+
+/* the "set" confirmation */
+.setrow{display:flex;align-items:center;gap:12px;margin:0}
+.setchip{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:var(--radius-full);
+  background:var(--success-soft);border:var(--stroke-thin) solid var(--success-line);color:var(--text-primary);font-size:12.5px;font-weight:600}
+.setchip svg{width:14px;height:14px;stroke:var(--success);fill:none;stroke-width:2.4}
+.setchip b{color:var(--success)}
+.setrow .line{height:1px;flex:1;background:var(--hairline)}
+
+/* composer — modern rounded, tool row, suggestion chips */
+.composer{flex:none;padding:12px 28px 18px;border-top:var(--stroke-thin) solid var(--hairline);background:var(--surface-page)}
+.composer .col-inner{display:flex;flex-direction:column;gap:11px}
+.suggest{display:flex;gap:8px;flex-wrap:wrap}
+.schip{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:99px;background:var(--surface-card);border:var(--stroke-thin) solid var(--border-default);font-size:12.5px;font-weight:600;color:var(--text-secondary)}
+.schip svg{width:13px;height:13px;stroke:currentColor;fill:none}
+.schip.spark{color:var(--primary);background:var(--primary-soft);border-color:var(--primary-line)}
+.schip.spark svg{stroke:var(--primary)}
+.cbox{background:var(--surface-card);border:var(--stroke-regular) solid var(--border-default);border-radius:24px;box-shadow:var(--shadow-md);padding:14px 16px 11px}
+.cbox .field{font-size:15px;color:var(--text-tertiary);min-height:22px}
+.cbox .tools{display:flex;align-items:center;gap:7px;margin-top:11px}
+.tbtn{width:32px;height:32px;border-radius:50%;border:var(--stroke-thin) solid var(--border-default);background:transparent;display:grid;place-items:center;color:var(--text-secondary);flex:none}
+.tbtn svg{width:16px;height:16px;stroke:currentColor;fill:none}
+.cbox .modelchip{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border-radius:99px;border:var(--stroke-thin) solid var(--border-default);font-size:12px;font-weight:600;color:var(--text-secondary)}
+.cbox .modelchip .kdot{width:7px;height:7px;border-radius:50%;background:var(--success)}
+.cbox .grow{flex:1}
+.cbox .send{width:34px;height:34px;border-radius:50%;background:var(--primary);color:var(--primary-text);display:grid;place-items:center;box-shadow:var(--shadow-sm);flex:none}
+.cbox .send svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2.2}
+.composer .meta{display:flex;align-items:center;gap:7px;margin:1px 2px 0;font-size:11px;color:var(--text-tertiary)}
+.composer .meta svg{width:12px;height:12px;stroke:currentColor;fill:none;flex:none}
+.composer .meta .sep{opacity:.4}
+
+/* ---------- COLUMN 3 · live brand system (hybrid canvas) ---------- */
+.canvas{background:var(--surface-subtle);border-left:var(--stroke-thin) solid var(--hairline);display:flex;flex-direction:column;min-height:0}
+.canvas .khead{flex:none;display:flex;align-items:center;gap:10px;padding:var(--spacing-4) var(--spacing-5) var(--spacing-3)}
+.canvas .khead .lt{display:flex;flex-direction:column;gap:2px}
+.canvas .khead .lt b{font-size:13px;font-weight:700;letter-spacing:.01em}
+.canvas .khead .lt span{font-size:11px;color:var(--text-tertiary)}
+.canvas .khead .tchip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-secondary);padding:4px 9px;border-radius:var(--radius-full);background:var(--surface-card);border:var(--stroke-thin) solid var(--hairline)}
+.canvas .khead .tchip .sw{width:10px;height:10px;border-radius:3px;background:var(--primary)}
+.canvas .khead .spacer{flex:1}
+.modetoggle{display:inline-flex;background:var(--surface-card);border:var(--stroke-thin) solid var(--hairline);border-radius:var(--radius-full);padding:3px}
+.modetoggle button{width:28px;height:24px;border:none;background:transparent;border-radius:99px;display:grid;place-items:center;color:var(--text-tertiary)}
+.modetoggle button.on{background:var(--surface-muted);color:var(--text-primary)}
+.modetoggle svg{width:14px;height:14px;stroke:currentColor;fill:none}
+
+.cscroll{flex:1;overflow:auto;padding:var(--spacing-1) var(--spacing-5) var(--spacing-5);display:flex;flex-direction:column;gap:10px}
+.sect{display:flex;align-items:center;gap:8px;margin:8px 2px 3px}
+.sect .lab{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary)}
+.sect .ln{height:1px;flex:1;background:var(--hairline)}
+.sect .st{font-size:10.5px;font-weight:700;color:var(--success);display:inline-flex;align-items:center;gap:4px}
+.sect .st svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.6}
+.sect .st.live{color:var(--primary)}
+
+.recCard{background:var(--surface-card);border:var(--stroke-thin) solid var(--hairline);border-radius:var(--radius-lg);padding:11px 13px;box-shadow:var(--shadow-sm)}
+.recCard .onliness{font-size:13.5px;line-height:1.48;font-weight:600;letter-spacing:-0.01em}
+.recCard .onliness em{font-style:normal;color:var(--primary);font-weight:700}
+.recCard .src{margin-top:9px;display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:11px;font-weight:600;color:var(--text-secondary);padding:3px 9px;border-radius:var(--radius-full);background:var(--surface-subtle);border:var(--stroke-thin) solid var(--hairline)}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.echip{display:inline-flex;align-items:center;height:34px;padding:0 16px;border-radius:var(--radius-full);font-size:14px;font-weight:700;letter-spacing:-0.01em;
+  background:var(--primary);color:var(--primary-text);box-shadow:var(--shadow-sm)}
+.echip.ghost{background:var(--surface-card);color:var(--text-tertiary);border:var(--stroke-thin) dashed var(--border-default);box-shadow:none;font-weight:600}
+.echip.ghost .tw{width:9px;height:9px;border-radius:50%;border:2px solid var(--primary-line);border-top-color:var(--primary);margin-right:8px}
+
+.traits{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.trait{background:var(--surface-card);border:var(--stroke-thin) solid var(--hairline);border-radius:var(--radius-md);padding:7px 10px;display:flex;flex-direction:column;gap:1px}
+.trait b{font-size:13px;font-weight:700}
+.trait span{font-size:11px;color:var(--text-tertiary)}
+.trait.derive{border-style:dashed;border-color:var(--border-default);background:var(--surface-subtle)}
+.trait.derive b{color:var(--text-tertiary);font-weight:600}
+
+.pill-card{background:var(--surface-card);border:var(--stroke-thin) solid var(--hairline);border-radius:var(--radius-lg);padding:10px 12px}
+.pill-card.derive{border-style:dashed;background:var(--surface-subtle)}
+.pill-card .pt{display:flex;align-items:center;gap:8px}
+.pill-card .pt b{font-size:13px;font-weight:700}
+.pill-card .pt .gv{margin-left:auto;font-size:10px;font-weight:700;color:var(--text-tertiary);letter-spacing:.04em;text-transform:uppercase}
+.pill-card .stmt{font-size:12px;color:var(--text-secondary);margin:4px 0 7px;line-height:1.4}
+.govern{display:flex;gap:6px;flex-wrap:wrap}
+.tk{font-family:var(--font-mono);font-size:11px;font-weight:500;padding:3px 8px;border-radius:var(--radius-md);background:var(--primary-soft);color:var(--primary);border:var(--stroke-thin) solid var(--primary-line)}
+.derive .deriving{display:flex;align-items:center;gap:8px;color:var(--text-tertiary);font-size:12px}
+.derive .deriving .tw{width:11px;height:11px;border-radius:50%;border:2px solid var(--primary-line);border-top-color:var(--primary)}
+
+/* speaking: live components in the brand voice */
+.speak{background:var(--surface-card);border:var(--stroke-thin) solid var(--hairline);border-radius:var(--radius-lg);padding:12px;display:flex;flex-direction:column;gap:9px;box-shadow:var(--shadow-sm)}
+.speak .row{display:flex;gap:9px;align-items:center}
+.sbtn{height:36px;padding:0 16px;border-radius:var(--radius-lg);font-size:13.5px;font-weight:600;border:none;font-family:inherit}
+.sbtn.p{background:var(--primary);color:var(--primary-text);box-shadow:var(--shadow-sm)}
+.sbtn.s{background:transparent;color:var(--text-primary);border:var(--stroke-thin) solid var(--border-default)}
+.alert{display:flex;gap:10px;padding:11px 12px;border-radius:var(--radius-md);background:var(--warn-soft);border:var(--stroke-thin) solid var(--warn-line)}
+.alert .ai{color:var(--warning);margin-top:1px}.alert svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
+.alert .at{font-size:12.5px;line-height:1.45}.alert .at b{font-weight:700}
+.toast{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:var(--radius-md);background:var(--surface-raised);border:var(--stroke-thin) solid var(--hairline);box-shadow:var(--shadow-md)}
+.toast .ti{width:22px;height:22px;border-radius:50%;background:var(--success);color:#062a14;display:grid;place-items:center;flex:none}
+.toast .ti svg{width:13px;height:13px;stroke:currentColor;stroke-width:3;fill:none}
+.toast .tt{font-size:12.5px}.toast .tt b{font-weight:700}
+.empty{border:var(--stroke-thin) dashed var(--border-default);border-radius:var(--radius-md);padding:14px;text-align:center}
+.empty .eg{font-size:12.5px;color:var(--text-secondary)}
+.empty .eg b{color:var(--text-primary);font-weight:700}
+.voicekey{font-size:10.5px;color:var(--text-tertiary);margin-top:2px;display:flex;align-items:center;gap:6px}
+.voicekey .vk{font-weight:700;color:var(--text-secondary)}
+
+.footnote{margin-top:auto;padding-top:var(--spacing-3);font-size:11px;color:var(--text-tertiary);display:flex;align-items:center;gap:7px;line-height:1.4}
+.footnote svg{width:13px;height:13px;stroke:currentColor;fill:none;flex:none}
+
+/* floating PREVIEW switcher — review tool only, not product chrome */
+.reviewbar{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:99;display:flex;align-items:center;gap:9px;
+  padding:6px 9px;border-radius:99px;background:rgba(18,18,22,.93);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.14);box-shadow:0 10px 34px rgba(0,0,0,.4);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif}
+.reviewbar .rl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);padding:0 4px 0 7px}
+.reviewbar .rg{display:flex;background:rgba(255,255,255,.09);border-radius:99px;padding:3px}
+.reviewbar .rg button{border:none;background:transparent;color:rgba(255,255,255,.72);font-family:inherit;font-size:12px;font-weight:600;padding:5px 12px;border-radius:99px;cursor:pointer;line-height:1}
+.reviewbar .rg button.on{background:#fff;color:#15151a}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============================ TOP BAR ============================ -->
+  <header class="bar">
+    <div class="brand">
+      <div class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M3 7l9 5 9-5M3 7l9-4 9 4M3 7v10l9 4 9-4V7"/></svg>
+      </div>
+      <div class="title">Brand Workbench</div>
+      <div class="proj"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg> Visor · public</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="pill" data-theme-name><span class="dot"></span><span class="tname">modern-minimal</span></div>
+    <div class="pill key"><span class="kdot"></span>Claude · key active</div>
+    <button class="btn btn-ghost"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>Export</button>
+  </header>
+  <div class="gprog"><i></i></div>
+
+  <div class="grid">
+
+    <!-- ===================== COLUMN 1 · DERIVATION SPINE ===================== -->
+    <nav class="col spine">
+      <div class="sprog">
+        <div class="r1"><span class="bn">Visor</span><span class="vtag">public</span></div>
+        <div class="r2"><span class="big">2</span><span class="of">of 10 steps</span><span class="pc">20%</span></div>
+        <div class="bar"><i></i></div>
+        <div class="enc">Nice start — the hard part, your <em>only</em>, is locked. About 8 min to a complete draft.</div>
+      </div>
+
+      <div class="eyebrow">Setup <span class="cnt done">1 / 1</span></div>
+      <div class="chain">
+        <div class="node done tail"><span class="rail"></span><span class="bullet"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span><span class="lbl"><b>Start</b><span>name · public</span></span></div>
+      </div>
+
+      <div class="eyebrow">Strategy <span class="cnt">1 / 4</span></div>
+      <div class="chain">
+        <div class="node done"><span class="rail"></span><span class="bullet"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span><span class="lbl"><b>Positioning</b><span>the onliness · set</span></span></div>
+        <div class="node active"><span class="rail"></span><span class="bullet"><span class="pulse"></span></span><span class="lbl"><b>Essence</b><span>working on it now</span></span></div>
+        <div class="node pending"><span class="rail"></span><span class="bullet"></span><span class="lbl"><b>Personality</b><span>brand-as-person</span></span><span class="lk"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></span></div>
+        <div class="node pending tail"><span class="rail"></span><span class="bullet"></span><span class="lbl"><b>Pillars</b><span>token-linked</span></span><span class="lk"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></span></div>
+      </div>
+
+      <div class="eyebrow">Verbal <span class="cnt">0 / 2</span></div>
+      <div class="chain">
+        <div class="node pending"><span class="rail"></span><span class="bullet"></span><span class="lbl"><b>Voice</b><span>fixed traits</span></span><span class="lk"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></span></div>
+        <div class="node pending tail"><span class="rail"></span><span class="bullet"></span><span class="lbl"><b>Tone</b><span>flexed by context</span></span><span class="lk"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></span></div>
+      </div>
+
+      <div class="eyebrow">Visual <span class="cnt">0 / 1</span></div>
+      <div class="chain">
+        <div class="node pending tail"><span class="rail"></span><span class="bullet"></span><span class="lbl"><b>Visual</b><span>color · type · marks</span></span></div>
+      </div>
+
+      <div class="eyebrow">Prove &amp; Export <span class="cnt">0 / 2</span></div>
+      <div class="chain">
+        <div class="node pending"><span class="rail"></span><span class="bullet"></span><span class="lbl"><b>Prove</b><span>coherence checks</span></span></div>
+        <div class="node pending tail"><span class="rail"></span><span class="bullet"></span><span class="lbl"><b>Export</b><span>.visor.yaml + manifest</span></span></div>
+      </div>
+
+      <div class="modecard">
+        <div class="seg"><button class="on">Guided</button><button>Canvas</button></div>
+        <p>Guided walks you to a complete draft. Switch to Canvas any time to free-edit any block, in any order.</p>
+      </div>
+    </nav>
+
+    <!-- ===================== COLUMN 2 · ELICIT CONVERSATION (modern chat) ===================== -->
+    <main class="col conv">
+      <div class="chead">
+        <div class="col-inner">
+          <div class="row1">
+            <span class="crumb">Strategy <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg> <b>Essence</b></span>
+            <span class="stepn">Step 3 of 10<span class="pct">· 20%</span></span>
+          </div>
+          <div class="pseg"><i class="done"></i><i class="done"></i><i class="cur"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="eta"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg> About 8 minutes to a complete first draft — stop and pick up anytime, nothing's lost.</div>
+        </div>
+      </div>
+
+      <div class="thread">
+        <div class="col-inner">
+
+          <!-- positioning question (history) -->
+          <div class="turn">
+            <div class="hdr"><span class="av"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/></svg></span><span class="nm">Strategist</span></div>
+            <div class="txt">Forget polish for a second. Who is Visor for, and what can it do that nothing else can? Say it messy — I'll sharpen it with you.</div>
+          </div>
+
+          <div class="uturn"><div class="ub">A design system you copy and own. It ships your tokens as one portable file — and now the brand layer too: voice, tone, the strategy. For people and for AI agents.</div></div>
+
+          <!-- onliness tool -->
+          <div class="turn">
+            <div class="hdr"><span class="av"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/></svg></span><span class="nm">Strategist</span></div>
+            <div class="txt">Strong raw material. Let's force it into the shape that actually differentiates — the onliness statement. Fill the blanks; rough is fine.</div>
+            <div class="sub">
+              <div class="tool">
+                <div class="th"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg> Onliness · the spearhead</div>
+                <div class="tb">The only <span class="slot">design system</span> that <span class="slot">compiles a brand — visual and verbal — from one portable file</span>, for <span class="slot">humans and agents alike</span>.</div>
+                <div class="hint">Category · benefit · audience. We'll pressure-test it next.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- THE CHALLENGE -->
+          <div class="turn">
+            <div class="hdr"><span class="av"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/></svg></span><span class="nm">Strategist<i>challenge</i></span></div>
+            <div class="sub">
+              <div class="challenge">
+                <div class="ch"><svg viewBox="0 0 24 24"><path d="M4 21V4h12l-1.5 4L16 12H4"/></svg> Is it actually <em style="font-style:normal">only</em>?</div>
+                <div class="cb">“One portable file” isn't yours alone — Frontify <strong>hosts</strong> a brand, Brandpad <strong>publishes</strong> one, Zeroheight <strong>documents</strong> one. The verb only you earn is <strong>compile</strong>: from typed intent, against a live engine, for humans <strong>and</strong> agents. Lean on that — or name a sharper wedge you can defend.</div>
+                <div class="actions">
+                  <button class="cbtn keep"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Use “compile”</button>
+                  <button class="cbtn alt">I'll rewrite it</button>
+                  <span class="gate"><svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>You hold the gate</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="uturn"><div class="ub">Yes — “compile” is the wedge. That's the verb nobody else can claim.</div></div>
+
+          <!-- set confirmation -->
+          <div class="setrow">
+            <span class="line"></span>
+            <span class="setchip"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg> Positioning <b>set</b> — downstream now derives</span>
+            <span class="line"></span>
+          </div>
+
+          <!-- essence kickoff (newest) -->
+          <div class="turn">
+            <div class="hdr"><span class="av"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/></svg></span><span class="nm">Strategist</span></div>
+            <div class="txt">Positioning's locked — a genuine category of one. Now the <em>essence</em>: the two or three words at the irreducible core, internal-facing, not a tagline. From everything you've said, I'd start with <strong>coherent · open · yours</strong>. Want me to draft why each earns its place — or would you rather choose the words yourself?</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- composer -->
+      <div class="composer">
+        <div class="col-inner">
+          <div class="suggest">
+            <span class="schip spark"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/></svg>Draft why each word fits</span>
+            <span class="schip">I'll choose the words myself</span>
+            <span class="schip">Show me other options</span>
+          </div>
+          <div class="cbox">
+            <div class="field">Message the strategist…</div>
+            <div class="tools">
+              <button class="tbtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+              <button class="tbtn"><svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3z"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg></button>
+              <span class="modelchip"><span class="kdot"></span>Claude · key active</span>
+              <span class="grow"></span>
+              <span class="send"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span>
+            </div>
+          </div>
+          <div class="meta">
+            <svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>
+            Your key, your data — strategy never leaves this machine
+            <span class="sep">·</span> AI drafts &amp; challenges, you decide
+            <span class="sep">·</span> no key? still fully manual
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ===================== COLUMN 3 · LIVE BRAND SYSTEM ===================== -->
+    <aside class="col canvas">
+      <div class="khead">
+        <div class="lt"><b>Live brand system</b><span>assembling as you answer</span></div>
+        <div class="spacer"></div>
+        <div class="tchip"><span class="sw"></span><span class="tname">modern-minimal</span></div>
+        <div class="modetoggle">
+          <button class="lighticon on"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg></button>
+          <button class="darkicon"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 119.5 4a6.5 6.5 0 0010.5 10.5z"/></svg></button>
+        </div>
+      </div>
+
+      <div class="cscroll">
+
+        <!-- POSITIONING set -->
+        <div class="sect"><span class="lab">Positioning</span><span class="ln"></span><span class="st"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>set</span></div>
+        <div class="recCard">
+          <div class="onliness">The only design system that <em>compiles</em> a complete brand — visual <em>and</em> verbal — from one portable file, for humans and agents alike.</div>
+          <div class="src"><span class="tag">design system</span><span class="tag">verb: compile</span><span class="tag">humans + agents</span></div>
+        </div>
+
+        <!-- ESSENCE forming -->
+        <div class="sect"><span class="lab">Essence</span><span class="ln"></span><span class="st live">drafting…</span></div>
+        <div class="chips">
+          <span class="echip">coherent</span>
+          <span class="echip">open</span>
+          <span class="echip ghost"><span class="tw"></span>yours?</span>
+        </div>
+
+        <!-- PERSONALITY (derives next) -->
+        <div class="sect"><span class="lab">Personality</span><span class="ln"></span></div>
+        <div class="traits">
+          <div class="trait derive"><b>precise</b><span>not fussy</span></div>
+          <div class="trait derive"><b>candid</b><span>not cold</span></div>
+          <div class="trait derive"><b>generous</b><span>not indulgent</span></div>
+          <div class="trait derive"><b>warm</b><span>not saccharine</span></div>
+        </div>
+
+        <!-- PILLARS (derive after essence) -->
+        <div class="sect"><span class="lab">Pillars</span><span class="ln"></span></div>
+        <div class="pill-card">
+          <div class="pt"><b>coherence</b><span class="gv">governs</span></div>
+          <div class="stmt">Every layer derives from the one above it.</div>
+          <div class="govern"><span class="tk">--primary</span><span class="tk">--surface-card</span><span class="tk">--text-primary</span></div>
+        </div>
+        <div class="pill-card derive">
+          <div class="deriving"><span class="tw"></span> openness &amp; ownership derive once essence locks…</div>
+        </div>
+
+        <!-- SPEAKING — live components in the brand voice -->
+        <div class="sect"><span class="lab">Speaking</span><span class="ln"></span><span class="st live">live</span></div>
+        <div class="speak">
+          <div class="row">
+            <button class="sbtn p">Get started</button>
+            <button class="sbtn s">Cancel</button>
+          </div>
+          <div class="alert">
+            <span class="ai"><svg viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></span>
+            <div class="at"><b>Heads up</b> — this theme fails AA on small text. Bump the contrast a notch, or keep the warning if it's intentional.</div>
+          </div>
+          <div class="toast">
+            <span class="ti"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>
+            <div class="tt"><b>Saved!</b> Your theme's live across every component — go take a look.</div>
+          </div>
+          <div class="empty"><div class="eg"><b>Nothing here yet</b> — let's change that. Start from a blank file, or clone one and make it yours.</div></div>
+          <div class="voicekey"><span class="vk">voice</span> plainspoken · candid · generous · warm — rendered on real components, this theme</div>
+        </div>
+
+        <div class="footnote">
+          <svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg>
+          Switch theme or mode and every surface here re-resolves — nothing is pinned. The brand is compiled, not pasted.
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<!-- floating preview switcher (review only) -->
+<div class="reviewbar">
+  <span class="rl">Preview</span>
+  <div class="rg" data-grp="theme">
+    <button data-t="t-mm" class="on">modern-minimal</button>
+    <button data-t="t-space">space</button>
+  </div>
+  <div class="rg" data-grp="mode">
+    <button data-m="light" class="on">☀ Light</button>
+    <button data-m="dark">☾ Dark</button>
+  </div>
+</div>
+<script>
+(function(){
+  var root=document.documentElement,names={'t-mm':'modern-minimal','t-space':'space'},theme='t-mm',mode='light';
+  function apply(){
+    root.className=theme+' '+mode;
+    document.querySelectorAll('.tname').forEach(function(e){e.textContent=names[theme];});
+    var li=document.querySelector('.modetoggle .lighticon'),di=document.querySelector('.modetoggle .darkicon');
+    if(li&&di){li.classList.toggle('on',mode==='light');di.classList.toggle('on',mode==='dark');}
+    document.querySelectorAll('[data-t]').forEach(function(b){b.classList.toggle('on',b.dataset.t===theme);});
+    document.querySelectorAll('[data-m]').forEach(function(b){b.classList.toggle('on',b.dataset.m===mode);});
+  }
+  document.querySelectorAll('[data-t]').forEach(function(b){b.addEventListener('click',function(){theme=b.dataset.t;apply();});});
+  document.querySelectorAll('[data-m]').forEach(function(b){b.addEventListener('click',function(){mode=b.dataset.m;apply();});});
+  apply();
+})();
+</script>
+</body>
+</html>
