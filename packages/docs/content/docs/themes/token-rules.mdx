@@ -226,3 +226,11 @@ padding: var(--spacing-3);
 /* Correct — documented */
 height: 2.25rem; /* 36px — size-md, sizing tokens deferred */
 ```
+
+## Runtime-Keyed Accent Bridge
+
+The var-chain pattern (Rules 1 and 7) is **load-bearing** for consumers that remap accent tokens at runtime. Every Visor component must resolve accent-path properties through a `var()` chain — no bare hex on `background-color`, `color`, or `background` for properties in the `--interactive-primary-*`, `--primary`, or `--accent` families.
+
+This contract enables the **runtime-keyed accent bridge pattern**: a one-line unlayered CSS rule that makes every Visor atom track a runtime-animated variable (e.g., an OKLab crossfade running on every rAF frame) without any component code changes.
+
+See [Runtime-Keyed Accent Bridge](/docs/guides/runtime-accent-bridge) for the full pattern, per-scope override recipe, and CI guard.
