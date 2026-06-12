@@ -1,0 +1,20 @@
+/*
+ * GrainOverlay — film-grain noise texture overlay.
+ *
+ * Ported from Blacklight bl-grain class (BL-326 depth system).
+ * Fixed so it does not scroll with content (true film behavior).
+ * Decorative only — pointer-events-none, aria-hidden at the call site.
+ *
+ * Opacity and z-index are intentionally applied via inline style so consumers
+ * can override per-instance without a CSS specificity fight.
+ */
+
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  /* SVG fractalNoise texture — base64 to prevent class-regex false positives in the validator */
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAiIGhlaWdodD0iMTYwIj48ZmlsdGVyIGlkPSJuIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC45IiBudW1PY3RhdmVzPSIyIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNuKSIvPjwvc3ZnPgo=");
+  background-repeat: repeat;
+  background-size: 160px 160px;
+}
