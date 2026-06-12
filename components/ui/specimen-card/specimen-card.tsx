@@ -37,8 +37,7 @@ SpecimenCard.displayName = "SpecimenCard"
 
 // ─── SpecimenCardFooter ──────────────────────────────────────────────────────
 
-export interface SpecimenCardFooterProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+export type SpecimenCardFooterProps = React.HTMLAttributes<HTMLDivElement>
 
 const SpecimenCardFooter = React.forwardRef<
   HTMLDivElement,
