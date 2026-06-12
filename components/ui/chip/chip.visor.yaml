@@ -23,12 +23,12 @@ why: >
   deletable tag inputs.
 
 variants:
-  variant: [default, outlined]
+  variant: [default, outlined, filled-primary]
   size: [sm, md, lg]
 
 props:
   - name: variant
-    type: '"default" | "outlined"'
+    type: '"default" | "outlined" | "filled-primary"'
     default: '"default"'
   - name: size
     type: '"sm" | "md" | "lg"'

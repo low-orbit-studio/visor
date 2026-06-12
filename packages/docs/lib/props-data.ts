@@ -1659,6 +1659,63 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  chip: [
+    {
+      name: 'variant',
+      type: "'default' | 'outlined' | 'filled-primary'",
+      default: "'default'",
+      description:
+        "Visual variant. `default` — muted surface background. `outlined` — transparent with a border. `filled-primary` — saturated primary fill + primary-text foreground; use when the chip must carry primary brand prominence (essence chips, brand strategy surfaces).",
+    },
+    {
+      name: 'size',
+      type: "'sm' | 'md' | 'lg'",
+      default: "'md'",
+      description: 'Controls chip height and font size.',
+    },
+    {
+      name: 'label',
+      type: 'ReactNode',
+      description: 'Label content. Falls back to children if omitted.',
+    },
+    {
+      name: 'avatar',
+      type: 'ReactNode',
+      description: 'Optional avatar rendered before the label.',
+    },
+    {
+      name: 'leadingIcon',
+      type: 'ReactNode',
+      description: 'Optional icon rendered before the label (after avatar).',
+    },
+    {
+      name: 'onDeleted',
+      type: '() => void',
+      description: 'When provided, a delete button is shown and called on click.',
+    },
+    {
+      name: 'deleteLabel',
+      type: 'string',
+      default: "'Remove'",
+      description: 'Accessible aria-label for the delete button.',
+    },
+    {
+      name: 'deleteIcon',
+      type: 'ReactNode',
+      description: 'Custom delete icon. Defaults to XIcon.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names merged onto the root element.',
+    },
+    {
+      name: '...props',
+      type: 'React.HTMLAttributes<HTMLDivElement>',
+      description: 'All standard div attributes are forwarded to the root element.',
+    },
+  ],
+
   'tag-input': [
     {
       name: 'value',

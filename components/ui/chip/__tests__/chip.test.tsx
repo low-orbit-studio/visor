@@ -33,6 +33,40 @@ describe("Chip", () => {
     expect(container.querySelector('[data-variant="outlined"]')).toBeInTheDocument()
   })
 
+  it("applies data-variant for filled-primary variant", () => {
+    const { container } = render(<Chip label="Coherent" variant="filled-primary" />)
+    expect(container.querySelector('[data-variant="filled-primary"]')).toBeInTheDocument()
+  })
+
+  it("filled-primary applies the variantFilledPrimary CSS class", () => {
+    const { container } = render(<Chip label="Coherent" variant="filled-primary" />)
+    const chip = container.querySelector('[data-slot="chip"]')
+    expect(chip).toHaveClass(styles.variantFilledPrimary)
+  })
+
+  it("filled-primary works at all three sizes", () => {
+    const { container: sm } = render(<Chip label="Coherent" variant="filled-primary" size="sm" />)
+    const { container: md } = render(<Chip label="Coherent" variant="filled-primary" size="md" />)
+    const { container: lg } = render(<Chip label="Coherent" variant="filled-primary" size="lg" />)
+    expect(sm.querySelector('[data-variant="filled-primary"][data-size="sm"]')).toBeInTheDocument()
+    expect(md.querySelector('[data-variant="filled-primary"][data-size="md"]')).toBeInTheDocument()
+    expect(lg.querySelector('[data-variant="filled-primary"][data-size="lg"]')).toBeInTheDocument()
+  })
+
+  it("default variant is unaffected by filled-primary addition", () => {
+    const { container } = render(<Chip label="Tag" />)
+    const chip = container.querySelector('[data-slot="chip"]')
+    expect(chip).toHaveClass(styles.variantDefault)
+    expect(chip).not.toHaveClass(styles.variantFilledPrimary)
+  })
+
+  it("outlined variant is unaffected by filled-primary addition", () => {
+    const { container } = render(<Chip label="Tag" variant="outlined" />)
+    const chip = container.querySelector('[data-slot="chip"]')
+    expect(chip).toHaveClass(styles.variantOutlined)
+    expect(chip).not.toHaveClass(styles.variantFilledPrimary)
+  })
+
   it("applies data-size for md size", () => {
     const { container } = render(<Chip label="Tag" />)
     expect(container.querySelector('[data-size="md"]')).toBeInTheDocument()
