@@ -1,0 +1,235 @@
+---
+title: Runtime-Keyed Accent Bridge
+description: Wire a runtime-animated CSS variable to every Visor component's color path using a one-line unlayered bridge — no component forks, scoped overrides where you need them.
+---
+
+## What This Pattern Does
+
+Every Visor component resolves color at paint time through a **var chain**. For example, the default Button variant:
+
+```css
+/* button.module.css */
+.variantDefault {
+  background-color: var(--interactive-primary-bg, var(--primary, #111827));
+}
+```
+
+The chain reads: "use `--interactive-primary-bg`; if that is unset, fall back to `--primary`; if that is also unset, use the Gray-900 hex." Because resolution happens at paint time — not at build time — you can intercept any tier of the chain at runtime without touching component code.
+
+A **runtime-keyed accent bridge** is a single CSS declaration that inserts a runtime-animated value into the chain:
+
+```css
+/* globals.css (unlayered, so it outranks @layer visor-semantic) */
+--interactive-primary-bg: var(--color-accent);
+```
+
+From that moment, every component that reads `--interactive-primary-bg` tracks whatever `--color-accent` resolves to — including values that change every animation frame.
+
+---
+
+## The Contract (Load-Bearing)
+
+This pattern is load-bearing for consumers that remap accent tokens at runtime. The contract that makes it work:
+
+**Visor components MUST NOT bake a hex color on any accent-path property.** All accent-path properties must be expressed as a `var()` chain that bottoms out in a Gray fallback. Any component that writes:
+
+```css
+/* WRONG — breaks the runtime bridge */
+background-color: #111827;
+```
+
+instead of:
+
+```css
+/* CORRECT — var chain is interceptable */
+background-color: var(--interactive-primary-bg, var(--primary, #111827));
+```
+
+prevents the bridge from reaching that component. This is enforced by Visor's component authoring rules — see [Token Rules](/docs/themes/token-rules) — and must be respected when adding or editing components.
+
+---
+
+## The Bridge Block
+
+Set the bridge in your app's root CSS, **outside any `@layer`** so it outranks the `visor-semantic` layer where Visor's defaults live:
+
+```css
+/* globals.css */
+@import '@loworbitstudio/visor-core';
+
+/* Bridge — unlayered so it wins over @layer visor-semantic */
+:root {
+  --interactive-primary-bg: var(--color-accent);
+  --interactive-primary-bg-hover: var(--color-accent-hover);
+  --interactive-primary-text: var(--color-accent-text);
+  --primary: var(--color-accent);
+}
+```
+
+`--color-accent`, `--color-accent-hover`, and `--color-accent-text` are your runtime-animated or dynamically-assigned variables. Visor does not define them — they are consumer-owned.
+
+> **Why unlayered?** Visor's semantic tokens emit inside `@layer visor-semantic`. An unlayered rule always wins over a layered one regardless of specificity, so `:root { --interactive-primary-bg: var(--color-accent) }` overrides `@layer visor-semantic { :root { --interactive-primary-bg: ... } }` without any specificity hacks.
+
+---
+
+## Per-Frame Animation (rAF Bridge)
+
+To drive the bridge from a JavaScript animation loop, update the root variable each frame:
+
+```ts
+// accent-carousel.ts
+function tick(t: number) {
+  const hue = (t / 30) % 360; // cycles ~12 s
+  document.documentElement.style.setProperty(
+    '--color-accent',
+    `oklch(0.65 0.22 ${hue})`
+  );
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+```
+
+Every Visor component that resolves `--interactive-primary-bg` or `--primary` updates on the next paint — no React re-renders, no class toggling, no component changes required.
+
+### OKLab Crossfade
+
+For smooth perceptual crossfades between palette stops (the Blacklight marketing site uses this pattern for its hero-carousel):
+
+```ts
+// oklch-crossfade.ts
+const stops = [
+  { l: 0.65, c: 0.22, h: 28 },   // amber
+  { l: 0.60, c: 0.20, h: 145 },  // green
+  { l: 0.55, c: 0.25, h: 265 },  // violet
+];
+
+function lerp(a: number, b: number, t: number) {
+  return a + (b - a) * t;
+}
+
+function tick(t: number) {
+  const cycleMs = 4000;
+  const progress = (t % (cycleMs * stops.length)) / cycleMs;
+  const i = Math.floor(progress) % stops.length;
+  const frac = progress - Math.floor(progress);
+  const from = stops[i];
+  const to = stops[(i + 1) % stops.length];
+
+  const l = lerp(from.l, to.l, frac);
+  const c = lerp(from.c, to.c, frac);
+  const h = lerp(from.h, to.h, frac);
+
+  document.documentElement.style.setProperty(
+    '--color-accent',
+    `oklch(${l.toFixed(3)} ${c.toFixed(3)} ${h.toFixed(1)})`
+  );
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+```
+
+`oklch()` interpolation is perceptually uniform — hue, chroma, and lightness blend in a way that avoids the "dead gray" midpoints that RGB crossfades produce.
+
+---
+
+## Scoped Override (Keying Off)
+
+When you want a specific region of the page to ignore the animated accent and use a static brand color instead, apply an override on the container. The bridge lives on `:root`; a closer ancestor wins:
+
+```css
+/* Static form section — override to fixed brand primary */
+.form-section {
+  --interactive-primary-bg: var(--primary-600, #4f46e5);
+  --interactive-primary-bg-hover: var(--primary-700, #4338ca);
+  --interactive-primary-text: #ffffff;
+  --primary: var(--primary-600, #4f46e5);
+}
+```
+
+```tsx
+<section className="form-section">
+  {/* Buttons, inputs, and interactive elements here use the static brand color */}
+  <Button>Submit</Button>
+</section>
+```
+
+The animated `:root` values continue to drive the rest of the page. Only the `form-section` subtree is pinned.
+
+---
+
+## Which Token Families Are Safe to Remap
+
+The bridge is safe on any token family where Visor components use a `var()` chain. The accent-path families are:
+
+| Family | Tokens | Safe to bridge? |
+|--------|--------|----------------|
+| Interactive primary | `--interactive-primary-bg`, `--interactive-primary-bg-hover`, `--interactive-primary-text` | Yes |
+| Bare intent | `--primary`, `--accent` | Yes |
+| Interactive secondary | `--interactive-secondary-bg`, `--interactive-secondary-bg-hover`, `--interactive-secondary-text` | Yes |
+| Interactive destructive | `--interactive-destructive-bg`, `--interactive-destructive-bg-hover`, `--interactive-destructive-text` | Yes |
+| Interactive ghost | `--interactive-ghost-bg`, `--interactive-ghost-bg-hover` | Yes — but ghost is often transparent; verify visually |
+| Border | `--border-default`, `--border-strong`, `--border-focus` | Yes — use for animated outline effects |
+| Text | `--text-primary`, `--text-secondary` | Caution — affects readability; test contrast at every animation frame |
+| Surface | `--surface-page`, `--surface-card` | Caution — large areas; performance-test at target frame rate |
+
+**Do not bridge** tokens that Visor resolves at layout time (spacing, radius, typography size). These are not part of CSS paint and bridging them does not achieve per-frame updates.
+
+---
+
+## CI Guard: No Hex on Accent-Path Properties
+
+The var-chain contract can be verified statically. To add a lint guard that fails if any component CSS Module hardcodes a hex color on an accent-path property (instead of a `var()` chain), add a `grep`-based check to your CI:
+
+```bash
+# scripts/check-accent-hex.sh
+# Fails if any .module.css in components/ writes a bare hex on an accent-path property.
+
+ACCENT_PROPS="background-color|background|color"
+HEX_PATTERN="#[0-9a-fA-F]{3,8}"
+
+# Search component CSS modules for bare hex on accent-path lines
+VIOLATIONS=$(grep -rn --include="*.module.css" \
+  -E "(${ACCENT_PROPS})\s*:\s*(${HEX_PATTERN})" \
+  components/ \
+  | grep -v "var(" \
+  | grep -v "\/\*")  # exclude comments
+
+if [ -n "$VIOLATIONS" ]; then
+  echo "ERROR: Bare hex on accent-path property (breaks runtime bridge):"
+  echo "$VIOLATIONS"
+  exit 1
+fi
+
+echo "OK: all accent-path properties use var() chains"
+```
+
+Wire it into CI alongside your existing build and typecheck jobs:
+
+```yaml
+# .github/workflows/ci.yml
+- name: Check accent-path var chains
+  run: bash scripts/check-accent-hex.sh
+```
+
+> **Scope:** The guard intentionally targets accent-path properties (`background-color`, `background`, `color`) because those are the ones the bridge relies on. Shadow, spacing, radius, and motion tokens are governed by the [Token Rules](/docs/themes/token-rules) linter and do not need separate coverage here.
+
+---
+
+## Reference Implementation
+
+Blacklight's marketing site uses this pattern for its OKLab hero-carousel crossfade: `--color-acid` is rewritten on `<html>` every rAF frame, and the bridge `--interactive-primary-bg: var(--color-acid)` causes every interactive atom on the page to track it live, while form sections override back to a static brand color.
+
+The Blacklight-website Visor conversion (BL-325) is the canonical reference implementation. Link forthcoming once that wave lands.
+
+---
+
+## Summary
+
+| Concept | Rule |
+|---------|------|
+| Bridge declaration | Unlayered `:root` rule; wins over `@layer visor-semantic` |
+| Update mechanism | `document.documentElement.style.setProperty()` each rAF |
+| Scope keying off | Override the same tokens on a closer ancestor element |
+| Safe token families | Interactive, bare intent, border — see table above |
+| Contract (load-bearing) | No hex on accent-path properties in component CSS Modules |
+| CI guard | `grep`-based script; fails on bare hex without `var()` chain |
