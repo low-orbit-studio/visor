@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react"
-import { describe, it, expect } from "vitest"
+import userEvent from "@testing-library/user-event"
+import { describe, it, expect, vi } from "vitest"
 import {
   Stepper,
   StepperItem,
@@ -152,6 +153,108 @@ describe("Stepper", () => {
     )
     expect(container.querySelector(".custom-stepper")).toBeTruthy()
     expect(container.querySelector(".custom-item")).toBeTruthy()
+  })
+})
+
+describe("locked status", () => {
+  function renderWithLocked() {
+    return render(
+      <Stepper activeStep={1}>
+        <StepperItem step={0}>
+          <StepperTrigger step={0} />
+          <StepperTitle>Account</StepperTitle>
+        </StepperItem>
+        <StepperSeparator complete />
+        <StepperItem step={1}>
+          <StepperTrigger step={1} />
+          <StepperTitle>Profile</StepperTitle>
+        </StepperItem>
+        <StepperSeparator />
+        <StepperItem step={2} status="locked">
+          <StepperTrigger step={2} status="locked" />
+          <StepperTitle>Review</StepperTitle>
+        </StepperItem>
+      </Stepper>
+    )
+  }
+
+  it("renders lock glyph in locked trigger", () => {
+    const { container } = renderWithLocked()
+    const lockedTrigger = container.querySelector("[data-status='locked']")
+    // Lock icon has aria-hidden="true", check via svg presence
+    const svg = lockedTrigger?.querySelector("svg")
+    expect(svg).toBeTruthy()
+    expect(svg).toHaveAttribute("aria-hidden", "true")
+  })
+
+  it("sets aria-disabled on locked trigger", () => {
+    const { container } = renderWithLocked()
+    const lockedTrigger = container.querySelector(
+      "[data-slot='stepper-trigger'][data-status='locked']"
+    )
+    expect(lockedTrigger).toHaveAttribute("aria-disabled", "true")
+  })
+
+  it("removes locked trigger from tab order", () => {
+    const { container } = renderWithLocked()
+    const lockedTrigger = container.querySelector(
+      "[data-slot='stepper-trigger'][data-status='locked']"
+    )
+    expect(lockedTrigger).toHaveAttribute("tabindex", "-1")
+  })
+
+  it("does not fire onClick when locked trigger is clicked", async () => {
+    const handler = vi.fn()
+    const { container } = render(
+      <Stepper activeStep={0}>
+        <StepperItem step={0} status="locked">
+          <StepperTrigger step={0} status="locked" onClick={handler} />
+          <StepperTitle>Locked Step</StepperTitle>
+        </StepperItem>
+      </Stepper>
+    )
+    const lockedTrigger = container.querySelector(
+      "[data-slot='stepper-trigger'][data-status='locked']"
+    ) as HTMLElement
+    await userEvent.click(lockedTrigger, { pointerEventsCheck: 0 })
+    expect(handler).not.toHaveBeenCalled()
+  })
+
+  it("locked status is never auto-derived from activeStep", () => {
+    const { container } = render(
+      <Stepper activeStep={0}>
+        <StepperItem step={0}>
+          <StepperTrigger step={0} />
+        </StepperItem>
+        <StepperItem step={1}>
+          <StepperTrigger step={1} />
+        </StepperItem>
+        <StepperItem step={2}>
+          <StepperTrigger step={2} />
+        </StepperItem>
+      </Stepper>
+    )
+    const items = container.querySelectorAll("[data-slot='stepper-item']")
+    items.forEach((item) => {
+      expect(item.getAttribute("data-status")).not.toBe("locked")
+    })
+    const triggers = container.querySelectorAll("[data-slot='stepper-trigger']")
+    triggers.forEach((trigger) => {
+      expect(trigger.getAttribute("data-status")).not.toBe("locked")
+    })
+  })
+
+  it("locked item sets data-status='locked' on the item element", () => {
+    const { container } = render(
+      <Stepper activeStep={0}>
+        <StepperItem step={1} status="locked">
+          <StepperTrigger step={1} status="locked" />
+          <StepperTitle>Locked</StepperTitle>
+        </StepperItem>
+      </Stepper>
+    )
+    const item = container.querySelector("[data-slot='stepper-item']")
+    expect(item).toHaveAttribute("data-status", "locked")
   })
 })
 

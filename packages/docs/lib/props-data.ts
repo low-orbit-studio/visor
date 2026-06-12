@@ -813,8 +813,8 @@ export const propsData: Record<string, PropDef[]> = {
     },
     {
       name: 'status',
-      type: "'complete' | 'active' | 'upcoming'",
-      description: 'Explicit status override for StepperItem or StepperTrigger. Auto-derived from activeStep if omitted.',
+      type: "'complete' | 'active' | 'upcoming' | 'locked'",
+      description: 'Explicit status override for StepperItem or StepperTrigger. Auto-derived from activeStep if omitted; "locked" is never auto-derived and must be set explicitly.',
     },
     {
       name: 'complete',
