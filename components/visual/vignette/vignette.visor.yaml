@@ -1,0 +1,45 @@
+name: Vignette
+description: Fixed, full-viewport radial vignette layer. Decorative atmosphere atom — pointer-events-none, aria-hidden, static. Ported from Blacklight bl-vignette (BL-326).
+category: visual-elements
+
+when_to_use:
+  - Adding cinematic depth to dark-background hero sections
+  - Creating stage-lighting atmosphere on full-viewport canvases
+  - Softening hard edges on near-black page backgrounds
+
+when_not_to_use:
+  - Light-mode pages (the dark falloff color will be jarring)
+  - Content-heavy pages where the dark vignette obscures readable text at the edges
+  - When you need a scrolling (non-fixed) overlay — Vignette is always fixed
+
+why: >
+  Vignette provides a zero-JS, CSS-only radial gradient layer that makes
+  large dark fills read as staged and intentional rather than flat. Because
+  it uses CSS custom properties for every gradient parameter, consumers can
+  adjust strength, position, and color without forking the component.
+
+props:
+  - name: zIndex
+    type: number
+    default: 20
+    description: CSS z-index for the vignette layer
+  - name: className
+    type: string
+    description: Additional class names
+  - name: style
+    type: React.CSSProperties
+    description: >
+      Inline styles; use CSS custom properties to tune the gradient:
+      --vignette-transparent-stop (52%), --vignette-color-stop (100%),
+      --vignette-color (rgba(0,0,6,0.5)), --vignette-size-x (120%),
+      --vignette-size-y (90%), --vignette-position (50% 38%)
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/visual-elements/vignette"
+
+example: |
+  <div style={{ position: 'relative', height: '400px', background: '#020214' }}>
+    <Vignette />
+  </div>
