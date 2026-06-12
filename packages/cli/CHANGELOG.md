@@ -1,5 +1,55 @@
 # Changelog
 
+## 1.9.0
+
+### Minor Changes
+
+- a13929f: Add `SegmentedProgress` primitive (VI-551) — discrete per-step progress meter.
+
+  New data-display primitive installable via `npx visor add segmented-progress`.
+  Renders N equal pill segments in a row, each independently expressing `done`,
+  `current`, or `pending` state. Designed for multi-step onboarding, wizard flows,
+  and survey/elicitation UIs where individual step completion matters.
+
+  - `role="progressbar"` with `aria-valuemin/max/now` and a required `aria-label`
+  - `done` segments: solid `var(--primary)` fill
+  - `current` segment (optional): `linear-gradient` from primary (55%) to `var(--surface-muted)` (45%) — matches the brand-workbench prototype treatment
+  - `pending` segments: `var(--surface-muted)` fill
+  - Two sizes: `sm` (6px, prototype height) and `md` (8px)
+  - CVA size variants, CSS Modules, all colors via design tokens
+  - `prefers-reduced-motion` support
+
+- e5f6436: Add `GrainOverlay` visual component — a fixed, full-viewport film-grain noise layer (VI-564). Ports Blacklight's `.bl-grain` depth-system primitive (BL-326). Decorative only: `aria-hidden`, `pointer-events: none`, monochrome SVG `fractalNoise` texture tiled at 160×160px. Props: `opacity` (default 0.035) and `zIndex` (default 30).
+- 92cbf64: Add `AmbientGlow` component (VI-566) — a decorative drifting radial-glow primitive ported from Blacklight's `.bl-ambient` depth system.
+
+  - **`AmbientGlow`** — fixed/absolute decorative layer (`aria-hidden`, `pointer-events: none`) whose color flows entirely through the `--glow-color` CSS custom property, resolved at paint time so live rAF rewrites on ancestor elements repaint without React re-renders.
+  - **`keyed` variant** — color-mix derived from `--glow-color` for runtime-keyed accents.
+  - **`gold` variant** — static warm `rgba(255, 190, 38, 0.07)` glow.
+  - Honors `prefers-reduced-motion` (drift animation disabled).
+
+- 5d38a93: Add `HeroGlow` decorative primitive (VI-567) — a breathing radial glow band for hero media, color-driven by a live `--glow-color` CSS custom property.
+
+  - **Component** `components/visual/hero-glow/hero-glow.tsx` — `position: absolute` element with `aria-hidden="true"` and `pointer-events: none`; glowColor prop sets `--glow-color` inline; external rAF-rate CSS var updates work without React re-renders
+  - **CSS Module** `hero-glow.module.css` — direct port of `.bl-hero-glow` (blacklight-website BL-326); `radial-gradient(70% 60% at 50% 55%, color-mix(in srgb, var(--glow-color) 16%, transparent), transparent 72%)`; 7s ease-in-out breathe animation (opacity 0.75↔1, scale 1↔1.03); `prefers-reduced-motion` disables animation
+  - **Registry** — registered in `registry/registry-visual.ts` as `hero-glow` in the `visual-elements` category
+  - **Docs** — specimen page at `/docs/components/visual-elements/hero-glow` with live preview, API reference, and rAF usage example
+
+- ae800f6: Add `SectionIntro` marketing component (VI-571) — eyebrow + display heading + optional lede pattern that opens a marketing section.
+
+  - **Component** — `SectionIntro` with `eyebrow`, `heading`, `lede`, `align` (`left` | `center`), `headingAs`, and `as` props. Registered in the Visor registry.
+  - **Eyebrow color** — driven through `--section-intro-eyebrow-color` so consumers can bind the eyebrow to any live-rewritten CSS var (e.g. a keyed `--color-acid` brand accent).
+  - **CSS Module** — `section-intro.module.css` using tokenized spacing, font, and color vars; pure CSS attribute-selector alignment variants.
+  - **Docs** — specimen page added to the General category at `/docs/components/general/section-intro`.
+
+### Patch Changes
+
+- 6c121f9: Add `locked` status to the Stepper component (VI-550).
+
+  - `StepperItem` and `StepperTrigger` accept `status="locked"` as an explicit per-item override — never auto-derived from `activeStep`.
+  - Locked triggers render a Phosphor `Lock` icon, set `aria-disabled="true"`, are removed from the tab order (`tabIndex={-1}`), and suppress `onClick` handlers.
+  - Title text is rendered in the secondary/muted color when the parent item is locked.
+  - New `.trigger--locked` CSS class added to `stepper.module.css` using `--border-muted`, `--text-tertiary`, and `--opacity-60` tokens.
+
 ## 1.8.0
 
 ### Minor Changes
