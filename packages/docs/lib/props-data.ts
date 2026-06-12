@@ -2873,4 +2873,24 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'Horizontal padding token.',
     },
   ],
+
+  spinner: [
+    {
+      name: 'size',
+      type: "'xs' | 'sm' | 'md'",
+      default: "'md'",
+      description: 'Ring size. xs=12px, sm=16px, md=24px.',
+    },
+    {
+      name: 'tone',
+      type: "'default' | 'primary'",
+      default: "'default'",
+      description: 'Color treatment for the leading edge. default uses --text-tertiary, primary uses the --primary brand token.',
+    },
+    {
+      name: 'label',
+      type: 'string',
+      description: 'Accessible label. When provided, renders role="status" with visually-hidden text. When omitted, aria-hidden="true" (decorative).',
+    },
+  ],
 };
