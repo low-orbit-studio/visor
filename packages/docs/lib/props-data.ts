@@ -678,6 +678,14 @@ export const propsData: Record<string, PropDef[]> = {
       name: 'feel',
       type: 'string',
       description: 'Italic feel descriptor pairing the context (e.g. "warm, accountable").',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
   'challenge-card': [
     {
       name: 'icon',
@@ -693,7 +701,6 @@ export const propsData: Record<string, PropDef[]> = {
     {
       name: 'className',
       type: 'string',
-      description: 'Additional CSS class names to merge onto the element.',
       description: 'Additional CSS class names to merge onto any sub-component.',
     },
   ],
