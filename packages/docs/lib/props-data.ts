@@ -667,6 +667,25 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'challenge-card': [
+    {
+      name: 'icon',
+      type: 'ReactNode | null',
+      description: 'ChallengeCardHeader: override the default Flag icon (null suppresses it). ChallengeCardAction: optional leading icon — primary defaults to a Check icon.',
+    },
+    {
+      name: 'variant',
+      type: "'primary' | 'ghost'",
+      default: "'primary'",
+      description: 'ChallengeCardAction style — "primary" is the filled warning-toned action, "ghost" is transparent with a border.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto any sub-component.',
+    },
+  ],
+
   stepper: [
     {
       name: 'activeStep',
