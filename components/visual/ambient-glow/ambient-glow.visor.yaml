@@ -1,0 +1,50 @@
+name: AmbientGlow
+description: Absolutely-positioned drifting radial glow with live CSS-var-driven color. Decorative only — aria-hidden, pointer-events-none. Ported from the Blacklight marketing depth system (BL-326).
+category: visual-elements
+
+when_to_use:
+  - Atmospheric background lighting behind hero sections or focal objects
+  - Live color-reactive glows that track a dynamically rewritten CSS custom property (e.g. hero crossfade accent)
+  - Marketing and landing pages that need depth via subtle light fields
+  - Pro/premium surface accents (gold variant)
+
+when_not_to_use:
+  - Functional UI elements — AmbientGlow is purely decorative
+  - When the user prefers reduced motion and you need a visible element (the glow becomes static but stays visible)
+  - Inside overflow: hidden containers without adjusting inset values
+
+why: >
+  AmbientGlow extracts the proven `.bl-ambient` pattern from Blacklight's depth
+  system into a reusable Visor primitive. The color flows entirely through
+  CSS custom properties resolved at paint time, so a live accent rewrite
+  (e.g. `document.documentElement.style.setProperty('--glow-color', ...)`)
+  repaint the glow each frame without triggering any React re-render. The drift
+  keyframe is transform-only (`translate3d` + `scale`), composited on the GPU
+  and safe to layer beneath content without layout impact.
+
+props:
+  - name: variant
+    type: "'keyed' | 'gold'"
+    default: "keyed"
+    description: "keyed — color-mix from --glow-color (live-rewritable); gold — static warm gold at 7% opacity"
+  - name: glowColor
+    type: string
+    description: Static glow color override — sets --glow-color as an inline custom property. For live runtime rewrites use a parent-element CSS variable instead.
+  - name: className
+    type: string
+    description: Additional class names for positioning and sizing (position/inset/width/height).
+  - name: style
+    type: React.CSSProperties
+    description: Inline styles, typically inset/width/height. --glow-color can also be set here.
+
+dependencies:
+  - class-variance-authority
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/visual-elements/ambient-glow"
+
+example: |
+  <div style={{ position: 'relative', width: 400, height: 300 }}>
+    <AmbientGlow style={{ inset: 0 }} />
+    <p style={{ position: 'relative' }}>Content above the glow</p>
+  </div>

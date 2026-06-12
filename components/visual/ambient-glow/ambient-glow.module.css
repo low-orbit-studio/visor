@@ -1,0 +1,61 @@
+/* AmbientGlow — drifting radial glow decorative primitive (VI-566)
+ *
+ * Color contract: all color paths run through CSS custom properties resolved
+ * at paint time. The consumer sets --glow-color on a parent element (or on
+ * the element itself via style). For Blacklight-style live crossfades, write
+ * --glow-color on <html> every rAF — the glow tracks without a re-render.
+ *
+ * Drift: transform-only (translate3d + scale). Will-change: transform tells
+ * the compositor to promote to its own layer. Do NOT combine with CSS utility
+ * translate classes — the keyframe already owns the transform axis.
+ *
+ * Size / position: set via className or style at the call site. The component
+ * renders absolutely positioned so the parent needs position: relative (or any
+ * non-static position) to contain it.
+ */
+
+/* Base */
+.base {
+  /* Consumer-overridable glow color — defaults to the theme accent. */
+  --glow-color: var(--accent, var(--interactive-primary-bg, #2563eb));
+
+  position: absolute;
+  pointer-events: none;
+  will-change: transform;
+  animation: ambientGlowDrift 18s ease-in-out infinite alternate;
+}
+
+/* Keyed variant — color-mix against the live --glow-color */
+.variantKeyed {
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--glow-color) 10%, transparent),
+    transparent 72%
+  );
+}
+
+/* Gold variant — static warm gold; --glow-color is unused for this variant */
+.variantGold {
+  background: radial-gradient(
+    closest-side,
+    rgba(255, 190, 38, 0.07),
+    transparent 72%
+  );
+}
+
+/* Drift keyframes — transform-only, ~2% translate + 1.07 scale (matches BL-326) */
+@keyframes ambientGlowDrift {
+  from {
+    transform: translate3d(-2%, -1.5%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(2%, 2%, 0) scale(1.07);
+  }
+}
+
+/* Reduced motion — disable drift, keep the glow visible */
+@media (prefers-reduced-motion: reduce) {
+  .base {
+    animation: none;
+  }
+}
