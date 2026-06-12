@@ -1,0 +1,109 @@
+---
+title: BrowserFrame
+description: Browser-chrome mockup frame with traffic-light dots and a URL pill. Wraps arbitrary content for marketing and landing surfaces.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { BrowserFrame } from '@/components/ui/browser-frame';
+
+## Preview
+
+<ComponentPreview
+  title="BrowserFrame — static display"
+  code={"import { BrowserFrame } from '@/components/visual/browser-frame/browser-frame';\n\n<BrowserFrame url=\"myproduct.example.com\">\n  <div style={{ padding: '24px', background: '#0a0a0b', color: '#fff' }}>Product screenshot or content here</div>\n</BrowserFrame>"}
+>
+  <BrowserFrame url="myproduct.example.com">
+    <div style={{ padding: '24px', background: '#0a0a0b', color: 'rgb(255 255 255 / 0.6)', fontSize: '0.875rem' }}>
+      Product screenshot or content here
+    </div>
+  </BrowserFrame>
+</ComponentPreview>
+
+## Clickable URL Pill
+
+Pass `href` to make the URL pill a real anchor link with a focus ring. The link opens in a new tab (`target="_blank"`) with `rel="noopener noreferrer"`.
+
+<ComponentPreview
+  title="BrowserFrame — clickable URL pill"
+  code={"import { BrowserFrame } from '@/components/visual/browser-frame/browser-frame';\n\n<BrowserFrame url=\"sharlese.epk.pro\" href=\"https://sharlese.epk.pro\">\n  <div style={{ padding: '24px', background: '#0a0a0b', color: '#fff' }}>Artist EPK content</div>\n</BrowserFrame>"}
+>
+  <BrowserFrame url="sharlese.epk.pro" href="https://sharlese.epk.pro">
+    <div style={{ padding: '24px', background: '#0a0a0b', color: 'rgb(255 255 255 / 0.6)', fontSize: '0.875rem' }}>
+      Artist EPK content — URL pill is a real link
+    </div>
+  </BrowserFrame>
+</ComponentPreview>
+
+## Elevation
+
+`BrowserFrame` is elevation-free by design. Compose with `.lit`, `.lit-soft`, or `.lit-strong` utility classes from `@loworbitstudio/visor-core/utilities` to add depth independently.
+
+```tsx
+import { BrowserFrame } from '@/components/visual/browser-frame/browser-frame';
+
+<BrowserFrame url="myproduct.example.com" className="lit">
+  <img src="/screenshot.png" alt="Product screenshot" />
+</BrowserFrame>
+```
+
+## Custom Focus Color
+
+The URL pill focus ring color is driven by `--browser-frame-focus-color`, defaulting to `var(--accent, currentColor)`. Override it per-instance to bind a themed or keyed accent (e.g. a per-artist color in Blacklight):
+
+```tsx
+<BrowserFrame
+  url="sharlese.epk.pro"
+  href="https://sharlese.epk.pro"
+  style={{ '--browser-frame-focus-color': '#c8ff00' } as React.CSSProperties}
+>
+  <img src="/screenshot.png" alt="Product screenshot" />
+</BrowserFrame>
+```
+
+## Installation
+
+```bash
+npx visor add browser-frame
+```
+
+## Usage
+
+```tsx
+import { BrowserFrame } from '@/components/visual/browser-frame/browser-frame';
+
+{/* Static display-only */}
+<BrowserFrame url="myproduct.example.com">
+  <img src="/screenshot.png" alt="Product screenshot" />
+</BrowserFrame>
+
+{/* Clickable URL pill */}
+<BrowserFrame url="sharlese.epk.pro" href="https://sharlese.epk.pro">
+  <div style={{ padding: '24px' }}>Artist EPK content</div>
+</BrowserFrame>
+```
+
+## API Reference
+
+### BrowserFrameProps
+
+<PropsTable component="browser-frame" />
+
+## Accessibility
+
+- The traffic-light dots are `aria-hidden="true"` — they are purely decorative.
+- When `href` is set, the URL pill renders as an `<a>` with an `aria-label` of `"Open {url} (opens in new tab)"` so screen readers convey both the destination and the new-tab behavior.
+- Focus ring uses `--focus-ring-width` and `--focus-ring-offset` tokens, consistent with all other Visor interactive elements.
+- The frame itself conveys no information — ensure the content inside is accessible independently.
+
+## When to Use
+
+- Showing a product screenshot or live embed inside a browser mockup on a marketing or landing page
+- EPK-style artist or product demos where the "in-browser" framing provides context
+- Any dark surface that needs a browser-chrome visual metaphor without hand-rolling the chrome bar
+
+## When Not to Use
+
+- Real browser chrome or app shells — this is a decorative mockup, not a functional navigation component
+- Light-mode surfaces without overriding `--browser-frame-bg` (the default deep-dark background will clash)
+- Nested inside another `BrowserFrame` (a browser inside a browser is confusing)

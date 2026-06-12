@@ -96,6 +96,25 @@ export const visual: Registry = [
     ],
   },
   {
+    name: "browser-frame",
+    type: "registry:ui",
+    category: "visual-elements",
+    description:
+      "Browser-chrome mockup frame with traffic-light dots and a URL pill. Wraps arbitrary content for marketing and landing surfaces. Elevation-free — compose with .lit / .lit-soft / .lit-strong for depth.",
+    dependencies: ["@loworbitstudio/visor-core", "@phosphor-icons/react"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/visual/browser-frame/browser-frame.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/visual/browser-frame/browser-frame.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "sphere",
     type: "registry:ui",
     category: "visual-elements",

@@ -1,0 +1,88 @@
+/*
+ * BrowserFrame — browser-chrome mockup frame.
+ *
+ * Ported from Blacklight EpkFrame (VI-570). Elevation is kept OUT so consumers
+ * can compose with .lit / .lit-soft / .lit-strong from visor-core/utilities.
+ *
+ * --browser-frame-bg: deep near-black background of the frame shell.
+ *   Override to use a theme surface token when the consumer has one.
+ *
+ * --browser-frame-focus-color: focus outline color on the URL pill link.
+ *   Defaults to var(--accent, currentColor) so Blacklight can bind its
+ *   keyed per-artist accent by setting this on the frame element.
+ */
+
+.frame {
+  overflow: hidden;
+  border-radius: var(--radius-xl, 1rem);
+  border: var(--stroke-width-thin) solid var(--hairline-strong, rgb(255 255 255 / var(--opacity-10, 0.10)));
+  background-color: var(--browser-frame-bg, #0a0a0b);
+}
+
+/* Chrome bar */
+.chrome {
+  position: relative;
+  display: flex;
+  height: var(--spacing-10, 40px);
+  align-items: center;
+  justify-content: center;
+  border-bottom: var(--stroke-width-thin) solid var(--hairline, rgb(255 255 255 / var(--opacity-5, 0.05)));
+  padding-left: var(--spacing-3, 12px);
+  padding-right: var(--spacing-3, 12px);
+}
+
+/* Traffic-light dots cluster */
+.dots {
+  position: absolute;
+  left: var(--spacing-3_5, 14px);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1, 4px);
+}
+
+.dot {
+  display: block;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background-color: rgb(255 255 255 / var(--opacity-12, 0.12));
+}
+
+/* URL pill (non-linked) */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1, 4px);
+  border-radius: var(--radius-md, 0.375rem);
+  background-color: rgb(255 255 255 / var(--opacity-5, 0.05));
+  padding-left: var(--spacing-3, 12px);
+  padding-right: var(--spacing-3, 12px);
+  padding-top: var(--spacing-1, 4px);
+  padding-bottom: var(--spacing-1, 4px);
+  font-size: 0.6875rem; /* 11px — intentional: mockup chrome reads at near-system scale */
+  font-weight: var(--font-weight-light, 300);
+  letter-spacing: 0.025em;
+  color: rgb(255 255 255 / var(--opacity-60, 0.60));
+}
+
+.pillIcon {
+  /* Phosphor icon inherits currentColor; the lock stays on the text baseline */
+  flex-shrink: 0;
+}
+
+/* URL pill as a link */
+.pillLink {
+  text-decoration: none;
+  color: inherit;
+  transition: color var(--motion-duration-fast, 150ms) var(--motion-easing-standard, ease);
+}
+
+.pillLink:hover .pill {
+  color: rgb(255 255 255 / var(--opacity-80, 0.80));
+}
+
+.pillLink:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--browser-frame-focus-color, var(--accent, currentColor));
+  outline-offset: var(--focus-ring-offset, 2px);
+  border-radius: var(--radius-md, 0.375rem);
+}
