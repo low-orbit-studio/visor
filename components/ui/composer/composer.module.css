@@ -17,7 +17,7 @@
   border: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
   border-radius: var(--radius-2xl, 1.5rem);     /* ~24px, matches cbox prototype */
   box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1));
-  padding: 14px 16px 11px;                       /* prototype: 14px top, 16px sides, 11px bottom */
+  padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem); /* prototype 14/16/11px, snapped to 4px grid */
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -88,7 +88,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-2, 0.5rem);                   /* prototype: 7px ≈ spacing-2 */
-  margin-top: 11px;                                 /* prototype: margin-top 11px */
+  margin-top: var(--spacing-3, 0.75rem);            /* prototype 11px, snapped to 4px grid */
 }
 
 /* ─── Tool button ───────────────────────────────────────────────────────── */
