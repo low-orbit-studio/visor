@@ -788,6 +788,28 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "toast-card",
+    type: "registry:ui",
+    description:
+      "A static, server-renderable notification card for editorial display of toast anatomy. Use in state galleries — not for imperative portal notifications.",
+    dependencies: [
+      "class-variance-authority",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/toast-card/toast-card.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/toast-card/toast-card.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "table",
     type: "registry:ui",
     description:

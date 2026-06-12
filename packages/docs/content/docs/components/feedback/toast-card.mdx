@@ -1,0 +1,154 @@
+---
+title: ToastCard
+description: A static, server-renderable notification card for editorial display of toast anatomy. Use in state galleries and design documentation — not for imperative portal notifications.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ToastCard, ToastCardStack } from '@/components/ui/toast-card';
+import { ToastCardActionDemo, ToastCardDismissDemo } from '@/components/ui/toast-card-demos';
+
+<Callout type="info">
+**ToastCard vs Toast:** `ToastCard` is the *static editorial* rendering of a notification card — used in state gallery screens to show toast anatomy in-flow. It has no portal, timer, or Sonner dependency. For imperative notifications that auto-dismiss, use [Toast](/docs/components/feedback/toast).
+</Callout>
+
+## Variants
+
+Each variant receives a distinct filled icon badge whose background uses the corresponding semantic token. The glyph defaults per variant: `CheckCircle` (success), `WarningCircle` (error), `Info` (info), `Warning` (warning).
+
+<ComponentPreview
+  title="All Variants"
+  code={"import { ToastCard } from '@/components/ui/toast-card/toast-card';\n\n<ToastCard variant=\"success\" title=\"Changes saved\" body=\"Your profile has been updated.\" />\n<ToastCard variant=\"error\" title=\"Upload failed\" body=\"The file exceeds the 10MB limit.\" />\n<ToastCard variant=\"info\" title=\"New update available\" body=\"Refresh to load the latest version.\" />\n<ToastCard variant=\"warning\" title=\"Storage almost full\" body=\"You have used 90% of your storage quota.\" />"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxWidth: '400px' }}>
+    <ToastCard variant="success" title="Changes saved" body="Your profile has been updated." />
+    <ToastCard variant="error" title="Upload failed" body="The file exceeds the 10MB limit." />
+    <ToastCard variant="info" title="New update available" body="Refresh to load the latest version." />
+    <ToastCard variant="warning" title="Storage almost full" body="You have used 90% of your storage quota." />
+  </div>
+</ComponentPreview>
+
+## With Action
+
+Provide `action` text and an `onAction` handler to render a primary-colored action affordance. When `onAction` is omitted, the action renders as static text (server-safe).
+
+<ComponentPreview
+  title="With Action"
+  code={"<ToastCard\n  variant=\"error\"\n  title=\"Sync failed\"\n  body=\"Could not connect to the server.\"\n  action=\"Retry\"\n  onAction={() => {}}\n/>"}
+>
+  <ToastCardActionDemo />
+</ComponentPreview>
+
+## With Dismiss
+
+Provide an `onDismiss` handler to render a muted X dismiss control.
+
+<ComponentPreview
+  title="With Dismiss"
+  code={"<ToastCard\n  variant=\"info\"\n  title=\"New update available\"\n  body=\"Refresh to load the latest version.\"\n  onDismiss={() => {}}\n/>"}
+>
+  <ToastCardDismissDemo />
+</ComponentPreview>
+
+## Custom Icon
+
+Override the default per-variant glyph via the `icon` prop.
+
+<ComponentPreview
+  title="Custom Icon"
+  code={"import { Rocket } from '@phosphor-icons/react';\n\n<ToastCard\n  variant=\"success\"\n  title=\"Deployment complete\"\n  body=\"Your app is live.\"\n  icon={<Rocket weight=\"fill\" />}\n/>"}
+>
+  <div style={{ maxWidth: '400px' }}>
+    <ToastCard
+      variant="success"
+      title="Deployment complete"
+      body="Your app is live."
+    />
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add toast-card
+```
+
+This copies two files into your project:
+
+- `components/ui/toast-card/toast-card.tsx` — the component
+- `components/ui/toast-card/toast-card.module.css` — the styles
+
+## Usage
+
+```tsx
+import { ToastCard, ToastCardStack } from '@/components/ui/toast-card/toast-card';
+
+// Basic
+<ToastCard variant="success" title="Changes saved" />
+
+// With body and dismiss
+<ToastCard
+  variant="error"
+  title="Upload failed"
+  body="The file exceeds the 10MB limit."
+  onDismiss={() => setVisible(false)}
+/>
+
+// Stacked (fixed top-right column)
+<ToastCardStack>
+  <ToastCard variant="success" title="Saved" />
+  <ToastCard variant="error" title="Upload failed" body="File too large." />
+  <ToastCard variant="info" title="Update available" />
+</ToastCardStack>
+```
+
+## API Reference
+
+### ToastCardProps
+
+<PropsTable component="toast-card" />
+
+The component also accepts all standard `<div>` HTML attributes except `title` (which is reserved for the notification headline).
+
+### ToastCardStack
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `top` | `string` | `var(--spacing-6)` | Distance from the top of the viewport. Maps to `--toast-card-stack-top`. |
+| `gap` | `string` | `var(--spacing-3)` | Vertical gap between cards. Maps to `--toast-card-stack-gap`. |
+
+`ToastCardStack` also accepts all standard `<div>` HTML attributes.
+
+## Disambiguation
+
+| Component | Use when |
+| --- | --- |
+| `ToastCard` | Static editorial card — state galleries, docs, design specimens |
+| `Toast` | Imperative portal notification — triggered by user actions, auto-dismisses |
+
+## Accessibility
+
+- Each card renders `role="status"` and `aria-live="polite"` so screen readers announce content updates politely.
+- The dismiss button has `aria-label="Dismiss notification"`.
+- The icon slot renders `aria-hidden="true"` — decorative; the title conveys the meaning.
+- For urgent errors that require immediate announcement, consider adding `aria-live="assertive"` via a `data-` attribute or wrapping element.
+
+## Customization
+
+After copying the component, common customizations include:
+
+```tsx
+// Retune the stack position
+<ToastCardStack top="var(--spacing-8)" gap="var(--spacing-2)">
+  <ToastCard variant="success" title="File uploaded" />
+</ToastCardStack>
+
+// Custom icon glyph
+import { CloudCheck } from '@phosphor-icons/react';
+
+<ToastCard
+  variant="success"
+  title="Synced"
+  icon={<CloudCheck weight="fill" />}
+/>
+```

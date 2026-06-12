@@ -1,0 +1,146 @@
+/* ToastCard — a declarative (non-Sonner) notification card that can be
+ * server-rendered in a fixed stack. Theme-agnostic: every value is a
+ * design-language token with a safe fallback, so the card looks right on
+ * all themes without any hardcoded brand color.
+ *
+ * Note: use ToastCard for static editorial rendering of notification anatomy
+ * (state galleries, docs). For imperative portal notifications use Toast. */
+
+/* Card surface — elevated card on a soft shadow, leading icon + content +
+   optional close, aligned to the top so multi-line bodies read cleanly. */
+.base {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3, 0.75rem);
+  min-width: 320px;
+  padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
+  background-color: var(--surface-elev, var(--surface-card, #ffffff));
+  border-radius: var(--radius-md, 0.5rem);
+  box-shadow: var(--shadow-lg);
+  color: var(--text-primary, #111827);
+}
+
+/* Circular FILLED icon badge — fixed square collapses to a perfect circle.
+   Background is set per-variant; the glyph inherits currentColor. */
+.icon {
+  flex-shrink: 0;
+  width: var(--toast-card-icon-size, 1.5rem);
+  height: var(--toast-card-icon-size, 1.5rem);
+  margin-top: calc(var(--spacing-1, 0.25rem) / 4);
+  border-radius: var(--radius-full, 9999px);
+  display: grid;
+  place-items: center;
+}
+
+.icon svg {
+  width: var(--toast-card-icon-glyph, 0.875rem);
+  height: var(--toast-card-icon-glyph, 0.875rem);
+}
+
+/* Variants — filled badge color + glyph color. */
+.variantSuccess .icon {
+  background-color: var(--success, #22c55e);
+  color: var(--primary-text, var(--text-inverse, #ffffff));
+}
+
+.variantError .icon {
+  background-color: var(--destructive, #ef4444);
+  color: var(--color-white, #ffffff);
+}
+
+.variantInfo .icon {
+  background-color: var(--accent, #0ea5e9);
+  color: var(--primary-text, var(--text-inverse, #ffffff));
+}
+
+.variantWarning .icon {
+  background-color: var(--warning, #f59e0b);
+  color: var(--primary-text, var(--text-inverse, #ffffff));
+}
+
+/* Content column — title, optional muted body, optional action. */
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1.3;
+  color: var(--text-primary, #111827);
+}
+
+.body {
+  margin-top: calc(var(--spacing-1, 0.25rem) / 2);
+  font-size: var(--toast-card-body-font-size, 0.8125rem);
+  line-height: 1.4;
+  color: var(--text-tertiary, #6b7280);
+}
+
+/* Primary-colored action affordance — borderless text button that reads as a
+   link. Server-safe: renders as static styled text when no handler is wired. */
+.action {
+  display: inline-block;
+  margin-top: calc(var(--spacing-1, 0.25rem) * 1.5);
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: var(--toast-card-body-font-size, 0.8125rem);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--primary, currentColor);
+  cursor: pointer;
+}
+
+.action:hover {
+  text-decoration: underline;
+}
+
+.action:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+/* Muted dismiss control — transparent square, darkens on hover. */
+.close {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--spacing-1, 0.25rem) / 2);
+  border: none;
+  background: transparent;
+  color: var(--text-muted, var(--text-tertiary, #9ca3af));
+  cursor: pointer;
+  transition: color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.close:hover {
+  color: var(--text-primary, #111827);
+}
+
+.close:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+.close svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Fixed top-right column for a vertical stack of cards. Top offset + gap are
+   CSS-var driven (set via ToastCardStack props) so consumers retune without
+   forking. Defaults match the overlay toast-region pattern. */
+.stack {
+  position: fixed;
+  top: var(--toast-card-stack-top, var(--spacing-6, 1.5rem));
+  right: var(--toast-card-stack-right, var(--spacing-6, 1.5rem));
+  z-index: var(--toast-card-stack-z, 60);
+  display: flex;
+  flex-direction: column;
+  gap: var(--toast-card-stack-gap, var(--spacing-3, 0.75rem));
+  max-width: 380px;
+}
