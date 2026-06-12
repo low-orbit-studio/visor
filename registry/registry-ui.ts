@@ -1948,6 +1948,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "section-intro",
+    type: "registry:ui",
+    category: "general",
+    description:
+      "Marketing section opener with a mono uppercase eyebrow, display-font heading, and optional lede paragraph. Eyebrow color tracks a live-rewritten CSS custom property for runtime brand-accent binding.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/section-intro/section-intro.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/section-intro/section-intro.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "section-nav",
     type: "registry:ui",
     category: "navigation",
