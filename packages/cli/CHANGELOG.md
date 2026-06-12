@@ -1,5 +1,44 @@
 # Changelog
 
+## 1.8.0
+
+### Minor Changes
+
+- bedea76: Add `ChallengeCard` component (VI-554) — a first-class adversarial challenge message with a human gate affordance.
+
+  - **`ChallengeCard`** — root container with `role="alert"` and warning-soft background / warning-line border.
+  - **`ChallengeCardHeader`** — uppercase warning-toned title with a default `Flag` icon (overridable or suppressible).
+  - **`ChallengeCardBody`** — prose body text.
+  - **`ChallengeCardActions`** — flex row for action buttons and gate indicator.
+  - **`ChallengeCardAction`** — real `<button>` with `variant="primary"` (filled warning-toned with dark text) or `variant="ghost"` (transparent + border). Includes focus rings via `var(--focus-ring-*)` tokens.
+  - **`ChallengeCardGate`** — lock icon + "You hold the gate" label (overridable), pushed right via `margin-left: auto`.
+
+  Distinct from `Alert` (passive notices) — ChallengeCard is for adversarial AI prompts that require an explicit human decision before proceeding.
+
+- 99b43a3: Add `Composer` — AI-chat composer compound component (VI-555).
+
+  A rounded card container holding an auto-growing multi-line text field and a tools row with icon buttons, an arbitrary status-chip slot, and a circular primary send button.
+
+  - **Compound API**: `Composer` (root, manages field value + submit), `ComposerField` (auto-growing textarea; Enter submits, Shift+Enter inserts newline), `ComposerToolbar` (flex tools row), `ComposerToolButton` (32px circular bordered icon button), `ComposerSpacer` (flex spacer), `ComposerSend` (34px circular primary send button, auto-disabled when field is empty).
+  - Supports both **controlled** (`value` / `onValueChange`) and **uncontrolled** modes; uncontrolled clears the field after submit.
+  - `disabled` on the root propagates to all interactive children.
+  - All values reference design tokens — no hard-coded colors, shadows, or spacing.
+  - Focus rings via `var(--focus-ring-width)` / `var(--focus-ring-offset)`.
+  - Respects `prefers-reduced-motion`.
+  - Installed via `npx visor add composer`.
+
+- 38fdb14: Add StructuredPrompt compound component (VI-553) — inline mad-lib fill-in-the-blank card for structured elicitation flows. Compound: StructuredPrompt / StructuredPromptHeader (icon + uppercase eyebrow) / StructuredPromptBody (tall-line-height prose) / StructuredPromptSlot (filled or empty inline chip; renders as button when onClick provided, span otherwise) / StructuredPromptHint (footer tertiary hint text).
+- 440ff79: Add `SpecimenCard` — a labeled frame that pairs a context token + "feel" descriptor with arbitrary live component children, proving how a brand voice/tone renders on real components.
+
+  Covers two Brand Workbench patterns: the tone-by-context grid card (context label + italic feel descriptor above a live specimen) and the Speaking block (multiple specimens stacked with an optional `SpecimenCardFooter` voice-key attribution line). One component, two uses — no ad-hoc frame HTML needed in workbench surfaces.
+
+- 6357c9b: Add `Vignette` visual primitive — fixed, full-viewport radial vignette layer (VI-565).
+
+  - **Component** — `components/visual/vignette/vignette.tsx` + `vignette.module.css`. Zero-JS, CSS-only. `position: fixed; inset: 0; pointer-events: none; aria-hidden`. Pixel-identical to Blacklight `.bl-vignette` (BL-326) at defaults.
+  - **Configurable** — All gradient parameters exposed as CSS custom properties (`--vignette-size-x`, `--vignette-size-y`, `--vignette-position`, `--vignette-transparent-stop`, `--vignette-color`, `--vignette-color-stop`). `zIndex` prop (default `20`).
+  - **Registry** — Registered in `registry-visual.ts`; available via `npx visor add vignette`.
+  - **Docs** — New docs page at `/docs/components/visual-elements/vignette`.
+
 ## 1.7.0
 
 ### Minor Changes
