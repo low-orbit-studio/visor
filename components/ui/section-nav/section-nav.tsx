@@ -32,6 +32,8 @@ export interface SectionNavItemProps extends React.ComponentProps<"a"> {
   asChild?: boolean
   /** Marks the item as the current section — text-primary, 2px primary underline, primary-tinted count pill. */
   isActive?: boolean
+  /** Blessed-API alias for `isActive` (the admin reference builds pass `active`). */
+  active?: boolean
   /**
    * Leading icon, accepted in two forms:
    * - a Phosphor icon **component** (e.g. `icon={UsersIcon}`) — rendered as
@@ -49,10 +51,11 @@ export interface SectionNavItemProps extends React.ComponentProps<"a"> {
 
 const SectionNavItem = React.forwardRef<HTMLAnchorElement, SectionNavItemProps>(
   (
-    { className, asChild, isActive, icon, label, count, children, ...props },
+    { className, asChild, isActive, active, icon, label, count, children, ...props },
     ref
   ) => {
     const Comp = asChild ? Slot : "a"
+    const isCurrent = isActive ?? active ?? false
     const showCount = count != null
 
     // `icon` accepts both a Phosphor component (`icon={Users}`) and a rendered
@@ -84,7 +87,7 @@ const SectionNavItem = React.forwardRef<HTMLAnchorElement, SectionNavItemProps>(
           <span
             className={cn(
               styles.count,
-              isActive ? styles.countActive : styles.countNeutral
+              isCurrent ? styles.countActive : styles.countNeutral
             )}
           >
             {count}
@@ -97,9 +100,9 @@ const SectionNavItem = React.forwardRef<HTMLAnchorElement, SectionNavItemProps>(
       <Comp
         ref={ref}
         data-slot="section-nav-item"
-        data-active={isActive || undefined}
-        aria-current={isActive ? "page" : undefined}
-        className={cn(styles.item, isActive && styles.itemActive, className)}
+        data-active={isCurrent || undefined}
+        aria-current={isCurrent ? "page" : undefined}
+        className={cn(styles.item, isCurrent && styles.itemActive, className)}
         {...props}
       >
         {chrome}

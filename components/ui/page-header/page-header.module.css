@@ -58,12 +58,14 @@
   gap: var(--page-header-leading-gap, var(--spacing-3, 0.75rem));
 }
 
-/* Leading media/identity slot: sits before the text block and top-aligns
-   against the title/description stack (VI-539), never shrinks. */
+/* Leading media/identity slot: sits before the text block, vertically
+   centered against the title/description stack, never shrinks. (Reverts the
+   VI-539 top-align, which assumed a different slot — the blessed admin
+   identity lockup centers the media. Superseded per the admin-editorial
+   reconcile plan.) */
 .leading {
   display: flex;
   align-items: center;
-  align-self: flex-start;
   flex: 0 0 auto;
 }
 

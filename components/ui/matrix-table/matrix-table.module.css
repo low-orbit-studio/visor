@@ -38,7 +38,6 @@
   box-shadow: var(--dt-container-shadow, none);
 }
 
-:global([data-density="editorial"]) .identityCell,
 :global([data-density="editorial"]) .cell {
   background-color: var(--dt-row-bg, color-mix(in srgb, var(--surface-page) 75%, var(--surface-card) 25%));
 }

@@ -14,10 +14,11 @@
 .root {
   display: flex;
   align-items: stretch;
-  gap: var(--spacing-1, 0.25rem);
+  gap: var(--spacing-2, 0.5rem);
   border-bottom: var(--stroke-width-thin, 1px) solid
-    var(--border-default, #e5e7eb);
-  overflow-x: auto;
+    var(--hairline, var(--border-default, #e5e7eb));
+  /* No overflow-x: a scroll container would clip the items' -1px overlap of
+     this hairline, shaving the bottom pixel off the active underline. */
 }
 
 /* Item — a single link: icon + label + optional count pill. */
@@ -26,12 +27,12 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-2, 0.5rem);
-  padding: var(--spacing-3, 0.75rem) var(--spacing-1, 0.25rem);
+  padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
   font-size: var(--font-size-sm, 0.875rem);
   font-weight: var(--font-weight-medium, 500);
-  line-height: var(--line-height-tight, 1.25);
+  line-height: 1;
   white-space: nowrap;
-  color: var(--text-secondary, #6b7280);
+  color: var(--text-tertiary, #9ca3af);
   text-decoration: none;
   cursor: pointer;
   /* Reserve the 2px underline so resting/active items don't shift vertically. */
@@ -60,11 +61,17 @@
   border-bottom-color: var(--primary, #2563eb);
 }
 
-/* Leading icon. */
+/* Leading icon — tertiary at rest, recolors with the active item. */
 .icon {
-  width: 1rem;
-  height: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.itemActive .icon {
+  color: var(--text-primary, #111827);
 }
 
 /* Label text. */
@@ -79,21 +86,21 @@
   justify-content: center;
   flex-shrink: 0;
   border-radius: var(--radius-full, 9999px);
-  padding: 0 var(--spacing-2, 0.5rem);
-  font-size: var(--font-size-xs, 0.75rem);
+  padding: 1px 6px;
+  font-size: 11px;
   font-weight: var(--font-weight-medium, 500);
   font-variant-numeric: tabular-nums;
-  line-height: 1.5;
+  line-height: normal;
 }
 
-/* Neutral (resting) count pill. */
+/* Neutral (resting) count pill — subtle surface, tertiary text. */
 .countNeutral {
-  background-color: var(--surface-muted, #f3f4f6);
-  color: var(--text-secondary, #6b7280);
+  background-color: var(--surface-subtle, #f3f4f6);
+  color: var(--text-tertiary, #9ca3af);
 }
 
 /* Primary-tinted count pill — active item. */
 .countActive {
-  background-color: var(--surface-accent-subtle, #eff6ff);
-  color: var(--text-link, #2563eb);
+  background-color: color-mix(in srgb, var(--primary, #2563eb) 22%, transparent);
+  color: var(--primary, #2563eb);
 }

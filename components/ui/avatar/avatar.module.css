@@ -20,6 +20,31 @@
   height: 2.5rem;
 }
 
+/* Editorial density — the admin prototype runs avatars a notch smaller
+   (sm 22 / default 28; lg stays 40) with per-size fallback initials. */
+:global([data-density="editorial"]) .avatar {
+  width: 28px;
+  height: 28px;
+}
+
+:global([data-density="editorial"]) .avatarSm {
+  width: 22px;
+  height: 22px;
+}
+
+:global([data-density="editorial"]) .avatarLg {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+:global([data-density="editorial"]) .avatarSm .avatarFallback {
+  font-size: 11px;
+}
+
+:global([data-density="editorial"]) .avatarLg .avatarFallback {
+  font-size: 13px;
+}
+
 /* AvatarImage */
 .avatarImage {
   aspect-ratio: 1 / 1;

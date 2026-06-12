@@ -118,6 +118,12 @@
   border-color: var(--border-default, #e5e7eb);
 }
 
+/* Editorial density: gated reads like plain disabled (the blessed admin
+   builds render gated actions at the 0.5 disabled opacity). */
+:global([data-density="editorial"]) .base[data-gated="true"] {
+  opacity: 0.5;
+}
+
 /* Suppress active transform when gated */
 .base[data-gated="true"]:active {
   transform: none;
