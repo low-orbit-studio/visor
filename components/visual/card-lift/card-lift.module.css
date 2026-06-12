@@ -1,4 +1,4 @@
-/* CardLift — hover lift + live-keyed halo (port of .bl-card-lift, BL-326)
+/* CardLift — hover lift + live-keyed halo (port of bl-card-lift, BL-326)
    ========================================================================
    Applies a translateY lift, depth shadow, and a color-mix halo on hover.
    The halo color is driven by --lift-color (default: var(--accent, #6366f1)),
