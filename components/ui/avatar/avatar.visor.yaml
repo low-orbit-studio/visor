@@ -35,8 +35,11 @@ sub_components:
   - name: AvatarStack
     description: >
       Compound primitive for overlapping avatar groups with a `+N` overflow indicator.
-      Accepts an array of image sources (`avatars`), a `total` count (supports
-      server-truncated lists), a `max` cap (default 6), a `size` pass-through
+      Each entry in `avatars` is a plain image-URL string, `undefined` (renders a
+      placeholder disc), or an `AvatarStackItem` object with `initials`, `src`,
+      `alt`, and an optional `style` escape hatch for per-disc gradient backgrounds.
+      Accepts a `total` count (supports server-truncated lists), a `max` cap (default 6),
+      an explicit `overflowCount` override, a `size` pass-through
       (`"sm" | "default" | "lg"`, default `"sm"`), and an optional accessible
       `label` override. Renders `role="img"` with `data-slot="avatar-stack"`.
 

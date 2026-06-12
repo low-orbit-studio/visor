@@ -6,4 +6,4 @@ export {
   AvatarFallback,
   AvatarStack,
 } from '../../../../components/ui/avatar/avatar';
-export type { AvatarStackProps } from '../../../../components/ui/avatar/avatar';
+export type { AvatarStackProps, AvatarStackItem } from '../../../../components/ui/avatar/avatar';

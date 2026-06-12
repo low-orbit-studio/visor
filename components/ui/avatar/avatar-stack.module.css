@@ -19,3 +19,12 @@
 .avatar:not(:first-child) {
   margin-inline-start: calc(-1 * var(--spacing-2, 0.5rem));
 }
+
+/* When an AvatarStackItem carries a per-item `style` with gradient
+   background + color, the fallback must be transparent so the gradient
+   on the parent Avatar shows through. Only applied to the initials
+   fallback inside a stack disc — plain Avatar usage is unaffected. */
+.initialsDisc {
+  background-color: transparent;
+  color: inherit;
+}

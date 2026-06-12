@@ -5,7 +5,7 @@ description: A circular avatar component with image display and fallback support
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarImage, AvatarFallback, AvatarStack } from '@/components/ui/avatar';
 
 ## Default
 
@@ -47,6 +47,64 @@ Three size variants keep avatar dimensions consistent: `sm` (1.5rem), `default` 
   </div>
 </ComponentPreview>
 
+## AvatarStack
+
+`AvatarStack` renders a row of overlapping avatar discs with a `+N` overflow indicator. It accepts both the legacy string-array form and the rich `AvatarStackItem` object form.
+
+### String array (legacy / simple)
+
+<ComponentPreview
+  title="AvatarStack — string array"
+  code={"import { AvatarStack } from '@/components/ui/avatar/avatar';\n\n<AvatarStack\n  avatars={[\n    'https://github.com/shadcn.png',\n    undefined,\n    undefined,\n  ]}\n  total={12}\n  max={3}\n/>"}
+>
+  <AvatarStack
+    avatars={[
+      'https://github.com/shadcn.png',
+      undefined,
+      undefined,
+    ]}
+    total={12}
+    max={3}
+  />
+</ComponentPreview>
+
+### Rich item form (initials + gradient discs)
+
+Pass `AvatarStackItem` objects to render initials with per-disc gradient backgrounds. Set `style.background` and `style.color` for the editorial gradient-disc look.
+
+<ComponentPreview
+  title="AvatarStack — rich items"
+  code={"import { AvatarStack } from '@/components/ui/avatar/avatar';\n\n<AvatarStack\n  avatars={[\n    { initials: 'AR', style: { background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff' }, alt: 'Alex Rivera' },\n    { initials: 'MK', style: { background: 'linear-gradient(135deg, #f59e0b, #ef4444)', color: '#fff' }, alt: 'Morgan Kim' },\n    { initials: 'JD', alt: 'Jordan Davis' },\n  ]}\n  total={7}\n  max={3}\n/>"}
+>
+  <AvatarStack
+    avatars={[
+      { initials: 'AR', style: { background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff' }, alt: 'Alex Rivera' },
+      { initials: 'MK', style: { background: 'linear-gradient(135deg, #f59e0b, #ef4444)', color: '#fff' }, alt: 'Morgan Kim' },
+      { initials: 'JD', alt: 'Jordan Davis' },
+    ]}
+    total={7}
+    max={3}
+  />
+</ComponentPreview>
+
+### Explicit overflow count
+
+Use `overflowCount` to override the derived `+N` value — useful when you already have a precomputed count.
+
+<ComponentPreview
+  title="AvatarStack — explicit overflowCount"
+  code={"import { AvatarStack } from '@/components/ui/avatar/avatar';\n\n<AvatarStack\n  avatars={[\n    { initials: 'AR', alt: 'Alex Rivera' },\n    { initials: 'MK', alt: 'Morgan Kim' },\n  ]}\n  total={2}\n  overflowCount={99}\n/>"}
+>
+  <AvatarStack
+    avatars={[
+      { initials: 'AR', alt: 'Alex Rivera' },
+      { initials: 'MK', alt: 'Morgan Kim' },
+    ]}
+    total={2}
+    overflowCount={99}
+  />
+</ComponentPreview>
+
 ## Installation
 
 ```bash
@@ -61,12 +119,23 @@ This copies two files into your project:
 ## Usage
 
 ```tsx
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar/avatar';
+import { Avatar, AvatarImage, AvatarFallback, AvatarStack } from '@/components/ui/avatar/avatar';
+import type { AvatarStackItem } from '@/components/ui/avatar/avatar';
 
 <Avatar>
   <AvatarImage src="/profile.jpg" alt="Jane Doe" />
   <AvatarFallback>JD</AvatarFallback>
 </Avatar>
+
+// Simple string array
+<AvatarStack avatars={['/a.jpg', '/b.jpg']} total={5} />
+
+// Rich item form with gradient discs
+const members: AvatarStackItem[] = [
+  { initials: 'AR', style: { background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff' }, alt: 'Alex Rivera' },
+  { initials: 'MK', style: { background: 'linear-gradient(135deg, #f59e0b, #ef4444)', color: '#fff' }, alt: 'Morgan Kim' },
+];
+<AvatarStack avatars={members} total={members.length} />
 ```
 
 ## API Reference
@@ -75,6 +144,26 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar/avat
 
 <PropsTable component="avatar" />
 
+### AvatarStackProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `avatars` | `(string \| undefined \| AvatarStackItem)[]` | — | Avatars in display order. Strings are image URLs; `undefined` renders a placeholder `·` disc; objects support `initials`, `src`, `alt`, and `style`. |
+| `total` | `number` | — | Total member count, may exceed `avatars.length` for server-truncated lists. |
+| `max` | `number` | `6` | Maximum avatar slots before the `+N` overflow indicator. |
+| `overflowCount` | `number` | — | Explicit overflow value; overrides the derived `total - visible` count. |
+| `size` | `"sm" \| "default" \| "lg"` | `"sm"` | Avatar size pass-through. |
+| `label` | `string` | `"${total} members"` | Accessible label override. |
+
+### AvatarStackItem
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `initials` | `ReactNode` | Initials rendered inside the disc fallback. |
+| `src` | `string` | Optional image source; covers the disc when present. |
+| `alt` | `string` | Accessible label for the disc. |
+| `style` | `CSSProperties` | Per-disc style escape hatch for gradient `background` + `color`. |
+
 ### Sub-components
 
 | Component | Purpose |
@@ -82,3 +171,4 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar/avat
 | `Avatar` | Root container with size variants |
 | `AvatarImage` | Image element with object-fit cover |
 | `AvatarFallback` | Centered fallback content shown when the image is unavailable |
+| `AvatarStack` | Overlapping avatar group with `+N` overflow indicator |

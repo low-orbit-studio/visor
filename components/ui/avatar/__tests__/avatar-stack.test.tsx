@@ -1,9 +1,10 @@
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { AvatarStack } from "../avatar"
+import type { AvatarStackItem } from "../avatar"
 import { checkA11y } from "../../../../test-utils/a11y"
 
-describe("AvatarStack", () => {
+describe("AvatarStack — string[] / undefined (existing API, zero-regression)", () => {
   it("renders N avatars when total === avatars.length and <= max", () => {
     render(
       <AvatarStack
@@ -120,6 +121,103 @@ describe("AvatarStack", () => {
   })
 })
 
+describe("AvatarStack — AvatarStackItem rich form", () => {
+  it("renders initials for an object item without src", () => {
+    render(
+      <AvatarStack
+        avatars={[{ initials: "AR", alt: "Alex Rivera" }]}
+        total={1}
+      />,
+    )
+    expect(screen.getByText("AR")).toBeInTheDocument()
+  })
+
+  it("renders an Avatar with data-stack-item when src is provided on an object item", () => {
+    // Radix AvatarImage defers rendering until the image loads (never in jsdom);
+    // verify the Avatar disc itself is present with the correct data attribute.
+    const { container } = render(
+      <AvatarStack
+        avatars={[{ src: "https://example.com/a.jpg", alt: "Jane Doe" }]}
+        total={1}
+      />,
+    )
+    expect(container.querySelectorAll("[data-stack-item]")).toHaveLength(1)
+  })
+
+  it("applies per-item style to the Avatar root", () => {
+    const gradientStyle: React.CSSProperties = {
+      background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+      color: "#fff",
+    }
+    const { container } = render(
+      <AvatarStack
+        avatars={[{ initials: "AR", style: gradientStyle, alt: "Alex Rivera" }]}
+        total={1}
+      />,
+    )
+    const avatarRoot = container.querySelector("[data-stack-item]")
+    expect(avatarRoot).toHaveStyle({
+      background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
+      color: "#fff",
+    })
+  })
+
+  it("renders placeholder disc for object item with no initials and no src", () => {
+    render(
+      <AvatarStack
+        avatars={[{ alt: "Unknown" }]}
+        total={1}
+      />,
+    )
+    expect(screen.getByText("·")).toBeInTheDocument()
+  })
+
+  it("mixes string and AvatarStackItem entries in the same array", () => {
+    const items: (string | undefined | AvatarStackItem)[] = [
+      "https://example.com/img.jpg",
+      undefined,
+      { initials: "MK", alt: "Morgan Kim" },
+    ]
+    render(<AvatarStack avatars={items} total={3} />)
+    expect(screen.getByText("·")).toBeInTheDocument()
+    expect(screen.getByText("MK")).toBeInTheDocument()
+  })
+})
+
+describe("AvatarStack — overflowCount prop", () => {
+  it("uses explicit overflowCount when provided", () => {
+    render(
+      <AvatarStack
+        avatars={[undefined, undefined]}
+        total={2}
+        overflowCount={99}
+      />,
+    )
+    expect(screen.getByText("+99")).toBeInTheDocument()
+  })
+
+  it("overrides the derived +N with explicit overflowCount=0 (no chip)", () => {
+    render(
+      <AvatarStack
+        avatars={[undefined]}
+        total={10}
+        overflowCount={0}
+      />,
+    )
+    expect(screen.queryByText(/^\+/)).not.toBeInTheDocument()
+  })
+
+  it("falls back to derived overflow when overflowCount is omitted", () => {
+    render(
+      <AvatarStack
+        avatars={[undefined, undefined, undefined]}
+        total={10}
+      />,
+    )
+    expect(screen.getByText("+7")).toBeInTheDocument()
+  })
+})
+
 describe("AvatarStack accessibility", () => {
   it("has no WCAG 2.1 AA violations (default size)", async () => {
     const { container } = render(
@@ -138,6 +236,20 @@ describe("AvatarStack accessibility", () => {
         avatars={[undefined, undefined]}
         total={2}
         size="lg"
+      />,
+    )
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (rich item form)", async () => {
+    const { container } = render(
+      <AvatarStack
+        avatars={[
+          { initials: "AR", style: { background: "linear-gradient(135deg, #6366f1, #8b5cf6)", color: "#fff" }, alt: "Alex Rivera" },
+          { initials: "MK", alt: "Morgan Kim" },
+        ]}
+        total={5}
+        max={2}
       />,
     )
     await checkA11y(container)
