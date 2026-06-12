@@ -1,0 +1,58 @@
+name: SegmentedProgress
+description: Discrete per-step progress meter — N equal pill segments in a row, each individually expressing done, current, or pending state. Designed for multi-step flows where individual step completion matters, not just an overall percentage.
+extends: HTMLDivElement
+category: data-display
+
+when_to_use:
+  - Multi-step onboarding or wizard flows where each discrete step needs individual visual state
+  - Brand elicitation, survey, or questionnaire progress where step-level completion is meaningful
+  - Short sequence indicators (≤12 steps) where a pill-per-step treatment reads clearly
+  - Inline progress in cards or compact surfaces where a stepper is too heavy
+
+when_not_to_use:
+  - Use `progress` for continuous values like upload percentage or loading progress
+  - Use `stepper` when step labels or click-to-navigate behavior is needed
+  - Sequences longer than ~15 segments (pills become too narrow to read)
+
+why: >
+  The brand-workbench elicitation flow introduced a recurring need for a
+  pill-per-step progress meter that shows granular step state (done / in-progress
+  / pending) rather than a percentage fill. The existing `Progress` component
+  (Radix continuous bar) and `Stepper` (labeled, navigable) don't cover this
+  visual pattern. Codifying it as a primitive standardizes the segment pill
+  shape, the gradient "current" treatment from the prototype, and the
+  progressbar ARIA contract across all multi-step surfaces.
+
+variants:
+  size: [sm, md]
+
+props:
+  - name: total
+    type: number
+    required: true
+    description: Total number of segments to render.
+  - name: value
+    type: number
+    required: true
+    description: Count of completed segments. Indices 0..value-1 render as done.
+  - name: current
+    type: number
+    description: Optional 0-based index of the in-progress segment. Renders with a primary→muted gradient. Typically equals `value`.
+  - name: size
+    type: '"sm" | "md"'
+    default: '"sm"'
+    description: Segment height. sm=6px (prototype height), md=8px.
+  - name: aria-label
+    type: string
+    required: true
+    description: Accessible name for the progressbar. Required — describe the current step context (e.g. "Step 3 of 10").
+
+dependencies:
+  - "class-variance-authority"
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/data-display/segmented-progress"
+
+example: |
+  <SegmentedProgress total={10} value={2} current={2} aria-label="Step 2 of 10" />
+  <SegmentedProgress total={6} value={3} aria-label="Step 3 of 6" size="md" />
