@@ -1,0 +1,94 @@
+---
+title: Specimen Card
+description: Labeled frame that pairs a context token + "feel" descriptor with arbitrary live component children — proves how a brand voice/tone renders on real components.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { SpecimenCard, SpecimenCardFooter } from '@/components/ui/specimen-card';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+
+## Tone-by-context preview
+
+A `SpecimenCard` labels a live component with its context token (e.g. `"error"`) and an optional italic feel descriptor (e.g. `"warm, accountable"`). The card is only the frame — children are real components rendered inside it.
+
+<ComponentPreview
+  title="Error context — warm, accountable tone"
+  code={"import { SpecimenCard } from '@/components/ui/specimen-card/specimen-card';\nimport { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert/alert';\n\n<SpecimenCard context=\"error\" feel=\"warm, accountable\">\n  <Alert variant=\"destructive\">\n    <AlertTitle>Payment failed</AlertTitle>\n    <AlertDescription>\n      We couldn't process your card — double-check your details and try again.\n    </AlertDescription>\n  </Alert>\n</SpecimenCard>"}
+>
+  <div style={{ maxWidth: '420px' }}>
+    <SpecimenCard context="error" feel="warm, accountable">
+      <Alert variant="destructive">
+        <AlertTitle>Payment failed</AlertTitle>
+        <AlertDescription>
+          We couldn't process your card — double-check your details and try again.
+        </AlertDescription>
+      </Alert>
+    </SpecimenCard>
+  </div>
+</ComponentPreview>
+
+## Speaking block with voice-key footer
+
+For brand-voice proof blocks, stack multiple specimens and attach a `SpecimenCardFooter` to attribute the voice traits in use.
+
+<ComponentPreview
+  title="Speaking block — multiple specimens + voice key"
+  code={"import { SpecimenCard, SpecimenCardFooter } from '@/components/ui/specimen-card/specimen-card';\nimport { Button } from '@/components/ui/button/button';\n\n<SpecimenCard context=\"onboarding\" feel=\"clear, encouraging\">\n  <Button>Get started free</Button>\n  <Button variant=\"outline\">Explore the docs</Button>\n  <SpecimenCardFooter>voice — precise · warm · direct</SpecimenCardFooter>\n</SpecimenCard>"}
+>
+  <div style={{ maxWidth: '320px' }}>
+    <SpecimenCard context="onboarding" feel="clear, encouraging">
+      <Button>Get started free</Button>
+      <Button variant="outline">Explore the docs</Button>
+      <SpecimenCardFooter>voice — precise · warm · direct</SpecimenCardFooter>
+    </SpecimenCard>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add specimen-card
+```
+
+This copies two files into your project:
+
+- `components/ui/specimen-card/specimen-card.tsx` — the component
+- `components/ui/specimen-card/specimen-card.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  SpecimenCard,
+  SpecimenCardFooter,
+} from '@/components/ui/specimen-card/specimen-card';
+
+// Tone-by-context grid card
+<SpecimenCard context="error" feel="warm, accountable">
+  <Alert variant="destructive">
+    <AlertTitle>Payment failed</AlertTitle>
+    <AlertDescription>We couldn't process your card.</AlertDescription>
+  </Alert>
+</SpecimenCard>
+
+// Speaking block with voice-key attribution
+<SpecimenCard context="onboarding">
+  <Button>Get started free</Button>
+  <Button variant="outline">Explore the docs</Button>
+  <SpecimenCardFooter>voice — precise · warm · direct</SpecimenCardFooter>
+</SpecimenCard>
+```
+
+## API Reference
+
+### SpecimenCardProps
+
+<PropsTable component="specimen-card" />
+
+The component also accepts all standard `<div>` HTML attributes.
+
+### SpecimenCardFooterProps
+
+`SpecimenCardFooter` accepts all standard `<div>` HTML attributes. Place it as the last child of `SpecimenCard` to render a hairline-separated footer for voice-key or attribution text.
