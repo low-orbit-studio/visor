@@ -2193,4 +2193,23 @@ export const ui: Registry = [
       },
     ],
   },
+  {
+    name: "structured-prompt",
+    type: "registry:ui",
+    category: "form",
+    description:
+      "Inline mad-lib fill-in-the-blank card for structured elicitation flows. Compound: StructuredPrompt > StructuredPromptHeader (icon + uppercase eyebrow) | StructuredPromptBody (tall-line-height prose) | StructuredPromptSlot (filled or empty inline chip; button when interactive, span when display-only) | StructuredPromptHint (footer tertiary text).",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/structured-prompt/structured-prompt.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/structured-prompt/structured-prompt.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
 ]

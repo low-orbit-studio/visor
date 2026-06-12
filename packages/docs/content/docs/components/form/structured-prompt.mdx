@@ -1,0 +1,122 @@
+---
+title: Structured Prompt
+description: Inline "mad-lib" fill-in-the-blank card for structured elicitation flows — an eyebrow header, flowing prose with inline slot chips, and a hint footer.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { StructuredPrompt, StructuredPromptHeader, StructuredPromptBody, StructuredPromptSlot, StructuredPromptHint } from '@/components/ui/structured-prompt';
+import { ListBullets } from '@phosphor-icons/react';
+
+```bash
+npx visor add structured-prompt
+```
+
+## Onliness statement
+
+The primary use case: a brand "onliness" statement where each bracket is an inline fillable slot. Filled slots show a primary-tinted chip; empty slots show a dashed, italic placeholder.
+
+<ComponentPreview
+  title="Onliness mad-lib"
+  code={"import { StructuredPrompt, StructuredPromptHeader, StructuredPromptBody, StructuredPromptSlot, StructuredPromptHint } from '@/components/ui/structured-prompt/structured-prompt';\nimport { ListBullets } from '@phosphor-icons/react';\n\n<StructuredPrompt>\n  <StructuredPromptHeader icon={<ListBullets size={13} />}>\n    ONLINESS · THE SPEARHEAD\n  </StructuredPromptHeader>\n  <StructuredPromptBody>\n    For <StructuredPromptSlot filled>design-led product teams</StructuredPromptSlot>,\n    Visor is the only <StructuredPromptSlot filled>component system</StructuredPromptSlot>\n    that <StructuredPromptSlot>derives every surface from one brand record</StructuredPromptSlot>.\n  </StructuredPromptBody>\n  <StructuredPromptHint>Click any slot to edit</StructuredPromptHint>\n</StructuredPrompt>"}
+>
+  <StructuredPrompt>
+    <StructuredPromptHeader icon={<ListBullets size={13} />}>
+      ONLINESS · THE SPEARHEAD
+    </StructuredPromptHeader>
+    <StructuredPromptBody>
+      For <StructuredPromptSlot filled>design-led product teams</StructuredPromptSlot>,
+      Visor is the only <StructuredPromptSlot filled>component system</StructuredPromptSlot>
+      that <StructuredPromptSlot>derives every surface from one brand record</StructuredPromptSlot>.
+    </StructuredPromptBody>
+    <StructuredPromptHint>Click any slot to edit</StructuredPromptHint>
+  </StructuredPrompt>
+</ComponentPreview>
+
+## Slot states
+
+Slots toggle between **filled** (confirmed value, primary-soft chip) and **empty** (awaiting input, dashed border, italic placeholder).
+
+<ComponentPreview
+  title="Filled vs empty slots"
+  code={"<StructuredPrompt>\n  <StructuredPromptBody>\n    <StructuredPromptSlot filled>filled value</StructuredPromptSlot>\n    {' '}vs{' '}\n    <StructuredPromptSlot>empty placeholder</StructuredPromptSlot>\n  </StructuredPromptBody>\n</StructuredPrompt>"}
+>
+  <StructuredPrompt>
+    <StructuredPromptBody>
+      <StructuredPromptSlot filled>filled value</StructuredPromptSlot>
+      {' '}vs{' '}
+      <StructuredPromptSlot>empty placeholder</StructuredPromptSlot>
+    </StructuredPromptBody>
+  </StructuredPrompt>
+</ComponentPreview>
+
+## Interactive slots
+
+Pass `onClick` to make a slot a focusable `<button>`. Without `onClick`, it renders as an inline `<span>` (display-only).
+
+<ComponentPreview
+  title="Interactive slot (button)"
+  code={"<StructuredPrompt>\n  <StructuredPromptBody>\n    For{' '}\n    <StructuredPromptSlot filled onClick={() => alert('edit audience')}>\n      design-led product teams\n    </StructuredPromptSlot>\n    , we are the only…\n  </StructuredPromptBody>\n</StructuredPrompt>"}
+>
+  <StructuredPrompt>
+    <StructuredPromptBody>
+      For{' '}
+      <StructuredPromptSlot filled onClick={() => {}}>
+        design-led product teams
+      </StructuredPromptSlot>
+      , we are the only…
+    </StructuredPromptBody>
+  </StructuredPrompt>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add structured-prompt
+```
+
+This copies two files into your project:
+
+- `components/ui/structured-prompt/structured-prompt.tsx` — the component
+- `components/ui/structured-prompt/structured-prompt.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  StructuredPrompt,
+  StructuredPromptHeader,
+  StructuredPromptBody,
+  StructuredPromptSlot,
+  StructuredPromptHint,
+} from '@/components/ui/structured-prompt/structured-prompt';
+import { ListBullets } from '@phosphor-icons/react';
+
+<StructuredPrompt>
+  <StructuredPromptHeader icon={<ListBullets size={13} />}>
+    ONLINESS · THE SPEARHEAD
+  </StructuredPromptHeader>
+  <StructuredPromptBody>
+    For <StructuredPromptSlot filled>design-led product teams</StructuredPromptSlot>,
+    Visor is the only <StructuredPromptSlot filled>component system</StructuredPromptSlot>
+    that <StructuredPromptSlot onClick={openEditor}>derives every surface from one brand record</StructuredPromptSlot>.
+  </StructuredPromptBody>
+  <StructuredPromptHint>Click any slot to edit</StructuredPromptHint>
+</StructuredPrompt>
+```
+
+## API Reference
+
+### StructuredPromptProps
+
+<PropsTable component="structured-prompt" />
+
+The component also accepts all standard `<div>` HTML attributes.
+
+### StructuredPromptHeaderProps
+
+<PropsTable component="structured-prompt-header" />
+
+### StructuredPromptSlotProps
+
+<PropsTable component="structured-prompt-slot" />

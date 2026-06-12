@@ -25,6 +25,7 @@
     "select",
     "slider",
     "slider-control",
+    "structured-prompt",
     "switch",
     "tag-input",
     "textarea",
