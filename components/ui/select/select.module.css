@@ -59,7 +59,7 @@
   border-color: transparent;
   background-color: var(--field-control-bg, var(--select-bg, var(--surface-interactive-default, #f9fafb)));
   /* In-form borderless selects match the Input they sit beside: full width and
-     the same md height/padding (the prototype's .field select == .field input). */
+     the same md height/padding (the prototype paired select and input controls inside its field rows). */
   width: 100%;
   padding: var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem);
 }
@@ -72,6 +72,7 @@
 
 .triggerBorderless:focus-visible {
   border-color: transparent;
+  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
 }
 
 :global([data-density="editorial"]) .trigger {

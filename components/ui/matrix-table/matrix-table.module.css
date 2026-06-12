@@ -88,7 +88,7 @@
 .columnHeader {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: calc(var(--spacing-1, 0.25rem) / 2);
   align-items: center;
 }
 
@@ -139,7 +139,7 @@
   text-align: center;
 }
 
-/* String cell — centered editorial value (e.g. "Unlimited", "Up to 5", "10").
+/* String cell — centered editorial value (for example "Unlimited", "Up to 5", "10").
    Matches the blessed feature-comparison string treatment: 13px medium,
    line-height inherited from the cell. */
 .textCell {
@@ -164,7 +164,7 @@
 }
 
 /* Active = 22px circular FILLED success disc with a centered check glyph.
-   Mirrors .badge--filled-success (var(--success) fill, var(--primary-text)
+   Mirrors the badge filled-success variant (var(--success) fill, var(--primary-text)
    glyph) so the disc reads identically on every palette. */
 .disc {
   display: inline-grid;
@@ -199,7 +199,7 @@
   transform: translateX(-50%);
   background: var(--surface-elev, #ffffff);
   color: var(--text-primary, #111827);
-  padding: 6px 10px;
+  padding: calc(var(--spacing-1, 0.25rem) * 1.5) calc(var(--spacing-2, 0.5rem) + var(--spacing-1, 0.25rem) / 2);
   border-radius: var(--radius-sm, 0.25rem);
   font-size: 11px;
   white-space: nowrap;

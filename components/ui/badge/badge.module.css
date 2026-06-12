@@ -21,7 +21,7 @@
 }
 
 /* Editorial density: uppercase + heavier + tracked. Any ancestor with
- * data-density="editorial" (e.g. the app root) activates this. */
+ * data-density="editorial" (for example the app root) activates this. */
 :global([data-density="editorial"]) .base {
   /* Theme-invariant: the editorial treatment runs 600 even when a theme maps
      --font-weight-semibold heavier (entr: 700). density-literal */
@@ -216,7 +216,7 @@
 }
 
 /* Icon-only — a circular, fixed-square chip carrying a single centered glyph
- * (e.g. the filled-success check used by the Roles matrix active cell +
+ * (for example the filled-success check used by the Roles matrix active cell +
  * legend). Zero padding and a fixed glyph size keep it crisp at any density.
  * The glyph centers via the base flex; per-size svg rules are overridden here. */
 .iconOnly {

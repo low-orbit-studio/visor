@@ -1,5 +1,5 @@
 /* Table container — radius/shadow are theme-driven so a consumer that wraps the
-   table in its own rounded shell (e.g. with a bulk bar on top) can flatten them.
+   table in its own rounded shell (for example with a bulk bar on top) can flatten them.
    Under the editorial density axis these default to 0/none (flush admin shell). */
 .container {
   position: relative;

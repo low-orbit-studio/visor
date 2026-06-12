@@ -61,7 +61,7 @@
  * `icon` to FieldError, so the default (text-only) error is unchanged. Lays
  * the icon + message out as a centered row; the icon sizes itself in em so it
  * tracks the error's font-size (a 14px WarningCircle at the editorial 13px
- * ramp), matching the prototype's `.field__error i { font-size: 14px }`. */
+ * ramp), matching the prototype's field-error icon sizing (14px). */
 .fieldErrorWithIcon {
   display: flex;
   align-items: center;

@@ -23,9 +23,9 @@ const css = readFileSync(
 
 describe("DropdownMenu density axis — editorial rules present", () => {
   describe("content / subContent — editorial block", () => {
-    it("editorial content has gap: 1px", () => {
+    it("editorial content has the 1px hairline gap", () => {
       expect(css).toMatch(
-        /\[data-density="editorial"\][^}]*\.content[^}]*\{[^}]*gap:\s*1px/
+        /\[data-density="editorial"\][^}]*\.content[^}]*\{[^}]*gap:\s*var\(--stroke-width-thin/
       )
     })
 
@@ -39,9 +39,9 @@ describe("DropdownMenu density axis — editorial rules present", () => {
       expect(css).toContain("var(--surface-elev, color-mix(in srgb, var(--surface-card), var(--surface-muted, var(--surface-card))))")
     })
 
-    it("editorial content has padding: 6px", () => {
+    it("editorial content has the 6px padding step", () => {
       expect(css).toMatch(
-        /\[data-density="editorial"\][^}]*\.content[^}]*\{[^}]*padding:\s*6px/
+        /\[data-density="editorial"\][^}]*\.content[^}]*\{[^}]*padding:\s*calc\(var\(--spacing-1/
       )
     })
 
@@ -59,9 +59,9 @@ describe("DropdownMenu density axis — editorial rules present", () => {
       )
     })
 
-    it("editorial item has padding: 8px 10px", () => {
+    it("editorial item has the 8px/10px padding steps", () => {
       expect(css).toMatch(
-        /\[data-density="editorial"\][^}]*\.item[^}]*\{[^}]*padding:\s*8px 10px/
+        /\[data-density="editorial"\][^}]*\.item[^}]*\{[^}]*padding:\s*var\(--spacing-2, 0\.5rem\) calc\(var\(--spacing-2/
       )
     })
 
@@ -132,9 +132,9 @@ describe("DropdownMenu density axis — editorial rules present", () => {
       )
     })
 
-    it("editorial label has padding: 6px 10px 2px", () => {
+    it("editorial label has the 6px/10px/2px padding steps", () => {
       expect(css).toMatch(
-        /\[data-density="editorial"\][^}]*\.label[^}]*\{[^}]*padding:\s*6px 10px 2px/
+        /\[data-density="editorial"\][^}]*\.label[^}]*\{[^}]*padding:\s*calc\(var\(--spacing-1, 0\.25rem\) \* 1\.5\) calc\(var\(--spacing-2/
       )
     })
   })
@@ -166,16 +166,16 @@ describe("DropdownMenu density axis — editorial rules present", () => {
       )
     })
 
-    it("editorial separator has margin: 4px 2px", () => {
+    it("editorial separator has the 4px/2px margin steps", () => {
       expect(css).toMatch(
-        /\[data-density="editorial"\][^}]*\.separator[^}]*\{[^}]*margin:\s*4px 2px/
+        /\[data-density="editorial"\][^}]*\.separator[^}]*\{[^}]*margin:\s*var\(--spacing-1, 0\.25rem\) calc\(var\(--spacing-1/
       )
     })
   })
 
   describe("default (canonical) rules still present — zero regression", () => {
-    it("default content has gap: 0px", () => {
-      expect(css).toContain("gap: 0px;")
+    it("default content has gap: 0", () => {
+      expect(css).toContain("gap: 0;")
     })
 
     it("default content background uses surface-popover chain", () => {

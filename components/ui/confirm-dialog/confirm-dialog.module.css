@@ -88,7 +88,7 @@
 
 /* Plated severity tints — bg uses a tinted wash of the severity token;
  * foreground uses the solid severity token. Matches prototype-overlay
- * .dialog__icon--warning / --destructive exactly. */
+ * the prototype's warning / destructive icon plates exactly. */
 .iconPlatedInfo {
   background: color-mix(in srgb, var(--accent, #0369a1) 18%, transparent);
   color: var(--accent, #0369a1);
@@ -228,7 +228,7 @@
   box-shadow: var(--shadow-lg);
 }
 
-/* Inline header — replaces DialogHeader (which depends on dialog.module.css). */
+/* Inline header — replaces DialogHeader (which depends on the dialog stylesheet). */
 .inlineHeader {
   display: flex;
   flex-direction: column;

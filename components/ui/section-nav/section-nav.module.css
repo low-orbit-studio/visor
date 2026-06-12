@@ -86,7 +86,7 @@
   justify-content: center;
   flex-shrink: 0;
   border-radius: var(--radius-full, 9999px);
-  padding: 1px 6px;
+  padding: var(--stroke-width-thin, 1px) calc(var(--spacing-1, 0.25rem) * 1.5);
   font-size: 11px;
   font-weight: var(--font-weight-medium, 500);
   font-variant-numeric: tabular-nums;

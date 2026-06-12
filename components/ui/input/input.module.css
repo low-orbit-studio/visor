@@ -5,7 +5,7 @@
   border: 1px solid var(--input-border, var(--border-default, #e5e7eb));
   /* --field-control-bg is the shared "what surface does a form control sit on"
      role. It defaults to var(--input-bg), so default inputs are unchanged. A
-     form context (e.g. an in-dialog wrapper) can set --field-control-bg:
+     form context (for example an in-dialog wrapper) can set --field-control-bg:
      var(--surface-subtle) to lift controls onto a different surface without a
      per-component prop. Under data-density="editorial", the fallback chain
      defaults to var(--surface-card) while still honoring any scoped
