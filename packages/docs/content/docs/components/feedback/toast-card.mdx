@@ -6,6 +6,7 @@ description: A static, server-renderable notification card for editorial display
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { ToastCard, ToastCardStack } from '@/components/ui/toast-card';
+import { ToastCardActionDemo, ToastCardDismissDemo } from '@/components/ui/toast-card-demos';
 
 <Callout type="info">
 **ToastCard vs Toast:** `ToastCard` is the *static editorial* rendering of a notification card — used in state gallery screens to show toast anatomy in-flow. It has no portal, timer, or Sonner dependency. For imperative notifications that auto-dismiss, use [Toast](/docs/components/feedback/toast).
@@ -35,15 +36,7 @@ Provide `action` text and an `onAction` handler to render a primary-colored acti
   title="With Action"
   code={"<ToastCard\n  variant=\"error\"\n  title=\"Sync failed\"\n  body=\"Could not connect to the server.\"\n  action=\"Retry\"\n  onAction={() => {}}\n/>"}
 >
-  <div style={{ maxWidth: '400px' }}>
-    <ToastCard
-      variant="error"
-      title="Sync failed"
-      body="Could not connect to the server."
-      action="Retry"
-      onAction={() => {}}
-    />
-  </div>
+  <ToastCardActionDemo />
 </ComponentPreview>
 
 ## With Dismiss
@@ -54,14 +47,7 @@ Provide an `onDismiss` handler to render a muted X dismiss control.
   title="With Dismiss"
   code={"<ToastCard\n  variant=\"info\"\n  title=\"New update available\"\n  body=\"Refresh to load the latest version.\"\n  onDismiss={() => {}}\n/>"}
 >
-  <div style={{ maxWidth: '400px' }}>
-    <ToastCard
-      variant="info"
-      title="New update available"
-      body="Refresh to load the latest version."
-      onDismiss={() => {}}
-    />
-  </div>
+  <ToastCardDismissDemo />
 </ComponentPreview>
 
 ## Custom Icon
