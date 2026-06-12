@@ -13,6 +13,7 @@ const chipVariants = cva(styles.base, {
     variant: {
       default: styles.variantDefault,
       outlined: styles.variantOutlined,
+      "filled-primary": styles.variantFilledPrimary,
     },
     size: {
       sm: styles.sizeSm,

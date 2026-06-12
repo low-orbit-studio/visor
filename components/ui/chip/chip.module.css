@@ -33,6 +33,20 @@
   color: var(--text-primary, #111827);
 }
 
+/* Variant: filled-primary — saturated brand-essence chip treatment.
+ * Primary background + primary-text foreground + subtle shadow.
+ * 700 weight + slight negative tracking assert "this IS a brand value".
+ * Use when the chip must carry primary brand prominence — essence chips
+ * on the Brand Workbench Elicit canvas, strategy surfaces, brand decks. */
+.variantFilledPrimary {
+  background-color: var(--primary, #111827);
+  border-color: transparent;
+  color: var(--primary-text, #f9fafb);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
 /* Sizes */
 .sizeSm {
   height: 1.5rem;

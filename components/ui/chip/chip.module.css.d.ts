@@ -2,6 +2,7 @@ declare const styles: {
   readonly base: string
   readonly variantDefault: string
   readonly variantOutlined: string
+  readonly variantFilledPrimary: string
   readonly sizeSm: string
   readonly sizeMd: string
   readonly sizeLg: string

@@ -72,13 +72,20 @@ All three chip types share `sm`, `md` (default), and `lg` sizes.
 
 <ComponentPreview
   title="Variants"
-  code={"<Chip label=\"Default\" variant=\"default\" />\n<Chip label=\"Outlined\" variant=\"outlined\" />"}
+  code={"<Chip label=\"Default\" variant=\"default\" />\n<Chip label=\"Outlined\" variant=\"outlined\" />\n<Chip label=\"Coherent\" variant=\"filled-primary\" />"}
 >
   <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
     <Chip label="Default" variant="default" />
     <Chip label="Outlined" variant="outlined" />
+    <Chip label="Coherent" variant="filled-primary" />
   </div>
 </ComponentPreview>
+
+### filled-primary
+
+Use `filled-primary` when a chip must assert primary brand prominence — for example, essence words on the Brand Workbench Elicit canvas, brand strategy surfaces, or marketing deck templates. It renders a saturated primary fill with `--primary-text` foreground and `--shadow-sm` depth.
+
+Avoid using `filled-primary` for generic tags or filters; prefer `default` or `outlined` there to preserve the variant's signal weight.
 
 ## Installation
 
@@ -137,7 +144,7 @@ The component accepts all standard `<div>` HTML attributes.
 | `avatar` | `ReactNode` | — | Optional avatar before the label. |
 | `leadingIcon` | `ReactNode` | — | Optional icon before the label. |
 | `label` | `ReactNode` | — | Label content (or use `children`). |
-| `variant` | `"default" \| "outlined"` | `"default"` | Visual variant. |
+| `variant` | `"default" \| "outlined" \| "filled-primary"` | `"default"` | Visual variant. |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Size. |
 | `disabled` | `boolean` | `false` | Disables the chip. |
 
@@ -153,7 +160,7 @@ The component accepts all standard `<div>` HTML attributes.
 | `count` | `ReactNode` | — | Optional count pill after the label. |
 | `countTone` | `"neutral" \| "primary"` | `"neutral"` | Tone for the count pill. |
 | `selectedTreatment` | `"accent" \| "neutral"` | `"accent"` | Selected-state visual treatment. `"accent"` uses accent-tinted bg + link text (default). `"neutral"` uses `--surface-card` bg + neutral border + primary text; the count pill renders as a solid mint pill. Use in editorial/admin contexts to avoid accent bleed. |
-| `variant` | `"default" \| "outlined"` | `"default"` | Visual variant. |
+| `variant` | `"default" \| "outlined" \| "filled-primary"` | `"default"` | Visual variant. |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Size. |
 | `disabled` | `boolean` | `false` | Disables the chip. |
 
