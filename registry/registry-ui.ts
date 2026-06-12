@@ -933,6 +933,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "composer",
+    type: "registry:ui",
+    category: "form",
+    description:
+      "AI-chat composer — a rounded card container with an auto-growing text field, a tools row for icon buttons and status chips, and a circular primary send button. Compound API: Composer, ComposerField, ComposerToolbar, ComposerToolButton, ComposerSpacer, ComposerSend.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/composer/composer.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/composer/composer.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "pagination",
     type: "registry:ui",
     description:

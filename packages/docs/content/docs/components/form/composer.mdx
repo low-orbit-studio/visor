@@ -1,0 +1,150 @@
+---
+title: Composer
+description: AI-chat composer — a rounded card container with an auto-growing text field, a tools row for icon buttons and status chips, and a circular primary send button.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import {
+  Composer,
+  ComposerField,
+  ComposerToolbar,
+  ComposerSpacer,
+  ComposerSend,
+} from '@/components/ui/composer';
+import { ComposerFullDemo, ComposerDisabledDemo } from '@/components/ui/composer-demo';
+
+```bash
+npx visor add composer
+```
+
+## Full example
+
+The composer composes a text field, tool buttons, an arbitrary status-chip slot, a spacer, and a send button inside a single rounded card container.
+
+<ComponentPreview
+  title="AI chat composer with tool buttons and model chip"
+  code={"import { Composer, ComposerField, ComposerToolbar, ComposerToolButton, ComposerSpacer, ComposerSend } from '@/components/ui/composer/composer';\nimport { Chip } from '@/components/ui/chip/chip';\nimport { StatusDot } from '@/components/ui/status-dot/status-dot';\nimport { Paperclip, Microphone } from '@phosphor-icons/react';\n\n<Composer onSubmit={(value) => console.log('submit:', value)}>\n  <ComposerField placeholder=\"Ask anything…\" />\n  <ComposerToolbar>\n    <ComposerToolButton icon={<Paperclip size={16} />} aria-label=\"Attach file\" />\n    <ComposerToolButton icon={<Microphone size={16} />} aria-label=\"Voice input\" />\n    <Chip size=\"sm\" leadingIcon={<StatusDot tone=\"mint\" />} label=\"Claude · key active\" />\n    <ComposerSpacer />\n    <ComposerSend />\n  </ComposerToolbar>\n</Composer>"}
+>
+  <ComposerFullDemo />
+</ComponentPreview>
+
+## Minimal
+
+A bare composer with just a field and send button.
+
+<ComponentPreview
+  title="Minimal composer"
+  code={"<Composer onSubmit={(value) => console.log(value)}>\n  <ComposerField placeholder=\"Type a message…\" />\n  <ComposerToolbar>\n    <ComposerSpacer />\n    <ComposerSend />\n  </ComposerToolbar>\n</Composer>"}
+>
+  <div style={{ maxWidth: '520px', width: '100%' }}>
+    <Composer>
+      <ComposerField placeholder="Type a message…" />
+      <ComposerToolbar>
+        <ComposerSpacer />
+        <ComposerSend />
+      </ComposerToolbar>
+    </Composer>
+  </div>
+</ComponentPreview>
+
+## Disabled state
+
+Pass `disabled` to the root to disable all interactive children simultaneously.
+
+<ComponentPreview
+  title="Disabled composer"
+  code={"<Composer disabled>\n  <ComposerField placeholder=\"Composing disabled…\" />\n  <ComposerToolbar>\n    <ComposerToolButton icon={<Paperclip size={16} />} aria-label=\"Attach file\" />\n    <ComposerSpacer />\n    <ComposerSend />\n  </ComposerToolbar>\n</Composer>"}
+>
+  <ComposerDisabledDemo />
+</ComponentPreview>
+
+## Controlled mode
+
+Supply `value` and `onValueChange` to drive the field from external state. `onSubmit` fires when the user presses Enter or clicks the send button.
+
+```tsx
+const [message, setMessage] = React.useState('');
+
+<Composer
+  value={message}
+  onValueChange={setMessage}
+  onSubmit={(value) => {
+    sendMessage(value);
+    setMessage('');
+  }}
+>
+  <ComposerField placeholder="Message…" />
+  <ComposerToolbar>
+    <ComposerSpacer />
+    <ComposerSend />
+  </ComposerToolbar>
+</Composer>
+```
+
+## Keyboard interaction
+
+| Key | Action |
+| --- | --- |
+| `Enter` | Submits the composer (calls `onSubmit`) |
+| `Shift + Enter` | Inserts a newline — does not submit |
+
+## Status chip placement
+
+The model/key status chip is **not** part of Composer — consumers compose `Chip` and `StatusDot` from the library and place them inside `ComposerToolbar`. This keeps the toolbar slot open for any content.
+
+```tsx
+<ComposerToolbar>
+  <ComposerToolButton icon={<Paperclip size={16} />} aria-label="Attach file" />
+  {/* Chip + StatusDot composed by the consumer */}
+  <Chip size="sm" leadingIcon={<StatusDot tone="mint" />} label="Claude · key active" />
+  <ComposerSpacer />
+  <ComposerSend />
+</ComposerToolbar>
+```
+
+## Installation
+
+```bash
+npx visor add composer
+```
+
+This copies two files into your project:
+
+- `components/ui/composer/composer.tsx` — the component
+- `components/ui/composer/composer.module.css` — the styles
+
+## API Reference
+
+### ComposerProps
+
+<PropsTable component="composer" />
+
+The root also accepts all standard `<div>` HTML attributes.
+
+### ComposerFieldProps
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `placeholder` | `string` | `"Message…"` | Placeholder text shown when the field is empty. |
+| `disabled` | `boolean` | — | Overrides the field's disabled state. Falls back to `Composer`'s `disabled`. |
+
+`ComposerField` also accepts all standard `<textarea>` attributes except `value` and `onChange` (managed by `Composer`).
+
+### ComposerToolButtonProps
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `icon` | `React.ReactNode` | — | Phosphor icon element to render inside the 32px circular button. |
+| `aria-label` | `string` | — | Required accessible label. |
+
+`ComposerToolButton` also accepts all standard `<button>` attributes.
+
+### ComposerSendProps
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `aria-label` | `string` | `"Send"` | Accessible label for the send button. |
+| `disabled` | `boolean` | — | Explicitly disable the button (otherwise auto-disabled when field is empty). |
+
+`ComposerSend` also accepts all standard `<button>` attributes except `type`.
