@@ -1,0 +1,72 @@
+name: StructuredPrompt
+description: Inline "mad-lib" fill-in-the-blank card for structured elicitation flows. A card with an eyebrow header, flowing prose at tall line-height, and inline slot chips (filled or empty) embedded in the prose, plus a hint footer.
+extends: HTMLDivElement
+category: form
+
+when_to_use:
+  - Guiding users through structured sentence completion (e.g. "For [audience], we are the only [category] that [differentiator]")
+  - Brand elicitation or onliness-statement workflows where each bracket is a fillable slot
+  - AI-assisted prompt templates where the model pre-fills slots and the user confirms or edits them
+  - Any pattern that mixes fixed prose with discrete editable inputs inline in a sentence
+
+when_not_to_use:
+  - Free-form text entry where sentence structure is not fixed (use Textarea or Input)
+  - Long multi-field forms (use Field + Fieldset)
+  - Structured data entry with labels and descriptions (use KeyValueList or a form layout)
+
+why: >
+  The Brand Workbench elicitation UI requires a distinct "mad-lib" input pattern —
+  prose with inline chips that are either filled (confirmed) or empty (awaiting input).
+  No existing primitive covers this shape, so every elicitation surface would invent
+  bespoke HTML. Codifying it standardizes the visual language (primary-soft filled /
+  dashed empty), the compound API (Header / Body / Slot / Hint), and the accessibility
+  contract (button for interactive slots, span for display-only).
+
+variants:
+  slot_state: [filled, empty]
+
+sub_components:
+  - name: StructuredPromptHeader
+    description: Eyebrow header bar with optional Phosphor icon and uppercase label. Renders a hairline bottom border separating it from the body.
+  - name: StructuredPromptBody
+    description: Prose container at tall line-height (2.05) so inline slot chips breathe within the sentence flow.
+  - name: StructuredPromptSlot
+    description: Inline chip embedded in prose. filled=true renders a primary-soft chip; false/absent renders a dashed empty chip. Renders a <button> when onClick is provided (interactive), otherwise a <span> (display-only).
+  - name: StructuredPromptHint
+    description: Footer hint text at small tertiary size, rendered below the body.
+
+props:
+  - name: className
+    type: string
+    description: Additional CSS classes for the root card element.
+
+  - name: icon
+    type: ReactNode
+    description: "(StructuredPromptHeader) Phosphor icon rendered before the eyebrow label."
+
+  - name: filled
+    type: boolean
+    default: 'false'
+    description: "(StructuredPromptSlot) When true, renders the primary-soft filled chip. When false, renders the dashed empty chip."
+
+  - name: onClick
+    type: "() => void"
+    description: "(StructuredPromptSlot) When provided, the slot renders as a focusable <button>. Without onClick it renders as a <span>."
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/form/structured-prompt"
+
+example: |
+  <StructuredPrompt>
+    <StructuredPromptHeader icon={<ListBullets weight="stroke" />}>
+      ONLINESS · THE SPEARHEAD
+    </StructuredPromptHeader>
+    <StructuredPromptBody>
+      For <StructuredPromptSlot filled>design-led product teams</StructuredPromptSlot>,
+      Visor is the only <StructuredPromptSlot filled>component system</StructuredPromptSlot>
+      that <StructuredPromptSlot>derives every surface from one brand record</StructuredPromptSlot>.
+    </StructuredPromptBody>
+    <StructuredPromptHint>Click any slot to edit</StructuredPromptHint>
+  </StructuredPrompt>

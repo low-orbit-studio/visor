@@ -1,0 +1,77 @@
+name: ChallengeCard
+description: >
+  Adversarial challenge message card — an AI pushes back on the user's input
+  and the human holds the gate. Distinct from Alert: ChallengeCard is for
+  messages that require an explicit human decision, not passive notices.
+extends: HTMLDivElement
+category: feedback
+
+why: >
+  Alert is a passive notice; the Brand Workbench needs a first-class
+  adversarial message where the AI challenges the user's input and a human
+  explicitly decides. The warning-toned action pair plus the gate affordance
+  encode "AI drafts and challenges, the human holds the gate" as a reusable
+  pattern.
+when_to_use:
+  - Surfacing an AI-generated challenge or push-back that the user must actively accept or override
+  - Presenting an adversarial review result (e.g. "Is it actually only?") where a human must decide the next action
+  - Any context where the system is flagging user input as potentially wrong and a conscious human gate is required before proceeding
+  - Chat or workflow UIs where the AI acts as a strategic antagonist and the human must confirm their intent
+
+when_not_to_use:
+  - Use `alert` for passive notices — ChallengeCard is for adversarial prompts requiring an explicit human decision
+  - Use Banner for persistent, page-level system notices that don't require an immediate response
+  - Use Toast for transient feedback that auto-dismisses — ChallengeCard is persistent until the user acts
+
+variants:
+  action_variant: [primary, ghost]
+
+props:
+  - name: icon
+    type: "React.ReactNode | null"
+    description: >
+      Override the default Flag icon in ChallengeCardHeader. Pass null to suppress the icon entirely.
+  - name: variant
+    type: '"primary" | "ghost"'
+    default: '"primary"'
+    description: >
+      Action button visual style. primary = filled warning-toned; ghost = transparent with border.
+    component: ChallengeCardAction
+  - name: icon
+    type: "React.ReactNode | null"
+    description: >
+      Optional icon for ChallengeCardAction. Primary defaults to a Check icon; ghost has no default icon.
+    component: ChallengeCardAction
+  - name: onClick
+    type: "React.MouseEventHandler<HTMLButtonElement>"
+    description: Click handler for the action button.
+    component: ChallengeCardAction
+  - name: children
+    type: React.ReactNode
+    description: >
+      Gate label text. Defaults to "You hold the gate" when no children are provided.
+    component: ChallengeCardGate
+
+dependencies:
+  - "@phosphor-icons/react"
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/feedback/challenge-card"
+
+example: |
+  <ChallengeCard>
+    <ChallengeCardHeader>Is it actually only?</ChallengeCardHeader>
+    <ChallengeCardBody>
+      The word "only" in this claim is absolute — it invites factual rebuttal.
+      Do you have data to back it up, or would a sharper qualifier work better?
+    </ChallengeCardBody>
+    <ChallengeCardActions>
+      <ChallengeCardAction variant="primary" onClick={() => {}}>
+        Use the sharper version
+      </ChallengeCardAction>
+      <ChallengeCardAction variant="ghost" onClick={() => {}}>
+        I'll rewrite it
+      </ChallengeCardAction>
+      <ChallengeCardGate />
+    </ChallengeCardActions>
+  </ChallengeCard>

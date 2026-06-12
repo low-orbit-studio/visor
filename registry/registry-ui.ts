@@ -408,6 +408,24 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "spinner",
+    type: "registry:ui",
+    description:
+      "Inline loading spinner — a rotating border ring with a subtle track and tone-colored leading edge. Three sizes (xs/sm/md), two tones (default/primary), accessible label contract, and full reduced-motion support.",
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/spinner/spinner.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/spinner/spinner.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "tooltip",
     type: "registry:ui",
     description:
@@ -439,6 +457,25 @@ export const ui: Registry = [
       },
       {
         path: "components/ui/alert/alert.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "challenge-card",
+    type: "registry:ui",
+    category: "feedback",
+    description:
+      "Adversarial challenge message card — an AI pushes back on the user's input and the human holds the gate. Distinct from Alert: ChallengeCard is for messages requiring an explicit human decision, not passive notices.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/challenge-card/challenge-card.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/challenge-card/challenge-card.module.css",
         type: "registry:ui",
       },
     ],
@@ -912,6 +949,25 @@ export const ui: Registry = [
       },
       {
         path: "components/ui/combobox/combobox.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "composer",
+    type: "registry:ui",
+    category: "form",
+    description:
+      "AI-chat composer — a rounded card container with an auto-growing text field, a tools row for icon buttons and status chips, and a circular primary send button. Compound API: Composer, ComposerField, ComposerToolbar, ComposerToolButton, ComposerSpacer, ComposerSend.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/composer/composer.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/composer/composer.module.css",
         type: "registry:ui",
       },
     ],
@@ -1578,6 +1634,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "specimen-card",
+    type: "registry:ui",
+    category: "specimen",
+    description:
+      "Labeled frame that pairs a context token + 'feel' descriptor with arbitrary live component children — proves how a brand voice/tone renders on real components. Covers both the tone-by-context grid card and the Speaking block with optional voice-key footer.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/specimen-card/specimen-card.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/specimen-card/specimen-card.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "surface-row",
     type: "registry:ui",
     description:
@@ -1889,6 +1964,25 @@ export const ui: Registry = [
       },
       {
         path: "components/ui/section-header/section-header.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "section-intro",
+    type: "registry:ui",
+    category: "general",
+    description:
+      "Marketing section opener with a mono uppercase eyebrow, display-font heading, and optional lede paragraph. Eyebrow color tracks a live-rewritten CSS custom property for runtime brand-accent binding.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/section-intro/section-intro.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/section-intro/section-intro.module.css",
         type: "registry:ui",
       },
     ],
@@ -2210,6 +2304,25 @@ export const ui: Registry = [
       },
       {
         path: "components/ui/color-picker/oklch.ts",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "structured-prompt",
+    type: "registry:ui",
+    category: "form",
+    description:
+      "Inline mad-lib fill-in-the-blank card for structured elicitation flows. Compound: StructuredPrompt > StructuredPromptHeader (icon + uppercase eyebrow) | StructuredPromptBody (tall-line-height prose) | StructuredPromptSlot (filled or empty inline chip; button when interactive, span when display-only) | StructuredPromptHint (footer tertiary text).",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/structured-prompt/structured-prompt.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/structured-prompt/structured-prompt.module.css",
         type: "registry:ui",
       },
     ],

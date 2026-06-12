@@ -199,16 +199,19 @@ describe("AdminTabbedEditor", () => {
     expect(title).toHaveAttribute("data-title-family", "display")
   })
 
-  it("forwards leading to the PageHeader title line-height hook", () => {
+  it("forwards leading to the PageHeader media/identity slot", () => {
     const { container } = render(
-      <AdminTabbedEditor title="Settings" tabs={sampleTabs} leading={1.05} />
+      <AdminTabbedEditor
+        title="Settings"
+        tabs={sampleTabs}
+        leading={<span data-testid="identity-media" />}
+      />
     )
-    const title = container.querySelector(
-      '[data-slot="page-header-title"]'
+    const slot = container.querySelector(
+      '[data-slot="page-header-leading"]'
     ) as HTMLElement
-    expect(title.style.getPropertyValue("--page-header-title-leading")).toBe(
-      "1.05"
-    )
+    expect(slot).not.toBeNull()
+    expect(slot.querySelector('[data-testid="identity-media"]')).not.toBeNull()
   })
 
   // ─── data-slot ──────────────────────────────────────────────────────

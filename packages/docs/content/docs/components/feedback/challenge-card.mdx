@@ -1,0 +1,125 @@
+---
+title: ChallengeCard
+description: Adversarial challenge message card — an AI pushes back on the user's input and the human holds the gate.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import {
+  ChallengeCard,
+  ChallengeCardHeader,
+  ChallengeCardBody,
+  ChallengeCardActions,
+  ChallengeCardAction,
+  ChallengeCardGate,
+} from '@/components/ui/challenge-card';
+
+ChallengeCard is a first-class adversarial message component: an AI pushes back on the user's input and the **human holds the gate**. It is distinct from [Alert](/docs/components/feedback/alert) in both purpose and API.
+
+**Alert vs ChallengeCard:**
+- **Alert** — passive notice. Static callout for information, warnings, or errors that require no explicit decision.
+- **ChallengeCard** — adversarial prompt. The AI is questioning the user's intent; the human must choose an action before proceeding.
+
+**Why standalone, not built on Alert internals?** Alert's compound sub-components (`AlertTitle`, `AlertDescription`, `AlertActions`) don't cover the warning-toned filled primary action button or the gate affordance — those are semantically different (real `<button>` elements with click handlers, not layout containers). Building standalone keeps the API clean and avoids leaking Alert's `variant` CVA logic into a component that has no variants.
+
+## The onliness challenge
+
+<ComponentPreview
+  title="Onliness challenge"
+  code={"import {\n  ChallengeCard,\n  ChallengeCardHeader,\n  ChallengeCardBody,\n  ChallengeCardActions,\n  ChallengeCardAction,\n  ChallengeCardGate,\n} from '@/components/ui/challenge-card/challenge-card';\n\n<ChallengeCard>\n  <ChallengeCardHeader>Is it actually only?</ChallengeCardHeader>\n  <ChallengeCardBody>\n    The word \"only\" in this claim is absolute — it invites factual rebuttal.\n    Do you have data to back it up, or would a sharper qualifier work better?\n  </ChallengeCardBody>\n  <ChallengeCardActions>\n    <ChallengeCardAction variant=\"primary\">Use the sharper version</ChallengeCardAction>\n    <ChallengeCardAction variant=\"ghost\">I'll rewrite it</ChallengeCardAction>\n    <ChallengeCardGate />\n  </ChallengeCardActions>\n</ChallengeCard>"}
+>
+  <ChallengeCard>
+    <ChallengeCardHeader>Is it actually only?</ChallengeCardHeader>
+    <ChallengeCardBody>
+      The word &ldquo;only&rdquo; in this claim is absolute — it invites factual rebuttal.
+      Do you have data to back it up, or would a sharper qualifier work better?
+    </ChallengeCardBody>
+    <ChallengeCardActions>
+      <ChallengeCardAction variant="primary">Use the sharper version</ChallengeCardAction>
+      <ChallengeCardAction variant="ghost">I&apos;ll rewrite it</ChallengeCardAction>
+      <ChallengeCardGate />
+    </ChallengeCardActions>
+  </ChallengeCard>
+</ComponentPreview>
+
+## Custom gate label
+
+Override the default "You hold the gate" text by passing children to `ChallengeCardGate`.
+
+<ComponentPreview
+  title="Custom gate label"
+  code={"<ChallengeCard>\n  <ChallengeCardHeader>Your call</ChallengeCardHeader>\n  <ChallengeCardBody>This is a high-stakes decision. You own the outcome.</ChallengeCardBody>\n  <ChallengeCardActions>\n    <ChallengeCardAction variant=\"primary\">Proceed anyway</ChallengeCardAction>\n    <ChallengeCardAction variant=\"ghost\">Go back</ChallengeCardAction>\n    <ChallengeCardGate>Human in the loop</ChallengeCardGate>\n  </ChallengeCardActions>\n</ChallengeCard>"}
+>
+  <ChallengeCard>
+    <ChallengeCardHeader>Your call</ChallengeCardHeader>
+    <ChallengeCardBody>This is a high-stakes decision. You own the outcome.</ChallengeCardBody>
+    <ChallengeCardActions>
+      <ChallengeCardAction variant="primary">Proceed anyway</ChallengeCardAction>
+      <ChallengeCardAction variant="ghost">Go back</ChallengeCardAction>
+      <ChallengeCardGate>Human in the loop</ChallengeCardGate>
+    </ChallengeCardActions>
+  </ChallengeCard>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add challenge-card
+```
+
+This copies two files into your project:
+
+- `components/ui/challenge-card/challenge-card.tsx` — the component
+- `components/ui/challenge-card/challenge-card.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  ChallengeCard,
+  ChallengeCardHeader,
+  ChallengeCardBody,
+  ChallengeCardActions,
+  ChallengeCardAction,
+  ChallengeCardGate,
+} from '@/components/ui/challenge-card/challenge-card';
+
+<ChallengeCard>
+  <ChallengeCardHeader>Is it actually only?</ChallengeCardHeader>
+  <ChallengeCardBody>
+    The word "only" in this claim is absolute — it invites factual rebuttal.
+  </ChallengeCardBody>
+  <ChallengeCardActions>
+    <ChallengeCardAction variant="primary" onClick={handleAccept}>
+      Use the sharper version
+    </ChallengeCardAction>
+    <ChallengeCardAction variant="ghost" onClick={handleRewrite}>
+      I'll rewrite it
+    </ChallengeCardAction>
+    <ChallengeCardGate />
+  </ChallengeCardActions>
+</ChallengeCard>
+```
+
+## API Reference
+
+### ChallengeCardProps
+
+<PropsTable component="challenge-card" />
+
+The component also accepts all standard `<div>` HTML attributes.
+
+### Sub-components
+
+- **`ChallengeCardHeader`** — Flag icon + uppercase warning-toned title. Accepts `icon` prop to override (`null` to suppress the icon). Accepts all `<div>` attributes.
+- **`ChallengeCardBody`** — Prose body text. Accepts all `<div>` attributes.
+- **`ChallengeCardActions`** — Flex row container for actions and the gate. Accepts all `<div>` attributes.
+- **`ChallengeCardAction`** — Real `<button>` with `variant="primary"` (filled warning) or `variant="ghost"` (transparent + border). Accepts `icon` prop to override the default icon (`null` to suppress). Accepts all `<button>` attributes including `onClick` and `disabled`.
+- **`ChallengeCardGate`** — Lock icon + label pushed right via `margin-left: auto`. Defaults to "You hold the gate"; pass children to override. Accepts all `<span>` attributes.
+
+## Accessibility
+
+- The root renders with `role="alert"` so screen readers announce the challenge immediately.
+- Action buttons are real `<button>` elements with keyboard focus and visible focus rings via `var(--focus-ring-width)` and `var(--focus-ring-offset)`.
+- The header icon and gate icon are `aria-hidden="true"` — meaning is conveyed through the title and gate label text.
+- Disabled actions receive `opacity` only; the element remains in the DOM so users can still discover it exists.

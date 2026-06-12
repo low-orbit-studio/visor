@@ -11,6 +11,7 @@ declare const styles: {
   readonly actions: string
   readonly action: string
   readonly secondaryAction: string
+  readonly editorial: string
 }
 
 export default styles

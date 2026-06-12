@@ -1,0 +1,85 @@
+/* Spinner
+ *
+ * Inline loading spinner — a border-based rotating ring with a subtle track
+ * and a tone-colored leading edge. Sizes: xs (12px), sm (16px), md (24px).
+ *
+ * All colors flow through CSS custom properties so themes can override the
+ * track and edge colors without forking the component. Stroke widths are
+ * sourced from the --stroke-width-* token set (thin/regular/medium/thick).
+ */
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.root {
+  --spinner-track-color: var(--border-default, #e5e7eb);
+  --spinner-edge-color: var(--text-tertiary, #6b7280);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: var(--radius-full, 9999px);
+  border-style: solid;
+  border-color: var(--spinner-track-color);
+  border-top-color: var(--spinner-edge-color);
+  animation: spin var(--motion-duration-1500, 1500ms) var(--motion-easing-linear, linear) infinite;
+  box-sizing: border-box;
+}
+
+/* Visually-hidden label text — accessible to screen readers, not visible */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Size xs — 12px ring, stroke-width-thin (1px) */
+.root.sizeXs {
+  width: 12px;
+  height: 12px;
+  border-width: var(--stroke-width-thin, 1px);
+}
+
+/* Size sm — 16px ring, stroke-width-regular (1.5px) */
+.root.sizeSm {
+  width: 16px;
+  height: 16px;
+  border-width: var(--stroke-width-regular, 1.5px);
+}
+
+/* Size md — 24px ring, stroke-width-medium (2px) */
+.root.sizeMd {
+  width: 24px;
+  height: 24px;
+  border-width: var(--stroke-width-medium, 2px);
+}
+
+/* Tone: default — tertiary text for leading edge */
+.root.toneDefault {
+  --spinner-edge-color: var(--text-tertiary, #6b7280);
+}
+
+/* Tone: primary — primary brand color for leading edge */
+.root.tonePrimary {
+  --spinner-edge-color: var(--primary, #111827);
+}
+
+/* Respect reduced motion — stop rotation */
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    animation-play-state: paused;
+  }
+}

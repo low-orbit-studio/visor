@@ -48,6 +48,12 @@
   gap: var(--spacing-1, 0.25rem);
 }
 
+/* Editorial density: tighter font + gap for md chips. */
+:global([data-density="editorial"]) .sizeMd {
+  font-size: var(--font-size-xs);
+  gap: var(--spacing-2);
+}
+
 .sizeLg {
   height: 2.5rem;
   padding: 0 var(--spacing-4, 1rem);
@@ -111,11 +117,15 @@
   display: block;
 }
 
-/* Count pill (FilterChip only) */
+/* Count pill (FilterChip only). Under data-density="editorial", it renders
+   as a fixed circular semibold pill. */
 .count {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  min-width: auto;
+  height: auto;
   border-radius: var(--radius-full, 9999px);
   padding: 0 var(--spacing-2, 0.5rem);
   font-size: var(--font-size-xs, 0.75rem);
@@ -123,6 +133,14 @@
   font-variant-numeric: tabular-nums;
   line-height: 1;
   align-self: baseline;
+}
+
+:global([data-density="editorial"]) .count {
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding-inline: var(--spacing-1);
+  font-weight: var(--font-weight-semibold);
+  align-self: center;
 }
 
 .countNeutral {
@@ -135,16 +153,33 @@
   color: var(--text-link, #2563eb);
 }
 
-/* Accent selected state overrides count pill (default behaviour) */
+/* Accent selected state overrides count pill (default behaviour). */
 .selected .count {
   background-color: var(--surface-card, #ffffff);
   color: var(--text-link, #2563eb);
+}
+
+/* Editorial density: selected count uses solid primary pill. */
+:global([data-density="editorial"]) .selected .count {
+  background-color: var(--primary);
+  color: var(--primary-text);
 }
 
 /* Solid mint count pill — editorial/neutral selected treatment */
 .countSolid {
   background-color: var(--surface-success-default, #22c55e);
   color: var(--text-inverse, #ffffff);
+}
+
+/* Trailing icon (FilterChip dropdown caret) — muted, after the count. */
+.trailing {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-tertiary, #9ca3af);
+  font-size: 0.875rem;
+  line-height: 1;
 }
 
 /* Interactive chips (ChoiceChip, FilterChip) */
@@ -184,11 +219,21 @@ button.base,
   transition: none;
 }
 
-/* Selected state */
+/* Selected state. Under data-density="editorial", switches to neutral-elevated
+   treatment (surface-elev bg + transparent border + primary text). */
 .selected {
   background-color: var(--surface-accent-subtle, #eff6ff);
   border-color: var(--surface-accent-default, #3b82f6);
   color: var(--text-link, #2563eb);
+}
+
+/* Editorial density: neutral-elevated selected treatment.
+   --surface-elev is a theme role; the color-mix fallback matches how the
+   retired overlay derived it. */
+:global([data-density="editorial"]) .selected {
+  background: var(--surface-elev, color-mix(in srgb, var(--surface-card), var(--surface-muted, var(--surface-card))));
+  border-color: transparent;
+  color: var(--text-primary);
 }
 
 @media (hover: hover) {
@@ -206,7 +251,22 @@ button.base,
   color: var(--text-primary, #111827);
 }
 
+/* Re-assert selectedNeutral under editorial density: the density .selected rule
+ * is (0,2,0) and would otherwise override .selectedNeutral at (0,1,0). */
+:global([data-density="editorial"]) .selectedNeutral {
+  background-color: var(--surface-card, #ffffff);
+  border-color: var(--border-strong, #d1d5db);
+  color: var(--text-primary, #111827);
+}
+
 .selectedNeutral .count {
+  background-color: var(--surface-success-default, #22c55e);
+  color: var(--text-inverse, #ffffff);
+}
+
+/* Re-assert selectedNeutral count under editorial density: the density
+ * .selected .count rule at (0,3,0) would otherwise override at (0,2,0). */
+:global([data-density="editorial"]) .selectedNeutral .count {
   background-color: var(--surface-success-default, #22c55e);
   color: var(--text-inverse, #ffffff);
 }
@@ -215,4 +275,14 @@ button.base,
   .interactive.selectedNeutral:hover:not(:disabled) {
     background-color: var(--surface-interactive-hover, #f3f4f6);
   }
+}
+
+/* FilterChip resting (unselected) surface. Under editorial density, uses
+   --surface-elev so the filter row reads as one consistent elevated set. */
+.filterChip[data-selected="false"] {
+  background-color: var(--surface-muted, #f3f4f6);
+}
+
+:global([data-density="editorial"]) .filterChip[data-selected="false"] {
+  background-color: var(--surface-elev, color-mix(in srgb, var(--surface-card), var(--surface-muted, var(--surface-card))));
 }

@@ -1,0 +1,10 @@
+.vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    var(--vignette-size-x, 120%) var(--vignette-size-y, 90%) at var(--vignette-position, 50% 38%),
+    transparent var(--vignette-transparent-stop, 52%),
+    var(--vignette-color, rgba(0, 0, 6, 0.5)) var(--vignette-color-stop, 100%)
+  );
+}

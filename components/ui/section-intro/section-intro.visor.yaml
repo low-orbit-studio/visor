@@ -1,0 +1,61 @@
+name: SectionIntro
+description: Marketing section opener with a mono uppercase eyebrow, display-font heading, and optional lede paragraph. Eyebrow color tracks a live-rewritten CSS custom property for brand-accent binding.
+extends: HTMLElement
+category: general
+
+when_to_use:
+  - Opening a marketing section with an eyebrow + display heading pattern
+  - Replacing hand-rolled eyebrow/heading combos that repeat across homepage sections
+  - Binding the eyebrow color to a keyed brand accent that changes at runtime
+  - Using left or center alignment for section intros on marketing pages
+
+when_not_to_use:
+  - Admin page headers with actions and breadcrumbs (use PageHeader)
+  - In-page content section dividers with meta labels (use SectionHeader)
+  - Plain typographic headings inside body copy (use Heading)
+  - Sections that require icon, badge, or button inside the heading area
+
+why: >
+  The blacklight-website repeats the eyebrow + display-heading pattern across ~10
+  homepage sections, each hand-rolled. Visor's SectionHeader and PageHeader are
+  admin-flavored; no marketing equivalent existed. SectionIntro canonicalizes the
+  atom so eyebrow color, font treatment, and alignment are consistent and can't drift
+  per page.
+
+variants:
+  align: [left, center]
+
+props:
+  - name: eyebrow
+    type: React.ReactNode
+    description: Short mono uppercase label rendered above the heading. Reads color from --section-intro-eyebrow-color.
+  - name: heading
+    type: React.ReactNode
+    required: true
+    description: Display-font heading — the main marketing statement.
+  - name: lede
+    type: React.ReactNode
+    description: Optional supporting paragraph rendered beneath the heading.
+  - name: align
+    type: "'left' | 'center'"
+    default: "left"
+    description: Text alignment for all three slots.
+  - name: headingAs
+    type: "'h1' | 'h2' | 'h3'"
+    default: "h2"
+    description: Heading level for the heading slot.
+  - name: as
+    type: "'header' | 'div' | 'section'"
+    default: "header"
+    description: Root element tag.
+
+dependencies: []
+
+preview_url: "https://visor.design/docs/components/general/section-intro"
+
+example: |
+  <SectionIntro
+    eyebrow="On the map"
+    heading="Built for the world's best venues"
+    lede="One platform. Every door."
+  />
