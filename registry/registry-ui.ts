@@ -462,6 +462,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "challenge-card",
+    type: "registry:ui",
+    category: "feedback",
+    description:
+      "Adversarial challenge message card — an AI pushes back on the user's input and the human holds the gate. Distinct from Alert: ChallengeCard is for messages requiring an explicit human decision, not passive notices.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/challenge-card/challenge-card.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/challenge-card/challenge-card.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "progress",
     type: "registry:ui",
     description:
