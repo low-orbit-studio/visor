@@ -24,6 +24,12 @@
   align-items: flex-start;
 }
 
+/* A bare single-line title centers against the 2rem trigger; wrapped
+ * title+description blocks keep the flex-start top alignment. */
+.itemVertical > .title {
+  line-height: 2rem;
+}
+
 /* Trigger (step indicator circle) */
 .trigger {
   display: inline-flex;
@@ -64,6 +70,20 @@
   background-color: transparent;
   border-color: var(--border-default, #e5e7eb);
   color: var(--text-tertiary, #9ca3af);
+}
+
+.trigger--locked {
+  background-color: transparent;
+  border-color: var(--border-muted, #e5e7eb);
+  color: var(--text-tertiary, #9ca3af);
+  cursor: not-allowed;
+  opacity: var(--opacity-60, 0.6);
+}
+
+/* Locked item — muted label */
+.item[data-status="locked"] .title {
+  color: var(--text-secondary, #6b7280);
+  font-weight: var(--font-weight-normal, 400);
 }
 
 /* Title */

@@ -95,6 +95,30 @@ import {
   </Stepper>
 </ComponentPreview>
 
+## Locked Step
+
+<ComponentPreview
+  title="Locked Step"
+  code={"<Stepper activeStep={1}>\n  <StepperItem step={0}>\n    <StepperTrigger step={0} />\n    <StepperTitle>Account</StepperTitle>\n  </StepperItem>\n  <StepperSeparator complete />\n  <StepperItem step={1}>\n    <StepperTrigger step={1} />\n    <StepperTitle>Profile</StepperTitle>\n  </StepperItem>\n  <StepperSeparator />\n  <StepperItem step={2} status=\"locked\">\n    <StepperTrigger step={2} status=\"locked\" />\n    <StepperTitle>Review</StepperTitle>\n  </StepperItem>\n</Stepper>"}
+>
+  <Stepper activeStep={1}>
+    <StepperItem step={0}>
+      <StepperTrigger step={0} />
+      <StepperTitle>Account</StepperTitle>
+    </StepperItem>
+    <StepperSeparator complete />
+    <StepperItem step={1}>
+      <StepperTrigger step={1} />
+      <StepperTitle>Profile</StepperTitle>
+    </StepperItem>
+    <StepperSeparator />
+    <StepperItem step={2} status="locked">
+      <StepperTrigger step={2} status="locked" />
+      <StepperTitle>Review</StepperTitle>
+    </StepperItem>
+  </Stepper>
+</ComponentPreview>
+
 ## All Steps Complete
 
 <ComponentPreview
@@ -184,7 +208,8 @@ export default function Example() {
 
 - `Stepper` renders with `role="group"` and `aria-label="Progress"` to group the steps as a meaningful unit.
 - `StepperItem` sets `aria-current="step"` on the currently active step.
-- `StepperTrigger` is a `<button>` element and includes a visually hidden label ("Completed" or "Step N") for screen readers.
-- The check icon in completed triggers has `aria-hidden="true"` since the status is communicated via the button's text content.
-- Step status (`complete`, `active`, `upcoming`) is also exposed as a `data-status` attribute for custom CSS targeting.
+- `StepperTrigger` is a `<button>` element and includes a visually hidden label ("Completed", "Step N", or "Step N, locked") for screen readers.
+- The check icon in completed triggers and the lock icon in locked triggers both have `aria-hidden="true"` since the status is communicated via the button's text content.
+- Step status (`complete`, `active`, `upcoming`, `locked`) is also exposed as a `data-status` attribute for custom CSS targeting.
+- Locked triggers set `aria-disabled="true"` and `tabIndex={-1}` — they are non-interactive and removed from the tab order. The `onClick` handler is suppressed regardless of what is passed.
 - When steps are clickable (navigating back), ensure `StepperTrigger` has a meaningful `onClick` handler. For read-only steppers, pass `disabled` or `tabIndex={-1}` to prevent interaction.

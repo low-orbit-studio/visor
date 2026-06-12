@@ -1,5 +1,5 @@
 name: Stepper
-description: A multi-step progress indicator with horizontal and vertical orientations and auto-derived step status.
+description: A multi-step progress indicator with horizontal and vertical orientations, auto-derived step status, and a locked status for non-interactive steps.
 extends: HTMLDivElement
 category: navigation
 
@@ -31,15 +31,29 @@ props:
     type: "'horizontal' | 'vertical'"
     default: "'horizontal'"
 
+variants:
+  - name: status
+    values:
+      - complete
+      - active
+      - upcoming
+      - locked
+    description: >
+      Per-item status override. "complete", "active", and "upcoming" can be
+      auto-derived from activeStep; "locked" must always be set explicitly and
+      is never auto-derived. A locked item renders a lock glyph in its trigger
+      circle and its trigger is non-interactive (aria-disabled, removed from
+      tab order).
+
 sub_components:
   - name: Stepper
     description: Root provider managing active step and orientation context.
   - name: StepperItem
-    description: Container for a single step with auto-derived status from context.
+    description: Container for a single step with auto-derived status from context. Pass status="locked" to override.
   - name: StepperTrigger
-    description: Clickable step indicator circle with status-based styling and check icon.
+    description: Clickable step indicator circle with status-based styling; check icon for complete, lock glyph for locked.
   - name: StepperTitle
-    description: Step label text.
+    description: Step label text. Rendered in secondary color when the parent item is locked.
   - name: StepperDescription
     description: Optional secondary description for a step.
   - name: StepperSeparator
