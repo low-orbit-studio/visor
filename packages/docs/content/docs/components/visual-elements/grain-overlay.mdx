@@ -3,7 +3,27 @@ title: GrainOverlay
 description: Fixed, full-viewport film-grain noise layer. Ports Blacklight's bl-grain depth-system primitive for dark marketing surfaces.
 ---
 
+import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
+import { GrainOverlay } from '@/components/ui/grain-overlay';
+
+## Preview
+
+<ComponentPreview
+  title="GrainOverlay — default opacity 0.035"
+  code={"import { GrainOverlay } from '@/components/visual/grain-overlay/grain-overlay';\n\n// Drop at the top of your dark page layout\n<div style={{ position: 'relative', height: '160px', background: '#080814', borderRadius: '8px', overflow: 'hidden' }}>\n  <GrainOverlay zIndex={1} />\n  <div style={{ position: 'relative', zIndex: 2, padding: '24px', color: '#ffffff', opacity: 0.6 }}>Film grain overlay — subtle noise texture on dark surfaces</div>\n</div>"}
+>
+  <div style={{ position: 'relative', height: '160px', background: '#080814', borderRadius: '8px', overflow: 'hidden' }}>
+    <GrainOverlay zIndex={1} />
+    <div style={{ position: 'relative', zIndex: 2, padding: '24px', color: '#ffffff', opacity: 0.6 }}>Film grain overlay — subtle noise texture on dark surfaces</div>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add grain-overlay
+```
 
 ## Overview
 
@@ -27,7 +47,7 @@ export default function DarkLayout({ children }) {
 }
 ```
 
-## Props
+## API Reference
 
 <PropsTable
   props={[
