@@ -667,6 +667,53 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  composer: [
+    {
+      name: 'value',
+      type: 'string',
+      description: 'Controlled value of the composer field.',
+    },
+    {
+      name: 'onValueChange',
+      type: '(value: string) => void',
+      description: 'Called when the field value changes (controlled mode).',
+    },
+    {
+      name: 'onSubmit',
+      type: '(value: string) => void',
+      description: 'Called when the field is submitted — Enter key or the send button. Shift+Enter inserts a newline instead.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables all interactive children (field, tool buttons, send).',
+    },
+    {
+      name: 'placeholder',
+      type: 'string',
+      default: "'Message…'",
+      description: 'ComposerField: placeholder text.',
+    },
+    {
+      name: 'icon',
+      type: 'ReactNode',
+      required: true,
+      description: 'ComposerToolButton: Phosphor icon element rendered inside the button.',
+    },
+    {
+      name: 'aria-label',
+      type: 'string',
+      required: true,
+      description: 'ComposerToolButton: accessible label (required — the button is icon-only).',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto any sub-component.',
+    },
+  ],
+
   stepper: [
     {
       name: 'activeStep',
