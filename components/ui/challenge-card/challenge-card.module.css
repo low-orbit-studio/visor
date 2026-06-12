@@ -4,8 +4,8 @@
  * input and the HUMAN holds the gate. Distinct from Alert (passive notice):
  * ChallengeCard carries its own action semantics and gate affordance.
  *
- * Visual spec: elicit-core.html .challenge / .ch / .cb / .actions / .cbtn /
- *              .cbtn.keep / .cbtn.alt / .gate
+ * Visual spec: docs/design/brand-workbench/elicit-core (the adversarial
+ *              challenge card section, around line 261-273)
  */
 
 /* Root card */
