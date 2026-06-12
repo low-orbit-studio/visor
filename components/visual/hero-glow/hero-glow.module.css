@@ -1,6 +1,6 @@
 /* HeroGlow: breathing radial glow band for hero media
  *
- * Port of .bl-hero-glow (blacklight-website globals.css, BL-326).
+ * Port of bl-hero-glow (blacklight-website globals.css, BL-326).
  *
  * Color contract:
  *   Color is driven exclusively by --glow-color, which the consumer sets
