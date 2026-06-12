@@ -1874,6 +1874,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "error-placard",
+    type: "registry:ui",
+    category: "feedback",
+    description:
+      "Inline failed-load placard with a destructive-tinted icon chip, title, body, and optional right-aligned recovery actions. Distinct from Alert (passive semantic callout) and Banner (full-width page bar).",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/error-placard/error-placard.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/error-placard/error-placard.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "filter-bar",
     type: "registry:ui",
     category: "admin",

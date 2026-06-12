@@ -1,0 +1,61 @@
+name: ErrorPlacard
+description: Inline failed-load placard with a destructive icon chip, title, body, and optional recovery actions.
+extends: HTMLDivElement
+category: feedback
+
+when_to_use:
+  - A specific section or data panel failed to load and requires user action to recover
+  - Displaying a named error with both context and a retry or dismiss option in-place
+  - Inline error states within cards, list items, or content panels (not page-level)
+
+when_not_to_use:
+  - Passive informational notices or warnings (use Alert)
+  - Site-wide or page-level announcements (use Banner)
+  - Empty states where no data exists yet (use EmptyState)
+  - Ephemeral transient notifications (use Toast)
+
+why: >
+  ErrorPlacard is an inline failed-load placard: a destructive-tinted horizontal card
+  with a circular icon chip, a title + body column, and an optional right-aligned action
+  cluster. Unlike Alert (passive inline callout with semantic variants) or Banner
+  (full-width page-level bar), ErrorPlacard is purpose-built for failed-load recovery
+  within a bounded content area. The single destructive surface treatment and horizontal
+  layout give it a distinct visual weight matched to its urgency.
+
+props:
+  - name: icon
+    type: "ReactNode"
+    required: true
+    description: Leading visual rendered in a destructive-tinted circular chip. Typically a Phosphor icon at 22px.
+  - name: title
+    type: "ReactNode"
+    required: true
+    description: Short direct statement of the failure.
+  - name: body
+    type: "ReactNode"
+    required: true
+    description: One or two sentences of explanation or recovery guidance.
+  - name: actions
+    type: "ReactNode"
+    required: false
+    description: Optional right-aligned action cluster — typically one or more Buttons (retry, dismiss, contact support).
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/feedback/error-placard"
+
+example: |
+  import { WarningCircle } from '@phosphor-icons/react';
+
+  <ErrorPlacard
+    icon={<WarningCircle weight="fill" />}
+    title="Could not load members"
+    body="The request timed out. Check your connection and try again."
+    actions={
+      <>
+        <Button variant="ghost" size="sm">Dismiss</Button>
+        <Button variant="outline" size="sm">Retry</Button>
+      </>
+    }
+  />
