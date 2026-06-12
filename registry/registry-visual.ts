@@ -21,6 +21,25 @@ export const visual: Registry = [
     ],
   },
   {
+    name: "ambient-glow",
+    type: "registry:ui",
+    category: "visual-elements",
+    description:
+      "Absolutely-positioned drifting radial glow with live CSS-var-driven color. Decorative only — aria-hidden, pointer-events-none. Keyed and gold variants. Ported from the Blacklight marketing depth system (BL-326).",
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/visual/ambient-glow/ambient-glow.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/visual/ambient-glow/ambient-glow.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "sphere",
     type: "registry:ui",
     category: "visual-elements",
