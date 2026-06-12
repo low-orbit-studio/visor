@@ -843,6 +843,12 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'Layout direction of the stepper. "vertical" stacks steps top-to-bottom.',
     },
     {
+      name: 'variant',
+      type: "'default' | 'prominent'",
+      default: "'default'",
+      description: 'Visual treatment. "default" is the standard step indicator for multi-step forms. "prominent" adds a primary-soft active-row tint, a concentric halo, a filled pulse dot in the active bullet, and a primary-tinted complete rail — use it vertically as a primary derivation spine or navigation surface.',
+    },
+    {
       name: 'step',
       type: 'number',
       required: true,

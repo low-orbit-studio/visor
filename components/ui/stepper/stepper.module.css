@@ -139,3 +139,61 @@
   white-space: nowrap;
   border-width: 0;
 }
+
+/* ─── Prominent variant ────────────────────────────────────────────────────── */
+
+/*
+ * Prominent variant tokens (all via the active theme; no hardcoded colors):
+ *   --interactive-primary-bg     — solid primary fill (complete bullet, active border)
+ *   --interactive-primary-text   — contrast text on primary bg (complete bullet icon)
+ *   --interactive-primary-soft   — ~12% primary alpha overlay (active row tint, halo)
+ *   --interactive-primary-glow   — ~32% primary alpha overlay (stronger halo ring if needed)
+ *
+ * No --primary-line token is emitted; the tinted rail uses color-mix at ~34%.
+ */
+
+/* Active row tint */
+.itemProminent {
+  border-radius: var(--radius-lg, 8px);
+  padding: var(--spacing-2, 0.5rem) var(--spacing-2, 0.5rem);
+  margin: 0 calc(var(--spacing-2, 0.5rem) * -1);
+}
+
+.itemProminentActive {
+  background-color: var(--interactive-primary-soft, color-mix(in srgb, var(--interactive-primary-bg, #111827) 12%, transparent));
+}
+
+/* Active row label color */
+.itemProminentActive .title {
+  color: var(--interactive-primary-bg, #111827);
+}
+
+/* Prominent trigger — complete state: identical to default (already solid primary) */
+.triggerProminent--complete {
+  /* no extra styles needed; default trigger--complete already matches */
+}
+
+/* Prominent trigger — active state: primary border + halo */
+.triggerProminent--active {
+  border-color: var(--interactive-primary-bg, #111827);
+  box-shadow: 0 0 0 var(--spacing-1, 0.25rem) var(--interactive-primary-soft, color-mix(in srgb, var(--interactive-primary-bg, #111827) 12%, transparent));
+}
+
+/* Prominent trigger — upcoming/locked: unchanged (no extra styles) */
+.triggerProminent--upcoming {}
+.triggerProminent--locked {}
+
+/* Pulse dot — primary-filled inner dot for active prominent trigger */
+.pulseDot {
+  display: block;
+  width: var(--spacing-2, 0.5rem);
+  height: var(--spacing-2, 0.5rem);
+  border-radius: var(--radius-full, 9999px);
+  background-color: var(--interactive-primary-bg, #111827);
+  flex-shrink: 0;
+}
+
+/* Prominent separator — complete rail tinted primary-line (~34% primary) */
+.separatorProminentComplete {
+  background-color: color-mix(in srgb, var(--interactive-primary-bg, #111827) 34%, transparent);
+}

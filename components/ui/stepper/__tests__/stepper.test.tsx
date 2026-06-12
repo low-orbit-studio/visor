@@ -258,6 +258,122 @@ describe("locked status", () => {
   })
 })
 
+describe("prominent variant", () => {
+  function renderProminentStepper(activeStep = 1) {
+    return render(
+      <Stepper orientation="vertical" variant="prominent" activeStep={activeStep}>
+        <StepperItem step={0}>
+          <StepperTrigger step={0} />
+          <StepperTitle>Start</StepperTitle>
+        </StepperItem>
+        <StepperSeparator complete={activeStep > 0} />
+        <StepperItem step={1}>
+          <StepperTrigger step={1} />
+          <StepperTitle>Essence</StepperTitle>
+        </StepperItem>
+        <StepperSeparator />
+        <StepperItem step={2} status="locked">
+          <StepperTrigger step={2} status="locked" />
+          <StepperTitle>Pillars</StepperTitle>
+        </StepperItem>
+      </Stepper>
+    )
+  }
+
+  it("sets data-variant='prominent' on the Stepper root", () => {
+    const { container } = renderProminentStepper()
+    expect(container.querySelector("[data-slot='stepper']")).toHaveAttribute(
+      "data-variant",
+      "prominent"
+    )
+  })
+
+  it("propagates data-variant='prominent' to StepperItem", () => {
+    const { container } = renderProminentStepper()
+    const items = container.querySelectorAll("[data-slot='stepper-item']")
+    items.forEach((item) => {
+      expect(item).toHaveAttribute("data-variant", "prominent")
+    })
+  })
+
+  it("propagates data-variant='prominent' to StepperTrigger", () => {
+    const { container } = renderProminentStepper()
+    const triggers = container.querySelectorAll("[data-slot='stepper-trigger']")
+    triggers.forEach((trigger) => {
+      expect(trigger).toHaveAttribute("data-variant", "prominent")
+    })
+  })
+
+  it("propagates data-variant='prominent' to StepperSeparator", () => {
+    const { container } = renderProminentStepper()
+    const separators = container.querySelectorAll("[data-slot='stepper-separator']")
+    separators.forEach((sep) => {
+      expect(sep).toHaveAttribute("data-variant", "prominent")
+    })
+  })
+
+  it("renders a pulse dot inside the active prominent trigger", () => {
+    const { container } = renderProminentStepper(1)
+    const activeTrigger = container.querySelector(
+      "[data-slot='stepper-trigger'][data-status='active'][data-variant='prominent']"
+    )
+    expect(activeTrigger).toBeTruthy()
+    // pulse dot is a span with aria-hidden inside the active trigger
+    const pulseDot = activeTrigger?.querySelector("span[aria-hidden='true']")
+    expect(pulseDot).toBeTruthy()
+  })
+
+  it("does NOT render a pulse dot for default variant active trigger", () => {
+    const { container } = render(
+      <Stepper activeStep={1}>
+        <StepperItem step={1}>
+          <StepperTrigger step={1} />
+          <StepperTitle>Active</StepperTitle>
+        </StepperItem>
+      </Stepper>
+    )
+    const activeTrigger = container.querySelector(
+      "[data-slot='stepper-trigger'][data-status='active']"
+    )
+    // Default active trigger shows step number, not a span pulse dot
+    const pulseDot = activeTrigger?.querySelector("span[aria-hidden='true']")
+    expect(pulseDot).toBeNull()
+  })
+
+  it("renders check icon for complete prominent trigger (not pulse dot)", () => {
+    const { container } = renderProminentStepper(1)
+    const completeTrigger = container.querySelector(
+      "[data-slot='stepper-trigger'][data-status='complete'][data-variant='prominent']"
+    )
+    expect(completeTrigger).toBeTruthy()
+    const svg = completeTrigger?.querySelector("svg")
+    expect(svg).toBeTruthy()
+    expect(svg).toHaveAttribute("aria-hidden", "true")
+  })
+
+  it("locked trigger in prominent variant still renders lock glyph and is non-interactive", () => {
+    const { container } = renderProminentStepper()
+    const lockedTrigger = container.querySelector(
+      "[data-slot='stepper-trigger'][data-status='locked'][data-variant='prominent']"
+    )
+    expect(lockedTrigger).toHaveAttribute("aria-disabled", "true")
+    expect(lockedTrigger).toHaveAttribute("tabindex", "-1")
+    const svg = lockedTrigger?.querySelector("svg")
+    expect(svg).toBeTruthy()
+  })
+
+  it("upcoming trigger in prominent variant shows step number (unchanged)", () => {
+    const { container } = renderProminentStepper(0)
+    const upcomingTrigger = container.querySelector(
+      "[data-slot='stepper-trigger'][data-status='upcoming'][data-variant='prominent']"
+    )
+    expect(upcomingTrigger).toBeTruthy()
+    // step number text should be present (no pulse dot for upcoming)
+    const pulseDot = upcomingTrigger?.querySelector("span[aria-hidden='true']")
+    expect(pulseDot).toBeNull()
+  })
+})
+
 describe("accessibility", () => {
   it("has no WCAG 2.1 AA violations (horizontal)", async () => {
     const { container } = renderBasicStepper(1)
