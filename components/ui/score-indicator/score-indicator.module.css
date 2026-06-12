@@ -19,6 +19,16 @@
   --score-indicator-center-bg: transparent;
   --score-indicator-icon-color: var(--text-primary, #111827);
 
+  /* Solid (flat disc) hooks — only consumed by .variantSolid. Defaults are
+   * tone-neutral so the ring variant is never affected by their presence;
+   * each tone block below overrides the tint + value color for solid mode. */
+  --score-indicator-solid-bg: color-mix(
+    in srgb,
+    var(--text-tertiary, #6b7280) 18%,
+    transparent
+  );
+  --score-indicator-solid-value-color: var(--text-primary, #111827);
+
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-2, 0.5rem);
@@ -37,6 +47,21 @@
 .denominatorNone,
 .denominatorTrailing {
   /* default flex-row layout */
+}
+
+/* Ring variant — default SVG track + arc treatment. No-op marker class. */
+.variantRing {
+  /* default rendering */
+}
+
+/* Solid variant — flat filled tinted disc, no SVG ring. The value text sits
+ * on a subtle tone tint (the editorial health-score look). */
+.variantSolid .ring {
+  background-color: var(--score-indicator-solid-bg);
+}
+
+.variantSolid .value {
+  color: var(--score-indicator-solid-value-color);
 }
 
 /* Ring container — holds the SVG + centered value text */
@@ -162,6 +187,12 @@
     var(--surface-success-subtle, var(--text-success, #16a34a)) 35%,
     transparent
   );
+  --score-indicator-solid-bg: color-mix(
+    in srgb,
+    var(--success, var(--text-success, #16a34a)) 18%,
+    transparent
+  );
+  --score-indicator-solid-value-color: var(--success, var(--text-success, #16a34a));
 }
 
 .toneInfo {
@@ -173,6 +204,12 @@
     var(--surface-info-subtle, var(--text-info, #2563eb)) 35%,
     transparent
   );
+  --score-indicator-solid-bg: color-mix(
+    in srgb,
+    var(--info, var(--text-info, #2563eb)) 18%,
+    transparent
+  );
+  --score-indicator-solid-value-color: var(--info, var(--text-info, #2563eb));
 }
 
 .toneWarning {
@@ -184,6 +221,12 @@
     var(--surface-warning-subtle, var(--text-warning, #d97706)) 35%,
     transparent
   );
+  --score-indicator-solid-bg: color-mix(
+    in srgb,
+    var(--warning, var(--text-warning, #d97706)) 18%,
+    transparent
+  );
+  --score-indicator-solid-value-color: var(--warning, var(--text-warning, #d97706));
 }
 
 .toneDestructive {
@@ -195,6 +238,12 @@
     var(--surface-error-subtle, var(--text-error, #dc2626)) 35%,
     transparent
   );
+  --score-indicator-solid-bg: color-mix(
+    in srgb,
+    var(--destructive, var(--text-error, #dc2626)) 18%,
+    transparent
+  );
+  --score-indicator-solid-value-color: var(--destructive, var(--text-error, #dc2626));
 }
 
 .toneNeutral {
@@ -202,6 +251,12 @@
   --score-indicator-value-color: var(--text-primary, #111827);
   --score-indicator-icon-color: var(--text-tertiary, #6b7280);
   --score-indicator-center-bg: transparent;
+  --score-indicator-solid-bg: color-mix(
+    in srgb,
+    var(--text-tertiary, #6b7280) 14%,
+    transparent
+  );
+  --score-indicator-solid-value-color: var(--text-primary, #111827);
 }
 
 /* Respect reduced motion — disable transitions */

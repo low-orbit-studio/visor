@@ -217,7 +217,7 @@ describe("PageHeader", () => {
     })
   })
 
-  describe("leading", () => {
+  describe("titleLeading", () => {
     it("does not set --page-header-title-leading when prop is omitted (byte-for-byte default)", () => {
       const { container } = render(<PageHeader title="Dashboard" />)
       const title = container.querySelector(
@@ -230,7 +230,9 @@ describe("PageHeader", () => {
     })
 
     it("forwards a unitless number as inline --page-header-title-leading", () => {
-      const { container } = render(<PageHeader title="Tonight" leading={1.05} />)
+      const { container } = render(
+        <PageHeader title="Tonight" titleLeading={1.05} />
+      )
       const title = container.querySelector(
         '[data-slot="page-header-title"]'
       ) as HTMLElement
@@ -241,7 +243,7 @@ describe("PageHeader", () => {
 
     it("forwards a CSS-length string as inline --page-header-title-leading", () => {
       const { container } = render(
-        <PageHeader title="Events" leading="2.5rem" />
+        <PageHeader title="Events" titleLeading="2.5rem" />
       )
       const title = container.querySelector(
         '[data-slot="page-header-title"]'
@@ -257,7 +259,7 @@ describe("PageHeader", () => {
           title="Tonight"
           titleSize="3rem"
           titleFamily="'ModernSociety', serif"
-          leading={1}
+          titleLeading={1}
         />
       )
       const title = container.querySelector(
@@ -272,6 +274,34 @@ describe("PageHeader", () => {
       expect(title.style.getPropertyValue("--page-header-title-leading")).toBe(
         "1"
       )
+    })
+  })
+
+  describe("leading (media/identity slot)", () => {
+    it("renders no leading slot when the prop is omitted (default unchanged)", () => {
+      const { container } = render(<PageHeader title="Dashboard" />)
+      expect(
+        container.querySelector('[data-slot="page-header-leading"]')
+      ).toBeNull()
+      const row = container.querySelector(
+        '[data-slot="page-header-row"]'
+      ) as HTMLElement
+      expect(row.hasAttribute("data-has-leading")).toBe(false)
+    })
+
+    it("renders the leading media node and flags the row", () => {
+      const { container } = render(
+        <PageHeader title="Atlas" leading={<span data-testid="avatar" />} />
+      )
+      const slot = container.querySelector(
+        '[data-slot="page-header-leading"]'
+      ) as HTMLElement
+      expect(slot).not.toBeNull()
+      expect(slot.querySelector('[data-testid="avatar"]')).not.toBeNull()
+      const row = container.querySelector(
+        '[data-slot="page-header-row"]'
+      ) as HTMLElement
+      expect(row.hasAttribute("data-has-leading")).toBe(true)
     })
   })
 

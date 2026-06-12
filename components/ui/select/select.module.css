@@ -7,7 +7,7 @@
   width: fit-content;
   border-radius: var(--radius-md, 0.375rem);
   border: 1px solid var(--select-border, var(--border-default, #e5e7eb));
-  background-color: var(--select-bg, var(--surface-interactive-default, #f9fafb));
+  background-color: var(--field-control-bg, var(--select-bg, var(--surface-interactive-default, #f9fafb)));
   padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
   font-size: var(--font-size-sm, 0.875rem);
   /* Match Input's line-height so the trigger's height tracks the text field at
@@ -44,6 +44,43 @@
 
 .trigger[data-placeholder] {
   color: var(--text-secondary, #9ca3af);
+}
+
+/* Borderless trigger variant (opt-in via <SelectTrigger variant="borderless">).
+ *
+ * Closed trigger has no 1px border and sits on --field-control-bg — the same
+ * shared form-control surface role Input uses — so a borderless Select matches a
+ * borderless Input inside an in-dialog form context that sets
+ * --field-control-bg: var(--surface-subtle). Default Select is unchanged. The
+ * border is kept transparent (rather than removed) so the trigger's box size
+ * stays identical to the default trigger and the focus ring keeps its geometry.
+ * Declared after the base .trigger so these overrides win the cascade. */
+.triggerBorderless {
+  border-color: transparent;
+  background-color: var(--field-control-bg, var(--select-bg, var(--surface-interactive-default, #f9fafb)));
+  /* In-form borderless selects match the Input they sit beside: full width and
+     the same md height/padding (the prototype paired select and input controls inside its field rows). */
+  width: 100%;
+  padding: var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem);
+}
+
+@media (hover: hover) {
+  .triggerBorderless:hover:not(:focus-visible):not(:disabled):not([aria-invalid="true"]) {
+    border-color: transparent;
+  }
+}
+
+.triggerBorderless:focus-visible {
+  border-color: transparent;
+  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
+}
+
+:global([data-density="editorial"]) .trigger {
+  background-color: var(--field-control-bg, var(--surface-card));
+}
+
+:global([data-density="editorial"]) .triggerBorderless {
+  background-color: var(--field-control-bg, var(--surface-card));
 }
 
 .triggerSizeSm {

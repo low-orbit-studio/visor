@@ -10,11 +10,15 @@
   color: var(--text-primary, #111827);
 }
 
-/* Density — vertical row padding step driven by `data-density` on the root.
+/* Density axis — vertical row padding step driven by `data-density` on the
+   root (or any ancestor). The three tiers map the full density spectrum:
+   compact (sub-content lists), default (backward-compatible baseline), and
+   editorial (generous card-like rows; high-design admin patterns).
+
    Cells consume `--dt-row-py` via the `.root td` rule below. Horizontal cell
    padding stays at TableCell's `padding: var(--spacing-3)` shorthand cascade
    — we only override the top/bottom longhand properties here, so `default`
-   density renders identically to pre-VI-425 markup.
+   density renders identically to pre-density-axis markup.
 
    Themes can override per-density values via their own selectors. Example:
      [data-theme="entr"] [data-density="editorial"] { --dt-row-py: var(--spacing-6); } */
@@ -22,16 +26,42 @@
 .root[data-density="default"]   { --dt-row-py: var(--spacing-3, 0.75rem); }
 .root[data-density="editorial"] { --dt-row-py: var(--spacing-5, 1.25rem); }
 
-/* Editorial column-header treatment — uppercase, xs scale, tertiary color,
+/* Editorial surface treatment — bakes the editorial-admin baseline values into
+   the density axis. The var() reads keep --dt-* hooks working for per-theme
+   overrides; the fallbacks resolve to the editorial values when no hook is set.
+   Container goes flush (radius 0, no shadow); header and rows use card/page
+   surface tiers instead of transparent. */
+.root[data-density="editorial"] .stickyHeader,
+.root[data-density="editorial"] [data-slot="table-container"] {
+  border-radius: var(--dt-container-radius, 0);
+  box-shadow: var(--dt-container-shadow, none);
+}
+.root[data-density="editorial"] [data-slot="table-head"] {
+  background-color: var(--dt-header-bg, var(--surface-card));
+}
+.root[data-density="editorial"] [data-slot="table-cell"] {
+  background-color: var(--dt-row-bg, color-mix(in srgb, var(--surface-page) 75%, var(--surface-card) 25%));
+}
+
+/* Editorial column-header treatment — uppercase, 11px, tertiary color,
    tracked type (0.08em). Anchored on .root to avoid a bare attribute selector
    (Turbopack pure-selector rule). Overrides the TableHead default styles and
    the sort-button font-weight rule below. */
 .root[data-density="editorial"] th {
-  font-size: var(--font-size-xs, 0.6875rem);
+  font-size: var(--dt-header-font-size, 11px);
   font-weight: var(--font-weight-medium, 500);
   color: var(--text-tertiary, #6b7280);
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+/* Editorial density widens horizontal cell padding (spacing-5 / 20px) to match
+   the editorial-admin baseline; vertical stays driven by --dt-row-py. The
+   --dt-cell-px hook lets a theme tune it; default equals the editorial value. */
+.root[data-density="editorial"] td,
+.root[data-density="editorial"] th {
+  padding-left: var(--dt-cell-px, var(--spacing-5, 1.25rem));
+  padding-right: var(--dt-cell-px, var(--spacing-5, 1.25rem));
 }
 
 /* The sort button inherits font from its <th>, but explicitly overrides
@@ -67,6 +97,16 @@
 
 .sortBar th:last-child {
   border-top-right-radius: var(--data-table-sort-bar-radius, var(--radius-lg, 0.5rem));
+}
+
+/* Editorial density: the flush admin shell has straight header corners — the
+   sort-bar radius defaults to 0 (still overridable via the hook). */
+.root[data-density="editorial"] .sortBar th:first-child {
+  border-top-left-radius: var(--data-table-sort-bar-radius, 0);
+}
+
+.root[data-density="editorial"] .sortBar th:last-child {
+  border-top-right-radius: var(--data-table-sort-bar-radius, 0);
 }
 
 /* Sort button — renders inside the <th> */

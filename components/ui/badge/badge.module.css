@@ -11,17 +11,38 @@
   border-radius: var(--radius-full, 9999px);
   border: 1px solid transparent;
   line-height: 1;
+  /* Typography defaults. Under data-density="editorial" on any ancestor,
+     the density rules below override to uppercase/heavier/tracked. */
   font-weight: var(--font-weight-medium, 500);
+  text-transform: none;
+  letter-spacing: normal;
   white-space: nowrap;
-  text-transform: var(--badge-text-transform, none);
   transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
-/* uppercase — a local class (not a bare attr selector, per Turbopack
- * pure-selector rule) sets the --badge-text-transform token so the prop and
- * a theme override share the same CSS hook. */
+/* Editorial density: uppercase + heavier + tracked. Any ancestor with
+ * data-density="editorial" (for example the app root) activates this. */
+:global([data-density="editorial"]) .base {
+  /* Theme-invariant: the editorial treatment runs 600 even when a theme maps
+     --font-weight-semibold heavier (entr: 700). density-literal */
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Editorial density opt-out: sizeLg is intrinsically a label (never tag),
+ * and caseSentence lets sm/md opt out per-usage. Both must win over the
+ * editorial .base rule above (same specificity, placed after). */
+:global([data-density="editorial"]) .sizeLg,
+:global([data-density="editorial"]) .caseSentence {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* uppercase prop — directly sets text-transform so it composes cleanly with
+ * the density axis. Specificity (0,2,0), placed after .base, wins over default. */
 .base.uppercase {
-  --badge-text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 .base:focus-visible {
@@ -38,17 +59,33 @@
   font-size: var(--font-size-xs, 0.75rem);
 }
 
-/* md — matches today's rendering byte-for-byte (1.25rem total height). */
+/* md — matches canonical rendering (1.25rem total height). Under
+   data-density="editorial", font-size steps down to 11px. */
 .sizeMd {
   gap: var(--spacing-1, 0.25rem);
   padding: calc(var(--spacing-1, 0.25rem) / 2) var(--spacing-2, 0.5rem);
   font-size: var(--font-size-xs, 0.75rem);
 }
 
+:global([data-density="editorial"]) .sizeMd {
+  font-size: 11px;
+}
+
 .sizeLg {
   gap: calc(var(--spacing-1, 0.25rem) + var(--spacing-1, 0.25rem) / 2);
   padding: var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem);
   font-size: var(--font-size-sm, 0.875rem);
+}
+
+/* Sentence case — opt OUT of any uppercase/tracking applied by the density
+ * axis or the uppercase prop. The large size always opts out (it is
+ * intrinsically a label); the .caseSentence class lets sm/md opt out
+ * per-usage. The editorial-density opt-out mirror lives above, after the
+ * editorial .base rule, ensuring it wins at equal specificity. */
+.sizeLg,
+.caseSentence {
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 /* Icon scaling — leading glyphs track the per-size font-size step. */
@@ -80,16 +117,31 @@
   border-color: transparent;
 }
 
+/* Editorial density: secondary surfaces sit on the card tier. Direct value —
+ * the editorial design language owns control surfaces, so the theme's
+ * --interactive-secondary-bg is deliberately bypassed (matches the blessed
+ * overlay, which out-cascaded the palette at :root). */
+:global([data-density="editorial"]) .variantSecondary {
+  background-color: var(--surface-card, #ffffff);
+}
+
 .variantOutline {
   background-color: transparent;
   color: var(--text-primary, #111827);
   border-color: var(--border-default, #e5e7eb);
 }
 
+/* Tonal variants — canonical surface tokens as plain values. Under
+ * data-density="editorial", backgrounds switch to color-mix tints for
+ * higher saturation at editorial admin density. Text colors are unchanged. */
 .variantDestructive {
   background-color: var(--surface-error-subtle, transparent);
   color: var(--text-error, currentColor);
   border-color: transparent;
+}
+
+:global([data-density="editorial"]) .variantDestructive {
+  background-color: color-mix(in srgb, var(--destructive) 20%, transparent);
 }
 
 .variantSuccess {
@@ -98,16 +150,28 @@
   border-color: transparent;
 }
 
+:global([data-density="editorial"]) .variantSuccess {
+  background-color: color-mix(in srgb, var(--success) 18%, transparent);
+}
+
 .variantWarning {
   background-color: var(--surface-warning-subtle, transparent);
   color: var(--text-warning, currentColor);
   border-color: transparent;
 }
 
+:global([data-density="editorial"]) .variantWarning {
+  background-color: color-mix(in srgb, var(--warning) 20%, transparent);
+}
+
 .variantInfo {
   background-color: var(--surface-info-subtle, transparent);
   color: var(--text-info, currentColor);
   border-color: transparent;
+}
+
+:global([data-density="editorial"]) .variantInfo {
+  background-color: color-mix(in srgb, var(--info) 18%, transparent);
 }
 
 .variantNeutral {
@@ -149,4 +213,22 @@
   background-color: var(--color-neutral-600, #4b5563);
   color: var(--color-white, #ffffff);
   border-color: transparent;
+}
+
+/* Icon-only — a circular, fixed-square chip carrying a single centered glyph
+ * (for example the filled-success check used by the Roles matrix active cell +
+ * legend). Zero padding and a fixed glyph size keep it crisp at any density.
+ * The glyph centers via the base flex; per-size svg rules are overridden here. */
+.iconOnly {
+  width: 1.375rem;
+  height: 1.375rem;
+  min-width: 1.375rem;
+  padding: 0;
+  gap: 0;
+  border-radius: var(--radius-full, 9999px);
+}
+
+.iconOnly > svg {
+  width: 0.875rem;
+  height: 0.875rem;
 }

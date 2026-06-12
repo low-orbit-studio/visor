@@ -5,6 +5,8 @@ declare const styles: {
   readonly fieldLabel: string
   readonly fieldDescription: string
   readonly fieldError: string
+  readonly fieldErrorWithIcon: string
+  readonly fieldErrorIcon: string
   readonly fieldErrorList: string
 }
 

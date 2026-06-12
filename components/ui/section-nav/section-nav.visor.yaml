@@ -33,8 +33,13 @@ props:
     type: string
     description: Destination URL. Applied directly when not using `asChild`. (SectionNavItem)
   - name: icon
-    type: "Icon"
-    description: Leading Phosphor icon component (e.g. `UsersIcon`). (SectionNavItem)
+    type: "Icon | React.ReactNode"
+    description: >
+      Leading icon, accepted in two forms — (1) a Phosphor icon component
+      (`icon={UsersIcon}`), rendered as `<Icon className=... weight="regular" />`;
+      or (2) a rendered element (`icon={<Users size={16} weight="bold" />}`),
+      rendered as-is so its own size/weight/props are preserved, wrapped in the
+      icon slot span. Branches on `React.isValidElement`. (SectionNavItem)
   - name: count
     type: number
     description: Optional trailing count pill value. `0` is rendered; `undefined`/`null` hides the pill. (SectionNavItem)

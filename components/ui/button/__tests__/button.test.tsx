@@ -120,6 +120,35 @@ describe("Button — gated state", () => {
   })
 })
 
+describe("Button — ghost held/open state (CSS-only, opt-in)", () => {
+  // The held look is painted by CSS for ghost buttons carrying one of three
+  // opt-in markers. happy-dom can't assert computed background, so these tests
+  // verify the markers pass through to the DOM and that the default ghost
+  // button stays unmarked (zero-regression).
+  it("forwards data-state=open onto a ghost button", () => {
+    render(<Button variant="ghost" data-state="open">Menu</Button>)
+    expect(screen.getByRole("button", { name: /menu/i })).toHaveAttribute("data-state", "open")
+  })
+
+  it("forwards data-active=true onto a ghost button", () => {
+    render(<Button variant="ghost" data-active="true">Menu</Button>)
+    expect(screen.getByRole("button", { name: /menu/i })).toHaveAttribute("data-active", "true")
+  })
+
+  it("merges an isActive className opt-in onto a ghost button", () => {
+    render(<Button variant="ghost" className="isActive">Menu</Button>)
+    expect(screen.getByRole("button", { name: /menu/i })).toHaveClass("isActive")
+  })
+
+  it("default ghost button carries none of the held-state markers", () => {
+    render(<Button variant="ghost">Menu</Button>)
+    const button = screen.getByRole("button", { name: /menu/i })
+    expect(button).not.toHaveAttribute("data-state")
+    expect(button).not.toHaveAttribute("data-active")
+    expect(button).not.toHaveClass("isActive")
+  })
+})
+
 describe("accessibility", () => {
   it("has no WCAG 2.1 AA violations (default)", async () => {
     const { container } = render(<Button>Click me</Button>)

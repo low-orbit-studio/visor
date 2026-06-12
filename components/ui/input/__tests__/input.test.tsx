@@ -1,3 +1,5 @@
+import { readFileSync } from "fs"
+import { resolve } from "path"
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Input } from "../input"
@@ -177,5 +179,105 @@ describe("aria-invalid styling", () => {
     const input = screen.getByRole("textbox")
     // aria-invalid=false is valid HTML — just confirms no crash and attribute value
     expect(input).toHaveAttribute("aria-invalid", "false")
+  })
+})
+
+describe("editorial density axis (CSS-only, zero-regression)", () => {
+  const css = readFileSync(
+    resolve(__dirname, "..", "input.module.css"),
+    "utf-8"
+  )
+
+  it("base background-color wraps --field-control-bg, defaulting to the current --input-bg chain", () => {
+    expect(css).toContain(
+      "background-color: var(--field-control-bg, var(--input-bg, var(--surface-interactive-default, #f9fafb)));"
+    )
+  })
+
+  it("editorial base background-color keeps --field-control-bg but defaults to var(--surface-card)", () => {
+    expect(css).toContain(':global([data-density="editorial"]) .base')
+    expect(css).toContain(
+      "background-color: var(--field-control-bg, var(--surface-card));"
+    )
+  })
+
+  it("aria-invalid color-mix base wraps --field-control-bg, defaulting to --input-bg", () => {
+    expect(css).toContain(
+      "color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--input-bg, #f9fafb)))"
+    )
+  })
+
+  it("editorial aria-invalid color-mix base defaults inner fallback to var(--surface-card)", () => {
+    expect(css).toContain(
+      "color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--surface-card)))"
+    )
+  })
+
+  it("::placeholder color wraps --input-placeholder-color, defaulting to --text-secondary", () => {
+    expect(css).toContain(
+      "color: var(--input-placeholder-color, var(--text-secondary, #9ca3af));"
+    )
+  })
+})
+
+describe("size density axis (CSS-only, zero-regression)", () => {
+  const css = readFileSync(
+    resolve(__dirname, "..", "input.module.css"),
+    "utf-8"
+  )
+
+  it("sizeSm height is inlined as canonical 2.25rem (no hook indirection)", () => {
+    expect(css).toContain("height: 2.25rem;")
+  })
+
+  it("sizeSm border-radius is inlined as canonical var(--radius-sm, 0.25rem) (no hook indirection)", () => {
+    expect(css).toContain("border-radius: var(--radius-sm, 0.25rem);")
+  })
+
+  it("sizeSm padding wraps --input-padding-sm, defaulting to the current spacing shorthand", () => {
+    expect(css).toContain(
+      "padding: var(--input-padding-sm, var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem));"
+    )
+  })
+
+  it("editorial sizeSm sets height: 33.5px", () => {
+    expect(css).toContain(':global([data-density="editorial"]) .sizeSm')
+    expect(css).toContain("height: 33.5px;")
+  })
+
+  it("editorial sizeSm sets border-radius: var(--radius-md)", () => {
+    expect(css).toContain("border-radius: var(--radius-md);")
+  })
+
+  it("sizeMd height wraps --input-height-md, defaulting to auto", () => {
+    expect(css).toContain("height: var(--input-height-md, auto);")
+  })
+
+  it("sizeMd border-radius wraps --input-radius-md, defaulting to --radius-sm 0.5rem", () => {
+    expect(css).toContain(
+      "border-radius: var(--input-radius-md, var(--radius-sm, 0.5rem));"
+    )
+  })
+
+  it("sizeMd padding wraps --input-padding-md, defaulting to the current spacing shorthand", () => {
+    expect(css).toContain(
+      "padding: var(--input-padding-md, var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem));"
+    )
+  })
+
+  it("sizeLg height wraps --input-height-lg, defaulting to auto", () => {
+    expect(css).toContain("height: var(--input-height-lg, auto);")
+  })
+
+  it("sizeLg border-radius wraps --input-radius-lg, defaulting to --radius-sm 0.5rem", () => {
+    expect(css).toContain(
+      "border-radius: var(--input-radius-lg, var(--radius-sm, 0.5rem));"
+    )
+  })
+
+  it("sizeLg padding wraps --input-padding-lg, defaulting to the current spacing shorthand", () => {
+    expect(css).toContain(
+      "padding: var(--input-padding-lg, var(--spacing-4_5, 1.125rem) var(--spacing-5, 1.25rem));"
+    )
   })
 })

@@ -21,6 +21,28 @@ why: >
   header weight, and footer background are styled via tokens. Keeps markup
   accessible while looking polished across themes.
 
+theme_hooks:
+  - name: --dt-container-radius
+    description: >
+      Container border-radius. Default rendering: var(--radius-lg, 0.5rem).
+      Under the editorial density axis the fallback switches to 0 (flush shell).
+      A consumer or theme can override this hook at any scope to flatten or
+      re-round the container independently of the density.
+  - name: --dt-container-shadow
+    description: >
+      Container box-shadow. Default rendering: var(--shadow-sm).
+      Under the editorial density axis the fallback switches to none.
+  - name: --dt-header-bg
+    description: >
+      TableHead background-color. Default rendering: transparent.
+      Under the editorial density axis the fallback switches to var(--surface-card).
+  - name: --dt-row-bg
+    description: >
+      TableCell background-color, painted on the cell for a uniform row surface
+      regardless of tr selected/hover state. Default rendering: transparent.
+      Under the editorial density axis the fallback switches to
+      color-mix(in srgb, var(--surface-page) 75%, var(--surface-card) 25%).
+
 props:
   - name: scope
     type: '"col" | "row" | "colgroup" | "rowgroup"'

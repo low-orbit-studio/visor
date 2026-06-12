@@ -408,6 +408,24 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "spinner",
+    type: "registry:ui",
+    description:
+      "Inline loading spinner — a rotating border ring with a subtle track and tone-colored leading edge. Three sizes (xs/sm/md), two tones (default/primary), accessible label contract, and full reduced-motion support.",
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/spinner/spinner.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/spinner/spinner.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "tooltip",
     type: "registry:ui",
     description:
@@ -439,6 +457,25 @@ export const ui: Registry = [
       },
       {
         path: "components/ui/alert/alert.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "challenge-card",
+    type: "registry:ui",
+    category: "feedback",
+    description:
+      "Adversarial challenge message card — an AI pushes back on the user's input and the human holds the gate. Distinct from Alert: ChallengeCard is for messages requiring an explicit human decision, not passive notices.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/challenge-card/challenge-card.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/challenge-card/challenge-card.module.css",
         type: "registry:ui",
       },
     ],
