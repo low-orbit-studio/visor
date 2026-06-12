@@ -1,10 +1,10 @@
 /* HeroGlow: breathing radial glow band for hero media
  *
- * Port of bl-hero-glow (blacklight-website globals.css, BL-326).
+ * Port of bl-hero-glow (blacklight-website globals-css, BL-326).
  *
  * Color contract:
  *   Color is driven exclusively by --glow-color, which the consumer sets
- *   inline or resets every rAF frame (e.g. keyed to the active artist color).
+ *   inline or resets every rAF frame (ex. keyed to the active artist color).
  *   No hex values are baked in. Fallback is transparent so nothing renders
  *   when the var is unset — intentional: callers must supply a color.
  *
