@@ -667,6 +667,25 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'specimen-card': [
+    {
+      name: 'context',
+      type: 'string',
+      required: true,
+      description: 'Context token label (e.g. "error", "empty", "loading"). Rendered uppercase in the label row.',
+    },
+    {
+      name: 'feel',
+      type: 'string',
+      description: 'Italic feel descriptor pairing the context (e.g. "warm, accountable").',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
   'challenge-card': [
     {
       name: 'icon',

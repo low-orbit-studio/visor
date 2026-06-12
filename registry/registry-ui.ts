@@ -1594,6 +1594,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "specimen-card",
+    type: "registry:ui",
+    category: "specimen",
+    description:
+      "Labeled frame that pairs a context token + 'feel' descriptor with arbitrary live component children — proves how a brand voice/tone renders on real components. Covers both the tone-by-context grid card and the Speaking block with optional voice-key footer.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/specimen-card/specimen-card.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/specimen-card/specimen-card.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "surface-row",
     type: "registry:ui",
     description:
