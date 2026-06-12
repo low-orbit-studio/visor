@@ -77,6 +77,25 @@ export const visual: Registry = [
     ],
   },
   {
+    name: "card-lift",
+    type: "registry:ui",
+    category: "visual-elements",
+    description:
+      "CSS-only hover-lift wrapper — translateY(-4px) + deep shadow + live-keyed color-mix halo on hover. Port of .bl-card-lift from blacklight-website (BL-326).",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/visual/card-lift/card-lift.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/visual/card-lift/card-lift.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "sphere",
     type: "registry:ui",
     category: "visual-elements",

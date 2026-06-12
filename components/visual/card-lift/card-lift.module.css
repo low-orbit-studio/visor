@@ -1,0 +1,38 @@
+/* CardLift — hover lift + live-keyed halo (port of .bl-card-lift, BL-326)
+   ========================================================================
+   Applies a translateY lift, depth shadow, and a color-mix halo on hover.
+   The halo color is driven by --lift-color (default: var(--accent, #6366f1)),
+   which consumers can rewrite live — the paint-time var tracks any mutation
+   without a React re-render. */
+
+/* ── Default: inherit the lift color from the consumer or fall back ────── */
+.cardLift {
+  --lift-color: var(--accent, #6366f1);
+
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+/* ── Hover state ─────────────────────────────────────────────────────────── */
+/* Shadow intentionally uses raw rgba() — this is a stage-lighting FX (BL-326)
+   whose depth layer is spec'd at exactly rgba(0,0,0,0.8) at 24px/60px spread.
+   The halo layer uses color-mix() against a runtime var, which var(--shadow-*)
+   tokens cannot express. Both values are intentional; changing them would break
+   visual parity with the blacklight-website source. */
+.cardLift:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 24px 60px -20px rgba(0, 0, 0, 0.8),
+    0 0 60px -16px color-mix(in srgb, var(--lift-color) 30%, transparent);
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .cardLift,
+  .cardLift:hover {
+    transform: none;
+    transition: none;
+  }
+}
