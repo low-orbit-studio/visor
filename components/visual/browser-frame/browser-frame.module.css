@@ -2,7 +2,7 @@
  * BrowserFrame — browser-chrome mockup frame.
  *
  * Ported from Blacklight EpkFrame (VI-570). Elevation is kept OUT so consumers
- * can compose with .lit / .lit-soft / .lit-strong from visor-core/utilities.
+ * can compose with the lit / lit-soft / lit-strong utilities from visor-core/utilities.
  *
  * --browser-frame-bg: deep near-black background of the frame shell.
  *   Override to use a theme surface token when the consumer has one.
