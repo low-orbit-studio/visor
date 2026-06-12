@@ -159,7 +159,7 @@ ComposerField.displayName = "ComposerField"
 
 /* ─── ComposerToolbar ─────────────────────────────────────────────────── */
 
-export interface ComposerToolbarProps extends React.HTMLAttributes<HTMLDivElement> {}
+export type ComposerToolbarProps = React.HTMLAttributes<HTMLDivElement>
 
 const ComposerToolbar = React.forwardRef<HTMLDivElement, ComposerToolbarProps>(
   ({ className, children, ...props }, ref) => (
@@ -208,7 +208,7 @@ ComposerToolButton.displayName = "ComposerToolButton"
 
 /* ─── ComposerSpacer ──────────────────────────────────────────────────── */
 
-export interface ComposerSpacerProps extends React.HTMLAttributes<HTMLDivElement> {}
+export type ComposerSpacerProps = React.HTMLAttributes<HTMLDivElement>
 
 const ComposerSpacer = React.forwardRef<HTMLDivElement, ComposerSpacerProps>(
   ({ className, ...props }, ref) => (

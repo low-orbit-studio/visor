@@ -30,7 +30,7 @@ The composer composes a text field, tool buttons, an arbitrary status-chip slot,
   code={"import { Composer, ComposerField, ComposerToolbar, ComposerToolButton, ComposerSpacer, ComposerSend } from '@/components/ui/composer/composer';\nimport { Chip } from '@/components/ui/chip/chip';\nimport { StatusDot } from '@/components/ui/status-dot/status-dot';\nimport { Paperclip, Microphone } from '@phosphor-icons/react';\n\n<Composer onSubmit={(value) => console.log('submit:', value)}>\n  <ComposerField placeholder=\"Ask anything…\" />\n  <ComposerToolbar>\n    <ComposerToolButton icon={<Paperclip size={16} />} aria-label=\"Attach file\" />\n    <ComposerToolButton icon={<Microphone size={16} />} aria-label=\"Voice input\" />\n    <Chip size=\"sm\" leadingIcon={<StatusDot tone=\"mint\" />} label=\"Claude · key active\" />\n    <ComposerSpacer />\n    <ComposerSend />\n  </ComposerToolbar>\n</Composer>"}
 >
   <div style={{ maxWidth: '520px', width: '100%' }}>
-    <Composer onSubmit={(value) => console.log('submit:', value)}>
+    <Composer>
       <ComposerField placeholder="Ask anything…" />
       <ComposerToolbar>
         <ComposerToolButton icon={<Paperclip size={16} />} aria-label="Attach file" />
@@ -52,7 +52,7 @@ A bare composer with just a field and send button.
   code={"<Composer onSubmit={(value) => console.log(value)}>\n  <ComposerField placeholder=\"Type a message…\" />\n  <ComposerToolbar>\n    <ComposerSpacer />\n    <ComposerSend />\n  </ComposerToolbar>\n</Composer>"}
 >
   <div style={{ maxWidth: '520px', width: '100%' }}>
-    <Composer onSubmit={(value) => console.log(value)}>
+    <Composer>
       <ComposerField placeholder="Type a message…" />
       <ComposerToolbar>
         <ComposerSpacer />
