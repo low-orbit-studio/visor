@@ -1,0 +1,90 @@
+---
+title: Spinner
+description: Inline loading indicator — a rotating ring with a subtle track and tone-colored leading edge.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Spinner } from '@/components/ui/spinner';
+
+## Default
+
+A `md` spinner with the default tone (text-tertiary leading edge).
+
+<ComponentPreview
+  title="Spinner default"
+  code={"import { Spinner } from '@/components/ui/spinner/spinner';\n\n<Spinner />"}
+>
+  <Spinner />
+</ComponentPreview>
+
+## Sizes
+
+Three sizes — `xs` (12px), `sm` (16px), and `md` (24px) — fit inline alongside text or inside buttons.
+
+<ComponentPreview
+  title="Spinner sizes"
+  code={"import { Spinner } from '@/components/ui/spinner/spinner';\n\n<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>\n  <Spinner size=\"xs\" />\n  <Spinner size=\"sm\" />\n  <Spinner size=\"md\" />\n</div>"}
+>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+    <Spinner size="xs" />
+    <Spinner size="sm" />
+    <Spinner size="md" />
+  </div>
+</ComponentPreview>
+
+## Tones
+
+`default` uses `--text-tertiary` for the leading edge. `primary` uses the `--primary` brand token.
+
+<ComponentPreview
+  title="Spinner tones"
+  code={"import { Spinner } from '@/components/ui/spinner/spinner';\n\n<div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>\n  <Spinner tone=\"default\" />\n  <Spinner tone=\"primary\" />\n</div>"}
+>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+    <Spinner tone="default" />
+    <Spinner tone="primary" />
+  </div>
+</ComponentPreview>
+
+## With Label
+
+Pass a `label` to make the spinner meaningful to screen readers. It renders `role="status"` with a visually-hidden label string. Without a label the spinner is `aria-hidden="true"` (decorative).
+
+<ComponentPreview
+  title="Spinner with label"
+  code={"import { Spinner } from '@/components/ui/spinner/spinner';\n\n<Spinner size=\"sm\" tone=\"primary\" label=\"Loading results…\" />"}
+>
+  <Spinner size="sm" tone="primary" label="Loading results…" />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add spinner
+```
+
+This copies two files into your project:
+
+- `components/ui/spinner/spinner.tsx` — the component
+- `components/ui/spinner/spinner.module.css` — the styles
+
+## Usage
+
+```tsx
+import { Spinner } from '@/components/ui/spinner/spinner';
+
+{/* Decorative — inside a button */}
+<Spinner size="sm" tone="primary" />
+
+{/* Accessible — standalone loading indicator */}
+<Spinner size="md" tone="primary" label="Loading data…" />
+```
+
+## API Reference
+
+### SpinnerProps
+
+<PropsTable component="spinner" />
+
+The component also accepts all standard `<span>` HTML attributes.

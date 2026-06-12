@@ -139,6 +139,27 @@ describe("FieldError", () => {
     const items = screen.getAllByText("Required")
     expect(items).toHaveLength(1)
   })
+
+  it("renders a leading aria-hidden icon and row layout when icon is provided", () => {
+    render(
+      <FieldError icon={<svg data-testid="warn" />}>This field is required</FieldError>
+    )
+    const alert = screen.getByRole("alert")
+    expect(alert).toHaveClass("fieldErrorWithIcon")
+    const iconSpan = alert.querySelector('[data-slot="field-error-icon"]')
+    expect(iconSpan).not.toBeNull()
+    expect(iconSpan).toHaveClass("fieldErrorIcon")
+    expect(iconSpan).toHaveAttribute("aria-hidden", "true")
+    expect(screen.getByTestId("warn")).toBeInTheDocument()
+    expect(screen.getByText("This field is required")).toBeInTheDocument()
+  })
+
+  it("omits the icon span and row layout by default (unchanged text-only render)", () => {
+    render(<FieldError>This field is required</FieldError>)
+    const alert = screen.getByRole("alert")
+    expect(alert).not.toHaveClass("fieldErrorWithIcon")
+    expect(alert.querySelector('[data-slot="field-error-icon"]')).toBeNull()
+  })
 })
 
 describe("accessibility", () => {

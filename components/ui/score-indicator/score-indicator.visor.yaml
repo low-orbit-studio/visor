@@ -25,6 +25,7 @@ why: >
   accessibility contract (role="img" with "X out of Y" aria-label).
 
 variants:
+  variant: [ring, solid]
   size: [sm, md, lg]
   tone: [success, warning, destructive, info, neutral]
   denominator: [none, trailing, below]
@@ -38,6 +39,13 @@ props:
     type: number
     default: '100'
     description: Maximum value the score can reach.
+  - name: variant
+    type: '"ring" | "solid"'
+    default: '"ring"'
+    description: >-
+      Display treatment. "ring" draws the SVG track + progress arc (default).
+      "solid" renders a flat filled tinted disc with no ring — the editorial
+      health-score look.
   - name: size
     type: '"sm" | "md" | "lg"'
     default: '"md"'

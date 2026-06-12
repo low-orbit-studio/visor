@@ -6,6 +6,10 @@ import styles from "./score-indicator.module.css"
 
 const scoreIndicatorVariants = cva(styles.base, {
   variants: {
+    variant: {
+      ring: styles.variantRing,
+      solid: styles.variantSolid,
+    },
     size: {
       sm: styles.sizeSm,
       md: styles.sizeMd,
@@ -18,6 +22,7 @@ const scoreIndicatorVariants = cva(styles.base, {
     },
   },
   defaultVariants: {
+    variant: "ring",
     size: "md",
     denominator: "trailing",
   },
@@ -48,6 +53,12 @@ export interface ScoreIndicatorProps
   value: number
   /** Maximum value the score can reach. @default 100 */
   max?: number
+  /**
+   * Display treatment. `"ring"` draws the SVG track + progress arc (default).
+   * `"solid"` renders a flat filled tinted disc with no ring — the editorial
+   * health-score look. @default "ring"
+   */
+  variant?: "ring" | "solid"
   /** Visual size. @default "md" */
   size?: "sm" | "md" | "lg"
   /** Color treatment. @default "auto" — derives from value/max ratio */
@@ -88,6 +99,7 @@ const ScoreIndicator = React.forwardRef<HTMLSpanElement, ScoreIndicatorProps>(
       className,
       value,
       max = 100,
+      variant = "ring",
       size = "md",
       tone = "auto",
       ariaLabel,
@@ -115,15 +127,18 @@ const ScoreIndicator = React.forwardRef<HTMLSpanElement, ScoreIndicatorProps>(
     const denominatorText = `/ ${defaultFormat(safeMax, safeMax)}`
     const computedAriaLabel = ariaLabel ?? `${value} out of ${safeMax}`
 
+    const isSolid = variant === "solid"
+
     return (
       <span
         ref={ref}
         data-slot="score-indicator"
+        data-variant={variant}
         data-size={size}
         data-tone={resolvedTone}
         data-denominator={denominator}
         className={cn(
-          scoreIndicatorVariants({ size, denominator }),
+          scoreIndicatorVariants({ variant, size, denominator }),
           TONE_CLASS[resolvedTone],
           className
         )}
@@ -136,37 +151,40 @@ const ScoreIndicator = React.forwardRef<HTMLSpanElement, ScoreIndicatorProps>(
           className={styles.ring}
           style={{ width: ringPx, height: ringPx }}
         >
-          <svg
-            className={styles.svg}
-            viewBox={`0 0 ${viewBox} ${viewBox}`}
-            aria-hidden="true"
-            focusable="false"
-          >
-            <circle
-              className={styles.track}
-              cx={center}
-              cy={center}
-              r={radius}
-              fill="none"
-              strokeWidth={strokePx * (viewBox / ringPx)}
-            />
-            <circle
-              className={styles.indicator}
-              cx={center}
-              cy={center}
-              r={radius}
-              fill="none"
-              strokeWidth={strokePx * (viewBox / ringPx)}
-              strokeDasharray={circumference}
-              strokeDashoffset={dashOffset}
-              strokeLinecap="round"
-              transform={`rotate(-90 ${center} ${center})`}
-            />
-          </svg>
+          {isSolid ? null : (
+            <svg
+              className={styles.svg}
+              viewBox={`0 0 ${viewBox} ${viewBox}`}
+              aria-hidden="true"
+              focusable="false"
+            >
+              <circle
+                className={styles.track}
+                cx={center}
+                cy={center}
+                r={radius}
+                fill="none"
+                strokeWidth={strokePx * (viewBox / ringPx)}
+              />
+              <circle
+                className={styles.indicator}
+                cx={center}
+                cy={center}
+                r={radius}
+                fill="none"
+                strokeWidth={strokePx * (viewBox / ringPx)}
+                strokeDasharray={circumference}
+                strokeDashoffset={dashOffset}
+                strokeLinecap="round"
+                transform={`rotate(-90 ${center} ${center})`}
+              />
+            </svg>
+          )}
           <span data-slot="score-indicator-value" className={styles.value}>
             {formatted}
           </span>
-          {resolvedTone === "destructive" || resolvedTone === "warning" ? (
+          {!isSolid &&
+          (resolvedTone === "destructive" || resolvedTone === "warning") ? (
             <span
               data-slot="score-indicator-icon"
               className={styles.iconOverlay}

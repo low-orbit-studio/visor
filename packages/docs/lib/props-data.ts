@@ -667,6 +667,44 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'specimen-card': [
+    {
+      name: 'context',
+      type: 'string',
+      required: true,
+      description: 'Context token label (e.g. "error", "empty", "loading"). Rendered uppercase in the label row.',
+    },
+    {
+      name: 'feel',
+      type: 'string',
+      description: 'Italic feel descriptor pairing the context (e.g. "warm, accountable").',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
+  'challenge-card': [
+    {
+      name: 'icon',
+      type: 'ReactNode | null',
+      description: 'ChallengeCardHeader: override the default Flag icon (null suppresses it). ChallengeCardAction: optional leading icon — primary defaults to a Check icon.',
+    },
+    {
+      name: 'variant',
+      type: "'primary' | 'ghost'",
+      default: "'primary'",
+      description: 'ChallengeCardAction style — "primary" is the filled warning-toned action, "ghost" is transparent with a border.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto any sub-component.',
+    },
+  ],
+
   composer: [
     {
       name: 'value',
@@ -2918,6 +2956,26 @@ export const propsData: Record<string, PropDef[]> = {
       type: 'ContainerSpacing',
       default: "'md'",
       description: 'Horizontal padding token.',
+    },
+  ],
+
+  spinner: [
+    {
+      name: 'size',
+      type: "'xs' | 'sm' | 'md'",
+      default: "'md'",
+      description: 'Ring size. xs=12px, sm=16px, md=24px.',
+    },
+    {
+      name: 'tone',
+      type: "'default' | 'primary'",
+      default: "'default'",
+      description: 'Color treatment for the leading edge. default uses --text-tertiary, primary uses the --primary brand token.',
+    },
+    {
+      name: 'label',
+      type: 'string',
+      description: 'Accessible label. When provided, renders role="status" with visually-hidden text. When omitted, aria-hidden="true" (decorative).',
     },
   ],
 };

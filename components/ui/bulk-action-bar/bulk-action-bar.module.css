@@ -41,6 +41,34 @@
   border-radius: 0;
 }
 
+/* Editorial density — the blessed admin strip: the inline bar sheds the
+   floating-card chrome entirely (flat, card-tier fill, hairline below, dense
+   padding), the count reads 13px tertiary, and actions are pushed to the right
+   edge and read muted. Matches the blessed admin-ui reference builds. */
+:global([data-density="editorial"]) .inline {
+  background-color: var(--surface-card, #ffffff);
+  box-shadow: none;
+  border-radius: 0;
+  border-top: none;
+  border-bottom: 1px solid var(--hairline, var(--border-default, #e5e7eb));
+  padding: var(--spacing-2, 0.5rem) var(--spacing-5, 1.25rem);
+}
+
+:global([data-density="editorial"]) .count {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary, #6b7280);
+}
+
+:global([data-density="editorial"]) .actions {
+  justify-content: flex-end;
+}
+
+/* Action buttons read muted under editorial; a destructive action keeps its
+   own inline color (style attribute wins over this). */
+:global([data-density="editorial"]) .actions button {
+  color: var(--text-tertiary, #6b7280);
+}
+
 /* Selection count label */
 .count {
   font-size: var(--font-size-sm, 0.875rem);

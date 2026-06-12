@@ -1,0 +1,72 @@
+/* Specimen Card
+ *
+ * A labeled frame that pairs a context label + "feel" descriptor with
+ * arbitrary live component children — proving how a brand voice/tone
+ * renders on real components.
+ *
+ * Two uses:
+ *   (a) Tone-by-context grid — card frame with uppercase context token +
+ *       italic feel descriptor above the live specimen.
+ *   (b) Speaking block — same frame with multiple specimens stacked and
+ *       an optional voice-key attribution footer.
+ *
+ * All values flow through CSS custom properties so themes can tune
+ * without forking the component.
+ */
+
+.card {
+  background: var(--surface-card, #ffffff);
+  border: var(--stroke-width-thin, 1px) solid var(--hairline, #e5e7eb);
+  border-radius: var(--radius-lg, 0.5rem);
+  padding: var(--spacing-3, 0.75rem);
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,0.06));
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+/* Label row — context token + feel descriptor */
+.labelRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+/* Context label — uppercase small caps, secondary color */
+.contextLabel {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-secondary, #6b7280);
+  line-height: 1;
+}
+
+/* Feel descriptor — italic, tertiary, pushed to the end */
+.feelText {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--text-tertiary, #9ca3af);
+  font-style: italic;
+  line-height: 1;
+}
+
+/* Body — vertical stack of live specimen children */
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+/* Footer — hairline-separated voice key attribution */
+.footer {
+  border-top: var(--stroke-width-thin, 1px) solid var(--hairline, #e5e7eb);
+  margin-top: var(--spacing-1, 0.25rem);
+  padding-top: var(--spacing-2, 0.5rem);
+  font-size: 10.5px;
+  color: var(--text-tertiary, #9ca3af);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1-5, 0.375rem);
+  line-height: 1.4;
+}

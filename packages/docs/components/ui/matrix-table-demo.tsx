@@ -44,8 +44,8 @@ const sampleRows = [
   },
 ];
 
-function renderIdentity(identity: { name: string; email: string }) {
-  return <span style={{ fontWeight: 500 }}>{identity.name}</span>;
+function renderIdentity(row: { identity?: { name: string; email: string } }) {
+  return <span style={{ fontWeight: 500 }}>{row.identity?.name}</span>;
 }
 
 export function MatrixTableDemo() {

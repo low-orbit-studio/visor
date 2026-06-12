@@ -111,6 +111,22 @@ describe("EmptyState", () => {
     expect(root).toHaveAttribute("data-tone", "subtle")
   })
 
+  it("defaults to the default variant with no editorial class", () => {
+    const { container } = render(<EmptyState heading="Empty" />)
+    const root = container.querySelector('[data-slot="empty-state"]')
+    expect(root?.className).not.toMatch(/editorial/)
+    expect(root).toHaveAttribute("data-variant", "default")
+  })
+
+  it("applies the editorial variant class and data attribute", () => {
+    const { container } = render(
+      <EmptyState heading="Empty" variant="editorial" />
+    )
+    const root = container.querySelector('[data-slot="empty-state"]')
+    expect(root?.className).toMatch(/editorial/)
+    expect(root).toHaveAttribute("data-variant", "editorial")
+  })
+
   it("respects headingAs to change heading level", () => {
     const { rerender } = render(
       <EmptyState heading="H2 heading" headingAs="h2" />

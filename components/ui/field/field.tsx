@@ -80,10 +80,18 @@ FieldDescription.displayName = "FieldDescription"
 
 export interface FieldErrorProps extends React.HTMLAttributes<HTMLDivElement> {
   errors?: Array<string | { message?: string } | undefined>
+  /**
+   * Optional leading icon rendered before the error message (e.g. a 14px
+   * Phosphor `WarningCircle`). When present, the error lays out as a centered
+   * icon + message row; without it the error renders exactly as before (plain
+   * inline text). The icon is `aria-hidden` — `role="alert"` already conveys
+   * the error to assistive tech.
+   */
+  icon?: React.ReactNode
 }
 
 const FieldError = React.forwardRef<HTMLDivElement, FieldErrorProps>(
-  ({ className, children, errors, ...props }, ref) => {
+  ({ className, children, errors, icon, ...props }, ref) => {
     let content: React.ReactNode = children
 
     if (!content && errors?.length) {
@@ -110,10 +118,15 @@ const FieldError = React.forwardRef<HTMLDivElement, FieldErrorProps>(
       <div
         role="alert"
         data-slot="field-error"
-        className={cn(styles.fieldError, className)}
+        className={cn(styles.fieldError, icon && styles.fieldErrorWithIcon, className)}
         ref={ref}
         {...props}
       >
+        {icon && (
+          <span className={styles.fieldErrorIcon} data-slot="field-error-icon" aria-hidden="true">
+            {icon}
+          </span>
+        )}
         {content}
       </div>
     )

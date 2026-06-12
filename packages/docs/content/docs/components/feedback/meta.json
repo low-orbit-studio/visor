@@ -5,6 +5,7 @@
   "pages": [
     "alert",
     "banner",
+    "challenge-card",
     "chart",
     "toast",
     "tooltip"

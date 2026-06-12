@@ -1,5 +1,50 @@
 # Changelog
 
+## 1.7.0
+
+### Minor Changes
+
+- 79e12ed: Density axis + editorial-admin reconcile. Components gain a first-class **density axis** (`compact | default | editorial`): the editorial-admin treatment (sizing, type ramp, tonal fills) is baked into each component's CSS under `:global([data-density="editorial"])`, switched by a single `data-density="editorial"` attribute on any ancestor (typically the app root). The former external token-overlay hook layer is retired. Default rendering is byte-identical for existing consumers; editorial is opt-in. See `docs/density.md` and `docs/admin-editorial-reconcile-plan.md`.
+
+  Density treatment (under `data-density="editorial"`): badge 11px/600 uppercase tracked + tonal color-mix fills; chip (FilterChip) 12px, neutral-elevated selected, circular primary count pill; input sm 33.5px/radius-md, controls on the card tier via `--field-control-bg`; button md 34px / sm 13px, secondary on card, ghost transparent, gated at 0.5 opacity; checkbox 18px/4px on the subtle surface with hairline border; avatar sm 22 / default 28 / lg 40 with per-size fallback initials; field 13/11/13px label/description/error ramp; dialog + inline confirm-card editorial modal metrics (480px / radius-xl / spacing-8 / shadow-lg / 2px overlay blur / 2xl·700 title); dropdown-menu full editorial menu metrics; data-table editorial density (row-py spacing-5, 11px headers, flush container, card header / page-card-mix rows — shared with table and matrix-table via the `--dt-*` roles); bulk-action-bar blessed inline strip; skeleton dim text-tinted gradient; tabs primary underline indicator.
+
+  Reconciled features (opt-in props/variants, density-independent):
+
+  - **select** — `variant="borderless"` trigger (drops border, sits on `--field-control-bg`).
+  - **field** — `FieldError` gains an `icon?` prop (leading glyph).
+  - **empty-state** — `variant="editorial"` (filled card + circular icon chip).
+  - **skeleton** — `shapePill` / `shapeLogo` / `shapeCircle` silhouette classes.
+  - **chip** — `FilterChip` gains `trailingIcon?` (orthogonal to `count`/`selectedTreatment`).
+  - **button** — opt-in ghost held/open state (`.variantGhost[data-state="open"]` / `[data-active="true"]` / `.isActive`).
+  - **badge** — `iconOnly` (circular glyph chip) + `case="sentence"` opt-out (reconciled with the existing `uppercase` prop).
+  - **dialog** — `DialogFooter` slot.
+  - **data-table** — `loadingSkeletonCell` render-prop (per-column loading silhouettes).
+  - **score-indicator** — `variant="solid"` (filled chip) alongside the default `ring`.
+  - **confirm-dialog** — `severity` / `iconTreatment` (inline | plated) / `mode` (dialog | inline) editorial API.
+  - **matrix-table** — editorial API (`columns`/`rows`/`cells`/`renderIdentity`, Check glyph, `--dt-*` rhythm).
+  - **page-header** — `leading` restored as the media/identity slot (vertically centered against the title stack; supersedes VI-539's top-align, which assumed a different slot); the prior line-height control is renamed `titleLeading`. `admin-tabbed-editor` forwards the media slot.
+  - **section-nav** — blessed item API (`active` accepted as alias of `isActive`), icon accepts a component or a rendered element; blessed strip treatment (hairline baseline, tertiary resting items, 11px count pill).
+  - **tabs** — line-variant parity (content-width triggers, hairline underline) and `font-family: inherit` on triggers; trigger label only wraps in a span when `count` is passed, so consumer icon+label flex gaps apply.
+
+- b61ffa4: Extend the `brand-strategy` block with the Phase 2 wave-1 fields (VI-541), mirroring the Phase 1 schema work in VI-505. All new fields are optional and additive, so existing brand records keep validating unchanged.
+
+  - **Engine `BrandStrategy` type** gains optional `messaging` (message-house roof), `taglines`, `boilerplate` (short/long), `colorUsage` (allowed pairings), and `accessibility` (WCAG 2.1 AA standard + contrast targets), plus optional per-pillar `proof[]` (reasons-to-believe). New exported types: `BrandMessaging`, `BrandBoilerplate`, `BrandColorPairing`, `BrandColorUsage`, `BrandContrastTarget`, `BrandAccessibility`.
+  - **Validation** (`validateBrandStrategy`) admits the five new top-level keys and applies deep per-field rules only when a field is present.
+  - **Serialization** (`serializeBrandStrategy`) projects the new fields into the agent manifest's `brand_strategy` (all public; a `private` record still drops the whole strategy).
+  - **Schema** — both `visor-theme.schema.json` copies (engine + docs) carry the new `$defs` and `brand-strategy` properties, byte-identical (schema-copies-sync).
+  - **Manifest** — the CLI's emitted `brand_strategy` now carries the new public fields; `SerializedBrandStrategy` (re-exported in the manifest type) flows them through automatically.
+
+- 7668de1: Add `Spinner` — inline loading spinner primitive.
+
+  A rotating border ring with a subtle track and tone-colored leading edge. Three sizes (`xs` 12px, `sm` 16px, `md` 24px), two tones (`default` uses `--text-tertiary`, `primary` uses `--primary`). Fully token-pure: stroke widths via `--stroke-width-*`, animation via `--motion-duration-1500` + `--motion-easing-linear`, colors via semantic CSS custom properties. Accessible label contract: `label` prop renders `role="status"` with visually-hidden text; without label, `aria-hidden="true"` (decorative). Reduced-motion: pauses rotation.
+
+  Install with `npx visor add spinner`.
+
+### Patch Changes
+
+- Updated dependencies [b61ffa4]
+  - @loworbitstudio/visor-theme-engine@0.17.0
+
 ## 1.6.0
 
 ### Minor Changes
