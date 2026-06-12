@@ -462,6 +462,27 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "segmented-progress",
+    type: "registry:ui",
+    description:
+      "Discrete per-step progress meter — N equal pill segments in a row, each individually expressing done, current, or pending state. Designed for multi-step flows where individual step completion matters.",
+    dependencies: [
+      "class-variance-authority",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/segmented-progress/segmented-progress.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/segmented-progress/segmented-progress.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "dialog",
     type: "registry:ui",
     description:

@@ -1,0 +1,59 @@
+/* SegmentedProgress
+ *
+ * Discrete per-step progress meter: N equal segments in a row, each
+ * individually expressing done, current, or pending state.
+ *
+ * Segment heights (6px sm / 8px md) are component-intrinsic dimensions —
+ * no spacing token maps to these values (same precedent as status-dot's 6px).
+ * All other spacing, radius, color, and motion values use tokens.
+ */
+
+.root {
+  display: flex;
+  gap: var(--spacing-1, 0.25rem);
+  width: 100%;
+}
+
+/* Segment — base pill shape */
+.segment {
+  flex: 1;
+  border-radius: var(--radius-full, 9999px);
+  transition: background var(--motion-duration-150, 150ms)
+    var(--motion-easing-default, ease-in-out);
+}
+
+/* State: done — solid primary fill */
+.segment.segmentDone {
+  background: var(--primary, #111827);
+}
+
+/* State: current — gradient from primary into muted (~55%/45% split) */
+.segment.segmentCurrent {
+  background: linear-gradient(
+    90deg,
+    var(--primary, #111827) 55%,
+    var(--surface-muted, #e5e7eb) 55%
+  );
+}
+
+/* State: pending — muted surface */
+.segment.segmentPending {
+  background: var(--surface-muted, #e5e7eb);
+}
+
+/* Size sm — 6px tall (matches the brand-workbench prototype) */
+.sizeSm .segment {
+  height: 6px;
+}
+
+/* Size md — 8px tall */
+.sizeMd .segment {
+  height: 8px;
+}
+
+/* Respect reduced motion — disable transitions */
+@media (prefers-reduced-motion: reduce) {
+  .segment {
+    transition: none;
+  }
+}

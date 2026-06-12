@@ -1,0 +1,106 @@
+---
+title: Segmented Progress
+description: Discrete per-step progress meter — N equal pill segments in a row, each individually expressing done, current, or pending state.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { SegmentedProgress } from '@/components/ui/segmented-progress';
+
+## Default
+
+Pass `total` and `value` to render a row of pill segments. Completed steps (indices `0..value-1`) are filled with the primary color; remaining steps render as muted surface.
+
+<ComponentPreview
+  title="6-step meter, 2 done"
+  code={"import { SegmentedProgress } from '@/components/ui/segmented-progress/segmented-progress';\n\n<SegmentedProgress total={6} value={2} aria-label=\"Step 2 of 6\" />"}
+>
+  <div style={{ width: '100%', maxWidth: '24rem' }}>
+    <SegmentedProgress total={6} value={2} aria-label="Step 2 of 6" />
+  </div>
+</ComponentPreview>
+
+## With current segment
+
+Pass `current` (a 0-based index, typically equal to `value`) to render an in-progress gradient on the next segment — a primary-to-muted split at the ~55%/45% mark.
+
+<ComponentPreview
+  title="6-step meter, 2 done, step 3 in progress"
+  code={"import { SegmentedProgress } from '@/components/ui/segmented-progress/segmented-progress';\n\n<SegmentedProgress total={6} value={2} current={2} aria-label=\"Step 3 of 6\" />"}
+>
+  <div style={{ width: '100%', maxWidth: '24rem' }}>
+    <SegmentedProgress total={6} value={2} current={2} aria-label="Step 3 of 6" />
+  </div>
+</ComponentPreview>
+
+## Sizes
+
+Two segment heights for different surface densities. `sm` (6px) is the default and matches the brand-workbench prototype. `md` (8px) is slightly taller for increased visual weight.
+
+<ComponentPreview
+  title="sm and md sizes"
+  code={"<SegmentedProgress total={8} value={3} current={3} size=\"sm\" aria-label=\"Step 4 of 8\" />\n<SegmentedProgress total={8} value={3} current={3} size=\"md\" aria-label=\"Step 4 of 8\" />"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', maxWidth: '24rem' }}>
+    <SegmentedProgress total={8} value={3} current={3} size="sm" aria-label="Step 4 of 8" />
+    <SegmentedProgress total={8} value={3} current={3} size="md" aria-label="Step 4 of 8" />
+  </div>
+</ComponentPreview>
+
+## Completion states
+
+Each segment independently resolves to `done`, `current`, or `pending`:
+
+<ComponentPreview
+  title="All-pending, in-progress, and complete"
+  code={"<SegmentedProgress total={6} value={0} aria-label=\"Not started\" />\n<SegmentedProgress total={6} value={3} current={3} aria-label=\"Step 4 of 6\" />\n<SegmentedProgress total={6} value={6} aria-label=\"Complete\" />"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', maxWidth: '24rem' }}>
+    <SegmentedProgress total={6} value={0} aria-label="Not started" />
+    <SegmentedProgress total={6} value={3} current={3} aria-label="Step 4 of 6" />
+    <SegmentedProgress total={6} value={6} aria-label="Complete" />
+  </div>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add segmented-progress
+```
+
+This copies two files into your project:
+
+- `components/ui/segmented-progress/segmented-progress.tsx` — the component
+- `components/ui/segmented-progress/segmented-progress.module.css` — the styles
+
+## Usage
+
+```tsx
+import { SegmentedProgress } from '@/components/ui/segmented-progress/segmented-progress';
+
+export default function OnboardingProgress({ step, total }: { step: number; total: number }) {
+  return (
+    <SegmentedProgress
+      total={total}
+      value={step}
+      current={step}
+      aria-label={`Step ${step + 1} of ${total}`}
+    />
+  );
+}
+```
+
+## API Reference
+
+### SegmentedProgressProps
+
+<PropsTable component="segmented-progress" />
+
+The component also accepts all standard `<div>` HTML attributes.
+
+## Accessibility
+
+- The root element has `role="progressbar"` with `aria-valuemin={0}`, `aria-valuemax={total}`, and `aria-valuenow={value}`.
+- An `aria-label` is required — describe the current step context (e.g. `"Step 3 of 10"` or `"Brand elicitation: step 3 of 10 complete"`).
+- Individual segment `<span>` elements are presentational; the progressbar role carries all announcements.
+- Segment transitions are disabled under `prefers-reduced-motion`.
