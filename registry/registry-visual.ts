@@ -2,6 +2,25 @@ import type { Registry } from "./schema"
 
 export const visual: Registry = [
   {
+    name: "vignette",
+    type: "registry:ui",
+    category: "visual-elements",
+    description:
+      "Fixed, full-viewport radial vignette layer. Decorative atmosphere atom — pointer-events-none, aria-hidden, static. Ported from Blacklight bl-vignette (BL-326). Gradient stops and strength are configurable via CSS custom properties.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/visual/vignette/vignette.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/visual/vignette/vignette.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "sphere",
     type: "registry:ui",
     category: "visual-elements",

@@ -1,0 +1,108 @@
+---
+title: Vignette
+description: Fixed, full-viewport radial vignette layer. Decorative atmosphere atom — pointer-events-none, aria-hidden, static. Ported from Blacklight bl-vignette.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { Vignette } from '@/components/ui/vignette';
+
+## Preview
+
+<ComponentPreview
+  title="Vignette — default (Blacklight bl-vignette values)"
+  code={"import { Vignette } from '@/components/visual/vignette/vignette';\n\n<div style={{ position: 'relative', height: '300px', background: '#020214', overflow: 'hidden' }}>\n  <Vignette style={{ position: 'absolute' }} />\n</div>"}
+>
+  <div style={{ position: 'relative', height: '300px', background: '#020214', overflow: 'hidden', borderRadius: '8px' }}>
+    <Vignette style={{ position: 'absolute' }} />
+  </div>
+</ComponentPreview>
+
+## Overview
+
+`Vignette` is a zero-JS, CSS-only radial gradient layer that adds cinematic depth to dark-background canvases. It is ported from the Blacklight `.bl-vignette` depth system (BL-326) and is visually identical at defaults: a `120% × 90%` radial gradient centered at `50% 38%`, fading from `transparent` at `52%` to `rgba(0, 0, 6, 0.5)` at `100%`.
+
+The component is decorative-only:
+- `position: fixed` — escapes the containing block and covers the full viewport
+- `pointer-events: none` — never captures mouse/touch events
+- `aria-hidden="true"` — invisible to assistive technology
+
+## Usage
+
+Drop `<Vignette />` anywhere in your layout tree. Because it is `position: fixed` it sits over the full viewport regardless of where in the DOM it is placed.
+
+```tsx
+import { Vignette } from '@/components/visual/vignette/vignette';
+
+export default function Page() {
+  return (
+    <>
+      <Vignette />
+      <main>…</main>
+    </>
+  );
+}
+```
+
+## Customising Strength and Position
+
+All gradient parameters are CSS custom properties. Override them via the `style` prop:
+
+```tsx
+<Vignette
+  style={{
+    // Widen the clear center — less vignette
+    '--vignette-transparent-stop': '65%',
+    // Use a warmer dark color
+    '--vignette-color': 'rgba(6, 0, 0, 0.6)',
+    // Pull focal point higher
+    '--vignette-position': '50% 25%',
+  } as React.CSSProperties}
+/>
+```
+
+| CSS custom property | Default | Description |
+|---------------------|---------|-------------|
+| `--vignette-size-x` | `120%` | Horizontal radius of the radial gradient |
+| `--vignette-size-y` | `90%` | Vertical radius of the radial gradient |
+| `--vignette-position` | `50% 38%` | Focal point (`at` position) |
+| `--vignette-transparent-stop` | `52%` | Inner clear stop |
+| `--vignette-color` | `rgba(0, 0, 6, 0.5)` | Outer dark color |
+| `--vignette-color-stop` | `100%` | Outer dark stop |
+
+## z-Index
+
+The default `zIndex` is `20`, matching the original Blacklight value. Adjust it via the `zIndex` prop if your layout uses a different stacking context:
+
+```tsx
+<Vignette zIndex={10} />
+```
+
+## Installation
+
+```bash
+npx visor add vignette
+```
+
+## Props
+
+<PropsTable
+  props={[
+    {
+      name: 'zIndex',
+      type: 'number',
+      default: '20',
+      description: 'CSS z-index for the vignette layer.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional class names applied to the root element.',
+    },
+    {
+      name: 'style',
+      type: 'React.CSSProperties',
+      description: 'Inline styles. Use CSS custom properties to tune gradient stops, color, size, and position.',
+    },
+  ]}
+/>

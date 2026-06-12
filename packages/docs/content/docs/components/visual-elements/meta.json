@@ -4,6 +4,7 @@
   "defaultOpen": true,
   "pages": [
     "sphere",
-    "station-spectrum"
+    "station-spectrum",
+    "vignette"
   ]
 }
