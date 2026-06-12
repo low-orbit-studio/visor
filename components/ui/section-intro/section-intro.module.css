@@ -3,7 +3,7 @@
  * The eyebrow color is intentionally driven through a CSS custom property
  * (`--section-intro-eyebrow-color`) so that consumers can override it at
  * any ancestor level and have it track a live-rewritten brand accent var
- * (e.g. a keyed `--color-acid` that swaps between artist palette entries).
+ * (for example a keyed `--color-acid` that swaps between artist palette entries).
  * Default fallback chain: --section-intro-eyebrow-color → --accent-default
  * → --interactive-primary-bg → #111827 (Tailwind Gray-900).
  *
@@ -43,7 +43,7 @@
   line-height: var(--line-height-tight, 1.25);
   /*
    * Live-rewriteable eyebrow color. Override --section-intro-eyebrow-color
-   * at any ancestor (e.g. on the <section> that contains this component) to
+   * at any ancestor (for example on the <section> that contains this component) to
    * track a keyed brand accent that changes at runtime.
    */
   color: var(
