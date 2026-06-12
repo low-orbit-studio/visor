@@ -1,0 +1,122 @@
+/* StructuredPrompt
+ *
+ * Inline "mad-lib" fill-in-the-blank card used in brand elicitation and
+ * structured-prompt workflows. A card with an eyebrow header, flowing prose
+ * at tall line-height, and inline slot chips (filled or empty) embedded in
+ * the prose, plus a hint footer.
+ */
+
+.root {
+  width: 100%;
+  border-radius: var(--radius-xl, 1rem);
+  background: var(--surface-card, #ffffff);
+  border: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+  overflow: hidden;
+}
+
+/* Header bar — small icon + uppercase eyebrow label, hairline bottom border */
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  padding: var(--spacing-2-5, 0.625rem) var(--spacing-3-5, 0.875rem);
+  border-bottom: var(--stroke-width-thin, 1px) solid var(--hairline, #e5e7eb);
+  /* 11.5px — no line-height token matches this tall-prose context; intentional */
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-tertiary, #6b7280);
+}
+
+.headerIcon {
+  display: inline-flex;
+  align-items: center;
+  /* Use accent color for the eyebrow icon, matching the design spec */
+  color: var(--surface-accent-default, #3b82f6);
+  flex-shrink: 0;
+  /* 13px icon — sized to match the 11.5px label rhythm */
+  font-size: 13px;
+  line-height: 1;
+}
+
+.headerLabel {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Body — prose container with tall line-height so inline chips breathe */
+.body {
+  padding: var(--spacing-3-5, 0.875rem);
+  /* 15px — closest to --font-size-base but intentionally smaller for prose density */
+  font-size: 15px;
+  /* 2.05 line-height — no token matches; intentional value from design spec (elicit-core HiFi prototype) */
+  line-height: 2.05;
+  color: var(--text-primary, #111827);
+}
+
+/* Slot chip — inline; rendered inside flowing prose text */
+.slot {
+  display: inline-flex;
+  align-items: center;
+  /* min-height 30px — no spacing token; intentional to match chip rhythm */
+  min-height: 30px;
+  padding: var(--spacing-0-5, 0.125rem) var(--spacing-2-5, 0.625rem);
+  margin: 0 var(--spacing-0-5, 0.125rem);
+  border-radius: var(--radius-md, 0.5rem);
+  border-width: var(--stroke-width-thin, 1px);
+  border-style: solid;
+  /* 14px — intentionally one step below body prose for visual hierarchy */
+  font-size: 14px;
+  cursor: default;
+  vertical-align: middle;
+  line-height: 1.4;
+  /* Reset button defaults when rendered as <button> */
+  font-family: inherit;
+  text-decoration: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Focus ring — only when rendered as <button> */
+.slot:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #3b82f6);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* Filled slot — accent-subtle bg + accent-default border + text-link color + 600 weight.
+ * Uses the same token triplet as Chip's selected state so it adapts correctly in dark mode.
+ */
+.slotFilled {
+  background: var(--surface-accent-subtle, #eff6ff);
+  border-color: var(--surface-accent-default, #3b82f6);
+  color: var(--text-link, #2563eb);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+/* Empty slot — dashed border, muted bg, italic, tertiary text */
+.slotEmpty {
+  color: var(--text-tertiary, #6b7280);
+  font-style: italic;
+  font-weight: var(--font-weight-medium, 500);
+  background: var(--surface-subtle, #f9fafb);
+  border-style: dashed;
+  border-color: var(--border-default, #e5e7eb);
+  cursor: text;
+}
+
+/* Hint footer — small tertiary text below the body */
+.hint {
+  padding: 0 var(--spacing-3-5, 0.875rem) var(--spacing-3, 0.75rem);
+  /* 11.5px — matches header eyebrow size; intentional */
+  font-size: 11.5px;
+  color: var(--text-tertiary, #6b7280);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .slot {
+    transition: none;
+  }
+}
