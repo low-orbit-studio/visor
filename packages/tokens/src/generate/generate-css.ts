@@ -678,6 +678,62 @@ function generateUtilitiesCSS(): string {
     ])
   );
 
+  // Lit-surface elevation utilities (VI-568)
+  //
+  // Three box-shadow recipes for dark framed surfaces — ported from
+  // Blacklight's .bl-lit / .bl-lit-soft / .bl-lit-strong utilities.
+  //
+  // The keyed halo channel flows through --lit-color, which defaults to
+  // var(--accent, …) and can be rewritten per-frame for live color tracking
+  // (e.g. Blacklight's carousel-keyed artist color via --color-acid).
+  //
+  // Usage:
+  //   <div class="lit" style="--lit-color: #ff3b00;">…</div>
+  //
+  // Distributed via @loworbitstudio/visor-core/utilities (opt-in, not bundled
+  // into index.css). Consumers must import this file explicitly.
+  lines.push(sectionComment("Lit-Surface Elevation Utilities (VI-568)"));
+
+  // Register --lit-color with a sensible default so elements that don't set
+  // an explicit value still render with a plausible accent halo.
+  // Default chain: --accent (semantic alias) → --color-primary-500 → indigo fallback.
+  lines.push(
+    block(":root", [
+      "--lit-color: var(--accent, var(--color-primary-500, #6366f1));",
+    ])
+  );
+
+  // .lit — standard lit surface: inset highlight + deep drop shadows + accent halo (22%)
+  lines.push(
+    block(".lit", [
+      "box-shadow:",
+      "  inset 0 1px 0 rgba(255, 255, 255, 0.07),",
+      "  0 24px 64px -24px rgba(0, 0, 0, 0.85),",
+      "  0 64px 140px -48px rgba(0, 0, 0, 0.9),",
+      "  0 0 80px -24px color-mix(in srgb, var(--lit-color) 22%, transparent);",
+    ])
+  );
+
+  // .lit-soft — gentle lift: inset highlight + single drop shadow, no halo
+  lines.push(
+    block(".lit-soft", [
+      "box-shadow:",
+      "  inset 0 1px 0 rgba(255, 255, 255, 0.06),",
+      "  0 16px 40px -20px rgba(0, 0, 0, 0.7);",
+    ])
+  );
+
+  // .lit-strong — dramatic lift: inset highlight + deep drop shadows + accent halo (30%)
+  lines.push(
+    block(".lit-strong", [
+      "box-shadow:",
+      "  inset 0 1px 0 rgba(255, 255, 255, 0.08),",
+      "  0 30px 80px -30px rgba(0, 0, 0, 0.9),",
+      "  0 80px 180px -60px rgba(0, 0, 0, 0.95),",
+      "  0 0 120px -30px color-mix(in srgb, var(--lit-color) 30%, transparent);",
+    ])
+  );
+
   return (
     header("Visor Design Tokens — Utilities") +
     LAYER_ORDER +

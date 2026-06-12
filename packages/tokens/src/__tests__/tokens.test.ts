@@ -1122,3 +1122,71 @@ describe("Field-panel alignment tokens (VI-497)", () => {
     }
   });
 });
+
+// ============================================================
+// Lit-surface elevation utilities (VI-568)
+// ============================================================
+
+describe("Lit-surface elevation utilities (VI-568)", () => {
+  it("utilities.css contains .lit class with inset highlight and drop shadows and color-mix halo", () => {
+    const css = readFileSync(join(REPO_ROOT, "packages/tokens/dist/utilities.css"), "utf-8");
+    // Inset highlight
+    expect(css).toContain("inset 0 1px 0 rgba(255, 255, 255, 0.07)");
+    // Deep drop shadows
+    expect(css).toContain("0 24px 64px -24px rgba(0, 0, 0, 0.85)");
+    expect(css).toContain("0 64px 140px -48px rgba(0, 0, 0, 0.9)");
+    // Accent halo via --lit-color at 22%
+    expect(css).toContain("color-mix(in srgb, var(--lit-color) 22%, transparent)");
+  });
+
+  it("utilities.css contains .lit-soft class with no halo", () => {
+    const css = readFileSync(join(REPO_ROOT, "packages/tokens/dist/utilities.css"), "utf-8");
+    // Soft inset highlight
+    expect(css).toContain("inset 0 1px 0 rgba(255, 255, 255, 0.06)");
+    // Single drop shadow
+    expect(css).toContain("0 16px 40px -20px rgba(0, 0, 0, 0.7)");
+    // lit-soft must NOT have a color-mix halo
+    const litSoftStart = css.indexOf(".lit-soft");
+    const litSoftEnd = css.indexOf("}", litSoftStart);
+    const litSoftBlock = css.slice(litSoftStart, litSoftEnd);
+    expect(litSoftBlock).not.toContain("color-mix");
+  });
+
+  it("utilities.css contains .lit-strong class with deeper shadows and stronger halo (30%)", () => {
+    const css = readFileSync(join(REPO_ROOT, "packages/tokens/dist/utilities.css"), "utf-8");
+    // Stronger inset highlight
+    expect(css).toContain("inset 0 1px 0 rgba(255, 255, 255, 0.08)");
+    // Deeper drop shadows
+    expect(css).toContain("0 30px 80px -30px rgba(0, 0, 0, 0.9)");
+    expect(css).toContain("0 80px 180px -60px rgba(0, 0, 0, 0.95)");
+    // Accent halo via --lit-color at 30%
+    expect(css).toContain("color-mix(in srgb, var(--lit-color) 30%, transparent)");
+  });
+
+  it("utilities.css registers --lit-color with fallback chain on :root", () => {
+    const css = readFileSync(join(REPO_ROOT, "packages/tokens/dist/utilities.css"), "utf-8");
+    // Default: var(--accent, var(--color-primary-500, #6366f1))
+    expect(css).toContain("--lit-color:");
+    expect(css).toContain("var(--accent,");
+    expect(css).toContain("var(--color-primary-500,");
+  });
+
+  it("utilities.css wraps lit utilities in visor-adaptive @layer", () => {
+    const css = readFileSync(join(REPO_ROOT, "packages/tokens/dist/utilities.css"), "utf-8");
+    expect(css).toContain("@layer visor-adaptive {");
+    // All three classes must appear inside the adaptive layer block
+    const layerStart = css.indexOf("@layer visor-adaptive {");
+    const layerContent = css.slice(layerStart);
+    expect(layerContent).toContain(".lit");
+    expect(layerContent).toContain(".lit-soft");
+    expect(layerContent).toContain(".lit-strong");
+  });
+
+  it("lit utility --lit-color fallback uses Gray not Slate (#6366f1 not #0f172a)", () => {
+    // Token rule: fallbacks use Tailwind Gray hex, not Slate
+    const css = readFileSync(join(REPO_ROOT, "packages/tokens/dist/utilities.css"), "utf-8");
+    // The indigo fallback (#6366f1) is the primary-500 default — NOT a slate value
+    expect(css).not.toContain("#0f172a");
+    expect(css).not.toContain("#1e293b");
+  });
+});
