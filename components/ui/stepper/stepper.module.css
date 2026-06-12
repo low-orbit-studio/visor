@@ -24,6 +24,12 @@
   align-items: flex-start;
 }
 
+/* A bare single-line title centers against the 2rem trigger; wrapped
+ * title+description blocks keep the flex-start top alignment. */
+.itemVertical > .title {
+  line-height: 2rem;
+}
+
 /* Trigger (step indicator circle) */
 .trigger {
   display: inline-flex;
