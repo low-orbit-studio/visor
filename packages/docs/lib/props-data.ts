@@ -667,6 +667,43 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'segmented-progress': [
+    {
+      name: 'total',
+      type: 'number',
+      required: true,
+      description: 'Total number of segments to render.',
+    },
+    {
+      name: 'value',
+      type: 'number',
+      required: true,
+      description: 'Count of completed segments — indices 0..value-1 render in the done state.',
+    },
+    {
+      name: 'current',
+      type: 'number',
+      description: 'Optional 0-based index of the in-progress segment, rendered with the primary-to-muted gradient. Typically equals value.',
+    },
+    {
+      name: 'size',
+      type: "'sm' | 'md'",
+      default: "'sm'",
+      description: 'Segment height — 6px (sm) or 8px (md).',
+    },
+    {
+      name: 'aria-label',
+      type: 'string',
+      required: true,
+      description: 'Accessible name for the progress bar.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the element.',
+    },
+  ],
+
   stepper: [
     {
       name: 'activeStep',
