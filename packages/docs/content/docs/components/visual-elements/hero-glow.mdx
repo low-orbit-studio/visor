@@ -1,0 +1,139 @@
+---
+title: HeroGlow
+description: Breathing radial glow band for hero media. Color is driven by a live CSS custom property so the caller can rewrite it every rAF frame without triggering a React re-render.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { HeroGlow } from '@/components/ui/hero-glow';
+
+## Preview
+
+<ComponentPreview
+  title="HeroGlow — static color"
+  code={"import { HeroGlow } from '@/components/visual/hero-glow/hero-glow';\n\n<div style={{ position: 'relative', height: 200, background: '#0a0a0a', borderRadius: 12, overflow: 'hidden' }}>\n  <HeroGlow glowColor=\"oklch(70% 0.3 145)\" />\n  <div style={{ position: 'relative', zIndex: 1, padding: 32, color: '#fff' }}>Hero content</div>\n</div>"}
+>
+  <div style={{ position: 'relative', height: 200, background: '#0a0a0a', borderRadius: 12, overflow: 'visible' }}>
+    <HeroGlow glowColor="oklch(70% 0.3 145)" />
+    <div style={{ position: 'relative', zIndex: 1, padding: 32, color: '#fff', fontWeight: 600 }}>Hero content</div>
+  </div>
+</ComponentPreview>
+
+## Color Contract
+
+HeroGlow is deliberately colorless by default. Color flows through the `--glow-color` CSS custom property. The component uses `color-mix(in srgb, var(--glow-color) 16%, transparent)` so only the hue is needed — opacity is baked into the gradient stop.
+
+```tsx
+{/* Via prop */}
+<HeroGlow glowColor="oklch(70% 0.3 145)" />
+
+{/* Via ancestor CSS variable */}
+<div style={{ '--glow-color': 'var(--color-acid)' }}>
+  <HeroGlow />
+</div>
+```
+
+### Live rAF Updates
+
+Because color flows through a CSS custom property, the consumer can rewrite `--glow-color` every animation frame without triggering a React re-render:
+
+```tsx
+const glowRef = React.useRef<HTMLDivElement>(null);
+
+React.useEffect(() => {
+  let frame: number;
+  const tick = () => {
+    glowRef.current?.style.setProperty('--glow-color', computeArtistColor());
+    frame = requestAnimationFrame(tick);
+  };
+  frame = requestAnimationFrame(tick);
+  return () => cancelAnimationFrame(frame);
+}, []);
+
+<div style={{ position: 'relative' }}>
+  <HeroGlow ref={glowRef} />
+  <img src="hero.jpg" alt="Hero" />
+</div>
+```
+
+## Animation
+
+The breathing animation runs at a 7-second ease-in-out cycle:
+
+- **Rest / peak:** opacity `0.75` → `1`, scale `1` → `1.03`
+- **Duration:** 7s (tuned to a typical carousel dwell rhythm)
+- **Easing:** `ease-in-out` for a natural in-and-out breath
+
+The animation is pure CSS (`@keyframes hero-glow-breathe`) — no JavaScript animation loop is needed.
+
+## Reduced Motion
+
+When `prefers-reduced-motion: reduce` is active, the breathing animation is disabled. The glow appears at its rest-state opacity (`0.75`) and scale (`1`) — still visible, just not animated.
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    animation: none;
+    opacity: 0.75;
+    transform: scale(1);
+  }
+}
+```
+
+## Layout Notes
+
+HeroGlow is `position: absolute` with a negative inset:
+
+```
+inset: -6% -8% -10%;
+```
+
+This causes the glow to bleed slightly outside the parent's box edges, which is intentional — the glow band should feel larger than the hero container. The parent **must** be `position: relative`.
+
+`pointer-events: none` and `aria-hidden="true"` are always applied — the element is purely decorative.
+
+## Installation
+
+```bash
+npx visor add hero-glow
+```
+
+## Usage
+
+```tsx
+import { HeroGlow } from '@/components/visual/hero-glow/hero-glow';
+
+{/* Static color */}
+<div style={{ position: 'relative' }}>
+  <HeroGlow glowColor="#7c3aed" />
+  <img src="hero.jpg" alt="Hero" />
+</div>
+
+{/* Color from ancestor variable */}
+<section style={{ position: 'relative', '--glow-color': 'var(--brand-accent)' }}>
+  <HeroGlow />
+  <img src="hero.jpg" alt="Hero" />
+</section>
+```
+
+## API Reference
+
+<PropsTable component="hero-glow" />
+
+## Accessibility
+
+- `aria-hidden="true"` is always applied — the glow is decorative and invisible to assistive technology.
+- `pointer-events: none` is always applied — the glow never captures clicks, focus, or hover events.
+- `prefers-reduced-motion: reduce` disables the breathing animation while keeping the glow visible.
+
+## When to Use
+
+- Behind hero images or carousels to cast a color-keyed ambient glow
+- When the glow color must track a live value (e.g. current artist color, active palette swatch)
+- Marketing hero sections that need atmospheric depth without a heavy WebGL shader
+
+## When Not to Use
+
+- When the parent is not `position: relative` — the glow will be clipped or invisible
+- As a layout element — HeroGlow is purely decorative
+- When a static, non-breathing glow is sufficient — a plain `box-shadow` or `filter: blur()` may be lighter

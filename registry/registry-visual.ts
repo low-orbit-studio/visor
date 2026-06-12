@@ -40,6 +40,25 @@ export const visual: Registry = [
     ],
   },
   {
+    name: "hero-glow",
+    type: "registry:ui",
+    category: "visual-elements",
+    description:
+      "Breathing radial glow band for hero media. Color is driven by a live CSS custom property (--glow-color) so the caller can rewrite it every rAF frame without triggering a React re-render.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/visual/hero-glow/hero-glow.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/visual/hero-glow/hero-glow.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "sphere",
     type: "registry:ui",
     category: "visual-elements",
