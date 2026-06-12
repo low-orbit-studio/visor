@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="en" class="t-mm light" data-stage="start">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Visor Brand Workbench — the A→Z journey</title>
+
+<style>
+@font-face{font-family:"Product Sans [modern-minimal]";src:url("https://fonts.visor.design/low-orbit-studio/product-sans/ProductSans-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Product Sans [modern-minimal]";src:url("https://fonts.visor.design/low-orbit-studio/product-sans/ProductSans-Bold.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
+</style>
+<link rel="preconnect" href="https://api.fontshare.com" />
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet" />
+
+<style>
+/* ===== resolved token blocks (real values from packages/docs/app/<theme>.css) ===== */
+html{--spacing-1:4px;--spacing-2:8px;--spacing-3:12px;--spacing-4:16px;--spacing-5:20px;--spacing-6:24px;--spacing-8:32px;--spacing-10:40px;--spacing-12:48px;--spacing-16:64px;
+  --radius-sm:2px;--radius-md:4px;--radius-lg:8px;--radius-xl:12px;--radius-2xl:16px;--radius-full:9999px;--stroke-thin:1px;--stroke-regular:1.5px;--focus-ring-width:2px;
+  --font-mono:"SF Mono","Fira Code","Roboto Mono",monospace;}
+html.t-mm.light{--font:"Product Sans [modern-minimal]","Product Sans",-apple-system,Segoe UI,Roboto,sans-serif;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-2xl:20px;
+  --primary:#04bf81;--accent:#04bf81;--primary-text:#fff;--success:#22c55e;--warning:#f59e0b;--destructive:#ef4444;
+  --surface-page:#f4f5f7;--surface-card:#fff;--surface-raised:#fff;--surface-subtle:#f4f5f7;--surface-muted:#e6e8ec;
+  --text-primary:rgba(0,0,0,.9);--text-secondary:rgba(0,0,0,.55);--text-tertiary:rgba(0,0,0,.42);--border-default:#d1d4db;--hairline:rgba(0,0,0,.06);
+  --primary-soft:rgba(4,191,129,.10);--primary-line:rgba(4,191,129,.34);--warn-soft:rgba(245,158,11,.12);--warn-line:rgba(245,158,11,.42);--success-soft:rgba(34,197,94,.12);--success-line:rgba(34,197,94,.40);--err-soft:rgba(239,68,68,.10);--err-line:rgba(239,68,68,.4);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.05);--shadow-md:0 4px 6px -1px rgba(0,0,0,.08),0 2px 4px -2px rgba(0,0,0,.08);--shadow-lg:0 10px 22px -6px rgba(0,0,0,.12),0 4px 8px -4px rgba(0,0,0,.08);}
+html.t-mm.dark{--font:"Product Sans [modern-minimal]","Product Sans",-apple-system,Segoe UI,Roboto,sans-serif;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;--radius-2xl:20px;
+  --primary:#02cd8d;--accent:#04bf81;--primary-text:#04231a;--success:#22c55e;--warning:#f59e0b;--destructive:#ef4444;
+  --surface-page:#000;--surface-card:rgba(255,255,255,.04);--surface-raised:rgba(255,255,255,.07);--surface-subtle:rgba(255,255,255,.02);--surface-muted:rgba(255,255,255,.05);
+  --text-primary:rgba(255,255,255,.92);--text-secondary:rgba(255,255,255,.62);--text-tertiary:rgba(255,255,255,.45);--border-default:rgba(255,255,255,.10);--hairline:rgba(255,255,255,.06);
+  --primary-soft:rgba(2,205,141,.12);--primary-line:rgba(2,205,141,.42);--warn-soft:rgba(245,158,11,.14);--warn-line:rgba(245,158,11,.48);--success-soft:rgba(34,197,94,.14);--success-line:rgba(34,197,94,.46);--err-soft:rgba(239,68,68,.16);--err-line:rgba(239,68,68,.5);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.25);--shadow-md:0 4px 6px -1px rgba(0,0,0,.35),0 2px 4px -2px rgba(0,0,0,.3);--shadow-lg:0 14px 30px -8px rgba(0,0,0,.6),0 6px 12px -6px rgba(0,0,0,.5);}
+html.t-space.light{--font:Satoshi,-apple-system,Segoe UI,Roboto,sans-serif;--radius-md:6px;--radius-lg:8px;--radius-xl:12px;--radius-2xl:16px;
+  --primary:#5b6fff;--accent:#5b6fff;--primary-text:#fff;--success:#22c55e;--warning:#f59e0b;--destructive:#ef4444;
+  --surface-page:#e0ddef;--surface-card:#f2f0f8;--surface-raised:#fff;--surface-subtle:#f5f5f8;--surface-muted:#e7e7ed;
+  --text-primary:#1a1630;--text-secondary:rgba(26,22,48,.72);--text-tertiary:rgba(26,22,48,.55);--border-default:#d2d2dd;--hairline:rgba(0,0,0,.06);
+  --primary-soft:rgba(91,111,255,.10);--primary-line:rgba(91,111,255,.34);--warn-soft:rgba(245,158,11,.12);--warn-line:rgba(245,158,11,.42);--success-soft:rgba(34,197,94,.12);--success-line:rgba(34,197,94,.40);--err-soft:rgba(239,68,68,.10);--err-line:rgba(239,68,68,.4);
+  --shadow-sm:0 1px 2px rgba(26,22,48,.06);--shadow-md:0 4px 8px -2px rgba(26,22,48,.10),0 2px 4px -2px rgba(26,22,48,.08);--shadow-lg:0 14px 30px -8px rgba(26,22,48,.16),0 5px 10px -5px rgba(26,22,48,.10);}
+html.t-space.dark{--font:Satoshi,-apple-system,Segoe UI,Roboto,sans-serif;--radius-md:6px;--radius-lg:8px;--radius-xl:12px;--radius-2xl:16px;
+  --primary:#5b6fff;--accent:#5b6fff;--primary-text:#fff;--success:#22c55e;--warning:#f59e0b;--destructive:#ef4444;
+  --surface-page:#080810;--surface-card:#0e0e18;--surface-raised:#16161f;--surface-subtle:#2b2b36;--surface-muted:#0b0b14;
+  --text-primary:#e8e8f0;--text-secondary:rgba(232,232,240,.72);--text-tertiary:rgba(232,232,240,.5);--border-default:#3f3f4b;--hairline:rgba(255,255,255,.06);
+  --primary-soft:rgba(91,111,255,.16);--primary-line:rgba(91,111,255,.5);--warn-soft:rgba(245,158,11,.15);--warn-line:rgba(245,158,11,.5);--success-soft:rgba(34,197,94,.15);--success-line:rgba(34,197,94,.48);--err-soft:rgba(239,68,68,.18);--err-line:rgba(239,68,68,.5);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.4);--shadow-md:0 4px 8px -2px rgba(0,0,0,.5),0 2px 4px -2px rgba(0,0,0,.4);--shadow-lg:0 16px 34px -8px rgba(0,0,0,.7),0 6px 12px -6px rgba(0,0,0,.55);}
+
+/* ===== shell / reset ===== */
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;background:var(--surface-page);color:var(--text-primary);font-family:var(--font);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+svg{stroke-width:1.6}
+
+/* ===== top bar ===== */
+.bar{height:56px;flex:none;display:flex;align-items:center;gap:var(--spacing-4);padding:0 var(--spacing-5);background:var(--surface-card);border-bottom:var(--stroke-thin) solid var(--hairline)}
+.brand{display:flex;align-items:center;gap:var(--spacing-3);min-width:0}
+.mark{width:30px;height:30px;border-radius:9px;flex:none;display:grid;place-items:center;background:var(--primary);color:var(--primary-text);box-shadow:var(--shadow-sm)}
+.mark svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2}
+.bar .title{font-weight:700;letter-spacing:-0.01em;font-size:15px;flex:none}
+.bar .proj{display:inline-flex;align-items:center;gap:6px;flex:none;white-space:nowrap;font-size:12.5px;color:var(--text-secondary);padding:3px 9px;border-radius:var(--radius-full);background:var(--surface-subtle);border:var(--stroke-thin) solid var(--hairline)}
+.bar .proj svg{width:13px;height:13px;flex:none;stroke:currentColor;fill:none}
+.bar .spacer{flex:1}
+.pill{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border-radius:var(--radius-full);background:var(--surface-subtle);border:var(--stroke-thin) solid var(--border-default);color:var(--text-secondary);font-size:12.5px;font-weight:500}
+.pill .dot{width:9px;height:9px;border-radius:50%;background:var(--primary)}
+.pill.key{color:var(--text-primary)}.pill.key .kdot{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 0 3px var(--success-soft)}
+.btn{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 15px;border:none;border-radius:var(--radius-lg);font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer}
+.btn svg{width:15px;height:15px;stroke:currentColor;fill:none}
+.btn-primary{background:var(--primary);color:var(--primary-text);box-shadow:var(--shadow-sm)}
+.btn-ghost{background:transparent;color:var(--text-secondary);border:var(--stroke-thin) solid var(--border-default)}
+.gprog{height:3px;flex:none;background:var(--hairline);position:relative}
+.gprog>i{position:absolute;left:0;top:0;bottom:0;width:5%;background:var(--primary);transition:width .35s ease}
+
+/* ===== grid: spine + stage host ===== */
+.grid{flex:1;display:grid;grid-template-columns:256px 1fr;min-height:0}
+.col{min-height:0;overflow:auto}
+.col::-webkit-scrollbar{width:9px}.col::-webkit-scrollbar-thumb{background:var(--border-default);border-radius:99px;border:3px solid transparent;background-clip:content-box}
+
+/* ===== spine ===== */
+.spine{background:var(--surface-card);border-right:var(--stroke-thin) solid var(--hairline);padding:var(--spacing-5) var(--spacing-4) var(--spacing-5) var(--spacing-5)}
+.sprog{padding:13px 14px;border-radius:var(--radius-lg);background:var(--surface-subtle);border:var(--stroke-thin) solid var(--hairline);margin-bottom:var(--spacing-3)}
+.sprog .r1{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.sprog .bn{font-size:14px;font-weight:700;letter-spacing:-0.01em}
+.sprog .vtag{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-tertiary);padding:2px 7px;border-radius:99px;background:var(--surface-muted)}
+.sprog .r2{display:flex;align-items:baseline;gap:6px;margin-bottom:8px}
+.sprog .big{font-size:24px;font-weight:800;letter-spacing:-0.03em;line-height:1}
+.sprog .of{font-size:12px;color:var(--text-tertiary);font-weight:600}
+.sprog .pc{margin-left:auto;font-size:13px;font-weight:800;color:var(--primary)}
+.sprog .bar{height:7px;border-radius:99px;background:var(--surface-muted);overflow:hidden}
+.sprog .bar>i{display:block;height:100%;width:5%;border-radius:99px;background:var(--primary);transition:width .35s ease}
+.sprog .enc{margin:9px 1px 0;font-size:11.5px;line-height:1.45;color:var(--text-secondary)}
+.sprog .enc em{font-style:normal;font-weight:700;color:var(--primary)}
+.spine .eyebrow{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-tertiary);margin:var(--spacing-5) 0 var(--spacing-3) 6px}
+.chain{position:relative;display:flex;flex-direction:column;gap:2px}
+.node{position:relative;display:flex;align-items:flex-start;gap:11px;padding:8px;border-radius:var(--radius-lg);cursor:pointer}
+.node:hover{background:var(--surface-subtle)}
+.node .rail{position:absolute;left:18px;top:26px;bottom:-2px;width:2px;background:var(--hairline)}
+.node.tail .rail{display:none}
+.node .bullet{position:relative;z-index:1;width:20px;height:20px;flex:none;border-radius:50%;display:grid;place-items:center;margin-top:1px;border:2px solid var(--border-default);background:var(--surface-card);color:var(--text-tertiary)}
+.node .bullet svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.4}
+.node.done .bullet{background:var(--primary);border-color:var(--primary);color:var(--primary-text)}
+.node.done .rail{background:var(--primary-line)}
+.node.active{background:var(--primary-soft)}
+.node.active .bullet{border-color:var(--primary);color:var(--primary);box-shadow:0 0 0 4px var(--primary-soft)}
+.node.active .bullet .pulse{width:8px;height:8px;border-radius:50%;background:var(--primary)}
+.node .lbl{display:flex;flex-direction:column;gap:1px;min-width:0;padding-top:1px}
+.node .lbl b{font-size:13.5px;font-weight:600;letter-spacing:-0.005em;color:var(--text-primary)}
+.node.pending .lbl b{color:var(--text-secondary);font-weight:500}
+.node .lbl span{font-size:11.5px;color:var(--text-tertiary)}
+.node.active .lbl b{color:var(--primary)}
+.node .lk{margin-left:auto;color:var(--text-tertiary);opacity:.7}.node.done .lk,.node.active .lk{display:none}
+.node .lk svg{width:12px;height:12px;stroke:currentColor;fill:none}
+.modecard{margin-top:var(--spacing-6);padding:12px;border-radius:var(--radius-lg);background:var(--surface-subtle);border:var(--stroke-thin) solid var(--hairline)}
+.modecard .seg{display:flex;background:var(--surface-muted);border-radius:var(--radius-md);padding:3px;gap:3px}
+.modecard .seg button{flex:1;height:26px;border:none;border-radius:6px;background:transparent;font-family:inherit;font-size:11.5px;font-weight:600;color:var(--text-secondary);cursor:pointer}
+.modecard .seg button.on{background:var(--surface-card);color:var(--text-primary);box-shadow:var(--shadow-sm)}
+.modecard p{margin:9px 2px 0;font-size:11px;line-height:1.45;color:var(--text-tertiary)}
+
+/* ===== stage host ===== */
+.host{position:relative;min-height:0;overflow:hidden;display:flex}
+.stage{display:none;flex:1;min-height:0;overflow:auto}
+.stage.show{display:flex}
+.stage.split{display:none}
+html[data-stage="strategy"] .stage[data-st="strategy"],
+html[data-stage="verbal"] .stage[data-st="verbal"]{display:grid;grid-template-columns:1fr 468px}
+html[data-stage="start"] .stage[data-st="start"],
+html[data-stage="visual"] .stage[data-st="visual"],
+html[data-stage="prove"] .stage[data-st="prove"],
+html[data-stage="export"] .stage[data-st="export"],
+html[data-stage="canvas"] .stage[data-st="canvas"]{display:flex}
+
+/* shared content widths */
+.pad{padding:var(--spacing-8) var(--spacing-12)}
+.eyebrowS{font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--primary);margin-bottom:10px}
+h2.big{font-size:30px;font-weight:800;letter-spacing:-0.03em;margin:0 0 8px;line-height:1.1}
+.lede{font-size:15px;color:var(--text-secondary);line-height:1.55;max-width:60ch;margin:0}
+
+/* ===== conversation (reused) ===== */
+.conv{display:flex;flex-direction:column;min-height:0;background:var(--surface-page)}
+.col-inner{width:100%;max-width:660px;margin:0 auto}
+.chead{flex:none;padding:13px 0;border-bottom:var(--stroke-thin) solid var(--hairline);background:var(--surface-page)}
+.chead .col-inner{padding:0 28px;display:flex;flex-direction:column;gap:10px}
+.chead .row1{display:flex;align-items:center;gap:10px}
+.chead .crumb{font-size:13px;color:var(--text-tertiary);font-weight:600;display:flex;align-items:center;gap:7px}
+.chead .crumb b{color:var(--text-primary)}.chead .crumb svg{width:13px;height:13px;stroke:currentColor;fill:none;opacity:.6}
+.chead .stepn{margin-left:auto;font-size:13px;font-weight:700;color:var(--text-secondary)}.chead .stepn .pct{color:var(--primary);margin-left:6px}
+.pseg{display:flex;gap:4px}.pseg>i{flex:1;height:6px;border-radius:99px;background:var(--surface-muted)}.pseg>i.done{background:var(--primary)}.pseg>i.cur{background:linear-gradient(90deg,var(--primary) 55%,var(--surface-muted) 55%)}
+.chead .eta{font-size:12px;color:var(--text-tertiary);display:flex;align-items:center;gap:7px}.chead .eta svg{width:13px;height:13px;stroke:currentColor;fill:none;flex:none}
+.thread{flex:1;overflow:auto;padding:26px 28px 16px}.thread .col-inner{display:flex;flex-direction:column;gap:26px}
+.turn{display:flex;flex-direction:column;gap:9px}
+.turn .hdr{display:flex;align-items:center;gap:9px}
+.turn .av{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:var(--primary);color:var(--primary-text);flex:none}.turn .av svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2}
+.turn .nm{font-size:13.5px;font-weight:700}.turn .nm i{font-style:normal;font-weight:600;color:var(--warning);margin-left:7px;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+.turn .txt{font-size:15.5px;line-height:1.62;color:var(--text-primary);padding-left:35px}.turn .txt em{font-style:normal;font-weight:700;color:var(--primary)}.turn .txt strong{font-weight:700}
+.turn .sub{padding-left:35px;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.uturn{display:flex;justify-content:flex-end}.uturn .ub{max-width:80%;background:var(--surface-muted);border:var(--stroke-thin) solid var(--border-default);color:var(--text-primary);border-radius:18px;border-bottom-right-radius:6px;padding:11px 15px;font-size:15px;line-height:1.5;box-shadow:var(--shadow-sm)}
+.tool{width:100%;border-radius:var(--radius-xl);background:var(--surface-card);border:var(--stroke-thin) solid var(--border-default);box-shadow:var(--shadow-sm);overflow:hidden}
+.tool .th{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:var(--stroke-thin) solid var(--hairline);font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-tertiary)}.tool .th svg{width:13px;height:13px;stroke:var(--primary);fill:none}
+.tool .tb{padding:14px;font-size:15px;line-height:2.05;color:var(--text-primary)}
+.slot{display:inline-flex;align-items:center;min-height:30px;padding:2px 11px;margin:0 2px;border-radius:var(--radius-md);background:var(--primary-soft);border:var(--stroke-thin) solid var(--primary-line);color:var(--text-primary);font-weight:600;font-size:14px}
+.composer{flex:none;padding:12px 28px 18px;border-top:var(--stroke-thin) solid var(--hairline);background:var(--surface-page)}.composer .col-inner{display:flex;flex-direction:column;gap:11px}
+.suggest{display:flex;gap:8px;flex-wrap:wrap}
+.schip{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:99px;background:var(--surface-card);border:var(--stroke-thin) solid var(--border-default);font-size:12.5px;font-weight:600;color:var(--text-secondary)}.schip svg{width:13px;height:13px;stroke:currentColor;fill:none}.schip.spark{color:var(--primary);background:var(--primary-soft);border-color:var(--primary-line)}.schip.spark svg{stroke:var(--primary)}
+.cbox{background:var(--surface-card);border:var(--stroke-regular) solid var(--border-default);border-radius:24px;box-shadow:var(--shadow-md);padding:14px 16px 11px}
+.cbox .field{font-size:15px;color:var(--text-tertiary);min-height:22px}.cbox .tools{display:flex;align-items:center;gap:7px;margin-top:11px}
+.tbtn{width:32px;height:32px;border-radius:50%;border:var(--stroke-thin) solid var(--border-default);background:transparent;display:grid;place-items:center;color:var(--text-secondary);flex:none}.tbtn svg{width:16px;height:16px;stroke:currentColor;fill:none}
+.cbox .modelchip{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border-radius:99px;border:var(--stroke-thin) solid var(--border-default);font-size:12px;font-weight:600;color:var(--text-secondary)}.cbox .modelchip .kdot{width:7px;height:7px;border-radius:50%;background:var(--success)}
+.cbox .grow{flex:1}.cbox .send{width:34px;height:34px;border-radius:50%;background:var(--primary);color:var(--primary-text);display:grid;place-items:center;box-shadow:var(--shadow-sm);flex:none}.cbox .send svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2.2}
+
+/* ===== right canvas (reused, trimmed) ===== */
+.canvas{background:var(--surface-subtle);border-left:var(--stroke-thin) solid var(--hairline);display:flex;flex-direction:column;min-height:0}
+.khead{flex:none;display:flex;align-items:center;gap:10px;padding:14px 20px 12px}
+.khead .lt{display:flex;flex-direction:column;gap:2px}.khead .lt b{font-size:13px;font-weight:700}.khead .lt span{font-size:11px;color:var(--text-tertiary)}
+.khead .spacer{flex:1}
+.tchip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-secondary);padding:4px 9px;border-radius:99px;background:var(--surface-card);border:var(--stroke-thin) solid var(--hairline)}.tchip .sw{width:10px;height:10px;border-radius:3px;background:var(--primary)}
+.modetoggle{display:inline-flex;background:var(--surface-card);border:var(--stroke-thin) solid var(--hairline);border-radius:99px;padding:3px}.modetoggle button{width:28px;height:24px;border:none;background:transparent;border-radius:99px;display:grid;place-items:center;color:var(--text-tertiary);cursor:pointer}.modetoggle button.on{background:var(--surface-muted);color:var(--text-primary)}.modetoggle svg{width:14px;height:14px;stroke:currentColor;fill:none}
+.cscroll{flex:1;overflow:auto;padding:4px 20px 20px;display:flex;flex-direction:column;gap:10px}
+.sect{display:flex;align-items:center;gap:8px;margin:8px 2px 3px}.sect .lab{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary)}.sect .ln{height:1px;flex:1;background:var(--hairline)}.sect .st{font-size:10.5px;font-weight:700;color:var(--success);display:inline-flex;align-items:center;gap:4px}.sect .st svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.6}.sect .st.live{color:var(--primary)}
+.recCard{background:var(--surface-card);border:var(--stroke-thin) solid var(--hairline);border-radius:var(--radius-lg);padding:11px 13px;box-shadow:var(--shadow-sm)}
+.recCard .onliness{font-size:13.5px;line-height:1.48;font-weight:600}.recCard .onliness em{font-style:normal;color:var(--primary);font-weight:700}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.echip{display:inline-flex;align-items:center;height:32px;padding:0 15px;border-radius:99px;font-size:13.5px;font-weight:700;background:var(--primary);color:var(--primary-text);box-shadow:var(--shadow-sm)}
+.tk{font-family:var(--font-mono);font-size:11px;font-weight:500;padding:3px 8px;border-radius:var(--radius-md);background:var(--primary-soft);color:var(--primary);border:var(--stroke-thin) solid var(--primary-line)}
+
+/* ===== START stage ===== */
+.start-wrap{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;padding:40px}
+.start{width:100%;max-width:840px}
+.start .hello{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--primary);margin-bottom:14px}
+.start .hello .av{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:var(--primary);color:var(--primary-text)}.start .hello .av svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
+.start h1{font-size:38px;font-weight:800;letter-spacing:-0.035em;margin:0 0 10px;line-height:1.05}
+.start .sub{font-size:16px;color:var(--text-secondary);line-height:1.5;max-width:56ch;margin:0 0 28px}
+.start .paths{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pathcard{background:var(--surface-card);border:var(--stroke-thin) solid var(--border-default);border-radius:var(--radius-xl);padding:22px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:14px}
+.pathcard.reco{border-color:var(--primary-line);box-shadow:0 0 0 3px var(--primary-soft),var(--shadow-md)}
+.pathcard .pch{display:flex;align-items:center;gap:10px}
+.pathcard .pic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--primary-soft);color:var(--primary);flex:none}.pathcard .pic svg{width:18px;height:18px;stroke:currentColor;fill:none}
+.pathcard h3{margin:0;font-size:16px;font-weight:700;letter-spacing:-0.01em}.pathcard h3 .rtag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--primary);background:var(--primary-soft);border:var(--stroke-thin) solid var(--primary-line);padding:2px 7px;border-radius:99px;margin-left:8px;vertical-align:middle}
+.pathcard p{margin:0;font-size:13px;color:var(--text-secondary);line-height:1.5}
+.inp{display:flex;align-items:center;gap:9px;height:42px;padding:0 13px;border-radius:var(--radius-lg);background:var(--surface-subtle);border:var(--stroke-thin) solid var(--border-default);font-size:14px;color:var(--text-tertiary)}
+.inp svg{width:16px;height:16px;stroke:var(--text-tertiary);fill:none}.inp .val{color:var(--text-primary);font-weight:500}
+.vis-toggle{display:inline-flex;background:var(--surface-muted);border-radius:var(--radius-md);padding:3px}.vis-toggle button{height:30px;padding:0 14px;border:none;background:transparent;border-radius:6px;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--text-secondary);cursor:pointer;display:inline-flex;align-items:center;gap:6px}.vis-toggle button.on{background:var(--surface-card);color:var(--text-primary);box-shadow:var(--shadow-sm)}.vis-toggle svg{width:13px;height:13px;stroke:currentColor;fill:none}
+.dropz{border:var(--stroke-regular) dashed var(--border-default);border-radius:var(--radius-lg);padding:16px;text-align:center;font-size:12.5px;color:var(--text-tertiary);background:var(--surface-subtle)}
+.start .go{display:flex;align-items:center;gap:14px;margin-top:26px}
+.start .go .note{font-size:11.5px;color:var(--text-tertiary);display:flex;align-items:center;gap:7px}.start .go .note svg{width:13px;height:13px;stroke:currentColor;fill:none}
+.bigbtn{display:inline-flex;align-items:center;gap:9px;height:46px;padding:0 22px;border:none;border-radius:var(--radius-lg);background:var(--primary);color:var(--primary-text);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:var(--shadow-md)}.bigbtn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* ===== VERBAL/TONE right column: tone-by-context on real components ===== */
+.tonecard{background:var(--surface-card);border:var(--stroke-thin) solid var(--hairline);border-radius:var(--radius-lg);padding:12px;box-shadow:var(--shadow-sm)}
+.tonecard .tlab{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.tonecard .tk2{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--text-secondary)}
+.tonecard .feel{margin-left:auto;font-size:11px;color:var(--text-tertiary);font-style:italic}
+.cmp-btn{height:36px;padding:0 16px;border-radius:var(--radius-lg);font-size:13.5px;font-weight:600;border:none;font-family:inherit;background:var(--primary);color:var(--primary-text);box-shadow:var(--shadow-sm)}
+.cmp-alert{display:flex;gap:10px;padding:11px 12px;border-radius:var(--radius-md)}
+.cmp-alert.err{background:var(--err-soft);border:var(--stroke-thin) solid var(--err-line)}.cmp-alert.err .i{color:var(--destructive)}
+.cmp-alert.warn{background:var(--warn-soft);border:var(--stroke-thin) solid var(--warn-line)}.cmp-alert.warn .i{color:var(--warning)}
+.cmp-alert .i svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;margin-top:1px}
+.cmp-alert .t{font-size:12.5px;line-height:1.45}.cmp-alert .t b{font-weight:700}
+.cmp-toast{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:var(--radius-md);background:var(--surface-raised);border:var(--stroke-thin) solid var(--hairline);box-shadow:var(--shadow-md)}
+.cmp-toast .ti{width:22px;height:22px;border-radius:50%;background:var(--success);color:#062a14;display:grid;place-items:center;flex:none}.cmp-toast .ti svg{width:13px;height:13px;stroke:currentColor;stroke-width:3;fill:none}.cmp-toast .t{font-size:12.5px}.cmp-toast .t b{font-weight:700}
+.cmp-empty{border:var(--stroke-thin) dashed var(--border-default);border-radius:var(--radius-md);padding:14px;text-align:center;font-size:12.5px;color:var(--text-secondary)}.cmp-empty b{color:var(--text-primary);font-weight:700}
+.cmp-load{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:var(--radius-md);background:var(--surface-subtle);border:var(--stroke-thin) solid var(--hairline)}
+.cmp-load .sk{flex:1;display:flex;flex-direction:column;gap:6px}.cmp-load .sk i{height:8px;border-radius:99px;background:var(--surface-muted);display:block}.cmp-load .sk i:nth-child(2){width:66%}
+.cmp-load .spin{width:16px;height:16px;border-radius:50%;border:2px solid var(--primary-line);border-top-color:var(--primary);flex:none}
+.cmp-load .lt{font-size:12.5px;color:var(--text-secondary);white-space:nowrap}
+
+/* ===== VISUAL stage ===== */
+.two{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:start}
+.panel{background:var(--surface-card);border:var(--stroke-thin) solid var(--hairline);border-radius:var(--radius-xl);padding:18px;box-shadow:var(--shadow-sm)}
+.panel h4{margin:0 0 13px;font-size:13px;font-weight:700;letter-spacing:.01em;display:flex;align-items:center;gap:8px}.panel h4 .tagm{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.04em}
+.ramp{display:flex;border-radius:var(--radius-md);overflow:hidden;height:38px;border:var(--stroke-thin) solid var(--hairline)}.ramp i{flex:1}
+.swrow{display:flex;gap:12px;margin-bottom:16px}
+.sw2{flex:1;border-radius:var(--radius-lg);padding:12px;color:#fff;font-weight:700;font-size:12px;min-height:64px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:var(--shadow-sm)}
+.sw2 code{font-family:var(--font-mono);font-weight:500;font-size:10.5px;opacity:.85}
+.typ{font-weight:800;letter-spacing:-0.02em;line-height:1.05}
+.misuse{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.dont{border:var(--stroke-thin) solid var(--err-line);background:var(--err-soft);border-radius:var(--radius-md);padding:9px 11px;font-size:11.5px;color:var(--text-secondary);display:flex;gap:8px;align-items:flex-start}
+.dont .x{width:16px;height:16px;border-radius:50%;background:var(--destructive);color:#fff;display:grid;place-items:center;flex:none;font-size:11px;font-weight:800}
+.markbox{display:flex;gap:12px}
+.markchip{flex:1;border-radius:var(--radius-lg);border:var(--stroke-thin) solid var(--hairline);min-height:72px;display:grid;place-items:center;font-weight:800;font-size:18px;letter-spacing:-0.02em}
+.markchip.lite{background:#fff;color:#111}.markchip.drk{background:#0c0c12;color:#fff}
+
+/* ===== PROVE stage ===== */
+.prove-wrap{flex:1;overflow:auto}
+.scorebar{display:flex;align-items:center;gap:18px;background:var(--surface-card);border:var(--stroke-thin) solid var(--hairline);border-radius:var(--radius-xl);padding:18px 20px;box-shadow:var(--shadow-sm);margin-bottom:20px}
+.ring{width:62px;height:62px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:16px;font-weight:800;color:var(--primary);background:conic-gradient(var(--primary) 86%,var(--surface-muted) 0);position:relative}
+.ring::after{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--surface-card)}.ring b{position:relative;z-index:1}
+.scorebar .sx b{font-size:15px;font-weight:700}.scorebar .sx p{margin:3px 0 0;font-size:12.5px;color:var(--text-secondary)}
+.scorebar .counts{margin-left:auto;display:flex;gap:16px}
+.scorebar .cc{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--text-secondary)}.scorebar .cc .d{width:9px;height:9px;border-radius:50%}.cc.pass .d{background:var(--success)}.cc.warn .d{background:var(--warning)}.cc.fail .d{background:var(--destructive)}
+.checkgrp{margin-bottom:18px}.checkgrp .gh{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-tertiary);margin:0 2px 9px}
+.check{display:flex;gap:13px;align-items:flex-start;background:var(--surface-card);border:var(--stroke-thin) solid var(--hairline);border-radius:var(--radius-lg);padding:13px 15px;margin-bottom:8px;box-shadow:var(--shadow-sm)}
+.check .ico{width:24px;height:24px;border-radius:50%;flex:none;display:grid;place-items:center;margin-top:1px}.check .ico svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.6}
+.check.pass .ico{background:var(--success)}.check.warn .ico{background:var(--warning)}.check.fail .ico{background:var(--destructive)}
+.check .cmid{flex:1;min-width:0}.check .cmid b{font-size:14px;font-weight:700}.check .cmid p{margin:3px 0 0;font-size:12.5px;color:var(--text-secondary);line-height:1.45}.check .cmid p code{font-family:var(--font-mono);font-size:11px;background:var(--surface-muted);padding:1px 6px;border-radius:5px}
+.check .fix{flex:none;align-self:center;height:30px;padding:0 13px;border-radius:var(--radius-md);font-family:inherit;font-size:12px;font-weight:700;border:var(--stroke-thin) solid var(--border-default);background:transparent;color:var(--text-primary);cursor:pointer}
+
+/* ===== EXPORT stage ===== */
+.exp-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;align-items:start}
+.codecard{background:var(--surface-raised);border:var(--stroke-thin) solid var(--hairline);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-md)}
+.codecard .cbar{display:flex;align-items:center;gap:9px;padding:11px 15px;border-bottom:var(--stroke-thin) solid var(--hairline);background:var(--surface-card)}
+.codecard .cbar .fn{font-family:var(--font-mono);font-size:12.5px;font-weight:600}.codecard .cbar .badge{margin-left:auto;font-size:10.5px;font-weight:700;color:var(--primary);background:var(--primary-soft);border:var(--stroke-thin) solid var(--primary-line);padding:2px 8px;border-radius:99px}
+.codecard pre{margin:0;padding:15px 16px;font-family:var(--font-mono);font-size:11.5px;line-height:1.62;color:var(--text-secondary);overflow:auto;max-height:330px}
+.codecard pre .k{color:var(--primary);font-weight:600}.codecard pre .s{color:var(--text-primary)}.codecard pre .c{color:var(--text-tertiary)}
+.outcard{background:var(--surface-card);border:var(--stroke-thin) solid var(--hairline);border-radius:var(--radius-lg);padding:14px 15px;box-shadow:var(--shadow-sm);display:flex;gap:12px;margin-bottom:12px}
+.outcard .oi{width:32px;height:32px;border-radius:9px;flex:none;display:grid;place-items:center;background:var(--primary-soft);color:var(--primary)}.outcard .oi svg{width:17px;height:17px;stroke:currentColor;fill:none}
+.outcard .om b{font-size:13.5px;font-weight:700}.outcard .om p{margin:3px 0 0;font-size:12px;color:var(--text-secondary);line-height:1.45}
+.pubrow{display:flex;gap:10px;margin-top:6px}
+.pubpill{flex:1;border-radius:var(--radius-lg);border:var(--stroke-thin) solid var(--border-default);padding:11px 13px;font-size:12px;color:var(--text-secondary)}
+.pubpill.on{border-color:var(--primary-line);background:var(--primary-soft);color:var(--text-primary)}
+.pubpill b{display:block;font-size:13px;color:var(--text-primary);margin-bottom:3px}
+
+/* ===== CANVAS stage ===== */
+.canvas-wrap{flex:1;overflow:auto}
+.canvas-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px}
+.canvas-head .ct{flex:1}
+.canvas-banner{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--primary);background:var(--primary-soft);border:var(--stroke-thin) solid var(--primary-line);padding:7px 13px;border-radius:99px}.canvas-banner svg{width:14px;height:14px;stroke:currentColor;fill:none}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.block{background:var(--surface-card);border:var(--stroke-thin) solid var(--hairline);border-radius:var(--radius-lg);padding:14px;box-shadow:var(--shadow-sm);min-height:96px;position:relative;cursor:pointer}
+.block:hover{border-color:var(--border-default)}
+.block .bk{font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.block .bk .ok{color:var(--success)}.block .bk .ok svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:3}
+.block .bv{font-size:13.5px;color:var(--text-primary);line-height:1.45}
+.block .ed{position:absolute;top:11px;right:11px;color:var(--text-tertiary);opacity:0}.block:hover .ed{opacity:.7}.block .ed svg{width:14px;height:14px;stroke:currentColor;fill:none}
+.block.editing{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+.block.editing .bk{color:var(--primary)}
+.block .editrow{display:flex;gap:7px;margin-top:10px}
+.block .ei{flex:1;height:32px;border-radius:var(--radius-md);background:var(--surface-subtle);border:var(--stroke-thin) solid var(--primary-line);font-size:13px;color:var(--text-primary);display:flex;align-items:center;padding:0 10px;font-weight:600}
+.block .es{width:32px;height:32px;border-radius:var(--radius-md);background:var(--primary);color:var(--primary-text);display:grid;place-items:center;flex:none}.block .es svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.4}
+.block .aibtn{display:inline-flex;align-items:center;gap:6px;margin-top:9px;font-size:11.5px;font-weight:700;color:var(--primary)}.block .aibtn svg{width:13px;height:13px;stroke:currentColor;fill:none}
+
+/* ===== reviewbar ===== */
+.reviewbar{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:99;display:flex;align-items:center;gap:9px;padding:6px 9px;border-radius:99px;background:rgba(18,18,22,.93);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.14);box-shadow:0 10px 34px rgba(0,0,0,.4);font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif}
+.reviewbar .rl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);padding:0 4px 0 7px}
+.reviewbar .rg{display:flex;background:rgba(255,255,255,.09);border-radius:99px;padding:3px}
+.reviewbar .rg button{border:none;background:transparent;color:rgba(255,255,255,.72);font-family:inherit;font-size:12px;font-weight:600;padding:5px 12px;border-radius:99px;cursor:pointer;line-height:1}.reviewbar .rg button.on{background:#fff;color:#15151a}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="bar">
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24"><path d="M3 7l9 5 9-5M3 7l9-4 9 4M3 7v10l9 4 9-4V7"/></svg></div>
+      <div class="title">Brand Workbench</div>
+      <div class="proj"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg> Visor · public</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="pill" data-theme-name><span class="dot"></span><span class="tname">modern-minimal</span></div>
+    <div class="pill key"><span class="kdot"></span>Claude · key active</div>
+    <button class="btn btn-ghost" data-go="export"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>Export</button>
+  </header>
+  <div class="gprog"><i id="gp"></i></div>
+
+  <div class="grid">
+
+    <!-- SPINE -->
+    <nav class="col spine">
+      <div class="sprog">
+        <div class="r1"><span class="bn">Visor</span><span class="vtag">public</span></div>
+        <div class="r2"><span class="big" id="sp-big">0</span><span class="of">of 10 steps</span><span class="pc" id="sp-pc">5%</span></div>
+        <div class="bar"><i id="sp-bar"></i></div>
+        <div class="enc" id="sp-enc">Welcome — let's compile your brand. About 15 min to a complete first draft.</div>
+      </div>
+
+      <div class="eyebrow">Setup</div>
+      <div class="chain">
+        <div class="node" data-go="start" data-order="1"><span class="rail"></span><span class="bullet"></span><span class="lbl"><b>Start</b><span>name · public</span></span></div>
+      </div>
+      <div class="eyebrow">Strategy</div>
+      <div class="chain">
+        <div class="node" data-go="strategy" data-order="2"><span class="rail"></span><span class="bullet"></span><span class="lbl"><b>Positioning</b><span>the onliness</span></span></div>
+        <div class="node" data-go="strategy" data-order="3"><span class="rail"></span><span class="bullet"></span><span class="lbl"><b>Essence</b><span>2–3 words</span></span></div>
+        <div class="node" data-go="strategy" data-order="4"><span class="rail"></span><span class="bullet"></span><span class="lbl"><b>Personality</b><span>brand-as-person</span></span></div>
+        <div class="node tail" data-go="strategy" data-order="5"><span class="rail"></span><span class="bullet"></span><span class="lbl"><b>Pillars</b><span>token-linked</span></span></div>
+      </div>
+      <div class="eyebrow">Verbal</div>
+      <div class="chain">
+        <div class="node" data-go="verbal" data-order="6"><span class="rail"></span><span class="bullet"></span><span class="lbl"><b>Voice</b><span>fixed traits</span></span></div>
+        <div class="node tail" data-go="verbal" data-order="7"><span class="rail"></span><span class="bullet"></span><span class="lbl"><b>Tone</b><span>flexed by context</span></span></div>
+      </div>
+      <div class="eyebrow">Visual</div>
+      <div class="chain">
+        <div class="node tail" data-go="visual" data-order="8"><span class="rail"></span><span class="bullet"></span><span class="lbl"><b>Visual</b><span>color · type · marks</span></span></div>
+      </div>
+      <div class="eyebrow">Prove &amp; Export</div>
+      <div class="chain">
+        <div class="node" data-go="prove" data-order="9"><span class="rail"></span><span class="bullet"></span><span class="lbl"><b>Prove</b><span>coherence checks</span></span></div>
+        <div class="node tail" data-go="export" data-order="10"><span class="rail"></span><span class="bullet"></span><span class="lbl"><b>Export</b><span>.visor.yaml + manifest</span></span></div>
+      </div>
+
+      <div class="modecard">
+        <div class="seg"><button data-go="strategy" id="seg-g" class="on">Guided</button><button data-go="canvas" id="seg-c">Canvas</button></div>
+        <p>Guided walks you to a complete draft. Switch to Canvas any time to free-edit any block, in any order.</p>
+      </div>
+    </nav>
+
+    <!-- STAGE HOST -->
+    <div class="host">
+
+      <!-- ===== START ===== -->
+      <section class="stage" data-st="start">
+        <div class="start-wrap">
+          <div class="start">
+            <div class="hello"><span class="av"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/></svg></span> Your AI brand strategist</div>
+            <h1>Let's compile your brand.</h1>
+            <p class="sub">I'll interview you, draft every layer, and push back when it's not sharp enough — and you'll watch the whole system assemble itself, live on real components. No brand-strategy degree required.</p>
+            <div class="paths">
+              <div class="pathcard reco">
+                <div class="pch"><span class="pic"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/></svg></span><h3>Seed from what you have <span class="rtag">fastest</span></h3></div>
+                <p>Point me at a site, a deck, or a pile of notes. I'll read it and propose a first-draft positioning you can sharpen — so you never start from a blank page.</p>
+                <div class="inp"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1"/><path d="M14 11a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1"/></svg><span class="val">visor.design</span></div>
+                <div class="dropz">or drop a deck / brand notes / screenshots here</div>
+              </div>
+              <div class="pathcard">
+                <div class="pch"><span class="pic"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><h3>Start from scratch</h3></div>
+                <p>A blank slate. We'll build it together, one decision at a time, down the derivation chain.</p>
+                <div class="inp"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h7"/></svg><span class="val">Visor</span></div>
+                <div class="vis-toggle"><button class="on"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>Public</button><button><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Private</button></div>
+              </div>
+            </div>
+            <div class="go">
+              <button class="bigbtn" data-go="strategy">Begin the interview <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+              <span class="note"><svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg> BYOK · local-first · your strategy never leaves this machine</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== STRATEGY (Elicit) ===== -->
+      <section class="stage split" data-st="strategy">
+        <div class="conv">
+          <div class="chead"><div class="col-inner">
+            <div class="row1"><span class="crumb">Strategy <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg> <b>Essence</b></span><span class="stepn">Step 3 of 10<span class="pct">· 20%</span></span></div>
+            <div class="pseg"><i class="done"></i><i class="done"></i><i class="cur"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="eta"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg> About 8 minutes to a complete first draft — stop and pick up anytime, nothing's lost.</div>
+          </div></div>
+          <div class="thread"><div class="col-inner">
+            <div class="turn"><div class="hdr"><span class="av"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/></svg></span><span class="nm">Strategist</span></div>
+              <div class="txt">Positioning's locked — a genuine category of one. Now the <em>essence</em>: the two or three words at the irreducible core, internal-facing, not a tagline. From everything you've said, I'd start with <strong>coherent · open · yours</strong>.</div></div>
+            <div class="turn"><div class="hdr"><span class="av"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/></svg></span><span class="nm">Strategist</span></div>
+              <div class="txt">Each one traces to a real principle: <em>coherent</em> = every layer derives from the one above; <em>open</em> = readable by humans and agents; <em>yours</em> = copy-and-own. Keep all three, or swap one?</div>
+              <div class="sub"><div class="tool"><div class="th"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg> Essence · the irreducible core</div><div class="tb"><span class="slot">coherent</span> <span class="slot">open</span> <span class="slot">yours</span></div></div></div></div>
+            <div class="uturn"><div class="ub">Keep all three. That's exactly it.</div></div>
+          </div></div>
+          <div class="composer"><div class="col-inner">
+            <div class="suggest"><span class="schip spark"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/></svg>Lock essence &amp; derive personality</span><span class="schip">Swap a word</span></div>
+            <div class="cbox"><div class="field">Message the strategist…</div><div class="tools"><button class="tbtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button><span class="modelchip"><span class="kdot"></span>Claude · key active</span><span class="grow"></span><span class="send"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span></div></div>
+          </div></div>
+        </div>
+        <aside class="canvas">
+          <div class="khead"><div class="lt"><b>Live brand system</b><span>assembling as you answer</span></div><div class="spacer"></div><div class="tchip"><span class="sw"></span><span class="tname">modern-minimal</span></div><div class="modetoggle"><button class="lighticon on"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg></button><button class="darkicon"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 119.5 4a6.5 6.5 0 0010.5 10.5z"/></svg></button></div></div>
+          <div class="cscroll">
+            <div class="sect"><span class="lab">Positioning</span><span class="ln"></span><span class="st"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>set</span></div>
+            <div class="recCard"><div class="onliness">The only design system that <em>compiles</em> a complete brand — visual <em>and</em> verbal — from one portable file.</div></div>
+            <div class="sect"><span class="lab">Essence</span><span class="ln"></span><span class="st"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>set</span></div>
+            <div class="chips"><span class="echip">coherent</span><span class="echip">open</span><span class="echip">yours</span></div>
+            <div class="sect"><span class="lab">Personality</span><span class="ln"></span><span class="st live">next</span></div>
+            <div class="recCard" style="color:var(--text-tertiary);font-size:12.5px">Derives from essence in the next step — precise, candid, generous, warm.</div>
+            <div class="sect"><span class="lab">Speaking</span><span class="ln"></span><span class="st live">live</span></div>
+            <div class="tonecard"><div style="display:flex;gap:9px"><button class="cmp-btn">Get started</button><button class="cmp-btn" style="background:transparent;color:var(--text-primary);border:1px solid var(--border-default)">Cancel</button></div></div>
+          </div>
+        </aside>
+      </section>
+
+      <!-- ===== VERBAL / TONE-BY-CONTEXT ===== -->
+      <section class="stage split" data-st="verbal">
+        <div class="conv">
+          <div class="chead"><div class="col-inner">
+            <div class="row1"><span class="crumb">Verbal <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg> <b>Tone by context</b></span><span class="stepn">Step 7 of 10<span class="pct">· 60%</span></span></div>
+            <div class="pseg"><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="cur"></i><i></i><i></i><i></i></div>
+            <div class="eta"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg> Voice is fixed; tone flexes. This is the half a PDF can't do — it renders live, on real states.</div>
+          </div></div>
+          <div class="thread"><div class="col-inner">
+            <div class="turn"><div class="hdr"><span class="av"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/></svg></span><span class="nm">Strategist</span></div>
+              <div class="txt">Your voice is set — <strong>plainspoken · candid · generous · warm</strong>. Voice never changes; <em>tone</em> is how it flexes for the reader's moment. I've drafted one per real UI state — watch them render on the right as we go.</div></div>
+            <div class="turn"><div class="hdr"><span class="av"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/></svg></span><span class="nm">Strategist</span></div>
+              <div class="txt">Take the <em>error</em> tone. A cold system says “Error: name taken.” Visor's candid-but-warm voice already holds the fix:</div>
+              <div class="sub"><div class="tool"><div class="th"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg> tone · error — <span style="text-transform:none;letter-spacing:0;color:var(--text-secondary);font-weight:600">warm, accountable, already holding the fix</span></div><div class="tb" style="font-size:14px;line-height:1.5;font-weight:500">“That didn't save — looks like the theme name's taken. Pick another and we'll keep everything else just as you left it.”</div></div></div></div>
+            <div class="uturn"><div class="ub">Love it. Same energy for the warning state.</div></div>
+          </div></div>
+          <div class="composer"><div class="col-inner">
+            <div class="suggest"><span class="schip spark"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/></svg>Draft all five tones</span><span class="schip">Run the voice-linter on my copy</span></div>
+            <div class="cbox"><div class="field">Paste copy to score against voice, or message the strategist…</div><div class="tools"><button class="tbtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button><span class="modelchip"><span class="kdot"></span>Claude · key active</span><span class="grow"></span><span class="send"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span></div></div>
+          </div></div>
+        </div>
+        <aside class="canvas">
+          <div class="khead"><div class="lt"><b>Tone, on real components</b><span>the verbal twin of light/dark mode</span></div><div class="spacer"></div><div class="tchip"><span class="sw"></span><span class="tname">modern-minimal</span></div><div class="modetoggle"><button class="lighticon on"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg></button><button class="darkicon"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 119.5 4a6.5 6.5 0 0010.5 10.5z"/></svg></button></div></div>
+          <div class="cscroll">
+            <div class="tonecard"><div class="tlab"><span class="tk2">error</span><span class="feel">warm, accountable</span></div><div class="cmp-alert err"><span class="i"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg></span><div class="t">That didn't save — the theme name's taken. Pick another and we'll keep everything just as you left it.</div></div></div>
+            <div class="tonecard"><div class="tlab"><span class="tk2">success</span><span class="feel">a small, real celebration</span></div><div class="cmp-toast"><span class="ti"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span><div class="t"><b>Saved!</b> Your theme's live across every component — go take a look.</div></div></div>
+            <div class="tonecard"><div class="tlab"><span class="tk2">empty</span><span class="feel">inviting, a friendly nudge</span></div><div class="cmp-empty"><b>Nothing here yet</b> — let's change that. Start from a blank file, or clone one and make it yours.</div></div>
+            <div class="tonecard"><div class="tlab"><span class="tk2">loading</span><span class="feel">unhurried, honest about the wait</span></div><div class="cmp-load"><span class="spin"></span><div class="sk"><i></i><i></i></div><span class="lt">Compiling your tokens…</span></div></div>
+            <div class="tonecard"><div class="tlab"><span class="tk2">validation-warning</span><span class="feel">a friend flagging a smell</span></div><div class="cmp-alert warn"><span class="i"><svg viewBox="0 0 24 24"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4m0 4h.01"/></svg></span><div class="t">Quick one — your primary and accent are nearly twins. Themes read flat this close; nudge one if it's not on purpose.</div></div></div>
+          </div>
+        </aside>
+      </section>
+
+      <!-- ===== VISUAL ===== -->
+      <section class="stage" data-st="visual">
+        <div class="pad" style="flex:1;overflow:auto">
+          <div class="eyebrowS">Step 8 of 10 · Visual</div>
+          <h2 class="big">A look that matches the strategy.</h2>
+          <p class="lede" style="margin-bottom:26px">Your essence is <strong>coherent · open · yours</strong> and you lean Sage + Creator. I've suggested a palette and type that read precise and open — taste stays yours; nudge anything.</p>
+          <div class="two">
+            <div>
+              <div class="panel" style="margin-bottom:18px">
+                <h4>Color <span class="tagm">suggested from strategy</span></h4>
+                <div class="swrow">
+                  <div class="sw2" style="background:var(--primary)">primary<code>#04bf81</code></div>
+                  <div class="sw2" style="background:var(--accent)">accent<code>#04bf81</code></div>
+                  <div class="sw2" style="background:#111827">neutral<code>gray-900</code></div>
+                </div>
+                <div style="font-size:11px;color:var(--text-tertiary);margin-bottom:6px">one intent → 53 derived tokens</div>
+                <div class="ramp"><i style="background:#ecfdf5"></i><i style="background:#a7f3d0"></i><i style="background:#34d399"></i><i style="background:#04bf81"></i><i style="background:#059669"></i><i style="background:#065f46"></i><i style="background:#064e3b"></i></div>
+              </div>
+              <div class="panel">
+                <h4>Don'ts <span class="tagm">AI-generated, you approve</span></h4>
+                <div class="misuse">
+                  <div class="dont"><span class="x">✕</span> Don't recolor the mark — it's monochrome-only off-palette.</div>
+                  <div class="dont"><span class="x">✕</span> Don't pair primary with accent as equals — accent supports.</div>
+                  <div class="dont"><span class="x">✕</span> Don't crowd the mark — keep clearspace ≥ its own height.</div>
+                  <div class="dont"><span class="x">✕</span> Don't ship below AA — the validator will flag it.</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="panel" style="margin-bottom:18px">
+                <h4>Type <span class="tagm">Product Sans</span></h4>
+                <div class="typ" style="font-size:40px;margin-bottom:4px">Coherent, open, yours.</div>
+                <div style="font-size:14px;color:var(--text-secondary);line-height:1.55">Body copy renders in the same family — plainspoken and clean, generous line-height for long-form docs.</div>
+              </div>
+              <div class="panel">
+                <h4>Marks <span class="tagm">live on theme</span></h4>
+                <div class="markbox"><div class="markchip lite">Visor</div><div class="markchip drk">Visor</div></div>
+                <div style="font-size:11.5px;color:var(--text-tertiary);margin-top:10px">The mark re-tints with the active theme — clearspace &amp; min-size promoted to enforced rules.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== PROVE ===== -->
+      <section class="stage" data-st="prove">
+        <div class="pad prove-wrap">
+          <div class="eyebrowS">Step 9 of 10 · Prove</div>
+          <h2 class="big">Does the system hold together?</h2>
+          <p class="lede" style="margin-bottom:22px">A static brand asserts; a living one proves itself against the running product — and re-proves the instant either side changes. These checks gate the export, exactly the way token drift fails CI.</p>
+          <div class="scorebar">
+            <div class="ring"><b>86%</b></div>
+            <div class="sx"><b>Coherent — with two things to look at</b><p>9 checks passed · 1 warning · 1 fail. Fix or accept each; nothing here blocks you.</p></div>
+            <div class="counts"><span class="cc pass"><span class="d"></span>9 pass</span><span class="cc warn"><span class="d"></span>1 warn</span><span class="cc fail"><span class="d"></span>1 fail</span></div>
+          </div>
+
+          <div class="checkgrp"><div class="gh">Derivation — every layer traces upward</div>
+            <div class="check pass"><span class="ico"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span><div class="cmid"><b>Every pillar governs something real</b><p><code>coherence</code> → <code>--primary</code>, <code>--surface-card</code>; <code>ownership</code> → all components; <code>openness</code> → manifest + CLI. No dead pillars.</p></div></div>
+            <div class="check pass"><span class="ico"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span><div class="cmid"><b>Voice derives from personality</b><p>plainspoken ← precise; candid ← candid; generous &amp; warm ← Everyman. Each trait is a consequence, not an assertion.</p></div></div>
+          </div>
+          <div class="checkgrp"><div class="gh">Voice &amp; copy</div>
+            <div class="check warn"><span class="ico"><svg viewBox="0 0 24 24"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></span><div class="cmid"><b>One sampled string drifts from voice</b><p>“Submit” on the export button reads transactional. Voice prefers a plainspoken verb — try “Compile” or “Publish”.</p></div><button class="fix">Rewrite to voice</button></div>
+          </div>
+          <div class="checkgrp"><div class="gh">Accessibility — WCAG 2.1 AA</div>
+            <div class="check fail"><span class="ico"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></span><div class="cmid"><b>One pairing fails on small text</b><p><code>--text-tertiary</code> on <code>--surface-subtle</code> is 3.9:1 — below 4.5:1 for body text. Bump tertiary one step, or keep it for large text only.</p></div><button class="fix">Suggest a fix</button></div>
+            <div class="check pass"><span class="ico"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span><div class="cmid"><b>Primary, text, and focus rings clear AA</b><p>Body 7.1:1 · large text 4.8:1 · non-text UI 3.4:1 — all above target on both light and dark.</p></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== EXPORT ===== -->
+      <section class="stage" data-st="export">
+        <div class="pad" style="flex:1;overflow:auto">
+          <div class="eyebrowS">Step 10 of 10 · Export</div>
+          <h2 class="big">Your brand system, compiled.</h2>
+          <p class="lede" style="margin-bottom:24px">One portable file an engineer reads and an agent queries — the same way it reads a component's <code style="font-family:var(--font-mono);font-size:12px">when_to_use</code>. Strategy as data, not a locked PDF.</p>
+          <div class="exp-grid">
+            <div class="codecard">
+              <div class="cbar"><span class="fn">.visor.yaml</span><span class="badge">brand-strategy block</span></div>
+<pre><span class="k">brand-strategy</span>:
+  <span class="k">positioning</span>:
+    <span class="k">onliness</span>: <span class="s">The only design system that compiles a</span>
+              <span class="s">brand — visual and verbal — from one file.</span>
+  <span class="k">essence</span>: [<span class="s">coherent</span>, <span class="s">open</span>, <span class="s">yours</span>]
+  <span class="k">archetype</span>: { <span class="k">primary</span>: <span class="s">sage</span>, <span class="k">secondary</span>: <span class="s">creator</span> }
+  <span class="k">voice</span>:
+    <span class="k">traits</span>:
+      - { <span class="k">name</span>: <span class="s">plainspoken</span>, <span class="k">do</span>: <span class="s">"Say it in one clause."</span> }
+      - { <span class="k">name</span>: <span class="s">candid</span>, <span class="k">do</span>: <span class="s">"Name the tradeoff."</span> }
+  <span class="k">tone</span>:
+    <span class="k">error</span>: { <span class="k">feeling</span>: <span class="s">warm, accountable</span> }
+    <span class="k">success</span>: { <span class="k">feeling</span>: <span class="s">a small celebration</span> }
+  <span class="k">pillars</span>:
+    - <span class="k">id</span>: <span class="s">coherence</span>
+      <span class="k">governs</span>: { <span class="k">tokens</span>: [<span class="s">--primary</span>, <span class="s">--surface-card</span>] }
+  <span class="c"># validated · linked · serialized — not expanded</span>
+  <span class="k">visibility</span>: <span class="s">public</span></pre>
+            </div>
+            <div>
+              <div class="outcard"><span class="oi"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></span><div class="om"><b>Agent manifest</b><p>The brand serialized to JSON under <code style="font-family:var(--font-mono);font-size:11px">brand_strategy</code> — every downstream agent reads your voice &amp; tone and stays on-brand.</p></div></div>
+              <div class="outcard"><span class="oi"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM4 9h16M9 9v10"/></svg></span><div class="om"><b>Live brand book</b><p>The docs surface — strategy, voice, and tone rendered on real components, re-resolving with theme &amp; mode.</p></div></div>
+              <div class="outcard"><span class="oi"><svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/></svg></span><div class="om"><b>Coherence gate</b><p>Re-runs on every change — a dead pillar or AA fail breaks the build, just like token drift.</p></div></div>
+              <div class="pubrow">
+                <div class="pubpill on"><b>Public</b>Visor's flagship — ships in the OSS docs.</div>
+                <div class="pubpill"><b>Private</b>Client brands → brand-systems-private, synced &amp; gitignored.</div>
+              </div>
+              <button class="bigbtn" style="margin-top:14px"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>Export brand system</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CANVAS ===== -->
+      <section class="stage" data-st="canvas">
+        <div class="pad canvas-wrap">
+          <div class="canvas-head">
+            <div class="ct">
+              <div class="eyebrowS">Free-edit mode</div>
+              <h2 class="big">Your brand, as a canvas.</h2>
+              <p class="lede">Guided got you a complete draft. Canvas lets you edit any block, in any order — the AI still drafts and challenges on request, and the right-hand system re-resolves the moment you change anything.</p>
+            </div>
+            <div class="canvas-banner"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM4 9h16M9 9v11"/></svg> Canvas mode</div>
+          </div>
+          <div class="board">
+            <div class="block editing"><div class="bk">Essence</div><div class="bv">coherent · open · yours</div><div class="editrow"><span class="ei">coherent · open · yours</span><span class="es"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span></div><span class="aibtn"><svg viewBox="0 0 24 24"><path d="M12 3l1.6 4.6L18 9l-4.4 1.4L12 15l-1.6-4.6L6 9l4.4-1.4L12 3z"/></svg>Ask AI to pressure-test</span></div>
+            <div class="block"><div class="bk">Positioning <span class="ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span></div><div class="bv">The only design system that <strong>compiles</strong> a brand — visual and verbal — from one file.</div><span class="ed"><svg viewBox="0 0 24 24"><path d="M4 20h4L18 10l-4-4L4 16z"/></svg></span></div>
+            <div class="block"><div class="bk">Personality <span class="ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span></div><div class="bv">precise · candid · generous · warm</div><span class="ed"><svg viewBox="0 0 24 24"><path d="M4 20h4L18 10l-4-4L4 16z"/></svg></span></div>
+            <div class="block"><div class="bk">Pillars <span class="ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span></div><div class="bv">coherence · openness · ownership <span class="tk" style="margin-left:4px">→ tokens</span></div><span class="ed"><svg viewBox="0 0 24 24"><path d="M4 20h4L18 10l-4-4L4 16z"/></svg></span></div>
+            <div class="block"><div class="bk">Voice <span class="ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span></div><div class="bv">plainspoken · candid · generous · warm</div><span class="ed"><svg viewBox="0 0 24 24"><path d="M4 20h4L18 10l-4-4L4 16z"/></svg></span></div>
+            <div class="block"><div class="bk">Tone <span class="ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span></div><div class="bv">error · success · empty · loading · warning</div><span class="ed"><svg viewBox="0 0 24 24"><path d="M4 20h4L18 10l-4-4L4 16z"/></svg></span></div>
+            <div class="block"><div class="bk">Lexicon <span class="ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span></div><div class="bv">theme not skin · compose not drag-drop · token not variable</div><span class="ed"><svg viewBox="0 0 24 24"><path d="M4 20h4L18 10l-4-4L4 16z"/></svg></span></div>
+            <div class="block"><div class="bk">Color &amp; type <span class="ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span></div><div class="bv">primary #04bf81 · Product Sans · 53 derived tokens</div><span class="ed"><svg viewBox="0 0 24 24"><path d="M4 20h4L18 10l-4-4L4 16z"/></svg></span></div>
+            <div class="block"><div class="bk">Marks <span class="ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span></div><div class="bv">logo · wordmark · monochrome — re-tint on theme</div><span class="ed"><svg viewBox="0 0 24 24"><path d="M4 20h4L18 10l-4-4L4 16z"/></svg></span></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- floating preview switcher -->
+<div class="reviewbar">
+  <span class="rl">Preview</span>
+  <div class="rg" data-grp="theme"><button data-t="t-mm" class="on">modern-minimal</button><button data-t="t-space">space</button></div>
+  <div class="rg" data-grp="mode"><button data-m="light" class="on">☀ Light</button><button data-m="dark">☾ Dark</button></div>
+</div>
+
+<script>
+(function(){
+  var root=document.documentElement,names={'t-mm':'modern-minimal','t-space':'space'},theme='t-mm',mode='light';
+  function applyTheme(){
+    root.className=theme+' '+mode;root.setAttribute('data-stage',stage);
+    document.querySelectorAll('.tname').forEach(function(e){e.textContent=names[theme];});
+    document.querySelectorAll('.modetoggle').forEach(function(mt){var li=mt.querySelector('.lighticon'),di=mt.querySelector('.darkicon');if(li&&di){li.classList.toggle('on',mode==='light');di.classList.toggle('on',mode==='dark');}});
+    document.querySelectorAll('[data-t]').forEach(function(b){b.classList.toggle('on',b.dataset.t===theme);});
+    document.querySelectorAll('[data-m]').forEach(function(b){b.classList.toggle('on',b.dataset.m===mode);});
+  }
+  // stage config: order (current step), done count, pct, encouraging copy
+  var CFG={
+    start:{order:0,done:0,pct:5,enc:"Welcome — let's compile your brand."},
+    strategy:{order:3,done:2,pct:20,enc:"Nice start — the hard part, your <em>only</em>, is locked."},
+    verbal:{order:7,done:6,pct:60,enc:"Over halfway. Voice is set; now make it flex."},
+    visual:{order:8,done:7,pct:75,enc:"Strategy and voice done — now the look falls out of them."},
+    prove:{order:9,done:8,pct:88,enc:"Almost there — let's make sure it all holds together."},
+    export:{order:10,done:10,pct:100,enc:"Done — a complete, coherent, agent-readable brand system."},
+    canvas:{order:99,done:10,pct:100,enc:"Complete draft. Edit any block, any order — nothing's locked."}
+  };
+  var stage='start';
+  function setStage(s){
+    if(!CFG[s])return;stage=s;var c=CFG[s];
+    root.setAttribute('data-stage',s);
+    // spine nodes
+    document.querySelectorAll('.node').forEach(function(n){
+      var o=+n.dataset.order;n.classList.remove('done','active','pending');
+      var bul=n.querySelector('.bullet');bul.innerHTML='';
+      if(s==='canvas'){n.classList.add('done');bul.innerHTML='<svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>';}
+      else if(o<c.order){n.classList.add('done');bul.innerHTML='<svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>';}
+      else if(o===c.order){n.classList.add('active');bul.innerHTML='<span class="pulse"></span>';}
+      else{n.classList.add('pending');n.querySelector('.lk')||(function(){var lk=document.createElement('span');lk.className='lk';lk.innerHTML='<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>';n.appendChild(lk);})();}
+    });
+    // progress meters
+    document.getElementById('sp-big').textContent=c.done;
+    document.getElementById('sp-pc').textContent=c.pct+'%';
+    document.getElementById('sp-bar').style.width=c.pct+'%';
+    document.getElementById('gp').style.width=c.pct+'%';
+    document.getElementById('sp-enc').innerHTML=c.enc+(s==='export'||s==='canvas'?'':' About '+(s==='start'?15:Math.max(1,Math.round((10-c.done)*1.2)))+' min to a complete draft.');
+    // guided/canvas seg
+    document.getElementById('seg-g').classList.toggle('on',s!=='canvas');
+    document.getElementById('seg-c').classList.toggle('on',s==='canvas');
+    document.querySelector('.host').scrollTop=0;
+    var sc=document.querySelector('.stage.show .col, .stage.show .start-wrap');
+  }
+  document.querySelectorAll('[data-go]').forEach(function(el){el.addEventListener('click',function(){setStage(el.dataset.go);});});
+  document.querySelectorAll('[data-t]').forEach(function(b){b.addEventListener('click',function(){theme=b.dataset.t;applyTheme();});});
+  document.querySelectorAll('[data-m]').forEach(function(b){b.addEventListener('click',function(){mode=b.dataset.m;applyTheme();});});
+  applyTheme();setStage('start');
+})();
+</script>
+</body>
+</html>
