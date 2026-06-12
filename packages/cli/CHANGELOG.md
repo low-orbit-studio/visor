@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.10.0
+
+### Minor Changes
+
+- 3f9511f: Add `CardLift` visual component — CSS-only hover lift + live-keyed halo interaction (VI-569).
+
+  Port of `.bl-card-lift` from blacklight-website (BL-326). `CardLift` is a thin wrapper `<div>` that applies a `translateY(-4px)` lift, depth shadow, and a `color-mix()` halo on hover. The halo is keyed to `--lift-color` (default: `var(--accent, #6366f1)`) — consumers can pass any CSS color or `var()` reference and the halo tracks live rewrites at paint time without a React re-render.
+
+  - `prefers-reduced-motion: reduce` removes all transitions and the transform
+  - Registered in the visual-elements category; install via `npx visor add card-lift`
+
+- cf08e76: Add `BrowserFrame` visual component to the registry (VI-570).
+
+  Ports Blacklight's `EpkFrame` into Visor as a browser-chrome mockup frame: traffic-light dots, a URL pill with optional real link, and an arbitrary content slot. Elevation is deliberately excluded — compose with `.lit` / `.lit-soft` / `.lit-strong` from `visor-core/utilities`. Focus ring color is driven by `--browser-frame-focus-color` so themed consumers can bind a keyed accent without forking.
+
+  Install via `npx visor add browser-frame`.
+
 ## 1.9.0
 
 ### Minor Changes
