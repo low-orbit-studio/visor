@@ -5,8 +5,8 @@ description: Inline "mad-lib" fill-in-the-blank card for structured elicitation 
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
-import { StructuredPrompt, StructuredPromptHeader, StructuredPromptBody, StructuredPromptSlot, StructuredPromptHint } from '@/components/ui/structured-prompt';
-import { ListBullets } from '@phosphor-icons/react';
+import { StructuredPrompt, StructuredPromptBody, StructuredPromptSlot } from '@/components/ui/structured-prompt';
+import { StructuredPromptOnlinessDemo } from '@/components/ui/structured-prompt-demo';
 
 ```bash
 npx visor add structured-prompt
@@ -20,17 +20,7 @@ The primary use case: a brand "onliness" statement where each bracket is an inli
   title="Onliness mad-lib"
   code={"import { StructuredPrompt, StructuredPromptHeader, StructuredPromptBody, StructuredPromptSlot, StructuredPromptHint } from '@/components/ui/structured-prompt/structured-prompt';\nimport { ListBullets } from '@phosphor-icons/react';\n\n<StructuredPrompt>\n  <StructuredPromptHeader icon={<ListBullets size={13} />}>\n    ONLINESS · THE SPEARHEAD\n  </StructuredPromptHeader>\n  <StructuredPromptBody>\n    For <StructuredPromptSlot filled>design-led product teams</StructuredPromptSlot>,\n    Visor is the only <StructuredPromptSlot filled>component system</StructuredPromptSlot>\n    that <StructuredPromptSlot>derives every surface from one brand record</StructuredPromptSlot>.\n  </StructuredPromptBody>\n  <StructuredPromptHint>Click any slot to edit</StructuredPromptHint>\n</StructuredPrompt>"}
 >
-  <StructuredPrompt>
-    <StructuredPromptHeader icon={<ListBullets size={13} />}>
-      ONLINESS · THE SPEARHEAD
-    </StructuredPromptHeader>
-    <StructuredPromptBody>
-      For <StructuredPromptSlot filled>design-led product teams</StructuredPromptSlot>,
-      Visor is the only <StructuredPromptSlot filled>component system</StructuredPromptSlot>
-      that <StructuredPromptSlot>derives every surface from one brand record</StructuredPromptSlot>.
-    </StructuredPromptBody>
-    <StructuredPromptHint>Click any slot to edit</StructuredPromptHint>
-  </StructuredPrompt>
+  <StructuredPromptOnlinessDemo />
 </ComponentPreview>
 
 ## Slot states
