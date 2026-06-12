@@ -1,0 +1,86 @@
+/* SectionIntro — marketing eyebrow + display heading + optional lede
+ *
+ * The eyebrow color is intentionally driven through a CSS custom property
+ * (`--section-intro-eyebrow-color`) so that consumers can override it at
+ * any ancestor level and have it track a live-rewritten brand accent var
+ * (e.g. a keyed `--color-acid` that swaps between artist palette entries).
+ * Default fallback chain: --section-intro-eyebrow-color → --accent-default
+ * → --interactive-primary-bg → #111827 (Tailwind Gray-900).
+ *
+ * Alignment is controlled by data-align on the root (set by the `align`
+ * prop). Both "left" and "center" are defined here.
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 1rem);
+  width: 100%;
+  min-width: 0;
+}
+
+/* ── Alignment variants ─────────────────────────────────────────────────── */
+
+.root[data-align="left"] {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.root[data-align="center"] {
+  align-items: center;
+  text-align: center;
+}
+
+/* ── Eyebrow ────────────────────────────────────────────────────────────── */
+
+.eyebrow {
+  margin: 0;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: var(--font-size-xs, 0.6875rem);
+  font-weight: var(--font-weight-medium, 500);
+  letter-spacing: var(--letter-spacing-widest, 0.2em);
+  text-transform: uppercase;
+  line-height: var(--line-height-tight, 1.25);
+  /*
+   * Live-rewriteable eyebrow color. Override --section-intro-eyebrow-color
+   * at any ancestor (e.g. on the <section> that contains this component) to
+   * track a keyed brand accent that changes at runtime.
+   */
+  color: var(
+    --section-intro-eyebrow-color,
+    var(--accent-default, var(--interactive-primary-bg, #111827))
+  );
+}
+
+/* ── Heading ────────────────────────────────────────────────────────────── */
+
+.heading {
+  margin: 0;
+  font-family: var(--font-display, var(--font-family-heading, inherit));
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-none, 1.05);
+  letter-spacing: var(--letter-spacing-tight, -0.02em);
+  color: var(--text-primary, #111827);
+  text-wrap: balance;
+  max-width: 18ch;
+}
+
+.root[data-align="center"] .heading {
+  max-width: 22ch;
+}
+
+/* ── Lede ───────────────────────────────────────────────────────────────── */
+
+.lede {
+  margin: 0;
+  font-size: var(--font-size-base, 1rem);
+  line-height: var(--line-height-relaxed, 1.6);
+  font-weight: var(--font-weight-light, 300);
+  color: var(--text-secondary, #6b7280);
+  max-width: 54ch;
+}
+
+.root[data-align="center"] .lede {
+  max-width: 60ch;
+}
