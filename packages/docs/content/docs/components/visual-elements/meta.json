@@ -5,6 +5,7 @@
   "pages": [
     "ambient-glow",
     "elevation-utilities",
+    "grain-overlay",
     "hero-glow",
     "sphere",
     "station-spectrum",

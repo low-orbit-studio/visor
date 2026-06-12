@@ -1,0 +1,42 @@
+name: GrainOverlay
+description: Fixed, full-viewport film-grain noise layer. Ported from Blacklight's bl-grain depth-system primitive (BL-326). Decorative only — pointer-events-none, aria-hidden.
+category: visual-elements
+
+when_to_use:
+  - Dark marketing surfaces where large near-black fills read as flat and digital
+  - Hero sections or landing pages with a cinema/atmospheric aesthetic
+  - Any surface using the Blacklight or similar dark depth-system look
+
+when_not_to_use:
+  - Light-mode surfaces (grain is near-invisible and adds nothing)
+  - Pages where every byte of bundle size counts (the SVG data URI is ~250 bytes — fine in practice)
+  - Animated grain effects (this is intentionally static; animated grain repaints the full viewport every frame)
+
+why: >
+  GrainOverlay ports Blacklight's film-grain depth atom into the Visor registry
+  so any dark marketing surface can adopt it via `npx visor add grain-overlay`
+  without hand-rolling the SVG data URI. It is fully self-contained: no external
+  assets, no JavaScript, no token dependencies. Opacity and z-index are exposed
+  as props for per-instance control; everything else is fixed in CSS.
+
+props:
+  - name: opacity
+    type: number
+    default: "0.035"
+    description: "Grain opacity (0–1). Default matches the Blacklight bl-grain reference."
+  - name: zIndex
+    type: number
+    default: "30"
+    description: "z-index of the overlay layer. Default 30 sits above page sections but below modals (z-100)."
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/visual-elements/grain-overlay"
+
+example: |
+  {/* Drop at the top of your dark page layout — renders nothing visible on its own */}
+  <GrainOverlay />
+
+  {/* Custom opacity for a more prominent grain */}
+  <GrainOverlay opacity={0.06} />

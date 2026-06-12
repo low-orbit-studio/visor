@@ -1,0 +1,58 @@
+---
+title: GrainOverlay
+description: Fixed, full-viewport film-grain noise layer. Ports Blacklight's bl-grain depth-system primitive for dark marketing surfaces.
+---
+
+import { PropsTable } from '@/components/props-table';
+
+## Overview
+
+`GrainOverlay` renders a fixed, full-viewport film-grain noise texture over your page. It kills the "flat digital fill" read of large near-black areas — the signature look of cinema and analog film. The grain is static (no animation) to avoid full-viewport repaint every frame.
+
+Port of Blacklight's `.bl-grain` depth-system primitive (BL-326). Decorative only: `aria-hidden="true"`, `pointer-events: none`. No color channel — monochrome SVG `fractalNoise` texture tiled at 160×160px.
+
+## Usage
+
+```tsx
+import { GrainOverlay } from '@/components/visual/grain-overlay/grain-overlay';
+
+// Drop at the top of your dark page layout
+export default function DarkLayout({ children }) {
+  return (
+    <div>
+      <GrainOverlay />
+      {children}
+    </div>
+  );
+}
+```
+
+## Props
+
+<PropsTable
+  props={[
+    {
+      name: 'opacity',
+      type: 'number',
+      default: '0.035',
+      description: 'Grain opacity (0–1). Default matches the Blacklight bl-grain reference value.',
+    },
+    {
+      name: 'zIndex',
+      type: 'number',
+      default: '30',
+      description: 'z-index of the overlay layer. Default 30 sits above page sections but below modals (z-100).',
+    },
+  ]}
+/>
+
+## Design Notes
+
+- **Static grain** — Animated grain repaints the full viewport every frame for marginal perceptible gain. This component is intentionally static.
+- **Fixed positioning** — The grain does not scroll with content, matching true film behavior.
+- **Monochrome only** — The SVG fractalNoise is desaturated. No color theming needed.
+- **z-index layering** — Default `zIndex={30}` sits above page sections. Pair with a vignette at `zIndex={20}` if you are building a full depth stack.
+
+## Accessibility
+
+The overlay is `aria-hidden="true"` and `pointer-events: none`. It is invisible to screen readers and does not intercept any mouse or touch events.

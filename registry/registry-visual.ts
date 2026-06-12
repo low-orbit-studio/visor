@@ -59,6 +59,24 @@ export const visual: Registry = [
     ],
   },
   {
+    name: "grain-overlay",
+    type: "registry:ui",
+    category: "visual-elements",
+    description:
+      "Fixed, full-viewport film-grain noise layer. Ported from Blacklight's bl-grain depth-system primitive. Decorative only — pointer-events-none, aria-hidden. No dependencies beyond visor-core.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    files: [
+      {
+        path: "components/visual/grain-overlay/grain-overlay.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/visual/grain-overlay/grain-overlay.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "sphere",
     type: "registry:ui",
     category: "visual-elements",
