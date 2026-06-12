@@ -1,0 +1,67 @@
+name: BrowserFrame
+description: Browser-chrome mockup frame with traffic-light dots and a URL pill. Wraps arbitrary content for marketing and landing surfaces. Elevation-free — compose with .lit / .lit-soft / .lit-strong for depth.
+category: visual-elements
+
+when_to_use:
+  - Showing a product screenshot or live embed inside a browser mockup on a marketing or landing page
+  - EPK-style artist/product demos where the "in-browser" framing provides context
+  - Any dark surface that needs a browser-chrome visual metaphor without hand-rolling the chrome bar
+
+when_not_to_use:
+  - Real browser chrome or app shells — this is a decorative mockup, not a functional navigation component
+  - Light-mode surfaces (the default deep-dark background will clash; override --browser-frame-bg to adapt)
+  - Nested inside another BrowserFrame (a browser inside a browser is confusing)
+
+why: >
+  BrowserFrame ports Blacklight's EpkFrame into the Visor registry (VI-570) so any
+  marketing surface showing product-in-a-browser can adopt it via `npx visor add
+  browser-frame`. The original EpkFrame drives 4+ Blacklight homepage sections. Elevation
+  is deliberately kept out — compose .lit / .lit-soft / .lit-strong from
+  `@loworbitstudio/visor-core/utilities` to control depth independently. Focus ring
+  color is driven by `--browser-frame-focus-color` so themed consumers (Blacklight
+  uses a per-artist keyed accent) can bind without forking.
+
+props:
+  - name: url
+    type: string
+    required: true
+    description: "Display URL shown in the chrome bar, e.g. \"sharlese.epk.pro\"."
+  - name: href
+    type: string
+    required: false
+    description: "Optional real link target. When set, the URL pill becomes a clickable <a> with a focus ring."
+  - name: children
+    type: React.ReactNode
+    required: true
+    description: "Content rendered inside the frame below the chrome bar."
+  - name: className
+    type: string
+    required: false
+    description: "Additional class name applied to the outer wrapper (e.g. to set --lit-color or --browser-frame-focus-color)."
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+  - "@phosphor-icons/react"
+
+preview_url: "https://visor.design/docs/components/visual-elements/browser-frame"
+
+example: |
+  {/* Static display-only */}
+  <BrowserFrame url="myproduct.example.com">
+    <img src="/screenshot.png" alt="Product screenshot" />
+  </BrowserFrame>
+
+  {/* Clickable URL pill */}
+  <BrowserFrame url="sharlese.epk.pro" href="https://sharlese.epk.pro">
+    <div style={{ padding: '24px' }}>Artist EPK content</div>
+  </BrowserFrame>
+
+  {/* With lit elevation from visor-core/utilities */}
+  <BrowserFrame
+    url="sharlese.epk.pro"
+    href="https://sharlese.epk.pro"
+    className="lit"
+    style={{ '--browser-frame-focus-color': '#c8ff00' }}
+  >
+    <div style={{ padding: '24px' }}>Artist EPK content</div>
+  </BrowserFrame>

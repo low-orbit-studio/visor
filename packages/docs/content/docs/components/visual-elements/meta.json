@@ -4,6 +4,7 @@
   "defaultOpen": true,
   "pages": [
     "ambient-glow",
+    "browser-frame",
     "card-lift",
     "elevation-utilities",
     "grain-overlay",
