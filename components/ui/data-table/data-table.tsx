@@ -129,6 +129,26 @@ export interface DataTableProps<TData, TValue = unknown>
   loading?: boolean
   emptyState?: React.ReactNode
 
+  /**
+   * Opt-in per-column skeleton shapes for the loading state (VI-516). When
+   * supplied, each skeleton row's cell contents are produced by this render
+   * prop instead of the default uniform full-width bars — letting the caller
+   * mirror the real row's silhouette (logo plates, badge pills, two-line id
+   * stacks) for a calmer load. Return the cell *contents*; DataTable still owns
+   * the `<tr>`/`<td>` structure, key, and `data-slot`. `colIndex` walks the
+   * resolved column list (the injected selection column, when present, is
+   * index 0). Return `null`/`undefined` to leave a cell empty.
+   *
+   * Default (prop omitted) is unchanged: every cell renders a full-width
+   * `Skeleton` bar, exactly as today. Pair with the `Skeleton` shape classes
+   * from `skeleton.module.css` (`shapeLogo`, `shapePill`, `shapeCircle`).
+   */
+  loadingSkeletonCell?: (args: {
+    rowIndex: number
+    colIndex: number
+    columnId: string
+  }) => React.ReactNode
+
   // Layout
   stickyHeader?: boolean
 
@@ -174,6 +194,7 @@ function DataTableInner<TData, TValue = unknown>(
     onGlobalFilterChange,
     loading = false,
     emptyState,
+    loadingSkeletonCell,
     stickyHeader = false,
     rowTone,
     onRowClick,
@@ -477,9 +498,17 @@ function DataTableInner<TData, TValue = unknown>(
           {loading ? (
             Array.from({ length: currentPageSize }).map((_, rowIdx) => (
               <TableRow key={`skeleton-${rowIdx}`} data-slot="data-table-skeleton-row">
-                {columns.map((_col, colIdx) => (
+                {columns.map((col, colIdx) => (
                   <TableCell key={`skeleton-${rowIdx}-${colIdx}`}>
-                    <Skeleton className={styles.skeletonCell} />
+                    {loadingSkeletonCell ? (
+                      loadingSkeletonCell({
+                        rowIndex: rowIdx,
+                        colIndex: colIdx,
+                        columnId: col.id ?? String(colIdx),
+                      })
+                    ) : (
+                      <Skeleton className={styles.skeletonCell} />
+                    )}
                   </TableCell>
                 ))}
               </TableRow>

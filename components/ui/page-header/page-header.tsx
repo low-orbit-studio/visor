@@ -46,6 +46,14 @@ export interface PageHeaderProps
   description?: React.ReactNode
   /** Optional ReactNode rendered above the title row (typically a Breadcrumb). */
   breadcrumb?: React.ReactNode
+  /**
+   * Optional media/identity node rendered to the LEFT of the title block inside
+   * the title row (typically an Avatar or identity plate). When present the row
+   * forms an identity lockup and the slot top-aligns against the title/description
+   * stack (VI-539). Omitting it leaves the row exactly as the default
+   * text|actions layout, so existing call sites render unchanged.
+   */
+  leading?: React.ReactNode
   /** Optional ReactNode rendered on the right side of the title row. */
   actions?: React.ReactNode
   /** Root element tag. Defaults to `header`. */
@@ -71,7 +79,7 @@ export interface PageHeaderProps
    * default line-height (tight for the standard title, `1` for the marquee
    * scale), so existing call sites render unchanged.
    */
-  leading?: string | number
+  titleLeading?: string | number
 }
 
 const PageHeader = React.forwardRef<HTMLElement, PageHeaderProps>(
@@ -83,12 +91,13 @@ const PageHeader = React.forwardRef<HTMLElement, PageHeaderProps>(
       title,
       description,
       breadcrumb,
+      leading,
       actions,
       as = "header",
       titleAs = "h1",
       titleSize,
       titleFamily,
-      leading,
+      titleLeading,
       ...props
     },
     ref
@@ -112,10 +121,10 @@ const PageHeader = React.forwardRef<HTMLElement, PageHeaderProps>(
         ? titleFamily
         : undefined
 
-    const hasLeading = leading !== undefined && leading !== null
+    const hasTitleLeading = titleLeading !== undefined && titleLeading !== null
 
     const titleStyle: React.CSSProperties | undefined =
-      rawTitleSize || rawTitleFamily || hasLeading
+      rawTitleSize || rawTitleFamily || hasTitleLeading
         ? {
             ...(rawTitleSize
               ? ({
@@ -127,9 +136,9 @@ const PageHeader = React.forwardRef<HTMLElement, PageHeaderProps>(
                   "--page-header-title-family": rawTitleFamily,
                 } as React.CSSProperties)
               : null),
-            ...(hasLeading
+            ...(hasTitleLeading
               ? ({
-                  "--page-header-title-leading": String(leading),
+                  "--page-header-title-leading": String(titleLeading),
                 } as React.CSSProperties)
               : null),
           }
@@ -155,7 +164,16 @@ const PageHeader = React.forwardRef<HTMLElement, PageHeaderProps>(
             {breadcrumb}
           </div>
         ) : null}
-        <div data-slot="page-header-row" className={styles.row}>
+        <div
+          data-slot="page-header-row"
+          data-has-leading={leading ? "" : undefined}
+          className={styles.row}
+        >
+          {leading ? (
+            <div data-slot="page-header-leading" className={styles.leading}>
+              {leading}
+            </div>
+          ) : null}
           <div data-slot="page-header-text" className={styles.text}>
             {eyebrow ? (
               <div data-slot="page-header-eyebrow" className={styles.eyebrow}>

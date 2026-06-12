@@ -42,6 +42,18 @@
   color: var(--interactive-secondary-text, #111827);
 }
 
+/* Editorial density: secondary on the card tier, ghost truly transparent.
+ * Direct values — the editorial design language owns control surfaces, so the
+ * theme's --interactive-secondary-bg / --interactive-ghost-bg are deliberately
+ * bypassed (matches the blessed overlay, which out-cascaded the palette). */
+:global([data-density="editorial"]) .variantSecondary {
+  background-color: var(--surface-card, #ffffff);
+}
+
+:global([data-density="editorial"]) .variantGhost {
+  background-color: transparent;
+}
+
 .variantOutline {
   background-color: transparent;
   color: var(--text-primary, #111827);
@@ -80,11 +92,36 @@
   }
 }
 
+/* Open / active state — ghost variant only. OPT-IN, strictly additive.
+   A ghost Button reads as "held" while its popover/menu is open so the
+   trigger no longer needs an inline style. Three opt-in triggers, all
+   resolving to the same held look:
+     - data-state="open"  — forwarded automatically by Radix when the
+       Button is the trigger via <Trigger asChild> (Popover/DropdownMenu).
+     - data-active="true" — manual non-Radix triggers (mirrors the
+       sidebar `data-active` convention).
+     - .isActive          — className opt-in (mirrors sidebar/section-nav).
+   Default ghost rendering is untouched: none of these match unless a
+   consumer explicitly sets them. Matches the prototype-overlay held look:
+   background var(--surface-subtle), color var(--text-primary). */
+.variantGhost[data-state="open"],
+.variantGhost[data-active="true"],
+.variantGhost.isActive {
+  background-color: var(--surface-subtle, var(--surface-muted, #f3f4f6));
+  color: var(--text-primary, #111827);
+}
+
 /* Gated state — orthogonal to variant, works with all variants */
 .base[data-gated="true"] {
   opacity: var(--opacity-40, 0.4);
   cursor: not-allowed;
   border-color: var(--border-default, #e5e7eb);
+}
+
+/* Editorial density: gated reads like plain disabled (the blessed admin
+   builds render gated actions at the 0.5 disabled opacity). */
+:global([data-density="editorial"]) .base[data-gated="true"] {
+  opacity: 0.5;
 }
 
 /* Suppress active transform when gated */
@@ -93,7 +130,11 @@
   transition: opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
-/* Sizes */
+/* Sizes
+   Default (no data-density attr) rendering is byte-identical to the prior
+   canonical values. Under data-density="editorial" (set on any ancestor,
+   typically the app root), the editorial density axis re-drives specific
+   metrics to the blessed admin values. */
 .sizeSm {
   height: 2rem;
   padding: 0 var(--spacing-3, 0.75rem);
@@ -103,6 +144,16 @@
 .sizeMd {
   height: 2.5rem;
   padding: 0 var(--spacing-4, 1rem);
+  line-height: 1;
+}
+
+:global([data-density="editorial"]) .sizeSm {
+  font-size: 0.8125rem;
+}
+
+:global([data-density="editorial"]) .sizeMd {
+  height: 2.125rem;
+  line-height: normal;
 }
 
 .sizeLg {

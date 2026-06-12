@@ -11,6 +11,8 @@ declare const styles: {
   readonly denominatorNone: string
   readonly denominatorTrailing: string
   readonly denominatorBelow: string
+  readonly variantRing: string
+  readonly variantSolid: string
   readonly ring: string
   readonly svg: string
   readonly track: string

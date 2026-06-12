@@ -23,6 +23,7 @@ why: >
 variants:
   size: [sm, md, lg]
   tone: [default, subtle]
+  variant: [default, editorial]
 
 props:
   - name: heading
@@ -49,6 +50,13 @@ props:
     type: "'default' | 'subtle'"
     default: "default"
     description: Default uses a dashed border on a muted surface. Subtle is borderless.
+  - name: variant
+    type: "'default' | 'editorial'"
+    default: "default"
+    description: >
+      Surface treatment. Default is the base placeholder (dashed/borderless per tone).
+      Editorial is an opt-in filled card on --surface-card with a 64px circular icon chip
+      and a larger heading; it overrides the tone surface and the size icon/heading scale.
   - name: headingAs
     type: "'h2' | 'h3' | 'h4'"
     default: "h3"

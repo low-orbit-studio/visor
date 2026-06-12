@@ -22,6 +22,14 @@ why: >
   built-in close button and animated overlay ensure a polished experience
   without any manual wiring.
 
+density_axis: >
+  Editorial admin treatment is activated by placing data-density="editorial"
+  on any ancestor (typically the app root). Editorial values: surface-card
+  background, 480px max-width, radius-xl, spacing-8 padding, shadow-lg,
+  font-size-2xl/700 title, text-tertiary description, 2px overlay blur.
+  Default (no attribute) rendering is byte-identical to the pre-density
+  canonical fallbacks.
+
 props:
   - name: open
     type: boolean
@@ -53,6 +61,8 @@ sub_components:
     description: The modal panel with overlay, close button, and animations.
   - name: DialogHeader
     description: Container for title and description at the top.
+  - name: DialogFooter
+    description: Right-aligned action row with a hairline top border, for dialog buttons.
   - name: DialogTitle
     description: Accessible dialog heading.
   - name: DialogDescription

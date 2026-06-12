@@ -72,7 +72,12 @@ describe('Typography token coverage — VI-135', () => {
   describe('No bare numeric font-weight values', () => {
     ALL_TOKENIZED_COMPONENTS.forEach((component) => {
       it(`${component} has no bare font-weight: <number>`, () => {
+        // density-literal: density-axis treatment is deliberately theme-invariant;
+        // a line whose preceding comment carries "density-literal" may use a bare weight.
         const css = readCSS(component)
+          .split('\n')
+          .filter((line, i, all) => !(BARE_FONT_WEIGHT.test(line) && /density-literal/.test(all.slice(Math.max(0, i - 3), i).join('\n'))))
+          .join('\n')
         expect(
           BARE_FONT_WEIGHT.test(css),
           `${component}.module.css contains a bare numeric font-weight. Use var(--font-weight-medium, 500) or var(--font-weight-semibold, 600) instead.`

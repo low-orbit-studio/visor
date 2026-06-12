@@ -22,6 +22,17 @@ why: >
   styling, keyboard shortcut display, and animated enter/exit transitions —
   all themed via CSS custom properties.
 
+density_axis: >
+  Editorial admin treatment is activated by placing data-density="editorial"
+  on any ancestor (typically the app root). Editorial values — Content: 1px gap,
+  radius-md, surface-elev background with color-mix fallback, 6px padding, inset
+  hairline ring. Item: 13px font, 8px 10px padding, spacing-3 gap, radius-sm,
+  text-tertiary leading icon at 16px, surface-subtle hover, color-mix 14%
+  destructive hover. Label: 11px uppercase 0.08em tracking text-tertiary
+  6px 10px 2px padding. Shortcut: 11px text-muted 0.04em tracking. Separator:
+  hairline color, 4px 2px margin. Default (no attribute) rendering is
+  byte-identical to the pre-density canonical fallbacks.
+
 sub_components:
   - name: DropdownMenu
     description: Root component managing open/close state.

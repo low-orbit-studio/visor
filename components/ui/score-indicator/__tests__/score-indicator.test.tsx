@@ -4,6 +4,10 @@ import {
   ScoreIndicator,
   deriveAutoTone,
 } from "../score-indicator"
+import styles from "../score-indicator.module.css"
+
+const root = (container: HTMLElement) =>
+  container.querySelector('[data-slot="score-indicator"]')
 
 describe("ScoreIndicator", () => {
   it("renders the value and default denominator", () => {
@@ -206,6 +210,53 @@ describe("ScoreIndicator", () => {
     const { container } = render(<ScoreIndicator value={50} max={100} />)
     const circles = container.querySelectorAll("circle")
     expect(circles.length).toBe(2)
+  })
+
+  describe("variant", () => {
+    it("defaults to the ring variant", () => {
+      const { container } = render(<ScoreIndicator value={50} />)
+      const root = container.querySelector('[data-slot="score-indicator"]')
+      expect(root).toHaveAttribute("data-variant", "ring")
+      expect(root).toHaveClass(styles.variantRing)
+    })
+
+    it("renders the SVG ring for the default ring variant", () => {
+      const { container } = render(<ScoreIndicator value={50} />)
+      expect(container.querySelectorAll("circle").length).toBe(2)
+      expect(root(container)).not.toHaveClass(styles.variantSolid)
+    })
+
+    it("applies the variantSolid class for variant=solid", () => {
+      const { container } = render(
+        <ScoreIndicator value={86} variant="solid" />
+      )
+      const el = root(container)
+      expect(el).toHaveAttribute("data-variant", "solid")
+      expect(el).toHaveClass(styles.variantSolid)
+    })
+
+    it("omits the SVG ring for variant=solid", () => {
+      const { container } = render(
+        <ScoreIndicator value={86} variant="solid" />
+      )
+      expect(container.querySelectorAll("circle").length).toBe(0)
+      // The value text still renders inside the disc.
+      expect(screen.getByText("86")).toBeInTheDocument()
+    })
+
+    it("omits the icon overlay for variant=solid even at warning/destructive tone", () => {
+      const { container, rerender } = render(
+        <ScoreIndicator value={20} tone="destructive" variant="solid" />
+      )
+      expect(
+        container.querySelector('[data-slot="score-indicator-icon"]')
+      ).toBeNull()
+
+      rerender(<ScoreIndicator value={45} tone="warning" variant="solid" />)
+      expect(
+        container.querySelector('[data-slot="score-indicator-icon"]')
+      ).toBeNull()
+    })
   })
 
   it("falls back to max=100 when max prop is zero", () => {

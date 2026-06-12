@@ -72,6 +72,17 @@ function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
 }
 DialogHeader.displayName = "DialogHeader"
 
+function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="dialog-footer"
+      className={cn(styles.footer, className)}
+      {...props}
+    />
+  )
+}
+DialogFooter.displayName = "DialogFooter"
+
 const DialogTitle = React.forwardRef<
   React.ComponentRef<typeof DialogPrimitive.Title>,
   React.ComponentProps<typeof DialogPrimitive.Title>
@@ -106,6 +117,7 @@ export {
   DialogOverlay,
   DialogContent,
   DialogHeader,
+  DialogFooter,
   DialogTitle,
   DialogDescription,
 }

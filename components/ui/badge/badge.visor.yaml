@@ -25,6 +25,7 @@ why: >
 variants:
   variant: [default, secondary, outline, neutral, destructive, success, warning, info, filled-destructive, filled-success, filled-warning, filled-info, filled-neutral]
   size: [sm, md, lg]
+  case: [sentence]
 
 props:
   - name: variant
@@ -39,6 +40,21 @@ props:
       call sites are unchanged. `sm` is tighter for dense inline data contexts;
       `lg` is larger for editorial contexts like page headers and stat-card
       status pills. Icons inside the badge scale with the size step.
+  - name: case
+    type: '"sentence"'
+    description: >
+      `case="sentence"` opts a sm/md badge OUT of the editorial uppercase +
+      letter-spacing treatment so prose-y labels (e.g. a plan name like
+      "Enterprise") read as a label, not a tag. The `lg` size already opts out
+      intrinsically. Omit for the default, theme-driven casing.
+  - name: iconOnly
+    type: boolean
+    default: "false"
+    description: >
+      Render as a circular, fixed-square chip carrying a single centered glyph
+      (e.g. a filled-success check in a roles matrix). Collapses padding/gap and
+      forces a perfect circle. Opt-in; sets `data-icon-only` for styling hooks.
+      Default badges are unaffected.
 
 dependencies:
   - "class-variance-authority"

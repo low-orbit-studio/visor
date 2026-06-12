@@ -37,7 +37,7 @@ props:
 
 sub_components:
   - name: SelectTrigger
-    description: The button that opens the select dropdown. Accepts a size prop ("sm" | "md" | "lg").
+    description: The button that opens the select dropdown. Accepts a size prop ("sm" | "md" | "lg") and a variant prop ("default" | "borderless"); borderless drops the border and sits on --field-control-bg to match a borderless Input in an in-dialog form.
   - name: SelectValue
     description: Displays the selected value or placeholder text inside the trigger.
   - name: SelectContent

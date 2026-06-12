@@ -17,6 +17,8 @@ declare const styles: {
   readonly sizeSm: string
   readonly sizeMd: string
   readonly sizeLg: string
+  readonly caseSentence: string
+  readonly iconOnly: string
 }
 
 export default styles

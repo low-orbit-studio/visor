@@ -1,4 +1,5 @@
-/* Dialog overlay */
+/* Dialog overlay
+ * Default: 4px backdrop blur. Density axis: editorial uses 2px. */
 .overlay {
   position: fixed;
   inset: 0;
@@ -6,6 +7,11 @@
   background-color: var(--overlay-bg, rgba(0, 0, 0, 0.8));
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+}
+
+:global([data-density="editorial"]) .overlay {
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }
 
 .overlay[data-state="open"] {
@@ -16,7 +22,9 @@
   animation: fadeOut var(--motion-duration-150, 150ms) var(--motion-easing-exit, ease-in);
 }
 
-/* Dialog content */
+/* Dialog content
+ * Default: 32rem max-width, radius-lg, surface-page, spacing-6, shadow-xl.
+ * Density axis: editorial uses 480px, radius-xl, surface-card, spacing-8, shadow-lg. */
 .content {
   position: fixed;
   top: 50%;
@@ -30,6 +38,14 @@
   padding: var(--spacing-6, 1.5rem);
   box-shadow: var(--shadow-xl);
   transition: opacity var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease-in-out), transform var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease-in-out);
+}
+
+:global([data-density="editorial"]) .content {
+  background-color: var(--surface-card);
+  max-width: 480px;
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-8);
+  box-shadow: var(--shadow-lg);
 }
 
 .content[data-state="open"] {
@@ -80,7 +96,8 @@
   margin-bottom: var(--spacing-4, 1rem);
 }
 
-/* Title */
+/* Title
+ * Default: font-size-lg / semibold. Density axis: editorial uses font-size-2xl / 700. */
 .title {
   font-size: var(--font-size-lg, 1.125rem);
   font-weight: var(--font-weight-semibold, 600);
@@ -88,11 +105,32 @@
   margin: 0;
 }
 
-/* Description */
+:global([data-density="editorial"]) .title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold, 700);
+}
+
+/* Description
+ * Default: text-secondary. Density axis: editorial uses text-tertiary. */
 .description {
   font-size: var(--font-size-sm, 0.875rem);
   color: var(--text-secondary, #6b7280);
   margin: 0;
+}
+
+:global([data-density="editorial"]) .description {
+  color: var(--text-tertiary);
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing-3, 0.75rem);
+  padding-top: var(--spacing-3, 0.75rem);
+  margin-top: var(--spacing-2, 0.5rem);
+  border-top: var(--hairline-width, 1px) solid var(--hairline, var(--border-subtle, rgba(0, 0, 0, 0.06)));
 }
 
 /* Screen reader only */

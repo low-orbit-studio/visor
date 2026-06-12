@@ -32,8 +32,17 @@ export interface SectionNavItemProps extends React.ComponentProps<"a"> {
   asChild?: boolean
   /** Marks the item as the current section — text-primary, 2px primary underline, primary-tinted count pill. */
   isActive?: boolean
-  /** Leading Phosphor icon component (e.g. `UsersIcon`). */
-  icon?: Icon
+  /** Blessed-API alias for `isActive` (the admin reference builds pass `active`). */
+  active?: boolean
+  /**
+   * Leading icon, accepted in two forms:
+   * - a Phosphor icon **component** (e.g. `icon={UsersIcon}`) — rendered as
+   *   `<Icon className={styles.icon} weight="regular" />`, the canonical form;
+   * - a rendered **element** (e.g. `icon={<Users size={16} weight="bold" />}`) —
+   *   rendered as-is so its own `size`/`weight`/props are preserved, wrapped in
+   *   the `styles.icon` slot span.
+   */
+  icon?: Icon | React.ReactNode
   /** Item label text. */
   label: React.ReactNode
   /** Optional trailing count pill value. `0` is rendered; `undefined`/`null` hides the pill. */
@@ -42,23 +51,43 @@ export interface SectionNavItemProps extends React.ComponentProps<"a"> {
 
 const SectionNavItem = React.forwardRef<HTMLAnchorElement, SectionNavItemProps>(
   (
-    { className, asChild, isActive, icon: IconComp, label, count, children, ...props },
+    { className, asChild, isActive, active, icon, label, count, children, ...props },
     ref
   ) => {
     const Comp = asChild ? Slot : "a"
+    const isCurrent = isActive ?? active ?? false
     const showCount = count != null
+
+    // `icon` accepts both a Phosphor component (`icon={Users}`) and a rendered
+    // element (`icon={<Users size={16} weight="bold" />}`). Branch on
+    // React.isValidElement: render an element as-is (preserving its own props),
+    // wrapped in the icon slot span; render a component type via the canonical
+    // `<Icon className={styles.icon} weight="regular" />` form.
+    let iconNode: React.ReactNode = null
+    if (React.isValidElement(icon)) {
+      iconNode = (
+        <span className={styles.icon} aria-hidden="true">
+          {icon}
+        </span>
+      )
+    } else if (icon) {
+      // A component *type* — a function or a forwardRef/memo object (Phosphor
+      // icons are forwardRef objects, so `typeof` is "object", not "function").
+      const IconComp = icon as Icon
+      iconNode = (
+        <IconComp className={styles.icon} weight="regular" aria-hidden="true" />
+      )
+    }
 
     const chrome = (
       <>
-        {IconComp && (
-          <IconComp className={styles.icon} weight="regular" aria-hidden="true" />
-        )}
+        {iconNode}
         <span className={styles.label}>{label}</span>
         {showCount && (
           <span
             className={cn(
               styles.count,
-              isActive ? styles.countActive : styles.countNeutral
+              isCurrent ? styles.countActive : styles.countNeutral
             )}
           >
             {count}
@@ -71,9 +100,9 @@ const SectionNavItem = React.forwardRef<HTMLAnchorElement, SectionNavItemProps>(
       <Comp
         ref={ref}
         data-slot="section-nav-item"
-        data-active={isActive || undefined}
-        aria-current={isActive ? "page" : undefined}
-        className={cn(styles.item, isActive && styles.itemActive, className)}
+        data-active={isCurrent || undefined}
+        aria-current={isCurrent ? "page" : undefined}
+        className={cn(styles.item, isCurrent && styles.itemActive, className)}
         {...props}
       >
         {chrome}
