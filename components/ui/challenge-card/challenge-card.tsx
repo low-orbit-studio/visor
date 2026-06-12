@@ -17,7 +17,7 @@ import styles from "./challenge-card.module.css"
 // Root
 // ---------------------------------------------------------------------------
 
-export interface ChallengeCardProps extends React.HTMLAttributes<HTMLDivElement> {}
+export type ChallengeCardProps = React.HTMLAttributes<HTMLDivElement>
 
 const ChallengeCard = React.forwardRef<HTMLDivElement, ChallengeCardProps>(
   ({ className, ...props }, ref) => {
@@ -69,7 +69,7 @@ ChallengeCardHeader.displayName = "ChallengeCardHeader"
 // Body
 // ---------------------------------------------------------------------------
 
-export interface ChallengeCardBodyProps extends React.HTMLAttributes<HTMLDivElement> {}
+export type ChallengeCardBodyProps = React.HTMLAttributes<HTMLDivElement>
 
 const ChallengeCardBody = React.forwardRef<HTMLDivElement, ChallengeCardBodyProps>(
   ({ className, ...props }, ref) => {
@@ -89,7 +89,7 @@ ChallengeCardBody.displayName = "ChallengeCardBody"
 // Actions row
 // ---------------------------------------------------------------------------
 
-export interface ChallengeCardActionsProps extends React.HTMLAttributes<HTMLDivElement> {}
+export type ChallengeCardActionsProps = React.HTMLAttributes<HTMLDivElement>
 
 const ChallengeCardActions = React.forwardRef<HTMLDivElement, ChallengeCardActionsProps>(
   ({ className, ...props }, ref) => {
@@ -151,7 +151,7 @@ ChallengeCardAction.displayName = "ChallengeCardAction"
 // Gate indicator
 // ---------------------------------------------------------------------------
 
-export interface ChallengeCardGateProps extends React.HTMLAttributes<HTMLSpanElement> {}
+export type ChallengeCardGateProps = React.HTMLAttributes<HTMLSpanElement>
 
 const ChallengeCardGate = React.forwardRef<HTMLSpanElement, ChallengeCardGateProps>(
   ({ className, children, ...props }, ref) => {

@@ -6,6 +6,12 @@ description: >
 extends: HTMLDivElement
 category: feedback
 
+why: >
+  Alert is a passive notice; the Brand Workbench needs a first-class
+  adversarial message where the AI challenges the user's input and a human
+  explicitly decides. The warning-toned action pair plus the gate affordance
+  encode "AI drafts and challenges, the human holds the gate" as a reusable
+  pattern.
 when_to_use:
   - Surfacing an AI-generated challenge or push-back that the user must actively accept or override
   - Presenting an adversarial review result (e.g. "Is it actually only?") where a human must decide the next action

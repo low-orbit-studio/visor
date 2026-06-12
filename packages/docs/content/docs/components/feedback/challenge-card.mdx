@@ -35,8 +35,8 @@ ChallengeCard is a first-class adversarial message component: an AI pushes back 
       Do you have data to back it up, or would a sharper qualifier work better?
     </ChallengeCardBody>
     <ChallengeCardActions>
-      <ChallengeCardAction variant="primary" onClick={() => {}}>Use the sharper version</ChallengeCardAction>
-      <ChallengeCardAction variant="ghost" onClick={() => {}}>I&apos;ll rewrite it</ChallengeCardAction>
+      <ChallengeCardAction variant="primary">Use the sharper version</ChallengeCardAction>
+      <ChallengeCardAction variant="ghost">I&apos;ll rewrite it</ChallengeCardAction>
       <ChallengeCardGate />
     </ChallengeCardActions>
   </ChallengeCard>
@@ -54,8 +54,8 @@ Override the default "You hold the gate" text by passing children to `ChallengeC
     <ChallengeCardHeader>Your call</ChallengeCardHeader>
     <ChallengeCardBody>This is a high-stakes decision. You own the outcome.</ChallengeCardBody>
     <ChallengeCardActions>
-      <ChallengeCardAction variant="primary" onClick={() => {}}>Proceed anyway</ChallengeCardAction>
-      <ChallengeCardAction variant="ghost" onClick={() => {}}>Go back</ChallengeCardAction>
+      <ChallengeCardAction variant="primary">Proceed anyway</ChallengeCardAction>
+      <ChallengeCardAction variant="ghost">Go back</ChallengeCardAction>
       <ChallengeCardGate>Human in the loop</ChallengeCardGate>
     </ChallengeCardActions>
   </ChallengeCard>
