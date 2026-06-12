@@ -48,6 +48,27 @@
   min-width: 0;
 }
 
+/* When a leading media/identity slot is present, the row forms an identity
+   lockup: the media sits before the text stack a tight gap from it. Scoped to
+   `data-has-leading` so the default (text|actions) row is untouched for
+   consumers that don't pass `leading`. The expanding text block keeps actions
+   pinned right via the inherited `justify-content: space-between`. */
+.row[data-has-leading] {
+  align-items: center;
+  gap: var(--page-header-leading-gap, var(--spacing-3, 0.75rem));
+}
+
+/* Leading media/identity slot: sits before the text block, vertically
+   centered against the title/description stack, never shrinks. (Reverts the
+   VI-539 top-align, which assumed a different slot — the blessed admin
+   identity lockup centers the media. Superseded per the admin-editorial
+   reconcile plan.) */
+.leading {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
 /* Text block: eyebrow, title, description stacked */
 .text {
   display: flex;

@@ -1,0 +1,61 @@
+name: Composer
+description: AI-chat composer — a rounded card container with an auto-growing text field, a tools row for icon buttons and status chips, and a circular primary send button.
+extends: HTMLDivElement
+category: form
+
+when_to_use:
+  - Building an AI chat or assistant input area where users type multi-line messages
+  - Any composer-style input that needs contextual tool buttons (attachment, mic, model picker) alongside a submit affordance
+  - Interfaces where the field must grow with content rather than scroll within a fixed height
+  - Placing a branded status chip (e.g. "Claude · key active") inside the toolbar alongside action buttons
+
+when_not_to_use:
+  - Plain multi-line text entry without action affordances — use textarea instead
+  - Single-line search or filter inputs — use search-input or input
+  - Form fields that need validation, labels, or fieldset grouping — use field + textarea
+  - Full-page editor surfaces where a document metaphor is more appropriate
+
+why: >
+  The AI-chat composer shape recurs across AI products — a rounded card with a
+  growing field, tool buttons for contextual actions, and a prominent circular
+  send affordance. Without a shared primitive every team rebuilds the same
+  compound: auto-grow logic, controlled/uncontrolled field state, keyboard
+  submit (Enter) vs newline (Shift+Enter), focus management, and disabled
+  propagation. Codifying it as a compound component standardizes the interaction
+  contract and lets consumers slot their own tool buttons, status chips, and
+  send behavior without forking the input logic.
+
+variants: {}
+
+props:
+  - name: value
+    type: string
+    description: Controlled field value.
+  - name: onValueChange
+    type: "(value: string) => void"
+    description: Called when the value changes (controlled mode).
+  - name: onSubmit
+    type: "(value: string) => void"
+    description: Called when the user submits (Enter key or send button).
+  - name: disabled
+    type: boolean
+    default: 'false'
+    description: Disables all interactive children.
+
+dependencies:
+  - "@phosphor-icons/react"
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/form/composer"
+
+example: |
+  <Composer onSubmit={(v) => console.log(v)}>
+    <ComposerField placeholder="Ask anything…" />
+    <ComposerToolbar>
+      <ComposerToolButton icon={<Paperclip size={16} />} aria-label="Attach file" />
+      <ComposerToolButton icon={<Microphone size={16} />} aria-label="Voice input" />
+      <Chip size="sm" leadingIcon={<StatusDot tone="mint" />} label="Claude · key active" />
+      <ComposerSpacer />
+      <ComposerSend />
+    </ComposerToolbar>
+  </Composer>

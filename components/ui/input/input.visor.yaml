@@ -23,6 +23,44 @@ why: >
   aria-invalid for error states and integrates with the Field component
   for labels and error messages.
 
+theme_hooks:
+  - name: --field-control-bg
+    description: >
+      Shared "what surface does a form control sit on" role. Controls the input's
+      background-color (and the inner color-mix base of the aria-invalid tint).
+      Defaults to var(--input-bg) so default inputs are unchanged; a form context
+      can set it to lift controls onto a different surface without a prop.
+      Under data-density="editorial", the fallback becomes var(--surface-card)
+      while still honoring any scoped --field-control-bg override.
+  - name: --input-placeholder-color
+    description: >
+      Override for the ::placeholder color. Defaults to var(--text-secondary).
+  - name: --input-height-md / --input-height-lg
+    description: >
+      Per-size control height for md and lg. Default to auto. Set to retune
+      control height without a prop (zero-regression — unset = unchanged).
+      Note: sm height is driven by the density axis (data-density="editorial"
+      bakes in 33.5px; canonical default is 2.25rem).
+  - name: --input-radius-md / --input-radius-lg
+    description: >
+      Per-size border-radius for md and lg. Default to var(--radius-sm, 0.5rem).
+      Note: sm border-radius is driven by the density axis (data-density="editorial"
+      bakes in var(--radius-md); canonical default is var(--radius-sm, 0.25rem)).
+  - name: --input-padding-sm / --input-padding-md / --input-padding-lg
+    description: >
+      Per-size padding (the full shorthand). Default to each size's current
+      spacing-token shorthand. Set to a full "vertical horizontal" value to
+      retune control padding per context.
+
+density_axis:
+  - axis: data-density="editorial"
+    description: >
+      Set data-density="editorial" on any ancestor to switch Input to the
+      editorial density: sm inputs render at 33.5px height with --radius-md
+      corners, and the default background shifts to var(--surface-card)
+      (scoped --field-control-bg overrides are still honored). Canonical
+      defaults are unchanged when no data-density is present.
+
 props:
   - name: size
     type: "'sm' | 'md' | 'lg'"

@@ -135,6 +135,89 @@ describe("DataTable", () => {
     expect(skeletonRows).toHaveLength(5)
   })
 
+  it("invokes loadingSkeletonCell per cell when loading and provided", () => {
+    const loadingSkeletonCell = vi.fn(
+      ({ rowIndex, colIndex }: { rowIndex: number; colIndex: number }) => (
+        <div data-testid={`custom-skeleton-${rowIndex}-${colIndex}`} />
+      )
+    )
+    const { container } = render(
+      <DataTable
+        columns={columns}
+        data={[]}
+        loading
+        pageSize={3}
+        loadingSkeletonCell={loadingSkeletonCell}
+      />
+    )
+
+    // 3 rows × 2 columns = 6 cells, each produced by the render prop.
+    expect(loadingSkeletonCell).toHaveBeenCalledTimes(6)
+    // columnId falls back to String(colIndex) when the ColumnDef has no
+    // explicit `id` (these are accessor columns).
+    expect(loadingSkeletonCell).toHaveBeenCalledWith({
+      rowIndex: 0,
+      colIndex: 0,
+      columnId: "0",
+    })
+    expect(loadingSkeletonCell).toHaveBeenCalledWith({
+      rowIndex: 2,
+      colIndex: 1,
+      columnId: "1",
+    })
+    expect(
+      screen.getByTestId("custom-skeleton-2-1")
+    ).toBeInTheDocument()
+
+    // The default uniform skeleton bars are not rendered when overridden.
+    expect(
+      container.querySelectorAll('[data-testid^="custom-skeleton-"]')
+    ).toHaveLength(6)
+  })
+
+  it("passes the explicit ColumnDef id to loadingSkeletonCell", () => {
+    const loadingSkeletonCell = vi.fn(() => null)
+    const idColumns: ColumnDef<Row>[] = [
+      { id: "name", accessorKey: "name", header: "Name" },
+      { id: "email", accessorKey: "email", header: "Email" },
+    ]
+    render(
+      <DataTable
+        columns={idColumns}
+        data={[]}
+        loading
+        pageSize={1}
+        loadingSkeletonCell={loadingSkeletonCell}
+      />
+    )
+    expect(loadingSkeletonCell).toHaveBeenCalledWith({
+      rowIndex: 0,
+      colIndex: 0,
+      columnId: "name",
+    })
+    expect(loadingSkeletonCell).toHaveBeenCalledWith({
+      rowIndex: 0,
+      colIndex: 1,
+      columnId: "email",
+    })
+  })
+
+  it("renders default uniform skeleton when loadingSkeletonCell is omitted", () => {
+    const { container } = render(
+      <DataTable columns={columns} data={[]} loading pageSize={3} />
+    )
+    const skeletonRows = container.querySelectorAll(
+      '[data-slot="data-table-skeleton-row"]'
+    )
+    expect(skeletonRows).toHaveLength(3)
+    // Each skeleton row renders one default Skeleton bar per column (2 cols).
+    skeletonRows.forEach((row) => {
+      expect(
+        row.querySelectorAll('[data-slot="skeleton"]')
+      ).toHaveLength(2)
+    })
+  })
+
   it("renders default empty state when data is empty", () => {
     render(<DataTable columns={columns} data={[]} />)
     expect(

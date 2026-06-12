@@ -1,0 +1,138 @@
+---
+title: Ambient Glow
+description: Absolutely-positioned drifting radial glow with live CSS-var-driven color. Decorative only — aria-hidden, pointer-events-none.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { AmbientGlow } from '@/components/ui/ambient-glow';
+
+## Preview
+
+<ComponentPreview
+  title="AmbientGlow — keyed variant (theme accent)"
+  code={"import { AmbientGlow } from '@/components/visual/ambient-glow/ambient-glow';\n\n<div style={{ position: 'relative', width: '100%', height: 240, background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>\n  <AmbientGlow style={{ inset: 0 }} />\n  <p style={{ position: 'relative', padding: '1rem', color: 'var(--text-primary)' }}>Content above the glow</p>\n</div>"}
+>
+  <div style={{ position: 'relative', width: '100%', height: 240, background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+    <AmbientGlow style={{ inset: 0 }} />
+    <p style={{ position: 'relative', padding: '1rem', color: 'var(--text-primary)' }}>Content above the glow</p>
+  </div>
+</ComponentPreview>
+
+## Gold Variant
+
+The `gold` variant uses a static warm gold at 7% opacity — matched to the Blacklight Pro surface accent. `--glow-color` is not consumed.
+
+<ComponentPreview
+  title="AmbientGlow — gold variant"
+  code={"<div style={{ position: 'relative', width: '100%', height: 200, background: '#020214', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>\n  <AmbientGlow variant=\"gold\" style={{ inset: '-10%' }} />\n  <p style={{ position: 'relative', padding: '1rem', color: '#fff' }}>Pro surface</p>\n</div>"}
+>
+  <div style={{ position: 'relative', width: '100%', height: 200, background: '#020214', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+    <AmbientGlow variant="gold" style={{ inset: '-10%' }} />
+    <p style={{ position: 'relative', padding: '1rem', color: '#fff' }}>Pro surface</p>
+  </div>
+</ComponentPreview>
+
+## Live Color Override
+
+The `glowColor` prop sets `--glow-color` as an inline custom property. For static color overrides this is the simplest path.
+
+<ComponentPreview
+  title="AmbientGlow — static glowColor override"
+  code={"<div style={{ position: 'relative', height: 200, background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>\n  <AmbientGlow glowColor=\"#8b5cf6\" style={{ inset: 0 }} />\n</div>"}
+>
+  <div style={{ position: 'relative', height: 200, background: 'var(--surface-card)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+    <AmbientGlow glowColor="#8b5cf6" style={{ inset: 0 }} />
+  </div>
+</ComponentPreview>
+
+## Live Runtime Rewrites
+
+For hero crossfades and other live color animations, set `--glow-color` on an ancestor element directly — the CSS engine repaints each frame without a React re-render:
+
+```ts
+// No re-render — the CSS engine handles the repaint each frame.
+function onAccentChange(newColor: string) {
+  document.documentElement.style.setProperty('--glow-color', newColor);
+}
+```
+
+This is the key differentiator over JS-resolved colors: `color-mix(in srgb, var(--glow-color) 10%, transparent)` is resolved at **paint time** by the compositor. A rAF loop that rewrites `--glow-color` on `<html>` every frame repaints all keyed glows page-wide at 60 fps with zero JS per-element overhead.
+
+## Drift Animation
+
+The drift is a CSS keyframe (`ambientGlowDrift`, 18s ease-in-out infinite alternate) that animates `transform` only:
+
+- **From:** `translate3d(-2%, -1.5%, 0) scale(1)`
+- **To:** `translate3d(2%, 2%, 0) scale(1.07)`
+
+Because only `transform` is animated, the compositor can run it on a GPU thread without triggering layout or paint. `will-change: transform` is set on the element.
+
+Do **not** combine `AmbientGlow` with CSS utility classes that set `transform` — the keyframe owns that axis.
+
+## Reduced Motion
+
+When `prefers-reduced-motion: reduce` is active, the drift animation is disabled. The glow remains visible at its resting position.
+
+## Positioning
+
+`AmbientGlow` is `position: absolute`. Its parent must have a non-static position (e.g. `position: relative`) to contain it.
+
+Size and position are set via `className` or `style` at the call site:
+
+```tsx
+// Fills the parent completely
+<AmbientGlow style={{ inset: 0 }} />
+
+// Overflows the parent for a softer edge
+<AmbientGlow style={{ inset: '-10% -15%' }} />
+```
+
+## Installation
+
+```bash
+npx visor add ambient-glow
+```
+
+## Usage
+
+```tsx
+import { AmbientGlow } from '@/components/visual/ambient-glow/ambient-glow';
+
+// Keyed to theme accent — fills parent
+<div style={{ position: 'relative' }}>
+  <AmbientGlow style={{ inset: 0 }} />
+</div>
+
+// Gold variant
+<div style={{ position: 'relative' }}>
+  <AmbientGlow variant="gold" style={{ inset: '-10%' }} />
+</div>
+
+// Static color override
+<AmbientGlow glowColor="var(--my-accent)" style={{ inset: 0 }} />
+```
+
+## API Reference
+
+### AmbientGlowProps
+
+<PropsTable component="ambient-glow" />
+
+## Accessibility
+
+- `aria-hidden="true"` — the glow is purely decorative and is hidden from the accessibility tree.
+- `pointer-events: none` — the glow never captures mouse or touch events.
+- `prefers-reduced-motion: reduce` — drift animation is disabled; the glow is visible at rest.
+
+## When to Use
+
+- Atmospheric background lighting behind hero sections or focal objects on marketing pages
+- Live color-reactive glows that track a dynamically rewritten CSS custom property (e.g. hero crossfade accent)
+- Pro/premium surface accents (gold variant)
+
+## When Not to Use
+
+- Functional UI elements — `AmbientGlow` is purely decorative
+- Inside `overflow: hidden` containers without adjusting `inset` values (the glow will be clipped at the container boundary; this may be intentional)
+- When you need a visible element under reduced motion — the drift stops but the glow remains

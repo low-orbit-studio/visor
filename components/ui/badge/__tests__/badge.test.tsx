@@ -223,6 +223,71 @@ describe("uppercase prop", () => {
   })
 })
 
+describe("case prop", () => {
+  it("applies the caseSentence class when case=sentence", () => {
+    render(<Badge case="sentence">Enterprise</Badge>)
+    const badge = screen.getByText("Enterprise")
+    expect(badge).toHaveClass(styles.caseSentence)
+  })
+
+  it("does not apply the caseSentence class when case is omitted", () => {
+    render(<Badge>Enterprise</Badge>)
+    const badge = screen.getByText("Enterprise")
+    expect(badge).not.toHaveClass(styles.caseSentence)
+  })
+
+  it("applies caseSentence alongside a variant class", () => {
+    render(
+      <Badge variant="secondary" case="sentence">
+        Pro plan
+      </Badge>
+    )
+    const badge = screen.getByText("Pro plan")
+    expect(badge).toHaveClass(styles.caseSentence)
+    expect(badge.className).toMatch(/variantSecondary/)
+  })
+})
+
+describe("iconOnly prop", () => {
+  it("applies the iconOnly class and data-icon-only attr when iconOnly=true", () => {
+    render(<Badge iconOnly variant="filled-success" aria-label="active" />)
+    const badge = screen.getByLabelText("active")
+    expect(badge).toHaveClass(styles.iconOnly)
+    expect(badge).toHaveAttribute("data-icon-only", "")
+  })
+
+  it("does not apply iconOnly class or data-icon-only attr when omitted", () => {
+    render(<Badge>Badge</Badge>)
+    const badge = screen.getByText("Badge")
+    expect(badge).not.toHaveClass(styles.iconOnly)
+    expect(badge).not.toHaveAttribute("data-icon-only")
+  })
+
+  it("combines with uppercase and case props", () => {
+    render(<Badge iconOnly uppercase aria-label="chip" />)
+    const badge = screen.getByLabelText("chip")
+    expect(badge).toHaveClass(styles.iconOnly)
+    expect(badge.className).toMatch(/uppercase/)
+  })
+})
+
+// Zero-regression guard: a plain Badge with no new opt-in props renders the
+// exact same className as before the editorial reconcile (only base + size +
+// default variant), and carries none of the new opt-in classes/attrs.
+describe("default render is unchanged (zero-regression)", () => {
+  it("renders only base + variantDefault + sizeMd, no opt-in classes", () => {
+    render(<Badge>Default</Badge>)
+    const badge = screen.getByText("Default")
+    expect(badge).toHaveClass(styles.base)
+    expect(badge).toHaveClass(styles.variantDefault)
+    expect(badge).toHaveClass(styles.sizeMd)
+    expect(badge).not.toHaveClass(styles.uppercase)
+    expect(badge).not.toHaveClass(styles.caseSentence)
+    expect(badge).not.toHaveClass(styles.iconOnly)
+    expect(badge).not.toHaveAttribute("data-icon-only")
+  })
+})
+
 describe("accessibility", () => {
   it("has no WCAG 2.1 AA violations (default variant)", async () => {
     const { container } = render(<Badge>New</Badge>)

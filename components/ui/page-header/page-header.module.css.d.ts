@@ -5,6 +5,7 @@ declare const styles: {
   readonly sizeLg: string
   readonly breadcrumb: string
   readonly row: string
+  readonly leading: string
   readonly text: string
   readonly eyebrow: string
   readonly title: string

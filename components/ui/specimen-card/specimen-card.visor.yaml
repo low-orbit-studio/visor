@@ -1,0 +1,48 @@
+name: SpecimenCard
+description: Labeled frame that pairs a context token + "feel" descriptor with arbitrary live component children — proving how a brand voice/tone renders on real components.
+extends: HTMLDivElement
+category: specimen
+
+when_to_use:
+  - Displaying tone-by-context previews in a brand workbench grid (e.g. "error" + "warm, accountable" above a real Alert component)
+  - Building brand-voice proof blocks that show live components annotated with their voice/tone attribution
+
+when_not_to_use:
+  - General-purpose card containers (use Card) — SpecimenCard is specifically a labeled component-specimen frame
+  - Production UI layouts where the context/feel labeling would be confusing to end users
+
+why: >
+  The Brand Workbench surfaces two recurring patterns: the tone-by-context grid
+  (a label row with context token + feel descriptor above a live specimen) and
+  the Speaking block (multiple specimens stacked with a voice-key footer).
+  Both shapes share the same card frame, making SpecimenCard the natural
+  primitive to codify both rather than embedding ad-hoc HTML in every
+  workbench surface.
+
+variants:
+  footer: [with-footer, without-footer]
+
+props:
+  - name: context
+    type: string
+    required: true
+    description: Context token label rendered uppercase (e.g. "error", "onboarding").
+  - name: feel
+    type: string
+    description: Italic feel descriptor rendered at the end of the label row (e.g. "warm, accountable").
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/specimen/specimen-card"
+
+example: |
+  <SpecimenCard context="error" feel="warm, accountable">
+    <Alert variant="destructive">Something went wrong — we've got it.</Alert>
+  </SpecimenCard>
+
+  <SpecimenCard context="onboarding">
+    <Button>Get started</Button>
+    <Button variant="outline">Learn more</Button>
+    <SpecimenCardFooter>voice — precise · warm · direct</SpecimenCardFooter>
+  </SpecimenCard>

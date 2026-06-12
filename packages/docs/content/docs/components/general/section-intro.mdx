@@ -1,0 +1,141 @@
+---
+title: Section Intro
+description: Marketing section opener with a mono uppercase eyebrow, display-font heading, and optional lede paragraph. Eyebrow color tracks a live-rewritten CSS custom property for runtime brand-accent binding.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { SectionIntro } from '@/components/ui/section-intro';
+
+## Basic
+
+<ComponentPreview
+  title="Eyebrow + heading + lede"
+  code={"import { SectionIntro } from '@/components/ui/section-intro/section-intro';\n\n<SectionIntro\n  eyebrow=\"On the map\"\n  heading=\"Built for the world's best venues\"\n  lede=\"One platform. Every door.\"\n/>"}
+>
+  <SectionIntro
+    eyebrow="On the map"
+    heading="Built for the world's best venues"
+    lede="One platform. Every door."
+  />
+</ComponentPreview>
+
+## Heading Only
+
+<ComponentPreview
+  title="Heading only (no eyebrow or lede)"
+  code={"<SectionIntro heading=\"Built for the world's best venues\" />"}
+>
+  <SectionIntro heading="Built for the world's best venues" />
+</ComponentPreview>
+
+## Center Alignment
+
+<ComponentPreview
+  title="Center aligned"
+  code={"<SectionIntro\n  eyebrow=\"Pricing\"\n  heading=\"Simple, honest pricing\"\n  lede=\"No hidden fees. Cancel any time.\"\n  align=\"center\"\n/>"}
+>
+  <SectionIntro
+    eyebrow="Pricing"
+    heading="Simple, honest pricing"
+    lede="No hidden fees. Cancel any time."
+    align="center"
+  />
+</ComponentPreview>
+
+## Eyebrow Color Binding
+
+The eyebrow reads its color from `--section-intro-eyebrow-color`, which falls back to
+`--accent-default`. Override this property at any ancestor element to bind the eyebrow
+to a live-rewritten brand accent (e.g. a keyed `--color-acid` that changes at runtime):
+
+```css
+.network-section {
+  --section-intro-eyebrow-color: var(--color-acid);
+}
+```
+
+```tsx
+<section className="network-section">
+  <SectionIntro
+    eyebrow="Network"
+    heading="Everywhere your crowd goes"
+  />
+</section>
+```
+
+The eyebrow color will track `--color-acid` live — no prop drilling, no re-render.
+
+## Installation
+
+```bash
+npx visor add section-intro
+```
+
+This copies two files into your project:
+
+- `components/ui/section-intro/section-intro.tsx` — the component
+- `components/ui/section-intro/section-intro.module.css` — the styles
+
+## Usage
+
+```tsx
+import { SectionIntro } from '@/components/ui/section-intro/section-intro';
+
+export default function HomePage() {
+  return (
+    <>
+      <section>
+        <SectionIntro
+          eyebrow="On the map"
+          heading="Built for the world's best venues"
+          lede="One platform. Every door."
+        />
+        {/* ...section content... */}
+      </section>
+      <section style={{ '--section-intro-eyebrow-color': 'var(--color-acid)' } as React.CSSProperties}>
+        <SectionIntro
+          eyebrow="Pricing"
+          heading="Simple, honest pricing"
+          align="center"
+        />
+        {/* ...section content... */}
+      </section>
+    </>
+  );
+}
+```
+
+## API Reference
+
+### SectionIntroProps
+
+<PropsTable component="section-intro" />
+
+The component also accepts all standard HTML attributes for the root element (defaults to `<header>`).
+
+## Accessibility
+
+`SectionIntro` renders the `heading` slot as an `<h2>` by default. Adjust the heading
+level via `headingAs` to match your page's document outline:
+
+```tsx
+{/* First section on a page — use h1 */}
+<SectionIntro headingAs="h1" heading="Welcome to Visor" />
+
+{/* Sub-sections — keep at h2 (default) or h3 */}
+<SectionIntro heading="Our approach" />
+```
+
+## When to Use
+
+- Opening a marketing section with an eyebrow + display heading pattern
+- Replacing hand-rolled eyebrow/heading combos that repeat across homepage sections
+- Binding the eyebrow color to a keyed brand accent that changes at runtime
+- Center-aligned section intros on pricing, features, and CTA blocks
+
+## When Not to Use
+
+- Admin page headers with actions and breadcrumbs — use [`PageHeader`](/docs/components/admin/page-header)
+- In-page content section dividers with meta labels — use [`SectionHeader`](/docs/components/navigation/section-header)
+- Plain typographic headings inside body copy — use [`Heading`](/docs/components/typography/heading)

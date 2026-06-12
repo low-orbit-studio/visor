@@ -1,5 +1,6 @@
 declare const styles: {
   readonly trigger: string
+  readonly triggerBorderless: string
   readonly triggerSizeSm: string
   readonly triggerSizeMd: string
   readonly triggerSizeLg: string
