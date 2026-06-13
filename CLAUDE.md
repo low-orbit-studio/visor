@@ -91,8 +91,10 @@ Visor's long-term goals, phased roadmap, and detailed specs live in `/docs/`. Re
 - [`docs/roadmap.md`](./docs/roadmap.md) — 8-phase plan with current status
 - [`docs/component-inventory.md`](./docs/component-inventory.md) — Current vs target components, source material for each
 - [`docs/interchange-format.md`](./docs/interchange-format.md) — Design system interchange format spec (draft)
-- [`docs/ai-consumability.md`](./docs/ai-consumability.md) — AI agent consumability spec (metadata, manifest, patterns, agent-first CLI)
+- [`docs/ai-consumability.md`](./docs/ai-consumability.md) — AI agent consumability spec (metadata, manifest, composition recipes, agent-first CLI)
 - [`docs/token-rules.md`](./docs/token-rules.md) — Token rules, theme contract, and 5-section theme template
+
+> **Borealis vocabulary:** Visor's `patterns/*.visor-pattern.yaml` are **composition recipes** — an AI-consumability artifact (powering `visor suggest`), distinct from Playbook design-language **patterns**. The directory and extension keep their physical names; only prose uses "composition recipe." See [Borealis Playbook `GLOSSARY.md` §3 "Disambiguating pattern"](~/Code/low-orbit/low-orbit-playbook/GLOSSARY.md#3-disambiguating-pattern).
 
 **Current focus:** Phase 1a — Core Expansion + Theme Architecture Validation (~15 priority components, second standard theme, interactive adaptive tokens, docs theme switcher).
 

@@ -249,11 +249,11 @@ npx visor add --block <block-name>
 
 ---
 
-## Composition Patterns (15)
+## Composition Recipes (15)
 
-Recommended component compositions for common UI scenarios. These are not installable — they serve as structural guidance.
+Recommended component compositions for common UI scenarios. These are not installable — they serve as structural guidance. (Visor calls these **composition recipes**, distinct from a design-language *pattern*.)
 
-| Pattern | Components Used |
+| Composition Recipe | Components Used |
 | --- | --- |
 | Auth Flow | card, input, button, field, alert, tabs |
 | Card Grid | card, badge, button, skeleton, empty-state, pagination |
@@ -365,7 +365,7 @@ Each component ships with a `.visor.yaml` metadata file containing:
 - `variants` — Available variant options
 - `dependencies` — External package requirements
 
-The full manifest (`visor-manifest.json`) aggregates all component, block, hook, and pattern metadata and is available via the CLI:
+The full manifest (`visor-manifest.json`) aggregates all component, block, hook, and composition-recipe metadata and is available via the CLI:
 
 ```sh
 npx visor list --json                     # Full catalog
