@@ -8,7 +8,7 @@ Make Visor as understandable and usable by AI agents as it is by human developer
 
 AI agents (Claude Code, Cursor, Copilot, custom agents) are increasingly the ones writing UI code. Most design systems are built for human consumption — prose docs, visual examples, implicit conventions. Agents work better with structured data, explicit guidance, and machine-readable metadata.
 
-Visor's advantage: if an agent can understand the full component catalog, know when to use each component, and compose them into patterns — it can build complete UIs from a description, themed via the interchange format. This is the "instant design systems" vision.
+Visor's advantage: if an agent can understand the full component catalog, know when to use each component, and compose them into composition recipes — it can build complete UIs from a description, themed via the interchange format. This is the "instant design systems" vision.
 
 ## Pillars
 
@@ -132,9 +132,11 @@ The manifest also carries the project's **brand strategy** under `brand_strategy
 }
 ```
 
-### 3. Composition Patterns / Recipes
+### 3. Composition Recipes
 
-Higher-level documentation that tells agents not just *what* components exist but *how to combine them*. Each pattern is a documented recipe.
+Higher-level documentation that tells agents not just *what* components exist but *how to combine them*. Each composition recipe is a documented composition of components for a common UI.
+
+> **Naming:** Visor's `patterns/*.visor-pattern.yaml` are **composition recipes** — a Components-axis / AI-consumability artifact, distinct from a Design-Language *pattern*. The directory and extension keep their physical names; prose says "composition recipe." See the Borealis Playbook `GLOSSARY.md` §3 ("Disambiguating pattern") for the canonical vocabulary.
 
 ```yaml
 # patterns/form-with-validation.visor-pattern.yaml
@@ -191,7 +193,7 @@ npx visor list --category form --json          # Filter by category
 
 # Discovery — Planned
 npx visor info button --json                   # Full metadata for a component
-npx visor pattern list --json                  # Available composition patterns
+npx visor pattern list --json                  # Available composition recipes
 npx visor pattern info form-with-validation --json
 
 # Theme operations (all with structured output) — Available
@@ -207,7 +209,7 @@ npx visor suggest --for "user settings page" --json  # Suggest components for a 
 > **Note:** Commands marked "Planned" are part of the future agent-first CLI roadmap and are not yet implemented. See the roadmap for timeline.
 
 **Key difference from current CLI:**
-The current CLI focuses on file operations (add, init, diff). The enhanced CLI adds *knowledge operations* — querying component metadata, patterns, and guidance without touching files.
+The current CLI focuses on file operations (add, init, diff). The enhanced CLI adds *knowledge operations* — querying component metadata, composition recipes, and guidance without touching files.
 
 ## Discoverability Score
 
@@ -222,7 +224,7 @@ The rule lives at `scripts/rules/discoverability-score.ts` and emits 10 dimensio
 | # | Dimension | Signal |
 |---|-----------|--------|
 | Q1 | Selection | % components with ≥2 `when_to_use` + ≥1 `when_not_to_use` |
-| Q2 | Composition | Pattern count scaled (0→0pt, 7→5pt, 15→10pt) |
+| Q2 | Composition | Composition recipe count scaled (0→0pt, 7→5pt, 15→10pt) |
 | Q3 | API Reference | % components without variant drift or YAML completeness failures |
 | Q4 | Bootstrap | `CONSUMER_CLAUDE.md` Quick Start + `visor init` command present |
 | Q5 | Theming | Token tier files + `interchange-format.md` + ≥3 theme CLI commands |
@@ -238,7 +240,7 @@ To gate CI at a minimum score, set `DISCOVERABILITY_MIN_SCORE` and flip `warnOnl
 
 - Component `.visor.yaml` metadata files live alongside the component source (e.g., `components/ui/button/button.visor.yaml`)
 - `visor-manifest.json` is auto-generated from individual metadata files during build (`npm run build:manifest -w packages/cli`)
-- Pattern files live in a top-level `patterns/` directory using `.visor-pattern.yaml` extension
+- Composition recipe files live in a top-level `patterns/` directory using `.visor-pattern.yaml` extension
 - The CLI reads metadata from the registry, not from local files — so even consumers who haven't installed a component can query its metadata
 - `tokens_used` is **auto-extracted** from each component's `.module.css` file at build time — not manually authored in YAML. This prevents drift between token usage and metadata.
 - `props` is optional in `.visor.yaml` — compound components that delegate all behavior to sub-components (e.g., Dialog) may omit it

@@ -518,7 +518,7 @@ Visor includes structured metadata that makes it easy for AI agents to discover,
 
 **Registry manifest** — `visor-manifest.json` is auto-generated during build, aggregating all component metadata (including auto-extracted CSS tokens) into a single file an agent can load.
 
-**Composition patterns** — Pattern files in `patterns/` document how components combine for common use cases (form with validation, dashboard layout, data table with filters).
+**Composition recipes** — Recipe files in `patterns/` document how components combine for common use cases (form with validation, dashboard layout, data table with filters). Visor calls these *composition recipes*, distinct from a design-language *pattern*.
 
 See [docs/ai-consumability.md](docs/ai-consumability.md) for the full spec.
 
@@ -614,7 +614,7 @@ visor/
 ├── components/ui/     # Component source + .visor.yaml metadata
 ├── hooks/             # Hook source (registry entries)
 ├── lib/               # Utility source (registry entries)
-├── patterns/          # Composition patterns (.visor-pattern.yaml)
+├── patterns/          # Composition recipes (.visor-pattern.yaml)
 ├── registry/          # Registry schema and definitions
 └── packages/
     ├── cli/           # @loworbitstudio/visor CLI + manifest builder
