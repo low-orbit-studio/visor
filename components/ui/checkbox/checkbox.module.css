@@ -28,14 +28,14 @@
 }
 
 @media (hover: hover) {
-  .root:hover:not(:focus-visible):not(:disabled):not([aria-invalid="true"]) {
+  .root:hover:not(:focus-visible):not(:disabled):not([aria-invalid="true"]):not([data-state="checked"]):not([data-state="indeterminate"]) {
     border-color: var(--border-strong, #d1d5db);
     background-color: transparent;
   }
 }
 
 @media (hover: hover) {
-  :global([data-density="editorial"]) .root:hover:not(:focus-visible):not(:disabled):not([aria-invalid="true"]) {
+  :global([data-density="editorial"]) .root:hover:not(:focus-visible):not(:disabled):not([aria-invalid="true"]):not([data-state="checked"]):not([data-state="indeterminate"]) {
     background-color: var(--surface-subtle);
   }
 }
