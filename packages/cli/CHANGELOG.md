@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.11.1
+
+### Patch Changes
+
+- 06f1192: Add `prominent` variant to `Stepper` component
+
+  The new `variant="prominent"` prop (on `Stepper`) enables a richer visual treatment for vertical derivation spines and primary-navigation surfaces: active rows get a `--interactive-primary-soft` tint, the active bullet renders a concentric halo plus a filled pulse dot (replacing the step number), and complete-to-next rails render in a primary-line tint via `color-mix`. All values are fully token-driven and theme-agnostic. Default variant behaviour is unchanged.
+
+- e62bb12: feat: add filled-primary variant to Chip
+
+  Adds a `filled-primary` variant to `Chip`, `ChoiceChip`, and `FilterChip` — saturated primary background, `--primary-text` foreground, `--shadow-sm` depth, 700 weight, slight negative letter-spacing. Matches the Brand Workbench Elicit essence-chip treatment and mirrors Badge's `filled-*` family pattern. All three sizes (sm, md, lg) supported. Default and outlined variants unchanged.
+
+- bd4e64c: docs: call Visor's `patterns/` "composition recipes" in prose (BO-50 follow-up)
+
+  Aligns Visor's prose with the canonical Borealis vocabulary: the `patterns/*.visor-pattern.yaml` directory holds **composition recipes** — a Components-axis / AI-consumability artifact powering `visor suggest` — distinct from a Playbook design-language **pattern**. Updated `CLAUDE.md`, `CONSUMER_CLAUDE.md`, `docs/ai-consumability.md`, and `README.md`, with a cross-link to the Playbook `GLOSSARY.md` §3 disambiguation. Vocabulary only — no directory, extension, CLI command, or manifest-key rename.
+
+- e2e28bb: fix: Checkbox hover no longer masks the checked fill (editorial density + base)
+
+  A checked checkbox left under the pointer rendered with the _unchecked_ hover background until the pointer moved away — the checked fill appeared late. Both `@media (hover: hover)` rules (base and `data-density="editorial"`) out-specified the `[data-state="checked"]` rule and forced their hover `background-color`. The fix excludes `[data-state="checked"]` and `[data-state="indeterminate"]` from both hover selectors, so hover affordance only applies to the unchecked box and the checked fill shows immediately on click. At-rest checked / unchecked / hover-unchecked / focus / invalid rendering is unchanged.
+
 ## 1.11.0
 
 ### Minor Changes
