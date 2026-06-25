@@ -11,6 +11,7 @@
     "conflict-banner",
     "error-placard",
     "slow-network-bar",
+    "success-feedback",
     "toast",
     "toast-card",
     "tooltip"

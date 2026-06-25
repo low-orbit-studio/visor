@@ -1,0 +1,53 @@
+name: SuccessFeedback
+description: App-wide success/transition feedback pattern. Provides useSuccessToast() hook and SuccessLiveRegion a11y component built on the Toast primitive.
+extends: HTMLDivElement
+category: feedback
+
+when_to_use:
+  - After a CRUD operation completes successfully (create, update, delete, archive)
+  - When a file upload or export finishes
+  - After settings are saved
+  - When an invite is sent or a link is copied
+  - Any transient confirmation that a user action succeeded
+
+when_not_to_use:
+  - Error conditions (use inline validation or error Banner)
+  - Warnings that require user attention (use Banner)
+  - Persistent messages that must stay visible (use Banner or Alert)
+  - Content that requires user acknowledgment (use Dialog)
+
+why: >
+  SuccessFeedback wraps the Toast primitive with Borealis-spec defaults:
+  4s auto-dismiss (clamped to 3–8s), optional undo action, and an explicit
+  a11y live region for screen-reader announcements. The useSuccessToast()
+  hook provides a stable imperative API; SuccessLiveRegion augments Sonner's
+  built-in aria-live with a dedicated visible-to-AT-only node for edge cases.
+
+sub_components:
+  - name: useSuccessToast
+    description: Hook returning showSuccess(title, options) that fires a Sonner toast.success() with Borealis-spec defaults.
+  - name: SuccessLiveRegion
+    description: Visually-hidden role=status aria-live=polite node for screen-reader announcements.
+
+props:
+  - name: message
+    type: "string"
+    required: false
+    description: "SuccessLiveRegion only — the success text to announce to screen readers. Updates trigger a re-announcement. Defaults to empty string."
+
+dependencies:
+  - "sonner"
+
+preview_url: "https://visor.design/docs/components/feedback/success-feedback"
+
+example: |
+  import { useSuccessToast, SuccessLiveRegion } from "@/components/ui/success-feedback/success-feedback"
+  import { Toaster } from "@/components/ui/toast/toast"
+
+  {/* Mount both once in your root layout */}
+  <Toaster />
+  <SuccessLiveRegion message="" />
+
+  {/* In any component */}
+  const { showSuccess } = useSuccessToast()
+  showSuccess("Project saved", { description: "All changes have been saved." })
