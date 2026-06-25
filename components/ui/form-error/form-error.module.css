@@ -22,7 +22,8 @@
 /* Leading icon slot */
 .icon {
   flex-shrink: 0;
-  margin-top: 1px;
+  /* 1px optical nudge to vertically align icon with the title cap-height */
+  margin-top: calc(var(--spacing-1, 0.25rem) / 4);
   display: inline-flex;
   align-items: center;
   justify-content: center;
