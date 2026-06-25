@@ -1,0 +1,158 @@
+---
+title: CoherenceCheck
+description: Check group with pass/warn/fail rows for displaying coherence audit results — group header, state icon circle, title, description with inline code support, and ghost Fix action.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { CheckGroup, CheckRow } from '@/components/ui/coherence-check';
+
+## States
+
+CheckRow supports three semantic states. Each state renders a tinted icon circle — pass (green check), warn (amber warning), fail (red X).
+
+<ComponentPreview
+  title="States"
+  code={"import { CheckGroup, CheckRow } from '@/components/ui/coherence-check/coherence-check';\n\n<CheckGroup heading=\"Derivation — every layer traces upward\">\n  <CheckRow state=\"pass\" title=\"Every pillar governs something real\" description=\"No dead pillars.\" />\n  <CheckRow state=\"warn\" title=\"One sampled string drifts from voice\" description='Try a plainspoken verb.' fixLabel=\"Rewrite to voice\" onFix={() => {}} />\n  <CheckRow state=\"fail\" title=\"One pairing fails on small text\" description=\"Below 4.5:1 for body text.\" fixLabel=\"Suggest a fix\" onFix={() => {}} />\n</CheckGroup>"}
+>
+  <CheckGroup heading="Derivation — every layer traces upward">
+    <CheckRow
+      state="pass"
+      title="Every pillar governs something real"
+      description="No dead pillars."
+    />
+    <CheckRow
+      state="warn"
+      title="One sampled string drifts from voice"
+      description='Try a plainspoken verb — "Compile" or "Publish".'
+      fixLabel="Rewrite to voice"
+      onFix={() => {}}
+    />
+    <CheckRow
+      state="fail"
+      title="One pairing fails on small text"
+      description="Below 4.5:1 for body text. Bump tertiary one step."
+      fixLabel="Suggest a fix"
+      onFix={() => {}}
+    />
+  </CheckGroup>
+</ComponentPreview>
+
+## Inline Code in Descriptions
+
+Pass a React node with `<code>` elements to `description` for inline token references.
+
+<ComponentPreview
+  title="Inline Code Tokens"
+  code={"import { CheckGroup, CheckRow } from '@/components/ui/coherence-check/coherence-check';\n\n<CheckGroup heading=\"Accessibility — WCAG 2.1 AA\">\n  <CheckRow\n    state=\"fail\"\n    title=\"One pairing fails on small text\"\n    description={<><code>--text-tertiary</code> on <code>--surface-subtle</code> is 3.9:1</>}\n    fixLabel=\"Suggest a fix\"\n    onFix={() => {}}\n  />\n  <CheckRow\n    state=\"pass\"\n    title=\"Primary, text, and focus rings clear AA\"\n    description=\"All above target on both light and dark.\"\n  />\n</CheckGroup>"}
+>
+  <CheckGroup heading="Accessibility — WCAG 2.1 AA">
+    <CheckRow
+      state="fail"
+      title="One pairing fails on small text"
+      description={<><code>--text-tertiary</code> on <code>--surface-subtle</code> is 3.9:1 — below 4.5:1 for body text.</>}
+      fixLabel="Suggest a fix"
+      onFix={() => {}}
+    />
+    <CheckRow
+      state="pass"
+      title="Primary, text, and focus rings clear AA"
+      description="Body 7.1:1 · large text 4.8:1 · non-text UI 3.4:1 — all above target."
+    />
+  </CheckGroup>
+</ComponentPreview>
+
+## Multiple Groups
+
+Use multiple `CheckGroup` instances to organize checks into labelled sections.
+
+<ComponentPreview
+  title="Multiple Groups"
+  code={"import { CheckGroup, CheckRow } from '@/components/ui/coherence-check/coherence-check';\n\n<>\n  <CheckGroup heading=\"Derivation — every layer traces upward\">\n    <CheckRow state=\"pass\" title=\"Every pillar governs something real\" description=\"No dead pillars.\" />\n    <CheckRow state=\"pass\" title=\"Voice derives from personality\" description=\"Each trait is a consequence.\" />\n  </CheckGroup>\n  <CheckGroup heading=\"Voice & copy\">\n    <CheckRow\n      state=\"warn\"\n      title=\"One sampled string drifts from voice\"\n      description='Try a plainspoken verb.'\n      fixLabel=\"Rewrite to voice\"\n      onFix={() => {}}\n    />\n  </CheckGroup>\n</>"}
+>
+  <>
+    <CheckGroup heading="Derivation — every layer traces upward">
+      <CheckRow
+        state="pass"
+        title="Every pillar governs something real"
+        description="No dead pillars."
+      />
+      <CheckRow
+        state="pass"
+        title="Voice derives from personality"
+        description="Each trait is a consequence, not an assertion."
+      />
+    </CheckGroup>
+    <CheckGroup heading="Voice & copy">
+      <CheckRow
+        state="warn"
+        title="One sampled string drifts from voice"
+        description='Try a plainspoken verb — "Compile" or "Publish".'
+        fixLabel="Rewrite to voice"
+        onFix={() => {}}
+      />
+    </CheckGroup>
+  </>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add coherence-check
+```
+
+This copies two files into your project:
+
+- `components/ui/coherence-check/coherence-check.tsx` — the component
+- `components/ui/coherence-check/coherence-check.module.css` — the styles
+
+## Usage
+
+```tsx
+import { CheckGroup, CheckRow } from '@/components/ui/coherence-check/coherence-check';
+
+<CheckGroup heading="Accessibility — WCAG 2.1 AA">
+  <CheckRow
+    state="fail"
+    title="One pairing fails on small text"
+    description={<><code>--text-tertiary</code> on <code>--surface-subtle</code> is 3.9:1</>}
+    fixLabel="Suggest a fix"
+    onFix={() => console.log('fix clicked')}
+  />
+  <CheckRow
+    state="pass"
+    title="Primary, text, and focus rings clear AA"
+    description="All above target on both light and dark."
+  />
+</CheckGroup>
+```
+
+## API Reference
+
+### CheckGroup
+
+<PropsTable component="coherence-check" />
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `heading` | `string` | — | Group header label (rendered uppercase). Required. |
+
+Also accepts all standard `<div>` HTML attributes.
+
+### CheckRow
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `state` | `'pass' \| 'warn' \| 'fail'` | `'pass'` | Semantic state controlling the icon and tint color. |
+| `title` | `string` | — | Check title / finding label. Required. |
+| `description` | `React.ReactNode` | — | Supporting text. Accepts inline `<code>` elements. |
+| `fixLabel` | `string` | — | Label for the ghost Fix action button. Omit to hide. |
+| `onFix` | `() => void` | — | Callback invoked when the Fix button is clicked. |
+
+Also accepts all standard `<div>` HTML attributes.
+
+## Accessibility
+
+- The state icon circle is `aria-hidden="true"` — state is conveyed visually by color and icon; consider pairing with an `aria-label` on the containing region when used in a standalone audit flow.
+- The Fix action button has `type="button"` to prevent accidental form submission.
+- All interactive elements are keyboard-reachable and show focus rings via `--focus-ring-width` and `--focus-ring-offset` tokens.

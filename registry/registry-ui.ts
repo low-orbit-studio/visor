@@ -481,6 +481,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "coherence-check",
+    type: "registry:ui",
+    category: "feedback",
+    description:
+      "Check group with pass/warn/fail rows for displaying coherence audit results — group header, state icon circle, title, description with inline code support, and ghost Fix action button.",
+    dependencies: ["class-variance-authority", "@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/coherence-check/coherence-check.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/coherence-check/coherence-check.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "progress",
     type: "registry:ui",
     description:
