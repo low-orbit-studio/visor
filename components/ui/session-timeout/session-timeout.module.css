@@ -1,0 +1,207 @@
+/* Session Timeout Overlay */
+
+/* Scrim — semi-transparent backdrop with blur, covers the full viewport */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background-color: var(--overlay-bg, rgba(0, 0, 0, var(--opacity-80, 0.8)));
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.overlay[data-state="open"] {
+  animation: overlayIn var(--motion-duration-normal, 200ms) var(--motion-easing-enter, ease-out);
+}
+
+.overlay[data-state="closed"] {
+  animation: overlayFadeOut var(--motion-duration-150, 150ms) var(--motion-easing-exit, ease-in);
+}
+
+/* Content shell — centers the card in the viewport */
+.content {
+  position: fixed;
+  inset: 0;
+  z-index: 51;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-6, 1.5rem);
+  outline: none;
+  /* No background on content shell — scrim is on .overlay */
+}
+
+/* Card surface */
+.card {
+  background-color: var(--surface-card, #ffffff);
+  border-radius: var(--radius-xl, 1rem);
+  padding: var(--spacing-10, 2.5rem) var(--spacing-9, 2.25rem);
+  text-align: center;
+  max-width: 340px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  border: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
+}
+
+.card[data-state="open"],
+.content[data-state="open"] .card {
+  animation: cardIn var(--motion-duration-normal, 200ms) var(--motion-easing-enter, ease-out);
+}
+
+/* Lock icon wrap — circular tinted plate */
+.iconWrap {
+  width: 4rem;
+  height: 4rem;
+  border-radius: var(--radius-full, 9999px);
+  background-color: color-mix(in srgb, var(--primary, #2563eb) var(--opacity-10, 10%), transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--spacing-6, 1.5rem);
+}
+
+/* Lock icon — uses primary color */
+.icon {
+  color: var(--primary, #2563eb);
+}
+
+/* Headline */
+.headline {
+  font-size: var(--font-size-xl, 1.25rem);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #111827);
+  line-height: 1.25;
+  margin-bottom: var(--spacing-2, 0.5rem);
+  margin-top: 0;
+}
+
+/* Body copy */
+.copy {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #4b5563);
+  line-height: 1.6;
+  margin-bottom: var(--spacing-7, 1.75rem);
+  margin-top: 0;
+}
+
+/* Primary CTA — Sign in */
+.signinBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2, 0.5rem);
+  width: 100%;
+  padding: var(--spacing-3, 0.75rem) var(--spacing-7, 1.75rem);
+  border-radius: var(--radius-md, 0.375rem);
+  border: none;
+  background-color: var(--interactive-primary-bg, var(--primary, #2563eb));
+  color: var(--interactive-primary-text, #ffffff);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+  cursor: pointer;
+  transition:
+    background-color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease),
+    opacity var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease);
+}
+
+@media (hover: hover) {
+  .signinBtn:hover:not(:disabled) {
+    background-color: var(--interactive-primary-bg-hover, var(--primary, #1d4ed8));
+  }
+}
+
+.signinBtn:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #3b82f6);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+.signinBtn:disabled {
+  opacity: var(--opacity-60, 0.6);
+  cursor: not-allowed;
+}
+
+/* Spinner — inline ring spinner for the primary CTA's redirecting state */
+.signinSpinner {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: var(--radius-full, 9999px);
+  border-style: solid;
+  border-width: var(--stroke-width-regular, 1.5px);
+  border-color: color-mix(in srgb, var(--text-inverse, #ffffff) var(--opacity-40, 40%), transparent);
+  border-top-color: var(--text-inverse, #ffffff);
+  animation: spin var(--motion-duration-1500, 1500ms) var(--motion-easing-linear, linear) infinite;
+}
+
+/* Return home ghost link */
+.returnHomeBtn {
+  display: block;
+  width: 100%;
+  margin-top: var(--spacing-3, 0.75rem);
+  padding: var(--spacing-1, 0.25rem);
+  background: none;
+  border: none;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-tertiary, #9ca3af);
+  text-align: center;
+  cursor: pointer;
+  transition: color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease);
+}
+
+@media (hover: hover) {
+  .returnHomeBtn:hover:not(:disabled) {
+    color: var(--text-secondary, #4b5563);
+  }
+}
+
+.returnHomeBtn:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #3b82f6);
+  outline-offset: var(--focus-ring-offset, 2px);
+  border-radius: var(--radius-sm, 0.125rem);
+}
+
+.returnHomeBtn:disabled {
+  opacity: var(--opacity-40, 0.4);
+  cursor: not-allowed;
+}
+
+/* Screen reader only */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Keyframes */
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes overlayFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(var(--spacing-4, 1rem)) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

@@ -1230,6 +1230,28 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "session-timeout",
+    type: "registry:ui",
+    description:
+      "Non-dismissible full-screen overlay for auth session expiry. Renders at portal root, blurs app content, and presents a centered card with a Sign in CTA. ESC key and backdrop click are inert. Async onSignIn handler shows spinner in redirecting state.",
+    dependencies: [
+      "@radix-ui/react-dialog",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/session-timeout/session-timeout.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/session-timeout/session-timeout.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "file-upload",
     type: "registry:ui",
     description:
