@@ -9,6 +9,7 @@
     "chart",
     "coherence-check",
     "error-placard",
+    "slow-network-bar",
     "toast",
     "toast-card",
     "tooltip"

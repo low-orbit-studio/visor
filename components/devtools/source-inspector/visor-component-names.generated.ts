@@ -379,6 +379,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "SliderControl",
   "SlideThemeContext",
   "SlideThemeProvider",
+  "SlowNetworkBar",
   "SourceInspector",
   "SourceInspectorContext",
   "SourceInspectorDevImpl",

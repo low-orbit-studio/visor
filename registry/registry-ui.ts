@@ -426,6 +426,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "slow-network-bar",
+    type: "registry:ui",
+    category: "feedback",
+    description:
+      "A 4px indeterminate progress bar that appears after a configurable threshold (default 3 s) to signal slow or stalled network requests. Includes useSlowRequest hook for automatic threshold management. Indeterminate animation only — no fake percentages.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/slow-network-bar/slow-network-bar.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/slow-network-bar/slow-network-bar.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "tooltip",
     type: "registry:ui",
     description:
