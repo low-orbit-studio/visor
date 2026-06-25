@@ -1,0 +1,154 @@
+---
+title: Session Timeout
+description: Non-dismissible full-screen overlay for auth session expiry. Renders at portal root, blurs app content beneath, and redirects to login with the current path preserved as a return URL.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import {
+  SessionTimeoutBasicDemo,
+  SessionTimeoutRedirectingDemo,
+  SessionTimeoutNoReturnHomeDemo,
+} from '@/components/ui/session-timeout-demos';
+
+## Basic
+
+Triggers the session timeout overlay. Click "Sign in" or "Return home" to dismiss the demo.
+
+<ComponentPreview
+  title="Session Timeout"
+  code={"import { useState } from 'react';\nimport { SessionTimeout } from '@/components/ui/session-timeout/session-timeout';\nimport { Button } from '@/components/ui/button/button';\n\nexport function Example() {\n  const [open, setOpen] = useState(false);\n  return (\n    <>\n      <Button onClick={() => setOpen(true)}>Simulate session expiry</Button>\n      <SessionTimeout\n        open={open}\n        onSignIn={() => setOpen(false)}\n        onReturnHome={() => setOpen(false)}\n      />\n    </>\n  );\n}"}
+>
+  <SessionTimeoutBasicDemo />
+</ComponentPreview>
+
+## Redirecting State
+
+When `onSignIn` returns a Promise, the overlay automatically enters the `redirecting` state — the CTA shows a spinner, the label changes to "Signing in…", and both buttons are disabled until the Promise resolves.
+
+<ComponentPreview
+  title="Redirecting state (2.5s delay)"
+  code={"import { useState } from 'react';\nimport { SessionTimeout } from '@/components/ui/session-timeout/session-timeout';\nimport { Button } from '@/components/ui/button/button';\n\nexport function Example() {\n  const [open, setOpen] = useState(false);\n\n  function handleSignIn() {\n    return new Promise<void>((resolve) => {\n      setTimeout(() => {\n        resolve();\n        setOpen(false);\n      }, 2500);\n    });\n  }\n\n  return (\n    <>\n      <Button onClick={() => setOpen(true)}>Simulate session expiry</Button>\n      <SessionTimeout\n        open={open}\n        onSignIn={handleSignIn}\n        onReturnHome={() => setOpen(false)}\n      />\n    </>\n  );\n}"}
+>
+  <SessionTimeoutRedirectingDemo />
+</ComponentPreview>
+
+## Without Return Home
+
+Omit `onReturnHome` to hide the ghost escape hatch. The user can only sign in.
+
+<ComponentPreview
+  title="No Return home link"
+  code={"import { useState } from 'react';\nimport { SessionTimeout } from '@/components/ui/session-timeout/session-timeout';\nimport { Button } from '@/components/ui/button/button';\n\nexport function Example() {\n  const [open, setOpen] = useState(false);\n  return (\n    <>\n      <Button onClick={() => setOpen(true)}>Session expired</Button>\n      <SessionTimeout\n        open={open}\n        onSignIn={() => setOpen(false)}\n      />\n    </>\n  );\n}"}
+>
+  <SessionTimeoutNoReturnHomeDemo />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add session-timeout
+```
+
+This copies two files into your project:
+
+- `components/ui/session-timeout/session-timeout.tsx` — the component
+- `components/ui/session-timeout/session-timeout.module.css` — the styles
+
+## Usage
+
+Mount `SessionTimeout` near the top of your app tree (e.g., in the root layout or a shared auth provider). Drive `open` from your auth event listener and call your login redirect inside `onSignIn`.
+
+```tsx
+import { SessionTimeout } from '@/components/ui/session-timeout/session-timeout';
+import { useRouter, usePathname } from 'next/navigation';
+
+export function SessionGuard({ isExpired }: { isExpired: boolean }) {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  async function handleSignIn() {
+    const redirect = encodeURIComponent(pathname);
+    router.push(`/login?redirect=${redirect}`);
+  }
+
+  return (
+    <SessionTimeout
+      open={isExpired}
+      onSignIn={handleSignIn}
+      onReturnHome={() => router.push('/')}
+    />
+  );
+}
+```
+
+### With Supabase
+
+```tsx
+import { useEffect, useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import { SessionTimeout } from '@/components/ui/session-timeout/session-timeout';
+import { useRouter, usePathname } from 'next/navigation';
+
+export function SessionGuard({ children }: { children: React.ReactNode }) {
+  const [expired, setExpired] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const supabase = createClient();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event) => {
+        if (event === 'SIGNED_OUT') setExpired(true);
+        if (event === 'SIGNED_IN') setExpired(false);
+      }
+    );
+    return () => subscription.unsubscribe();
+  }, [supabase]);
+
+  async function handleSignIn() {
+    const redirect = encodeURIComponent(pathname);
+    router.push(`/login?redirect=${redirect}`);
+  }
+
+  return (
+    <>
+      {children}
+      <SessionTimeout
+        open={expired}
+        onSignIn={handleSignIn}
+        onReturnHome={() => router.push('/')}
+      />
+    </>
+  );
+}
+```
+
+## API Reference
+
+### SessionTimeoutProps
+
+<PropsTable component="session-timeout" />
+
+## Behavior
+
+| Behavior | Detail |
+|----------|--------|
+| ESC key | Inert — does not close the overlay |
+| Backdrop click | Inert — does not close the overlay |
+| `onSignIn` (sync) | Closes immediately (consumer's responsibility) |
+| `onSignIn` (async Promise) | Shows spinner + "Signing in…", disables both buttons until settled |
+| `onReturnHome` omitted | "Return home" link is not rendered |
+| `open` flips to `false` | Redirecting state resets automatically |
+
+## Composition
+
+`SessionTimeout` builds on `@radix-ui/react-dialog` via `DialogPrimitive`. It sets `onEscapeKeyDown`, `onPointerDownOutside`, and `onInteractOutside` to `event.preventDefault()` to enforce the non-dismissible contract. The overlay renders via `DialogPrimitive.Portal` at the React portal root — it is never trapped inside a page component's DOM subtree.
+
+## Accessibility
+
+- `aria-labelledby` links the visible headline; `aria-describedby` links the body copy.
+- The card surface carries `role="alertdialog"` and `aria-modal="true"`.
+- Focus is trapped inside the overlay while open (Radix built-in).
+- The "Sign in" button reports `aria-busy` during the `redirecting` state.
+- The lock icon is `aria-hidden`; content meaning is carried by the headline and body copy.

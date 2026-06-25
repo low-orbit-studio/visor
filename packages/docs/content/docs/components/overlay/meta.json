@@ -11,6 +11,7 @@
     "lightbox",
     "popover",
     "scroll-area",
+    "session-timeout",
     "sheet"
   ]
 }

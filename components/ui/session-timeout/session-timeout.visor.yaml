@@ -1,0 +1,73 @@
+name: SessionTimeout
+description: >-
+  Non-dismissible full-screen overlay for auth session expiry. Renders at portal
+  root, blurs app content, and presents a centered card with a primary Sign in CTA
+  and an optional Return home escape hatch. ESC key and backdrop click are inert.
+extends: HTMLDivElement
+category: overlay
+
+when_to_use:
+  - JWT expiry detected client-side (exp claim check)
+  - 401 response from API with error=invalid_token
+  - Supabase SIGNED_OUT event with reason TOKEN_REFRESHED_FAILED
+  - Any scenario where an auth session expires mid-flow and you must redirect to login
+
+when_not_to_use:
+  - Confirmable dialogs (use ConfirmDialog)
+  - Standard authentication gates (use a route guard / redirect instead)
+  - Dismissible notifications (use Banner or Toast)
+  - Inline inline auth errors in a form (use field-level validation)
+
+why: >-
+  Session expiry is an app-wide event, not page-local. The overlay renders at portal
+  root so it covers all content regardless of the current route. It is deliberately
+  non-dismissible to prevent users from inadvertently continuing in an expired state.
+  Preserving the current path in a redirect query param prevents deep-link loss on login.
+
+props:
+  - name: open
+    type: boolean
+    default: "false"
+    description: Whether the session timeout overlay is visible. Drive from your auth event listener.
+  - name: onSignIn
+    type: "() => void | Promise<void>"
+    default: "undefined"
+    description: >-
+      Called when the user clicks "Sign in". Returning a Promise triggers the
+      redirecting state (spinner + disabled CTA) automatically.
+  - name: onReturnHome
+    type: "() => void"
+    default: "undefined"
+    description: >-
+      Called when the user clicks "Return home". If omitted, the ghost link is not rendered.
+  - name: signInLabel
+    type: React.ReactNode
+    default: '"Sign in"'
+    description: Label for the primary CTA.
+  - name: returnHomeLabel
+    type: React.ReactNode
+    default: '"Return home"'
+    description: Label for the optional ghost link.
+  - name: className
+    type: string
+    default: "undefined"
+    description: Additional class name applied to the card surface.
+
+dependencies:
+  - "@radix-ui/react-dialog"
+  - "@phosphor-icons/react"
+  - "@loworbitstudio/visor-core"
+registryDependencies:
+  - utils
+
+preview_url: "https://visor.design/docs/components/overlay/session-timeout"
+
+example: |
+  <SessionTimeout
+    open={isExpired}
+    onSignIn={() => {
+      const redirect = window.location.pathname;
+      router.push(`/login?redirect=${encodeURIComponent(redirect)}`);
+    }}
+    onReturnHome={() => router.push('/')}
+  />

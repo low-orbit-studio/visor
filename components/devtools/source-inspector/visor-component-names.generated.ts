@@ -345,6 +345,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "SemanticColorItem",
   "SemanticTokensSlide",
   "Separator",
+  "SessionTimeout",
   "ShadowSection",
   "Sheet",
   "SheetClose",
