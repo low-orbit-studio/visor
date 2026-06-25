@@ -1,0 +1,61 @@
+name: OfflineBanner
+description: App-shell sticky banner for network connectivity loss with offline, reconnecting, and restored states.
+extends: HTMLDivElement
+category: feedback
+
+when_to_use:
+  - When the app must signal network connectivity loss to the user non-intrusively
+  - As the primary offline indicator below the navigation bar in a full-page shell
+  - When stale data should remain visible and the app should remain navigable while offline
+  - When you need a manual retry action that checks connectivity without forcing a page reload
+
+when_not_to_use:
+  - For generic informational messages unrelated to network status (use Banner or Alert)
+  - When the failure is a server error, not a connectivity issue (use Alert with error intent)
+  - As an overlay that blocks content (use Dialog or a full-screen overlay instead)
+  - For ephemeral success/failure notifications (use Toast)
+
+why: >
+  OfflineBanner implements the Borealis "offline shell banner" global state pattern.
+  It uses sticky positioning below the nav bar, not an overlay, so stale data remains
+  visible and navigable. The included useNetworkStatus hook drives the state machine
+  (offline → reconnecting → restored → online) via browser online/offline events and
+  an optional custom retry probe. All three states (offline, reconnecting, restored)
+  are announced to assistive technology via aria-live="polite".
+
+variants:
+  networkState: [online, offline, reconnecting, restored]
+
+props:
+  - name: networkState
+    type: "'online' | 'offline' | 'reconnecting' | 'restored'"
+    required: true
+  - name: onRetry
+    type: "() => void"
+  - name: offlineLabel
+    type: string
+    default: "You're offline"
+  - name: reconnectingLabel
+    type: string
+    default: "Reconnecting…"
+  - name: restoredLabel
+    type: string
+    default: "Back online"
+  - name: retryLabel
+    type: string
+    default: "Retry"
+
+dependencies:
+  - "@phosphor-icons/react"
+
+hooks:
+  - name: useNetworkStatus
+    description: >
+      Hook that listens to window online/offline events and drives the OfflineBanner
+      state machine. Accepts an optional onRetry callback for a custom connectivity probe.
+
+preview_url: "https://visor.loworbit.studio/docs/components/feedback/offline-banner"
+
+example: |
+  const { networkState, retry } = useNetworkStatus();
+  <OfflineBanner networkState={networkState} onRetry={retry} />

@@ -286,6 +286,51 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'offline-banner': [
+    {
+      name: 'networkState',
+      type: "'online' | 'offline' | 'reconnecting' | 'restored'",
+      required: true,
+      description:
+        "Current network state. 'online' renders nothing; 'offline' shows the banner with a Retry button; 'reconnecting' shows a spinner; 'restored' shows a brief success confirmation before auto-dismissing.",
+    },
+    {
+      name: 'onRetry',
+      type: '() => void',
+      description:
+        "Called when the user presses the Retry button (offline state only). Typically wired to the `retry` function from `useNetworkStatus()`.",
+    },
+    {
+      name: 'offlineLabel',
+      type: 'string',
+      default: '"You\'re offline"',
+      description: 'Text shown in the offline state.',
+    },
+    {
+      name: 'reconnectingLabel',
+      type: 'string',
+      default: '"Reconnecting…"',
+      description: 'Text shown in the reconnecting state.',
+    },
+    {
+      name: 'restoredLabel',
+      type: 'string',
+      default: '"Back online"',
+      description: 'Text shown in the restored state.',
+    },
+    {
+      name: 'retryLabel',
+      type: 'string',
+      default: '"Retry"',
+      description: 'Label for the retry button.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names to merge onto the banner element.',
+    },
+  ],
+
   'radio-group': [
     {
       name: 'value',

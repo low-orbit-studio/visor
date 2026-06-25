@@ -1,0 +1,143 @@
+---
+title: Offline Banner
+description: App-shell banner for network connectivity loss. Non-blocking sticky bar below nav with offline, reconnecting, and restored states.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { OfflineBannerStateDemo, OfflineBannerHookDemo } from '@/components/ui/offline-banner-demos';
+
+## Overview
+
+`OfflineBanner` is a full-width sticky banner pinned below the navigation bar. It signals network connectivity loss without blocking content — stale data remains visible and navigable beneath it.
+
+It models three visual states driven by a `useNetworkStatus()` hook or controlled externally:
+
+| State | Appearance |
+|-------|-----------|
+| `offline` | Dark surface, Wifi-off icon, "You're offline", Retry button |
+| `reconnecting` | Dark surface, spinner, "Reconnecting…", no Retry |
+| `restored` | Success-tint surface, check icon, "Back online" (auto-dismisses after 1.5s) |
+
+When `networkState` is `"online"` the component renders nothing.
+
+## Interactive States
+
+<ComponentPreview
+  title="All States"
+  code={"import { OfflineBanner } from '@/components/ui/offline-banner/offline-banner';\n\n// Offline\n<OfflineBanner networkState=\"offline\" onRetry={retry} />\n\n// Reconnecting\n<OfflineBanner networkState=\"reconnecting\" />\n\n// Restored (auto-dismisses after 1.5s)\n<OfflineBanner networkState=\"restored\" />\n\n// Online — renders null\n<OfflineBanner networkState=\"online\" />"}
+>
+  <OfflineBannerStateDemo />
+</ComponentPreview>
+
+## With `useNetworkStatus` Hook
+
+The `useNetworkStatus` hook listens to `window`'s `online`/`offline` events and drives the banner automatically. Pass a custom `onRetry` callback to run your own connectivity check (e.g., a lightweight HEAD request) instead of relying on `navigator.onLine`.
+
+<ComponentPreview
+  title="Hook-driven"
+  code={"import { OfflineBanner, useNetworkStatus } from '@/components/ui/offline-banner/offline-banner';\n\nfunction AppShell() {\n  const { networkState, retry } = useNetworkStatus();\n\n  return (\n    <>\n      <OfflineBanner networkState={networkState} onRetry={retry} />\n      {/* rest of app */}\n    </>\n  );\n}"}
+>
+  <OfflineBannerHookDemo />
+</ComponentPreview>
+
+## Custom Retry Check
+
+Pass an `onRetry` function to `useNetworkStatus` to run a real connectivity probe before transitioning to `restored`:
+
+```tsx
+const { networkState, retry } = useNetworkStatus({
+  onRetry: async () => {
+    try {
+      await fetch('/api/health', { method: 'HEAD', cache: 'no-store' });
+      return true;
+    } catch {
+      return false;
+    }
+  },
+  restoredDisplayDuration: 2000, // show "Back online" for 2s
+});
+```
+
+## Installation
+
+```bash
+npx visor add offline-banner
+```
+
+This copies two files into your project:
+
+- `components/ui/offline-banner/offline-banner.tsx` — the component and hook
+- `components/ui/offline-banner/offline-banner.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  OfflineBanner,
+  useNetworkStatus,
+} from '@/components/ui/offline-banner/offline-banner';
+
+export function AppShell({ children }: { children: React.ReactNode }) {
+  const { networkState, retry } = useNetworkStatus();
+
+  return (
+    <div>
+      <nav>{/* navigation */}</nav>
+      <OfflineBanner networkState={networkState} onRetry={retry} />
+      <main>{children}</main>
+    </div>
+  );
+}
+```
+
+## Stale Data Pattern
+
+When offline, stale data should remain visible beneath the banner — the banner only gates network-dependent actions (saves, fetches, mutations). Disable those buttons using the hook's `networkState`:
+
+```tsx
+const { networkState, retry } = useNetworkStatus();
+const isOffline = networkState === 'offline' || networkState === 'reconnecting';
+
+<Button disabled={isOffline} onClick={save}>Save</Button>
+```
+
+## API Reference
+
+### OfflineBannerProps
+
+<PropsTable component="offline-banner" />
+
+### useNetworkStatus(options?)
+
+```ts
+function useNetworkStatus(options?: UseNetworkStatusOptions): UseNetworkStatusReturn
+```
+
+**Options:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `onRetry` | `() => Promise<boolean>` | — | Custom async connectivity check. Return `true` if online, `false` if still offline. Falls back to `navigator.onLine` when omitted. |
+| `restoredDisplayDuration` | `number` | `1500` | Milliseconds to show the "restored" state before auto-dismissing. |
+
+**Returns:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `networkState` | `NetworkState` | Current state: `"online" \| "offline" \| "reconnecting" \| "restored"` |
+| `retry` | `() => void` | Trigger a manual reconnect check. Transitions to `"reconnecting"` then `"restored"` or `"offline"`. |
+
+## Accessibility
+
+- The banner uses `role="status"` and `aria-live="polite"` — changes are announced non-interruptively.
+- `aria-label` updates to reflect the current state ("You're offline", "Reconnecting…", "Back online").
+- The Retry button has an `aria-label` that clarifies intent: "Retry — check network connection".
+- Icons are `aria-hidden="true"` — meaning is carried by the text label.
+- The banner does not trap focus or block interaction with content below it.
+
+## Composition Notes
+
+- Position the `OfflineBanner` immediately after your `<nav>` element so it sticks below the navigation bar without pushing content.
+- The component uses `position: sticky; top: 0; z-index: 40` — ensure your nav bar sits above (`z-index: 50` or higher) if both are sticky.
+- The entrance animation (`200ms ease-out` slide from top) is a CSS keyframe with `opacity: 1` as resting state — SSR-safe, no JS mount dependency.
