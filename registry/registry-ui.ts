@@ -2425,4 +2425,23 @@ export const ui: Registry = [
       },
     ],
   },
+  {
+    name: "conflict-banner",
+    type: "registry:ui",
+    category: "feedback",
+    description:
+      "Inline conflict detection and optimistic-rollback UI for concurrent edit scenarios. Surfaces a 409/ETag conflict inline within the affected record with Keep my version / Load latest actions and an optional collapsible diff view. Pairs with the useOptimisticMutation hook for a full pending → conflict → resolving → resolved state machine.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/conflict-banner/conflict-banner.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/conflict-banner/conflict-banner.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
 ]

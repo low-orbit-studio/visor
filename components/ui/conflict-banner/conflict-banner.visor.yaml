@@ -1,0 +1,60 @@
+name: ConflictBanner
+description: Inline conflict detection and optimistic-rollback UI for concurrent edit scenarios.
+extends: HTMLDivElement
+category: feedback
+
+when_to_use:
+  - Detecting and surfacing concurrent edit conflicts (409 / ETag mismatch)
+  - Presenting a "Keep my version" vs "Load latest" choice to the user
+  - Reverting a failed optimistic update cleanly and atomically
+  - Showing a collapsible field-level diff after a conflict is detected
+
+when_not_to_use:
+  - Ephemeral success or failure notifications (use Toast)
+  - Page-level alerts that don't require a user decision (use Alert or Banner)
+  - Errors unrelated to concurrent edits (use Alert variant="destructive")
+
+why: >
+  ConflictBanner renders inline within the affected record — not as a global toast —
+  so the user sees the conflict in context. It pairs with the useOptimisticMutation
+  hook, which drives the full pending → conflict → resolving → resolved state machine.
+  All styling uses semantic warning tokens and is fully theme-agnostic.
+
+variants: {}
+
+sub_components: []
+
+props:
+  - name: state
+    type: "'pending' | 'conflict' | 'resolving' | 'resolved-local' | 'resolved-remote'"
+    default: "conflict"
+  - name: description
+    type: string
+    default: "'This record was updated by someone else.'"
+  - name: diffs
+    type: "ConflictDiff[]"
+    default: "[]"
+  - name: onKeepMine
+    type: "() => void"
+    default: undefined
+  - name: onLoadLatest
+    type: "() => void"
+    default: undefined
+
+exports:
+  - ConflictBanner
+  - useOptimisticMutation
+
+dependencies:
+  - "@phosphor-icons/react"
+
+preview_url: "https://visor.design/docs/components/feedback/conflict-banner"
+
+example: |
+  <ConflictBanner
+    state="conflict"
+    description="Jordan Kim saved changes 30 seconds ago."
+    diffs={[{ field: "Title", yours: "Draft v2", theirs: "Draft v1" }]}
+    onKeepMine={() => void 0}
+    onLoadLatest={() => void 0}
+  />
