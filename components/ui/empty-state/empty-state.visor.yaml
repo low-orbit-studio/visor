@@ -24,6 +24,7 @@ variants:
   size: [sm, md, lg]
   tone: [default, subtle]
   variant: [default, editorial]
+  intent: [first-use, zero-results, no-access]
 
 props:
   - name: heading
@@ -33,6 +34,12 @@ props:
   - name: icon
     type: React.ReactNode
     description: Leading visual, typically a Phosphor icon. Marked aria-hidden.
+  - name: iconWrap
+    type: boolean
+    description: >
+      Wraps the icon in a circular chip. Auto-enabled when intent is set.
+      Can be used independently of intent to get the chip treatment without
+      semantic coloring.
   - name: description
     type: React.ReactNode
     description: 1-2 sentence explanation or guidance beneath the heading.
@@ -57,6 +64,14 @@ props:
       Surface treatment. Default is the base placeholder (dashed/borderless per tone).
       Editorial is an opt-in filled card on --surface-card with a 64px circular icon chip
       and a larger heading; it overrides the tone surface and the size icon/heading scale.
+  - name: intent
+    type: "'first-use' | 'zero-results' | 'no-access'"
+    description: >
+      Semantic intent of the empty state (Borealis global state spec §5).
+      first-use: no items exist yet; accent-tinted icon chip; encourage creation CTA.
+      zero-results: filter/search returned nothing; accent-tinted chip; offer clear-filter.
+      no-access: permission gate; neutral chip; typically no CTA (terminal state).
+      Setting intent auto-activates iconWrap.
   - name: headingAs
     type: "'h2' | 'h3' | 'h4'"
     default: "h3"
