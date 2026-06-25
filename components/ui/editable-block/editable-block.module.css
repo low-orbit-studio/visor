@@ -4,8 +4,8 @@
  * check), a value body, a hover-revealed edit icon, and an editing state
  * (focus ring, inline input + save button, AI action slot).
  *
- * Visual source: docs/design/brand-workbench/journey.html L274-285
- * (.block / .bk / .bv / .ed / .editrow / .aibtn selectors)
+ * Visual source: docs/design/brand-workbench/journey (HTML) L274-285
+ * (prototype selectors: block, bk, bv, ed, editrow, aibtn)
  *
  * All values flow through CSS custom properties. No hard-coded colors or
  * magic numbers — every value traces to a design token or is documented.
