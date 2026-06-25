@@ -418,6 +418,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "StructuredPromptHeader",
   "StructuredPromptHint",
   "StructuredPromptSlot",
+  "SuccessLiveRegion",
   "SurfaceRow",
   "SurfaceScaleStack",
   "SurfaceSection",

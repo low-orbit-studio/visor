@@ -1,0 +1,160 @@
+---
+title: Success Feedback
+description: App-wide success/transition feedback pattern. useSuccessToast() fires an auto-dismissing success toast; SuccessLiveRegion provides an explicit a11y live region for screen readers.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import {
+  SuccessFeedbackBasicDemo,
+  SuccessFeedbackUndoDemo,
+  SuccessFeedbackGalleryDemo,
+} from '@/components/ui/success-feedback-demos';
+
+<Callout type="info">
+**Pattern vs Primitive:** `SuccessFeedback` is the Borealis-recommended *pattern* for app-wide success confirmation — it wraps the [Toast](/docs/components/feedback/toast) primitive with spec-mandated defaults (4s auto-dismiss, undo action support, a11y live region). Use [Toast](/docs/components/feedback/toast) directly when you need full control.
+</Callout>
+
+## Setup
+
+Add `<Toaster />` and `<SuccessLiveRegion />` once in your root layout.
+
+```tsx
+// app/layout.tsx
+import { Toaster } from '@/components/ui/toast/toast';
+import { SuccessLiveRegion } from '@/components/ui/success-feedback/success-feedback';
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        {children}
+        <Toaster />
+        <SuccessLiveRegion message="" />
+      </body>
+    </html>
+  );
+}
+```
+
+## Basic Usage
+
+Call `showSuccess(title, options?)` after any successful operation. The toast auto-dismisses after 4 seconds.
+
+<ComponentPreview
+  title="Basic Success"
+  code={"const { showSuccess } = useSuccessToast();\nshowSuccess('Project saved', { description: 'All changes have been saved.' });"}
+>
+  <SuccessFeedbackBasicDemo />
+</ComponentPreview>
+
+## With Undo Action
+
+Provide an `action` to give users a recovery path. The Borealis spec recommends `Undo` for destructive operations and `View` for created/exported items.
+
+<ComponentPreview
+  title="With Undo Action"
+  code={"const { showSuccess } = useSuccessToast();\nshowSuccess('Item deleted', {\n  description: 'Project archived successfully.',\n  action: { label: 'Undo', onClick: handleUndo },\n});"}
+>
+  <SuccessFeedbackUndoDemo />
+</ComponentPreview>
+
+## Gallery
+
+Common success scenarios in a Borealis-native app:
+
+<ComponentPreview
+  title="Success Scenarios"
+  code={"// Save project\nshowSuccess('Project saved', { description: 'All changes have been saved.' });\n\n// Send invite with action\nshowSuccess('Invitation sent', {\n  description: 'alex@example.com has been invited.',\n  action: { label: 'View', onClick: openInvites },\n});\n\n// Delete with undo\nshowSuccess('Item deleted', {\n  action: { label: 'Undo', onClick: handleUndo },\n});\n\n// Copy link (no description needed)\nshowSuccess('Link copied');\n\n// Export with view action\nshowSuccess('Export ready', {\n  description: 'Your CSV is ready to download.',\n  action: { label: 'View', onClick: downloadCSV },\n});"}
+>
+  <SuccessFeedbackGalleryDemo />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add success-feedback
+```
+
+This copies two files into your project:
+
+- `components/ui/success-feedback/success-feedback.tsx` — the hook + live region
+- `components/ui/success-feedback/success-feedback.module.css` — the styles
+
+The pattern depends on the [Toast](/docs/components/feedback/toast) primitive — install that first:
+
+```bash
+npx visor add toast
+```
+
+## Usage
+
+```tsx
+import { useSuccessToast, SuccessLiveRegion } from '@/components/ui/success-feedback/success-feedback';
+
+// In your component
+const { showSuccess } = useSuccessToast();
+
+// Basic
+showSuccess('Changes saved');
+
+// With description
+showSuccess('File uploaded', {
+  description: 'report-q4-2025.pdf was saved to your documents.',
+});
+
+// With action
+showSuccess('Message sent', {
+  action: { label: 'Undo', onClick: handleUndo },
+});
+
+// Custom duration (clamped to 3000–8000ms)
+showSuccess('Settings saved', { duration: 6000 });
+```
+
+## API Reference
+
+### `useSuccessToast()`
+
+Returns `{ showSuccess }`.
+
+```tsx
+showSuccess(title: string, options?: SuccessToastOptions): void
+```
+
+### `SuccessToastOptions`
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `description` | `string` | — | Optional supporting sub-copy beneath the title |
+| `action` | `{ label: string; onClick: () => void }` | — | Optional action affordance (e.g. "Undo", "View") |
+| `duration` | `number` | `4000` | Auto-dismiss in ms. Clamped to [3000, 8000] per Borealis spec |
+| `id` | `string \| number` | — | Explicit id for deduplication (Sonner merges same-id toasts) |
+
+### `SuccessLiveRegion`
+
+<PropsTable component="success-feedback" />
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `message` | `string` | `""` | The success text to announce to screen readers |
+
+`SuccessLiveRegion` also accepts all standard `<div>` HTML attributes.
+
+## Accessibility
+
+- `SuccessLiveRegion` renders `role="status"` + `aria-live="polite"` + `aria-atomic="true"` so screen readers announce the message without interrupting the user.
+- The Toaster (Sonner) also provides its own `aria-live="polite"` container — both reinforce the announcement.
+- Toasts auto-dismiss after 4 seconds. Ensure any critical confirmation is also conveyed inline if the user might miss the toast.
+- Sonner respects `prefers-reduced-motion`: animations are suppressed when the OS setting is active.
+- The dismiss button in each toast is keyboard-accessible; focus does not jump when a toast appears.
+
+## Composition Rules (Borealis Spec)
+
+Per the [Borealis global state catalog](/docs/patterns/borealis-states):
+
+- **Triggers:** CRUD operations, file upload/export, settings saved, invite sent, link copied
+- **Never for errors:** Use inline validation (VI-587) or an error Banner for failures
+- **Auto-dismiss:** Default 4s; configurable 3–8s. Timer pauses on hover/keyboard focus (Sonner built-in)
+- **Stacking:** Max 3 visible toasts (Sonner default). Oldest is dismissed when the queue exceeds 3
+- **Deduplication:** Pass `id` to deduplicate identical messages within a 500ms window

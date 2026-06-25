@@ -1,0 +1,14 @@
+/* SuccessLiveRegion — visually hidden, screen-reader only.
+   Uses the standard SR-only technique: clip to a 1×1 pixel box,
+   position absolute so it does not affect layout flow. */
+.liveRegion {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
