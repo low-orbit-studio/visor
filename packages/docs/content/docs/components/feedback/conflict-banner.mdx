@@ -1,0 +1,141 @@
+---
+title: Conflict Banner
+description: Inline conflict detection and optimistic-rollback UI for concurrent edit scenarios.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ConflictBannerStaticDemo, ConflictBannerInteractiveDemo } from '@/components/ui/conflict-banner-demos';
+
+## Overview
+
+`ConflictBanner` surfaces a concurrent-edit conflict inline within the affected record — not as a global toast. It requires an explicit user decision: **Keep my version** or **Load latest**. ESC key and backdrop click are intentionally ignored.
+
+Pair it with the `useOptimisticMutation` hook, which drives the full state machine: `pending → conflict → resolving → resolved-local | resolved-remote`.
+
+## Conflict State
+
+The banner appears when `state="conflict"`. Fields in the parent record should be dimmed (`opacity: var(--opacity-50)`) to signal that the current values are in question.
+
+<ComponentPreview
+  title="Conflict State"
+  code={"import { ConflictBanner } from '@/components/ui/conflict-banner/conflict-banner';\n\n<ConflictBanner\n  state=\"conflict\"\n  description=\"Jordan Kim saved changes 30 seconds ago. Your edits may conflict.\"\n  diffs={[\n    { field: 'Title', yours: 'Q3 Marketing Brief (Draft)', theirs: 'Q3 Marketing Brief' },\n  ]}\n  onKeepMine={() => void 0}\n  onLoadLatest={() => void 0}\n/>"}
+>
+  <div style={{ width: '100%' }}>
+    <ConflictBannerStaticDemo />
+  </div>
+</ComponentPreview>
+
+## Interactive Demo
+
+Click **Simulate conflict** to trigger an optimistic mutation that returns a 409 error, then resolve it with either action. The `useOptimisticMutation` hook manages the full state machine.
+
+<ComponentPreview
+  title="Interactive Demo"
+  code={"import { ConflictBanner, useOptimisticMutation } from '@/components/ui/conflict-banner/conflict-banner';\n\nconst { conflictState, keepMine, loadLatest, mutate } = useOptimisticMutation(initialValue, {\n  onKeepMine: async (v) => { /* re-PUT with client intent */ },\n  onLoadLatest: async () => { /* refetch remote state */ return remoteValue; },\n});\n\n<ConflictBanner\n  state={conflictState}\n  onKeepMine={keepMine}\n  onLoadLatest={loadLatest}\n/>"}
+>
+  <ConflictBannerInteractiveDemo />
+</ComponentPreview>
+
+## Diff View
+
+Supply `diffs` to enable a collapsible "See what changed" panel. It's collapsed by default so casual users get a clean default, while power users can inspect specifics.
+
+```tsx
+<ConflictBanner
+  state="conflict"
+  description="Jordan Kim saved changes 30 seconds ago."
+  diffs={[
+    { field: 'Title', yours: 'Q3 Draft', theirs: 'Q3 Brief' },
+    { field: 'Due date', yours: 'July 15', theirs: 'August 1' },
+  ]}
+  onKeepMine={keepMine}
+  onLoadLatest={loadLatest}
+/>
+```
+
+## useOptimisticMutation
+
+The `useOptimisticMutation` hook wraps any async mutation with a built-in conflict state machine and rollback mechanism.
+
+```tsx
+import { useOptimisticMutation } from '@/components/ui/conflict-banner/conflict-banner';
+
+const {
+  status,          // 'idle' | 'pending' | 'conflict' | 'resolving' | 'resolved-local' | 'resolved-remote'
+  conflictState,   // ConflictState — maps directly to ConflictBanner's state prop
+  currentValue,    // current displayed value (optimistic or rolled-back)
+  mutate,          // (value, asyncFn) => Promise<void> — applies optimistic, calls fn, handles errors
+  keepMine,        // () => Promise<void> — re-submits the user's version
+  loadLatest,      // () => Promise<void> — fetches and applies the remote version
+  reset,           // () => void — returns to idle
+} = useOptimisticMutation(initialValue, {
+  onOptimisticApply: (v) => { /* optional: side effect when optimistic is applied */ },
+  onRollback: (prev) => { /* optional: side effect when rollback occurs */ },
+  onKeepMine: async (v) => { /* submit user's data to server */ },
+  onLoadLatest: async () => { /* fetch latest from server; return the value */ return remoteValue; },
+});
+```
+
+### Rollback guarantees
+
+- **Atomic rollback:** When `mutate` throws, `currentValue` is reset to `previousValue` immediately before entering `conflict` state — no partial states.
+- **Keep my version:** Calls `onKeepMine(pendingValue)` and enters `resolved-local`. The API receives an explicit client-intent signal, not a silent clobber.
+- **Load latest:** Calls `onLoadLatest()`, applies the returned value, and enters `resolved-remote`.
+
+## Installation
+
+```bash
+npx visor add conflict-banner
+```
+
+This copies two files into your project:
+
+- `components/ui/conflict-banner/conflict-banner.tsx` — the component + hook
+- `components/ui/conflict-banner/conflict-banner.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  ConflictBanner,
+  useOptimisticMutation,
+} from '@/components/ui/conflict-banner/conflict-banner';
+
+function RecordForm() {
+  const { conflictState, currentValue, mutate, keepMine, loadLatest } =
+    useOptimisticMutation(record, {
+      onKeepMine: async (v) => await api.put('/records/1', v),
+      onLoadLatest: async () => (await api.get('/records/1')).data,
+    });
+
+  return (
+    <div>
+      <ConflictBanner
+        state={conflictState}
+        description="Another user saved this record while you were editing."
+        onKeepMine={keepMine}
+        onLoadLatest={loadLatest}
+      />
+      <div style={{ opacity: conflictState === 'conflict' ? 0.5 : 1 }}>
+        {/* your fields here */}
+      </div>
+    </div>
+  );
+}
+```
+
+## API Reference
+
+### ConflictBannerProps
+
+<PropsTable component="conflict-banner" />
+
+The component also accepts all standard `<div>` HTML attributes.
+
+## Accessibility
+
+- Renders with `role="alert"` and `aria-live="assertive"` — conflict is announced immediately.
+- ESC key does NOT dismiss the banner; explicit user action is required.
+- Diff toggle uses `aria-expanded` and `aria-controls` for screen reader compatibility.
+- Buttons are disabled (not hidden) during the resolving state so focus is preserved.
