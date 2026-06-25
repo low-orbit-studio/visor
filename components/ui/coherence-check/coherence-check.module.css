@@ -1,0 +1,130 @@
+/* ─── CheckGroup ─────────────────────────────────────────────────────────── */
+
+.group {
+  margin-bottom: var(--spacing-5, 1.25rem);
+}
+
+/* Uppercase group header */
+.groupHeading {
+  margin: 0 0 var(--spacing-2, 0.5rem);
+  padding: 0 calc(var(--spacing-1, 0.25rem) / 2);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-extrabold, 800);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary, #9ca3af);
+  line-height: 1.4;
+}
+
+/* ─── CheckRow ───────────────────────────────────────────────────────────── */
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3, 0.75rem);
+  background: var(--surface-card, #ffffff);
+  border: var(--stroke-width-thin, 1px) solid var(--hairline, #e5e7eb);
+  border-radius: var(--radius-lg, 0.5rem);
+  padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
+  margin-bottom: var(--spacing-2, 0.5rem);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Last row in a group has no bottom margin */
+.row:last-child {
+  margin-bottom: 0;
+}
+
+/* ─── State icon circle ─────────────────────────────────────────────────── */
+
+.icon {
+  flex: none;
+  width: var(--spacing-6, 1.5rem);
+  height: var(--spacing-6, 1.5rem);
+  border-radius: var(--radius-full, 9999px);
+  display: grid;
+  place-items: center;
+  margin-top: calc(var(--spacing-1, 0.25rem) / 4);
+  color: var(--text-inverse, #ffffff);
+}
+
+.icon svg {
+  width: var(--spacing-4, 1rem);
+  height: var(--spacing-4, 1rem);
+}
+
+/* State — icon background tints */
+.statePass .icon {
+  background: var(--success, #22c55e);
+}
+
+.stateWarn .icon {
+  background: var(--warning, #f59e0b);
+}
+
+.stateFail .icon {
+  background: var(--destructive, #ef4444);
+}
+
+/* ─── Body (title + description) ─────────────────────────────────────────── */
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.rowTitle {
+  display: block;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #111827);
+  line-height: 1.4;
+}
+
+.rowDescription {
+  margin: calc(var(--spacing-1, 0.25rem) * 0.75) 0 0;
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-secondary, #6b7280);
+  line-height: 1.5;
+}
+
+/* Inline code token support within description */
+.rowDescription code {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: var(--font-size-xs, 0.75rem);
+  background: var(--surface-muted, #f3f4f6);
+  padding: var(--stroke-width-thin, 1px) var(--spacing-1, 0.25rem);
+  border-radius: var(--radius-sm, 0.125rem);
+}
+
+/* ─── Fix action button (ghost) ──────────────────────────────────────────── */
+
+.fixButton {
+  flex: none;
+  align-self: center;
+  height: var(--spacing-8, 2rem);
+  padding: 0 var(--spacing-3, 0.75rem);
+  border-radius: var(--radius-md, 0.25rem);
+  font-family: inherit;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-bold, 700);
+  border: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
+  background: transparent;
+  color: var(--text-primary, #111827);
+  cursor: pointer;
+  transition:
+    background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+  white-space: nowrap;
+}
+
+.fixButton:hover {
+  background: var(--surface-muted, #f3f4f6);
+  border-color: var(--border-strong, #d1d5db);
+}
+
+.fixButton:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+}

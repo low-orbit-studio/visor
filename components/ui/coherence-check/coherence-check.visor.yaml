@@ -1,0 +1,83 @@
+name: CoherenceCheck
+description: Check group with pass/warn/fail rows for displaying coherence audit results — group header + state icon circle + title, description with inline code support, and optional ghost Fix action.
+extends: HTMLDivElement
+category: feedback
+
+when_to_use:
+  - Displaying a grouped list of brand or system coherence checks (pass / warn / fail)
+  - Presenting audit results where each item has a state, a title, and an optional corrective action
+  - Building Prove-stage UIs in a Brand Workbench flow where checks gate an export
+  - Showing accessibility, derivation, or voice-consistency checks inline with fix affordances
+
+when_not_to_use:
+  - Progress tracking across sequential steps (use Stepper)
+  - Simple boolean on/off toggles or checkboxes (use Checkbox)
+  - Validation errors on individual form fields (use Field error state)
+  - Status badges on cards or list items (use StatusBadge or Badge)
+
+why: >
+  CoherenceCheck provides a semantically structured container for grouped audit
+  checks. CheckGroup renders an uppercase section header; CheckRow renders a
+  state-tinted icon circle (pass/warn/fail via CVA), a title + description slot
+  with inline <code> token support, and a right-aligned ghost Fix action button.
+  All values are 100% token-pure — no hardcoded colors, spacing, or motion.
+
+variants:
+  state: [pass, warn, fail]
+
+sub_components:
+  - name: CheckGroup
+    description: Groups related CheckRow items under an uppercase section heading.
+  - name: CheckRow
+    description: Individual check result row with a state icon circle, title, optional description, and optional ghost Fix action button.
+
+props:
+  - name: heading
+    type: string
+    description: Group header label (rendered uppercase).
+    applies_to: CheckGroup
+  - name: state
+    type: "'pass' | 'warn' | 'fail'"
+    default: "pass"
+    description: Semantic state controlling the icon and tint color.
+    applies_to: CheckRow
+  - name: title
+    type: string
+    description: Check title / finding label.
+    applies_to: CheckRow
+  - name: description
+    type: React.ReactNode
+    description: Supporting description. Accepts inline <code> elements for token names.
+    applies_to: CheckRow
+  - name: fixLabel
+    type: string
+    description: Label for the ghost Fix action button. Omit to hide the button.
+    applies_to: CheckRow
+  - name: onFix
+    type: "() => void"
+    description: Callback invoked when the Fix action button is clicked.
+    applies_to: CheckRow
+
+dependencies:
+  - "class-variance-authority"
+  - "@phosphor-icons/react"
+
+preview_url: "https://visor.design/docs/components/feedback/coherence-check"
+
+example: |
+  <CheckGroup heading="Accessibility — WCAG 2.1 AA">
+    <CheckRow
+      state="fail"
+      title="One pairing fails on small text"
+      description={<>
+        <code>--text-tertiary</code> on <code>--surface-subtle</code> is 3.9:1 — below 4.5:1 for body text.
+      </>}
+      fixLabel="Suggest a fix"
+      onFix={() => {}}
+    />
+    <CheckRow
+      state="pass"
+      title="Primary, text, and focus rings clear AA"
+      description="Body 7.1:1 · large text 4.8:1 · non-text UI 3.4:1 — all above target on both light and dark."
+    />
+  </CheckGroup>
