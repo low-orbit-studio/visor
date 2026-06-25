@@ -1365,6 +1365,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "form-error",
+    type: "registry:ui",
+    category: "form",
+    description:
+      "Form-level submission error banner — appears inside a form card when submission is blocked by field validation failures. Pairs with Field, FieldError, and Input[aria-invalid] to deliver the complete Borealis form validation pattern.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/form-error/form-error.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/form-error/form-error.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "search-input",
     type: "registry:ui",
     description:

@@ -1435,6 +1435,19 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'form-error': [
+    {
+      name: 'icon',
+      type: 'ReactNode',
+      description: 'Optional leading icon (e.g. a Phosphor WarningCircle). Rendered at the destructive color. aria-hidden — role="alert" carries the semantic weight.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names merged onto the container element.',
+    },
+  ],
+
   'form-field': [
     {
       name: 'field',

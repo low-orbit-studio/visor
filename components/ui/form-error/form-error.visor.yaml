@@ -1,0 +1,61 @@
+name: FormError
+description: Form-level submission error banner — appears inside a form card when submission is blocked by field validation failures.
+extends: HTMLDivElement
+category: form
+
+when_to_use:
+  - A form submit is blocked by one or more invalid fields and the user needs to know there are errors to fix
+  - Server-side validation returns field-keyed errors (422) that need a top-of-form summary
+  - You want a visible anchor point at the top of the form alongside per-field FieldError messages
+
+when_not_to_use:
+  - Single-field inline validation — use FieldError on its own
+  - Page-level or section-level error announcements unrelated to a form (use Banner or ErrorPlacard)
+  - Ephemeral transient notifications (use Toast)
+  - Inside a dialog or overlay where space is constrained (prefer just FieldError)
+
+why: >
+  FormError is the form-level complement to FieldError. While FieldError handles per-field
+  error messages inline (below each invalid control), FormError provides a top-of-form
+  submit-error banner that anchors the user's attention and announces the failure to assistive
+  technology via role="alert". Together they implement the full Borealis form validation pattern:
+  field-level errors keep the user in context; the form-level banner gives a clear, scannable
+  summary entry point above the fields.
+
+props:
+  - name: icon
+    type: "ReactNode"
+    required: false
+    description: Optional leading icon (e.g. a Phosphor WarningCircle). Rendered at the destructive color. aria-hidden — role="alert" carries the semantic weight.
+  - name: className
+    type: "string"
+    required: false
+    description: Additional CSS class names merged onto the container element.
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/form/form-error"
+
+example: |
+  import { WarningCircle } from '@phosphor-icons/react';
+  import { FormError, FormErrorTitle, FormErrorDescription } from '@/components/ui/form-error/form-error';
+  import { Field, FieldLabel, FieldError } from '@/components/ui/field/field';
+  import { Input } from '@/components/ui/input/input';
+
+  {submitError && (
+    <FormError icon={<WarningCircle size={18} weight="fill" />}>
+      <FormErrorTitle>Please fix the errors below before continuing</FormErrorTitle>
+      <FormErrorDescription>2 fields need your attention.</FormErrorDescription>
+    </FormError>
+  )}
+
+  <Field>
+    <FieldLabel htmlFor="name">Full name</FieldLabel>
+    <Input
+      id="name"
+      aria-invalid={nameError ? 'true' : undefined}
+      aria-describedby={nameError ? 'name-error' : undefined}
+    />
+    {nameError && <FieldError id="name-error">{nameError}</FieldError>}
+  </Field>
