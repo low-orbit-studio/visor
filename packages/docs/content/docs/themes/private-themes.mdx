@@ -12,6 +12,14 @@ The `/themes/private` route renders every theme from `@low-orbit-studio/visor-th
 - The `/themes/private` route reads `PRIVATE_THEMES`. When the array is empty, the route returns 404 — that's the public-build behavior.
 - When `PRIVATE_THEMES` is non-empty, the page renders a switcher, a representative component preview, and the Brand cohesion view — each theme's real logo, brandmark, and wordmark on light and dark surfaces. Slots a theme omits (e.g. monochrome) fall back to the Visor default mark. Cloudflare Access enforces who can reach the route in the first place.
 
+## Interim access gate (`proxy.ts`)
+
+Until the Cloudflare Access policy below is live, the route is gated by a stopgap HTTP Basic Auth proxy at `packages/docs/proxy.ts` (VI-329). It enforces only in deployed environments (`process.env.VERCEL`) — local `next dev` is left open so the gallery stays workable without a secret.
+
+To activate it, set `THEMES_PRIVATE_BASIC_AUTH` (format `user:password`) in the visor.design Vercel project for **Production + Preview**. The gate **fails closed**: in a deployed environment a missing secret or wrong credential returns `401`, never the gallery HTML.
+
+This is a temporary measure. Once Cloudflare Access is configured and verified (next section), **delete `packages/docs/proxy.ts` and remove the `THEMES_PRIVATE_BASIC_AUTH` env var** — edge auth at the DNS layer (decision D1) is the durable gate.
+
 ## One-time infrastructure setup
 
 These steps must be performed manually by an operator with access to the relevant dashboards. They are not driven by application code.
