@@ -1,0 +1,111 @@
+---
+title: EditableBlock
+description: Canvas brand block — a card tile with an uppercase label header, value body, hover-revealed edit icon, and editing state with inline input, save button, and AI action slot.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { EditableBlock } from '@/components/ui/editable-block';
+import {
+  EditableBlockDefaultDemo,
+  EditableBlockDoneDemo,
+  EditableBlockEditingDemo,
+  EditableBlockGridDemo,
+} from '@/components/ui/editable-block-demo';
+
+```bash
+npx visor add editable-block
+```
+
+## Default
+
+View state — label + value body; the edit icon is revealed on hover.
+
+<ComponentPreview
+  title="EditableBlock — default view state"
+  code={"const [value, setValue] = React.useState('coherent · open · yours');\n\n<EditableBlock\n  label=\"Essence\"\n  value={value}\n  onSave={setValue}\n  onAiAction={() => console.log('AI action')}\n/>"}
+>
+  <EditableBlockDefaultDemo />
+</ComponentPreview>
+
+## Done state
+
+When `done={true}` a green check icon appears next to the label. The block is still editable.
+
+<ComponentPreview
+  title="EditableBlock — done state"
+  code={"<EditableBlock\n  label=\"Positioning\"\n  value=\"The only design system that compiles a brand — visual and verbal — from one file.\"\n  done\n  onSave={setValue}\n/>"}
+>
+  <EditableBlockDoneDemo />
+</ComponentPreview>
+
+## Editing state
+
+Pass `defaultEditing` to open the block in its editing state on mount (useful for demos and controlled pre-open). In normal usage, the user clicks the card or the edit icon to enter this state.
+
+<ComponentPreview
+  title="EditableBlock — editing state"
+  code={"<EditableBlock\n  label=\"Essence\"\n  value=\"coherent · open · yours\"\n  defaultEditing\n  onSave={setValue}\n  onAiAction={() => console.log('pressure-test')}\n/>"}
+>
+  <EditableBlockEditingDemo />
+</ComponentPreview>
+
+## Canvas grid
+
+The board grid is a plain `Grid` composition — `EditableBlock` is only the tile. Six blocks here mirror the Canvas stage in the Brand Workbench prototype.
+
+<ComponentPreview
+  title="Canvas brand record grid"
+  code={"<div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.875rem' }}>\n  <EditableBlock label=\"Essence\" value=\"coherent · open · yours\" onSave={...} onAiAction={...} />\n  <EditableBlock label=\"Positioning\" value=\"The only design system that compiles a brand...\" done onSave={...} />\n  {/* ...more blocks */}\n</div>"}
+>
+  <EditableBlockGridDemo />
+</ComponentPreview>
+
+## Keyboard interaction
+
+| Key | Action |
+| --- | --- |
+| `Enter` | Saves the current draft |
+| `Escape` | Cancels editing; restores the previous value |
+
+## AI action slot
+
+The `aiActionLabel` prop (default `"Ask AI to pressure-test"`) controls the label on the AI affordance button shown during editing. Pass `null` to suppress the button entirely.
+
+```tsx
+// Custom AI label
+<EditableBlock
+  label="Voice"
+  value="plainspoken · candid · warm"
+  onSave={setValue}
+  aiActionLabel="Generate voice alternatives"
+  onAiAction={triggerVoiceAlternatives}
+/>
+
+// No AI button
+<EditableBlock
+  label="Lexicon"
+  value="theme not skin · token not variable"
+  onSave={setValue}
+  aiActionLabel={null}
+/>
+```
+
+## Installation
+
+```bash
+npx visor add editable-block
+```
+
+This copies two files into your project:
+
+- `components/ui/editable-block/editable-block.tsx` — the component
+- `components/ui/editable-block/editable-block.module.css` — the styles
+
+## API Reference
+
+### EditableBlockProps
+
+<PropsTable component="editable-block" />
+
+`EditableBlock` also accepts all standard `<div>` HTML attributes.

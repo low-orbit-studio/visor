@@ -1,0 +1,74 @@
+name: EditableBlock
+description: Canvas brand block — a card tile with an uppercase label header, value body, hover-revealed edit icon, and editing state with inline input, save button, and AI action slot.
+extends: HTMLDivElement
+category: general
+
+when_to_use:
+  - Building a free-edit canvas board where each cell in a brand record (essence, positioning, personality, etc.) is independently editable
+  - Any situation where a small labeled data block needs in-place editing without a modal or drawer
+  - Displaying a short AI-derived value the user can challenge or refine with a direct AI action
+  - Showing a board of brand strategy blocks that each represent a distinct, modifiable attribute
+
+when_not_to_use:
+  - Multi-field forms — use a form with labeled inputs + a single submit action instead
+  - Long-form text editing — use a textarea or rich-text editor
+  - Read-only display cards with no edit intent — use Card + Text
+  - Situations where editing must be confirmed by a secondary reviewer before saving — use a review workflow instead
+
+why: >
+  The brand-workbench Canvas stage (phase 4 of the Brand Workbench epic, VI-548) presents the
+  complete brand record as a free-edit grid where every attribute is independently editable.
+  The block pattern — uppercase label + value body, hover-revealed edit affordance, inline
+  input + save, and an AI "pressure-test" slot — appears across all nine canvas cells and is
+  meaningfully different from any existing Card or form primitive. Codifying it as a compound
+  component standardises the view↔edit state machine, focus management, keyboard interaction
+  (Enter to save, Escape to cancel), SSR-safe opacity reveal, and the AI action slot across
+  all canvas cells.
+
+variants:
+  state:
+    default: View state — label + value body; edit icon visible only on hover.
+    done: Confirmed block — adds a green check to the header; still editable.
+    editing: Active edit — focus ring border, inline input + save button, AI action slot.
+
+props:
+  - name: label
+    type: string
+    description: Block label rendered uppercase above the value.
+  - name: value
+    type: string
+    description: The current value to display (and the initial draft value when editing opens).
+  - name: done
+    type: boolean
+    default: 'false'
+    description: Shows a success check icon in the header when true.
+  - name: onSave
+    type: "(value: string) => void"
+    description: Called when the user saves an edited value. Parent is responsible for updating `value`.
+  - name: aiActionLabel
+    type: "string | null"
+    default: '"Ask AI to pressure-test"'
+    description: Label for the AI action button shown in editing state. Pass null to suppress the button.
+  - name: onAiAction
+    type: "() => void"
+    description: Called when the AI action button is clicked.
+  - name: defaultEditing
+    type: boolean
+    default: 'false'
+    description: Opens the block in editing state on mount. Useful for programmatic pre-open.
+
+dependencies:
+  - "@phosphor-icons/react"
+  - "class-variance-authority"
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/general/editable-block"
+
+example: |
+  <EditableBlock
+    label="Essence"
+    value="coherent · open · yours"
+    done={false}
+    onSave={(v) => console.log('saved:', v)}
+    onAiAction={() => console.log('AI: pressure-test')}
+  />

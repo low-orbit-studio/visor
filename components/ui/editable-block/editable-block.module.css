@@ -1,0 +1,246 @@
+/* EditableBlock
+ *
+ * Canvas brand block — a card tile with an uppercase label header (+ done
+ * check), a value body, a hover-revealed edit icon, and an editing state
+ * (focus ring, inline input + save button, AI action slot).
+ *
+ * Visual source: docs/design/brand-workbench/journey.html L274-285
+ * (.block / .bk / .bv / .ed / .editrow / .aibtn selectors)
+ *
+ * All values flow through CSS custom properties. No hard-coded colors or
+ * magic numbers — every value traces to a design token or is documented.
+ */
+
+/* ─── Root tile ─────────────────────────────────────────────────────────── */
+
+.root {
+  background: var(--surface-card, #ffffff);
+  border: var(--stroke-width-thin, 1px) solid var(--hairline, rgba(0,0,0,0.06));
+  border-radius: var(--radius-lg, 0.75rem);
+  padding: var(--spacing-3_5, 0.875rem);         /* prototype: 14px */
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgb(0 0 0 / 0.05));
+  min-height: 6rem;                               /* prototype: 96px */
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition:
+    border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+/* ─── State: default (hover) ────────────────────────────────────────────── */
+
+.stateDefault:hover {
+  border-color: var(--border-default, #e5e7eb);
+}
+
+/* Reveal edit icon on hover — use CSS opacity so resting state is still
+   in the DOM (avoids SSR/hydration race on mount). */
+.stateDefault:hover .editIcon {
+  opacity: var(--opacity-80, 0.8);
+}
+
+/* ─── State: done ───────────────────────────────────────────────────────── */
+
+.stateDone:hover {
+  border-color: var(--border-default, #e5e7eb);
+}
+
+.stateDone:hover .editIcon {
+  opacity: var(--opacity-80, 0.8);
+}
+
+/* ─── State: editing ────────────────────────────────────────────────────── */
+
+.stateEditing {
+  /* Focus-ring shadow — exception per token-rules Rule 2 (focus ring variant) */
+  border-color: var(--primary, #111827);
+  box-shadow: 0 0 0 var(--spacing-1, 0.25rem) var(--interactive-primary-soft, color-mix(in srgb, var(--interactive-primary-bg, #111827) 12%, transparent));
+  cursor: default;
+}
+
+.stateEditing .label {
+  color: var(--primary, #111827);
+}
+
+/* ─── Header row ────────────────────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1_5, 0.375rem);             /* prototype: 7px ≈ 1.5 × 4px */
+  margin-bottom: var(--spacing-2, 0.5rem);       /* prototype: 8px */
+}
+
+/* ─── Label ─────────────────────────────────────────────────────────────── */
+
+.label {
+  font-size: var(--font-size-2xs, 0.65625rem);   /* prototype: 10.5px */
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-tertiary, #6b7280);
+  transition: color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+/* ─── Done check icon ───────────────────────────────────────────────────── */
+
+.doneCheck {
+  display: inline-flex;
+  align-items: center;
+  color: var(--success, #22c55e);
+}
+
+.doneCheck > svg {
+  width: var(--spacing-3, 0.75rem);             /* prototype: 12px */
+  height: var(--spacing-3, 0.75rem);
+  stroke-width: 3;
+}
+
+/* ─── Value body ────────────────────────────────────────────────────────── */
+
+.value {
+  font-size: var(--font-size-sm, 0.84375rem);   /* prototype: 13.5px ≈ sm */
+  color: var(--text-primary, #111827);
+  line-height: var(--line-height-snug, 1.45);
+  flex: 1;
+}
+
+/* ─── Hover-revealed edit icon ──────────────────────────────────────────── */
+
+.editIcon {
+  position: absolute;
+  top: var(--spacing-2_5, 0.6875rem);           /* prototype: 11px */
+  right: var(--spacing-2_5, 0.6875rem);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary, #6b7280);
+  /* Resting state opacity=0 via CSS (visible on hover via .stateDefault:hover rule).
+     Must remain in DOM at rest for accessibility & SSR hydration safety. */
+  opacity: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.editIcon:focus-visible {
+  opacity: var(--opacity-80, 0.8);
+  outline: var(--focus-ring-width, 2px) solid var(--primary, #111827);
+  outline-offset: var(--focus-ring-offset, 2px);
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+.editIcon > svg {
+  width: var(--spacing-3_5, 0.875rem);          /* prototype: 14px */
+  height: var(--spacing-3_5, 0.875rem);
+}
+
+/* ─── Edit row (input + save button) ────────────────────────────────────── */
+
+.editRow {
+  display: flex;
+  gap: var(--spacing-1_5, 0.375rem);            /* prototype: 7px */
+  margin-top: var(--spacing-2_5, 0.625rem);     /* prototype: 10px */
+}
+
+/* Inline edit input */
+.editInput {
+  flex: 1;
+  height: var(--spacing-8, 2rem);               /* prototype: 32px */
+  border-radius: var(--radius-md, 0.5rem);
+  background: var(--surface-subtle, #f9fafb);
+  border: var(--stroke-width-thin, 1px) solid
+    color-mix(in srgb, var(--primary, #111827) 30%, transparent);
+  font-family: inherit;
+  font-size: var(--font-size-sm, 0.84375rem);   /* prototype: 13px */
+  font-weight: 600;
+  color: var(--text-primary, #111827);
+  padding: 0 var(--spacing-2_5, 0.625rem);      /* prototype: 0 10px */
+  outline: none;
+}
+
+.editInput:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--primary, #111827);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* Save button (checkmark) */
+.saveButton {
+  width: var(--spacing-8, 2rem);               /* prototype: 32px */
+  height: var(--spacing-8, 2rem);
+  border-radius: var(--radius-md, 0.5rem);
+  background: var(--primary, #111827);
+  color: var(--primary-text, #ffffff);
+  display: grid;
+  place-items: center;
+  flex: none;
+  border: none;
+  cursor: pointer;
+  transition:
+    background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.saveButton:hover {
+  background: color-mix(in srgb, var(--primary, #111827) 88%, white);
+}
+
+.saveButton:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--primary, #111827);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+.saveButton > svg {
+  width: var(--spacing-3_5, 0.9375rem);         /* prototype: 15px */
+  height: var(--spacing-3_5, 0.9375rem);
+  stroke-width: 2.4;
+}
+
+/* ─── AI action button ───────────────────────────────────────────────────── */
+
+.aiAction {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1_5, 0.375rem);            /* prototype: 6px */
+  margin-top: var(--spacing-2, 0.5rem);         /* prototype: 9px ≈ spacing-2 */
+  font-family: inherit;
+  font-size: var(--font-size-xs, 0.71875rem);   /* prototype: 11.5px */
+  font-weight: 700;
+  color: var(--primary, #111827);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.aiAction:hover {
+  opacity: var(--opacity-80, 0.8);
+}
+
+.aiAction:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--primary, #111827);
+  outline-offset: var(--focus-ring-offset, 2px);
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+.aiAction > svg {
+  width: var(--spacing-3, 0.8125rem);           /* prototype: 13px */
+  height: var(--spacing-3, 0.8125rem);
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .label,
+  .editIcon,
+  .saveButton,
+  .aiAction {
+    transition: none;
+  }
+}
