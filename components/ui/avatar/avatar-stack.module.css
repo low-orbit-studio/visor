@@ -8,9 +8,15 @@
 
 /* Each avatar gets a ring matching the parent surface so adjacent avatars
    read as separate circles. Avatar's own `overflow: hidden` clips inner
-   shadows, so the ring is projected outward via box-shadow. */
+   shadows, so the ring is projected outward via box-shadow.
+
+   `--avatar-stack-ring` is the per-surface role hook: it defaults to
+   `--surface-default` (byte-identical for existing consumers). A stack that
+   sits on a different tier sets ONE custom property on a wrapper — for example
+   `--avatar-stack-ring: var(--surface-card)` — instead of reaching into the
+   component's `data-slot` internals (VI-578). */
 .avatar {
-  box-shadow: 0 0 0 var(--stroke-width-medium, 2px) var(--surface-default, #ffffff);
+  box-shadow: 0 0 0 var(--stroke-width-medium, 2px) var(--avatar-stack-ring, var(--surface-default, #ffffff));
 }
 
 /* Overlap every avatar except the first. Later siblings stack on top of
@@ -27,4 +33,15 @@
 .initialsDisc {
   background-color: transparent;
   color: inherit;
+}
+
+/* The "+N" overflow disc carries 3–4 glyphs. Editorial density shrinks the
+   default disc to 28px, but the base avatar stylesheet only adds explicit
+   fallback font-sizes for the sm and lg sizes, so a default-size overflow
+   count keeps the 14px base and clips behind overflow:hidden. Pin it to 11px
+   here (matching the blessed avatar overflow treatment), absorbing the
+   consumer's former font-size-sm overlay hack (VI-578). Default density is
+   unchanged; the more specific lg fallback rule still wins for lg discs. */
+:global([data-density="editorial"]) .overflowDisc {
+  font-size: 11px;
 }

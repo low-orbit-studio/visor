@@ -42,6 +42,12 @@ sub_components:
       an explicit `overflowCount` override, a `size` pass-through
       (`"sm" | "default" | "lg"`, default `"sm"`), and an optional accessible
       `label` override. Renders `role="img"` with `data-slot="avatar-stack"`.
+      Each disc rings itself against the parent surface via the
+      `--avatar-stack-ring` role hook (defaults to `--surface-default`); a stack
+      sitting on a different tier sets that one custom property on a wrapper
+      (e.g. `--avatar-stack-ring: var(--surface-card)`) rather than reaching into
+      `data-slot` internals. Under `data-density="editorial"` the `+N` overflow
+      disc font drops to 11px so the count never clips in the smaller disc.
 
 dependencies:
   - "@radix-ui/react-avatar"

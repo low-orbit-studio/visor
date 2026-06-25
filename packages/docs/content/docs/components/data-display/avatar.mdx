@@ -105,6 +105,25 @@ Use `overflowCount` to override the derived `+N` value — useful when you alrea
   />
 </ComponentPreview>
 
+### Theming the ring per surface
+
+Each disc in an `AvatarStack` rings itself against the parent surface so adjacent
+avatars read as separate circles. That ring color is exposed as the
+`--avatar-stack-ring` role hook, defaulting to `--surface-default`. When a stack
+sits on a different surface tier — say a card — retint the ring by setting that one
+custom property on a wrapper, rather than reaching into the component's `data-slot`
+internals:
+
+```tsx
+// The stack lives on a card, so ring each disc against --surface-card.
+<div style={{ '--avatar-stack-ring': 'var(--surface-card)' } as React.CSSProperties}>
+  <AvatarStack avatars={members} total={members.length} />
+</div>
+```
+
+Under `data-density="editorial"` the `+N` overflow disc font drops to 11px so the
+count never clips inside the smaller editorial disc — no consumer override required.
+
 ## Installation
 
 ```bash

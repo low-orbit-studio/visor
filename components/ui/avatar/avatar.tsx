@@ -180,7 +180,9 @@ const AvatarStack = React.forwardRef<HTMLDivElement, AvatarStackProps>(
             className={stackStyles.avatar}
             data-stack-overflow=""
           >
-            <AvatarFallback>+{overflow}</AvatarFallback>
+            <AvatarFallback className={stackStyles.overflowDisc}>
+              +{overflow}
+            </AvatarFallback>
           </Avatar>
         ) : null}
       </div>
