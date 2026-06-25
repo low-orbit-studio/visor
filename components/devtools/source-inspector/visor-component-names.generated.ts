@@ -288,6 +288,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "NavbarLink",
   "NavbarToggle",
   "NumberInput",
+  "OfflineBanner",
   "OpacityBar",
   "OpacitySlide",
   "OTPInput",

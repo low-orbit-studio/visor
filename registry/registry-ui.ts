@@ -1469,6 +1469,28 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "offline-banner",
+    type: "registry:ui",
+    description:
+      "App-shell banner for network connectivity loss. Sticky below the nav bar with offline, reconnecting, and restored states. Includes a useNetworkStatus hook that listens to browser online/offline events.",
+    dependencies: [
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: [],
+    category: "feedback",
+    files: [
+      {
+        path: "components/ui/offline-banner/offline-banner.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/offline-banner/offline-banner.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "number-input",
     type: "registry:ui",
     description:

@@ -1,0 +1,135 @@
+/* OfflineBanner
+ * Full-width sticky banner pinned below the navigation bar.
+ * Dark surface (--surface-overlay) with inverse text — authoritative, not alarming.
+ * Accent icon (--accent) reads against the dark background.
+ *
+ * Three rendered states share the same base layout:
+ *   offline     → dark bg, wifi-off icon, "You're offline" + Retry button
+ *   reconnecting → dark bg, spinner replacing icon, "Reconnecting…", no Retry
+ *   restored    → success-tinted bg, check icon, "Back online" (auto-dismisses)
+ */
+
+/* ── Slide-in entrance animation ─────────────────────────────────────────── */
+/* Resting state is opacity:1 (SSR-safe — never gated on JS mount) */
+@keyframes offlineBannerEnter {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ── Shared banner base ──────────────────────────────────────────────────── */
+.banner {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  padding: 0 var(--spacing-4, 1rem);
+  height: 44px;
+  animation: offlineBannerEnter var(--motion-duration-normal, 200ms) var(--motion-easing-enter, ease-out);
+}
+
+/* ── Offline / reconnecting: dark inverse surface ────────────────────────── */
+.bannerOffline {
+  background-color: var(--surface-overlay, #111827);
+  border-bottom: var(--stroke-width-thin, 1px) solid
+    color-mix(in srgb, var(--accent, #0ea5e9) 20%, transparent);
+  color: var(--text-inverse, #ffffff);
+}
+
+/* ── Restored: success-tinted surface ───────────────────────────────────── */
+.bannerRestored {
+  background-color: var(--surface-success-subtle, #f0fdf4);
+  border-bottom: var(--stroke-width-thin, 1px) solid var(--border-success, #22c55e);
+  color: var(--text-success, #16a34a);
+}
+
+/* ── Icon slot ───────────────────────────────────────────────────────────── */
+.iconSlot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.iconOffline {
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--accent, #0ea5e9);
+}
+
+.iconRestored {
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--text-success, #16a34a);
+}
+
+/* ── Spinner (reconnecting state) ────────────────────────────────────────── */
+@keyframes offlineBannerSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  border: var(--stroke-width-regular, 2px) solid
+    color-mix(in srgb, var(--accent, #0ea5e9) 30%, transparent);
+  border-top-color: var(--accent, #0ea5e9);
+  border-radius: var(--radius-full, 9999px);
+  animation: offlineBannerSpin var(--motion-duration-800, 800ms) var(--motion-easing-linear, linear) infinite;
+  flex-shrink: 0;
+}
+
+/* ── Status label ────────────────────────────────────────────────────────── */
+.label {
+  flex: 1;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 1;
+  /* Inherits color from .bannerOffline or .bannerRestored */
+}
+
+/* ── Retry button ────────────────────────────────────────────────────────── */
+.retryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+  margin-left: auto;
+  padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
+  border: none;
+  border-radius: var(--radius-sm, 0.25rem);
+  background: transparent;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--accent, #0ea5e9);
+  cursor: pointer;
+  transition:
+    background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.retryBtn:hover {
+  background-color: color-mix(in srgb, var(--accent, #0ea5e9) 10%, transparent);
+}
+
+.retryBtn:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+.retryIcon {
+  width: 0.875rem;
+  height: 0.875rem;
+}

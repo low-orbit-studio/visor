@@ -10,6 +10,7 @@
     "coherence-check",
     "conflict-banner",
     "error-placard",
+    "offline-banner",
     "slow-network-bar",
     "success-feedback",
     "toast",
