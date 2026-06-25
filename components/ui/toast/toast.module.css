@@ -45,7 +45,7 @@
 /* Success: Borealis-spec dark inverse surface (VI-589).
    Dark bg + light text signals a completed, affirmative action.
    Falls back to a high-contrast dark surface on themes that lack
-   --surface-inverse (e.g. custom minimal themes). */
+   the --surface-inverse token (for example, custom minimal themes). */
 .toaster :global([data-sonner-toast][data-type="success"]) {
   background-color: var(--surface-inverse, var(--text-primary, #111827));
   color: var(--text-inverse, #f9fafb);
@@ -60,7 +60,7 @@
 
 /* Success description — slightly muted inverse text */
 .toaster :global([data-sonner-toast][data-type="success"] [data-description]) {
-  color: var(--text-inverse-secondary, rgba(249, 250, 251, 0.75));
+  color: var(--text-inverse-secondary, #d1d5db);
 }
 
 /* Success action button — accent colour reads on dark surface */
@@ -74,7 +74,7 @@
 .toaster :global([data-sonner-toast][data-type="success"] [data-close-button]) {
   background-color: transparent;
   border-color: color-mix(in srgb, var(--text-inverse, #f9fafb) 20%, transparent);
-  color: var(--text-inverse-secondary, rgba(249, 250, 251, 0.75));
+  color: var(--text-inverse-secondary, #d1d5db);
 }
 
 .toaster :global([data-sonner-toast][data-type="error"]) {

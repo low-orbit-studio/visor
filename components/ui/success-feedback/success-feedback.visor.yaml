@@ -29,6 +29,12 @@ sub_components:
   - name: SuccessLiveRegion
     description: Visually-hidden role=status aria-live=polite node for screen-reader announcements.
 
+props:
+  - name: message
+    type: "string"
+    required: false
+    description: "SuccessLiveRegion only — the success text to announce to screen readers. Updates trigger a re-announcement. Defaults to empty string."
+
 dependencies:
   - "sonner"
 
