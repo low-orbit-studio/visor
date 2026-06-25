@@ -1,5 +1,91 @@
 # Changelog
 
+## 1.12.0
+
+### Minor Changes
+
+- b6a20a2: Add CoherenceCheck component: `CheckGroup` (uppercase group header) + `CheckRow` (pass/warn/fail state icon circle, title, description with inline `code` token support, right-aligned ghost Fix action). Covers the Brand Workbench Prove stage coherence audit UI.
+- 28a9ef3: Add `EditableBlock` component — canvas brand block with inline edit and AI affordance. Board tile with uppercase label header (+ done check), value body, hover-revealed edit icon, editing state (focus ring, inline input + save button, AI action slot). Covers Brand Workbench Canvas stage blocks.
+- f433b5a: feat(skeleton): add content-shape-aware variants — SkeletonList, SkeletonTable, SkeletonDetail
+
+  Extends the Skeleton primitive with three compound loading-placeholder components that mirror real content shapes, eliminating layout reflow on data resolve. Per the VI-584 Borealis state-pattern spec:
+
+  - `SkeletonList` — list rows with avatar circle, two text lines, and a badge pill
+  - `SkeletonTable` — N×M grid of cell-width placeholders for data tables
+  - `SkeletonDetail` — large avatar block plus heading and body text lines for detail/profile panels
+
+  All three carry `role="status"` and `aria-label` for screen-reader accessibility. Internal shape helpers (line heights, avatar sizes, width utilities, layout classes) added to the CSS module. Shimmer animation and token references unchanged.
+
+- 3765372: feat: add OfflineBanner component (VI-585)
+
+  Adds the `OfflineBanner` component and `useNetworkStatus` hook — the Borealis "global state" pattern for network connectivity loss.
+
+  **Component.** Full-width sticky banner that pins below the navigation bar using `position: sticky` — does not overlay or block content beneath it. Renders three states: `offline` (dark surface, Wifi-off icon, Retry button), `reconnecting` (spinner replacing icon, Retry hidden), and `restored` (success-tint, check icon, auto-dismisses after 1.5s). Returns `null` when `networkState` is `"online"`.
+
+  **Hook.** `useNetworkStatus()` listens to `window`'s `online`/`offline` events and drives the state machine. Accepts an optional `onRetry: () => Promise<boolean>` callback for a real connectivity probe (e.g., a `HEAD /api/health` request). Falls back to `navigator.onLine` when omitted.
+
+  **Animation.** CSS keyframe entrance (`200ms ease-out`, slide from top) with `opacity: 1` as resting state — SSR-safe, no JS mount gate.
+
+  **Accessibility.** `role="status"`, `aria-live="polite"`, dynamic `aria-label` per state, `aria-hidden` decorative icons, focus-visible Retry button with descriptive `aria-label`.
+
+  **Tokens.** All values reference Visor semantic tokens: `--surface-overlay` (dark bg), `--text-inverse` (inverse text), `--accent` (icon + Retry), `--surface-success-subtle` / `--border-success` (restored state), `--motion-duration-normal`, `--motion-easing-enter`, `--stroke-width-thin`, `--spacing-*`, `--radius-*`, `--focus-ring-width`.
+
+- e32dbe8: feat: add SessionTimeout component — non-dismissible full-screen overlay for auth session expiry (VI-586)
+- deabbfd: feat: add FormError component — form-level submission error banner
+
+  Adds the FormError pattern: a left-border destructive banner that appears inside a form card when submission is blocked by field validation errors. Ships with FormErrorTitle and FormErrorDescription sub-components.
+
+  Pairs with the existing Field, FieldError, and Input[aria-invalid] primitives to deliver the complete form validation / error pattern (VI-587):
+
+  - FormError / FormErrorTitle / FormErrorDescription — form-level submit-error banner
+  - Field-level errors via FieldError + aria-invalid (existing)
+  - Focus management: focus first errored field on submit
+  - Full a11y: role="alert", aria-invalid, aria-describedby linkage
+
+  Docs: interactive full-pattern demo showing field-level + submit-error banner composition.
+
+- bc9e340: feat(empty-state): add intent variants for Borealis global state spec §5
+
+  Extends `EmptyState` with three semantic `intent` values — `first-use`,
+  `zero-results`, and `no-access` — that communicate the cause of the empty
+  state and style the icon slot accordingly.
+
+  - `first-use`: no items exist yet; accent-tinted circular icon chip; encourage
+    a creation CTA.
+  - `zero-results`: filter or search returned nothing; accent-tinted chip; offer
+    a clear-filter secondary action.
+  - `no-access`: permission or feature gate; neutral chip with lock icon; no CTA
+    (terminal state).
+
+  Also adds `iconWrap` boolean prop. Setting `intent` auto-activates `iconWrap`,
+  wrapping the icon in a 72 × 72 circular chip. `iconWrap` can be used
+  independently of `intent` to get the chip treatment without semantic coloring.
+
+- 8b47b13: feat: add ConflictBanner component and useOptimisticMutation hook — inline concurrent-edit conflict detection with Keep my version / Load latest resolution and atomic rollback (VI-590)
+- c1dd678: feat: add SlowNetworkBar component and useSlowRequest hook (VI-591)
+
+  Adds the `SlowNetworkBar` component and `useSlowRequest` hook — the Borealis slow-network loading-accuracy pattern.
+
+  **Component.** A 4px indeterminate progress bar that renders immediately below the navigation bar. Appears only after a configurable threshold (default 3 000 ms) so fast requests never trigger it. Three states: `hidden` (opacity 0, pointer-events none), `visible` (indeterminate sweep animation, fades in over 300 ms), `resolving` (sweep completes to full width then fades out over 800 ms).
+
+  **Hook.** `useSlowRequest(threshold?)` manages the timer automatically. Call `trigger()` when a request starts, `resolve()` in a `finally` block when it completes. If the request finishes before the threshold the bar never appears — no phantom successes, accurate pending indication on 3G.
+
+  **Composition rules.** Never alongside Skeleton in the same loading zone (choose one). On error, call `reset()` and let the error pattern take over. Non-blocking — users can navigate away while the bar is visible.
+
+  **Animation.** CSS keyframe indeterminate sweep (`1.8s ease-in-out`, looping) with `opacity: 0` as the resting/hidden state — SSR-safe, no JS mount visibility gate. `prefers-reduced-motion`: sweep pauses, bar renders as a static full-width strip.
+
+  **Accessibility.** `role="progressbar"`, `aria-valuemin={0}`, `aria-valuemax={100}`, dynamic `aria-busy` (true when visible or resolving), configurable `aria-label`.
+
+  **Tokens.** All values reference Visor semantic tokens: `--primary` / `--accent` (fill gradient), `--motion-duration-300` / `--motion-easing-ease-out` (entrance), `--motion-easing-ease-in` (exit), `--motion-easing-ease-in-out` (sweep), `--opacity-40` (reduced-motion static indicator).
+
+### Patch Changes
+
+- 22533fe: feat(success-feedback): add SuccessFeedback pattern — useSuccessToast() hook + SuccessLiveRegion a11y component (VI-589)
+
+  App-wide success/transition feedback pattern built on the Toast primitive. Provides `useSuccessToast()` for imperative success toasts with Borealis-spec defaults (4s auto-dismiss, duration clamped to 3–8s, optional undo/view action, deduplication via id) and `SuccessLiveRegion` — a visually-hidden `role=status aria-live=polite` node for screen-reader announcements.
+
+  Also updates toast.module.css success variant to use the inverse-surface dark treatment (per Borealis state spec), giving success toasts a high-contrast dark bg that reads as affirmative vs. the neutral default.
+
 ## 1.11.1
 
 ### Patch Changes
