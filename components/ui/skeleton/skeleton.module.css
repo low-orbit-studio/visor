@@ -60,3 +60,107 @@
 .shapeCircle {
   border-radius: var(--radius-full, 999px);
 }
+
+/* ── Content-shape-aware primitives (VI-584) ──────────────────────────────
+   Height / radius / width helpers used internally by SkeletonList,
+   SkeletonTable, and SkeletonDetail. All dimensions trace to tokens or are
+   documented as intentional pixel values that mirror spec anatomy. */
+
+/* Bar heights */
+.skeletonLineH1   { height: 24px; border-radius: var(--radius-md, 0.375rem); }
+.skeletonLineHeading { height: 18px; border-radius: var(--radius-md, 0.375rem); }
+.skeletonLineBody { height: 14px; border-radius: var(--radius-sm, 0.25rem); }
+
+/* Avatar / thumbnail */
+.skeletonAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full, 9999px);
+  flex-shrink: 0;
+}
+
+/* Larger avatar for detail views */
+.skeletonAvatarLg {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full, 9999px);
+  flex-shrink: 0;
+}
+
+/* Badge pill used in list rows */
+.skeletonBadge {
+  width: 72px;
+  height: 22px;
+  border-radius: var(--radius-full, 9999px);
+  flex-shrink: 0;
+}
+
+/* Width utilities — fractional widths for organic line-length variety */
+.skeletonW40 { width: 40%; }
+.skeletonW60 { width: 60%; }
+.skeletonW70 { width: 70%; }
+.skeletonW80 { width: 80%; }
+.skeletonWFull { width: 100%; }
+
+/* ── SkeletonList layout ─── */
+.skeletonList {
+  display: flex;
+  flex-direction: column;
+}
+
+.skeletonListRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3, 0.75rem);
+  padding: var(--spacing-3, 0.75rem) 0;
+  border-bottom: 1px solid var(--border-default, #e5e7eb);
+}
+
+/* Remove bottom border on last row */
+.skeletonListRow:last-child {
+  border-bottom: none;
+}
+
+.skeletonListText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+  flex: 1;
+}
+
+/* ── SkeletonTable layout ─── */
+.skeletonTable {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.skeletonTableRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4, 1rem);
+  padding: var(--spacing-3, 0.75rem) 0;
+  border-bottom: 1px solid var(--border-default, #e5e7eb);
+}
+
+.skeletonTableRow:last-child {
+  border-bottom: none;
+}
+
+.skeletonTableCell {
+  flex: 1;
+}
+
+/* ── SkeletonDetail layout ─── */
+.skeletonDetail {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-4, 1rem);
+}
+
+.skeletonDetailContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+  flex: 1;
+}

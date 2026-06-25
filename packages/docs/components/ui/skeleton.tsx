@@ -1,3 +1,3 @@
 'use client';
 
-export { Skeleton } from '../../../../components/ui/skeleton/skeleton';
+export { Skeleton, SkeletonList, SkeletonTable, SkeletonDetail } from '../../../../components/ui/skeleton/skeleton';
