@@ -4,6 +4,7 @@
   "defaultOpen": true,
   "pages": [
     "button",
+    "editable-block",
     "section-intro",
     "sidebar",
     "theme-switcher"

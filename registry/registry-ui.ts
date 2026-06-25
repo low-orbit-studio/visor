@@ -1567,6 +1567,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "editable-block",
+    type: "registry:ui",
+    category: "general",
+    description:
+      "Canvas brand block — a card tile with an uppercase label header, value body, hover-revealed edit icon, and editing state with inline input, save button, and AI action slot. Used for free-edit canvas boards where each attribute is independently editable.",
+    dependencies: ["@phosphor-icons/react", "class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/editable-block/editable-block.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/editable-block/editable-block.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "elevation-card",
     type: "registry:ui",
     description:
