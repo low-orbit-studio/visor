@@ -121,6 +121,55 @@ See the [Flutter Empty State](/docs/flutter/widgets/empty-state) page for the fu
   </div>
 </ComponentPreview>
 
+## Intent Variants
+
+Use `intent` to communicate the **cause** of the empty state. Setting `intent` also automatically wraps the icon in a circular chip whose color reflects the semantic meaning. Three intents map to the Borealis global state spec (§5):
+
+- `first-use` — no items exist yet; encourage a creation action.
+- `zero-results` — a filter or search returned nothing; offer a way to clear it.
+- `no-access` — the user lacks permission; no action (terminal state).
+
+<ComponentPreview
+  title="first-use — no items yet"
+  code={"<EmptyState\n  intent=\"first-use\"\n  icon={<svg aria-hidden=\"true\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.5\" width=\"32\" height=\"32\"><path d=\"M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z\"/></svg>}\n  heading=\"No projects yet\"\n  description=\"Create your first project to start tracking work and collaborating with your team.\"\n  action={<Button>Create a project</Button>}\n/>"}
+>
+  <EmptyState
+    intent="first-use"
+    tone="subtle"
+    icon={<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="32" height="32"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>}
+    heading="No projects yet"
+    description="Create your first project to start tracking work and collaborating with your team."
+    action={<Button>Create a project</Button>}
+  />
+</ComponentPreview>
+
+<ComponentPreview
+  title="zero-results — filter returned nothing"
+  code={"<EmptyState\n  intent=\"zero-results\"\n  icon={<svg aria-hidden=\"true\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.5\" width=\"32\" height=\"32\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"/></svg>}\n  heading='No results for \"lighthouse redesign\"'\n  description=\"Try a different search term or clear your filters.\"\n  secondaryAction={<Button variant=\"outline\">Clear search</Button>}\n/>"}
+>
+  <EmptyState
+    intent="zero-results"
+    tone="subtle"
+    icon={<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="32" height="32"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>}
+    heading='No results for "lighthouse redesign"'
+    description="Try a different search term or clear your filters."
+    secondaryAction={<Button variant="outline">Clear search</Button>}
+  />
+</ComponentPreview>
+
+<ComponentPreview
+  title="no-access — permission gate (terminal, no CTA)"
+  code={"<EmptyState\n  intent=\"no-access\"\n  icon={<svg aria-hidden=\"true\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"1.5\" width=\"32\" height=\"32\"><rect x=\"3\" y=\"11\" width=\"18\" height=\"11\" rx=\"2\" ry=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/></svg>}\n  heading=\"You don't have access\"\n  description=\"Ask your workspace admin to give you permission to view this section.\"\n/>"}
+>
+  <EmptyState
+    intent="no-access"
+    tone="subtle"
+    icon={<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" width="32" height="32"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>}
+    heading="You don't have access"
+    description="Ask your workspace admin to give you permission to view this section."
+  />
+</ComponentPreview>
+
 ## Sizes
 
 <ComponentPreview
@@ -189,3 +238,4 @@ After copying the component, you own it completely. Common customizations:
 - Add an `illustration` slot for larger SVG artwork above the icon.
 - Swap the default `role="status"` for `role="region"` with `aria-label` when the empty state is a primary landmark.
 - Extend tones to include a `destructive` variant for error states.
+- Use `iconWrap` without `intent` if you want the circular chip treatment on a custom empty state without semantic coloring.

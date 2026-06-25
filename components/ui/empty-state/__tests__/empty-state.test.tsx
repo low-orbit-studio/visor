@@ -170,3 +170,134 @@ describe("EmptyState", () => {
     expect(ref.current?.getAttribute("data-slot")).toBe("empty-state")
   })
 })
+
+describe("EmptyState — intent variants", () => {
+  it("renders first-use intent with data-intent attribute", () => {
+    const { container } = render(
+      <EmptyState intent="first-use" heading="No projects yet" />
+    )
+    const root = container.querySelector('[data-slot="empty-state"]')
+    expect(root).toHaveAttribute("data-intent", "first-use")
+    expect(root?.className).toMatch(/intentFirstUse/)
+  })
+
+  it("renders zero-results intent with data-intent attribute", () => {
+    const { container } = render(
+      <EmptyState intent="zero-results" heading='No results for "foo"' />
+    )
+    const root = container.querySelector('[data-slot="empty-state"]')
+    expect(root).toHaveAttribute("data-intent", "zero-results")
+    expect(root?.className).toMatch(/intentZeroResults/)
+  })
+
+  it("renders no-access intent with data-intent attribute", () => {
+    const { container } = render(
+      <EmptyState intent="no-access" heading="You don't have access" />
+    )
+    const root = container.querySelector('[data-slot="empty-state"]')
+    expect(root).toHaveAttribute("data-intent", "no-access")
+    expect(root?.className).toMatch(/intentNoAccess/)
+  })
+
+  it("does not add data-intent when intent is not set", () => {
+    const { container } = render(<EmptyState heading="Empty" />)
+    const root = container.querySelector('[data-slot="empty-state"]')
+    expect(root).not.toHaveAttribute("data-intent")
+  })
+
+  it("auto-wraps icon in iconWrap slot when intent is set", () => {
+    const { container } = render(
+      <EmptyState
+        intent="first-use"
+        icon={<svg data-testid="icon" />}
+        heading="No projects yet"
+      />
+    )
+    const iconSlot = container.querySelector('[data-slot="empty-state-icon"]')
+    expect(iconSlot).not.toBeNull()
+    expect(iconSlot).toHaveAttribute("aria-hidden", "true")
+    expect(iconSlot?.className).toMatch(/iconWrap/)
+  })
+
+  it("does not wrap icon when no intent and iconWrap is not set", () => {
+    const { container } = render(
+      <EmptyState icon={<svg data-testid="icon" />} heading="Empty" />
+    )
+    const iconSlot = container.querySelector('[data-slot="empty-state-icon"]')
+    expect(iconSlot).not.toBeNull()
+    expect(iconSlot?.className).not.toMatch(/iconWrap/)
+  })
+
+  it("wraps icon when iconWrap=true even without intent", () => {
+    const { container } = render(
+      <EmptyState iconWrap icon={<svg data-testid="icon" />} heading="Empty" />
+    )
+    const iconSlot = container.querySelector('[data-slot="empty-state-icon"]')
+    expect(iconSlot?.className).toMatch(/iconWrap/)
+  })
+
+  it("does not render icon wrap slot when no icon is provided", () => {
+    const { container } = render(
+      <EmptyState intent="first-use" heading="No projects yet" />
+    )
+    expect(
+      container.querySelector('[data-slot="empty-state-icon"]')
+    ).toBeNull()
+  })
+
+  it("first-use: renders with description and creation CTA", () => {
+    render(
+      <EmptyState
+        intent="first-use"
+        icon={<svg />}
+        heading="No projects yet"
+        description="Create your first project to get started."
+        action={<button type="button">Create a project</button>}
+      />
+    )
+    expect(
+      screen.getByRole("heading", { name: /no projects yet/i })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/create your first project/i)
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole("button", { name: /create a project/i })
+    ).toBeInTheDocument()
+  })
+
+  it("zero-results: renders with clear-filter secondary action", () => {
+    render(
+      <EmptyState
+        intent="zero-results"
+        icon={<svg />}
+        heading='No results for "lighthouse redesign"'
+        description="Try a different search term or clear your filters."
+        secondaryAction={<button type="button">Clear search</button>}
+      />
+    )
+    expect(
+      screen.getByRole("heading", { name: /no results for/i })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole("button", { name: /clear search/i })
+    ).toBeInTheDocument()
+  })
+
+  it("no-access: renders without CTA (terminal state)", () => {
+    const { container } = render(
+      <EmptyState
+        intent="no-access"
+        icon={<svg />}
+        heading="You don't have access"
+        description="Ask your workspace admin to give you permission."
+      />
+    )
+    expect(
+      screen.getByRole("heading", { name: /you don't have access/i })
+    ).toBeInTheDocument()
+    expect(
+      container.querySelector('[data-slot="empty-state-actions"]')
+    ).toBeNull()
+  })
+})
