@@ -1,0 +1,155 @@
+---
+title: Slow Network Bar
+description: A 4px indeterminate progress bar that surfaces after a 3 s threshold to signal slow or stalled network requests — without blocking interaction.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { SlowNetworkBarStateDemo, SlowNetworkBarManualDemo } from '@/components/ui/slow-network-bar-demos';
+
+## Interactive Demo
+
+Click "Export Report" to start a simulated slow request. The bar appears after 3 s and resolves when the operation completes.
+
+<ComponentPreview
+  title="Slow Network Bar — Live Demo"
+  code={"import { SlowNetworkBar, useSlowRequest } from '@/components/ui/slow-network-bar/slow-network-bar';\n\nconst { state, trigger, resolve } = useSlowRequest(3000);\n\nconst handleExport = async () => {\n  trigger();\n  try {\n    await exportReport();\n  } finally {\n    resolve();\n  }\n};\n\n<SlowNetworkBar state={state} label=\"Generating export, please wait…\" />\n<button onClick={handleExport}>Export Report</button>"}
+>
+  <SlowNetworkBarStateDemo />
+</ComponentPreview>
+
+## Visual States
+
+<ComponentPreview
+  title="All States"
+  code={"<SlowNetworkBar state=\"hidden\" />\n<SlowNetworkBar state=\"visible\" />\n<SlowNetworkBar state=\"resolving\" />"}
+>
+  <SlowNetworkBarManualDemo />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add slow-network-bar
+```
+
+This copies two files into your project:
+
+- `components/ui/slow-network-bar/slow-network-bar.tsx` — the component + hook
+- `components/ui/slow-network-bar/slow-network-bar.module.css` — the styles
+
+## Usage
+
+### With `useSlowRequest` (recommended)
+
+The `useSlowRequest` hook manages the threshold timer automatically. Call `trigger()` when a request starts and `resolve()` when it completes (in a `finally` block so errors also dismiss the bar).
+
+```tsx
+import {
+  SlowNetworkBar,
+  useSlowRequest,
+} from '@/components/ui/slow-network-bar/slow-network-bar';
+
+export function ExportButton() {
+  const { state, trigger, resolve } = useSlowRequest(3000);
+
+  const handleExport = async () => {
+    trigger();
+    try {
+      await exportReport();
+    } finally {
+      resolve();
+    }
+  };
+
+  return (
+    <>
+      <SlowNetworkBar state={state} label="Generating export, please wait…" />
+      <button onClick={handleExport} disabled={state !== 'hidden'}>
+        Export Report
+      </button>
+    </>
+  );
+}
+```
+
+### Controlled (manual state)
+
+Drive the bar directly when you manage request state yourself (e.g., React Query, SWR, or Redux).
+
+```tsx
+import { SlowNetworkBar } from '@/components/ui/slow-network-bar/slow-network-bar';
+import type { SlowNetworkBarState } from '@/components/ui/slow-network-bar/slow-network-bar';
+
+function Dashboard({ isLoading }: { isLoading: boolean }) {
+  const barState: SlowNetworkBarState = isLoading ? 'visible' : 'hidden';
+  return (
+    <>
+      <SlowNetworkBar state={barState} />
+      {/* page content */}
+    </>
+  );
+}
+```
+
+## Composition Rules
+
+- **Never alongside Skeleton** — both communicate loading. Choose one per content zone; `SlowNetworkBar` is for requests that exceed the threshold; `Skeleton` is for initial data loading.
+- **On error, dismiss immediately** — set `state` to `"hidden"` (or call `reset()`) and let the error pattern take over. The bar must never linger after a failure.
+- **Non-blocking** — the bar does not prevent interaction. Users can cancel, navigate, or take other actions while it is visible.
+- **Position below navigation** — the bar renders at the top of the content zone, immediately below the nav bar, using `position: relative; overflow: hidden` on its container.
+
+## `useSlowRequest` API
+
+```tsx
+const { state, trigger, resolve, reset } = useSlowRequest(threshold?: number);
+```
+
+| Name | Type | Description |
+|------|------|-------------|
+| `state` | `SlowNetworkBarState` | Current bar state — pass to `<SlowNetworkBar state={state} />`. |
+| `trigger()` | `() => void` | Start the threshold timer. Call when a request begins. |
+| `resolve()` | `() => void` | Signal completion. If the bar is `visible`, transitions to `resolving` (sweep + fade). If the request resolved before the threshold, stays `hidden`. |
+| `reset()` | `() => void` | Return to `hidden` immediately — use on cancel or unmount. |
+| `threshold` | `number` | Milliseconds before the bar appears. Default `3000`. |
+
+## API Reference
+
+<PropsTable component="slow-network-bar" />
+
+The component also accepts all standard `<div>` HTML attributes.
+
+## Accessibility
+
+- Renders with `role="progressbar"`, `aria-valuemin={0}`, and `aria-valuemax={100}`.
+- `aria-busy` is `true` while `state` is `"visible"` or `"resolving"`, and `false` when `"hidden"`.
+- `aria-label` defaults to `"Loading, please wait…"` — override with the `label` prop to describe the specific operation.
+- `prefers-reduced-motion`: the indeterminate sweep animation pauses and the bar renders at full width as a static indicator; the fade-out is instant.
+
+## Customization
+
+After copying the component, you own it completely. Common customizations:
+
+```tsx
+// Custom threshold (5 s for upload-heavy operations)
+const { state, trigger, resolve } = useSlowRequest(5000);
+
+// Custom accessible label
+<SlowNetworkBar
+  state={state}
+  label="Uploading file, please wait…"
+/>
+
+// Add to a layout so it appears on every slow page transition
+export function AppLayout({ children }) {
+  const { state, trigger, resolve } = useSlowRequest(3000);
+  // wire trigger/resolve to your router events
+  return (
+    <>
+      <nav>…</nav>
+      <SlowNetworkBar state={state} />
+      <main>{children}</main>
+    </>
+  );
+}
+```

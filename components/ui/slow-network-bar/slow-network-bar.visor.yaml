@@ -1,0 +1,55 @@
+name: SlowNetworkBar
+description: 4px indeterminate progress bar that appears after a threshold delay (~3 s) to indicate a slow or stalled network request.
+extends: HTMLDivElement
+category: feedback
+
+when_to_use:
+  - A fetch or mutation is still pending after ~3 000 ms
+  - An upload or download has produced no progress event for 5 s
+  - Communicating "still working" without blocking interaction
+
+when_not_to_use:
+  - Initial page load (use Skeleton instead — never both in the same zone)
+  - Determinate progress with a known percentage (use Progress)
+  - Operation that has succeeded or failed (dismiss the bar; let the result pattern take over)
+  - Short operations that complete in < 3 s (the threshold prevents this bar from appearing)
+
+why: >
+  SlowNetworkBar signals that a request is taking longer than expected without
+  full-screen blocking. The 3 s threshold delay prevents flicker on fast connections
+  so the bar is rarely seen under normal conditions. The indeterminate animation is
+  intentional — showing fake percentage progress when remaining time is unknown
+  creates anxiety. Pairs with useSlowRequest for automatic threshold management.
+
+props:
+  - name: state
+    type: "'hidden' | 'visible' | 'resolving'"
+    default: "'hidden'"
+    description: "Visibility state. hidden = not rendered; visible = indeterminate animation; resolving = sweep completes then fades out."
+  - name: label
+    type: string
+    default: "'Loading, please wait…'"
+    description: "Accessible label announced to screen readers when the bar becomes visible."
+  - name: className
+    type: string
+    description: Additional CSS class names to merge onto the element.
+
+dependencies: []
+
+preview_url: "https://visor.design/docs/components/feedback/slow-network-bar"
+
+example: |
+  // Controlled via useSlowRequest hook
+  const { state, trigger, resolve } = useSlowRequest(3000);
+
+  const handleSave = async () => {
+    trigger();
+    try {
+      await saveData();
+    } finally {
+      resolve();
+    }
+  };
+
+  <SlowNetworkBar state={state} />
+  <button onClick={handleSave}>Save</button>

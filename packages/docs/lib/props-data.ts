@@ -3118,4 +3118,21 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'Accessible label. When provided, renders role="status" with visually-hidden text. When omitted, aria-hidden="true" (decorative).',
     },
   ],
+
+  'slow-network-bar': [
+    {
+      name: 'state',
+      type: "'hidden' | 'visible' | 'resolving'",
+      default: "'hidden'",
+      description:
+        "Visibility state. 'hidden' — not rendered; 'visible' — indeterminate animation active; 'resolving' — completes a full sweep then fades out (800ms). Pair with useSlowRequest for automatic threshold management.",
+    },
+    {
+      name: 'label',
+      type: 'string',
+      default: "'Loading, please wait…'",
+      description:
+        'Accessible label announced to screen readers when the bar becomes visible. Override to describe the specific operation (e.g. "Uploading file, please wait…").',
+    },
+  ],
 };
