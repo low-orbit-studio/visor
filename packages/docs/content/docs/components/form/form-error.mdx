@@ -1,0 +1,143 @@
+---
+title: Form Error
+description: Form-level submission error banner — appears when submit is blocked by field validation failures. Pairs with Field, FieldError, and Input[aria-invalid] to deliver the complete form validation pattern.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { FormError, FormErrorTitle, FormErrorDescription } from '@/components/ui/form-error';
+import { Field, FieldLabel, FieldError } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import {
+  FormErrorBannerDemo,
+  FormErrorMinimalDemo,
+  FormValidationPatternDemo,
+} from '@/components/ui/form-error-demos';
+
+## Submit-Error Banner
+
+The `FormError` banner appears inside the form card when submission is blocked. It uses a left-border destructive accent on a softly tinted surface — the color signals urgency; the `role="alert"` announces it immediately to assistive technology.
+
+<ComponentPreview
+  title="Submit-Error Banner"
+  code={"import { FormError, FormErrorTitle, FormErrorDescription } from '@/components/ui/form-error/form-error';\nimport { WarningCircle } from '@phosphor-icons/react';\n\n<FormError icon={<WarningCircle size={18} weight=\"fill\" />}>\n  <FormErrorTitle>Please fix the errors below before continuing</FormErrorTitle>\n  <FormErrorDescription>2 fields need your attention.</FormErrorDescription>\n</FormError>"}
+>
+  <FormErrorBannerDemo />
+</ComponentPreview>
+
+## Minimal Banner
+
+The icon is optional. Without it, the left-border and tinted surface still clearly signal an error.
+
+<ComponentPreview
+  title="Minimal Banner (no icon)"
+  code={"<FormError>\n  <FormErrorTitle>Please fix the errors below before continuing</FormErrorTitle>\n</FormError>"}
+>
+  <FormErrorMinimalDemo />
+</ComponentPreview>
+
+## Full Validation Pattern
+
+The complete pattern combines:
+- **`FormError`** — form-level submission banner
+- **`Field` + `FieldError`** — field-level inline errors
+- **`Input[aria-invalid]`** — error-state input treatment
+
+Try submitting the form empty or with an invalid email to see the full pattern.
+
+<ComponentPreview
+  title="Interactive Form Validation"
+  code={"import { FormError, FormErrorTitle, FormErrorDescription } from '@/components/ui/form-error/form-error';\nimport { Field, FieldLabel, FieldError } from '@/components/ui/field/field';\nimport { Input } from '@/components/ui/input/input';\n\n// Field-level validation example\n<form onSubmit={handleSubmit} noValidate>\n  {submitError && (\n    <FormError icon={<WarningCircle size={18} weight=\"fill\" />}>\n      <FormErrorTitle>Please fix the errors below before continuing</FormErrorTitle>\n      <FormErrorDescription>2 fields need your attention.</FormErrorDescription>\n    </FormError>\n  )}\n  <Field>\n    <FieldLabel htmlFor=\"name\">Full name *</FieldLabel>\n    <Input\n      id=\"name\"\n      aria-invalid={nameError ? 'true' : undefined}\n      aria-describedby={nameError ? 'name-error' : undefined}\n    />\n    {nameError && <FieldError id=\"name-error\">{nameError}</FieldError>}\n  </Field>\n</form>"}
+>
+  <FormValidationPatternDemo />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add form-error
+```
+
+This copies two files into your project:
+
+- `components/ui/form-error/form-error.tsx` — the component
+- `components/ui/form-error/form-error.module.css` — the styles
+
+## Usage
+
+```tsx
+import { FormError, FormErrorTitle, FormErrorDescription } from '@/components/ui/form-error/form-error';
+import { Field, FieldLabel, FieldError } from '@/components/ui/field/field';
+import { Input } from '@/components/ui/input/input';
+
+export default function InviteForm() {
+  const [nameError, setNameError] = React.useState<string | null>(null);
+  const [submitError, setSubmitError] = React.useState(false);
+  const nameRef = React.useRef<HTMLInputElement>(null);
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const ne = !nameValue.trim() ? 'Full name is required' : null;
+    setNameError(ne);
+    if (ne) {
+      setSubmitError(true);
+      nameRef.current?.focus(); // focus first errored field
+      return;
+    }
+    setSubmitError(false);
+    // proceed with submission...
+  }
+
+  return (
+    <form onSubmit={handleSubmit} noValidate>
+      {submitError && (
+        <FormError>
+          <FormErrorTitle>Please fix the errors below before continuing</FormErrorTitle>
+        </FormError>
+      )}
+
+      <Field>
+        <FieldLabel htmlFor="name">Full name</FieldLabel>
+        <Input
+          ref={nameRef}
+          id="name"
+          aria-invalid={nameError ? 'true' : undefined}
+          aria-describedby={nameError ? 'name-error' : undefined}
+        />
+        {nameError && <FieldError id="name-error">{nameError}</FieldError>}
+      </Field>
+
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+
+## API Reference
+
+### FormErrorProps
+
+<PropsTable component="form-error" />
+
+### Sub-components
+
+| Component | Element | Purpose |
+| --- | --- | --- |
+| `FormError` | `<div>` | Container with `role="alert"`, destructive left-border, and tinted surface |
+| `FormErrorTitle` | `<p>` | Direct statement of the failure — always present |
+| `FormErrorDescription` | `<p>` | Optional secondary line (e.g. field count) |
+
+## Accessibility
+
+- `FormError` renders with `role="alert"` — the banner is announced immediately by screen readers when it appears.
+- The icon slot is `aria-hidden="true"` — the `role="alert"` carries the semantic weight.
+- **Focus management (required):** On failed submission, call `focus()` on the first invalid field so keyboard users do not have to hunt for errors. See the Usage example above.
+- **`aria-invalid`:** Set `aria-invalid="true"` on each invalid `Input`. This changes the input's visual treatment and communicates invalidity to assistive tech independently of the visible error text.
+- **`aria-describedby`:** Link each `FieldError` to its `Input` via `aria-describedby` so screen readers read the error message after the field label when the user navigates to the input.
+
+## Composition Rules
+
+- `FormError` appears **inside** the form card, **above** the first field group — not at page level.
+- It is **conditionally rendered** — shown only on submit failure, hidden on pristine and valid states.
+- Error messages use `--text-primary` (not red text) — color + left-border signal the error; copy stays readable.
+- The banner auto-dismisses when the form is successfully submitted — no manual close needed.
