@@ -1239,7 +1239,7 @@ export const ui: Registry = [
       "@phosphor-icons/react",
       "@loworbitstudio/visor-core",
     ],
-    registryDependencies: ["utils", "spinner"],
+    registryDependencies: ["utils"],
     files: [
       {
         path: "components/ui/session-timeout/session-timeout.tsx",
