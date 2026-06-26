@@ -49,8 +49,9 @@ export interface PageHeaderProps
   /**
    * Optional media/identity node rendered to the LEFT of the title block inside
    * the title row (typically an Avatar or identity plate). When present the row
-   * forms an identity lockup and the slot top-aligns against the title/description
-   * stack (VI-539). Omitting it leaves the row exactly as the default
+   * forms an identity lockup and the slot vertically centers against the
+   * title/description stack (the VI-539 top-align was superseded by the VI-545
+   * admin-editorial reconcile). Omitting it leaves the row exactly as the default
    * text|actions layout, so existing call sites render unchanged.
    */
   leading?: React.ReactNode
