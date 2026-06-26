@@ -2,21 +2,21 @@
 //   Only `covered` steps are scaffolded: step 3 (key active / model chip) and step 5 (adversarial challenge).
 //   Steps 1,2,4,6,7 are partial:/gap:VI-562 → omitted (belong to the AI-seam build, not VI-559).
 //   testids: spec/INTERFACE.d.ts BrandWorkbenchTestId. Route: BrandWorkbenchRoute.
-// TIER 2 (scaffold): test.fixme until VI-559 builds the presentational layer.
+// TIER 2 (scaffold): both covered steps live on the Strategy core screen → activated by VI-559.
 
 import { test, expect } from "@playwright/test"
 
 const ROUTE = "/brand-workbench" // spec/INTERFACE.d.ts BrandWorkbenchRoute
 
 test.describe("UJ-C — BYOK + AI seam", () => {
-  test.fixme("UJ-C.3 — key active: key pill + model chip show 'Claude · key active'", async ({ page }) => {
+  test("UJ-C.3 — key active: key pill + model chip show 'Claude · key active'", async ({ page }) => {
     // activated by VI-559 build
     await page.goto(ROUTE)
     await expect(page.getByTestId("bw-key-pill")).toBeVisible()
     await expect(page.getByTestId("bw-model-chip")).toBeVisible()
   })
 
-  test.fixme("UJ-C.5 — AI returns an adversarial challenge; human holds the gate", async ({ page }) => {
+  test("UJ-C.5 — AI returns an adversarial challenge; human holds the gate", async ({ page }) => {
     // activated by VI-559 build
     await page.goto(ROUTE)
     await expect(page.getByTestId("bw-challenge")).toBeVisible()

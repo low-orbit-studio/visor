@@ -2,20 +2,22 @@
 //   Only `covered` steps are scaffolded: 1, 2, 3, 5, 6. Step 4 is partial:VI-562 (live AI rewrite) → omitted.
 //   Encodes R-PROVE-NONBLOCKING: warn AND fail are advisory; export proceeds.
 //   testids: spec/INTERFACE.d.ts BrandWorkbenchTestId. Route: BrandWorkbenchRoute.
-// TIER 2 (scaffold): test.fixme until VI-559 builds the presentational layer.
+// TIER 2 (scaffold): the challenge steps (D.1, D.2) live on the Strategy core screen → activated by
+//   VI-559. The Prove/Export steps (D.3, D.5, D.6) are downstream stage views → they stay test.fixme
+//   until VI-560.
 
 import { test, expect } from "@playwright/test"
 
 const ROUTE = "/brand-workbench" // spec/INTERFACE.d.ts BrandWorkbenchRoute
 
 test.describe("UJ-D — Error Recovery & Validation Rejects", () => {
-  test.fixme("UJ-D.1 — Positioning too generic → AI challenge 'push harder'", async ({ page }) => {
+  test("UJ-D.1 — Positioning too generic → AI challenge 'push harder'", async ({ page }) => {
     // activated by VI-559 build
     await page.goto(ROUTE)
     await expect(page.getByTestId("bw-challenge")).toBeVisible()
   })
 
-  test.fixme("UJ-D.2 — resolve the challenge: keep or rewrite", async ({ page }) => {
+  test("UJ-D.2 — resolve the challenge: keep or rewrite", async ({ page }) => {
     // activated by VI-559 build
     await page.goto(ROUTE)
     await expect(page.getByTestId("bw-challenge-keep")).toBeVisible()
