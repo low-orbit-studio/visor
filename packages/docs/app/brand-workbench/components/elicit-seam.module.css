@@ -1,0 +1,69 @@
+.seam {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 8px);
+  padding: var(--spacing-3, 12px) 0 0;
+  border-top: var(--stroke-width-thin, 1px) dashed var(--hairline, rgba(0, 0, 0, 0.06));
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 8px);
+  font-size: var(--text-13, 12.5px);
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+}
+
+.locked {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1, 4px);
+  color: var(--success-text, #047857);
+}
+
+.locked svg {
+  width: 13px;
+  height: 13px;
+}
+
+.streaming {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 8px);
+  font-size: var(--text-13, 12.5px);
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.streaming svg {
+  width: 14px;
+  height: 14px;
+  color: var(--primary, #04bf81);
+}
+
+.error {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 8px);
+  font-size: var(--text-13, 12.5px);
+  color: var(--danger-text, #b91c1c);
+}
+
+.error svg {
+  width: 14px;
+  height: 14px;
+}
+
+.retry {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1, 4px);
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text-primary, #111827);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}

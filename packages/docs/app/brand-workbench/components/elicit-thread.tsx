@@ -38,6 +38,8 @@ import { Badge } from "@/components/ui/badge"
 import { SegmentedProgress } from "@/components/ui/segmented-progress"
 import { StatusDot } from "@/components/ui/status-dot"
 import { ELICIT_HEAD, ONLINESS_TOOL, SUGGESTIONS, COMPOSER } from "../lib/elicit-fixtures"
+import { useElicitSeam } from "../lib/use-elicit-seam"
+import { ElicitSeam } from "./elicit-seam"
 import styles from "./elicit-thread.module.css"
 
 /** A plain-text assistant turn (Claude/ChatGPT-style — no bubble), optional warning eyebrow. */
@@ -74,6 +76,9 @@ function UserTurn({ children }: { children: React.ReactNode }) {
  * thread is the locked snapshot; the AI loop is VI-562.
  */
 export function ElicitThread() {
+  const seam = useElicitSeam()
+  const [draft, setDraft] = React.useState("")
+
   return (
     <main className={styles.conv}>
       <div className={styles.head}>
@@ -201,6 +206,9 @@ export function ElicitThread() {
         </div>
       </div>
 
+      {/* Live BYOK/AI seam (VI-562) — overlays the static history above. */}
+      <ElicitSeam ctl={seam} />
+
       {/* Composer */}
       <div className={styles.composerWrap}>
         <div className={styles.suggest}>
@@ -216,14 +224,22 @@ export function ElicitThread() {
             </button>
           ))}
         </div>
-        <Composer data-testid="bw-composer">
+        <Composer
+          data-testid="bw-composer"
+          value={draft}
+          onValueChange={setDraft}
+          onSubmit={(value) => {
+            void seam.send(value)
+            setDraft("")
+          }}
+        >
           <ComposerField placeholder={COMPOSER.placeholder} data-testid="bw-composer-input" />
           <ComposerToolbar>
             <ComposerToolButton icon={<Plus />} aria-label="Add context" />
             <ComposerToolButton icon={<Microphone />} aria-label="Dictate" />
             <span className={styles.modelChip} data-testid="bw-model-chip">
-              <StatusDot tone="mint" aria-hidden="true" />
-              {COMPOSER.model}
+              <StatusDot tone={seam.keyStatus === "key-active" ? "mint" : "muted"} aria-hidden="true" />
+              {seam.keyStatus === "key-active" ? "Claude · key active" : "Claude · keyless"}
             </span>
             <ComposerSpacer />
             <ComposerSend data-testid="bw-composer-send" />
