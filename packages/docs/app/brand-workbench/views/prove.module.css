@@ -1,0 +1,64 @@
+/* Prove stage (journey.html .scorebar/.counts). Token-pure; Gray hex fallbacks. */
+
+.scorebar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-5, 18px);
+  background: var(--surface-card, #ffffff);
+  border: var(--stroke-width-thin, 1px) solid var(--hairline, rgba(0, 0, 0, 0.06));
+  border-radius: var(--radius-xl, 16px);
+  padding: var(--spacing-5, 18px) var(--spacing-5, 20px);
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+  margin-bottom: var(--spacing-5, 20px);
+}
+
+.sx b {
+  font-size: var(--text-16, 15px);
+  font-weight: 700;
+}
+
+.sx p {
+  margin: var(--spacing-1, 3px) 0 0;
+  font-size: var(--text-13, 12.5px);
+  color: var(--text-secondary, #6b7280);
+}
+
+.counts {
+  margin-left: auto;
+  display: flex;
+  gap: var(--spacing-4, 16px);
+}
+
+.count {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 7px);
+  font-size: var(--text-13, 12.5px);
+  font-weight: 600;
+  color: var(--text-secondary, #6b7280);
+}
+
+.dotPass,
+.dotWarn,
+.dotFail {
+  width: 9px;
+  height: 9px;
+  border-radius: var(--radius-full, 9999px);
+  flex: none;
+}
+
+.dotPass {
+  background: var(--success, #22c55e);
+}
+
+.dotWarn {
+  background: var(--warning, #f59e0b);
+}
+
+.dotFail {
+  background: var(--destructive, #ef4444);
+}
+
+.group {
+  margin-bottom: var(--spacing-5, 18px);
+}

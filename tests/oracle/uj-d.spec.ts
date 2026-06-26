@@ -1,47 +1,54 @@
 // Derived from: spec/cuj-coverage.yaml — UJ-D "Error Recovery & Validation Rejects".
-//   Only `covered` steps are scaffolded: 1, 2, 3, 5, 6. Step 4 is partial:VI-562 (live AI rewrite) → omitted.
+//   Covered steps: 1, 2 (challenge, on Strategy) and 6 (Export proceeds despite warnings/fails).
 //   Encodes R-PROVE-NONBLOCKING: warn AND fail are advisory; export proceeds.
 //   testids: spec/INTERFACE.d.ts BrandWorkbenchTestId. Route: BrandWorkbenchRoute.
-// TIER 2 (scaffold): the challenge steps (D.1, D.2) live on the Strategy core screen → activated by
-//   VI-559. The Prove/Export steps (D.3, D.5, D.6) are downstream stage views → they stay test.fixme
-//   until VI-560.
+// TIER 2: VI-560 makes the stages navigable. D.1/D.2 (challenge) reach Strategy by beginning the
+//   interview; D.6 (Export proceeds) navigates to Export via the spine. D.3/D.5 assert the Prove fix
+//   action (`bw-check-fix`), which the shared CheckRow does not yet forward to its fix button — they
+//   stay test.fixme pending that small component enhancement (the Prove checks + fix buttons render).
 
-import { test, expect } from "@playwright/test"
+import { test, expect, type Page } from "@playwright/test"
 
 const ROUTE = "/brand-workbench" // spec/INTERFACE.d.ts BrandWorkbenchRoute
 
+async function begin(page: Page) {
+  await page.goto(ROUTE)
+  await page.getByTestId("bw-begin").click()
+}
+
+async function gotoStep(page: Page, step: string) {
+  await begin(page)
+  await page.getByTestId(`bw-spine-node-${step}`).getByRole("button").click()
+}
+
 test.describe("UJ-D — Error Recovery & Validation Rejects", () => {
   test("UJ-D.1 — Positioning too generic → AI challenge 'push harder'", async ({ page }) => {
-    // activated by VI-559 build
-    await page.goto(ROUTE)
+    await begin(page)
     await expect(page.getByTestId("bw-challenge")).toBeVisible()
   })
 
   test("UJ-D.2 — resolve the challenge: keep or rewrite", async ({ page }) => {
-    // activated by VI-559 build
-    await page.goto(ROUTE)
+    await begin(page)
     await expect(page.getByTestId("bw-challenge-keep")).toBeVisible()
     await expect(page.getByTestId("bw-challenge-rewrite")).toBeVisible()
   })
 
   test.fixme("UJ-D.3 — Prove: voice-drift warning carries a 'Rewrite to voice' fix", async ({ page }) => {
-    // activated by VI-559 build
-    await page.goto(ROUTE)
-    await expect(page.getByTestId("bw-prove")).toBeVisible()
+    // Needs bw-check-fix forwarded by the shared CheckRow component.
+    await gotoStep(page, "prove")
     await expect(page.getByTestId("bw-check").first()).toBeVisible()
     await expect(page.getByTestId("bw-check-fix").first()).toBeVisible()
   })
 
   test.fixme("UJ-D.5 — Prove: accessibility fail carries 'Suggest a fix' (non-blocking)", async ({ page }) => {
-    // activated by VI-559 build
-    await page.goto(ROUTE)
+    // Needs bw-check-fix forwarded by the shared CheckRow component.
+    await gotoStep(page, "prove")
     await expect(page.getByTestId("bw-check").first()).toBeVisible()
     await expect(page.getByTestId("bw-check-fix").first()).toBeVisible()
   })
 
-  test.fixme("UJ-D.6 — proceed to Export despite warnings/fails (nothing blocks you)", async ({ page }) => {
-    // activated by VI-559 build
-    await page.goto(ROUTE)
+  test("UJ-D.6 — proceed to Export despite warnings/fails (nothing blocks you)", async ({ page }) => {
+    await gotoStep(page, "export")
     await expect(page.getByTestId("bw-export")).toBeVisible()
     await expect(page.getByTestId("bw-export-submit")).toBeEnabled()
   })

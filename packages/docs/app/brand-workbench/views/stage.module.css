@@ -1,0 +1,33 @@
+/* Shared chrome for the single-column stage views (visual · prove · export · canvas).
+   Token-pure; Gray hex fallbacks per token-rules.md. */
+
+.scroll {
+  flex: 1;
+  overflow: auto;
+  padding: var(--spacing-8, 32px) var(--spacing-12, 48px);
+}
+
+.eyebrow {
+  font-size: var(--text-11, 11.5px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary, #04bf81);
+  margin-bottom: var(--spacing-3, 10px);
+}
+
+.heading {
+  font-size: var(--text-32, 30px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 0 0 var(--spacing-2, 8px);
+  line-height: 1.1;
+}
+
+.lede {
+  font-size: var(--text-16, 15px);
+  color: var(--text-secondary, #6b7280);
+  line-height: 1.55;
+  max-width: 60ch;
+  margin: 0 0 var(--spacing-6, 24px);
+}

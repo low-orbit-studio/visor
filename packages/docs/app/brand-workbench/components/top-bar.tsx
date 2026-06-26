@@ -5,15 +5,18 @@ import { Button } from "@/components/ui/button"
 import { Chip } from "@/components/ui/chip"
 import { StatusDot } from "@/components/ui/status-dot"
 import { useActiveTheme } from "../lib/use-active-theme"
+import { useSpine } from "../lib/use-spine"
 import { SPINE_PROGRESS, COMPOSER } from "../lib/elicit-fixtures"
 import styles from "./top-bar.module.css"
 
 /**
  * Brand Workbench top bar: brand mark + project chip, the active-theme pill, the BYOK key pill
- * ("Claude · key active"), and an Export action. The key pill is the testable BYOK affordance.
+ * ("Claude · key active"), and an Export action that jumps to the Export stage (journey.html
+ * `data-go="export"`). The key pill is the testable BYOK affordance.
  */
 export function TopBar() {
   const { themeLabel } = useActiveTheme()
+  const { goToStep } = useSpine()
 
   return (
     <header className={styles.bar}>
@@ -43,7 +46,12 @@ export function TopBar() {
         data-testid="bw-key-pill"
       />
 
-      <Button variant="outline" size="sm">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => goToStep("export")}
+        data-testid="bw-topbar-export"
+      >
         <Export aria-hidden="true" />
         Export
       </Button>

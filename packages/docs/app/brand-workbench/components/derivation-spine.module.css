@@ -128,7 +128,7 @@
 /* ─── Mode card ──────────────────────────────────────────────────────────── */
 
 .modeCard {
-  margin-top: var(--spacing-6, 1.5rem);
+  margin-top: var(--spacing-5, 20px);
   padding: var(--spacing-3, 12px);
   border-radius: var(--radius-lg, 12px);
   background: var(--surface-subtle, #f4f5f7);

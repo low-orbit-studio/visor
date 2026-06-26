@@ -1,0 +1,163 @@
+/* Visual stage (journey.html .two/.panel/.swrow/.dont/.markbox). Token-pure; Gray hex fallbacks.
+   Marks render on two inverted token surfaces so they re-tint with the theme. */
+
+.two {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: var(--spacing-8, 28px);
+  align-items: start;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5, 18px);
+}
+
+.panel {
+  background: var(--surface-card, #ffffff);
+  border: var(--stroke-width-thin, 1px) solid var(--hairline, rgba(0, 0, 0, 0.06));
+  border-radius: var(--radius-xl, 16px);
+  padding: var(--spacing-5, 18px);
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+.panelHead {
+  margin: 0 0 var(--spacing-3, 13px);
+  font-size: var(--text-13, 13px);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 8px);
+}
+
+.tag {
+  margin-left: auto;
+  font-size: var(--text-11, 10.5px);
+  font-weight: 700;
+  color: var(--text-tertiary, #9ca3af);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.swrow {
+  display: flex;
+  gap: var(--spacing-3, 12px);
+  margin-bottom: var(--spacing-4, 16px);
+}
+
+.swatch {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 6px);
+}
+
+.swChip {
+  height: 48px;
+  border-radius: var(--radius-lg, 8px);
+  border: var(--stroke-width-thin, 1px) solid var(--hairline, rgba(0, 0, 0, 0.06));
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+.swLabel {
+  font-size: var(--text-13, 12px);
+  font-weight: 700;
+}
+
+.swCode {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--text-11, 10.5px);
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.rampNote {
+  font-size: var(--text-11, 11px);
+  color: var(--text-tertiary, #9ca3af);
+  margin-bottom: var(--spacing-2, 6px);
+}
+
+.ramp {
+  height: 38px;
+  border-radius: var(--radius-md, 4px);
+  border: var(--stroke-width-thin, 1px) solid var(--hairline, rgba(0, 0, 0, 0.06));
+  background: linear-gradient(90deg, var(--surface-muted, #e6e8ec), var(--primary, #04bf81));
+}
+
+.donts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-3, 10px);
+}
+
+.dont {
+  border: var(--stroke-width-thin, 1px) solid var(--border-error, rgba(239, 68, 68, 0.4));
+  background: var(--surface-error-subtle, rgba(239, 68, 68, 0.1));
+  border-radius: var(--radius-md, 4px);
+  padding: var(--spacing-2, 9px) var(--spacing-3, 11px);
+  font-size: var(--text-11, 11.5px);
+  color: var(--text-secondary, #6b7280);
+  display: flex;
+  gap: var(--spacing-2, 8px);
+  align-items: flex-start;
+}
+
+.dontMark {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--destructive, #ef4444);
+  color: var(--primary-text, #ffffff);
+  display: grid;
+  place-items: center;
+  flex: none;
+  font-size: var(--text-11, 11px);
+}
+
+.typeSpecimen {
+  font-size: var(--text-40, 40px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  margin-bottom: var(--spacing-1, 4px);
+}
+
+.typeNote {
+  font-size: var(--text-14, 14px);
+  color: var(--text-secondary, #6b7280);
+  line-height: 1.55;
+}
+
+.markbox {
+  display: flex;
+  gap: var(--spacing-3, 12px);
+}
+
+.markLight,
+.markDark {
+  flex: 1;
+  border-radius: var(--radius-lg, 12px);
+  border: var(--stroke-width-thin, 1px) solid var(--hairline, rgba(0, 0, 0, 0.06));
+  min-height: 72px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: var(--text-20, 18px);
+  letter-spacing: -0.02em;
+}
+
+.markLight {
+  background: var(--surface-card, #ffffff);
+  color: var(--text-primary, #111827);
+}
+
+.markDark {
+  background: var(--text-primary, #111827);
+  color: var(--surface-card, #ffffff);
+}
+
+.markNote {
+  font-size: var(--text-11, 11.5px);
+  color: var(--text-tertiary, #9ca3af);
+  margin-top: var(--spacing-3, 10px);
+}

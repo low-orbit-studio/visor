@@ -7,70 +7,10 @@
 // (deriveStepStatuses("essence","guided"), STAGE_PROGRESS.strategy) without importing across the
 // package boundary; the Tier-1 oracle verifies the logic, this file renders the known snapshot.
 
-import type { SpineNodeStatus } from "../components/derivation-spine"
+// Spine node layout + live per-node status moved to lib/journey-fixtures.ts (SPINE_LAYOUT) and the
+// frozen state machine (deriveStepStatuses) in VI-560 — the spine is navigable, not a static snapshot.
 
-/** A single derivation-spine node. `id` matches a frozen SpineStepId (→ data-testid bw-spine-node-${id}). */
-export interface SpineNode {
-  id: string
-  title: string
-  sublabel: string
-  status: SpineNodeStatus
-}
-
-/** A labelled group of spine nodes with its eyebrow completion count. */
-export interface SpineGroup {
-  label: string
-  /** e.g. "1 / 4" */
-  count: string
-  /** When true the count pill flips to the done (primary) treatment. */
-  countDone?: boolean
-  nodes: SpineNode[]
-}
-
-// Strategy stage, Essence step. Statuses follow the locked design: completed steps are `complete`,
-// the current step is `active`, the next-up locked steps in active groups show `locked` (lock glyph),
-// and not-yet-started further groups show `upcoming` (plain) — faithful to elicit-core.html.
-export const SPINE_GROUPS: SpineGroup[] = [
-  {
-    label: "Setup",
-    count: "1 / 1",
-    countDone: true,
-    nodes: [{ id: "start", title: "Start", sublabel: "name · public", status: "complete" }],
-  },
-  {
-    label: "Strategy",
-    count: "1 / 4",
-    nodes: [
-      { id: "positioning", title: "Positioning", sublabel: "the onliness · set", status: "complete" },
-      { id: "essence", title: "Essence", sublabel: "working on it now", status: "active" },
-      { id: "personality", title: "Personality", sublabel: "brand-as-person", status: "locked" },
-      { id: "pillars", title: "Pillars", sublabel: "token-linked", status: "locked" },
-    ],
-  },
-  {
-    label: "Verbal",
-    count: "0 / 2",
-    nodes: [
-      { id: "voice", title: "Voice", sublabel: "fixed traits", status: "locked" },
-      { id: "tone", title: "Tone", sublabel: "flexed by context", status: "locked" },
-    ],
-  },
-  {
-    label: "Visual",
-    count: "0 / 1",
-    nodes: [{ id: "visual", title: "Visual", sublabel: "color · type · marks", status: "upcoming" }],
-  },
-  {
-    label: "Prove & Export",
-    count: "0 / 2",
-    nodes: [
-      { id: "prove", title: "Prove", sublabel: "coherence checks", status: "upcoming" },
-      { id: "export", title: "Export", sublabel: ".visor.yaml + manifest", status: "upcoming" },
-    ],
-  },
-]
-
-/** Spine progress summary card (journey.html CFG strategy → done 2, pct 20). */
+/** Brand identity + total for the spine progress card (live done/pct come from STAGE_PROGRESS). */
 export const SPINE_PROGRESS = {
   brand: "Visor",
   visibility: "public",

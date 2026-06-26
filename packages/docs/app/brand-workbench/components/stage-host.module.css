@@ -1,0 +1,9 @@
+/* Stage host — the content region beside the spine. Each view manages its own scroll. */
+
+.host {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}

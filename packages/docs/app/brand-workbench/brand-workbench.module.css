@@ -19,16 +19,17 @@
   border-radius: 0;
 }
 
-/* Three-column split: derivation spine | conversational Elicit | live brand canvas. */
+/* Two-region split: derivation spine (nav) | stage host. The host owns its own per-view layout —
+   the conversational stages split again internally into Elicit | live canvas. */
 .grid {
   flex: 1;
   display: grid;
-  grid-template-columns: 256px 1fr 472px;
+  grid-template-columns: 256px 1fr;
   min-height: 0;
 }
 
 @media (max-width: 1100px) {
   .grid {
-    grid-template-columns: 220px 1fr 380px;
+    grid-template-columns: 220px 1fr;
   }
 }

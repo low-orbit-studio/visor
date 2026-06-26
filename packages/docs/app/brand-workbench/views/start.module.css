@@ -1,0 +1,176 @@
+/* Start stage (journey.html .start) — the journey entry, centered. All color/surface/spacing/stroke
+   values resolve through Visor tokens; Gray hex fallbacks per token-rules.md. */
+
+.wrap {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-10, 40px);
+}
+
+.start {
+  width: 100%;
+  max-width: 840px;
+}
+
+.hello {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3, 10px);
+  font-size: var(--text-13, 12px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--primary, #04bf81);
+  margin-bottom: var(--spacing-4, 14px);
+}
+
+.helloAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-md, 8px);
+  display: grid;
+  place-items: center;
+  background: var(--primary, #04bf81);
+  color: var(--primary-text, #ffffff);
+}
+
+.heading {
+  font-size: var(--text-40, 38px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  margin: 0 0 var(--spacing-3, 10px);
+  line-height: 1.05;
+}
+
+.sub {
+  font-size: var(--text-16, 16px);
+  color: var(--text-secondary, #6b7280);
+  line-height: 1.5;
+  max-width: 56ch;
+  margin: 0 0 var(--spacing-8, 28px);
+}
+
+.paths {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-4, 16px);
+}
+
+.card,
+.cardActive {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 14px);
+  padding: var(--spacing-6, 22px);
+  border-radius: var(--radius-xl, 16px);
+  cursor: pointer;
+}
+
+.cardActive {
+  border-color: var(--border-focus, rgba(4, 191, 129, 0.34));
+  box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.08));
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3, 10px);
+}
+
+.cardIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-lg, 10px);
+  display: grid;
+  place-items: center;
+  background: var(--interactive-primary-soft, rgba(4, 191, 129, 0.1));
+  color: var(--primary, #04bf81);
+  flex: none;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: var(--text-16, 16px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 8px);
+}
+
+.recoTag {
+  font-size: var(--text-11, 10px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--primary, #04bf81);
+  background: var(--interactive-primary-soft, rgba(4, 191, 129, 0.1));
+  border: var(--stroke-width-thin, 1px) solid var(--border-focus, rgba(4, 191, 129, 0.34));
+  padding: 2px 7px;
+  border-radius: var(--radius-full, 9999px);
+}
+
+.cardBody {
+  margin: 0;
+  font-size: var(--text-13, 13px);
+  color: var(--text-secondary, #6b7280);
+  line-height: 1.5;
+}
+
+.fauxInput {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 9px);
+  height: 42px;
+  padding: 0 var(--spacing-3, 13px);
+  border-radius: var(--radius-lg, 12px);
+  background: var(--surface-subtle, #f4f5f7);
+  border: var(--stroke-width-thin, 1px) solid var(--border-default, #d1d4db);
+  font-size: var(--text-14, 14px);
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.fauxValue {
+  color: var(--text-primary, #111827);
+  font-weight: 500;
+}
+
+.dropzone {
+  border: var(--stroke-width-regular, 1.5px) dashed var(--border-default, #d1d4db);
+  border-radius: var(--radius-lg, 12px);
+  padding: var(--spacing-4, 16px);
+  text-align: center;
+  font-size: var(--text-13, 12.5px);
+  color: var(--text-tertiary, #9ca3af);
+  background: var(--surface-subtle, #f4f5f7);
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 9px);
+}
+
+.nameIcon {
+  color: var(--text-tertiary, #9ca3af);
+  flex: none;
+}
+
+.go {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4, 14px);
+  margin-top: var(--spacing-6, 26px);
+  flex-wrap: wrap;
+}
+
+.note {
+  font-size: var(--text-11, 11.5px);
+  color: var(--text-tertiary, #9ca3af);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 7px);
+}
