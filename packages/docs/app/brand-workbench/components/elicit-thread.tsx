@@ -238,8 +238,8 @@ export function ElicitThread() {
             <ComposerToolButton icon={<Plus />} aria-label="Add context" />
             <ComposerToolButton icon={<Microphone />} aria-label="Dictate" />
             <span className={styles.modelChip} data-testid="bw-model-chip">
-              <StatusDot tone="mint" aria-hidden="true" />
-              {COMPOSER.model}
+              <StatusDot tone={seam.keyStatus === "key-active" ? "mint" : "muted"} aria-hidden="true" />
+              {seam.keyStatus === "key-active" ? "Claude · key active" : "Claude · keyless"}
             </span>
             <ComposerSpacer />
             <ComposerSend data-testid="bw-composer-send" />
