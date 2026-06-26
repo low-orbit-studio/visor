@@ -61,7 +61,14 @@ as `covered`/`designed` when their phase is designed+built — they do NOT block
 
 - **Phase 1 (Freeze Inputs):** artifacts complete — `types.ts`, `state-machine.ts`, `contracts.ts`,
   `INTERFACE.d.ts`, `rules.md`, `state-inventory.yaml`, `cuj-coverage.yaml`, this ledger. TS compiles
-  `tsc --strict` (exit 0). Both completeness validators green. **Awaiting operator approval (spec-frozen).**
-- **Phase 2 (Freeze the Oracle):** blocked on Phase 1 sign-off. Requires worktree bootstrap
-  (`npm install`) so the blind oracle author can run Vitest + Playwright.
+  `tsc --strict` (exit 0). Both completeness validators green. **Gate PASSED — operator-approved (spec-frozen).**
+- **Phase 2 (Freeze the Oracle):** IN PROGRESS.
+  - **Isolation attestation (required, G-04):** the acceptance oracle is authored by a subagent
+    instructed to read ONLY `spec/` — explicitly forbidden from opening `packages/`, `components/`,
+    `src/`, or any existing test. Isolation is by instruction + this attestation (not dispatch-enforced).
+  - **Oracle tiers:** TIER 1 runnable now — Vitest unit tests of the frozen pure logic
+    (`spec/state-machine.ts` per `rules.md` rows) + Zod contract tests (`spec/contracts.ts`); these
+    must pass green against `spec/`. TIER 2 scaffold — Playwright CUJ specs for the `covered` journeys,
+    authored as `test.fixme` (skipped), activated by the VI-559 build (presentational layer is impl-first
+    per the spec-freeze carve-out; only the frozen LOGIC is oracle-first-green at this stage).
 - No ESCALATE item blocks the static-structure freeze; all are tracked to existing build tickets.
