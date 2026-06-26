@@ -3,11 +3,8 @@ declare const styles: {
   readonly headText: string
   readonly banner: string
   readonly board: string
-  readonly block: string
-  readonly blockKey: string
-  readonly ok: string
-  readonly blockVal: string
-  readonly edit: string
+  readonly cell: string
+  readonly reresolving: string
 }
 
 export default styles
