@@ -168,7 +168,17 @@
 }
 
 .ghostChip {
-  border-style: dashed;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 8px);
+  height: 34px;
+  padding: 0 14px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--surface-card, #ffffff);
+  border: var(--stroke-width-thin, 1px) dashed var(--border-default, #d1d4db);
+  color: var(--text-tertiary, #9ca3af);
+  font-size: var(--text-14, 14px);
+  font-weight: 600;
 }
 
 /* ─── Personality traits ─────────────────────────────────────────────────── */

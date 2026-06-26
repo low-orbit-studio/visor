@@ -111,13 +111,11 @@ export function LiveCanvas() {
             {ESSENCE_CHIPS.map((word) => (
               <Chip key={word} variant="filled-primary" size="md" label={word} />
             ))}
-            <Chip
-              variant="outlined"
-              size="md"
-              className={styles.ghostChip}
-              leadingIcon={<Spinner size="xs" tone="primary" />}
-              label={ESSENCE_GHOST}
-            />
+            {/* Deriving placeholder — an app-level affordance, not a Chip treatment. */}
+            <span className={styles.ghostChip}>
+              <Spinner size="xs" tone="primary" />
+              {ESSENCE_GHOST}
+            </span>
           </div>
         </Section>
 
