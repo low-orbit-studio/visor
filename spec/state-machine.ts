@@ -268,6 +268,35 @@ export type CheckStatus = "pass" | "warn" | "fail"
 /** Sections that own a canvas tile (every step except `start` and `canvas`). */
 export type CanvasSectionId = Exclude<SpineStepId, "start" | "canvas">
 
+/**
+ * Global progress per section view (journey.html CFG L613–621). `done` = spine steps complete,
+ * `pct` = global bar width. Frozen as data (R-PROGRESS) so the build cannot drift the numbers.
+ * (Resolves blind-oracle gap G-C: R-PROGRESS previously had no frozen pure source.)
+ */
+export const STAGE_PROGRESS: Record<SectionViewId, { done: number; pct: number }> = {
+  start: { done: 0, pct: 5 },
+  strategy: { done: 2, pct: 20 },
+  verbal: { done: 6, pct: 60 },
+  visual: { done: 7, pct: 75 },
+  prove: { done: 8, pct: 88 },
+  export: { done: 10, pct: 100 },
+  canvas: { done: 10, pct: 100 },
+}
+
+/**
+ * A section's canvas tile reaches `set` only after every listed upstream section locks
+ * (R-DERIVATION-DEPENDENCY; journey.html "derives once essence locks…"). Frozen as the dependency
+ * GRAPH; the live re-resolution reducer is VI-561 (canvas). Sections absent here have no upstream dep.
+ * (Resolves blind-oracle gap G-D: the dependency graph was prose-only.)
+ */
+export const DERIVATION_DEPENDENCIES: Partial<Record<CanvasSectionId, CanvasSectionId[]>> = {
+  essence: ["positioning"],
+  personality: ["essence"],
+  pillars: ["essence"],
+  voice: ["personality"],
+  tone: ["voice"],
+}
+
 /** The full observable workbench state. */
 export interface WorkbenchState {
   mode: WorkbenchMode

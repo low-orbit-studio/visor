@@ -59,8 +59,18 @@ export const zBrandRecord = z.object({
   archetype: zArchetype,
   pillars: z.array(zPillar),
   voice: z.object({ traits: z.array(zVoiceTrait) }),
-  // Tone: every one of the five fixed contexts is present.
-  tone: z.record(zToneContext, zToneSpecimen),
+  // Tone: the CLOSED five-context set. `.strict()` so a MISSING key OR an EXTRA key is invalid
+  // (R-TONE-KEYS, D-3). z.record(enum, …) is partial under Zod 3 and would let a missing key pass —
+  // the G-A spec gap the blind oracle caught.
+  tone: z
+    .object({
+      error: zToneSpecimen,
+      success: zToneSpecimen,
+      empty: zToneSpecimen,
+      loading: zToneSpecimen,
+      "validation-warning": zToneSpecimen,
+    })
+    .strict(),
   lexicon: z.array(z.object({ use: z.string(), avoid: z.string() })),
   messaging: z.object({ roof: z.string() }),
   taglines: z.array(z.string()).min(1),

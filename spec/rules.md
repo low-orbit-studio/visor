@@ -18,7 +18,7 @@ Source: journey.html `CFG` L613–621. `done` = spine steps complete; `pct` = gl
 | export   | 10 | 100 | yes |
 | canvas   | 10 | 100 | yes (free-edit) |
 
-Boundary: `start` is the floor (0 done / 5%); `export` and `canvas` both pin to 10/100% — entering canvas never reduces progress.
+Boundary: `start` is the floor (0 done / 5%); `export` and `canvas` both pin to 10/100% — entering canvas never reduces progress. Frozen as `STAGE_PROGRESS` in state-machine.ts (gap G-C resolved).
 
 ## R-NEXTSTEP — `nextStep(step)` (ordered derivation chain)
 
@@ -39,6 +39,20 @@ Source: spec/state-machine.ts `DERIVATION_ORDER`.
 | canvas      | **null** (free-mode, not in chain) |
 
 Boundary: `export` → null (no successor); `canvas` → null (excluded from the ordered chain).
+
+## R-PREVSTEP — `prevStep(step)` (inverse of the chain)
+
+| step | prevStep |
+|------|----------|
+| start       | **null** (no predecessor) |
+| positioning | start |
+| essence     | positioning |
+| tone        | voice |
+| visual      | tone |
+| export      | prove |
+| canvas      | **null** (free-mode, not in chain) |
+
+Boundary: `start` → null; `canvas` → null. (Resolves blind-oracle gap G-E — `prevStep` now has an authoritative row table.)
 
 ## R-SPINE-STATUS — `deriveStepStatuses(currentStep, mode)`
 
@@ -97,7 +111,7 @@ Source: BUILD-HANDOFF "no key? still fully manual"; spec/state-machine.ts `AI_DE
 | key-active | fires | fires |
 | keyless | **suppressed** (never fires) | **fires** (user locks sections manually) |
 
-Boundary: in `keyless`, the Elicit machine reaches `section-complete` only via a manual `section-lock`; no AI event is emitted.
+Boundary: in `keyless`, no AI-dependent event is emitted; the manual `section-lock` event is the only non-AI route to `section-complete`. NOTE (gap G-B): the keyless ENTRY path — how the first StructuredPrompt is presented and a section is locked without any AI turn — is asserted by BUILD-HANDOFF ("fully manual") but not drawn in the locked design. The conversational `ELICIT_TRANSITIONS` model the AI path; the full keyless interaction model is tracked to VI-562 (the AI/key seam, which owns the key-active vs keyless split). Do not infer a manual entry transition the design has not specified.
 
 ## R-PROVE-NONBLOCKING — coherence checks never block export
 
@@ -156,4 +170,4 @@ Source: journey.html canvas ghost/derive states ("derives once essence locks…"
 | voice       | personality |
 | tone        | voice |
 
-Boundary: a downstream section renders in the `deriving` (ghost) canvas state until every listed upstream section is `set`; it cannot reach `set` before them.
+Boundary: a downstream section renders in the `deriving` (ghost) canvas state until every listed upstream section is `set`; it cannot reach `set` before them. Frozen as `DERIVATION_DEPENDENCIES` in state-machine.ts (graph only; live re-resolution reducer is VI-561). Gap G-D resolved.

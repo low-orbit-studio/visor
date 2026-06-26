@@ -57,18 +57,31 @@ as `covered`/`designed` when their phase is designed+built — they do NOT block
 | docs/brand/visor-brand-strategy.md | Human-canonical narrative |
 | docs/brand-workbench-roadmap.md | Epic phasing |
 
+## Blind-oracle gaps (Phase 2) — found by the isolated oracle author
+
+| Gap | Finding | Resolution |
+|-----|---------|-----------|
+| G-A | `tone: z.record(enum,…)` is partial under Zod 3 → a missing tone key wrongly parsed as valid (1 RED test) | contracts.ts `tone` → explicit `z.object({…5 keys}).strict()`; missing OR extra key now invalid. Oracle green. |
+| G-B | The conversational state machine has no AI-free path to `section-complete`; the keyless-manual flow is not expressible | NOT modified (the locked design does not draw the manual entry — no inventing UX). ESCALATE → VI-562 (owns the key-active/keyless split); R-KEYLESS note added. |
+| G-C | R-PROGRESS done/pct had no frozen source (journey.html CFG only) | Frozen as `STAGE_PROGRESS` const in state-machine.ts + oracle test (`frozen-data.test.ts`). |
+| G-D | R-DERIVATION-DEPENDENCY graph was prose-only | Frozen as `DERIVATION_DEPENDENCIES` const + oracle test; live re-resolution reducer remains VI-561. |
+| G-E | `prevStep` had no authoritative row table | R-PREVSTEP table added to rules.md. |
+
 ## Phase status
 
 - **Phase 1 (Freeze Inputs):** artifacts complete — `types.ts`, `state-machine.ts`, `contracts.ts`,
   `INTERFACE.d.ts`, `rules.md`, `state-inventory.yaml`, `cuj-coverage.yaml`, this ledger. TS compiles
   `tsc --strict` (exit 0). Both completeness validators green. **Gate PASSED — operator-approved (spec-frozen).**
-- **Phase 2 (Freeze the Oracle):** IN PROGRESS.
-  - **Isolation attestation (required, G-04):** the acceptance oracle is authored by a subagent
-    instructed to read ONLY `spec/` — explicitly forbidden from opening `packages/`, `components/`,
-    `src/`, or any existing test. Isolation is by instruction + this attestation (not dispatch-enforced).
-  - **Oracle tiers:** TIER 1 runnable now — Vitest unit tests of the frozen pure logic
-    (`spec/state-machine.ts` per `rules.md` rows) + Zod contract tests (`spec/contracts.ts`); these
-    must pass green against `spec/`. TIER 2 scaffold — Playwright CUJ specs for the `covered` journeys,
-    authored as `test.fixme` (skipped), activated by the VI-559 build (presentational layer is impl-first
-    per the spec-freeze carve-out; only the frozen LOGIC is oracle-first-green at this stage).
+- **Phase 2 (Freeze the Oracle):** COMPLETE. Oracle authored blind; isolation attested (below).
+  5 spec gaps surfaced (table above) — G-A/C/D/E fixed in the spec, G-B escalated to VI-562.
+  - **Isolation attestation (required, G-04):** the acceptance oracle was authored by a subagent
+    instructed to read ONLY `spec/` — forbidden from opening `packages/`, `components/`, `src/`, or any
+    existing test. The subagent attested it read only the eight `spec/` files. By instruction + attestation
+    (not dispatch-enforced).
+  - **Oracle tiers:** TIER 1 runnable — Vitest unit tests of the frozen pure logic + Zod contract tests,
+    green against `spec/`. TIER 2 scaffold — Playwright CUJ specs for the `covered` journeys, `test.fixme`,
+    activated by the VI-559 build (the presentational layer is impl-first per the spec-freeze carve-out).
+- **Phase 3 (Prove + Self-Inspect):** Tier-1 oracle runs green; CI workflow committed to run the oracle +
+  both completeness validators on every PR. Playwright screenshots N/A at this stage — the UI is built in
+  Phase 5 (VI-559); the Tier-2 specs un-skip then.
 - No ESCALATE item blocks the static-structure freeze; all are tracked to existing build tickets.
