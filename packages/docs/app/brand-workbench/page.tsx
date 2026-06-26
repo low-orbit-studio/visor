@@ -3,26 +3,22 @@
 import { Progress } from "@/components/ui/progress"
 import { TopBar } from "./components/top-bar"
 import { DerivationSpine } from "./components/derivation-spine"
-import { ElicitThread } from "./components/elicit-thread"
-import { LiveCanvas } from "./components/live-canvas"
-import { SPINE_PROGRESS } from "./lib/elicit-fixtures"
+import { StageHost } from "./components/stage-host"
+import { SpineProvider, useSpineController, useSpine } from "./lib/use-spine"
 import styles from "./brand-workbench.module.css"
 
 /**
- * Brand Workbench — core Elicit screen (VI-559).
- *
- * A static, theme-agnostic snapshot of the guided Strategy stage at the Essence step, faithful to
- * docs/design/brand-workbench/elicit-core.html: a three-column split-screen — derivation spine,
- * conversational Elicit, and a live brand canvas. No AI and no state transitions yet (the AI seam is
- * VI-562, journey routes VI-560, canvas live-edit VI-561). The active stage is reflected on the root
- * via `data-stage` until per-stage sub-routing lands (VI-560).
+ * The shell: a three-region surface (top bar / spine nav / stage host). The active view + global
+ * progress read from the navigation controller; `data-stage` reflects the active `SectionViewId`.
  */
-export default function BrandWorkbenchPage() {
+function BrandWorkbenchShell() {
+  const { view, progress } = useSpine()
+
   return (
-    <div className={styles.app} data-testid="bw-root" data-stage="strategy">
+    <div className={styles.app} data-testid="bw-root" data-stage={view}>
       <TopBar />
       <Progress
-        value={SPINE_PROGRESS.pct}
+        value={progress.pct}
         size="thin"
         className={styles.globalProgress}
         data-testid="bw-global-progress"
@@ -30,9 +26,24 @@ export default function BrandWorkbenchPage() {
       />
       <div className={styles.grid}>
         <DerivationSpine />
-        <ElicitThread />
-        <LiveCanvas />
+        <StageHost />
       </div>
     </div>
+  )
+}
+
+/**
+ * Brand Workbench (VI-560) — the seven journey stages (Start → Strategy → Verbal → Visual → Prove →
+ * Export → Canvas) as navigable views on a single `/brand-workbench` route (FREEZE-LEDGER E-6: no
+ * sub-routes). The spine drives content switching off the frozen `spec/state-machine.ts` via
+ * `useSpineController`; Canvas is gated to ≥Export (D-8). No AI (VI-562), no live re-resolution
+ * (VI-561), no real export emission (VI-563).
+ */
+export default function BrandWorkbenchPage() {
+  const controller = useSpineController()
+  return (
+    <SpineProvider value={controller}>
+      <BrandWorkbenchShell />
+    </SpineProvider>
   )
 }

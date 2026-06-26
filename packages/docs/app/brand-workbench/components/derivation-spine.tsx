@@ -10,19 +10,38 @@ import {
 } from "@/components/ui/stepper"
 import { Progress } from "@/components/ui/progress"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { SPINE_GROUPS, SPINE_PROGRESS } from "../lib/elicit-fixtures"
+import type { NodeStatus } from "../../../../../spec/state-machine"
+import { useSpine } from "../lib/use-spine"
+import { SPINE_LAYOUT, STAGE_ENCOURAGEMENT } from "../lib/journey-fixtures"
+import { SPINE_PROGRESS } from "../lib/elicit-fixtures"
 import styles from "./derivation-spine.module.css"
 
-/** Per-node status, mapped onto the Stepper's status vocabulary (VI-550 adds `locked`). */
+/** The Stepper's status vocabulary (VI-550 adds `locked`). */
 export type SpineNodeStatus = "complete" | "active" | "locked" | "upcoming"
 
 /**
+ * Frozen NodeStatus → Stepper status. Future steps (`locked`/`pending`) render as `upcoming` so the
+ * node stays a clickable nav button — the spine doubles as the journey nav (journey.html), and the
+ * frozen testid contract exposes no separate advance affordance. The hard gate is Canvas mode (D-8).
+ */
+const TO_STEPPER: Record<NodeStatus, SpineNodeStatus> = {
+  done: "complete",
+  active: "active",
+  locked: "upcoming",
+  pending: "upcoming",
+}
+
+/**
  * Column 1 — the derivation spine: the load-bearing chain (Start → … → Export) that is also the
- * journey nav. A welcoming progress card, then per-section vertical Steppers (with `locked` nodes
- * gated forward-only in guided mode), then the Guided ⇄ Canvas mode card. Static in VI-559: the
- * mode switch and node navigation arrive with VI-560/VI-561.
+ * journey nav. The progress card, the per-section Steppers, and the Guided ⇄ Canvas mode card all
+ * read live from the frozen state machine (`useSpine`): each node's status comes from
+ * `deriveStepStatuses`, progress from `STAGE_PROGRESS`. Nodes are navigable — clicking a reached
+ * (`done`/`active`) node jumps there; `locked` nodes are forward-only-gated and inert. Canvas mode
+ * is enabled only once the guided chain reaches Export (D-8 / `canEnterCanvas`).
  */
 export function DerivationSpine() {
+  const { statuses, progress, view, goToStep, mode, setMode, canEnterCanvas } = useSpine()
+
   return (
     <nav className={styles.spine} data-testid="bw-spine" aria-label="Brand derivation spine">
       <div className={styles.progressCard} data-testid="bw-spine-progress-card">
@@ -31,52 +50,64 @@ export function DerivationSpine() {
           <span className={styles.pcTag}>{SPINE_PROGRESS.visibility}</span>
         </div>
         <div className={styles.pcCount}>
-          <span className={styles.pcBig}>{SPINE_PROGRESS.done}</span>
+          <span className={styles.pcBig}>{progress.done}</span>
           <span className={styles.pcOf}>of {SPINE_PROGRESS.total} steps</span>
-          <span className={styles.pcPct}>{SPINE_PROGRESS.pct}%</span>
+          <span className={styles.pcPct}>{progress.pct}%</span>
         </div>
         <Progress
-          value={SPINE_PROGRESS.pct}
+          value={progress.pct}
           size="thin"
           className={styles.pcBar}
-          aria-label={`${SPINE_PROGRESS.done} of ${SPINE_PROGRESS.total} steps complete`}
+          aria-label={`${progress.done} of ${SPINE_PROGRESS.total} steps complete`}
         />
-        <p className={styles.pcEnc}>
-          Nice start — the hard part, your <em>only</em>, is locked. About 8 min to a complete draft.
-        </p>
+        <p className={styles.pcEnc}>{STAGE_ENCOURAGEMENT[view]}</p>
       </div>
 
-      {SPINE_GROUPS.map((group) => (
-        <div key={group.label} className={styles.group}>
-          <div className={styles.eyebrow}>
-            {group.label}
-            <span className={group.countDone ? styles.countDone : styles.count}>{group.count}</span>
+      {SPINE_LAYOUT.map((group) => {
+        const doneCount = group.nodes.filter((n) => statuses[n.id] === "done").length
+        const allDone = doneCount === group.nodes.length
+        return (
+          <div key={group.label} className={styles.group}>
+            <div className={styles.eyebrow}>
+              {group.label}
+              <span className={allDone ? styles.countDone : styles.count}>
+                {doneCount} / {group.nodes.length}
+              </span>
+            </div>
+            <Stepper orientation="vertical" variant="prominent" activeStep={-1}>
+              {group.nodes.map((node, i) => {
+                const stepperStatus = TO_STEPPER[statuses[node.id]]
+                return (
+                  <StepperItem
+                    key={node.id}
+                    step={i}
+                    status={stepperStatus}
+                    data-testid={`bw-spine-node-${node.id}`}
+                  >
+                    <StepperTrigger
+                      step={i}
+                      status={stepperStatus}
+                      aria-label={node.title}
+                      onClick={() => goToStep(node.id)}
+                    />
+                    <StepperTitle>{node.title}</StepperTitle>
+                    <StepperDescription>{node.sublabel}</StepperDescription>
+                    {i < group.nodes.length - 1 && (
+                      <StepperSeparator complete={statuses[node.id] === "done"} />
+                    )}
+                  </StepperItem>
+                )
+              })}
+            </Stepper>
           </div>
-          <Stepper orientation="vertical" variant="prominent" activeStep={-1}>
-            {group.nodes.map((node, i) => (
-              <StepperItem
-                key={node.id}
-                step={i}
-                status={node.status}
-                data-testid={`bw-spine-node-${node.id}`}
-              >
-                <StepperTrigger step={i} status={node.status} aria-label={node.title} />
-                <StepperTitle>{node.title}</StepperTitle>
-                <StepperDescription>{node.sublabel}</StepperDescription>
-                {i < group.nodes.length - 1 && (
-                  <StepperSeparator complete={node.status === "complete"} />
-                )}
-              </StepperItem>
-            ))}
-          </Stepper>
-        </div>
-      ))}
+        )
+      })}
 
       <div className={styles.modeCard}>
         <ToggleGroup
           type="single"
-          value="guided"
-          onValueChange={() => {}}
+          value={mode}
+          onValueChange={(v) => v && setMode(v as "guided" | "canvas")}
           variant="outline"
           size="sm"
           aria-label="Authoring mode"
@@ -84,7 +115,7 @@ export function DerivationSpine() {
           <ToggleGroupItem value="guided" data-testid="bw-mode-guided">
             Guided
           </ToggleGroupItem>
-          <ToggleGroupItem value="canvas" data-testid="bw-mode-canvas" disabled>
+          <ToggleGroupItem value="canvas" data-testid="bw-mode-canvas" disabled={!canEnterCanvas}>
             Canvas
           </ToggleGroupItem>
         </ToggleGroup>

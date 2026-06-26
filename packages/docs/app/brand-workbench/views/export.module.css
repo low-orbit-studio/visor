@@ -1,0 +1,86 @@
+/* Export stage (journey.html .exp-grid/.outcard/.pubrow). Token-pure; Gray hex fallbacks. */
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: var(--spacing-5, 22px);
+  align-items: start;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 12px);
+}
+
+.outcard {
+  display: flex;
+  gap: var(--spacing-3, 12px);
+  background: var(--surface-card, #ffffff);
+  border: var(--stroke-width-thin, 1px) solid var(--hairline, rgba(0, 0, 0, 0.06));
+  border-radius: var(--radius-lg, 12px);
+  padding: var(--spacing-4, 14px) var(--spacing-4, 15px);
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+.outIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-lg, 9px);
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: var(--interactive-primary-soft, rgba(4, 191, 129, 0.1));
+  color: var(--primary, #04bf81);
+}
+
+.outText b {
+  font-size: var(--text-14, 13.5px);
+  font-weight: 700;
+}
+
+.outText p {
+  margin: var(--spacing-1, 3px) 0 0;
+  font-size: var(--text-13, 12px);
+  color: var(--text-secondary, #6b7280);
+  line-height: 1.45;
+}
+
+.pubrow {
+  display: flex;
+  gap: var(--spacing-3, 10px);
+  margin-top: var(--spacing-1, 6px);
+}
+
+.pubpill,
+.pubpillOn {
+  flex: 1;
+  text-align: left;
+  border-radius: var(--radius-lg, 12px);
+  border: var(--stroke-width-thin, 1px) solid var(--border-default, #d1d4db);
+  background: transparent;
+  padding: var(--spacing-3, 11px) var(--spacing-3, 13px);
+  font-family: inherit;
+  font-size: var(--text-13, 12px);
+  color: var(--text-secondary, #6b7280);
+  cursor: pointer;
+}
+
+.pubpillOn {
+  border-color: var(--border-focus, rgba(4, 191, 129, 0.34));
+  background: var(--interactive-primary-soft, rgba(4, 191, 129, 0.1));
+  color: var(--text-primary, #111827);
+}
+
+.pubpill b,
+.pubpillOn b {
+  display: block;
+  font-size: var(--text-13, 13px);
+  color: var(--text-primary, #111827);
+  margin-bottom: var(--spacing-1, 3px);
+}
+
+.cta {
+  margin-top: var(--spacing-2, 8px);
+  align-self: flex-start;
+}
