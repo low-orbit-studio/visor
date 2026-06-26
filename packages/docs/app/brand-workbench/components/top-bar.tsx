@@ -2,17 +2,16 @@
 
 import { Stack, Globe, Export } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
-import { Chip } from "@/components/ui/chip"
-import { StatusDot } from "@/components/ui/status-dot"
 import { useActiveTheme } from "../lib/use-active-theme"
 import { useSpine } from "../lib/use-spine"
-import { SPINE_PROGRESS, COMPOSER } from "../lib/elicit-fixtures"
+import { SPINE_PROGRESS } from "../lib/elicit-fixtures"
+import { ByokKeyControl } from "./byok-settings"
 import styles from "./top-bar.module.css"
 
 /**
- * Brand Workbench top bar: brand mark + project chip, the active-theme pill, the BYOK key pill
- * ("Claude · key active"), and an Export action that jumps to the Export stage (journey.html
- * `data-go="export"`). The key pill is the testable BYOK affordance.
+ * Brand Workbench top bar: brand mark + project chip, the active-theme pill, the BYOK key control
+ * (the `bw-key-pill` affordance — keyless vs key-active, opens the key-management panel, VI-562), and
+ * an Export action that jumps to the Export stage (journey.html `data-go="export"`).
  */
 export function TopBar() {
   const { themeLabel } = useActiveTheme()
@@ -38,13 +37,7 @@ export function TopBar() {
         {themeLabel || "theme"}
       </span>
 
-      <Chip
-        variant="outlined"
-        size="sm"
-        leadingIcon={<StatusDot tone="mint" aria-hidden="true" />}
-        label={COMPOSER.model}
-        data-testid="bw-key-pill"
-      />
+      <ByokKeyControl />
 
       <Button
         variant="outline"
