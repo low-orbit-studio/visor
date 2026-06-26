@@ -1,0 +1,329 @@
+.canvas {
+  min-height: 0;
+  overflow: hidden;
+  background: var(--surface-subtle, #f4f5f7);
+  border-left: var(--stroke-width-thin, 1px) solid var(--hairline, rgba(0, 0, 0, 0.06));
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Canvas header ──────────────────────────────────────────────────────── */
+
+.khead {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 10px);
+  padding: var(--spacing-4, 1rem) var(--spacing-5, 1.25rem) var(--spacing-3, 0.75rem);
+}
+
+.kheadText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kheadText b {
+  font-size: var(--text-13, 13px);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.kheadText span {
+  font-size: var(--text-11, 11px);
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.kheadSpacer {
+  flex: 1;
+}
+
+.tchip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1, 6px);
+  font-size: var(--text-11, 11.5px);
+  color: var(--text-secondary, #6b7280);
+  padding: 4px 9px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--surface-card, #ffffff);
+  border: var(--stroke-width-thin, 1px) solid var(--hairline, rgba(0, 0, 0, 0.06));
+  text-transform: capitalize;
+}
+
+.tchipSwatch {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-sm, 3px);
+  background: var(--primary, #04bf81);
+}
+
+/* ─── Scroll body + sections ─────────────────────────────────────────────── */
+
+.scroll {
+  flex: 1;
+  overflow: auto;
+  padding: var(--spacing-1, 4px) var(--spacing-5, 1.25rem) var(--spacing-5, 1.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sect {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 8px);
+  margin: var(--spacing-2, 8px) 2px 0;
+}
+
+.sectLabel {
+  font-size: var(--text-11, 10.5px);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.sectLine {
+  height: 1px;
+  flex: 1;
+  background: var(--hairline, rgba(0, 0, 0, 0.06));
+}
+
+.sectStatus,
+.sectStatusLive {
+  font-size: var(--text-11, 10.5px);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sectStatus {
+  color: var(--success, #22c55e);
+}
+
+.sectStatusLive {
+  color: var(--primary, #04bf81);
+}
+
+.sectStatus svg {
+  width: 11px;
+  height: 11px;
+}
+
+/* ─── Record card (Positioning) ──────────────────────────────────────────── */
+
+.recCard {
+  background: var(--surface-card, #ffffff);
+  border: var(--stroke-width-thin, 1px) solid var(--hairline, rgba(0, 0, 0, 0.06));
+  border-radius: var(--radius-lg, 12px);
+  padding: 11px 13px;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+.onliness {
+  font-size: var(--text-13, 13.5px);
+  line-height: 1.48;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.onliness em {
+  font-style: normal;
+  color: var(--primary, #04bf81);
+  font-weight: 700;
+}
+
+.recTags {
+  margin-top: 9px;
+  display: flex;
+  gap: var(--spacing-1, 6px);
+  flex-wrap: wrap;
+}
+
+.recTag {
+  font-size: var(--text-11, 11px);
+  font-weight: 600;
+  color: var(--text-secondary, #6b7280);
+  padding: 3px 9px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--surface-subtle, #f4f5f7);
+  border: var(--stroke-width-thin, 1px) solid var(--hairline, rgba(0, 0, 0, 0.06));
+}
+
+/* ─── Essence chips ──────────────────────────────────────────────────────── */
+
+.chips {
+  display: flex;
+  gap: var(--spacing-2, 8px);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.ghostChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 8px);
+  height: 34px;
+  padding: 0 14px;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--surface-card, #ffffff);
+  border: var(--stroke-width-thin, 1px) dashed var(--border-default, #d1d4db);
+  color: var(--text-tertiary, #9ca3af);
+  font-size: var(--text-14, 14px);
+  font-weight: 600;
+}
+
+/* ─── Personality traits ─────────────────────────────────────────────────── */
+
+.traits {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-1, 6px);
+}
+
+.trait {
+  background: var(--surface-subtle, #f4f5f7);
+  border: var(--stroke-width-thin, 1px) dashed var(--border-default, #d1d4db);
+  border-radius: var(--radius-md, 6px);
+  padding: 7px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.trait b {
+  font-size: var(--text-13, 13px);
+  font-weight: 600;
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.trait span {
+  font-size: var(--text-11, 11px);
+  color: var(--text-tertiary, #9ca3af);
+}
+
+/* ─── Pillars ────────────────────────────────────────────────────────────── */
+
+.pillCard {
+  background: var(--surface-card, #ffffff);
+  border: var(--stroke-width-thin, 1px) solid var(--hairline, rgba(0, 0, 0, 0.06));
+  border-radius: var(--radius-lg, 12px);
+  padding: 10px 12px;
+}
+
+.pillTop {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 8px);
+}
+
+.pillTop b {
+  font-size: var(--text-13, 13px);
+  font-weight: 700;
+}
+
+.governs {
+  margin-left: auto;
+  font-size: var(--text-11, 10px);
+  font-weight: 700;
+  color: var(--text-tertiary, #9ca3af);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.pillStmt {
+  font-size: var(--text-13, 12px);
+  color: var(--text-secondary, #6b7280);
+  margin: 4px 0 7px;
+  line-height: 1.4;
+}
+
+.govern {
+  display: flex;
+  gap: var(--spacing-1, 6px);
+  flex-wrap: wrap;
+}
+
+.govToken {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--text-11, 11px);
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: var(--radius-md, 4px);
+  background: var(--interactive-primary-soft, rgba(4, 191, 129, 0.1));
+  color: var(--primary, #04bf81);
+  border: var(--stroke-width-thin, 1px) solid var(--border-focus, rgba(4, 191, 129, 0.34));
+}
+
+.pillDeriving {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 8px);
+  background: var(--surface-subtle, #f4f5f7);
+  border: var(--stroke-width-thin, 1px) dashed var(--border-default, #d1d4db);
+  border-radius: var(--radius-lg, 12px);
+  padding: 10px 12px;
+  color: var(--text-tertiary, #9ca3af);
+  font-size: var(--text-13, 12px);
+}
+
+/* ─── Speaking specimen ──────────────────────────────────────────────────── */
+
+.speakBody {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.speakRow {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+}
+
+.empty {
+  border: var(--stroke-width-thin, 1px) dashed var(--border-default, #d1d4db);
+  border-radius: var(--radius-md, 6px);
+  padding: var(--spacing-3, 14px);
+  text-align: center;
+  font-size: var(--text-13, 12.5px);
+  color: var(--text-secondary, #6b7280);
+}
+
+.empty b {
+  color: var(--text-primary, #111827);
+  font-weight: 700;
+}
+
+.voiceKeyLabel {
+  font-weight: 700;
+  color: var(--text-secondary, #6b7280);
+}
+
+/* ─── Footnote ───────────────────────────────────────────────────────────── */
+
+.footnote {
+  margin-top: auto;
+  padding-top: var(--spacing-3, 0.75rem);
+  font-size: var(--text-11, 11px);
+  color: var(--text-tertiary, #9ca3af);
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  line-height: 1.4;
+}
+
+.footnote svg {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  margin-top: 1px;
+}
