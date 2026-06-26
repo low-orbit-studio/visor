@@ -37,53 +37,18 @@
   }
 }
 
-.block {
-  position: relative;
-  background: var(--surface-card, #ffffff);
-  border: var(--stroke-width-thin, 1px) solid var(--hairline, rgba(0, 0, 0, 0.06));
-  border-radius: var(--radius-lg, 12px);
-  padding: var(--spacing-4, 14px);
-  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
-  min-height: 96px;
-}
-
-.block:hover {
-  border-color: var(--border-default, #d1d4db);
-}
-
-.blockKey {
-  font-size: var(--text-11, 10.5px);
-  font-weight: 800;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--text-tertiary, #9ca3af);
-  margin-bottom: var(--spacing-2, 8px);
+/* One grid cell: the EditableBlock card + (when stale) a re-resolving affordance below it. */
+.cell {
   display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 8px);
+}
+
+/* Downstream-stale marker (D4) — mirrors the live-canvas "deriving" affordance. */
+.reresolving {
+  display: inline-flex;
   align-items: center;
   gap: var(--spacing-2, 7px);
-}
-
-.ok {
-  color: var(--success, #22c55e);
-  display: inline-flex;
-}
-
-.blockVal {
-  font-size: var(--text-13, 13.5px);
-  color: var(--text-primary, #111827);
-  line-height: 1.45;
-}
-
-.edit {
-  position: absolute;
-  top: var(--spacing-3, 11px);
-  right: var(--spacing-3, 11px);
-  color: var(--text-tertiary, #9ca3af);
-  opacity: 0;
-  display: inline-flex;
-  transition: opacity var(--motion-duration-fast, 150ms) var(--motion-easing-standard, ease);
-}
-
-.block:hover .edit {
-  opacity: 0.7;
+  font-size: var(--text-11, 11px);
+  color: var(--primary, #04bf81);
 }

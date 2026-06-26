@@ -1,16 +1,24 @@
 "use client"
 
-import { Check, PencilSimple, SquaresFour } from "@phosphor-icons/react"
+import { SquaresFour } from "@phosphor-icons/react"
+import { Spinner } from "@/components/ui/spinner"
+import { EditableBlock } from "@/components/ui/editable-block"
+import { useDraft } from "../lib/draft-store"
 import { CANVAS_CONTENT } from "../lib/journey-fixtures"
 import stage from "./stage.module.css"
 import styles from "./canvas.module.css"
 
 /**
  * Canvas stage (journey.html L567–589) — the free-edit board, reachable only at/after Export (D-8 /
- * `canEnterCanvas`). Every block of the complete draft, editable in any order. The inline edit/save,
- * AI pressure-test, and live downstream re-resolution are VI-561/VI-562 — here the board is static.
+ * `canEnterCanvas`). Every block of the shared draft (VI-561 `draft-store`) is editable in any order
+ * via `EditableBlock`; saving a block writes the single shared draft and marks its downstream
+ * derivation closure `stale` (D4, scoped per pillar). Stale blocks show a re-resolving affordance and
+ * settle back to `set` lazily, on the next view of the Guided section that owns them. The AI
+ * pressure-test action is suppressed here — it depends on the BYOK/AI seam (VI-562).
  */
 export function CanvasView() {
+  const { blocks, editBlock } = useDraft()
+
   return (
     <div className={stage.scroll} data-testid="bw-canvas-view">
       <div className={styles.head}>
@@ -26,18 +34,27 @@ export function CanvasView() {
       </div>
 
       <div className={styles.board} data-testid="bw-board">
-        {CANVAS_CONTENT.blocks.map((block) => (
-          <div key={block.label} className={styles.block} data-testid="bw-block">
-            <div className={styles.blockKey}>
-              <span className={styles.ok} aria-hidden="true">
-                <Check weight="bold" />
+        {blocks.map((block) => (
+          <div
+            key={block.id}
+            className={styles.cell}
+            data-testid="bw-block"
+            data-block={block.id}
+            data-status={block.status}
+          >
+            <EditableBlock
+              label={block.label}
+              value={block.value}
+              done={block.status !== "stale"}
+              aiActionLabel={null}
+              onSave={(value) => editBlock(block.id, value)}
+            />
+            {block.status === "stale" ? (
+              <span className={styles.reresolving}>
+                <Spinner size="xs" tone="primary" />
+                re-resolving from upstream…
               </span>
-              {block.label}
-            </div>
-            <div className={styles.blockVal}>{block.value}</div>
-            <span className={styles.edit} aria-hidden="true">
-              <PencilSimple />
-            </span>
+            ) : null}
           </div>
         ))}
       </div>
