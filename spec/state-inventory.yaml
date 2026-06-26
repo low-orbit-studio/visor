@@ -1,0 +1,299 @@
+# State & Exit-Point Inventory — Brand Workbench (VI-592, golden-path Phase 1)
+# Validator: scripts/state_exit_point_validator.py --inventory spec/state-inventory.yaml
+# Generated from: plays/spec-freeze/state-exit-point-inventory.md
+#
+# Disposition: designed | n/a:<reason> | deferred:<ticket>
+# Product shape (drives many n/a): a LOCAL-FIRST, single-user, BYOK authoring tool.
+# No server, no auth/permissions, no concurrent edit, no dates/times rendered, no webhooks.
+# AI is OPTIONAL (keyless = full manual). AI-dependent async/loading/error states are
+# deferred to VI-562 (BYOK + AI seam). Cross-screen routes are VI-560. Canvas live-edit is
+# VI-561. Export-manifest emission is VI-563. The Elicit core screen (VI-559) is the only
+# fully `designed` surface today; later surfaces carry deferrals to their build ticket.
+
+screens:
+  # ───────────────────────────────────────────────────────────────────────────
+  - id: start
+    name: "Start / Setup"
+    description: "Choose seed-vs-blank, set name + visibility, begin the interview."
+    states:
+      idle:                designed
+      hover:               designed
+      focus:               designed
+      active:              designed
+      disabled:            designed                       # "Begin" disabled until a path is chosen
+      loading:             deferred:VI-562                # seed ingestion is an AI call
+      success:             deferred:VI-562
+      error:               deferred:VI-562
+      loading-skeleton:    n/a:no-data-fetch-on-this-screen
+      empty-no-data:       designed                       # blank-slate path is the empty state
+      empty-no-results:    n/a:no-search-or-filter
+      loading-more:        n/a:no-pagination
+      error-fetch:         deferred:VI-562                # seed-from-URL fetch failure
+      error-validation:    designed                       # name/URL field validation (local)
+      unauthorized:        n/a:local-first-no-auth-or-permissions
+      offline:             n/a:local-first-manual-mode-unaffected-ai-gated-by-key-pill
+      stale:               n/a:single-local-source-no-remote-cache
+      end-of-list:         n/a:no-list
+      first-run:           designed                       # canonical first-run surface
+      back:                deferred:VI-560                # cross-screen routing
+      interrupt-resume:    designed                       # local draft preserved on return
+      deep-link:           deferred:VI-560
+      timeout:             n/a:local-first-no-auth-session
+      conflict:            n/a:single-user-local-no-concurrent-edits
+      optimistic-rollback: n/a:no-optimistic-server-writes
+      pending:             deferred:VI-562
+      retry:               deferred:VI-562
+      partial-failure:     n/a:no-batch-operations
+      idempotent-replay:   n/a:no-server-mutations
+      webhook-lost:        n/a:no-webhooks
+      long-content:        designed                       # long brand name
+      overflow:            n/a:fixed-two-card-layout
+      special-chars:       designed                       # brand name / URL special chars
+      timezone:            n/a:no-dates-or-times-displayed
+      slow-network:        deferred:VI-562
+
+  # ───────────────────────────────────────────────────────────────────────────
+  - id: elicit-strategy
+    name: "Elicit — Strategy split-screen"
+    description: "Positioning → Essence → Personality → Pillars: spine | conversational Elicit | live canvas."
+    states:
+      idle:                designed
+      hover:               designed
+      focus:               designed
+      active:              designed
+      disabled:            designed                       # composer send disabled when empty
+      loading:             deferred:VI-562                # assistant-streaming is the AI reply
+      success:             designed                       # section-complete (setrow) confirmation
+      error:               deferred:VI-562                # provider error turn
+      loading-skeleton:    n/a:thread-builds-incrementally-no-skeleton
+      empty-no-data:       designed                       # empty thread / first-run
+      empty-no-results:    n/a:no-search-or-filter
+      loading-more:        n/a:thread-not-paginated
+      error-fetch:         deferred:VI-562
+      error-validation:    designed                       # validation-warning (off-voice / coherence) advisory
+      unauthorized:        n/a:local-first-no-auth-or-permissions
+      offline:             n/a:local-first-manual-mode-unaffected-ai-gated-by-key-pill
+      stale:               n/a:single-local-source-no-remote-cache
+      end-of-list:         n/a:no-list
+      first-run:           designed
+      back:                deferred:VI-560
+      interrupt-resume:    designed                       # draft + thread restored
+      deep-link:           deferred:VI-560
+      timeout:             n/a:local-first-no-auth-session
+      conflict:            n/a:single-user-local-no-concurrent-edits
+      optimistic-rollback: n/a:no-optimistic-server-writes
+      pending:             deferred:VI-562                # canvas deriving while AI works
+      retry:               deferred:VI-562
+      partial-failure:     n/a:no-batch-operations
+      idempotent-replay:   n/a:no-server-mutations
+      webhook-lost:        n/a:no-webhooks
+      long-content:        designed                       # long onliness / pillar statements
+      overflow:            designed                       # thread + canvas scroll
+      special-chars:       designed
+      timezone:            n/a:no-dates-or-times-displayed
+      slow-network:        deferred:VI-562
+
+  # ───────────────────────────────────────────────────────────────────────────
+  - id: elicit-verbal
+    name: "Elicit — Verbal split-screen"
+    description: "Voice → Tone: conversational Elicit with live tone-by-context specimens on real components."
+    states:
+      idle:                designed
+      hover:               designed
+      focus:               designed
+      active:              designed
+      disabled:            designed
+      loading:             deferred:VI-562
+      success:             designed                       # section-complete
+      error:               deferred:VI-562
+      loading-skeleton:    n/a:thread-builds-incrementally-no-skeleton
+      empty-no-data:       designed                       # tone cards not yet drafted
+      empty-no-results:    n/a:no-search-or-filter
+      loading-more:        n/a:thread-not-paginated
+      error-fetch:         deferred:VI-562
+      error-validation:    designed                       # voice-linter warning specimen
+      unauthorized:        n/a:local-first-no-auth-or-permissions
+      offline:             n/a:local-first-manual-mode-unaffected-ai-gated-by-key-pill
+      stale:               n/a:single-local-source-no-remote-cache
+      end-of-list:         n/a:no-list
+      first-run:           designed
+      back:                deferred:VI-560
+      interrupt-resume:    designed
+      deep-link:           deferred:VI-560
+      timeout:             n/a:local-first-no-auth-session
+      conflict:            n/a:single-user-local-no-concurrent-edits
+      optimistic-rollback: n/a:no-optimistic-server-writes
+      pending:             deferred:VI-562
+      retry:               deferred:VI-562
+      partial-failure:     n/a:no-batch-operations
+      idempotent-replay:   n/a:no-server-mutations
+      webhook-lost:        n/a:no-webhooks
+      long-content:        designed                       # tone example copy length
+      overflow:            designed                       # five tone specimens scroll
+      special-chars:       designed
+      timezone:            n/a:no-dates-or-times-displayed
+      slow-network:        deferred:VI-562
+
+  # ───────────────────────────────────────────────────────────────────────────
+  - id: visual
+    name: "Visual stage"
+    description: "Suggested color/type/marks + AI-generated don'ts. Single-pane, read-only review."
+    states:
+      idle:                designed
+      hover:               designed
+      focus:               designed
+      active:              designed
+      disabled:            n/a:no-disabled-controls-read-only-review
+      loading:             deferred:VI-562                # AI suggests palette/type
+      success:             n/a:no-async-success-affordance
+      error:               deferred:VI-562
+      loading-skeleton:    deferred:VI-562                # palette derivation placeholder
+      empty-no-data:       n/a:always-populated-from-strategy
+      empty-no-results:    n/a:no-search-or-filter
+      loading-more:        n/a:no-pagination
+      error-fetch:         deferred:VI-562
+      error-validation:    n/a:no-user-input-on-this-screen
+      unauthorized:        n/a:local-first-no-auth-or-permissions
+      offline:             n/a:local-first-manual-mode-unaffected-ai-gated-by-key-pill
+      stale:               n/a:single-local-source-no-remote-cache
+      end-of-list:         n/a:no-list
+      first-run:           n/a:reached-only-after-strategy
+      back:                deferred:VI-560
+      interrupt-resume:    designed
+      deep-link:           deferred:VI-560
+      timeout:             n/a:local-first-no-auth-session
+      conflict:            n/a:single-user-local-no-concurrent-edits
+      optimistic-rollback: n/a:no-optimistic-server-writes
+      pending:             deferred:VI-562
+      retry:               deferred:VI-562
+      partial-failure:     n/a:no-batch-operations
+      idempotent-replay:   n/a:no-server-mutations
+      webhook-lost:        n/a:no-webhooks
+      long-content:        designed                       # don't-card copy length
+      overflow:            designed                       # two-column panel scroll
+      special-chars:       designed
+      timezone:            n/a:no-dates-or-times-displayed
+      slow-network:        deferred:VI-562
+
+  # ───────────────────────────────────────────────────────────────────────────
+  - id: prove
+    name: "Prove — coherence audit"
+    description: "Automated coherence audit: score ring + pass/warn/fail checks with non-blocking fix actions."
+    states:
+      idle:                designed
+      hover:               designed
+      focus:               designed
+      active:              designed
+      disabled:            n/a:no-disabled-controls
+      loading:             deferred:VI-562                # AI "suggest a fix" / rewrite
+      success:             designed                       # check flips pass after a fix
+      error:               deferred:VI-562
+      loading-skeleton:    designed                       # audit running placeholder
+      empty-no-data:       n/a:audit-always-has-checks
+      empty-no-results:    n/a:no-search-or-filter
+      loading-more:        n/a:no-pagination
+      error-fetch:         deferred:VI-562
+      error-validation:    designed                       # warn/fail checks are the validation surface
+      unauthorized:        n/a:local-first-no-auth-or-permissions
+      offline:             n/a:local-first-manual-mode-unaffected-ai-gated-by-key-pill
+      stale:               n/a:re-runs-on-every-change-never-stale
+      end-of-list:         n/a:no-list
+      first-run:           n/a:reached-only-after-visual
+      back:                deferred:VI-560
+      interrupt-resume:    designed
+      deep-link:           deferred:VI-560
+      timeout:             n/a:local-first-no-auth-session
+      conflict:            n/a:single-user-local-no-concurrent-edits
+      optimistic-rollback: n/a:no-optimistic-server-writes
+      pending:             deferred:VI-562
+      retry:               deferred:VI-562
+      partial-failure:     designed                       # 9 pass / 1 warn / 1 fail is per-item status
+      idempotent-replay:   n/a:no-server-mutations
+      webhook-lost:        n/a:no-webhooks
+      long-content:        designed                       # check explanation length
+      overflow:            designed                       # check groups scroll
+      special-chars:       designed
+      timezone:            n/a:no-dates-or-times-displayed
+      slow-network:        deferred:VI-562
+
+  # ───────────────────────────────────────────────────────────────────────────
+  - id: export
+    name: "Export"
+    description: ".visor.yaml brand-strategy block + agent manifest + brand book + coherence gate; visibility choice."
+    states:
+      idle:                designed
+      hover:               designed
+      focus:               designed
+      active:              designed
+      disabled:            designed                       # export disabled until all stages done
+      loading:             deferred:VI-563                # writing the manifest/file
+      success:             deferred:VI-563                # export-complete confirmation
+      error:               deferred:VI-563                # write/serialize failure
+      loading-skeleton:    n/a:content-precomputed-from-record
+      empty-no-data:       n/a:always-populated-at-export
+      empty-no-results:    n/a:no-search-or-filter
+      loading-more:        n/a:no-pagination
+      error-fetch:         n/a:no-remote-fetch-local-serialize
+      error-validation:    designed                       # coherence-gate blocks invalid export
+      unauthorized:        n/a:local-first-no-auth-or-permissions
+      offline:             n/a:local-first-serialize-runs-offline
+      stale:               n/a:single-local-source
+      end-of-list:         n/a:no-list
+      first-run:           n/a:reached-only-after-prove
+      back:                deferred:VI-560
+      interrupt-resume:    designed
+      deep-link:           deferred:VI-560
+      timeout:             n/a:local-first-no-auth-session
+      conflict:            n/a:single-user-local-no-concurrent-edits
+      optimistic-rollback: n/a:no-optimistic-server-writes
+      pending:             deferred:VI-563
+      retry:               deferred:VI-563
+      partial-failure:     n/a:single-file-export-atomic
+      idempotent-replay:   deferred:VI-563                # re-export same record is a no-op
+      webhook-lost:        n/a:no-webhooks
+      long-content:        designed                       # long YAML preview
+      overflow:            designed                       # code card scroll
+      special-chars:       designed                       # YAML-safe escaping of brand copy
+      timezone:            n/a:no-dates-or-times-displayed
+      slow-network:        n/a:local-serialize-no-network
+
+  # ───────────────────────────────────────────────────────────────────────────
+  - id: canvas
+    name: "Canvas — free-edit board"
+    description: "Post-draft free-edit board: any block, any order; inline edit + AI pressure-test; live re-resolve."
+    states:
+      idle:                deferred:VI-561
+      hover:               deferred:VI-561
+      focus:               deferred:VI-561
+      active:              deferred:VI-561
+      disabled:            deferred:VI-561
+      loading:             deferred:VI-562                # AI pressure-test
+      success:             deferred:VI-561                # block saved
+      error:               deferred:VI-562
+      loading-skeleton:    n/a:blocks-precomputed-from-record
+      empty-no-data:       n/a:reached-only-with-complete-draft
+      empty-no-results:    n/a:no-search-or-filter
+      loading-more:        n/a:no-pagination
+      error-fetch:         deferred:VI-562
+      error-validation:    deferred:VI-561                # inline block edit validation
+      unauthorized:        n/a:local-first-no-auth-or-permissions
+      offline:             n/a:local-first-manual-mode-unaffected-ai-gated-by-key-pill
+      stale:               n/a:re-resolves-on-every-edit-never-stale
+      end-of-list:         n/a:no-list
+      first-run:           n/a:reached-only-after-export
+      back:                deferred:VI-561                # canvas → guided toggle
+      interrupt-resume:    deferred:VI-561
+      deep-link:           deferred:VI-560
+      timeout:             n/a:local-first-no-auth-session
+      conflict:            n/a:single-user-local-no-concurrent-edits
+      optimistic-rollback: deferred:VI-561                # failed live re-resolve revert
+      pending:             deferred:VI-562
+      retry:               deferred:VI-562
+      partial-failure:     n/a:no-batch-operations
+      idempotent-replay:   n/a:no-server-mutations
+      webhook-lost:        n/a:no-webhooks
+      long-content:        deferred:VI-561
+      overflow:            deferred:VI-561                # board grid overflow
+      special-chars:       deferred:VI-561
+      timezone:            n/a:no-dates-or-times-displayed
+      slow-network:        deferred:VI-562

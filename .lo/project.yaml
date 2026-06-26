@@ -18,3 +18,7 @@ github:
   auto_merge: true
 git:
   main_branch_write_policy: pr_required
+spec_freeze:
+  freeze_gate: advisory   # advisory | required — flips to required after retro_count >= 2
+  retro_count: 0
+  waived_by: ""

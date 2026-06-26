@@ -1,0 +1,260 @@
+# CUJ-bible — Brand Workbench (VI-592, golden-path Phase 1)
+# Validator: scripts/cuj_coverage_validator.py --coverage spec/cuj-coverage.yaml
+# Companion gate to spec/state-inventory.yaml (surfaces below match its screen ids).
+#
+# Disposition: covered | partial:<ticket> | gap:<ticket> | n/a:<reason>
+#   covered  — the surface AND the step's required state are drawn in the locked prototypes
+#              (docs/design/brand-workbench/{journey.html, elicit-core.html}).
+#   partial: — surface drawn, but the step's dynamic state (AI streaming, live re-resolve) isn't.
+#   gap:     — nothing drawn yet (key-entry UI, export emission mechanics, seed ingestion).
+# Deferral tickets: VI-562 (BYOK+AI seam) · VI-561 (Guided⇄Canvas live-edit) · VI-563 (export emit).
+# The guided STRUCTURE is fully designed → mostly covered; the AI/canvas/export DYNAMICS are tracked.
+
+cujs:
+  # ───────────────────────────────────────────────────────────────────────────
+  - id: UJ-A
+    name: "Guided Full Onboarding (Start → Export)"
+    actor: brand-owner
+    phase: "epic-2 (VI-559) + epic-3 (VI-560)"
+    terminal: "complete .visor.yaml brand system exported; all 10 spine nodes done"
+    steps:
+      - n: 1
+        action: "Land on Start; choose Seed-from-existing or Start-from-scratch path"
+        surface: start
+        disposition: covered
+        evidence: "journey.html L357-383 (.start, two .pathcard)"
+      - n: 2
+        action: "Blank path: enter brand name; choose public/private visibility"
+        surface: start
+        disposition: covered
+        evidence: "journey.html L373-374 (.inp, .vis-toggle)"
+      - n: 3
+        action: "Click Begin the interview → advance to Positioning"
+        surface: start
+        disposition: covered
+        evidence: "journey.html L378 (.bigbtn), L623 setStage('strategy')"
+      - n: 4
+        action: "Positioning: read AI onliness proposal turn"
+        surface: elicit-strategy
+        disposition: covered
+        evidence: "elicit-core.html L472-475 (.turn .txt)"
+      - n: 5
+        action: "Positioning challenge gate: accept (Use X) or rewrite (I'll rewrite)"
+        surface: elicit-strategy
+        disposition: covered
+        evidence: "elicit-core.html L496-506 (.challenge, .cbtn.keep/.alt, .gate)"
+      - n: 6
+        action: "Essence: lock 2–3 core words via the onliness mad-lib"
+        surface: elicit-strategy
+        disposition: covered
+        evidence: "elicit-core.html L484-489 (.tool/.slot); L511-515 (.setrow/.setchip)"
+      - n: 7
+        action: "Personality: confirm derived archetype + trait/antonym pairs"
+        surface: elicit-strategy
+        disposition: covered
+        evidence: "elicit-core.html L584-590 (.traits/.trait); journey.html L329"
+      - n: 8
+        action: "Pillars: confirm 3–5 pillars and the tokens each governs"
+        surface: elicit-strategy
+        disposition: covered
+        evidence: "elicit-core.html L593-601 (.pill-card, .govern); journey.html L330"
+      - n: 9
+        action: "Voice: lock the voice traits derived from personality"
+        surface: elicit-verbal
+        disposition: covered
+        evidence: "journey.html L422-431 (Verbal › Voice)"
+      - n: 10
+        action: "Tone: review five live tone-by-context specimens; accept all"
+        surface: elicit-verbal
+        disposition: covered
+        evidence: "journey.html L444-450 (.tonecard ×5 on real cmp-* components)"
+      - n: 11
+        action: "Visual: review suggested color/type/marks and AI-generated don'ts"
+        surface: visual
+        disposition: covered
+        evidence: "journey.html L455-496 (.pad .two, .panel ×4)"
+      - n: 12
+        action: "Prove: review coherence audit — score ring + pass/warn/fail checks"
+        surface: prove
+        disposition: covered
+        evidence: "journey.html L499-522 (.scorebar/.ring, .checkgrp)"
+      - n: 13
+        action: "Export: review .visor.yaml + outputs; choose visibility"
+        surface: export
+        disposition: covered
+        evidence: "journey.html L525-559 (.exp-grid, .codecard, .pubrow)"
+      - n: 14
+        action: "Click Export brand system → emit .visor.yaml + agent manifest to disk"
+        surface: export
+        disposition: gap:VI-563
+        evidence: "journey.html L560 (.bigbtn) — emission mechanics not designed/built"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  - id: UJ-B
+    name: "Canvas Free-Edit Refine (post-export)"
+    actor: brand-owner
+    phase: "epic-4 (VI-561)"
+    terminal: "any block edited; system re-resolves; export updated"
+    steps:
+      - n: 1
+        action: "Enter Canvas mode after export (mode toggle); all spine nodes show done"
+        surface: canvas
+        disposition: partial:VI-561
+        evidence: "journey.html L567-589 board drawn; toggle/transition mechanics not"
+      - n: 2
+        action: "Edit a block inline; save the new value"
+        surface: canvas
+        disposition: gap:VI-561
+        evidence: "journey.html L578 (.block.editing, .editrow) — edit/save behavior not built"
+      - n: 3
+        action: "Ask AI to pressure-test a block"
+        surface: canvas
+        disposition: gap:VI-562
+        evidence: "journey.html L578 (.aibtn) — AI action depends on the seam"
+      - n: 4
+        action: "Downstream blocks live re-resolve after an upstream edit"
+        surface: canvas
+        disposition: gap:VI-561
+        evidence: "journey.html L622-625 footnote 're-resolves'; mechanics not designed"
+      - n: 5
+        action: "Coherence re-runs automatically after the edit"
+        surface: prove
+        disposition: partial:VI-561
+        evidence: "journey.html L503/L555 're-proves on every change'; trigger not built"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  - id: UJ-C
+    name: "BYOK + AI seam (local-first, Claude-first)"
+    actor: brand-owner
+    phase: "epic-5 (VI-562)"
+    terminal: "AI drafts every layer; human holds the gate throughout"
+    steps:
+      - n: 1
+        action: "Keyless entry: AI features disabled; manual tool still fully usable"
+        surface: elicit-strategy
+        disposition: partial:VI-562
+        evidence: "elicit-core.html L544-549 meta 'no key? still fully manual'; disabled state not drawn"
+      - n: 2
+        action: "Enter Claude API key (key-entry UI)"
+        surface: elicit-strategy
+        disposition: gap:VI-562
+        evidence: "no key-entry surface in prototype"
+      - n: 3
+        action: "Key active → AI flows unlock; key pill shows 'Claude · key active'"
+        surface: elicit-strategy
+        disposition: covered
+        evidence: "elicit-core.html L539 (.modelchip); journey.html L305 (.pill.key)"
+      - n: 4
+        action: "Send a message → assistant streaming (loading) reply"
+        surface: elicit-strategy
+        disposition: partial:VI-562
+        evidence: "elicit-core.html node .pulse / canvas .st.live imply streaming; not drawn explicitly"
+      - n: 5
+        action: "AI returns an adversarial challenge (amber); human holds the gate"
+        surface: elicit-strategy
+        disposition: covered
+        evidence: "elicit-core.html L496-506 (.challenge)"
+      - n: 6
+        action: "Provider/network error → error turn with retry"
+        surface: elicit-strategy
+        disposition: gap:VI-562
+        evidence: "no error/retry turn drawn in prototype"
+      - n: 7
+        action: "Switch model / view cost estimate"
+        surface: elicit-strategy
+        disposition: gap:VI-562
+        evidence: "BUILD-HANDOFF cost-estimate note; no model-switcher surface drawn"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  - id: UJ-D
+    name: "Error Recovery & Validation Rejects"
+    actor: brand-owner
+    phase: "epic-2 (VI-559) + epic-3 (VI-560)"
+    terminal: "issues resolved or accepted; warnings never block export"
+    steps:
+      - n: 1
+        action: "Positioning too generic → AI challenges 'that's not only — push harder'"
+        surface: elicit-strategy
+        disposition: covered
+        evidence: "elicit-core.html L496-498 (.challenge .ch/.cb)"
+      - n: 2
+        action: "Resolve the challenge: keep the sharpened version or rewrite"
+        surface: elicit-strategy
+        disposition: covered
+        evidence: "elicit-core.html L499-503 (.actions .cbtn.keep/.alt)"
+      - n: 3
+        action: "Prove: voice-drift warning with 'Rewrite to voice' fix action"
+        surface: prove
+        disposition: covered
+        evidence: "journey.html L515 (.check.warn, .fix)"
+      - n: 4
+        action: "Apply the fix → AI rewrites → check flips to pass"
+        surface: prove
+        disposition: partial:VI-562
+        evidence: "journey.html L515 fix button drawn; AI rewrite is live"
+      - n: 5
+        action: "Prove: accessibility fail with 'Suggest a fix' (non-blocking)"
+        surface: prove
+        disposition: covered
+        evidence: "journey.html L518 (.check.fail, .fix)"
+      - n: 6
+        action: "Proceed to Export despite warnings/fails (nothing blocks you)"
+        surface: export
+        disposition: covered
+        evidence: "journey.html L503 lede 'nothing here blocks you'"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  - id: UJ-E
+    name: "Empty / First-Run (no prior brand)"
+    actor: brand-owner
+    phase: "epic-2 (VI-559)"
+    terminal: "blank brand enters the guided flow from Positioning"
+    steps:
+      - n: 1
+        action: "Start → choose 'Start from scratch'"
+        surface: start
+        disposition: covered
+        evidence: "journey.html L370 (.pathcard, no reco)"
+      - n: 2
+        action: "Enter brand name (empty/first-run state)"
+        surface: start
+        disposition: covered
+        evidence: "journey.html L373 (.inp placeholder)"
+      - n: 3
+        action: "Choose public/private visibility"
+        surface: start
+        disposition: covered
+        evidence: "journey.html L374 (.vis-toggle)"
+      - n: 4
+        action: "Begin → AI interviews from first principles (cold start)"
+        surface: elicit-strategy
+        disposition: partial:VI-562
+        evidence: "journey.html L362 'I'll interview you…'; AI cold-start not built"
+
+  # ───────────────────────────────────────────────────────────────────────────
+  - id: UJ-F
+    name: "Seeded Onboarding (existing assets)"
+    actor: brand-owner
+    phase: "epic-2 (VI-559) + epic-5 (VI-562)"
+    terminal: "seeded first-draft → guided flow from Positioning"
+    steps:
+      - n: 1
+        action: "Start → choose 'Seed from what you have' (recommended)"
+        surface: start
+        disposition: covered
+        evidence: "journey.html L364 (.pathcard.reco, .rtag 'fastest')"
+      - n: 2
+        action: "Paste a URL or drop a deck / notes / screenshots"
+        surface: start
+        disposition: covered
+        evidence: "journey.html L367-368 (.inp, .dropz)"
+      - n: 3
+        action: "AI ingests the seed and proposes a first-draft positioning"
+        surface: start
+        disposition: gap:VI-562
+        evidence: "ingestion + proposal not designed/built (AI seam)"
+      - n: 4
+        action: "Seed ingestion fails (bad URL / unparseable) → error + retry"
+        surface: start
+        disposition: gap:VI-562
+        evidence: "no ingest-error surface drawn"

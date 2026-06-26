@@ -1,0 +1,33 @@
+# Brand Workbench spec-freeze oracle (VI-592, golden-path Phase 3).
+# Runs the runnable Tier-1 acceptance oracle (frozen logic + Zod contracts) on every PR that
+# touches the frozen spec or the oracle. A RED run means the spec and its oracle have drifted —
+# fix the spec artifact or the oracle, never the implementation (spec-freeze Phase 3 discipline).
+#
+# NOTE: the two completeness validators (state_exit_point_validator.py, cuj_coverage_validator.py)
+# live in the private low-orbit-playbook and are run LOCALLY during the freeze — they are
+# intentionally not wired into this public-repo CI (CLAUDE.md: private surfaces stay out of public CI).
+name: Brand Workbench Oracle
+
+on:
+  pull_request:
+    paths:
+      - "spec/**"
+      - "tests/oracle/**"
+      - ".github/workflows/brand-workbench-oracle.yml"
+
+jobs:
+  oracle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Tier-1 acceptance oracle (Vitest)
+        run: >-
+          npx vitest run
+          tests/oracle/state-machine.test.ts
+          tests/oracle/contracts.test.ts
+          tests/oracle/frozen-data.test.ts
