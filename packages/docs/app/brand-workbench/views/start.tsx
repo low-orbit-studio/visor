@@ -14,8 +14,19 @@ import {
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { FileUpload } from "@/components/ui/file-upload"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useSpine } from "../lib/use-spine"
+import { useByok } from "../lib/use-byok"
+import { useSeed } from "../lib/seed-store"
+import {
+  extractSeedText,
+  classifyTextInput,
+  type SeedInput,
+  type SeedFailure,
+} from "../lib/seed-ingest"
+import { proposeDraftFromText } from "../lib/seed-propose-draft"
+import { SeedErrorCard } from "../components/seed-error-card"
 import { START_CONTENT } from "../lib/journey-fixtures"
 import styles from "./start.module.css"
 
@@ -23,14 +34,63 @@ type Path = "seed" | "blank"
 
 /**
  * Start stage (journey.html L357–383) — the journey entry. Two paths (seed-from-existing /
- * start-from-scratch), a brand name, and public/private visibility. "Begin the interview" advances
- * the guided chain to Positioning. Seed ingestion + the AI cold-start are VI-562 — here it's static.
+ * start-from-scratch), a brand name, and public/private visibility. The blank path's "Begin" advances
+ * the guided chain to Positioning. The seed path (UJ-F, VI-594) ingests a URL / paste / file, asks the
+ * AI for a first-draft positioning, then lands on Positioning seeded. Keyless suppresses the seed path
+ * (D5 / R-KEYLESS) — the pathcard disables with a BYOK pointer.
  */
 export function StartView() {
   const { advance } = useSpine()
+  const { keyStatus } = useByok()
+  const { setSeeded } = useSeed()
+  const keyless = keyStatus === "keyless"
+
   const [path, setPath] = React.useState<Path>("seed")
   const [name, setName] = React.useState<string>(START_CONTENT.blank.name)
   const [visibility, setVisibility] = React.useState<"public" | "private">("public")
+
+  const [seedText, setSeedText] = React.useState("")
+  const [busy, setBusy] = React.useState(false)
+  const [error, setError] = React.useState<{ failure: SeedFailure; detail?: string } | null>(null)
+  const lastInput = React.useRef<SeedInput | null>(null)
+
+  // Ingest a seed input → extract text → AI proposes a first-draft record → land on Positioning seeded.
+  const runIngest = React.useCallback(
+    async (input: SeedInput) => {
+      lastInput.current = input
+      setBusy(true)
+      setError(null)
+      const extracted = await extractSeedText(input)
+      if (!extracted.ok) {
+        setError({ failure: extracted.failure, detail: extracted.detail })
+        setBusy(false)
+        return
+      }
+      const proposal = await proposeDraftFromText(extracted.text)
+      if (!proposal.ok) {
+        setError({ failure: proposal.failure, detail: proposal.detail })
+        setBusy(false)
+        return
+      }
+      setBusy(false)
+      setSeeded(proposal.record)
+      advance()
+    },
+    [setSeeded, advance],
+  )
+
+  const handleBegin = React.useCallback(() => {
+    if (busy) return
+    // Blank path, or the seed path with no usable seed (keyless, or an empty field), begins the guided
+    // cold-start (UJ-A/UJ-E). Only a key-active seed path with input runs the ingestion pipeline.
+    if (path === "blank" || keyless || !seedText.trim()) {
+      advance()
+      return
+    }
+    void runIngest(classifyTextInput(seedText))
+  }, [path, keyless, busy, seedText, advance, runIngest])
+
+  const seedDisabled = keyless || busy
 
   return (
     <div className={styles.wrap} data-testid="bw-start">
@@ -50,6 +110,7 @@ export function StartView() {
             onClick={() => setPath("seed")}
             data-testid="bw-path-seed"
             data-selected={path === "seed"}
+            data-disabled={keyless || undefined}
           >
             <div className={styles.cardHead}>
               <span className={styles.cardIcon} aria-hidden="true">
@@ -61,11 +122,46 @@ export function StartView() {
               </h3>
             </div>
             <p className={styles.cardBody}>{START_CONTENT.seed.body}</p>
-            <div className={styles.fauxInput}>
-              <LinkSimple aria-hidden="true" />
-              <span className={styles.fauxValue}>{START_CONTENT.seed.url}</span>
+
+            <div className={styles.seedField}>
+              <LinkSimple aria-hidden="true" className={styles.seedFieldIcon} />
+              <Input
+                size="sm"
+                value={seedText}
+                onChange={(e) => setSeedText(e.target.value)}
+                disabled={seedDisabled}
+                aria-label="Seed from a URL or pasted text"
+                placeholder="Paste a URL — or your notes"
+                data-testid="bw-seed-input"
+                onClick={(e) => e.stopPropagation()}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    handleBegin()
+                  }
+                }}
+              />
             </div>
-            <div className={styles.dropzone}>{START_CONTENT.seed.drop}</div>
+
+            <FileUpload
+              accept=".pdf,.txt,.md,.markdown,.mdx,.csv,text/*,application/pdf"
+              maxSize={10}
+              disabled={seedDisabled}
+              onFilesChange={(files) => {
+                if (files[0]) void runIngest({ kind: "file", file: files[0] })
+              }}
+              data-testid="bw-seed-dropzone"
+            >
+              <span className={styles.seedDropText}>{START_CONTENT.seed.drop}</span>
+            </FileUpload>
+
+            {keyless ? (
+              <p className={styles.byokPointer} data-testid="bw-seed-disabled">
+                <Lock aria-hidden="true" />
+                Add a Claude key (top-right) to seed from existing materials.
+              </p>
+            ) : null}
           </Card>
 
           <Card
@@ -115,10 +211,30 @@ export function StartView() {
           </Card>
         </div>
 
+        {error ? (
+          <div className={styles.errorWrap}>
+            <SeedErrorCard
+              failure={error.failure}
+              detail={error.detail}
+              onRetry={() => {
+                if (lastInput.current) void runIngest(lastInput.current)
+              }}
+              onSwitchInput={() => {
+                setError(null)
+                setSeedText("")
+              }}
+              onFallback={() => {
+                setError(null)
+                setPath("blank")
+              }}
+            />
+          </div>
+        ) : null}
+
         <div className={styles.go}>
-          <Button size="lg" onClick={advance} data-testid="bw-begin">
-            {START_CONTENT.begin}
-            <ArrowRight aria-hidden="true" />
+          <Button size="lg" onClick={handleBegin} disabled={busy} data-testid="bw-begin">
+            {busy ? "Reading your materials…" : START_CONTENT.begin}
+            {busy ? null : <ArrowRight aria-hidden="true" />}
           </Button>
           <span className={styles.note}>
             <ShieldCheck aria-hidden="true" />

@@ -12,6 +12,7 @@ import { createClaudeProvider } from "./provider-claude"
 import { getModel } from "./byok"
 import { useByok } from "./use-byok"
 import { useSpine } from "./use-spine"
+import { useSeed } from "./seed-store"
 import type { ElicitState, KeyStatus } from "../../../../../spec/state-machine"
 import type { ElicitRequest, ElicitResponse, AiFailure } from "../../../../../spec/contracts"
 
@@ -45,6 +46,7 @@ const OVERLAY_START: ElicitState = { kind: "awaiting-input" }
 export function useElicitSeam(): ElicitSeamController {
   const { keyStatus } = useByok()
   const { currentStep } = useSpine()
+  const { seeded } = useSeed()
   const [state, setState] = React.useState<ElicitState>(OVERLAY_START)
   const [lastResponse, setLastResponse] = React.useState<ElicitResponse | undefined>(undefined)
   const [lastFailure, setLastFailure] = React.useState<AiFailure | undefined>(undefined)
@@ -68,7 +70,8 @@ export function useElicitSeam(): ElicitSeamController {
       const req: ElicitRequest = {
         requestId: crypto.randomUUID(),
         step: currentStep,
-        record: {},
+        // Seed the AI's "record so far" with the UJ-F first-draft proposal when present (VI-594).
+        record: seeded ?? {},
         userMessage: message,
         model: getModel(),
       }
@@ -79,7 +82,7 @@ export function useElicitSeam(): ElicitSeamController {
       setLastFailureDetail(turn.detail)
       setBusy(false)
     },
-    [keyStatus, currentStep, state],
+    [keyStatus, currentStep, state, seeded],
   )
 
   const keep = React.useCallback(() => setState((s) => resolveChallenge(s, "keep")), [])

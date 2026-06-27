@@ -62,6 +62,7 @@
     "fumadocs-mdx": "^14.2.11",
     "fumadocs-ui": "^16.7.9",
     "next": "^16.2.1",
+    "pdfjs-dist": "^6.0.227",
     "react": "^19.2.0",
     "react-day-picker": "^9.14.0",
     "react-dom": "^19.2.0",
