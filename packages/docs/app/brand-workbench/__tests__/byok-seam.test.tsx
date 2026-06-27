@@ -38,6 +38,15 @@ function stubChallengeFetch() {
   )
 }
 
+/** A fetch stub returning a non-OK status with an Anthropic-shaped error body. */
+function stubErrorFetch(status: number, message: string) {
+  const body = JSON.stringify({ type: "error", error: { type: "invalid_request_error", message } })
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => new Response(body, { status })),
+  )
+}
+
 beforeEach(() => localStorage.clear())
 afterEach(() => vi.unstubAllGlobals())
 
@@ -109,5 +118,22 @@ describe("Elicit seam — key-active turbo path + challenge human-gate", () => {
 
     fireEvent.click(within(challenge).getByTestId("bw-seam-challenge-keep"))
     expect(screen.getByTestId("bw-seam-locked")).toBeInTheDocument()
+  })
+})
+
+describe("Elicit seam — provider error surfaces the real message (VI-593)", () => {
+  it("a non-OK provider response renders the provider detail, not a bare 'unknown'", async () => {
+    localStorage.setItem(BYOK_KEY_STORAGE, "sk-ant-test")
+    stubErrorFetch(400, "Your credit balance is too low to access the Anthropic API.")
+    renderAtStrategy()
+
+    fireEvent.change(screen.getByTestId("bw-composer-input"), {
+      target: { value: "A design system you copy and own." },
+    })
+    fireEvent.click(screen.getByTestId("bw-composer-send"))
+
+    const error = await screen.findByTestId("bw-seam-error")
+    expect(error).toHaveTextContent("credit balance is too low")
+    expect(error).not.toHaveTextContent("Provider error: unknown.")
   })
 })

@@ -164,6 +164,17 @@ describe("runAiTurn — key-active drives the provider; keyless is a no-op", () 
     expect(turn.failure).toBe("rate-limited")
   })
 
+  it("provider rejection → turn carries the human-readable detail beside the failure", async () => {
+    const provider: Provider = {
+      elicit: vi.fn(async () => {
+        throw new ElicitError("unknown", "HTTP 400: Your credit balance is too low")
+      }),
+    }
+    const turn = await runAiTurn({ kind: "awaiting-input" }, REQ, { provider, keyStatus: "key-active" })
+    expect(turn.failure).toBe("unknown")
+    expect(turn.detail).toContain("credit balance is too low")
+  })
+
   it("keyless: provider never called, state unchanged", async () => {
     const provider = providerReturning({ kind: "text", content: "x" })
     const turn = await runAiTurn({ kind: "awaiting-input" }, REQ, { provider, keyStatus: "keyless" })

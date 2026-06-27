@@ -37,6 +37,15 @@ export function aiFailureOf(err: unknown): AiFailure {
   return err instanceof ElicitError ? err.failure : "unknown"
 }
 
+/**
+ * Human-readable failure detail for the UI — the `ElicitError.message` (e.g. the provider's
+ * `error.message`), or `undefined` for a non-ElicitError throwable. Surfaced alongside the closed-enum
+ * `failure` so the operator sees the real reason (e.g. "credit balance too low") instead of "unknown".
+ */
+export function aiDetailOf(err: unknown): string | undefined {
+  return err instanceof ElicitError ? err.message : undefined
+}
+
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages"
 const ANTHROPIC_VERSION = "2023-06-01"
 const MAX_TOKENS = 2048
@@ -49,6 +58,34 @@ function failureForStatus(status: number): AiFailure {
   if (status === 429) return "rate-limited"
   if (status === 408 || status === 504) return "timeout"
   return "unknown" // 400 / 5xx / 529 — no finer bucket in zAiFailure
+}
+
+/** Cap on the detail string carried into the UI — long enough for a real provider message, bounded. */
+const MAX_DETAIL_LEN = 300
+
+/**
+ * Best-effort human-readable detail from a non-OK provider response. Prefers Anthropic's
+ * `error.message` (the actionable text, e.g. "credit balance too low"), then a truncated raw body,
+ * then a bare status. The closed-enum `failure` is unchanged — this only enriches the message.
+ */
+async function readErrorDetail(res: Response): Promise<string> {
+  let body = ""
+  try {
+    body = await res.text()
+  } catch {
+    return `HTTP ${res.status}`
+  }
+  try {
+    const parsed = JSON.parse(body) as { error?: { message?: unknown } }
+    const message = parsed?.error?.message
+    if (typeof message === "string" && message.trim()) {
+      return `HTTP ${res.status}: ${message.trim().slice(0, MAX_DETAIL_LEN)}`
+    }
+  } catch {
+    // not JSON — fall through to the raw body
+  }
+  const trimmed = body.trim()
+  return trimmed ? `HTTP ${res.status}: ${trimmed.slice(0, MAX_DETAIL_LEN)}` : `HTTP ${res.status}`
 }
 
 /**
@@ -139,7 +176,7 @@ export function createClaudeProvider(options: ClaudeProviderOptions = {}): Provi
         clearTimeout(timer)
       }
 
-      if (!res.ok) throw new ElicitError(failureForStatus(res.status), `HTTP ${res.status}`)
+      if (!res.ok) throw new ElicitError(failureForStatus(res.status), await readErrorDetail(res))
 
       let payload: { content?: { type: string; text?: string }[]; stop_reason?: string }
       try {
