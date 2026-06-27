@@ -36,6 +36,10 @@ describe("htmlToText", () => {
     expect(text).not.toContain("color:red")
     expect(text).not.toMatch(/[<>]/)
   })
+
+  it("decodes numeric quote/apostrophe entities to the right characters", () => {
+    expect(htmlToText("<p>say &#34;hi&#34; it&#39;s fine</p>")).toBe(`say "hi" it's fine`)
+  })
 })
 
 describe("fetchSeedUrl — routing + extraction", () => {
