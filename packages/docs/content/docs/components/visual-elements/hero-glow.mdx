@@ -68,13 +68,13 @@ The animation is pure CSS (`@keyframes hero-glow-breathe`) — no JavaScript ani
 
 ## Reduced Motion
 
-When `prefers-reduced-motion: reduce` is active, the breathing animation is disabled. The glow appears at its rest-state opacity (`0.75`) and scale (`1`) — still visible, just not animated.
+When `prefers-reduced-motion: reduce` is active, the breathing animation is disabled. The glow rests at full opacity (`1`) and scale (`1`) — still fully visible, just not animated. Full opacity is faithful to the `bl-hero-glow` origin (BL-326), so a pixel-accurate adoption needs no consumer override.
 
 ```css
 @media (prefers-reduced-motion: reduce) {
   .root {
     animation: none;
-    opacity: 0.75;
+    opacity: 1;
     transform: scale(1);
   }
 }
