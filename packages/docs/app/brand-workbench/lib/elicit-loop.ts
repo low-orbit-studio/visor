@@ -23,7 +23,7 @@ import {
   type KeyStatus,
 } from "../../../../../spec/state-machine"
 import type { ElicitRequest, ElicitResponse, AiFailure } from "../../../../../spec/contracts"
-import { type Provider, aiFailureOf } from "./provider-claude"
+import { type Provider, aiFailureOf, aiDetailOf } from "./provider-claude"
 
 export type { ChallengeResolution }
 
@@ -32,6 +32,8 @@ export interface ElicitTurn {
   state: ElicitState
   response?: ElicitResponse
   failure?: AiFailure
+  /** Human-readable failure detail (the provider's real message), surfaced beside `failure`. */
+  detail?: string
 }
 
 /** Map a provider reply to the Elicit event that consumes it (assistant-streaming → next state). */
@@ -107,6 +109,7 @@ export async function runAiTurn(
     return {
       state: elicitReduceGated(streaming, "ai-errors", deps.keyStatus),
       failure: aiFailureOf(err),
+      detail: aiDetailOf(err),
     }
   }
 }

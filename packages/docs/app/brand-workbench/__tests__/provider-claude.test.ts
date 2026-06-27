@@ -1,7 +1,7 @@
 // VI-562 — Claude provider seam: success / error / rate-limit / refusal / parse handling.
 
 import { describe, it, expect } from "vitest"
-import { createClaudeProvider } from "../lib/provider-claude"
+import { createClaudeProvider, aiDetailOf, ElicitError } from "../lib/provider-claude"
 import type { ElicitRequest, ElicitResponse } from "../../../../../spec/contracts"
 
 const REQ: ElicitRequest = {
@@ -21,6 +21,12 @@ function fetchOk(elicit: ElicitResponse, stopReason = "end_turn"): typeof fetch 
 /** A fetch stub that returns a raw status (non-OK). */
 function fetchStatus(status: number): typeof fetch {
   return (async () => new Response("{}", { status })) as unknown as typeof fetch
+}
+
+/** A fetch stub returning a non-OK status with an Anthropic-shaped `{error:{message}}` body. */
+function fetchErrorBody(status: number, message: string): typeof fetch {
+  const body = JSON.stringify({ type: "error", error: { type: "invalid_request_error", message } })
+  return (async () => new Response(body, { status })) as unknown as typeof fetch
 }
 
 function provider(fetchImpl: typeof fetch) {
@@ -117,5 +123,28 @@ describe("provider-claude — failures reject with an AiFailure", () => {
     const fetchImpl = (async () =>
       new Response(JSON.stringify(body), { status: 200 })) as unknown as typeof fetch
     await expect(provider(fetchImpl).elicit(REQ)).rejects.toMatchObject({ failure: "unknown" })
+  })
+})
+
+describe("provider-claude — surfaces the real provider message (VI-593)", () => {
+  it("400 with an Anthropic error body → failure unknown, message carries error.message", async () => {
+    const p = provider(
+      fetchErrorBody(400, "Your credit balance is too low to access the Anthropic API."),
+    )
+    await expect(p.elicit(REQ)).rejects.toMatchObject({
+      failure: "unknown",
+      message: expect.stringContaining("credit balance is too low"),
+    })
+  })
+
+  it("includes the HTTP status in the surfaced detail", async () => {
+    const p = provider(fetchErrorBody(529, "Overloaded"))
+    await expect(p.elicit(REQ)).rejects.toMatchObject({ message: expect.stringContaining("529") })
+  })
+
+  it("aiDetailOf reads the message off an ElicitError, undefined for anything else", () => {
+    expect(aiDetailOf(new ElicitError("unknown", "HTTP 400: nope"))).toBe("HTTP 400: nope")
+    expect(aiDetailOf(new Error("plain"))).toBeUndefined()
+    expect(aiDetailOf("oops")).toBeUndefined()
   })
 })

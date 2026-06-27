@@ -20,6 +20,8 @@ export interface ElicitSeamController {
   state: ElicitState
   lastResponse?: ElicitResponse
   lastFailure?: AiFailure
+  /** Human-readable detail for the last failure (the provider's real message), when available. */
+  lastFailureDetail?: string
   busy: boolean
   /** Send a composer message (key-active only; no-op in keyless — use `lock`). */
   send: (message: string) => Promise<void>
@@ -46,6 +48,7 @@ export function useElicitSeam(): ElicitSeamController {
   const [state, setState] = React.useState<ElicitState>(OVERLAY_START)
   const [lastResponse, setLastResponse] = React.useState<ElicitResponse | undefined>(undefined)
   const [lastFailure, setLastFailure] = React.useState<AiFailure | undefined>(undefined)
+  const [lastFailureDetail, setLastFailureDetail] = React.useState<string | undefined>(undefined)
   const [busy, setBusy] = React.useState(false)
 
   // Flipping the key (keyless ⇄ key-active) resets the live overlay to the continuation point.
@@ -53,6 +56,7 @@ export function useElicitSeam(): ElicitSeamController {
     setState(OVERLAY_START)
     setLastResponse(undefined)
     setLastFailure(undefined)
+    setLastFailureDetail(undefined)
   }, [keyStatus])
 
   const send = React.useCallback(
@@ -60,6 +64,7 @@ export function useElicitSeam(): ElicitSeamController {
       if (keyStatus !== "key-active" || !message.trim()) return
       setBusy(true)
       setLastFailure(undefined)
+      setLastFailureDetail(undefined)
       const req: ElicitRequest = {
         requestId: crypto.randomUUID(),
         step: currentStep,
@@ -71,6 +76,7 @@ export function useElicitSeam(): ElicitSeamController {
       setState(turn.state)
       setLastResponse(turn.response)
       setLastFailure(turn.failure)
+      setLastFailureDetail(turn.detail)
       setBusy(false)
     },
     [keyStatus, currentStep, state],
@@ -84,5 +90,17 @@ export function useElicitSeam(): ElicitSeamController {
     [keyStatus],
   )
 
-  return { keyStatus, state, lastResponse, lastFailure, busy, send, keep, rewrite, lock, retry }
+  return {
+    keyStatus,
+    state,
+    lastResponse,
+    lastFailure,
+    lastFailureDetail,
+    busy,
+    send,
+    keep,
+    rewrite,
+    lock,
+    retry,
+  }
 }

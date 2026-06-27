@@ -23,7 +23,7 @@ import type { ElicitSeamController } from "../lib/use-elicit-seam"
 import styles from "./elicit-seam.module.css"
 
 export function ElicitSeam({ ctl }: { ctl: ElicitSeamController }) {
-  const { keyStatus, state, lastResponse, lastFailure, busy } = ctl
+  const { keyStatus, state, lastResponse, lastFailure, lastFailureDetail, busy } = ctl
   const active = keyStatus === "key-active"
   const complete = state.kind === "section-complete"
 
@@ -86,7 +86,11 @@ export function ElicitSeam({ ctl }: { ctl: ElicitSeamController }) {
       {active && state.kind === "error" ? (
         <div className={styles.error} data-testid="bw-seam-error">
           <Warning aria-hidden="true" />
-          <span>Provider error: {lastFailure ?? "unknown"}.</span>
+          <span>
+            {lastFailureDetail
+              ? `Provider error: ${lastFailureDetail}`
+              : `Provider error: ${lastFailure ?? "unknown"}.`}
+          </span>
           <button type="button" className={styles.retry} onClick={ctl.retry} data-testid="bw-seam-retry">
             <ArrowClockwise aria-hidden="true" /> Retry
           </button>
