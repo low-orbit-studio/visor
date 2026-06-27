@@ -13,9 +13,11 @@ declare const styles: {
   readonly cardTitle: string
   readonly recoTag: string
   readonly cardBody: string
-  readonly fauxInput: string
-  readonly fauxValue: string
-  readonly dropzone: string
+  readonly seedField: string
+  readonly seedFieldIcon: string
+  readonly seedDropText: string
+  readonly byokPointer: string
+  readonly errorWrap: string
   readonly nameRow: string
   readonly nameIcon: string
   readonly go: string

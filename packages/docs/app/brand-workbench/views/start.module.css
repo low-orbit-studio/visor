@@ -120,32 +120,33 @@
   line-height: 1.5;
 }
 
-.fauxInput {
+.seedField {
   display: flex;
   align-items: center;
   gap: var(--spacing-2, 9px);
-  height: 42px;
-  padding: 0 var(--spacing-3, 13px);
-  border-radius: var(--radius-lg, 12px);
-  background: var(--surface-subtle, #f4f5f7);
-  border: var(--stroke-width-thin, 1px) solid var(--border-default, #d1d4db);
-  font-size: var(--text-14, 14px);
+}
+
+.seedFieldIcon {
   color: var(--text-tertiary, #9ca3af);
+  flex: none;
 }
 
-.fauxValue {
-  color: var(--text-primary, #111827);
-  font-weight: 500;
-}
-
-.dropzone {
-  border: var(--stroke-width-regular, 1.5px) dashed var(--border-default, #d1d4db);
-  border-radius: var(--radius-lg, 12px);
-  padding: var(--spacing-4, 16px);
-  text-align: center;
+.seedDropText {
   font-size: var(--text-13, 12.5px);
   color: var(--text-tertiary, #9ca3af);
-  background: var(--surface-subtle, #f4f5f7);
+}
+
+.byokPointer {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 7px);
+  margin: 0;
+  font-size: var(--text-12, 12px);
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.errorWrap {
+  margin-top: var(--spacing-4, 16px);
 }
 
 .nameRow {

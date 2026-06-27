@@ -6,6 +6,7 @@ import { DerivationSpine } from "./components/derivation-spine"
 import { StageHost } from "./components/stage-host"
 import { SpineProvider, useSpineController, useSpine } from "./lib/use-spine"
 import { DraftProvider, useDraftController, useResolveOnView } from "./lib/draft-store"
+import { SeedProvider, useSeedController } from "./lib/seed-store"
 import styles from "./brand-workbench.module.css"
 
 /**
@@ -45,10 +46,13 @@ function BrandWorkbenchShell() {
 export default function BrandWorkbenchPage() {
   const controller = useSpineController()
   const draft = useDraftController()
+  const seed = useSeedController()
   return (
     <SpineProvider value={controller}>
       <DraftProvider value={draft}>
-        <BrandWorkbenchShell />
+        <SeedProvider value={seed}>
+          <BrandWorkbenchShell />
+        </SeedProvider>
       </DraftProvider>
     </SpineProvider>
   )

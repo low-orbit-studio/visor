@@ -1,6 +1,18 @@
 /* Strategy/Verbal conversational split — Elicit thread beside the live canvas (journey.html .split).
    The 472px right rail matches the VI-559 shell; values resolve through tokens. */
 
+.stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Seed first-draft banner (VI-594) — shown above the split on Positioning when the seed path proposed. */
+.seededBanner {
+  margin: var(--spacing-4, 16px) var(--spacing-4, 16px) 0;
+}
+
 .split {
   flex: 1;
   display: grid;
