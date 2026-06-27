@@ -251,10 +251,10 @@ cujs:
       - n: 3
         action: "AI ingests the seed and proposes a first-draft positioning"
         surface: start
-        disposition: gap:VI-562
-        evidence: "ingestion + proposal not designed/built (AI seam)"
+        disposition: covered
+        evidence: "VI-594 seed-ingest/seed-fetch-url/seed-parse-file → seed-propose-draft (zDraftBrandRecord); seeded banner on Positioning (strategy.tsx); tests/oracle/uj-f.spec.ts paste path"
       - n: 4
         action: "Seed ingestion fails (bad URL / unparseable) → error + retry"
         surface: start
-        disposition: gap:VI-562
-        evidence: "no ingest-error surface drawn"
+        disposition: covered
+        evidence: "VI-594 seed-error-card.tsx (D4 taxonomy: retry / switch input / fall back to blank); tests/oracle/uj-f.spec.ts error path"
