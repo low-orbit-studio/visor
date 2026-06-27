@@ -15,7 +15,8 @@
  *
  * Animation:
  *   @keyframes hero-glow-breathe: opacity 0.75 ↔ 1, scale 1 ↔ 1.03, 7s cycle.
- *   prefers-reduced-motion: animation is disabled — glow appears at rest state.
+ *   prefers-reduced-motion: animation is disabled — glow rests at full opacity (1),
+ *   faithful to the bl-hero-glow origin (not the keyframe's 0.75 rest value).
  */
 
 /* ── Keyframe ────────────────────────────────────────────────────────────── */
@@ -51,7 +52,9 @@
 @media (prefers-reduced-motion: reduce) {
   .root {
     animation: none;
-    opacity: 0.75;
+    /* Rest at full opacity, faithful to the bl-hero-glow origin (BL-326);
+       do not re-normalize to the keyframe's 0.75 rest value (VI-581). */
+    opacity: 1;
     transform: scale(1);
   }
 }

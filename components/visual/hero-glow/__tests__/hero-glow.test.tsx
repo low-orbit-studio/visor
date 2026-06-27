@@ -1,6 +1,15 @@
+import { readFileSync } from "node:fs"
+import { join } from "node:path"
 import { render } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { HeroGlow } from "../hero-glow"
+
+// Read the CSS module source from the repo root (vitest's cwd) — jsdom cannot
+// compute @media rules, so the reduced-motion assertion checks the source directly.
+const cssSource = readFileSync(
+  join(process.cwd(), "components/visual/hero-glow/hero-glow.module.css"),
+  "utf8"
+)
 
 // ── Rendering ───────────────────────────────────────────────────────────────
 
@@ -63,5 +72,18 @@ describe("HeroGlow — reduced motion", () => {
     // The animation: none rule is in .module.css @media prefers-reduced-motion.
     const { container } = render(<HeroGlow glowColor="red" />)
     expect(container.querySelector("[data-slot='hero-glow']")).not.toBeNull()
+  })
+
+  it("rests at full opacity under prefers-reduced-motion (faithful to BL-326, VI-581)", () => {
+    // jsdom cannot compute @media rules, so assert against the CSS source: the
+    // reduced-motion block must rest at opacity 1 — the bl-hero-glow origin set no
+    // base opacity, so its computed rest was 1. Guard against re-normalizing to the
+    // keyframe's 0.75 rest value, which dims reduced-motion users ~25%.
+    const block = cssSource.match(
+      /@media \(prefers-reduced-motion: reduce\)\s*\{[\s\S]*?\}\s*\}/
+    )?.[0]
+    expect(block).toBeDefined()
+    const opacity = block!.match(/opacity:\s*([\d.]+)/)?.[1]
+    expect(opacity).toBe("1")
   })
 })
