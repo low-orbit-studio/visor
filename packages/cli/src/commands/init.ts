@@ -8,6 +8,7 @@ import { DEFAULT_CONFIG } from "../config/defaults.js"
 import { hasVisorTokens } from "../utils/packages.js"
 import { logger } from "../utils/logger.js"
 import {
+  extractColorScheme,
   NEXTJS_STARTER_YAML,
   NEXTJS_PINNED_VERSION,
   CREATE_NEXT_APP_FLAGS,
@@ -205,9 +206,13 @@ function scaffoldNextjs(
     logger.success("Created app/globals.css with theme tokens")
   }
 
-  // Overwrite app/layout.tsx with the Visor layout (FOWT + globals).
+  // Overwrite app/layout.tsx with the Visor layout (FOWT + globals). The
+  // theme's declared `color-scheme` drives the mode applied at the root, keyed
+  // off the same starter yaml globals.css is generated from so the two stay in
+  // sync.
   const layoutPath = join(cwd, "app", "layout.tsx")
-  writeFileSync(layoutPath, generateNextjsLayout(), "utf-8")
+  const colorScheme = extractColorScheme(NEXTJS_STARTER_YAML)
+  writeFileSync(layoutPath, generateNextjsLayout(colorScheme), "utf-8")
   filesCreated.push("app/layout.tsx")
   if (!json) {
     logger.success("Wired app/layout.tsx with FOWT prevention and theme tokens")

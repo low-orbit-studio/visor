@@ -17,6 +17,9 @@ import { DEFAULT_CONFIG } from "../config/defaults.js"
 import {
   NEXTJS_PINNED_VERSION,
   CREATE_NEXT_APP_FLAGS,
+  NEXTJS_STARTER_YAML,
+  extractColorScheme,
+  generateNextjsLayout,
 } from "../commands/templates/nextjs.js"
 
 function mockProcessExit() {
@@ -289,6 +292,12 @@ describe("init command", () => {
       expect(layout).toContain("FOWT_SCRIPT")
       expect(layout).toContain("@loworbitstudio/visor-theme-engine/fowt")
 
+      // Starter yaml is `color-scheme: adaptive` → adaptive root (no forced
+      // mode class), preserving the historical prefers-color-scheme behavior.
+      expect(layout).toContain('<html lang="en">')
+      expect(layout).not.toContain('className="dark"')
+      expect(layout).not.toContain("colorScheme:")
+
       // globals.css is the Visor adapter output, not the Tailwind default.
       const css = readFileSync(join(testDir, "app/globals.css"), "utf-8")
       expect(css).toContain("@layer visor-primitives")
@@ -298,6 +307,9 @@ describe("init command", () => {
       const yaml = readFileSync(join(testDir, ".visor.yaml"), "utf-8")
       expect(yaml).toContain("name: my-app")
       expect(yaml).toContain("primary:")
+      // Starter yaml documents the color-scheme field so the root-mode
+      // mechanism is discoverable.
+      expect(yaml).toContain("color-scheme:")
 
       // borealis.json has version + ISO timestamp.
       const stamp = JSON.parse(readFileSync(join(testDir, ".lo/borealis.json"), "utf-8"))
@@ -433,5 +445,58 @@ describe("init command", () => {
       })
       expect(buildResult.status).toBe(0)
     }, 300_000)
+  })
+})
+
+describe("extractColorScheme", () => {
+  it("reads dark-only / light-only / adaptive", () => {
+    expect(extractColorScheme('color-scheme: "dark-only"\ncolors:\n  primary: "#000"')).toBe(
+      "dark-only"
+    )
+    expect(extractColorScheme("color-scheme: light-only")).toBe("light-only")
+    expect(extractColorScheme("color-scheme: adaptive")).toBe("adaptive")
+  })
+
+  it("returns undefined for a missing or invalid field", () => {
+    expect(extractColorScheme("name: my-app")).toBeUndefined()
+    expect(extractColorScheme("color-scheme: sepia")).toBeUndefined()
+  })
+
+  it("reads adaptive from the starter yaml", () => {
+    expect(extractColorScheme(NEXTJS_STARTER_YAML)).toBe("adaptive")
+  })
+})
+
+describe("generateNextjsLayout", () => {
+  it("dark-only forces the dark root, color-scheme, and FOWT default", () => {
+    const layout = generateNextjsLayout("dark-only")
+    expect(layout).toContain('className="dark"')
+    expect(layout).toContain('colorScheme: "dark"')
+    expect(layout).toContain('generateFowtScript({ defaultTheme: "dark" })')
+    // Pre-paint class mutation requires suppressHydrationWarning (W-047).
+    expect(layout).toContain("suppressHydrationWarning")
+    expect(layout).toContain("@loworbitstudio/visor-theme-engine/fowt")
+  })
+
+  it("light-only forces the light root (inverse of dark-only)", () => {
+    const layout = generateNextjsLayout("light-only")
+    expect(layout).toContain('className="light"')
+    expect(layout).toContain('colorScheme: "light"')
+    expect(layout).toContain('generateFowtScript({ defaultTheme: "light" })')
+    expect(layout).toContain("suppressHydrationWarning")
+    expect(layout).not.toContain('className="dark"')
+  })
+
+  it("adaptive is byte-identical to the unset (default) layout", () => {
+    const adaptive = generateNextjsLayout("adaptive")
+    const unset = generateNextjsLayout()
+    expect(adaptive).toBe(unset)
+    // Adaptive keeps the historical prefers-color-scheme behavior: no forced
+    // mode class, default FOWT_SCRIPT, no inline color-scheme.
+    expect(adaptive).toContain('<html lang="en">')
+    expect(adaptive).toContain("{FOWT_SCRIPT}")
+    expect(adaptive).not.toContain("className=")
+    expect(adaptive).not.toContain("colorScheme")
+    expect(adaptive).not.toContain("suppressHydrationWarning")
   })
 })

@@ -38,9 +38,9 @@ This shells out to `create-next-app` with pinned flags, then layers Visor on top
 |------|--------|---------|
 | `package.json` | create-next-app + visor deps | `next`, `react`, TypeScript, plus `@loworbitstudio/visor-core` and `@loworbitstudio/visor-theme-engine` |
 | `app/page.tsx` | create-next-app | Default page |
-| `app/layout.tsx` | Visor (overwrites default) | Imports `globals.css` and injects `FOWT_SCRIPT` inline in `<head>` |
+| `app/layout.tsx` | Visor (overwrites default) | Imports `globals.css`, injects FOWT prevention inline in `<head>`, and applies the theme's declared `color-scheme` at the root (see below) |
 | `app/globals.css` | Visor adapter | CSS custom properties generated from `.visor.yaml` |
-| `.visor.yaml` | Visor starter | Editable theme — colors, typography, radius, shadows |
+| `.visor.yaml` | Visor starter | Editable theme — colors, typography, radius, shadows, `color-scheme` |
 | `tsconfig.json`, `next.config.ts`, `.gitignore` | create-next-app | Standard scaffolding |
 | `.lo/borealis.json` | Visor | Stamp recording the Visor version that initialized the project |
 | `visor.json` | Visor | CLI path configuration |
@@ -52,6 +52,12 @@ cd my-app && npm run dev
 ```
 
 The dev server starts immediately — no FOWT flash on hard reload, no missing tokens, no extra setup steps.
+
+The generated `app/layout.tsx` applies the theme's declared `color-scheme` at the root so the app renders in the right mode from first paint:
+
+- `dark-only` → `<html className="dark">` with an inline `color-scheme: dark` and a FOWT script forced to `defaultTheme: "dark"`, so a dark-only brand renders dark even on a light-preference browser.
+- `light-only` → the inverse.
+- `adaptive` (the starter default, or no field) → the default FOWT script that follows `prefers-color-scheme`.
 
 > `--template nextjs` refuses if `package.json` already exists in the target directory. To retrofit an existing app, see the [Migration Guide](/docs/guides/migration).
 
