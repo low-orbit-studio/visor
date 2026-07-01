@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.14.0
+
+### Minor Changes
+
+- 8b4d658: Add a deterministic `visor check theme-mode <path>` gate (BO-58). It reads a theme's declared `color-scheme` (`dark-only | light-only | adaptive`) and asserts the app-root background (`--surface-page`) luminance matches the declared mode — `dark-only` must render dark, `light-only` must render light, `adaptive` is skipped. Emits machine-readable JSON (`{ pass, mode, computed_bg, luminance, ... }`, surfacing the offending computed color on failure) for pipeline wiring, plus a human-readable mode. Reuses the theme engine's own resolution and its `getLuminance()` (now re-exported from the engine index) rather than reinventing luminance math or booting a browser. Catches the failure class where a dark-only brand ships a light app root — invisible to structural oracle/freeze gates.
+
+### Patch Changes
+
+- 0dd8490: `visor init --template nextjs` now applies the theme's declared `color-scheme` (BO-55/56) at the generated root layout. `generateNextjsLayout()` reads the starter `.visor.yaml` via a new `extractColorScheme()` reader (mirroring `theme-sync`'s `extractDefaultMode()` parsing style) and emits: `dark-only` → `<html className="dark" suppressHydrationWarning>` + inline `color-scheme: dark` + forced FOWT `generateFowtScript({ defaultTheme: "dark" })`; `light-only` → the inverse; `adaptive`/unset → the historical prefers-color-scheme layout, byte-for-byte unchanged. The starter yaml documents the `color-scheme` field so the mechanism is discoverable. This generalizes the animal-booking PR #11 fix into the scaffold so a dark-only brand can no longer scaffold a light-rendering root.
+- 080e1ef: Fix stale `PageHeader` `leading`-prop docstring: it claimed the leading slot top-aligns (VI-539), but the CSS centers it — the VI-539 top-align was superseded by the VI-545 admin-editorial reconcile. Comment-only; no behavior or API change.
+- f1c5152: Fix `HeroGlow` reduced-motion rest opacity: under `prefers-reduced-motion: reduce` the glow now rests at full opacity (`1`) instead of `0.75` (VI-581). The original `bl-hero-glow` (BL-326) set no base opacity and only killed the animation, so its computed rest was `1`; the registry port had "normalized" to the keyframe's `0.75` rest value, dimming reduced-motion users ~25%. A pixel-faithful adoption no longer needs a consumer override.
+- Updated dependencies [7284be5]
+- Updated dependencies [36fe7ee]
+- Updated dependencies [23a060c]
+- Updated dependencies [8b4d658]
+  - @loworbitstudio/visor-theme-engine@0.17.1
+
 ## 1.13.0
 
 ### Minor Changes
