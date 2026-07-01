@@ -59,7 +59,7 @@
     "embla-carousel-react": "^8.6.0",
     "intl-tel-input": "^26.9.1",
     "fumadocs-core": "^16.7.9",
-    "fumadocs-mdx": "^14.2.11",
+    "fumadocs-mdx": "~14.2.14",
     "fumadocs-ui": "^16.7.9",
     "next": "^16.2.1",
     "pdfjs-dist": "^6.0.227",
