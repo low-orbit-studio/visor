@@ -29,6 +29,11 @@
       "enum": ["light", "dark"],
       "description": "Default color mode when activating this theme. When set, the docs site forces this mode on theme switch (unless the user has a stored mode preference). Optional."
     },
+    "color-scheme": {
+      "type": "string",
+      "enum": ["dark-only", "light-only", "adaptive"],
+      "description": "Brand constraint declaring which color modes the theme supports. 'dark-only'/'light-only' lock the brand to a single mode; 'adaptive' supports both. Complements 'default-mode' (the runtime default) — 'color-scheme' is authoritative for the brand-lock. Defaults to 'adaptive' when omitted. Optional."
+    },
     "colors": {
       "type": "object",
       "description": "Color definitions for light mode. Only primary is required — all others have sensible defaults.",

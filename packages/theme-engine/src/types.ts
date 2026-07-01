@@ -118,6 +118,13 @@ export interface VisorThemeConfig {
   label?: string;
   /** Default color mode to force when the theme is activated ('dark' or 'light'). If unset, user/system preference applies. */
   "default-mode"?: "dark" | "light";
+  /**
+   * BO-55: Brand constraint declaring which color modes the theme supports.
+   * 'dark-only'/'light-only' lock the brand to a single mode; 'adaptive' supports both.
+   * Complements `default-mode` (the runtime default) — `color-scheme` is authoritative
+   * for the brand-lock. Defaults to 'adaptive' when omitted.
+   */
+  "color-scheme"?: "dark-only" | "light-only" | "adaptive";
   colors: {
     primary: string;
     accent?: string;
@@ -301,6 +308,12 @@ export interface ResolvedThemeConfig {
   label?: string;
   /** Default color mode forwarded from VisorThemeConfig["default-mode"]. */
   "default-mode"?: "dark" | "light";
+  /**
+   * BO-55: Brand constraint for supported color modes. Always resolved (defaults
+   * to 'adaptive' when the theme omits it) so downstream readers (engine/extractor/gate)
+   * get a guaranteed value.
+   */
+  "color-scheme": "dark-only" | "light-only" | "adaptive";
   version: 1;
   colors: {
     primary: string;

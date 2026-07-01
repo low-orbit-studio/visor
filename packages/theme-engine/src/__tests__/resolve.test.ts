@@ -31,6 +31,23 @@ describe("resolveConfig", () => {
     expect(resolved.colors.neutral).toBeNull();
   });
 
+  // BO-55: color-scheme is always resolved. A theme with no field is back-compat
+  // 'adaptive'; a theme that declares one keeps its declared value.
+  it("defaults color-scheme to 'adaptive' when the theme omits it", () => {
+    const resolved = resolveConfig(minimalConfig);
+    expect(resolved["color-scheme"]).toBe("adaptive");
+  });
+
+  it("preserves a declared color-scheme value", () => {
+    const darkLocked: VisorThemeConfig = {
+      name: "Dark Locked",
+      version: 1,
+      "color-scheme": "dark-only",
+      colors: { primary: "#2563EB" },
+    };
+    expect(resolveConfig(darkLocked)["color-scheme"]).toBe("dark-only");
+  });
+
   it("defaults background and surface to #FFFFFF", () => {
     const resolved = resolveConfig(minimalConfig);
     expect(resolved.colors.background).toBe("#FFFFFF");

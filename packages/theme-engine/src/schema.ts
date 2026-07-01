@@ -23,7 +23,7 @@ export interface ValidationResult {
 // ============================================================
 
 const KNOWN_TOP_LEVEL_KEYS = new Set([
-  "name", "version", "group", "label", "default-mode", "colors", "colors-dark", "typography",
+  "name", "version", "group", "label", "default-mode", "color-scheme", "colors", "colors-dark", "typography",
   "brand", "brand-strategy", "spacing", "radius", "shadows", "strokeWidths", "motion", "overrides",
 ]);
 
@@ -331,6 +331,15 @@ export function validateConfig(config: unknown): ValidationResult {
     const mode = obj["default-mode"];
     if (mode !== "dark" && mode !== "light") {
       errors.push("'default-mode' must be either 'dark' or 'light'");
+    }
+  }
+
+  // BO-55: brand-constraint field. Complements `default-mode` (runtime default);
+  // `color-scheme` is authoritative for the brand-lock (which modes are supported).
+  if (obj["color-scheme"] !== undefined) {
+    const scheme = obj["color-scheme"];
+    if (scheme !== "dark-only" && scheme !== "light-only" && scheme !== "adaptive") {
+      errors.push("'color-scheme' must be one of: dark-only, light-only, adaptive");
     }
   }
 
