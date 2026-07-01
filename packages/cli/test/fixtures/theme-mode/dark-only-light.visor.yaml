@@ -1,0 +1,18 @@
+# Regression fixture: declares dark-only but the dark-scope app-root background
+# is WHITE. This is the exact failure class the gate exists to catch — a
+# "dark-only" brand that renders a light app root. Gate must FAIL.
+name: dark-only-light
+version: 1
+group: Visor
+
+color-scheme: dark-only
+
+colors:
+  primary: "#666666"
+  neutral: "#333333"
+  background: "#ffffff"
+  surface: "#ffffff"
+
+colors-dark:
+  background: "#ffffff"
+  surface: "#ffffff"

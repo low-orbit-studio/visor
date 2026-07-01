@@ -1,0 +1,17 @@
+# Correct dark-only theme: the dark-scope app-root background is near-black.
+# Gate must PASS.
+name: dark-only-dark
+version: 1
+group: Visor
+
+color-scheme: dark-only
+
+colors:
+  primary: "#666666"
+  neutral: "#333333"
+  background: "#0a0a0a"
+  surface: "#111111"
+
+colors-dark:
+  background: "#000000"
+  surface: "#0a0a0a"

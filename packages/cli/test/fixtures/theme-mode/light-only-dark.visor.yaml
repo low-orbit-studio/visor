@@ -1,0 +1,13 @@
+# Regression fixture (light-only mirror): declares light-only but the
+# light-scope app-root background is near-black. Gate must FAIL.
+name: light-only-dark
+version: 1
+group: Visor
+
+color-scheme: light-only
+
+colors:
+  primary: "#1798ad"
+  neutral: "#71717a"
+  background: "#0b0b0b"
+  surface: "#141414"

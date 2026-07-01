@@ -175,6 +175,52 @@ Rules in `disabledRules` are skipped entirely — useful when a project intentio
   run: npx visor check design ./src --json
 ```
 
+## visor check theme-mode
+
+Deterministic theme-mode gate. Reads a theme's declared `color-scheme` (`dark-only | light-only | adaptive`) and asserts that the app-root background (`--surface-page`) luminance matches the declared mode — catching the failure class where a `dark-only` brand ships a light app root (or vice versa), which structural oracle/freeze gates cannot see.
+
+- `dark-only` → the dark-scope app-root background must be **dark** (luminance `< 0.2`)
+- `light-only` → the light-scope app-root background must be **light** (luminance `>= 0.2`)
+- `adaptive` (or no `color-scheme`) → **skipped** — no single mode to assert
+
+The gate is fully deterministic and dependency-light: it reuses the theme engine's own resolution to compute the host page background the emitted CSS would carry, then reuses `getLuminance()`. No browser required.
+
+```bash
+# Human-readable terminal output
+npx visor check theme-mode ./my-theme.visor.yaml
+
+# JSON output for pipeline wiring
+npx visor check theme-mode ./my-theme.visor.yaml --json
+
+# Advisory mode — report without failing CI
+npx visor check theme-mode ./my-theme.visor.yaml --no-fail
+```
+
+### Output schema (--json)
+
+```json
+{
+  "success": true,
+  "pass": false,
+  "skipped": false,
+  "mode": "dark-only",
+  "theme": "my-theme",
+  "computed_bg": "#ffffff",
+  "luminance": 1,
+  "threshold": 0.2,
+  "reason": "theme declares dark-only but app-root background \"#ffffff\" renders light (luminance 1.0000, threshold 0.2) — expected dark"
+}
+```
+
+On failure, `computed_bg` is the offending computed background color.
+
+### Exit codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Mode matches, or `adaptive`/no-scheme (skipped), or `--no-fail` mode |
+| `1` | Rendered mode does not match the declared `color-scheme` |
+
 ## Documentation
 
 Full docs at [visor.loworbit.studio](https://visor.loworbit.studio).

@@ -5,6 +5,7 @@ import { loadManifest } from "../registry/resolve.js"
 import { getAllCatalogItems, findByName, fuzzyFind } from "../check/catalog.js"
 import { scanJsx } from "../check/jsx-scan.js"
 import { scanDesign, loadVisorRc } from "../check/design.js"
+import { checkThemeModeFile } from "../check/theme-mode.js"
 import { logger } from "../utils/logger.js"
 import pc from "picocolors"
 
@@ -241,6 +242,61 @@ function checkDesignCommand(
   if (!options.noFail && summary.errorCount > 0) process.exit(1)
 }
 
+interface ThemeModeCommandOptions {
+  format?: "json" | "human"
+  // Commander maps `--no-fail` to `fail: false` (negatable boolean, default true).
+  fail?: boolean
+  json?: boolean
+}
+
+function checkThemeModeCommand(
+  pathArg: string,
+  options: ThemeModeCommandOptions
+): void {
+  let result
+  try {
+    result = checkThemeModeFile(pathArg)
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    const useJson = options.json || options.format === "json"
+    if (useJson) {
+      console.log(JSON.stringify({ success: false, error: message }, null, 2))
+    } else {
+      logger.error(message)
+    }
+    process.exit(1)
+    return
+  }
+
+  const useJson = options.json || options.format === "json"
+
+  const shouldFail = options.fail !== false
+
+  if (useJson) {
+    console.log(JSON.stringify({ success: true, ...result }, null, 2))
+    if (shouldFail && !result.pass) process.exit(1)
+    process.exit(0)
+    return
+  }
+
+  // Human output
+  if (result.skipped) {
+    logger.info(`⃝  skipped — ${result.theme}: ${result.reason}`)
+    process.exit(0)
+    return
+  }
+
+  if (result.pass) {
+    logger.success(`${result.theme} — ${result.reason}`)
+    process.exit(0)
+    return
+  }
+
+  logger.error(`${result.theme} — ${result.reason}`)
+  logger.item(`  offending background: ${pc.cyan(result.computed_bg ?? "unknown")} (luminance ${result.luminance?.toFixed(4)})`)
+  if (shouldFail) process.exit(1)
+}
+
 export function checkCommand(): Command {
   const check = new Command("check")
     .description("Check Visor catalog — list items, test existence, scan JSX for native HTML")
@@ -284,6 +340,17 @@ export function checkCommand(): Command {
     .option("--json", "shorthand for --format json")
     .action((pathArg: string, options: DesignCheckCommandOptions) => {
       checkDesignCommand(pathArg, options)
+    })
+
+  check
+    .command("theme-mode")
+    .description("Assert a theme's rendered app-root background matches its declared color-scheme (dark-only/light-only/adaptive)")
+    .argument("<path>", "path to a .visor.yaml theme file")
+    .option("--format <format>", "output format: json or human (default: human)")
+    .option("--no-fail", "do not exit 1 on a mode mismatch (advisory mode)")
+    .option("--json", "shorthand for --format json")
+    .action((pathArg: string, options: ThemeModeCommandOptions) => {
+      checkThemeModeCommand(pathArg, options)
     })
 
   return check

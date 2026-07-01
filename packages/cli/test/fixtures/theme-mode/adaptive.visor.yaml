@@ -1,0 +1,17 @@
+# Adaptive theme: supports both modes, so there is no single declared mode to
+# assert. Gate must SKIP (exit 0, skipped: true).
+name: adaptive-theme
+version: 1
+group: Visor
+
+color-scheme: adaptive
+
+colors:
+  primary: "#1798ad"
+  neutral: "#71717a"
+  background: "#ffffff"
+  surface: "#ffffff"
+
+colors-dark:
+  background: "#09090b"
+  surface: "#18181b"
