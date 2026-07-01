@@ -659,6 +659,89 @@ function extractBackgroundSurface(
 }
 
 // ============================================================
+// Color-Scheme Detection (BO-57)
+// ============================================================
+
+type ColorScheme = "dark-only" | "light-only" | "adaptive";
+
+/**
+ * Scan raw CSS for the standard `color-scheme:` property and classify it.
+ *
+ * Deliberately scoped to the standard property, NOT the `--color-scheme` custom
+ * property nor `prefers-color-scheme` media conditions — the negative lookbehind
+ * `(?<![\w-])` excludes both (each is preceded by `-`). Comments are stripped so
+ * commented-out declarations are ignored. Returns the first definitive match, or
+ * `null` when no standard `color-scheme` declaration is present.
+ *
+ * Value mapping: `dark` -> dark-only, `light` -> light-only, `light dark` /
+ * `dark light` / `normal` -> adaptive. The `only` keyword is ignored.
+ */
+function detectExplicitColorScheme(files: CSSFile[]): ColorScheme | null {
+  for (const file of files) {
+    const content = file.content.replace(/\/\*[\s\S]*?\*\//g, "");
+    const re = /(?<![\w-])color-scheme\s*:\s*([^;}]+)/gi;
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(content)) !== null) {
+      const keywords = m[1]
+        .trim()
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((k) => k.length > 0 && k !== "only");
+      const hasDark = keywords.includes("dark");
+      const hasLight = keywords.includes("light");
+      if (hasDark && hasLight) return "adaptive";
+      if (hasDark) return "dark-only";
+      if (hasLight) return "light-only";
+      if (keywords.includes("normal")) return "adaptive";
+      // Unrecognized value (e.g. a var() reference) — keep scanning.
+    }
+  }
+  return null;
+}
+
+/**
+ * Detect the source project's color-scheme (BO-57).
+ *
+ * Priority:
+ *   1. Explicit standard `color-scheme:` declaration — wins over any conflicting
+ *      heuristic (this is exactly the signal the Animal source declared).
+ *   2. Dark-only-background heuristic: a dark-context background with no
+ *      light-context background is the "dark-only" signal.
+ *   3. Default `adaptive`.
+ *
+ * Gap (deferred): `@media (prefers-color-scheme: dark)` blocks are not classified
+ * into the light/dark context split (DARK_SELECTOR_RE does not match prefers-media),
+ * so a theme that expresses dark styling only through prefers-media — and declares
+ * no explicit `color-scheme` — falls through to the `adaptive` default.
+ *
+ * When the explicit declaration conflicts with the background heuristic, the
+ * explicit declaration wins and an ambiguity warning is pushed onto `warnings`
+ * for the operator (surfaced by the CLI/skill).
+ */
+function detectColorScheme(
+  files: CSSFile[],
+  bgSurface: { light: { background?: string }; dark: { background?: string } },
+  warnings: string[]
+): ColorScheme {
+  const explicit = detectExplicitColorScheme(files);
+  const heuristic: ColorScheme =
+    bgSurface.dark.background && !bgSurface.light.background ? "dark-only" : "adaptive";
+
+  if (explicit) {
+    if (heuristic !== "adaptive" && heuristic !== explicit) {
+      warnings.push(
+        `color-scheme ambiguity: source CSS explicitly declares 'color-scheme: ${explicit}' ` +
+          `but the background heuristic suggests '${heuristic}'. Using the explicit declaration — ` +
+          `review the source if this is unexpected.`
+      );
+    }
+    return explicit;
+  }
+
+  return heuristic;
+}
+
+// ============================================================
 // Main Extraction Pipeline
 // ============================================================
 
@@ -769,6 +852,11 @@ export function extractFromCSS(
   if (Object.keys(darkColors).length > 0) {
     config["colors-dark"] = darkColors as VisorThemeConfig["colors-dark"];
   }
+
+  // BO-57: Capture the source project's color-scheme as a machine-readable field
+  // (explicit `color-scheme:` decl > dark-only-bg heuristic > `adaptive` default),
+  // instead of losing the mode to a hand-written prose comment.
+  config["color-scheme"] = detectColorScheme(files, bgSurface, warnings);
 
   // Add typography
   if (typography.heading || typography.display || typography.body || typography.mono) {

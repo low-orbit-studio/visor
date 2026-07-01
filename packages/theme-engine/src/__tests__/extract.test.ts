@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { extractFromCSS, parseCSSDeclarations, parseFontFaceDeclarations, cleanFontValue, type CSSFile } from "../extract.js";
+import { validate } from "../validate.js";
 
 describe("parseCSSDeclarations", () => {
   it("extracts custom properties from :root", () => {
@@ -137,6 +138,170 @@ describe("extractFromCSS", () => {
     const result = extractFromCSS(files);
     expect(result.config["colors-dark"]).toBeDefined();
     expect(result.config["colors-dark"]?.background).toBe("#000000");
+  });
+
+  describe("color-scheme detection (BO-57)", () => {
+    it("sets dark-only from an explicit color-scheme: dark declaration", () => {
+      const files: CSSFile[] = [
+        {
+          path: "tokens.css",
+          content: `:root {
+            color-scheme: dark;
+            --primary-600: #6366f1;
+            --surface-page: #0a0a0a;
+          }`,
+        },
+      ];
+      const result = extractFromCSS(files);
+      expect(result.config["color-scheme"]).toBe("dark-only");
+    });
+
+    it("sets light-only from an explicit color-scheme: light declaration", () => {
+      const files: CSSFile[] = [
+        {
+          path: "tokens.css",
+          content: `:root {
+            color-scheme: only light;
+            --primary-600: #6366f1;
+          }`,
+        },
+      ];
+      const result = extractFromCSS(files);
+      expect(result.config["color-scheme"]).toBe("light-only");
+    });
+
+    it("sets adaptive from an explicit color-scheme: light dark declaration", () => {
+      const files: CSSFile[] = [
+        {
+          path: "tokens.css",
+          content: `:root {
+            color-scheme: light dark;
+            --primary-600: #6366f1;
+            --surface-page: #0a0a0a;
+          }`,
+        },
+      ];
+      // Explicit adaptive wins over what the dark-bg heuristic would otherwise say.
+      const result = extractFromCSS(files);
+      expect(result.config["color-scheme"]).toBe("adaptive");
+    });
+
+    it("sets dark-only from the dark-only-background heuristic (dark bg, no light bg)", () => {
+      const files: CSSFile[] = [
+        {
+          path: "tokens.css",
+          content: `.dark {
+            --primary-600: #6366f1;
+            --surface-page: #0a0a0a;
+            --background: #000000;
+          }`,
+        },
+      ];
+      const result = extractFromCSS(files);
+      expect(result.config["color-scheme"]).toBe("dark-only");
+    });
+
+    it("defaults to adaptive for a :root + .dark theme (light and dark backgrounds present)", () => {
+      const files: CSSFile[] = [
+        {
+          path: "tokens.css",
+          content: `:root {
+            --primary-600: #6366f1;
+            --surface-page: #ffffff;
+          }
+          .dark {
+            --surface-page: #0a0a0a;
+            --background: #000000;
+          }`,
+        },
+      ];
+      const result = extractFromCSS(files);
+      expect(result.config["color-scheme"]).toBe("adaptive");
+    });
+
+    it("defaults to adaptive for a minimal light-only theme with no background signal", () => {
+      const files: CSSFile[] = [
+        { path: "tokens.css", content: `:root { --primary-600: #ff0000; }` },
+      ];
+      const result = extractFromCSS(files);
+      expect(result.config["color-scheme"]).toBe("adaptive");
+    });
+
+    it("ignores prefers-color-scheme media conditions (not an explicit declaration)", () => {
+      const files: CSSFile[] = [
+        {
+          path: "tokens.css",
+          content: `:root {
+            --primary-600: #6366f1;
+            --surface-page: #ffffff;
+          }
+          @media (prefers-color-scheme: dark) {
+            :root { --surface-page: #0a0a0a; }
+          }`,
+        },
+      ];
+      // prefers-color-scheme must NOT be read as an explicit color-scheme decl.
+      const result = extractFromCSS(files);
+      expect(result.config["color-scheme"]).toBe("adaptive");
+    });
+
+    it("ignores the --color-scheme custom property (only the standard property counts)", () => {
+      const files: CSSFile[] = [
+        {
+          path: "tokens.css",
+          content: `:root {
+            --color-scheme: dark;
+            --primary-600: #6366f1;
+            --surface-page: #ffffff;
+          }`,
+        },
+      ];
+      const result = extractFromCSS(files);
+      expect(result.config["color-scheme"]).toBe("adaptive");
+    });
+
+    it("explicit declaration wins over a conflicting heuristic and flags ambiguity", () => {
+      const files: CSSFile[] = [
+        {
+          path: "tokens.css",
+          content: `:root {
+            color-scheme: light dark;
+            --primary-600: #6366f1;
+          }
+          .dark {
+            --surface-page: #0a0a0a;
+            --background: #000000;
+          }`,
+        },
+      ];
+      const result = extractFromCSS(files);
+      // Heuristic would say dark-only (only a dark background), but the explicit
+      // adaptive declaration wins and an ambiguity warning is surfaced.
+      expect(result.config["color-scheme"]).toBe("adaptive");
+      expect(
+        result.warnings.some((w) => w.toLowerCase().includes("color-scheme ambiguity"))
+      ).toBe(true);
+    });
+
+    it("emits a color-scheme field that validate() accepts (schema round-trip)", () => {
+      const files: CSSFile[] = [
+        {
+          path: "tokens.css",
+          content: `:root {
+            color-scheme: dark;
+            --primary-600: #6366f1;
+            --surface-page: #0a0a0a;
+          }`,
+        },
+      ];
+      const result = extractFromCSS(files, "round-trip-theme");
+      expect(result.config["color-scheme"]).toBe("dark-only");
+      const validation = validate(result.config);
+      const schemeErrors = validation.errors.filter((e) =>
+        e.message.includes("color-scheme")
+      );
+      expect(schemeErrors).toHaveLength(0);
+    });
   });
 
   it("extracts typography tokens", () => {
