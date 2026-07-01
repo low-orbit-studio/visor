@@ -50,6 +50,7 @@ export {
   isValidHex,
   normalizeHex,
   getContrastRatio,
+  getLuminance,
   parseColor,
   isValidColor,
   serializeColor,

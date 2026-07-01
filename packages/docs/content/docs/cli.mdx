@@ -241,6 +241,32 @@ npx @loworbitstudio/visor theme validate .visor.yaml --strict-dark
 
 This flag is opt-in today. Once all themes in your project supply `colors-dark.neutral`, you can make it the default by adding `--strict-dark` to every validate call in CI.
 
+### `visor check theme-mode`
+
+Deterministic theme-mode gate. Reads a theme's declared `color-scheme` (`dark-only | light-only | adaptive`) and asserts that the app-root background (`--surface-page`) luminance matches the declared mode. Catches the failure class where a `dark-only` brand ships a light app root (or a `light-only` brand ships a dark one) — a rendered-mode regression that structural oracle/freeze gates cannot see.
+
+```bash
+npx @loworbitstudio/visor check theme-mode ./my-theme.visor.yaml
+npx @loworbitstudio/visor check theme-mode ./my-theme.visor.yaml --json
+npx @loworbitstudio/visor check theme-mode ./my-theme.visor.yaml --no-fail
+```
+
+- `dark-only` → the dark-scope app-root background must be **dark** (luminance `< 0.2`).
+- `light-only` → the light-scope app-root background must be **light** (luminance `>= 0.2`).
+- `adaptive` (or no `color-scheme`) → **skipped** — no single mode to assert.
+
+The gate is fully deterministic and dependency-light: it reuses the theme engine's own resolution to compute the host page background the emitted CSS would carry, then reuses `getLuminance()` — no browser required.
+
+#### Options
+
+| Flag | Description |
+|------|-------------|
+| `--json` | Output structured JSON (`{ pass, mode, computed_bg, luminance, ... }`) for pipeline wiring |
+| `--format <format>` | `json` or `human` (default: `human`) |
+| `--no-fail` | Report without exiting `1` on a mismatch (advisory mode) |
+
+On failure, `computed_bg` reports the offending computed background color and the command exits `1`.
+
 ### `visor theme export`
 
 Export a minimal `.visor.yaml` from an existing theme.

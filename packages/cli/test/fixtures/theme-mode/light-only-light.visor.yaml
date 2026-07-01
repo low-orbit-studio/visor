@@ -1,0 +1,13 @@
+# Correct light-only theme: the light-scope app-root background is white.
+# Gate must PASS.
+name: light-only-light
+version: 1
+group: Visor
+
+color-scheme: light-only
+
+colors:
+  primary: "#1798ad"
+  neutral: "#71717a"
+  background: "#ffffff"
+  surface: "#ffffff"
