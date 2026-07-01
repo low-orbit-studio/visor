@@ -190,6 +190,36 @@ describe("theme extract command", () => {
     expect(parsed.config["colors-dark"]).toBeDefined();
   });
 
+  it("detects color-scheme from source and emits it into config + YAML (BO-57)", () => {
+    const DARK_ONLY_CSS = `:root {
+      color-scheme: dark;
+      --primary-600: #6366f1;
+      --surface-page: #0a0a0a;
+      --background: #000000;
+    }`;
+    writeFileSync(join(testDir, "globals.css"), DARK_ONLY_CSS, "utf-8");
+
+    // JSON output carries the machine-readable field.
+    themeExtractCommand(outputDir, { from: testDir, json: true });
+    const calls = (console.log as ReturnType<typeof vi.fn>).mock.calls;
+    const jsonCall = calls.find((call: unknown[]) => {
+      try {
+        return JSON.parse(String(call[0])).success !== undefined;
+      } catch {
+        return false;
+      }
+    });
+    expect(jsonCall).toBeDefined();
+    const parsed = JSON.parse(String(jsonCall![0]));
+    expect(parsed.config["color-scheme"]).toBe("dark-only");
+
+    // A non-json run writes the emitted .visor.yaml with the field serialized verbatim.
+    themeExtractCommand(outputDir, { from: testDir });
+    const outputPath = join(outputDir, ".visor.yaml");
+    const content = readFileSync(outputPath, "utf-8");
+    expect(content).toContain("color-scheme: dark-only");
+  });
+
   it("infers theme name from package.json", () => {
     writeFileSync(join(testDir, "globals.css"), MINIMAL_CSS, "utf-8");
     writeFileSync(
