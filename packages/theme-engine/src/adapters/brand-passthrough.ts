@@ -14,6 +14,7 @@
  */
 
 import type { BrandPassthrough } from "../overrides.js";
+import type { ColorScheme } from "../types.js";
 
 /** Bright magenta — unmistakable in dev when a pass-through value is missing. */
 const SENTINEL_COLOR = "#ff00ff";
@@ -60,6 +61,7 @@ export interface PassthroughSelectors {
 export function generateBrandPassthroughCss(
   passthrough: BrandPassthrough,
   selectors: PassthroughSelectors,
+  colorScheme: ColorScheme = "adaptive",
 ): string {
   const lightKeys = Object.keys(passthrough.light);
   const darkKeys = Object.keys(passthrough.dark);
@@ -75,6 +77,24 @@ export function generateBrandPassthroughCss(
       .join(", ");
     const count = lightKeys.length + darkKeys.length;
     blocks.push(`/* [visor-brand] ${count} passthrough: ${names} */`);
+  }
+
+  // BO-56: single-mode brands collapse onto the host selector (`selectors.light`)
+  // with no manual-toggle / `prefers-color-scheme` blocks. `dark-only` keeps the
+  // dark-mode values; `light-only` keeps the light-mode values.
+  if (colorScheme === "dark-only") {
+    if (darkKeys.length > 0) {
+      const decls = darkKeys.map((k) => declFor(k, passthrough.dark[k]));
+      blocks.push(indentBlock(selectors.light, decls));
+    }
+    return blocks.filter(Boolean).join("\n\n");
+  }
+  if (colorScheme === "light-only") {
+    if (lightKeys.length > 0) {
+      const decls = lightKeys.map((k) => declFor(k, passthrough.light[k]));
+      blocks.push(indentBlock(selectors.light, decls));
+    }
+    return blocks.filter(Boolean).join("\n\n");
   }
 
   if (lightKeys.length > 0) {

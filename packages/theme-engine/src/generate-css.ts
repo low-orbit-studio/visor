@@ -11,6 +11,7 @@ import type {
   SemanticTokens,
   ShadeStep,
   ColorRole,
+  ColorScheme,
 } from "./types.js";
 import { FULL_SHADE_STEPS, SELECTIVE_SHADE_STEPS } from "./shades.js";
 import {
@@ -437,13 +438,26 @@ function buildAdaptiveDecls(
 
 export function generateLightCss(
   tokens: SemanticTokens,
-  options?: { scopePrefix?: string },
+  options?: { scopePrefix?: string; colorScheme?: ColorScheme },
 ): string {
+  const colorScheme = options?.colorScheme ?? "adaptive";
+  // BO-56: a `dark-only` brand has no light palette at all — the dark values
+  // live on the host (see generateDarkCss). Emit nothing here.
+  if (colorScheme === "dark-only") return "";
+
   const lines: string[] = [];
   const { textDecls, surfaceDecls, borderDecls, interactiveDecls, intentDecls, hairlineDecls } =
     buildAdaptiveDecls(tokens, "light");
   // Same body-class scoping rationale as generatePrimitivesCss — see VI-368.
   const host = options?.scopePrefix ?? ":root";
+
+  // BO-56: `light-only` pins `color-scheme: light` on the host so UA chrome
+  // (form controls, scrollbars) renders light. `adaptive` keeps the historical
+  // output byte-for-byte (no color-scheme declaration).
+  if (colorScheme === "light-only") {
+    lines.push(sectionComment("Adaptive: color-scheme (light)"));
+    lines.push(block(host, ["color-scheme: light;"]));
+  }
 
   lines.push(sectionComment("Adaptive: Text (light)"));
   lines.push(block(host, textDecls));
@@ -468,11 +482,39 @@ export function generateLightCss(
 
 export function generateDarkCss(
   tokens: SemanticTokens,
-  options?: { scopePrefix?: string },
+  options?: { scopePrefix?: string; colorScheme?: ColorScheme },
 ): string {
+  const colorScheme = options?.colorScheme ?? "adaptive";
+  // BO-56: a `light-only` brand has no dark palette at all (see generateLightCss).
+  if (colorScheme === "light-only") return "";
+
   const lines: string[] = [];
   const { textDecls, surfaceDecls, borderDecls, interactiveDecls, intentDecls, hairlineDecls } =
     buildAdaptiveDecls(tokens, "dark");
+
+  // BO-56: a `dark-only` brand pins the dark palette on the host selector
+  // unconditionally — no manual-toggle classes, no `@media (prefers-color-scheme)`.
+  // `color-scheme: dark` renders UA chrome dark. This makes the historical
+  // "light-at-:root, dark-behind-prefers" shape (which shipped a white app on a
+  // dark-only brand) ungeneratable.
+  if (colorScheme === "dark-only") {
+    const host = options?.scopePrefix ?? ":root";
+    lines.push(sectionComment("Adaptive: color-scheme (dark)"));
+    lines.push(block(host, ["color-scheme: dark;"]));
+    lines.push(sectionComment("Adaptive: Text (dark) — host"));
+    lines.push(block(host, textDecls));
+    lines.push(sectionComment("Adaptive: Surface (dark) — host"));
+    lines.push(block(host, surfaceDecls));
+    lines.push(sectionComment("Adaptive: Border (dark) — host"));
+    lines.push(block(host, borderDecls));
+    lines.push(sectionComment("Adaptive: Interactive (dark) — host"));
+    lines.push(block(host, interactiveDecls));
+    lines.push(sectionComment("Adaptive: Intent aliases (dark) — host"));
+    lines.push(block(host, intentDecls));
+    lines.push(sectionComment("Adaptive: Hairline aliases (dark) — host"));
+    lines.push(block(host, hairlineDecls));
+    return header("Visor Theme — Dark") + lines.join("\n");
+  }
 
   // When scoped (e.g. `body.blacklight-theme`), the manual-toggle dark
   // selectors compose with the prefix as `<prefix>.dark`,
@@ -584,6 +626,36 @@ export function generateFullBundleCss(
     .slice(6)
     .join("\n");
   lines.push(primitivesBody);
+
+  // BO-56: branch the Tier-3 composition on the theme's color-scheme.
+  const colorScheme = config["color-scheme"] ?? "adaptive";
+
+  if (colorScheme === "dark-only") {
+    // Dark palette on the host (:root) + `color-scheme: dark`. No light block,
+    // no `@media (prefers-color-scheme: dark)`.
+    lines.push(
+      "/* ============================================",
+      "   Tier 3: Adaptive — Dark Theme (:root host) + color-scheme: dark",
+      "   ============================================ */"
+    );
+    lines.push(
+      generateDarkCss(tokens, { colorScheme }).split("\n").slice(6).join("\n")
+    );
+    return lines.join("\n");
+  }
+
+  if (colorScheme === "light-only") {
+    // Light palette on the host (:root) + `color-scheme: light`. No dark block.
+    lines.push(
+      "/* ============================================",
+      "   Tier 3: Adaptive — Light Theme (:root host) + color-scheme: light",
+      "   ============================================ */"
+    );
+    lines.push(
+      generateLightCss(tokens, { colorScheme }).split("\n").slice(6).join("\n")
+    );
+    return lines.join("\n");
+  }
 
   // Tier 3: Adaptive — Light
   lines.push(

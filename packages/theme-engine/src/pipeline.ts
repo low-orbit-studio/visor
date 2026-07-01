@@ -181,8 +181,8 @@ export function generateThemeDataFromConfig(
   const output: ThemeOutput = {
     primitivesCss: generatePrimitivesCss(primitives, resolved),
     semanticCss: generateSemanticCss(tokens),
-    lightCss: generateLightCss(tokens),
-    darkCss: generateDarkCss(tokens),
+    lightCss: generateLightCss(tokens, { colorScheme: resolved["color-scheme"] }),
+    darkCss: generateDarkCss(tokens, { colorScheme: resolved["color-scheme"] }),
     fullBundleCss: generateFullBundleCss(primitives, tokens, resolved),
   };
 

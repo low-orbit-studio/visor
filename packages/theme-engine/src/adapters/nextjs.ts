@@ -50,6 +50,10 @@ export function nextjsAdapter(
   // Optional body-class scope prefix (e.g. `body.blacklight-theme`). When
   // unset, output preserves the legacy `:root` selectors. See VI-368.
   const scopePrefix = options?.scopePrefix;
+  // BO-56: brand color-mode constraint. `dark-only`/`light-only` collapse the
+  // adaptive + semantic + brand-passthrough emission onto the host selector and
+  // drop the manual-toggle / `prefers-color-scheme` blocks.
+  const colorScheme = input.config["color-scheme"] ?? "adaptive";
   const lines: string[] = [];
   const slug = toKebabCase(input.config.name);
   const aliasedFamilies = new Map<string, string>();
@@ -151,7 +155,7 @@ export function nextjsAdapter(
     prefers: scopePrefix
       ? `${scopePrefix}:not(.light):not(.theme-light):not([data-theme="light"])`
       : ':root:not(.light):not(.theme-light):not([data-theme="light"])',
-  });
+  }, colorScheme);
   if (passthroughCss) {
     lines.push(wrapInLayer("visor-brand", passthroughCss));
     lines.push("");
@@ -185,35 +189,53 @@ export function nextjsAdapter(
   semanticLines.push(block(hostSelector, generateSpaceAliasDecls(input.config)));
   semanticLines.push("");
 
-  // Light mode intent + hairline.
-  semanticLines.push(sectionComment("Intent aliases (light)"));
-  semanticLines.push(block(lightModeSelector, generateIntentDecls(input.tokens, "light")));
-  semanticLines.push("");
-  semanticLines.push(sectionComment("Hairline aliases (light)"));
-  semanticLines.push(block(lightModeSelector, generateHairlineDecls(input.tokens, "light")));
-  semanticLines.push("");
+  if (colorScheme === "dark-only") {
+    // BO-56: dark intent/hairline live on the host unconditionally.
+    semanticLines.push(sectionComment("Intent aliases (dark) — host"));
+    semanticLines.push(block(hostSelector, generateIntentDecls(input.tokens, "dark")));
+    semanticLines.push("");
+    semanticLines.push(sectionComment("Hairline aliases (dark) — host"));
+    semanticLines.push(block(hostSelector, generateHairlineDecls(input.tokens, "dark")));
+    semanticLines.push("");
+  } else if (colorScheme === "light-only") {
+    // BO-56: light intent/hairline live on the host unconditionally.
+    semanticLines.push(sectionComment("Intent aliases (light) — host"));
+    semanticLines.push(block(hostSelector, generateIntentDecls(input.tokens, "light")));
+    semanticLines.push("");
+    semanticLines.push(sectionComment("Hairline aliases (light) — host"));
+    semanticLines.push(block(hostSelector, generateHairlineDecls(input.tokens, "light")));
+    semanticLines.push("");
+  } else {
+    // Light mode intent + hairline.
+    semanticLines.push(sectionComment("Intent aliases (light)"));
+    semanticLines.push(block(lightModeSelector, generateIntentDecls(input.tokens, "light")));
+    semanticLines.push("");
+    semanticLines.push(sectionComment("Hairline aliases (light)"));
+    semanticLines.push(block(lightModeSelector, generateHairlineDecls(input.tokens, "light")));
+    semanticLines.push("");
 
-  // Dark mode intent + hairline — manual toggle.
-  semanticLines.push(sectionComment("Intent aliases (dark) — manual toggle"));
-  semanticLines.push(block(darkModeSelector, generateIntentDecls(input.tokens, "dark")));
-  semanticLines.push("");
-  semanticLines.push(sectionComment("Hairline aliases (dark) — manual toggle"));
-  semanticLines.push(block(darkModeSelector, generateHairlineDecls(input.tokens, "dark")));
-  semanticLines.push("");
+    // Dark mode intent + hairline — manual toggle.
+    semanticLines.push(sectionComment("Intent aliases (dark) — manual toggle"));
+    semanticLines.push(block(darkModeSelector, generateIntentDecls(input.tokens, "dark")));
+    semanticLines.push("");
+    semanticLines.push(sectionComment("Hairline aliases (dark) — manual toggle"));
+    semanticLines.push(block(darkModeSelector, generateHairlineDecls(input.tokens, "dark")));
+    semanticLines.push("");
 
-  // Dark mode intent + hairline — prefers-color-scheme.
-  semanticLines.push(sectionComment("Intent aliases (dark) — prefers-color-scheme"));
-  {
-    const inner = block(prefersSelector, generateIntentDecls(input.tokens, "dark"));
-    semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
+    // Dark mode intent + hairline — prefers-color-scheme.
+    semanticLines.push(sectionComment("Intent aliases (dark) — prefers-color-scheme"));
+    {
+      const inner = block(prefersSelector, generateIntentDecls(input.tokens, "dark"));
+      semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
+    }
+    semanticLines.push("");
+    semanticLines.push(sectionComment("Hairline aliases (dark) — prefers-color-scheme"));
+    {
+      const inner = block(prefersSelector, generateHairlineDecls(input.tokens, "dark"));
+      semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
+    }
+    semanticLines.push("");
   }
-  semanticLines.push("");
-  semanticLines.push(sectionComment("Hairline aliases (dark) — prefers-color-scheme"));
-  {
-    const inner = block(prefersSelector, generateHairlineDecls(input.tokens, "dark"));
-    semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
-  }
-  semanticLines.push("");
 
   const semanticLayer = wrapInLayer("visor-semantic", semanticLines.join("\n").trim());
   if (semanticLayer) {
@@ -221,11 +243,13 @@ export function nextjsAdapter(
     lines.push("");
   }
 
-  // 4. Adaptive layer (light + dark)
-  const lightBody = stripHeader(generateLightCss(input.tokens, { scopePrefix }));
-  const darkBody = stripHeader(generateDarkCss(input.tokens, { scopePrefix }));
+  // 4. Adaptive layer (light + dark). BO-56: single-mode brands emit only one
+  // palette (on the host) — the unused generator returns "".
+  const lightBody = stripHeader(generateLightCss(input.tokens, { scopePrefix, colorScheme }));
+  const darkBody = stripHeader(generateDarkCss(input.tokens, { scopePrefix, colorScheme }));
+  const adaptiveBody = [lightBody, darkBody].filter(Boolean).join("\n\n");
   lines.push(
-    wrapInLayer("visor-adaptive", lightBody + "\n\n" + darkBody),
+    wrapInLayer("visor-adaptive", adaptiveBody),
   );
 
   // 5. FOWT usage comment

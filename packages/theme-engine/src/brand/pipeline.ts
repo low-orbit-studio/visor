@@ -24,6 +24,7 @@ import type {
   ThemeBrandResult,
   VisorBrand,
 } from "./types.js";
+import type { ColorScheme } from "../types.js";
 import { BRAND_VARIANTS } from "./types.js";
 
 /** Wrap a value in a CSS `url()` for image-typed brand vars. */
@@ -71,6 +72,7 @@ function block(selector: string, decls: string[]): string {
 function generateBrandCSS(
   resolutions: BrandResolution[],
   scope: string,
+  colorScheme: ColorScheme = "adaptive",
 ): string {
   if (resolutions.length === 0) return "";
 
@@ -86,6 +88,22 @@ function generateBrandCSS(
   lines.push("/* --- Brand: forced-mode aliases + tokens --- */");
   lines.push(block(baseSelector, staticDecls));
   lines.push("");
+
+  // BO-56: single-mode brands pin `--brand-{variant}` on the host selector with
+  // no `html:not(.dark)` / `.dark` / `prefers-color-scheme` blocks. The
+  // forced-mode `-light`/`-dark` aliases above still resolve either mark.
+  if (colorScheme === "dark-only") {
+    const darkDecls = resolutions.map((r) => modeDecl(r, "dark"));
+    lines.push("/* --- Brand: variants (dark) — host --- */");
+    lines.push(block(baseSelector, darkDecls));
+    return lines.join("\n").trim();
+  }
+  if (colorScheme === "light-only") {
+    const lightDecls = resolutions.map((r) => modeDecl(r, "light"));
+    lines.push("/* --- Brand: variants (light) — host --- */");
+    lines.push(block(baseSelector, lightDecls));
+    return lines.join("\n").trim();
+  }
 
   // Light: mode-scoped --brand-{variant}.
   const lightDecls = resolutions.map((r) => modeDecl(r, "light"));
@@ -125,10 +143,11 @@ function generateBrandCSS(
  */
 export function resolveThemeBrand(
   brand: VisorBrand | undefined,
-  options?: { scope?: string },
+  options?: { scope?: string; colorScheme?: ColorScheme },
 ): ThemeBrandResult {
   const effective = brand ?? DEFAULT_VISOR_BRAND;
   const scope = options?.scope ?? "";
+  const colorScheme = options?.colorScheme ?? "adaptive";
   const source = resolveBrandSource(effective);
   const org = effective.org ?? null;
   const cdnBase = effective["cdn-overrides"]?.["visor-brands"] ?? null;
@@ -154,7 +173,7 @@ export function resolveThemeBrand(
     }
   }
 
-  const css = generateBrandCSS([...variants, ...custom], scope);
+  const css = generateBrandCSS([...variants, ...custom], scope, colorScheme);
 
   return { variants, custom, css, warnings };
 }
