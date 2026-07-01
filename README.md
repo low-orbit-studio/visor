@@ -40,7 +40,7 @@ npx @loworbitstudio/visor init --template nextjs
 That single command scaffolds a complete, runnable Next.js App Router project pre-wired with Visor:
 
 - `package.json` with `next`, `react`, TypeScript, and `@loworbitstudio/visor-core` + `@loworbitstudio/visor-theme-engine` already installed.
-- `app/layout.tsx` with the FOWT (Flash of Wrong Theme) prevention script inline in `<head>` and `globals.css` imported.
+- `app/layout.tsx` with the FOWT (Flash of Wrong Theme) prevention script inline in `<head>`, `globals.css` imported, and the theme's declared `color-scheme` applied at the root — a `dark-only` brand scaffolds `<html className="dark">` + `color-scheme: dark` so it renders dark even on a light-preference browser; `light-only` is the inverse; `adaptive` follows `prefers-color-scheme`.
 - `app/globals.css` generated from `.visor.yaml` via the Visor Next.js adapter.
 - `app/page.tsx`, `tsconfig.json`, `next.config.ts`, `.gitignore` — the full create-next-app baseline.
 - `.lo/borealis.json` stamp recording the Visor version that initialized the project.
