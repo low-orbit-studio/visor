@@ -32,6 +32,7 @@ name: Dark Locked
 version: 1
 label: Dark Locked Theme
 default-mode: dark
+color-scheme: dark-only
 colors:
   primary: "#6366F1"
 `.trim();
@@ -74,6 +75,18 @@ describe("D1 — visor-theme.schema.json (both copies)", () => {
       expect(schema.properties["default-mode"].type).toBe("string");
       expect(schema.properties["default-mode"].enum).toContain("light");
       expect(schema.properties["default-mode"].enum).toContain("dark");
+    });
+
+    // BO-55: brand-constraint field, added alongside default-mode.
+    it(`${relativePath}: contains 'color-scheme' property with the brand-constraint enum`, () => {
+      const schema = JSON.parse(readFileSync(schemaPath, "utf-8"));
+      expect(schema.properties).toHaveProperty("color-scheme");
+      expect(schema.properties["color-scheme"].type).toBe("string");
+      expect(schema.properties["color-scheme"].enum).toEqual([
+        "dark-only",
+        "light-only",
+        "adaptive",
+      ]);
     });
 
     it(`${relativePath}: additionalProperties is false (strictness preserved)`, () => {
@@ -137,6 +150,12 @@ describe("D3 — label + default-mode parse cleanly through generateThemeData", 
   it("config carries the default-mode value", () => {
     const data = generateThemeData(YAML_WITH_DEFAULT_MODE);
     expect(data.config["default-mode"]).toBe("dark");
+  });
+
+  // BO-55: color-scheme parses through the pipeline alongside default-mode.
+  it("config carries the color-scheme value", () => {
+    const data = generateThemeData(YAML_WITH_DEFAULT_MODE);
+    expect(data.config["color-scheme"]).toBe("dark-only");
   });
 });
 

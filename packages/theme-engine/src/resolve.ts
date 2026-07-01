@@ -164,6 +164,9 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
     name: config.name,
     ...(config.label !== undefined && { label: config.label }),
     ...(config["default-mode"] !== undefined && { "default-mode": config["default-mode"] }),
+    // BO-55: always-resolved brand constraint — existing themes (no field) resolve
+    // to 'adaptive', preserving back-compat.
+    "color-scheme": config["color-scheme"] ?? "adaptive",
     version: 1,
     colors: {
       primary: colors.primary,

@@ -1431,6 +1431,30 @@ describe("validate — unknown keys", () => {
     expect(result.valid).toBe(false);
     expect(result.errors.some((e) => e.code === "STRUCTURAL" && e.message.includes("midnight"))).toBe(true);
   });
+
+  // BO-55: color-scheme is a known top-level key with a fixed brand-constraint enum.
+  it("accepts a valid color-scheme value", () => {
+    const result = validate({
+      name: "Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      "color-scheme": "dark-only",
+    } as unknown);
+    expect(result.valid).toBe(true);
+  });
+
+  it("rejects an invalid color-scheme enum value", () => {
+    const result = validate({
+      name: "Test",
+      version: 1,
+      colors: { primary: "#2563EB" },
+      "color-scheme": "sepia",
+    } as unknown);
+    expect(result.valid).toBe(false);
+    expect(
+      result.errors.some((e) => e.code === "STRUCTURAL" && e.message.includes("color-scheme")),
+    ).toBe(true);
+  });
 });
 
 // ============================================================
