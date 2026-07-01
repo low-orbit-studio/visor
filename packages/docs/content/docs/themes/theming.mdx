@@ -69,6 +69,27 @@ The dark theme activates on `:root` unless the consumer has explicitly forced li
 }
 ```
 
+## Single-Mode Brands (`color-scheme`)
+
+Some brands only ship one mode. A theme can declare this in its `.visor.yaml` with the `color-scheme` field, and the engine generates mode-correct CSS:
+
+```yaml
+name: Animal
+color-scheme: dark-only   # dark-only | light-only | adaptive (default)
+colors:
+  primary: "#e8b64c"
+```
+
+| Value | Generated output |
+|-------|------------------|
+| `adaptive` *(default)* | Light palette on `:root`, dark behind `@media (prefers-color-scheme: dark)` + manual toggles. |
+| `dark-only` | Dark palette pinned directly on the host selector, plus `color-scheme: dark`. **No** `prefers-color-scheme` media query and **no** light blocks. |
+| `light-only` | Light palette pinned on the host, plus `color-scheme: light`. No dark blocks. |
+
+For a single-mode brand the palette is unconditional — there is nothing to toggle — so the `.dark` / `.light` selectors and the `prefers-color-scheme` fallback are omitted entirely. The emitted `color-scheme` property also tells the browser to render native UI chrome (form controls, scrollbars) in the matching mode.
+
+This makes the "light-at-`:root`, dark-behind-`prefers`" shape ungeneratable for a `dark-only` brand — the failure mode where a dark brand briefly (or permanently, on a light OS) renders as a white app.
+
 ## Manual Theme Toggle
 
 To override the system preference, apply one of the following to your `<html>` element (or any root container):

@@ -1,0 +1,13 @@
+# BO-56 fixture: a dark-only brand. Named "Animal" so the docs adapter emits
+# `.animal-theme` — matching the ticket's Animal-regeneration proof assertion.
+# The real Animal theme YAML lives in the private `visor-themes-private` repo;
+# this is a self-contained stand-in for engine-level color-scheme tests.
+name: Animal
+version: 1
+color-scheme: dark-only
+colors:
+  primary: "#e8b64c"
+  accent: "#c14953"
+  neutral: "#1e1f21"
+  background: "#141517"
+  surface: "#1e1f21"

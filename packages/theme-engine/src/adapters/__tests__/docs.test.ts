@@ -560,3 +560,61 @@ colors:
     });
   });
 });
+
+// BO-56 — color-scheme honored in the docs adapter (the one Animal ships).
+// The `Animal` fixture is a dark-only stand-in named so the adapter emits
+// `.animal-theme` — the ticket's regeneration-proof selector. The real Animal
+// theme YAML lives in the private visor-themes-private repo.
+const ANIMAL_DARK_ONLY_YAML = readFileSync(
+  resolve(__dirname, "../../__tests__/fixtures/dark-only.visor.yaml"),
+  "utf-8",
+);
+
+const LIGHT_ONLY_YAML = `
+name: Daybreak
+version: 1
+color-scheme: light-only
+colors:
+  primary: "#2563EB"
+`;
+
+describe("docsAdapter — color-scheme (BO-56)", () => {
+  describe("dark-only (Animal regeneration proof)", () => {
+    it("emits color-scheme: dark at .animal-theme and no prefers-color-scheme", () => {
+      const css = docsAdapter(makeInput(ANIMAL_DARK_ONLY_YAML));
+      expect(css).toContain(".animal-theme {");
+      expect(css).toContain("color-scheme: dark;");
+      expect(css).not.toContain("prefers-color-scheme");
+    });
+
+    it("collapses the dark palette onto the host — no html:not(.dark) / .dark toggle blocks", () => {
+      const css = docsAdapter(makeInput(ANIMAL_DARK_ONLY_YAML));
+      expect(css).not.toContain("html:not(.dark)");
+      expect(css).not.toContain(".dark .animal-theme");
+    });
+
+    it("pins the dark surface at the host and drops the light page value", () => {
+      const data = generateThemeData(ANIMAL_DARK_ONLY_YAML);
+      const css = docsAdapter(makeInput(ANIMAL_DARK_ONLY_YAML));
+      expect(css).toContain(`--surface-page: ${data.tokens.surface.page.dark};`);
+      expect(css).not.toContain(`--surface-page: ${data.tokens.surface.page.light};`);
+    });
+  });
+
+  describe("light-only (inverse)", () => {
+    it("emits color-scheme: light on the host and no prefers/dark blocks", () => {
+      const css = docsAdapter(makeInput(LIGHT_ONLY_YAML));
+      expect(css).toContain("color-scheme: light;");
+      expect(css).not.toContain("prefers-color-scheme");
+      expect(css).not.toContain(".dark .daybreak-theme");
+    });
+  });
+
+  describe("adaptive (regression guard)", () => {
+    it("still emits the prefers-color-scheme media query and no bare color-scheme property", () => {
+      const css = docsAdapter(makeInput(MINIMAL_YAML));
+      expect(css).toContain("@media (prefers-color-scheme: dark)");
+      expect(css).not.toMatch(/color-scheme:\s*(dark|light);/);
+    });
+  });
+});

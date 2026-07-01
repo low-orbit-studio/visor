@@ -247,6 +247,21 @@ export function docsAdapter(
 ): string {
   const slug = toKebabCase(input.config.name);
   const scopeClass = `.${slug}-theme`;
+  // BO-56: brand color-mode constraint. `dark-only`/`light-only` collapse the
+  // adaptive palette + intent/hairline + fumadocs bridge onto the host
+  // (`.{slug}-theme`) with `color-scheme: {mode}`, dropping the manual-toggle,
+  // `html:not(.dark)`, and `@media (prefers-color-scheme: dark)` blocks. This
+  // makes the "light-at-host, dark-behind-prefers" shape (which shipped a white
+  // app on the dark-only Animal brand) ungeneratable.
+  const colorScheme = input.config["color-scheme"] ?? "adaptive";
+  const singleMode: "light" | "dark" | null =
+    colorScheme === "dark-only" ? "dark" : colorScheme === "light-only" ? "light" : null;
+  const emitDark = colorScheme !== "light-only"; // adaptive + dark-only
+  const emitLight = colorScheme !== "dark-only"; // adaptive + light-only
+  const emitPrefers = colorScheme === "adaptive";
+  const darkSel = singleMode ? scopeClass : `.dark ${scopeClass}`;
+  const lightSel = singleMode ? scopeClass : `html:not(.dark) ${scopeClass}`;
+  const darkSuffix = singleMode ? " — host" : " — manual toggle";
   const includeFontImports = options?.includeFontImports ?? true;
   const fontLines: string[] = [];
   const lines: string[] = [];
@@ -327,6 +342,8 @@ export function docsAdapter(
   const sharedDecls: string[] = [
     "min-height: 100vh;",
     "font-size: 1rem;",
+    // BO-56: pin UA chrome to the brand's single mode (adaptive emits nothing).
+    ...(singleMode ? [`color-scheme: ${singleMode};`] : []),
     `background: var(--surface-page, var(--surface-background));`,
     "color: var(--text-primary);",
     "font-family: var(--font-sans);",
@@ -391,13 +408,13 @@ export function docsAdapter(
       }
     }
   }
-  if (darkPrimitiveOverrides.length > 0) {
+  if (darkPrimitiveOverrides.length > 0 && emitDark) {
     lines.push(sectionComment("Primitive overrides (dark) — dark brand color anchors at shade 500"));
-    lines.push(block(`.dark ${scopeClass}`, darkPrimitiveOverrides));
+    lines.push(block(darkSel, darkPrimitiveOverrides));
     lines.push("");
   }
 
-  // Manual toggle
+  // Manual toggle (host, unconditionally, for dark-only)
   const categories = ["Text", "Surface", "Border", "Interactive"];
   const categoryDecls = [
     Object.entries(input.tokens.text).map(([n, v]) => `--text-${n}: ${v.dark};`),
@@ -405,28 +422,32 @@ export function docsAdapter(
     Object.entries(input.tokens.border).map(([n, v]) => `--border-${n}: ${v.dark};`),
     Object.entries(input.tokens.interactive).map(([n, v]) => `--interactive-${n}: ${v.dark};`),
   ];
-  for (let i = 0; i < categories.length; i++) {
-    lines.push(sectionComment(`Adaptive: ${categories[i]} (dark) — manual toggle`));
-    lines.push(block(`.dark ${scopeClass}`, categoryDecls[i]));
-    lines.push("");
+  if (emitDark) {
+    for (let i = 0; i < categories.length; i++) {
+      lines.push(sectionComment(`Adaptive: ${categories[i]} (dark)${darkSuffix}`));
+      lines.push(block(darkSel, categoryDecls[i]));
+      lines.push("");
+    }
   }
 
-  // prefers-color-scheme duplicate
+  // prefers-color-scheme duplicate (adaptive only)
   const pcsCategories = [
     { label: "Text", entries: Object.entries(input.tokens.text).map(([n, v]) => `--text-${n}: ${v.dark};`) },
     { label: "Surface", entries: Object.entries(input.tokens.surface).map(([n, v]) => `--surface-${n}: ${v.dark};`) },
     { label: "Border", entries: Object.entries(input.tokens.border).map(([n, v]) => `--border-${n}: ${v.dark};`) },
     { label: "Interactive", entries: Object.entries(input.tokens.interactive).map(([n, v]) => `--interactive-${n}: ${v.dark};`) },
   ];
-  for (const cat of pcsCategories) {
-    lines.push(sectionComment(`Adaptive: ${cat.label} (dark) — prefers-color-scheme`));
-    const inner = block(`${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`, cat.entries);
-    lines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
-    lines.push("");
+  if (emitPrefers) {
+    for (const cat of pcsCategories) {
+      lines.push(sectionComment(`Adaptive: ${cat.label} (dark) — prefers-color-scheme`));
+      const inner = block(`${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`, cat.entries);
+      lines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
+      lines.push("");
+    }
   }
 
   // Primitive overrides also apply under prefers-color-scheme when no manual toggle set
-  if (darkPrimitiveOverrides.length > 0) {
+  if (darkPrimitiveOverrides.length > 0 && emitPrefers) {
     lines.push(sectionComment("Primitive overrides (dark) — prefers-color-scheme"));
     const inner = block(`${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`, darkPrimitiveOverrides);
     lines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
@@ -443,21 +464,27 @@ export function docsAdapter(
     { label: "Border", entries: Object.entries(input.tokens.border).map(([n, v]) => `--border-${n}: ${v.light};`) },
     { label: "Interactive", entries: Object.entries(input.tokens.interactive).map(([n, v]) => `--interactive-${n}: ${v.light};`) },
   ];
-  for (const cat of lightCategoryDecls) {
-    lines.push(sectionComment(`Adaptive: ${cat.label} (light)`));
-    lines.push(block(`html:not(.dark) ${scopeClass}`, cat.entries));
-    lines.push("");
+  if (emitLight) {
+    for (const cat of lightCategoryDecls) {
+      lines.push(sectionComment(`Adaptive: ${cat.label} (light)`));
+      lines.push(block(lightSel, cat.entries));
+      lines.push("");
+    }
   }
 
   // ─── Section 4: Framework bridge (fumadocs) ────────────────────────────────
 
-  lines.push(sectionComment("Fumadocs bridge: dark"));
-  lines.push(block(`.dark ${scopeClass}`, generateFumadocsBridgeDecls(input.tokens, "dark")));
-  lines.push("");
+  if (emitDark) {
+    lines.push(sectionComment("Fumadocs bridge: dark"));
+    lines.push(block(darkSel, generateFumadocsBridgeDecls(input.tokens, "dark")));
+    lines.push("");
+  }
 
-  lines.push(sectionComment("Fumadocs bridge: light"));
-  lines.push(block(`html:not(.dark) ${scopeClass}`, generateFumadocsBridgeDecls(input.tokens, "light")));
-  lines.push("");
+  if (emitLight) {
+    lines.push(sectionComment("Fumadocs bridge: light"));
+    lines.push(block(lightSel, generateFumadocsBridgeDecls(input.tokens, "light")));
+    lines.push("");
+  }
 
   // ─── Layer: Semantic aliases (VI-451) — visor-semantic cascade layer ─────
   //
@@ -483,35 +510,41 @@ export function docsAdapter(
   semanticLines.push(block(scopeClass, generateSpaceAliasDecls(input.config)));
   semanticLines.push("");
 
-  // 5b — Light mode intent + hairline (default cascade, html:not(.dark)).
-  semanticLines.push(sectionComment("Intent aliases (light)"));
-  semanticLines.push(block(`html:not(.dark) ${scopeClass}`, generateIntentDecls(input.tokens, "light")));
-  semanticLines.push("");
-  semanticLines.push(sectionComment("Hairline aliases (light)"));
-  semanticLines.push(block(`html:not(.dark) ${scopeClass}`, generateHairlineDecls(input.tokens, "light")));
-  semanticLines.push("");
-
-  // 5c — Dark mode intent + hairline (manual toggle + prefers-color-scheme).
-  semanticLines.push(sectionComment("Intent aliases (dark) — manual toggle"));
-  semanticLines.push(block(`.dark ${scopeClass}`, generateIntentDecls(input.tokens, "dark")));
-  semanticLines.push("");
-  semanticLines.push(sectionComment("Hairline aliases (dark) — manual toggle"));
-  semanticLines.push(block(`.dark ${scopeClass}`, generateHairlineDecls(input.tokens, "dark")));
-  semanticLines.push("");
-
-  semanticLines.push(sectionComment("Intent aliases (dark) — prefers-color-scheme"));
-  {
-    const inner = block(`${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`, generateIntentDecls(input.tokens, "dark"));
-    semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
+  // 5b — Light mode intent + hairline (default cascade, html:not(.dark); host for light-only).
+  if (emitLight) {
+    semanticLines.push(sectionComment("Intent aliases (light)"));
+    semanticLines.push(block(lightSel, generateIntentDecls(input.tokens, "light")));
+    semanticLines.push("");
+    semanticLines.push(sectionComment("Hairline aliases (light)"));
+    semanticLines.push(block(lightSel, generateHairlineDecls(input.tokens, "light")));
+    semanticLines.push("");
   }
-  semanticLines.push("");
 
-  semanticLines.push(sectionComment("Hairline aliases (dark) — prefers-color-scheme"));
-  {
-    const inner = block(`${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`, generateHairlineDecls(input.tokens, "dark"));
-    semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
+  // 5c — Dark mode intent + hairline (manual toggle + prefers-color-scheme; host for dark-only).
+  if (emitDark) {
+    semanticLines.push(sectionComment(`Intent aliases (dark)${darkSuffix}`));
+    semanticLines.push(block(darkSel, generateIntentDecls(input.tokens, "dark")));
+    semanticLines.push("");
+    semanticLines.push(sectionComment(`Hairline aliases (dark)${darkSuffix}`));
+    semanticLines.push(block(darkSel, generateHairlineDecls(input.tokens, "dark")));
+    semanticLines.push("");
   }
-  semanticLines.push("");
+
+  if (emitPrefers) {
+    semanticLines.push(sectionComment("Intent aliases (dark) — prefers-color-scheme"));
+    {
+      const inner = block(`${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`, generateIntentDecls(input.tokens, "dark"));
+      semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
+    }
+    semanticLines.push("");
+
+    semanticLines.push(sectionComment("Hairline aliases (dark) — prefers-color-scheme"));
+    {
+      const inner = block(`${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`, generateHairlineDecls(input.tokens, "dark"));
+      semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
+    }
+    semanticLines.push("");
+  }
 
   // ─── Layer: Brand assets (VI-470) — visor-brand cascade layer ─────────────
   //
@@ -519,7 +552,7 @@ export function docsAdapter(
   // aliases) and per-variant `clearSpace`/`aspectRatio` tokens. Scoped to the
   // theme class and ordered immediately after visor-semantic (Q1). Themes with
   // no `brand` block fall back to the Visor default brand (D3).
-  const brandResult = resolveThemeBrand(input.config.brand, { scope: scopeClass });
+  const brandResult = resolveThemeBrand(input.config.brand, { scope: scopeClass, colorScheme });
 
   // Brand pass-through (VI-493) — unrecognized `overrides` keys emit as bare
   // `--<key>` custom properties, appended to the visor-brand layer. Mirrors the
@@ -528,10 +561,11 @@ export function docsAdapter(
   const passthroughCss = generateBrandPassthroughCss(
     collectBrandPassthrough(input.tokens, input.config.overrides),
     {
-      light: `html:not(.dark) ${scopeClass}`,
-      dark: `.dark ${scopeClass}`,
+      light: lightSel,
+      dark: darkSel,
       prefers: `${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`,
     },
+    colorScheme,
   );
 
   const adaptiveLayer = wrapInLayer("visor-adaptive", lines.join("\n").trim());

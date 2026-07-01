@@ -109,6 +109,12 @@ export interface TextSlotOverride {
   "letter-spacing"?: number;
 }
 
+/**
+ * BO-55/BO-56: brand color-mode constraint. `dark-only`/`light-only` lock the
+ * brand to a single mode; `adaptive` supports both (the historical default).
+ */
+export type ColorScheme = "dark-only" | "light-only" | "adaptive";
+
 export interface VisorThemeConfig {
   name: string;
   version: 1;
@@ -124,7 +130,7 @@ export interface VisorThemeConfig {
    * Complements `default-mode` (the runtime default) — `color-scheme` is authoritative
    * for the brand-lock. Defaults to 'adaptive' when omitted.
    */
-  "color-scheme"?: "dark-only" | "light-only" | "adaptive";
+  "color-scheme"?: ColorScheme;
   colors: {
     primary: string;
     accent?: string;
@@ -313,7 +319,7 @@ export interface ResolvedThemeConfig {
    * to 'adaptive' when the theme omits it) so downstream readers (engine/extractor/gate)
    * get a guaranteed value.
    */
-  "color-scheme": "dark-only" | "light-only" | "adaptive";
+  "color-scheme": ColorScheme;
   version: 1;
   colors: {
     primary: string;

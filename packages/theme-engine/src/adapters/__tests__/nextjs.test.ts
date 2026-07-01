@@ -438,3 +438,39 @@ typography:
     });
   });
 });
+
+// BO-56 — color-scheme honored in the nextjs adapter.
+const DARK_ONLY_YAML = `
+name: Nocturne
+version: 1
+color-scheme: dark-only
+colors:
+  primary: "#e8b64c"
+  neutral: "#1e1f21"
+  background: "#141517"
+  surface: "#1e1f21"
+`;
+
+describe("nextjsAdapter — color-scheme (BO-56)", () => {
+  it("dark-only emits color-scheme: dark on the host and no prefers/toggle blocks", () => {
+    const css = nextjsAdapter(makeInput(DARK_ONLY_YAML), { includeFowt: false });
+    expect(css).toContain("color-scheme: dark;");
+    expect(css).not.toContain("@media (prefers-color-scheme: dark)");
+    expect(css).not.toContain("html:not(.dark)");
+    expect(css).not.toContain("html.dark");
+  });
+
+  it("dark-only pins the dark palette at :root, dropping the light page value", () => {
+    const data = generateThemeData(DARK_ONLY_YAML);
+    const css = nextjsAdapter(makeInput(DARK_ONLY_YAML), { includeFowt: false });
+    expect(css).toContain(`--surface-page: ${data.tokens.surface.page.dark};`);
+    expect(css).not.toContain(`--surface-page: ${data.tokens.surface.page.light};`);
+  });
+
+  it("adaptive still emits the prefers-color-scheme media query (regression guard)", () => {
+    const css = nextjsAdapter(makeInput(MINIMAL_YAML));
+    expect(css).toContain("@media (prefers-color-scheme: dark)");
+    // and no bare color-scheme property.
+    expect(css).not.toMatch(/color-scheme:\s*(dark|light);/);
+  });
+});
