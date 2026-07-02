@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.17.1
+
+### Patch Changes
+
+- 7284be5: Add a machine-readable `color-scheme: dark-only | light-only | adaptive` brand-constraint field to the Visor theme schema (both schema JSON copies), runtime validation (`KNOWN_TOP_LEVEL_KEYS` + enum check), and types. Optional on `VisorThemeConfig`; always resolved to `adaptive` on `ResolvedThemeConfig` so existing themes (no field) behave unchanged. Complements `default-mode` (the runtime default) — `color-scheme` is authoritative for the brand-lock. Foundation for the downstream engine/extractor/gate work.
+- 36fe7ee: Generate mode-correct CSS from a theme's `color-scheme` field (BO-55). `dark-only` pins the dark palette on the host selector (`:root` / `.{slug}-theme`) with `color-scheme: dark` and omits every `@media (prefers-color-scheme: dark)` / light block; `light-only` is the inverse (`color-scheme: light`); `adaptive` is byte-for-byte unchanged. Branches the core emitters (`generateLightCss` / `generateDarkCss` / `generateFullBundleCss`), both inlining adapters (`docs`, `nextjs`), the brand-passthrough emitter, and the brand-variants pipeline. This makes the "light-at-`:root`, dark-behind-`prefers`" shape — which shipped a white app on the dark-only Animal brand — ungeneratable for single-mode brands.
+- 23a060c: Extractor now detects the source project's color-scheme and records it as the machine-readable `color-scheme` field on the generated config (BO-57), instead of losing the mode to a hand-written prose comment. A new `detectColorScheme()` helper resolves by priority: an explicit standard `color-scheme:` CSS declaration (excluding `--color-scheme` and `prefers-color-scheme`) wins over the dark-only-background heuristic, which wins over the `adaptive` default. `parseCSSDeclarations` stays scoped to custom properties. When an explicit declaration conflicts with the heuristic, the explicit value wins and an ambiguity warning is surfaced for the operator.
+- 8b4d658: Add a deterministic `visor check theme-mode <path>` gate (BO-58). It reads a theme's declared `color-scheme` (`dark-only | light-only | adaptive`) and asserts the app-root background (`--surface-page`) luminance matches the declared mode — `dark-only` must render dark, `light-only` must render light, `adaptive` is skipped. Emits machine-readable JSON (`{ pass, mode, computed_bg, luminance, ... }`, surfacing the offending computed color on failure) for pipeline wiring, plus a human-readable mode. Reuses the theme engine's own resolution and its `getLuminance()` (now re-exported from the engine index) rather than reinventing luminance math or booting a browser. Catches the failure class where a dark-only brand ships a light app root — invisible to structural oracle/freeze gates.
+
 ## 0.17.0
 
 ### Minor Changes
