@@ -8,9 +8,10 @@
   },
   "main": "./dist/index.js",
   "scripts": {
-    "build": "npm run build:cli && npm run build:registry && npm run build:manifest",
+    "build": "npm run build:cli && npm run build:registry && npm run build:manifest && npm run build:init-plays",
     "build:registry": "tsx src/generate/build-registry.ts",
     "build:manifest": "tsx src/generate/build-manifest.ts",
+    "build:init-plays": "tsx src/generate/build-init-plays.ts",
     "build:cli": "tsup",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"

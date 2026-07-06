@@ -22,7 +22,11 @@ npx @loworbitstudio/visor init
 | Flag | Description |
 |------|-------------|
 | `--template nextjs` | Scaffold a complete runnable Borealis-native Next.js app in one command |
-| `--json` | Emit structured JSON for AI agents — `success`, `files.created`, `nextSteps` |
+| `--for <play>` | Bootstrap a Playbook play (`pattern-build`, `new-web-app`, `feature-addition`) alongside the scaffold |
+| `--play-name <name>` | Name for the play instance (defaults to the current directory name) |
+| `--theme <id>` | Theme id to record in the play's state metadata |
+| `--from <ref>` | Brief source for the play (e.g. a `PL-N` Linear ticket) |
+| `--json` | Emit structured JSON for AI agents — `success`, `files.created`, `nextSteps`, `play` |
 
 **Template scaffolding (one-command flow):**
 
@@ -60,6 +64,44 @@ The generated `app/layout.tsx` applies the theme's declared `color-scheme` at th
 - `adaptive` (the starter default, or no field) → the default FOWT script that follows `prefers-color-scheme`.
 
 > `--template nextjs` refuses if `package.json` already exists in the target directory. To retrofit an existing app, see the [Migration Guide](/docs/guides/migration).
+
+**Play bootstrap (`--for {play-type}`):**
+
+`--for` makes Visor the single entry point for starting a Playbook play. It is **additive** to `--template nextjs` — you can use either alone or combine them:
+
+```bash
+# Just the play orchestration structure (no app scaffold)
+npx @loworbitstudio/visor init --for pattern-build --play-name organization-management --theme entr
+
+# A fresh NextJS app that also enters the Playbook lifecycle
+npx @loworbitstudio/visor init --for new-web-app --play-name my-app --template nextjs
+```
+
+Known play types:
+
+| Play | `.lo/` subdirectory | Use for |
+|------|---------------------|---------|
+| `pattern-build` | `.lo/pattern-builds/{name}/` | Design + converge a reusable Borealis pattern |
+| `new-web-app` | `.lo/new-web-apps/{name}/` | A fresh NextJS app entering the Playbook lifecycle |
+| `feature-addition` | `.lo/feature-additions/{name}/` | An existing project onboarding mid-stream (safe, idempotent) |
+
+The known-plays table is static and Playbook-owned by convention — an unknown `--for` value errors with the list of known plays. What `--for` does:
+
+1. **Play state** — writes `.lo/{subdir}/{name}/state.json` at `phase: 0` with metadata (`play`, `name`, `theme`, `devPort`, `createdWith`). Structural write only — semantic phase content stays owned by the play.
+2. **Dev port** — allocates a port via `/lo-ports` when a `lo-ports` command is available, otherwise falls back to a deterministic heuristic port and prints a warning.
+3. **Entry checklist** — prints the play's next-phase checklist from `~/.claude/skills/lo-play/{play-type}/entry-checklist.md`. If the file is missing it prints a fallback pointing you at `/lo-play {play-type}`.
+
+Re-running `--for` with the same `--play-name` is **idempotent** — it reports the existing state and does nothing else.
+
+```txt
+✓ Playbook state: .lo/pattern-builds/organization-management/state.json (phase 0)
+✓ Dev port allocated: 4210 (via /lo-ports)
+✓ Theme recorded: entr
+
+Next steps (from ~/.claude/skills/lo-play/pattern-build/entry-checklist.md):
+  - [ ] Confirm the shape (admin-ui, forms, ...)
+  - [ ] Dispatch the design phase: /lo-play pattern-build
+```
 
 Default config:
 

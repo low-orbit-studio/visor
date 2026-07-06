@@ -58,8 +58,12 @@ program
   .command("init")
   .description("Initialize Visor — with --template nextjs, scaffolds a complete runnable Borealis-native Next.js app in one command")
   .option("--template <name>", "scaffold a complete runnable app (templates: nextjs)")
+  .option("--for <play>", "bootstrap a Playbook play (pattern-build, new-web-app, feature-addition)")
+  .option("--play-name <name>", "name for the play instance (default: current directory name)")
+  .option("--theme <id>", "theme id to record in the play's state metadata")
+  .option("--from <ref>", "brief source for the play (e.g. a PL-N Linear ticket)")
   .option("--json", "output structured JSON (for AI agents)")
-  .action((options: { template?: string; json?: boolean }) => {
+  .action((options: { template?: string; json?: boolean; for?: string; playName?: string; theme?: string; from?: string }) => {
     initCommand(process.cwd(), options)
   })
 
