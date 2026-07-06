@@ -1,5 +1,5 @@
 import { existsSync, writeFileSync, mkdirSync, readFileSync } from "fs"
-import { join, dirname } from "path"
+import { join, dirname, basename } from "path"
 import { fileURLToPath } from "url"
 import * as childProcess from "child_process"
 import type { SpawnSyncReturns } from "child_process"
@@ -14,12 +14,44 @@ import {
   CREATE_NEXT_APP_FLAGS,
   generateNextjsLayout,
 } from "./templates/nextjs.js"
+import {
+  getPlay,
+  knownPlayIds,
+  playStatePaths,
+  readPlayState,
+  writePlayState,
+  type PlayDefinition,
+  type PlayState,
+} from "./init-plays/registry.js"
+import { allocatePort, type PortSource } from "../lib/lo-ports-bridge.js"
+import { readEntryChecklist } from "../lib/lo-play-checklist.js"
 import { generateThemeData } from "@loworbitstudio/visor-theme-engine"
 import { nextjsAdapter } from "@loworbitstudio/visor-theme-engine/adapters"
 
 export interface InitOptions {
   template?: string
   json?: boolean
+  /** Bootstrap a Playbook play (D2): pattern-build, new-web-app, feature-addition. */
+  for?: string
+  /** Name for the play instance (defaults to the current directory name). */
+  playName?: string
+  /** Theme id to record in the play's state metadata. */
+  theme?: string
+  /** Brief source for the play (e.g. a PL-N Linear ticket). */
+  from?: string
+}
+
+interface PlayInitResult {
+  play: string
+  name: string
+  statePath: string
+  phase: number
+  devPort?: number
+  portSource?: PortSource
+  theme?: string
+  from?: string
+  alreadyInitialized: boolean
+  checklist: { found: boolean; path: string }
 }
 
 interface JsonInitResult {
@@ -28,6 +60,7 @@ interface JsonInitResult {
   files?: { created: string[]; skipped: string[] }
   warnings?: string[]
   nextSteps?: string[]
+  play?: PlayInitResult
   error?: string
 }
 
@@ -40,6 +73,30 @@ export function initCommand(cwd: string, options?: InitOptions): void {
   if (options?.template && options.template !== "nextjs") {
     emitError(json, `Unknown template: ${options.template}. Available templates: nextjs`)
     process.exit(1)
+  }
+
+  // Resolve --for up front so an unknown play errors cleanly before any writes
+  // (D2). The known-plays table is static — Visor does not discover plays from a
+  // Playbook install.
+  let playDef: PlayDefinition | undefined
+  let playName = ""
+  if (options?.for) {
+    playDef = getPlay(options.for)
+    if (!playDef) {
+      emitError(
+        json,
+        `Unknown play: ${options.for}. Known plays: ${knownPlayIds().join(", ")}`
+      )
+      process.exit(1)
+    }
+    playName = options.playName ?? basename(cwd)
+    if (!/^[a-z0-9][a-z0-9-_]*$/i.test(playName)) {
+      emitError(
+        json,
+        `Invalid play name '${playName}'. Use letters, digits, '-' or '_' (e.g. --play-name organization-management).`
+      )
+      process.exit(1)
+    }
   }
 
   // Refusal gate for --template nextjs: never destructively scaffold over an
@@ -93,6 +150,14 @@ export function initCommand(cwd: string, options?: InitOptions): void {
     }
   }
 
+  // Play bootstrap (D1): additive to the scaffold. Writes only the
+  // play-specific .lo/ subdirectory, allocates a dev port, and prints the
+  // play's entry checklist.
+  let playResult: PlayInitResult | undefined
+  if (playDef) {
+    playResult = runPlayInit(cwd, playDef, playName, options ?? {}, json, warnings)
+  }
+
   if (json) {
     const nextSteps = buildNextSteps(options, warnings)
     const result: JsonInitResult = {
@@ -101,9 +166,113 @@ export function initCommand(cwd: string, options?: InitOptions): void {
       files: { created: filesCreated, skipped: filesSkipped },
       warnings,
       nextSteps,
+      ...(playResult ? { play: playResult } : {}),
     }
     console.log(JSON.stringify(result, null, 2))
     process.exit(0)
+  }
+}
+
+/**
+ * Bootstrap a Playbook play: write `.lo/{subdir}/{name}/state.json` at phase 0
+ * (D5), allocate a dev port via /lo-ports with a heuristic fallback (D4), and
+ * print the play's entry checklist (D6). Idempotent (D7): a second run with the
+ * same play + name is a no-op that reports the existing state.
+ */
+function runPlayInit(
+  cwd: string,
+  def: PlayDefinition,
+  name: string,
+  options: InitOptions,
+  json: boolean,
+  warnings: string[]
+): PlayInitResult {
+  const { statePath, relStatePath } = playStatePaths(cwd, def, name)
+  const existing = readPlayState(statePath)
+  const checklist = readEntryChecklist(def.id)
+
+  if (existing) {
+    // Idempotent no-op — do not re-allocate a port or overwrite state.
+    if (!json) {
+      logger.blank()
+      logger.warn(
+        `Play '${def.id}' / '${name}' already initialized at ${relStatePath} ` +
+          `(phase ${existing.phase}${existing.devPort ? `, port ${existing.devPort}` : ""}). Nothing to do.`
+      )
+      printChecklist(def.id, checklist)
+    }
+    return {
+      play: def.id,
+      name,
+      statePath: relStatePath,
+      phase: existing.phase,
+      devPort: existing.devPort,
+      portSource: existing.portSource,
+      theme: existing.theme,
+      from: existing.from,
+      alreadyInitialized: true,
+      checklist: { found: checklist.found, path: checklist.path },
+    }
+  }
+
+  const port = allocatePort(name)
+  if (port.warning) warnings.push(port.warning)
+
+  const state: PlayState = {
+    play: def.id,
+    name,
+    phase: 0,
+    ...(options.theme ? { theme: options.theme } : {}),
+    ...(options.from ? { from: options.from } : {}),
+    devPort: port.port,
+    portSource: port.source,
+    createdWith: `@loworbitstudio/visor@${readVisorCliVersion()}`,
+    createdAt: new Date().toISOString(),
+  }
+  writePlayState(statePath, state)
+
+  if (!json) {
+    logger.blank()
+    if (options.template === "nextjs") {
+      logger.success("Visor scaffold: NextJS + tokens + FOWT layout")
+    }
+    logger.success(`Playbook state: ${relStatePath} (phase 0)`)
+    if (port.source === "lo-ports") {
+      logger.success(`Dev port allocated: ${port.port} (via /lo-ports)`)
+    } else {
+      logger.warn(port.warning ?? `Dev port ${port.port} (heuristic fallback)`)
+      logger.success(`Dev port: ${port.port} (heuristic fallback)`)
+    }
+    if (options.theme) logger.success(`Theme recorded: ${options.theme}`)
+    printChecklist(def.id, checklist)
+  }
+
+  return {
+    play: def.id,
+    name,
+    statePath: relStatePath,
+    phase: 0,
+    devPort: port.port,
+    portSource: port.source,
+    theme: options.theme,
+    from: options.from,
+    alreadyInitialized: false,
+    checklist: { found: checklist.found, path: checklist.path },
+  }
+}
+
+function printChecklist(
+  playId: string,
+  checklist: ReturnType<typeof readEntryChecklist>
+): void {
+  logger.blank()
+  if (checklist.found) {
+    logger.info(`Next steps (from ${checklist.path}):`)
+    for (const line of checklist.content.split("\n")) {
+      logger.item(line)
+    }
+  } else {
+    logger.warn(checklist.fallbackMessage)
   }
 }
 
