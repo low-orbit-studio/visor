@@ -164,6 +164,10 @@ theme
     "--theme-class-name <name>",
     "(flutter) class name for generated theme (default: VisorAppTheme)"
   )
+  .option(
+    "--target-path <path>",
+    "(nextjs) path to a blessed-build root; dispatches CSS through the build's theme_apply_target (VI-601), ignores --output"
+  )
   .action(
     (
       file: string,
@@ -177,6 +181,7 @@ theme
         lightOnly?: boolean
         darkOnly?: boolean
         themeClassName?: string
+        targetPath?: string
       }
     ) => {
       themeApplyCommand(file, process.cwd(), {

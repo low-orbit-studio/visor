@@ -1,0 +1,5 @@
+---
+"@loworbitstudio/visor": minor
+---
+
+Extend `blessed-manifest.json` with an optional `theme_apply_target` field and teach `visor spawn` (and `visor theme apply --target-path`) to dispatch on it (VI-601). Blessed reference builds can now declare *where* the nextjs-adapter CSS is written when a theme is applied instead of Visor assuming a single shape. Two initial kinds: `globals-css` (default; optional `path` override) writes to a single file, and `themes-css-dir` (required `path`) writes to `<path>/<theme-id>.css` — matching organization-management's per-theme swap-point where `layout.tsx` inlines one CSS file per registered theme. Manifests without the field behave exactly as before (`app/globals.css`). Unknown kinds and malformed inputs fail the Zod validation with a docs pointer. Standalone `visor theme apply` gains a `--target-path <build-root>` option (nextjs adapter only) that reads the build's manifest and dispatches through the same primitive; `--target-path` ignores `--output`. See `docs/blessed-builds.md` for the schema, kinds, and examples.
