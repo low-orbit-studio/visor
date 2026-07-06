@@ -451,6 +451,55 @@ Sandbox captures use a **three-state review flow**:
 | `--diff` | **Deprecated.** No-op; default capture already pixel-diffs against the approved baseline. Kept for backwards compatibility. |
 | `--json` | Emit structured JSON for AI agents |
 
+### `visor spawn`
+
+Fork a Playbook **blessed reference build** — one command replaces the manual `cp -R` + `npm install` + `visor theme apply` dance. Copies the build's tree into a new project, re-skins it with a theme (atomically), and optionally installs dependencies.
+
+A blessed build is any directory that ships a `blessed-manifest.json` at its root. See [Blessed Builds](https://github.com/low-orbit-studio/visor/blob/main/docs/blessed-builds.md) for the manifest contract.
+
+```bash
+npx @loworbitstudio/visor spawn \
+  --from blessed:admin-ui:organization-management \
+  --theme entr \
+  --output ~/tmp/org-admin \
+  --install
+```
+
+```
+✓ Discovered blessed build: admin-ui/organization-management (requires visor >=1.14.0)
+✓ Forked to ~/tmp/org-admin (excluded node_modules, .next, .git)
+✓ Theme applied: entr → ~/tmp/org-admin
+✓ Installed dependencies
+
+Next: cd ~/tmp/org-admin && npm run dev
+```
+
+The source identifier is a namespaced string, `blessed:{shape}:{pattern}` (shape-agnostic) — `visor spawn` resolves it by matching `blessed-manifest.json` fields, not by directory path.
+
+#### Options
+
+| Flag | Description |
+|------|-------------|
+| `--from <identifier>` | Blessed build to spawn: `blessed:{shape}:{pattern}` |
+| `--theme <id>` | Theme id (or path to a `.visor.yaml`) to re-skin the fork. Resolution mirrors `sandbox init`: `--theme-file` → direct path → `${VISOR_THEMES_PRIVATE_PATH}/themes/<id>/theme.visor.yaml` → `themes/<id>.visor.yaml` → `custom-themes/<id>.visor.yaml` |
+| `--theme-file <path>` | Explicit path to a `theme.visor.yaml` — bypasses `--theme` name resolution |
+| `--output <path>` | Destination directory for the forked project (must be empty or non-existent) |
+| `--blessed-dir <path>` | Override the blessed-build root. Precedence: `--blessed-dir` → `VISOR_BLESSED_DIR` → `~/Code/low-orbit/low-orbit-playbook/design-prototypes` |
+| `--install` | Run `npm install` in the fork (default: skip) |
+| `--validate` | Validate the applied theme after forking; validation errors roll the spawn back (default: skip) |
+| `--list-blessed` | List all discoverable blessed builds and exit |
+| `--json` | Output structured JSON (for AI agents) |
+
+The fork excludes `node_modules`, `.next`, `.git`, and other transient dirs, and creates an independent project with no upstream tracking. Theme application is **atomic**: if it (or `--validate`) fails, the output directory is deleted, so you get a clean fork or nothing.
+
+```bash
+# Discover what's available
+npx @loworbitstudio/visor spawn --list-blessed
+
+# Point at a custom blessed-build root
+VISOR_BLESSED_DIR=~/my/blessed npx @loworbitstudio/visor spawn --list-blessed
+```
+
 ## Typical Workflow
 
 ```bash
