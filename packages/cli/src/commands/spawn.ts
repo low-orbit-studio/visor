@@ -1,11 +1,9 @@
 import {
   cpSync,
   existsSync,
-  mkdirSync,
   readFileSync,
   readdirSync,
   rmSync,
-  writeFileSync,
 } from "fs"
 import { basename, isAbsolute, join, resolve } from "path"
 import { homedir } from "os"
@@ -21,6 +19,8 @@ import {
   resolveBlessedBuild,
   type DiscoveredBuild,
 } from "../lib/blessed-discovery.js"
+import type { BlessedManifest } from "../lib/blessed-manifest.js"
+import { applyThemeToBuild } from "../lib/theme-apply-targets/index.js"
 
 /**
  * Default blessed-build root (VI-597 D2). Overridable with `--blessed-dir` or
@@ -146,33 +146,41 @@ function resolveThemeFile(
 }
 
 /**
- * Locate the globals.css to overwrite in the fork. Prefers an existing file so
- * we re-skin the build's real stylesheet; falls back to `app/globals.css`.
+ * Apply `themeFile` to the forked project using the same nextjs adapter that
+ * backs `visor theme apply --adapter nextjs`. Dispatches through the build's
+ * `theme_apply_target` (VI-601): missing → `globals-css` at `app/globals.css`;
+ * declared → the handler under `lib/theme-apply-targets/`. Called directly
+ * (not via the CLI command) so failures throw and can be rolled back
+ * atomically rather than calling `process.exit`.
+ *
+ * The theme id used to name per-theme files (e.g. `themes-css-dir` writes
+ * `<path>/<themeId>.css`) is taken from the theme's authoritative
+ * `config.name` — the same source `visor theme apply --target-path` uses, and
+ * safer than `options.theme`, which may be a file path rather than an id.
  */
-function resolveGlobalsCssPath(outputDir: string): string {
-  const candidates = [
-    join(outputDir, "app", "globals.css"),
-    join(outputDir, "src", "app", "globals.css"),
-  ]
-  const existing = candidates.find((candidate) => existsSync(candidate))
-  return existing ?? candidates[0]
-}
-
-/**
- * Apply `themeFile` to the forked project's globals.css using the same nextjs
- * adapter that backs `visor theme apply --adapter nextjs`. Called directly (not
- * via the CLI command) so failures throw and can be rolled back atomically
- * rather than calling `process.exit`.
- */
-function applyThemeToFork(themeFile: string, globalsOut: string): void {
+function applyThemeToFork(
+  themeFile: string,
+  outputDir: string,
+  manifest: BlessedManifest
+): void {
   const yaml = readFileSync(themeFile, "utf-8")
   const data = generateThemeData(yaml)
+  const themeId = data.config.name
+  if (!themeId || themeId.length === 0) {
+    throw new Error(
+      `Theme file '${themeFile}' is missing a config.name; required to derive the theme id for spawn's theme-apply dispatch. See docs/blessed-builds.md.`
+    )
+  }
   const css = nextjsAdapter(
     { primitives: data.primitives, tokens: data.tokens, config: data.config },
     {}
   )
-  mkdirSync(join(globalsOut, ".."), { recursive: true })
-  writeFileSync(globalsOut, css, "utf-8")
+  applyThemeToBuild({
+    manifest,
+    buildDir: outputDir,
+    themeId,
+    adapterCss: css,
+  })
 }
 
 function runNpmInstall(outputDir: string, json: boolean): void {
@@ -234,8 +242,7 @@ export function runSpawn(cwd: string, options: SpawnOptions): SpawnResult {
   let validated = false
   let installed = false
   try {
-    const globalsOut = resolveGlobalsCssPath(outputDir)
-    applyThemeToFork(themeFile, globalsOut)
+    applyThemeToFork(themeFile, outputDir, build.manifest)
 
     if (options.validate) {
       const parsed: unknown = parseYaml(readFileSync(themeFile, "utf-8"))

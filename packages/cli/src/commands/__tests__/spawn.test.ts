@@ -267,6 +267,123 @@ describe("discoverBlessedBuilds", () => {
   })
 })
 
+describe("visor spawn theme_apply_target dispatch (VI-601)", () => {
+  it("uses globals-css at app/globals.css by default (backward compat)", () => {
+    makeBlessedBuild(blessedRoot, "admin-ui", "test-pattern")
+    const themeFile = writeTheme()
+    const output = join(baseDir, "out-default")
+
+    runSpawn(baseDir, {
+      from: "blessed:admin-ui:test-pattern",
+      theme: themeFile,
+      output,
+      blessedDir: blessedRoot,
+    })
+
+    const globals = readFileSync(join(output, "app", "globals.css"), "utf-8")
+    expect(globals).toContain("--color-primary-")
+  })
+
+  it("dispatches themes-css-dir → <path>/<themeId>.css using theme config.name", () => {
+    makeBlessedBuild(
+      blessedRoot,
+      "admin-ui",
+      "test-pattern",
+      manifest({
+        shape: "admin-ui",
+        pattern: "test-pattern",
+        theme_apply_target: {
+          kind: "themes-css-dir",
+          path: "app/styles/themes",
+        },
+      })
+    )
+    // VALID_THEME's config.name is "test-theme" — that's the theme id used
+    // to name the emitted file, sourced from the theme's authoritative
+    // `config.name` (not options.theme, which may be a path).
+    const themeFile = writeTheme()
+    const output = join(baseDir, "out-themes-dir")
+
+    runSpawn(baseDir, {
+      from: "blessed:admin-ui:test-pattern",
+      theme: themeFile,
+      output,
+      blessedDir: blessedRoot,
+    })
+
+    const themeCss = join(output, "app", "styles", "themes", "test-theme.css")
+    expect(existsSync(themeCss)).toBe(true)
+    expect(readFileSync(themeCss, "utf-8")).toContain("--color-primary-")
+
+    // globals.css remains the placeholder from the fixture — untouched.
+    const untouched = readFileSync(join(output, "app", "globals.css"), "utf-8")
+    expect(untouched).toContain("placeholder globals")
+  })
+
+  it("a manifest declaring an unknown kind is rejected by discovery and no fork happens", () => {
+    // Manifest fails Zod → discovery silently skips it → spawn sees no build.
+    // The dispatcher's own unknown-kind path is exercised end-to-end by the
+    // lib/__tests__/theme-apply-targets.test.ts suite.
+    makeBlessedBuild(
+      blessedRoot,
+      "admin-ui",
+      "bad-target",
+      JSON.stringify({
+        shape: "admin-ui",
+        pattern: "bad-target",
+        base_theme: "reference-app",
+        requires_visor: ">=1.14.0",
+        captures_baseline: "captures/approved/",
+        three_gates_status: "passing",
+        theme_apply_target: { kind: "not-a-real-kind", path: "x" },
+      })
+    )
+    const themeFile = writeTheme()
+    const output = join(baseDir, "out-bad")
+
+    expect(() =>
+      runSpawn(baseDir, {
+        from: "blessed:admin-ui:bad-target",
+        theme: themeFile,
+        output,
+        blessedDir: blessedRoot,
+      })
+    ).toThrow(/No blessed build found/)
+    expect(existsSync(output)).toBe(false)
+  })
+
+  it("honors a globals-css path override", () => {
+    makeBlessedBuild(
+      blessedRoot,
+      "admin-ui",
+      "test-pattern",
+      manifest({
+        shape: "admin-ui",
+        pattern: "test-pattern",
+        theme_apply_target: {
+          kind: "globals-css",
+          path: "app/styles/root.css",
+        },
+      })
+    )
+    const themeFile = writeTheme()
+    const output = join(baseDir, "out-globals-path")
+
+    runSpawn(baseDir, {
+      from: "blessed:admin-ui:test-pattern",
+      theme: themeFile,
+      output,
+      blessedDir: blessedRoot,
+    })
+
+    const overridden = readFileSync(
+      join(output, "app", "styles", "root.css"),
+      "utf-8"
+    )
+    expect(overridden).toContain("--color-primary-")
+  })
+})
+
 describe("parseBlessedManifest (Zod schema, D9)", () => {
   it("accepts a valid manifest", () => {
     const dir = join(baseDir, "valid")

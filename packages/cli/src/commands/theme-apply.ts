@@ -14,6 +14,8 @@ import type {
   FlutterAdapterOptions,
 } from "@loworbitstudio/visor-theme-engine/adapters"
 import { logger } from "../utils/logger.js"
+import { parseBlessedManifest } from "../lib/blessed-manifest.js"
+import { applyThemeToBuild } from "../lib/theme-apply-targets/index.js"
 
 export interface ThemeApplyOptions {
   output?: string
@@ -35,6 +37,13 @@ export interface ThemeApplyOptions {
   darkOnly?: boolean
   /** Flutter adapter: generated theme class name. */
   themeClassName?: string
+  /**
+   * Path to a blessed-build root (must contain `blessed-manifest.json`). When
+   * set, dispatches through the build's `theme_apply_target` (VI-601) instead
+   * of writing to `--output`. Only meaningful with `--adapter nextjs`. The
+   * theme id used to name emitted files comes from the theme's `config.name`.
+   */
+  targetPath?: string
 }
 
 /** Default output path per adapter. Directory for flutter; file otherwise. */
@@ -152,6 +161,72 @@ export function themeApplyCommand(
       logger.info(message)
     }
     process.exit(1)
+  }
+
+  // Blessed-build dispatch (VI-601): route the nextjs-adapter CSS through
+  // `theme_apply_target` instead of writing to `--output`. Nextjs-only — the
+  // dispatch contract is defined against the nextjs adapter's single-file
+  // output.
+  if (options.targetPath) {
+    if (options.adapter !== "nextjs") {
+      const message =
+        "--target-path requires --adapter nextjs; see docs/blessed-builds.md"
+      if (options.json) console.log(JSON.stringify({ success: false, error: message }))
+      else logger.error(message)
+      process.exit(1)
+    }
+    if (css === null) {
+      // Unreachable — the nextjs adapter always produces CSS.
+      process.exit(1)
+    }
+    if (!themeName || themeName.length === 0) {
+      const message =
+        "theme config is missing a `name` — required to derive the theme id for --target-path dispatch; see docs/blessed-builds.md"
+      if (options.json) console.log(JSON.stringify({ success: false, error: message }))
+      else logger.error(message)
+      process.exit(1)
+    }
+    const buildDir = resolve(cwd, options.targetPath)
+    const manifestResult = parseBlessedManifest(buildDir)
+    if (!manifestResult.ok) {
+      if (options.json) {
+        console.log(JSON.stringify({ success: false, error: manifestResult.error }))
+      } else {
+        logger.error(manifestResult.error)
+      }
+      process.exit(2)
+    }
+    let writtenPath: string
+    try {
+      writtenPath = applyThemeToBuild({
+        manifest: manifestResult.manifest,
+        buildDir,
+        themeId: themeName,
+        adapterCss: css,
+      }).writtenPath
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      if (options.json) console.log(JSON.stringify({ success: false, error: message }))
+      else logger.error(message)
+      process.exit(1)
+    }
+    if (options.json) {
+      console.log(
+        JSON.stringify({
+          success: true,
+          file: writtenPath,
+          adapter: options.adapter,
+          size: css.length,
+          targetPath: buildDir,
+        })
+      )
+    } else {
+      logger.success(`Theme CSS written via blessed-manifest dispatch: ${writtenPath}`)
+      logger.info(`Adapter: ${options.adapter}`)
+      logger.item(`Build root: ${buildDir}`)
+      logger.item(`Size: ${formatSize(css.length)}`)
+    }
+    return
   }
 
   // Write the output

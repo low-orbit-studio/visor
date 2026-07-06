@@ -9,11 +9,44 @@ import { z } from "zod"
 export const BLESSED_MANIFEST_FILENAME = "blessed-manifest.json"
 
 /**
- * Zod schema for `blessed-manifest.json` (VI-597 D9).
+ * Where a blessed build wants `visor spawn` / `visor theme apply` to write the
+ * nextjs-adapter CSS (VI-601). Absent = implicit `{ kind: "globals-css" }`,
+ * preserving VI-597's original behavior for reference-builds that haven't
+ * opted in.
+ *
+ * Two initial kinds:
+ * - `globals-css` (default) writes the adapter output to a single file
+ *   (defaults to `app/globals.css`).
+ * - `themes-css-dir` writes to `<path>/<theme-id>.css`, matching
+ *   organization-management's actual swap-point where `layout.tsx` inlines
+ *   every registered theme as a scoped `<style>` and a pre-paint script picks
+ *   the active one.
+ */
+export const themeApplyTargetSchema = z.discriminatedUnion("kind", [
+  z
+    .object({
+      kind: z.literal("globals-css"),
+      /** Build-root-relative destination file. Defaults to `app/globals.css`. */
+      path: z.string().min(1).optional(),
+    })
+    .strict(),
+  z
+    .object({
+      kind: z.literal("themes-css-dir"),
+      /** Build-root-relative directory. The adapter output is written to `<path>/<theme-id>.css`. */
+      path: z.string().min(1),
+    })
+    .strict(),
+])
+
+export type ThemeApplyTarget = z.infer<typeof themeApplyTargetSchema>
+
+/**
+ * Zod schema for `blessed-manifest.json` (VI-597 D9, VI-601).
  *
  * `.strict()` rejects unknown keys so drift (a stray/renamed field) fails
- * loudly rather than being silently ignored. Every field is required — a
- * partial manifest is not a valid blessed-build contract.
+ * loudly rather than being silently ignored. Every non-optional field is
+ * required — a partial manifest is not a valid blessed-build contract.
  */
 export const blessedManifestSchema = z
   .object({
@@ -29,6 +62,8 @@ export const blessedManifestSchema = z
     captures_baseline: z.string().min(1),
     /** Three-gates disposition at the time the build was blessed. */
     three_gates_status: z.string().min(1),
+    /** Optional: where to write the nextjs-adapter CSS. Absent = `globals-css`. */
+    theme_apply_target: themeApplyTargetSchema.optional(),
   })
   .strict()
 

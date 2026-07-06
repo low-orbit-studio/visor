@@ -175,6 +175,96 @@ describe("theme apply command", () => {
     expect(css).toContain(":root")
   })
 
+  describe("--target-path (VI-601 blessed-manifest dispatch)", () => {
+    const MANIFEST_BASE = {
+      shape: "admin-ui",
+      pattern: "test",
+      base_theme: "reference-app",
+      requires_visor: ">=1.15.0",
+      captures_baseline: "captures/approved/",
+      three_gates_status: "passing",
+    }
+
+    it("dispatches themes-css-dir to <path>/<themeId>.css", () => {
+      const yamlPath = join(testDir, ".visor.yaml")
+      writeFileSync(yamlPath, VALID_YAML, "utf-8")
+      const buildDir = join(testDir, "build")
+      mkdirSync(buildDir, { recursive: true })
+      writeFileSync(
+        join(buildDir, "blessed-manifest.json"),
+        JSON.stringify({
+          ...MANIFEST_BASE,
+          theme_apply_target: {
+            kind: "themes-css-dir",
+            path: "app/styles/themes",
+          },
+        })
+      )
+
+      themeApplyCommand(".visor.yaml", testDir, {
+        adapter: "nextjs",
+        targetPath: buildDir,
+      })
+
+      const css = readFileSync(
+        join(buildDir, "app", "styles", "themes", "test-theme.css"),
+        "utf-8"
+      )
+      expect(css).toContain("--color-primary-")
+    })
+
+    it("dispatches globals-css (backward compat) at app/globals.css", () => {
+      const yamlPath = join(testDir, ".visor.yaml")
+      writeFileSync(yamlPath, VALID_YAML, "utf-8")
+      const buildDir = join(testDir, "build2")
+      mkdirSync(buildDir, { recursive: true })
+      writeFileSync(
+        join(buildDir, "blessed-manifest.json"),
+        JSON.stringify(MANIFEST_BASE)
+      )
+
+      themeApplyCommand(".visor.yaml", testDir, {
+        adapter: "nextjs",
+        targetPath: buildDir,
+      })
+
+      const css = readFileSync(join(buildDir, "app", "globals.css"), "utf-8")
+      expect(css).toContain("--color-primary-")
+    })
+
+    it("errors when --target-path is used without --adapter nextjs", () => {
+      const yamlPath = join(testDir, ".visor.yaml")
+      writeFileSync(yamlPath, VALID_YAML, "utf-8")
+      const buildDir = join(testDir, "build3")
+      mkdirSync(buildDir, { recursive: true })
+      writeFileSync(
+        join(buildDir, "blessed-manifest.json"),
+        JSON.stringify(MANIFEST_BASE)
+      )
+
+      expect(() =>
+        themeApplyCommand(".visor.yaml", testDir, {
+          adapter: "fumadocs",
+          targetPath: buildDir,
+        })
+      ).toThrow(/process\.exit\(1\)/)
+    })
+
+    it("errors clearly when the build root has no blessed-manifest.json", () => {
+      const yamlPath = join(testDir, ".visor.yaml")
+      writeFileSync(yamlPath, VALID_YAML, "utf-8")
+      const buildDir = join(testDir, "build4")
+      mkdirSync(buildDir, { recursive: true })
+
+      expect(() =>
+        themeApplyCommand(".visor.yaml", testDir, {
+          adapter: "nextjs",
+          targetPath: buildDir,
+        })
+      ).toThrow(/process\.exit\(2\)/)
+    })
+  })
+
   it("generates fumadocs adapter output with --adapter fumadocs", () => {
     const yamlPath = join(testDir, ".visor.yaml")
     writeFileSync(yamlPath, VALID_YAML, "utf-8")
