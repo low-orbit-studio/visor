@@ -34,6 +34,8 @@ import type { MigrateTokenSubstitutionOptions } from "./commands/migrate-token-s
 import { sandboxInitCommand } from "./commands/sandbox/init.js"
 import { sandboxDevCommand } from "./commands/sandbox/dev.js"
 import { sandboxApproveCommand } from "./commands/sandbox/approve.js"
+import { spawnCommand } from "./commands/spawn.js"
+import type { SpawnOptions } from "./commands/spawn.js"
 
 // Resolve CLI version from the package's own package.json so `visor --version`
 // matches the installed npm version. After tsup bundles into dist/index.js,
@@ -471,5 +473,23 @@ sandbox
       sandboxApproveCommand(process.cwd(), options)
     }
   )
+
+program
+  .command("spawn")
+  .description(
+    "Fork a Playbook blessed reference build with atomic theme re-skinning — one command replaces cp -R + npm install + theme apply"
+  )
+  .option("--from <identifier>", "blessed build to spawn: blessed:{shape}:{pattern}")
+  .option("--theme <id>", "theme id (or path to a .visor.yaml) to re-skin the fork with")
+  .option("--theme-file <path>", "explicit path to a theme.visor.yaml — bypasses --theme name resolution")
+  .option("--output <path>", "destination directory for the forked project")
+  .option("--blessed-dir <path>", "override the blessed-build root (default: VISOR_BLESSED_DIR or ~/Code/low-orbit/low-orbit-playbook/design-prototypes)")
+  .option("--install", "run npm install in the forked project (default: skip)")
+  .option("--validate", "validate the applied theme after forking (default: skip)")
+  .option("--list-blessed", "list all discoverable blessed builds and exit")
+  .option("--json", "output structured JSON (for AI agents)")
+  .action((options: SpawnOptions) => {
+    spawnCommand(process.cwd(), options)
+  })
 
 program.parse()
