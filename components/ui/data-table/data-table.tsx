@@ -334,6 +334,13 @@ function DataTableInner<TData, TValue = unknown>(
     return [selectionColumn, ...userColumns]
   }, [enableRowSelection, userColumns])
 
+  // NOTE: `useReactTable()` returns non-memoizable row models/handlers, so a
+  // consumer on the React 19 compiler ruleset (eslint-plugin-react-hooks v6)
+  // sees a non-blocking `react-hooks/incompatible-library` warning here. This
+  // is inherent to TanStack Table and cannot be refactored away. It is
+  // intentionally NOT suppressed in Visor source — Visor's own eslint
+  // (react-hooks v5) doesn't load that rule, so a disable directive for it
+  // errors here. See VI-602.
   const table: TanstackTable<TData> = useReactTable<TData>({
     data: dataItems,
     columns,

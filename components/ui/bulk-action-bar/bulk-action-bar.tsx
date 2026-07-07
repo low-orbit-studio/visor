@@ -66,7 +66,6 @@ const BulkActionBar = React.forwardRef<HTMLDivElement, BulkActionBarProps>(
     }, [onClear])
 
     // Auto-focus first action button on mount (not on every count change).
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     React.useEffect(() => {
       if (!autoFocus) return
       const root = actionsRef.current
@@ -75,6 +74,11 @@ const BulkActionBar = React.forwardRef<HTMLDivElement, BulkActionBarProps>(
         "button:not([disabled])"
       )
       firstButton?.focus()
+      // Mount-only by design; `autoFocus` is intentionally omitted so a later
+      // prop flip does not steal focus. The React 19 compiler lint reports the
+      // missing dep on the deps-array line, so the narrow disable sits here
+      // rather than above the hook. See VI-602.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     if (count <= 0) return null
