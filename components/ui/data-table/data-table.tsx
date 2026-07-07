@@ -334,6 +334,13 @@ function DataTableInner<TData, TValue = unknown>(
     return [selectionColumn, ...userColumns]
   }, [enableRowSelection, userColumns])
 
+  // TanStack Table's `useReactTable()` returns row models and handlers that
+  // cannot be memoized safely, so the React 19 compiler skips memoizing this
+  // component and the `react-hooks/incompatible-library` lint flags the call.
+  // This is inherent to the library's design — there is nothing to refactor —
+  // so the warning is disabled narrowly at this single call site rather than
+  // via a dir-wide exemption in a consumer's ESLint config. See VI-602.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table: TanstackTable<TData> = useReactTable<TData>({
     data: dataItems,
     columns,

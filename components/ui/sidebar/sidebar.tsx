@@ -12,6 +12,26 @@ const SIDEBAR_WIDTH = "16rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
+const SIDEBAR_MOBILE_MEDIA_QUERY = "(max-width: 768px)"
+
+// `isMobile` is derived from a `matchMedia` subscription via
+// `useSyncExternalStore` (below) instead of a `useState` + `useEffect` pair.
+// This keeps SSR safe — the server snapshot is always `false` — while avoiding
+// a synchronous `setState` inside an effect body, which the React 19 compiler
+// lint (`react-hooks/set-state-in-effect`) flags as a cascading-render hazard.
+function subscribeIsMobile(callback: () => void) {
+  const mql = window.matchMedia(SIDEBAR_MOBILE_MEDIA_QUERY)
+  mql.addEventListener("change", callback)
+  return () => mql.removeEventListener("change", callback)
+}
+
+function getIsMobileSnapshot() {
+  return window.matchMedia(SIDEBAR_MOBILE_MEDIA_QUERY).matches
+}
+
+function getIsMobileServerSnapshot() {
+  return false
+}
 
 type SidebarContextProps = {
   state: "expanded" | "collapsed"
@@ -52,18 +72,14 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
     },
     ref
   ) => {
-    const [isMobile, setIsMobile] = React.useState(false)
+    const isMobile = React.useSyncExternalStore(
+      subscribeIsMobile,
+      getIsMobileSnapshot,
+      getIsMobileServerSnapshot
+    )
     const [openMobile, setOpenMobile] = React.useState(false)
     const [_open, _setOpen] = React.useState(defaultOpen)
     const open = openProp ?? _open
-
-    React.useEffect(() => {
-      const mql = window.matchMedia("(max-width: 768px)")
-      const handleChange = (e: MediaQueryListEvent) => setIsMobile(e.matches)
-      setIsMobile(mql.matches)
-      mql.addEventListener("change", handleChange)
-      return () => mql.removeEventListener("change", handleChange)
-    }, [])
 
     const setOpen = React.useCallback(
       (value: boolean | ((value: boolean) => boolean)) => {
