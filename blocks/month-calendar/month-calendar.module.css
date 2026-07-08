@@ -1,0 +1,322 @@
+/* Month Calendar
+ * A theme-portable month event-grid (scheduler) block: a 6×7 day-cell grid
+ * under a weekday header, with month navigation, a view-mode segmented control,
+ * and per-cell event chips carrying a status dot and an optional series tint.
+ *
+ * Every color, size, spacing, stroke, radius, and motion value binds to a Visor
+ * token so the block adopts the active theme without modification. Selectors are
+ * anchored on a local class to satisfy the docs bundler's pure-selector rule.
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-card);
+  border: var(--stroke-width-thin) solid var(--border-muted);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  color: var(--text-primary);
+}
+
+/* ── Header: month nav + view segmented control ── */
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3, 0.75rem);
+  padding: var(--spacing-4, 1rem);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.navButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 32px — icon-button sizing; sizing tokens deferred (Rule 5 exception). */
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  color: var(--text-secondary);
+  background: transparent;
+  border: var(--stroke-width-thin) solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+.navButton:hover:not(:disabled) {
+  background: var(--surface-interactive-hover);
+  color: var(--text-primary);
+}
+
+.navButton:disabled {
+  opacity: var(--opacity-40);
+  cursor: default;
+}
+
+.navButton:focus-visible {
+  outline: var(--focus-ring-width) solid var(--border-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.monthLabel {
+  margin: 0;
+  min-width: 10ch;
+  text-align: center;
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary);
+}
+
+/* ── View-mode segmented control ── */
+.segmented {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--stroke-width-thin);
+  padding: var(--spacing-1, 0.25rem);
+  background: var(--surface-subtle);
+  border: var(--stroke-width-thin) solid var(--border-muted);
+  border-radius: var(--radius-md);
+}
+
+.segment {
+  appearance: none;
+  padding: var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color var(--motion-duration-fast, 100ms)
+      var(--motion-easing-default, ease-in-out),
+    background-color var(--motion-duration-fast, 100ms)
+      var(--motion-easing-default, ease-in-out);
+}
+
+.segment:hover:not([data-active]) {
+  color: var(--text-primary);
+}
+
+.segment[data-active] {
+  color: var(--text-primary);
+  background: var(--surface-card);
+  box-shadow: var(--shadow-xs);
+}
+
+.segment:focus-visible {
+  outline: var(--focus-ring-width) solid var(--border-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* ── Weekday header row ── */
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  border-top: var(--stroke-width-thin) solid var(--border-muted);
+  background: var(--surface-subtle);
+}
+
+.weekday {
+  padding: var(--spacing-2, 0.5rem);
+  text-align: center;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-medium, 500);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* ── 6×7 day grid ── */
+/* The hairline background shows through the 1px gaps to draw the grid lines. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-auto-rows: minmax(0, 1fr);
+  gap: var(--stroke-width-thin);
+  background: var(--border-muted);
+  border-top: var(--stroke-width-thin) solid var(--border-muted);
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+  /* 104px — day-cell min height; sizing tokens deferred (Rule 5 exception). */
+  min-height: 6.5rem;
+  padding: var(--spacing-1, 0.25rem);
+  background: var(--surface-card);
+}
+
+.cell[data-outside] {
+  background: var(--surface-subtle);
+}
+
+.cell[data-outside] .dayNumber {
+  color: var(--text-disabled);
+}
+
+.cell[data-selected] {
+  background: var(--interactive-primary-soft);
+}
+
+/* ── Day number head (button when the day is selectable) ── */
+.dayHead {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  /* 24px — day-number badge sizing; sizing tokens deferred (Rule 5 exception). */
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 var(--spacing-1, 0.25rem);
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: default;
+}
+
+.dayHead:is(button) {
+  cursor: pointer;
+}
+
+.dayHead:is(button):hover {
+  background: var(--surface-interactive-hover);
+}
+
+.dayHead:focus-visible {
+  outline: var(--focus-ring-width) solid var(--border-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.dayNumber {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.cell[data-today] .dayHead {
+  background: var(--interactive-primary-bg);
+}
+
+.cell[data-today] .dayNumber {
+  color: var(--interactive-primary-text);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+/* ── Event chips ── */
+.events {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+  min-width: 0;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+  width: 100%;
+  padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-medium, 500);
+  text-align: start;
+  color: var(--text-primary);
+  background: var(--surface-subtle);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: default;
+}
+
+.chip:is(button) {
+  cursor: pointer;
+}
+
+.chip:is(button):hover {
+  background: var(--surface-interactive-hover);
+}
+
+.chip:focus-visible {
+  outline: var(--focus-ring-width) solid var(--border-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Series tint — background wash + leading accent bar keyed to the chart ramp. */
+.chip[data-series="1"] {
+  --mc-series: var(--chart-1);
+}
+.chip[data-series="2"] {
+  --mc-series: var(--chart-2);
+}
+.chip[data-series="3"] {
+  --mc-series: var(--chart-3);
+}
+.chip[data-series="4"] {
+  --mc-series: var(--chart-4);
+}
+.chip[data-series="5"] {
+  --mc-series: var(--chart-5);
+}
+
+.chip[data-series] {
+  background: color-mix(in srgb, var(--mc-series) 16%, transparent);
+  box-shadow: inset var(--stroke-width-medium) 0 0 0 var(--mc-series);
+}
+
+.chip[data-series]:is(button):hover {
+  background: color-mix(in srgb, var(--mc-series) 28%, transparent);
+}
+
+.chipLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ── Status dot ── */
+.dot {
+  flex-shrink: 0;
+  /* 8px dot — bound to the spacing scale. */
+  width: var(--spacing-2, 0.5rem);
+  height: var(--spacing-2, 0.5rem);
+  border-radius: var(--radius-full);
+  background: var(--text-tertiary);
+}
+
+.dot[data-status="success"] {
+  background: var(--surface-success-default);
+}
+.dot[data-status="warning"] {
+  background: var(--surface-warning-default);
+}
+.dot[data-status="danger"] {
+  background: var(--surface-error-default);
+}
+.dot[data-status="info"] {
+  background: var(--surface-info-default);
+}
+
+/* ── Overflow row ── */
+.overflow {
+  padding: 0 var(--spacing-2, 0.5rem);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-tertiary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .segment {
+    transition: none;
+  }
+}

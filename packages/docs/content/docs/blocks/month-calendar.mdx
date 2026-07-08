@@ -1,0 +1,119 @@
+---
+title: Month Calendar
+description: A theme-portable month event-grid (scheduler) — a 6×7 day-cell grid with weekday header, month navigation, a view-mode segmented control, and per-cell event chips carrying a status dot and series tint.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { MonthCalendarDemo } from '@/components/blocks/month-calendar-demo';
+
+## Preview
+
+<BlockPreview
+  title="Month Calendar"
+  code={"<MonthCalendar\n  month={month}\n  onMonthChange={setMonth}\n  events={events}\n  today={new Date()}\n  selectedDate={selected}\n  onSelectDate={setSelected}\n  onEventSelect={(e) => openEvent(e.id)}\n  view={view}\n  onViewChange={setView}\n/>"}
+>
+  <MonthCalendarDemo />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block month-calendar
+```
+
+This copies files into your project:
+
+- `blocks/month-calendar/month-calendar.tsx` — the block component
+- `blocks/month-calendar/month-calendar.module.css` — the styles
+
+The block depends only on `@phosphor-icons/react` (nav arrows) and the shared `utils` helper — it builds its own grid, so there are no component registry dependencies.
+
+## Usage
+
+```tsx
+'use client';
+
+import * as React from 'react';
+import {
+  MonthCalendar,
+  type MonthCalendarEvent,
+} from '@/blocks/month-calendar/month-calendar';
+
+const events: MonthCalendarEvent[] = [
+  { id: '1', date: new Date(2026, 6, 4), title: 'Launch party', status: 'success', series: 1 },
+  { id: '2', date: new Date(2026, 6, 4), title: 'Standup', status: 'info', series: 2 },
+  { id: '3', date: new Date(2026, 6, 20), title: 'Payment due', status: 'danger' },
+];
+
+export function Schedule() {
+  const [month, setMonth] = React.useState(new Date());
+  const [selected, setSelected] = React.useState<Date | undefined>(undefined);
+  const [view, setView] = React.useState('month');
+
+  return (
+    <MonthCalendar
+      month={month}
+      onMonthChange={setMonth}
+      events={events}
+      today={new Date()}
+      selectedDate={selected}
+      onSelectDate={setSelected}
+      onEventSelect={(event) => console.log('open', event.id)}
+      view={view}
+      onViewChange={setView}
+    />
+  );
+}
+```
+
+## Anatomy
+
+The block is a single column with three regions:
+
+1. **Header** — prev/next month arrows around a localized `Month Year` label, plus a view-mode segmented control (`Month` / `Week` / `Day` by default). The arrows are disabled when no `onMonthChange` handler is supplied.
+2. **Weekday header** — seven localized short weekday names, honoring `weekStartsOn` (Sunday or Monday).
+3. **Day grid** — a fixed 6×7 (42-cell) month grid. Each cell shows its day number and stacks its event chips; days outside the displayed month are dimmed.
+
+## Event chips
+
+Each event renders as a chip with two token-driven signals:
+
+- **Status dot** — a leading dot colored by `status` (`success` / `warning` / `danger` / `info`, or a neutral default). Dots bind to the `--surface-{success,warning,error,info}-default` tokens.
+- **Series tint** — an optional `series` index (`1`–`5`) that washes the chip background and adds a leading accent bar, keyed to the theme's `--chart-1…5` ramp. Use it to color-code a recurring series or a resource lane.
+
+When a day holds more events than `maxChipsPerDay` (default `3`), the extras collapse into a `+N more` row.
+
+## Interaction
+
+The block is fully controlled and SSR-safe — it never reads the system clock itself.
+
+- **`month` + `onMonthChange`** — drive the displayed month. The handler receives the first day of the target month.
+- **`onSelectDate`** — when supplied, day cells become buttons and report the clicked date; the active day is highlighted via `selectedDate`.
+- **`onEventSelect`** — when supplied, chips become buttons and report the clicked event.
+- **`today`** — pass `new Date()` from a client boundary to highlight the current day. Omit it to keep server and client render identical (no hydration mismatch).
+- **`view` + `onViewChange`** — drive the segmented control. The block always renders the month grid; swap in your own week/day surface based on the active view.
+
+## Accessibility
+
+- Month-nav arrows carry `aria-label="Previous month"` / `"Next month"`.
+- The view-mode control is a labelled `role="group"`; each segment reports `aria-pressed`.
+- Selectable day cells expose a full `aria-label` (e.g. `"July 4, 2026, 2 events"`) and report `aria-pressed` for the selected day.
+- Status dots are decorative (`aria-hidden`) — the chip's text label is the accessible name.
+
+## Props
+
+See `MonthCalendarProps` in `blocks/month-calendar/month-calendar.tsx` for the full list. In summary:
+
+- **Month** — `month` (required), `onMonthChange`, `weekStartsOn`, `locale`.
+- **Events** — `events`, `maxChipsPerDay`, `onEventSelect`.
+- **Selection** — `selectedDate`, `onSelectDate`, `today`.
+- **View mode** — `viewOptions`, `view`, `onViewChange`.
+
+`MonthCalendarEvent` is `{ id, date, title, status?, series? }`, where `status` is `"default" | "success" | "warning" | "danger" | "info"` and `series` is `1 | 2 | 3 | 4 | 5`.
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI — such as admin shells, login forms, or dashboard panels.
+
+Blocks are copy-and-own, just like components. Install them into your project and customize freely.

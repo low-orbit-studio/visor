@@ -217,6 +217,25 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "month-calendar",
+    type: "registry:block",
+    category: "data-display",
+    description:
+      "Theme-portable month event-grid (scheduler) block: a 6×7 day-cell grid under a localized weekday header, with prev/next month navigation, a view-mode segmented control (Month / Week / Day), and per-cell event chips. Each chip carries a status-dot slot (success / warning / danger / info) and an optional series tint (1–5) keyed to the theme's chart ramp. Days outside the displayed month are dimmed; optional today and selected-day highlighting. Fully token-driven and theme-agnostic.",
+    dependencies: ["@loworbitstudio/visor-core", "@phosphor-icons/react"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "blocks/month-calendar/month-calendar.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/month-calendar/month-calendar.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "workspace-switcher",
     type: "registry:block",
     category: "admin",

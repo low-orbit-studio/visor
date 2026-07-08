@@ -1,0 +1,68 @@
+name: Month Calendar
+description: >-
+  A theme-portable month event-grid (scheduler) block. Renders a 6×7 day-cell
+  grid under a localized weekday header, with prev/next month navigation, a
+  view-mode segmented control (Month / Week / Day), and per-cell event chips.
+  Each chip carries a status-dot slot (success / warning / danger / info) and an
+  optional series tint (1–5) keyed to the theme's chart ramp for color-coding a
+  recurring series or resource lane. Days outside the displayed month are dimmed;
+  optional today and selected-day highlighting. Fully token-driven — every color,
+  spacing, stroke, radius, shadow, opacity, and motion value binds to a Visor
+  token, so the grid adopts the active theme without modification.
+category: data-display
+preview_url: "https://visor.loworbit.studio/docs/blocks/month-calendar"
+components_used: []
+props:
+  - name: month
+    type: Date
+    required: true
+    description: Any date within the month to display. Controlled.
+  - name: onMonthChange
+    type: "(month: Date) => void"
+    description: Fired with the first day of the previous/next month when the nav arrows are used. Arrows are disabled when omitted.
+  - name: events
+    type: MonthCalendarEvent[]
+    default: "[]"
+    description: Events to place into day cells (id, date, title, optional status, optional series).
+  - name: today
+    type: Date
+    description: The day marked as "today". Omit to mark none — the block never reads the system clock, keeping SSR and client render identical.
+  - name: selectedDate
+    type: Date
+    description: Selected day, highlighted distinctly from today.
+  - name: onSelectDate
+    type: "(date: Date) => void"
+    description: Fired when a day cell is activated. Cells are inert unless provided.
+  - name: onEventSelect
+    type: "(event: MonthCalendarEvent) => void"
+    description: Fired when an event chip is activated. Chips are inert unless provided.
+  - name: weekStartsOn
+    type: "0 | 1"
+    default: "0"
+    description: First column of the week — 0 = Sunday, 1 = Monday.
+  - name: maxChipsPerDay
+    type: number
+    default: "3"
+    description: Max chips shown per day before collapsing to a "+N more" row.
+  - name: locale
+    type: string
+    default: '"en-US"'
+    description: BCP-47 locale for the month title and weekday headers.
+  - name: viewOptions
+    type: MonthCalendarViewOption[]
+    default: Month / Week / Day
+    description: View-mode options for the segmented control.
+  - name: view
+    type: string
+    description: Active view value (controlled). Falls back to internal state when omitted.
+  - name: onViewChange
+    type: "(view: string) => void"
+    description: Fired when a view-mode segment is chosen.
+when_to_use:
+  - Admin or booking surfaces that show events-in-a-month (the most common scheduling view)
+  - Color-coding recurring series or resource lanes via the per-chip series tint
+  - Status-at-a-glance calendars where each event needs a success / warning / danger / info dot
+when_not_to_use:
+  - Picking a single date or date range (use calendar, date-picker, or date-range-picker)
+  - Time-slot / day-timeline scheduling with hour rows (use a dedicated day/week scheduler)
+  - Dense agenda lists with no month context (use a table or activity-feed)

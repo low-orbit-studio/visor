@@ -274,6 +274,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "MenubarSubContent",
   "MenubarSubTrigger",
   "MenubarTrigger",
+  "MonthCalendar",
   "MotionDuration",
   "MotionDurationSection",
   "MotionEasing",
