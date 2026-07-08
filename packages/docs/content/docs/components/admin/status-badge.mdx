@@ -40,7 +40,10 @@ import { StatusBadge } from '@/components/ui/status-badge';
 A second vocabulary covers admin-ui event lifecycle states — useful for events
 tables, ticket listings, and any content that moves through a publish /
 schedule / live / sold-out / archived flow. Each tone maps to an existing
-semantic color group, so no new tokens are introduced.
+semantic color group, so no new tokens are introduced. `scheduled` reads as
+info (blue) — an upcoming/committed state — deliberately distinct from
+`draft`'s muted neutral grey, so a committed-but-not-yet-live item never looks
+like an unpublished one.
 
 <ComponentPreview
   title="Admin-ui event tones"
@@ -177,7 +180,7 @@ export default function Example() {
 | `idle` | neutral | `neutral` | `filled-neutral` |
 | `live` | success | `success` | `filled-success` |
 | `warn` | warning | `warning` | `filled-warning` |
-| `scheduled` | neutral | `neutral` | `filled-neutral` |
+| `scheduled` | info | `info` | `filled-info` |
 | `sold` | success | `success` | `filled-success` |
 | `draft` | neutral | `neutral` | `filled-neutral` |
 | `prospect` | info | `info` | `filled-info` |
