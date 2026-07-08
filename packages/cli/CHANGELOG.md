@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.17.0
+
+### Minor Changes
+
+- 1caa899: Add a `month-calendar` block — a theme-portable month event-grid (scheduler) (VI-604). Renders a 6×7 day-cell grid under a localized weekday header with prev/next month navigation and a view-mode segmented control (Month / Week / Day). Each day cell stacks event chips carrying a status-dot slot (`success` / `warning` / `danger` / `info`) and an optional series tint (`1`–`5`) keyed to the theme's `--chart-1…5` ramp for color-coding a recurring series or resource lane. Days outside the displayed month are dimmed, with optional `today` and selected-day highlighting. Fully controlled and SSR-safe (never reads the system clock), and fully token-driven — every color, spacing, stroke, radius, shadow, opacity, and motion value binds to a Visor token so the grid adopts the active theme without modification. Closes the AN-124 gap where no blessed month event-grid existed (only date-picker-style `calendar` / `date-picker` / `date-range-picker` selectors). Install with `npx visor add --block month-calendar`.
+- 3df9963: VI-605: split block registry deps into hard vs. suggested slot-fill deps.
+
+  Registry items gain an optional `suggestedDependencies` field for slot-fill
+  components a block can compose with but does not import to render itself. The
+  `admin-shell` block now declares only `utils` as a hard `registryDependency`,
+  with `breadcrumb`, `dropdown-menu`, and `sidebar` moved to `suggestedDependencies`.
+
+  `visor add <block> --block` now installs only hard deps by default, so a
+  slot-only compose no longer pulls unused component files or their npm trees
+  (e.g. Radix `@radix-ui/react-dropdown-menu`). A new `--with-suggested` flag opts
+  into installing the suggested slot-fill components. When suggested deps are
+  skipped, they are surfaced in the CLI output (and under a `suggested` key in
+  `--json` output). The block's `.visor.yaml` `components_used` list is unchanged
+  and continues to document the slots for humans and agents.
+
+- 2748852: Add the `admin-detail` block — a full-page, read-oriented detail RECORD for the admin-shell main column (VI-606). It is the natural sibling to `admin-detail-drawer` (a right-side drawer) and `admin-list-page`: an identity header (media + title + composed `StatusBadge` + actions), N key-value sections built on the blessed `KeyValueList`, an optional sensitive/reveal panel gated behind a `Switch` (for tax IDs, banking, W-9 data), and optional sub-list slots for ledgers or history — all separated by `Separator` hairlines and fully token-driven. Resolves the Animal §04 Artist Detail gap where `npx visor check has admin-detail` returned NOT FOUND. Install with `npx visor add --block admin-detail`; the registry pulls in `key-value-list`, `status-badge`, `switch`, and `separator`.
+
+### Patch Changes
+
+- a966908: Re-group `status-badge`'s `scheduled` status from the neutral (grey) color group to the info (blue) group (VI-607). `scheduled` is semantically an upcoming/committed state, not a muted draft, so it now renders with the info tone — `info` in subtle tone and `filled-info` in filled tone — deliberately distinct from `draft`, which stays neutral grey. This makes a faithful compose of designs that paint a scheduled item blue (e.g. Animal §04 Artist Detail's invoice ledger) render correctly without hacking an info-group status key. Fully token-driven — the info tone reuses the existing `--surface-info-default` / info Badge variants; no new tokens.
+
 ## 1.16.1
 
 ### Patch Changes
