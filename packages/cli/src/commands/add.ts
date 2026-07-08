@@ -3,6 +3,7 @@ import {
   loadRegistry,
   resolveTransitiveDeps,
   collectDependencies,
+  collectSuggestedDeps,
   filterItemsByTarget,
   findItemForTarget,
 } from "../registry/resolve.js"
@@ -26,6 +27,7 @@ export interface AddOptions {
   overwrite?: boolean
   category?: string
   block?: boolean
+  withSuggested?: boolean
   json?: boolean
   dryRun?: boolean
   target?: RegistryTarget
@@ -38,6 +40,7 @@ export function addCommand(
 ): void {
   const json = options.json ?? false
   const dryRun = options.dryRun ?? false
+  const withSuggested = options.withSuggested ?? false
   const target: RegistryTarget = options.target ?? "react"
   const prefix = dryRun ? "[dry-run] " : ""
 
@@ -216,9 +219,14 @@ export function addCommand(
   const circularWarnings: string[] = []
   let items: ReturnType<typeof resolveTransitiveDeps>
   try {
-    items = resolveTransitiveDeps(targetRegistry, canonicalNames, (msg) => {
-      circularWarnings.push(msg)
-    })
+    items = resolveTransitiveDeps(
+      targetRegistry,
+      canonicalNames,
+      (msg) => {
+        circularWarnings.push(msg)
+      },
+      withSuggested
+    )
   } catch (error) {
     if (json) {
       const message = error instanceof Error ? error.message : String(error)
@@ -233,6 +241,13 @@ export function addCommand(
       logger.warn(warning)
     }
   }
+
+  // Slot-fill components a resolved block suggests but that were not installed
+  // (default install skips them). Surfaced as an opt-in hint (VI-605).
+  const resolvedNames = new Set(items.map((i) => i.name))
+  const suggestedAvailable = withSuggested
+    ? []
+    : collectSuggestedDeps(targetRegistry, canonicalNames, resolvedNames)
 
   if (!json) {
     logger.info(
@@ -436,6 +451,9 @@ export function addCommand(
           autoInitialized,
           requested: itemNames,
           resolved: items.map((i) => i.name),
+          ...(suggestedAvailable.length > 0
+            ? { suggested: suggestedAvailable }
+            : {}),
           files: { written: writtenFiles, skipped: skippedFiles },
           dependencies: { installed: installedDeps, failed: failedDeps },
           warnings,
@@ -445,6 +463,18 @@ export function addCommand(
       )
     )
     process.exit(failedDeps.length > 0 ? 1 : 0)
+  }
+
+  if (suggestedAvailable.length > 0) {
+    logger.blank()
+    logger.info(
+      `Suggested slot-fill components (not installed): ${suggestedAvailable.join(", ")}`
+    )
+    logger.info(
+      `  These fill the block's slots but aren't required to render it. Add with:`
+    )
+    logger.info(`  npx visor add ${canonicalNames.join(" ")} --block --with-suggested`)
+    logger.info(`  or: npx visor add ${suggestedAvailable.join(" ")}`)
   }
 
   if (failedDeps.length > 0) {

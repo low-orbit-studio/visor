@@ -83,12 +83,13 @@ program
   .option("--overwrite", "overwrite existing files", false)
   .option("--category <name>", "install all items from a category")
   .option("--block", "install blocks instead of components")
+  .option("--with-suggested", "also install a block's suggested slot-fill components (e.g. breadcrumb, dropdown-menu, sidebar for admin-shell)")
   .option("--target <platform>", "target platform: react (default) or flutter", "react")
   .option("--dry-run", "preview what would be added without writing files")
   .option("--json", "output structured JSON (for AI agents)")
-  .action((items: string[], options: { overwrite: boolean; category?: string; block?: boolean; target?: string; dryRun?: boolean; json?: boolean }) => {
+  .action((items: string[], options: { overwrite: boolean; category?: string; block?: boolean; withSuggested?: boolean; target?: string; dryRun?: boolean; json?: boolean }) => {
     const target = options.target === "flutter" ? "flutter" : "react"
-    addCommand(items, process.cwd(), { overwrite: options.overwrite, category: options.category, block: options.block, target, dryRun: options.dryRun, json: options.json })
+    addCommand(items, process.cwd(), { overwrite: options.overwrite, category: options.category, block: options.block, withSuggested: options.withSuggested, target, dryRun: options.dryRun, json: options.json })
   })
 
 program

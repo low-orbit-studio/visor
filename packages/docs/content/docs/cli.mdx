@@ -148,6 +148,31 @@ If `visor.json` doesn't exist, `visor add` creates one automatically with defaul
 | Flag | Description |
 |------|-------------|
 | `--overwrite` | Overwrite existing files. Without this flag, existing files are skipped. |
+| `--category <name>` | Install every item in a category instead of naming items individually. |
+| `--block` | Install blocks instead of components. |
+| `--with-suggested` | Also install a block's **suggested slot-fill** components. See below. |
+| `--target <platform>` | Target platform: `react` (default) or `flutter`. |
+| `--dry-run` | Preview what would be added without writing files. |
+| `--json` | Output structured JSON (for AI agents). |
+
+#### Hard vs. suggested block dependencies
+
+A block only installs the components it **imports to render itself** (its hard
+`registryDependencies`). Slot-driven blocks like `admin-shell` also declare
+**suggested** slot-fill components — example fillers for their slots that the
+block does *not* import. These are skipped by default so a slot-only compose
+doesn't pull an unused component tree (and its npm deps, e.g. Radix).
+
+```bash
+# Installs only the hard deps (admin-shell + utils) — no Radix
+npx @loworbitstudio/visor add admin-shell --block
+
+# Also installs the suggested slot-fill components (breadcrumb, dropdown-menu, sidebar)
+npx @loworbitstudio/visor add admin-shell --block --with-suggested
+```
+
+When suggested components are skipped, the CLI prints them (and lists them under
+`suggested` in `--json` output) so you can add them on demand.
 
 ### `visor list`
 

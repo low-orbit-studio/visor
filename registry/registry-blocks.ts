@@ -8,7 +8,12 @@ export const blocks: Registry = [
     description:
       "Foundational admin layout with sidebar, topbar, and main content area. Slot-driven for logo, navigation, breadcrumbs, user menu, and status indicators.",
     dependencies: ["@loworbitstudio/visor-core"],
-    registryDependencies: ["utils", "breadcrumb", "dropdown-menu", "sidebar"],
+    // admin-shell.tsx imports ONLY `cn` from lib/utils — utils is the sole hard
+    // dep. breadcrumb/dropdown-menu/sidebar are slot-fill choices (see
+    // components_used in admin-shell.visor.yaml); install them opt-in via
+    // `--with-suggested` so a slot-only compose doesn't pull Radix (VI-605).
+    registryDependencies: ["utils"],
+    suggestedDependencies: ["breadcrumb", "dropdown-menu", "sidebar"],
     files: [
       {
         path: "blocks/admin-shell/admin-shell.tsx",
