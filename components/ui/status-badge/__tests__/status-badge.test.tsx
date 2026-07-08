@@ -108,7 +108,7 @@ describe("StatusBadge", () => {
       // Admin-ui event tones
       ["live", "success"],
       ["warn", "warning"],
-      ["scheduled", "neutral"],
+      ["scheduled", "info"],
       ["sold", "success"],
       ["draft", "neutral"],
       // CRM / pipeline stages
@@ -144,7 +144,7 @@ describe("StatusBadge", () => {
       // Admin-ui event tones
       ["live", "filled-success"],
       ["warn", "filled-warning"],
-      ["scheduled", "filled-neutral"],
+      ["scheduled", "filled-info"],
       ["sold", "filled-success"],
       ["draft", "filled-neutral"],
       // CRM / pipeline stages
@@ -208,6 +208,22 @@ describe("StatusBadge", () => {
       expect(container.textContent).toContain(statusBadgeLabels[status])
       unmount()
     }
+  })
+
+  it("maps scheduled to the info group, distinct from draft's neutral grey", () => {
+    // scheduled is an upcoming/committed state, not a muted draft — it must
+    // render blue (info), not grey (neutral). See VI-607.
+    const scheduled = render(<StatusBadge status="scheduled" />)
+    expect(
+      scheduled.container.querySelector('[data-slot="status-badge"]')
+    ).toHaveAttribute("data-variant", "info")
+    scheduled.unmount()
+
+    const draft = render(<StatusBadge status="draft" />)
+    expect(
+      draft.container.querySelector('[data-slot="status-badge"]')
+    ).toHaveAttribute("data-variant", "neutral")
+    draft.unmount()
   })
 
   it("renders each CRM pipeline status with the correct data-status attribute", () => {
