@@ -1,0 +1,19 @@
+name: Admin Detail
+description: Full-page, read-oriented detail RECORD for the admin-shell main column. Composes an identity header (media + title + StatusBadge + actions), N key-value sections built on KeyValueList, an optional sensitive/reveal panel gated behind a Switch, and optional sub-list slots for ledgers or history — separated by hairline dividers. The full-page sibling to admin-detail-drawer (a drawer) and admin-list-page.
+category: admin
+preview_url: "https://visor.loworbit.studio/docs/blocks/admin-detail"
+components_used:
+  - key-value-list
+  - status-badge
+  - switch
+  - separator
+when_to_use:
+  - Read-oriented single-record detail pages rendered in the admin-shell main column
+  - Records with an identity header plus grouped key-value facts (profile, account, metadata)
+  - Detail pages that expose sensitive data (tax IDs, banking, W-9) behind a reveal control
+  - Records with sub-ledgers or history tables beneath the key-value sections
+when_not_to_use:
+  - Inline editing of a record from a list without leaving the page (use admin-detail-drawer)
+  - Full-page multi-section editors with save/cancel (use admin-settings-page)
+  - Multi-step create/edit flows (use admin-wizard)
+  - Tabular lists of many records (use admin-list-page)

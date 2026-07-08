@@ -3,6 +3,7 @@
   "description": "Complete UI patterns composed of multiple Visor components. Blocks are alphabetized. Insert new entries in A-Z order.",
   "pages": [
     "admin-dashboard",
+    "admin-detail",
     "admin-detail-drawer",
     "admin-detail-drawer-admin-ui-density",
     "admin-list-page",
