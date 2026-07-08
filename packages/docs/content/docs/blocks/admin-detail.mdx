@@ -1,0 +1,146 @@
+---
+title: Admin Detail
+description: Full-page, read-oriented detail RECORD for the admin-shell main column — identity header, key-value sections, an optional sensitive/reveal panel, and sub-list slots.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { AdminDetailDemo } from '@/components/blocks/admin-detail-demo';
+
+## Preview
+
+<BlockPreview
+  title="Admin Detail"
+  code={"<AdminDetail\n  eyebrow=\"Artist\"\n  title=\"Nadia Reyes\"\n  subtitle=\"Techno · Berlin / New York\"\n  status=\"active\"\n  media={<Avatar size=\"lg\"><AvatarFallback>NR</AvatarFallback></Avatar>}\n  actions={<Button size=\"sm\">Book</Button>}\n  sections={[\n    { id: 'profile', title: 'Profile', columns: 2, items: [\n      { label: 'Legal name', value: 'Nadia Reyes' },\n      { label: 'Agency', value: 'Animal Bookings' },\n    ] },\n  ]}\n  sensitive={{\n    title: 'Tax & banking',\n    hiddenNote: 'Hidden for privacy.',\n    items: [{ label: 'Tax ID', value: '**-***4821' }],\n  }}\n>\n  {/* booking history sub-ledger */}\n</AdminDetail>"}
+>
+  <AdminDetailDemo />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add --block admin-detail
+```
+
+This copies files into your project:
+
+- `blocks/admin-detail/admin-detail.tsx` — the block component
+- `blocks/admin-detail/admin-detail.module.css` — the styles
+
+The registry pulls in `key-value-list`, `status-badge`, `switch`, and `separator` as dependencies.
+
+## When to use
+
+`AdminDetail` is the **full-page, read-oriented** sibling to [`admin-detail-drawer`](/docs/blocks/admin-detail-drawer). Where the drawer slides a single record in from the right for quick inline edits, `AdminDetail` renders a record as a **main-column page** in the [admin shell](/docs/blocks/admin-shell) — an identity header, grouped key-value facts, sensitive data behind a reveal gate, and sub-ledgers beneath.
+
+- **Use `AdminDetail`** for a record's canonical detail page — profile, account, or entity view with grouped facts and history.
+- **Use `admin-detail-drawer`** for edit-in-place from a list without navigating away.
+- **Use `admin-settings-page`** for a full-page editor with save/cancel.
+
+## Usage
+
+```tsx
+'use client';
+
+import { AdminDetail } from '@/blocks/admin-detail/admin-detail';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar/avatar';
+import { StatusBadge } from '@/components/ui/status-badge/status-badge';
+import { Button } from '@/components/ui/button/button';
+
+export function ArtistDetail({ artist }: { artist: Artist }) {
+  return (
+    <AdminDetail
+      eyebrow="Artist"
+      title={artist.name}
+      subtitle={artist.genre}
+      status="active"
+      media={
+        <Avatar size="lg">
+          <AvatarFallback>{artist.initials}</AvatarFallback>
+        </Avatar>
+      }
+      actions={<Button size="sm">Book</Button>}
+      sections={[
+        {
+          id: 'profile',
+          title: 'Profile',
+          columns: 2,
+          items: [
+            { label: 'Legal name', value: artist.legalName },
+            { label: 'Agency', value: artist.agency },
+            { label: 'Home base', value: artist.homeBase },
+          ],
+        },
+      ]}
+      sensitive={{
+        title: 'Tax & banking',
+        hiddenNote: 'W-9 and banking details are hidden for privacy.',
+        items: [
+          { label: 'Tax ID (EIN)', value: artist.taxId },
+          { label: 'Payout method', value: artist.payout },
+        ],
+      }}
+    >
+      {/* Any sub-list: booking history, invoice ledger, notes… */}
+    </AdminDetail>
+  );
+}
+```
+
+## Anatomy
+
+The block is a vertical stack, top to bottom:
+
+1. **Identity header** — `media` (Avatar / logo), `eyebrow`, `title`, `subtitle`, a `status` slot, `breadcrumb`, and right-aligned `actions`. A hairline divider closes the header (suppress with `hideHeaderDivider`). Replace the whole header with `header` for custom chrome.
+2. **Key-value sections** — each entry in `sections` renders a titled block that composes [`KeyValueList`](/docs/components/data-display/key-value-list) from its `items`, plus arbitrary `content` for a sub-list.
+3. **Sensitive / reveal panel** — the optional `sensitive` prop renders a bordered panel whose contents stay hidden behind a [`Switch`](/docs/components/switch) until revealed.
+4. **Sub-list slots** — `children` appended after the sections for ledgers, history tables, or notes.
+
+Regions are separated by [`Separator`](/docs/components/separator) hairlines.
+
+## Composition
+
+`AdminDetail` composes blessed Visor components rather than reinventing them:
+
+- **`KeyValueList`** renders every section's `items` (label/value pairs, with optional `hint`).
+- **`StatusBadge`** renders the header `status` when you pass a status string (e.g. `status="active"`); pass any other node to render it verbatim.
+- **`Switch`** gates the sensitive panel's reveal.
+- **`Separator`** draws the dividers between regions.
+
+## The sensitive / reveal panel
+
+Sensitive fields — tax IDs, banking, W-9 status — should not be visible by default. The `sensitive` prop renders a panel that keeps its `items` and `content` hidden until the reveal `Switch` is toggled on:
+
+```tsx
+sensitive={{
+  eyebrow: 'Confidential',
+  title: 'Tax & banking',
+  hiddenNote: 'W-9 and banking details are hidden for privacy.',
+  items: [
+    { label: 'Tax ID (EIN)', value: '**-***4821' },
+    { label: 'Payout method', value: 'ACH · Chase ****2210' },
+  ],
+}}
+```
+
+The reveal state is uncontrolled by default (starts hidden, set `defaultRevealed` to override). Pass `revealed` + `onRevealedChange` to control it externally — for example to log an audit event whenever an operator unmasks the data.
+
+## Accessibility
+
+- The identity title is the page `<h1>`; each section title is an `<h2>`.
+- The reveal `Switch` is labeled and wired to the panel body via `aria-controls`.
+- Sections carry stable `id` anchors so you can deep-link to a region.
+
+## Props
+
+See `AdminDetailProps` in `blocks/admin-detail/admin-detail.tsx` for the full list. In summary:
+
+- **Identity** — `title` (required), `eyebrow`, `subtitle`, `media`, `status`, `breadcrumb`, `actions`, `header`, `hideHeaderDivider`.
+- **Body** — `sections` (each with `items`, `columns`, `orientation`, `density`, `content`), `sensitive`, `children`.
+- **Layout** — `maxWidth`.
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI — such as admin shells, detail records, or dashboard panels.
+
+Blocks are copy-and-own, just like components. Install them into your project and customize freely.

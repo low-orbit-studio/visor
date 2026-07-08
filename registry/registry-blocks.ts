@@ -72,6 +72,31 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "admin-detail",
+    type: "registry:block",
+    category: "admin",
+    description:
+      "Full-page, read-oriented detail RECORD for the admin-shell main column. Composes an identity header (media + title + StatusBadge + actions), N key-value sections built on KeyValueList, an optional sensitive/reveal panel gated behind a Switch, and optional sub-list slots for ledgers or history. The full-page sibling to admin-detail-drawer.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: [
+      "utils",
+      "key-value-list",
+      "status-badge",
+      "switch",
+      "separator",
+    ],
+    files: [
+      {
+        path: "blocks/admin-detail/admin-detail.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/admin-detail/admin-detail.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "admin-detail-drawer",
     type: "registry:block",
     category: "admin",
