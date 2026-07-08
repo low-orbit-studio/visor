@@ -1,0 +1,5 @@
+---
+"@loworbitstudio/visor": minor
+---
+
+Add a `month-calendar` block — a theme-portable month event-grid (scheduler) (VI-604). Renders a 6×7 day-cell grid under a localized weekday header with prev/next month navigation and a view-mode segmented control (Month / Week / Day). Each day cell stacks event chips carrying a status-dot slot (`success` / `warning` / `danger` / `info`) and an optional series tint (`1`–`5`) keyed to the theme's `--chart-1…5` ramp for color-coding a recurring series or resource lane. Days outside the displayed month are dimmed, with optional `today` and selected-day highlighting. Fully controlled and SSR-safe (never reads the system clock), and fully token-driven — every color, spacing, stroke, radius, shadow, opacity, and motion value binds to a Visor token so the grid adopts the active theme without modification. Closes the AN-124 gap where no blessed month event-grid existed (only date-picker-style `calendar` / `date-picker` / `date-range-picker` selectors). Install with `npx visor add --block month-calendar`.
