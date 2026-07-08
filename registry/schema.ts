@@ -32,6 +32,14 @@ export interface RegistryItem {
   devDependencies?: string[]
   pubDependencies?: PubDependency[]
   registryDependencies?: string[]
+  /**
+   * Slot-fill components a block can be composed with but does NOT import to
+   * render itself. Not installed by `visor add <block> --block` by default —
+   * opt in with `--with-suggested`. Distinct from `registryDependencies`
+   * (hard deps needed to render). Mirrors the block's `.visor.yaml`
+   * `components_used` list, which documents the same slots for humans/agents.
+   */
+  suggestedDependencies?: string[]
   files: RegistryFile[]
   tailwind?: {
     config?: Record<string, unknown>

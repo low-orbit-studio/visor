@@ -43,6 +43,20 @@ This copies files into your project:
 - `blocks/admin-shell/admin-shell.tsx` — the block component
 - `blocks/admin-shell/admin-shell.module.css` — the styles
 
+Admin Shell is a **pure slot component** — it imports only the `utils` helper to
+render, so the default install stays lean (no Radix). The `breadcrumb`,
+`dropdown-menu`, and `sidebar` components are **suggested slot-fills**: common
+choices for the topbar and sidebar slots, but not required. Add them when you
+want them:
+
+```bash
+# Bring the suggested slot-fill components along
+npx visor add --block admin-shell --with-suggested
+
+# …or add just the ones you need, à la carte
+npx visor add breadcrumb dropdown-menu sidebar
+```
+
 ## Usage
 
 ```tsx

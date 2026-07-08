@@ -32,6 +32,13 @@ export interface BundledRegistryItem {
   devDependencies?: string[]
   pubDependencies?: PubDependency[]
   registryDependencies?: string[]
+  /**
+   * Slot-fill components a block can be composed with but does NOT import to
+   * render itself. Resolved only when `visor add --block --with-suggested` is
+   * used; excluded from the default install graph. See `RegistryItem` in
+   * registry/schema.ts.
+   */
+  suggestedDependencies?: string[]
   files: BundledFile[]
 }
 

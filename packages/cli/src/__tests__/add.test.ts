@@ -70,6 +70,40 @@ vi.mock("../registry/resolve.js", async (importOriginal) => {
             },
           ],
         },
+        {
+          name: "breadcrumb",
+          type: "registry:ui",
+          dependencies: ["@radix-ui/react-slot"],
+          registryDependencies: ["utils"],
+          files: [
+            {
+              path: "components/ui/breadcrumb/breadcrumb.tsx",
+              type: "registry:ui",
+              content: "export function Breadcrumb() {}",
+            },
+          ],
+        },
+        {
+          name: "admin-shell",
+          type: "registry:block",
+          category: "admin",
+          dependencies: ["@loworbitstudio/visor-core"],
+          // Hard dep = utils only; breadcrumb is a slot-fill suggestion.
+          registryDependencies: ["utils"],
+          suggestedDependencies: ["breadcrumb"],
+          files: [
+            {
+              path: "blocks/admin-shell/admin-shell.tsx",
+              type: "registry:block",
+              content: 'export function AdminShell() { return <div /> }',
+            },
+            {
+              path: "blocks/admin-shell/admin-shell.module.css",
+              type: "registry:block",
+              content: ".root { display: grid; }",
+            },
+          ],
+        },
       ],
     })),
   }
@@ -206,6 +240,27 @@ describe("add command", () => {
     expect(existsSync(join(testDir, "lib/utils.ts"))).toBe(true)
   })
 
+  describe("suggested slot-fill dependencies", () => {
+    it("does not install a block's suggested deps by default", () => {
+      addCommand(["admin-shell"], testDir, { block: true })
+
+      // Hard dep (utils) and the block itself are written
+      expect(existsSync(join(testDir, "blocks/admin-shell/admin-shell.tsx"))).toBe(true)
+      expect(existsSync(join(testDir, "lib/utils.ts"))).toBe(true)
+      // Suggested slot-fill component is NOT pulled
+      expect(existsSync(join(testDir, "components/ui/breadcrumb/breadcrumb.tsx"))).toBe(false)
+    })
+
+    it("installs a block's suggested deps with withSuggested", () => {
+      addCommand(["admin-shell"], testDir, { block: true, withSuggested: true })
+
+      expect(existsSync(join(testDir, "blocks/admin-shell/admin-shell.tsx"))).toBe(true)
+      expect(existsSync(join(testDir, "lib/utils.ts"))).toBe(true)
+      // Suggested slot-fill component IS pulled when opted in
+      expect(existsSync(join(testDir, "components/ui/breadcrumb/breadcrumb.tsx"))).toBe(true)
+    })
+  })
+
   it("auto-creates visor.json when missing", () => {
     // Remove visor.json that beforeEach created
     const { rmSync } = require("fs")
@@ -294,6 +349,36 @@ describe("add command", () => {
       const result = getJsonOutput() as { dependencies: { installed: string[]; failed: string[] } }
       expect(Array.isArray(result.dependencies.installed)).toBe(true)
       expect(Array.isArray(result.dependencies.failed)).toBe(true)
+    })
+
+    it("surfaces suggested slot-fill deps in JSON without installing them", () => {
+      mockProcessExit()
+      expect(() => {
+        addCommand(["admin-shell"], testDir, { block: true, json: true })
+      }).toThrow("process.exit(0)")
+
+      const result = getJsonOutput() as {
+        resolved: string[]
+        suggested?: string[]
+      }
+      // breadcrumb is suggested, so it is surfaced but NOT resolved/installed
+      expect(result.suggested).toContain("breadcrumb")
+      expect(result.resolved).not.toContain("breadcrumb")
+    })
+
+    it("omits the suggested field when withSuggested installs them", () => {
+      mockProcessExit()
+      expect(() => {
+        addCommand(["admin-shell"], testDir, { block: true, withSuggested: true, json: true })
+      }).toThrow("process.exit(0)")
+
+      const result = getJsonOutput() as {
+        resolved: string[]
+        suggested?: string[]
+      }
+      // Now breadcrumb is resolved, so nothing is left to suggest
+      expect(result.resolved).toContain("breadcrumb")
+      expect(result.suggested).toBeUndefined()
     })
 
     it("outputs success:false and exits 1 when no items specified", () => {

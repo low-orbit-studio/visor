@@ -3,6 +3,7 @@ import {
   findItem,
   resolveTransitiveDeps,
   collectDependencies,
+  collectSuggestedDeps,
 } from "../registry/resolve.js"
 import type { BundledRegistry, BundledRegistryItem } from "../registry/types.js"
 
@@ -47,6 +48,17 @@ const testRegistry: BundledRegistry = {
       registryDependencies: ["utils"],
       files: [
         { path: "components/ui/label/label.tsx", type: "registry:ui", content: "<Label />" },
+      ],
+    }),
+    makeItem({
+      name: "shell",
+      type: "registry:block",
+      dependencies: ["@loworbitstudio/visor-core"],
+      // Hard dep = utils only; label is a slot-fill suggestion (pulls Radix).
+      registryDependencies: ["utils"],
+      suggestedDependencies: ["label"],
+      files: [
+        { path: "blocks/shell/shell.tsx", type: "registry:block", content: "<Shell />" },
       ],
     }),
   ],
@@ -99,6 +111,55 @@ describe("resolveTransitiveDeps", () => {
     expect(() =>
       resolveTransitiveDeps(testRegistry, ["nonexistent"])
     ).toThrow('Registry item "nonexistent" not found.')
+  })
+
+  it("excludes suggested slot-fill deps by default", () => {
+    const items = resolveTransitiveDeps(testRegistry, ["shell"])
+    const names = items.map((i) => i.name)
+    expect(names).toContain("shell")
+    expect(names).toContain("utils")
+    // label is a suggested dep — not pulled by default
+    expect(names).not.toContain("label")
+    expect(items).toHaveLength(2)
+  })
+
+  it("includes suggested slot-fill deps when includeSuggested is true", () => {
+    const items = resolveTransitiveDeps(testRegistry, ["shell"], undefined, true)
+    const names = items.map((i) => i.name)
+    expect(names).toContain("shell")
+    expect(names).toContain("utils")
+    expect(names).toContain("label")
+  })
+
+  it("resolves transitive registry deps of a suggested dep when opted in", () => {
+    // label depends on utils (already resolved) — no dupes, and label's Radix
+    // npm dep should now be collectable.
+    const items = resolveTransitiveDeps(testRegistry, ["shell"], undefined, true)
+    const { dependencies } = collectDependencies(items)
+    expect(dependencies).toContain("@radix-ui/react-label")
+  })
+})
+
+describe("collectSuggestedDeps", () => {
+  it("returns suggested deps not already in the resolved graph", () => {
+    const items = resolveTransitiveDeps(testRegistry, ["shell"])
+    const resolvedNames = new Set(items.map((i) => i.name))
+    const suggested = collectSuggestedDeps(testRegistry, ["shell"], resolvedNames)
+    expect(suggested).toEqual(["label"])
+  })
+
+  it("returns empty when a suggested dep is already resolved", () => {
+    // Pretend label was resolved (e.g. requested alongside shell)
+    const resolvedNames = new Set(["shell", "utils", "label"])
+    const suggested = collectSuggestedDeps(testRegistry, ["shell"], resolvedNames)
+    expect(suggested).toEqual([])
+  })
+
+  it("returns empty for items with no suggested deps", () => {
+    const items = resolveTransitiveDeps(testRegistry, ["button"])
+    const resolvedNames = new Set(items.map((i) => i.name))
+    const suggested = collectSuggestedDeps(testRegistry, ["button"], resolvedNames)
+    expect(suggested).toEqual([])
   })
 })
 

@@ -46,7 +46,8 @@ export function findItem(
 export function resolveTransitiveDeps(
   registry: BundledRegistry,
   names: string[],
-  onWarning?: (msg: string) => void
+  onWarning?: (msg: string) => void,
+  includeSuggested = false
 ): BundledRegistryItem[] {
   const resolved = new Map<string, BundledRegistryItem>()
   const queue: Array<{ name: string; ancestors: Set<string> }> = names.map((n) => ({
@@ -65,11 +66,18 @@ export function resolveTransitiveDeps(
 
     resolved.set(name, item)
 
-    if (item.registryDependencies) {
+    // Hard deps (needed to render) are always walked. Suggested slot-fill deps
+    // are walked only when opted in — keeps a slot-only compose from pulling a
+    // block's example fillers and their npm trees (VI-605).
+    const walkDeps = includeSuggested
+      ? [...(item.registryDependencies ?? []), ...(item.suggestedDependencies ?? [])]
+      : item.registryDependencies
+
+    if (walkDeps) {
       const childAncestors = new Set(ancestors)
       childAncestors.add(name)
 
-      for (const dep of item.registryDependencies) {
+      for (const dep of walkDeps) {
         if (childAncestors.has(dep)) {
           // True circular: dep is an ancestor of this item
           onWarning?.(`Circular registry dependency: ${name} → ${dep}`)
@@ -81,6 +89,27 @@ export function resolveTransitiveDeps(
   }
 
   return Array.from(resolved.values())
+}
+
+/**
+ * Collect the suggested slot-fill deps declared by any of the given root items
+ * that are NOT already part of the resolved default-install graph. Used to
+ * surface an opt-in hint (`--with-suggested`) without installing them.
+ */
+export function collectSuggestedDeps(
+  registry: BundledRegistry,
+  rootNames: string[],
+  resolvedNames: Set<string>
+): string[] {
+  const suggested = new Set<string>()
+  for (const name of rootNames) {
+    const item = findItem(registry, name)
+    if (!item?.suggestedDependencies) continue
+    for (const dep of item.suggestedDependencies) {
+      if (!resolvedNames.has(dep)) suggested.add(dep)
+    }
+  }
+  return Array.from(suggested).sort()
 }
 
 export function collectDependencies(

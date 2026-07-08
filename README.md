@@ -171,6 +171,16 @@ npx visor add admin-dashboard --block
 npx visor add hero-section --block
 ```
 
+A block installs only the components it imports to render itself. Slot-driven
+blocks (e.g. `admin-shell`) also declare **suggested** slot-fill components —
+example fillers that are skipped by default so a slot-only compose stays lean.
+Pull them with `--with-suggested`:
+
+```sh
+npx visor add admin-shell --block                  # hard deps only (no Radix)
+npx visor add admin-shell --block --with-suggested # + breadcrumb, dropdown-menu, sidebar
+```
+
 | Block | CLI Name | Category |
 |-------|----------|----------|
 | Admin Dashboard | `admin-dashboard` | Admin |
@@ -481,7 +491,8 @@ npx @loworbitstudio/visor init --template nextjs            # Initialize with Ne
 npx @loworbitstudio/visor add <component>                   # Add a component, hook, or lib entry
 npx @loworbitstudio/visor add <c1> <c2> <c3>                # Add multiple at once
 npx @loworbitstudio/visor add --category <name>             # Add all items in a category
-npx @loworbitstudio/visor add <component> --block           # Add a block
+npx @loworbitstudio/visor add <component> --block           # Add a block (hard deps only)
+npx @loworbitstudio/visor add <block> --block --with-suggested # + a block's suggested slot-fill components
 npx @loworbitstudio/visor add <component> --overwrite       # Update an existing component
 npx @loworbitstudio/visor list                              # List all available components
 npx @loworbitstudio/visor list --category <name>            # List by category

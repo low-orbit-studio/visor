@@ -136,6 +136,9 @@ async function main(): Promise<void> {
       ...(item.registryDependencies
         ? { registryDependencies: item.registryDependencies }
         : {}),
+      ...(item.suggestedDependencies
+        ? { suggestedDependencies: item.suggestedDependencies }
+        : {}),
       files: bundledFiles,
     })
 
