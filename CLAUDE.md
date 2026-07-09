@@ -56,6 +56,39 @@ Reference design system: `~/Code/low-orbit/low-orbit-playbook/reference-nextjs-a
 Source components: `~/Code/kaiah/kaiah-app/packages/ui/src/components/ui/`
 Source tokens: `~/Code/blacklight/packages/design-tokens/`
 
+## Component Build Workflow
+
+### Render-vs-design self-check (default-on, keyed on `design_ref`)
+
+When a component you are building or changing has an **approved design**, you MUST render the built component and diff it against that design **before opening the PR**. This is a build-time step, not an optional checklist item — the whole point (W-111) is that a gate needing a hand-authored opt-in reproduces the "codified but never adopted" gap it was meant to close.
+
+**The intrinsic trigger is a `design_ref` on the component's `.visor.yaml`.** If a component in your diff carries `design_ref`, the self-check below is mandatory. No separate manifest, flag, or checklist item enables it — presence of the field *is* the enablement. (This makes CLAUDE.md's advisory "Design-Fidelity Before Done" ASK, which can be waived, a concrete build-time step for any component with an approved design.)
+
+**When it fires** (a component in the diff has a `design_ref`):
+
+1. **Render** the built component with the BO-66 harness across **≥2 themes × both modes**:
+
+   ```bash
+   npx tsx packages/cli/src/index.ts render <component> --theme space   --mode dark  --out .visor/renders/<component>__space__dark.png
+   npx tsx packages/cli/src/index.ts render <component> --theme space   --mode light --out .visor/renders/<component>__space__light.png
+   npx tsx packages/cli/src/index.ts render <component> --theme neutral  --mode dark  --out .visor/renders/<component>__neutral__dark.png
+   npx tsx packages/cli/src/index.ts render <component> --theme neutral  --mode light --out .visor/renders/<component>__neutral__light.png
+   ```
+
+   (Published-CLI form: `npx @loworbitstudio/visor render <component> --theme <slug> --mode <light|dark>`. Requires `playwright` + `esbuild` — optional deps; the command prints an install prompt if absent. See [`docs/cli`](./packages/docs/content/docs/cli.mdx).) Use ≥2 *contrasting* themes — a decorative theme (e.g. `space`, `blackout`) surfaces radius/surface-ramp drift that a plain theme hides.
+
+2. **Multimodal side-by-side.** `Read` the `design_ref` image **and** each rendered PNG in the same turn and inspect them together — the way the operator would. This is the load-bearing step: pixel-precise self-inspection is uniquely the model's strength (see the playbook wisdom [`self-inspect-before-approval-ping.md`](~/Code/low-orbit/low-orbit-playbook/roots/foundations/wisdom/self-inspect-before-approval-ping.md)). A green `validate:strict` is **not** proof of fidelity — token *names* lie about rendered values per theme (`--surface-subtle` reads lighter than the card in dark; `--radius-xl` balloons to 32px on decorative themes).
+
+3. **Enumerate deltas.** Walk each surface and name every mismatch against the design in these classes: **radius** (cluster/pill corner rounding), **spacing** (padding, gaps, vertical rhythm), **color** (fill, border, text, accent — especially recessed vs raised surfaces), and **alignment** (optical centering, baseline drift).
+
+4. **Fix, then re-render** until the built surface matches the design. Only then open the PR.
+
+**Rationale / prior art:** W-110 (Cited ≠ Embedded ≠ Built — an approved design accumulates three separate, non-substitutable fidelity claims; only a rendered diff proves *Built*) and W-111 (an opt-in enforcement gate reproduces the codification gap; trigger from an intrinsic signal — here, `design_ref`). Both live under `~/Code/low-orbit/low-orbit-playbook/roots/foundations/wisdom/`. This step is Visor-repo-scoped for now (not yet in the shared `lo-swarm` teammate prompt) — it generalizes once proven.
+
+**Where the `design_ref` comes from (v1):** the self-check fires only when a `design_ref` was *supplied* on the component's `.visor.yaml`. It does not (yet) hard-require a `/lo-visual-design` or `/lo-prototype` output as a precondition to *build* a component — it enforces fidelity when an approved design exists, without blocking components that have none. Point `design_ref` at the approved fragment/mockup (a repo-relative path or a URL). The `visor-yaml-design-ref` validate rule confirms it resolves; a stale reference warns.
+
+**Worked example — doc-nav (retroactive proof).** See [`docs/audits/BO-67/`](./docs/audits/BO-67/): the pre-VI-611 doc-nav rendered vs the approved design surfaces exactly the deltas the operator had to hand-catch — medium-gray `--surface-subtle` pills (should be recessed wells darker than the card in both modes), ballooned group-cluster radius (decorative themes inflate `--radius-xl` past a fixed ~12px), title-case oversized labels (should be all-caps mono a step smaller), a weak outlined active pill (should be a vivid accent fill), and group-label caps riding ~2px high off the scope dot.
+
 ## Token Rules
 
 Full rules: [`docs/token-rules.md`](./docs/token-rules.md). Key enforcement points for AI-assisted work:
