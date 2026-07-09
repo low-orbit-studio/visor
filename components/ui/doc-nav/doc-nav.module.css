@@ -10,6 +10,11 @@
 
 /* Root — the wrapping row of peer groups. */
 .root {
+  /* Accent-pop indirection (B2): the active pill / caret / hub / pinned frame
+   * all route through this single token so a consumer (DocFrame) can retint the
+   * whole nav in one place. Defaults to the theme's vivid `--accent` — not
+   * `--primary`, which reads dull on muted-primary themes such as Strata. */
+  --doc-nav-accent: var(--accent, #2563eb);
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
@@ -25,14 +30,25 @@
   padding: var(--spacing-2, 0.5rem);
   border: var(--stroke-width-thin, 1px) solid
     var(--hairline, var(--border-default, #e5e7eb));
-  border-radius: var(--radius-md, 0.5rem);
+  border-radius: var(--radius-xl, 0.75rem);
   background: var(--surface-card, #ffffff);
 }
 
-/* Pinned — the Shared group stays open; a subtle primary-tinted frame. */
+/* Pinned — the Shared group stays open; a subtle frame keyed to the group hue.
+ * Routed through overridable tokens (P5) so borderless themes (Animal / ENTR)
+ * can null the frame — set `--doc-nav-pin-border: transparent` and
+ * `--doc-nav-pin-bg: var(--surface-card)`. Default derives from the group's
+ * shared hue, not `--primary` (which read as an unwanted border on those
+ * borderless themes). */
 .groupPinned {
-  border-color: color-mix(in srgb, var(--primary, #2563eb) 32%, transparent);
-  background: color-mix(in srgb, var(--primary, #2563eb) 5%, var(--surface-card, #ffffff));
+  border-color: var(
+    --doc-nav-pin-border,
+    color-mix(in srgb, var(--doc-nav-group-accent, var(--info, #0ea5e9)) 32%, transparent)
+  );
+  background: var(
+    --doc-nav-pin-bg,
+    color-mix(in srgb, var(--doc-nav-group-accent, var(--info, #0ea5e9)) 6%, var(--surface-card, #ffffff))
+  );
 }
 
 /* Collapsed — a group reduces to a single pill-shaped chip. */
@@ -48,9 +64,10 @@
   align-items: center;
   gap: var(--spacing-2, 0.5rem);
   padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
+  font-family: var(--font-mono, ui-monospace, "SFMono-Regular", Menlo, monospace);
   font-size: var(--font-size-xs, 0.75rem);
-  font-weight: var(--font-weight-semibold, 600);
-  letter-spacing: 0.08em;
+  font-weight: var(--font-weight-bold, 700);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-secondary, #4b5563);
 }
@@ -84,23 +101,36 @@
   background: var(--surface-subtle, #f3f4f6);
 }
 
-/* Caret — recolors with the group accent. */
+/* Caret — accent-popped fill glyph (P6). */
 .caret {
   flex-shrink: 0;
-  color: var(--primary, #2563eb);
+  color: var(--doc-nav-accent, var(--accent, #2563eb));
 }
 
-/* Scope dot — a small grouping cue. Overridable via --doc-nav-group-accent. */
+/* Scope dot — a per-group grouping cue, color-coded with a soft glow (P1).
+ * `color` carries the group hue so `currentColor` drives both the fill and the
+ * glow; a consumer overrides the whole group via `--doc-nav-group-accent`.
+ * Default (product groups) is the vivid accent; pinned/appendix retint below. */
 .scopeDot {
   width: var(--spacing-2, 0.5rem);
   height: var(--spacing-2, 0.5rem);
   flex-shrink: 0;
   border-radius: var(--radius-full, 9999px);
-  background: var(--doc-nav-group-accent, var(--text-tertiary, #9ca3af));
+  color: var(--doc-nav-group-accent, var(--accent, #2563eb));
+  background: currentColor;
+  box-shadow: 0 0 var(--spacing-2, 0.5rem)
+    color-mix(in srgb, currentColor 60%, transparent);
 }
 
+/* Shared (pinned) group reads in the info hue. */
 .groupPinned .scopeDot {
-  background: var(--doc-nav-group-accent, var(--primary, #2563eb));
+  color: var(--doc-nav-group-accent, var(--info, #0ea5e9));
+}
+
+/* Appendix reads muted and un-glowed — an ad-hoc bucket, not a product. */
+.group[data-role="appendix"] .scopeDot {
+  color: var(--doc-nav-group-accent, var(--text-tertiary, #9ca3af));
+  box-shadow: none;
 }
 
 /* Group label text. */
@@ -108,7 +138,7 @@
   min-width: 0;
 }
 
-/* Trailing count badge — shown on a collapsed group. */
+/* Trailing count badge — a hairline mono pill on a collapsed group (N2). */
 .count {
   display: inline-flex;
   align-items: center;
@@ -119,7 +149,9 @@
   border: var(--stroke-width-thin, 1px) solid
     var(--hairline, var(--border-default, #e5e7eb));
   border-radius: var(--radius-full, 9999px);
-  font-size: var(--font-size-xs, 0.75rem);
+  font-family: var(--font-mono, ui-monospace, "SFMono-Regular", Menlo, monospace);
+  /* ~9px — a quarter down from the xs step, matching the design's tiny badge. */
+  font-size: calc(var(--font-size-xs, 0.75rem) * 0.75);
   font-variant-numeric: tabular-nums;
   color: var(--text-tertiary, #9ca3af);
 }
@@ -131,7 +163,7 @@
   gap: var(--spacing-1, 0.25rem);
 }
 
-/* Pill — a single doc link. */
+/* Pill — a single doc link. Mono · UPPERCASE · letter-spaced (B1). */
 .pill {
   display: inline-flex;
   align-items: center;
@@ -140,8 +172,11 @@
   border: var(--stroke-width-thin, 1px) solid transparent;
   border-radius: var(--radius-full, 9999px);
   background: var(--surface-subtle, #f3f4f6);
-  font-size: var(--font-size-sm, 0.875rem);
+  font-family: var(--font-mono, ui-monospace, "SFMono-Regular", Menlo, monospace);
+  font-size: var(--font-size-xs, 0.75rem);
   font-weight: var(--font-weight-medium, 500);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   line-height: 1;
   white-space: nowrap;
   color: var(--text-secondary, #4b5563);
@@ -166,32 +201,54 @@
   outline-offset: var(--focus-ring-offset, 2px);
 }
 
-/* Active — the current doc, resolved from currentPath. */
-.pillActive {
-  color: var(--primary, #2563eb);
-  border-color: color-mix(in srgb, var(--primary, #2563eb) 40%, transparent);
-  background: color-mix(in srgb, var(--primary, #2563eb) 10%, transparent);
+/* Shared-group pills carry the group's tint at rest (P4) — hover/active win. */
+.groupPinned .pill:not(.pillActive) {
+  color: var(--doc-nav-group-accent, var(--info, #0ea5e9));
 }
 
-/* Hub — the order-0 overview entry gets a leading accent dot. */
+.groupPinned .pill:not(.pillActive):hover {
+  color: var(--text-primary, #111827);
+}
+
+/* Active — the current doc, resolved from currentPath. Accent-popped (B2). */
+.pillActive {
+  color: var(--doc-nav-accent, var(--accent, #2563eb));
+  border-color: color-mix(
+    in srgb,
+    var(--doc-nav-accent, var(--accent, #2563eb)) 40%,
+    transparent
+  );
+  background: color-mix(
+    in srgb,
+    var(--doc-nav-accent, var(--accent, #2563eb)) 10%,
+    transparent
+  );
+}
+
+/* Hub — the group's overview entry gets a leading accent dot with a glow (N1).
+ * `color` carries the accent so `currentColor` drives fill + glow together. */
 .pillHub::before {
   content: "";
   width: calc(var(--spacing-1, 0.25rem) * 1.25);
   height: calc(var(--spacing-1, 0.25rem) * 1.25);
   flex-shrink: 0;
   border-radius: var(--radius-full, 9999px);
-  background: var(--primary, #2563eb);
+  color: var(--doc-nav-accent, var(--accent, #2563eb));
+  background: currentColor;
+  box-shadow: 0 0 var(--spacing-2, 0.5rem)
+    color-mix(in srgb, currentColor 60%, transparent);
 }
 
-/* Leading order number. */
+/* Leading order number — mono, a step under the pill (B1). */
 .pillNum {
-  font-size: var(--font-size-xs, 0.75rem);
+  font-family: var(--font-mono, ui-monospace, "SFMono-Regular", Menlo, monospace);
+  font-size: calc(var(--font-size-xs, 0.75rem) * 0.8);
   font-variant-numeric: tabular-nums;
   color: var(--text-tertiary, #9ca3af);
 }
 
 .pillActive .pillNum {
-  color: var(--primary, #2563eb);
+  color: var(--doc-nav-accent, var(--accent, #2563eb));
 }
 
 /* Label text. */

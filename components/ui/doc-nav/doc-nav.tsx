@@ -276,7 +276,7 @@ function DocNavGroup({ group, open, currentPath, onToggle }: DocNavGroupProps) {
 
   const head = (
     <>
-      <Caret className={styles.caret} aria-hidden="true" />
+      <Caret className={styles.caret} weight="fill" aria-hidden="true" />
       <span className={styles.scopeDot} aria-hidden="true" />
       <span className={styles.groupLabel}>{group.label}</span>
       {!open && <span className={styles.count}>{group.entries.length}</span>}
@@ -312,11 +312,14 @@ function DocNavGroup({ group, open, currentPath, onToggle }: DocNavGroupProps) {
 
       {open && (
         <div id={panelId} className={styles.pills}>
-          {group.entries.map((entry) => (
+          {group.entries.map((entry, index) => (
             <DocNavPill
               key={entry.href}
               entry={entry}
               active={hrefMatchesPath(entry.href, currentPath)}
+              // Hub = the group's overview entry: an explicit order-0 doc, or the
+              // lead pill of the pinned Shared set (which often starts at order 1).
+              isHub={entry.order === 0 || (group.role === "pinned" && index === 0)}
             />
           ))}
         </div>
@@ -330,11 +333,12 @@ function DocNavGroup({ group, open, currentPath, onToggle }: DocNavGroupProps) {
 interface DocNavPillProps {
   entry: DocEntry
   active: boolean
+  /** Marks the group's hub/overview entry — a leading accent dot. */
+  isHub: boolean
 }
 
-function DocNavPill({ entry, active }: DocNavPillProps) {
+function DocNavPill({ entry, active, isHub }: DocNavPillProps) {
   const external = isExternalEntry(entry)
-  const isHub = entry.order === 0
 
   return (
     <a

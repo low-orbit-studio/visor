@@ -168,6 +168,32 @@ describe("DocNav — appendix", () => {
   })
 })
 
+describe("DocNav — hub entry", () => {
+  it("marks the lead pill of the pinned Shared set as the hub", () => {
+    // Charter is order 1, not 0, but it is the first entry of the pinned group.
+    render(<DocNav docs={multiDocs} currentPath="/docs/charter.html" activeProduct="artist" />)
+    expect(screen.getByRole("link", { name: /Charter/ })).toHaveAttribute("data-hub", "true")
+    // A later Shared entry is not the hub.
+    expect(screen.getByRole("link", { name: /Data/ })).not.toHaveAttribute("data-hub")
+  })
+
+  it("marks an explicit order-0 entry as the hub", () => {
+    const withIndex: DocEntry[] = [
+      { order: 0, label: "Index", href: "/docs", group: "Planning" },
+      { order: 2, label: "CUJs", href: "/docs/cujs", group: "Planning" },
+    ]
+    render(<DocNav docs={withIndex} currentPath="/docs/cujs" defaultCollapsed={false} />)
+    expect(screen.getByRole("link", { name: /Index/ })).toHaveAttribute("data-hub", "true")
+    expect(screen.getByRole("link", { name: /CUJs/ })).not.toHaveAttribute("data-hub")
+  })
+
+  it("does not mark the lead pill of a non-pinned product group as a hub", () => {
+    // Journeys (order 2) leads the Artist group but Artist is not pinned.
+    render(<DocNav docs={multiDocs} currentPath="/docs/artist/journeys" activeProduct="artist" />)
+    expect(screen.getByRole("link", { name: /Journeys/ })).not.toHaveAttribute("data-hub")
+  })
+})
+
 describe("DocNav — single-product mode", () => {
   const singleDocs: DocEntry[] = [
     { order: 0, label: "Index", href: "/docs", group: "Planning" },
