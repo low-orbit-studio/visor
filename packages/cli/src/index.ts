@@ -36,6 +36,8 @@ import { sandboxDevCommand } from "./commands/sandbox/dev.js"
 import { sandboxApproveCommand } from "./commands/sandbox/approve.js"
 import { spawnCommand } from "./commands/spawn.js"
 import type { SpawnOptions } from "./commands/spawn.js"
+import { renderCommand } from "./commands/render.js"
+import type { RenderOptions } from "./commands/render.js"
 
 // Resolve CLI version from the package's own package.json so `visor --version`
 // matches the installed npm version. After tsup bundles into dist/index.js,
@@ -500,6 +502,24 @@ program
   .option("--json", "output structured JSON (for AI agents)")
   .action((options: SpawnOptions) => {
     spawnCommand(process.cwd(), options)
+  })
+
+program
+  .command("render")
+  .description(
+    "Render a single component to a PNG using the real emitted tokens + real theme CSS + the real component (serverless, no next dev). A per-component render-fidelity harness."
+  )
+  .argument("<component>", "component name under components/ui/ (e.g. doc-nav, stat-card)")
+  .requiredOption("--theme <slug>", "theme slug (e.g. space, neutral) — resolves packages/docs/app/<slug>-theme.css")
+  .option("--mode <mode>", "color mode: light or dark", "light")
+  .option("--state <state>", "interactive state to capture: default, hover, focus, active", "default")
+  .option("--fixture <name>", "named fixture for the component (default: 'default')")
+  .option("-o, --out <path>", "output PNG path (default: .visor/renders/<component>__<theme>__<mode>.png)")
+  .option("--width <px>", "viewport width in px", "720")
+  .option("--height <px>", "viewport height in px", "640")
+  .option("--json", "output structured JSON (for AI agents)")
+  .action(async (component: string, options: RenderOptions) => {
+    await renderCommand(component, process.cwd(), options)
   })
 
 program.parse()

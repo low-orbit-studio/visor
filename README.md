@@ -515,7 +515,14 @@ npx @loworbitstudio/visor theme sync                        # Re-generate CSS fo
 
 # Fonts
 npx @loworbitstudio/visor fonts add <path> --org <name>     # Upload woff2 to Visor Fonts CDN
+
+# Render fidelity
+npx @loworbitstudio/visor render <component> --theme <slug> --mode <light|dark>  # Render one real component to a PNG (serverless)
+npx @loworbitstudio/visor render doc-nav --theme space --mode dark               # Real tokens + real theme CSS + real component
+npx @loworbitstudio/visor render button --theme neutral --state hover            # Capture an interactive state
 ```
+
+`visor render` is a per-component render-fidelity harness: it composes the **real** emitted tokens + **real** per-theme CSS (with correct `@layer`/mode scoping) + the **real** esbuild-bundled component, then screenshots it with Playwright — no `next dev`. A computed-style probe confirms the themed surface resolved to its mapped value, not the raw primitive. `playwright` and `esbuild` are lazy/optional deps (not bundled into the CLI); the command prompts to install them if missing.
 
 All commands support `--json` for structured output (useful for AI agents and scripts).
 
