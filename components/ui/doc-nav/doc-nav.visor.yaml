@@ -58,6 +58,13 @@ dependencies:
 
 preview_url: "https://visor.loworbit.studio/docs/components/navigation/doc-nav"
 
+# The operator-approved design this component must match (VI-611 polished doc-nav
+# to it). Its presence is the default-on trigger for the render-vs-design
+# self-check in the Component Build Workflow (CLAUDE.md); see docs/audits/BO-67/
+# for the retroactive proof — the pre-VI-611 render vs this reference surfaces the
+# gray-pill / radius / type / alignment deltas the operator had to hand-catch.
+design_ref: "docs/audits/BO-67/doc-nav-approved.png"
+
 example: |
   import { DocNav, type DocEntry } from '@/components/ui/doc-nav/doc-nav'
 

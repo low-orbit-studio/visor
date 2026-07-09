@@ -85,6 +85,11 @@ example: |
   </Button>
 ```
 
+**Optional visual-reference fields.** Two more keys carry visual context, and they are *not* interchangeable:
+
+- `preview_url` — an advisory link to the component's live docs preview, for multimodal agents browsing the catalog. Every component *should* eventually have one, so the `visor-yaml-preview-url` rule warns when it is missing.
+- `design_ref` — a repo-relative path or URL to the **operator-approved design** fragment/mockup the component was built against. It is **conditional**: only components built to an approved design carry it, so absence is silent (the `visor-yaml-design-ref` rule warns only when a *present* reference fails to resolve). Its presence is the intrinsic, default-on trigger (W-111) for the mandatory render-vs-design self-check in Visor's [Component Build Workflow](../CLAUDE.md) — the built component is rendered via `visor render` across ≥2 themes × both modes and diffed against `design_ref` before the PR. `preview_url` shows what the component *is*; `design_ref` is what it *must match*.
+
 ### 2. Single Registry Manifest
 
 One `visor-manifest.json` file that an agent can load to understand the entire catalog at a glance. Auto-generated from the individual component metadata files.

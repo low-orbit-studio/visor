@@ -16,7 +16,7 @@ import { themeYamlExists } from './rules/theme-yaml-exists.js';
 import { themeYamlValid } from './rules/theme-yaml-valid.js';
 import { noHardcodedColors } from './rules/no-hardcoded-colors.js';
 import { visorYamlExists } from './rules/visor-yaml-exists.js';
-import { visorYamlComplete, visorYamlPreviewUrl } from './rules/visor-yaml-complete.js';
+import { visorYamlComplete, visorYamlPreviewUrl, visorYamlDesignRef } from './rules/visor-yaml-complete.js';
 import { testFileExists } from './rules/test-file-exists.js';
 import { cssModuleExists } from './rules/css-module-exists.js';
 import { registryEntryExists } from './rules/registry-entry-exists.js';
@@ -74,6 +74,7 @@ const rules: Rule[] = [
   visorYamlExists,
   visorYamlComplete,
   visorYamlPreviewUrl,
+  visorYamlDesignRef,
   crossPlatformManifestSync,
   flutterCssTokenSync,
   schemaCopiesSync,
