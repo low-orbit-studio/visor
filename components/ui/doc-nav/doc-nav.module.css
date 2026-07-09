@@ -115,7 +115,10 @@
   border: var(--stroke-width-thin, 1px) solid
     var(--hairline, var(--border-default, #e5e7eb));
   border-radius: var(--radius-full, 9999px);
-  background: var(--surface-subtle, #f3f4f6);
+  /* The chip reads as the group's card surface (matching the design's chip-bg),
+   * not a lighter subtle surface — `--surface-subtle` resolves as a mid-gray in
+   * dark themes. */
+  background: var(--surface-card, #111827);
 }
 
 /* Caret — accent-popped fill glyph (P6). */
@@ -185,7 +188,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-2, 0.5rem);
-  padding: var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem);
+  padding: calc(var(--spacing-1, 0.25rem) * 1.5) var(--spacing-3, 0.75rem);
   border: var(--stroke-width-thin, 1px) solid transparent;
   border-radius: var(--radius-full, 9999px);
   background: var(--doc-nav-pill-bg, var(--surface-card, #111827));
