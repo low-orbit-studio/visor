@@ -1,0 +1,82 @@
+name: DocNav
+description: A manifest-driven, grouped/collapsible, multi-product-aware documentation navigation. Renders peer collapsible groups from a manifest slice — a pinned Shared set, accordion product groups (one open at a time), and an Appendix bucket for ad-hoc docs — resolving the active pill from the current path. The group row wraps and is never an overflow-x scroll strip. Replaces the vanilla-JS doc nav (nav.js).
+extends: HTMLElement
+category: navigation
+
+when_to_use:
+  - A documentation shell that must group docs by product/section and collapse them, driven by a docs manifest
+  - Multi-product doc sets where a pinned Shared group sits beside accordion product groups (switching product = expanding its group)
+  - Ad-hoc/one-off docs with no canonical slot that should tuck into an Appendix instead of widening the row
+  - Any doc nav that must never run off the edge — groups wrap, they do not scroll horizontally
+
+when_not_to_use:
+  - The surrounding themed page shell, sticky header, and brand/logo slot (use DocFrame — VI-609)
+  - In-app section sub-navigation with count pills across a detail view (use SectionNav)
+  - Top-level site navigation with brand + actions (use Navbar)
+  - A single expandable section (use Collapsible) or a grouped side rail (use Sidebar)
+
+why: >
+  The doc nav is moving off vanilla JS (nav.js) into Visor. The old shell rendered
+  a flat ~34-pill wall with no grouping, tiering, or product concept. DocNav turns a
+  pre-filtered manifest slice into peer, collapsible groups: the Shared group is pinned
+  so foundational docs never leave view, product groups run as an accordion (opening one
+  collapses the sibling via the parent-controlled activeProduct), empty groups auto-hide,
+  and slot-less/group-less docs (order >= 10, no group/scope) collapse into an Appendix.
+  Active state and aria-current resolve from currentPath. Everything is derived from the
+  manifest and themed entirely by Visor tokens, so multi-product handling falls out of
+  props rather than hand-rolled JS.
+
+variants: {}
+
+props:
+  - name: docs
+    type: "DocEntry[]"
+    required: true
+    description: The manifest slice for the active view (Shared + product-scoped), pre-filtered by DocFrame. Each DocEntry carries order, label, href, and optional kind/scope/group/tier/external.
+  - name: currentPath
+    type: string
+    required: true
+    description: The active route (or static location.pathname). Resolves the active pill (with aria-current="page") and auto-expands its group.
+  - name: activeProduct
+    type: string
+    description: Which product group is open (the accordion). Absent → single-product mode with no accordion.
+  - name: onProductToggle
+    type: "(id: string) => void"
+    description: Accordion callback — the parent expands a product group and collapses the sibling by swapping activeProduct. Absent → groups render as plain, independently expandable links (static-doc mode).
+  - name: pinnedGroups
+    type: "string[]"
+    default: '["shared"]'
+    description: Group ids that stay open regardless of the accordion.
+  - name: defaultCollapsed
+    type: boolean
+    default: "true"
+    description: Whether non-active, non-pinned groups start collapsed — the anti-wall rule.
+
+dependencies:
+  - "@phosphor-icons/react"
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.loworbit.studio/docs/components/navigation/doc-nav"
+
+example: |
+  import { DocNav, type DocEntry } from '@/components/ui/doc-nav/doc-nav'
+
+  const docs: DocEntry[] = [
+    { order: 0, label: 'Overview', href: '/docs', group: 'Shared' },
+    { order: 1, label: 'Charter', href: '/docs/charter', group: 'Shared' },
+    { order: 3, label: 'Screens', href: '/docs/artist-screens', scope: ['artist'], group: 'Artist' },
+    { order: 2, label: 'Journeys', href: '/docs/pro-journeys', scope: ['pro'], group: 'Pro' },
+    { order: 11, label: 'Q3 Audit', href: '/docs/q3-audit' },
+  ]
+
+  export function Nav({ product }: { product: string }) {
+    const [open, setOpen] = React.useState(product)
+    return (
+      <DocNav
+        docs={docs}
+        currentPath="/docs/artist-screens"
+        activeProduct={open}
+        onProductToggle={setOpen}
+      />
+    )
+  }
