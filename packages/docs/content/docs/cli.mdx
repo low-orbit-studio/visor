@@ -567,6 +567,44 @@ npx @loworbitstudio/visor spawn --list-blessed
 VISOR_BLESSED_DIR=~/my/blessed npx @loworbitstudio/visor spawn --list-blessed
 ```
 
+### `visor render`
+
+Render **one real component** to a PNG using the **real emitted tokens**, the **real per-theme CSS**, and the **real component `.tsx`** — fully serverless (no `next dev`). Fast enough to run per-component per-PR as a render-fidelity gate.
+
+```bash
+npx @loworbitstudio/visor render doc-nav --theme space --mode dark
+npx @loworbitstudio/visor render stat-card --theme neutral --mode light --out shot.png
+```
+
+The harness composes CSS in the correct cascade order — `packages/tokens/dist/tokens.css` → the theme's real per-mode CSS from `packages/docs/app/<slug>-theme.css` (which self-declares its `@layer` order and scopes each mode by ancestor) — then esbuild-bundles the real component with a representative fixture and its default variant classes, mounts it under the theme scope, and screenshots it with Playwright.
+
+Because the theme class lives on `#theme-scope` (not `<html>`), a **computed-style probe** reads `--surface-card` from both the themed element and the raw `<html>` root and confirms the themed surface resolved to its **mapped** value, not the base primitive — the exact drift class (medium-gray pill, ballooned group radius) that otherwise has to be caught by hand:
+
+```
+✓ Rendered doc-nav · space · dark
+  → .visor/renders/doc-nav__space__dark.png (44.9 KB)
+
+✓ Themed --surface-card resolved to #0e0e18 (base primitive: #111827) — theme mapping applied.
+```
+
+#### Options
+
+| Flag | Description |
+|------|-------------|
+| `--theme <slug>` | **Required.** Theme slug (e.g. `space`, `neutral`) — resolves `packages/docs/app/<slug>-theme.css` |
+| `--mode <mode>` | Color mode: `light` (default) or `dark` |
+| `--state <state>` | Interactive state to capture: `default`, `hover`, `focus`, or `active` |
+| `--fixture <name>` | Named fixture for the component (default: `default`) |
+| `--out <path>` | Output PNG path (default: `.visor/renders/<component>__<theme>__<mode>.png`) |
+| `--width <px>` / `--height <px>` | Viewport size (defaults: `720` × `640`) |
+| `--json` | Output structured JSON (including the computed-style `probe`) for AI agents |
+
+**Optional dependencies.** `visor render` needs `playwright` and `esbuild`. They are **not** bundled into the CLI — so consumers who never render pay no install-size cost — and are loaded lazily only when the command runs. If either is absent, the command prints a clear install prompt:
+
+```bash
+npm install -D playwright esbuild && npx playwright install chromium
+```
+
 ## Typical Workflow
 
 ```bash
