@@ -153,18 +153,31 @@ describe('isAllowlisted', () => {
 // ---------------------------------------------------------------------------
 
 describe('real-browser resolution reproduces the pre-VI-612 finding', () => {
+  // Minimal structural type for the slice of Playwright this test drives —
+  // avoids depending on `playwright`'s published types (optional browser dep).
+  interface BrowserLike {
+    newContext(opts: { colorScheme: 'light' | 'dark' }): Promise<{
+      newPage(): Promise<{
+        setContent(html: string, opts: { waitUntil: 'load' }): Promise<void>;
+        evaluate(expression: string): Promise<unknown>;
+      }>;
+      close(): Promise<void>;
+    }>;
+    close(): Promise<void>;
+  }
+
   const cwd = process.cwd();
   const themeCssPath = resolve(cwd, 'packages/docs/app/neutral-theme.css');
   const tokensCssPath = resolve(cwd, 'packages/tokens/dist/tokens.css');
   const docNavCssPath = resolve(cwd, 'components/ui/doc-nav/doc-nav.module.css');
 
-  let browser: any = null;
+  let browser: BrowserLike | null = null;
 
   beforeAll(async () => {
     if (!existsSync(themeCssPath)) return;
     for (const mod of ['playwright', '@playwright/test']) {
       try {
-        const { chromium } = (await import(mod)) as { chromium: { launch: () => Promise<unknown> } };
+        const { chromium } = (await import(mod)) as { chromium: { launch: () => Promise<BrowserLike> } };
         browser = await chromium.launch();
         break;
       } catch {

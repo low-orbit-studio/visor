@@ -1,10 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { resolve, join } from 'node:path';
-import {
-  resolveThemeCssFile,
-  resolveTokensCssFile,
-} from '../../packages/cli/src/commands/render.js';
+import { resolveTokensCssFile } from '../../packages/cli/src/commands/render.js';
 import type { Rule, RuleResult } from './types.js';
 
 /**
@@ -212,10 +209,31 @@ export function isAllowlisted(
 // Browser resolution — the real getComputedStyle path (reuses BO-66's compose)
 // ---------------------------------------------------------------------------
 
-async function loadPlaywright(): Promise<any | null> {
+/**
+ * The slice of Playwright's API this rule drives. Declared structurally so the
+ * rule does not depend on `playwright`'s published types — it is an optional,
+ * browser-only dependency the rule skips gracefully when absent (W-111).
+ */
+interface ProbePage {
+  setContent(html: string, opts: { waitUntil: 'load' }): Promise<void>;
+  evaluate(expression: string): Promise<unknown>;
+}
+interface ProbeContext {
+  newPage(): Promise<ProbePage>;
+  close(): Promise<void>;
+}
+interface ProbeBrowser {
+  newContext(opts: { colorScheme: 'light' | 'dark' }): Promise<ProbeContext>;
+  close(): Promise<void>;
+}
+interface PlaywrightModule {
+  chromium?: { launch(): Promise<ProbeBrowser> };
+}
+
+async function loadPlaywright(): Promise<PlaywrightModule | null> {
   for (const mod of ['playwright', '@playwright/test']) {
     try {
-      return await import(mod);
+      return (await import(mod)) as PlaywrightModule;
     } catch {
       /* try next */
     }
@@ -325,7 +343,7 @@ export const tokenResolutionTransparency: Rule = {
       }),
     );
 
-    let browser: any;
+    let browser: ProbeBrowser;
     try {
       browser = await playwright.chromium.launch();
     } catch {
