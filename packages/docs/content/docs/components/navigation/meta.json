@@ -5,6 +5,7 @@
   "pages": [
     "breadcrumb",
     "command",
+    "doc-frame",
     "doc-nav",
     "menubar",
     "navbar",

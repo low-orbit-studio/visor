@@ -1,0 +1,126 @@
+/* DocFrame — the themed doc-page shell that wraps DocNav.
+ *
+ * A sticky header (a flexible brand/logo slot + the DocNav slot) above a
+ * content wrapper (the doc as children). The header sticks to the page scroll
+ * so the brand + nav never leave view. Theme-agnostic: every value references a
+ * CSS custom property token, so the shell adopts the active project theme.
+ *
+ * No ancestor sets overflow: hidden/auto — that would create a scroll container
+ * and break the viewport-anchored sticky header.
+ */
+
+/* Shell root — a centered, max-width column. */
+.frame {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  max-width: var(--doc-frame-max-width, 75rem);
+  margin-inline: auto;
+  background: var(--surface-page, #ffffff);
+  color: var(--text-primary, #111827);
+}
+
+/* Sticky chrome — the brand row + nav row. Opaque background so scrolled
+ * content never bleeds through. Sticks to the nearest scroll ancestor (the
+ * page/viewport). */
+.chrome {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3, 0.75rem);
+  padding: var(--spacing-3, 0.75rem) var(--spacing-5, 1.25rem);
+  background: var(--surface-card, #ffffff);
+  border-bottom: var(--stroke-width-thin, 1px) solid
+    var(--hairline, var(--border-default, #e5e7eb));
+}
+
+/* Brand row — brand/logo slot on the left, flexible spacer on the right. */
+.headerRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4, 1rem);
+  flex-wrap: wrap;
+}
+
+.brandSlot {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+/* Nav row — holds the DocNav slot. */
+.navRow {
+  display: flex;
+  min-width: 0;
+}
+
+/* Content wrapper — the doc, as children. */
+.content {
+  flex: 1 1 auto;
+  padding: var(--spacing-6, 1.5rem) var(--spacing-5, 1.25rem)
+    var(--spacing-8, 2rem);
+}
+
+/* ─── brand slot ─────────────────────────────────────────────────────────── */
+
+/* Wraps the theme-logo layer + the text wordmark. */
+.brand {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  min-width: 0;
+}
+
+/* Text wordmark — the resting/fallback brand. Mode-adaptive via --text-primary. */
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: var(--font-weight-bold, 700);
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  color: var(--text-primary, #111827);
+}
+
+/* Theme-logo layer — the active theme's brand logo SVG (mode-aware via the
+ * --brand-logo custom property). Hidden until the client effect confirms the
+ * theme ships one, so the resting state is always the visible wordmark. */
+.themeLogo {
+  display: none;
+  height: var(--doc-frame-logo-height, var(--spacing-5, 1.25rem));
+  aspect-ratio: var(--brand-logo-aspect-ratio, 3 / 1);
+  background-image: var(--brand-logo);
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: contain;
+}
+
+/* When the theme provides --brand-logo, show the image and drop the wordmark. */
+.brand[data-theme-logo] .themeLogo {
+  display: inline-block;
+}
+
+.brand[data-theme-logo] .wordmark {
+  display: none;
+}
+
+/* ─── mobile ─────────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .chrome {
+    padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
+  }
+
+  .content {
+    padding: var(--spacing-5, 1.25rem) var(--spacing-4, 1rem)
+      var(--spacing-6, 1.5rem);
+  }
+}

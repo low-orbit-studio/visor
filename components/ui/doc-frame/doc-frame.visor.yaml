@@ -1,0 +1,81 @@
+name: DocFrame
+description: The themed doc-page shell that wraps DocNav. A sticky header with a flexible brand/logo slot, the DocNav slot, and a content wrapper for the doc. Reads a single docs manifest, derives the active product, and passes the slice + active-state down to DocNav. Themed entirely by Visor tokens. Replaces the vanilla-JS doc shell (nav.js + docs.css) on the React/route track.
+extends: HTMLDivElement
+category: navigation
+
+when_to_use:
+  - The surrounding themed page shell for a documentation site — sticky header, brand/logo slot, and content wrapper around a manifest-driven DocNav
+  - A doc host that must theme its whole chrome from Visor tokens and adopt the active project theme without modification
+  - A brand/logo slot that resolves an explicit logo, then the active theme's mode-aware brand logo, then a text wordmark
+  - Multi-product doc sets where the frame derives the active product from the route and drives the DocNav accordion
+
+when_not_to_use:
+  - The nav internals themselves — the peer groups, accordion, pinned Shared, and Appendix (use DocNav — rendered in the slot)
+  - Top-level site navigation with brand and actions across an app (use Navbar)
+  - A generic app page layout or shell unrelated to docs (use Container, Stack, or a page-header composition)
+  - Manifest parsing, tiering, or routing resolution (owned upstream; DocFrame consumes the parsed manifest)
+
+why: >
+  The doc shell is leaving vanilla JS (nav.js + docs.css). DocFrame is the Visor
+  component that owns the page: theme tokens, a sticky header with a flexible
+  brand/logo slot, the DocNav slot, and the content wrapper (the doc as children).
+  It reads the single manifest, resolves the product roster (explicit or inferred
+  from doc scopes), seeds the open accordion product from the current route, and
+  passes the docs slice + active-state down to DocNav. The brand slot resolves in
+  order — an explicit logo node, then the active theme's brand logo SVG (mode-aware
+  via the --brand-logo custom property, upgraded client-side so the resting state is
+  always a visible text wordmark), then the manifest brand text. The header sticks to
+  the page scroll so brand + nav never leave view, and no ancestor clips it. Everything
+  is themed by Visor tokens, so the shell re-themes with the project without changes.
+
+variants: {}
+
+props:
+  - name: manifest
+    type: DocsManifest
+    required: true
+    description: The parsed manifest (docs[], optional products[], optional brand text, optional dispositions) — the single input everything derives from.
+  - name: children
+    type: React.ReactNode
+    required: true
+    description: The doc content, rendered in the content wrapper below the nav.
+  - name: logo
+    type: React.ReactNode
+    description: The brand slot. Any node — an <img> of an SVG, an inline <svg>, or a full component. Resolution order — explicit logo → the active theme's brand logo SVG (mode-aware via --brand-logo) → the manifest brand text.
+  - name: activeProduct
+    type: string
+    description: Which product group is expanded (the accordion). Defaults to the route's product, else the first product in the roster. Absent roster → single-product mode.
+  - name: currentPath
+    type: string
+    description: The active route for active-state. Next consumers pass usePathname(); a static page passes location.pathname. Defaults to window.location.pathname in the browser, or "/" during SSR.
+  - name: theme
+    type: string
+    description: A Visor theme class name applied to the shell root, scoping all doc-shell CSS variables. Defaults to the app's ambient theme.
+
+dependencies:
+  - "@phosphor-icons/react"
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.loworbit.studio/docs/components/navigation/doc-frame"
+
+example: |
+  import { DocFrame, type DocsManifest } from '@/components/ui/doc-frame/doc-frame'
+
+  const manifest: DocsManifest = {
+    brand: 'Blacklight',
+    products: [{ id: 'artist' }, { id: 'pro' }],
+    docs: [
+      { order: 1, label: 'Charter', href: '/docs/charter.html', group: 'Shared' },
+      { order: 3, label: 'Screens', href: '/docs/artist/screens', scope: ['artist'], group: 'Artist' },
+      { order: 2, label: 'Journeys', href: '/docs/pro/journeys', scope: ['pro'], group: 'Pro' },
+      { order: 11, label: 'Q3 Audit', href: '/docs/q3-audit.html' },
+    ],
+  }
+
+  export function Shell({ children }: { children: React.ReactNode }) {
+    return (
+      <DocFrame manifest={manifest} currentPath="/docs/artist/screens">
+        {children}
+      </DocFrame>
+    )
+  }

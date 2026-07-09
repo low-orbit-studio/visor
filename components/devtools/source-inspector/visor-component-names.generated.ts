@@ -182,6 +182,8 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "DialogPortal",
   "DialogTitle",
   "DialogTrigger",
+  "DocFrame",
+  "DocFrameBrand",
   "DocNav",
   "DocNavGroup",
   "DocNavPill",
