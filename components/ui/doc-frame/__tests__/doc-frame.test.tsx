@@ -311,12 +311,12 @@ describe("DocFrame — group color-coding + borderless", () => {
     )
   })
 
-  it("auto-detects borderless for a known borderless theme", () => {
+  it("does not infer borderless from the theme name (no hardcoded private slugs)", () => {
     render(
       <DocFrame
         manifest={manifest}
         currentPath="/docs/artist/screens"
-        theme="entr-theme"
+        theme="some-theme"
       >
         <p>Body</p>
       </DocFrame>
@@ -324,10 +324,10 @@ describe("DocFrame — group color-coding + borderless", () => {
     const frame = document.querySelector(
       '[data-slot="doc-frame"]'
     ) as HTMLElement
-    expect(frame).toHaveAttribute("data-borderless")
-    expect(frame.style.getPropertyValue("--doc-nav-pin-border")).toBe(
-      "transparent"
-    )
+    // Borderless is never inferred from a theme name — that would bake (and leak)
+    // private theme slugs into the public bundle. It comes only from the
+    // `borderless` prop or the theme's own `--doc-nav-pin-border` token.
+    expect(frame).not.toHaveAttribute("data-borderless")
   })
 
   it("stays bordered for a bordered theme unless forced", () => {

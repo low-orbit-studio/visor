@@ -120,9 +120,9 @@ export interface DocFrameProps
   /**
    * Force the borderless treatment — null the pinned Shared group's frame
    * (`--doc-nav-pin-border: transparent`) and settle its fill onto the card
-   * surface, for borderless themes (Animal / ENTR) that carry structure from
-   * surface contrast, not borders. Auto-detected from `theme` for the known
-   * borderless set; pass explicitly when the theme is applied by an ancestor.
+   * surface, for themes that carry structure from surface contrast, not borders.
+   * A theme that is borderless by design nulls the token in its own CSS; this
+   * prop is the per-instance escape hatch.
    */
   borderless?: boolean
   /** The doc content, rendered in the content wrapper below the nav. */
@@ -130,13 +130,6 @@ export interface DocFrameProps
 }
 
 // ─── constants ─────────────────────────────────────────────────────────────────
-
-/**
- * Themes that carry no borders by design (structure from surface contrast).
- * The pinned Shared group's derived tint reads as an unwanted frame on these,
- * so DocFrame nulls it. Overridable per-instance via the `borderless` prop.
- */
-const BORDERLESS_THEMES = new Set(["animal-theme", "entr-theme"])
 
 /**
  * Default per-group nav accents. DocNav already resolves shared → --info,
@@ -312,10 +305,11 @@ const DocFrame = React.forwardRef<HTMLDivElement, DocFrameProps>(
 
     const resolvedLogo = logo ?? <DocFrameBrand brand={manifest.brand} />
 
-    // Borderless themes drop the pinned-group frame. Auto-detected from `theme`;
-    // `borderless` overrides (e.g. when the theme is applied by an ancestor).
-    const isBorderless =
-      borderless ?? (theme ? BORDERLESS_THEMES.has(theme) : false)
+    // Borderless drops the pinned-group frame via `--doc-nav-pin-border`. Set it
+    // explicitly with the `borderless` prop; a theme that is borderless by design
+    // nulls the token in its own CSS rather than the component hardcoding (and
+    // leaking) private theme names into the public bundle.
+    const isBorderless = borderless ?? false
 
     // Per-group nav accents → DocNav's `--doc-nav-group-accent` hook. Rendered
     // as a frame-scoped <style> keyed to this instance so it never leaks to a
