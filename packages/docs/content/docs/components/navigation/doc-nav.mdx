@@ -1,0 +1,78 @@
+---
+title: Doc Nav
+description: A manifest-driven, grouped/collapsible, multi-product-aware documentation navigation — a pinned Shared set beside accordion product groups and an Appendix for ad-hoc docs. Copy it into your project and own it completely.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { DocNavDemo } from '@/components/ui/doc-nav-demo';
+
+## Basic
+
+<ComponentPreview
+  title="Peer groups — pinned Shared, accordion products, and an Appendix"
+  code={"<DocNav\n  docs={docs}\n  currentPath=\"/docs/artist/screens\"\n  activeProduct={product}\n  onProductToggle={setProduct}\n/>"}
+>
+  <DocNavDemo />
+</ComponentPreview>
+
+## When to use
+
+Use `DocNav` for a **documentation shell** that groups docs by product or section and collapses them, all driven by a docs manifest. It turns a pre-filtered manifest slice into **peer, collapsible groups**: a pinned **Shared** set that never leaves view, **accordion product groups** (opening one collapses the sibling), and an **Appendix** bucket for ad-hoc docs. The group row **wraps** — it is never an `overflow-x` scroll strip.
+
+This is distinct from [`SectionNav`](/docs/components/navigation/section-nav) (in-app section sub-navigation with count pills) and [`Navbar`](/docs/components/navigation/navbar) (top-level site navigation with brand and actions). Reach for `DocNav` when you are rendering a docs index from a manifest. The surrounding themed page shell, sticky header, and brand/logo slot are the sibling `DocFrame` component.
+
+## Anatomy
+
+Each `DocEntry` in `docs` carries an `order`, a `label`, an `href`, and optional `kind` / `scope` / `group` / `tier` / `external` fields. `DocNav` derives the groups:
+
+- **Shared / pinned** — groups whose id is in `pinnedGroups` (default `["shared"]`) stay open regardless of the accordion.
+- **Product groups** — accordion peers driven by `activeProduct`; opening one collapses the sibling. Toggling calls `onProductToggle(id)` so the parent can swap the open product.
+- **Appendix** — any doc with no `group`, no `scope`, and `order >= 10` collapses into an Appendix at the tail. A lone ad-hoc doc renders inline; two or more collapse.
+- **Auto-hide** — a group with zero docs in the slice never renders.
+
+The active pill (and its group's auto-expand) resolve from `currentPath` versus each entry's `href`, and the active link is marked `aria-current="page"`. External entries badge and open in a new tab.
+
+## Single-product mode
+
+Omit `activeProduct` (and `onProductToggle`) and the nav **degrades to one grouped row** with no accordion — the drop-in path for single-product projects. Groups become plain, independently expandable links.
+
+```tsx
+<DocNav docs={docs} currentPath="/docs/cujs" defaultCollapsed={false} />
+```
+
+## Installation
+
+```bash
+npx visor add doc-nav
+```
+
+## Usage
+
+```tsx
+import * as React from 'react';
+import { DocNav, type DocEntry } from '@/components/ui/doc-nav/doc-nav';
+
+const docs: DocEntry[] = [
+  { order: 1, label: 'Charter', href: '/docs/charter.html', group: 'Shared' },
+  { order: 3, label: 'Screens', href: '/docs/artist/screens', scope: ['artist'], group: 'Artist' },
+  { order: 2, label: 'Journeys', href: '/docs/pro/journeys', scope: ['pro'], group: 'Pro' },
+  { order: 11, label: 'Q3 Audit', href: '/docs/q3-audit.html' },
+];
+
+export function Nav() {
+  const [product, setProduct] = React.useState('artist');
+  return (
+    <DocNav
+      docs={docs}
+      currentPath="/docs/artist/screens"
+      activeProduct={product}
+      onProductToggle={setProduct}
+    />
+  );
+}
+```
+
+## API Reference
+
+<PropsTable component="doc-nav" />

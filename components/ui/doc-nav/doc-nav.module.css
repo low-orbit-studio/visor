@@ -1,0 +1,219 @@
+/* DocNav — manifest-driven, grouped/collapsible doc navigation.
+ *
+ * Renders peer, collapsible groups from a manifest slice: a pinned Shared set,
+ * accordion product groups (one open at a time), and an Appendix bucket for
+ * ad-hoc docs. The group row wraps (flex-wrap) and is NEVER an overflow-x
+ * scroll strip — the run-off-the-edge defect this component exists to kill.
+ *
+ * Theme-agnostic: every value references a CSS custom property token.
+ */
+
+/* Root — the wrapping row of peer groups. */
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--spacing-2, 0.5rem);
+  /* Deliberately no overflow-x: groups wrap down, never scroll sideways. */
+}
+
+/* Group — a bordered, surface-backed cluster: header + pill row. */
+.group {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+  padding: var(--spacing-2, 0.5rem);
+  border: var(--stroke-width-thin, 1px) solid
+    var(--hairline, var(--border-default, #e5e7eb));
+  border-radius: var(--radius-md, 0.5rem);
+  background: var(--surface-card, #ffffff);
+}
+
+/* Pinned — the Shared group stays open; a subtle primary-tinted frame. */
+.groupPinned {
+  border-color: color-mix(in srgb, var(--primary, #2563eb) 32%, transparent);
+  background: color-mix(in srgb, var(--primary, #2563eb) 5%, var(--surface-card, #ffffff));
+}
+
+/* Collapsed — a group reduces to a single pill-shaped chip. */
+.groupCollapsed {
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+}
+
+/* Header — the group label row. As a chip when collapsed, plain when open. */
+.head {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-semibold, 600);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary, #4b5563);
+}
+
+/* Button variant — collapsible group heads are clickable. */
+.headButton {
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  transition: color var(--motion-duration-fast, 150ms)
+    var(--motion-easing-standard, ease);
+}
+
+.headButton:hover {
+  color: var(--text-primary, #111827);
+}
+
+.headButton:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid
+    var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+/* Collapsed group head — reads as a resting chip. */
+.groupCollapsed .head {
+  border: var(--stroke-width-thin, 1px) solid
+    var(--hairline, var(--border-default, #e5e7eb));
+  border-radius: var(--radius-full, 9999px);
+  background: var(--surface-subtle, #f3f4f6);
+}
+
+/* Caret — recolors with the group accent. */
+.caret {
+  flex-shrink: 0;
+  color: var(--primary, #2563eb);
+}
+
+/* Scope dot — a small grouping cue. Overridable via --doc-nav-group-accent. */
+.scopeDot {
+  width: var(--spacing-2, 0.5rem);
+  height: var(--spacing-2, 0.5rem);
+  flex-shrink: 0;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--doc-nav-group-accent, var(--text-tertiary, #9ca3af));
+}
+
+.groupPinned .scopeDot {
+  background: var(--doc-nav-group-accent, var(--primary, #2563eb));
+}
+
+/* Group label text. */
+.groupLabel {
+  min-width: 0;
+}
+
+/* Trailing count badge — shown on a collapsed group. */
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: var(--spacing-4, 1rem);
+  padding: 0 calc(var(--spacing-1, 0.25rem) * 1.5);
+  border: var(--stroke-width-thin, 1px) solid
+    var(--hairline, var(--border-default, #e5e7eb));
+  border-radius: var(--radius-full, 9999px);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary, #9ca3af);
+}
+
+/* Pill row — wraps within the group. */
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-1, 0.25rem);
+}
+
+/* Pill — a single doc link. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  padding: var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem);
+  border: var(--stroke-width-thin, 1px) solid transparent;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--surface-subtle, #f3f4f6);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--text-secondary, #4b5563);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--motion-duration-fast, 150ms)
+      var(--motion-easing-standard, ease),
+    border-color var(--motion-duration-fast, 150ms)
+      var(--motion-easing-standard, ease),
+    background-color var(--motion-duration-fast, 150ms)
+      var(--motion-easing-standard, ease);
+}
+
+.pill:hover {
+  color: var(--text-primary, #111827);
+  border-color: var(--hairline, var(--border-default, #e5e7eb));
+}
+
+.pill:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid
+    var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* Active — the current doc, resolved from currentPath. */
+.pillActive {
+  color: var(--primary, #2563eb);
+  border-color: color-mix(in srgb, var(--primary, #2563eb) 40%, transparent);
+  background: color-mix(in srgb, var(--primary, #2563eb) 10%, transparent);
+}
+
+/* Hub — the order-0 overview entry gets a leading accent dot. */
+.pillHub::before {
+  content: "";
+  width: calc(var(--spacing-1, 0.25rem) * 1.25);
+  height: calc(var(--spacing-1, 0.25rem) * 1.25);
+  flex-shrink: 0;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--primary, #2563eb);
+}
+
+/* Leading order number. */
+.pillNum {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.pillActive .pillNum {
+  color: var(--primary, #2563eb);
+}
+
+/* Label text. */
+.pillLabel {
+  min-width: 0;
+}
+
+/* External-link badge. */
+.pillExternal {
+  flex-shrink: 0;
+  color: var(--text-tertiary, #9ca3af);
+}
+
+/* Visually-hidden text for assistive technology. */
+.srOnly {
+  position: absolute;
+  width: var(--stroke-width-thin, 1px);
+  height: var(--stroke-width-thin, 1px);
+  padding: 0;
+  margin: calc(-1 * var(--stroke-width-thin, 1px));
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

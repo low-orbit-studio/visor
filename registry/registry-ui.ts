@@ -2191,6 +2191,28 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "doc-nav",
+    type: "registry:ui",
+    category: "navigation",
+    description:
+      "A manifest-driven, grouped/collapsible, multi-product-aware documentation navigation. Renders peer collapsible groups from a manifest slice — a pinned Shared set, accordion product groups (one open at a time), and an Appendix bucket for ad-hoc docs — resolving the active pill from currentPath. The group row wraps and is never an overflow-x scroll strip. Replaces the vanilla-JS doc nav.",
+    dependencies: [
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/doc-nav/doc-nav.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/doc-nav/doc-nav.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "key-value-list",
     type: "registry:ui",
     category: "data-display",

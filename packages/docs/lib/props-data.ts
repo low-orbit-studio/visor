@@ -545,6 +545,47 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'doc-nav': [
+    {
+      name: 'docs',
+      type: 'DocEntry[]',
+      required: true,
+      description:
+        'The manifest slice for the active view (Shared + product-scoped), pre-filtered by DocFrame. Each DocEntry carries order, label, href, and optional kind/scope/group/tier/external.',
+    },
+    {
+      name: 'currentPath',
+      type: 'string',
+      required: true,
+      description:
+        'The active route (or static location.pathname). Resolves the active pill (aria-current="page") and auto-expands its group.',
+    },
+    {
+      name: 'activeProduct',
+      type: 'string',
+      description:
+        'Which product group is open (the accordion). Absent → single-product mode with no accordion.',
+    },
+    {
+      name: 'onProductToggle',
+      type: '(id: string) => void',
+      description:
+        'Accordion callback — the parent expands a product group and collapses the sibling by swapping activeProduct. Absent → plain, independently expandable links (static-doc mode).',
+    },
+    {
+      name: 'pinnedGroups',
+      type: 'string[]',
+      default: '["shared"]',
+      description: 'Group ids that stay open regardless of the accordion.',
+    },
+    {
+      name: 'defaultCollapsed',
+      type: 'boolean',
+      default: 'true',
+      description:
+        'Whether non-active, non-pinned groups start collapsed — the anti-wall rule.',
+    },
+  ],
   'section-nav': [
     {
       name: 'label',
