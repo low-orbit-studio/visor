@@ -1,0 +1,115 @@
+---
+title: Doc Frame
+description: The themed doc-page shell that wraps DocNav — a sticky header with a flexible brand/logo slot, the nav slot, and a content wrapper for the doc. Copy it into your project and own it completely.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { DocFrameDemo } from '@/components/ui/doc-frame-demo';
+
+## Basic
+
+<ComponentPreview
+  title="Themed shell — sticky header, brand/logo slot, nav slot, content wrapper"
+  code={"<DocFrame manifest={manifest} currentPath=\"/docs/artist/screens\">\n  <h1>Artist — Screen Inventory</h1>\n</DocFrame>"}
+>
+  <DocFrameDemo />
+</ComponentPreview>
+
+## When to use
+
+Use `DocFrame` for the **surrounding themed page shell** of a documentation site: a **sticky header** with a flexible **brand/logo slot**, the [`DocNav`](/docs/components/navigation/doc-nav) slot, and a **content wrapper** for the doc. It reads a single docs manifest, derives the active product, and passes the docs slice plus active-state down to `DocNav`. Everything is themed by Visor tokens, so the shell adopts the active project theme without modification.
+
+`DocFrame` owns the page; `DocNav` owns the nav. This is distinct from [`Navbar`](/docs/components/navigation/navbar) (top-level site navigation with brand and actions) — reach for `DocFrame` when you are rendering a documentation shell from a manifest.
+
+## Anatomy
+
+`DocFrame` derives everything from the `manifest`:
+
+- **Sticky header** — the brand/logo slot on the left, then the `DocNav` slot. It sticks to the page scroll so brand and nav never leave view.
+- **Content wrapper** — the doc, passed as `children`, rendered below the nav.
+- **Product accordion** — when the manifest has a `products` roster (or docs with distinct `scope` values), `DocFrame` seeds the open product from `currentPath` (or the `activeProduct` prop) and drives the `DocNav` accordion. With no roster it degrades to a single grouped row.
+
+## Header chrome
+
+The sticky header carries, left to right:
+
+- **Brand slot** — the resolved logo (see below). The text fallback leads with a **glyph chip** in the theme's `--primary` brand color.
+- **Home pill** (`home`) — an `OVERVIEW` chip with a leading compass glyph, mono UPPERCASE, that links back to the docs hub. Pass `{ href, label }`.
+- **Meta slot** (`meta`) — a **right-aligned** breadcrumb / status line, mono UPPERCASE and `--text-tertiary` — e.g. `ARTIST · BUILD-READY`.
+
+```tsx
+<DocFrame
+  manifest={manifest}
+  home={{ href: '/docs', label: 'Overview' }}
+  meta="Artist · Build-Ready"
+>
+  {children}
+</DocFrame>
+```
+
+## Group color-coding
+
+`DocFrame` drives `DocNav`'s `--doc-nav-group-accent` hook so each group's dot reads a distinct hue: the pinned **Shared** group is `--info` (blue), product groups are `--accent`, the **Pro** group is `--warning` (amber), and the **Appendix** is muted. Override any group with `groupAccents` (keyed by group id or role):
+
+```tsx
+<DocFrame manifest={manifest} groupAccents={{ pro: 'var(--warning)', beta: 'var(--accent)' }}>
+  {children}
+</DocFrame>
+```
+
+Borderless themes (Animal, ENTR) carry structure from surface contrast, not borders. `DocFrame` auto-nulls the pinned group's frame for the known borderless set; pass `borderless` explicitly when the theme is applied by an ancestor.
+
+## Logo resolution
+
+The brand slot resolves in order:
+
+1. **The `logo` prop** — any node: an `<img>` of an SVG, an inline `<svg>`, or a full component (an animated mark, a Visor `<Brand>`).
+2. **The active theme's brand logo** — the mode-aware `--brand-logo` custom property, shown when the theme ships one. The resting state is always the text wordmark, upgraded client-side, so there is never a flash of invisibility on reload.
+3. **The manifest `brand` text** — a plain wordmark, mode-adaptive via `--text-primary`.
+
+```tsx
+// Explicit logo — an SVG file, an inline SVG, or any component.
+<DocFrame manifest={manifest} logo={<img src="/logo.svg" alt="Blacklight" />}>
+  {children}
+</DocFrame>
+```
+
+## Installation
+
+```bash
+npx visor add doc-frame
+```
+
+This also pulls in the `doc-nav` component, which `DocFrame` renders in its nav slot.
+
+## Usage
+
+```tsx
+import { DocFrame, type DocsManifest } from '@/components/ui/doc-frame/doc-frame';
+
+const manifest: DocsManifest = {
+  brand: 'Blacklight',
+  products: [{ id: 'artist' }, { id: 'pro' }],
+  docs: [
+    { order: 1, label: 'Charter', href: '/docs/charter.html', group: 'Shared' },
+    { order: 3, label: 'Screens', href: '/docs/artist/screens', scope: ['artist'], group: 'Artist' },
+    { order: 2, label: 'Journeys', href: '/docs/pro/journeys', scope: ['pro'], group: 'Pro' },
+    { order: 11, label: 'Q3 Audit', href: '/docs/q3-audit.html' },
+  ],
+};
+
+export function Shell({ children }: { children: React.ReactNode }) {
+  return (
+    <DocFrame manifest={manifest} currentPath="/docs/artist/screens">
+      {children}
+    </DocFrame>
+  );
+}
+```
+
+For a Next route, pass `currentPath={usePathname()}` so active-state resolves during SSR; a static page passes `location.pathname`.
+
+## API Reference
+
+<PropsTable component="doc-frame" />

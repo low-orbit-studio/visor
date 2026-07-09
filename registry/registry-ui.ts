@@ -2213,6 +2213,28 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "doc-frame",
+    type: "registry:ui",
+    category: "navigation",
+    description:
+      "The themed doc-page shell that wraps DocNav — a sticky header with a flexible brand/logo slot, the DocNav slot, and a content wrapper for the doc. Reads a single docs manifest, derives the active product, and passes the slice + active-state down to DocNav. Themed entirely by Visor tokens. Replaces the vanilla-JS doc shell (nav.js + docs.css) on the React/route track.",
+    dependencies: [
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils", "doc-nav"],
+    files: [
+      {
+        path: "components/ui/doc-frame/doc-frame.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/doc-frame/doc-frame.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "key-value-list",
     type: "registry:ui",
     category: "data-display",

@@ -545,6 +545,45 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'doc-frame': [
+    {
+      name: 'manifest',
+      type: 'DocsManifest',
+      required: true,
+      description:
+        'The parsed manifest (docs[], optional products[], optional brand text, optional dispositions) — the single input everything derives from.',
+    },
+    {
+      name: 'children',
+      type: 'React.ReactNode',
+      required: true,
+      description: 'The doc content, rendered in the content wrapper below the nav.',
+    },
+    {
+      name: 'logo',
+      type: 'React.ReactNode',
+      description:
+        "The brand slot. Any node — an <img> of an SVG, an inline <svg>, or a full component. Resolution order: explicit logo → the active theme's brand logo SVG (mode-aware via --brand-logo) → the manifest brand text.",
+    },
+    {
+      name: 'activeProduct',
+      type: 'string',
+      description:
+        'Which product group is expanded (the accordion). Defaults to the route\'s product, else the first product in the roster. Absent roster → single-product mode.',
+    },
+    {
+      name: 'currentPath',
+      type: 'string',
+      description:
+        'The active route for active-state. Next consumers pass usePathname(); a static page passes location.pathname. Defaults to window.location.pathname in the browser, or "/" during SSR.',
+    },
+    {
+      name: 'theme',
+      type: 'string',
+      description:
+        'A Visor theme class name applied to the shell root, scoping all doc-shell CSS variables. Defaults to the app\'s ambient theme.',
+    },
+  ],
   'doc-nav': [
     {
       name: 'docs',
