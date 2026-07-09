@@ -89,11 +89,16 @@
 }
 
 /* Text wordmark — the resting/fallback brand (a leading glyph chip + the name).
- * Mode-adaptive via --text-primary. */
+ * Mode-adaptive via --text-primary. Set in the theme's display face so a text
+ * wordmark carries the theme's brand character (say, Animal's condensed
+ * "Sequel 100 Black 95" rather than the body "Ratio"); degrades to the heading
+ * face, then the ambient sans, on themes that ship no --font-display — matching
+ * the display-font convention in stat-card / page-header / section-intro. */
 .wordmark {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-2, 0.5rem);
+  font-family: var(--font-display, var(--font-family-heading, inherit));
   font-size: var(--font-size-lg, 1.125rem);
   font-weight: var(--font-weight-bold, 700);
   letter-spacing: -0.01em;
