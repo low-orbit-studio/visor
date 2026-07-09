@@ -30,7 +30,7 @@
   --doc-nav-pill-bg: color-mix(
     in srgb,
     var(--surface-card, #111827),
-    var(--color-neutral-950, #030712) 35%
+    var(--color-neutral-950, #030712) 20%
   );
   display: flex;
   flex-wrap: wrap;
@@ -238,18 +238,25 @@
   color: var(--text-primary, #111827);
 }
 
-/* Active — the current doc, resolved from currentPath. Accent-popped (B2). */
+/* Active — the current doc, resolved from currentPath. Contrast-safe (VI-612):
+ * the label is `--text-primary` (always legible), NOT raw `--doc-nav-accent`,
+ * which is unreadable when a theme's accent is white/near-white (Blacklight, say)
+ * on a light card. The active pill reads as active via a distinct opaque surface
+ * plus an accent ring blended with a hairline so it never fully vanishes. */
 .pillActive {
-  color: var(--doc-nav-accent, var(--accent, #2563eb));
+  color: var(--text-primary, #111827);
   border-color: color-mix(
     in srgb,
-    var(--doc-nav-accent, var(--accent, #2563eb)) 40%,
-    transparent
+    var(--doc-nav-accent, var(--accent, #2563eb)) 55%,
+    var(--hairline, var(--border-default, #e5e7eb))
   );
-  background: color-mix(
-    in srgb,
-    var(--doc-nav-accent, var(--accent, #2563eb)) 10%,
-    transparent
+  background: var(
+    --surface-selected,
+    color-mix(
+      in srgb,
+      var(--surface-card, #111827),
+      var(--doc-nav-accent, var(--accent, #2563eb)) 14%
+    )
   );
 }
 
