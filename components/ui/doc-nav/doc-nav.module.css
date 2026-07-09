@@ -86,6 +86,11 @@
   font-weight: var(--font-weight-bold, 700);
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  /* Collapse the label's line box to the glyph height so the all-caps text
+   * optically centers against the dot/caret (matching `.pill`). Without this the
+   * caps ride high — the empty descender space pushes the line-box center below
+   * the visual center of the caps. */
+  line-height: 1;
   color: var(--text-secondary, #4b5563);
 }
 
