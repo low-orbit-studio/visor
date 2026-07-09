@@ -41,7 +41,19 @@ props:
     description: The doc content, rendered in the content wrapper below the nav.
   - name: logo
     type: React.ReactNode
-    description: The brand slot. Any node — an <img> of an SVG, an inline <svg>, or a full component. Resolution order — explicit logo → the active theme's brand logo SVG (mode-aware via --brand-logo) → the manifest brand text.
+    description: The brand slot. Any node — an <img> of an SVG, an inline <svg>, or a full component. Resolution order — explicit logo → the active theme's brand logo SVG (mode-aware via --brand-logo, upgraded only once it loads so a 404 keeps the wordmark) → the manifest brand text (a leading glyph chip + the name).
+  - name: home
+    type: DocFrameHome
+    description: The OVERVIEW / home pill rendered after the brand — a bordered mono chip with a leading compass glyph and a { href, label }. Omit to hide it.
+  - name: meta
+    type: React.ReactNode
+    description: A right-aligned breadcrumb / status slot in the header (mono, UPPERCASE, --text-tertiary) — e.g. ARTIST · BUILD-READY.
+  - name: groupAccents
+    type: Record<string, string>
+    description: Per-group nav accent overrides keyed by DocNav group id or role, driving its --doc-nav-group-accent hook. Merged over the default palette (pro → --warning, the amber Pro dot); DocNav already defaults shared → --info, other products → --accent, appendix → --text-tertiary.
+  - name: borderless
+    type: boolean
+    description: Force the borderless treatment — null the pinned Shared group's frame for borderless themes (Animal / ENTR) that carry structure from surface contrast. Auto-detected from theme for the known borderless set; pass explicitly when the theme is applied by an ancestor.
   - name: activeProduct
     type: string
     description: Which product group is expanded (the accordion). Defaults to the route's product, else the first product in the roster. Absent roster → single-product mode.

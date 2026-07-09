@@ -1,9 +1,10 @@
 /* DocFrame — the themed doc-page shell that wraps DocNav.
  *
- * A sticky header (a flexible brand/logo slot + the DocNav slot) above a
- * content wrapper (the doc as children). The header sticks to the page scroll
- * so the brand + nav never leave view. Theme-agnostic: every value references a
- * CSS custom property token, so the shell adopts the active project theme.
+ * A sticky header (a flexible brand/logo slot + an OVERVIEW home pill + a
+ * right-aligned meta slot, then the DocNav slot) above a content wrapper (the
+ * doc as children). The header sticks to the page scroll so the brand + nav
+ * never leave view. Theme-agnostic: every value references a CSS custom property
+ * token, so the shell adopts the active project theme.
  *
  * No ancestor sets overflow: hidden/auto — that would create a scroll container
  * and break the viewport-anchored sticky header.
@@ -11,6 +12,11 @@
 
 /* Shell root — a centered, max-width column. */
 .frame {
+  /* A tight, controlled glyph radius the frame owns — NOT the theme `--radius-*`
+   * scale, which decorative themes inflate far past what a 24px brand chip wants
+   * (Strata inflates `--radius-md` to 10px, `--radius-xl` to 32px). Overridable
+   * by a consumer/theme via this variable. */
+  --doc-frame-glyph-radius: 0.375rem;
   display: flex;
   flex-direction: column;
   min-height: 100%;
@@ -20,28 +26,31 @@
   color: var(--text-primary, #111827);
 }
 
-/* Sticky chrome — the brand row + nav row. Opaque background so scrolled
- * content never bleeds through. Sticks to the nearest scroll ancestor (the
- * page/viewport). */
+/* Sticky chrome — the header row + nav row. The page surface (opaque, so
+ * scrolled content never bleeds through) sits below the card-surfaced nav
+ * groups + chips, which read lighter on top. Sticks to the nearest scroll
+ * ancestor (the page/viewport). */
 .chrome {
   position: sticky;
   top: 0;
   z-index: 10;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-3, 0.75rem);
-  padding: var(--spacing-3, 0.75rem) var(--spacing-5, 1.25rem);
-  background: var(--surface-card, #ffffff);
+  background: var(--surface-page, #ffffff);
   border-bottom: var(--stroke-width-thin, 1px) solid
     var(--hairline, var(--border-default, #e5e7eb));
 }
 
-/* Brand row — brand/logo slot on the left, flexible spacer on the right. */
+/* Header row — brand/logo slot, then the OVERVIEW home pill, a flexible spacer,
+ * and the right-aligned meta slot. A hairline rule separates it from the nav. */
 .headerRow {
   display: flex;
   align-items: center;
-  gap: var(--spacing-4, 1rem);
+  gap: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
   flex-wrap: wrap;
+  padding: var(--spacing-3, 0.75rem) var(--spacing-5, 1.25rem);
+  border-bottom: var(--stroke-width-thin, 1px) solid
+    var(--hairline, var(--border-default, #e5e7eb));
 }
 
 .brandSlot {
@@ -58,6 +67,7 @@
 .navRow {
   display: flex;
   min-width: 0;
+  padding: var(--spacing-3, 0.75rem) var(--spacing-5, 1.25rem);
 }
 
 /* Content wrapper — the doc, as children. */
@@ -78,7 +88,8 @@
   min-width: 0;
 }
 
-/* Text wordmark — the resting/fallback brand. Mode-adaptive via --text-primary. */
+/* Text wordmark — the resting/fallback brand (a leading glyph chip + the name).
+ * Mode-adaptive via --text-primary. */
 .wordmark {
   display: inline-flex;
   align-items: center;
@@ -90,12 +101,33 @@
   color: var(--text-primary, #111827);
 }
 
+/* Brand glyph — a single-letter mark in the theme's primary brand color, its
+ * guaranteed-contrasting on-primary text. A controlled small radius (see
+ * `--doc-frame-glyph-radius`), not the ballooning theme radius scale. */
+.glyph {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: var(--spacing-6, 1.5rem);
+  height: var(--spacing-6, 1.5rem);
+  border-radius: var(--doc-frame-glyph-radius, 0.375rem);
+  background: var(--primary, #111827);
+  color: var(--primary-text, #ffffff);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: 1;
+}
+
 /* Theme-logo layer — the active theme's brand logo SVG (mode-aware via the
  * --brand-logo custom property). Hidden until the client effect confirms the
- * theme ships one, so the resting state is always the visible wordmark. */
+ * theme ships one AND it loads, so the resting state is always the visible
+ * wordmark and a failed load never leaves an empty slot. */
 .themeLogo {
   display: none;
   height: var(--doc-frame-logo-height, var(--spacing-5, 1.25rem));
+  /* An explicit min-width keeps a masked/tinted mark from collapsing to a
+   * zero-width box on themes that ship no --brand-logo-aspect-ratio. */
+  min-width: var(--spacing-8, 2rem);
   aspect-ratio: var(--brand-logo-aspect-ratio, 3 / 1);
   background-image: var(--brand-logo);
   background-repeat: no-repeat;
@@ -112,10 +144,76 @@
   display: none;
 }
 
+/* ─── header chrome — home pill + meta ───────────────────────────────────── */
+
+/* OVERVIEW / home pill — a bordered mono chip with a leading compass glyph. */
+.home {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  flex-shrink: 0;
+  /* ~6px 12px — a compact chip that clears the mono caps. */
+  padding: calc(var(--spacing-1, 0.25rem) * 1.5) var(--spacing-3, 0.75rem);
+  border: var(--stroke-width-thin, 1px) solid
+    var(--hairline, var(--border-default, #e5e7eb));
+  border-radius: var(--radius-full, 9999px);
+  background: var(--surface-card, #ffffff);
+  font-family: var(--font-mono, ui-monospace, "SFMono-Regular", Menlo, monospace);
+  font-size: var(--font-size-2xs, 0.6875rem);
+  font-weight: var(--font-weight-medium, 500);
+  letter-spacing: 0.06em;
+  /* Collapse the line box to the glyph height so the all-caps label optically
+   * centers against the compass icon. */
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--text-tertiary, #9ca3af);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--motion-duration-fast, 150ms)
+      var(--motion-easing-standard, ease),
+    border-color var(--motion-duration-fast, 150ms)
+      var(--motion-easing-standard, ease);
+}
+
+.home:hover {
+  color: var(--text-primary, #111827);
+  border-color: var(--hairline-strong, var(--border-default, #d1d5db));
+}
+
+.home:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* Compass glyph — a hair larger than the caps (the design's 13px vs 11px);
+ * inherits the pill color via currentColor. */
+.homeIcon {
+  flex-shrink: 0;
+  width: var(--font-size-sm, 0.875rem);
+  height: var(--font-size-sm, 0.875rem);
+}
+
+/* Meta slot — a right-aligned breadcrumb/status line, mono UPPERCASE, tertiary. */
+.meta {
+  flex-shrink: 0;
+  font-family: var(--font-mono, ui-monospace, "SFMono-Regular", Menlo, monospace);
+  font-size: var(--font-size-2xs, 0.6875rem);
+  font-weight: var(--font-weight-medium, 500);
+  letter-spacing: 0.12em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--text-tertiary, #9ca3af);
+  white-space: nowrap;
+}
+
 /* ─── mobile ─────────────────────────────────────────────────────────────── */
 
 @media (max-width: 640px) {
-  .chrome {
+  .headerRow {
+    padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
+  }
+
+  .navRow {
     padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
   }
 

@@ -23,7 +23,9 @@ export function DocFrameDemo() {
       manifest={manifest}
       currentPath="/docs/artist/screens"
       activeProduct="artist"
-      style={{ maxWidth: '100%', border: '1px solid var(--hairline)', borderRadius: 'var(--radius-lg)' }}
+      home={{ href: '/docs', label: 'Overview' }}
+      meta="Artist · Build-Ready"
+      style={{ maxWidth: '100%', border: '1px solid var(--hairline)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}
     >
       <h2 style={{ margin: 0, fontSize: 'var(--font-size-xl)', fontWeight: 700, color: 'var(--text-primary)' }}>
         Artist — Screen Inventory

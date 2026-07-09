@@ -218,6 +218,148 @@ describe("DocFrame — single-product mode", () => {
   })
 })
 
+describe("DocFrame — header chrome", () => {
+  it("renders the OVERVIEW home pill after the brand when `home` is given", () => {
+    render(
+      <DocFrame
+        manifest={manifest}
+        currentPath="/docs/artist/screens"
+        home={{ href: "/docs", label: "Overview" }}
+      >
+        <p>Body</p>
+      </DocFrame>
+    )
+    const home = screen.getByRole("link", { name: /Overview/ })
+    expect(home).toHaveAttribute("href", "/docs")
+    expect(home).toHaveAttribute("data-slot", "doc-frame-home")
+  })
+
+  it("omits the home pill when `home` is absent", () => {
+    render(
+      <DocFrame manifest={manifest} currentPath="/docs/artist/screens">
+        <p>Body</p>
+      </DocFrame>
+    )
+    expect(document.querySelector('[data-slot="doc-frame-home"]')).toBeNull()
+  })
+
+  it("renders the right-aligned meta slot", () => {
+    render(
+      <DocFrame
+        manifest={manifest}
+        currentPath="/docs/artist/screens"
+        meta="Artist · Build-Ready"
+      >
+        <p>Body</p>
+      </DocFrame>
+    )
+    const meta = document.querySelector('[data-slot="doc-frame-meta"]')
+    expect(meta).not.toBeNull()
+    expect(meta).toHaveTextContent("Artist · Build-Ready")
+  })
+
+  it("leads the text-fallback brand with a glyph of the brand's initial", () => {
+    render(
+      <DocFrame manifest={manifest} currentPath="/docs/charter.html">
+        <p>Body</p>
+      </DocFrame>
+    )
+    const brandSlot = document.querySelector(
+      '[data-slot="doc-frame-brand-slot"]'
+    ) as HTMLElement
+    // "Blacklight" → glyph "B", aria-hidden so it doesn't double the label.
+    const glyph = within(brandSlot).getByText("B", { selector: "span" })
+    expect(glyph).toHaveAttribute("aria-hidden", "true")
+  })
+})
+
+describe("DocFrame — group color-coding + borderless", () => {
+  it("scopes an amber Pro group accent into the nav by default", () => {
+    render(
+      <DocFrame manifest={manifest} currentPath="/docs/artist/screens">
+        <p>Body</p>
+      </DocFrame>
+    )
+    const frame = document.querySelector(
+      '[data-slot="doc-frame"]'
+    ) as HTMLElement
+    const frameId = frame.getAttribute("data-doc-frame")
+    const style = frame.querySelector("style") as HTMLStyleElement
+    expect(style).not.toBeNull()
+    // Frame-scoped rule sets the Pro group's --doc-nav-group-accent to --warning.
+    expect(style.textContent).toContain(`[data-doc-frame="${frameId}"]`)
+    expect(style.textContent).toContain('[data-group="pro"]')
+    expect(style.textContent).toContain("--doc-nav-group-accent:var(--warning")
+  })
+
+  it("honours a groupAccents override", () => {
+    render(
+      <DocFrame
+        manifest={manifest}
+        currentPath="/docs/artist/screens"
+        groupAccents={{ pro: "var(--accent)" }}
+      >
+        <p>Body</p>
+      </DocFrame>
+    )
+    const frame = document.querySelector(
+      '[data-slot="doc-frame"]'
+    ) as HTMLElement
+    const style = frame.querySelector("style") as HTMLStyleElement
+    expect(style.textContent).toContain(
+      "--doc-nav-group-accent:var(--accent)"
+    )
+  })
+
+  it("auto-detects borderless for a known borderless theme", () => {
+    render(
+      <DocFrame
+        manifest={manifest}
+        currentPath="/docs/artist/screens"
+        theme="entr-theme"
+      >
+        <p>Body</p>
+      </DocFrame>
+    )
+    const frame = document.querySelector(
+      '[data-slot="doc-frame"]'
+    ) as HTMLElement
+    expect(frame).toHaveAttribute("data-borderless")
+    expect(frame.style.getPropertyValue("--doc-nav-pin-border")).toBe(
+      "transparent"
+    )
+  })
+
+  it("stays bordered for a bordered theme unless forced", () => {
+    const { rerender } = render(
+      <DocFrame
+        manifest={manifest}
+        currentPath="/docs/artist/screens"
+        theme="strata-theme"
+      >
+        <p>Body</p>
+      </DocFrame>
+    )
+    let frame = document.querySelector(
+      '[data-slot="doc-frame"]'
+    ) as HTMLElement
+    expect(frame).not.toHaveAttribute("data-borderless")
+
+    rerender(
+      <DocFrame
+        manifest={manifest}
+        currentPath="/docs/artist/screens"
+        theme="strata-theme"
+        borderless
+      >
+        <p>Body</p>
+      </DocFrame>
+    )
+    frame = document.querySelector('[data-slot="doc-frame"]') as HTMLElement
+    expect(frame).toHaveAttribute("data-borderless")
+  })
+})
+
 describe("DocFrame — accessibility", () => {
   it("has no WCAG 2.1 AA violations", async () => {
     const { container } = render(

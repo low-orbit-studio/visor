@@ -30,6 +30,36 @@ Use `DocFrame` for the **surrounding themed page shell** of a documentation site
 - **Content wrapper** — the doc, passed as `children`, rendered below the nav.
 - **Product accordion** — when the manifest has a `products` roster (or docs with distinct `scope` values), `DocFrame` seeds the open product from `currentPath` (or the `activeProduct` prop) and drives the `DocNav` accordion. With no roster it degrades to a single grouped row.
 
+## Header chrome
+
+The sticky header carries, left to right:
+
+- **Brand slot** — the resolved logo (see below). The text fallback leads with a **glyph chip** in the theme's `--primary` brand color.
+- **Home pill** (`home`) — an `OVERVIEW` chip with a leading compass glyph, mono UPPERCASE, that links back to the docs hub. Pass `{ href, label }`.
+- **Meta slot** (`meta`) — a **right-aligned** breadcrumb / status line, mono UPPERCASE and `--text-tertiary` — e.g. `ARTIST · BUILD-READY`.
+
+```tsx
+<DocFrame
+  manifest={manifest}
+  home={{ href: '/docs', label: 'Overview' }}
+  meta="Artist · Build-Ready"
+>
+  {children}
+</DocFrame>
+```
+
+## Group color-coding
+
+`DocFrame` drives `DocNav`'s `--doc-nav-group-accent` hook so each group's dot reads a distinct hue: the pinned **Shared** group is `--info` (blue), product groups are `--accent`, the **Pro** group is `--warning` (amber), and the **Appendix** is muted. Override any group with `groupAccents` (keyed by group id or role):
+
+```tsx
+<DocFrame manifest={manifest} groupAccents={{ pro: 'var(--warning)', beta: 'var(--accent)' }}>
+  {children}
+</DocFrame>
+```
+
+Borderless themes (Animal, ENTR) carry structure from surface contrast, not borders. `DocFrame` auto-nulls the pinned group's frame for the known borderless set; pass `borderless` explicitly when the theme is applied by an ancestor.
+
 ## Logo resolution
 
 The brand slot resolves in order:
