@@ -393,6 +393,47 @@ If a value cannot use a token yet (e.g., component sizing), add a CSS comment ex
 
 ---
 
+### 13. Surface Intent Resolution Rule (BO-68)
+
+A surface token's **name** is not a promise about its **rendered value**. Empirically, `--surface-subtle` reads *lighter* than `--surface-card` in several dark themes (neutral, space, borderless) — an intentional lift for input controls and hover surfaces. A component that grabs `--surface-subtle` expecting a *recessed well* therefore gets the opposite in dark mode: the exact VI-611/VI-612 doc-nav trap, where the resting pill read as a raised chip instead of a sunken well.
+
+The `token-resolution-transparency` validator rule (`scripts/rules/token-resolution-transparency.ts`) catches this class of bug. Per theme × mode, it resolves what each declared surface token **actually computes to** in a **real browser** (Playwright `getComputedStyle` on a `[data-specimen]` element — never a regex/string CSS engine, per [W-111](https://linear.app/low-orbit-studio)), then flags **intent-vs-rendered inversions**:
+
+- a token declared **recessed** must render **≤** its container's luminance in every mode;
+- a token declared **raised** must render **≥** it.
+
+Intent is **component-declared**, not guessed from the token name (which is ambiguous — see the `--surface-subtle` lift above). A component registers the surfaces it uses with a semantic intent in the `SURFACE_INTENTS` table in the rule. The doc-nav pill is the seeded exemplar: its resting fill routes through `--doc-nav-pill-bg` (`--surface-card` mixed ~20% toward `--color-neutral-950`), which is guaranteed darker than the card in both modes — the durable VI-612 fix, now held in place by this gate.
+
+```ts
+// scripts/rules/token-resolution-transparency.ts
+export const SURFACE_INTENTS: SurfaceIntentAssertion[] = [
+  { component: "doc-nav", token: "--doc-nav-pill-bg", intent: "recessed", container: "--surface-card" },
+  // Add an entry when a component uses a surface token as a recessed well or a raised layer.
+];
+```
+
+The rule runs in every `visor validate` wherever a browser is available (local dev, browser-capable CI); it skips gracefully where Playwright/chromium is not installed rather than falling back to a string resolver.
+
+**Override — a repo-root `.visorrc.json`** (the same file `visor check design` reads for `disabledRules`) suppresses legitimate near-container / hairline-defined cases:
+
+```jsonc
+{
+  // Disable the whole rule:
+  "disabledRules": ["token-resolution-transparency"],
+
+  // …or exempt a single legit inversion. Bare "<component>:<token>" exempts all
+  // themes/modes; the "@<theme>:<mode>" suffix scopes the exemption:
+  "surfaceIntentAllow": [
+    "some-component:--surface-subtle",            // all themes/modes
+    "some-component:--surface-subtle@space:dark"  // just space · dark
+  ]
+}
+```
+
+A surface separated from its container by a **hairline border** (not a fill shift) has near-equal luminance and is *not* flagged — the `EPSILON_LUM` tolerance absorbs it, so the allowlist is only for genuine intentional inversions.
+
+---
+
 ## CSS @layer Strategy
 
 Adapter-generated CSS uses `@layer` declarations for specificity ordering. This ensures theme overrides work without `!important`.
