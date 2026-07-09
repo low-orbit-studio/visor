@@ -120,6 +120,9 @@
   border: var(--stroke-width-thin, 1px) solid
     var(--hairline, var(--border-default, #e5e7eb));
   border-radius: var(--radius-full, 9999px);
+  /* A collapsed chip stands alone in the nav row, so it carries more vertical
+   * padding than the tight open-group label (the design gives it ~7px 12px). */
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
   /* The chip reads as the group's card surface (matching the design's chip-bg),
    * not a lighter subtle surface — `--surface-subtle` resolves as a mid-gray in
    * dark themes. */
