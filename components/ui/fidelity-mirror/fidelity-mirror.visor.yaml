@@ -1,0 +1,108 @@
+name: FidelityMirror
+description: The design-left / built-right comparison surface — renders a pure-HTML design source beside its Visor-TSX render (or a native/Flutter device-framed screenshot set, or an external artifact) in recessed capture wells, with a verdict diff indicator, numbered delta callouts, a classed delta legend, and a drag-to-reveal overlay mode. Composes inside DocFrame's content and goes full-bleed on widescreen so each pane is ~50vw. This is the Fidelity Mirror DISPLAY; the screenshot-diff GATE (PL-2139) is a separate verification concern.
+extends: HTMLElement
+category: data-display
+
+when_to_use:
+  - A Fidelity Mirror doc surface that renders a design-vs-built comparison inside DocFrame, so the doc type is Borealis-native rather than hand-rolled per project
+  - Showing the pure HTML design (left) against the Visor-ified TSX render (right) with a diff verdict and enumerated, classed deltas
+  - Comparing a native (SwiftUI) or Flutter screen against its design inside a device bezel, or an external claude.ai artifact against its source
+  - A widescreen full-bleed compare where each pane spans ~50vw for pixel-level review on a fullscreen monitor
+
+when_not_to_use:
+  - The fidelity GATE — screenshot-diff verification that a build matches its design (that is PL-2139 / Gate 16, a verification concern, not a display one)
+  - The themed doc-page shell / sticky header / brand slot (use DocFrame — VI-609)
+  - The grouped, collapsible doc navigation (use DocNav — VI-608)
+  - A generic two-up media comparison with no design-fidelity semantics (use a plain grid or Carousel)
+
+why: >
+  PL-2139 shipped the fidelity GATE (screenshot-diff verification). The Fidelity
+  Mirror DISPLAY — the side-by-side viewer that renders in the docs — is a separate
+  UI concern, and per the Visor pivot (nav/frame → Visor components, VI-608/609) it
+  should be a Visor component too. Gate VERIFIES; component DISPLAYS. Real compare
+  semantics are HTML-design-left / Visor-TSX-right: the scope-dot hues carry SOURCE
+  identity (--info for the design, --accent for the built render), and any diff shown
+  comes from genuinely comparing the two real sources, never from recoloring one side.
+  The card/cluster radius and the recessed well fill are component-OWNED fixed tokens,
+  not the theme --radius-* scale or a bare --surface-* token — decorative themes inflate
+  --radius-xl to 32px and lift --surface-subtle above the card in dark mode, which is
+  exactly the drift this component exists to surface.
+
+variants: {}
+
+props:
+  - name: title
+    type: string
+    required: true
+    description: The compared surface's name — the header title (e.g. a component or screen name).
+  - name: design
+    type: FidelitySource
+    required: true
+    description: The DESIGN source (left pane) — the pure-HTML design. Renders `content` when present, else an `<img>` (image) or a live-route/external `<iframe>` from `src`. Carries an optional pane `label` + mono `meta`.
+  - name: built
+    type: FidelitySource
+    required: true
+    description: The BUILT source (right pane) — the Visor-TSX render, or a device-framed screenshot for native/flutter. Same shape as `design`; the built pane also draws the numbered delta callouts.
+  - name: verdict
+    type: "'match' | 'drift' | 'fail'"
+    required: true
+    description: The diff verdict — tints the status pill (the diff indicator). match → success, drift → warning, fail → destructive.
+  - name: platform
+    type: "'web' | 'native' | 'flutter' | 'external'"
+    default: "'web'"
+    description: Platform of the built surface. Drives the built-side renderer and the header chip — web → live-route iframe + "Web · Live Route"; native → SwiftUI screenshot in a device bezel + "iOS · SwiftUI"; flutter → device-framed image + "Flutter"; external → external artifact + "External".
+  - name: mode
+    type: "'split' | 'overlay'"
+    default: "'split'"
+    description: Initial compare presentation — split (design-left / built-right in recessed wells) or overlay (drag-to-reveal slider seam). The header segmented toggle switches in place.
+  - name: score
+    type: string
+    description: Optional score/summary string on the status pill (e.g. "99.4%", "3 deltas").
+  - name: deltas
+    type: "FidelityDelta[]"
+    description: Enumerated drifts — each renders a numbered callout on the built side (when it carries a `position`) and a classed legend row. Classes mirror the render-vs-design self-check taxonomy (radius | color | spacing | type | align). Omit → no callouts or legend (e.g. a MATCH case).
+  - name: bleed
+    type: boolean
+    default: "true"
+    description: Widescreen full-bleed layout — the compare escapes DocFrame's centered column and spans the viewport so each pane is ~50vw with the center gutter equal to the outer padding. Under 768px the panes stack design-over-built.
+  - name: overlayPosition
+    type: number
+    default: "55"
+    description: Initial overlay reveal position (0–100), the percent of the design source shown from the left before the slider seam.
+  - name: onModeChange
+    type: "(mode: 'split' | 'overlay') => void"
+    description: Notified when the compare mode toggles via the header segmented control.
+
+dependencies:
+  - "@phosphor-icons/react"
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/fidelity-mirror"
+
+# The operator-approved design this component must match. Its presence is the
+# default-on trigger for the render-vs-design self-check in the Component Build
+# Workflow (CLAUDE.md): the built component was rendered across Neutral + Space ×
+# light/dark and diffed against this reference before the PR opened.
+design_ref: "docs/audits/vi-610/index.html"
+
+example: |
+  import { FidelityMirror } from '@/components/ui/fidelity-mirror/fidelity-mirror'
+
+  export function DocNavMirror() {
+    return (
+      <FidelityMirror
+        title="DocNav"
+        subtitle="Fidelity Mirror · VI-611"
+        platform="web"
+        verdict="drift"
+        score="3 deltas"
+        design={{ content: <DesignCapture />, meta: 'index.html' }}
+        built={{ content: <BuiltCapture />, meta: 'route · /doc-nav' }}
+        deltas={[
+          { class: 'radius', description: <>Group cluster corners <b>22px → 12px</b>.</>, position: { top: '34px', left: '12px' } },
+          { class: 'color', description: <>Resting pills read <b>--surface-subtle</b> — should be a recessed well.</>, position: { top: '52px', left: '96px' } },
+          { class: 'type', description: <>Group labels are <b>title-case</b> — should be all-caps mono.</>, position: { top: '34px', right: '12px' } },
+        ]}
+      />
+    )
+  }

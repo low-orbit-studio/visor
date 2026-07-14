@@ -1,0 +1,91 @@
+---
+title: Fidelity Mirror
+description: The design-left / built-right comparison surface — renders a pure-HTML design source beside its Visor-TSX render (or a native/Flutter device-framed screenshot, or an external artifact) with a verdict diff indicator, numbered delta callouts, and a drag-to-reveal overlay. Copy it into your project and own it completely.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { FidelityMirrorDemo, FidelityMirrorNativeDemo } from '@/components/ui/fidelity-mirror-demos';
+
+## Basic
+
+<ComponentPreview
+  title="Web · side-by-side compare with delta callouts"
+  code={"<FidelityMirror\n  title=\"DocNav\"\n  platform=\"web\"\n  verdict=\"drift\"\n  score=\"3 deltas\"\n  design={{ content: <DesignCapture />, meta: 'index.html' }}\n  built={{ content: <BuiltCapture />, meta: 'route · /doc-nav' }}\n  deltas={deltas}\n/>"}
+>
+  <FidelityMirrorDemo />
+</ComponentPreview>
+
+## When to use
+
+Use `FidelityMirror` for the **Fidelity Mirror doc type** — the side-by-side viewer that renders a **design-vs-built** comparison inside [`DocFrame`](/docs/components/navigation/doc-frame)'s content. It renders the **pure HTML design** (left) against the **Visor-ified TSX render** (right) in recessed capture wells, with a verdict **diff indicator**, numbered **delta callouts**, and a classed **delta legend**.
+
+This is the fidelity **DISPLAY**, not the fidelity **GATE**: the screenshot-diff verification that a build matches its design is a separate concern. The mirror shows the comparison; the gate verifies it.
+
+Real compare semantics are **HTML-design-left / Visor-TSX-right**. The scope-dot hues carry **source identity** — `--info` for the design source, `--accent` for the built render — and any diff shown comes from genuinely comparing the two real sources, never from recoloring one side.
+
+## Platform variants
+
+The `platform` prop drives the built-side renderer and the header chip:
+
+- **`web`** — the built side is a live route (iframe) or captured image; the chip reads `WEB · LIVE ROUTE`. The pane labels read `Design · HTML` / `Built · Visor TSX`.
+- **`native`** — the built side is a SwiftUI screenshot set inside a subtle device bezel; the chip reads `iOS · SWIFTUI`.
+- **`flutter`** — the same device-framed image path as native.
+- **`external`** — the built side is an external artifact snapshot (URL/image); the chip reads `EXTERNAL`.
+
+<ComponentPreview
+  title="Native iOS · device-framed · verdict MATCH"
+  code={"<FidelityMirror\n  title=\"Roster Screen\"\n  platform=\"native\"\n  verdict=\"match\"\n  score=\"99.4%\"\n  design={{ content: <RosterCapture />, meta: 'figma · roster' }}\n  built={{ content: <RosterCapture />, meta: 'snapshot · iphone-15' }}\n/>"}
+>
+  <FidelityMirrorNativeDemo />
+</ComponentPreview>
+
+## Compare modes
+
+The header segmented toggle switches between two presentations in place:
+
+- **`split`** (default) — design-left / built-right in recessed wells, with numbered callouts pinned on the built side.
+- **`overlay`** — the two surfaces stack and reveal design-under-built with a draggable accent seam — the canonical affordance for catching sub-pixel drift.
+
+## Widescreen full-bleed
+
+The compare is meant for fullscreen widescreen monitors. With `bleed` (default **on**), it escapes `DocFrame`'s centered column and spans the viewport — each pane is ~50vw, with the outer padding and the center gutter resolving to the same value: `(100vw − 3·pad) / 2`. Under 768px the panes stack design-over-built — never a sideways scroll strip. Pass `bleed={false}` to keep the mirror inside the content column (as the previews above do).
+
+## Deltas
+
+Each entry in `deltas` renders a numbered callout on the built side (when it carries a `position`) and a classed legend row. Classes mirror the render-vs-design self-check taxonomy — `radius`, `color`, `spacing`, `type`, `align`. Omit `deltas` for a clean MATCH case (no callouts, no legend).
+
+## Installation
+
+```bash
+npx visor add fidelity-mirror
+```
+
+## Usage
+
+```tsx
+import { FidelityMirror } from '@/components/ui/fidelity-mirror/fidelity-mirror';
+
+export function DocNavMirror() {
+  return (
+    <FidelityMirror
+      title="DocNav"
+      subtitle="Fidelity Mirror · VI-611"
+      platform="web"
+      verdict="drift"
+      score="3 deltas"
+      design={{ content: <DesignCapture />, meta: 'index.html' }}
+      built={{ content: <BuiltCapture />, meta: 'route · /doc-nav' }}
+      deltas={[
+        { class: 'radius', description: <>Group cluster corners <b>22px → 12px</b>.</>, position: { top: '34px', left: '12px' } },
+        { class: 'color', description: <>Resting pills read <b>--surface-subtle</b>.</>, position: { top: '52px', left: '96px' } },
+        { class: 'type', description: <>Group labels are <b>title-case</b>.</>, position: { top: '34px', right: '12px' } },
+      ]}
+    />
+  );
+}
+```
+
+## API Reference
+
+<PropsTable component="fidelity-mirror" />

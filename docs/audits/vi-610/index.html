@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VI-610 — FidelityMirror Component Design Spec</title>
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   VISOR THEME TOKENS — real resolved values from packages/docs/app/*-theme.css
+   Two contrasting themes × two modes. Mode is scoped by an ancestor class
+   (.m-light / .m-dark) so the spec viewer's switcher is deterministic.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Theme-constant tokens (spacing grid, radius scale, hues, fonts) */
+.t-neutral, .t-space {
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px;
+  --text-11: 11px; --text-13: 13px; --text-14: 14px; --text-16: 16px;
+  --text-20: 20px; --text-24: 24px; --text-32: 32px;
+  --radius-sm: 0.25rem; --radius-md: 0.375rem; --radius-full: 9999px;
+  --success: #22c55e; --warning: #f59e0b; --destructive: #ef4444; --info: #0ea5e9;
+  --focus-ring-width: 2px; --focus-ring-offset: 2px;
+  --motion-fast: 150ms; --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  /* Widescreen gutter/padding — outer left/right padding AND the center gutter
+     resolve to the same value, so each pane ≈ 50vw: (100vw - 3*pad) / 2. */
+  --pad: clamp(20px, 3.2vw, 56px);
+}
+.t-neutral {
+  --primary: #1798ad; --accent: #1798ad;
+  --color-neutral-950: #09090c;
+  --font-display: system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-base: system-ui, sans-serif;
+}
+.t-space {
+  --primary: #5b6fff; --accent: #5b6fff;
+  --color-neutral-950: #080810;
+  --font-display: "Satoshi", system-ui, sans-serif;
+  --font-mono: "Source Code Pro", ui-monospace, monospace;
+  --font-base: "Satoshi", system-ui, sans-serif;
+}
+
+/* Neutral — surfaces + text per mode */
+.t-neutral.m-light {
+  --surface-page: #ffffff; --surface-card: #ffffff; --surface-subtle: #f5f5f6;
+  --surface-selected: #d7eff5;
+  --text-primary: #1a1a1f; --text-secondary: #41414a; --text-tertiary: #54545d;
+  --hairline: rgba(0,0,0,0.08); --hairline-strong: rgba(0,0,0,0.14);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.07); --shadow-lg: 0 10px 15px rgba(0,0,0,0.07);
+}
+.t-neutral.m-dark {
+  --surface-page: #09090b; --surface-card: #18181b; --surface-subtle: #2d2d34;
+  --surface-selected: #013d46;
+  --text-primary: #f5f5f6; --text-secondary: #b6b7bd; --text-tertiary: #8e8e97;
+  --hairline: rgba(255,255,255,0.08); --hairline-strong: rgba(255,255,255,0.14);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.4); --shadow-lg: 0 10px 24px rgba(0,0,0,0.5);
+}
+
+/* Space — surfaces + text per mode */
+.t-space.m-light {
+  --surface-page: #e0ddef; --surface-card: #f2f0f8; --surface-subtle: #f5f5f8;
+  --surface-selected: #e2e9fe;
+  --text-primary: #1a1630; --text-secondary: rgba(26,22,48,0.72); --text-tertiary: rgba(26,22,48,0.65);
+  --hairline: rgba(26,22,48,0.10); --hairline-strong: rgba(26,22,48,0.18);
+  --shadow-md: 0 4px 12px rgba(91,111,255,0.12); --shadow-lg: 0 10px 24px rgba(91,111,255,0.14);
+}
+.t-space.m-dark {
+  --surface-page: #080810; --surface-card: #0e0e18; --surface-subtle: #2b2b36;
+  --surface-selected: #1e168d;
+  --text-primary: #e8e8f0; --text-secondary: rgba(232,232,240,0.72); --text-tertiary: rgba(232,232,240,0.5);
+  --hairline: rgba(255,255,255,0.09); --hairline-strong: rgba(255,255,255,0.16);
+  --shadow-md: 0 4px 12px rgba(91,111,255,0.22); --shadow-lg: 0 12px 30px rgba(91,111,255,0.3);
+}
+
+/* ── Derived: recessed well (darker than card in BOTH modes) — the DocNav
+   pill-bg convention, so capture panes read below the card surface. ── */
+.t-neutral, .t-space {
+  --well: color-mix(in srgb, var(--surface-card), var(--color-neutral-950) 22%);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Layout-shape vocabulary (maps 1:1 to Visor primitives)
+   ══════════════════════════════════════════════════════════════════════════ */
+* { box-sizing: border-box; }
+.stack { display: flex; flex-direction: column; }
+.stack[data-gap="sm"] { gap: var(--space-2); }
+.stack[data-gap="md"] { gap: var(--space-4); }
+.stack[data-gap="lg"] { gap: var(--space-6); }
+.inline { display: flex; align-items: center; }
+.inline[data-gap="xs"] { gap: var(--space-1); }
+.inline[data-gap="sm"] { gap: var(--space-2); }
+.inline[data-gap="md"] { gap: var(--space-3); }
+.inline[data-wrap="wrap"] { flex-wrap: wrap; }
+.grid { display: grid; }
+.box[data-padding="md"] { padding: var(--space-4); }
+.spacer { flex: 1 1 auto; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FidelityMirror component (the design under review)
+   ══════════════════════════════════════════════════════════════════════════ */
+.fm {
+  /* Fixed cluster radius the component OWNS — NOT --radius-* (decorative themes
+     inflate --radius-xl to 32px; the doc-nav learned this the hard way). */
+  --fm-radius: 12px;
+  --fm-design-hue: var(--info);
+  --fm-built-hue: var(--accent);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--hairline);
+  border-radius: var(--fm-radius);
+  background: var(--surface-card);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  font-family: var(--font-base);
+}
+
+/* ── Widescreen full-bleed: the compare escapes the centered doc column and
+   spans the viewport. Header + legend align to the panes' outer edge via --pad;
+   the panes grid uses gap:--pad so each column resolves to ~50vw. ── */
+.fm.bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  border-radius: 0;
+  border-inline: 0;
+}
+.fm.bleed .fm__bar { padding-inline: var(--pad); }
+.fm.bleed .fm__panes { padding-inline: var(--pad); gap: var(--pad); }
+.fm.bleed .fm__legend { padding-inline: var(--pad); }
+.fm.bleed .fm__overlay { padding-inline: var(--pad); }
+
+/* ── Header bar ─────────────────────────────────────────────────────────── */
+.fm__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--hairline);
+}
+.fm__titlewrap { display: inline-flex; flex-direction: column; gap: 3px; min-width: 0; }
+.fm__title {
+  font-family: var(--font-mono);
+  font-size: var(--text-13);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+  line-height: 1;
+}
+.fm__subtitle {
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  line-height: 1;
+}
+
+/* Platform chip — mono caps pill, hairline, card bg (DocFrame home-pill lang). */
+.fm__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 5px var(--space-3);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-full);
+  background: var(--surface-card);
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.fm__chipDot {
+  width: 6px; height: 6px; border-radius: var(--radius-full);
+  background: var(--success);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--success) 70%, transparent);
+}
+.fm__chip svg { width: 12px; height: 12px; color: var(--text-tertiary); }
+
+/* Status pill — the diff indicator. Tinted by verdict. */
+.fm__status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 5px var(--space-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.fm__status[data-verdict="match"] {
+  color: var(--success);
+  border-color: color-mix(in srgb, var(--success) 40%, transparent);
+  background: color-mix(in srgb, var(--success) 12%, var(--surface-card));
+}
+.fm__status[data-verdict="drift"] {
+  color: var(--warning);
+  border-color: color-mix(in srgb, var(--warning) 42%, transparent);
+  background: color-mix(in srgb, var(--warning) 12%, var(--surface-card));
+}
+.fm__status[data-verdict="fail"] {
+  color: var(--destructive);
+  border-color: color-mix(in srgb, var(--destructive) 42%, transparent);
+  background: color-mix(in srgb, var(--destructive) 12%, var(--surface-card));
+}
+.fm__statusGlyph { width: 10px; height: 10px; border-radius: var(--radius-full); background: currentColor; box-shadow: 0 0 7px currentColor; }
+.fm__score { font-variant-numeric: tabular-nums; opacity: 0.85; letter-spacing: 0.02em; }
+
+/* Segmented mode toggle — side-by-side / overlay. */
+.fm__seg {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-full);
+  background: var(--well);
+  gap: 2px;
+}
+.fm__segBtn {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  padding: 5px 10px;
+  border: 0; border-radius: var(--radius-full);
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1;
+  color: var(--text-tertiary); cursor: pointer;
+  transition: color var(--motion-fast) var(--ease), background-color var(--motion-fast) var(--ease);
+}
+.fm__segBtn svg { width: 13px; height: 13px; }
+.fm__segBtn[aria-pressed="true"] {
+  color: var(--text-primary);
+  background: var(--surface-card);
+  box-shadow: var(--shadow-md);
+}
+
+/* ── Panes: side-by-side ────────────────────────────────────────────────── */
+.fm__panes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  align-items: start;
+}
+.fm__pane { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+.fm__paneLabel {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-11);
+  font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; line-height: 1;
+  color: var(--text-secondary);
+}
+.fm__scopeDot {
+  width: 8px; height: 8px; flex-shrink: 0; border-radius: var(--radius-full);
+  background: currentColor;
+  box-shadow: 0 0 8px color-mix(in srgb, currentColor 60%, transparent);
+}
+.fm__pane[data-side="design"] .fm__scopeDot { color: var(--fm-design-hue); }
+.fm__pane[data-side="built"] .fm__scopeDot { color: var(--fm-built-hue); }
+.fm__paneMeta { margin-left: auto; color: var(--text-tertiary); letter-spacing: 0.1em; font-weight: 500; }
+
+/* Capture well — the recessed frame that holds the captured surface. */
+.fm__well {
+  position: relative;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: var(--well);
+  padding: var(--space-3);
+  overflow: hidden;
+}
+.fm__pane[data-side="built"] .fm__well {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fm-built-hue) 22%, transparent);
+}
+
+/* Delta callout marker — numbered accent dot pinned over a drift location. */
+.fm__delta {
+  position: absolute; z-index: 3;
+  display: grid; place-items: center;
+  width: 20px; height: 20px;
+  border-radius: var(--radius-full);
+  background: var(--warning);
+  color: #1a1200;
+  font-family: var(--font-mono);
+  font-size: 11px; font-weight: 700; line-height: 1;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--warning) 30%, transparent), var(--shadow-md);
+}
+
+/* ── Overlay / slider mode ──────────────────────────────────────────────── */
+.fm__overlay { position: relative; padding: var(--space-4); }
+.fm__overlayFrame {
+  position: relative;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: var(--well);
+  overflow: hidden;
+}
+.fm__layer { padding: var(--space-3); }
+/* Clear space below the corner ribbons so they never collide with content. */
+.fm__overlayFrame .fm__layer { padding-top: 40px; }
+.fm__layerTop {
+  position: absolute; inset: 0;
+  /* Revealed portion driven by --split (design shows on the left). */
+  clip-path: inset(0 calc(100% - var(--split, 55%)) 0 0);
+}
+.fm__handle {
+  position: absolute; top: 0; bottom: 0;
+  left: var(--split, 55%);
+  width: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 70%, transparent);
+  z-index: 4;
+}
+.fm__grip {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 28px; height: 28px;
+  display: grid; place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--accent); color: #fff;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 26%, transparent), var(--shadow-md);
+  cursor: ew-resize;
+}
+.fm__grip svg { width: 15px; height: 15px; }
+.fm__ribbon {
+  position: absolute; z-index: 5; top: var(--space-3);
+  padding: 4px var(--space-2);
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; line-height: 1;
+  color: #fff;
+}
+.fm__ribbon[data-side="design"] { left: var(--space-3); background: color-mix(in srgb, var(--info) 88%, #000); }
+.fm__ribbon[data-side="built"]  { right: var(--space-3); background: color-mix(in srgb, var(--accent) 88%, #000); }
+.fm__range {
+  width: 100%; margin-top: var(--space-3); accent-color: var(--accent);
+}
+
+/* ── Delta legend ───────────────────────────────────────────────────────── */
+.fm__legend {
+  border-top: 1px solid var(--hairline);
+  padding: var(--space-3) var(--space-4);
+  display: flex; flex-direction: column; gap: var(--space-2);
+}
+.fm__legendHead {
+  font-family: var(--font-mono); font-size: var(--text-11); font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-tertiary);
+}
+.fm__legendRow { display: flex; align-items: center; gap: var(--space-3); }
+.fm__legendNum {
+  flex-shrink: 0; display: grid; place-items: center;
+  width: 18px; height: 18px; border-radius: var(--radius-full);
+  background: var(--warning); color: #1a1200;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+}
+.fm__tag {
+  flex-shrink: 0; padding: 3px var(--space-2); border-radius: var(--radius-sm);
+  font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  border: 1px solid var(--hairline); color: var(--text-secondary);
+  background: var(--surface-subtle);
+}
+.fm__legendText { font-family: var(--font-mono); font-size: var(--text-13); color: var(--text-secondary); }
+.fm__legendText b { color: var(--text-primary); font-weight: 700; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Mock captured surfaces (illustrative content inside the panes)
+   A. doc-nav cluster (web) — "design" is correct, "built" carries the drift.
+   ══════════════════════════════════════════════════════════════════════════ */
+.cap { display: flex; flex-direction: column; gap: 10px; font-family: var(--font-base); }
+.cap__head { display: flex; align-items: center; gap: var(--space-2); }
+.cap__glyph {
+  width: 20px; height: 20px; border-radius: 6px; display: grid; place-items: center;
+  background: var(--primary); color: #fff; font-family: var(--font-mono);
+  font-size: 10px; font-weight: 700;
+}
+.cap__word { font-family: var(--font-display); font-weight: 700; font-size: var(--text-14); color: var(--text-primary); letter-spacing: -0.01em; }
+.cap__meta { margin-left: auto; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-tertiary); }
+.cap__nav { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.cap__group {
+  display: inline-flex; flex-direction: column; gap: var(--space-2);
+  padding: var(--space-2);
+  border: 1px solid var(--hairline);
+  border-radius: 12px; /* fixed — design intent */
+  background: var(--surface-card);
+}
+.cap__grouphead {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase; line-height: 1;
+  color: var(--text-secondary); padding: 2px 4px;
+}
+.cap__dot { width: 7px; height: 7px; border-radius: 9999px; background: currentColor; box-shadow: 0 0 7px color-mix(in srgb, currentColor 60%, transparent); }
+.cap__dot--info { color: var(--info); }
+.cap__dot--accent { color: var(--accent); }
+.cap__pills { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+.cap__pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 9px; border-radius: 9999px; border: 1px solid transparent;
+  background: var(--well); /* recessed well — design intent */
+  font-family: var(--font-mono); font-size: 9px; font-weight: 500;
+  letter-spacing: 0.05em; text-transform: uppercase; line-height: 1;
+  color: var(--text-secondary); white-space: nowrap;
+}
+.cap__pill--hub::before {
+  content: ""; width: 5px; height: 5px; border-radius: 9999px;
+  background: var(--accent); box-shadow: 0 0 6px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+.cap__pill--active {
+  color: var(--text-primary);
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--hairline));
+  background: var(--surface-selected);
+}
+
+/* Drift modifiers — the BUILT side reproduces the exact deltas CLAUDE.md lists. */
+.cap--drift .cap__group { border-radius: 22px; }              /* ① radius ballooned */
+.cap--drift .cap__pill { background: var(--surface-subtle); } /* ② pills too light  */
+.cap--drift .cap__grouphead { text-transform: none; letter-spacing: 0; align-items: flex-start; } /* ③ title-case, riding high */
+.cap--drift .cap__pill--active {
+  background: transparent;                                      /* weak outlined active */
+  border-color: var(--hairline-strong);
+  color: var(--text-secondary);
+}
+
+/* ── B. iOS screen mock (native) ────────────────────────────────────────── */
+.phone {
+  width: 168px; margin: 0 auto;
+  border: 6px solid color-mix(in srgb, var(--text-primary) 78%, transparent);
+  border-radius: 26px; overflow: hidden; background: var(--surface-page);
+  box-shadow: var(--shadow-lg);
+}
+.phone__status { display: flex; align-items: center; justify-content: space-between; padding: 6px 12px 2px; font-family: var(--font-mono); font-size: 8px; font-weight: 700; color: var(--text-secondary); }
+.phone__nav { padding: 4px 12px 10px; font-family: var(--font-display); font-weight: 700; font-size: var(--text-20); color: var(--text-primary); }
+.phone__list { display: flex; flex-direction: column; }
+.phone__row { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-top: 1px solid var(--hairline); }
+.phone__avatar { width: 22px; height: 22px; border-radius: 9999px; background: color-mix(in srgb, var(--accent) 30%, var(--surface-subtle)); flex-shrink: 0; }
+.phone__lines { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.phone__l1 { height: 6px; width: 70%; border-radius: 3px; background: var(--text-secondary); opacity: 0.8; }
+.phone__l2 { height: 5px; width: 45%; border-radius: 3px; background: var(--text-tertiary); opacity: 0.7; }
+.phone__cta { margin: 10px 12px 14px; padding: 8px; border-radius: 10px; background: var(--primary); color: #fff; text-align: center; font-family: var(--font-display); font-weight: 700; font-size: 10px; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Spec-viewer chrome (scaffolding — not part of the component)
+   ══════════════════════════════════════════════════════════════════════════ */
+body { margin: 0; background: var(--surface-page); color: var(--text-primary); font-family: var(--font-base); transition: background 200ms var(--ease); }
+.page { max-width: 1180px; margin-inline: auto; padding: var(--space-6) var(--space-5) var(--space-10); }
+.toolbar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap;
+  padding: var(--space-3) var(--space-5);
+  margin: 0 0 var(--space-6);
+  background: color-mix(in srgb, var(--surface-page) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--hairline);
+}
+.toolbar__brand { font-family: var(--font-mono); font-size: var(--text-11); font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-tertiary); }
+.toolbar__group { display: inline-flex; align-items: center; gap: var(--space-2); }
+.toolbar__label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-tertiary); }
+.swbtn {
+  padding: 5px 11px; border: 1px solid var(--hairline); border-radius: 9999px;
+  background: var(--surface-card); color: var(--text-secondary);
+  font-family: var(--font-mono); font-size: var(--text-11); font-weight: 600;
+  letter-spacing: 0.04em; cursor: pointer; text-transform: uppercase;
+}
+.swbtn[aria-pressed="true"] { color: var(--text-primary); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface-card)); }
+.section { margin-bottom: var(--space-10); }
+.section__eyebrow { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: var(--space-2); }
+.section__title { font-family: var(--font-display); font-weight: 700; font-size: var(--text-24); color: var(--text-primary); margin: 0 0 var(--space-2); letter-spacing: -0.01em; }
+.section__note { font-family: var(--font-base); font-size: var(--text-14); color: var(--text-secondary); margin: 0 0 var(--space-5); max-width: 62ch; line-height: 1.5; }
+
+/* Responsive: panes stack under 768px (design over built). */
+@media (max-width: 767px) {
+  .fm__panes { grid-template-columns: 1fr; }
+  .fm__bar { gap: var(--space-2); }
+}
+</style>
+</head>
+<body class="t-neutral m-dark">
+<div class="page">
+
+  <!-- Spec-viewer toolbar -->
+  <div class="toolbar">
+    <span class="toolbar__brand">VI-610 · FidelityMirror</span>
+    <span class="spacer"></span>
+    <div class="toolbar__group">
+      <span class="toolbar__label">Theme</span>
+      <button class="swbtn" data-theme="neutral" aria-pressed="true">Neutral</button>
+      <button class="swbtn" data-theme="space" aria-pressed="false">Space</button>
+    </div>
+    <div class="toolbar__group">
+      <span class="toolbar__label">Mode</span>
+      <button class="swbtn" data-mode="light" aria-pressed="false">Light</button>
+      <button class="swbtn" data-mode="dark" aria-pressed="true">Dark</button>
+    </div>
+  </div>
+
+  <!-- ════════ Example A: Web · side-by-side · DRIFT ════════ -->
+  <section class="section">
+    <div class="section__eyebrow">Platform · Web (live route) — default mode</div>
+    <h2 class="section__title">Side-by-side compare with delta callouts</h2>
+    <p class="section__note">The compare goes full-bleed on widescreen — the pure <b>HTML design</b> left, the built <b>Visor TSX</b> render right, each pane ~50vw with the center gutter equal to the outer padding. The header carries the platform chip, a verdict status pill (the diff indicator), and the mode toggle. Numbered callouts pin drift on the built side and map to the delta legend below — classed the way the render-vs-design self-check enumerates drift.</p>
+
+    <div class="fm bleed">
+      <div class="fm__bar">
+        <div class="fm__titlewrap">
+          <span class="fm__title">DocNav</span>
+          <span class="fm__subtitle">Fidelity Mirror · VI-611</span>
+        </div>
+        <span class="fm__chip"><span class="fm__chipDot"></span>Web · Live Route</span>
+        <span class="spacer"></span>
+        <span class="fm__status" data-verdict="drift"><span class="fm__statusGlyph"></span>Drift <span class="fm__score">· 3 deltas</span></span>
+        <div class="fm__seg" role="group" aria-label="Compare mode">
+          <button class="fm__segBtn" aria-pressed="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="7" height="16" rx="1"/><rect x="14" y="4" width="7" height="16" rx="1"/></svg>Split
+          </button>
+          <button class="fm__segBtn" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M12 4v16"/></svg>Overlay
+          </button>
+        </div>
+      </div>
+
+      <div class="fm__panes">
+        <!-- DESIGN pane -->
+        <div class="fm__pane" data-side="design">
+          <span class="fm__paneLabel"><span class="fm__scopeDot"></span>Design · HTML<span class="fm__paneMeta">index.html</span></span>
+          <div class="fm__well">
+            <div class="cap">
+              <div class="cap__head"><span class="cap__glyph">V</span><span class="cap__word">Visor</span><span class="cap__meta">Component · Doc</span></div>
+              <div class="cap__nav">
+                <div class="cap__group">
+                  <span class="cap__grouphead"><span class="cap__dot cap__dot--info"></span>Shared</span>
+                  <div class="cap__pills"><span class="cap__pill cap__pill--hub">Overview</span><span class="cap__pill cap__pill--active">Tokens</span><span class="cap__pill">Themes</span></div>
+                </div>
+                <div class="cap__group">
+                  <span class="cap__grouphead"><span class="cap__dot cap__dot--accent"></span>Visor</span>
+                  <div class="cap__pills"><span class="cap__pill">Button</span><span class="cap__pill">Card</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- BUILT pane -->
+        <div class="fm__pane" data-side="built">
+          <span class="fm__paneLabel"><span class="fm__scopeDot"></span>Built · Visor TSX<span class="fm__paneMeta">route · /doc-nav</span></span>
+          <div class="fm__well">
+            <span class="fm__delta" style="top:34px; left:12px;">1</span>
+            <span class="fm__delta" style="top:52px; left:96px;">2</span>
+            <span class="fm__delta" style="top:34px; right:12px;">3</span>
+            <div class="cap cap--drift">
+              <div class="cap__head"><span class="cap__glyph">V</span><span class="cap__word">Visor</span><span class="cap__meta">Component · Doc</span></div>
+              <div class="cap__nav">
+                <div class="cap__group">
+                  <span class="cap__grouphead"><span class="cap__dot cap__dot--info"></span>Shared</span>
+                  <div class="cap__pills"><span class="cap__pill cap__pill--hub">Overview</span><span class="cap__pill cap__pill--active">Tokens</span><span class="cap__pill">Themes</span></div>
+                </div>
+                <div class="cap__group">
+                  <span class="cap__grouphead"><span class="cap__dot cap__dot--accent"></span>Visor</span>
+                  <div class="cap__pills"><span class="cap__pill">Button</span><span class="cap__pill">Card</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fm__legend">
+        <span class="fm__legendHead">Deltas — built vs design</span>
+        <div class="fm__legendRow"><span class="fm__legendNum">1</span><span class="fm__tag">Radius</span><span class="fm__legendText">Group cluster corners <b>22px → 12px</b> — decorative theme inflated <code>--radius-xl</code>.</span></div>
+        <div class="fm__legendRow"><span class="fm__legendNum">2</span><span class="fm__tag">Color</span><span class="fm__legendText">Resting pills read <b>--surface-subtle</b> (mid-gray) — should be a recessed well darker than the card.</span></div>
+        <div class="fm__legendRow"><span class="fm__legendNum">3</span><span class="fm__tag">Type</span><span class="fm__legendText">Group labels are <b>title-case</b> riding high — should be all-caps mono, optically centered.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ Example B: Web · overlay / slider ════════ -->
+  <section class="section">
+    <div class="section__eyebrow">Platform · Web — overlay mode</div>
+    <h2 class="section__title">Drag-to-reveal overlay (pixel diff)</h2>
+    <p class="section__note">The second compare mode stacks the two surfaces and reveals design-under-built with a draggable accent seam — the canonical affordance for catching sub-pixel drift. Corner ribbons label which side each edge shows.</p>
+
+    <div class="fm bleed">
+      <div class="fm__bar">
+        <div class="fm__titlewrap">
+          <span class="fm__title">DocNav</span>
+          <span class="fm__subtitle">Fidelity Mirror · VI-611</span>
+        </div>
+        <span class="fm__chip"><span class="fm__chipDot"></span>Web · Live Route</span>
+        <span class="spacer"></span>
+        <span class="fm__status" data-verdict="drift"><span class="fm__statusGlyph"></span>Drift <span class="fm__score">· 3 deltas</span></span>
+        <div class="fm__seg" role="group" aria-label="Compare mode">
+          <button class="fm__segBtn" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="7" height="16" rx="1"/><rect x="14" y="4" width="7" height="16" rx="1"/></svg>Split
+          </button>
+          <button class="fm__segBtn" aria-pressed="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M12 4v16"/></svg>Overlay
+          </button>
+        </div>
+      </div>
+
+      <div class="fm__overlay">
+        <div class="fm__overlayFrame" id="ovFrame">
+          <span class="fm__ribbon" data-side="built">Visor TSX</span>
+          <!-- base layer: built (drift) -->
+          <div class="fm__layer">
+            <div class="cap cap--drift">
+              <div class="cap__head"><span class="cap__glyph">V</span><span class="cap__word">Visor</span><span class="cap__meta">Component · Doc</span></div>
+              <div class="cap__nav">
+                <div class="cap__group"><span class="cap__grouphead"><span class="cap__dot cap__dot--info"></span>Shared</span><div class="cap__pills"><span class="cap__pill cap__pill--hub">Overview</span><span class="cap__pill cap__pill--active">Tokens</span><span class="cap__pill">Themes</span></div></div>
+                <div class="cap__group"><span class="cap__grouphead"><span class="cap__dot cap__dot--accent"></span>Visor</span><div class="cap__pills"><span class="cap__pill">Button</span><span class="cap__pill">Card</span></div></div>
+              </div>
+            </div>
+          </div>
+          <!-- top layer: design, clipped to --split -->
+          <div class="fm__layer fm__layerTop" id="ovTop">
+            <span class="fm__ribbon" data-side="design">HTML Design</span>
+            <div class="cap">
+              <div class="cap__head"><span class="cap__glyph">V</span><span class="cap__word">Visor</span><span class="cap__meta">Component · Doc</span></div>
+              <div class="cap__nav">
+                <div class="cap__group"><span class="cap__grouphead"><span class="cap__dot cap__dot--info"></span>Shared</span><div class="cap__pills"><span class="cap__pill cap__pill--hub">Overview</span><span class="cap__pill cap__pill--active">Tokens</span><span class="cap__pill">Themes</span></div></div>
+                <div class="cap__group"><span class="cap__grouphead"><span class="cap__dot cap__dot--accent"></span>Visor</span><div class="cap__pills"><span class="cap__pill">Button</span><span class="cap__pill">Card</span></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="fm__handle" id="ovHandle"><span class="fm__grip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 7l-4 5 4 5M16 7l4 5-4 5"/></svg></span></div>
+        </div>
+        <input class="fm__range" id="ovRange" type="range" min="8" max="92" value="55" aria-label="Reveal position" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════ Example C: Native iOS · side-by-side · MATCH ════════ -->
+  <section class="section">
+    <div class="section__eyebrow">Platform · Native iOS (SwiftUI screenshots)</div>
+    <h2 class="section__title">Platform variant — device-framed, verdict MATCH</h2>
+    <p class="section__note">Native and Flutter surfaces render the captured screenshot set inside a subtle device bezel to signal the platform. No live route — the built side is a screenshot. Here the built screen matches its design: the status pill reads MATCH and no callouts are drawn.</p>
+
+    <div class="fm bleed">
+      <div class="fm__bar">
+        <div class="fm__titlewrap">
+          <span class="fm__title">Roster Screen</span>
+          <span class="fm__subtitle">Fidelity Mirror · SK-204</span>
+        </div>
+        <span class="fm__chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>iOS · SwiftUI
+        </span>
+        <span class="spacer"></span>
+        <span class="fm__status" data-verdict="match"><span class="fm__statusGlyph"></span>Match <span class="fm__score">· 99.4%</span></span>
+        <div class="fm__seg" role="group" aria-label="Compare mode">
+          <button class="fm__segBtn" aria-pressed="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="7" height="16" rx="1"/><rect x="14" y="4" width="7" height="16" rx="1"/></svg>Split
+          </button>
+          <button class="fm__segBtn" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M12 4v16"/></svg>Overlay
+          </button>
+        </div>
+      </div>
+
+      <div class="fm__panes">
+        <div class="fm__pane" data-side="design">
+          <span class="fm__paneLabel"><span class="fm__scopeDot"></span>Design<span class="fm__paneMeta">figma · roster</span></span>
+          <div class="fm__well">
+            <div class="phone">
+              <div class="phone__status"><span>9:41</span><span>●●●</span></div>
+              <div class="phone__nav">Roster</div>
+              <div class="phone__list">
+                <div class="phone__row"><span class="phone__avatar"></span><span class="phone__lines"><span class="phone__l1"></span><span class="phone__l2"></span></span></div>
+                <div class="phone__row"><span class="phone__avatar"></span><span class="phone__lines"><span class="phone__l1"></span><span class="phone__l2"></span></span></div>
+                <div class="phone__row"><span class="phone__avatar"></span><span class="phone__lines"><span class="phone__l1"></span><span class="phone__l2"></span></span></div>
+              </div>
+              <div class="phone__cta">Add player</div>
+            </div>
+          </div>
+        </div>
+        <div class="fm__pane" data-side="built">
+          <span class="fm__paneLabel"><span class="fm__scopeDot"></span>Built<span class="fm__paneMeta">snapshot · iphone-15</span></span>
+          <div class="fm__well">
+            <div class="phone">
+              <div class="phone__status"><span>9:41</span><span>●●●</span></div>
+              <div class="phone__nav">Roster</div>
+              <div class="phone__list">
+                <div class="phone__row"><span class="phone__avatar"></span><span class="phone__lines"><span class="phone__l1"></span><span class="phone__l2"></span></span></div>
+                <div class="phone__row"><span class="phone__avatar"></span><span class="phone__lines"><span class="phone__l1"></span><span class="phone__l2"></span></span></div>
+                <div class="phone__row"><span class="phone__avatar"></span><span class="phone__lines"><span class="phone__l1"></span><span class="phone__l2"></span></span></div>
+              </div>
+              <div class="phone__cta">Add player</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // Spec-viewer switcher (scaffolding).
+  const body = document.body;
+  document.querySelectorAll('[data-theme]').forEach(b => b.addEventListener('click', () => {
+    body.classList.remove('t-neutral','t-space'); body.classList.add('t-' + b.dataset.theme);
+    document.querySelectorAll('[data-theme]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+  document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => {
+    body.classList.remove('m-light','m-dark'); body.classList.add('m-' + b.dataset.mode);
+    document.querySelectorAll('[data-mode]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+
+  // Overlay slider (basic state display).
+  const range = document.getElementById('ovRange');
+  const top = document.getElementById('ovTop');
+  const handle = document.getElementById('ovHandle');
+  if (range) {
+    const apply = v => { const s = v + '%'; top.style.setProperty('--split', s); handle.style.left = s; };
+    range.addEventListener('input', e => apply(e.target.value));
+    apply(range.value);
+  }
+</script>
+</body>
+</html>

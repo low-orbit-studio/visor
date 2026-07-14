@@ -545,6 +545,78 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'fidelity-mirror': [
+    {
+      name: 'title',
+      type: 'string',
+      required: true,
+      description: "The compared surface's name — the header title (e.g. a component or screen name).",
+    },
+    {
+      name: 'design',
+      type: 'FidelitySource',
+      required: true,
+      description:
+        'The DESIGN source (left pane) — the pure-HTML design. Renders `content` when present, else an <img> (image) or a live-route/external <iframe> from `src`. Carries an optional pane label + mono meta.',
+    },
+    {
+      name: 'built',
+      type: 'FidelitySource',
+      required: true,
+      description:
+        'The BUILT source (right pane) — the Visor-TSX render, or a device-framed screenshot for native/flutter. Same shape as design; the built pane also draws the numbered delta callouts.',
+    },
+    {
+      name: 'verdict',
+      type: "'match' | 'drift' | 'fail'",
+      required: true,
+      description:
+        'The diff verdict — tints the status pill (the diff indicator). match → success, drift → warning, fail → destructive.',
+    },
+    {
+      name: 'platform',
+      type: "'web' | 'native' | 'flutter' | 'external'",
+      default: "'web'",
+      description:
+        'Platform of the built surface. Drives the built-side renderer and the header chip (web live route, native/flutter device bezel, external artifact).',
+    },
+    {
+      name: 'mode',
+      type: "'split' | 'overlay'",
+      default: "'split'",
+      description:
+        'Initial compare presentation — split (design-left / built-right) or overlay (drag-to-reveal slider). The header toggle switches in place.',
+    },
+    {
+      name: 'score',
+      type: 'string',
+      description: 'Optional score/summary string on the status pill (e.g. "99.4%", "3 deltas").',
+    },
+    {
+      name: 'deltas',
+      type: 'FidelityDelta[]',
+      description:
+        'Enumerated drifts — each renders a numbered callout on the built side (when it carries a position) and a classed legend row (radius | color | spacing | type | align). Omit → no callouts or legend.',
+    },
+    {
+      name: 'bleed',
+      type: 'boolean',
+      default: 'true',
+      description:
+        'Widescreen full-bleed layout — the compare spans the viewport so each pane is ~50vw. Under 768px the panes stack design-over-built.',
+    },
+    {
+      name: 'overlayPosition',
+      type: 'number',
+      default: '55',
+      description: 'Initial overlay reveal position (0–100), the percent of the design source shown from the left before the seam.',
+    },
+    {
+      name: 'onModeChange',
+      type: "(mode: 'split' | 'overlay') => void",
+      description: 'Notified when the compare mode toggles via the header segmented control.',
+    },
+  ],
   'doc-frame': [
     {
       name: 'manifest',
