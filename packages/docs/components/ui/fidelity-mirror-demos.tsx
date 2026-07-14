@@ -19,10 +19,11 @@ function DocNavCapture({ drift = false }: { drift?: boolean }) {
           style={{
             width: '20px', height: '20px', borderRadius: '6px', display: 'grid', placeItems: 'center',
             background: 'var(--primary)', color: 'var(--color-white)',
-            fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 700,
+            fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 700, lineHeight: 1,
           }}
         >
-          V
+          {/* Optically center the cap — mono metrics ride the glyph above the em center. */}
+          <span style={{ transform: 'translateY(1px)' }}>V</span>
         </span>
         <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '14px', color: 'var(--text-primary)' }}>
           Visor
@@ -69,7 +70,7 @@ function DocNavCapture({ drift = false }: { drift?: boolean }) {
 /** A minimal iOS roster screen — same on both sides (the MATCH case). */
 function RosterCapture() {
   return (
-    <div style={{ width: '168px', margin: '0 auto', fontFamily: 'var(--font-sans)' }}>
+    <div style={{ width: '100%', fontFamily: 'var(--font-sans)' }}>
       <div
         style={{
           display: 'flex', justifyContent: 'space-between', padding: '6px 12px 2px',

@@ -82,7 +82,7 @@
 .titleWrap {
   display: inline-flex;
   flex-direction: column;
-  gap: calc(var(--spacing-1, 0.25rem) * 0.75);
+  gap: calc(var(--spacing-1, 0.25rem) * 1.5);
   min-width: 0;
 }
 .title {
