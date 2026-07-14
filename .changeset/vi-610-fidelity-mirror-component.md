@@ -1,7 +1,0 @@
----
-"@loworbitstudio/visor": patch
----
-
-VI-610: add the `FidelityMirror` component — the design-left / built-right comparison surface.
-
-`FidelityMirror` is the Fidelity Mirror DISPLAY: the side-by-side viewer that renders inside `DocFrame`'s content, distinct from the screenshot-diff GATE (PL-2139), which VERIFIES rather than DISPLAYS. It renders the pure-HTML design (left) against the Visor-TSX render (right) in recessed capture wells, with a verdict diff indicator, numbered delta callouts, a classed delta legend (radius | color | spacing | type | align), and a drag-to-reveal `overlay` mode alongside the default `split`. Real compare semantics are HTML-design-left / Visor-TSX-right — the scope-dot hues carry source identity (`--info` design, `--accent` built), never a recolored side. `platform` (`web` | `native` | `flutter` | `external`) drives the built-side renderer and header chip: web live-route iframe, native/flutter device-bezel screenshot, or external artifact. The compare goes full-bleed on widescreen (`bleed`, default on) so each pane is ~50vw with the center gutter equal to the outer padding; under 768px the panes stack design-over-built (never a sideways scroll strip). The card/cluster radius and the recessed well fill are component-OWNED fixed tokens (`--fm-radius`, `--fm-well`), not the theme `--radius-*` scale or a bare `--surface-*` token — the drift class this component exists to surface. Carries a `design_ref` (`docs/audits/vi-610/index.html`) and ships via the registry as `npx visor add fidelity-mirror`.
