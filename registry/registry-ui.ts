@@ -2235,6 +2235,28 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "fidelity-mirror",
+    type: "registry:ui",
+    category: "data-display",
+    description:
+      "The design-left / built-right comparison surface — renders a pure-HTML design source beside its Visor-TSX render (or a native/Flutter device-framed screenshot, or an external artifact) in recessed capture wells, with a verdict diff indicator, numbered delta callouts, a classed delta legend, and a drag-to-reveal overlay mode. Composes inside DocFrame's content and goes full-bleed on widescreen so each pane is ~50vw. The fidelity DISPLAY (the screenshot-diff GATE is a separate verification concern).",
+    dependencies: [
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/fidelity-mirror/fidelity-mirror.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/fidelity-mirror/fidelity-mirror.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "key-value-list",
     type: "registry:ui",
     category: "data-display",

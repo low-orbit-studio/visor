@@ -81,6 +81,97 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       }`,
     },
   },
+  "fidelity-mirror": {
+    default: {
+      export: "FidelityMirror",
+      interactiveTarget: '[data-slot="fidelity-mirror-overlay"]',
+      // Mirrors the approved spec's Example A — the web split DRIFT compare of a
+      // doc-nav cluster (design-left / built-right), so the rendered diff is
+      // meaningful for the render-vs-design self-check. Captures are lightweight
+      // inline nodes (React is in scope in the fixture) — no external assets.
+      props: `(function () {
+        var cluster = function (drift) {
+          return React.createElement(
+            "div",
+            {
+              style: {
+                display: "flex", flexDirection: "column", gap: "10px",
+                fontFamily: "var(--font-sans)",
+              },
+            },
+            React.createElement(
+              "div",
+              { style: { display: "flex", alignItems: "center", gap: "var(--spacing-2)" } },
+              React.createElement("span", {
+                style: {
+                  width: "20px", height: "20px", borderRadius: "6px",
+                  display: "grid", placeItems: "center",
+                  background: "var(--primary)", color: "var(--color-white)",
+                  fontFamily: "var(--font-mono)", fontSize: "10px", fontWeight: 700,
+                },
+              }, "V"),
+              React.createElement("span", {
+                style: { fontFamily: "var(--font-mono)", fontWeight: 700, fontSize: "14px", color: "var(--text-primary)" },
+              }, "Visor")
+            ),
+            React.createElement(
+              "div",
+              {
+                style: {
+                  display: "inline-flex", flexDirection: "column", gap: "var(--spacing-2)",
+                  padding: "var(--spacing-2)",
+                  border: "1px solid var(--hairline)",
+                  borderRadius: drift ? "22px" : "12px",
+                  background: "var(--surface-card)",
+                },
+              },
+              React.createElement("span", {
+                style: {
+                  fontFamily: "var(--font-mono)", fontSize: "9px", fontWeight: 700,
+                  letterSpacing: drift ? "0" : "0.14em",
+                  textTransform: drift ? "none" : "uppercase",
+                  color: "var(--text-secondary)",
+                },
+              }, "Shared"),
+              React.createElement(
+                "div",
+                { style: { display: "flex", gap: "var(--spacing-1)" } },
+                ["Overview", "Tokens", "Themes"].map(function (label, i) {
+                  return React.createElement("span", {
+                    key: label,
+                    style: {
+                      padding: "5px 9px", borderRadius: "9999px",
+                      border: "1px solid transparent",
+                      background: drift
+                        ? "var(--surface-subtle)"
+                        : "color-mix(in srgb, var(--surface-card), var(--color-neutral-950) 22%)",
+                      fontFamily: "var(--font-mono)", fontSize: "9px", fontWeight: 500,
+                      letterSpacing: "0.05em", textTransform: "uppercase",
+                      color: "var(--text-secondary)",
+                    },
+                  }, label)
+                })
+              )
+            )
+          )
+        }
+        return {
+          title: "DocNav",
+          subtitle: "Fidelity Mirror · VI-611",
+          platform: "web",
+          verdict: "drift",
+          score: "3 deltas",
+          design: { content: cluster(false), meta: "index.html" },
+          built: { content: cluster(true), meta: "route · /doc-nav" },
+          deltas: [
+            { class: "radius", description: "Group cluster corners 22px -> 12px.", position: { top: "34px", left: "12px" } },
+            { class: "color", description: "Resting pills read --surface-subtle.", position: { top: "52px", left: "96px" } },
+            { class: "type", description: "Group labels are title-case.", position: { top: "34px", right: "12px" } },
+          ],
+        }
+      })()`,
+    },
+  },
   button: {
     default: {
       export: "Button",

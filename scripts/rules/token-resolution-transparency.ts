@@ -78,6 +78,16 @@ export const SURFACE_INTENTS: SurfaceIntentAssertion[] = [
     intent: 'recessed',
     container: '--surface-card',
   },
+  {
+    // FidelityMirror's capture well (VI-610) — the recessed frame the design and
+    // built surfaces sit in. Routes through `--fm-well` (the card mixed ~22%
+    // toward `--color-neutral-950`), guaranteed darker than the card in BOTH
+    // modes so the wells read as recessed and never invert to a raised chip.
+    component: 'fidelity-mirror',
+    token: '--fm-well',
+    intent: 'recessed',
+    container: '--surface-card',
+  },
 ];
 
 /**
