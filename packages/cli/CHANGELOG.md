@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.18.1
+
+### Patch Changes
+
+- 95d1a1d: BO-67: add a `design_ref` field to component `.visor.yaml` and a default-on, Visor-scoped render-vs-design self-check in the Component Build Workflow.
+
+  `design_ref` points at the operator-approved design a component must match. Its presence is the intrinsic trigger (W-111) for a mandatory build-time step: render the built component via `visor render` across ≥2 themes × both modes, diff each capture against the design, enumerate radius/spacing/color/alignment deltas, and fix before the PR. A new `visor-yaml-design-ref` validate rule confirms a present `design_ref` resolves. The `doc-nav` component carries a `design_ref`; `docs/audits/BO-67/` proves the check retroactively surfaces the gray-pill / radius / type / alignment deltas that had to be hand-caught across VI-611.
+
+- 59f4f09: VI-610: add the `FidelityMirror` component — the design-left / built-right comparison surface.
+
+  `FidelityMirror` is the Fidelity Mirror DISPLAY: the side-by-side viewer that renders inside `DocFrame`'s content, distinct from the screenshot-diff GATE (PL-2139), which VERIFIES rather than DISPLAYS. It renders the pure-HTML design (left) against the Visor-TSX render (right) in recessed capture wells, with a verdict diff indicator, numbered delta callouts, a classed delta legend (radius | color | spacing | type | align), and a drag-to-reveal `overlay` mode alongside the default `split`. Real compare semantics are HTML-design-left / Visor-TSX-right — the scope-dot hues carry source identity (`--info` design, `--accent` built), never a recolored side. `platform` (`web` | `native` | `flutter` | `external`) drives the built-side renderer and header chip: web live-route iframe, native/flutter device-bezel screenshot, or external artifact. The compare goes full-bleed on widescreen (`bleed`, default on) so each pane is ~50vw with the center gutter equal to the outer padding; under 768px the panes stack design-over-built (never a sideways scroll strip). The card/cluster radius and the recessed well fill are component-OWNED fixed tokens (`--fm-radius`, `--fm-well`), not the theme `--radius-*` scale or a bare `--surface-*` token — the drift class this component exists to surface. Carries a `design_ref` (`docs/audits/vi-610/index.html`) and ships via the registry as `npx visor add fidelity-mirror`.
+
+- c42d0a4: VI-613: DocFrame text-fallback wordmark now renders in the theme's display face.
+
+  When a theme ships no `--brand-logo` (or the brand asset fails to load) and DocFrame falls back to the `manifest.brand` text wordmark, the wordmark now uses `var(--font-display, var(--font-family-heading, inherit))` instead of the ambient `--font-sans`. A text wordmark now carries the theme's brand character — e.g. Animal's condensed "Sequel 100 Black 95" instead of the body "Ratio" — matching the display-font convention already used by `stat-card`, `page-header`, and `section-intro`, and degrading gracefully (heading face → ambient sans) on themes that ship no `--font-display`. Brand-logo resolution from the private visor themes (the mode-aware `--brand-logo` SVG path) is unchanged and verified end-to-end in `docs/audits/VI-613/`.
+
 ## 1.18.0
 
 ### Minor Changes
