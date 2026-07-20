@@ -1,5 +1,71 @@
 # @loworbitstudio/visor-core
 
+## 0.14.0
+
+### Minor Changes
+
+- b4d4e38: VI-617: move the `prefers-reduced-motion` block into the `visor-base` cascade layer
+
+  **This changes cascade priority for every consumer of `./css`, `./tokens`, and `.` — read this before upgrading.** It is a behavioural change, not an internal tidy.
+
+  `dist/tokens.css` ships a global motion-safety rule:
+
+  ```css
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  ```
+
+  Until now this was emitted **unlayered** — outside every `@layer`. It is now emitted inside `@layer visor-base`, the first and lowest-priority layer. The declarations themselves, including `!important`, are unchanged.
+
+  **What is unaffected.** Motion is still suppressed. Component animations live in unlayered `.module.css` classes, and an `!important` declaration beats a normal one regardless of layer, so the block keeps winning over every component's `animation`/`transition`. Verified in Chromium against the real `skeleton` (`@keyframes`) and `button` (`transition`) module CSS: under `prefers-reduced-motion: reduce` the computed `animation-duration` and `transition-duration` are `0.01ms` before and after this change.
+
+  **What changes — and it is the opposite of what you might expect.** `!important` declarations _invert_ cascade-layer order: unlayered `!important` is the **lowest**-priority important author declaration, and the first-declared layer is the **highest**. So this block is now **harder** to override with `!important`, not easier:
+
+  | Consumer rule (unlayered, loaded after visor-core) | Before                           | After               |
+  | -------------------------------------------------- | -------------------------------- | ------------------- |
+  | normal declaration, no `!important`                | visor-core wins                  | visor-core wins     |
+  | `!important` declaration                           | **consumer wins** (source order) | **visor-core wins** |
+
+  If you rely on an unlayered `!important` rule to opt a surface out of global motion suppression, that rule **will stop working** on upgrade. Two supported ways to override the block:
+
+  ```css
+  /* 1. Declare your own layer ahead of visor-base. */
+  @layer app, visor-base;
+  @layer app {
+    .my-surface {
+      animation-duration: 3s !important;
+    }
+  }
+  ```
+
+  ```html
+  <!-- 2. Inline style with !important. -->
+  <div style="animation-duration: 3s !important"></div>
+  ```
+
+  **Why make the change at all.** Unlayered styles beat every layered style in the package, so this was the single highest-priority declaration `visor-core` shipped and the one rule the layer system could not reason about. It now sits in the same layer as every other element-level rule visor-core owns (`visor-base`, added in VI-616), which makes the package's cascade behaviour uniform and inspectable. `dist/tokens.css` now contains **no** depth-0 rules at all — every construct in the file is an `@layer` block.
+
+- 06446b9: VI-616: ship a `visor-base` layer — token-to-page binding + element reset
+
+  visor-core now owns the element-level baseline instead of leaving each consumer and each component to rediscover it.
+
+  **New `visor-base` cascade layer.** Added as the FIRST (lowest-priority) entry in both mirrored `LAYER_ORDER` declarations, so a consumer's own unlayered `body {}` and every component `.module.css` beat it unconditionally, while author-origin styles still outrank the UA stylesheet.
+
+  **New opt-in export `@loworbitstudio/visor-core/reset`** (`dist/reset.css`) — the _propagation_ half. `input, textarea, select, button, optgroup { font: inherit }`, global `box-sizing: border-box`, zeroed UA margin on form controls, button chrome normalisation, `img/svg/video` block sizing, and `appearance: none` for `input[type=search|number]`. It is a separate export: `.`, `./css`, `./tokens` and `./primitives` emit no element rules, so consumers relying on Tailwind preflight are byte-unchanged.
+
+  **NextJS adapter now emits the _origination_ half** — a `@layer visor-base` block binding `font-family: var(--font-body)`, `color`, `background` and `font-size` to `body` (mirroring what the docs adapter has always done), plus the `@import "@loworbitstudio/visor-core/reset";` line for new scaffolds. Previously `--font-sans` was defined and bound to nothing, so `font: inherit` on a control faithfully propagated whatever the consumer hand-wrote. Opt out with `includeBaseLayer: false`.
+
+  **New `missing-visor-base-layer` warning in `visor check design`** — fires when an app renders Visor form controls but imports neither the reset nor Tailwind preflight, and also when the _installed_ visor-core predates the `/reset` export (a file-existence test for `dist/reset.css`, not a version comparison). Honours `.visorrc.json` `disabledRules`.
+
+  **Component sweep.** Removed 24 redundant `font-family: inherit` / `font: inherit` declarations across components and blocks, and reconciled the drifted variants: hardcoded `system-ui` fallbacks behind body-font tokens now fall back to `inherit`, and color-picker's hardcoded mono stack now routes through `var(--font-mono)`. The ~20 button-rendering components that were never patched need no patch. A new `element-defaults-owned-by-base` validator rule keeps it that way, deriving its native-control target set from the CLI's native map rather than a hardcoded path list.
+
 ## 0.13.0
 
 ### Minor Changes
