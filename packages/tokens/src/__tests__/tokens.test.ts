@@ -9,7 +9,7 @@
  * - Token generation produces valid CSS
  */
 
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, vi, afterEach, beforeAll, afterAll } from "vitest";
 
 import {
   primitiveColors,
@@ -1328,6 +1328,147 @@ describe("Motion-safety block layering (VI-617)", () => {
     );
     expect(offenders).toEqual([]);
   });
+
+  // The emitted comment is the only cascade documentation most consumers read.
+  // The first cut of it claimed "a consumer's own unlayered `!important` can now
+  // beat this block" — flatly backwards, and it contradicted the release notes.
+  // These pin the prose against that exact regression.
+  it("does NOT claim a consumer's unlayered !important can override the block", () => {
+    const css = tokensCss();
+    expect(css).not.toMatch(/unlayered `!important` can now beat/i);
+    expect(css).not.toMatch(/`!important`[^*]{0,80}can now (beat|override)/i);
+  });
+
+  it("documents the inversion and both supported escape hatches", () => {
+    const css = tokensCss();
+    expect(css).toContain("HARDER to override");
+    expect(css).toContain("INVERTS cascade-layer order");
+    expect(css).toContain("@layer app, visor-base;");
+    expect(css).toMatch(/inline `style` attribute with `!important`/);
+  });
+});
+
+// ============================================================
+// Cascade behaviour — layered vs unlayered `!important` (VI-617)
+// ============================================================
+//
+// Pins the BEHAVIOUR the comment above describes, rather than only its prose.
+// `!important` inverts cascade-layer order: an unlayered `!important` author
+// declaration is the LOWEST-priority important declaration, and the
+// FIRST-declared layer is the highest. Moving the motion-safety block into
+// `visor-base` (the first layer) therefore made it HARDER to override, not
+// easier — the opposite of the intuition that shipped in the first comment.
+//
+// Skips where chromium is unavailable (playwright is an optional dep), mirroring
+// scripts/rules/__tests__/token-resolution-transparency.test.ts.
+
+describe("Cascade behaviour — layered vs unlayered !important (VI-617)", () => {
+  interface BrowserLike {
+    newPage(): Promise<{
+      setContent(html: string, opts: { waitUntil: "load" }): Promise<void>;
+      evaluate(expression: string): Promise<unknown>;
+      close(): Promise<void>;
+    }>;
+    close(): Promise<void>;
+  }
+
+  let browser: BrowserLike | null = null;
+
+  beforeAll(async () => {
+    for (const mod of ["playwright", "@playwright/test"]) {
+      try {
+        const { chromium } = (await import(mod)) as {
+          chromium: { launch: () => Promise<BrowserLike> };
+        };
+        browser = await chromium.launch();
+        break;
+      } catch {
+        browser = null; // chromium not installed — tests self-skip below
+      }
+    }
+  }, 60_000);
+
+  afterAll(async () => {
+    if (browser) await browser.close();
+  });
+
+  /** Returns the computed color of `#probe` after applying `css`. */
+  async function computedColor(css: string): Promise<string> {
+    const page = await browser!.newPage();
+    await page.setContent(
+      `<style>${css}</style><div id="probe">x</div>`,
+      { waitUntil: "load" },
+    );
+    const color = (await page.evaluate(
+      `getComputedStyle(document.getElementById('probe')).color`,
+    )) as string;
+    await page.close();
+    return color;
+  }
+
+  const GREEN = "rgb(0, 128, 0)";
+  const RED = "rgb(255, 0, 0)";
+
+  it("a LAYERED !important beats a later-declared UNLAYERED !important", async (ctx) => {
+    if (!browser) return ctx.skip();
+    // The real shape: visor-core's block sits in `visor-base` (first layer);
+    // the consumer's override is unlayered and loaded afterwards.
+    const color = await computedColor(`
+      @layer visor-base, visor-primitives;
+      @layer visor-base { #probe { color: green !important; } }
+      #probe { color: red !important; }
+    `);
+    expect(color).toBe(GREEN); // visor-core wins — the block is NOT overridable this way
+  }, 30_000);
+
+  it("negative control — with BOTH unlayered, source order decides (the pre-move behaviour)", async (ctx) => {
+    if (!browser) return ctx.skip();
+    // This is exactly what the block used to do when emitted at depth 0. It is
+    // the outcome the original comment wrongly claimed still holds.
+    const color = await computedColor(`
+      #probe { color: green !important; }
+      #probe { color: red !important; }
+    `);
+    expect(color).toBe(RED); // consumer wins — no longer the case after VI-617
+  }, 30_000);
+
+  it("a consumer layer declared AHEAD of visor-base is a working escape hatch", async (ctx) => {
+    if (!browser) return ctx.skip();
+    // Escape hatch #1 from the emitted comment. `app` is declared first, so its
+    // !important declaration outranks visor-base's.
+    const color = await computedColor(`
+      @layer app, visor-base;
+      @layer visor-base { #probe { color: green !important; } }
+      @layer app { #probe { color: red !important; } }
+    `);
+    expect(color).toBe(RED); // consumer wins via layer order
+  }, 30_000);
+
+  it("an inline style with !important is a working escape hatch", async (ctx) => {
+    if (!browser) return ctx.skip();
+    // Escape hatch #2 from the emitted comment.
+    const page = await browser.newPage();
+    await page.setContent(
+      `<style>@layer visor-base;@layer visor-base { #probe { color: green !important; } }</style>` +
+        `<div id="probe" style="color: red !important">x</div>`,
+      { waitUntil: "load" },
+    );
+    const color = (await page.evaluate(
+      `getComputedStyle(document.getElementById('probe')).color`,
+    )) as string;
+    await page.close();
+    expect(color).toBe(RED); // consumer wins via inline !important
+  }, 30_000);
+
+  it("a layered !important still beats an unlayered NORMAL declaration (motion safety survives)", async (ctx) => {
+    if (!browser) return ctx.skip();
+    const color = await computedColor(`
+      @layer visor-base;
+      @layer visor-base { #probe { color: green !important; } }
+      #probe { color: red; }
+    `);
+    expect(color).toBe(GREEN);
+  }, 30_000);
 });
 
 describe("LAYER_ORDER mirroring (VI-312 invariant)", () => {
