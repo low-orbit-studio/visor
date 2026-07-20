@@ -1268,6 +1268,68 @@ describe("Element reset — dist/reset.css (VI-616)", () => {
   });
 });
 
+// ============================================================
+// Motion-safety block layering (VI-617)
+// ============================================================
+//
+// The prefers-reduced-motion block used to be emitted at nesting depth 0 —
+// OUTSIDE every @layer. Per the cascade-layers spec unlayered styles beat all
+// layered styles, so combined with `!important` on a universal selector it was
+// the single highest-priority declaration visor-core shipped and could not be
+// overridden by any consumer. It now lives in visor-base, the lowest layer.
+
+describe("Motion-safety block layering (VI-617)", () => {
+  const DIST = join(REPO_ROOT, "packages/tokens/dist");
+  const tokensCss = () => readFileSync(join(DIST, "tokens.css"), "utf-8");
+
+  /** Names every construct that opens a block at nesting depth 0. */
+  const topLevelBlocks = (css: string): string[] => {
+    const stripped = css.replace(/\/\*[\s\S]*?\*\//g, "");
+    const blocks: string[] = [];
+    let depth = 0;
+    let buf = "";
+    for (const ch of stripped) {
+      if (ch === "{") {
+        if (depth === 0) blocks.push(buf.trim());
+        depth += 1;
+        buf = "";
+      } else if (ch === "}") {
+        depth -= 1;
+        buf = "";
+      } else if (ch === ";" && depth === 0) {
+        buf = "";
+      } else {
+        buf += ch;
+      }
+    }
+    return blocks;
+  };
+
+  it("emits the reduced-motion block inside @layer visor-base", () => {
+    const css = tokensCss();
+    const layerStart = css.indexOf("@layer visor-base {");
+    expect(layerStart).toBeGreaterThan(-1);
+    const motionIdx = css.indexOf("@media (prefers-reduced-motion: reduce) {");
+    expect(motionIdx).toBeGreaterThan(layerStart);
+  });
+
+  it("retains the !important declarations (D2 — they beat unlayered component animations)", () => {
+    const css = tokensCss();
+    expect(css).toContain("animation-duration: 0.01ms !important;");
+    expect(css).toContain("animation-iteration-count: 1 !important;");
+    expect(css).toContain("transition-duration: 0.01ms !important;");
+  });
+
+  it("leaves NO unlayered rule at nesting depth 0", () => {
+    // Every depth-0 block must be an @layer block. Anything else is unlayered
+    // and therefore beats the entire package.
+    const offenders = topLevelBlocks(tokensCss()).filter(
+      (b) => !b.startsWith("@layer "),
+    );
+    expect(offenders).toEqual([]);
+  });
+});
+
 describe("LAYER_ORDER mirroring (VI-312 invariant)", () => {
   it("is byte-identical between the tokens generator and the adapter module", () => {
     const generator = readFileSync(

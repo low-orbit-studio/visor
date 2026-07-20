@@ -638,17 +638,35 @@ function generateTokensCSS(): string {
 
   lines.push(
     "/* ============================================",
-    "   Global: Motion Safety",
-    "   ============================================ */"
+    "   Global: Motion Safety → @layer visor-base",
+    "   ============================================ */",
+    "/*",
+    " * Lives in visor-base (VI-617), the FIRST/lowest-priority layer, so it is",
+    " * overridable like every other element-level rule visor-core ships. It was",
+    " * previously emitted unlayered, which per the cascade-layers spec beat every",
+    " * layered rule in the package and made it effectively unoverridable.",
+    " *",
+    " * The `!important` declarations are retained deliberately: component",
+    " * animations live in unlayered `.module.css` classes, which beat any layered",
+    " * rule on layer order alone. `!important` in a lower layer still wins over a",
+    " * normal declaration in a higher layer (and over unlayered normal rules), so",
+    " * motion safety survives the move. What changes is that a consumer's own",
+    " * unlayered `!important` can now beat this block.",
+    " */"
   );
   lines.push(
-    "@media (prefers-reduced-motion: reduce) {",
-    "  *, *::before, *::after {",
-    "    animation-duration: 0.01ms !important;",
-    "    animation-iteration-count: 1 !important;",
-    "    transition-duration: 0.01ms !important;",
-    "  }",
-    "}",
+    wrapInLayer(
+      "visor-base",
+      [
+        "@media (prefers-reduced-motion: reduce) {",
+        "  *, *::before, *::after {",
+        "    animation-duration: 0.01ms !important;",
+        "    animation-iteration-count: 1 !important;",
+        "    transition-duration: 0.01ms !important;",
+        "  }",
+        "}",
+      ].join("\n"),
+    ),
     ""
   );
 
