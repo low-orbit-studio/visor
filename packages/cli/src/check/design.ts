@@ -11,11 +11,14 @@
  *
  *   Warn (general anti-patterns):
  *     banned-fonts, purple-gradient-on-white, pure-black-untinted, bounce-easing,
- *     sub-44px-touch-target, line-length-over-75ch, gradient-text, excessive-card-nesting
+ *     sub-44px-touch-target, line-length-over-75ch, gradient-text, excessive-card-nesting,
+ *     missing-visor-base-layer
  */
 
 import { readFileSync, readdirSync, statSync, existsSync } from "fs"
-import { resolve, extname, join, basename } from "path"
+import { resolve, extname, join, basename, dirname } from "path"
+
+import { NATIVE_TO_VISOR, INPUT_TYPE_MAP } from "./native-map.js"
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -609,6 +612,164 @@ function ruleExcessiveCardNesting(source: string, filePath: string): DesignFindi
   return found
 }
 
+/**
+ * warn: missing-visor-base-layer  (VI-616)
+ *
+ * Visor components assume an element baseline exists: they no longer carry
+ * per-component `font-family: inherit` patches, because those are copy-and-own
+ * and therefore can never propagate. The baseline ships instead as
+ * `@loworbitstudio/visor-core/reset` — npm being the only auto-propagating
+ * channel Visor has.
+ *
+ * This rule fires on BOTH failure modes (D10):
+ *   1. the app renders Visor controls but imports neither the reset nor
+ *      Tailwind preflight; and
+ *   2. visor-core is installed but predates the `/reset` export.
+ *
+ * Case 2 is a plain file-existence test against the *installed* package —
+ * `node_modules/@loworbitstudio/visor-core/dist/reset.css` — deliberately not
+ * a version comparison. There is no semver dependency in the CLI and no
+ * version constant to compare against; asking "does the installed package
+ * expose the file" is exact and cannot drift.
+ */
+const NATIVE_CONTROL_COMPONENTS = new Set<string>([
+  ...Object.values(NATIVE_TO_VISOR).map((m) => m.visorName),
+  ...Object.values(INPUT_TYPE_MAP).map((m) => m.visorName),
+])
+
+const RESET_IMPORT_RE = /@loworbitstudio\/visor-core\/reset/
+const PREFLIGHT_RE = /@tailwind\s+base|@import\s+["']tailwindcss["']/
+
+interface BaseLayerState {
+  hasReset: boolean
+  hasPreflight: boolean
+  visorCoreInstalled: boolean
+  visorCoreExportsReset: boolean
+}
+
+const baseLayerStateCache = new Map<string, BaseLayerState>()
+const baseLayerReported = new Set<string>()
+
+/** Reset per-scan memoisation so repeated `scanDesign` calls stay independent. */
+export function resetBaseLayerCache(): void {
+  baseLayerStateCache.clear()
+  baseLayerReported.clear()
+}
+
+/** Nearest ancestor directory containing a package.json. */
+function findProjectRoot(filePath: string): string | null {
+  let dir = dirname(resolve(filePath))
+  for (;;) {
+    if (existsSync(join(dir, "package.json"))) return dir
+    const parent = dirname(dir)
+    if (parent === dir) return null
+    dir = parent
+  }
+}
+
+function collectStylesheets(root: string): string[] {
+  const out: string[] = []
+  function recurse(dir: string, depth: number) {
+    if (depth > 6) return
+    let entries: string[]
+    try {
+      entries = readdirSync(dir)
+    } catch {
+      return
+    }
+    for (const entry of entries) {
+      if (entry === "node_modules" || entry === "dist" || entry.startsWith(".")) continue
+      const full = join(dir, entry)
+      let s
+      try {
+        s = statSync(full)
+      } catch {
+        continue
+      }
+      if (s.isDirectory()) recurse(full, depth + 1)
+      else if (extname(full) === ".css") out.push(full)
+    }
+  }
+  recurse(root, 0)
+  return out
+}
+
+function baseLayerState(root: string): BaseLayerState {
+  const cached = baseLayerStateCache.get(root)
+  if (cached) return cached
+
+  let hasReset = false
+  let hasPreflight = false
+  for (const sheet of collectStylesheets(root)) {
+    let css: string
+    try {
+      css = readFileSync(sheet, "utf-8")
+    } catch {
+      continue
+    }
+    if (RESET_IMPORT_RE.test(css)) hasReset = true
+    if (PREFLIGHT_RE.test(css)) hasPreflight = true
+    if (hasReset && hasPreflight) break
+  }
+
+  const corePath = join(root, "node_modules", "@loworbitstudio", "visor-core")
+  const state: BaseLayerState = {
+    hasReset,
+    hasPreflight,
+    visorCoreInstalled: existsSync(corePath),
+    visorCoreExportsReset: existsSync(join(corePath, "dist", "reset.css")),
+  }
+  baseLayerStateCache.set(root, state)
+  return state
+}
+
+function ruleMissingVisorBaseLayer(source: string, filePath: string): DesignFinding[] {
+  if (!CODE_EXTS.has(extname(filePath))) return []
+
+  // Does this file render a Visor component that stands in for a native
+  // control? Target set derives from native-map, so adding an entry there
+  // extends coverage without touching this rule.
+  const src = lines(source)
+  let usageLine = -1
+  for (let i = 0; i < src.length; i++) {
+    const spec = src[i].match(/from\s+["'][^"']*components\/ui\/([a-z0-9-]+)["']/)
+    if (spec && NATIVE_CONTROL_COMPONENTS.has(spec[1])) {
+      usageLine = i + 1
+      break
+    }
+  }
+  if (usageLine === -1) return []
+
+  const root = findProjectRoot(filePath)
+  if (!root || baseLayerReported.has(root)) return []
+
+  const state = baseLayerState(root)
+
+  if (state.visorCoreInstalled && !state.visorCoreExportsReset) {
+    baseLayerReported.add(root)
+    return [finding(
+      filePath, usageLine,
+      "missing-visor-base-layer",
+      "warn",
+      "The installed @loworbitstudio/visor-core predates the /reset export, so Visor's element baseline is unavailable. Form controls will render in the browser's default font rather than your theme font.",
+      'Run `npm update @loworbitstudio/visor-core`, then add `@import "@loworbitstudio/visor-core/reset";` to your global stylesheet.'
+    )]
+  }
+
+  if (!state.hasReset && !state.hasPreflight) {
+    baseLayerReported.add(root)
+    return [finding(
+      filePath, usageLine,
+      "missing-visor-base-layer",
+      "warn",
+      "This project renders Visor form controls but imports neither @loworbitstudio/visor-core/reset nor Tailwind preflight. Without an element baseline, inputs, selects and buttons fall back to the UA font instead of inheriting your theme font.",
+      'Add `@import "@loworbitstudio/visor-core/reset";` to your global stylesheet — or keep your existing reset/preflight and disable this rule in .visorrc.json.'
+    )]
+  }
+
+  return []
+}
+
 // ─── Rule registry ────────────────────────────────────────────────────────────
 
 export interface RuleDefinition {
@@ -636,6 +797,7 @@ export const RULES: RuleDefinition[] = [
   { name: "line-length-over-75ch", severity: "warn", fn: ruleLineLengthOver75ch },
   { name: "gradient-text", severity: "warn", fn: ruleGradientText },
   { name: "excessive-card-nesting", severity: "warn", fn: ruleExcessiveCardNesting },
+  { name: "missing-visor-base-layer", severity: "warn", fn: ruleMissingVisorBaseLayer },
 ]
 
 // ─── Main scan function ───────────────────────────────────────────────────────
@@ -651,6 +813,9 @@ export function scanDesign(
 ): DesignCheckResult {
   const files = collectFiles(pathArg)
   const { disabledRules = [], errorsOnly = false } = options
+
+  // VI-616: project-level state is memoised across files within one scan.
+  resetBaseLayerCache()
 
   // Determine active rules
   const activeRules = RULES.filter(r => {

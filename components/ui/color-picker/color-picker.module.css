@@ -272,7 +272,7 @@
   border-radius: var(--radius-sm, 0.5rem);
   background-color: var(--surface-interactive-default, #f9fafb);
   color: var(--text-primary, #111827);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
   font-size: var(--font-size-sm, 0.875rem);
   font-variant-numeric: tabular-nums;
   outline: none;

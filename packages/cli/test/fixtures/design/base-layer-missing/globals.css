@@ -1,0 +1,4 @@
+/* No reset, no preflight. */
+body {
+  margin: 0;
+}

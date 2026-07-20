@@ -170,7 +170,6 @@
   background-color: var(--surface-page, #ffffff);
   color: var(--text-primary, #111827);
   font-size: var(--font-size-sm, 0.875rem);
-  font-family: inherit;
   line-height: var(--line-height-normal, 1.5);
   transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }

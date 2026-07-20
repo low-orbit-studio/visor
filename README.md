@@ -432,19 +432,22 @@ Visor's distributed CSS uses [CSS Cascade Layers](https://developer.mozilla.org/
 Every shipped `dist/*.css` file declares the same layer order and wraps its content in the matching tier:
 
 ```css
-@layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;
+@layer visor-base, visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;
 ```
 
 | Layer | Source | Purpose |
 | --- | --- | --- |
+| `visor-base` | `@loworbitstudio/visor-core/reset` (opt-in), generated themes (`visor theme apply --adapter nextjs`) | Element baseline — binds theme tokens to `html`/`body` and normalises UA element defaults |
 | `visor-primitives` | `@loworbitstudio/visor-core/primitives` | Raw token values (colors, spacing, type) |
 | `visor-semantic` | `@loworbitstudio/visor-core/semantic` | Purpose-named tokens (`--text-primary`, `--surface-card`) |
+| `visor-brand` | Generated themes (`overrides` pass-through) | Brand asset vars (`--brand-*`) |
 | `visor-adaptive` | `@loworbitstudio/visor-core/themes/*`, generated themes (`visor theme apply --adapter nextjs`) | Light/dark-aware tokens, generated theme overrides |
 | `visor-bridge` | Framework integrations (e.g. fumadocs) | Maps Visor tokens onto framework-native variables |
 
 **Cascade rules at a glance:**
 
 - Per the CSS spec, **unlayered styles always beat layered styles**. So your bare `:root { ... }` overrides written after `@import "@loworbitstudio/visor-core"` continue to win — that pattern still works as documented above.
+- **`visor-base` is deliberately lowest.** Your own unlayered `body { ... }` and every component `.module.css` (which uses no `@layer` at all) beat it unconditionally. Author-origin still beats the browser's UA stylesheet regardless of layer, so the reset does its job without ever fighting your code.
 - **Generated themes win over visor-core defaults.** Both sit in `@layer visor-adaptive`, and last-loaded wins within a layer, so importing a generated theme after visor-core gives the theme its expected priority.
 - **Stock themes ship layered too.** When you import `@loworbitstudio/visor-core/themes/blackout` (or any other stock theme), the `.{slug}-theme` class still wins on selector specificity but its rules participate in `visor-adaptive` so they coexist cleanly with generated themes.
 

@@ -44,8 +44,3 @@
 .cellFilled {
   border-color: var(--border-focus, #111827);
 }
-
-/* VI-510: form controls do not inherit font-family from the page; opt back in (matches textarea). */
-.wrapper :is(input, button, textarea) {
-  font-family: inherit;
-}

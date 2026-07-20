@@ -52,9 +52,6 @@
   padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
   font-size: var(--font-size-sm, 0.875rem);
   font-weight: var(--font-weight-medium, 500);
-  /* <button> doesn't inherit font-family — without this the trigger falls back
-     to the UA default (Arial), not the theme font. */
-  font-family: inherit;
   white-space: nowrap;
   color: var(--text-secondary, #6b7280);
   background: transparent;

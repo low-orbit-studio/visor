@@ -10,6 +10,7 @@ import { spacingGrid } from './rules/spacing-grid.js';
 import { noHardcodedMotion } from './rules/no-hardcoded-motion.js';
 import { noHardcodedOverlay } from './rules/no-hardcoded-overlay.js';
 import { focusRingTokens } from './rules/focus-ring-tokens.js';
+import { elementDefaultsOwnedByBase } from './rules/element-defaults-owned-by-base.js';
 import { themeStructure } from './rules/theme-structure.js';
 import { themePrimaryScale } from './rules/theme-primary-scale.js';
 import { themeYamlExists } from './rules/theme-yaml-exists.js';
@@ -62,6 +63,7 @@ const rules: Rule[] = [
   noHardcodedMotion,
   noHardcodedOverlay,
   focusRingTokens,
+  elementDefaultsOwnedByBase,
   themeStructure,
   themePrimaryScale,
   themeFontImports,

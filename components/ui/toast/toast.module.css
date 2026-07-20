@@ -6,7 +6,7 @@
 /* Individual toast — :global() selectors nested under .toaster for CSS Modules purity.
    Sonner renders toasts as children of its container element. */
 .toaster :global([data-sonner-toast]) {
-  font-family: var(--font-family-sans, system-ui, sans-serif);
+  font-family: var(--font-family-sans, inherit);
   background-color: var(--surface-popover, var(--surface-card, #ffffff));
   color: var(--text-primary, #111827);
   border-radius: var(--radius-lg, 0.5rem);

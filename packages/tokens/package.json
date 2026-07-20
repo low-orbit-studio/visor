@@ -9,6 +9,7 @@
     "./css": "./dist/index.css",
     "./tokens": "./dist/tokens.css",
     "./primitives": "./dist/primitives.css",
+    "./reset": "./dist/reset.css",
     "./semantic": "./dist/semantic.css",
     "./themes/blackout": "./dist/themes/blackout.css",
     "./themes/dark": "./dist/themes/dark.css",

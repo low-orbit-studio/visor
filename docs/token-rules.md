@@ -439,13 +439,15 @@ A surface separated from its container by a **hairline border** (not a fill shif
 Adapter-generated CSS uses `@layer` declarations for specificity ordering. This ensures theme overrides work without `!important`.
 
 ```css
-@layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;
+@layer visor-base, visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;
 ```
 
 | Layer | Contents | Specificity |
 |-------|----------|-------------|
-| `visor-primitives` | Color scales, spacing, radius, typography, shadows, motion | Lowest |
+| `visor-base` | Element baseline — `html`/`body` token binding + UA element reset (VI-616) | Lowest |
+| `visor-primitives` | Color scales, spacing, radius, typography, shadows, motion | ↑ |
 | `visor-semantic` | Purpose-named tokens (text-*, surface-*, border-*, interactive-*) | ↑ |
+| `visor-brand` | Brand asset pass-through vars (`--brand-*`) | ↑ |
 | `visor-adaptive` | Light/dark mode token values | ↑ |
 | `visor-bridge` | Framework bridge tokens (fumadocs --color-fd-*) | Highest |
 

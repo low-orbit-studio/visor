@@ -24,7 +24,7 @@ describe("nextjsAdapter", () => {
   it("outputs @layer order declaration", () => {
     const css = nextjsAdapter(makeInput(MINIMAL_YAML));
     expect(css).toContain(
-      "@layer visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;",
+      "@layer visor-base, visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;",
     );
   });
 
@@ -97,7 +97,7 @@ describe("nextjsAdapter", () => {
   it("@import appears before @layer declaration", () => {
     const css = nextjsAdapter(makeInput(FULL_YAML));
     const importIdx = css.indexOf("@import url(");
-    const layerIdx = css.indexOf("@layer visor-primitives,");
+    const layerIdx = css.indexOf("@layer visor-base,");
     expect(importIdx).toBeGreaterThan(-1);
     expect(layerIdx).toBeGreaterThan(importIdx);
   });
@@ -472,5 +472,59 @@ describe("nextjsAdapter — color-scheme (BO-56)", () => {
     expect(css).toContain("@media (prefers-color-scheme: dark)");
     // and no bare color-scheme property.
     expect(css).not.toMatch(/color-scheme:\s*(dark|light);/);
+  });
+});
+
+describe("nextjsAdapter — visor-base element baseline (VI-616)", () => {
+  it("emits the visor-core reset @import before any style rule", () => {
+    const css = nextjsAdapter(makeInput(MINIMAL_YAML));
+    const importIdx = css.indexOf('@import "@loworbitstudio/visor-core/reset";');
+    expect(importIdx).toBeGreaterThan(-1);
+    // CSS spec: @import must precede every rule except @charset / @layer statements.
+    expect(importIdx).toBeLessThan(css.indexOf("@layer visor-base {"));
+  });
+
+  it("binds the theme's body font to the page root", () => {
+    const css = nextjsAdapter(makeInput(MINIMAL_YAML));
+    const layerIdx = css.indexOf("@layer visor-base {");
+    const body = css.slice(layerIdx, css.indexOf("@layer visor-primitives {"));
+    expect(body).toContain("body {");
+    expect(body).toContain("font-family: var(--font-body);");
+    expect(body).toContain("color: var(--text-primary);");
+    expect(body).toContain("background: var(--surface-page, var(--surface-background));");
+    expect(body).toContain("font-size: 1rem;");
+  });
+
+  it("orders visor-base first, so consumer and component rules always win", () => {
+    const css = nextjsAdapter(makeInput(MINIMAL_YAML));
+    expect(css).toContain(
+      "@layer visor-base, visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;",
+    );
+  });
+
+  it("targets the scope prefix instead of bare body when one is set", () => {
+    const css = nextjsAdapter(makeInput(MINIMAL_YAML), {
+      scopePrefix: "body.acme-theme",
+    });
+    const layerIdx = css.indexOf("@layer visor-base {");
+    const body = css.slice(layerIdx, css.indexOf("@layer visor-primitives {"));
+    expect(body).toContain("body.acme-theme {");
+  });
+
+  it("omits both halves when includeBaseLayer is false", () => {
+    const css = nextjsAdapter(makeInput(MINIMAL_YAML), { includeBaseLayer: false });
+    expect(css).not.toContain('@import "@loworbitstudio/visor-core/reset";');
+    expect(css).not.toContain("@layer visor-base {");
+    // The layer must still be *declared* so the ordering contract holds.
+    expect(css).toContain("@layer visor-base, visor-primitives,");
+  });
+
+  it("does not emit element-level rules beyond the token binding", () => {
+    const css = nextjsAdapter(makeInput(MINIMAL_YAML));
+    const layerIdx = css.indexOf("@layer visor-base {");
+    const body = css.slice(layerIdx, css.indexOf("@layer visor-primitives {"));
+    // Propagation lives in visor-core/reset, not in generated theme CSS.
+    expect(body).not.toContain("font: inherit;");
+    expect(body).not.toContain("box-sizing:");
   });
 });

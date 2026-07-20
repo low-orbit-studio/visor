@@ -314,6 +314,31 @@ npx @loworbitstudio/visor theme validate .visor.yaml --strict-dark
 
 This flag is opt-in today. Once all themes in your project supply `colors-dark.neutral`, you can make it the default by adding `--strict-dark` to every validate call in CI.
 
+### `visor check design`
+
+Deterministic static analysis for Borealis design anti-patterns — no LLM required. Errors cover non-negotiable Borealis violations (hardcoded hex/px, tier-1 token misuse, `div`-as-input); warnings cover general anti-patterns.
+
+```bash
+npx @loworbitstudio/visor check design ./src
+```
+
+#### `missing-visor-base-layer` (warn)
+
+Fires when a project renders Visor form controls but has no element baseline — the failure mode where the page uses your brand font while every `<input>` and `<button>` falls back to the browser's system font.
+
+It triggers on **two** conditions:
+
+1. The project imports neither `@loworbitstudio/visor-core/reset` nor Tailwind preflight.
+2. `@loworbitstudio/visor-core` is installed but **predates the `/reset` export** — detected by testing whether the installed package actually exposes `dist/reset.css`, not by comparing version numbers. Remediation: `npm update @loworbitstudio/visor-core`.
+
+The set of components that count as "a native control" derives from the CLI's native map, so it stays in sync as the catalog grows. See [The Element Baseline](/docs/guides/getting-started#the-element-baseline) for the full explanation.
+
+Opt out per-project in `.visorrc.json`:
+
+```json
+{ "disabledRules": ["missing-visor-base-layer"] }
+```
+
 ### `visor check theme-mode`
 
 Deterministic theme-mode gate. Reads a theme's declared `color-scheme` (`dark-only | light-only | adaptive`) and asserts that the app-root background (`--surface-page`) luminance matches the declared mode. Catches the failure class where a `dark-only` brand ships a light app root (or a `light-only` brand ships a dark one) — a rendered-mode regression that structural oracle/freeze gates cannot see.

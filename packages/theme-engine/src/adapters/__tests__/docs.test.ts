@@ -76,7 +76,7 @@ describe("docsAdapter", () => {
     it("declares the visor layer order with visor-brand after visor-semantic", () => {
       const css = docsAdapter(makeInput(MINIMAL_YAML));
       expect(css).toContain(
-        "@layer visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;",
+        "@layer visor-base, visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;",
       );
     });
 
