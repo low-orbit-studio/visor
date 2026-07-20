@@ -47,6 +47,10 @@ export function nextjsAdapter(
 ): string {
   const includeFontImports = options?.includeFontImports ?? true;
   const includeFowt = options?.includeFowt ?? true;
+  // VI-616: element baseline. `includeBaseLayer` covers both halves — the
+  // visor-core reset @import (propagation) and the origination block that
+  // binds theme tokens to html/body.
+  const includeBaseLayer = options?.includeBaseLayer ?? true;
   // Optional body-class scope prefix (e.g. `body.blacklight-theme`). When
   // unset, output preserves the legacy `:root` selectors. See VI-368.
   const scopePrefix = options?.scopePrefix;
@@ -59,6 +63,15 @@ export function nextjsAdapter(
   const aliasedFamilies = new Map<string, string>();
 
   lines.push(header("Visor Theme — NextJS Adapter"));
+
+  // 0. Element baseline (VI-616). Ships from visor-core so it reaches every
+  //    consumer on `npm update` — components are copy-and-own, so npm is the
+  //    only auto-propagating channel Visor has. Delete this one line to
+  //    decline (e.g. if the app already ships Tailwind preflight).
+  if (includeBaseLayer) {
+    lines.push('@import "@loworbitstudio/visor-core/reset";');
+    lines.push("");
+  }
 
   // 1. Google Fonts @import + Visor Fonts @font-face (must come before @layer per CSS spec)
   if (includeFontImports && input.config.typography) {
@@ -130,6 +143,44 @@ export function nextjsAdapter(
   // 2. @layer order declaration
   lines.push(LAYER_ORDER);
   lines.push("");
+
+  // 2b. Base layer — ORIGINATION (VI-616).
+  //
+  // visor-core defines `--font-body` / `--text-primary` / `--surface-page` but
+  // has no way to bind them to an element: the scaffolded layout is a bare
+  // `<body>{children}</body>`. Without this block `--font-sans` is defined and
+  // bound to nothing, so `font: inherit` on a control faithfully propagates
+  // whatever the consumer hand-wrote. The docs adapter has always done this on
+  // `.{slug}-theme`; the nextjs path never got it.
+  //
+  // Sits in `visor-base`, the lowest layer, so a consumer's own unlayered
+  // `body { … }` still wins.
+  if (includeBaseLayer) {
+    const baseLines: string[] = [];
+
+    // BO-56: pin UA chrome to the brand's single mode. Adaptive themes get
+    // `color-scheme` per-mode from the visor-adaptive layer instead.
+    if (colorScheme === "dark-only" || colorScheme === "light-only") {
+      baseLines.push(sectionComment("Base: UA color-scheme"));
+      baseLines.push(
+        block("html", [`color-scheme: ${colorScheme === "dark-only" ? "dark" : "light"};`]),
+      );
+      baseLines.push("");
+    }
+
+    baseLines.push(sectionComment("Base: token-to-page binding"));
+    baseLines.push(
+      block(scopePrefix ?? "body", [
+        "font-family: var(--font-body);",
+        "font-size: 1rem;",
+        "color: var(--text-primary);",
+        "background: var(--surface-page, var(--surface-background));",
+      ]),
+    );
+
+    lines.push(wrapInLayer("visor-base", baseLines.join("\n").trim()));
+    lines.push("");
+  }
 
   // 3. Primitives layer
   const primitivesBody = stripHeader(

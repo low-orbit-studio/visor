@@ -116,13 +116,15 @@ See [Flutter Theme Consumption](/docs/guides/flutter-themes) for full setup inst
 Adapter output uses CSS `@layer` declarations for specificity ordering:
 
 ```css
-@layer visor-primitives, visor-semantic, visor-adaptive, visor-bridge;
+@layer visor-base, visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;
 ```
 
 This ensures:
-- **Primitives** have lowest specificity
+- **Base** (element reset + `html`/`body` token binding) has lowest specificity — your own unlayered rules and every component `.module.css` beat it
+- **Primitives** override base
 - **Semantic** tokens override primitives
-- **Adaptive** (light/dark) tokens override semantic
+- **Brand** pass-through vars override semantic
+- **Adaptive** (light/dark) tokens override brand
 - **Bridge** tokens (fumadocs) override everything
 
 No `!important` needed — layers handle specificity naturally.

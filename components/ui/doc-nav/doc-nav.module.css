@@ -99,7 +99,6 @@
   cursor: pointer;
   border: 0;
   background: transparent;
-  font-family: inherit;
   transition: color var(--motion-duration-fast, 150ms)
     var(--motion-easing-standard, ease);
 }

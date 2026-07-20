@@ -214,6 +214,11 @@ Instead of the full bundle, you can import individual CSS files:
 
 /* Dark theme adaptive tokens (manual selectors + media query) */
 @import '@loworbitstudio/visor-core/themes/dark';
+
+/* Element baseline — form-control font inheritance, box-sizing, UA
+   margin/appearance normalisation. Opt-in: skip it if you already ship
+   Tailwind preflight or your own reset. */
+@import '@loworbitstudio/visor-core/reset';
 ```
 
 This is useful when you want to compose the token layers manually or when your build system handles CSS concatenation.

@@ -172,8 +172,3 @@
   margin: var(--spacing-1, 0.25rem) calc(-1 * var(--spacing-1, 0.25rem));
   background-color: var(--border-default, #e5e7eb);
 }
-
-/* VI-510: form controls do not inherit font-family from the page; opt back in (matches textarea). */
-.root :is(input, button, textarea) {
-  font-family: inherit;
-}

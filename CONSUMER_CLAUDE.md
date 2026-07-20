@@ -27,6 +27,10 @@ npm install @loworbitstudio/visor-core
 #    e.g. app/layout.tsx or src/main.tsx
 import "@loworbitstudio/visor-core/index.css";
 
+# 2b. Import the element reset in your global stylesheet.
+#     Skip this ONLY if you already ship Tailwind preflight or your own reset.
+#     @import "@loworbitstudio/visor-core/reset";
+
 # 3. Add components
 npx visor add button          # single component
 npx visor add button input card  # multiple at once
@@ -324,6 +328,7 @@ Use only these subpath imports — no others exist:
 | `@loworbitstudio/visor-core/tokens` | All tokens without theme layers |
 | `@loworbitstudio/visor-core/primitives` | Raw color/spacing/type primitives only |
 | `@loworbitstudio/visor-core/semantic` | Semantic tokens only |
+| `@loworbitstudio/visor-core/reset` | Element baseline — form-control font inheritance, box-sizing, UA margin/appearance normalisation (opt-in) |
 | `@loworbitstudio/visor-core/themes/light` | Light theme overrides only |
 | `@loworbitstudio/visor-core/themes/dark` | Dark theme overrides only |
 
@@ -343,6 +348,53 @@ Use only these subpath imports — no others exist:
 | `--font-size-*` | Type scale | `--font-size-sm`, `--font-size-base`, `--font-size-lg` |
 | `--shadow-*` | Box shadows | `--shadow-sm`, `--shadow-md`, `--shadow-lg` |
 | `--motion-*` | Animation timing | `--motion-duration-fast`, `--motion-easing-default` |
+
+---
+
+## Fonts and the Element Baseline
+
+Two separate things have to be true for a Visor component to render in your theme's font. Getting one without the other is the single most common styling bug in a fresh Visor app.
+
+**1. Origination — the font is bound to the page.** Browsers never apply `--font-body` on their own; something has to write it onto an element. `visor theme apply --adapter nextjs` emits this into your generated `globals.css`:
+
+```css
+@layer visor-base {
+  body {
+    font-family: var(--font-body);
+    color: var(--text-primary);
+    background: var(--surface-page, var(--surface-background));
+  }
+}
+```
+
+**2. Propagation — form controls opt back in.** `<input>`, `<textarea>`, `<select>` and `<button>` do *not* inherit `font-family` from their ancestors; the browser's UA stylesheet sets them to a system font. `@loworbitstudio/visor-core/reset` fixes that for every control at once:
+
+```css
+/* globals.css */
+@import "@loworbitstudio/visor-core/reset";
+```
+
+Without it, your buttons and inputs render in Arial while the rest of the page uses your brand font.
+
+### Why it lives in the tokens package
+
+Components are copy-and-own — `npx visor add input` copies the file into your repo, so a fix made in a component can never reach an app that already vendored it. npm is the only channel that propagates automatically, so the baseline ships in `@loworbitstudio/visor-core` and reaches you on `npm update`.
+
+### Declining it
+
+If your app already ships Tailwind preflight or its own reset, delete the `@import` line. Nothing else changes: the reset is a **separate export**, so `@loworbitstudio/visor-core`, `/css`, `/tokens` and `/primitives` emit no element rules at all.
+
+### Cascade safety
+
+Everything above sits in `@layer visor-base`, the **lowest-priority** Visor layer. Your own unlayered `body { … }` and every component `.module.css` beat it unconditionally, while author-origin styles still beat the browser's UA stylesheet — so the reset does its job without ever fighting your code.
+
+### `visor check design` will tell you if it's missing
+
+The `missing-visor-base-layer` warning fires when a project renders Visor form controls but imports neither the reset nor Tailwind preflight — and also when the installed `@loworbitstudio/visor-core` predates the `/reset` export (fix: `npm update @loworbitstudio/visor-core`). Silence it in `.visorrc.json` if you've deliberately opted out:
+
+```json
+{ "disabledRules": ["missing-visor-base-layer"] }
+```
 
 ---
 

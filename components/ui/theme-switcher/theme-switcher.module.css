@@ -15,7 +15,7 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 
-  font-family: var(--font-body, system-ui, sans-serif);
+  font-family: var(--font-body, inherit);
   font-size: var(--font-size-xs, 0.75rem);
   letter-spacing: 0.04em;
 

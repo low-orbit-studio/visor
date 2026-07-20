@@ -38,6 +38,13 @@ export interface NextJSAdapterOptions extends AdapterOptions {
    * (`:root`) for backward compatibility. See VI-368.
    */
   scopePrefix?: string;
+  /**
+   * Emit the `@import "@loworbitstudio/visor-core/reset";` line and the
+   * `@layer visor-base` origination block that binds theme tokens to the page
+   * root (default: true). Set false for consumers that ship Tailwind preflight
+   * or their own reset. See VI-616.
+   */
+  includeBaseLayer?: boolean;
 }
 
 /** Options specific to the Deck adapter. */

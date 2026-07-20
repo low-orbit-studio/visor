@@ -20,9 +20,11 @@ import { docsAdapter } from "@loworbitstudio/visor-theme-engine/adapters";
 // Layer-order declaration — must precede any @layer blocks. Mirrors LAYER_ORDER
 // in @loworbitstudio/visor-theme-engine/adapters/layers so adapter and core
 // agree regardless of import order. See VI-312. visor-brand (VI-470) sits
-// after visor-semantic.
+// after visor-semantic. visor-base (VI-616) is FIRST — lowest priority — so a
+// consumer's own unlayered rules and component .module.css always win over the
+// element-level baseline.
 const LAYER_ORDER =
-  "@layer visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;";
+  "@layer visor-base, visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;";
 
 /** Wrap CSS body in a named @layer block. */
 function wrapInLayer(layerName: string, css: string): string {
@@ -654,6 +656,82 @@ function generateTokensCSS(): string {
 }
 
 // ============================================================
+// Base layer / element reset generation (VI-616)
+// ============================================================
+
+/**
+ * Element-level baseline — the *propagation* half of the visor-base contract.
+ *
+ * Theme-independent and static, so it ships as its own opt-in export
+ * (`@loworbitstudio/visor-core/reset`) rather than being folded into
+ * `.` / `./css` / `./primitives`. Consumers on Tailwind preflight can decline
+ * it by not importing it; the nextjs adapter emits the `@import` line for new
+ * scaffolds so it is on-by-default for fresh apps.
+ *
+ * The *origination* half (binding `--font-body` / `--text-primary` /
+ * `--surface-page` to `html` + `body`) is theme-dependent and lives in the
+ * nextjs adapter's generated globals.css.
+ *
+ * Everything here sits in `@layer visor-base`, the FIRST (lowest-priority)
+ * layer, so consumer rules and component `.module.css` always win.
+ */
+function generateResetCSS(): string {
+  const lines: string[] = [];
+
+  lines.push(
+    sectionComment(
+      "Box sizing — assumed by every sized Visor control, provided by none"
+    )
+  );
+  lines.push(block("*, *::before, *::after", ["box-sizing: border-box;"]));
+
+  lines.push(
+    sectionComment(
+      "Form controls inherit typography — the `font` shorthand also covers size, weight and line-height leakage"
+    )
+  );
+  lines.push(
+    block("input, textarea, select, button, optgroup", ["font: inherit;"])
+  );
+
+  lines.push(sectionComment("Form controls — drop Safari/Firefox UA margin"));
+  lines.push(block("input, textarea, select, button", ["margin: 0;"]));
+
+  lines.push(sectionComment("Button normalisation"));
+  lines.push(block("button", ["background: none;", "border: 0;"]));
+
+  lines.push(sectionComment("Replaced elements — block-level, never overflow"));
+  lines.push(
+    block("img, svg, video", ["display: block;", "max-width: 100%;"])
+  );
+
+  lines.push(
+    sectionComment(
+      "Strip Safari's search pill/clear button and the number-input spinners"
+    )
+  );
+  lines.push(
+    block('input[type="search"], input[type="number"]', [
+      "-webkit-appearance: none;",
+      "appearance: none;",
+    ])
+  );
+
+  return (
+    header("Visor Element Reset — @layer visor-base") +
+    "/* Opt-in element baseline. Import via:\n" +
+    " *   @import \"@loworbitstudio/visor-core/reset\";\n" +
+    " *\n" +
+    " * Decline it if your app already ships Tailwind preflight or its own reset.\n" +
+    " * Lives in the lowest cascade layer, so your own rules always win. */\n" +
+    LAYER_ORDER +
+    "\n\n" +
+    wrapInLayer("visor-base", lines.join("\n")) +
+    "\n"
+  );
+}
+
+// ============================================================
 // Utilities CSS generation
 // ============================================================
 
@@ -814,6 +892,11 @@ function main(): void {
   const indexCSS = generateIndexCSS();
   writeFileSync(join(DIST_DIR, "index.css"), indexCSS, "utf-8");
   console.log("✓ dist/index.css");
+
+  // Generate reset.css (VI-616, opt-in — NOT bundled into index.css)
+  const resetCSS = generateResetCSS();
+  writeFileSync(join(DIST_DIR, "reset.css"), resetCSS, "utf-8");
+  console.log("✓ dist/reset.css");
 
   // Generate utilities.css (opt-in — NOT bundled into index.css)
   const utilitiesCSS = generateUtilitiesCSS();

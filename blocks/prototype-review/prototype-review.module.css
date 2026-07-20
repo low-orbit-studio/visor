@@ -549,7 +549,6 @@
   padding: var(--spacing-6);
   cursor: pointer;
   text-align: left;
-  font-family: inherit;
   color: inherit;
   display: flex;
   flex-direction: column;

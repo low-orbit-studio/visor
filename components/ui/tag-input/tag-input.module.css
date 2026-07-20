@@ -92,8 +92,3 @@
 .input::placeholder {
   color: var(--text-secondary, #9ca3af);
 }
-
-/* VI-510: form controls do not inherit font-family from the page; opt back in (matches textarea). */
-.wrapper :is(input, button, textarea) {
-  font-family: inherit;
-}

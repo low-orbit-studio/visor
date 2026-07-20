@@ -54,8 +54,3 @@
   width: 0.875rem;
   height: 0.875rem;
 }
-
-/* VI-510: form controls do not inherit font-family from the page; opt back in (matches textarea). */
-.wrapper :is(input, button, textarea) {
-  font-family: inherit;
-}

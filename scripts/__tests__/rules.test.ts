@@ -10,6 +10,11 @@ import { spacingGrid } from '../rules/spacing-grid.js';
 import { noHardcodedMotion } from '../rules/no-hardcoded-motion.js';
 import { noHardcodedOverlay } from '../rules/no-hardcoded-overlay.js';
 import { focusRingTokens } from '../rules/focus-ring-tokens.js';
+import {
+  elementDefaultsOwnedByBase,
+  findOwnedDeclarations,
+  nativeControlComponentNames,
+} from '../rules/element-defaults-owned-by-base.js';
 import { themeStructure } from '../rules/theme-structure.js';
 import { themePrimaryScale } from '../rules/theme-primary-scale.js';
 import { noHardcodedColors } from '../rules/no-hardcoded-colors.js';
@@ -382,5 +387,85 @@ describe('rule type compliance', () => {
       const results = await rule.run();
       expect(results.length).toBeGreaterThan(0);
     }
+  });
+});
+
+describe('element-defaults-owned-by-base', () => {
+  it('has correct metadata', () => {
+    expect(elementDefaultsOwnedByBase.name).toBe('element-defaults-owned-by-base');
+    expect(elementDefaultsOwnedByBase.category).toBe('components');
+  });
+
+  it('passes on the current codebase (after the VI-616 sweep)', async () => {
+    const results = await elementDefaultsOwnedByBase.run();
+    const failures = results.filter((r) => !r.pass);
+    expect(failures).toHaveLength(0);
+  });
+
+  it('derives its native-control target set from NATIVE_TO_VISOR + INPUT_TYPE_MAP', () => {
+    const names = nativeControlComponentNames();
+    // From NATIVE_TO_VISOR.
+    expect(names.has('button')).toBe(true);
+    expect(names.has('select')).toBe(true);
+    // From INPUT_TYPE_MAP — proves both maps feed the set.
+    expect(names.has('number-input')).toBe(true);
+    expect(names.has('phone-input')).toBe(true);
+    // Not a native control in either map — no hardcoded path list.
+    expect(names.has('card')).toBe(false);
+  });
+});
+
+describe('element-defaults-owned-by-base — fixtures', () => {
+  const fixture = 'components/ui/fixture/fixture.module.css';
+
+  it('fails on a component that re-declares font-family: inherit, passes after removal', () => {
+    const bad = ['.base {', '  color: red;', '  font-family: inherit;', '}'].join('\n');
+    const badResults = findOwnedDeclarations(bad, fixture, true);
+    expect(badResults).toHaveLength(1);
+    expect(badResults[0].pass).toBe(false);
+    expect(badResults[0].line).toBe(3);
+
+    const good = ['.base {', '  color: red;', '}'].join('\n');
+    expect(findOwnedDeclarations(good, fixture, true)).toHaveLength(0);
+  });
+
+  it('fails on the `font: inherit` shorthand variant', () => {
+    const css = ['.trigger {', '  font: inherit;', '}'].join('\n');
+    expect(findOwnedDeclarations(css, fixture, true)).toHaveLength(1);
+  });
+
+  it('fails on a body-font token with a hardcoded system-ui fallback', () => {
+    const css = ['.pill {', '  font-family: var(--font-body, system-ui, sans-serif);', '}'].join('\n');
+    const results = findOwnedDeclarations(css, fixture, false);
+    expect(results).toHaveLength(1);
+    expect(results[0].message).toContain('must be `inherit`');
+  });
+
+  it('accepts the canonical var(--font-body, inherit) form', () => {
+    const css = ['.pill {', '  font-family: var(--font-body, inherit);', '}'].join('\n');
+    expect(findOwnedDeclarations(css, fixture, false)).toHaveLength(0);
+  });
+
+  it('accepts a deliberate non-body font routed through a token', () => {
+    const css = ['.field {', '  font-family: var(--font-mono, ui-monospace, monospace);', '}'].join('\n');
+    expect(findOwnedDeclarations(css, fixture, false)).toHaveLength(0);
+  });
+
+  it('fails on a hardcoded font stack with no token', () => {
+    const css = ['.field {', '  font-family: ui-monospace, Menlo, monospace;', '}'].join('\n');
+    const results = findOwnedDeclarations(css, fixture, false);
+    expect(results).toHaveLength(1);
+    expect(results[0].message).toContain('hardcoded font stack');
+  });
+
+  it('ignores declarations inside comments', () => {
+    const css = ['/* font-family: inherit; */', '.base {', '  color: red;', '}'].join('\n');
+    expect(findOwnedDeclarations(css, fixture, true)).toHaveLength(0);
+  });
+
+  it('flags search/number appearance resets only for native-control components', () => {
+    const css = ['input[type="search"] {', '  appearance: none;', '}'].join('\n');
+    expect(findOwnedDeclarations(css, fixture, true)).toHaveLength(1);
+    expect(findOwnedDeclarations(css, fixture, false)).toHaveLength(0);
   });
 });

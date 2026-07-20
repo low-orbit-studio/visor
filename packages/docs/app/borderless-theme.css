@@ -1,6 +1,6 @@
 @import url("https://api.fontshare.com/v2/css?f[]=satoshi@400,700&display=swap");
 
-@layer visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;
+@layer visor-base, visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;
 
 @layer visor-semantic {
 /* ── Layer: Semantic aliases (VI-451) ── */

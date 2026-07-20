@@ -176,7 +176,6 @@
   min-width: 1.5rem;
   height: 1.5rem;
   padding: 0 var(--spacing-1, 0.25rem);
-  font: inherit;
   color: inherit;
   background: transparent;
   border: none;

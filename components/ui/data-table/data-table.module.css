@@ -119,7 +119,6 @@
   background: transparent;
   border: 0;
   color: inherit;
-  font: inherit;
   font-weight: var(--font-weight-semibold, 600);
   cursor: pointer;
   line-height: var(--line-height-tight, 1.25);

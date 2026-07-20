@@ -25,16 +25,16 @@ function fixtureWarnings(fixtureName: string, rule: string) {
 // ─── Rule inventory ───────────────────────────────────────────────────────────
 
 describe("rule registry", () => {
-  it("exports exactly 16 rules", () => {
-    expect(RULES).toHaveLength(16)
+  it("exports exactly 17 rules", () => {
+    expect(RULES).toHaveLength(17)
   })
 
   it("has 8 error-severity rules", () => {
     expect(RULES.filter(r => r.severity === "error")).toHaveLength(8)
   })
 
-  it("has 8 warn-severity rules", () => {
-    expect(RULES.filter(r => r.severity === "warn")).toHaveLength(8)
+  it("has 9 warn-severity rules", () => {
+    expect(RULES.filter(r => r.severity === "warn")).toHaveLength(9)
   })
 
   const expectedErrorRules = [
@@ -57,6 +57,7 @@ describe("rule registry", () => {
     "line-length-over-75ch",
     "gradient-text",
     "excessive-card-nesting",
+    "missing-visor-base-layer",
   ]
 
   for (const name of expectedErrorRules) {
@@ -508,6 +509,119 @@ describe("output schema", () => {
     const withFix = result.errors.find(f => f.fix !== undefined)
     if (withFix) {
       expect(typeof withFix.fix).toBe("string")
+    }
+  })
+})
+
+// ─── missing-visor-base-layer (VI-616) ───────────────────────────────────────
+
+describe("missing-visor-base-layer", () => {
+  it("warns when Visor controls ship without a reset or preflight", () => {
+    const warnings = fixtureWarnings("base-layer-missing", "missing-visor-base-layer")
+    expect(warnings).toHaveLength(1)
+    expect(warnings[0].message).toContain("neither @loworbitstudio/visor-core/reset nor Tailwind preflight")
+    expect(warnings[0].fix).toContain('@import "@loworbitstudio/visor-core/reset"')
+  })
+
+  it("does not warn when the project imports the visor-core reset", () => {
+    expect(fixtureWarnings("base-layer-reset", "missing-visor-base-layer")).toHaveLength(0)
+  })
+
+  it("does not warn when the project ships Tailwind preflight", () => {
+    expect(fixtureWarnings("base-layer-preflight", "missing-visor-base-layer")).toHaveLength(0)
+  })
+
+  it("does not warn on files that render no native-control component", () => {
+    expect(fixtureWarnings("clean", "missing-visor-base-layer")).toHaveLength(0)
+  })
+
+  it("honours .visorrc.json disabledRules", () => {
+    const result = scanFixture("base-layer-missing", {
+      disabledRules: ["missing-visor-base-layer"],
+    })
+    expect(result.warnings.filter(f => f.rule === "missing-visor-base-layer")).toHaveLength(0)
+  })
+
+  it("warns once per project, not once per file", () => {
+    const dir = join(tmpdir(), `visor-base-multi-${Date.now()}`)
+    mkdirSync(join(dir, "app"), { recursive: true })
+    writeFileSync(join(dir, "package.json"), '{"name":"multi","private":true}')
+    writeFileSync(join(dir, "globals.css"), "body { margin: 0; }")
+    for (const name of ["a.tsx", "b.tsx", "c.tsx"]) {
+      writeFileSync(
+        join(dir, "app", name),
+        'import { Input } from "@/components/ui/input"\nexport default function P() { return <Input /> }\n'
+      )
+    }
+    try {
+      const result = scanDesign(dir)
+      expect(result.warnings.filter(f => f.rule === "missing-visor-base-layer")).toHaveLength(1)
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
+  })
+
+  it("warns when the installed visor-core predates the /reset export (D10 — file existence, not semver)", () => {
+    const dir = join(tmpdir(), `visor-base-old-${Date.now()}`)
+    const core = join(dir, "node_modules", "@loworbitstudio", "visor-core")
+    mkdirSync(join(core, "dist"), { recursive: true })
+    writeFileSync(join(dir, "package.json"), '{"name":"old","private":true}')
+    // An old visor-core: tokens.css ships, dist/reset.css does not.
+    writeFileSync(join(core, "package.json"), '{"name":"@loworbitstudio/visor-core","version":"0.12.0"}')
+    writeFileSync(join(core, "dist", "tokens.css"), ":root { --font-body: sans-serif; }")
+    // The app DOES import the reset — but the installed package cannot serve it.
+    writeFileSync(join(dir, "globals.css"), '@import "@loworbitstudio/visor-core/reset";')
+    writeFileSync(
+      join(dir, "page.tsx"),
+      'import { Input } from "@/components/ui/input"\nexport default function P() { return <Input /> }\n'
+    )
+    try {
+      const warnings = scanDesign(dir).warnings.filter(f => f.rule === "missing-visor-base-layer")
+      expect(warnings).toHaveLength(1)
+      expect(warnings[0].message).toContain("predates the /reset export")
+      expect(warnings[0].fix).toContain("npm update @loworbitstudio/visor-core")
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
+  })
+
+  it("does not warn when the installed visor-core exposes dist/reset.css", () => {
+    const dir = join(tmpdir(), `visor-base-new-${Date.now()}`)
+    const core = join(dir, "node_modules", "@loworbitstudio", "visor-core")
+    mkdirSync(join(core, "dist"), { recursive: true })
+    writeFileSync(join(dir, "package.json"), '{"name":"new","private":true}')
+    writeFileSync(join(core, "dist", "reset.css"), "@layer visor-base { button { font: inherit; } }")
+    writeFileSync(join(dir, "globals.css"), '@import "@loworbitstudio/visor-core/reset";')
+    writeFileSync(
+      join(dir, "page.tsx"),
+      'import { Input } from "@/components/ui/input"\nexport default function P() { return <Input /> }\n'
+    )
+    try {
+      expect(scanDesign(dir).warnings.filter(f => f.rule === "missing-visor-base-layer")).toHaveLength(0)
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
+  })
+
+  it("derives its target set from native-map — an added mapping extends coverage", () => {
+    // `select` is in NATIVE_TO_VISOR; `card` is not. Neither is named in the rule.
+    const dir = join(tmpdir(), `visor-base-map-${Date.now()}`)
+    mkdirSync(dir, { recursive: true })
+    writeFileSync(join(dir, "package.json"), '{"name":"map","private":true}')
+    writeFileSync(join(dir, "globals.css"), "body { margin: 0; }")
+    writeFileSync(
+      join(dir, "card.tsx"),
+      'import { Card } from "@/components/ui/card"\nexport default function P() { return <Card /> }\n'
+    )
+    try {
+      expect(scanDesign(dir).warnings.filter(f => f.rule === "missing-visor-base-layer")).toHaveLength(0)
+      writeFileSync(
+        join(dir, "select.tsx"),
+        'import { Select } from "@/components/ui/select"\nexport default function P() { return <Select /> }\n'
+      )
+      expect(scanDesign(dir).warnings.filter(f => f.rule === "missing-visor-base-layer")).toHaveLength(1)
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
     }
   })
 })

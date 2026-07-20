@@ -9,7 +9,6 @@
   color: var(--text-primary, #111827);
   transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
   outline: none;
-  font-family: inherit;
 }
 
 .base::placeholder {

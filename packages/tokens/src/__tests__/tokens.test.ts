@@ -989,7 +989,7 @@ describe("Stock theme CSS generation", () => {
 describe("Layered CSS output (VI-312)", () => {
   const DIST = join(REPO_ROOT, "packages/tokens/dist");
   const LAYER_ORDER =
-    "@layer visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;";
+    "@layer visor-base, visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;";
 
   const fileLayerMap: Array<{ path: string; layer: string }> = [
     { path: "primitives.css", layer: "visor-primitives" },
@@ -1001,6 +1001,7 @@ describe("Layered CSS output (VI-312)", () => {
     { path: "themes/neutral.css", layer: "visor-adaptive" },
     { path: "themes/space.css", layer: "visor-adaptive" },
     { path: "utilities.css", layer: "visor-adaptive" },
+    { path: "reset.css", layer: "visor-base" },
   ];
 
   it.each(fileLayerMap)(
@@ -1188,5 +1189,101 @@ describe("Lit-surface elevation utilities (VI-568)", () => {
     // The indigo fallback (#6366f1) is the primary-500 default — NOT a slate value
     expect(css).not.toContain("#0f172a");
     expect(css).not.toContain("#1e293b");
+  });
+});
+
+// ============================================================
+// Element reset / visor-base layer (VI-616)
+// ============================================================
+
+describe("Element reset — dist/reset.css (VI-616)", () => {
+  const DIST = join(REPO_ROOT, "packages/tokens/dist");
+  const resetCss = () => readFileSync(join(DIST, "reset.css"), "utf-8");
+
+  it("wraps every rule in @layer visor-base", () => {
+    const css = resetCss();
+    expect(css).toContain("@layer visor-base {");
+    // Exactly one top-level layer block — nothing escapes into the
+    // unlayered origin, where it would outrank consumer styles.
+    expect(css.match(/@layer visor-base \{/g)).toHaveLength(1);
+  });
+
+  it("declares visor-base first in the layer order", () => {
+    expect(resetCss()).toContain(
+      "@layer visor-base, visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;",
+    );
+  });
+
+  it("makes form controls inherit typography via the `font` shorthand", () => {
+    const css = resetCss();
+    expect(css).toContain("input, textarea, select, button, optgroup {");
+    expect(css).toContain("font: inherit;");
+  });
+
+  it("zeroes UA margin on form controls", () => {
+    const css = resetCss();
+    expect(css).toContain("input, textarea, select, button {");
+    expect(css).toContain("margin: 0;");
+  });
+
+  it("sets border-box sizing globally", () => {
+    const css = resetCss();
+    expect(css).toContain("*, *::before, *::after {");
+    expect(css).toContain("box-sizing: border-box;");
+  });
+
+  it("normalises button chrome and replaced elements", () => {
+    const css = resetCss();
+    expect(css).toContain("background: none;");
+    expect(css).toContain("img, svg, video {");
+    expect(css).toContain("max-width: 100%;");
+  });
+
+  it("strips the search pill and number spinners", () => {
+    const css = resetCss();
+    expect(css).toContain('input[type="search"], input[type="number"] {');
+    expect(css).toContain("-webkit-appearance: none;");
+  });
+
+  it("does NOT carry the prefers-reduced-motion block (split to VI-617)", () => {
+    expect(resetCss()).not.toContain("prefers-reduced-motion");
+  });
+
+  it("is NOT bundled into index.css — the reset stays opt-in", () => {
+    const index = readFileSync(join(DIST, "index.css"), "utf-8");
+    expect(index).not.toContain("reset.css");
+  });
+
+  it("is NOT bundled into tokens.css — Tailwind-preflight consumers stay byte-unchanged", () => {
+    const tokens = readFileSync(join(DIST, "tokens.css"), "utf-8");
+    expect(tokens).not.toContain("box-sizing: border-box;");
+    expect(tokens).not.toContain("font: inherit;");
+  });
+
+  it("is reachable through the package's ./reset export", () => {
+    const pkg = JSON.parse(
+      readFileSync(join(REPO_ROOT, "packages/tokens/package.json"), "utf-8"),
+    );
+    expect(pkg.exports["./reset"]).toBe("./dist/reset.css");
+  });
+});
+
+describe("LAYER_ORDER mirroring (VI-312 invariant)", () => {
+  it("is byte-identical between the tokens generator and the adapter module", () => {
+    const generator = readFileSync(
+      join(REPO_ROOT, "packages/tokens/src/generate/generate-css.ts"),
+      "utf-8",
+    );
+    const adapter = readFileSync(
+      join(REPO_ROOT, "packages/theme-engine/src/adapters/layers.ts"),
+      "utf-8",
+    );
+    const extract = (src: string) => {
+      const match = src.match(/"(@layer visor-[^"]*;)"/);
+      expect(match).not.toBeNull();
+      return match![1];
+    };
+    expect(extract(generator)).toBe(extract(adapter));
+    expect(extract(generator)).toContain("@layer visor-base,");
   });
 });

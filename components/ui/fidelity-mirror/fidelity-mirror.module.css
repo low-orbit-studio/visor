@@ -44,7 +44,7 @@
   background: var(--surface-card, #ffffff);
   box-shadow: var(--shadow-md);
   overflow: hidden;
-  font-family: var(--font-sans, system-ui, sans-serif);
+  font-family: var(--font-sans, inherit);
 }
 
 /* Widescreen full-bleed — escape DocFrame's centered column and span the

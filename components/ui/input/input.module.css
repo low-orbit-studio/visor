@@ -140,8 +140,3 @@
 .sizeLg.hasLeadingIcon {
   padding-left: calc(var(--spacing-5, 1.25rem) + var(--spacing-3, 0.75rem) + 1.125em);
 }
-
-/* VI-510: form controls do not inherit font-family from the page; opt back in (matches textarea). */
-.base {
-  font-family: inherit;
-}
