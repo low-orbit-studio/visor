@@ -176,7 +176,11 @@ export const blocks: Registry = [
     category: "form",
     description:
       "Compact dialog field (dlg-field, Animal dialog substrate): a flex-column field with a 5px label→control gap, an 11px/600 primary-ink label, and a recessed control well (surface deeper than the card in both modes + hairline border) hosting leading-icon and trailing control/caret slots. Composes the Label atom; token-driven.",
-    dependencies: ["@radix-ui/react-label", "@loworbitstudio/visor-core"],
+    dependencies: [
+      "@radix-ui/react-label",
+      "class-variance-authority",
+      "@loworbitstudio/visor-core",
+    ],
     registryDependencies: ["utils", "label"],
     files: [
       {
