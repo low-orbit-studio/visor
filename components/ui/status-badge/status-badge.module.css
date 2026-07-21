@@ -87,6 +87,15 @@
   }
 }
 
+/* Mono label variant (Animal dialog substrate, VI-620) — monospace token
+ * label at the 11px chrome step, for ID / code / token-style status readouts.
+ * Overrides only the label typography; dot, color, and chrome are unchanged. */
+.labelMono {
+  font-family: var(--font-mono, "SF Mono", "Fira Code", "Fira Mono", monospace);
+  font-size: var(--text-11, 0.6875rem);
+  letter-spacing: 0.02em;
+}
+
 /* Visually hidden but announced to screen readers */
 .srOnly {
   position: absolute;

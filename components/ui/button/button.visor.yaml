@@ -21,15 +21,22 @@ why: >
 
 variants:
   variant: [default, secondary, outline, ghost, destructive]
-  size: [sm, md, lg]
+  size: [sm, md, lg, dlg]
 
 props:
   - name: variant
     type: "'default' | 'secondary' | 'outline' | 'ghost' | 'destructive'"
     default: "default"
   - name: size
-    type: "'sm' | 'md' | 'lg'"
+    type: "'sm' | 'md' | 'lg' | 'dlg'"
     default: "md"
+    description: >
+      Standard sizes plus `dlg` — the compact dialog-footer button (dlg-btn) from
+      the Animal dialog substrate (VI-620): 11px/600 text, tokenized ~8/12px
+      padding, radius-lg. Its three intents reuse the variant axis — primary via
+      variant="default", ghost via variant="ghost" (renders a hairline-outlined,
+      secondary-ink face at dlg size), danger via variant="destructive" (renders
+      a subtle-danger face at dlg size).
   - name: asChild
     type: boolean
     default: false

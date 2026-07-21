@@ -1,0 +1,69 @@
+---
+title: Dialog Field
+description: Compact dialog field (dlg-field) — a label over a recessed control well with leading-icon and trailing control/caret slots.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { DialogFieldDemo } from '@/components/blocks/dialog-field-demo';
+
+## Preview
+
+<BlockPreview
+  title="Dialog Field"
+  code={"<DialogField>\n  <DialogFieldLabel htmlFor=\"name\">Artist name</DialogFieldLabel>\n  <DialogFieldControl icon={<CircleIcon />}>\n    <input id=\"name\" />\n  </DialogFieldControl>\n</DialogField>"}
+>
+  <DialogFieldDemo />
+</BlockPreview>
+
+## When to Use
+
+- Form fields inside a [Dialog Form](/docs/blocks/dialog-form) / admin modal
+- Fields that need a leading icon or a trailing caret / stepper / unit control
+- Any compact form control that would otherwise hand-roll a recessed input well
+
+For standard page forms, use the [Field](/docs/components/field) component instead.
+
+## Installation
+
+```bash
+npx visor add --block dialog-field
+```
+
+This copies files into your project:
+
+- `blocks/dialog-field/dialog-field.tsx` — the block component
+- `blocks/dialog-field/dialog-field.module.css` — the styles
+
+## Usage
+
+```tsx
+import {
+  DialogField,
+  DialogFieldLabel,
+  DialogFieldControl,
+} from '@/blocks/dialog-field/dialog-field';
+
+<DialogField>
+  <DialogFieldLabel htmlFor="set-time">Set time</DialogFieldLabel>
+  <DialogFieldControl trailing={<CaretDown />}>
+    <input id="set-time" defaultValue="23:00" />
+  </DialogFieldControl>
+</DialogField>;
+```
+
+## Sub-components
+
+| Component | Description |
+| --- | --- |
+| `DialogField` | Root — flex column, 5px label→control gap. |
+| `DialogFieldLabel` | 11px / 600 primary-ink label (composes the Label atom). |
+| `DialogFieldControl` | The recessed control well. Props: `icon` (leading) and `trailing` (control/caret). Any `input` / `select` / `textarea` dropped inside renders on the well surface. |
+
+## Composition
+
+The control well is a surface deeper than the card in **both** light and dark modes (a `color-mix` deriving from `--surface-card`, since the surface ramp inverts between modes) plus a hairline border. Override the well fill per theme via `--dialog-field-bg`. Every value traces to a Visor token — the active theme swaps the whole treatment.
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. They are copy-and-own, just like components — install them into your project and customize freely.

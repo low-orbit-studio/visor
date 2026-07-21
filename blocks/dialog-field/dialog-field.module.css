@@ -1,0 +1,91 @@
+/* DialogField block — Animal dialog substrate field (dlg-field, VI-620).
+ *
+ * flex column, 5px gap · 11px/600 primary-ink label · the standard Visor medium
+ * field (md size, themed form-control surface, borderless) hosting a leading
+ * icon, the control, and a trailing control/caret. Every value traces to a Visor
+ * token; the active theme swaps the whole treatment (no bespoke CSS).
+ */
+
+/* Field — flex column. 5px label→control gap (dlg-field spec): the 4px grid
+ * has no 5px step, so derive it from --spacing-1 (the same calc idiom the
+ * field atom uses for its 6px icon gap). */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing-1, 0.25rem) + var(--spacing-1, 0.25rem) / 4);
+}
+
+/* Label — dlg-label: 11px / 600 / --ink (primary). */
+.label {
+  font-size: var(--text-11, 0.6875rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #111827);
+  line-height: 1.4;
+}
+
+/* Control — the standard Visor medium field: md size (--input-padding-md) on the
+ * shared form-control surface role (--field-control-bg), borderless. The surface
+ * color is theme-driven — a dialog context may lift it with --field-control-bg
+ * (the documented in-dialog hook on the input atom); we do not hand-roll it here.
+ * Borderless per the dlg-field direction; focus shows a tokenized ring. */
+.control {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  padding: var(--input-padding-md, var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem));
+  border-radius: var(--input-radius-md, var(--radius-sm, 0.5rem));
+  /* Borderless field → the surface must contrast with the card on its own. A
+   * fixed surface token (--surface-subtle) can't guarantee that: some themes
+   * pin it almost on the card (e.g. space/light). Instead derive it from the
+   * card mixed a few percent toward --text-primary — which is legible on the
+   * card by definition, so the field reads as a subtle-but-visible step in
+   * every theme and both modes. Overridable per theme via --field-control-bg. */
+  background: var(
+    --field-control-bg,
+    color-mix(in srgb, var(--surface-card, #ffffff), var(--text-primary, #111827) 7%)
+  );
+  color: var(--text-primary, #111827);
+  transition: box-shadow var(--motion-duration-150, 150ms)
+    var(--motion-easing-default, ease-in-out);
+}
+
+.control:focus-within {
+  box-shadow: 0 0 0 var(--focus-ring-width, 2px)
+    color-mix(in srgb, var(--border-focus, var(--primary, #111827)) 15%, transparent);
+}
+
+/* Leading icon slot. */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--text-tertiary, #9ca3af);
+}
+
+/* The control itself sits on the well surface — transparent, borderless, so a
+ * plain <input>/<select>/<textarea> dropped in reads as part of the well. */
+.controlInner {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+}
+
+.controlInner :global(input),
+.controlInner :global(select),
+.controlInner :global(textarea) {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  outline: none;
+  color: var(--text-primary, #111827);
+}
+
+/* Trailing control / caret slot. */
+.trailing {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--text-tertiary, #9ca3af);
+}

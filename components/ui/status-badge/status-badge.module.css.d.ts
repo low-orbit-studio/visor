@@ -6,6 +6,7 @@ declare const styles: {
   readonly indicatorInfo: string
   readonly indicatorNeutral: string
   readonly pulse: string
+  readonly labelMono: string
   readonly srOnly: string
 }
 

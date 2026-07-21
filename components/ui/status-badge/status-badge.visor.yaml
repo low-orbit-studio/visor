@@ -69,6 +69,13 @@ props:
     type: boolean
     default: false
     description: Animate the indicator dot with a soft pulse. Respects prefers-reduced-motion.
+  - name: mono
+    type: boolean
+    default: false
+    description: >
+      Render the label in the monospace token face (--font-mono, 11px) — the
+      dot + mono-token treatment from the Animal dialog substrate (VI-620), for
+      ID / code / token-style status readouts.
 
 dependencies:
   - "badge"

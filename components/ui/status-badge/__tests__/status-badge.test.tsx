@@ -66,6 +66,21 @@ describe("StatusBadge", () => {
     ).not.toBeNull()
   })
 
+  it("applies the mono label face when mono=true (VI-620)", () => {
+    const { container } = render(<StatusBadge status="live" mono />)
+    const label = container.querySelector('[data-slot="status-badge-label"]')
+    expect(label).not.toBeNull()
+    expect(label).toHaveAttribute("data-mono", "true")
+    expect(label?.className).toMatch(/labelMono/)
+  })
+
+  it("leaves the label unstyled when mono is omitted (default)", () => {
+    const { container } = render(<StatusBadge status="live" />)
+    const label = container.querySelector('[data-slot="status-badge-label"]')
+    expect(label).not.toHaveAttribute("data-mono")
+    expect(label?.className ?? "").not.toMatch(/labelMono/)
+  })
+
   it("hides the indicator when indicator=false", () => {
     const { container } = render(
       <StatusBadge status="healthy" indicator={false} />

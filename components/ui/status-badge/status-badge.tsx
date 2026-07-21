@@ -41,6 +41,12 @@ export interface StatusBadgeProps
   indicator?: boolean
   /** Animate the indicator dot with a soft pulse. Defaults to false. */
   pulse?: boolean
+  /**
+   * Render the label in the monospace token face (`--font-mono`, 11px) — the
+   * dot + mono-token treatment from the Animal dialog substrate (VI-620), for
+   * ID / code / token-style status readouts. Defaults to false.
+   */
+  mono?: boolean
 }
 
 /**
@@ -154,6 +160,7 @@ const StatusBadge = React.forwardRef<HTMLSpanElement, StatusBadgeProps>(
       tone = "subtle",
       indicator = true,
       pulse = false,
+      mono = false,
       ...props
     },
     ref
@@ -185,7 +192,13 @@ const StatusBadge = React.forwardRef<HTMLSpanElement, StatusBadgeProps>(
           />
         ) : null}
         <span className={styles.srOnly}>Status: </span>
-        <span data-slot="status-badge-label">{visibleLabel}</span>
+        <span
+          data-slot="status-badge-label"
+          data-mono={mono ? "true" : undefined}
+          className={cn(mono && styles.labelMono)}
+        >
+          {visibleLabel}
+        </span>
       </Badge>
     )
   }
