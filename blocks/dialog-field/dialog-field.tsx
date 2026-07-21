@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "../../lib/utils"
 import { Label } from "../../components/ui/label/label"
 import styles from "./dialog-field.module.css"
@@ -50,8 +51,24 @@ DialogFieldLabel.displayName = "DialogFieldLabel"
 
 /* ─── Control — the recessed well with icon + trailing slots ─────────── */
 
+/* Size axis drives the well padding only (label typography unchanged), matching
+ * Visor's input-only `size` semantics. Default `md` preserves the VI-620 medium
+ * well; `sm` is the compact Animal modal-form well. */
+const controlVariants = cva(styles.control, {
+  variants: {
+    size: {
+      sm: styles.controlSm,
+      md: styles.controlMd,
+    },
+  },
+  defaultVariants: {
+    size: "md",
+  },
+})
+
 export interface DialogFieldControlProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof controlVariants> {
   /** Leading icon rendered before the control (aria-hidden decoration). */
   icon?: React.ReactNode
   /** Trailing control / caret slot rendered after the control. */
@@ -61,10 +78,10 @@ export interface DialogFieldControlProps
 const DialogFieldControl = React.forwardRef<
   HTMLDivElement,
   DialogFieldControlProps
->(({ className, icon, trailing, children, ...props }, ref) => (
+>(({ className, size, icon, trailing, children, ...props }, ref) => (
   <div
     data-slot="dialog-field-control"
-    className={cn(styles.control, className)}
+    className={cn(controlVariants({ size }), className)}
     ref={ref}
     {...props}
   >
@@ -79,4 +96,4 @@ const DialogFieldControl = React.forwardRef<
 ))
 DialogFieldControl.displayName = "DialogFieldControl"
 
-export { DialogField, DialogFieldLabel, DialogFieldControl }
+export { DialogField, DialogFieldLabel, DialogFieldControl, controlVariants }

@@ -31,13 +31,41 @@ const DialogFormDescription = DialogDescription
 
 /* ─── Content — the compact panel ───────────────────────────────────── */
 
-export type DialogFormContentProps = React.ComponentProps<typeof DialogContent>
+/* Panel axes: `width` sets the max-width (token-backed --dialog-form-width-*,
+ * default 30rem) and `border` toggles the hairline seam (default keeps it;
+ * "none" nulls --dialog-form-panel-border for a borderless panel). Both default
+ * to the VI-620 rendering, so existing call sites are unchanged. */
+const panelVariants = cva(styles.panel, {
+  variants: {
+    width: {
+      sm: styles.widthSm,
+      md: styles.widthMd,
+      lg: styles.widthLg,
+    },
+    border: {
+      default: "",
+      none: styles.panelBorderless,
+    },
+  },
+  defaultVariants: {
+    width: "md",
+    border: "default",
+  },
+})
+
+export interface DialogFormContentProps
+  extends React.ComponentProps<typeof DialogContent>,
+    VariantProps<typeof panelVariants> {}
 
 const DialogFormContent = React.forwardRef<
   React.ComponentRef<typeof DialogContent>,
   DialogFormContentProps
->(({ className, ...props }, ref) => (
-  <DialogContent ref={ref} className={cn(styles.panel, className)} {...props} />
+>(({ className, width, border, ...props }, ref) => (
+  <DialogContent
+    ref={ref}
+    className={cn(panelVariants({ width, border }), className)}
+    {...props}
+  />
 ))
 DialogFormContent.displayName = "DialogFormContent"
 
@@ -121,4 +149,5 @@ export {
   DialogFormFooter,
   DialogFormDescription,
   titleVariants,
+  panelVariants,
 }
