@@ -95,7 +95,7 @@ export function AddArtistModal() {
 | --- | --- |
 | `DialogForm` | Root — controls open state (re-exports the Dialog atom root). |
 | `DialogFormTrigger` | Element that opens the modal. |
-| `DialogFormContent` | The compact panel (backdrop + centered surface + close X). |
+| `DialogFormContent` | The compact panel (backdrop + centered surface + close X). `width="sm \| md \| lg"` (~24rem / 30rem default / ~40rem, token-backed via `--dialog-form-width-*`) sizes the panel; `border="default \| none"` keeps or drops the hairline (a theme can equivalently null `--dialog-form-panel-border`). |
 | `DialogFormHeader` | Container for the title and optional description. |
 | `DialogFormTitle` | Modal heading. `size="sm"` (13px, default) or `size="md"` (16px). |
 | `DialogFormDescription` | Secondary text under the title. |
@@ -111,7 +111,7 @@ This block composes Visor primitives:
 - **Button** — footer actions, rendered at the compact `size="dlg"` metrics
 - **DialogField** — the field block for the body (installed separately)
 
-Everything is token-driven — the active theme swaps the surface, hairline, radius, and title scale, so the same modal reskins per theme with no bespoke CSS.
+Everything is token-driven — the active theme swaps the surface, hairline, radius, and title scale, so the same modal reskins per theme with no bespoke CSS. The panel width (`--dialog-form-width-sm|md|lg`) and hairline (`--dialog-form-panel-border`) are token seams a theme can retune without touching the block; the `width` and `border` props select the defaults per instance.
 
 ## About Blocks
 

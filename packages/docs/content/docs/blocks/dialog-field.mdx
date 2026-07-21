@@ -58,7 +58,7 @@ import {
 | --- | --- |
 | `DialogField` | Root — flex column, 5px label→control gap. |
 | `DialogFieldLabel` | 11px / 600 primary-ink label (composes the Label atom). |
-| `DialogFieldControl` | The recessed control well. Props: `icon` (leading) and `trailing` (control/caret). Any `input` / `select` / `textarea` dropped inside renders on the well surface. |
+| `DialogFieldControl` | The recessed control well. Props: `size` (`sm \| md`, default `md`) tunes the well padding only — the label typography is unchanged, matching the input atom's `size` semantics; `icon` (leading) and `trailing` (control/caret). Any `input` / `select` / `textarea` dropped inside renders on the well surface. |
 
 ## Composition
 

@@ -23,16 +23,18 @@
   line-height: 1.4;
 }
 
-/* Control — the standard Visor medium field: md size (--input-padding-md) on the
- * shared form-control surface role (--field-control-bg), borderless. The surface
- * color is theme-driven — a dialog context may lift it with --field-control-bg
- * (the documented in-dialog hook on the input atom); we do not hand-roll it here.
- * Borderless per the dlg-field direction; focus shows a tokenized ring. */
+/* Control — the standard Visor field well on the shared form-control surface role
+ * (--field-control-bg), borderless. The surface color is theme-driven — a dialog
+ * context may lift it with --field-control-bg (the documented in-dialog hook on
+ * the input atom); we do not hand-roll it here. Borderless per the dlg-field
+ * direction; focus shows a tokenized ring. The well padding is the `size` axis
+ * (--controlSm / --controlMd below) so a compact Animal modal field and the
+ * default medium field share one well — matching Visor's input-only `size`
+ * semantics (padding varies; the label typography does not). */
 .control {
   display: flex;
   align-items: center;
   gap: var(--spacing-2, 0.5rem);
-  padding: var(--input-padding-md, var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem));
   border-radius: var(--input-radius-md, var(--radius-sm, 0.5rem));
   /* Borderless field → the surface must contrast with the card on its own. A
    * fixed surface token (--surface-subtle) can't guarantee that: some themes
@@ -52,6 +54,18 @@
 .control:focus-within {
   box-shadow: 0 0 0 var(--focus-ring-width, 2px)
     color-mix(in srgb, var(--border-focus, var(--primary, #111827)) 15%, transparent);
+}
+
+/* Size axis — well/control padding only (label typography unchanged). Mirrors the
+ * input atom's --input-padding-{sm,md} seams so the field well tracks the input
+ * size scale. `md` (default) preserves the VI-620 medium well; `sm` is the
+ * compact Animal modal-form well (opted into per-field via size="sm"). */
+.controlSm {
+  padding: var(--input-padding-sm, var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem));
+}
+
+.controlMd {
+  padding: var(--input-padding-md, var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem));
 }
 
 /* Leading icon slot. */
