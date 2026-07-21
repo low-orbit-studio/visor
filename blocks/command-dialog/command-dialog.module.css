@@ -36,8 +36,13 @@
 
 /* ── Command root ────────────────────────────────────────────────────── */
 
+/* Floating palette surface — opaque. `--surface-card` may be translucent glass
+ * per theme (blackout: rgba(255,255,255,0.04)); the palette floats over the
+ * dimmed backdrop with no opaque layer behind it, so a glass fill reads
+ * see-through. `--surface-popover` is the opaque floating token (identical to
+ * `--surface-card` on solid themes). `.list` below matches this surface. */
 .command {
-  background: var(--surface-card, #ffffff);
+  background: var(--surface-popover, var(--surface-page, #ffffff));
   box-shadow: var(--shadow-xl, 0 30px 80px rgba(0, 0, 0, 0.6));
   border-radius: var(--radius-lg, 0.5rem);
   display: flex;
@@ -98,7 +103,8 @@
 .list {
   max-height: 27rem;
   padding: 0.375rem 0;
-  background: var(--surface-card, #ffffff);
+  /* Match `.command` — opaque floating surface, not glass `--surface-card`. */
+  background: var(--surface-popover, var(--surface-page, #ffffff));
 }
 
 .empty {
