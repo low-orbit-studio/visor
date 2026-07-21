@@ -1,0 +1,20 @@
+name: Dialog Form
+description: >
+  Compact admin modal shell (the Animal dialog substrate, VI-620) composing the
+  Dialog atom into a backdrop + centered panel + header + footer. Exposes a
+  titled header with a size axis (13px default / 16px), a body stack for
+  DialogField blocks, and a right-aligned dlg-btn footer row. Token-driven — the
+  active theme swaps the surface, hairline, radius, and title scale.
+category: overlay
+components_used:
+  - dialog
+  - button
+when_to_use:
+  - Create / edit modals in an admin app (invite user, edit venue, add artist)
+  - Confirmation and destructive-action prompts that need a titled shell + actions
+  - Any pop-up form that would otherwise hand-roll a backdrop + panel + footer
+when_not_to_use:
+  - ⌘K command palette (use command-dialog)
+  - Right-side detail editing (use admin-detail-drawer / Sheet)
+  - Non-blocking notifications (use Toast)
+  - A plain full-page form (use a page, not a modal)

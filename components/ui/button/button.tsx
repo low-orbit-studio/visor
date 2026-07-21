@@ -22,6 +22,7 @@ const buttonVariants = cva(styles.base, {
       sm: styles.sizeSm,
       md: styles.sizeMd,
       lg: styles.sizeLg,
+      dlg: styles.sizeDlg,
     },
   },
   defaultVariants: {

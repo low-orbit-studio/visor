@@ -148,6 +148,48 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "dialog-form",
+    type: "registry:block",
+    category: "overlay",
+    description:
+      "Compact admin modal shell (Animal dialog substrate) composing the Dialog atom into a backdrop + centered panel + header + footer. Titled header with a size axis (13px/16px), a body stack for DialogField blocks, and a right-aligned dlg-btn footer row. Token-driven — the theme swaps surface, hairline, radius, and title scale.",
+    dependencies: [
+      "@radix-ui/react-dialog",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils", "dialog", "button"],
+    files: [
+      {
+        path: "blocks/dialog-form/dialog-form.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/dialog-form/dialog-form.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
+    name: "dialog-field",
+    type: "registry:block",
+    category: "form",
+    description:
+      "Compact dialog field (dlg-field, Animal dialog substrate): a flex-column field with a 5px label→control gap, an 11px/600 primary-ink label, and a recessed control well (surface deeper than the card in both modes + hairline border) hosting leading-icon and trailing control/caret slots. Composes the Label atom; token-driven.",
+    dependencies: ["@radix-ui/react-label", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "label"],
+    files: [
+      {
+        path: "blocks/dialog-field/dialog-field.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/dialog-field/dialog-field.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "admin-tabbed-editor",
     type: "registry:block",
     category: "admin",

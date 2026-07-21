@@ -161,3 +161,41 @@
   padding: 0 var(--spacing-6, 1.5rem);
   font-size: var(--font-size-base, 1rem);
 }
+
+/* Dialog-footer button — dlg-btn (Animal dialog substrate, VI-620).
+   Compact modal-action metrics measured from the AN prototype (11.5px / 600,
+   ~7px 13px padding, 7px radius), normalized onto Visor tokens: font-size-2xs
+   (11px), spacing-2/spacing-3 padding (8/12px), radius-lg (8px). Height is
+   auto so the compact padding drives the box. Color faces reuse the existing
+   variant axis — primary via variant="default", ghost via variant="ghost"
+   (refined below to a hairline-outlined, secondary-ink face), danger via
+   variant="destructive" (refined below to a subtle-danger face). */
+.sizeDlg {
+  height: auto;
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  font-size: var(--font-size-2xs, 0.6875rem);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1;
+  border-radius: var(--radius-lg, 0.5rem);
+}
+
+/* dlg ghost — transparent well with a hairline outline + secondary ink
+   (AN dlg-btn ghost face: transparent / --ink-60 / 1px --hair). Two-class
+   specificity keeps this scoped to the dlg size only. */
+.sizeDlg.variantGhost {
+  color: var(--text-secondary, #6b7280);
+  border-color: var(--hairline, var(--border-default, #e5e7eb));
+}
+
+/* dlg danger — subtle-danger face (AN dlg-btn danger face: --red on a faint
+   red fill), distinct from the solid `destructive` variant. */
+.sizeDlg.variantDestructive {
+  background-color: var(--surface-error-subtle, color-mix(in srgb, var(--destructive, #ef4444) 8%, transparent));
+  color: var(--text-error, var(--destructive, #b91c1c));
+}
+
+@media (hover: hover) {
+  .sizeDlg.variantDestructive:hover {
+    background-color: color-mix(in srgb, var(--destructive, #ef4444) 14%, transparent);
+  }
+}

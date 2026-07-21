@@ -149,6 +149,36 @@ describe("Button — ghost held/open state (CSS-only, opt-in)", () => {
   })
 })
 
+describe("dlg size (Animal dialog substrate, VI-620)", () => {
+  it("applies the sizeDlg class when size='dlg'", () => {
+    render(<Button size="dlg">Send</Button>)
+    const button = screen.getByRole("button", { name: /send/i })
+    expect(button.className).toMatch(/sizeDlg/)
+  })
+
+  it("composes the dlg size with the ghost variant face", () => {
+    render(
+      <Button size="dlg" variant="ghost">
+        Cancel
+      </Button>
+    )
+    const button = screen.getByRole("button", { name: /cancel/i })
+    expect(button.className).toMatch(/sizeDlg/)
+    expect(button.className).toMatch(/variantGhost/)
+  })
+
+  it("composes the dlg size with the destructive (subtle-danger) face", () => {
+    render(
+      <Button size="dlg" variant="destructive">
+        Delete
+      </Button>
+    )
+    const button = screen.getByRole("button", { name: /delete/i })
+    expect(button.className).toMatch(/sizeDlg/)
+    expect(button.className).toMatch(/variantDestructive/)
+  })
+})
+
 describe("accessibility", () => {
   it("has no WCAG 2.1 AA violations (default)", async () => {
     const { container } = render(<Button>Click me</Button>)

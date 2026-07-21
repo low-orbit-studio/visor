@@ -1,0 +1,20 @@
+name: Dialog Field
+description: >
+  Compact dialog field block (dlg-field, the Animal dialog substrate VI-620): a
+  flex-column field with a 5px label→control gap, an 11px/600 primary-ink label,
+  and a recessed control "well" (a surface deeper than the card in both modes +
+  a hairline border) hosting a leading icon slot, the control, and a trailing
+  control/caret slot. Composes the Label atom; token-driven so the active theme
+  swaps the treatment.
+category: form
+components_used:
+  - label
+  - input
+when_to_use:
+  - Form fields inside a DialogForm / admin modal
+  - Fields that need a leading icon or a trailing caret / stepper / unit control
+  - Any compact form control that would otherwise hand-roll a recessed input well
+when_not_to_use:
+  - Standard page forms (use the Field component)
+  - Standalone labels (use Label directly)
+  - Non-form content grouping (use a div or Card)

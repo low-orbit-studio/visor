@@ -117,6 +117,22 @@ The animation is skipped automatically when the user has
   </div>
 </ComponentPreview>
 
+## Mono Label
+
+Set `mono` to render the label in the monospace token face (`--font-mono`, 11px)
+— the dot + mono-token treatment from the Animal dialog substrate, for ID / code
+/ token-style status readouts. Pair it with a custom `label`.
+
+<ComponentPreview
+  title="Monospace token label"
+  code={"<StatusBadge status=\"live\" mono label=\"ID-4821\" />\n<StatusBadge status=\"scheduled\" mono label=\"SET-02\" />"}
+>
+  <div style={{ display: 'flex', gap: '0.5rem' }}>
+    <StatusBadge status="live" mono label="ID-4821" />
+    <StatusBadge status="scheduled" mono label="SET-02" />
+  </div>
+</ComponentPreview>
+
 ## Custom Label
 
 <ComponentPreview

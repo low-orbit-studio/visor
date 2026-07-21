@@ -79,6 +79,27 @@ See the [Flutter Button](/docs/flutter/widgets/button) page for the full API ref
   </div>
 </ComponentPreview>
 
+### Dialog footer (`dlg`)
+
+The compact `size="dlg"` face is the dialog-footer button from the Animal
+dialog substrate — 11px/600 text, tokenized ~8/12px padding, `radius-lg`. Its
+three intents reuse the variant axis: primary via `variant="default"`, cancel
+via `variant="ghost"` (renders a hairline-outlined, secondary-ink face at `dlg`
+size), and destructive via `variant="destructive"` (renders a subtle-danger
+face at `dlg` size). Pair it with the [Dialog Form](/docs/blocks/dialog-form)
+block.
+
+<ComponentPreview
+  title="Dialog footer buttons"
+  code={"<Button size=\"dlg\" variant=\"destructive\">Remove</Button>\n<Button size=\"dlg\" variant=\"ghost\">Cancel</Button>\n<Button size=\"dlg\">Add artist</Button>"}
+>
+  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+    <Button size="dlg" variant="destructive">Remove</Button>
+    <Button size="dlg" variant="ghost">Cancel</Button>
+    <Button size="dlg">Add artist</Button>
+  </div>
+</ComponentPreview>
+
 ## Disabled State
 
 <ComponentPreview

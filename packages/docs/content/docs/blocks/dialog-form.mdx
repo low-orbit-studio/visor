@@ -1,0 +1,118 @@
+---
+title: Dialog Form
+description: Compact admin modal shell (the Animal dialog substrate) composing the Dialog atom into a backdrop, centered panel, header, and dlg-btn footer.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { DialogFormDemo } from '@/components/blocks/dialog-form-demo';
+
+## Preview
+
+<BlockPreview
+  title="Dialog Form"
+  code={"<DialogForm open={open} onOpenChange={setOpen}>\n  <DialogFormContent>\n    <DialogFormHeader>\n      <DialogFormTitle>Add artist</DialogFormTitle>\n    </DialogFormHeader>\n    <DialogFormBody>{/* DialogField blocks */}</DialogFormBody>\n    <DialogFormFooter>\n      <DialogFormClose asChild>\n        <Button size=\"dlg\" variant=\"ghost\">Cancel</Button>\n      </DialogFormClose>\n      <Button size=\"dlg\">Add artist</Button>\n    </DialogFormFooter>\n  </DialogFormContent>\n</DialogForm>"}
+>
+  <DialogFormDemo />
+</BlockPreview>
+
+## When to Use
+
+- Create / edit modals in an admin app (invite user, edit venue, add artist)
+- Confirmation and destructive-action prompts that need a titled shell + actions
+- Any pop-up form that would otherwise hand-roll a backdrop + panel + footer
+
+Reach for [Command Dialog](/docs/blocks/command-dialog) for a ⌘K palette, or [Admin Detail Drawer](/docs/blocks/admin-detail-drawer) for right-side detail editing.
+
+## Installation
+
+```bash
+npx visor add --block dialog-form
+```
+
+This copies files into your project:
+
+- `blocks/dialog-form/dialog-form.tsx` — the block component
+- `blocks/dialog-form/dialog-form.module.css` — the styles
+
+## Usage
+
+```tsx
+'use client';
+
+import { useState } from 'react';
+import {
+  DialogForm,
+  DialogFormTrigger,
+  DialogFormClose,
+  DialogFormContent,
+  DialogFormHeader,
+  DialogFormTitle,
+  DialogFormBody,
+  DialogFormFooter,
+} from '@/blocks/dialog-form/dialog-form';
+import {
+  DialogField,
+  DialogFieldLabel,
+  DialogFieldControl,
+} from '@/blocks/dialog-field/dialog-field';
+import { Button } from '@/components/ui/button/button';
+
+export function AddArtistModal() {
+  const [open, setOpen] = useState(false);
+  return (
+    <DialogForm open={open} onOpenChange={setOpen}>
+      <DialogFormTrigger asChild>
+        <Button>Add artist</Button>
+      </DialogFormTrigger>
+      <DialogFormContent>
+        <DialogFormHeader>
+          <DialogFormTitle>Add artist</DialogFormTitle>
+        </DialogFormHeader>
+        <DialogFormBody>
+          <DialogField>
+            <DialogFieldLabel htmlFor="artist-name">Artist name</DialogFieldLabel>
+            <DialogFieldControl>
+              <input id="artist-name" />
+            </DialogFieldControl>
+          </DialogField>
+        </DialogFormBody>
+        <DialogFormFooter>
+          <DialogFormClose asChild>
+            <Button size="dlg" variant="ghost">Cancel</Button>
+          </DialogFormClose>
+          <Button size="dlg">Add artist</Button>
+        </DialogFormFooter>
+      </DialogFormContent>
+    </DialogForm>
+  );
+}
+```
+
+## Sub-components
+
+| Component | Description |
+| --- | --- |
+| `DialogForm` | Root — controls open state (re-exports the Dialog atom root). |
+| `DialogFormTrigger` | Element that opens the modal. |
+| `DialogFormContent` | The compact panel (backdrop + centered surface + close X). |
+| `DialogFormHeader` | Container for the title and optional description. |
+| `DialogFormTitle` | Modal heading. `size="sm"` (13px, default) or `size="md"` (16px). |
+| `DialogFormDescription` | Secondary text under the title. |
+| `DialogFormBody` | Vertical stack for `DialogField` blocks. |
+| `DialogFormFooter` | Right-aligned `dlg-btn` action row. |
+| `DialogFormClose` | Explicit close trigger. |
+
+## Composition
+
+This block composes Visor primitives:
+
+- **Dialog** — Radix-backed modal behavior (focus trap, Escape, overlay dismiss)
+- **Button** — footer actions, rendered at the compact `size="dlg"` metrics
+- **DialogField** — the field block for the body (installed separately)
+
+Everything is token-driven — the active theme swaps the surface, hairline, radius, and title scale, so the same modal reskins per theme with no bespoke CSS.
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. They are copy-and-own, just like components — install them into your project and customize freely.

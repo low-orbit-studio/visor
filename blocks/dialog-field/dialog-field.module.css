@@ -1,0 +1,87 @@
+/* DialogField block — Animal dialog substrate field (dlg-field, VI-620).
+ *
+ * flex column, 5px gap · 11px/600 primary-ink label · a recessed control well
+ * (surface deeper than the card in both modes + hairline border) hosting a
+ * leading icon, the control, and a trailing control/caret. Every value traces
+ * to a Visor token; the active theme swaps the whole treatment (no bespoke CSS).
+ */
+
+/* Field — flex column. 5px label→control gap (dlg-field spec): the 4px grid
+ * has no 5px step, so derive it from --spacing-1 (the same calc idiom the
+ * field atom uses for its 6px icon gap). */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing-1, 0.25rem) + var(--spacing-1, 0.25rem) / 4);
+}
+
+/* Label — dlg-label: 11px / 600 / --ink (primary). */
+.label {
+  font-size: var(--text-11, 0.6875rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #111827);
+  line-height: 1.4;
+}
+
+/* Control well — dlg-input: recessed surface (--bg-deep) + hairline (--hair)
+ * border. The surface ramp inverts light↔dark, so a single surface token
+ * can't stay "below" the card; mixing the card toward neutral-950 darkens it
+ * directionally in either mode (the doc-nav / BO-67 recessed-well idiom).
+ * Overridable per theme via --dialog-field-bg. */
+.control {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  border-radius: var(--radius-lg, 0.5rem);
+  border: var(--stroke-width-thin, 1px) solid
+    var(--hairline, var(--border-default, #e5e7eb));
+  background: var(
+    --dialog-field-bg,
+    color-mix(
+      in srgb,
+      var(--surface-card, #ffffff),
+      var(--color-neutral-950, #030712) 20%
+    )
+  );
+}
+
+.control:focus-within {
+  border-color: var(--border-focus, var(--primary, #111827));
+}
+
+/* Leading icon slot. */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--text-tertiary, #9ca3af);
+}
+
+/* The control itself sits on the well surface — transparent, borderless, so a
+ * plain <input>/<select>/<textarea> dropped in reads as part of the well. */
+.controlInner {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+}
+
+.controlInner :global(input),
+.controlInner :global(select),
+.controlInner :global(textarea) {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  outline: none;
+  color: var(--text-primary, #111827);
+}
+
+/* Trailing control / caret slot. */
+.trailing {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--text-tertiary, #9ca3af);
+}

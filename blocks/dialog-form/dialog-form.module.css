@@ -1,0 +1,60 @@
+/* DialogForm block — Animal dialog substrate shell (VI-620).
+ *
+ * Restyles the `dialog` atom's DialogContent into the compact admin modal
+ * panel, then adds the header / title / body / footer chrome the 10 hand-rolled
+ * Animal modals converge onto. Every value traces to a Visor token so the
+ * active theme (Animal, or any other) swaps the whole shell — no bespoke CSS.
+ */
+
+/* Compact panel — overrides the atom's default 32rem / spacing-6 content. */
+.panel {
+  max-width: 30rem;
+  border-radius: var(--radius-xl, 0.75rem);
+  padding: var(--spacing-5, 1.25rem);
+  background: var(--surface-card, #ffffff);
+  border: var(--stroke-width-thin, 1px) solid
+    var(--hairline, var(--border-default, #e5e7eb));
+  box-shadow: var(--shadow-lg);
+}
+
+/* Header — title + optional description, tight stack above the body. */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+  margin-bottom: var(--spacing-4, 1rem);
+}
+
+/* Title — dlg-title. Bold, primary ink. Size axis reconciles the two AN
+ * sources: the 13.5px surface scale (default `sm`) and reuse.html's 15px
+ * shared/confirm dialogs (`md`). Normalized onto the --text-N chrome scale. */
+.title {
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-primary, #111827);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.titleSm {
+  font-size: var(--text-13, 0.8125rem);
+}
+
+.titleMd {
+  font-size: var(--text-16, 1rem);
+}
+
+/* Body — vertical stack of DialogField blocks. */
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 1rem);
+}
+
+/* Footer — right-aligned dlg-btn action row. */
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  margin-top: var(--spacing-5, 1.25rem);
+}
