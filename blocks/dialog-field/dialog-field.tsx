@@ -9,11 +9,11 @@ import styles from "./dialog-field.module.css"
  * DialogField — the Animal dialog substrate field block (dlg-field, VI-620).
  *
  * A flex-column field (label over control) with the compact dialog treatment:
- * 5px label→control gap, an 11px/600 primary-ink label, and a recessed control
- * "well" (a surface deeper than the card in both modes + a hairline border)
- * that hosts a leading icon slot, the control itself, and a trailing
- * control/caret slot. Composes the `label` atom for the label. Every value
- * traces to a Visor token so the active theme swaps the whole treatment.
+ * 5px label→control gap, an 11px/600 primary-ink label, and the standard Visor
+ * medium field (md size, themed form-control surface, borderless) that hosts a
+ * leading icon slot, the control itself, and a trailing control/caret slot.
+ * Composes the `label` atom for the label. Every value traces to a Visor token
+ * so the active theme swaps the whole treatment.
  */
 
 /* ─── Field root — flex column, 5px gap ──────────────────────────────── */

@@ -36,13 +36,13 @@ export function DialogFormDemo() {
         </DialogFormHeader>
         <DialogFormBody>
           <DialogField>
-            <DialogFieldLabel htmlFor="dfd-name">ARTIST NAME</DialogFieldLabel>
+            <DialogFieldLabel htmlFor="dfd-name">Artist name</DialogFieldLabel>
             <DialogFieldControl>
               <input id="dfd-name" defaultValue="Aurora Halo" />
             </DialogFieldControl>
           </DialogField>
           <DialogField>
-            <DialogFieldLabel htmlFor="dfd-time">SET TIME</DialogFieldLabel>
+            <DialogFieldLabel htmlFor="dfd-time">Set time</DialogFieldLabel>
             <DialogFieldControl trailing={<span aria-hidden>▾</span>}>
               <input id="dfd-time" defaultValue="23:00" />
             </DialogFieldControl>
