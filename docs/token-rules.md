@@ -434,6 +434,25 @@ A surface separated from its container by a **hairline border** (not a fill shif
 
 ---
 
+### 14. Floating Panel Opaque Background Rule (VI-209 / VI-623)
+
+A floating / portaled panel (dialog, popover, dropdown, command palette, tooltip, toast) floats over the dimmed backdrop with **no opaque layer behind it**, so its fill **must be opaque**. `--surface-card` is a *card-in-flow* token a theme may make translucent glass (blackout: `rgba(255,255,255,0.04)`), designed to layer over the opaque `--surface-page`. Used as a floating panel's **primary** fill it reads see-through — the VI-620/VI-386 `dialog-form` + `command-dialog` bug.
+
+The `floating-panel-opaque-bg` rule (`scripts/rules/floating-panel-opaque-bg.ts`) catches this. A `.module.css` is treated as a floating panel **structurally** — when its sibling `.tsx` renders a portaled atom (a Radix portal primitive, a composed Visor atom by import path, or sonner) — so a **new floating block is covered automatically**, with no hand-maintained name allowlist to forget. It scans both `components/**` and `blocks/**`, matches the `background:` shorthand as well as `background-color:`, and flags only when `--surface-card` is the **primary** (first) background token inside a **box-shadow'd** (elevated) block. The box-shadow gate isolates the outermost panel from inner surfaces backed by the already-opaque panel; a nested fallback like `var(--surface-elev, color-mix(… --surface-card …))` resolves to its opaque primary and is not flagged.
+
+**Fix:** use `var(--surface-popover, var(--surface-page, #ffffff))` — opaque, and `--surface-popover` equals `--surface-card` on solid themes, so no visual change there.
+
+**Exempt an in-flow surface** — a static-positioned card that sits on the page (not over a backdrop), e.g. confirm-dialog's inline surface — with a marker comment on, or on the line directly above, the fill:
+
+```css
+/* opaque-bg-exempt: in-flow static card */
+background-color: var(--surface-card, var(--surface-page, #ffffff));
+```
+
+See [W032](./wisdom/W032-floating-panel-opaque-surface.md) for the four coverage holes that let this class recur before VI-623.
+
+---
+
 ## CSS @layer Strategy
 
 Adapter-generated CSS uses `@layer` declarations for specificity ordering. This ensures theme overrides work without `!important`.

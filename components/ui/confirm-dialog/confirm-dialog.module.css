@@ -211,6 +211,10 @@
   width: 100%;
   max-width: 32rem;
   border-radius: var(--radius-lg, 0.5rem);
+  /* In-flow static-positioned surface — sits on the page, not over a backdrop,
+   * so a glass --surface-card reads as a faint card lift, not see-through. The
+   * portaled confirm uses the dialog atom (surface-page). */
+  /* opaque-bg-exempt: in-flow static card */
   background-color: var(--surface-card, var(--surface-page, #ffffff));
   padding: var(--spacing-6, 1.5rem);
   box-shadow: var(--shadow-xl);
@@ -220,6 +224,7 @@
    metrics (card surface, 480px, radius-xl, spacing-8, shadow-lg) — verified
    against the blessed user-states render. */
 :global([data-density="editorial"]) .inlineSurface {
+  /* opaque-bg-exempt: in-flow static-positioned surface (see note above). */
   background-color: var(--surface-card);
   max-width: 480px;
   border-radius: var(--radius-xl);

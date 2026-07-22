@@ -33,7 +33,10 @@
 
 /* Card surface */
 .card {
-  background-color: var(--surface-card, #ffffff);
+  /* Floating card over the scrim — opaque. --surface-card may be translucent
+   * glass per theme (blackout); use the opaque floating token so the card is
+   * never see-through (== --surface-card on solid themes). VI-623. */
+  background-color: var(--surface-popover, var(--surface-page, #ffffff));
   border-radius: var(--radius-xl, 1rem);
   padding: var(--spacing-10, 2.5rem) var(--spacing-9, 2.25rem);
   text-align: center;
