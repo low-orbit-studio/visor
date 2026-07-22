@@ -14,7 +14,12 @@
 .panel {
   border-radius: var(--radius-xl, 0.75rem);
   padding: var(--spacing-5, 1.25rem);
-  background: var(--surface-card, #ffffff);
+  /* Floating panel — MUST be an opaque surface. `--surface-card` is a card-in-
+   * flow token a theme may make translucent glass (blackout: rgba(255,255,255,
+   * 0.04)); over the dimmed backdrop it has no opaque layer behind it and reads
+   * see-through. `--surface-popover` is the opaque floating-panel token and is
+   * identical to `--surface-card` on solid themes, so only glass themes change. */
+  background: var(--surface-popover, var(--surface-page, #ffffff));
   border: var(
     --dialog-form-panel-border,
     var(--stroke-width-thin, 1px) solid
