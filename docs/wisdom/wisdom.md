@@ -40,6 +40,7 @@ For global wisdom (universal lessons): [`~/Code/low-orbit/low-orbit-playbook/roo
 | W029 | Linear "Done" ≠ published registry — close the loop with a post-smoke audit that comments on the GitHub PR that landed each drifted primitive (no Linear keys in public-repo secrets) | governance, github, publish, registry, ci, public-repo | [W029](W029-vi-ticket-publish-governance.md) |
 | W030 | `npx changeset status` silently passes unknown package names — use `@changesets/get-release-plan` directly for non-destructive validation in CI gates | changesets, ci, validation, release, monorepo, publish | [W030](W030-changeset-status-silent-pass.md) |
 | W031 | When auditing whether a surface "exposes" a token/feature, verify it actually emits end-to-end — a demo referencing a token the engine silently drops renders nothing | audit, design-tokens, theme-engine, verification, pipeline | [W031](W031-audit-emit-pipeline-not-surface.md) |
+| W032 | Floating panels must fill with an opaque surface (`--surface-popover`), never a bare `--surface-card` (translucent glass in some themes); detect floating-ness structurally, not via a hand-maintained allowlist | css, tokens, themes, floating-panel, dialog, validator, coverage-hole | [W032](W032-floating-panel-opaque-surface.md) |
 
 ## Adding Entries
 

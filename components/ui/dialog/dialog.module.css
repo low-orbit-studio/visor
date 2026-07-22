@@ -41,7 +41,11 @@
 }
 
 :global([data-density="editorial"]) .content {
-  background-color: var(--surface-card);
+  /* Floating modal — opaque. --surface-card may be translucent glass per theme
+   * (blackout: rgba(255,255,255,0.04)); over the backdrop it reads see-through.
+   * --surface-popover is the opaque floating token (== --surface-card on solid
+   * themes, so no visual change there). VI-623. */
+  background-color: var(--surface-popover, var(--surface-page, #ffffff));
   max-width: 480px;
   border-radius: var(--radius-xl);
   padding: var(--spacing-8);
