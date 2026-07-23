@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
-import { mkdirSync, rmSync, existsSync, writeFileSync, readFileSync } from "fs"
+import { mkdirSync, rmSync, existsSync, writeFileSync, readFileSync, readdirSync } from "fs"
 import { join } from "path"
 import { tmpdir } from "os"
 import type { SpawnSyncReturns } from "child_process"
@@ -409,6 +409,153 @@ describe("init command", () => {
       const result = JSON.parse(jsonOutput!)
       expect(result.success).toBe(false)
       expect(result.error).toContain("package.json already exists")
+    })
+
+    it("writes visor.json AFTER create-next-app runs, not before (VI-619)", () => {
+      // Regression for the empty-directory scaffold: visor.json must not be
+      // written into cwd before create-next-app is invoked, because
+      // create-next-app refuses to scaffold into a directory containing
+      // conflicting files. We assert the ordering directly by capturing whether
+      // visor.json existed at the moment the scaffolder was called.
+      let visorJsonPresentAtScaffold: boolean | undefined
+      const spy = mockShellOut()
+      spy.mockImplementation(((command: string, args: readonly string[]) => {
+        const argv = Array.from(args ?? [])
+        if (command === "npx" && argv[0]?.startsWith("create-next-app@")) {
+          // Capture cwd state at the exact moment the scaffolder runs.
+          visorJsonPresentAtScaffold = existsSync(join(testDir, "visor.json"))
+          mkdirSync(join(testDir, "app"), { recursive: true })
+          writeFileSync(
+            join(testDir, "package.json"),
+            JSON.stringify({ name: "my-app", version: "0.1.0", dependencies: {} }, null, 2),
+            "utf-8"
+          )
+          writeFileSync(join(testDir, "app", "globals.css"), "/* default */\n", "utf-8")
+          writeFileSync(join(testDir, "app", "layout.tsx"), "export default function L() {}\n", "utf-8")
+          return {
+            status: 0,
+            signal: null,
+            output: [],
+            pid: 0,
+            stdout: Buffer.from(""),
+            stderr: Buffer.from(""),
+          }
+        }
+        if (command === "npm" && argv[0] === "install") {
+          const pkgPath = join(testDir, "package.json")
+          const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"))
+          pkg.dependencies = {
+            ...pkg.dependencies,
+            "@loworbitstudio/visor-core": "^0.4.1",
+            "@loworbitstudio/visor-theme-engine": "^0.4.0",
+          }
+          writeFileSync(pkgPath, JSON.stringify(pkg, null, 2), "utf-8")
+          return {
+            status: 0,
+            signal: null,
+            output: [],
+            pid: 0,
+            stdout: Buffer.from(""),
+            stderr: Buffer.from(""),
+          }
+        }
+        throw new Error(`unexpected spawnSync call: ${command} ${argv.join(" ")}`)
+      }) as never)
+
+      initCommand(testDir, { template: "nextjs" })
+
+      // The load-bearing assertion: cwd was clean of visor.json when the
+      // scaffolder ran. On the pre-fix code this is `true` and the real
+      // create-next-app would abort.
+      expect(visorJsonPresentAtScaffold).toBe(false)
+
+      // And the scaffold still completes with every expected artifact.
+      expect(configExists(testDir)).toBe(true)
+      expect(existsSync(join(testDir, "app/globals.css"))).toBe(true)
+      expect(existsSync(join(testDir, "app/layout.tsx"))).toBe(true)
+      expect(existsSync(join(testDir, ".visor.yaml"))).toBe(true)
+      const pkg = JSON.parse(readFileSync(join(testDir, "package.json"), "utf-8"))
+      expect(pkg.dependencies["@loworbitstudio/visor-core"]).toBeDefined()
+    })
+
+    it("create-next-app-style conflict check passes: empty dir, no visor.json seam (VI-619)", () => {
+      // Higher-fidelity guard: simulate create-next-app's real refusal by
+      // aborting the scaffold if the target directory contains a conflicting
+      // file (visor.json). On the pre-fix code visor.json is written first and
+      // this fails; on the fixed code the directory is clean and it succeeds.
+      const CREATE_NEXT_APP_ALLOWLIST = new Set([
+        ".git",
+        ".gitignore",
+        ".gitattributes",
+        "LICENSE",
+        "README.md",
+      ])
+      const spy = mockShellOut()
+      spy.mockImplementation(((command: string, args: readonly string[]) => {
+        const argv = Array.from(args ?? [])
+        if (command === "npx" && argv[0]?.startsWith("create-next-app@")) {
+          const conflicts = readdirSync(testDir).filter(
+            (f: string) => !CREATE_NEXT_APP_ALLOWLIST.has(f)
+          )
+          if (conflicts.length > 0) {
+            return {
+              status: 1,
+              signal: null,
+              output: [],
+              pid: 0,
+              stdout: Buffer.from(""),
+              stderr: Buffer.from(
+                `The directory contains files that could conflict:\n\n  ${conflicts.join("\n  ")}\n`
+              ),
+            }
+          }
+          mkdirSync(join(testDir, "app"), { recursive: true })
+          writeFileSync(
+            join(testDir, "package.json"),
+            JSON.stringify({ name: "my-app", version: "0.1.0", dependencies: {} }, null, 2),
+            "utf-8"
+          )
+          writeFileSync(join(testDir, "app", "globals.css"), "/* default */\n", "utf-8")
+          writeFileSync(join(testDir, "app", "layout.tsx"), "export default function L() {}\n", "utf-8")
+          return {
+            status: 0,
+            signal: null,
+            output: [],
+            pid: 0,
+            stdout: Buffer.from(""),
+            stderr: Buffer.from(""),
+          }
+        }
+        if (command === "npm" && argv[0] === "install") {
+          const pkgPath = join(testDir, "package.json")
+          const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"))
+          pkg.dependencies = {
+            ...pkg.dependencies,
+            "@loworbitstudio/visor-core": "^0.4.1",
+            "@loworbitstudio/visor-theme-engine": "^0.4.0",
+          }
+          writeFileSync(pkgPath, JSON.stringify(pkg, null, 2), "utf-8")
+          return {
+            status: 0,
+            signal: null,
+            output: [],
+            pid: 0,
+            stdout: Buffer.from(""),
+            stderr: Buffer.from(""),
+          }
+        }
+        throw new Error(`unexpected spawnSync call: ${command} ${argv.join(" ")}`)
+      }) as never)
+
+      // Must NOT throw — the scaffolder sees a clean directory.
+      expect(() => {
+        initCommand(testDir, { template: "nextjs" })
+      }).not.toThrow()
+
+      expect(configExists(testDir)).toBe(true)
+      expect(existsSync(join(testDir, "app/globals.css"))).toBe(true)
+      expect(existsSync(join(testDir, "app/layout.tsx"))).toBe(true)
+      expect(existsSync(join(testDir, ".visor.yaml"))).toBe(true)
     })
 
     it("propagates create-next-app failures", () => {
