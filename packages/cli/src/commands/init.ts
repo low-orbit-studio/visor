@@ -109,30 +109,17 @@ export function initCommand(cwd: string, options?: InitOptions): void {
     process.exit(1)
   }
 
-  // Always create visor.json if it doesn't exist
-  if (configExists(cwd)) {
-    filesSkipped.push("visor.json")
-    if (!json) {
-      logger.warn("visor.json already exists. Skipping config creation.")
-    }
-  } else {
-    writeConfig(cwd, DEFAULT_CONFIG)
-    filesCreated.push("visor.json")
-    if (!json) {
-      logger.success("Created visor.json")
-      logger.blank()
-      logger.info("Default paths:")
-      logger.item(`components      → ${DEFAULT_CONFIG.paths.components}`)
-      logger.item(`deck components → ${DEFAULT_CONFIG.paths.deckComponents}`)
-      logger.item(`blocks          → ${DEFAULT_CONFIG.paths.blocks}`)
-      logger.item(`hooks           → ${DEFAULT_CONFIG.paths.hooks}`)
-      logger.item(`lib             → ${DEFAULT_CONFIG.paths.lib}`)
-    }
-  }
-
-  // Template scaffolding
+  // visor.json write vs. create-next-app ordering (VI-619). create-next-app
+  // refuses to scaffold into a directory that already contains conflicting
+  // files, and visor.json — which visor itself writes — is exactly such a
+  // conflict. So for the nextjs template path, visor.json MUST be written AFTER
+  // create-next-app runs; scaffoldNextjs performs that write itself, right after
+  // the scaffolder succeeds. The non-template path has nothing that shells out,
+  // so it keeps writing visor.json first (its historical order).
   if (options?.template === "nextjs") {
     scaffoldNextjs(cwd, json, filesCreated, filesSkipped, warnings)
+  } else {
+    writeVisorConfig(cwd, json, filesCreated, filesSkipped)
   }
 
   // Tokens warning is irrelevant after nextjs scaffold (we install the dep
@@ -301,17 +288,53 @@ function emitError(json: boolean, message: string): void {
 }
 
 /**
+ * Write visor.json with the default config, or skip + warn if it already exists.
+ * Extracted so the write can be ordered correctly relative to create-next-app in
+ * the nextjs template path (VI-619): the scaffolder refuses to run in a directory
+ * containing conflicting files, so visor.json must land AFTER it, not before.
+ */
+function writeVisorConfig(
+  cwd: string,
+  json: boolean,
+  filesCreated: string[],
+  filesSkipped: string[]
+): void {
+  if (configExists(cwd)) {
+    filesSkipped.push("visor.json")
+    if (!json) {
+      logger.warn("visor.json already exists. Skipping config creation.")
+    }
+    return
+  }
+
+  writeConfig(cwd, DEFAULT_CONFIG)
+  filesCreated.push("visor.json")
+  if (!json) {
+    logger.success("Created visor.json")
+    logger.blank()
+    logger.info("Default paths:")
+    logger.item(`components      → ${DEFAULT_CONFIG.paths.components}`)
+    logger.item(`deck components → ${DEFAULT_CONFIG.paths.deckComponents}`)
+    logger.item(`blocks          → ${DEFAULT_CONFIG.paths.blocks}`)
+    logger.item(`hooks           → ${DEFAULT_CONFIG.paths.hooks}`)
+    logger.item(`lib             → ${DEFAULT_CONFIG.paths.lib}`)
+  }
+}
+
+/**
  * Scaffolds a complete runnable Borealis-native Next.js App Router app.
  *
  * Order of operations:
  *   1. Shell out to create-next-app (pinned version) — produces package.json,
  *      app/page.tsx, app/layout.tsx, tsconfig.json, next.config.*, .gitignore.
- *   2. Install @loworbitstudio/visor-core and @loworbitstudio/visor-theme-engine.
- *   3. Write .visor.yaml.
- *   4. Generate app/globals.css via the existing nextjs adapter.
- *   5. Overwrite app/layout.tsx with a Visor layout that imports globals.css
+ *   2. Write visor.json (VI-619: only now, once create-next-app has run — it
+ *      would otherwise be flagged as a conflicting file in the empty directory).
+ *   3. Install @loworbitstudio/visor-core and @loworbitstudio/visor-theme-engine.
+ *   4. Write .visor.yaml.
+ *   5. Generate app/globals.css via the existing nextjs adapter.
+ *   6. Overwrite app/layout.tsx with a Visor layout that imports globals.css
  *      and injects FOWT_SCRIPT inline in <head> before first paint.
- *   6. Write .lo/borealis.json stamp with visor version + ISO timestamp.
+ *   7. Write .lo/borealis.json stamp with visor version + ISO timestamp.
  *
  * Idempotency: this function assumes refusal-on-existing-package.json has
  * already gated execution (handled in initCommand). Inside this function,
@@ -332,6 +355,9 @@ function scaffoldNextjs(
   }
 
   runCreateNextApp(cwd, json)
+  // Write visor.json only now — create-next-app has run, so it can no longer be
+  // seen as a conflicting file in the (formerly empty) target directory (VI-619).
+  writeVisorConfig(cwd, json, filesCreated, filesSkipped)
   runInstallVisorDeps(cwd, json)
 
   // Write .visor.yaml
