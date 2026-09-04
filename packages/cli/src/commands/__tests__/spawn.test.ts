@@ -66,6 +66,22 @@ function makeBlessedBuild(
   return buildDir
 }
 
+/**
+ * Build a *near-miss* pattern dir (VI-626 D1): a full `reference-build/` and an
+ * approved capture baseline, but no `blessed-manifest.json`. Returns the pattern
+ * dir — the directory `--list-blessed` should report as incomplete.
+ */
+function makeNearMissBuild(root: string, shape: string, pattern: string): string {
+  const patternDir = join(root, shape, pattern)
+  const buildDir = join(patternDir, "reference-build")
+  mkdirSync(join(buildDir, "app"), { recursive: true })
+  writeFileSync(join(buildDir, "app", "page.tsx"), "export default function Page() { return null }\n")
+  writeFileSync(join(buildDir, "package.json"), JSON.stringify({ name: pattern }))
+  mkdirSync(join(patternDir, "captures", "approved"), { recursive: true })
+  writeFileSync(join(patternDir, "captures", "approved", "shell.png"), "")
+  return patternDir
+}
+
 function writeTheme(content = VALID_THEME): string {
   const themePath = join(baseDir, "theme.visor.yaml")
   writeFileSync(themePath, content, "utf-8")
@@ -251,6 +267,88 @@ describe("visor spawn", () => {
     const froms = payload.builds.map((b: { from: string }) => b.from)
     expect(froms).toContain("blessed:admin-ui:test-pattern")
     expect(froms).toContain("blessed:admin-ui:another-pattern")
+    expect(payload.incomplete).toEqual([])
+  })
+})
+
+describe("--list-blessed near-miss reporting (VI-626)", () => {
+  it("reports a near-miss in incomplete[] with path + reason (JSON)", () => {
+    makeBlessedBuild(blessedRoot, "admin-ui", "test-pattern")
+    const nearMiss = makeNearMissBuild(blessedRoot, "admin-ui", "user-management")
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {})
+    mockProcessExit()
+
+    spawnCommand(baseDir, { listBlessed: true, blessedDir: blessedRoot, json: true })
+
+    const payload = JSON.parse(logSpy.mock.calls[0][0] as string)
+    expect(payload.incomplete).toEqual([
+      { dir: nearMiss, reason: "missing blessed-manifest.json" },
+    ])
+  })
+
+  it("keeps success:true and errors:[] when the only findings are near-misses (D4)", () => {
+    makeNearMissBuild(blessedRoot, "admin-ui", "user-management")
+    makeNearMissBuild(blessedRoot, "admin-ui", "events-management")
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {})
+    mockProcessExit()
+
+    spawnCommand(baseDir, { listBlessed: true, blessedDir: blessedRoot, json: true })
+
+    const payload = JSON.parse(logSpy.mock.calls[0][0] as string)
+    expect(payload.success).toBe(true)
+    expect(payload.errors).toEqual([])
+    expect(payload.builds).toEqual([])
+    expect(payload.incomplete).toHaveLength(2)
+  })
+
+  it("excludes near-misses from builds[] and keeps them non-spawnable (D2)", () => {
+    makeBlessedBuild(blessedRoot, "admin-ui", "test-pattern")
+    makeNearMissBuild(blessedRoot, "admin-ui", "user-management")
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {})
+    mockProcessExit()
+
+    spawnCommand(baseDir, { listBlessed: true, blessedDir: blessedRoot, json: true })
+
+    const payload = JSON.parse(logSpy.mock.calls[0][0] as string)
+    expect(payload.builds.map((b: { pattern: string }) => b.pattern)).toEqual(["test-pattern"])
+
+    // …and `spawn --from` against it still fails with the existing loud error,
+    // naming only the genuinely-blessed builds as available.
+    const themeFile = writeTheme()
+    expect(() =>
+      runSpawn(baseDir, {
+        from: "blessed:admin-ui:user-management",
+        theme: themeFile,
+        output: join(baseDir, "out"),
+        blessedDir: blessedRoot,
+      })
+    ).toThrow(/No blessed build found for blessed:admin-ui:user-management/)
+    expect(existsSync(join(baseDir, "out"))).toBe(false)
+  })
+
+  it("prints a near-miss section in the human output", () => {
+    makeBlessedBuild(blessedRoot, "admin-ui", "test-pattern")
+    const nearMiss = makeNearMissBuild(blessedRoot, "admin-ui", "user-management")
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {})
+    mockProcessExit()
+
+    spawnCommand(baseDir, { listBlessed: true, blessedDir: blessedRoot })
+
+    const output = logSpy.mock.calls.map((call) => String(call[0])).join("\n")
+    expect(output).toContain("Near-miss builds (not spawnable)")
+    expect(output).toContain(nearMiss)
+    expect(output).toContain("missing blessed-manifest.json")
+  })
+
+  it("prints no near-miss section when there are none", () => {
+    makeBlessedBuild(blessedRoot, "admin-ui", "test-pattern")
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {})
+    mockProcessExit()
+
+    spawnCommand(baseDir, { listBlessed: true, blessedDir: blessedRoot })
+
+    const output = logSpy.mock.calls.map((call) => String(call[0])).join("\n")
+    expect(output).not.toContain("Near-miss")
   })
 })
 

@@ -579,7 +579,7 @@ The source identifier is a namespaced string, `blessed:{shape}:{pattern}` (shape
 | `--blessed-dir <path>` | Override the blessed-build root. Precedence: `--blessed-dir` → `VISOR_BLESSED_DIR` → the nearest `design-prototypes/` directory found by walking up from the cwd. If none resolves, `spawn` fails with `No blessed-build root configured…` rather than falling back to a machine-specific path |
 | `--install` | Run `npm install` in the fork (default: skip) |
 | `--validate` | Validate the applied theme after forking; validation errors roll the spawn back (default: skip) |
-| `--list-blessed` | List all discoverable blessed builds and exit |
+| `--list-blessed` | List all discoverable blessed builds (plus any near-miss builds) and exit |
 | `--json` | Output structured JSON (for AI agents) |
 
 The fork excludes `node_modules`, `.next`, `.git`, and other transient dirs, and creates an independent project with no upstream tracking. Theme application is **atomic**: if it (or `--validate`) fails, the output directory is deleted, so you get a clean fork or nothing.
@@ -591,6 +591,8 @@ npx @loworbitstudio/visor spawn --list-blessed
 # Point at a custom blessed-build root
 VISOR_BLESSED_DIR=~/my/blessed npx @loworbitstudio/visor spawn --list-blessed
 ```
+
+`--list-blessed` also reports **near-miss** builds — directories carrying a `reference-build/` and an approved `captures/approved/` baseline but no `blessed-manifest.json`. They land in a sibling `incomplete[]` array (`--json`) or a "Near-miss builds (not spawnable)" section, each with its path and the reason. Discovery never synthesizes a blessing: a near-miss stays out of `builds[]`, `spawn --from` against it still fails, and `success` remains `true` with `errors: []` — a near-miss is a finding about the catalog, not a discovery failure.
 
 ### `visor render`
 
