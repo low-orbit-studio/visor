@@ -495,7 +495,7 @@ program
   .option("--theme <id>", "theme id (or path to a .visor.yaml) to re-skin the fork with")
   .option("--theme-file <path>", "explicit path to a theme.visor.yaml — bypasses --theme name resolution")
   .option("--output <path>", "destination directory for the forked project")
-  .option("--blessed-dir <path>", "override the blessed-build root (default: VISOR_BLESSED_DIR or ~/Code/low-orbit/low-orbit-playbook/design-prototypes)")
+  .option("--blessed-dir <path>", "override the blessed-build root (default: VISOR_BLESSED_DIR, else the nearest design-prototypes/ directory found by walking up from the cwd)")
   .option("--install", "run npm install in the forked project (default: skip)")
   .option("--validate", "validate the applied theme after forking (default: skip)")
   .option("--list-blessed", "list all discoverable blessed builds and exit")

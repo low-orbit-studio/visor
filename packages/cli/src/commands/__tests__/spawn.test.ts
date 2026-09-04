@@ -7,6 +7,8 @@ import {
   runSpawn,
   spawnCommand,
   parseBlessedIdentifier,
+  discoverBlessedRoot,
+  BLESSED_ROOT_DIRNAME,
   type SpawnOptions,
 } from "../spawn.js"
 import { discoverBlessedBuilds } from "../../lib/blessed-discovery.js"
@@ -249,6 +251,124 @@ describe("visor spawn", () => {
     const froms = payload.builds.map((b: { from: string }) => b.from)
     expect(froms).toContain("blessed:admin-ui:test-pattern")
     expect(froms).toContain("blessed:admin-ui:another-pattern")
+  })
+})
+
+describe("blessed-root resolution (VI-627)", () => {
+  /** Root discovered by walking up from `cwd`; holds a build named `pattern`. */
+  function makeDiscoverableRoot(pattern: string): { root: string; cwd: string } {
+    const root = join(baseDir, BLESSED_ROOT_DIRNAME)
+    makeBlessedBuild(root, "admin-ui", pattern)
+    const cwd = join(baseDir, "workspace", "nested", "deep")
+    mkdirSync(cwd, { recursive: true })
+    return { root, cwd }
+  }
+
+  it("discoverBlessedRoot finds the nearest design-prototypes/ walking up", () => {
+    const { root, cwd } = makeDiscoverableRoot("discovered-pattern")
+    expect(discoverBlessedRoot(cwd)).toBe(root)
+  })
+
+  it("discoverBlessedRoot returns undefined when no ancestor has one", () => {
+    const cwd = join(baseDir, "no-root", "deep")
+    mkdirSync(cwd, { recursive: true })
+    expect(discoverBlessedRoot(cwd)).toBeUndefined()
+  })
+
+  it("discoverBlessedRoot ignores a design-prototypes *file*", () => {
+    const cwd = join(baseDir, "file-not-dir")
+    mkdirSync(cwd, { recursive: true })
+    writeFileSync(join(cwd, BLESSED_ROOT_DIRNAME), "not a directory")
+    expect(discoverBlessedRoot(cwd)).toBeUndefined()
+  })
+
+  it("--blessed-dir wins over VISOR_BLESSED_DIR and discovery", () => {
+    const { cwd } = makeDiscoverableRoot("discovered-pattern")
+    const envRoot = join(baseDir, "env-root")
+    makeBlessedBuild(envRoot, "admin-ui", "env-pattern")
+    const flagRoot = join(baseDir, "flag-root")
+    makeBlessedBuild(flagRoot, "admin-ui", "flag-pattern")
+    process.env.VISOR_BLESSED_DIR = envRoot
+
+    const result = runSpawn(cwd, {
+      from: "blessed:admin-ui:flag-pattern",
+      theme: writeTheme(),
+      output: join(baseDir, "out-flag"),
+      blessedDir: flagRoot,
+    })
+    expect(result.build.source.startsWith(flagRoot)).toBe(true)
+  })
+
+  it("VISOR_BLESSED_DIR wins over discovery", () => {
+    const { cwd } = makeDiscoverableRoot("discovered-pattern")
+    const envRoot = join(baseDir, "env-root")
+    makeBlessedBuild(envRoot, "admin-ui", "env-pattern")
+    process.env.VISOR_BLESSED_DIR = envRoot
+
+    const result = runSpawn(cwd, {
+      from: "blessed:admin-ui:env-pattern",
+      theme: writeTheme(),
+      output: join(baseDir, "out-env"),
+    })
+    expect(result.build.source.startsWith(envRoot)).toBe(true)
+  })
+
+  it("discovers a design-prototypes/ root by walking up from the cwd", () => {
+    const { root, cwd } = makeDiscoverableRoot("discovered-pattern")
+
+    const result = runSpawn(cwd, {
+      from: "blessed:admin-ui:discovered-pattern",
+      theme: writeTheme(),
+      output: join(baseDir, "out-discovered"),
+    })
+    expect(result.success).toBe(true)
+    expect(result.build.source.startsWith(root)).toBe(true)
+  })
+
+  it("errors with an actionable no-root message when nothing resolves", () => {
+    const cwd = join(baseDir, "no-root", "deep")
+    mkdirSync(cwd, { recursive: true })
+
+    expect(() =>
+      runSpawn(cwd, {
+        from: "blessed:admin-ui:test-pattern",
+        theme: writeTheme(),
+        output: join(baseDir, "out-none"),
+      })
+    ).toThrow(/No blessed-build root configured/)
+  })
+
+  it("never reports '(none found)' against an unconfigured root", () => {
+    const cwd = join(baseDir, "no-root", "deep")
+    mkdirSync(cwd, { recursive: true })
+
+    let message = ""
+    try {
+      runSpawn(cwd, {
+        from: "blessed:admin-ui:test-pattern",
+        theme: writeTheme(),
+        output: join(baseDir, "out-none-2"),
+      })
+    } catch (err) {
+      message = err instanceof Error ? err.message : String(err)
+    }
+    expect(message).not.toContain("(none found)")
+    expect(message).toContain("--blessed-dir")
+    expect(message).toContain("VISOR_BLESSED_DIR")
+  })
+
+  it("--list-blessed reports the no-root error instead of an empty listing", () => {
+    const cwd = join(baseDir, "no-root", "deep")
+    mkdirSync(cwd, { recursive: true })
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {})
+    mockProcessExit()
+
+    expect(() => spawnCommand(cwd, { listBlessed: true, json: true })).toThrow(
+      /process\.exit\(1\)/
+    )
+    const payload = JSON.parse(logSpy.mock.calls[0][0] as string)
+    expect(payload.success).toBe(false)
+    expect(payload.error).toMatch(/No blessed-build root configured/)
   })
 })
 

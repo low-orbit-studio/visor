@@ -70,7 +70,9 @@ Next: cd ~/tmp/org-admin && npm run dev
 
 1. `--blessed-dir <path>`
 2. `VISOR_BLESSED_DIR` environment variable
-3. Default: `~/Code/low-orbit/low-orbit-playbook/design-prototypes/`
+3. Discovery: the nearest `design-prototypes/` directory found by walking up from the current working directory
+
+If none of the three resolves, `spawn` fails with `No blessed-build root configured…` — it never falls back to a machine-specific path (VI-627).
 
 ### Theme resolution
 
