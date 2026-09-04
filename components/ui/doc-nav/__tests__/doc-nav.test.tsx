@@ -231,3 +231,52 @@ describe("DocNav — accessibility", () => {
     await checkA11y(container)
   })
 })
+
+// VI-628 — `groupKeyFor` reads `scope[0]`, which is only a `string` under a
+// checked-index compiler. The read is now bound and guarded, so these pin the
+// behaviour at the degenerate edges the guard has to leave untouched.
+describe("DocNav — degenerate scope (VI-628)", () => {
+  it("buckets an empty scope into Shared, exactly like an absent scope", () => {
+    const docs: DocEntry[] = [
+      { order: 1, label: "Charter", href: "/docs/charter.html", kind: "local-html", scope: [] },
+      { order: 2, label: "Data", href: "/docs/data.html", kind: "local-html", scope: [] },
+    ]
+    render(<DocNav docs={docs} currentPath="/docs/charter.html" />)
+
+    expect(screen.getByText("Shared")).toBeInTheDocument()
+    expect(screen.getByRole("link", { name: /Charter/ })).toHaveAttribute(
+      "aria-current",
+      "page"
+    )
+    expect(screen.getByRole("link", { name: /Data/ })).toBeInTheDocument()
+  })
+
+  it("still routes an empty-scope, group-less, high-order doc to the Appendix", () => {
+    const docs: DocEntry[] = [
+      { order: 11, label: "Q3 Audit", href: "/docs/q3-audit.html", kind: "local-html", scope: [] },
+    ]
+    render(<DocNav docs={docs} currentPath="/docs/q3-audit.html" />)
+
+    expect(screen.getByText("Appendix")).toBeInTheDocument()
+    expect(screen.getByRole("link", { name: /Q3 Audit/ })).toBeInTheDocument()
+  })
+
+  it("still prefers an explicit group over an empty scope", () => {
+    const docs: DocEntry[] = [
+      { order: 1, label: "Journeys", href: "/docs/artist/journeys", kind: "route", scope: [], group: "Artist" },
+    ]
+    render(<DocNav docs={docs} currentPath="/docs/artist/journeys" />)
+
+    expect(screen.getByText("Artist")).toBeInTheDocument()
+    expect(screen.queryByText("Shared")).not.toBeInTheDocument()
+  })
+
+  it("still derives the group label from a populated scope", () => {
+    const docs: DocEntry[] = [
+      { order: 1, label: "Journeys", href: "/docs/artist/journeys", kind: "route", scope: ["artist"] },
+    ]
+    render(<DocNav docs={docs} currentPath="/docs/artist/journeys" />)
+
+    expect(screen.getByText("Artist")).toBeInTheDocument()
+  })
+})

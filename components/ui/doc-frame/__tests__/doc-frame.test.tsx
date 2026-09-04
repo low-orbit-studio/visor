@@ -1,6 +1,6 @@
 import * as React from "react"
-import { render, screen, within } from "@testing-library/react"
-import { describe, it, expect } from "vitest"
+import { render, screen, waitFor, within } from "@testing-library/react"
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { DocFrame, type DocsManifest } from "../doc-frame"
 import { checkA11y } from "../../../../test-utils/a11y"
 
@@ -371,5 +371,127 @@ describe("DocFrame — accessibility", () => {
       </DocFrame>
     )
     await checkA11y(container)
+  })
+})
+
+// VI-628 — `cssUrl()` extracts the theme logo from the computed `--brand-logo`.
+// Its capture-group read is only a `string` under a checked-index compiler, so
+// it is now bound and guarded: anything it cannot pull a URL out of collapses
+// to `null` (never `undefined`), which is the falsy value the caller's
+// `if (!url)` branch — and the "keep the wordmark" contract — depends on.
+describe("DocFrame — theme-logo URL extraction (VI-628)", () => {
+  /** Force the computed `--brand-logo` on the brand slot, leaving all other computed styles real. */
+  function stubBrandLogo(value: string) {
+    const real = window.getComputedStyle.bind(window)
+    return vi
+      .spyOn(window, "getComputedStyle")
+      .mockImplementation((element: Element, pseudo?: string | null) => {
+        const computed = real(element, pseudo ?? undefined)
+        if (
+          !(element instanceof HTMLElement) ||
+          element.dataset.slot !== "doc-frame-brand"
+        ) {
+          return computed
+        }
+        const shadowed: CSSStyleDeclaration = Object.create(computed)
+        shadowed.getPropertyValue = (name: string) =>
+          name === "--brand-logo" ? value : computed.getPropertyValue(name)
+        return shadowed
+      })
+  }
+
+  /** A stand-in for the probe `new window.Image()`, which jsdom never resolves on its own. */
+  class ProbeImage {
+    static instances: ProbeImage[] = []
+    static outcome: "load" | "error" = "load"
+    onload: (() => void) | null = null
+    onerror: (() => void) | null = null
+    private value = ""
+
+    constructor() {
+      ProbeImage.instances.push(this)
+    }
+
+    get src(): string {
+      return this.value
+    }
+
+    set src(next: string) {
+      this.value = next
+      queueMicrotask(() => {
+        if (ProbeImage.outcome === "load") this.onload?.()
+        else this.onerror?.()
+      })
+    }
+  }
+
+  const RealImage = window.Image
+
+  beforeEach(() => {
+    ProbeImage.instances = []
+    ProbeImage.outcome = "load"
+    window.Image = ProbeImage as unknown as typeof window.Image
+  })
+
+  afterEach(() => {
+    window.Image = RealImage
+    vi.restoreAllMocks()
+  })
+
+  function renderFrame() {
+    return render(
+      <DocFrame manifest={manifest} currentPath="/docs/charter.html">
+        <p>Body</p>
+      </DocFrame>
+    )
+  }
+
+  function brandEl(): HTMLElement {
+    return document.querySelector('[data-slot="doc-frame-brand"]') as HTMLElement
+  }
+
+  it("upgrades to the theme logo for a quoted url() value", async () => {
+    stubBrandLogo('url("/brand/logo.svg")')
+    renderFrame()
+
+    await waitFor(() => expect(brandEl()).toHaveAttribute("data-theme-logo"))
+    expect(ProbeImage.instances.map((p) => p.src)).toEqual(["/brand/logo.svg"])
+  })
+
+  it("upgrades to the theme logo for an unquoted url() value", async () => {
+    stubBrandLogo("url(/brand/logo.svg)")
+    renderFrame()
+
+    await waitFor(() => expect(brandEl()).toHaveAttribute("data-theme-logo"))
+    expect(ProbeImage.instances.map((p) => p.src)).toEqual(["/brand/logo.svg"])
+  })
+
+  it.each([
+    ["a non-url value", "linear-gradient(to right, red, blue)"],
+    ["an empty url()", "url()"],
+    ['an empty quoted url("")', 'url("")'],
+    ["the explicit none keyword", "none"],
+    ["an empty custom property", ""],
+  ])("keeps the wordmark and probes nothing for %s", async (_label, value) => {
+    stubBrandLogo(value)
+    renderFrame()
+
+    // No URL could be extracted, so nothing is probed and the resting text
+    // wordmark stays visible — the `null` contract, not an `undefined` leak.
+    await waitFor(() =>
+      expect(screen.getByText("Blacklight")).toBeInTheDocument()
+    )
+    expect(ProbeImage.instances).toHaveLength(0)
+    expect(brandEl()).not.toHaveAttribute("data-theme-logo")
+  })
+
+  it("keeps the wordmark when the extracted URL fails to load", async () => {
+    ProbeImage.outcome = "error"
+    stubBrandLogo('url("/brand/missing.svg")')
+    renderFrame()
+
+    await waitFor(() => expect(ProbeImage.instances).toHaveLength(1))
+    expect(brandEl()).not.toHaveAttribute("data-theme-logo")
+    expect(screen.getByText("Blacklight")).toBeInTheDocument()
   })
 })

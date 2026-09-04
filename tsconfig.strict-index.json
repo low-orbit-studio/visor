@@ -1,0 +1,22 @@
+// VI-628 — a narrow, opt-in typecheck used only by
+// `components/ui/__tests__/strict-index-access.test.ts`.
+//
+// Consumers who scaffold a docs host with `noUncheckedIndexedAccess: true`
+// (the Golden Ticket default) type-check the copy-in components they vendor
+// from this registry. This config reproduces that consumer compiler over the
+// components known to be vendored into such a host, so an unguarded index read
+// is caught here rather than in a downstream `next build`.
+//
+// This is deliberately NOT the repo-wide `tsconfig.json` — enabling the flag
+// across all of Visor is a separate, wider call.
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noUncheckedIndexedAccess": true
+  },
+  "include": [
+    "components/ui/doc-frame/doc-frame.tsx",
+    "components/ui/doc-nav/doc-nav.tsx",
+    "css-modules.d.ts"
+  ]
+}
