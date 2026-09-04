@@ -576,7 +576,7 @@ The source identifier is a namespaced string, `blessed:{shape}:{pattern}` (shape
 | `--theme <id>` | Theme id (or path to a `.visor.yaml`) to re-skin the fork. Resolution mirrors `sandbox init`: `--theme-file` → direct path → `${VISOR_THEMES_PRIVATE_PATH}/themes/<id>/theme.visor.yaml` → `themes/<id>.visor.yaml` → `custom-themes/<id>.visor.yaml` |
 | `--theme-file <path>` | Explicit path to a `theme.visor.yaml` — bypasses `--theme` name resolution |
 | `--output <path>` | Destination directory for the forked project (must be empty or non-existent) |
-| `--blessed-dir <path>` | Override the blessed-build root. Precedence: `--blessed-dir` → `VISOR_BLESSED_DIR` → `~/Code/low-orbit/low-orbit-playbook/design-prototypes` |
+| `--blessed-dir <path>` | Override the blessed-build root. Precedence: `--blessed-dir` → `VISOR_BLESSED_DIR` → the nearest `design-prototypes/` directory found by walking up from the cwd. If none resolves, `spawn` fails with `No blessed-build root configured…` rather than falling back to a machine-specific path |
 | `--install` | Run `npm install` in the fork (default: skip) |
 | `--validate` | Validate the applied theme after forking; validation errors roll the spawn back (default: skip) |
 | `--list-blessed` | List all discoverable blessed builds and exit |

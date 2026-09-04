@@ -4,9 +4,9 @@ import {
   readFileSync,
   readdirSync,
   rmSync,
+  statSync,
 } from "fs"
-import { basename, isAbsolute, join, resolve } from "path"
-import { homedir } from "os"
+import { basename, dirname, isAbsolute, join, resolve } from "path"
 import * as childProcess from "child_process"
 import { parse as parseYaml } from "yaml"
 import { generateThemeData } from "@loworbitstudio/visor-theme-engine"
@@ -23,17 +23,38 @@ import type { BlessedManifest } from "../lib/blessed-manifest.js"
 import { applyThemeToBuild } from "../lib/theme-apply-targets/index.js"
 
 /**
- * Default blessed-build root (VI-597 D2). Overridable with `--blessed-dir` or
- * the `VISOR_BLESSED_DIR` env var. Computed from the OS home dir so `~` is
- * never left unexpanded.
+ * Directory name that marks a blessed-build root when neither `--blessed-dir`
+ * nor `VISOR_BLESSED_DIR` is supplied (VI-627 D3).
  */
-export const DEFAULT_BLESSED_DIR = join(
-  homedir(),
-  "Code",
-  "low-orbit",
-  "low-orbit-playbook",
-  "design-prototypes"
-)
+export const BLESSED_ROOT_DIRNAME = "design-prototypes"
+
+/**
+ * Emitted when nothing configures a blessed-build root and none can be
+ * discovered (VI-627 D2). Names the missing *root* — the actual problem —
+ * rather than reporting missing *builds* under a path that never existed.
+ */
+export const NO_BLESSED_ROOT_ERROR =
+  "No blessed-build root configured. Pass --blessed-dir <path>, set VISOR_BLESSED_DIR, " +
+  `or run from a checkout that contains a '${BLESSED_ROOT_DIRNAME}/' directory. ` +
+  "See docs/blessed-builds.md."
+
+/**
+ * Discover a blessed-build root by walking up from `cwd` looking for a
+ * `design-prototypes/` directory (VI-627 D3). Replaces the former
+ * `$HOME`-relative constant, which only resolved on one developer's machine and
+ * left every other checkout (CI runners included) pointed at a phantom path.
+ * Returns `undefined` when no such directory exists on the ancestor chain.
+ */
+export function discoverBlessedRoot(cwd: string): string | undefined {
+  let dir = resolve(cwd)
+  for (;;) {
+    const candidate = join(dir, BLESSED_ROOT_DIRNAME)
+    if (existsSync(candidate) && statSync(candidate).isDirectory()) return candidate
+    const parent = dirname(dir)
+    if (parent === dir) return undefined
+    dir = parent
+  }
+}
 
 /**
  * Directories and files excluded from the fork (VI-597 D3). Excludes are
@@ -97,15 +118,22 @@ export function parseBlessedIdentifier(from: string): { shape: string; pattern: 
   return { shape: parts[0], pattern: parts[1] }
 }
 
-/** Resolve the blessed-dir per precedence: --blessed-dir > VISOR_BLESSED_DIR > default. */
-function resolveBlessedDir(cwd: string, options: SpawnOptions): string {
-  const raw =
+/**
+ * Resolve the blessed-dir per precedence: `--blessed-dir` > `VISOR_BLESSED_DIR`
+ * > discovery. Returns `undefined` when nothing is configured and nothing is
+ * discoverable, so callers can raise `NO_BLESSED_ROOT_ERROR` (VI-627 D2)
+ * instead of reporting "(none found)" against a path that never existed.
+ */
+function resolveBlessedDir(cwd: string, options: SpawnOptions): string | undefined {
+  const explicit =
     options.blessedDir ??
     (process.env.VISOR_BLESSED_DIR && process.env.VISOR_BLESSED_DIR.length > 0
       ? process.env.VISOR_BLESSED_DIR
-      : undefined) ??
-    DEFAULT_BLESSED_DIR
-  return isAbsolute(raw) ? raw : resolve(cwd, raw)
+      : undefined)
+  if (explicit !== undefined) {
+    return isAbsolute(explicit) ? explicit : resolve(cwd, explicit)
+  }
+  return discoverBlessedRoot(cwd)
 }
 
 /**
@@ -208,6 +236,7 @@ export function runSpawn(cwd: string, options: SpawnOptions): SpawnResult {
 
   const { shape, pattern } = parseBlessedIdentifier(options.from)
   const blessedDir = resolveBlessedDir(cwd, options)
+  if (blessedDir === undefined) throw new Error(NO_BLESSED_ROOT_ERROR)
 
   const { build, available } = resolveBlessedBuild(blessedDir, shape, pattern)
   if (!build) {
@@ -282,6 +311,7 @@ export function runSpawn(cwd: string, options: SpawnOptions): SpawnResult {
 /** `--list-blessed` handler. */
 function listBlessed(cwd: string, options: SpawnOptions): void {
   const blessedDir = resolveBlessedDir(cwd, options)
+  if (blessedDir === undefined) throw new Error(NO_BLESSED_ROOT_ERROR)
   const { builds, errors } = discoverBlessedBuilds(blessedDir)
 
   if (options.json) {
