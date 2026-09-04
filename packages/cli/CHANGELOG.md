@@ -1,5 +1,52 @@
 # Changelog
 
+## 1.21.1
+
+### Patch Changes
+
+- e7c6f9c: VI-619: Fix `visor init --template nextjs` failing in an empty directory.
+
+  `initCommand` wrote `visor.json` into the target directory before shelling out to `create-next-app`. create-next-app refuses to scaffold into a directory that already contains conflicting files, and `visor.json` — which visor itself had just written — was exactly such a conflict, so the scaffold aborted with `create-next-app exited with code 1` on the documented empty-directory onboarding path.
+
+  The `visor.json` write now happens inside the nextjs scaffold, immediately after create-next-app succeeds, so the directory is clean when the scaffolder runs. The bare `visor init` path (and every non-template path) is unchanged — it still writes `visor.json` first, since nothing there shells out. `visor init --for <play>` alone never invoked create-next-app, so it did not share the defect; the combined `--for --template nextjs` case is covered by the same reorder.
+
+- d665fb8: VI-622: Fix `dialog-form` and `command-dialog` floating panels rendering see-through on glass themes.
+
+  Both blocks filled their portaled panels with `var(--surface-card)` — a card-in-flow surface a theme may legitimately make translucent glass (e.g. `blackout`: `rgba(255,255,255,0.04)`). A modal / command palette floats over the dimmed backdrop with no opaque layer behind it, so the translucent fill read straight through to the page. Swapped to `var(--surface-popover)` (the opaque floating-panel token, matching the Dialog atom's opacity intent) with an opaque `--surface-page` fallback:
+
+  - `dialog-form` — `.panel` background
+  - `command-dialog` — `.command` and `.list` backgrounds
+
+  On every solid theme `--surface-popover` resolves identically to `--surface-card` (e.g. neutral `#18181b`, space `#0e0e18`), so the panels are pixel-unchanged where they already rendered correctly; only the translucent glass-theme case is fixed.
+
+- 17b3dbd: VI-623: Close the coverage holes in the `floating-panel-opaque-bg` validator so a floating/portaled panel can no longer ship with a translucent `--surface-card` fill (the recurring dialog-form / command-dialog see-through class).
+
+  The rule existed since VI-209 but had four holes that let the blocks through: it scanned only `components/**` (not `blocks/**`), fired only on a hand-maintained name allowlist, matched only `background-color:` (not the `background:` shorthand), and gated on box-shadow. Rewrote it to detect floating panels **structurally** — a `.module.css` is a floating panel when its sibling `.tsx` renders a portaled atom (Radix portal primitive, composed Visor atom by import path, or sonner) — so new floating blocks are covered automatically. It now scans `blocks/**`, matches the shorthand, and flags only when `--surface-card` is the **primary** background token (so `var(--surface-elev, color-mix(…))` is not a false positive). In-flow static surfaces opt out with a `/* opaque-bg-exempt: <reason> */` marker.
+
+  Fixed two latent instances the repaired guard now catches: the `dialog` atom's **editorial** density variant and `session-timeout`'s card — both swapped from `--surface-card` to the opaque `var(--surface-popover, …)`. Identical on solid themes; opaque on glass themes.
+
+- d244694: VI-626: `visor spawn --list-blessed` now reports near-miss builds instead of silently omitting them.
+
+  A directory carrying a full `reference-build/` and an approved `captures/approved/` baseline but no `blessed-manifest.json` was walked straight past by discovery. `--list-blessed --json` reported that as a clean `success: true` with `errors: []` — an operator or agent asking "what can I spawn?" was told about one build with no hint that five more were a single file away from spawnable.
+
+  Discovery now classifies such a directory as a **near-miss** and returns it in a sibling `incomplete[]` array, each entry carrying the directory and a `reason` (`missing blessed-manifest.json`). `spawn --list-blessed` surfaces it in both the JSON payload and a "Near-miss builds (not spawnable)" section of the human output.
+
+  Nothing about blessing changes. Discovery does not synthesize a manifest: a near-miss is excluded from `builds[]`, stays out of the "available builds" hint, and `spawn --from` against one fails with the same loud error as before. `incomplete[]` is deliberately a sibling of `errors[]` — a near-miss is a finding about the catalog, not a failure of the discovery operation — so `success` stays `true` and `errors` stays reserved for unreadable directories and malformed manifests.
+
+- d829b9f: VI-627: Stop `visor spawn` defaulting its blessed-build root to a hardcoded `$HOME` path.
+
+  `spawn` resolved its blessed-build root to `$HOME/Code/low-orbit/low-orbit-playbook/design-prototypes` whenever neither `--blessed-dir` nor `VISOR_BLESSED_DIR` was supplied. That is one developer's machine layout shipped inside a public npm package: on a CI runner, a second machine, or any other clone location it resolved to a directory that does not exist, and `spawn` failed at build discovery with a misleading `Available builds: (none found)` against a path that was never real — sending the reader looking for missing _builds_ when the actual problem was a missing _root_.
+
+  The `$HOME`-relative constant is gone. Resolution is now `--blessed-dir` → `VISOR_BLESSED_DIR` → discovery (the nearest `design-prototypes/` directory found by walking up from the current working directory). When none of the three resolves, `spawn` (and `spawn --list-blessed`) fails with an actionable `No blessed-build root configured. Pass --blessed-dir <path>, set VISOR_BLESSED_DIR, or run from a checkout that contains a 'design-prototypes/' directory.`
+
+  `--blessed-dir` and `VISOR_BLESSED_DIR` behaviour is unchanged.
+
+- e8be21e: VI-628: Guard unchecked index reads in `doc-frame` and `doc-nav` so a consumer can type-check them under `noUncheckedIndexedAccess`.
+
+  The Golden Ticket docs-host scaffold enables `noUncheckedIndexedAccess`, and a scaffolded host type-checks the copy-in components it vendors from this registry — so three unguarded index reads surfaced as `next build` errors in code the consumer must not edit. `doc-frame`'s `cssUrl()` returned a regex capture-group read directly (`match[1]`, `string | undefined`) from a `string | null` signature, and `doc-nav`'s `groupKeyFor()` passed `scope[0]` into two `string` parameters. Both now bind the index read and guard it rather than asserting it — no `!`, no `@ts-expect-error`.
+
+  Behaviour is unchanged on every input either component already handled. `cssUrl()`'s guard collapses "matched but captured nothing" into the same `null` the no-match branch already returned, which the caller's `if (!url)` treats identically; the capture group cannot match empty, so the branch is unreachable in practice. `groupKeyFor()`'s guard is likewise unreachable — `hasScope` already proves a non-empty array — and falls through to the same Shared bucket an absent scope resolves to. A `tsconfig.strict-index.json` plus a colocated test now compile both components under the consumer's compiler so this class cannot silently return; the repo-wide flag is deliberately left off.
+
 ## 1.21.0
 
 ### Minor Changes
