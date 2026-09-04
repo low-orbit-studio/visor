@@ -92,6 +92,32 @@ visor spawn --list-blessed --json
 
 Walks the blessed-dir and prints every discoverable build with its base theme, required Visor version, and gates status.
 
+#### Near-miss builds
+
+A directory that carries a `reference-build/` **and** an approved capture baseline at `captures/approved/` but no `blessed-manifest.json` is a **near-miss**: one file away from spawnable. Before VI-626 those directories were silently walked past, so `--list-blessed` answered "what can I spawn?" with a clean `success: true` / `errors: []` and simply left them out.
+
+They are now reported in a sibling `incomplete[]` array, with the directory and the reason:
+
+```json
+{
+  "success": true,
+  "blessedDir": "…/design-prototypes",
+  "builds": [ … ],
+  "incomplete": [
+    { "dir": "…/admin-ui/pattern-builds/user-management", "reason": "missing blessed-manifest.json" }
+  ],
+  "errors": []
+}
+```
+
+Three rules govern the shape:
+
+- **Reported, never blessed.** Discovery does not synthesize a manifest. A near-miss is excluded from `builds[]` and stays non-spawnable — `spawn --from` against one fails with the same "No blessed build found …" error as before.
+- **`incomplete[]`, not `errors[]`.** A near-miss is a finding about the catalog, not a failure of the discovery operation. `errors[]` stays reserved for unreadable directories and malformed manifests.
+- **`success` stays `true`.** Discovery succeeded; it just has more to say.
+
+To promote a near-miss, add the `blessed-manifest.json` described under [Authoring a blessed build](#authoring-a-blessed-build).
+
 ## Theme apply target
 
 Blessed builds are inherently heterogeneous — that is the whole point of the model. Some ship a monolithic `app/globals.css`; others (like `organization-management`) inline a per-theme CSS file per swap-point and select one at runtime. `theme_apply_target` lets a build declare *where* the nextjs-adapter output goes so `visor spawn` and `visor theme apply --target-path` write to the right place.

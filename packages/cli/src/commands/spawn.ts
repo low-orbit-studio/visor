@@ -312,7 +312,7 @@ export function runSpawn(cwd: string, options: SpawnOptions): SpawnResult {
 function listBlessed(cwd: string, options: SpawnOptions): void {
   const blessedDir = resolveBlessedDir(cwd, options)
   if (blessedDir === undefined) throw new Error(NO_BLESSED_ROOT_ERROR)
-  const { builds, errors } = discoverBlessedBuilds(blessedDir)
+  const { builds, incomplete, errors } = discoverBlessedBuilds(blessedDir)
 
   if (options.json) {
     console.log(
@@ -328,6 +328,7 @@ function listBlessed(cwd: string, options: SpawnOptions): void {
           three_gates_status: b.manifest.three_gates_status,
           dir: b.dir,
         })),
+        incomplete,
         errors,
       })
     )
@@ -341,6 +342,14 @@ function listBlessed(cwd: string, options: SpawnOptions): void {
   for (const b of builds) {
     logger.success(`blessed:${b.manifest.shape}:${b.manifest.pattern}`)
     logger.item(`base theme: ${b.manifest.base_theme}  ·  requires visor ${b.manifest.requires_visor}  ·  gates: ${b.manifest.three_gates_status}`)
+  }
+  if (incomplete.length > 0) {
+    logger.blank()
+    logger.heading(`Near-miss builds (not spawnable) — ${incomplete.length}`)
+    for (const i of incomplete) {
+      logger.warn(i.dir)
+      logger.item(i.reason)
+    }
   }
   for (const e of errors) {
     logger.warn(`Skipped ${e.dir}: ${e.error}`)
