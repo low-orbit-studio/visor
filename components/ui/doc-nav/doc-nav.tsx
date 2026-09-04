@@ -113,8 +113,14 @@ function groupKeyFor(entry: DocEntry): { id: string; label: string } {
     return { id: slug(entry.group as string), label: entry.group as string }
   }
   if (hasScope) {
+    // Bind-then-guard: index reads are only `string` under a checked-index
+    // compiler. `hasScope` already proves a non-empty array, so the guard never
+    // fires in practice — a scope that somehow yields nothing falls through to
+    // the same Shared bucket an absent scope resolves to.
     const first = (entry.scope as string[])[0]
-    return { id: slug(first), label: titleCase(first) }
+    if (first !== undefined) {
+      return { id: slug(first), label: titleCase(first) }
+    }
   }
   return { id: SHARED_ID, label: SHARED_LABEL }
 }

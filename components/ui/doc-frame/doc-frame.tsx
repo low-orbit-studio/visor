@@ -155,7 +155,13 @@ function normalizePath(value: string): string {
 /** Extract the URL from a computed `url("…")` custom-property value, if any. */
 function cssUrl(value: string): string | null {
   const match = value.match(/url\(\s*["']?([^"')]+)["']?\s*\)/)
-  return match ? match[1] : null
+  if (!match) return null
+  // Bind-then-guard: index reads are only `string` under a checked-index
+  // compiler. "Matched but captured nothing" collapses to the same `null` the
+  // no-match branch returns, which every caller already handles.
+  const url = match[1]
+  if (url === undefined) return null
+  return url
 }
 
 /**
