@@ -25,16 +25,16 @@ function fixtureWarnings(fixtureName: string, rule: string) {
 // ─── Rule inventory ───────────────────────────────────────────────────────────
 
 describe("rule registry", () => {
-  it("exports exactly 17 rules", () => {
-    expect(RULES).toHaveLength(17)
+  it("exports exactly 19 rules", () => {
+    expect(RULES).toHaveLength(19)
   })
 
   it("has 8 error-severity rules", () => {
     expect(RULES.filter(r => r.severity === "error")).toHaveLength(8)
   })
 
-  it("has 9 warn-severity rules", () => {
-    expect(RULES.filter(r => r.severity === "warn")).toHaveLength(9)
+  it("has 11 warn-severity rules", () => {
+    expect(RULES.filter(r => r.severity === "warn")).toHaveLength(11)
   })
 
   const expectedErrorRules = [
@@ -58,6 +58,8 @@ describe("rule registry", () => {
     "gradient-text",
     "excessive-card-nesting",
     "missing-visor-base-layer",
+    "inline-style-object",
+    "kit-element-redeclared",
   ]
 
   for (const name of expectedErrorRules) {

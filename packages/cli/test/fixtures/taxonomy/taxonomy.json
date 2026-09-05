@@ -1,0 +1,136 @@
+{
+  "$schema": "https://low-orbit.studio/schemas/admin-ui-taxonomy.json",
+  "source": "test fixture — mirrors the shape of design-prototypes/admin-ui/taxonomy.json (PL-2821)",
+  "title": "Kit taxonomy (fixture)",
+  "tiers": [
+    {
+      "tier": "A",
+      "label": "Shell & navigation",
+      "families": [
+        {
+          "family": "Shell & navigation",
+          "family_slug": "shell-navigation",
+          "rows": [
+            {
+              "id": "A/shell-navigation/app-shell",
+              "tier": "A",
+              "family": "Shell & navigation",
+              "element": "app shell",
+              "element_slug": "app-shell",
+              "decision": "One shell block owns the chrome.",
+              "visor": {
+                "raw": "`blocks/admin-shell`",
+                "bound": true,
+                "entries": [{ "ref": "blocks/admin-shell", "kind": "block", "platform": "web" }],
+                "notes": []
+              },
+              "prevents": "a second hand-rolled shell per route"
+            },
+            {
+              "id": "A/shell-navigation/page-header",
+              "tier": "A",
+              "family": "Shell & navigation",
+              "element": "page header",
+              "element_slug": "page-header",
+              "decision": "One page header element.",
+              "visor": {
+                "raw": "`page-header`",
+                "bound": true,
+                "entries": [{ "ref": "page-header", "kind": "component", "platform": "web" }],
+                "notes": []
+              },
+              "prevents": "per-route header re-implementations"
+            },
+            {
+              "id": "A/shell-navigation/divider-token",
+              "tier": "A",
+              "family": "Shell & navigation",
+              "element": "divider",
+              "element_slug": "divider",
+              "decision": "Dividers come from a token, not an element.",
+              "visor": {
+                "raw": "`--divider`",
+                "bound": true,
+                "entries": [{ "ref": "--divider", "kind": "token", "platform": "web" }],
+                "notes": []
+              },
+              "prevents": "hand-picked hairline colors"
+            }
+          ],
+          "row_count": 3
+        }
+      ],
+      "row_count": 3
+    },
+    {
+      "tier": "B",
+      "label": "Controls & data display",
+      "families": [
+        {
+          "family": "Controls",
+          "family_slug": "controls",
+          "rows": [
+            {
+              "id": "B/controls/button",
+              "tier": "B",
+              "family": "Controls",
+              "element": "button",
+              "element_slug": "button",
+              "decision": "One button element with variants.",
+              "visor": {
+                "raw": "`button`",
+                "bound": true,
+                "entries": [{ "ref": "button", "kind": "component", "platform": "web" }],
+                "notes": []
+              },
+              "prevents": "seven local button components"
+            },
+            {
+              "id": "B/controls/card",
+              "tier": "B",
+              "family": "Controls",
+              "element": "card",
+              "element_slug": "card",
+              "decision": "One card surface.",
+              "visor": {
+                "raw": "`card`",
+                "bound": true,
+                "entries": [{ "ref": "card", "kind": "component", "platform": "web" }],
+                "notes": []
+              },
+              "prevents": "per-view card surfaces"
+            },
+            {
+              "id": "B/controls/stat-card",
+              "tier": "B",
+              "family": "Controls",
+              "element": "stat card",
+              "element_slug": "stat-card",
+              "decision": "One stat card.",
+              "visor": {
+                "raw": "`stat-card`",
+                "bound": true,
+                "entries": [{ "ref": "stat-card", "kind": "component", "platform": "web" }],
+                "notes": []
+              },
+              "prevents": "a KPI tile per dashboard"
+            },
+            {
+              "id": "B/controls/unbound-row",
+              "tier": "B",
+              "family": "Controls",
+              "element": "sparkline",
+              "element_slug": "sparkline",
+              "decision": "No Visor binding yet.",
+              "visor": { "raw": "—", "bound": false, "entries": [], "notes": [] },
+              "prevents": "n/a"
+            }
+          ],
+          "row_count": 4
+        }
+      ],
+      "row_count": 4
+    }
+  ],
+  "totals": { "actual": { "A": 3, "B": 4, "total": 7 } }
+}

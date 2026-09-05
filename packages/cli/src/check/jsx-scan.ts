@@ -23,7 +23,8 @@ async function getBabelParser() {
   return parse
 }
 
-function walk(node: unknown, visit: (n: Record<string, unknown>) => void): void {
+/** Generic AST visitor. Shared with the composition rules in `design.ts` (VI-631 D4). */
+export function walk(node: unknown, visit: (n: Record<string, unknown>) => void): void {
   if (!node || typeof node !== "object") return
   const obj = node as Record<string, unknown>
   visit(obj)

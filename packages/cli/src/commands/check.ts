@@ -4,7 +4,7 @@ import { resolve, dirname } from "path"
 import { loadManifest } from "../registry/resolve.js"
 import { getAllCatalogItems, findByName, fuzzyFind } from "../check/catalog.js"
 import { scanJsx } from "../check/jsx-scan.js"
-import { scanDesign, loadVisorRc } from "../check/design.js"
+import { scanDesign, loadVisorRc, compositionScopeNotice, COMPOSITION_SCOPE } from "../check/design.js"
 import { checkThemeModeFile } from "../check/theme-mode.js"
 import { logger } from "../utils/logger.js"
 import pc from "picocolors"
@@ -134,6 +134,18 @@ function checkHasCommand(pattern: string, options: { fuzzy?: boolean; json?: boo
   logger.info(`  ${result.description}`)
 }
 
+/**
+ * VI-631 D2 — the checker states its own limit. A green here says the scanned
+ * surface introduced no styling outside the kit; it never says the surface is
+ * on-design. Printing it on the green path is the point: a green read as
+ * "on-design" is exactly the failure this statement exists to prevent.
+ */
+function printCompositionScope(): void {
+  logger.blank()
+  for (const line of compositionScopeNotice()) logger.item(line)
+  logger.blank()
+}
+
 async function checkDiffCommand(
   pathArg: string,
   options: { failOnHits?: boolean; json?: boolean }
@@ -141,14 +153,16 @@ async function checkDiffCommand(
   const result = await scanJsx(pathArg)
 
   if (options.json) {
-    console.log(JSON.stringify({ success: true, ...result }, null, 2))
-    if (options.failOnHits && result.summary.hits > 0) process.exit(1)
-    process.exit(0)
+    // `process.exit()` truncates a large payload on a pipe — set the code and
+    // let Node flush stdout on a natural exit instead.
+    console.log(JSON.stringify({ success: true, ...result, composition: COMPOSITION_SCOPE }, null, 2))
+    if (options.failOnHits && result.summary.hits > 0) process.exitCode = 1
     return
   }
 
   if (result.summary.hits === 0) {
     logger.success(`No native HTML primitives found — ${result.summary.scanned} file(s) scanned.`)
+    printCompositionScope()
     return
   }
 
@@ -159,7 +173,7 @@ async function checkDiffCommand(
     logger.warn(`  <${f.nativeTag}> → use <${f.suggestedPrimitive}>${note}`)
     logger.item(`  ${loc}  ${f.installCmd}`)
   }
-  logger.blank()
+  printCompositionScope()
 
   if (options.failOnHits) process.exit(1)
 }
@@ -169,6 +183,8 @@ interface DesignCheckCommandOptions {
   errorsOnly?: boolean
   noFail?: boolean
   json?: boolean
+  taxonomy?: string
+  composition?: boolean
 }
 
 function checkDesignCommand(
@@ -184,23 +200,39 @@ function checkDesignCommand(
   const result = scanDesign(absPath, {
     disabledRules: rc.disabledRules ?? [],
     errorsOnly: options.errorsOnly ?? false,
+    taxonomyPath: options.taxonomy,
+    visorrcTaxonomyPath: rc.taxonomy,
+    composition: options.composition ?? false,
   })
 
   // Determine output format: --json or --format json → JSON; otherwise human
   const useJson = options.json || options.format === "json"
 
   if (useJson) {
+    // A full-project scan emits megabytes of findings; `process.exit()` would
+    // truncate them mid-string on a pipe. Set the exit code and return instead.
     console.log(JSON.stringify({ success: true, ...result }, null, 2))
-    if (!options.noFail && result.summary.errorCount > 0) process.exit(1)
-    process.exit(0)
+    if (!options.noFail && result.summary.errorCount > 0) process.exitCode = 1
     return
   }
 
   // Human output
-  const { errors, warnings, summary } = result
+  const { errors, warnings, summary, composition } = result
+
+  const printKitMembership = () => {
+    const km = composition.kitMembership
+    if (km.asserted) {
+      logger.item(`Kit membership: asserted against ${km.taxonomyPath} (${km.elementCount} element(s), via ${km.source}).`)
+    } else {
+      logger.item(`Kit membership: NOT asserted — ${km.reason}`)
+    }
+  }
 
   if (summary.errorCount === 0 && summary.warningCount === 0) {
     logger.success(`No design anti-patterns found — ${summary.filesScanned} file(s) scanned.`)
+    printCompositionScope()
+    printKitMembership()
+    logger.blank()
     process.exit(0)
     return
   }
@@ -237,6 +269,8 @@ function checkDesignCommand(
   } else {
     logger.warn(`${summary.warningCount} warning(s) (0 errors)`)
   }
+  printCompositionScope()
+  printKitMembership()
   logger.blank()
 
   if (!options.noFail && summary.errorCount > 0) process.exit(1)
@@ -332,12 +366,14 @@ export function checkCommand(): Command {
 
   check
     .command("design")
-    .description("Scan frontend code for Borealis design anti-patterns (deterministic, no LLM)")
+    .description("Scan frontend code for Borealis design anti-patterns (deterministic, no LLM). Asserts composition — that the surface introduced no styling outside the kit — never arrangement.")
     .argument("<path>", "file path or directory to scan")
     .option("--format <format>", "output format: json or human (default: human when TTY, json otherwise)")
     .option("--errors-only", "report only error-severity rules (skip warnings)")
     .option("--no-fail", "do not exit 1 on errors (advisory mode)")
     .option("--json", "shorthand for --format json")
+    .option("--taxonomy <path>", "path to the kit's taxonomy.json — the definition kit membership is asserted against")
+    .option("--composition", "require the kit-membership assertion: fail closed when no taxonomy.json resolves")
     .action((pathArg: string, options: DesignCheckCommandOptions) => {
       checkDesignCommand(pathArg, options)
     })

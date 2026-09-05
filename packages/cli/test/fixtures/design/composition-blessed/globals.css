@@ -1,0 +1,18 @@
+@import "@loworbitstudio/visor-core/reset";
+
+.page {
+  background: var(--surface-page);
+  color: var(--text-primary);
+  padding: var(--space-6);
+  transition: background var(--motion-duration-fast) var(--motion-easing-standard);
+}
+
+.page:hover {
+  background: var(--surface-subtle);
+}
+
+@media (prefers-color-scheme: dark) {
+  .page {
+    background: var(--surface-page);
+  }
+}
