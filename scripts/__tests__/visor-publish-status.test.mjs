@@ -549,7 +549,14 @@ describe('buildStatusReport — queue blind spot (VI-633 regression)', () => {
       readDir: sixQueued, now: OUTAGE_NOW,
     });
     expect(report.driftFound).toBe(false);
-    expect(report.rows.every(r => r[3] === 'no')).toBe(true);
+    // Assert only the three in-repo artifacts. buildStatusReport resolves the
+    // private themes package through the real `existsSync`, so that row reads
+    // `no` on a machine with the sibling repo cloned and `error` on a CI runner
+    // without it — an environment difference, not a drift signal, and not what
+    // this test is about.
+    const inRepo = report.rows.filter(r => r[0] !== '@low-orbit-studio/visor-themes-private');
+    expect(inRepo).toHaveLength(3);
+    expect(inRepo.every(r => r[3] === 'no')).toBe(true);
   });
 
   it('still flags the queue as stale — the blind spot is now covered', () => {
