@@ -60,9 +60,9 @@
     "parity:component-tokens": "npx tsx scripts/component-token-parity.ts"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.30.0",
-    "@changesets/config": "^3.1.4",
-    "@changesets/get-release-plan": "^4.0.16",
+    "@changesets/cli": "^3.0.2",
+    "@changesets/config": "^4.0.0",
+    "@changesets/get-release-plan": "^5.0.1",
     "@eslint/js": "^9.18.0",
     "@manypkg/get-packages": "^1.1.3",
     "@playwright/test": "^1.59.0",

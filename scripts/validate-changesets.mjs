@@ -18,17 +18,17 @@
  * type, etc. — whatever assemble-release-plan throws on).
  */
 
-import getReleasePlan from '@changesets/get-release-plan';
-import { read } from '@changesets/config';
-import { getPackages } from '@manypkg/get-packages';
+import { getReleasePlan } from '@changesets/get-release-plan';
 
 const cwd = process.cwd();
 
 let plan;
 try {
-  const { packages, root } = await getPackages(cwd);
-  const config = await read(cwd, { packages, root });
-  plan = await getReleasePlan(cwd, undefined, config);
+  // changesets v3 resolves the workspace packages and .changeset/config.json
+  // internally, so the previous getPackages() + read() dance is gone — passing
+  // a hand-assembled Packages object to the new readConfig() throws. The
+  // default export was also deprecated in favour of this named one.
+  plan = await getReleasePlan(cwd);
 } catch (err) {
   console.error('::error::Changeset validation failed.');
   console.error('');
