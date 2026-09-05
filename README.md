@@ -555,6 +555,12 @@ npx @loworbitstudio/visor theme register <file>             # Register theme in 
 npx @loworbitstudio/visor theme unregister <slug>           # Remove a theme from the docs site
 npx @loworbitstudio/visor theme sync                        # Re-generate CSS for all themes
 
+# Composition lint
+npx @loworbitstudio/visor check design <path>               # Scan for Borealis design anti-patterns
+npx @loworbitstudio/visor check design <path> --taxonomy <taxonomy.json>  # + assert kit membership
+npx @loworbitstudio/visor check design <path> --composition # Require the kit assertion (fail closed)
+npx @loworbitstudio/visor check diff <path>                 # Native HTML that has a Visor equivalent
+
 # Fonts
 npx @loworbitstudio/visor fonts add <path> --org <name>     # Upload woff2 to Visor Fonts CDN
 
@@ -563,6 +569,13 @@ npx @loworbitstudio/visor render <component> --theme <slug> --mode <light|dark> 
 npx @loworbitstudio/visor render doc-nav --theme space --mode dark               # Real tokens + real theme CSS + real component
 npx @loworbitstudio/visor render button --theme neutral --state hover            # Capture an interactive state
 ```
+
+`visor check design` and `visor check diff` are the **composition lint**: they assert that a
+surface introduced no styling outside your kit. A green means exactly that — it does **not**
+mean the surface is on-design. Arrangement (right elements, wrong order), content (wrong icon,
+dropped hint) and data/reachability are uncovered residue, and both commands say so in their own
+output. See [the CLI docs](https://visor.loworbit.studio/docs/cli) for the rule list, the
+`taxonomy.json` resolution order, and the warning-only adoption ramp.
 
 `visor render` is a per-component render-fidelity harness: it composes the **real** emitted tokens + **real** per-theme CSS (with correct `@layer`/mode scoping) + the **real** esbuild-bundled component, then screenshots it with Playwright — no `next dev`. A computed-style probe confirms the themed surface resolved to its mapped value, not the raw primitive. `playwright` and `esbuild` are lazy/optional deps (not bundled into the CLI); the command prompts to install them if missing.
 

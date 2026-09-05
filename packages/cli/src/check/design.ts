@@ -19,6 +19,10 @@ import { readFileSync, readdirSync, statSync, existsSync } from "fs"
 import { resolve, extname, join, basename, dirname } from "path"
 
 import { NATIVE_TO_VISOR, INPUT_TYPE_MAP } from "./native-map.js"
+import { parseJsx } from "./jsx-ast.js"
+import { walk } from "./jsx-scan.js"
+import { resolveTaxonomy } from "./taxonomy.js"
+import type { KitTaxonomy, TaxonomySource } from "./taxonomy.js"
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -33,6 +37,27 @@ export interface DesignFinding {
   fix?: string
 }
 
+/**
+ * The composition-only scope statement (VI-631 D2).
+ *
+ * A checker that overstates its scope is worse than no checker. Every report
+ * this module produces carries this block so a green can never be read as a
+ * claim about arrangement — the tool says its own limit, in its own output.
+ */
+export interface CompositionScope {
+  scope: "composition-only"
+  asserts: string
+  doesNotAssert: string[]
+  limit: string
+  kitMembership: {
+    asserted: boolean
+    taxonomyPath: string | null
+    source: TaxonomySource | null
+    elementCount: number
+    reason: string
+  }
+}
+
 export interface DesignCheckResult {
   errors: DesignFinding[]
   warnings: DesignFinding[]
@@ -41,6 +66,7 @@ export interface DesignCheckResult {
     warningCount: number
     filesScanned: number
   }
+  composition: CompositionScope
 }
 
 export interface RuleResult {
@@ -53,6 +79,8 @@ export type RuleFn = (source: string, filePath: string) => DesignFinding[]
 
 export interface VisorRc {
   disabledRules?: string[]
+  /** Path to the project's `taxonomy.json` kit definition (VI-631 D7). */
+  taxonomy?: string
 }
 
 export function loadVisorRc(dir: string): VisorRc {
@@ -192,8 +220,81 @@ function ruleHardcodedHex(source: string, filePath: string): DesignFinding[] {
  * error: hardcoded-px
  * Catches hardcoded pixel values for spacing/sizing that bypass spacing tokens.
  * Excludes 0px, 1px (borders), and common shadow blur values (2px, 3px).
+ *
+ * VI-631 D5 — the camelCase blind spot.
+ * ------------------------------------
+ * The original context gate was a case-sensitive substring pre-filter, so a JSX
+ * style object's `fontSize: "13px"` matched *nothing* and was skipped, as were
+ * `lineHeight`, `borderRadius`, `minWidth` and `maxHeight` (the capital W/H
+ * defeat the `width`/`height` alternatives). `marginTop` and `paddingLeft` only
+ * matched by substring accident. Coverage was arbitrarily partial.
+ *
+ * The fix matches on a **normalized property name** rather than widening the
+ * alternation — widening would leave the rule accidentally partial and the next
+ * camelCase property would reintroduce the hole.
+ *
+ * Severity is the adoption ramp (D3). The legacy filter is retained as the
+ * "was this already covered?" oracle: a value the old rule reported still
+ * reports as an **error** (byte-identical output on existing codebases), and a
+ * value only the normalized matcher finds reports as a **warning**, so fixing
+ * the blind spot cannot turn a first adoption into a wall of red.
  */
 const PX_WHITELIST = new Set(["0px", "1px", "2px", "3px"])
+
+/** The pre-VI-631 context gate. Kept only to decide severity, never coverage. */
+const LEGACY_PX_CONTEXT_RE =
+  /margin|padding|width|height|gap|top:|left:|right:|bottom:|font-size|line-height|min-width|max-width|min-height|max-height/
+
+/**
+ * Spacing/sizing property names in normalized form — lowercased with every
+ * separator stripped, so `fontSize`, `font-size` and `"font-size"` all collapse
+ * to `fontsize`. Adding a property here covers all three spellings at once.
+ */
+const SIZING_PROPS = new Set([
+  // box model
+  "margin", "margintop", "marginright", "marginbottom", "marginleft",
+  "marginblock", "marginblockstart", "marginblockend",
+  "margininline", "margininlinestart", "margininlineend",
+  "padding", "paddingtop", "paddingright", "paddingbottom", "paddingleft",
+  "paddingblock", "paddingblockstart", "paddingblockend",
+  "paddinginline", "paddinginlinestart", "paddinginlineend",
+  // intrinsic size
+  "width", "minwidth", "maxwidth", "height", "minheight", "maxheight",
+  "size", "blocksize", "minblocksize", "maxblocksize",
+  "inlinesize", "mininlinesize", "maxinlinesize",
+  // position
+  "top", "right", "bottom", "left",
+  "inset", "insetblock", "insetinline",
+  // layout gaps
+  "gap", "rowgap", "columngap", "gridgap", "gridrowgap", "gridcolumngap",
+  // typographic metrics
+  "fontsize", "lineheight", "letterspacing", "wordspacing", "textindent",
+  // corner radius
+  "borderradius",
+  "bordertopleftradius", "bordertoprightradius",
+  "borderbottomleftradius", "borderbottomrightradius",
+  "borderstartstartradius", "borderstartendradius",
+  "borderendstartradius", "borderendendradius",
+  // flex + scroll boxes
+  "flexbasis", "scrollmargin", "scrollpadding",
+])
+
+/** Property-name-followed-by-colon, in CSS, JS-object and quoted-key form. */
+const PROP_NAME_RE = /(^|[^\w$])(-{0,2}[A-Za-z][\w-]*)\s*:/g
+
+function normalizeProp(name: string): string {
+  return name.replace(/[^A-Za-z0-9]/g, "").toLowerCase()
+}
+
+/** True when the line declares any property in `SIZING_PROPS`, any spelling. */
+function hasSizingProp(line: string): boolean {
+  PROP_NAME_RE.lastIndex = 0
+  let m: RegExpExecArray | null
+  while ((m = PROP_NAME_RE.exec(line)) !== null) {
+    if (SIZING_PROPS.has(normalizeProp(m[2]))) return true
+  }
+  return false
+}
 
 function ruleHardcodedPx(source: string, filePath: string): DesignFinding[] {
   const found: DesignFinding[] = []
@@ -203,23 +304,213 @@ function ruleHardcodedPx(source: string, filePath: string): DesignFinding[] {
   for (let i = 0; i < src.length; i++) {
     const l = src[i]
     if (l.trim().startsWith("//") || l.trim().startsWith("*") || l.trim().startsWith("/*")) continue
-    // Only flag spacing-related properties
-    if (!/margin|padding|width|height|gap|top:|left:|right:|bottom:|font-size|line-height|min-width|max-width|min-height|max-height/.test(l)) continue
+    // Union gate: everything the legacy filter caught, plus every spelling the
+    // normalized matcher now covers. A strict superset — nothing stops firing.
+    const legacy = LEGACY_PX_CONTEXT_RE.test(l)
+    if (!legacy && !hasSizingProp(l)) continue
     let m: RegExpExecArray | null
     PX_RE.lastIndex = 0
     while ((m = PX_RE.exec(l)) !== null) {
       const full = m[0]
       if (PX_WHITELIST.has(full)) continue
-      found.push(finding(
-        filePath, i + 1,
-        "hardcoded-px",
-        "error",
-        `Hardcoded pixel value "${full}" in spacing/sizing bypasses the Borealis spacing token system.`,
-        "Replace with a semantic spacing token: var(--space-1), var(--space-2), var(--space-4), etc."
-      ))
+      found.push(legacy
+        ? finding(
+          filePath, i + 1,
+          "hardcoded-px",
+          "error",
+          `Hardcoded pixel value "${full}" in spacing/sizing bypasses the Borealis spacing token system.`,
+          "Replace with a semantic spacing token: var(--space-1), var(--space-2), var(--space-4), etc."
+        )
+        : finding(
+          filePath, i + 1,
+          "hardcoded-px",
+          "warn",
+          `Hardcoded pixel value "${full}" in spacing/sizing bypasses the Borealis spacing token system. Reported as a warning because this property spelling was previously skipped (VI-631) — it will graduate to an error in a future major.`,
+          "Replace with a semantic spacing token: var(--space-1), var(--space-2), var(--space-4), etc."
+        ))
     }
   }
   return found
+}
+
+// ─── Composition rules (VI-631) ───────────────────────────────────────────────
+
+/** Kit taxonomy resolved for the current scan. Set by `scanDesign`, read by rules. */
+let activeKit: KitTaxonomy | null = null
+
+/**
+ * warn: inline-style-object
+ *
+ * An inline `style={{ ... }}` object is styling the surface introduces itself —
+ * outside the kit, outside the token system, unthemeable and unauditable.
+ *
+ * AST-based, never regex (D4). Regex cannot separate:
+ *   - `style={styles.foo}`            — a CSS Module handle, legitimate
+ *   - `style={{ padding: 8 }}`        — the violation
+ *   - `style={{ "--x": token }}`      — a CSS-variable bridge, legitimate
+ * Only the second is flagged: the value must be an object literal, and at least
+ * one of its own (non-computed) keys must be a real CSS property rather than a
+ * custom property. Spread properties are forwarding, not authoring, and pass.
+ */
+function ruleInlineStyleObject(source: string, filePath: string): DesignFinding[] {
+  if (!CODE_EXTS.has(extname(filePath))) return []
+  const ast = parseJsx(source)
+  if (!ast) return []
+
+  const found: DesignFinding[] = []
+
+  walk(ast, (node) => {
+    if (node.type !== "JSXAttribute") return
+    const nameNode = node.name as Record<string, unknown> | undefined
+    if (nameNode?.type !== "JSXIdentifier" || nameNode.name !== "style") return
+
+    const valueNode = node.value as Record<string, unknown> | null
+    if (!valueNode || valueNode.type !== "JSXExpressionContainer") return
+
+    // `style={styles.foo}` / `style={cx(...)}` / `style={props.style}` — the
+    // expression is not an object literal, so no styling is authored here.
+    const expr = valueNode.expression as Record<string, unknown> | undefined
+    if (expr?.type !== "ObjectExpression") return
+
+    const declared: string[] = []
+    for (const raw of (expr.properties as unknown[]) ?? []) {
+      const prop = raw as Record<string, unknown>
+      // SpreadElement — forwarding an existing style object, not authoring one.
+      if (prop.type !== "ObjectProperty") continue
+      // `style={{ [key]: v }}` — the key is an expression; cannot prove a violation.
+      if (prop.computed === true) continue
+      const key = prop.key as Record<string, unknown> | undefined
+      let keyName: string | null = null
+      if (key?.type === "Identifier") keyName = String(key.name ?? "")
+      else if (key?.type === "StringLiteral") keyName = String(key.value ?? "")
+      if (!keyName) continue
+      // CSS-variable bridge — `style={{ "--x": token }}` hands a token *into*
+      // the cascade rather than styling around it. Explicitly allowed.
+      if (keyName.startsWith("--")) continue
+      declared.push(keyName)
+    }
+
+    if (declared.length === 0) return
+
+    const loc = node.loc as Record<string, Record<string, number>> | undefined
+    found.push(finding(
+      filePath, loc?.start?.line ?? 1,
+      "inline-style-object",
+      "warn",
+      `Inline style object declares ${declared.map(d => `"${d}"`).join(", ")}. Inline styles introduce styling outside the kit — untokenized, unthemeable, and invisible to the design system.`,
+      "Move these declarations into the component's CSS Module and reference tokens, or pass a CSS-variable bridge: style={{ \"--my-token\": value }}."
+    ))
+  })
+
+  return found
+}
+
+/**
+ * warn: kit-element-redeclared
+ *
+ * A surface that declares its own `Card`, `StatCard` or `AdminShell` has rebuilt
+ * a kit element instead of composing the kit's. Nothing detected this before:
+ * `native-map.ts` covers lowercase HTML tags only and the JSX scanner returns on
+ * any uppercase tag.
+ *
+ * Kit membership resolves against `taxonomy.json` (D7) — read as data, never a
+ * re-typed list here. With no taxonomy resolved the rule does not run and the
+ * scan reports `kit-taxonomy-missing` instead of a green (fail closed).
+ */
+function ruleKitElementRedeclared(source: string, filePath: string): DesignFinding[] {
+  const kit = activeKit
+  if (!kit) return []
+  if (!CODE_EXTS.has(extname(filePath))) return []
+  // The kit's own copy-and-own source files legitimately declare kit elements.
+  if (isOwnedKitSource(filePath, kit)) return []
+
+  const ast = parseJsx(source)
+  if (!ast) return []
+
+  const program = (ast as Record<string, unknown>).program as Record<string, unknown> | undefined
+  const body = (program?.body as unknown[]) ?? []
+
+  const found: DesignFinding[] = []
+
+  for (const raw of body) {
+    for (const decl of moduleScopeDeclarations(raw)) {
+      if (!kit.identifiers.has(decl.name)) continue
+      found.push(finding(
+        filePath, decl.line,
+        "kit-element-redeclared",
+        "warn",
+        `Local re-declaration of the kit element "${decl.name}". This surface builds its own copy of a kit element instead of composing the kit's — the styling it introduces is outside the kit by construction.`,
+        `Compose the kit element instead (\`npx visor add ${identifierToSlug(decl.name)}\`), or rename this local component so it does not shadow a kit element.`
+      ))
+    }
+  }
+
+  return found
+}
+
+interface LocalDeclaration {
+  name: string
+  line: number
+}
+
+/** Module-scope component-shaped declarations, unwrapping `export`. */
+function moduleScopeDeclarations(raw: unknown): LocalDeclaration[] {
+  let node = raw as Record<string, unknown> | undefined
+  if (!node) return []
+  if (node.type === "ExportNamedDeclaration" || node.type === "ExportDefaultDeclaration") {
+    node = node.declaration as Record<string, unknown> | undefined
+    if (!node) return []
+  }
+
+  const line = ((node.loc as Record<string, Record<string, number>> | undefined)?.start?.line) ?? 1
+
+  if (node.type === "FunctionDeclaration" || node.type === "ClassDeclaration") {
+    const id = node.id as Record<string, unknown> | undefined
+    const name = id?.name
+    return typeof name === "string" ? [{ name, line }] : []
+  }
+
+  if (node.type === "VariableDeclaration") {
+    const out: LocalDeclaration[] = []
+    for (const d of (node.declarations as unknown[]) ?? []) {
+      const declarator = d as Record<string, unknown>
+      const id = declarator.id as Record<string, unknown> | undefined
+      if (id?.type !== "Identifier" || typeof id.name !== "string") continue
+      // Only component-shaped initialisers: a function, an arrow, or a wrapper
+      // call such as forwardRef/memo/styled. `const Card = "card"` is not a
+      // re-declaration of the element.
+      const init = declarator.init as Record<string, unknown> | undefined
+      const initType = init?.type
+      if (
+        initType !== "ArrowFunctionExpression" &&
+        initType !== "FunctionExpression" &&
+        initType !== "CallExpression"
+      ) continue
+      const dLine = ((declarator.loc as Record<string, Record<string, number>> | undefined)?.start?.line) ?? line
+      out.push({ name: id.name, line: dLine })
+    }
+    return out
+  }
+
+  return []
+}
+
+/** Reverse of `slugToIdentifier`, for the fix hint. `StatCard` → `stat-card`. */
+function identifierToSlug(identifier: string): string {
+  return identifier.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase()
+}
+
+/**
+ * True when this file *is* the project's owned copy of a kit element — what
+ * `npx visor add card` writes to `components/ui/card/card.tsx`. Flagging those
+ * would fail the kit's own source on every adopting project.
+ */
+function isOwnedKitSource(filePath: string, kit: KitTaxonomy): boolean {
+  const base = basename(filePath)
+    .replace(/\.(tsx|ts|jsx|js)$/, "")
+    .replace(/\.module$/, "")
+  if (kit.slugs.has(base)) return true
+  return kit.slugs.has(basename(dirname(filePath)))
 }
 
 /**
@@ -798,6 +1089,11 @@ export const RULES: RuleDefinition[] = [
   { name: "gradient-text", severity: "warn", fn: ruleGradientText },
   { name: "excessive-card-nesting", severity: "warn", fn: ruleExcessiveCardNesting },
   { name: "missing-visor-base-layer", severity: "warn", fn: ruleMissingVisorBaseLayer },
+  // Composition (VI-631) — warning-only by default (D3) so the camelCase fix and
+  // the two new assertions can be adopted without escalating an existing
+  // project's exit code on first run.
+  { name: "inline-style-object", severity: "warn", fn: ruleInlineStyleObject },
+  { name: "kit-element-redeclared", severity: "warn", fn: ruleKitElementRedeclared },
 ]
 
 // ─── Main scan function ───────────────────────────────────────────────────────
@@ -805,7 +1101,36 @@ export const RULES: RuleDefinition[] = [
 export interface DesignCheckOptions {
   disabledRules?: string[]
   errorsOnly?: boolean
+  /** Explicit `taxonomy.json` path — `--taxonomy <path>` (VI-631 D7). */
+  taxonomyPath?: string
+  /** `taxonomy` key read from the scanned directory's `.visorrc.json`. */
+  visorrcTaxonomyPath?: string
+  /**
+   * Force the kit-membership assertion on. Without it the assertion engages
+   * only when a taxonomy is configured or discovered; with it, an unresolvable
+   * taxonomy fails closed rather than reporting an unasserted green.
+   */
+  composition?: boolean
+  /** Injected for tests; defaults to `process.env`. */
+  env?: Record<string, string | undefined>
 }
+
+/**
+ * The words the tool uses about its own scope (D2). Shared by `check design`
+ * and `check diff` so both checkers make exactly the same claim, and neither
+ * can be read as a claim about arrangement.
+ */
+export const COMPOSITION_SCOPE = {
+  scope: "composition-only",
+  asserts: "this surface introduced no styling outside the kit",
+  doesNotAssert: [
+    "arrangement (right elements, wrong order)",
+    "content (wrong icon, dropped hint)",
+    "data / reachability",
+  ],
+  limit:
+    "Green means this surface introduced no styling outside the kit. It does NOT mean the surface is on-design. Arrangement (right elements, wrong order), content (wrong icon, dropped hint), and data/reachability are not checked here and still need a human.",
+} as const
 
 export function scanDesign(
   pathArg: string,
@@ -817,6 +1142,20 @@ export function scanDesign(
   // VI-616: project-level state is memoised across files within one scan.
   resetBaseLayerCache()
 
+  // VI-631 D7: kit membership resolves against taxonomy.json, read as data.
+  const resolution = resolveTaxonomy({
+    explicitPath: options.taxonomyPath,
+    visorrcPath: options.visorrcTaxonomyPath,
+    scanPath: pathArg,
+    env: options.env,
+  })
+  // The assertion engages when a taxonomy was asked for, one was found, or the
+  // caller demanded it. Otherwise the report says "not asserted" out loud
+  // rather than counting an unchecked surface as green.
+  const engaged =
+    options.composition === true || resolution.requested || resolution.path !== null
+  activeKit = resolution.taxonomy
+
   // Determine active rules
   const activeRules = RULES.filter(r => {
     if (disabledRules.includes(r.name)) return false
@@ -827,21 +1166,41 @@ export function scanDesign(
   const errors: DesignFinding[] = []
   const warnings: DesignFinding[] = []
 
-  for (const file of files) {
-    let source: string
-    try {
-      source = readFileSync(file, "utf-8")
-    } catch {
-      continue
-    }
+  try {
+    for (const file of files) {
+      let source: string
+      try {
+        source = readFileSync(file, "utf-8")
+      } catch {
+        continue
+      }
 
-    for (const rule of activeRules) {
-      const ruleFindings = rule.fn(source, file)
-      for (const f of ruleFindings) {
-        if (f.severity === "error") errors.push(f)
-        else warnings.push(f)
+      for (const rule of activeRules) {
+        const ruleFindings = rule.fn(source, file)
+        for (const f of ruleFindings) {
+          // A rule may emit mixed severities (hardcoded-px does, per D5), so
+          // --errors-only filters findings as well as rules.
+          if (errorsOnly && f.severity !== "error") continue
+          if (f.severity === "error") errors.push(f)
+          else warnings.push(f)
+        }
       }
     }
+  } finally {
+    activeKit = null
+  }
+
+  // Fail closed (D7): a requested-but-unresolvable kit definition is an error,
+  // not a silent pass. A green that skipped the assertion is a false green.
+  if (engaged && !resolution.taxonomy && !disabledRules.includes("kit-taxonomy-missing")) {
+    errors.push(finding(
+      resolve(pathArg), 1,
+      "kit-taxonomy-missing",
+      "error",
+      resolution.error
+        ?? "Kit membership could not be asserted: no taxonomy.json resolved. The composition lint fails closed rather than reporting a green it did not earn.",
+      "Point the lint at the kit definition: --taxonomy <path/to/taxonomy.json>, the VISOR_TAXONOMY environment variable, or a \"taxonomy\" key in .visorrc.json."
+    ))
   }
 
   return {
@@ -852,5 +1211,31 @@ export function scanDesign(
       warningCount: warnings.length,
       filesScanned: files.length,
     },
+    composition: {
+      scope: COMPOSITION_SCOPE.scope,
+      asserts: COMPOSITION_SCOPE.asserts,
+      doesNotAssert: [...COMPOSITION_SCOPE.doesNotAssert],
+      limit: COMPOSITION_SCOPE.limit,
+      kitMembership: {
+        asserted: resolution.taxonomy !== null,
+        taxonomyPath: resolution.path,
+        source: resolution.source,
+        elementCount: resolution.taxonomy?.slugs.size ?? 0,
+        reason: resolution.taxonomy
+          ? `resolved from ${resolution.source} (${resolution.taxonomy.slugs.size} kit elements)`
+          : resolution.error
+            ?? "no taxonomy.json resolved; pass --taxonomy <path> to assert kit membership",
+      },
+    },
   }
+}
+
+/** The composition-only limit as human output lines (D2). */
+export function compositionScopeNotice(): string[] {
+  return [
+    "Composition scope — this check asserts one thing:",
+    `  ${COMPOSITION_SCOPE.asserts}.`,
+    "It does NOT assert the surface is on-design. Uncovered residue:",
+    ...COMPOSITION_SCOPE.doesNotAssert.map(r => `  · ${r}`),
+  ]
 }

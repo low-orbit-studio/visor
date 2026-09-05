@@ -320,7 +320,96 @@ Deterministic static analysis for Borealis design anti-patterns — no LLM requi
 
 ```bash
 npx @loworbitstudio/visor check design ./src
+npx @loworbitstudio/visor check design ./src --taxonomy ./design/taxonomy.json
+npx @loworbitstudio/visor check design ./src --composition
 ```
+
+#### Options
+
+| Flag | Description |
+|------|-------------|
+| `--format <format>` | `json` or `human` (default: `human`) |
+| `--json` | Shorthand for `--format json` |
+| `--errors-only` | Report only error-severity findings (skips warnings, including the composition rules) |
+| `--no-fail` | Report without exiting `1` (advisory mode) |
+| `--taxonomy <path>` | Path to the kit's `taxonomy.json` — the definition kit membership is asserted against |
+| `--composition` | Require the kit-membership assertion: fail closed when no `taxonomy.json` resolves |
+
+#### What a green means — and what it does not
+
+`check design` and `check diff` are a **composition lint**. Green asserts one thing:
+
+> this surface introduced no styling outside the kit
+
+It does **not** assert the surface is on-design. Both commands print that limit in their own
+output, on the green path as well as the red one, and name the uncovered residue:
+
+- **arrangement** — right elements, wrong order
+- **content** — wrong icon, dropped hint
+- **data / reachability**
+
+A checker that overstates its scope is worse than no checker, so the report never lets a green
+be read as a design sign-off. In `--json` output the same statement ships as a `composition`
+object alongside `errors`, `warnings` and `summary`.
+
+#### Asserting kit membership against `taxonomy.json`
+
+Kit membership resolves against your kit's `taxonomy.json`, read as data — there is no second
+kit list inside the CLI. Resolution order, first hit wins:
+
+1. `--taxonomy <path>`
+2. the `VISOR_TAXONOMY` environment variable
+3. a `"taxonomy"` key in the scanned directory's `.visorrc.json`
+4. conventional discovery — `taxonomy.json`, `.visor/taxonomy.json` or
+   `design-prototypes/admin-ui/taxonomy.json`, walking up from the scanned path and stopping at
+   the repository root
+
+```json title=".visorrc.json"
+{
+  "taxonomy": "../design/taxonomy.json",
+  "disabledRules": ["missing-visor-base-layer"]
+}
+```
+
+**It fails closed.** When a taxonomy is configured (or `--composition` is passed) but cannot be
+loaded, the scan reports a `kit-taxonomy-missing` **error** rather than a green it did not earn.
+When no taxonomy is configured *and* none is discovered, the assertion simply does not engage —
+and the report says `Kit membership: NOT asserted` out loud instead of implying it passed.
+
+#### `inline-style-object` (warn)
+
+Fires on an inline `style={{ ... }}` object — styling the surface introduces itself, outside the
+kit, outside the token system, unthemeable and unauditable.
+
+The rule is **AST-based, never regex**, because regex cannot separate the three shapes:
+
+```tsx
+<div style={styles.card} />              {/* CSS Module handle — not flagged */}
+<div style={{ "--accent": token }} />    {/* CSS-variable bridge — not flagged */}
+<div style={{ ...rest }} />              {/* forwarded style object — not flagged */}
+<div style={{ padding: 8 }} />           {/* flagged */}
+```
+
+#### `kit-element-redeclared` (warn)
+
+Fires when a surface declares its own `Card`, `StatCard` or `AdminShell` — a kit element rebuilt
+locally instead of composed. Requires a resolved `taxonomy.json`; the project's own copy-and-own
+kit sources (`components/ui/card/card.tsx`) are excluded.
+
+#### `hardcoded-px` and the camelCase fix
+
+`hardcoded-px` used to gate on a case-sensitive substring filter, so a JSX style object's
+`fontSize: "13px"` matched nothing and was skipped — as were `lineHeight`, `borderRadius`,
+`minWidth` and `maxHeight`. `marginTop` and `paddingLeft` only matched by substring accident.
+
+The rule now matches on a **normalized property name**, so `fontSize`, `font-size` and
+`"font-size"` are one rule, and the next camelCase property cannot reintroduce the hole.
+
+**Severity is the adoption ramp.** A value the rule reported before still reports as an
+**error**; a value only the normalized matcher finds reports as a **warning**. Fixing the blind
+spot therefore cannot turn a first adoption into a wall of red — on a real 250-file app the fix
+added 279 warnings and **zero** new errors. The newly-covered spellings graduate to errors in a
+future major.
 
 #### `missing-visor-base-layer` (warn)
 
@@ -338,6 +427,25 @@ Opt out per-project in `.visorrc.json`:
 ```json
 { "disabledRules": ["missing-visor-base-layer"] }
 ```
+
+### `visor check diff`
+
+Scan JSX/TSX for native HTML elements that have a Visor equivalent. Like `check design`, it
+prints the composition-only limit with its result — a clean `check diff` says the surface
+introduced no styling outside the kit, never that the surface is on-design.
+
+```bash
+npx @loworbitstudio/visor check diff ./src
+npx @loworbitstudio/visor check diff ./src --fail-on-hits
+npx @loworbitstudio/visor check diff - < component.tsx
+```
+
+#### Options
+
+| Flag | Description |
+|------|-------------|
+| `--fail-on-hits` | Exit `1` when any native HTML usage is found (for CI) |
+| `--json` | Output structured JSON (for AI agents) |
 
 ### `visor check theme-mode`
 
