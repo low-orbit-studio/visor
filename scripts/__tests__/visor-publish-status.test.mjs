@@ -8,6 +8,12 @@ import {
   assertVisorWorktree,
   resolveArtifactPath,
   buildStatusReport,
+  DEFAULT_STALE_DAYS,
+  resolveStaleDays,
+  readPendingChangesets,
+  oldestChangesetAgeDays,
+  fetchPublishAgeDays,
+  formatQueueSummary,
 } from '../visor-publish-status.mjs';
 
 describe('compareVersions', () => {
@@ -339,5 +345,278 @@ describe('buildStatusReport', () => {
     expect(themesRow[3]).toBe('auth?');
     expect(report.authMissing).toBe(true);
     expect(report.errorFound).toBe(false);
+  });
+});
+
+// --- VI-633: queued changesets + publish-path staleness ---------------------
+
+describe('resolveStaleDays', () => {
+  it('defaults to DEFAULT_STALE_DAYS', () => {
+    expect(resolveStaleDays({}, undefined)).toBe(DEFAULT_STALE_DAYS);
+  });
+
+  it('reads the env override', () => {
+    expect(resolveStaleDays({ VISOR_PUBLISH_STALE_DAYS: '3' }, undefined)).toBe(3);
+  });
+
+  it('explicit override beats env', () => {
+    expect(resolveStaleDays({ VISOR_PUBLISH_STALE_DAYS: '3' }, '9')).toBe(9);
+  });
+
+  it('treats an empty env value as unset', () => {
+    expect(resolveStaleDays({ VISOR_PUBLISH_STALE_DAYS: '' }, undefined)).toBe(DEFAULT_STALE_DAYS);
+  });
+
+  it('throws on a non-numeric threshold', () => {
+    expect(() => resolveStaleDays({}, 'soon')).toThrow(/Invalid stale-days/);
+  });
+
+  it('throws on a negative threshold', () => {
+    expect(() => resolveStaleDays({}, '-1')).toThrow(/Invalid stale-days/);
+  });
+});
+
+describe('readPendingChangesets', () => {
+  it('counts .md files and excludes README.md', () => {
+    const readDir = () => ['README.md', 'quiet-forks-argue.md', 'brave-cows-sing.md'];
+    expect(readPendingChangesets('/repo', readDir)).toEqual([
+      'brave-cows-sing.md',
+      'quiet-forks-argue.md',
+    ]);
+  });
+
+  it('excludes README.md case-insensitively', () => {
+    const readDir = () => ['readme.md', 'a.md'];
+    expect(readPendingChangesets('/repo', readDir)).toEqual(['a.md']);
+  });
+
+  it('ignores non-markdown entries such as config.json', () => {
+    const readDir = () => ['config.json', 'pre.json', 'a.md'];
+    expect(readPendingChangesets('/repo', readDir)).toEqual(['a.md']);
+  });
+
+  it('returns [] when .changeset does not exist', () => {
+    const readDir = () => { throw new Error('ENOENT'); };
+    expect(readPendingChangesets('/repo', readDir)).toEqual([]);
+  });
+});
+
+describe('oldestChangesetAgeDays', () => {
+  const now = new Date('2026-09-04T00:00:00Z');
+
+  it('returns the age of the OLDEST changeset, not the newest', () => {
+    const runCommand = (_cmd, args) => {
+      const rel = args[args.length - 1];
+      const dates = {
+        '.changeset/old.md': '2026-07-21T00:00:00Z',
+        '.changeset/new.md': '2026-09-03T00:00:00Z',
+      };
+      return { status: 0, stdout: dates[rel] ?? '', stderr: '' };
+    };
+    expect(oldestChangesetAgeDays('/repo', ['new.md', 'old.md'], runCommand, now)).toBe(45);
+  });
+
+  it('uses git commit date, not filesystem mtime', () => {
+    // The command issued must be a git log against the changeset path — mtime
+    // would report ~0 days in a fresh clone and disarm the gate in CI.
+    const calls = [];
+    const runCommand = (cmd, args) => {
+      calls.push([cmd, ...args]);
+      return { status: 0, stdout: '2026-08-01T00:00:00Z', stderr: '' };
+    };
+    oldestChangesetAgeDays('/repo', ['a.md'], runCommand, now);
+    expect(calls[0][0]).toBe('git');
+    expect(calls[0]).toContain('log');
+    expect(calls[0]).toContain('--format=%cI');
+    expect(calls[0][calls[0].length - 1]).toBe('.changeset/a.md');
+  });
+
+  it('returns null when no changesets are pending', () => {
+    const runCommand = () => ({ status: 0, stdout: '', stderr: '' });
+    expect(oldestChangesetAgeDays('/repo', [], runCommand, now)).toBeNull();
+  });
+
+  it('skips files whose git date cannot be resolved', () => {
+    const runCommand = (_cmd, args) =>
+      args[args.length - 1] === '.changeset/tracked.md'
+        ? { status: 0, stdout: '2026-08-30T00:00:00Z', stderr: '' }
+        : { status: 1, stdout: '', stderr: 'not tracked' };
+    expect(
+      oldestChangesetAgeDays('/repo', ['untracked.md', 'tracked.md'], runCommand, now)
+    ).toBe(5);
+  });
+
+  it('returns null when every date is unresolvable', () => {
+    const runCommand = () => ({ status: 1, stdout: '', stderr: 'boom' });
+    expect(oldestChangesetAgeDays('/repo', ['a.md'], runCommand, now)).toBeNull();
+  });
+});
+
+describe('fetchPublishAgeDays', () => {
+  const now = new Date('2026-09-04T00:00:00Z');
+
+  it('reads the publish time of the given version from the registry time map', () => {
+    const runCommand = () => ({
+      status: 0,
+      stdout: JSON.stringify({
+        modified: '2026-07-21T20:11:44.564Z',
+        '1.20.0': '2026-07-21T04:33:57.261Z',
+        '1.21.0': '2026-07-21T20:11:44.368Z',
+      }),
+      stderr: '',
+    });
+    expect(fetchPublishAgeDays('@loworbitstudio/visor', '1.21.0', 'npm', runCommand, now)).toBe(44);
+  });
+
+  it('returns null when the version is absent from the time map', () => {
+    const runCommand = () => ({ status: 0, stdout: JSON.stringify({ '1.0.0': '2026-01-01T00:00:00Z' }), stderr: '' });
+    expect(fetchPublishAgeDays('pkg', '9.9.9', 'npm', runCommand, now)).toBeNull();
+  });
+
+  it('returns null when no version is published', () => {
+    const runCommand = () => { throw new Error('should not be called'); };
+    expect(fetchPublishAgeDays('pkg', null, 'npm', runCommand, now)).toBeNull();
+  });
+
+  it('returns null on unparseable registry output', () => {
+    const runCommand = () => ({ status: 0, stdout: 'not json', stderr: '' });
+    expect(fetchPublishAgeDays('pkg', '1.0.0', 'npm', runCommand, now)).toBeNull();
+  });
+
+  it('targets the GitHub Packages registry for private artifacts', () => {
+    let seen = null;
+    const runCommand = (_cmd, args) => { seen = args; return { status: 0, stdout: '{}', stderr: '' }; };
+    fetchPublishAgeDays('pkg', '1.0.0', 'github-packages', runCommand, now);
+    expect(seen).toContain('--registry=https://npm.pkg.github.com/');
+  });
+});
+
+describe('buildStatusReport — queue blind spot (VI-633 regression)', () => {
+  // Replays the real 2026-07/09 outage state: every version matches, so the
+  // drift table reads entirely clean, while six changesets sit queued and the
+  // publish credential is dead. Before VI-633 this returned exit 0.
+  const OUTAGE_NOW = new Date('2026-09-04T00:00:00Z');
+  const cwd = process.cwd(); // vitest runs from the repo root; existsSync needs a real path
+
+  const inSync = {
+    'packages/tokens/package.json': ['@loworbitstudio/visor-core', '0.13.0'],
+    'packages/cli/package.json': ['@loworbitstudio/visor', '1.21.0'],
+    'packages/theme-engine/package.json': ['@loworbitstudio/visor-theme-engine', '0.17.1'],
+  };
+  const themesPath = path.join(
+    ARTIFACTS.find(a => a.name === '@low-orbit-studio/visor-themes-private').defaultDir,
+    'package.json'
+  );
+
+  const readJson = p => {
+    for (const [rel, [name, version]] of Object.entries(inSync)) {
+      if (p === path.join(cwd, rel)) return { name, version };
+    }
+    if (p === themesPath) return { name: '@low-orbit-studio/visor-themes-private', version: '0.1.4' };
+    throw new Error(`ENOENT: ${p}`);
+  };
+
+  const published = {
+    '@loworbitstudio/visor-core': '0.13.0',
+    '@loworbitstudio/visor': '1.21.0',
+    '@loworbitstudio/visor-theme-engine': '0.17.1',
+    '@low-orbit-studio/visor-themes-private': '0.1.4',
+  };
+
+  const makeRunCommand = ({ oldestIso }) => (cmd, args) => {
+    if (cmd === 'git') {
+      // Every queued changeset landed on the same day in this fixture.
+      return { status: 0, stdout: oldestIso, stderr: '' };
+    }
+    if (args.includes('time')) {
+      return { status: 0, stdout: JSON.stringify({ '1.21.0': '2026-07-21T20:11:44.368Z' }), stderr: '' };
+    }
+    const hit = Object.keys(published).find(n => args.includes(n));
+    return hit
+      ? { status: 0, stdout: `${published[hit]}\n`, stderr: '' }
+      : { status: 1, stdout: '', stderr: '' };
+  };
+
+  const sixQueued = () => [
+    'README.md',
+    'vi-619.md', 'vi-622.md', 'vi-623.md', 'vi-626.md', 'vi-627.md', 'vi-628.md',
+  ];
+
+  it('reports no version drift — the table genuinely is clean', () => {
+    const report = buildStatusReport({
+      cwd, env: {}, readJson,
+      runCommand: makeRunCommand({ oldestIso: '2026-07-21T00:00:00Z' }),
+      readDir: sixQueued, now: OUTAGE_NOW,
+    });
+    expect(report.driftFound).toBe(false);
+    // Assert only the three in-repo artifacts. buildStatusReport resolves the
+    // private themes package through the real `existsSync`, so that row reads
+    // `no` on a machine with the sibling repo cloned and `error` on a CI runner
+    // without it — an environment difference, not a drift signal, and not what
+    // this test is about.
+    const inRepo = report.rows.filter(r => r[0] !== '@low-orbit-studio/visor-themes-private');
+    expect(inRepo).toHaveLength(3);
+    expect(inRepo.every(r => r[3] === 'no')).toBe(true);
+  });
+
+  it('still flags the queue as stale — the blind spot is now covered', () => {
+    const report = buildStatusReport({
+      cwd, env: {}, readJson,
+      runCommand: makeRunCommand({ oldestIso: '2026-07-21T00:00:00Z' }),
+      readDir: sixQueued, now: OUTAGE_NOW,
+    });
+    expect(report.queue.pending).toBe(6);
+    expect(report.queue.oldestDays).toBe(45);
+    expect(report.queue.stale).toBe(true);
+  });
+
+  it('reports days since the last successful publish', () => {
+    const report = buildStatusReport({
+      cwd, env: {}, readJson,
+      runCommand: makeRunCommand({ oldestIso: '2026-07-21T00:00:00Z' }),
+      readDir: sixQueued, now: OUTAGE_NOW,
+    });
+    expect(report.lastPublish.version).toBe('1.21.0');
+    expect(report.lastPublish.ageDays).toBe(44);
+  });
+
+  it('does NOT flag a queue that is merely non-empty (D2 — no permanently-red gate)', () => {
+    const report = buildStatusReport({
+      cwd, env: {}, readJson,
+      // Six changesets, but all landed yesterday — normal mid-development.
+      runCommand: makeRunCommand({ oldestIso: '2026-09-03T00:00:00Z' }),
+      readDir: sixQueued, now: OUTAGE_NOW,
+    });
+    expect(report.queue.pending).toBe(6);
+    expect(report.queue.stale).toBe(false);
+  });
+
+  it('reports an empty queue when only README.md is present', () => {
+    const report = buildStatusReport({
+      cwd, env: {}, readJson,
+      runCommand: makeRunCommand({ oldestIso: '2026-07-21T00:00:00Z' }),
+      readDir: () => ['README.md'], now: OUTAGE_NOW,
+    });
+    expect(report.queue.pending).toBe(0);
+    expect(report.queue.stale).toBe(false);
+  });
+
+  it('honours a threshold override', () => {
+    const report = buildStatusReport({
+      cwd, env: {}, readJson,
+      runCommand: makeRunCommand({ oldestIso: '2026-07-21T00:00:00Z' }),
+      readDir: sixQueued, now: OUTAGE_NOW, staleDays: '90',
+    });
+    expect(report.queue.stale).toBe(false);
+  });
+
+  it('formatQueueSummary renders both lines', () => {
+    const out = formatQueueSummary({
+      queue: { pending: 6, oldestDays: 45, staleDays: 14, stale: true },
+      lastPublish: { name: '@loworbitstudio/visor', version: '1.21.0', ageDays: 44 },
+    });
+    expect(out).toContain('Pending changesets: 6');
+    expect(out).toContain('oldest 45d');
+    expect(out).toContain('@loworbitstudio/visor@1.21.0, 44d ago');
   });
 });
