@@ -4,20 +4,20 @@
   flex-direction: column;
   width: 100%;
   min-width: 0;
-  gap: var(--spacing-3, 0.75rem);
-  padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
-  background-color: var(--surface-card, #ffffff);
-  border: 1px solid var(--border-default, #e5e7eb);
-  border-radius: var(--radius-lg, 0.75rem);
-  color: var(--text-primary, #111827);
+  gap: var(--filter-bar-gap, var(--spacing-3, 0.75rem));
+  padding: var(--filter-bar-padding, var(--spacing-3, 0.75rem) var(--spacing-4, 1rem));
+  background-color: var(--filter-bar-bg, var(--surface-card, #ffffff));
+  border: var(--filter-bar-border, 1px solid var(--border-default, #e5e7eb));
+  border-radius: var(--filter-bar-radius, var(--radius-lg, 0.75rem));
+  color: var(--filter-bar-text-color, var(--text-primary, #111827));
   container-type: inline-size;
   container-name: filter-bar;
 }
 
 /* Dense variant — tighter padding for packed admin layouts */
 .dense {
-  gap: var(--spacing-2, 0.5rem);
-  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  gap: var(--filter-bar-dense-gap, var(--spacing-2, 0.5rem));
+  padding: var(--filter-bar-dense-padding, var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem));
 }
 
 /* Primary row: [search] [filters...] [spacer] [meta] */
@@ -45,7 +45,7 @@
 .searchSlot input,
 .filters > button[role="combobox"],
 .filters button[data-slot="select-trigger"] {
-  border-radius: var(--radius-md, 0.25rem);
+  border-radius: var(--filter-bar-control-radius, var(--radius-md, 0.25rem));
 }
 
 /* Filters cluster — horizontal flow, wraps on tight rows */
@@ -70,8 +70,8 @@
 }
 
 .results {
-  font-size: var(--font-size-sm, 0.875rem);
-  color: var(--text-secondary, #6b7280);
+  font-size: var(--filter-bar-results-font-size, var(--font-size-sm, 0.875rem));
+  color: var(--filter-bar-results-color, var(--text-secondary, #6b7280));
   line-height: var(--line-height-tight, 1.25);
   white-space: nowrap;
 }

@@ -1,0 +1,418 @@
+---
+title: Component Tokens
+description: The component-scoped custom properties a Visor theme can bind for the admin-UI families — table, chip, filter bar, page header, empty state, banner, sidebar, tabs, skeleton, spinner — each with a documented Tier-1 fallback.
+---
+
+A Visor theme has always been able to repaint the Tier-1 semantic surface —
+`--surface-*`, `--text-*`, `--border-*`, `--interactive-*`. That is enough to make
+an admin UI *functional*. It is not enough to make it look like **one thing**:
+nothing stopped a page inventing its own table-header treatment, its own chip
+tracking, its own filter-bar padding. A fidelity retro on a shipped admin app
+measured the result — 247 element categories across 13 families whose
+inconsistency traced to the substrate, not to any one component. The page title
+rendered five ways; the table header cell four ways; the same mono status chip at
+8.5 / 9 / 9.5 / 10 / 11px across nine implementations.
+
+**Component tokens close that gap.** Each family below exposes a set of
+component-scoped custom properties a theme binds once, in its `.visor.yaml`.
+Distil the design into the theme, and every consuming surface inherits it —
+instead of each page re-deriving the look in local CSS.
+
+## The two guarantees
+
+1. **Bind nothing and nothing changes.** Every token is read as
+   `var(--token, <Tier-1 expression>)` where the fallback is byte-for-byte what
+   the component rendered before the token existed. A theme with no
+   `components:` block is pixel-identical to a theme from before this contract,
+   and the engine emits no extra CSS at all.
+2. **Bind one thing and every surface follows.** A bound token retunes every
+   consuming rule at once — the whole point of moving the decision into the
+   theme.
+
+## Binding a family
+
+```yaml
+# my-theme.visor.yaml
+components:
+  table:
+    head-height: "2.5rem"
+    head-font-family: '"IBM Plex Mono", monospace'
+    head-font-size: "11px"
+    head-text-transform: uppercase
+    head-letter-spacing: "0.06em"
+    head-bg:
+      light: "#f7f7f8"
+      dark: "#141418"
+  chip:
+    md-font-size: "11px"
+    letter-spacing: "0.04em"
+    text-transform: uppercase
+  badge:
+    text-transform: uppercase
+    letter-spacing: "0.04em"
+    font-size: "11px"
+    font-weight: "600"
+```
+
+A bare string binds both modes; `{ light, dark }` binds them independently, and a
+binding may be mode-asymmetric (dark only, say). Family and key names are
+validated — an unknown key is an **error**, not a warning, because a typo'd
+component token is otherwise silently inert: the component just keeps resolving
+its fallback and you never learn the binding missed.
+
+## Where the CSS lands
+
+Bound tokens emit into the `visor-adaptive` cascade layer, on the same selectors
+as the Tier-1 adaptive set (light on the host selector; dark on the manual-toggle
+selectors plus a `prefers-color-scheme` query). Single-mode brands
+(`color-scheme: dark-only` / `light-only`) collapse onto the host selector, with
+no toggle blocks — the same shape every other emitter uses.
+
+Component `.module.css` files use no `@layer` at all, so a consumer that really
+must override one surface locally still can. The point of this contract is that
+they should not have to.
+
+## Overriding without a theme
+
+The same properties work as plain CSS custom properties, so a block or a page
+shell can scope a treatment without touching the theme:
+
+```css
+.myAdminShell {
+  --table-head-text-transform: uppercase;
+  --table-head-letter-spacing: 0.06em;
+}
+```
+
+Prefer the theme. A local override is exactly the per-page divergence this
+contract exists to end — reach for it only when the treatment genuinely belongs
+to one surface.
+
+## The contract
+
+
+### `table`
+
+Table head, row and cell treatment. The retro measured the same header cell rendered four ways across one admin app; binding this family pins it once.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--table-font-size` | Base table type size. | `var(--font-size-sm, 0.875rem)` |
+| `--table-text-color` | Base table text colour. | `var(--text-primary, #111827)` |
+| `--table-head-height` | Header row height. | `3rem` |
+| `--table-head-padding-x` | Header cell horizontal padding. | `var(--spacing-3, 0.75rem)` |
+| `--table-head-font-family` | Header cell family — set a mono/condensed face for a chrome-style header. | `inherit` |
+| `--table-head-font-size` | Header cell type size. | `inherit` |
+| `--table-head-font-weight` | Header cell weight. | `var(--font-weight-medium, 500)` |
+| `--table-head-letter-spacing` | Header cell tracking. | `inherit` |
+| `--table-head-text-transform` | Header cell casing — `uppercase` for the editorial admin header. | `inherit` |
+| `--table-head-color` | Header cell text colour. | `var(--text-primary, #111827)` |
+| `--table-head-bg` | Header cell fill. Sits above the shared `--dt-header-bg` surface role. | `var(--dt-header-bg, transparent)` |
+| `--table-row-border` | Row separator (width, style and colour). | `1px solid var(--border-default, #e5e7eb)` |
+| `--table-row-hover-bg` | Row hover fill. | `var(--surface-muted, #f3f4f6)` |
+| `--table-row-selected-bg` | Selected-row fill. | `var(--surface-muted, #f3f4f6)` |
+| `--table-cell-padding` | Body cell padding. | `var(--spacing-3, 0.75rem)` |
+| `--table-cell-font-size` | Body cell type size. | `inherit` |
+| `--table-cell-color` | Body cell text colour. | `var(--text-primary, #111827)` |
+| `--table-cell-bg` | Body cell fill. Sits above the shared `--dt-row-bg` surface role. | `var(--dt-row-bg, transparent)` |
+| `--table-cell-border-top` | Cell hairline. | `1px solid var(--hairline, transparent)` |
+| `--table-footer-bg` | Footer row fill. | `var(--surface-muted, #f3f4f6)` |
+| `--table-caption-color` | Caption text colour. | `var(--text-secondary, #6b7280)` |
+
+### `data-table`
+
+The admin-ui Tier-2 data-table surface stack (D3). Shared between the Table primitive and the DataTable shell so a list page and its table read as one surface.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--dt-header-bg` | Header-row surface tier. | `transparent` |
+| `--dt-row-bg` | Data-row surface tier — a hair above the page so rows track any palette. | `transparent` |
+| `--dt-container-radius` | Table container rounding — `0` lets the consumer shell own the corners. | `var(--radius-lg, 0.5rem)` |
+| `--dt-container-shadow` | Table container elevation. | `var(--shadow-sm)` |
+| `--dt-row-py` | Row vertical rhythm (the density axis). | `var(--spacing-3, 0.75rem)` |
+| `--dt-cell-px` | Cell horizontal inset. | `var(--spacing-5, 1.25rem)` |
+| `--dt-header-font-size` | Sort-header type size. | `11px` |
+
+### `chip`
+
+Chip / filter-pill treatment. The retro found the same mono status chip at 8.5 / 9 / 9.5 / 10 / 11px with tracking .03–.14em across nine implementations; this family is the single dial.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--chip-radius` | Chip corner rounding. | `var(--radius-full, 9999px)` |
+| `--chip-border` | Chip outline. | `var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb)` |
+| `--chip-bg` | Resting chip fill. | `var(--surface-card, #ffffff)` |
+| `--chip-text-color` | Chip label colour. | `var(--text-primary, #111827)` |
+| `--chip-font-family` | Chip label family — bind a mono face for token/ID chips. | `var(--font-body, inherit)` |
+| `--chip-font-weight` | Chip label weight. | `var(--font-weight-medium, 500)` |
+| `--chip-letter-spacing` | Chip label tracking. | `inherit` |
+| `--chip-text-transform` | Chip label casing. | `inherit` |
+| `--chip-sm-height` | Small chip height. | `1.5rem` |
+| `--chip-sm-padding-x` | Small chip horizontal padding. | `var(--spacing-2, 0.5rem)` |
+| `--chip-sm-font-size` | Small chip type size. | `var(--font-size-xs, 0.75rem)` |
+| `--chip-md-height` | Default chip height. | `2rem` |
+| `--chip-md-padding-x` | Default chip horizontal padding. | `var(--spacing-3, 0.75rem)` |
+| `--chip-md-font-size` | Default chip type size. | `var(--font-size-sm, 0.875rem)` |
+| `--chip-lg-height` | Large chip height. | `2.5rem` |
+| `--chip-lg-padding-x` | Large chip horizontal padding. | `var(--spacing-4, 1rem)` |
+| `--chip-lg-font-size` | Large chip type size. | `var(--font-size-base, 1rem)` |
+| `--chip-selected-bg` | Selected chip fill. | `var(--surface-accent-subtle, #eff6ff)` |
+| `--chip-selected-border-color` | Selected chip outline colour. | `var(--surface-accent-default, #3b82f6)` |
+| `--chip-selected-text-color` | Selected chip label colour. | `var(--text-link, #2563eb)` |
+
+### `badge`
+
+Badge treatment — the D3 Tier-2 `--badge-text-transform` / `-letter-spacing` / `-font-size` / `-font-weight` set, promoted from the admin-ui audit to a bindable contract.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--badge-radius` | Badge corner rounding. | `var(--radius-full, 9999px)` |
+| `--badge-border` | Badge outline. | `1px solid transparent` |
+| `--badge-font-family` | Badge label family. | `inherit` |
+| `--badge-font-weight` | Badge label weight (Tier-2: 600). | `var(--font-weight-medium, 500)` |
+| `--badge-text-transform` | Badge casing (Tier-2: uppercase). | `none` |
+| `--badge-letter-spacing` | Badge tracking (Tier-2: 0.04em). | `normal` |
+| `--badge-font-size` | Default badge type size (Tier-2: 11px). Drives both the standard and editorial-density steps. | `var(--font-size-xs, 0.75rem)` |
+| `--badge-md-padding` | Default badge padding. | `calc(var(--spacing-1, 0.25rem) / 2) var(--spacing-2, 0.5rem)` |
+| `--badge-md-gap` | Default badge icon gap. | `var(--spacing-1, 0.25rem)` |
+
+### `status-badge`
+
+Status-badge indicator dot and the mono readout label. Chrome is inherited from the Badge family.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--status-badge-dot-size` | Indicator dot diameter. | `0.5rem` |
+| `--status-badge-dot-radius` | Indicator dot rounding — square it for a Linear-style status marker. | `var(--radius-full, 9999px)` |
+| `--status-badge-mono-font-family` | Mono-label family. | `var(--font-mono, "SF Mono", "Fira Code", "Fira Mono", monospace)` |
+| `--status-badge-mono-font-size` | Mono-label type size. | `var(--text-11, 0.6875rem)` |
+| `--status-badge-mono-letter-spacing` | Mono-label tracking. | `0.02em` |
+
+### `filter-bar`
+
+The operator's named case: "the filter bar above the table in many admin pages was pretty different from one to the next; that should be streamlined."
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--filter-bar-bg` | Filter-bar fill. | `var(--surface-card, #ffffff)` |
+| `--filter-bar-border` | Filter-bar frame. | `1px solid var(--border-default, #e5e7eb)` |
+| `--filter-bar-radius` | Filter-bar corner rounding. | `var(--radius-lg, 0.75rem)` |
+| `--filter-bar-padding` | Filter-bar inset. | `var(--spacing-3, 0.75rem) var(--spacing-4, 1rem)` |
+| `--filter-bar-gap` | Vertical rhythm between the control row and the chip row. | `var(--spacing-3, 0.75rem)` |
+| `--filter-bar-text-color` | Filter-bar text colour. | `var(--text-primary, #111827)` |
+| `--filter-bar-dense-padding` | Dense-variant inset. | `var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem)` |
+| `--filter-bar-dense-gap` | Dense-variant rhythm. | `var(--spacing-2, 0.5rem)` |
+| `--filter-bar-control-radius` | Rounding of the search input and filter triggers inside the bar. | `var(--radius-md, 0.25rem)` |
+| `--filter-bar-results-font-size` | Results-count type size. | `var(--font-size-sm, 0.875rem)` |
+| `--filter-bar-results-color` | Results-count colour. | `var(--text-secondary, #6b7280)` |
+
+### `page-header`
+
+Page-header lockup. The retro found the page title rendered five ways across one app.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--page-header-gap` | Header stack rhythm. | `var(--spacing-4, 1rem)` |
+| `--page-header-text-color` | Header text colour. | `var(--text-primary, #111827)` |
+| `--page-header-leading-gap` | Gap between the leading media slot and the text stack. | `var(--spacing-3, 0.75rem)` |
+| `--page-header-eyebrow-font-size` | Eyebrow type size. | `var(--font-size-xs, 0.75rem)` |
+| `--page-header-eyebrow-font-weight` | Eyebrow weight. | `var(--font-weight-semibold, 600)` |
+| `--page-header-eyebrow-letter-spacing` | Eyebrow tracking. | `var(--letter-spacing-wide, 0.05em)` |
+| `--page-header-eyebrow-text-transform` | Eyebrow casing. | `uppercase` |
+| `--page-header-eyebrow-color` | Eyebrow colour. | `var(--text-tertiary, #6b7280)` |
+| `--page-header-title-family` | Marquee title family (`titleFamily="display"`). Falls through to the admin-ui marquee role before the theme display font. | `var(--admin-ui-marquee-family, var(--font-display, var(--font-family-heading, inherit)))` |
+| `--page-header-title-size` | Marquee title size (`titleSize="marquee"`). | `3.5rem` |
+| `--page-header-title-leading` | Title leading. | `var(--line-height-tight, 1.2)` |
+| `--page-header-title-font-size` | Standard title size. | `var(--font-size-2xl, 1.5rem)` |
+| `--page-header-title-font-weight` | Title weight. | `var(--font-weight-semibold, 600)` |
+| `--page-header-title-letter-spacing` | Title tracking. | `var(--letter-spacing-tight, -0.01em)` |
+| `--page-header-title-color` | Title colour. | `var(--text-primary, #111827)` |
+| `--page-header-description-font-size` | Description type size. | `var(--font-size-sm, 0.875rem)` |
+| `--page-header-description-color` | Description colour. | `var(--text-secondary, #6b7280)` |
+| `--page-header-actions-gap` | Gap between header action buttons. | `var(--spacing-2, 0.5rem)` |
+
+### `empty-state`
+
+Empty-state placard — surface, icon chip and copy scale.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--empty-state-radius` | Placard corner rounding. | `var(--radius-lg, 0.75rem)` |
+| `--empty-state-text-color` | Placard base text colour. | `var(--text-secondary, #6b7280)` |
+| `--empty-state-gap` | Placard stack rhythm. | `var(--spacing-2, 0.5rem)` |
+| `--empty-state-padding` | Default-size placard inset. | `var(--spacing-8, 2rem) var(--spacing-5, 1.25rem)` |
+| `--empty-state-bg` | Default-tone fill. | `var(--surface-muted, #f9fafb)` |
+| `--empty-state-border` | Default-tone frame (dashed by default). | `1px dashed var(--border-default, #e5e7eb)` |
+| `--empty-state-icon-size` | Icon-chip diameter. | `72px` |
+| `--empty-state-icon-radius` | Icon-chip rounding. | `var(--radius-full, 9999px)` |
+| `--empty-state-icon-bg` | Icon-chip fill. | `var(--surface-subtle, #f5f5f6)` |
+| `--empty-state-icon-color` | Icon-chip glyph colour. | `var(--text-tertiary, #6b7280)` |
+| `--empty-state-heading-font-family` | Heading family. | `var(--font-family-heading, inherit)` |
+| `--empty-state-heading-font-size` | Default-size heading type size. | `var(--font-size-base, 1rem)` |
+| `--empty-state-heading-font-weight` | Heading weight. | `var(--font-weight-semibold, 600)` |
+| `--empty-state-heading-color` | Heading colour. | `var(--text-primary, #111827)` |
+| `--empty-state-description-font-size` | Description type size. | `var(--font-size-sm, 0.875rem)` |
+| `--empty-state-description-color` | Description colour. | `var(--text-secondary, #6b7280)` |
+| `--empty-state-actions-gap` | Gap between placard actions. | `var(--spacing-2, 0.5rem)` |
+
+### `banner`
+
+Full-width notice bar. The retro found six separate banner systems across ~180 instances in one app; binding this family collapses them to one.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--banner-padding` | Banner inset. | `var(--spacing-3, 0.75rem) var(--spacing-4, 1rem)` |
+| `--banner-gap` | Gap between icon, content and actions. | `var(--spacing-3, 0.75rem)` |
+| `--banner-font-size` | Banner base type size. | `var(--font-size-sm, 0.875rem)` |
+| `--banner-radius` | Banner corner rounding — `0` keeps the full-bleed bar. | `0` |
+| `--banner-border-width` | Banner rule weight. | `1px` |
+| `--banner-shadow` | Banner elevation. | `var(--shadow-sm)` |
+| `--banner-title-font-weight` | Banner title weight. | `var(--font-weight-semibold, 600)` |
+| `--banner-description-font-size` | Banner description type size. | `var(--font-size-sm, 0.875rem)` |
+| `--banner-info-bg` | Info-intent fill. | `var(--surface-info-subtle, transparent)` |
+| `--banner-info-text-color` | Info-intent text colour. | `var(--text-info, currentColor)` |
+| `--banner-info-border-color` | Info-intent rule colour. | `var(--border-info, currentColor)` |
+| `--banner-warning-bg` | Warning-intent fill. | `var(--surface-warning-subtle, transparent)` |
+| `--banner-warning-text-color` | Warning-intent text colour. | `var(--text-warning, currentColor)` |
+| `--banner-warning-border-color` | Warning-intent rule colour. | `var(--border-warning, currentColor)` |
+| `--banner-error-bg` | Error-intent fill. | `var(--surface-error-subtle, transparent)` |
+| `--banner-error-text-color` | Error-intent text colour. | `var(--text-error, currentColor)` |
+| `--banner-error-border-color` | Error-intent rule colour. | `var(--border-error, currentColor)` |
+| `--banner-success-bg` | Success-intent fill. | `var(--surface-success-subtle, transparent)` |
+| `--banner-success-text-color` | Success-intent text colour. | `var(--text-success, currentColor)` |
+| `--banner-success-border-color` | Success-intent rule colour. | `var(--border-success, currentColor)` |
+
+### `sidebar`
+
+Sidebar chrome and nav-item treatment. The palette roles (`bg`, `text`, `border`, `accent-*`) already ship defaults from visor-core's `visor-semantic` layer and are read bare; the structural roles below are new in VI-625.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--sidebar-bg` | Sidebar rail fill. Defaulted by visor-core. | _visor-core default_ |
+| `--sidebar-text` | Sidebar text colour. Defaulted by visor-core. | _visor-core default_ |
+| `--sidebar-text-muted` | Sidebar group-label colour. Defaulted by visor-core. | _visor-core default_ |
+| `--sidebar-border` | Sidebar separator + rail colour. Defaulted by visor-core. | _visor-core default_ |
+| `--sidebar-accent-bg` | Active / hover nav-item fill. Defaulted by visor-core. | _visor-core default_ |
+| `--sidebar-accent-text` | Active / hover nav-item text. Defaulted by visor-core. | _visor-core default_ |
+| `--sidebar-header-padding` | Sidebar header inset. | `var(--spacing-2, 0.5rem)` |
+| `--sidebar-footer-padding` | Sidebar footer inset. | `var(--spacing-2, 0.5rem)` |
+| `--sidebar-content-padding` | Scrollable nav-area inset. | `var(--spacing-1, 0.25rem)` |
+| `--sidebar-menu-gap` | Gap between nav items. | `var(--spacing-1, 0.25rem)` |
+| `--sidebar-group-label-height` | Nav group-label height. | `2rem` |
+| `--sidebar-group-label-font-size` | Nav group-label type size. | `var(--font-size-xs, 0.75rem)` |
+| `--sidebar-group-label-font-weight` | Nav group-label weight. | `var(--font-weight-medium, 500)` |
+| `--sidebar-group-label-letter-spacing` | Nav group-label tracking. | `inherit` |
+| `--sidebar-group-label-text-transform` | Nav group-label casing. | `inherit` |
+| `--sidebar-item-radius` | Nav-item corner rounding. | `var(--radius-md, 0.375rem)` |
+| `--sidebar-item-gap` | Nav-item icon gap. | `var(--spacing-2, 0.5rem)` |
+| `--sidebar-item-font-size` | Nav-item type size. | `var(--font-size-sm, 0.875rem)` |
+| `--sidebar-item-font-weight` | Nav-item resting weight. | `inherit` |
+| `--sidebar-item-letter-spacing` | Nav-item tracking. | `inherit` |
+| `--sidebar-item-text-transform` | Nav-item casing. | `inherit` |
+| `--sidebar-item-height` | Default nav-item height. | `2.25rem` |
+| `--sidebar-item-padding` | Default nav-item inset. | `0 var(--spacing-3, 0.75rem)` |
+| `--sidebar-item-active-font-weight` | Active nav-item weight. | `var(--font-weight-medium, 500)` |
+
+### `tabs`
+
+Tab rail and trigger treatment, for both the segmented (`default`) and underlined (`line`) variants.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--tabs-list-radius` | Tab-rail corner rounding. | `var(--radius-full, 9999px)` |
+| `--tabs-list-height` | Tab-rail height. | `2.25rem` |
+| `--tabs-list-padding` | Tab-rail inset. | `calc(var(--spacing-1, 0.25rem) * 0.75)` |
+| `--tabs-list-color` | Tab-rail base text colour. | `var(--text-secondary, #6b7280)` |
+| `--tabs-list-bg` | Segmented-variant rail fill. | `var(--surface-muted, #f3f4f6)` |
+| `--tabs-line-border-bottom` | Underlined-variant rail rule. | `1px solid var(--hairline, var(--border-default, #e5e7eb))` |
+| `--tabs-trigger-radius` | Trigger corner rounding. | `var(--radius-md, 0.375rem)` |
+| `--tabs-trigger-padding` | Trigger inset. | `var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem)` |
+| `--tabs-trigger-font-size` | Trigger type size. | `var(--font-size-sm, 0.875rem)` |
+| `--tabs-trigger-font-weight` | Trigger weight. | `var(--font-weight-medium, 500)` |
+| `--tabs-trigger-letter-spacing` | Trigger tracking. | `inherit` |
+| `--tabs-trigger-text-transform` | Trigger casing. | `inherit` |
+| `--tabs-trigger-color` | Resting trigger colour. | `var(--text-secondary, #6b7280)` |
+| `--tabs-trigger-active-bg` | Active trigger fill. | `var(--surface-page, #ffffff)` |
+| `--tabs-trigger-active-color` | Active trigger colour. | `var(--text-primary, #111827)` |
+| `--tabs-trigger-active-shadow` | Active trigger elevation. | `var(--shadow-sm)` |
+| `--tabs-indicator-height` | Underline indicator thickness. | `2px` |
+| `--tabs-indicator-color` | Underline indicator colour. | `var(--text-primary, #111827)` |
+
+### `skeleton`
+
+Loading-placeholder shimmer and the content-shape geometry the admin list/table/detail skeletons use.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--skeleton-from` | Shimmer gradient start. | `#f3f4f6` |
+| `--skeleton-to` | Shimmer gradient peak. | `#e5e7eb` |
+| `--skeleton-radius` | Default placeholder rounding. | `var(--radius-md, 0.375rem)` |
+| `--skeleton-duration` | Shimmer cycle length. | `1.5s` |
+| `--skeleton-logo-width` | Logo-plate placeholder width. | `104px` |
+| `--skeleton-logo-height` | Logo-plate placeholder height. | `24px` |
+| `--skeleton-pill-width` | Badge-pill placeholder width. | `64px` |
+| `--skeleton-pill-height` | Badge-pill placeholder height. | `18px` |
+| `--skeleton-line-h1-height` | Display-line placeholder height. | `24px` |
+| `--skeleton-line-heading-height` | Heading-line placeholder height. | `18px` |
+| `--skeleton-line-body-height` | Body-line placeholder height. | `14px` |
+| `--skeleton-avatar-size` | Avatar placeholder diameter. | `40px` |
+| `--skeleton-avatar-lg-size` | Large avatar placeholder diameter. | `64px` |
+| `--skeleton-badge-width` | Row-badge placeholder width. | `72px` |
+| `--skeleton-badge-height` | Row-badge placeholder height. | `22px` |
+| `--skeleton-row-gap` | Skeleton row gap. | `var(--spacing-3, 0.75rem)` |
+| `--skeleton-row-padding` | Skeleton row inset. | `var(--spacing-3, 0.75rem) 0` |
+| `--skeleton-row-border-bottom` | Skeleton row separator. | `1px solid var(--border-default, #e5e7eb)` |
+
+### `spinner`
+
+Inline loading ring — track, leading edge, per-size geometry and cycle length.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--spinner-track-color` | Ring track colour. | `var(--border-default, #e5e7eb)` |
+| `--spinner-edge-color` | Leading-edge colour (default tone). | `var(--text-tertiary, #6b7280)` |
+| `--spinner-primary-edge-color` | Leading-edge colour (primary tone). | `var(--primary, #111827)` |
+| `--spinner-radius` | Ring rounding. | `var(--radius-full, 9999px)` |
+| `--spinner-duration` | Rotation cycle length. | `var(--motion-duration-1500, 1500ms)` |
+| `--spinner-xs-size` | Extra-small ring diameter. | `12px` |
+| `--spinner-xs-border-width` | Extra-small ring stroke. | `var(--stroke-width-thin, 1px)` |
+| `--spinner-sm-size` | Small ring diameter. | `16px` |
+| `--spinner-sm-border-width` | Small ring stroke. | `var(--stroke-width-regular, 1.5px)` |
+| `--spinner-md-size` | Default ring diameter. | `24px` |
+| `--spinner-md-border-width` | Default ring stroke. | `var(--stroke-width-medium, 2px)` |
+
+### `checkbox`
+
+Control sizing — the D3 Tier-2 `--checkbox-size` / `-radius` / `-bg` / `-border` set, promoted from the admin-ui audit to a bindable contract.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--checkbox-size` | Checkbox box size. | `1rem` |
+| `--checkbox-radius` | Checkbox corner rounding — square it for the editorial admin look. | `var(--radius-sm, 0.25rem)` |
+| `--checkbox-bg` | Unchecked fill. | `transparent` |
+| `--checkbox-border` | Unchecked outline. | `1px solid var(--border-default, #e5e7eb)` |
+| `--checkbox-bg-checked` | Checked fill. | `var(--interactive-primary-bg, var(--primary, #111827))` |
+| `--checkbox-border-checked` | Checked outline colour. | `var(--interactive-primary-bg, var(--primary, #111827))` |
+
+### `admin-ui`
+
+Structural roles the admin-ui pattern owns. `marquee-family` is the display face for KPI hero figures and marquee page titles — the role the admin-ui portability audit named as the one piece of ENTR brand coupling a new theme must rebind.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--admin-ui-marquee-family` | Marquee / hero-figure display family. | `var(--font-display, var(--font-family-heading, inherit))` |
+
+## Emit-only roles
+
+Two entries above have no Visor component reading them. They exist so a
+**generated** theme can carry the admin-ui pattern's Tier-2 treatment layer
+rather than leaving it as prose in a design audit — the pattern shell
+(`design-prototypes/admin-ui/tokens.css`) is the consumer. `--surface-screen` is
+the deepest chrome tier (the sidebar rail); bind it to the theme's deep overlay,
+never to a literal.
+
+## See also
+
+- [Token Rules](/docs/themes/token-rules) — the rules every token and fallback must satisfy
+- [Creating Themes](/docs/themes/creating-themes) — the full `.visor.yaml` surface
+- [Theming](/docs/themes/theming) — how a theme is applied and switched

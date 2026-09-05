@@ -34,6 +34,8 @@ import {
   generateSpaceAliasDecls,
 } from "../generate-css.js";
 import { generateBrandPassthroughCss } from "./brand-passthrough.js";
+import { generateComponentTokensCss } from "./component-tokens-css.js";
+import { resolveComponentBindings } from "../component-tokens.js";
 import { FUMADOCS_BRIDGE_MAP } from "./fumadocs-map.js";
 import { LAYER_ORDER, wrapInLayer } from "./layers.js";
 import type { AdapterInput, DocsAdapterOptions } from "./types.js";
@@ -568,7 +570,21 @@ export function docsAdapter(
     colorScheme,
   );
 
-  const adaptiveLayer = wrapInLayer("visor-adaptive", lines.join("\n").trim());
+  // Component tokens (VI-625) — the theme's `components:` bindings for the
+  // admin-UI families, appended to the visor-adaptive layer. Empty (and
+  // therefore invisible in the emitted file) unless the theme binds something.
+  const componentTokensCss = generateComponentTokensCss(
+    resolveComponentBindings(input.config.components),
+    {
+      light: lightSel,
+      dark: darkSel,
+      prefers: `${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`,
+    },
+    colorScheme,
+  );
+
+  const adaptiveBody = [lines.join("\n").trim(), componentTokensCss].filter(Boolean).join("\n\n");
+  const adaptiveLayer = wrapInLayer("visor-adaptive", adaptiveBody);
   const semanticLayer = wrapInLayer("visor-semantic", semanticLines.join("\n").trim());
   const brandLayerBody = [brandResult.css, passthroughCss].filter(Boolean).join("\n\n");
   const brandLayer = wrapInLayer("visor-brand", brandLayerBody);

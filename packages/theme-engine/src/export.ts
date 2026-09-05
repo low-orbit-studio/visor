@@ -217,5 +217,10 @@ export function exportTheme(
     }
   }
 
+  // Component bindings (VI-625) — round-tripped verbatim
+  if (config.components && Object.keys(config.components).length > 0) {
+    output.components = config.components;
+  }
+
   return stringifyYaml(output, { lineWidth: 0 });
 }

@@ -10,6 +10,7 @@ import { isValidHex, isValidColor } from "./color.js";
 import { MATERIAL_TEXT_SLOTS } from "./types.js";
 import type { VisorThemeConfig } from "./types.js";
 import { checkBrandStrategyStructure } from "./brand-strategy/validate.js";
+import { validateComponentBindings } from "./component-tokens.js";
 
 export { visorThemeSchema };
 
@@ -25,6 +26,7 @@ export interface ValidationResult {
 const KNOWN_TOP_LEVEL_KEYS = new Set([
   "name", "version", "group", "label", "default-mode", "color-scheme", "colors", "colors-dark", "typography",
   "brand", "brand-strategy", "spacing", "radius", "shadows", "strokeWidths", "motion", "overrides",
+  "components",
 ]);
 
 const KNOWN_COLOR_KEYS = new Set([
@@ -293,6 +295,12 @@ function checkUnknownKeys(obj: Record<string, unknown>, errors: string[]): void 
         errors.push(`Unknown key 'overrides.${key}'. Valid keys: ${[...KNOWN_OVERRIDES_KEYS].join(", ")}`);
       }
     }
+  }
+
+  // components (VI-625) — family + key names are checked against the contract
+  // in component-tokens.ts, which is the single registration point.
+  if (obj.components !== undefined) {
+    errors.push(...validateComponentBindings(obj.components));
   }
 }
 

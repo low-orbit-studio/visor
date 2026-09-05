@@ -9,8 +9,8 @@
 }
 
 .skeleton {
-  --_shimmer-duration: 1.5s;
-  border-radius: var(--radius-md, 0.375rem);
+  --_shimmer-duration: var(--skeleton-duration, 1.5s);
+  border-radius: var(--skeleton-radius, var(--radius-md, 0.375rem));
   /* Default (light) gradient — theme-tunable, falls back to the muted
      surface ramp (Tailwind Gray) */
   background: linear-gradient(
@@ -67,30 +67,30 @@
    documented as intentional pixel values that mirror spec anatomy. */
 
 /* Bar heights */
-.skeletonLineH1   { height: 24px; border-radius: var(--radius-md, 0.375rem); }
-.skeletonLineHeading { height: 18px; border-radius: var(--radius-md, 0.375rem); }
-.skeletonLineBody { height: 14px; border-radius: var(--radius-sm, 0.25rem); }
+.skeletonLineH1   { height: var(--skeleton-line-h1-height, 24px); border-radius: var(--radius-md, 0.375rem); }
+.skeletonLineHeading { height: var(--skeleton-line-heading-height, 18px); border-radius: var(--radius-md, 0.375rem); }
+.skeletonLineBody { height: var(--skeleton-line-body-height, 14px); border-radius: var(--radius-sm, 0.25rem); }
 
 /* Avatar / thumbnail */
 .skeletonAvatar {
-  width: 40px;
-  height: 40px;
+  width: var(--skeleton-avatar-size, 40px);
+  height: var(--skeleton-avatar-size, 40px);
   border-radius: var(--radius-full, 9999px);
   flex-shrink: 0;
 }
 
 /* Larger avatar for detail views */
 .skeletonAvatarLg {
-  width: 64px;
-  height: 64px;
+  width: var(--skeleton-avatar-lg-size, 64px);
+  height: var(--skeleton-avatar-lg-size, 64px);
   border-radius: var(--radius-full, 9999px);
   flex-shrink: 0;
 }
 
 /* Badge pill used in list rows */
 .skeletonBadge {
-  width: 72px;
-  height: 22px;
+  width: var(--skeleton-badge-width, 72px);
+  height: var(--skeleton-badge-height, 22px);
   border-radius: var(--radius-full, 9999px);
   flex-shrink: 0;
 }
@@ -111,9 +111,9 @@
 .skeletonListRow {
   display: flex;
   align-items: center;
-  gap: var(--spacing-3, 0.75rem);
-  padding: var(--spacing-3, 0.75rem) 0;
-  border-bottom: 1px solid var(--border-default, #e5e7eb);
+  gap: var(--skeleton-row-gap, var(--spacing-3, 0.75rem));
+  padding: var(--skeleton-row-padding, var(--spacing-3, 0.75rem) 0);
+  border-bottom: var(--skeleton-row-border-bottom, 1px solid var(--border-default, #e5e7eb));
 }
 
 /* Remove bottom border on last row */
@@ -139,8 +139,8 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-4, 1rem);
-  padding: var(--spacing-3, 0.75rem) 0;
-  border-bottom: 1px solid var(--border-default, #e5e7eb);
+  padding: var(--skeleton-row-padding, var(--spacing-3, 0.75rem) 0);
+  border-bottom: var(--skeleton-row-border-bottom, 1px solid var(--border-default, #e5e7eb));
 }
 
 .skeletonTableRow:last-child {

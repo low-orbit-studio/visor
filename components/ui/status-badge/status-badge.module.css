@@ -7,13 +7,15 @@
  * typography, background) is inherited from Badge.
  */
 
-/* Indicator dot — filled circle, 0.5rem, colored per status */
+/* Indicator dot — filled circle, 0.5rem, colored per status.
+   VI-625: --status-badge-dot-size / -dot-radius let a theme square the marker
+   (Linear-style) or resize it without forking the component. */
 .indicator {
   display: inline-block;
-  width: 0.5rem;
-  height: 0.5rem;
+  width: var(--status-badge-dot-size, 0.5rem);
+  height: var(--status-badge-dot-size, 0.5rem);
   flex-shrink: 0;
-  border-radius: var(--radius-full, 9999px);
+  border-radius: var(--status-badge-dot-radius, var(--radius-full, 9999px));
   background-color: currentColor;
 }
 
@@ -91,9 +93,9 @@
  * label at the 11px chrome step, for ID / code / token-style status readouts.
  * Overrides only the label typography; dot, color, and chrome are unchanged. */
 .labelMono {
-  font-family: var(--font-mono, "SF Mono", "Fira Code", "Fira Mono", monospace);
-  font-size: var(--text-11, 0.6875rem);
-  letter-spacing: 0.02em;
+  font-family: var(--status-badge-mono-font-family, var(--font-mono, "SF Mono", "Fira Code", "Fira Mono", monospace));
+  font-size: var(--status-badge-mono-font-size, var(--text-11, 0.6875rem));
+  letter-spacing: var(--status-badge-mono-letter-spacing, 0.02em);
 }
 
 /* Visually hidden but announced to screen readers */

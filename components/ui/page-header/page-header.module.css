@@ -1,22 +1,24 @@
-/* Page Header base: container query wrapper */
-.base {
-  /* Override hooks for title typography. Themes (or consumers via a wrapping
-     className) can set these to retune the marquee title without forking the
-     component. Props are sugar over the same custom properties.
-     `--page-header-title-leading` is intentionally left unset here so the
-     title falls back to its per-rule default line-height (tight for the
-     standard title, `1` for the marquee scale); the `leading` prop sets it. */
-  --page-header-title-size: 3.5rem;
-  --page-header-title-family: var(--font-display, var(--font-family-heading, inherit));
+/* Page Header base: container query wrapper.
 
+   VI-625: `--page-header-title-size` / `-title-family` used to be *declared*
+   here. An element-level declaration outranks anything a theme emits into a
+   cascade layer on :root, so the documented "themes can set these" was never
+   actually true — the component shadowed the theme. Both use sites already
+   carry the identical fallback inline, so dropping the declarations is
+   value-preserving (`var(--x, 3.5rem)` with no --x resolves to 3.5rem, exactly
+   as it did when --x was declared as 3.5rem) and makes the hooks genuinely
+   theme-bindable. `--page-header-title-leading` was already unset for the same
+   reason: the title falls back to its per-rule default line-height (tight for
+   the standard title, `1` for the marquee scale); the `leading` prop sets it. */
+.base {
   display: flex;
   flex-direction: column;
   width: 100%;
   min-width: 0;
-  gap: var(--spacing-4, 1rem);
+  gap: var(--page-header-gap, var(--spacing-4, 1rem));
   container-type: inline-size;
   container-name: page-header;
-  color: var(--text-primary, #111827);
+  color: var(--page-header-text-color, var(--text-primary, #111827));
 }
 
 /* Size variants control vertical rhythm */
@@ -88,11 +90,11 @@
 
 /* Eyebrow: small uppercase label above the title */
 .eyebrow {
-  font-size: var(--font-size-xs, 0.75rem);
-  font-weight: var(--font-weight-semibold, 600);
-  letter-spacing: var(--letter-spacing-wide, 0.05em);
-  text-transform: uppercase;
-  color: var(--text-tertiary, #6b7280);
+  font-size: var(--page-header-eyebrow-font-size, var(--font-size-xs, 0.75rem));
+  font-weight: var(--page-header-eyebrow-font-weight, var(--font-weight-semibold, 600));
+  letter-spacing: var(--page-header-eyebrow-letter-spacing, var(--letter-spacing-wide, 0.05em));
+  text-transform: var(--page-header-eyebrow-text-transform, uppercase);
+  color: var(--page-header-eyebrow-color, var(--text-tertiary, #6b7280));
   line-height: var(--line-height-tight, 1.25);
 }
 
@@ -100,11 +102,11 @@
 .title {
   margin: 0;
   font-family: var(--font-family-heading, inherit);
-  font-size: var(--font-size-2xl, 1.5rem);
-  font-weight: var(--font-weight-semibold, 600);
+  font-size: var(--page-header-title-font-size, var(--font-size-2xl, 1.5rem));
+  font-weight: var(--page-header-title-font-weight, var(--font-weight-semibold, 600));
   line-height: var(--page-header-title-leading, var(--line-height-tight, 1.2));
-  color: var(--text-primary, #111827);
-  letter-spacing: var(--letter-spacing-tight, -0.01em);
+  color: var(--page-header-title-color, var(--text-primary, #111827));
+  letter-spacing: var(--page-header-title-letter-spacing, var(--letter-spacing-tight, -0.01em));
 }
 
 .sizeSm .title {
@@ -126,17 +128,19 @@
 }
 
 /* `data-title-family="display"` switches to the display family with a
-   graceful fallback to the heading family when no display font is themed. */
+   graceful fallback to the heading family when no display font is themed.
+   VI-625: `--admin-ui-marquee-family` sits in the chain so the admin-ui
+   pattern's marquee role drives the hero title when a theme binds it. */
 .title[data-title-family="display"] {
-  font-family: var(--page-header-title-family, var(--font-display, var(--font-family-heading, inherit)));
+  font-family: var(--page-header-title-family, var(--admin-ui-marquee-family, var(--font-display, var(--font-family-heading, inherit))));
 }
 
 /* Description */
 .description {
   margin: 0;
-  font-size: var(--font-size-sm, 0.875rem);
+  font-size: var(--page-header-description-font-size, var(--font-size-sm, 0.875rem));
   line-height: var(--line-height-relaxed, 1.6);
-  color: var(--text-secondary, #6b7280);
+  color: var(--page-header-description-color, var(--text-secondary, #6b7280));
   max-width: 65ch;
 }
 
@@ -148,7 +152,7 @@
 .actions {
   display: flex;
   align-items: center;
-  gap: var(--spacing-2, 0.5rem);
+  gap: var(--page-header-actions-gap, var(--spacing-2, 0.5rem));
   flex: 0 0 auto;
   flex-wrap: wrap;
   justify-content: flex-end;

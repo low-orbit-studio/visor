@@ -7,9 +7,9 @@
   text-align: center;
   width: 100%;
   min-width: 0;
-  gap: var(--spacing-2, 0.5rem);
-  color: var(--text-secondary, #6b7280);
-  border-radius: var(--radius-lg, 0.75rem);
+  gap: var(--empty-state-gap, var(--spacing-2, 0.5rem));
+  color: var(--empty-state-text-color, var(--text-secondary, #6b7280));
+  border-radius: var(--empty-state-radius, var(--radius-lg, 0.75rem));
   container-type: inline-size;
   container-name: empty-state;
 }
@@ -21,8 +21,8 @@
 }
 
 .sizeMd {
-  padding: var(--spacing-8, 2rem) var(--spacing-5, 1.25rem);
-  gap: var(--spacing-2, 0.5rem);
+  padding: var(--empty-state-padding, var(--spacing-8, 2rem) var(--spacing-5, 1.25rem));
+  gap: var(--empty-state-gap, var(--spacing-2, 0.5rem));
 }
 
 .sizeLg {
@@ -32,8 +32,8 @@
 
 /* Tone: default — dashed border card on muted surface */
 .toneDefault {
-  background-color: var(--surface-muted, #f9fafb);
-  border: 1px dashed var(--border-default, #e5e7eb);
+  background-color: var(--empty-state-bg, var(--surface-muted, #f9fafb));
+  border: var(--empty-state-border, 1px dashed var(--border-default, #e5e7eb));
 }
 
 /* Tone: subtle — borderless, transparent */
@@ -57,12 +57,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-full, 9999px);
-  width: 72px;
-  height: 72px;
+  border-radius: var(--empty-state-icon-radius, var(--radius-full, 9999px));
+  width: var(--empty-state-icon-size, 72px);
+  height: var(--empty-state-icon-size, 72px);
   margin-bottom: var(--spacing-3, 0.75rem);
-  background-color: var(--surface-subtle, #f5f5f6);
-  color: var(--text-tertiary, #6b7280);
+  background-color: var(--empty-state-icon-bg, var(--surface-subtle, #f5f5f6));
+  color: var(--empty-state-icon-color, var(--text-tertiary, #6b7280));
 }
 
 .iconWrap svg {
@@ -118,10 +118,10 @@
 /* Heading — short direct statement */
 .heading {
   margin: 0;
-  font-family: var(--font-family-heading, inherit);
-  font-weight: var(--font-weight-semibold, 600);
+  font-family: var(--empty-state-heading-font-family, var(--font-family-heading, inherit));
+  font-weight: var(--empty-state-heading-font-weight, var(--font-weight-semibold, 600));
   line-height: var(--line-height-tight, 1.25);
-  color: var(--text-primary, #111827);
+  color: var(--empty-state-heading-color, var(--text-primary, #111827));
   letter-spacing: var(--letter-spacing-tight, -0.01em);
 }
 
@@ -130,7 +130,7 @@
 }
 
 .sizeMd .heading {
-  font-size: var(--font-size-base, 1rem);
+  font-size: var(--empty-state-heading-font-size, var(--font-size-base, 1rem));
 }
 
 .sizeLg .heading {
@@ -140,9 +140,9 @@
 /* Description — supporting guidance */
 .description {
   margin: 0;
-  font-size: var(--font-size-sm, 0.875rem);
+  font-size: var(--empty-state-description-font-size, var(--font-size-sm, 0.875rem));
   line-height: var(--line-height-relaxed, 1.6);
-  color: var(--text-secondary, #6b7280);
+  color: var(--empty-state-description-color, var(--text-secondary, #6b7280));
   max-width: 48ch;
 }
 
@@ -159,7 +159,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-2, 0.5rem);
+  gap: var(--empty-state-actions-gap, var(--spacing-2, 0.5rem));
   flex-wrap: wrap;
   margin-top: var(--spacing-3, 0.75rem);
 }
