@@ -14,9 +14,6 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-      # Required by npm Trusted Publishing (OIDC) so the job can mint a
-      # short-lived, job-scoped credential at publish time. See VI-630.
-      id-token: write
 
     steps:
       - name: Checkout
@@ -35,14 +32,6 @@ jobs:
           node-version: "22"
           cache: "npm"
           registry-url: "https://registry.npmjs.org"
-
-      - name: Upgrade npm for trusted publishing
-        # Trusted publishing requires npm CLI >= 11.5.1 and Node >= 22.14.0.
-        # setup-node's `node-version: 22` satisfies Node but ships npm 10.x,
-        # which cannot exchange the OIDC token. See VI-630 D3.
-        run: |
-          npm install -g npm@^11.5.1
-          npm --version
 
       - name: Install dependencies
         run: npm ci
@@ -88,20 +77,12 @@ jobs:
         run: node scripts/check-export-drift.mjs
 
       - name: Create Release Pull Request or Publish
-        # Pinned to an exact v2 tag (VI-630 D1): v1 does not support trusted
-        # publishing. v2 renamed every input this step passes — `publish` →
-        # `publish-script`, `title` → `pr-title`, `commit` → `commit-message`,
-        # and the GITHUB_TOKEN env var became the `github-token` input. Actions
-        # ignores unknown inputs with a warning rather than an error, so those
-        # renames are load-bearing: keeping the v1 names here would silently
-        # stop publishing and retitle the release PR. See VI-630 D2.
-        uses: changesets/action@v2.1.1
+        uses: changesets/action@v1
         with:
-          github-token: ${{ secrets.CHANGESETS_PAT }}
-          publish-script: npm run changeset:publish
-          pr-title: ${{ steps.release_title.outputs.title }}
-          commit-message: ${{ steps.release_title.outputs.title }}
-        # No NPM_TOKEN / NODE_AUTH_TOKEN: authentication is the OIDC token minted
-        # via `id-token: write` above. The NPM_TOKEN repo secret is deliberately
-        # left in place but unreferenced so reverting this commit fully restores
-        # the token path. See VI-630 D4.
+          publish: npm run changeset:publish
+          title: ${{ steps.release_title.outputs.title }}
+          commit: ${{ steps.release_title.outputs.title }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.CHANGESETS_PAT }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
