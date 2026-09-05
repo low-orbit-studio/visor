@@ -5,12 +5,14 @@
   gap: var(--spacing-1, 0.25rem);
   width: fit-content;
   flex-shrink: 0;
-  border-radius: var(--radius-full, 9999px);
-  border: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
-  background-color: var(--surface-card, #ffffff);
-  color: var(--text-primary, #111827);
-  font-family: var(--font-body, inherit);
-  font-weight: var(--font-weight-medium, 500);
+  border-radius: var(--chip-radius, var(--radius-full, 9999px));
+  border: var(--chip-border, var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb));
+  background-color: var(--chip-bg, var(--surface-card, #ffffff));
+  color: var(--chip-text-color, var(--text-primary, #111827));
+  font-family: var(--chip-font-family, var(--font-body, inherit));
+  font-weight: var(--chip-font-weight, var(--font-weight-medium, 500));
+  letter-spacing: var(--chip-letter-spacing, inherit);
+  text-transform: var(--chip-text-transform, inherit);
   white-space: nowrap;
   user-select: none;
   transition:
@@ -49,16 +51,16 @@
 
 /* Sizes */
 .sizeSm {
-  height: 1.5rem;
-  padding: 0 var(--spacing-2, 0.5rem);
-  font-size: var(--font-size-xs, 0.75rem);
+  height: var(--chip-sm-height, 1.5rem);
+  padding: 0 var(--chip-sm-padding-x, var(--spacing-2, 0.5rem));
+  font-size: var(--chip-sm-font-size, var(--font-size-xs, 0.75rem));
   gap: var(--spacing-1, 0.25rem);
 }
 
 .sizeMd {
-  height: 2rem;
-  padding: 0 var(--spacing-3, 0.75rem);
-  font-size: var(--font-size-sm, 0.875rem);
+  height: var(--chip-md-height, 2rem);
+  padding: 0 var(--chip-md-padding-x, var(--spacing-3, 0.75rem));
+  font-size: var(--chip-md-font-size, var(--font-size-sm, 0.875rem));
   gap: var(--spacing-1, 0.25rem);
 }
 
@@ -69,9 +71,9 @@
 }
 
 .sizeLg {
-  height: 2.5rem;
-  padding: 0 var(--spacing-4, 1rem);
-  font-size: var(--font-size-base, 1rem);
+  height: var(--chip-lg-height, 2.5rem);
+  padding: 0 var(--chip-lg-padding-x, var(--spacing-4, 1rem));
+  font-size: var(--chip-lg-font-size, var(--font-size-base, 1rem));
   gap: var(--spacing-2, 0.5rem);
 }
 
@@ -236,9 +238,9 @@ button.base,
 /* Selected state. Under data-density="editorial", switches to neutral-elevated
    treatment (surface-elev bg + transparent border + primary text). */
 .selected {
-  background-color: var(--surface-accent-subtle, #eff6ff);
-  border-color: var(--surface-accent-default, #3b82f6);
-  color: var(--text-link, #2563eb);
+  background-color: var(--chip-selected-bg, var(--surface-accent-subtle, #eff6ff));
+  border-color: var(--chip-selected-border-color, var(--surface-accent-default, #3b82f6));
+  color: var(--chip-selected-text-color, var(--text-link, #2563eb));
 }
 
 /* Editorial density: neutral-elevated selected treatment.

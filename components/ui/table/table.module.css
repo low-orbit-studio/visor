@@ -1,6 +1,11 @@
 /* Table container — radius/shadow are theme-driven so a consumer that wraps the
    table in its own rounded shell (for example with a bulk bar on top) can flatten them.
-   Under the editorial density axis these default to 0/none (flush admin shell). */
+   Under the editorial density axis these default to 0/none (flush admin shell).
+
+   VI-625: every declaration below reads a component-scoped `--table-*` hook with
+   its previous expression as the fallback, so a theme that binds nothing renders
+   identically and a theme that binds the `table` family retunes every admin list
+   page at once. Contract: the component-tokens module in packages/theme-engine/src */
 .container {
   position: relative;
   width: 100%;
@@ -22,11 +27,11 @@
 }
 
 :global([data-density="editorial"]) .head {
-  background-color: var(--dt-header-bg, var(--surface-card));
+  background-color: var(--table-head-bg, var(--dt-header-bg, var(--surface-card)));
 }
 
 :global([data-density="editorial"]) .cell {
-  background-color: var(--dt-row-bg, color-mix(in srgb, var(--surface-page) 75%, var(--surface-card) 25%));
+  background-color: var(--table-cell-bg, var(--dt-row-bg, color-mix(in srgb, var(--surface-page) 75%, var(--surface-card) 25%)));
 }
 
 /* Table */
@@ -34,8 +39,8 @@
   width: 100%;
   caption-side: bottom;
   border-collapse: collapse;
-  font-size: var(--font-size-sm, 0.875rem);
-  color: var(--text-primary, #111827);
+  font-size: var(--table-font-size, var(--font-size-sm, 0.875rem));
+  color: var(--table-text-color, var(--text-primary, #111827));
 }
 
 /* TableHeader */
@@ -51,7 +56,7 @@
 /* TableFooter */
 .footer {
   border-top: 1px solid var(--border-default, #e5e7eb);
-  background-color: var(--surface-muted, #f3f4f6);
+  background-color: var(--table-footer-bg, var(--surface-muted, #f3f4f6));
   font-weight: var(--font-weight-medium, 500);
 }
 
@@ -61,44 +66,53 @@
 
 /* TableRow */
 .row {
-  border-bottom: 1px solid var(--border-default, #e5e7eb);
+  border-bottom: var(--table-row-border, 1px solid var(--border-default, #e5e7eb));
   transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
 .row:not([data-slot="data-table-group-row"]):hover {
-  background-color: var(--surface-muted, #f3f4f6);
+  background-color: var(--table-row-hover-bg, var(--surface-muted, #f3f4f6));
 }
 
 .row[data-state="selected"] {
-  background-color: var(--surface-muted, #f3f4f6);
+  background-color: var(--table-row-selected-bg, var(--surface-muted, #f3f4f6));
 }
 
-/* TableHead — bg via --dt-header-bg (theme-driven; transparent default). */
+/* TableHead — bg via --table-head-bg → --dt-header-bg (theme-driven; transparent
+   default). The type hooks (family/size/letter-spacing/text-transform) fall back
+   to `inherit`, which is the initial computed value for each of those inherited
+   properties — so an unbound theme renders exactly as before they existed. */
 .head {
-  height: 3rem;
-  padding-left: var(--spacing-3, 0.75rem);
-  padding-right: var(--spacing-3, 0.75rem);
+  height: var(--table-head-height, 3rem);
+  padding-left: var(--table-head-padding-x, var(--spacing-3, 0.75rem));
+  padding-right: var(--table-head-padding-x, var(--spacing-3, 0.75rem));
   text-align: left;
   vertical-align: middle;
-  font-weight: var(--font-weight-medium, 500);
+  font-family: var(--table-head-font-family, inherit);
+  font-size: var(--table-head-font-size, inherit);
+  font-weight: var(--table-head-font-weight, var(--font-weight-medium, 500));
+  letter-spacing: var(--table-head-letter-spacing, inherit);
+  text-transform: var(--table-head-text-transform, inherit);
   white-space: nowrap;
-  color: var(--text-primary, #111827);
-  background-color: var(--dt-header-bg, transparent);
+  color: var(--table-head-color, var(--text-primary, #111827));
+  background-color: var(--table-head-bg, var(--dt-header-bg, transparent));
 }
 
-/* TableCell — bg via --dt-row-bg (theme-driven; transparent default). Painting
-   on the cell gives a uniform row surface regardless of tr selected/hover state. */
+/* TableCell — bg via --table-cell-bg → --dt-row-bg (theme-driven; transparent
+   default). Painting on the cell gives a uniform row surface regardless of tr
+   selected/hover state. */
 .cell {
-  padding: var(--spacing-3, 0.75rem);
+  padding: var(--table-cell-padding, var(--spacing-3, 0.75rem));
   vertical-align: middle;
-  color: var(--text-primary, #111827);
-  background-color: var(--dt-row-bg, transparent);
-  border-top: 1px solid var(--hairline, transparent);
+  font-size: var(--table-cell-font-size, inherit);
+  color: var(--table-cell-color, var(--text-primary, #111827));
+  background-color: var(--table-cell-bg, var(--dt-row-bg, transparent));
+  border-top: var(--table-cell-border-top, 1px solid var(--hairline, transparent));
 }
 
 /* TableCaption */
 .caption {
   margin-top: var(--spacing-4, 1rem);
   font-size: var(--font-size-sm, 0.875rem);
-  color: var(--text-secondary, #6b7280);
+  color: var(--table-caption-color, var(--text-secondary, #6b7280));
 }

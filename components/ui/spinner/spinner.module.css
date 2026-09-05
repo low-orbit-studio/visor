@@ -17,19 +17,21 @@
   }
 }
 
+/* VI-625: the hooks used to be *declared* on .root, which meant an element-level
+   declaration shadowed anything a theme emitted on :root — the "themes can
+   override the track and edge colors" promise in the header never actually
+   held. Reading them with the same expression as the inline fallback is
+   value-preserving and makes them genuinely theme-bindable. */
 .root {
-  --spinner-track-color: var(--border-default, #e5e7eb);
-  --spinner-edge-color: var(--text-tertiary, #6b7280);
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border-radius: var(--radius-full, 9999px);
+  border-radius: var(--spinner-radius, var(--radius-full, 9999px));
   border-style: solid;
-  border-color: var(--spinner-track-color);
-  border-top-color: var(--spinner-edge-color);
-  animation: spin var(--motion-duration-1500, 1500ms) var(--motion-easing-linear, linear) infinite;
+  border-color: var(--spinner-track-color, var(--border-default, #e5e7eb));
+  border-top-color: var(--spinner-edge-color, var(--text-tertiary, #6b7280));
+  animation: spin var(--spinner-duration, var(--motion-duration-1500, 1500ms)) var(--motion-easing-linear, linear) infinite;
   box-sizing: border-box;
 }
 
@@ -48,33 +50,33 @@
 
 /* Size xs — 12px ring, stroke-width-thin (1px) */
 .root.sizeXs {
-  width: 12px;
-  height: 12px;
-  border-width: var(--stroke-width-thin, 1px);
+  width: var(--spinner-xs-size, 12px);
+  height: var(--spinner-xs-size, 12px);
+  border-width: var(--spinner-xs-border-width, var(--stroke-width-thin, 1px));
 }
 
 /* Size sm — 16px ring, stroke-width-regular (1.5px) */
 .root.sizeSm {
-  width: 16px;
-  height: 16px;
-  border-width: var(--stroke-width-regular, 1.5px);
+  width: var(--spinner-sm-size, 16px);
+  height: var(--spinner-sm-size, 16px);
+  border-width: var(--spinner-sm-border-width, var(--stroke-width-regular, 1.5px));
 }
 
 /* Size md — 24px ring, stroke-width-medium (2px) */
 .root.sizeMd {
-  width: 24px;
-  height: 24px;
-  border-width: var(--stroke-width-medium, 2px);
+  width: var(--spinner-md-size, 24px);
+  height: var(--spinner-md-size, 24px);
+  border-width: var(--spinner-md-border-width, var(--stroke-width-medium, 2px));
 }
 
 /* Tone: default — tertiary text for leading edge */
 .root.toneDefault {
-  --spinner-edge-color: var(--text-tertiary, #6b7280);
+  border-top-color: var(--spinner-edge-color, var(--text-tertiary, #6b7280));
 }
 
 /* Tone: primary — primary brand color for leading edge */
 .root.tonePrimary {
-  --spinner-edge-color: var(--primary, #111827);
+  border-top-color: var(--spinner-primary-edge-color, var(--primary, #111827));
 }
 
 /* Respect reduced motion — stop rotation */

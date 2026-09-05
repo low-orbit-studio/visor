@@ -267,11 +267,19 @@ describe("editorial token hooks (CSS-only, additive, zero-regression)", () => {
     )
   })
 
-  it("TableHead background-color uses --dt-header-bg, defaulting to transparent", () => {
-    expect(css).toContain("background-color: var(--dt-header-bg, transparent);")
+  // VI-625 put a component-scoped --table-head-bg / --table-cell-bg in front of
+  // the shared --dt-* surface roles. The dt role stays the default, so an
+  // unbound theme resolves to the same `transparent` it always did — the fill
+  // just gained a per-component dial above the shared one.
+  it("TableHead background-color layers --table-head-bg over --dt-header-bg, defaulting to transparent", () => {
+    expect(css).toContain(
+      "background-color: var(--table-head-bg, var(--dt-header-bg, transparent));"
+    )
   })
 
-  it("TableCell background-color uses --dt-row-bg, defaulting to transparent", () => {
-    expect(css).toContain("background-color: var(--dt-row-bg, transparent);")
+  it("TableCell background-color layers --table-cell-bg over --dt-row-bg, defaulting to transparent", () => {
+    expect(css).toContain(
+      "background-color: var(--table-cell-bg, var(--dt-row-bg, transparent));"
+    )
   })
 })

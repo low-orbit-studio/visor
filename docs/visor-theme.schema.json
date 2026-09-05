@@ -451,6 +451,125 @@
         }
       }
     },
+    "components": {
+      "type": "object",
+      "description": "Component-scoped theme bindings for the admin-UI families (VI-625). Keyed by family, then by token key; the value is a string (both modes) or { light, dark }. Every token falls back to its Tier-1 expression, so omitting this block renders exactly as before. Key names are validated against the contract in component-tokens.ts.",
+      "additionalProperties": false,
+      "properties": {
+        "table": {
+          "type": "object",
+          "description": "Table head, row and cell treatment. The retro measured the same header cell rendered four ways across one admin app; binding this family pins it once. Keys: font-size, text-color, head-height, head-padding-x, head-font-family, head-font-size, head-font-weight, head-letter-spacing, head-text-transform, head-color, head-bg, row-border, row-hover-bg, row-selected-bg, cell-padding, cell-font-size, cell-color, cell-bg, cell-border-top, footer-bg, caption-color.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "data-table": {
+          "type": "object",
+          "description": "The admin-ui Tier-2 data-table surface stack (D3). Shared between the Table primitive and the DataTable shell so a list page and its table read as one surface. Keys: header-bg, row-bg, container-radius, container-shadow, row-py, cell-px, header-font-size.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "chip": {
+          "type": "object",
+          "description": "Chip / filter-pill treatment. The retro found the same mono status chip at 8.5 / 9 / 9.5 / 10 / 11px with tracking .03–.14em across nine implementations; this family is the single dial. Keys: radius, border, bg, text-color, font-family, font-weight, letter-spacing, text-transform, sm-height, sm-padding-x, sm-font-size, md-height, md-padding-x, md-font-size, lg-height, lg-padding-x, lg-font-size, selected-bg, selected-border-color, selected-text-color.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "badge": {
+          "type": "object",
+          "description": "Badge treatment — the D3 Tier-2 `--badge-text-transform` / `-letter-spacing` / `-font-size` / `-font-weight` set, promoted from the admin-ui audit to a bindable contract. Keys: radius, border, font-family, font-weight, text-transform, letter-spacing, font-size, md-padding, md-gap.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "status-badge": {
+          "type": "object",
+          "description": "Status-badge indicator dot and the mono readout label. Chrome is inherited from the Badge family. Keys: dot-size, dot-radius, mono-font-family, mono-font-size, mono-letter-spacing.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "filter-bar": {
+          "type": "object",
+          "description": "The operator's named case: \"the filter bar above the table in many admin pages was pretty different from one to the next; that should be streamlined.\" Keys: bg, border, radius, padding, gap, text-color, dense-padding, dense-gap, control-radius, results-font-size, results-color.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "page-header": {
+          "type": "object",
+          "description": "Page-header lockup. The retro found the page title rendered five ways across one app. Keys: gap, text-color, leading-gap, eyebrow-font-size, eyebrow-font-weight, eyebrow-letter-spacing, eyebrow-text-transform, eyebrow-color, title-family, title-size, title-leading, title-font-size, title-font-weight, title-letter-spacing, title-color, description-font-size, description-color, actions-gap.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "empty-state": {
+          "type": "object",
+          "description": "Empty-state placard — surface, icon chip and copy scale. Keys: radius, text-color, gap, padding, bg, border, icon-size, icon-radius, icon-bg, icon-color, heading-font-family, heading-font-size, heading-font-weight, heading-color, description-font-size, description-color, actions-gap.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "banner": {
+          "type": "object",
+          "description": "Full-width notice bar. The retro found six separate banner systems across ~180 instances in one app; binding this family collapses them to one. Keys: padding, gap, font-size, radius, border-width, shadow, title-font-weight, description-font-size, info-bg, info-text-color, info-border-color, warning-bg, warning-text-color, warning-border-color, error-bg, error-text-color, error-border-color, success-bg, success-text-color, success-border-color.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "sidebar": {
+          "type": "object",
+          "description": "Sidebar chrome and nav-item treatment. The palette roles (`bg`, `text`, `border`, `accent-*`) already ship defaults from visor-core's `visor-semantic` layer and are read bare; the structural roles below are new in VI-625. Keys: bg, text, text-muted, border, accent-bg, accent-text, header-padding, footer-padding, content-padding, menu-gap, group-label-height, group-label-font-size, group-label-font-weight, group-label-letter-spacing, group-label-text-transform, item-radius, item-gap, item-font-size, item-font-weight, item-letter-spacing, item-text-transform, item-height, item-padding, item-active-font-weight.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "tabs": {
+          "type": "object",
+          "description": "Tab rail and trigger treatment, for both the segmented (`default`) and underlined (`line`) variants. Keys: list-radius, list-height, list-padding, list-color, list-bg, line-border-bottom, trigger-radius, trigger-padding, trigger-font-size, trigger-font-weight, trigger-letter-spacing, trigger-text-transform, trigger-color, trigger-active-bg, trigger-active-color, trigger-active-shadow, indicator-height, indicator-color.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "skeleton": {
+          "type": "object",
+          "description": "Loading-placeholder shimmer and the content-shape geometry the admin list/table/detail skeletons use. Keys: from, to, radius, duration, logo-width, logo-height, pill-width, pill-height, line-h1-height, line-heading-height, line-body-height, avatar-size, avatar-lg-size, badge-width, badge-height, row-gap, row-padding, row-border-bottom.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "spinner": {
+          "type": "object",
+          "description": "Inline loading ring — track, leading edge, per-size geometry and cycle length. Keys: track-color, edge-color, primary-edge-color, radius, duration, xs-size, xs-border-width, sm-size, sm-border-width, md-size, md-border-width.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "checkbox": {
+          "type": "object",
+          "description": "Control sizing — the D3 Tier-2 `--checkbox-size` / `-radius` / `-bg` / `-border` set, promoted from the admin-ui audit to a bindable contract. Keys: size, radius, bg, border, bg-checked, border-checked.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "surface": {
+          "type": "object",
+          "description": "The D3 Tier-2 surface-scale extremes. `elev` is the elevated control tier the chip family already reads; `screen` is the deepest chrome tier consumed by admin pattern shells (`design-prototypes/admin-ui/tokens.css`) rather than by a Visor component. Keys: elev, screen.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "admin-ui": {
+          "type": "object",
+          "description": "Structural roles the admin-ui pattern owns. `marquee-family` is the display face for KPI hero figures and marquee page titles — the role the admin-ui portability audit named as the one piece of ENTR brand coupling a new theme must rebind. Keys: marquee-family.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        }
+      }
+    },
     "migrate": {
       "type": "object",
       "description": "Migration metadata consumed by `visor migrate` commands. Does not affect CSS generation or theme application.",
@@ -465,6 +584,20 @@
     }
   },
   "$defs": {
+    "componentTokenBinding": {
+      "description": "A component-token binding: one string for both modes, or per-mode values.",
+      "oneOf": [
+        { "type": "string" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "light": { "type": "string" },
+            "dark": { "type": "string" }
+          }
+        }
+      ]
+    },
     "cssColor": {
       "type": "string",
       "description": "CSS color value. Accepts hex (#RGB, #RRGGBB, #RRGGBBAA), rgb()/rgba(), hsl()/hsla(), or oklch() formats.",

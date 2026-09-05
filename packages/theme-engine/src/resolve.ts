@@ -268,6 +268,9 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
         : {}),
     },
     overrides: config.overrides,
+    // VI-625: component bindings pass through untouched — the contract in
+    // component-tokens.ts owns their shape, there is nothing to default.
+    components: config.components,
     originalColors,
     colorFormats,
   };

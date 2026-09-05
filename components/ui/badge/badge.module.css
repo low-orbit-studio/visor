@@ -8,14 +8,17 @@
   width: fit-content;
   flex-shrink: 0;
   overflow: hidden;
-  border-radius: var(--radius-full, 9999px);
-  border: 1px solid transparent;
+  border-radius: var(--badge-radius, var(--radius-full, 9999px));
+  border: var(--badge-border, 1px solid transparent);
   line-height: 1;
   /* Typography defaults. Under data-density="editorial" on any ancestor,
-     the density rules below override to uppercase/heavier/tracked. */
-  font-weight: var(--font-weight-medium, 500);
-  text-transform: none;
-  letter-spacing: normal;
+     the density rules below override to uppercase/heavier/tracked.
+     VI-625: the D3 Tier-2 badge treatment (--badge-text-transform /
+     -letter-spacing / -font-size / -font-weight) is bound here. */
+  font-family: var(--badge-font-family, inherit);
+  font-weight: var(--badge-font-weight, var(--font-weight-medium, 500));
+  text-transform: var(--badge-text-transform, none);
+  letter-spacing: var(--badge-letter-spacing, normal);
   white-space: nowrap;
   transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
@@ -60,15 +63,17 @@
 }
 
 /* md — matches canonical rendering (1.25rem total height). Under
-   data-density="editorial", font-size steps down to 11px. */
+   data-density="editorial", font-size steps down to 11px. A theme binding
+   --badge-font-size retunes BOTH steps, which is the point: the badge type
+   size becomes one dial instead of two. */
 .sizeMd {
-  gap: var(--spacing-1, 0.25rem);
-  padding: calc(var(--spacing-1, 0.25rem) / 2) var(--spacing-2, 0.5rem);
-  font-size: var(--font-size-xs, 0.75rem);
+  gap: var(--badge-md-gap, var(--spacing-1, 0.25rem));
+  padding: var(--badge-md-padding, calc(var(--spacing-1, 0.25rem) / 2) var(--spacing-2, 0.5rem));
+  font-size: var(--badge-font-size, var(--font-size-xs, 0.75rem));
 }
 
 :global([data-density="editorial"]) .sizeMd {
-  font-size: 11px;
+  font-size: var(--badge-font-size, 11px);
 }
 
 .sizeLg {

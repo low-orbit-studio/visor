@@ -595,6 +595,58 @@ A theme **may** override these tokens. They have sensible defaults from visor-co
 | `--sidebar-ring` | primary-500 / primary-400 |
 | `--sidebar-text-muted` | neutral-500 / neutral-400 (Visor extension) |
 
+### Component Tokens (VI-625)
+
+Beyond the Tier-1 contract above, each admin-UI family exposes **component-scoped**
+custom properties a theme may bind under a `components:` block in its
+`.visor.yaml`. They exist because a Tier-1-complete theme still leaves every page
+free to invent its own table-header treatment, chip tracking or filter-bar
+padding — the substrate drift a fidelity retro measured across 247 element
+categories in one shipped admin app.
+
+```yaml
+components:
+  table:
+    head-text-transform: uppercase
+    head-letter-spacing: "0.06em"
+    head-bg:
+      light: "#f7f7f8"
+      dark: "#141418"
+  chip:
+    md-font-size: "11px"
+    letter-spacing: "0.04em"
+```
+
+Rules for this surface:
+
+1. **Every component token falls back to its Tier-1 expression.** A component
+   reads `var(--table-head-height, 3rem)` where `3rem` is byte-for-byte what
+   shipped before the token existed. A theme binding nothing is pixel-identical
+   to a pre-contract theme, and the engine emits no component CSS at all.
+2. **Never add a *default*.** Shipping a bound value in a stock theme moves
+   pixels for every project on that theme. Stock themes bind nothing, and a test
+   asserts it.
+3. **Names are `--<family>-<key>`, registered in one place** —
+   `packages/theme-engine/src/component-tokens.ts`. That module is the single
+   registration point: the schema validator, both CSS emitters, the docs page and
+   the fallback-parity test all read it. An unknown family or key in a
+   `.visor.yaml` is an **error**, because a typo'd component token is otherwise
+   silently inert.
+4. **Bound tokens emit into `visor-adaptive`**, per mode, on the same selectors
+   as the Tier-1 adaptive set. Single-mode brands collapse onto the host selector.
+5. **The surface-scale extremes stay Tier-1.** `--surface-screen` and
+   `--surface-elev` are already emitted as adaptive surfaces; bind them through
+   `overrides:`, not `components:`, so one role never has two homes.
+
+Prove a change with `npm run parity:component-tokens` — it renders every touched
+module in Chromium against `origin/main` and fails on any computed-style delta in
+the unbound configuration, then shows the fully-bound configuration moving every
+probed surface.
+
+Full family-by-family table: [`packages/docs/content/docs/themes/component-tokens.mdx`](../packages/docs/content/docs/themes/component-tokens.mdx).
+
+---
+
 ### Extension Tokens (Namespaced)
 
 Theme-specific tokens use a `--{theme-name}-*` prefix. These are NOT part of the contract and components must never depend on them directly. They are consumed only by theme-specific CSS in section 5 (creative extensions).

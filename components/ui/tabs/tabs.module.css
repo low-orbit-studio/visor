@@ -10,15 +10,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-full, 9999px);
-  padding: calc(var(--spacing-1, 0.25rem) * 0.75);
-  color: var(--text-secondary, #6b7280);
-  height: 2.25rem;
+  border-radius: var(--tabs-list-radius, var(--radius-full, 9999px));
+  padding: var(--tabs-list-padding, calc(var(--spacing-1, 0.25rem) * 0.75));
+  color: var(--tabs-list-color, var(--text-secondary, #6b7280));
+  height: var(--tabs-list-height, 2.25rem);
   width: fit-content;
 }
 
 .listVariantDefault {
-  background-color: var(--surface-muted, #f3f4f6);
+  background-color: var(--tabs-list-bg, var(--surface-muted, #f3f4f6));
 }
 
 .listVariantLine {
@@ -26,7 +26,7 @@
   gap: var(--spacing-2, 0.5rem);
   background-color: transparent;
   border-radius: 0;
-  border-bottom: 1px solid var(--hairline, var(--border-default, #e5e7eb));
+  border-bottom: var(--tabs-line-border-bottom, 1px solid var(--hairline, var(--border-default, #e5e7eb)));
   height: auto;
   padding-bottom: 0;
   width: 100%;
@@ -47,13 +47,15 @@
   align-items: center;
   justify-content: center;
   gap: calc(var(--spacing-1, 0.25rem) * 1.5);
-  border-radius: var(--radius-md, 0.375rem);
+  border-radius: var(--tabs-trigger-radius, var(--radius-md, 0.375rem));
   border: 1px solid transparent;
-  padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
-  font-size: var(--font-size-sm, 0.875rem);
-  font-weight: var(--font-weight-medium, 500);
+  padding: var(--tabs-trigger-padding, var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem));
+  font-size: var(--tabs-trigger-font-size, var(--font-size-sm, 0.875rem));
+  font-weight: var(--tabs-trigger-font-weight, var(--font-weight-medium, 500));
+  letter-spacing: var(--tabs-trigger-letter-spacing, inherit);
+  text-transform: var(--tabs-trigger-text-transform, inherit);
   white-space: nowrap;
-  color: var(--text-secondary, #6b7280);
+  color: var(--tabs-trigger-color, var(--text-secondary, #6b7280));
   background: transparent;
   cursor: pointer;
   transition: color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), transform var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
@@ -84,9 +86,9 @@
 }
 
 .trigger[data-state="active"] {
-  background-color: var(--surface-page, #ffffff);
-  color: var(--text-primary, #111827);
-  box-shadow: var(--shadow-sm);
+  background-color: var(--tabs-trigger-active-bg, var(--surface-page, #ffffff));
+  color: var(--tabs-trigger-active-color, var(--text-primary, #111827));
+  box-shadow: var(--tabs-trigger-active-shadow, var(--shadow-sm));
 }
 
 /* Trigger label — wraps children to allow count pill alongside */
@@ -151,9 +153,9 @@
 .indicator {
   position: absolute;
   bottom: -1px;
-  height: 2px;
+  height: var(--tabs-indicator-height, 2px);
   /* Default: text-primary */
-  background-color: var(--text-primary, #111827);
+  background-color: var(--tabs-indicator-color, var(--text-primary, #111827));
   border-radius: var(--radius-full, 9999px);
   transition: left var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease-in-out),
               width var(--motion-duration-normal, 200ms) var(--motion-easing-default, ease-in-out);

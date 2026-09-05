@@ -7,6 +7,7 @@
 import type { FontSource } from "./fonts/types.js";
 import type { VisorBrand } from "./brand/types.js";
 import type { BrandStrategy } from "./brand-strategy/types.js";
+import type { ComponentTokenBindings } from "./component-tokens.js";
 
 // ============================================================
 // Shade Generation Types
@@ -291,6 +292,16 @@ export interface VisorThemeConfig {
     dark?: Record<string, string>;
   };
   /**
+   * VI-625: component-scoped theme bindings for the admin-UI families.
+   *
+   * Keyed by family (`table`, `chip`, `filter-bar`, …) then by token key; the
+   * value is a string (both modes) or `{ light, dark }`. Every key is declared
+   * in `component-tokens.ts`, and every consuming component falls back to its
+   * Tier-1 expression, so a theme that omits this block renders exactly as it
+   * did before the contract existed.
+   */
+  components?: ComponentTokenBindings;
+  /**
    * Migration metadata — optional, additive, consumed by `visor migrate` commands.
    * Does not affect CSS generation or theme application.
    */
@@ -398,6 +409,8 @@ export interface ResolvedThemeConfig {
     light?: Record<string, string>;
     dark?: Record<string, string>;
   };
+  /** VI-625: component-scoped theme bindings, carried through unchanged. */
+  components?: ComponentTokenBindings;
   /** Original color strings from user input, for round-trip export. */
   originalColors?: Record<string, string>;
   /** Color format of each user-provided color, keyed by field name. */

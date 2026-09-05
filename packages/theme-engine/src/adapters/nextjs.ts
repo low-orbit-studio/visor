@@ -25,6 +25,8 @@ import {
 } from "../generate-css.js";
 import { collectBrandPassthrough } from "../overrides.js";
 import { generateBrandPassthroughCss } from "./brand-passthrough.js";
+import { generateComponentTokensCss } from "./component-tokens-css.js";
+import { resolveComponentBindings } from "../component-tokens.js";
 import { LAYER_ORDER, wrapInLayer } from "./layers.js";
 import type { AdapterInput, NextJSAdapterOptions } from "./types.js";
 
@@ -302,6 +304,22 @@ export function nextjsAdapter(
   lines.push(
     wrapInLayer("visor-adaptive", adaptiveBody),
   );
+
+  // 4b. Component tokens (VI-625) — the theme's `components:` bindings for the
+  // admin-UI families. Appended to the same `visor-adaptive` layer: they are
+  // mode-aware like the Tier-1 set, and nothing else declares these property
+  // names, so a dedicated layer would buy no resolution power. Emits nothing
+  // when the theme binds nothing, which is what keeps an unbound theme
+  // byte-identical to a pre-VI-625 one.
+  const componentTokensCss = generateComponentTokensCss(
+    resolveComponentBindings(input.config.components),
+    { light: hostSelector, dark: darkSelectors.join(",\n"), prefers: prefersSelector },
+    colorScheme,
+  );
+  if (componentTokensCss) {
+    lines.push("");
+    lines.push(wrapInLayer("visor-adaptive", componentTokensCss));
+  }
 
   // 5. FOWT usage comment
   if (includeFowt) {

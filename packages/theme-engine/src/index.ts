@@ -30,6 +30,25 @@ export { exportTheme } from "./export.js";
 // Schema & validation
 export { visorThemeSchema, validateConfig, isVisorThemeConfig } from "./schema.js";
 
+// Component-scoped theme-bindable token contract (VI-625)
+export {
+  COMPONENT_TOKEN_FAMILIES,
+  COMPONENT_TOKEN_FAMILY_BY_NAME,
+  componentTokenName,
+  allComponentTokenNames,
+  resolveComponentBindings,
+  hasComponentBindings,
+  validateComponentBindings,
+} from "./component-tokens.js";
+export type {
+  ComponentTokenBinding,
+  ComponentTokenBindings,
+  ComponentTokenConsumer,
+  ComponentTokenFamily,
+  ComponentTokenSpec,
+  ResolvedComponentTokens,
+} from "./component-tokens.js";
+
 // Comprehensive theme validation
 export { validate } from "./validate.js";
 export type {

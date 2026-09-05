@@ -312,6 +312,45 @@ Override any token after your `@import` statement — no forking required:
 }
 ```
 
+### Component Tokens — binding the admin-UI families
+
+Semantic tokens make an admin UI *functional*. They do not, on their own, make it
+look like **one thing**: nothing stops a page inventing its own table-header
+treatment, its own chip tracking, its own filter-bar padding. A fidelity retro on
+a shipped admin app found the page title rendered five ways, the table header cell
+four ways, and the same status chip at five different sizes across nine
+implementations — all of it substrate drift, not a component bug.
+
+So each admin-UI family also exposes **component-scoped** custom properties a
+theme binds once, in its `.visor.yaml`:
+
+```yaml
+components:
+  table:
+    head-font-family: '"IBM Plex Mono", ui-monospace, monospace'
+    head-font-size: "11px"
+    head-text-transform: uppercase
+    head-letter-spacing: "0.08em"
+    head-bg:
+      light: "#eceef1"
+      dark: "#16161b"
+  chip:
+    radius: "4px"
+    md-font-size: "11px"
+    letter-spacing: "0.06em"
+    text-transform: uppercase
+```
+
+Bind nothing and nothing changes — every token is read as
+`var(--token, <the Tier-1 expression that shipped before it>)`, and the engine
+emits no extra CSS at all. Bind one and every consuming surface follows.
+
+Families: `table` · `data-table` · `chip` · `badge` · `status-badge` ·
+`filter-bar` · `page-header` · `empty-state` · `banner` · `sidebar` · `tabs` ·
+`skeleton` · `spinner` · `checkbox` · `admin-ui`. The full token list, with each
+one's fallback, is in [Component Tokens](https://visor.design/docs/themes/component-tokens)
+and in [`docs/token-rules.md`](./docs/token-rules.md).
+
 ### Creating a Custom Theme
 
 ```css
