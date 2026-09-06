@@ -559,6 +559,7 @@ npx @loworbitstudio/visor theme sync                        # Re-generate CSS fo
 npx @loworbitstudio/visor check design <path>               # Scan for Borealis design anti-patterns
 npx @loworbitstudio/visor check design <path> --taxonomy <taxonomy.json>  # + assert kit membership
 npx @loworbitstudio/visor check design <path> --composition # Require the kit assertion (fail closed)
+npx @loworbitstudio/visor check design <path> --no-fail     # Advisory mode: report everything, always exit 0
 npx @loworbitstudio/visor check diff <path>                 # Native HTML that has a Visor equivalent
 
 # Fonts

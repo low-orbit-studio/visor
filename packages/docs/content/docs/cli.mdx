@@ -335,6 +335,21 @@ npx @loworbitstudio/visor check design ./src --composition
 | `--taxonomy <path>` | Path to the kit's `taxonomy.json` — the definition kit membership is asserted against |
 | `--composition` | Require the kit-membership assertion: fail closed when no `taxonomy.json` resolves |
 
+#### Advisory mode (`--no-fail`)
+
+`--no-fail` reports every finding and exits `0` anyway — the intended first step of a rollout, so a
+project can read the lint's real output before it is allowed to block a PR.
+
+```bash
+# Report only — never blocks the build
+npx @loworbitstudio/visor check design ./src --taxonomy ./design/taxonomy.json --no-fail
+```
+
+It suppresses the **exit code only**. Findings, the composition-scope statement and the
+kit-membership line all still print, and `--json` still emits the full payload. It also covers the
+fail-closed `kit-taxonomy-missing` error, so a pilot can adopt `--composition` advisory-first. Drop
+the flag when the project is ready for the lint to gate.
+
 #### What a green means — and what it does not
 
 `check design` and `check diff` are a **composition lint**. Green asserts one thing:
