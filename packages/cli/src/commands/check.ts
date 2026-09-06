@@ -181,7 +181,10 @@ async function checkDiffCommand(
 interface DesignCheckCommandOptions {
   format?: "json" | "human"
   errorsOnly?: boolean
-  noFail?: boolean
+  // Commander maps `--no-fail` to `fail: false` (negatable boolean, default
+  // true). It never sets a `noFail` key — reading one silently pins advisory
+  // mode off and the exit-1 fires anyway. Always test `options.fail !== false`.
+  fail?: boolean
   json?: boolean
   taxonomy?: string
   composition?: boolean
@@ -208,11 +211,15 @@ function checkDesignCommand(
   // Determine output format: --json or --format json → JSON; otherwise human
   const useJson = options.json || options.format === "json"
 
+  // `--no-fail` is advisory mode: findings still print, only the exit code is
+  // suppressed. See DesignCheckCommandOptions for the Commander mapping.
+  const shouldFail = options.fail !== false
+
   if (useJson) {
     // A full-project scan emits megabytes of findings; `process.exit()` would
     // truncate them mid-string on a pipe. Set the exit code and return instead.
     console.log(JSON.stringify({ success: true, ...result }, null, 2))
-    if (!options.noFail && result.summary.errorCount > 0) process.exitCode = 1
+    if (shouldFail && result.summary.errorCount > 0) process.exitCode = 1
     return
   }
 
@@ -273,7 +280,7 @@ function checkDesignCommand(
   printKitMembership()
   logger.blank()
 
-  if (!options.noFail && summary.errorCount > 0) process.exit(1)
+  if (shouldFail && summary.errorCount > 0) process.exit(1)
 }
 
 interface ThemeModeCommandOptions {
