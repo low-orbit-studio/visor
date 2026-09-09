@@ -97,6 +97,15 @@ const PhoneInput = React.forwardRef<IntlTelInputRef, PhoneInputProps>(
       getInput: () => itiRef.current?.getInput() ?? null,
     }))
 
+    // `emit` must be identity-stable. The wrapper derives its internal `update`
+    // from the onChange* props and keys its value-writeback effect on
+    // `[value, update]`; a new `emit` each render re-runs that effect, and while
+    // the field is unfocused and holding a partial (so the controlled value is
+    // null) it calls setNumber("") and erases what the user typed. Reading the
+    // consumer's callback from a ref keeps the effect keyed on `value` alone.
+    const onChangeRef = React.useRef(onChange)
+    onChangeRef.current = onChange
+
     // The library's own `onChangeNumber` emits `getNumber()` verbatim, which for a
     // partial is a `+<dial code>` prefix glued to the formatted national string
     // (typing "21337" yields "+1213-37"). Derive the value at emit time instead so
@@ -108,8 +117,8 @@ const PhoneInput = React.forwardRef<IntlTelInputRef, PhoneInputProps>(
       const last = lastEmitted.current
       if (last && last.e164 === e164 && last.isValid === isValid) return
       lastEmitted.current = { e164, isValid }
-      onChange?.(e164, isValid)
-    }, [onChange])
+      onChangeRef.current?.(e164, isValid)
+    }, [])
 
     const handleBlur = React.useCallback(() => {
       const iti = itiRef.current?.getInstance()

@@ -20,6 +20,8 @@ The component hand-rolled its own `intl-tel-input` init against v26 — a custom
 
 Each binding falls back to the vendor default, so a theme missing one of these tokens renders exactly as the unstyled library does. v29 sets no colour on the country list and none at all on the search field (an `<input>`, which takes UA `Field`/`FieldText` colours rather than inheriting), so those are pinned explicitly — without it a dark theme rendered a white search box inside a dark panel.
 
+**Controlled usage keeps the user's partial.** Because a partial emits `null`, a controlled parent holds `value={null}` while the user is mid-number. The wrapper writes `value` back to the input whenever its internal update callback changes identity, and it only guards that write behind "is the input focused" — so with an inline `onChange` (a new identity every render) a blur plus any unrelated re-render called `setNumber("")` and erased what the user had typed. The emit callback is identity-stable, which keeps that effect keyed on `value` alone. Covered by a regression test that drives a real controlled parent.
+
 **Other changes:**
 
 - `initialCountry` defaults to `"us"` with `initialCountryLookup: null` — the old code fetched `https://ipapi.co/country/` on every mount, which ad-blockers kill, and whose failure path left the flag unset.

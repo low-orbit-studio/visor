@@ -149,6 +149,59 @@ describe("PhoneInput onChange contract", () => {
   })
 })
 
+describe("PhoneInput controlled usage", () => {
+  // A realistic controlled consumer: holds the emitted value (null while the
+  // number is partial) and passes an inline onChange, so the callback identity
+  // changes on every render.
+  function Controlled() {
+    const [phone, setPhone] = React.useState<string | null>(null)
+    const [tick, setTick] = React.useState(0)
+    return (
+      <div>
+        <PhoneInput name="phone" value={phone} onChange={(e164) => setPhone(e164)} />
+        <button data-testid="rerender" onClick={() => setTick((t) => t + 1)}>
+          {tick}
+        </button>
+      </div>
+    )
+  }
+
+  it("keeps the user's partial across blur and an unrelated re-render", async () => {
+    render(<Controlled />)
+    const input = screen.getByRole("textbox") as HTMLInputElement
+    await new Promise((r) => setTimeout(r, 200))
+
+    type(input, "21337")
+    await waitFor(() => expect(input.value).toBe("213-37"))
+
+    // The emitted value is null for a partial, so the controlled `value` is null.
+    // The wrapper writes `value` back to the input whenever its internal update
+    // callback changes identity — which, before emit was stabilised, erased the
+    // partial the moment the field lost focus and anything re-rendered.
+    fireEvent.blur(input)
+    await new Promise((r) => setTimeout(r, 50))
+    expect(input.value).toBe("213-37")
+
+    fireEvent.click(screen.getByTestId("rerender"))
+    await new Promise((r) => setTimeout(r, 100))
+    expect(input.value).toBe("213-37")
+  })
+
+  it("round-trips a complete number back through a controlled parent", async () => {
+    render(<Controlled />)
+    const input = screen.getByRole("textbox") as HTMLInputElement
+    await new Promise((r) => setTimeout(r, 200))
+
+    type(input, "2133734253")
+    await waitFor(() => expect(input.value).toBe("213-373-4253"))
+
+    fireEvent.blur(input)
+    fireEvent.click(screen.getByTestId("rerender"))
+    await new Promise((r) => setTimeout(r, 100))
+    expect(input.value).toBe("213-373-4253")
+  })
+})
+
 describe("PhoneInput value round-trip", () => {
   it("displays a formatted national number with the US flag and +1 dial code", async () => {
     const { input } = await setup({ name: "phone", value: "+12133734253" })
