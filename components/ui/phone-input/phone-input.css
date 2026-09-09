@@ -94,6 +94,18 @@
   box-shadow: var(--shadow-md) !important;
 }
 
+/* With countrySearch on, v29 pins the panel height so it does not jump while the
+   list is filtered — but it measures that height in a throwaway container on
+   document.body, outside this page's typography. The search field's line-height
+   is inherited, so it measured shorter there than it renders here and the pinned
+   height came up short, letting the square-cornered list and its scrollbar spill
+   past the panel's rounded bottom corner. Clipping is the guard; pinning
+   line-height on the search field is the fix — it makes the measurement and the
+   render agree, so nothing needs to be clipped in the first place. */
+.iti--inline-country-selector .iti__country-selector {
+  overflow: hidden !important;
+}
+
 /* The search field is an <input>: it takes UA `Field`/`FieldText` colours rather
    than inheriting, so on a dark theme it would render as a white box inside a
    dark panel. The library ships no colours for it. */
@@ -101,6 +113,10 @@
   background-color: transparent !important;
   color: var(--text-primary, #111827) !important;
   font-size: var(--font-size-sm, 0.875rem) !important;
+  /* Must be an explicit value, not inherited — see the panel-clipping note above.
+     An inherited line-height resolves differently in v29's off-page measuring
+     container than it does here, which throws off the pinned panel height. */
+  line-height: 1.5 !important;
   outline: none !important;
 }
 
