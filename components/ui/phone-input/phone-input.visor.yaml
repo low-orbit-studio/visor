@@ -1,5 +1,5 @@
 name: PhoneInput
-description: An international phone number input with country code selection, geo-IP detection, format-as-you-type, and validation.
+description: An international phone number input with country code selection, format-as-you-type, and E.164 validation.
 extends: HTMLInputElement
 category: form
 
@@ -13,10 +13,12 @@ when_not_to_use:
   - Phone + extension combined fields (build a composite)
 
 why: >
-  PhoneInput wraps intl-tel-input to provide country code selection with geo-IP
-  auto-detection, format-as-you-type with per-country formatting rules, and
-  libphonenumber validation. The onChange callback returns both the full
-  international number and a validation boolean. SSR-safe via dynamic imports.
+  PhoneInput wraps the official @intl-tel-input/react v29 component to provide
+  country code selection with a searchable dropdown, format-as-you-type with
+  per-country formatting rules, and libphonenumber validation. onChange emits
+  E.164 or null — never a partial number — so a malformed value cannot be
+  persisted. The country dropdown is themed through the library's own CSS
+  custom properties, so every Visor theme is correct without consumer CSS.
 
 props:
   - name: id
@@ -26,17 +28,31 @@ props:
     type: string
     description: HTML name attribute for the input element.
   - name: value
-    type: string
-    description: Initial phone number value (e.g. "+14155551234").
+    type: string | null
+    description: Phone number in E.164 (e.g. "+14155551234"). Displayed formatted for the detected country.
   - name: placeholder
     type: string
     description: Placeholder text for the input.
   - name: required
     type: boolean
+    default: "false"
     description: Whether the field is required.
   - name: disabled
     type: boolean
+    default: "false"
     description: Whether the field is disabled.
+  - name: readOnly
+    type: boolean
+    default: "false"
+    description: Whether the field is read-only. Pair with countrySelectorMode="OFF" to also close off the country dropdown.
+  - name: countrySelectorMode
+    type: '"OFF" | "DROPDOWN" | "FULLSCREEN" | "AUTO"'
+    default: '"AUTO"'
+    description: Country selector behaviour. "OFF" renders the selected country as a non-interactive element.
+  - name: initialCountry
+    type: Iso2
+    default: '"us"'
+    description: ISO 3166-1 alpha-2 country selected on mount.
   - name: size
     type: '"sm" | "md" | "lg"'
     default: '"md"'
@@ -44,15 +60,22 @@ props:
   - name: className
     type: string
     description: Additional CSS classes applied to the wrapper.
+  - name: portal
+    type: "{ container: HTMLElement; scopeClassName: string }"
+    description: >
+      Portal the country selector out of the input's DOM position. All-or-nothing —
+      the theme-scoping class is not separable from the container, so a portaled
+      selector can never escape its theme. Omit for the default inline selector.
   - name: onChange
-    type: "(value: string, isValid: boolean) => void"
-    description: Called with the full international number and validation status on every change.
+    type: "(e164: string | null, isValid: boolean) => void"
+    description: Called with the E.164 number and its validity. e164 is null for anything that is not a complete, valid number — a partial is never emitted.
   - name: onBlur
-    type: "() => void"
-    description: Called when the input loses focus.
+    type: "(error: ValidationError | null) => void"
+    description: Called on blur with the validation error for a non-empty, invalid number (otherwise null).
 
 dependencies:
   - intl-tel-input
+  - "@intl-tel-input/react"
 
 preview_url: "https://visor.loworbit.studio/docs/components/form/phone-input"
 
@@ -60,7 +83,7 @@ example: |
   <PhoneInput
     name="phone"
     placeholder="Enter phone number"
-    onChange={(value, isValid) => {
-      console.log(value, isValid);
+    onChange={(e164, isValid) => {
+      console.log(e164, isValid);
     }}
   />

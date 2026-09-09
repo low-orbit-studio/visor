@@ -1537,8 +1537,12 @@ export const ui: Registry = [
     name: "phone-input",
     type: "registry:ui",
     description:
-      "An international phone number input with country code selection, geo-IP detection, format-as-you-type, and validation.",
-    dependencies: ["@loworbitstudio/visor-core", "intl-tel-input"],
+      "An international phone number input with country code selection, format-as-you-type, and E.164 validation.",
+    dependencies: [
+      "@loworbitstudio/visor-core",
+      "intl-tel-input",
+      "@intl-tel-input/react",
+    ],
     registryDependencies: ["utils"],
     files: [
       {

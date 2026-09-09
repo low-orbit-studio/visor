@@ -1,30 +1,39 @@
-/* intl-tel-input theme overrides — Visor design tokens
+/* intl-tel-input v29 theming — Visor design tokens
  *
- * Global (not CSS Module) because intl-tel-input renders DOM outside React
- * and appends the dropdown to document.body. All overrides need !important
- * to beat the library's shipped styles loaded via dynamic import.
+ * Global (not a CSS Module) because intl-tel-input renders its own DOM, and the
+ * country selector can be portaled out of the React tree.
  *
- * Token mapping from Blacklight --theme-* → Visor semantic tokens:
- *   --theme-background   → --surface-interactive-default (inputs)
- *   --theme-muted         → --surface-card (dropdown surfaces)
- *   --theme-border        → --border-default
- *   --theme-foreground    → --text-primary
- *   --theme-muted-foreground → --text-secondary
- *   --theme-accent        → --interactive-primary-bg (selected state)
- *   --theme-accent-foreground → --text-inverse (text on accent)
+ * v29 exposes CSS custom properties for the country selector, so the dropdown is
+ * themed by binding those rather than by overriding rules. Every binding falls
+ * back to the vendor default, so a theme missing a token behaves exactly as the
+ * unstyled library does. The input chrome still needs explicit rules — the
+ * library ships no colours for the `<input>` itself.
  */
 
-/* Container fills available width */
 .iti {
-  display: block !important;
-  width: 100% !important;
+  display: block;
+  width: 100%;
+
+  /* v29 country-selector variables → Visor tokens (vendor defaults as fallbacks) */
+  --iti-country-selector-bg: var(--surface-popover, white);
+  --iti-border-color: var(--divider, #ccc);
+  --iti-icon-color: var(--text-secondary, #555);
+  --iti-hover-color: var(--surface-interactive-hover, rgba(0, 0, 0, 0.05));
+  --iti-strict-reject-flash-color: var(
+    --surface-error-subtle,
+    rgba(255, 0, 0, 0.12)
+  );
+
+  /* The country list sets no colour of its own — it inherits. Without this the
+     list would take its colour from whatever encloses the input. */
+  color: var(--text-primary, #111827);
 }
 
 /* The input element itself — match Visor Input component (input.module.css) */
 .iti input.iti__tel-input {
   width: 100% !important;
   min-width: 0 !important;
-  border: 1px solid var(--border-default, #e5e7eb) !important;
+  border: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb) !important;
   background-color: var(--surface-interactive-default, #f9fafb) !important;
   /* padding-left is set dynamically by intl-tel-input to fit the flag + dial code */
   color: var(--text-primary, #111827) !important;
@@ -34,7 +43,7 @@
   outline: none !important;
 }
 
-/* Size: sm — compact (default for backwards compat) */
+/* Size: sm — compact */
 [data-size="sm"] .iti input.iti__tel-input {
   height: 2.25rem !important;
   padding-top: var(--spacing-1, 0.25rem) !important;
@@ -76,108 +85,43 @@
 .iti input.iti__tel-input:disabled {
   pointer-events: none !important;
   cursor: not-allowed !important;
-  opacity: 0.5 !important;
+  opacity: var(--opacity-50, 0.5) !important;
 }
 
-/* Dropdown content (search + country list container) — must be opaque since
-   intl-tel-input renders on document.body, potentially outside theme wrappers */
-.iti__dropdown-content {
-  background-color: var(--surface-card, #ffffff) !important;
-  border: 1px solid var(--border-default, #e5e7eb) !important;
-  border-radius: var(--radius-lg, 0.5rem) !important;
-  box-shadow: var(--shadow-md) !important;
-  z-index: var(--z-index-dropdown, 1000) !important;
-  min-width: 18rem !important;
-}
-
-/* Search input inside dropdown — match Visor Input base */
-.iti__search-input {
-  background-color: var(--surface-interactive-default, #f9fafb) !important;
-  border: 1px solid var(--border-default, #e5e7eb) !important;
-  color: var(--text-primary, #111827) !important;
+/* Country selector panel — v29 hardcodes a 3px radius and an untokenised shadow */
+.iti__country-selector {
   border-radius: var(--radius-md, 0.375rem) !important;
-  padding: var(--spacing-2, 0.5rem) var(--spacing-2, 0.5rem) var(--spacing-2, 0.5rem) 2rem !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+/* The search field is an <input>: it takes UA `Field`/`FieldText` colours rather
+   than inheriting, so on a dark theme it would render as a white box inside a
+   dark panel. The library ships no colours for it. */
+.iti__search-input {
+  background-color: transparent !important;
+  color: var(--text-primary, #111827) !important;
   font-size: var(--font-size-sm, 0.875rem) !important;
   outline: none !important;
-  transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out) !important;
-}
-
-.iti__search-input:focus {
-  border-color: var(--border-focus, #111827) !important;
-  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent) !important;
 }
 
 .iti__search-input::placeholder {
   color: var(--text-secondary, #9ca3af) !important;
 }
 
-/* Divider between search and country list */
-.iti__search-input-wrapper {
-  border-bottom: 1px solid var(--border-default, #e5e7eb) !important;
+.iti__search-input:focus-visible {
+  box-shadow: inset 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent) !important;
 }
 
-/* Country list background — matches dropdown content */
-.iti__country-list {
-  background-color: var(--surface-card, #ffffff) !important;
-}
-
-/* Individual country items — match Select .item */
-.iti__country {
-  color: var(--text-primary, #111827) !important;
-  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem) !important;
-  font-size: var(--font-size-sm, 0.875rem) !important;
-  line-height: 1.4 !important;
-  white-space: nowrap !important;
-  gap: var(--spacing-2, 0.5rem) !important;
-}
-
-/* Hover and keyboard highlight — match Select .item:focus */
-.iti__country:hover,
-.iti__country.iti__highlight {
-  background-color: var(--surface-interactive-hover, #f3f4f6) !important;
-}
-
-/* Selected/active country — match interactive primary */
-.iti__country.iti__active {
-  background-color: var(--interactive-primary-bg, var(--primary, #111827)) !important;
-  color: var(--text-inverse, #ffffff) !important;
-}
-
-/* Dial code in country list */
+/* Dial code beside the country name in the list */
 .iti__dial-code {
   color: var(--text-secondary, #9ca3af) !important;
 }
 
-/* Inherit color for active state (overrides dial-code muted color) */
-.iti__country-name,
-.iti__country.iti__active .iti__country-name,
-.iti__country.iti__active .iti__dial-code {
-  color: inherit !important;
-}
-
-/* Selected country button (dropdown trigger in the input) */
-.iti__selected-country {
-  background-color: transparent !important;
+/* Selected country trigger overlaying the left of the input */
+.iti__selected-country-primary {
   border-radius: var(--radius-md, 0.375rem) 0 0 var(--radius-md, 0.375rem) !important;
-  transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out) !important;
 }
 
-.iti__selected-country:hover,
-.iti__selected-country:focus {
-  background-color: var(--surface-interactive-hover, #f3f4f6) !important;
-}
-
-/* Arrow/chevron */
-.iti__arrow {
-  border-top-color: var(--text-secondary, #9ca3af) !important;
-}
-
-.iti__arrow--up {
-  border-bottom-color: var(--text-secondary, #9ca3af) !important;
-}
-
-/* Selected dial code text */
 .iti__selected-dial-code {
   color: var(--text-primary, #111827) !important;
-  margin-right: var(--spacing-2, 0.5rem) !important;
 }

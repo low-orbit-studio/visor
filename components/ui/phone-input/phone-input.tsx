@@ -1,215 +1,163 @@
 "use client"
 
 import * as React from "react"
+import IntlTelInput from "@intl-tel-input/react"
+import type { IntlTelInputRef } from "@intl-tel-input/react"
+import type { CountrySelectorMode, Iso2, ValidationError } from "intl-tel-input"
 import "intl-tel-input/styles"
 import { cn } from "../../../lib/utils"
+
+// Password managers mangle tel fields. Typed through `input` props because the
+// library's `inputProps` surface does not model arbitrary data attributes.
+const PASSWORD_MANAGER_OPT_OUT = {
+  "data-1p-ignore": true,
+  "data-lpignore": "true",
+  "data-bwignore": true,
+  "data-form-type": "other",
+} as React.ComponentPropsWithoutRef<"input">
+
+export interface PhoneInputPortal {
+  /** Element the country selector is portaled into. */
+  container: HTMLElement
+  /**
+   * Theme-scoping class applied to the portaled country selector. Required —
+   * a selector portaled out of the tree escapes the consumer's theme class,
+   * so the scope has to travel with it.
+   */
+  scopeClassName: string
+}
 
 export interface PhoneInputProps {
   /** HTML id attribute */
   id?: string
   /** HTML name attribute */
   name?: string
-  /** Initial phone number value (e.g. "+14155551234") */
-  value?: string
+  /** Phone number in E.164 (e.g. "+14155551234"). Displayed formatted for the detected country. */
+  value?: string | null
   /** Placeholder text */
   placeholder?: string
   /** Whether the field is required */
   required?: boolean
   /** Whether the field is disabled */
   disabled?: boolean
+  /** Whether the field is read-only. Pair with `countrySelectorMode="OFF"` to also close off the country dropdown. */
+  readOnly?: boolean
+  /** Country selector behaviour. `"OFF"` renders the selected country as a non-interactive element. */
+  countrySelectorMode?: CountrySelectorMode
+  /** ISO 3166-1 alpha-2 country selected on mount. */
+  initialCountry?: Iso2
   /** Size variant — matches Input component sizes */
   size?: "sm" | "md" | "lg"
   /** Additional CSS classes applied to the wrapper */
   className?: string
-  /** Called with (fullInternationalNumber, isValid) on change */
-  onChange?: (value: string, isValid: boolean) => void
-  /** Called on blur */
-  onBlur?: () => void
+  /**
+   * Portal the country selector out of the input's DOM position. All-or-nothing:
+   * the scoping class is not separable from the container, so the selector can
+   * never escape its theme. Omit for the default inline selector.
+   */
+  portal?: PhoneInputPortal
+  /**
+   * Called with the E.164 number and its validity. `e164` is `null` for anything
+   * that is not a complete, valid number — a partial is never emitted.
+   */
+  onChange?: (e164: string | null, isValid: boolean) => void
+  /** Called on blur with the validation error for a non-empty, invalid number (otherwise `null`). */
+  onBlur?: (error: ValidationError | null) => void
 }
 
-interface ItiInstance {
-  getNumber: () => string
-  isValidNumber: () => boolean | null
-  destroy: () => void
-}
-
-const PhoneInput = React.forwardRef<HTMLInputElement, PhoneInputProps>(
+const PhoneInput = React.forwardRef<IntlTelInputRef, PhoneInputProps>(
   (
     {
       id,
       name,
-      value = "",
+      value,
       placeholder,
       required = false,
       disabled = false,
+      readOnly = false,
+      countrySelectorMode,
+      initialCountry = "us",
       size = "md",
       className,
+      portal,
       onChange,
       onBlur,
     },
     ref
   ) => {
-    const inputRef = React.useRef<HTMLInputElement>(null)
-    const itiRef = React.useRef<ItiInstance | null>(null)
-    const initializedRef = React.useRef(false)
-    const [isMounted, setIsMounted] = React.useState(false)
+    const itiRef = React.useRef<IntlTelInputRef>(null)
+    // `undefined` until the first emission — an initial `{ null, false }` would be
+    // indistinguishable from the first partial the user types and would swallow it.
+    const lastEmitted = React.useRef<
+      { e164: string | null; isValid: boolean } | undefined
+    >(undefined)
 
-    // CRITICAL: Store callbacks in refs to prevent re-initialization on parent re-render.
-    // Without this, new onChange reference → handleChange recreates → useEffect re-runs
-    // → intl-tel-input destroys/recreates → input loses focus.
-    // See docs/wisdom/W007-intl-tel-input-focus.md
-    const onChangeRef = React.useRef(onChange)
-    const onBlurRef = React.useRef(onBlur)
+    React.useImperativeHandle(ref, () => ({
+      getInstance: () => itiRef.current?.getInstance() ?? null,
+      getInput: () => itiRef.current?.getInput() ?? null,
+    }))
 
-    React.useEffect(() => {
-      onChangeRef.current = onChange
+    // The library's own `onChangeNumber` emits `getNumber()` verbatim, which for a
+    // partial is a `+<dial code>` prefix glued to the formatted national string
+    // (typing "21337" yields "+1213-37"). Derive the value at emit time instead so
+    // a malformed number can never reach the consumer.
+    const emit = React.useCallback(() => {
+      const iti = itiRef.current?.getInstance()
+      const isValid = iti?.isValidNumber() ?? false
+      const e164 = isValid ? iti!.getNumber() : null
+      const last = lastEmitted.current
+      if (last && last.e164 === e164 && last.isValid === isValid) return
+      lastEmitted.current = { e164, isValid }
+      onChange?.(e164, isValid)
     }, [onChange])
 
-    React.useEffect(() => {
-      onBlurRef.current = onBlur
+    const handleBlur = React.useCallback(() => {
+      const iti = itiRef.current?.getInstance()
+      const input = itiRef.current?.getInput()
+      // The error callback never fires while a number is still partial, so read the
+      // error directly — a visibly-present partial that saves as nothing is silent
+      // data loss. Gate on validity: getValidationError() reports "IS_POSSIBLE" for
+      // a number that is fine, which is not an error.
+      const error =
+        iti && input?.value && !iti.isValidNumber()
+          ? (iti.getValidationError() ?? null)
+          : null
+      onBlur?.(error)
     }, [onBlur])
-
-    React.useEffect(() => {
-      setIsMounted(true)
-    }, [])
-
-    // Merge forwarded ref with internal ref
-    const setRefs = React.useCallback(
-      (node: HTMLInputElement | null) => {
-        ;(inputRef as React.MutableRefObject<HTMLInputElement | null>).current =
-          node
-        if (typeof ref === "function") {
-          ref(node)
-        } else if (ref) {
-          ;(ref as React.MutableRefObject<HTMLInputElement | null>).current =
-            node
-        }
-      },
-      [ref]
-    )
-
-    // Stable handler — reads from refs, never recreates
-    const handleChange = React.useCallback(() => {
-      if (!itiRef.current) return
-
-      try {
-        const number = itiRef.current.getNumber()
-        const isValid = itiRef.current.isValidNumber() ?? false
-        onChangeRef.current?.(number, isValid)
-      } catch {
-        const input = inputRef.current
-        if (input) {
-          onChangeRef.current?.(input.value, input.value.length > 0)
-        }
-      }
-    }, [])
-
-    React.useEffect(() => {
-      if (!isMounted || !inputRef.current || initializedRef.current) return
-
-      let cleanup: (() => void) | undefined
-
-      const initializeIntlTelInput = async () => {
-        const intlTelInputModule = await import(
-          "intl-tel-input/intlTelInputWithUtils"
-        )
-        const intlTelInput = intlTelInputModule.default
-
-        const input = inputRef.current
-        if (!input) return
-
-        const iti = intlTelInput(input, {
-          initialCountry: "auto",
-          geoIpLookup: (callback, failure) => {
-            fetch("https://ipapi.co/country/", {
-              headers: { Accept: "text/plain" },
-            })
-              .then((res) => res.text())
-              .then((country) =>
-                callback(country.trim().toLowerCase() as "us")
-              )
-              .catch(() => failure())
-          },
-          separateDialCode: true,
-          formatAsYouType: true,
-          formatOnDisplay: true,
-          strictMode: true,
-          countrySearch: true,
-          dropdownContainer: document.body,
-        })
-
-        itiRef.current = iti
-        initializedRef.current = true
-
-        input.addEventListener("countrychange", handleChange)
-        input.addEventListener("input", handleChange)
-
-        cleanup = () => {
-          input.removeEventListener("countrychange", handleChange)
-          input.removeEventListener("input", handleChange)
-          if (itiRef.current) {
-            try {
-              itiRef.current.destroy()
-            } catch {
-              // Ignore errors during cleanup
-            }
-            itiRef.current = null
-          }
-          initializedRef.current = false
-        }
-      }
-
-      initializeIntlTelInput()
-
-      return () => {
-        cleanup?.()
-      }
-    }, [isMounted, handleChange])
-
-    const handleBlur = () => {
-      handleChange()
-      onBlurRef.current?.()
-    }
-
-    // SSR-safe: render basic input during server render
-    if (!isMounted) {
-      return (
-        <div data-slot="phone-input" data-size={size} className={cn(className)}>
-          <input
-            type="tel"
-            id={id}
-            name={name}
-            defaultValue={value}
-            placeholder={placeholder}
-            required={required}
-            disabled={disabled}
-            autoComplete="tel"
-            data-1p-ignore
-            data-lpignore="true"
-            data-bwignore
-            data-form-type="other"
-          />
-        </div>
-      )
-    }
 
     return (
       <div data-slot="phone-input" data-size={size} className={cn(className)}>
-        <input
-          ref={setRefs}
-          type="tel"
-          id={id}
-          name={name}
-          defaultValue={value}
-          placeholder={placeholder}
-          required={required}
+        <IntlTelInput
+          ref={itiRef}
+          value={value}
           disabled={disabled}
-          autoComplete="tel"
-          data-1p-ignore
-          data-lpignore="true"
-          data-bwignore
-          data-form-type="other"
-          onBlur={handleBlur}
+          readOnly={readOnly}
+          onChangeNumber={emit}
+          onChangeCountry={emit}
+          onChangeValidity={emit}
+          initialCountry={initialCountry}
+          initialCountryLookup={null}
+          countrySelectorMode={countrySelectorMode}
+          separateDialCode
+          formatAsYouType
+          strictMode
+          countrySearch
+          loadUtils={() => import("intl-tel-input/utils")}
+          dropdownParent={portal?.container ?? null}
+          classNames={
+            portal
+              ? { countrySelectorContainer: portal.scopeClassName }
+              : undefined
+          }
+          inputProps={{
+            id,
+            name,
+            placeholder,
+            required,
+            autoComplete: "tel",
+            onBlur: handleBlur,
+            ...PASSWORD_MANAGER_OPT_OUT,
+          }}
         />
       </div>
     )
