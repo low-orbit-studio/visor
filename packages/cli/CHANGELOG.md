@@ -1,5 +1,60 @@
 # Changelog
 
+## 1.24.0
+
+### Minor Changes
+
+- 2700100: VI-635: `phone-input` rebuilt on the official `@intl-tel-input/react` v29 wrapper.
+  
+  The component hand-rolled its own `intl-tel-input` init against v26 — a custom effect, latest-ref plumbing to survive parent re-renders, and a geo-IP fetch on every mount. v29 ships an officially controlled React wrapper that rebinds `onInput` each render and skips writing back to the input while it is focused, so all of that plumbing is now dead weight. It is deleted.
+  
+  **`onChange` is now E.164-safe.** The signature changes from `(value: string, isValid: boolean)` to `(e164: string | null, isValid: boolean)`, and a partial number is never emitted. The library's own `onChangeNumber` emits `getNumber()` verbatim, which for a partial is a dial-code prefix glued to the formatted national string — typing `21337` yields `"+1213-37"`, hyphens included. Validity is instead derived at emit time, so the emitted value is either a string matching `/^\+[1-9]\d{1,14}$/` or `null`. The display keeps the user's partial typing while the emitted value is `null`, so the control never fights the user.
+  
+  **The country dropdown is themed through the library's CSS custom properties**, so every theme is correct with no consumer-side CSS:
+  
+  | Library variable | Visor token |
+  |---|---|
+  | `--iti-country-selector-bg` | `--surface-popover` |
+  | `--iti-border-color` | `--border-default` |
+  | `--iti-icon-color` | `--text-secondary` |
+  | `--iti-hover-color` | `--surface-interactive-hover` |
+  | `--iti-strict-reject-flash-color` | `--surface-error-subtle` |
+  
+  Each binding falls back to the vendor default, so a theme missing one of these tokens renders exactly as the unstyled library does. v29 sets no colour on the country list and none at all on the search field (an `<input>`, which takes UA `Field`/`FieldText` colours rather than inheriting), so those are pinned explicitly — without it a dark theme rendered a white search box inside a dark panel.
+  
+  **Controlled usage keeps the user's partial.** Because a partial emits `null`, a controlled parent holds `value={null}` while the user is mid-number. The wrapper writes `value` back to the input whenever its internal update callback changes identity, and it only guards that write behind "is the input focused" — so with an inline `onChange` (a new identity every render) a blur plus any unrelated re-render called `setNumber("")` and erased what the user had typed. The emit callback is identity-stable, which keeps that effect keyed on `value` alone. Covered by a regression test that drives a real controlled parent.
+  
+  **Other changes:**
+  
+  - `initialCountry` defaults to `"us"` with `initialCountryLookup: null` — the old code fetched `https://ipapi.co/country/` on every mount, which ad-blockers kill, and whose failure path left the flag unset.
+  - `loadUtils` is baked in and not overridable.
+  - `readOnly` and `countrySelectorMode` are passed through. `readOnly` alone does **not** close off the dropdown — the selected country stays a `<button>` and opens on click — so a read-only display needs `countrySelectorMode="OFF"` too.
+  - `onBlur` now receives the validation error (`(error: ValidationError | null) => void`). The library's error callback does not fire while a number is still partial, and a visibly-present partial that saves as nothing is silent data loss.
+  - The country selector stays inline by default. Portaling is exposed as one all-or-nothing `portal={{ container, scopeClassName }}` prop, so a selector portaled out of the tree cannot escape its theme scope.
+  - `intl-tel-input` bumped `^26.9.1` → `^29.2.3`; `@intl-tel-input/react` added.
+  
+  **Migration:** `onChange` consumers must handle `null`. Code that persisted the first argument directly was previously able to store a malformed number; it now stores `null` until the number is complete. `onBlur` handlers that took no argument continue to work.
+
+### Patch Changes
+
+- cbebd46: VI-631: `visor check design --no-fail` now actually suppresses the exit code.
+  
+  `--no-fail` was a no-op. Commander treats it as a **negatable boolean**, so it sets `fail: false` and never sets a `noFail` key — but both read sites tested `!options.noFail`, which was permanently `true`. Advisory mode was unreachable: a scan with errors exited `1` whether or not the flag was passed, on the human path and the `--json` path alike. This is the mechanism VI-631's warning-only rollout depends on, so a pilot project could not adopt the lint report-first.
+  
+  Both sites now use the same idiom `check theme-mode` already used — `options.fail !== false` — and the interface documents the Commander mapping so the next reader does not reintroduce it.
+  
+  `--no-fail` suppresses the **exit code only**: findings, the composition-scope statement and the kit-membership line still print, and `--json` still emits the full payload. It also covers the fail-closed `kit-taxonomy-missing` error, so `--composition` can be adopted advisory-first.
+  
+  | Invocation | Before | After |
+  |------------|--------|-------|
+  | blessed fixture, taxonomy asserted | `0` | `0` |
+  | seeded violations | `1` | `1` |
+  | `--composition`, no taxonomy resolves | `1` | `1` |
+  | no flags | `0` | `0` |
+  | errors + `--no-fail` | `1` ✗ | `0` ✓ |
+  
+  `check diff --fail-on-hits` was audited and is correct — it is a positive (non-negatable) flag, so Commander sets `failOnHits` as the code expects. `check theme-mode --no-fail` was already correct and is unchanged. Both are now covered by CLI-level exit-code regression tests that drive the real Commander tree.
+
 ## 1.23.0
 
 ### Minor Changes
