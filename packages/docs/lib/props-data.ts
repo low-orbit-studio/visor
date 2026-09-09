@@ -1807,8 +1807,8 @@ export const propsData: Record<string, PropDef[]> = {
     },
     {
       name: 'value',
-      type: 'string',
-      description: 'Initial phone number value (e.g. "+14155551234").',
+      type: 'string | null',
+      description: 'Phone number in E.164 (e.g. "+14155551234"). Displayed formatted for the detected country.',
     },
     {
       name: 'placeholder',
@@ -1828,19 +1828,49 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'Whether the field is disabled.',
     },
     {
+      name: 'readOnly',
+      type: 'boolean',
+      default: 'false',
+      description: 'Whether the field is read-only. Pair with countrySelectorMode="OFF" to also close off the country dropdown.',
+    },
+    {
+      name: 'countrySelectorMode',
+      type: '"OFF" | "DROPDOWN" | "FULLSCREEN" | "AUTO"',
+      default: '"AUTO"',
+      description: 'Country selector behaviour. "OFF" renders the selected country as a non-interactive element.',
+    },
+    {
+      name: 'initialCountry',
+      type: 'Iso2',
+      default: '"us"',
+      description: 'ISO 3166-1 alpha-2 country selected on mount.',
+    },
+    {
+      name: 'size',
+      type: '"sm" | "md" | "lg"',
+      default: '"md"',
+      description: 'Size variant — matches Input component sizes.',
+    },
+    {
       name: 'className',
       type: 'string',
       description: 'Additional CSS classes applied to the wrapper.',
     },
     {
+      name: 'portal',
+      type: '{ container: HTMLElement; scopeClassName: string }',
+      description:
+        "Portal the country selector out of the input's DOM position. All-or-nothing — the theme-scoping class is not separable from the container, so a portaled selector can never escape its theme. Omit for the default inline selector.",
+    },
+    {
       name: 'onChange',
-      type: '(value: string, isValid: boolean) => void',
-      description: 'Called with the full international number and validation status on every change.',
+      type: '(e164: string | null, isValid: boolean) => void',
+      description: 'Called with the E.164 number and its validity. e164 is null for anything that is not a complete, valid number — a partial is never emitted.',
     },
     {
       name: 'onBlur',
-      type: '() => void',
-      description: 'Called when the input loses focus.',
+      type: '(error: ValidationError | null) => void',
+      description: 'Called on blur with the validation error for a non-empty, invalid number (otherwise null).',
     },
   ],
 

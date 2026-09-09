@@ -35,6 +35,7 @@
   "dependencies": {
     "@conform-to/react": "^1.17.1",
     "@conform-to/zod": "^1.17.1",
+    "@intl-tel-input/react": "^29.2.3",
     "@loworbitstudio/visor-theme-engine": "*",
     "@phosphor-icons/react": "^2.1.10",
     "@radix-ui/react-avatar": "^1.1.11",
@@ -57,7 +58,7 @@
     "culori": "^4.0.2",
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
-    "intl-tel-input": "^26.9.1",
+    "intl-tel-input": "^29.2.3",
     "fumadocs-core": "^16.7.9",
     "fumadocs-mdx": "~14.2.14",
     "fumadocs-ui": "^16.7.9",

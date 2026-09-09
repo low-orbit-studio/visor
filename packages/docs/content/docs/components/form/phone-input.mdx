@@ -1,11 +1,16 @@
 ---
 title: Phone Input
-description: An international phone number input with country code selection, geo-IP detection, format-as-you-type, and validation.
+description: An international phone number input with country code selection, format-as-you-type, and E.164 validation.
 ---
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { PhoneInput } from '@/components/ui/phone-input';
+import {
+  PhoneInputOnChangeDemo,
+  PhoneInputBlurErrorDemo,
+  PhoneInputReadOnlyDemo,
+} from '@/components/ui/phone-input-demos';
 
 ## Default
 
@@ -13,23 +18,48 @@ import { PhoneInput } from '@/components/ui/phone-input';
   title="Phone Input"
   code={"import { PhoneInput } from '@/components/ui/phone-input/phone-input';\n\n<PhoneInput name=\"phone\" placeholder=\"Enter phone number\" />"}
 >
-  <div style={{ width: '100%', maxWidth: '20rem' }}>
+  <div style={{ width: '100%', maxWidth: '20rem', minHeight: '19rem' }}>
     <PhoneInput name="phone-default" placeholder="Enter phone number" />
   </div>
 </ComponentPreview>
 
 ## With onChange
 
+`onChange` emits an E.164 string only when the number is complete and valid. Anything
+else emits `null` — type a few digits below and watch the emitted value stay `null`
+until the number is whole.
+
 <ComponentPreview
   title="With onChange"
-  code={"<PhoneInput\n  name=\"phone\"\n  placeholder=\"Enter phone number\"\n  onChange={(value, isValid) => {\n    console.log('Number:', value, 'Valid:', isValid);\n  }}\n/>"}
+  code={"<PhoneInput\n  name=\"phone\"\n  placeholder=\"Enter phone number\"\n  onChange={(e164, isValid) => {\n    // e164 is null until the number is complete and valid\n    console.log(e164, isValid);\n  }}\n/>"}
 >
-  <div style={{ width: '100%', maxWidth: '20rem' }}>
-    <PhoneInput
-      name="phone-onchange"
-      placeholder="Enter phone number"
-    />
-  </div>
+  <PhoneInputOnChangeDemo />
+</ComponentPreview>
+
+## Validation on blur
+
+The library's error callback does not fire while a number is still partial, so
+`onBlur` reports the validation error directly. A visibly-present partial that saves
+as nothing is silent data loss — surface it.
+
+<ComponentPreview
+  title="Validation on blur"
+  code={"<PhoneInput\n  name=\"phone\"\n  onBlur={(error) => {\n    // e.g. \"TOO_SHORT\" — null when empty or valid\n    setError(error);\n  }}\n/>"}
+>
+  <PhoneInputBlurErrorDemo />
+</ComponentPreview>
+
+## Read-only
+
+`readOnly` alone does not close off the country dropdown — the selected country stays a
+`<button>` and opens on click. Pair it with `countrySelectorMode="OFF"` for a true
+read-only display.
+
+<ComponentPreview
+  title="Read-only"
+  code={"<PhoneInput\n  name=\"phone\"\n  value=\"+12133734253\"\n  readOnly\n  countrySelectorMode=\"OFF\"\n/>"}
+>
+  <PhoneInputReadOnlyDemo />
 </ComponentPreview>
 
 ## Sizes
@@ -38,7 +68,7 @@ import { PhoneInput } from '@/components/ui/phone-input';
   title="Small"
   code={"<PhoneInput name=\"phone\" size=\"sm\" placeholder=\"Enter phone number\" />"}
 >
-  <div style={{ width: '100%', maxWidth: '20rem' }}>
+  <div style={{ width: '100%', maxWidth: '20rem', minHeight: '19rem' }}>
     <PhoneInput name="phone-sm" size="sm" placeholder="Enter phone number" />
   </div>
 </ComponentPreview>
@@ -47,7 +77,7 @@ import { PhoneInput } from '@/components/ui/phone-input';
   title="Medium (default)"
   code={"<PhoneInput name=\"phone\" size=\"md\" placeholder=\"Enter phone number\" />"}
 >
-  <div style={{ width: '100%', maxWidth: '20rem' }}>
+  <div style={{ width: '100%', maxWidth: '20rem', minHeight: '19rem' }}>
     <PhoneInput name="phone-md" size="md" placeholder="Enter phone number" />
   </div>
 </ComponentPreview>
@@ -56,7 +86,7 @@ import { PhoneInput } from '@/components/ui/phone-input';
   title="Large"
   code={"<PhoneInput name=\"phone\" size=\"lg\" placeholder=\"Enter phone number\" />"}
 >
-  <div style={{ width: '100%', maxWidth: '20rem' }}>
+  <div style={{ width: '100%', maxWidth: '20rem', minHeight: '19rem' }}>
     <PhoneInput name="phone-lg" size="lg" placeholder="Enter phone number" />
   </div>
 </ComponentPreview>
@@ -67,7 +97,7 @@ import { PhoneInput } from '@/components/ui/phone-input';
   title="Disabled"
   code={"<PhoneInput name=\"phone\" placeholder=\"Enter phone number\" disabled />"}
 >
-  <div style={{ width: '100%', maxWidth: '20rem' }}>
+  <div style={{ width: '100%', maxWidth: '20rem', minHeight: '19rem' }}>
     <PhoneInput name="phone-disabled" placeholder="Enter phone number" disabled />
   </div>
 </ComponentPreview>
@@ -81,10 +111,10 @@ npx visor add phone-input
 This copies three files into your project:
 
 - `components/ui/phone-input/phone-input.tsx` — the component
-- `components/ui/phone-input/phone-input.css` — global theme overrides for intl-tel-input
+- `components/ui/phone-input/phone-input.css` — theme bindings for intl-tel-input
 - `components/ui/phone-input/phone-input.module.css` — wrapper styles
 
-It also installs `intl-tel-input` as a dependency.
+It also installs `intl-tel-input` and `@intl-tel-input/react` as dependencies.
 
 **Important:** Import the global CSS file in your app layout or entry point:
 
@@ -98,20 +128,24 @@ import '@/components/ui/phone-input/phone-input.css';
 import { PhoneInput } from '@/components/ui/phone-input/phone-input';
 
 function MyForm() {
-  const [phone, setPhone] = useState('');
+  const [phone, setPhone] = useState<string | null>(null);
   const [isValid, setIsValid] = useState(false);
 
   return (
     <PhoneInput
       name="phone"
-      onChange={(value, valid) => {
-        setPhone(value);
+      value={phone}
+      onChange={(e164, valid) => {
+        setPhone(e164);
         setIsValid(valid);
       }}
     />
   );
 }
 ```
+
+`phone` is either a valid E.164 string or `null` — it is never a partial, so it is safe
+to persist directly.
 
 ## API Reference
 
@@ -122,25 +156,45 @@ function MyForm() {
 ## Features
 
 - **Country code selection** — searchable dropdown with all countries and dial codes
-- **Geo-IP detection** — auto-detects user's country on mount with US fallback
-- **Format-as-you-type** — applies per-country formatting rules as users type
-- **Validation** — powered by libphonenumber, returns validation status via `onChange`
-- **SSR-safe** — renders a basic `<input type="tel">` during server render, hydrates with full functionality on mount
+- **E.164 safe** — `onChange` emits a valid E.164 string or `null`, never a partial number
+- **Format-as-you-type** — applies per-country formatting rules as users type; the display keeps the user's partial typing even while the emitted value is `null`
+- **Paste detection** — pasting a foreign number switches the selected country automatically
+- **Validation** — powered by libphonenumber, with the error surfaced on blur
+- **SSR-safe** — renders a plain `<input type="tel">` on the server and hydrates in place
 
-## CSS Import
+## Theming
 
-The component requires a global CSS import for the intl-tel-input dropdown theming. This file overrides the library's default styles with Visor design tokens:
+The country dropdown is themed by binding the library's own CSS custom properties to
+Visor tokens, so every theme is correct with no consumer-side CSS:
+
+| Library variable | Visor token |
+|---|---|
+| `--iti-country-selector-bg` | `--surface-popover` |
+| `--iti-border-color` | `--border-default` |
+| `--iti-icon-color` | `--text-secondary` |
+| `--iti-hover-color` | `--surface-interactive-hover` |
+| `--iti-strict-reject-flash-color` | `--surface-error-subtle` |
+
+Each binding falls back to the library's own default, so a theme that does not define one
+of these tokens renders exactly as the unstyled library does.
+
+## Portaling the dropdown
+
+The country selector is inline by default, which keeps it inside the consumer's theme
+scope. If you need it portaled — to escape an `overflow: hidden` ancestor, say — pass the
+`portal` prop. It is all-or-nothing on purpose: the container cannot be set without the
+theme-scoping class that travels with it.
 
 ```tsx
-// In your layout.tsx or _app.tsx
-import '@/components/ui/phone-input/phone-input.css';
+<PhoneInput
+  name="phone"
+  portal={{ container: document.body, scopeClassName: 'theme-space' }}
+/>
 ```
-
-The CSS is global (not a CSS Module) because intl-tel-input renders its dropdown via `document.body`, outside React's component tree.
 
 ## Accessibility
 
 - Renders a native `<input>` with `type="tel"` and `autocomplete="tel"` for appropriate mobile keyboard and autofill
 - Always pair with a `<Label>` using `htmlFor`/`id`, or provide `aria-label` directly
 - The country dropdown supports keyboard navigation and search
-- Focus is maintained during parent re-renders (callback refs pattern)
+- Focus and caret survive parent re-renders — the wrapper skips writing back to the input while it is focused
