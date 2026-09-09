@@ -134,10 +134,23 @@ const PhoneInput = React.forwardRef<IntlTelInputRef, PhoneInputProps>(
       onBlur?.(error)
     }, [onBlur])
 
+    // The library validates every option key it is handed, and a key explicitly
+    // set to `undefined` is still an own key — so spreading an unset optional
+    // prop makes it warn ("must be ...; got undefined. Ignoring.") on every
+    // mount. Carry each key only when the consumer actually set one; there is no
+    // correct default to invent for either.
+    const optional = {
+      ...(countrySelectorMode !== undefined && { countrySelectorMode }),
+      ...(portal && {
+        classNames: { countrySelectorContainer: portal.scopeClassName },
+      }),
+    }
+
     return (
       <div data-slot="phone-input" data-size={size} className={cn(className)}>
         <IntlTelInput
           ref={itiRef}
+          {...optional}
           value={value}
           disabled={disabled}
           readOnly={readOnly}
@@ -146,18 +159,12 @@ const PhoneInput = React.forwardRef<IntlTelInputRef, PhoneInputProps>(
           onChangeValidity={emit}
           initialCountry={initialCountry}
           initialCountryLookup={null}
-          countrySelectorMode={countrySelectorMode}
           separateDialCode
           formatAsYouType
           strictMode
           countrySearch
           loadUtils={() => import("intl-tel-input/utils")}
           dropdownParent={portal?.container ?? null}
-          classNames={
-            portal
-              ? { countrySelectorContainer: portal.scopeClassName }
-              : undefined
-          }
           inputProps={{
             id,
             name,

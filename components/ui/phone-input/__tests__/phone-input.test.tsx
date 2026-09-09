@@ -240,6 +240,50 @@ describe("PhoneInput country selector", () => {
   })
 })
 
+describe("PhoneInput portal", () => {
+  it("applies the portal scopeClassName to the portaled country selector", async () => {
+    const host = document.createElement("div")
+    document.body.appendChild(host)
+    try {
+      const ref = React.createRef<IntlTelInputRef>()
+      render(
+        <PhoneInput
+          ref={ref}
+          name="phone"
+          portal={{ container: host, scopeClassName: "theme-scope" }}
+        />
+      )
+      await waitFor(() => expect(ref.current?.getInstance()).toBeTruthy())
+      await ref.current!.getInstance()!.promise
+
+      // The library only appends the detached selector to `dropdownParent` when
+      // the dropdown opens, so the scoping class is only observable from there.
+      fireEvent.click(document.querySelector(".iti__selected-country")!)
+
+      await waitFor(() =>
+        expect(host.querySelector(".theme-scope")).toBeInTheDocument()
+      )
+    } finally {
+      host.remove()
+    }
+  })
+})
+
+describe("PhoneInput console hygiene", () => {
+  // The library validates every option key it is handed, and a key explicitly
+  // set to `undefined` is still an own key — so spreading an unset optional
+  // prop makes it warn on every mount. Omit the key instead.
+  it("logs no library warnings when the optional pass-through props are omitted", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
+    const error = vi.spyOn(console, "error").mockImplementation(() => {})
+
+    await setup({ name: "phone" })
+
+    expect(warn.mock.calls).toEqual([])
+    expect(error.mock.calls).toEqual([])
+  })
+})
+
 describe("PhoneInput blur validation", () => {
   it("reports the validation error for a non-empty partial", async () => {
     const onBlur = vi.fn()
