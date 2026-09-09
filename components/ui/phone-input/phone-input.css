@@ -16,7 +16,7 @@
 
   /* v29 country-selector variables → Visor tokens (vendor defaults as fallbacks) */
   --iti-country-selector-bg: var(--surface-popover, white);
-  --iti-border-color: var(--divider, #ccc);
+  --iti-border-color: var(--border-default, #ccc);
   --iti-icon-color: var(--text-secondary, #555);
   --iti-hover-color: var(--surface-interactive-hover, rgba(0, 0, 0, 0.05));
   --iti-strict-reject-flash-color: var(

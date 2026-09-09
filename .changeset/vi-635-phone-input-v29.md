@@ -13,7 +13,7 @@ The component hand-rolled its own `intl-tel-input` init against v26 — a custom
 | Library variable | Visor token |
 |---|---|
 | `--iti-country-selector-bg` | `--surface-popover` |
-| `--iti-border-color` | `--divider` |
+| `--iti-border-color` | `--border-default` |
 | `--iti-icon-color` | `--text-secondary` |
 | `--iti-hover-color` | `--surface-interactive-hover` |
 | `--iti-strict-reject-flash-color` | `--surface-error-subtle` |

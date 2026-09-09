@@ -10,7 +10,7 @@ export function PhoneInputOnChangeDemo() {
   const [isValid, setIsValid] = React.useState(false);
 
   return (
-    <div style={{ width: '100%', maxWidth: '20rem', display: 'grid', gap: 'var(--spacing-2)' }}>
+    <div style={{ width: '100%', maxWidth: '20rem', minHeight: '19rem', display: 'grid', gap: 'var(--spacing-2)', alignContent: 'start' }}>
       <PhoneInput
         name="phone-onchange"
         placeholder="Enter phone number"
@@ -39,7 +39,7 @@ export function PhoneInputBlurErrorDemo() {
   const [error, setError] = React.useState<string | null>(null);
 
   return (
-    <div style={{ width: '100%', maxWidth: '20rem', display: 'grid', gap: 'var(--spacing-2)' }}>
+    <div style={{ width: '100%', maxWidth: '20rem', minHeight: '19rem', display: 'grid', gap: 'var(--spacing-2)', alignContent: 'start' }}>
       <PhoneInput
         name="phone-blur"
         placeholder="Type a partial number, then click away"
@@ -63,7 +63,7 @@ export function PhoneInputBlurErrorDemo() {
 
 export function PhoneInputReadOnlyDemo() {
   return (
-    <div style={{ width: '100%', maxWidth: '20rem' }}>
+    <div style={{ width: '100%', maxWidth: '20rem', minHeight: '19rem' }}>
       <PhoneInput
         name="phone-readonly"
         value="+12133734253"
