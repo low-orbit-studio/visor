@@ -23,6 +23,26 @@ Visor uses two distribution layers:
 - **Testing:** Vitest + React Testing Library
 - **Docs:** fumadocs (Next.js MDX site)
 
+## Build Artifacts
+
+`packages/theme-engine/dist` and `packages/tokens/dist` are **built by a plain install** — the root
+`prepare` script chains `npm run build -w packages/theme-engine -w packages/tokens` after the husky
+setup, so `npm ci` and `npm install` both leave them on disk. Anything that imports the engine or
+reads `tokens.css` therefore works straight after an install, with no caller-side build step (VI-644).
+
+Two rules follow:
+
+1. **Do not add a `prepare` script to a package whose build reads another workspace package.** npm
+   dispatches workspace `prepare` scripts concurrently in non-deterministic order — a sibling's
+   `dist/` may not exist yet, and `tsup --clean` may be deleting it as you read. Only the root
+   `prepare` is guaranteed to run last and in order. See
+   [`W034`](./docs/wisdom/W034-workspace-prepare-runs-concurrently.md).
+2. **Recipes still name what they additionally need.** `prepare` covers the engine and tokens only —
+   `packages/cli`, `packages/tailwind-preset`, and `packages/docs` are leaf consumers and are still
+   built explicitly where required.
+
+To skip the build (e.g. installing in order to *fix* a broken engine build): `npm ci --ignore-scripts`.
+
 ## Linear
 
 - **Default team:** Visor (VI)
