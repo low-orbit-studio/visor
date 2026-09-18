@@ -42,6 +42,7 @@ For global wisdom (universal lessons): [`~/Code/low-orbit/low-orbit-playbook/roo
 | W031 | When auditing whether a surface "exposes" a token/feature, verify it actually emits end-to-end — a demo referencing a token the engine silently drops renders nothing | audit, design-tokens, theme-engine, verification, pipeline | [W031](W031-audit-emit-pipeline-not-surface.md) |
 | W032 | Floating panels must fill with an opaque surface (`--surface-popover`), never a bare `--surface-card` (translucent glass in some themes); detect floating-ness structurally, not via a hand-maintained allowlist | css, tokens, themes, floating-panel, dialog, validator, coverage-hole | [W032](W032-floating-panel-opaque-surface.md) |
 | W033 | A gate that dies before its check is indistinguishable from one that passes — assert the check *ran*; scheduled gates fail unwatched, and green CI hides build-order gaps | ci, workflows, publish, monorepo, build-order, coverage-hole | [W033](W033-gate-that-dies-before-it-runs.md) |
+| W034 | npm runs workspace `prepare` scripts **concurrently in non-deterministic order** — only the root `prepare` is ordered; per-package `prepare` is safe only for a package with no workspace build inputs | npm, workspaces, monorepo, build-order, lifecycle-scripts, prepare, ci | [W034](W034-workspace-prepare-runs-concurrently.md) |
 
 ## Adding Entries
 
