@@ -10,6 +10,9 @@ declare const styles: {
   readonly sizeMd: string
   readonly sizeLg: string
   readonly sizeDlg: string
+  readonly pendingLabel: string
+  readonly pendingOverlay: string
+  readonly pendingText: string
 }
 
 export default styles

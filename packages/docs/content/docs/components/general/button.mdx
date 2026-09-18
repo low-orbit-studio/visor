@@ -140,6 +140,65 @@ Use `gated` to apply the visual state, and `gatedReason` to provide the tooltip 
 
 The `gated` prop uses `aria-disabled="true"` instead of the native `disabled` attribute, so the button stays keyboard-focusable. Click handlers are suppressed internally — no need to guard them in your code.
 
+## Pending State
+
+`pending` reports that the button's action is in flight. It paints a busy glyph, sets `aria-busy="true"`, and suppresses activation so the action cannot be double-submitted — without ever changing the control's geometry.
+
+**Holding the box is the point.** The idle children stay in place at zero opacity and the glyph paints over them, so the button keeps its width and its height. A pending state that swaps `Save` for `Saving…` on a content-sized button resizes the control and shoves every sibling in a `justify-content: flex-end` footer — which is the visible defect this prop exists to remove, not a cosmetic detail.
+
+<ComponentPreview
+  title="Pending holds the geometry"
+  code={"<Button>Save changes</Button>\n<Button pending>Save changes</Button>\n<Button pending pendingLabel=\"Saving…\">Save changes</Button>"}
+>
+  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
+    <Button>Save changes</Button>
+    <Button pending>Save changes</Button>
+    <Button pending pendingLabel="Saving…">Save changes</Button>
+  </div>
+</ComponentPreview>
+
+All three buttons above are the same width. The third one shows a longer label than the idle one and still does not grow — the busy text is clamped inside the reserved box.
+
+### Two thresholds, so it reads as progress
+
+| Threshold | Default | Theme property | Prop |
+| --- | --- | --- | --- |
+| Delay before painting | `200ms` | `--button-pending-delay` | `pendingDelay` |
+| Minimum time on screen | `300ms` | `--button-pending-min-duration` | `pendingMinDuration` |
+
+An action that resolves in 150ms shows nothing at all. An action that resolves in 250ms shows the glyph for long enough to be legible instead of flashing for a single frame. Neither custom property is declared on the component's own class, so a theme's `:root` value is not shadowed.
+
+### Accessibility contract
+
+- `aria-busy="true"` is set while the action is in flight. A label change alone is **not** announced, which is why the attribute carries the signal.
+- The **accessible name does not change**. `pendingLabel` is decorative (`aria-hidden`), so the control is not renamed mid-action.
+- `pending` does **not** set the native `disabled` attribute — like `gated`, it uses `aria-disabled` so the button stays focusable. It is the user's focus anchor while they wait.
+- Button deliberately does not invent a `role="status"` region. Pair it with your own when the message needs to be spoken.
+- The glyph is the [Spinner](/docs/components/general/spinner) primitive, which pauses under `prefers-reduced-motion`.
+
+```tsx
+const [saving, setSaving] = React.useState(false);
+
+async function handleSave() {
+  setSaving(true);
+  try {
+    await save();
+  } finally {
+    setSaving(false);
+  }
+}
+
+<Button pending={saving} onClick={handleSave}>
+  Save changes
+</Button>;
+```
+
+<Callout type="info">
+  Under `asChild` the state attributes and the activation suppression still apply,
+  but no chrome is injected — Slot takes a single child, so there is nowhere to put
+  the overlay. Render a real `<button>` when you need the glyph.
+</Callout>
+
 ## Installation
 
 ```bash
@@ -230,22 +289,30 @@ All styles use CSS custom properties from `@loworbitstudio/visor-core`, so the b
 
 ## Customization
 
-After copying the component, you own it completely. Common customizations:
+After copying the component, you own it completely.
+
+A busy state is **not** a customization — use the built-in [`pending`](#pending-state)
+prop. Hand-rolling one is how a codebase ends up with thirty different busy flags,
+each resizing its own control:
 
 ```tsx
-// Add a loading state
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, loading, children, ...props }, ref) => {
-    return (
-      <button
-        className={cn(buttonVariants({ variant, size }), className)}
-        disabled={loading || props.disabled}
-        ref={ref}
-        {...props}
-      >
-        {loading ? <Spinner size={16} /> : children}
-      </button>
-    );
-  }
-);
+// Don't — this resizes the button and announces nothing
+{saving ? "Saving…" : "Save"}
+
+// Do
+<Button pending={saving}>Save</Button>
+```
+
+Genuine customizations are new variants and sizes — add a branch to the CVA
+config and a matching class in `button.module.css`:
+
+```tsx
+const buttonVariants = cva(styles.base, {
+  variants: {
+    variant: {
+      // ...existing variants
+      success: styles.variantSuccess,
+    },
+  },
+});
 ```
