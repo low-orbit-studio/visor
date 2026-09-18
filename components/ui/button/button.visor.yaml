@@ -61,10 +61,50 @@ props:
       gated. Only rendered when gated is also true. A TooltipProvider ancestor
       is required whenever gatedReason is set — add one at the page or layout
       level. Example: "You can't delete this — you're not an owner".
+  - name: pending
+    type: boolean
+    default: false
+    description: >
+      Reports that the button's action is in flight — a busy glyph paints over
+      the label, aria-busy is set, and activation is suppressed so the action
+      cannot be double-submitted. The control's geometry is held: the idle
+      children stay in the box at zero opacity and the glyph overlays them, so
+      the button never resizes and never shoves its siblings. Like gated, it
+      does NOT set the native disabled attribute, so the button stays focusable
+      while the user waits. Under asChild the state attributes and the
+      activation suppression still apply, but no chrome is injected (Slot takes
+      a single child).
+  - name: pendingLabel
+    type: ReactNode
+    default: undefined
+    description: >
+      Optional text shown beside the busy glyph while pending. Decorative only —
+      it is aria-hidden, and the accessible name stays the idle label so the
+      control is not renamed mid-action. Pair pending with your own
+      role="status" region when the message needs to be spoken; Button
+      deliberately does not invent one.
+  - name: pendingDelay
+    type: number
+    default: 200
+    description: >
+      Milliseconds to wait before painting the busy glyph, so an action that
+      resolves faster than this shows nothing at all. Overrides the themed
+      --button-pending-delay.
+  - name: pendingMinDuration
+    type: number
+    default: 300
+    description: >
+      Milliseconds to keep the busy glyph on screen once painted, so a barely-
+      slow action does not strobe. Overrides the themed
+      --button-pending-min-duration.
 
 dependencies:
   - "class-variance-authority"
   - "@radix-ui/react-tooltip"
+
+registry_dependencies:
+  - "utils"
+  - "spinner"
 
 notes: |
   **TooltipProvider requirement:** when using `gatedReason`, a `<TooltipProvider>`
@@ -79,7 +119,23 @@ notes: |
   the button is a `<Trigger asChild>` (Popover/DropdownMenu); the other two are
   manual opt-ins. Default ghost rendering is unchanged when none are set.
 
-  **Density axis (`data-density="editorial"`):** setting `data-density="editorial"` on
+  **Pending state (`pending`):** the busy affordance is gated on two thresholds so
+  it reads as progress rather than as a glitch — it does not paint for the first
+  `--button-pending-delay` (200ms), and once painted it holds for at least
+  `--button-pending-min-duration` (300ms). Both are themeable custom properties
+  and both can be overridden per call site via `pendingDelay` / `pendingMinDuration`.
+  Neither property is declared on `.base`, so a theme's `:root` value is not
+  shadowed (the defect VI-625 fixed on Spinner). The glyph is the `spinner`
+  primitive, which already pauses under `prefers-reduced-motion` — a paused ring
+  is still a visible affordance, so nothing extra is needed there.
+
+  **Why the geometry is held rather than a leading slot:** a leading spinner slot
+  adds its own width plus a gap, so the control grows the moment it gets busy and
+  shoves everything after it in a `justify-content: flex-end` footer. Holding the
+  idle box and overlaying the glyph is the only arrangement where the pending
+  state costs zero layout.
+
+    **Density axis (`data-density="editorial"`):** setting `data-density="editorial"` on
   any ancestor (typically the app root) switches Button to the editorial density:
     - `.sizeMd` renders at `2.125rem` height with `line-height: normal`
     - `.sizeSm` renders with `0.8125rem` font-size
@@ -99,7 +155,13 @@ example: |
   {/* Gated — no reason (tooltip suppressed) */}
   <Button gated>Delete organization</Button>
 
-  {/* Gated with reason — tooltip shown on hover/focus */}
+  {/* Pending — geometry held, activation suppressed, aria-busy set */}
+  <Button pending={saving}>Save changes</Button>
+
+  {/* Pending with a decorative busy label */}
+  <Button pending={saving} pendingLabel="Saving…">Save changes</Button>
+
+    {/* Gated with reason — tooltip shown on hover/focus */}
   <TooltipProvider>
     <Button gated gatedReason="You can't delete this — you're not an owner">
       Delete organization

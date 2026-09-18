@@ -101,13 +101,13 @@ export const ui: Registry = [
     name: "button",
     type: "registry:ui",
     description:
-      "A button component with multiple variants and sizes using CVA.",
+      "A button component with multiple variants and sizes using CVA. Includes a gated permission state and a pending state that holds the control's geometry while its action is in flight.",
     dependencies: [
       "@radix-ui/react-slot",
       "class-variance-authority",
       "@loworbitstudio/visor-core",
     ],
-    registryDependencies: ["utils"],
+    registryDependencies: ["utils", "spinner"],
     files: [
       {
         path: "components/ui/button/button.tsx",

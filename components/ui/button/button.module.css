@@ -199,3 +199,57 @@
     background-color: color-mix(in srgb, var(--destructive, #ef4444) 14%, transparent);
   }
 }
+
+/* Pending state — orthogonal to variant and size (VI-643).
+   The idle children stay in the box at zero opacity so the control keeps its
+   width, its height and its accessible name; the busy glyph paints over them
+   in an absolutely-positioned overlay. A pending state that reflows has not
+   fixed the defect it exists for, which is why nothing here is a leading slot
+   that adds width.
+
+   Themes tune the two timings via --button-pending-delay and
+   --button-pending-min-duration. Neither is declared here on purpose: an
+   element-level declaration shadows anything a theme emits on :root (VI-625). */
+.base[data-pending="true"] {
+  position: relative;
+  cursor: progress;
+}
+
+/* No press dip while the action is in flight — the button is not accepting
+   the click, so it must not pretend to. */
+.base[data-pending="true"]:active {
+  transform: none;
+  transition: none;
+}
+
+/* Geometry holder. Mirrors .base's own flex metrics so wrapping the children
+   does not change how they lay out. */
+.pendingLabel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2, 0.5rem);
+  opacity: 0;
+  transition: opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.pendingOverlay {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  padding: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2, 0.5rem);
+  pointer-events: none;
+}
+
+/* Clamped, so a pending label longer than the idle one can never widen the
+   box it is being held inside. */
+.pendingText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
