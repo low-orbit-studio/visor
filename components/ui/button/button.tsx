@@ -249,7 +249,18 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const handleClick = React.useCallback(
       (e: React.MouseEvent<HTMLButtonElement>) => {
-        if (inert) return
+        if (inert) {
+          /* `preventDefault` as well as swallowing the handler, and this is
+           * load-bearing: most buttons `pending` and `gated` exist for are a
+           * `type="submit"` inside a form, and suppressing `onClick` alone
+           * leaves the browser's own ACTIVATION BEHAVIOUR intact — the form
+           * submits anyway, through `onSubmit`, which this never sees. Measured
+           * in a consumer: a second click on a pending submit mailed a second
+           * one-time code. A keyboard Enter on a focused submit button
+           * dispatches a click too, so this covers that path as well. */
+          e.preventDefault()
+          return
+        }
         onClick?.(e)
       },
       [inert, onClick]
