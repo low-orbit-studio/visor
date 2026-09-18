@@ -187,6 +187,37 @@ GITHUB_TOKEN=... npm run audit:publish -- --post-comments
 
 **When you see an audit comment on a PR:** treat it as a signal that the change merged but never made it into the published registry. Cut a coordinated release per [`docs/wisdom/W020-publish-coordination-drift.md`](./docs/wisdom/W020-publish-coordination-drift.md); the next smoke run will clear the drift and no further audit comments will fire. See [`docs/wisdom/W029-vi-ticket-publish-governance.md`](./docs/wisdom/W029-vi-ticket-publish-governance.md) for the full governance pattern.
 
+## Scheduled Workflow Watch
+
+A scheduled workflow blocks nobody's merge, so nothing surfaces one that has gone
+quiet. [`visor-publish-smoke`](./.github/workflows/visor-publish-smoke.yml) was red for
+**276 consecutive runs across three and a half months** before anyone looked (VI-642).
+
+[`.github/workflows/scheduled-workflow-watch.yml`](./.github/workflows/scheduled-workflow-watch.yml)
+runs daily at 07:00 UTC and opens a GitHub issue — labelled `ci-watch` — when any
+scheduled workflow has failed **3 consecutive runs** on `main`. It closes that issue when
+the workflow goes green again, so one streak produces one issue and a later streak
+produces a fresh one.
+
+- **The watch list is auto-discovered** from every file in `.github/workflows/` carrying a
+  `schedule:` trigger, read at run time. Add a scheduled workflow and it is watched; there
+  is no allowlist to forget.
+- **The watcher is in its own watch list**, and its job has no `npm ci`, no build, and no
+  optional tooling — nothing that can fail *before* its assertion, which is exactly how
+  VI-642 hid. It also reports any watched workflow whose state is not `active`, which is
+  how GitHub retires a schedule after 60 days of repository inactivity.
+- **A failing workflow does not make the watcher red.** The issue is the signal; a red
+  watcher would alert on itself.
+
+Run it locally against the live repo without writing anything:
+
+```bash
+GITHUB_REPOSITORY=low-orbit-studio/visor GITHUB_TOKEN=$(gh auth token) \
+  node scripts/scheduled-workflow-watch.mjs --dry-run
+```
+
+Background: [`docs/wisdom/W033-gate-that-dies-before-it-runs.md`](./docs/wisdom/W033-gate-that-dies-before-it-runs.md).
+
 ## Environment
 
 - `.env.local` at repo root — contains API keys (if needed)

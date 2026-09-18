@@ -1,0 +1,72 @@
+name: Scheduled Workflow Watch
+
+# VI-645. Notices when a scheduled workflow has been failing for N consecutive
+# runs and opens a GitHub issue saying so. VI-642 was red for 276 consecutive
+# runs across three and a half months before anyone looked — see
+# docs/wisdom/W033-gate-that-dies-before-it-runs.md.
+#
+# Deliberate properties, each one a direct response to how VI-642 hid:
+#
+#   * **No setup steps.** No `npm ci`, no build, no optional tooling. Checkout,
+#     then node. VI-642 died at `Build CLI` and skipped the assertion it exists
+#     to make, which reads as infrastructure noise rather than a signal. There
+#     is nothing here that can fail before the assertion.
+#
+#   * **Auto-discovery.** The watch list is every workflow in this directory with
+#     a `schedule:` trigger, read at run time. Nobody has to remember to add the
+#     next one. (VI-645 D2.)
+#
+#   * **It watches itself.** This file has a `schedule:` trigger, so it is in its
+#     own watch list. That covers "the watcher runs but fails." Nothing inside
+#     the repo can cover "the watcher never runs at all"; the closest real
+#     mitigation is that the script reports any watched workflow whose state is
+#     not `active`, which is how GitHub retires a scheduled workflow after 60
+#     days of repository inactivity. (VI-645 D5.)
+#
+#   * **The job stays green when it finds something.** The issue is the signal. A
+#     red watcher would end up alerting on itself.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Report findings without opening or closing issues"
+        type: boolean
+        default: false
+  schedule:
+    # Daily at 07:00 UTC — an hour after the publish smoke's 06:00 run.
+    - cron: "0 7 * * *"
+
+concurrency:
+  group: scheduled-workflow-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    name: Watch scheduled workflows
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Watch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          # Null on a schedule trigger, which reads as "not true" below.
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          ARGS=()
+          if [ "$DRY_RUN" = "true" ]; then
+            ARGS+=(--dry-run)
+          fi
+          # `pipefail` is on by default in Actions bash, so a failing watcher
+          # still fails the step even though its output goes through tee.
+          node scripts/scheduled-workflow-watch.mjs "${ARGS[@]}" \
+            | tee -a "$GITHUB_STEP_SUMMARY"
