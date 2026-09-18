@@ -117,3 +117,6 @@ packages/docs/public/themes/*.visor.yaml
 
 # Claude Code session artifacts
 .env*
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/
