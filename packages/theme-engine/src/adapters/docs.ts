@@ -32,6 +32,7 @@ import {
   generateHairlineDecls,
   generateTextScaleAliasDecls,
   generateSpaceAliasDecls,
+  generateFontSizeDecls,
 } from "../generate-css.js";
 import { generateBrandPassthroughCss } from "./brand-passthrough.js";
 import { generateComponentTokensCss } from "./component-tokens-css.js";
@@ -111,13 +112,9 @@ function generateTypographyDecls(
   decls.push(`--font-body: ${fontStack(config.typography.body.family, aliases)};`);
   decls.push(`--font-mono: ${fontStack(config.typography.mono.family, aliases)};`);
 
-  // Font sizes
-  const fontSizes: Record<string, number> = {
-    xs: 12, sm: 14, base: 16, lg: 18, xl: 20, "2xl": 24, "3xl": 30, "4xl": 36,
-  };
-  for (const [name, px] of Object.entries(fontSizes)) {
-    decls.push(`--font-size-${name}: ${px / 16}rem; /* ${px}px */`);
-  }
+  // Font sizes — multiplied by `typography.scale` (VI-638), from the same ramp
+  // the core generator uses so the two outputs cannot drift.
+  decls.push(...generateFontSizeDecls(config.typography.scale));
 
   // Font weights
   decls.push(`--font-weight-normal: ${config.typography.body.weight};`);
@@ -309,11 +306,13 @@ export function docsAdapter(
       }
     }
 
-    // Visor Fonts @font-face — emitted with a per-theme aliased family name
-    // so co-loaded themes that share a family don't overwrite each other's
-    // per-theme properties (e.g. `size-adjust`). The theme's `--font-*` vars
-    // reference this aliased name first, with the bare family as fallback.
-    const scale = input.config.typography?.scale ?? 1;
+    // Visor Fonts @font-face — emitted with a per-theme aliased family name so
+    // co-loaded themes that share a family don't overwrite each other's
+    // per-theme properties. The theme's `--font-*` vars reference this aliased
+    // name first, with the bare family as fallback. (VI-354 introduced the
+    // alias to protect a per-theme `size-adjust`; VI-638 removed that
+    // declaration, but the alias still isolates every other per-theme face
+    // property, so it stays.)
     const emittedFamilies = new Set<string>();
     for (const font of fontSlots) {
       if (font && font.source === "visor-fonts" && !emittedFamilies.has(font.family)) {
@@ -327,9 +326,6 @@ export function docsAdapter(
           fontLines.push(`  font-weight: ${weight};`);
           fontLines.push(`  font-style: ${font.italic ? "italic" : "normal"};`);
           fontLines.push(`  font-display: ${font.display};`);
-          if (scale !== 1) {
-            fontLines.push(`  size-adjust: ${Math.round(scale * 100)}%;`);
-          }
           fontLines.push("}");
           fontLines.push("");
         }
@@ -343,7 +339,11 @@ export function docsAdapter(
 
   const sharedDecls: string[] = [
     "min-height: 100vh;",
-    "font-size: 1rem;",
+    // VI-638: the scaled ramp is the single mechanism that sets type size, and
+    // the base step is what the page inherits. Safe here because the scope is a
+    // class on a wrapper, never `:root` — a scaled root would multiply the
+    // rem-expressed ramp a second time.
+    "font-size: var(--font-size-base, 1rem);",
     // BO-56: pin UA chrome to the brand's single mode (adaptive emits nothing).
     ...(singleMode ? [`color-scheme: ${singleMode};`] : []),
     `background: var(--surface-page, var(--surface-background));`,

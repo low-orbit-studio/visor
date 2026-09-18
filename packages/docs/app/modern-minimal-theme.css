@@ -169,7 +169,7 @@ html:not(.dark) .modern-minimal-theme {
 /* --- Primitive: Colors --- */
 .modern-minimal-theme {
   min-height: 100vh;
-  font-size: 1rem;
+  font-size: var(--font-size-base, 1rem);
   background: var(--surface-page, var(--surface-background));
   color: var(--text-primary);
   font-family: var(--font-sans);

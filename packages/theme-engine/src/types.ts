@@ -155,6 +155,12 @@ export interface VisorThemeConfig {
     info?: string;
   };
   typography?: {
+    /**
+     * Type-scale multiplier applied to the `--font-size-*` ramp (VI-638).
+     * Every step is multiplied by it, and the page inherits the scaled
+     * `--font-size-base`. CSS adapters only — the Flutter adapter emits
+     * Material 3 slot sizes verbatim. Default: 1.
+     */
     scale?: number;
     /**
      * VI-375: text color placed on a LIGHT interactive background. Auto-picked
@@ -345,6 +351,12 @@ export interface ResolvedThemeConfig {
   };
   "colors-dark"?: VisorThemeConfig["colors-dark"];
   typography: {
+    /**
+     * Type-scale multiplier applied to the `--font-size-*` ramp (VI-638).
+     * Every step is multiplied by it, and the page inherits the scaled
+     * `--font-size-base`. CSS adapters only — the Flutter adapter emits
+     * Material 3 slot sizes verbatim. Default: 1.
+     */
     scale: number;
     /**
      * VI-375: resolved default text color for LIGHT interactive backgrounds.

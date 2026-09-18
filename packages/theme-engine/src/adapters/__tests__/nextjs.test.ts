@@ -492,7 +492,10 @@ describe("nextjsAdapter — visor-base element baseline (VI-616)", () => {
     expect(body).toContain("font-family: var(--font-body);");
     expect(body).toContain("color: var(--text-primary);");
     expect(body).toContain("background: var(--surface-page, var(--surface-background));");
-    expect(body).toContain("font-size: 1rem;");
+    // VI-638: the base size is the ramp's base step, so `typography.scale`
+    // reaches the page through one mechanism instead of a second, disagreeing
+    // `font-size: <scale>rem` in the primitives block.
+    expect(body).toContain("font-size: var(--font-size-base, 1rem);");
   });
 
   it("orders visor-base first, so consumer and component rules always win", () => {

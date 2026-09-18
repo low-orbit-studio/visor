@@ -153,7 +153,7 @@ html:not(.dark) .neutral-theme {
 /* --- Primitive: Colors --- */
 .neutral-theme {
   min-height: 100vh;
-  font-size: 1rem;
+  font-size: var(--font-size-base, 1rem);
   background: var(--surface-page, var(--surface-background));
   color: var(--text-primary);
   font-family: var(--font-sans);

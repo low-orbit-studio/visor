@@ -31,7 +31,7 @@ import { docsProxyExists } from './rules/docs-proxy-exists.js';
 import { themeFontImports } from './rules/theme-font-imports.js';
 import { globalsCssImportsOrder } from './rules/globals-css-imports-order.js';
 import { globalsWordmarkRules } from './rules/globals-wordmark-rules.js';
-import { themeFontScaleAdjust } from './rules/theme-font-scale-adjust.js';
+import { themeTypeScaleRamp } from './rules/theme-type-scale-ramp.js';
 import { themePrimaryBrandAnchor } from './rules/theme-primary-brand-anchor.js';
 import { registryManifestSync } from './rules/registry-manifest-sync.js';
 import { hooksDocsPageExists } from './rules/hooks-docs-page-exists.js';
@@ -67,7 +67,7 @@ const rules: Rule[] = [
   themeStructure,
   themePrimaryScale,
   themeFontImports,
-  themeFontScaleAdjust,
+  themeTypeScaleRamp,
   themePrimaryBrandAnchor,
   globalsCssImportsOrder,
   globalsWordmarkRules,

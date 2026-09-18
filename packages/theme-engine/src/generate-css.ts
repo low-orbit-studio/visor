@@ -134,15 +134,51 @@ function generateShadowPrimitives(config: ResolvedThemeConfig): string[] {
   ];
 }
 
+/**
+ * The font-size ramp in px at `scale: 1`. Shared by the core generator and the
+ * docs adapter so the two cannot drift apart again.
+ */
+export const FONT_SIZE_RAMP_PX: Readonly<Record<string, number>> = {
+  xs: 12,
+  sm: 14,
+  base: 16,
+  lg: 18,
+  xl: 20,
+  "2xl": 24,
+  "3xl": 30,
+  "4xl": 36,
+};
+
+/**
+ * Emit `--font-size-*`, multiplied by `typography.scale`.
+ *
+ * VI-638: `scale` multiplies the ramp and nothing else. It previously wrote a
+ * standalone `font-size: <scale>rem` on the host selector and left the ramp at
+ * its absolute values, so on a 0.85 theme an element inheriting the body size
+ * and an element set to `var(--font-size-base)` rendered 17.6% apart — a gap
+ * wider than a full step of the ramp it belongs to. Two mechanisms disagreeing
+ * is what produced that; there is now one.
+ *
+ * The scaled base reaches the page as `font-size: var(--font-size-base)` on
+ * `body` (the nextjs adapter's base layer) or on the docs scope class —
+ * deliberately never on `:root`. The ramp is expressed in `rem`, so scaling the
+ * root font-size as well would multiply twice.
+ *
+ * `scale: 1` output is byte-identical to the pre-VI-638 emission.
+ */
+export function generateFontSizeDecls(scale: number): string[] {
+  return Object.entries(FONT_SIZE_RAMP_PX).map(([name, px]) => {
+    const scaled = px * scale;
+    const rem = Number((scaled / 16).toFixed(5));
+    return `--font-size-${name}: ${rem}rem; /* ${Number(scaled.toFixed(2))}px */`;
+  });
+}
+
 function generateTypographyPrimitives(
   config: ResolvedThemeConfig,
   aliases: AliasedFamilies = EMPTY_ALIASES,
 ): string[] {
   const decls: string[] = [];
-
-  // Font-size scale — applied to wrapper/root, cascades to em-relative elements
-  const scale = config.typography.scale;
-  decls.push(`font-size: ${scale === 1 ? "1rem" : `${scale}rem`};`);
 
   // Font families — layer the aliased name before the bare family for any
   // family the theme emits as a per-theme @font-face (see VI-354).
@@ -152,20 +188,9 @@ function generateTypographyPrimitives(
   decls.push(`--font-body: ${fontStack(config.typography.body.family, aliases)};`);
   decls.push(`--font-mono: ${fontStack(config.typography.mono.family, aliases)};`);
 
-  // Font sizes (matching Visor defaults — not configurable via .visor.yaml yet)
-  const fontSizes: Record<string, number> = {
-    xs: 12,
-    sm: 14,
-    base: 16,
-    lg: 18,
-    xl: 20,
-    "2xl": 24,
-    "3xl": 30,
-    "4xl": 36,
-  };
-  for (const [name, px] of Object.entries(fontSizes)) {
-    decls.push(`--font-size-${name}: ${px / 16}rem; /* ${px}px */`);
-  }
+  // Font sizes — the step values themselves are not configurable via
+  // .visor.yaml yet; `typography.scale` multiplies them.
+  decls.push(...generateFontSizeDecls(config.typography.scale));
 
   // Font weights
   decls.push(`--font-weight-normal: ${config.typography.body.weight};`);
