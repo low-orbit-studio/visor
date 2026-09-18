@@ -11,7 +11,7 @@
  * children stay mounted inside the box, which is what holds the width.
  */
 
-import { render, screen, act } from "@testing-library/react"
+import { render, screen, act, fireEvent } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 import { Button, BUTTON_PENDING_DELAY_MS, BUTTON_PENDING_MIN_DURATION_MS } from "../button"
@@ -257,5 +257,46 @@ describe("Button — pending, accessibility", () => {
     advance(0)
     vi.useRealTimers()
     await checkA11y(container)
+  })
+})
+
+describe("Button — an inert button stops a FORM SUBMIT, not only an onClick", () => {
+  /* Found by measurement in a consumer, not by reading. Suppressing `onClick`
+     leaves the browser's own activation behaviour intact, so a `type="submit"`
+     button in a pending (or gated) state still submitted its form through
+     `onSubmit` — which the Button never sees. Most buttons either state exists
+     for are submits inside a form, so the primitive has to cancel the default,
+     not just the handler. */
+  it("does not submit its form while pending", () => {
+    const onSubmit = vi.fn((e: React.FormEvent) => e.preventDefault())
+    render(
+      <form onSubmit={onSubmit}>
+        <Button type="submit" pending>Save</Button>
+      </form>
+    )
+    fireEvent.click(screen.getByRole("button", { name: /save/i }))
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
+
+  it("does not submit its form while gated", () => {
+    const onSubmit = vi.fn((e: React.FormEvent) => e.preventDefault())
+    render(
+      <form onSubmit={onSubmit}>
+        <Button type="submit" gated>Save</Button>
+      </form>
+    )
+    fireEvent.click(screen.getByRole("button", { name: /save/i }))
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
+
+  it("submits normally when it is neither", () => {
+    const onSubmit = vi.fn((e: React.FormEvent) => e.preventDefault())
+    render(
+      <form onSubmit={onSubmit}>
+        <Button type="submit">Save</Button>
+      </form>
+    )
+    fireEvent.click(screen.getByRole("button", { name: /save/i }))
+    expect(onSubmit).toHaveBeenCalledOnce()
   })
 })
