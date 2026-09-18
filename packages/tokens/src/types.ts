@@ -101,6 +101,9 @@ export const TOKEN_FONT_WEIGHT_NORMAL = "--font-weight-normal" as const;
 export const TOKEN_FONT_WEIGHT_MEDIUM = "--font-weight-medium" as const;
 export const TOKEN_FONT_WEIGHT_SEMIBOLD = "--font-weight-semibold" as const;
 export const TOKEN_FONT_WEIGHT_BOLD = "--font-weight-bold" as const;
+export const TOKEN_FONT_WEIGHT_HEADING = "--font-weight-heading" as const;
+export const TOKEN_FONT_WEIGHT_BODY = "--font-weight-body" as const;
+export const TOKEN_FONT_WEIGHT_DISPLAY = "--font-weight-display" as const;
 
 // Shadows
 export const TOKEN_SHADOW_XS = "--shadow-xs" as const;

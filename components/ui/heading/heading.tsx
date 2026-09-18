@@ -14,6 +14,11 @@ const headingVariants = cva(styles.base, {
       "2xl": styles.size2xl,
     },
     weight: {
+      // `heading` follows the theme's declared heading weight; the other four
+      // are steps on the named ramp. Before VI-639 these were the same thing —
+      // `--font-weight-semibold` was emitted as the theme's heading weight, so
+      // the default below silently meant "heading" on every theme.
+      heading: styles.weightHeading,
       normal: styles.weightNormal,
       medium: styles.weightMedium,
       semibold: styles.weightSemibold,
@@ -21,7 +26,7 @@ const headingVariants = cva(styles.base, {
     },
   },
   defaultVariants: {
-    weight: "semibold",
+    weight: "heading",
   },
 })
 

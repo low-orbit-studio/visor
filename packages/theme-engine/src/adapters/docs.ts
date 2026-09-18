@@ -34,6 +34,7 @@ import {
   generateSpaceAliasDecls,
   generateFontSizeDecls,
 } from "../generate-css.js";
+import { generateFontWeightDecls } from "../font-weights.js";
 import { generateBrandPassthroughCss } from "./brand-passthrough.js";
 import { generateComponentTokensCss } from "./component-tokens-css.js";
 import { resolveComponentBindings } from "../component-tokens.js";
@@ -116,11 +117,9 @@ function generateTypographyDecls(
   // the core generator uses so the two outputs cannot drift.
   decls.push(...generateFontSizeDecls(config.typography.scale));
 
-  // Font weights
-  decls.push(`--font-weight-normal: ${config.typography.body.weight};`);
-  decls.push("--font-weight-medium: 500;");
-  decls.push(`--font-weight-semibold: ${config.typography.heading.weight};`);
-  decls.push("--font-weight-bold: 700;");
+  // Font weights — same resolution as the core generator (VI-639), so the two
+  // outputs cannot disagree about what a named weight means.
+  decls.push(...generateFontWeightDecls(config.typography));
 
   // Line heights
   const lineHeights: Record<string, number> = {

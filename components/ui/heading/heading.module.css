@@ -32,6 +32,17 @@
 }
 
 /* Weights */
+
+/*
+ * VI-639: the theme's own heading weight. `--font-weight-heading` carries what
+ * this theme says headings weigh; `--font-weight-semibold` is a step on the
+ * named ramp and no longer doubles as that channel. Falls back through semibold
+ * so a consumer on an older tokens package keeps the previous resolution.
+ */
+.weightHeading {
+  font-weight: var(--font-weight-heading, var(--font-weight-semibold, 600));
+}
+
 .weightNormal {
   font-weight: var(--font-weight-normal, 400);
 }

@@ -372,6 +372,24 @@ Set `typography.<slot>.source` in `.visor.yaml` to control which `@font-face` (o
 
 The validator (`validateFontCoverage`) runs inside `visor theme sync` and `generate-private-themes.mjs`. Any theme whose emitted CSS names a custom family with no matching `@font-face` aborts the build with a pointer to the offending slot. Generic CSS keywords (`system-ui`, `sans-serif`, …) and well-known platform fonts (`SF Mono`, `Helvetica`, …) are skipped — those are intentional fallback-stack entries.
 
+### 11b. Font Weight Rule (VI-639)
+
+Weight tokens come in three families, and they are not interchangeable:
+
+| Family | Tokens | Means |
+|--------|--------|-------|
+| **Ramp** | `--font-weight-{normal,medium,semibold,bold}` | A generic step. `semibold` means "a step above medium", not "a heading". |
+| **Role** | `--font-weight-{heading,body,display}` | What *this theme* says that role weighs, from `typography.<slot>.weight`. Surfaced semantically as `--weight-heading` / `--weight-body`. |
+| **Ladder** | `--font-weight-<n>` | One per weight in the theme's `weights` array — the only way to name a loaded face exactly (e.g. `--font-weight-800`). |
+
+Use a **role** token when you mean "the theme's heading weight" and a **ramp** step when you mean a specific weight relative to body copy. Reach for the **ladder** only when a component genuinely needs one exact face; it is per-theme, so a component using it is asserting that weight exists.
+
+Never re-purpose one family as another. `--font-weight-semibold` used to be emitted as `typography.heading.weight`, which collapsed it onto `--font-weight-medium` on every theme whose heading weight was 500, onto `--font-weight-normal` where it was 400, and inverted the ramp where it was above `bold`.
+
+**Declare `weights`.** When a slot names a `weights` array, the engine resolves every emitted weight token against that set using the CSS font-matching algorithm — so no token can name a face the theme never fetched, and the emitted value is the one the browser would have substituted anyway. A theme with a hosted `source` and no `weights` array keeps the canonical 400/500/600/700 literals and earns a `FONT_WEIGHTS_UNDECLARED` build warning.
+
+Two names may still share a value when the family cannot separate them — a `[400, 700]` family has nothing to put between `normal` and `medium`. That is reported as `FONT_WEIGHT_RAMP_COLLAPSED`, a warning rather than an error: it is what the browser already does, and the fix is to load an intermediate face or use the ladder.
+
 ### 12. No Magic Numbers Rule
 
 Every value in component CSS must trace to a token or be documented as intentional. No unexplained pixel values, rem values, or percentages.

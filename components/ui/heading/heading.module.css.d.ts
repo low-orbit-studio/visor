@@ -6,6 +6,7 @@ declare const styles: {
   readonly sizeLg: string
   readonly sizeXl: string
   readonly size2xl: string
+  readonly weightHeading: string
   readonly weightNormal: string
   readonly weightMedium: string
   readonly weightSemibold: string

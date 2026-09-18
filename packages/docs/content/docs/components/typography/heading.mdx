@@ -41,11 +41,21 @@ The `size` prop lets you decouple visual size from semantic level — an `<h3>` 
 
 ## Weights
 
+`weight="heading"` is the default and follows the active theme's declared heading
+weight (`--font-weight-heading`). The other four are steps on the named ramp,
+which each theme resolves against the font weights it actually loads — so on a
+theme that ships no face between 500 and 700, `semibold` resolves to 700 rather
+than to a weight the browser would have to substitute.
+
+Reach for `heading` when you want "whatever this theme's headings weigh", and a
+ramp step when you want a specific weight relative to body copy.
+
 <ComponentPreview
   title="Weight Variants"
-  code={"<Heading weight=\"normal\">Normal Weight</Heading>\n<Heading weight=\"medium\">Medium Weight</Heading>\n<Heading weight=\"semibold\">Semibold Weight</Heading>\n<Heading weight=\"bold\">Bold Weight</Heading>"}
+  code={"<Heading weight=\"heading\">Heading Weight (theme default)</Heading>\n<Heading weight=\"normal\">Normal Weight</Heading>\n<Heading weight=\"medium\">Medium Weight</Heading>\n<Heading weight=\"semibold\">Semibold Weight</Heading>\n<Heading weight=\"bold\">Bold Weight</Heading>"}
 >
   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+    <Heading weight="heading">Heading Weight (theme default)</Heading>
     <Heading weight="normal">Normal Weight</Heading>
     <Heading weight="medium">Medium Weight</Heading>
     <Heading weight="semibold">Semibold Weight</Heading>
