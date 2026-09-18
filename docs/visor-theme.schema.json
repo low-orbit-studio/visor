@@ -187,7 +187,7 @@
         },
         "scale": {
           "type": "number",
-          "description": "Type scale multiplier applied to the font-size ramp. Default: 1."
+          "description": "Type scale multiplier applied to the font-size ramp: every --font-size-* step is multiplied by it, and the page inherits the scaled --font-size-base. Default: 1. CSS adapters only — the Flutter adapter emits Material 3 slot sizes verbatim and ignores this field."
         },
         "text-on-light": {
           "type": "string",

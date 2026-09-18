@@ -43,6 +43,10 @@ export interface NextJSAdapterOptions extends AdapterOptions {
    * `@layer visor-base` origination block that binds theme tokens to the page
    * root (default: true). Set false for consumers that ship Tailwind preflight
    * or their own reset. See VI-616.
+   *
+   * VI-638: the base block also carries `font-size: var(--font-size-base)`,
+   * which is how `typography.scale` reaches the page. A consumer that declines
+   * it must bind the base size itself — on `body`, not `:root`.
    */
   includeBaseLayer?: boolean;
 }

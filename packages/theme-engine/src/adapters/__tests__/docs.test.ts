@@ -252,7 +252,11 @@ describe("docsAdapter", () => {
       expect(css).toContain('--font-heading: "Modern Society [custom-font-theme]", "Modern Society";');
     });
 
-    it("emits size-adjust on visor-fonts @font-face when scale < 1", () => {
+    // VI-638: `scale` used to reach the docs output as `size-adjust` on
+    // visor-fonts `@font-face` rules — a third meaning for the field, applied
+    // only to that one source. It now multiplies the `--font-size-*` ramp, the
+    // same single mechanism the core generator uses.
+    it("expresses scale as a multiplied font-size ramp, not size-adjust", () => {
       const scaledYaml = `
 name: Scaled Theme
 version: 1
@@ -268,10 +272,12 @@ typography:
     org: low-orbit-studio
 `;
       const css = docsAdapter(makeInput(scaledYaml));
-      expect(css).toContain("size-adjust: 80%;");
+      expect(css).not.toContain("size-adjust");
+      expect(css).toContain("--font-size-base: 0.8rem; /* 12.8px */");
+      expect(css).toContain("font-size: var(--font-size-base, 1rem);");
     });
 
-    it("does not emit size-adjust when scale is 1 (default)", () => {
+    it("never emits size-adjust, scaled or not", () => {
       const css = docsAdapter(makeInput(VISOR_FONT_YAML));
       expect(css).not.toContain("size-adjust");
     });
@@ -334,11 +340,14 @@ typography:
 
   describe("cross-theme @font-face scoping (VI-354)", () => {
     // Two themes that share `PP Model Mono` as a visor-fonts family with
-    // different `typography.scale` values. Before VI-354, both themes
-    // emitted `@font-face { font-family: "PP Model Mono"; size-adjust: ... }`,
-    // and the later block silently overwrote the earlier one for shared
-    // weights. After VI-354, each theme's @font-face uses an aliased
-    // family name so they coexist without collision.
+    // different `typography.scale` values. Before VI-354, both themes emitted
+    // `@font-face { font-family: "PP Model Mono"; size-adjust: ... }`, and the
+    // later block silently overwrote the earlier one for shared weights. After
+    // VI-354, each theme's @font-face uses an aliased family name so they
+    // coexist without collision. VI-638 moved `scale` off `size-adjust` and
+    // onto the `--font-size-*` ramp, so the per-theme divergence now shows up
+    // there — but the alias still isolates every other per-theme face property
+    // (src URL, weight set, display), so the isolation contract stands.
     const SCALE_90_YAML = `
 name: Scale Ninety
 version: 1
@@ -410,12 +419,14 @@ typography:
         /@font-face \{\s*\n\s*font-family: "PP Model Mono";/,
       );
 
-      // size-adjust is preserved per theme (the original bug: 80% used to
-      // overwrite 90% via shared `@font-face` for "PP Model Mono").
-      expect(css90).toContain("size-adjust: 90%;");
-      expect(css80).toContain("size-adjust: 80%;");
-      expect(css90).not.toContain("size-adjust: 80%;");
-      expect(css80).not.toContain("size-adjust: 90%;");
+      // Each theme's scale is preserved independently (the original bug: 80%
+      // used to overwrite 90% via a shared `@font-face` for "PP Model Mono").
+      // Post-VI-638 that divergence lives on the ramp rather than size-adjust.
+      expect(combined).not.toContain("size-adjust");
+      expect(css90).toContain("--font-size-base: 0.9rem; /* 14.4px */");
+      expect(css80).toContain("--font-size-base: 0.8rem; /* 12.8px */");
+      expect(css90).not.toContain("--font-size-base: 0.8rem;");
+      expect(css80).not.toContain("--font-size-base: 0.9rem;");
     });
 
     it("emits 4 distinct @font-face blocks across two themes sharing a family with 2 weights each", () => {

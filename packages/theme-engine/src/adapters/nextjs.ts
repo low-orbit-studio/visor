@@ -174,7 +174,11 @@ export function nextjsAdapter(
     baseLines.push(
       block(scopePrefix ?? "body", [
         "font-family: var(--font-body);",
-        "font-size: 1rem;",
+        // VI-638: the scaled ramp is the single mechanism that sets type size,
+        // and the base step is what the page inherits. This binding lives on
+        // `body` (or the body-class scope), never `:root` — the ramp is
+        // expressed in `rem`, so a scaled root would multiply it a second time.
+        "font-size: var(--font-size-base, 1rem);",
         "color: var(--text-primary);",
         "background: var(--surface-page, var(--surface-background));",
       ]),
