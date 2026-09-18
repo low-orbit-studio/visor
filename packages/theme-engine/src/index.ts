@@ -95,6 +95,16 @@ export {
   generateDarkCss,
   generateFullBundleCss,
 } from "./generate-css.js";
+export {
+  WEIGHT_RAMP_TARGETS,
+  loadedWeights,
+  declaresWeights,
+  matchLoadedWeight,
+  resolveWeightRamp,
+  resolveRoleWeight,
+  generateFontWeightDecls,
+  type ResolvedWeightRamp,
+} from "./font-weights.js";
 
 // Extraction pipeline
 export { extractFromCSS, parseCSSDeclarations, parseFontFaceDeclarations, cleanFontValue } from "./extract.js";

@@ -204,10 +204,12 @@ export const semanticTypography = {
   "size-heading-lg": "font-size-2xl",
   "size-heading-xl": "font-size-3xl",
 
-  // Weight roles
-  "weight-body": "font-weight-normal",
+  // Weight roles. `body`/`heading` resolve through the role primitives a theme
+  // sets from its own typography slots (VI-639); `label`/`strong` stay on the
+  // named ramp, which is what they mean.
+  "weight-body": "font-weight-body",
   "weight-label": "font-weight-medium",
-  "weight-heading": "font-weight-semibold",
+  "weight-heading": "font-weight-heading",
   "weight-strong": "font-weight-bold",
 } as const;
 

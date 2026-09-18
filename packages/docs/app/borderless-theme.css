@@ -269,9 +269,15 @@ html:not(.dark) .borderless-theme {
   --font-size-3xl: 1.875rem; /* 30px */
   --font-size-4xl: 2.25rem; /* 36px */
   --font-weight-normal: 400;
-  --font-weight-medium: 500;
+  --font-weight-medium: 400;
   --font-weight-semibold: 700;
   --font-weight-bold: 700;
+  --font-weight-heading: 700;
+  --font-weight-body: 400;
+  --font-weight-display: 400;
+  --weight-display: 400;
+  --font-weight-400: 400;
+  --font-weight-700: 700;
   --line-height-none: 1;
   --line-height-tight: 1.25;
   --line-height-snug: 1.375;

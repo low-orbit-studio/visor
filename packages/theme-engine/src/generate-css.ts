@@ -14,6 +14,7 @@ import type {
   ColorScheme,
 } from "./types.js";
 import { FULL_SHADE_STEPS, SELECTIVE_SHADE_STEPS } from "./shades.js";
+import { generateFontWeightDecls } from "./font-weights.js";
 import {
   EMPTY_ALIASES,
   fontStack,
@@ -192,12 +193,9 @@ function generateTypographyPrimitives(
   // .visor.yaml yet; `typography.scale` multiplies them.
   decls.push(...generateFontSizeDecls(config.typography.scale));
 
-  // Font weights
-  decls.push(`--font-weight-normal: ${config.typography.body.weight};`);
-  decls.push("--font-weight-medium: 500;");
-  decls.push(`--font-weight-semibold: ${config.typography.heading.weight};`);
-  decls.push("--font-weight-bold: 700;");
-  decls.push(`--weight-display: ${config.typography.display.weight};`);
+  // Font weights — named ramp resolved against the faces the theme loaded,
+  // plus the role tokens and the discrete ladder (VI-639).
+  decls.push(...generateFontWeightDecls(config.typography));
 
   // Line heights
   const lineHeights: Record<string, number> = {

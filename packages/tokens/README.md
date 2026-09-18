@@ -146,7 +146,9 @@ const value = getComputedStyle(element).getPropertyValue(TOKEN_TEXT_PRIMARY)
 | Border widths | `--border-width-*` | `--border-width-1` |
 | Font families | `--font-*` | `--font-sans` |
 | Font sizes | `--font-size-*` | `--font-size-base` |
-| Font weights | `--font-weight-*` | `--font-weight-semibold` |
+| Font weights (ramp) | `--font-weight-{normal,medium,semibold,bold}` | `--font-weight-semibold` |
+| Font weights (role) | `--font-weight-{heading,body,display}` | `--font-weight-heading` |
+| Font weights (ladder) | `--font-weight-<n>` | `--font-weight-800` |
 | Line heights | `--line-height-*` | `--line-height-normal` |
 | Shadows | `--shadow-*` | `--shadow-md` |
 | Z-index | `--z-*` | `--z-modal` |

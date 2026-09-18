@@ -21,6 +21,7 @@ import {
   getKnownTokenRefs,
 } from "./semantic-map.js";
 import { checkBrandStrategyCoherence } from "./brand-strategy/validate.js";
+import { declaresWeights, loadedWeights, resolveWeightRamp } from "./font-weights.js";
 import { generatePrimitives, generateDarkPrimitives } from "./pipeline.js";
 import { assignSemanticTokens, reapplyInteractiveTextDerivation } from "./assign.js";
 import { applyOverrides } from "./overrides.js";
@@ -423,6 +424,74 @@ function checkTypeScaleCoherence(
         )
       );
     }
+  }
+}
+
+/**
+ * VI-639 D4 — tell a theme author when a named weight token will not resolve to
+ * a face they loaded. Today the browser silently substitutes and nothing says
+ * so, which is how `--font-weight-medium: 500` survived on four themes that
+ * only ever loaded 400 and 700.
+ *
+ * Warnings, not errors: substitution is legal CSS and every shipped theme
+ * relied on it. The point is to make the gap visible at build time.
+ */
+function checkFontWeightCoverage(
+  config: VisorThemeConfig,
+  issues: ValidationIssue[]
+): void {
+  const typography = config.typography;
+  if (!typography) return;
+
+  const HOSTED: ReadonlySet<string> = new Set(["visor-fonts", "google-fonts", "fontshare"]);
+  const slots = ["heading", "display", "body", "mono"] as const;
+
+  if (!declaresWeights(typography)) {
+    const hosted = slots.filter((slot) => {
+      const source = typography[slot]?.source;
+      return typeof source === "string" && HOSTED.has(source);
+    });
+    if (hosted.length > 0) {
+      issues.push(
+        issue(
+          "warning",
+          "FONT_WEIGHTS_UNDECLARED",
+          `typography.${hosted[0]} loads from '${typography[hosted[0]]!.source}' but no slot declares a 'weights' array. ` +
+            `Named weight tokens fall back to the canonical 500/600/700 literals, which may not be faces this theme fetched. ` +
+            `Declare 'weights' to make them resolve against what you actually load.`,
+          `typography.${hosted[0]}.weights`
+        )
+      );
+    }
+    return;
+  }
+
+  // The theme told us what it loads, so every emitted value is resolved against
+  // that set and cannot point outside it. What can still surprise an author is
+  // a ramp step that collapses onto the one below it because the family has no
+  // face in between — asking for the heavier name then renders no differently.
+  const loaded = loadedWeights(typography);
+  const ramp = resolveWeightRamp(typography);
+  const collapsed = ([
+    ["medium", "normal"],
+    ["semibold", "medium"],
+    ["bold", "semibold"],
+  ] as const)
+    .filter(([heavier, lighter]) => ramp[heavier] === ramp[lighter])
+    .map(([heavier, lighter]) => `${heavier} = ${lighter} (${ramp[heavier]})`);
+
+  if (collapsed.length > 0) {
+    issues.push(
+      issue(
+        "warning",
+        "FONT_WEIGHT_RAMP_COLLAPSED",
+        `Named weight steps share a value because this theme loads only [${loaded.join(", ")}]: ${collapsed.join(", ")}. ` +
+          `Asking for the heavier name renders no differently from the lighter one. This is what the browser already does — ` +
+          `load an intermediate face, or use the discrete ladder (--font-weight-${loaded.join(" / --font-weight-")}) ` +
+          `where a real step is needed.`,
+        "typography"
+      )
+    );
   }
 }
 
@@ -1160,6 +1229,9 @@ export function validate(config: unknown, options?: ValidateOptions): ThemeValid
 
   // 3. Type scale coherence (errors)
   checkTypeScaleCoherence(typedConfig, errors);
+
+  // 3b. Font-weight coverage (VI-639, warnings only)
+  checkFontWeightCoverage(typedConfig, warnings);
 
   // 4. Letter-spacing validation (errors)
   checkLetterSpacing(typedConfig, errors);

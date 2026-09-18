@@ -136,6 +136,16 @@ export const primitiveFontWeights = {
   medium: 500,
   semibold: 600,
   bold: 700,
+  // VI-639: role weights. The named ramp above is a generic vocabulary; these
+  // three are what a *theme* says its headings, body and display type weigh.
+  // Themes override them from `typography.<slot>.weight`; the defaults here
+  // reproduce the untuned Visor baseline. Before this, `--weight-heading`
+  // aliased `--font-weight-semibold` and the theme engine emitted its heading
+  // weight *as* semibold — the only channel it had, and the reason asking for
+  // "semibold" on a 500-heading theme rendered no differently from "medium".
+  heading: 600,
+  body: 400,
+  display: 400,
 } as const;
 
 // Line heights
