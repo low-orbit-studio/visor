@@ -140,7 +140,7 @@ The Borealis publish gate prevents drift between the source in this repo and the
 **Run it locally:**
 
 ```bash
-npm run build -w packages/cli
+npm run build -w packages/theme-engine -w packages/tokens -w packages/cli
 npm run smoke:publish
 ```
 
@@ -157,7 +157,7 @@ The PR is the durable, public artifact connecting a commit to the change that in
 **Run the audit locally:**
 
 ```bash
-npm run build -w packages/cli
+npm run build -w packages/theme-engine -w packages/tokens -w packages/cli
 npm run audit:publish               # human report
 npm run audit:publish -- --json     # machine-readable
 GITHUB_TOKEN=... npm run audit:publish -- --post-comments

@@ -63,8 +63,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # The CLI's `build:manifest` imports @loworbitstudio/visor-theme-engine,
+      # which resolves through the workspace symlink to packages/theme-engine —
+      # whose dist/ is a build artifact that `npm ci` does not produce. Building
+      # packages/cli alone therefore fails at ERR_MODULE_NOT_FOUND, and every
+      # step below is skipped, so the smoke silently never ran between
+      # 2026-06-04 (when VI-505 added that import) and VI-642. Same package list
+      # as the CI test shards, which is why CI stayed green throughout.
       - name: Build CLI (produces packages/cli/dist/registry.json)
-        run: npm run build -w packages/cli
+        run: npm run build -w packages/theme-engine -w packages/tokens -w packages/cli
 
       - name: Wait for npm CDN to index new publish
         if: github.event_name == 'workflow_run'
