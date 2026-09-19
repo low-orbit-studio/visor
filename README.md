@@ -651,7 +651,7 @@ npm run themes:apply-flutter  # Regenerate packages/visor_themes/ for all 11 the
 
 Every PR that touches shipping-package source needs a `.changeset/*.md` file. The `Changeset Gate` workflow blocks merge if one is missing or malformed.
 
-**Automatic generation (recommended).** The pre-push git hook runs `scripts/generate-changeset.mjs` before every push. If the diff touches a shipping path (any directory listed in `changeset-paths.json` — `components/`, `blocks/`, `hooks/`, `lib/`, `registry/`, `themes/`, `patterns/`, `assets/`, or the `src/`/`lib/` trees of the published packages) and no operator-authored changeset exists yet, Claude will write `.changeset/<branch-slug>.md` and stage it automatically. The same `changeset-paths.json` drives the CI changeset gate, so the local hook and CI stay in sync.
+**Automatic generation (recommended).** The pre-push git hook runs `scripts/generate-changeset.mjs` before every push. If the diff touches a shipping path (any directory keyed in `changeset-paths.json` — `components/`, `blocks/`, `hooks/`, `lib/`, `registry/`, `themes/`, `patterns/`, `assets/`, or the `src/`/`lib/` trees of the published packages) and no operator-authored changeset exists yet, Claude will write `.changeset/<branch-slug>.md` and stage it automatically. The same `changeset-paths.json` drives the CI changeset gate, so the local hook and CI stay in sync. Each entry also names the npm package that publishes that path, and CI rejects a changeset that declares a real-but-wrong package — see **Package ownership** below.
 
 Requirements: `claude` CLI must be installed globally (`npm install -g @anthropic-ai/claude-code`). If it's not available, the hook prints a warning and the push proceeds normally.
 
@@ -680,6 +680,24 @@ git push --no-verify
 **Failure handling.** If `claude` fails for any reason, the hook exits 0 and the push proceeds. Run `npm run changeset` manually if you need a minor/major bump and the auto-generation failed.
 
 **Prompt source.** `scripts/changeset-prompt.md` contains the bump-type rules and output format. Edit it to tune the AI's behavior.
+
+**Package ownership (VI-647).** `changeset-paths.json` maps every shipping path to the npm package that publishes it, and CI checks that a PR's changesets declare every package the PR touched. A changeset may name *more* packages than the diff touches — that is a release-scope choice — but not fewer.
+
+```json
+"shippingPaths": {
+  "packages/theme-engine/src/**": "@loworbitstudio/visor-theme-engine",
+  "themes/**": "@loworbitstudio/visor-core",
+  "assets/**": null
+}
+```
+
+A `null` owner means the path requires a changeset but no npm package publishes it (`assets/` is README artwork and brand SVGs; `packages/visor-flutter/` ships to pub.dev), so no package name is asserted.
+
+Why this check exists: VI-638 and VI-639 changed `packages/theme-engine/src/generate-css.ts` but both changesets declared `@loworbitstudio/visor` — the CLI. Three gates passed green (a changeset was present, it named a package that is in the workspace, and the publish smoke only covers the CLI), `visor-theme-engine` was never bumped, and the fixes sat on `main` unpublished. Run the check locally with:
+
+```sh
+node scripts/check-changeset-packages.mjs
+```
 
 ### Repository Structure
 

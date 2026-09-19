@@ -140,11 +140,14 @@ describe('hasPublishedPackageChanges', () => {
 // ---------------------------------------------------------------------------
 
 describe('SHIPPING_PATHS', () => {
-  it('exposes the list from changeset-paths.json', () => {
+  it('exposes the keys of the ownership map in changeset-paths.json', () => {
+    // VI-647 turned shippingPaths from a flat array into a path→package map.
+    // This hook only needs "does the diff touch a shipping path", so it reads
+    // the keys; scripts/check-changeset-packages.mjs reads the values.
     const raw = JSON.parse(
       readFileSync(join(REPO_ROOT, 'changeset-paths.json'), 'utf8'),
     );
-    expect(SHIPPING_PATHS).toEqual(raw.shippingPaths);
+    expect(SHIPPING_PATHS).toEqual(Object.keys(raw.shippingPaths));
   });
 
   it('every pattern ends in "/**" so prefix-matching is sound', () => {
