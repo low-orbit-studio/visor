@@ -1,5 +1,63 @@
 # Changelog
 
+## 0.20.0
+
+### Minor Changes
+
+- 938b39a: > **Republish (VI-646).** The work below merged in #716 but its changeset declared
+  > `"@loworbitstudio/visor"` — the CLI — while the code it changed lives in `packages/theme-engine`.
+  > Version Packages #718 released the CLI; `@loworbitstudio/visor-theme-engine` was never bumped, so this fix sat on
+  > `main` unpublished. This entry re-declares it against the right package(s). No code changed.
+  
+  VI-638: `typography.scale` now multiplies the `--font-size-*` ramp it always claimed to, and it is the only mechanism that sets type size.
+  
+  The schema promised "type scale multiplier applied to the font-size ramp." The generator wrote a standalone `font-size: <scale>rem` on the host selector and left the ramp as a literal map. On a theme scoped with `scopePrefix` (the VI-368 body-class repaint pattern), the root element stays at 16px, so the ramp never moved:
+  
+  ```
+  <html> font-size          16px
+  <body> computed           13.6px   ← the 0.85 landed here
+  var(--font-size-base)     16px     ← and nowhere near here
+  ```
+  
+  An element inheriting the body size and an element asking for `--font-size-base` rendered 17.6% apart — a wider gap than a full step of the ramp they both belong to (12→14 is 16.7%). Reaching for a token got you a size that matched nothing around it.
+  
+  Two other implementations of the same field went with it:
+  
+  - The docs adapter turned `scale` into `size-adjust: <scale*100>%` on `@font-face`, and only for `visor-fonts` slots — so a Fontshare or Google theme got nothing, and against a scaled ramp it would have shrunk twice. It is removed. `size-adjust` is a font-metric correction rather than a type-scale one; if a theme needs it, it belongs in its own optional field.
+  - The Flutter adapter ignores `scale` entirely. That is unchanged, but the schema now says so instead of implying otherwise.
+  
+  **What changed**
+  
+  - `--font-size-*` are multiplied by `typography.scale`, from one ramp definition shared by the core generator and the docs adapter.
+  - The bare `font-size` declaration is gone from the primitives block. The page inherits the scaled base through `font-size: var(--font-size-base, 1rem)` — on `body` (nextjs base layer) or the docs scope class, deliberately never on `:root`. The ramp is expressed in `rem`, so scaling the root as well would apply the factor a second time.
+  - The `theme-font-scale-adjust` validate rule, which required `size-adjust` on scaled themes, is replaced by `theme-type-scale-ramp`, which checks that the ramp responds, the page is bound to the base step, and no `size-adjust` remains.
+  
+  **Migration.** `scale: 1` output is byte-identical, so any theme that does not declare a scale is untouched — that is 14 of the 17 currently shipped. On a theme that does (`blacklight`, `blacklight-pro`, `blacklight-aqua`, all at 0.85), the rendered body size does not move; `--font-size-base` moves to meet it, from 16px to 13.6px, and every other step scales with it. Consumers of `var(--font-size-*)` on those themes get the ~15% they asked for when they set the scale, at the point they re-run `visor theme apply`.
+  
+  A consumer passing `includeBaseLayer: false` supplies its own reset and must now bind the base size itself — on `body`, not `:root`.
+- 938b39a: > **Republish (VI-646).** The work below merged in #717 but its changeset declared
+  > `"@loworbitstudio/visor"` — the CLI — while the code it changed lives in `packages/theme-engine` and `packages/tokens`.
+  > Version Packages #718 released the CLI; neither `@loworbitstudio/visor-theme-engine` nor `@loworbitstudio/visor-core` was never bumped, so this fix sat on
+  > `main` unpublished. This entry re-declares it against the right package(s). No code changed.
+  
+  VI-639: `--font-weight-semibold` is a step on the weight ramp again, not the theme's heading weight, and the `weights` array a theme declares is now authoritative.
+  
+  `semibold` was emitted as `typography.heading.weight`, which is a different concept. On any theme whose heading weight is 500 it was identical to `--font-weight-medium`, so a component author asking for a step above medium silently got medium. Where the heading weight is 400 it collapsed onto `normal`. Where it is above 700 it inverted the ramp — `strata` shipped `semibold: 800` over `bold: 700`. Meanwhile `medium: 500` and `bold: 700` were bare literals that ignored the declared `weights` entirely, so a theme declaring `[200, 400, 600, 900]` got tokens naming faces it never fetched.
+  
+  **Why it could not simply be unpinned.** `--font-weight-semibold` was the *only* channel a theme's heading weight had: `packages/tokens` defined `--weight-heading: var(--font-weight-semibold)`, the engine emitted no per-theme value, and `Heading` defaults to a semibold weight. Changing semibold alone would have flattened every heading in every app.
+  
+  **What changed**
+  
+  - **Role primitives.** `--font-weight-heading`, `--font-weight-body` and `--font-weight-display` are emitted per theme from `typography.<slot>.weight`, and the semantic `--weight-heading` / `--weight-body` roles resolve through them. They are `--font-weight-*` primitives rather than the bare `--weight-*` names on purpose: the semantic names live in `@layer visor-semantic`, which wins over `visor-primitives`, so a theme writing them directly would be overridden by the tokens package on a `:root`-scoped consumer.
+  - **The named ramp resolves against loaded faces.** On any theme declaring a `weights` array, `normal / medium / semibold / bold` resolve through the CSS font-matching algorithm (CSS Fonts 4 §5.2) against that set. The browser already performs this substitution at render time, so the emitted token becomes the weight that was *already rendering* — verified against Chrome's own engine across 23 target/face combinations. Themes that declare no `weights` array keep the historical literals.
+  - **The declared ladder is reachable.** `--font-weight-<n>` is emitted for every weight in the array, following the `--text-N` / `--space-N` precedent from VI-451. Blacklight's 800 had no name before; BL-987 had to write a literal `font-weight: 700`.
+  - **`Heading` gains `weight="heading"`, now its default.** It follows `--font-weight-heading`, so heading weight keeps tracking the theme on every shipped theme while `weight="semibold"` becomes a genuine ramp step. The previous four values are unchanged.
+  - **Two build-time warnings.** `FONT_WEIGHTS_UNDECLARED` when a theme loads from a hosted source but declares no `weights` array; `FONT_WEIGHT_RAMP_COLLAPSED` when a family cannot separate adjacent named steps. Warnings, not errors — substitution is legal CSS and every shipped theme relied on it.
+  
+  **Migration.** Eleven of the seventeen shipped themes emit the same rendered weights. Six change, and each is a correction: the three Blacklight themes get `semibold: 700` instead of a second `medium: 500`; `knowmentum` gets `semibold: 500` instead of a `semibold` identical to body; `strata`'s inverted `semibold: 800` becomes `700`; `sked` gets the real `600` it loads instead of `700`. Where `medium` moves (e.g. `500` → `400` on a `[400, 700]` family) the rendered face does not: 500 was already being substituted.
+  
+  A consumer that relied on `--font-weight-semibold` carrying the theme's heading weight should move to `--font-weight-heading` (or `Heading`'s `weight="heading"`).
+
 ## 0.19.0
 
 ### Minor Changes
