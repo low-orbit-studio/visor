@@ -58,7 +58,10 @@ jobs:
       # -----------------------------------------------------------------------
       # Build paths-filter input from changeset-paths.json (single source of
       # truth shared with scripts/generate-changeset.mjs — the local pre-push
-      # hook). Update the JSON file, not this workflow, when paths change.
+      # hook — and scripts/check-changeset-packages.mjs). Update the JSON file,
+      # not this workflow, when paths change. Since VI-647 the entries are an
+      # object keyed by path, so the keys are the filter and the values name the
+      # owning package.
       # -----------------------------------------------------------------------
       - name: Build paths-filter from changeset-paths.json
         id: build-filter
@@ -70,7 +73,7 @@ jobs:
             echo "::error::changeset-paths.json not found at repo root. The changeset gate cannot determine shipping paths without it."
             exit 1
           fi
-          PATHS=$(jq -r '.shippingPaths[] | "  - \"" + . + "\""' changeset-paths.json)
+          PATHS=$(jq -r '.shippingPaths | keys_unsorted[] | "  - \"" + . + "\""' changeset-paths.json)
           if [ -z "$PATHS" ]; then
             echo "::error::changeset-paths.json contains no .shippingPaths entries. Refusing to silently bypass the changeset gate."
             exit 1
@@ -168,3 +171,24 @@ jobs:
 
       - name: Validate changeset frontmatter
         run: node scripts/validate-changesets.mjs
+
+      # -----------------------------------------------------------------------
+      # Ownership gate — the changeset must name the package whose code this PR
+      # touched, not merely *a* real package. Background: VI-647. VI-638 (#716)
+      # and VI-639 (#717) changed packages/theme-engine/src/generate-css.ts and
+      # both changesets declared "@loworbitstudio/visor" — the CLI. All three
+      # existing gates passed green: a changeset was present, it named a package
+      # that is in the workspace, and the publish smoke only covers the CLI.
+      # visor-theme-engine was never bumped and the fixes never reached npm.
+      #
+      # Runs only when the presence gate applies. `skip-changeset` means no
+      # changeset is required, so there is nothing to cross-check; a PR touching
+      # no shipping paths has no owner to assert.
+      # -----------------------------------------------------------------------
+      - name: Check changeset package ownership
+        if: |
+          steps.skip.outputs.skip == 'false' &&
+          steps.shipping.outputs.source == 'true'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: node scripts/check-changeset-packages.mjs

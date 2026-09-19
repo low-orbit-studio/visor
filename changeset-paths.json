@@ -1,18 +1,19 @@
 {
-  "_comment": "Single source of truth for the changeset gate. Both scripts/generate-changeset.mjs (local pre-push hook) and .github/workflows/changeset-gate.yml (CI gate) read this file. When this list changes, both consumers pick it up automatically. Patterns use minimatch syntax; every entry must end in '/**'.",
-  "shippingPaths": [
-    "components/**",
-    "blocks/**",
-    "hooks/**",
-    "lib/**",
-    "registry/**",
-    "themes/**",
-    "patterns/**",
-    "assets/**",
-    "packages/cli/src/**",
-    "packages/theme-engine/src/**",
-    "packages/visor-flutter/lib/**",
-    "packages/tokens/src/**",
-    "packages/tailwind-preset/src/**"
-  ]
+  "_comment": "Single source of truth for the changeset gate. Both scripts/generate-changeset.mjs (local pre-push hook) and .github/workflows/changeset-gate.yml (CI gate) read this file. When this map changes, both consumers pick it up automatically. Keys are the shipping paths — patterns use minimatch syntax and every key must end in '/**'. Values name the npm package that publishes that path, so the gate can check that a changeset declares the package whose code the PR actually touched (VI-647). A null value means the path requires a changeset but no npm package publishes it, so no owner can be asserted — see _unowned.",
+  "_unowned": "assets/** is README artwork and brand SVGs, listed in no package's `files` field. packages/visor-flutter/lib/** publishes to pub.dev, which changesets does not manage. Both still require a changeset for release-note visibility; neither can be cross-checked against a package name.",
+  "shippingPaths": {
+    "components/**": "@loworbitstudio/visor",
+    "blocks/**": "@loworbitstudio/visor",
+    "hooks/**": "@loworbitstudio/visor",
+    "lib/**": "@loworbitstudio/visor",
+    "registry/**": "@loworbitstudio/visor",
+    "themes/**": "@loworbitstudio/visor-core",
+    "patterns/**": "@loworbitstudio/visor",
+    "assets/**": null,
+    "packages/cli/src/**": "@loworbitstudio/visor",
+    "packages/theme-engine/src/**": "@loworbitstudio/visor-theme-engine",
+    "packages/visor-flutter/lib/**": null,
+    "packages/tokens/src/**": "@loworbitstudio/visor-core",
+    "packages/tailwind-preset/src/**": "@loworbitstudio/visor-tailwind-preset"
+  }
 }
