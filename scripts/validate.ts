@@ -43,6 +43,7 @@ import { patternOverlapDetection } from './rules/pattern-overlap-detection.js';
 import { discoverabilityScore } from './rules/discoverability-score.js';
 import { themeTextContrast } from './rules/theme-text-contrast.js';
 import { tokenResolutionTransparency } from './rules/token-resolution-transparency.js';
+import { scopedThemeAliasResolution } from './rules/scoped-theme-alias-resolution.js';
 import { crossPlatformManifestSync } from './rules/cross-platform-manifest-sync.js';
 import { flutterCssTokenSync } from './rules/flutter-css-token-sync.js';
 import { widgetbookUseCaseCoverage } from './rules/widgetbook-use-case-coverage.js';
@@ -94,6 +95,7 @@ const rules: Rule[] = [
   discoverabilityScore,
   themeTextContrast,
   tokenResolutionTransparency,
+  scopedThemeAliasResolution,
   hooksDocsPageExists,
   patternsDocsPageExists,
   docsPageExists,
