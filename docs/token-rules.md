@@ -251,6 +251,28 @@ overrides:
 
 Bare `primary` resolves to the intent group, not `--text-primary` (prefixed `text-primary` continues to route to the text group).
 
+### 5c. Alias Substitution on Scoped Themes (VI-648)
+
+A semantic alias resolves **where it is declared**, not where it is read. This is the rule that decides whether a theme is honoured at all.
+
+`@loworbitstudio/visor-core` declares its remaining aliases on `:root` as indirections:
+
+```css
+:root {
+  --weight-heading: var(--font-weight-heading);
+  --chart-1: var(--color-primary-500);
+}
+```
+
+On a `:root`-scoped theme that is correct — the theme's primitives land on the same element, so `var()` sees them. On a `scopePrefix` theme (the VI-368 body-class repaint pattern) the theme's primitives land on a *descendant*, e.g. `body.mybrand-theme`. From `:root` those are invisible, so the alias substitutes visor-core's untuned default and `body` inherits that already-substituted value. The theme is ignored, silently, with no warning and no invalid CSS.
+
+The engine closes this by re-declaring the affected aliases on the scope selector. Two rules follow for anyone touching the alias surface:
+
+1. **Adding an alias to `packages/tokens/src/tokens/semantic.ts` means adding it to `VISOR_CORE_SEMANTIC_ALIASES`** in `packages/theme-engine/src/semantic-aliases.ts`. The `semantic-alias-coverage` test compares the table against the emitted `tokens.css` and fails with the missing names, so this is enforced rather than remembered.
+2. **A green `validate:strict` on token *names* proves nothing about resolved *values*.** The `scoped-theme-alias-resolution` rule asserts, in a real browser, that every alias computes to the same value as the primitive it resolves through, per theme. Before it existed, a theme declaring `typography.heading.weight: 500` computed `--weight-heading: 600` and every text-level check passed.
+
+Consumers on a scoped theme pick the fix up by re-running `visor theme apply`; it lives in generated CSS, not in the `.visor.yaml`.
+
 ### 6. Motion Rule
 
 All transitions must use `var(--motion-duration-*)` for timing and `var(--motion-easing-*)` for easing. No hard-coded duration or easing values.
@@ -382,7 +404,7 @@ Weight tokens come in three families, and they are not interchangeable:
 | **Role** | `--font-weight-{heading,body,display}` | What *this theme* says that role weighs, from `typography.<slot>.weight`. Surfaced semantically as `--weight-heading` / `--weight-body`. |
 | **Ladder** | `--font-weight-<n>` | One per weight in the theme's `weights` array — the only way to name a loaded face exactly (e.g. `--font-weight-800`). |
 
-Use a **role** token when you mean "the theme's heading weight" and a **ramp** step when you mean a specific weight relative to body copy. Reach for the **ladder** only when a component genuinely needs one exact face; it is per-theme, so a component using it is asserting that weight exists.
+Use a **role** token when you mean "the theme's heading weight" and a **ramp** step when you mean a specific weight relative to body copy. On a `scopePrefix` theme the semantic `--weight-*` roles only track the theme because the engine re-declares them at the scope — see [5c](#5c-alias-substitution-on-scoped-themes-vi-648). Reach for the **ladder** only when a component genuinely needs one exact face; it is per-theme, so a component using it is asserting that weight exists.
 
 Never re-purpose one family as another. `--font-weight-semibold` used to be emitted as `typography.heading.weight`, which collapsed it onto `--font-weight-medium` on every theme whose heading weight was 500, onto `--font-weight-normal` where it was 400, and inverted the ramp where it was above `bold`.
 

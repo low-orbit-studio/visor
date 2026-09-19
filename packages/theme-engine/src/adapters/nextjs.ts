@@ -28,6 +28,10 @@ import { generateBrandPassthroughCss } from "./brand-passthrough.js";
 import { generateComponentTokensCss } from "./component-tokens-css.js";
 import { resolveComponentBindings } from "../component-tokens.js";
 import { LAYER_ORDER, wrapInLayer } from "./layers.js";
+import {
+  collectDeclaredProperties,
+  generateSemanticAliasDecls,
+} from "../semantic-aliases.js";
 import type { AdapterInput, NextJSAdapterOptions } from "./types.js";
 
 function toKebabCase(name: string): string {
@@ -294,17 +298,49 @@ export function nextjsAdapter(
     semanticLines.push("");
   }
 
+  // 3d. Adaptive layer body (light + dark). BO-56: single-mode brands emit only
+  // one palette (on the host) — the unused generator returns "". Built here,
+  // ahead of being appended in step 4, because the scope re-substitution below
+  // needs to know every property this theme declares — including the adaptive
+  // ones it resolves through, such as `--surface-muted`.
+  const lightBody = stripHeader(generateLightCss(input.tokens, { scopePrefix, colorScheme }));
+  const darkBody = stripHeader(generateDarkCss(input.tokens, { scopePrefix, colorScheme }));
+  const adaptiveBody = [lightBody, darkBody].filter(Boolean).join("\n\n");
+
+  // 3e. Scope re-substitution (VI-648).
+  //
+  // visor-core declares its remaining semantic aliases on `:root` as
+  // indirections — `--chart-1: var(--color-primary-500)`. Substitution resolves
+  // where a property is *declared*, so from `:root` those never see the
+  // theme's primitives on a descendant scope selector; `body` inherits the
+  // already-substituted visor-core default and the theme is silently ignored.
+  // Re-declaring the aliases on the scope moves the substitution there.
+  //
+  // Only for a scoped theme. A `:root`-scoped theme declares its primitives on
+  // the same element visor-core aliases from, so substitution already sees
+  // them and this block would be redundant — and would change that theme's
+  // emitted bytes for no behavioural gain.
+  if (scopePrefix) {
+    const declared = collectDeclaredProperties(
+      [primitivesBody, semanticLines.join("\n"), adaptiveBody].join("\n"),
+    );
+    const aliasDecls = generateSemanticAliasDecls(declared);
+    if (aliasDecls.length > 0) {
+      semanticLines.push(
+        sectionComment("visor-core alias re-substitution at theme scope (VI-648)"),
+      );
+      semanticLines.push(block(hostSelector, aliasDecls));
+      semanticLines.push("");
+    }
+  }
+
   const semanticLayer = wrapInLayer("visor-semantic", semanticLines.join("\n").trim());
   if (semanticLayer) {
     lines.push(semanticLayer);
     lines.push("");
   }
 
-  // 4. Adaptive layer (light + dark). BO-56: single-mode brands emit only one
-  // palette (on the host) — the unused generator returns "".
-  const lightBody = stripHeader(generateLightCss(input.tokens, { scopePrefix, colorScheme }));
-  const darkBody = stripHeader(generateDarkCss(input.tokens, { scopePrefix, colorScheme }));
-  const adaptiveBody = [lightBody, darkBody].filter(Boolean).join("\n\n");
+  // 4. Adaptive layer (light + dark).
   lines.push(
     wrapInLayer("visor-adaptive", adaptiveBody),
   );
