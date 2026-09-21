@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.26.2
+
+### Patch Changes
+
+- Updated dependencies [a34153f]
+  - @loworbitstudio/visor-theme-engine@0.21.0
+
 ## 1.26.1
 
 ### Patch Changes
