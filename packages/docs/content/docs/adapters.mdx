@@ -53,6 +53,28 @@ The dark-mode block composes the prefix with the standard `.dark` / `.theme-dark
 
 When `--scope-prefix` is omitted, output is unchanged (`:root` selectors), so existing setups continue to work.
 
+##### Alias re-substitution at the scope
+
+A scoped theme also carries a block re-declaring visor-core's remaining semantic aliases on the scope selector:
+
+```css
+/* --- visor-core alias re-substitution at theme scope (VI-648) --- */
+body.mybrand-theme {
+  --weight-heading: var(--font-weight-heading);
+  --chart-1: var(--color-primary-500);
+  --skeleton-from: var(--surface-muted);
+  /* ... */
+}
+```
+
+This is load-bearing, not redundant. `@loworbitstudio/visor-core` declares these aliases on `:root`, and CSS resolves a custom property's `var()` **where the property is declared**. From `:root`, a theme's primitives on a descendant scope selector are invisible, so the alias would resolve against visor-core's untuned default and the element would inherit that already-substituted value — the theme silently ignored. Re-declaring the aliases on the scope moves the substitution there.
+
+Before this block existed, a theme declaring `typography.heading.weight: 500` computed `--weight-heading: 600`, and `--chart-1` / `--skeleton-from` rendered visor-core's stock light-mode values on dark themes.
+
+`:root`-scoped output does not include the block and is byte-identical to before — a `:root` theme declares its primitives on the same element visor-core aliases from, so substitution already sees them.
+
+**Upgrading:** re-run `visor theme apply` for any theme using `--scope-prefix`. The fix is in generated CSS; no `.visor.yaml` changes are needed.
+
 ### Fumadocs
 
 Generates a bridge CSS file that maps Visor semantic tokens to fumadocs `--color-fd-*` custom properties.
