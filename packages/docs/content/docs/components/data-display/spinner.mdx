@@ -1,11 +1,12 @@
 ---
 title: Spinner
-description: Inline loading indicator — a rotating ring with a subtle track and tone-colored leading edge.
+description: Loading indicator — an inline rotating ring, or a dotted thinking-orb for waits over larger surfaces.
 ---
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Spinner } from '@/components/ui/spinner';
+import { SpinnerOrbGalleryDemo, SpinnerRingVsOrbDemo, SpinnerOrbScrimDemo } from '@/components/ui/spinner-demo';
 
 ## Default
 
@@ -58,15 +59,64 @@ Pass a `label` to make the spinner meaningful to screen readers. It renders `rol
   <Spinner size="sm" tone="primary" label="Loading results…" />
 </ComponentPreview>
 
+## Orb
+
+`variant="orb"` swaps the ring for a dotted thinking-orb, drawn on a canvas by [thinking-orbs](https://libraries.dev/orbs). The ring belongs inline, beside a button label. The orb is for a wait over a large visual, like a card re-rendering under a scrim or an agent thinking.
+
+The orb reuses `size`, mapped to the orb's own presets: `xs` is 20px, `sm` is 32px, and `md` is 64px. 20 and 64 are hand-tuned designs rather than a scale factor. 32 is interpolated between them.
+
+<ComponentPreview
+  title="Ring vs orb"
+  code={"import { Spinner } from '@/components/ui/spinner/spinner';\n\n<Spinner size=\"md\" />\n<Spinner variant=\"orb\" size=\"md\" />"}
+>
+  <SpinnerRingVsOrbDemo />
+</ComponentPreview>
+
+### States
+
+Pick the animation with `orb`. All nine states render at every size, shown here at md, sm, and xs.
+
+<ComponentPreview
+  title="Orb states"
+  code={"import { Spinner } from '@/components/ui/spinner/spinner';\n\n<Spinner variant=\"orb\" orb=\"working\" />\n<Spinner variant=\"orb\" orb=\"searching\" />\n<Spinner variant=\"orb\" orb=\"solving\" />\n<Spinner variant=\"orb\" orb=\"listening\" />\n<Spinner variant=\"orb\" orb=\"connecting\" />\n<Spinner variant=\"orb\" orb=\"weaving\" />\n<Spinner variant=\"orb\" orb=\"composing\" />\n<Spinner variant=\"orb\" orb=\"breathing\" />\n<Spinner variant=\"orb\" orb=\"shaping\" />"}
+>
+  <SpinnerOrbGalleryDemo />
+</ComponentPreview>
+
+### Primary tone
+
+By default the orb's ink follows the text colour of wherever it sits. `tone="primary"` tints it with the `--primary` brand token and keeps the orb's depth shading.
+
+<ComponentPreview
+  title="Orb primary tone"
+  code={"import { Spinner } from '@/components/ui/spinner/spinner';\n\n<Spinner variant=\"orb\" orb=\"weaving\" tone=\"primary\" />"}
+>
+  <SpinnerOrbGalleryDemo tone="primary" />
+</ComponentPreview>
+
+### Over a scrim
+
+Because the ink follows the surrounding text colour, set the text colour on a dark scrim and the orb draws light ink in both modes. The `label` contract works exactly as it does for the ring.
+
+<ComponentPreview
+  title="Orb over a scrim"
+  code={"import { Spinner } from '@/components/ui/spinner/spinner';\n\n<div style={{ background: 'var(--overlay-bg)', color: 'var(--color-white)' }}>\n  <Spinner variant=\"orb\" orb=\"working\" label=\"Rendering share card…\" />\n</div>"}
+>
+  <SpinnerOrbScrimDemo />
+</ComponentPreview>
+
+With `prefers-reduced-motion: reduce`, the orb renders one still frame instead of animating. It also pauses while it is offscreen or the tab is hidden.
+
 ## Installation
 
 ```bash
 npx visor add spinner
 ```
 
-This copies two files into your project:
+This copies three files into your project and installs `thinking-orbs`:
 
 - `components/ui/spinner/spinner.tsx` — the component
+- `components/ui/spinner/spinner-orb.tsx` — the orb variant (a client component)
 - `components/ui/spinner/spinner.module.css` — the styles
 
 ## Usage
@@ -79,6 +129,9 @@ import { Spinner } from '@/components/ui/spinner/spinner';
 
 {/* Accessible — standalone loading indicator */}
 <Spinner size="md" tone="primary" label="Loading data…" />
+
+{/* Orb — a wait over a large visual */}
+<Spinner variant="orb" orb="working" label="Rendering preview…" />
 ```
 
 ## API Reference

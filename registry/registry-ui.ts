@@ -411,12 +411,20 @@ export const ui: Registry = [
     name: "spinner",
     type: "registry:ui",
     description:
-      "Inline loading spinner — a rotating border ring with a subtle track and tone-colored leading edge. Three sizes (xs/sm/md), two tones (default/primary), accessible label contract, and full reduced-motion support.",
-    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+      "Loading spinner — an inline rotating ring, or a dotted thinking-orb (nine animations) for waits over larger surfaces. Three sizes (xs/sm/md), two tones (default/primary), accessible label contract, and full reduced-motion support.",
+    dependencies: [
+      "class-variance-authority",
+      "thinking-orbs",
+      "@loworbitstudio/visor-core",
+    ],
     registryDependencies: ["utils"],
     files: [
       {
         path: "components/ui/spinner/spinner.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/spinner/spinner-orb.tsx",
         type: "registry:ui",
       },
       {
