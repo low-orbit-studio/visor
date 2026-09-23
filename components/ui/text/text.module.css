@@ -6,36 +6,57 @@
 
 /* Sizes
  * A theme sets each size's type size, case and tracking through
- * --text-<size>-* (VI-656). Unset, case and tracking revert to what they would
- * be without these declarations (revert-layer), so a layered utility still applies. */
+ * --text-<size>-* (VI-656). Case and tracking live in visor-base, below. */
 .sizeXs {
   font-size: var(--text-xs-font-size, var(--font-size-xs, 0.75rem));
-  text-transform: var(--text-xs-text-transform, revert-layer);
-  letter-spacing: var(--text-xs-letter-spacing, revert-layer);
 }
 
 .sizeSm {
   font-size: var(--text-sm-font-size, var(--font-size-sm, 0.875rem));
-  text-transform: var(--text-sm-text-transform, revert-layer);
-  letter-spacing: var(--text-sm-letter-spacing, revert-layer);
 }
 
 .sizeMd {
   font-size: var(--text-md-font-size, var(--font-size-base, 1rem));
-  text-transform: var(--text-md-text-transform, revert-layer);
-  letter-spacing: var(--text-md-letter-spacing, revert-layer);
 }
 
 .sizeLg {
   font-size: var(--text-lg-font-size, var(--font-size-lg, 1.125rem));
-  text-transform: var(--text-lg-text-transform, revert-layer);
-  letter-spacing: var(--text-lg-letter-spacing, revert-layer);
 }
 
 .sizeXl {
   font-size: var(--text-xl-font-size, var(--font-size-xl, 1.25rem));
-  text-transform: var(--text-xl-text-transform, revert-layer);
-  letter-spacing: var(--text-xl-letter-spacing, revert-layer);
+}
+
+/* Case and tracking are inherited properties, so any unlayered fallback would
+   override something: `inherit` beats a layered utility, `revert-layer` drops
+   an unlayered consumer rule. In visor-base, the lowest Visor layer (the reset's),
+   every consumer rule still wins, and when the hook is unset revert-layer
+   leaves the element exactly as if these declarations were absent. */
+@layer visor-base {
+  .sizeXs {
+    text-transform: var(--text-xs-text-transform, revert-layer);
+    letter-spacing: var(--text-xs-letter-spacing, revert-layer);
+  }
+
+  .sizeSm {
+    text-transform: var(--text-sm-text-transform, revert-layer);
+    letter-spacing: var(--text-sm-letter-spacing, revert-layer);
+  }
+
+  .sizeMd {
+    text-transform: var(--text-md-text-transform, revert-layer);
+    letter-spacing: var(--text-md-letter-spacing, revert-layer);
+  }
+
+  .sizeLg {
+    text-transform: var(--text-lg-text-transform, revert-layer);
+    letter-spacing: var(--text-lg-letter-spacing, revert-layer);
+  }
+
+  .sizeXl {
+    text-transform: var(--text-xl-text-transform, revert-layer);
+    letter-spacing: var(--text-xl-letter-spacing, revert-layer);
+  }
 }
 
 /* Weights */

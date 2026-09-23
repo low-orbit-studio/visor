@@ -513,9 +513,11 @@ Switch track and knob dimensions (default size; `size="sm"` keeps its own). Set 
 | `--switch-edge-color` | Track edge colour — transparent by default. Width and style come from the shared `control` edge, so `control.edge-width: 0` turns it off. | `transparent` |
 
 Every hook in `field`, `button`, `text` and `switch` defaults to what shipped
-before it existed. Case and tracking fall back to "as if unset": `inherit` on
-the label and Text elements, and `revert-layer` on Button, whose `<button>`
-already carries a browser `normal` / `none`.
+before it existed. Case and tracking are declared in Visor's lowest cascade
+layer (`visor-base`, where the reset lives) and fall back to `revert-layer`, so
+while a hook is unset the element is exactly as it would be without it: your
+own rules, a utility class, a reset, inheritance or the browser's `<button>`
+default still decide. Set, the hook still yields to any rule of yours.
 
 A compact caps pill for dialog actions, a 13px state line and a caps state tag:
 

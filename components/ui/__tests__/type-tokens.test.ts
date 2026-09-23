@@ -191,6 +191,70 @@ describe("VI-656 — type, case and size hooks (real browser)", () => {
   })
 })
 
+// With a hook unset, the component must leave the property exactly as it would
+// be without the declaration: every consumer rule, layered or not, earlier or
+// later, still decides it. That is why the case, tracking and knob-padding
+// declarations live in @layer visor-base.
+describe("VI-656 — consumer rules still win while a hook is unset (real browser)", () => {
+  const TARGETS = [
+    { fixture: "text/default", target: SIZE_TEXT(2), prop: "text-transform", value: "uppercase" },
+    { fixture: "text/default", target: SIZE_TEXT(2), prop: "letter-spacing", value: "3px" },
+    { fixture: "field/default", target: LABEL, prop: "text-transform", value: "uppercase" },
+    { fixture: "button/default", target: "button", prop: "letter-spacing", value: "3px" },
+    { fixture: "button/dlg", target: "button", prop: "text-transform", value: "uppercase" },
+  ]
+  const readProp = async (fixture: string, target: string, prop: string, opts: { componentCss?: string; extraCss?: string }) => {
+    const [component, name] = fixture.split("/")
+    const page = await open(component, name, opts)
+    const value = (await page.evaluate(
+      `getComputedStyle(document.querySelector(${JSON.stringify(`#root ${target}`)})).getPropertyValue(${JSON.stringify(prop)})`,
+    )) as string
+    await page.close()
+    return value
+  }
+  // The pre-fix shapes: an unlayered declaration that shadows consumer rules.
+  const unlayered = (target: string, prop: string, fallback: string) =>
+    `#root ${target} { ${prop}: var(--vi656-unset, ${fallback}); }`
+
+  for (const t of TARGETS) {
+    const [component, fixture] = t.fixture.split("/")
+    const rule = `#root ${t.target} { ${t.prop}: ${t.value}; }`
+
+    it(`${t.fixture} ${t.prop}: an unlayered consumer rule loaded BEFORE the component wins`, async (ctx) => {
+      if (!ready()) return ctx.skip()
+      const css = (await bundle(component, fixture)).css
+      expect(await readProp(t.fixture, t.target, t.prop, { componentCss: `${rule}\n${css}` })).toBe(t.value)
+      // Mutation control: an unlayered revert-layer declaration drops it.
+      expect(
+        await readProp(t.fixture, t.target, t.prop, { componentCss: `${rule}\n${css}`, extraCss: unlayered(t.target, t.prop, "revert-layer") }),
+      ).not.toBe(t.value)
+    }, 30_000)
+
+    it(`${t.fixture} ${t.prop}: a layered utility wins`, async (ctx) => {
+      if (!ready()) return ctx.skip()
+      const utility = `@layer utilities { ${rule} }`
+      expect(await readProp(t.fixture, t.target, t.prop, { extraCss: utility })).toBe(t.value)
+      // Mutation control: an unlayered `inherit` declaration beats the layer.
+      expect(await readProp(t.fixture, t.target, t.prop, { extraCss: `${utility}\n${unlayered(t.target, t.prop, "inherit")}` })).not.toBe(t.value)
+    }, 30_000)
+  }
+
+  it("switch: an unlayered `button { padding: 0 }` reset still zeroes the track while knob-inset is unset", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    const css = (await bundle("switch", "default")).css
+    const preflight = "button { padding: 0; }"
+    expect(await readProp("switch/default", "button", "padding-left", { componentCss: `${preflight}\n${css}` })).toBe("0px")
+    // Mutation control: an unlayered revert-layer declaration brings the
+    // browser's button padding back.
+    expect(
+      await readProp("switch/default", "button", "padding-left", {
+        componentCss: `${preflight}\n${css}`,
+        extraCss: unlayered("button", "padding-inline", "revert-layer"),
+      }),
+    ).not.toBe("0px")
+  }, 30_000)
+})
+
 describe("VI-656 coverage", () => {
   it("exercises every token in the field, button, text and switch families", () => {
     const exercised = new Set(CASES.map((c) => c.token))

@@ -610,13 +610,14 @@ const controlFamily: ComponentTokenFamily = {
 // Field label, Button and Text, the Switch's dimensions, and (on Text) a
 // warning tone, following the badge precedent above. Every hook defaults to
 // what shipped before it existed. The inherited type properties (case,
-// tracking) fall back to `revert-layer`, "as if the declaration were absent":
-// on Button it keeps the `<button>` UA `normal` / `none` that `inherit` would
-// override, and on the label and Text it keeps any layered utility or reset
-// (a Tailwind v4 `uppercase`) that an unlayered `inherit` would beat. None of
-// these hooks draws an edge: the dlg outline Button and
-// the Switch track take theirs from the `control` family, so `control.edge-width:
-// 0` still removes them.
+// tracking) are declared in `@layer visor-base` with a `revert-layer`
+// fallback, so an unset hook is exactly "as if the declaration were absent":
+// every consumer rule, layered or unlayered, still wins, and otherwise the
+// element inherits or keeps the `<button>` UA `normal` / `none`. An unlayered
+// declaration cannot do that — `inherit` beats a layered utility and
+// `revert-layer` drops an unlayered consumer rule. None of these hooks draws an
+// edge: the dlg outline Button and the Switch track take theirs from the
+// `control` family, so `control.edge-width: 0` still removes them.
 const fieldFamily: ComponentTokenFamily = {
   family: "field",
   prefix: "field",

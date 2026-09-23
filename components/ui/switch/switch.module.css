@@ -58,10 +58,18 @@
 .sizeDefault {
   height: var(--switch-track-height, 1.15rem);
   width: var(--switch-track-width, 2rem);
-  padding-inline: var(--_switch-pad, revert-layer);
   --_switch-pad: calc(var(--switch-knob-inset) * 0);
   --_switch-knob-size: calc(var(--switch-track-height, 1.15rem) - 2 * var(--switch-knob-inset));
   --_switch-knob-start: calc(var(--switch-knob-inset) - 1px);
+}
+
+/* In visor-base so an unset inset leaves the track's padding to whatever reset
+   or browser default applies, and a set inset zeroes it only where no consumer
+   rule speaks. */
+@layer visor-base {
+  .sizeDefault {
+    padding-inline: var(--_switch-pad, revert-layer);
+  }
 }
 
 .sizeSm {
