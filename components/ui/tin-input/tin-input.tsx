@@ -92,6 +92,10 @@ const TinInput = React.forwardRef<HTMLInputElement, TinInputProps>(
     const [committedLastFour, setCommittedLastFour] = React.useState<string | null>(null)
     const [pasteError, setPasteError] = React.useState<string | null>(null)
     const [replacing, setReplacing] = React.useState(false)
+    // Until hydration nothing intercepts keystrokes, so the server-rendered
+    // field refuses input rather than showing the digits typed into it.
+    const [hydrated, setHydrated] = React.useState(false)
+    React.useEffect(() => setHydrated(true), [])
     // `undefined` until the first emission, so the first keystroke reports `null`.
     const lastEmittedNull = React.useRef<boolean | undefined>(undefined)
 
@@ -287,6 +291,7 @@ const TinInput = React.forwardRef<HTMLInputElement, TinInputProps>(
           onPaste={handlePaste}
           onBlur={handleBlur}
           onFocus={handleFocus}
+          readOnly={!hydrated}
           disabled={disabled}
           passwordManagers="ignore"
           // No `pattern`: the value is always the mask, so `[0-9]*` would hold

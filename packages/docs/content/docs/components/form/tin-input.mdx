@@ -111,6 +111,7 @@ const [tin, setTin] = useState<string | null>(null);
 ## How It Keeps the Digits Out
 
 - **The value is only ever the mask.** Every edit is intercepted before it reaches the DOM and applied to digits held in memory, so the digits are never in `input.value` or in any attribute, not even while typing.
+- **Nothing is typed before hydration.** The server-rendered field is read-only until the component mounts, so keystrokes on a slow first load are refused rather than shown in plain text.
 - **On blur, the digits are dropped.** A complete entry shows the grouping mask and the last four (`•••-••-1234`), and the component keeps only those four.
 - **No way back out.** There is no show/hide toggle, no copy affordance (copying the field copies bullets), no `title` or `data-*` carrying digits, and nothing is logged.
 - **No save prompts.** The field is a text input, never a password input, and it always carries the password-manager ignore attributes (`data-1p-ignore`, `data-bwignore`, `data-lpignore`, `data-form-type="other"`), even inside a form that allows them.

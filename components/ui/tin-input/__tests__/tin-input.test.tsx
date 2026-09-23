@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
+import { renderToString } from "react-dom/server"
 import { describe, it, expect, vi } from "vitest"
 import { TinInput, type TinInputProps } from "../tin-input"
 import { Field, FieldLabel } from "../../field/field"
@@ -396,6 +397,13 @@ describe("TinInput", () => {
       const ref = { current: null as HTMLInputElement | null }
       render(<TinInput ref={ref} aria-label="Taxpayer ID" kind="ssn" onValueChange={() => {}} />)
       expect(ref.current).toBe(screen.getByLabelText("Taxpayer ID"))
+    })
+
+    it("server-renders the field read-only, so nothing typed before hydration is shown", () => {
+      const html = renderToString(<TinInput aria-label="Taxpayer ID" kind="ssn" onValueChange={() => {}} />)
+      expect(html).toMatch(/<input[^>]*readonly/i)
+      render(<TinInput aria-label="Hydrated" kind="ssn" onValueChange={() => {}} />)
+      expect(screen.getByLabelText("Hydrated")).not.toHaveAttribute("readonly")
     })
 
     it("disables the field", () => {
