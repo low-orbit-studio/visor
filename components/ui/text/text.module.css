@@ -4,25 +4,37 @@
   margin: 0;
 }
 
-/* Sizes */
+/* Sizes
+ * A theme sets each size's type size, case and tracking through
+ * --text-<size>-* (VI-656). Case and tracking inherit when unset. */
 .sizeXs {
-  font-size: var(--font-size-xs, 0.75rem);
+  font-size: var(--text-xs-font-size, var(--font-size-xs, 0.75rem));
+  text-transform: var(--text-xs-text-transform, inherit);
+  letter-spacing: var(--text-xs-letter-spacing, inherit);
 }
 
 .sizeSm {
-  font-size: var(--font-size-sm, 0.875rem);
+  font-size: var(--text-sm-font-size, var(--font-size-sm, 0.875rem));
+  text-transform: var(--text-sm-text-transform, inherit);
+  letter-spacing: var(--text-sm-letter-spacing, inherit);
 }
 
 .sizeMd {
-  font-size: var(--font-size-base, 1rem);
+  font-size: var(--text-md-font-size, var(--font-size-base, 1rem));
+  text-transform: var(--text-md-text-transform, inherit);
+  letter-spacing: var(--text-md-letter-spacing, inherit);
 }
 
 .sizeLg {
-  font-size: var(--font-size-lg, 1.125rem);
+  font-size: var(--text-lg-font-size, var(--font-size-lg, 1.125rem));
+  text-transform: var(--text-lg-text-transform, inherit);
+  letter-spacing: var(--text-lg-letter-spacing, inherit);
 }
 
 .sizeXl {
-  font-size: var(--font-size-xl, 1.25rem);
+  font-size: var(--text-xl-font-size, var(--font-size-xl, 1.25rem));
+  text-transform: var(--text-xl-text-transform, inherit);
+  letter-spacing: var(--text-xl-letter-spacing, inherit);
 }
 
 /* Weights */
@@ -53,6 +65,10 @@
 
 .colorTertiary {
   color: var(--text-tertiary, #9ca3af);
+}
+
+.colorWarning {
+  color: var(--text-warning, #b45309);
 }
 
 .colorInherit {

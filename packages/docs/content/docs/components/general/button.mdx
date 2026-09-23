@@ -199,6 +199,24 @@ async function handleSave() {
   the overlay. Render a real `<button>` when you need the glyph.
 </Callout>
 
+## Theming
+
+A theme sets case, tracking, type size and rounding without a new size, through
+the `button` component tokens. The unprefixed keys set every size; a size key
+sets one. See [Component tokens](/docs/themes/component-tokens#button).
+
+```yaml
+components:
+  button:
+    dlg-font-size: "10px"
+    dlg-text-transform: uppercase
+    dlg-letter-spacing: "0.06em"
+    dlg-radius: "999px"
+```
+
+The outline face draws its edge from the shared `control` tokens at every size,
+so `edges: off` removes it with every other control's edge.
+
 ## Installation
 
 ```bash

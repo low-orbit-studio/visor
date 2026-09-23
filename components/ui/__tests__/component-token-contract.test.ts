@@ -183,6 +183,15 @@ describe("VI-625 component token contract", () => {
         const allow = new Set([
           // Tier-1 semantic surfaces that share the `surface` prefix.
           ...[...css.matchAll(/var\(\s*--(surface-[a-z0-9-]+)/g)].map((m) => m[1]),
+          // Tier-1 semantic text roles (`--text-primary`, `--text-warning`, …)
+          // share the `text` prefix. Every Text-family key begins with a size,
+          // so only a `--text-<size>-*` read can be a Text-family orphan.
+          ...[...css.matchAll(/var\(\s*--(text-(?!(?:xs|sm|md|lg|xl)-)[a-z0-9-]+)/g)].map((m) => m[1]),
+          // Field surfaces that share the `field` prefix and predate the
+          // contract: `--field-menu-bg` is a visor-core semantic alias, and
+          // `--field-control-bg` is the VI-620 dialog-substrate field fill.
+          "field-control-bg",
+          "field-menu-bg",
           // Sidebar rail geometry is written by SidebarProvider as an inline
           // style on the wrapper. An inline declaration outranks any layer, so
           // these are structure props the component owns — not theme bindings,

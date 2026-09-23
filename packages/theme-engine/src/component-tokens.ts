@@ -133,6 +133,8 @@ const SWITCH = "components/ui/switch/switch.module.css";
 const TAG_INPUT = "components/ui/tag-input/tag-input.module.css";
 const FILE_UPLOAD = "components/ui/file-upload/file-upload.module.css";
 const BUTTON = "components/ui/button/button.module.css";
+const FIELD = "components/ui/field/field.module.css";
+const TEXT = "components/ui/text/text.module.css";
 
 /** Shorthand for the common single-consumer case. */
 function at(file: string, fallback: string | null): ComponentTokenConsumer[] {
@@ -604,6 +606,160 @@ const controlFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-656 (filed from BL-1090). Type treatment — size, case and tracking — on
+// Field label, Button and Text, the Switch's dimensions, and (on Text) a
+// warning tone, following the badge precedent above. Every hook defaults to
+// what shipped before it existed. The inherited type properties (case,
+// tracking) fall back to "as if the declaration were absent": `inherit` on the
+// label and Text elements, which have no UA value for them, and `revert-layer`
+// on Button, whose `<button>` carries a UA `normal` / `none` that `inherit`
+// would override. None of these hooks draws an edge: the dlg outline Button and
+// the Switch track take theirs from the `control` family, so `control.edge-width:
+// 0` still removes them.
+const fieldFamily: ComponentTokenFamily = {
+  family: "field",
+  prefix: "field",
+  description:
+    "Field label treatment — size, case, tracking and colour of `FieldLabel`, in both densities.",
+  tokens: [
+    {
+      key: "label-font-size",
+      property: "font-size",
+      description: "Label type size. Drives both the standard and editorial-density steps.",
+      consumers: [
+        { file: FIELD, fallback: "var(--font-size-sm, 0.875rem)" },
+        { file: FIELD, fallback: "13px" },
+      ],
+    },
+    { key: "label-text-transform", property: "text-transform", description: "Label casing.", consumers: at(FIELD, "inherit") },
+    { key: "label-letter-spacing", property: "letter-spacing", description: "Label tracking.", consumers: at(FIELD, "inherit") },
+    {
+      key: "label-color",
+      property: "color",
+      description: "Label colour. Drives both the standard and editorial-density steps.",
+      consumers: [
+        { file: FIELD, fallback: "var(--text-primary, currentColor)" },
+        { file: FIELD, fallback: "var(--text-secondary)" },
+      ],
+    },
+  ],
+};
+
+/** Button sizes, each with its shipped type size and corner rounding. */
+const BUTTON_SIZES = [
+  { size: "sm", fontSize: ["var(--font-size-xs, 0.75rem)", "0.8125rem"], radius: "var(--radius-md, 0.375rem)" },
+  { size: "md", fontSize: ["var(--font-size-sm, 0.875rem)"], radius: "var(--radius-md, 0.375rem)" },
+  { size: "lg", fontSize: ["var(--font-size-base, 1rem)"], radius: "var(--radius-md, 0.375rem)" },
+  { size: "dlg", fontSize: ["var(--font-size-2xs, 0.6875rem)"], radius: "var(--radius-lg, 0.5rem)" },
+];
+const buttonFamily: ComponentTokenFamily = {
+  family: "button",
+  prefix: "button",
+  description:
+    "Button type treatment and rounding. The unprefixed keys set every size at once; a size key (`dlg-radius`) overrides one size.",
+  tokens: [
+    {
+      key: "text-transform",
+      property: "text-transform",
+      description: "Casing for every size.",
+      consumers: BUTTON_SIZES.map(() => ({ file: BUTTON, fallback: "revert-layer" })),
+    },
+    {
+      key: "letter-spacing",
+      property: "letter-spacing",
+      description: "Tracking for every size.",
+      consumers: BUTTON_SIZES.map(() => ({ file: BUTTON, fallback: "revert-layer" })),
+    },
+    {
+      key: "radius",
+      property: "border-radius",
+      description: "Corner rounding for every size (`999px` for a pill).",
+      consumers: BUTTON_SIZES.map(({ radius }) => ({ file: BUTTON, fallback: radius })),
+    },
+    ...BUTTON_SIZES.flatMap(({ size, fontSize, radius }) => [
+      {
+        key: `${size}-font-size`,
+        property: "font-size",
+        description:
+          fontSize.length > 1
+            ? `\`${size}\` type size. Drives both the standard and editorial-density steps.`
+            : `\`${size}\` type size.`,
+        consumers: fontSize.map((fallback) => ({ file: BUTTON, fallback })),
+      },
+      {
+        key: `${size}-text-transform`,
+        property: "text-transform",
+        description: `\`${size}\` casing.`,
+        consumers: at(BUTTON, "var(--button-text-transform, revert-layer)"),
+      },
+      {
+        key: `${size}-letter-spacing`,
+        property: "letter-spacing",
+        description: `\`${size}\` tracking.`,
+        consumers: at(BUTTON, "var(--button-letter-spacing, revert-layer)"),
+      },
+      {
+        key: `${size}-radius`,
+        property: "border-radius",
+        description: `\`${size}\` corner rounding.`,
+        consumers: at(BUTTON, `var(--button-radius, ${radius})`),
+      },
+    ]),
+  ],
+};
+
+/** Text sizes and the type size each shipped with. */
+const TEXT_SIZES = [
+  { size: "xs", fontSize: "var(--font-size-xs, 0.75rem)" },
+  { size: "sm", fontSize: "var(--font-size-sm, 0.875rem)" },
+  { size: "md", fontSize: "var(--font-size-base, 1rem)" },
+  { size: "lg", fontSize: "var(--font-size-lg, 1.125rem)" },
+  { size: "xl", fontSize: "var(--font-size-xl, 1.25rem)" },
+];
+// Every key begins with a size, so the family never claims a Tier-1 `--text-*`
+// colour role (`--text-primary`, `--text-warning`, …) that shares its prefix.
+const textFamily: ComponentTokenFamily = {
+  family: "text",
+  prefix: "text",
+  description:
+    "Text type treatment, per size — set `sm-font-size: 13px` for a 13px step, or caps and tracking on `xs` for a state tag. Every key begins with a size.",
+  tokens: TEXT_SIZES.flatMap(({ size, fontSize }) => [
+    { key: `${size}-font-size`, property: "font-size", description: `\`${size}\` type size.`, consumers: at(TEXT, fontSize) },
+    { key: `${size}-text-transform`, property: "text-transform", description: `\`${size}\` casing.`, consumers: at(TEXT, "inherit") },
+    { key: `${size}-letter-spacing`, property: "letter-spacing", description: `\`${size}\` tracking.`, consumers: at(TEXT, "inherit") },
+  ]),
+};
+
+const switchFamily: ComponentTokenFamily = {
+  family: "switch",
+  prefix: "switch",
+  description:
+    "Switch track and knob dimensions (default size; `size=\"sm\"` keeps its own). Set `knob-inset` to size the knob from the track: it sits that far from the track's outer edge on every side.",
+  tokens: [
+    { key: "track-width", property: "width", description: "Track width.", consumers: at(SWITCH, "2rem") },
+    {
+      key: "track-height",
+      property: "height",
+      description: "Track height. With `knob-inset` set, the knob is the track height less the inset on both sides.",
+      consumers: at(SWITCH, "1.15rem"),
+    },
+    {
+      key: "knob-inset",
+      property: "width / height / transform (knob)",
+      description:
+        "Gap between the knob and the track's outer edge, on every side. Unset, the knob keeps its shipped 1rem size and position.",
+      consumers: at(SWITCH, null),
+    },
+    { key: "track-bg", property: "background-color", description: "Unchecked track fill.", consumers: at(SWITCH, "var(--border-default, #e5e7eb)") },
+    {
+      key: "edge-color",
+      property: "outline-color",
+      description: "Track edge colour — transparent by default. Width and style come from the shared `control` edge, so `control.edge-width: 0` turns it off.",
+      consumers: at(SWITCH, "transparent"),
+    },
+  ],
+};
+
 const adminUiFamily: ComponentTokenFamily = {
   family: "admin-ui",
   prefix: "admin-ui",
@@ -642,6 +798,10 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   spinnerFamily,
   checkboxFamily,
   controlFamily,
+  fieldFamily,
+  buttonFamily,
+  textFamily,
+  switchFamily,
   adminUiFamily,
 ];
 

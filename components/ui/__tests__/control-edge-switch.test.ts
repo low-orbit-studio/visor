@@ -15,20 +15,9 @@
  * CI-portable half of the contract lives in control-edge-tokens.test.ts.
  */
 
-import { readFileSync } from "node:fs"
 import { afterAll, beforeAll, describe, expect, it } from "vitest"
-import {
-  FIXTURES,
-  buildEntrySource,
-  buildHtml,
-  pascalCase,
-  resolveComponentFile,
-  resolveThemeCssFile,
-  resolveTokensCssFile,
-} from "../../../packages/cli/src/commands/render"
-
-const REPO_ROOT = process.cwd()
-const THEME = "neutral"
+import { FIXTURES } from "../../../packages/cli/src/commands/render"
+import { bundle, close, launch, open, ready } from "./render-page"
 
 /** Every fixture of every component the switch governs. */
 const COMPONENTS = [
@@ -39,83 +28,12 @@ const COMPONENTS = [
 const EDGED = new Set([
   "input/default", "textarea/default", "select/default", "checkbox/default",
   "tag-input/default", "chip/outlined", "file-upload/default", "empty-state/default",
-  "button/outline", "button/gated", "button/dlg-ghost",
+  "button/outline", "button/gated", "button/dlg-ghost", "button/dlg-outline",
 ])
 /** Fixtures that draw a dashed (drop) edge. */
 const DASHED = new Set(["file-upload/default", "empty-state/default"])
 
-interface Bundle { css: string; js: string }
-interface PageLike {
-  setContent(html: string, opts: { waitUntil: "load" }): Promise<void>
-  evaluate(expression: string): Promise<unknown>
-  waitForFunction(expression: string, arg?: unknown, opts?: { timeout: number }): Promise<unknown>
-  addStyleTag(opts: { content: string }): Promise<unknown>
-  screenshot(opts: { clip?: { x: number; y: number; width: number; height: number } }): Promise<Buffer>
-  close(): Promise<void>
-}
-interface BrowserLike { newPage(opts?: { viewport: { width: number; height: number } }): Promise<PageLike>; close(): Promise<void> }
-
-let browser: BrowserLike | null = null
-let esbuild: { build(opts: Record<string, unknown>): Promise<{ outputFiles?: Array<{ path: string; text: string }> }> } | null = null
-const bundles = new Map<string, Bundle>()
-
-const tokensCss = () => readFileSync(resolveTokensCssFile(REPO_ROOT)!, "utf-8")
-const themeCss = () => readFileSync(resolveThemeCssFile(REPO_ROOT, THEME)!, "utf-8")
-
-async function bundle(component: string, fixture: string): Promise<Bundle> {
-  const key = `${component}/${fixture}`
-  const cached = bundles.get(key)
-  if (cached) return cached
-  const spec = FIXTURES[component][fixture]
-  const result = await esbuild!.build({
-    stdin: {
-      contents: buildEntrySource(resolveComponentFile(REPO_ROOT, component)!, spec, spec.export ?? pascalCase(component)),
-      resolveDir: REPO_ROOT,
-      loader: "tsx",
-      sourcefile: "edge-switch-entry.tsx",
-    },
-    bundle: true,
-    format: "iife",
-    platform: "browser",
-    jsx: "automatic",
-    write: false,
-    outdir: "edge-switch-out",
-    define: { "process.env.NODE_ENV": '"production"' },
-    banner: { js: "globalThis.process = globalThis.process || { env: {} };" },
-    logLevel: "silent",
-  })
-  const out: Bundle = { css: "", js: "" }
-  for (const f of result.outputFiles ?? []) {
-    if (f.path.endsWith(".css")) out.css += f.text
-    else if (f.path.endsWith(".js")) out.js += f.text
-  }
-  bundles.set(key, out)
-  return out
-}
-
 const ALL_FIXTURES = COMPONENTS.flatMap((c) => Object.keys(FIXTURES[c]).map((f) => ({ component: c, fixture: f, id: `${c}/${f}` })))
-
-/** Open a fixture. `scopeCss` is applied to #theme-scope; `componentCss` replaces the bundle's CSS. */
-async function open(
-  component: string,
-  fixture: string,
-  opts: { scopeCss?: string; componentCss?: string; extraCss?: string } = {},
-): Promise<PageLike> {
-  const b = await bundle(component, fixture)
-  const page = await browser!.newPage({ viewport: { width: 720, height: 480 } })
-  const html = buildHtml({
-    tokensCss: tokensCss(),
-    themeCss: themeCss(),
-    componentCss: (opts.componentCss ?? b.css) + `\n#theme-scope { ${opts.scopeCss ?? ""} }\n${opts.extraCss ?? ""}`,
-    bundleJs: b.js,
-    themeClass: `${THEME}-theme`,
-    mode: "light",
-  })
-  await page.setContent(html, { waitUntil: "load" })
-  await page.waitForFunction("document.getElementById('root') && document.getElementById('root').childElementCount > 0", undefined, { timeout: 10000 })
-  await page.addStyleTag({ content: "*, *::before, *::after { transition: none !important; animation: none !important; caret-color: transparent !important; }" })
-  return page
-}
 
 /**
  * Widest resting edge anywhere under #root, in px: the host outline, the
@@ -147,21 +65,10 @@ const SHOT = { clip: { x: 0, y: 0, width: 720, height: 480 } }
 const OFF = "--control-edge-width: 0;"
 
 beforeAll(async () => {
-  for (const mod of ["playwright", "@playwright/test"]) {
-    try {
-      const { chromium } = (await import(mod)) as { chromium: { launch: () => Promise<BrowserLike> } }
-      browser = await chromium.launch()
-      esbuild = (await import("esbuild")) as unknown as typeof esbuild
-      break
-    } catch {
-      browser = null // chromium or esbuild not installed — tests self-skip below
-    }
-  }
+  await launch() // chromium or esbuild not installed — tests self-skip below
 }, 60_000)
 
-afterAll(async () => {
-  if (browser) await browser.close()
-})
+afterAll(close)
 
 describe("VI-655 — one switch turns every form-control edge off (real browser)", () => {
   describe("the switch", () => {
@@ -169,7 +76,7 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
     // --control-state-edge-width on purpose, and is covered below.
     for (const { component, fixture, id } of ALL_FIXTURES.filter((f) => f.fixture !== "invalid")) {
       it(`${id}: --control-edge-width: 0 zeroes every resting edge`, async (ctx) => {
-        if (!browser) return ctx.skip()
+        if (!ready()) return ctx.skip()
         const on = await open(component, fixture)
         const onEdge = (await on.evaluate(REST_EDGE)) as number
         await on.close()
@@ -189,7 +96,7 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
     // component — and only that one — keeps its edge with the switch off.
     for (const component of COMPONENTS) {
       it(`${component}: mutation control — without the token its edge survives the switch`, async (ctx) => {
-        if (!browser) return ctx.skip()
+        if (!ready()) return ctx.skip()
         const fixture = Object.keys(FIXTURES[component]).find((f) => EDGED.has(`${component}/${f}`)) ?? "default"
         const b = await bundle(component, fixture)
         const mutated = b.css.replaceAll("--control-edge-width", "--control-edge-width-mutated")
@@ -205,7 +112,7 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
   describe("no border does the work", () => {
     for (const { component, fixture, id } of ALL_FIXTURES) {
       it(`${id}: a border-color: transparent !important host rule changes nothing`, async (ctx) => {
-        if (!browser) return ctx.skip()
+        if (!ready()) return ctx.skip()
         const plain = await open(component, fixture)
         const before = await plain.screenshot(SHOT)
         await plain.close()
@@ -219,7 +126,7 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
     }
 
     it("mutation control — an edge drawn with a coloured border IS caught", async (ctx) => {
-      if (!browser) return ctx.skip()
+      if (!ready()) return ctx.skip()
       const css = (await bundle("input", "default")).css + "\n#root input { border-color: rgb(255, 0, 0); }"
       const plain = await open("input", "default", { componentCss: css })
       const before = await plain.screenshot(SHOT)
@@ -237,7 +144,7 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
   describe("no layout shift", () => {
     for (const { component, fixture, id } of ALL_FIXTURES) {
       it(`${id}: every box is identical with the switch on and off`, async (ctx) => {
-        if (!browser) return ctx.skip()
+        if (!ready()) return ctx.skip()
         const on = await open(component, fixture)
         const onRects = await on.evaluate(RECTS)
         await on.close()
@@ -249,7 +156,7 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
     }
 
     it("mutation control — an edge whose width takes layout space IS caught", async (ctx) => {
-      if (!browser) return ctx.skip()
+      if (!ready()) return ctx.skip()
       const css = (await bundle("input", "default")).css + "\n#root input { border-width: var(--control-edge-width, 1px); }"
       const on = await open("input", "default", { componentCss: css })
       const onRects = await on.evaluate(RECTS)
@@ -270,7 +177,7 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
     )
     for (const { component, fixture, id } of focusable) {
       it(`${id}: focus still draws a visible ring at --control-edge-width: 0`, async (ctx) => {
-        if (!browser) return ctx.skip()
+        if (!ready()) return ctx.skip()
         const target = FIXTURES[component][fixture].interactiveTarget!
         const page = await open(component, fixture, { scopeCss: OFF })
         const rest = await page.screenshot(SHOT)
@@ -283,7 +190,7 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
 
     for (const component of ["input", "textarea", "select", "checkbox", "switch"]) {
       it(`${component}: invalid still draws a visible ring at --control-edge-width: 0`, async (ctx) => {
-        if (!browser) return ctx.skip()
+        if (!ready()) return ctx.skip()
         const page = await open(component, "invalid", { scopeCss: OFF })
         const invalid = await page.screenshot(SHOT)
         await page.evaluate(`document.querySelector("#root [aria-invalid]").removeAttribute("aria-invalid")`)
@@ -295,7 +202,7 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
 
     for (const zero of ["0", "0px"]) {
       it(`checkbox: an unchecked box still reads as a box at --control-edge-width: ${zero}`, async (ctx) => {
-        if (!browser) return ctx.skip()
+        if (!ready()) return ctx.skip()
         const page = await open("checkbox", "default", { scopeCss: `--control-edge-width: ${zero};` })
         const shown = await page.screenshot(SHOT)
         // The fill covers the whole border box — every side, not a lopsided ring.
@@ -324,7 +231,7 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
     ]
     for (const [component, fixture, token] of cases) {
       it(`${token} recolours the edge and it stays inside the box`, async (ctx) => {
-        if (!browser) return ctx.skip()
+        if (!ready()) return ctx.skip()
         const page = await open(component, fixture, { scopeCss: `${token}: rgb(255, 0, 0); --control-edge-width: 3px;` })
         const edge = (await page.evaluate(`(function () {
           var els = document.querySelectorAll("#root *");
@@ -351,7 +258,7 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
     for (const id of DASHED) {
       const [component, fixture] = id.split("/")
       it(`${id}: --control-drop-edge-width brings the dashed edge back while solid edges stay off`, async (ctx) => {
-        if (!browser) return ctx.skip()
+        if (!ready()) return ctx.skip()
         const page = await open(component, fixture, { scopeCss: `${OFF} --control-drop-edge-width: 1px;` })
         expect(await page.evaluate(REST_EDGE)).toBeGreaterThan(0)
         await page.close()
@@ -359,7 +266,7 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
     }
 
     it("input: --control-drop-edge-width does not bring solid edges back", async (ctx) => {
-      if (!browser) return ctx.skip()
+      if (!ready()) return ctx.skip()
       const page = await open("input", "default", { scopeCss: `${OFF} --control-drop-edge-width: 1px;` })
       expect(await page.evaluate(REST_EDGE)).toBe(0)
       await page.close()

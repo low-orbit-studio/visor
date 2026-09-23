@@ -16,17 +16,21 @@
 
 /* Field Label
  * Default: canonical 14px / text-primary. Density axis: editorial tightens
- * to 13px / text-secondary. Switch via data-density="editorial" on any ancestor. */
+ * to 13px / text-secondary. Switch via data-density="editorial" on any ancestor.
+ * A theme sets size, case, tracking and colour through --field-label-* (VI-656);
+ * each hook drives both densities, and case and tracking inherit when unset. */
 .fieldLabel {
-  font-size: var(--font-size-sm, 0.875rem);
+  font-size: var(--field-label-font-size, var(--font-size-sm, 0.875rem));
   font-weight: var(--font-weight-medium, 500);
-  color: var(--text-primary, currentColor);
+  color: var(--field-label-color, var(--text-primary, currentColor));
   line-height: 1.4;
+  text-transform: var(--field-label-text-transform, inherit);
+  letter-spacing: var(--field-label-letter-spacing, inherit);
 }
 
 :global([data-density="editorial"]) .fieldLabel {
-  font-size: 13px;
-  color: var(--text-secondary);
+  font-size: var(--field-label-font-size, 13px);
+  color: var(--field-label-color, var(--text-secondary));
 }
 
 /* Field Description

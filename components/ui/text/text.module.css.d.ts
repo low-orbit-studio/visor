@@ -12,6 +12,7 @@ declare const styles: {
   readonly colorPrimary: string
   readonly colorSecondary: string
   readonly colorTertiary: string
+  readonly colorWarning: string
   readonly colorInherit: string
   readonly leadingTight: string
   readonly leadingSnug: string
