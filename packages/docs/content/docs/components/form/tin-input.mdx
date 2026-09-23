@@ -1,0 +1,126 @@
+---
+title: TIN Input
+description: A write-only, masked 9-digit TIN/EIN input with a last-four echo that never re-displays the value.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { TinInputDemo } from '@/components/ui/tin-input-demos';
+
+A taxpayer ID is typed once and never shown back. `TinInput` masks every character as it is typed, and on blur a complete entry shows only the grouping mask and the last four. The digits leave the component through one `onValueChange` call and nowhere else. The readouts under these demos show what that call receives. They never show the digits.
+
+## Social Security Number
+
+Type or paste nine digits, then tab away. Focusing the field again clears it for re-entry and never reveals it.
+
+<ComponentPreview
+  title="SSN"
+  code={"import { Field, FieldLabel } from '@/components/ui/field/field';\nimport { TinInput } from '@/components/ui/tin-input/tin-input';\n\n<Field>\n  <FieldLabel htmlFor=\"ssn\">Social Security number</FieldLabel>\n  <TinInput id=\"ssn\" kind=\"ssn\" onValueChange={setTin} />\n</Field>"}
+>
+  <TinInputDemo id="tin-ssn" label="Social Security number" kind="ssn" />
+</ComponentPreview>
+
+## Employer Identification Number
+
+`kind="ein"` groups the same nine digits as `##-#######`.
+
+<ComponentPreview
+  title="EIN"
+  code={"<Field>\n  <FieldLabel htmlFor=\"ein\">Employer Identification Number</FieldLabel>\n  <TinInput id=\"ein\" kind=\"ein\" onValueChange={setTin} />\n</Field>"}
+>
+  <TinInputDemo id="tin-ein" label="Employer Identification Number" kind="ein" />
+</ComponentPreview>
+
+## On File
+
+When a TIN is already stored, pass its `lastFour`. The field renders a read-only echo and a **Replace** button that swaps in an empty field and moves focus to it. Pass only the last four digits: the component never needs more.
+
+<ComponentPreview
+  title="On file"
+  code={"<TinInput\n  id=\"tin\"\n  kind=\"ssn\"\n  lastFour={business.tin_last4}\n  onReplace={() => setReplacing(true)}\n  onValueChange={setTin}\n/>"}
+>
+  <TinInputDemo id="tin-on-file" label="Taxpayer ID" kind="ssn" lastFour="6789" />
+</ComponentPreview>
+
+## Error
+
+`error` renders through the Visor field convention: a `FieldError` bound by `aria-describedby`, with `aria-invalid` on the field. A paste of more than nine digits is refused with an error of its own rather than truncated.
+
+<ComponentPreview
+  title="Error"
+  code={"<TinInput id=\"tin\" kind=\"ssn\" error=\"Enter all 9 digits.\" onValueChange={setTin} />"}
+>
+  <TinInputDemo id="tin-error" label="Taxpayer ID" kind="ssn" error="Enter all 9 digits." />
+</ComponentPreview>
+
+## Touch Size
+
+`size="lg"` makes both the field and the Replace button at least 44px tall, which meets touch-target guidance on phone-first forms.
+
+<ComponentPreview
+  title="Touch size"
+  code={"<TinInput id=\"tin\" kind=\"ssn\" size=\"lg\" lastFour=\"6789\" onValueChange={setTin} />"}
+>
+  <TinInputDemo id="tin-touch" label="Taxpayer ID" kind="ssn" size="lg" lastFour="6789" />
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={"<TinInput id=\"tin\" kind=\"ssn\" disabled onValueChange={setTin} />"}
+>
+  <TinInputDemo id="tin-disabled" label="Taxpayer ID" kind="ssn" disabled />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add tin-input
+```
+
+This copies two files into your project:
+
+- `components/ui/tin-input/tin-input.tsx` — the component
+- `components/ui/tin-input/tin-input.module.css` — the styles
+
+This also installs `input`, `button` and `field` as dependencies.
+
+## Usage
+
+```tsx
+import { Field, FieldLabel } from '@/components/ui/field/field';
+import { TinInput } from '@/components/ui/tin-input/tin-input';
+
+const [tin, setTin] = useState<string | null>(null);
+
+<Field>
+  <FieldLabel htmlFor="tin">Taxpayer ID</FieldLabel>
+  <TinInput id="tin" kind="ssn" onValueChange={setTin} />
+</Field>
+```
+
+`TinInput` is uncontrolled by design. There is no `value` prop, because a controlled value would have to be handed back in, and no `name`, because the digits are never serialized by a form. Send the digits you received from `onValueChange` in your own submit handler.
+
+## API Reference
+
+### TinInputProps
+
+<PropsTable component="tin-input" />
+
+## How It Keeps the Digits Out
+
+- **The value is only ever the mask.** Every edit is intercepted before it reaches the DOM and applied to digits held in memory, so the digits are never in `input.value` or in any attribute, not even while typing.
+- **On blur, the digits are dropped.** A complete entry shows the grouping mask and the last four (`•••-••-1234`), and the component keeps only those four.
+- **No way back out.** There is no show/hide toggle, no copy affordance (copying the field copies bullets), no `title` or `data-*` carrying digits, and nothing is logged.
+- **No save prompts.** The field is a text input, never a password input, and it always carries the password-manager ignore attributes (`data-1p-ignore`, `data-bwignore`, `data-lpignore`, `data-form-type="other"`), even inside a form that allows them.
+- **Input hygiene.** `inputMode="numeric"`, `autoComplete="off"`, `autoCorrect="off"`, `autoCapitalize="off"`, `spellCheck={false}` and `enterKeyHint="next"`. Non-digits are ignored and typing past nine is ignored. A paste strips spaces, dashes and any other non-digits, and one that would make more than nine digits is refused whole.
+- **No `pattern` attribute.** The value is always the mask, so `pattern="[0-9]*"` would keep the field invalid and block a native form submit. `inputMode` already raises the numeric keypad on current mobile browsers.
+
+## Accessibility
+
+- Associate the label through the Visor field row: `FieldLabel htmlFor` matching the `id` you pass.
+- The "9 digits" hint and any error are bound by `aria-describedby`, and an error sets `aria-invalid`.
+- After blur, the masked echo is described to assistive tech as "ending in 1234" rather than as a row of bullets.
+- The on-file echo is a read-only field, so it is reachable and announced with its label. Replace is a real button, reachable by keyboard with the Visor focus ring, and it moves focus into the new empty field.
+- The Replace button is `type="button"`, so it never submits the surrounding form.
