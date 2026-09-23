@@ -54,7 +54,7 @@
 }
 
 .variantOutlined::after {
-  outline-color: var(--border-default, #e5e7eb);
+  outline-color: var(--control-edge-color, var(--border-default, #e5e7eb));
 }
 
 /* Variant: filled-primary — saturated brand-essence chip treatment.

@@ -87,7 +87,7 @@
 }
 
 .variantOutline::after {
-  outline-color: var(--border-strong, #e5e7eb);
+  outline-color: var(--control-edge-color, var(--border-strong, #e5e7eb));
 }
 
 .variantGhost {
@@ -220,7 +220,7 @@
 }
 
 .sizeDlg.variantGhost::after {
-  outline-color: var(--hairline, var(--border-default, #e5e7eb));
+  outline-color: var(--control-edge-color, var(--hairline, var(--border-default, #e5e7eb)));
 }
 
 /* dlg danger — subtle-danger face (AN dlg-btn danger face: --red on a faint
