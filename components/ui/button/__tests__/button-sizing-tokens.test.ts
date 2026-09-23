@@ -31,8 +31,10 @@ describe("Button density axis (CSS-only, zero-regression)", () => {
   })
 
   describe(".sizeSm canonical defaults", () => {
-    it("font-size is inlined as canonical var(--font-size-xs, 0.75rem) (no hook indirection)", () => {
-      expect(css).toContain("font-size: var(--font-size-xs, 0.75rem);")
+    // VI-656: the theme hook falls back to the canonical value, so an unbound
+    // theme still renders var(--font-size-xs, 0.75rem).
+    it("font-size falls back to canonical var(--font-size-xs, 0.75rem) behind the theme hook", () => {
+      expect(css).toContain("font-size: var(--button-sm-font-size, var(--font-size-xs, 0.75rem));")
     })
   })
 
@@ -52,7 +54,7 @@ describe("Button density axis (CSS-only, zero-regression)", () => {
       expect(css).toContain(
         ':global([data-density="editorial"]) .sizeSm'
       )
-      expect(css).toContain("font-size: 0.8125rem;")
+      expect(css).toContain("font-size: var(--button-sm-font-size, 0.8125rem);")
     })
   })
 })

@@ -610,10 +610,11 @@ const controlFamily: ComponentTokenFamily = {
 // Field label, Button and Text, the Switch's dimensions, and (on Text) a
 // warning tone, following the badge precedent above. Every hook defaults to
 // what shipped before it existed. The inherited type properties (case,
-// tracking) fall back to "as if the declaration were absent": `inherit` on the
-// label and Text elements, which have no UA value for them, and `revert-layer`
-// on Button, whose `<button>` carries a UA `normal` / `none` that `inherit`
-// would override. None of these hooks draws an edge: the dlg outline Button and
+// tracking) fall back to `revert-layer`, "as if the declaration were absent":
+// on Button it keeps the `<button>` UA `normal` / `none` that `inherit` would
+// override, and on the label and Text it keeps any layered utility or reset
+// (a Tailwind v4 `uppercase`) that an unlayered `inherit` would beat. None of
+// these hooks draws an edge: the dlg outline Button and
 // the Switch track take theirs from the `control` family, so `control.edge-width:
 // 0` still removes them.
 const fieldFamily: ComponentTokenFamily = {
@@ -631,8 +632,8 @@ const fieldFamily: ComponentTokenFamily = {
         { file: FIELD, fallback: "13px" },
       ],
     },
-    { key: "label-text-transform", property: "text-transform", description: "Label casing.", consumers: at(FIELD, "inherit") },
-    { key: "label-letter-spacing", property: "letter-spacing", description: "Label tracking.", consumers: at(FIELD, "inherit") },
+    { key: "label-text-transform", property: "text-transform", description: "Label casing.", consumers: at(FIELD, "revert-layer") },
+    { key: "label-letter-spacing", property: "letter-spacing", description: "Label tracking.", consumers: at(FIELD, "revert-layer") },
     {
       key: "label-color",
       property: "color",
@@ -725,8 +726,8 @@ const textFamily: ComponentTokenFamily = {
     "Text type treatment, per size — set `sm-font-size: 13px` for a 13px step, or caps and tracking on `xs` for a state tag. Every key begins with a size.",
   tokens: TEXT_SIZES.flatMap(({ size, fontSize }) => [
     { key: `${size}-font-size`, property: "font-size", description: `\`${size}\` type size.`, consumers: at(TEXT, fontSize) },
-    { key: `${size}-text-transform`, property: "text-transform", description: `\`${size}\` casing.`, consumers: at(TEXT, "inherit") },
-    { key: `${size}-letter-spacing`, property: "letter-spacing", description: `\`${size}\` tracking.`, consumers: at(TEXT, "inherit") },
+    { key: `${size}-text-transform`, property: "text-transform", description: `\`${size}\` casing.`, consumers: at(TEXT, "revert-layer") },
+    { key: `${size}-letter-spacing`, property: "letter-spacing", description: `\`${size}\` tracking.`, consumers: at(TEXT, "revert-layer") },
   ]),
 };
 
