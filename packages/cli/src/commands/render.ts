@@ -178,6 +178,82 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       interactiveTarget: "button",
       props: `{ children: "Get started" }`,
     },
+    // Edged faces (VI-655): the three button faces that draw a resting edge.
+    outline: {
+      export: "Button",
+      interactiveTarget: "button",
+      props: `{ variant: "outline", children: "Outline" }`,
+    },
+    "dlg-ghost": {
+      export: "Button",
+      interactiveTarget: "button",
+      props: `{ size: "dlg", variant: "ghost", children: "Cancel" }`,
+    },
+    gated: {
+      export: "Button",
+      interactiveTarget: "button",
+      props: `{ gated: true, children: "Upgrade" }`,
+    },
+  },
+  // Form controls (VI-655). Each has a resting fixture plus the states that
+  // redraw the edge (invalid, checked, selected), so `visor render` can prove
+  // the edge tokens leave a default theme unchanged.
+  input: {
+    default: { export: "Input", interactiveTarget: "input", props: `{ placeholder: "Email address" }` },
+    invalid: { export: "Input", interactiveTarget: "input", props: `{ defaultValue: "not-an-email", "aria-invalid": true }` },
+  },
+  textarea: {
+    default: { export: "Textarea", interactiveTarget: "textarea", props: `{ placeholder: "Tell us more" }` },
+    invalid: { export: "Textarea", interactiveTarget: "textarea", props: `{ defaultValue: "Too short", "aria-invalid": true }` },
+  },
+  select: {
+    default: {
+      export: "Select",
+      interactiveTarget: "button",
+      props: `{ children: React.createElement(__mod.SelectTrigger, null, React.createElement(__mod.SelectValue, { placeholder: "Pick a plan" })) }`,
+    },
+    invalid: {
+      export: "Select",
+      interactiveTarget: "button",
+      props: `{ children: React.createElement(__mod.SelectTrigger, { "aria-invalid": true }, React.createElement(__mod.SelectValue, { placeholder: "Pick a plan" })) }`,
+    },
+    borderless: {
+      export: "Select",
+      interactiveTarget: "button",
+      props: `{ children: React.createElement(__mod.SelectTrigger, { variant: "borderless" }, React.createElement(__mod.SelectValue, { placeholder: "Pick a plan" })) }`,
+    },
+  },
+  checkbox: {
+    default: { export: "Checkbox", interactiveTarget: "button", props: `{ "aria-label": "Accept" }` },
+    checked: { export: "Checkbox", interactiveTarget: "button", props: `{ "aria-label": "Accept", defaultChecked: true }` },
+    invalid: { export: "Checkbox", interactiveTarget: "button", props: `{ "aria-label": "Accept", "aria-invalid": true }` },
+  },
+  switch: {
+    default: { export: "Switch", interactiveTarget: "button", props: `{ "aria-label": "Notifications" }` },
+    checked: { export: "Switch", interactiveTarget: "button", props: `{ "aria-label": "Notifications", defaultChecked: true }` },
+    invalid: { export: "Switch", interactiveTarget: "button", props: `{ "aria-label": "Notifications", "aria-invalid": true }` },
+  },
+  "tag-input": {
+    default: {
+      export: "TagInput",
+      interactiveTarget: "input",
+      props: `{ defaultValue: ["design", "tokens"], placeholder: "Add a tag" }`,
+    },
+  },
+  chip: {
+    default: { export: "Chip", props: `{ label: "Default" }` },
+    outlined: { export: "Chip", props: `{ variant: "outlined", label: "Outlined" }` },
+    choice: { export: "ChoiceChip", interactiveTarget: "button", props: `{ label: "Choice" }` },
+    selected: { export: "ChoiceChip", interactiveTarget: "button", props: `{ label: "Selected", selected: true }` },
+  },
+  "file-upload": {
+    default: { export: "FileUpload", interactiveTarget: "[tabindex=\"0\"]", props: `{}` },
+  },
+  "empty-state": {
+    default: {
+      export: "EmptyState",
+      props: `{ heading: "No projects yet", description: "Create a project to get started." }`,
+    },
   },
   badge: {
     default: {

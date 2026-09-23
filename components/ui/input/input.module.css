@@ -2,7 +2,12 @@
 .base {
   width: 100%;
   min-width: 0;
-  border: 1px solid var(--input-border, var(--border-default, #e5e7eb));
+  /* VI-655: the border only holds box geometry and is always transparent. The
+     visible resting edge is an outline pulled inside the box, drawn from the
+     shared --control-edge-* tokens, so --control-edge-width: 0 on any ancestor
+     removes it with no layout shift. --input-border stays the per-component
+     colour override and still wins over the shared colour. */
+  border: 1px solid transparent;
   /* --field-control-bg is the shared "what surface does a form control sit on"
      role. It defaults to var(--input-bg), so default inputs are unchanged. A
      form context (for example an in-dialog wrapper) can set --field-control-bg:
@@ -13,8 +18,9 @@
   background-color: var(--field-control-bg, var(--input-bg, var(--surface-interactive-default, #f9fafb)));
   line-height: 1.5;
   color: var(--text-primary, #111827);
-  transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
-  outline: none;
+  transition: outline-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+  outline: var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--input-border, var(--control-edge-color, var(--border-default, #e5e7eb)));
+  outline-offset: calc(-1 * var(--control-edge-width, 1px));
 }
 
 :global([data-density="editorial"]) .base {
@@ -27,12 +33,15 @@
 
 @media (hover: hover) {
   .base:hover:not(:focus-visible):not(:disabled):not([aria-invalid="true"]) {
-    border-color: var(--border-strong, #d1d5db);
+    outline-color: var(--border-strong, #d1d5db);
   }
 }
 
+/* Focus and invalid draw at --control-state-edge-width, which the edge switch
+   does not touch, so both stay visible with edges off. */
 .base:focus-visible {
-  border-color: var(--border-focus, #111827);
+  outline: var(--control-state-edge-width, 1px) solid var(--border-focus, #111827);
+  outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
   box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
 }
 
@@ -43,7 +52,7 @@
 }
 
 .base[aria-invalid="true"] {
-  border-color: transparent;
+  outline-color: transparent;
   background-color: var(--input-bg-invalid, var(--surface-error-subtle, color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--input-bg, #f9fafb)))));
   box-shadow: inset 0 0 0 1.5px var(--border-error, #ef4444);
 }
@@ -53,7 +62,7 @@
 }
 
 .base[aria-invalid="true"]:focus-visible {
-  border-color: transparent;
+  outline-color: transparent;
   outline-offset: var(--focus-ring-offset, 2px);
   box-shadow: inset 0 0 0 1.5px var(--border-error, #ef4444),
     0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-error, #ef4444) 30%, transparent);

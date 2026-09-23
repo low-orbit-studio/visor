@@ -9,6 +9,10 @@
  * Pattern: var(--{cmp}-border, var(--border-default, <hex>))
  *          var(--{cmp}-bg, var(--surface-interactive-default, <hex>))
  *
+ * VI-655: on the controls that draw their resting edge from the shared
+ * --control-edge-* tokens, the shared colour sits between the two:
+ *          var(--{cmp}-border, var(--control-edge-color, var(--border-default, <hex>)))
+ *
  * Separator / chip / strength-segment uses of --border-default are
  * explicitly out of scope and must NOT be wrapped.
  */
@@ -25,6 +29,9 @@ function readCSS(component: string): string {
     'utf-8'
   )
 }
+
+// Controls whose resting edge reads the shared VI-655 edge colour.
+const SHARED_EDGE = new Set(['input', 'textarea', 'select', 'tag-input'])
 
 // Components that should have both --{cmp}-bg and --{cmp}-border override tokens
 const BOTH_TOKENS: Array<{ component: string; bgToken: string; borderToken: string }> = [
@@ -60,10 +67,13 @@ describe('Form-field override tokens — VI-494', () => {
 
       it(`${component} ${borderToken} wraps --border-default as inner fallback`, () => {
         const css = readCSS(component)
+        const inner = SHARED_EDGE.has(component)
+          ? `var\\(--control-edge-color,\\s*var\\(--border-default`
+          : `var\\(--border-default`
         expect(
           css,
           `${component} ${borderToken} must fall back to --border-default`
-        ).toMatch(new RegExp(`var\\(${borderToken},\\s*var\\(--border-default`))
+        ).toMatch(new RegExp(`var\\(${borderToken},\\s*${inner}`))
       })
     })
   })
@@ -104,10 +114,12 @@ describe('Form-field override tokens — VI-494', () => {
       expect(css).toContain('background-color: var(--border-default, #e5e7eb)')
     })
 
-    it('tag-input chip (line ~43) still uses bare --border-default', () => {
+    it('tag-input chip follows the shared edge, not --tag-input-border', () => {
       const css = readCSS('tag-input')
-      // Tag chip: border: 1px solid var(--border-default, ...)
-      expect(css).toMatch(/\.tag\s*\{[^}]*border:\s*1px solid var\(--border-default/)
+      // VI-655: the tag chip's edge reads the shared edge colour directly.
+      const tag = css.match(/\.tag\s*\{[^}]*\}/)?.[0] ?? ''
+      expect(tag).toMatch(/outline:[^;]*var\(--control-edge-color,\s*var\(--border-default/)
+      expect(tag).not.toContain('--tag-input-border')
     })
   })
 })

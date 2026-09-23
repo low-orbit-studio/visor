@@ -126,10 +126,22 @@ const TABS = "components/ui/tabs/tabs.module.css";
 const SKELETON = "components/ui/skeleton/skeleton.module.css";
 const SPINNER = "components/ui/spinner/spinner.module.css";
 const CHECKBOX = "components/ui/checkbox/checkbox.module.css";
+const INPUT = "components/ui/input/input.module.css";
+const TEXTAREA = "components/ui/textarea/textarea.module.css";
+const SELECT = "components/ui/select/select.module.css";
+const SWITCH = "components/ui/switch/switch.module.css";
+const TAG_INPUT = "components/ui/tag-input/tag-input.module.css";
+const FILE_UPLOAD = "components/ui/file-upload/file-upload.module.css";
+const BUTTON = "components/ui/button/button.module.css";
 
 /** Shorthand for the common single-consumer case. */
 function at(file: string, fallback: string | null): ComponentTokenConsumer[] {
   return [{ file, fallback }];
+}
+
+/** Shorthand for a token every listed file reads with the same fallback. */
+function each(files: string[], fallback: string): ComponentTokenConsumer[] {
+  return files.map((file) => ({ file, fallback }));
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -223,7 +235,12 @@ const chipFamily: ComponentTokenFamily = {
     "Chip / filter-pill treatment. The retro found the same mono status chip at 8.5 / 9 / 9.5 / 10 / 11px with tracking .03–.14em across nine implementations; this family is the single dial.",
   tokens: [
     { key: "radius", property: "border-radius", description: "Chip corner rounding.", consumers: at(CHIP, "var(--radius-full, 9999px)") },
-    { key: "border", property: "border", description: "Chip outline.", consumers: at(CHIP, "var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb)") },
+    {
+      key: "border",
+      property: "outline (width style colour, on ::after)",
+      description: "Chip resting edge, as one `<width> <style> <colour>` value. Defaults to the shared `control` edge, so `control.edge-width: 0` turns it off.",
+      consumers: at(CHIP, "var(--control-edge-width, var(--stroke-width-thin, 1px)) var(--control-edge-style, solid) var(--control-edge-color, var(--border-default, #e5e7eb))"),
+    },
     { key: "bg", property: "background-color", description: "Resting chip fill.", consumers: at(CHIP, "var(--surface-card, #ffffff)") },
     { key: "text-color", property: "color", description: "Chip label colour.", consumers: at(CHIP, "var(--text-primary, #111827)") },
     { key: "font-family", property: "font-family", description: "Chip label family — bind a mono face for token/ID chips.", consumers: at(CHIP, "var(--font-body, inherit)") },
@@ -240,7 +257,7 @@ const chipFamily: ComponentTokenFamily = {
     { key: "lg-padding-x", property: "padding", description: "Large chip horizontal padding.", consumers: at(CHIP, "var(--spacing-4, 1rem)") },
     { key: "lg-font-size", property: "font-size", description: "Large chip type size.", consumers: at(CHIP, "var(--font-size-base, 1rem)") },
     { key: "selected-bg", property: "background-color", description: "Selected chip fill.", consumers: at(CHIP, "var(--surface-accent-subtle, #eff6ff)") },
-    { key: "selected-border-color", property: "border-color", description: "Selected chip outline colour.", consumers: at(CHIP, "var(--surface-accent-default, #3b82f6)") },
+    { key: "selected-border-color", property: "outline-color (on ::after)", description: "Selected chip edge colour.", consumers: at(CHIP, "var(--surface-accent-default, #3b82f6)") },
     { key: "selected-text-color", property: "color", description: "Selected chip label colour.", consumers: at(CHIP, "var(--text-link, #2563eb)") },
   ],
 };
@@ -345,7 +362,12 @@ const emptyStateFamily: ComponentTokenFamily = {
     { key: "gap", property: "gap", description: "Placard stack rhythm.", consumers: at(EMPTY_STATE, "var(--spacing-2, 0.5rem)") },
     { key: "padding", property: "padding", description: "Default-size placard inset.", consumers: at(EMPTY_STATE, "var(--spacing-8, 2rem) var(--spacing-5, 1.25rem)") },
     { key: "bg", property: "background-color", description: "Default-tone fill.", consumers: at(EMPTY_STATE, "var(--surface-muted, #f9fafb)") },
-    { key: "border", property: "border", description: "Default-tone frame (dashed by default).", consumers: at(EMPTY_STATE, "1px dashed var(--border-default, #e5e7eb)") },
+    {
+      key: "border",
+      property: "outline (width style colour)",
+      description: "Default-tone dashed edge, as one `<width> <style> <colour>` value. Defaults to the shared `control` drop edge, so `control.edge-width: 0` turns it off.",
+      consumers: at(EMPTY_STATE, "var(--control-drop-edge-width, var(--control-edge-width, 1px)) var(--control-drop-edge-style, dashed) var(--control-edge-color, var(--border-default, #e5e7eb))"),
+    },
     { key: "icon-size", property: "width / height", description: "Icon-chip diameter.", consumers: at(EMPTY_STATE, "72px") },
     { key: "icon-radius", property: "border-radius", description: "Icon-chip rounding.", consumers: at(EMPTY_STATE, "var(--radius-full, 9999px)") },
     { key: "icon-bg", property: "background-color", description: "Icon-chip fill.", consumers: at(EMPTY_STATE, "var(--surface-subtle, #f5f5f6)") },
@@ -502,9 +524,83 @@ const checkboxFamily: ComponentTokenFamily = {
     { key: "size", property: "width / height", description: "Checkbox box size.", consumers: at(CHECKBOX, "1rem") },
     { key: "radius", property: "border-radius", description: "Checkbox corner rounding — square it for the editorial admin look.", consumers: at(CHECKBOX, "var(--radius-sm, 0.25rem)") },
     { key: "bg", property: "background-color", description: "Unchecked fill.", consumers: at(CHECKBOX, "transparent") },
-    { key: "border", property: "border", description: "Unchecked outline.", consumers: at(CHECKBOX, "1px solid var(--border-default, #e5e7eb)") },
+    {
+      key: "border",
+      property: "outline (width style colour)",
+      description: "Unchecked resting edge, as one `<width> <style> <colour>` value. Defaults to the shared `control` edge, so `control.edge-width: 0` turns it off.",
+      consumers: at(CHECKBOX, "var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--control-edge-color, var(--border-default, #e5e7eb))"),
+    },
+    {
+      key: "edgeless-bg",
+      property: "background-image",
+      description: "Unchecked fill shown only while the shared edge is off (`control.edge-width: 0`), so the box still reads as a control.",
+      consumers: at(CHECKBOX, "var(--control-edge-color, var(--border-default, #e5e7eb))"),
+    },
     { key: "bg-checked", property: "background-color", description: "Checked fill.", consumers: at(CHECKBOX, "var(--interactive-primary-bg, var(--primary, #111827))") },
-    { key: "border-checked", property: "border-color", description: "Checked outline colour.", consumers: at(CHECKBOX, "var(--interactive-primary-bg, var(--primary, #111827))") },
+    { key: "border-checked", property: "outline-color", description: "Checked edge colour.", consumers: at(CHECKBOX, "var(--interactive-primary-bg, var(--primary, #111827))") },
+  ],
+};
+
+// VI-655 (filed from BL-1090). One shared set of edge tokens that every form
+// control reads for its resting edge, so a single binding turns every edge off:
+//
+//   components:
+//     control:
+//       edge-width: "0"     # or the top-level shorthand `edges: off`
+//
+// The edge is drawn with `outline` + a matching negative `outline-offset` over
+// a transparent geometry border, never with a visible `border`: it takes no
+// layout space, so the switch never moves anything, and no consumer needs a
+// `border-color … !important` override to remove it. Focus and invalid draw
+// with `state-edge-width`, which the switch deliberately does not touch.
+const EDGE_CONTROLS = [INPUT, TEXTAREA, SELECT, CHECKBOX, SWITCH, TAG_INPUT, BUTTON];
+const controlFamily: ComponentTokenFamily = {
+  family: "control",
+  prefix: "control",
+  description:
+    "The one switch for form-control edges (VI-655). Every form control draws its resting edge from these, so `edge-width: 0` removes every resting edge at once, dashed edges included, with no layout shift.",
+  tokens: [
+    {
+      key: "edge-width",
+      property: "outline-width",
+      description: "THE switch. Resting-edge weight for every form control; `0` turns every resting edge off.",
+      consumers: [
+        ...each(EDGE_CONTROLS, "1px"),
+        { file: CHIP, fallback: "var(--stroke-width-thin, 1px)" },
+        { file: FILE_UPLOAD, fallback: "1px" },
+        { file: EMPTY_STATE, fallback: "1px" },
+      ],
+    },
+    {
+      key: "edge-color",
+      property: "outline-color",
+      description: "Resting-edge colour. A component's own `--<component>-border` override still wins over it.",
+      consumers: each([INPUT, TEXTAREA, SELECT, CHECKBOX, TAG_INPUT, CHIP, FILE_UPLOAD, EMPTY_STATE, BUTTON], "var(--border-default, #e5e7eb)"),
+    },
+    {
+      key: "edge-style",
+      property: "outline-style",
+      description: "Resting-edge style for solid edges.",
+      consumers: each([...EDGE_CONTROLS, CHIP], "solid"),
+    },
+    {
+      key: "drop-edge-width",
+      property: "outline-width",
+      description: "Dashed-edge weight (file-upload draws it at 2×). Follows `edge-width` unless set — set it alone to keep dashed edges while solid edges are off.",
+      consumers: each([FILE_UPLOAD, EMPTY_STATE], "var(--control-edge-width, 1px)"),
+    },
+    {
+      key: "drop-edge-style",
+      property: "outline-style",
+      description: "Dashed-edge style for drop targets and empty states.",
+      consumers: each([FILE_UPLOAD, EMPTY_STATE], "dashed"),
+    },
+    {
+      key: "state-edge-width",
+      property: "outline-width",
+      description: "Focus and invalid edge weight. Independent of `edge-width`, so focus and invalid stay visible with edges off.",
+      consumers: each([INPUT, TEXTAREA, SELECT, CHECKBOX, SWITCH, TAG_INPUT], "1px"),
+    },
   ],
 };
 
@@ -545,6 +641,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   skeletonFamily,
   spinnerFamily,
   checkboxFamily,
+  controlFamily,
   adminUiFamily,
 ];
 

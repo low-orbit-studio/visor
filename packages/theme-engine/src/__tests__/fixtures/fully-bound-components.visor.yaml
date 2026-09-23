@@ -234,7 +234,15 @@ components:
     radius: "3px"
     bg: "#2b0a3d"
     border: "3px dashed #ff00aa"
+    edgeless-bg: "#ff00aa"
     bg-checked: "#2b0a3d"
     border-checked: "#ff00aa"
+  control:
+    edge-width: "3px"
+    edge-color: "#ff00aa"
+    edge-style: "dotted"
+    drop-edge-width: "4px"
+    drop-edge-style: "double"
+    state-edge-width: "3px"
   admin-ui:
     marquee-family: "\"Courier New\", monospace"

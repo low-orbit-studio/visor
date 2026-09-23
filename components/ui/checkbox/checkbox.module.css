@@ -2,7 +2,12 @@
    Default rendering uses canonical values directly. Under data-density="editorial"
    (set on any ancestor), the editorial density axis bakes in the blessed admin
    values: 1.125rem box, 4px radius, var(--surface-subtle) background, and
-   var(--hairline-strong) border. */
+   var(--hairline-strong) edge.
+
+   VI-655: the border only holds box geometry and is always transparent. The
+   visible resting edge is an inset outline read from --checkbox-border, which
+   defaults to the shared --control-edge-* tokens, so --control-edge-width: 0 on
+   any ancestor removes it with no layout shift. */
 .root {
   position: relative;
   display: flex;
@@ -12,10 +17,18 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--checkbox-radius, var(--radius-sm, 0.25rem));
-  border: var(--checkbox-border, 1px solid var(--border-default, #e5e7eb));
+  border: 1px solid transparent;
   background-color: var(--checkbox-bg, transparent);
-  transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
-  outline: none;
+  /* With the edge switched off an unchecked box would vanish, and the box is
+     the control, not decoration. So it takes a fill whose size is derived from
+     the switch: calc(max(0px, 1px - width) * 1000) is 0 while the edge is on
+     (nothing paints) and covers the box once the edge width drops to 0. */
+  background-image: linear-gradient(var(--checkbox-edgeless-bg, var(--control-edge-color, var(--border-default, #e5e7eb))), var(--checkbox-edgeless-bg, var(--control-edge-color, var(--border-default, #e5e7eb))));
+  background-size: calc(max(0px, 1px - var(--control-edge-width, 1px)) * 1000);
+  background-repeat: no-repeat;
+  transition: outline-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+  outline: var(--checkbox-border, var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--control-edge-color, var(--border-default, #e5e7eb)));
+  outline-offset: calc(-1 * var(--control-edge-width, 1px));
   cursor: pointer;
 }
 
@@ -23,13 +36,13 @@
   width: 1.125rem;
   height: 1.125rem;
   border-radius: 4px;
-  border-color: var(--hairline-strong, #e5e7eb);
+  outline-color: var(--hairline-strong, #e5e7eb);
   background-color: var(--surface-subtle);
 }
 
 @media (hover: hover) {
   .root:hover:not(:focus-visible):not(:disabled):not([aria-invalid="true"]):not([data-state="checked"]):not([data-state="indeterminate"]) {
-    border-color: var(--border-strong, #d1d5db);
+    outline-color: var(--border-strong, #d1d5db);
     background-color: transparent;
   }
 }
@@ -40,8 +53,11 @@
   }
 }
 
+/* Focus and invalid draw at --control-state-edge-width, which the edge switch
+   does not touch. */
 .root:focus-visible {
-  border-color: var(--border-focus, #111827);
+  outline: var(--control-state-edge-width, 1px) solid var(--border-focus, #111827);
+  outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
   box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
 }
 
@@ -51,19 +67,22 @@
 }
 
 .root[aria-invalid="true"] {
-  border-color: var(--border-error, #ef4444);
+  outline: var(--control-state-edge-width, 1px) solid var(--border-error, #ef4444);
+  outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
   box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-error, #ef4444) 15%, transparent);
 }
 
 .root[data-state="checked"] {
-  border-color: var(--checkbox-border-checked, var(--interactive-primary-bg, var(--primary, #111827)));
+  outline-color: var(--checkbox-border-checked, var(--interactive-primary-bg, var(--primary, #111827)));
   background-color: var(--checkbox-bg-checked, var(--interactive-primary-bg, var(--primary, #111827)));
+  background-image: none;
   color: var(--interactive-primary-text, #f9fafb);
 }
 
 .root[data-state="indeterminate"] {
-  border-color: var(--checkbox-border-checked, var(--interactive-primary-bg, var(--primary, #111827)));
+  outline-color: var(--checkbox-border-checked, var(--interactive-primary-bg, var(--primary, #111827)));
   background-color: var(--checkbox-bg-checked, var(--interactive-primary-bg, var(--primary, #111827)));
+  background-image: none;
   color: var(--interactive-primary-text, #f9fafb);
 }
 

@@ -5,10 +5,15 @@
   flex-shrink: 0;
   align-items: center;
   border-radius: 9999px;
+  /* VI-655: the border only holds box geometry. The track's resting edge is an
+     inset outline on the shared --control-edge-* tokens; it is transparent
+     unless a theme sets --switch-edge-color, and --control-edge-width: 0
+     removes it with every other control's edge. */
   border: 1px solid transparent;
   background-color: var(--switch-track-bg, var(--border-default, #e5e7eb));
-  transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
-  outline: none;
+  transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), outline-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+  outline: var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--switch-edge-color, transparent);
+  outline-offset: calc(-1 * var(--control-edge-width, 1px));
   cursor: pointer;
 }
 
@@ -18,8 +23,11 @@
   }
 }
 
+/* Focus and invalid draw at --control-state-edge-width, which the edge switch
+   does not touch. */
 .root:focus-visible {
-  border-color: var(--border-focus, #111827);
+  outline: var(--control-state-edge-width, 1px) solid var(--border-focus, #111827);
+  outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
   box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
 }
 
@@ -29,7 +37,8 @@
 }
 
 .root[aria-invalid="true"] {
-  border-color: var(--border-error, #ef4444);
+  outline: var(--control-state-edge-width, 1px) solid var(--border-error, #ef4444);
+  outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
   box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-error, #ef4444) 15%, transparent);
 }
 
