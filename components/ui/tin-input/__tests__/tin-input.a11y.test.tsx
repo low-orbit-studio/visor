@@ -1,9 +1,17 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { describe, it, expect } from "vitest"
+import { afterEach, beforeEach, describe, it, expect, vi, type MockInstance } from "vitest"
 import { axe } from "../../../../test-utils/axe"
 import { TinInput, type TinInputProps } from "../tin-input"
 import { Field, FieldLabel } from "../../field/field"
+
+// jsdom reports no document focus while it dispatches a blur; a browser page
+// keeps focus as focus moves within it, which is what commits the echo.
+let hasFocus: MockInstance<() => boolean>
+beforeEach(() => {
+  hasFocus = vi.spyOn(document, "hasFocus").mockReturnValue(true)
+})
+afterEach(() => hasFocus.mockRestore())
 
 function renderInField(props: Partial<TinInputProps> = {}) {
   return render(
@@ -40,10 +48,11 @@ describe("TinInput a11y (vitest-axe)", () => {
     const { container } = renderInField({ kind: "ein" })
     await user.type(screen.getByLabelText("Taxpayer ID"), "123456789")
     await user.tab()
+    expect(screen.getByLabelText("Taxpayer ID")).toHaveValue("••-•••6789")
     expect(await axe(container)).toHaveNoViolations()
   })
 
-  it("labelled by aria-label alone has no WCAG 2.1 AA violations", async () => {
+  it("labeled by aria-label alone has no WCAG 2.1 AA violations", async () => {
     const { container } = render(
       <TinInput aria-label="Employer ID" kind="ein" onValueChange={() => {}} />
     )

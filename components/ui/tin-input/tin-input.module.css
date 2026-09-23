@@ -1,6 +1,6 @@
 /* TIN input — the entry field, or the on-file echo with its Replace button.
- * The gap matches Field's, so hint, control and error keep the field rhythm
- * whether or not the component sits inside a Field. */
+ * The gap matches Field's, so control, hint and error keep the field rhythm
+ * and order whether or not the component sits inside a Field. */
 .root {
   display: flex;
   flex-direction: column;

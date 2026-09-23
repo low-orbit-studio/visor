@@ -1770,7 +1770,7 @@ export const propsData: Record<string, PropDef[]> = {
     {
       name: 'lastFour',
       type: 'string',
-      description: 'Last four digits of a TIN already on file. Renders a read-only "On file · ending 1234" with a Replace button.',
+      description: 'Last four digits of a TIN already on file. Renders a read-only "On file · ending 1234" with a Replace button. A new value brings the echo back after a Replace.',
     },
     {
       name: 'onReplace',

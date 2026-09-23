@@ -33,7 +33,7 @@ Type or paste nine digits, then tab away. Focusing the field again clears it for
 
 ## On File
 
-When a TIN is already stored, pass its `lastFour`. The field renders a read-only echo and a **Replace** button that swaps in an empty field and moves focus to it. Pass only the last four digits: the component never needs more.
+When a TIN is already stored, pass its `lastFour`. The field renders a read-only echo and a **Replace** button that swaps in an empty field and moves focus to it. Pass only the last four digits: the component never needs more. Once the new TIN is saved, pass its `lastFour` and the echo comes back, with no remount needed.
 
 <ComponentPreview
   title="On file"
@@ -112,7 +112,7 @@ const [tin, setTin] = useState<string | null>(null);
 
 - **The value is only ever the mask.** Every edit is intercepted before it reaches the DOM and applied to digits held in memory, so the digits are never in `input.value` or in any attribute, not even while typing.
 - **Nothing is typed before hydration.** The server-rendered field is read-only until the component mounts, so keystrokes on a slow first load are refused rather than shown in plain text.
-- **On blur, the digits are dropped.** A complete entry shows the grouping mask and the last four (`•••-••-1234`), and the component keeps only those four.
+- **On blur, the digits are dropped.** When focus moves elsewhere on the page, a complete entry shows the grouping mask and the last four (`•••-••-1234`), and the component keeps only those four. Switching to another app and back leaves the entry as it was, so it is not wiped.
 - **No way back out.** There is no show/hide toggle, no copy affordance (copying the field copies bullets), no `title` or `data-*` carrying digits, and nothing is logged.
 - **No save prompts.** The field is a text input, never a password input, and it always carries the password-manager ignore attributes (`data-1p-ignore`, `data-bwignore`, `data-lpignore`, `data-form-type="other"`), even inside a form that allows them.
 - **Input hygiene.** `inputMode="numeric"`, `autoComplete="off"`, `autoCorrect="off"`, `autoCapitalize="off"`, `spellCheck={false}` and `enterKeyHint="next"`. Non-digits are ignored and typing past nine is ignored. A paste strips spaces, dashes and any other non-digits, and one that would make more than nine digits is refused whole.

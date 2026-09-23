@@ -1,12 +1,21 @@
-import { render, screen, fireEvent } from "@testing-library/react"
+import { act, render, screen, fireEvent } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { renderToString } from "react-dom/server"
-import { describe, it, expect, vi } from "vitest"
+import { afterEach, beforeEach, describe, it, expect, vi, type MockInstance } from "vitest"
 import { TinInput, type TinInputProps } from "../tin-input"
 import { Field, FieldLabel } from "../../field/field"
 import { PasswordManagersProvider } from "../../../../lib/password-managers-context"
 
 const DIGITS = "987654321"
+
+// jsdom reports no document focus while it dispatches a blur; a browser page
+// keeps focus as focus moves within it. Model an active window, and lower it
+// where a test switches apps.
+let hasFocus: MockInstance<() => boolean>
+beforeEach(() => {
+  hasFocus = vi.spyOn(document, "hasFocus").mockReturnValue(true)
+})
+afterEach(() => hasFocus.mockRestore())
 
 function renderTin(props: Partial<TinInputProps> = {}) {
   const onValueChange = vi.fn()
@@ -103,6 +112,26 @@ describe("TinInput", () => {
       expect(input().value).toBe("")
       expect(onValueChange).toHaveBeenCalledWith(null)
       expect(onValueChange).not.toHaveBeenCalledWith(DIGITS)
+    })
+
+    it("switching apps and back keeps a complete entry", async () => {
+      const { user, input, onValueChange } = renderTin()
+      await user.type(input(), DIGITS)
+      onValueChange.mockClear()
+
+      // The window deactivates: the field blurs with the whole document, and
+      // coming back refocuses it.
+      hasFocus.mockReturnValue(false)
+      act(() => input().blur())
+      hasFocus.mockReturnValue(true)
+      act(() => input().focus())
+
+      expect(input().value).toBe("•••-••-••••")
+      expect(onValueChange).not.toHaveBeenCalled()
+
+      // A blur within the page still commits.
+      await user.tab()
+      expect(input().value).toBe("•••-••-4321")
     })
 
     it("blurring an incomplete entry keeps it masked for the user to finish", async () => {
@@ -236,6 +265,19 @@ describe("TinInput", () => {
       expect(input()).not.toHaveAttribute("aria-invalid")
     })
 
+    it("refocusing a committed field clears a paste error with the entry", async () => {
+      const { user, input } = renderTin()
+      await user.type(input(), DIGITS)
+      await user.paste("1")
+      expect(screen.getByRole("alert")).toBeInTheDocument()
+      await user.tab()
+
+      await user.click(input())
+      expect(input().value).toBe("")
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument()
+      expect(input()).not.toHaveAttribute("aria-invalid")
+    })
+
     it("refuses a paste that would overflow the digits already entered", async () => {
       const { user, input, onValueChange } = renderTin()
       await user.type(input(), "9876")
@@ -296,6 +338,31 @@ describe("TinInput", () => {
 
       await user.type(input(), DIGITS, { skipClick: true })
       expect(onValueChange).toHaveBeenLastCalledWith(DIGITS)
+    })
+
+    it("returns to the on-file echo when lastFour changes after Replace", async () => {
+      const onValueChange = vi.fn()
+      const user = userEvent.setup()
+      const tree = (lastFour: string) => (
+        <Field>
+          <FieldLabel htmlFor="tin">Taxpayer ID</FieldLabel>
+          <TinInput id="tin" kind="ssn" lastFour={lastFour} onValueChange={onValueChange} />
+        </Field>
+      )
+      const field = () => screen.getByLabelText("Taxpayer ID") as HTMLInputElement
+      const { rerender } = render(tree("6789"))
+      await user.click(screen.getByRole("button", { name: "Replace" }))
+      await user.type(field(), DIGITS, { skipClick: true })
+
+      // The consumer saves as soon as the entry is complete, before any blur,
+      // and passes the new last four.
+      rerender(tree("4321"))
+      expect(field().value).toBe("On file · ending 4321")
+
+      // A second Replace starts empty too, and says so.
+      await user.click(screen.getByRole("button", { name: "Replace" }))
+      expect(field().value).toBe("")
+      expect(onValueChange).toHaveBeenLastCalledWith(null)
     })
 
     it("Replace is keyboard-reachable", async () => {
@@ -384,6 +451,14 @@ describe("TinInput", () => {
       expect(described).toEqual(["Used for your 1099", "9 digits", "Enter all 9 digits"])
       expect(input).toHaveAttribute("aria-invalid", "true")
       expect(screen.getByRole("alert")).toHaveTextContent("Enter all 9 digits")
+    })
+
+    it("renders the hint below the control and above the error, in Field order", () => {
+      const { input } = renderTin({ error: "Enter all 9 digits" })
+      const hint = screen.getByText("9 digits")
+      const error = screen.getByRole("alert")
+      expect(input().compareDocumentPosition(hint) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+      expect(hint.compareDocumentPosition(error) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     })
 
     it("describes the committed echo as ending in the last four", async () => {

@@ -33,7 +33,7 @@ props:
     description: Called with the 9 digits once the entry is complete, and with null while it is incomplete or cleared.
   - name: lastFour
     type: string
-    description: Last four digits of a TIN already on file. Renders a read-only "On file · ending 1234" with a Replace button. Only ever pass four digits.
+    description: Last four digits of a TIN already on file. Renders a read-only "On file · ending 1234" with a Replace button. A new value brings the echo back after a Replace. Only ever pass four digits.
   - name: onReplace
     type: "() => void"
     description: Called when Replace swaps the on-file echo for an empty field.

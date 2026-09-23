@@ -15,7 +15,7 @@ interface TinInputDemoProps {
 }
 
 /**
- * A labelled TinInput with a readout of what the consumer receives. The
+ * A labeled TinInput with a readout of what the consumer receives. The
  * readout reports the SHAPE of each onValueChange call and never the digits —
  * a demo that echoed them would undo the component.
  */

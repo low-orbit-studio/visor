@@ -26,7 +26,10 @@ export interface TinInputProps
    * component.
    */
   onValueChange: (digits: string | null) => void
-  /** Last four digits of a TIN already on file. Renders the on-file echo with a Replace button. */
+  /**
+   * Last four digits of a TIN already on file. Renders the on-file echo with a
+   * Replace button. A new value brings the echo back after a Replace.
+   */
   lastFour?: string
   /** Called when Replace swaps the on-file echo for an empty field. */
   onReplace?: () => void
@@ -64,8 +67,9 @@ function digitIndex(display: string, offset: number): number {
  * A write-only, masked 9-digit TIN field. The input's value is only ever the
  * mask: every edit is intercepted before it reaches the DOM and applied to
  * digits held in memory, so the digits are never in `input.value` or in any
- * attribute. On blur a complete entry shows only the grouping mask and the
- * last four, and the digits are dropped; focusing it again clears it.
+ * attribute. When focus moves elsewhere on the page, a complete entry shows
+ * only the grouping mask and the last four, and the digits are dropped;
+ * focusing it again clears it. Switching apps and back keeps the entry.
  */
 const TinInput = React.forwardRef<HTMLInputElement, TinInputProps>(
   (
@@ -92,6 +96,12 @@ const TinInput = React.forwardRef<HTMLInputElement, TinInputProps>(
     const [committedLastFour, setCommittedLastFour] = React.useState<string | null>(null)
     const [pasteError, setPasteError] = React.useState<string | null>(null)
     const [replacing, setReplacing] = React.useState(false)
+    // A new `lastFour` is a new TIN on file, so the echo comes back after a Replace.
+    const [prevLastFour, setPrevLastFour] = React.useState(lastFour)
+    if (lastFour !== prevLastFour) {
+      setPrevLastFour(lastFour)
+      setReplacing(false)
+    }
     // Until hydration nothing intercepts keystrokes, so the server-rendered
     // field refuses input rather than showing the digits typed into it.
     const [hydrated, setHydrated] = React.useState(false)
@@ -218,18 +228,28 @@ const TinInput = React.forwardRef<HTMLInputElement, TinInputProps>(
 
     const handleBlur = () => {
       if (digitsRef.current.length !== TIN_LENGTH) return
+      // Switching apps blurs the field too, and coming back refocuses it, which
+      // would clear a committed entry. Commit only when focus moved within the page.
+      if (!document.hasFocus()) return
       setCommittedLastFour(digitsRef.current.slice(-4))
       digitsRef.current = ""
     }
 
-    const handleFocus = () => {
-      if (committedLastFour === null) return
+    const clearEntry = () => {
+      digitsRef.current = ""
       setCommittedLastFour(null)
+      setPasteError(null)
       setEntry({ count: 0, caret: 0 })
       emit(null)
     }
 
+    const handleFocus = () => {
+      if (committedLastFour !== null) clearEntry()
+    }
+
     const handleReplace = () => {
+      // After `lastFour` changes, Replace is offered again; it still starts empty.
+      clearEntry()
       setReplacing(true)
       onReplace?.()
     }
@@ -279,7 +299,6 @@ const TinInput = React.forwardRef<HTMLInputElement, TinInputProps>(
 
     return (
       <div data-slot="tin-input" className={cn(styles.root, className)}>
-        <FieldDescription id={hintId}>9 digits</FieldDescription>
         <Input
           ref={setRefs}
           id={id}
@@ -316,6 +335,7 @@ const TinInput = React.forwardRef<HTMLInputElement, TinInputProps>(
             ending in {committedLastFour}
           </span>
         )}
+        <FieldDescription id={hintId}>9 digits</FieldDescription>
         {errorNode}
       </div>
     )
