@@ -158,8 +158,17 @@ const PENDING_SPINNER_SIZE: Record<string, "xs" | "sm"> = {
  * `aria-label` (or `aria-labelledby`). Warns once per mount in development;
  * silent in production.
  */
-function useIconLabelWarning(size: string | null | undefined, props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  const unlabelled = size === "icon" && !props["aria-label"] && !props["aria-labelledby"]
+function useIconLabelWarning(
+  size: string | null | undefined,
+  asChild: boolean | undefined,
+  children: React.ReactNode,
+  props: React.ButtonHTMLAttributes<HTMLButtonElement>
+) {
+  // Under asChild the name can live on the child, which is not inspectable
+  // here, so only a plain <button> is checked. A text child or a title is a name.
+  const hasText = React.Children.toArray(children).some((c) => typeof c === "string" || typeof c === "number")
+  const unlabelled =
+    size === "icon" && !asChild && !hasText && !props["aria-label"] && !props["aria-labelledby"] && !props.title
   React.useEffect(() => {
     if (unlabelled && process.env.NODE_ENV !== "production") {
       // eslint-disable-next-line no-console
@@ -245,7 +254,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const Comp = asChild ? Slot : "button"
 
-    useIconLabelWarning(size, props)
+    useIconLabelWarning(size, asChild, children, props)
 
     const elementRef = React.useRef<HTMLButtonElement | null>(null)
     const mergeRef = React.useCallback(

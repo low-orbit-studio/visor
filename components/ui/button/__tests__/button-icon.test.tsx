@@ -63,6 +63,27 @@ describe('Button size="icon" (VI-659)', () => {
     expect(warn).not.toHaveBeenCalled()
   })
 
+  it("does not warn when the name comes from a title, a text child or an asChild child", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
+    render(
+      <>
+        <Button size="icon" title="Delete">
+          <Glyph />
+        </Button>
+        <Button size="icon">
+          <Glyph />
+          Delete
+        </Button>
+        <Button size="icon" asChild>
+          <a href="#x" aria-label="Open">
+            <Glyph />
+          </a>
+        </Button>
+      </>
+    )
+    expect(warn).not.toHaveBeenCalled()
+  })
+
   it("does not warn for a labelled text button", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
     render(<Button>Save</Button>)
