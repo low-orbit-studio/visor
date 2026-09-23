@@ -1,5 +1,5 @@
 name: Spinner
-description: Inline loading spinner — a rotating border ring with a subtle track and a tone-colored leading edge. Three sizes (xs/sm/md), two tones (default/primary), and full reduced-motion support.
+description: Loading spinner — an inline rotating border ring, or a dotted thinking-orb (nine animations) for waits over larger surfaces. Three sizes (xs/sm/md), two tones (default/primary), and full reduced-motion support.
 extends: HTMLSpanElement
 category: data-display
 
@@ -7,6 +7,7 @@ when_to_use:
   - Indicating an async operation is in progress within a button, form field, or inline context
   - Replacing text or an icon while content is loading (inline, non-blocking)
   - Decorative loading affordance inside a card or panel where a full-page skeleton would be too heavy
+  - A wait over a large visual (a card re-rendering under a scrim, an agent thinking) — use variant="orb" at md (64px)
 
 when_not_to_use:
   - Full-page or full-section loading states (use Skeleton instead)
@@ -21,6 +22,7 @@ why: >
   loading states.
 
 variants:
+  variant: [ring, orb]
   size: [xs, sm, md]
   tone: [default, primary]
 
@@ -28,17 +30,26 @@ props:
   - name: size
     type: '"xs" | "sm" | "md"'
     default: '"md"'
-    description: Ring size. xs=12px, sm=16px, md=24px.
+    description: Size. Ring — xs=12px, sm=16px, md=24px. Orb — xs=20px, sm=32px, md=64px (20 and 64 are hand-tuned designs; 32 is interpolated).
   - name: tone
     type: '"default" | "primary"'
     default: '"default"'
-    description: Color treatment for the leading edge. default=text-tertiary, primary=primary brand token.
+    description: Color treatment. Ring leading edge — default=text-tertiary, primary=primary brand token. Orb ink — default=the surrounding text colour, primary=primary brand token.
+  - name: variant
+    type: '"ring" | "orb"'
+    default: '"ring"'
+    description: ring is the inline rotating border. orb is a dotted thinking-orb canvas (thinking-orbs) for waits over larger surfaces.
+  - name: orb
+    type: '"working" | "searching" | "solving" | "listening" | "connecting" | "weaving" | "composing" | "breathing" | "shaping"'
+    default: '"working"'
+    description: Which orb animation to show. Read only when variant="orb".
   - name: label
     type: string
     description: Accessible label. When provided, renders role="status" with visually-hidden text. When omitted, aria-hidden="true" (decorative).
 
 dependencies:
   - "class-variance-authority"
+  - "thinking-orbs"
   - "@loworbitstudio/visor-core"
 
 preview_url: "https://visor.design/docs/components/data-display/spinner"
@@ -47,3 +58,4 @@ example: |
   <Spinner />
   <Spinner size="xs" tone="primary" />
   <Spinner size="sm" label="Loading results…" />
+  <Spinner variant="orb" orb="working" label="Rendering preview…" />

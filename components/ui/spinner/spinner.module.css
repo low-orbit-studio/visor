@@ -85,3 +85,25 @@
     animation-play-state: paused;
   }
 }
+
+/* Orb variant (VI-653) — a dotted thinking-orb drawn on a canvas by
+   thinking-orbs. The wrapper is sized inline to the canvas preset (20/32/64)
+   so server and client boxes match. The ink is read at runtime from the
+   hidden probe below: default tone follows the surrounding text colour,
+   primary tone the same hook the ring's primary edge reads. */
+.orb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.orbInk {
+  display: none;
+  color: currentColor;
+}
+
+.orbInkPrimary {
+  color: var(--spinner-primary-edge-color, var(--primary, #111827));
+}
