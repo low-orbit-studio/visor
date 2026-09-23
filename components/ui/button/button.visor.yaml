@@ -21,14 +21,14 @@ why: >
 
 variants:
   variant: [default, secondary, outline, ghost, destructive]
-  size: [sm, md, lg, dlg]
+  size: [sm, md, lg, dlg, icon]
 
 props:
   - name: variant
     type: "'default' | 'secondary' | 'outline' | 'ghost' | 'destructive'"
     default: "default"
   - name: size
-    type: "'sm' | 'md' | 'lg' | 'dlg'"
+    type: "'sm' | 'md' | 'lg' | 'dlg' | 'icon'"
     default: "md"
     description: >
       Standard sizes plus `dlg` — the compact dialog-footer button (dlg-btn) from
@@ -37,6 +37,10 @@ props:
       variant="default", ghost via variant="ghost" (renders a hairline-outlined,
       secondary-ink face at dlg size), danger via variant="destructive" (renders
       a subtle-danger face at dlg size).
+      `icon` is a square icon-only mark — glyph (--button-icon-size) plus a
+      hit-target pad (--button-icon-pad) on every side, so width always equals
+      height. Use it with variant="ghost" for a bare mark in secondary ink.
+      Requires an aria-label; warns in development without one.
   - name: asChild
     type: boolean
     default: false

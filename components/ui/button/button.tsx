@@ -24,6 +24,7 @@ const buttonVariants = cva(styles.base, {
       md: styles.sizeMd,
       lg: styles.sizeLg,
       dlg: styles.sizeDlg,
+      icon: styles.sizeIcon,
     },
   },
   defaultVariants: {
@@ -149,6 +150,25 @@ const PENDING_SPINNER_SIZE: Record<string, "xs" | "sm"> = {
   dlg: "xs",
   md: "sm",
   lg: "sm",
+  icon: "sm",
+}
+
+/**
+ * An icon-only button has no text for assistive tech to read, so it needs an
+ * `aria-label` (or `aria-labelledby`). Warns once per mount in development;
+ * silent in production.
+ */
+function useIconLabelWarning(size: string | null | undefined, props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  const unlabelled = size === "icon" && !props["aria-label"] && !props["aria-labelledby"]
+  React.useEffect(() => {
+    if (unlabelled && process.env.NODE_ENV !== "production") {
+      // eslint-disable-next-line no-console
+      console.warn(
+        '[Button] size="icon" renders no text, so it needs an accessible name. ' +
+          "Pass aria-label (or aria-labelledby) describing the action."
+      )
+    }
+  }, [unlabelled])
 }
 
 export interface ButtonProps
@@ -224,6 +244,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const Comp = asChild ? Slot : "button"
+
+    useIconLabelWarning(size, props)
 
     const elementRef = React.useRef<HTMLButtonElement | null>(null)
     const mergeRef = React.useCallback(

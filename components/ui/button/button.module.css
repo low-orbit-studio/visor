@@ -222,6 +222,42 @@
   border-radius: var(--button-dlg-radius, var(--button-radius, var(--radius-lg, 0.5rem)));
 }
 
+/* Icon-only button — a square mark around one glyph (VI-659). The box is the
+   glyph plus a hit-target pad on every side, so width always equals height;
+   --button-icon-size sets the glyph and --button-icon-pad the pad. A 1em glyph
+   (Phosphor's default) takes the size from font-size; a glyph with its own
+   width/height attributes is sized by the svg rule. No edge on ghost; on
+   outline the edge is the shared ::after one, so --control-edge-width: 0 turns
+   it off. */
+.sizeIcon {
+  width: calc(var(--button-icon-size, 1rem) + 2 * var(--button-icon-pad, var(--spacing-2, 0.5rem)));
+  height: calc(var(--button-icon-size, 1rem) + 2 * var(--button-icon-pad, var(--spacing-2, 0.5rem)));
+  padding: 0;
+  flex-shrink: 0;
+  font-size: var(--button-icon-size, 1rem);
+  border-radius: var(--button-icon-radius, var(--button-radius, var(--radius-md, 0.375rem)));
+}
+
+.sizeIcon > svg {
+  width: var(--button-icon-size, 1rem);
+  height: var(--button-icon-size, 1rem);
+  flex-shrink: 0;
+}
+
+/* Ghost icon ink — the mark sits beside what it acts on, so it rests quieter
+   than a labelled ghost button and comes up to primary ink on hover. :where()
+   keeps it at one-class weight, so the held (open / active) ghost rule above
+   still wins. */
+:where(.sizeIcon).variantGhost {
+  color: var(--button-icon-ghost-color, var(--text-secondary, #6b7280));
+}
+
+@media (hover: hover) {
+  :where(.sizeIcon).variantGhost:hover {
+    color: var(--text-primary, #111827);
+  }
+}
+
 /* Case and tracking are inherited properties, so any unlayered fallback would
    override something: `inherit` beats a layered utility, `revert-layer` drops
    an unlayered consumer rule. In visor-base, the lowest Visor layer (the reset's),

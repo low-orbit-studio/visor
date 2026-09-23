@@ -63,6 +63,14 @@ const CASES: Case[] = [
   ]),
   { token: "--button-sm-font-size", fixture: "button/sm", target: "button", prop: "font-size", value: "21px", density: "editorial" as const },
 
+  // button — icon-only (VI-659): the box is the glyph plus the pad on each side
+  { token: "--button-icon-size", fixture: "button/icon", target: "button", prop: "width", value: "20px", expected: "36px" },
+  { token: "--button-icon-size", fixture: "button/icon", target: "button > svg", prop: "width", value: "20px" },
+  { token: "--button-icon-pad", fixture: "button/icon", target: "button", prop: "height", value: "4px", expected: "24px" },
+  { token: "--button-icon-radius", fixture: "button/icon", target: "button", prop: "border-top-left-radius", value: "13px" },
+  { token: "--button-radius", fixture: "button/icon", target: "button", prop: "border-top-left-radius", value: "13px" },
+  { token: "--button-icon-ghost-color", fixture: "button/icon", target: "button", prop: "color", value: "rgb(255, 0, 170)" },
+
   // text — every size
   ...["xs", "sm", "md", "lg", "xl"].flatMap((size, i) =>
     TYPE.map((t) => ({ token: `--text-${size}-${t.key}`, fixture: "text/default", target: SIZE_TEXT(i + 1), prop: t.prop, value: t.value })),

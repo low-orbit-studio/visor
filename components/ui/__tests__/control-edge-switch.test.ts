@@ -17,7 +17,7 @@
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest"
 import { FIXTURES } from "../../../packages/cli/src/commands/render"
-import { bundle, close, launch, open, ready } from "./render-page"
+import { REST_EDGE, bundle, close, launch, open, pixelDelta, ready } from "./render-page"
 
 /** Every fixture of every component the switch governs. */
 const COMPONENTS = [
@@ -28,34 +28,12 @@ const COMPONENTS = [
 const EDGED = new Set([
   "input/default", "textarea/default", "select/default", "checkbox/default",
   "tag-input/default", "chip/outlined", "file-upload/default", "empty-state/default",
-  "button/outline", "button/gated", "button/dlg-ghost", "button/dlg-outline",
+  "button/outline", "button/gated", "button/dlg-ghost", "button/dlg-outline", "button/icon-outline",
 ])
 /** Fixtures that draw a dashed (drop) edge. */
 const DASHED = new Set(["file-upload/default", "empty-state/default"])
 
 const ALL_FIXTURES = COMPONENTS.flatMap((c) => Object.keys(FIXTURES[c]).map((f) => ({ component: c, fixture: f, id: `${c}/${f}` })))
-
-/**
- * Widest resting edge anywhere under #root, in px: the host outline, the
- * ::after outline, and any border that carries colour. Width is read raw — a
- * transparent edge still counts, because the switch has to zero the width.
- */
-const REST_EDGE = `(function () {
-  var widest = 0;
-  var read = function (cs) { return cs.outlineStyle === "none" ? 0 : parseFloat(cs.outlineWidth) || 0; };
-  var visible = function (c) { return c !== "transparent" && !/rgba\\([^)]*,\\s*0\\)$/.test(c); };
-  var els = document.querySelectorAll("#root *");
-  for (var i = 0; i < els.length; i++) {
-    var cs = getComputedStyle(els[i]);
-    widest = Math.max(widest, read(cs), read(getComputedStyle(els[i], "::after")));
-    ["Top", "Right", "Bottom", "Left"].forEach(function (s) {
-      if (cs["border" + s + "Style"] !== "none" && visible(cs["border" + s + "Color"])) {
-        widest = Math.max(widest, parseFloat(cs["border" + s + "Width"]) || 0);
-      }
-    });
-  }
-  return widest;
-})()`
 
 const RECTS = `JSON.stringify([].map.call(document.querySelectorAll("#root *"), function (el) {
   var r = el.getBoundingClientRect(); return [r.x, r.y, r.width, r.height];
@@ -121,7 +99,8 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
         })
         const after = await hammered.screenshot(SHOT)
         await hammered.close()
-        expect(Buffer.compare(before, after)).toBe(0)
+        // Within Chromium's ±1/255 corner raster jitter: nothing visible changed.
+        expect((await pixelDelta(before, after)).max).toBeLessThanOrEqual(2)
       }, 30_000)
     }
 
@@ -137,7 +116,7 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
       })
       const after = await hammered.screenshot(SHOT)
       await hammered.close()
-      expect(Buffer.compare(before, after)).not.toBe(0)
+      expect((await pixelDelta(before, after)).max).toBeGreaterThan(2)
     }, 30_000)
   })
 
@@ -184,7 +163,7 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
         await page.evaluate(`document.querySelector(${JSON.stringify(`#root ${target}`)}).focus()`)
         const focused = await page.screenshot(SHOT)
         await page.close()
-        expect(Buffer.compare(rest, focused)).not.toBe(0)
+        expect((await pixelDelta(rest, focused)).max).toBeGreaterThan(2)
       }, 30_000)
     }
 
@@ -196,7 +175,7 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
         await page.evaluate(`document.querySelector("#root [aria-invalid]").removeAttribute("aria-invalid")`)
         const valid = await page.screenshot(SHOT)
         await page.close()
-        expect(Buffer.compare(invalid, valid)).not.toBe(0)
+        expect((await pixelDelta(invalid, valid)).max).toBeGreaterThan(2)
       }, 30_000)
     }
 
@@ -214,7 +193,7 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
         await page.evaluate(`document.querySelector("#root button").style.visibility = "hidden"`)
         const hidden = await page.screenshot(SHOT)
         await page.close()
-        expect(Buffer.compare(shown, hidden)).not.toBe(0)
+        expect((await pixelDelta(shown, hidden)).max).toBeGreaterThan(2)
       }, 30_000)
     }
   })

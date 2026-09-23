@@ -70,7 +70,7 @@
         },
         "button": {
           "type": "object",
-          "description": "Button type treatment and rounding. The unprefixed keys set every size at once; a size key (`dlg-radius`) overrides one size. Keys: text-transform, letter-spacing, radius, sm-font-size, sm-text-transform, sm-letter-spacing, sm-radius, md-font-size, md-text-transform, md-letter-spacing, md-radius, lg-font-size, lg-text-transform, lg-letter-spacing, lg-radius, dlg-font-size, dlg-text-transform, dlg-letter-spacing, dlg-radius.",
+          "description": "Button type treatment and rounding. The unprefixed keys set every size at once; a size key (`dlg-radius`) overrides one size. Keys: text-transform, letter-spacing, radius, sm-font-size, sm-text-transform, sm-letter-spacing, sm-radius, md-font-size, md-text-transform, md-letter-spacing, md-radius, lg-font-size, lg-text-transform, lg-letter-spacing, lg-radius, dlg-font-size, dlg-text-transform, dlg-letter-spacing, dlg-radius, icon-size, icon-pad, icon-radius, icon-ghost-color.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }
