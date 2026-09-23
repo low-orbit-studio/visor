@@ -23,7 +23,7 @@ why: >
 variants:
   size: [xs, sm, md, lg, xl]
   weight: [normal, medium, semibold, bold]
-  color: [primary, secondary, tertiary, inherit]
+  color: [primary, secondary, tertiary, warning, inherit]
   leading: [tight, snug, normal, relaxed, loose]
 
 props:
@@ -38,7 +38,7 @@ props:
     type: "'normal' | 'medium' | 'semibold' | 'bold'"
     default: "'normal'"
   - name: color
-    type: "'primary' | 'secondary' | 'tertiary' | 'inherit'"
+    type: "'primary' | 'secondary' | 'tertiary' | 'warning' | 'inherit'"
     default: "'primary'"
   - name: leading
     type: "'tight' | 'snug' | 'normal' | 'relaxed' | 'loose'"

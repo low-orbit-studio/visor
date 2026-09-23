@@ -194,6 +194,36 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       interactiveTarget: "button",
       props: `{ gated: true, children: "Upgrade" }`,
     },
+    // Type tokens (VI-656): one fixture per size, plus the dlg outline face.
+    sm: { export: "Button", interactiveTarget: "button", props: `{ size: "sm", children: "Small" }` },
+    lg: { export: "Button", interactiveTarget: "button", props: `{ size: "lg", children: "Large" }` },
+    dlg: { export: "Button", interactiveTarget: "button", props: `{ size: "dlg", children: "Save" }` },
+    "dlg-outline": {
+      export: "Button",
+      interactiveTarget: "button",
+      props: `{ size: "dlg", variant: "outline", children: "Preview" }`,
+    },
+  },
+  // Type tokens (VI-656). Field label and Text at every step, in both densities.
+  field: {
+    default: {
+      export: "Field",
+      props: `{ children: [React.createElement(__mod.FieldLabel, { key: "l" }, "Display name"), React.createElement(__mod.FieldDescription, { key: "d" }, "Shown on your profile.")] }`,
+    },
+    editorial: {
+      export: "Field",
+      props: `{ "data-density": "editorial", children: [React.createElement(__mod.FieldLabel, { key: "l" }, "Display name"), React.createElement(__mod.FieldDescription, { key: "d" }, "Shown on your profile.")] }`,
+    },
+  },
+  text: {
+    default: {
+      export: "Text",
+      props: `{ as: "div", children: ["xs", "sm", "md", "lg", "xl"].map(function (s) { return React.createElement(__mod.Text, { key: s, size: s }, "Text " + s) }) }`,
+    },
+    colors: {
+      export: "Text",
+      props: `{ as: "div", children: ["primary", "secondary", "tertiary", "warning"].map(function (c) { return React.createElement(__mod.Text, { key: c, size: "sm", color: c }, "Text " + c) }) }`,
+    },
   },
   // Form controls (VI-655). Each has a resting fixture plus the states that
   // redraw the edge (invalid, checked, selected), so `visor render` can prove
@@ -232,6 +262,12 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     default: { export: "Switch", interactiveTarget: "button", props: `{ "aria-label": "Notifications" }` },
     checked: { export: "Switch", interactiveTarget: "button", props: `{ "aria-label": "Notifications", defaultChecked: true }` },
     invalid: { export: "Switch", interactiveTarget: "button", props: `{ "aria-label": "Notifications", "aria-invalid": true }` },
+    sm: { export: "Switch", interactiveTarget: "button", props: `{ "aria-label": "Notifications", size: "sm" }` },
+    "sm-checked": {
+      export: "Switch",
+      interactiveTarget: "button",
+      props: `{ "aria-label": "Notifications", size: "sm", defaultChecked: true }`,
+    },
   },
   "tag-input": {
     default: {

@@ -22,6 +22,7 @@ const textVariants = cva(styles.base, {
       primary: styles.colorPrimary,
       secondary: styles.colorSecondary,
       tertiary: styles.colorTertiary,
+      warning: styles.colorWarning,
       inherit: styles.colorInherit,
     },
     leading: {

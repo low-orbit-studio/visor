@@ -40,14 +40,32 @@ import { Text } from '@/components/ui/text';
 
 <ComponentPreview
   title="Color Variants"
-  code={"<Text color=\"primary\">Primary text color</Text>\n<Text color=\"secondary\">Secondary text color</Text>\n<Text color=\"tertiary\">Tertiary text color</Text>"}
+  code={"<Text color=\"primary\">Primary text color</Text>\n<Text color=\"secondary\">Secondary text color</Text>\n<Text color=\"tertiary\">Tertiary text color</Text>\n<Text color=\"warning\">Warning text color</Text>"}
 >
   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
     <Text color="primary">Primary text color</Text>
     <Text color="secondary">Secondary text color</Text>
     <Text color="tertiary">Tertiary text color</Text>
+    <Text color="warning">Warning text color</Text>
   </div>
 </ComponentPreview>
+
+`color="warning"` reads `--text-warning`, for a state line such as "Unsaved changes".
+
+## Theming
+
+A theme sets each size's type size, case and tracking through the `text`
+component tokens — `--text-<size>-font-size`, `-text-transform` and
+`-letter-spacing` — without a new size. See
+[Component tokens](/docs/themes/component-tokens#text).
+
+```yaml
+components:
+  text:
+    sm-font-size: "13px"
+    xs-text-transform: uppercase
+    xs-letter-spacing: "0.12em"
+```
 
 ## Line Height
 

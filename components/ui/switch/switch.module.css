@@ -46,10 +46,30 @@
   background-color: var(--interactive-primary-bg, var(--primary, #111827));
 }
 
-/* Size variants */
+/* Size variants
+   The default size takes its dimensions from the theme (VI-656):
+   --switch-track-width / -height, and --switch-knob-inset, the gap between the
+   knob and the track's outer edge on every side. The private properties below
+   exist only while --switch-knob-inset is set; unset, they are invalid, so the
+   knob falls back to its shipped 1rem size and position and the track keeps
+   whatever inline padding it had (revert-layer). Set, the track's inline
+   padding goes to 0 so the inset alone places the knob. The 1px is the
+   geometry border (see .root), which the inset is measured across. */
 .sizeDefault {
-  height: 1.15rem;
-  width: 2rem;
+  height: var(--switch-track-height, 1.15rem);
+  width: var(--switch-track-width, 2rem);
+  --_switch-pad: calc(var(--switch-knob-inset) * 0);
+  --_switch-knob-size: calc(var(--switch-track-height, 1.15rem) - 2 * var(--switch-knob-inset));
+  --_switch-knob-start: calc(var(--switch-knob-inset) - 1px);
+}
+
+/* In visor-base so an unset inset leaves the track's padding to whatever reset
+   or browser default applies, and a set inset zeroes it only where no consumer
+   rule speaks. */
+@layer visor-base {
+  .sizeDefault {
+    padding-inline: var(--_switch-pad, revert-layer);
+  }
 }
 
 .sizeSm {
@@ -69,8 +89,8 @@
 
 /* Thumb size — derived from parent via CSS nesting */
 .sizeDefault .thumb {
-  width: 1rem;
-  height: 1rem;
+  width: var(--_switch-knob-size, 1rem);
+  height: var(--_switch-knob-size, 1rem);
 }
 
 .sizeSm .thumb {
@@ -82,8 +102,15 @@
   transform: translateX(0);
 }
 
+.sizeDefault[data-state="unchecked"] .thumb {
+  transform: translateX(var(--_switch-knob-start, 0));
+}
+
+/* The knob's right edge sits the same distance from the track's right edge as
+   its left edge does from the left: flush inside the 1px geometry border by
+   default (2rem - 1rem - 2px, the shipped 100% - 2px), or the inset when set. */
 .sizeDefault[data-state="checked"] .thumb {
-  transform: translateX(calc(100% - 2px));
+  transform: translateX(calc(var(--switch-track-width, 2rem) - 100% - 2px - var(--_switch-knob-start, 0px)));
 }
 
 .sizeSm[data-state="checked"] .thumb {

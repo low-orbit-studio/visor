@@ -219,6 +219,38 @@ function fixtureMarkup(): string {
     </div>
   </section>
 
+  <section class="band" data-family="field">
+    <div class="${c("field", "field", "fieldVertical")}">
+      <label class="${c("field", "fieldLabel")}" data-probe="field-label">Display name</label>
+      <p class="${c("field", "fieldDescription")}">Shown on your profile.</p>
+    </div>
+  </section>
+
+  <section class="band" data-family="button">
+    <div class="spinnerRow">
+      <button class="${c("button", "base", "variantDefault", "sizeSm")}" data-probe="button-sm">Small</button>
+      <button class="${c("button", "base", "variantDefault", "sizeMd")}" data-probe="button-md">Default</button>
+      <button class="${c("button", "base", "variantDefault", "sizeLg")}" data-probe="button-lg">Large</button>
+      <button class="${c("button", "base", "variantDefault", "sizeDlg")}" data-probe="button-dlg">Save</button>
+      <button class="${c("button", "base", "variantOutline", "sizeDlg")}" data-probe="button-dlg-outline">Preview</button>
+    </div>
+  </section>
+
+  <section class="band" data-family="text">
+    <p class="${c("text", "base", "sizeXs", "colorSecondary")}" data-probe="text-xs">Draft · saved</p>
+    <p class="${c("text", "base", "sizeSm", "colorSecondary")}" data-probe="text-sm">Saved moments ago</p>
+    <p class="${c("text", "base", "sizeMd", "colorPrimary")}" data-probe="text-md">Body copy</p>
+    <p class="${c("text", "base", "sizeLg", "colorPrimary")}" data-probe="text-lg">Lead copy</p>
+    <p class="${c("text", "base", "sizeXl", "colorPrimary")}" data-probe="text-xl">Display copy</p>
+  </section>
+
+  <section class="band" data-family="switch">
+    <div class="spinnerRow">
+      <button class="${c("switch", "root", "sizeDefault")}" data-state="unchecked" data-probe="switch-track"><span class="${c("switch", "thumb")}" data-state="unchecked" data-probe="switch-knob"></span></button>
+      <button class="${c("switch", "root", "sizeDefault")}" data-state="checked"><span class="${c("switch", "thumb")}" data-state="checked" data-probe="switch-knob-checked"></span></button>
+    </div>
+  </section>
+
   <section class="band" data-family="sidebar">
     <div class="${c("sidebar", "sidebarContent")}" data-probe="sidebar-content" style="height:auto">
       <div class="${c("sidebar", "header")}" data-probe="sidebar-header">Acme</div>
@@ -256,7 +288,7 @@ const PROPS = [
   "margin-bottom", "row-gap", "column-gap",
   "width", "height", "box-shadow",
   "font-family", "font-size", "font-weight", "letter-spacing", "text-transform", "line-height",
-  "animation-duration",
+  "animation-duration", "transform", "outline-color",
 ];
 
 interface Probe {

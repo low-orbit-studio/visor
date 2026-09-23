@@ -441,6 +441,114 @@ How the switch holds up:
 - **Dashed edges can come back on their own.** Set `--control-drop-edge-width`
   to keep drop-target and empty-state edges while solid edges stay off.
 
+### `field`
+
+Field label treatment — size, case, tracking and colour of `FieldLabel`, in both densities.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--field-label-font-size` | Label type size. Drives both the standard and editorial-density steps. | `var(--font-size-sm, 0.875rem)` · `13px` |
+| `--field-label-text-transform` | Label casing. | `revert-layer` |
+| `--field-label-letter-spacing` | Label tracking. | `revert-layer` |
+| `--field-label-color` | Label colour. Drives both the standard and editorial-density steps. | `var(--text-primary, currentColor)` · `var(--text-secondary)` |
+
+### `button`
+
+Button type treatment and rounding. The unprefixed keys set every size at once; a size key (`dlg-radius`) overrides one size.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--button-text-transform` | Casing for every size. | `revert-layer` |
+| `--button-letter-spacing` | Tracking for every size. | `revert-layer` |
+| `--button-radius` | Corner rounding for every size (`999px` for a pill). | `var(--radius-md, 0.375rem)` · `var(--radius-lg, 0.5rem)` |
+| `--button-sm-font-size` | `sm` type size. Drives both the standard and editorial-density steps. | `var(--font-size-xs, 0.75rem)` · `0.8125rem` |
+| `--button-sm-text-transform` | `sm` casing. | `var(--button-text-transform, revert-layer)` |
+| `--button-sm-letter-spacing` | `sm` tracking. | `var(--button-letter-spacing, revert-layer)` |
+| `--button-sm-radius` | `sm` corner rounding. | `var(--button-radius, var(--radius-md, 0.375rem))` |
+| `--button-md-font-size` | `md` type size. | `var(--font-size-sm, 0.875rem)` |
+| `--button-md-text-transform` | `md` casing. | `var(--button-text-transform, revert-layer)` |
+| `--button-md-letter-spacing` | `md` tracking. | `var(--button-letter-spacing, revert-layer)` |
+| `--button-md-radius` | `md` corner rounding. | `var(--button-radius, var(--radius-md, 0.375rem))` |
+| `--button-lg-font-size` | `lg` type size. | `var(--font-size-base, 1rem)` |
+| `--button-lg-text-transform` | `lg` casing. | `var(--button-text-transform, revert-layer)` |
+| `--button-lg-letter-spacing` | `lg` tracking. | `var(--button-letter-spacing, revert-layer)` |
+| `--button-lg-radius` | `lg` corner rounding. | `var(--button-radius, var(--radius-md, 0.375rem))` |
+| `--button-dlg-font-size` | `dlg` type size. | `var(--font-size-2xs, 0.6875rem)` |
+| `--button-dlg-text-transform` | `dlg` casing. | `var(--button-text-transform, revert-layer)` |
+| `--button-dlg-letter-spacing` | `dlg` tracking. | `var(--button-letter-spacing, revert-layer)` |
+| `--button-dlg-radius` | `dlg` corner rounding. | `var(--button-radius, var(--radius-lg, 0.5rem))` |
+
+### `text`
+
+Text type treatment, per size — set `sm-font-size: 13px` for a 13px step, or caps and tracking on `xs` for a state tag. Every key begins with a size.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--text-xs-font-size` | `xs` type size. | `var(--font-size-xs, 0.75rem)` |
+| `--text-xs-text-transform` | `xs` casing. | `revert-layer` |
+| `--text-xs-letter-spacing` | `xs` tracking. | `revert-layer` |
+| `--text-sm-font-size` | `sm` type size. | `var(--font-size-sm, 0.875rem)` |
+| `--text-sm-text-transform` | `sm` casing. | `revert-layer` |
+| `--text-sm-letter-spacing` | `sm` tracking. | `revert-layer` |
+| `--text-md-font-size` | `md` type size. | `var(--font-size-base, 1rem)` |
+| `--text-md-text-transform` | `md` casing. | `revert-layer` |
+| `--text-md-letter-spacing` | `md` tracking. | `revert-layer` |
+| `--text-lg-font-size` | `lg` type size. | `var(--font-size-lg, 1.125rem)` |
+| `--text-lg-text-transform` | `lg` casing. | `revert-layer` |
+| `--text-lg-letter-spacing` | `lg` tracking. | `revert-layer` |
+| `--text-xl-font-size` | `xl` type size. | `var(--font-size-xl, 1.25rem)` |
+| `--text-xl-text-transform` | `xl` casing. | `revert-layer` |
+| `--text-xl-letter-spacing` | `xl` tracking. | `revert-layer` |
+
+### `switch`
+
+Switch track and knob dimensions (default size; `size="sm"` keeps its own). Set `knob-inset` to size the knob from the track: it sits that far from the track's outer edge on every side.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--switch-track-width` | Track width. | `2rem` |
+| `--switch-track-height` | Track height. With `knob-inset` set, the knob is the track height less the inset on both sides. | `1.15rem` |
+| `--switch-knob-inset` | Gap between the knob and the track's outer edge, on every side. Unset, the knob keeps its shipped 1rem size and position. | — (unset) |
+| `--switch-track-bg` | Unchecked track fill. | `var(--border-default, #e5e7eb)` |
+| `--switch-edge-color` | Track edge colour — transparent by default. Width and style come from the shared `control` edge, so `control.edge-width: 0` turns it off. | `transparent` |
+
+Every hook in `field`, `button`, `text` and `switch` defaults to what shipped
+before it existed. Case and tracking are declared in Visor's lowest cascade
+layer (`visor-base`, where the reset lives) and fall back to `revert-layer`, so
+while a hook is unset the element is exactly as it would be without it: your
+own rules, a utility class, a reset, inheritance or the browser's `<button>`
+default still decide. Set, the hook still yields to any rule of yours.
+
+A compact caps pill for dialog actions, a 13px state line and a caps state tag:
+
+```yaml
+# my-theme.visor.yaml
+components:
+  button:
+    dlg-font-size: "10px"
+    dlg-text-transform: uppercase
+    dlg-letter-spacing: "0.06em"
+    dlg-radius: "999px"
+  text:
+    sm-font-size: "13px"
+    xs-font-size: "9px"
+    xs-text-transform: uppercase
+    xs-letter-spacing: "0.12em"
+  field:
+    label-font-size: "9px"
+    label-text-transform: uppercase
+    label-letter-spacing: "0.12em"
+    label-color: "var(--text-tertiary)"
+  switch:
+    track-width: "30px"
+    track-height: "17px"
+    knob-inset: "3px"
+```
+
+None of these hooks draws an edge. The outline Button (at any size, `dlg`
+included) and the Switch track take their edge from the `control` family, so
+`control.edge-width: 0` still turns them off.
+
 ### `admin-ui`
 
 Structural roles the admin-ui pattern owns. `marquee-family` is the display face for KPI hero figures and marquee page titles — the role the admin-ui portability audit named as the one piece of ENTR brand coupling a new theme must rebind.

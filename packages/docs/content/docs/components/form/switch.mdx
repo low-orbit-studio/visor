@@ -68,6 +68,24 @@ import { Label } from '@/components/ui/label';
   </div>
 </ComponentPreview>
 
+## Theming
+
+A theme sets the default size's track and knob through the `switch` component
+tokens. `knob-inset` places the knob that far from the track's outer edge on
+every side and sizes it from the track height. See
+[Component tokens](/docs/themes/component-tokens#switch).
+
+```yaml
+components:
+  switch:
+    track-width: "30px"
+    track-height: "17px"
+    knob-inset: "3px"
+```
+
+The track's edge comes from the shared `control` tokens, so `edges: off` removes
+it with every other control's edge.
+
 ## Installation
 
 ```bash

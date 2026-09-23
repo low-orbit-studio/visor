@@ -244,5 +244,52 @@ components:
     drop-edge-width: "4px"
     drop-edge-style: "double"
     state-edge-width: "3px"
+  field:
+    label-font-size: "37px"
+    label-text-transform: uppercase
+    label-letter-spacing: "0.3em"
+    label-color: "#ff00aa"
+  button:
+    text-transform: uppercase
+    letter-spacing: "0.3em"
+    radius: "3px"
+    sm-font-size: "37px"
+    sm-text-transform: uppercase
+    sm-letter-spacing: "0.3em"
+    sm-radius: "3px"
+    md-font-size: "37px"
+    md-text-transform: uppercase
+    md-letter-spacing: "0.3em"
+    md-radius: "3px"
+    lg-font-size: "37px"
+    lg-text-transform: uppercase
+    lg-letter-spacing: "0.3em"
+    lg-radius: "3px"
+    dlg-font-size: "37px"
+    dlg-text-transform: uppercase
+    dlg-letter-spacing: "0.3em"
+    dlg-radius: "3px"
+  text:
+    xs-font-size: "37px"
+    xs-text-transform: uppercase
+    xs-letter-spacing: "0.3em"
+    sm-font-size: "37px"
+    sm-text-transform: uppercase
+    sm-letter-spacing: "0.3em"
+    md-font-size: "37px"
+    md-text-transform: uppercase
+    md-letter-spacing: "0.3em"
+    lg-font-size: "37px"
+    lg-text-transform: uppercase
+    lg-letter-spacing: "0.3em"
+    xl-font-size: "37px"
+    xl-text-transform: uppercase
+    xl-letter-spacing: "0.3em"
+  switch:
+    track-width: "37px"
+    track-height: "37px"
+    knob-inset: "3px"
+    track-bg: "#2b0a3d"
+    edge-color: "#ff00aa"
   admin-ui:
     marquee-family: "\"Courier New\", monospace"
