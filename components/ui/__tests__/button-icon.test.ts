@@ -45,8 +45,9 @@ describe("VI-659 — Button size=\"icon\" (real browser)", () => {
 
   it("stays square when a theme retunes the glyph and the pad", async (ctx) => {
     if (!ready()) return ctx.skip()
-    const [width, height] = await box("icon", { scopeCss: "--button-icon-size: 20px; --button-icon-pad: 6px;" })
-    expect([width, height]).toEqual([32, 32])
+    // 24 + 2 × 6 = 36: neither value is the default (1rem, 8px), so ignoring either token fails.
+    const [width, height] = await box("icon", { scopeCss: "--button-icon-size: 24px; --button-icon-pad: 6px;" })
+    expect([width, height]).toEqual([36, 36])
   }, 30_000)
 
   it("mutation control — a padded, text-sized box is caught as not square", async (ctx) => {
