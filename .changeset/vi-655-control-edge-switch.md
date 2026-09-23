@@ -12,6 +12,7 @@ Input, Textarea, Select, Checkbox, Switch, TagInput, Chip, FileUpload, EmptyStat
 - With edges off, an unchecked Checkbox takes a fill (`--checkbox-edgeless-bg`) so it still reads as a box.
 - Dashed edges (FileUpload, EmptyState) read `--control-drop-edge-width`, which follows the switch unless set on its own.
 - Per-component colour overrides (`--input-border`, `--select-border`, `--tag-input-border`, …) still win over the shared colour.
+- **Contract change:** `components.checkbox.border`, `components.chip.border` and `components.empty-state.border` (`--checkbox-border`, `--chip-border`, `--empty-state-border`) are now colour-only, like `--input-border`. Width and style always come from the shared edge, so an override can never push the inset edge outside the box. A binding like `"1px solid red"` becomes `"red"`. No stock or known consumer theme binds them.
 - Theme engine: new top-level `edges: on | off` field and a `control` family in the VI-625 component-token contract (`components.control.*`), plus `checkbox.edgeless-bg`.
 - `visor render` gains fixtures for every governed component.
 

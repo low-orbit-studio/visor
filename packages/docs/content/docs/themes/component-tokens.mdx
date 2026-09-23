@@ -140,7 +140,7 @@ Chip / filter-pill treatment. The retro found the same mono status chip at 8.5 /
 | Token | Binds | Falls back to |
 |---|---|---|
 | `--chip-radius` | Chip corner rounding. | `var(--radius-full, 9999px)` |
-| `--chip-border` | Chip resting edge, as one `<width> <style> <colour>` value. Defaults to the shared `control` edge, so `control.edge-width: 0` turns it off. | `var(--control-edge-width, var(--stroke-width-thin, 1px)) var(--control-edge-style, solid) var(--control-edge-color, var(--border-default, #e5e7eb))` |
+| `--chip-border` | Outlined-chip edge colour. Width and style come from the shared `control` edge, so `control.edge-width: 0` turns it off. | `var(--control-edge-color, var(--border-default, #e5e7eb))` |
 | `--chip-bg` | Resting chip fill. | `var(--surface-card, #ffffff)` |
 | `--chip-text-color` | Chip label colour. | `var(--text-primary, #111827)` |
 | `--chip-font-family` | Chip label family — bind a mono face for token/ID chips. | `var(--font-body, inherit)` |
@@ -242,7 +242,7 @@ Empty-state placard — surface, icon chip and copy scale.
 | `--empty-state-gap` | Placard stack rhythm. | `var(--spacing-2, 0.5rem)` |
 | `--empty-state-padding` | Default-size placard inset. | `var(--spacing-8, 2rem) var(--spacing-5, 1.25rem)` |
 | `--empty-state-bg` | Default-tone fill. | `var(--surface-muted, #f9fafb)` |
-| `--empty-state-border` | Default-tone dashed edge, as one `<width> <style> <colour>` value. Defaults to the shared `control` drop edge, so `control.edge-width: 0` turns it off. | `var(--control-drop-edge-width, var(--control-edge-width, 1px)) var(--control-drop-edge-style, dashed) var(--control-edge-color, var(--border-default, #e5e7eb))` |
+| `--empty-state-border` | Default-tone dashed-edge colour. Width and style come from the shared `control` drop edge, so `control.edge-width: 0` turns it off. | `var(--control-edge-color, var(--border-default, #e5e7eb))` |
 | `--empty-state-icon-size` | Icon-chip diameter. | `72px` |
 | `--empty-state-icon-radius` | Icon-chip rounding. | `var(--radius-full, 9999px)` |
 | `--empty-state-icon-bg` | Icon-chip fill. | `var(--surface-subtle, #f5f5f6)` |
@@ -390,7 +390,7 @@ Control sizing — the D3 Tier-2 `--checkbox-size` / `-radius` / `-bg` / `-borde
 | `--checkbox-size` | Checkbox box size. | `1rem` |
 | `--checkbox-radius` | Checkbox corner rounding — square it for the editorial admin look. | `var(--radius-sm, 0.25rem)` |
 | `--checkbox-bg` | Unchecked fill. | `transparent` |
-| `--checkbox-border` | Unchecked resting edge, as one `<width> <style> <colour>` value. Defaults to the shared `control` edge, so `control.edge-width: 0` turns it off. | `var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--control-edge-color, var(--border-default, #e5e7eb))` |
+| `--checkbox-border` | Unchecked edge colour. Width and style come from the shared `control` edge, so `control.edge-width: 0` turns it off. | `var(--control-edge-color, var(--border-default, #e5e7eb))` |
 | `--checkbox-edgeless-bg` | Unchecked fill shown only while the shared edge is off (`control.edge-width: 0`), so the box still reads as a control. | `var(--control-edge-color, var(--border-default, #e5e7eb))` |
 | `--checkbox-bg-checked` | Checked fill. | `var(--interactive-primary-bg, var(--primary, #111827))` |
 | `--checkbox-border-checked` | Checked edge colour. | `var(--interactive-primary-bg, var(--primary, #111827))` |

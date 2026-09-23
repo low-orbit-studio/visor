@@ -175,9 +175,13 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
         await on.close()
         if (EDGED.has(id)) expect(onEdge, `${id} should draw an edge with the switch on`).toBeGreaterThan(0)
 
-        const off = await open(component, fixture, { scopeCss: OFF })
-        expect(await off.evaluate(REST_EDGE)).toBe(0)
-        await off.close()
+        // Unitless 0 (what `edges: off` emits) and 0px take different calc()
+        // paths — unitless 0 makes the length math invalid — so both are held.
+        for (const zero of ["0", "0px"]) {
+          const off = await open(component, fixture, { scopeCss: `--control-edge-width: ${zero};` })
+          expect(await off.evaluate(REST_EDGE), `${id} at --control-edge-width: ${zero}`).toBe(0)
+          await off.close()
+        }
       }, 30_000)
     }
 
@@ -289,15 +293,58 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
       }, 30_000)
     }
 
-    it("checkbox: an unchecked box still reads as a box with edges off", async (ctx) => {
-      if (!browser) return ctx.skip()
-      const page = await open("checkbox", "default", { scopeCss: OFF })
-      const shown = await page.screenshot(SHOT)
-      await page.evaluate(`document.querySelector("#root button").style.visibility = "hidden"`)
-      const hidden = await page.screenshot(SHOT)
-      await page.close()
-      expect(Buffer.compare(shown, hidden)).not.toBe(0)
-    }, 30_000)
+    for (const zero of ["0", "0px"]) {
+      it(`checkbox: an unchecked box still reads as a box at --control-edge-width: ${zero}`, async (ctx) => {
+        if (!browser) return ctx.skip()
+        const page = await open("checkbox", "default", { scopeCss: `--control-edge-width: ${zero};` })
+        const shown = await page.screenshot(SHOT)
+        // The fill covers the whole border box — every side, not a lopsided ring.
+        const fill = (await page.evaluate(`(function () {
+          var cs = getComputedStyle(document.querySelector("#root button"));
+          return [cs.backgroundImage !== "none", cs.backgroundOrigin];
+        })()`)) as [boolean, string]
+        expect(fill).toEqual([true, "border-box"])
+        await page.evaluate(`document.querySelector("#root button").style.visibility = "hidden"`)
+        const hidden = await page.screenshot(SHOT)
+        await page.close()
+        expect(Buffer.compare(shown, hidden)).not.toBe(0)
+      }, 30_000)
+    }
+  })
+
+  // checkbox.border / chip.border / empty-state.border are colour-only: width
+  // and style always come from the shared edge, so the inset offset always
+  // matches and the edge can never land outside the box.
+  describe("per-component colour overrides", () => {
+    const cases: Array<[string, string, string]> = [
+      ["checkbox", "default", "--checkbox-border"],
+      ["chip", "outlined", "--chip-border"],
+      ["empty-state", "default", "--empty-state-border"],
+      ["input", "default", "--input-border"],
+    ]
+    for (const [component, fixture, token] of cases) {
+      it(`${token} recolours the edge and it stays inside the box`, async (ctx) => {
+        if (!browser) return ctx.skip()
+        const page = await open(component, fixture, { scopeCss: `${token}: rgb(255, 0, 0); --control-edge-width: 3px;` })
+        const edge = (await page.evaluate(`(function () {
+          var els = document.querySelectorAll("#root *");
+          for (var i = 0; i < els.length; i++) {
+            var list = [getComputedStyle(els[i]), getComputedStyle(els[i], "::after")];
+            for (var j = 0; j < 2; j++) {
+              var cs = list[j];
+              if (cs.outlineStyle !== "none" && cs.outlineColor === "rgb(255, 0, 0)") {
+                return [cs.outlineWidth, cs.outlineOffset];
+              }
+            }
+          }
+          return null;
+        })()`)) as [string, string] | null
+        await page.close()
+        expect(edge, `${token} should colour the edge`).not.toBeNull()
+        const [width, offset] = edge!
+        expect(parseFloat(offset)).toBe(-parseFloat(width))
+      }, 30_000)
+    }
   })
 
   describe("dashed edges", () => {

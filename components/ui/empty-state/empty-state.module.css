@@ -34,11 +34,12 @@
    VI-655: the border only holds box geometry. The dashed edge is an inset
    outline on the shared drop-edge tokens, so --control-edge-width: 0 removes it
    with every other control's edge, and --control-drop-edge-width brings the
-   dashed edges back on their own. */
+   dashed edges back on their own. --empty-state-border is the per-component
+   colour override. */
 .toneDefault {
   background-color: var(--empty-state-bg, var(--surface-muted, #f9fafb));
   border: 1px solid transparent;
-  outline: var(--empty-state-border, var(--control-drop-edge-width, var(--control-edge-width, 1px)) var(--control-drop-edge-style, dashed) var(--control-edge-color, var(--border-default, #e5e7eb)));
+  outline: var(--control-drop-edge-width, var(--control-edge-width, 1px)) var(--control-drop-edge-style, dashed) var(--empty-state-border, var(--control-edge-color, var(--border-default, #e5e7eb)));
   outline-offset: calc(-1 * var(--control-drop-edge-width, var(--control-edge-width, 1px)));
 }
 

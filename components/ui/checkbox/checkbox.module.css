@@ -5,9 +5,9 @@
    var(--hairline-strong) edge.
 
    VI-655: the border only holds box geometry and is always transparent. The
-   visible resting edge is an inset outline read from --checkbox-border, which
-   defaults to the shared --control-edge-* tokens, so --control-edge-width: 0 on
-   any ancestor removes it with no layout shift. */
+   visible resting edge is an inset outline on the shared --control-edge-*
+   tokens, so --control-edge-width: 0 on any ancestor removes it with no layout
+   shift. --checkbox-border is the per-component colour override. */
 .root {
   position: relative;
   display: flex;
@@ -25,9 +25,10 @@
      (nothing paints) and covers the box once the edge width drops to 0. */
   background-image: linear-gradient(var(--checkbox-edgeless-bg, var(--control-edge-color, var(--border-default, #e5e7eb))), var(--checkbox-edgeless-bg, var(--control-edge-color, var(--border-default, #e5e7eb))));
   background-size: calc(max(0px, 1px - var(--control-edge-width, 1px)) * 1000);
+  background-origin: border-box;
   background-repeat: no-repeat;
   transition: outline-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
-  outline: var(--checkbox-border, var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--control-edge-color, var(--border-default, #e5e7eb)));
+  outline: var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--checkbox-border, var(--control-edge-color, var(--border-default, #e5e7eb)));
   outline-offset: calc(-1 * var(--control-edge-width, 1px));
   cursor: pointer;
 }

@@ -237,9 +237,9 @@ const chipFamily: ComponentTokenFamily = {
     { key: "radius", property: "border-radius", description: "Chip corner rounding.", consumers: at(CHIP, "var(--radius-full, 9999px)") },
     {
       key: "border",
-      property: "outline (width style colour, on ::after)",
-      description: "Chip resting edge, as one `<width> <style> <colour>` value. Defaults to the shared `control` edge, so `control.edge-width: 0` turns it off.",
-      consumers: at(CHIP, "var(--control-edge-width, var(--stroke-width-thin, 1px)) var(--control-edge-style, solid) var(--control-edge-color, var(--border-default, #e5e7eb))"),
+      property: "outline-color (outlined variant, on ::after)",
+      description: "Outlined-chip edge colour. Width and style come from the shared `control` edge, so `control.edge-width: 0` turns it off.",
+      consumers: at(CHIP, "var(--control-edge-color, var(--border-default, #e5e7eb))"),
     },
     { key: "bg", property: "background-color", description: "Resting chip fill.", consumers: at(CHIP, "var(--surface-card, #ffffff)") },
     { key: "text-color", property: "color", description: "Chip label colour.", consumers: at(CHIP, "var(--text-primary, #111827)") },
@@ -364,9 +364,9 @@ const emptyStateFamily: ComponentTokenFamily = {
     { key: "bg", property: "background-color", description: "Default-tone fill.", consumers: at(EMPTY_STATE, "var(--surface-muted, #f9fafb)") },
     {
       key: "border",
-      property: "outline (width style colour)",
-      description: "Default-tone dashed edge, as one `<width> <style> <colour>` value. Defaults to the shared `control` drop edge, so `control.edge-width: 0` turns it off.",
-      consumers: at(EMPTY_STATE, "var(--control-drop-edge-width, var(--control-edge-width, 1px)) var(--control-drop-edge-style, dashed) var(--control-edge-color, var(--border-default, #e5e7eb))"),
+      property: "outline-color",
+      description: "Default-tone dashed-edge colour. Width and style come from the shared `control` drop edge, so `control.edge-width: 0` turns it off.",
+      consumers: at(EMPTY_STATE, "var(--control-edge-color, var(--border-default, #e5e7eb))"),
     },
     { key: "icon-size", property: "width / height", description: "Icon-chip diameter.", consumers: at(EMPTY_STATE, "72px") },
     { key: "icon-radius", property: "border-radius", description: "Icon-chip rounding.", consumers: at(EMPTY_STATE, "var(--radius-full, 9999px)") },
@@ -526,9 +526,9 @@ const checkboxFamily: ComponentTokenFamily = {
     { key: "bg", property: "background-color", description: "Unchecked fill.", consumers: at(CHECKBOX, "transparent") },
     {
       key: "border",
-      property: "outline (width style colour)",
-      description: "Unchecked resting edge, as one `<width> <style> <colour>` value. Defaults to the shared `control` edge, so `control.edge-width: 0` turns it off.",
-      consumers: at(CHECKBOX, "var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--control-edge-color, var(--border-default, #e5e7eb))"),
+      property: "outline-color",
+      description: "Unchecked edge colour. Width and style come from the shared `control` edge, so `control.edge-width: 0` turns it off.",
+      consumers: at(CHECKBOX, "var(--control-edge-color, var(--border-default, #e5e7eb))"),
     },
     {
       key: "edgeless-bg",
