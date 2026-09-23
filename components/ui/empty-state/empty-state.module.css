@@ -30,10 +30,17 @@
   gap: var(--spacing-3, 0.75rem);
 }
 
-/* Tone: default — dashed border card on muted surface */
+/* Tone: default — dashed-edge card on muted surface.
+   VI-655: the border only holds box geometry. The dashed edge is an inset
+   outline on the shared drop-edge tokens, so --control-edge-width: 0 removes it
+   with every other control's edge, and --control-drop-edge-width brings the
+   dashed edges back on their own. --empty-state-border is the per-component
+   colour override. */
 .toneDefault {
   background-color: var(--empty-state-bg, var(--surface-muted, #f9fafb));
-  border: var(--empty-state-border, 1px dashed var(--border-default, #e5e7eb));
+  border: 1px solid transparent;
+  outline: var(--control-drop-edge-width, var(--control-edge-width, 1px)) var(--control-drop-edge-style, dashed) var(--empty-state-border, var(--control-edge-color, var(--border-default, #e5e7eb)));
+  outline-offset: calc(-1 * var(--control-drop-edge-width, var(--control-edge-width, 1px)));
 }
 
 /* Tone: subtle — borderless, transparent */
@@ -204,6 +211,7 @@
 .editorial {
   background-color: var(--surface-card, #ffffff);
   border: 0;
+  outline: none;
   border-radius: var(--radius-lg, 0.75rem);
   padding: var(--spacing-16, 4rem) var(--spacing-8, 2rem);
   gap: var(--spacing-3, 0.75rem);

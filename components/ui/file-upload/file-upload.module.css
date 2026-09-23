@@ -8,18 +8,38 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px dashed var(--border-default, #e5e7eb);
+  /* VI-655: the 2px border only holds box geometry. The dashed edge is drawn
+     on ::after (below) so the root's own outline stays free for the focus
+     ring. */
+  border: 2px solid transparent;
   border-radius: var(--radius-lg, 0.5rem);
   padding: var(--spacing-8, 2rem);
   cursor: pointer;
-  transition: border-color var(--motion-duration-fast, 150ms) var(--motion-easing-default, ease),
-              background-color var(--motion-duration-fast, 150ms) var(--motion-easing-default, ease);
+  transition: background-color var(--motion-duration-fast, 150ms) var(--motion-easing-default, ease);
+}
+
+/* The drop target's dashed edge: an inset outline over the border box, on the
+   shared drop-edge tokens at 2x weight. --control-edge-width: 0 removes it
+   with every other control's edge; --control-drop-edge-width brings the dashed
+   edges back on their own. */
+.root::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  outline: calc(2 * var(--control-drop-edge-width, var(--control-edge-width, 1px))) var(--control-drop-edge-style, dashed) var(--control-edge-color, var(--border-default, #e5e7eb));
+  outline-offset: calc(-2 * var(--control-drop-edge-width, var(--control-edge-width, 1px)));
+  pointer-events: none;
+  transition: outline-color var(--motion-duration-fast, 150ms) var(--motion-easing-default, ease);
 }
 
 @media (hover: hover) {
   .root:hover:not(.disabled) {
-    border-color: var(--border-strong, #d1d5db);
     background-color: var(--surface-muted, #f3f4f6);
+  }
+
+  .root:hover:not(.disabled)::after {
+    outline-color: var(--border-strong, #d1d5db);
   }
 }
 
@@ -29,8 +49,11 @@
 }
 
 .dragging {
-  border-color: var(--interactive-primary-bg, #3b82f6);
   background-color: var(--interactive-primary-bg-subtle, #eff6ff);
+}
+
+.dragging::after {
+  outline-color: var(--interactive-primary-bg, #3b82f6);
 }
 
 .disabled {

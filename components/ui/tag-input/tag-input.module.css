@@ -7,22 +7,29 @@
   min-height: 2.25rem;
   width: 100%;
   border-radius: var(--radius-md, 0.375rem);
-  border: 1px solid var(--tag-input-border, var(--border-default, #e5e7eb));
+  /* VI-655: transparent geometry border; the visible resting edge is an inset
+     outline from the shared --control-edge-* tokens (as Input does). */
+  border: 1px solid transparent;
+  outline: var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--tag-input-border, var(--control-edge-color, var(--border-default, #e5e7eb)));
+  outline-offset: calc(-1 * var(--control-edge-width, 1px));
   background-color: var(--tag-input-bg, var(--surface-interactive-default, #f9fafb));
   padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
   cursor: text;
-  transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+  transition: outline-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
     box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
 @media (hover: hover) {
   .wrapper:hover:not(.wrapperFocused):not(.wrapperDisabled) {
-    border-color: var(--border-strong, #d1d5db);
+    outline-color: var(--border-strong, #d1d5db);
   }
 }
 
+/* Focus draws at --control-state-edge-width, which the edge switch does not
+   touch. */
 .wrapperFocused {
-  border-color: var(--border-focus, #111827);
+  outline: var(--control-state-edge-width, 1px) solid var(--border-focus, #111827);
+  outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
   box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
 }
 
@@ -40,7 +47,10 @@
   padding: calc(var(--spacing-1, 0.25rem) / 4) var(--spacing-2, 0.5rem);
   border-radius: var(--radius-full, 9999px);
   background-color: var(--surface-muted, #f3f4f6);
-  border: 1px solid var(--border-default, #e5e7eb);
+  /* The tag chip's edge follows the same switch as the field around it. */
+  border: 1px solid transparent;
+  outline: var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--control-edge-color, var(--border-default, #e5e7eb));
+  outline-offset: calc(-1 * var(--control-edge-width, 1px));
   font-size: var(--font-size-xs, 0.75rem);
   line-height: 1.5;
   color: var(--text-primary, #111827);

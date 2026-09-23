@@ -10,8 +10,12 @@
   font-weight: var(--font-weight-medium, 500);
   line-height: 1;
   cursor: pointer;
+  /* VI-655: the border only holds box geometry and is always transparent. The
+     faces that draw an edge (outline, gated, dlg ghost) draw it on ::after —
+     see "Edged faces" below — so the button's own outline stays free for the
+     focus ring. */
   border: 1px solid transparent;
-  transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), transform var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+  transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), transform var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
   text-decoration: none;
   outline: none;
 }
@@ -57,7 +61,33 @@
 .variantOutline {
   background-color: transparent;
   color: var(--text-primary, #111827);
-  border-color: var(--border-strong, #e5e7eb);
+}
+
+/* Edged faces (VI-655). The resting edge is an inset outline over the border
+   box, on the shared --control-edge-* tokens, so --control-edge-width: 0 on any
+   ancestor removes it with no layout shift. Each face sets only the colour, in
+   the same source position its border-color used to hold. */
+.variantOutline,
+.base[data-gated="true"],
+.sizeDlg.variantGhost {
+  position: relative;
+}
+
+.variantOutline::after,
+.base[data-gated="true"]::after,
+.sizeDlg.variantGhost::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  outline: var(--control-edge-width, 1px) var(--control-edge-style, solid) transparent;
+  outline-offset: calc(-1 * var(--control-edge-width, 1px));
+  pointer-events: none;
+  transition: outline-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.variantOutline::after {
+  outline-color: var(--control-edge-color, var(--border-strong, #e5e7eb));
 }
 
 .variantGhost {
@@ -115,7 +145,10 @@
 .base[data-gated="true"] {
   opacity: var(--opacity-40, 0.4);
   cursor: not-allowed;
-  border-color: var(--border-default, #e5e7eb);
+}
+
+.base[data-gated="true"]::after {
+  outline-color: var(--control-edge-color, var(--border-default, #e5e7eb));
 }
 
 /* Editorial density: gated reads like plain disabled (the blessed admin
@@ -184,7 +217,10 @@
    specificity keeps this scoped to the dlg size only. */
 .sizeDlg.variantGhost {
   color: var(--text-secondary, #6b7280);
-  border-color: var(--hairline, var(--border-default, #e5e7eb));
+}
+
+.sizeDlg.variantGhost::after {
+  outline-color: var(--control-edge-color, var(--hairline, var(--border-default, #e5e7eb)));
 }
 
 /* dlg danger — subtle-danger face (AN dlg-btn danger face: --red on a faint

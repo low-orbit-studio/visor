@@ -308,6 +308,14 @@ export interface VisorThemeConfig {
    */
   components?: ComponentTokenBindings;
   /**
+   * VI-655: the one switch for form-control edges. `off` removes the resting
+   * edge of every form control — dashed drop-target and empty-state edges
+   * included — with no layout shift; focus and invalid stay visible. It is
+   * shorthand for `components.control.edge-width: "0"`, and an explicit
+   * `components.control.edge-width` wins over it. Default: `on`.
+   */
+  edges?: "on" | "off";
+  /**
    * Migration metadata — optional, additive, consumed by `visor migrate` commands.
    * Does not affect CSS generation or theme application.
    */

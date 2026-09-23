@@ -90,6 +90,17 @@ For a single-mode brand the palette is unconditional — there is nothing to tog
 
 This makes the "light-at-`:root`, dark-behind-`prefers`" shape ungeneratable for a `dark-only` brand — the failure mode where a dark brand briefly (or permanently, on a light OS) renders as a white app.
 
+## Form-Control Edges (`edges`)
+
+One line turns off the resting edge of every form control — Input, Textarea, Select, Checkbox, Switch, TagInput, Chip, FileUpload, EmptyState and the edged Button faces — dashed edges included:
+
+```yaml
+# my-theme.visor.yaml
+edges: off   # on (default) | off
+```
+
+`edges: off` emits `--control-edge-width: 0`. Nothing moves when it flips, because the edge is an inset `outline`, not a `border`. Focus and invalid stay visible, and an unchecked checkbox takes a fill so it still reads as a box. To scope it to one part of an app, set `--control-edge-width: 0` on any ancestor. The full token set is in [Component Tokens → `control`](/docs/themes/component-tokens#control).
+
 ## Manual Theme Toggle
 
 To override the system preference, apply one of the following to your `<html>` element (or any root container):

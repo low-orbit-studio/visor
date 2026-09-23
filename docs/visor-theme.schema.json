@@ -34,6 +34,11 @@
       "enum": ["dark-only", "light-only", "adaptive"],
       "description": "Brand constraint declaring which color modes the theme supports. 'dark-only'/'light-only' lock the brand to a single mode; 'adaptive' supports both. Complements 'default-mode' (the runtime default) — 'color-scheme' is authoritative for the brand-lock. Defaults to 'adaptive' when omitted. Optional."
     },
+    "edges": {
+      "type": "string",
+      "enum": ["on", "off"],
+      "description": "The one switch for form-control edges (VI-655). 'off' removes the resting edge of every form control, dashed drop-target and empty-state edges included, with no layout shift; focus and invalid stay visible. Shorthand for components.control.edge-width: \"0\" (an explicit binding there wins). Defaults to 'on'. Optional."
+    },
     "colors": {
       "type": "object",
       "description": "Color definitions for light mode. Only primary is required — all others have sensible defaults.",
@@ -549,7 +554,14 @@
         },
         "checkbox": {
           "type": "object",
-          "description": "Control sizing — the D3 Tier-2 `--checkbox-size` / `-radius` / `-bg` / `-border` set, promoted from the admin-ui audit to a bindable contract. Keys: size, radius, bg, border, bg-checked, border-checked.",
+          "description": "Control sizing — the D3 Tier-2 `--checkbox-size` / `-radius` / `-bg` / `-border` set, promoted from the admin-ui audit to a bindable contract. Keys: size, radius, bg, border, edgeless-bg, bg-checked, border-checked.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "control": {
+          "type": "object",
+          "description": "The one switch for form-control edges (VI-655). Every form control draws its resting edge from these, so `edge-width: 0` removes every resting edge at once, dashed edges included, with no layout shift. Keys: edge-width, edge-color, edge-style, drop-edge-width, drop-edge-style, state-edge-width.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

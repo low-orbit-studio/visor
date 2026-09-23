@@ -270,7 +270,15 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
     overrides: config.overrides,
     // VI-625: component bindings pass through untouched — the contract in
     // component-tokens.ts owns their shape, there is nothing to default.
-    components: config.components,
+    // VI-655: `edges: off` folds in here as `control.edge-width: 0`, so every
+    // adapter emits the switch through the same component-token path.
+    components:
+      config.edges === "off"
+        ? {
+            ...config.components,
+            control: { "edge-width": "0", ...config.components?.control },
+          }
+        : config.components,
     originalColors,
     colorFormats,
   };

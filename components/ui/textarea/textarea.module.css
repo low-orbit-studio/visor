@@ -3,12 +3,15 @@
   display: flex;
   width: 100%;
   resize: none;
-  border: 1px solid var(--textarea-border, var(--border-default, #e5e7eb));
+  /* VI-655: transparent geometry border; the visible resting edge is an inset
+     outline from the shared --control-edge-* tokens (as Input does). */
+  border: 1px solid transparent;
   background-color: var(--textarea-bg, var(--surface-interactive-default, #f9fafb));
   line-height: 1.5;
   color: var(--text-primary, #111827);
-  transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
-  outline: none;
+  transition: outline-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+  outline: var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--textarea-border, var(--control-edge-color, var(--border-default, #e5e7eb)));
+  outline-offset: calc(-1 * var(--control-edge-width, 1px));
 }
 
 .base::placeholder {
@@ -17,12 +20,15 @@
 
 @media (hover: hover) {
   .base:hover:not(:focus-visible):not(:disabled):not([aria-invalid="true"]) {
-    border-color: var(--border-strong, #d1d5db);
+    outline-color: var(--border-strong, #d1d5db);
   }
 }
 
+/* Focus and invalid draw at --control-state-edge-width, which the edge switch
+   does not touch. */
 .base:focus-visible {
-  border-color: var(--border-focus, #111827);
+  outline: var(--control-state-edge-width, 1px) solid var(--border-focus, #111827);
+  outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
   box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
 }
 
@@ -32,7 +38,8 @@
 }
 
 .base[aria-invalid="true"] {
-  border-color: var(--border-error, #ef4444);
+  outline: var(--control-state-edge-width, 1px) solid var(--border-error, #ef4444);
+  outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
   box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-error, #ef4444) 15%, transparent);
 }
 

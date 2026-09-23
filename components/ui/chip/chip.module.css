@@ -1,12 +1,15 @@
 /* Chip base */
 .base {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-1, 0.25rem);
   width: fit-content;
   flex-shrink: 0;
   border-radius: var(--chip-radius, var(--radius-full, 9999px));
-  border: var(--chip-border, var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb));
+  /* VI-655: the border only holds box geometry. The visible edge is drawn on
+     ::after (below) so the chip's own outline stays free for the focus ring. */
+  border: var(--stroke-width-thin, 1px) solid transparent;
   background-color: var(--chip-bg, var(--surface-card, #ffffff));
   color: var(--chip-text-color, var(--text-primary, #111827));
   font-family: var(--chip-font-family, var(--font-body, inherit));
@@ -17,22 +20,42 @@
   user-select: none;
   transition:
     background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
-    color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
-    border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+    color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+/* The chip's edge: an inset outline over the border box, on the shared
+   --control-edge-* tokens, so --control-edge-width: 0 on any ancestor removes
+   it with no layout shift. Each variant sets only the colour; the outlined
+   variant's colour is the per-component override, --chip-border. */
+.base::after {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--stroke-width-thin, 1px));
+  border-radius: inherit;
+  outline: var(--control-edge-width, var(--stroke-width-thin, 1px)) var(--control-edge-style, solid) var(--control-edge-color, var(--border-default, #e5e7eb));
+  outline-offset: calc(-1 * var(--control-edge-width, var(--stroke-width-thin, 1px)));
+  pointer-events: none;
+  transition: outline-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
 /* Variant: default (filled/tonal surface) */
 .variantDefault {
   background-color: var(--surface-muted, #f3f4f6);
-  border-color: transparent;
   color: var(--text-primary, #111827);
+}
+
+.variantDefault::after {
+  outline-color: transparent;
 }
 
 /* Variant: outlined */
 .variantOutlined {
   background-color: transparent;
-  border-color: var(--border-default, #e5e7eb);
   color: var(--text-primary, #111827);
+}
+
+.variantOutlined::after {
+  outline-color: var(--chip-border, var(--control-edge-color, var(--border-default, #e5e7eb)));
 }
 
 /* Variant: filled-primary — saturated brand-essence chip treatment.
@@ -42,11 +65,14 @@
  * on the Brand Workbench Elicit canvas, strategy surfaces, brand decks. */
 .variantFilledPrimary {
   background-color: var(--primary, #111827);
-  border-color: transparent;
   color: var(--primary-text, #f9fafb);
   font-weight: 700;
   letter-spacing: -0.01em;
   box-shadow: var(--shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+.variantFilledPrimary::after {
+  outline-color: transparent;
 }
 
 /* Sizes */
@@ -204,6 +230,10 @@
   border: var(--stroke-width-thin, 1px) solid transparent;
 }
 
+.interactive::after {
+  outline-color: transparent;
+}
+
 button.base,
 .interactive {
   /* Inherit base layout; add button-specific resets */
@@ -226,7 +256,10 @@ button.base,
 @media (hover: hover) {
   .interactive:hover:not(:disabled):not([data-selected="true"]) {
     background-color: var(--surface-interactive-hover, #f3f4f6);
-    border-color: var(--border-default, #e5e7eb);
+  }
+
+  .interactive:hover:not(:disabled):not([data-selected="true"])::after {
+    outline-color: var(--border-default, #e5e7eb);
   }
 }
 
@@ -239,8 +272,11 @@ button.base,
    treatment (surface-elev bg + transparent border + primary text). */
 .selected {
   background-color: var(--chip-selected-bg, var(--surface-accent-subtle, #eff6ff));
-  border-color: var(--chip-selected-border-color, var(--surface-accent-default, #3b82f6));
   color: var(--chip-selected-text-color, var(--text-link, #2563eb));
+}
+
+.selected::after {
+  outline-color: var(--chip-selected-border-color, var(--surface-accent-default, #3b82f6));
 }
 
 /* Editorial density: neutral-elevated selected treatment.
@@ -248,8 +284,11 @@ button.base,
    retired overlay derived it. */
 :global([data-density="editorial"]) .selected {
   background: var(--surface-elev, color-mix(in srgb, var(--surface-card), var(--surface-muted, var(--surface-card))));
-  border-color: transparent;
   color: var(--text-primary);
+}
+
+:global([data-density="editorial"]) .selected::after {
+  outline-color: transparent;
 }
 
 @media (hover: hover) {
@@ -259,20 +298,26 @@ button.base,
 }
 
 /* Editorial / neutral-elevated selected treatment
- * Uses --surface-card bg + neutral border instead of accent tint.
+ * Uses --surface-card bg + neutral edge instead of accent tint.
  * Compose with .selected to override the accent colours. */
 .selectedNeutral {
   background-color: var(--surface-card, #ffffff);
-  border-color: var(--border-strong, #d1d5db);
   color: var(--text-primary, #111827);
+}
+
+.selectedNeutral::after {
+  outline-color: var(--border-strong, #d1d5db);
 }
 
 /* Re-assert selectedNeutral under editorial density: the density .selected rule
  * is (0,2,0) and would otherwise override .selectedNeutral at (0,1,0). */
 :global([data-density="editorial"]) .selectedNeutral {
   background-color: var(--surface-card, #ffffff);
-  border-color: var(--border-strong, #d1d5db);
   color: var(--text-primary, #111827);
+}
+
+:global([data-density="editorial"]) .selectedNeutral::after {
+  outline-color: var(--border-strong, #d1d5db);
 }
 
 .selectedNeutral .count {

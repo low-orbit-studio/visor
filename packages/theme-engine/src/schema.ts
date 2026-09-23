@@ -26,7 +26,7 @@ export interface ValidationResult {
 const KNOWN_TOP_LEVEL_KEYS = new Set([
   "name", "version", "group", "label", "default-mode", "color-scheme", "colors", "colors-dark", "typography",
   "brand", "brand-strategy", "spacing", "radius", "shadows", "strokeWidths", "motion", "overrides",
-  "components",
+  "components", "edges",
 ]);
 
 const KNOWN_COLOR_KEYS = new Set([
@@ -349,6 +349,11 @@ export function validateConfig(config: unknown): ValidationResult {
     if (scheme !== "dark-only" && scheme !== "light-only" && scheme !== "adaptive") {
       errors.push("'color-scheme' must be one of: dark-only, light-only, adaptive");
     }
+  }
+
+  // VI-655: the one switch for form-control edges.
+  if (obj.edges !== undefined && obj.edges !== "on" && obj.edges !== "off") {
+    errors.push("'edges' must be either 'on' or 'off'");
   }
 
   if (typeof obj.colors !== "object" || obj.colors === null) {
