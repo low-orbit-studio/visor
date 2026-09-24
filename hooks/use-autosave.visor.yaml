@@ -1,0 +1,52 @@
+name: useAutosave
+description: Autosave for one value — debounces the write, runs one write at a time so the newest value wins, flushes a pending change when the page is left or the component unmounts, and reports saved · saving · unsaved · refused.
+category: hooks
+
+params:
+  - name: value
+    type: "T"
+    required: true
+    description: The value to keep saved. The first render's value counts as saved and is not written.
+  - name: write
+    type: "(value: T, context: { leaving: boolean }) => unknown"
+    required: true
+    description: Persists the value. Return a promise; a rejection (or a throw) puts the hook in refused. `leaving` is true when the page is being left, so use `keepalive` or `sendBeacon`.
+  - name: options.delay
+    type: "number"
+    required: false
+    description: Debounce in milliseconds after the last change. Defaults to 600.
+  - name: options.validate
+    type: "(value: T) => boolean"
+    required: false
+    description: Return false to refuse a value. A refused value is never written, stays in the control, and puts the hook in refused.
+  - name: options.isEqual
+    type: "(a: T, b: T) => boolean"
+    required: false
+    description: Decides whether a value is already saved. Defaults to Object.is; pass one for object values.
+
+returns:
+  - name: status
+    type: "'saved' | 'saving' | 'unsaved' | 'refused'"
+    description: Where the value stands. Pass it to SaveStatus.
+  - name: reason
+    type: "'invalid' | 'failed' | null"
+    description: Why the hook is refused — validate rejected the value, or write failed.
+  - name: error
+    type: "unknown"
+    description: What write threw or rejected with, while reason is failed.
+  - name: retry
+    type: "() => void"
+    description: Write the current value now.
+  - name: flush
+    type: "() => void"
+    description: Write a pending change now instead of waiting for the debounce.
+
+dependencies: []
+
+example: |
+  const [bio, setBio] = useState(artist.bio)
+  const autosave = useAutosave(bio, (value, { leaving }) =>
+    fetch("/api/bio", { method: "PUT", body: value, keepalive: leaving })
+  )
+
+  <SaveStatus status={autosave.status} onRetry={autosave.retry} />

@@ -1,0 +1,87 @@
+/* SaveStatus (VI-657)
+ *
+ * A readout, not a control: status text in a fixed-width slot, so the row
+ * never reflows as Saved / Saving / Unsaved / Couldn't save swap in. It draws
+ * no edge at all (no border, no outline, no box). The retry mark is the
+ * editor's icon mark (VI-659): the icon Button's size, pad and ink, with its
+ * hit target on ::before so it adds no height to the row. */
+.root {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+  width: var(--save-status-width, 7.5rem);
+  /* Tall enough for the retry mark in every state, so it adds no height. */
+  min-height: var(--button-icon-size, 1rem);
+  font-size: var(--font-size-xs, 0.75rem);
+  white-space: nowrap;
+  color: var(--text-secondary, #6b7280);
+}
+
+/* Family, case and tracking are inherited properties, so any unlayered
+   fallback would override something: `inherit` beats a layered utility,
+   `revert-layer` drops an unlayered consumer rule. In visor-base, the lowest
+   Visor layer, every consumer rule still wins, and when a token is unset
+   revert-layer leaves the readout as if these declarations were absent. */
+@layer visor-base {
+  .root {
+    font-family: var(--save-status-font-family, revert-layer);
+    text-transform: var(--save-status-text-transform, revert-layer);
+    letter-spacing: var(--save-status-letter-spacing, revert-layer);
+  }
+}
+
+.root[data-state="saved"] {
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.root[data-state="refused"] {
+  color: var(--text-error, #b91c1c);
+}
+
+/* A longer custom label (a translation) truncates inside the slot rather
+   than painting past it. */
+.text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.retry {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--button-icon-size, 1rem);
+  height: var(--button-icon-size, 1rem);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm, 0.125rem);
+  background: none;
+  color: var(--button-icon-ghost-color, var(--text-secondary, #6b7280));
+  cursor: pointer;
+  transition: color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.retry::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--button-icon-pad, var(--spacing-2, 0.5rem)));
+}
+
+.retry > svg {
+  width: 100%;
+  height: 100%;
+}
+
+@media (hover: hover) {
+  .retry:hover {
+    color: var(--text-primary, #111827);
+  }
+}
+
+.retry:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #111827);
+  outline-offset: var(--focus-ring-offset, 2px);
+}

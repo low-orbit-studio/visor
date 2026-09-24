@@ -688,6 +688,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "save-status",
+    type: "registry:ui",
+    category: "feedback",
+    description:
+      "Autosave readout — Saved / Saving / Unsaved / Couldn't save in a fixed-width slot that never reflows its row, with a retry mark after a failed save. aria-live polite; draws no edge. Pairs with the use-autosave hook.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/save-status/save-status.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/save-status/save-status.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "scroll-area",
     type: "registry:ui",
     description:

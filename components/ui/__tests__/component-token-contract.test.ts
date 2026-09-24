@@ -304,3 +304,28 @@ describe("VI-625 component token contract", () => {
     });
   });
 });
+
+// VI-657: VI-656 pasted four families into `colors.properties`, where an editor
+// validating against the published schema would accept `colors.button` and
+// reject `components.button`. Pin every family to `components`, in both copies.
+describe("the theme JSON schema places every family under `components`", () => {
+  for (const path of ["packages/theme-engine/src/visor-theme.schema.json", "docs/visor-theme.schema.json"]) {
+    const schema = JSON.parse(readFileSync(join(process.cwd(), path), "utf-8"));
+    const components = schema.properties.components.properties as Record<string, { description: string }>;
+    const colors = schema.properties.colors.properties as Record<string, unknown>;
+
+    for (const family of COMPONENT_TOKEN_FAMILIES) {
+      it(`${path}: components.${family.family} lists exactly the contract's keys`, () => {
+        expect(components[family.family], `components.${family.family} missing`).toBeTruthy();
+        const keys = components[family.family].description.match(/Keys: (.*)\.$/)?.[1].split(", ");
+        expect(keys).toEqual(family.tokens.map((t) => t.key));
+      });
+    }
+
+    // `surface` is a real colour key as well as a component family.
+    it(`${path}: no family sits under colors`, () => {
+      const misplaced = COMPONENT_TOKEN_FAMILIES.map((f) => f.family).filter((f) => f in colors && f !== "surface");
+      expect(misplaced).toEqual([]);
+    });
+  }
+});

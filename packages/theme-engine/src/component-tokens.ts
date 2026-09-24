@@ -136,6 +136,7 @@ const BUTTON = "components/ui/button/button.module.css";
 const FIELD = "components/ui/field/field.module.css";
 const TEXT = "components/ui/text/text.module.css";
 const INLINE_EDIT = "components/ui/inline-edit/inline-edit.module.css";
+const SAVE_STATUS = "components/ui/save-status/save-status.module.css";
 
 /** Shorthand for the common single-consumer case. */
 function at(file: string, fallback: string | null): ComponentTokenConsumer[] {
@@ -717,14 +718,14 @@ const buttonFamily: ComponentTokenFamily = {
     {
       key: "icon-size",
       property: "width / height / font-size",
-      description: "Icon-only (`size=\"icon\"`) glyph size. The square box is this plus `icon-pad` on every side. Also sizes the InlineEdit pencil.",
-      consumers: [...each(Array(5).fill(BUTTON), "1rem"), ...each(Array(3).fill(INLINE_EDIT), "1rem")],
+      description: "Icon-only (`size=\"icon\"`) glyph size. The square box is this plus `icon-pad` on every side. Also sizes the InlineEdit pencil and the SaveStatus retry mark.",
+      consumers: [...each(Array(5).fill(BUTTON), "1rem"), ...each(Array(3).fill(INLINE_EDIT), "1rem"), ...each(Array(3).fill(SAVE_STATUS), "1rem")],
     },
     {
       key: "icon-pad",
       property: "width / height",
-      description: "Icon-only hit-target pad around the glyph, on every side. Also the InlineEdit pencil's hit target.",
-      consumers: [...each([BUTTON, BUTTON], "var(--spacing-2, 0.5rem)"), ...at(INLINE_EDIT, "var(--spacing-2, 0.5rem)")],
+      description: "Icon-only hit-target pad around the glyph, on every side. Also the hit target of the InlineEdit pencil and the SaveStatus retry mark.",
+      consumers: [...each([BUTTON, BUTTON], "var(--spacing-2, 0.5rem)"), ...at(INLINE_EDIT, "var(--spacing-2, 0.5rem)"), ...at(SAVE_STATUS, "var(--spacing-2, 0.5rem)")],
     },
     {
       key: "icon-radius",
@@ -735,8 +736,8 @@ const buttonFamily: ComponentTokenFamily = {
     {
       key: "icon-ghost-color",
       property: "color",
-      description: "Icon-only ghost ink at rest. Hover comes up to `--text-primary`. Also the InlineEdit pencil's ink.",
-      consumers: [...at(BUTTON, "var(--text-secondary, #6b7280)"), ...at(INLINE_EDIT, "var(--text-secondary, #6b7280)")],
+      description: "Icon-only ghost ink at rest. Hover comes up to `--text-primary`. Also the ink of the InlineEdit pencil and the SaveStatus retry mark.",
+      consumers: [...at(BUTTON, "var(--text-secondary, #6b7280)"), ...at(INLINE_EDIT, "var(--text-secondary, #6b7280)"), ...at(SAVE_STATUS, "var(--text-secondary, #6b7280)")],
     },
   ],
 };
@@ -793,6 +794,22 @@ const switchFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-657: the autosave readout. Font, case and tracking are inherited
+// properties, so they fall back to revert-layer inside @layer visor-base
+// (unset = absent, the VI-656 pattern).
+const saveStatusFamily: ComponentTokenFamily = {
+  family: "save-status",
+  prefix: "save-status",
+  description:
+    "SaveStatus readout — the fixed-width slot and its type, so the readout never reflows its row.",
+  tokens: [
+    { key: "width", property: "width", description: "Slot width. Fixed, so the row never reflows between states.", consumers: at(SAVE_STATUS, "7.5rem") },
+    { key: "font-family", property: "font-family", description: "Readout family (e.g. the theme's mono).", consumers: at(SAVE_STATUS, "revert-layer") },
+    { key: "text-transform", property: "text-transform", description: "Readout casing.", consumers: at(SAVE_STATUS, "revert-layer") },
+    { key: "letter-spacing", property: "letter-spacing", description: "Readout tracking.", consumers: at(SAVE_STATUS, "revert-layer") },
+  ],
+};
+
 const adminUiFamily: ComponentTokenFamily = {
   family: "admin-ui",
   prefix: "admin-ui",
@@ -835,6 +852,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   buttonFamily,
   textFamily,
   switchFamily,
+  saveStatusFamily,
   adminUiFamily,
 ];
 

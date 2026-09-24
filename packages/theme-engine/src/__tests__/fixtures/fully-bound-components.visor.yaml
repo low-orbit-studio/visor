@@ -295,5 +295,10 @@ components:
     knob-inset: "3px"
     track-bg: "#2b0a3d"
     edge-color: "#ff00aa"
+  save-status:
+    width: "91px"
+    font-family: "\"Courier New\", monospace"
+    text-transform: uppercase
+    letter-spacing: "3px"
   admin-ui:
     marquee-family: "\"Courier New\", monospace"

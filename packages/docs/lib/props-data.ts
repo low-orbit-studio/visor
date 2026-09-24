@@ -3061,6 +3061,31 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'save-status': [
+    {
+      name: 'status',
+      type: "'saved' | 'saving' | 'unsaved' | 'refused'",
+      required: true,
+      description: 'Where the value stands — pass `useAutosave(...).status`.',
+    },
+    {
+      name: 'onRetry',
+      type: '() => void',
+      description: 'Shows a retry mark while `status` is `refused`. Pass `useAutosave(...).retry`.',
+    },
+    {
+      name: 'labels',
+      type: "Partial<Record<'saved' | 'saving' | 'unsaved' | 'refused', string>>",
+      description: 'Override any of the four labels (Saved, Saving, Unsaved, Couldn\'t save), e.g. to translate them.',
+    },
+    {
+      name: 'retryLabel',
+      type: 'string',
+      default: "'Retry saving'",
+      description: 'Accessible name of the retry mark.',
+    },
+  ],
+
   'inline-edit': [
     {
       name: 'value',
