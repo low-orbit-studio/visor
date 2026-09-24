@@ -1754,6 +1754,63 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'tin-input': [
+    {
+      name: 'kind',
+      type: "'ssn' | 'ein'",
+      required: true,
+      description: 'Display grouping: SSN ###-##-#### or EIN ##-#######. Both are 9 digits.',
+    },
+    {
+      name: 'onValueChange',
+      type: '(digits: string | null) => void',
+      required: true,
+      description: 'Called with the 9 digits once the entry is complete, and with null while it is incomplete or cleared.',
+    },
+    {
+      name: 'lastFour',
+      type: 'string',
+      description: 'Last four digits of a TIN already on file. Renders a read-only "On file · ending 1234" with a Replace button. A new value brings the echo back after a Replace.',
+    },
+    {
+      name: 'onReplace',
+      type: '() => void',
+      description: 'Called when Replace swaps the on-file echo for an empty field.',
+    },
+    {
+      name: 'error',
+      type: 'string',
+      description: 'Error message, rendered as a FieldError bound by aria-describedby. Sets aria-invalid.',
+    },
+    {
+      name: 'size',
+      type: "'sm' | 'md' | 'lg'",
+      default: "'md'",
+      description: 'Size of the field and the Replace button. lg meets 44px touch targets.',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables the field and the Replace button.',
+    },
+    {
+      name: 'id',
+      type: 'string',
+      description: 'Id for the input, so a FieldLabel htmlFor associates the label.',
+    },
+    {
+      name: 'aria-*',
+      type: 'aria-label | aria-labelledby | aria-describedby | aria-required',
+      description: 'Forwarded to the input. aria-describedby is merged with the hint and error ids.',
+    },
+    {
+      name: 'className',
+      type: 'string',
+      description: 'Additional CSS class names merged onto the wrapper.',
+    },
+  ],
+
   'number-input': [
     {
       name: 'value',

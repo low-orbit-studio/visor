@@ -1,0 +1,66 @@
+name: TinInput
+description: A write-only, masked 9-digit TIN/EIN input with a last-four echo that never re-displays the value.
+extends: HTMLInputElement
+category: form
+
+when_to_use:
+  - Collecting a Social Security number or an EIN (a W-9, a payout or tax form)
+  - Any 9-digit taxpayer ID that is stored server-side and must never be shown back
+  - Showing a TIN already on file by its last four, with a way to replace it
+
+when_not_to_use:
+  - Passwords (use PasswordInput — it has a show/hide toggle, which a TIN must not)
+  - Verification codes (use OTPInput)
+  - Numbers the user needs to read back or edit in place (use Input or NumberInput)
+
+why: >
+  A taxpayer ID is typed once and never displayed again. TinInput keeps the
+  digits out of the DOM entirely: the input's value is only ever the grouping
+  mask, every edit is applied to digits held in memory, and on blur a complete
+  entry shows only the mask and the last four (•••-••-1234) while the digits
+  are dropped. The only way out is the one onValueChange call. There is no
+  value prop, no name, no reveal toggle and no copy affordance, and
+  password-manager save prompts are suppressed.
+
+props:
+  - name: kind
+    type: "'ssn' | 'ein'"
+    required: true
+    description: Display grouping — SSN ###-##-#### or EIN ##-#######. Both are 9 digits.
+  - name: onValueChange
+    type: "(digits: string | null) => void"
+    required: true
+    description: Called with the 9 digits once the entry is complete, and with null while it is incomplete or cleared.
+  - name: lastFour
+    type: string
+    description: Last four digits of a TIN already on file. Renders a read-only "On file · ending 1234" with a Replace button. A new value brings the echo back after a Replace. Only ever pass four digits.
+  - name: onReplace
+    type: "() => void"
+    description: Called when Replace swaps the on-file echo for an empty field.
+  - name: error
+    type: string
+    description: Error message, rendered as a FieldError and bound by aria-describedby; sets aria-invalid.
+  - name: size
+    type: "'sm' | 'md' | 'lg'"
+    default: "md"
+    description: Size of the field and the Replace button. lg meets 44px touch targets.
+  - name: disabled
+    type: boolean
+    default: "false"
+    description: Disables the field and the Replace button.
+  - name: id
+    type: string
+    description: Id for the input, so a FieldLabel htmlFor associates the label.
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.loworbit.studio/docs/components/form/tin-input"
+
+example: |
+  <Field>
+    <FieldLabel htmlFor="tin">Social Security number</FieldLabel>
+    <TinInput id="tin" kind="ssn" onValueChange={setTin} />
+  </Field>
+
+  <TinInput id="tin" kind="ein" lastFour="6789" onValueChange={setTin} />

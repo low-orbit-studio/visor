@@ -484,6 +484,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "TimelineItem",
   "TimelineTimestamp",
   "TimelineTitle",
+  "TinInput",
   "TitleSlide",
   "ToastCard",
   "ToastCardStack",

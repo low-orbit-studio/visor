@@ -1605,6 +1605,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "tin-input",
+    type: "registry:ui",
+    category: "form",
+    description:
+      "A write-only, masked 9-digit TIN/EIN input with a last-four echo that never re-displays the value. Digits never enter the DOM; password-manager prompts are suppressed.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "input", "button", "field"],
+    files: [
+      {
+        path: "components/ui/tin-input/tin-input.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/tin-input/tin-input.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "tag-input",
     type: "registry:ui",
     description:

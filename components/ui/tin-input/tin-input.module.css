@@ -1,0 +1,57 @@
+/* TIN input — the entry field, or the on-file echo with its Replace button.
+ * The gap matches Field's, so control, hint and error keep the field rhythm
+ * and order whether or not the component sits inside a Field. */
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+  width: 100%;
+  min-width: 0;
+  container: tin-input / inline-size;
+}
+
+/* Equal-width digits keep the grouping mask steady as it fills. */
+.input {
+  font-variant-numeric: tabular-nums;
+}
+
+.onFile {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  min-width: 0;
+}
+
+/* The echo is read-only: secondary ink says it is not an editable value. */
+.onFileValue {
+  flex: 1;
+  color: var(--text-secondary, #6b7280);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Too narrow for the lg echo and Replace side by side without clipping the
+ * last four (a phone-width form), so Replace drops under the echo. 20rem is
+ * intentional: the narrowest row that holds the lg pair whole. */
+@container tin-input (max-width: 20rem) {
+  .onFile {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .onFileValue {
+    flex: none;
+  }
+}
+
+/* Carries "ending in 1234" to assistive tech in place of the bullets. */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
