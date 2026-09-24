@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { act, render, screen, waitFor } from "@testing-library/react"
 import { afterEach, beforeEach, describe, it, expect, vi } from "vitest"
 import { Spinner, type SpinnerOrbState } from "../spinner"
 
@@ -29,6 +29,15 @@ function fakeContext() {
       return true
     },
   }) as unknown as CanvasRenderingContext2D
+}
+
+/** thinking-orbs loads when an orb mounts (VI-660), so its canvas arrives a tick later. */
+async function orbCanvas(container: HTMLElement) {
+  await waitFor(() => expect(container.querySelector("canvas")).not.toBeNull())
+  // The canvas can commit before its own effects run; settle them so a test
+  // reading the animation loop sees the orb's mounted state, not its first frame.
+  await act(async () => {})
+  return container.querySelector("canvas") as HTMLCanvasElement
 }
 
 function mockReducedMotion(reduced: boolean) {
@@ -157,12 +166,12 @@ describe("Spinner", () => {
       vi.unstubAllGlobals()
     })
 
-    it.each(ORB_STATES)("renders the %s state", (state) => {
+    it.each(ORB_STATES)("renders the %s state", async (state) => {
       const { container } = render(<Spinner variant="orb" orb={state} />)
       const root = container.querySelector('[data-slot="spinner"]')
       expect(root).toHaveAttribute("data-variant", "orb")
       expect(root).toHaveAttribute("data-orb", state)
-      expect(root?.querySelector("canvas")).not.toBeNull()
+      await orbCanvas(container)
     })
 
     it("defaults to the working state at md", () => {
@@ -176,10 +185,10 @@ describe("Spinner", () => {
       ["xs", 20],
       ["sm", 32],
       ["md", 64],
-    ] as const)("sizes %s to a %ipx canvas and matching box", (size, px) => {
+    ] as const)("sizes %s to a %ipx canvas and matching box", async (size, px) => {
       const { container } = render(<Spinner variant="orb" size={size} />)
       const root = container.querySelector<HTMLElement>('[data-slot="spinner"]')
-      const canvas = root?.querySelector("canvas")
+      const canvas = await orbCanvas(container)
       expect(root?.style.width).toBe(`${px}px`)
       expect(root?.style.height).toBe(`${px}px`)
       expect(canvas?.style.width).toBe(`${px}px`)
@@ -194,8 +203,9 @@ describe("Spinner", () => {
       expect(screen.queryByRole("img")).toBeNull()
     })
 
-    it("holds the label contract: role=status, aria-label, visually-hidden text", () => {
-      render(<Spinner variant="orb" label="Rendering share card" />)
+    it("holds the label contract: role=status, aria-label, visually-hidden text", async () => {
+      const { container } = render(<Spinner variant="orb" label="Rendering share card" />)
+      await orbCanvas(container)
       const status = screen.getByRole("status")
       expect(status).toHaveAttribute("aria-label", "Rendering share card")
       expect(status).toHaveAttribute("data-variant", "orb")
@@ -228,28 +238,29 @@ describe("Spinner", () => {
      * (thinking-orbs reads reduced-motion after mount, so the first commit
      * may request one frame before the still frame cancels it.)
      */
-    function framesRequestedAfterMount(orb: SpinnerOrbState) {
+    async function framesRequestedAfterMount(orb: SpinnerOrbState) {
       const queued: FrameRequestCallback[] = []
       const raf = vi
         .spyOn(window, "requestAnimationFrame")
         .mockImplementation((cb) => queued.push(cb))
       const { container } = render(<Spinner variant="orb" orb={orb} />)
+      await orbCanvas(container)
       raf.mockClear()
       queued.splice(0).forEach((cb) => cb(performance.now()))
       return { container, requested: raf.mock.calls.length }
     }
 
-    it("renders a still frame under reduced motion", () => {
+    it("renders a still frame under reduced motion", async () => {
       mockReducedMotion(true)
-      const { container, requested } = framesRequestedAfterMount("weaving")
+      const { container, requested } = await framesRequestedAfterMount("weaving")
       // Painted (the backing store was sized), but no loop keeps running.
       expect(container.querySelector("canvas")?.width).toBeGreaterThan(0)
       expect(requested).toBe(0)
     })
 
-    it("animates when motion is allowed", () => {
+    it("animates when motion is allowed", async () => {
       mockReducedMotion(false)
-      const { requested } = framesRequestedAfterMount("weaving")
+      const { requested } = await framesRequestedAfterMount("weaving")
       expect(requested).toBeGreaterThan(0)
     })
   })

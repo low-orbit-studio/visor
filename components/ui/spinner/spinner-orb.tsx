@@ -1,12 +1,22 @@
 "use client"
 
 import * as React from "react"
-import { ThinkingOrb, type OrbState } from "thinking-orbs"
+import type { OrbState } from "thinking-orbs"
 import { cn } from "../../../lib/utils"
 import styles from "./spinner.module.css"
 
 /** The nine thinking-orbs animations. */
 export type SpinnerOrbState = OrbState
+
+/**
+ * thinking-orbs is fetched the first time an orb renders, never before
+ * (VI-660). `spinner.tsx` imports this file for every Spinner, so a static
+ * import here shipped the canvas engine to every consumer of the ring — a busy
+ * button, a "Saving…" line — which never draws an orb.
+ */
+const ThinkingOrb = React.lazy(() =>
+  import("thinking-orbs").then((m) => ({ default: m.ThinkingOrb }))
+)
 
 /**
  * Spinner size → orb preset. thinking-orbs ships 20 and 64 as hand-tuned
@@ -139,16 +149,18 @@ const SpinnerOrb = React.forwardRef<HTMLSpanElement, SpinnerOrbProps>(
             tone === "primary" && styles.orbInkPrimary
           )}
         />
-        {/* Server and first client render share this fixed-size canvas, so
-            the box holds still on hydrate; it paints once ink resolves. */}
-        <ThinkingOrb
-          state={state}
-          size={px}
-          theme={ink ? (ink.dark ? "dark" : "light") : "auto"}
-          color={ink?.color}
-          role="presentation"
-          aria-hidden="true"
-        />
+        {/* The box is sized inline, so it holds still on hydrate and while
+            thinking-orbs loads; the canvas mounts into it once it arrives. */}
+        <React.Suspense fallback={null}>
+          <ThinkingOrb
+            state={state}
+            size={px}
+            theme={ink ? (ink.dark ? "dark" : "light") : "auto"}
+            color={ink?.color}
+            role="presentation"
+            aria-hidden="true"
+          />
+        </React.Suspense>
         {children}
       </span>
     )
