@@ -1,0 +1,84 @@
+name: InlineEdit
+description: Inline-editable text — the text, then a pencil. A click or Enter turns it into an input in place, at the same size; Enter, blur or Tab commits, Escape restores, and clearing it brings back a muted default.
+extends: HTMLElement
+category: form
+
+when_to_use:
+  - A title the user can rename where it stands — a section heading, a photo set's name, a venue group, a rider's title
+  - A single-line value whose default should come back when the user clears it
+  - Renaming at the size of the heading being renamed, with no layout jump into an editing state
+
+when_not_to_use:
+  - Multi-line text — use Textarea
+  - Rich text — use a dedicated rich-text editor
+  - A labelled card tile with a save button and an AI action — use EditableBlock
+  - A field inside a form that is always editable — use Input with Field
+
+why: >
+  Six of the eight approved Blacklight editor designs rename something in place: a section
+  title, a photo set, a venue group, a rider, the booking heading. EditableBlock is a card
+  tile with a label header and a save button, a different shape. InlineEdit codifies the
+  text-and-pencil pattern once: the input takes the place of the text at the same size, the
+  keyboard contract (Enter and blur commit, Escape restores, Tab commits and moves on) and the
+  "empty means default" rule. The pencil is the editor's one mark (VI-659), so it reads the
+  icon Button's size, pad and ink tokens. At rest there is no edge; the editing input draws
+  its edge from the shared control-edge tokens, so `--control-edge-width: 0` removes it with
+  every other control.
+
+variants:
+  state:
+    rest: The text (or the muted default), then the pencil. No edge.
+    editing: A single-line input in the text's place, at the same size, drawing the shared control edge.
+
+theme_hooks:
+  - name: --button-icon-size
+    description: The pencil's glyph size, shared with the icon-only Button (1rem).
+  - name: --button-icon-pad
+    description: The pencil's hit-target pad on every side, shared with the icon-only Button. Drawn on ::before, so it adds no height to the line.
+  - name: --button-icon-ghost-color
+    description: The pencil's ink at rest, shared with the icon-only Button. Hover comes up to --text-primary.
+  - name: --control-edge-width / --control-edge-style / --control-edge-color
+    description: The editing input's resting edge (VI-655). Width 0 removes it; focus still draws its own ring.
+
+props:
+  - name: value
+    type: string
+    description: The committed text. An empty string means no override, and `defaultValue` shows instead.
+  - name: defaultValue
+    type: string
+    default: '""'
+    description: Shown, muted, while `value` is empty, and used as the input's placeholder.
+  - name: onCommit
+    type: "(value: string) => void"
+    description: Called with the trimmed text on Enter, blur or Tab, only when it differs from `value`. An empty string means "restore the default". The parent updates `value`.
+  - name: label
+    type: string
+    description: The field's name (e.g. "Section title"). Names the input, and the pencil as "Edit {label}".
+  - name: editLabel
+    type: string
+    description: Accessible name of the pencil. Defaults to "Edit {label}".
+  - name: as
+    type: "'span' | 'div' | 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'"
+    default: '"span"'
+    description: The element to render. Typography inherits from it, so a title keeps its heading's size and colour.
+  - name: defaultEditing
+    type: boolean
+    default: 'false'
+    description: Opens in the editing state on mount, without moving focus.
+
+dependencies:
+  - "@phosphor-icons/react"
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/form/inline-edit"
+
+example: |
+  const [title, setTitle] = React.useState("")
+
+  <InlineEdit
+    as="h2"
+    label="Section title"
+    value={title}
+    defaultValue="Track record"
+    onCommit={setTitle}
+  />

@@ -120,6 +120,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "inline-edit",
+    type: "registry:ui",
+    category: "form",
+    description:
+      "Inline-editable text — the text, then a pencil. A click or Enter turns it into an input in place, at the same size; Enter, blur or Tab commits, Escape restores, and clearing it brings back a muted default.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/inline-edit/inline-edit.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/inline-edit/inline-edit.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "input",
     type: "registry:ui",
     description: "A text input component with focus and validation states.",

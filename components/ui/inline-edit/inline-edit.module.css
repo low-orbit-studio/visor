@@ -1,0 +1,119 @@
+/* InlineEdit (VI-658)
+ *
+ * At rest: the text, then a pencil. No edge. Editing: an input in the same
+ * box, so the line box keeps its height. Typography (size, weight, colour,
+ * case, tracking) is inherited from the element InlineEdit renders as.
+ *
+ * The pencil is the editor's mark pattern (VI-659): one size and one ink,
+ * read from the same --button-icon-* tokens as an icon-only Button. Its hit
+ * target is the Button's too, but drawn on ::before so it adds no height to
+ * a 14px line. */
+.root {
+  /* A long title wraps; it is never truncated. */
+  overflow-wrap: anywhere;
+}
+
+.text {
+  cursor: text;
+}
+
+/* The default shows while there is no override, muted. */
+.textDefault {
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.pencil {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  width: var(--button-icon-size, 1rem);
+  height: var(--button-icon-size, 1rem);
+  margin-inline-start: var(--spacing-2, 0.5rem);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm, 0.125rem);
+  background: none;
+  color: var(--button-icon-ghost-color, var(--text-secondary, #6b7280));
+  cursor: pointer;
+  transition: color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.pencil::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--button-icon-pad, var(--spacing-2, 0.5rem)));
+}
+
+.pencil > svg {
+  width: 100%;
+  height: 100%;
+}
+
+@media (hover: hover) {
+  .pencil:hover {
+    color: var(--text-primary, #111827);
+  }
+}
+
+.pencil:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #111827);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* The editing field is the rest box: a one-cell grid sized by a hidden copy
+ * of the draft plus the room the pencil took, so it is as wide as the text
+ * and pencil were, grows as the user types, and stops at its container. */
+.field {
+  display: inline-grid;
+  grid-template-columns: minmax(0, 1fr);
+  vertical-align: top;
+  max-width: 100%;
+}
+
+.field::after {
+  content: attr(data-value);
+  grid-area: 1 / 1;
+  visibility: hidden;
+  overflow: hidden;
+  white-space: pre;
+  padding-inline-end: calc(var(--spacing-2, 0.5rem) + var(--button-icon-size, 1rem));
+}
+
+/* The input sits in the text's place. Its padding is cancelled by an equal
+ * negative margin, so the text does not move and the line box keeps its
+ * height; the padding only gives the edge room around the glyphs. */
+.input {
+  box-sizing: border-box;
+  grid-area: 1 / 1;
+  width: calc(100% + 2 * var(--spacing-1, 0.25rem));
+  min-width: 0;
+  margin: calc(-1 * var(--spacing-1, 0.25rem));
+  padding: var(--spacing-1, 0.25rem);
+  border: 0;
+  border-radius: var(--radius-sm, 0.125rem);
+  background: transparent;
+  /* Size, weight and line-height come from the reset's `font: inherit`;
+     case, tracking and colour are not covered there. */
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  /* VI-655: the resting edge is the shared control edge, so
+     --control-edge-width: 0 turns it off with every other control. */
+  outline: var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--control-edge-color, var(--border-default, #e5e7eb));
+  outline-offset: calc(-1 * var(--control-edge-width, 1px));
+  transition: outline-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.input::placeholder {
+  color: var(--text-tertiary, #9ca3af);
+}
+
+/* Focus draws at --control-state-edge-width, which the edge switch does not
+   touch, so it stays visible with edges off. Same ring as Input. */
+.input:focus-visible {
+  outline: var(--control-state-edge-width, 1px) solid var(--border-focus, #111827);
+  outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
+  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
+}

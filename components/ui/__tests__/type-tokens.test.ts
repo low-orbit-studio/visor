@@ -70,6 +70,10 @@ const CASES: Case[] = [
   { token: "--button-icon-radius", fixture: "button/icon", target: "button", prop: "border-top-left-radius", value: "13px" },
   { token: "--button-radius", fixture: "button/icon", target: "button", prop: "border-top-left-radius", value: "13px" },
   { token: "--button-icon-ghost-color", fixture: "button/icon", target: "button", prop: "color", value: "rgb(255, 0, 170)" },
+  // InlineEdit's pencil is the same mark (VI-658)
+  { token: "--button-icon-size", fixture: "inline-edit/default", target: "[data-slot=inline-edit-pencil]", prop: "width", value: "20px" },
+  { token: "--button-icon-size", fixture: "inline-edit/default", target: "[data-slot=inline-edit-pencil]", prop: "height", value: "20px" },
+  { token: "--button-icon-ghost-color", fixture: "inline-edit/default", target: "[data-slot=inline-edit-pencil]", prop: "color", value: "rgb(255, 0, 170)" },
 
   // text — every size
   ...["xs", "sm", "md", "lg", "xl"].flatMap((size, i) =>
