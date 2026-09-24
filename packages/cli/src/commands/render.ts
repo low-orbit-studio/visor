@@ -283,6 +283,35 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       props: `{ "aria-label": "Notifications", size: "sm", defaultChecked: true }`,
     },
   },
+  // VI-658: rest draws no edge; editing draws the shared control edge.
+  // `heading` renders at the 21px display size the editor's titles use.
+  "inline-edit": {
+    default: {
+      export: "InlineEdit",
+      interactiveTarget: "button",
+      props: `{ label: "Rider title", value: "Technical rider", defaultValue: "Rider", onCommit: function () {} }`,
+    },
+    "default-value": {
+      export: "InlineEdit",
+      interactiveTarget: "button",
+      props: `{ label: "Rider title", value: "", defaultValue: "Rider", onCommit: function () {} }`,
+    },
+    editing: {
+      export: "InlineEdit",
+      interactiveTarget: "input",
+      props: `{ label: "Rider title", value: "Technical rider", defaultValue: "Rider", onCommit: function () {}, defaultEditing: true }`,
+    },
+    heading: {
+      export: "InlineEdit",
+      interactiveTarget: "button",
+      props: `{ as: "h2", style: { margin: 0, fontSize: "21px", lineHeight: 1.25, fontWeight: 600 }, label: "Section title", value: "Track record", defaultValue: "Untitled section", onCommit: function () {} }`,
+    },
+    "heading-editing": {
+      export: "InlineEdit",
+      interactiveTarget: "input",
+      props: `{ as: "h2", style: { margin: 0, fontSize: "21px", lineHeight: 1.25, fontWeight: 600 }, label: "Section title", value: "Track record", defaultValue: "Untitled section", onCommit: function () {}, defaultEditing: true }`,
+    },
+  },
   "tag-input": {
     default: {
       export: "TagInput",

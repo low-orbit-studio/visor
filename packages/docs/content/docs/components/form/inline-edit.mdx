@@ -1,0 +1,90 @@
+---
+title: InlineEdit
+description: Inline-editable text — the text, then a pencil. A click or Enter turns it into an input in place, at the same size; Enter, blur or Tab commits, Escape restores, and clearing it brings back a muted default.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import {
+  InlineEditBodyDemo,
+  InlineEditEdgesOffDemo,
+  InlineEditHeadingDemo,
+} from '@/components/ui/inline-edit-demo';
+
+```bash
+npx visor add inline-edit
+```
+
+## Default
+
+The text, then a pencil. Click either one (or press Enter on the pencil) and an input takes the text's place at the same size, so nothing below it moves. A long title wraps; it is never truncated.
+
+<ComponentPreview
+  title="InlineEdit — 14px body"
+  code={"const [value, setValue] = React.useState('Technical rider');\n\n<InlineEdit\n  label=\"Rider title\"\n  value={value}\n  defaultValue=\"Rider\"\n  onCommit={setValue}\n/>"}
+>
+  <InlineEditBodyDemo />
+</ComponentPreview>
+
+## A heading, with a default
+
+`as` sets the element, and the type comes with it: here an `h2` at the editor's 21px display size. While `value` is empty, `defaultValue` shows, muted. Clear the text and commit, and `onCommit("")` is called and the default comes back.
+
+<ComponentPreview
+  title="InlineEdit — 21px heading showing its default"
+  code={"const [title, setTitle] = React.useState('');\n\n<InlineEdit\n  as=\"h2\"\n  className=\"section-title\"\n  label=\"Section title\"\n  value={title}\n  defaultValue=\"Track record\"\n  onCommit={setTitle}\n/>"}
+>
+  <InlineEditHeadingDemo />
+</ComponentPreview>
+
+## Keyboard
+
+| Key | Action |
+| --- | --- |
+| `Enter` (on the pencil) | Opens the input, with the text selected |
+| `Enter` | Commits, and returns focus to the pencil |
+| `Tab` | Commits, and moves on to the next field |
+| `Escape` | Restores the text without committing |
+
+Blur commits too. `onCommit` receives the trimmed text, and is not called when nothing changed.
+
+## Edges
+
+At rest, InlineEdit is text and a pencil, with no edge. While editing, the input draws its resting edge from the shared [control-edge tokens](/docs/themes/component-tokens), never from `border`, so `--control-edge-width: 0` turns it off with every other form control. Focus still draws its own ring.
+
+<ComponentPreview
+  title="InlineEdit — editing, with --control-edge-width: 0"
+  code={"<div style={{ '--control-edge-width': '0' }}>\n  <InlineEdit label=\"Rider title\" value={value} onCommit={setValue} defaultEditing />\n</div>"}
+>
+  <InlineEditEdgesOffDemo />
+</ComponentPreview>
+
+## Theming
+
+The pencil is the same mark as an icon-only [Button](/docs/components/general/button): it reads `--button-icon-size` (the glyph), `--button-icon-pad` (the hit target, drawn on `::before` so it adds no height to the line) and `--button-icon-ghost-color` (the ink at rest). The default's muted colour is `--text-tertiary`.
+
+The input takes its size, weight and line height from `font: inherit`, which comes from Visor's element reset (`@import "@loworbitstudio/visor-core/reset"`), as it does for every form control. Tailwind's preflight sets the same thing.
+
+## When not to use
+
+- Multi-line text: use [Textarea](/docs/components/form/textarea).
+- A labelled card tile with a save button: use [EditableBlock](/docs/components/general/editable-block).
+
+## Installation
+
+```bash
+npx visor add inline-edit
+```
+
+This copies two files into your project:
+
+- `components/ui/inline-edit/inline-edit.tsx`: the component
+- `components/ui/inline-edit/inline-edit.module.css`: the styles
+
+## API Reference
+
+### InlineEditProps
+
+<PropsTable component="inline-edit" />
+
+`InlineEdit` also accepts the standard HTML attributes of the element it renders.

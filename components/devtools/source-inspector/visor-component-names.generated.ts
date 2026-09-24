@@ -264,6 +264,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "Image",
   "InfographicBar",
   "Inline",
+  "InlineEdit",
   "Input",
   "Kbd",
   "KeyValueList",

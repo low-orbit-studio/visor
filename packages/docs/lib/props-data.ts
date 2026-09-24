@@ -3004,6 +3004,51 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'inline-edit': [
+    {
+      name: 'value',
+      type: 'string',
+      required: true,
+      description: 'The committed text. An empty string means no override, and `defaultValue` shows instead.',
+    },
+    {
+      name: 'onCommit',
+      type: '(value: string) => void',
+      required: true,
+      description:
+        'Called with the trimmed text on Enter, blur or Tab, only when it differs from `value`. An empty string means "restore the default". The parent updates `value`.',
+    },
+    {
+      name: 'label',
+      type: 'string',
+      required: true,
+      description: 'The field\'s name (e.g. "Section title"). Names the input, and the pencil as "Edit {label}".',
+    },
+    {
+      name: 'defaultValue',
+      type: 'string',
+      default: "''",
+      description: "Shown, muted, while `value` is empty, and used as the input's placeholder.",
+    },
+    {
+      name: 'as',
+      type: "'span' | 'div' | 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'",
+      default: "'span'",
+      description: "The element to render. Typography inherits from it, so a title keeps its heading's size and colour.",
+    },
+    {
+      name: 'editLabel',
+      type: 'string',
+      description: 'Accessible name of the pencil. Defaults to "Edit {label}".',
+    },
+    {
+      name: 'defaultEditing',
+      type: 'boolean',
+      default: 'false',
+      description: 'Opens in the editing state on mount, without moving focus.',
+    },
+  ],
+
   'infographic-bar': [
     {
       name: 'stats',

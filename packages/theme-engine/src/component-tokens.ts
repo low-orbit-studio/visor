@@ -135,6 +135,7 @@ const FILE_UPLOAD = "components/ui/file-upload/file-upload.module.css";
 const BUTTON = "components/ui/button/button.module.css";
 const FIELD = "components/ui/field/field.module.css";
 const TEXT = "components/ui/text/text.module.css";
+const INLINE_EDIT = "components/ui/inline-edit/inline-edit.module.css";
 
 /** Shorthand for the common single-consumer case. */
 function at(file: string, fallback: string | null): ComponentTokenConsumer[] {
@@ -711,17 +712,19 @@ const buttonFamily: ComponentTokenFamily = {
       },
     ]),
     // VI-659: the icon-only size. A square box of glyph + 2 × pad.
+    // VI-658: InlineEdit's pencil is the same mark, so it reads the same size,
+    // pad and ink.
     {
       key: "icon-size",
       property: "width / height / font-size",
-      description: "Icon-only (`size=\"icon\"`) glyph size. The square box is this plus `icon-pad` on every side.",
-      consumers: each(Array(5).fill(BUTTON), "1rem"),
+      description: "Icon-only (`size=\"icon\"`) glyph size. The square box is this plus `icon-pad` on every side. Also sizes the InlineEdit pencil.",
+      consumers: [...each(Array(5).fill(BUTTON), "1rem"), ...each(Array(3).fill(INLINE_EDIT), "1rem")],
     },
     {
       key: "icon-pad",
       property: "width / height",
-      description: "Icon-only hit-target pad around the glyph, on every side.",
-      consumers: each([BUTTON, BUTTON], "var(--spacing-2, 0.5rem)"),
+      description: "Icon-only hit-target pad around the glyph, on every side. Also the InlineEdit pencil's hit target.",
+      consumers: [...each([BUTTON, BUTTON], "var(--spacing-2, 0.5rem)"), ...at(INLINE_EDIT, "var(--spacing-2, 0.5rem)")],
     },
     {
       key: "icon-radius",
@@ -732,8 +735,8 @@ const buttonFamily: ComponentTokenFamily = {
     {
       key: "icon-ghost-color",
       property: "color",
-      description: "Icon-only ghost ink at rest. Hover comes up to `--text-primary`.",
-      consumers: at(BUTTON, "var(--text-secondary, #6b7280)"),
+      description: "Icon-only ghost ink at rest. Hover comes up to `--text-primary`. Also the InlineEdit pencil's ink.",
+      consumers: [...at(BUTTON, "var(--text-secondary, #6b7280)"), ...at(INLINE_EDIT, "var(--text-secondary, #6b7280)")],
     },
   ],
 };
