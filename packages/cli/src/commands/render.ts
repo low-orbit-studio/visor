@@ -347,6 +347,13 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       export: "Badge",
       props: `{ children: "New" }`,
     },
+    // One fixture per non-default variant (VI-661 reads each variant's ground and ink).
+    ...Object.fromEntries(
+      [
+        "secondary", "outline", "destructive", "success", "warning", "info", "neutral",
+        "filled-destructive", "filled-success", "filled-warning", "filled-info", "filled-neutral",
+      ].map((variant) => [variant, { export: "Badge", props: `{ variant: "${variant}", children: "New" }` }]),
+    ),
   },
 }
 

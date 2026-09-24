@@ -78,6 +78,8 @@ components:
     font-size: "13px"
     md-padding: "17px 21px"
     md-gap: "17px"
+    bg: "#0a1b2c"
+    ink: "#fedcba"
   status-badge:
     dot-size: "37px"
     dot-radius: "3px"
