@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import type { OrbState, ThinkingOrb as ThinkingOrbType } from "thinking-orbs"
+import type { OrbState } from "thinking-orbs"
 import { cn } from "../../../lib/utils"
 import styles from "./spinner.module.css"
 
@@ -9,31 +9,14 @@ import styles from "./spinner.module.css"
 export type SpinnerOrbState = OrbState
 
 /**
- * thinking-orbs is fetched the first time an orb mounts, never before (VI-660).
- * `spinner.tsx` imports this file for every Spinner, so a static import here
- * shipped the canvas engine to every consumer of the ring — a busy button,
- * a "Saving…" line — which never draws an orb.
+ * thinking-orbs is fetched the first time an orb renders, never before
+ * (VI-660). `spinner.tsx` imports this file for every Spinner, so a static
+ * import here shipped the canvas engine to every consumer of the ring — a busy
+ * button, a "Saving…" line — which never draws an orb.
  */
-let thinkingOrb: Promise<typeof ThinkingOrbType> | undefined
-
-function useThinkingOrb(): typeof ThinkingOrbType | null {
-  const [Orb, setOrb] = React.useState<typeof ThinkingOrbType | null>(null)
-  React.useEffect(() => {
-    let live = true
-    thinkingOrb ??= import("thinking-orbs").then((m) => m.ThinkingOrb)
-    thinkingOrb.then(
-      (loaded) => {
-        if (live) setOrb(() => loaded)
-      },
-      // A chunk that fails to load leaves the box empty, as before ink resolves.
-      () => {}
-    )
-    return () => {
-      live = false
-    }
-  }, [])
-  return Orb
-}
+const ThinkingOrb = React.lazy(() =>
+  import("thinking-orbs").then((m) => ({ default: m.ThinkingOrb }))
+)
 
 /**
  * Spinner size → orb preset. thinking-orbs ships 20 and 64 as hand-tuned
@@ -136,7 +119,6 @@ const SpinnerOrb = React.forwardRef<HTMLSpanElement, SpinnerOrbProps>(
     const hostRef = React.useRef<HTMLSpanElement | null>(null)
     const probeRef = React.useRef<HTMLSpanElement | null>(null)
     const ink = useOrbInk(hostRef, probeRef, tone)
-    const ThinkingOrb = useThinkingOrb()
     const px = ORB_PX[size]
 
     const setRef = React.useCallback(
@@ -169,7 +151,7 @@ const SpinnerOrb = React.forwardRef<HTMLSpanElement, SpinnerOrbProps>(
         />
         {/* The box is sized inline, so it holds still on hydrate and while
             thinking-orbs loads; the canvas mounts into it once it arrives. */}
-        {ThinkingOrb ? (
+        <React.Suspense fallback={null}>
           <ThinkingOrb
             state={state}
             size={px}
@@ -178,7 +160,7 @@ const SpinnerOrb = React.forwardRef<HTMLSpanElement, SpinnerOrbProps>(
             role="presentation"
             aria-hidden="true"
           />
-        ) : null}
+        </React.Suspense>
         {children}
       </span>
     )
