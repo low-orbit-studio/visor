@@ -1,5 +1,69 @@
 # Changelog
 
+## 1.28.0
+
+### Minor Changes
+
+- 3011510: feat: add TinInput — a write-only, masked 9-digit TIN/EIN input
+  
+  `npx visor add tin-input` ships a taxpayer-ID field that never re-displays the value:
+  
+  - The input's value is only ever the grouping mask. Every edit is intercepted before it reaches the DOM, so the digits are never in `input.value` or in any attribute. On blur a complete entry shows `•••-••-1234` and the digits are dropped; focusing it again clears it. Until hydration the field is read-only, so nothing typed on a slow first load is shown.
+  - `kind: 'ssn' | 'ein'` sets the grouping. `onValueChange(digits | null)` is the only way the digits leave: the 9 digits once complete, `null` while incomplete or cleared. There is no `value` and no `name`.
+  - `lastFour` renders a read-only "On file · ending 1234" with a Replace button that swaps in an empty field. A new `lastFour` brings the echo back.
+  - Paste strips spaces and dashes and refuses more than 9 digits with an error rather than truncating. Password-manager ignore attributes are always set, with no reveal toggle and no copy affordance.
+  - The hint and error sit below the field, in Visor Field order, and are bound by `aria-describedby`. The committed echo reads as "ending in 1234", and `size="lg"` meets 44px touch targets.
+- b448d9a: VI-655: one switch turns every form-control edge off.
+  
+  Input, Textarea, Select, Checkbox, Switch, TagInput, Chip, FileUpload, EmptyState and the edged Button faces (outline, gated, dlg ghost) now draw their resting edge from one shared set of tokens, `--control-edge-width` / `-color` / `-style`, instead of from `border`. Set `--control-edge-width: 0` on any ancestor, or `edges: off` in a `.visor.yaml`, and every resting edge goes, dashed edges included.
+  
+  - The edge is an `outline` pulled inside the box over a transparent geometry border, so flipping the switch never moves anything and no consumer needs a `border-color: transparent !important` override.
+  - Focus and invalid draw at `--control-state-edge-width`, which the switch does not touch, so both stay visible with edges off.
+  - With edges off, an unchecked Checkbox takes a fill (`--checkbox-edgeless-bg`) so it still reads as a box.
+  - Dashed edges (FileUpload, EmptyState) read `--control-drop-edge-width`, which follows the switch unless set on its own.
+  - Per-component colour overrides (`--input-border`, `--select-border`, `--tag-input-border`, …) still win over the shared colour.
+  - **Contract change:** `components.checkbox.border`, `components.chip.border` and `components.empty-state.border` (`--checkbox-border`, `--chip-border`, `--empty-state-border`) are now colour-only, like `--input-border`. Width and style always come from the shared edge, so an override can never push the inset edge outside the box. A binding like `"1px solid red"` becomes `"red"`. No stock or known consumer theme binds them.
+  - Theme engine: new top-level `edges: on | off` field and a `control` family in the VI-625 component-token contract (`components.control.*`), plus `checkbox.edgeless-bg`.
+  - `visor render` gains fixtures for every governed component.
+  
+  With no token set, components render as before: geometry, fills, text and straight edges are unchanged, and only the anti-aliasing of rounded corners and dash ends differs by a few levels.
+- f22cb84: Theme tokens for size, case and tracking on Field label, Button and Text, the Switch's dimensions, and a warning tone on Text (VI-656).
+  
+  - **Field** — `components.field`: `label-font-size`, `label-text-transform`, `label-letter-spacing`, `label-color` (both densities).
+  - **Button** — `components.button`: `text-transform`, `letter-spacing`, `radius` for every size, plus `{sm,md,lg,dlg}-font-size`, `-text-transform`, `-letter-spacing`, `-radius` for one size.
+  - **Text** — `components.text`: `{xs,sm,md,lg,xl}-font-size`, `-text-transform`, `-letter-spacing`, and a new `color="warning"` that reads `--text-warning`.
+  - **Switch** — `components.switch`: `track-width`, `track-height`, `knob-inset` (the knob sits that far from the track's outer edge on every side), plus the existing `track-bg` and `edge-color` hooks, now in the contract.
+  
+  Every hook defaults to what shipped before it existed, so an unbound theme renders unchanged. None draws an edge: the outline Button and the Switch track keep reading the shared `control` edge tokens, so `edges: off` still removes them.
+- 03e71cc: Autosave (VI-657): a `useAutosave` hook and a `SaveStatus` readout. There is no Save button.
+  
+  - **`useAutosave(value, write, { delay = 600, validate, isEqual })`.** Debounces the write and runs one write at a time, so the newest value wins; a response from an older write never overrides a newer state. It flushes a pending change on `pagehide`, when the tab is hidden, on `beforeunload` and on unmount (`write` gets `{ leaving: true }` for `keepalive`). `beforeunload` warns only while a write is in flight. A value `validate` refuses is never written. It reports `saved` · `saving` · `unsaved` · `refused`, with `retry()` and `flush()`.
+  - **`SaveStatus`.** Shows Saved / Saving / Unsaved / Couldn't save in a fixed-width slot that never reflows its row; a longer custom label truncates inside the slot. It is an `aria-live="polite"` status region, with a retry mark after a failed save, and it draws no edge.
+  - **Tokens.** New `components.save-status` family: `width`, `font-family`, `text-transform` and `letter-spacing`. The retry mark reads the icon Button's `icon-size`, `icon-pad` and `icon-ghost-color`.
+  - **Schema fix.** The `field`, `button`, `text` and `switch` families (VI-656) sat under `colors` in `visor-theme.schema.json`. They now sit under `components`, where themes set them.
+- 2feb025: New component: `InlineEdit` (VI-658), inline-editable text. It shows the text, then a pencil. A click or Enter turns it into an input in place, at the same size, so nothing moves.
+  
+  - **Commit and cancel.** Enter, blur and Tab commit the trimmed text through `onCommit`, and only when it changed. Escape restores the text.
+  - **Defaults.** While `value` is empty, `defaultValue` shows, muted (`--text-tertiary`). Committing an empty string brings the default back.
+  - **Typography from `as`.** `as` sets the element (`span`, `p`, `h1`–`h6`…), and the type comes with it, so a section title renames at its own heading size.
+  - **Edges.** At rest, no edge. While editing, the input draws the shared `control` edge, so `edges: off` removes it. Focus keeps its own ring.
+  - **The pencil is the icon Button's mark.** It reads `button.icon-size`, `icon-pad` (its hit target, which adds no line height) and `icon-ghost-color`, so the engine's component-token contract now lists InlineEdit as a consumer of those three tokens.
+- 45c9081: Button gets an icon-only size, `size="icon"` (VI-659): a square mark around one glyph — the glyph plus a hit-target pad on every side, so width always equals height.
+  
+  - **Tokens** — `components.button`: `icon-size` (glyph, 1rem), `icon-pad` (hit-target pad, `--spacing-2`), `icon-radius`, and `icon-ghost-color` (ghost ink at rest, secondary; hover comes up to primary).
+  - **Accessible name** — an icon-only button renders no text, so it warns in development when it has no `aria-label` or `aria-labelledby`.
+  - **Edges** — ghost draws no edge; the outline face uses the shared `control` edge, so `edges: off` removes it.
+
+### Patch Changes
+
+- d8bc0a3: Spinner loads `thinking-orbs` only when an orb mounts (VI-660). The ring used to ship the orb's canvas engine too (about 15KB gzipped), because `spinner.tsx` imports `spinner-orb.tsx` and that file imported `thinking-orbs` statically. It is now a module-level `React.lazy` inside a `Suspense`, and the orb's box is sized inline, so it holds still while the canvas loads. The API is unchanged.
+- Updated dependencies [b448d9a]
+- Updated dependencies [f22cb84]
+- Updated dependencies [03e71cc]
+- Updated dependencies [2feb025]
+- Updated dependencies [45c9081]
+  - @loworbitstudio/visor-theme-engine@0.22.0
+
 ## 1.27.0
 
 ### Minor Changes
