@@ -1,0 +1,72 @@
+---
+title: SaveStatus
+description: Autosave readout — Saved / Saving / Unsaved / Couldn't save in a fixed-width slot that never reflows its row, with a retry mark after a failed save. aria-live polite; draws no edge.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { SaveStatusLiveDemo, SaveStatusStatesDemo } from '@/components/ui/save-status-demo';
+
+```bash
+npx visor add save-status use-autosave
+```
+
+## With useAutosave
+
+SaveStatus is the readout for [`useAutosave`](/docs/hooks/use-autosave): pass it the hook's `status`, and its `retry` for the retry mark. There is no Save button.
+
+<ComponentPreview
+  title="SaveStatus — driven by useAutosave"
+  code={"const [bio, setBio] = React.useState(artist.bio);\nconst autosave = useAutosave(bio, saveBio, { validate: (v) => v.trim().length > 0 });\n\n<label htmlFor=\"bio\">Bio</label>\n<SaveStatus status={autosave.status} onRetry={autosave.retry} />\n<Input id=\"bio\" value={bio} onChange={(e) => setBio(e.target.value)} />"}
+>
+  <SaveStatusLiveDemo />
+</ComponentPreview>
+
+## Every state, in a row
+
+The slot has a fixed width (`--save-status-width`, 7.5rem), so the text after it stays put as the state changes. `Saved` rests muted; `Couldn't save` takes the error colour and, when `onRetry` is passed, a retry mark.
+
+<ComponentPreview
+  title="SaveStatus — saved, saving, unsaved, refused"
+  code={"<SaveStatus status=\"saved\" />\n<SaveStatus status=\"saving\" />\n<SaveStatus status=\"unsaved\" />\n<SaveStatus status=\"refused\" onRetry={retry} />"}
+>
+  <SaveStatusStatesDemo />
+</ComponentPreview>
+
+## Accessibility
+
+The label sits in a `role="status"` region with `aria-live="polite"`, so a screen reader hears each change without losing its place. The readout is status text, not a button: the only control is the retry mark (named "Retry saving"; set `retryLabel` to change it), and it sits outside the live region so it is not announced with every state.
+
+## Theming
+
+`components.save-status` sets the slot: `width`, `font-family`, `text-transform` and `letter-spacing`. Unset, the readout inherits its family, case and tracking from its row, and any rule of yours wins. A 78px caps mono readout:
+
+```yaml
+components:
+  save-status:
+    width: "78px"
+    font-family: "var(--font-mono)"
+    text-transform: uppercase
+    letter-spacing: "0.06em"
+```
+
+The retry mark is the icon Button's mark: `--button-icon-size`, `--button-icon-pad` (its hit target, which adds no height) and `--button-icon-ghost-color`. SaveStatus draws no edge, so there is nothing for `control.edge-width` to turn off.
+
+## Installation
+
+```bash
+npx visor add save-status
+```
+
+This copies two files into your project:
+
+- `components/ui/save-status/save-status.tsx`: the component
+- `components/ui/save-status/save-status.module.css`: the styles
+
+## API Reference
+
+### SaveStatusProps
+
+<PropsTable component="save-status" />
+
+`SaveStatus` also accepts the standard `<span>` HTML attributes.

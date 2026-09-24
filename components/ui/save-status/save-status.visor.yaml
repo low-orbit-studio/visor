@@ -1,0 +1,64 @@
+name: SaveStatus
+description: Autosave readout — Saved / Saving / Unsaved / Couldn't save in a fixed-width slot that never reflows its row, with a retry mark after a failed save. aria-live polite; draws no edge.
+extends: HTMLSpanElement
+category: feedback
+
+when_to_use:
+  - Showing where an autosaved value stands, beside the section or field it saves
+  - Any editor with no Save button, driven by the useAutosave hook
+  - Offering a retry after a save failed, without a toast
+
+when_not_to_use:
+  - Confirming a one-off action the user just took — use SuccessFeedback or a toast
+  - A save/cancel footer model — use the admin editor patterns' footer buttons
+  - Conflicts between tabs or users — use ConflictBanner
+
+why: >
+  The Blacklight editor autosaves on a 600ms debounce with no Save button, and needs a
+  readout that says where each section stands without moving the row it sits in. SaveStatus
+  is that readout: four fixed labels in a slot whose width is a token, so the row never
+  reflows as the state changes, announced politely to assistive tech. It is status text,
+  not a control — the only control is the retry mark after a failed save, which is the
+  editor's icon mark (the icon Button's size, pad and ink). It draws no edge, so there is
+  nothing for the edge switch to turn off.
+
+variants:
+  status:
+    saved: Saved — muted, the resting state.
+    saving: Saving — a write is in flight.
+    unsaved: Unsaved — a change is waiting for the debounce.
+    refused: Couldn't save — validation refused the value or the write failed; shows a retry mark when onRetry is passed.
+
+theme_hooks:
+  - name: --save-status-width
+    description: Slot width (7.5rem). Fixed, so the row never reflows between states.
+  - name: --save-status-font-family / --save-status-text-transform / --save-status-letter-spacing
+    description: Readout family, case and tracking. Unset, the readout inherits from its row and any rule of yours wins.
+  - name: --button-icon-size / --button-icon-pad / --button-icon-ghost-color
+    description: The retry mark, shared with the icon-only Button.
+
+props:
+  - name: status
+    type: "'saved' | 'saving' | 'unsaved' | 'refused'"
+    description: Where the value stands — pass useAutosave(...).status.
+  - name: onRetry
+    type: "() => void"
+    description: Shows a retry mark while status is refused. Pass useAutosave(...).retry.
+  - name: labels
+    type: "Partial<Record<'saved' | 'saving' | 'unsaved' | 'refused', string>>"
+    description: Override any of the four labels, e.g. to translate them.
+  - name: retryLabel
+    type: string
+    default: '"Retry saving"'
+    description: Accessible name of the retry mark.
+
+dependencies:
+  - "@phosphor-icons/react"
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/feedback/save-status"
+
+example: |
+  const autosave = useAutosave(bio, saveBio)
+
+  <SaveStatus status={autosave.status} onRetry={autosave.retry} />

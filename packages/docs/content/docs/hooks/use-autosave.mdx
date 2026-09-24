@@ -1,0 +1,54 @@
+---
+title: useAutosave
+description: Autosave for one value — debounces the write, runs one write at a time so the newest value wins, flushes a pending change when the page is left or the component unmounts, and reports saved · saving · unsaved · refused.
+---
+
+## Usage
+
+```tsx
+const [bio, setBio] = useState(artist.bio)
+const autosave = useAutosave(bio, (value, { leaving }) =>
+  fetch("/api/bio", { method: "PUT", body: value, keepalive: leaving })
+)
+
+<Textarea value={bio} onChange={(e) => setBio(e.target.value)} />
+<SaveStatus status={autosave.status} onRetry={autosave.retry} />
+```
+
+There is no Save button. The value on the first render counts as saved; every change after it is written `delay` ms after the user stops.
+
+## Installation
+
+```bash
+npx visor add use-autosave
+```
+
+## How it behaves
+
+- **Debounced.** Each change restarts the delay (600ms by default), so typing a word writes once. Changing back to the saved value cancels the write.
+- **One write at a time; the newest value wins.** A change made while a write is in flight waits for it, and then only the newest value is written, so your store sees edits in order. A response from an older write never overrides a newer state.
+- **Nothing pending is lost.** A waiting change is written at once on `pagehide`, when the tab is hidden, on `beforeunload` and on unmount. `write` receives `{ leaving: true }` when the page is being left: use `fetch(..., { keepalive: true })` or `navigator.sendBeacon` so the request outlives the page. `beforeunload` asks the user to stay only while a write is still in flight.
+- **Validation belongs to you.** A value `validate` rejects is never written. It stays in the control, and the hook goes to `refused` with `reason: "invalid"` until the value changes.
+- **Failures.** A `write` that rejects or throws puts the hook in `refused` with `reason: "failed"` and the `error`. `retry()` writes the current value again.
+
+Pass a stable value, or an `isEqual`, for objects: with the default `Object.is`, a new object every render counts as a change.
+
+## Parameters
+
+| Name | Type | Required | Default | Description |
+|------|------|----------|---------|-------------|
+| `value` | `T` | Yes | -- | The value to keep saved. The first render's value counts as saved and is not written. |
+| `write` | `(value: T, context: { leaving: boolean }) => unknown` | Yes | -- | Persists the value. Return a promise; a rejection or a throw puts the hook in `refused`. |
+| `options.delay` | `number` | No | `600` | Debounce in milliseconds after the last change. |
+| `options.validate` | `(value: T) => boolean` | No | -- | Return `false` to refuse a value. It is never written. |
+| `options.isEqual` | `(a: T, b: T) => boolean` | No | `Object.is` | Decides whether a value is already saved. |
+
+## Returns
+
+| Name | Type | Description |
+|------|------|-------------|
+| `status` | `'saved' \| 'saving' \| 'unsaved' \| 'refused'` | Where the value stands. Pass it to [SaveStatus](/docs/components/feedback/save-status). |
+| `reason` | `'invalid' \| 'failed' \| null` | Why the hook is `refused`. |
+| `error` | `unknown` | What `write` threw or rejected with, while `reason` is `'failed'`. |
+| `retry` | `() => void` | Write the current value now. |
+| `flush` | `() => void` | Write a pending change now instead of waiting for the debounce. |

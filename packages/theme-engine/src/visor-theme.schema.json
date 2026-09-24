@@ -61,34 +61,6 @@
           "$ref": "#/$defs/cssColor",
           "description": "Page background for light mode. Default: #FFFFFF."
         },
-        "field": {
-          "type": "object",
-          "description": "Field label treatment — size, case, tracking and colour of `FieldLabel`, in both densities. Keys: label-font-size, label-text-transform, label-letter-spacing, label-color.",
-          "additionalProperties": {
-            "$ref": "#/$defs/componentTokenBinding"
-          }
-        },
-        "button": {
-          "type": "object",
-          "description": "Button type treatment and rounding. The unprefixed keys set every size at once; a size key (`dlg-radius`) overrides one size. Keys: text-transform, letter-spacing, radius, sm-font-size, sm-text-transform, sm-letter-spacing, sm-radius, md-font-size, md-text-transform, md-letter-spacing, md-radius, lg-font-size, lg-text-transform, lg-letter-spacing, lg-radius, dlg-font-size, dlg-text-transform, dlg-letter-spacing, dlg-radius, icon-size, icon-pad, icon-radius, icon-ghost-color.",
-          "additionalProperties": {
-            "$ref": "#/$defs/componentTokenBinding"
-          }
-        },
-        "text": {
-          "type": "object",
-          "description": "Text type treatment, per size — set `sm-font-size: 13px` for a 13px step, or caps and tracking on `xs` for a state tag. Every key begins with a size. Keys: xs-font-size, xs-text-transform, xs-letter-spacing, sm-font-size, sm-text-transform, sm-letter-spacing, md-font-size, md-text-transform, md-letter-spacing, lg-font-size, lg-text-transform, lg-letter-spacing, xl-font-size, xl-text-transform, xl-letter-spacing.",
-          "additionalProperties": {
-            "$ref": "#/$defs/componentTokenBinding"
-          }
-        },
-        "switch": {
-          "type": "object",
-          "description": "Switch track and knob dimensions (default size; `size=\"sm\"` keeps its own). Set `knob-inset` to size the knob from the track: it sits that far from the track's outer edge on every side. Keys: track-width, track-height, knob-inset, track-bg, edge-color.",
-          "additionalProperties": {
-            "$ref": "#/$defs/componentTokenBinding"
-          }
-        },
         "surface": {
           "$ref": "#/$defs/cssColor",
           "description": "Card/panel background for light mode. Default: #FFFFFF."
@@ -597,6 +569,41 @@
         "surface": {
           "type": "object",
           "description": "The D3 Tier-2 surface-scale extremes. `elev` is the elevated control tier the chip family already reads; `screen` is the deepest chrome tier consumed by admin pattern shells (`design-prototypes/admin-ui/tokens.css`) rather than by a Visor component. Keys: elev, screen.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "field": {
+          "type": "object",
+          "description": "Field label treatment — size, case, tracking and colour of `FieldLabel`, in both densities. Keys: label-font-size, label-text-transform, label-letter-spacing, label-color.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "button": {
+          "type": "object",
+          "description": "Button type treatment and rounding. The unprefixed keys set every size at once; a size key (`dlg-radius`) overrides one size. Keys: text-transform, letter-spacing, radius, sm-font-size, sm-text-transform, sm-letter-spacing, sm-radius, md-font-size, md-text-transform, md-letter-spacing, md-radius, lg-font-size, lg-text-transform, lg-letter-spacing, lg-radius, dlg-font-size, dlg-text-transform, dlg-letter-spacing, dlg-radius, icon-size, icon-pad, icon-radius, icon-ghost-color.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "text": {
+          "type": "object",
+          "description": "Text type treatment, per size — set `sm-font-size: 13px` for a 13px step, or caps and tracking on `xs` for a state tag. Every key begins with a size. Keys: xs-font-size, xs-text-transform, xs-letter-spacing, sm-font-size, sm-text-transform, sm-letter-spacing, md-font-size, md-text-transform, md-letter-spacing, lg-font-size, lg-text-transform, lg-letter-spacing, xl-font-size, xl-text-transform, xl-letter-spacing.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "switch": {
+          "type": "object",
+          "description": "Switch track and knob dimensions (default size; `size=\"sm\"` keeps its own). Set `knob-inset` to size the knob from the track: it sits that far from the track's outer edge on every side. Keys: track-width, track-height, knob-inset, track-bg, edge-color.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "save-status": {
+          "type": "object",
+          "description": "SaveStatus readout — the fixed-width slot and its type, so the readout never reflows its row. Keys: width, font-family, text-transform, letter-spacing.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

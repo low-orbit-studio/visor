@@ -11,6 +11,7 @@
     "conflict-banner",
     "error-placard",
     "offline-banner",
+    "save-status",
     "slow-network-bar",
     "success-feedback",
     "toast",

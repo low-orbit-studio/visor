@@ -25,6 +25,18 @@ export const hooks: Registry = [
     ],
   },
   {
+    name: "use-autosave",
+    type: "registry:hook",
+    description:
+      "Autosave for one value: debounces the write (600ms), runs one write at a time so the newest value wins, flushes a pending change on pagehide, tab hide and unmount, and reports saved · saving · unsaved · refused with retry().",
+    files: [
+      {
+        path: "hooks/use-autosave.ts",
+        type: "registry:hook",
+      },
+    ],
+  },
+  {
     name: "use-click-outside",
     type: "registry:hook",
     description:
