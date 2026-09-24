@@ -269,6 +269,10 @@ components:
     dlg-text-transform: uppercase
     dlg-letter-spacing: "0.3em"
     dlg-radius: "3px"
+    icon-size: "37px"
+    icon-pad: "37px"
+    icon-radius: "3px"
+    icon-ghost-color: "#ff00aa"
   text:
     xs-font-size: "37px"
     xs-text-transform: uppercase

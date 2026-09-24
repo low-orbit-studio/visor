@@ -115,6 +115,59 @@ export async function open(
   })
   await page.setContent(html, { waitUntil: "load" })
   await page.waitForFunction("document.getElementById('root') && document.getElementById('root').childElementCount > 0", undefined, { timeout: 10000 })
+  // Pixel comparisons between two loads race a late web font under load.
+  await page.evaluate("document.fonts.ready.then(function () { return true })")
   await page.addStyleTag({ content: "*, *::before, *::after { transition: none !important; animation: none !important; caret-color: transparent !important; }" })
   return page
 }
+
+/**
+ * Compare two PNG screenshots in the browser (no image dependency): how many
+ * pixels differ, and the largest per-channel difference out of 255. Chromium
+ * re-rasterises rounded corners with ±1/255 jitter when pages render
+ * concurrently, so "nothing visible changed" is `max <= 2`, not byte equality.
+ */
+export async function pixelDelta(a: Buffer, b: Buffer): Promise<{ n: number; max: number }> {
+  const page = await browser!.newPage()
+  const result = (await page.evaluate(`(async function () {
+    async function decode(b64) {
+      var img = await createImageBitmap(await (await fetch("data:image/png;base64," + b64)).blob());
+      var c = new OffscreenCanvas(img.width, img.height), x = c.getContext("2d");
+      x.drawImage(img, 0, 0);
+      return { w: img.width, h: img.height, d: x.getImageData(0, 0, img.width, img.height).data };
+    }
+    var A = await decode(${JSON.stringify(a.toString("base64"))}), B = await decode(${JSON.stringify(b.toString("base64"))});
+    if (A.w !== B.w || A.h !== B.h) return { n: A.w * A.h, max: 255 };
+    var n = 0, max = 0;
+    for (var i = 0; i < A.d.length; i += 4) {
+      var d = 0;
+      for (var k = 0; k < 4; k++) d = Math.max(d, Math.abs(A.d[i + k] - B.d[i + k]));
+      if (d) { n++; if (d > max) max = d; }
+    }
+    return { n: n, max: max };
+  })()`)) as { n: number; max: number }
+  await page.close()
+  return result
+}
+
+/**
+ * Widest resting edge anywhere under #root, in px: the host outline, the
+ * ::after outline, and any border that carries colour. Width is read raw — a
+ * transparent edge still counts, because the switch has to zero the width.
+ */
+export const REST_EDGE = `(function () {
+  var widest = 0;
+  var read = function (cs) { return cs.outlineStyle === "none" ? 0 : parseFloat(cs.outlineWidth) || 0; };
+  var visible = function (c) { return c !== "transparent" && !/rgba\\([^)]*,\\s*0\\)$/.test(c); };
+  var els = document.querySelectorAll("#root *");
+  for (var i = 0; i < els.length; i++) {
+    var cs = getComputedStyle(els[i]);
+    widest = Math.max(widest, read(cs), read(getComputedStyle(els[i], "::after")));
+    ["Top", "Right", "Bottom", "Left"].forEach(function (s) {
+      if (cs["border" + s + "Style"] !== "none" && visible(cs["border" + s + "Color"])) {
+        widest = Math.max(widest, parseFloat(cs["border" + s + "Width"]) || 0);
+      }
+    });
+  }
+  return widest;
+})()`

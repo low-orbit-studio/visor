@@ -8,6 +8,7 @@ import { PropsTable } from '@/components/props-table';
 import { Button } from '@/components/ui/button';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { PencilSimple, Trash, X } from '@phosphor-icons/react/dist/ssr';
 
 <Tabs defaultValue="react">
   <TabsList>
@@ -97,6 +98,32 @@ block.
     <Button size="dlg" variant="destructive">Remove</Button>
     <Button size="dlg" variant="ghost">Cancel</Button>
     <Button size="dlg">Add artist</Button>
+  </div>
+</ComponentPreview>
+
+### Icon-only (`icon`)
+
+`size="icon"` is a square mark around one glyph: the pencil, the remove X, the
+trash, a row's tools. The box is the glyph (`--button-icon-size`, 1rem) plus a
+hit-target pad (`--button-icon-pad`, `--spacing-2`) on every side, so it is
+always as wide as it is tall. Pair it with `variant="ghost"` for a bare mark: it
+rests in secondary ink (`--button-icon-ghost-color`) and comes up to primary on
+hover. On `variant="outline"` the edge is the shared control edge, so
+`edges: off` removes it.
+
+An icon-only button has no text, so it **needs an `aria-label`**; in
+development it warns in the console without one. For a hover label, compose
+[Tooltip](/docs/components/feedback/tooltip).
+
+<ComponentPreview
+  title="Icon-only buttons"
+  code={"import { PencilSimple, Trash, X } from '@phosphor-icons/react';\n\n<Button size=\"icon\" variant=\"ghost\" aria-label=\"Edit\"><PencilSimple /></Button>\n<Button size=\"icon\" variant=\"ghost\" aria-label=\"Remove\"><X /></Button>\n<Button size=\"icon\" variant=\"ghost\" aria-label=\"Delete\"><Trash /></Button>\n<Button size=\"icon\" variant=\"outline\" aria-label=\"Edit\"><PencilSimple /></Button>"}
+>
+  <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center' }}>
+    <Button size="icon" variant="ghost" aria-label="Edit"><PencilSimple /></Button>
+    <Button size="icon" variant="ghost" aria-label="Remove"><X /></Button>
+    <Button size="icon" variant="ghost" aria-label="Delete"><Trash /></Button>
+    <Button size="icon" variant="outline" aria-label="Edit"><PencilSimple /></Button>
   </div>
 </ComponentPreview>
 

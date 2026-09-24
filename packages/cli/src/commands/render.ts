@@ -46,6 +46,9 @@ interface Fixture {
   interactiveTarget?: string
 }
 
+/** A 1em Phosphor "X" glyph, inline so icon fixtures need no icon package. */
+const ICON_X = `React.createElement("svg", { viewBox: "0 0 256 256", width: "1em", height: "1em", fill: "currentColor", "aria-hidden": true }, React.createElement("path", { d: "M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z" }))`
+
 /**
  * Default fixtures give each render real content, not an empty shell. Keyed
  * `<component> -> <fixture-name>`; "default" is used when `--fixture` is omitted.
@@ -202,6 +205,17 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       export: "Button",
       interactiveTarget: "button",
       props: `{ size: "dlg", variant: "outline", children: "Preview" }`,
+    },
+    // Icon-only (VI-659): a bare ghost mark and its outline face.
+    icon: {
+      export: "Button",
+      interactiveTarget: "button",
+      props: `{ size: "icon", variant: "ghost", "aria-label": "Remove", children: ${ICON_X} }`,
+    },
+    "icon-outline": {
+      export: "Button",
+      interactiveTarget: "button",
+      props: `{ size: "icon", variant: "outline", "aria-label": "Remove", children: ${ICON_X} }`,
     },
   },
   // Type tokens (VI-656). Field label and Text at every step, in both densities.

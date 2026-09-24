@@ -676,7 +676,10 @@ const buttonFamily: ComponentTokenFamily = {
       key: "radius",
       property: "border-radius",
       description: "Corner rounding for every size (`999px` for a pill).",
-      consumers: BUTTON_SIZES.map(({ radius }) => ({ file: BUTTON, fallback: radius })),
+      consumers: [
+        ...BUTTON_SIZES.map(({ radius }) => ({ file: BUTTON, fallback: radius })),
+        { file: BUTTON, fallback: "var(--radius-md, 0.375rem)" },
+      ],
     },
     ...BUTTON_SIZES.flatMap(({ size, fontSize, radius }) => [
       {
@@ -707,6 +710,31 @@ const buttonFamily: ComponentTokenFamily = {
         consumers: at(BUTTON, `var(--button-radius, ${radius})`),
       },
     ]),
+    // VI-659: the icon-only size. A square box of glyph + 2 × pad.
+    {
+      key: "icon-size",
+      property: "width / height / font-size",
+      description: "Icon-only (`size=\"icon\"`) glyph size. The square box is this plus `icon-pad` on every side.",
+      consumers: each(Array(5).fill(BUTTON), "1rem"),
+    },
+    {
+      key: "icon-pad",
+      property: "width / height",
+      description: "Icon-only hit-target pad around the glyph, on every side.",
+      consumers: each([BUTTON, BUTTON], "var(--spacing-2, 0.5rem)"),
+    },
+    {
+      key: "icon-radius",
+      property: "border-radius",
+      description: "Icon-only corner rounding (`999px` for a round mark).",
+      consumers: at(BUTTON, "var(--button-radius, var(--radius-md, 0.375rem))"),
+    },
+    {
+      key: "icon-ghost-color",
+      property: "color",
+      description: "Icon-only ghost ink at rest. Hover comes up to `--text-primary`.",
+      consumers: at(BUTTON, "var(--text-secondary, #6b7280)"),
+    },
   ],
 };
 

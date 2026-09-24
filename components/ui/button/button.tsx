@@ -24,6 +24,7 @@ const buttonVariants = cva(styles.base, {
       md: styles.sizeMd,
       lg: styles.sizeLg,
       dlg: styles.sizeDlg,
+      icon: styles.sizeIcon,
     },
   },
   defaultVariants: {
@@ -149,6 +150,34 @@ const PENDING_SPINNER_SIZE: Record<string, "xs" | "sm"> = {
   dlg: "xs",
   md: "sm",
   lg: "sm",
+  icon: "sm",
+}
+
+/**
+ * An icon-only button has no text for assistive tech to read, so it needs an
+ * `aria-label` (or `aria-labelledby`). Warns once per mount in development;
+ * silent in production.
+ */
+function useIconLabelWarning(
+  size: string | null | undefined,
+  asChild: boolean | undefined,
+  children: React.ReactNode,
+  props: React.ButtonHTMLAttributes<HTMLButtonElement>
+) {
+  // Under asChild the name can live on the child, which is not inspectable
+  // here, so only a plain <button> is checked. A text child or a title is a name.
+  const hasText = React.Children.toArray(children).some((c) => typeof c === "string" || typeof c === "number")
+  const unlabelled =
+    size === "icon" && !asChild && !hasText && !props["aria-label"] && !props["aria-labelledby"] && !props.title
+  React.useEffect(() => {
+    if (unlabelled && process.env.NODE_ENV !== "production") {
+      // eslint-disable-next-line no-console
+      console.warn(
+        '[Button] size="icon" renders no text, so it needs an accessible name. ' +
+          "Pass aria-label (or aria-labelledby) describing the action."
+      )
+    }
+  }, [unlabelled])
 }
 
 export interface ButtonProps
@@ -224,6 +253,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const Comp = asChild ? Slot : "button"
+
+    useIconLabelWarning(size, asChild, children, props)
 
     const elementRef = React.useRef<HTMLButtonElement | null>(null)
     const mergeRef = React.useCallback(
