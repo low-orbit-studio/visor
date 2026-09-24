@@ -178,6 +178,8 @@ Badge treatment — the D3 Tier-2 `--badge-text-transform` / `-letter-spacing` /
 | `--badge-bg` | Badge ground in every variant (an accent tint, an on-image scrim). Unset, each variant keeps its own surface. | The variant's own surface |
 | `--badge-ink` | Badge label colour in every variant. Unset, each variant keeps its own text colour. | The variant's own text colour |
 
+A theme-wide `bg` / `ink` binding paints every variant the same, including `destructive` and `success`, so status colour is lost. To tint one badge or one region, set `--badge-bg` / `--badge-ink` on that badge or its container instead.
+
 ### `status-badge`
 
 Status-badge indicator dot and the mono readout label. Chrome is inherited from the Badge family.

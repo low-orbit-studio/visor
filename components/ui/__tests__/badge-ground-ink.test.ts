@@ -19,6 +19,8 @@
  * component-token-contract.test.ts.
  */
 
+import { readFileSync } from "node:fs"
+import { join } from "node:path"
 import { afterAll, beforeAll, describe, expect, it } from "vitest"
 import { FIXTURES } from "../../../packages/cli/src/commands/render"
 import { bundle, close, launch, open, ready, type PageLike } from "./render-page"
@@ -100,8 +102,11 @@ beforeAll(async () => {
 afterAll(close)
 
 describe("VI-661 — Badge ground and ink tokens (real browser)", () => {
-  it("covers all 13 variants", () => {
-    expect(VARIANTS).toHaveLength(13)
+  it("has a render fixture for every variant badge.visor.yaml declares", () => {
+    const yaml = readFileSync(join(process.cwd(), "components/ui/badge/badge.visor.yaml"), "utf-8")
+    const declared = yaml.match(/^ {2}variant: \[(.*)\]$/m)?.[1].split(", ")
+    expect(declared).toBeTruthy()
+    expect([...VARIANTS].sort()).toEqual([...declared!].sort())
   })
 
   for (const density of DENSITIES) {
