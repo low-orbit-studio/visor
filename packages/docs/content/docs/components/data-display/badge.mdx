@@ -55,6 +55,45 @@ Set `uppercase` to render the label in all-caps — useful for plan, status, and
 
 The `uppercase` prop applies the `.uppercase` CSS module class, which sets `--badge-text-transform: uppercase` on the element. A theme can also drive this via the CSS custom property directly — any element in the theme cascade that sets `--badge-text-transform: uppercase` will produce uppercase badges without needing the prop.
 
+## Ground and Ink
+
+Every variant reads its background through `--badge-bg` and its label colour through `--badge-ink`, falling back to the variant's own surface and text colour. Set either on a badge or on any ancestor to tint one badge without adding a variant per tint. With neither set, every variant renders exactly as it did before. A theme can bind both as `components.badge.bg` and `components.badge.ink` (see [Component tokens](/docs/themes/component-tokens)).
+
+<ComponentPreview
+  title="Tinted Badges"
+  code={"import { Badge } from '@/components/ui/badge/badge';\n\n<Badge variant=\"neutral\">Neutral</Badge>\n<Badge\n  variant=\"neutral\"\n  style={{\n    '--badge-bg': 'var(--surface-accent-subtle)',\n    '--badge-ink': 'var(--text-link)',\n  }}\n>\n  Synced\n</Badge>"}
+>
+  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+    <Badge variant="neutral">Neutral</Badge>
+    <Badge variant="neutral" style={{ '--badge-bg': 'var(--surface-accent-subtle)', '--badge-ink': 'var(--text-link)' }}>Synced</Badge>
+  </div>
+</ComponentPreview>
+
+On a photograph, a scrim ground keeps the label legible. Setting the tokens on the image container tints every badge inside it:
+
+<ComponentPreview
+  title="Badge on an Image"
+  code={"import { Badge } from '@/components/ui/badge/badge';\n\n<div\n  style={{\n    backgroundImage: 'url(/astronaut.png)',\n    backgroundSize: 'cover',\n    '--badge-bg': 'var(--overlay-bg)',\n    '--badge-ink': 'var(--color-white)',\n  }}\n>\n  <Badge variant=\"neutral\">Cover photo</Badge>\n</div>"}
+>
+  <div
+    style={{
+      display: 'flex',
+      alignItems: 'flex-start',
+      width: '16rem',
+      height: '9rem',
+      padding: '0.75rem',
+      borderRadius: 'var(--radius-md, 0.5rem)',
+      backgroundImage: 'url(/astronaut.png)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      '--badge-bg': 'var(--overlay-bg, rgba(0, 0, 0, 0.5))',
+      '--badge-ink': 'var(--color-white, #ffffff)',
+    }}
+  >
+    <Badge variant="neutral">Cover photo</Badge>
+  </div>
+</ComponentPreview>
+
 ## Installation
 
 ```bash

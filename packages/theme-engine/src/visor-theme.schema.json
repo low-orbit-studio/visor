@@ -484,7 +484,7 @@
         },
         "badge": {
           "type": "object",
-          "description": "Badge treatment — the D3 Tier-2 `--badge-text-transform` / `-letter-spacing` / `-font-size` / `-font-weight` set, promoted from the admin-ui audit to a bindable contract. Keys: radius, border, font-family, font-weight, text-transform, letter-spacing, font-size, md-padding, md-gap.",
+          "description": "Badge treatment — the D3 Tier-2 `--badge-text-transform` / `-letter-spacing` / `-font-size` / `-font-weight` set, promoted from the admin-ui audit to a bindable contract. Keys: radius, border, font-family, font-weight, text-transform, letter-spacing, font-size, md-padding, md-gap, bg, ink.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }
