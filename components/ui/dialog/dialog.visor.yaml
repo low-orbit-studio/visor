@@ -22,6 +22,14 @@ why: >
   built-in close button and animated overlay ensure a polished experience
   without any manual wiring.
 
+presentation: >
+  presentation="sheet" (or "responsive" below its breakpoint) anchors the same
+  content to the bottom edge with top-rounded corners. It is sized with dvh and
+  the visual viewport so the on-screen keyboard never covers it, scrolls a
+  focused field into view, and appears without the slide under
+  prefers-reduced-motion. The close button is always present; swipe is optional.
+  No visible border: the resting edge is surface and shadow only.
+
 density_axis: >
   Editorial admin treatment is activated by placing data-density="editorial"
   on any ancestor (typically the app root). Editorial values: surface-card
@@ -43,6 +51,33 @@ props:
     type: boolean
     default: true
     description: When true, interaction with outside elements is blocked (Dialog root)
+  - name: presentation
+    type: "'dialog' | 'sheet' | 'responsive'"
+    default: "dialog"
+    description: >
+      How the content is presented (Dialog root). dialog is a centred modal,
+      sheet is a bottom sheet, responsive is a dialog from breakpoint up and a
+      sheet below it. Same content, focus trap and Escape handling in each.
+  - name: breakpoint
+    type: "number | string"
+    default: "640"
+    description: Viewport width where responsive switches from sheet to dialog. A number is px; a string is any CSS length (Dialog root)
+  - name: container
+    type: "HTMLElement | null"
+    default: "undefined"
+    description: >
+      Element the overlay and content portal into, covering only that element
+      (Dialog root). Not Radix modal mode: focus is trapped in the content, the
+      container's other children are inert, and content outside the container
+      stays interactive. Pass the element, not a ref.
+  - name: showHandle
+    type: boolean
+    default: false
+    description: Show a drag handle on the sheet presentation; dragging down dismisses (DialogContent)
+  - name: back
+    type: React.ReactNode
+    default: "undefined"
+    description: Leading back action rendered before the title, beside the close button (DialogHeader). See DialogBack.
   - name: className
     type: string
     default: "undefined"
@@ -61,6 +96,8 @@ sub_components:
     description: The modal panel with overlay, close button, and animations.
   - name: DialogHeader
     description: Container for title and description at the top.
+  - name: DialogBack
+    description: Leading back action for DialogHeader's back slot (labelled "Back" by default).
   - name: DialogFooter
     description: Right-aligned action row with a hairline top border, for dialog buttons.
   - name: DialogTitle

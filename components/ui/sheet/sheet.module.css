@@ -34,6 +34,7 @@
   top: 0;
   height: auto;
   max-height: 80vh;
+  max-height: 80dvh;
 }
 
 .sideTop[data-state="open"] {
@@ -65,6 +66,7 @@
   bottom: 0;
   height: auto;
   max-height: 80vh;
+  max-height: 80dvh;
 }
 
 .sideBottom[data-state="open"] {
@@ -89,6 +91,12 @@
 
 .sideLeft[data-state="closed"] {
   animation: slideOutToLeft var(--motion-duration-normal, 200ms) var(--motion-easing-exit, ease-in);
+}
+
+/* Scoped (container) presentation: covers only the container, not the window. */
+.scrim,
+.scoped {
+  position: absolute;
 }
 
 /* Close button */
@@ -216,4 +224,25 @@
 @keyframes slideOutToLeft {
   from { transform: translateX(0); opacity: 1; }
   to { transform: translateX(-100%); opacity: 0; }
+}
+
+/* Reduced motion: the sheet appears without the slide. */
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    transition: none;
+  }
+
+  .sideTop[data-state="open"],
+  .sideRight[data-state="open"],
+  .sideBottom[data-state="open"],
+  .sideLeft[data-state="open"] {
+    animation: fadeIn var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out);
+  }
+
+  .sideTop[data-state="closed"],
+  .sideRight[data-state="closed"],
+  .sideBottom[data-state="closed"],
+  .sideLeft[data-state="closed"] {
+    animation: fadeOut var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out);
+  }
 }

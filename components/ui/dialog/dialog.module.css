@@ -60,6 +60,66 @@
   animation: contentHide var(--motion-duration-150, 150ms) var(--motion-easing-exit, ease-in);
 }
 
+/* Bottom-sheet presentation (VI-667): same content, anchored to the bottom edge.
+ * Sized by dvh and the visual viewport so the on-screen keyboard never covers it;
+ * the --dialog-* vars are written by DialogContent from the browser's visual viewport API.
+ * No border — the sheet reads against the scrim by surface and shadow alone. */
+.presentationSheet {
+  top: auto;
+  right: 0;
+  bottom: var(--dialog-keyboard-inset, 0px);
+  left: 0;
+  max-width: none;
+  max-height: min(85dvh, calc(var(--dialog-viewport-height, 100dvh) - var(--spacing-4, 1rem)));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  transform: none;
+  border-radius: var(--radius-lg, 0.5rem) var(--radius-lg, 0.5rem) 0 0;
+  padding-bottom: calc(var(--spacing-6, 1.5rem) + env(safe-area-inset-bottom, 0px));
+}
+
+:global([data-density="editorial"]) .presentationSheet {
+  max-width: none;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  padding-bottom: calc(var(--spacing-8) + env(safe-area-inset-bottom, 0px));
+}
+
+.presentationSheet[data-state="open"] {
+  animation: sheetShow var(--motion-duration-normal, 200ms) var(--motion-easing-enter, ease-out);
+}
+
+.presentationSheet[data-state="closed"] {
+  animation: sheetHide var(--motion-duration-150, 150ms) var(--motion-easing-exit, ease-in);
+}
+
+/* Scoped (container) presentation: covers only the container, not the window. */
+.scrim,
+.scoped {
+  position: absolute;
+}
+
+.scoped {
+  max-height: calc(100% - var(--spacing-8, 2rem));
+  overflow-y: auto;
+}
+
+.scoped.presentationSheet {
+  bottom: 0;
+  max-height: 85%;
+}
+
+/* Drag handle */
+.handle {
+  width: 2.5rem;
+  height: var(--spacing-1, 0.25rem);
+  margin: calc(var(--spacing-3, 0.75rem) * -1) auto var(--spacing-4, 1rem);
+  border-radius: var(--radius-full, 9999px);
+  background-color: var(--text-tertiary, #9ca3af);
+  opacity: var(--opacity-40, 0.4);
+  cursor: grab;
+  touch-action: none;
+}
+
 /* Close button */
 .closeButton {
   position: absolute;
@@ -92,12 +152,55 @@
   height: 1rem;
 }
 
+/* Back action: leading counterpart of the close button */
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm, 0.25rem);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+  padding: var(--spacing-1, 0.25rem);
+  color: var(--text-primary, #111827);
+}
+
+.backButton:hover {
+  opacity: 1;
+}
+
+.backButton:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
 /* Header */
 .header {
   display: flex;
   flex-direction: column;
   gap: calc(var(--spacing-1, 0.25rem) * 1.5);
   margin-bottom: var(--spacing-4, 1rem);
+}
+
+.headerWithBack {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.backSlot {
+  flex: none;
+  /* Align the 24px control with the first title line (line-height lg ~1.75rem). */
+  margin-block: calc(var(--spacing-1, 0.25rem) * 0.5);
+}
+
+.headerBody {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing-1, 0.25rem) * 1.5);
+  min-width: 0;
 }
 
 /* Title
@@ -180,5 +283,35 @@
   to {
     opacity: 0;
     transform: translate(-50%, calc(-50% + 8px));
+  }
+}
+
+@keyframes sheetShow {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes sheetHide {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+
+/* Reduced motion: the dialog and the sheet appear without moving. */
+@media (prefers-reduced-motion: reduce) {
+  .content,
+  .presentationSheet,
+  .backButton,
+  .closeButton {
+    transition: none;
+  }
+
+  .content[data-state="open"],
+  .presentationSheet[data-state="open"] {
+    animation: fadeIn var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+  }
+
+  .content[data-state="closed"],
+  .presentationSheet[data-state="closed"] {
+    animation: fadeOut var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
   }
 }

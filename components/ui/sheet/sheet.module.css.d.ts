@@ -5,6 +5,8 @@ declare const styles: {
   readonly sideRight: string
   readonly sideBottom: string
   readonly sideLeft: string
+  readonly scrim: string
+  readonly scoped: string
   readonly closeButton: string
   readonly closeIcon: string
   readonly header: string

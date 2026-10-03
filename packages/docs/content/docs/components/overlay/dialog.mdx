@@ -61,6 +61,43 @@ A confirmation dialog with explicit close actions.
   </Dialog>
 </ComponentPreview>
 
+## Bottom sheet on a phone
+
+`presentation` picks how the same content is presented: `dialog` (a centred modal, the default), `sheet` (a bottom sheet), or `responsive` (a dialog from `breakpoint` up, a sheet below it; default 640px). The content, focus trap and Escape handling do not change. The sheet is sized with `dvh` and the visual viewport so the on-screen keyboard never covers it, scrolls a focused field into view, and appears without the slide under `prefers-reduced-motion`. The close button is always present; `showHandle` adds a drag handle that dismisses on a downward drag, never as the only way out.
+
+```tsx
+<Dialog presentation="responsive" breakpoint={640}>
+  <DialogTrigger asChild><Button>Add a booking</Button></DialogTrigger>
+  <DialogContent showHandle>
+    <DialogHeader back={<DialogBack onClick={goBack} />}>
+      <DialogTitle>Add a booking</DialogTitle>
+    </DialogHeader>
+    {/* same content on desktop and phone */}
+  </DialogContent>
+</Dialog>
+```
+
+## Inside a container
+
+Pass `container` (the element itself, held in state) and the overlay and content cover only that element. A scoped dialog is deliberately not Radix modal mode, which aria-hides everything outside and blocks pointer events on `body`: it traps focus inside the content, makes only the container's other children `inert`, and leaves the rest of the page interactive. Only the scrim dismisses on a press. The container gets `position: relative` if it is `static`.
+
+```tsx
+const [pane, setPane] = useState<HTMLElement | null>(null)
+
+<section ref={setPane}>
+  <Editor />
+  <Dialog open={open} onOpenChange={setOpen} container={pane}>
+    <DialogContent>
+      <DialogHeader><DialogTitle>Sign back in</DialogTitle></DialogHeader>
+    </DialogContent>
+  </Dialog>
+</section>
+```
+
+## Back action
+
+`DialogHeader` takes a `back` slot, rendered before the title and opposite the close button. `DialogBack` is a ready-made arrow button labelled "Back" for it.
+
 ## Installation
 
 ```bash
@@ -107,7 +144,8 @@ import {
 | `Dialog` | -- (Radix Root) | Root component managing open/close state. |
 | `DialogTrigger` | `<button>` | Element that opens the dialog on click. |
 | `DialogContent` | `<div>` (portal) | The modal panel with overlay, close button, and animations. |
-| `DialogHeader` | `<div>` | Container for title and description at the top. |
+| `DialogHeader` | `<div>` | Container for title and description at the top. Takes a `back` slot for a leading back action. |
+| `DialogBack` | `<button>` | Leading back action for the header (labelled "Back"). |
 | `DialogTitle` | `<h2>` | Accessible dialog heading. |
 | `DialogDescription` | `<p>` | Secondary text describing the dialog purpose. |
 | `DialogClose` | `<button>` | Explicit close trigger (in addition to the built-in X button). |
@@ -117,7 +155,7 @@ import {
 ## Accessibility
 
 - Built on `@radix-ui/react-dialog` with full WAI-ARIA dialog semantics.
-- Focus is trapped inside the dialog while open.
+- Focus is trapped inside the dialog while open, in both presentations and when scoped to a container.
 - `Escape` key closes the dialog; clicking the overlay also dismisses it.
 - `DialogTitle` is linked via `aria-labelledby`; `DialogDescription` via `aria-describedby`.
 - Focus returns to the trigger element when the dialog closes.

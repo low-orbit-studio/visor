@@ -48,6 +48,14 @@ sub_components:
     description: Portal wrapper for rendering outside the DOM tree.
 
 props:
+  - name: container
+    type: "HTMLElement | null"
+    default: "undefined"
+    description: >
+      Element the overlay and panel portal into, covering only that element
+      (Sheet root). Not Radix modal mode: focus is trapped in the panel, the
+      container's other children are inert, and content outside the container
+      stays interactive. Pass the element, not a ref.
   - name: side
     type: "'top' | 'right' | 'bottom' | 'left'"
     default: "right"
