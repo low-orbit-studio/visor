@@ -5,7 +5,12 @@
   gap: var(--spacing-2, 0.5rem);
 }
 
-/* RadioGroup item (the button) */
+/* RadioGroup item (the button)
+
+   VI-668: the border only holds box geometry and is always transparent. The
+   visible resting edge is an inset outline on the shared --control-edge-*
+   tokens, so --control-edge-width: 0 on any ancestor removes it with no layout
+   shift. --radio-border is the per-component colour override. */
 .item {
   position: relative;
   display: flex;
@@ -15,23 +20,33 @@
   align-items: center;
   justify-content: center;
   border-radius: 9999px;
-  border: 1px solid var(--radio-border, var(--border-default, #e5e7eb));
+  border: 1px solid transparent;
   background-color: transparent;
-  transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+  /* With the edge switched off an unchecked dot would vanish, and the dot is
+     the control. So it takes a fill whose size is derived from the switch: 0
+     while the edge is on, the whole box once the edge width drops to 0. */
+  background-image: linear-gradient(var(--radio-edgeless-bg, var(--control-edge-color, var(--border-default, #e5e7eb))), var(--radio-edgeless-bg, var(--control-edge-color, var(--border-default, #e5e7eb))));
+  background-size: calc(max(0px, 1px - var(--control-edge-width, 1px)) * 1000);
+  background-origin: border-box;
+  background-repeat: no-repeat;
+  outline: var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--radio-border, var(--control-edge-color, var(--border-default, #e5e7eb)));
+  outline-offset: calc(-1 * var(--control-edge-width, 1px));
+  transition: outline-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
     background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
     box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
-  outline: none;
   cursor: pointer;
 }
 
 @media (hover: hover) {
   .item:hover:not(:focus-visible):not(:disabled) {
-    border-color: var(--border-strong, #d1d5db);
+    outline-color: var(--border-strong, #d1d5db);
   }
 }
 
+/* Focus draws at --control-state-edge-width, which the edge switch does not touch. */
 .item:focus-visible {
-  border-color: var(--border-focus, #111827);
+  outline: var(--control-state-edge-width, 1px) solid var(--border-focus, #111827);
+  outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
   box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
 }
 
@@ -41,7 +56,8 @@
 }
 
 .item[data-state="checked"] {
-  border-color: var(--interactive-primary-bg, var(--primary, #111827));
+  outline-color: var(--interactive-primary-bg, var(--primary, #111827));
+  background-image: none;
   background-color: var(--interactive-primary-bg, var(--primary, #111827));
   color: var(--interactive-primary-text, #f9fafb);
 }
@@ -56,4 +72,128 @@
 .icon {
   width: 0.5rem;
   height: 0.5rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Card variant (VI-668). Each item is a card: icon, title, one-line
+   description and a check mark. The border is geometry only; the resting edge
+   is an inset outline on the shared --control-edge-* tokens, so
+   --control-edge-width: 0 removes it. The selected card is a lifted fill with a
+   light inset edge, never white, and it also carries a check, so selection is
+   never colour alone.
+   --------------------------------------------------------------------------- */
+.rootCard {
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.card {
+  position: relative;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: var(--spacing-3, 0.75rem);
+  padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
+  border: 1px solid transparent;
+  border-radius: var(--radio-card-radius, var(--radius-lg, 0.5rem));
+  background-color: var(--radio-card-bg, var(--surface-card, #ffffff));
+  color: var(--text-primary, #111827);
+  text-align: left;
+  outline: var(--control-edge-width, var(--stroke-width-thin, 1px)) var(--control-edge-style, solid) var(--radio-card-border, var(--control-edge-color, var(--border-default, #e5e7eb)));
+  outline-offset: calc(-1 * var(--control-edge-width, var(--stroke-width-thin, 1px)));
+  cursor: pointer;
+  transition: outline-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+@media (hover: hover) {
+  .card:hover:not(:focus-visible):not(:disabled):not([data-state="checked"]) {
+    outline-color: var(--border-strong, #d1d5db);
+    background-color: var(--radio-card-hover-bg, var(--surface-interactive-hover, var(--surface-muted, #f3f4f6)));
+  }
+}
+
+.card:focus-visible {
+  outline: var(--control-state-edge-width, var(--stroke-width-thin, 1px)) solid var(--border-focus, #111827);
+  outline-offset: calc(-1 * var(--control-state-edge-width, var(--stroke-width-thin, 1px)));
+  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 25%, transparent);
+}
+
+.card[aria-invalid="true"] {
+  outline: var(--control-state-edge-width, var(--stroke-width-thin, 1px)) solid var(--border-error, var(--destructive, #dc2626));
+  outline-offset: calc(-1 * var(--control-state-edge-width, var(--stroke-width-thin, 1px)));
+}
+
+.card[data-state="checked"] {
+  background-color: var(--radio-card-selected-bg, color-mix(in srgb, var(--text-primary, #111827) 10%, var(--radio-card-bg, var(--surface-card, #ffffff))));
+  outline-color: var(--radio-card-selected-border, color-mix(in srgb, var(--text-primary, #111827) 40%, transparent));
+}
+
+/* A disabled card stays in place and stays readable: dimmed, not removed. */
+.card:disabled {
+  cursor: not-allowed;
+  opacity: var(--opacity-60, 0.6);
+}
+
+.cardIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--radio-card-icon-size, 1.5rem);
+  height: var(--radio-card-icon-size, 1.5rem);
+  color: var(--text-secondary, #6b7280);
+  font-size: var(--radio-card-icon-size, 1.5rem);
+}
+
+.card[data-state="checked"] .cardIcon {
+  color: var(--text-primary, #111827);
+}
+
+.cardText {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--spacing-1, 0.25rem);
+}
+
+.cardTitle {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: var(--line-height-tight, 1.25);
+  color: var(--text-primary, #111827);
+}
+
+.cardDescription {
+  font-size: var(--font-size-xs, 0.75rem);
+  line-height: var(--line-height-snug, 1.375);
+  color: var(--text-secondary, #6b7280);
+}
+
+/* The mark: a ring that holds a check once the card is chosen. */
+.cardMark {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: var(--radius-full, 9999px);
+}
+
+.cardIndicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background-color: var(--radio-card-mark-bg, var(--interactive-primary-bg, var(--primary, #111827)));
+  color: var(--radio-card-mark-text, var(--interactive-primary-text, #f9fafb));
+}
+
+.cardCheck {
+  width: 0.75rem;
+  height: 0.75rem;
 }

@@ -22,7 +22,7 @@ import { REST_EDGE, bundle, close, launch, open, pixelDelta, ready } from "./ren
 /** Every fixture of every component the switch governs. */
 const COMPONENTS = [
   "input", "textarea", "select", "checkbox", "switch",
-  "tag-input", "chip", "file-upload", "empty-state", "button", "inline-edit",
+  "tag-input", "chip", "file-upload", "empty-state", "button", "inline-edit", "radio-group",
 ]
 /** Fixtures that draw a visible resting edge while the switch is on. */
 const EDGED = new Set([
@@ -30,6 +30,7 @@ const EDGED = new Set([
   "tag-input/default", "chip/outlined", "file-upload/default", "empty-state/default",
   "button/outline", "button/gated", "button/dlg-ghost", "button/dlg-outline", "button/icon-outline",
   "inline-edit/editing", "inline-edit/heading-editing",
+  "radio-group/default", "radio-group/card",
 ])
 /** Fixtures that draw a dashed (drop) edge. */
 const DASHED = new Set(["file-upload/default", "empty-state/default"])

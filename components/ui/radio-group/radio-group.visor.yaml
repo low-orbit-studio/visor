@@ -7,6 +7,7 @@ when_to_use:
   - Selecting exactly one option from a small set (2-6 choices)
   - Mutually exclusive choices where all options should be visible
   - Form fields like gender, plan selection, or priority level
+  - variant="card" when each option needs an icon and a sentence (visibility levels, plan tiers), including options shown disabled
 
 when_not_to_use:
   - Multiple selections allowed (use Checkbox group)
@@ -21,9 +22,13 @@ why: >
 
 sub_components:
   - name: RadioGroupItem
-    description: An individual radio button with a filled circle indicator when selected.
+    description: An individual radio button with a filled circle indicator when selected. In the card variant it is a card with icon, title and description slots and a check mark.
 
 props:
+  - name: variant
+    type: "'default' | 'card'"
+    default: "default"
+    description: "default draws a dot beside a label; card draws each item as a card with icon, title and description."
   - name: value
     type: string
     description: Controlled selected value
@@ -37,6 +42,20 @@ props:
   - name: orientation
     type: "'vertical' | 'horizontal'"
     default: "vertical"
+
+item_props:
+  - name: icon
+    type: ReactNode
+    description: Card variant only. Leading icon or swatch; decorative (aria-hidden).
+  - name: title
+    type: ReactNode
+    description: Card variant only. The option's name; it is the item's accessible name.
+  - name: description
+    type: ReactNode
+    description: Card variant only. One line saying what the option means; it describes the item.
+  - name: disabled
+    type: boolean
+    description: The item stays in place and readable, is skipped by the arrow keys, and cannot be chosen. Pass aria-describedby (an id) to say why; it is announced after the description.
 
 dependencies:
   - "@radix-ui/react-radio-group"
@@ -58,4 +77,19 @@ example: |
       <RadioGroupItem value="large" id="large" />
       <Label htmlFor="large">Large</Label>
     </div>
+  </RadioGroup>
+
+example_card: |
+  <RadioGroup variant="card" defaultValue="team" aria-label="Visibility">
+    <RadioGroupItem value="you" icon={<UserIcon />} title="Just You" description="Only you can see it." />
+    <RadioGroupItem value="team" icon={<UsersIcon />} title="Your Team" description="Your team can see it." />
+    <RadioGroupItem
+      value="public"
+      icon={<GlobeIcon />}
+      title="Public"
+      description="Anyone can see it."
+      disabled
+      aria-describedby="why-public"
+    />
+    <p id="why-public">Public needs a verified booking.</p>
   </RadioGroup>
