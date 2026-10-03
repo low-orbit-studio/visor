@@ -622,7 +622,7 @@
         },
         "segmented-control": {
           "type": "object",
-          "description": "SegmentedControl \u2014 the recessed track, the sliding pill and the ink on it. The resting edge is the shared `control` edge. Keys: track-bg, indicator-bg, indicator-text.",
+          "description": "SegmentedControl \u2014 the well, the sliding pill and the ink on it. The resting edge is the shared `control` edge. Keys: track-bg, indicator-bg, indicator-text.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

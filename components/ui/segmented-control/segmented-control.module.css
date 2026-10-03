@@ -12,8 +12,9 @@
   border: 1px solid transparent;
   outline: var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--control-edge-color, var(--border-default, #e5e7eb));
   outline-offset: calc(-1 * var(--control-edge-width, 1px));
-  /* Recessed track the active pill sits in. */
-  background-color: var(--segmented-control-track-bg, var(--surface-subtle, #f3f4f6));
+  /* The well the active pill sits in: the page nudged 12% toward the ink, so it reads as a well
+     in light and dark alike (page-relative, unlike --surface-subtle, which is the page in dark). */
+  background-color: var(--segmented-control-track-bg, color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff)));
 }
 
 /* Labels are medium weight, never light. */

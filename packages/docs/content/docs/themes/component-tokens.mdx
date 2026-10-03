@@ -642,11 +642,11 @@ SaveStatus draws no edge, so there is nothing for `control.edge-width` to turn o
 
 ### `segmented-control`
 
-SegmentedControl — the recessed track, the sliding pill and the ink on it. The resting edge is the shared `control` edge.
+SegmentedControl — the well, the sliding pill and the ink on it. The resting edge is the shared `control` edge.
 
 | Token | Binds | Falls back to |
 |---|---|---|
-| `--segmented-control-track-bg` | Recessed track the pill slides in. | `var(--surface-subtle, #f3f4f6)` |
+| `--segmented-control-track-bg` | The well the pill slides in. Default is the page nudged 12% toward the ink, so it reads as a well in light and dark. | `color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff))` |
 | `--segmented-control-indicator-bg` | Sliding active pill. Bind a lifted dark fill where the theme wants one. | `var(--interactive-primary-bg, var(--primary, #111827))` |
 | `--segmented-control-indicator-text` | Active segment label ink, on the pill. | `var(--interactive-primary-text, #f9fafb)` |
 

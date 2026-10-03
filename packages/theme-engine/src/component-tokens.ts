@@ -961,9 +961,9 @@ const segmentedControlFamily: ComponentTokenFamily = {
   family: "segmented-control",
   prefix: "segmented-control",
   description:
-    "SegmentedControl — the recessed track, the sliding pill and the ink on it. The resting edge is the shared `control` edge.",
+    "SegmentedControl — the well, the sliding pill and the ink on it. The resting edge is the shared `control` edge.",
   tokens: [
-    { key: "track-bg", property: "background-color", description: "Recessed track the pill slides in.", consumers: at(SEGMENTED_CONTROL, "var(--surface-subtle, #f3f4f6)") },
+    { key: "track-bg", property: "background-color", description: "The well the pill slides in. Default is the page nudged 12% toward the ink, so it reads as a well in light and dark.", consumers: at(SEGMENTED_CONTROL, "color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff))") },
     { key: "indicator-bg", property: "background-color", description: "Sliding active pill. Bind a lifted dark fill where the theme wants one.", consumers: at(SEGMENTED_CONTROL, "var(--interactive-primary-bg, var(--primary, #111827))") },
     { key: "indicator-text", property: "color", description: "Active segment label ink, on the pill.", consumers: at(SEGMENTED_CONTROL, "var(--interactive-primary-text, #f9fafb)") },
   ],
