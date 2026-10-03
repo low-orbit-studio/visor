@@ -15,6 +15,7 @@ import {
   pascalCase,
   resolveComponentFile,
   resolveThemeCssFile,
+  resolveResetCssFile,
   resolveTokensCssFile,
 } from "../../../packages/cli/src/commands/render"
 
@@ -58,6 +59,7 @@ export async function close(): Promise<void> {
 
 export const ready = (): boolean => browser !== null
 
+const resetCss = () => readFileSync(resolveResetCssFile(REPO_ROOT)!, "utf-8")
 const tokensCss = () => readFileSync(resolveTokensCssFile(REPO_ROOT)!, "utf-8")
 const themeCss = () => readFileSync(resolveThemeCssFile(REPO_ROOT, THEME)!, "utf-8")
 
@@ -106,6 +108,7 @@ export async function open(
   const b = await bundle(component, fixture)
   const page = await browser!.newPage({ viewport: { width: 720, height: 480 } })
   const html = buildHtml({
+    resetCss: resetCss(),
     tokensCss: tokensCss(),
     themeCss: themeCss(),
     componentCss: (opts.componentCss ?? b.css) + `\n#theme-scope { ${opts.scopeCss ?? ""} }\n${opts.extraCss ?? ""}`,

@@ -1,4 +1,4 @@
-import { existsSync } from "fs"
+import { existsSync, readFileSync } from "fs"
 import { dirname, resolve } from "path"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import {
@@ -10,6 +10,7 @@ import {
   renderCommand,
   resolveComponentFile,
   resolveOutPath,
+  resolveResetCssFile,
   resolveThemeCssFile,
   resolveTokensCssFile,
 } from "../commands/render.js"
@@ -98,6 +99,7 @@ describe("render — optional-dep error path", () => {
 describe("render — CSS cascade + entry composition", () => {
   it("buildHtml orders tokens → theme → component and scopes the theme class off #theme-scope, not <html>", () => {
     const html = buildHtml({
+      resetCss: "/* RESET */",
       tokensCss: "/* TOKENS */",
       themeCss: "/* THEME */",
       componentCss: "/* COMPONENT */",
@@ -105,10 +107,14 @@ describe("render — CSS cascade + entry composition", () => {
       themeClass: "space-theme",
       mode: "dark",
     })
+    const resetIdx = html.indexOf("/* RESET */")
     const tokensIdx = html.indexOf("/* TOKENS */")
     const themeIdx = html.indexOf("/* THEME */")
     const componentIdx = html.indexOf("/* COMPONENT */")
     // Cascade order: base tokens before theme overrides before component CSS.
+    expect(resetIdx).toBeGreaterThan(-1)
+    expect(resetIdx).toBeLessThan(tokensIdx)
+    expect(html).toContain('<style data-visor="reset">')
     expect(tokensIdx).toBeLessThan(themeIdx)
     expect(themeIdx).toBeLessThan(componentIdx)
     // Dark mode stamps <html class="dark">; the theme class lives on #theme-scope
@@ -117,8 +123,27 @@ describe("render — CSS cascade + entry composition", () => {
     expect(html).toContain('<div id="theme-scope" class="space-theme">')
   })
 
+  it("buildHtml binds #theme-scope to the same --font-body token the nextjs adapter binds to body", () => {
+    const html = buildHtml({
+      resetCss: "r", tokensCss: "t", themeCss: "th", componentCss: "c", bundleJs: "j",
+      themeClass: "x-theme", mode: "light",
+    })
+    expect(html).toMatch(/font-family: var\(--font-body, var\(--font-sans,/)
+  })
+
+  it("resolveResetCssFile finds visor-core's reset from the workspace build", () => {
+    const f = resolveResetCssFile(REPO_ROOT)
+    expect(f).not.toBeNull()
+    expect(f).toMatch(/reset\.css$/)
+  })
+
+  it("resolveResetCssFile returns null when no reset is present", () => {
+    expect(resolveResetCssFile("/nonexistent-visor-dir")).toBeNull()
+  })
+
   it("buildHtml leaves <html> without the dark class in light mode", () => {
     const html = buildHtml({
+      resetCss: "/* RESET */",
       tokensCss: "t",
       themeCss: "th",
       componentCss: "c",
@@ -240,4 +265,45 @@ describe.skipIf(!INTEGRATION_READY)("render — full integration (browser + real
     },
     90000
   )
+})
+
+// VI-682 — native controls wear the theme's body font in the harness. Gated on the
+// chromium binary + built reset, like the integration suite above.
+const FONT_READY = (await browserReady()) && resolveResetCssFile(REPO_ROOT) !== null
+
+describe.skipIf(!FONT_READY)("render — native button wears the theme body font (VI-682)", () => {
+  const THEME_FONT = "Menlo, monospace"
+  const page = (resetCss: string) =>
+    buildHtml({
+      resetCss,
+      tokensCss: "",
+      themeCss: `.fixture-theme { --font-body: ${THEME_FONT}; }`,
+      componentCss: "",
+      bundleJs: 'document.getElementById("root").innerHTML = "<button id=b>Label</button>";',
+      themeClass: "fixture-theme",
+      mode: "light",
+    })
+
+  async function buttonFont(html: string): Promise<string> {
+    const pw = (await import("playwright")) as any
+    const browser = await pw.chromium.launch()
+    try {
+      const p = await browser.newPage()
+      await p.setContent(html, { waitUntil: "load" })
+      return await p.evaluate(
+        'getComputedStyle(document.getElementById("b")).fontFamily'
+      )
+    } finally {
+      await browser.close()
+    }
+  }
+
+  it("computed button font-family equals the theme body font with the reset injected", async () => {
+    const reset = readFileSync(resolveResetCssFile(REPO_ROOT) as string, "utf-8")
+    expect(await buttonFont(page(reset))).toBe(THEME_FONT)
+  }, 60000)
+
+  it("mutation control: dropping the reset leaves the button in the browser default font", async () => {
+    expect(await buttonFont(page(""))).not.toBe(THEME_FONT)
+  }, 60000)
 })

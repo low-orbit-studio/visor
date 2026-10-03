@@ -422,6 +422,17 @@ export function resolveTokensCssFile(cwd: string): string | null {
 }
 
 /**
+ * Locate visor-core's element reset (VI-616) relative to `cwd`. Same lookup as
+ * tokens.css: the workspace build first, then the installed package.
+ */
+export function resolveResetCssFile(cwd: string): string | null {
+  return firstExisting([
+    resolve(cwd, "packages", "tokens", "dist", "reset.css"),
+    resolve(cwd, "node_modules", "@loworbitstudio", "visor-core", "dist", "reset.css"),
+  ])
+}
+
+/**
  * Lazily load an optional dependency. Returns the module or `null` if it is not
  * installed. Mirrors the optional-dependency handling used for browser tooling
  * that must not bloat the published CLI (see fonts-add's env-guard pattern).
@@ -461,7 +472,8 @@ async function settle(page: any, fontsTimeout = 5000): Promise<void> {
 /**
  * Compose the standalone HTML document.
  *
- * Cascade order matters (VI-511 footgun): base tokens first, then the real
+ * Cascade order matters (VI-511 footgun): visor-core's element reset first
+ * (VI-682 — native controls inherit the theme font, as in a real app), then base tokens, then the real
  * per-theme CSS (which self-declares the `@layer` order and scopes per-mode by
  * ancestor — `.dark .<slug>-theme` vs `html:not(.dark) .<slug>-theme`), then the
  * component's esbuild-emitted CSS, then harness layout. The theme class lives on
@@ -470,6 +482,7 @@ async function settle(page: any, fontsTimeout = 5000): Promise<void> {
  * it to prove the themed surface resolved to its mapped value, not the primitive.
  */
 export function buildHtml(opts: {
+  resetCss: string
   tokensCss: string
   themeCss: string
   componentCss: string
@@ -483,6 +496,9 @@ export function buildHtml(opts: {
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<style data-visor="reset">
+${opts.resetCss}
+</style>
 <style data-visor="tokens">
 ${opts.tokensCss}
 </style>
@@ -503,7 +519,8 @@ html, body { margin: 0; padding: 0; }
   justify-content: center;
   background: var(--surface-page, #ffffff);
   color: var(--text-primary, #111827);
-  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+  /* Same token the nextjs adapter's origination binds to body (VI-616). */
+  font-family: var(--font-body, var(--font-sans, system-ui, -apple-system, sans-serif));
 }
 #root { width: 100%; max-width: 420px; }
 </style>
@@ -599,6 +616,15 @@ export async function renderCommand(
     )
   }
 
+  const resetCssFile = resolveResetCssFile(cwd)
+  if (!resetCssFile) {
+    fail(
+      "RESET_NOT_FOUND",
+      "visor-core reset.css not found. Expected packages/tokens/dist/reset.css.",
+      { hint: "Run `npm run build -w packages/tokens` first." }
+    )
+  }
+
   const fixtureName = options.fixture ?? "default"
   const componentFixtures = FIXTURES[component]
   const fixture: Fixture =
@@ -663,6 +689,7 @@ export async function renderCommand(
   // ── Compose HTML ────────────────────────────────────────────────────────────
   const themeClass = `${options.theme}-theme`
   const html = buildHtml({
+    resetCss: readFileSync(resetCssFile as string, "utf-8"),
     tokensCss: readFileSync(tokensCssFile as string, "utf-8"),
     themeCss: readFileSync(themeCssFile as string, "utf-8"),
     componentCss,

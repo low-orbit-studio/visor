@@ -726,7 +726,7 @@ npx @loworbitstudio/visor render doc-nav --theme space --mode dark
 npx @loworbitstudio/visor render stat-card --theme neutral --mode light --out shot.png
 ```
 
-The harness composes CSS in the correct cascade order — `packages/tokens/dist/tokens.css` → the theme's real per-mode CSS from `packages/docs/app/<slug>-theme.css` (which self-declares its `@layer` order and scopes each mode by ancestor) — then esbuild-bundles the real component with a representative fixture and its default variant classes, mounts it under the theme scope, and screenshots it with Playwright.
+The harness composes CSS in the correct cascade order — visor-core's element reset (`packages/tokens/dist/reset.css`, so native `<button>`/`<input>` controls inherit the theme's body font exactly as they do in a real app) → `packages/tokens/dist/tokens.css` → the theme's real per-mode CSS from `packages/docs/app/<slug>-theme.css` (which self-declares its `@layer` order and scopes each mode by ancestor) — then esbuild-bundles the real component with a representative fixture and its default variant classes, mounts it under the theme scope, and screenshots it with Playwright.
 
 Because the theme class lives on `#theme-scope` (not `<html>`), a **computed-style probe** reads `--surface-card` from both the themed element and the raw `<html>` root and confirms the themed surface resolved to its **mapped** value, not the base primitive — the exact drift class (medium-gray pill, ballooned group radius) that otherwise has to be caught by hand:
 
