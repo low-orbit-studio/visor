@@ -310,5 +310,20 @@ components:
   tooltip:
     bg: "#ff00aa"
     text: "#2b0a3d"
+  action-row:
+    min-height: "3rem"
+    padding: "10px 14px"
+    gap: "14px"
+    radius: "10px"
+    hover-bg: "#ff00aa"
+    open-bg: "#aa00ff"
+    selected-bg: "#2b0a3d"
+    selected-edge: "#ffd000"
+    disabled-opacity: "0.4"
+    title-weight: "600"
+    line-color: "#009966"
+    leading-color: "#0099ff"
+    leading-size: "1.5rem"
+    trailing-color: "#ff6600"
   admin-ui:
     marquee-family: "\"Courier New\", monospace"

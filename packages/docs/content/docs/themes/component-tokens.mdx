@@ -666,6 +666,42 @@ components:
 A flat `overrides.dark.tooltip-bg` / `tooltip-text` pair emits the same two
 properties through the brand pass-through.
 
+### `action-row`
+
+ActionRow state fills, edge and geometry: rest, hover, open, selected and disabled each read their own token.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--action-row-min-height` | Row floor height; the whole row is the target. | `2.75rem` |
+| `--action-row-padding` | Row inset, kept inside the hover and selected fills. | `var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem)` |
+| `--action-row-gap` | Gap between the leading slot, the title block and the trailing slot. | `var(--spacing-3, 0.75rem)` |
+| `--action-row-radius` | Row corner rounding (the hover and selected fill). | `var(--radius-md, 0.375rem)` |
+| `--action-row-hover-bg` | Hover fill. | `var(--surface-interactive-hover, #f3f4f6)` |
+| `--action-row-open-bg` | Fill of a row that has opened a picker or popover (`aria-expanded`). | `var(--surface-interactive-hover, #f3f4f6)` |
+| `--action-row-selected-bg` | Selected fill. A lifted fill, never white. | `var(--surface-interactive-active, #e5e7eb)` |
+| `--action-row-selected-edge` | Selected row's inset edge colour. Its width is `--control-edge-width`. | `var(--control-edge-color, var(--border-strong, #d1d5db))` |
+| `--action-row-disabled-opacity` | Disabled row opacity. | `var(--opacity-50, 0.5)` |
+| `--action-row-title-weight` | Title weight. | `var(--font-weight-medium, 500)` |
+| `--action-row-line-color` | Second-line colour. | `var(--text-secondary, #6b7280)` |
+| `--action-row-leading-color` | Leading icon colour. | `var(--text-secondary, #6b7280)` |
+| `--action-row-leading-size` | Leading icon size. | `1.25rem` |
+| `--action-row-trailing-color` | Trailing value or caret colour. | `var(--text-secondary, #6b7280)` |
+
+Unbound, the selected row is `--surface-interactive-active` (a neutral lift, not the accent `--surface-selected`) with a `--control-edge-color`
+inset edge. The edge is the row's only resting edge: `control.edge-width: 0`
+removes it, and the list's hairlines between rows read `--hairline-width`
+(`hairlines: off`). Focus stays visible either way. A dark theme that wants the
+lifted dark fill with a light edge binds the two selected tokens:
+
+```yaml
+components:
+  action-row:
+    selected-bg:
+      dark: "#26262b"
+    selected-edge:
+      dark: "rgba(255, 255, 255, 0.24)"
+```
+
 ### `admin-ui`
 
 Structural roles the admin-ui pattern owns. `marquee-family` is the display face for KPI hero figures and marquee page titles — the role the admin-ui portability audit named as the one piece of ENTR brand coupling a new theme must rebind.

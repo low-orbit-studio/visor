@@ -4,6 +4,7 @@
   "defaultOpen": true,
   "pages": [
     "accordion",
+    "action-row",
     "avatar",
     "badge",
     "bento-grid",

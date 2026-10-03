@@ -138,6 +138,7 @@ const TEXT = "components/ui/text/text.module.css";
 const INLINE_EDIT = "components/ui/inline-edit/inline-edit.module.css";
 const SAVE_STATUS = "components/ui/save-status/save-status.module.css";
 const TOOLTIP = "components/ui/tooltip/tooltip.module.css";
+const ACTION_ROW = "components/ui/action-row/action-row.module.css";
 
 /** Shorthand for the common single-consumer case. */
 function at(file: string, fallback: string | null): ComponentTokenConsumer[] {
@@ -872,6 +873,34 @@ const tooltipFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-666. ActionRow: one tappable list row. Each state has its own token, so a
+// theme can lift the selected fill without retuning the shared surface ramp
+// (Blacklight's dark selection rule: a lifted dark fill with a light inset edge,
+// never white). The resting edge is drawn on the selected row only, on the
+// shared `--control-edge-*` tokens, so `control.edge-width: 0` turns it off.
+const actionRowFamily: ComponentTokenFamily = {
+  family: "action-row",
+  prefix: "action-row",
+  description:
+    "ActionRow state fills, edge and geometry: rest, hover, open, selected and disabled each read their own token.",
+  tokens: [
+    { key: "min-height", property: "min-height", description: "Row floor height; the whole row is the target.", consumers: at(ACTION_ROW, "2.75rem") },
+    { key: "padding", property: "padding", description: "Row inset, kept inside the hover and selected fills.", consumers: at(ACTION_ROW, "var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem)") },
+    { key: "gap", property: "gap", description: "Gap between the leading slot, the title block and the trailing slot.", consumers: at(ACTION_ROW, "var(--spacing-3, 0.75rem)") },
+    { key: "radius", property: "border-radius", description: "Row corner rounding (the hover and selected fill).", consumers: at(ACTION_ROW, "var(--radius-md, 0.375rem)") },
+    { key: "hover-bg", property: "background-color", description: "Hover fill.", consumers: at(ACTION_ROW, "var(--surface-interactive-hover, #f3f4f6)") },
+    { key: "open-bg", property: "background-color", description: "Fill of a row that has opened a picker or popover (`aria-expanded`).", consumers: at(ACTION_ROW, "var(--surface-interactive-hover, #f3f4f6)") },
+    { key: "selected-bg", property: "background-color", description: "Selected fill. A lifted fill, never white.", consumers: at(ACTION_ROW, "var(--surface-interactive-active, #e5e7eb)") },
+    { key: "selected-edge", property: "outline-color", description: "Selected row's inset edge colour. Its width is `--control-edge-width`.", consumers: at(ACTION_ROW, "var(--control-edge-color, var(--border-strong, #d1d5db))") },
+    { key: "disabled-opacity", property: "opacity", description: "Disabled row opacity.", consumers: at(ACTION_ROW, "var(--opacity-50, 0.5)") },
+    { key: "title-weight", property: "font-weight", description: "Title weight.", consumers: at(ACTION_ROW, "var(--font-weight-medium, 500)") },
+    { key: "line-color", property: "color", description: "Second-line colour.", consumers: at(ACTION_ROW, "var(--text-secondary, #6b7280)") },
+    { key: "leading-color", property: "color", description: "Leading icon colour.", consumers: at(ACTION_ROW, "var(--text-secondary, #6b7280)") },
+    { key: "leading-size", property: "font-size", description: "Leading icon size.", consumers: at(ACTION_ROW, "1.25rem") },
+    { key: "trailing-color", property: "color", description: "Trailing value or caret colour.", consumers: at(ACTION_ROW, "var(--text-secondary, #6b7280)") },
+  ],
+};
+
 // VI-680. The hairline mirror of the VI-655 edge switch: one token every
 // hairline rule reads for its weight, so a single binding turns every hairline
 // off:
@@ -892,6 +921,7 @@ const HAIRLINE_PX = [
   TABS,
 ];
 const HAIRLINE_THIN = [
+  ACTION_ROW,
   "blocks/dialog-form/dialog-form.module.css",
   "components/ui/coherence-check/coherence-check.module.css",
   "components/ui/doc-frame/doc-frame.module.css",
@@ -968,6 +998,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   switchFamily,
   saveStatusFamily,
   tooltipFamily,
+  actionRowFamily,
   adminUiFamily,
 ];
 
