@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.25.0
+
+### Minor Changes
+
+- d5f49ac: Add `ActionRow` and `ActionRowList` (`npx visor add action-row`): one tappable list row that is a `button`, or an `a` through `asChild`, with a leading slot, a title, an optional second line and a trailing value, badge or caret. The row is at least 44px tall and has rest, hover, focus-visible, selected, open and disabled states, each reading a token. `selected` sets `aria-current` (`aria-selected` on option, tab, row, gridcell and treeitem roles) and draws a lifted fill with an inset edge at `--control-state-edge-width` (the width focus and invalid use), so `edges: off` keeps it. `ActionRowList` stacks rows in a `ul` with a hairline between them on `--hairline-width`. The trailing slot is non-interactive: a focusable element in it fires a development-only `console.warn`.
+  
+  The theme engine registers the `action-row` component-token family (`components.action-row.*`: `min-height`, `padding`, `gap`, `radius`, `hover-bg`, `open-bg`, `selected-bg`, `selected-edge-color`, `disabled-opacity`, `title-weight`, `line-color`, `leading-color`, `leading-size`, `trailing-color`) in the contract and both theme schemas, and `ActionRow` joins the `--hairline-width` consumers. Unbound themes render from the semantic surface ramp.
+- 6952ae6: EmptyState gains `intent="error"` and a `fill` prop. A failed load now wears the empty-state layout: centred icon, heading and description, with the icon and heading in the destructive colour (`--empty-state-error-color` overrides it), `role="alert"` instead of `status`, and an unchipped icon unless `iconWrap` is set. `fill` stretches the empty state to its container and centres it both ways. ErrorPlacard stays for inline, in-card failures; both components' `when_to_use` now point at each other.
+- a10f9f0: SaveStatus takes `status="syncing"`, for a first sync from an outside source writing rows the user did not type (`labels.syncing` overrides the word; the consumer sets it, `useAutosave` never emits it), and `unsavedAs="dot"`, which draws Unsaved as a dot alone while the label stays as visually hidden text in the live region, so the dot keeps an accessible name. New theme tokens `--save-status-syncing-color` (the Syncing ink) and `--save-status-dot-size`. The slot is now sized from content: as wide as the longest label (overrides included) in the theme's own font plus room for the retry mark, one width in every state, so a default label never truncates. `--save-status-width` still pins it and wins when set (its unbound fallback is now `auto`, was `7.5rem`).
+
 ## 0.24.0
 
 ### Minor Changes
