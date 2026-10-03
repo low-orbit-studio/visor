@@ -46,6 +46,12 @@ theme_hooks:
       Per-size border-radius for md and lg. Default to var(--radius-sm, 0.5rem).
       Note: sm border-radius is driven by the density axis (data-density="editorial"
       bakes in var(--radius-md); canonical default is var(--radius-sm, 0.25rem)).
+  - name: --input-affix-gap
+    description: >
+      Space between a prefix or suffix and the value. Defaults to var(--spacing-2).
+  - name: --input-affix-color
+    description: >
+      Prefix and suffix ink. Defaults to var(--text-secondary).
   - name: --input-padding-sm / --input-padding-md / --input-padding-lg
     description: >
       Per-size padding (the full shorthand). Default to each size's current
@@ -73,6 +79,13 @@ props:
   - name: leadingIcon
     type: React.ReactNode
     description: Optional leading glyph rendered inside the field (e.g. a Phosphor icon). The input reserves enough left padding to clear it.
+  - name: prefix
+    type: React.ReactNode
+    description: >
+      Fixed text before the value, inside the same well (a currency symbol). Drawn in the secondary text colour, never part of the value or the selection, and the value never runs under it. Clicking it focuses the input; it is wired to the input with aria-describedby, so assistive tech reads it as a description, not as the value. Replaces the native `prefix` HTML attribute, which is not forwarded. When set, `className` lands on the wrapper that draws the well.
+  - name: suffix
+    type: React.ReactNode
+    description: Fixed text after the value, inside the same well (`.epk.pro`, a unit). Same behaviour as `prefix`.
   - name: passwordManagers
     type: "'ignore' | 'allow'"
     default: "ignore"
@@ -85,5 +98,9 @@ preview_url: "https://visor.loworbit.studio/docs/components/form/input"
 
 example: |
   <Input type="email" placeholder="you@example.com" />
+
+  <Input suffix=".epk.pro" aria-label="Address" />
+
+  <Input prefix="€" inputMode="decimal" aria-label="Amount" />
 
   <Input type="password" passwordManagers="allow" aria-invalid="true" />

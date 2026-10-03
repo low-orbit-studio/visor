@@ -6,6 +6,14 @@ declare const styles: {
   readonly sizeSm: string
   readonly sizeMd: string
   readonly sizeLg: string
+  readonly affixWrapper: string
+  readonly affixSm: string
+  readonly affixLg: string
+  readonly bare: string
+  readonly afterPrefix: string
+  readonly beforeSuffix: string
+  readonly affixIcon: string
+  readonly affix: string
 }
 
 export default styles

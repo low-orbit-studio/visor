@@ -641,6 +641,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "input-affix": {
+          "type": "object",
+          "description": "Input and NumberInput prefix and suffix: the gap between a fixed affix and the value, and the affix's ink. Keys: gap, color.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "admin-ui": {
           "type": "object",
           "description": "Structural roles the admin-ui pattern owns. `marquee-family` is the display face for KPI hero figures and marquee page titles — the role the admin-ui portability audit named as the one piece of ENTR brand coupling a new theme must rebind. Keys: marquee-family.",

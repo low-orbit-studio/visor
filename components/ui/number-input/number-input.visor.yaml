@@ -38,6 +38,18 @@ props:
     type: number
     default: "1"
     description: Increment/decrement step size.
+  - name: prefix
+    type: React.ReactNode
+    description: Fixed text before the value, inside the same well (a currency symbol). Same treatment as Input's prefix; replaces the native `prefix` attribute.
+  - name: suffix
+    type: React.ReactNode
+    description: Fixed text after the value, inside the same well (a unit such as `h` or `m`).
+
+theme_hooks:
+  - name: --input-affix-gap
+    description: Space between a prefix or suffix and the value (shared with Input).
+  - name: --input-affix-color
+    description: Prefix and suffix ink (shared with Input).
 
 dependencies:
   - "@phosphor-icons/react"
@@ -46,3 +58,7 @@ preview_url: "https://visor.loworbit.studio/docs/components/form/number-input"
 
 example: |
   <NumberInput defaultValue={1} min={0} max={10} step={1} />
+
+  <NumberInput prefix="$" defaultValue={150} aria-label="Fee" />
+
+  <NumberInput suffix="h" defaultValue={2} aria-label="Hours" />

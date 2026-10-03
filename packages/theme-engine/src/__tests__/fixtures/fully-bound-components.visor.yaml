@@ -333,5 +333,8 @@ components:
     leading-color: "#0099ff"
     leading-size: "1.5rem"
     trailing-color: "#ff6600"
+  input-affix:
+    gap: "12px"
+    color: "#6b21a8"
   admin-ui:
     marquee-family: "\"Courier New\", monospace"

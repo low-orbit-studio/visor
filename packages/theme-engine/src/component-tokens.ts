@@ -127,6 +127,7 @@ const SKELETON = "components/ui/skeleton/skeleton.module.css";
 const SPINNER = "components/ui/spinner/spinner.module.css";
 const CHECKBOX = "components/ui/checkbox/checkbox.module.css";
 const INPUT = "components/ui/input/input.module.css";
+const NUMBER_INPUT = "components/ui/number-input/number-input.module.css";
 const TEXTAREA = "components/ui/textarea/textarea.module.css";
 const SELECT = "components/ui/select/select.module.css";
 const SWITCH = "components/ui/switch/switch.module.css";
@@ -603,7 +604,7 @@ const checkboxFamily: ComponentTokenFamily = {
 // layout space, so the switch never moves anything, and no consumer needs a
 // `border-color … !important` override to remove it. Focus and invalid draw
 // with `state-edge-width`, which the switch deliberately does not touch.
-const EDGE_CONTROLS = [INPUT, TEXTAREA, SELECT, CHECKBOX, SWITCH, TAG_INPUT, BUTTON];
+const EDGE_CONTROLS = [INPUT, NUMBER_INPUT, TEXTAREA, SELECT, CHECKBOX, SWITCH, TAG_INPUT, BUTTON];
 const controlFamily: ComponentTokenFamily = {
   family: "control",
   prefix: "control",
@@ -625,7 +626,7 @@ const controlFamily: ComponentTokenFamily = {
       key: "edge-color",
       property: "outline-color",
       description: "Resting-edge colour. A component's own `--<component>-border` override still wins over it.",
-      consumers: each([INPUT, TEXTAREA, SELECT, CHECKBOX, TAG_INPUT, CHIP, FILE_UPLOAD, EMPTY_STATE, BUTTON], "var(--border-default, #e5e7eb)"),
+      consumers: each([INPUT, NUMBER_INPUT, TEXTAREA, SELECT, CHECKBOX, TAG_INPUT, CHIP, FILE_UPLOAD, EMPTY_STATE, BUTTON], "var(--border-default, #e5e7eb)"),
     },
     {
       key: "edge-style",
@@ -649,7 +650,7 @@ const controlFamily: ComponentTokenFamily = {
       key: "state-edge-width",
       property: "outline-width",
       description: "Focus and invalid edge weight. Independent of `edge-width`, so focus and invalid stay visible with edges off.",
-      consumers: each([INPUT, TEXTAREA, SELECT, CHECKBOX, SWITCH, TAG_INPUT], "1px"),
+      consumers: each([INPUT, NUMBER_INPUT, TEXTAREA, SELECT, CHECKBOX, SWITCH, TAG_INPUT], "1px"),
     },
   ],
 };
@@ -903,6 +904,31 @@ const actionRowFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-662. The fixed text an Input or NumberInput shows inside its well, beside
+// the value (a currency symbol, a unit, `.epk.pro`). Unbound, the gap is the
+// 8px step and the ink is the secondary text colour. The affix draws no edge of
+// its own: the well keeps its one edge from the `control` family above.
+const inputAffixFamily: ComponentTokenFamily = {
+  family: "input-affix",
+  prefix: "input-affix",
+  description:
+    "Input and NumberInput prefix and suffix: the gap between a fixed affix and the value, and the affix's ink.",
+  tokens: [
+    {
+      key: "gap",
+      property: "gap",
+      description: "Space between a prefix or suffix and the value.",
+      consumers: [...at(INPUT, "var(--spacing-2, 0.5rem)"), ...at(NUMBER_INPUT, "var(--spacing-2, 0.5rem)")],
+    },
+    {
+      key: "color",
+      property: "color",
+      description: "Prefix and suffix ink.",
+      consumers: [...at(INPUT, "var(--text-secondary, #6b7280)"), ...at(NUMBER_INPUT, "var(--text-secondary, #6b7280)")],
+    },
+  ],
+};
+
 // VI-680. The hairline mirror of the VI-655 edge switch: one token every
 // hairline rule reads for its weight, so a single binding turns every hairline
 // off:
@@ -1029,6 +1055,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   segmentedControlFamily,
   tooltipFamily,
   actionRowFamily,
+  inputAffixFamily,
   adminUiFamily,
 ];
 

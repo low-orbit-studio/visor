@@ -18,7 +18,7 @@ import { describe, expect, it } from "vitest"
 const REPO_ROOT = process.cwd()
 
 const GOVERNED = [
-  "input", "textarea", "select", "checkbox", "switch",
+  "input", "number-input", "textarea", "select", "checkbox", "switch",
   "tag-input", "chip", "file-upload", "empty-state", "button", "radio-group", "time-picker",
 ]
 
