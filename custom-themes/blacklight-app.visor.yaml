@@ -8,6 +8,14 @@
 # rather than the orange marketing theme in blacklight.visor.yaml (VI-679).
 # Render-only: no docs theme switcher entry.
 #
+# ONE INTENDED DIFFERENCE from the Blacklight source: the typography slots
+# below carry `source: visor-fonts` + `org: low-orbit-studio` (with weights),
+# modelled on blacklight.visor.yaml (weights limited to faces that exist on the CDN). Blacklight serves PP Model Plastic and
+# PP Model Mono from its own globals.css, so its file declares families only;
+# Visor has no such stylesheet, serves them from fonts.visor.design, and its
+# validateFontCoverage (Token Rule 11) rejects a --font-* family with no
+# @font-face. Every declared slot, display included, is covered.
+#
 # Generate the CSS, never by hand:
 #   npx tsx packages/cli/src/index.ts theme apply custom-themes/blacklight-app.visor.yaml \
 #     --adapter docs -o packages/docs/app/blacklight-app-theme.css
@@ -67,12 +75,28 @@ colors-dark:
 typography:
   display:
     family: "PP Model Plastic"
+    weight: 400
+    weights: [400]
+    source: visor-fonts
+    org: low-orbit-studio
   heading:
-    family: "PP Model Mono"
+    family: "PP Model Plastic"
+    weight: 400
+    weights: [400]
+    source: visor-fonts
+    org: low-orbit-studio
   body:
     family: "PP Model Mono"
+    weight: 400
+    weights: [300, 400, 500]
+    source: visor-fonts
+    org: low-orbit-studio
   mono:
     family: "PP Model Mono"
+    weight: 400
+    weights: [300, 400, 500]
+    source: visor-fonts
+    org: low-orbit-studio
 
 # VI-655: every form control's resting edge off; focus and invalid stay visible.
 edges: "off"
