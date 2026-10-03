@@ -10,4 +10,4 @@ Every hairline rule, divider and ring (the `--hairline` / `--hairline-strong` fa
 - Independent of VI-655's `edges` switch: neither touches the other's tokens. Focus and invalid states are untouched.
 - Consumers: Table, Tabs (line), Dialog, DropdownMenu, MatrixTable, BulkActionBar, DocFrame, DocNav, SectionNav, InfographicBar, Popover, SpecimenCard, StructuredPrompt, CoherenceCheck, FidelityMirror, EditableBlock, BrowserFrame and the DialogForm block.
 - Theme engine: new top-level `hairlines: on | off` field and a `hairline` family in the VI-625 component-token contract (`components.hairline.width`). An explicit `components.hairline.width` wins over `hairlines: off`.
-- Hairlines are borders, so a hairline that was drawn goes away with its pixel; content-sized boxes tighten by 1px when off.
+- No layout shift: the box keeps its geometry and only the paint changes (inset outline for rings, border-image for single rules, inset shadow for dividers). Collapsed-border tables (Table cell hairline, MatrixTable) cannot take that treatment and stay real borders.

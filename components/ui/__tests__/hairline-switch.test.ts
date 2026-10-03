@@ -48,13 +48,26 @@ function stripHairlineWidth(value: string): string {
 }
 
 /** Properties that carry a weight: borders, rings and the `--*-border*` hooks. */
-const WEIGHT_PROPERTY = /^(border(-(top|right|bottom|left))?|box-shadow|outline|--[a-z0-9-]*border[a-z0-9-]*)$/
+const WEIGHT_PROPERTY = /^(border(-(top|right|bottom|left))?|border-image|box-shadow|outline|--[a-z0-9-]*border[a-z0-9-]*)$/
+
+/** A visible `border` — the one thing a hairline may not be painted with. */
+const BORDER_PROPERTY = /^(border(-(top|right|bottom|left))?|--[a-z0-9-]*border[a-z0-9-]*)$/
+
+/**
+ * `border-image` and `outline` do not apply to a collapsed-border table cell, so
+ * these two stay real borders (VI-680). Table's cell rule shares its edge with
+ * the row rule, so removing it moves nothing; MatrixTable's tightens by 1px.
+ */
+const COLLAPSED_TABLES = new Set([
+  "components/ui/table/table.module.css",
+  "components/ui/matrix-table/matrix-table.module.css",
+])
 
 /**
  * Every weight-carrying declaration that paints with a hairline colour but does
  * not read `--hairline-width`, or still carries a literal width beside it.
  */
-export function hairlineWidthViolations(css: string): string[] {
+export function hairlineWidthViolations(css: string, opts: { allowBorder?: boolean } = {}): string[] {
   const withoutComments = css.replace(/\/\*[\s\S]*?\*\//g, "")
   const found: string[] = []
   for (const match of withoutComments.matchAll(/([a-z-]+)\s*:\s*([^;{}]+)/g)) {
@@ -62,6 +75,13 @@ export function hairlineWidthViolations(css: string): string[] {
     const value = raw.replace(/\s+/g, " ").trim()
     if (!WEIGHT_PROPERTY.test(property)) continue
     if (!/var\(\s*--hairline(?:-strong)?\b(?!-width)/.test(value)) continue
+    // VI-680: a hairline is never painted with `border` — the border keeps its
+    // width and the paint is an outline, border-image or inset shadow, so
+    // --hairline-width: 0 moves nothing.
+    if (!opts.allowBorder && BORDER_PROPERTY.test(property)) {
+      found.push(`${property}: ${value} (painted with border)`)
+      continue
+    }
     const rest = stripHairlineWidth(value)
     if (rest === value) found.push(`${property}: ${value} (no --hairline-width)`)
     else if (/\b\d*\.?\d+px\b/.test(rest) || /--stroke-width-/.test(rest)) {
@@ -83,30 +103,35 @@ describe("VI-680 — every hairline consumer reads --hairline-width", () => {
     const css = readFileSync(file, "utf-8")
     if (!/var\(\s*--hairline/.test(css)) continue
     it(`${relative(REPO_ROOT, file)} holds no literal hairline width`, () => {
-      expect(hairlineWidthViolations(css)).toEqual([])
+      const rel = relative(REPO_ROOT, file)
+      expect(hairlineWidthViolations(css, { allowBorder: COLLAPSED_TABLES.has(rel) })).toEqual([])
     })
   }
 
-  it("the editorial dropdown separator takes its height from the switch", () => {
+  it("the editorial dropdown separator keeps its 1px box and paints the line at --hairline-width", () => {
     const css = readFileSync(join(REPO_ROOT, "components/ui/dropdown-menu/dropdown-menu.module.css"), "utf-8")
-    expect(css).toMatch(/\[data-density="editorial"\]\) \.separator \{\s*height: var\(--hairline-width, 1px\);/)
+    expect(css).toMatch(/\[data-density="editorial"\]\) \.separator \{[^}]*box-shadow: inset 0 0 0 var\(--hairline-width, 1px\)/)
   })
 
   it("mutation control — a consumer left on a literal width IS caught", () => {
-    const ok = ".a { border-bottom: var(--hairline-width, 1px) solid var(--hairline, #e5e7eb); }"
+    const ok = ".a { border-bottom: 1px solid transparent; border-image: linear-gradient(var(--hairline), var(--hairline)) 1 / 0 0 var(--hairline-width, 1px) 0; outline: var(--hairline-width, 1px) solid var(--hairline); }"
     expect(hairlineWidthViolations(ok)).toEqual([])
+
+    const painted = ".a { border-bottom: var(--hairline-width, 1px) solid var(--hairline, #e5e7eb); }"
+    expect(hairlineWidthViolations(painted)).toHaveLength(1)
+    expect(hairlineWidthViolations(painted, { allowBorder: true })).toEqual([])
 
     const literal = ".a { border-bottom: 1px solid var(--hairline, #e5e7eb); }"
     expect(hairlineWidthViolations(literal)).toHaveLength(1)
 
-    const stroke = ".a { border: var(--stroke-width-thin, 1px) solid\n    var(--hairline, #e5e7eb); }"
+    const stroke = ".a { outline: var(--stroke-width-thin, 1px) solid\n    var(--hairline, #e5e7eb); }"
     expect(hairlineWidthViolations(stroke)).toHaveLength(1)
 
     const ring = ".a { box-shadow: inset 0 0 0 1px var(--hairline, transparent), var(--shadow-lg); }"
     expect(hairlineWidthViolations(ring)).toHaveLength(1)
 
     const hook = ".a { --x-border: 1px solid var(--hairline-strong, #ddd); }"
-    expect(hairlineWidthViolations(hook)).toHaveLength(1)
+    expect(hairlineWidthViolations(hook, { allowBorder: true })).toHaveLength(1)
   })
 
   it("does not flag colour-only declarations or comments", () => {

@@ -134,7 +134,8 @@
   gap: var(--spacing-3, 0.75rem);
   padding-top: var(--spacing-3, 0.75rem);
   margin-top: var(--spacing-2, 0.5rem);
-  border-top: var(--hairline-width, 1px) solid var(--hairline, var(--border-subtle, rgba(0, 0, 0, 0.06)));
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(var(--hairline, var(--border-subtle, rgba(0, 0, 0, 0.06))), var(--hairline, var(--border-subtle, rgba(0, 0, 0, 0.06)))) 1 / var(--hairline-width, 1px) 0 0 0;
 }
 
 /* Screen reader only */

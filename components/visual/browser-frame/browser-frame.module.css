@@ -15,7 +15,9 @@
 .frame {
   overflow: hidden;
   border-radius: var(--radius-xl, 1rem);
-  border: var(--hairline-width, var(--stroke-width-thin, 1px)) solid var(--hairline-strong, rgb(255 255 255 / var(--opacity-10, 0.10)));
+  border: var(--stroke-width-thin, 1px) solid transparent;
+  outline: var(--hairline-width, var(--stroke-width-thin, 1px)) solid var(--hairline-strong, rgb(255 255 255 / var(--opacity-10, 0.10)));
+  outline-offset: calc(-1 * var(--hairline-width, var(--stroke-width-thin, 1px)));
   background-color: var(--browser-frame-bg, #0a0a0b);
 }
 
@@ -26,7 +28,8 @@
   height: var(--spacing-10, 40px);
   align-items: center;
   justify-content: center;
-  border-bottom: var(--hairline-width, var(--stroke-width-thin, 1px)) solid var(--hairline, rgb(255 255 255 / var(--opacity-5, 0.05)));
+  border-bottom: var(--stroke-width-thin, 1px) solid transparent;
+  border-image: linear-gradient(var(--hairline, rgb(255 255 255 / var(--opacity-5, 0.05))), var(--hairline, rgb(255 255 255 / var(--opacity-5, 0.05)))) 1 / 0 0 var(--hairline-width, var(--stroke-width-thin, 1px)) 0;
   padding-left: var(--spacing-3, 12px);
   padding-right: var(--spacing-3, 12px);
 }

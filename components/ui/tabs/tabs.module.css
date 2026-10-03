@@ -26,7 +26,16 @@
   gap: var(--spacing-2, 0.5rem);
   background-color: transparent;
   border-radius: 0;
-  border-bottom: var(--tabs-line-border-bottom, var(--hairline-width, 1px) solid var(--hairline, var(--border-default, #e5e7eb)));
+  /* The border is geometry; the rail rule is painted by border-image at
+     --hairline-width, so --hairline-width: 0 removes it with no layout shift.
+     A bound --tabs-line-border-bottom (a full border shorthand) is not valid
+     as a border-image, so binding it drops the painted rule and draws the
+     bound border instead. */
+  border-bottom: var(--tabs-line-border-bottom, 1px solid transparent);
+  border-image: var(
+    --tabs-line-border-bottom,
+    linear-gradient(var(--hairline, var(--border-default, #e5e7eb)), var(--hairline, var(--border-default, #e5e7eb))) 1 / 0 0 var(--hairline-width, 1px) 0
+  );
   height: auto;
   padding-bottom: 0;
   width: 100%;

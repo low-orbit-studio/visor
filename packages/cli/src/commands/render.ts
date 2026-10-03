@@ -78,6 +78,41 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       })()`,
     },
   },
+  dialog: {
+    default: {
+      export: "Dialog",
+      props: `(function () {
+        var h = React.createElement;
+        return {
+          open: true,
+          // The trigger gives #root a node; the content itself portals to <body>.
+          children: [h(__mod.DialogTrigger, { key: "tr", asChild: true }, h("button", { type: "button" }, "Open")), h(__mod.DialogContent, { key: "c" }, [
+            h(__mod.DialogHeader, { key: "h" }, [
+              h(__mod.DialogTitle, { key: "t" }, "Invite a teammate"),
+              h(__mod.DialogDescription, { key: "d" }, "They will get an email with a link to join."),
+            ]),
+            h("p", { key: "b" }, "Dialog body copy sits between the header and the footer rule."),
+            h(__mod.DialogFooter, { key: "f" }, h("button", { type: "button" }, "Send invite")),
+          ])],
+        };
+      })()`,
+    },
+  },
+  popover: {
+    selection: {
+      export: "PopoverSelectionList",
+      props: `(function () {
+        var h = React.createElement;
+        return {
+          mode: "checkbox",
+          "aria-label": "Filters",
+          children: ["Design", "Engineering", "Operations"].map(function (t, i) {
+            return h(__mod.PopoverSelectionItem, { key: t, selected: i === 0 }, t);
+          }),
+        };
+      })()`,
+    },
+  },
   tabs: {
     line: {
       export: "Tabs",

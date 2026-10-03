@@ -115,7 +115,8 @@ describe("DialogForm", () => {
 
     it("panel border reads --dialog-form-panel-border, defaulting to the hairline", () => {
       expect(css).toContain("--dialog-form-panel-border,")
-      expect(css).toContain("var(--hairline-width, var(--stroke-width-thin, 1px)) solid")
+      expect(css).toContain("var(--stroke-width-thin, 1px) solid transparent")
+      expect(css).toContain("outline-width: var(--hairline-width, var(--stroke-width-thin, 1px))")
       expect(css).toContain("var(--hairline, var(--border-default, #e5e7eb))")
     })
 

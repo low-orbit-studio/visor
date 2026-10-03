@@ -160,9 +160,9 @@ describe("DropdownMenu density axis — editorial rules present", () => {
   })
 
   describe("separator — editorial block", () => {
-    it("editorial separator uses --hairline for background", () => {
+    it("editorial separator paints --hairline as an inset shadow (VI-680)", () => {
       expect(css).toMatch(
-        /\[data-density="editorial"\][^}]*\.separator[^}]*\{[^}]*background-color:\s*var\(--hairline/
+        /\[data-density="editorial"\][^}]*\.separator[^}]*\{[^}]*box-shadow:\s*inset 0 0 0 var\(--hairline-width, 1px\) var\(--hairline/
       )
     })
 

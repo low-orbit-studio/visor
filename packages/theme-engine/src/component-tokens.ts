@@ -500,7 +500,7 @@ const tabsFamily: ComponentTokenFamily = {
     { key: "list-padding", property: "padding", description: "Tab-rail inset.", consumers: at(TABS, "calc(var(--spacing-1, 0.25rem) * 0.75)") },
     { key: "list-color", property: "color", description: "Tab-rail base text colour.", consumers: at(TABS, "var(--text-secondary, #6b7280)") },
     { key: "list-bg", property: "background-color", description: "Segmented-variant rail fill.", consumers: at(TABS, "var(--surface-muted, #f3f4f6)") },
-    { key: "line-border-bottom", property: "border-bottom", description: "Underlined-variant rail rule.", consumers: at(TABS, "var(--hairline-width, 1px) solid var(--hairline, var(--border-default, #e5e7eb))") },
+    { key: "line-border-bottom", property: "border-bottom", description: "Underlined-variant rail rule (width, style and colour). Unbound, the rail rule is painted at `--hairline-width`; binding this draws your border instead.", consumers: at(TABS, "1px solid transparent") },
     { key: "trigger-radius", property: "border-radius", description: "Trigger corner rounding.", consumers: at(TABS, "var(--radius-md, 0.375rem)") },
     { key: "trigger-padding", property: "padding", description: "Trigger inset.", consumers: at(TABS, "var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem)") },
     { key: "trigger-font-size", property: "font-size", description: "Trigger type size.", consumers: at(TABS, "var(--font-size-sm, 0.875rem)") },

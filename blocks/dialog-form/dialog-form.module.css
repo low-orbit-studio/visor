@@ -20,11 +20,16 @@
    * see-through. `--surface-popover` is the opaque floating-panel token and is
    * identical to `--surface-card` on solid themes, so only glass themes change. */
   background: var(--surface-popover, var(--surface-page, #ffffff));
-  border: var(
-    --dialog-form-panel-border,
-    var(--hairline-width, var(--stroke-width-thin, 1px)) solid
-      var(--hairline, var(--border-default, #e5e7eb))
-  );
+  /* The border is geometry; the visible hairline is an inset outline at
+   * --hairline-width, so --hairline-width: 0 removes it with no layout shift.
+   * A bound --dialog-form-panel-border (a full border shorthand, or `none`) is
+   * not a valid outline-style, so binding it drops the outline and draws the
+   * bound border instead. */
+  border: var(--dialog-form-panel-border, var(--stroke-width-thin, 1px) solid transparent);
+  outline-style: var(--dialog-form-panel-border, solid);
+  outline-width: var(--hairline-width, var(--stroke-width-thin, 1px));
+  outline-color: var(--hairline, var(--border-default, #e5e7eb));
+  outline-offset: calc(-1 * var(--hairline-width, var(--stroke-width-thin, 1px)));
   box-shadow: var(--shadow-lg);
 }
 
