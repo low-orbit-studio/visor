@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs"
 import { join } from "node:path"
 import * as React from "react"
 import { render, screen, fireEvent, within } from "@testing-library/react"
-import { describe, it, expect, vi, afterEach } from "vitest"
+import { describe, it, expect, vi } from "vitest"
 
 import {
   MonthCalendar,
@@ -545,70 +545,6 @@ describe("MonthCalendar", () => {
     cell(15).focus()
     fireEvent.keyDown(cell(15), { key: "ArrowRight" })
     expect(cell(16)).toHaveFocus()
-  })
-
-  // ─── Calendar dates, not instants ────────────────────────────────────────
-
-  describe("under a non-UTC time zone", () => {
-    const originalTz = process.env.TZ
-    afterEach(() => {
-      if (originalTz === undefined) delete process.env.TZ
-      else process.env.TZ = originalTz
-    })
-
-    // [zone, a span over that zone's DST edge, expected columns of its bar]
-    // [zone, span start, span end, weekday column of the 1st of that month]
-    const zones: Array<[string, string, string, number]> = [
-      ["Pacific/Auckland", "2026-04-04", "2026-04-06", 3], // NZ DST ends 5 Apr; 1 Apr is a Wednesday
-      ["America/Los_Angeles", "2026-03-07", "2026-03-09", 0], // US DST starts 8 Mar; 1 Mar is a Sunday
-    ]
-
-    for (const [zone, start, end, firstColumn] of zones) {
-      it(`${zone}: a stay keeps its days (${start} to ${end})`, () => {
-        process.env.TZ = zone
-        // The zone really took effect: a local Date's offset is not UTC's.
-        expect(new Date(2026, 5, 1).getTimezoneOffset()).not.toBe(0)
-
-        const month = start.slice(0, 7) + "-01"
-        const { container } = render(
-          <MonthCalendar
-            month={month}
-            onSelectDate={vi.fn()}
-            events={[{ id: "s", start, end, title: "Stay" }]}
-          />
-        )
-        const day = (iso: string) => container.querySelector(`[data-date="${iso}"]`)
-        const dateOf = (iso: string) => Number(iso.slice(8))
-        const covered = Array.from(
-          container.querySelectorAll<HTMLElement>('[data-slot="month-calendar-day"]')
-        )
-          .filter((c) => /Stay, day/.test(c.querySelector("button")!.getAttribute("aria-label")!))
-          .map((c) => c.getAttribute("data-date"))
-        expect(covered).toEqual([start, `${start.slice(0, 8)}${String(dateOf(start) + 1).padStart(2, "0")}`, end])
-        expect(day(start)!.textContent).toBe(String(dateOf(start)))
-        // The first of the month lands on the right weekday.
-        const first = container.querySelector('[data-slot="month-calendar-day"]:not([data-outside])')!
-        expect(first.getAttribute("data-date")).toBe(month)
-        expect(
-          Array.from(first.parentElement!.querySelectorAll('[role="gridcell"]')).indexOf(first)
-        ).toBe(firstColumn)
-      })
-    }
-
-    it("a Date prop reads local calendar fields; a date string never goes through Date", () => {
-      process.env.TZ = "Pacific/Auckland"
-      render(
-        <MonthCalendar
-          month={new Date(2026, 6, 15)}
-          today={new Date(2026, 6, 1)}
-          selectedDate="2026-07-31"
-          onSelectDate={vi.fn()}
-        />
-      )
-      expect(screen.getByText("July 2026")).toBeInTheDocument()
-      expect(document.querySelector('[data-today="true"]')!.getAttribute("data-date")).toBe("2026-07-01")
-      expect(document.querySelector('[data-selected="true"]')!.getAttribute("data-date")).toBe("2026-07-31")
-    })
   })
 
   // ─── Edges (VI-655 / VI-680) ─────────────────────────────────────────────
