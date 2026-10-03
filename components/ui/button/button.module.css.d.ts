@@ -10,6 +10,7 @@ declare const styles: {
   readonly sizeMd: string
   readonly sizeLg: string
   readonly sizeDlg: string
+  readonly label: string
   readonly sizeIcon: string
   readonly pendingLabel: string
   readonly pendingOverlay: string
