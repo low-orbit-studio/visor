@@ -7,10 +7,10 @@
  * span, not the caret) and input, at every size.
  *
  * Input is the one exception, and it is a ceiling, not a miss: a native <input>
- * cannot carry the Blink baseline correction (a transform would move the whole
- * field), and its inner line box is placed on whole CSS px in Chromium, so an odd box height
- * (md is 51px) can leave the capitals up to half a px off; WebKit does not yet
- * trim an <input> at all (Arial sits 0.34px high). It is held to 0.5px there.
+ * cannot be trimmed without clipping descenders and accents (VI-684 regression),
+ * so it takes the font's own line box. Chromium places that on whole CSS px, and
+ * md and lg heights are intrinsic, so the capitals sit up to 0.9px high there; WebKit
+ * is within 0.34px. Held to 1px in Chromium and 0.5px in WebKit.
  *
  * Skips where Chromium/WebKit or esbuild is missing, or the font CDN is unreachable.
  */
@@ -21,7 +21,7 @@ import { measureInk, type InkResult } from "./ink-centering"
 import { FONT_SCENARIOS, withScenario } from "./ink-fonts"
 
 const EPS = 1e-3
-const limit = (id: string, engine: "chromium" | "webkit" = "chromium") => (id.startsWith("input") && (engine === "webkit" || id === "input md") ? 0.5 : 0.25) + EPS
+const limit = (id: string, engine: "chromium" | "webkit" = "chromium") => (id.startsWith("input") ? (engine === "webkit" ? 0.5 : 1) : 0.25) + EPS
 
 async function available(engine: "chromium" | "webkit"): Promise<boolean> {
   try {
@@ -46,7 +46,7 @@ const WEBKIT = (await available("webkit")) && (await fontsReachable())
 
 /** Switch the trim off everywhere: what the controls rendered before VI-684. */
 const NO_TRIM =
-  "\n[data-slot=toggle-group-text],[data-slot=tabs-trigger-text],[data-slot=badge-text],[data-slot=chip-text],[data-slot=select-trigger]>span{text-box:normal!important;transform:none!important;padding-block:0!important}input{text-box:normal!important}"
+  "\n[data-slot=toggle-group-text],[data-slot=tabs-trigger-text],[data-slot=badge-text],[data-slot=chip-text],[data-slot=select-trigger]>span{text-box:normal!important;transform:none!important;padding-block:0!important}"
 
 describe.skipIf(!CHROMIUM)("control label optical centering (Chromium)", () => {
   for (const dsf of [2, 4]) {

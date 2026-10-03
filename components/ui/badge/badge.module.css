@@ -7,7 +7,8 @@
   justify-content: center;
   width: fit-content;
   flex-shrink: 0;
-  overflow: hidden;
+  /* Not hidden (VI-684): a descender or an accent in a short badge is taller than its line box, and a clip cuts it. The badge is fit-content, so there is no overflow to hide. */
+  overflow: visible;
   border-radius: var(--badge-radius, var(--radius-full, 9999px));
   border: var(--badge-border, 1px solid transparent);
   line-height: 1;
