@@ -8,9 +8,10 @@
  *
  * Input is the one exception, and it is a ceiling, not a miss: a native <input>
  * cannot be trimmed without clipping descenders and accents (VI-684 regression),
- * so it takes the font's own line box. Chromium places that on whole CSS px, and
- * md and lg heights are intrinsic, so the capitals sit up to 0.9px high there; WebKit
- * is within 0.34px. Held to 1px in Chromium and 0.5px in WebKit.
+ * so it takes the font's own line box. Chromium snaps its baseline to a whole CSS
+ * px, so the odd-pixel md and lg boxes carry a padding nudge (input.module.css);
+ * the capitals land within half a px, the most a whole-px baseline allows. WebKit
+ * places the baseline exactly and is within 0.34px. Held to 0.5px in both.
  *
  * Skips where Chromium/WebKit or esbuild is missing, or the font CDN is unreachable.
  */
@@ -21,7 +22,7 @@ import { measureInk, type InkResult } from "./ink-centering"
 import { FONT_SCENARIOS, withScenario } from "./ink-fonts"
 
 const EPS = 1e-3
-const limit = (id: string, engine: "chromium" | "webkit" = "chromium") => (id.startsWith("input") ? (engine === "webkit" ? 0.5 : 1) : 0.25) + EPS
+const limit = (id: string) => (id.startsWith("input") ? 0.5 : 0.25) + EPS
 
 async function available(engine: "chromium" | "webkit"): Promise<boolean> {
   try {
@@ -72,6 +73,17 @@ describe.skipIf(!CHROMIUM)("control label optical centering (Chromium)", () => {
     }
   }, 180000)
 
+  it("mutation control: without the nudge, input md and lg fail the centring bound", async () => {
+    const hit: string[] = []
+    const NO_NUDGE = '\ninput[class*="sizeMd"]{padding:var(--spacing-3_5) var(--spacing-4)!important}input[class*="sizeLg"]{padding:var(--spacing-4_5) var(--spacing-5)!important}'
+    for (const scenario of FONT_SCENARIOS) {
+      const spec = withScenario(scenario, CONTROLS)
+      const res = await measureInk({ ...spec, extraCss: spec.extraCss + NO_NUDGE })
+      for (const r of res) if (Math.abs(r.offset) > limit(r.id)) hit.push(r.id)
+    }
+    expect(hit).toEqual(expect.arrayContaining(["input md", "input lg"]))
+  }, 180000)
+
   it("mutation control: without the trim, toggle-group and badge fail the centring bound", async () => {
     const hit: string[] = []
     for (const scenario of FONT_SCENARIOS) {
@@ -88,7 +100,7 @@ describe.skipIf(!WEBKIT)("control label optical centering (WebKit)", () => {
   for (const scenario of FONT_SCENARIOS) {
     it(`${scenario.name} at 4x: every control and size is centred`, async () => {
       const res = await measureInk({ ...withScenario(scenario, CONTROLS), browser: "webkit", dsf: 4 })
-      for (const r of res) expect(Math.abs(r.offset), `${r.id} ${r.offset}`).toBeLessThanOrEqual(limit(r.id, "webkit"))
+      for (const r of res) expect(Math.abs(r.offset), `${r.id} ${r.offset}`).toBeLessThanOrEqual(limit(r.id))
     }, 120000)
   }
 })
