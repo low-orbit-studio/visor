@@ -1,0 +1,87 @@
+name: ActionRow
+description: One tappable list row — a button or link with a leading icon, a title, an optional second line and a trailing value, badge or caret.
+extends: HTMLButtonElement
+category: data-display
+
+when_to_use:
+  - A settings or detail list where each row opens something (a picker, a screen, a map, a billing page)
+  - A row that reads a value on the right and a verb or caret ("3 suggested · Review", "Address ›")
+  - A person or invitation row whose whole surface is the target
+  - Any list that needs rest, hover, focus, selected, open and disabled states with a hairline between rows
+
+when_not_to_use:
+  - A row that needs a Switch, Checkbox or second button inside it (the trailing slot is non-interactive; build a label row with the control as its own element)
+  - A row that expands in place (use Accordion or Collapsible; ActionRow is the closed row)
+  - A read-only label/value pair (use KeyValueList)
+  - A token specimen (use SurfaceRow)
+
+why: >
+  Blacklight's artist designs draw the same interactive row in at least nine
+  places (the visibility picker, suggested entries, the pass's Details rows,
+  readout links, person and invitation rows, Data and Privacy rows) and each was
+  hand-built. ActionRow is the one primitive: a single button or anchor, so name,
+  role and value are exposed (WCAG 4.1.2), focus is visible (2.4.7), and the row
+  is at least 44px tall so the whole row is the target. Selected is a lifted fill
+  with a light inset edge at --control-state-edge-width (kept when edges are switched off), never white.
+
+sub_components:
+  - name: ActionRowList
+    description: A list wrapper (ul, each row in an li) that draws a hairline between rows on --hairline-width.
+
+theme_hooks:
+  - name: --action-row-hover-bg
+    description: Hover fill. Falls back to var(--surface-interactive-hover, #f3f4f6). Theme key components.action-row.hover-bg.
+  - name: --action-row-open-bg
+    description: Fill of a row that has opened something (aria-expanded or data-state="open"). Falls back to var(--surface-interactive-hover, #f3f4f6). Theme key components.action-row.open-bg.
+  - name: --action-row-selected-bg
+    description: Selected fill, a lifted fill and never white. Falls back to var(--surface-interactive-active, #e5e7eb), a neutral lift rather than the accent --surface-selected. Theme key components.action-row.selected-bg.
+  - name: --action-row-selected-edge-color
+    description: Colour of the selected row's inset edge; its width is --control-state-edge-width, so edges are off but this edge stays. Falls back to var(--text-secondary, #6b7280). Theme key components.action-row.selected-edge-color.
+  - name: --action-row-disabled-opacity
+    description: Disabled row opacity. Falls back to var(--opacity-50, 0.5). Theme key components.action-row.disabled-opacity.
+  - name: --action-row-min-height
+    description: Row floor height, 2.75rem (44px) unbound. Theme key components.action-row.min-height.
+
+props:
+  - name: children
+    type: React.ReactNode
+    description: The title. With asChild, the one element to render as (an <a href>), with the title inside it.
+  - name: asChild
+    type: boolean
+    default: "false"
+    description: Render as the single child element (a link, a router Link) instead of a <button>.
+  - name: leading
+    type: React.ReactNode
+    description: Leading slot, an icon or avatar. Wrapped in an aria-hidden span; the title carries the name.
+  - name: line
+    type: React.ReactNode
+    description: Optional second line under the title.
+  - name: trailing
+    type: React.ReactNode
+    description: Trailing value, badge or caret. Non-interactive; a focusable element here fires a development warning.
+  - name: selected
+    type: boolean
+    default: "false"
+    description: The row is the current choice. Sets aria-current ("true", or the aria-current you pass) and aria-selected on option, tab, row, gridcell and treeitem roles.
+  - name: open
+    type: boolean
+    description: The row has opened a picker or popover. Sets aria-expanded and data-state.
+  - name: disabled
+    type: boolean
+    default: "false"
+    description: Native disabled on a button; aria-disabled, tabIndex -1 and a blocked click under asChild.
+
+dependencies:
+  - "@radix-ui/react-slot"
+
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/action-row"
+
+example: |
+  <ActionRowList aria-label="Pass details">
+    <ActionRow leading={<MapPin />} line="Open in Maps" trailing={<CaretRight />}>
+      Address
+    </ActionRow>
+    <ActionRow leading={<Users />} trailing="2 riders" selected>
+      Riders
+    </ActionRow>
+  </ActionRowList>

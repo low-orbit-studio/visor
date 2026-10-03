@@ -627,6 +627,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "action-row": {
+          "type": "object",
+          "description": "ActionRow state fills, edge and geometry: rest, hover, open, selected and disabled each read their own token. Keys: min-height, padding, gap, radius, hover-bg, open-bg, selected-bg, selected-edge-color, disabled-opacity, title-weight, line-color, leading-color, leading-size, trailing-color.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "admin-ui": {
           "type": "object",
           "description": "Structural roles the admin-ui pattern owns. `marquee-family` is the display face for KPI hero figures and marquee page titles — the role the admin-ui portability audit named as the one piece of ENTR brand coupling a new theme must rebind. Keys: marquee-family.",

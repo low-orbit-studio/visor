@@ -587,6 +587,51 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       props: `{ intent: "error", tone: "subtle", icon: ${ICON_X}, heading: "Could not load the inbox", description: "The request timed out. Check your connection and try again." }`,
     },
   },
+  // VI-666: ActionRow. Every row is captioned (title = state, line = what it
+  // reads); `edges-off` binds both switches on the list: the resting edge and
+  // the hairline go, the selected state edge and focus stay. `--state hover|focus` drives the
+  // first row.
+  "action-row": {
+    default: {
+      export: "ActionRowList",
+      props: `(function () {
+        var h = React.createElement;
+        var row = function (key, props) {
+          return h(__mod.ActionRow, Object.assign({ key: key, leading: ${ICON_X}, trailing: h("span", null, "Value") }, props), props.title);
+        };
+        return { "aria-label": "States", style: { maxWidth: "420px" }, children: [
+          row("rest", { title: "Rest", line: "no fill, 44px floor" }),
+          row("selected", { title: "Selected", line: "lifted fill + inset edge", selected: true }),
+          row("open", { title: "Open", line: "open fill, aria-expanded", open: true }),
+          row("disabled", { title: "Disabled", line: "disabled opacity", disabled: true }),
+          h(__mod.ActionRow, { key: "bare", trailing: h("span", null, "Review") }, "Title only, trailing value"),
+          h(__mod.ActionRow, { key: "long", leading: ${ICON_X}, line: "A second line that is long enough that it has to wrap onto another line", trailing: h("span", null, "3 suggested") }, "A title long enough that it wraps to a second line at this width"),
+          h(__mod.ActionRow, { key: "glyphs", leading: ${ICON_X}, line: "Descenders jpqgy and accents ÉÅÑ", trailing: h("span", null, "jpq ÉÅÑ") }, "Typography jpq ÉÅÑ"),
+          h(__mod.ActionRow, { key: "link", asChild: true, leading: ${ICON_X}, trailing: h("span", null, "Open") }, h("a", { href: "#billing" }, "Row as a link (asChild)")),
+        ] };
+      })()`,
+    },
+    interactive: {
+      export: "ActionRowList",
+      props: `(function () {
+        var h = React.createElement;
+        return { "aria-label": "Interactive", style: { maxWidth: "420px" }, children: [
+          h(__mod.ActionRow, { key: "a", leading: ${ICON_X}, line: "driven by --state", trailing: h("span", null, "Value") }, "First row"),
+          h(__mod.ActionRow, { key: "b", leading: ${ICON_X}, line: "left at rest", trailing: h("span", null, "Value") }, "Second row"),
+        ] };
+      })()`,
+    },
+    "edges-off": {
+      export: "ActionRowList",
+      props: `(function () {
+        var h = React.createElement;
+        return { "aria-label": "Edges off", style: { maxWidth: "420px", "--control-edge-width": "0", "--hairline-width": "0" }, children: [
+          h(__mod.ActionRow, { key: "a", leading: ${ICON_X}, line: "edge kept, resting edge off", trailing: h("span", null, "Value"), selected: true }, "Selected"),
+          h(__mod.ActionRow, { key: "b", leading: ${ICON_X}, line: "hairline off", trailing: h("span", null, "Value") }, "Rest"),
+        ] };
+      })()`,
+    },
+  },
   badge: {
     default: {
       export: "Badge",

@@ -13,6 +13,8 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "AccordionContent",
   "AccordionItem",
   "AccordionTrigger",
+  "ActionRow",
+  "ActionRowList",
   "ActivityFeed",
   "ActivityFeedContext",
   "ActivityFeedItem",

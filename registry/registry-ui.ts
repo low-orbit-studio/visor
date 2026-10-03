@@ -956,6 +956,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "action-row",
+    type: "registry:ui",
+    category: "data-display",
+    description:
+      "One tappable list row: a button (or a link through asChild) with a leading icon, a title, an optional second line and a trailing value, badge or caret. Selected, open and disabled states each read a token; ActionRowList stacks rows with a hairline between them. The trailing slot is non-interactive.",
+    dependencies: ["@radix-ui/react-slot", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/action-row/action-row.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/action-row/action-row.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "collapsible",
     type: "registry:ui",
     description:

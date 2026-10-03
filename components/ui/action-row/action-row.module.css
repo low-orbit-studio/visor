@@ -1,0 +1,143 @@
+/* ActionRow — one tappable list row: leading icon, title, optional line and a
+ * trailing value or caret. Every state reads a theme-bindable token (the
+ * `action-row` component-token family) with a Tier-1 fallback, so an unbound
+ * theme renders from the semantic surface ramp.
+ */
+.root {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--action-row-gap, var(--spacing-3, 0.75rem));
+  box-sizing: border-box;
+  width: 100%;
+  /* 44px at every width: the whole row is the target (WCAG 2.5.8 asks 24px). */
+  min-height: var(--action-row-min-height, 2.75rem);
+  padding: var(--action-row-padding, var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem));
+  margin: 0;
+  border: 0;
+  border-radius: var(--action-row-radius, var(--radius-md, 0.375rem));
+  background-color: transparent;
+  color: var(--text-primary, #111827);
+  font-size: var(--font-size-base, 1rem);
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+/* Selected edge. The row draws no resting edge. The selected state's edge is a
+   state edge, so it sits on --control-state-edge-width, the width focus and
+   invalid use: `edges: off` removes resting edges
+   and leaves this one (WCAG 1.4.11, 1.4.1). Inset outline: no layout shift. */
+.root::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  outline: var(--control-state-edge-width, 1px) solid transparent;
+  outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
+  pointer-events: none;
+  transition: outline-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.root:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+@media (hover: hover) {
+  .root:hover:not([data-disabled]) {
+    background-color: var(--action-row-hover-bg, var(--surface-interactive-hover, #f3f4f6));
+  }
+}
+
+/* Open: the row has opened something (aria-expanded or data-state="open"). */
+.root[aria-expanded="true"],
+.root[data-state="open"] {
+  background-color: var(--action-row-open-bg, var(--surface-interactive-hover, #f3f4f6));
+}
+
+/* Selected: a lifted fill (--surface-interactive-active, one step above hover:
+   a neutral lift in every theme, not the accent --surface-selected) with a light
+   inset edge, never white. The edge (a light --text-secondary, at least 3:1
+   against the fill and the page) and aria-current / aria-selected carry the
+   state alongside the fill, so colour is never the only cue. */
+.root[data-selected="true"] {
+  background-color: var(--action-row-selected-bg, var(--surface-interactive-active, #e5e7eb));
+}
+
+.root[data-selected="true"]::after {
+  outline-color: var(--action-row-selected-edge-color, var(--text-secondary, #6b7280));
+}
+
+.root[data-disabled] {
+  cursor: not-allowed;
+  opacity: var(--action-row-disabled-opacity, var(--opacity-50, 0.5));
+}
+
+.leading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: var(--action-row-leading-size, 1.25rem);
+  line-height: 1;
+  color: var(--action-row-leading-color, var(--text-secondary, #6b7280));
+}
+
+.leading svg {
+  display: block;
+}
+
+.body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.title {
+  font-weight: var(--action-row-title-weight, var(--font-weight-medium, 500));
+  line-height: var(--line-height-snug, 1.375);
+  overflow-wrap: anywhere;
+}
+
+.line {
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: var(--line-height-snug, 1.375);
+  color: var(--action-row-line-color, var(--text-secondary, #6b7280));
+  overflow-wrap: anywhere;
+}
+
+.trailing {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  flex-shrink: 0;
+  margin-inline-start: auto;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--action-row-trailing-color, var(--text-secondary, #6b7280));
+}
+
+.trailing svg {
+  display: block;
+}
+
+/* List: a hairline between rows, on the VI-680 switch. The reserved top border
+   keeps its width when --hairline-width is 0 (only the paint is removed), so
+   turning hairlines off never moves a row. */
+.list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item + .item {
+  border-top: var(--stroke-width-thin, 1px) solid transparent;
+  border-image: linear-gradient(var(--hairline, var(--border-default, #e5e7eb)), var(--hairline, var(--border-default, #e5e7eb))) 1 / var(--hairline-width, var(--stroke-width-thin, 1px)) 0 0 0;
+}

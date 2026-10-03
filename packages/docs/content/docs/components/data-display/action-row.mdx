@@ -1,0 +1,115 @@
+---
+title: Action Row
+description: One tappable list row with a leading icon, a title, an optional second line and a trailing value or caret. Built with CSS Modules — copy it into your project and own it completely.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ActionRow, ActionRowList } from '@/components/ui/action-row';
+import { CaretRight, Lock, MapPin, UsersThree } from '@phosphor-icons/react/dist/ssr';
+
+## Default
+
+A single button. The whole row is the target, at least 44px tall.
+
+<ComponentPreview
+  title="Leading icon, title, line and caret"
+  code={"<ActionRow leading={<MapPin />} line=\"Open in Maps\" trailing={<CaretRight />}>\n  Address\n</ActionRow>"}
+>
+  <ActionRow leading={<MapPin />} line="Open in Maps" trailing={<CaretRight />}>
+    Address
+  </ActionRow>
+</ComponentPreview>
+
+## List
+
+`ActionRowList` renders a `ul`, wraps each row in an `li` and draws a hairline between rows. The hairline reads `--hairline-width`, so a theme with `hairlines: off` removes it with no layout shift.
+
+<ComponentPreview
+  title="Stacked rows with a hairline between"
+  code={"<ActionRowList aria-label=\"Pass details\">\n  <ActionRow leading={<MapPin />} trailing={<CaretRight />}>Address</ActionRow>\n  <ActionRow leading={<UsersThree />} trailing=\"2 riders\">Riders</ActionRow>\n  <ActionRow leading={<Lock />} trailing=\"Review\" line=\"3 suggested\">Privacy</ActionRow>\n</ActionRowList>"}
+>
+  <ActionRowList aria-label="Pass details">
+    <ActionRow leading={<MapPin />} trailing={<CaretRight />}>Address</ActionRow>
+    <ActionRow leading={<UsersThree />} trailing="2 riders">Riders</ActionRow>
+    <ActionRow leading={<Lock />} trailing="Review" line="3 suggested">Privacy</ActionRow>
+  </ActionRowList>
+</ComponentPreview>
+
+## States
+
+Rest, hover, focus-visible, selected, open and disabled. Selected is a lifted fill with a light inset edge, never white; the edge is a state edge at `--control-state-edge-width`, so `edges: off` removes resting edges and keeps it. No state is carried by colour alone: `aria-current`, `aria-expanded` and `disabled` expose each one to assistive tech.
+
+<ComponentPreview
+  title="Selected, open and disabled"
+  code={"<ActionRowList aria-label=\"Visibility\">\n  <ActionRow selected trailing=\"Everyone\">Selected</ActionRow>\n  <ActionRow open trailing=\"Friends\">Open</ActionRow>\n  <ActionRow disabled trailing=\"Off\">Disabled</ActionRow>\n</ActionRowList>"}
+>
+  <ActionRowList aria-label="Visibility">
+    <ActionRow selected trailing="Everyone">Selected</ActionRow>
+    <ActionRow open trailing="Friends">Open</ActionRow>
+    <ActionRow disabled trailing="Off">Disabled</ActionRow>
+  </ActionRowList>
+</ComponentPreview>
+
+## As a link
+
+`asChild` renders the row as the one child element. Put the title inside it; the slots are placed around that text.
+
+<ComponentPreview
+  title="Row as an anchor"
+  code={"<ActionRow asChild trailing={<CaretRight />}>\n  <a href=\"/billing\">Billing details</a>\n</ActionRow>"}
+>
+  <ActionRow asChild trailing={<CaretRight />}>
+    <a href="#billing">Billing details</a>
+  </ActionRow>
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add action-row
+```
+
+This copies two files into your project:
+
+- `components/ui/action-row/action-row.tsx` — the component
+- `components/ui/action-row/action-row.module.css` — the styles
+
+## Usage
+
+```tsx
+import { ActionRow, ActionRowList } from '@/components/ui/action-row/action-row';
+import { CaretRight, MapPin } from '@phosphor-icons/react';
+
+export default function PassDetails() {
+  return (
+    <ActionRowList aria-label="Pass details">
+      <ActionRow leading={<MapPin />} line="Open in Maps" trailing={<CaretRight />} onClick={openMaps}>
+        Address
+      </ActionRow>
+    </ActionRowList>
+  );
+}
+```
+
+## When to Use
+
+- A list where each row opens a picker, a screen, a map or a billing page
+- A row that reads a value or a verb on the right ("3 suggested · Review")
+- Person and invitation rows whose whole surface is the target
+
+## When Not to Use
+
+- A row that needs a Switch or a second button: the row is already one button or link, so its trailing slot is non-interactive (nesting interactive content breaks WCAG 4.1.2, and a focusable element in the slot fires a development warning). Build a label row with the Switch as its own control.
+- A row that expands in place: use [Accordion](/docs/components/data-display/accordion) or [Collapsible](/docs/components/data-display/collapsible). `ActionRow` is the closed row; `open` only styles a row that has opened a picker or popover.
+- A read-only label and value: use [Key-Value List](/docs/components/data-display/key-value-list).
+
+## Theming
+
+Each state has a token under `components.action-row` (see [Component Tokens](/docs/themes/component-tokens)): `hover-bg`, `open-bg`, `selected-bg`, `selected-edge-color`, `disabled-opacity`, plus geometry (`min-height`, `padding`, `gap`, `radius`) and colour (`line-color`, `leading-color`, `trailing-color`).
+
+## API Reference
+
+<PropsTable component="action-row" />
+
+The component also accepts all standard HTML `<button>` attributes (`onClick`, `aria-label`, `type`).
