@@ -1,0 +1,122 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# FIXTURE. Blacklight owns this theme; do not edit it here.
+# Source of truth: ~/Code/blacklight/blacklight-website/.visor-app.yaml
+# (BL-1237, PR #1000). Re-copy from that file when the app theme changes.
+#
+# Exists so `visor render <component> --theme blacklight-app --mode dark`
+# renders on the artist app's own theme (Electric Aqua, black page, edges off)
+# rather than the orange marketing theme in blacklight.visor.yaml (VI-679).
+# Render-only: no docs theme switcher entry.
+#
+# Generate the CSS, never by hand:
+#   npx tsx packages/cli/src/index.ts theme apply custom-themes/blacklight-app.visor.yaml \
+#     --adapter docs -o packages/docs/app/blacklight-app-theme.css
+# ─────────────────────────────────────────────────────────────────────────────
+name: blacklight-app
+label: Blacklight App
+group: Low Orbit
+default-mode: dark
+color-scheme: dark-only
+version: 1
+
+# ─────────────────────────────────────────────────────────────────────────────
+# The artist app's own Visor theme (BL-1237). Scoped to the `(app)` route group
+# by the `.bl-app` wrapper in src/app/(app)/layout.tsx, so the marketing site's
+# theme (.visor.yaml) and its keyed-accent bridge never reach a Visor component
+# rendered inside the app.
+#
+# Started from Visor's custom-themes/blacklight.visor.yaml (brand, fonts) and
+# themes/blackout.visor.yaml (neutral greys, #000000 page). Every value below is
+# one the app already shipped through the BL-988 override files this replaces
+# (blackout.css, borderless.css), so generating it changes nothing on screen:
+#
+#   - primary: Electric Aqua #2CE0E6 (Build Charter law 10). NEVER the hero's
+#     keyed --color-acid, which is a marketing-only channel.
+#   - neutrals: blackout's pure greys. The BL-988 complaint was the blue cast.
+#   - text: the editor shell's alphas (#fafafa, 0.6, 0.46, 0.3), only losing
+#     their blue cast. Blackout's own dimmer text-primary (0.7) is NOT taken.
+#   - edges: off (VI-655), and every structural border transparent — the
+#     borderless direction the operator ruled for the artist UI.
+#
+# Regenerate, never hand-edit the CSS (Build Charter law 9):
+#   ./node_modules/.bin/visor theme apply .visor-app.yaml --adapter nextjs \
+#     --scope-prefix '.bl-app' -o src/app/blacklight-app-theme.css
+# ─────────────────────────────────────────────────────────────────────────────
+
+colors:
+  primary: "#2ce0e6"   # Electric Aqua — the static masterbrand accent
+  accent: "#2ce0e6"
+  neutral: "#333333"   # blackout: pure neutral, no blue channel lead
+  background: "#000000"
+  surface: "#0a0a0a"
+  success: "#10b981"
+  warning: "#ffb300"
+  error: "#ff6679"
+  info: "#00d4ff"
+
+colors-dark:
+  primary: "#2ce0e6"
+  accent: "#2ce0e6"
+  background: "#000000"
+  surface: "#0a0a0a"
+  success: "#10b981"
+  error: "#ff6679"
+
+# Family-only slots, as in .visor.yaml: the faces load from globals.css's
+# @font-face rules, so no Visor @font-face is emitted. The app is mono-bodied.
+typography:
+  display:
+    family: "PP Model Plastic"
+  heading:
+    family: "PP Model Mono"
+  body:
+    family: "PP Model Mono"
+  mono:
+    family: "PP Model Mono"
+
+# VI-655: every form control's resting edge off; focus and invalid stay visible.
+edges: "off"
+
+overrides:
+  dark:
+    # Text — the editor shell's ramp (--ink, --ink-60, --ink-46, --ink-30).
+    text-primary: "#fafafa"
+    text-secondary: "rgba(255, 255, 255, 0.6)"
+    text-tertiary: "rgba(255, 255, 255, 0.46)"
+    text-disabled: "rgba(255, 255, 255, 0.3)"
+    # Derived from the #333333 neutral this would be #333333, unreadable on
+    # the black page (1.4.3). Muted reads as the tertiary step.
+    text-muted: "rgba(255, 255, 255, 0.46)"
+    # Page and planes. The editor's three planes hold their order on the
+    # neutral ramp: canvas → sections → rail, then the two raised steps
+    # (hover, selected) above the rail. epk-shell.css binds --bg, --surface-0,
+    # --surface, --surface-2 and --surface-3 to these five.
+    surface-page: "#000000"
+    surface-elev-0: "#101010"
+    surface-elev-1: "#181818"
+    surface-elev-2: "#242424"
+    surface-elev-3: "#2c2c2c"
+    surface-elev-4: "#383838"
+    surface-screen: "#080808"   # the preview stage's deeper ground (--bg-deep)
+    surface-elev: "#181818"
+    surface-overlay: "#080808"
+    # Cards and hovers on the Tailwind-driven pages (dashboard, Account):
+    # blackout's glass.
+    surface-card: "rgba(255, 255, 255, 0.04)"
+    surface-interactive-hover: "rgba(255, 255, 255, 0.08)"
+    surface-popover: "#141414"
+    surface-subtle: "rgba(255, 255, 255, 0.02)"
+    surface-muted: "rgba(255, 255, 255, 0.04)"
+    # Borderless: structural borders collapse; focus and status borders stay.
+    border-default: "transparent"
+    border-muted: "transparent"
+    border-strong: "transparent"
+    border-disabled: "transparent"
+    hairline: "transparent"
+    hairline-strong: "transparent"
+    interactive-secondary-border: "transparent"
+    # Focus rings on the static aqua, as globals.css gives them everywhere else.
+    border-focus: "#2ce0e6"
+    # Primary action — static aqua with the shell's aqua ink (--ac-ink).
+    interactive-primary-bg: "#2ce0e6"
+    interactive-primary-text: "#02161a"

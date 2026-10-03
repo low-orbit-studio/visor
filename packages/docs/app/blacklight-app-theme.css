@@ -1,0 +1,438 @@
+@layer visor-base, visor-primitives, visor-semantic, visor-brand, visor-adaptive, visor-bridge;
+
+@layer visor-semantic {
+/* ── Layer: Semantic aliases (VI-451) ── */
+
+/* --- Discrete: Text size aliases (--text-N) --- */
+.blacklight-app-theme {
+  --text-11: 11px;
+  --text-13: 13px;
+  --text-14: 14px;
+  --text-16: 16px;
+  --text-20: 20px;
+  --text-24: 24px;
+  --text-32: 32px;
+  --text-40: 40px;
+  --text-48: 48px;
+}
+
+
+/* --- Discrete: Space aliases (--space-N) --- */
+.blacklight-app-theme {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+}
+
+
+/* --- Intent aliases (dark) — host --- */
+.blacklight-app-theme {
+  --primary: #2ce0e6;
+  --primary-text: var(--interactive-primary-text);
+  --accent: #2ce0e6;
+  --success: #10b981;
+  --warning: #ffb301;
+  --destructive: #ff6679;
+  --info: #06d4ff;
+}
+
+
+/* --- Hairline aliases (dark) — host --- */
+.blacklight-app-theme {
+  --hairline: transparent;
+  --hairline-strong: transparent;
+}
+}
+
+@layer visor-brand {
+/* --- Brand: forced-mode aliases + tokens --- */
+.blacklight-app-theme {
+  --brand-logo-light: url("/themes/visor/brand/visor-logo-light.svg");
+  --brand-logo-dark: url("/themes/visor/brand/visor-logo-dark.svg");
+  --brand-logo-clear-space: 0.5rem;
+  --brand-logo-aspect-ratio: 1269.97 / 540;
+  --brand-brandmark-light: url("/themes/visor/brand/visor-brandmark.svg");
+  --brand-brandmark-dark: url("/themes/visor/brand/visor-brandmark.svg");
+  --brand-brandmark-clear-space: 0.25rem;
+  --brand-brandmark-aspect-ratio: 1 / 1;
+  --brand-wordmark-light: url("/themes/visor/brand/visor-wordmark-light.svg");
+  --brand-wordmark-dark: url("/themes/visor/brand/visor-wordmark-dark.svg");
+  --brand-wordmark-clear-space: 0.5rem;
+  --brand-wordmark-aspect-ratio: 1100 / 316;
+  --brand-monochrome-light: url("/themes/visor/brand/visor-monochrome.svg");
+  --brand-monochrome-dark: url("/themes/visor/brand/visor-monochrome.svg");
+  --brand-monochrome-clear-space: 0.25rem;
+  --brand-monochrome-aspect-ratio: 2210 / 636;
+  --brand-favicon-light: url("/themes/visor/brand/visor-favicon.svg");
+  --brand-favicon-dark: url("/themes/visor/brand/visor-favicon.svg");
+  --brand-favicon-aspect-ratio: 1 / 1;
+}
+
+/* --- Brand: variants (dark) — host --- */
+.blacklight-app-theme {
+  --brand-logo: url("/themes/visor/brand/visor-logo-dark.svg");
+  --brand-brandmark: url("/themes/visor/brand/visor-brandmark.svg");
+  --brand-wordmark: url("/themes/visor/brand/visor-wordmark-dark.svg");
+  --brand-monochrome: url("/themes/visor/brand/visor-monochrome.svg");
+  --brand-favicon: url("/themes/visor/brand/visor-favicon.svg");
+}
+}
+
+@layer visor-adaptive {
+/* ── Section 1: Shared tokens (mode-independent) ── */
+
+/* --- Primitive: Colors --- */
+.blacklight-app-theme {
+  min-height: 100vh;
+  font-size: var(--font-size-base, 1rem);
+  color-scheme: dark;
+  background: var(--surface-page, var(--surface-background));
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-primary-50: #e6fafa;
+  --color-primary-100: #d8f8f9;
+  --color-primary-200: #bbf7f9;
+  --color-primary-300: #90f3f7;
+  --color-primary-400: #5ce9ee;
+  --color-primary-500: #2ce0e6;
+  --color-primary-600: #01a6ab;
+  --color-primary-700: #017f83;
+  --color-primary-800: #005558;
+  --color-primary-900: #012e30;
+  --color-primary-950: #000c0d;
+  --color-accent-50: #e6fafa;
+  --color-accent-100: #d8f8f9;
+  --color-accent-200: #bbf7f9;
+  --color-accent-300: #90f3f7;
+  --color-accent-400: #5ce9ee;
+  --color-accent-500: #2ce0e6;
+  --color-accent-600: #01a6ab;
+  --color-accent-700: #017f83;
+  --color-accent-800: #005558;
+  --color-accent-900: #012e30;
+  --color-accent-950: #000c0d;
+  --color-neutral-50: #f5f5f5;
+  --color-neutral-100: #e0e0e0;
+  --color-neutral-200: #c2c2c2;
+  --color-neutral-300: #979797;
+  --color-neutral-400: #5c5c5c;
+  --color-neutral-500: #333333;
+  --color-neutral-600: #282828;
+  --color-neutral-700: #212121;
+  --color-neutral-800: #181818;
+  --color-neutral-900: #101011;
+  --color-neutral-950: #090909;
+  --color-success-50: #e9faf1;
+  --color-success-100: #d7f5e5;
+  --color-success-500: #10b981;
+  --color-success-600: #018a5f;
+  --color-success-700: #006b48;
+  --color-success-900: #002919;
+  --color-warning-50: #fff3e2;
+  --color-warning-100: #ffeed5;
+  --color-warning-500: #ffb301;
+  --color-warning-600: #bd8401;
+  --color-warning-700: #916400;
+  --color-warning-900: #362300;
+  --color-error-50: #fef2f2;
+  --color-error-100: #ffe6e7;
+  --color-error-500: #ff6679;
+  --color-error-600: #cd3751;
+  --color-error-700: #ab0636;
+  --color-error-900: #460011;
+  --color-info-50: #e7f9ff;
+  --color-info-100: #d9f6ff;
+  --color-info-500: #06d4ff;
+  --color-info-600: #019dbd;
+  --color-info-700: #017891;
+  --color-info-900: #002c37;
+}
+
+
+/* --- Primitive: Spacing --- */
+.blacklight-app-theme {
+  --spacing-0: 0;
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-10: 2.5rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+  --spacing-20: 5rem;
+  --spacing-24: 6rem;
+}
+
+
+/* --- Primitive: Border Radius --- */
+.blacklight-app-theme {
+  --radius-none: 0;
+  --radius-sm: 0.125rem; /* 2px */
+  --radius-md: 0.25rem; /* 4px */
+  --radius-lg: 0.5rem; /* 8px */
+  --radius-xl: 0.75rem; /* 12px */
+  --radius-2xl: 0.9997499999999999rem; /* 16px */
+  --radius-3xl: 1.5rem; /* 24px */
+  --radius-full: 9999px;
+}
+
+
+/* --- Primitive: Typography --- */
+.blacklight-app-theme {
+  --font-display: PP Model Plastic;
+  --font-sans: PP Model Mono;
+  --font-heading: PP Model Mono;
+  --font-body: PP Model Mono;
+  --font-mono: PP Model Mono;
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem; /* 36px */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-heading: 600;
+  --font-weight-body: 400;
+  --font-weight-display: 400;
+  --weight-display: 400;
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+  --letter-spacing-xl: 0.16em;
+  --letter-spacing-lg: 0.1em;
+  --letter-spacing-md: 0.05em;
+  --letter-spacing-sm: 0.025em;
+  --letter-spacing-xs: 0.01em;
+  --letter-spacing-tight: -0.01em;
+  --letter-spacing-normal: 0.05em;
+  --letter-spacing-wide: 0.1em;
+}
+
+
+/* --- Primitive: Shadows --- */
+.blacklight-app-theme {
+  --shadow-xs: 0 1px 1px 0 rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+
+/* --- Primitive: Motion --- */
+.blacklight-app-theme {
+  --motion-duration-100: 100ms;
+  --motion-duration-150: 150ms;
+  --motion-duration-200: 200ms;
+  --motion-duration-300: 300ms;
+  --motion-duration-500: 500ms;
+  --motion-duration-800: 800ms;
+  --motion-duration-1500: 1500ms;
+  --motion-easing-linear: linear;
+  --motion-easing-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --motion-easing-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --motion-easing-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --motion-easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+
+/* --- Primitive: Miscellaneous --- */
+.blacklight-app-theme {
+  --border-width-1: 1px;
+  --border-width-2: 2px;
+  --border-width-3: 3px;
+  --border-width-4: 4px;
+  --z-base: 0;
+  --z-raised: 1;
+  --z-dropdown: 1000;
+  --z-sticky: 1100;
+  --z-modal: 1300;
+  --z-popover: 1400;
+  --z-toast: 1500;
+  --overlay-bg: rgba(0, 0, 0, 0.5);
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+}
+
+
+/* ── Section 2: Dark mode overrides ── */
+
+/* --- Primitive overrides (dark) — dark brand color anchors at shade 500 --- */
+.blacklight-app-theme {
+  --color-primary-50: #e6fafa;
+  --color-primary-100: #d8f8f9;
+  --color-primary-200: #bbf7f9;
+  --color-primary-300: #90f3f7;
+  --color-primary-400: #5ce9ee;
+  --color-primary-500: #2ce0e6;
+  --color-primary-600: #01a6ab;
+  --color-primary-700: #017f83;
+  --color-primary-800: #005558;
+  --color-primary-900: #012e30;
+  --color-primary-950: #000c0d;
+  --color-accent-50: #e6fafa;
+  --color-accent-100: #d8f8f9;
+  --color-accent-200: #bbf7f9;
+  --color-accent-300: #90f3f7;
+  --color-accent-400: #5ce9ee;
+  --color-accent-500: #2ce0e6;
+  --color-accent-600: #01a6ab;
+  --color-accent-700: #017f83;
+  --color-accent-800: #005558;
+  --color-accent-900: #012e30;
+  --color-accent-950: #000c0d;
+  --color-success-50: #e9faf1;
+  --color-success-100: #d7f5e5;
+  --color-success-500: #10b981;
+  --color-success-600: #018a5f;
+  --color-success-700: #006b48;
+  --color-success-900: #002919;
+  --color-error-50: #fef2f2;
+  --color-error-100: #ffe6e7;
+  --color-error-500: #ff6679;
+  --color-error-600: #cd3751;
+  --color-error-700: #ab0636;
+  --color-error-900: #460011;
+}
+
+
+/* --- Adaptive: Text (dark) — host --- */
+.blacklight-app-theme {
+  --text-primary: #fafafa;
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --text-tertiary: rgba(255, 255, 255, 0.46);
+  --text-muted: rgba(255, 255, 255, 0.46);
+  --text-disabled: rgba(255, 255, 255, 0.3);
+  --text-inverse: #101011;
+  --text-inverse-secondary: #212121;
+  --text-link: #5ce9ee;
+  --text-link-hover: #90f3f7;
+  --text-success: #10b981;
+  --text-warning: #ffb301;
+  --text-error: #ff6679;
+  --text-info: #06d4ff;
+}
+
+
+/* --- Adaptive: Surface (dark) — host --- */
+.blacklight-app-theme {
+  --surface-page: #000000;
+  --surface-card: rgba(255, 255, 255, 0.04);
+  --surface-popover: #141414;
+  --surface-subtle: rgba(255, 255, 255, 0.02);
+  --surface-muted: rgba(255, 255, 255, 0.04);
+  --surface-screen: #080808;
+  --surface-elev: #181818;
+  --surface-overlay: #080808;
+  --surface-interactive-default: #181818;
+  --surface-interactive-hover: rgba(255, 255, 255, 0.08);
+  --surface-interactive-active: #282828;
+  --surface-interactive-disabled: #181818;
+  --surface-selected: #005558;
+  --surface-accent-subtle: #012e30;
+  --surface-accent-default: #2ce0e6;
+  --surface-accent-strong: #5ce9ee;
+  --surface-success-subtle: #002919;
+  --surface-success-default: #10b981;
+  --surface-warning-subtle: #362300;
+  --surface-warning-default: #ffb301;
+  --surface-error-subtle: #460011;
+  --surface-error-default: #ff6679;
+  --surface-info-subtle: #002c37;
+  --surface-info-default: #06d4ff;
+  --surface-success-soft: color-mix(in srgb, var(--color-success-500) 10%, transparent);
+  --surface-warning-soft: color-mix(in srgb, var(--color-warning-500) 12%, transparent);
+  --surface-error-soft: color-mix(in srgb, var(--color-error-500) 12%, transparent);
+  --surface-elev-0: #101010;
+  --surface-elev-1: #181818;
+  --surface-elev-2: #242424;
+  --surface-elev-3: #2c2c2c;
+  --surface-elev-4: #383838;
+}
+
+
+/* --- Adaptive: Border (dark) — host --- */
+.blacklight-app-theme {
+  --border-default: transparent;
+  --border-muted: transparent;
+  --border-strong: transparent;
+  --border-focus: #2ce0e6;
+  --border-disabled: transparent;
+  --border-success: #10b981;
+  --border-warning: #ffb301;
+  --border-error: #ff6679;
+  --border-info: #06d4ff;
+}
+
+
+/* --- Adaptive: Interactive (dark) — host --- */
+.blacklight-app-theme {
+  --interactive-primary-bg: #2ce0e6;
+  --interactive-primary-bg-hover: #5ce9ee;
+  --interactive-primary-bg-active: #90f3f7;
+  --interactive-primary-text: #02161a;
+  --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
+  --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
+  --interactive-primary-strong: #5ce9ee;
+  --interactive-secondary-bg: #181818;
+  --interactive-secondary-bg-hover: #212121;
+  --interactive-secondary-bg-active: #282828;
+  --interactive-secondary-text: #f5f5f5;
+  --interactive-secondary-border: transparent;
+  --interactive-destructive-bg: #ff6679;
+  --interactive-destructive-bg-hover: #cd3751;
+  --interactive-destructive-text: #FFFFFF;
+  --interactive-ghost-bg: #181818;
+  --interactive-ghost-bg-hover: #212121;
+}
+
+
+/* ── Section 3: Light mode overrides ── */
+
+/* --- Fumadocs bridge: dark --- */
+.blacklight-app-theme {
+  --color-fd-background: #000000;
+  --color-fd-foreground: #fafafa;
+  --color-fd-card: rgba(255, 255, 255, 0.04);
+  --color-fd-card-foreground: #fafafa;
+  --color-fd-border: transparent;
+  --color-fd-muted: rgba(255, 255, 255, 0.04);
+  --color-fd-muted-foreground: rgba(255, 255, 255, 0.6);
+  --color-fd-accent: #2ce0e6;
+  --color-fd-accent-foreground: #02161a;
+  --color-fd-primary: #2ce0e6;
+  --color-fd-primary-foreground: #02161a;
+  --color-fd-secondary: rgba(255, 255, 255, 0.04);
+  --color-fd-secondary-foreground: #fafafa;
+  --color-fd-popover: #141414;
+  --color-fd-popover-foreground: #fafafa;
+  --color-fd-ring: #2ce0e6;
+}
+
+/* ── Component tokens (VI-625) — theme bindings for the admin-UI families ── */
+
+.blacklight-app-theme {
+  --control-edge-width: 0;
+}
+}

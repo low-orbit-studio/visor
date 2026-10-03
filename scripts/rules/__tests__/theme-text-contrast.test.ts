@@ -445,5 +445,12 @@ describe('theme-text-contrast rule', () => {
         .filter((r) => STOCK_SLUGS.some((slug) => (r.file ?? '').includes(`${slug}.visor.yaml`)));
       expect(stockFailures).toEqual([]);
     });
+
+    it('dark-only fixture (blacklight-app) passes: its unused light ramp is not checked (VI-679)', async () => {
+      const results = await themeTextContrast.run();
+      const mine = results.filter((r) => (r.file ?? '').includes('blacklight-app.visor.yaml'));
+      expect(mine.length).toBeGreaterThan(0);
+      expect(mine.filter((r) => !r.pass)).toEqual([]);
+    });
   });
 });

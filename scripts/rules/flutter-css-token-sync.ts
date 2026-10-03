@@ -17,6 +17,7 @@ const TOKENS: Array<{ cssVar: string; dartField: string }> = [
 const WEB_ONLY_THEMES = new Set<string>([
   'animal',
   'blacklight',
+  'blacklight-app',
   'blacklight-aqua',
   'blacklight-pro',
   'entr',

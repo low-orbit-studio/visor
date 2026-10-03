@@ -266,7 +266,8 @@ function resolveFromYaml(
   return {
     themeName: data.config?.name,
     resolved: {
-      light: buildMode('light'),
+      // A dark-only theme never renders light, so its light ramp is not a contrast surface.
+      ...(data.config?.['color-scheme'] === 'dark-only' ? {} : { light: buildMode('light') }),
       dark: buildMode('dark'),
     },
   };
