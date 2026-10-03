@@ -399,6 +399,12 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       interactiveTarget: "button",
       props: `{ label: "Rider title", value: "", defaultValue: "Rider", onCommit: function () {}, pencil: false }`,
     },
+    // Descenders and accents must survive the cap-band trim.
+    "no-pencil-glyphs": {
+      export: "InlineEdit",
+      interactiveTarget: "button",
+      props: `{ label: "Rider title", value: "Typography jpq \u00C9\u00C5\u00D1", defaultValue: "Rider", onCommit: function () {}, pencil: false }`,
+    },
     "no-pencil-heading": {
       export: "InlineEdit",
       interactiveTarget: "button",

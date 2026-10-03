@@ -44,7 +44,7 @@
   cursor: text;
 }
 
-/* Centre the ring on the capitals (docs/label-centering.md). The button's line
+/* Centre the ring on the capitals (label-centering doc). The button's line
  * box is trimmed to the capital-to-baseline band, so the padded box, and the
  * ring drawn around it, is symmetric about the caps and not about the font's
  * ascent and descent. The block padding and its cancelling negative margin
