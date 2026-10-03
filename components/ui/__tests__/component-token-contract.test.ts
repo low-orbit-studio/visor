@@ -202,6 +202,10 @@ describe("VI-625 component token contract", () => {
           // Piped from admin-list-page so the shell can flatten the sort bar's
           // top corners; owned by the block, not the theme.
           "data-table-sort-bar-radius",
+          // The Tier-1 hairline colours share the `hairline` prefix; only
+          // `--hairline-width` is the family's.
+          "hairline",
+          "hairline-strong",
         ]);
         expect([...orphans].filter((o) => !allow.has(o)).sort()).toEqual([]);
       });

@@ -47,7 +47,7 @@ describe("DropdownMenu density axis — editorial rules present", () => {
 
     it("editorial content box-shadow has inset hairline ring", () => {
       expect(css).toContain(
-        "inset 0 0 0 1px var(--hairline, var(--border-subtle, transparent))"
+        "inset 0 0 0 var(--hairline-width, 1px) var(--hairline, var(--border-subtle, transparent))"
       )
     })
   })

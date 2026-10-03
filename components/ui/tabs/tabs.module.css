@@ -26,7 +26,7 @@
   gap: var(--spacing-2, 0.5rem);
   background-color: transparent;
   border-radius: 0;
-  border-bottom: var(--tabs-line-border-bottom, 1px solid var(--hairline, var(--border-default, #e5e7eb)));
+  border-bottom: var(--tabs-line-border-bottom, var(--hairline-width, 1px) solid var(--hairline, var(--border-default, #e5e7eb)));
   height: auto;
   padding-bottom: 0;
   width: 100%;

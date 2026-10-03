@@ -246,6 +246,8 @@ components:
     drop-edge-width: "4px"
     drop-edge-style: "double"
     state-edge-width: "3px"
+  hairline:
+    width: "3px"
   field:
     label-font-size: "37px"
     label-text-transform: uppercase

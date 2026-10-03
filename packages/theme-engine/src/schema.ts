@@ -26,7 +26,7 @@ export interface ValidationResult {
 const KNOWN_TOP_LEVEL_KEYS = new Set([
   "name", "version", "group", "label", "default-mode", "color-scheme", "colors", "colors-dark", "typography",
   "brand", "brand-strategy", "spacing", "radius", "shadows", "strokeWidths", "motion", "overrides",
-  "components", "edges",
+  "components", "edges", "hairlines",
 ]);
 
 const KNOWN_COLOR_KEYS = new Set([
@@ -354,6 +354,11 @@ export function validateConfig(config: unknown): ValidationResult {
   // VI-655: the one switch for form-control edges.
   if (obj.edges !== undefined && obj.edges !== "on" && obj.edges !== "off") {
     errors.push("'edges' must be either 'on' or 'off'");
+  }
+
+  // VI-680: the one switch for hairlines.
+  if (obj.hairlines !== undefined && obj.hairlines !== "on" && obj.hairlines !== "off") {
+    errors.push("'hairlines' must be either 'on' or 'off'");
   }
 
   if (typeof obj.colors !== "object" || obj.colors === null) {

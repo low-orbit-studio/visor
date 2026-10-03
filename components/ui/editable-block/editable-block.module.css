@@ -15,7 +15,7 @@
 
 .root {
   background: var(--surface-card, #ffffff);
-  border: var(--stroke-width-thin, 1px) solid var(--hairline, rgba(0,0,0,0.06));
+  border: var(--hairline-width, var(--stroke-width-thin, 1px)) solid var(--hairline, rgba(0,0,0,0.06));
   border-radius: var(--radius-lg, 0.75rem);
   padding: var(--spacing-3_5, 0.875rem);         /* prototype: 14px */
   box-shadow: var(--shadow-sm, 0 1px 2px 0 rgb(0 0 0 / 0.05));

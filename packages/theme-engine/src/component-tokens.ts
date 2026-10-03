@@ -178,7 +178,7 @@ const tableFamily: ComponentTokenFamily = {
     { key: "cell-font-size", property: "font-size", description: "Body cell type size.", consumers: at(TABLE, "inherit") },
     { key: "cell-color", property: "color", description: "Body cell text colour.", consumers: at(TABLE, "var(--text-primary, #111827)") },
     { key: "cell-bg", property: "background-color", description: "Body cell fill. Sits above the shared `--dt-row-bg` surface role.", consumers: at(TABLE, "var(--dt-row-bg, transparent)") },
-    { key: "cell-border-top", property: "border-top", description: "Cell hairline.", consumers: at(TABLE, "1px solid var(--hairline, transparent)") },
+    { key: "cell-border-top", property: "border-top", description: "Cell hairline.", consumers: at(TABLE, "var(--hairline-width, 1px) solid var(--hairline, transparent)") },
     { key: "footer-bg", property: "background-color", description: "Footer row fill.", consumers: at(TABLE, "var(--surface-muted, #f3f4f6)") },
     { key: "caption-color", property: "color", description: "Caption text colour.", consumers: at(TABLE, "var(--text-secondary, #6b7280)") },
   ],
@@ -500,7 +500,7 @@ const tabsFamily: ComponentTokenFamily = {
     { key: "list-padding", property: "padding", description: "Tab-rail inset.", consumers: at(TABS, "calc(var(--spacing-1, 0.25rem) * 0.75)") },
     { key: "list-color", property: "color", description: "Tab-rail base text colour.", consumers: at(TABS, "var(--text-secondary, #6b7280)") },
     { key: "list-bg", property: "background-color", description: "Segmented-variant rail fill.", consumers: at(TABS, "var(--surface-muted, #f3f4f6)") },
-    { key: "line-border-bottom", property: "border-bottom", description: "Underlined-variant rail rule.", consumers: at(TABS, "1px solid var(--hairline, var(--border-default, #e5e7eb))") },
+    { key: "line-border-bottom", property: "border-bottom", description: "Underlined-variant rail rule.", consumers: at(TABS, "var(--hairline-width, 1px) solid var(--hairline, var(--border-default, #e5e7eb))") },
     { key: "trigger-radius", property: "border-radius", description: "Trigger corner rounding.", consumers: at(TABS, "var(--radius-md, 0.375rem)") },
     { key: "trigger-padding", property: "padding", description: "Trigger inset.", consumers: at(TABS, "var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem)") },
     { key: "trigger-font-size", property: "font-size", description: "Trigger type size.", consumers: at(TABS, "var(--font-size-sm, 0.875rem)") },
@@ -852,6 +852,57 @@ const saveStatusFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-680. The hairline mirror of the VI-655 edge switch: one token every
+// hairline rule reads for its weight, so a single binding turns every hairline
+// off:
+//
+//   components:
+//     hairline:
+//       width: "0"          # or the top-level shorthand `hairlines: off`
+//
+// Hairlines are the soft separators and rings coloured by `--hairline` /
+// `--hairline-strong`. The switch is independent of `edges`: it never touches
+// a `--control-*` token, and focus and invalid edges are not hairlines.
+const HAIRLINE_PX = [
+  "components/ui/bulk-action-bar/bulk-action-bar.module.css",
+  "components/ui/dialog/dialog.module.css",
+  "components/ui/dropdown-menu/dropdown-menu.module.css",
+  "components/ui/matrix-table/matrix-table.module.css",
+  TABLE,
+  TABS,
+];
+const HAIRLINE_THIN = [
+  "blocks/dialog-form/dialog-form.module.css",
+  "components/ui/coherence-check/coherence-check.module.css",
+  "components/ui/doc-frame/doc-frame.module.css",
+  "components/ui/doc-nav/doc-nav.module.css",
+  "components/ui/editable-block/editable-block.module.css",
+  "components/ui/fidelity-mirror/fidelity-mirror.module.css",
+  "components/ui/infographic-bar/infographic-bar.module.css",
+  "components/ui/popover/popover.module.css",
+  "components/ui/section-nav/section-nav.module.css",
+  "components/ui/specimen-card/specimen-card.module.css",
+  "components/ui/structured-prompt/structured-prompt.module.css",
+  "components/visual/browser-frame/browser-frame.module.css",
+];
+const hairlineFamily: ComponentTokenFamily = {
+  family: "hairline",
+  prefix: "hairline",
+  description:
+    "The one switch for hairlines (VI-680). Every hairline rule, divider and ring reads its weight from `--hairline-width`, so `width: 0` removes them all at once. Independent of the `control` edge switch.",
+  tokens: [
+    {
+      key: "width",
+      property: "border-width / box-shadow spread / height",
+      description: "THE switch. Hairline weight for every `--hairline` / `--hairline-strong` rule; `0` turns every hairline off. Focus and invalid edges are untouched.",
+      consumers: [
+        ...each(HAIRLINE_PX, "1px"),
+        ...each(HAIRLINE_THIN, "var(--stroke-width-thin, 1px)"),
+      ],
+    },
+  ],
+};
+
 const adminUiFamily: ComponentTokenFamily = {
   family: "admin-ui",
   prefix: "admin-ui",
@@ -890,6 +941,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   spinnerFamily,
   checkboxFamily,
   controlFamily,
+  hairlineFamily,
   fieldFamily,
   buttonFamily,
   textFamily,

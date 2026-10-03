@@ -23,7 +23,7 @@
   align-items: flex-start;
   gap: var(--spacing-3, 0.75rem);
   background: var(--surface-card, #ffffff);
-  border: var(--stroke-width-thin, 1px) solid var(--hairline, #e5e7eb);
+  border: var(--hairline-width, var(--stroke-width-thin, 1px)) solid var(--hairline, #e5e7eb);
   border-radius: var(--radius-lg, 0.5rem);
   padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
   margin-bottom: var(--spacing-2, 0.5rem);

@@ -115,7 +115,7 @@ Table head, row and cell treatment. The retro measured the same header cell rend
 | `--table-cell-font-size` | Body cell type size. | `inherit` |
 | `--table-cell-color` | Body cell text colour. | `var(--text-primary, #111827)` |
 | `--table-cell-bg` | Body cell fill. Sits above the shared `--dt-row-bg` surface role. | `var(--dt-row-bg, transparent)` |
-| `--table-cell-border-top` | Cell hairline. | `1px solid var(--hairline, transparent)` |
+| `--table-cell-border-top` | Cell hairline. | `var(--hairline-width, 1px) solid var(--hairline, transparent)` |
 | `--table-footer-bg` | Footer row fill. | `var(--surface-muted, #f3f4f6)` |
 | `--table-caption-color` | Caption text colour. | `var(--text-secondary, #6b7280)` |
 
@@ -328,7 +328,7 @@ Tab rail and trigger treatment, for both the segmented (`default`) and underline
 | `--tabs-list-padding` | Tab-rail inset. | `calc(var(--spacing-1, 0.25rem) * 0.75)` |
 | `--tabs-list-color` | Tab-rail base text colour. | `var(--text-secondary, #6b7280)` |
 | `--tabs-list-bg` | Segmented-variant rail fill. | `var(--surface-muted, #f3f4f6)` |
-| `--tabs-line-border-bottom` | Underlined-variant rail rule. | `1px solid var(--hairline, var(--border-default, #e5e7eb))` |
+| `--tabs-line-border-bottom` | Underlined-variant rail rule. | `var(--hairline-width, 1px) solid var(--hairline, var(--border-default, #e5e7eb))` |
 | `--tabs-trigger-radius` | Trigger corner rounding. | `var(--radius-md, 0.375rem)` |
 | `--tabs-trigger-padding` | Trigger inset. | `var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem)` |
 | `--tabs-trigger-font-size` | Trigger type size. | `var(--font-size-sm, 0.875rem)` |
@@ -444,6 +444,48 @@ How the switch holds up:
   control, not decoration.
 - **Dashed edges can come back on their own.** Set `--control-drop-edge-width`
   to keep drop-target and empty-state edges while solid edges stay off.
+
+### `hairline`
+
+The one switch for hairlines. Every hairline rule, divider and ring — the soft
+separators and rings coloured by `--hairline` and `--hairline-strong` — reads its
+weight from `--hairline-width`, so `width: 0` removes all of them at once.
+Independent of the `control` edge switch above: neither touches the other's
+tokens.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--hairline-width` | **The switch.** Hairline weight for every `--hairline` / `--hairline-strong` rule; `0` turns every hairline off. Focus and invalid edges are untouched. | `1px` (most components: `var(--stroke-width-thin, 1px)`) |
+
+Turning every hairline off is one line in the theme:
+
+```yaml
+# my-theme.visor.yaml
+hairlines: off   # shorthand for components.hairline.width: "0"
+```
+
+Or set the token on any ancestor, for one part of an app:
+
+```css
+.canvas {
+  --hairline-width: 0;
+}
+```
+
+How the switch holds up:
+
+- **Independent of `edges`.** `hairlines: off` emits only `--hairline-width: 0`
+  and `edges: off` emits only `--control-edge-width: 0`. Set both, either, or
+  neither.
+- **Hairlines are borders, so they give up their pixel.** A rule that was 1px
+  tall (a table row divider, a tab rail, a dialog footer rule) takes no space
+  once it is off. Anything sized from the content, not from a fixed height,
+  tightens by that pixel; a fixed-height hairline-only separator keeps its box.
+- **Colour is still yours.** `--hairline` and `--hairline-strong` are unchanged;
+  the switch is the width, so a theme can still tune the colour while hairlines
+  are on.
+- **Focus and invalid stay visible.** They draw at `--control-state-edge-width`,
+  which this switch does not touch.
 
 ### `field`
 

@@ -43,6 +43,6 @@
  * borderless themes set to `transparent`, so the band melts into the page.
  */
 .bar .cell + .cell {
-  border-left: var(--stroke-width-thin, 1px) solid
+  border-left: var(--hairline-width, var(--stroke-width-thin, 1px)) solid
     var(--infographic-bar-divider, var(--hairline, #e5e7eb));
 }

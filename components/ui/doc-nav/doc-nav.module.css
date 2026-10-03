@@ -45,7 +45,7 @@
   flex-direction: column;
   gap: var(--spacing-2, 0.5rem);
   padding: var(--spacing-2, 0.5rem);
-  border: var(--stroke-width-thin, 1px) solid
+  border: var(--hairline-width, var(--stroke-width-thin, 1px)) solid
     var(--hairline, var(--border-default, #e5e7eb));
   border-radius: var(--doc-nav-group-radius, var(--radius-md, 0.375rem));
   background: var(--surface-card, #ffffff);
@@ -116,7 +116,7 @@
 
 /* Collapsed group head — reads as a resting chip. */
 .groupCollapsed .head {
-  border: var(--stroke-width-thin, 1px) solid
+  border: var(--hairline-width, var(--stroke-width-thin, 1px)) solid
     var(--hairline, var(--border-default, #e5e7eb));
   border-radius: var(--radius-full, 9999px);
   /* A collapsed chip stands alone in the nav row, so it carries more vertical
@@ -173,7 +173,7 @@
   flex-shrink: 0;
   min-width: var(--spacing-4, 1rem);
   padding: 0 calc(var(--spacing-1, 0.25rem) * 1.5);
-  border: var(--stroke-width-thin, 1px) solid
+  border: var(--hairline-width, var(--stroke-width-thin, 1px)) solid
     var(--hairline, var(--border-default, #e5e7eb));
   border-radius: var(--radius-full, 9999px);
   font-family: var(--font-mono, ui-monospace, "SFMono-Regular", Menlo, monospace);

@@ -15,7 +15,7 @@
   display: flex;
   align-items: stretch;
   gap: var(--spacing-2, 0.5rem);
-  border-bottom: var(--stroke-width-thin, 1px) solid
+  border-bottom: var(--hairline-width, var(--stroke-width-thin, 1px)) solid
     var(--hairline, var(--border-default, #e5e7eb));
   /* No overflow-x: a scroll container would clip the items' -1px overlap of
      this hairline, shaving the bottom pixel off the active underline. */

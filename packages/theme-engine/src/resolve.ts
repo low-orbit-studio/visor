@@ -272,11 +272,18 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
     // component-tokens.ts owns their shape, there is nothing to default.
     // VI-655: `edges: off` folds in here as `control.edge-width: 0`, so every
     // adapter emits the switch through the same component-token path.
+    // VI-680: `hairlines: off` folds in the same way, as `hairline.width: 0`.
+    // The two switches are independent: each touches only its own family.
     components:
-      config.edges === "off"
+      config.edges === "off" || config.hairlines === "off"
         ? {
             ...config.components,
-            control: { "edge-width": "0", ...config.components?.control },
+            ...(config.edges === "off" && {
+              control: { "edge-width": "0", ...config.components?.control },
+            }),
+            ...(config.hairlines === "off" && {
+              hairline: { width: "0", ...config.components?.hairline },
+            }),
           }
         : config.components,
     originalColors,

@@ -55,6 +55,48 @@ const ICON_X = `React.createElement("svg", { viewBox: "0 0 256 256", width: "1em
  * Components without a registered fixture render with empty props and a warning.
  */
 export const FIXTURES: Record<string, Record<string, Fixture>> = {
+  // VI-680: hairline consumers. `__mod` is the component module, so a fixture can
+  // reach the compound parts a single export does not expose.
+  table: {
+    default: {
+      export: "Table",
+      props: `(function () {
+        var h = React.createElement;
+        var row = function (cells, key) {
+          return h(__mod.TableRow, { key: key }, cells.map(function (c, i) { return h(__mod.TableCell, { key: i }, c); }));
+        };
+        return {
+          children: [
+            h(__mod.TableHeader, { key: "h" }, h(__mod.TableRow, null, ["Name", "Role", "Status"].map(function (t) { return h(__mod.TableHead, { key: t }, t); }))),
+            h(__mod.TableBody, { key: "b" }, [
+              row(["Ada Lovelace", "Engineer", "Active"], 1),
+              row(["Grace Hopper", "Admiral", "Active"], 2),
+              row(["Alan Turing", "Researcher", "Away"], 3),
+            ]),
+          ],
+        };
+      })()`,
+    },
+  },
+  tabs: {
+    line: {
+      export: "Tabs",
+      props: `(function () {
+        var h = React.createElement;
+        return {
+          defaultValue: "one",
+          children: [
+            h(__mod.TabsList, { key: "l", variant: "line" }, [
+              h(__mod.TabsTrigger, { key: "1", value: "one" }, "Overview"),
+              h(__mod.TabsTrigger, { key: "2", value: "two" }, "Activity"),
+              h(__mod.TabsTrigger, { key: "3", value: "three" }, "Settings"),
+            ]),
+            h(__mod.TabsContent, { key: "c", value: "one" }, "Overview content"),
+          ],
+        };
+      })()`,
+    },
+  },
   "stat-card": {
     default: {
       export: "StatCard",
