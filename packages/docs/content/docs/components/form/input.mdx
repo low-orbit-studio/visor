@@ -174,4 +174,4 @@ The component also accepts all standard `<input>` HTML attributes.
 
 ## Label Centering
 
-The label is optically centred in any font: its line box is trimmed to the capital-height band, so capitals (not the font's ascent and descent) sit on the box centre, with the box size unchanged. Firefox keeps the previous rendering. Shared spec: [`docs/label-centering.md`](https://github.com/low-orbit-studio/visor/blob/main/docs/label-centering.md).
+A native `<input>` is not trimmed to the capital-height band (it would clip descenders and accents), so its value sits on the font's own line box: capitals land within 0.5px of centre at every size (Chromium shifts a little padding from the bottom to the top at md and lg, with the box size unchanged). Shared spec: [`docs/label-centering.md`](https://github.com/low-orbit-studio/visor/blob/main/docs/label-centering.md).

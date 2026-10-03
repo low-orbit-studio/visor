@@ -133,6 +133,31 @@
   border-radius: var(--input-radius-lg, var(--radius-sm, 0.5rem));
 }
 
+/* Baseline nudge (VI-684). A native <input> cannot be trimmed to its capital
+   band without clipping descenders and accents, so its capitals sit wherever the
+   font's line box puts them. Blink snaps that baseline to a whole CSS px, and the
+   md and lg boxes (51px, 62px) have an odd-pixel centre, so the capitals land up
+   to ~0.9px high. The ideal baseline is (box height + 1cap) / 2; this moves the
+   padding from the bottom edge to the top by what rounding that baseline to a
+   whole px takes away, so the snapped baseline lands on the nearest px to ideal
+   and the capitals are within half a px of centre in any font. padding-top plus
+   padding-bottom is unchanged, so the box is exactly as tall as before; a theme
+   that sets --input-padding-md / --input-padding-lg replaces it, as before.
+   Blink only: WebKit places the baseline exactly, so correcting there overshoots
+   (-apple-pay-button-style is the WebKit-only probe). The height is 2px of
+   border + both paddings + 1lh (line-height 1.5). */
+@supports (padding-top: round(1.4px, 1px)) and (not (-apple-pay-button-style: black)) {
+  .sizeMd {
+    --input-nudge: calc(round((2px + 2 * var(--spacing-3_5, 0.875rem) + 1lh + 1cap) / 2, 1px) - (2px + 2 * var(--spacing-3_5, 0.875rem) + 1lh + 1cap) / 2 + 0.5px);
+    padding: var(--input-padding-md, calc(var(--spacing-3_5, 0.875rem) + var(--input-nudge)) var(--spacing-4, 1rem) calc(var(--spacing-3_5, 0.875rem) - var(--input-nudge)));
+  }
+
+  .sizeLg {
+    --input-nudge: calc(round((2px + 2 * var(--spacing-4_5, 1.125rem) + 1lh + 1cap) / 2, 1px) - (2px + 2 * var(--spacing-4_5, 1.125rem) + 1lh + 1cap) / 2 + 0.5px);
+    padding: var(--input-padding-lg, calc(var(--spacing-4_5, 1.125rem) + var(--input-nudge)) var(--spacing-5, 1.25rem) calc(var(--spacing-4_5, 1.125rem) - var(--input-nudge)));
+  }
+}
+
 /* Leading-icon left-padding override.
  *
  * Declared AFTER the size variants so the padding-left value wins the
@@ -148,16 +173,4 @@
 
 .sizeLg.hasLeadingIcon {
   padding-left: calc(var(--spacing-5, 1.25rem) + var(--spacing-3, 0.75rem) + 1.125em);
-}
-
-/* Label centring (VI-684, shared spec: the label-centering doc under docs/). Chromium trims
-   an <input>'s inner line box to the capital-to-baseline band, so the field
-   centres the typed value and the placeholder by their capitals and not by the
-   font's ascent/descent. The box does not change: the field's height is its
-   padding plus a line box that the trim leaves centred. Without text-box
-   (Firefox, Safari today) rendering is exactly what it was. */
-@supports (text-box: trim-both cap alphabetic) {
-  .base:not([type="file"]) {
-    text-box: trim-both cap alphabetic;
-  }
 }
