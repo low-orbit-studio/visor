@@ -606,6 +606,7 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
           row("disabled", { title: "Disabled", line: "disabled opacity", disabled: true }),
           h(__mod.ActionRow, { key: "bare", trailing: h("span", null, "Review") }, "Title only, trailing value"),
           h(__mod.ActionRow, { key: "long", leading: ${ICON_X}, line: "A second line that is long enough that it has to wrap onto another line", trailing: h("span", null, "3 suggested") }, "A title long enough that it wraps to a second line at this width"),
+          h(__mod.ActionRow, { key: "glyphs", leading: ${ICON_X}, line: "Descenders jpqgy and accents ÉÅÑ", trailing: h("span", null, "jpq ÉÅÑ") }, "Typography jpq ÉÅÑ"),
           h(__mod.ActionRow, { key: "link", asChild: true, leading: ${ICON_X}, trailing: h("span", null, "Open") }, h("a", { href: "#billing" }, "Row as a link (asChild)")),
         ] };
       })()`,
