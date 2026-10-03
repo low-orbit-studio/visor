@@ -84,13 +84,44 @@ Each event renders as a chip with two token-driven signals:
 
 When a day holds more events than `maxChipsPerDay` (default `3`), the extras collapse into a `+N more` row.
 
+## Spans
+
+An event with an `end` draws as one bar across the days it covers, instead of a chip on one day.
+
+```tsx
+{ id: 'berlin', start: '2026-07-10', end: '2026-07-14', title: 'Berlin stay', color: '--region-berlin' }
+```
+
+- **Cut at week edges.** A span that crosses a week edge renders as one segment per week. A segment that continues into the next (or from the previous) week runs flat into the edge and carries a caret.
+- **Lanes.** Spans that share days stack in lanes. Past `maxLanes` (default `3`) a day shows `+N` for the spans that did not fit; clicking it opens the day.
+- **Colour.** `series` (`1`–`5`) keys to the theme's chart ramp. `color` takes any colour token instead — a custom-property name (`'--region-berlin'`), a `var()` call or a CSS colour — and wins over `series`. Chips take both too.
+- **Dates are calendar dates.** `start` and `end` are `YYYY-MM-DD` strings, read field by field and never built into a local-time `Date`, so a stay does not shift by a day across time zones. (`date` and `Date` values still work: a `Date` is read through its local calendar fields.)
+
+## Week detail slot
+
+`renderWeekDetail(week)` renders under the week row that holds `selectedDate`, in the page flow, pushing later weeks down. An arrow points at the selected day. `week` is `{ index, start, end, days, selected }` (all `YYYY-MM-DD`). Return nothing to keep it closed.
+
+```tsx
+<MonthCalendar
+  selectedDate={selected}
+  onSelectDate={(_, iso) => setSelected(iso)}
+  renderWeekDetail={(week) => <DaySheet date={week.selected} />}
+/>
+```
+
+Activating a day moves focus into the slot (the first focusable control in it, else the slot itself) and sets `aria-expanded` on that day. The slot fades in; under `prefers-reduced-motion` it opens without animation.
+
+## Day mark
+
+`renderDayMark({ date, inMonth, isToday, isSelected })` renders a consumer mark (a count, a range end) opposite the day number in each cell's head.
+
 ## Interaction
 
 The block is fully controlled and SSR-safe — it never reads the system clock itself.
 
 - **`month` + `onMonthChange`** — drive the displayed month. The handler receives the first day of the target month.
-- **`onSelectDate`** — when supplied, day cells become buttons and report the clicked date; the active day is highlighted via `selectedDate`.
-- **`onEventSelect`** — when supplied, chips become buttons and report the clicked event.
+- **`onSelectDate`** — when supplied, day cells hold a button and report the activated date (`Date`, plus the `YYYY-MM-DD` string); the active day is highlighted via `selectedDate`.
+- **`onEventSelect`** — when supplied, chips become buttons and report the clicked event. Span bars are pointer-only art (click reports the event); the keyboard route to a span is its day.
 - **`today`** — pass `new Date()` from a client boundary to highlight the current day. Omit it to keep server and client render identical (no hydration mismatch).
 - **`view` + `onViewChange`** — drive the segmented control. The block always renders the month grid; swap in your own week/day surface based on the active view.
 
@@ -98,19 +129,27 @@ The block is fully controlled and SSR-safe — it never reads the system clock i
 
 - Month-nav arrows carry `aria-label="Previous month"` / `"Next month"`.
 - The view-mode control is a labelled `role="group"`; each segment reports `aria-pressed`.
-- Selectable day cells expose a full `aria-label` (e.g. `"July 4, 2026, 2 events"`) and report `aria-pressed` for the selected day.
+- The month is a `role="grid"` of week rows and day cells with one tab stop. Arrow keys move by day, Up/Down by week, Home/End to the week edges.
+- Each day names its events, spans with their position: `"June 12, 2026, Berlin stay, day 2 of 4"`. Span bars are `aria-hidden` art; hidden spans (`+N`) are still named by the day.
+- The selected day is `aria-selected`, drawn with an accent rule as well as a tint (not colour alone), and carries `aria-expanded` while its week slot is open. Today is `aria-current="date"`.
+- At phone width a bar's label truncates with an ellipsis; the day's name carries the full text.
 - Status dots are decorative (`aria-hidden`) — the chip's text label is the accessible name.
+
+## Edges
+
+The block draws no visible `border`. Its resting edge reads the shared `--control-edge-*` tokens (`--control-edge-width: 0` removes it) and its grid lines read `--hairline-width` (`--hairline-width: 0` removes them without moving a box). Focus rings survive both switches.
 
 ## Props
 
 See `MonthCalendarProps` in `blocks/month-calendar/month-calendar.tsx` for the full list. In summary:
 
 - **Month** — `month` (required), `onMonthChange`, `weekStartsOn`, `locale`.
-- **Events** — `events`, `maxChipsPerDay`, `onEventSelect`.
+- **Events** — `events`, `maxChipsPerDay`, `maxLanes`, `onEventSelect`.
 - **Selection** — `selectedDate`, `onSelectDate`, `today`.
+- **Slots** — `renderWeekDetail`, `renderDayMark`.
 - **View mode** — `viewOptions`, `view`, `onViewChange`.
 
-`MonthCalendarEvent` is `{ id, date, title, status?, series? }`, where `status` is `"default" | "success" | "warning" | "danger" | "info"` and `series` is `1 | 2 | 3 | 4 | 5`.
+`MonthCalendarEvent` is `{ id, start | date, end?, title, status?, series?, color? }`, where `status` is `"default" | "success" | "warning" | "danger" | "info"` and `series` is `1 | 2 | 3 | 4 | 5`.
 
 ## About Blocks
 

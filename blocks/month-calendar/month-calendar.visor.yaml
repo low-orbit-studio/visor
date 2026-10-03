@@ -6,7 +6,12 @@ description: >-
   Each chip carries a status-dot slot (success / warning / danger / info) and an
   optional series tint (1–5) keyed to the theme's chart ramp for color-coding a
   recurring series or resource lane. Days outside the displayed month are dimmed;
-  optional today and selected-day highlighting. Fully token-driven — every color,
+  optional today and selected-day highlighting. Events with an `end` draw as one
+  bar across the days they span, cut at week edges with a continued mark and
+  stacked in lanes (with "+N" past `maxLanes`). `renderWeekDetail` opens a slot
+  under the week that holds the selected day; `renderDayMark` puts a consumer
+  mark in each day cell. Dates are plain YYYY-MM-DD calendar dates. The month is
+  an ARIA grid with arrow-key day movement. Fully token-driven — every color,
   spacing, stroke, radius, shadow, opacity, and motion value binds to a Visor
   token, so the grid adopts the active theme without modification.
 category: data-display
@@ -14,25 +19,25 @@ preview_url: "https://visor.loworbit.studio/docs/blocks/month-calendar"
 components_used: []
 props:
   - name: month
-    type: Date
+    type: "string | Date"
     required: true
-    description: Any date within the month to display. Controlled.
+    description: Any date within the month to display ("YYYY-MM-DD" string or Date). Controlled.
   - name: onMonthChange
     type: "(month: Date) => void"
     description: Fired with the first day of the previous/next month when the nav arrows are used. Arrows are disabled when omitted.
   - name: events
     type: MonthCalendarEvent[]
     default: "[]"
-    description: Events to place into day cells (id, date, title, optional status, optional series).
+    description: Events to place into day cells (id, start/date, optional end, title, optional status, series and color). An event with `end` is a span bar.
   - name: today
-    type: Date
+    type: "string | Date"
     description: The day marked as "today". Omit to mark none — the block never reads the system clock, keeping SSR and client render identical.
   - name: selectedDate
-    type: Date
+    type: "string | Date"
     description: Selected day, highlighted distinctly from today.
   - name: onSelectDate
-    type: "(date: Date) => void"
-    description: Fired when a day cell is activated. Cells are inert unless provided.
+    type: "(date: Date, iso: string) => void"
+    description: Fired when a day cell is activated, with a local-midnight Date and the "YYYY-MM-DD" string. Cells are inert unless provided.
   - name: onEventSelect
     type: "(event: MonthCalendarEvent) => void"
     description: Fired when an event chip is activated. Chips are inert unless provided.
@@ -44,6 +49,16 @@ props:
     type: number
     default: "3"
     description: Max chips shown per day before collapsing to a "+N more" row.
+  - name: maxLanes
+    type: number
+    default: "3"
+    description: Max lanes of overlapping span bars per week before a day shows "+N" for the spans that did not fit. The "+N" opens the day.
+  - name: renderWeekDetail
+    type: "(week: MonthCalendarWeek) => ReactNode"
+    description: Content for the slot under the week that holds selectedDate. Opens in the page flow, pushes later weeks down, points an arrow at the selected day, and takes focus when the day is activated. Opens without animation under reduced motion.
+  - name: renderDayMark
+    type: "(day: MonthCalendarDay) => ReactNode"
+    description: A consumer mark in each day cell's head, opposite the day number (a count, a range end).
   - name: locale
     type: string
     default: '"en-US"'
@@ -61,6 +76,8 @@ props:
 when_to_use:
   - Admin or booking surfaces that show events-in-a-month (the most common scheduling view)
   - Color-coding recurring series or resource lanes via the per-chip series tint
+  - Stays, trips and availability that span several days, drawn as one bar and coloured per event
+  - A day sheet opening under the selected week
   - Status-at-a-glance calendars where each event needs a success / warning / danger / info dot
 when_not_to_use:
   - Picking a single date or date range (use calendar, date-picker, or date-range-picker)

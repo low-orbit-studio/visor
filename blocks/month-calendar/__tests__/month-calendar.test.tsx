@@ -1,4 +1,7 @@
-import { render, screen, fireEvent } from "@testing-library/react"
+import { readFileSync } from "node:fs"
+import { join } from "node:path"
+import * as React from "react"
+import { render, screen, fireEvent, within } from "@testing-library/react"
 import { describe, it, expect, vi } from "vitest"
 
 import {
@@ -197,6 +200,408 @@ describe("MonthCalendar", () => {
         onMonthChange={vi.fn()}
         onSelectDate={vi.fn()}
         onEventSelect={vi.fn()}
+      />
+    )
+    await checkA11y(container)
+  })
+
+  // ─── Spans (VI-669) ──────────────────────────────────────────────────────
+
+  const bars = (container: HTMLElement, id?: string) =>
+    Array.from(
+      container.querySelectorAll<HTMLElement>(
+        `[data-slot="month-calendar-span"]${id ? `[data-event-id="${id}"]` : ""}`
+      )
+    )
+
+  it("draws a span inside one week as a single bar over its columns", () => {
+    const { container } = render(
+      <MonthCalendar
+        month="2026-07-01"
+        events={[{ id: "s", start: "2026-07-07", end: "2026-07-09", title: "Stay" }]}
+      />
+    )
+    const [bar, ...more] = bars(container, "s")
+    expect(more).toHaveLength(0)
+    // 2026-07-07 is a Tuesday: column 3 of a Sunday-first week, three days wide.
+    expect(bar!.style.gridColumn).toBe("3 / span 3")
+    expect(bar!).not.toHaveAttribute("data-continued-before")
+    expect(bar!).not.toHaveAttribute("data-continued-after")
+  })
+
+  it("splits a span that crosses a week edge into two segments with a continued mark", () => {
+    const { container } = render(
+      <MonthCalendar
+        month="2026-07-01"
+        events={[{ id: "s", start: "2026-07-10", end: "2026-07-14", title: "Berlin stay" }]}
+      />
+    )
+    const segments = bars(container, "s")
+    expect(segments).toHaveLength(2)
+    const [first, second] = segments as [HTMLElement, HTMLElement]
+    // Fri 10 – Sat 11, then Sun 12 – Tue 14.
+    expect(first.style.gridColumn).toBe("6 / span 2")
+    expect(first).toHaveAttribute("data-continued-after", "true")
+    expect(first).not.toHaveAttribute("data-continued-before")
+    expect(first.querySelector('[data-slot="month-calendar-span-continued-after"]')).toBeTruthy()
+    expect(second.style.gridColumn).toBe("1 / span 3")
+    expect(second).toHaveAttribute("data-continued-before", "true")
+    expect(second).not.toHaveAttribute("data-continued-after")
+    expect(second.querySelector('[data-slot="month-calendar-span-continued-before"]')).toBeTruthy()
+    // Each segment sits in its own week row.
+    const rows = container.querySelectorAll('[data-slot="month-calendar-week"]')
+    expect(Array.from(rows).filter((r) => r.contains(first) || r.contains(second))).toHaveLength(2)
+  })
+
+  it("honors weekStartsOn when cutting a span", () => {
+    const { container } = render(
+      <MonthCalendar
+        month="2026-07-01"
+        weekStartsOn={1}
+        events={[{ id: "s", start: "2026-07-10", end: "2026-07-14", title: "Stay" }]}
+      />
+    )
+    // Monday-first: Fri 10 – Sun 12, then Mon 13 – Tue 14.
+    expect(bars(container, "s").map((b) => b.style.gridColumn)).toEqual([
+      "5 / span 3",
+      "1 / span 2",
+    ])
+  })
+
+  it("keeps bars out of the accessibility tree", () => {
+    const { container } = render(
+      <MonthCalendar
+        month="2026-07-01"
+        events={[{ id: "s", start: "2026-07-07", end: "2026-07-09", title: "Stay" }]}
+      />
+    )
+    for (const layer of container.querySelectorAll('[data-slot="month-calendar-bars"]')) {
+      expect(layer).toHaveAttribute("aria-hidden", "true")
+    }
+  })
+
+  it("names each day's events in its cell, with the day of the span", () => {
+    render(
+      <MonthCalendar
+        month="2026-06-01"
+        onSelectDate={vi.fn()}
+        events={[
+          { id: "s", start: "2026-06-11", end: "2026-06-14", title: "Berlin stay" },
+          { id: "c", date: "2026-06-12", title: "Soundcheck" },
+        ]}
+      />
+    )
+    expect(
+      screen.getByRole("button", {
+        name: "June 12, 2026, Berlin stay, day 2 of 4, Soundcheck",
+      })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole("button", { name: "June 14, 2026, Berlin stay, day 4 of 4" })
+    ).toBeInTheDocument()
+  })
+
+  it("stacks overlapping spans in lanes and shows +N past maxLanes", () => {
+    const overlap: MonthCalendarEvent[] = ["a", "b", "c", "d"].map((id) => ({
+      id,
+      start: "2026-07-07",
+      end: "2026-07-09",
+      title: `Stay ${id}`,
+    }))
+    const { container } = render(<MonthCalendar month="2026-07-01" events={overlap} />)
+    // Three lanes drawn, the fourth span not drawn.
+    const lanes = bars(container).map((b) => b.style.getPropertyValue("--mc-lane"))
+    expect(lanes.sort()).toEqual(["0", "1", "2"])
+    expect(bars(container, "d")).toHaveLength(0)
+    // Each of the three days the spans share reads "+1".
+    const more = container.querySelectorAll('[data-slot="month-calendar-more-spans"]')
+    expect(Array.from(more).map((m) => m.textContent)).toEqual(["+1", "+1", "+1"])
+    // The hidden span is still named by the day cell.
+    expect(
+      screen.getByLabelText(/July 7, 2026.*Stay d, day 1 of 3/)
+    ).toBeInTheDocument()
+  })
+
+  it("lets a span reuse a lane freed earlier in the week", () => {
+    const { container } = render(
+      <MonthCalendar
+        month="2026-07-01"
+        events={[
+          { id: "a", start: "2026-07-05", end: "2026-07-06", title: "A" },
+          { id: "b", start: "2026-07-07", end: "2026-07-08", title: "B" },
+        ]}
+      />
+    )
+    expect(bars(container, "b")[0]!.style.getPropertyValue("--mc-lane")).toBe("0")
+  })
+
+  it("opens the day from the +N", () => {
+    const onSelectDate = vi.fn()
+    const overlap: MonthCalendarEvent[] = ["a", "b"].map((id) => ({
+      id,
+      start: "2026-07-07",
+      end: "2026-07-07",
+      title: id,
+    }))
+    const { container } = render(
+      <MonthCalendar
+        month="2026-07-01"
+        maxLanes={1}
+        events={overlap}
+        onSelectDate={onSelectDate}
+      />
+    )
+    fireEvent.click(container.querySelector('[data-slot="month-calendar-more-spans"]')!)
+    expect(onSelectDate).toHaveBeenCalledTimes(1)
+    expect(onSelectDate.mock.calls[0]![1]).toBe("2026-07-07")
+  })
+
+  it("takes an event colour token as well as a series", () => {
+    const { container } = render(
+      <MonthCalendar
+        month="2026-07-01"
+        events={[
+          { id: "s", start: "2026-07-07", end: "2026-07-08", title: "Region", color: "--region-berlin", series: 2 },
+          { id: "v", start: "2026-07-14", end: "2026-07-15", title: "Var", color: "var(--chart-4)" },
+          { id: "c", date: "2026-07-20", title: "Chip", color: "--region-lisbon" },
+        ]}
+      />
+    )
+    expect(bars(container, "s")[0]!.style.getPropertyValue("--mc-series")).toBe("var(--region-berlin)")
+    expect(bars(container, "v")[0]!.style.getPropertyValue("--mc-series")).toBe("var(--chart-4)")
+    const chip = container.querySelector<HTMLElement>('[data-slot="month-calendar-event"]')!
+    expect(chip.style.getPropertyValue("--mc-series")).toBe("var(--region-lisbon)")
+    expect(chip).toHaveAttribute("data-tinted", "true")
+  })
+
+  it("fires onEventSelect from a bar click", () => {
+    const onEventSelect = vi.fn()
+    const { container } = render(
+      <MonthCalendar
+        month="2026-07-01"
+        onEventSelect={onEventSelect}
+        events={[{ id: "s", start: "2026-07-07", end: "2026-07-08", title: "Stay" }]}
+      />
+    )
+    fireEvent.click(bars(container, "s")[0]!)
+    expect(onEventSelect).toHaveBeenCalledWith(expect.objectContaining({ id: "s" }))
+  })
+
+  // ─── Day mark ────────────────────────────────────────────────────────────
+
+  it("renders a consumer mark in the day cell", () => {
+    render(
+      <MonthCalendar
+        month="2026-07-01"
+        renderDayMark={(day) => (day.date === "2026-07-17" ? <b>3 left</b> : null)}
+      />
+    )
+    const cell = document.querySelector('[data-date="2026-07-17"]') as HTMLElement
+    expect(within(cell).getByText("3 left")).toBeInTheDocument()
+    expect(screen.getAllByText("3 left")).toHaveLength(1)
+  })
+
+  // ─── Week detail slot ────────────────────────────────────────────────────
+
+  it("opens the detail slot under the week that holds selectedDate", () => {
+    const renderWeekDetail = vi.fn((week: { start: string }) => (
+      <p>Detail for {week.start}</p>
+    ))
+    const { container } = render(
+      <MonthCalendar
+        month="2026-07-01"
+        selectedDate="2026-07-22"
+        renderWeekDetail={renderWeekDetail}
+      />
+    )
+    expect(renderWeekDetail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        index: 3,
+        start: "2026-07-19",
+        end: "2026-07-25",
+        selected: "2026-07-22",
+      })
+    )
+    const rows = Array.from(container.querySelectorAll('[role="grid"] > [role="row"]'))
+    const slotIndex = rows.findIndex((r) => r.matches('[data-slot="month-calendar-week-detail"]'))
+    // Header row + weeks 0-3, then the slot, then weeks 4-5.
+    expect(slotIndex).toBe(5)
+    expect(rows[slotIndex - 1]!.querySelector('[data-date="2026-07-22"]')).toBeTruthy()
+    expect(rows[slotIndex]).toHaveTextContent("Detail for 2026-07-19")
+    expect(rows).toHaveLength(8)
+  })
+
+  it("keeps the slot closed without a selected day, or when the render returns nothing", () => {
+    const { container, rerender } = render(
+      <MonthCalendar month="2026-07-01" renderWeekDetail={() => <p>x</p>} />
+    )
+    expect(container.querySelector('[data-slot="month-calendar-week-detail"]')).toBeNull()
+    rerender(
+      <MonthCalendar
+        month="2026-07-01"
+        selectedDate="2026-07-22"
+        renderWeekDetail={() => null}
+      />
+    )
+    expect(container.querySelector('[data-slot="month-calendar-week-detail"]')).toBeNull()
+  })
+
+  it("sets aria-expanded on the selected day while its slot is open, and moves focus into the slot", () => {
+    function Harness() {
+      const [selected, setSelected] = React.useState<string | undefined>()
+      return (
+        <MonthCalendar
+          month="2026-07-01"
+          selectedDate={selected}
+          onSelectDate={(_, iso) => setSelected(iso)}
+          renderWeekDetail={() => (
+            <button type="button">Book this day</button>
+          )}
+        />
+      )
+    }
+    render(<Harness />)
+    const day = () => screen.getByRole("button", { name: /July 22, 2026/ })
+    expect(day()).not.toHaveAttribute("aria-expanded")
+    fireEvent.click(day())
+    expect(day()).toHaveAttribute("aria-expanded", "true")
+    expect(day()).toHaveAttribute("aria-controls", screen.getByRole("region").id)
+    expect(screen.getByRole("button", { name: "Book this day" })).toHaveFocus()
+    // Another day in the same grid is not expanded.
+    expect(screen.getByRole("button", { name: /July 21, 2026/ })).not.toHaveAttribute("aria-expanded")
+  })
+
+  it("does not steal focus when selectedDate changes without a click", () => {
+    const { rerender } = render(
+      <MonthCalendar month="2026-07-01" renderWeekDetail={() => <button type="button">Inside</button>} />
+    )
+    rerender(
+      <MonthCalendar
+        month="2026-07-01"
+        selectedDate="2026-07-22"
+        renderWeekDetail={() => <button type="button">Inside</button>}
+      />
+    )
+    expect(screen.getByRole("button", { name: "Inside" })).not.toHaveFocus()
+  })
+
+  it("points the slot's arrow at the selected day's column", () => {
+    const { container } = render(
+      <MonthCalendar
+        month="2026-07-01"
+        selectedDate="2026-07-22"
+        renderWeekDetail={() => <p>x</p>}
+      />
+    )
+    const row = container.querySelector<HTMLElement>('[data-slot="month-calendar-week-detail"]')!
+    // Wednesday, third column from a Sunday start: index 3.
+    expect(row.style.getPropertyValue("--mc-arrow-col")).toBe("3")
+  })
+
+  // ─── Grid semantics + keyboard ───────────────────────────────────────────
+
+  it("is a grid of rows and cells", () => {
+    render(<MonthCalendar month="2026-07-01" onSelectDate={vi.fn()} />)
+    expect(screen.getByRole("grid", { name: "July 2026" })).toBeInTheDocument()
+    expect(screen.getAllByRole("columnheader")).toHaveLength(7)
+    expect(screen.getAllByRole("gridcell")).toHaveLength(42)
+  })
+
+  it("moves focus by day with the arrow keys, one tab stop for the grid", () => {
+    render(
+      <MonthCalendar
+        month="2026-07-01"
+        selectedDate="2026-07-15"
+        onSelectDate={vi.fn()}
+      />
+    )
+    // Attribute lookups: a role query over 42 labelled cells is slow enough to time out.
+    const day = (n: number) =>
+      document.querySelector<HTMLElement>(`[data-date="2026-07-${String(n).padStart(2, "0")}"] button`)!
+    expect(day(15)).toHaveAttribute("tabindex", "0")
+    expect(day(16)).toHaveAttribute("tabindex", "-1")
+    day(15).focus()
+    fireEvent.keyDown(day(15), { key: "ArrowRight" })
+    expect(day(16)).toHaveFocus()
+    fireEvent.keyDown(day(16), { key: "ArrowDown" })
+    expect(day(23)).toHaveFocus()
+    fireEvent.keyDown(day(23), { key: "ArrowLeft" })
+    expect(day(22)).toHaveFocus()
+    fireEvent.keyDown(day(22), { key: "ArrowUp" })
+    expect(day(15)).toHaveFocus()
+    fireEvent.keyDown(day(15), { key: "Home" })
+    expect(day(12)).toHaveFocus()
+    fireEvent.keyDown(day(12), { key: "End" })
+    expect(day(18)).toHaveFocus()
+    expect(day(18)).toHaveAttribute("tabindex", "0")
+    expect(day(15)).toHaveAttribute("tabindex", "-1")
+  })
+
+  it("moves focus between inert cells too, when days are not selectable", () => {
+    render(<MonthCalendar month="2026-07-01" today="2026-07-15" />)
+    const cell = (n: number) =>
+      document.querySelector<HTMLElement>(`[data-date="2026-07-${String(n).padStart(2, "0")}"]`)!
+    expect(cell(15)).toHaveAttribute("tabindex", "0")
+    cell(15).focus()
+    fireEvent.keyDown(cell(15), { key: "ArrowRight" })
+    expect(cell(16)).toHaveFocus()
+  })
+
+  // ─── Edges (VI-655 / VI-680) ─────────────────────────────────────────────
+
+  describe("edges", () => {
+    const css = readFileSync(
+      join(process.cwd(), "blocks/month-calendar/month-calendar.module.css"),
+      "utf-8"
+    ).replace(/\/\*[\s\S]*?\*\//g, "")
+
+    it("draws no visible border: every border is transparent, 0 or none", () => {
+      const visible = [
+        ...css.matchAll(/(?:^|[{;\s])(border(?:-(?:top|right|bottom|left))?(?:-color)?)\s*:\s*([^;}]+)/g),
+      ].filter(([, , value]) => !/^(0|none)$/.test(value!.trim()) && !/\btransparent\b/.test(value!))
+      expect(visible.map(([, p, v]) => `${p}: ${v}`)).toEqual([])
+    })
+
+    it("reads the control-edge switch for the resting edge", () => {
+      expect(css).toContain("var(--control-edge-width")
+    })
+
+    it("reads the hairline switch for the grid lines", () => {
+      expect(css).toContain("var(--hairline-width")
+    })
+  })
+
+  // ─── Accessibility (spans, slot) ─────────────────────────────────────────
+
+  it("has no axe violations with spans, marks and the slot open", async () => {
+    const { container } = render(
+      <MonthCalendar
+        month="2026-07-01"
+        today="2026-07-09"
+        selectedDate="2026-07-15"
+        onSelectDate={vi.fn()}
+        onEventSelect={vi.fn()}
+        onMonthChange={vi.fn()}
+        maxLanes={2}
+        events={[
+          { id: "a", start: "2026-07-10", end: "2026-07-14", title: "Berlin stay", series: 1 },
+          { id: "b", start: "2026-07-10", end: "2026-07-12", title: "Overlap", color: "--chart-3" },
+          { id: "c", start: "2026-07-11", end: "2026-07-12", title: "Third" },
+          { id: "d", date: "2026-07-15", title: "Chip" },
+        ]}
+        renderDayMark={(d) => (d.date === "2026-07-16" ? "2" : null)}
+        renderWeekDetail={() => <button type="button">Open</button>}
+      />
+    )
+    await checkA11y(container)
+  })
+
+  it("has no axe violations on inert cells with spans", async () => {
+    const { container } = render(
+      <MonthCalendar
+        month="2026-07-01"
+        today="2026-07-09"
+        events={[{ id: "a", start: "2026-07-10", end: "2026-07-14", title: "Berlin stay" }]}
       />
     )
     await checkA11y(container)

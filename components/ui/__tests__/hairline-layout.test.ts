@@ -23,6 +23,7 @@ const FIXTURES = [
   { id: "popover/selection", component: "popover", fixture: "selection" }, // outline ring
   { id: "doc-nav/default", component: "doc-nav", fixture: "default" }, // outline rings
   { id: "fidelity-mirror/default", component: "fidelity-mirror", fixture: "default" }, // rings + rules
+  { id: "month-calendar/default", component: "month-calendar", fixture: "default" }, // inset-shadow grid lines
 ]
 
 const OFF = ":root { --hairline-width: 0 !important; }"
