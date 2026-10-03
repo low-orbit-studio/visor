@@ -44,6 +44,21 @@
   cursor: text;
 }
 
+/* Centre the ring on the capitals (docs/label-centering.md). The button's line
+ * box is trimmed to the capital-to-baseline band, so the padded box, and the
+ * ring drawn around it, is symmetric about the caps and not about the font's
+ * ascent and descent. The block padding and its cancelling negative margin
+ * are the room the ring clears the glyphs by; the margin box is the cap band,
+ * so the line box (set by the surrounding text) does not change. Without
+ * text-box (Firefox) the padding above stands and the ring centres on the line box. */
+@supports (text-box: trim-both cap alphabetic) {
+  .textControl {
+    text-box: trim-both cap alphabetic;
+    padding-block: var(--spacing-2, 0.5rem);
+    margin-block: calc(-1 * var(--spacing-2, 0.5rem));
+  }
+}
+
 .textControl.textDefault {
   color: var(--text-tertiary, #9ca3af);
 }
