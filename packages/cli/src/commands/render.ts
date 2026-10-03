@@ -176,6 +176,49 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       })()`,
     },
   },
+  // VI-669: a block, resolved from blocks/. July 2026 with a stay crossing a week
+  // edge, three overlapping spans plus a fourth ("+1"), a colour-token event, a
+  // day mark, and the week detail slot open under the selected day.
+  "month-calendar": {
+    default: {
+      export: "MonthCalendar",
+      props: `(function () {
+        var h = React.createElement;
+        return {
+          month: "2026-07-01",
+          today: "2026-07-09",
+          selectedDate: "2026-07-15",
+          weekStartsOn: 1,
+          onSelectDate: function () {},
+          events: [
+            { id: "berlin", start: "2026-07-02", end: "2026-07-05", title: "Berlin stay", series: 1 },
+            { id: "lisbon", start: "2026-07-13", end: "2026-07-19", title: "Lisbon run", color: "--chart-3" },
+            { id: "paris", start: "2026-07-20", end: "2026-07-22", title: "Paris", series: 4 },
+            { id: "a", start: "2026-07-20", end: "2026-07-21", title: "Studio hold", series: 2 },
+            { id: "b", start: "2026-07-20", end: "2026-07-24", title: "Press week", series: 5 },
+            { id: "c", start: "2026-07-21", end: "2026-07-22", title: "Fourth lane", series: 3 },
+            { id: "gig", date: "2026-07-09", title: "Soundcheck", status: "success", series: 2 },
+          ],
+          renderDayMark: function (day) { return day.date === "2026-07-17" ? "3" : null; },
+          renderWeekDetail: function (week) {
+            return h("div", null, h("strong", null, "Week of " + week.start), h("p", { style: { margin: 0 } }, "Day sheet content sits here."));
+          },
+        };
+      })()`,
+    },
+    overlap: {
+      export: "MonthCalendar",
+      props: `{
+        month: "2026-07-01",
+        events: [
+          { id: "a", start: "2026-07-07", end: "2026-07-11", title: "Stay A", series: 1 },
+          { id: "b", start: "2026-07-08", end: "2026-07-12", title: "Stay B", series: 2 },
+          { id: "c", start: "2026-07-09", end: "2026-07-10", title: "Stay C", series: 3 },
+          { id: "d", start: "2026-07-09", end: "2026-07-10", title: "Stay D", series: 4 },
+        ],
+      }`,
+    },
+  },
   "stat-card": {
     default: {
       export: "StatCard",
@@ -575,6 +618,7 @@ export function resolveComponentFile(cwd: string, name: string): string | null {
     resolve(cwd, "components", "ui", name, `${name}.tsx`),
     resolve(cwd, "components", "devtools", name, `${name}.tsx`),
     resolve(cwd, "components", "ui", name, "index.tsx"),
+    resolve(cwd, "blocks", name, `${name}.tsx`),
   ])
 }
 
@@ -768,7 +812,7 @@ export async function renderCommand(
   if (!componentFile) {
     fail(
       "COMPONENT_NOT_FOUND",
-      `Component "${component}" not found under components/ui/. Expected components/ui/${component}/${component}.tsx.`
+      `Component "${component}" not found under components/ui/ or blocks/. Expected components/ui/${component}/${component}.tsx or blocks/${component}/${component}.tsx.`
     )
   }
 

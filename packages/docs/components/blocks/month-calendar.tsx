@@ -5,5 +5,8 @@ export type {
   MonthCalendarEvent,
   MonthCalendarStatus,
   MonthCalendarSeries,
+  MonthCalendarDate,
+  MonthCalendarWeek,
+  MonthCalendarDay,
   MonthCalendarViewOption,
 } from '../../../../blocks/month-calendar/month-calendar';

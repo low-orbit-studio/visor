@@ -21,6 +21,8 @@ const DEMO_EVENTS: MonthCalendarEvent[] = [
   { id: '9', date: new Date(2026, 6, 20), title: 'Payment due', status: 'danger', series: 5 },
   { id: '10', date: new Date(2026, 6, 24), title: 'Launch party', status: 'success', series: 1 },
   { id: '11', date: new Date(2026, 6, 28), title: 'Board sync', status: 'warning', series: 4 },
+  { id: '12', start: '2026-07-15', end: '2026-07-19', title: 'Berlin stay', series: 5 },
+  { id: '13', start: '2026-07-16', end: '2026-07-21', title: 'Lisbon run', color: '--chart-3' },
 ];
 
 export function MonthCalendarDemo() {
@@ -43,6 +45,9 @@ export function MonthCalendarDemo() {
         view={view}
         onViewChange={setView}
         maxChipsPerDay={3}
+        renderWeekDetail={(week) => (
+          <p style={{ margin: 0 }}>Day sheet for the week of {week.start}.</p>
+        )}
       />
     </div>
   );

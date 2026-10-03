@@ -1,0 +1,5 @@
+---
+"@loworbitstudio/visor": minor
+---
+
+MonthCalendar draws events that span several days and opens a detail slot under the selected week (VI-669). An event with `end` draws as one bar across the days it covers, cut at week edges with a continued mark; overlapping spans stack in lanes with "+N" past `maxLanes` (default 3), and the "+N" opens the day. `renderWeekDetail(week)` renders under the week that holds `selectedDate` in the page flow, with an arrow at the selected day; activating a day sets `aria-expanded` and moves focus into the slot, and the slot opens without animation under reduced motion. Events take a `color` token as well as a `series`, and `renderDayMark` puts a consumer mark in each day cell. `start` / `end` are plain `YYYY-MM-DD` calendar dates, never built into a local-time `Date`. The month is now an ARIA grid with arrow-key day movement, each day's name lists its events ("June 12, 2026, Berlin stay, day 2 of 4"), and `onSelectDate` also receives the ISO string. The resting edge reads `--control-edge-width` and the grid lines read `--hairline-width`. `visor render` now resolves blocks from `blocks/`, with `month-calendar` fixtures.
