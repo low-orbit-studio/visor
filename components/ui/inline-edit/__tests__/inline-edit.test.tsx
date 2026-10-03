@@ -200,3 +200,104 @@ describe("InlineEdit (VI-658)", () => {
     await checkA11y(editing.container)
   })
 })
+
+describe("InlineEdit pencil={false} (VI-677)", () => {
+  const text = () => screen.getByRole("button", { name: "Edit Rider title, Technical rider" })
+
+  it("draws no pencil; the text is a button named Edit {label} plus the value", () => {
+    render(<Harness pencil={false} />)
+    expect(document.querySelector('[data-slot="inline-edit-pencil"]')).toBeNull()
+    expect(screen.getAllByRole("button", { name: /^Edit/ })).toHaveLength(1)
+    expect(text()).toHaveTextContent("Technical rider")
+    expect(text().tagName).toBe("BUTTON")
+  })
+
+  it("names the muted default too", () => {
+    render(<Harness pencil={false} initial="" />)
+    expect(screen.getByRole("button", { name: "Edit Rider title, Rider" })).toHaveAttribute("data-default")
+  })
+
+  it("opens the field on click", async () => {
+    const user = userEvent.setup()
+    render(<Harness pencil={false} />)
+    await user.click(text())
+    expect(input()).toHaveValue("Technical rider")
+    expect(input()).toHaveFocus()
+  })
+
+  it("opens the field on Enter and on Space", async () => {
+    const user = userEvent.setup()
+    render(<Harness pencil={false} />)
+    text().focus()
+    await user.keyboard("{Enter}")
+    expect(input()).toHaveFocus()
+    await user.keyboard("{Escape}")
+    text().focus()
+    await user.keyboard(" ")
+    expect(input()).toHaveFocus()
+  })
+
+  it("is reachable by Tab", async () => {
+    const user = userEvent.setup()
+    render(<Harness pencil={false} />)
+    await user.tab()
+    expect(text()).toHaveFocus()
+  })
+
+  it("Enter commits and focus returns to the text", async () => {
+    const user = userEvent.setup()
+    const onCommit = vi.fn()
+    render(<Harness pencil={false} onCommit={onCommit} />)
+    await user.click(text())
+    await user.clear(input())
+    await user.type(input(), "Hospitality rider{Enter}")
+    expect(onCommit).toHaveBeenCalledWith("Hospitality rider")
+    expect(screen.getByRole("button", { name: "Edit Rider title, Hospitality rider" })).toHaveFocus()
+  })
+
+  it("Escape restores without committing and focus returns to the text", async () => {
+    const user = userEvent.setup()
+    const onCommit = vi.fn()
+    render(<Harness pencil={false} onCommit={onCommit} />)
+    await user.click(text())
+    await user.type(input(), "x{Escape}")
+    expect(onCommit).not.toHaveBeenCalled()
+    expect(text()).toHaveFocus()
+  })
+
+  it("editLabel overrides the lead of the name", () => {
+    render(<Harness pencil={false} editLabel="Rename rider" />)
+    expect(screen.getByRole("button", { name: "Rename rider, Technical rider" })).toBeInTheDocument()
+  })
+
+  it("passes axe at rest, as a heading, and while editing", async () => {
+    const rest = render(<Harness pencil={false} />)
+    await checkA11y(rest.container)
+    rest.unmount()
+    const heading = render(<Harness pencil={false} as="h2" />)
+    await checkA11y(heading.container)
+    heading.unmount()
+    const editing = render(<Harness pencil={false} defaultEditing />)
+    await checkA11y(editing.container)
+  })
+})
+
+describe("InlineEdit default is unchanged (VI-677 back-compat)", () => {
+  const html = (ui: React.ReactElement) => render(ui).container.innerHTML
+
+  it("renders byte-identical markup to before the pencil prop existed", () => {
+    expect(html(<InlineEdit label="Rider title" value="Technical rider" onCommit={() => {}} />)).toBe(
+      "<span data-slot=\"inline-edit\" data-state=\"rest\" class=\"root\"><span data-slot=\"inline-edit-text\" class=\"text\">Technical rider</span><button type=\"button\" data-slot=\"inline-edit-pencil\" class=\"pencil\" aria-label=\"Edit Rider title\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1em\" height=\"1em\" fill=\"currentColor\" viewBox=\"0 0 256 256\" aria-hidden=\"true\"><path d=\"M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.68,147.31,64l24-24L216,84.68Z\"></path></svg></button></span>"
+    )
+    expect(html(<InlineEdit as="h2" label="T" value="" defaultValue="Rider" onCommit={() => {}} />)).toBe(
+      "<h2 data-slot=\"inline-edit\" data-state=\"rest\" class=\"root\"><span data-slot=\"inline-edit-text\" data-default=\"true\" class=\"text textDefault\">Rider</span><button type=\"button\" data-slot=\"inline-edit-pencil\" class=\"pencil\" aria-label=\"Edit T\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1em\" height=\"1em\" fill=\"currentColor\" viewBox=\"0 0 256 256\" aria-hidden=\"true\"><path d=\"M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.68,147.31,64l24-24L216,84.68Z\"></path></svg></button></h2>"
+    )
+  })
+
+  it("pencil={true} is the default", () => {
+    const base = html(<InlineEdit label="L" value="v" onCommit={() => {}} />)
+    document.body.innerHTML = ""
+    expect(html(<InlineEdit label="L" value="v" pencil onCommit={() => {}} />)).toBe(base)
+  })
+})
+

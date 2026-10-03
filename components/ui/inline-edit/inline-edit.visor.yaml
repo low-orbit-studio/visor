@@ -37,6 +37,8 @@ theme_hooks:
     description: The pencil's hit-target pad on every side, shared with the icon-only Button. Drawn on ::before, so it adds no height to the line.
   - name: --button-icon-ghost-color
     description: The pencil's ink at rest, shared with the icon-only Button. Hover comes up to --text-primary.
+  - name: --inline-edit-underline-style
+    description: The text button's hover underline when `pencil` is false. Solid by default; a theme may set `dashed`. Never dotted.
   - name: --control-edge-width / --control-edge-style / --control-edge-color
     description: The editing input's resting edge (VI-655). Width 0 removes it; focus still draws its own ring.
 
@@ -56,7 +58,11 @@ props:
     description: The field's name (e.g. "Section title"). Names the input, and the pencil as "Edit {label}".
   - name: editLabel
     type: string
-    description: Accessible name of the pencil. Defaults to "Edit {label}".
+    description: Accessible name of the pencil, or the lead of the text button's name when `pencil` is false. Defaults to "Edit {label}".
+  - name: pencil
+    type: boolean
+    default: 'true'
+    description: Draws the pencil after the text. With `false` the text is the control (VI-677) - a button named "Edit {label}, {value}" that opens on click, Enter or Space and takes focus back after Enter or Escape. It underlines on hover and shows the focus ring alone on focus, clear of the glyphs.
   - name: as
     type: "'span' | 'div' | 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'"
     default: '"span"'

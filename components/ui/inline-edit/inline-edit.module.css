@@ -22,6 +22,75 @@
   color: var(--text-tertiary, #9ca3af);
 }
 
+/* pencil={false}: the text is the control. A native button, reset to read as
+ * the text it holds: typography comes from the reset's `font: inherit` and the
+ * rest is inherited from the element InlineEdit renders as. No edge at rest. */
+.textControl {
+  position: relative;
+  display: inline;
+  /* Padding is present in every state and cancelled by an equal negative
+   * margin, so nothing shifts between rest, hover and focus. It is the room
+   * the focus ring clears the glyphs by, on top of --focus-ring-offset. */
+  margin: calc(-1 * var(--spacing-1, 0.25rem)) calc(-1 * var(--spacing-2, 0.5rem));
+  padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
+  border: 0;
+  border-radius: var(--radius-sm, 0.125rem);
+  background: none;
+  color: inherit;
+  text-align: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  overflow-wrap: inherit;
+  cursor: text;
+}
+
+/* Centre the ring on the capitals (label-centering doc). The button's line
+ * box is trimmed to the capital-to-baseline band, so the padded box, and the
+ * ring drawn around it, is symmetric about the caps and not about the font's
+ * ascent and descent. The block padding and its cancelling negative margin
+ * are the room the ring clears the glyphs by; the margin box is the cap band,
+ * so the line box (set by the surrounding text) does not change. Without
+ * text-box (Firefox) the padding above stands and the ring centres on the line box. */
+@supports (text-box: trim-both cap alphabetic) {
+  .textControl {
+    text-box: trim-both cap alphabetic;
+    padding-block: var(--spacing-2, 0.5rem);
+    margin-block: calc(-1 * var(--spacing-2, 0.5rem));
+  }
+}
+
+.textControl.textDefault {
+  color: var(--text-tertiary, #9ca3af);
+}
+
+/* WCAG 2.5.8: the hit target is at least 24px tall. Drawn on ::before so it
+ * adds no height to the line; it only grows when the line is shorter. */
+.textControl::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block: min(0px, calc((100% - 1.5rem) / 2));
+}
+
+/* Hover reads as editable without an icon: an underline. Solid by default;
+ * a theme that wants a dashed one sets --inline-edit-underline-style. Never dotted. */
+@media (hover: hover) {
+  .textControl:hover {
+    text-decoration-line: underline;
+    text-decoration-style: var(--inline-edit-underline-style, solid);
+    text-decoration-thickness: var(--stroke-width-thin, 1px);
+    text-underline-offset: var(--spacing-1, 0.25rem);
+  }
+}
+
+/* Focus shows the ring alone. The underline is the hover cue; under the ring it
+ * read as a double line. */
+.textControl:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #111827);
+  outline-offset: var(--focus-ring-offset, 2px);
+  text-decoration-line: none;
+}
+
 .pencil {
   position: relative;
   display: inline-flex;

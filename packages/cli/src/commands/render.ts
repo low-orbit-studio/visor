@@ -528,6 +528,28 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       interactiveTarget: "input",
       props: `{ as: "h2", style: { margin: 0, fontSize: "21px", lineHeight: 1.25, fontWeight: 600 }, label: "Section title", value: "Track record", defaultValue: "Untitled section", onCommit: function () {}, defaultEditing: true }`,
     },
+    // VI-677: pencil={false}. The text is the button, so hover/focus drive it.
+    "no-pencil": {
+      export: "InlineEdit",
+      interactiveTarget: "button",
+      props: `{ label: "Rider title", value: "Technical rider", defaultValue: "Rider", onCommit: function () {}, pencil: false }`,
+    },
+    "no-pencil-default-value": {
+      export: "InlineEdit",
+      interactiveTarget: "button",
+      props: `{ label: "Rider title", value: "", defaultValue: "Rider", onCommit: function () {}, pencil: false }`,
+    },
+    // Descenders and accents must survive the cap-band trim.
+    "no-pencil-glyphs": {
+      export: "InlineEdit",
+      interactiveTarget: "button",
+      props: `{ label: "Rider title", value: "Typography jpq \u00C9\u00C5\u00D1", defaultValue: "Rider", onCommit: function () {}, pencil: false }`,
+    },
+    "no-pencil-heading": {
+      export: "InlineEdit",
+      interactiveTarget: "button",
+      props: `{ as: "h2", style: { margin: 0, fontSize: "21px", lineHeight: 1.25, fontWeight: 600 }, label: "Section title", value: "Track record", defaultValue: "Untitled section", onCommit: function () {}, pencil: false }`,
+    },
   },
   // VI-657: the autosave readout in each state. It draws no edge in any of them.
   "save-status": {

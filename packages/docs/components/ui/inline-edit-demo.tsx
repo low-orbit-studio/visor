@@ -14,6 +14,17 @@ export function InlineEditBodyDemo() {
   );
 }
 
+/* ─── InlineEditNoPencilDemo ────────────────────────────────────────────── */
+
+export function InlineEditNoPencilDemo() {
+  const [value, setValue] = React.useState('Technical rider');
+  return (
+    <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.5 }}>
+      <InlineEdit pencil={false} label="Rider title" value={value} defaultValue="Rider" onCommit={setValue} />
+    </p>
+  );
+}
+
 /* ─── InlineEditHeadingDemo ─────────────────────────────────────────────── */
 
 export function InlineEditHeadingDemo() {
