@@ -95,6 +95,29 @@
   color: var(--text-secondary, #6b7280);
 }
 
+/* Intent: error — a failed load. Icon and heading wear the destructive colour;
+   the icon stays unchipped unless iconWrap is set (then the chip is tinted). */
+.intentError .icon {
+  color: var(--empty-state-error-color, var(--destructive, #dc2626));
+}
+
+.intentError .iconWrap {
+  background-color: color-mix(in srgb, var(--empty-state-error-color, var(--destructive, #dc2626)) 20%, transparent);
+  color: var(--empty-state-error-color, var(--destructive, #dc2626));
+}
+
+.intentError .heading {
+  color: var(--empty-state-error-color, var(--destructive, #dc2626));
+}
+
+/* Fill: take the container's open space; base already centres both ways. */
+.fill {
+  flex: 1 1 auto;
+  align-self: stretch;
+  height: 100%;
+  min-height: 0;
+}
+
 .sizeSm .icon {
   font-size: var(--font-size-xl, 1.25rem);
 }

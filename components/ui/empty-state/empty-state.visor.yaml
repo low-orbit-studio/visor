@@ -18,13 +18,17 @@ why: >
   "No data" placeholders were duplicated inline across blacklight-admin and
   veronica-admin. Canonicalizing them into a single compound ensures
   consistent vertical rhythm, tone (dashed card vs subtle), and accessible
-  announcement via role="status".
+  announcement via role="status" (role="alert" for intent="error").
+  When a whole region's load failed, use intent="error" so it reads like an empty
+  state in the destructive colour; for inline, in-card failures with retry actions
+  use ErrorPlacard instead.
 
 variants:
   size: [sm, md, lg]
   tone: [default, subtle]
   variant: [default, editorial]
-  intent: [first-use, zero-results, no-access]
+  intent: [first-use, zero-results, no-access, error]
+  fill: [true, false]
 
 props:
   - name: heading
@@ -65,13 +69,23 @@ props:
       Editorial is an opt-in filled card on --surface-card with a 64px circular icon chip
       and a larger heading; it overrides the tone surface and the size icon/heading scale.
   - name: intent
-    type: "'first-use' | 'zero-results' | 'no-access'"
+    type: "'first-use' | 'zero-results' | 'no-access' | 'error'"
     description: >
       Semantic intent of the empty state (Borealis global state spec §5).
       first-use: no items exist yet; accent-tinted icon chip; encourage creation CTA.
       zero-results: filter/search returned nothing; accent-tinted chip; offer clear-filter.
       no-access: permission gate; neutral chip; typically no CTA (terminal state).
-      Setting intent auto-activates iconWrap.
+      error: a failed load; icon and heading in the destructive colour, role="alert",
+      and the icon stays unchipped unless iconWrap is set. Use ErrorPlacard for inline,
+      in-card failures.
+      Setting any other intent auto-activates iconWrap.
+  - name: fill
+    type: boolean
+    default: "false"
+    description: >
+      Fills the container and centres the content vertically and horizontally.
+      Use inside a flex or fixed-height parent so empty and error screens sit in the
+      middle of the open space.
   - name: headingAs
     type: "'h2' | 'h3' | 'h4'"
     default: "h3"

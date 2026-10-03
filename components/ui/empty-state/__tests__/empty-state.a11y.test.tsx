@@ -101,4 +101,23 @@ describe("EmptyState a11y (vitest-axe)", () => {
     const results = await axe(container)
     expect(results).toHaveNoViolations()
   })
+
+  it("has no WCAG 2.1 AA violations (intent error)", async () => {
+    const { container } = render(
+      <EmptyState
+        intent="error"
+        fill
+        icon={
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+            <rect width="24" height="24" />
+          </svg>
+        }
+        heading="Could not load the inbox"
+        description="The request timed out. Check your connection and try again."
+        action={<button type="button">Retry</button>}
+      />
+    )
+    const results = await axe(container)
+    expect(results).toHaveNoViolations()
+  })
 })

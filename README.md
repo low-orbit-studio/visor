@@ -153,7 +153,7 @@ npx visor add --category admin
 | Bulk Action Bar | `bulk-action-bar` | Floating bar for multi-select actions |
 | Confirm Dialog | `confirm-dialog` | Destructive action confirmation modal |
 | Data Table | `data-table` | Sortable, filterable table with pagination |
-| Empty State | `empty-state` | Zero-data placeholder with CTA |
+| Empty State | `empty-state` | Zero-data placeholder with CTA; `intent="error"` for failed loads |
 | Filter Bar | `filter-bar` | Composable filter chip row |
 | Infographic Bar | `infographic-bar` | Continuous stat-card band with hairline dividers |
 | Kbd | `kbd` | Keyboard shortcut display |

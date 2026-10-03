@@ -123,11 +123,12 @@ See the [Flutter Empty State](/docs/flutter/widgets/empty-state) page for the fu
 
 ## Intent Variants
 
-Use `intent` to communicate the **cause** of the empty state. Setting `intent` also automatically wraps the icon in a circular chip whose color reflects the semantic meaning. Three intents map to the Borealis global state spec (§5):
+Use `intent` to communicate the **cause** of the empty state. Setting `intent` also automatically wraps the icon in a circular chip whose color reflects the semantic meaning. Four intents; the first three map to the Borealis global state spec (§5):
 
 - `first-use` — no items exist yet; encourage a creation action.
 - `zero-results` — a filter or search returned nothing; offer a way to clear it.
 - `no-access` — the user lacks permission; no action (terminal state).
+- `error` — a failed load; destructive icon and heading, `role="alert"`. See [Error Intent](#error-intent).
 
 <ComponentPreview
   title="first-use — no items yet"
@@ -168,6 +169,28 @@ Use `intent` to communicate the **cause** of the empty state. Setting `intent` a
     heading="You don't have access"
     description="Ask your workspace admin to give you permission to view this section."
   />
+</ComponentPreview>
+
+## Error Intent
+
+`intent="error"` turns a failed load into an empty state: centred icon, heading and description, with the icon and heading in the destructive colour. It announces as `role="alert"` and keeps a thin, unchipped icon (set `iconWrap` for a tinted chip). Add `fill` inside a flex or fixed-height parent to centre it vertically in the open space.
+
+Use `EmptyState intent="error"` when the failure replaces a whole region or screen. For an inline failure inside a card or list, use [ErrorPlacard](/docs/components/feedback/error-placard) instead.
+
+<ComponentPreview
+  title="error — failed load"
+  code={"<div style={{ display: 'flex', height: 280 }}>\n  <EmptyState\n    intent=\"error\"\n    tone=\"subtle\"\n    fill\n    icon={<WarningCircle weight=\"thin\" size={48} />}\n    heading=\"Could not load the inbox\"\n    description=\"The request timed out. Check your connection and try again.\"\n  />\n</div>"}
+>
+  <div style={{ display: 'flex', height: 280, width: '100%' }}>
+    <EmptyState
+      intent="error"
+      tone="subtle"
+      fill
+      icon={<svg aria-hidden="true" viewBox="0 0 256 256" width="48" height="48" fill="currentColor"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V80a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm20,36a12,12,0,1,1-12-12A12,12,0,0,1,140,172Z"/></svg>}
+      heading="Could not load the inbox"
+      description="The request timed out. Check your connection and try again."
+    />
+  </div>
 </ComponentPreview>
 
 ## Sizes
@@ -225,7 +248,7 @@ After running `npx visor add empty-state`, you'll have:
 
 ### `empty-state.tsx`
 
-A forwardRef component using CVA for size and tone variants and CSS Modules for layout. The root is a `<div>` with `role="status"` so assistive tech announces the empty state as a state change. The heading element is controlled by `headingAs`, and the icon slot is marked `aria-hidden` since the heading text carries the meaning.
+A forwardRef component using CVA for size and tone variants and CSS Modules for layout. The root is a `<div>` with `role="status"` (`role="alert"` for `intent="error"`) so assistive tech announces the empty state as a state change. The heading element is controlled by `headingAs`, and the icon slot is marked `aria-hidden` since the heading text carries the meaning.
 
 ### `empty-state.module.css`
 
@@ -237,5 +260,4 @@ After copying the component, you own it completely. Common customizations:
 
 - Add an `illustration` slot for larger SVG artwork above the icon.
 - Swap the default `role="status"` for `role="region"` with `aria-label` when the empty state is a primary landmark.
-- Extend tones to include a `destructive` variant for error states.
 - Use `iconWrap` without `intent` if you want the circular chip treatment on a custom empty state without semantic coloring.
