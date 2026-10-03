@@ -349,6 +349,51 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     checked: { export: "Checkbox", interactiveTarget: "button", props: `{ "aria-label": "Accept", defaultChecked: true }` },
     invalid: { export: "Checkbox", interactiveTarget: "button", props: `{ "aria-label": "Accept", "aria-invalid": true }` },
   },
+  // VI-668: the card variant — icon, title, line; the third level is drawn disabled.
+  "radio-group": {
+    default: {
+      export: "RadioGroup",
+      interactiveTarget: "[role=\"radio\"]",
+      props: `(function () {
+        var h = React.createElement;
+        return {
+          "aria-label": "Size",
+          defaultValue: "medium",
+          style: { width: 320 },
+          children: ["small", "medium", "large"].map(function (v) {
+            return h(__mod.RadioGroupItem, { key: v, value: v, "aria-label": v });
+          }),
+        };
+      })()`,
+    },
+    card: {
+      export: "RadioGroup",
+      interactiveTarget: "[role=\"radio\"]",
+      props: `(function () {
+        var h = React.createElement;
+        var icon = function (shapes) {
+          return h("svg", { width: "1em", height: "1em", viewBox: "0 0 24 24", fill: "currentColor" }, shapes);
+        };
+        var levels = [
+          ["just-you", "Just You", "Only you can see this booking.", icon([h("circle", { key: 1, cx: 12, cy: 8, r: 4 }), h("path", { key: 2, d: "M4 21a8 8 0 0 1 16 0Z" })])],
+          ["team", "Your Team", "Everyone on your team can see it.", icon([h("circle", { key: 1, cx: 8, cy: 9, r: 3.5 }), h("circle", { key: 2, cx: 16, cy: 9, r: 3.5 }), h("path", { key: 3, d: "M1 20a7 7 0 0 1 14 0ZM9 20a7 7 0 0 1 14 0Z" })])],
+          ["public", "Public", "Verified bookers only for now.", icon([h("path", { key: 1, d: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 3a7 7 0 0 1 0 14 7 7 0 0 1 0-14Z", fillRule: "evenodd" })])],
+        ];
+        return {
+          variant: "card",
+          "aria-label": "Visibility",
+          defaultValue: "team",
+          style: { width: 360 },
+          children: levels.map(function (l, i) {
+            return h(__mod.RadioGroupItem, {
+              key: l[0], value: l[0], icon: l[3], title: l[1], description: l[2],
+              disabled: i === 2, "aria-describedby": i === 2 ? "radio-reason" : undefined,
+            });
+          }).concat([h("p", { key: "r", id: "radio-reason", style: { margin: 0, fontSize: 12 } }, "Public needs a verified booking.")]),
+        };
+      })()`,
+    },
+  },
   switch: {
     default: { export: "Switch", interactiveTarget: "button", props: `{ "aria-label": "Notifications" }` },
     checked: { export: "Switch", interactiveTarget: "button", props: `{ "aria-label": "Notifications", defaultChecked: true }` },

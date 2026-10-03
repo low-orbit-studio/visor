@@ -48,6 +48,31 @@ import { Label } from '@/components/ui/label';
   </RadioGroup>
 </ComponentPreview>
 
+## Card variant
+
+`variant="card"` draws each item as a card with a leading icon, a title and a one-line description. The chosen card is a lifted fill with a light inset edge and a check mark, so selection is never carried by colour alone. A `disabled` item stays in place and stays readable, is skipped by the arrow keys, and says why when you pass `aria-describedby`.
+
+<ComponentPreview
+  title="Card Radio Group"
+  code={"<RadioGroup variant=\"card\" defaultValue=\"team\" aria-label=\"Visibility\">\n  <RadioGroupItem value=\"you\" title=\"Just You\" description=\"Only you can see it.\" />\n  <RadioGroupItem value=\"team\" title=\"Your Team\" description=\"Your team can see it.\" />\n  <RadioGroupItem value=\"public\" title=\"Public\" description=\"Anyone can see it.\" disabled aria-describedby=\"why-public\" />\n  <p id=\"why-public\">Public needs a verified booking.</p>\n</RadioGroup>"}
+>
+  <RadioGroup variant="card" defaultValue="team" aria-label="Visibility" style={{ maxWidth: '24rem' }}>
+    <RadioGroupItem value="you" title="Just You" description="Only you can see it." />
+    <RadioGroupItem value="team" title="Your Team" description="Your team can see it." />
+    <RadioGroupItem value="public" title="Public" description="Anyone can see it." disabled aria-describedby="why-public-demo" />
+    <p id="why-public-demo" style={{ margin: 0, fontSize: '0.75rem' }}>Public needs a verified booking.</p>
+  </RadioGroup>
+</ComponentPreview>
+
+| Item prop | Purpose |
+| --- | --- |
+| `icon` | Leading icon or swatch; decorative and hidden from assistive tech |
+| `title` | The option's name; it is the item's accessible name |
+| `description` | One line saying what the option means; it describes the item |
+| `aria-describedby` | An id saying why an item is disabled; announced after the description |
+
+The resting edge reads the shared `--control-edge-*` tokens, so `--control-edge-width: 0` turns it off; focus and invalid keep drawing at `--control-state-edge-width`. Per-component overrides: `--radio-card-bg`, `--radio-card-selected-bg`, `--radio-card-selected-border`, `--radio-card-border`, `--radio-card-radius`, `--radio-card-icon-size`.
+
 ## Installation
 
 ```bash
@@ -88,7 +113,7 @@ import { Label } from '@/components/ui/label/label';
 | Component | Element | Purpose |
 | --- | --- | --- |
 | `RadioGroup` | `<div>` | Root container with `role="radiogroup"` managing selection state |
-| `RadioGroupItem` | `<button>` | Individual radio option with `role="radio"` and circle indicator |
+| `RadioGroupItem` | `<button>` | Individual radio option with `role="radio"` and circle indicator (or, in the card variant, icon, title, description and check mark) |
 
 ## Accessibility
 
@@ -96,4 +121,5 @@ import { Label } from '@/components/ui/label/label';
 - `RadioGroup` renders with `role="radiogroup"`; each `RadioGroupItem` renders with `role="radio"`
 - Wrap the group in a `<Fieldset>` with a `<FieldsetLegend>` to give the group an accessible name
 - Each item should have an associated `<Label>` via matching `htmlFor`/`id`
-- Keyboard: Arrow keys move selection within the group; Tab moves focus to/from the group
+- Keyboard: Arrow keys move selection within the group and skip disabled items; Tab moves focus to/from the group
+- Card variant: the title names the item (`aria-labelledby`), the description and any `aria-describedby` id describe it, and the chosen card carries a check mark as well as a fill

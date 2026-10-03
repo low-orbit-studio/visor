@@ -19,7 +19,7 @@ const REPO_ROOT = process.cwd()
 
 const GOVERNED = [
   "input", "textarea", "select", "checkbox", "switch",
-  "tag-input", "chip", "file-upload", "empty-state", "button",
+  "tag-input", "chip", "file-upload", "empty-state", "button", "radio-group",
 ]
 
 function readCss(component: string): string {

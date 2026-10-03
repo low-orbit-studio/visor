@@ -98,7 +98,7 @@ describe('Form-field override tokens — VI-494', () => {
 
     it('radio-group --radio-border wraps --border-default as inner fallback', () => {
       const css = readCSS('radio-group')
-      expect(css).toMatch(/var\(--radio-border,\s*var\(--border-default/)
+      expect(css).toMatch(/var\(--radio-border,\s*var\(--control-edge-color,\s*var\(--border-default/)
     })
   })
 
