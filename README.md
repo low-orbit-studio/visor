@@ -347,7 +347,7 @@ emits no extra CSS at all. Bind one and every consuming surface follows.
 
 Families: `table` · `data-table` · `chip` · `badge` · `status-badge` ·
 `filter-bar` · `page-header` · `empty-state` · `banner` · `sidebar` · `tabs` ·
-`skeleton` · `spinner` · `checkbox` · `admin-ui`. The full token list, with each
+`skeleton` · `spinner` · `checkbox` · `tooltip` · `admin-ui`. The full token list, with each
 one's fallback, is in [Component Tokens](https://visor.design/docs/themes/component-tokens)
 and in [`docs/token-rules.md`](./docs/token-rules.md).
 

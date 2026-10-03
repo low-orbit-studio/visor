@@ -304,5 +304,8 @@ components:
     font-family: "\"Courier New\", monospace"
     text-transform: uppercase
     letter-spacing: "3px"
+  tooltip:
+    bg: "#ff00aa"
+    text: "#2b0a3d"
   admin-ui:
     marquee-family: "\"Courier New\", monospace"

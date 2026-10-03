@@ -620,6 +620,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "tooltip": {
+          "type": "object",
+          "description": "Tooltip ground and ink, so a dark theme can keep the label legible without retuning the shared inverse pair other components read. Keys: bg, text.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "admin-ui": {
           "type": "object",
           "description": "Structural roles the admin-ui pattern owns. `marquee-family` is the display face for KPI hero figures and marquee page titles — the role the admin-ui portability audit named as the one piece of ENTR brand coupling a new theme must rebind. Keys: marquee-family.",

@@ -11,12 +11,21 @@ const Tooltip = TooltipPrimitive.Root
 
 const TooltipTrigger = TooltipPrimitive.Trigger
 
+interface TooltipContentProps
+  extends React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content> {
+  /**
+   * Element the tooltip portals into. Defaults to `document.body`. Pass the
+   * root of a class-scoped theme so the tooltip inherits that theme's tokens.
+   */
+  container?: React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Portal>["container"]
+}
+
 const TooltipContent = React.forwardRef<
   React.ElementRef<typeof TooltipPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
->(({ className, sideOffset = 4, ...props }, ref) => {
+  TooltipContentProps
+>(({ className, sideOffset = 4, container, ...props }, ref) => {
   return (
-    <TooltipPrimitive.Portal>
+    <TooltipPrimitive.Portal container={container}>
       <TooltipPrimitive.Content
         ref={ref}
         data-slot="tooltip-content"
@@ -30,3 +39,4 @@ const TooltipContent = React.forwardRef<
 TooltipContent.displayName = "TooltipContent"
 
 export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger }
+export type { TooltipContentProps }

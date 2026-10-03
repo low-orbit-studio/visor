@@ -7,10 +7,10 @@
   align-items: center;
   gap: calc(var(--spacing-1, 0.25rem) * 1.5);
   border-radius: var(--radius-lg, 0.5rem);
-  background-color: var(--surface-overlay, #111827);
+  background-color: var(--tooltip-bg, var(--surface-overlay, #111827));
   padding: calc(var(--spacing-1, 0.25rem) * 1.5) var(--spacing-3, 0.75rem);
   font-size: var(--font-size-xs, 0.75rem);
-  color: var(--text-inverse, #ffffff);
+  color: var(--tooltip-text, var(--text-inverse, #ffffff));
   box-shadow: var(--shadow-md);
   animation-duration: var(--motion-duration-150, 150ms);
   animation-timing-function: var(--motion-easing-enter, ease-out);
