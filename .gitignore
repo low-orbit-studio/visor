@@ -120,3 +120,5 @@ packages/docs/public/themes/*.visor.yaml
 
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 /graft/
+# graft's hook helpers — `graft build` bakes a machine-specific install path into them.
+/.claude/helpers/graft-*.cjs
