@@ -77,14 +77,16 @@
 
 /* Sizes */
 .sizeSm {
-  height: var(--chip-sm-height, 1.5rem);
+  --label-box-height: var(--chip-sm-height, 1.5rem);
+  height: var(--label-box-height);
   padding: 0 var(--chip-sm-padding-x, var(--spacing-2, 0.5rem));
   font-size: var(--chip-sm-font-size, var(--font-size-xs, 0.75rem));
   gap: var(--spacing-1, 0.25rem);
 }
 
 .sizeMd {
-  height: var(--chip-md-height, 2rem);
+  --label-box-height: var(--chip-md-height, 2rem);
+  height: var(--label-box-height);
   padding: 0 var(--chip-md-padding-x, var(--spacing-3, 0.75rem));
   font-size: var(--chip-md-font-size, var(--font-size-sm, 0.875rem));
   gap: var(--spacing-1, 0.25rem);
@@ -97,7 +99,8 @@
 }
 
 .sizeLg {
-  height: var(--chip-lg-height, 2.5rem);
+  --label-box-height: var(--chip-lg-height, 2.5rem);
+  height: var(--label-box-height);
   padding: 0 var(--chip-lg-padding-x, var(--spacing-4, 1rem));
   font-size: var(--chip-lg-font-size, var(--font-size-base, 1rem));
   gap: var(--spacing-2, 0.5rem);
@@ -346,4 +349,24 @@ button.base,
 
 :global([data-density="editorial"]) .filterChip[data-selected="false"] {
   background-color: var(--surface-elev, color-mix(in srgb, var(--surface-card), var(--surface-muted, var(--surface-card))));
+}
+
+/* Label centring (VI-684, shared spec: docs/label-centering.md). The label's line
+   box is trimmed to the capital-to-baseline band, so the flex container centres
+   the ink and not the font's ascent/descent. padding-block hands back the room
+   the trim took, so the box (and descenders under overflow: hidden) are
+   unchanged. Without text-box (Firefox) rendering is exactly what it was. */
+@supports (text-box: trim-both cap alphabetic) {
+  .label {
+    text-box: trim-both cap alphabetic;
+    padding-block: calc((1lh - 1cap) / 2);
+  }
+}
+
+/* Blink only: it snaps the baseline to a whole CSS px; this hands back what the
+   snap took. WebKit places the baseline exactly, so it is excluded. */
+@supports (text-box: trim-both cap alphabetic) and (not (-apple-pay-button-style: black)) {
+  .label {
+    transform: translateY(calc((var(--label-box-height) + 1cap) / 2 - round((var(--label-box-height) + 1cap) / 2, 1px)));
+  }
 }

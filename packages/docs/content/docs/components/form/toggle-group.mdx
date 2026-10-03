@@ -106,3 +106,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group/toggl
 - Active items have `aria-pressed="true"` (or `aria-checked` depending on type)
 - Provide an `aria-label` on `<ToggleGroup>` to describe the purpose of the group (e.g., "Text formatting", "View mode")
 - Keyboard: Arrow keys navigate between items within the group; Space/Enter toggles the focused item
+
+## Label Centering
+
+The label is optically centred in any font: its line box is trimmed to the capital-height band, so capitals (not the font's ascent and descent) sit on the box centre, with the box size unchanged. Firefox keeps the previous rendering. Shared spec: [`docs/label-centering.md`](https://github.com/low-orbit-studio/visor/blob/main/docs/label-centering.md).

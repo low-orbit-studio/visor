@@ -25,6 +25,8 @@ export interface InkCase {
   jsx: string
   /** CSS selector, inside the case wrapper, of the control to measure (default: the first child). */
   selector?: string
+  /** CSS selector, inside the control, of the element whose horizontal extent is scanned (default: the control inset by 8px). Use it to keep an icon or caret out of the measurement. */
+  inkSelector?: string
 }
 export interface InkResult {
   id: string
@@ -49,7 +51,11 @@ export interface MeasureOptions {
   browser?: "chromium" | "webkit"
   /** deviceScaleFactor (default 4). */
   dsf?: number
+  /** Called once the page is laid out, before the measuring screenshot (zoom sheets, DOM inspection). */
+  onPage?: (page: InkPage, rects: InkRect[]) => Promise<void>
 }
+
+export interface InkRect { id: string; x: number; y: number; w: number; h: number; font: string; ix: number; iw: number }
 
 export async function measureInk(opts: MeasureOptions): Promise<InkResult[]> {
   const esbuild = (await import("esbuild")) as unknown as {
@@ -73,7 +79,7 @@ const C = { ${exposed} };
 const cases = [${opts.cases.map((c) => `{ id: ${JSON.stringify(c.id)}, el: (${c.jsx}) }`).join(",\n")}];
 createRoot(document.getElementById("root")).render(
   React.createElement("div", { style: { display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 24 } },
-    cases.map((c) => React.createElement("div", { key: c.id, "data-case": c.id, style: { display: "inline-block" } }, c.el))));`
+    cases.map((c) => React.createElement("div", { key: c.id, "data-case": c.id, style: { display: "flex", alignItems: "flex-start", flex: "none", height: 72 } }, c.el))));`
   const built = await esbuild.build({
     stdin: { contents: entry, resolveDir: ROOT, loader: "tsx", sourcefile: "ink-entry.tsx" },
     bundle: true, format: "iife", platform: "browser", jsx: "automatic", write: false, outdir: "ink-out",
@@ -109,11 +115,18 @@ createRoot(document.getElementById("root")).render(
     // Fonts are requested lazily, on first use; settle once more after layout.
     await page.evaluate("new Promise(r => setTimeout(r, 400)).then(() => document.fonts.ready).then(() => true)")
 
-    const rects = (await page.evaluate(`JSON.stringify([...document.querySelectorAll("[data-case]")].map(w => {
+    const rects = (await page.evaluate(`(() => { function cornerInset(el, r) {
+      // How far in from the sides the corner curve is still clear of the first scanned row (1.25px down), so a pill or large radius does not read as ink.
+      const rad = Math.min(parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0, r.height / 2, r.width / 2);
+      return Math.max(2, rad - Math.sqrt(Math.max(0, rad * rad - (rad - 1.25) * (rad - 1.25))) + 1.5);
+    }
+    return JSON.stringify([...document.querySelectorAll("[data-case]")].map(w => {
       const sel = ${JSON.stringify(Object.fromEntries(opts.cases.map((c) => [c.id, c.selector ?? null])))}[w.getAttribute("data-case")]; const el = sel ? w.querySelector(sel) : w.firstElementChild; const r = el.getBoundingClientRect();
-      return { id: w.getAttribute("data-case"), x: r.x + scrollX, y: r.y + scrollY, w: r.width, h: r.height, font: getComputedStyle(el).fontFamily };
-    }))`)) as string
-    const list = JSON.parse(rects) as Array<{ id: string; x: number; y: number; w: number; h: number; font: string }>
+      const isel = ${JSON.stringify(Object.fromEntries(opts.cases.map((c) => [c.id, c.inkSelector ?? null])))}[w.getAttribute("data-case")]; const ink = isel ? el.querySelector(isel) : null; const ir = ink ? ink.getBoundingClientRect() : null;
+      return { id: w.getAttribute("data-case"), x: r.x + scrollX, y: r.y + scrollY, w: r.width, h: r.height, font: getComputedStyle(el).fontFamily, ix: ir ? ir.x - r.x : cornerInset(el, r), iw: ir ? ir.width : r.width - 2 * cornerInset(el, r) };
+    })) })()`)) as string
+    const list = JSON.parse(rects) as InkRect[]
+    if (opts.onPage) await opts.onPage(page, list)
 
     const png = (await page.screenshot({ fullPage: true })) as Buffer
     const b64 = png.toString("base64")
@@ -126,14 +139,19 @@ createRoot(document.getElementById("root")).render(
         const cx = cv.getContext("2d"); cx.drawImage(img, 0, 0);
         const D = ${DSF}; const res = {};
         for (const r of ${JSON.stringify(list)}) {
-          // Exact bounding rect, in device pixels. Scan inset 2px top/bottom, 8px sides (edge + corner radius).
-          const x0 = Math.round((r.x + 8) * D), x1 = Math.round((r.x + r.w - 8) * D);
+          // Exact bounding rect, in device pixels. Scan inset 1.25px top/bottom and past the corner curve at the sides.
+          const x0 = Math.round((r.x + r.ix) * D), x1 = Math.round((r.x + r.ix + r.iw) * D);
           const y0 = Math.round(r.y * D), y1 = Math.round((r.y + r.h) * D);
           const sx = Math.max(x1 - x0, 1);
           const data = cx.getImageData(x0, y0, sx, y1 - y0).data;
           const rowPx = (row, col) => { const i = (row * sx + col) * 4; return [data[i], data[i+1], data[i+2]]; };
           const rows = y1 - y0;
-          const bg = rowPx(Math.floor(rows / 2), 0);
+          // The ground is the commonest colour in the scan (the label never covers most of it).
+          const tally = new Map(); let bg = rowPx(0, 0), best = 0;
+          for (let row = 0; row < rows; row++) for (let col = 0; col < sx; col++) {
+            const p = rowPx(row, col), k = p[0] + "," + p[1] + "," + p[2], n = (tally.get(k) || 0) + 1;
+            tally.set(k, n); if (n > best) { best = n; bg = p; }
+          }
           const dist = (p) => Math.abs(p[0]-bg[0]) + Math.abs(p[1]-bg[1]) + Math.abs(p[2]-bg[2]);
           const inset = Math.round(1.25 * D);
           // Per-row peak contrast, then sub-device-pixel edges from the edge rows' coverage.
@@ -168,9 +186,9 @@ createRoot(document.getElementById("root")).render(
   }
 }
 
-interface InkPage {
+export interface InkPage {
   setContent(html: string, o: { waitUntil: "load" }): Promise<void>
   waitForFunction(expr: string, arg: undefined, o: { timeout: number }): Promise<unknown>
   evaluate(expr: string): Promise<unknown>
-  screenshot(o: { fullPage: boolean }): Promise<Buffer>
+  screenshot(o: { fullPage?: boolean; clip?: { x: number; y: number; width: number; height: number }; path?: string }): Promise<Buffer>
 }

@@ -57,6 +57,7 @@
  * No --spacing-1.5 token exists, so the 6px step uses
  * calc(--spacing-1 + --spacing-1/2) — mirrors the pattern used in kbd. */
 .sizeSm {
+  --label-box-height: 1lh; /* VI-684: outer height, for the label correction (padding-block 0) */
   gap: var(--spacing-1, 0.25rem);
   padding: 0 calc(var(--spacing-1, 0.25rem) + var(--spacing-1, 0.25rem) / 2);
   font-size: var(--font-size-xs, 0.75rem);
@@ -67,6 +68,7 @@
    --badge-font-size retunes BOTH steps, which is the point: the badge type
    size becomes one dial instead of two. */
 .sizeMd {
+  --label-box-height: calc(1lh + var(--spacing-1, 0.25rem)); /* default padding-block is --spacing-1 / 2 twice; re-bind with --badge-md-padding */
   gap: var(--badge-md-gap, var(--spacing-1, 0.25rem));
   padding: var(--badge-md-padding, calc(var(--spacing-1, 0.25rem) / 2) var(--spacing-2, 0.5rem));
   font-size: var(--badge-font-size, var(--font-size-xs, 0.75rem));
@@ -77,6 +79,7 @@
 }
 
 .sizeLg {
+  --label-box-height: calc(1lh + 2 * var(--spacing-1, 0.25rem));
   gap: calc(var(--spacing-1, 0.25rem) + var(--spacing-1, 0.25rem) / 2);
   padding: var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem);
   font-size: var(--font-size-sm, 0.875rem);
@@ -240,4 +243,30 @@
 .iconOnly > svg {
   width: 0.875rem;
   height: 0.875rem;
+}
+
+/* Label centring (VI-684, shared spec: docs/label-centering.md). The label's line
+   box is trimmed to the capital-to-baseline band, so the flex container centres
+   the ink and not the font's ascent/descent. padding-block hands back the room
+   the trim took, so the badge's intrinsic height is unchanged. Without text-box
+   (Firefox) the span is a plain block and rendering is exactly what it was. */
+.label {
+  display: block;
+}
+
+@supports (text-box: trim-both cap alphabetic) {
+  .label {
+    text-box: trim-both cap alphabetic;
+    padding-block: calc((1lh - 1cap) / 2);
+  }
+}
+
+/* Blink only: it snaps the baseline to a whole CSS px; this hands back what the
+   snap took, from the control's outer height (--label-box-height, set per size
+   above; left unset, the correction is simply off). WebKit places the baseline
+   exactly, so it is excluded. */
+@supports (text-box: trim-both cap alphabetic) and (not (-apple-pay-button-style: black)) {
+  .label {
+    transform: translateY(calc((var(--label-box-height) + 1cap) / 2 - round((var(--label-box-height) + 1cap) / 2, 1px)));
+  }
 }

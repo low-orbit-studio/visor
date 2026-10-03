@@ -5,6 +5,7 @@ declare const styles: {
   readonly listVariantLine: string
   readonly trigger: string
   readonly label: string
+  readonly text: string
   readonly count: string
   readonly countNeutral: string
   readonly countPrimary: string

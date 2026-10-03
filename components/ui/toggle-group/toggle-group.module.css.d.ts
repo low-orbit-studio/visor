@@ -14,6 +14,7 @@ declare const styles: {
   readonly itemSizeSm: string
   readonly itemSizeMd: string
   readonly itemSizeLg: string
+  readonly label: string
 }
 
 export default styles

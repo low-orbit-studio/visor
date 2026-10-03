@@ -47,6 +47,7 @@
 .listVariantLine .trigger {
   flex: 0 0 auto;
   padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  --label-box-height: calc(1lh + var(--spacing-2, 0.5rem) * 2 + 2px);
 }
 
 /* Tabs trigger */
@@ -71,6 +72,8 @@
   outline: none;
   flex: 1;
   height: calc(100% - 2px);
+  /* VI-684: outer height, for the label correction (list height - list padding - 2px). */
+  --label-box-height: calc(var(--tabs-list-height, 2.25rem) - var(--spacing-1, 0.25rem) * 1.5 - 2px);
 }
 
 .trigger:active:not(:disabled) {
@@ -106,6 +109,12 @@
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Bare label text (no count pill) — same block, without the flex sizing of .label. */
+.text {
+  display: block;
   white-space: nowrap;
 }
 
@@ -173,4 +182,26 @@
 /* Density axis — editorial: brand primary underline for dark admin surfaces */
 :global([data-density="editorial"]) .indicator {
   background-color: var(--primary);
+}
+
+/* Label centring (VI-684, shared spec: docs/label-centering.md). The label's line
+   box is trimmed to the capital-to-baseline band, so the flex container centres
+   the ink and not the font's ascent/descent. padding-block hands back the room
+   the trim took, so the control's intrinsic box is unchanged. Without text-box
+   (Firefox) rendering is exactly what it was. */
+@supports (text-box: trim-both cap alphabetic) {
+  .text {
+    text-box: trim-both cap alphabetic;
+    padding-block: calc((1lh - 1cap) / 2);
+  }
+}
+
+/* Blink only: it snaps the baseline to a whole CSS px; this hands back what the
+   snap took, from the control's outer height (--label-box-height, set per size
+   above; left unset, the correction is simply off). WebKit places the baseline
+   exactly, so it is excluded. */
+@supports (text-box: trim-both cap alphabetic) and (not (-apple-pay-button-style: black)) {
+  .text {
+    transform: translateY(calc((var(--label-box-height) + 1cap) / 2 - round((var(--label-box-height) + 1cap) / 2, 1px)));
+  }
 }

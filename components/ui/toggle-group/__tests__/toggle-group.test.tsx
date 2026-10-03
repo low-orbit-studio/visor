@@ -105,7 +105,7 @@ describe("ToggleGroup keyboard navigation", () => {
     renderToggleGroup({ defaultValue: "left" })
     await user.click(screen.getByText("Left"))
     await user.keyboard("{ArrowRight}")
-    expect(screen.getByText("Center")).toHaveFocus()
+    expect(screen.getByRole("radio", { name: "Center" })).toHaveFocus()
   })
 })
 

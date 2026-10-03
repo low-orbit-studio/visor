@@ -35,7 +35,7 @@
   opacity: 0.5;
 }
 
-/* Label (VI-682). Bare text is wrapped in a block span whose line box is trimmed
+/* Label (VI-682; shared spec: docs/label-centering.md). Bare text is wrapped in a block span whose line box is trimmed
    to the capital-height band, so the flex container centres the ink and not the
    font's ascent/descent (which put Product Sans ~1px high in a 40px button).
    Without text-box (Firefox) the span is a plain block and rendering is exactly

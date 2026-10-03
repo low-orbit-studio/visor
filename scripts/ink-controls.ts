@@ -20,7 +20,12 @@ export const CONTROLS = {
     { id: "tabs trigger", selector: "[role=tab]", jsx: e("C.Tabs", `{ defaultValue: "a" }`, e("C.TabsList", "null", e("C.TabsTrigger", `{ value: "a" }`, `"${L}"`))) },
     ...["sm", "md", "lg"].map((s) => ({ id: `chip ${s}`, jsx: e("C.Chip", `{ size: "${s}", label: "${L}" }`) })),
     ...["sm", "md", "lg"].map((s) => ({ id: `badge ${s}`, jsx: e("C.Badge", `{ size: "${s}" }`, `"${L}"`) })),
-    { id: "select trigger", selector: "[role=combobox]", jsx: e("C.Select", `{ defaultValue: "a" }`, e("C.SelectTrigger", "null", e("C.SelectValue", `{ placeholder: "${L}" }`))) },
-    { id: "input", selector: "input", jsx: e("C.Input", `{ defaultValue: "${L}" }`) },
+    ...["sm", "md", "lg"].map((s) => ({
+      id: `select trigger ${s}`,
+      selector: "[role=combobox]",
+      inkSelector: "[data-slot=select-trigger] > span",
+      jsx: e("C.Select", "null", e("C.SelectTrigger", `{ size: "${s}" }`, e("C.SelectValue", `{ placeholder: "${L}" }`))),
+    })),
+    ...["sm", "md", "lg"].map((s) => ({ id: `input ${s}`, selector: "input", jsx: e("C.Input", `{ size: "${s}", defaultValue: "${L}" }`) })),
   ],
 }
