@@ -177,7 +177,7 @@
   gap: var(--spacing-2, 0.5rem);
 }
 
-/* Label centring (VI-684, shared spec: docs/label-centering.md). The label is a
+/* Label centring (VI-684, shared spec: the label-centering doc under docs/). The label is a
    block span whose line box is trimmed to the capital-to-baseline band, so the
    flex container centres the ink and not the font's ascent/descent. Without
    text-box (Firefox) it is a plain block and rendering is unchanged. */

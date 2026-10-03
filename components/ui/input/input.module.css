@@ -150,7 +150,7 @@
   padding-left: calc(var(--spacing-5, 1.25rem) + var(--spacing-3, 0.75rem) + 1.125em);
 }
 
-/* Label centring (VI-684, shared spec: docs/label-centering.md). Chromium trims
+/* Label centring (VI-684, shared spec: the label-centering doc under docs/). Chromium trims
    an <input>'s inner line box to the capital-to-baseline band, so the field
    centres the typed value and the placeholder by their capitals and not by the
    font's ascent/descent. The box does not change: the field's height is its

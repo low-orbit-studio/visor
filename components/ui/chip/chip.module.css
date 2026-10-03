@@ -351,7 +351,7 @@ button.base,
   background-color: var(--surface-elev, color-mix(in srgb, var(--surface-card), var(--surface-muted, var(--surface-card))));
 }
 
-/* Label centring (VI-684, shared spec: docs/label-centering.md). The label's line
+/* Label centring (VI-684, shared spec: the label-centering doc under docs/). The label's line
    box is trimmed to the capital-to-baseline band, so the flex container centres
    the ink and not the font's ascent/descent. padding-block hands back the room
    the trim took, so the box (and descenders under overflow: hidden) are
