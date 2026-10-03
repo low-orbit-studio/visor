@@ -94,6 +94,14 @@ describe("SaveStatus (VI-657)", () => {
     })
   })
 
+  it("sizers carry every label, including overrides, hidden from assistive tech", () => {
+    const { container } = render(<SaveStatus status="saved" labels={{ refused: "Nicht gespeichert" }} />)
+    const sizers = Array.from(container.querySelectorAll("[data-slot=save-status-sizer]"))
+    expect(sizers.map((e) => e.textContent)).toEqual(["Saved", "Saving", "Syncing", "Unsaved", "Nicht gespeichert"])
+    for (const e of sizers) expect(e).toHaveAttribute("aria-hidden", "true")
+    expect(screen.getAllByRole("status")).toHaveLength(1)
+  })
+
   it("passes axe in every state", async () => {
     for (const [status] of LABELS) {
       const { container, unmount } = render(<SaveStatus status={status} onRetry={() => {}} />)

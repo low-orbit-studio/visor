@@ -846,7 +846,7 @@ const saveStatusFamily: ComponentTokenFamily = {
   description:
     "SaveStatus readout — the fixed-width slot, its type, the Syncing ink and the Unsaved dot, so the readout never reflows its row.",
   tokens: [
-    { key: "width", property: "width", description: "Slot width. Fixed, so the row never reflows between states.", consumers: at(SAVE_STATUS, "7.5rem") },
+    { key: "width", property: "width", description: "Slot width. Unbound, the slot is as wide as the longest label in the current font plus the retry mark, the same in every state. Bind it to pin a width; a longer label then truncates inside it.", consumers: at(SAVE_STATUS, "auto") },
     { key: "syncing-color", property: "color", description: "Ink of the Syncing state (a first sync from an outside source). Unbound it reads `--text-secondary`.", consumers: at(SAVE_STATUS, "var(--text-secondary, #6b7280)") },
     { key: "dot-size", property: "width", description: "Diameter of the dot that draws Unsaved when `unsavedAs=\"dot\"`. The slot width does not change.", consumers: at(SAVE_STATUS, "var(--spacing-2, 0.5rem)") },
     { key: "font-family", property: "font-family", description: "Readout family (e.g. the theme's mono).", consumers: at(SAVE_STATUS, "revert-layer") },

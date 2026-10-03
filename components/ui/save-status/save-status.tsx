@@ -12,6 +12,8 @@ import styles from "./save-status.module.css"
  */
 export type SaveStatusState = "saved" | "saving" | "syncing" | "unsaved" | "refused"
 
+const STATES: SaveStatusState[] = ["saved", "saving", "syncing", "unsaved", "refused"]
+
 const DEFAULT_LABELS: Record<SaveStatusState, string> = {
   saved: "Saved",
   saving: "Saving",
@@ -37,7 +39,8 @@ export interface SaveStatusProps extends Omit<React.HTMLAttributes<HTMLSpanEleme
 }
 
 /**
- * The autosave readout: status text in a fixed-width slot, so the row it
+ * The autosave readout: status text in a slot as wide as the longest label
+ * (in the theme's own font) plus the retry mark, or `--save-status-width`, so the row it
  * sits in never reflows as the state changes. It is status text, not a
  * button; the only control is the retry mark, shown after a failed save.
  * It draws no edge.
@@ -46,6 +49,7 @@ const SaveStatus = React.forwardRef<HTMLSpanElement, SaveStatusProps>(
   ({ status, onRetry, labels, unsavedAs = "text", retryLabel = "Retry saving", className, ...props }, ref) => {
     const label = labels?.[status] ?? DEFAULT_LABELS[status]
     const asDot = status === "unsaved" && unsavedAs === "dot"
+    const showRetry = status === "refused" && onRetry
     return (
       <span
         ref={ref}
@@ -55,16 +59,23 @@ const SaveStatus = React.forwardRef<HTMLSpanElement, SaveStatusProps>(
         className={cn(styles.root, className)}
         {...props}
       >
-        {asDot ? <span data-slot="save-status-dot" className={styles.dot} aria-hidden="true" /> : null}
-        <span
-          data-slot="save-status-text"
-          className={cn(styles.text, asDot && styles.hidden)}
-          role="status"
-          aria-live="polite"
-        >
-          {label}
+        <span data-slot="save-status-cell" className={styles.cell}>
+          {STATES.map((state) => (
+            <span key={state} data-slot="save-status-sizer" className={styles.sizer} aria-hidden="true">
+              {labels?.[state] ?? DEFAULT_LABELS[state]}
+            </span>
+          ))}
+          {asDot ? <span data-slot="save-status-dot" className={styles.dot} aria-hidden="true" /> : null}
+          <span
+            data-slot="save-status-text"
+            className={cn(styles.text, asDot && styles.hidden)}
+            role="status"
+            aria-live="polite"
+          >
+            {label}
+          </span>
         </span>
-        {status === "refused" && onRetry ? (
+        {showRetry ? (
           <button
             type="button"
             data-slot="save-status-retry"
@@ -74,7 +85,9 @@ const SaveStatus = React.forwardRef<HTMLSpanElement, SaveStatusProps>(
           >
             <ArrowClockwise aria-hidden="true" />
           </button>
-        ) : null}
+        ) : (
+          <span data-slot="save-status-retry-reserve" className={styles.reserve} aria-hidden="true" />
+        )}
       </span>
     )
   }

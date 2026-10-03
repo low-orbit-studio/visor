@@ -10,7 +10,10 @@
   flex: none;
   align-items: center;
   gap: var(--spacing-1, 0.25rem);
-  width: var(--save-status-width, 7.5rem);
+  /* Sized from content: the cell below is as wide as the longest label in
+     the current font, and the retry mark's room is always reserved, so the
+     slot is one width in every state. The token overrides it. */
+  width: var(--save-status-width, auto);
   /* Tall enough for the retry mark in every state, so it adds no height. */
   min-height: var(--button-icon-size, 1rem);
   font-size: var(--font-size-xs, 0.75rem);
@@ -45,6 +48,28 @@
 
 /* A longer custom label (a translation) truncates inside the slot rather
    than painting past it. */
+.cell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Every label, stacked invisibly in the one cell, sets its width. */
+.sizer,
+.text,
+.dot {
+  grid-area: 1 / 1;
+}
+
+.sizer {
+  visibility: hidden;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
 .text {
   min-width: 0;
   overflow: hidden;
@@ -55,7 +80,7 @@
    would start and takes the unsaved ink; the slot is unchanged, so the row
    does not move. The label stays in the DOM as visually hidden text. */
 .dot {
-  flex: none;
+  justify-self: start;
   width: var(--save-status-dot-size, var(--spacing-2, 0.5rem));
   height: var(--save-status-dot-size, var(--spacing-2, 0.5rem));
   border-radius: var(--radius-full, 9999px);
@@ -63,12 +88,18 @@
 }
 
 .hidden {
-  position: absolute;
   width: 1px;
   height: 1px;
-  overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+/* The retry mark's room, kept when the mark is not shown, so showing it
+   never widens the slot. */
+.reserve {
+  flex: none;
+  width: var(--button-icon-size, 1rem);
+  height: var(--button-icon-size, 1rem);
 }
 
 .retry {

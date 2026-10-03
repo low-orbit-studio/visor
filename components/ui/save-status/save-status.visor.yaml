@@ -32,7 +32,7 @@ variants:
 
 theme_hooks:
   - name: --save-status-width
-    description: Slot width (7.5rem). Fixed, so the row never reflows between states.
+    description: Slot width. Unset, the slot is sized from content (the longest label in the current font plus the retry mark), the same in every state. Set, it wins and a longer label truncates.
   - name: --save-status-syncing-color
     description: Ink of the Syncing state. Unbound it reads --text-secondary.
   - name: --save-status-dot-size

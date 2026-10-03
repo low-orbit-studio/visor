@@ -48,19 +48,36 @@ describe("VI-657 — SaveStatus (real browser)", () => {
       for (const s of seen) {
         expect({ ...s, state: undefined }, s.state).toEqual({ ...seen[0], state: undefined })
       }
-      expect(seen[0].width).toBe(120) // 7.5rem
+      expect(seen[0].width).toBeGreaterThan(0)
     }, 60_000)
 
-    it("mutation control — a slot sized by its label DOES reflow", async (ctx) => {
+    it("mutation control — a slot sized by its own label (sizers removed) DOES reflow", async (ctx) => {
       if (!ready()) return ctx.skip()
       const widths: number[] = []
       for (const state of ["default", "refused"]) {
-        const page = await open("save-status", state, { extraCss: `${ROW} ${ROOT} { width: auto !important; }` })
+        const page = await open("save-status", state, { extraCss: `${ROW} ${ROOT} [data-slot=save-status-sizer], ${ROOT} [data-slot=save-status-retry-reserve] { display: none !important; }` })
         widths.push(((await page.evaluate(geometry)) as { width: number }).width)
         await page.close()
       }
       expect(widths[0]).not.toBe(widths[1])
     }, 60_000)
+
+    it("no state truncates or overflows, in a proportional or a mono font", async (ctx) => {
+      if (!ready()) return ctx.skip()
+      for (const font of ["Arial, sans-serif", "ui-monospace, Menlo, monospace"]) {
+        for (const state of STATES) {
+          const page = await open("save-status", state, { extraCss: `#root { font-family: ${font}; }` })
+          const r = (await page.evaluate(`(function () {
+            var t = document.querySelector("#root [data-slot=save-status-text]");
+            var cell = document.querySelector("#root [data-slot=save-status-cell]");
+            var root = document.querySelector(${JSON.stringify(ROOT)});
+            return { text: t.closest("[data-as=dot]") ? 0 : t.scrollWidth - t.clientWidth, cell: cell.scrollWidth - cell.clientWidth, root: root.querySelector("[data-slot=save-status-retry]") ? 0 : root.scrollWidth - root.clientWidth }; // the retry hit target is a deliberate ::before outset
+          })()`)) as { text: number; cell: number; root: number }
+          await page.close()
+          expect({ font, state, ...r }).toEqual({ font, state, text: 0, cell: 0, root: 0 })
+        }
+      }
+    }, 90_000)
 
     // A label longer than the slot (a translation) must not paint past it.
     // Screenshot the strip just right of a 40px slot, then again with the
@@ -86,7 +103,7 @@ describe("VI-657 — SaveStatus (real browser)", () => {
 
     it("mutation control — a label left to overflow DOES paint past the slot", async (ctx) => {
       if (!ready()) return ctx.skip()
-      expect((await outside(`${ROOT} > span { overflow: visible !important; }`)).n).toBeGreaterThan(0)
+      expect((await outside(`${ROOT} [data-slot=save-status-cell], ${ROOT} [data-slot=save-status-text] { overflow: visible !important; }`)).n).toBeGreaterThan(0)
     }, 30_000)
 
     it("--save-status-width sets the slot, and it still holds across states", async (ctx) => {
