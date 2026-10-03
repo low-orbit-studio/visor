@@ -112,6 +112,7 @@ npx visor add <component-name> --overwrite
 | `switch` | Toggle between on/off states |
 | `tag-input` | Multi-value input with tag chips |
 | `textarea` | Multi-line text input |
+| `time-picker` | Typeable time input with hour and minute popover, 12- or 24-hour |
 | `toggle-group` | Multi-option toggle button group |
 
 ### Layout (4)

@@ -1230,6 +1230,21 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'time-picker': [
+    { name: 'value', type: 'string', description: 'Selected time as 24-hour "HH:MM".' },
+    { name: 'defaultValue', type: 'string', description: 'Initial "HH:MM" when uncontrolled.' },
+    { name: 'onChange', type: '(value: string | undefined) => void', description: 'Called with 24-hour "HH:MM", or undefined when the field is cleared.' },
+    { name: 'hourCycle', type: '12 | 24', default: 'from locale', description: '12 shows "4:30 PM" and adds an AM/PM column; 24 shows "16:30".' },
+    { name: 'locale', type: 'string', default: 'document language', description: 'BCP 47 locale that decides the default hour cycle.' },
+    { name: 'minuteStep', type: 'number', default: '1', description: 'Minutes between popover choices. Typed times snap to the nearest step.' },
+    { name: 'placeholder', type: 'string', description: 'Text shown when no time is selected.' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Disables the field and the clock button.' },
+    { name: 'open', type: 'boolean', description: 'Controlled popover state.' },
+    { name: 'onOpenChange', type: '(open: boolean) => void', description: 'Called when the popover opens or closes.' },
+    { name: 'container', type: 'HTMLElement | null', description: 'Element the popover portals into. Defaults to document.body.' },
+    { name: 'triggerLabel', type: 'string', default: "'Choose time'", description: 'Accessible name of the clock button.' },
+  ],
+
   'date-picker': [
     {
       name: 'value',

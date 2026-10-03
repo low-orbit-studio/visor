@@ -88,6 +88,7 @@ Interactive controls that accept user input.
 | switch | ✅ Documented | Toggle switch input |
 | tag-input | ✅ Documented | Multi-value tag entry |
 | textarea | ✅ Documented | Multi-line text input |
+| time-picker | ✅ Documented | Time input with hour/minute popover |
 | toggle-group | ✅ Documented | Multi-option toggle buttons |
 
 ### general/

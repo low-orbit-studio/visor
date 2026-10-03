@@ -367,6 +367,14 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     default: { export: "Input", interactiveTarget: "input", props: `{ placeholder: "Email address" }` },
     invalid: { export: "Input", interactiveTarget: "input", props: `{ defaultValue: "not-an-email", "aria-invalid": true }` },
   },
+  // VI-624: `default` is the closed field; the popover fixtures render open so the
+  // two-column (24-hour) and three-column (12-hour) anatomy can be inspected.
+  "time-picker": {
+    default: { export: "TimePicker", interactiveTarget: "input", props: `{ "aria-label": "Doors open", hourCycle: 12, minuteStep: 15, defaultValue: "16:00" }` },
+    "popover-24h": { export: "TimePicker", interactiveTarget: "input", props: `{ "aria-label": "Set start", hourCycle: 24, minuteStep: 15, defaultValue: "16:15", open: true }` },
+    "popover-12h": { export: "TimePicker", interactiveTarget: "input", props: `{ "aria-label": "Doors open", hourCycle: 12, minuteStep: 15, defaultValue: "16:15", open: true }` },
+    invalid: { export: "TimePicker", interactiveTarget: "input", props: `{ "aria-label": "Doors open", hourCycle: 12, defaultValue: "16:00", "aria-invalid": true }` },
+  },
   textarea: {
     default: { export: "Textarea", interactiveTarget: "textarea", props: `{ placeholder: "Tell us more" }` },
     invalid: { export: "Textarea", interactiveTarget: "textarea", props: `{ defaultValue: "Too short", "aria-invalid": true }` },

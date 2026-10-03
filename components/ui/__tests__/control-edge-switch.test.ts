@@ -22,7 +22,7 @@ import { REST_EDGE, bundle, close, launch, open, pixelDelta, ready } from "./ren
 /** Every fixture of every component the switch governs. */
 const COMPONENTS = [
   "input", "textarea", "select", "checkbox", "switch",
-  "tag-input", "chip", "file-upload", "empty-state", "button", "inline-edit", "radio-group",
+  "tag-input", "chip", "file-upload", "empty-state", "button", "inline-edit", "radio-group", "time-picker",
 ]
 /** Fixtures that draw a visible resting edge while the switch is on. */
 const EDGED = new Set([
@@ -31,6 +31,7 @@ const EDGED = new Set([
   "button/outline", "button/gated", "button/dlg-ghost", "button/dlg-outline", "button/icon-outline",
   "inline-edit/editing", "inline-edit/heading-editing",
   "radio-group/default", "radio-group/card",
+  "time-picker/default", "time-picker/popover-24h", "time-picker/popover-12h",
 ])
 /** Fixtures that draw a dashed (drop) edge. */
 const DASHED = new Set(["file-upload/default", "empty-state/default"])
@@ -169,7 +170,7 @@ describe("VI-655 — one switch turns every form-control edge off (real browser)
       }, 30_000)
     }
 
-    for (const component of ["input", "textarea", "select", "checkbox", "switch"]) {
+    for (const component of ["input", "textarea", "select", "checkbox", "switch", "time-picker"]) {
       it(`${component}: invalid still draws a visible ring at --control-edge-width: 0`, async (ctx) => {
         if (!ready()) return ctx.skip()
         const page = await open(component, "invalid", { scopeCss: OFF })
