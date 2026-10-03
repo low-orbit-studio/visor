@@ -233,6 +233,25 @@ export interface ButtonProps
   pendingMinDuration?: number
 }
 
+/**
+ * Wrap bare text in a block label so the stylesheet can trim its line box to the
+ * capital-to-baseline band (`text-box`, see `.label`). Flexbox centres the line
+ * box, whose height comes from the font's ascent and descent rather than from
+ * where its capitals sit, so an untrimmed label lands off-centre by an amount
+ * that differs per font (VI-682). Elements (icons, spinners) pass through.
+ */
+function wrapLabel(children: React.ReactNode): React.ReactNode {
+  return React.Children.map(children, (child) =>
+    typeof child === "string" || typeof child === "number" ? (
+      <span className={styles.label} data-slot="button-text">
+        {child}
+      </span>
+    ) : (
+      child
+    )
+  )
+}
+
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
@@ -318,7 +337,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {showPendingChrome ? (
           <>
             <span className={styles.pendingLabel} data-slot="button-label">
-              {children}
+              {wrapLabel(children)}
             </span>
             <span
               className={styles.pendingOverlay}
@@ -331,8 +350,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
               ) : null}
             </span>
           </>
+        ) : asChild && React.isValidElement<{ children?: React.ReactNode }>(children) ? (
+          // Slot merges onto its one child, so the child's own text is wrapped
+          // in place; its props and ref are kept by cloneElement.
+          React.cloneElement(children, undefined, wrapLabel(children.props.children))
         ) : (
-          children
+          wrapLabel(children)
         )}
       </Comp>
     )

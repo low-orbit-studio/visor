@@ -127,6 +127,10 @@ development it warns in the console without one. For a hover label, compose
   </div>
 </ComponentPreview>
 
+## Label Centering
+
+Bare text in a `Button` is wrapped in a `<span data-slot="button-text">` whose line box is trimmed to the capital-height band (`text-box: trim-both cap alphabetic`). Flexbox then centres the letters themselves rather than the font's ascent and descent, so the label sits optically centred in every font (a regular line box sits up to a pixel high in fonts like Product Sans). Box sizes are unchanged; the `dlg` size, whose height comes from padding, is left untrimmed. Browsers without `text-box` (Firefox) keep the previous rendering. Elements you pass as children (icons) are not wrapped.
+
 ## Disabled State
 
 <ComponentPreview

@@ -35,6 +35,41 @@
   opacity: 0.5;
 }
 
+/* Label (VI-682). Bare text is wrapped in a block span whose line box is trimmed
+   to the capital-height band, so the flex container centres the ink and not the
+   font's ascent/descent (which put Product Sans ~1px high in a 40px button).
+   Without text-box (Firefox) the span is a plain block and rendering is exactly
+   what it was before. */
+.label {
+  display: block;
+}
+
+@supports (text-box: trim-both cap alphabetic) {
+  .label {
+    text-box: trim-both cap alphabetic;
+  }
+
+  /* The compact dlg size is height:auto, so trimming would shrink its box. */
+  .sizeDlg .label {
+    text-box: normal;
+  }
+}
+
+/* Blink only. Blink snaps the text baseline to a whole CSS px, which leaves the
+   trimmed ink up to half a pixel off for fractional cap heights (12px type). The
+   baseline lands at (box + cap) / 2; this hands back what the snap took. WebKit
+   positions the baseline exactly, so correcting there would overshoot. The
+   -apple-pay-button-style probe is the WebKit-only property that tells them apart. */
+@supports (text-box: trim-both cap alphabetic) and (not (-apple-pay-button-style: black)) {
+  .label {
+    transform: translateY(calc((var(--label-box-height) + 1cap) / 2 - round((var(--label-box-height) + 1cap) / 2, 1px)));
+  }
+
+  .sizeDlg .label {
+    transform: none;
+  }
+}
+
 /* Variants */
 .variantDefault {
   background-color: var(--interactive-primary-bg, var(--primary, #111827));
@@ -175,14 +210,16 @@
    size. Unset, each size keeps its shipped type size and rounding; case and
    tracking live in visor-base, after the dlg size. */
 .sizeSm {
-  height: 2rem;
+  --label-box-height: 2rem;
+  height: var(--label-box-height);
   padding: 0 var(--spacing-3, 0.75rem);
   font-size: var(--button-sm-font-size, var(--font-size-xs, 0.75rem));
   border-radius: var(--button-sm-radius, var(--button-radius, var(--radius-md, 0.375rem)));
 }
 
 .sizeMd {
-  height: 2.5rem;
+  --label-box-height: 2.5rem;
+  height: var(--label-box-height);
   padding: 0 var(--spacing-4, 1rem);
   line-height: 1;
   font-size: var(--button-md-font-size, var(--font-size-sm, 0.875rem));
@@ -194,12 +231,14 @@
 }
 
 :global([data-density="editorial"]) .sizeMd {
-  height: 2.125rem;
+  --label-box-height: 2.125rem;
+  height: var(--label-box-height);
   line-height: normal;
 }
 
 .sizeLg {
-  height: 3rem;
+  --label-box-height: 3rem;
+  height: var(--label-box-height);
   padding: 0 var(--spacing-6, 1.5rem);
   font-size: var(--button-lg-font-size, var(--font-size-base, 1rem));
   border-radius: var(--button-lg-radius, var(--button-radius, var(--radius-md, 0.375rem)));
