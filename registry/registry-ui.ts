@@ -80,6 +80,28 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "time-picker",
+    type: "registry:ui",
+    description:
+      "A time picker with a typeable field and a popover of hour and minute columns, in a 12- or 24-hour cycle with a configurable minute step.",
+    dependencies: [
+      "@radix-ui/react-popover",
+      "@phosphor-icons/react",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/time-picker/time-picker.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/time-picker/time-picker.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "timeline",
     type: "registry:ui",
     description:

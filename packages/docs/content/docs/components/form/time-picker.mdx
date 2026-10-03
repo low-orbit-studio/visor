@@ -1,0 +1,102 @@
+---
+title: Time Picker
+description: A time picker with a typeable field and a popover of hour and minute columns, in a 12- or 24-hour cycle with a configurable minute step.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { TimePicker } from '@/components/ui/time-picker';
+
+## Default
+
+The hour cycle comes from the locale. The value in and out is always a 24-hour `"HH:MM"` string.
+
+<ComponentPreview
+  title="Time Picker"
+  code={"import { TimePicker } from '@/components/ui/time-picker/time-picker';\n\n<TimePicker aria-label=\"Doors open\" />"}
+>
+  <TimePicker aria-label="Doors open" />
+</ComponentPreview>
+
+## 12-hour
+
+<ComponentPreview
+  title="12-hour with 15-minute steps"
+  code={"<TimePicker hourCycle={12} minuteStep={15} defaultValue=\"16:00\" aria-label=\"Doors open\" />"}
+>
+  <TimePicker hourCycle={12} minuteStep={15} defaultValue="16:00" aria-label="Doors open" />
+</ComponentPreview>
+
+## 24-hour
+
+An hour column and a minute column (00, 15, 30, 45).
+
+<ComponentPreview
+  title="24-hour with 15-minute steps"
+  code={"<TimePicker hourCycle={24} minuteStep={15} defaultValue=\"16:00\" aria-label=\"Set start\" />"}
+>
+  <TimePicker hourCycle={24} minuteStep={15} defaultValue="16:00" aria-label="Set start" />
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={"<TimePicker defaultValue=\"09:30\" disabled aria-label=\"Doors close\" />"}
+>
+  <TimePicker defaultValue="09:30" disabled aria-label="Doors close" />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add time-picker
+```
+
+This copies two files into your project:
+
+- `components/ui/time-picker/time-picker.tsx` — the component
+- `components/ui/time-picker/time-picker.module.css` — the styles
+
+## Usage
+
+```tsx
+import { TimePicker } from '@/components/ui/time-picker/time-picker';
+import { useState } from 'react';
+
+export default function Example() {
+  const [opensAt, setOpensAt] = useState<string>();
+
+  return (
+    <TimePicker
+      value={opensAt}
+      onChange={setOpensAt}
+      minuteStep={15}
+      aria-label="Doors open"
+    />
+  );
+}
+```
+
+## Typing
+
+The field is a real text input, so a time can be typed without opening the popover. It accepts `16:30`, `1630`, `4:30pm`, `4 pm` and `4p`. In the 12-hour cycle a bare hour from 1 to 12 keeps the current AM or PM. The value commits on Enter or blur, snapped to the nearest minute step; text that does not parse reverts to the last good value. Arrow Up and Arrow Down step the time by `minuteStep`, and Alt + Arrow Down opens the popover.
+
+## Hour cycle
+
+`hourCycle` is `12` or `24`. When omitted it is read from `locale`, then from the document's `lang`, then from the runtime default. Set it explicitly where server and browser locales can differ.
+
+## Inside a field control
+
+The field draws its edge from the shared `--control-edge-*` tokens and matches Input at the small size, so it shares a baseline with sibling inputs in the same row.
+
+## API Reference
+
+<PropsTable component="time-picker" />
+
+## Accessibility
+
+- The field is a labelled text input: pass `aria-label`, `aria-labelledby` or an associated `<Label htmlFor>` with `id`
+- The clock button has its own accessible name (`triggerLabel`)
+- Each popover column is a listbox with `aria-selected` options; arrow keys, Home and End move within a column, and focus lands on the selected hour when the popover opens
+- Escape closes the popover and returns focus to the clock button

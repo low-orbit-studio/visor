@@ -1,0 +1,80 @@
+name: TimePicker
+description: A time picker with a typeable field and a popover of hour and minute columns, shown in a 12- or 24-hour cycle with a configurable minute step.
+extends: HTMLInputElement
+category: form
+
+when_to_use:
+  - A wall-clock time of day in a form (doors open, start time, reminder time)
+  - Times where only a few minute values make sense (15- or 30-minute steps)
+  - Fields that must show AM/PM or 24-hour regardless of the browser's locale
+
+when_not_to_use:
+  - A date and a time together (use DatePicker beside a TimePicker, or a dedicated datetime picker)
+  - Durations or elapsed time (use NumberInput)
+  - Time zones; values are venue-local wall-clock times with no zone
+  - A native time input is acceptable and the browser locale is the right one
+
+why: >
+  The native time input renders in the browser's locale, ignores the app's, and
+  ships its own clock affordance that collides with field-control chrome.
+  TimePicker keeps the date-picker anatomy (a field with a popover trigger) but
+  the field is a real text input, so a time can be typed without opening the
+  popover. The value in and out is always a 24-hour "HH:MM" string, so a
+  consumer never parses a localised display string.
+
+props:
+  - name: value
+    type: string | undefined
+    description: 'Selected time as 24-hour "HH:MM"'
+  - name: defaultValue
+    type: string
+    description: 'Initial "HH:MM" when uncontrolled'
+  - name: onChange
+    type: "(value: string | undefined) => void"
+    description: 'Called with 24-hour "HH:MM", or undefined when the field is cleared'
+  - name: hourCycle
+    type: "12 | 24"
+    default: from locale
+    description: 12 shows "4:30 PM" and adds an AM/PM column; 24 shows "16:30"
+  - name: locale
+    type: string
+    default: document language
+    description: BCP 47 locale that decides the default hour cycle
+  - name: minuteStep
+    type: number
+    default: "1"
+    description: Minutes between popover choices; typed times snap to the nearest step
+  - name: placeholder
+    type: string
+  - name: disabled
+    type: boolean
+    default: "false"
+  - name: open
+    type: boolean
+    description: Controlled popover state
+  - name: onOpenChange
+    type: "(open: boolean) => void"
+  - name: container
+    type: HTMLElement | null
+    description: Element the popover portals into (defaults to document.body)
+  - name: triggerLabel
+    type: string
+    default: '"Choose time"'
+    description: Accessible name of the clock button
+
+dependencies:
+  - "@radix-ui/react-popover"
+  - "@phosphor-icons/react"
+
+preview_url: "https://visor.loworbit.studio/docs/components/form/time-picker"
+
+example: |
+  <TimePicker value={opensAt} onChange={setOpensAt} aria-label="Doors open" />
+
+  <TimePicker
+    hourCycle={24}
+    minuteStep={15}
+    value={start}
+    onChange={setStart}
+    aria-label="Set start"
+  />
