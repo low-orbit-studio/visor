@@ -1,5 +1,5 @@
 name: SaveStatus
-description: Autosave readout — Saved / Saving / Unsaved / Couldn't save in a fixed-width slot that never reflows its row, with a retry mark after a failed save. aria-live polite; draws no edge.
+description: Autosave readout — Saved / Saving / Syncing / Unsaved / Couldn't save in a fixed-width slot that never reflows its row, with a retry mark after a failed save. aria-live polite; draws no edge.
 extends: HTMLSpanElement
 category: feedback
 
@@ -16,7 +16,7 @@ when_not_to_use:
 why: >
   The Blacklight editor autosaves on a 600ms debounce with no Save button, and needs a
   readout that says where each section stands without moving the row it sits in. SaveStatus
-  is that readout: four fixed labels in a slot whose width is a token, so the row never
+  is that readout: five fixed labels in a slot whose width is a token, so the row never
   reflows as the state changes, announced politely to assistive tech. It is status text,
   not a control — the only control is the retry mark after a failed save, which is the
   editor's icon mark (the icon Button's size, pad and ink). It draws no edge, so there is
@@ -26,12 +26,17 @@ variants:
   status:
     saved: Saved — muted, the resting state.
     saving: Saving — a write is in flight.
-    unsaved: Unsaved — a change is waiting for the debounce.
+    syncing: Syncing — a first sync from an outside source is writing rows the user did not type. The consumer sets it; useAutosave never emits it.
+    unsaved: Unsaved — a change is waiting for the debounce. Draw it as a dot alone with unsavedAs="dot"; the label stays as the dot's accessible name.
     refused: Couldn't save — validation refused the value or the write failed; shows a retry mark when onRetry is passed.
 
 theme_hooks:
   - name: --save-status-width
     description: Slot width (7.5rem). Fixed, so the row never reflows between states.
+  - name: --save-status-syncing-color
+    description: Ink of the Syncing state. Unbound it reads --text-secondary.
+  - name: --save-status-dot-size
+    description: Diameter of the Unsaved dot (0.5rem). The slot width does not change.
   - name: --save-status-font-family / --save-status-text-transform / --save-status-letter-spacing
     description: Readout family, case and tracking. Unset, the readout inherits from its row and any rule of yours wins.
   - name: --button-icon-size / --button-icon-pad / --button-icon-ghost-color
@@ -39,14 +44,18 @@ theme_hooks:
 
 props:
   - name: status
-    type: "'saved' | 'saving' | 'unsaved' | 'refused'"
+    type: "'saved' | 'saving' | 'syncing' | 'unsaved' | 'refused'"
     description: Where the value stands — pass useAutosave(...).status.
   - name: onRetry
     type: "() => void"
     description: Shows a retry mark while status is refused. Pass useAutosave(...).retry.
   - name: labels
-    type: "Partial<Record<'saved' | 'saving' | 'unsaved' | 'refused', string>>"
-    description: Override any of the four labels, e.g. to translate them.
+    type: "Partial<Record<'saved' | 'saving' | 'syncing' | 'unsaved' | 'refused', string>>"
+    description: Override any of the five labels, e.g. to translate them.
+  - name: unsavedAs
+    type: "'text' | 'dot'"
+    default: '"text"'
+    description: How unsaved is drawn. dot draws a dot alone, keeping the label as visually hidden text so it is still announced.
   - name: retryLabel
     type: string
     default: '"Retry saving"'

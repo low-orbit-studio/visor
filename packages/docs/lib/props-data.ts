@@ -3064,9 +3064,9 @@ export const propsData: Record<string, PropDef[]> = {
   'save-status': [
     {
       name: 'status',
-      type: "'saved' | 'saving' | 'unsaved' | 'refused'",
+      type: "'saved' | 'saving' | 'syncing' | 'unsaved' | 'refused'",
       required: true,
-      description: 'Where the value stands — pass `useAutosave(...).status`.',
+      description: 'Where the value stands — pass `useAutosave(...).status`. `syncing` is the consumer\'s to set (a first sync from an outside source); `useAutosave` never emits it.',
     },
     {
       name: 'onRetry',
@@ -3075,8 +3075,14 @@ export const propsData: Record<string, PropDef[]> = {
     },
     {
       name: 'labels',
-      type: "Partial<Record<'saved' | 'saving' | 'unsaved' | 'refused', string>>",
-      description: 'Override any of the four labels (Saved, Saving, Unsaved, Couldn\'t save), e.g. to translate them.',
+      type: "Partial<Record<'saved' | 'saving' | 'syncing' | 'unsaved' | 'refused', string>>",
+      description: 'Override any of the five labels (Saved, Saving, Syncing, Unsaved, Couldn\'t save), e.g. to translate them. With `unsavedAs="dot"` the Unsaved label is the dot\'s accessible name.',
+    },
+    {
+      name: 'unsavedAs',
+      type: "'text' | 'dot'",
+      default: "'text'",
+      description: 'How `unsaved` is drawn. `dot` draws a dot alone with the label kept as visually hidden text, still announced by the live region. The slot width does not change.',
     },
     {
       name: 'retryLabel',

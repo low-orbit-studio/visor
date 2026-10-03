@@ -1,7 +1,7 @@
 /* SaveStatus (VI-657)
  *
  * A readout, not a control: status text in a fixed-width slot, so the row
- * never reflows as Saved / Saving / Unsaved / Couldn't save swap in. It draws
+ * never reflows as Saved / Saving / Syncing / Unsaved / Couldn't save swap in. It draws
  * no edge at all (no border, no outline, no box). The retry mark is the
  * editor's icon mark (VI-659): the icon Button's size, pad and ink, with its
  * hit target on ::before so it adds no height to the row. */
@@ -35,6 +35,10 @@
   color: var(--text-tertiary, #9ca3af);
 }
 
+.root[data-state="syncing"] {
+  color: var(--save-status-syncing-color, var(--text-secondary, #6b7280));
+}
+
 .root[data-state="refused"] {
   color: var(--text-error, #b91c1c);
 }
@@ -45,6 +49,26 @@
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Unsaved as a dot alone (unsavedAs="dot"). The dot sits where the word
+   would start and takes the unsaved ink; the slot is unchanged, so the row
+   does not move. The label stays in the DOM as visually hidden text. */
+.dot {
+  flex: none;
+  width: var(--save-status-dot-size, var(--spacing-2, 0.5rem));
+  height: var(--save-status-dot-size, var(--spacing-2, 0.5rem));
+  border-radius: var(--radius-full, 9999px);
+  background-color: currentColor;
+}
+
+.hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .retry {

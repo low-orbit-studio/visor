@@ -11,7 +11,7 @@ import { COMPONENT_TOKEN_FAMILY_BY_NAME, componentTokenName } from "../../../pac
 import { REST_EDGE, bundle, close, launch, open, pixelDelta, ready } from "./render-page"
 
 const ROOT = "#root [data-slot=save-status]"
-const STATES = ["default", "saving", "unsaved", "refused", "refused-retry"]
+const STATES = ["default", "saving", "syncing", "unsaved", "unsaved-dot", "refused", "refused-retry"]
 
 /** SaveStatus in a row with a sibling after it, the way an editor header uses it. */
 const ROW = `#root { display: flex; align-items: center; gap: 8px; }
@@ -25,7 +25,8 @@ const geometry = `(function () {
   return { width: r.width, height: r.height, left: r.left, rowWidth: root.width, afterContent: after.content };
 })()`
 
-const read = (prop: string) => `getComputedStyle(document.querySelector(${JSON.stringify(ROOT)})).getPropertyValue(${JSON.stringify(prop)})`
+const read = (prop: string, sel = ROOT) => `getComputedStyle(document.querySelector(${JSON.stringify(sel)})).getPropertyValue(${JSON.stringify(prop)})`
+const DOT = "#root [data-slot=save-status-dot]"
 
 beforeAll(async () => {
   await launch()
@@ -124,8 +125,10 @@ describe("VI-657 — SaveStatus (real browser)", () => {
   })
 
   describe("tokens", () => {
-    const CASES: Array<{ token: string; prop: string; value: string; expected?: string }> = [
+    const CASES: Array<{ token: string; prop: string; value: string; expected?: string; state?: string; sel?: string }> = [
       { token: "--save-status-width", prop: "width", value: "78px" },
+      { token: "--save-status-syncing-color", prop: "color", value: "rgb(1, 2, 3)", state: "syncing" },
+      { token: "--save-status-dot-size", prop: "width", value: "14px", state: "unsaved-dot", sel: DOT },
       { token: "--save-status-font-family", prop: "font-family", value: "monospace" },
       { token: "--save-status-text-transform", prop: "text-transform", value: "uppercase" },
       { token: "--save-status-letter-spacing", prop: "letter-spacing", value: "3px" },
@@ -133,11 +136,12 @@ describe("VI-657 — SaveStatus (real browser)", () => {
     for (const c of CASES) {
       it(`${c.token}: binding it moves ${c.prop}`, async (ctx) => {
         if (!ready()) return ctx.skip()
-        const unset = await open("save-status", "default")
-        const before = await unset.evaluate(read(c.prop))
+        const state = c.state ?? "default"
+        const unset = await open("save-status", state)
+        const before = await unset.evaluate(read(c.prop, c.sel))
         await unset.close()
-        const bound = await open("save-status", "default", { scopeCss: `${c.token}: ${c.value};` })
-        const after = await bound.evaluate(read(c.prop))
+        const bound = await open("save-status", state, { scopeCss: `${c.token}: ${c.value};` })
+        const after = await bound.evaluate(read(c.prop, c.sel))
         await bound.close()
         expect(after).toBe(c.expected ?? c.value)
         expect(after).not.toBe(before)
@@ -145,14 +149,15 @@ describe("VI-657 — SaveStatus (real browser)", () => {
 
       it(`${c.token}: mutation control — renamed in the CSS, the binding changes nothing`, async (ctx) => {
         if (!ready()) return ctx.skip()
-        const css = (await bundle("save-status", "default")).css
+        const state = c.state ?? "default"
+        const css = (await bundle("save-status", state)).css
         const mutated = css.replace(new RegExp(`${c.token}(?![a-z0-9-])`, "g"), `${c.token}-mutated`)
         expect(mutated).not.toBe(css)
-        const unset = await open("save-status", "default")
-        const before = await unset.evaluate(read(c.prop))
+        const unset = await open("save-status", state)
+        const before = await unset.evaluate(read(c.prop, c.sel))
         await unset.close()
-        const bound = await open("save-status", "default", { scopeCss: `${c.token}: ${c.value};`, componentCss: mutated })
-        expect(await bound.evaluate(read(c.prop))).toBe(before)
+        const bound = await open("save-status", state, { scopeCss: `${c.token}: ${c.value};`, componentCss: mutated })
+        expect(await bound.evaluate(read(c.prop, c.sel))).toBe(before)
         await bound.close()
       }, 30_000)
     }

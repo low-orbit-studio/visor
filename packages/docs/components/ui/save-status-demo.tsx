@@ -10,7 +10,7 @@ const row: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '
 /* ─── SaveStatusStatesDemo ──────────────────────────────────────────────── */
 
 export function SaveStatusStatesDemo() {
-  const states: SaveStatusState[] = ['saved', 'saving', 'unsaved', 'refused'];
+  const states: SaveStatusState[] = ['saved', 'saving', 'syncing', 'unsaved', 'refused'];
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
       {states.map((status) => (
@@ -20,6 +20,11 @@ export function SaveStatusStatesDemo() {
           <span>Edit history</span>
         </div>
       ))}
+      <div style={row}>
+        <strong style={{ width: '6rem' }}>Bio</strong>
+        <SaveStatus status="unsaved" unsavedAs="dot" />
+        <span>Edit history</span>
+      </div>
     </div>
   );
 }

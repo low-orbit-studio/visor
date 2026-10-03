@@ -615,7 +615,7 @@
         },
         "save-status": {
           "type": "object",
-          "description": "SaveStatus readout — the fixed-width slot and its type, so the readout never reflows its row. Keys: width, font-family, text-transform, letter-spacing.",
+          "description": "SaveStatus readout — the fixed-width slot, its type, the Syncing ink and the Unsaved dot, so the readout never reflows its row. Keys: width, syncing-color, dot-size, font-family, text-transform, letter-spacing.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

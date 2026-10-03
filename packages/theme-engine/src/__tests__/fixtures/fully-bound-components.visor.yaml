@@ -301,6 +301,8 @@ components:
     edge-color: "#ff00aa"
   save-status:
     width: "91px"
+    syncing-color: "#33ccaa"
+    dot-size: "11px"
     font-family: "\"Courier New\", monospace"
     text-transform: uppercase
     letter-spacing: "3px"

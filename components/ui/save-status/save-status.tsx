@@ -5,12 +5,17 @@ import { ArrowClockwise } from "@phosphor-icons/react"
 import { cn } from "../../../lib/utils"
 import styles from "./save-status.module.css"
 
-/** The states `useAutosave` reports. */
-export type SaveStatusState = "saved" | "saving" | "unsaved" | "refused"
+/**
+ * The states `useAutosave` reports, plus `syncing`: a first sync from an outside
+ * source is writing rows the user did not type. `useAutosave` never emits it;
+ * the consumer sets it.
+ */
+export type SaveStatusState = "saved" | "saving" | "syncing" | "unsaved" | "refused"
 
 const DEFAULT_LABELS: Record<SaveStatusState, string> = {
   saved: "Saved",
   saving: "Saving",
+  syncing: "Syncing",
   unsaved: "Unsaved",
   refused: "Couldn't save",
 }
@@ -20,8 +25,13 @@ export interface SaveStatusProps extends Omit<React.HTMLAttributes<HTMLSpanEleme
   status: SaveStatusState
   /** Shows a retry mark while `status` is `refused`. Pass `useAutosave(...).retry`. */
   onRetry?: () => void
-  /** Override any of the four labels (e.g. to translate them). */
+  /** Override any of the five labels (e.g. to translate them). */
   labels?: Partial<Record<SaveStatusState, string>>
+  /**
+   * How `unsaved` is drawn. `"dot"` draws a dot alone, no word; the label stays
+   * as visually hidden text, so the live region still announces it. Defaults to `"text"`.
+   */
+  unsavedAs?: "text" | "dot"
   /** Accessible name of the retry mark. Defaults to "Retry saving". */
   retryLabel?: string
 }
@@ -33,17 +43,25 @@ export interface SaveStatusProps extends Omit<React.HTMLAttributes<HTMLSpanEleme
  * It draws no edge.
  */
 const SaveStatus = React.forwardRef<HTMLSpanElement, SaveStatusProps>(
-  ({ status, onRetry, labels, retryLabel = "Retry saving", className, ...props }, ref) => {
+  ({ status, onRetry, labels, unsavedAs = "text", retryLabel = "Retry saving", className, ...props }, ref) => {
     const label = labels?.[status] ?? DEFAULT_LABELS[status]
+    const asDot = status === "unsaved" && unsavedAs === "dot"
     return (
       <span
         ref={ref}
         data-slot="save-status"
         data-state={status}
+        data-as={asDot ? "dot" : undefined}
         className={cn(styles.root, className)}
         {...props}
       >
-        <span data-slot="save-status-text" className={styles.text} role="status" aria-live="polite">
+        {asDot ? <span data-slot="save-status-dot" className={styles.dot} aria-hidden="true" /> : null}
+        <span
+          data-slot="save-status-text"
+          className={cn(styles.text, asDot && styles.hidden)}
+          role="status"
+          aria-live="polite"
+        >
           {label}
         </span>
         {status === "refused" && onRetry ? (
