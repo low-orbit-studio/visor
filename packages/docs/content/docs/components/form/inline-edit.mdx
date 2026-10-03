@@ -40,7 +40,7 @@ The text, then a pencil. Click either one (or press Enter on the pencil) and an 
 
 ## Without the pencil
 
-Pass `pencil={false}` when the design draws the text alone. The text is then the control: a native `button` named `Edit {label}, {value}` (override the lead with `editLabel`), reachable by Tab, opened by click, Enter or Space, and given focus back after Enter or Escape. Hover and focus underline it, so it still reads as editable. The underline is solid; a theme that wants a dashed one sets `--inline-edit-underline-style: dashed` (never dotted). The hit target is at least 24px tall.
+Pass `pencil={false}` when the design draws the text alone. The text is then the control: a native `button` named `Edit {label}, {value}` (override the lead with `editLabel`), reachable by Tab, opened by click, Enter or Space, and given focus back after Enter or Escape. Hover underlines it, and keyboard focus draws the focus ring alone (an underline under the ring read as a double line), so it still reads as editable: the underline on hover, the ring on focus. The padding that clears the ring is present in every state and cancelled by a negative margin, so nothing shifts. The underline is solid; a theme that wants a dashed one sets `--inline-edit-underline-style: dashed` (never dotted). The hit target is at least 24px tall.
 
 <ComponentPreview
   title="InlineEdit — pencil={false}"
@@ -73,7 +73,7 @@ At rest, InlineEdit is text and a pencil, with no edge. While editing, the input
 
 ## Theming
 
-The pencil is the same mark as an icon-only [Button](/docs/components/general/button): it reads `--button-icon-size` (the glyph), `--button-icon-pad` (the hit target, drawn on `::before` so it adds no height to the line) and `--button-icon-ghost-color` (the ink at rest). The default's muted colour is `--text-tertiary`. With `pencil={false}`, the text button's hover and focus underline reads `--inline-edit-underline-style` (default `solid`).
+The pencil is the same mark as an icon-only [Button](/docs/components/general/button): it reads `--button-icon-size` (the glyph), `--button-icon-pad` (the hit target, drawn on `::before` so it adds no height to the line) and `--button-icon-ghost-color` (the ink at rest). The default's muted colour is `--text-tertiary`. With `pencil={false}`, the text button's hover underline reads `--inline-edit-underline-style` (default `solid`).
 
 The input takes its size, weight and line height from `font: inherit`, which comes from Visor's element reset (`@import "@loworbitstudio/visor-core/reset"`), as it does for every form control. Tailwind's preflight sets the same thing.
 
