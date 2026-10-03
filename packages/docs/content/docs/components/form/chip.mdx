@@ -171,3 +171,7 @@ The component accepts all standard `<div>` HTML attributes.
 - `FilterChip` renders as `<button role="checkbox" aria-checked>`. `ChipGroup type="multiple"` wraps items in `role="group"`.
 - Keyboard: `Tab` focuses each interactive chip; `Space` / `Enter` toggles or activates.
 - Disabled chips use `disabled` attribute and `opacity` — not hidden from screen readers.
+
+## Label Centering
+
+The label is optically centred in any font: its line box is trimmed to the capital-height band, so capitals (not the font's ascent and descent) sit on the box centre, with the box size unchanged. Firefox keeps the previous rendering. Shared spec: [`docs/label-centering.md`](https://github.com/low-orbit-studio/visor/blob/main/docs/label-centering.md).

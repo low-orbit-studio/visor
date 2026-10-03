@@ -115,3 +115,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs/t
 - Content panels have `role="tabpanel"` linked to their trigger via `aria-labelledby`.
 - `ArrowLeft` / `ArrowRight` navigate between triggers; `Enter` or `Space` activates.
 - Disabled triggers receive `aria-disabled="true"` and are skipped in keyboard navigation.
+
+## Label Centering
+
+The label is optically centred in any font: its line box is trimmed to the capital-height band, so capitals (not the font's ascent and descent) sit on the box centre, with the box size unchanged. Firefox keeps the previous rendering. Shared spec: [`docs/label-centering.md`](https://github.com/low-orbit-studio/visor/blob/main/docs/label-centering.md).

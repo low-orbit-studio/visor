@@ -91,11 +91,13 @@
 }
 
 .triggerSizeSm {
-  height: 2.25rem;
+  --label-box-height: 2.25rem; /* VI-684: outer height, for the label correction */
+  height: var(--label-box-height);
   border-radius: var(--radius-sm, 0.25rem);
 }
 
 .triggerSizeMd {
+  --label-box-height: calc(1lh + var(--spacing-3_5, 0.875rem) * 2 + 2px);
   height: auto;
   padding: var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem);
   font-size: var(--font-size-sm, 0.875rem);
@@ -103,6 +105,7 @@
 }
 
 .triggerSizeLg {
+  --label-box-height: calc(1lh + var(--spacing-4_5, 1.125rem) * 2 + 2px);
   height: auto;
   padding: var(--spacing-4_5, 1.125rem) var(--spacing-5, 1.25rem);
   font-size: var(--font-size-base, 1rem);
@@ -211,4 +214,25 @@
 .scrollButtonIcon {
   width: 1rem;
   height: 1rem;
+}
+
+/* Label centring (VI-684, shared spec: the label-centering doc under docs/). The value (or
+   placeholder) span's line box is trimmed to the capital-to-baseline band, so
+   the flex trigger centres the ink and not the font's ascent/descent.
+   padding-block hands back the room the trim took, so the trigger's box is
+   unchanged. Without text-box (Firefox) rendering is exactly what it was. */
+@supports (text-box: trim-both cap alphabetic) {
+  .trigger > span {
+    text-box: trim-both cap alphabetic;
+    padding-block: calc((1lh - 1cap) / 2);
+  }
+}
+
+/* Blink only: it snaps the baseline to a whole CSS px; this hands back what the
+   snap took, from the trigger's outer height (--label-box-height, per size
+   above). WebKit places the baseline exactly, so it is excluded. */
+@supports (text-box: trim-both cap alphabetic) and (not (-apple-pay-button-style: black)) {
+  .trigger > span {
+    transform: translateY(calc((var(--label-box-height) + 1cap) / 2 - round((var(--label-box-height) + 1cap) / 2, 1px)));
+  }
 }

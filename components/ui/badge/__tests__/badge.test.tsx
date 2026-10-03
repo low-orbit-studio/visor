@@ -4,6 +4,9 @@ import { Badge, type BadgeProps } from "../badge"
 import styles from "../badge.module.css"
 import { checkA11y } from "../../../../test-utils/a11y"
 
+/** The badge element that holds the text (the text itself sits in a trimmed label span, VI-684). */
+const getBadge = (text: string | RegExp): HTMLElement => screen.getByText(text).closest('[data-slot="badge"]') as HTMLElement
+
 const VARIANTS = [
   "default",
   "secondary",
@@ -31,88 +34,88 @@ const SIZE_CLASS: Record<(typeof SIZES)[number], string> = {
 describe("Badge", () => {
   it("renders with default props", () => {
     render(<Badge>New</Badge>)
-    expect(screen.getByText("New")).toBeInTheDocument()
+    expect(getBadge("New")).toBeInTheDocument()
   })
 
   it("renders with custom className", () => {
     render(<Badge className="custom-class">Badge</Badge>)
-    expect(screen.getByText("Badge")).toHaveClass("custom-class")
+    expect(getBadge("Badge")).toHaveClass("custom-class")
   })
 
   it("applies data-slot attribute", () => {
     render(<Badge>Badge</Badge>)
-    expect(screen.getByText("Badge")).toHaveAttribute("data-slot", "badge")
+    expect(getBadge("Badge")).toHaveAttribute("data-slot", "badge")
   })
 
   it("applies data-variant for default variant", () => {
     render(<Badge>Badge</Badge>)
-    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "default")
+    expect(getBadge("Badge")).toHaveAttribute("data-variant", "default")
   })
 
   it("applies data-variant for secondary variant", () => {
     render(<Badge variant="secondary">Badge</Badge>)
-    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "secondary")
+    expect(getBadge("Badge")).toHaveAttribute("data-variant", "secondary")
   })
 
   it("applies data-variant for outline variant", () => {
     render(<Badge variant="outline">Badge</Badge>)
-    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "outline")
+    expect(getBadge("Badge")).toHaveAttribute("data-variant", "outline")
   })
 
   it("applies data-variant for destructive variant", () => {
     render(<Badge variant="destructive">Badge</Badge>)
-    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "destructive")
+    expect(getBadge("Badge")).toHaveAttribute("data-variant", "destructive")
   })
 
   it("applies data-variant for success variant", () => {
     render(<Badge variant="success">Badge</Badge>)
-    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "success")
+    expect(getBadge("Badge")).toHaveAttribute("data-variant", "success")
   })
 
   it("applies data-variant for warning variant", () => {
     render(<Badge variant="warning">Badge</Badge>)
-    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "warning")
+    expect(getBadge("Badge")).toHaveAttribute("data-variant", "warning")
   })
 
   it("applies data-variant for info variant", () => {
     render(<Badge variant="info">Badge</Badge>)
-    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "info")
+    expect(getBadge("Badge")).toHaveAttribute("data-variant", "info")
   })
 
   it("applies data-variant for filled-destructive variant", () => {
     render(<Badge variant="filled-destructive">Badge</Badge>)
-    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "filled-destructive")
+    expect(getBadge("Badge")).toHaveAttribute("data-variant", "filled-destructive")
   })
 
   it("applies data-variant for filled-success variant", () => {
     render(<Badge variant="filled-success">Badge</Badge>)
-    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "filled-success")
+    expect(getBadge("Badge")).toHaveAttribute("data-variant", "filled-success")
   })
 
   it("applies data-variant for filled-warning variant", () => {
     render(<Badge variant="filled-warning">Badge</Badge>)
-    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "filled-warning")
+    expect(getBadge("Badge")).toHaveAttribute("data-variant", "filled-warning")
   })
 
   it("applies data-variant for filled-info variant", () => {
     render(<Badge variant="filled-info">Badge</Badge>)
-    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "filled-info")
+    expect(getBadge("Badge")).toHaveAttribute("data-variant", "filled-info")
   })
 
   it("applies data-variant for neutral variant", () => {
     render(<Badge variant="neutral">Badge</Badge>)
-    expect(screen.getByText("Badge")).toHaveAttribute("data-variant", "neutral")
+    expect(getBadge("Badge")).toHaveAttribute("data-variant", "neutral")
   })
 
   it("applies variantNeutral CSS class for neutral variant", () => {
     render(<Badge variant="neutral">Draft</Badge>)
-    const el = screen.getByText("Draft")
+    const el = getBadge("Draft")
     expect(el.className).toMatch(/variantNeutral/)
   })
 
   it("applies data-variant for filled-neutral variant", () => {
     render(<Badge variant="filled-neutral">Badge</Badge>)
-    expect(screen.getByText("Badge")).toHaveAttribute(
+    expect(getBadge("Badge")).toHaveAttribute(
       "data-variant",
       "filled-neutral"
     )
@@ -120,7 +123,7 @@ describe("Badge", () => {
 
   it("applies variantFilledNeutral CSS class for filled-neutral variant", () => {
     render(<Badge variant="filled-neutral">Archived</Badge>)
-    const el = screen.getByText("Archived")
+    const el = getBadge("Archived")
     expect(el.className).toMatch(/variantFilledNeutral/)
   })
 
@@ -132,21 +135,21 @@ describe("Badge", () => {
 
   it("renders children correctly", () => {
     render(<Badge>Status</Badge>)
-    expect(screen.getByText("Status")).toBeInTheDocument()
+    expect(getBadge("Status")).toBeInTheDocument()
   })
 })
 
 describe("Badge size", () => {
   it("defaults to md when no size prop is provided", () => {
     render(<Badge>Default</Badge>)
-    const badge = screen.getByText("Default")
+    const badge = getBadge("Default")
     expect(badge).toHaveAttribute("data-size", "md")
     expect(badge).toHaveClass(styles.sizeMd)
   })
 
   it.each(SIZES)("applies data-size and the size class for size=%s", (size) => {
     render(<Badge size={size}>Sized</Badge>)
-    const badge = screen.getByText("Sized")
+    const badge = getBadge("Sized")
     expect(badge).toHaveAttribute("data-size", size)
     expect(badge).toHaveClass(SIZE_CLASS[size])
   })
@@ -170,7 +173,7 @@ describe("Badge size", () => {
           Cell
         </Badge>
       )
-      const badge = screen.getByText("Cell")
+      const badge = getBadge("Cell")
       expect(badge).toHaveAttribute("data-slot", "badge")
       expect(badge).toHaveAttribute("data-variant", variant)
       expect(badge).toHaveAttribute("data-size", size)
@@ -185,7 +188,7 @@ describe("Badge size", () => {
         Labeled
       </Badge>
     )
-    const badge = screen.getByText("Labeled").closest('[data-slot="badge"]')
+    const badge = getBadge("Labeled").closest('[data-slot="badge"]')
     const icon = screen.getByTestId("badge-icon")
     // Icon is a direct child so the .sizeLg > svg rule applies.
     expect(icon.parentElement).toBe(badge)
@@ -195,19 +198,19 @@ describe("Badge size", () => {
 describe("uppercase prop", () => {
   it("applies the uppercase CSS class when uppercase=true", () => {
     render(<Badge uppercase>Enterprise</Badge>)
-    const badge = screen.getByText("Enterprise")
+    const badge = getBadge("Enterprise")
     expect(badge.className).toMatch(/uppercase/)
   })
 
   it("does not apply the uppercase CSS class when uppercase is omitted", () => {
     render(<Badge>Enterprise</Badge>)
-    const badge = screen.getByText("Enterprise")
+    const badge = getBadge("Enterprise")
     expect(badge.className).not.toMatch(/\buppercase\b/)
   })
 
   it("does not apply the uppercase CSS class when uppercase=false", () => {
     render(<Badge uppercase={false}>Enterprise</Badge>)
-    const badge = screen.getByText("Enterprise")
+    const badge = getBadge("Enterprise")
     expect(badge.className).not.toMatch(/\buppercase\b/)
   })
 
@@ -217,7 +220,7 @@ describe("uppercase prop", () => {
         Pro
       </Badge>
     )
-    const badge = screen.getByText("Pro")
+    const badge = getBadge("Pro")
     expect(badge.className).toMatch(/uppercase/)
     expect(badge.className).toMatch(/variantSecondary/)
   })
@@ -226,13 +229,13 @@ describe("uppercase prop", () => {
 describe("case prop", () => {
   it("applies the caseSentence class when case=sentence", () => {
     render(<Badge case="sentence">Enterprise</Badge>)
-    const badge = screen.getByText("Enterprise")
+    const badge = getBadge("Enterprise")
     expect(badge).toHaveClass(styles.caseSentence)
   })
 
   it("does not apply the caseSentence class when case is omitted", () => {
     render(<Badge>Enterprise</Badge>)
-    const badge = screen.getByText("Enterprise")
+    const badge = getBadge("Enterprise")
     expect(badge).not.toHaveClass(styles.caseSentence)
   })
 
@@ -242,7 +245,7 @@ describe("case prop", () => {
         Pro plan
       </Badge>
     )
-    const badge = screen.getByText("Pro plan")
+    const badge = getBadge("Pro plan")
     expect(badge).toHaveClass(styles.caseSentence)
     expect(badge.className).toMatch(/variantSecondary/)
   })
@@ -258,7 +261,7 @@ describe("iconOnly prop", () => {
 
   it("does not apply iconOnly class or data-icon-only attr when omitted", () => {
     render(<Badge>Badge</Badge>)
-    const badge = screen.getByText("Badge")
+    const badge = getBadge("Badge")
     expect(badge).not.toHaveClass(styles.iconOnly)
     expect(badge).not.toHaveAttribute("data-icon-only")
   })
@@ -277,7 +280,7 @@ describe("iconOnly prop", () => {
 describe("default render is unchanged (zero-regression)", () => {
   it("renders only base + variantDefault + sizeMd, no opt-in classes", () => {
     render(<Badge>Default</Badge>)
-    const badge = screen.getByText("Default")
+    const badge = getBadge("Default")
     expect(badge).toHaveClass(styles.base)
     expect(badge).toHaveClass(styles.variantDefault)
     expect(badge).toHaveClass(styles.sizeMd)

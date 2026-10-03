@@ -82,7 +82,7 @@ const Chip = React.forwardRef<HTMLDivElement, ChipProps>(
             {leadingIcon}
           </span>
         ) : null}
-        <span className={styles.label}>{content}</span>
+        <span className={styles.label} data-slot="chip-text">{content}</span>
         {onDeleted ? (
           <button
             type="button"
@@ -180,7 +180,7 @@ const ChoiceChip = React.forwardRef<HTMLButtonElement, ChoiceChipProps>(
             {leadingIcon}
           </span>
         ) : null}
-        <span className={styles.label}>{content}</span>
+        <span className={styles.label} data-slot="chip-text">{content}</span>
       </button>
     )
   },
@@ -270,7 +270,7 @@ const FilterChip = React.forwardRef<HTMLButtonElement, FilterChipProps>(
             {leadingIcon}
           </span>
         ) : null}
-        <span className={styles.label}>{content}</span>
+        <span className={styles.label} data-slot="chip-text">{content}</span>
         {count != null ? (
           <span
             data-slot="filter-chip-count"

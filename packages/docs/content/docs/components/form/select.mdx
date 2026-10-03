@@ -123,3 +123,7 @@ import {
 - Content renders a `role="listbox"`; each item has `role="option"` with `aria-selected`
 - Always pair `SelectTrigger` with a `<Label>` via `htmlFor`/`id` for screen reader association
 - Keyboard: Space/Enter opens the dropdown; Arrow keys navigate options; Enter selects; Escape closes
+
+## Label Centering
+
+The label is optically centred in any font: its line box is trimmed to the capital-height band, so capitals (not the font's ascent and descent) sit on the box centre, with the box size unchanged. Firefox keeps the previous rendering. Shared spec: [`docs/label-centering.md`](https://github.com/low-orbit-studio/visor/blob/main/docs/label-centering.md).

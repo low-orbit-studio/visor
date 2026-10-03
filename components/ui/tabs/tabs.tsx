@@ -120,6 +120,23 @@ export interface TabsTriggerProps
   countTone?: "primary" | "neutral"
 }
 
+/**
+ * Wrap bare text in a block label so the stylesheet can trim its line box to the
+ * capital-to-baseline band (see `.text`), centring the capitals in the trigger
+ * whatever the font (VI-684). Elements (icons) pass through.
+ */
+function wrapLabel(children: React.ReactNode): React.ReactNode {
+  return React.Children.map(children, (child) =>
+    typeof child === "string" || typeof child === "number" ? (
+      <span className={styles.text} data-slot="tabs-trigger-text">
+        {child}
+      </span>
+    ) : (
+      child
+    )
+  )
+}
+
 const TabsTrigger = React.forwardRef<
   React.ComponentRef<typeof TabsPrimitive.Trigger>,
   TabsTriggerProps
@@ -134,7 +151,11 @@ const TabsTrigger = React.forwardRef<
         (truncation + flex sizing). Without a count, render children directly
         so the trigger's flex gap applies between consumer-provided icon and
         label elements. */}
-    {count != null ? <span className={styles.label}>{children}</span> : children}
+    {count != null ? (
+      <span className={cn(styles.label, styles.text)} data-slot="tabs-trigger-text">{children}</span>
+    ) : (
+      wrapLabel(children)
+    )}
     {count != null && (
       <span
         className={cn(

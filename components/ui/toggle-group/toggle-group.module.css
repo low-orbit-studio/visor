@@ -142,7 +142,8 @@
 
 /* Sizes */
 .itemSizeXs {
-  height: 1.5rem;
+  --label-box-height: 1.5rem;
+  height: var(--label-box-height);
   padding: 0 var(--spacing-2, 0.5rem);
   border-radius: var(--radius-sm, 0.25rem);
   font-size: var(--font-size-xs, 0.75rem);
@@ -150,7 +151,8 @@
 }
 
 .itemSizeSm {
-  height: 1.75rem;
+  --label-box-height: 1.75rem;
+  height: var(--label-box-height);
   padding: 0 var(--spacing-2, 0.5rem);
   border-radius: var(--radius-md, 0.375rem);
   font-size: var(--font-size-xs, 0.75rem);
@@ -158,7 +160,8 @@
 }
 
 .itemSizeMd {
-  height: 2.25rem;
+  --label-box-height: 2.25rem;
+  height: var(--label-box-height);
   padding: 0 var(--spacing-3, 0.75rem);
   border-radius: var(--radius-md, 0.375rem);
   font-size: var(--font-size-sm, 0.875rem);
@@ -166,9 +169,32 @@
 }
 
 .itemSizeLg {
-  height: 2.75rem;
+  --label-box-height: 2.75rem;
+  height: var(--label-box-height);
   padding: 0 var(--spacing-4, 1rem);
   border-radius: var(--radius-lg, 0.5rem);
   font-size: var(--font-size-base, 1rem);
   gap: var(--spacing-2, 0.5rem);
+}
+
+/* Label centring (VI-684, shared spec: the label-centering doc under docs/). The label is a
+   block span whose line box is trimmed to the capital-to-baseline band, so the
+   flex container centres the ink and not the font's ascent/descent. Without
+   text-box (Firefox) it is a plain block and rendering is unchanged. */
+.label {
+  display: block;
+}
+
+@supports (text-box: trim-both cap alphabetic) {
+  .label {
+    text-box: trim-both cap alphabetic;
+  }
+}
+
+/* Blink only: it snaps the baseline to a whole CSS px; this hands back what the
+   snap took. WebKit places the baseline exactly, so it is excluded. */
+@supports (text-box: trim-both cap alphabetic) and (not (-apple-pay-button-style: black)) {
+  .label {
+    transform: translateY(calc((var(--label-box-height) + 1cap) / 2 - round((var(--label-box-height) + 1cap) / 2, 1px)));
+  }
 }

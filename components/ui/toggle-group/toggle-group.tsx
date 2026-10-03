@@ -164,10 +164,27 @@ export interface ToggleGroupItemProps
   extends React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Item>,
     VariantProps<typeof toggleGroupItemVariants> {}
 
+/**
+ * Wrap bare text in a block label so the stylesheet can trim its line box to the
+ * capital-to-baseline band (see `.label`), centring the capitals in the item
+ * whatever the font (VI-684). Elements (icons) pass through.
+ */
+function wrapLabel(children: React.ReactNode): React.ReactNode {
+  return React.Children.map(children, (child) =>
+    typeof child === "string" || typeof child === "number" ? (
+      <span className={styles.label} data-slot="toggle-group-text">
+        {child}
+      </span>
+    ) : (
+      child
+    )
+  )
+}
+
 const ToggleGroupItem = React.forwardRef<
   React.ElementRef<typeof ToggleGroupPrimitive.Item>,
   ToggleGroupItemProps
->(({ className, variant, size, ...props }, ref) => {
+>(({ className, variant, size, children, ...props }, ref) => {
   const ctx = React.useContext(ToggleGroupContext)
   const resolvedVariant = variant ?? ctx.variant
   const resolvedSize = size ?? ctx.size
@@ -177,7 +194,9 @@ const ToggleGroupItem = React.forwardRef<
       className={cn(toggleGroupItemVariants({ variant: resolvedVariant, size: resolvedSize }), className)}
       ref={ref}
       {...props}
-    />
+    >
+      {wrapLabel(children)}
+    </ToggleGroupPrimitive.Item>
   )
 })
 ToggleGroupItem.displayName = "ToggleGroupItem"

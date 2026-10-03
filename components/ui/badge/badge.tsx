@@ -49,9 +49,26 @@ export interface BadgeProps
   iconOnly?: boolean
 }
 
+/**
+ * Wrap bare text in a block label so the stylesheet can trim its line box to the
+ * capital-to-baseline band (see `.label`), centring the capitals in the badge
+ * whatever the font (VI-684). Elements (icons) pass through.
+ */
+function wrapLabel(children: React.ReactNode): React.ReactNode {
+  return React.Children.map(children, (child) =>
+    typeof child === "string" || typeof child === "number" ? (
+      <span className={styles.label} data-slot="badge-text">
+        {child}
+      </span>
+    ) : (
+      child
+    )
+  )
+}
+
 const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
   (
-    { className, variant, size, case: textCase, uppercase, iconOnly, ...props },
+    { className, variant, size, case: textCase, uppercase, iconOnly, children, ...props },
     ref
   ) => {
     return (
@@ -68,7 +85,9 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
           className
         )}
         {...props}
-      />
+      >
+        {wrapLabel(children)}
+      </span>
     )
   }
 )
