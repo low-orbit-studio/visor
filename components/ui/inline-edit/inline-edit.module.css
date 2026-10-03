@@ -22,6 +22,58 @@
   color: var(--text-tertiary, #9ca3af);
 }
 
+/* pencil={false}: the text is the control. A native button, reset to read as
+ * the text it holds: typography comes from the reset's `font: inherit` and the
+ * rest is inherited from the element InlineEdit renders as. No edge at rest. */
+.textControl {
+  position: relative;
+  display: inline;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm, 0.125rem);
+  background: none;
+  color: inherit;
+  text-align: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  overflow-wrap: inherit;
+  cursor: text;
+}
+
+.textControl.textDefault {
+  color: var(--text-tertiary, #9ca3af);
+}
+
+/* WCAG 2.5.8: the hit target is at least 24px tall. Drawn on ::before so it
+ * adds no height to the line; it only grows when the line is shorter. */
+.textControl::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block: min(0px, calc((100% - 1.5rem) / 2));
+}
+
+/* Hover reads as editable without an icon: an underline. Solid by default;
+ * a theme that wants a dashed one sets --inline-edit-underline-style. Never dotted. */
+@media (hover: hover) {
+  .textControl:hover {
+    text-decoration-line: underline;
+    text-decoration-style: var(--inline-edit-underline-style, solid);
+    text-decoration-thickness: var(--stroke-width-thin, 1px);
+    text-underline-offset: var(--spacing-1, 0.25rem);
+  }
+}
+
+.textControl:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #111827);
+  outline-offset: var(--focus-ring-offset, 2px);
+  text-decoration-line: underline;
+  text-decoration-style: var(--inline-edit-underline-style, solid);
+  text-decoration-thickness: var(--stroke-width-thin, 1px);
+  text-underline-offset: var(--spacing-1, 0.25rem);
+}
+
 .pencil {
   position: relative;
   display: inline-flex;

@@ -21,6 +21,12 @@ export interface InlineEditProps
   editLabel?: string
   /** The element to render. Typography inherits from it, so a title keeps its heading's size. */
   as?: InlineEditElement
+  /**
+   * Draw the pencil after the text. Default `true`. With `false` the text is the
+   * control: a button named "Edit {label}, {value}" that opens the field on click,
+   * Enter or Space, and takes focus back after Enter or Escape.
+   */
+  pencil?: boolean
   /** Open in the editing state on mount, without moving focus. */
   defaultEditing?: boolean
 }
@@ -35,6 +41,7 @@ const InlineEdit = React.forwardRef<HTMLElement, InlineEditProps>(
       editLabel,
       as: Comp = "span",
       defaultEditing = false,
+      pencil = true,
       className,
       ...props
     },
@@ -43,20 +50,21 @@ const InlineEdit = React.forwardRef<HTMLElement, InlineEditProps>(
     const [editing, setEditing] = React.useState(defaultEditing)
     const [draft, setDraft] = React.useState(defaultEditing ? value : "")
     const inputRef = React.useRef<HTMLInputElement>(null)
-    const pencilRef = React.useRef<HTMLButtonElement>(null)
+    // The one focusable trigger at rest: the pencil, or the text without it.
+    const triggerRef = React.useRef<HTMLButtonElement>(null)
     // Set once Enter or Escape has closed the editor, so the blur that follows
     // the input unmounting does not commit a second time.
     const settled = React.useRef(false)
     // Where focus goes after the next render: into the input when editing
-    // starts, back to the pencil after Enter or Escape.
-    const pendingFocus = React.useRef<"input" | "pencil" | null>(null)
+    // starts, back to the trigger after Enter or Escape.
+    const pendingFocus = React.useRef<"input" | "trigger" | null>(null)
 
     React.useEffect(() => {
       if (pendingFocus.current === "input" && inputRef.current) {
         inputRef.current.focus()
         inputRef.current.select()
-      } else if (pendingFocus.current === "pencil") {
-        pencilRef.current?.focus()
+      } else if (pendingFocus.current === "trigger") {
+        triggerRef.current?.focus()
       }
       pendingFocus.current = null
     }, [editing])
@@ -71,7 +79,7 @@ const InlineEdit = React.forwardRef<HTMLElement, InlineEditProps>(
     const finish = (commit: boolean, returnFocus: boolean) => {
       if (settled.current) return
       settled.current = true
-      if (returnFocus) pendingFocus.current = "pencil"
+      if (returnFocus) pendingFocus.current = "trigger"
       setEditing(false)
       const next = draft.trim()
       if (commit && next !== value) onCommit(next)
@@ -89,6 +97,7 @@ const InlineEdit = React.forwardRef<HTMLElement, InlineEditProps>(
     }
 
     const isDefault = value === ""
+    const shown = isDefault ? defaultValue : value
 
     return (
       <Comp
@@ -120,24 +129,41 @@ const InlineEdit = React.forwardRef<HTMLElement, InlineEditProps>(
           </span>
         ) : (
           <>
-            <span
-              data-slot="inline-edit-text"
-              data-default={isDefault || undefined}
-              className={cn(styles.text, isDefault && styles.textDefault)}
-              onClick={start}
-            >
-              {isDefault ? defaultValue : value}
-            </span>
-            <button
-              ref={pencilRef}
-              type="button"
-              data-slot="inline-edit-pencil"
-              className={styles.pencil}
-              aria-label={editLabel ?? `Edit ${label}`}
-              onClick={start}
-            >
-              <PencilSimple aria-hidden="true" />
-            </button>
+            {pencil ? (
+              <span
+                data-slot="inline-edit-text"
+                data-default={isDefault || undefined}
+                className={cn(styles.text, isDefault && styles.textDefault)}
+                onClick={start}
+              >
+                {shown}
+              </span>
+            ) : (
+              <button
+                ref={triggerRef}
+                type="button"
+                data-slot="inline-edit-text"
+                data-default={isDefault || undefined}
+                data-control=""
+                className={cn(styles.text, styles.textControl, isDefault && styles.textDefault)}
+                aria-label={`${editLabel ?? `Edit ${label}`}, ${shown}`}
+                onClick={start}
+              >
+                {shown}
+              </button>
+            )}
+            {pencil && (
+              <button
+                ref={triggerRef}
+                type="button"
+                data-slot="inline-edit-pencil"
+                className={styles.pencil}
+                aria-label={editLabel ?? `Edit ${label}`}
+                onClick={start}
+              >
+                <PencilSimple aria-hidden="true" />
+              </button>
+            )}
           </>
         )}
       </Comp>
