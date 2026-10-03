@@ -52,14 +52,16 @@ export interface MeasureOptions {
 }
 
 export async function measureInk(opts: MeasureOptions): Promise<InkResult[]> {
-  const esbuild: any = await import("esbuild")
-  const pw = (await import("playwright")) as any
+  const esbuild = (await import("esbuild")) as unknown as {
+    build(o: Record<string, unknown>): Promise<{ outputFiles?: Array<{ path: string; text: string }> }>
+  }
+  const pw = (await import("playwright")) as unknown as Record<"chromium" | "webkit", { launch(): Promise<{ newContext(o: Record<string, unknown>): Promise<{ newPage(): Promise<InkPage> }>; close(): Promise<void> }> }>
   const chromium = pw[opts.browser ?? "chromium"]
   const DSF = opts.dsf ?? 4
   const theme = opts.theme ?? "neutral"
   const mode = opts.mode ?? "light"
 
-  const imports = Object.entries(opts.modules).map(([dir, names], i) => {
+  const imports = Object.entries(opts.modules).map(([dir, names]) => {
     const file = resolveComponentFile(ROOT, dir) as string
     return `import { ${names.join(", ")} } from ${JSON.stringify(file)};`
   })
@@ -164,4 +166,11 @@ createRoot(document.getElementById("root")).render(
   } finally {
     await browser.close()
   }
+}
+
+interface InkPage {
+  setContent(html: string, o: { waitUntil: "load" }): Promise<void>
+  waitForFunction(expr: string, arg: undefined, o: { timeout: number }): Promise<unknown>
+  evaluate(expr: string): Promise<unknown>
+  screenshot(o: { fullPage: boolean }): Promise<Buffer>
 }

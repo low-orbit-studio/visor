@@ -20,7 +20,7 @@ const SIZED = { modules: { button: ["Button"] }, cases: SIZES.map((s) => ({ id: 
 
 async function available(engine: "chromium" | "webkit"): Promise<boolean> {
   try {
-    const pw = (await import("playwright")) as any
+    const pw = (await import("playwright")) as unknown as Record<string, { executablePath(): string }>
     await import("esbuild")
     return existsSync(pw[engine].executablePath())
   } catch {
