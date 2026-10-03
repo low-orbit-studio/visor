@@ -45,8 +45,9 @@
   flex-direction: column;
   gap: var(--spacing-2, 0.5rem);
   padding: var(--spacing-2, 0.5rem);
-  border: var(--stroke-width-thin, 1px) solid
-    var(--hairline, var(--border-default, #e5e7eb));
+  border: var(--stroke-width-thin, 1px) solid transparent;
+  outline: var(--hairline-width, var(--stroke-width-thin, 1px)) solid var(--hairline, var(--border-default, #e5e7eb));
+  outline-offset: calc(-1 * var(--hairline-width, var(--stroke-width-thin, 1px)));
   border-radius: var(--doc-nav-group-radius, var(--radius-md, 0.375rem));
   background: var(--surface-card, #ffffff);
 }
@@ -58,7 +59,7 @@
  * shared hue, not `--primary` (which read as an unwanted border on those
  * borderless themes). */
 .groupPinned {
-  border-color: var(
+  outline-color: var(
     --doc-nav-pin-border,
     color-mix(in srgb, var(--doc-nav-group-accent, var(--info, #0ea5e9)) 32%, transparent)
   );
@@ -71,7 +72,7 @@
 /* Collapsed — a group reduces to a single pill-shaped chip. */
 .groupCollapsed {
   padding: 0;
-  border-color: transparent;
+  outline-color: transparent;
   background: transparent;
 }
 
@@ -116,8 +117,9 @@
 
 /* Collapsed group head — reads as a resting chip. */
 .groupCollapsed .head {
-  border: var(--stroke-width-thin, 1px) solid
-    var(--hairline, var(--border-default, #e5e7eb));
+  border: var(--stroke-width-thin, 1px) solid transparent;
+  outline: var(--hairline-width, var(--stroke-width-thin, 1px)) solid var(--hairline, var(--border-default, #e5e7eb));
+  outline-offset: calc(-1 * var(--hairline-width, var(--stroke-width-thin, 1px)));
   border-radius: var(--radius-full, 9999px);
   /* A collapsed chip stands alone in the nav row, so it carries more vertical
    * padding than the tight open-group label (the design gives it ~7px 12px). */
@@ -173,8 +175,9 @@
   flex-shrink: 0;
   min-width: var(--spacing-4, 1rem);
   padding: 0 calc(var(--spacing-1, 0.25rem) * 1.5);
-  border: var(--stroke-width-thin, 1px) solid
-    var(--hairline, var(--border-default, #e5e7eb));
+  border: var(--stroke-width-thin, 1px) solid transparent;
+  outline: var(--hairline-width, var(--stroke-width-thin, 1px)) solid var(--hairline, var(--border-default, #e5e7eb));
+  outline-offset: calc(-1 * var(--hairline-width, var(--stroke-width-thin, 1px)));
   border-radius: var(--radius-full, 9999px);
   font-family: var(--font-mono, ui-monospace, "SFMono-Regular", Menlo, monospace);
   /* ~9px — a quarter down from the xs step, matching the design's tiny badge. */

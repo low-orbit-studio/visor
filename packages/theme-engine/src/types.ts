@@ -316,6 +316,14 @@ export interface VisorThemeConfig {
    */
   edges?: "on" | "off";
   /**
+   * VI-680: the one switch for hairlines. `off` sets `--hairline-width` to 0 so
+   * every hairline rule, divider and ring (the `--hairline` / `--hairline-strong`
+   * family) disappears. Shorthand for `components.hairline.width: "0"`, and an
+   * explicit `components.hairline.width` wins over it. Independent of `edges`:
+   * neither switch touches the other's tokens. Default: `on`.
+   */
+  hairlines?: "on" | "off";
+  /**
    * Migration metadata — optional, additive, consumed by `visor migrate` commands.
    * Does not affect CSS generation or theme application.
    */

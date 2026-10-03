@@ -133,20 +133,23 @@
   height: 1rem;      /* 16px */
   transition:
     background-color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out),
-    border-color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out);
+    border-color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out),
+    outline-color var(--motion-duration-fast, 100ms) var(--motion-easing-default, ease-in-out);
 }
 
 /* Checkbox: rounded-4px plate */
 .selectionIndicatorCheckbox {
   border-radius: 4px;
-  border: var(--stroke-width-thin, 1px) solid var(--hairline-strong, #d1d5db);
+  border: var(--stroke-width-thin, 1px) solid transparent;
+  outline: var(--hairline-width, var(--stroke-width-thin, 1px)) solid var(--hairline-strong, #d1d5db);
+  outline-offset: calc(-1 * var(--hairline-width, var(--stroke-width-thin, 1px)));
   background-color: var(--surface-card, #ffffff);
   color: transparent;
 }
 
 .selectionIndicatorCheckbox.selectionIndicatorSelected {
   background-color: var(--primary, #6366f1);
-  border-color: var(--primary, #6366f1);
+  outline-color: var(--primary, #6366f1);
   color: var(--interactive-primary-text, #f9fafb);
 }
 
@@ -158,12 +161,15 @@
 /* Radio: circular plate with ring */
 .selectionIndicatorRadio {
   border-radius: 9999px;
-  border: var(--stroke-width-thin, 1px) solid var(--hairline-strong, #d1d5db);
+  border: var(--stroke-width-thin, 1px) solid transparent;
+  outline: var(--hairline-width, var(--stroke-width-thin, 1px)) solid var(--hairline-strong, #d1d5db);
+  outline-offset: calc(-1 * var(--hairline-width, var(--stroke-width-thin, 1px)));
   background-color: var(--surface-card, #ffffff);
 }
 
 .selectionIndicatorRadio.selectionIndicatorSelected {
   border: 1.5px solid var(--primary, #6366f1);
+  outline: none;
 }
 
 /* Radio filled dot when selected */

@@ -39,6 +39,11 @@
       "enum": ["on", "off"],
       "description": "The one switch for form-control edges (VI-655). 'off' removes the resting edge of every form control, dashed drop-target and empty-state edges included, with no layout shift; focus and invalid stay visible. Shorthand for components.control.edge-width: \"0\" (an explicit binding there wins). Defaults to 'on'. Optional."
     },
+    "hairlines": {
+      "type": "string",
+      "enum": ["on", "off"],
+      "description": "The one switch for hairlines (VI-680). 'off' sets --hairline-width to 0, so every hairline rule, divider and ring disappears. Shorthand for components.hairline.width: \"0\" (an explicit binding there wins). Independent of 'edges'. Defaults to 'on'. Optional."
+    },
     "colors": {
       "type": "object",
       "description": "Color definitions for light mode. Only primary is required — all others have sensible defaults.",
@@ -555,6 +560,13 @@
         "checkbox": {
           "type": "object",
           "description": "Control sizing — the D3 Tier-2 `--checkbox-size` / `-radius` / `-bg` / `-border` set, promoted from the admin-ui audit to a bindable contract. Keys: size, radius, bg, border, edgeless-bg, bg-checked, border-checked.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "hairline": {
+          "type": "object",
+          "description": "The one switch for hairlines (VI-680). Every hairline rule, divider and ring reads its weight from `--hairline-width`, so `width: 0` removes them all at once. Independent of the `control` edge switch. Keys: width.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

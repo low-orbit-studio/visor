@@ -101,6 +101,17 @@ edges: off   # on (default) | off
 
 `edges: off` emits `--control-edge-width: 0`. Nothing moves when it flips, because the edge is an inset `outline`, not a `border`. Focus and invalid stay visible, and an unchecked checkbox takes a fill so it still reads as a box. To scope it to one part of an app, set `--control-edge-width: 0` on any ancestor. The full token set is in [Component Tokens → `control`](/docs/themes/component-tokens#control).
 
+## Hairlines (`hairlines`)
+
+One line turns off every hairline — the soft separators, dividers and rings coloured by `--hairline` and `--hairline-strong` (table row rules, the tab rail, dialog footer rules, popover and doc-frame borders, and more):
+
+```yaml
+# my-theme.visor.yaml
+hairlines: off   # on (default) | off
+```
+
+`hairlines: off` emits `--hairline-width: 0`. It is independent of `edges`: neither switch touches the other's tokens, and focus and invalid states are untouched. To scope it to one part of an app, set `--hairline-width: 0` on any ancestor. The full token set is in [Component Tokens → `hairline`](/docs/themes/component-tokens#hairline).
+
 ## Manual Theme Toggle
 
 To override the system preference, apply one of the following to your `<html>` element (or any root container):

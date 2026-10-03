@@ -16,7 +16,9 @@
 
 .card {
   background: var(--surface-card, #ffffff);
-  border: var(--stroke-width-thin, 1px) solid var(--hairline, #e5e7eb);
+  border: var(--stroke-width-thin, 1px) solid transparent;
+  outline: var(--hairline-width, var(--stroke-width-thin, 1px)) solid var(--hairline, #e5e7eb);
+  outline-offset: calc(-1 * var(--hairline-width, var(--stroke-width-thin, 1px)));
   border-radius: var(--radius-lg, 0.5rem);
   padding: var(--spacing-3, 0.75rem);
   box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,0.06));
@@ -60,7 +62,8 @@
 
 /* Footer — hairline-separated voice key attribution */
 .footer {
-  border-top: var(--stroke-width-thin, 1px) solid var(--hairline, #e5e7eb);
+  border-top: var(--stroke-width-thin, 1px) solid transparent;
+  border-image: linear-gradient(var(--hairline, #e5e7eb), var(--hairline, #e5e7eb)) 1 / var(--hairline-width, var(--stroke-width-thin, 1px)) 0 0 0;
   margin-top: var(--spacing-1, 0.25rem);
   padding-top: var(--spacing-2, 0.5rem);
   font-size: 10.5px;

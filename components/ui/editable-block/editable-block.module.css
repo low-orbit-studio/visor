@@ -15,7 +15,9 @@
 
 .root {
   background: var(--surface-card, #ffffff);
-  border: var(--stroke-width-thin, 1px) solid var(--hairline, rgba(0,0,0,0.06));
+  border: var(--stroke-width-thin, 1px) solid transparent;
+  outline: var(--hairline-width, var(--stroke-width-thin, 1px)) solid var(--hairline, rgba(0,0,0,0.06));
+  outline-offset: calc(-1 * var(--hairline-width, var(--stroke-width-thin, 1px)));
   border-radius: var(--radius-lg, 0.75rem);
   padding: var(--spacing-3_5, 0.875rem);         /* prototype: 14px */
   box-shadow: var(--shadow-sm, 0 1px 2px 0 rgb(0 0 0 / 0.05));
@@ -25,14 +27,14 @@
   display: flex;
   flex-direction: column;
   transition:
-    border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    outline-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
     box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
 /* ─── State: default (hover) ────────────────────────────────────────────── */
 
 .stateDefault:hover {
-  border-color: var(--border-default, #e5e7eb);
+  outline-color: var(--border-default, #e5e7eb);
 }
 
 /* Reveal edit icon on hover — use CSS opacity so resting state is still
@@ -44,7 +46,7 @@
 /* ─── State: done ───────────────────────────────────────────────────────── */
 
 .stateDone:hover {
-  border-color: var(--border-default, #e5e7eb);
+  outline-color: var(--border-default, #e5e7eb);
 }
 
 .stateDone:hover .editIcon {
@@ -55,7 +57,7 @@
 
 .stateEditing {
   /* Focus-ring shadow — exception per token-rules Rule 2 (focus ring variant) */
-  border-color: var(--primary, #111827);
+  outline-color: var(--primary, #111827);
   box-shadow: 0 0 0 var(--spacing-1, 0.25rem) var(--interactive-primary-soft, color-mix(in srgb, var(--interactive-primary-bg, #111827) 12%, transparent));
   cursor: default;
 }

@@ -107,7 +107,7 @@
   font-size: var(--table-cell-font-size, inherit);
   color: var(--table-cell-color, var(--text-primary, #111827));
   background-color: var(--table-cell-bg, var(--dt-row-bg, transparent));
-  border-top: var(--table-cell-border-top, 1px solid var(--hairline, transparent));
+  border-top: var(--table-cell-border-top, var(--hairline-width, 1px) solid var(--hairline, transparent));
 }
 
 /* TableCaption */

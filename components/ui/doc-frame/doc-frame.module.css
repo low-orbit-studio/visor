@@ -37,8 +37,8 @@
   display: flex;
   flex-direction: column;
   background: var(--surface-page, #ffffff);
-  border-bottom: var(--stroke-width-thin, 1px) solid
-    var(--hairline, var(--border-default, #e5e7eb));
+  border-bottom: var(--stroke-width-thin, 1px) solid transparent;
+  border-image: linear-gradient(var(--hairline, var(--border-default, #e5e7eb)), var(--hairline, var(--border-default, #e5e7eb))) 1 / 0 0 var(--hairline-width, var(--stroke-width-thin, 1px)) 0;
 }
 
 /* Header row — brand/logo slot, then the OVERVIEW home pill, a flexible spacer,
@@ -49,8 +49,8 @@
   gap: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
   flex-wrap: wrap;
   padding: var(--spacing-3, 0.75rem) var(--spacing-5, 1.25rem);
-  border-bottom: var(--stroke-width-thin, 1px) solid
-    var(--hairline, var(--border-default, #e5e7eb));
+  border-bottom: var(--stroke-width-thin, 1px) solid transparent;
+  border-image: linear-gradient(var(--hairline, var(--border-default, #e5e7eb)), var(--hairline, var(--border-default, #e5e7eb))) 1 / 0 0 var(--hairline-width, var(--stroke-width-thin, 1px)) 0;
 }
 
 .brandSlot {
@@ -159,8 +159,9 @@
   flex-shrink: 0;
   /* ~6px 12px — a compact chip that clears the mono caps. */
   padding: calc(var(--spacing-1, 0.25rem) * 1.5) var(--spacing-3, 0.75rem);
-  border: var(--stroke-width-thin, 1px) solid
-    var(--hairline, var(--border-default, #e5e7eb));
+  border: var(--stroke-width-thin, 1px) solid transparent;
+  outline: var(--hairline-width, var(--stroke-width-thin, 1px)) solid var(--hairline, var(--border-default, #e5e7eb));
+  outline-offset: calc(-1 * var(--hairline-width, var(--stroke-width-thin, 1px)));
   border-radius: var(--radius-full, 9999px);
   background: var(--surface-card, #ffffff);
   font-family: var(--font-mono, ui-monospace, "SFMono-Regular", Menlo, monospace);
@@ -176,13 +177,13 @@
   white-space: nowrap;
   transition: color var(--motion-duration-fast, 150ms)
       var(--motion-easing-standard, ease),
-    border-color var(--motion-duration-fast, 150ms)
+    outline-color var(--motion-duration-fast, 150ms)
       var(--motion-easing-standard, ease);
 }
 
 .home:hover {
   color: var(--text-primary, #111827);
-  border-color: var(--hairline-strong, var(--border-default, #d1d5db));
+  outline-color: var(--hairline-strong, var(--border-default, #d1d5db));
 }
 
 .home:focus-visible {
