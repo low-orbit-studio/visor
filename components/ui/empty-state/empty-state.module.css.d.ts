@@ -16,6 +16,8 @@ declare const styles: {
   readonly intentFirstUse: string
   readonly intentZeroResults: string
   readonly intentNoAccess: string
+  readonly intentError: string
+  readonly fill: string
 }
 
 export default styles

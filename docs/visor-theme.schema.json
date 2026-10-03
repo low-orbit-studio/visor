@@ -517,7 +517,7 @@
         },
         "empty-state": {
           "type": "object",
-          "description": "Empty-state placard — surface, icon chip and copy scale. Keys: radius, text-color, gap, padding, bg, border, icon-size, icon-radius, icon-bg, icon-color, heading-font-family, heading-font-size, heading-font-weight, heading-color, description-font-size, description-color, actions-gap.",
+          "description": "Empty-state placard — surface, icon chip and copy scale. Keys: radius, text-color, gap, padding, bg, border, icon-size, icon-radius, icon-bg, icon-color, heading-font-family, heading-font-size, heading-font-weight, heading-color, description-font-size, description-color, error-color, actions-gap.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

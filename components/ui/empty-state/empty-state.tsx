@@ -32,17 +32,29 @@ const emptyStateVariants = cva(styles.base, {
      * - `zero-results` — filter or search returned nothing; accent-tinted chip;
      *   encourages a clear-filter action.
      * - `no-access` — permission or feature gate; neutral chip with lock icon.
+     * - `error` — a failed load; icon and heading in the destructive colour,
+     *   `role="alert"`, and an unchipped icon unless `iconWrap` is set.
      */
     intent: {
       "first-use": styles.intentFirstUse,
       "zero-results": styles.intentZeroResults,
       "no-access": styles.intentNoAccess,
+      error: styles.intentError,
+    },
+    /**
+     * Fill the container and centre the content both ways. For a flex or
+     * fixed-height parent that gives the empty state room.
+     */
+    fill: {
+      true: styles.fill,
+      false: undefined,
     },
   },
   defaultVariants: {
     size: "md",
     tone: "default",
     variant: "default",
+    fill: false,
   },
 })
 
@@ -54,7 +66,7 @@ export interface EmptyStateProps
   /** Optional leading visual — typically a Phosphor icon. */
   icon?: React.ReactNode
   /**
-   * When true (or when `intent` is set), wraps the icon in a circular chip
+   * When true (or when `intent` is set, except `error`), wraps the icon in a circular chip
    * whose color is controlled by the `intent` variant. Ignored if no `icon` is
    * provided.
    */
@@ -79,6 +91,7 @@ const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(
       tone,
       variant,
       intent,
+      fill,
       icon,
       iconWrap,
       heading,
@@ -93,18 +106,21 @@ const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(
     const Heading = headingAs as React.ElementType
     const hasBothActions = Boolean(action) && Boolean(secondaryAction)
     const hasAnyAction = Boolean(action) || Boolean(secondaryAction)
-    // Auto-activate icon wrap when intent is set, unless explicitly disabled
-    const shouldWrapIcon = icon != null && (iconWrap ?? intent != null)
+    const isError = intent === "error"
+    // Auto-activate icon wrap when intent is set, unless explicitly disabled.
+    // The error intent keeps the thin, unchipped icon unless iconWrap is set.
+    const shouldWrapIcon =
+      icon != null && (iconWrap ?? (intent != null && !isError))
 
     return (
       <div
         ref={ref}
-        role="status"
+        role={isError ? "alert" : "status"}
         data-slot="empty-state"
         data-tone={tone ?? "default"}
         data-variant={variant ?? "default"}
         {...(intent ? { "data-intent": intent } : {})}
-        className={cn(emptyStateVariants({ size, tone, variant, intent }), className)}
+        className={cn(emptyStateVariants({ size, tone, variant, intent, fill }), className)}
         {...props}
       >
         {icon ? (

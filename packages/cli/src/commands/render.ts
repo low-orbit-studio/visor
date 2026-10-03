@@ -418,6 +418,10 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       export: "EmptyState",
       props: `{ heading: "No projects yet", description: "Create a project to get started." }`,
     },
+    error: {
+      export: "EmptyState",
+      props: `{ intent: "error", tone: "subtle", icon: ${ICON_X}, heading: "Could not load the inbox", description: "The request timed out. Check your connection and try again." }`,
+    },
   },
   badge: {
     default: {

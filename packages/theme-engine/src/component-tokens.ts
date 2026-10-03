@@ -425,6 +425,7 @@ const emptyStateFamily: ComponentTokenFamily = {
     { key: "heading-color", property: "color", description: "Heading colour.", consumers: at(EMPTY_STATE, "var(--text-primary, #111827)") },
     { key: "description-font-size", property: "font-size", description: "Description type size.", consumers: at(EMPTY_STATE, "var(--font-size-sm, 0.875rem)") },
     { key: "description-color", property: "color", description: "Description colour.", consumers: at(EMPTY_STATE, "var(--text-secondary, #6b7280)") },
+    { key: "error-color", property: "color", description: "Icon, chip glyph and heading colour for `intent=\"error\"`.", consumers: at(EMPTY_STATE, "var(--destructive, #dc2626)") },
     { key: "actions-gap", property: "gap", description: "Gap between placard actions.", consumers: at(EMPTY_STATE, "var(--spacing-2, 0.5rem)") },
   ],
 };

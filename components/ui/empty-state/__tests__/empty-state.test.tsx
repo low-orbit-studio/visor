@@ -301,3 +301,42 @@ describe("EmptyState — intent variants", () => {
     ).toBeNull()
   })
 })
+
+describe("EmptyState intent=error", () => {
+  it("announces as an alert instead of a status", () => {
+    render(<EmptyState intent="error" heading="Could not load" />)
+    expect(screen.getByRole("alert")).toHaveAttribute("data-intent", "error")
+    expect(screen.queryByRole("status")).toBeNull()
+  })
+
+  it("keeps role=status for other intents", () => {
+    render(<EmptyState intent="first-use" heading="None yet" />)
+    expect(screen.getByRole("status")).toBeInTheDocument()
+  })
+
+  it("applies the destructive intent class and leaves the icon unchipped", () => {
+    const { container } = render(
+      <EmptyState intent="error" icon={<svg />} heading="Could not load" />
+    )
+    expect(screen.getByRole("alert").className).toMatch(/intentError/)
+    const icon = container.querySelector('[data-slot="empty-state-icon"]')!
+    expect(icon.className).not.toMatch(/iconWrap/)
+  })
+
+  it("wraps the icon in a chip when iconWrap is set", () => {
+    const { container } = render(
+      <EmptyState intent="error" iconWrap icon={<svg />} heading="Could not load" />
+    )
+    const icon = container.querySelector('[data-slot="empty-state-icon"]')!
+    expect(icon.className).toMatch(/iconWrap/)
+  })
+})
+
+describe("EmptyState fill", () => {
+  it("adds the fill class only when fill is set", () => {
+    const { rerender } = render(<EmptyState heading="Empty" />)
+    expect(screen.getByRole("status").className).not.toMatch(/fill/)
+    rerender(<EmptyState fill heading="Empty" />)
+    expect(screen.getByRole("status").className).toMatch(/fill/)
+  })
+})

@@ -12,6 +12,7 @@ when_not_to_use:
   - Passive informational notices or warnings (use Alert)
   - Site-wide or page-level announcements (use Banner)
   - Empty states where no data exists yet (use EmptyState)
+  - A whole region or screen whose load failed and should read like an empty state (use EmptyState intent="error")
   - Ephemeral transient notifications (use Toast)
 
 why: >

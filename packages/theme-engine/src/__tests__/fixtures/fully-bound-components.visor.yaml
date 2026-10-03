@@ -134,6 +134,7 @@ components:
     heading-color: "#00d5ff"
     description-font-size: "13px"
     description-color: "#00d5ff"
+    error-color: "#ff00aa"
     actions-gap: "17px"
   banner:
     padding: "17px 21px"
