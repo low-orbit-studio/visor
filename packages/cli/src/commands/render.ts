@@ -561,6 +561,22 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     refused: { export: "SaveStatus", props: `{ status: "refused" }` },
     "refused-retry": { export: "SaveStatus", interactiveTarget: "button", props: `{ status: "refused", onRetry: function () {} }` },
   },
+  // VI-615: the single-select pill group. `fullwidth` fills the render frame.
+  "segmented-control": {
+    default: {
+      export: "SegmentedControl",
+      interactiveTarget: "[data-slot=toggle-group-item]",
+      props: `{ "aria-label": "Payment status", defaultValue: "paid", options: [{ value: "unpaid", label: "Unpaid" }, { value: "paid", label: "Paid" }, { value: "any", label: "Any" }] }`,
+    },
+    fullwidth: {
+      export: "SegmentedControl",
+      props: `{ "aria-label": "Artist scope", fullWidth: true, defaultValue: "active", options: [{ value: "active", label: "Active" }, { value: "archived", label: "Archived" }, { value: "dnb", label: "Do-not-book" }] }`,
+    },
+    "disabled-option": {
+      export: "SegmentedControl",
+      props: `{ "aria-label": "View", defaultValue: "day", options: [{ value: "day", label: "Day" }, { value: "week", label: "Week" }, { value: "month", label: "Month", disabled: true }] }`,
+    },
+  },
   "tag-input": {
     default: {
       export: "TagInput",

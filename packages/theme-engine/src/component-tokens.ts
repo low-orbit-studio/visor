@@ -137,6 +137,7 @@ const FIELD = "components/ui/field/field.module.css";
 const TEXT = "components/ui/text/text.module.css";
 const INLINE_EDIT = "components/ui/inline-edit/inline-edit.module.css";
 const SAVE_STATUS = "components/ui/save-status/save-status.module.css";
+const SEGMENTED_CONTROL = "components/ui/segmented-control/segmented-control.module.css";
 const TOOLTIP = "components/ui/tooltip/tooltip.module.css";
 const ACTION_ROW = "components/ui/action-row/action-row.module.css";
 
@@ -954,6 +955,20 @@ const hairlineFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-615: the single-select pill group. Its resting edge is the shared `control` edge
+// (no token of its own), so `control.edge-width: 0` turns it off.
+const segmentedControlFamily: ComponentTokenFamily = {
+  family: "segmented-control",
+  prefix: "segmented-control",
+  description:
+    "SegmentedControl — the recessed track, the sliding pill and the ink on it. The resting edge is the shared `control` edge.",
+  tokens: [
+    { key: "track-bg", property: "background-color", description: "Recessed track the pill slides in.", consumers: at(SEGMENTED_CONTROL, "var(--surface-subtle, #f3f4f6)") },
+    { key: "indicator-bg", property: "background-color", description: "Sliding active pill. Bind a lifted dark fill where the theme wants one.", consumers: at(SEGMENTED_CONTROL, "var(--interactive-primary-bg, var(--primary, #111827))") },
+    { key: "indicator-text", property: "color", description: "Active segment label ink, on the pill.", consumers: at(SEGMENTED_CONTROL, "var(--interactive-primary-text, #f9fafb)") },
+  ],
+};
+
 const adminUiFamily: ComponentTokenFamily = {
   family: "admin-ui",
   prefix: "admin-ui",
@@ -998,6 +1013,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   textFamily,
   switchFamily,
   saveStatusFamily,
+  segmentedControlFamily,
   tooltipFamily,
   actionRowFamily,
   adminUiFamily,

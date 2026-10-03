@@ -356,6 +356,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "SectionIntro",
   "SectionNav",
   "SectionNavItem",
+  "SegmentedControl",
   "SegmentedProgress",
   "Select",
   "SelectContent",

@@ -1,0 +1,57 @@
+/* SegmentedControl layers on ToggleGroup (outline, single). ToggleGroup owns the
+   mechanics, sizes, sliding indicator and label centring; this sheet only
+   re-skins the track and indicator and adds the fullWidth layout. ToggleGroup's
+   own classes are hashed, so they are reached through the data attributes it
+   renders. Specificity here is two classes or a class plus an attribute so the
+   re-skin wins whatever order the sheets load in. */
+
+.root[data-variant="outline"] {
+  /* VI-655: the border only holds box geometry. The visible resting edge is an
+     outline pulled inside the box from the shared --control-edge-* tokens, so
+     --control-edge-width: 0 on any ancestor removes it with no layout shift. */
+  border: 1px solid transparent;
+  outline: var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--control-edge-color, var(--border-default, #e5e7eb));
+  outline-offset: calc(-1 * var(--control-edge-width, 1px));
+  /* Recessed track the active pill sits in. */
+  background-color: var(--segmented-control-track-bg, var(--surface-subtle, #f3f4f6));
+}
+
+/* Labels are medium weight, never light. */
+.root [data-slot="toggle-group-item"] {
+  font-weight: var(--font-weight-medium, 500);
+}
+
+/* The sliding pill. A theme can set a lifted dark fill (and the ink on it). */
+.root > [aria-hidden="true"] {
+  background-color: var(--segmented-control-indicator-bg, var(--interactive-primary-bg, var(--primary, #111827)));
+}
+
+.root [data-slot="toggle-group-item"][data-state="on"] {
+  color: var(--segmented-control-indicator-text, var(--interactive-primary-text, #f9fafb));
+}
+
+/* Focus stays visible with edges off: it draws at the focus ring width, which
+   the edge switch does not touch. It sits outside the pill, in the track. */
+.root [data-slot="toggle-group-item"]:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #111827);
+  outline-offset: var(--focus-ring-offset, 2px);
+  box-shadow: none;
+}
+
+/* Equal-width segments spanning the container (list-filter treatment). */
+.root.fullWidth {
+  display: flex;
+  width: 100%;
+}
+
+.root.fullWidth > [data-slot="toggle-group-item"] {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* The indicator snaps instead of sliding. */
+@media (prefers-reduced-motion: reduce) {
+  .root > [aria-hidden="true"] {
+    transition: none;
+  }
+}

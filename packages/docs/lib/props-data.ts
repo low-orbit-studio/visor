@@ -391,6 +391,48 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'segmented-control': [
+    {
+      name: 'options',
+      type: '{ value: string; label: ReactNode; icon?: ReactNode; disabled?: boolean }[]',
+      required: true,
+      description: 'The segments, in order. Each takes an optional icon and a disabled flag.',
+    },
+    {
+      name: 'value',
+      type: 'string',
+      description: 'Controlled value. One option is always on.',
+    },
+    {
+      name: 'defaultValue',
+      type: 'string',
+      description: 'Uncontrolled initial value. Falls back to the first enabled option.',
+    },
+    {
+      name: 'onValueChange',
+      type: '(value: string) => void',
+      description: 'Fires with the new value. Never fires with an empty string: clicking the active segment keeps it.',
+    },
+    {
+      name: 'size',
+      type: "'xs' | 'sm' | 'md' | 'lg'",
+      default: "'md'",
+      description: 'Segment height and type size, passed through to ToggleGroup.',
+    },
+    {
+      name: 'fullWidth',
+      type: 'boolean',
+      default: 'false',
+      description: 'Equal-width segments spanning the container (the list-filter treatment).',
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables every segment.',
+    },
+  ],
+
   'toggle-group': [
     {
       name: 'type',

@@ -307,6 +307,10 @@ components:
     font-family: "\"Courier New\", monospace"
     text-transform: uppercase
     letter-spacing: "3px"
+  segmented-control:
+    track-bg: "#2b0a3d"
+    indicator-bg: "#ff00aa"
+    indicator-text: "#ffffff"
   tooltip:
     bg: "#ff00aa"
     text: "#2b0a3d"

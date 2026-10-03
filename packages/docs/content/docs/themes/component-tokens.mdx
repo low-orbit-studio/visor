@@ -640,6 +640,28 @@ components:
 
 SaveStatus draws no edge, so there is nothing for `control.edge-width` to turn off.
 
+### `segmented-control`
+
+SegmentedControl — the recessed track, the sliding pill and the ink on it. The resting edge is the shared `control` edge.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--segmented-control-track-bg` | Recessed track the pill slides in. | `var(--surface-subtle, #f3f4f6)` |
+| `--segmented-control-indicator-bg` | Sliding active pill. Bind a lifted dark fill where the theme wants one. | `var(--interactive-primary-bg, var(--primary, #111827))` |
+| `--segmented-control-indicator-text` | Active segment label ink, on the pill. | `var(--interactive-primary-text, #f9fafb)` |
+
+A lifted dark pill with its own ink:
+
+```yaml
+components:
+  segmented-control:
+    indicator-bg: "#1c1c22"
+    indicator-text: "#ffffff"
+```
+
+SegmentedControl's resting edge is an outline from `--control-edge-*`, so
+`control.edge-width: 0` turns it off while focus stays visible.
+
 ### `tooltip`
 
 Tooltip ground and ink, so a dark theme can keep the label legible without retuning the shared inverse pair other components read.
