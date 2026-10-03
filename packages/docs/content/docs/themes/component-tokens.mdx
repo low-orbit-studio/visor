@@ -637,6 +637,32 @@ components:
 
 SaveStatus draws no edge, so there is nothing for `control.edge-width` to turn off.
 
+### `tooltip`
+
+Tooltip ground and ink, so a dark theme can keep the label legible without retuning the shared inverse pair other components read.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--tooltip-bg` | Tooltip ground. | `var(--surface-overlay, #111827)` |
+| `--tooltip-text` | Tooltip label colour. | `var(--text-inverse, #ffffff)` |
+
+Unbound, the tooltip reads `--surface-overlay` under `--text-inverse`, as it
+always has. In a dark theme both can resolve dark, and `--text-inverse` cannot
+be retuned for the tooltip alone: it is the dark ink Calendar, Badge and Chip
+set on light and accent fills. Bind the pair in dark mode instead:
+
+```yaml
+components:
+  tooltip:
+    bg:
+      dark: "rgba(0, 0, 0, 0.8)"
+    text:
+      dark: "#fafafa"
+```
+
+A flat `overrides.dark.tooltip-bg` / `tooltip-text` pair emits the same two
+properties through the brand pass-through.
+
 ### `admin-ui`
 
 Structural roles the admin-ui pattern owns. `marquee-family` is the display face for KPI hero figures and marquee page titles — the role the admin-ui portability audit named as the one piece of ENTR brand coupling a new theme must rebind.

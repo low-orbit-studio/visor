@@ -137,6 +137,7 @@ const FIELD = "components/ui/field/field.module.css";
 const TEXT = "components/ui/text/text.module.css";
 const INLINE_EDIT = "components/ui/inline-edit/inline-edit.module.css";
 const SAVE_STATUS = "components/ui/save-status/save-status.module.css";
+const TOOLTIP = "components/ui/tooltip/tooltip.module.css";
 
 /** Shorthand for the common single-consumer case. */
 function at(file: string, fallback: string | null): ComponentTokenConsumer[] {
@@ -852,6 +853,22 @@ const saveStatusFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-683. The tooltip's own ground and ink. Unbound it reads the inverse pair
+// it always read (`--surface-overlay` under `--text-inverse`), so every theme
+// renders identically. A dark theme needs the override: there both of those
+// resolve dark, and `--text-inverse` cannot turn light for the tooltip because
+// it is the dark ink Calendar, Badge and Chip set on light and accent fills.
+const tooltipFamily: ComponentTokenFamily = {
+  family: "tooltip",
+  prefix: "tooltip",
+  description:
+    "Tooltip ground and ink, so a dark theme can keep the label legible without retuning the shared inverse pair other components read.",
+  tokens: [
+    { key: "bg", property: "background-color", description: "Tooltip ground.", consumers: at(TOOLTIP, "var(--surface-overlay, #111827)") },
+    { key: "text", property: "color", description: "Tooltip label colour.", consumers: at(TOOLTIP, "var(--text-inverse, #ffffff)") },
+  ],
+};
+
 // VI-680. The hairline mirror of the VI-655 edge switch: one token every
 // hairline rule reads for its weight, so a single binding turns every hairline
 // off:
@@ -947,6 +964,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   textFamily,
   switchFamily,
   saveStatusFamily,
+  tooltipFamily,
   adminUiFamily,
 ];
 

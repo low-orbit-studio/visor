@@ -44,6 +44,51 @@ Use the `sideOffset` prop on `TooltipContent` to control the distance between th
   </TooltipProvider>
 </ComponentPreview>
 
+## Portal Container
+
+`TooltipContent` portals into `document.body` by default. A theme scoped to a class on a wrapper never reaches the body, so the tooltip would read the page's theme instead. Pass the wrapper as `container` and the tooltip mounts inside it, under the scoped theme.
+
+```tsx
+const [themeRoot, setThemeRoot] = React.useState<HTMLDivElement | null>(null);
+
+<div ref={setThemeRoot} className="my-scoped-theme">
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <Button variant="ghost">Edit</Button>
+    </TooltipTrigger>
+    <TooltipContent container={themeRoot}>Edit section</TooltipContent>
+  </Tooltip>
+</div>
+```
+
+## Theme Tokens
+
+The tooltip reads its own ground and ink. Each falls back to the pair it has always used, so a theme that sets neither renders exactly as before.
+
+| Token | Property | Falls back to |
+|---|---|---|
+| `--tooltip-bg` | `background-color` | `var(--surface-overlay, #111827)` |
+| `--tooltip-text` | `color` | `var(--text-inverse, #ffffff)` |
+
+In a dark theme `--surface-overlay` and `--text-inverse` can both resolve dark, which leaves the label unreadable. Do not retune `--text-inverse` to fix it: Calendar, Badge and Chip read it as their dark ink on light and accent fills. Bind the tooltip pair instead, as a component token or a flat override:
+
+```yaml
+components:
+  tooltip:
+    bg:
+      dark: "rgba(0, 0, 0, 0.8)"
+    text:
+      dark: "#fafafa"
+
+# or, equivalently
+overrides:
+  dark:
+    tooltip-bg: "rgba(0, 0, 0, 0.8)"
+    tooltip-text: "#fafafa"
+```
+
+See [Component tokens](/docs/themes/component-tokens) for the full contract.
+
 ## Installation
 
 ```bash
@@ -86,7 +131,7 @@ import {
 | `TooltipProvider` | Wraps the app to set global tooltip delay and behavior |
 | `Tooltip` | Root component managing open/close state for a single tooltip |
 | `TooltipTrigger` | Element that activates the tooltip on hover/focus |
-| `TooltipContent` | The floating label rendered in a portal |
+| `TooltipContent` | The floating label rendered in a portal (`document.body` unless `container` is set) |
 
 ## Accessibility
 
