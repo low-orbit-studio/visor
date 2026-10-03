@@ -28,8 +28,11 @@
 .textControl {
   position: relative;
   display: inline;
-  margin: 0;
-  padding: 0;
+  /* Padding is present in every state and cancelled by an equal negative
+   * margin, so nothing shifts between rest, hover and focus. It is the room
+   * the focus ring clears the glyphs by, on top of --focus-ring-offset. */
+  margin: calc(-1 * var(--spacing-1, 0.25rem)) calc(-1 * var(--spacing-2, 0.5rem));
+  padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
   border: 0;
   border-radius: var(--radius-sm, 0.125rem);
   background: none;
@@ -65,13 +68,12 @@
   }
 }
 
+/* Focus shows the ring alone. The underline is the hover cue; under the ring it
+ * read as a double line. */
 .textControl:focus-visible {
   outline: var(--focus-ring-width, 2px) solid var(--border-focus, #111827);
   outline-offset: var(--focus-ring-offset, 2px);
-  text-decoration-line: underline;
-  text-decoration-style: var(--inline-edit-underline-style, solid);
-  text-decoration-thickness: var(--stroke-width-thin, 1px);
-  text-underline-offset: var(--spacing-1, 0.25rem);
+  text-decoration-line: none;
 }
 
 .pencil {
