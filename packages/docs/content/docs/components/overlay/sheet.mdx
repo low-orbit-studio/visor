@@ -86,6 +86,22 @@ A sheet with header, content, and action footer.
   </Sheet>
 </ComponentPreview>
 
+## Inside a container
+
+Pass `container` (the element itself, held in state) and the overlay and panel cover only that element. A scoped sheet is not Radix modal mode, which aria-hides everything outside and blocks pointer events on `body`: it traps focus inside the panel, makes only the container's other children `inert`, and leaves the rest of the page interactive. Only the scrim dismisses on a press. The container gets `position: relative` if it is `static`.
+
+```tsx
+const [pane, setPane] = useState<HTMLElement | null>(null)
+
+<section ref={setPane}>
+  <Sheet open={open} onOpenChange={setOpen} container={pane}>
+    <SheetContent side="bottom">...</SheetContent>
+  </Sheet>
+</section>
+```
+
+Under `prefers-reduced-motion` the sheet fades in without the slide. For a bottom sheet that becomes a dialog on desktop, see Dialog's `presentation` prop.
+
 ## Installation
 
 ```bash

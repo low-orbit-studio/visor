@@ -97,6 +97,50 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
         };
       })()`,
     },
+    // VI-667: bottom-sheet presentation, with the drag handle and a leading back action.
+    sheet: {
+      export: "Dialog",
+      props: `(function () {
+        var h = React.createElement;
+        return {
+          open: true,
+          presentation: "sheet",
+          children: [h(__mod.DialogTrigger, { key: "tr", asChild: true }, h("button", { type: "button" }, "Open")), h(__mod.DialogContent, { key: "c", showHandle: true }, [
+            h(__mod.DialogHeader, { key: "h", back: h(__mod.DialogBack, null) }, [
+              h(__mod.DialogTitle, { key: "t" }, "Set start time"),
+              h(__mod.DialogDescription, { key: "d" }, "Doors open one hour earlier."),
+            ]),
+            h("input", { key: "i", "aria-label": "Start", defaultValue: "21:00", style: { width: "100%", boxSizing: "border-box", padding: "8px" } }),
+            h(__mod.DialogFooter, { key: "f" }, h("button", { type: "button" }, "Save")),
+          ])],
+        };
+      })()`,
+    },
+    // VI-667: dialog scoped to one pane (#root) under a scrim; the page outside it is untouched.
+    scoped: {
+      export: "Dialog",
+      props: `(function () {
+        var h = React.createElement;
+        var pane = document.getElementById("root");
+        pane.style.minHeight = "420px";
+        pane.style.position = "relative";
+        pane.style.background = "var(--surface-card, #f3f4f6)";
+        return {
+          open: true,
+          container: pane,
+          children: [
+            h("p", { key: "p", style: { margin: 0, padding: "16px" } }, "Editor pane: stays visible behind the scrim."),
+            h(__mod.DialogContent, { key: "c" }, [
+              h(__mod.DialogHeader, { key: "h", back: h(__mod.DialogBack, null) }, [
+                h(__mod.DialogTitle, { key: "t" }, "Sign back in"),
+                h(__mod.DialogDescription, { key: "d" }, "Your session timed out."),
+              ]),
+              h(__mod.DialogFooter, { key: "f" }, h("button", { type: "button" }, "Continue")),
+            ]),
+          ],
+        };
+      })()`,
+    },
   },
   popover: {
     selection: {
