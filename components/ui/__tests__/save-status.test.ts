@@ -11,7 +11,7 @@ import { COMPONENT_TOKEN_FAMILY_BY_NAME, componentTokenName } from "../../../pac
 import { REST_EDGE, bundle, close, launch, open, pixelDelta, ready } from "./render-page"
 
 const ROOT = "#root [data-slot=save-status]"
-const STATES = ["default", "saving", "unsaved", "refused", "refused-retry"]
+const STATES = ["default", "saving", "syncing", "unsaved", "unsaved-dot", "refused", "refused-retry"]
 
 /** SaveStatus in a row with a sibling after it, the way an editor header uses it. */
 const ROW = `#root { display: flex; align-items: center; gap: 8px; }
@@ -25,7 +25,8 @@ const geometry = `(function () {
   return { width: r.width, height: r.height, left: r.left, rowWidth: root.width, afterContent: after.content };
 })()`
 
-const read = (prop: string) => `getComputedStyle(document.querySelector(${JSON.stringify(ROOT)})).getPropertyValue(${JSON.stringify(prop)})`
+const read = (prop: string, sel = ROOT) => `getComputedStyle(document.querySelector(${JSON.stringify(sel)})).getPropertyValue(${JSON.stringify(prop)})`
+const DOT = "#root [data-slot=save-status-dot]"
 
 beforeAll(async () => {
   await launch()
@@ -47,19 +48,36 @@ describe("VI-657 — SaveStatus (real browser)", () => {
       for (const s of seen) {
         expect({ ...s, state: undefined }, s.state).toEqual({ ...seen[0], state: undefined })
       }
-      expect(seen[0].width).toBe(120) // 7.5rem
+      expect(seen[0].width).toBeGreaterThan(0)
     }, 60_000)
 
-    it("mutation control — a slot sized by its label DOES reflow", async (ctx) => {
+    it("mutation control — a slot sized by its own label (sizers removed) DOES reflow", async (ctx) => {
       if (!ready()) return ctx.skip()
       const widths: number[] = []
       for (const state of ["default", "refused"]) {
-        const page = await open("save-status", state, { extraCss: `${ROW} ${ROOT} { width: auto !important; }` })
+        const page = await open("save-status", state, { extraCss: `${ROW} ${ROOT} [data-slot=save-status-sizer], ${ROOT} [data-slot=save-status-retry-reserve] { display: none !important; }` })
         widths.push(((await page.evaluate(geometry)) as { width: number }).width)
         await page.close()
       }
       expect(widths[0]).not.toBe(widths[1])
     }, 60_000)
+
+    it("no state truncates or overflows, in a proportional or a mono font", async (ctx) => {
+      if (!ready()) return ctx.skip()
+      for (const font of ["Arial, sans-serif", "ui-monospace, Menlo, monospace"]) {
+        for (const state of STATES) {
+          const page = await open("save-status", state, { extraCss: `#root { font-family: ${font}; }` })
+          const r = (await page.evaluate(`(function () {
+            var t = document.querySelector("#root [data-slot=save-status-text]");
+            var cell = document.querySelector("#root [data-slot=save-status-cell]");
+            var root = document.querySelector(${JSON.stringify(ROOT)});
+            return { text: t.closest("[data-as=dot]") ? 0 : t.scrollWidth - t.clientWidth, cell: cell.scrollWidth - cell.clientWidth, root: root.querySelector("[data-slot=save-status-retry]") ? 0 : root.scrollWidth - root.clientWidth }; // the retry hit target is a deliberate ::before outset
+          })()`)) as { text: number; cell: number; root: number }
+          await page.close()
+          expect({ font, state, ...r }).toEqual({ font, state, text: 0, cell: 0, root: 0 })
+        }
+      }
+    }, 90_000)
 
     // A label longer than the slot (a translation) must not paint past it.
     // Screenshot the strip just right of a 40px slot, then again with the
@@ -85,7 +103,7 @@ describe("VI-657 — SaveStatus (real browser)", () => {
 
     it("mutation control — a label left to overflow DOES paint past the slot", async (ctx) => {
       if (!ready()) return ctx.skip()
-      expect((await outside(`${ROOT} > span { overflow: visible !important; }`)).n).toBeGreaterThan(0)
+      expect((await outside(`${ROOT} [data-slot=save-status-cell], ${ROOT} [data-slot=save-status-text] { overflow: visible !important; }`)).n).toBeGreaterThan(0)
     }, 30_000)
 
     it("--save-status-width sets the slot, and it still holds across states", async (ctx) => {
@@ -124,8 +142,10 @@ describe("VI-657 — SaveStatus (real browser)", () => {
   })
 
   describe("tokens", () => {
-    const CASES: Array<{ token: string; prop: string; value: string; expected?: string }> = [
+    const CASES: Array<{ token: string; prop: string; value: string; expected?: string; state?: string; sel?: string }> = [
       { token: "--save-status-width", prop: "width", value: "78px" },
+      { token: "--save-status-syncing-color", prop: "color", value: "rgb(1, 2, 3)", state: "syncing" },
+      { token: "--save-status-dot-size", prop: "width", value: "14px", state: "unsaved-dot", sel: DOT },
       { token: "--save-status-font-family", prop: "font-family", value: "monospace" },
       { token: "--save-status-text-transform", prop: "text-transform", value: "uppercase" },
       { token: "--save-status-letter-spacing", prop: "letter-spacing", value: "3px" },
@@ -133,11 +153,12 @@ describe("VI-657 — SaveStatus (real browser)", () => {
     for (const c of CASES) {
       it(`${c.token}: binding it moves ${c.prop}`, async (ctx) => {
         if (!ready()) return ctx.skip()
-        const unset = await open("save-status", "default")
-        const before = await unset.evaluate(read(c.prop))
+        const state = c.state ?? "default"
+        const unset = await open("save-status", state)
+        const before = await unset.evaluate(read(c.prop, c.sel))
         await unset.close()
-        const bound = await open("save-status", "default", { scopeCss: `${c.token}: ${c.value};` })
-        const after = await bound.evaluate(read(c.prop))
+        const bound = await open("save-status", state, { scopeCss: `${c.token}: ${c.value};` })
+        const after = await bound.evaluate(read(c.prop, c.sel))
         await bound.close()
         expect(after).toBe(c.expected ?? c.value)
         expect(after).not.toBe(before)
@@ -145,14 +166,15 @@ describe("VI-657 — SaveStatus (real browser)", () => {
 
       it(`${c.token}: mutation control — renamed in the CSS, the binding changes nothing`, async (ctx) => {
         if (!ready()) return ctx.skip()
-        const css = (await bundle("save-status", "default")).css
+        const state = c.state ?? "default"
+        const css = (await bundle("save-status", state)).css
         const mutated = css.replace(new RegExp(`${c.token}(?![a-z0-9-])`, "g"), `${c.token}-mutated`)
         expect(mutated).not.toBe(css)
-        const unset = await open("save-status", "default")
-        const before = await unset.evaluate(read(c.prop))
+        const unset = await open("save-status", state)
+        const before = await unset.evaluate(read(c.prop, c.sel))
         await unset.close()
-        const bound = await open("save-status", "default", { scopeCss: `${c.token}: ${c.value};`, componentCss: mutated })
-        expect(await bound.evaluate(read(c.prop))).toBe(before)
+        const bound = await open("save-status", state, { scopeCss: `${c.token}: ${c.value};`, componentCss: mutated })
+        expect(await bound.evaluate(read(c.prop, c.sel))).toBe(before)
         await bound.close()
       }, 30_000)
     }

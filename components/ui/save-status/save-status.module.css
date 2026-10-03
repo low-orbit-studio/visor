@@ -1,7 +1,7 @@
 /* SaveStatus (VI-657)
  *
  * A readout, not a control: status text in a fixed-width slot, so the row
- * never reflows as Saved / Saving / Unsaved / Couldn't save swap in. It draws
+ * never reflows as Saved / Saving / Syncing / Unsaved / Couldn't save swap in. It draws
  * no edge at all (no border, no outline, no box). The retry mark is the
  * editor's icon mark (VI-659): the icon Button's size, pad and ink, with its
  * hit target on ::before so it adds no height to the row. */
@@ -10,7 +10,10 @@
   flex: none;
   align-items: center;
   gap: var(--spacing-1, 0.25rem);
-  width: var(--save-status-width, 7.5rem);
+  /* Sized from content: the cell below is as wide as the longest label in
+     the current font, and the retry mark's room is always reserved, so the
+     slot is one width in every state. The token overrides it. */
+  width: var(--save-status-width, auto);
   /* Tall enough for the retry mark in every state, so it adds no height. */
   min-height: var(--button-icon-size, 1rem);
   font-size: var(--font-size-xs, 0.75rem);
@@ -35,16 +38,68 @@
   color: var(--text-tertiary, #9ca3af);
 }
 
+.root[data-state="syncing"] {
+  color: var(--save-status-syncing-color, var(--text-secondary, #6b7280));
+}
+
 .root[data-state="refused"] {
   color: var(--text-error, #b91c1c);
 }
 
 /* A longer custom label (a translation) truncates inside the slot rather
    than painting past it. */
+.cell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Every label, stacked invisibly in the one cell, sets its width. */
+.sizer,
+.text,
+.dot {
+  grid-area: 1 / 1;
+}
+
+.sizer {
+  visibility: hidden;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
 .text {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Unsaved as a dot alone (unsavedAs="dot"). The dot sits where the word
+   would start and takes the unsaved ink; the slot is unchanged, so the row
+   does not move. The label stays in the DOM as visually hidden text. */
+.dot {
+  justify-self: start;
+  width: var(--save-status-dot-size, var(--spacing-2, 0.5rem));
+  height: var(--save-status-dot-size, var(--spacing-2, 0.5rem));
+  border-radius: var(--radius-full, 9999px);
+  background-color: currentColor;
+}
+
+.hidden {
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The retry mark's room, kept when the mark is not shown, so showing it
+   never widens the slot. */
+.reserve {
+  flex: none;
+  width: var(--button-icon-size, 1rem);
+  height: var(--button-icon-size, 1rem);
 }
 
 .retry {

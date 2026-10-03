@@ -551,11 +551,13 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       props: `{ as: "h2", style: { margin: 0, fontSize: "21px", lineHeight: 1.25, fontWeight: 600 }, label: "Section title", value: "Track record", defaultValue: "Untitled section", onCommit: function () {}, pencil: false }`,
     },
   },
-  // VI-657: the autosave readout in each state. It draws no edge in any of them.
+  // VI-657/VI-665: the autosave readout in each state, Unsaved as a dot too. It draws no edge in any of them.
   "save-status": {
     default: { export: "SaveStatus", props: `{ status: "saved" }` },
     saving: { export: "SaveStatus", props: `{ status: "saving" }` },
+    syncing: { export: "SaveStatus", props: `{ status: "syncing" }` },
     unsaved: { export: "SaveStatus", props: `{ status: "unsaved" }` },
+    "unsaved-dot": { export: "SaveStatus", props: `{ status: "unsaved", unsavedAs: "dot" }` },
     refused: { export: "SaveStatus", props: `{ status: "refused" }` },
     "refused-retry": { export: "SaveStatus", interactiveTarget: "button", props: `{ status: "refused", onRetry: function () {} }` },
   },

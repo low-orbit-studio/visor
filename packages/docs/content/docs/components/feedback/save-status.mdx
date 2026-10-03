@@ -1,6 +1,6 @@
 ---
 title: SaveStatus
-description: Autosave readout — Saved / Saving / Unsaved / Couldn't save in a fixed-width slot that never reflows its row, with a retry mark after a failed save. aria-live polite; draws no edge.
+description: Autosave readout — Saved / Saving / Syncing / Unsaved / Couldn't save in a fixed-width slot that never reflows its row, with a retry mark after a failed save. aria-live polite; draws no edge.
 ---
 
 import { ComponentPreview } from '@/components/preview';
@@ -24,22 +24,22 @@ SaveStatus is the readout for [`useAutosave`](/docs/hooks/use-autosave): pass it
 
 ## Every state, in a row
 
-The slot has a fixed width (`--save-status-width`, 7.5rem), so the text after it stays put as the state changes. `Saved` rests muted; `Couldn't save` takes the error colour and, when `onRetry` is passed, a retry mark.
+The slot is sized from content: as wide as the longest label (overrides through `labels` count) in the theme's own font, plus room for the retry mark, so it is one width in every state and never clips a default label. `--save-status-width` pins it instead. So the text after it stays put as the state changes. `Saved` rests muted; `Syncing` is for a first sync from an outside source writing rows the user did not type: the consumer sets it, `useAutosave` never emits it, and its ink is `--save-status-syncing-color`. `unsavedAs="dot"` draws Unsaved as a dot alone; the slot does not change. `Couldn't save` takes the error colour and, when `onRetry` is passed, a retry mark.
 
 <ComponentPreview
-  title="SaveStatus — saved, saving, unsaved, refused"
-  code={"<SaveStatus status=\"saved\" />\n<SaveStatus status=\"saving\" />\n<SaveStatus status=\"unsaved\" />\n<SaveStatus status=\"refused\" onRetry={retry} />"}
+  title="SaveStatus — saved, saving, syncing, unsaved, refused"
+  code={"<SaveStatus status=\"saved\" />\n<SaveStatus status=\"saving\" />\n<SaveStatus status=\"syncing\" />\n<SaveStatus status=\"unsaved\" />\n<SaveStatus status=\"unsaved\" unsavedAs=\"dot\" />\n<SaveStatus status=\"refused\" onRetry={retry} />"}
 >
   <SaveStatusStatesDemo />
 </ComponentPreview>
 
 ## Accessibility
 
-The label sits in a `role="status"` region with `aria-live="polite"`, so a screen reader hears each change without losing its place. The readout is status text, not a button: the only control is the retry mark (named "Retry saving"; set `retryLabel` to change it), and it sits outside the live region so it is not announced with every state.
+The label sits in a `role="status"` region with `aria-live="polite"`, so a screen reader hears each change without losing its place. With `unsavedAs="dot"` the dot is decorative and the `labels.unsaved` text stays in the live region, visually hidden, so it is the dot's accessible name and is still announced. No state is carried by colour alone. The readout is status text, not a button: the only control is the retry mark (named "Retry saving"; set `retryLabel` to change it), and it sits outside the live region so it is not announced with every state.
 
 ## Theming
 
-`components.save-status` sets the slot: `width`, `font-family`, `text-transform` and `letter-spacing`. Unset, the readout inherits its family, case and tracking from its row, and any rule of yours wins. A 78px caps mono readout:
+`components.save-status` sets the slot: `width`, `syncing-color`, `dot-size`, `font-family`, `text-transform` and `letter-spacing`. Unset, the readout inherits its family, case and tracking from its row, and any rule of yours wins. A 78px caps mono readout:
 
 ```yaml
 components:
