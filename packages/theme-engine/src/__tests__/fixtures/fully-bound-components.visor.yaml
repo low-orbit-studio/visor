@@ -318,7 +318,7 @@ components:
     hover-bg: "#ff00aa"
     open-bg: "#aa00ff"
     selected-bg: "#2b0a3d"
-    selected-edge: "#ffd000"
+    selected-edge-color: "#ffd000"
     disabled-opacity: "0.4"
     title-weight: "600"
     line-color: "#009966"

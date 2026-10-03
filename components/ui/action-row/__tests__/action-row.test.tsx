@@ -295,9 +295,10 @@ describe("ActionRow stylesheet contract", () => {
     expect(css).toMatch(/min-height:\s*var\(--action-row-min-height,\s*2\.75rem\)/)
   })
 
-  it("draws no visible border; the resting edge is the shared --control-edge-* outline", () => {
+  it("draws no visible border; the selected edge is a state edge on --control-state-edge-width", () => {
     expect(css).toMatch(/border:\s*0;/)
-    expect(css).toMatch(/outline:\s*var\(--control-edge-width,\s*1px\)\s+var\(--control-edge-style,\s*solid\)\s+transparent/)
+    expect(css).toMatch(/outline:\s*var\(--control-state-edge-width,\s*1px\)\s+solid\s+transparent/)
+    expect(css).not.toContain("--control-edge-width")
     expect(css).not.toMatch(/border(-\w+)?:\s*[1-9]\d*px\s+solid\s+var\(--(border|hairline)/)
   })
 
@@ -306,7 +307,7 @@ describe("ActionRow stylesheet contract", () => {
   })
 
   it("gives rest, hover, open, selected and disabled each a token", () => {
-    for (const token of ["hover-bg", "open-bg", "selected-bg", "selected-edge", "disabled-opacity"]) {
+    for (const token of ["hover-bg", "open-bg", "selected-bg", "selected-edge-color", "disabled-opacity"]) {
       expect(css).toContain(`--action-row-${token}`)
     }
   })

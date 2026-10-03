@@ -876,8 +876,9 @@ const tooltipFamily: ComponentTokenFamily = {
 // VI-666. ActionRow: one tappable list row. Each state has its own token, so a
 // theme can lift the selected fill without retuning the shared surface ramp
 // (Blacklight's dark selection rule: a lifted dark fill with a light inset edge,
-// never white). The resting edge is drawn on the selected row only, on the
-// shared `--control-edge-*` tokens, so `control.edge-width: 0` turns it off.
+// never white). The row has no resting edge. The selected edge is a state
+// edge, drawn at `--control-state-edge-width` (the width focus and invalid use),
+// so `edges: off` does not remove it: a state indicator needs 3:1 (WCAG 1.4.11).
 const actionRowFamily: ComponentTokenFamily = {
   family: "action-row",
   prefix: "action-row",
@@ -891,7 +892,7 @@ const actionRowFamily: ComponentTokenFamily = {
     { key: "hover-bg", property: "background-color", description: "Hover fill.", consumers: at(ACTION_ROW, "var(--surface-interactive-hover, #f3f4f6)") },
     { key: "open-bg", property: "background-color", description: "Fill of a row that has opened a picker or popover (`aria-expanded`).", consumers: at(ACTION_ROW, "var(--surface-interactive-hover, #f3f4f6)") },
     { key: "selected-bg", property: "background-color", description: "Selected fill. A lifted fill, never white.", consumers: at(ACTION_ROW, "var(--surface-interactive-active, #e5e7eb)") },
-    { key: "selected-edge", property: "outline-color", description: "Selected row's inset edge colour. Its width is `--control-edge-width`.", consumers: at(ACTION_ROW, "var(--control-edge-color, var(--border-strong, #d1d5db))") },
+    { key: "selected-edge-color", property: "outline-color", description: "Selected row's inset edge colour. Its width is `--control-state-edge-width`, so `edges: off` keeps it.", consumers: at(ACTION_ROW, "var(--text-secondary, #6b7280)") },
     { key: "disabled-opacity", property: "opacity", description: "Disabled row opacity.", consumers: at(ACTION_ROW, "var(--opacity-50, 0.5)") },
     { key: "title-weight", property: "font-weight", description: "Title weight.", consumers: at(ACTION_ROW, "var(--font-weight-medium, 500)") },
     { key: "line-color", property: "color", description: "Second-line colour.", consumers: at(ACTION_ROW, "var(--text-secondary, #6b7280)") },

@@ -28,16 +28,17 @@
     opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
-/* Resting edge (VI-655). Drawn only on the selected row, as an inset outline
-   over the border box on the shared --control-edge-* tokens, so
-   --control-edge-width: 0 on any ancestor removes it with no layout shift. */
+/* Selected edge. The row draws no resting edge. The selected state's edge is a
+   state edge, so it sits on --control-state-edge-width, the width focus and
+   invalid use: `edges: off` removes resting edges
+   and leaves this one (WCAG 1.4.11, 1.4.1). Inset outline: no layout shift. */
 .root::after {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  outline: var(--control-edge-width, 1px) var(--control-edge-style, solid) transparent;
-  outline-offset: calc(-1 * var(--control-edge-width, 1px));
+  outline: var(--control-state-edge-width, 1px) solid transparent;
+  outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
   pointer-events: none;
   transition: outline-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
@@ -61,15 +62,15 @@
 
 /* Selected: a lifted fill (--surface-interactive-active, one step above hover:
    a neutral lift in every theme, not the accent --surface-selected) with a light
-   inset edge, never white. The edge and
-   the aria-current / aria-selected attribute carry the state alongside the
-   fill, so colour is never the only cue (WCAG 1.4.1). */
+   inset edge, never white. The edge (a light --text-secondary, at least 3:1
+   against the fill and the page) and aria-current / aria-selected carry the
+   state alongside the fill, so colour is never the only cue. */
 .root[data-selected="true"] {
   background-color: var(--action-row-selected-bg, var(--surface-interactive-active, #e5e7eb));
 }
 
 .root[data-selected="true"]::after {
-  outline-color: var(--action-row-selected-edge, var(--control-edge-color, var(--border-strong, #d1d5db)));
+  outline-color: var(--action-row-selected-edge-color, var(--text-secondary, #6b7280));
 }
 
 .root[data-disabled] {

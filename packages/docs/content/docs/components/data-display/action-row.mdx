@@ -38,7 +38,7 @@ A single button. The whole row is the target, at least 44px tall.
 
 ## States
 
-Rest, hover, focus-visible, selected, open and disabled. Selected is a lifted fill with a light inset edge, never white; the edge reads `--control-edge-*`, so `control.edge-width: 0` turns it off. No state is carried by colour alone: `aria-current`, `aria-expanded` and `disabled` expose each one to assistive tech.
+Rest, hover, focus-visible, selected, open and disabled. Selected is a lifted fill with a light inset edge, never white; the edge is a state edge at `--control-state-edge-width`, so `edges: off` removes resting edges and keeps it. No state is carried by colour alone: `aria-current`, `aria-expanded` and `disabled` expose each one to assistive tech.
 
 <ComponentPreview
   title="Selected, open and disabled"
@@ -106,7 +106,7 @@ export default function PassDetails() {
 
 ## Theming
 
-Each state has a token under `components.action-row` (see [Component Tokens](/docs/themes/component-tokens)): `hover-bg`, `open-bg`, `selected-bg`, `selected-edge`, `disabled-opacity`, plus geometry (`min-height`, `padding`, `gap`, `radius`) and colour (`line-color`, `leading-color`, `trailing-color`).
+Each state has a token under `components.action-row` (see [Component Tokens](/docs/themes/component-tokens)): `hover-bg`, `open-bg`, `selected-bg`, `selected-edge-color`, `disabled-opacity`, plus geometry (`min-height`, `padding`, `gap`, `radius`) and colour (`line-color`, `leading-color`, `trailing-color`).
 
 ## API Reference
 

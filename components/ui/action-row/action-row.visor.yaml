@@ -22,7 +22,7 @@ why: >
   hand-built. ActionRow is the one primitive: a single button or anchor, so name,
   role and value are exposed (WCAG 4.1.2), focus is visible (2.4.7), and the row
   is at least 44px tall so the whole row is the target. Selected is a lifted fill
-  with a light inset edge on the shared --control-edge-* tokens, never white.
+  with a light inset edge at --control-state-edge-width (kept when edges are off), never white.
 
 sub_components:
   - name: ActionRowList
@@ -35,8 +35,8 @@ theme_hooks:
     description: Fill of a row that has opened something (aria-expanded or data-state="open"). Falls back to var(--surface-interactive-hover, #f3f4f6). Theme key components.action-row.open-bg.
   - name: --action-row-selected-bg
     description: Selected fill, a lifted fill and never white. Falls back to var(--surface-interactive-active, #e5e7eb), a neutral lift rather than the accent --surface-selected. Theme key components.action-row.selected-bg.
-  - name: --action-row-selected-edge
-    description: Colour of the selected row's inset edge; its width is --control-edge-width, so control.edge-width 0 removes it. Falls back to var(--control-edge-color, var(--border-strong, #d1d5db)). Theme key components.action-row.selected-edge.
+  - name: --action-row-selected-edge-color
+    description: Colour of the selected row's inset edge; its width is --control-state-edge-width, so edges: off keeps it. Falls back to var(--text-secondary, #6b7280). Theme key components.action-row.selected-edge-color.
   - name: --action-row-disabled-opacity
     description: Disabled row opacity. Falls back to var(--opacity-50, 0.5). Theme key components.action-row.disabled-opacity.
   - name: --action-row-min-height

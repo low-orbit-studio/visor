@@ -588,8 +588,8 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     },
   },
   // VI-666: ActionRow. Every row is captioned (title = state, line = what it
-  // reads); `edges-off` binds the two switches on the list to prove the edge and
-  // hairline both turn off while focus stays. `--state hover|focus` drives the
+  // reads); `edges-off` binds both switches on the list: the resting edge and
+  // the hairline go, the selected state edge and focus stay. `--state hover|focus` drives the
   // first row.
   "action-row": {
     default: {
@@ -600,10 +600,10 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
           return h(__mod.ActionRow, Object.assign({ key: key, leading: ${ICON_X}, trailing: h("span", null, "Value") }, props), props.title);
         };
         return { "aria-label": "States", style: { maxWidth: "420px" }, children: [
-          row("rest", { title: "Rest", line: "transparent fill, 44px floor" }),
-          row("selected", { title: "Selected", line: "--action-row-selected-bg + --control-edge-*", selected: true }),
-          row("open", { title: "Open", line: "--action-row-open-bg, aria-expanded", open: true }),
-          row("disabled", { title: "Disabled", line: "--action-row-disabled-opacity", disabled: true }),
+          row("rest", { title: "Rest", line: "no fill, 44px floor" }),
+          row("selected", { title: "Selected", line: "lifted fill + inset edge", selected: true }),
+          row("open", { title: "Open", line: "open fill, aria-expanded", open: true }),
+          row("disabled", { title: "Disabled", line: "disabled opacity", disabled: true }),
           h(__mod.ActionRow, { key: "bare", trailing: h("span", null, "Review") }, "Title only, trailing value"),
           h(__mod.ActionRow, { key: "long", leading: ${ICON_X}, line: "A second line that is long enough that it has to wrap onto another line", trailing: h("span", null, "3 suggested") }, "A title long enough that it wraps to a second line at this width"),
           h(__mod.ActionRow, { key: "link", asChild: true, leading: ${ICON_X}, trailing: h("span", null, "Open") }, h("a", { href: "#billing" }, "Row as a link (asChild)")),
@@ -625,8 +625,8 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       props: `(function () {
         var h = React.createElement;
         return { "aria-label": "Edges off", style: { maxWidth: "420px", "--control-edge-width": "0", "--hairline-width": "0" }, children: [
-          h(__mod.ActionRow, { key: "a", leading: ${ICON_X}, line: "edge and hairline off", trailing: h("span", null, "Value"), selected: true }, "Selected"),
-          h(__mod.ActionRow, { key: "b", leading: ${ICON_X}, line: "no hairline above", trailing: h("span", null, "Value") }, "Rest"),
+          h(__mod.ActionRow, { key: "a", leading: ${ICON_X}, line: "edge kept, resting edge off", trailing: h("span", null, "Value"), selected: true }, "Selected"),
+          h(__mod.ActionRow, { key: "b", leading: ${ICON_X}, line: "hairline off", trailing: h("span", null, "Value") }, "Rest"),
         ] };
       })()`,
     },
