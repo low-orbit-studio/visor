@@ -64,7 +64,9 @@ overrides:
     text-secondary: "rgba(26, 22, 48, 0.72)"
     text-tertiary: "rgba(26, 22, 48, 0.65)"
     text-link: "#5b6fff"
-    interactive-primary-bg: "#5b6fff"
+    # VI-697: white on the brand periwinkle (#5b6fff) measured 4.07:1. The fill
+    # is darkened along the same hue to clear AA text contrast (4.5:1).
+    interactive-primary-bg: "#5063f5"
     interactive-primary-text: "#ffffff"
     border-focus: "#5b6fff"
   dark:
@@ -72,7 +74,12 @@ overrides:
     text-secondary: "rgba(232, 232, 240, 0.72)"
     text-tertiary: "rgba(232, 232, 240, 0.5)"
     text-link: "#8b9fff"
-    interactive-primary-bg: "#5b6fff"
+    # VI-697: same AA fix as light. The derived dark hover/active lighten the
+    # fill (#7b93ff, #aabcff), which drops white text below AA, so they step
+    # darker instead and stay at or above 4.5:1.
+    interactive-primary-bg: "#5063f5"
+    interactive-primary-bg-hover: "#4556e6"
+    interactive-primary-bg-active: "#3646c4"
     interactive-primary-text: "#ffffff"
     border-focus: "#5b6fff"
     # VI-348: surface-muted dark slots between page (#080810) and card (#0e0e18)

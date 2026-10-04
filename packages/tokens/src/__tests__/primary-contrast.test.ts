@@ -4,19 +4,21 @@ import { join } from "path";
 import { getContrastRatio } from "@loworbitstudio/visor-theme-engine";
 
 /**
- * Primary interactive pair contrast (VI-689).
+ * Primary interactive pair contrast (VI-689, VI-697).
  *
  * Reads the EMITTED `dist/themes/<slug>.css` (what visor-core ships), not the
  * yaml literal, so an override that never reaches the CSS cannot pass. Needs
  * `npm run build -w packages/tokens` first, like the other emitted-CSS tests.
  *
- * Neutral is asserted at 4.5:1 (WCAG 2.2 AA, 1.4.3). Every other shipped theme
- * is measured and reported only: the table prints, nothing fails.
+ * Neutral, space and modern-minimal are asserted at 4.5:1 (WCAG 2.2 AA, 1.4.3).
+ * Every other shipped theme is measured and reported only: the table prints,
+ * nothing fails.
  */
 
 const AA_TEXT = 4.5;
 const THEMES_DIR = join(__dirname, "..", "..", "dist", "themes");
 const NON_THEME = new Set(["light", "dark"]);
+const ASSERTED = ["neutral", "space", "modern-minimal"];
 
 type Mode = "light" | "dark";
 
@@ -46,8 +48,8 @@ const slugs = readdirSync(THEMES_DIR)
   .filter((s) => !NON_THEME.has(s))
   .sort();
 
-describe("neutral primary pair meets AA text contrast", () => {
-  const css = readFileSync(join(THEMES_DIR, "neutral.css"), "utf8");
+describe.each(ASSERTED)("%s primary pair meets AA text contrast", (slug) => {
+  const css = readFileSync(join(THEMES_DIR, `${slug}.css`), "utf8");
   const pairs: Array<[string, string]> = [
     ["interactive-primary-bg", "interactive-primary-text"],
     ["interactive-primary-bg-hover", "interactive-primary-text"],
@@ -56,7 +58,7 @@ describe("neutral primary pair meets AA text contrast", () => {
 
   for (const mode of ["light", "dark"] as const) {
     it.each(pairs)(`%s vs %s in ${mode} is at least 4.5:1`, (bg, fg) => {
-      const r = ratio(css, "neutral", mode, bg, fg);
+      const r = ratio(css, slug, mode, bg, fg);
       expect(r, `${bg} / ${fg} not emitted for ${mode}`).not.toBeNull();
       expect(r!).toBeGreaterThanOrEqual(AA_TEXT);
     });
@@ -80,6 +82,6 @@ describe("primary pair contrast across shipped themes (report only)", () => {
       }
     }
     console.log(`\n${rows.join("\n")}\n`);
-    expect(slugs).toContain("neutral");
+    for (const slug of ASSERTED) expect(slugs).toContain(slug);
   });
 });
