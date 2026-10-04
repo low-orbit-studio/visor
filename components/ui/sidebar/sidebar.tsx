@@ -2,8 +2,16 @@
 
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
+import { Slot } from "@radix-ui/react-slot"
 import { SidebarIcon } from "@phosphor-icons/react"
 import { cn } from "../../../lib/utils"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+  type TooltipContentProps,
+} from "../tooltip/tooltip"
 import styles from "./sidebar.module.css"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
@@ -41,9 +49,23 @@ type SidebarContextProps = {
   setOpenMobile: (open: boolean) => void
   isMobile: boolean
   toggleSidebar: () => void
+  /** Used by Sidebar to tell the provider what kind of sidebars are mounted. */
+  registerSidebar: (collapsible: SidebarCollapsible) => () => void
 }
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null)
+
+/**
+ * What the nearest Sidebar tells its menu buttons: whether a button's
+ * `tooltip` applies, and where the tooltip portals (the Sidebar's own element,
+ * so a class-scoped theme on an ancestor of the sidebar reaches it).
+ */
+type SidebarScopeProps = {
+  collapsible: SidebarCollapsible
+  container: HTMLElement | null
+}
+
+const SidebarScopeContext = React.createContext<SidebarScopeProps | null>(null)
 
 function useSidebar() {
   const context = React.useContext(SidebarContext)
@@ -57,6 +79,13 @@ export interface SidebarProviderProps extends React.ComponentProps<"div"> {
   defaultOpen?: boolean
   open?: boolean
   onOpenChange?: (open: boolean) => void
+  /**
+   * Binds Cmd/Ctrl+B to toggle the sidebar. Defaults to `true`. The binding is
+   * skipped, and `preventDefault` is not called, while the only sidebars
+   * mounted are `collapsible="none"` (nothing would toggle). Pass `false` to
+   * never bind it.
+   */
+  keyboardShortcut?: boolean
 }
 
 const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
@@ -65,6 +94,7 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
       defaultOpen = true,
       open: openProp,
       onOpenChange: setOpenProp,
+      keyboardShortcut = true,
       className,
       style,
       children,
@@ -100,16 +130,30 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
         : setOpen((prev) => !prev)
     }, [isMobile, setOpen, setOpenMobile])
 
+    // How many collapsible and static (`collapsible="none"`) sidebars are
+    // mounted under this provider. A static-only provider has nothing to toggle.
+    const mountedRef = React.useRef({ collapsible: 0, none: 0 })
+    const registerSidebar = React.useCallback((collapsible: SidebarCollapsible) => {
+      const key = collapsible === "none" ? "none" : "collapsible"
+      mountedRef.current[key] += 1
+      return () => {
+        mountedRef.current[key] -= 1
+      }
+    }, [])
+
     React.useEffect(() => {
+      if (!keyboardShortcut) return
       const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === SIDEBAR_KEYBOARD_SHORTCUT && (event.metaKey || event.ctrlKey)) {
+          const { collapsible, none } = mountedRef.current
+          if (none > 0 && collapsible === 0) return
           event.preventDefault()
           toggleSidebar()
         }
       }
       window.addEventListener("keydown", handleKeyDown)
       return () => window.removeEventListener("keydown", handleKeyDown)
-    }, [toggleSidebar])
+    }, [keyboardShortcut, toggleSidebar])
 
     const state = open ? "expanded" : "collapsed"
 
@@ -122,38 +166,50 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
         openMobile,
         setOpenMobile,
         toggleSidebar,
+        registerSidebar,
       }),
-      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]
+      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar, registerSidebar]
     )
 
     return (
       <SidebarContext.Provider value={contextValue}>
-        <div
-          ref={ref}
-          data-slot="sidebar-wrapper"
-          style={
-            {
-              "--sidebar-width": SIDEBAR_WIDTH,
-              "--sidebar-width-mobile": SIDEBAR_WIDTH_MOBILE,
-              "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
-              ...style,
-            } as React.CSSProperties
-          }
-          className={cn(styles.wrapper, className)}
-          {...props}
-        >
-          {children}
-        </div>
+        <TooltipProvider delayDuration={200}>
+          <div
+            ref={ref}
+            data-slot="sidebar-wrapper"
+            style={
+              {
+                "--sidebar-width": SIDEBAR_WIDTH,
+                "--sidebar-width-mobile": SIDEBAR_WIDTH_MOBILE,
+                "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
+                ...style,
+              } as React.CSSProperties
+            }
+            className={cn(styles.wrapper, className)}
+            {...props}
+          >
+            {children}
+          </div>
+        </TooltipProvider>
       </SidebarContext.Provider>
     )
   }
 )
 SidebarProvider.displayName = "SidebarProvider"
 
+type SidebarCollapsible = "offcanvas" | "icon" | "none"
+
 export interface SidebarProps extends React.ComponentProps<"div"> {
   side?: "left" | "right"
   variant?: "sidebar" | "floating" | "inset"
-  collapsible?: "offcanvas" | "icon" | "none"
+  collapsible?: SidebarCollapsible
+  /**
+   * `fixed` (default) pins the sidebar to the viewport at full height, the
+   * page-sidebar shape. `contained` lays it out inside its parent instead, so
+   * an icon rail can sit under an app bar without covering it. A contained
+   * sidebar is as tall as the SidebarProvider that holds it.
+   */
+  position?: "fixed" | "contained"
 }
 
 const Sidebar = React.forwardRef<HTMLDivElement, SidebarProps>(
@@ -162,55 +218,77 @@ const Sidebar = React.forwardRef<HTMLDivElement, SidebarProps>(
       side = "left",
       variant = "sidebar",
       collapsible = "offcanvas",
+      position = "fixed",
       className,
       children,
       ...props
     },
     ref
   ) => {
-    const { state } = useSidebar()
+    const { state, registerSidebar } = useSidebar()
+    const [element, setElement] = React.useState<HTMLDivElement | null>(null)
+    const setRefs = React.useCallback(
+      (node: HTMLDivElement | null) => {
+        setElement(node)
+        if (typeof ref === "function") ref(node)
+        else if (ref) ref.current = node
+      },
+      [ref]
+    )
+
+    React.useEffect(() => registerSidebar(collapsible), [registerSidebar, collapsible])
+
+    const scope = React.useMemo<SidebarScopeProps>(
+      () => ({ collapsible, container: element }),
+      [collapsible, element]
+    )
 
     if (collapsible === "none") {
       return (
-        <div
-          ref={ref}
-          data-slot="sidebar"
-          className={cn(styles.sidebarStatic, className)}
-          {...props}
-        >
-          {children}
-        </div>
+        <SidebarScopeContext.Provider value={scope}>
+          <div
+            ref={setRefs}
+            data-slot="sidebar"
+            className={cn(styles.sidebarStatic, className)}
+            {...props}
+          >
+            {children}
+          </div>
+        </SidebarScopeContext.Provider>
       )
     }
 
     return (
-      <div
-        ref={ref}
-        className={cn(styles.sidebarContainer, className)}
-        data-state={state}
-        data-collapsible={state === "collapsed" ? collapsible : ""}
-        data-variant={variant}
-        data-side={side}
-        data-slot="sidebar"
-        {...props}
-      >
+      <SidebarScopeContext.Provider value={scope}>
         <div
-          data-slot="sidebar-gap"
-          className={styles.sidebarGap}
-        />
-        <div
-          data-slot="sidebar-inner"
+          ref={setRefs}
+          className={cn(styles.sidebarContainer, className)}
+          data-state={state}
+          data-collapsible={state === "collapsed" ? collapsible : ""}
+          data-variant={variant}
+          data-position={position}
           data-side={side}
-          className={styles.sidebarInner}
+          data-slot="sidebar"
+          {...props}
         >
           <div
-            data-sidebar="sidebar"
-            className={styles.sidebarContent}
+            data-slot="sidebar-gap"
+            className={styles.sidebarGap}
+          />
+          <div
+            data-slot="sidebar-inner"
+            data-side={side}
+            className={styles.sidebarInner}
           >
-            {children}
+            <div
+              data-sidebar="sidebar"
+              className={styles.sidebarContent}
+            >
+              {children}
+            </div>
           </div>
         </div>
-      </div>
+      </SidebarScopeContext.Provider>
     )
   }
 )
@@ -426,28 +504,96 @@ const sidebarMenuButtonVariants = cva(styles.menuButton, {
   },
 })
 
+export type SidebarMenuButtonTooltip =
+  | string
+  | (Omit<TooltipContentProps, "children"> & { children: React.ReactNode })
+
 export interface SidebarMenuButtonProps
   extends React.ComponentProps<"button">,
     VariantProps<typeof sidebarMenuButtonVariants> {
+  /** Render the child (a Next `<Link>`, an `<a>`) as the button, via Radix Slot. */
   asChild?: boolean
   isActive?: boolean
-  tooltip?: string
+  /**
+   * Shown in a Tooltip when the sidebar is an icon rail: collapsed to icons
+   * (`collapsible="icon"`), or a `collapsible="none"` sidebar (a static rail has
+   * no collapsed state, so passing `tooltip` is the opt-in). Never shown on
+   * mobile or in an expanded sidebar, where the visible label names the item.
+   * A string (or a string `children`) also names the button for assistive tech
+   * while the label is hidden, unless the button sets its own `aria-label` or
+   * `aria-labelledby`. Pass an object to set `side`, `container` and the rest of
+   * TooltipContent's props; the tooltip portals into the Sidebar by default.
+   */
+  tooltip?: SidebarMenuButtonTooltip
 }
 
 const SidebarMenuButton = React.forwardRef<HTMLButtonElement, SidebarMenuButtonProps>(
-  ({ className, variant = "default", size = "default", isActive, children, ...props }, ref) => (
-    <button
-      ref={ref}
-      data-slot="sidebar-menu-button"
-      data-sidebar="menu-button"
-      data-size={size}
-      data-active={isActive || undefined}
-      className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
-      {...props}
-    >
-      {children}
-    </button>
-  )
+  (
+    {
+      asChild = false,
+      className,
+      variant = "default",
+      size = "default",
+      isActive,
+      tooltip,
+      children,
+      ...props
+    },
+    ref
+  ) => {
+    const { state, isMobile } = useSidebar()
+    const scope = React.useContext(SidebarScopeContext)
+    const [tooltipOpen, setTooltipOpen] = React.useState(false)
+
+    const tooltipApplies =
+      tooltip != null &&
+      !isMobile &&
+      scope != null &&
+      (scope.collapsible === "none" ||
+        (scope.collapsible === "icon" && state === "collapsed"))
+
+    const tooltipProps = typeof tooltip === "object" ? tooltip : undefined
+    const tooltipLabel = typeof tooltip === "string" ? tooltip : tooltipProps?.children
+    const needsName =
+      tooltipApplies &&
+      typeof tooltipLabel === "string" &&
+      props["aria-label"] === undefined &&
+      props["aria-labelledby"] === undefined
+
+    const Comp = asChild ? Slot : "button"
+    const button = (
+      <Comp
+        ref={ref}
+        data-slot="sidebar-menu-button"
+        data-sidebar="menu-button"
+        data-size={size}
+        data-active={isActive || undefined}
+        className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
+        {...(needsName ? { "aria-label": tooltipLabel as string } : null)}
+        {...props}
+      >
+        {children}
+      </Comp>
+    )
+
+    if (tooltip == null) return button
+
+    const { children: tooltipChildren, ...contentProps } =
+      typeof tooltip === "object" ? tooltip : { children: tooltip }
+
+    return (
+      <Tooltip open={tooltipApplies && tooltipOpen} onOpenChange={setTooltipOpen}>
+        <TooltipTrigger asChild>{button}</TooltipTrigger>
+        <TooltipContent
+          side="right"
+          container={scope?.container}
+          {...contentProps}
+        >
+          {tooltipChildren}
+        </TooltipContent>
+      </Tooltip>
+    )
+  }
 )
 SidebarMenuButton.displayName = "SidebarMenuButton"
 

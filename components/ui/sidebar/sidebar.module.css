@@ -69,6 +69,13 @@
   width: var(--sidebar-width-icon, 3rem);
 }
 
+/* Contained (position="contained"): the sidebar lays out inside its parent
+   instead of pinning to the viewport, so a rail can sit under an app bar. */
+.sidebarContainer[data-position="contained"] .sidebarInner {
+  position: absolute;
+  height: auto;
+}
+
 /* Sidebar content container */
 .sidebarContent {
   display: flex;

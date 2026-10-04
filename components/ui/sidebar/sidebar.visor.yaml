@@ -81,10 +81,36 @@ props:
   - name: collapsible
     type: "'offcanvas' | 'icon' | 'none'"
     default: "offcanvas"
+  - name: position
+    type: "'fixed' | 'contained'"
+    default: "fixed"
+    description: >
+      Sidebar prop. `fixed` pins the sidebar to the viewport at full height.
+      `contained` lays it out inside its parent, so an icon rail can sit under
+      an app bar without covering it.
   - name: defaultOpen
     type: boolean
     default: true
     description: Initial open state (SidebarProvider prop)
+  - name: keyboardShortcut
+    type: boolean
+    default: true
+    description: >
+      SidebarProvider prop. Binds Cmd/Ctrl+B to toggle the sidebar. Skipped
+      (no preventDefault) when only collapsible="none" sidebars are mounted;
+      false never binds it.
+  - name: asChild
+    type: boolean
+    default: false
+    description: SidebarMenuButton prop. Renders the child (a Next Link or anchor) as the item via Radix Slot.
+  - name: tooltip
+    type: "string | (TooltipContentProps & { children: ReactNode })"
+    description: >
+      SidebarMenuButton prop. Shown in a Tooltip when the sidebar is an icon
+      rail (collapsible="icon" while collapsed, or collapsible="none"); never on
+      mobile or when expanded. A string also names the button (aria-label)
+      unless the button sets its own. Portals into the Sidebar so a scoped
+      theme reaches it; pass `container` to override.
 
 responsive:
   breakpoints:
@@ -93,6 +119,7 @@ responsive:
   notes: "Responsive behavior is entirely JS-driven via the useSidebar hook; no CSS media queries are involved. The SIDEBAR_WIDTH_MOBILE CSS variable (18rem) is available for consumers who render a Sheet-based mobile drawer."
 
 dependencies:
+  - "@radix-ui/react-slot"
   - "class-variance-authority"
   - "@phosphor-icons/react"
 
