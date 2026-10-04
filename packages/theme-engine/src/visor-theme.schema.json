@@ -131,6 +131,11 @@
             "org": {
               "type": "string",
               "description": "Organization namespace for visor-fonts CDN (required when source is visor-fonts)."
+            },
+            "text-transform": {
+              "type": "string",
+              "enum": ["none", "uppercase", "lowercase", "capitalize"],
+              "description": "Casing applied to this slot's text via --font-heading-text-transform. Emitted only when set."
             }
           }
         },
@@ -157,6 +162,11 @@
             "org": {
               "type": "string",
               "description": "Organization namespace for visor-fonts CDN (required when source is visor-fonts)."
+            },
+            "text-transform": {
+              "type": "string",
+              "enum": ["none", "uppercase", "lowercase", "capitalize"],
+              "description": "Casing applied to this slot's text via --font-display-text-transform. Emitted only when set."
             }
           }
         },
@@ -182,6 +192,11 @@
             "org": {
               "type": "string",
               "description": "Organization namespace for visor-fonts CDN (required when source is visor-fonts)."
+            },
+            "text-transform": {
+              "type": "string",
+              "enum": ["none", "uppercase", "lowercase", "capitalize"],
+              "description": "Casing applied to this slot's text via --font-body-text-transform. Emitted only when set."
             }
           }
         },
@@ -192,6 +207,11 @@
             "family": {
               "type": "string",
               "description": "Google Fonts family name or CSS font stack for monospace."
+            },
+            "text-transform": {
+              "type": "string",
+              "enum": ["none", "uppercase", "lowercase", "capitalize"],
+              "description": "Casing applied to this slot's text via --font-mono-text-transform. Emitted only when set."
             }
           }
         },

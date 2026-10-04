@@ -7,7 +7,7 @@
 
 import visorThemeSchema from "./visor-theme.schema.json";
 import { isValidHex, isValidColor } from "./color.js";
-import { MATERIAL_TEXT_SLOTS } from "./types.js";
+import { MATERIAL_TEXT_SLOTS, TEXT_TRANSFORMS } from "./types.js";
 import type { VisorThemeConfig } from "./types.js";
 import { checkBrandStrategyStructure } from "./brand-strategy/validate.js";
 import { validateComponentBindings } from "./component-tokens.js";
@@ -43,8 +43,8 @@ const KNOWN_TYPOGRAPHY_KEYS = new Set([
 
 const KNOWN_CDN_OVERRIDE_KEYS = new Set(["visor-fonts"]);
 
-const KNOWN_TYPOGRAPHY_FONT_KEYS = new Set(["family", "weight", "weights", "source", "org"]);
-const KNOWN_TYPOGRAPHY_MONO_KEYS = new Set(["family", "weight", "weights", "source", "org"]);
+const KNOWN_TYPOGRAPHY_FONT_KEYS = new Set(["family", "weight", "weights", "source", "org", "text-transform"]);
+const KNOWN_TYPOGRAPHY_MONO_KEYS = new Set(["family", "weight", "weights", "source", "org", "text-transform"]);
 // VI-447: 6-tier letter-spacing ramp (`xl | lg | md | sm | xs | tight`). The
 // legacy triad keys (`normal`, `wide`) remain valid input for back-compat —
 // they map onto the ramp at resolve time (`normal`→md, `wide`→lg, `tight`→tight).
@@ -444,6 +444,13 @@ export function validateConfig(config: unknown): ValidationResult {
       errors.push(`'typography.cdn-overrides.visor-fonts' must not be empty`);
     }
     const orgOptional = typeof visorFontsOverride === "string" && visorFontsOverride.length > 0;
+    // VI-687: text-transform on every slot, including mono.
+    for (const slot of ["heading", "display", "body", "mono"]) {
+      const tt = (typo[slot] as Record<string, unknown> | undefined)?.["text-transform"];
+      if (tt !== undefined && !(TEXT_TRANSFORMS as readonly unknown[]).includes(tt)) {
+        errors.push(`'typography.${slot}.text-transform' must be one of: ${TEXT_TRANSFORMS.join(", ")}`);
+      }
+    }
     for (const slot of ["heading", "display", "body"]) {
       const font = typo[slot] as Record<string, unknown> | undefined;
       if (font && font.source === "visor-fonts" && !orgOptional && !font.org) {

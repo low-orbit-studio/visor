@@ -33,6 +33,7 @@ import {
   generateTextScaleAliasDecls,
   generateSpaceAliasDecls,
   generateFontSizeDecls,
+  generateFontTextTransformDecls,
 } from "../generate-css.js";
 import { generateFontMetricDecls } from "../font-metrics.js";
 import { generateFontWeightDecls } from "../font-weights.js";
@@ -128,6 +129,7 @@ function generateTypographyDecls(
   // Body face vertical metrics, for centring native inputs (VI-684).
   decls.push(...generateFontMetricDecls(config.typography.body.family));
   decls.push(...generateFontWeightDecls(config.typography));
+  decls.push(...generateFontTextTransformDecls(config.typography));
 
   // Line heights
   const lineHeights: Record<string, number> = {

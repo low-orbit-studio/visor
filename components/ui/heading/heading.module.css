@@ -3,6 +3,8 @@
   font-family: var(--font-heading, ui-sans-serif, system-ui, sans-serif);
   color: var(--text-primary, #111827);
   line-height: var(--line-height-tight, 1.25);
+  /* VI-687: theme-set heading casing; inherit (the CSS default) when unset. */
+  text-transform: var(--font-heading-text-transform, inherit);
   margin: 0;
 }
 
