@@ -21,11 +21,13 @@ async function main() {
     onPage: async (page, rects) => {
       const r = rects[0]
       await page.evaluate(`(() => { const r = ${JSON.stringify(r)}; const inp = document.querySelector("input"); const cs = getComputedStyle(inp);
+        const lab = (t, y) => { const e = document.createElement("div"); e.textContent = t; e.style.cssText = "position:absolute;left:" + r.x + "px;top:" + y + "px;font:12px/16px ui-monospace,Menlo,monospace;white-space:nowrap;color:#1f1f1f"; document.body.append(e) };
+        lab("input (WebKit, Inter, sm)", r.y - 22);
         const ref = document.createElement("div"); ref.textContent = ${JSON.stringify(CLIP_LABEL)};
-        ref.style.cssText = "position:absolute;left:" + (r.x + 14) + "px;top:" + (r.y + r.h + 16) + "px;white-space:nowrap;font:" + cs.font + ";color:" + cs.color + ";line-height:1.5";
-        const cap = document.createElement("div"); cap.textContent = "above: the input (webkit, Inter, sm). below: the same text, unclipped reference"; cap.style.cssText = "position:absolute;left:" + r.x + "px;top:" + (r.y + r.h + 60) + "px;font:12px ui-monospace,Menlo,monospace;white-space:nowrap";
-        document.body.append(ref, cap) })()`)
-      await page.screenshot({ fullPage: true, clip: { x: r.x - 10, y: r.y - 10, width: r.w + 20, height: r.h + 90 }, path: out })
+        ref.style.cssText = "position:absolute;left:" + (r.x + 14) + "px;top:" + (r.y + r.h + 40) + "px;white-space:nowrap;font:" + cs.font + ";color:" + cs.color + ";line-height:1.5";
+        document.body.append(ref);
+        lab("unclipped reference (same text, same computed font)", r.y + r.h + 18) })()`)
+      await page.screenshot({ fullPage: true, clip: { x: r.x - 10, y: r.y - 30, width: Math.max(r.w + 20, 420), height: r.h + 110 }, path: out })
     },
   })
   const clipped = (css: string) => measureClipping({ ...smOnly, extraCss: scenario.extraCss + css, label: CLIP_LABEL }).then((r) => r[0])
