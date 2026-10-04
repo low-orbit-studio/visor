@@ -8,6 +8,10 @@
  * the `VI-N` reference and PR number from that commit subject, and
  * (optionally) posts a GitHub comment on each affected PR.
  *
+ * The other published packages (VI-649) ship build output, which is
+ * gitignored — so a drifted package maps to the most recent commit that
+ * touched its *source* paths since its published release tag.
+ *
  * Closes the loop on the failure pattern documented in VI-306 — Linear "Done"
  * tickets whose code shipped to `main` but never made it into the published
  * registry. The PR is the durable, public artifact that connects a commit on
@@ -37,7 +41,7 @@ import { tmpdir } from "node:os"
 import { fileURLToPath } from "node:url"
 import path from "node:path"
 
-import { computeDrift } from "./visor-publish-smoke.mjs"
+import { computeDrift, checkPackages } from "./visor-publish-smoke.mjs"
 
 const PUBLISHED_PKG = "@loworbitstudio/visor"
 const __filename = fileURLToPath(import.meta.url)
@@ -86,7 +90,11 @@ export function extractPRNumber(message) {
  * introduced them. Each primitive's "touching commit" is the most recent
  * commit that touched any of its drifted files.
  *
- * @param {Array<{ name: string, files: string[] }>} drifts
+ * A drift file ending in `/` is a directory: any commit file under it matches.
+ * A drift's optional `publishedRef` (`@loworbitstudio/visor-core@0.15.0`)
+ * rides along on each primitive, for packages other than the CLI.
+ *
+ * @param {Array<{ name: string, files: string[], publishedRef?: string }>} drifts
  * @param {Array<{ sha: string, subject: string, files: string[] }>} commits
  * @returns {{
  *   findings: Array<{
@@ -106,7 +114,9 @@ export function mapDriftToTickets(drifts, commits) {
       c.files.some(
         (f) =>
           driftFiles.has(f) ||
-          [...driftFiles].some((df) => f.endsWith(path.basename(df))),
+          [...driftFiles].some((df) =>
+            df.endsWith("/") ? f.startsWith(df) : f.endsWith(path.basename(df)),
+          ),
       ),
     )
     if (!touchingCommit) {
@@ -128,6 +138,7 @@ export function mapDriftToTickets(drifts, commits) {
         sha: touchingCommit.sha.slice(0, 7),
         subject: touchingCommit.subject,
         prNumber,
+        ...(drift.publishedRef ? { publishedRef: drift.publishedRef } : {}),
       })
     }
   }
@@ -136,6 +147,22 @@ export function mapDriftToTickets(drifts, commits) {
     a.ticketId.localeCompare(b.ticketId, undefined, { numeric: true }),
   )
   return { findings, orphans }
+}
+
+/**
+ * Merge two `mapDriftToTickets` results — the registry's and the packages',
+ * which are mapped separately because each package has its own commit range.
+ */
+export function mergeAuditResults(a, b) {
+  const byTicket = new Map()
+  for (const f of [...a.findings, ...b.findings]) {
+    if (!byTicket.has(f.ticketId)) byTicket.set(f.ticketId, { ticketId: f.ticketId, primitives: [] })
+    byTicket.get(f.ticketId).primitives.push(...f.primitives)
+  }
+  const findings = [...byTicket.values()].sort((x, y) =>
+    x.ticketId.localeCompare(y.ticketId, undefined, { numeric: true }),
+  )
+  return { findings, orphans: [...a.orphans, ...b.orphans] }
 }
 
 /**
@@ -188,7 +215,8 @@ export function formatAuditReport({ findings, orphans, publishedVersion }) {
       lines.push(`  ${f.ticketId}`)
       for (const p of f.primitives) {
         const prSuffix = p.prNumber != null ? `  PR #${p.prNumber}` : ""
-        lines.push(`    • ${p.name}  (${p.sha})${prSuffix}  ${p.subject}`)
+        const refSuffix = p.publishedRef ? `  [not in ${p.publishedRef}]` : ""
+        lines.push(`    • ${p.name}  (${p.sha})${prSuffix}${refSuffix}  ${p.subject}`)
       }
     }
   }
@@ -206,9 +234,16 @@ export function formatAuditReport({ findings, orphans, publishedVersion }) {
     }
   }
   if (findings.length > 0) {
+    const packages = new Set(
+      findings.flatMap((f) =>
+        f.primitives.map((p) =>
+          p.publishedRef ? p.publishedRef.replace(/@[^@]+$/, "") : "@loworbitstudio/visor",
+        ),
+      ),
+    )
     lines.push("")
     lines.push(
-      `Resolution: cut a new @loworbitstudio/visor release that includes the drifted primitives (see W020), then the next smoke run will clear the audit.`,
+      `Resolution: cut a new ${[...packages].sort().join(", ")} release that includes the drifted primitives (see W020), then the next smoke run will clear the audit.`,
     )
   }
   return lines.join("\n")
@@ -222,17 +257,24 @@ export function formatAuditReport({ findings, orphans, publishedVersion }) {
 export function formatGitHubPRComment(prFinding, publishedVersion) {
   const lines = []
   const ticketList = prFinding.ticketIds.join(", ")
+  const refs = [
+    ...new Set(
+      prFinding.primitives.map((p) => p.publishedRef ?? `@loworbitstudio/visor@${publishedVersion}`),
+    ),
+  ]
+  const onlyRegistry = prFinding.primitives.every((p) => !p.publishedRef)
   lines.push(
-    `**Publish-audit signal** — this PR landed (closing ${ticketList}), but its ${prFinding.primitives.length === 1 ? "primitive is" : "primitives are"} not present in the latest published \`@loworbitstudio/visor@${publishedVersion}\`.`,
+    `**Publish-audit signal** — this PR landed (closing ${ticketList}), but its ${prFinding.primitives.length === 1 ? "primitive is" : "primitives are"} not present in the latest published ${refs.map((r) => `\`${r}\``).join(", ")}.`,
   )
   lines.push("")
   lines.push("Drifted primitives:")
   for (const p of prFinding.primitives) {
-    lines.push(`- \`${p.name}\` — \`${p.sha}\` (${p.subject})`)
+    const refSuffix = p.publishedRef ? ` — not in \`${p.publishedRef}\`` : ""
+    lines.push(`- \`${p.name}\` — \`${p.sha}\` (${p.subject})${refSuffix}`)
   }
   lines.push("")
   lines.push(
-    `Consumers of \`npx visor add <name>\` will still receive the older source until a new release ships. See [W020](https://github.com/low-orbit-studio/visor/blob/main/docs/wisdom/W020-publish-coordination-drift.md) for the resolution path.`,
+    `${onlyRegistry ? "Consumers of \`npx visor add <name>\` will still receive the older source" : "Consumers will keep installing the older published build"} until a new release ships. See [W020](https://github.com/low-orbit-studio/visor/blob/main/docs/wisdom/W020-publish-coordination-drift.md) for the resolution path.`,
   )
   lines.push("")
   for (const p of prFinding.primitives) {
@@ -288,6 +330,7 @@ Options:
                         with pull-requests:write).
   --version <semver>    Audit against a specific published version (default: latest).
   --local <path>        Read published registry from <path>/dist/registry.json (no npm fetch).
+                        Registry only — the other published packages are skipped.
   -h, --help            Show this help.
 
 Exit codes:
@@ -406,6 +449,35 @@ function loadTouchingCommits(drifts) {
   return [...commits.values()]
 }
 
+/**
+ * The most recent commit touching a drifted package's source paths since its
+ * published release tag (changesets tags `<name>@<version>`). Falls back to
+ * the most recent commit overall when the tag is not in the local clone.
+ */
+function loadPackageTouchingCommit(pkg) {
+  const tag = `${pkg.name}@${pkg.publishedVersion}`
+  const hasTag =
+    spawnSync("git", ["rev-parse", "--verify", "--quiet", `refs/tags/${tag}`], {
+      encoding: "utf8",
+      cwd: REPO_ROOT,
+    }).status === 0
+  const range = hasTag ? [`${tag}..HEAD`] : []
+  const r = spawnSync(
+    "git",
+    ["log", "-1", "--format=%H%n%s", ...range, "--", ...pkg.sources],
+    { encoding: "utf8", cwd: REPO_ROOT },
+  )
+  if (r.status !== 0 || r.stdout.trim().length === 0) return []
+  const [sha, ...subjectLines] = r.stdout.trim().split("\n")
+  const filesR = spawnSync("git", ["show", "--name-only", "--format=", sha], {
+    encoding: "utf8",
+    cwd: REPO_ROOT,
+  })
+  const files =
+    filesR.status === 0 ? filesR.stdout.split("\n").map((l) => l.trim()).filter(Boolean) : []
+  return [{ sha, subject: subjectLines.join("\n"), files }]
+}
+
 function resolveRepo() {
   // Prefer the GitHub Actions env vars when present (always set in CI), fall
   // back to `git remote get-url origin` for local invocations.
@@ -458,6 +530,7 @@ async function main() {
   let local
   let published
   let publishedVersion
+  let packages
   try {
     local = loadLocalRegistry()
     if (opts.localTarballDir) {
@@ -472,14 +545,16 @@ async function main() {
       publishedVersion = opts.version ?? resolveLatestVersion()
       published = fetchPublishedRegistry(publishedVersion)
     }
+    packages = opts.localTarballDir ? [] : checkPackages()
   } catch (err) {
     process.stderr.write(`${err.message}\n`)
     process.exit(2)
   }
 
   const { drifts } = computeDrift(local, published)
+  const driftedPackages = packages.filter((p) => p.drifts.length > 0)
 
-  if (drifts.length === 0) {
+  if (drifts.length === 0 && driftedPackages.length === 0) {
     if (opts.json) {
       process.stdout.write(
         JSON.stringify(
@@ -496,14 +571,30 @@ async function main() {
       )
     } else {
       process.stdout.write(
-        `✓ No publish drift against @loworbitstudio/visor@${publishedVersion} — nothing to audit.\n`,
+        `✓ No publish drift against @loworbitstudio/visor@${publishedVersion}${packages.length > 0 ? " or the other published packages" : ""} — nothing to audit.\n`,
       )
     }
     process.exit(0)
   }
 
-  const commits = loadTouchingCommits(drifts)
-  const { findings, orphans } = mapDriftToTickets(drifts, commits)
+  // Each package maps against its own commit range, so map it on its own.
+  const { findings, orphans } = driftedPackages.reduce(
+    (acc, pkg) =>
+      mergeAuditResults(
+        acc,
+        mapDriftToTickets(
+          [
+            {
+              name: pkg.name,
+              files: pkg.sources,
+              publishedRef: `${pkg.name}@${pkg.publishedVersion}`,
+            },
+          ],
+          loadPackageTouchingCommit(pkg),
+        ),
+      ),
+    mapDriftToTickets(drifts, loadTouchingCommits(drifts)),
+  )
   const prGroups = groupByPR(findings)
 
   if (opts.postComments) {

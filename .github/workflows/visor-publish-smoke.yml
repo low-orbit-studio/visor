@@ -3,8 +3,9 @@ name: Visor Publish Smoke
 # Borealis publish gate: VI- ticket "Done" should require that the artifact
 # is reachable via `npx visor add <name>`. The smoke compares this repo's
 # locally-built registry against the registry shipped in the latest
-# published @loworbitstudio/visor tarball. Any per-file content drift
-# fails the job.
+# published @loworbitstudio/visor tarball, and every file shipped by
+# visor-core, visor-theme-engine and visor-tailwind-preset against their
+# latest tarballs (VI-649). Any per-file content drift fails the job.
 #
 # No untrusted inputs are interpolated into run: steps — only the GitHub-
 # controlled event_name and workflow_run.conclusion fields are referenced,
@@ -70,8 +71,10 @@ jobs:
       # step below is skipped, so the smoke silently never ran between
       # 2026-06-04 (when VI-505 added that import) and VI-642. Same package list
       # as the CI test shards, which is why CI stayed green throughout.
-      - name: Build CLI (produces packages/cli/dist/registry.json)
-        run: npm run build -w packages/theme-engine -w packages/tokens -w packages/cli
+      # tailwind-preset is built too: the smoke diffs its dist/ against its
+      # published tarball (VI-649).
+      - name: Build published packages (registry.json + every package dist/)
+        run: npm run build -w packages/theme-engine -w packages/tokens -w packages/tailwind-preset -w packages/cli
 
       - name: Wait for npm CDN to index new publish
         if: github.event_name == 'workflow_run'
