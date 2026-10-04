@@ -1683,6 +1683,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "position-picker",
+    type: "registry:ui",
+    category: "form",
+    description:
+      "A 3x3 anchor grid: nine targets, one chosen, the value a { y, x } pair. Draws on its own ground or over a photograph.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/position-picker/position-picker.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/position-picker/position-picker.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "tin-input",
     type: "registry:ui",
     category: "form",

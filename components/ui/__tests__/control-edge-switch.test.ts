@@ -22,7 +22,7 @@ import { REST_EDGE, bundle, close, launch, open, pixelDelta, ready } from "./ren
 /** Every fixture of every component the switch governs. */
 const COMPONENTS = [
   "input", "number-input", "textarea", "select", "checkbox", "switch",
-  "tag-input", "chip", "file-upload", "empty-state", "button", "inline-edit", "radio-group", "time-picker", "month-calendar",
+  "tag-input", "chip", "file-upload", "empty-state", "button", "inline-edit", "radio-group", "time-picker", "month-calendar", "position-picker",
 ]
 /** Fixtures that draw a visible resting edge while the switch is on. */
 const EDGED = new Set([
@@ -33,6 +33,7 @@ const EDGED = new Set([
   "radio-group/default", "radio-group/card",
   "time-picker/default", "time-picker/popover-24h", "time-picker/popover-12h",
   "month-calendar/default", "month-calendar/overlap",
+  "position-picker/default",
 ])
 /** Fixtures that draw a dashed (drop) edge. */
 const DASHED = new Set(["file-upload/default", "empty-state/default"])

@@ -23,6 +23,7 @@
     "otp-input",
     "password-input",
     "phone-input",
+    "position-picker",
     "radio-group",
     "search-input",
     "segmented-control",

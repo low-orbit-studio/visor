@@ -439,6 +439,27 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     invalid: { export: "OTPInput", interactiveTarget: "input", props: `{ value: "428519", invalid: true, errorMessage: "That code didn't work. Check it and try again." }` },
     trailing: { export: "OTPInput", interactiveTarget: "input", props: `{ value: "428519", trailing: React.createElement("button", { type: "button" }, "Resend") }` },
   },
+  // VI-672: `default` is the grid on its own ground; `on-image` draws it over a busy
+  // synthetic photograph (turbulence, one light half and one dark half) so each
+  // target's scrim ring is checked against both. The picker is its own frame here:
+  // `position: relative` and a size stand in for the positioned photo frame.
+  "position-picker": {
+    default: { export: "PositionPicker", interactiveTarget: "[role=\"radio\"]", props: `{ "aria-label": "Focal point", defaultValue: { y: "center", x: "center" } }` },
+    "on-image": {
+      export: "PositionPicker",
+      interactiveTarget: "[role=\"radio\"]",
+      props: `(function () {
+        var svg = "<svg xmlns='http://www.w3.org/2000/svg' width='480' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.06' numOctaves='4' seed='7'/><feColorMatrix values='1.4 0 0 0 0.05 0 1.2 0 0 0.05 0 0 1.1 0 0.05 0 0 0 1 0'/></filter><rect width='480' height='300' fill='#d9c8a6'/><rect width='480' height='300' filter='url(#n)'/><rect x='0' y='0' width='240' height='300' fill='#f4efe4' opacity='0.55'/><rect x='240' y='0' width='240' height='300' fill='#0b0b14' opacity='0.6'/></svg>";
+        return {
+          variant: "on-image",
+          "aria-label": "Focal point",
+          defaultValue: { y: "top", x: "right" },
+          style: { position: "relative", inset: "auto", width: 480, height: 300, backgroundImage: "url('data:image/svg+xml;utf8," + encodeURIComponent(svg).replace(/'/g, "%27") + "')", backgroundSize: "cover" },
+        };
+      })()`,
+    },
+    thumbnail: { export: "PositionPicker", interactiveTarget: "[role=\"radio\"]", props: `{ variant: "on-image", "aria-label": "Focal point", defaultValue: { y: "bottom", x: "left" }, style: { position: "relative", inset: "auto", width: 40, height: 28, background: "#667" } }` },
+  },
   // VI-624: `default` is the closed field; the popover fixtures render open so the
   // two-column (24-hour) and three-column (12-hour) anatomy can be inspected.
   "time-picker": {

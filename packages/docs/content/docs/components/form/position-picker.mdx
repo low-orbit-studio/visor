@@ -1,0 +1,107 @@
+---
+title: Position Picker
+description: A 3x3 anchor grid. Nine targets, one chosen, the value a { y, x } pair.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { PositionPicker } from '@/components/ui/position-picker';
+import {
+  PositionPickerControlledDemo,
+  PositionPickerGlyphDemo,
+  PositionPickerOnImageDemo,
+} from '@/components/ui/position-picker-demos';
+
+## Default
+
+A radio group in two dimensions. The grid draws on its own ground. The value is a `{ y, x }` pair: `y` is `top`, `center` or `bottom`; `x` is `left`, `center` or `right`.
+
+<ComponentPreview
+  title="Position Picker"
+  code={"import { PositionPicker } from '@/components/ui/position-picker/position-picker';\n\n<PositionPicker aria-label=\"Anchor\" defaultValue={{ y: 'center', x: 'center' }} />"}
+>
+  <PositionPicker aria-label="Anchor" defaultValue={{ y: 'center', x: 'center' }} />
+</ComponentPreview>
+
+## Controlled
+
+<ComponentPreview
+  title="Controlled"
+  code={"const [value, setValue] = React.useState<PositionValue | null>({ y: 'center', x: 'center' });\n\n<PositionPicker aria-label=\"Anchor\" value={value} onValueChange={setValue} />"}
+>
+  <PositionPickerControlledDemo />
+</ComponentPreview>
+
+## On an image
+
+`variant="on-image"` fills a positioned parent, the photograph's frame, with no ground of its own. Every target is a light mark inside a dark scrim ring, so it keeps 3:1 over both light and dark regions of any photograph. Nothing is applied to the photo (no filter). On a thumbnail smaller than three targets a side, the grid grows to the target size rather than shrinking the targets.
+
+<ComponentPreview
+  title="On an image"
+  code={"<div style={{ position: 'relative', width: 320, height: 200 }}>\n  <img src=\"/hero.jpg\" alt=\"\" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />\n  <PositionPicker variant=\"on-image\" aria-label=\"Focal point\" value={value} onValueChange={setValue} />\n</div>"}
+>
+  <PositionPickerOnImageDemo />
+</ComponentPreview>
+
+## Custom glyphs
+
+`renderTarget` replaces the drawn dot of any target, for example alignment marks in the occupied row. The glyph is decorative: each target keeps its accessible name.
+
+<ComponentPreview
+  title="Custom glyphs"
+  code={"<PositionPicker\n  aria-label=\"Info position and alignment\"\n  value={value}\n  onValueChange={setValue}\n  renderTarget={(position, { selected }) => (selected ? null : <AlignMark x={position.x} />)}\n/>"}
+>
+  <PositionPickerGlyphDemo />
+</ComponentPreview>
+
+## Disabled
+
+<ComponentPreview
+  title="Disabled"
+  code={"<PositionPicker aria-label=\"Anchor\" defaultValue={{ y: 'top', x: 'left' }} disabled />"}
+>
+  <PositionPicker aria-label="Anchor" defaultValue={{ y: 'top', x: 'left' }} disabled />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add position-picker
+```
+
+This copies two files into your project:
+
+- `components/ui/position-picker/position-picker.tsx` — the component
+- `components/ui/position-picker/position-picker.module.css` — the styles
+
+## Usage
+
+```tsx
+import { PositionPicker } from '@/components/ui/position-picker/position-picker';
+
+<PositionPicker
+  aria-label="Focal point"
+  defaultValue={{ y: 'center', x: 'center' }}
+  onValueChange={({ y, x }) => save(y, x)}
+/>
+```
+
+## Theming
+
+The resting edge of the standalone grid is an inset outline on the shared `--control-edge-*` tokens, so `--control-edge-width: 0` turns it off. Focus is not affected by that switch. `--position-picker-target-size` sets the minimum target size (default `--spacing-8` standalone, `--spacing-6` floor), and `--position-picker-scrim` sets the on-image ring.
+
+## API Reference
+
+### PositionPickerProps
+
+<PropsTable component="position-picker" />
+
+## Accessibility
+
+- The grid is `role="radiogroup"` and each target is `role="radio"` with `aria-checked`. Give the group an `aria-label` or `aria-labelledby` (4.1.2)
+- Every target has an accessible name from its position: "Top left", "Top center", "Center", "Bottom right"
+- One tab stop: the chosen target, or the first when nothing is chosen. Arrow keys move in both axes and choose as they move, wrapping at the edges; `Home` and `End` go to the first and last target
+- Every target's hit area is at least 24×24 at every size, even where the drawn dot is smaller (2.5.8)
+- The chosen target is larger and ringed as well as filled, so state is not carried by colour alone (1.4.1)
+- Over an image, each target keeps 3:1 against the photograph with its own scrim ring (1.4.11)
+- Focus draws a visible ring at the focus-ring tokens, with a scrim halo over an image (2.4.7)

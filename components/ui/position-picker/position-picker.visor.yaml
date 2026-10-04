@@ -1,0 +1,54 @@
+name: PositionPicker
+description: A 3x3 anchor grid. Nine targets, one chosen, the value a { y, x } pair. Draws on its own ground or over a photograph.
+extends: HTMLDivElement
+category: form
+
+when_to_use:
+  - Choosing a focal point over a photograph (nine dots on the image)
+  - Placing a logo, title or block at one of nine anchors
+  - Any choice of one of nine positions, in two dimensions
+
+when_not_to_use:
+  - A choice along one axis only (use RadioGroup or SegmentedControl)
+  - A free-form coordinate or percentage (use Slider or two NumberInputs)
+  - Dragging a point to an exact spot (this picks from nine, it does not drag)
+
+why: >
+  A position picker is a radio group in two dimensions. Arrow keys move in both
+  axes, each target is named ("Top left"), and the value is a { y, x } pair so
+  the consumer never parses a string. Over a photograph every target carries its
+  own scrim ring, so it keeps 3:1 against any image without a filter on the
+  photo, and every target's hit area is at least 24x24 at every size.
+
+props:
+  - name: value
+    type: "PositionValue | null"
+    description: "Controlled value, a { y: 'top' | 'center' | 'bottom', x: 'left' | 'center' | 'right' } pair. null is controlled with nothing chosen."
+  - name: defaultValue
+    type: "PositionValue | null"
+    description: Initial value when uncontrolled.
+  - name: onValueChange
+    type: "(value: PositionValue) => void"
+    description: Called with the chosen { y, x } pair.
+  - name: variant
+    type: "'default' | 'on-image'"
+    default: "'default'"
+    description: "default draws the grid on its own ground. on-image fills a positioned parent (the photograph's frame) and gives every target its own scrim ring."
+  - name: disabled
+    type: boolean
+    default: "false"
+    description: Disables all nine targets.
+  - name: renderTarget
+    type: "(position: PositionValue, state: { selected: boolean }) => ReactNode"
+    description: Replaces the drawn dot of one target, for example an alignment icon in the occupied row. Decorative; the target keeps its accessible name.
+
+dependencies: []
+
+preview_url: "https://visor.loworbit.studio/docs/components/form/position-picker"
+
+example: |
+  <PositionPicker
+    aria-label="Focal point"
+    defaultValue={{ y: "center", x: "center" }}
+    onValueChange={(position) => console.log(position)}
+  />
