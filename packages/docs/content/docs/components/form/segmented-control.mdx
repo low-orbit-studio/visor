@@ -168,6 +168,7 @@ The active pill carries a 1px inset state edge (`--control-state-edge-width`, co
 - Keyboard: Tab enters the group, Arrow keys move between segments, Space or Enter selects the focused segment
 - The active segment is told apart by fill and by `aria-checked`, not by colour alone
 - The sliding indicator snaps, with no transition, when `prefers-reduced-motion: reduce` is set
+- Each label reserves its width at the active and inactive weight with `aria-hidden` copies, so selecting a segment shifts nothing, even with a heavier `active-weight`
 - Focus draws a ring outside the pill that stays visible when edges are off
 
 ## Label Centering

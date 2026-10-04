@@ -74,6 +74,35 @@ function useResyncIndicator(rootRef: React.RefObject<HTMLDivElement | null>) {
   }, [rootRef])
 }
 
+/* ─── Label with its width reserved ─────────────────────────────────── */
+
+/**
+ * A bare-text label, rendered the way ToggleGroupItem renders one (a
+ * `toggle-group-text` block, trimmed to the capital band, see .label) inside a
+ * one-cell grid. Two hidden copies of the text share the cell, one at the
+ * active weight and one at the inactive weight, so each segment is always as
+ * wide as its widest state and selecting a segment moves nothing, even when a
+ * theme binds a heavier `active-weight`. The copies are `aria-hidden` and
+ * visually hidden: they cost no height and are not read. Elements (icons, rich
+ * labels) pass through unchanged.
+ */
+function renderLabel(label: React.ReactNode): React.ReactNode {
+  if (typeof label !== "string" && typeof label !== "number") return label
+  return (
+    <span className={styles.labelBox}>
+      <span className={styles.label} data-slot="toggle-group-text">
+        {label}
+      </span>
+      <span className={cn(styles.reserve, styles.reserveActive)} aria-hidden="true">
+        {label}
+      </span>
+      <span className={cn(styles.reserve, styles.reserveInactive)} aria-hidden="true">
+        {label}
+      </span>
+    </span>
+  )
+}
+
 /* ─── SegmentedControl ──────────────────────────────────────────────── */
 
 const SegmentedControl = React.forwardRef<HTMLDivElement, SegmentedControlProps>(
@@ -141,7 +170,7 @@ const SegmentedControl = React.forwardRef<HTMLDivElement, SegmentedControlProps>
             disabled={option.disabled}
           >
             {option.icon}
-            {option.label}
+            {renderLabel(option.label)}
           </ToggleGroupItem>
         ))}
       </ToggleGroup>

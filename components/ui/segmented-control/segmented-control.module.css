@@ -82,3 +82,52 @@
     transition: none;
   }
 }
+
+/* Label box (see renderLabel in the .tsx). The label, trimmed to the capital band
+   exactly as ToggleGroup trims its own (docs/label-centering.md), and two hidden
+   copies of the text share one grid cell, so the cell is as wide as the widest of
+   the active-weight and inactive-weight text and the visible label stays centred
+   in it. The copies have no height. */
+.labelBox {
+  display: inline-grid;
+  justify-items: center;
+}
+
+.labelBox > * {
+  grid-area: 1 / 1;
+}
+
+.label {
+  display: block;
+  white-space: nowrap;
+}
+
+@supports (text-box: trim-both cap alphabetic) {
+  .label {
+    text-box: trim-both cap alphabetic;
+  }
+}
+
+/* Blink only: it snaps the baseline to a whole CSS px; this hands back what the
+   snap took. WebKit places the baseline exactly, so it is excluded. */
+@supports (text-box: trim-both cap alphabetic) and (not (-apple-pay-button-style: black)) {
+  .label {
+    transform: translateY(calc((var(--label-box-height) + 1cap) / 2 - round((var(--label-box-height) + 1cap) / 2, 1px)));
+  }
+}
+
+.reserve {
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.reserveActive {
+  font-weight: var(--segmented-control-active-weight, var(--font-weight-medium, 500));
+}
+
+.reserveInactive {
+  font-weight: var(--font-weight-medium, 500);
+}

@@ -132,3 +132,43 @@ describe("SegmentedControl type and radius tokens (real browser)", () => {
     expect(e.inactiveColor).toBe("rgb(1, 2, 3)")
   })
 })
+
+describe("SegmentedControl reserves each label's width (real browser)", () => {
+  // Item boxes, the track and the pill, in order, after selecting each segment in turn.
+  const SWEEP = `(async function () {
+    var items = [].slice.call(document.querySelectorAll("#root [data-slot=toggle-group-item]"));
+    var root = document.querySelector("#root [data-slot=segmented-control]");
+    var pill = root.querySelector(":scope > [aria-hidden=true]");
+    var wait = function () { return new Promise(function (r) { setTimeout(r, 60); }); };
+    var out = [];
+    for (var i = 0; i < items.length; i++) {
+      items[i].click(); await wait();
+      var boxes = items.map(function (el) { var r = el.getBoundingClientRect(); return [r.x, r.width]; });
+      var t = root.getBoundingClientRect();
+      out.push({ on: i, boxes: boxes, track: [t.x, t.width], active: items[i].getAttribute("data-state") });
+    }
+    return JSON.stringify(out);
+  })()`
+  type Sweep = { on: number; boxes: number[][]; track: number[]; active: string }[]
+  const sweep = async (extraCss = ""): Promise<Sweep> => {
+    const page = await open("segmented-control", "default", { scopeCss: "--segmented-control-active-weight: 600;", extraCss })
+    await page.waitForFunction(`${PILL}.style.opacity === "1"`, undefined, { timeout: 5000 })
+    const out = JSON.parse((await page.evaluate(SWEEP)) as string) as Sweep
+    await page.close()
+    return out
+  }
+  const same = (s: Sweep) => s.every((r) => JSON.stringify(r.boxes) === JSON.stringify(s[0].boxes) && JSON.stringify(r.track) === JSON.stringify(s[0].track))
+
+  it("with active-weight 600 bound, every segment's box and x position are identical whichever segment is on", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    const s = await sweep()
+    expect(s.map((r) => r.active)).toEqual(["on", "on", "on"])
+    expect(same(s), JSON.stringify(s)).toBe(true)
+  })
+
+  it("mutation control: without the reservation the segments shift and the measurement sees it", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    const s = await sweep(`[data-slot=toggle-group-item] [aria-hidden=true]{display:none!important}`)
+    expect(same(s)).toBe(false)
+  })
+})
