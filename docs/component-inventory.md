@@ -11,8 +11,8 @@
 ### Content Display (8)
 - accordion, avatar, carousel, collapsible, image, progress, separator, skeleton
 
-### Navigation (4)
-- breadcrumb, command, navbar, pagination
+### Navigation (5)
+- bottom-nav, breadcrumb, command, navbar, pagination
 
 ### Interaction (3)
 - dropdown-menu, scroll-area, tabs
@@ -28,6 +28,7 @@
 All 15 priority components shipped.
 
 ### Navigation
+- [x] Bottom Nav
 - [x] Navbar
 - [x] Pagination
 - [x] Command Palette (cmdk-style)

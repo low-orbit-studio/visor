@@ -51,6 +51,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "BentoTileMedia",
   "BentoTileMeta",
   "BentoTileTitle",
+  "BottomNav",
   "Box",
   "Breadcrumb",
   "BreadcrumbEllipsis",

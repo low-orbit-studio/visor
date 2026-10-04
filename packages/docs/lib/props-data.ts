@@ -391,6 +391,27 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'bottom-nav': [
+    {
+      name: 'items',
+      type: '{ label: string; icon: BottomNavIcon; href?: string; onSelect?: (e) => void; active?: boolean; mark?: boolean | number; markLabel?: string; group?: string; key?: string }[]',
+      required: true,
+      description: 'The destinations, in order. `href` renders a link, otherwise a button. `active` sets aria-current="page" and fills the icon. `mark` draws an unread dot (a number goes into the accessible name, never onto the dot). `group` draws a hairline before the first destination of a new group.',
+    },
+    {
+      name: 'showLabels',
+      type: 'boolean',
+      default: 'false',
+      description: 'Show each label under its icon. Otherwise the label is visually hidden and still names the destination.',
+    },
+    {
+      name: 'fixed',
+      type: 'boolean',
+      default: 'true',
+      description: 'Pin to the foot of the viewport and publish --bottom-nav-height on the document root. `false` lays the bar out in flow.',
+    },
+  ],
+
   'segmented-control': [
     {
       name: 'options',

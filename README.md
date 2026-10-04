@@ -118,8 +118,8 @@ The registry ships 88+ UI components across 6 categories, plus admin compounds, 
 **Data Display (12)**
 `accordion` · `avatar` · `carousel` · `code-block` · `collapsible` · `heading` · `image` · `progress` · `separator` · `skeleton` · `text` · `timeline`
 
-**Navigation (5)**
-`breadcrumb` · `command` · `navbar` · `pagination` · `stepper`
+**Navigation (6)**
+`bottom-nav` · `breadcrumb` · `command` · `navbar` · `pagination` · `stepper`
 
 **Overlay (7)**
 `context-menu` · `dialog` · `fullscreen-overlay` · `hover-card` · `lightbox` · `menubar` · `popover`

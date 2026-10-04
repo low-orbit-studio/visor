@@ -413,6 +413,24 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "bottom-nav",
+    type: "registry:ui",
+    description:
+      "A bottom navigation bar of icon destinations for phone widths: filled active destination, an optional unread mark, a hairline group break, safe-area padding, and its height published as --bottom-nav-height.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/bottom-nav/bottom-nav.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/bottom-nav/bottom-nav.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "separator",
     type: "registry:ui",
     description:

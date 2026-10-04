@@ -1,0 +1,59 @@
+name: BottomNav
+description: A bottom navigation bar of icon destinations for phone widths. Filled active destination, an optional unread mark, a hairline group break, safe-area padding, and its height published as --bottom-nav-height.
+extends: HTMLElement
+category: navigation
+
+when_to_use:
+  - The primary destinations of an app at phone width, as a row fixed to the foot of the screen (the desktop rail becomes the foot bar)
+  - 3 to 7 top-level destinations that each deserve one tap
+  - A destination that sometimes has something waiting on it (an unread dot on Inbox)
+
+when_not_to_use:
+  - A top bar of site links (use Navbar)
+  - A collapsible side rail on wide screens (use Sidebar)
+  - Switching a view in place without changing the page (use SegmentedControl or Tabs)
+  - More than 7 destinations (group the rest behind one More destination)
+
+why: >
+  Navbar is a top bar and Sidebar collapses to a rail; neither becomes a row of
+  destinations fixed to the foot of a phone screen. BottomNav is that row. Each
+  destination takes an icon, a label (visible or visually hidden), an href or
+  onSelect, and an optional mark. The active destination sets aria-current="page"
+  and fills its icon, so colour is never the only cue. The unread mark is a solid
+  dot that is hidden from assistive tech; its meaning lives in the destination's
+  accessible name ("Inbox, 3 unread"). The bar pads for env(safe-area-inset-bottom),
+  and publishes its rendered height as --bottom-nav-height on the document root so
+  scroll-padding-bottom keeps a focused field clear of it (WCAG 2.4.11). Its resting
+  edge is a hairline that reads --hairline-width, so --hairline-width: 0 removes it.
+
+variants:
+  showLabels: [true, false]
+  fixed: [true, false]
+
+props:
+  - name: items
+    type: "{ label: string; icon: BottomNavIcon; href?: string; onSelect?: (e) => void; active?: boolean; mark?: boolean | number; markLabel?: string; group?: string; key?: string }[]"
+    description: The destinations, in order. A hairline is drawn before the first destination of each new group.
+  - name: showLabels
+    type: boolean
+    default: false
+    description: Show each label under its icon. Otherwise the label is visually hidden.
+  - name: fixed
+    type: boolean
+    default: true
+    description: Pin to the foot of the viewport and publish --bottom-nav-height on the document root.
+
+dependencies: []
+
+preview_url: "https://visor.loworbit.studio/docs/components/navigation/bottom-nav"
+
+example: |
+  <BottomNav
+    aria-label="Workspace"
+    items={[
+      { label: "Edit", icon: PencilSimple, href: "/edit", active: true },
+      { label: "Inbox", icon: Tray, href: "/inbox", mark: 3 },
+      { label: "Team", icon: UsersThree, href: "/team", group: "admin" },
+      { label: "Settings", icon: Gear, href: "/settings", group: "admin" },
+    ]}
+  />
