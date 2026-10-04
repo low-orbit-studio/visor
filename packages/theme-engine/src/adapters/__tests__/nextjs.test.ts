@@ -3,6 +3,10 @@ import { readFileSync } from "fs";
 import { resolve } from "path";
 import { generateThemeData } from "../../pipeline.js";
 import { nextjsAdapter } from "../nextjs.js";
+import {
+  VISOR_CORE_SEMANTIC_ALIASES,
+  VISOR_CORE_DARK_SEMANTIC_ALIASES,
+} from "../../semantic-aliases.js";
 import type { AdapterInput } from "../types.js";
 
 const MINIMAL_YAML = readFileSync(
@@ -529,5 +533,96 @@ describe("nextjsAdapter — visor-base element baseline (VI-616)", () => {
     // Propagation lives in visor-core/reset, not in generated theme CSS.
     expect(body).not.toContain("font: inherit;");
     expect(body).not.toContain("box-sizing:");
+  });
+});
+
+// VI-696 — the VI-648 scope re-substitution declared all aliases flat on the
+// scope, so a scoped dark theme pinned `--sidebar-*`, `--border-input`,
+// `--skeleton-*` and `--chart-1` to their light referent: a dark sidebar
+// resolved to the theme's near-white neutral-50. The dark selectors now
+// re-declare those twelve with their dark referent.
+describe("nextjsAdapter — mode-aware alias re-substitution (VI-696)", () => {
+  const SCOPE = "body.acme-theme";
+  const DARK_SEL = `${SCOPE}.dark,\n${SCOPE}.theme-dark,\n${SCOPE}[data-theme="dark"]`;
+  const PREFERS = `${SCOPE}:not(.light):not(.theme-light):not([data-theme="light"])`;
+
+  function semanticLayer(css: string): string {
+    const start = css.indexOf("@layer visor-semantic {");
+    return css.slice(start, css.indexOf("\n@layer ", start));
+  }
+
+  /** The `{ … }` body of the first rule for `selector` after `marker`. */
+  function ruleAfter(css: string, marker: string, selector: string): string {
+    const from = css.indexOf(marker);
+    expect(from, `${marker} not found`).toBeGreaterThan(-1);
+    const open = css.indexOf(`${selector} {`, from);
+    expect(open, `${selector} not found after ${marker}`).toBeGreaterThan(-1);
+    return css.slice(open, css.indexOf("}", open));
+  }
+
+  it("keeps the light referents on the host", () => {
+    const css = nextjsAdapter(makeInput(FULL_YAML), { scopePrefix: SCOPE });
+    const host = ruleAfter(semanticLayer(css), "(VI-648)", SCOPE);
+    for (const alias of Object.keys(VISOR_CORE_DARK_SEMANTIC_ALIASES)) {
+      expect(host).toContain(`--${alias}: var(--${VISOR_CORE_SEMANTIC_ALIASES[alias]});`);
+    }
+  });
+
+  it("re-declares the mode-dependent aliases with their dark referent on the toggle and prefers selectors", () => {
+    const layer = semanticLayer(nextjsAdapter(makeInput(FULL_YAML), { scopePrefix: SCOPE }));
+    const manual = ruleAfter(layer, "(dark) — manual toggle (VI-696)", DARK_SEL);
+    const prefers = ruleAfter(layer, "(dark) — prefers-color-scheme (VI-696)", PREFERS);
+    expect(layer).toMatch(/\(dark\) — prefers-color-scheme \(VI-696\) --- \*\/\n@media \(prefers-color-scheme: dark\) \{/);
+    for (const [alias, referent] of Object.entries(VISOR_CORE_DARK_SEMANTIC_ALIASES)) {
+      expect(manual).toContain(`--${alias}: var(--${referent});`);
+      expect(prefers).toContain(`--${alias}: var(--${referent});`);
+    }
+    expect(manual.match(/--[a-z0-9-]+:/g)).toHaveLength(Object.keys(VISOR_CORE_DARK_SEMANTIC_ALIASES).length);
+  });
+
+  it("emits the dark blocks after the host block, inside visor-semantic", () => {
+    const css = nextjsAdapter(makeInput(FULL_YAML), { scopePrefix: SCOPE });
+    const layer = semanticLayer(css);
+    expect(layer.indexOf("(dark) — manual toggle (VI-696)")).toBeGreaterThan(layer.indexOf("(VI-648)"));
+    expect(layer.indexOf("(dark) — prefers-color-scheme (VI-696)")).toBeGreaterThan(
+      layer.indexOf("(dark) — manual toggle (VI-696)"),
+    );
+    expect(css.indexOf("(VI-696)")).toBeLessThan(css.indexOf("@layer visor-adaptive {"));
+  });
+
+  it("puts the dark referents on the host of a dark-only theme", () => {
+    const yaml = `
+name: Nightshade
+version: 1
+color-scheme: dark-only
+colors:
+  primary: "#e8b64c"
+`;
+    const css = nextjsAdapter(makeInput(yaml), { scopePrefix: SCOPE });
+    const host = ruleAfter(semanticLayer(css), "(VI-648)", SCOPE);
+    for (const [alias, referent] of Object.entries(VISOR_CORE_DARK_SEMANTIC_ALIASES)) {
+      expect(host).toContain(`--${alias}: var(--${referent});`);
+    }
+    expect(host).toContain("--chart-2: var(--color-success-500);");
+    expect(css).not.toContain("(VI-696)");
+  });
+
+  it("emits no dark alias block for a light-only theme", () => {
+    const yaml = `
+name: Daybreak
+version: 1
+color-scheme: light-only
+colors:
+  primary: "#2563EB"
+`;
+    const css = nextjsAdapter(makeInput(yaml), { scopePrefix: SCOPE });
+    expect(ruleAfter(css, "(VI-648)", SCOPE)).toContain("--sidebar-bg: var(--color-neutral-50);");
+    expect(css).not.toContain("(VI-696)");
+  });
+
+  it("emits nothing new for a :root-scoped theme", () => {
+    const css = nextjsAdapter(makeInput(FULL_YAML));
+    expect(css).not.toContain("(VI-696)");
+    expect(css).not.toContain("--sidebar-bg: var(");
   });
 });

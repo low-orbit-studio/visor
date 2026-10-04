@@ -266,10 +266,15 @@ A semantic alias resolves **where it is declared**, not where it is read. This i
 
 On a `:root`-scoped theme that is correct — the theme's primitives land on the same element, so `var()` sees them. On a `scopePrefix` theme (the VI-368 body-class repaint pattern) the theme's primitives land on a *descendant*, e.g. `body.mybrand-theme`. From `:root` those are invisible, so the alias substitutes visor-core's untuned default and `body` inherits that already-substituted value. The theme is ignored, silently, with no warning and no invalid CSS.
 
-The engine closes this by re-declaring the affected aliases on the scope selector. Two rules follow for anyone touching the alias surface:
+The engine closes this by re-declaring the affected aliases on the scope selector. Both scoped emitters do this: the nextjs adapter with `scopePrefix`, and the docs adapter on `.{slug}-theme` (VI-695).
+
+Twelve aliases change referent with the mode: `--sidebar-*` (nine), `--border-input`, `--skeleton-from`, `--skeleton-to` and `--chart-1`. `VISOR_CORE_DARK_SEMANTIC_ALIASES` records their dark referents. The scope block carries the light referent. The adapter's dark selectors re-declare these twelve with the dark referent (VI-696): the manual toggle, the `prefers-color-scheme` block, and the host itself for a `dark-only` theme. Both sit in `visor-semantic`, and the dark rule comes later in that layer with higher specificity, so it wins only in dark mode. A dark re-declaration is emitted only when the theme declares the dark referent where the dark selector can see it, and only when the theme does not set the alias itself in dark mode.
+
+Three rules follow for anyone touching the alias surface:
 
 1. **Adding an alias to `packages/tokens/src/tokens/semantic.ts` means adding it to `VISOR_CORE_SEMANTIC_ALIASES`** in `packages/theme-engine/src/semantic-aliases.ts`. The `semantic-alias-coverage` test compares the table against the emitted `tokens.css` and fails with the missing names, so this is enforced rather than remembered.
-2. **A green `validate:strict` on token *names* proves nothing about resolved *values*.** The `scoped-theme-alias-resolution` rule asserts, in a real browser, that every alias computes to the same value as the primitive it resolves through, per theme. Before it existed, a theme declaring `typography.heading.weight: 500` computed `--weight-heading: 600` and every text-level check passed.
+2. **Giving an alias a different dark referent in `tokens.css` means updating `VISOR_CORE_DARK_SEMANTIC_ALIASES`.** `semantic-alias-coverage` pins both its key set and every dark referent against `tokens.css`'s dark rules.
+3. **A green `validate:strict` on token *names* proves nothing about resolved *values*.** The `scoped-theme-alias-resolution` rule asserts, in a real browser, that every alias computes to the same value as the primitive it resolves through, per theme, for both adapters, in light mode and in dark mode (manual toggle and `prefers-color-scheme`). Before it existed, a theme declaring `typography.heading.weight: 500` computed `--weight-heading: 600` and every text-level check passed.
 
 Consumers on a scoped theme pick the fix up by re-running `visor theme apply`; it lives in generated CSS, not in the `.visor.yaml`.
 

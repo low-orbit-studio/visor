@@ -97,6 +97,7 @@ html:not(.dark) .borderless-theme {
 
 /* --- visor-core alias re-substitution at theme scope (VI-695) --- */
 .borderless-theme {
+  --border-input: var(--color-neutral-200);
   --component-xs: var(--spacing-1);
   --component-sm: var(--spacing-2);
   --component-md: var(--spacing-4);
@@ -127,12 +128,59 @@ html:not(.dark) .borderless-theme {
   --motion-easing-default: var(--motion-easing-ease-in-out);
   --motion-easing-enter: var(--motion-easing-ease-out);
   --motion-easing-exit: var(--motion-easing-ease-in);
+  --skeleton-from: var(--surface-muted);
+  --skeleton-to: var(--surface-subtle);
+  --chart-1: var(--color-primary-500);
   --chart-2: var(--color-success-500);
   --chart-3: var(--color-warning-500);
   --chart-4: var(--color-info-500);
   --chart-5: var(--color-error-500);
+  --sidebar-bg: var(--color-neutral-50);
+  --sidebar-text: var(--color-neutral-700);
+  --sidebar-primary-bg: var(--color-primary-600);
   --sidebar-primary-text: var(--color-white);
+  --sidebar-accent-bg: var(--color-neutral-100);
+  --sidebar-accent-text: var(--color-neutral-900);
+  --sidebar-border: var(--color-neutral-200);
+  --sidebar-ring: var(--color-primary-500);
+  --sidebar-text-muted: var(--color-neutral-500);
   --field-menu-bg: var(--surface-popover);
+}
+
+
+/* --- visor-core alias re-substitution (dark) — manual toggle (VI-696) --- */
+.dark .borderless-theme {
+  --border-input: var(--color-neutral-700);
+  --skeleton-from: var(--color-neutral-800);
+  --skeleton-to: var(--color-neutral-700);
+  --chart-1: var(--color-primary-400);
+  --sidebar-bg: var(--color-neutral-900);
+  --sidebar-text: var(--color-neutral-300);
+  --sidebar-primary-bg: var(--color-primary-500);
+  --sidebar-accent-bg: var(--color-neutral-800);
+  --sidebar-accent-text: var(--color-neutral-50);
+  --sidebar-border: var(--color-neutral-700);
+  --sidebar-ring: var(--color-primary-400);
+  --sidebar-text-muted: var(--color-neutral-400);
+}
+
+
+/* --- visor-core alias re-substitution (dark) — prefers-color-scheme (VI-696) --- */
+@media (prefers-color-scheme: dark) {
+  .borderless-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
+    --border-input: var(--color-neutral-700);
+    --skeleton-from: var(--color-neutral-800);
+    --skeleton-to: var(--color-neutral-700);
+    --chart-1: var(--color-primary-400);
+    --sidebar-bg: var(--color-neutral-900);
+    --sidebar-text: var(--color-neutral-300);
+    --sidebar-primary-bg: var(--color-primary-500);
+    --sidebar-accent-bg: var(--color-neutral-800);
+    --sidebar-accent-text: var(--color-neutral-50);
+    --sidebar-border: var(--color-neutral-700);
+    --sidebar-ring: var(--color-primary-400);
+    --sidebar-text-muted: var(--color-neutral-400);
+  }
 }
 }
 

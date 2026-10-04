@@ -120,36 +120,50 @@ export const VISOR_CORE_SEMANTIC_ALIASES: Readonly<Record<string, string>> = {
 };
 
 /**
- * Aliases visor-core declares with a **different referent in dark mode** —
- * `--sidebar-bg` is `var(--color-neutral-50)` on `:root` but
- * `var(--color-neutral-900)` under `[data-theme="dark"]` and the
+ * Aliases visor-core declares with a **different referent in dark mode**, mapped
+ * to that dark referent. `--sidebar-bg` is `var(--color-neutral-50)` on `:root`
+ * but `var(--color-neutral-900)` under `[data-theme="dark"]` and the
  * prefers-color-scheme block.
  *
- * The table above records only the light referent. Re-declaring one of these
- * flat on a theme scope therefore pins dark mode to the light mapping: a dark
- * sidebar resolves to the theme's near-white `neutral-50`. Left alone, the
- * scope inherits visor-core's own mode-correct value — the theme's palette is
- * not seen, but the mode is right.
+ * `VISOR_CORE_SEMANTIC_ALIASES` records the light referent. A theme scope
+ * re-declares these with the light referent on the host and with the dark one
+ * on its dark selectors (VI-696), so a scoped dark sidebar resolves to the
+ * theme's own `neutral-900`, not its near-white `neutral-50` (the VI-648 flat
+ * emission) nor visor-core's untuned default (the VI-695 skip).
  *
- * The docs adapter skips these (VI-695); VI-696 tracks emitting a dark
- * referent per mode in both adapters. Pinned against the emitted
- * `tokens.css` by `semantic-alias-coverage`, so a new mode-dependent alias
- * fails there by name rather than silently re-declaring the light mapping.
+ * Pinned against the dark rules of the emitted `tokens.css` by
+ * `semantic-alias-coverage`: both the key set and every referent. A new
+ * mode-dependent alias, or a changed dark referent, fails there by name.
  */
-export const MODE_DEPENDENT_SEMANTIC_ALIASES: ReadonlySet<string> = new Set([
-  "border-input",
-  "skeleton-from",
-  "skeleton-to",
-  "chart-1",
-  "sidebar-bg",
-  "sidebar-text",
-  "sidebar-primary-bg",
-  "sidebar-accent-bg",
-  "sidebar-accent-text",
-  "sidebar-border",
-  "sidebar-ring",
-  "sidebar-text-muted",
-]);
+export const VISOR_CORE_DARK_SEMANTIC_ALIASES: Readonly<Record<string, string>> = {
+  "border-input": "color-neutral-700",
+  "skeleton-from": "color-neutral-800",
+  "skeleton-to": "color-neutral-700",
+  "chart-1": "color-primary-400",
+  "sidebar-bg": "color-neutral-900",
+  "sidebar-text": "color-neutral-300",
+  "sidebar-primary-bg": "color-primary-500",
+  "sidebar-accent-bg": "color-neutral-800",
+  "sidebar-accent-text": "color-neutral-50",
+  "sidebar-border": "color-neutral-700",
+  "sidebar-ring": "color-primary-400",
+  "sidebar-text-muted": "color-neutral-400",
+};
+
+/** The aliases in `VISOR_CORE_DARK_SEMANTIC_ALIASES`: the ones whose referent changes with the mode. */
+export const MODE_DEPENDENT_SEMANTIC_ALIASES: ReadonlySet<string> = new Set(
+  Object.keys(VISOR_CORE_DARK_SEMANTIC_ALIASES),
+);
+
+/**
+ * The full table as a dark-only theme needs it on its host: every alias, with
+ * the dark referent wherever one differs. Spread order keeps the light table's
+ * key order, so the emitted block reads the same as the light one.
+ */
+export const VISOR_CORE_SEMANTIC_ALIASES_DARK_HOST: Readonly<Record<string, string>> = {
+  ...VISOR_CORE_SEMANTIC_ALIASES,
+  ...VISOR_CORE_DARK_SEMANTIC_ALIASES,
+};
 
 /**
  * Every custom property declared anywhere in `css`, without the leading `--`.
@@ -158,11 +172,29 @@ export const MODE_DEPENDENT_SEMANTIC_ALIASES: ReadonlySet<string> = new Set([
  * `generateSemanticAliasDecls` reflects what this theme *actually* emits —
  * including conditional output such as the `--font-weight-<n>` ladder, which
  * only appears when a theme declares an explicit `weights` array.
+ *
+ * `options.exclude` drops the rules whose selector is listed, for a caller that
+ * needs only what one mode's selector can see (VI-696).
  */
-export function collectDeclaredProperties(css: string): Set<string> {
+export function collectDeclaredProperties(
+  css: string,
+  options: { exclude?: readonly string[] } = {},
+): Set<string> {
   const declared = new Set<string>();
-  for (const match of css.matchAll(/(^|[{;\s])--([a-zA-Z0-9-]+)\s*:/g)) {
-    declared.add(match[2]);
+  if (!options.exclude?.length) {
+    for (const match of css.matchAll(/(^|[{;\s])--([a-zA-Z0-9-]+)\s*:/g)) {
+      declared.add(match[2]);
+    }
+    return declared;
+  }
+  // `exclude` names selectors whose rules the caller's selector can never see
+  // (the light-only `html:not(.dark) …` rules, for a dark selector), so the
+  // walk goes rule by rule: innermost `{…}` blocks, comments stripped so the
+  // prelude is the bare selector.
+  const exclude = new Set(options.exclude);
+  for (const rule of css.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]*)\{([^{}]*)\}/g)) {
+    if (exclude.has(rule[1].trim())) continue;
+    for (const prop of collectDeclaredProperties(rule[2])) declared.add(prop);
   }
   return declared;
 }
@@ -183,8 +215,11 @@ export function collectDeclaredProperties(css: string): Set<string> {
  *   the correct outcome — re-emitting would replace a working value with an
  *   invalid one.
  *
- * `options.skip` names aliases to leave inheriting visor-core's value — the
- * docs adapter passes `MODE_DEPENDENT_SEMANTIC_ALIASES`.
+ * `options.skip` names aliases to leave inheriting visor-core's value.
+ *
+ * `options.table` swaps the alias → referent table. A dark selector passes
+ * `VISOR_CORE_DARK_SEMANTIC_ALIASES`, with `declared` read off only what that
+ * selector sees; a dark-only host passes `VISOR_CORE_SEMANTIC_ALIASES_DARK_HOST`.
  *
  * Returns `[]` for a `:root`-scoped theme's caller, which does not need this at
  * all: there, visor-core's aliases and the theme's primitives are declared on
@@ -192,10 +227,10 @@ export function collectDeclaredProperties(css: string): Set<string> {
  */
 export function generateSemanticAliasDecls(
   declared: ReadonlySet<string>,
-  options: { skip?: ReadonlySet<string> } = {},
+  options: { skip?: ReadonlySet<string>; table?: Readonly<Record<string, string>> } = {},
 ): string[] {
   const decls: string[] = [];
-  for (const [alias, referent] of Object.entries(VISOR_CORE_SEMANTIC_ALIASES)) {
+  for (const [alias, referent] of Object.entries(options.table ?? VISOR_CORE_SEMANTIC_ALIASES)) {
     if (options.skip?.has(alias)) continue;
     if (declared.has(alias)) continue;
     if (!declared.has(referent)) continue;

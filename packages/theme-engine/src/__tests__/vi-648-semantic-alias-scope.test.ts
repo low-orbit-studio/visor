@@ -3,6 +3,8 @@ import { readFileSync, readdirSync } from "fs";
 import { join } from "path";
 import {
   VISOR_CORE_SEMANTIC_ALIASES,
+  VISOR_CORE_DARK_SEMANTIC_ALIASES,
+  MODE_DEPENDENT_SEMANTIC_ALIASES,
   collectDeclaredProperties,
   generateSemanticAliasDecls,
 } from "../semantic-aliases.js";
@@ -145,6 +147,34 @@ describe.each(themeSlugs)("nextjs adapter — %s", (slug) => {
     // Every line the fix contributes is present exactly once.
     for (const line of decls) {
       expect(scoped.split(line).length - 1, `${line} emitted more than once`).toBe(1);
+    }
+  });
+});
+
+describe("dark-mode helpers (VI-696)", () => {
+  it("collectDeclaredProperties drops the rules whose selector is excluded", () => {
+    const css = [
+      "/* --- shared --- */",
+      ".x {\n  --a: 1;\n}",
+      "html:not(.dark) .x {\n  --b: 2;\n}",
+      "@media (prefers-color-scheme: dark) {\n  .x:not(.light) {\n    --c: 3;\n  }\n}",
+    ].join("\n");
+    const seen = collectDeclaredProperties(css, { exclude: ["html:not(.dark) .x"] });
+    expect([...seen].sort()).toEqual(["a", "c"]);
+    expect([...collectDeclaredProperties(css)].sort()).toEqual(["a", "b", "c"]);
+  });
+
+  it("generateSemanticAliasDecls takes the dark table, with the same two-sided filter", () => {
+    const decls = generateSemanticAliasDecls(new Set(["color-neutral-900", "sidebar-text", "color-neutral-300"]), {
+      table: VISOR_CORE_DARK_SEMANTIC_ALIASES,
+    });
+    expect(decls).toEqual(["--sidebar-bg: var(--color-neutral-900);"]);
+  });
+
+  it("MODE_DEPENDENT_SEMANTIC_ALIASES is the dark table's key set, all of them in the light table", () => {
+    expect([...MODE_DEPENDENT_SEMANTIC_ALIASES].sort()).toEqual(Object.keys(VISOR_CORE_DARK_SEMANTIC_ALIASES).sort());
+    for (const alias of MODE_DEPENDENT_SEMANTIC_ALIASES) {
+      expect(VISOR_CORE_SEMANTIC_ALIASES[alias], alias).toBeDefined();
     }
   });
 });
