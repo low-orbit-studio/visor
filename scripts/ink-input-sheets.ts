@@ -48,7 +48,7 @@ async function main() {
         const x1 = Math.max(...rects.map((r) => r.x + Math.max(r.w, 230))) + 12, y1 = Math.max(...rects.map((r) => r.y + r.h)) + 36
         await page.screenshot({ fullPage: true, clip: { x: x0, y: y0, width: x1 - x0, height: y1 - y0 }, path: join(out, `${sheet.file}.png`) })
         for (const r of rects.filter((q) => q.id.endsWith("cap") || q.id.endsWith("jpq"))) {
-          await page.screenshot({ fullPage: true, clip: { x: r.x - 6, y: r.y - 6, width: Math.min(r.w, 150) + 12, height: r.h + 12 }, path: join(out, `${sheet.file}-zoom-${r.id.replace(/ /g, "-")}.png`) })
+          await page.screenshot({ fullPage: true, clip: { x: r.x - 10, y: r.y - 8, width: r.w + 20, height: r.h + 12 }, path: join(out, `${sheet.file}-zoom-${r.id.replace(/ /g, "-")}.png`) })
         }
         await page.evaluate(`document.querySelectorAll("[data-guide]").forEach(g => g.remove())`)
       },
