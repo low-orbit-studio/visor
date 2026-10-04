@@ -34,6 +34,7 @@ import {
   generateSpaceAliasDecls,
   generateFontSizeDecls,
 } from "../generate-css.js";
+import { generateFontMetricDecls } from "../font-metrics.js";
 import { generateFontWeightDecls } from "../font-weights.js";
 import { generateBrandPassthroughCss } from "./brand-passthrough.js";
 import { generateComponentTokensCss } from "./component-tokens-css.js";
@@ -119,6 +120,8 @@ function generateTypographyDecls(
 
   // Font weights — same resolution as the core generator (VI-639), so the two
   // outputs cannot disagree about what a named weight means.
+  // Body face vertical metrics, for centring native inputs (VI-684).
+  decls.push(...generateFontMetricDecls(config.typography.body.family));
   decls.push(...generateFontWeightDecls(config.typography));
 
   // Line heights
