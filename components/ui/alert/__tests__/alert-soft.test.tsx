@@ -222,6 +222,41 @@ describe("Alert appearance=\"soft\" (VI-698)", () => {
     it("keeps the body in secondary ink, not the tone's colour", () => {
       expect(rule(".soft .description")).toContain("color: var(--text-secondary")
     })
+
+    // MDX wraps multi-line children in a <p>, and prose styles give it a top
+    // and bottom margin that pushed the text below the icon (operator review).
+    it("trims the outer margins of whatever sits at the text's edges", () => {
+      expect(rule(".content > :first-child,\n.soft .description > :first-child")).toContain(
+        "margin-top: 0"
+      )
+      expect(rule(".content > :last-child,\n.soft .description > :last-child")).toContain(
+        "margin-bottom: 0"
+      )
+    })
+
+    it("gives the lead no margin of its own", () => {
+      expect(rule(".lead")).not.toMatch(/\bmargin/)
+    })
+
+    it("leaves the action row's buttons their own face", () => {
+      expect(rule(".actions")).not.toMatch(/\b(color|background|border|padding|font|all)\b[\w-]*\s*:/)
+    })
+  })
+})
+
+describe("Alert soft docs example (VI-698)", () => {
+  const mdx = readFileSync(
+    resolve(process.cwd(), "packages/docs/content/docs/components/feedback/alert.mdx"),
+    "utf8"
+  )
+  const section = mdx.slice(mdx.indexOf('title="Soft Alert With Actions"'))
+  const preview = section.slice(0, section.indexOf("</ComponentPreview>"))
+  const actions = preview.slice(preview.lastIndexOf("<AlertActions>"), preview.lastIndexOf("</AlertActions>"))
+
+  it("renders its action row with the Visor Button, not a bare button", () => {
+    expect(actions).toMatch(/<Button variant="destructive" size="sm">Merge profiles<\/Button>/)
+    expect(actions).toMatch(/<Button variant="ghost" size="sm">Cancel<\/Button>/)
+    expect(actions).not.toMatch(/<button\b/)
   })
 })
 

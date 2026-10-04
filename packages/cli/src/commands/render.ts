@@ -44,6 +44,12 @@ interface Fixture {
   props: string
   /** CSS selector (inside #root) to drive for interactive-state capture. */
   interactiveTarget?: string
+  /**
+   * Other components the fixture composes, by registry name. Each is bundled
+   * from its real source and reachable in `props` as `__with["<name>"]`, so an
+   * action row renders a real Button rather than a bare `<button>`.
+   */
+  with?: string[]
 }
 
 /** A 1em Phosphor "X" glyph, inline so icon fixtures need no icon package. */
@@ -768,7 +774,14 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     },
     "soft-actions": {
       export: "Alert",
-      props: `{ appearance: "soft", variant: "destructive", style: { width: 420 }, children: [React.createElement(__mod.AlertDescription, { key: "d" }, React.createElement(__mod.AlertLead, null, "This can't be undone."), " The two profiles merge into one, and their bookings, payouts and notes move with it."), React.createElement(__mod.AlertActions, { key: "a" }, React.createElement("button", { type: "button" }, "Merge profiles"))] }`,
+      with: ["button"],
+      props: `{ appearance: "soft", variant: "destructive", style: { width: 420 }, children: [React.createElement(__mod.AlertDescription, { key: "d" }, React.createElement(__mod.AlertLead, null, "This can't be undone."), " The two profiles merge into one, and their bookings, payouts and notes move with it."), React.createElement(__mod.AlertActions, { key: "a" }, [React.createElement(__with["button"].Button, { key: "c", type: "button", variant: "ghost", size: "sm" }, "Cancel"), React.createElement(__with["button"].Button, { key: "m", type: "button", variant: "destructive", size: "sm" }, "Merge profiles")])] }`,
+    },
+    // The same block with its text in a paragraph, as MDX wraps multi-line
+    // children: the paragraph's margins must not push the text off the icon.
+    "soft-paragraph": {
+      export: "Alert",
+      props: `{ appearance: "soft", variant: "warning", style: { width: 420 }, children: React.createElement(__mod.AlertDescription, null, React.createElement("p", null, React.createElement(__mod.AlertLead, null, "Unsaved changes."), " Leave now and they are lost.")) }`,
     },
   },
   "empty-state": {
@@ -1030,11 +1043,18 @@ ${opts.bundleJs}
 export function buildEntrySource(
   componentFile: string,
   fixture: Fixture,
-  exportName: string
+  exportName: string,
+  withFiles: Record<string, string> = {}
 ): string {
+  const withNames = Object.keys(withFiles)
+  const withImports = withNames
+    .map((name, i) => `import * as __with_${i} from ${JSON.stringify(withFiles[name])};\n`)
+    .join("")
+  const withMap = withNames.map((name, i) => `${JSON.stringify(name)}: __with_${i}`).join(", ")
   return `import * as React from "react";
 import { createRoot } from "react-dom/client";
 import * as __mod from ${JSON.stringify(componentFile)};
+${withImports}var __with = { ${withMap} };
 
 function __resolveComponent(mod, preferred) {
   if (preferred && mod[preferred]) return mod[preferred];
@@ -1133,6 +1153,17 @@ export async function renderCommand(
     )
   }
   const exportName = fixture.export ?? pascalCase(component)
+  const withFiles: Record<string, string> = {}
+  for (const name of fixture.with ?? []) {
+    const file = resolveComponentFile(cwd, name)
+    if (!file) {
+      fail(
+        "COMPONENT_NOT_FOUND",
+        `Fixture "${fixtureName}" composes "${name}", which was not found under components/ui/ or blocks/.`
+      )
+    }
+    withFiles[name] = file as string
+  }
 
   // ── Load optional deps ──────────────────────────────────────────────────────
   const esbuild = (await loadOptional("esbuild")) as any
@@ -1149,7 +1180,7 @@ export async function renderCommand(
   let componentCss = ""
   let bundleJs = ""
   try {
-    const entrySource = buildEntrySource(componentFile as string, fixture, exportName)
+    const entrySource = buildEntrySource(componentFile as string, fixture, exportName, withFiles)
     const result = await esbuild.build({
       stdin: {
         contents: entrySource,

@@ -177,6 +177,22 @@
   min-height: var(--alert-icon-size-note, 1.5rem);
 }
 
+/* Trim the outer margins of whatever sits at the content's edges. MDX wraps
+   multi-line children in a paragraph, and prose styles (and the browser
+   default) give it a top and bottom margin, which pushes the text below the
+   icon and pads the card. Two classes out-specify a prose paragraph rule, so
+   this holds inside documentation and marketing prose. Margins between
+   paragraphs are kept. */
+.content > :first-child,
+.soft .description > :first-child {
+  margin-top: 0;
+}
+
+.content > :last-child,
+.soft .description > :last-child {
+  margin-bottom: 0;
+}
+
 .soft .title {
   color: var(--text-primary, currentColor);
 }

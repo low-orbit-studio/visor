@@ -169,6 +169,18 @@ describe("render — CSS cascade + entry composition", () => {
     expect(src).toContain('__resolveComponent(__mod, "StatCard")')
     expect(src).toContain("Total Revenue")
   })
+
+  it("buildEntrySource bundles the components a fixture composes, as __with", () => {
+    const fixture = FIXTURES.alert["soft-actions"]
+    expect(fixture.with).toEqual(["button"])
+    expect(fixture.props).not.toContain('createElement("button"')
+    const src = buildEntrySource("/abs/components/ui/alert/alert.tsx", fixture, "Alert", {
+      button: "/abs/components/ui/button/button.tsx",
+    })
+    expect(src).toContain('import * as __with_0 from "/abs/components/ui/button/button.tsx"')
+    expect(src).toContain('var __with = { "button": __with_0 }')
+    expect(src).toContain('__with["button"].Button')
+  })
 })
 
 describe("render — command validation (no browser)", () => {
