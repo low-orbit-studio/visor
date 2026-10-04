@@ -10,3 +10,4 @@ export {
   SelectLabel,
   SelectSeparator,
 } from '../../../../components/ui/select/select';
+export type { SelectContentProps } from '../../../../components/ui/select/select';

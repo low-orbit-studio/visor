@@ -86,6 +86,39 @@ components:
 The track's edge comes from the shared `control` tokens, so `edges: off` removes
 it with every other control's edge.
 
+The knob and the hovered track have colour keys of their own. Each falls back to
+the token it has always read, so a theme that sets none renders exactly as
+before.
+
+| Key | Token | Falls back to |
+|---|---|---|
+| `knob-bg` | `--switch-knob-bg` | `var(--surface-page, #ffffff)` |
+| `knob-bg-checked` | `--switch-knob-bg-checked` | `var(--surface-page, #ffffff)` |
+| `track-hover-bg` | `--switch-track-hover-bg` | `var(--border-strong, #d1d5db)` |
+| `track-hover-bg-checked` | `--switch-track-hover-bg-checked` | `var(--border-strong, #d1d5db)` |
+
+A dark, borderless theme needs them. Its page colour is black, so the unchecked
+knob is a black disc on a dark track, below the 3:1 that WCAG 1.4.11 asks of a
+control. Its `--border-strong` is transparent, so the track disappears under the
+pointer. Bind the knob and the hover fills in dark mode:
+
+```yaml
+edges: "off"
+components:
+  switch:
+    track-bg:
+      dark: "#383838"
+    knob-bg:
+      dark: "#d4d4d4"
+    track-hover-bg:
+      dark: "#4a4a4a"
+    track-hover-bg-checked:
+      dark: "var(--interactive-primary-bg)"
+```
+
+`knob-bg-checked` does not follow `knob-bg`: a light unchecked knob and the
+default knob on a bright checked track can sit side by side.
+
 ## Installation
 
 ```bash

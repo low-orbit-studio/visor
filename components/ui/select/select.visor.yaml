@@ -34,6 +34,13 @@ props:
   - name: placeholder
     type: string
     description: Shown via SelectValue when no value is selected
+  - name: container
+    type: HTMLElement | null
+    default: document.body
+    description: >
+      SelectContent only. Element the menu portals into. Pass the root of a
+      class-scoped theme so the menu reads that theme's tokens instead of the
+      page's.
 
 sub_components:
   - name: SelectTrigger
@@ -41,7 +48,7 @@ sub_components:
   - name: SelectValue
     description: Displays the selected value or placeholder text inside the trigger.
   - name: SelectContent
-    description: The dropdown container with scroll buttons and portal positioning.
+    description: The dropdown container with scroll buttons and portal positioning (document.body unless `container` is set).
   - name: SelectItem
     description: An individual selectable option with a check indicator.
   - name: SelectGroup

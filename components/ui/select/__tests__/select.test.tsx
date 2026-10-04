@@ -169,3 +169,57 @@ describe("field-menu-bg token (VI-497)", () => {
     expect(down === null || down instanceof Element).toBe(true)
   })
 })
+
+// VI-693: SelectContent forwards `container` to the Radix Portal, so a theme
+// scoped to a wrapper class reaches the open menu instead of stopping at <body>.
+describe("portal container (VI-693)", () => {
+  const renderOpen = (container?: HTMLElement, renderInto?: HTMLElement) =>
+    render(
+      <Select open>
+        <SelectTrigger aria-label="Choose">
+          <SelectValue placeholder="Pick one" />
+        </SelectTrigger>
+        <SelectContent container={container}>
+          <SelectItem value="a">A</SelectItem>
+        </SelectContent>
+      </Select>,
+      renderInto ? { container: renderInto } : undefined
+    )
+
+  it("mounts the menu outside the render container when none is passed", () => {
+    const { container } = renderOpen()
+    const content = document.querySelector("[data-slot='select-content']")
+    expect(content).not.toBeNull()
+    expect(container.contains(content)).toBe(false)
+    expect(document.body.contains(content)).toBe(true)
+  })
+
+  it("mounts the menu inside the passed container, not on body", () => {
+    const themeRoot = document.createElement("div")
+    themeRoot.className = "scoped-theme"
+    document.body.appendChild(themeRoot)
+    const outside = document.createElement("div")
+    document.body.appendChild(outside)
+
+    renderOpen(themeRoot, outside)
+
+    const content = document.querySelector("[data-slot='select-content']")
+    expect(content).not.toBeNull()
+    expect(themeRoot.contains(content)).toBe(true)
+    expect(outside.contains(content)).toBe(false)
+    expect(content!.closest(".scoped-theme")).toBe(themeRoot)
+    expect(themeRoot.contains(screen.getByRole("listbox"))).toBe(true)
+
+    themeRoot.remove()
+    outside.remove()
+  })
+
+  it("does not forward container onto the content element", () => {
+    const themeRoot = document.createElement("div")
+    document.body.appendChild(themeRoot)
+    renderOpen(themeRoot)
+    const content = document.querySelector("[data-slot='select-content']")
+    expect(content!.hasAttribute("container")).toBe(false)
+    themeRoot.remove()
+  })
+})

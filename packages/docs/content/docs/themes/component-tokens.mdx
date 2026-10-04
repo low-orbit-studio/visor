@@ -670,7 +670,7 @@ Text type treatment, per size — set `sm-font-size: 13px` for a 13px step, or c
 
 ### `switch`
 
-Switch track and knob dimensions (default size; `size="sm"` keeps its own). Set `knob-inset` to size the knob from the track: it sits that far from the track's outer edge on every side.
+Switch track and knob dimensions (default size; `size="sm"` keeps its own) and colours. Set `knob-inset` to size the knob from the track: it sits that far from the track's outer edge on every side.
 
 | Token | Binds | Falls back to |
 |---|---|---|
@@ -679,6 +679,10 @@ Switch track and knob dimensions (default size; `size="sm"` keeps its own). Set 
 | `--switch-knob-inset` | Gap between the knob and the track's outer edge, on every side. Unset, the knob keeps its shipped 1rem size and position. | — (unset) |
 | `--switch-track-bg` | Unchecked track fill. | `var(--border-default, #e5e7eb)` |
 | `--switch-edge-color` | Track edge colour — transparent by default. Width and style come from the shared `control` edge, so `control.edge-width: 0` turns it off. | `transparent` |
+| `--switch-track-hover-bg` | Unchecked track fill under the pointer. Bind it in a borderless theme, where `--border-strong` is transparent. | `var(--border-strong, #d1d5db)` |
+| `--switch-track-hover-bg-checked` | Checked track fill under the pointer. Unbound it is `--border-strong`, as it always was; bind it to keep the checked fill under the pointer. | `var(--border-strong, #d1d5db)` |
+| `--switch-knob-bg` | Unchecked knob fill. Bind it in a dark theme, where the page colour is a black knob on a dark track. | `var(--surface-page, #ffffff)` |
+| `--switch-knob-bg-checked` | Checked knob fill. Independent of `knob-bg`, so a light unchecked knob can sit beside a dark knob on a bright checked track. | `var(--surface-page, #ffffff)` |
 
 Every hook in `field`, `button`, `text` and `switch` defaults to what shipped
 before it existed. Case and tracking are declared in Visor's lowest cascade

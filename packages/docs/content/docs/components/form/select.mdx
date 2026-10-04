@@ -65,6 +65,26 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
   </div>
 </ComponentPreview>
 
+## Portal Container
+
+`SelectContent` portals into `document.body` by default. A theme scoped to a class on a wrapper never reaches the body, so the open menu would read the page's theme instead. Pass the wrapper as `container` and the menu mounts inside it, under the scoped theme.
+
+```tsx
+const [themeRoot, setThemeRoot] = React.useState<HTMLDivElement | null>(null);
+
+<div ref={setThemeRoot} className="my-scoped-theme">
+  <Select>
+    <SelectTrigger>
+      <SelectValue placeholder="Pick one" />
+    </SelectTrigger>
+    <SelectContent container={themeRoot}>
+      <SelectItem value="a">Option A</SelectItem>
+      <SelectItem value="b">Option B</SelectItem>
+    </SelectContent>
+  </Select>
+</div>
+```
+
 ## Installation
 
 ```bash
@@ -108,7 +128,7 @@ import {
 | `Select` | — (Radix Root) | Root provider managing open state and value |
 | `SelectTrigger` | `<button>` | Clickable trigger that opens the dropdown |
 | `SelectValue` | `<span>` | Displays the selected value or placeholder text |
-| `SelectContent` | `<div>` (portal) | Dropdown panel containing options |
+| `SelectContent` | `<div>` (portal) | Dropdown panel containing options. Portals into `document.body` unless `container` is set |
 | `SelectItem` | `<div>` | Individual selectable option with check indicator |
 | `SelectGroup` | `<div>` | Groups related options together |
 | `SelectLabel` | `<div>` | Non-interactive label for an option group |

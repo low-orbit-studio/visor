@@ -22,6 +22,27 @@ why: >
 variants:
   size: [sm, default]
 
+theme_hooks:
+  - name: --switch-knob-bg
+    description: >
+      Unchecked knob fill. Falls back to var(--surface-page, #ffffff). Bind it in
+      a dark theme, where the page colour is a black knob that a dark track
+      cannot hold at 3:1 (WCAG 1.4.11). Theme key: components.switch.knob-bg.
+  - name: --switch-knob-bg-checked
+    description: >
+      Checked knob fill. Falls back to var(--surface-page, #ffffff), not to
+      --switch-knob-bg. Theme key: components.switch.knob-bg-checked.
+  - name: --switch-track-hover-bg
+    description: >
+      Unchecked track fill under the pointer. Falls back to
+      var(--border-strong, #d1d5db). Bind it in a borderless theme, where
+      --border-strong is transparent. Theme key: components.switch.track-hover-bg.
+  - name: --switch-track-hover-bg-checked
+    description: >
+      Checked track fill under the pointer. Falls back to
+      var(--border-strong, #d1d5db), as it always has. Theme key:
+      components.switch.track-hover-bg-checked.
+
 props:
   - name: size
     type: "'sm' | 'default'"

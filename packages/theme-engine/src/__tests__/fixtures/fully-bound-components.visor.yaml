@@ -331,6 +331,10 @@ components:
     knob-inset: "3px"
     track-bg: "#2b0a3d"
     edge-color: "#ff00aa"
+    track-hover-bg: "#33ccaa"
+    track-hover-bg-checked: "#aa33cc"
+    knob-bg: "#ffee00"
+    knob-bg-checked: "#00eeff"
   save-status:
     width: "91px"
     syncing-color: "#33ccaa"

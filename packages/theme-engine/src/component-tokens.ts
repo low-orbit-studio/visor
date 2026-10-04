@@ -937,11 +937,16 @@ const textFamily: ComponentTokenFamily = {
   ]),
 };
 
+// VI-693 adds the knob and hover colours. Unbound they read the pair Switch
+// always read (`--surface-page` for the knob, `--border-strong` under the
+// pointer). A dark, borderless theme cannot leave them there: its page colour
+// is a black knob on a dark track (under 3:1, WCAG 1.4.11) and its
+// `--border-strong` is transparent, so the hovered track vanishes.
 const switchFamily: ComponentTokenFamily = {
   family: "switch",
   prefix: "switch",
   description:
-    "Switch track and knob dimensions (default size; `size=\"sm\"` keeps its own). Set `knob-inset` to size the knob from the track: it sits that far from the track's outer edge on every side.",
+    "Switch track and knob dimensions (default size; `size=\"sm\"` keeps its own) and colours. Set `knob-inset` to size the knob from the track: it sits that far from the track's outer edge on every side.",
   tokens: [
     { key: "track-width", property: "width", description: "Track width.", consumers: at(SWITCH, "2rem") },
     {
@@ -963,6 +968,30 @@ const switchFamily: ComponentTokenFamily = {
       property: "outline-color",
       description: "Track edge colour — transparent by default. Width and style come from the shared `control` edge, so `control.edge-width: 0` turns it off.",
       consumers: at(SWITCH, "transparent"),
+    },
+    {
+      key: "track-hover-bg",
+      property: "background-color (hover)",
+      description: "Unchecked track fill under the pointer. Bind it in a borderless theme, where `--border-strong` is transparent.",
+      consumers: at(SWITCH, "var(--border-strong, #d1d5db)"),
+    },
+    {
+      key: "track-hover-bg-checked",
+      property: "background-color (hover)",
+      description: "Checked track fill under the pointer. Unbound it is `--border-strong`, as it always was; bind it to keep the checked fill under the pointer.",
+      consumers: at(SWITCH, "var(--border-strong, #d1d5db)"),
+    },
+    {
+      key: "knob-bg",
+      property: "background-color (knob)",
+      description: "Unchecked knob fill. Bind it in a dark theme, where the page colour is a black knob on a dark track.",
+      consumers: at(SWITCH, "var(--surface-page, #ffffff)"),
+    },
+    {
+      key: "knob-bg-checked",
+      property: "background-color (knob)",
+      description: "Checked knob fill. Independent of `knob-bg`, so a light unchecked knob can sit beside a dark knob on a bright checked track.",
+      consumers: at(SWITCH, "var(--surface-page, #ffffff)"),
     },
   ],
 };
