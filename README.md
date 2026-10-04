@@ -745,7 +745,7 @@ The skill itself contains no publish logic. Each repo's existing CI (`release.ym
 
 ### Publish-gate audit (PR comment governance)
 
-When the `visor-publish-smoke` workflow detects drift between the source on `main` and the latest published `@loworbitstudio/visor` tarball, the audit step maps each drifted primitive back to the PR that landed it and posts a comment there — so "merged" eventually catches up with "shipped." Uses the built-in `GITHUB_TOKEN`, no extra secrets required. Run it locally with `npm run audit:publish`. Full background in [`CLAUDE.md` § Publish Gate](./CLAUDE.md#publish-gate) and [`docs/wisdom/W029-vi-ticket-publish-governance.md`](./docs/wisdom/W029-vi-ticket-publish-governance.md).
+When the `visor-publish-smoke` workflow detects drift between the source on `main` and the latest published tarball of any of the four npm packages — the CLI's registry, or the build output of `visor-core`, `visor-theme-engine` and `visor-tailwind-preset` — the audit step maps each drifted primitive or package back to the PR that landed it and posts a comment there — so "merged" eventually catches up with "shipped." Uses the built-in `GITHUB_TOKEN`, no extra secrets required. Run it locally with `npm run audit:publish`. Full background in [`CLAUDE.md` § Publish Gate](./CLAUDE.md#publish-gate) and [`docs/wisdom/W029-vi-ticket-publish-governance.md`](./docs/wisdom/W029-vi-ticket-publish-governance.md).
 
 ---
 

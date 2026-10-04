@@ -155,22 +155,33 @@ Visor's long-term goals, phased roadmap, and detailed specs live in `/docs/`. Re
 
 The Borealis publish gate prevents drift between the source in this repo and the registry that powers `npx visor add`. Symptom of drift: a VI- ticket is marked Done, the source file ships a new feature (e.g. `valueAs="hero"` on `stat-card`), but `npx visor add stat-card` writes the older version because the CLI hasn't been re-published.
 
-**The check:** [`scripts/visor-publish-smoke.mjs`](./scripts/visor-publish-smoke.mjs) compares this repo's locally-built `packages/cli/dist/registry.json` against the `dist/registry.json` shipped in the latest published `@loworbitstudio/visor` tarball. Any per-file content drift fails the job and names the drifted primitives.
+**The check:** [`scripts/visor-publish-smoke.mjs`](./scripts/visor-publish-smoke.mjs) compares every published package against its latest npm tarball. Any per-file content drift fails the job and names what drifted. The comparison artifact differs per package (VI-649):
+
+| Package | Compared | Why |
+|---|---|---|
+| `@loworbitstudio/visor` | `dist/registry.json`, per primitive and file | The registry is what `npx visor add` writes; each file maps straight to its source path. |
+| `@loworbitstudio/visor-core`, `-theme-engine`, `-tailwind-preset` | Every file the tarball ships, read from the package's own `files` field | These ship build output. The builds are reproducible: tailwind-preset 0.2.0 rebuilds byte-for-byte identical to its tarball. Bundler content hashes in file names (`chunk-C2DUPZVY.js`) are normalised to `[hash]` before comparing. |
+
+`package.json` and `README.md` are not compared: the version differs by design until the release lands. A version check alone (`visor-publish-status`) cannot see a pending changeset hiding unreleased work, or a package whose output changed with no changeset at all. For example, the engine's theme CSS changed visor-core's `dist/themes/*.css`, and nothing bumped visor-core.
+
+`PACKAGE_ARTIFACTS` in the script lists the non-CLI packages. A test fails if a publishable workspace package is missing from it.
 
 **Run it locally:**
 
 ```bash
-npm run build -w packages/theme-engine -w packages/tokens -w packages/cli
-npm run smoke:publish
+npm run build -w packages/cli
+npm run smoke:publish   # rebuilds the engine, tokens, tailwind-preset and registry first
 ```
 
 **In CI:** [`.github/workflows/visor-publish-smoke.yml`](./.github/workflows/visor-publish-smoke.yml) runs the smoke daily at 06:00 UTC, on `workflow_dispatch`, and after every successful `Release` workflow run.
 
-**When it fails:** cut a new `@loworbitstudio/visor` release that includes the drifted primitives. See [`docs/wisdom/W020-publish-coordination-drift.md`](./docs/wisdom/W020-publish-coordination-drift.md) for the failure-class background.
+**When it fails:** cut a new release of each package the report names. A package that drifted with no pending changeset needs one written first, or the Release workflow has nothing to bump. See [`docs/wisdom/W020-publish-coordination-drift.md`](./docs/wisdom/W020-publish-coordination-drift.md) for the failure-class background.
 
 ### Governance signal — GitHub PR audit (VI-306)
 
 The smoke detects drift; the audit closes the loop on the **PR** that landed the drifted primitive. When the smoke fails in CI, [`scripts/visor-publish-audit.mjs`](./scripts/visor-publish-audit.mjs) walks `git log` per drifted file, finds the most recent commit that touched it, extracts the `VI-N` reference and PR number from the commit subject (squash-merge `(#N)` suffix), and posts a comment on each affected PR via the built-in `GITHUB_TOKEN` — flagging that the PR landed but its primitive is still missing from the published registry.
+
+`dist/` is gitignored, so a drifted *package* maps through its `sources` instead. The audit names the most recent commit that touched those source paths since the package's release tag (`<name>@<version>`). That is the newest unreleased change, which is not necessarily the one that caused the drift.
 
 The PR is the durable, public artifact connecting a commit to the change that introduced the drift, so this is the right place for the signal. No external API keys live in repo secrets — Linear and other private surfaces stay out of public-repo CI.
 

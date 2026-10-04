@@ -3,6 +3,7 @@ import {
   extractVIRefs,
   extractPRNumber,
   mapDriftToTickets,
+  mergeAuditResults,
   groupByPR,
   formatAuditReport,
   formatGitHubPRComment,
@@ -426,5 +427,128 @@ describe("parseRepoFromRemoteUrl", () => {
   it("returns null for unrecognized URLs", () => {
     expect(parseRepoFromRemoteUrl("")).toBeNull()
     expect(parseRepoFromRemoteUrl(null)).toBeNull()
+  })
+})
+
+describe("package drift (VI-649)", () => {
+  const pkgDrift = {
+    name: "@loworbitstudio/visor-core",
+    files: ["packages/tokens/src/", "packages/theme-engine/src/"],
+    publishedRef: "@loworbitstudio/visor-core@0.15.0",
+  }
+
+  it("matches a directory-prefix drift file against any commit file under it", () => {
+    const commits = [
+      {
+        sha: "bf9af47b00",
+        subject: "VI-662 feat: input and number-input prefix and suffix (#754)",
+        files: ["packages/theme-engine/src/component-tokens.ts"],
+      },
+    ]
+    const { findings, orphans } = mapDriftToTickets([pkgDrift], commits)
+    expect(orphans).toEqual([])
+    expect(findings).toEqual([
+      {
+        ticketId: "VI-662",
+        primitives: [
+          {
+            name: "@loworbitstudio/visor-core",
+            sha: "bf9af47",
+            subject: "VI-662 feat: input and number-input prefix and suffix (#754)",
+            prNumber: 754,
+            publishedRef: "@loworbitstudio/visor-core@0.15.0",
+          },
+        ],
+      },
+    ])
+  })
+
+  it("does not match a commit outside the directory prefix", () => {
+    const commits = [
+      {
+        sha: "abc1234567",
+        subject: "VI-1 chore: unrelated (#1)",
+        // shares the basename "src" but sits outside the prefix
+        files: ["packages/cli/src/index.ts"],
+      },
+    ]
+    const { findings, orphans } = mapDriftToTickets([pkgDrift], commits)
+    expect(findings).toEqual([])
+    expect(orphans).toEqual([{ name: "@loworbitstudio/visor-core", reason: "no-touching-commit" }])
+  })
+
+  it("merges registry and package results under one ticket", () => {
+    const registry = {
+      findings: [{ ticketId: "VI-662", primitives: [{ name: "input", sha: "a", subject: "s", prNumber: 754 }] }],
+      orphans: [{ name: "ghost", reason: "no-touching-commit" }],
+    }
+    const packages = {
+      findings: [
+        {
+          ticketId: "VI-662",
+          primitives: [
+            { name: "@loworbitstudio/visor-core", sha: "a", subject: "s", prNumber: 754, publishedRef: "x@1" },
+          ],
+        },
+        { ticketId: "VI-9", primitives: [{ name: "p", sha: "b", subject: "t", prNumber: 9 }] },
+      ],
+      orphans: [],
+    }
+    const merged = mergeAuditResults(registry, packages)
+    expect(merged.findings.map((f) => f.ticketId)).toEqual(["VI-9", "VI-662"])
+    expect(merged.findings[1].primitives.map((p) => p.name)).toEqual([
+      "input",
+      "@loworbitstudio/visor-core",
+    ])
+    expect(merged.orphans).toEqual([{ name: "ghost", reason: "no-touching-commit" }])
+  })
+
+  it("names the package's own published version in the report and the release to cut", () => {
+    const out = formatAuditReport({
+      findings: [
+        {
+          ticketId: "VI-662",
+          primitives: [
+            { name: "input", sha: "bf9af47", subject: "s (#754)", prNumber: 754 },
+            {
+              name: "@loworbitstudio/visor-core",
+              sha: "bf9af47",
+              subject: "s (#754)",
+              prNumber: 754,
+              publishedRef: "@loworbitstudio/visor-core@0.15.0",
+            },
+          ],
+        },
+      ],
+      orphans: [],
+      publishedVersion: "1.31.0",
+    })
+    expect(out).toContain("[not in @loworbitstudio/visor-core@0.15.0]")
+    expect(out).toContain(
+      "Resolution: cut a new @loworbitstudio/visor, @loworbitstudio/visor-core release",
+    )
+  })
+
+  it("comments with the package's published ref, not the CLI's", () => {
+    const out = formatGitHubPRComment(
+      {
+        prNumber: 754,
+        ticketIds: ["VI-662"],
+        primitives: [
+          {
+            name: "@loworbitstudio/visor-theme-engine",
+            sha: "bf9af47",
+            subject: "s (#754)",
+            prNumber: 754,
+            publishedRef: "@loworbitstudio/visor-theme-engine@0.25.0",
+          },
+        ],
+      },
+      "1.31.0",
+    )
+    expect(out).toContain("latest published `@loworbitstudio/visor-theme-engine@0.25.0`")
+    expect(out).not.toContain("@loworbitstudio/visor@1.31.0")
+    expect(out).toContain("Consumers will keep installing the older published build")
+    expect(out).toContain("Publish-audit marker: @loworbitstudio/visor-theme-engine@bf9af47")
   })
 })

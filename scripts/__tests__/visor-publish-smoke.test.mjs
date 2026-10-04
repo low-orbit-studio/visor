@@ -1,10 +1,19 @@
 import { describe, it, expect } from "vitest"
+import { readFileSync, readdirSync, existsSync } from "node:fs"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
 import {
   computeDrift,
   formatReport,
   parseArgs,
   detectStaleRegistry,
+  hashedStem,
+  computePackageDrift,
+  formatPackageReport,
+  PACKAGE_ARTIFACTS,
 } from "../visor-publish-smoke.mjs"
+
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..")
 
 const item = (name, files) => ({
   name,
@@ -300,5 +309,198 @@ describe("detectStaleRegistry", () => {
     ])
     expect(result.newerFile).toBe("newest.tsx")
     expect(result.newerMtimeMs).toBe(5000)
+  })
+})
+
+describe("PACKAGE_ARTIFACTS", () => {
+  // A package added to the workspace and published without a smoke entry is
+  // exactly the zero-coverage hole VI-646 fell through.
+  it("covers every publishable workspace package", () => {
+    const published = readdirSync(path.join(REPO_ROOT, "packages"))
+      .map((dir) => path.join(REPO_ROOT, "packages", dir, "package.json"))
+      .filter((p) => existsSync(p))
+      .map((p) => JSON.parse(readFileSync(p, "utf8")))
+      .filter((pkg) => !pkg.private)
+      .map((pkg) => pkg.name)
+      .sort()
+    const covered = ["@loworbitstudio/visor", ...PACKAGE_ARTIFACTS.map((p) => p.name)].sort()
+    expect(covered).toEqual(published)
+  })
+
+  it("points each entry at the workspace dir that publishes that name", () => {
+    for (const pkg of PACKAGE_ARTIFACTS) {
+      const manifest = JSON.parse(
+        readFileSync(path.join(REPO_ROOT, pkg.dir, "package.json"), "utf8"),
+      )
+      expect(manifest.name).toBe(pkg.name)
+      expect(manifest.files?.length).toBeGreaterThan(0)
+    }
+  })
+
+  it("names source paths that exist, as directory prefixes", () => {
+    for (const pkg of PACKAGE_ARTIFACTS) {
+      for (const src of pkg.sources) {
+        expect(src.endsWith("/")).toBe(true)
+        expect(existsSync(path.join(REPO_ROOT, src))).toBe(true)
+      }
+    }
+  })
+})
+
+describe("hashedStem", () => {
+  it("recognises tsup chunk names", () => {
+    expect(hashedStem("chunk-C2DUPZVY.js")).toEqual({
+      stem: "chunk-C2DUPZVY",
+      placeholder: "chunk-[hash]",
+    })
+  })
+
+  it("recognises rollup-plugin-dts names, including a hash ending in a dash", () => {
+    expect(hashedStem("types-ZPTjTL_-.d.ts")).toEqual({
+      stem: "types-ZPTjTL_-",
+      placeholder: "types-[hash]",
+    })
+  })
+
+  it("ignores ordinary names, even with an eight-letter suffix", () => {
+    expect(hashedStem("index.js")).toBeNull()
+    expect(hashedStem("fowt-defaults.js")).toBeNull()
+    expect(hashedStem("modern-minimal.css")).toBeNull()
+  })
+})
+
+const tree = (entries) => new Map(entries)
+
+describe("computePackageDrift", () => {
+  it("returns no drift for identical trees", () => {
+    const t = tree([
+      ["dist/index.js", "A"],
+      ["dist/themes/space.css", "B"],
+    ])
+    expect(computePackageDrift(t, new Map(t))).toEqual({ drifts: [], warnings: [] })
+  })
+
+  it("flags a file whose content changed", () => {
+    const result = computePackageDrift(
+      tree([["dist/themes/neutral.css", "--font-ascent: 0.967;"]]),
+      tree([["dist/themes/neutral.css", ""]]),
+    )
+    expect(result.drifts).toEqual([{ path: "dist/themes/neutral.css", kind: "content" }])
+  })
+
+  it("flags a file the published tarball does not ship", () => {
+    const result = computePackageDrift(
+      tree([
+        ["dist/index.js", "A"],
+        ["dist/new.js", "N"],
+      ]),
+      tree([["dist/index.js", "A"]]),
+    )
+    expect(result.drifts).toEqual([{ path: "dist/new.js", kind: "missing-in-published" }])
+  })
+
+  it("warns, without failing, on a file only the published tarball ships", () => {
+    const result = computePackageDrift(
+      tree([["dist/index.js", "A"]]),
+      tree([
+        ["dist/index.js", "A"],
+        ["dist/gone.js", "G"],
+      ]),
+    )
+    expect(result.drifts).toEqual([])
+    expect(result.warnings).toEqual([{ path: "dist/gone.js", kind: "removed-in-source" }])
+  })
+
+  it("treats a chunk renamed by an unchanged rebuild as no drift", () => {
+    // Same bytes, different hash: only possible if the hash input differs
+    // (e.g. a different bundler version), not the shipped code.
+    const result = computePackageDrift(
+      tree([
+        ["dist/index.js", 'export * from "./chunk-AAAA1111.js"'],
+        ["dist/chunk-AAAA1111.js", "code"],
+      ]),
+      tree([
+        ["dist/index.js", 'export * from "./chunk-BBBB2222.js"'],
+        ["dist/chunk-BBBB2222.js", "code"],
+      ]),
+    )
+    expect(result).toEqual({ drifts: [], warnings: [] })
+  })
+
+  it("flags a chunk whose content changed, under its normalised name", () => {
+    const result = computePackageDrift(
+      tree([
+        ["dist/index.js", 'export * from "./chunk-AAAA1111.js"'],
+        ["dist/chunk-AAAA1111.js", "new code"],
+      ]),
+      tree([
+        ["dist/index.js", 'export * from "./chunk-BBBB2222.js"'],
+        ["dist/chunk-BBBB2222.js", "old code"],
+      ]),
+    )
+    expect(result.drifts).toEqual([{ path: "dist/chunk-[hash].js", kind: "content" }])
+  })
+
+  it("compares several chunks as a set, independent of hash order", () => {
+    const result = computePackageDrift(
+      tree([
+        ["dist/chunk-AAAA1111.js", "one"],
+        ["dist/chunk-ZZZZ9999.js", "two"],
+      ]),
+      tree([
+        ["dist/chunk-ZZZZ0000.js", "one"],
+        ["dist/chunk-AAAA0000.js", "two"],
+      ]),
+    )
+    expect(result.drifts).toEqual([])
+  })
+
+  it("flags a change in the number of chunks", () => {
+    const result = computePackageDrift(
+      tree([
+        ["dist/chunk-AAAA1111.js", "one"],
+        ["dist/chunk-BBBB1111.js", "two"],
+      ]),
+      tree([["dist/chunk-AAAA0000.js", "one"]]),
+    )
+    expect(result.drifts).toEqual([{ path: "dist/chunk-[hash].js", kind: "content" }])
+  })
+})
+
+describe("formatPackageReport", () => {
+  it("reports a clean package with its file count", () => {
+    const out = formatPackageReport([
+      {
+        name: "@loworbitstudio/visor-tailwind-preset",
+        publishedVersion: "0.2.0",
+        fileCount: 20,
+        drifts: [],
+        warnings: [],
+      },
+    ])
+    expect(out).toBe(
+      "✓ No publish drift. 20 files match @loworbitstudio/visor-tailwind-preset@0.2.0.",
+    )
+  })
+
+  it("names each drifted file and the release that resolves it", () => {
+    const out = formatPackageReport([
+      {
+        name: "@loworbitstudio/visor-core",
+        publishedVersion: "0.15.0",
+        fileCount: 14,
+        drifts: [
+          { path: "dist/themes/neutral.css", kind: "content" },
+          { path: "dist/new.css", kind: "missing-in-published" },
+        ],
+        warnings: [{ path: "dist/old.css", kind: "removed-in-source" }],
+      },
+    ])
+    expect(out).toContain("✗ Publish drift detected in @loworbitstudio/visor-core@0.15.0 (2 files):")
+    expect(out).toContain("dist/themes/neutral.css — content drift")
+    expect(out).toContain("dist/new.css — missing from published tarball")
+    expect(out).toContain("Resolution: cut a new @loworbitstudio/visor-core release.")
+    expect(out).toContain("⚠ 1 file in @loworbitstudio/visor-core@0.15.0 but not in the local build")
+    expect(out).toContain("dist/old.css")
   })
 })
