@@ -21,7 +21,8 @@ import { measureClipping } from "./ink-clipping"
 import { FONT_SCENARIOS, withScenario } from "./ink-fonts"
 
 /** CSS px of vertical extent, and fraction of ink area, a control may lose against the unclipped reference. */
-const EXTENT = 0.35
+/* A hairline row (an accent ring top, a descender tip) can fall either side of the 50% ink threshold when the control and its reference are painted on different sub-pixel baselines (WebKit, Inter, input sm: 0.75px, 0.2% of the ink). A real clip loses whole rows of descenders and several percent of the ink. */
+const EXTENT = 0.8
 const AREA = 0.02
 const CONTROLS = buildControls(CLIP_LABEL, true)
 
