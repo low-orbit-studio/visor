@@ -115,6 +115,13 @@
   --brand-monochrome: url("/themes/visor/brand/visor-monochrome.svg");
   --brand-favicon: url("/themes/visor/brand/visor-favicon.svg");
 }
+
+/* [visor-brand] 2 passthrough: --tooltip-bg, --tooltip-text */
+
+.blacklight-app-theme {
+  --tooltip-bg: rgba(0, 0, 0, 0.8);
+  --tooltip-text: #fafafa;
+}
 }
 
 @layer visor-adaptive {

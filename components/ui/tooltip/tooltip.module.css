@@ -16,6 +16,17 @@
   animation-timing-function: var(--motion-easing-enter, ease-out);
 }
 
+/* Dark mode default (VI-683). Both of the inverse pair resolve dark there, so
+   the label vanishes. Flip to the primary ink as ground under the inverse ink
+   (the dark ink Calendar, Badge and Chip also read). A theme binding of
+   --tooltip-bg / --tooltip-text still wins; light mode is untouched.
+   :where() keeps this at the specificity of .content. */
+:global(:where(.dark)) .content,
+:global(:where([data-theme="dark"])) .content {
+  background-color: var(--tooltip-bg, var(--text-primary, #f9fafb));
+  color: var(--tooltip-text, var(--text-inverse, #111827));
+}
+
 .content[data-state="delayed-open"] {
   animation-name: fadeIn;
 }

@@ -35,12 +35,13 @@ theme_hooks:
   - name: --tooltip-bg
     description: >
       Tooltip ground. Falls back to var(--surface-overlay, #111827), so a theme
-      that leaves it unset renders as before. Bind it in a dark theme, where
-      --surface-overlay resolves dark. Theme key: components.tooltip.bg.
+      that leaves it unset renders as before in light mode. In dark mode the
+      default is var(--text-primary), because --surface-overlay resolves dark
+      there; a binding always wins. Theme key: components.tooltip.bg.
   - name: --tooltip-text
     description: >
-      Tooltip label colour. Falls back to var(--text-inverse, #ffffff). Bind it
-      with --tooltip-bg rather than retuning --text-inverse, which Calendar,
+      Tooltip label colour. Falls back to var(--text-inverse, #ffffff) in light mode and the same
+      var(--text-inverse) (dark ink) in dark mode. Bind it with --tooltip-bg rather than retuning --text-inverse, which Calendar,
       Badge and Chip read as their dark ink. Theme key: components.tooltip.text.
 
 props:

@@ -504,6 +504,45 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
   tooltip: {
     default: { export: "TooltipProvider", props: `{ children: React.createElement(__mod.Tooltip, { open: true }, [React.createElement(__mod.TooltipTrigger, { key: "t", asChild: true }, React.createElement("button", { type: "button" }, "Hover me")), React.createElement(__mod.TooltipContent, { key: "c" }, "Tooltip on the theme")]) }` },
   },
+  // VI-683: an icon rail under an app bar (position="contained"), collapsed to
+  // icons. Render with `--width 1024 --state focus` to open the first item's
+  // tooltip (the sidebar is mobile at or below 768px, and mobile never shows
+  // it); the second item wears the unread dot.
+  sidebar: {
+    default: {
+      export: "SidebarProvider",
+      interactiveTarget: '[data-sidebar="menu-button"]',
+      props: `(function () {
+        var h = React.createElement;
+        var glyph = function (d) {
+          return h("svg", { viewBox: "0 0 256 256", width: 20, height: 20, fill: "currentColor", "aria-hidden": true }, h("path", { d: d }));
+        };
+        var items = [
+          ["Edit EPK", "M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63Z"],
+          ["Inbox, 3 unread", "M32,136v56a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V136l-32-72a16,16,0,0,0-14.6-9.5H78.6A16,16,0,0,0,64,64Z", true],
+          ["Calendar", "M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32Z"],
+        ];
+        return {
+          defaultOpen: false,
+          style: { flexDirection: "column", minHeight: 360, width: 420 },
+          children: [
+            h("div", { key: "bar", style: { height: 48, display: "flex", alignItems: "center", padding: "0 16px", background: "var(--surface-card)", color: "var(--text-primary)", fontSize: 14 } }, "App bar"),
+            h("div", { key: "body", style: { display: "flex", flex: 1 } }, [
+              h(__mod.Sidebar, { key: "rail", collapsible: "icon", position: "contained" },
+                h(__mod.SidebarMenu, null, items.map(function (it) {
+                  return h(__mod.SidebarMenuItem, { key: it[0] }, [
+                    h(__mod.SidebarMenuButton, { key: "b", asChild: true, tooltip: it[0] }, h("a", { href: "#" }, glyph(it[1]))),
+                    it[2] ? h(__mod.SidebarMenuBadge, { key: "d", "aria-hidden": true, style: { top: 4, right: 4, minWidth: 8, height: 8, padding: 0, borderRadius: "50%", background: "var(--text-primary)" } }) : null,
+                  ]);
+                }))
+              ),
+              h(__mod.SidebarInset, { key: "main" }, h("div", { style: { padding: 16, fontSize: 14 } }, "Page content")),
+            ]),
+          ],
+        };
+      })()`,
+    },
+  },
   checkbox: {
     default: { export: "Checkbox", interactiveTarget: "button", props: `{ "aria-label": "Accept" }` },
     checked: { export: "Checkbox", interactiveTarget: "button", props: `{ "aria-label": "Accept", defaultChecked: true }` },

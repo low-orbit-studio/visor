@@ -151,3 +151,10 @@ overrides:
     # Primary action — static aqua with the shell's aqua ink (--ac-ink).
     interactive-primary-bg: "#2ce0e6"
     interactive-primary-text: "#02161a"
+    # BL-1244 / VI-683: the tooltip's own pair. 80% black with white ink
+    # (operator ruling). Never retune `--text-inverse` for it: that is the dark
+    # ink Calendar, Badge and Chip need on their aqua and light fills. Without
+    # this pair the tooltip reads `surface-overlay` (#080808) under
+    # `text-inverse`, dark ink on a dark plane.
+    tooltip-bg: "rgba(0, 0, 0, 0.8)"
+    tooltip-text: "#fafafa"

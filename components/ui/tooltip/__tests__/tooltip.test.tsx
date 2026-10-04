@@ -186,6 +186,12 @@ describe("tooltip tokens (VI-683)", () => {
     expect(css).not.toMatch(/:\s*var\(--text-inverse/)
   })
 
+  it("flips to a legible dark-mode default that still yields to the theme binding", () => {
+    expect(css).toMatch(/:global\(:where\(\.dark\)\) \.content/)
+    expect(css).toContain("background-color: var(--tooltip-bg, var(--text-primary, #f9fafb));")
+    expect(css).toContain("color: var(--tooltip-text, var(--text-inverse, #111827));")
+  })
+
   const theme = (block: string) => `
 name: tooltip-dark
 version: 1

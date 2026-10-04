@@ -415,6 +415,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "SidebarMenuSubItem",
   "SidebarProvider",
   "SidebarRail",
+  "SidebarScopeContext",
   "SidebarSeparator",
   "SidebarTrigger",
   "Skeleton",

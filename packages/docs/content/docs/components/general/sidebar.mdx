@@ -101,6 +101,30 @@ import {
 
 <PropsTable component="sidebar" />
 
+## Icon rail under an app bar
+
+A rail is a `Sidebar` collapsed to icons. Give it `position="contained"` so it lays out inside its parent and sits under an app bar; the default `fixed` pins it to the viewport at full height and would cover the bar. Override the provider's `min-height` (it defaults to `100svh`) with `style` or `className`.
+
+```tsx
+<SidebarProvider defaultOpen={false} style={{ minHeight: 0, flex: 1 }}>
+  <Sidebar collapsible="icon" position="contained">
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <SidebarMenuButton asChild tooltip="Inbox">
+          <Link href="/inbox"><Tray /></Link>
+        </SidebarMenuButton>
+        <SidebarMenuBadge aria-hidden="true" />
+      </SidebarMenuItem>
+    </SidebarMenu>
+  </Sidebar>
+</SidebarProvider>
+```
+
+- **`asChild`** renders the child (a Next `<Link>`, an `<a>`) as the item through Radix Slot, keeping the button treatment and `data-*` hooks. `SidebarMenuBadge` stays a sibling in the `<li>`, so it positions the same way.
+- **`tooltip`** is a string, or an object of `TooltipContent` props (`children`, `side`, `container`). It shows when the sidebar is collapsed to icons (`collapsible="icon"`) and for `collapsible="none"` rails (a static rail has no collapsed state, so passing `tooltip` is the opt-in). It never shows on mobile or in an expanded sidebar. A string also becomes the button's `aria-label` while the rail is icon-only, unless you set `aria-label` or `aria-labelledby` yourself.
+- The tooltip portals into the `Sidebar` element, so a class-scoped theme on an ancestor reaches it. Pass `container` to override. `SidebarProvider` includes a `TooltipProvider`.
+- **`keyboardShortcut`** on `SidebarProvider` (default `true`) controls Cmd/Ctrl+B. The binding is skipped, with no `preventDefault`, while only `collapsible="none"` sidebars are mounted. Pass `false` to never bind it.
+
 ## Sub-components
 
 | Component | Element | Purpose |
@@ -129,7 +153,7 @@ import {
 
 ## Accessibility
 
-- Toggle keyboard shortcut: `Cmd+B` (macOS) / `Ctrl+B` (Windows/Linux).
+- Toggle keyboard shortcut: `Cmd+B` (macOS) / `Ctrl+B` (Windows/Linux). Turn it off with `keyboardShortcut={false}`; it is skipped for `collapsible="none"`.
 - Menu items use semantic `<ul>` / `<li>` structure.
 - `SidebarMenuButton` supports `isActive` for `aria-current` indication.
-- Collapsible modes (offcanvas, icon-only) preserve accessible labels via tooltips.
+- Collapsible modes (offcanvas, icon-only) preserve accessible labels: `SidebarMenuButton`'s `tooltip` string names the button while the label is hidden.

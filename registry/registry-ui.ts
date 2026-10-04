@@ -770,11 +770,12 @@ export const ui: Registry = [
     description:
       "A feature-rich collapsible sidebar component with provider, menu, groups, and sub-menus.",
     dependencies: [
+      "@radix-ui/react-slot",
       "class-variance-authority",
       "@phosphor-icons/react",
       "@loworbitstudio/visor-core",
     ],
-    registryDependencies: ["utils"],
+    registryDependencies: ["utils", "tooltip"],
     files: [
       {
         path: "components/ui/sidebar/sidebar.tsx",
