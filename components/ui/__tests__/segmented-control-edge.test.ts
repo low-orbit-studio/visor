@@ -42,7 +42,7 @@ const lum = (c: number[]) => 0.2126 * lin(c[0]) + 0.7152 * lin(c[1]) + 0.0722 * 
 const ratio = (a: number[], b: number[]) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05) }
 
 beforeAll(async () => { await launch() }, 60_000)
-afterAll(close)
+afterAll(close, 30_000)
 
 describe("SegmentedControl state edge (real browser)", () => {
   it("draws a 1px inset edge on the active pill, in --text-primary", async (ctx) => {
