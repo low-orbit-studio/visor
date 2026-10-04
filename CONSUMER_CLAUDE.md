@@ -104,6 +104,7 @@ npx visor add <component-name> --overwrite
 | `otp-input` | Multi-digit one-time-password input |
 | `password-input` | Masked input with show/hide toggle and strength meter |
 | `phone-input` | Phone number input with country code selector |
+| `position-picker` | 3x3 anchor grid; value is a { y, x } pair; on its own or over an image |
 | `radio-group` | Single-select from a group of options |
 | `search-input` | Input with search icon and clear button |
 | `select` | Dropdown single-select (sizes: sm, md, lg) |

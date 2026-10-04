@@ -80,6 +80,7 @@ Interactive controls that accept user input.
 | otp-input | ✅ Documented | One-time password input |
 | password-input | ✅ Documented | Password input with visibility toggle |
 | phone-input | ✅ Documented | Phone number input with country code |
+| position-picker | ✅ Documented | 3x3 anchor grid, value is a { y, x } pair |
 | radio-group | ✅ Documented | Single-select from a group of options |
 | search-input | ✅ Documented | Search field with icon and clear button |
 | select | ✅ Documented | Dropdown selection |
