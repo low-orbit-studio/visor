@@ -97,7 +97,7 @@ describe("render — optional-dep error path", () => {
 })
 
 describe("render — CSS cascade + entry composition", () => {
-  it("buildHtml orders tokens → theme → component and scopes the theme class off #theme-scope, not <html>", () => {
+  it("buildHtml orders tokens → theme → component and puts the theme class on <body> (so portals inherit it), not <html>", () => {
     const html = buildHtml({
       resetCss: "/* RESET */",
       tokensCss: "/* TOKENS */",
@@ -117,13 +117,16 @@ describe("render — CSS cascade + entry composition", () => {
     expect(html).toContain('<style data-visor="reset">')
     expect(tokensIdx).toBeLessThan(themeIdx)
     expect(themeIdx).toBeLessThan(componentIdx)
-    // Dark mode stamps <html class="dark">; the theme class lives on #theme-scope
-    // (a descendant), leaving <html> outside the theme scope for the base probe.
+    // Dark mode stamps <html class="dark">; the theme class lives on <body>
+    // (VI-692: Radix portals mount there), leaving <html> outside the theme scope
+    // for the base probe.
     expect(html).toContain('<html lang="en" class="dark"')
-    expect(html).toContain('<div id="theme-scope" class="space-theme">')
+    expect(html).toContain('<body class="space-theme">')
+    expect(html).toContain('<div id="theme-scope">')
+    expect(html).not.toMatch(/<html[^>]*space-theme/)
   })
 
-  it("buildHtml binds #theme-scope to the same --font-body token the nextjs adapter binds to body", () => {
+  it("buildHtml binds <body> to the same --font-body token the nextjs adapter binds to body", () => {
     const html = buildHtml({
       resetCss: "r", tokensCss: "t", themeCss: "th", componentCss: "c", bundleJs: "j",
       themeClass: "x-theme", mode: "light",
@@ -224,14 +227,14 @@ describe.skipIf(!INTEGRATION_READY)("render — full integration (browser + real
     vi.restoreAllMocks()
   })
 
-  async function runProbe(mode: "light" | "dark") {
+  async function runProbe(mode: "light" | "dark", theme = "space") {
     const out = resolve(
       REPO_ROOT,
       ".visor",
       "renders",
-      `__test_stat-card__space__${mode}.png`
+      `__test_stat-card__${theme}__${mode}.png`
     )
-    await renderCommand("stat-card", REPO_ROOT, { theme: "space", mode, out, json: true })
+    await renderCommand("stat-card", REPO_ROOT, { theme, mode, out, json: true })
     const line = (console.log as ReturnType<typeof vi.fn>).mock.calls
       .map((c) => c[0] as string)
       .find((c) => typeof c === "string" && c.includes('"success"'))
@@ -248,6 +251,17 @@ describe.skipIf(!INTEGRATION_READY)("render — full integration (browser + real
       // The themed surface resolved to its mapped value, not the base primitive.
       expect(result.probe.mapped).toBe(true)
       expect(result.probe.themedSurfaceCard).not.toBe(result.probe.baseSurfaceCard)
+    },
+    60000
+  )
+
+  // VI-692: the probe reads the themed <body> against raw <html>.
+  it.each(["blacklight-app", "space", "neutral"])(
+    "probe reports mapped=true for %s (theme class on <body>)",
+    async (theme) => {
+      const { result } = await runProbe("dark", theme)
+      expect(result.success).toBe(true)
+      expect(result.probe.mapped).toBe(true)
     },
     60000
   )

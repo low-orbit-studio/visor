@@ -445,6 +445,27 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     invalid: { export: "OTPInput", interactiveTarget: "input", props: `{ value: "428519", invalid: true, errorMessage: "That code didn't work. Check it and try again." }` },
     trailing: { export: "OTPInput", interactiveTarget: "input", props: `{ value: "428519", trailing: React.createElement("button", { type: "button" }, "Resend") }` },
   },
+  // VI-672: `default` is the grid on its own ground; `on-image` draws it over a busy
+  // synthetic photograph (turbulence, one light half and one dark half) so each
+  // target's scrim ring is checked against both. The picker is its own frame here:
+  // `position: relative` and a size stand in for the positioned photo frame.
+  "position-picker": {
+    default: { export: "PositionPicker", interactiveTarget: "[role=\"radio\"]", props: `{ "aria-label": "Focal point", defaultValue: { y: "center", x: "center" } }` },
+    "on-image": {
+      export: "PositionPicker",
+      interactiveTarget: "[role=\"radio\"]",
+      props: `(function () {
+        var svg = "<svg xmlns='http://www.w3.org/2000/svg' width='480' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.06' numOctaves='4' seed='7'/><feColorMatrix values='1.4 0 0 0 0.05 0 1.2 0 0 0.05 0 0 1.1 0 0.05 0 0 0 1 0'/></filter><rect width='480' height='300' fill='#d9c8a6'/><rect width='480' height='300' filter='url(#n)'/><rect x='0' y='0' width='240' height='300' fill='#f4efe4' opacity='0.55'/><rect x='240' y='0' width='240' height='300' fill='#0b0b14' opacity='0.6'/></svg>";
+        return {
+          variant: "on-image",
+          "aria-label": "Focal point",
+          defaultValue: { y: "top", x: "right" },
+          style: { position: "relative", inset: "auto", width: 480, height: 300, backgroundImage: "url('data:image/svg+xml;utf8," + encodeURIComponent(svg).replace(/'/g, "%27") + "')", backgroundSize: "cover" },
+        };
+      })()`,
+    },
+    thumbnail: { export: "PositionPicker", interactiveTarget: "[role=\"radio\"]", props: `{ variant: "on-image", "aria-label": "Focal point", defaultValue: { y: "bottom", x: "left" }, style: { position: "relative", inset: "auto", width: 40, height: 28, background: "#667" } }` },
+  },
   // VI-624: `default` is the closed field; the popover fixtures render open so the
   // two-column (24-hour) and three-column (12-hour) anatomy can be inspected.
   "time-picker": {
@@ -473,6 +494,15 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       interactiveTarget: "button",
       props: `{ children: React.createElement(__mod.SelectTrigger, { variant: "borderless" }, React.createElement(__mod.SelectValue, { placeholder: "Pick a plan" })) }`,
     },
+    // VI-692: forced open so the portaled listbox is in the shot.
+    open: {
+      export: "Select",
+      props: `{ open: true, defaultValue: "pro", children: [React.createElement(__mod.SelectTrigger, { key: "t" }, React.createElement(__mod.SelectValue, { placeholder: "Pick a plan" })), React.createElement(__mod.SelectContent, { key: "c" }, [React.createElement(__mod.SelectItem, { key: "a", value: "free" }, "Free"), React.createElement(__mod.SelectItem, { key: "b", value: "pro" }, "Pro"), React.createElement(__mod.SelectItem, { key: "d", value: "team" }, "Team")])] }`,
+    },
+  },
+  // VI-692: forced open so the portaled tip is in the shot.
+  tooltip: {
+    default: { export: "TooltipProvider", props: `{ children: React.createElement(__mod.Tooltip, { open: true }, [React.createElement(__mod.TooltipTrigger, { key: "t", asChild: true }, React.createElement("button", { type: "button" }, "Hover me")), React.createElement(__mod.TooltipContent, { key: "c" }, "Tooltip on the theme")]) }` },
   },
   checkbox: {
     default: { export: "Checkbox", interactiveTarget: "button", props: `{ "aria-label": "Accept" }` },
@@ -865,9 +895,12 @@ async function settle(page: any, fontsTimeout = 5000): Promise<void> {
  * per-theme CSS (which self-declares the `@layer` order and scopes per-mode by
  * ancestor — `.dark .<slug>-theme` vs `html:not(.dark) .<slug>-theme`), then the
  * component's esbuild-emitted CSS, then harness layout. The theme class lives on
- * `#theme-scope` (NOT `<html>`), so `<html>` stays OUTSIDE the theme scope and
- * exposes the RAW tokens.css value of any custom property — the base probe reads
- * it to prove the themed surface resolved to its mapped value, not the primitive.
+ * `<body>` (VI-692), as in a real app (nextjs adapter `scopePrefix:
+ * body.<slug>-theme`), so Radix portals — which mount on `<body>` — inherit the
+ * theme. `<html>` stays OUTSIDE the theme scope and exposes the RAW tokens.css
+ * value of any custom property — the base probe reads it to prove the themed
+ * surface resolved to its mapped value, not the primitive. `#theme-scope` keeps
+ * layout and the page ground only.
  */
 export function buildHtml(opts: {
   resetCss: string
@@ -898,6 +931,11 @@ ${opts.componentCss}
 </style>
 <style data-visor="harness">
 html, body { margin: 0; padding: 0; }
+body {
+  color: var(--text-primary, #111827);
+  /* Same token the nextjs adapter's origination binds to body (VI-616). */
+  font-family: var(--font-body, var(--font-sans, system-ui, -apple-system, sans-serif));
+}
 #theme-scope {
   box-sizing: border-box;
   min-height: 100vh;
@@ -906,15 +944,12 @@ html, body { margin: 0; padding: 0; }
   align-items: center;
   justify-content: center;
   background: var(--surface-page, #ffffff);
-  color: var(--text-primary, #111827);
-  /* Same token the nextjs adapter's origination binds to body (VI-616). */
-  font-family: var(--font-body, var(--font-sans, system-ui, -apple-system, sans-serif));
 }
 #root { width: 100%; max-width: 420px; }
 </style>
 </head>
-<body>
-<div id="theme-scope" class="${opts.themeClass}">
+<body class="${opts.themeClass}">
+<div id="theme-scope">
 <div id="root"></div>
 </div>
 <script>
@@ -1119,16 +1154,17 @@ export async function renderCommand(
     await settle(page)
 
     // Computed-style probe: prove the themed surface resolved to its MAPPED value
-    // (read from #theme-scope) and NOT the raw primitive (read from <html>, which
-    // is outside the theme scope). This backs the @layer/mode-scoping assertion.
+    // (read from <body>, which carries the theme class) and NOT the raw primitive
+    // (read from <html>, which is outside the theme scope). This backs the @layer/mode-scoping assertion.
     probe = (await page.evaluate(
       `(function () {
         var scope = document.getElementById("theme-scope");
+        var body = document.body;
         var html = document.documentElement;
         var read = function (el, prop) {
           return getComputedStyle(el).getPropertyValue(prop).trim();
         };
-        var themed = read(scope, "--surface-card");
+        var themed = read(body, "--surface-card");
         var base = read(html, "--surface-card");
         return {
           themedSurfaceCard: themed,

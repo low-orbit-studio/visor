@@ -1832,6 +1832,46 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'position-picker': [
+    {
+      name: 'value',
+      type: 'PositionValue | null',
+      description: "Controlled value, a { y: 'top' | 'center' | 'bottom', x: 'left' | 'center' | 'right' } pair. null is controlled with nothing chosen.",
+    },
+    {
+      name: 'defaultValue',
+      type: 'PositionValue | null',
+      description: 'Initial value when uncontrolled.',
+    },
+    {
+      name: 'onValueChange',
+      type: '(value: PositionValue) => void',
+      description: 'Called with the chosen { y, x } pair.',
+    },
+    {
+      name: 'variant',
+      type: "'default' | 'on-image'",
+      default: "'default'",
+      description: "default draws the grid on its own ground. on-image fills a positioned parent (the photograph's frame) and gives every target its own scrim ring.",
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables all nine targets.',
+    },
+    {
+      name: 'renderTarget',
+      type: '(position: PositionValue, state: { selected: boolean }) => ReactNode',
+      description: 'Replaces the drawn dot of one target, for example an alignment icon in the occupied row. Decorative; the target keeps its accessible name.',
+    },
+    {
+      name: '...props',
+      type: 'React.HTMLAttributes<HTMLDivElement>',
+      description: 'Standard div attributes are forwarded to the radiogroup. Give it an aria-label or aria-labelledby.',
+    },
+  ],
+
   'tin-input': [
     {
       name: 'kind',
