@@ -22,7 +22,7 @@ const SPEC = {
   cases: ["sm", "md", "lg"].map((s) => ({
     id: `segmented-control ${s}`,
     selector: "[data-slot=toggle-group-item]",
-    jsx: `React.createElement(C.SegmentedControl, { size: "${s}", defaultValue: "a", options: [{ value: "a", label: "${LABEL}" }] })`,
+    jsx: `React.createElement(C.SegmentedControl, { size: "${s}", defaultValue: "a", style: { "--segmented-control-indicator-edge": "transparent" }, options: [{ value: "a", label: "${LABEL}" }] })`,
   })),
 }
 const NO_TRIM = "\n[data-slot=toggle-group-text]{text-box:normal!important;transform:none!important}"

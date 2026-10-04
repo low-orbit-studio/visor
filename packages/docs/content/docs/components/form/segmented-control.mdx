@@ -157,7 +157,9 @@ Clicking the active segment keeps it, and `onValueChange` is never called with a
 
 ## Theming
 
-The resting edge comes from the shared `--control-edge-*` tokens, so `control.edge-width: 0` removes it without moving the layout. Focus stays visible. The track, the sliding pill and the ink on it are bindable through the `segmented-control` family (`--segmented-control-track-bg`, `--segmented-control-indicator-bg`, `--segmented-control-indicator-text`); see [Component tokens](/docs/themes/component-tokens).
+The resting edge comes from the shared `--control-edge-*` tokens, so `control.edge-width: 0` removes it without moving the layout. Focus stays visible. The well, the track radius, the sliding pill, its ink, the state edge on it and the inactive and active label type are bindable through the `segmented-control` family (`--segmented-control-track-bg`, `-radius`, `-indicator-bg`, `-indicator-text`, `-indicator-edge`, `-inactive-text`, `-active-weight`); see [Component tokens](/docs/themes/component-tokens).
+
+The active pill carries a 1px inset state edge (`--control-state-edge-width`, colour `--segmented-control-indicator-edge`, default `--text-primary`) so the selected state keeps a 3:1 boundary of its own (WCAG 1.4.11). It sits inside the pill, so nothing shifts, and it stays when edges are off. Bind the colour to `transparent` where the fill already clears 3:1 against the well.
 
 ## Accessibility
 

@@ -311,6 +311,10 @@ components:
     track-bg: "#2b0a3d"
     indicator-bg: "#ff00aa"
     indicator-text: "#ffffff"
+    radius: "11px"
+    indicator-edge: "#ffcc00"
+    inactive-text: "#c7b8d6"
+    active-weight: "650"
   tooltip:
     bg: "#ff00aa"
     text: "#2b0a3d"

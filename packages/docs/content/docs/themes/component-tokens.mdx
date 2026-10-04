@@ -642,21 +642,38 @@ SaveStatus draws no edge, so there is nothing for `control.edge-width` to turn o
 
 ### `segmented-control`
 
-SegmentedControl — the well, the sliding pill and the ink on it. The resting edge is the shared `control` edge.
+SegmentedControl — the well, its corner radius, the sliding pill, the ink and the state edge on it. The resting edge is the shared `control` edge.
 
 | Token | Binds | Falls back to |
 |---|---|---|
 | `--segmented-control-track-bg` | The well the pill slides in. Default is the page nudged 12% toward the ink, so it reads as a well in light and dark. | `color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff))` |
+| `--segmented-control-radius` | Track corner radius. Unset, each size keeps its ToggleGroup radius. | xs `var(--radius-md, 0.375rem)`, sm and md `var(--radius-lg, 0.5rem)`, lg `var(--radius-xl, 0.75rem)` |
 | `--segmented-control-indicator-bg` | Sliding active pill. Bind a lifted dark fill where the theme wants one. | `var(--interactive-primary-bg, var(--primary, #111827))` |
 | `--segmented-control-indicator-text` | Active segment label ink, on the pill. | `var(--interactive-primary-text, #f9fafb)` |
+| `--segmented-control-indicator-edge` | Colour of the 1px state edge on the active pill. Set `transparent` where the fill already clears 3:1 against the well. | `var(--text-primary, #111827)` |
+| `--segmented-control-inactive-text` | Inactive segment label colour. | `var(--text-primary, #111827)` |
+| `--segmented-control-active-weight` | Active segment label weight. | `var(--font-weight-medium, 500)` |
 
-A lifted dark pill with its own ink:
+The state edge is an inset ring at `--control-state-edge-width` (the width focus and invalid use), so
+`control.edge-width: 0` turns the resting edge off and leaves the state edge, with no layout shift. A theme
+whose pill already clears 3:1 against the well, such as an accent fill on black, binds it to `transparent`:
 
 ```yaml
 components:
   segmented-control:
-    indicator-bg: "#1c1c22"
+    indicator-edge: "transparent"
+```
+
+A red pill with white ink, muted inactive labels, a bold active label and an 8px track:
+
+```yaml
+components:
+  segmented-control:
+    indicator-bg: "#e51a1a"
     indicator-text: "#ffffff"
+    inactive-text: "rgba(255, 255, 255, 0.46)"
+    active-weight: "600"
+    radius: "8px"
 ```
 
 SegmentedControl's resting edge is an outline from `--control-edge-*`, so
