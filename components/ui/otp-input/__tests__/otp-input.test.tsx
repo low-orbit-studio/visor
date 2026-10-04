@@ -153,7 +153,7 @@ describe("invalid", () => {
 
   it("has no WCAG violations while invalid", async () => {
     const { container } = render(
-      <OTPInput length={4} value="1234" invalid errorMessage="Wrong code" slot={<button type="button">Resend</button>} />
+      <OTPInput length={4} value="1234" invalid errorMessage="Wrong code" trailing={<button type="button">Resend</button>} />
     )
     await checkA11y(container)
   })
@@ -186,16 +186,16 @@ describe("paste and autofill", () => {
   })
 })
 
-describe("slot", () => {
-  it("renders the slot beside the cells", () => {
-    render(<OTPInput length={4} slot={<button type="button">Resend</button>} />)
+describe("trailing", () => {
+  it("renders trailing content beside the cells", () => {
+    render(<OTPInput length={4} trailing={<button type="button">Resend</button>} />)
     const slot = screen.getByRole("button", { name: "Resend" })
-    expect(slot.closest('[data-slot="otp-input-slot"]')).toBeInTheDocument()
+    expect(slot.closest('[data-slot="otp-input-trailing"]')).toBeInTheDocument()
     expect(screen.getByRole("group")).toContainElement(slot)
   })
 
-  it("renders no slot wrapper without one", () => {
+  it("renders no trailing wrapper without one", () => {
     const { container } = render(<OTPInput length={4} />)
-    expect(container.querySelector('[data-slot="otp-input-slot"]')).toBeNull()
+    expect(container.querySelector('[data-slot="otp-input-trailing"]')).toBeNull()
   })
 })

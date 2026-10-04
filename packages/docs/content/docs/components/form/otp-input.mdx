@@ -45,15 +45,15 @@ import { OTPInput } from '@/components/ui/otp-input';
   <OTPInput length={6} value="428519" invalid errorMessage="That code is not right." />
 </ComponentPreview>
 
-## Trailing slot
+## Trailing content
 
-`slot` renders beside the cells: a working indicator while the code is checked, or a resend action.
+`trailing` renders beside the cells: a working indicator while the code is checked, or a resend action.
 
 <ComponentPreview
-  title="Trailing slot"
-  code={"<OTPInput length={6} slot={<button type=\"button\">Resend</button>} />"}
+  title="Trailing content"
+  code={"<OTPInput length={6} trailing={<button type=\"button\">Resend</button>} />"}
 >
-  <OTPInput length={6} slot={<button type="button">Resend</button>} />
+  <OTPInput length={6} trailing={<button type="button">Resend</button>} />
 </ComponentPreview>
 
 ## Installation

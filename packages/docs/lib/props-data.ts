@@ -2029,9 +2029,9 @@ export const propsData: Record<string, PropDef[]> = {
       description: 'Code error announced through a live region (role=alert) while invalid. Show the visible message beside the control.',
     },
     {
-      name: 'slot',
+      name: 'trailing',
       type: 'ReactNode',
-      description: 'Trailing slot beside the cells, for a working indicator (Spinner) or a resend action.',
+      description: 'Trailing content beside the cells, for a working indicator (Spinner) or a resend action.',
     },
   ],
 

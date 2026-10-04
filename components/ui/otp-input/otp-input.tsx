@@ -15,8 +15,8 @@ export interface OTPInputProps
   invalid?: boolean
   /** Announced to assistive tech when set (4.1.3). Rendered in a visually hidden live region; show the visible message next to the control. */
   errorMessage?: React.ReactNode
-  /** Trailing slot beside the cells: a working indicator (Spinner) or a resend action. */
-  slot?: React.ReactNode
+  /** Trailing content beside the cells: a working indicator (Spinner) or a resend action. */
+  trailing?: React.ReactNode
 }
 
 const OTPInput = React.forwardRef<HTMLDivElement, OTPInputProps>(
@@ -30,7 +30,7 @@ const OTPInput = React.forwardRef<HTMLDivElement, OTPInputProps>(
       autoFocus = false,
       invalid = false,
       errorMessage,
-      slot,
+      trailing,
       ...props
     },
     ref
@@ -159,9 +159,9 @@ const OTPInput = React.forwardRef<HTMLDivElement, OTPInputProps>(
             )}
           />
         ))}
-        {slot != null && (
-          <span data-slot="otp-input-slot" className={styles.slot}>
-            {slot}
+        {trailing != null && (
+          <span data-slot="otp-input-trailing" className={styles.trailing}>
+            {trailing}
           </span>
         )}
         <span

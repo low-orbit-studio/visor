@@ -6,8 +6,8 @@
   gap: var(--spacing-2, 0.5rem);
 }
 
-/* Trailing slot: a working indicator or a resend action beside the cells. */
-.slot {
+/* Trailing: a working indicator or a resend action beside the cells. */
+.trailing {
   display: inline-flex;
   align-items: center;
   margin-inline-start: var(--spacing-2, 0.5rem);
