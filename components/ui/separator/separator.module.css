@@ -1,7 +1,7 @@
 /* Separator */
 .separator {
   flex-shrink: 0;
-  background-color: var(--border-default, #e5e7eb);
+  background-color: var(--separator-color, var(--border-default, #e5e7eb));
 }
 
 .horizontal {
@@ -12,4 +12,28 @@
 .vertical {
   width: 1px;
   align-self: stretch;
+}
+
+/* Labelled: the root becomes a flex row and draws no fill itself; each .rule
+   draws the line on the same token, so the word sits centred between two. */
+.labelled {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3, 0.75rem);
+  width: 100%;
+  background-color: transparent;
+}
+
+.rule {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 1px;
+  background-color: var(--separator-color, var(--border-default, #e5e7eb));
+}
+
+.label {
+  flex-shrink: 0;
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1.5;
+  color: var(--text-secondary, #6b7280);
 }

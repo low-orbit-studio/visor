@@ -101,6 +101,13 @@ typography:
 # VI-655: every form control's resting edge off; focus and invalid stay visible.
 edges: "off"
 
+# VI-671: the separator rule stays visible on the borderless theme. The
+# surface-elev-3 step: quiet on the black page, on the theme's plane ramp.
+components:
+  separator:
+    color:
+      dark: "#2c2c2c"
+
 overrides:
   dark:
     # Text — the editor shell's ramp (--ink, --ink-60, --ink-46, --ink-30).

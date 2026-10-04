@@ -416,6 +416,11 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     descenders: { export: "Input", interactiveTarget: "input", props: `{ "aria-label": "Amount", defaultValue: "Typography jpq \u00c9\u00c5\u00d1", prefix: "\u20ac", suffix: "jpy" }` },
     both: { export: "Input", interactiveTarget: "input", props: `{ "aria-label": "Rate", inputMode: "decimal", defaultValue: "85", prefix: "$", suffix: "/ hr" }` },
   },
+  // VI-671: a rule, a word and a rule.
+  separator: {
+    default: { export: "Separator", props: `{ style: { width: 360 } }` },
+    labelled: { export: "Separator", props: `{ label: "or", style: { width: 360 } }` },
+  },
   "number-input": {
     default: { export: "NumberInput", interactiveTarget: "input", props: `{ "aria-label": "Quantity", defaultValue: 4, min: 0, max: 99 }` },
     prefix: { export: "NumberInput", interactiveTarget: "input", props: `{ "aria-label": "Fee", defaultValue: 150, prefix: "$" }` },

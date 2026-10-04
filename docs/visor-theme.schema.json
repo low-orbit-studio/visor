@@ -676,6 +676,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "separator": {
+          "type": "object",
+          "description": "Separator rule colour, bare or either side of a label. Keys: color.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "admin-ui": {
           "type": "object",
           "description": "Structural roles the admin-ui pattern owns. `marquee-family` is the display face for KPI hero figures and marquee page titles — the role the admin-ui portability audit named as the one piece of ENTR brand coupling a new theme must rebind. Keys: marquee-family.",

@@ -1,4 +1,6 @@
-import { render } from "@testing-library/react"
+import { readFileSync } from "node:fs"
+import { join } from "node:path"
+import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Separator } from "../separator"
 import { checkA11y } from "../../../../test-utils/a11y"
@@ -47,6 +49,61 @@ describe("Separator", () => {
   })
 })
 
+describe("label", () => {
+  it("renders the label centred between two rules", () => {
+    const { container } = render(<Separator label="or" />)
+    const root = container.firstChild as HTMLElement
+    expect(root).toHaveAttribute("data-slot", "separator")
+    expect(root.children).toHaveLength(3)
+    expect(root.children[1]).toHaveTextContent("or")
+    expect(root.children[0]).toHaveAttribute("aria-hidden", "true")
+    expect(root.children[2]).toHaveAttribute("aria-hidden", "true")
+  })
+
+  it("is not decorative: exposes role=separator named by the label", () => {
+    render(<Separator label="or" />)
+    expect(screen.getByRole("separator", { name: "or" })).toBeInTheDocument()
+  })
+
+  it("is not decorative even when decorative is passed true", () => {
+    render(<Separator label="or" decorative />)
+    expect(screen.getByRole("separator", { name: "or" })).toBeInTheDocument()
+  })
+
+  it("stays horizontal and forwards className and ref", () => {
+    const ref = { current: null as HTMLDivElement | null }
+    const { container } = render(
+      <Separator label="or" className="custom-sep" ref={ref} />
+    )
+    expect(container.firstChild).toHaveAttribute("data-orientation", "horizontal")
+    expect(container.firstChild).toHaveClass("custom-sep")
+    expect(ref.current).toBe(container.firstChild)
+  })
+
+  it("renders the bare form when label is empty", () => {
+    const { container } = render(<Separator label="" />)
+    expect((container.firstChild as HTMLElement).children).toHaveLength(0)
+    expect(container.firstChild).toHaveAttribute("role", "none")
+  })
+
+  it("ignores label on a vertical separator", () => {
+    const { container } = render(<Separator orientation="vertical" label="or" />)
+    expect((container.firstChild as HTMLElement).children).toHaveLength(0)
+    expect(container.firstChild).toHaveAttribute("role", "none")
+  })
+})
+
+describe("rule colour token", () => {
+  const css = readFileSync(join(__dirname, "../separator.module.css"), "utf8")
+  const rule = (sel: string) => css.match(new RegExp(`\\${sel}\\s*\\{[^}]*\\}`))![0]
+
+  it("bare and labelled rules read --separator-color, then --border-default", () => {
+    const chain = "var(--separator-color, var(--border-default, #e5e7eb))"
+    expect(rule(".separator")).toContain(chain)
+    expect(rule(".rule")).toContain(chain)
+  })
+})
+
 describe("accessibility", () => {
   it("has no WCAG 2.1 AA violations (decorative)", async () => {
     const { container } = render(<Separator />)
@@ -55,6 +112,11 @@ describe("accessibility", () => {
 
   it("has no WCAG 2.1 AA violations (non-decorative)", async () => {
     const { container } = render(<Separator decorative={false} />)
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (labelled)", async () => {
+    const { container } = render(<Separator label="or" />)
     await checkA11y(container)
   })
 })

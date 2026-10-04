@@ -471,5 +471,6 @@
 
 .blacklight-app-theme {
   --control-edge-width: 0;
+  --separator-color: #2c2c2c;
 }
 }
