@@ -34,6 +34,14 @@ import { DatePicker } from '@/components/ui/date-picker';
   <DatePicker placeholder="Select date" dateFormat="MM/dd/yyyy" />
 </ComponentPreview>
 
+## Selected month and alignment
+
+The calendar opens on the month of `value`, so a date in November opens on November whatever the device's month is. `align`, `sideOffset` and `collisionPadding` position the popover; the defaults (`"start"`, `4`, `0`) are unchanged. Use `align="end"` under a full-width trigger on a phone so the calendar does not sit against the right edge.
+
+```tsx
+<DatePicker value={date} onChange={setDate} align="end" collisionPadding={16} />
+```
+
 ## Installation
 
 ```bash

@@ -37,6 +37,22 @@ props:
   - name: disabled
     type: boolean
     default: "false"
+  - name: align
+    type: '"start" | "center" | "end"'
+    default: '"start"'
+    description: Popover alignment against the trigger. Use "end" under a full-width trigger so the calendar does not sit against the right edge.
+  - name: sideOffset
+    type: number
+    default: "4"
+    description: Gap in px between the trigger and the popover
+  - name: collisionPadding
+    type: number
+    default: "0"
+    description: Viewport padding in px the popover keeps clear when it collides with an edge
+  - name: defaultOpen
+    type: boolean
+    default: "false"
+    description: Whether the popover starts open (uncontrolled)
 
 dependencies:
   - "@radix-ui/react-popover"

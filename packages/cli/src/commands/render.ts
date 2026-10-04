@@ -422,6 +422,12 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     descenders: { export: "NumberInput", interactiveTarget: "input", props: `{ "aria-label": "Fee", defaultValue: 1299, prefix: "\u20ac", suffix: "jpy" }` },
     suffix: { export: "NumberInput", interactiveTarget: "input", props: `{ "aria-label": "Hours", defaultValue: 2, suffix: "h" }` },
   },
+  // VI-654: the calendar renders open on the month of `value` (November), not the
+  // device's month; `align-end` shows the popover right-aligned to the trigger.
+  "date-picker": {
+    default: { export: "DatePicker", interactiveTarget: "button", props: `{ value: new Date(2026, 10, 14), defaultOpen: true }` },
+    "align-end": { export: "DatePicker", interactiveTarget: "button", props: `{ value: new Date(2026, 10, 14), defaultOpen: true, align: "end", className: "w-full" }` },
+  },
   // VI-624: `default` is the closed field; the popover fixtures render open so the
   // two-column (24-hour) and three-column (12-hour) anatomy can be inspected.
   "time-picker": {
