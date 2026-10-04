@@ -114,8 +114,9 @@ describe("SpherePlayground", () => {
   it("renders geometry mode toggle options", () => {
     render(<SpherePlayground />)
     // "Sphere" appears as both panel title and toggle — check the toggle specifically
-    const groups = screen.getAllByRole("group")
-    expect(groups.length).toBeGreaterThanOrEqual(2)
+    // Single-select ToggleGroups are radiogroups (VI-690)
+    const groups = screen.getAllByRole("radiogroup")
+    expect(groups.length).toBeGreaterThanOrEqual(1)
     expect(screen.getByText("Curl")).toBeInTheDocument()
     expect(screen.getByText("Turing")).toBeInTheDocument()
     expect(screen.getByText("Lorenz")).toBeInTheDocument()
