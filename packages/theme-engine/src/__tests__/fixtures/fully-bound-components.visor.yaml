@@ -369,5 +369,7 @@ components:
   input-affix:
     gap: "12px"
     color: "#6b21a8"
+  separator:
+    color: "#2c2c2c"
   admin-ui:
     marquee-family: "\"Courier New\", monospace"

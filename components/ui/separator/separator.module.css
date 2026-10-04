@@ -1,7 +1,7 @@
 /* Separator */
 .separator {
   flex-shrink: 0;
-  background-color: var(--border-default, #e5e7eb);
+  background-color: var(--separator-color, var(--border-default, #e5e7eb));
 }
 
 .horizontal {
@@ -28,7 +28,7 @@
   flex: 1 1 0;
   min-width: 0;
   height: 1px;
-  background-color: var(--border-default, #e5e7eb);
+  background-color: var(--separator-color, var(--border-default, #e5e7eb));
 }
 
 .label {

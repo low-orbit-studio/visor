@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs"
+import { join } from "node:path"
 import { render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Separator } from "../separator"
@@ -88,6 +90,17 @@ describe("label", () => {
     const { container } = render(<Separator orientation="vertical" label="or" />)
     expect((container.firstChild as HTMLElement).children).toHaveLength(0)
     expect(container.firstChild).toHaveAttribute("role", "none")
+  })
+})
+
+describe("rule colour token", () => {
+  const css = readFileSync(join(__dirname, "../separator.module.css"), "utf8")
+  const rule = (sel: string) => css.match(new RegExp(`\\${sel}\\s*\\{[^}]*\\}`))![0]
+
+  it("bare and labelled rules read --separator-color, then --border-default", () => {
+    const chain = "var(--separator-color, var(--border-default, #e5e7eb))"
+    expect(rule(".separator")).toContain(chain)
+    expect(rule(".rule")).toContain(chain)
   })
 })
 

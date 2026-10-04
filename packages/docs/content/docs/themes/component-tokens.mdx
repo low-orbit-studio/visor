@@ -883,6 +883,24 @@ components:
       dark: "#a3a3a3"
 ```
 
+### `separator`
+
+The line a Separator draws, bare or on both sides of a label.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--separator-color` | Rule colour. | `var(--border-default, #e5e7eb)` |
+
+A borderless theme sets `border-default` to transparent, which hides the rule.
+Bind `separator.color` to keep it visible without bringing structural borders back.
+
+```yaml
+components:
+  separator:
+    color:
+      dark: "#2c2c2c"
+```
+
 ### `admin-ui`
 
 Structural roles the admin-ui pattern owns. `marquee-family` is the display face for KPI hero figures and marquee page titles — the role the admin-ui portability audit named as the one piece of ENTR brand coupling a new theme must rebind.

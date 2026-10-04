@@ -127,6 +127,7 @@ const SKELETON = "components/ui/skeleton/skeleton.module.css";
 const SPINNER = "components/ui/spinner/spinner.module.css";
 const CHECKBOX = "components/ui/checkbox/checkbox.module.css";
 const INPUT = "components/ui/input/input.module.css";
+const SEPARATOR = "components/ui/separator/separator.module.css";
 const NUMBER_INPUT = "components/ui/number-input/number-input.module.css";
 const TEXTAREA = "components/ui/textarea/textarea.module.css";
 const SELECT = "components/ui/select/select.module.css";
@@ -1069,6 +1070,23 @@ const inputAffixFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-671. The line a Separator draws, bare or either side of a label. Unbound it
+// is the default border colour, so nothing moves; a borderless theme that sets
+// `border-default` to transparent binds this to keep the rule visible.
+const separatorFamily: ComponentTokenFamily = {
+  family: "separator",
+  prefix: "separator",
+  description: "Separator rule: the colour of the line, bare or on both sides of a label.",
+  tokens: [
+    {
+      key: "color",
+      property: "background-color",
+      description: "Rule colour. Falls back to the default border colour.",
+      consumers: at(SEPARATOR, "var(--border-default, #e5e7eb)"),
+    },
+  ],
+};
+
 // VI-680. The hairline mirror of the VI-655 edge switch: one token every
 // hairline rule reads for its weight, so a single binding turns every hairline
 // off:
@@ -1200,6 +1218,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   tooltipFamily,
   actionRowFamily,
   inputAffixFamily,
+  separatorFamily,
   adminUiFamily,
 ];
 
