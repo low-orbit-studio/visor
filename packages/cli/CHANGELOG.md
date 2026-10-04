@@ -1,5 +1,38 @@
 # Changelog
 
+## 1.36.0
+
+### Minor Changes
+
+- 8f6311b: Select and Switch inside a dark, borderless, class-scoped theme (VI-693).
+  
+  `SelectContent` takes an optional `container`, forwarded to the Radix Portal, as
+  `TooltipContent` does. Pass the root of a class-scoped theme and the open menu
+  mounts inside it, so it reads that theme's tokens instead of the page's. Unset,
+  it portals to `document.body` as before.
+  
+  Switch gains four colour keys in the `switch` component-token family, each
+  falling back to the token it read before, so every existing theme renders
+  exactly as it did:
+  
+  - `knob-bg` (`--switch-knob-bg`) and `knob-bg-checked`
+    (`--switch-knob-bg-checked`), the knob fill per state. Both fall back to
+    `--surface-page`. A dark theme binds `knob-bg`: its black page colour is a
+    black knob that a dark track cannot hold at 3:1 (WCAG 1.4.11).
+  - `track-hover-bg` (`--switch-track-hover-bg`) and `track-hover-bg-checked`
+    (`--switch-track-hover-bg-checked`), the track fill under the pointer per
+    state. Both fall back to `--border-strong`, which a borderless theme sets
+    transparent, so the hovered track vanished.
+
+### Patch Changes
+
+- 5fcb187: Typography slots accept `text-transform` (VI-687). `typography.heading | display | body | mono` take `none`, `uppercase`, `lowercase` or `capitalize`, and the engine emits `--font-<slot>-text-transform` only when a theme sets it, so existing themes are byte-identical. A theme such as Animal's, which sets `typography.display.text-transform: uppercase`, now validates and generates. The Flutter adapter does not emit it. `Heading` reads `--font-heading-text-transform`; `PageHeader` (display title) and `SectionIntro` read `--font-display-text-transform`; both inherit when the token is unset.
+- Updated dependencies [5fcb187]
+- Updated dependencies [8f6311b]
+- Updated dependencies [206e7cb]
+- Updated dependencies [0c5daa8]
+  - @loworbitstudio/visor-theme-engine@0.29.0
+
 ## 1.35.0
 
 ### Minor Changes

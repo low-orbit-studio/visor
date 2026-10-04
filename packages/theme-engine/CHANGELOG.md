@@ -1,5 +1,51 @@
 # Changelog
 
+## 0.29.0
+
+### Minor Changes
+
+- 5fcb187: Typography slots accept `text-transform` (VI-687). `typography.heading | display | body | mono` take `none`, `uppercase`, `lowercase` or `capitalize`, and the engine emits `--font-<slot>-text-transform` only when a theme sets it, so existing themes are byte-identical. A theme such as Animal's, which sets `typography.display.text-transform: uppercase`, now validates and generates. The Flutter adapter does not emit it. `Heading` reads `--font-heading-text-transform`; `PageHeader` (display title) and `SectionIntro` read `--font-display-text-transform`; both inherit when the token is unset.
+- 8f6311b: Select and Switch inside a dark, borderless, class-scoped theme (VI-693).
+  
+  `SelectContent` takes an optional `container`, forwarded to the Radix Portal, as
+  `TooltipContent` does. Pass the root of a class-scoped theme and the open menu
+  mounts inside it, so it reads that theme's tokens instead of the page's. Unset,
+  it portals to `document.body` as before.
+  
+  Switch gains four colour keys in the `switch` component-token family, each
+  falling back to the token it read before, so every existing theme renders
+  exactly as it did:
+  
+  - `knob-bg` (`--switch-knob-bg`) and `knob-bg-checked`
+    (`--switch-knob-bg-checked`), the knob fill per state. Both fall back to
+    `--surface-page`. A dark theme binds `knob-bg`: its black page colour is a
+    black knob that a dark track cannot hold at 3:1 (WCAG 1.4.11).
+  - `track-hover-bg` (`--switch-track-hover-bg`) and `track-hover-bg-checked`
+    (`--switch-track-hover-bg-checked`), the track fill under the pointer per
+    state. Both fall back to `--border-strong`, which a borderless theme sets
+    transparent, so the hovered track vanished.
+
+### Patch Changes
+
+- 206e7cb: Class-scoped themes from the docs adapter now resolve visor-core's semantic aliases against the theme's own tokens (VI-695). `--field-menu-bg`, `--chart-2` to `--chart-5`, `--weight-*`, `--size-*`, the motion and layout aliases and the rest are re-declared on `.{slug}-theme`, so they no longer inherit visor-core's `:root` default: on blacklight-app, Select, Combobox, DatePicker, DateRangePicker and TimePicker panels now use the theme's popover surface instead of navy. This matches what the nextjs adapter has done since VI-648. It applies to `visor theme apply --adapter docs` output, to visor-core's `dist/themes/*.css`, and to the theme CSS the docs site and `visor render` read.
+  
+  Twelve aliases whose visor-core value changes in dark mode (`--sidebar-*`, `--border-input`, `--skeleton-from`/`-to`, `--chart-1`) are left inheriting visor-core's mode-correct value, since the alias table holds only their light referent. They are listed as `MODE_DEPENDENT_SEMANTIC_ALIASES` (new export) and pinned against the emitted `tokens.css`. `generateSemanticAliasDecls` takes an optional `{ skip }` set.
+- 0c5daa8: Scoped themes now re-substitute visor-core's twelve mode-dependent aliases with the right referent in each mode (VI-696). The twelve are `--sidebar-*`, `--border-input`, `--skeleton-from`/`-to` and `--chart-1`. Both the nextjs adapter (`scopePrefix`) and the docs adapter (`.{slug}-theme`) emit them.
+  
+  - **Light:** the scope block carries the light referent, as before.
+  - **Dark:** the adapter's dark selectors re-declare them with the dark referent (for example `--sidebar-bg: var(--color-neutral-900)`). That covers the manual toggle and the `prefers-color-scheme` block. A `dark-only` theme gets the dark referents on its host instead.
+  
+  **nextjs adapter.** It used to re-declare all twelve flat with the light referent. A scoped theme in OS dark mode therefore rendered the Sidebar in the theme's near-white `neutral-50`, and `--border-input` in `neutral-200`. A dark-only scoped theme got the same light mappings in every mode. The manual toggle on `body` was not affected, because visor-core's own `.dark` rule matched the body.
+  
+  **docs adapter.** It used to skip the twelve, so they kept visor-core's own palette. This affects `visor theme apply --adapter docs` output, visor-core's `dist/themes/*.css`, and the theme CSS that the docs site and `visor render` read.
+  
+  **New exports:**
+  - `VISOR_CORE_DARK_SEMANTIC_ALIASES` maps alias to dark referent. It is pinned against `tokens.css`.
+  - `generateSemanticAliasDecls` takes an optional `{ table }`.
+  - `collectDeclaredProperties` takes an optional `{ exclude }` list of selectors.
+  
+  `MODE_DEPENDENT_SEMANTIC_ALIASES` is now derived from the dark table. Output for `:root`-scoped themes is unchanged.
+
 ## 0.28.0
 
 ### Minor Changes

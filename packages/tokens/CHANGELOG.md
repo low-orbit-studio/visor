@@ -1,5 +1,30 @@
 # @loworbitstudio/visor-core
 
+## 0.15.2
+
+### Patch Changes
+
+- 1a0bbf9: Neutral theme: the primary interactive fill is darkened from #1798ad to #138092 (same teal hue) so the white label passes WCAG 2.2 AA text contrast (3.43:1 to 4.64:1) in light and dark. Dark-mode hover and active fills now step darker (#0f6b7a, #0c5663) instead of lighter, keeping white text at or above 4.5:1. Button, ToggleGroup, SegmentedControl and Badge pick this up through the theme.
+- 206e7cb: Class-scoped themes from the docs adapter now resolve visor-core's semantic aliases against the theme's own tokens (VI-695). `--field-menu-bg`, `--chart-2` to `--chart-5`, `--weight-*`, `--size-*`, the motion and layout aliases and the rest are re-declared on `.{slug}-theme`, so they no longer inherit visor-core's `:root` default: on blacklight-app, Select, Combobox, DatePicker, DateRangePicker and TimePicker panels now use the theme's popover surface instead of navy. This matches what the nextjs adapter has done since VI-648. It applies to `visor theme apply --adapter docs` output, to visor-core's `dist/themes/*.css`, and to the theme CSS the docs site and `visor render` read.
+  
+  Twelve aliases whose visor-core value changes in dark mode (`--sidebar-*`, `--border-input`, `--skeleton-from`/`-to`, `--chart-1`) are left inheriting visor-core's mode-correct value, since the alias table holds only their light referent. They are listed as `MODE_DEPENDENT_SEMANTIC_ALIASES` (new export) and pinned against the emitted `tokens.css`. `generateSemanticAliasDecls` takes an optional `{ skip }` set.
+- 0c5daa8: Scoped themes now re-substitute visor-core's twelve mode-dependent aliases with the right referent in each mode (VI-696). The twelve are `--sidebar-*`, `--border-input`, `--skeleton-from`/`-to` and `--chart-1`. Both the nextjs adapter (`scopePrefix`) and the docs adapter (`.{slug}-theme`) emit them.
+  
+  - **Light:** the scope block carries the light referent, as before.
+  - **Dark:** the adapter's dark selectors re-declare them with the dark referent (for example `--sidebar-bg: var(--color-neutral-900)`). That covers the manual toggle and the `prefers-color-scheme` block. A `dark-only` theme gets the dark referents on its host instead.
+  
+  **nextjs adapter.** It used to re-declare all twelve flat with the light referent. A scoped theme in OS dark mode therefore rendered the Sidebar in the theme's near-white `neutral-50`, and `--border-input` in `neutral-200`. A dark-only scoped theme got the same light mappings in every mode. The manual toggle on `body` was not affected, because visor-core's own `.dark` rule matched the body.
+  
+  **docs adapter.** It used to skip the twelve, so they kept visor-core's own palette. This affects `visor theme apply --adapter docs` output, visor-core's `dist/themes/*.css`, and the theme CSS that the docs site and `visor render` read.
+  
+  **New exports:**
+  - `VISOR_CORE_DARK_SEMANTIC_ALIASES` maps alias to dark referent. It is pinned against `tokens.css`.
+  - `generateSemanticAliasDecls` takes an optional `{ table }`.
+  - `collectDeclaredProperties` takes an optional `{ exclude }` list of selectors.
+  
+  `MODE_DEPENDENT_SEMANTIC_ALIASES` is now derived from the dark table. Output for `:root`-scoped themes is unchanged.
+- 3604f1a: Space and Modern Minimal themes: the primary interactive pair now passes WCAG 2.2 AA text contrast (4.5:1) in light and dark, hover and active included. Space darkens its fill from #5b6fff to #5063f5 (same hue, 4.07:1 to 4.73:1), and its dark hover and active step darker (#4556e6, #3646c4) instead of lighter. Modern Minimal light darkens its fill from #018e5f to #018458 (4.17:1 to 4.73:1); Modern Minimal dark keeps its neon fill and mint hover ramp and switches the label from white to black (2.39:1 to 8.77:1). Button, ToggleGroup, SegmentedControl and Badge pick this up through the theme.
+
 ## 0.15.1
 
 ### Patch Changes
