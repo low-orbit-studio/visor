@@ -5,8 +5,7 @@ description: A bottom navigation bar of icon destinations for phone widths. Fill
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
-import { BottomNav } from '@/components/ui/bottom-nav';
-import { PencilSimple, Tray, CalendarDots, Receipt, ChartLineUp, UsersThree, Gear } from '@phosphor-icons/react';
+import { BottomNavDefaultDemo, BottomNavMarkGroupDemo, BottomNavLabelsDemo } from '@/components/ui/bottom-nav-demos';
 
 BottomNav is the row of destinations fixed to the foot of a phone screen: the desktop rail becomes the foot bar. The previews below set `fixed={false}` so the bar sits in the page instead of pinning to the viewport.
 
@@ -18,15 +17,7 @@ Icons only. The label is visually hidden and still names each destination.
   title="Default"
   code={"import { BottomNav } from '@/components/ui/bottom-nav/bottom-nav';\nimport { PencilSimple, Tray, CalendarDots } from '@phosphor-icons/react';\n\n<BottomNav\n  aria-label=\"Workspace\"\n  items={[\n    { label: 'Edit', icon: PencilSimple, href: '/edit', active: true },\n    { label: 'Inbox', icon: Tray, href: '/inbox' },\n    { label: 'Calendar', icon: CalendarDots, href: '/calendar' },\n  ]}\n/>"}
 >
-  <BottomNav
-    fixed={false}
-    aria-label="Workspace"
-    items={[
-      { label: 'Edit', icon: PencilSimple, href: '#edit', active: true },
-      { label: 'Inbox', icon: Tray, href: '#inbox' },
-      { label: 'Calendar', icon: CalendarDots, href: '#calendar' },
-    ]}
-  />
+  <BottomNavDefaultDemo />
 </ComponentPreview>
 
 ## Unread mark and group break
@@ -37,19 +28,7 @@ Icons only. The label is visually hidden and still names each destination.
   title="Mark and group"
   code={"<BottomNav\n  aria-label=\"Workspace\"\n  items={[\n    { label: 'Edit', icon: PencilSimple, href: '/edit', active: true },\n    { label: 'Inbox', icon: Tray, href: '/inbox', mark: 3 },\n    { label: 'Calendar', icon: CalendarDots, href: '/calendar' },\n    { label: 'Invoices', icon: Receipt, href: '/invoices' },\n    { label: 'Analytics', icon: ChartLineUp, href: '/analytics' },\n    { label: 'Team', icon: UsersThree, href: '/team', group: 'admin' },\n    { label: 'Settings', icon: Gear, href: '/settings', group: 'admin' },\n  ]}\n/>"}
 >
-  <BottomNav
-    fixed={false}
-    aria-label="Workspace"
-    items={[
-      { label: 'Edit', icon: PencilSimple, href: '#edit', active: true },
-      { label: 'Inbox', icon: Tray, href: '#inbox', mark: 3 },
-      { label: 'Calendar', icon: CalendarDots, href: '#calendar' },
-      { label: 'Invoices', icon: Receipt, href: '#invoices' },
-      { label: 'Analytics', icon: ChartLineUp, href: '#analytics' },
-      { label: 'Team', icon: UsersThree, href: '#team', group: 'admin' },
-      { label: 'Settings', icon: Gear, href: '#settings', group: 'admin' },
-    ]}
-  />
+  <BottomNavMarkGroupDemo />
 </ComponentPreview>
 
 ## Visible labels
@@ -58,16 +37,7 @@ Icons only. The label is visually hidden and still names each destination.
   title="Visible labels"
   code={"<BottomNav showLabels aria-label=\"Workspace\" items={items} />"}
 >
-  <BottomNav
-    fixed={false}
-    showLabels
-    aria-label="Workspace"
-    items={[
-      { label: 'Edit', icon: PencilSimple, href: '#edit', active: true },
-      { label: 'Inbox', icon: Tray, href: '#inbox', mark: true },
-      { label: 'Settings', icon: Gear, href: '#settings' },
-    ]}
-  />
+  <BottomNavLabelsDemo />
 </ComponentPreview>
 
 ## Keep focus clear of the bar
@@ -95,7 +65,7 @@ A destination with an `href` renders an `<a>`; without one it renders a `<button
 
 ## Edges
 
-The bar draws no border. Its resting top edge reads the shared `--control-edge-*` tokens, so `--control-edge-width: 0` removes it. Focus still draws at the focus ring width.
+The bar draws no border. Its resting top edge is a hairline and reads `--hairline-width`, so `--hairline-width: 0` removes it. Focus still draws at the focus ring width.
 
 ## Installation
 

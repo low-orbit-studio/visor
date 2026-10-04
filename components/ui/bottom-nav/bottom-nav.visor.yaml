@@ -24,7 +24,7 @@ why: >
   accessible name ("Inbox, 3 unread"). The bar pads for env(safe-area-inset-bottom),
   and publishes its rendered height as --bottom-nav-height on the document root so
   scroll-padding-bottom keeps a focused field clear of it (WCAG 2.4.11). Its resting
-  edge reads the shared --control-edge-* tokens, so edges: off removes it.
+  edge is a hairline that reads --hairline-width, so --hairline-width: 0 removes it.
 
 variants:
   showLabels: [true, false]
