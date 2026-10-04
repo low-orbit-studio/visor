@@ -25,7 +25,7 @@ async function main() {
   for (const sheet of SHEETS) {
     const spec = { theme: sheet.theme, mode: sheet.mode, dsf: 4, modules: { input: ["Input"] }, cases: [...cases("HEHTI", "cap"), ...cases(CLIP_LABEL, "jpq")] }
     const ink = sheet.mode === "dark" ? "#e5e5e5" : "#1f1f1f"
-    let captions: Record<string, string> = {}
+    const captions: Record<string, string> = {}
     const first = await measureInk({ ...spec, cases: cases("HEHTI", "cap") })
     for (const r of first) {
       const sz = r.id.split(" ")[1]
