@@ -453,9 +453,9 @@ html:not(.dark) .neutral-theme {
 
 /* --- Adaptive: Interactive (dark) — manual toggle --- */
 .dark .neutral-theme {
-  --interactive-primary-bg: #1798ad;
-  --interactive-primary-bg-hover: #4fb0c3;
-  --interactive-primary-bg-active: #89cfde;
+  --interactive-primary-bg: #138092;
+  --interactive-primary-bg-hover: #0f6b7a;
+  --interactive-primary-bg-active: #0c5663;
   --interactive-primary-text: #ffffff;
   --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
   --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
@@ -551,9 +551,9 @@ html:not(.dark) .neutral-theme {
 /* --- Adaptive: Interactive (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
   .neutral-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
-    --interactive-primary-bg: #1798ad;
-    --interactive-primary-bg-hover: #4fb0c3;
-    --interactive-primary-bg-active: #89cfde;
+    --interactive-primary-bg: #138092;
+    --interactive-primary-bg-hover: #0f6b7a;
+    --interactive-primary-bg-active: #0c5663;
     --interactive-primary-text: #ffffff;
     --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
     --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
@@ -645,7 +645,7 @@ html:not(.dark) .neutral-theme {
 
 /* --- Adaptive: Interactive (light) --- */
 html:not(.dark) .neutral-theme {
-  --interactive-primary-bg: #1798ad;
+  --interactive-primary-bg: #138092;
   --interactive-primary-bg-hover: #015866;
   --interactive-primary-bg-active: #013d46;
   --interactive-primary-text: #ffffff;
