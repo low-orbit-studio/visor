@@ -10,7 +10,7 @@
  * This renders Button, toggle-group, tabs, chip, badge, select and input at every
  * size with a label of descenders and accents, and compares each against the same
  * text in an unclipped reference (see ink-clipping.ts). It runs in Chromium and
- * WebKit, in Arial, Product Sans and PP Model Mono.
+ * WebKit, in every body face a shipped theme uses.
  *
  * Skips where Chromium/WebKit or esbuild is missing, or the font CDN is unreachable.
  */
