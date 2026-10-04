@@ -467,6 +467,15 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       interactiveTarget: "button",
       props: `{ children: React.createElement(__mod.SelectTrigger, { variant: "borderless" }, React.createElement(__mod.SelectValue, { placeholder: "Pick a plan" })) }`,
     },
+    // VI-692: forced open so the portaled listbox is in the shot.
+    open: {
+      export: "Select",
+      props: `{ open: true, defaultValue: "pro", children: [React.createElement(__mod.SelectTrigger, { key: "t" }, React.createElement(__mod.SelectValue, { placeholder: "Pick a plan" })), React.createElement(__mod.SelectContent, { key: "c" }, [React.createElement(__mod.SelectItem, { key: "a", value: "free" }, "Free"), React.createElement(__mod.SelectItem, { key: "b", value: "pro" }, "Pro"), React.createElement(__mod.SelectItem, { key: "d", value: "team" }, "Team")])] }`,
+    },
+  },
+  // VI-692: forced open so the portaled tip is in the shot.
+  tooltip: {
+    default: { export: "TooltipProvider", props: `{ children: React.createElement(__mod.Tooltip, { open: true }, [React.createElement(__mod.TooltipTrigger, { key: "t", asChild: true }, React.createElement("button", { type: "button" }, "Hover me")), React.createElement(__mod.TooltipContent, { key: "c" }, "Tooltip on the theme")]) }` },
   },
   checkbox: {
     default: { export: "Checkbox", interactiveTarget: "button", props: `{ "aria-label": "Accept" }` },
@@ -847,9 +856,12 @@ async function settle(page: any, fontsTimeout = 5000): Promise<void> {
  * per-theme CSS (which self-declares the `@layer` order and scopes per-mode by
  * ancestor — `.dark .<slug>-theme` vs `html:not(.dark) .<slug>-theme`), then the
  * component's esbuild-emitted CSS, then harness layout. The theme class lives on
- * `#theme-scope` (NOT `<html>`), so `<html>` stays OUTSIDE the theme scope and
- * exposes the RAW tokens.css value of any custom property — the base probe reads
- * it to prove the themed surface resolved to its mapped value, not the primitive.
+ * `<body>` (VI-692), as in a real app (nextjs adapter `scopePrefix:
+ * body.<slug>-theme`), so Radix portals — which mount on `<body>` — inherit the
+ * theme. `<html>` stays OUTSIDE the theme scope and exposes the RAW tokens.css
+ * value of any custom property — the base probe reads it to prove the themed
+ * surface resolved to its mapped value, not the primitive. `#theme-scope` keeps
+ * layout and the page ground only.
  */
 export function buildHtml(opts: {
   resetCss: string
@@ -880,6 +892,11 @@ ${opts.componentCss}
 </style>
 <style data-visor="harness">
 html, body { margin: 0; padding: 0; }
+body {
+  color: var(--text-primary, #111827);
+  /* Same token the nextjs adapter's origination binds to body (VI-616). */
+  font-family: var(--font-body, var(--font-sans, system-ui, -apple-system, sans-serif));
+}
 #theme-scope {
   box-sizing: border-box;
   min-height: 100vh;
@@ -888,15 +905,12 @@ html, body { margin: 0; padding: 0; }
   align-items: center;
   justify-content: center;
   background: var(--surface-page, #ffffff);
-  color: var(--text-primary, #111827);
-  /* Same token the nextjs adapter's origination binds to body (VI-616). */
-  font-family: var(--font-body, var(--font-sans, system-ui, -apple-system, sans-serif));
 }
 #root { width: 100%; max-width: 420px; }
 </style>
 </head>
-<body>
-<div id="theme-scope" class="${opts.themeClass}">
+<body class="${opts.themeClass}">
+<div id="theme-scope">
 <div id="root"></div>
 </div>
 <script>
@@ -1101,16 +1115,17 @@ export async function renderCommand(
     await settle(page)
 
     // Computed-style probe: prove the themed surface resolved to its MAPPED value
-    // (read from #theme-scope) and NOT the raw primitive (read from <html>, which
-    // is outside the theme scope). This backs the @layer/mode-scoping assertion.
+    // (read from <body>, which carries the theme class) and NOT the raw primitive
+    // (read from <html>, which is outside the theme scope). This backs the @layer/mode-scoping assertion.
     probe = (await page.evaluate(
       `(function () {
         var scope = document.getElementById("theme-scope");
+        var body = document.body;
         var html = document.documentElement;
         var read = function (el, prop) {
           return getComputedStyle(el).getPropertyValue(prop).trim();
         };
-        var themed = read(scope, "--surface-card");
+        var themed = read(body, "--surface-card");
         var base = read(html, "--surface-card");
         return {
           themedSurfaceCard: themed,
