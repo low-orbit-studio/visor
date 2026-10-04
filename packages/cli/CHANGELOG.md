@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.34.0
+
+### Minor Changes
+
+- 80cd286: DatePicker opens its calendar on the month of `value` instead of the device's current month (VI-654), and takes `align` (default `"start"`), `sideOffset` (default `4`), `collisionPadding` (default `0`) and `defaultOpen` for the popover; defaults are unchanged. The trigger and popover edges now draw from the shared `--control-edge-*` tokens as an outline instead of a visible `border`. New render fixtures: `date-picker` `default` / `align-end`.
+- c37e71f: OTPInput takes `invalid` (VI-670): every cell gets `aria-invalid` and the invalid edge, and the digits are kept so the code can be fixed. A new `errorMessage` prop is shown under the cells in the error text colour and is the `role="alert"` live region (4.1.3), so the error is not colour alone (1.4.1). A new `trailing` prop renders beside the cells for a working indicator (Spinner) or a resend action. The first cell now carries `autocomplete="one-time-code"` and accepts a whole autofilled code (WCAG 3.3.8). The resting edge moves from a `border` to the shared `--control-edge-*` tokens, so `--control-edge-width: 0` turns it off while focus and invalid survive. New render fixtures: `otp-input` `default` / `invalid` / `trailing`.
+- d30f5ca: Separator takes `label` (VI-671): text centred on a horizontal rule, with the rule drawn on both sides on the same `--border-default` token. A labelled separator is never decorative: it exposes `role="separator"` named by the label, so the word is read. `label` is ignored on a vertical separator. The rule reads the new `--separator-color` (`components.separator.color`), falling back to `--border-default`, so a borderless theme can keep it visible. New render fixtures: `separator` `default` / `labelled`.
+- 31bfa9a: ToggleGroup shows a visible keyboard focus ring and exposes the right role (VI-690). `.item:focus-visible` now draws a solid `--border-focus` outline at `--focus-ring-width`, offset by `--focus-ring-offset`, replacing the 15% halo that measured 1.4:1 on dark planes (WCAG 2.4.7). A single-select ToggleGroup renders `role="radiogroup"` so its radio items have a radiogroup parent (WCAG 4.1.2); multi-select stays a `group` of pressed buttons. SegmentedControl inherits both.
+
+### Patch Changes
+
+- Updated dependencies [d30f5ca]
+  - @loworbitstudio/visor-theme-engine@0.28.0
+
 ## 1.33.0
 
 ### Minor Changes
