@@ -112,14 +112,14 @@ npx visor add button input label card
 
 The registry ships 88+ UI components across 6 categories, plus admin compounds, blocks, and hooks.
 
-**Form (24)**
-`button` · `calendar` · `checkbox` · `combobox` · `date-picker` · `field` · `fieldset` · `file-upload` · `form` · `input` · `label` · `number-input` · `otp-input` · `password-input` · `phone-input` · `radio-group` · `search-input` · `select` · `slider` · `slider-control` · `switch` · `tag-input` · `textarea` · `time-picker` · `toggle-group`
+**Form (25)**
+`button` · `calendar` · `checkbox` · `combobox` · `date-picker` · `field` · `fieldset` · `file-upload` · `form` · `input` · `label` · `number-input` · `otp-input` · `password-input` · `phone-input` · `position-picker` · `radio-group` · `search-input` · `select` · `slider` · `slider-control` · `switch` · `tag-input` · `textarea` · `time-picker` · `toggle-group`
 
 **Data Display (12)**
 `accordion` · `avatar` · `carousel` · `code-block` · `collapsible` · `heading` · `image` · `progress` · `separator` · `skeleton` · `text` · `timeline`
 
-**Navigation (5)**
-`breadcrumb` · `command` · `navbar` · `pagination` · `stepper`
+**Navigation (6)**
+`bottom-nav` · `breadcrumb` · `command` · `navbar` · `pagination` · `stepper`
 
 **Overlay (7)**
 `context-menu` · `dialog` · `fullscreen-overlay` · `hover-card` · `lightbox` · `menubar` · `popover`

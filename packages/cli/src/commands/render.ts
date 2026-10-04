@@ -49,6 +49,12 @@ interface Fixture {
 /** A 1em Phosphor "X" glyph, inline so icon fixtures need no icon package. */
 const ICON_X = `React.createElement("svg", { viewBox: "0 0 256 256", width: "1em", height: "1em", fill: "currentColor", "aria-hidden": true }, React.createElement("path", { d: "M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z" }))`
 
+/** A Phosphor-shaped icon component (takes `weight`, fills at "fill"), inline so bottom-nav needs no icon package. */
+const navIcon = (shape: string) =>
+  `function (p) { return React.createElement("svg", { viewBox: "0 0 256 256", width: p.size || 24, height: p.size || 24, className: p.className, fill: p.weight === "fill" ? "currentColor" : "none", stroke: "currentColor", strokeWidth: 16, strokeLinejoin: "round", "aria-hidden": true }, React.createElement("path", { d: ${JSON.stringify(shape)} })); }`
+const NAV_SHAPES = ["M40 56h176v144H40z", "M128 32l96 176H32z", "M128 32a96 96 0 1 0 0 192a96 96 0 0 0 0-192z", "M48 64h160v128H48zM48 112h160", "M40 200V120M104 200V64M168 200V96M216 200V152", "M64 216V96l64-64l64 64v120z", "M128 40a40 40 0 1 0 0 80a40 40 0 0 0 0-80zM48 216c0-44 36-72 80-72s80 28 80 72z"]
+const NAV_ICONS = NAV_SHAPES.map(navIcon)
+
 /**
  * Default fixtures give each render real content, not an empty shell. Keyed
  * `<component> -> <fixture-name>`; "default" is used when `--fixture` is omitted.
@@ -439,6 +445,27 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     invalid: { export: "OTPInput", interactiveTarget: "input", props: `{ value: "428519", invalid: true, errorMessage: "That code didn't work. Check it and try again." }` },
     trailing: { export: "OTPInput", interactiveTarget: "input", props: `{ value: "428519", trailing: React.createElement("button", { type: "button" }, "Resend") }` },
   },
+  // VI-672: `default` is the grid on its own ground; `on-image` draws it over a busy
+  // synthetic photograph (turbulence, one light half and one dark half) so each
+  // target's scrim ring is checked against both. The picker is its own frame here:
+  // `position: relative` and a size stand in for the positioned photo frame.
+  "position-picker": {
+    default: { export: "PositionPicker", interactiveTarget: "[role=\"radio\"]", props: `{ "aria-label": "Focal point", defaultValue: { y: "center", x: "center" } }` },
+    "on-image": {
+      export: "PositionPicker",
+      interactiveTarget: "[role=\"radio\"]",
+      props: `(function () {
+        var svg = "<svg xmlns='http://www.w3.org/2000/svg' width='480' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.06' numOctaves='4' seed='7'/><feColorMatrix values='1.4 0 0 0 0.05 0 1.2 0 0 0.05 0 0 1.1 0 0.05 0 0 0 1 0'/></filter><rect width='480' height='300' fill='#d9c8a6'/><rect width='480' height='300' filter='url(#n)'/><rect x='0' y='0' width='240' height='300' fill='#f4efe4' opacity='0.55'/><rect x='240' y='0' width='240' height='300' fill='#0b0b14' opacity='0.6'/></svg>";
+        return {
+          variant: "on-image",
+          "aria-label": "Focal point",
+          defaultValue: { y: "top", x: "right" },
+          style: { position: "relative", inset: "auto", width: 480, height: 300, backgroundImage: "url('data:image/svg+xml;utf8," + encodeURIComponent(svg).replace(/'/g, "%27") + "')", backgroundSize: "cover" },
+        };
+      })()`,
+    },
+    thumbnail: { export: "PositionPicker", interactiveTarget: "[role=\"radio\"]", props: `{ variant: "on-image", "aria-label": "Focal point", defaultValue: { y: "bottom", x: "left" }, style: { position: "relative", inset: "auto", width: 40, height: 28, background: "#667" } }` },
+  },
   // VI-624: `default` is the closed field; the popover fixtures render open so the
   // two-column (24-hour) and three-column (12-hour) anatomy can be inspected.
   "time-picker": {
@@ -639,6 +666,18 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     "refused-retry": { export: "SaveStatus", interactiveTarget: "button", props: `{ status: "refused", onRetry: function () {} }` },
     dot: { export: "SaveStatus", props: `{ status: "saved", dot: true }` },
     "dot-unsaved": { export: "SaveStatus", props: `{ status: "unsaved", dot: true }` },
+  },
+  // VI-673: the phone foot bar. `fixed: false` lays it in the render frame instead of pinning it.
+  "bottom-nav": {
+    default: {
+      export: "BottomNav",
+      interactiveTarget: "a",
+      props: `{ "aria-label": "Workspace", fixed: false, items: [{ label: "Edit", icon: ${NAV_ICONS[0]}, href: "#edit", active: true }, { label: "Inbox", icon: ${NAV_ICONS[1]}, href: "#inbox", mark: 3 }, { label: "Calendar", icon: ${NAV_ICONS[2]}, href: "#calendar" }, { label: "Invoices", icon: ${NAV_ICONS[3]}, href: "#invoices" }, { label: "Analytics", icon: ${NAV_ICONS[4]}, href: "#analytics" }, { label: "Team", icon: ${NAV_ICONS[6]}, href: "#team", group: "admin" }, { label: "Settings", icon: ${NAV_ICONS[5]}, href: "#settings", group: "admin" }] }`,
+    },
+    labelled: {
+      export: "BottomNav",
+      props: `{ "aria-label": "Workspace", fixed: false, showLabels: true, items: [{ label: "Home", icon: ${NAV_ICONS[5]}, href: "#home", active: true }, { label: "Inbox", icon: ${NAV_ICONS[1]}, href: "#inbox", mark: true }, { label: "Settings", icon: ${NAV_ICONS[5]}, href: "#settings" }] }`,
+    },
   },
   // VI-615: the single-select pill group. `fullwidth` fills the render frame.
   "segmented-control": {

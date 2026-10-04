@@ -1,0 +1,93 @@
+---
+title: Bottom Nav
+description: A bottom navigation bar of icon destinations for phone widths. Filled active destination, an optional unread mark, a hairline group break and safe-area padding.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { BottomNavDefaultDemo, BottomNavMarkGroupDemo, BottomNavLabelsDemo } from '@/components/ui/bottom-nav-demos';
+
+BottomNav is the row of destinations fixed to the foot of a phone screen: the desktop rail becomes the foot bar. The previews below set `fixed={false}` so the bar sits in the page instead of pinning to the viewport.
+
+## Default
+
+Icons only. The label is visually hidden and still names each destination.
+
+<ComponentPreview
+  title="Default"
+  code={"import { BottomNav } from '@/components/ui/bottom-nav/bottom-nav';\nimport { PencilSimple, Tray, CalendarDots } from '@phosphor-icons/react';\n\n<BottomNav\n  aria-label=\"Workspace\"\n  items={[\n    { label: 'Edit', icon: PencilSimple, href: '/edit', active: true },\n    { label: 'Inbox', icon: Tray, href: '/inbox' },\n    { label: 'Calendar', icon: CalendarDots, href: '/calendar' },\n  ]}\n/>"}
+>
+  <BottomNavDefaultDemo />
+</ComponentPreview>
+
+## Unread mark and group break
+
+`mark` draws a solid dot on the destination. A number never appears on the dot; it goes into the accessible name, so Inbox reads "Inbox, 3 unread". A `group` draws a hairline before the first destination of each new group (here, before Team). The hairline is hidden from assistive tech.
+
+<ComponentPreview
+  title="Mark and group"
+  code={"<BottomNav\n  aria-label=\"Workspace\"\n  items={[\n    { label: 'Edit', icon: PencilSimple, href: '/edit', active: true },\n    { label: 'Inbox', icon: Tray, href: '/inbox', mark: 3 },\n    { label: 'Calendar', icon: CalendarDots, href: '/calendar' },\n    { label: 'Invoices', icon: Receipt, href: '/invoices' },\n    { label: 'Analytics', icon: ChartLineUp, href: '/analytics' },\n    { label: 'Team', icon: UsersThree, href: '/team', group: 'admin' },\n    { label: 'Settings', icon: Gear, href: '/settings', group: 'admin' },\n  ]}\n/>"}
+>
+  <BottomNavMarkGroupDemo />
+</ComponentPreview>
+
+## Visible labels
+
+<ComponentPreview
+  title="Visible labels"
+  code={"<BottomNav showLabels aria-label=\"Workspace\" items={items} />"}
+>
+  <BottomNavLabelsDemo />
+</ComponentPreview>
+
+## Keep focus clear of the bar
+
+A fixed bar covers the last rows of the page, so a focused field could scroll in behind it (WCAG 2.4.11, Focus Not Obscured). While `fixed` (the default), BottomNav publishes its rendered height, safe-area pad included, as `--bottom-nav-height` on the document root and removes it on unmount. Set `scroll-padding-bottom` from it and a focused field scrolls clear:
+
+```css
+html {
+  scroll-padding-bottom: var(--bottom-nav-height, 0px);
+}
+
+/* Room for the last row of content to scroll above the bar. */
+body {
+  padding-bottom: var(--bottom-nav-height, 0px);
+}
+```
+
+## Navigating
+
+A destination with an `href` renders an `<a>`; without one it renders a `<button>`. `onSelect` fires on click for both, so a client router can take over a link:
+
+```tsx
+{ label: 'Inbox', icon: Tray, href: '/inbox', onSelect: (e) => { e.preventDefault(); router.push('/inbox'); } }
+```
+
+## Edges
+
+The bar draws no border. Its resting top edge is a hairline and reads `--hairline-width`, so `--hairline-width: 0` removes it. Focus still draws at the focus ring width.
+
+## Installation
+
+```bash
+npx visor add bottom-nav
+```
+
+This copies two files into your project (the component and its CSS module). Icons are yours to bring: pass any Phosphor-style component.
+
+## API Reference
+
+### BottomNavProps
+
+<PropsTable component="bottom-nav" />
+
+BottomNav renders a `<nav>` and accepts all standard nav attributes. Give it an `aria-label`.
+
+## Accessibility
+
+- A `<nav>` landmark holding a list. Give it an `aria-label` ("Workspace").
+- The active destination sets `aria-current="page"` and fills its icon, so colour is never the only cue (WCAG 1.4.1).
+- Each destination's accessible name is its label. With a `mark` it becomes "Inbox, 3 unread" (`markLabel` changes the word). The dot is `aria-hidden`, never the only carrier of meaning.
+- The group hairline is `aria-hidden` and `role="presentation"`: it is not announced.
+- Targets are 48px, over the 24px minimum (WCAG 2.5.8). Focus is visible (2.4.7) and the bar publishes its height so focus is not obscured (2.4.11).
+- Padding for `env(safe-area-inset-bottom)` keeps destinations off the home indicator. Add `viewport-fit=cover` to your viewport meta so the inset is non-zero on notched phones.

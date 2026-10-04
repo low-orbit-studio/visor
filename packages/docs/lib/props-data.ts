@@ -391,6 +391,27 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'bottom-nav': [
+    {
+      name: 'items',
+      type: '{ label: string; icon: BottomNavIcon; href?: string; onSelect?: (e) => void; active?: boolean; mark?: boolean | number; markLabel?: string; group?: string; key?: string }[]',
+      required: true,
+      description: 'The destinations, in order. `href` renders a link, otherwise a button. `active` sets aria-current="page" and fills the icon. `mark` draws an unread dot (a number goes into the accessible name, never onto the dot). `group` draws a hairline before the first destination of a new group.',
+    },
+    {
+      name: 'showLabels',
+      type: 'boolean',
+      default: 'false',
+      description: 'Show each label under its icon. Otherwise the label is visually hidden and still names the destination.',
+    },
+    {
+      name: 'fixed',
+      type: 'boolean',
+      default: 'true',
+      description: 'Pin to the foot of the viewport and publish --bottom-nav-height on the document root. `false` lays the bar out in flow.',
+    },
+  ],
+
   'segmented-control': [
     {
       name: 'options',
@@ -1808,6 +1829,46 @@ export const propsData: Record<string, PropDef[]> = {
       name: '...props',
       type: 'React.InputHTMLAttributes<HTMLInputElement>',
       description: 'All standard HTML input attributes are forwarded.',
+    },
+  ],
+
+  'position-picker': [
+    {
+      name: 'value',
+      type: 'PositionValue | null',
+      description: "Controlled value, a { y: 'top' | 'center' | 'bottom', x: 'left' | 'center' | 'right' } pair. null is controlled with nothing chosen.",
+    },
+    {
+      name: 'defaultValue',
+      type: 'PositionValue | null',
+      description: 'Initial value when uncontrolled.',
+    },
+    {
+      name: 'onValueChange',
+      type: '(value: PositionValue) => void',
+      description: 'Called with the chosen { y, x } pair.',
+    },
+    {
+      name: 'variant',
+      type: "'default' | 'on-image'",
+      default: "'default'",
+      description: "default draws the grid on its own ground. on-image fills a positioned parent (the photograph's frame) and gives every target its own scrim ring.",
+    },
+    {
+      name: 'disabled',
+      type: 'boolean',
+      default: 'false',
+      description: 'Disables all nine targets.',
+    },
+    {
+      name: 'renderTarget',
+      type: '(position: PositionValue, state: { selected: boolean }) => ReactNode',
+      description: 'Replaces the drawn dot of one target, for example an alignment icon in the occupied row. Decorative; the target keeps its accessible name.',
+    },
+    {
+      name: '...props',
+      type: 'React.HTMLAttributes<HTMLDivElement>',
+      description: 'Standard div attributes are forwarded to the radiogroup. Give it an aria-label or aria-labelledby.',
     },
   ],
 
