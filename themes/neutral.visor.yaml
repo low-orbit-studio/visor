@@ -55,12 +55,19 @@ overrides:
   # shades (900/50, 700/300, 600/400).
   light:
     text-link: "#0891b2"
-    interactive-primary-bg: "#1798ad"
+    # VI-689: white on the brand teal (#1798ad) measured 3.43:1. The fill is
+    # darkened along the same hue to clear AA text contrast (4.5:1).
+    interactive-primary-bg: "#138092"
     interactive-primary-text: "#ffffff"
     border-focus: "#1798ad"
   dark:
     text-link: "#67e8f9"
-    interactive-primary-bg: "#1798ad"
+    # VI-689: same AA fix as light. The derived dark hover/active lighten the
+    # fill (#4fb0c3, #89cfde), which drops white text below 3:1, so they step
+    # darker instead and stay at or above 4.5:1.
+    interactive-primary-bg: "#138092"
+    interactive-primary-bg-hover: "#0f6b7a"
+    interactive-primary-bg-active: "#0c5663"
     interactive-primary-text: "#ffffff"
     border-focus: "#1798ad"
     # VI-348: surface-muted dark sits between page (#09090b) and card (#18181b)
