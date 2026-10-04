@@ -44,3 +44,33 @@ export const buildControls = (label: string, button = false) => ({
 
 /** Fixed-height single-line controls measured (not fixed) by VI-682. */
 export const CONTROLS = buildControls(L)
+
+/**
+ * VI-662: Input and NumberInput with a prefix and suffix, at every size. The value and each affix are measured
+ * separately (the affix cases scan the affix's own extent inside the well), so "value and affix share a baseline"
+ * is a measured fact. Kept apart from `buildControls`: the harness page is a single column and these would push
+ * it past the 16k-device-pixel screenshot limit at 4x. NumberInput holds only a number, so its value is measured
+ * with the flat-topped centring label only; its typed-text coverage is input-no-clip.test.ts.
+ */
+export const buildAffixControls = (label: string) => ({
+  modules: { input: ["Input"], "number-input": ["NumberInput"] } as Record<string, string[]>,
+  cases: [
+    ...["sm", "md", "lg"].flatMap((s) => [
+      { id: `input affix ${s} value`, selector: "input", jsx: e("C.Input", `{ size: "${s}", defaultValue: "${label}", prefix: "${label === L ? label : "\u20ac"}", suffix: "${label === L ? label : "jpy"}", "aria-label": "x" }`) },
+      { id: `input affix ${s} prefix`, selector: "[data-slot=input-wrapper]", inkSelector: "[data-slot=input-prefix]", jsx: e("C.Input", `{ size: "${s}", defaultValue: "1", prefix: "${label}", "aria-label": "x" }`) },
+      { id: `input affix ${s} suffix`, selector: "[data-slot=input-wrapper]", inkSelector: "[data-slot=input-suffix]", jsx: e("C.Input", `{ size: "${s}", defaultValue: "1", suffix: "${label}", "aria-label": "x" }`) },
+    ]),
+    ...(label === L ? [{ id: "number-input affix value", selector: "input", jsx: e("C.NumberInput", `{ defaultValue: 1, prefix: "${label}", "aria-label": "x" }`) }] : []),
+    { id: "number-input affix prefix", selector: "[data-slot=number-input]", inkSelector: "[data-slot=number-input-prefix]", jsx: e("C.NumberInput", `{ defaultValue: 1, prefix: "${label}", "aria-label": "x" }`) },
+    { id: "number-input affix suffix", selector: "[data-slot=number-input]", inkSelector: "[data-slot=number-input-suffix]", jsx: e("C.NumberInput", `{ defaultValue: 1, suffix: "${label}", "aria-label": "x" }`) },
+  ],
+})
+export const AFFIX_CONTROLS = buildAffixControls(L)
+
+/**
+ * Measurement only: the affix is drawn in the secondary ink, whose antialiased edge rows fall under the harness's
+ * 50% contrast threshold sooner than the primary-ink value's do, which reads as a sub-pixel offset that is not
+ * positional. Measuring the affix in the value's ink makes the two comparable; position is unchanged.
+ */
+export const AFFIX_MEASURE_CSS =
+  "\n[data-slot=input-prefix],[data-slot=input-suffix],[data-slot=number-input-prefix],[data-slot=number-input-suffix]{color:var(--text-primary)!important}"

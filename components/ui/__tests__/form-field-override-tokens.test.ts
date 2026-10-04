@@ -31,7 +31,7 @@ function readCSS(component: string): string {
 }
 
 // Controls whose resting edge reads the shared VI-655 edge colour.
-const SHARED_EDGE = new Set(['input', 'textarea', 'select', 'tag-input'])
+const SHARED_EDGE = new Set(['input', 'number-input', 'textarea', 'select', 'tag-input'])
 
 // Components that should have both --{cmp}-bg and --{cmp}-border override tokens
 const BOTH_TOKENS: Array<{ component: string; bgToken: string; borderToken: string }> = [

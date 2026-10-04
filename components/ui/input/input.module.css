@@ -188,3 +188,188 @@
 .sizeLg.hasLeadingIcon {
   padding-left: calc(var(--spacing-5, 1.25rem) + var(--spacing-3, 0.75rem) + 1.125em);
 }
+
+/* Prefix and suffix (VI-662)
+ *
+ * With an affix the WRAPPER is the well: it draws the one edge, the ground, the
+ * radius and the focus and invalid states around the affix and the value
+ * together, from the same tokens .base reads. The <input> inside is bare (no
+ * edge, no ground) and is a flex item, so its content box starts where the
+ * prefix ends and stops where the suffix begins: a value of any length scrolls
+ * inside that box and never runs under an affix. The input keeps its 1px
+ * transparent geometry border and its size class, so the wrapper is exactly as
+ * tall as a plain Input. The edge is the shared --control-edge-* outline (no
+ * visible border), so --control-edge-width: 0 removes it here too. */
+.affixWrapper {
+  --affix-inset: var(--spacing-4, 1rem);
+  --affix-pad-y: var(--spacing-3_5, 0.875rem);
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  cursor: text;
+  background-color: var(--field-control-bg, var(--input-bg, var(--surface-interactive-default, #f9fafb)));
+  color: var(--text-primary, #111827);
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1.5;
+  border-radius: var(--input-radius-md, var(--radius-sm, 0.5rem));
+  transition: outline-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+  outline: var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--input-border, var(--control-edge-color, var(--border-default, #e5e7eb)));
+  outline-offset: calc(-1 * var(--control-edge-width, 1px));
+}
+
+.affixSm {
+  --affix-pad-y: var(--spacing-1, 0.25rem);
+  --affix-inset: var(--spacing-3, 0.75rem);
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+.affixLg {
+  --affix-pad-y: var(--spacing-4_5, 1.125rem);
+  --affix-inset: var(--spacing-5, 1.25rem);
+  font-size: var(--font-size-base, 1rem);
+  border-radius: var(--input-radius-lg, var(--radius-sm, 0.5rem));
+}
+
+:global([data-density="editorial"]) .affixWrapper {
+  background-color: var(--field-control-bg, var(--surface-card));
+}
+
+:global([data-density="editorial"]) .affixSm {
+  border-radius: var(--radius-md);
+}
+
+@media (hover: hover) {
+  .affixWrapper:hover:not(:has(> .bare:focus-visible)):not(:has(> .bare:disabled)):not(:has(> .bare[aria-invalid="true"])) {
+    outline-color: var(--border-strong, #d1d5db);
+  }
+}
+
+.affixWrapper:has(> .bare:focus-visible) {
+  outline: var(--control-state-edge-width, 1px) solid var(--border-focus, #111827);
+  outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
+  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
+}
+
+.affixWrapper:has(> .bare:disabled) {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.affixWrapper:has(> .bare[aria-invalid="true"]) {
+  outline-color: transparent;
+  background-color: var(--input-bg-invalid, var(--surface-error-subtle, color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--input-bg, #f9fafb)))));
+  box-shadow: inset 0 0 0 1.5px var(--border-error, #ef4444);
+}
+
+:global([data-density="editorial"]) .affixWrapper:has(> .bare[aria-invalid="true"]) {
+  background-color: var(--input-bg-invalid, var(--surface-error-subtle, color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--surface-card)))));
+}
+
+.affixWrapper:has(> .bare[aria-invalid="true"]:focus-visible) {
+  outline-color: transparent;
+  outline-offset: var(--focus-ring-offset, 2px);
+  box-shadow: inset 0 0 0 1.5px var(--border-error, #ef4444),
+    0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-error, #ef4444) 30%, transparent);
+}
+
+/* The bare input: the value only. It keeps .base's geometry (width, 1px
+   transparent border, line-height, size class) and drops its edge and ground. */
+.bare {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+  line-height: 1.5;
+  color: inherit;
+}
+
+.bare::placeholder {
+  color: var(--input-placeholder-color, var(--text-secondary, #9ca3af));
+}
+
+/* The side that meets an affix gives up its padding and border for the gap, so
+   the gap is exactly --input-affix-gap. Two classes beat the size class. */
+.bare.afterPrefix {
+  padding-left: var(--input-affix-gap, var(--spacing-2, 0.5rem));
+  border-left-width: 0;
+}
+
+.bare.beforeSuffix {
+  padding-right: var(--input-affix-gap, var(--spacing-2, 0.5rem));
+  border-right-width: 0;
+}
+
+.affixIcon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: calc(var(--affix-inset) + 1px);
+  color: var(--text-secondary, #9ca3af);
+  font-size: 1.125em;
+  line-height: 1;
+}
+
+.affixIcon + .affix {
+  margin-left: var(--input-affix-gap, var(--spacing-2, 0.5rem));
+}
+
+/* The affix is part of the well, never of the value: it does not shrink, wrap
+   or take the selection. The ink is the secondary text colour, retunable with
+   --input-affix-color. */
+.affix {
+  flex-shrink: 0;
+  white-space: nowrap;
+  user-select: none;
+  color: var(--input-affix-color, var(--text-secondary, #6b7280));
+}
+
+/* The value is nudged by --input-nudge (the VI-684 per-font baseline correction,
+   set on .sizeSm / .sizeMd / .sizeLg above from the theme's --font-ascent and
+   --font-descent). The affix sits on the same baseline, so the wrapper computes
+   the same nudge for the same box and the affix takes it. Blink only, like the
+   value's. With no font metrics the nudge falls back to 0px, as the value's does.
+   A theme that re-binds --input-padding-* drops the value's nudge; the affix then
+   keeps it, which is the one case the two can differ. */
+@supports (padding-top: round(1.4px, 1px)) and (not (-apple-pay-button-style: black)) {
+  .affixWrapper {
+    --input-box: calc(2px + 2 * var(--spacing-3_5, 0.875rem) + 1lh);
+    --input-nudge: calc(round((var(--input-box) + 1cap) / 2, 1px) - (var(--input-box) + (round(var(--font-ascent) * 1em, 1px) - round(var(--font-descent) * 1em, 1px))) / 2);
+  }
+
+  .affixSm {
+    --input-nudge: calc(round((2.25rem + 1cap) / 2, 1px) - (2.25rem + (round(var(--font-ascent) * 1em, 1px) - round(var(--font-descent) * 1em, 1px))) / 2);
+  }
+
+  .affixLg {
+    --input-box: calc(2px + 2 * var(--spacing-4_5, 1.125rem) + 1lh);
+    --input-nudge: calc(round((var(--input-box) + 1cap) / 2, 1px) - (var(--input-box) + (round(var(--font-ascent) * 1em, 1px) - round(var(--font-descent) * 1em, 1px))) / 2);
+  }
+
+  /* The affix takes the nudge the way the input does, as padding moved from the
+     bottom edge to the top, so its baseline snaps exactly as the value's does. */
+  .affix {
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    border-block: 1px solid transparent;
+    padding-top: calc(var(--affix-pad-y) + var(--input-nudge, 0px));
+    padding-bottom: calc(var(--affix-pad-y) - var(--input-nudge, 0px));
+  }
+}
+
+.affix:first-child {
+  margin-left: calc(var(--affix-inset) + 1px);
+}
+
+.affix:last-child {
+  margin-right: calc(var(--affix-inset) + 1px);
+}
+

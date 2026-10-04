@@ -2,11 +2,16 @@
 .wrapper {
   display: inline-flex;
   align-items: center;
-  border: 1px solid var(--number-input-border, var(--border-default, #e5e7eb));
+  /* VI-662: the border only holds box geometry. The resting edge is the shared
+     --control-edge-* outline (VI-655), so --control-edge-width: 0 turns it off.
+     --number-input-border stays the per-component colour override. */
+  border: 1px solid transparent;
+  outline: var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--number-input-border, var(--control-edge-color, var(--border-default, #e5e7eb)));
+  outline-offset: calc(-1 * var(--control-edge-width, 1px));
   border-radius: var(--radius-md, 0.375rem);
   background-color: var(--number-input-bg, var(--surface-interactive-default, #f9fafb));
   overflow: hidden;
-  transition: border-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+  transition: outline-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
     box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
@@ -18,7 +23,8 @@
 }
 
 .wrapper:focus-within {
-  border-color: var(--border-focus, #111827);
+  outline: var(--control-state-edge-width, 1px) solid var(--border-focus, #111827);
+  outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
   box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
 }
 
@@ -79,4 +85,55 @@
 
 .input::placeholder {
   color: var(--text-secondary, #9ca3af);
+}
+
+/* Prefix and suffix (VI-662). Fixed text inside the same well, between the
+   steppers and the value. Both are flex items beside the input, so the value
+   never runs under them. The affix reads the same tokens as Input's. */
+.affix {
+  flex-shrink: 0;
+  white-space: nowrap;
+  user-select: none;
+  cursor: text;
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: 1.5;
+  color: var(--input-affix-color, var(--text-secondary, #6b7280));
+}
+
+/* With one affix the value leans toward it, so the pair reads as one figure
+   ("€ 150", "2 h"); with both, or neither, the value stays centred. */
+.inputAfterPrefix {
+  text-align: start;
+  padding-inline-start: var(--input-affix-gap, var(--spacing-2, 0.5rem));
+}
+
+.inputBeforeSuffix {
+  text-align: end;
+  padding-inline-end: var(--input-affix-gap, var(--spacing-2, 0.5rem));
+}
+
+.affixPrefix {
+  margin-inline-start: var(--spacing-2, 0.5rem);
+}
+
+.affixSuffix {
+  margin-inline-end: var(--spacing-2, 0.5rem);
+}
+
+/* Per-font baseline nudge (VI-684 mechanism, shared with Input). The theme engine
+   publishes the body face's ascent and descent as unitless em ratios; the value
+   box is 2.25rem, the same as Input sm, so it takes the same nudge: the gap
+   between the whole px nearest the ideal baseline and the one the font produces.
+   The value and both affixes move by it, so they share a baseline. Blink only
+   (WebKit places the baseline exactly); no font metrics means no nudge (0px). */
+@supports (padding-top: round(1.4px, 1px)) and (not (-apple-pay-button-style: black)) {
+  .wrapper {
+    --input-nudge: calc(round((2.25rem + 1cap) / 2, 1px) - (2.25rem + (round(var(--font-ascent) * 1em, 1px) - round(var(--font-descent) * 1em, 1px))) / 2);
+  }
+
+  .input,
+  .affix {
+    position: relative;
+    top: var(--input-nudge, 0px);
+  }
 }

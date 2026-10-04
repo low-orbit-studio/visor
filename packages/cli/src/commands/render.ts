@@ -409,6 +409,18 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
   input: {
     default: { export: "Input", interactiveTarget: "input", props: `{ placeholder: "Email address" }` },
     invalid: { export: "Input", interactiveTarget: "input", props: `{ defaultValue: "not-an-email", "aria-invalid": true }` },
+    // VI-662: fixed text inside the well, beside the value.
+    suffix: { export: "Input", interactiveTarget: "input", props: `{ "aria-label": "Address", defaultValue: "lowtide", suffix: ".epk.pro" }` },
+    prefix: { export: "Input", interactiveTarget: "input", props: `{ "aria-label": "Amount", inputMode: "decimal", defaultValue: "1,250.00", prefix: "\u20ac" }` },
+    // Descenders and accents: a native input must never clip them (text-box trim does).
+    descenders: { export: "Input", interactiveTarget: "input", props: `{ "aria-label": "Amount", defaultValue: "Typography jpq \u00c9\u00c5\u00d1", prefix: "\u20ac", suffix: "jpy" }` },
+    both: { export: "Input", interactiveTarget: "input", props: `{ "aria-label": "Rate", inputMode: "decimal", defaultValue: "85", prefix: "$", suffix: "/ hr" }` },
+  },
+  "number-input": {
+    default: { export: "NumberInput", interactiveTarget: "input", props: `{ "aria-label": "Quantity", defaultValue: 4, min: 0, max: 99 }` },
+    prefix: { export: "NumberInput", interactiveTarget: "input", props: `{ "aria-label": "Fee", defaultValue: 150, prefix: "$" }` },
+    descenders: { export: "NumberInput", interactiveTarget: "input", props: `{ "aria-label": "Fee", defaultValue: 1299, prefix: "\u20ac", suffix: "jpy" }` },
+    suffix: { export: "NumberInput", interactiveTarget: "input", props: `{ "aria-label": "Hours", defaultValue: 2, suffix: "h" }` },
   },
   // VI-624: `default` is the closed field; the popover fixtures render open so the
   // two-column (24-hour) and three-column (12-hour) anatomy can be inspected.

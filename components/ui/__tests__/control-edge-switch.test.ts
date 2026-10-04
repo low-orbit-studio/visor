@@ -21,12 +21,12 @@ import { REST_EDGE, bundle, close, launch, open, pixelDelta, ready } from "./ren
 
 /** Every fixture of every component the switch governs. */
 const COMPONENTS = [
-  "input", "textarea", "select", "checkbox", "switch",
+  "input", "number-input", "textarea", "select", "checkbox", "switch",
   "tag-input", "chip", "file-upload", "empty-state", "button", "inline-edit", "radio-group", "time-picker", "month-calendar",
 ]
 /** Fixtures that draw a visible resting edge while the switch is on. */
 const EDGED = new Set([
-  "input/default", "textarea/default", "select/default", "checkbox/default",
+  "input/default", "input/prefix", "input/suffix", "input/both", "number-input/default", "number-input/prefix", "number-input/suffix", "textarea/default", "select/default", "checkbox/default",
   "tag-input/default", "chip/outlined", "file-upload/default", "empty-state/default",
   "button/outline", "button/gated", "button/dlg-ghost", "button/dlg-outline", "button/icon-outline",
   "inline-edit/editing", "inline-edit/heading-editing",
