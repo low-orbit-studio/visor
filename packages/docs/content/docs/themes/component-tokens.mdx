@@ -905,6 +905,29 @@ components:
       dark: "#2c2c2c"
 ```
 
+### `alert`
+
+Alert's soft appearance: the inline alert under a control or in a dialog. Every key is soft-only, so binding the family never moves an edged Alert.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--alert-icon-size` | Soft icon size for the destructive, warning and success tones; the content is at least this tall. | `2rem` |
+| `--alert-icon-size-note` | Soft icon size for the neutral note (`default` and `info`). | `1.5rem` |
+| `--alert-soft-padding` | Soft alert inset. | `var(--spacing-3, 0.75rem) calc(var(--spacing-3, 0.75rem) + var(--spacing-1, 0.25rem) / 2)` |
+| `--alert-gap` | Gap between the soft icon and its text. | `var(--spacing-3, 0.75rem)` |
+| `--alert-radius` | Soft alert corner rounding. | `var(--radius-lg, 0.5rem)` |
+| `--alert-font-size` | Soft alert type size. | `var(--font-size-sm, 0.875rem)` |
+| `--alert-lead-font-weight` | Weight of the inline `AlertLead` sentence. | `var(--font-weight-bold, 700)` |
+
+The defaults are Animal Booking's build. Blacklight's door sets a smaller, lighter type:
+
+```yaml
+components:
+  alert:
+    font-size: "13px"
+    lead-font-weight: "600"
+```
+
 ### `admin-ui`
 
 Structural roles the admin-ui pattern owns. `marquee-family` is the display face for KPI hero figures and marquee page titles — the role the admin-ui portability audit named as the one piece of ENTR brand coupling a new theme must rebind.

@@ -5,7 +5,7 @@ description: Static inline callout for important messages with semantic variants
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
-import { Alert, AlertTitle, AlertDescription, AlertActions } from '@/components/ui/alert';
+import { Alert, AlertTitle, AlertDescription, AlertLead, AlertActions } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 
 ## Variants
@@ -71,6 +71,75 @@ Use `AlertActions` to add a right-aligned, gap-aware row of action buttons — i
   </div>
 </ComponentPreview>
 
+## Soft Appearance
+
+`appearance="soft"` is the inline alert for forms and dialogs: a refusal under a control, or the consequence of an action inside a dialog. It draws a soft tinted fill with no edge and no shadow, a 32px outline icon in the tone's colour, and the body in secondary ink. The icon and the fill carry the tone, so a refusal reads calm. Set an optional bold lead with `AlertLead` at the start of the description.
+
+| `variant` | Fill | Icon | Default `role` |
+|---|---|---|---|
+| `destructive` | `--surface-error-soft` | `WarningOctagon`, 32px | `alert` |
+| `warning` | `--surface-warning-soft` | `Warning`, 32px | `status` |
+| `success` | `--surface-success-soft` | `CheckCircle`, 32px | `status` |
+| `default` | a faint wash of the ink colour | `Info`, 24px | `status` |
+
+Danger is an octagon, so it differs from a warning by shape as well as colour. `info` has no soft surface yet and draws as `default`. An explicit `role` prop still wins.
+
+<ComponentPreview
+  title="Soft Appearance"
+  code={"import { Alert, AlertDescription, AlertLead } from '@/components/ui/alert/alert';\n\n<Alert appearance=\"soft\" variant=\"destructive\">\n  <AlertDescription>\n    <AlertLead>That email isn't on the list.</AlertLead> Ask your host for an invite, or try another address.\n  </AlertDescription>\n</Alert>\n<Alert appearance=\"soft\" variant=\"warning\">\n  <AlertDescription>\n    <AlertLead>Unsaved changes.</AlertLead> Leave now and they are lost.\n  </AlertDescription>\n</Alert>\n<Alert appearance=\"soft\" variant=\"success\">\n  <AlertDescription>Check your inbox for a sign-in code.</AlertDescription>\n</Alert>\n<Alert appearance=\"soft\">\n  <AlertDescription>Only the venue owner can change payout details.</AlertDescription>\n</Alert>"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', maxWidth: '28rem' }}>
+    <Alert appearance="soft" variant="destructive">
+      <AlertDescription>
+        <AlertLead>That email isn't on the list.</AlertLead> Ask your host for an invite, or try another address.
+      </AlertDescription>
+    </Alert>
+    <Alert appearance="soft" variant="warning">
+      <AlertDescription>
+        <AlertLead>Unsaved changes.</AlertLead> Leave now and they are lost.
+      </AlertDescription>
+    </Alert>
+    <Alert appearance="soft" variant="success">
+      <AlertDescription>Check your inbox for a sign-in code.</AlertDescription>
+    </Alert>
+    <Alert appearance="soft">
+      <AlertDescription>Only the venue owner can change payout details.</AlertDescription>
+    </Alert>
+  </div>
+</ComponentPreview>
+
+### With an action row
+
+`AlertActions` sits under the text. The content is at least the icon's height and centred against it: one line sits level with the icon, and a longer message starts at its top.
+
+<ComponentPreview
+  title="Soft Alert With Actions"
+  code={"import { Alert, AlertDescription, AlertLead, AlertActions } from '@/components/ui/alert/alert';\nimport { Button } from '@/components/ui/button/button';\n\n<Alert appearance=\"soft\" variant=\"destructive\">\n  <AlertDescription>\n    <AlertLead>This can't be undone.</AlertLead> The two profiles merge into one, and their bookings, payouts and notes move with it.\n  </AlertDescription>\n  <AlertActions>\n    <Button variant=\"ghost\" size=\"sm\">Cancel</Button>\n    <Button variant=\"destructive\" size=\"sm\">Merge profiles</Button>\n  </AlertActions>\n</Alert>"}
+>
+  <div style={{ width: '100%', maxWidth: '28rem' }}>
+    <Alert appearance="soft" variant="destructive">
+      <AlertDescription>
+        <AlertLead>This can't be undone.</AlertLead> The two profiles merge into one, and their bookings, payouts and notes move with it.
+      </AlertDescription>
+      <AlertActions>
+        <Button variant="ghost" size="sm">Cancel</Button>
+        <Button variant="destructive" size="sm">Merge profiles</Button>
+      </AlertActions>
+    </Alert>
+  </div>
+</ComponentPreview>
+
+### Choosing between Alert, FieldError, ErrorPlacard and Banner
+
+- **`Alert appearance="soft"`** — a refusal or notice directly under a control (a sign-in code refused, an email not invited), or a consequence inside a dialog.
+- **[`FieldError`](/docs/components/form/field)** — one input's own validation hint, wired to that input through `aria-describedby`.
+- **[`ErrorPlacard`](/docs/components/feedback/error-placard)** — a section or panel failed to load and offers a retry.
+- **[`Banner`](/docs/components/feedback/banner)** — a full-width notice at the top of a page.
+
+### Tuning
+
+The soft sizes are component tokens, so a product tunes them in its theme without forking the component: `--alert-icon-size` (32px), `--alert-icon-size-note` (24px), `--alert-soft-padding` (12px 14px), `--alert-gap` (12px), `--alert-radius` (`--radius-lg`), `--alert-font-size` (`--font-size-sm`) and `--alert-lead-font-weight` (`--font-weight-bold`). Bind them under `components.alert` in a theme. See [Component Tokens](/docs/themes/component-tokens).
+
 ## Installation
 
 ```bash
@@ -105,10 +174,13 @@ The component also accepts all standard `<div>` HTML attributes.
 
 - **`AlertTitle`** — Bold heading text for the alert message. Accepts all `<div>` attributes.
 - **`AlertDescription`** — Secondary descriptive text below the title. Accepts all `<div>` attributes.
+- **`AlertLead`** — A bold lead sentence in primary ink, set inline at the start of `AlertDescription`. Renders a `<strong>`.
 - **`AlertActions`** — Right-aligned, gap-aware row for inline action buttons (e.g. retry/dismiss). Accepts all `<div>` attributes.
 
 ## Accessibility
 
 - Renders with `role="alert"`, which announces the content to screen readers immediately.
+- Under `appearance="soft"`, only `destructive` keeps `role="alert"`; the other tones use `role="status"`, which waits for a pause. Pass `role` to override.
+- The soft icon is decorative (`aria-hidden`). Tone is never carried by colour alone: each tone has its own icon shape, and the lead names the problem in words.
 - Use `AlertTitle` to provide a concise summary that screen readers announce first.
 - For non-urgent messages, consider using Banner with `role="status"` instead.

@@ -128,6 +128,7 @@ const SPINNER = "components/ui/spinner/spinner.module.css";
 const CHECKBOX = "components/ui/checkbox/checkbox.module.css";
 const INPUT = "components/ui/input/input.module.css";
 const SEPARATOR = "components/ui/separator/separator.module.css";
+const ALERT = "components/ui/alert/alert.module.css";
 const NUMBER_INPUT = "components/ui/number-input/number-input.module.css";
 const TEXTAREA = "components/ui/textarea/textarea.module.css";
 const SELECT = "components/ui/select/select.module.css";
@@ -1116,6 +1117,27 @@ const separatorFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-698. Alert's `appearance="soft"` — the inline alert Animal Booking
+// (AN-724) and Blacklight (BL-1204) each built locally. Every key is soft-only,
+// so binding the family never moves an edged Alert. The two approved builds
+// differ in type (14px/700 vs 13px/600); each binds its own here instead of
+// forking the component.
+const alertFamily: ComponentTokenFamily = {
+  family: "alert",
+  prefix: "alert",
+  description:
+    "Alert's soft appearance: the inline alert under a control or in a dialog — icon size, inset, gap, rounding and type.",
+  tokens: [
+    { key: "icon-size", property: "width / height / min-height", description: "Soft icon size for the destructive, warning and success tones; the content is at least this tall.", consumers: at(ALERT, "2rem") },
+    { key: "icon-size-note", property: "width / height / min-height", description: "Soft icon size for the neutral note (`default` and `info`).", consumers: at(ALERT, "1.5rem") },
+    { key: "soft-padding", property: "padding", description: "Soft alert inset.", consumers: at(ALERT, "var(--spacing-3, 0.75rem) calc(var(--spacing-3, 0.75rem) + var(--spacing-1, 0.25rem) / 2)") },
+    { key: "gap", property: "gap", description: "Gap between the soft icon and its text.", consumers: at(ALERT, "var(--spacing-3, 0.75rem)") },
+    { key: "radius", property: "border-radius", description: "Soft alert corner rounding.", consumers: at(ALERT, "var(--radius-lg, 0.5rem)") },
+    { key: "font-size", property: "font-size", description: "Soft alert type size.", consumers: at(ALERT, "var(--font-size-sm, 0.875rem)") },
+    { key: "lead-font-weight", property: "font-weight", description: "Weight of the inline `AlertLead` sentence.", consumers: at(ALERT, "var(--font-weight-bold, 700)") },
+  ],
+};
+
 // VI-680. The hairline mirror of the VI-655 edge switch: one token every
 // hairline rule reads for its weight, so a single binding turns every hairline
 // off:
@@ -1248,6 +1270,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   actionRowFamily,
   inputAffixFamily,
   separatorFamily,
+  alertFamily,
   adminUiFamily,
 ];
 
