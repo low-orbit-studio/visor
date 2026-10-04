@@ -2017,6 +2017,22 @@ export const propsData: Record<string, PropDef[]> = {
       default: 'false',
       description: 'Auto-focus the first cell on mount.',
     },
+    {
+      name: 'invalid',
+      type: 'boolean',
+      default: 'false',
+      description: 'Marks every cell aria-invalid and draws the invalid edge. The digits are kept so they can be corrected.',
+    },
+    {
+      name: 'errorMessage',
+      type: 'ReactNode',
+      description: 'Code error announced through a live region (role=alert) while invalid. Show the visible message beside the control.',
+    },
+    {
+      name: 'slot',
+      type: 'ReactNode',
+      description: 'Trailing slot beside the cells, for a working indicator (Spinner) or a resend action.',
+    },
   ],
 
   chip: [

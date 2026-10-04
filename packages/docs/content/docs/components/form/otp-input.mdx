@@ -34,6 +34,28 @@ import { OTPInput } from '@/components/ui/otp-input';
   <OTPInput length={6} disabled />
 </ComponentPreview>
 
+## Invalid
+
+`invalid` marks every cell `aria-invalid` and draws the invalid edge. The digits stay, so the code can be fixed. `errorMessage` is announced through a live region.
+
+<ComponentPreview
+  title="Invalid"
+  code={"<OTPInput length={6} value=\"428519\" invalid errorMessage=\"That code is not right.\" />"}
+>
+  <OTPInput length={6} value="428519" invalid errorMessage="That code is not right." />
+</ComponentPreview>
+
+## Trailing slot
+
+`slot` renders beside the cells: a working indicator while the code is checked, or a resend action.
+
+<ComponentPreview
+  title="Trailing slot"
+  code={"<OTPInput length={6} slot={<button type=\"button\">Resend</button>} />"}
+>
+  <OTPInput length={6} slot={<button type="button">Resend</button>} />
+</ComponentPreview>
+
 ## Installation
 
 ```bash
@@ -64,5 +86,7 @@ import { OTPInput } from '@/components/ui/otp-input/otp-input';
 - Each digit cell renders as `type="text"` with `inputmode="numeric"` and `maxlength="1"`
 - Cells are grouped inside a `<div role="group">` with an accessible label (e.g., `aria-label="One-time password"`)
 - Focus auto-advances to the next cell on digit entry and moves back on Backspace
+- The first cell carries `autocomplete="one-time-code"`, so a one-time-code autofill fills every cell (WCAG 3.3.8)
+- `invalid` sets `aria-invalid` on every cell; `errorMessage` is announced via `role="alert"` (4.1.3)
 - Paste support fills all cells from clipboard and focuses the last filled cell
 - Provide a descriptive `aria-label` prop on the group for screen reader context (e.g., "Enter your 6-digit verification code")

@@ -11,6 +11,12 @@ export interface OTPInputProps
   onChange?: (value: string) => void
   disabled?: boolean
   autoFocus?: boolean
+  /** Marks every cell invalid (`aria-invalid`) and draws the invalid edge. The digits are kept so they can be fixed. */
+  invalid?: boolean
+  /** Announced to assistive tech when set (4.1.3). Rendered in a visually hidden live region; show the visible message next to the control. */
+  errorMessage?: React.ReactNode
+  /** Trailing slot beside the cells: a working indicator (Spinner) or a resend action. */
+  slot?: React.ReactNode
 }
 
 const OTPInput = React.forwardRef<HTMLDivElement, OTPInputProps>(
@@ -22,6 +28,9 @@ const OTPInput = React.forwardRef<HTMLDivElement, OTPInputProps>(
       onChange,
       disabled = false,
       autoFocus = false,
+      invalid = false,
+      errorMessage,
+      slot,
       ...props
     },
     ref
@@ -78,10 +87,20 @@ const OTPInput = React.forwardRef<HTMLDivElement, OTPInputProps>(
       }
     }
 
+    const errorId = React.useId()
+    const hasError = invalid && errorMessage != null && errorMessage !== ""
+
     const handleChange = (
       index: number,
       e: React.ChangeEvent<HTMLInputElement>
     ) => {
+      // One-time-code autofill writes the whole code into the first cell.
+      const all = e.target.value.replace(/\D/g, "")
+      if (index === 0 && all.length > 1 && all.length >= length) {
+        updateValue(all)
+        focusInput(Math.min(all.length, length - 1))
+        return
+      }
       const char = e.target.value.replace(/\D/g, "").slice(-1)
       if (char) {
         handleInput(index, char)
@@ -122,7 +141,10 @@ const OTPInput = React.forwardRef<HTMLDivElement, OTPInputProps>(
             type="text"
             inputMode="numeric"
             pattern="[0-9]"
-            maxLength={1}
+            maxLength={i === 0 ? length : 1}
+            autoComplete={i === 0 ? "one-time-code" : "off"}
+            aria-invalid={invalid || undefined}
+            aria-describedby={hasError ? errorId : undefined}
             value={digits[i] ?? ""}
             onChange={(e) => handleChange(i, e)}
             onKeyDown={(e) => handleKeyDown(i, e)}
@@ -137,6 +159,18 @@ const OTPInput = React.forwardRef<HTMLDivElement, OTPInputProps>(
             )}
           />
         ))}
+        {slot != null && (
+          <span data-slot="otp-input-slot" className={styles.slot}>
+            {slot}
+          </span>
+        )}
+        <span
+          id={errorId}
+          role="alert"
+          className={styles.srOnly}
+        >
+          {invalid ? errorMessage : null}
+        </span>
       </div>
     )
   }

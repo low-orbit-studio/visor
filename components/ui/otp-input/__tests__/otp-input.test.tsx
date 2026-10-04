@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { render, screen, fireEvent } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, it, expect, vi } from "vitest"
 import { checkA11y } from "../../../../test-utils/a11y"
@@ -113,5 +113,89 @@ describe("accessibility", () => {
       "aria-label",
       "Verification code"
     )
+  })
+})
+
+describe("invalid", () => {
+  it("sets aria-invalid on every cell and keeps the digits", () => {
+    render(<OTPInput length={4} value="1234" invalid />)
+    const cells = screen.getAllByRole("textbox")
+    cells.forEach((cell, i) => {
+      expect(cell).toHaveAttribute("aria-invalid", "true")
+      expect(cell).toHaveValue(String(i + 1))
+    })
+  })
+
+  it("does not set aria-invalid by default", () => {
+    render(<OTPInput length={4} />)
+    screen.getAllByRole("textbox").forEach((cell) => {
+      expect(cell).not.toHaveAttribute("aria-invalid")
+    })
+  })
+
+  it("announces the error message and describes the cells with it", () => {
+    render(<OTPInput length={4} value="1234" invalid errorMessage="Wrong code" />)
+    const alert = screen.getByRole("alert")
+    expect(alert).toHaveTextContent("Wrong code")
+    screen.getAllByRole("textbox").forEach((cell) => {
+      expect(cell).toHaveAttribute("aria-describedby", alert.id)
+    })
+  })
+
+  it("lets the code be corrected while invalid", async () => {
+    const user = userEvent.setup()
+    const handleChange = vi.fn()
+    render(<OTPInput length={4} invalid onChange={handleChange} />)
+    await user.click(screen.getAllByRole("textbox")[0])
+    await user.keyboard("1234{Backspace}9")
+    expect(handleChange).toHaveBeenLastCalledWith("1239")
+  })
+
+  it("has no WCAG violations while invalid", async () => {
+    const { container } = render(
+      <OTPInput length={4} value="1234" invalid errorMessage="Wrong code" slot={<button type="button">Resend</button>} />
+    )
+    await checkA11y(container)
+  })
+})
+
+describe("paste and autofill", () => {
+  it("fills every cell on a full paste", async () => {
+    const user = userEvent.setup()
+    render(<OTPInput length={6} />)
+    const cells = screen.getAllByRole("textbox")
+    await user.click(cells[0])
+    await user.paste("428519")
+    cells.forEach((cell, i) => expect(cell).toHaveValue("428519"[i]))
+  })
+
+  it("puts autocomplete=one-time-code on the first cell", () => {
+    render(<OTPInput length={4} />)
+    const cells = screen.getAllByRole("textbox")
+    expect(cells[0]).toHaveAttribute("autocomplete", "one-time-code")
+    expect(cells[1]).not.toHaveAttribute("autocomplete", "one-time-code")
+  })
+
+  it("accepts a whole autofilled code written into the first cell", () => {
+    const handleChange = vi.fn()
+    render(<OTPInput length={6} onChange={handleChange} />)
+    const cells = screen.getAllByRole("textbox")
+    fireEvent.change(cells[0], { target: { value: "428519" } })
+    expect(handleChange).toHaveBeenLastCalledWith("428519")
+    cells.forEach((cell, i) => expect(cell).toHaveValue("428519"[i]))
+  })
+})
+
+describe("slot", () => {
+  it("renders the slot beside the cells", () => {
+    render(<OTPInput length={4} slot={<button type="button">Resend</button>} />)
+    const slot = screen.getByRole("button", { name: "Resend" })
+    expect(slot.closest('[data-slot="otp-input-slot"]')).toBeInTheDocument()
+    expect(screen.getByRole("group")).toContainElement(slot)
+  })
+
+  it("renders no slot wrapper without one", () => {
+    const { container } = render(<OTPInput length={4} />)
+    expect(container.querySelector('[data-slot="otp-input-slot"]')).toBeNull()
   })
 })
