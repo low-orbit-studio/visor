@@ -124,7 +124,7 @@
 
 /* The group break: a vertical hairline between destinations, not announced. It
    reads Separator's colour token first, so it stays drawn on a borderless theme
-   whose --hairline is transparent (blacklight-app binds separator.color for this). */
+   whose --hairline is transparent (blacklight-app binds the separator colour for this). */
 .group {
   flex: 0 0 auto;
   align-self: stretch;
