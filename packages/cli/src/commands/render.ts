@@ -603,6 +603,33 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       props: `{ "aria-label": "View", defaultValue: "day", options: [{ value: "day", label: "Day" }, { value: "week", label: "Week" }, { value: "month", label: "Month", disabled: true }] }`,
     },
   },
+  // VI-690: the single-select toggle group in both variants; `--state focus` drives the first item.
+  "toggle-group": {
+    default: {
+      export: "ToggleGroup",
+      interactiveTarget: "[data-slot=toggle-group-item]",
+      props: `(function () {
+        var h = React.createElement;
+        return { type: "single", "aria-label": "Text alignment", defaultValue: "center", children: [
+          h(__mod.ToggleGroupItem, { key: "l", value: "left" }, "Left"),
+          h(__mod.ToggleGroupItem, { key: "c", value: "center" }, "Center"),
+          h(__mod.ToggleGroupItem, { key: "r", value: "right" }, "Right"),
+        ] };
+      })()`,
+    },
+    outline: {
+      export: "ToggleGroup",
+      interactiveTarget: "[data-slot=toggle-group-item]",
+      props: `(function () {
+        var h = React.createElement;
+        return { type: "single", variant: "outline", "aria-label": "View", defaultValue: "week", children: [
+          h(__mod.ToggleGroupItem, { key: "d", value: "day" }, "Day"),
+          h(__mod.ToggleGroupItem, { key: "w", value: "week" }, "Week"),
+          h(__mod.ToggleGroupItem, { key: "m", value: "month" }, "Month"),
+        ] };
+      })()`,
+    },
+  },
   "tag-input": {
     default: {
       export: "TagInput",

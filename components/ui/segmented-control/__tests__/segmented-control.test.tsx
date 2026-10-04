@@ -22,7 +22,7 @@ function renderControl(props?: Partial<React.ComponentProps<typeof SegmentedCont
 describe("SegmentedControl", () => {
   it("renders one radio per option inside a labelled group", () => {
     renderControl()
-    expect(screen.getByRole("group", { name: "Payment status" })).toBeInTheDocument()
+    expect(screen.getByRole("radiogroup", { name: "Payment status" })).toBeInTheDocument()
     expect(screen.getAllByRole("radio")).toHaveLength(3)
   })
 
