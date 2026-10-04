@@ -149,7 +149,7 @@
    much padding from the bottom edge to the top lands the snapped baseline on the
    whole px nearest the ideal, within half a px of centre in any font. padding-top
    plus padding-bottom is unchanged, so the box is exactly as tall as before. A
-   theme that sets --input-padding-* (or input.md-padding) replaces it, as before; a face the engine has
+   theme that sets --input-padding-* (or the theme key md-padding) replaces it, as before; a face the engine has
    no metrics for gets no nudge (the var() fallback is 0px).
    Blink only: WebKit places the baseline exactly, so correcting there overshoots
    (-apple-pay-button-style is the WebKit-only probe). */

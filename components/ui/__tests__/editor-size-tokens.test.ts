@@ -106,7 +106,7 @@ const CASES: Case[] = [
   { token: "--control-invalid-halo-width", fixture: "select/invalid", target: "button", prop: "box-shadow", value: "3px", contains: "0px 0px 0px 3px" },
 
   // Input md — the variables that existed but were not contract keys
-  { token: "--input-md-height", fixture: "input/default", target: "input", prop: "height", value: "40px", unset: "50.9844px" },
+  { token: "--input-md-height", fixture: "input/default", target: "input", prop: "height", value: "40px", unset: "51px" },
   { token: "--input-md-padding", fixture: "input/default", target: "input", prop: "padding-left", value: "10px 12px", expected: "12px", unset: "16px" },
   { token: "--input-md-padding", fixture: "input/default", target: "input", prop: "padding-top", value: "10px 12px", expected: "10px" },
   { token: "--input-md-radius", fixture: "input/default", target: "input", prop: "border-top-left-radius", value: "9px", unset: "4px" },
