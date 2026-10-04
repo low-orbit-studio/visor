@@ -130,9 +130,9 @@ describe("DialogField", () => {
       )
     })
 
-    it("controlMd padding wraps --input-padding-md with a spacing-token fallback", () => {
+    it("controlMd padding wraps --input-md-padding over --input-padding-md with a spacing-token fallback", () => {
       expect(css).toContain(
-        "padding: var(--input-padding-md, var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem));"
+        "padding: var(--input-md-padding, var(--input-padding-md, var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem)));"
       )
     })
   })

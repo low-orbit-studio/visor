@@ -560,6 +560,8 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     "unsaved-dot": { export: "SaveStatus", props: `{ status: "unsaved", unsavedAs: "dot" }` },
     refused: { export: "SaveStatus", props: `{ status: "refused" }` },
     "refused-retry": { export: "SaveStatus", interactiveTarget: "button", props: `{ status: "refused", onRetry: function () {} }` },
+    dot: { export: "SaveStatus", props: `{ status: "saved", dot: true }` },
+    "dot-unsaved": { export: "SaveStatus", props: `{ status: "unsaved", dot: true }` },
   },
   // VI-615: the single-select pill group. `fullwidth` fills the render frame.
   "segmented-control": {
@@ -582,6 +584,11 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       export: "TagInput",
       interactiveTarget: "input",
       props: `{ defaultValue: ["design", "tokens"], placeholder: "Add a tag" }`,
+    },
+    slot: {
+      export: "TagInput",
+      interactiveTarget: "input",
+      props: `{ defaultValue: ["design", "tokens"], placeholder: "Add a tag", entryAs: "slot" }`,
     },
   },
   chip: {

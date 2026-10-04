@@ -4,16 +4,16 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--spacing-1, 0.25rem);
-  min-height: 2.25rem;
+  min-height: var(--tag-input-min-height, 2.25rem);
   width: 100%;
-  border-radius: var(--radius-md, 0.375rem);
+  border-radius: var(--tag-input-radius, var(--radius-md, 0.375rem));
   /* VI-655: transparent geometry border; the visible resting edge is an inset
      outline from the shared --control-edge-* tokens (as Input does). */
   border: 1px solid transparent;
   outline: var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--tag-input-border, var(--control-edge-color, var(--border-default, #e5e7eb)));
   outline-offset: calc(-1 * var(--control-edge-width, 1px));
   background-color: var(--tag-input-bg, var(--surface-interactive-default, #f9fafb));
-  padding: var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem);
+  padding: var(--tag-input-padding, var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem));
   cursor: text;
   transition: outline-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
     box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
@@ -44,16 +44,27 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-1, 0.25rem);
-  padding: calc(var(--spacing-1, 0.25rem) / 4) var(--spacing-2, 0.5rem);
-  border-radius: var(--radius-full, 9999px);
+  height: var(--tag-input-tag-height, auto);
+  padding: calc(var(--spacing-1, 0.25rem) / 4) var(--tag-input-tag-padding-x, var(--spacing-2, 0.5rem));
+  border-radius: var(--tag-input-tag-radius, var(--radius-full, 9999px));
   background-color: var(--surface-muted, #f3f4f6);
   /* The tag chip's edge follows the same switch as the field around it. */
   border: 1px solid transparent;
   outline: var(--control-edge-width, 1px) var(--control-edge-style, solid) var(--control-edge-color, var(--border-default, #e5e7eb));
   outline-offset: calc(-1 * var(--control-edge-width, 1px));
-  font-size: var(--font-size-xs, 0.75rem);
+  font-size: var(--tag-input-tag-font-size, var(--font-size-xs, 0.75rem));
   line-height: 1.5;
   color: var(--text-primary, #111827);
+}
+
+/* Weight is inherited, so any unlayered fallback would override something:
+   `inherit` beats a layered utility, `revert-layer` drops an unlayered consumer
+   rule. In visor-base every consumer rule still wins, and while the token is
+   unset revert-layer leaves the tag inheriting its row's weight. */
+@layer visor-base {
+  .tag {
+    font-weight: var(--tag-input-tag-font-weight, revert-layer);
+  }
 }
 
 .tagLabel {
@@ -101,4 +112,25 @@
 
 .input::placeholder {
   color: var(--text-secondary, #9ca3af);
+}
+
+/* Typing slot (entryAs="slot", VI-663). The next tag is typed into a dashed
+   slot the shape of a held tag, and the slot grows with what is typed. The
+   dashed edge is the shared drop edge (VI-655), so --control-edge-width: 0
+   turns it off with every other edge. Declared after .input so it wins.
+   1.375rem is the height a held tag draws while --tag-input-tag-height is
+   unset (an 18px line, 1px padding and the 1px geometry border, each side),
+   so the unbound slot is the tag's shape too. */
+.inputSlot {
+  flex: 0 1 auto;
+  box-sizing: border-box;
+  field-sizing: content;
+  min-width: var(--tag-input-slot-min-width, 4rem);
+  max-width: 100%;
+  height: var(--tag-input-slot-height, var(--tag-input-tag-height, 1.375rem));
+  padding: 0 var(--tag-input-slot-padding-x, var(--tag-input-tag-padding-x, var(--spacing-2, 0.5rem)));
+  border-radius: var(--tag-input-slot-radius, var(--tag-input-tag-radius, var(--radius-full, 9999px)));
+  font-size: var(--tag-input-tag-font-size, var(--font-size-xs, 0.75rem));
+  outline: var(--control-drop-edge-width, var(--control-edge-width, 1px)) var(--control-drop-edge-style, dashed) var(--control-edge-color, var(--border-default, #e5e7eb));
+  outline-offset: calc(-1 * var(--control-drop-edge-width, var(--control-edge-width, 1px)));
 }

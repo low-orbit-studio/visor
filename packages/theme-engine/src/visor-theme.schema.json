@@ -564,6 +564,34 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "input": {
+          "type": "object",
+          "description": "Input shape at the default `md` size. Each key falls back to the matching `--input-*-md` variable, so a scope that sets one still applies while the key is unbound; a bound key wins. Keys: md-height, md-padding, md-radius.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "textarea": {
+          "type": "object",
+          "description": "Textarea shape at the default `md` size. Keys: padding, radius.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "select": {
+          "type": "object",
+          "description": "Select trigger shape at the default `md` size. Keys: height, padding, radius.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
+        "tag-input": {
+          "type": "object",
+          "description": "TagInput — the field around the tags, each held tag, and the opt-in typing slot (`entryAs=\"slot\"`). The slot follows the tag's shape unless its own keys are set. Keys: min-height, padding, radius, tag-height, tag-padding-x, tag-font-size, tag-font-weight, tag-radius, slot-height, slot-padding-x, slot-radius, slot-min-width.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "hairline": {
           "type": "object",
           "description": "The one switch for hairlines (VI-680). Every hairline rule, divider and ring reads its weight from `--hairline-width`, so `width: 0` removes them all at once. Independent of the `control` edge switch. Keys: width.",
@@ -573,7 +601,7 @@
         },
         "control": {
           "type": "object",
-          "description": "The one switch for form-control edges (VI-655). Every form control draws its resting edge from these, so `edge-width: 0` removes every resting edge at once, dashed edges included, with no layout shift. Keys: edge-width, edge-color, edge-style, drop-edge-width, drop-edge-style, state-edge-width.",
+          "description": "The one switch for form-control edges (VI-655). Every form control draws its resting edge from these, so `edge-width: 0` removes every resting edge at once, dashed edges included, with no layout shift. Keys: edge-width, edge-color, edge-style, drop-edge-width, drop-edge-style, state-edge-width, invalid-ring-width, invalid-halo-width.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }
@@ -594,7 +622,7 @@
         },
         "button": {
           "type": "object",
-          "description": "Button type treatment and rounding. The unprefixed keys set every size at once; a size key (`dlg-radius`) overrides one size. Keys: text-transform, letter-spacing, radius, sm-font-size, sm-text-transform, sm-letter-spacing, sm-radius, md-font-size, md-text-transform, md-letter-spacing, md-radius, lg-font-size, lg-text-transform, lg-letter-spacing, lg-radius, dlg-font-size, dlg-text-transform, dlg-letter-spacing, dlg-radius, icon-size, icon-pad, icon-radius, icon-ghost-color.",
+          "description": "Button type treatment and rounding. The unprefixed keys set every size at once; a size key (`dlg-radius`) overrides one size. Keys: text-transform, letter-spacing, font-weight, radius, sm-font-size, sm-font-weight, sm-text-transform, sm-letter-spacing, sm-radius, md-font-size, md-font-weight, md-text-transform, md-letter-spacing, md-radius, lg-font-size, lg-font-weight, lg-text-transform, lg-letter-spacing, lg-radius, dlg-font-size, dlg-font-weight, dlg-text-transform, dlg-letter-spacing, dlg-radius, icon-size, icon-pad, icon-radius, icon-ghost-color.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }
@@ -615,7 +643,7 @@
         },
         "save-status": {
           "type": "object",
-          "description": "SaveStatus readout — the fixed-width slot, its type, the Syncing ink and the Unsaved dot, so the readout never reflows its row. Keys: width, syncing-color, dot-size, font-family, text-transform, letter-spacing.",
+          "description": "SaveStatus readout — the fixed-width slot, its type, the Syncing ink and the Unsaved dot, so the readout never reflows its row. Keys: width, syncing-color, font-size, dot-size, unsaved-dot-size, font-family, text-transform, letter-spacing.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

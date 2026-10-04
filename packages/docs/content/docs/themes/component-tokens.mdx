@@ -400,6 +400,94 @@ Control sizing — the D3 Tier-2 `--checkbox-size` / `-radius` / `-bg` / `-borde
 | `--checkbox-bg-checked` | Checked fill. | `var(--interactive-primary-bg, var(--primary, #111827))` |
 | `--checkbox-border-checked` | Checked edge colour. | `var(--interactive-primary-bg, var(--primary, #111827))` |
 
+### `input`
+
+Input shape at the default `md` size. Each key falls back to the matching
+`--input-*-md` variable, so a scope that sets one still applies while the key is
+unbound; a bound key wins.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--input-md-height` | `md` height. Unbound, the height follows the padding and the line. Bind `md-padding` with it. | `var(--input-height-md, auto)` |
+| `--input-md-padding` | `md` padding. Also the padding of DialogField's medium well, so the well tracks the field. | `var(--input-padding-md, var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem))` |
+| `--input-md-radius` | `md` corner rounding. Also the rounding of DialogField's well. | `var(--input-radius-md, var(--radius-sm, 0.5rem))` |
+
+### `textarea`
+
+Textarea shape at the default `md` size.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--textarea-padding` | `md` padding. | `var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem)` |
+| `--textarea-radius` | `md` corner rounding. | `var(--radius-sm, 0.5rem)` |
+
+### `select`
+
+Select trigger shape at the default `md` size.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--select-height` | `md` trigger height. Unbound, the height follows the padding and the line. Bind `padding` with it. | `auto` |
+| `--select-padding` | `md` trigger padding. | `var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem)` |
+| `--select-radius` | `md` trigger corner rounding. | `var(--radius-sm, 0.5rem)` |
+
+A 40px field with `10px 12px` padding and 9px corners, on all three:
+
+```yaml
+components:
+  input:
+    md-height: "40px"
+    md-padding: "10px 12px"
+    md-radius: "9px"
+  textarea:
+    padding: "10px 12px"
+    radius: "9px"
+  select:
+    height: "40px"
+    padding: "10px 12px"
+    radius: "9px"
+```
+
+### `tag-input`
+
+TagInput — the field around the tags, each held tag, and the opt-in typing slot
+(`entryAs="slot"`). The slot follows the tag's shape unless its own keys are set.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--tag-input-min-height` | Field minimum height. The field grows as tags wrap. | `2.25rem` |
+| `--tag-input-padding` | Field padding around the tags. | `var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem)` |
+| `--tag-input-radius` | Field corner rounding. | `var(--radius-md, 0.375rem)` |
+| `--tag-input-tag-height` | Held-tag height. Unbound, the tag is as tall as its line. | `auto` |
+| `--tag-input-tag-padding-x` | Held-tag horizontal padding. | `var(--spacing-2, 0.5rem)` |
+| `--tag-input-tag-font-size` | Held-tag type size. The typing slot types at it too. | `var(--font-size-xs, 0.75rem)` |
+| `--tag-input-tag-font-weight` | Held-tag weight. Unbound, the tag inherits its row's weight. | `revert-layer` |
+| `--tag-input-tag-radius` | Held-tag corner rounding (a pill today). | `var(--radius-full, 9999px)` |
+| `--tag-input-slot-height` | Typing-slot height. Follows `tag-height`. | `var(--tag-input-tag-height, 1.375rem)` |
+| `--tag-input-slot-padding-x` | Typing-slot horizontal padding. Follows `tag-padding-x`. | `var(--tag-input-tag-padding-x, var(--spacing-2, 0.5rem))` |
+| `--tag-input-slot-radius` | Typing-slot corner rounding. Follows `tag-radius`. | `var(--tag-input-tag-radius, var(--radius-full, 9999px))` |
+| `--tag-input-slot-min-width` | Typing-slot minimum width. The slot grows with what is typed. | `4rem` |
+
+The typing slot draws its dashed edge from `--control-drop-edge-width` and
+`--control-drop-edge-style`, so `edges: off` turns it off with every other edge.
+A 29px tag and slot with 9px corners, in a 40px field:
+
+```yaml
+components:
+  tag-input:
+    min-height: "40px"
+    padding: "5px"
+    radius: "9px"
+    tag-height: "29px"
+    tag-padding-x: "10px"
+    tag-font-weight: "300"
+    tag-radius: "9px"
+```
+
+```tsx
+<TagInput entryAs="slot" defaultValue={["techno", "house"]} />
+```
+
 ### `control`
 
 The one switch for form-control edges. Every form control — Input, Textarea,
@@ -413,8 +501,10 @@ every resting edge at once, dashed edges included.
 | `--control-edge-color` | Resting-edge colour. A component's own `--<component>-border` override still wins over it. | `var(--border-default, #e5e7eb)` |
 | `--control-edge-style` | Resting-edge style for solid edges. | `solid` |
 | `--control-drop-edge-width` | Dashed-edge weight (FileUpload draws it at 2×). Follows `edge-width` unless set — set it alone to keep dashed edges while solid edges are off. | `var(--control-edge-width, 1px)` |
-| `--control-drop-edge-style` | Dashed-edge style for drop targets and empty states. | `dashed` |
+| `--control-drop-edge-style` | Dashed-edge style for drop targets, empty states and the TagInput typing slot. | `dashed` |
 | `--control-state-edge-width` | Focus and invalid edge weight. Independent of `edge-width`, so focus and invalid stay visible with edges off. | `1px` |
+| `--control-invalid-ring-width` | Width of the error-colour ring on a refused value. Unbound, Input draws a 1.5px inset ring and Textarea and Select draw it at `state-edge-width`. | `1.5px` (Textarea, Select: `var(--control-state-edge-width, 1px)`) |
+| `--control-invalid-halo-width` | Width of the soft error-colour halo outside the ring. Unbound, Input draws none and Textarea and Select draw it at `--focus-ring-width`. | `0px` (Textarea, Select: `var(--focus-ring-width, 2px)`) |
 
 Turning every edge off is one line in the theme:
 
@@ -445,6 +535,16 @@ How the switch holds up:
   control, not decoration.
 - **Dashed edges can come back on their own.** Set `--control-drop-edge-width`
   to keep drop-target and empty-state edges while solid edges stay off.
+
+The refused-value look on Input, Textarea and Select is a ring in the error
+colour plus a soft halo. A 1px ring with a 3px halo on all three:
+
+```yaml
+components:
+  control:
+    invalid-ring-width: "1px"
+    invalid-halo-width: "3px"
+```
 
 ### `hairline`
 
@@ -519,20 +619,25 @@ Button type treatment and rounding. The unprefixed keys set every size at once; 
 |---|---|---|
 | `--button-text-transform` | Casing for every size. | `revert-layer` |
 | `--button-letter-spacing` | Tracking for every size. | `revert-layer` |
+| `--button-font-weight` | Weight for every size. | `var(--font-weight-medium, 500)` · `var(--font-weight-semibold, 600)` |
 | `--button-radius` | Corner rounding for every size (`999px` for a pill). | `var(--radius-md, 0.375rem)` · `var(--radius-lg, 0.5rem)` |
 | `--button-sm-font-size` | `sm` type size. Drives both the standard and editorial-density steps. | `var(--font-size-xs, 0.75rem)` · `0.8125rem` |
+| `--button-sm-font-weight` | `sm` weight. | `var(--button-font-weight, var(--font-weight-medium, 500))` |
 | `--button-sm-text-transform` | `sm` casing. | `var(--button-text-transform, revert-layer)` |
 | `--button-sm-letter-spacing` | `sm` tracking. | `var(--button-letter-spacing, revert-layer)` |
 | `--button-sm-radius` | `sm` corner rounding. | `var(--button-radius, var(--radius-md, 0.375rem))` |
 | `--button-md-font-size` | `md` type size. | `var(--font-size-sm, 0.875rem)` |
+| `--button-md-font-weight` | `md` weight. | `var(--button-font-weight, var(--font-weight-medium, 500))` |
 | `--button-md-text-transform` | `md` casing. | `var(--button-text-transform, revert-layer)` |
 | `--button-md-letter-spacing` | `md` tracking. | `var(--button-letter-spacing, revert-layer)` |
 | `--button-md-radius` | `md` corner rounding. | `var(--button-radius, var(--radius-md, 0.375rem))` |
 | `--button-lg-font-size` | `lg` type size. | `var(--font-size-base, 1rem)` |
+| `--button-lg-font-weight` | `lg` weight. | `var(--button-font-weight, var(--font-weight-medium, 500))` |
 | `--button-lg-text-transform` | `lg` casing. | `var(--button-text-transform, revert-layer)` |
 | `--button-lg-letter-spacing` | `lg` tracking. | `var(--button-letter-spacing, revert-layer)` |
 | `--button-lg-radius` | `lg` corner rounding. | `var(--button-radius, var(--radius-md, 0.375rem))` |
 | `--button-dlg-font-size` | `dlg` type size. | `var(--font-size-2xs, 0.6875rem)` |
+| `--button-dlg-font-weight` | `dlg` weight. | `var(--button-font-weight, var(--font-weight-semibold, 600))` |
 | `--button-dlg-text-transform` | `dlg` casing. | `var(--button-text-transform, revert-layer)` |
 | `--button-dlg-letter-spacing` | `dlg` tracking. | `var(--button-letter-spacing, revert-layer)` |
 | `--button-dlg-radius` | `dlg` corner rounding. | `var(--button-radius, var(--radius-lg, 0.5rem))` |
@@ -620,7 +725,9 @@ SaveStatus readout — the fixed-width slot, its type, the Syncing ink and the U
 |---|---|---|
 | `--save-status-width` | Slot width. Unbound, the slot is as wide as the longest label in the current font plus the retry mark, the same in every state. Bind it to pin a width; a longer label then truncates inside it. | `auto` |
 | `--save-status-syncing-color` | Ink of the Syncing state (a first sync from an outside source). Unbound it reads `--text-secondary`. | `var(--text-secondary, #6b7280)` |
-| `--save-status-dot-size` | Diameter of the dot that draws Unsaved when `unsavedAs="dot"`. The slot width does not change. | `var(--spacing-2, 0.5rem)` |
+| `--save-status-font-size` | Readout type size. | `var(--font-size-xs, 0.75rem)` |
+| `--save-status-dot-size` | Diameter of the status dot (`dot`), in every state but Unsaved. Also the Unsaved dot's, until `unsaved-dot-size` is set. The slot width does not change. | `var(--spacing-2, 0.5rem)` |
+| `--save-status-unsaved-dot-size` | Diameter of the dot that draws Unsaved — the status dot while Unsaved, and the dot alone of `unsavedAs="dot"`. Follows `dot-size`. | `var(--save-status-dot-size, var(--spacing-2, 0.5rem))` |
 | `--save-status-font-family` | Readout family (e.g. the theme's mono). | `revert-layer` |
 | `--save-status-text-transform` | Readout casing. | `revert-layer` |
 | `--save-status-letter-spacing` | Readout tracking. | `revert-layer` |
@@ -637,6 +744,19 @@ components:
     text-transform: uppercase
     letter-spacing: "0.06em"
 ```
+
+With `dot`, SaveStatus draws a status dot before the label in every state, in
+the state's ink. A 9px readout with a 5px dot that grows to 6px while unsaved:
+
+```yaml
+components:
+  save-status:
+    font-size: "9px"
+    dot-size: "5px"
+    unsaved-dot-size: "6px"
+```
+
+The dot's box is as wide as the larger diameter, so the label never moves.
 
 SaveStatus draws no edge, so there is nothing for `control.edge-width` to turn off.
 

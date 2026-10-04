@@ -39,7 +39,7 @@ The label sits in a `role="status"` region with `aria-live="polite"`, so a scree
 
 ## Theming
 
-`components.save-status` sets the slot: `width`, `syncing-color`, `dot-size`, `font-family`, `text-transform` and `letter-spacing`. Unset, the readout inherits its family, case and tracking from its row, and any rule of yours wins. A 78px caps mono readout:
+`components.save-status` sets the slot: `width`, `syncing-color`, `font-size`, `dot-size`, `unsaved-dot-size`, `font-family`, `text-transform` and `letter-spacing`. Unset, the readout inherits its family, case and tracking from its row, and any rule of yours wins. A 78px caps mono readout:
 
 ```yaml
 components:
@@ -48,6 +48,20 @@ components:
     font-family: "var(--font-mono)"
     text-transform: uppercase
     letter-spacing: "0.06em"
+```
+
+`dot` draws a status dot before the label in every state, in the state's ink. `dot-size` sets it, and `unsaved-dot-size` sets it while Unsaved (it follows `dot-size` until set). The dot's box is as wide as the larger of the two, so the label never moves. A 9px readout with a 5px dot that grows to 6px while unsaved:
+
+```yaml
+components:
+  save-status:
+    font-size: "9px"
+    dot-size: "5px"
+    unsaved-dot-size: "6px"
+```
+
+```tsx
+<SaveStatus status={status} dot />
 ```
 
 The retry mark is the icon Button's mark: `--button-icon-size`, `--button-icon-pad` (its hit target, which adds no height) and `--button-icon-ghost-color`. SaveStatus draws no edge, so there is nothing for `control.edge-width` to turn off.

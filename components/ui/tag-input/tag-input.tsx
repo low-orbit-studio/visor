@@ -13,6 +13,12 @@ export interface TagInputProps
   placeholder?: string
   disabled?: boolean
   max?: number
+  /**
+   * Where the next tag is typed. `"text"` types after the last tag as bare
+   * text. `"slot"` types into a dashed slot the shape of a held tag, drawn on
+   * the shared drop edge. Defaults to `"text"`.
+   */
+  entryAs?: "text" | "slot"
 }
 
 const TagInput = React.forwardRef<HTMLDivElement, TagInputProps>(
@@ -25,6 +31,7 @@ const TagInput = React.forwardRef<HTMLDivElement, TagInputProps>(
       placeholder = "Add tag...",
       disabled = false,
       max,
+      entryAs = "text",
       ...props
     },
     ref
@@ -120,7 +127,8 @@ const TagInput = React.forwardRef<HTMLDivElement, TagInputProps>(
             }}
             placeholder={tags.length === 0 ? placeholder : ""}
             disabled={disabled}
-            className={styles.input}
+            data-slot={entryAs === "slot" ? "tag-input-slot" : undefined}
+            className={cn(styles.input, entryAs === "slot" && styles.inputSlot)}
             aria-label="Add tag"
           />
         )}

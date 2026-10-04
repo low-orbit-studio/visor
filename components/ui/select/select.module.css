@@ -44,9 +44,11 @@
 }
 
 .trigger[aria-invalid="true"] {
-  outline: var(--control-state-edge-width, 1px) solid var(--border-error, #ef4444);
-  outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
-  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-error, #ef4444) 15%, transparent);
+  /* VI-663: ring and halo widths are theme keys; unset they are the state
+     edge and the focus ring, as before. */
+  outline: var(--control-invalid-ring-width, var(--control-state-edge-width, 1px)) solid var(--border-error, #ef4444);
+  outline-offset: calc(-1 * var(--control-invalid-ring-width, var(--control-state-edge-width, 1px)));
+  box-shadow: 0 0 0 var(--control-invalid-halo-width, var(--focus-ring-width, 2px)) color-mix(in srgb, var(--border-error, #ef4444) 15%, transparent);
 }
 
 .trigger[data-placeholder] {
@@ -97,11 +99,11 @@
 }
 
 .triggerSizeMd {
-  --label-box-height: calc(1lh + var(--spacing-3_5, 0.875rem) * 2 + 2px);
-  height: auto;
-  padding: var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem);
+  --label-box-height: var(--select-height, calc(1lh + var(--spacing-3_5, 0.875rem) * 2 + 2px));
+  height: var(--select-height, auto);
+  padding: var(--select-padding, var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem));
   font-size: var(--font-size-sm, 0.875rem);
-  border-radius: var(--radius-sm, 0.5rem);
+  border-radius: var(--select-radius, var(--radius-sm, 0.5rem));
 }
 
 .triggerSizeLg {

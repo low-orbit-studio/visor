@@ -27,6 +27,7 @@ const geometry = `(function () {
 
 const read = (prop: string, sel = ROOT) => `getComputedStyle(document.querySelector(${JSON.stringify(sel)})).getPropertyValue(${JSON.stringify(prop)})`
 const DOT = "#root [data-slot=save-status-dot]"
+const STATUS_DOT = "#root [data-slot=save-status-status-dot]"
 
 beforeAll(async () => {
   await launch()
@@ -146,6 +147,11 @@ describe("VI-657 — SaveStatus (real browser)", () => {
       { token: "--save-status-width", prop: "width", value: "78px" },
       { token: "--save-status-syncing-color", prop: "color", value: "rgb(1, 2, 3)", state: "syncing" },
       { token: "--save-status-dot-size", prop: "width", value: "14px", state: "unsaved-dot", sel: DOT },
+      // VI-663: the readout size, and the status dot (dot) in every state
+      { token: "--save-status-font-size", prop: "font-size", value: "9px" },
+      { token: "--save-status-dot-size", prop: "height", value: "5px", state: "dot", sel: STATUS_DOT },
+      { token: "--save-status-unsaved-dot-size", prop: "width", value: "6px", state: "dot-unsaved", sel: STATUS_DOT },
+      { token: "--save-status-unsaved-dot-size", prop: "width", value: "6px", state: "unsaved-dot", sel: DOT },
       { token: "--save-status-font-family", prop: "font-family", value: "monospace" },
       { token: "--save-status-text-transform", prop: "text-transform", value: "uppercase" },
       { token: "--save-status-letter-spacing", prop: "letter-spacing", value: "3px" },

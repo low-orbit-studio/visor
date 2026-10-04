@@ -104,10 +104,40 @@ describe("TagInput", () => {
   })
 })
 
+describe("entryAs (VI-663)", () => {
+  it("types after the last tag as bare text by default", () => {
+    render(<TagInput defaultValue={["react"]} />)
+    expect(screen.getByLabelText("Add tag")).not.toHaveAttribute("data-slot")
+  })
+
+  it("slot types into the typing slot, and adds a tag from it", async () => {
+    const user = userEvent.setup()
+    const handleChange = vi.fn()
+    render(<TagInput entryAs="slot" defaultValue={["react"]} onChange={handleChange} />)
+
+    const slot = screen.getByLabelText("Add tag")
+    expect(slot).toHaveAttribute("data-slot", "tag-input-slot")
+    await user.type(slot, "vue{Enter}")
+    expect(handleChange).toHaveBeenCalledWith(["react", "vue"])
+  })
+
+  it("hides the slot at max, like the bare input", () => {
+    render(<TagInput entryAs="slot" defaultValue={["a", "b"]} max={2} />)
+    expect(screen.queryByLabelText("Add tag")).toBeNull()
+  })
+})
+
 describe("accessibility", () => {
   it("has no WCAG 2.1 AA violations", async () => {
     const { container } = render(
       <TagInput defaultValue={["react", "vue"]} />
+    )
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations with the typing slot", async () => {
+    const { container } = render(
+      <TagInput entryAs="slot" defaultValue={["react", "vue"]} />
     )
     await checkA11y(container)
   })

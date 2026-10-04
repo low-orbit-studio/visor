@@ -206,6 +206,31 @@ describe("VI-625 component token contract", () => {
           // `--hairline-width` is the family's.
           "hairline",
           "hairline-strong",
+          // Form-control hooks that predate the contract (VI-663 added the
+          // input / textarea / select / tag-input families around them). The
+          // per-control fill and edge colour are scoped overrides a form context
+          // sets (form-field-override-tokens.test.ts), and Input's sized
+          // variables are what the contract's `md-*` keys sit over. `--input-nudge`
+          // and `--input-box` are Input's own baseline arithmetic.
+          "input-bg",
+          "input-border",
+          "input-bg-invalid",
+          "input-placeholder-color",
+          "input-padding-sm",
+          "input-height-md",
+          "input-padding-md",
+          "input-radius-md",
+          "input-height-lg",
+          "input-padding-lg",
+          "input-radius-lg",
+          "input-nudge",
+          "input-box",
+          "textarea-bg",
+          "textarea-border",
+          "select-bg",
+          "select-border",
+          "tag-input-bg",
+          "tag-input-border",
         ]);
         expect([...orphans].filter((o) => !allow.has(o)).sort()).toEqual([]);
       });

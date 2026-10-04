@@ -40,6 +40,19 @@ import { TagInput } from '@/components/ui/tag-input';
   </div>
 </ComponentPreview>
 
+## Typing Slot
+
+`entryAs="slot"` types the next tag into a dashed slot the shape of a held tag, instead of bare text after the last tag. The slot grows with what is typed. Its dashed edge is the shared drop edge, so `edges: off` turns it off with every other edge.
+
+<ComponentPreview
+  title="Typing Slot"
+  code={"<TagInput entryAs=\"slot\" defaultValue={['React', 'TypeScript']} placeholder=\"Add a tag\" />"}
+>
+  <div style={{ width: '100%', maxWidth: '24rem' }}>
+    <TagInput entryAs="slot" defaultValue={['React', 'TypeScript']} placeholder="Add a tag" />
+  </div>
+</ComponentPreview>
+
 ## Disabled
 
 <ComponentPreview
@@ -68,6 +81,22 @@ This copies two files into your project:
 import { TagInput } from '@/components/ui/tag-input/tag-input';
 
 <TagInput placeholder="Add skills..." onChange={(tags) => console.log(tags)} />
+```
+
+## Theming
+
+`components.tag-input` sets the field (`min-height`, `padding`, `radius`), each held tag (`tag-height`, `tag-padding-x`, `tag-font-size`, `tag-font-weight`, `tag-radius`) and the typing slot (`slot-height`, `slot-padding-x`, `slot-radius`, `slot-min-width`). Each slot key follows the matching tag key until set. Unset, everything renders as before. A 29px tag and slot with 9px corners, in a 40px field:
+
+```yaml
+components:
+  tag-input:
+    min-height: "40px"
+    padding: "5px"
+    radius: "9px"
+    tag-height: "29px"
+    tag-padding-x: "10px"
+    tag-font-weight: "300"
+    tag-radius: "9px"
 ```
 
 ## API Reference
