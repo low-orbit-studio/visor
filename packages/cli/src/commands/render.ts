@@ -743,6 +743,34 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
   "file-upload": {
     default: { export: "FileUpload", interactiveTarget: "[tabindex=\"0\"]", props: `{}` },
   },
+  // VI-698: the edged Alert, then `appearance="soft"` in each tone. `soft` is
+  // Blacklight's door refusal; `soft-actions` is Animal's merge-dialog block.
+  alert: {
+    default: {
+      export: "Alert",
+      props: `{ variant: "destructive", style: { width: 420 }, children: [React.createElement(__mod.AlertTitle, { key: "t" }, "Error"), React.createElement(__mod.AlertDescription, { key: "d" }, "Your session has expired. Please log in again.")] }`,
+    },
+    soft: {
+      export: "Alert",
+      props: `{ appearance: "soft", variant: "destructive", style: { width: 420 }, children: React.createElement(__mod.AlertDescription, null, React.createElement(__mod.AlertLead, null, "That email isn't on the list."), " Ask your host for an invite, or try another address.") }`,
+    },
+    "soft-warning": {
+      export: "Alert",
+      props: `{ appearance: "soft", variant: "warning", style: { width: 420 }, children: React.createElement(__mod.AlertDescription, null, React.createElement(__mod.AlertLead, null, "Unsaved changes."), " Leave now and they are lost.") }`,
+    },
+    "soft-success": {
+      export: "Alert",
+      props: `{ appearance: "soft", variant: "success", style: { width: 420 }, children: React.createElement(__mod.AlertDescription, null, "Check your inbox for a sign-in code.") }`,
+    },
+    "soft-note": {
+      export: "Alert",
+      props: `{ appearance: "soft", style: { width: 420 }, children: React.createElement(__mod.AlertDescription, null, "Only the venue owner can change payout details.") }`,
+    },
+    "soft-actions": {
+      export: "Alert",
+      props: `{ appearance: "soft", variant: "destructive", style: { width: 420 }, children: [React.createElement(__mod.AlertDescription, { key: "d" }, React.createElement(__mod.AlertLead, null, "This can't be undone."), " The two profiles merge into one, and their bookings, payouts and notes move with it."), React.createElement(__mod.AlertActions, { key: "a" }, React.createElement("button", { type: "button" }, "Merge profiles"))] }`,
+    },
+  },
   "empty-state": {
     default: {
       export: "EmptyState",

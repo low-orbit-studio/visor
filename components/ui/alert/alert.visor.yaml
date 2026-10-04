@@ -8,11 +8,13 @@ when_to_use:
   - Showing success confirmation that should remain visible
   - Informational callouts in documentation or onboarding flows
   - Form-level error summaries above or below a form
+  - A refusal or notice directly under a control, or a consequence in a dialog ("This can't be undone") — use appearance="soft"
 
 when_not_to_use:
   - Ephemeral notifications that auto-dismiss (use Toast)
   - Full-width announcements at the top of a page (use Banner)
-  - Inline field-level validation messages (use Field error state)
+  - A field's own validation hint tied to one input via aria-describedby (use FieldError); a refusal of the whole submit under the control uses appearance="soft"
+  - A failed load inside a card or panel that needs a retry (use ErrorPlacard)
   - Messages requiring user action to dismiss (use Dialog)
 
 why: >
@@ -20,15 +22,24 @@ why: >
   variants for default, destructive, success, warning, and info states. It ensures
   consistent color coding and structure with AlertTitle and AlertDescription
   sub-components, all themed via CSS custom properties.
+  appearance="soft" draws the inline alert Animal Booking and Blacklight each built
+  locally: a soft tinted fill with no edge or shadow, an outline icon in the tone's
+  colour, and the body in secondary ink, so a refusal reads calm. It is one component
+  rather than a sibling InlineAlert, so spacing and type tune in one place (the
+  --alert-* component tokens). FieldError stays the per-input hint, ErrorPlacard the
+  failed-load card with a retry, and Banner the full-width page notice.
 
 variants:
   variant: [default, destructive, success, warning, info]
+  appearance: [default, soft]
 
 sub_components:
   - name: AlertTitle
     description: Bold heading text for the alert message.
   - name: AlertDescription
     description: Secondary descriptive text below the title.
+  - name: AlertLead
+    description: Bold lead sentence in primary ink, set inline at the start of AlertDescription.
   - name: AlertActions
     description: Right-aligned, gap-aware row for inline action buttons (e.g. retry/dismiss).
 
@@ -36,9 +47,23 @@ props:
   - name: variant
     type: "'default' | 'destructive' | 'success' | 'warning' | 'info'"
     default: "default"
+  - name: appearance
+    type: "'default' | 'soft'"
+    default: "default"
+    description: >
+      soft draws a tinted fill with no edge or shadow, a tone icon and the body in secondary ink.
+      Under soft, info falls back to the neutral default note, and role defaults to alert for
+      destructive and status for the rest (an explicit role still wins).
+  - name: icon
+    type: "ReactElement<IconProps>"
+    required: false
+    description: >
+      soft only. Replaces the tone's default icon (WarningOctagon, Warning, CheckCircle, Info).
+      Drawn at --alert-icon-size (32px; 24px for the neutral note) and hidden from assistive tech.
 
 dependencies:
   - "class-variance-authority"
+  - "@phosphor-icons/react"
 
 preview_url: "https://visor.loworbit.studio/docs/components/feedback/alert"
 
@@ -46,4 +71,10 @@ example: |
   <Alert variant="destructive">
     <AlertTitle>Error</AlertTitle>
     <AlertDescription>Your session has expired. Please log in again.</AlertDescription>
+  </Alert>
+
+  <Alert appearance="soft" variant="destructive">
+    <AlertDescription>
+      <AlertLead>That email isn't on the list.</AlertLead> Ask your host for an invite, or try another address.
+    </AlertDescription>
   </Alert>

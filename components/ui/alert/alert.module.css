@@ -80,3 +80,109 @@
 .variantInfo .description {
   color: color-mix(in srgb, var(--text-info, currentColor) 90%, transparent);
 }
+
+/* AlertLead — a bold lead sentence set inline at the start of the description */
+.lead {
+  color: var(--text-primary, currentColor);
+  font-weight: var(--alert-lead-font-weight, var(--font-weight-bold, 700));
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   appearance="soft" (VI-698) — the inline alert Animal Booking (AN-724) and
+   Blacklight (BL-1204) each built locally. A soft tinted fill with no edge and
+   no shadow, an unchipped outline icon in the tone's colour, and the body in
+   secondary ink: the icon and the fill carry the tone, so a refusal reads calm.
+   The edged variant classes are never applied under `soft`, so nothing here
+   has to out-specify them. Sizes are `--alert-*` component tokens a theme binds
+   in its components block, under alert.
+   ───────────────────────────────────────────────────────────────────────────── */
+.soft {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--alert-gap, var(--spacing-3, 0.75rem));
+  /* 12px 14px — the approved builds' inset; 14px is spacing-3 plus half a step. */
+  padding: var(--alert-soft-padding, var(--spacing-3, 0.75rem) calc(var(--spacing-3, 0.75rem) + var(--spacing-1, 0.25rem) / 2));
+  border-radius: var(--alert-radius, var(--radius-lg, 0.5rem));
+  box-shadow: none;
+  font-size: var(--alert-font-size, var(--font-size-sm, 0.875rem));
+  line-height: var(--line-height-normal, 1.5);
+  color: var(--text-secondary, currentColor);
+}
+
+.softDestructive {
+  background-color: var(--surface-error-soft, var(--surface-error-subtle, transparent));
+}
+
+.softWarning {
+  background-color: var(--surface-warning-soft, var(--surface-warning-subtle, transparent));
+}
+
+.softSuccess {
+  background-color: var(--surface-success-soft, var(--surface-success-subtle, transparent));
+}
+
+/* The neutral note: a faint wash of the ink colour — white on a dark card, a
+   faint grey on a light one. 5% is the approved builds' white wash at 5% alpha,
+   mixed toward the ink instead of white so it also reads in light mode. */
+.softNote {
+  background-color: color-mix(in srgb, var(--text-primary, #111827) 5%, transparent);
+}
+
+/* The icon: outline, unchipped, in the tone's colour. The SVG's own width is
+   the token's fallback; this governs the rendered size so a theme can bind it. */
+.icon {
+  flex: none;
+  display: inline-flex;
+}
+
+.icon > svg {
+  width: var(--alert-icon-size, 2rem);
+  height: var(--alert-icon-size, 2rem);
+}
+
+.softNote .icon > svg {
+  width: var(--alert-icon-size-note, 1.5rem);
+  height: var(--alert-icon-size-note, 1.5rem);
+}
+
+.softDestructive .icon {
+  color: var(--text-error, currentColor);
+}
+
+.softWarning .icon {
+  color: var(--text-warning, currentColor);
+}
+
+.softSuccess .icon {
+  color: var(--text-success, currentColor);
+}
+
+.softNote .icon {
+  color: var(--text-secondary, currentColor);
+}
+
+/* At least the icon's height and centred against it, so a one-line message
+   sits level with the icon while a longer one starts at its top. */
+.content {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--alert-icon-size, 2rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(var(--spacing-1, 0.25rem) / 2);
+}
+
+.softNote .content {
+  min-height: var(--alert-icon-size-note, 1.5rem);
+}
+
+.soft .title {
+  color: var(--text-primary, currentColor);
+}
+
+.soft .description {
+  font-size: inherit;
+  line-height: inherit;
+  color: var(--text-secondary, currentColor);
+}

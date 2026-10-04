@@ -8,6 +8,14 @@ declare const styles: {
   readonly title: string
   readonly description: string
   readonly actions: string
+  readonly lead: string
+  readonly soft: string
+  readonly softDestructive: string
+  readonly softWarning: string
+  readonly softSuccess: string
+  readonly softNote: string
+  readonly icon: string
+  readonly content: string
 }
 
 export default styles

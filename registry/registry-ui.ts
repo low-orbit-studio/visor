@@ -533,8 +533,8 @@ export const ui: Registry = [
     name: "alert",
     type: "registry:ui",
     description:
-      "An alert component with title, description, and right-aligned actions sub-components, supporting default, destructive, success, and warning variants.",
-    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+      "An alert component with title, description, lead, and right-aligned actions sub-components, supporting default, destructive, success, and warning variants, and a soft appearance with a tone icon for inline refusals under a control.",
+    dependencies: ["class-variance-authority", "@phosphor-icons/react", "@loworbitstudio/visor-core"],
     registryDependencies: ["utils"],
     files: [
       {

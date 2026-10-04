@@ -703,6 +703,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "alert": {
+          "type": "object",
+          "description": "Alert's soft appearance: the inline alert under a control or in a dialog — icon size, inset, gap, rounding and type. Keys: icon-size, icon-size-note, soft-padding, gap, radius, font-size, lead-font-weight.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "admin-ui": {
           "type": "object",
           "description": "Structural roles the admin-ui pattern owns. `marquee-family` is the display face for KPI hero figures and marquee page titles — the role the admin-ui portability audit named as the one piece of ENTR brand coupling a new theme must rebind. Keys: marquee-family.",

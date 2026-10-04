@@ -7,6 +7,34 @@ export interface PropDef {
 }
 
 export const propsData: Record<string, PropDef[]> = {
+  alert: [
+    {
+      name: 'variant',
+      type: "'default' | 'destructive' | 'success' | 'warning' | 'info'",
+      default: "'default'",
+      description: 'Semantic tone. Under appearance="soft", info draws as default.',
+    },
+    {
+      name: 'appearance',
+      type: "'default' | 'soft'",
+      default: "'default'",
+      description:
+        'soft draws a tinted fill with no edge or shadow, a tone icon and the body in secondary ink.',
+    },
+    {
+      name: 'icon',
+      type: 'React.ReactElement<IconProps>',
+      description:
+        "soft only. Replaces the tone's default icon; drawn at --alert-icon-size (24px for the default note) and hidden from assistive tech.",
+    },
+    {
+      name: 'role',
+      type: 'string',
+      default: "'alert'",
+      description:
+        'Defaults to alert. Under appearance="soft", defaults to alert for destructive and status for the rest.',
+    },
+  ],
   button: [
     {
       name: 'variant',

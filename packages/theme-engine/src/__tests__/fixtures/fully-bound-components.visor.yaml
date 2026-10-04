@@ -375,5 +375,13 @@ components:
     color: "#6b21a8"
   separator:
     color: "#2c2c2c"
+  alert:
+    icon-size: "28px"
+    icon-size-note: "20px"
+    soft-padding: "12px 14px"
+    gap: "12px"
+    radius: "10px"
+    font-size: "13px"
+    lead-font-weight: "600"
   admin-ui:
     marquee-family: "\"Courier New\", monospace"
