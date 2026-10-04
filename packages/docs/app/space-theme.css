@@ -507,9 +507,9 @@ html:not(.dark) .space-theme {
 
 /* --- Adaptive: Interactive (dark) — manual toggle --- */
 .dark .space-theme {
-  --interactive-primary-bg: #5b6fff;
-  --interactive-primary-bg-hover: #7b93ff;
-  --interactive-primary-bg-active: #aabcff;
+  --interactive-primary-bg: #5063f5;
+  --interactive-primary-bg-hover: #4556e6;
+  --interactive-primary-bg-active: #3646c4;
   --interactive-primary-text: #ffffff;
   --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
   --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
@@ -605,9 +605,9 @@ html:not(.dark) .space-theme {
 /* --- Adaptive: Interactive (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
   .space-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
-    --interactive-primary-bg: #5b6fff;
-    --interactive-primary-bg-hover: #7b93ff;
-    --interactive-primary-bg-active: #aabcff;
+    --interactive-primary-bg: #5063f5;
+    --interactive-primary-bg-hover: #4556e6;
+    --interactive-primary-bg-active: #3646c4;
     --interactive-primary-text: #ffffff;
     --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
     --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
@@ -699,7 +699,7 @@ html:not(.dark) .space-theme {
 
 /* --- Adaptive: Interactive (light) --- */
 html:not(.dark) .space-theme {
-  --interactive-primary-bg: #5b6fff;
+  --interactive-primary-bg: #5063f5;
   --interactive-primary-bg-hover: #2e2dbc;
   --interactive-primary-bg-active: #1e168d;
   --interactive-primary-text: #ffffff;

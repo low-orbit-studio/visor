@@ -61,6 +61,9 @@ overrides:
     text-primary: "rgba(0, 0, 0, 0.9)"
     text-secondary: "rgba(0, 0, 0, 0.55)"
     text-tertiary: "rgba(0, 0, 0, 0.55)"
+    # VI-697: white on the derived green fill (#018e5f) measured 4.17:1. The
+    # fill is darkened along the same hue to clear AA text contrast (4.5:1).
+    interactive-primary-bg: "#018458"
   dark:
     # VI-346: see light-mode note above — alpha-blended neutrals are stylistic.
     text-primary: "rgba(255, 255, 255, 0.7)"
@@ -83,3 +86,7 @@ overrides:
     interactive-primary-bg: "#04bf81"
     interactive-primary-bg-hover: "#a0ffcf"
     interactive-primary-bg-active: "#bbffdb"
+    # VI-697: the neon fill and its mint hover/active ramp read white text at
+    # 2.39:1 down to 1.1:1. Black text keeps the neon look and clears AA on all
+    # three (8.77:1, 17.7:1, 18.4:1).
+    interactive-primary-text: "#000000"

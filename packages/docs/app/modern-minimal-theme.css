@@ -536,7 +536,7 @@ html:not(.dark) .modern-minimal-theme {
   --interactive-primary-bg: #04bf81;
   --interactive-primary-bg-hover: #a0ffcf;
   --interactive-primary-bg-active: #bbffdb;
-  --interactive-primary-text: #FFFFFF;
+  --interactive-primary-text: #000000;
   --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
   --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
   --interactive-primary-strong: #4fdca1;
@@ -634,7 +634,7 @@ html:not(.dark) .modern-minimal-theme {
     --interactive-primary-bg: #04bf81;
     --interactive-primary-bg-hover: #a0ffcf;
     --interactive-primary-bg-active: #bbffdb;
-    --interactive-primary-text: #FFFFFF;
+    --interactive-primary-text: #000000;
     --interactive-primary-soft: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
     --interactive-primary-glow: color-mix(in srgb, var(--color-primary-500) 32%, transparent);
     --interactive-primary-strong: #4fdca1;
@@ -743,7 +743,7 @@ html:not(.dark) .modern-minimal-theme {
 
 /* --- Adaptive: Interactive (light) --- */
 html:not(.dark) .modern-minimal-theme {
-  --interactive-primary-bg: #018e5f;
+  --interactive-primary-bg: #018458;
   --interactive-primary-bg-hover: #016e48;
   --interactive-primary-bg-active: #004a30;
   --interactive-primary-text: #FFFFFF;
@@ -773,9 +773,9 @@ html:not(.dark) .modern-minimal-theme {
   --color-fd-muted: rgba(255, 255, 255, 0.04);
   --color-fd-muted-foreground: rgba(255, 255, 255, 0.70);
   --color-fd-accent: #04bf81;
-  --color-fd-accent-foreground: #FFFFFF;
+  --color-fd-accent-foreground: #000000;
   --color-fd-primary: #04bf81;
-  --color-fd-primary-foreground: #FFFFFF;
+  --color-fd-primary-foreground: #000000;
   --color-fd-secondary: rgba(255, 255, 255, 0.04);
   --color-fd-secondary-foreground: rgba(255, 255, 255, 0.7);
   --color-fd-popover: #141414;
