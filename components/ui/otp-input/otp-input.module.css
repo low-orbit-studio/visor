@@ -2,7 +2,8 @@
 .wrapper {
   position: relative;
   display: inline-flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   gap: var(--spacing-2, 0.5rem);
 }
 
@@ -15,17 +16,18 @@
   font-size: var(--font-size-sm, 0.875rem);
 }
 
-/* Visually hidden live region for the code error (4.1.3). */
-.srOnly {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  padding: 0;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-  border: 0;
+/* Cells and trailing content share one row; the error sits under it. */
+.row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+/* Visible code error, a live region (4.1.3). Not colour alone (1.4.1). */
+.error {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-normal, 400);
+  color: var(--text-error, #dc2626);
 }
 
 /* Individual digit cell */

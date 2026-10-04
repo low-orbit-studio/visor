@@ -13,7 +13,7 @@ export interface OTPInputProps
   autoFocus?: boolean
   /** Marks every cell invalid (`aria-invalid`) and draws the invalid edge. The digits are kept so they can be fixed. */
   invalid?: boolean
-  /** Announced to assistive tech when set (4.1.3). Rendered in a visually hidden live region; show the visible message next to the control. */
+  /** Shown under the cells while `invalid`, in the error text colour, as a `role="alert"` live region (4.1.3). The component draws the message, so do not render a second error line. */
   errorMessage?: React.ReactNode
   /** Trailing content beside the cells: a working indicator (Spinner) or a resend action. */
   trailing?: React.ReactNode
@@ -132,6 +132,7 @@ const OTPInput = React.forwardRef<HTMLDivElement, OTPInputProps>(
         className={cn(styles.wrapper, className)}
         {...props}
       >
+        <div className={styles.row}>
         {Array.from({ length }, (_, i) => (
           <input
             key={i}
@@ -164,13 +165,12 @@ const OTPInput = React.forwardRef<HTMLDivElement, OTPInputProps>(
             {trailing}
           </span>
         )}
-        <span
-          id={errorId}
-          role="alert"
-          className={styles.srOnly}
-        >
-          {invalid ? errorMessage : null}
-        </span>
+        </div>
+        {hasError && (
+          <span id={errorId} role="alert" className={styles.error}>
+            {errorMessage}
+          </span>
+        )}
       </div>
     )
   }

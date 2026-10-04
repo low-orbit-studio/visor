@@ -36,7 +36,7 @@ import { OTPInput } from '@/components/ui/otp-input';
 
 ## Invalid
 
-`invalid` marks every cell `aria-invalid` and draws the invalid edge. The digits stay, so the code can be fixed. `errorMessage` is announced through a live region.
+`invalid` marks every cell `aria-invalid` and draws the invalid edge. The digits stay, so the code can be fixed. `errorMessage` is shown under the cells in the error text colour and announced as a `role="alert"` live region. Do not also render your own error line when you pass it.
 
 <ComponentPreview
   title="Invalid"
@@ -87,6 +87,6 @@ import { OTPInput } from '@/components/ui/otp-input/otp-input';
 - Cells are grouped inside a `<div role="group">` with an accessible label (e.g., `aria-label="One-time password"`)
 - Focus auto-advances to the next cell on digit entry and moves back on Backspace
 - The first cell carries `autocomplete="one-time-code"`, so a one-time-code autofill fills every cell (WCAG 3.3.8)
-- `invalid` sets `aria-invalid` on every cell; `errorMessage` is announced via `role="alert"` (4.1.3)
+- `invalid` sets `aria-invalid` on every cell; `errorMessage` is shown under the cells and is the `role="alert"` live region (4.1.3, 1.4.1)
 - Paste support fills all cells from clipboard and focuses the last filled cell
 - Provide a descriptive `aria-label` prop on the group for screen reader context (e.g., "Enter your 6-digit verification code")

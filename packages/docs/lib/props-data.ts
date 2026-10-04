@@ -2026,7 +2026,7 @@ export const propsData: Record<string, PropDef[]> = {
     {
       name: 'errorMessage',
       type: 'ReactNode',
-      description: 'Code error announced through a live region (role=alert) while invalid. Show the visible message beside the control.',
+      description: 'Shown under the cells while invalid, in the error text colour, as a role=alert live region. The component draws the message, so do not render a second error line.',
     },
     {
       name: 'trailing',

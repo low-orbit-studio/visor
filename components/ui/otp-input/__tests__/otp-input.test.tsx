@@ -137,6 +137,8 @@ describe("invalid", () => {
     render(<OTPInput length={4} value="1234" invalid errorMessage="Wrong code" />)
     const alert = screen.getByRole("alert")
     expect(alert).toHaveTextContent("Wrong code")
+    expect(alert).toBeVisible()
+    expect(alert.className).not.toMatch(/srOnly/)
     screen.getAllByRole("textbox").forEach((cell) => {
       expect(cell).toHaveAttribute("aria-describedby", alert.id)
     })
@@ -197,5 +199,17 @@ describe("trailing", () => {
   it("renders no trailing wrapper without one", () => {
     const { container } = render(<OTPInput length={4} />)
     expect(container.querySelector('[data-slot="otp-input-trailing"]')).toBeNull()
+  })
+})
+
+describe("errorMessage visibility", () => {
+  it("renders nothing when not invalid or no message", () => {
+    const { rerender } = render(<OTPInput length={4} errorMessage="Wrong code" />)
+    expect(screen.queryByRole("alert")).toBeNull()
+    rerender(<OTPInput length={4} invalid />)
+    expect(screen.queryByRole("alert")).toBeNull()
+    screen.getAllByRole("textbox").forEach((cell) => {
+      expect(cell).not.toHaveAttribute("aria-describedby")
+    })
   })
 })

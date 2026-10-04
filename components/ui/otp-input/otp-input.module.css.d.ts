@@ -3,6 +3,7 @@ declare const styles: {
   readonly cell: string
   readonly cellFilled: string
   readonly trailing: string
-  readonly srOnly: string
+  readonly row: string
+  readonly error: string
 }
 export default styles
