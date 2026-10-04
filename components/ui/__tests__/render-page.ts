@@ -29,6 +29,7 @@ export interface PageLike {
   waitForFunction(expression: string, arg?: unknown, opts?: { timeout: number }): Promise<unknown>
   addStyleTag(opts: { content: string }): Promise<unknown>
   screenshot(opts: { clip?: { x: number; y: number; width: number; height: number } }): Promise<Buffer>
+  hover(selector: string): Promise<void>
   close(): Promise<void>
 }
 interface BrowserLike { newPage(opts?: { viewport: { width: number; height: number } }): Promise<PageLike>; close(): Promise<void> }
@@ -98,23 +99,29 @@ export async function bundle(component: string, fixture: string): Promise<Bundle
 /**
  * Open a fixture with transitions and animations off. `scopeCss` is applied to
  * #theme-scope, the element the theme class sits on; `componentCss` replaces
- * the bundle's CSS; `extraCss` is appended after it.
+ * the bundle's CSS; `extraCss` is appended after it. `theme` swaps the default
+ * neutral light theme for other theme CSS, its scope class and mode.
  */
 export async function open(
   component: string,
   fixture: string,
-  opts: { scopeCss?: string; componentCss?: string; extraCss?: string } = {},
+  opts: {
+    scopeCss?: string
+    componentCss?: string
+    extraCss?: string
+    theme?: { css: string; className: string; mode: "light" | "dark" }
+  } = {},
 ): Promise<PageLike> {
   const b = await bundle(component, fixture)
   const page = await browser!.newPage({ viewport: { width: 720, height: 480 } })
   const html = buildHtml({
     resetCss: resetCss(),
     tokensCss: tokensCss(),
-    themeCss: themeCss(),
+    themeCss: opts.theme?.css ?? themeCss(),
     componentCss: (opts.componentCss ?? b.css) + `\n#theme-scope { ${opts.scopeCss ?? ""} }\n${opts.extraCss ?? ""}`,
     bundleJs: b.js,
-    themeClass: `${THEME}-theme`,
-    mode: "light",
+    themeClass: opts.theme?.className ?? `${THEME}-theme`,
+    mode: opts.theme?.mode ?? "light",
   })
   await page.setContent(html, { waitUntil: "load" })
   await page.waitForFunction("document.getElementById('root') && document.getElementById('root').childElementCount > 0", undefined, { timeout: 10000 })

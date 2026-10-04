@@ -17,9 +17,17 @@
   cursor: pointer;
 }
 
+/* VI-693: hover reads its own keys, so a borderless theme (border-strong set
+   transparent) keeps a visible track under the pointer. Unset, both states
+   repaint with --border-strong, as they always have. The checked rule is one
+   class more specific, so it wins over the unchecked one. */
 @media (hover: hover) {
   .root:hover:not(:focus-visible):not(:disabled):not([aria-invalid="true"]) {
-    background-color: var(--border-strong, #d1d5db);
+    background-color: var(--switch-track-hover-bg, var(--border-strong, #d1d5db));
+  }
+
+  .root[data-state="checked"]:hover:not(:focus-visible):not(:disabled):not([aria-invalid="true"]) {
+    background-color: var(--switch-track-hover-bg-checked, var(--border-strong, #d1d5db));
   }
 }
 
@@ -81,7 +89,7 @@
 .thumb {
   display: block;
   border-radius: 9999px;
-  background-color: var(--surface-page, #ffffff);
+  background-color: var(--switch-knob-bg, var(--surface-page, #ffffff));
   box-shadow: var(--shadow-sm);
   transition: transform var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
   pointer-events: none;
@@ -96,6 +104,12 @@
 .sizeSm .thumb {
   width: 0.75rem;
   height: 0.75rem;
+}
+
+/* VI-693: the knob has a key per state. A dark theme's page colour is a black
+   knob, which an unchecked track cannot hold at 3:1 (WCAG 1.4.11). */
+.root[data-state="checked"] .thumb {
+  background-color: var(--switch-knob-bg-checked, var(--surface-page, #ffffff));
 }
 
 .root[data-state="unchecked"] .thumb {

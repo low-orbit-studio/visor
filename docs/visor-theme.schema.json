@@ -656,7 +656,7 @@
         },
         "switch": {
           "type": "object",
-          "description": "Switch track and knob dimensions (default size; `size=\"sm\"` keeps its own). Set `knob-inset` to size the knob from the track: it sits that far from the track's outer edge on every side. Keys: track-width, track-height, knob-inset, track-bg, edge-color.",
+          "description": "Switch track and knob dimensions (default size; `size=\"sm\"` keeps its own) and colours. Set `knob-inset` to size the knob from the track: it sits that far from the track's outer edge on every side. Keys: track-width, track-height, knob-inset, track-bg, edge-color, track-hover-bg, track-hover-bg-checked, knob-bg, knob-bg-checked.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

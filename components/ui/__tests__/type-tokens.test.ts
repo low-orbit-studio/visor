@@ -31,6 +31,8 @@ interface Case {
   /** Bound computed value in px, compared to 1 decimal (layout rounds to 1/64 px). */
   expectedPx?: number
   density?: "editorial"
+  /** Hover the target before reading (the hover-only hooks). */
+  hover?: boolean
 }
 
 const LABEL = "[data-slot=field-label]"
@@ -90,12 +92,19 @@ const CASES: Case[] = [
   { token: "--switch-knob-inset", fixture: "switch/default", target: "button > span", prop: "width", value: "3px", expectedPx: 12.4 },
   { token: "--switch-track-bg", fixture: "switch/default", target: "button", prop: "background-color", value: "rgb(1, 2, 3)" },
   { token: "--switch-edge-color", fixture: "switch/default", target: "button", prop: "outline-color", value: "rgb(1, 2, 3)" },
+  // VI-693: knob and hover colours. Unset-equals-1.34.0 and the blacklight-app
+  // contrast proof live in switch-color-tokens.test.ts.
+  { token: "--switch-knob-bg", fixture: "switch/default", target: "button > span", prop: "background-color", value: "rgb(1, 2, 3)" },
+  { token: "--switch-knob-bg-checked", fixture: "switch/checked", target: "button > span", prop: "background-color", value: "rgb(1, 2, 3)" },
+  { token: "--switch-track-hover-bg", fixture: "switch/default", target: "button", prop: "background-color", value: "rgb(1, 2, 3)", hover: true },
+  { token: "--switch-track-hover-bg-checked", fixture: "switch/checked", target: "button", prop: "background-color", value: "rgb(1, 2, 3)", hover: true },
 ]
 
 async function read(c: Case, opts: { scopeCss?: string; componentCss?: string } = {}): Promise<string> {
   const [component, fixture] = c.fixture.split("/")
   const page = await open(component, fixture, opts)
   if (c.density) await page.evaluate(`document.getElementById("theme-scope").setAttribute("data-density", ${JSON.stringify(c.density)})`)
+  if (c.hover) await page.hover(`#root ${c.target}`)
   const value = (await page.evaluate(
     `getComputedStyle(document.querySelector(${JSON.stringify(`#root ${c.target}`)})).getPropertyValue(${JSON.stringify(c.prop)})`,
   )) as string

@@ -55,12 +55,21 @@ const SelectTrigger = React.forwardRef<
 })
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
 
+interface SelectContentProps
+  extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content> {
+  /**
+   * Element the menu portals into. Defaults to `document.body`. Pass the root
+   * of a class-scoped theme so the menu inherits that theme's tokens.
+   */
+  container?: React.ComponentPropsWithoutRef<typeof SelectPrimitive.Portal>["container"]
+}
+
 const SelectContent = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
->(({ className, children, position = "popper", ...props }, ref) => {
+  SelectContentProps
+>(({ className, children, position = "popper", container, ...props }, ref) => {
   return (
-    <SelectPrimitive.Portal>
+    <SelectPrimitive.Portal container={container}>
       <SelectPrimitive.Content
         data-slot="select-content"
         className={cn(styles.content, className)}
@@ -183,3 +192,4 @@ export {
   SelectTrigger,
   SelectValue,
 }
+export type { SelectContentProps }
