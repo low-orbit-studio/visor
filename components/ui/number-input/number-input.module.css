@@ -119,3 +119,21 @@
 .affixSuffix {
   margin-inline-end: var(--spacing-2, 0.5rem);
 }
+
+/* Per-font baseline nudge (VI-684 mechanism, shared with Input). The theme engine
+   publishes the body face's ascent and descent as unitless em ratios; the value
+   box is 2.25rem, the same as Input sm, so it takes the same nudge: the gap
+   between the whole px nearest the ideal baseline and the one the font produces.
+   The value and both affixes move by it, so they share a baseline. Blink only
+   (WebKit places the baseline exactly); no font metrics means no nudge (0px). */
+@supports (padding-top: round(1.4px, 1px)) and (not (-apple-pay-button-style: black)) {
+  .wrapper {
+    --input-nudge: calc(round((2.25rem + 1cap) / 2, 1px) - (2.25rem + (round(var(--font-ascent) * 1em, 1px) - round(var(--font-descent) * 1em, 1px))) / 2);
+  }
+
+  .input,
+  .affix {
+    position: relative;
+    top: var(--input-nudge, 0px);
+  }
+}

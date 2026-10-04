@@ -20,7 +20,8 @@ async function main() {
   const rows: string[] = []
   for (const s of FONT_SCENARIOS) {
     const spec = which === "button" ? BUTTONS : which === "affix" ? (await import("./ink-controls")).AFFIX_CONTROLS : (await import("./ink-controls")).CONTROLS
-    const res = await measureInk({ ...withScenario(s, spec), browser, dsf })
+    const sc = withScenario(s, spec)
+    const res = await measureInk({ ...sc, extraCss: sc.extraCss + (which === "affix" ? (await import("./ink-controls")).AFFIX_MEASURE_CSS : ""), browser, dsf })
     for (const r of res) rows.push(`${s.name.padEnd(36)} ${r.id.padEnd(22)} ${r.width.toFixed(1)}x${r.height.toFixed(1)}  top ${r.topGap.toFixed(2)}  bottom ${r.bottomGap.toFixed(2)}  offset ${r.offset >= 0 ? "+" : ""}${r.offset.toFixed(3)}`)
   }
   console.log(rows.join("\n"))

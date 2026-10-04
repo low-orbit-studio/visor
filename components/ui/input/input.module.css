@@ -199,6 +199,7 @@
  * visible border), so --control-edge-width: 0 removes it here too. */
 .affixWrapper {
   --affix-inset: var(--spacing-4, 1rem);
+  --affix-pad-y: var(--spacing-3_5, 0.875rem);
   display: flex;
   align-items: center;
   width: 100%;
@@ -216,11 +217,13 @@
 }
 
 .affixSm {
+  --affix-pad-y: var(--spacing-1, 0.25rem);
   --affix-inset: var(--spacing-3, 0.75rem);
   border-radius: var(--radius-sm, 0.25rem);
 }
 
 .affixLg {
+  --affix-pad-y: var(--spacing-4_5, 1.125rem);
   --affix-inset: var(--spacing-5, 1.25rem);
   font-size: var(--font-size-base, 1rem);
   border-radius: var(--input-radius-lg, var(--radius-sm, 0.5rem));
@@ -272,7 +275,7 @@
 /* The bare input: the value only. It keeps .base's geometry (width, 1px
    transparent border, line-height, size class) and drops its edge and ground. */
 .bare {
-  flex: 1 1 0;
+  flex: 1 1 auto;
   width: auto;
   min-width: 0;
   border: 1px solid transparent;
@@ -324,22 +327,38 @@
   color: var(--input-affix-color, var(--text-secondary, #6b7280));
 }
 
-/* The value is nudged by --input-nudge (the VI-684 baseline correction, set on
-   .sizeMd / .sizeLg above). The affix sits on the same baseline, so it takes the
-   same nudge: md and lg only, Blink only, and not when a theme re-binds the
-   size's padding (then the input is not nudged either). */
+/* The value is nudged by --input-nudge (the VI-684 per-font baseline correction,
+   set on .sizeSm / .sizeMd / .sizeLg above from the theme's --font-ascent and
+   --font-descent). The affix sits on the same baseline, so the wrapper computes
+   the same nudge for the same box and the affix takes it. Blink only, like the
+   value's. With no font metrics the nudge falls back to 0px, as the value's does.
+   A theme that re-binds --input-padding-* drops the value's nudge; the affix then
+   keeps it, which is the one case the two can differ. */
 @supports (padding-top: round(1.4px, 1px)) and (not (-apple-pay-button-style: black)) {
-  .affixWrapper:not(.affixSm):not(.affixLg) {
-    --input-nudge: calc(round((2px + 2 * var(--spacing-3_5, 0.875rem) + 1lh + 1cap) / 2, 1px) - (2px + 2 * var(--spacing-3_5, 0.875rem) + 1lh + 1cap) / 2 + 0.5px);
+  .affixWrapper {
+    --input-box: calc(2px + 2 * var(--spacing-3_5, 0.875rem) + 1lh);
+    --input-nudge: calc(round((var(--input-box) + 1cap) / 2, 1px) - (var(--input-box) + (round(var(--font-ascent) * 1em, 1px) - round(var(--font-descent) * 1em, 1px))) / 2);
+  }
+
+  .affixSm {
+    --input-nudge: calc(round((2.25rem + 1cap) / 2, 1px) - (2.25rem + (round(var(--font-ascent) * 1em, 1px) - round(var(--font-descent) * 1em, 1px))) / 2);
   }
 
   .affixLg {
-    --input-nudge: calc(round((2px + 2 * var(--spacing-4_5, 1.125rem) + 1lh + 1cap) / 2, 1px) - (2px + 2 * var(--spacing-4_5, 1.125rem) + 1lh + 1cap) / 2 + 0.5px);
+    --input-box: calc(2px + 2 * var(--spacing-4_5, 1.125rem) + 1lh);
+    --input-nudge: calc(round((var(--input-box) + 1cap) / 2, 1px) - (var(--input-box) + (round(var(--font-ascent) * 1em, 1px) - round(var(--font-descent) * 1em, 1px))) / 2);
   }
 
+  /* The affix takes the nudge the way the input does, as padding moved from the
+     bottom edge to the top, so its baseline snaps exactly as the value's does. */
   .affix {
-    position: relative;
-    top: var(--input-nudge, 0px);
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    border-block: 1px solid transparent;
+    padding-top: calc(var(--affix-pad-y) + var(--input-nudge, 0px));
+    padding-bottom: calc(var(--affix-pad-y) - var(--input-nudge, 0px));
   }
 }
 

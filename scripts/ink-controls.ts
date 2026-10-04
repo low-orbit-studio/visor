@@ -56,7 +56,7 @@ export const buildAffixControls = (label: string) => ({
   modules: { input: ["Input"], "number-input": ["NumberInput"] } as Record<string, string[]>,
   cases: [
     ...["sm", "md", "lg"].flatMap((s) => [
-      { id: `input affix ${s} value`, selector: "input", jsx: e("C.Input", `{ size: "${s}", defaultValue: "${label}", prefix: "${label}", suffix: "${label}", "aria-label": "x" }`) },
+      { id: `input affix ${s} value`, selector: "input", jsx: e("C.Input", `{ size: "${s}", defaultValue: "${label}", prefix: "${label === L ? label : "\u20ac"}", suffix: "${label === L ? label : "jpy"}", "aria-label": "x" }`) },
       { id: `input affix ${s} prefix`, selector: "[data-slot=input-wrapper]", inkSelector: "[data-slot=input-prefix]", jsx: e("C.Input", `{ size: "${s}", defaultValue: "1", prefix: "${label}", "aria-label": "x" }`) },
       { id: `input affix ${s} suffix`, selector: "[data-slot=input-wrapper]", inkSelector: "[data-slot=input-suffix]", jsx: e("C.Input", `{ size: "${s}", defaultValue: "1", suffix: "${label}", "aria-label": "x" }`) },
     ]),
@@ -66,3 +66,11 @@ export const buildAffixControls = (label: string) => ({
   ],
 })
 export const AFFIX_CONTROLS = buildAffixControls(L)
+
+/**
+ * Measurement only: the affix is drawn in the secondary ink, whose antialiased edge rows fall under the harness's
+ * 50% contrast threshold sooner than the primary-ink value's do, which reads as a sub-pixel offset that is not
+ * positional. Measuring the affix in the value's ink makes the two comparable; position is unchanged.
+ */
+export const AFFIX_MEASURE_CSS =
+  "\n[data-slot=input-prefix],[data-slot=input-suffix],[data-slot=number-input-prefix],[data-slot=number-input-suffix]{color:var(--text-primary)!important}"
