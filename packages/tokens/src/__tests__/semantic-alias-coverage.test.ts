@@ -4,6 +4,7 @@ import { join } from "path";
 import {
   generateThemeData,
   VISOR_CORE_SEMANTIC_ALIASES,
+  VISOR_CORE_DARK_SEMANTIC_ALIASES,
   MODE_DEPENDENT_SEMANTIC_ALIASES,
   collectDeclaredProperties,
 } from "@loworbitstudio/visor-theme-engine";
@@ -128,24 +129,49 @@ describe("semantic-alias-coverage (VI-648)", () => {
     expect(mismatched, mismatched.join("\n  ")).toEqual([]);
   });
 
-  it.runIf(built)("MODE_DEPENDENT_SEMANTIC_ALIASES names exactly the aliases visor-core re-points in dark mode (VI-695)", () => {
-    // Innermost rule blocks; the selector is the last line of the prelude.
-    // Dark mode is `[data-theme="dark"]` plus the prefers-color-scheme block's
-    // `:root:not(.light)...`.
-    const darkDiffers = new Set<string>();
+  /**
+   * Alias → dark referent for every table alias whose dark-mode referent
+   * differs from its light one, read off tokens.css's dark rules: innermost
+   * rule blocks whose selector (the last line of the prelude) is
+   * `[data-theme="dark"]` or the prefers-color-scheme block's
+   * `:root:not(.light)...`. Throws if the two dark sources disagree.
+   */
+  function darkReferents(): Map<string, string> {
+    const out = new Map<string, string>();
     for (const rule of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
       const selector = rule[1].trim().split("\n").pop()!.trim();
       if (!/data-theme="dark"|:not\(\.light\)/.test(selector)) continue;
       for (const decl of rule[2].matchAll(/--([a-z0-9-]+)\s*:\s*([^;]+);/g)) {
-        const referent = VISOR_CORE_SEMANTIC_ALIASES[decl[1]];
-        if (referent && decl[2].trim() !== `var(--${referent})`) darkDiffers.add(decl[1]);
+        const alias = decl[1];
+        // A non-`var()` dark value is kept verbatim, so it can never match a table referent.
+        const value = decl[2].trim();
+        const referent = /^var\(--([a-z0-9-]+)\)$/.exec(value)?.[1] ?? value;
+        if (!(alias in VISOR_CORE_SEMANTIC_ALIASES) || referent === VISOR_CORE_SEMANTIC_ALIASES[alias]) continue;
+        const seen = out.get(alias);
+        if (seen && seen !== referent) {
+          throw new Error(`tokens.css's dark rules disagree on --${alias}: var(--${seen}) vs var(--${referent})`);
+        }
+        out.set(alias, referent);
       }
     }
+    return out;
+  }
+
+  it.runIf(built)("MODE_DEPENDENT_SEMANTIC_ALIASES names exactly the aliases visor-core re-points in dark mode (VI-695)", () => {
+    const darkDiffers = darkReferents();
     expect(darkDiffers.size, "parser found no dark-mode alias declarations").toBeGreaterThan(0);
     expect(
       [...MODE_DEPENDENT_SEMANTIC_ALIASES].sort(),
       "MODE_DEPENDENT_SEMANTIC_ALIASES (packages/theme-engine/src/semantic-aliases.ts) must list every\n" +
         "table alias whose dark-mode referent differs from its light one, and nothing else.",
-    ).toEqual([...darkDiffers].sort());
+    ).toEqual([...darkDiffers.keys()].sort());
+  });
+
+  it.runIf(built)("VISOR_CORE_DARK_SEMANTIC_ALIASES carries tokens.css's dark referent for each (VI-696)", () => {
+    expect(
+      { ...VISOR_CORE_DARK_SEMANTIC_ALIASES },
+      "VISOR_CORE_DARK_SEMANTIC_ALIASES (packages/theme-engine/src/semantic-aliases.ts) must map each\n" +
+        "mode-dependent alias to the referent visor-core gives it in dark mode.",
+    ).toEqual(Object.fromEntries(darkReferents()));
   });
 });

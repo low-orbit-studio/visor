@@ -3,7 +3,10 @@ import { readFileSync } from "fs";
 import { resolve } from "path";
 import { generateThemeData } from "../../pipeline.js";
 import { docsAdapter } from "../docs.js";
-import { MODE_DEPENDENT_SEMANTIC_ALIASES } from "../../semantic-aliases.js";
+import {
+  VISOR_CORE_SEMANTIC_ALIASES,
+  VISOR_CORE_DARK_SEMANTIC_ALIASES,
+} from "../../semantic-aliases.js";
 import type { AdapterInput } from "../types.js";
 
 const MINIMAL_YAML = readFileSync(
@@ -665,21 +668,118 @@ overrides:
     expect(css).not.toContain("--field-menu-bg: var(--surface-popover);");
   });
 
-  it("leaves the mode-dependent aliases inheriting visor-core's mode-correct value", () => {
-    // The table holds only the light referent; a flat scope declaration would
-    // pin a dark sidebar to the theme's near-white neutral-50.
-    const css = docsAdapter(makeInput(FULL_YAML));
-    const block = semanticLayer(css).split("(VI-695)")[1];
-    for (const alias of MODE_DEPENDENT_SEMANTIC_ALIASES) {
-      expect(block, `--${alias} re-declared flat`).not.toContain(`--${alias}:`);
-    }
-  });
-
   it("emits each re-substituted alias exactly once", () => {
     const css = docsAdapter(makeInput(FULL_YAML));
-    const block = semanticLayer(css).split("(VI-695)")[1];
+    const block = semanticLayer(css).split("(VI-695)")[1].split("(VI-696)")[0];
     for (const line of block.match(/--[a-z0-9-]+: var\(--[a-z0-9-]+\);/g) ?? []) {
       expect(css.split(line).length - 1, `${line} emitted more than once`).toBe(1);
     }
+  });
+});
+
+// VI-696 — twelve aliases (`--sidebar-*`, `--border-input`, `--skeleton-*`,
+// `--chart-1`) resolve through a different referent in dark mode. The host
+// block carries the light referent; the dark selectors carry the dark one.
+describe("docsAdapter — mode-aware alias re-substitution (VI-696)", () => {
+  const PREFERS = ':not(.light):not(.theme-light):not([data-theme="light"])';
+
+  function semanticLayer(css: string): string {
+    const start = css.indexOf("@layer visor-semantic {");
+    return css.slice(start, css.indexOf("\n@layer ", start));
+  }
+
+  /** The `{ … }` body of the first rule for `selector` after `marker`. */
+  function ruleAfter(css: string, marker: string, selector: string): string {
+    const from = css.indexOf(marker);
+    expect(from, `${marker} not found`).toBeGreaterThan(-1);
+    const open = css.indexOf(`${selector} {`, from);
+    expect(open, `${selector} not found after ${marker}`).toBeGreaterThan(-1);
+    return css.slice(open, css.indexOf("}", open));
+  }
+
+  it("re-declares every mode-dependent alias with its light referent on the host", () => {
+    const css = docsAdapter(makeInput(FULL_YAML));
+    const host = ruleAfter(semanticLayer(css), "(VI-695)", ".full-theme-theme");
+    for (const alias of Object.keys(VISOR_CORE_DARK_SEMANTIC_ALIASES)) {
+      expect(host).toContain(`--${alias}: var(--${VISOR_CORE_SEMANTIC_ALIASES[alias]});`);
+    }
+  });
+
+  it("re-declares them with the dark referent on darkSel and in the prefers block", () => {
+    const layer = semanticLayer(docsAdapter(makeInput(FULL_YAML)));
+    const manual = ruleAfter(layer, "(dark) — manual toggle (VI-696)", ".dark .full-theme-theme");
+    const prefers = ruleAfter(layer, "(dark) — prefers-color-scheme (VI-696)", `.full-theme-theme${PREFERS}`);
+    expect(layer).toMatch(/\(dark\) — prefers-color-scheme \(VI-696\) --- \*\/\n@media \(prefers-color-scheme: dark\) \{/);
+    for (const [alias, referent] of Object.entries(VISOR_CORE_DARK_SEMANTIC_ALIASES)) {
+      expect(manual).toContain(`--${alias}: var(--${referent});`);
+      expect(prefers).toContain(`--${alias}: var(--${referent});`);
+    }
+    // Only the mode-dependent aliases need a dark re-declaration.
+    expect(manual.match(/--[a-z0-9-]+:/g)).toHaveLength(Object.keys(VISOR_CORE_DARK_SEMANTIC_ALIASES).length);
+  });
+
+  it("emits the dark blocks after the host block, inside visor-semantic", () => {
+    const css = docsAdapter(makeInput(FULL_YAML));
+    const layer = semanticLayer(css);
+    expect(layer.indexOf("(dark) — manual toggle (VI-696)")).toBeGreaterThan(layer.indexOf("(VI-695)"));
+    expect(layer.indexOf("(dark) — prefers-color-scheme (VI-696)")).toBeGreaterThan(
+      layer.indexOf("(dark) — manual toggle (VI-696)"),
+    );
+  });
+
+  it("puts the dark referents on the host of a dark-only theme, with no dark selector", () => {
+    const css = docsAdapter(makeInput(ANIMAL_DARK_ONLY_YAML));
+    const host = ruleAfter(semanticLayer(css), "(VI-695)", ".animal-theme");
+    for (const [alias, referent] of Object.entries(VISOR_CORE_DARK_SEMANTIC_ALIASES)) {
+      expect(host).toContain(`--${alias}: var(--${referent});`);
+      expect(host).not.toContain(`--${alias}: var(--${VISOR_CORE_SEMANTIC_ALIASES[alias]});`);
+    }
+    // The rest of the table keeps its (only) referent.
+    expect(host).toContain("--field-menu-bg: var(--surface-popover);");
+    expect(css).not.toContain("(VI-696)");
+  });
+
+  it("keeps the light referents and emits no dark block for a light-only theme", () => {
+    const css = docsAdapter(makeInput(LIGHT_ONLY_YAML));
+    const host = ruleAfter(semanticLayer(css), "(VI-695)", ".daybreak-theme");
+    expect(host).toContain("--sidebar-bg: var(--color-neutral-50);");
+    expect(css).not.toContain("(VI-696)");
+    expect(css).not.toContain("--sidebar-bg: var(--color-neutral-900);");
+  });
+
+  it("still emits the dark mapping when the theme overrides the alias in light mode only", () => {
+    // The light override sits on `html:not(.dark) …`, which a dark selector
+    // never sees, so dark mode still needs the theme-palette re-declaration.
+    const yaml = `
+name: Lightpin
+version: 1
+colors:
+  primary: "#2563EB"
+overrides:
+  light:
+    sidebar-bg: "#fafafa"
+`;
+    const css = docsAdapter(makeInput(yaml));
+    expect(css).not.toContain("--sidebar-bg: var(--color-neutral-50);");
+    expect(ruleAfter(css, "(dark) — manual toggle (VI-696)", ".dark .lightpin-theme")).toContain(
+      "--sidebar-bg: var(--color-neutral-900);",
+    );
+  });
+
+  it("does not re-emit an alias the theme overrides in dark mode", () => {
+    const yaml = `
+name: Darkpin
+version: 1
+colors:
+  primary: "#2563EB"
+overrides:
+  dark:
+    sidebar-bg: "#0a0a0a"
+`;
+    const css = docsAdapter(makeInput(yaml));
+    expect(css).toContain("--sidebar-bg: #0a0a0a;");
+    expect(css).not.toContain("--sidebar-bg: var(--color-neutral-900);");
+    // Its siblings are unaffected.
+    expect(css).toContain("--sidebar-text: var(--color-neutral-300);");
   });
 });

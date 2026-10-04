@@ -29,6 +29,8 @@ import { generateComponentTokensCss } from "./component-tokens-css.js";
 import { resolveComponentBindings } from "../component-tokens.js";
 import { LAYER_ORDER, wrapInLayer } from "./layers.js";
 import {
+  VISOR_CORE_DARK_SEMANTIC_ALIASES,
+  VISOR_CORE_SEMANTIC_ALIASES_DARK_HOST,
   collectDeclaredProperties,
   generateSemanticAliasDecls,
 } from "../semantic-aliases.js";
@@ -320,17 +322,47 @@ export function nextjsAdapter(
   // the same element visor-core aliases from, so substitution already sees
   // them and this block would be redundant — and would change that theme's
   // emitted bytes for no behavioural gain.
+  //
+  // Mode-dependent aliases (VI-696). Twelve aliases — `--sidebar-*`,
+  // `--border-input`, `--skeleton-*`, `--chart-1` — resolve through a different
+  // referent in dark mode. The host block carries the light referent; the same
+  // dark selectors the adaptive layer uses re-declare them with the dark one,
+  // later in this layer and at higher specificity, so they win in dark mode
+  // only. Their `declared` set is read off what a dark selector can see: every
+  // rule but the light-only `html:not(.dark) …` ones. A dark-only theme has no
+  // dark selector, so its host block takes the dark referents directly.
   if (scopePrefix) {
-    const declared = collectDeclaredProperties(
-      [primitivesBody, semanticLines.join("\n"), adaptiveBody].join("\n"),
-    );
-    const aliasDecls = generateSemanticAliasDecls(declared);
+    const themeCss = [primitivesBody, semanticLines.join("\n"), adaptiveBody].join("\n");
+    const declared = collectDeclaredProperties(themeCss);
+    const aliasDecls = generateSemanticAliasDecls(declared, {
+      table: colorScheme === "dark-only" ? VISOR_CORE_SEMANTIC_ALIASES_DARK_HOST : undefined,
+    });
     if (aliasDecls.length > 0) {
       semanticLines.push(
         sectionComment("visor-core alias re-substitution at theme scope (VI-648)"),
       );
       semanticLines.push(block(hostSelector, aliasDecls));
       semanticLines.push("");
+    }
+
+    if (colorScheme === "adaptive") {
+      const darkAliasDecls = generateSemanticAliasDecls(
+        collectDeclaredProperties(themeCss, { exclude: [lightModeSelector] }),
+        { table: VISOR_CORE_DARK_SEMANTIC_ALIASES },
+      );
+      if (darkAliasDecls.length > 0) {
+        semanticLines.push(
+          sectionComment("visor-core alias re-substitution (dark) — manual toggle (VI-696)"),
+        );
+        semanticLines.push(block(darkSelectors.join(",\n"), darkAliasDecls));
+        semanticLines.push("");
+        semanticLines.push(
+          sectionComment("visor-core alias re-substitution (dark) — prefers-color-scheme (VI-696)"),
+        );
+        const inner = block(prefersSelector, darkAliasDecls);
+        semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
+        semanticLines.push("");
+      }
     }
   }
 

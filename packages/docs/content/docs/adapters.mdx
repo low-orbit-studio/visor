@@ -71,6 +71,21 @@ This is load-bearing, not redundant. `@loworbitstudio/visor-core` declares these
 
 Before this block existed, a theme declaring `typography.heading.weight: 500` computed `--weight-heading: 600`, and `--chart-1` / `--skeleton-from` rendered visor-core's stock light-mode values on dark themes.
 
+Twelve of these aliases point somewhere else in dark mode: the nine `--sidebar-*` aliases, `--border-input`, `--skeleton-from` / `--skeleton-to` and `--chart-1`. For example, `--sidebar-bg` resolves through `--color-neutral-50` in light mode and `--color-neutral-900` in dark mode. The scope block carries their light referent. The dark selectors re-declare them with the dark referent, so a scoped dark sidebar uses the theme's own `neutral-900`:
+
+```css
+/* --- visor-core alias re-substitution (dark) — manual toggle (VI-696) --- */
+body.mybrand-theme.dark,
+body.mybrand-theme.theme-dark,
+body.mybrand-theme[data-theme="dark"] {
+  --sidebar-bg: var(--color-neutral-900);
+  --border-input: var(--color-neutral-700);
+  /* ... */
+}
+```
+
+The same declarations repeat under `@media (prefers-color-scheme: dark)` with the `:not(.light)` guard. A `dark-only` theme has no dark selector, so its scope block takes the dark referents directly. A `light-only` theme gets the light block only.
+
 `:root`-scoped output does not include the block and is byte-identical to before — a `:root` theme declares its primitives on the same element visor-core aliases from, so substitution already sees them.
 
 **Upgrading:** re-run `visor theme apply` for any theme using `--scope-prefix`. The fix is in generated CSS; no `.visor.yaml` changes are needed.

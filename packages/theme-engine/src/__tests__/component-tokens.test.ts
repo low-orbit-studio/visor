@@ -23,6 +23,7 @@ import {
   resolveComponentBindings,
 } from "../component-tokens.js";
 import { generateComponentTokensCss } from "../adapters/component-tokens-css.js";
+import { VISOR_CORE_SEMANTIC_ALIASES } from "../semantic-aliases.js";
 import type { AdapterInput } from "../adapters/types.js";
 import type { VisorThemeConfig } from "../types.js";
 
@@ -233,6 +234,15 @@ describe("VI-625 component-token emission", () => {
       const css = typeof out === "string" ? out : Object.values(out).join("\n");
       expect(css).not.toContain("Component tokens (VI-625)");
       for (const name of allComponentTokenNames()) {
+        if (name in VISOR_CORE_SEMANTIC_ALIASES) {
+          // Some roles (the sidebar and skeleton palette) are visor-core aliases
+          // too, which the docs adapter re-declares at the theme scope (VI-695,
+          // VI-696). Those are bare `var()` indirections, never a bound value.
+          for (const m of css.matchAll(new RegExp(`--${name}:\\s*([^;]+);`, "g"))) {
+            expect(m[1], `--${name}`).toMatch(/^var\(--[a-z0-9-]+\)$/);
+          }
+          continue;
+        }
         expect(css).not.toContain(`--${name}:`);
       }
     });

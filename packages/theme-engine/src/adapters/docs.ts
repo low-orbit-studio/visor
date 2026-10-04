@@ -43,7 +43,8 @@ import { resolveComponentBindings } from "../component-tokens.js";
 import { FUMADOCS_BRIDGE_MAP } from "./fumadocs-map.js";
 import { LAYER_ORDER, wrapInLayer } from "./layers.js";
 import {
-  MODE_DEPENDENT_SEMANTIC_ALIASES,
+  VISOR_CORE_DARK_SEMANTIC_ALIASES,
+  VISOR_CORE_SEMANTIC_ALIASES_DARK_HOST,
   collectDeclaredProperties,
   generateSemanticAliasDecls,
 } from "../semantic-aliases.js";
@@ -600,17 +601,41 @@ export function docsAdapter(
   // the theme's tokens on `.{slug}-theme`; the scope inherits visor-core's
   // already-substituted default. Re-declaring the aliases on the scope class
   // moves the substitution there. Everything this theme emits counts as
-  // declared, so an alias the theme sets itself is never overridden. The
-  // mode-dependent aliases are skipped: the table holds only their light
-  // referent, and this block is mode-agnostic.
-  const declared = collectDeclaredProperties(
-    [lines.join("\n"), semanticLines.join("\n"), componentTokensCss, brandResult.css, passthroughCss].join("\n"),
-  );
-  const aliasDecls = generateSemanticAliasDecls(declared, { skip: MODE_DEPENDENT_SEMANTIC_ALIASES });
+  // declared, so an alias the theme sets itself is never overridden.
+  //
+  // Mode-dependent aliases (VI-696). Twelve aliases — `--sidebar-*`,
+  // `--border-input`, `--skeleton-*`, `--chart-1` — resolve through a different
+  // referent in dark mode. The host block carries the light referent; `darkSel`
+  // and the prefers block re-declare them with the dark one, later in this
+  // layer and at higher specificity, so they win in dark mode only. Their
+  // `declared` set is read off what a dark selector can see: every rule but the
+  // light-only `lightSel` ones. A dark-only theme has no dark selector, so its
+  // host block takes the dark referents directly.
+  const themeCss = [lines.join("\n"), semanticLines.join("\n"), componentTokensCss, brandResult.css, passthroughCss].join("\n");
+  const declared = collectDeclaredProperties(themeCss);
+  const aliasDecls = generateSemanticAliasDecls(declared, {
+    table: colorScheme === "dark-only" ? VISOR_CORE_SEMANTIC_ALIASES_DARK_HOST : undefined,
+  });
   if (aliasDecls.length > 0) {
     semanticLines.push(sectionComment("visor-core alias re-substitution at theme scope (VI-695)"));
     semanticLines.push(block(scopeClass, aliasDecls));
     semanticLines.push("");
+  }
+
+  if (emitPrefers) {
+    const darkAliasDecls = generateSemanticAliasDecls(
+      collectDeclaredProperties(themeCss, { exclude: [lightSel] }),
+      { table: VISOR_CORE_DARK_SEMANTIC_ALIASES },
+    );
+    if (darkAliasDecls.length > 0) {
+      semanticLines.push(sectionComment("visor-core alias re-substitution (dark) — manual toggle (VI-696)"));
+      semanticLines.push(block(darkSel, darkAliasDecls));
+      semanticLines.push("");
+      semanticLines.push(sectionComment("visor-core alias re-substitution (dark) — prefers-color-scheme (VI-696)"));
+      const inner = block(`${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`, darkAliasDecls);
+      semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
+      semanticLines.push("");
+    }
   }
 
   const adaptiveBody = [lines.join("\n").trim(), componentTokensCss].filter(Boolean).join("\n\n");
