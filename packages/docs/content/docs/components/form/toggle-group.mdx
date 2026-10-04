@@ -101,9 +101,8 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group/toggl
 
 ## Accessibility
 
-- Built on `@radix-ui/react-toggle-group` with full WAI-ARIA toolbar semantics
-- The group renders with `role="group"`; each item renders with `role="radio"` (single) or `role="checkbox"` (multiple)
-- Active items have `aria-pressed="true"` (or `aria-checked` depending on type)
+- Built on `@radix-ui/react-toggle-group`. A single-select group has `role="radiogroup"` with `role="radio"` items and `aria-checked`; a multi-select group stays a `group` of `aria-pressed` buttons
+- Keyboard focus draws a solid `--border-focus` ring at `--focus-ring-width`, offset by `--focus-ring-offset`, on every item
 - Provide an `aria-label` on `<ToggleGroup>` to describe the purpose of the group (e.g., "Text formatting", "View mode")
 - Keyboard: Arrow keys navigate between items within the group; Space/Enter toggles the focused item
 

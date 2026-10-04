@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs"
+import { join } from "node:path"
 import { render, screen } from "@testing-library/react"
 import { userEvent } from "@testing-library/user-event"
 import { describe, it, expect, vi } from "vitest"
@@ -106,6 +108,36 @@ describe("ToggleGroup keyboard navigation", () => {
     await user.click(screen.getByText("Left"))
     await user.keyboard("{ArrowRight}")
     expect(screen.getByRole("radio", { name: "Center" })).toHaveFocus()
+  })
+})
+
+describe("ToggleGroup roles (VI-690)", () => {
+  it("single-select is a radiogroup of radios", () => {
+    renderToggleGroup({ defaultValue: "left" })
+    const group = screen.getByRole("radiogroup", { name: "Text alignment" })
+    expect(group).toBeInTheDocument()
+    expect(screen.getByRole("radio", { name: "Left" })).toHaveAttribute("aria-checked", "true")
+  })
+
+  it("multi-select stays a group of pressed buttons", () => {
+    renderToggleGroup({ defaultValue: ["left"] }, "multiple")
+    expect(screen.getByRole("group", { name: "Text alignment" })).toBeInTheDocument()
+    expect(screen.queryByRole("radiogroup")).toBeNull()
+    expect(screen.getByRole("button", { name: "Left" })).toHaveAttribute("aria-pressed", "true")
+  })
+})
+
+describe("ToggleGroup focus ring (VI-690)", () => {
+  const css = readFileSync(join(process.cwd(), "components/ui/toggle-group/toggle-group.module.css"), "utf-8")
+  const rule = css.match(/\.item:focus-visible \{([^}]*)\}/)?.[1] ?? ""
+
+  it("draws a solid --border-focus outline at the focus ring width, not only a translucent shadow", () => {
+    expect(rule).toMatch(/outline:\s*var\(--focus-ring-width[^)]*\)\s+solid\s+var\(--border-focus/)
+    expect(rule).toMatch(/outline-offset:\s*var\(--focus-ring-offset/)
+  })
+
+  it("does not suppress the outline on the item", () => {
+    expect(css.match(/\.item \{([^}]*)\}/)?.[1] ?? "").not.toMatch(/outline:\s*none/)
   })
 })
 

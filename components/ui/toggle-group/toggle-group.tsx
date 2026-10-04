@@ -121,6 +121,10 @@ const ToggleGroup = React.forwardRef<
         data-variant={variant ?? "default"}
         data-size={size ?? "md"}
         data-type={props.type ?? "single"}
+        // Radix renders role="group" with radio items for single-select; a radio
+        // item needs a radiogroup parent (VI-690). Multi-select stays a group of
+        // pressed buttons. Spread after, so a caller's own role still wins.
+        {...(props.type === "multiple" ? {} : { role: "radiogroup" })}
         className={cn(toggleGroupVariants({ variant, size }), className)}
         ref={mergedRef}
         {...props}

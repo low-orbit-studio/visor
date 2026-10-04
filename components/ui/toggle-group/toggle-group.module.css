@@ -87,7 +87,6 @@
   transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
     color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
     box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
-  outline: none;
   user-select: none;
   white-space: nowrap;
 }
@@ -97,8 +96,11 @@
   transition: none;
 }
 
+/* A solid ring at the focus ring width, cleared of the item by the focus ring offset
+   (VI-690). The translucent halo alone measured 1.4:1 on dark planes (WCAG 2.4.7). */
 .item:focus-visible {
-  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #111827);
+  outline-offset: var(--focus-ring-offset, 2px);
 }
 
 .item:disabled {
