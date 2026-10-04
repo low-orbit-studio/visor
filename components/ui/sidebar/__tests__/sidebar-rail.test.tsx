@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs"
+import { join } from "node:path"
 import { render, screen, act } from "@testing-library/react"
 import { describe, it, expect, beforeAll } from "vitest"
 import {
@@ -209,5 +211,21 @@ describe("Cmd/Ctrl+B", () => {
     const event = press()
     expect(event.defaultPrevented).toBe(false)
     expect(screen.getByTestId("sidebar")).toHaveAttribute("data-state", "collapsed")
+  })
+})
+
+// VI-683: .sidebarContent clips overflow, so the focus ring must sit inside the
+// button or the 48px rail shows only a bottom line (WCAG 2.4.7). jsdom has no
+// layout, so the contract is asserted on the CSS source.
+describe("menu button focus ring on the rail", () => {
+  const css = readFileSync(
+    join(process.cwd(), "components/ui/sidebar/sidebar.module.css"),
+    "utf-8"
+  )
+  const block = css.match(/\.menuButton:focus-visible \{([^}]*)\}/)?.[1] ?? ""
+
+  it("draws the ring inset by its width plus the offset token", () => {
+    expect(block).toContain("outline: var(--focus-ring-width, 2px) solid")
+    expect(block).toContain("outline-offset: calc(-1 * (var(--focus-ring-width, 2px) + var(--focus-ring-offset, 0px)));")
   })
 })

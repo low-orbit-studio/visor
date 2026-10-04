@@ -288,9 +288,12 @@
   outline: none;
 }
 
+/* Inset ring: .sidebarContent clips overflow, so an outset ring is cut to a
+   bottom line on the icon rail. Drawing it inside the button (width + offset token) keeps all four
+   sides visible (WCAG 2.4.7) without consumer CSS. */
 .menuButton:focus-visible {
   outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
-  outline-offset: var(--focus-ring-offset, 2px);
+  outline-offset: calc(-1 * (var(--focus-ring-width, 2px) + var(--focus-ring-offset, 0px)));
 }
 
 .menuButton:disabled {
