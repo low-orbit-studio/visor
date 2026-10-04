@@ -53,10 +53,52 @@ describe("DatePicker", () => {
   })
 })
 
+describe("DatePicker month and alignment (VI-654)", () => {
+  it("opens on the month of value, not the device month", () => {
+    render(<DatePicker value={new Date(2031, 10, 14)} />)
+    fireEvent.click(screen.getByRole("button"))
+    expect(screen.getByText("November 2031")).toBeInTheDocument()
+  })
+
+  it("opens on the device month when no value is set", () => {
+    render(<DatePicker />)
+    fireEvent.click(screen.getByRole("button"))
+    const label = new Date().toLocaleString("en-US", {
+      month: "long",
+      year: "numeric",
+    })
+    expect(screen.getByText(label)).toBeInTheDocument()
+  })
+
+  it("defaults popover alignment to start", () => {
+    render(<DatePicker defaultOpen />)
+    const content = document.querySelector("[data-slot='date-picker-content']")
+    expect(content).toHaveAttribute("data-align", "start")
+  })
+
+  it("passes align to the popover", () => {
+    render(<DatePicker defaultOpen align="end" />)
+    const content = document.querySelector("[data-slot='date-picker-content']")
+    expect(content).toHaveAttribute("data-align", "end")
+  })
+
+  it("starts open with defaultOpen", () => {
+    render(<DatePicker defaultOpen />)
+    expect(
+      document.querySelector("[data-slot='date-picker-content']")
+    ).toBeTruthy()
+  })
+})
+
 describe("DatePicker accessibility", () => {
   it("has no WCAG 2.1 AA violations", async () => {
     const { container } = render(<DatePicker />)
     await checkA11y(container)
+  })
+
+  it("has no violations with the popover open on a selected month", async () => {
+    render(<DatePicker value={new Date(2031, 10, 14)} defaultOpen align="end" />)
+    await checkA11y(document.body)
   })
 })
 

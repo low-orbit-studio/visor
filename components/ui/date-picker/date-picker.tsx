@@ -21,6 +21,14 @@ export interface DatePickerProps {
   disabled?: boolean
   /** Additional class name for the trigger button */
   className?: string
+  /** Popover alignment against the trigger (VI-654). Defaults to "start". */
+  align?: "start" | "center" | "end"
+  /** Gap in px between the trigger and the popover. Defaults to 4. */
+  sideOffset?: number
+  /** Viewport padding in px the popover keeps clear when it collides. Defaults to 0. */
+  collisionPadding?: number
+  /** Whether the popover starts open (uncontrolled). Defaults to false. */
+  defaultOpen?: boolean
 }
 
 const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
@@ -32,10 +40,14 @@ const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
       dateFormat = "PPP",
       disabled = false,
       className,
+      align = "start",
+      sideOffset = 4,
+      collisionPadding = 0,
+      defaultOpen = false,
     },
     ref
   ) => {
-    const [open, setOpen] = React.useState(false)
+    const [open, setOpen] = React.useState(defaultOpen)
 
     return (
       <PopoverPrimitive.Root open={open} onOpenChange={setOpen}>
@@ -57,12 +69,14 @@ const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(
           <PopoverPrimitive.Content
             data-slot="date-picker-content"
             className={styles.content}
-            align="start"
-            sideOffset={4}
+            align={align}
+            sideOffset={sideOffset}
+            collisionPadding={collisionPadding}
           >
             <Calendar
               mode="single"
               selected={value}
+              defaultMonth={value}
               onSelect={(date) => {
                 onChange?.(date)
                 setOpen(false)
