@@ -428,6 +428,12 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     default: { export: "DatePicker", interactiveTarget: "button", props: `{ value: new Date(2026, 10, 14), defaultOpen: true }` },
     "align-end": { export: "DatePicker", interactiveTarget: "button", props: `{ value: new Date(2026, 10, 14), defaultOpen: true, align: "end", className: "w-full" }` },
   },
+  // VI-670: invalid keeps the digits; trailing holds a working indicator or Resend.
+  "otp-input": {
+    default: { export: "OTPInput", interactiveTarget: "input", props: `{ value: "428" }` },
+    invalid: { export: "OTPInput", interactiveTarget: "input", props: `{ value: "428519", invalid: true, errorMessage: "That code didn't work. Check it and try again." }` },
+    trailing: { export: "OTPInput", interactiveTarget: "input", props: `{ value: "428519", trailing: React.createElement("button", { type: "button" }, "Resend") }` },
+  },
   // VI-624: `default` is the closed field; the popover fixtures render open so the
   // two-column (24-hour) and three-column (12-hour) anatomy can be inspected.
   "time-picker": {

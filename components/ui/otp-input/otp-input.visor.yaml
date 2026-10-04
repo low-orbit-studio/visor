@@ -36,6 +36,16 @@ props:
     type: boolean
     default: "false"
     description: Auto-focus the first cell on mount.
+  - name: invalid
+    type: boolean
+    default: "false"
+    description: Marks every cell aria-invalid and draws the invalid edge. The digits are kept so they can be corrected.
+  - name: errorMessage
+    type: ReactNode
+    description: Shown under the cells while invalid, in the error text colour, as a role=alert live region. The component draws the message, so do not render a second error line.
+  - name: trailing
+    type: ReactNode
+    description: Trailing content beside the cells, for a working indicator (Spinner) or a resend action.
 
 dependencies: []
 
