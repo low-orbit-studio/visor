@@ -38,6 +38,20 @@ props:
     type: boolean
     default: "false"
     description: Disables the tag input.
+  - name: entryAs
+    type: "'text' | 'slot'"
+    default: '"text"'
+    description: Where the next tag is typed. text types after the last tag as bare text; slot types into a dashed slot the shape of a held tag, drawn on the shared drop edge so edges off turns it off.
+
+theme_hooks:
+  - name: --tag-input-min-height / --tag-input-padding / --tag-input-radius
+    description: The field around the tags.
+  - name: --tag-input-tag-height / --tag-input-tag-padding-x / --tag-input-tag-font-size / --tag-input-tag-font-weight / --tag-input-tag-radius
+    description: Each held tag. Unset, the tag is a pill as tall as its line.
+  - name: --tag-input-slot-height / --tag-input-slot-padding-x / --tag-input-slot-radius / --tag-input-slot-min-width
+    description: The typing slot (entryAs="slot"). Each follows the matching tag key unless set.
+  - name: --control-drop-edge-width / --control-drop-edge-style
+    description: The typing slot's dashed edge, shared with FileUpload and EmptyState.
 
 dependencies:
   - "@phosphor-icons/react"

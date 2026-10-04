@@ -16,7 +16,7 @@
   width: var(--save-status-width, auto);
   /* Tall enough for the retry mark in every state, so it adds no height. */
   min-height: var(--button-icon-size, 1rem);
-  font-size: var(--font-size-xs, 0.75rem);
+  font-size: var(--save-status-font-size, var(--font-size-xs, 0.75rem));
   white-space: nowrap;
   color: var(--text-secondary, #6b7280);
 }
@@ -78,13 +78,37 @@
 
 /* Unsaved as a dot alone (unsavedAs="dot"). The dot sits where the word
    would start and takes the unsaved ink; the slot is unchanged, so the row
-   does not move. The label stays in the DOM as visually hidden text. */
+   does not move. The label stays in the DOM as visually hidden text. Its
+   diameter is the Unsaved one, which follows --save-status-dot-size. */
 .dot {
   justify-self: start;
+  width: var(--save-status-unsaved-dot-size, var(--save-status-dot-size, var(--spacing-2, 0.5rem)));
+  height: var(--save-status-unsaved-dot-size, var(--save-status-dot-size, var(--spacing-2, 0.5rem)));
+  border-radius: var(--radius-full, 9999px);
+  background-color: currentColor;
+}
+
+/* Status dot (dot, VI-663). A dot before the label in every state, in the
+   state's ink. Its box is as wide as the larger of the two diameters, so the
+   Unsaved dot growing never moves the label. */
+.lead {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: max(var(--save-status-dot-size, var(--spacing-2, 0.5rem)), var(--save-status-unsaved-dot-size, var(--save-status-dot-size, var(--spacing-2, 0.5rem))));
+}
+
+.statusDot {
   width: var(--save-status-dot-size, var(--spacing-2, 0.5rem));
   height: var(--save-status-dot-size, var(--spacing-2, 0.5rem));
   border-radius: var(--radius-full, 9999px);
   background-color: currentColor;
+}
+
+.root[data-state="unsaved"] .statusDot {
+  width: var(--save-status-unsaved-dot-size, var(--save-status-dot-size, var(--spacing-2, 0.5rem)));
+  height: var(--save-status-unsaved-dot-size, var(--save-status-dot-size, var(--spacing-2, 0.5rem)));
 }
 
 .hidden {

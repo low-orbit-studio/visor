@@ -94,6 +94,35 @@ describe("SaveStatus (VI-657)", () => {
     })
   })
 
+  describe("dot (VI-663)", () => {
+    it("draws no status dot by default", () => {
+      const { container } = render(<SaveStatus status="saved" />)
+      expect(container.querySelector("[data-slot=save-status-status-dot]")).toBeNull()
+    })
+
+    it("draws a status dot beside the label in every state, hidden from assistive tech", () => {
+      for (const [status, label] of LABELS) {
+        const { container, unmount } = render(<SaveStatus status={status} dot />)
+        expect(container.querySelector("[data-slot=save-status-status-dot]"), status).not.toBeNull()
+        expect(container.querySelector("[data-slot=save-status-lead]")).toHaveAttribute("aria-hidden", "true")
+        expect(screen.getByRole("status")).toHaveTextContent(label)
+        unmount()
+      }
+    })
+
+    it("with unsavedAs=\"dot\", Unsaved is the status dot alone: one dot, label still announced", () => {
+      const { container } = render(<SaveStatus status="unsaved" unsavedAs="dot" dot />)
+      expect(container.querySelector("[data-slot=save-status-status-dot]")).not.toBeNull()
+      expect(container.querySelector("[data-slot=save-status-dot]")).toBeNull()
+      expect(screen.getByRole("status")).toHaveTextContent("Unsaved")
+    })
+
+    it("passes axe", async () => {
+      const { container } = render(<SaveStatus status="refused" onRetry={() => {}} dot />)
+      await checkA11y(container)
+    })
+  })
+
   it("sizers carry every label, including overrides, hidden from assistive tech", () => {
     const { container } = render(<SaveStatus status="saved" labels={{ refused: "Nicht gespeichert" }} />)
     const sizers = Array.from(container.querySelectorAll("[data-slot=save-status-sizer]"))

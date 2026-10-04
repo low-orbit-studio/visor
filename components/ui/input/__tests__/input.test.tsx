@@ -249,19 +249,19 @@ describe("size density axis (CSS-only, zero-regression)", () => {
     expect(css).toContain("border-radius: var(--radius-md);")
   })
 
-  it("sizeMd height wraps --input-height-md, defaulting to auto", () => {
-    expect(css).toContain("height: var(--input-height-md, auto);")
+  it("sizeMd height wraps --input-md-height over --input-height-md, defaulting to auto", () => {
+    expect(css).toContain("height: var(--input-md-height, var(--input-height-md, auto));")
   })
 
-  it("sizeMd border-radius wraps --input-radius-md, defaulting to --radius-sm 0.5rem", () => {
+  it("sizeMd border-radius wraps --input-md-radius over --input-radius-md, defaulting to --radius-sm 0.5rem", () => {
     expect(css).toContain(
-      "border-radius: var(--input-radius-md, var(--radius-sm, 0.5rem));"
+      "border-radius: var(--input-md-radius, var(--input-radius-md, var(--radius-sm, 0.5rem)));"
     )
   })
 
-  it("sizeMd padding wraps --input-padding-md, defaulting to the current spacing shorthand", () => {
+  it("sizeMd padding wraps --input-md-padding over --input-padding-md, defaulting to the current spacing shorthand", () => {
     expect(css).toContain(
-      "padding: var(--input-padding-md, var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem));"
+      "padding: var(--input-md-padding, var(--input-padding-md, var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem)));"
     )
   })
 

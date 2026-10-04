@@ -35,7 +35,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-2, 0.5rem);
-  border-radius: var(--input-radius-md, var(--radius-sm, 0.5rem));
+  border-radius: var(--input-md-radius, var(--input-radius-md, var(--radius-sm, 0.5rem)));
   /* Borderless field → the surface must contrast with the card on its own. A
    * fixed surface token (--surface-subtle) can't guarantee that: some themes
    * pin it almost on the card (e.g. space/light). Instead derive it from the
@@ -65,7 +65,7 @@
 }
 
 .controlMd {
-  padding: var(--input-padding-md, var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem));
+  padding: var(--input-md-padding, var(--input-padding-md, var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem)));
 }
 
 /* Leading icon slot. */

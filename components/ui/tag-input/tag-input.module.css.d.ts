@@ -6,5 +6,6 @@ declare const styles: {
   readonly tagLabel: string
   readonly tagRemove: string
   readonly input: string
+  readonly inputSlot: string
 }
 export default styles

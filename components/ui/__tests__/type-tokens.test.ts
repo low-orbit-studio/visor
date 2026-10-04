@@ -57,6 +57,9 @@ const CASES: Case[] = [
   ...Object.entries(BUTTON_FIXTURES).flatMap(([size, fixture]) => [
     ...TYPE.map((t) => ({ token: `--button-${size}-${t.key}`, fixture, target: "button", prop: t.prop, value: t.value })),
     { token: `--button-${size}-radius`, fixture, target: "button", prop: "border-top-left-radius", value: "13px" },
+    // VI-663: weight (the editor's dlg pill draws at 300)
+    { token: `--button-${size}-font-weight`, fixture, target: "button", prop: "font-weight", value: "300" },
+    { token: "--button-font-weight", fixture, target: "button", prop: "font-weight", value: "300" },
     { token: "--button-text-transform", fixture, target: "button", prop: "text-transform", value: "uppercase" },
     { token: "--button-letter-spacing", fixture, target: "button", prop: "letter-spacing", value: "3px" },
     { token: "--button-radius", fixture, target: "button", prop: "border-top-left-radius", value: "13px" },

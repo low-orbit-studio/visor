@@ -140,6 +140,7 @@ const SAVE_STATUS = "components/ui/save-status/save-status.module.css";
 const SEGMENTED_CONTROL = "components/ui/segmented-control/segmented-control.module.css";
 const TOOLTIP = "components/ui/tooltip/tooltip.module.css";
 const ACTION_ROW = "components/ui/action-row/action-row.module.css";
+const DIALOG_FIELD = "blocks/dialog-field/dialog-field.module.css";
 
 /** Shorthand for the common single-consumer case. */
 function at(file: string, fallback: string | null): ComponentTokenConsumer[] {
@@ -591,6 +592,97 @@ const checkboxFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-663 (filed from BL-1133). The control shapes Blacklight's editor draws
+// visibly unlike the shipped defaults. Input's md keys fall back to the
+// `--input-height-md` / `--input-padding-md` / `--input-radius-md` variables
+// that predate the contract, so a scope that already sets those keeps working
+// while the theme leaves the key unbound. A bound key wins.
+// The unsized Textarea and Select keys drive the default `md` size.
+const INPUT_MD_PADDING = "var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem)";
+const INPUT_MD_PADDING_NUDGED =
+  "calc(var(--spacing-3_5, 0.875rem) + var(--input-nudge, 0px)) var(--spacing-4, 1rem) calc(var(--spacing-3_5, 0.875rem) - var(--input-nudge, 0px))";
+
+const inputFamily: ComponentTokenFamily = {
+  family: "input",
+  prefix: "input",
+  description:
+    "Input shape at the default `md` size. Each key falls back to the matching `--input-*-md` variable, so a scope that sets one still applies while the key is unbound; a bound key wins.",
+  tokens: [
+    {
+      key: "md-height",
+      property: "height",
+      description: "`md` height. Unbound, the height follows the padding and the line. Bind `md-padding` with it.",
+      consumers: at(INPUT, "var(--input-height-md, auto)"),
+    },
+    {
+      key: "md-padding",
+      property: "padding",
+      description: "`md` padding. Also the padding of DialogField's medium well, so the well tracks the field.",
+      consumers: [
+        { file: INPUT, fallback: `var(--input-padding-md, ${INPUT_MD_PADDING})` },
+        { file: INPUT, fallback: `var(--input-padding-md, ${INPUT_MD_PADDING_NUDGED})` },
+        { file: DIALOG_FIELD, fallback: `var(--input-padding-md, ${INPUT_MD_PADDING})` },
+      ],
+    },
+    {
+      key: "md-radius",
+      property: "border-radius",
+      description: "`md` corner rounding. Also the rounding of DialogField's well.",
+      consumers: each([INPUT, DIALOG_FIELD], "var(--input-radius-md, var(--radius-sm, 0.5rem))"),
+    },
+  ],
+};
+
+const textareaFamily: ComponentTokenFamily = {
+  family: "textarea",
+  prefix: "textarea",
+  description: "Textarea shape at the default `md` size.",
+  tokens: [
+    { key: "padding", property: "padding", description: "`md` padding.", consumers: at(TEXTAREA, INPUT_MD_PADDING) },
+    { key: "radius", property: "border-radius", description: "`md` corner rounding.", consumers: at(TEXTAREA, "var(--radius-sm, 0.5rem)") },
+  ],
+};
+
+const selectFamily: ComponentTokenFamily = {
+  family: "select",
+  prefix: "select",
+  description: "Select trigger shape at the default `md` size.",
+  tokens: [
+    {
+      key: "height",
+      property: "height",
+      description: "`md` trigger height. Unbound, the height follows the padding and the line. Bind `padding` with it.",
+      consumers: [
+        { file: SELECT, fallback: "auto" },
+        { file: SELECT, fallback: "calc(1lh + var(--spacing-3_5, 0.875rem) * 2 + 2px)" },
+      ],
+    },
+    { key: "padding", property: "padding", description: "`md` trigger padding.", consumers: at(SELECT, INPUT_MD_PADDING) },
+    { key: "radius", property: "border-radius", description: "`md` trigger corner rounding.", consumers: at(SELECT, "var(--radius-sm, 0.5rem)") },
+  ],
+};
+
+const tagInputFamily: ComponentTokenFamily = {
+  family: "tag-input",
+  prefix: "tag-input",
+  description:
+    "TagInput — the field around the tags, each held tag, and the opt-in typing slot (`entryAs=\"slot\"`). The slot follows the tag's shape unless its own keys are set.",
+  tokens: [
+    { key: "min-height", property: "min-height", description: "Field minimum height. The field grows as tags wrap.", consumers: at(TAG_INPUT, "2.25rem") },
+    { key: "padding", property: "padding", description: "Field padding around the tags.", consumers: at(TAG_INPUT, "var(--spacing-1, 0.25rem) var(--spacing-2, 0.5rem)") },
+    { key: "radius", property: "border-radius", description: "Field corner rounding.", consumers: at(TAG_INPUT, "var(--radius-md, 0.375rem)") },
+    { key: "tag-height", property: "height", description: "Held-tag height. Unbound, the tag is as tall as its line.", consumers: at(TAG_INPUT, "auto") },
+    { key: "tag-padding-x", property: "padding-left / padding-right", description: "Held-tag horizontal padding.", consumers: at(TAG_INPUT, "var(--spacing-2, 0.5rem)") },
+    { key: "tag-font-size", property: "font-size", description: "Held-tag type size. The typing slot types at it too.", consumers: each([TAG_INPUT, TAG_INPUT], "var(--font-size-xs, 0.75rem)") },
+    { key: "tag-font-weight", property: "font-weight", description: "Held-tag weight. Unbound, the tag inherits its row's weight.", consumers: at(TAG_INPUT, "revert-layer") },
+    { key: "tag-radius", property: "border-radius", description: "Held-tag corner rounding (a pill today).", consumers: at(TAG_INPUT, "var(--radius-full, 9999px)") },
+    { key: "slot-height", property: "height", description: "Typing-slot height. Follows `tag-height`.", consumers: at(TAG_INPUT, "var(--tag-input-tag-height, 1.375rem)") },
+    { key: "slot-padding-x", property: "padding-left / padding-right", description: "Typing-slot horizontal padding. Follows `tag-padding-x`.", consumers: at(TAG_INPUT, "var(--tag-input-tag-padding-x, var(--spacing-2, 0.5rem))") },
+    { key: "slot-radius", property: "border-radius", description: "Typing-slot corner rounding. Follows `tag-radius`.", consumers: at(TAG_INPUT, "var(--tag-input-tag-radius, var(--radius-full, 9999px))") },
+    { key: "slot-min-width", property: "min-width", description: "Typing-slot minimum width. The slot grows with what is typed.", consumers: at(TAG_INPUT, "4rem") },
+  ],
+};
+
 // VI-655 (filed from BL-1090). One shared set of edge tokens that every form
 // control reads for its resting edge, so a single binding turns every edge off:
 //
@@ -637,19 +729,40 @@ const controlFamily: ComponentTokenFamily = {
       key: "drop-edge-width",
       property: "outline-width",
       description: "Dashed-edge weight (file-upload draws it at 2×). Follows `edge-width` unless set — set it alone to keep dashed edges while solid edges are off.",
-      consumers: each([FILE_UPLOAD, EMPTY_STATE], "var(--control-edge-width, 1px)"),
+      consumers: each([FILE_UPLOAD, EMPTY_STATE, TAG_INPUT], "var(--control-edge-width, 1px)"),
     },
     {
       key: "drop-edge-style",
       property: "outline-style",
-      description: "Dashed-edge style for drop targets and empty states.",
-      consumers: each([FILE_UPLOAD, EMPTY_STATE], "dashed"),
+      description: "Dashed-edge style for drop targets, empty states and the TagInput typing slot.",
+      consumers: each([FILE_UPLOAD, EMPTY_STATE, TAG_INPUT], "dashed"),
     },
     {
       key: "state-edge-width",
       property: "outline-width",
       description: "Focus and invalid edge weight. Independent of `edge-width`, so focus and invalid stay visible with edges off.",
       consumers: each([INPUT, TEXTAREA, SELECT, CHECKBOX, SWITCH, TAG_INPUT], "1px"),
+    },
+    // VI-663: the refused-value look on Input, Textarea and Select — a ring in
+    // the error colour plus a halo around it. Neither reads `edge-width`, so
+    // invalid stays visible with edges off.
+    {
+      key: "invalid-ring-width",
+      property: "box-shadow (Input) / outline-width",
+      description: "Width of the error-colour ring on a refused value. Unbound, Input draws a 1.5px inset ring and Textarea and Select draw it at `state-edge-width`.",
+      consumers: [
+        ...each([INPUT, INPUT], "1.5px"),
+        ...each([TEXTAREA, TEXTAREA, SELECT, SELECT], "var(--control-state-edge-width, 1px)"),
+      ],
+    },
+    {
+      key: "invalid-halo-width",
+      property: "box-shadow",
+      description: "Width of the soft error-colour halo outside the ring. Unbound, Input draws none and Textarea and Select draw it at `--focus-ring-width`.",
+      consumers: [
+        { file: INPUT, fallback: "0px" },
+        ...each([TEXTAREA, SELECT], "var(--focus-ring-width, 2px)"),
+      ],
     },
   ],
 };
@@ -697,10 +810,10 @@ const fieldFamily: ComponentTokenFamily = {
 
 /** Button sizes, each with its shipped type size and corner rounding. */
 const BUTTON_SIZES = [
-  { size: "sm", fontSize: ["var(--font-size-xs, 0.75rem)", "0.8125rem"], radius: "var(--radius-md, 0.375rem)" },
-  { size: "md", fontSize: ["var(--font-size-sm, 0.875rem)"], radius: "var(--radius-md, 0.375rem)" },
-  { size: "lg", fontSize: ["var(--font-size-base, 1rem)"], radius: "var(--radius-md, 0.375rem)" },
-  { size: "dlg", fontSize: ["var(--font-size-2xs, 0.6875rem)"], radius: "var(--radius-lg, 0.5rem)" },
+  { size: "sm", fontSize: ["var(--font-size-xs, 0.75rem)", "0.8125rem"], fontWeight: "var(--font-weight-medium, 500)", radius: "var(--radius-md, 0.375rem)" },
+  { size: "md", fontSize: ["var(--font-size-sm, 0.875rem)"], fontWeight: "var(--font-weight-medium, 500)", radius: "var(--radius-md, 0.375rem)" },
+  { size: "lg", fontSize: ["var(--font-size-base, 1rem)"], fontWeight: "var(--font-weight-medium, 500)", radius: "var(--radius-md, 0.375rem)" },
+  { size: "dlg", fontSize: ["var(--font-size-2xs, 0.6875rem)"], fontWeight: "var(--font-weight-semibold, 600)", radius: "var(--radius-lg, 0.5rem)" },
 ];
 const buttonFamily: ComponentTokenFamily = {
   family: "button",
@@ -721,6 +834,12 @@ const buttonFamily: ComponentTokenFamily = {
       consumers: BUTTON_SIZES.map(() => ({ file: BUTTON, fallback: "revert-layer" })),
     },
     {
+      key: "font-weight",
+      property: "font-weight",
+      description: "Weight for every size.",
+      consumers: BUTTON_SIZES.map(({ fontWeight }) => ({ file: BUTTON, fallback: fontWeight })),
+    },
+    {
       key: "radius",
       property: "border-radius",
       description: "Corner rounding for every size (`999px` for a pill).",
@@ -729,7 +848,7 @@ const buttonFamily: ComponentTokenFamily = {
         { file: BUTTON, fallback: "var(--radius-md, 0.375rem)" },
       ],
     },
-    ...BUTTON_SIZES.flatMap(({ size, fontSize, radius }) => [
+    ...BUTTON_SIZES.flatMap(({ size, fontSize, fontWeight, radius }) => [
       {
         key: `${size}-font-size`,
         property: "font-size",
@@ -738,6 +857,12 @@ const buttonFamily: ComponentTokenFamily = {
             ? `\`${size}\` type size. Drives both the standard and editorial-density steps.`
             : `\`${size}\` type size.`,
         consumers: fontSize.map((fallback) => ({ file: BUTTON, fallback })),
+      },
+      {
+        key: `${size}-font-weight`,
+        property: "font-weight",
+        description: `\`${size}\` weight.`,
+        consumers: at(BUTTON, `var(--button-font-weight, ${fontWeight})`),
       },
       {
         key: `${size}-text-transform`,
@@ -851,7 +976,22 @@ const saveStatusFamily: ComponentTokenFamily = {
   tokens: [
     { key: "width", property: "width", description: "Slot width. Unbound, the slot is as wide as the longest label in the current font plus the retry mark, the same in every state. Bind it to pin a width; a longer label then truncates inside it.", consumers: at(SAVE_STATUS, "auto") },
     { key: "syncing-color", property: "color", description: "Ink of the Syncing state (a first sync from an outside source). Unbound it reads `--text-secondary`.", consumers: at(SAVE_STATUS, "var(--text-secondary, #6b7280)") },
-    { key: "dot-size", property: "width", description: "Diameter of the dot that draws Unsaved when `unsavedAs=\"dot\"`. The slot width does not change.", consumers: at(SAVE_STATUS, "var(--spacing-2, 0.5rem)") },
+    { key: "font-size", property: "font-size", description: "Readout type size.", consumers: at(SAVE_STATUS, "var(--font-size-xs, 0.75rem)") },
+    {
+      key: "dot-size",
+      property: "width / height",
+      description: "Diameter of the status dot (`dot`), in every state but Unsaved. Also the Unsaved dot's, until `unsaved-dot-size` is set. The slot width does not change.",
+      consumers: [
+        { file: SAVE_STATUS, fallback: "var(--spacing-2, 0.5rem)" },
+        { file: SAVE_STATUS, fallback: "var(--spacing-2, 0.5rem)" },
+      ],
+    },
+    {
+      key: "unsaved-dot-size",
+      property: "width / height",
+      description: "Diameter of the dot that draws Unsaved — the status dot while Unsaved, and the dot alone of `unsavedAs=\"dot\"`. Follows `dot-size`.",
+      consumers: each([SAVE_STATUS, SAVE_STATUS], "var(--save-status-dot-size, var(--spacing-2, 0.5rem))"),
+    },
     { key: "font-family", property: "font-family", description: "Readout family (e.g. the theme's mono).", consumers: at(SAVE_STATUS, "revert-layer") },
     { key: "text-transform", property: "text-transform", description: "Readout casing.", consumers: at(SAVE_STATUS, "revert-layer") },
     { key: "letter-spacing", property: "letter-spacing", description: "Readout tracking.", consumers: at(SAVE_STATUS, "revert-layer") },
@@ -1019,6 +1159,10 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   skeletonFamily,
   spinnerFamily,
   checkboxFamily,
+  inputFamily,
+  textareaFamily,
+  selectFamily,
+  tagInputFamily,
   controlFamily,
   hairlineFamily,
   fieldFamily,

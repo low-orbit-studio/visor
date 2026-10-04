@@ -51,6 +51,16 @@ theme_hooks:
       Per-size padding (the full shorthand). Default to each size's current
       spacing-token shorthand. Set to a full "vertical horizontal" value to
       retune control padding per context.
+  - name: --input-md-height / --input-md-padding / --input-md-radius
+    description: >
+      The md shape as theme keys (components.input.md-height / md-padding /
+      md-radius in .visor.yaml). Each falls back to the matching --input-*-md
+      variable, so unset it is unchanged and a scope that sets the older
+      variable still applies; a bound key wins over it.
+  - name: --control-invalid-ring-width / --control-invalid-halo-width
+    description: >
+      The refused-value look: the error ring (1.5px inset) and the soft halo
+      outside it (0px, none). Shared with Textarea and Select.
 
 density_axis:
   - axis: data-density="editorial"

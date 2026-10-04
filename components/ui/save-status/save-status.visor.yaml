@@ -35,8 +35,12 @@ theme_hooks:
     description: Slot width. Unset, the slot is sized from content (the longest label in the current font plus the retry mark), the same in every state. Set, it wins and a longer label truncates.
   - name: --save-status-syncing-color
     description: Ink of the Syncing state. Unbound it reads --text-secondary.
+  - name: --save-status-font-size
+    description: Readout type size (--font-size-xs).
   - name: --save-status-dot-size
-    description: Diameter of the Unsaved dot (0.5rem). The slot width does not change.
+    description: Diameter of the status dot (dot), and of the Unsaved dot until --save-status-unsaved-dot-size is set (0.5rem). The slot width does not change.
+  - name: --save-status-unsaved-dot-size
+    description: Diameter of the dot that draws Unsaved, in both the status dot and unsavedAs="dot". Follows --save-status-dot-size.
   - name: --save-status-font-family / --save-status-text-transform / --save-status-letter-spacing
     description: Readout family, case and tracking. Unset, the readout inherits from its row and any rule of yours wins.
   - name: --button-icon-size / --button-icon-pad / --button-icon-ghost-color
@@ -56,6 +60,10 @@ props:
     type: "'text' | 'dot'"
     default: '"text"'
     description: How unsaved is drawn. dot draws a dot alone, keeping the label as visually hidden text so it is still announced.
+  - name: dot
+    type: boolean
+    default: "false"
+    description: Draws a status dot before the label in every state, in the state's ink. Its box is as wide as the larger of the two dot sizes, so the label never moves.
   - name: retryLabel
     type: string
     default: '"Retry saving"'

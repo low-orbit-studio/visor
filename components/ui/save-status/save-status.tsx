@@ -34,6 +34,11 @@ export interface SaveStatusProps extends Omit<React.HTMLAttributes<HTMLSpanEleme
    * as visually hidden text, so the live region still announces it. Defaults to `"text"`.
    */
   unsavedAs?: "text" | "dot"
+  /**
+   * Draws a status dot before the label in every state, in the state's ink.
+   * With `unsavedAs="dot"`, Unsaved is this dot alone. Defaults to `false`.
+   */
+  dot?: boolean
   /** Accessible name of the retry mark. Defaults to "Retry saving". */
   retryLabel?: string
 }
@@ -46,7 +51,7 @@ export interface SaveStatusProps extends Omit<React.HTMLAttributes<HTMLSpanEleme
  * It draws no edge.
  */
 const SaveStatus = React.forwardRef<HTMLSpanElement, SaveStatusProps>(
-  ({ status, onRetry, labels, unsavedAs = "text", retryLabel = "Retry saving", className, ...props }, ref) => {
+  ({ status, onRetry, labels, unsavedAs = "text", dot = false, retryLabel = "Retry saving", className, ...props }, ref) => {
     const label = labels?.[status] ?? DEFAULT_LABELS[status]
     const asDot = status === "unsaved" && unsavedAs === "dot"
     const showRetry = status === "refused" && onRetry
@@ -59,13 +64,18 @@ const SaveStatus = React.forwardRef<HTMLSpanElement, SaveStatusProps>(
         className={cn(styles.root, className)}
         {...props}
       >
+        {dot ? (
+          <span data-slot="save-status-lead" className={styles.lead} aria-hidden="true">
+            <span data-slot="save-status-status-dot" className={styles.statusDot} />
+          </span>
+        ) : null}
         <span data-slot="save-status-cell" className={styles.cell}>
           {STATES.map((state) => (
             <span key={state} data-slot="save-status-sizer" className={styles.sizer} aria-hidden="true">
               {labels?.[state] ?? DEFAULT_LABELS[state]}
             </span>
           ))}
-          {asDot ? <span data-slot="save-status-dot" className={styles.dot} aria-hidden="true" /> : null}
+          {asDot && !dot ? <span data-slot="save-status-dot" className={styles.dot} aria-hidden="true" /> : null}
           <span
             data-slot="save-status-text"
             className={cn(styles.text, asDot && styles.hidden)}

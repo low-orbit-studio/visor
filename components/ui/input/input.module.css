@@ -54,7 +54,10 @@
 .base[aria-invalid="true"] {
   outline-color: transparent;
   background-color: var(--input-bg-invalid, var(--surface-error-subtle, color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--input-bg, #f9fafb)))));
-  box-shadow: inset 0 0 0 1.5px var(--border-error, #ef4444);
+  /* VI-663: the ring and halo widths are theme keys. Unset, the halo is 0px
+     wide and paints nothing, so the look is the 1.5px inset ring alone. */
+  box-shadow: inset 0 0 0 var(--control-invalid-ring-width, 1.5px) var(--border-error, #ef4444),
+    0 0 0 var(--control-invalid-halo-width, 0px) color-mix(in srgb, var(--border-error, #ef4444) 15%, transparent);
 }
 
 :global([data-density="editorial"]) .base[aria-invalid="true"] {
@@ -64,7 +67,7 @@
 .base[aria-invalid="true"]:focus-visible {
   outline-color: transparent;
   outline-offset: var(--focus-ring-offset, 2px);
-  box-shadow: inset 0 0 0 1.5px var(--border-error, #ef4444),
+  box-shadow: inset 0 0 0 var(--control-invalid-ring-width, 1.5px) var(--border-error, #ef4444),
     0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-error, #ef4444) 30%, transparent);
 }
 
@@ -120,10 +123,10 @@
 }
 
 .sizeMd {
-  height: var(--input-height-md, auto);
-  padding: var(--input-padding-md, var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem));
+  height: var(--input-md-height, var(--input-height-md, auto));
+  padding: var(--input-md-padding, var(--input-padding-md, var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem)));
   font-size: var(--font-size-sm, 0.875rem);
-  border-radius: var(--input-radius-md, var(--radius-sm, 0.5rem));
+  border-radius: var(--input-md-radius, var(--input-radius-md, var(--radius-sm, 0.5rem)));
 }
 
 .sizeLg {
@@ -146,7 +149,7 @@
    much padding from the bottom edge to the top lands the snapped baseline on the
    whole px nearest the ideal, within half a px of centre in any font. padding-top
    plus padding-bottom is unchanged, so the box is exactly as tall as before. A
-   theme that sets --input-padding-* replaces it, as before; a face the engine has
+   theme that sets --input-padding-* (or input.md-padding) replaces it, as before; a face the engine has
    no metrics for gets no nudge (the var() fallback is 0px).
    Blink only: WebKit places the baseline exactly, so correcting there overshoots
    (-apple-pay-button-style is the WebKit-only probe). */
@@ -159,7 +162,7 @@
   .sizeMd {
     --input-box: calc(2px + 2 * var(--spacing-3_5, 0.875rem) + 1lh);
     --input-nudge: calc(round((var(--input-box) + 1cap) / 2, 1px) - (var(--input-box) + (round(var(--font-ascent) * 1em, 1px) - round(var(--font-descent) * 1em, 1px))) / 2);
-    padding: var(--input-padding-md, calc(var(--spacing-3_5, 0.875rem) + var(--input-nudge, 0px)) var(--spacing-4, 1rem) calc(var(--spacing-3_5, 0.875rem) - var(--input-nudge, 0px)));
+    padding: var(--input-md-padding, var(--input-padding-md, calc(var(--spacing-3_5, 0.875rem) + var(--input-nudge, 0px)) var(--spacing-4, 1rem) calc(var(--spacing-3_5, 0.875rem) - var(--input-nudge, 0px))));
   }
 
   .sizeLg {

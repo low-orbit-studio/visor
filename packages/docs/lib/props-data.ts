@@ -2109,6 +2109,12 @@ export const propsData: Record<string, PropDef[]> = {
       default: 'false',
       description: 'Disables the tag input.',
     },
+    {
+      name: 'entryAs',
+      type: "'text' | 'slot'",
+      default: "'text'",
+      description: 'Where the next tag is typed. `text` types after the last tag as bare text. `slot` types into a dashed slot the shape of a held tag, drawn on the shared drop edge, so `edges: off` turns it off.',
+    },
   ],
 
   'accessibility-specimen': [
@@ -3140,6 +3146,12 @@ export const propsData: Record<string, PropDef[]> = {
       type: "'text' | 'dot'",
       default: "'text'",
       description: 'How `unsaved` is drawn. `dot` draws a dot alone with the label kept as visually hidden text, still announced by the live region. The slot width does not change.',
+    },
+    {
+      name: 'dot',
+      type: 'boolean',
+      default: 'false',
+      description: 'Draws a status dot before the label in every state, in the state\'s ink. With `unsavedAs="dot"`, Unsaved is this dot alone. The label never moves.',
     },
     {
       name: 'retryLabel',

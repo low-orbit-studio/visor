@@ -240,6 +240,30 @@ components:
     edgeless-bg: "#ff00aa"
     bg-checked: "#2b0a3d"
     border-checked: "#ff00aa"
+  input:
+    md-height: "37px"
+    md-padding: "3px 7px"
+    md-radius: "3px"
+  textarea:
+    padding: "3px 7px"
+    radius: "3px"
+  select:
+    height: "37px"
+    padding: "3px 7px"
+    radius: "3px"
+  tag-input:
+    min-height: "37px"
+    padding: "3px"
+    radius: "3px"
+    tag-height: "37px"
+    tag-padding-x: "7px"
+    tag-font-size: "37px"
+    tag-font-weight: "300"
+    tag-radius: "3px"
+    slot-height: "37px"
+    slot-padding-x: "7px"
+    slot-radius: "3px"
+    slot-min-width: "91px"
   control:
     edge-width: "3px"
     edge-color: "#ff00aa"
@@ -247,6 +271,8 @@ components:
     drop-edge-width: "4px"
     drop-edge-style: "double"
     state-edge-width: "3px"
+    invalid-ring-width: "3px"
+    invalid-halo-width: "7px"
   hairline:
     width: "3px"
   field:
@@ -257,20 +283,25 @@ components:
   button:
     text-transform: uppercase
     letter-spacing: "0.3em"
+    font-weight: "300"
     radius: "3px"
     sm-font-size: "37px"
+    sm-font-weight: "300"
     sm-text-transform: uppercase
     sm-letter-spacing: "0.3em"
     sm-radius: "3px"
     md-font-size: "37px"
+    md-font-weight: "300"
     md-text-transform: uppercase
     md-letter-spacing: "0.3em"
     md-radius: "3px"
     lg-font-size: "37px"
+    lg-font-weight: "300"
     lg-text-transform: uppercase
     lg-letter-spacing: "0.3em"
     lg-radius: "3px"
     dlg-font-size: "37px"
+    dlg-font-weight: "300"
     dlg-text-transform: uppercase
     dlg-letter-spacing: "0.3em"
     dlg-radius: "3px"
@@ -303,7 +334,9 @@ components:
   save-status:
     width: "91px"
     syncing-color: "#33ccaa"
+    font-size: "37px"
     dot-size: "11px"
+    unsaved-dot-size: "13px"
     font-family: "\"Courier New\", monospace"
     text-transform: uppercase
     letter-spacing: "3px"
