@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.35.0
+
+### Minor Changes
+
+- d6c624b: feat: add PositionPicker (VI-672), a 3x3 anchor grid
+  
+  `npx visor add position-picker` ships nine targets in a grid, one chosen, the value a `{ y: 'top' | 'center' | 'bottom', x: 'left' | 'center' | 'right' }` pair. It is a radio group in two dimensions: arrow keys move in both axes (wrapping), `Home` and `End` jump to the ends, and each target is named ("Top left"). Controlled (`value`, `null` for none) or uncontrolled (`defaultValue`), with `onValueChange`.
+  
+  `variant="on-image"` fills a positioned photograph frame with no ground of its own and gives every target its own scrim ring, so each keeps 3:1 over any photograph without a filter on the photo. Every target's hit area is at least 24x24 at every size; on a small thumbnail the grid grows to the target size rather than shrinking the targets. `renderTarget` swaps the drawn dot for a glyph, such as alignment icons in the occupied row. The standalone grid's resting edge reads the shared `--control-edge-*` tokens, so `--control-edge-width: 0` turns it off while focus survives.
+- 1074624: Sidebar works as an icon rail. `SidebarMenuButton` now implements `asChild` (Radix Slot, so a Next `<Link>` can be the item) and `tooltip` (shown on an icon rail, naming the button for assistive tech, portaled into the Sidebar so a scoped theme reaches it). `Sidebar` takes `position="contained"` so a rail sits under an app bar instead of pinning to the viewport. `SidebarProvider` takes `keyboardShortcut` and skips Cmd/Ctrl+B (and its `preventDefault`) when only `collapsible="none"` sidebars are mounted. `SidebarProvider` now includes a `TooltipProvider`. The `blacklight-app` render theme binds `tooltip-bg` / `tooltip-text`, and `visor render sidebar` adds an icon-rail fixture.
+  
+  The sidebar menu button's focus ring is now drawn inset, so the overflow-clipped icon rail shows it on all four sides. Tooltip has a dark-mode default (`--text-primary` ground under `--text-inverse` ink) so it is legible in stock dark themes with no override; light mode and any `--tooltip-bg` / `--tooltip-text` binding are unchanged.
+- 3a13410: Add BottomNav, a bottom navigation bar of icon destinations for phone widths. Each destination takes an `icon` (a Phosphor-style component), a `label` (visually hidden unless `showLabels`), an `href` (renders a link) or `onSelect` (a button), and an optional `mark`. The active destination sets `aria-current="page"` and renders its icon at `weight="fill"`, so colour is never the only cue. `mark` draws a solid 8px accent dot and never draws a number: the accessible name composes the meaning ("Inbox, 3 unread", `markLabel` changes the word). A `group` on a destination draws a hairline before the first destination of each new group, hidden from assistive tech. The bar pads for `env(safe-area-inset-bottom)`, targets are 48px, and the resting top edge reads the shared `--control-edge-*` tokens (`--control-edge-width: 0` removes it, focus stays visible). When `fixed` (the default) the bar publishes its rendered height, safe-area pad included, as `--bottom-nav-height` on the document root, so `scroll-padding-bottom: var(--bottom-nav-height)` keeps a focused field clear of it (WCAG 2.4.11). `npx visor add bottom-nav`.
+
+### Patch Changes
+
+- c2e418a: `visor render` puts the theme class on `<body>` instead of the inner `#theme-scope` div, so portaled panels (popover, select, dialog, tooltip, date-picker and the rest) render on the theme under test, as they do in a real app. Adds `select --fixture open` and a `tooltip` fixture.
+
 ## 1.34.0
 
 ### Minor Changes
