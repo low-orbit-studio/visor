@@ -2,9 +2,10 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import {
   generateThemeData,
+  MODE_DEPENDENT_SEMANTIC_ALIASES,
   VISOR_CORE_SEMANTIC_ALIASES,
 } from '@loworbitstudio/visor-theme-engine';
-import { nextjsAdapter } from '@loworbitstudio/visor-theme-engine/adapters';
+import { docsAdapter, nextjsAdapter } from '@loworbitstudio/visor-theme-engine/adapters';
 import { resolveTokensCssFile } from '../../packages/cli/src/commands/render.js';
 import type { Rule, RuleResult } from './types.js';
 
@@ -140,11 +141,18 @@ export const scopedThemeAliasResolution: Rule = {
     try {
       const page = await browser.newPage();
       for (const theme of themes) {
-        let themeCss: string;
+        // Both scoped emitters: the nextjs adapter (`scopePrefix`, VI-648) and
+        // the docs adapter, whose `.{slug}-theme` output also ships as
+        // visor-core's `dist/themes/*.css` and feeds the render harness (VI-695).
+        // The docs adapter deliberately skips the mode-dependent aliases (their
+        // table referent is light-only), so they are not expected to follow it.
+        let variants: { label: string; css: string; bodyClass: string; skip?: ReadonlySet<string> }[];
         try {
-          themeCss = nextjsAdapter(generateThemeData(readFileSync(theme.file, 'utf-8')), {
-            scopePrefix: SCOPE_PREFIX,
-          });
+          const data = generateThemeData(readFileSync(theme.file, 'utf-8'));
+          variants = [
+            { label: SCOPE_PREFIX, css: nextjsAdapter(data, { scopePrefix: SCOPE_PREFIX }), bodyClass: SCOPE_CLASS },
+            { label: 'docs adapter', css: docsAdapter(data, { includeFontImports: false }), bodyClass: `${theme.slug}-theme`, skip: MODE_DEPENDENT_SEMANTIC_ALIASES },
+          ];
         } catch (err) {
           results.push({
             pass: false,
@@ -154,33 +162,36 @@ export const scopedThemeAliasResolution: Rule = {
           continue;
         }
 
-        await page.setContent(
-          `<!doctype html><html><head><meta charset="utf-8" />` +
-          `<style>${tokensCss}</style><style>${themeCss}</style></head>` +
-          `<body class="${SCOPE_CLASS}"></body></html>`,
-          { waitUntil: 'load' },
-        );
-        const values = (await page.evaluate(probe)) as Record<string, [string, string]>;
+        for (const variant of variants) {
+          await page.setContent(
+            `<!doctype html><html><head><meta charset="utf-8" />` +
+            `<style>${tokensCss}</style><style>${variant.css}</style></head>` +
+            `<body class="${variant.bodyClass}"></body></html>`,
+            { waitUntil: 'load' },
+          );
+          const values = (await page.evaluate(probe)) as Record<string, [string, string]>;
 
-        const drifted: string[] = [];
-        for (const [alias, referent] of pairs) {
-          const [aliasValue, referentValue] = values[alias] ?? ['', ''];
-          // An empty referent means this theme does not declare it, so the
-          // alias is correctly left inheriting visor-core's default.
-          if (referentValue === '') continue;
-          if (aliasValue !== referentValue) {
-            drifted.push(`--${alias} = ${aliasValue || '(empty)'} but --${referent} = ${referentValue}`);
+          const drifted: string[] = [];
+          for (const [alias, referent] of pairs) {
+            if (variant.skip?.has(alias)) continue;
+            const [aliasValue, referentValue] = values[alias] ?? ['', ''];
+            // An empty referent means this theme does not declare it, so the
+            // alias is correctly left inheriting visor-core's default.
+            if (referentValue === '') continue;
+            if (aliasValue !== referentValue) {
+              drifted.push(`--${alias} = ${aliasValue || '(empty)'} but --${referent} = ${referentValue}`);
+            }
           }
-        }
 
-        results.push({
-          pass: drifted.length === 0,
-          message: drifted.length === 0
-            ? `${theme.slug}: all ${pairs.length} aliases resolve to the theme on ${SCOPE_PREFIX}`
-            : `${theme.slug}: ${drifted.length} alias(es) ignored the theme on ${SCOPE_PREFIX} — ` +
-              `resolved against visor-core's :root default instead:\n    ${drifted.join('\n    ')}`,
-          file: theme.file,
-        });
+          results.push({
+            pass: drifted.length === 0,
+            message: drifted.length === 0
+              ? `${theme.slug}: all ${pairs.length} aliases resolve to the theme on ${variant.label}`
+              : `${theme.slug}: ${drifted.length} alias(es) ignored the theme on ${variant.label} — ` +
+                `resolved against visor-core's :root default instead:\n    ${drifted.join('\n    ')}`,
+            file: theme.file,
+          });
+        }
       }
     } finally {
       await browser.close();

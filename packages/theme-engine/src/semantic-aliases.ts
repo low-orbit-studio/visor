@@ -120,6 +120,38 @@ export const VISOR_CORE_SEMANTIC_ALIASES: Readonly<Record<string, string>> = {
 };
 
 /**
+ * Aliases visor-core declares with a **different referent in dark mode** —
+ * `--sidebar-bg` is `var(--color-neutral-50)` on `:root` but
+ * `var(--color-neutral-900)` under `[data-theme="dark"]` and the
+ * prefers-color-scheme block.
+ *
+ * The table above records only the light referent. Re-declaring one of these
+ * flat on a theme scope therefore pins dark mode to the light mapping: a dark
+ * sidebar resolves to the theme's near-white `neutral-50`. Left alone, the
+ * scope inherits visor-core's own mode-correct value — the theme's palette is
+ * not seen, but the mode is right.
+ *
+ * The docs adapter skips these (VI-695); VI-696 tracks emitting a dark
+ * referent per mode in both adapters. Pinned against the emitted
+ * `tokens.css` by `semantic-alias-coverage`, so a new mode-dependent alias
+ * fails there by name rather than silently re-declaring the light mapping.
+ */
+export const MODE_DEPENDENT_SEMANTIC_ALIASES: ReadonlySet<string> = new Set([
+  "border-input",
+  "skeleton-from",
+  "skeleton-to",
+  "chart-1",
+  "sidebar-bg",
+  "sidebar-text",
+  "sidebar-primary-bg",
+  "sidebar-accent-bg",
+  "sidebar-accent-text",
+  "sidebar-border",
+  "sidebar-ring",
+  "sidebar-text-muted",
+]);
+
+/**
  * Every custom property declared anywhere in `css`, without the leading `--`.
  *
  * Read off the generated CSS rather than the token data so the filter in
@@ -151,13 +183,20 @@ export function collectDeclaredProperties(css: string): Set<string> {
  *   the correct outcome — re-emitting would replace a working value with an
  *   invalid one.
  *
+ * `options.skip` names aliases to leave inheriting visor-core's value — the
+ * docs adapter passes `MODE_DEPENDENT_SEMANTIC_ALIASES`.
+ *
  * Returns `[]` for a `:root`-scoped theme's caller, which does not need this at
  * all: there, visor-core's aliases and the theme's primitives are declared on
  * the same element, so substitution already sees the theme's values.
  */
-export function generateSemanticAliasDecls(declared: ReadonlySet<string>): string[] {
+export function generateSemanticAliasDecls(
+  declared: ReadonlySet<string>,
+  options: { skip?: ReadonlySet<string> } = {},
+): string[] {
   const decls: string[] = [];
   for (const [alias, referent] of Object.entries(VISOR_CORE_SEMANTIC_ALIASES)) {
+    if (options.skip?.has(alias)) continue;
     if (declared.has(alias)) continue;
     if (!declared.has(referent)) continue;
     decls.push(`--${alias}: var(--${referent});`);
