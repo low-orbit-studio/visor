@@ -135,26 +135,37 @@
 
 /* Baseline nudge (VI-684). A native <input> cannot be trimmed to its capital
    band without clipping descenders and accents, so its capitals sit wherever the
-   font's line box puts them. Blink snaps that baseline to a whole CSS px, and the
-   md and lg boxes (51px, 62px) have an odd-pixel centre, so the capitals land up
-   to ~0.9px high. The ideal baseline is (box height + 1cap) / 2; this moves the
-   padding from the bottom edge to the top by what rounding that baseline to a
-   whole px takes away, so the snapped baseline lands on the nearest px to ideal
-   and the capitals are within half a px of centre in any font. padding-top plus
-   padding-bottom is unchanged, so the box is exactly as tall as before; a theme
-   that sets --input-padding-md / --input-padding-lg replaces it, as before.
+   font's line box puts them: half a line above the box centre plus (ascent -
+   descent) / 2, with ascent and descent each rounded to a whole px, and then the
+   baseline snapped to a whole CSS px (Blink). Both depend on the font, so no one
+   constant centres every face. The theme engine publishes the body face's
+   ascent and descent as unitless em ratios (--font-ascent, --font-descent); the
+   box height H is known, so the ideal baseline (H + 1cap) / 2 and the one the
+   font produces can both be written out. --input-nudge is the gap between the
+   nearest whole px to the ideal and the baseline the font produces; moving that
+   much padding from the bottom edge to the top lands the snapped baseline on the
+   whole px nearest the ideal, within half a px of centre in any font. padding-top
+   plus padding-bottom is unchanged, so the box is exactly as tall as before. A
+   theme that sets --input-padding-* replaces it, as before; a face the engine has
+   no metrics for gets no nudge (the var() fallback is 0px).
    Blink only: WebKit places the baseline exactly, so correcting there overshoots
-   (-apple-pay-button-style is the WebKit-only probe). The height is 2px of
-   border + both paddings + 1lh (line-height 1.5). */
+   (-apple-pay-button-style is the WebKit-only probe). */
 @supports (padding-top: round(1.4px, 1px)) and (not (-apple-pay-button-style: black)) {
+  .sizeSm {
+    --input-nudge: calc(round((2.25rem + 1cap) / 2, 1px) - (2.25rem + (round(var(--font-ascent) * 1em, 1px) - round(var(--font-descent) * 1em, 1px))) / 2);
+    padding: var(--input-padding-sm, calc(var(--spacing-1, 0.25rem) + var(--input-nudge, 0px)) var(--spacing-3, 0.75rem) calc(var(--spacing-1, 0.25rem) - var(--input-nudge, 0px)));
+  }
+
   .sizeMd {
-    --input-nudge: calc(round((2px + 2 * var(--spacing-3_5, 0.875rem) + 1lh + 1cap) / 2, 1px) - (2px + 2 * var(--spacing-3_5, 0.875rem) + 1lh + 1cap) / 2 + 0.5px);
-    padding: var(--input-padding-md, calc(var(--spacing-3_5, 0.875rem) + var(--input-nudge)) var(--spacing-4, 1rem) calc(var(--spacing-3_5, 0.875rem) - var(--input-nudge)));
+    --input-box: calc(2px + 2 * var(--spacing-3_5, 0.875rem) + 1lh);
+    --input-nudge: calc(round((var(--input-box) + 1cap) / 2, 1px) - (var(--input-box) + (round(var(--font-ascent) * 1em, 1px) - round(var(--font-descent) * 1em, 1px))) / 2);
+    padding: var(--input-padding-md, calc(var(--spacing-3_5, 0.875rem) + var(--input-nudge, 0px)) var(--spacing-4, 1rem) calc(var(--spacing-3_5, 0.875rem) - var(--input-nudge, 0px)));
   }
 
   .sizeLg {
-    --input-nudge: calc(round((2px + 2 * var(--spacing-4_5, 1.125rem) + 1lh + 1cap) / 2, 1px) - (2px + 2 * var(--spacing-4_5, 1.125rem) + 1lh + 1cap) / 2 + 0.5px);
-    padding: var(--input-padding-lg, calc(var(--spacing-4_5, 1.125rem) + var(--input-nudge)) var(--spacing-5, 1.25rem) calc(var(--spacing-4_5, 1.125rem) - var(--input-nudge)));
+    --input-box: calc(2px + 2 * var(--spacing-4_5, 1.125rem) + 1lh);
+    --input-nudge: calc(round((var(--input-box) + 1cap) / 2, 1px) - (var(--input-box) + (round(var(--font-ascent) * 1em, 1px) - round(var(--font-descent) * 1em, 1px))) / 2);
+    padding: var(--input-padding-lg, calc(var(--spacing-4_5, 1.125rem) + var(--input-nudge, 0px)) var(--spacing-5, 1.25rem) calc(var(--spacing-4_5, 1.125rem) - var(--input-nudge, 0px)));
   }
 }
 
