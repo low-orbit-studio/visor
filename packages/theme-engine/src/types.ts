@@ -5,6 +5,10 @@
  */
 
 import type { FontSource } from "./fonts/types.js";
+
+/** VI-687: casing a typography slot applies to its text. */
+export type TextTransform = "none" | "uppercase" | "lowercase" | "capitalize";
+export const TEXT_TRANSFORMS: readonly TextTransform[] = ["none", "uppercase", "lowercase", "capitalize"];
 import type { VisorBrand } from "./brand/types.js";
 import type { BrandStrategy } from "./brand-strategy/types.js";
 import type { ComponentTokenBindings } from "./component-tokens.js";
@@ -184,6 +188,7 @@ export interface VisorThemeConfig {
       weights?: number[];
       source?: FontSource;
       org?: string;
+      "text-transform"?: TextTransform;
     };
     display?: {
       family?: string;
@@ -191,6 +196,7 @@ export interface VisorThemeConfig {
       weights?: number[];
       source?: FontSource;
       org?: string;
+      "text-transform"?: TextTransform;
     };
     body?: {
       family?: string;
@@ -198,6 +204,7 @@ export interface VisorThemeConfig {
       weights?: number[];
       source?: FontSource;
       org?: string;
+      "text-transform"?: TextTransform;
     };
     mono?: {
       family?: string;
@@ -205,6 +212,7 @@ export interface VisorThemeConfig {
       weights?: number[];
       source?: FontSource;
       org?: string;
+      "text-transform"?: TextTransform;
     };
     /**
      * VI-447: 6-tier letter-spacing ramp (`xl | lg | md | sm | xs | tight`).
@@ -384,10 +392,10 @@ export interface ResolvedThemeConfig {
      * Always present (defaults to `#FFFFFF`); theme-overridable.
      */
     "text-on-dark": string;
-    heading: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string };
-    display: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string };
-    body: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string };
-    mono: { family: string; weight?: number; weights?: number[]; source?: FontSource; org?: string };
+    heading: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string; "text-transform"?: TextTransform };
+    display: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string; "text-transform"?: TextTransform };
+    body: { family: string; weight: number; weights?: number[]; source?: FontSource; org?: string; "text-transform"?: TextTransform };
+    mono: { family: string; weight?: number; weights?: number[]; source?: FontSource; org?: string; "text-transform"?: TextTransform };
     /**
      * Per-source CDN base URL overrides (e.g., `visor-fonts:
      * https://fonts.knowmentum.ai`). Passed through from raw config so

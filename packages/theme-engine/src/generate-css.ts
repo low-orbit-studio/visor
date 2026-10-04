@@ -176,6 +176,19 @@ export function generateFontSizeDecls(scale: number): string[] {
   });
 }
 
+/**
+ * VI-687: `--font-<slot>-text-transform`, emitted only for a slot the theme
+ * sets, so output for every theme that does not stays byte-identical.
+ */
+export function generateFontTextTransformDecls(typography: ResolvedThemeConfig["typography"]): string[] {
+  const decls: string[] = [];
+  for (const slot of ["heading", "display", "body", "mono"] as const) {
+    const value = typography[slot]["text-transform"];
+    if (value) decls.push(`--font-${slot}-text-transform: ${value};`);
+  }
+  return decls;
+}
+
 function generateTypographyPrimitives(
   config: ResolvedThemeConfig,
   aliases: AliasedFamilies = EMPTY_ALIASES,
@@ -199,6 +212,7 @@ function generateTypographyPrimitives(
   // Body face vertical metrics, for centring native inputs (VI-684).
   decls.push(...generateFontMetricDecls(config.typography.body.family));
   decls.push(...generateFontWeightDecls(config.typography));
+  decls.push(...generateFontTextTransformDecls(config.typography));
 
   // Line heights
   const lineHeights: Record<string, number> = {

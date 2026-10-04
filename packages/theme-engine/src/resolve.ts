@@ -193,6 +193,7 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
           config.typography?.heading?.weight ?? DEFAULTS.typography.heading.weight,
         ...(config.typography?.heading?.source && { source: config.typography.heading.source }),
         ...(config.typography?.heading?.org && { org: config.typography.heading.org }),
+        ...(config.typography?.heading?.["text-transform"] && { "text-transform": config.typography.heading["text-transform"] }),
         ...(config.typography?.heading?.weights && { weights: config.typography.heading.weights }),
       },
       display: {
@@ -204,6 +205,7 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
           config.typography?.display?.weight ?? 400,
         ...(config.typography?.display?.source && { source: config.typography.display.source }),
         ...(config.typography?.display?.org && { org: config.typography.display.org }),
+        ...(config.typography?.display?.["text-transform"] && { "text-transform": config.typography.display["text-transform"] }),
         ...(config.typography?.display?.weights && { weights: config.typography.display.weights }),
       },
       body: {
@@ -213,6 +215,7 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
           config.typography?.body?.weight ?? DEFAULTS.typography.body.weight,
         ...(config.typography?.body?.source && { source: config.typography.body.source }),
         ...(config.typography?.body?.org && { org: config.typography.body.org }),
+        ...(config.typography?.body?.["text-transform"] && { "text-transform": config.typography.body["text-transform"] }),
         ...(config.typography?.body?.weights && { weights: config.typography.body.weights }),
       },
       mono: {
@@ -222,6 +225,7 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
         ...(config.typography?.mono?.weights && { weights: config.typography.mono.weights }),
         ...(config.typography?.mono?.source && { source: config.typography.mono.source }),
         ...(config.typography?.mono?.org && { org: config.typography.mono.org }),
+        ...(config.typography?.mono?.["text-transform"] && { "text-transform": config.typography.mono["text-transform"] }),
       },
       ...(config.typography?.["cdn-overrides"] && {
         "cdn-overrides": config.typography["cdn-overrides"],

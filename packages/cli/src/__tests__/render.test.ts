@@ -321,3 +321,53 @@ describe.skipIf(!FONT_READY)("render — native button wears the theme body font
     expect(await buttonFont(page(""))).not.toBe(THEME_FONT)
   }, 60000)
 })
+
+// VI-687 — a theme's typography text-transform reaches a rendered heading. Real
+// engine output + the real Heading / SectionIntro CSS, computed style in chromium.
+describe.skipIf(!(await browserReady()))("render — typography text-transform reaches headings (VI-687)", () => {
+  async function computedTransforms(yaml: string): Promise<{ heading: string; display: string }> {
+    const { generateThemeData, generatePrimitivesCss } = await import("@loworbitstudio/visor-theme-engine")
+    const data = generateThemeData(yaml)
+    const themeCss = generatePrimitivesCss(data.primitives, data.config)
+    const css = ["heading/heading", "section-intro/section-intro"]
+      .map((n) => readFileSync(resolve(REPO_ROOT, "components", "ui", `${n}.module.css`), "utf-8"))
+      .join("\n")
+    const html = buildHtml({
+      resetCss: "",
+      tokensCss: "",
+      themeCss,
+      componentCss: css,
+      bundleJs:
+        'document.getElementById("root").innerHTML = "<h2 id=h class=base>Title</h2><h1 id=d class=heading>Hero</h1>";',
+      themeClass: "tt-theme",
+      mode: "light",
+    })
+    const pw = (await import("playwright")) as any
+    const browser = await pw.chromium.launch()
+    try {
+      const p = await browser.newPage()
+      await p.setContent(html, { waitUntil: "load" })
+      return await p.evaluate(
+        '({ heading: getComputedStyle(document.getElementById("h")).textTransform, display: getComputedStyle(document.getElementById("d")).textTransform })'
+      )
+    } finally {
+      await browser.close()
+    }
+  }
+
+  const base = "name: tt\nversion: 1\ncolors:\n  primary: \"#2563EB\"\n"
+
+  it("display text-transform: uppercase renders the display heading uppercase and leaves the heading slot alone", async () => {
+    const out = await computedTransforms(`${base}typography:\n  display:\n    text-transform: uppercase\n`)
+    expect(out).toEqual({ heading: "none", display: "uppercase" })
+  }, 60000)
+
+  it("heading text-transform: capitalize reaches the Heading component", async () => {
+    const out = await computedTransforms(`${base}typography:\n  heading:\n    text-transform: capitalize\n`)
+    expect(out).toEqual({ heading: "capitalize", display: "none" })
+  }, 60000)
+
+  it("a theme that sets none leaves both at the CSS default", async () => {
+    expect(await computedTransforms(base)).toEqual({ heading: "none", display: "none" })
+  }, 60000)
+})

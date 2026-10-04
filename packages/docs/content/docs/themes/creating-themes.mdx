@@ -99,6 +99,25 @@ The legacy triad keys stay valid for back-compat and fold onto the ramp (`normal
 `wide`→`lg`, `tight`→`tight`). The engine also emits `--letter-spacing-normal` (= `md`) and
 `--letter-spacing-wide` (= `lg`) as aliases so older consumers keep resolving.
 
+### Typography text-transform
+
+Every typography slot (`heading`, `display`, `body`, `mono`) accepts `text-transform` with
+one of `none`, `uppercase`, `lowercase` or `capitalize`. The engine emits
+`--font-<slot>-text-transform` only for a slot the theme sets, so themes that do not set it
+are unchanged.
+
+```yaml
+typography:
+  display:
+    family: "Anton"
+    text-transform: uppercase # emits --font-display-text-transform: uppercase
+```
+
+`Heading` consumes `--font-heading-text-transform`, and the display-family headlines in
+`PageHeader` and `SectionIntro` consume `--font-display-text-transform`. When the token is
+unset they inherit, as before. The Flutter adapter does not emit it: Flutter's `TextStyle`
+has no casing property.
+
 ### Extension Tokens (Namespaced)
 
 Theme-specific tokens use a `--{theme-name}-*` prefix. Components must **never** depend on these — they are consumed only by theme-specific CSS.

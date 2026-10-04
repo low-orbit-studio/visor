@@ -133,6 +133,8 @@
    pattern's marquee role drives the hero title when a theme binds it. */
 .title[data-title-family="display"] {
   font-family: var(--page-header-title-family, var(--admin-ui-marquee-family, var(--font-display, var(--font-family-heading, inherit))));
+  /* VI-687: theme-set display casing; inherit when unset. */
+  text-transform: var(--font-display-text-transform, inherit);
 }
 
 /* Description */
