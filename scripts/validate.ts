@@ -49,6 +49,7 @@ import { flutterCssTokenSync } from './rules/flutter-css-token-sync.js';
 import { widgetbookUseCaseCoverage } from './rules/widgetbook-use-case-coverage.js';
 import { widgetbookDepsFresh } from './rules/widgetbook-deps-fresh.js';
 import { schemaCopiesSync } from './rules/schema-copies-sync.js';
+import { componentNamesFresh } from './rules/component-names-fresh.js';
 import type { Rule } from './rules/types.js';
 
 const rules: Rule[] = [
@@ -82,6 +83,7 @@ const rules: Rule[] = [
   crossPlatformManifestSync,
   flutterCssTokenSync,
   schemaCopiesSync,
+  componentNamesFresh,
   widgetbookUseCaseCoverage,
   widgetbookDepsFresh,
   testFileExists,

@@ -17,7 +17,7 @@
 
 import * as fs from "node:fs"
 import * as path from "node:path"
-import { fileURLToPath } from "node:url"
+import { fileURLToPath, pathToFileURL } from "node:url"
 
 import type { Registry, RegistryItem } from "../registry/schema"
 import { ui } from "../registry/registry-ui"
@@ -28,7 +28,7 @@ import { visual } from "../registry/registry-visual"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = path.resolve(__dirname, "..")
-const OUTPUT_PATH = path.join(
+export const OUTPUT_PATH = path.join(
   REPO_ROOT,
   "components/devtools/source-inspector/visor-component-names.generated.ts",
 )
@@ -85,7 +85,7 @@ function extractNamesFromSource(source: string): Set<string> {
   return names
 }
 
-function collectNames(): { names: Set<string>; fileCount: number } {
+export function collectNames(): { names: Set<string>; fileCount: number } {
   const names = new Set<string>()
   let fileCount = 0
 
@@ -110,7 +110,7 @@ function collectNames(): { names: Set<string>; fileCount: number } {
   return { names, fileCount }
 }
 
-function renderOutput(names: Set<string>): string {
+export function renderOutput(names: Set<string>): string {
   const sorted = Array.from(names).sort((a, b) => a.localeCompare(b))
   const entries = sorted.map((n) => `  ${JSON.stringify(n)},`).join("\n")
 
@@ -156,4 +156,11 @@ function main(): void {
   )
 }
 
-main()
+// Run only when executed directly, so the `component-names-fresh` validate
+// rule (VI-688) can import collectNames/renderOutput without writing the file.
+if (
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(process.argv[1]).href
+) {
+  main()
+}
