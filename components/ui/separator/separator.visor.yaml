@@ -28,7 +28,10 @@ props:
   - name: decorative
     type: boolean
     default: true
-    description: When true, removes the separator from the accessibility tree
+    description: When true, removes the separator from the accessibility tree. Ignored when a label is set.
+  - name: label
+    type: ReactNode
+    description: Text centred on a horizontal rule, with the rule on both sides. A labelled separator is never decorative (role="separator", named by the label). Ignored on a vertical separator.
 
 dependencies:
   - "@radix-ui/react-separator"
@@ -41,6 +44,8 @@ example: |
     <Separator />
     <h3>Section B</h3>
   </div>
+
+  <Separator label="or" />
 
   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
     <span>Item 1</span>

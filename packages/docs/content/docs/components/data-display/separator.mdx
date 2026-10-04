@@ -39,6 +39,19 @@ Set `orientation="vertical"` to render a vertical divider between inline element
   </div>
 </ComponentPreview>
 
+## Label
+
+Pass `label` to draw a word centred on the rule, with the rule on both sides. Both lines use the same border token as the bare separator. `label` applies to horizontal separators only.
+
+<ComponentPreview
+  title="Labelled Separator"
+  code={"import { Separator } from '@/components/ui/separator/separator';\n\n<Separator label=\"or\" />"}
+>
+  <div style={{ width: '100%' }}>
+    <Separator label="or" />
+  </div>
+</ComponentPreview>
+
 ## Installation
 
 ```bash
@@ -57,6 +70,7 @@ import { Separator } from '@/components/ui/separator/separator';
 
 <Separator />
 <Separator orientation="vertical" />
+<Separator label="or" />
 ```
 
 ## API Reference
@@ -72,3 +86,4 @@ The component also accepts all standard Radix UI Separator props.
 - Built on `@radix-ui/react-separator` with correct `role="separator"` semantics.
 - Set `decorative={false}` when the separator conveys meaningful content grouping that screen readers should announce.
 - Decorative separators (the default) are hidden from the accessibility tree with `role="none"`.
+- A separator with a `label` is never decorative: it renders `role="separator"` named by the label, so the word is read. The `decorative` prop is ignored when `label` is set.
