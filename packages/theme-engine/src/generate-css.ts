@@ -14,6 +14,7 @@ import type {
   ColorScheme,
 } from "./types.js";
 import { FULL_SHADE_STEPS, SELECTIVE_SHADE_STEPS } from "./shades.js";
+import { generateFontMetricDecls } from "./font-metrics.js";
 import { generateFontWeightDecls } from "./font-weights.js";
 import {
   EMPTY_ALIASES,
@@ -195,6 +196,8 @@ function generateTypographyPrimitives(
 
   // Font weights — named ramp resolved against the faces the theme loaded,
   // plus the role tokens and the discrete ladder (VI-639).
+  // Body face vertical metrics, for centring native inputs (VI-684).
+  decls.push(...generateFontMetricDecls(config.typography.body.family));
   decls.push(...generateFontWeightDecls(config.typography));
 
   // Line heights

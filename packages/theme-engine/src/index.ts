@@ -140,3 +140,6 @@ export type {
   ColorFormat,
   ParsedColor,
 } from "./types.js";
+
+export { generateFontMetricDecls, FONT_VERTICAL_METRICS } from "./font-metrics.js";
+export type { FontVerticalMetrics } from "./font-metrics.js";

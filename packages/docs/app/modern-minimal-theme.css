@@ -282,6 +282,8 @@ html:not(.dark) .modern-minimal-theme {
   --font-size-2xl: 1.5rem; /* 24px */
   --font-size-3xl: 1.875rem; /* 30px */
   --font-size-4xl: 2.25rem; /* 36px */
+  --font-ascent: 0.96;
+  --font-descent: 0.253;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;

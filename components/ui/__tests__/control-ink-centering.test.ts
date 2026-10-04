@@ -1,7 +1,7 @@
 // @vitest-environment node
 /**
  * VI-684 — every fixed-height single-line control centres its label's capitals
- * within 0.25 CSS px, in any font (Arial, Product Sans, PP Model Mono), on the
+ * within 0.25 CSS px, in every body face a shipped theme uses (Arial, system-ui, Satoshi, Product Sans, PP Model Mono, Pitch Sans, Inter, Outfit), on the
  * shared mechanism documented in docs/label-centering.md. Measured on pixels,
  * with the VI-682 harness: toggle-group, tabs, chip, badge, select (the value
  * span, not the caret) and input, at every size.
@@ -9,9 +9,10 @@
  * Input is the one exception, and it is a ceiling, not a miss: a native <input>
  * cannot be trimmed without clipping descenders and accents (VI-684 regression),
  * so it takes the font's own line box. Chromium snaps its baseline to a whole CSS
- * px, so the odd-pixel md and lg boxes carry a padding nudge (input.module.css);
- * the capitals land within half a px, the most a whole-px baseline allows. WebKit
- * places the baseline exactly and is within 0.34px. Held to 0.5px in both.
+ * px, so the capitals land within half a px of centre at best. The padding nudge
+ * (input.module.css), driven by the --font-ascent / --font-descent the theme
+ * engine publishes, puts the snapped baseline on the nearest whole px. WebKit
+ * places the baseline exactly. Held to 0.5px in both.
  *
  * Skips where Chromium/WebKit or esbuild is missing, or the font CDN is unreachable.
  */
@@ -71,18 +72,18 @@ describe.skipIf(!CHROMIUM)("control label optical centering (Chromium)", () => {
         expect(Math.abs(t.height - p.height), `${scenario.name} ${t.id} height`).toBeLessThan(0.05)
       }
     }
-  }, 180000)
+  }, 400000)
 
-  it("mutation control: without the nudge, input md and lg fail the centring bound", async () => {
+  it("mutation control: without the nudge, input sm, md and lg fail the centring bound", async () => {
     const hit: string[] = []
-    const NO_NUDGE = '\ninput[class*="sizeMd"]{padding:var(--spacing-3_5) var(--spacing-4)!important}input[class*="sizeLg"]{padding:var(--spacing-4_5) var(--spacing-5)!important}'
+    const NO_NUDGE = '\ninput[class*="sizeSm"]{padding:var(--spacing-1) var(--spacing-3)!important}input[class*="sizeMd"]{padding:var(--spacing-3_5) var(--spacing-4)!important}input[class*="sizeLg"]{padding:var(--spacing-4_5) var(--spacing-5)!important}'
     for (const scenario of FONT_SCENARIOS) {
       const spec = withScenario(scenario, CONTROLS)
       const res = await measureInk({ ...spec, extraCss: spec.extraCss + NO_NUDGE })
       for (const r of res) if (Math.abs(r.offset) > limit(r.id)) hit.push(r.id)
     }
-    expect(hit).toEqual(expect.arrayContaining(["input md", "input lg"]))
-  }, 180000)
+    expect(hit).toEqual(expect.arrayContaining(["input sm", "input md", "input lg"]))
+  }, 400000)
 
   it("mutation control: without the trim, toggle-group and badge fail the centring bound", async () => {
     const hit: string[] = []
@@ -93,7 +94,7 @@ describe.skipIf(!CHROMIUM)("control label optical centering (Chromium)", () => {
     }
     expect(hit.some((id) => id.startsWith("toggle-group"))).toBe(true)
     expect(hit.some((id) => id.startsWith("badge"))).toBe(true)
-  }, 180000)
+  }, 400000)
 })
 
 describe.skipIf(!WEBKIT)("control label optical centering (WebKit)", () => {

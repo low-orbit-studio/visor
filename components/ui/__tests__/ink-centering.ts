@@ -109,8 +109,10 @@ createRoot(document.getElementById("root")).render(
   try {
     const context = await browser.newContext({ viewport: { width: 900, height: 1400 }, deviceScaleFactor: DSF, colorScheme: mode })
     const page = await context.newPage()
-    await page.setContent(html, { waitUntil: "load" })
+    await page.setContent(html, { waitUntil: "load", timeout: 120000 })
     await page.waitForFunction(`document.querySelectorAll("[data-case]").length === ${opts.cases.length} && [...document.querySelectorAll("[data-case]")].every(e => e.firstElementChild)`, undefined, { timeout: 10000 })
+    // Load every declared face outright (a slow font CDN must not leave a case measured in the fallback face).
+    await page.evaluate("Promise.all([...document.fonts].map(function (f) { return f.load().catch(function () { return null }) })).then(function () { return true })")
     await page.evaluate("document.fonts.ready.then(function () { return true })")
     // Fonts are requested lazily, on first use; settle once more after layout.
     await page.evaluate("new Promise(r => setTimeout(r, 400)).then(() => document.fonts.ready).then(() => true)")
@@ -187,7 +189,7 @@ createRoot(document.getElementById("root")).render(
 }
 
 export interface InkPage {
-  setContent(html: string, o: { waitUntil: "load" }): Promise<void>
+  setContent(html: string, o: { waitUntil: "load"; timeout?: number }): Promise<void>
   waitForFunction(expr: string, arg: undefined, o: { timeout: number }): Promise<unknown>
   evaluate(expr: string): Promise<unknown>
   screenshot(o: { fullPage?: boolean; clip?: { x: number; y: number; width: number; height: number }; path?: string }): Promise<Buffer>
