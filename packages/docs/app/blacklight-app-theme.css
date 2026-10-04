@@ -81,6 +81,47 @@
   --hairline: transparent;
   --hairline-strong: transparent;
 }
+
+
+/* --- visor-core alias re-substitution at theme scope (VI-695) --- */
+.blacklight-app-theme {
+  --component-xs: var(--spacing-1);
+  --component-sm: var(--spacing-2);
+  --component-md: var(--spacing-4);
+  --component-lg: var(--spacing-6);
+  --component-xl: var(--spacing-8);
+  --layout-sm: var(--spacing-4);
+  --layout-md: var(--spacing-8);
+  --layout-lg: var(--spacing-12);
+  --layout-xl: var(--spacing-16);
+  --layout-2xl: var(--spacing-24);
+  --layout-section-padding: var(--spacing-24);
+  --layout-section-padding-mobile: var(--spacing-16);
+  --size-body: var(--font-size-base);
+  --size-body-sm: var(--font-size-sm);
+  --size-label: var(--font-size-sm);
+  --size-caption: var(--font-size-xs);
+  --size-heading-sm: var(--font-size-lg);
+  --size-heading-md: var(--font-size-xl);
+  --size-heading-lg: var(--font-size-2xl);
+  --size-heading-xl: var(--font-size-3xl);
+  --weight-body: var(--font-weight-body);
+  --weight-label: var(--font-weight-medium);
+  --weight-heading: var(--font-weight-heading);
+  --weight-strong: var(--font-weight-bold);
+  --motion-duration-fast: var(--motion-duration-100);
+  --motion-duration-normal: var(--motion-duration-200);
+  --motion-duration-slow: var(--motion-duration-500);
+  --motion-easing-default: var(--motion-easing-ease-in-out);
+  --motion-easing-enter: var(--motion-easing-ease-out);
+  --motion-easing-exit: var(--motion-easing-ease-in);
+  --chart-2: var(--color-success-500);
+  --chart-3: var(--color-warning-500);
+  --chart-4: var(--color-info-500);
+  --chart-5: var(--color-error-500);
+  --sidebar-primary-text: var(--color-white);
+  --field-menu-bg: var(--surface-popover);
+}
 }
 
 @layer visor-brand {

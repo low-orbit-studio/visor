@@ -3,6 +3,7 @@ import { readFileSync } from "fs";
 import { resolve } from "path";
 import { generateThemeData } from "../../pipeline.js";
 import { docsAdapter } from "../docs.js";
+import { MODE_DEPENDENT_SEMANTIC_ALIASES } from "../../semantic-aliases.js";
 import type { AdapterInput } from "../types.js";
 
 const MINIMAL_YAML = readFileSync(
@@ -627,5 +628,58 @@ describe("docsAdapter — color-scheme (BO-56)", () => {
       expect(css).toContain("@media (prefers-color-scheme: dark)");
       expect(css).not.toMatch(/color-scheme:\s*(dark|light);/);
     });
+  });
+});
+
+// VI-695 — nextjs parity with VI-648. visor-core declares its semantic aliases
+// on `:root` as `--X: var(--Y)`, so they never see a theme's tokens on
+// `.{slug}-theme` unless the adapter re-declares them on the scope class.
+describe("docsAdapter — alias re-substitution at theme scope (VI-695)", () => {
+  function semanticLayer(css: string): string {
+    const start = css.indexOf("@layer visor-semantic {");
+    return css.slice(start, css.indexOf("\n@layer ", start));
+  }
+
+  it("re-declares --field-menu-bg on the scope class, inside visor-semantic", () => {
+    const css = docsAdapter(makeInput(FULL_YAML));
+    const layer = semanticLayer(css);
+    expect(layer).toContain("visor-core alias re-substitution at theme scope (VI-695)");
+    const block = layer.slice(layer.indexOf("(VI-695)"));
+    expect(block).toMatch(/\.[a-z0-9-]+-theme \{[^}]*--field-menu-bg: var\(--surface-popover\);/);
+  });
+
+  it("does not re-declare an alias the theme already sets itself", () => {
+    const yaml = `
+name: Pinned
+version: 1
+colors:
+  primary: "#2563EB"
+overrides:
+  light:
+    field-menu-bg: "#123456"
+  dark:
+    field-menu-bg: "#123456"
+`;
+    const css = docsAdapter(makeInput(yaml));
+    expect(css).toContain("--field-menu-bg: #123456;");
+    expect(css).not.toContain("--field-menu-bg: var(--surface-popover);");
+  });
+
+  it("leaves the mode-dependent aliases inheriting visor-core's mode-correct value", () => {
+    // The table holds only the light referent; a flat scope declaration would
+    // pin a dark sidebar to the theme's near-white neutral-50.
+    const css = docsAdapter(makeInput(FULL_YAML));
+    const block = semanticLayer(css).split("(VI-695)")[1];
+    for (const alias of MODE_DEPENDENT_SEMANTIC_ALIASES) {
+      expect(block, `--${alias} re-declared flat`).not.toContain(`--${alias}:`);
+    }
+  });
+
+  it("emits each re-substituted alias exactly once", () => {
+    const css = docsAdapter(makeInput(FULL_YAML));
+    const block = semanticLayer(css).split("(VI-695)")[1];
+    for (const line of block.match(/--[a-z0-9-]+: var\(--[a-z0-9-]+\);/g) ?? []) {
+      expect(css.split(line).length - 1, `${line} emitted more than once`).toBe(1);
+    }
   });
 });

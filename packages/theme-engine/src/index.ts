@@ -90,6 +90,7 @@ export {
 export { SEMANTIC_MAP, getKnownTokenRefs } from "./semantic-map.js";
 export {
   VISOR_CORE_SEMANTIC_ALIASES,
+  MODE_DEPENDENT_SEMANTIC_ALIASES,
   collectDeclaredProperties,
   generateSemanticAliasDecls,
 } from "./semantic-aliases.js";

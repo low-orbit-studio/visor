@@ -41,6 +41,11 @@ import { generateComponentTokensCss } from "./component-tokens-css.js";
 import { resolveComponentBindings } from "../component-tokens.js";
 import { FUMADOCS_BRIDGE_MAP } from "./fumadocs-map.js";
 import { LAYER_ORDER, wrapInLayer } from "./layers.js";
+import {
+  MODE_DEPENDENT_SEMANTIC_ALIASES,
+  collectDeclaredProperties,
+  generateSemanticAliasDecls,
+} from "../semantic-aliases.js";
 import type { AdapterInput, DocsAdapterOptions } from "./types.js";
 
 /** Color roles that produce full scales vs. selective scales. */
@@ -584,6 +589,27 @@ export function docsAdapter(
     },
     colorScheme,
   );
+
+  // Scope re-substitution (VI-695, nextjs parity with VI-648).
+  //
+  // visor-core declares its remaining semantic aliases on `:root` as
+  // indirections — `--field-menu-bg: var(--surface-popover)`. Substitution
+  // resolves where a property is *declared*, so from `:root` those never see
+  // the theme's tokens on `.{slug}-theme`; the scope inherits visor-core's
+  // already-substituted default. Re-declaring the aliases on the scope class
+  // moves the substitution there. Everything this theme emits counts as
+  // declared, so an alias the theme sets itself is never overridden. The
+  // mode-dependent aliases are skipped: the table holds only their light
+  // referent, and this block is mode-agnostic.
+  const declared = collectDeclaredProperties(
+    [lines.join("\n"), semanticLines.join("\n"), componentTokensCss, brandResult.css, passthroughCss].join("\n"),
+  );
+  const aliasDecls = generateSemanticAliasDecls(declared, { skip: MODE_DEPENDENT_SEMANTIC_ALIASES });
+  if (aliasDecls.length > 0) {
+    semanticLines.push(sectionComment("visor-core alias re-substitution at theme scope (VI-695)"));
+    semanticLines.push(block(scopeClass, aliasDecls));
+    semanticLines.push("");
+  }
 
   const adaptiveBody = [lines.join("\n").trim(), componentTokensCss].filter(Boolean).join("\n\n");
   const adaptiveLayer = wrapInLayer("visor-adaptive", adaptiveBody);
