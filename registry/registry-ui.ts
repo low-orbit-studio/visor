@@ -1079,6 +1079,24 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "segmented-control",
+    type: "registry:ui",
+    description:
+      "A single-select pill group with a sliding active indicator, an options API and an equal-width fullWidth layout. A thin wrapper over toggle-group that never goes empty.",
+    dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
+    registryDependencies: ["toggle-group", "utils"],
+    files: [
+      {
+        path: "components/ui/segmented-control/segmented-control.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/segmented-control/segmented-control.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "combobox",
     type: "registry:ui",
     description:

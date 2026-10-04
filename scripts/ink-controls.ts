@@ -9,6 +9,7 @@ export const buildControls = (label: string, button = false) => ({
   modules: {
     ...(button ? { button: ["Button"] } : {}),
     "toggle-group": ["ToggleGroup", "ToggleGroupItem"],
+    "segmented-control": ["SegmentedControl"],
     tabs: ["Tabs", "TabsList", "TabsTrigger"],
     chip: ["Chip", "ChoiceChip"],
     badge: ["Badge"],
@@ -21,6 +22,12 @@ export const buildControls = (label: string, button = false) => ({
       id: `toggle-group item ${s}`,
       selector: "[data-slot=toggle-group-item]",
       jsx: e("C.ToggleGroup", `{ type: "single", size: "${s}", defaultValue: "a" }`, e("C.ToggleGroupItem", `{ value: "a" }`, `"${label}"`)),
+    })),
+    ...["xs", "sm", "md", "lg"].map((s) => ({
+      id: `segmented-control item ${s}`,
+      selector: "[data-slot=toggle-group-item]",
+      // The pill's state edge would be the "ink" the scan finds (symmetric, so the offset would read 0): turn it off to measure the label.
+      jsx: e("C.SegmentedControl", `{ size: "${s}", defaultValue: "a", style: { "--segmented-control-indicator-edge": "transparent" }, options: [{ value: "a", label: "${label}" }] }`),
     })),
     { id: "tabs trigger", selector: "[role=tab]", jsx: e("C.Tabs", `{ defaultValue: "a" }`, e("C.TabsList", "null", e("C.TabsTrigger", `{ value: "a" }`, `"${label}"`))) },
     ...["sm", "md", "lg"].map((s) => ({ id: `chip ${s}`, jsx: e("C.Chip", `{ size: "${s}", label: "${label}" }`) })),

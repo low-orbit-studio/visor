@@ -620,6 +620,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "segmented-control": {
+          "type": "object",
+          "description": "SegmentedControl \u2014 the well, its corner radius, the sliding pill, the ink and the state edge on it. The resting edge is the shared `control` edge. Keys: track-bg, radius, indicator-bg, indicator-text, indicator-edge, inactive-text, active-weight.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "tooltip": {
           "type": "object",
           "description": "Tooltip ground and ink, so a dark theme can keep the label legible without retuning the shared inverse pair other components read. Keys: bg, text.",

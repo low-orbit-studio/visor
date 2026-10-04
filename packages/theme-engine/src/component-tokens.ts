@@ -137,6 +137,7 @@ const FIELD = "components/ui/field/field.module.css";
 const TEXT = "components/ui/text/text.module.css";
 const INLINE_EDIT = "components/ui/inline-edit/inline-edit.module.css";
 const SAVE_STATUS = "components/ui/save-status/save-status.module.css";
+const SEGMENTED_CONTROL = "components/ui/segmented-control/segmented-control.module.css";
 const TOOLTIP = "components/ui/tooltip/tooltip.module.css";
 const ACTION_ROW = "components/ui/action-row/action-row.module.css";
 
@@ -954,6 +955,33 @@ const hairlineFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-615: the single-select pill group. Its resting edge is the shared `control` edge
+// (no token of its own), so `control.edge-width: 0` turns it off.
+const segmentedControlFamily: ComponentTokenFamily = {
+  family: "segmented-control",
+  prefix: "segmented-control",
+  description:
+    "SegmentedControl — the well, its corner radius, the sliding pill, the ink and the state edge on it. The resting edge is the shared `control` edge.",
+  tokens: [
+    { key: "track-bg", property: "background-color", description: "The well the pill slides in. Default is the page nudged 12% toward the ink, so it reads as a well in light and dark.", consumers: at(SEGMENTED_CONTROL, "color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff))") },
+    {
+      key: "radius",
+      property: "border-radius",
+      description: "Track corner radius. Unset, each size keeps its ToggleGroup radius (md and sm `--radius-lg`, xs `--radius-md`, lg `--radius-xl`).",
+      consumers: [
+        { file: SEGMENTED_CONTROL, fallback: "var(--radius-md, 0.375rem)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--radius-lg, 0.5rem)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--radius-xl, 0.75rem)" },
+      ],
+    },
+    { key: "indicator-bg", property: "background-color", description: "Sliding active pill. Bind a lifted dark fill where the theme wants one.", consumers: at(SEGMENTED_CONTROL, "var(--interactive-primary-bg, var(--primary, #111827))") },
+    { key: "indicator-text", property: "color", description: "Active segment label ink, on the pill.", consumers: at(SEGMENTED_CONTROL, "var(--interactive-primary-text, #f9fafb)") },
+    { key: "indicator-edge", property: "box-shadow (inset, at --control-state-edge-width)", description: "Colour of the 1px state edge on the active pill. Set `transparent` where the fill already clears 3:1 against the well.", consumers: at(SEGMENTED_CONTROL, "var(--text-primary, #111827)") },
+    { key: "inactive-text", property: "color", description: "Inactive segment label colour.", consumers: at(SEGMENTED_CONTROL, "var(--text-primary, #111827)") },
+    { key: "active-weight", property: "font-weight", description: "Active segment label weight.", consumers: at(SEGMENTED_CONTROL, "var(--font-weight-medium, 500)") },
+  ],
+};
+
 const adminUiFamily: ComponentTokenFamily = {
   family: "admin-ui",
   prefix: "admin-ui",
@@ -998,6 +1026,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   textFamily,
   switchFamily,
   saveStatusFamily,
+  segmentedControlFamily,
   tooltipFamily,
   actionRowFamily,
   adminUiFamily,

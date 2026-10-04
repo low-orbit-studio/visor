@@ -1,0 +1,70 @@
+name: SegmentedControl
+description: A single-select pill group with a sliding active indicator, an options API and a fullWidth equal-segment layout. A thin wrapper over ToggleGroup that never goes empty.
+extends: toggle-group
+category: form
+
+when_to_use:
+  - Switching a list or view filter between 2-5 mutually exclusive options (Unpaid / Paid / Any)
+  - A scope or range selector where exactly one option is always on
+  - Compact view-mode switches (day / week / month) that change the content below in place
+
+when_not_to_use:
+  - Navigation between pages or routes (use Tabs)
+  - Multi-select toolbar toggles (use ToggleGroup type="multiple")
+  - A form answer that is submitted with the form (use Radio Group)
+  - A long list of options (use Select or Combobox)
+  - Binary on/off (use Switch)
+
+why: >
+  Consumers kept hand-rolling the same recessed track with a sliding pill because
+  "outline variant + single type = segmented control" is not something to remember.
+  SegmentedControl is that ToggleGroup configuration behind an options / value /
+  onValueChange API, with the behaviour a segmented control needs and a raw
+  ToggleGroup does not: one option is always on (clicking the active segment keeps it,
+  and onValueChange never receives an empty string), and fullWidth gives equal-width
+  segments for a list-filter bar. The resting edge comes from the shared
+  --control-edge-* tokens, so edges: off removes it while focus stays visible.
+
+variants:
+  size: [xs, sm, md, lg]
+  fullWidth: [true, false]
+
+props:
+  - name: options
+    type: "{ value: string; label: ReactNode; icon?: ReactNode; disabled?: boolean }[]"
+    description: The segments, in order.
+  - name: value
+    type: string
+    description: Controlled value.
+  - name: defaultValue
+    type: string
+    description: Uncontrolled initial value. Falls back to the first enabled option.
+  - name: onValueChange
+    type: "(value: string) => void"
+    description: Fires with the new value. Never fires with an empty string.
+  - name: size
+    type: "'xs' | 'sm' | 'md' | 'lg'"
+    default: "md"
+  - name: fullWidth
+    type: boolean
+    default: false
+    description: Equal-width segments spanning the container.
+  - name: disabled
+    type: boolean
+    default: false
+
+dependencies:
+  - "class-variance-authority"
+
+preview_url: "https://visor.loworbit.studio/docs/components/form/segmented-control"
+
+example: |
+  <SegmentedControl
+    aria-label="Payment status"
+    defaultValue="unpaid"
+    options={[
+      { value: "unpaid", label: "Unpaid" },
+      { value: "paid", label: "Paid" },
+      { value: "any", label: "Any" },
+    ]}
+  />

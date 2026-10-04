@@ -1,0 +1,176 @@
+---
+title: Segmented Control
+description: A single-select pill group with a sliding active indicator and an options API. A thin wrapper over ToggleGroup that never goes empty.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { SegmentedControl } from '@/components/ui/segmented-control';
+
+## Default
+
+<ComponentPreview
+  title="Default"
+  code={"import { SegmentedControl } from '@/components/ui/segmented-control/segmented-control';\n\n<SegmentedControl\n  aria-label=\"Payment status\"\n  defaultValue=\"unpaid\"\n  options={[\n    { value: 'unpaid', label: 'Unpaid' },\n    { value: 'paid', label: 'Paid' },\n    { value: 'any', label: 'Any' },\n  ]}\n/>"}
+>
+  <SegmentedControl
+    aria-label="Payment status"
+    defaultValue="unpaid"
+    options={[
+      { value: 'unpaid', label: 'Unpaid' },
+      { value: 'paid', label: 'Paid' },
+      { value: 'any', label: 'Any' },
+    ]}
+  />
+</ComponentPreview>
+
+## Sizes
+
+<ComponentPreview
+  title="Sizes"
+  code={"<SegmentedControl size=\"xs\" options={options} />\n<SegmentedControl size=\"sm\" options={options} />\n<SegmentedControl size=\"md\" options={options} />\n<SegmentedControl size=\"lg\" options={options} />"}
+>
+  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
+    <SegmentedControl
+      size="xs"
+      aria-label="Range, xs"
+      defaultValue="upcoming"
+      options={[
+        { value: 'upcoming', label: 'Upcoming' },
+        { value: 'past', label: 'Past' },
+        { value: 'all', label: 'All' },
+      ]}
+    />
+    <SegmentedControl
+      size="sm"
+      aria-label="Range, sm"
+      defaultValue="upcoming"
+      options={[
+        { value: 'upcoming', label: 'Upcoming' },
+        { value: 'past', label: 'Past' },
+        { value: 'all', label: 'All' },
+      ]}
+    />
+    <SegmentedControl
+      size="md"
+      aria-label="Range, md"
+      defaultValue="upcoming"
+      options={[
+        { value: 'upcoming', label: 'Upcoming' },
+        { value: 'past', label: 'Past' },
+        { value: 'all', label: 'All' },
+      ]}
+    />
+    <SegmentedControl
+      size="lg"
+      aria-label="Range, lg"
+      defaultValue="upcoming"
+      options={[
+        { value: 'upcoming', label: 'Upcoming' },
+        { value: 'past', label: 'Past' },
+        { value: 'all', label: 'All' },
+      ]}
+    />
+  </div>
+</ComponentPreview>
+
+## Full width
+
+`fullWidth` makes the segments equal-width and spans the container, the list-filter treatment.
+
+<ComponentPreview
+  title="Full width"
+  code={"<SegmentedControl\n  fullWidth\n  aria-label=\"Artist scope\"\n  defaultValue=\"active\"\n  options={[\n    { value: 'active', label: 'Active' },\n    { value: 'archived', label: 'Archived' },\n    { value: 'dnb', label: 'Do-not-book' },\n  ]}\n/>"}
+>
+  <div style={{ width: '100%', maxWidth: '28rem' }}>
+    <SegmentedControl
+      fullWidth
+      aria-label="Artist scope"
+      defaultValue="active"
+      options={[
+        { value: 'active', label: 'Active' },
+        { value: 'archived', label: 'Archived' },
+        { value: 'dnb', label: 'Do-not-book' },
+      ]}
+    />
+  </div>
+</ComponentPreview>
+
+## Disabled option
+
+<ComponentPreview
+  title="Disabled option"
+  code={"<SegmentedControl\n  aria-label=\"View\"\n  defaultValue=\"day\"\n  options={[\n    { value: 'day', label: 'Day' },\n    { value: 'week', label: 'Week' },\n    { value: 'month', label: 'Month', disabled: true },\n  ]}\n/>"}
+>
+  <SegmentedControl
+    aria-label="View"
+    defaultValue="day"
+    options={[
+      { value: 'day', label: 'Day' },
+      { value: 'week', label: 'Week' },
+      { value: 'month', label: 'Month', disabled: true },
+    ]}
+  />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add segmented-control
+```
+
+This copies two files into your project, and adds `toggle-group` (which it composes) if you do not have it:
+
+- `components/ui/segmented-control/segmented-control.tsx` — the component
+- `components/ui/segmented-control/segmented-control.module.css` — the styles
+
+## Usage
+
+```tsx
+import { SegmentedControl } from '@/components/ui/segmented-control/segmented-control';
+
+const [status, setStatus] = React.useState('unpaid');
+
+<SegmentedControl
+  aria-label="Payment status"
+  value={status}
+  onValueChange={setStatus}
+  options={[
+    { value: 'unpaid', label: 'Unpaid' },
+    { value: 'paid', label: 'Paid' },
+    { value: 'any', label: 'Any' },
+  ]}
+/>
+```
+
+Pass `value` and `onValueChange` to control it, or `defaultValue` to leave it uncontrolled. Each option also takes an `icon` and a `disabled` flag.
+
+## One option is always on
+
+Clicking the active segment keeps it, and `onValueChange` is never called with an empty string, whether the control is controlled or not. With no `value` or `defaultValue`, the first enabled option starts on. For a filter that can be cleared, use a ToggleGroup or a Select instead.
+
+## API Reference
+
+### SegmentedControlProps
+
+<PropsTable component="segmented-control" />
+
+## Theming
+
+The resting edge comes from the shared `--control-edge-*` tokens, so `control.edge-width: 0` removes it without moving the layout. Focus stays visible. The well, the track radius, the sliding pill, its ink, the state edge on it and the inactive and active label type are bindable through the `segmented-control` family (`--segmented-control-track-bg`, `-radius`, `-indicator-bg`, `-indicator-text`, `-indicator-edge`, `-inactive-text`, `-active-weight`); see [Component tokens](/docs/themes/component-tokens).
+
+The active pill carries a 1px inset state edge (`--control-state-edge-width`, colour `--segmented-control-indicator-edge`, default `--text-primary`) so the selected state keeps a 3:1 boundary of its own (WCAG 1.4.11). It sits inside the pill, so nothing shifts, and it stays when edges are off. Bind the colour to `transparent` where the fill already clears 3:1 against the well.
+
+## Accessibility
+
+- Built on ToggleGroup (`@radix-ui/react-toggle-group`, `type="single"`): the group has `role="group"` and each segment `role="radio"` with `aria-checked`
+- Give the control an `aria-label` that names what it filters (for example "Payment status")
+- Keyboard: Tab enters the group, Arrow keys move between segments, Space or Enter selects the focused segment
+- The active segment is told apart by fill and by `aria-checked`, not by colour alone
+- The sliding indicator snaps, with no transition, when `prefers-reduced-motion: reduce` is set
+- Each label reserves its width at the active and inactive weight with `aria-hidden` copies, so selecting a segment shifts nothing, even with a heavier `active-weight`
+- Focus draws a ring outside the pill that stays visible when edges are off
+
+## Label Centering
+
+Segment labels are centred optically in any font, inherited from ToggleGroup. See [`docs/label-centering.md`](https://github.com/low-orbit-studio/visor/blob/main/docs/label-centering.md).
