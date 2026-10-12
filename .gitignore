@@ -126,3 +126,4 @@ packages/docs/public/themes/*.visor.yaml
 /graft/
 # graft's hook helpers — `graft build` bakes a machine-specific install path into them.
 /.claude/helpers/graft-*.cjs
+/scripts-playbook
