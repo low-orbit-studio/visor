@@ -51,7 +51,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version-file: .nvmrc
           cache: "npm"
 
       - name: Install dependencies
@@ -76,7 +76,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version-file: .nvmrc
           cache: "npm"
 
       - name: Install dependencies
@@ -89,7 +89,7 @@ jobs:
         run: npm run typecheck
 
   build-and-test:
-    name: Build & Test (shard ${{ matrix.shard }}/4)
+    name: Build & Test (node ${{ matrix.node }}, shard ${{ matrix.shard }}/4)
     needs: changes
     if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
@@ -97,6 +97,7 @@ jobs:
       fail-fast: false
       matrix:
         shard: [1, 2, 3, 4]
+        node: [22, 24]
 
     steps:
       - name: Checkout
@@ -105,7 +106,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: ${{ matrix.node }}
           cache: "npm"
 
       - name: Install dependencies
@@ -140,7 +141,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version-file: .nvmrc
           cache: "npm"
 
       - name: Install dependencies
@@ -217,7 +218,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version-file: .nvmrc
           cache: "npm"
 
       - name: Install dependencies
@@ -257,7 +258,7 @@ jobs:
       - name: Setup Node.js (for visor CLI)
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version-file: .nvmrc
           cache: "npm"
 
       - name: Install npm dependencies
