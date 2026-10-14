@@ -106,6 +106,29 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group/toggl
 - Provide an `aria-label` on `<ToggleGroup>` to describe the purpose of the group (e.g., "Text formatting", "View mode")
 - Keyboard: Arrow keys navigate between items within the group; Space/Enter toggles the focused item
 
+## Theming
+
+A theme sets the group's look with the `toggle-group` keys, so no tokens go on the group itself: the
+outline track's fill, the selected option's fill and ink, the unselected ink, and the compact (`xs`)
+label size, option sides and corners. Every key falls back to what the group read before, so a theme
+that sets none of them renders as it always has. A compact group on a dark well, the selected option
+in a soft accent wash:
+
+```yaml
+components:
+  toggle-group:
+    track-bg: "rgba(0, 0, 0, 0.65)"
+    selected-bg: "rgba(44, 224, 230, 0.09)"
+    selected-text: "#2ce0e6"
+    unselected-text: "rgba(255, 255, 255, 0.46)"
+    xs-font-size: 10px
+    xs-padding-x: 11px
+    xs-track-radius: 8px
+    xs-item-radius: 6px
+```
+
+The full list, with each fallback, is in [Component Tokens](/docs/themes/component-tokens#toggle-group).
+
 ## Label Centering
 
 The label is optically centred in any font: its line box is trimmed to the capital-height band, so capitals (not the font's ascent and descent) sit on the box centre, with the box size unchanged. Firefox keeps the previous rendering. Shared spec: [`docs/label-centering.md`](https://github.com/low-orbit-studio/visor/blob/main/docs/label-centering.md).

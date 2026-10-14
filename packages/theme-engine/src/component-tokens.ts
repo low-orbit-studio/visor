@@ -141,6 +141,7 @@ const TEXT = "components/ui/text/text.module.css";
 const INLINE_EDIT = "components/ui/inline-edit/inline-edit.module.css";
 const SAVE_STATUS = "components/ui/save-status/save-status.module.css";
 const SEGMENTED_CONTROL = "components/ui/segmented-control/segmented-control.module.css";
+const TOGGLE_GROUP = "components/ui/toggle-group/toggle-group.module.css";
 const TOOLTIP = "components/ui/tooltip/tooltip.module.css";
 const ACTION_ROW = "components/ui/action-row/action-row.module.css";
 const DIALOG_FIELD = "blocks/dialog-field/dialog-field.module.css";
@@ -1217,6 +1218,31 @@ const segmentedControlFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-709: the ToggleGroup's track, selected and unselected inks, and its compact (xs)
+// size. SegmentedControl is built on ToggleGroup: it re-skins the track, pill and inks
+// with its own family, but takes these xs option sizes.
+const toggleGroupFamily: ComponentTokenFamily = {
+  family: "toggle-group",
+  prefix: "toggle-group",
+  description:
+    "ToggleGroup — the outline track's fill, the selected option's fill and ink, the unselected ink, and the compact (`xs`) size: its label size, option sides and corners. SegmentedControl takes the `xs` option keys too.",
+  tokens: [
+    { key: "track-bg", property: "background-color", description: "The outline variant's track. Bind a well darker than its plane where the theme wants one.", consumers: at(TOGGLE_GROUP, "transparent") },
+    {
+      key: "selected-bg",
+      property: "background-color",
+      description: "The selected option's fill: the sliding indicator (outline, single) and the item itself (default, and outline multiple).",
+      consumers: each([TOGGLE_GROUP, TOGGLE_GROUP, TOGGLE_GROUP], "var(--interactive-primary-bg, var(--primary, #111827))"),
+    },
+    { key: "selected-text", property: "color", description: "The selected option's label ink.", consumers: at(TOGGLE_GROUP, "var(--interactive-primary-text, #f9fafb)") },
+    { key: "unselected-text", property: "color", description: "Every option that is not selected.", consumers: at(TOGGLE_GROUP, "var(--text-primary, #111827)") },
+    { key: "xs-font-size", property: "font-size", description: "Compact (`xs`) label size.", consumers: at(TOGGLE_GROUP, "var(--font-size-xs, 0.75rem)") },
+    { key: "xs-padding-x", property: "padding-inline", description: "Compact (`xs`) option sides.", consumers: at(TOGGLE_GROUP, "var(--spacing-2, 0.5rem)") },
+    { key: "xs-track-radius", property: "border-radius", description: "Compact (`xs`) outline track corner radius.", consumers: at(TOGGLE_GROUP, "var(--radius-md, 0.375rem)") },
+    { key: "xs-item-radius", property: "border-radius", description: "Compact (`xs`) option and indicator corner radius. Concentric with the track is the track radius minus its 2px inset.", consumers: at(TOGGLE_GROUP, "var(--radius-sm, 0.25rem)") },
+  ],
+};
+
 const adminUiFamily: ComponentTokenFamily = {
   family: "admin-ui",
   prefix: "admin-ui",
@@ -1266,6 +1292,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   switchFamily,
   saveStatusFamily,
   segmentedControlFamily,
+  toggleGroupFamily,
   tooltipFamily,
   actionRowFamily,
   inputAffixFamily,
