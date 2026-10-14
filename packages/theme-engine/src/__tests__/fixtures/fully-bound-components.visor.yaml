@@ -352,6 +352,15 @@ components:
     indicator-edge: "#ffcc00"
     inactive-text: "#c7b8d6"
     active-weight: "650"
+  toggle-group:
+    track-bg: "#1a0526"
+    selected-bg: "#ff00aa"
+    selected-text: "#ffffff"
+    unselected-text: "#c7b8d6"
+    xs-font-size: "10px"
+    xs-padding-x: "11px"
+    xs-track-radius: "8px"
+    xs-item-radius: "6px"
   tooltip:
     bg: "#ff00aa"
     text: "#2b0a3d"

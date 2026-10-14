@@ -803,6 +803,39 @@ components:
 SegmentedControl's resting edge is an outline from `--control-edge-*`, so
 `control.edge-width: 0` turns it off while focus stays visible.
 
+
+### `toggle-group`
+
+ToggleGroup — the outline track's fill, the selected option's fill and ink, the unselected ink, and the compact (`xs`) size: its label size, option sides and corners. SegmentedControl takes the `xs` option keys too.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--toggle-group-track-bg` | The outline variant's track. Bind a well darker than its plane where the theme wants one. | `transparent` |
+| `--toggle-group-selected-bg` | The selected option's fill: the sliding indicator (outline, single) and the item itself (default, and outline multiple). | `var(--interactive-primary-bg, var(--primary, #111827))` |
+| `--toggle-group-selected-text` | The selected option's label ink. | `var(--interactive-primary-text, #f9fafb)` |
+| `--toggle-group-unselected-text` | Every option that is not selected. | `var(--text-primary, #111827)` |
+| `--toggle-group-xs-font-size` | Compact (`xs`) label size. | `var(--font-size-xs, 0.75rem)` |
+| `--toggle-group-xs-padding-x` | Compact (`xs`) option sides. | `var(--spacing-2, 0.5rem)` |
+| `--toggle-group-xs-track-radius` | Compact (`xs`) outline track corner radius. | `var(--radius-md, 0.375rem)` |
+| `--toggle-group-xs-item-radius` | Compact (`xs`) option and indicator corner radius. Concentric with the track is the track radius minus its 2px inset. | `var(--radius-sm, 0.25rem)` |
+
+The track fill is set at zero specificity, so a consumer class that sets the group's background still wins.
+SegmentedControl keeps its own track, pill and inks (`segmented-control`); only the `xs` option keys reach it.
+A dark theme that wants a compact group on a well, with the selected option in a soft accent wash:
+
+```yaml
+components:
+  toggle-group:
+    track-bg: "rgba(0, 0, 0, 0.65)"
+    selected-bg: "rgba(44, 224, 230, 0.09)"
+    selected-text: "#2ce0e6"
+    unselected-text: "rgba(255, 255, 255, 0.46)"
+    xs-font-size: 10px
+    xs-padding-x: 11px
+    xs-track-radius: 8px
+    xs-item-radius: 6px
+```
+
 ### `tooltip`
 
 Tooltip ground and ink, so a dark theme can keep the label legible without retuning the shared inverse pair other components read.

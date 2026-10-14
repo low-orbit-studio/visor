@@ -675,6 +675,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "toggle-group": {
+          "type": "object",
+          "description": "ToggleGroup \u2014 the outline track's fill, the selected option's fill and ink, the unselected ink, and the compact (`xs`) size: its label size, option sides and corners. SegmentedControl takes the `xs` option keys too. Keys: track-bg, selected-bg, selected-text, unselected-text, xs-font-size, xs-padding-x, xs-track-radius, xs-item-radius.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "tooltip": {
           "type": "object",
           "description": "Tooltip ground and ink, so a dark theme can keep the label legible without retuning the shared inverse pair other components read. Keys: bg, text.",

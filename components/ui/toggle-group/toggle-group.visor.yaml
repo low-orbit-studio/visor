@@ -24,6 +24,43 @@ variants:
   variant: [default, outline]
   size: [xs, sm, md, lg]
 
+theme_hooks:
+  - name: --toggle-group-track-bg
+    description: >
+      Outline track fill. Falls back to transparent, at zero specificity so a
+      consumer class still wins. Theme key: components.toggle-group.track-bg.
+  - name: --toggle-group-selected-bg
+    description: >
+      Selected option fill (the sliding indicator, or the item itself in the
+      default variant and in a multiple group). Falls back to
+      var(--interactive-primary-bg, var(--primary, #111827)). Theme key:
+      components.toggle-group.selected-bg.
+  - name: --toggle-group-selected-text
+    description: >
+      Selected option ink. Falls back to var(--interactive-primary-text, #f9fafb).
+      Theme key: components.toggle-group.selected-text.
+  - name: --toggle-group-unselected-text
+    description: >
+      Unselected option ink. Falls back to var(--text-primary, #111827). Theme
+      key: components.toggle-group.unselected-text.
+  - name: --toggle-group-xs-font-size
+    description: >
+      Compact (xs) label size. Falls back to var(--font-size-xs, 0.75rem). Theme
+      key: components.toggle-group.xs-font-size.
+  - name: --toggle-group-xs-padding-x
+    description: >
+      Compact (xs) option sides. Falls back to var(--spacing-2, 0.5rem). Theme
+      key: components.toggle-group.xs-padding-x.
+  - name: --toggle-group-xs-track-radius
+    description: >
+      Compact (xs) outline track corners. Falls back to var(--radius-md, 0.375rem).
+      Theme key: components.toggle-group.xs-track-radius.
+  - name: --toggle-group-xs-item-radius
+    description: >
+      Compact (xs) option and indicator corners; concentric is the track radius
+      minus its 2px inset. Falls back to var(--radius-sm, 0.25rem). Theme key:
+      components.toggle-group.xs-item-radius.
+
 props:
   - name: type
     type: "'single' | 'multiple'"

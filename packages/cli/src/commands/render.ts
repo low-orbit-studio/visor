@@ -727,6 +727,18 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
         ] };
       })()`,
     },
+    // VI-709: the compact size the `toggle-group` xs keys drive.
+    compact: {
+      export: "ToggleGroup",
+      interactiveTarget: "[data-slot=toggle-group-item]",
+      props: `(function () {
+        var h = React.createElement;
+        return { type: "single", variant: "outline", size: "xs", "aria-label": "Applies to", defaultValue: "gig", children: [
+          h(__mod.ToggleGroupItem, { key: "g", value: "gig" }, "This Booking"),
+          h(__mod.ToggleGroupItem, { key: "t", value: "trip" }, "Whole Trip"),
+        ] };
+      })()`,
+    },
   },
   "tag-input": {
     default: {
