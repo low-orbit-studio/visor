@@ -50,7 +50,7 @@ function parseCssDuration(raw: string | null | undefined): number | undefined {
   if (!raw) return undefined
   const match = /^(\d+(?:\.\d+)?)\s*(ms|s)?$/.exec(raw.trim())
   if (!match) return undefined
-  const value = Number.parseFloat(match[1])
+  const value = Number.parseFloat(match[1] ?? "")
   if (!Number.isFinite(value)) return undefined
   return match[2] === "s" ? value * 1000 : value
 }

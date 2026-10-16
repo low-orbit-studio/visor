@@ -83,7 +83,7 @@ function useActiveThemeSlug(): string | null {
 
     function read() {
       const match = body.className.match(THEME_CLASS_PATTERN)
-      setSlug(match ? match[2] : null)
+      setSlug(match?.[2] ?? null)
     }
     read()
 

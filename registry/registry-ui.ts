@@ -129,7 +129,7 @@ export const ui: Registry = [
       "class-variance-authority",
       "@loworbitstudio/visor-core",
     ],
-    registryDependencies: ["utils", "spinner"],
+    registryDependencies: ["utils", "spinner", "tooltip"],
     files: [
       {
         path: "components/ui/button/button.tsx",
@@ -1784,7 +1784,7 @@ export const ui: Registry = [
     description:
       "A full-width color bar displaying a live CSS token value with hex and token label. Used in design specimens to highlight a theme's brand color.",
     dependencies: ["@loworbitstudio/visor-core"],
-    registryDependencies: ["utils"],
+    registryDependencies: ["utils", "color-utils"],
     files: [
       {
         path: "components/ui/color-bar/color-bar.tsx",
@@ -1802,7 +1802,7 @@ export const ui: Registry = [
     description:
       "Individual color swatch with hex value display, plus grid variants for color scales and semantic color tokens.",
     dependencies: ["@loworbitstudio/visor-core"],
-    registryDependencies: ["utils", "text"],
+    registryDependencies: ["utils", "text", "color-utils"],
     files: [
       {
         path: "components/ui/color-swatch/color-swatch.tsx",
