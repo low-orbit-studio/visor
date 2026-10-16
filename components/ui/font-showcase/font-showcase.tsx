@@ -51,7 +51,7 @@ function useLiveFontName(token: string): string {
     function read() {
       const ff = getComputedStyle(span).fontFamily
       // Parse first font name: "PP Model Plastic", sans-serif → PP Model Plastic
-      const first = ff.split(",")[0].trim().replace(/^["']|["']$/g, "")
+      const first = (ff.split(",")[0] ?? "").trim().replace(/^["']|["']$/g, "")
       setName(first || token)
     }
 

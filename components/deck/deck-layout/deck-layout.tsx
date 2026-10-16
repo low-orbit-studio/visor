@@ -111,6 +111,24 @@ export function DeckLayout({
     return () => observer.disconnect()
   }, [])
 
+  // A deck that fills the viewport is the page, so it owns the arrow keys from
+  // the start. An embedded deck (a docs preview) leaves the page's keys alone.
+  useEffect(() => {
+    const container = containerRef.current
+    if (container && container.getBoundingClientRect().height >= window.innerHeight - 1) {
+      container.focus({ preventScroll: true })
+    }
+  }, [])
+
+  // A dot click moves focus to the dot, outside the container; hand it back.
+  const handleDotClick = useCallback(
+    (index: number) => {
+      goTo(index)
+      containerRef.current?.focus({ preventScroll: true })
+    },
+    [goTo]
+  )
+
   const deckValue = useMemo(() => ({ goTo, navigateTo }), [goTo, navigateTo])
 
   return (
@@ -118,7 +136,7 @@ export function DeckLayout({
       <DotNav
         slideCount={slideCount}
         currentIndex={currentIndex}
-        onDotClick={goTo}
+        onDotClick={handleDotClick}
         variant={currentTheme}
         titles={slideTitles}
       />

@@ -19,14 +19,14 @@ interface IconGridSectionProps {
 
 export function IconGridSection({ icons, className }: IconGridSectionProps) {
   const gridItems = icons
-    .filter((icon) => ICON_MAP[icon.phosphorName])
-    .map((icon) => {
+    .flatMap((icon) => {
       const IconComponent = ICON_MAP[icon.phosphorName]
-      return {
+      if (!IconComponent) return []
+      return [{
         name: icon.name,
         usage: icon.usage,
         icon: <IconComponent size={24} />,
-      }
+      }]
     })
 
   return (

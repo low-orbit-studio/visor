@@ -1,9 +1,21 @@
 .container {
   position: relative;
   width: 100%;
-  height: 100%;
+  /* Fills the viewport on a bare page; a sized parent caps it (a percentage
+     max-height against an auto-height parent resolves to none). */
+  height: 100dvh;
+  max-height: 100%;
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   overscroll-behavior: contain;
+}
+
+/* Slides size padding inside width:100%. Don't rely on the host having a
+   border-box reset; zero specificity so any component's own rule wins. */
+:where(.container),
+:where(.container) *,
+:where(.container) *::before,
+:where(.container) *::after {
+  box-sizing: border-box;
 }

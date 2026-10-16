@@ -62,6 +62,24 @@ describe("useKeyboardNav", () => {
     expect(goTo).toHaveBeenCalledWith(0)
   })
 
+  it("ignores keys typed into a form field", () => {
+    const input = document.createElement("input")
+    document.body.appendChild(input)
+    fireEvent.keyDown(input, { key: " " })
+    fireEvent.keyDown(input, { key: "ArrowDown" })
+    expect(goTo).not.toHaveBeenCalled()
+    input.remove()
+  })
+
+  it("ignores arrows inside a widget that uses them (radio, tabs, toggle group)", () => {
+    const item = document.createElement("button")
+    item.setAttribute("data-radix-collection-item", "")
+    document.body.appendChild(item)
+    fireEvent.keyDown(item, { key: "ArrowDown" })
+    expect(goTo).not.toHaveBeenCalled()
+    item.remove()
+  })
+
   it("cleans up event listener on unmount", () => {
     const localGoTo = vi.fn()
     const { unmount } = render(<TestComponent goTo={localGoTo} />)

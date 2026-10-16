@@ -47,7 +47,7 @@ function toRgb(value: string): [number, number, number] | null {
   probeCtx.clearRect(0, 0, 1, 1)
   probeCtx.fillStyle = value
   probeCtx.fillRect(0, 0, 1, 1)
-  const [r, g, b] = probeCtx.getImageData(0, 0, 1, 1).data
+  const [r = 0, g = 0, b = 0] = probeCtx.getImageData(0, 0, 1, 1).data
   return [r, g, b]
 }
 

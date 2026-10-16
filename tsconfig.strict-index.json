@@ -12,7 +12,9 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    // A Next.js consumer always has @types/node (VI-716: button reads process.env).
+    "types": ["node"]
   },
   "include": [
     "components/ui/doc-frame/doc-frame.tsx",

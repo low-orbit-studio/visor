@@ -15,6 +15,20 @@ export const lib: Registry = [
     ],
   },
   {
+    name: "color-utils",
+    type: "registry:lib",
+    description:
+      "OKLCH-aware color helpers built on culori: parse, format and WCAG contrast.",
+    dependencies: ["culori"],
+    devDependencies: ["@types/culori"],
+    files: [
+      {
+        path: "lib/color-utils.ts",
+        type: "registry:lib",
+      },
+    ],
+  },
+  {
     name: "deck-registry",
     type: "registry:lib",
     category: "deck",
