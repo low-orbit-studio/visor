@@ -41,7 +41,7 @@ props:
     description: One entry per step, each a segment with its label under it. A step without a `state` follows `value` and `current`. A failed step fills with --interactive-destructive-bg and its label reads in --text-error with a warning icon; a done label carries a check-circle. The bar is aria-hidden and `summary` is read in its place. Labels are 12px (sm) and 14px (md), rebindable through --segmented-progress-sm-label-font-size and --segmented-progress-md-label-font-size.
   - name: summary
     type: ReactNode
-    description: With `steps`, the visually hidden line a screen reader hears. Defaults to "Step 2 of 3: Bank Details" naming the failed, current or next step.
+    description: 'With `steps`, the visually hidden line a screen reader hears. Defaults to "Step 2 of 3: Bank Details", naming the failed, current or next step.'
   - name: current
     type: number
     description: Optional 0-based index of the in-progress segment. Renders with a primary→muted gradient. Typically equals `value`.
