@@ -65,7 +65,7 @@ export const ui: Registry = [
     name: "text",
     type: "registry:ui",
     description:
-      "A body text component with size, weight, color, and line-height variants using CVA.",
+      "A body text component with size, weight, family (body or mono), color (including success and amber inks), and line-height variants using CVA.",
     dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
     registryDependencies: ["utils"],
     files: [
@@ -607,9 +607,10 @@ export const ui: Registry = [
     name: "segmented-progress",
     type: "registry:ui",
     description:
-      "Discrete per-step progress meter — N equal pill segments in a row, each individually expressing done, current, or pending state. Designed for multi-step flows where individual step completion matters.",
+      "Discrete per-step progress meter — N equal pill segments in a row, each individually expressing done, current, or pending state. With `steps`, a label under each segment, a failed state, a fill-once animation and a visually hidden summary. Designed for multi-step flows where individual step completion matters.",
     dependencies: [
       "class-variance-authority",
+      "@phosphor-icons/react",
       "@loworbitstudio/visor-core",
     ],
     registryDependencies: ["utils"],
@@ -2205,8 +2206,8 @@ export const ui: Registry = [
     type: "registry:ui",
     category: "feedback",
     description:
-      "App-wide success/transition feedback pattern. useSuccessToast() fires an auto-dismissing Sonner toast with Borealis-spec defaults (4s, optional undo action). SuccessLiveRegion provides an explicit aria-live polite node for screen readers.",
-    dependencies: ["sonner", "@loworbitstudio/visor-core"],
+      "App-wide success/transition feedback pattern. useSuccessToast() fires an auto-dismissing Sonner toast with Borealis-spec defaults (4s, optional undo action). SuccessLiveRegion provides an explicit aria-live polite node for screen readers. SuccessPanel is the end-of-flow screen: a success seal, heading, description, check list and action.",
+    dependencies: ["sonner", "@phosphor-icons/react", "@loworbitstudio/visor-core"],
     registryDependencies: ["utils", "toast"],
     files: [
       {

@@ -414,6 +414,36 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       export: "Text",
       props: `{ as: "div", children: ["primary", "secondary", "tertiary", "warning"].map(function (c) { return React.createElement(__mod.Text, { key: c, size: "sm", color: c }, "Text " + c) }) }`,
     },
+    // VI-715: a plain line, then the mono face and the success and amber inks.
+    faces: {
+      export: "Text",
+      props: `{ as: "div", children: [
+        React.createElement(__mod.Text, { key: "plain", "data-face": "plain" }, "Total"),
+        React.createElement(__mod.Text, { key: "mono", "data-face": "mono", family: "mono", weight: "bold" }, "$400"),
+        React.createElement(__mod.Text, { key: "success", "data-face": "success", color: "success" }, "Total $400 of $400"),
+        React.createElement(__mod.Text, { key: "amber", "data-face": "amber", color: "amber" }, "Held"),
+        React.createElement(__mod.Text, { key: "warning", "data-face": "warning", color: "warning" }, "Left to Assign")
+      ] }`,
+    },
+  },
+  // VI-714: the end-of-flow panel with a check list and an action.
+  "success-feedback": {
+    panel: {
+      export: "SuccessPanel",
+      props: `{ style: { width: 420 }, heading: "You\u2019re all set", description: "Your bookings, their fees and your payments live on your dashboard.", items: [{ content: [React.createElement("b", { key: "b" }, "Your info"), " is saved."] }, { content: [React.createElement("b", { key: "b" }, "Your W-9"), " is signed and released to Animal Brooklyn."] }], action: React.createElement("button", { type: "button" }, "Go to Dashboard") }`,
+    },
+  },
+  // VI-713: labelled steps, one in every state, at both sizes.
+  "segmented-progress": {
+    default: { export: "SegmentedProgress", props: `{ total: 6, value: 2, current: 2, "aria-label": "Step 3 of 6", style: { width: 360 } }` },
+    steps: {
+      export: "SegmentedProgress",
+      props: `{ style: { width: 360 }, steps: [{ label: "Your Info", state: "done" }, { label: "Bank Details", state: "current" }, { label: "W-9", state: "pending" }, { label: "Paid", state: "failed" }] }`,
+    },
+    "steps-md": {
+      export: "SegmentedProgress",
+      props: `{ size: "md", style: { width: 360 }, steps: [{ label: "Your Info", state: "done" }, { label: "Bank Details", state: "current" }, { label: "W-9", state: "pending" }, { label: "Paid", state: "failed" }] }`,
+    },
   },
   // Form controls (VI-655). Each has a resting fixture plus the states that
   // redraw the edge (invalid, checked, selected), so `visor render` can prove

@@ -1,5 +1,5 @@
 name: Text
-description: A body text component with size, weight, color, and line-height variants.
+description: A body text component with size, weight, family (body or mono), color (including success and amber inks), and line-height variants.
 extends: HTMLElement
 category: typography
 
@@ -12,7 +12,7 @@ when_to_use:
 when_not_to_use:
   - Page or section headings (use Heading)
   - Form field labels (use Label or Field)
-  - Code snippets or monospace text (use CodeBlock or inline <code>)
+  - Code snippets (use CodeBlock or inline <code>); a mono figure such as a fee or a count is family="mono"
 
 why: >
   Text provides a polymorphic body text primitive with CVA variants for size,
@@ -23,7 +23,8 @@ why: >
 variants:
   size: [xs, sm, md, lg, xl]
   weight: [normal, medium, semibold, bold]
-  color: [primary, secondary, tertiary, warning, inherit]
+  family: [mono]  # `body`, the default, is .base itself and has no class
+  color: [primary, secondary, tertiary, warning, success, amber, inherit]
   leading: [tight, snug, normal, relaxed, loose]
 
 props:
@@ -37,9 +38,14 @@ props:
   - name: weight
     type: "'normal' | 'medium' | 'semibold' | 'bold'"
     default: "'normal'"
+  - name: family
+    type: "'body' | 'mono'"
+    default: "'body'"
+    description: Type face. `mono` reads `--font-mono` (fallback `ui-monospace, monospace`) and composes with every size and weight.
   - name: color
-    type: "'primary' | 'secondary' | 'tertiary' | 'warning' | 'inherit'"
+    type: "'primary' | 'secondary' | 'tertiary' | 'warning' | 'success' | 'amber' | 'inherit'"
     default: "'primary'"
+    description: Ink. `success` reads `--text-success`; `amber` reads `--text-amber`, falling back to `--text-warning`.
   - name: leading
     type: "'tight' | 'snug' | 'normal' | 'relaxed' | 'loose'"
     default: "'normal'"
@@ -58,4 +64,8 @@ example: |
 
   <Text as="span" weight="semibold" size="lg">
     Inline emphasized text
+  </Text>
+
+  <Text as="span" family="mono" weight="bold" color="success">
+    $400
   </Text>

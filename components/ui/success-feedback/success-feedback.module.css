@@ -12,3 +12,94 @@
   white-space: nowrap;
   border-width: 0;
 }
+
+/* SuccessPanel (VI-714) — the end-of-flow screen, centred.
+   Type sizes are hooks so a host can step them down at desktop widths
+   (heading 19px, description and rows 14px / 13px in Animal's drawing). */
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-3, 0.75rem);
+  padding: var(--spacing-6, 1.5rem) var(--spacing-4, 1rem);
+  text-align: center;
+}
+
+/* Intentional: a 56px seal around a 30px icon slot, per the design. */
+.seal {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--surface-success-subtle, #f0fdf4);
+  color: var(--text-success, #15803d);
+  font-size: 1.875rem;
+}
+
+.seal > svg {
+  width: 1em;
+  height: 1em;
+}
+
+.heading {
+  margin: 0;
+  font-size: var(--success-panel-heading-font-size, var(--font-size-xl, 1.25rem));
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--line-height-tight, 1.25);
+  color: var(--text-primary, #111827);
+}
+
+/* Intentional: 15px and a ~420px measure, per the design. */
+.description {
+  margin: 0;
+  max-width: 26.25rem;
+  font-size: var(--success-panel-description-font-size, 0.9375rem);
+  line-height: var(--line-height-normal, 1.5);
+  color: var(--text-secondary, #6b7280);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  gap: var(--spacing-3, 0.75rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: start;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3, 0.75rem);
+  font-size: var(--success-panel-item-font-size, var(--font-size-sm, 0.875rem));
+  line-height: var(--line-height-normal, 1.5);
+  color: var(--text-secondary, #6b7280);
+}
+
+.item b,
+.item strong {
+  color: var(--text-primary, #111827);
+}
+
+/* One line tall, so the 18px glyph (intentional, per the design) centres on
+   the row's first line. */
+.itemIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  height: 1lh;
+  color: var(--text-success, #15803d);
+}
+
+.itemIcon > svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.action {
+  margin-top: var(--spacing-1, 0.25rem);
+}

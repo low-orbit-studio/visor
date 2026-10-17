@@ -1,5 +1,5 @@
 name: SegmentedProgress
-description: Discrete per-step progress meter — N equal pill segments in a row, each individually expressing done, current, or pending state. Designed for multi-step flows where individual step completion matters, not just an overall percentage.
+description: Discrete per-step progress meter — N equal pill segments in a row, each individually expressing done, current, or pending state. With `steps`, each segment carries a label under it, a step can be failed, the fills draw in once on mount, and a visually hidden summary is read in place of the bar. Designed for multi-step flows where individual step completion matters, not just an overall percentage.
 extends: HTMLDivElement
 category: data-display
 
@@ -8,10 +8,11 @@ when_to_use:
   - Brand elicitation, survey, or questionnaire progress where step-level completion is meaningful
   - Short sequence indicators (≤12 steps) where a pill-per-step treatment reads clearly
   - Inline progress in cards or compact surfaces where a stepper is too heavy
+  - A segmented stepper with a label under each bar, including a failed step (pass `steps`)
 
 when_not_to_use:
   - Use `progress` for continuous values like upload percentage or loading progress
-  - Use `stepper` when step labels or click-to-navigate behavior is needed
+  - Use `stepper` when numbered circles or click-to-navigate behavior is needed
   - Sequences longer than ~15 segments (pills become too narrow to read)
 
 why: >
@@ -30,11 +31,17 @@ props:
   - name: total
     type: number
     required: true
-    description: Total number of segments to render.
+    description: Total number of segments to render. Not used with `steps`.
   - name: value
     type: number
     required: true
-    description: Count of completed segments. Indices 0..value-1 render as done.
+    description: Count of completed segments. Indices 0..value-1 render as done. With `steps`, the default for a step that sets no `state`.
+  - name: steps
+    type: "{ label: ReactNode; state?: 'done' | 'current' | 'pending' | 'failed' }[]"
+    description: One entry per step, each a segment with its label under it. A step without a `state` follows `value` and `current`. A failed step fills with --interactive-destructive-bg and its label reads in --text-error with a warning icon; a done label carries a check-circle. The bar is aria-hidden and `summary` is read in its place. Labels are 12px (sm) and 14px (md), rebindable through --segmented-progress-sm-label-font-size and --segmented-progress-md-label-font-size.
+  - name: summary
+    type: ReactNode
+    description: 'With `steps`, the visually hidden line a screen reader hears. Defaults to "Step 2 of 3: Bank Details", naming the failed, current or next step.'
   - name: current
     type: number
     description: Optional 0-based index of the in-progress segment. Renders with a primary→muted gradient. Typically equals `value`.
@@ -45,10 +52,11 @@ props:
   - name: aria-label
     type: string
     required: true
-    description: Accessible name for the progressbar. Required — describe the current step context (e.g. "Step 3 of 10").
+    description: Accessible name for the progressbar. Required without `steps` — describe the current step context (e.g. "Step 3 of 10"). Not used with `steps`.
 
 dependencies:
   - "class-variance-authority"
+  - "@phosphor-icons/react"
   - "@loworbitstudio/visor-core"
 
 preview_url: "https://visor.design/docs/components/data-display/segmented-progress"
@@ -56,3 +64,10 @@ preview_url: "https://visor.design/docs/components/data-display/segmented-progre
 example: |
   <SegmentedProgress total={10} value={2} current={2} aria-label="Step 2 of 10" />
   <SegmentedProgress total={6} value={3} aria-label="Step 3 of 6" size="md" />
+  <SegmentedProgress
+    steps={[
+      { label: "Your Info", state: "done" },
+      { label: "Bank Details", state: "current" },
+      { label: "W-9", state: "pending" },
+    ]}
+  />

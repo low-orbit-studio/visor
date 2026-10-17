@@ -30,6 +30,7 @@ export interface PageLike {
   addStyleTag(opts: { content: string }): Promise<unknown>
   screenshot(opts: { clip?: { x: number; y: number; width: number; height: number } }): Promise<Buffer>
   hover(selector: string): Promise<void>
+  emulateMedia(opts: { reducedMotion: "reduce" | "no-preference" }): Promise<void>
   close(): Promise<void>
 }
 interface BrowserLike { newPage(opts?: { viewport: { width: number; height: number } }): Promise<PageLike>; close(): Promise<void> }
@@ -100,7 +101,8 @@ export async function bundle(component: string, fixture: string): Promise<Bundle
  * Open a fixture with transitions and animations off. `scopeCss` is applied to
  * #theme-scope, the element the theme class sits on; `componentCss` replaces
  * the bundle's CSS; `extraCss` is appended after it. `theme` swaps the default
- * neutral light theme for other theme CSS, its scope class and mode.
+ * neutral light theme for other theme CSS, its scope class and mode. `motion`
+ * keeps animations on under that reduced-motion preference.
  */
 export async function open(
   component: string,
@@ -110,10 +112,12 @@ export async function open(
     componentCss?: string
     extraCss?: string
     theme?: { css: string; className: string; mode: "light" | "dark" }
+    motion?: "reduce" | "no-preference"
   } = {},
 ): Promise<PageLike> {
   const b = await bundle(component, fixture)
   const page = await browser!.newPage({ viewport: { width: 720, height: 480 } })
+  if (opts.motion) await page.emulateMedia({ reducedMotion: opts.motion })
   const html = buildHtml({
     resetCss: resetCss(),
     tokensCss: tokensCss(),
@@ -127,7 +131,7 @@ export async function open(
   await page.waitForFunction("document.getElementById('root') && document.getElementById('root').childElementCount > 0", undefined, { timeout: 10000 })
   // Pixel comparisons between two loads race a late web font under load.
   await page.evaluate("document.fonts.ready.then(function () { return true })")
-  await page.addStyleTag({ content: "*, *::before, *::after { transition: none !important; animation: none !important; caret-color: transparent !important; }" })
+  if (!opts.motion) await page.addStyleTag({ content: "*, *::before, *::after { transition: none !important; animation: none !important; caret-color: transparent !important; }" })
   return page
 }
 

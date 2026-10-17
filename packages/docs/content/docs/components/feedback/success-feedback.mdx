@@ -1,6 +1,6 @@
 ---
 title: Success Feedback
-description: App-wide success/transition feedback pattern. useSuccessToast() fires an auto-dismissing success toast; SuccessLiveRegion provides an explicit a11y live region for screen readers.
+description: App-wide success/transition feedback pattern. useSuccessToast() fires an auto-dismissing success toast; SuccessLiveRegion provides an explicit a11y live region for screen readers; SuccessPanel is the end-of-flow screen.
 ---
 
 import { ComponentPreview } from '@/components/preview';
@@ -10,6 +10,8 @@ import {
   SuccessFeedbackUndoDemo,
   SuccessFeedbackGalleryDemo,
 } from '@/components/ui/success-feedback-demos';
+import { SuccessPanel } from '@/components/ui/success-feedback';
+import { Button } from '@/components/ui/button';
 
 <Callout type="info">
 **Pattern vs Primitive:** `SuccessFeedback` is the Borealis-recommended *pattern* for app-wide success confirmation — it wraps the [Toast](/docs/components/feedback/toast) primitive with spec-mandated defaults (4s auto-dismiss, undo action support, a11y live region). Use [Toast](/docs/components/feedback/toast) directly when you need full control.
@@ -70,6 +72,37 @@ Common success scenarios in a Borealis-native app:
   <SuccessFeedbackGalleryDemo />
 </ComponentPreview>
 
+## Success Panel
+
+`SuccessPanel` is the screen at the end of a flow: a round success seal, a heading, a
+description, an optional check list and your action, centred. It announces its heading once, on
+mount, through a `SuccessLiveRegion` of its own. The seal's icon and each row's icon are slots;
+each defaults to a check-circle. Bold runs in a row (`<b>`, `<strong>`) read in the primary ink.
+
+<ComponentPreview
+  title="Success Panel"
+  code={"<SuccessPanel\n  heading=\"You're all set\"\n  description=\"Your bookings, their fees and your payments live on your dashboard.\"\n  items={[\n    { content: <><b>Your info</b> is saved.</> },\n    { content: <><b>Your W-9</b> is signed.</> },\n  ]}\n  action={<Button>Go to Dashboard</Button>}\n/>"}
+>
+  <SuccessPanel
+    heading="You're all set"
+    description="Your bookings, their fees and your payments live on your dashboard."
+    items={[
+      { content: <><b>Your info</b> is saved.</> },
+      { content: <><b>Your W-9</b> is signed.</> },
+    ]}
+    action={<Button>Go to Dashboard</Button>}
+  />
+</ComponentPreview>
+
+| Hook | Default | Drives |
+| --- | --- | --- |
+| `--success-panel-heading-font-size` | `--font-size-xl` (20px) | The heading |
+| `--success-panel-description-font-size` | `0.9375rem` (15px) | The description |
+| `--success-panel-item-font-size` | `--font-size-sm` (14px) | Each check-list row |
+
+A host that wants smaller type at desktop widths sets these in its own media or container query.
+The seal fills with `--surface-success-subtle` and draws its icon in `--text-success`.
+
 ## Installation
 
 ```bash
@@ -78,7 +111,7 @@ npx visor add success-feedback
 
 This copies two files into your project:
 
-- `components/ui/success-feedback/success-feedback.tsx` — the hook + live region
+- `components/ui/success-feedback/success-feedback.tsx` — the hook, the live region and the panel
 - `components/ui/success-feedback/success-feedback.module.css` — the styles
 
 The pattern depends on the [Toast](/docs/components/feedback/toast) primitive — install that first:
@@ -141,8 +174,21 @@ showSuccess(title: string, options?: SuccessToastOptions): void
 
 `SuccessLiveRegion` also accepts all standard `<div>` HTML attributes.
 
+### `SuccessPanel`
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `heading` | `string` | — | The heading, announced once on mount |
+| `description` | `ReactNode` | — | Supporting copy under the heading |
+| `icon` | `ReactNode` | check-circle | The seal's icon slot |
+| `items` | `{ icon?: ReactNode; content: ReactNode }[]` | — | An optional check list |
+| `action` | `ReactNode` | — | Your action, usually a `Button` |
+
+`SuccessPanel` also accepts all standard `<div>` HTML attributes.
+
 ## Accessibility
 
+- `SuccessPanel` renders its heading as an `<h2>` and announces it once, on mount, through its own live region. The seal and row icons are hidden from assistive tech.
 - `SuccessLiveRegion` renders `role="status"` + `aria-live="polite"` + `aria-atomic="true"` so screen readers announce the message without interrupting the user.
 - The Toaster (Sonner) also provides its own `aria-live="polite"` container — both reinforce the announcement.
 - Toasts auto-dismiss after 4 seconds. Ensure any critical confirmation is also conveyed inline if the user might miss the toast.

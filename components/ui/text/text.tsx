@@ -18,11 +18,18 @@ const textVariants = cva(styles.base, {
       semibold: styles.weightSemibold,
       bold: styles.weightBold,
     },
+    // `body` adds no class: .base already sets the body face, so unset renders as before.
+    family: {
+      body: "",
+      mono: styles.familyMono,
+    },
     color: {
       primary: styles.colorPrimary,
       secondary: styles.colorSecondary,
       tertiary: styles.colorTertiary,
       warning: styles.colorWarning,
+      success: styles.colorSuccess,
+      amber: styles.colorAmber,
       inherit: styles.colorInherit,
     },
     leading: {
@@ -36,6 +43,7 @@ const textVariants = cva(styles.base, {
   defaultVariants: {
     size: "md",
     weight: "normal",
+    family: "body",
     color: "primary",
     leading: "normal",
   },
@@ -48,12 +56,12 @@ export interface TextProps
 }
 
 const Text = React.forwardRef<HTMLElement, TextProps>(
-  ({ className, as: Tag = "p", size, weight, color, leading, ...props }, ref) => {
+  ({ className, as: Tag = "p", size, weight, family, color, leading, ...props }, ref) => {
     return (
       <Tag
         ref={ref as React.Ref<never>}
         data-slot="text"
-        className={cn(textVariants({ size, weight, color, leading }), className)}
+        className={cn(textVariants({ size, weight, family, color, leading }), className)}
         {...props}
       />
     )

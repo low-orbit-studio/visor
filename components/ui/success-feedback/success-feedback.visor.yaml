@@ -1,5 +1,5 @@
 name: SuccessFeedback
-description: App-wide success/transition feedback pattern. Provides useSuccessToast() hook and SuccessLiveRegion a11y component built on the Toast primitive.
+description: App-wide success/transition feedback pattern. Provides useSuccessToast() hook and SuccessLiveRegion a11y component built on the Toast primitive, and SuccessPanel, the end-of-flow screen (success seal, heading, description, check list, action).
 extends: HTMLDivElement
 category: feedback
 
@@ -9,6 +9,7 @@ when_to_use:
   - After settings are saved
   - When an invite is sent or a link is copied
   - Any transient confirmation that a user action succeeded
+  - The end of a multi-step flow, where the whole screen confirms it is done (SuccessPanel)
 
 when_not_to_use:
   - Error conditions (use inline validation or error Banner)
@@ -28,15 +29,34 @@ sub_components:
     description: Hook returning showSuccess(title, options) that fires a Sonner toast.success() with Borealis-spec defaults.
   - name: SuccessLiveRegion
     description: Visually-hidden role=status aria-live=polite node for screen-reader announcements.
+  - name: SuccessPanel
+    description: The end-of-flow screen — a 56px round success seal, a heading announced once on mount through SuccessLiveRegion, a description, an optional check list and the host's action, centred. Icons are slots, each defaulting to a check-circle.
 
 props:
   - name: message
     type: "string"
     required: false
     description: "SuccessLiveRegion only — the success text to announce to screen readers. Updates trigger a re-announcement. Defaults to empty string."
+  - name: heading
+    type: "string"
+    required: true
+    description: "SuccessPanel only — the heading, announced to screen readers once on mount."
+  - name: description
+    type: "ReactNode"
+    description: "SuccessPanel only — supporting copy under the heading, in the secondary ink."
+  - name: icon
+    type: "ReactNode"
+    description: "SuccessPanel only — the seal's icon slot (30px). Defaults to a check-circle."
+  - name: items
+    type: "{ icon?: ReactNode; content: ReactNode }[]"
+    description: "SuccessPanel only — an optional check list. Each row is an 18px icon (default a success check-circle) and its text; bold runs read in the primary ink."
+  - name: action
+    type: "ReactNode"
+    description: "SuccessPanel only — the host's action, usually a Button."
 
 dependencies:
   - "sonner"
+  - "@phosphor-icons/react"
 
 preview_url: "https://visor.design/docs/components/feedback/success-feedback"
 
@@ -51,3 +71,11 @@ example: |
   {/* In any component */}
   const { showSuccess } = useSuccessToast()
   showSuccess("Project saved", { description: "All changes have been saved." })
+
+  {/* At the end of a flow */}
+  <SuccessPanel
+    heading="You're all set"
+    description="Your bookings and payments live on your dashboard."
+    items={[{ content: <><b>Your info</b> is saved.</> }]}
+    action={<Button>Go to Dashboard</Button>}
+  />
