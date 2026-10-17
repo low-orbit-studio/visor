@@ -426,6 +426,13 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       ] }`,
     },
   },
+  // VI-714: the end-of-flow panel with a check list and an action.
+  "success-feedback": {
+    panel: {
+      export: "SuccessPanel",
+      props: `{ style: { width: 420 }, heading: "You\u2019re all set", description: "Your bookings, their fees and your payments live on your dashboard.", items: [{ content: [React.createElement("b", { key: "b" }, "Your info"), " is saved."] }, { content: [React.createElement("b", { key: "b" }, "Your W-9"), " is signed and released to Animal Brooklyn."] }], action: React.createElement("button", { type: "button" }, "Go to Dashboard") }`,
+    },
+  },
   // VI-713: labelled steps, one in every state, at both sizes.
   "segmented-progress": {
     default: { export: "SegmentedProgress", props: `{ total: 6, value: 2, current: 2, "aria-label": "Step 3 of 6", style: { width: 360 } }` },

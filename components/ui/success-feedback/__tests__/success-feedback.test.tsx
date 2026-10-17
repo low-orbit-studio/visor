@@ -1,7 +1,7 @@
 import { render, screen, waitFor, act } from "@testing-library/react"
 import { describe, it, expect, vi } from "vitest"
 import { renderHook } from "@testing-library/react"
-import { useSuccessToast, SuccessLiveRegion } from "../success-feedback"
+import { useSuccessToast, SuccessLiveRegion, SuccessPanel } from "../success-feedback"
 import { Toaster } from "../../toast/toast"
 import { checkA11y } from "../../../../test-utils/a11y"
 
@@ -107,6 +107,98 @@ describe("SuccessLiveRegion", () => {
   it("forwards additional HTML attributes", () => {
     render(<SuccessLiveRegion message="Test" data-testid="live-region" />)
     expect(screen.getByTestId("live-region")).toBeInTheDocument()
+  })
+})
+
+/* ──────────────────────────────────────────────────────────────────────────
+   SuccessPanel (VI-714)
+   ────────────────────────────────────────────────────────────────────────── */
+
+describe("SuccessPanel", () => {
+  const region = (c: HTMLElement) => c.querySelector("[data-slot='success-live-region']")
+
+  it("announces its heading once, on mount", async () => {
+    const { container, rerender } = render(<SuccessPanel heading="You're all set" />)
+    await waitFor(() => expect(region(container)?.textContent).toBe("You're all set"))
+    rerender(<SuccessPanel heading="You're all set" description="Changed copy" />)
+    rerender(<SuccessPanel heading="A later heading" />)
+    expect(container.querySelectorAll("[data-slot='success-live-region']")).toHaveLength(1)
+    expect(region(container)?.textContent).toBe("You're all set")
+  })
+
+  it("renders the heading, description and action", () => {
+    render(
+      <SuccessPanel
+        heading="You're all set"
+        description="Your bookings live on your dashboard."
+        action={<button type="button">Go to Dashboard</button>}
+      />
+    )
+    expect(screen.getByRole("heading", { name: "You're all set" })).toBeInTheDocument()
+    expect(screen.getByText("Your bookings live on your dashboard.")).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Go to Dashboard" })).toBeInTheDocument()
+  })
+
+  it("draws a seal with a default check icon, hidden from assistive tech", () => {
+    const { container } = render(<SuccessPanel heading="Done" />)
+    const seal = container.querySelector("[data-slot='success-panel-seal']")
+    expect(seal).toHaveAttribute("aria-hidden", "true")
+    expect(seal?.querySelector("svg")).not.toBeNull()
+  })
+
+  it("takes icons through slots", () => {
+    const { container } = render(
+      <SuccessPanel
+        heading="Done"
+        icon={<i data-testid="seal-icon" />}
+        items={[{ icon: <i data-testid="row-icon" />, content: "Bank details" }]}
+      />
+    )
+    expect(screen.getByTestId("seal-icon")).toBeInTheDocument()
+    expect(screen.getByTestId("row-icon")).toBeInTheDocument()
+    expect(container.querySelector("[data-slot='success-panel-item'] svg")).toBeNull()
+  })
+
+  it("renders a check list with a check per row and bold runs", () => {
+    const { container } = render(
+      <SuccessPanel
+        heading="Done"
+        items={[
+          { content: <><b>Your info</b> is saved.</> },
+          { content: <><b>Your W-9</b> is signed.</> },
+        ]}
+      />
+    )
+    const rows = container.querySelectorAll("[data-slot='success-panel-item']")
+    expect(rows).toHaveLength(2)
+    rows.forEach((r) => expect(r.querySelector("svg")).not.toBeNull())
+    expect(screen.getByText("Your info").tagName).toBe("B")
+  })
+
+  it("omits the description, list and action when not given", () => {
+    const { container } = render(<SuccessPanel heading="Done" />)
+    expect(container.querySelector("[data-slot='success-panel-description']")).toBeNull()
+    expect(container.querySelector("[data-slot='success-panel-list']")).toBeNull()
+    expect(container.querySelector("[data-slot='success-panel-action']")).toBeNull()
+  })
+
+  it("forwards ref, className and attributes", () => {
+    const ref = { current: null as HTMLDivElement | null }
+    render(<SuccessPanel ref={ref} heading="Done" className="custom" data-testid="panel" />)
+    expect(ref.current).toBe(screen.getByTestId("panel"))
+    expect(screen.getByTestId("panel")).toHaveClass("custom")
+  })
+
+  it("has no WCAG 2.1 AA violations", async () => {
+    const { container } = render(
+      <SuccessPanel
+        heading="You're all set"
+        description="Your bookings live on your dashboard."
+        items={[{ content: <><b>Your info</b> is saved.</> }]}
+        action={<button type="button">Go to Dashboard</button>}
+      />
+    )
+    await checkA11y(container)
   })
 })
 

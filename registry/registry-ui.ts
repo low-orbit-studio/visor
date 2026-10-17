@@ -2206,8 +2206,8 @@ export const ui: Registry = [
     type: "registry:ui",
     category: "feedback",
     description:
-      "App-wide success/transition feedback pattern. useSuccessToast() fires an auto-dismissing Sonner toast with Borealis-spec defaults (4s, optional undo action). SuccessLiveRegion provides an explicit aria-live polite node for screen readers.",
-    dependencies: ["sonner", "@loworbitstudio/visor-core"],
+      "App-wide success/transition feedback pattern. useSuccessToast() fires an auto-dismissing Sonner toast with Borealis-spec defaults (4s, optional undo action). SuccessLiveRegion provides an explicit aria-live polite node for screen readers. SuccessPanel is the end-of-flow screen: a success seal, heading, description, check list and action.",
+    dependencies: ["sonner", "@phosphor-icons/react", "@loworbitstudio/visor-core"],
     registryDependencies: ["utils", "toast"],
     files: [
       {

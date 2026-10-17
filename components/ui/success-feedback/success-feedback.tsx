@@ -1,7 +1,9 @@
 "use client"
 
 import * as React from "react"
+import { CheckCircle } from "@phosphor-icons/react/dist/ssr"
 import { toast } from "../toast/toast"
+import { cn } from "../../../lib/utils"
 import styles from "./success-feedback.module.css"
 
 /* ──────────────────────────────────────────────────────────────────────────
@@ -119,3 +121,80 @@ const SuccessLiveRegion = React.forwardRef<HTMLDivElement, SuccessLiveRegionProp
 SuccessLiveRegion.displayName = "SuccessLiveRegion"
 
 export { SuccessLiveRegion }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   SuccessPanel (VI-714)
+
+   The end-of-flow screen: a round success seal, a heading, a description,
+   an optional check list and the host's action, centred. Its heading is
+   announced once, on mount, through SuccessLiveRegion. Icons are slots;
+   each defaults to a check-circle.
+   ────────────────────────────────────────────────────────────────────────── */
+
+export interface SuccessPanelItem {
+  /** The row's icon. Defaults to a check-circle in the success ink. */
+  icon?: React.ReactNode
+  /** The row's text. Bold runs (`<b>`, `<strong>`) read in the primary ink. */
+  content: React.ReactNode
+}
+
+export interface SuccessPanelProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  /** The panel's heading, announced to screen readers once on mount. */
+  heading: string
+  /** Supporting copy under the heading. */
+  description?: React.ReactNode
+  /** The seal's icon. Defaults to a check-circle. */
+  icon?: React.ReactNode
+  /** Optional check list under the description. */
+  items?: SuccessPanelItem[]
+  /** The host's action, usually a Button. */
+  action?: React.ReactNode
+}
+
+const SuccessPanel = React.forwardRef<HTMLDivElement, SuccessPanelProps>(
+  ({ heading, description, icon, items, action, className, ...props }, ref) => {
+    // Set after mount so the live region exists before its text changes.
+    const [announced, setAnnounced] = React.useState("")
+    const headingOnMount = React.useRef(heading)
+    React.useEffect(() => {
+      setAnnounced(headingOnMount.current)
+    }, [])
+
+    return (
+      <div ref={ref} data-slot="success-panel" className={cn(styles.panel, className)} {...props}>
+        <span data-slot="success-panel-seal" className={styles.seal} aria-hidden="true">
+          {icon ?? <CheckCircle />}
+        </span>
+        <h2 data-slot="success-panel-heading" className={styles.heading}>
+          {heading}
+        </h2>
+        {description && (
+          <p data-slot="success-panel-description" className={styles.description}>
+            {description}
+          </p>
+        )}
+        {items && items.length > 0 && (
+          <ul data-slot="success-panel-list" className={styles.list}>
+            {items.map((item, i) => (
+              <li key={i} data-slot="success-panel-item" className={styles.item}>
+                <span className={styles.itemIcon} aria-hidden="true">
+                  {item.icon ?? <CheckCircle />}
+                </span>
+                <span>{item.content}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        {action && (
+          <div data-slot="success-panel-action" className={styles.action}>
+            {action}
+          </div>
+        )}
+        <SuccessLiveRegion message={announced} />
+      </div>
+    )
+  }
+)
+SuccessPanel.displayName = "SuccessPanel"
+
+export { SuccessPanel }
