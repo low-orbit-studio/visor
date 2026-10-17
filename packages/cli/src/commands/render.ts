@@ -414,6 +414,17 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       export: "Text",
       props: `{ as: "div", children: ["primary", "secondary", "tertiary", "warning"].map(function (c) { return React.createElement(__mod.Text, { key: c, size: "sm", color: c }, "Text " + c) }) }`,
     },
+    // VI-715: a plain line, then the mono face and the success and amber inks.
+    faces: {
+      export: "Text",
+      props: `{ as: "div", children: [
+        React.createElement(__mod.Text, { key: "plain", "data-face": "plain" }, "Total"),
+        React.createElement(__mod.Text, { key: "mono", "data-face": "mono", family: "mono", weight: "bold" }, "$400"),
+        React.createElement(__mod.Text, { key: "success", "data-face": "success", color: "success" }, "Total $400 of $400"),
+        React.createElement(__mod.Text, { key: "amber", "data-face": "amber", color: "amber" }, "Held"),
+        React.createElement(__mod.Text, { key: "warning", "data-face": "warning", color: "warning" }, "Left to Assign")
+      ] }`,
+    },
   },
   // Form controls (VI-655). Each has a resting fixture plus the states that
   // redraw the edge (invalid, checked, selected), so `visor render` can prove

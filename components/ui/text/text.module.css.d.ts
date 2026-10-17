@@ -9,10 +9,13 @@ declare const styles: {
   readonly weightMedium: string
   readonly weightSemibold: string
   readonly weightBold: string
+  readonly familyMono: string
   readonly colorPrimary: string
   readonly colorSecondary: string
   readonly colorTertiary: string
   readonly colorWarning: string
+  readonly colorSuccess: string
+  readonly colorAmber: string
   readonly colorInherit: string
   readonly leadingTight: string
   readonly leadingSnug: string

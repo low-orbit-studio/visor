@@ -76,6 +76,12 @@
   font-weight: var(--font-weight-bold, 700);
 }
 
+/* Families. `body` is .base itself; mono swaps the face and composes with
+   every size and weight (VI-715). */
+.familyMono {
+  font-family: var(--font-mono, ui-monospace, monospace);
+}
+
 /* Colors */
 .colorPrimary {
   color: var(--text-primary, #111827);
@@ -91,6 +97,15 @@
 
 .colorWarning {
   color: var(--text-warning, #b45309);
+}
+
+.colorSuccess {
+  color: var(--text-success, #15803d);
+}
+
+/* A second amber a theme can bind without moving `warning` (VI-715). */
+.colorAmber {
+  color: var(--text-amber, var(--text-warning, #b45309));
 }
 
 .colorInherit {

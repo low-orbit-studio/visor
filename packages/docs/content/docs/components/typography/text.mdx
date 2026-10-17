@@ -1,6 +1,6 @@
 ---
 title: Text
-description: A body text component with size, weight, color, and line-height variants. Renders as a paragraph by default with polymorphic element support.
+description: A body text component with size, weight, family, color, and line-height variants. Renders as a paragraph by default with polymorphic element support.
 ---
 
 import { ComponentPreview } from '@/components/preview';
@@ -51,6 +51,37 @@ import { Text } from '@/components/ui/text';
 </ComponentPreview>
 
 `color="warning"` reads `--text-warning`, for a state line such as "Unsaved changes".
+
+`color="success"` reads `--text-success`, for a settled figure such as "Total $400 of $400".
+`color="amber"` reads `--text-amber` and falls back to `--text-warning`, so a theme can bind a
+second amber (a held line, say) without moving `warning`.
+
+<ComponentPreview
+  title="Success and Amber"
+  code={"<Text color=\"success\">Total $400 of $400</Text>\n<Text color=\"amber\">Held</Text>"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+    <Text color="success">Total $400 of $400</Text>
+    <Text color="amber">Held</Text>
+  </div>
+</ComponentPreview>
+
+## Family
+
+`family="mono"` sets the face to `--font-mono` (falling back to `ui-monospace, monospace`) for a
+figure: a fee, a count, a masked last four. It composes with every size, weight and color. The
+default, `body`, is the face Text has always had.
+
+<ComponentPreview
+  title="Mono Figures"
+  code={"<Text family=\"mono\" weight=\"bold\">$400</Text>\n<Text family=\"mono\" size=\"sm\" color=\"secondary\">•••• 4242</Text>\n<Text family=\"mono\" weight=\"bold\" color=\"success\">$400 of $400</Text>"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+    <Text family="mono" weight="bold">$400</Text>
+    <Text family="mono" size="sm" color="secondary">•••• 4242</Text>
+    <Text family="mono" weight="bold" color="success">$400 of $400</Text>
+  </div>
+</ComponentPreview>
 
 ## Theming
 

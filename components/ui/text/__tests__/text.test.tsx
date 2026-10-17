@@ -60,6 +60,32 @@ describe("Text", () => {
   })
 })
 
+describe("family and the success and amber inks (VI-715)", () => {
+  it("unset renders the 1.29.0 classes exactly", () => {
+    render(<Text>Plain</Text>)
+    expect(screen.getByText("Plain").className).toBe("base sizeMd weightNormal colorPrimary leadingNormal")
+  })
+
+  it("family='body' adds no class", () => {
+    render(<Text family="body">Body</Text>)
+    expect(screen.getByText("Body").className).toBe("base sizeMd weightNormal colorPrimary leadingNormal")
+  })
+
+  it("family='mono' composes with size and weight", () => {
+    render(<Text family="mono" size="sm" weight="bold">$400</Text>)
+    expect(screen.getByText("$400")).toHaveClass("familyMono", "sizeSm", "weightBold")
+  })
+
+  it.each([
+    ["success", "colorSuccess"],
+    ["amber", "colorAmber"],
+  ] as const)("color='%s' applies %s", (color, cls) => {
+    render(<Text color={color}>Ink</Text>)
+    expect(screen.getByText("Ink")).toHaveClass(cls)
+    expect(screen.getByText("Ink")).not.toHaveClass("colorPrimary")
+  })
+})
+
 describe("accessibility", () => {
   it("has no WCAG 2.1 AA violations (default)", async () => {
     const { container } = render(<Text>Accessible text content</Text>)

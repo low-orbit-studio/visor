@@ -65,7 +65,7 @@ export const ui: Registry = [
     name: "text",
     type: "registry:ui",
     description:
-      "A body text component with size, weight, color, and line-height variants using CVA.",
+      "A body text component with size, weight, family (body or mono), color (including success and amber inks), and line-height variants using CVA.",
     dependencies: ["class-variance-authority", "@loworbitstudio/visor-core"],
     registryDependencies: ["utils"],
     files: [
