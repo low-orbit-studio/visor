@@ -607,9 +607,10 @@ export const ui: Registry = [
     name: "segmented-progress",
     type: "registry:ui",
     description:
-      "Discrete per-step progress meter — N equal pill segments in a row, each individually expressing done, current, or pending state. Designed for multi-step flows where individual step completion matters.",
+      "Discrete per-step progress meter — N equal pill segments in a row, each individually expressing done, current, or pending state. With `steps`, a label under each segment, a failed state, a fill-once animation and a visually hidden summary. Designed for multi-step flows where individual step completion matters.",
     dependencies: [
       "class-variance-authority",
+      "@phosphor-icons/react",
       "@loworbitstudio/visor-core",
     ],
     registryDependencies: ["utils"],

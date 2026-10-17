@@ -27,11 +27,12 @@
   background: var(--interactive-primary-bg, var(--primary, #111827));
 }
 
-/* State: current — gradient from primary into muted (~55%/45% split) */
+/* State: current — gradient from the strong rung into muted (~55%/45% split).
+   --button-strong-fill lets a host rebind it; unset it is the primary (VI-713). */
 .segment.segmentCurrent {
   background: linear-gradient(
     90deg,
-    var(--interactive-primary-bg, var(--primary, #111827)) 55%,
+    var(--button-strong-fill, var(--interactive-primary-bg, var(--primary, #111827))) 55%,
     var(--surface-muted, #e5e7eb) 55%
   );
 }
@@ -51,9 +52,146 @@
   height: 8px;
 }
 
-/* Respect reduced motion — disable transitions */
+/* ── Labelled steps (VI-713) ────────────────────────────────────────────
+ * With `steps`, each segment sits over its label, a step can fail, and the
+ * fills draw left to right once on mount. None of this applies to a bar
+ * without `steps`, which renders exactly as before. */
+
+.labelled {
+  position: relative;
+}
+
+.labelled.sizeMd {
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.step {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+  min-width: 0;
+}
+
+/* The track is muted; the fill is a layer clipped to the state's extent, so
+   it can draw in from the left. */
+.segment.fill {
+  flex: none;
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-muted, #e5e7eb);
+}
+
+.fill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--interactive-primary-bg, var(--primary, #111827));
+  clip-path: inset(0 100% 0 0 round var(--radius-full, 9999px));
+  transition: clip-path var(--motion-duration-300, 300ms)
+    var(--motion-easing-ease-out, ease-out);
+}
+
+.fill.segmentDone::before {
+  clip-path: inset(0 round var(--radius-full, 9999px));
+}
+
+.fill.segmentCurrent::before {
+  background: var(--button-strong-fill, var(--interactive-primary-bg, var(--primary, #111827)));
+  clip-path: inset(0 45% 0 0 round var(--radius-full, 9999px));
+}
+
+.fill.segmentFailed::before {
+  background: var(--interactive-destructive-bg, #dc2626);
+  clip-path: inset(0 round var(--radius-full, 9999px));
+}
+
+/* Label: 12px under sm, 14px under md. A host rebinds the size hooks (at
+   desktop widths, say) without touching the component. */
+.label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+  min-width: 0;
+  font-size: var(--segmented-progress-sm-label-font-size, var(--font-size-xs, 0.75rem));
+  line-height: var(--line-height-tight, 1.25);
+  color: var(--text-tertiary, #9ca3af);
+}
+
+.sizeMd .label {
+  font-size: var(--segmented-progress-md-label-font-size, var(--font-size-sm, 0.875rem));
+}
+
+.labelText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Intentional: the glyph draws a touch larger than its label, as in the design. */
+.labelIcon {
+  flex: none;
+  width: 1.1em;
+  height: 1.1em;
+  color: var(--interactive-primary-bg, var(--primary, #111827));
+}
+
+.step[data-state="current"] .label {
+  color: var(--text-primary, #111827);
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.step[data-state="done"] .label {
+  color: var(--text-secondary, #6b7280);
+}
+
+.step[data-state="failed"] .label,
+.step[data-state="failed"] .labelIcon {
+  color: var(--text-error, #b91c1c);
+}
+
+.step[data-state="failed"] .label {
+  font-weight: var(--font-weight-bold, 700);
+}
+
+/* The words a screen reader hears in place of the bar. */
+.summary {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Fill once on mount, each segment ~140ms after the one before it. */
+@media (prefers-reduced-motion: no-preference) {
+  .fill::before {
+    animation: segmented-progress-fill var(--segmented-progress-fill-duration, 600ms)
+      var(--motion-easing-ease-out, ease-out) both;
+    animation-delay: calc(
+      var(--segmented-progress-index, 0) * var(--segmented-progress-fill-stagger, 140ms)
+    );
+  }
+}
+
+@keyframes segmented-progress-fill {
+  from {
+    clip-path: inset(0 100% 0 0 round var(--radius-full, 9999px));
+  }
+}
+
+/* Respect reduced motion — disable transitions; the fills draw static */
 @media (prefers-reduced-motion: reduce) {
   .segment {
+    transition: none;
+  }
+
+  .fill::before {
     transition: none;
   }
 }

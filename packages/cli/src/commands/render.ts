@@ -426,6 +426,18 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       ] }`,
     },
   },
+  // VI-713: labelled steps, one in every state, at both sizes.
+  "segmented-progress": {
+    default: { export: "SegmentedProgress", props: `{ total: 6, value: 2, current: 2, "aria-label": "Step 3 of 6", style: { width: 360 } }` },
+    steps: {
+      export: "SegmentedProgress",
+      props: `{ style: { width: 360 }, steps: [{ label: "Your Info", state: "done" }, { label: "Bank Details", state: "current" }, { label: "W-9", state: "pending" }, { label: "Paid", state: "failed" }] }`,
+    },
+    "steps-md": {
+      export: "SegmentedProgress",
+      props: `{ size: "md", style: { width: 360 }, steps: [{ label: "Your Info", state: "done" }, { label: "Bank Details", state: "current" }, { label: "W-9", state: "pending" }, { label: "Paid", state: "failed" }] }`,
+    },
+  },
   // Form controls (VI-655). Each has a resting fixture plus the states that
   // redraw the edge (invalid, checked, selected), so `visor render` can prove
   // the edge tokens leave a default theme unchanged.

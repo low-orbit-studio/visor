@@ -1,6 +1,6 @@
 ---
 title: Segmented Progress
-description: Discrete per-step progress meter — N equal pill segments in a row, each individually expressing done, current, or pending state.
+description: Discrete per-step progress meter — N equal pill segments in a row, each individually expressing done, current, or pending state, with optional step labels and a failed state.
 ---
 
 import { ComponentPreview } from '@/components/preview';
@@ -62,6 +62,81 @@ Each segment independently resolves to `done`, `current`, or `pending`:
   </div>
 </ComponentPreview>
 
+## Step labels
+
+Pass `steps` to put a label under each segment. A done step's label carries a check, the current
+step's reads bold in the primary ink, and a step not reached reads in the tertiary ink. On mount
+each filled segment draws in from the left, once, about 140ms after the one before it; under
+`prefers-reduced-motion` the fills are drawn static.
+
+<ComponentPreview
+  title="Labelled steps, sm and md"
+  code={"<SegmentedProgress\n  steps={[\n    { label: 'Your Info', state: 'done' },\n    { label: 'Bank Details', state: 'current' },\n    { label: 'W-9', state: 'pending' },\n  ]}\n/>\n<SegmentedProgress\n  size=\"md\"\n  steps={[\n    { label: 'Your Info', state: 'done' },\n    { label: 'Bank Details', state: 'current' },\n    { label: 'W-9', state: 'pending' },\n  ]}\n/>"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%', maxWidth: '24rem' }}>
+    <SegmentedProgress
+      steps={[
+        { label: 'Your Info', state: 'done' },
+        { label: 'Bank Details', state: 'current' },
+        { label: 'W-9', state: 'pending' },
+      ]}
+    />
+    <SegmentedProgress
+      size="md"
+      steps={[
+        { label: 'Your Info', state: 'done' },
+        { label: 'Bank Details', state: 'current' },
+        { label: 'W-9', state: 'pending' },
+      ]}
+    />
+  </div>
+</ComponentPreview>
+
+A step without a `state` follows `value` and `current`, so
+`<SegmentedProgress value={1} current={1} steps={[{ label: 'A' }, { label: 'B' }, { label: 'C' }]} />`
+draws done, current, pending.
+
+## Failed step
+
+A `failed` step fills with `--interactive-destructive-bg`, and its label reads bold in
+`--text-error` with a warning icon.
+
+<ComponentPreview
+  title="A failed step, sm and md"
+  code={"<SegmentedProgress\n  steps={[\n    { label: 'Sent', state: 'done' },\n    { label: 'Payment Starts', state: 'failed' },\n    { label: 'Paid', state: 'pending' },\n  ]}\n/>"}
+>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%', maxWidth: '24rem' }}>
+    <SegmentedProgress
+      steps={[
+        { label: 'Sent', state: 'done' },
+        { label: 'Payment Starts', state: 'failed' },
+        { label: 'Paid', state: 'pending' },
+      ]}
+    />
+    <SegmentedProgress
+      size="md"
+      steps={[
+        { label: 'Sent', state: 'done' },
+        { label: 'Payment Starts', state: 'failed' },
+        { label: 'Paid', state: 'pending' },
+      ]}
+    />
+  </div>
+</ComponentPreview>
+
+## Theming the steps
+
+| Hook | Default | Drives |
+| --- | --- | --- |
+| `--button-strong-fill` | `--interactive-primary-bg` | The current segment's fill, with or without `steps` |
+| `--segmented-progress-sm-label-font-size` | `--font-size-xs` (12px) | Labels under `sm` |
+| `--segmented-progress-md-label-font-size` | `--font-size-sm` (14px) | Labels under `md` |
+| `--segmented-progress-fill-duration` | `600ms` | Each segment's fill-in |
+| `--segmented-progress-fill-stagger` | `140ms` | The delay between one segment's fill and the next |
+
+A host that wants smaller labels at desktop widths sets the label hooks in its own media or
+container query.
+
 ## Installation
 
 ```bash
@@ -100,7 +175,8 @@ The component also accepts all standard `<div>` HTML attributes.
 
 ## Accessibility
 
-- The root element has `role="progressbar"` with `aria-valuemin={0}`, `aria-valuemax={total}`, and `aria-valuenow={value}`.
-- An `aria-label` is required — describe the current step context (e.g. `"Step 3 of 10"` or `"Brand elicitation: step 3 of 10 complete"`).
+- Without `steps`, the root element has `role="progressbar"` with `aria-valuemin={0}`, `aria-valuemax={total}`, and `aria-valuenow={value}`.
+- With `steps`, every step is `aria-hidden` and a visually hidden line beside the bar is read instead: "Step 2 of 3: Bank Details" by default, naming the failed step first, then the current one, then the next one ("All 3 steps done" when every step is done). Pass `summary` to say it differently.
+- Without `steps`, an `aria-label` is required — describe the current step context (e.g. `"Step 3 of 10"` or `"Brand elicitation: step 3 of 10 complete"`).
 - Individual segment `<span>` elements are presentational; the progressbar role carries all announcements.
-- Segment transitions are disabled under `prefers-reduced-motion`.
+- Segment transitions and the fill-in animation are disabled under `prefers-reduced-motion`.

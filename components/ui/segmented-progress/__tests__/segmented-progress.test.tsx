@@ -1,6 +1,8 @@
 import { render, screen } from "@testing-library/react"
+import { renderToString } from "react-dom/server"
 import { describe, it, expect } from "vitest"
-import { SegmentedProgress } from "../segmented-progress"
+import { SegmentedProgress, type SegmentedProgressStep } from "../segmented-progress"
+import { checkA11y } from "../../../../test-utils/a11y"
 
 describe("SegmentedProgress", () => {
   it("renders the correct number of segments", () => {
@@ -164,5 +166,112 @@ describe("SegmentedProgress", () => {
         container.querySelector(`[data-size="${size}"]`)
       ).not.toBeNull()
     })
+  })
+
+  it("without steps renders exactly the 1.37.0 markup", () => {
+    expect(
+      renderToString(<SegmentedProgress total={3} value={1} current={1} aria-label="Step 2 of 3" />)
+    ).toBe(
+      '<div data-slot="segmented-progress" data-size="sm" role="progressbar" aria-valuemin="0" aria-valuemax="3" aria-valuenow="1" aria-label="Step 2 of 3" class="root sizeSm"><span data-slot="segmented-progress-segment" data-state="done" class="segment segmentDone"></span><span data-slot="segmented-progress-segment" data-state="current" class="segment segmentCurrent"></span><span data-slot="segmented-progress-segment" data-state="pending" class="segment segmentPending"></span></div>'
+    )
+  })
+})
+
+describe("SegmentedProgress with steps (VI-713)", () => {
+  const STEPS: SegmentedProgressStep[] = [
+    { label: "Your Info", state: "done" },
+    { label: "Bank Details", state: "current" },
+    { label: "W-9", state: "pending" },
+  ]
+
+  const steps = (container: HTMLElement) =>
+    Array.from(container.querySelectorAll('[data-slot="segmented-progress-step"]'))
+
+  it("renders a segment and a label per step", () => {
+    const { container } = render(<SegmentedProgress steps={STEPS} />)
+    expect(steps(container)).toHaveLength(3)
+    expect(container.querySelectorAll('[data-slot="segmented-progress-segment"]')).toHaveLength(3)
+    expect(
+      Array.from(container.querySelectorAll('[data-slot="segmented-progress-label"]')).map((l) => l.textContent)
+    ).toEqual(["Your Info", "Bank Details", "W-9"])
+  })
+
+  it.each(["done", "current", "pending", "failed"] as const)("renders the %s state", (state) => {
+    const { container } = render(<SegmentedProgress steps={[{ label: "Step", state }]} />)
+    const step = steps(container)[0]
+    expect(step).toHaveAttribute("data-state", state)
+    const segment = step.querySelector('[data-slot="segmented-progress-segment"]')!
+    expect(segment).toHaveAttribute("data-state", state)
+    expect(segment).toHaveClass("fill", `segment${state[0].toUpperCase()}${state.slice(1)}`)
+    // done carries a check, failed a warning; current and pending no icon
+    expect(step.querySelectorAll("svg")).toHaveLength(state === "done" || state === "failed" ? 1 : 0)
+  })
+
+  it("a step without a state follows value and current", () => {
+    const { container } = render(
+      <SegmentedProgress value={1} current={1} steps={[{ label: "A" }, { label: "B" }, { label: "C" }]} />
+    )
+    expect(steps(container).map((s) => s.getAttribute("data-state"))).toEqual(["done", "current", "pending"])
+  })
+
+  it("hides the bar and reads a summary in its place", () => {
+    const { container } = render(<SegmentedProgress steps={STEPS} />)
+    for (const step of steps(container)) expect(step).toHaveAttribute("aria-hidden", "true")
+    expect(screen.queryByRole("progressbar")).toBeNull()
+    expect(container.querySelector('[data-slot="segmented-progress-summary"]')?.textContent).toBe(
+      "Step 2 of 3: Bank Details"
+    )
+  })
+
+  it("the summary names a failed step first", () => {
+    const { container } = render(
+      <SegmentedProgress steps={[{ label: "Sent", state: "done" }, { label: "Payment Starts", state: "failed" }, { label: "Paid" }]} />
+    )
+    expect(container.querySelector('[data-slot="segmented-progress-summary"]')?.textContent).toBe(
+      "Step 2 of 3 failed: Payment Starts"
+    )
+  })
+
+  it("the summary names the next step when none is current, and says so when all are done", () => {
+    const { container, rerender } = render(
+      <SegmentedProgress steps={[{ label: "A", state: "done" }, { label: "B", state: "pending" }]} />
+    )
+    const summary = () => container.querySelector('[data-slot="segmented-progress-summary"]')?.textContent
+    expect(summary()).toBe("Step 2 of 2: B")
+    rerender(<SegmentedProgress steps={[{ label: "A", state: "done" }, { label: "B", state: "done" }]} />)
+    expect(summary()).toBe("All 2 steps done")
+  })
+
+  it("takes a host summary", () => {
+    const { container } = render(<SegmentedProgress steps={STEPS} summary="2 of 3 steps done. Your W-9 is next." />)
+    expect(container.querySelector('[data-slot="segmented-progress-summary"]')?.textContent).toBe(
+      "2 of 3 steps done. Your W-9 is next."
+    )
+  })
+
+  it("staggers each step by its index", () => {
+    const { container } = render(<SegmentedProgress steps={STEPS} />)
+    expect(steps(container).map((s) => (s as HTMLElement).style.getPropertyValue("--segmented-progress-index"))).toEqual([
+      "0",
+      "1",
+      "2",
+    ])
+  })
+
+  it.each(["sm", "md"] as const)("renders at size %s", (size) => {
+    const { container } = render(<SegmentedProgress size={size} steps={STEPS} />)
+    expect(container.querySelector('[data-slot="segmented-progress"]')).toHaveAttribute("data-size", size)
+  })
+
+  it("forwards ref and className", () => {
+    const ref = { current: null as HTMLDivElement | null }
+    const { container } = render(<SegmentedProgress ref={ref} className="custom" steps={STEPS} />)
+    expect(ref.current?.tagName).toBe("DIV")
+    expect(container.querySelector('[data-slot="segmented-progress"]')).toHaveClass("custom")
+  })
+
+  it("has no WCAG 2.1 AA violations", async () => {
+    const { container } = render(<SegmentedProgress steps={[...STEPS, { label: "Paid", state: "failed" }]} />)
+    await checkA11y(container)
   })
 })

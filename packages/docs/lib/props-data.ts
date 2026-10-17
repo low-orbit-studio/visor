@@ -1091,7 +1091,17 @@ export const propsData: Record<string, PropDef[]> = {
       name: 'value',
       type: 'number',
       required: true,
-      description: 'Count of completed segments — indices 0..value-1 render in the done state.',
+      description: 'Count of completed segments — indices 0..value-1 render in the done state. With steps, the default for a step that sets no state.',
+    },
+    {
+      name: 'steps',
+      type: "{ label: ReactNode; state?: 'done' | 'current' | 'pending' | 'failed' }[]",
+      description: 'One entry per step: a segment with its label under it. The bar is then aria-hidden and summary is read in its place; total and aria-label are not used.',
+    },
+    {
+      name: 'summary',
+      type: 'ReactNode',
+      description: 'With steps, the visually hidden line a screen reader hears. Defaults to "Step 2 of 3: Bank Details", naming the failed, current or next step.',
     },
     {
       name: 'current',
@@ -1108,7 +1118,7 @@ export const propsData: Record<string, PropDef[]> = {
       name: 'aria-label',
       type: 'string',
       required: true,
-      description: 'Accessible name for the progress bar.',
+      description: 'Accessible name for the progress bar. Not used with steps.',
     },
     {
       name: 'className',
