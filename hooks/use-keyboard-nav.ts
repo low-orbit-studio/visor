@@ -10,6 +10,10 @@ export interface UseKeyboardNavOptions {
   totalSectionsRef: React.MutableRefObject<number>
 }
 
+/** Focused controls that use these keys themselves (typing, radio/tab/toggle groups, sliders, selects). */
+const OWNS_KEYS =
+  'input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role="slider"], [role="combobox"], [role="spinbutton"], [role="listbox"], [role="menu"], [data-radix-collection-item]'
+
 export function useKeyboardNav({
   containerRef,
   goTo,
@@ -20,6 +24,7 @@ export function useKeyboardNav({
     const target = containerRef?.current ?? document
 
     function handleKeydown(e: KeyboardEvent) {
+      if (e.target instanceof Element && e.target.closest(OWNS_KEYS)) return
       // Let browser handle Cmd+Arrow (back/forward navigation)
       if (e.metaKey && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
         return

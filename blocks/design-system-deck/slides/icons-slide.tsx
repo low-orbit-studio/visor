@@ -10,14 +10,14 @@ import styles from "./slides.module.css"
 
 export function IconsSlide() {
   const gridItems = ICON_SPECIMENS
-    .filter((icon) => ICON_MAP[icon.phosphorName])
-    .map((icon) => {
+    .flatMap((icon) => {
       const IconComponent = ICON_MAP[icon.phosphorName]
-      return {
+      if (!IconComponent) return []
+      return [{
         name: icon.name,
         usage: icon.usage,
         icon: <IconComponent size={24} />,
-      }
+      }]
     })
 
   return (

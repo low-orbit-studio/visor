@@ -83,8 +83,8 @@ export function getFooterColumns(registry: DeckRegistry): FooterColumn[] {
     })),
   }))
 
-  if (registry.footerExtras?.length && columns.length > 0) {
-    const lastCol = columns[columns.length - 1]
+  const lastCol = columns[columns.length - 1]
+  if (registry.footerExtras?.length && lastCol) {
     for (const extra of registry.footerExtras) {
       lastCol.links.push(extra)
     }
