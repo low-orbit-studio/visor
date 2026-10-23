@@ -256,6 +256,9 @@ export function docsAdapter(
 ): string {
   const slug = toKebabCase(input.config.name);
   const scopeClass = `.${slug}-theme`;
+  // VI-721: next-themes puts `.light` on <html>, not the theme element, so the self-guards alone
+  // never fire; the `html:not(.light)` ancestor guard stops OS-dark overriding an explicit light choice.
+  const prefersSel = `html:not(.light) ${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`;
   // BO-56: brand color-mode constraint. `dark-only`/`light-only` collapse the
   // adaptive palette + intent/hairline + fumadocs bridge onto the host
   // (`.{slug}-theme`) with `color-scheme: {mode}`, dropping the manual-toggle,
@@ -452,7 +455,7 @@ export function docsAdapter(
   if (emitPrefers) {
     for (const cat of pcsCategories) {
       lines.push(sectionComment(`Adaptive: ${cat.label} (dark) — prefers-color-scheme`));
-      const inner = block(`${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`, cat.entries);
+      const inner = block(prefersSel, cat.entries);
       lines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
       lines.push("");
     }
@@ -461,7 +464,7 @@ export function docsAdapter(
   // Primitive overrides also apply under prefers-color-scheme when no manual toggle set
   if (darkPrimitiveOverrides.length > 0 && emitPrefers) {
     lines.push(sectionComment("Primitive overrides (dark) — prefers-color-scheme"));
-    const inner = block(`${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`, darkPrimitiveOverrides);
+    const inner = block(prefersSel, darkPrimitiveOverrides);
     lines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
     lines.push("");
   }
@@ -545,14 +548,14 @@ export function docsAdapter(
   if (emitPrefers) {
     semanticLines.push(sectionComment("Intent aliases (dark) — prefers-color-scheme"));
     {
-      const inner = block(`${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`, generateIntentDecls(input.tokens, "dark"));
+      const inner = block(prefersSel, generateIntentDecls(input.tokens, "dark"));
       semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
     }
     semanticLines.push("");
 
     semanticLines.push(sectionComment("Hairline aliases (dark) — prefers-color-scheme"));
     {
-      const inner = block(`${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`, generateHairlineDecls(input.tokens, "dark"));
+      const inner = block(prefersSel, generateHairlineDecls(input.tokens, "dark"));
       semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
     }
     semanticLines.push("");
@@ -575,7 +578,7 @@ export function docsAdapter(
     {
       light: lightSel,
       dark: darkSel,
-      prefers: `${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`,
+      prefers: prefersSel,
     },
     colorScheme,
   );
@@ -588,7 +591,7 @@ export function docsAdapter(
     {
       light: lightSel,
       dark: darkSel,
-      prefers: `${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`,
+      prefers: prefersSel,
     },
     colorScheme,
   );
@@ -632,7 +635,7 @@ export function docsAdapter(
       semanticLines.push(block(darkSel, darkAliasDecls));
       semanticLines.push("");
       semanticLines.push(sectionComment("visor-core alias re-substitution (dark) — prefers-color-scheme (VI-696)"));
-      const inner = block(`${scopeClass}:not(.light):not(.theme-light):not([data-theme="light"])`, darkAliasDecls);
+      const inner = block(prefersSel, darkAliasDecls);
       semanticLines.push(`@media (prefers-color-scheme: dark) {\n${inner.split("\n").map((l) => `  ${l}`).join("\n")}\n}`);
       semanticLines.push("");
     }

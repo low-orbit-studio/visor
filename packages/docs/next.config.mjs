@@ -1,6 +1,7 @@
 import { createMDX } from 'fumadocs-mdx/next';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { componentRedirects } from './lib/component-redirects.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -30,6 +31,7 @@ const config = {
         destination: '/docs/themes/token-rules',
         permanent: true,
       },
+      ...componentRedirects(path.join(__dirname, 'content/docs/components')),
     ];
   },
 };

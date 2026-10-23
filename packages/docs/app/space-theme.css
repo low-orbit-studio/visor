@@ -76,7 +76,7 @@ html:not(.dark) .space-theme {
 
 /* --- Intent aliases (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .space-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
+  html:not(.light) .space-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --primary: #5b6fff;
     --primary-text: var(--interactive-primary-text);
     --accent: #5b6fff;
@@ -90,7 +90,7 @@ html:not(.dark) .space-theme {
 
 /* --- Hairline aliases (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .space-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
+  html:not(.light) .space-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --hairline: rgba(255, 255, 255, 0.06);
     --hairline-strong: rgba(255, 255, 255, 0.10);
   }
@@ -169,7 +169,7 @@ html:not(.dark) .space-theme {
 
 /* --- visor-core alias re-substitution (dark) — prefers-color-scheme (VI-696) --- */
 @media (prefers-color-scheme: dark) {
-  .space-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
+  html:not(.light) .space-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --border-input: var(--color-neutral-700);
     --skeleton-from: var(--color-neutral-800);
     --skeleton-to: var(--color-neutral-700);
@@ -230,7 +230,7 @@ html:not(.dark) .space-theme {
 
 /* --- Brand: variants (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .space-theme:not(.light) {
+  html:not(.light) .space-theme:not(.light) {
     --brand-logo: url("/themes/visor/brand/visor-logo-dark.svg");
     --brand-brandmark: url("/themes/visor/brand/visor-brandmark.svg");
     --brand-wordmark: url("/themes/visor/brand/visor-wordmark-dark.svg");
@@ -529,7 +529,7 @@ html:not(.dark) .space-theme {
 
 /* --- Adaptive: Text (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .space-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
+  html:not(.light) .space-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --text-primary: #e8e8f0;
     --text-secondary: rgba(232, 232, 240, 0.72);
     --text-tertiary: rgba(232, 232, 240, 0.5);
@@ -549,7 +549,7 @@ html:not(.dark) .space-theme {
 
 /* --- Adaptive: Surface (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .space-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
+  html:not(.light) .space-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --surface-page: #080810;
     --surface-card: #0e0e18;
     --surface-popover: #0e0e18;
@@ -588,7 +588,7 @@ html:not(.dark) .space-theme {
 
 /* --- Adaptive: Border (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .space-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
+  html:not(.light) .space-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --border-default: #3f3f4b;
     --border-muted: #2b2b36;
     --border-strong: #51515d;
@@ -604,7 +604,7 @@ html:not(.dark) .space-theme {
 
 /* --- Adaptive: Interactive (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .space-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
+  html:not(.light) .space-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --interactive-primary-bg: #5063f5;
     --interactive-primary-bg-hover: #4556e6;
     --interactive-primary-bg-active: #3646c4;
