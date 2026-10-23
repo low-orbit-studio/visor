@@ -23,7 +23,7 @@ const ALL_RESULTS: SearchResult[] = [
   {
     id: '1',
     title: 'Getting Started with Visor',
-    url: '/docs/getting-started',
+    url: '/docs/guides/getting-started',
     snippet:
       'Learn how to install and configure Visor in your Next.js project in under five minutes.',
   },
@@ -37,14 +37,14 @@ const ALL_RESULTS: SearchResult[] = [
   {
     id: '3',
     title: 'Theme Architecture',
-    url: '/docs/tokens/themes',
+    url: '/docs/themes/theming',
     snippet:
       "Visor's three-tier token architecture separates primitives, semantic tokens, and adaptive theme values.",
   },
   {
     id: '4',
     title: 'Design Token Rules',
-    url: '/docs/tokens/rules',
+    url: '/docs/themes/token-rules',
     snippet:
       'Token rules enforce consistent spacing, shadow, motion, and color usage across all components.',
   },

@@ -205,7 +205,7 @@ An action that resolves in 150ms shows nothing at all. An action that resolves i
 - The **accessible name does not change**. `pendingLabel` is decorative (`aria-hidden`), so the control is not renamed mid-action.
 - `pending` does **not** set the native `disabled` attribute — like `gated`, it uses `aria-disabled` so the button stays focusable. It is the user's focus anchor while they wait.
 - Button deliberately does not invent a `role="status"` region. Pair it with your own when the message needs to be spoken.
-- The glyph is the [Spinner](/docs/components/general/spinner) primitive, which pauses under `prefers-reduced-motion`.
+- The glyph is the [Spinner](/docs/components/data-display/spinner) primitive, which pauses under `prefers-reduced-motion`.
 
 ```tsx
 const [saving, setSaving] = React.useState(false);

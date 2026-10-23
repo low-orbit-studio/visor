@@ -74,7 +74,7 @@ html:not(.dark) .borderless-theme {
 
 /* --- Intent aliases (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .borderless-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
+  html:not(.light) .borderless-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --primary: #6beba5;
     --primary-text: var(--interactive-primary-text);
     --accent: #6beba5;
@@ -88,7 +88,7 @@ html:not(.dark) .borderless-theme {
 
 /* --- Hairline aliases (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .borderless-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
+  html:not(.light) .borderless-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --hairline: rgba(255, 255, 255, 0.06);
     --hairline-strong: rgba(255, 255, 255, 0.10);
   }
@@ -167,7 +167,7 @@ html:not(.dark) .borderless-theme {
 
 /* --- visor-core alias re-substitution (dark) — prefers-color-scheme (VI-696) --- */
 @media (prefers-color-scheme: dark) {
-  .borderless-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
+  html:not(.light) .borderless-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --border-input: var(--color-neutral-700);
     --skeleton-from: var(--color-neutral-800);
     --skeleton-to: var(--color-neutral-700);
@@ -228,7 +228,7 @@ html:not(.dark) .borderless-theme {
 
 /* --- Brand: variants (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .borderless-theme:not(.light) {
+  html:not(.light) .borderless-theme:not(.light) {
     --brand-logo: url("/themes/visor/brand/visor-logo-dark.svg");
     --brand-brandmark: url("/themes/visor/brand/visor-brandmark.svg");
     --brand-wordmark: url("/themes/visor/brand/visor-wordmark-dark.svg");
@@ -527,7 +527,7 @@ html:not(.dark) .borderless-theme {
 
 /* --- Adaptive: Text (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .borderless-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
+  html:not(.light) .borderless-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --text-primary: #f5f5f5;
     --text-secondary: #c2c2c2;
     --text-tertiary: #999999;
@@ -547,7 +547,7 @@ html:not(.dark) .borderless-theme {
 
 /* --- Adaptive: Surface (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .borderless-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
+  html:not(.light) .borderless-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --surface-page: #0a0a0c;
     --surface-card: #111115;
     --surface-popover: #111115;
@@ -586,7 +586,7 @@ html:not(.dark) .borderless-theme {
 
 /* --- Adaptive: Border (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .borderless-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
+  html:not(.light) .borderless-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --border-default: transparent;
     --border-muted: transparent;
     --border-strong: transparent;
@@ -602,7 +602,7 @@ html:not(.dark) .borderless-theme {
 
 /* --- Adaptive: Interactive (dark) — prefers-color-scheme --- */
 @media (prefers-color-scheme: dark) {
-  .borderless-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
+  html:not(.light) .borderless-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --interactive-primary-bg: #6beba5;
     --interactive-primary-bg-hover: #83f2b2;
     --interactive-primary-bg-active: #a6f9c7;
