@@ -91,7 +91,7 @@ describe("resolveThemeBrand — CSS emission", () => {
   it("emits a prefers-color-scheme dark fallback", () => {
     const result = resolveThemeBrand(brand, { scope: ".blacklight-theme" });
     expect(result.css).toContain("@media (prefers-color-scheme: dark)");
-    expect(result.css).toContain(".blacklight-theme:not(.light) {");
+    expect(result.css).toContain("html:not(.light) .blacklight-theme:not(.light) {");
   });
 
   it("falls back to :root selectors when no scope is supplied", () => {

@@ -79,7 +79,8 @@ function generateBrandCSS(
   const baseSelector = scope ? scope : ":root";
   const lightSelector = scope ? `html:not(.dark) ${scope}` : ":root";
   const darkSelector = scope ? `.dark ${scope}` : ".dark";
-  const pcsSelector = scope ? `${scope}:not(.light)` : ":root:not(.light)";
+  // VI-721: scoped (docs) consumers put `.light` on <html>, so guard on the ancestor too.
+  const pcsSelector = scope ? `html:not(.light) ${scope}:not(.light)` : ":root:not(.light)";
 
   const lines: string[] = [];
 
