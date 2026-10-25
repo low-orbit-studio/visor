@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit",
     "test:vr": "playwright test",
     "test:vr:ui": "playwright test --ui",
-    "test:vr:update": "playwright test --update-snapshots"
+    "test:vr:update": "playwright test --update-snapshots",
+    "test:prod": "playwright test -c playwright.prod.config.ts"
   },
   "keywords": [
     "design-system",
