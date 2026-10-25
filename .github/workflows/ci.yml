@@ -33,6 +33,8 @@ jobs:
             docs:
               - 'packages/docs/**'
               - 'components/**'
+              - 'packages/theme-engine/**'
+              - 'packages/tokens/**'
             flutter:
               - 'components/flutter/**'
               - 'packages/visor-flutter/**'
@@ -229,6 +231,18 @@ jobs:
 
       - name: Build docs site
         run: npm run docs:build
+
+      # VI-722: color-mode resolution + routing on the production build. Reuses the build above.
+      - name: Install Playwright browsers (chromium only)
+        run: npx playwright install --with-deps chromium
+
+      - name: Color mode and routing (production build)
+        run: npm run test:prod -w packages/docs
+
+      # Content-only PRs skip the `code` filter, so the unit tests that read
+      # packages/docs/content must run here (VI-721 internal-links guard).
+      - name: Docs internal links test
+        run: npx vitest run packages/docs/lib/__tests__/internal-links.test.ts
 
   flutter-test:
     name: Flutter analyze + test (CI goldens)
