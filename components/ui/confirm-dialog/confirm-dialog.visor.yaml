@@ -25,7 +25,7 @@ why: >
 variants:
   severity: [info, warning, destructive]
   severity_deprecated: [danger]  # "danger" is a deprecated alias for "destructive" — use "destructive" instead
-  iconTreatment: [inline, plated]  # unset = canonical default tinted plate stacked above the title
+  iconTreatment: [inline, plated, none]  # unset = canonical default tinted plate stacked above the title
   mode: [dialog, inline]  # "dialog" = Radix portal + overlay; "inline" = non-portal surface for stacking in a shared scrim
 
 props:
@@ -54,12 +54,13 @@ props:
       severity. Sizing/color is handled by the icon container, so pass a bare
       Phosphor icon (no explicit size).
   - name: iconTreatment
-    type: "'inline' | 'plated'"
+    type: "'inline' | 'plated' | 'none'"
     description: >
       Severity-icon treatment. Leave unset for the canonical default — a tinted
       circular plate stacked above the title. Set "plated" for a 40px color-mix
       severity plate leading the title column, or "inline" for a small leading
-      icon next to the title. Default rendering (unset) is unchanged.
+      icon next to the title, or "none" for no icon and no icon container.
+      Default rendering (unset) is unchanged.
   - name: mode
     type: "'dialog' | 'inline'"
     default: "dialog"
@@ -67,6 +68,18 @@ props:
       Rendering mode. "dialog" uses Radix Dialog + Portal + Overlay + auto
       X-close. "inline" renders only the content surface (no portal, no overlay,
       no X-close) so multiple dialogs can stack inside one shared scrim.
+  - name: container
+    type: "HTMLElement | null"
+    description: >
+      Element the dialog portals into instead of document.body, passed straight
+      to Dialog's container. Use it to render inside the host app's theme root.
+      Dialog mode only.
+  - name: showCloseButton
+    type: boolean
+    default: "true"
+    description: >
+      Render the X close button. Escape and the focus trap are kept when it is
+      hidden. Dialog mode only.
   - name: cancelVariant
     type: ButtonProps["variant"]
     default: "outline"

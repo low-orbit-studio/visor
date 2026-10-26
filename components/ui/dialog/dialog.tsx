@@ -221,12 +221,17 @@ export interface DialogContentProps
   extends React.ComponentProps<typeof DialogPrimitive.Content> {
   /** Show a drag handle (sheet presentation only). Dragging down dismisses. */
   showHandle?: boolean
+  /**
+   * Render the X close button. Default `true`. Hide it only when the content
+   * carries its own dismiss action; Escape still closes. Drag-to-dismiss needs it.
+   */
+  showCloseButton?: boolean
 }
 
 const DialogContent = React.forwardRef<
   React.ComponentRef<typeof DialogPrimitive.Content>,
   DialogContentProps
->(({ className, children, showHandle = false, onInteractOutside, onFocus, ...props }, ref) => {
+>(({ className, children, showHandle = false, showCloseButton = true, onInteractOutside, onFocus, ...props }, ref) => {
   const { presentation, container } = React.useContext(DialogContext)
   const scoped = Boolean(container)
   const isSheet = presentation === "sheet"
@@ -312,10 +317,12 @@ const DialogContent = React.forwardRef<
           />
         )}
         {children}
-        <DialogPrimitive.Close ref={closeRef} className={styles.closeButton}>
-          <XIcon className={styles.closeIcon} />
-          <span className={styles.srOnly}>Close</span>
-        </DialogPrimitive.Close>
+        {showCloseButton && (
+          <DialogPrimitive.Close ref={closeRef} className={styles.closeButton}>
+            <XIcon className={styles.closeIcon} />
+            <span className={styles.srOnly}>Close</span>
+          </DialogPrimitive.Close>
+        )}
       </DialogPrimitive.Content>
     </DialogPortal>
   )

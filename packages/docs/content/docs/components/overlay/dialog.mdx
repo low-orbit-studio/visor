@@ -63,7 +63,7 @@ A confirmation dialog with explicit close actions.
 
 ## Bottom sheet on a phone
 
-`presentation` picks how the same content is presented: `dialog` (a centred modal, the default), `sheet` (a bottom sheet), or `responsive` (a dialog from `breakpoint` up, a sheet below it; default 640px). The content, focus trap and Escape handling do not change. The sheet is sized with `dvh` and the visual viewport so the on-screen keyboard never covers it, scrolls a focused field into view, and appears without the slide under `prefers-reduced-motion`. The close button is always present; `showHandle` adds a drag handle that dismisses on a downward drag, never as the only way out.
+`presentation` picks how the same content is presented: `dialog` (a centred modal, the default), `sheet` (a bottom sheet), or `responsive` (a dialog from `breakpoint` up, a sheet below it; default 640px). The content, focus trap and Escape handling do not change. The sheet is sized with `dvh` and the visual viewport so the on-screen keyboard never covers it, scrolls a focused field into view, and appears without the slide under `prefers-reduced-motion`. The close button is present unless `showCloseButton={false}`, for content that carries its own dismiss action; `showHandle` adds a drag handle that dismisses on a downward drag, never as the only way out.
 
 ```tsx
 <Dialog presentation="responsive" breakpoint={640}>

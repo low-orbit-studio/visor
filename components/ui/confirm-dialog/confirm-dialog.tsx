@@ -43,8 +43,9 @@ function normalizeSeverity(s: ConfirmDialogSeverity): NormalizedSeverity {
  * Set explicitly to opt into the blessed editorial treatments:
  * - `"plated"` — a 40px circular plate with a `color-mix` severity wash,
  *   leading the title column (golden organization-management Feedback screen).
- * - `"inline"` — a small leading icon next to the title (no plate). */
-export type ConfirmDialogIconTreatment = "inline" | "plated"
+ * - `"inline"` — a small leading icon next to the title (no plate).
+ * - `"none"` — no icon and no icon container. */
+export type ConfirmDialogIconTreatment = "inline" | "plated" | "none"
 
 /** Rendering mode. `dialog` (default) wraps content in Radix
  * Dialog/Portal/Overlay with an auto X-close. `inline` renders just the
@@ -80,8 +81,8 @@ export interface ConfirmDialogProps {
 
   /** Severity-icon treatment. Leave unset for the canonical default (a tinted
    * circular plate stacked above the title). Set "plated" for the blessed
-   * color-mix plate, or "inline" for a small leading icon next to the title.
-   * Default rendering (unset) is unchanged. */
+   * color-mix plate, "inline" for a small leading icon next to the title, or
+   * "none" for no icon at all. Default rendering (unset) is unchanged. */
   iconTreatment?: ConfirmDialogIconTreatment
 
   /** Rendering mode. "dialog" (default) uses Radix Dialog + Portal + Overlay +
@@ -89,6 +90,15 @@ export interface ConfirmDialogProps {
    * overlay, no X-close) so multiple dialogs can stack in one shared scrim.
    * Opt-in — default rendering is unchanged. */
   mode?: ConfirmDialogMode
+
+  /** Element the dialog portals into instead of `<body>` — passed straight to
+   * Dialog's `container`. Use it to render inside the host app's theme root.
+   * Dialog mode only. */
+  container?: HTMLElement | null
+
+  /** Render the X close button. Default `true`. Escape and the focus trap are
+   * kept either way. Dialog mode only (inline mode never has one). */
+  showCloseButton?: boolean
 
   /** Confirm button label. Defaults: "Delete" for danger, "Confirm" otherwise. */
   confirmLabel?: React.ReactNode
@@ -192,6 +202,8 @@ const ConfirmDialog = React.forwardRef<
       icon,
       iconTreatment,
       mode = "dialog",
+      container,
+      showCloseButton = true,
       confirmLabel,
       cancelLabel = "Cancel",
       cancelVariant = "outline",
@@ -289,6 +301,7 @@ const ConfirmDialog = React.forwardRef<
     // - "plated"        → blessed plated: 40px color-mix plate leading the
     //                     title column (data-slot="confirm-dialog-icon").
     // - "inline"        → blessed inline: small leading icon (no plate).
+    // - "none"          → no icon element; title row holds the title alone.
     const isCanonicalPlate = iconTreatment === undefined
     const isBlessedPlated = iconTreatment === "plated"
 
@@ -336,7 +349,11 @@ const ConfirmDialog = React.forwardRef<
         ? styles.titleRowPlated
         : styles.titleRow
 
-    const iconElement = isCanonicalPlate ? canonicalPlate : blessedIconSpan
+    const iconElement = isCanonicalPlate
+      ? canonicalPlate
+      : iconTreatment === "none"
+        ? null
+        : blessedIconSpan
 
     // Dialog-mode header — uses Radix Title/Description (a11y + aria-labelledby).
     // Canonical plate stacks plate + title + description inside one .headerStack;
@@ -470,6 +487,7 @@ const ConfirmDialog = React.forwardRef<
         open={actualOpen}
         defaultOpen={defaultOpen}
         onOpenChange={handleOpenChange}
+        container={container}
       >
         {trigger ? <DialogTrigger asChild>{trigger}</DialogTrigger> : null}
         <DialogContent
@@ -478,6 +496,7 @@ const ConfirmDialog = React.forwardRef<
           data-severity={normalizedSeverity}
           className={cn(styles.root, className)}
           onOpenAutoFocus={handleOpenAutoFocus}
+          showCloseButton={showCloseButton}
         >
           {innerContent}
         </DialogContent>
