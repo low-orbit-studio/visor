@@ -98,6 +98,26 @@ export default function Example() {
 }
 ```
 
+### Inside a host app's theme root
+
+By default the dialog portals to `<body>`, outside any themed subtree. Pass `container` to render it inside the host app's theme root instead. `iconTreatment="none"` drops the severity icon, and `showCloseButton={false}` hides the X; Escape and the focus trap still work, and Cancel stays as the way out.
+
+```tsx
+const [root, setRoot] = React.useState<HTMLElement | null>(null);
+
+<div ref={setRoot} className="app-theme-root">
+  <ConfirmDialog
+    open={open}
+    onOpenChange={setOpen}
+    container={root}
+    iconTreatment="none"
+    showCloseButton={false}
+    title="Change password?"
+    onConfirm={savePassword}
+  />
+</div>
+```
+
 ## API Reference
 
 ### ConfirmDialogProps

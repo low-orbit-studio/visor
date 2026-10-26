@@ -74,6 +74,10 @@ props:
     type: boolean
     default: false
     description: Show a drag handle on the sheet presentation; dragging down dismisses (DialogContent)
+  - name: showCloseButton
+    type: boolean
+    default: "true"
+    description: Render the X close button (DialogContent). Hide it only when the content has its own dismiss action; Escape still closes. Drag-to-dismiss needs it.
   - name: back
     type: React.ReactNode
     default: "undefined"
