@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.40.0
+
+### Minor Changes
+
+- 8883a78: ConfirmDialog: `container` (passed straight to Dialog, so the dialog renders inside the host app's theme root), `iconTreatment="none"` (no icon or icon container), and `showCloseButton` (default `true`; Escape and the focus trap are kept). DialogContent gains `showCloseButton`. Defaults render exactly as before.
+
+### Patch Changes
+
+- Updated dependencies [e1f17fb]
+  - @loworbitstudio/visor-theme-engine@0.31.1
+
 ## 1.39.0
 
 ### Minor Changes
