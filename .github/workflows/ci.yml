@@ -134,7 +134,8 @@ jobs:
     name: Visual regression (per-theme)
     needs: changes
     if: needs.changes.outputs.docs == 'true'
-    runs-on: ubuntu-latest
+    # shortcut: Playwright 1.59 has no chromium for ubuntu-26.04 (now ubuntu-latest); unpin after a Playwright upgrade that supports it.
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -211,7 +212,8 @@ jobs:
     name: Verify docs build
     needs: changes
     if: needs.changes.outputs.docs == 'true'
-    runs-on: ubuntu-latest
+    # shortcut: Playwright 1.59 has no chromium for ubuntu-26.04 (now ubuntu-latest); unpin after a Playwright upgrade that supports it.
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
