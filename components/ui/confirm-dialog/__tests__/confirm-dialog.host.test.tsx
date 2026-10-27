@@ -60,6 +60,35 @@ describe("ConfirmDialog — host-app embedding", () => {
     expect(onOpenChange).toHaveBeenCalledWith(false)
   })
 
+  it.each([
+    ["Cancel", async (user: ReturnType<typeof userEvent.setup>) =>
+      user.click(screen.getByRole("button", { name: "Cancel" }))],
+    ["Escape", async (user: ReturnType<typeof userEvent.setup>) =>
+      user.keyboard("{Escape}")],
+  ])("onCloseAutoFocus returns focus to the consumer's target on %s", async (_, close) => {
+    const user = userEvent.setup()
+    function Host() {
+      const inputRef = React.useRef<HTMLInputElement>(null)
+      return (
+        <>
+          <input aria-label="Password" ref={inputRef} />
+          <ConfirmDialog
+            defaultOpen
+            title="Change password?"
+            onCloseAutoFocus={(e) => {
+              e.preventDefault()
+              inputRef.current?.focus()
+            }}
+          />
+        </>
+      )
+    }
+    render(<Host />)
+    await close(user)
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull())
+    expect(document.activeElement).toBe(screen.getByRole("textbox", { name: "Password" }))
+  })
+
   it("shows the close button by default", () => {
     render(<ConfirmDialog open title="Delete?" />)
     expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument()

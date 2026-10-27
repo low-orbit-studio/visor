@@ -100,6 +100,11 @@ export interface ConfirmDialogProps {
    * kept either way. Dialog mode only (inline mode never has one). */
   showCloseButton?: boolean
 
+  /** Called when focus moves out of the dialog on close — passed straight to
+   * DialogContent. Call `event.preventDefault()` and focus your own target to
+   * choose where focus lands. Dialog mode only. */
+  onCloseAutoFocus?: (event: Event) => void
+
   /** Confirm button label. Defaults: "Delete" for danger, "Confirm" otherwise. */
   confirmLabel?: React.ReactNode
   /** Cancel button label. Default "Cancel". */
@@ -204,6 +209,7 @@ const ConfirmDialog = React.forwardRef<
       mode = "dialog",
       container,
       showCloseButton = true,
+      onCloseAutoFocus,
       confirmLabel,
       cancelLabel = "Cancel",
       cancelVariant = "outline",
@@ -496,6 +502,7 @@ const ConfirmDialog = React.forwardRef<
           data-severity={normalizedSeverity}
           className={cn(styles.root, className)}
           onOpenAutoFocus={handleOpenAutoFocus}
+          onCloseAutoFocus={onCloseAutoFocus}
           showCloseButton={showCloseButton}
         >
           {innerContent}
