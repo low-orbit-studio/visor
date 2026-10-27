@@ -80,6 +80,12 @@ props:
     description: >
       Render the X close button. Escape and the focus trap are kept when it is
       hidden. Dialog mode only.
+  - name: onCloseAutoFocus
+    type: "(event: Event) => void"
+    description: >
+      Called when focus leaves the dialog on close, passed straight to
+      DialogContent. Call event.preventDefault() and focus your own target to
+      choose where focus lands. Dialog mode only.
   - name: cancelVariant
     type: ButtonProps["variant"]
     default: "outline"

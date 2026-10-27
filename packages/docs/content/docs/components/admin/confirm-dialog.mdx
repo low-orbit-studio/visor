@@ -118,6 +118,23 @@ const [root, setRoot] = React.useState<HTMLElement | null>(null);
 </div>
 ```
 
+### Returning focus on close
+
+On close, focus goes back to whatever had it when the dialog opened. When the dialog opens from a field's blur, that is `<body>`. Pass `onCloseAutoFocus`, prevent the default, and focus your own target.
+
+```tsx
+<ConfirmDialog
+  open={open}
+  onOpenChange={setOpen}
+  onCloseAutoFocus={(event) => {
+    event.preventDefault();
+    inputRef.current?.focus();
+  }}
+  title="Change password?"
+  onConfirm={savePassword}
+/>
+```
+
 ## API Reference
 
 ### ConfirmDialogProps
