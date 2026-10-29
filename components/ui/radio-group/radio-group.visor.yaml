@@ -29,6 +29,10 @@ props:
     type: "'default' | 'card'"
     default: "default"
     description: "default draws a dot beside a label; card draws each item as a card with icon, title and description."
+  - name: indicator
+    type: "'check' | 'dot'"
+    default: "check"
+    description: "Card variant only. check draws a check in a filled disc on the chosen card; dot draws a ring on every card and a dot inside the chosen one. Colours: --radio-card-ring, --radio-card-ring-selected, --radio-card-dot."
   - name: value
     type: string
     description: Controlled selected value

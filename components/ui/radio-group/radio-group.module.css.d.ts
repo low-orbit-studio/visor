@@ -12,6 +12,8 @@ declare const styles: {
   readonly cardMark: string
   readonly cardIndicator: string
   readonly cardCheck: string
+  readonly cardMarkDot: string
+  readonly cardIndicatorDot: string
 }
 
 export default styles

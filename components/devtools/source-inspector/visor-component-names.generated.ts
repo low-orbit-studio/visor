@@ -74,6 +74,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "CardFooter",
   "CardGrid",
   "CardHeader",
+  "CardIndicatorContext",
   "CardLift",
   "CardTitle",
   "Carousel",

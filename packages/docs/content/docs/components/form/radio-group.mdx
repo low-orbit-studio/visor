@@ -73,6 +73,8 @@ import { Label } from '@/components/ui/label';
 
 The resting edge reads the shared `--control-edge-*` tokens, so `--control-edge-width: 0` turns it off; focus and invalid keep drawing at `--control-state-edge-width`. Per-component overrides: `--radio-card-bg`, `--radio-card-selected-bg`, `--radio-card-selected-border`, `--radio-card-border`, `--radio-card-radius`, `--radio-card-icon-size`.
 
+Set `indicator="dot"` on the group to draw a radio ring on every card and a dot inside the chosen one, instead of the default check in a filled disc (`indicator="check"`). The ring and dot read `--radio-card-ring` (unselected ring), `--radio-card-ring-selected` and `--radio-card-dot`.
+
 ## Installation
 
 ```bash
