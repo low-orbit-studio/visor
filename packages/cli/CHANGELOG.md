@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.42.0
+
+### Minor Changes
+
+- 898bcec: RadioGroup card variant gains `indicator="dot"`: a ring on every card and a dot inside the chosen one, coloured by `--radio-card-ring`, `--radio-card-ring-selected` and `--radio-card-dot`. `check` stays the default.
+- 898bcec: RadioGroup card theme keys (VI-720): a `radio-card` component-token family (`ring`, `ring-selected`, `dot`) sets `--radio-card-ring`, `--radio-card-ring-selected` and `--radio-card-dot` from a theme yaml's `components:` block. Unbound, the dot indicator reads what it did before.
+
+### Patch Changes
+
+- Updated dependencies [898bcec]
+  - @loworbitstudio/visor-theme-engine@0.32.0
+
 ## 1.41.0
 
 ### Minor Changes
