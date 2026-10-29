@@ -201,12 +201,15 @@
 /* indicator="dot": a ring on every card, a dot inside the chosen one. */
 .cardMarkDot {
   box-sizing: border-box;
-  border: var(--stroke-width-regular, 2px) solid
+  /* Inset outline, not border (VI-655); padding keeps the dot's room the border gave. */
+  padding: var(--stroke-width-regular, 2px);
+  outline: var(--stroke-width-regular, 2px) solid
     var(--radio-card-ring, color-mix(in srgb, var(--text-primary, #111827) 30%, transparent));
+  outline-offset: calc(-1 * var(--stroke-width-regular, 2px));
 }
 
 .card[data-state="checked"] .cardMarkDot {
-  border-color: var(--radio-card-ring-selected, var(--radio-card-dot, var(--interactive-primary-bg, var(--primary, #111827))));
+  outline-color: var(--radio-card-ring-selected, var(--radio-card-dot, var(--interactive-primary-bg, var(--primary, #111827))));
 }
 
 .cardIndicatorDot {

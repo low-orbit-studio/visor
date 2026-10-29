@@ -684,7 +684,7 @@
         },
         "radio-card": {
           "type": "object",
-          "description": "RadioGroup card with `indicator=\"dot\"` \u2014 the ring on every card and the ring and dot on the chosen one. Keys: ring, ring-selected, dot.",
+          "description": "RadioGroup card \u2014 its surface, edge, radius, icon and mark, plus the ring and dot of `indicator=\"dot\"`. Keys: bg, border, radius, hover-bg, selected-bg, selected-border, icon-size, mark-bg, mark-text, ring, ring-selected, dot.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

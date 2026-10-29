@@ -99,6 +99,33 @@ example_card: |
   </RadioGroup>
 
 theme_hooks:
+  - name: --radio-card-bg
+    description: >
+      Card surface. Theme key: components.radio-card.bg.
+  - name: --radio-card-border
+    description: >
+      Resting card edge colour. Theme key: components.radio-card.border.
+  - name: --radio-card-radius
+    description: >
+      Card corner radius. Theme key: components.radio-card.radius.
+  - name: --radio-card-hover-bg
+    description: >
+      Card surface on hover. Theme key: components.radio-card.hover-bg.
+  - name: --radio-card-selected-bg
+    description: >
+      Chosen card surface. Theme key: components.radio-card.selected-bg.
+  - name: --radio-card-selected-border
+    description: >
+      Chosen card edge colour. Theme key: components.radio-card.selected-border.
+  - name: --radio-card-icon-size
+    description: >
+      Leading icon box and font size. Theme key: components.radio-card.icon-size.
+  - name: --radio-card-mark-bg
+    description: >
+      Filled disc behind the check mark. Theme key: components.radio-card.mark-bg.
+  - name: --radio-card-mark-text
+    description: >
+      Check mark colour. Theme key: components.radio-card.mark-text.
   - name: --radio-card-ring
     description: >
       indicator="dot" ring on an unchosen card. Theme key: components.radio-card.ring.

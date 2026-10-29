@@ -1249,10 +1249,19 @@ const radioCardFamily: ComponentTokenFamily = {
   family: "radio-card",
   prefix: "radio-card",
   description:
-    "RadioGroup card with `indicator=\"dot\"` — the ring on every card and the ring and dot on the chosen one.",
+    "RadioGroup card — its surface, edge, radius, icon and mark, plus the ring and dot of `indicator=\"dot\"`.",
   tokens: [
-    { key: "ring", property: "border-color", description: "The ring on a card that is not chosen.", consumers: at(RADIO_GROUP, "color-mix(in srgb, var(--text-primary, #111827) 30%, transparent)") },
-    { key: "ring-selected", property: "border-color", description: "The ring on the chosen card. Unbound it follows the dot.", consumers: at(RADIO_GROUP, "var(--radio-card-dot, var(--interactive-primary-bg, var(--primary, #111827)))") },
+    { key: "bg", property: "background-color", description: "Card surface.", consumers: [{ file: RADIO_GROUP, fallback: "var(--surface-card, #ffffff)" }] },
+    { key: "border", property: "outline-color", description: "Resting card edge colour.", consumers: at(RADIO_GROUP, "var(--control-edge-color, var(--border-default, #e5e7eb))") },
+    { key: "radius", property: "border-radius", description: "Card corner radius.", consumers: at(RADIO_GROUP, "var(--radius-lg, 0.5rem)") },
+    { key: "hover-bg", property: "background-color", description: "Card surface on hover.", consumers: at(RADIO_GROUP, "var(--surface-interactive-hover, var(--surface-muted, #f3f4f6))") },
+    { key: "selected-bg", property: "background-color", description: "Chosen card surface.", consumers: at(RADIO_GROUP, "color-mix(in srgb, var(--text-primary, #111827) 10%, var(--radio-card-bg, var(--surface-card, #ffffff)))") },
+    { key: "selected-border", property: "outline-color", description: "Chosen card edge colour.", consumers: at(RADIO_GROUP, "color-mix(in srgb, var(--text-primary, #111827) 40%, transparent)") },
+    { key: "icon-size", property: "width", description: "Leading icon box and font size.", consumers: at(RADIO_GROUP, "1.5rem") },
+    { key: "mark-bg", property: "background-color", description: "Filled disc behind the check mark.", consumers: at(RADIO_GROUP, "var(--interactive-primary-bg, var(--primary, #111827))") },
+    { key: "mark-text", property: "color", description: "Check mark colour.", consumers: at(RADIO_GROUP, "var(--interactive-primary-text, #f9fafb)") },
+    { key: "ring", property: "outline-color", description: "The ring on a card that is not chosen.", consumers: at(RADIO_GROUP, "color-mix(in srgb, var(--text-primary, #111827) 30%, transparent)") },
+    { key: "ring-selected", property: "outline-color", description: "The ring on the chosen card. Unbound it follows the dot.", consumers: at(RADIO_GROUP, "var(--radio-card-dot, var(--interactive-primary-bg, var(--primary, #111827)))") },
     { key: "dot", property: "background-color", description: "The dot inside the chosen card.", consumers: at(RADIO_GROUP, "var(--interactive-primary-bg, var(--primary, #111827))") },
   ],
 };
