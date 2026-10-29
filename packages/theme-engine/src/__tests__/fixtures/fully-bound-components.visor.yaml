@@ -361,6 +361,10 @@ components:
     xs-padding-x: "11px"
     xs-track-radius: "8px"
     xs-item-radius: "6px"
+  radio-card:
+    ring: "#c7b8d6"
+    ring-selected: "#ffcc00"
+    dot: "#ff00aa"
   tooltip:
     bg: "#ff00aa"
     text: "#2b0a3d"

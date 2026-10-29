@@ -142,6 +142,7 @@ const INLINE_EDIT = "components/ui/inline-edit/inline-edit.module.css";
 const SAVE_STATUS = "components/ui/save-status/save-status.module.css";
 const SEGMENTED_CONTROL = "components/ui/segmented-control/segmented-control.module.css";
 const TOGGLE_GROUP = "components/ui/toggle-group/toggle-group.module.css";
+const RADIO_GROUP = "components/ui/radio-group/radio-group.module.css";
 const TOOLTIP = "components/ui/tooltip/tooltip.module.css";
 const ACTION_ROW = "components/ui/action-row/action-row.module.css";
 const DIALOG_FIELD = "blocks/dialog-field/dialog-field.module.css";
@@ -1243,6 +1244,19 @@ const toggleGroupFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-720: the RadioGroup card's `indicator="dot"` ring and dot colours.
+const radioCardFamily: ComponentTokenFamily = {
+  family: "radio-card",
+  prefix: "radio-card",
+  description:
+    "RadioGroup card with `indicator=\"dot\"` — the ring on every card and the ring and dot on the chosen one.",
+  tokens: [
+    { key: "ring", property: "border-color", description: "The ring on a card that is not chosen.", consumers: at(RADIO_GROUP, "color-mix(in srgb, var(--text-primary, #111827) 30%, transparent)") },
+    { key: "ring-selected", property: "border-color", description: "The ring on the chosen card. Unbound it follows the dot.", consumers: at(RADIO_GROUP, "var(--radio-card-dot, var(--interactive-primary-bg, var(--primary, #111827)))") },
+    { key: "dot", property: "background-color", description: "The dot inside the chosen card.", consumers: at(RADIO_GROUP, "var(--interactive-primary-bg, var(--primary, #111827))") },
+  ],
+};
+
 const adminUiFamily: ComponentTokenFamily = {
   family: "admin-ui",
   prefix: "admin-ui",
@@ -1293,6 +1307,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   saveStatusFamily,
   segmentedControlFamily,
   toggleGroupFamily,
+  radioCardFamily,
   tooltipFamily,
   actionRowFamily,
   inputAffixFamily,

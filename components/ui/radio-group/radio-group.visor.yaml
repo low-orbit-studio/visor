@@ -97,3 +97,16 @@ example_card: |
     />
     <p id="why-public">Public needs a verified booking.</p>
   </RadioGroup>
+
+theme_hooks:
+  - name: --radio-card-ring
+    description: >
+      indicator="dot" ring on an unchosen card. Theme key: components.radio-card.ring.
+  - name: --radio-card-ring-selected
+    description: >
+      indicator="dot" ring on the chosen card. Falls back to the dot colour.
+      Theme key: components.radio-card.ring-selected.
+  - name: --radio-card-dot
+    description: >
+      indicator="dot" dot colour. Falls back to var(--interactive-primary-bg, var(--primary, #111827)).
+      Theme key: components.radio-card.dot.
