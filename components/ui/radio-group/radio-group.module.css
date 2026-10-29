@@ -197,3 +197,23 @@
   width: 0.75rem;
   height: 0.75rem;
 }
+
+/* indicator="dot": a ring on every card, a dot inside the chosen one. */
+.cardMarkDot {
+  box-sizing: border-box;
+  /* Inset outline, not border (VI-655); padding keeps the dot's room the border gave. */
+  padding: var(--stroke-width-regular, 2px);
+  outline: var(--stroke-width-regular, 2px) solid
+    var(--radio-card-ring, color-mix(in srgb, var(--text-primary, #111827) 30%, transparent));
+  outline-offset: calc(-1 * var(--stroke-width-regular, 2px));
+}
+
+.card[data-state="checked"] .cardMarkDot {
+  outline-color: var(--radio-card-ring-selected, var(--radio-card-dot, var(--interactive-primary-bg, var(--primary, #111827))));
+}
+
+.cardIndicatorDot {
+  width: 50%;
+  height: 50%;
+  background-color: var(--radio-card-dot, var(--interactive-primary-bg, var(--primary, #111827)));
+}

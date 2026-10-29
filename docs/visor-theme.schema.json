@@ -682,6 +682,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "radio-card": {
+          "type": "object",
+          "description": "RadioGroup card \u2014 its surface, edge, radius, icon and mark, plus the ring and dot of `indicator=\"dot\"`. Keys: bg, border, radius, hover-bg, selected-bg, selected-border, icon-size, mark-bg, mark-text, ring, ring-selected, dot.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "tooltip": {
           "type": "object",
           "description": "Tooltip ground and ink, so a dark theme can keep the label legible without retuning the shared inverse pair other components read. Keys: bg, text.",

@@ -142,6 +142,7 @@ const INLINE_EDIT = "components/ui/inline-edit/inline-edit.module.css";
 const SAVE_STATUS = "components/ui/save-status/save-status.module.css";
 const SEGMENTED_CONTROL = "components/ui/segmented-control/segmented-control.module.css";
 const TOGGLE_GROUP = "components/ui/toggle-group/toggle-group.module.css";
+const RADIO_GROUP = "components/ui/radio-group/radio-group.module.css";
 const TOOLTIP = "components/ui/tooltip/tooltip.module.css";
 const ACTION_ROW = "components/ui/action-row/action-row.module.css";
 const DIALOG_FIELD = "blocks/dialog-field/dialog-field.module.css";
@@ -1243,6 +1244,28 @@ const toggleGroupFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-720: the RadioGroup card's `indicator="dot"` ring and dot colours.
+const radioCardFamily: ComponentTokenFamily = {
+  family: "radio-card",
+  prefix: "radio-card",
+  description:
+    "RadioGroup card — its surface, edge, radius, icon and mark, plus the ring and dot of `indicator=\"dot\"`.",
+  tokens: [
+    { key: "bg", property: "background-color", description: "Card surface.", consumers: [{ file: RADIO_GROUP, fallback: "var(--surface-card, #ffffff)" }] },
+    { key: "border", property: "outline-color", description: "Resting card edge colour.", consumers: at(RADIO_GROUP, "var(--control-edge-color, var(--border-default, #e5e7eb))") },
+    { key: "radius", property: "border-radius", description: "Card corner radius.", consumers: at(RADIO_GROUP, "var(--radius-lg, 0.5rem)") },
+    { key: "hover-bg", property: "background-color", description: "Card surface on hover.", consumers: at(RADIO_GROUP, "var(--surface-interactive-hover, var(--surface-muted, #f3f4f6))") },
+    { key: "selected-bg", property: "background-color", description: "Chosen card surface.", consumers: at(RADIO_GROUP, "color-mix(in srgb, var(--text-primary, #111827) 10%, var(--radio-card-bg, var(--surface-card, #ffffff)))") },
+    { key: "selected-border", property: "outline-color", description: "Chosen card edge colour.", consumers: at(RADIO_GROUP, "color-mix(in srgb, var(--text-primary, #111827) 40%, transparent)") },
+    { key: "icon-size", property: "width", description: "Leading icon box and font size.", consumers: at(RADIO_GROUP, "1.5rem") },
+    { key: "mark-bg", property: "background-color", description: "Filled disc behind the check mark.", consumers: at(RADIO_GROUP, "var(--interactive-primary-bg, var(--primary, #111827))") },
+    { key: "mark-text", property: "color", description: "Check mark colour.", consumers: at(RADIO_GROUP, "var(--interactive-primary-text, #f9fafb)") },
+    { key: "ring", property: "outline-color", description: "The ring on a card that is not chosen.", consumers: at(RADIO_GROUP, "color-mix(in srgb, var(--text-primary, #111827) 30%, transparent)") },
+    { key: "ring-selected", property: "outline-color", description: "The ring on the chosen card. Unbound it follows the dot.", consumers: at(RADIO_GROUP, "var(--radio-card-dot, var(--interactive-primary-bg, var(--primary, #111827)))") },
+    { key: "dot", property: "background-color", description: "The dot inside the chosen card.", consumers: at(RADIO_GROUP, "var(--interactive-primary-bg, var(--primary, #111827))") },
+  ],
+};
+
 const adminUiFamily: ComponentTokenFamily = {
   family: "admin-ui",
   prefix: "admin-ui",
@@ -1293,6 +1316,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   saveStatusFamily,
   segmentedControlFamily,
   toggleGroupFamily,
+  radioCardFamily,
   tooltipFamily,
   actionRowFamily,
   inputAffixFamily,

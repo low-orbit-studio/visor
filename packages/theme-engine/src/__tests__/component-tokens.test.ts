@@ -122,6 +122,25 @@ describe("VI-625 component-token emission", () => {
     });
   });
 
+  describe("VI-720 radio-card keys", () => {
+    it("emits ring, ring-selected and dot per mode as --radio-card-*", () => {
+      const components = {
+        "radio-card": { ring: "#111111", "ring-selected": { light: "#222222", dark: "#333333" }, dot: "#444444" },
+      };
+      const config = { name: "x", version: 1, colors: { primary: "#6b46ff" }, components };
+      expect(validateConfig(config).errors).toEqual([]);
+      const css = generateComponentTokensCss(resolveComponentBindings(components as never), {
+        light: ":root",
+        dark: ".dark",
+        prefers: ":root:not(.light)",
+      });
+      expect(css).toContain(
+        ":root {\n  --radio-card-dot: #444444;\n  --radio-card-ring: #111111;\n  --radio-card-ring-selected: #222222;\n}",
+      );
+      expect(css).toContain(".dark {\n  --radio-card-dot: #444444;\n  --radio-card-ring: #111111;\n  --radio-card-ring-selected: #333333;\n}");
+    });
+  });
+
   describe("generateComponentTokensCss", () => {
     const selectors = { light: ":root", dark: ".dark", prefers: ":root:not(.light)" };
 

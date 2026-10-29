@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs"
 import { render, screen, waitFor } from "@testing-library/react"
 import { userEvent } from "@testing-library/user-event"
 import { describe, it, expect, vi } from "vitest"
@@ -197,5 +198,32 @@ describe("RadioGroup variant=card", () => {
   it("has no accessibility violations with a different selection", async () => {
     const { container } = render(<CardGroup defaultValue="public" />)
     await checkA11y(container)
+  })
+})
+
+describe("RadioGroup card indicator", () => {
+  const marks = (c: HTMLElement) => c.querySelectorAll('[data-slot="radio-group-item"] > span[aria-hidden="true"]:last-child')
+
+  it("defaults to the check", () => {
+    const { container } = render(<CardGroup />)
+    expect(container.querySelector('[data-slot="radio-group"]')).toHaveAttribute("data-indicator", "check")
+    expect(container.querySelectorAll("svg[class*=cardCheck]")).toHaveLength(1)
+  })
+
+  it("dot draws a ring on every card and a dot only on the checked one", () => {
+    const { container } = render(<CardGroup indicator="dot" />)
+    expect(marks(container)).toHaveLength(4)
+    for (const m of marks(container)) expect(m.className).toMatch(/cardMarkDot/)
+    const indicators = container.querySelectorAll('[data-slot="radio-group-indicator"]')
+    expect(indicators).toHaveLength(1)
+    expect(indicators[0].className).toMatch(/cardIndicatorDot/)
+    expect(indicators[0].querySelector("svg")).toBeNull()
+  })
+
+  it("ring and dot colours resolve from theme keys", () => {
+    const css = readFileSync(`${process.cwd()}/components/ui/radio-group/radio-group.module.css`, "utf8")
+    for (const key of ["--radio-card-ring", "--radio-card-ring-selected", "--radio-card-dot"]) {
+      expect(css).toContain(`var(${key}`)
+    }
   })
 })

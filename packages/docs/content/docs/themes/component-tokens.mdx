@@ -836,6 +836,33 @@ components:
     xs-item-radius: 6px
 ```
 
+### `radio-card`
+
+RadioGroup card — its surface, edge, radius, icon and mark, plus the ring and dot of `indicator="dot"`.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--radio-card-bg` | Card surface. | `var(--surface-card, #ffffff)` |
+| `--radio-card-border` | Resting card edge colour. | `var(--control-edge-color, var(--border-default, #e5e7eb))` |
+| `--radio-card-radius` | Card corner radius. | `var(--radius-lg, 0.5rem)` |
+| `--radio-card-hover-bg` | Card surface on hover. | `var(--surface-interactive-hover, var(--surface-muted, #f3f4f6))` |
+| `--radio-card-selected-bg` | Chosen card surface. | `color-mix(in srgb, var(--text-primary, #111827) 10%, var(--radio-card-bg, var(--surface-card, #ffffff)))` |
+| `--radio-card-selected-border` | Chosen card edge colour. | `color-mix(in srgb, var(--text-primary, #111827) 40%, transparent)` |
+| `--radio-card-icon-size` | Leading icon box and font size. | `1.5rem` |
+| `--radio-card-mark-bg` | Filled disc behind the check mark. | `var(--interactive-primary-bg, var(--primary, #111827))` |
+| `--radio-card-mark-text` | Check mark colour. | `var(--interactive-primary-text, #f9fafb)` |
+| `--radio-card-ring` | The ring on a card that is not chosen. | `color-mix(in srgb, var(--text-primary, #111827) 30%, transparent)` |
+| `--radio-card-ring-selected` | The ring on the chosen card. Unbound it follows the dot. | `var(--radio-card-dot, var(--interactive-primary-bg, var(--primary, #111827)))` |
+| `--radio-card-dot` | The dot inside the chosen card. | `var(--interactive-primary-bg, var(--primary, #111827))` |
+
+```yaml
+components:
+  radio-card:
+    ring: "rgba(255, 255, 255, 0.3)"
+    ring-selected: { light: "#111827", dark: "#2ce0e6" }
+    dot: "#2ce0e6"
+```
+
 ### `tooltip`
 
 Tooltip ground and ink, so a dark theme can keep the label legible without retuning the shared inverse pair other components read.

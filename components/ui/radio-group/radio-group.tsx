@@ -8,6 +8,8 @@ import styles from "./radio-group.module.css"
 
 export type RadioGroupVariant = "default" | "card"
 
+export type RadioGroupIndicator = "check" | "dot"
+
 export interface RadioGroupProps
   extends React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root> {
   /**
@@ -15,23 +17,32 @@ export interface RadioGroupProps
    * an icon, a title and a one-line description.
    */
   variant?: RadioGroupVariant
+  /**
+   * Card variant: `check` (default) draws a check in a filled disc on the chosen
+   * card; `dot` draws a ring on every card and a dot inside the chosen one.
+   */
+  indicator?: RadioGroupIndicator
 }
 
 const RadioGroupVariantContext = React.createContext<RadioGroupVariant>("default")
+const CardIndicatorContext = React.createContext<RadioGroupIndicator>("check")
 
 const RadioGroup = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,
   RadioGroupProps
->(({ className, variant = "default", ...props }, ref) => {
+>(({ className, variant = "default", indicator = "check", ...props }, ref) => {
   return (
     <RadioGroupVariantContext.Provider value={variant}>
+      <CardIndicatorContext.Provider value={indicator}>
       <RadioGroupPrimitive.Root
         data-slot="radio-group"
         data-variant={variant}
+        data-indicator={variant === "card" ? indicator : undefined}
         className={cn(styles.root, variant === "card" && styles.rootCard, className)}
         ref={ref}
         {...props}
       />
+      </CardIndicatorContext.Provider>
     </RadioGroupVariantContext.Provider>
   )
 })
@@ -57,6 +68,7 @@ const RadioGroupItem = React.forwardRef<
   RadioGroupItemProps
 >(({ className, icon, title, description, children, ...props }, ref) => {
   const variant = React.useContext(RadioGroupVariantContext)
+  const indicator = React.useContext(CardIndicatorContext)
   const uid = React.useId()
   const titleId = `${uid}-title`
   const descriptionId = `${uid}-description`
@@ -100,12 +112,15 @@ const RadioGroupItem = React.forwardRef<
           ) : null}
           {children}
         </span>
-        <span className={styles.cardMark} aria-hidden="true">
+        <span
+          className={cn(styles.cardMark, indicator === "dot" && styles.cardMarkDot)}
+          aria-hidden="true"
+        >
           <RadioGroupPrimitive.Indicator
             data-slot="radio-group-indicator"
-            className={styles.cardIndicator}
+            className={cn(styles.cardIndicator, indicator === "dot" && styles.cardIndicatorDot)}
           >
-            <CheckIcon weight="bold" className={styles.cardCheck} />
+            {indicator === "dot" ? null : <CheckIcon weight="bold" className={styles.cardCheck} />}
           </RadioGroupPrimitive.Indicator>
         </span>
       </RadioGroupPrimitive.Item>
