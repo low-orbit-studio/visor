@@ -20,15 +20,14 @@ export function useSlideEngine({
 
   const goTo = useCallback(
     (index: number) => {
-      const sections = sectionsRef.current
-      if (!sections || index < 0 || index >= sections.length || isScrollingRef.current) return
+      const el = sectionsRef.current?.[index]
+      if (!el || isScrollingRef.current) return
 
       isScrollingRef.current = true
       currentIndexRef.current = index
       setCurrentIndex?.(index)
 
       const container = containerRef?.current
-      const el = sections[index]
 
       // Use native smooth scroll — the browser coordinates with scroll-snap
       // internally, avoiding the stutter caused by rAF + snap fighting.
