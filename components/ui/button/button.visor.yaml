@@ -20,13 +20,16 @@ why: >
   Using it instead of a styled <div> or <a> ensures accessibility compliance.
 
 variants:
-  variant: [default, secondary, outline, ghost, destructive]
+  variant: [default, hero, secondary, outline, ghost, destructive]
   size: [sm, md, lg, dlg, icon]
 
 props:
   - name: variant
-    type: "'default' | 'secondary' | 'outline' | 'ghost' | 'destructive'"
+    type: "'default' | 'hero' | 'secondary' | 'outline' | 'ghost' | 'destructive'"
     default: "default"
+    description: >
+      `hero` is the solid face for special moments. Unset it renders as `default`;
+      a theme sets its own fill and ink with `components.button.hero-bg` / `hero-text`.
   - name: size
     type: "'sm' | 'md' | 'lg' | 'dlg' | 'icon'"
     default: "md"

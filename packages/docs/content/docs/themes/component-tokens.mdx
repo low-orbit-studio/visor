@@ -411,6 +411,7 @@ unbound; a bound key wins.
 | `--input-md-height` | `md` height. Unbound, the height follows the padding and the line. Bind `md-padding` with it. | `var(--input-height-md, auto)` |
 | `--input-md-padding` | `md` padding. Also the padding of DialogField's medium well, so the well tracks the field. | `var(--input-padding-md, var(--spacing-3_5, 0.875rem) var(--spacing-4, 1rem))` |
 | `--input-md-radius` | `md` corner rounding. Also the rounding of DialogField's well. | `var(--input-radius-md, var(--radius-sm, 0.5rem))` |
+| `--input-bg-invalid` | Well of a refused field (`aria-invalid`). Input, Textarea, Select and TagInput all read it. Unbound, Input uses `--surface-error-subtle` and the others keep their resting well. | `var(--surface-error-subtle, color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--input-bg, #f9fafb))))` (the others: their resting well) |
 
 ### `textarea`
 
@@ -505,6 +506,10 @@ every resting edge at once, dashed edges included.
 | `--control-state-edge-width` | Focus and invalid edge weight. Independent of `edge-width`, so focus and invalid stay visible with edges off. | `1px` |
 | `--control-invalid-ring-width` | Width of the error-colour ring on a refused value. Unbound, Input draws a 1.5px inset ring and Textarea and Select draw it at `state-edge-width`. | `1.5px` (Textarea, Select: `var(--control-state-edge-width, 1px)`) |
 | `--control-invalid-halo-width` | Width of the soft error-colour halo outside the ring. Unbound, Input draws none and Textarea and Select draw it at `--focus-ring-width`. | `0px` (Textarea, Select: `var(--focus-ring-width, 2px)`) |
+| `--control-focus-halo-color` | Focus halo colour, apart from the ring (`border-focus`). | `color-mix(in srgb, var(--border-focus, #111827) 15%, transparent)` |
+| `--control-focus-halo-width` | Focus halo width, apart from `--focus-ring-width` (the focus ring's own width). Also the halo of a focused refused field. | `var(--focus-ring-width, 2px)` |
+| `--control-invalid-ring-color` | Colour of the ring on a refused value. | `var(--border-error, #ef4444)` |
+| `--control-invalid-halo-color` | Colour of the halo around a refused value's ring. | `color-mix(in srgb, var(--border-error, #ef4444) 15%, transparent)` (focused Input: 30%) |
 
 Turning every edge off is one line in the theme:
 
@@ -617,6 +622,17 @@ Button type treatment and rounding. The unprefixed keys set every size at once; 
 
 | Token | Binds | Falls back to |
 |---|---|---|
+| `--button-default-bg` | `default` variant fill, apart from `interactive-primary-bg` (which Switch's on track also reads). | `var(--interactive-primary-bg, var(--primary, #111827))` |
+| `--button-default-bg-hover` | `default` variant fill on hover. | `var(--interactive-primary-bg-hover, #1f2937)` |
+| `--button-default-text` | `default` variant ink, apart from `interactive-primary-text`. | `var(--interactive-primary-text, #f9fafb)` |
+| `--button-hero-bg` | `hero` variant fill, the solid face for special moments. Unbound, it is the `default` look. | `var(--interactive-primary-bg, var(--primary, #111827))` |
+| `--button-hero-bg-hover` | `hero` variant fill on hover. | `var(--interactive-primary-bg-hover, #1f2937)` |
+| `--button-hero-text` | `hero` variant ink. | `var(--interactive-primary-text, #f9fafb)` |
+| `--button-ghost-text` | `ghost` variant ink at rest. The `dlg` size rests in secondary ink. | `var(--text-primary, #111827)` (`dlg`: `var(--text-secondary, #6b7280)`) |
+| `--button-ghost-text-hover` | `ghost` variant ink on hover. | `var(--text-primary, #111827)` (`dlg`: `var(--text-secondary, #6b7280)`) |
+| `--button-md-height` | `md` height. Bind `auto` with `md-padding` to let the padding set the height. | `var(--label-box-height)` (2.5rem) |
+| `--button-md-padding` | `md` padding. | `0 var(--spacing-4, 1rem)` |
+| `--button-dlg-padding` | `dlg` padding. | `var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem)` |
 | `--button-text-transform` | Casing for every size. | `revert-layer` |
 | `--button-letter-spacing` | Tracking for every size. | `revert-layer` |
 | `--button-font-weight` | Weight for every size. | `var(--font-weight-medium, 500)` · `var(--font-weight-semibold, 600)` |

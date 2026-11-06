@@ -597,6 +597,10 @@ const checkboxFamily: ComponentTokenFamily = {
   ],
 };
 
+const FOCUS_HALO = "color-mix(in srgb, var(--border-focus, #111827) 15%, transparent)";
+const INVALID_HALO = "color-mix(in srgb, var(--border-error, #ef4444) 15%, transparent)";
+const INVALID_HALO_FOCUSED = "color-mix(in srgb, var(--border-error, #ef4444) 30%, transparent)";
+
 // VI-663 (filed from BL-1133). The control shapes Blacklight's editor draws
 // visibly unlike the shipped defaults. Input's md keys fall back to the
 // `--input-height-md` / `--input-padding-md` / `--input-radius-md` variables
@@ -634,6 +638,20 @@ const inputFamily: ComponentTokenFamily = {
       property: "border-radius",
       description: "`md` corner rounding. Also the rounding of DialogField's well.",
       consumers: each([INPUT, DIALOG_FIELD], "var(--input-radius-md, var(--radius-sm, 0.5rem))"),
+    },
+    // VI-699: the refused-value well, read by every text-entry control.
+    {
+      key: "bg-invalid",
+      property: "background-color",
+      description: "Well of a refused field (`aria-invalid`). Input, Textarea, Select and TagInput all read it. Unbound, Input uses `--surface-error-subtle` and the others keep their resting well.",
+      consumers: [
+        { file: INPUT, fallback: "var(--surface-error-subtle, color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--input-bg, #f9fafb))))" },
+        { file: INPUT, fallback: "var(--surface-error-subtle, color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--surface-card))))" },
+        { file: TEXTAREA, fallback: "var(--textarea-bg, var(--surface-interactive-default, #f9fafb))" },
+        { file: SELECT, fallback: "var(--field-control-bg, var(--select-bg, var(--surface-interactive-default, #f9fafb)))" },
+        { file: SELECT, fallback: "var(--field-control-bg, var(--surface-card))" },
+        { file: TAG_INPUT, fallback: "var(--tag-input-bg, var(--surface-interactive-default, #f9fafb))" },
+      ],
     },
   ],
 };
@@ -769,6 +787,31 @@ const controlFamily: ComponentTokenFamily = {
         ...each([TEXTAREA, SELECT], "var(--focus-ring-width, 2px)"),
       ],
     },
+    // VI-699: colours of the focus halo and the refused field's ring and halo.
+    {
+      key: "focus-halo-color",
+      property: "box-shadow",
+      description: "Focus halo colour, apart from the ring (`border-focus`). Unbound, 15% of `border-focus`.",
+      consumers: each([INPUT, TEXTAREA, SELECT, TAG_INPUT], FOCUS_HALO),
+    },
+    {
+      key: "focus-halo-width",
+      property: "box-shadow",
+      description: "Focus halo width, apart from `--focus-ring-width` (the focus ring's own width). Unbound, `--focus-ring-width`. Also the halo of a focused refused field.",
+      consumers: each([INPUT, TEXTAREA, SELECT, TAG_INPUT], "var(--focus-ring-width, 2px)"),
+    },
+    {
+      key: "invalid-ring-color",
+      property: "box-shadow (Input) / outline-color",
+      description: "Colour of the ring on a refused value. Unbound, `--border-error`.",
+      consumers: each([INPUT, TEXTAREA, SELECT], "var(--border-error, #ef4444)"),
+    },
+    {
+      key: "invalid-halo-color",
+      property: "box-shadow",
+      description: "Colour of the halo around a refused value's ring. Unbound, 15% of `--border-error` (30% on a focused Input).",
+      consumers: [...each([INPUT, TEXTAREA, SELECT], INVALID_HALO), ...at(INPUT, INVALID_HALO_FOCUSED)],
+    },
   ],
 };
 
@@ -826,6 +869,19 @@ const buttonFamily: ComponentTokenFamily = {
   description:
     "Button type treatment and rounding. The unprefixed keys set every size at once; a size key (`dlg-radius`) overrides one size.",
   tokens: [
+    // VI-699: fill and ink per variant, apart from the shared `interactive-*`
+    // roles (Switch's on track reads `interactive-primary-bg`).
+    { key: "default-bg", property: "background-color", description: "`default` variant fill, apart from `interactive-primary-bg`.", consumers: at(BUTTON, "var(--interactive-primary-bg, var(--primary, #111827))") },
+    { key: "default-bg-hover", property: "background-color", description: "`default` variant fill on hover.", consumers: at(BUTTON, "var(--interactive-primary-bg-hover, #1f2937)") },
+    { key: "default-text", property: "color", description: "`default` variant ink, apart from `interactive-primary-text`.", consumers: at(BUTTON, "var(--interactive-primary-text, #f9fafb)") },
+    { key: "hero-bg", property: "background-color", description: "`hero` variant fill, the solid face for special moments. Unbound, it is the `default` look.", consumers: at(BUTTON, "var(--interactive-primary-bg, var(--primary, #111827))") },
+    { key: "hero-bg-hover", property: "background-color", description: "`hero` variant fill on hover.", consumers: at(BUTTON, "var(--interactive-primary-bg-hover, #1f2937)") },
+    { key: "hero-text", property: "color", description: "`hero` variant ink.", consumers: at(BUTTON, "var(--interactive-primary-text, #f9fafb)") },
+    { key: "ghost-text", property: "color", description: "`ghost` variant ink at rest. The `dlg` size rests in secondary ink.", consumers: [...at(BUTTON, "var(--text-primary, #111827)"), ...at(BUTTON, "var(--text-secondary, #6b7280)")] },
+    { key: "ghost-text-hover", property: "color", description: "`ghost` variant ink on hover.", consumers: [...at(BUTTON, "var(--text-primary, #111827)"), ...at(BUTTON, "var(--text-secondary, #6b7280)")] },
+    { key: "md-height", property: "height", description: "`md` height. Bind `auto` with `md-padding` to let the padding set the height.", consumers: at(BUTTON, "var(--label-box-height)") },
+    { key: "md-padding", property: "padding", description: "`md` padding.", consumers: at(BUTTON, "0 var(--spacing-4, 1rem)") },
+    { key: "dlg-padding", property: "padding", description: "`dlg` padding.", consumers: at(BUTTON, "var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem)") },
     {
       key: "text-transform",
       property: "text-transform",

@@ -1,6 +1,7 @@
 declare const styles: {
   readonly base: string
   readonly variantDefault: string
+  readonly variantHero: string
   readonly variantSecondary: string
   readonly variantOutline: string
   readonly variantGhost: string

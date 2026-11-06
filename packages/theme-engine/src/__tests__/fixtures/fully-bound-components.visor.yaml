@@ -244,6 +244,7 @@ components:
     md-height: "37px"
     md-padding: "3px 7px"
     md-radius: "3px"
+    bg-invalid: "#1a0526"
   textarea:
     padding: "3px 7px"
     radius: "3px"
@@ -273,6 +274,10 @@ components:
     state-edge-width: "3px"
     invalid-ring-width: "3px"
     invalid-halo-width: "7px"
+    focus-halo-color: "#ff00aa"
+    focus-halo-width: "7px"
+    invalid-ring-color: "#ff0044"
+    invalid-halo-color: "#ff004433"
   hairline:
     width: "3px"
   field:
@@ -281,6 +286,17 @@ components:
     label-letter-spacing: "0.3em"
     label-color: "#ff00aa"
   button:
+    default-bg: "#2ce0e6"
+    default-bg-hover: "#2ce0e6"
+    default-text: "#02161a"
+    hero-bg: "#2ce0e6"
+    hero-bg-hover: "#2ce0e6"
+    hero-text: "#02161a"
+    ghost-text: "#c7b8d6"
+    ghost-text-hover: "#ffffff"
+    md-height: auto
+    md-padding: "12px 20px"
+    dlg-padding: "6px 11px"
     text-transform: uppercase
     letter-spacing: "0.3em"
     font-weight: "300"
