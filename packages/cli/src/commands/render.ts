@@ -374,6 +374,7 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       props: `{ gated: true, children: "Upgrade" }`,
     },
     // Type tokens (VI-656): one fixture per size, plus the dlg outline face.
+    hero: { export: "Button", interactiveTarget: "button", props: `{ variant: "hero", children: "Send invoice" }` },
     sm: { export: "Button", interactiveTarget: "button", props: `{ size: "sm", children: "Small" }` },
     lg: { export: "Button", interactiveTarget: "button", props: `{ size: "lg", children: "Large" }` },
     dlg: { export: "Button", interactiveTarget: "button", props: `{ size: "dlg", children: "Save" }` },
@@ -780,6 +781,11 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       export: "TagInput",
       interactiveTarget: "input",
       props: `{ defaultValue: ["design", "tokens"], placeholder: "Add a tag", entryAs: "slot" }`,
+    },
+    invalid: {
+      export: "TagInput",
+      interactiveTarget: "input",
+      props: `{ defaultValue: ["design"], "aria-invalid": true }`,
     },
   },
   chip: {

@@ -72,8 +72,14 @@
 
 /* Variants */
 .variantDefault {
-  background-color: var(--interactive-primary-bg, var(--primary, #111827));
-  color: var(--interactive-primary-text, #f9fafb);
+  background-color: var(--button-default-bg, var(--interactive-primary-bg, var(--primary, #111827)));
+  color: var(--button-default-text, var(--interactive-primary-text, #f9fafb));
+}
+
+/* Hero (VI-699): the solid, special-moment face. Unset it is the default face. */
+.variantHero {
+  background-color: var(--button-hero-bg, var(--interactive-primary-bg, var(--primary, #111827)));
+  color: var(--button-hero-text, var(--interactive-primary-text, #f9fafb));
 }
 
 .variantSecondary {
@@ -127,7 +133,7 @@
 
 .variantGhost {
   background-color: var(--interactive-ghost-bg, transparent);
-  color: var(--text-primary, #111827);
+  color: var(--button-ghost-text, var(--text-primary, #111827));
 }
 
 .variantDestructive {
@@ -137,7 +143,11 @@
 
 @media (hover: hover) {
   .variantDefault:hover {
-    background-color: var(--interactive-primary-bg-hover, #1f2937);
+    background-color: var(--button-default-bg-hover, var(--interactive-primary-bg-hover, #1f2937));
+  }
+
+  .variantHero:hover {
+    background-color: var(--button-hero-bg-hover, var(--interactive-primary-bg-hover, #1f2937));
   }
 
   .variantSecondary:hover {
@@ -150,6 +160,11 @@
 
   .variantGhost:hover {
     background-color: var(--interactive-ghost-bg-hover, var(--surface-muted, #f3f4f6));
+    color: var(--button-ghost-text-hover, var(--text-primary, #111827));
+  }
+
+  .sizeDlg.variantGhost:hover {
+    color: var(--button-ghost-text-hover, var(--text-secondary, #6b7280));
   }
 
   .variantDestructive:hover {
@@ -220,8 +235,8 @@
 
 .sizeMd {
   --label-box-height: 2.5rem;
-  height: var(--label-box-height);
-  padding: 0 var(--spacing-4, 1rem);
+  height: var(--button-md-height, var(--label-box-height));
+  padding: var(--button-md-padding, 0 var(--spacing-4, 1rem));
   line-height: 1;
   font-size: var(--button-md-font-size, var(--font-size-sm, 0.875rem));
   font-weight: var(--button-md-font-weight, var(--button-font-weight, var(--font-weight-medium, 500)));
@@ -257,7 +272,7 @@
    variant="destructive" (refined below to a subtle-danger face). */
 .sizeDlg {
   height: auto;
-  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+  padding: var(--button-dlg-padding, var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem));
   font-size: var(--button-dlg-font-size, var(--font-size-2xs, 0.6875rem));
   font-weight: var(--button-dlg-font-weight, var(--button-font-weight, var(--font-weight-semibold, 600)));
   line-height: 1;
@@ -331,7 +346,7 @@
    (AN dlg-btn ghost face: transparent / --ink-60 / 1px --hair). Two-class
    specificity keeps this scoped to the dlg size only. */
 .sizeDlg.variantGhost {
-  color: var(--text-secondary, #6b7280);
+  color: var(--button-ghost-text, var(--text-secondary, #6b7280));
 }
 
 .sizeDlg.variantGhost::after {

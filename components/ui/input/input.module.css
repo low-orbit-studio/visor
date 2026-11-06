@@ -42,7 +42,7 @@
 .base:focus-visible {
   outline: var(--control-state-edge-width, 1px) solid var(--border-focus, #111827);
   outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
-  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
+  box-shadow: 0 0 0 var(--control-focus-halo-width, var(--focus-ring-width, 2px)) var(--control-focus-halo-color, color-mix(in srgb, var(--border-focus, #111827) 15%, transparent));
 }
 
 .base:disabled {
@@ -56,8 +56,8 @@
   background-color: var(--input-bg-invalid, var(--surface-error-subtle, color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--input-bg, #f9fafb)))));
   /* VI-663: the ring and halo widths are theme keys. Unset, the halo is 0px
      wide and paints nothing, so the look is the 1.5px inset ring alone. */
-  box-shadow: inset 0 0 0 var(--control-invalid-ring-width, 1.5px) var(--border-error, #ef4444),
-    0 0 0 var(--control-invalid-halo-width, 0px) color-mix(in srgb, var(--border-error, #ef4444) 15%, transparent);
+  box-shadow: inset 0 0 0 var(--control-invalid-ring-width, 1.5px) var(--control-invalid-ring-color, var(--border-error, #ef4444)),
+    0 0 0 var(--control-invalid-halo-width, 0px) var(--control-invalid-halo-color, color-mix(in srgb, var(--border-error, #ef4444) 15%, transparent));
 }
 
 :global([data-density="editorial"]) .base[aria-invalid="true"] {
@@ -67,8 +67,8 @@
 .base[aria-invalid="true"]:focus-visible {
   outline-color: transparent;
   outline-offset: var(--focus-ring-offset, 2px);
-  box-shadow: inset 0 0 0 var(--control-invalid-ring-width, 1.5px) var(--border-error, #ef4444),
-    0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-error, #ef4444) 30%, transparent);
+  box-shadow: inset 0 0 0 var(--control-invalid-ring-width, 1.5px) var(--control-invalid-ring-color, var(--border-error, #ef4444)),
+    0 0 0 var(--control-focus-halo-width, var(--focus-ring-width, 2px)) var(--control-invalid-halo-color, color-mix(in srgb, var(--border-error, #ef4444) 30%, transparent));
 }
 
 /* File input styles */
@@ -249,7 +249,7 @@
 .affixWrapper:has(> .bare:focus-visible) {
   outline: var(--control-state-edge-width, 1px) solid var(--border-focus, #111827);
   outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
-  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
+  box-shadow: 0 0 0 var(--control-focus-halo-width, var(--focus-ring-width, 2px)) var(--control-focus-halo-color, color-mix(in srgb, var(--border-focus, #111827) 15%, transparent));
 }
 
 .affixWrapper:has(> .bare:disabled) {
@@ -261,7 +261,7 @@
 .affixWrapper:has(> .bare[aria-invalid="true"]) {
   outline-color: transparent;
   background-color: var(--input-bg-invalid, var(--surface-error-subtle, color-mix(in srgb, var(--border-error, #ef4444) 6%, var(--field-control-bg, var(--input-bg, #f9fafb)))));
-  box-shadow: inset 0 0 0 1.5px var(--border-error, #ef4444);
+  box-shadow: inset 0 0 0 1.5px var(--control-invalid-ring-color, var(--border-error, #ef4444));
 }
 
 :global([data-density="editorial"]) .affixWrapper:has(> .bare[aria-invalid="true"]) {
@@ -271,8 +271,8 @@
 .affixWrapper:has(> .bare[aria-invalid="true"]:focus-visible) {
   outline-color: transparent;
   outline-offset: var(--focus-ring-offset, 2px);
-  box-shadow: inset 0 0 0 1.5px var(--border-error, #ef4444),
-    0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-error, #ef4444) 30%, transparent);
+  box-shadow: inset 0 0 0 1.5px var(--control-invalid-ring-color, var(--border-error, #ef4444)),
+    0 0 0 var(--control-focus-halo-width, var(--focus-ring-width, 2px)) var(--control-invalid-halo-color, color-mix(in srgb, var(--border-error, #ef4444) 30%, transparent));
 }
 
 /* The bare input: the value only. It keeps .base's geometry (width, 1px

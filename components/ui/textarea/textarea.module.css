@@ -29,7 +29,7 @@
 .base:focus-visible {
   outline: var(--control-state-edge-width, 1px) solid var(--border-focus, #111827);
   outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
-  box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
+  box-shadow: 0 0 0 var(--control-focus-halo-width, var(--focus-ring-width, 2px)) var(--control-focus-halo-color, color-mix(in srgb, var(--border-focus, #111827) 15%, transparent));
 }
 
 .base:disabled {
@@ -40,9 +40,10 @@
 .base[aria-invalid="true"] {
   /* VI-663: ring and halo widths are theme keys; unset they are the state
      edge and the focus ring, as before. */
-  outline: var(--control-invalid-ring-width, var(--control-state-edge-width, 1px)) solid var(--border-error, #ef4444);
+  outline: var(--control-invalid-ring-width, var(--control-state-edge-width, 1px)) solid var(--control-invalid-ring-color, var(--border-error, #ef4444));
   outline-offset: calc(-1 * var(--control-invalid-ring-width, var(--control-state-edge-width, 1px)));
-  box-shadow: 0 0 0 var(--control-invalid-halo-width, var(--focus-ring-width, 2px)) color-mix(in srgb, var(--border-error, #ef4444) 15%, transparent);
+  box-shadow: 0 0 0 var(--control-invalid-halo-width, var(--focus-ring-width, 2px)) var(--control-invalid-halo-color, color-mix(in srgb, var(--border-error, #ef4444) 15%, transparent));
+  background-color: var(--input-bg-invalid, var(--textarea-bg, var(--surface-interactive-default, #f9fafb)));
 }
 
 /* Size variants */

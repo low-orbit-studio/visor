@@ -75,6 +75,18 @@ const CASES: Case[] = [
   { token: "--button-icon-radius", fixture: "button/icon", target: "button", prop: "border-top-left-radius", value: "13px" },
   { token: "--button-radius", fixture: "button/icon", target: "button", prop: "border-top-left-radius", value: "13px" },
   { token: "--button-icon-ghost-color", fixture: "button/icon", target: "button", prop: "color", value: "rgb(255, 0, 170)" },
+  // fill and ink per variant, ghost ink and padding (VI-699)
+  { token: "--button-default-bg", fixture: "button/default", target: "button", prop: "background-color", value: "rgb(1, 2, 3)" },
+  { token: "--button-default-bg-hover", fixture: "button/default", target: "button", prop: "background-color", value: "rgb(1, 2, 3)", hover: true },
+  { token: "--button-default-text", fixture: "button/default", target: "button", prop: "color", value: "rgb(4, 5, 6)" },
+  { token: "--button-hero-bg", fixture: "button/hero", target: "button", prop: "background-color", value: "rgb(1, 2, 3)" },
+  { token: "--button-hero-bg-hover", fixture: "button/hero", target: "button", prop: "background-color", value: "rgb(1, 2, 3)", hover: true },
+  { token: "--button-hero-text", fixture: "button/hero", target: "button", prop: "color", value: "rgb(4, 5, 6)" },
+  { token: "--button-ghost-text", fixture: "button/dlg-ghost", target: "button", prop: "color", value: "rgb(4, 5, 6)" },
+  { token: "--button-ghost-text-hover", fixture: "button/dlg-ghost", target: "button", prop: "color", value: "rgb(4, 5, 6)", hover: true },
+  { token: "--button-md-height", fixture: "button/default", target: "button", prop: "height", value: "50px" },
+  { token: "--button-md-padding", fixture: "button/default", target: "button", prop: "padding-left", value: "20px" },
+  { token: "--button-dlg-padding", fixture: "button/dlg", target: "button", prop: "padding-left", value: "11px" },
   // InlineEdit's pencil is the same mark (VI-658)
   { token: "--button-icon-size", fixture: "inline-edit/default", target: "[data-slot=inline-edit-pencil]", prop: "width", value: "20px" },
   { token: "--button-icon-size", fixture: "inline-edit/default", target: "[data-slot=inline-edit-pencil]", prop: "height", value: "20px" },
