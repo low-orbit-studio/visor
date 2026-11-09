@@ -286,6 +286,7 @@ components:
     label-letter-spacing: "0.3em"
     label-color: "#ff00aa"
   button:
+    icon-gap: "6px"
     default-bg: "#2ce0e6"
     default-bg-hover: "#2ce0e6"
     default-text: "#02161a"

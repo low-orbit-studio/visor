@@ -242,15 +242,31 @@ export interface ButtonProps
  * that differs per font (VI-682). Elements (icons, spinners) pass through.
  */
 function wrapLabel(children: React.ReactNode): React.ReactNode {
-  return React.Children.map(children, (child) =>
-    typeof child === "string" || typeof child === "number" ? (
-      <span className={styles.label} data-slot="button-text">
-        {child}
-      </span>
-    ) : (
-      child
-    )
-  )
+  // Adjacent strings join into one label; a whitespace-only run (the " " in
+  // `<Icon/> {label}`) is dropped so it never becomes an empty flex item (VI-733).
+  const parts: React.ReactNode[] = []
+  let text = ""
+  const flush = () => {
+    const label = text.trim()
+    if (label) {
+      parts.push(
+        <span key={parts.length} className={styles.label} data-slot="button-text">
+          {label}
+        </span>
+      )
+    }
+    text = ""
+  }
+  React.Children.toArray(children).forEach((child) => {
+    if (typeof child === "string" || typeof child === "number") {
+      text += child
+    } else {
+      flush()
+      parts.push(child)
+    }
+  })
+  flush()
+  return parts
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(

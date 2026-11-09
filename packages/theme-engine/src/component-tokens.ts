@@ -871,6 +871,7 @@ const buttonFamily: ComponentTokenFamily = {
   tokens: [
     // VI-699: fill and ink per variant, apart from the shared `interactive-*`
     // roles (Switch's on track reads `interactive-primary-bg`).
+    { key: "icon-gap", property: "gap", description: "Gap between an icon and its label, on every size. Apart from `icon-pad` (the icon-only hit target).", consumers: at(BUTTON, "var(--spacing-2, 0.5rem)") },
     { key: "default-bg", property: "background-color", description: "`default` variant fill, apart from `interactive-primary-bg`.", consumers: at(BUTTON, "var(--interactive-primary-bg, var(--primary, #111827))") },
     { key: "default-bg-hover", property: "background-color", description: "`default` variant fill on hover.", consumers: at(BUTTON, "var(--interactive-primary-bg-hover, #1f2937)") },
     { key: "default-text", property: "color", description: "`default` variant ink, apart from `interactive-primary-text`.", consumers: at(BUTTON, "var(--interactive-primary-text, #f9fafb)") },
