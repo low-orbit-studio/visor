@@ -286,6 +286,10 @@ components:
     label-letter-spacing: "0.3em"
     label-color: "#ff00aa"
   button:
+    icon-gap: "6px"
+    dlg-destructive-bg: "#2ce0e6"
+    dlg-destructive-bg-hover: "#2ce0e6"
+    dlg-destructive-text: "#02161a"
     default-bg: "#2ce0e6"
     default-bg-hover: "#2ce0e6"
     default-text: "#02161a"

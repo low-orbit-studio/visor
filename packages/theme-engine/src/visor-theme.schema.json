@@ -642,7 +642,7 @@
         },
         "button": {
           "type": "object",
-          "description": "Button type treatment and rounding. The unprefixed keys set every size at once; a size key (`dlg-radius`) overrides one size. Keys: default-bg, default-bg-hover, default-text, hero-bg, hero-bg-hover, hero-text, ghost-text, ghost-text-hover, md-height, md-padding, dlg-padding, text-transform, letter-spacing, font-weight, radius, sm-font-size, sm-font-weight, sm-text-transform, sm-letter-spacing, sm-radius, md-font-size, md-font-weight, md-text-transform, md-letter-spacing, md-radius, lg-font-size, lg-font-weight, lg-text-transform, lg-letter-spacing, lg-radius, dlg-font-size, dlg-font-weight, dlg-text-transform, dlg-letter-spacing, dlg-radius, icon-size, icon-pad, icon-radius, icon-ghost-color.",
+          "description": "Button type treatment and rounding. The unprefixed keys set every size at once; a size key (`dlg-radius`) overrides one size. Keys: icon-gap, default-bg, default-bg-hover, default-text, dlg-destructive-bg, dlg-destructive-bg-hover, dlg-destructive-text, hero-bg, hero-bg-hover, hero-text, ghost-text, ghost-text-hover, md-height, md-padding, dlg-padding, text-transform, letter-spacing, font-weight, radius, sm-font-size, sm-font-weight, sm-text-transform, sm-letter-spacing, sm-radius, md-font-size, md-font-weight, md-text-transform, md-letter-spacing, md-radius, lg-font-size, lg-font-weight, lg-text-transform, lg-letter-spacing, lg-radius, dlg-font-size, dlg-font-weight, dlg-text-transform, dlg-letter-spacing, dlg-radius, icon-size, icon-pad, icon-radius, icon-ghost-color.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

@@ -79,6 +79,9 @@ const CASES: Case[] = [
   { token: "--button-default-bg", fixture: "button/default", target: "button", prop: "background-color", value: "rgb(1, 2, 3)" },
   { token: "--button-default-bg-hover", fixture: "button/default", target: "button", prop: "background-color", value: "rgb(1, 2, 3)", hover: true },
   { token: "--button-default-text", fixture: "button/default", target: "button", prop: "color", value: "rgb(4, 5, 6)" },
+  { token: "--button-dlg-destructive-bg", fixture: "button/dlg-destructive", target: "button", prop: "background-color", value: "rgb(1, 2, 3)" },
+  { token: "--button-dlg-destructive-bg-hover", fixture: "button/dlg-destructive", target: "button", prop: "background-color", value: "rgb(1, 2, 3)", hover: true },
+  { token: "--button-dlg-destructive-text", fixture: "button/dlg-destructive", target: "button", prop: "color", value: "rgb(4, 5, 6)" },
   { token: "--button-hero-bg", fixture: "button/hero", target: "button", prop: "background-color", value: "rgb(1, 2, 3)" },
   { token: "--button-hero-bg-hover", fixture: "button/hero", target: "button", prop: "background-color", value: "rgb(1, 2, 3)", hover: true },
   { token: "--button-hero-text", fixture: "button/hero", target: "button", prop: "color", value: "rgb(4, 5, 6)" },
@@ -87,6 +90,8 @@ const CASES: Case[] = [
   { token: "--button-md-height", fixture: "button/default", target: "button", prop: "height", value: "50px" },
   { token: "--button-md-padding", fixture: "button/default", target: "button", prop: "padding-left", value: "20px" },
   { token: "--button-dlg-padding", fixture: "button/dlg", target: "button", prop: "padding-left", value: "11px" },
+  // icon gap (VI-733); the compact destructive face is in button-vi733.test.ts
+  { token: "--button-icon-gap", fixture: "button/icon-label", target: "button", prop: "column-gap", value: "6px" },
   // InlineEdit's pencil is the same mark (VI-658)
   { token: "--button-icon-size", fixture: "inline-edit/default", target: "[data-slot=inline-edit-pencil]", prop: "width", value: "20px" },
   { token: "--button-icon-size", fixture: "inline-edit/default", target: "[data-slot=inline-edit-pencil]", prop: "height", value: "20px" },

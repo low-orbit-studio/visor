@@ -378,6 +378,9 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     sm: { export: "Button", interactiveTarget: "button", props: `{ size: "sm", children: "Small" }` },
     lg: { export: "Button", interactiveTarget: "button", props: `{ size: "lg", children: "Large" }` },
     dlg: { export: "Button", interactiveTarget: "button", props: `{ size: "dlg", children: "Save" }` },
+    // VI-733: the compact destructive face, and an icon beside a label with JSX's " " between.
+    "dlg-destructive": { export: "Button", interactiveTarget: "button", props: `{ size: "dlg", variant: "destructive", children: "Void" }` },
+    "icon-label": { export: "Button", interactiveTarget: "button", props: `{ children: [${ICON_X}, " ", "Label"] }` },
     "dlg-outline": {
       export: "Button",
       interactiveTarget: "button",
