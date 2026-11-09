@@ -356,13 +356,13 @@
 /* dlg danger — subtle-danger face (AN dlg-btn danger face: --red on a faint
    red fill), distinct from the solid `destructive` variant. */
 .sizeDlg.variantDestructive {
-  background-color: var(--interactive-destructive-bg, var(--surface-error-subtle, color-mix(in srgb, var(--destructive, #ef4444) 8%, transparent)));
-  color: var(--interactive-destructive-text, var(--text-error, var(--destructive, #b91c1c)));
+  background-color: var(--button-dlg-destructive-bg, var(--surface-error-subtle, color-mix(in srgb, var(--destructive, #ef4444) 8%, transparent)));
+  color: var(--button-dlg-destructive-text, var(--text-error, var(--destructive, #b91c1c)));
 }
 
 @media (hover: hover) {
   .sizeDlg.variantDestructive:hover {
-    background-color: var(--interactive-destructive-bg-hover, color-mix(in srgb, var(--destructive, #ef4444) 14%, transparent));
+    background-color: var(--button-dlg-destructive-bg-hover, color-mix(in srgb, var(--destructive, #ef4444) 14%, transparent));
   }
 }
 

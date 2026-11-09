@@ -1,6 +1,6 @@
 // @vitest-environment node
 /**
- * VI-733 — the compact (`dlg`) destructive Button reads --interactive-destructive-bg / -text / -bg-hover,
+ * VI-733 — the compact (`dlg`) destructive Button reads --button-dlg-destructive-bg / -text / -bg-hover,
  * and an icon sits exactly one gap from its label (JSX's " " makes no empty flex item).
  * Skips where Chromium is unavailable.
  */
@@ -20,20 +20,44 @@ async function read(fixture: string, scopeCss: string, prop: string, opts: { hov
   return value
 }
 
-describe("VI-733 compact destructive reads its keys", () => {
-  for (const [token, prop, hover] of [
-    ["--interactive-destructive-bg", "backgroundColor", false],
-    ["--interactive-destructive-text", "color", false],
-    ["--interactive-destructive-bg-hover", "backgroundColor", true],
+// origin/main's compact Remove, written as the fallback expressions it carried.
+const ORIGINAL = {
+  backgroundColor: "var(--surface-error-subtle, color-mix(in srgb, var(--destructive, #ef4444) 8%, transparent))",
+  color: "var(--text-error, var(--destructive, #b91c1c))",
+  hover: "color-mix(in srgb, var(--destructive, #ef4444) 14%, transparent)",
+}
+
+/** What an expression resolves to under the same tokens and theme, via a probe in the page. */
+async function resolve(prop: "backgroundColor" | "color", expr: string, opts: { componentCss?: string } = {}) {
+  const page = await open("button", "dlg-destructive", { componentCss: opts.componentCss })
+  const v = (await page.evaluate(`(function () {
+    var p = document.createElement("div"); p.style.${prop} = ${JSON.stringify(expr)};
+    document.getElementById("theme-scope").appendChild(p); return getComputedStyle(p).${prop};
+  })()`)) as string
+  await page.close()
+  return v
+}
+
+describe("VI-733 compact destructive reads button.dlg-destructive-* keys", () => {
+  for (const [prop, hover, expr] of [
+    ["backgroundColor", false, ORIGINAL.backgroundColor],
+    ["color", false, ORIGINAL.color],
+    ["backgroundColor", true, ORIGINAL.hover],
   ] as const) {
-    it(`${token} moves ${prop}; renamed in the CSS it does not`, async (ctx) => {
+    it(`unbound ${prop}${hover ? " on hover" : ""} is origin/main's, with tokens.css loaded`, async (ctx) => {
       if (!ready()) return ctx.skip()
-      const scope = `${token}: rgb(1, 2, 3);`
-      expect(await read("dlg-destructive", scope, prop, { hover })).toBe("rgb(1, 2, 3)")
-      const css = (await bundle("button", "dlg-destructive")).css
-      const mutated = css.replace(new RegExp(`${token}(?![a-z0-9-])`, "g"), `${token}-mutated`)
-      expect(mutated).not.toBe(css)
-      expect(await read("dlg-destructive", scope, prop, { hover, componentCss: mutated })).not.toBe("rgb(1, 2, 3)")
+      expect(await read("dlg-destructive", "", prop, { hover })).toBe(await resolve(prop, expr))
+    }, 30_000)
+  }
+
+  for (const [token, prop, hover, value] of [
+    ["--button-dlg-destructive-bg", "backgroundColor", false, "rgba(255, 107, 107, 0.08)"],
+    ["--button-dlg-destructive-text", "color", false, "rgb(255, 107, 107)"],
+    ["--button-dlg-destructive-bg-hover", "backgroundColor", true, "rgba(255, 107, 107, 0.16)"],
+  ] as const) {
+    it(`${token} moves ${prop}`, async (ctx) => {
+      if (!ready()) return ctx.skip()
+      expect(await read("dlg-destructive", `${token}: ${value};`, prop, { hover })).toBe(value)
     }, 30_000)
   }
 })
