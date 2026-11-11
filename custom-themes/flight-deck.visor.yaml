@@ -1,0 +1,172 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# FIXTURE. Flight Deck owns this theme; do not edit it here.
+# Source of truth: ~/Code/low-orbit/flight-deck-ios/spec/codified-tokens.css
+# (light = `:root`, "Paper"; dark = `.paper-night`, "Paper at night").
+# That CSS uses color-mix / oklch / var, so every value below is its resolved
+# sRGB value exactly as the app ships it. Re-copy when the CSS changes.
+#
+# Visor's record of Flight Deck's theme (VI-735). No docs theme switcher entry.
+# `visor render <component> --theme flight-deck` needs the generated CSS below,
+# which is not committed yet (blacklight-app commits its CSS; that also needs a
+# .gitignore exception and a WEB_ONLY_THEMES entry in flutter-css-token-sync).
+#
+# Generate the CSS, never by hand:
+#   npx tsx packages/cli/src/index.ts theme apply custom-themes/flight-deck.visor.yaml \
+#     --adapter docs -o packages/docs/app/flight-deck-theme.css
+#
+# NOT MAPPED (Flight Deck defines no value, so Visor's own defaults apply):
+#   - success / warning / info: Flight Deck has no green, amber or info colours;
+#     coral is the alert colour and is for alerts only (style rule).
+#   - accent: Surf (#5bc4bf) is in the brand block but no Flight Deck role uses
+#     it, so accent stays on primary.
+#   - shadows: --lift is a colour only (rgba(13, 59, 79, 0.08) light,
+#     transparent dark), with no offset or blur, so no box-shadow string exists.
+#   - motion: Flight Deck defines no durations or easing.
+#   - spacing: Flight Deck's 2pt grid means every value is an even px
+#     (--space-N = 2N px), not a 2px unit. `spacing.base: 2` would halve every
+#     Visor component's padding, which Flight Deck never asked for, so the
+#     Visor base of 4 stays.
+#   - radius --radius-mark 2, --radius-blob 32, --radius-sheet 38: no Visor slot.
+#   - --scrim-blur 14px: the dialog overlay's 4px blur is not a token.
+#   - --btn-busy, --btn-ghost, --tint-ink, --sep, --mark, --alert-text-strong,
+#     --sheet-group, --well-locked: no Visor role.
+#
+# PROJECT HUES (no Visor role). 12 OKLCH angles; fill / fill-strong / ink / solid:
+#   hue  light: fill    strong  ink     solid   | dark: fill    strong  ink     solid
+#    75  sand   #ffebce #f7ce97 #693c00 #bd7d00 |       #3a2b16 #553d1a #f7d19c #e1a447
+#    99  gold   #f6f0ce #e3d796 #574700 #a28c00 |       #332e16 #4a431a #e4d99c #c6b244
+#   123  olive  #e8f4d3 #cbe0a1 #3d5000 #7c9928 |       #2a311a #3c4822 #cde1a6 #a2be5c
+#   147  green  #dcf7dd #b1e6b6 #0e5720 #49a257 |       #203322 #2c4b2f #b5e6b9 #75c77f
+#   171  jade   #d2f9ea #9be9ce #005940 #00a781 |       #17342b #1a4d3e #a1e9d0 #41cba6
+#   195  teal   #cdf9f8 #90e8e7 #00585a #00a5a6 |       #113434 #0d4c4c #97e9e8 #00cacb
+#   219  cyan   #cef6ff #94e4fc #00546f #009ec5 |       #13333b #134a58 #9ae5fb #29c4e9
+#   243  tide   #d5f3ff #a5ddff #004c7d #2894da |       #1b3040 #234660 #aadeff #5fbafd
+#   267  blue   #e1eeff #bdd5ff #2d4382 #6687e1 |       #252d42 #344163 #c0d7ff #8caeff
+#   291  violet #eeeaff #d5cdff #493a7d #8d7bda |       #2e2a40 #423c60 #d7cfff #b2a2fd
+#   315  orchid #fae6ff #ebc5fd #5d3270 #ac70c6 |       #35283c #4e3858 #ecc8fc #d097ea
+#   339  rose   #ffe3f9 #fcc1e9 #6c2c5b #c267a8 |       #3b2634 #57354d #fcc4e9 #e78fcc
+# ─────────────────────────────────────────────────────────────────────────────
+name: flight-deck
+label: Flight Deck
+group: Low Orbit
+default-mode: light
+color-scheme: adaptive
+version: 1
+
+colors:
+  primary: "#1a5f7a"     # Tide Mid: --btn, --link, --track
+  neutral: "#1e1f21"     # Graphite: --text. Only its hue drives Visor's derived greys
+  background: "#fcfcfb"  # --ground
+  surface: "#f7f6f2"     # --card
+  error: "#f28b6d"       # --alert, the coral alert colour
+
+colors-dark:
+  neutral: "#1e1f21"     # same Graphite hue at night
+  background: "#0c1015"  # --ground
+  surface: "#151b20"     # --card
+  error: "#f28b6d"       # --alert is the same coral in both modes
+
+typography:
+  display:
+    family: "Satoshi"
+    weight: 900          # --type-blob-*
+    weights: [300, 400, 500, 700, 900]
+    source: fontshare
+  heading:
+    family: "Satoshi"
+    weight: 900          # --type-large-title, --type-title-1, --type-title-3
+    weights: [300, 400, 500, 700, 900]
+    source: fontshare
+  body:
+    family: "Satoshi"
+    weight: 500          # --type-body
+    weights: [300, 400, 500, 700, 900]
+    source: fontshare
+  mono:
+    family: 'ui-monospace, "SF Mono", Menlo, monospace'   # --font-mono, system
+
+radius:
+  sm: 10     # --radius-s
+  md: 14     # --radius-m
+  lg: 18     # --radius-l
+  xl: 28     # --radius-card (Visor's Card reads xl)
+  pill: 999  # --radius-pill
+
+components:
+  input:
+    md-radius: "22px"    # --radius-field
+  textarea:
+    radius: "22px"       # --radius-field
+  select:
+    radius: "22px"       # --radius-field
+  button:
+    radius: "28px"       # --radius-card: "primary button"
+  segmented-control:
+    radius: "14px"       # --radius-m
+    track-bg:
+      light: "rgba(30, 31, 33, 0.07)"     # --segment
+      dark: "rgba(245, 245, 240, 0.09)"
+    indicator-bg:
+      light: "#f7f6f2"                    # --segment-on
+      dark: "#3d4245"
+  switch:
+    track-width: "51px"  # --switch-w
+    track-height: "31px" # --switch-h
+    knob-inset: "2px"    # (31 - 27) / 2: --knob-size 27px centred in the track
+    track-bg:
+      light: "rgba(30, 31, 33, 0.14)"     # --track-off
+      dark: "rgba(245, 245, 240, 0.2)"
+    knob-bg: "#f5f5f0"                    # --knob
+    knob-bg-checked: "#f5f5f0"
+
+overrides:
+  light:
+    # Text
+    text-primary: "#1e1f21"                    # --text
+    text-secondary: "#55575b"                  # --text-2
+    text-tertiary: "#6e6f72"                   # --text-3
+    text-muted: "rgba(30, 31, 33, 0.62)"       # --text-sub: faintest line passing AA on --card
+    text-disabled: "#7e7f7a"                   # --text-faint: inactive tab
+    text-link: "#1a5f7a"                       # --link
+    text-error: "#ae411f"                      # --alert-text
+    # Surfaces
+    surface-popover: "#fcfcfb"                 # --sheet
+    # surface-muted pinned to --card: Visor would derive #dededf from the
+    # neutral, a value Flight Deck never defines. A real Flight Deck surface is
+    # more faithful than a derived one; this is not a re-tint.
+    surface-muted: "#f7f6f2"                   # --card
+    surface-interactive-default: "#edede7"     # --well: inputs and code slots
+    surface-accent-subtle: "#d8e4e7"           # --tint
+    surface-error-subtle: "#f7e0d4"            # --alert-bg
+    # Borders
+    border-default: "rgba(30, 31, 33, 0.11)"   # --rule
+    border-muted: "rgba(30, 31, 33, 0.07)"     # --edge
+    border-focus: "#1a5f7a"                    # --link: "focus ring"
+    border-error: "rgba(242, 139, 109, 0.7)"   # --alert-line
+    hairline: "rgba(30, 31, 33, 0.11)"         # --rule
+    # Primary action
+    interactive-primary-bg: "#1a5f7a"          # --btn
+    interactive-primary-text: "#fcfcfb"        # --btn-ink
+    # Sheet scrim (dialog overlay)
+    overlay-bg: "rgba(12, 16, 21, 0.42)"       # --scrim
+  dark:
+    text-primary: "#f5f5f0"
+    text-secondary: "#b1b8bf"
+    text-tertiary: "#b1b8bf"
+    text-muted: "rgba(245, 245, 240, 0.55)"
+    text-disabled: "#888183"
+    text-link: "#5aabbf"                       # Tide Pale
+    text-error: "#ffa186"                      # --alert-ink-dark
+    surface-popover: "#252a2f"
+    surface-muted: "#151b20"                   # --card (see light)
+    surface-interactive-default: "#151b20"     # the well is the card at night
+    surface-accent-subtle: "#1b3040"
+    surface-error-subtle: "#312423"
+    border-default: "rgba(245, 245, 240, 0.13)"
+    border-muted: "rgba(245, 245, 240, 0.07)"
+    border-focus: "#5aabbf"
+    border-error: "rgba(242, 139, 109, 0.75)"
+    hairline: "rgba(245, 245, 240, 0.13)"
+    interactive-primary-bg: "#f5f5f0"          # Cream button
+    interactive-primary-text: "#0d3b4f"        # Tide Deep ink
+    overlay-bg: "rgba(0, 0, 0, 0.62)"
