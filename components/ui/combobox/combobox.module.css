@@ -99,7 +99,8 @@
   user-select: none;
 }
 
-.item:focus:not([data-disabled]) {
+.item:focus:not([data-disabled]),
+.item[data-highlighted] {
   background-color: var(--surface-interactive-hover, #f3f4f6);
   cursor: pointer;
 }

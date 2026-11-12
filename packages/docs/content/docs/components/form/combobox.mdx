@@ -6,6 +6,7 @@ description: An autocomplete input with a filterable dropdown list. Supports con
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Combobox, ComboboxInput, ComboboxContent, ComboboxItem, ComboboxEmpty } from '@/components/ui/combobox';
+import { ComboboxKeyboardExample } from '@/components/combobox-keyboard-example';
 
 ## Filterable List
 
@@ -42,6 +43,19 @@ import { Combobox, ComboboxInput, ComboboxContent, ComboboxItem, ComboboxEmpty }
         <ComboboxEmpty>No results found.</ComboboxEmpty>
       </ComboboxContent>
     </Combobox>
+  </div>
+</ComponentPreview>
+
+## Keyboard
+
+Type to filter: the first match is highlighted, so typing "new y" then Enter picks New York. Arrow Down and Arrow Up move the highlight (Oregon is disabled and is skipped), Home and End jump to the ends, Enter picks, Escape closes and a second Escape clears the text. Tab picks nothing. Focus stays in the text field throughout.
+
+<ComponentPreview
+  title="Keyboard"
+  code={"const [query, setQuery] = useState('');\nconst matches = STATES.filter((s) => s.toLowerCase().includes(query.toLowerCase()));\n\n<Combobox inputValue={query} onInputChange={setQuery}>\n  <ComboboxInput placeholder=\"Pick a state...\" aria-label=\"State\" />\n  <ComboboxContent aria-label=\"States\">\n    {matches.map((s) => (\n      <ComboboxItem key={s} value={s} disabled={s === 'Oregon'}>{s}</ComboboxItem>\n    ))}\n    {matches.length === 0 && <ComboboxEmpty>No states found.</ComboboxEmpty>}\n  </ComboboxContent>\n</Combobox>"}
+>
+  <div style={{ width: '100%', maxWidth: '16rem' }}>
+    <ComboboxKeyboardExample />
   </div>
 </ComponentPreview>
 
@@ -99,6 +113,7 @@ import {
 
 - Input renders with `role="combobox"`, `aria-expanded`, and `aria-autocomplete="list"`
 - The dropdown list renders with `role="listbox"`; each option has `role="option"`
-- `aria-activedescendant` tracks keyboard-focused option
-- Keyboard: Type to filter, Arrow Down/Up navigate options, Enter selects, Escape closes
+- Focus stays in the input; `aria-activedescendant` names the highlighted option, and each option has a stable `id`
+- Keyboard: typing highlights the first match; Arrow Down opens the list and moves down, Arrow Up moves up, Home/End jump to the ends (no wrap), disabled options are skipped; Enter picks, Escape closes (a second Escape clears the text), Tab picks nothing
+- Hovering an option moves the same highlight the keys move
 - Screen readers announce the number of available options when the list opens

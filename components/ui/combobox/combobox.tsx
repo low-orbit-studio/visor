@@ -17,9 +17,24 @@ interface ComboboxContextValue {
   setSelectedValue: (value: string) => void
   onSelect?: (value: string, label: string) => void
   listboxId: string
+  /** Element id of the highlighted option, announced via aria-activedescendant */
+  activeId: string | null
+  setActiveId: (id: string | null) => void
+  /** Highlight the first enabled option once the list has rendered */
+  highlightFirst: () => void
+  /** Items call this on mount so a pending highlightFirst can resolve */
+  registerItem: () => void
 }
 
 const ComboboxContext = React.createContext<ComboboxContextValue | undefined>(undefined)
+
+/** Enabled options in DOM order — the order the user sees. */
+function getEnabledOptions(listboxId: string): HTMLElement[] {
+  const listbox = document.getElementById(listboxId)
+  return listbox
+    ? Array.from(listbox.querySelectorAll<HTMLElement>('[role="option"]:not([data-disabled])'))
+    : []
+}
 
 function useComboboxContext() {
   const ctx = React.useContext(ComboboxContext)
@@ -79,6 +94,15 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
     const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue)
 
     const listboxId = React.useId()
+    const [activeId, setActiveId] = React.useState<string | null>(null)
+    const highlightFirstRef = React.useRef(false)
+    // Bumped by each item on mount: the portal renders after open flips, so the
+    // first-option lookup has to retry once the options exist.
+    const [itemsVersion, registerItem] = React.useReducer((n: number) => n + 1, 0)
+    const highlightFirst = React.useCallback(() => {
+      highlightFirstRef.current = true
+      setActiveId(null)
+    }, [])
 
     const isOpenControlled = controlledOpen !== undefined
     const isInputControlled = controlledInput !== undefined
@@ -111,6 +135,19 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
       [isValueControlled]
     )
 
+    React.useEffect(() => {
+      if (!open) {
+        setActiveId(null)
+        return
+      }
+      if (!highlightFirstRef.current) return
+      const first = getEnabledOptions(listboxId)[0]
+      if (first) {
+        highlightFirstRef.current = false
+        setActiveId(first.id)
+      }
+    }, [open, inputValue, itemsVersion, listboxId])
+
     const handleSelect = React.useCallback(
       (value: string, label: string) => {
         setSelectedValue(value)
@@ -132,6 +169,10 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
           setSelectedValue,
           onSelect: handleSelect,
           listboxId,
+          activeId,
+          setActiveId,
+          highlightFirst,
+          registerItem,
         }}
       >
         <PopoverPrimitive.Root open={open} onOpenChange={setOpen}>
@@ -157,11 +198,13 @@ export interface ComboboxInputProps extends React.InputHTMLAttributes<HTMLInputE
 }
 
 const ComboboxInput = React.forwardRef<HTMLInputElement, ComboboxInputProps>(
-  ({ className, onChange, onFocus, onClick, placeholder = "Search...", ...props }, ref) => {
-    const { inputValue, setInputValue, setOpen, open, listboxId } = useComboboxContext()
+  ({ className, onChange, onFocus, onClick, onKeyDown, placeholder = "Search...", ...props }, ref) => {
+    const { inputValue, setInputValue, setOpen, open, listboxId, activeId, setActiveId, highlightFirst } =
+      useComboboxContext()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(e.target.value)
+      highlightFirst()
       if (!open) setOpen(true)
       onChange?.(e)
     }
@@ -176,6 +219,64 @@ const ComboboxInput = React.forwardRef<HTMLInputElement, ComboboxInputProps>(
       onClick?.(e)
     }
 
+    const moveHighlight = (to: "next" | "prev" | "first" | "last") => {
+      const options = getEnabledOptions(listboxId)
+      if (options.length === 0) return
+      const current = options.findIndex((o) => o.id === activeId)
+      const last = options.length - 1
+      // No wrap at either end, like a native select.
+      const index =
+        to === "first" ? 0
+        : to === "last" ? last
+        : to === "next" ? (current < 0 ? 0 : Math.min(current + 1, last))
+        : current < 0 ? last : Math.max(current - 1, 0)
+      setActiveId(options[index].id)
+      options[index].scrollIntoView?.({ block: "nearest" })
+    }
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      onKeyDown?.(e)
+      if (e.defaultPrevented) return
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault()
+          if (open) moveHighlight("next")
+          else {
+            setOpen(true)
+            highlightFirst()
+          }
+          break
+        case "ArrowUp":
+          if (!open) break
+          e.preventDefault()
+          moveHighlight("prev")
+          break
+        case "Home":
+        case "End":
+          if (!open) break
+          e.preventDefault()
+          moveHighlight(e.key === "Home" ? "first" : "last")
+          break
+        case "Enter": {
+          const active = open && activeId ? document.getElementById(activeId) : null
+          if (!active) break
+          e.preventDefault()
+          active.click() // same path as a mouse pick
+          break
+        }
+        case "Escape":
+          // First Escape closes the list; a second clears what was typed.
+          if (open) setOpen(false)
+          else if (inputValue) setInputValue("")
+          else break
+          e.preventDefault()
+          break
+        case "Tab":
+          if (open) setOpen(false)
+          break
+      }
+    }
+
     return (
       <PopoverPrimitive.Anchor asChild>
         <div data-slot="combobox-input-wrapper" className={styles.inputWrapper}>
@@ -186,6 +287,7 @@ const ComboboxInput = React.forwardRef<HTMLInputElement, ComboboxInputProps>(
             aria-expanded={open}
             aria-autocomplete="list"
             aria-controls={open ? listboxId : undefined}
+            aria-activedescendant={open && activeId ? activeId : undefined}
             aria-haspopup="listbox"
             autoComplete="off"
             value={inputValue}
@@ -194,6 +296,7 @@ const ComboboxInput = React.forwardRef<HTMLInputElement, ComboboxInputProps>(
             onChange={handleChange}
             onFocus={handleFocus}
             onClick={handleClick}
+            onKeyDown={handleKeyDown}
             {...props}
           />
           <CaretDownIcon
@@ -255,9 +358,19 @@ export interface ComboboxItemProps extends React.HTMLAttributes<HTMLLIElement> {
 }
 
 const ComboboxItem = React.forwardRef<HTMLLIElement, ComboboxItemProps>(
-  ({ className, value, label, children, disabled, onClick, ...props }, ref) => {
-    const { selectedValue, onSelect } = useComboboxContext()
+  ({ className, value, label, children, disabled, onClick, onMouseMove, id: idProp, ...props }, ref) => {
+    const { selectedValue, onSelect, listboxId, activeId, setActiveId, registerItem } = useComboboxContext()
     const isSelected = selectedValue === value
+    // Stable per value; encoded so a value with spaces stays a valid IDREF.
+    const id = idProp ?? `${listboxId}-option-${encodeURIComponent(value)}`
+    const isHighlighted = activeId === id
+
+    React.useEffect(() => registerItem(), [registerItem])
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLLIElement>) => {
+      if (!disabled && !isHighlighted) setActiveId(id)
+      onMouseMove?.(e)
+    }
     const displayLabel = label ?? (typeof children === "string" ? children : "")
 
     const handleClick = (e: React.MouseEvent<HTMLLIElement>) => {
@@ -277,13 +390,17 @@ const ComboboxItem = React.forwardRef<HTMLLIElement, ComboboxItemProps>(
     return (
       <li
         ref={ref}
+        id={id}
         role="option"
         aria-selected={isSelected}
+        aria-disabled={disabled || undefined}
         data-slot="combobox-item"
         data-selected={isSelected ? "" : undefined}
         data-disabled={disabled ? "" : undefined}
+        data-highlighted={isHighlighted ? "" : undefined}
         className={cn(styles.item, className)}
         onClick={handleClick}
+        onMouseMove={handleMouseMove}
         onKeyDown={handleKeyDown}
         tabIndex={disabled ? -1 : 0}
         {...props}
