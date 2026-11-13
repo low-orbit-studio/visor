@@ -1,0 +1,140 @@
+---
+title: Proportion Bar
+description: One measured total split into named parts, widths proportional to value, with hatched, striped and alert fills and an optional legend.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import {
+  ProportionBarHoursDemo,
+  ProportionBarThinDemo,
+  ProportionBarStackedDemo,
+  ProportionBarEmptyDemo,
+  ProportionBarFillsDemo,
+} from '@/components/ui/proportion-bar-demos';
+
+## Default
+
+Pass `parts`, each a `label` and a `value`. Each part's width is its share of the total. Parts are
+told apart by the ground showing between them, never by a line, and only the outer ends round.
+`legend` adds a row under the bar: swatch, label, value. `formatValue` formats every value the bar
+shows or says.
+
+<ComponentPreview
+  title="Hours by bucket"
+  code={"import { ProportionBar } from '@/components/ui/proportion-bar/proportion-bar';\n\n<ProportionBar\n  legend\n  formatValue={(v) => `${v} h`}\n  parts={[\n    { label: 'On a package', value: 92.25 },\n    { label: 'Outside a package', value: 41.5 },\n    { label: 'Covered', value: 18, fill: 'var(--proportion-bar-fill-3)' },\n    { label: 'Investment', value: 21.5, fill: 'var(--proportion-bar-fill-4)' },\n    { label: 'Not billable', value: 4, fill: 'hatched' },\n    { label: 'Unresolved', value: 9.25, fill: 'alert' },\n  ]}\n/>"}
+>
+  <div style={{ width: '100%', maxWidth: '40rem' }}>
+    <ProportionBarHoursDemo />
+  </div>
+</ComponentPreview>
+
+## Thin
+
+`size="thin"` draws the bar 8px tall with full pill ends, for a summary inside a card. The default
+is 30px, for a main balance.
+
+<ComponentPreview
+  title="Money by state, thin"
+  code={"<ProportionBar\n  size=\"thin\"\n  legend\n  formatValue={(v) => `$${v.toLocaleString('en-US')}`}\n  parts={[\n    { label: 'Invoiced', value: 12455 },\n    { label: 'Waiting', value: 9025, fill: 'striped' },\n    { label: 'Written off', value: 0, fill: 'hatched' },\n  ]}\n/>"}
+>
+  <div style={{ width: '100%', maxWidth: '24rem' }}>
+    <ProportionBarThinDemo />
+  </div>
+</ComponentPreview>
+
+A part of zero draws nothing in the bar and keeps its line in the legend ("Written off $0").
+
+## Two bars on one axis
+
+Stack two bars in a grid with a label column, and both share one width: hours above money.
+
+<ComponentPreview
+  title="Hours above money"
+  code={"<div style={{ display: 'grid', gridTemplateColumns: 'auto minmax(0, 1fr)', gap: '20px 16px' }}>\n  <span>Hours</span>\n  <ProportionBar legend formatValue={hours} parts={HOURS} />\n  <span>Money</span>\n  <ProportionBar legend formatValue={money} parts={MONEY} />\n</div>"}
+>
+  <div style={{ width: '100%', maxWidth: '44rem' }}>
+    <ProportionBarStackedDemo />
+  </div>
+</ComponentPreview>
+
+## Fills
+
+Without `fill`, a part takes `--proportion-bar-fill-1` to `-4` by its position (the fifth takes
+`fill-1` again). Three fills are built in:
+
+- `hatched`: diagonal strokes, for time or money that does not count (not billable, written off).
+- `striped`: two close tones in alternating bands, for money earned and not yet collected.
+- `alert`: the theme's alert fill, for the one part that needs a decision. Its legend label and
+  value read in the alert text colour, so the part is named in text as well as by its fill.
+
+Any other string is used as the part's CSS `background`: a colour, a `var()`, or a gradient. A part
+narrower than 4px still draws at 4px so it can be hovered (the last part below); its value is in
+the legend and its tooltip.
+
+<ComponentPreview
+  title="Every fill"
+  code={"<ProportionBar legend parts={[\n  { label: 'fill-1', value: 3 },\n  { label: 'fill-2', value: 3 },\n  { label: 'fill-3', value: 3 },\n  { label: 'fill-4', value: 3 },\n  { label: 'hatched', value: 3, fill: 'hatched' },\n  { label: 'striped', value: 3, fill: 'striped' },\n  { label: 'alert', value: 3, fill: 'alert' },\n  { label: 'sliver', value: 0.05 },\n]} />"}
+>
+  <div style={{ width: '100%', maxWidth: '40rem' }}>
+    <ProportionBarFillsDemo />
+  </div>
+</ComponentPreview>
+
+## Empty
+
+When nothing is measured, the bar draws one neutral track.
+
+<ComponentPreview
+  title="Nothing measured"
+  code={"<ProportionBar parts={[]} />\n<ProportionBar size=\"thin\" legend parts={[{ label: 'Earned', value: 0 }]} />"}
+>
+  <div style={{ width: '100%', maxWidth: '24rem' }}>
+    <ProportionBarEmptyDemo />
+  </div>
+</ComponentPreview>
+
+## Theming
+
+Every colour is a `proportion-bar` component token (`components.proportion-bar` in `.visor.yaml`).
+Unbound, the default fills read the chart palette.
+
+| Token | Drives | Unbound |
+| --- | --- | --- |
+| `--proportion-bar-fill-1` … `-4` | Default part fills by position | `--chart-1` … `--chart-4` |
+| `--proportion-bar-hatch-color`, `--proportion-bar-hatch-gap` | The `hatched` strokes and the ground between them | `--text-tertiary`, the card at 70% |
+| `--proportion-bar-stripe-a`, `--proportion-bar-stripe-b` | The `striped` bands | `--color-success-500`, `--color-success-600` |
+| `--proportion-bar-alert-bg`, `--proportion-bar-alert-text` | The `alert` fill and its legend text | `--interactive-destructive-bg`, `--text-error` |
+| `--proportion-bar-track-bg` | The empty track | `--surface-muted` |
+
+Paper binds them to its money and hours colours: Slate in light and Deep ocean at night for the
+fills, Tide for `fill-4`, Emerald stripes for `striped`, and coral for `alert`. Every fill but coral
+clears 3:1 on the card; coral is under 3:1 on the light card, which is why the legend names it in
+text.
+
+## Installation
+
+```bash
+npx visor add proportion-bar
+```
+
+This copies two files into your project:
+
+- `components/ui/proportion-bar/proportion-bar.tsx` — the component
+- `components/ui/proportion-bar/proportion-bar.module.css` — the styles
+
+## API Reference
+
+### ProportionBarProps
+
+<PropsTable component="proportion-bar" />
+
+The component also accepts all standard `<div>` HTML attributes, on the root.
+
+## Accessibility
+
+- The bar is one `role="img"` whose accessible name sums it: "186.5 h: On a package 92.25 h,
+  Outside a package 41.5 h, …". Pass `summary` to say it differently.
+- The legend is a plain list after the bar, readable as text.
+- Each part carries a `title` with its label and value, so a sliver can be hovered.
+- The alert part is named in the alert text colour, never by its fill alone.

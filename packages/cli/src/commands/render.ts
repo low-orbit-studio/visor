@@ -448,6 +448,18 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       props: `{ "aria-label": "Hours Website embeds bills", value: 12.5, savedValue: 8, min: 8, max: 16.75, hue: 339, size: "lg", marks: [{ value: 10, label: "High", hatchPast: true }], evidence: { value: 10.5, agent: 3, proposed: 1.25 }, minLabel: "Low", maxLabel: "Ceiling allows", formatValue: (h) => h + " h", onValueChange: () => {}, style: { width: 640 } }`,
     },
   },
+  // VI-766: hours by bucket with a hatched and an alert part, money in thin with stripes, and empty.
+  "proportion-bar": {
+    default: {
+      export: "ProportionBar",
+      props: `{ style: { width: 520 }, legend: true, formatValue: function (v) { return v + " h"; }, parts: [{ label: "On a package", value: 92.25 }, { label: "Outside a package", value: 41.5 }, { label: "Covered", value: 18, fill: "var(--proportion-bar-fill-3)" }, { label: "Investment", value: 21.5, fill: "var(--proportion-bar-fill-4)" }, { label: "Not billable", value: 4, fill: "hatched" }, { label: "Unresolved", value: 9.25, fill: "alert" }] }`,
+    },
+    thin: {
+      export: "ProportionBar",
+      props: `{ size: "thin", style: { width: 360 }, legend: true, parts: [{ label: "Invoiced", value: 12455 }, { label: "Waiting", value: 9025, fill: "striped" }, { label: "Written off", value: 0, fill: "hatched" }] }`,
+    },
+    empty: { export: "ProportionBar", props: `{ style: { width: 360 }, parts: [] }` },
+  },
   // VI-767: a row meter past its heads-up tick, and a contract meter with zones and mark text.
   meter: {
     default: {

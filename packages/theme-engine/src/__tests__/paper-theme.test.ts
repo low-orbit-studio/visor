@@ -189,6 +189,28 @@ describe("VI-749: paper theme", () => {
     expect(css).toContain("--admin-shell-topbar-bg: var(--surface-page);");
   });
 
+  it("draws the ProportionBar's parts at 3:1 on the card, coral named in AA text (VI-766)", () => {
+    const pb = data.config.components!["proportion-bar"] as Record<string, string | { light: string; dark: string }>;
+    const at = (key: string, mode: Mode) => {
+      const v = pb[key];
+      return typeof v === "string" ? v : v[mode];
+    };
+    const fails: string[] = [];
+    for (const mode of MODES) {
+      for (const key of ["fill-1", "fill-2", "fill-3", "fill-4", "hatch-color", "stripe-a", "stripe-b"]) {
+        const r = ratio(at(key, mode), "surface-card", mode);
+        if (r < 3) fails.push(`${mode} ${r.toFixed(2)} ${key} on surface-card`);
+      }
+      // Coral fills under 3:1 on the light card, so the legend names it in text-error.
+      for (const t of ["text-error", "text-primary", "text-secondary"]) {
+        const r = ratio(t, "surface-card", mode);
+        if (r < 4.5) fails.push(`${mode} ${r.toFixed(2)} legend ${t} on surface-card`);
+      }
+    }
+    expect(fails).toEqual([]);
+    expect(at("alert-bg", "light")).toBe("#f28b6d");
+  });
+
   it("folds the AdminShell sidebar on Paper's 480ms ease (VI-770)", () => {
     const css = nextjsAdapter(data);
     expect(css).toContain("--admin-shell-rail-duration: 480ms;");

@@ -108,6 +108,34 @@ components:
     inactive-text:
       light: "#55575b"
       dark: "#b1b8bf"
+  # VI-766: the money and hours bars (LO-344). Slate in light, Deep ocean at night, Tide
+  # for investment, Emerald stripes for Waiting, coral only for the alert part.
+  proportion-bar:
+    fill-1:
+      light: "#2c3e50"
+      dark: "#cde4ec"
+    fill-2:
+      light: "#5d7387"
+      dark: "#7fa2b4"
+    fill-3:
+      light: "#6a8094"
+      dark: "#6a8ea1"
+    fill-4:
+      light: "#1a5f7a"
+      dark: "#5aabbf"
+    hatch-color:
+      light: "#7b858f"
+      dark: "#5f7d8e"
+    stripe-a:
+      light: "#2f8566"
+      dark: "#2f9a76"
+    stripe-b:
+      light: "#25735a"
+      dark: "#3cb08a"
+    alert-bg: "#f28b6d"
+    track-bg:
+      light: "rgba(30, 31, 33, 0.07)"
+      dark: "rgba(245, 245, 240, 0.09)"
   switch:
     track-bg:
       light: "rgba(30, 31, 33, 0.14)"

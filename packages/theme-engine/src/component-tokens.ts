@@ -141,6 +141,7 @@ const TEXT = "components/ui/text/text.module.css";
 const INLINE_EDIT = "components/ui/inline-edit/inline-edit.module.css";
 const SAVE_STATUS = "components/ui/save-status/save-status.module.css";
 const SEGMENTED_CONTROL = "components/ui/segmented-control/segmented-control.module.css";
+const PROPORTION_BAR = "components/ui/proportion-bar/proportion-bar.module.css";
 const TOGGLE_GROUP = "components/ui/toggle-group/toggle-group.module.css";
 const RADIO_GROUP = "components/ui/radio-group/radio-group.module.css";
 const TOOLTIP = "components/ui/tooltip/tooltip.module.css";
@@ -1286,6 +1287,28 @@ const hairlineFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-766: one measured total split into parts. A theme binds the default fills by
+// position, the built-in hatched, striped and alert fills, and the empty track.
+const proportionBarFamily: ComponentTokenFamily = {
+  family: "proportion-bar",
+  prefix: "proportion-bar",
+  description:
+    "ProportionBar — the default part fills by position, the built-in hatched, striped and alert fills, the alert's legend text and the empty track.",
+  tokens: [
+    { key: "fill-1", property: "background", description: "First part's fill when it sets none (then every fourth).", consumers: at(PROPORTION_BAR, "var(--chart-1, #2563eb)") },
+    { key: "fill-2", property: "background", description: "Second part's default fill.", consumers: at(PROPORTION_BAR, "var(--chart-2, #16a34a)") },
+    { key: "fill-3", property: "background", description: "Third part's default fill.", consumers: at(PROPORTION_BAR, "var(--chart-3, #d97706)") },
+    { key: "fill-4", property: "background", description: "Fourth part's default fill.", consumers: at(PROPORTION_BAR, "var(--chart-4, #0891b2)") },
+    { key: "hatch-color", property: "background (hatched stroke)", description: "Stroke of the `hatched` fill (not billable, written off).", consumers: at(PROPORTION_BAR, "var(--text-tertiary, #9ca3af)") },
+    { key: "hatch-gap", property: "background (hatched gap)", description: "Ground between the hatch strokes.", consumers: at(PROPORTION_BAR, "color-mix(in srgb, var(--surface-card, #ffffff) 70%, transparent)") },
+    { key: "stripe-a", property: "background (striped band)", description: "First band of the `striped` fill (earned, not yet collected).", consumers: at(PROPORTION_BAR, "var(--color-success-500, #22c55e)") },
+    { key: "stripe-b", property: "background (striped band)", description: "Second band of the `striped` fill.", consumers: at(PROPORTION_BAR, "var(--color-success-600, #16a34a)") },
+    { key: "alert-bg", property: "background", description: "The `alert` fill: the one part that needs a decision.", consumers: at(PROPORTION_BAR, "var(--interactive-destructive-bg, #dc2626)") },
+    { key: "alert-text", property: "color", description: "The alert part's legend label and value.", consumers: at(PROPORTION_BAR, "var(--text-error, #b91c1c)") },
+    { key: "track-bg", property: "background", description: "The one neutral track drawn when nothing is measured.", consumers: at(PROPORTION_BAR, "var(--surface-muted, #e5e7eb)") },
+  ],
+};
+
 // VI-615: the single-select pill group. Its resting edge is the shared `control` edge
 // (no token of its own), so `control.edge-width: 0` turns it off.
 const segmentedControlFamily: ComponentTokenFamily = {
@@ -1410,6 +1433,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   textFamily,
   switchFamily,
   saveStatusFamily,
+  proportionBarFamily,
   segmentedControlFamily,
   toggleGroupFamily,
   radioCardFamily,
