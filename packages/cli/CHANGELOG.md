@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.46.0
+
+### Minor Changes
+
+- a639d0b: Add the `kanban-board` block: stage columns in one row, cards that move between columns by native drag and drop or by keyboard (Space, Left/Right, Space; Escape cancels) with aria-live announcements, arrow-key focus between cards, a count and total in each column header, and collapsed side rails that expand on click and accept drops. `npx visor add kanban-board`.
+
+### Patch Changes
+
+- a0571e0: `visor add data-table` and `visor add --block admin-list-page` now install `@tanstack/react-table@^8.21.3` instead of the latest major. The data table is written for the v8 API, so an unpinned install resolved to v9 and failed the consumer's type check. Registry dependencies may now carry a version range (`name@range`).
+- ed87108: VI-753: AdminShell's rules are now theme tokens. The block reads `--admin-shell-sidebar-border`, `--admin-shell-sidebar-header-border`, `--admin-shell-sidebar-footer-border`, `--admin-shell-topbar-bg` and `--admin-shell-topbar-border`, each falling back to the value it drew before, so an unbound theme renders unchanged. The theme engine adds them as the `admin-shell` component-token family (`components.admin-shell` in `.visor.yaml`). The `paper` theme binds the borders to `none` and the topbar to `var(--surface-page)`, so its shell is borderless without app CSS.
+- Updated dependencies [ed87108]
+- Updated dependencies [58091ed]
+  - @loworbitstudio/visor-theme-engine@0.35.0
+
 ## 1.45.1
 
 ### Patch Changes
