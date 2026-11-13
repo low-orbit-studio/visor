@@ -1,0 +1,288 @@
+/*
+ * BillingSlider: how many hours a package bills. The track starts at the floor,
+ * fills in the hue's strong fill to the thumb, stripes past the hatch mark,
+ * carries the evidence along its foot and ends at the caller's max.
+ * `hue` sets --billing-slider-hue-fill-strong / -ink from Paper's project hues;
+ * without them (or on another theme) the slider falls back to neutrals.
+ * Geometry is the LO-345 frame (the billing slider in the Client Money frames).
+ */
+.root {
+  --_fill: var(--billing-slider-hue-fill-strong, var(--surface-interactive-active, #e5e7eb));
+  --_ink: var(--billing-slider-hue-ink, var(--text-primary, #111827));
+  --_gap: var(--billing-slider-gap-color, var(--color-success-600, #16a34a));
+  --_hatch: 4px;
+  --_rail-h: 40px;
+  --_rail-r: 13px;
+  --_thumb-w: 26px;
+  --_thumb-h: 52px;
+  --_grip-inset: 16px;
+  --_foot-h: 5px;
+  --_ring: 3px;
+  display: block;
+  min-width: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.root[data-size="lg"] {
+  --_rail-h: 56px;
+  --_rail-r: 16px;
+  --_thumb-w: 30px;
+  --_thumb-h: 70px;
+  --_grip-inset: 24px;
+  --_foot-h: 7px;
+}
+
+.slider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: var(--_rail-h);
+  touch-action: none;
+  user-select: none;
+  cursor: pointer;
+}
+
+.root[data-disabled] .slider {
+  cursor: not-allowed;
+}
+
+.track {
+  position: relative;
+  flex-grow: 1;
+  height: 100%;
+  border-radius: var(--_rail-r);
+  background: var(--billing-slider-track-bg, color-mix(in srgb, var(--text-primary, #111827) 7%, transparent));
+}
+
+.track > * {
+  position: absolute;
+}
+
+/* One hairline per whole unit along the top edge. */
+.ruler {
+  inset: 0;
+  border-radius: var(--_rail-r);
+  overflow: hidden;
+}
+
+.ruler i {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 7px;
+  background: color-mix(in srgb, var(--text-primary, #111827) 26%, transparent);
+}
+
+.fill {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: var(--_rail-r) 0 0 var(--_rail-r);
+  background: var(--_fill);
+}
+
+/* Past the hatch mark (the package's high): ink stripes. */
+.past {
+  top: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--_ink) 55%, transparent) 0 var(--_hatch),
+    transparent var(--_hatch) calc(var(--_hatch) * 2)
+  );
+}
+
+/* The gap between the thumb and the evidence tick: money at stake. */
+.gap {
+  top: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    135deg,
+    var(--_gap) 0 var(--_hatch),
+    color-mix(in srgb, var(--_gap) 30%, transparent) var(--_hatch) calc(var(--_hatch) * 2)
+  );
+}
+
+/* Evidence along the foot: worked solid, agent dotted, proposed pale. */
+.evidence,
+.agent,
+.proposed {
+  bottom: 0;
+  height: var(--_foot-h);
+}
+
+.evidence {
+  left: 0;
+  border-radius: 0 0 0 var(--_rail-r);
+  background: var(--_ink);
+}
+
+.agent {
+  background: repeating-linear-gradient(90deg, var(--_ink) 0 3px, transparent 3px 5px);
+}
+
+.proposed {
+  background: color-mix(in srgb, var(--_ink) 30%, transparent);
+}
+
+/* A mark: a notch across the track, proud of it by 4px. Not a stop. */
+.mark {
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--text-primary, #111827) 55%, transparent);
+}
+
+/* The evidence tick, full height. */
+.tick {
+  top: 3px;
+  bottom: 3px;
+  width: 3px;
+  margin-left: -1.5px;
+  border-radius: 3px;
+  background: var(--_ink);
+}
+
+.tick[data-variant="proposed"] {
+  width: 0;
+  margin-left: -1px;
+  border-radius: 0;
+  background: none;
+  border-left: 2px dashed color-mix(in srgb, var(--_ink) 55%, transparent);
+}
+
+/* Evidence past the end: an arrow at the end instead of a tick. */
+.tick[data-out] {
+  top: 50%;
+  bottom: auto;
+  width: 0;
+  height: 0;
+  margin: -6px 0 0 -2px;
+  border: 6px solid transparent;
+  border-left: 8px solid var(--_ink);
+  border-radius: 0;
+  background: none;
+}
+
+/*
+ * The thumb is 2px wide so Radix centres it on the value (it shifts a wide thumb
+ * inward by up to half its width to keep it inside the track; at 2px that is 1px).
+ * The pill is drawn around it, overhanging the track's ends as the frame does.
+ */
+.thumb {
+  position: relative;
+  display: block;
+  width: 2px;
+  height: var(--_thumb-h);
+  outline: none;
+  cursor: grab;
+}
+
+.thumb::before {
+  content: "";
+  position: absolute;
+  inset: 0 calc(50% - var(--_thumb-w) / 2);
+  border-radius: calc(var(--_thumb-w) / 2);
+  background: var(--billing-slider-thumb-bg, var(--surface-popover, #ffffff));
+  box-shadow: 0 0 0 var(--_ring) var(--_ink), var(--shadow-md);
+}
+
+/* Two grip lines down the middle of the pill. */
+.thumb::after {
+  content: "";
+  position: absolute;
+  top: var(--_grip-inset);
+  bottom: var(--_grip-inset);
+  left: calc(50% - 4px);
+  width: 2px;
+  border-radius: 2px;
+  background: var(--billing-slider-thumb-grip, color-mix(in srgb, var(--_ink) 45%, transparent));
+  box-shadow: 6px 0 0 var(--billing-slider-thumb-grip, color-mix(in srgb, var(--_ink) 45%, transparent));
+}
+
+.slider:active .thumb {
+  cursor: grabbing;
+}
+
+.thumb:focus-visible::before {
+  box-shadow: 0 0 0 var(--_ring) var(--_ink),
+    0 0 0 calc(var(--_ring) + var(--focus-ring-offset, 2px) + var(--focus-ring-width, 2px)) var(--border-focus, #111827),
+    var(--shadow-md);
+}
+
+.root[data-disabled] .thumb {
+  cursor: not-allowed;
+}
+
+.root[data-disabled] .thumb::before {
+  box-shadow: 0 0 0 var(--_ring) color-mix(in srgb, var(--_ink) 35%, transparent);
+}
+
+.root[data-status="saving"] .thumb::before {
+  animation: pulse var(--motion-duration-1000, 1000ms) var(--motion-easing-default, ease-in-out) infinite;
+}
+
+@keyframes pulse {
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--_ink) 30%, transparent), var(--shadow-md);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root[data-status="saving"] .thumb::before {
+    animation: none;
+  }
+}
+
+/* The value bubble: shown while the thumb has focus (dragging focuses it). */
+.bubble {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+  opacity: 0;
+  padding: calc(var(--spacing-1, 0.25rem) * 1.25) calc(var(--spacing-2, 0.5rem) * 1.25);
+  border-radius: 10px;
+  background: var(--text-primary, #111827);
+  color: var(--surface-page, #ffffff);
+  font-size: var(--font-size-xs, 0.75rem);
+  line-height: 18px;
+  font-weight: var(--font-weight-bold, 700);
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    transform var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.thumb:focus .bubble {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* Labels under the track: the floor at the left, marks at their place, the end at the right. */
+.labels {
+  position: relative;
+  height: 18px;
+  margin-top: calc(var(--spacing-1, 0.25rem) * 2.25);
+  font-size: var(--font-size-xs, 0.75rem);
+  line-height: 18px;
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-secondary, #4b5563);
+}
+
+.labels span {
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+}
+
+.labels span[data-align="center"] {
+  transform: translateX(-50%);
+}
+
+.labels b {
+  color: var(--text-primary, #111827);
+  font-weight: var(--font-weight-bold, 700);
+}

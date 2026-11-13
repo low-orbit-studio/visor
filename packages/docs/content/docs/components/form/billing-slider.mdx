@@ -1,0 +1,79 @@
+---
+title: Billing Slider
+description: A range slider for how many hours a package bills, with a floor, marks, evidence along the track and a striped gap.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { BillingSliderHeroDemo, BillingSliderStatesDemo } from '@/components/ui/billing-slider-demos';
+
+BillingSlider sets how many hours a by-estimate package bills. The track starts at the floor (the signed low), carries the package's high as a mark, and ends at a maximum the caller computes (as far as the ceiling allows). What was worked sits on the track as evidence, so the operator can see how far the bill is from it. `hue` reads Paper's project hues, so switch the site theme to **Paper** (light or dark) to see the colours as designed. On other themes the slider falls back to neutrals.
+
+## The slider
+
+Drag it anywhere on the track, or use the keys. The filled range runs from the floor to the thumb. The notch is the high: a mark, not a stop. Past it the range turns to stripes. Along the track's foot, the solid strip and tick are the worked hours; counted agent hours extend them dotted (switch them off below and the tick moves back); proposed hours extend them pale, with a dashed tick. The striped emerald gap between the thumb and the tick is money at stake: undecided, and worked past what it bills.
+
+<ComponentPreview
+  title="Billing slider"
+  code={"import { BillingSlider } from '@/components/ui/billing-slider/billing-slider';\n\n<BillingSlider\n  aria-label=\"Hours Website embeds bills\"\n  size=\"lg\"\n  value={hours}\n  onValueChange={setHours}\n  onValueCommit={save}\n  savedValue={saved}\n  min={8}\n  max={16.75}\n  hue={339}\n  marks={[{ value: 10, label: 'High', hatchPast: true }]}\n  evidence={{ value: 10.5, agent: countAgent ? 3 : undefined, proposed: 1.25 }}\n  gap\n  minLabel=\"Low\"\n  maxLabel=\"Ceiling allows\"\n  formatValue={(h) => `${h} h`}\n  valueText={(h) => `Bills ${h} h, $${h * 120}`}\n/>"}
+>
+  <BillingSliderHeroDemo />
+</ComponentPreview>
+
+## Keys
+
+| Key | Does |
+|---|---|
+| <kbd>←</kbd> <kbd>→</kbd> (or <kbd>↓</kbd> <kbd>↑</kbd>) | One step (a quarter hour) |
+| <kbd>Shift</kbd> + arrows, <kbd>Page Up</kbd> <kbd>Page Down</kbd> | Four steps (an hour) |
+| <kbd>Home</kbd> | The floor |
+| <kbd>End</kbd> | The end |
+| <kbd>Enter</kbd> | Calls `onValueCommit` |
+| <kbd>Esc</kbd> | Goes back to `savedValue` |
+
+Arrow keys only move the thumb. Saving happens on <kbd>Enter</kbd> or when a drag ends, so stepping through values never saves each one.
+
+## States
+
+Each row is live: drag it, or focus it and use the keys. Enter saves after a short wait. The failed row snaps back to its saved value, which is the caller's job: on `status="failed"`, put `value` back to `savedValue`.
+
+<ComponentPreview
+  title="Every state"
+  code={"<BillingSlider value={12.5} savedValue={8} min={8} max={16.75} marks={[{ value: 10, label: 'High', hatchPast: true }]} evidence={{ value: 12.5 }} … />\n<BillingSlider value={16.75} min={8} max={16.75} evidence={{ value: 18 }} … />\n<BillingSlider value={9.5} savedValue={8} status=\"saving\" … />\n<BillingSlider value={8} disabled … />"}
+>
+  <BillingSliderStatesDemo />
+</ComponentPreview>
+
+## Colour
+
+`hue` takes a Paper project-hue angle (75, 99, 123 … 339) and sets two variables on the slider: `--billing-slider-hue-fill-strong` (the filled range) and `--billing-slider-hue-ink` (the thumb ring, the evidence, the ticks and the stripes past the high). For a colour that is not a Paper hue, leave `hue` off and set them yourself.
+
+A theme binds the rest through the `billing-slider` [component tokens](/docs/themes/component-tokens): `track-bg`, `thumb-bg`, `thumb-grip` and `gap-color`. Paper draws the gap in Emerald, the money-at-stake colour, never coral. Every part carries a `data-slot` (`billing-slider-track`, `-fill`, `-past`, `-gap`, `-evidence`, `-agent`, `-proposed`, `-mark`, `-tick`, `-thumb`, `-labels`) for anything else.
+
+## Installation
+
+```bash
+npx visor add billing-slider
+```
+
+This copies two files into your project:
+
+- `components/ui/billing-slider/billing-slider.tsx` — the component
+- `components/ui/billing-slider/billing-slider.module.css` — the styles
+
+## API Reference
+
+### BillingSliderProps
+
+<PropsTable component="billing-slider" />
+
+BillingSlider renders a `<div>` and accepts all standard div attributes. `aria-label` and `aria-labelledby` go to the thumb.
+
+## Accessibility
+
+- The thumb has `role="slider"` with `aria-valuemin` (the floor), `aria-valuemax` (the end) and `aria-valuenow`. Pass `valueText` so `aria-valuetext` reads the value and its amount ("Bills 9.5 h, $1,140").
+- Name it with `aria-label` or `aria-labelledby`; both land on the thumb.
+- Marks, evidence, ticks and stripes are decoration on the track. Say what they mean in text next to the slider (a legend, or the message under it).
+- Past the high and in the gap, stripes carry a pattern as well as a colour (WCAG 1.4.1).
+- The labels row and the bubble are 13px on Paper, in the secondary and primary text colours, which meet AA on the page and card surfaces in light and dark.
+- Saving pulses the thumb's ring; with reduced motion the pulse is off.

@@ -437,6 +437,17 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       props: `{ style: { width: 420 }, heading: "You\u2019re all set", description: "Your bookings, their fees and your payments live on your dashboard.", items: [{ content: [React.createElement("b", { key: "b" }, "Your info"), " is saved."] }, { content: [React.createElement("b", { key: "b" }, "Your W-9"), " is signed and released to Animal Brooklyn."] }], action: React.createElement("button", { type: "button" }, "Go to Dashboard") }`,
     },
   },
+  // VI-768: a row slider with the gap open, and the hero past the high with agent and proposed evidence.
+  "billing-slider": {
+    default: {
+      export: "BillingSlider",
+      props: `{ "aria-label": "Hours Website embeds bills", value: 8, savedValue: 8, min: 8, max: 16.75, hue: 339, marks: [{ value: 10, label: "High", hatchPast: true }], evidence: { value: 10.5 }, gap: true, minLabel: "Low", maxLabel: "Ceiling allows", formatValue: (h) => h + " h", onValueChange: () => {}, style: { width: 560 } }`,
+    },
+    hero: {
+      export: "BillingSlider",
+      props: `{ "aria-label": "Hours Website embeds bills", value: 12.5, savedValue: 8, min: 8, max: 16.75, hue: 339, size: "lg", marks: [{ value: 10, label: "High", hatchPast: true }], evidence: { value: 10.5, agent: 3, proposed: 1.25 }, minLabel: "Low", maxLabel: "Ceiling allows", formatValue: (h) => h + " h", onValueChange: () => {}, style: { width: 640 } }`,
+    },
+  },
   // VI-767: a row meter past its heads-up tick, and a contract meter with zones and mark text.
   meter: {
     default: {

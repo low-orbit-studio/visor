@@ -1,0 +1,120 @@
+name: BillingSlider
+description: A range slider for how many hours a package bills. The track starts at a floor, carries marks as notches, stripes past the high, draws worked, agent and proposed hours along its foot with a tick at the evidence, stripes the gap between the thumb and that tick, and ends at a computed maximum.
+extends: HTMLDivElement
+category: form
+
+when_to_use:
+  - Choosing how many hours a by-estimate package bills, between its signed low and what the ceiling allows
+  - An amount the operator sets against evidence, where the evidence should sit on the track itself
+  - A range with a soft limit inside it (a package's high) that the value may pass with a reason
+  - Showing money at stake between what something bills and what was worked
+
+when_not_to_use:
+  - A plain numeric value or a two-thumb range (use Slider)
+  - A slider with a label and a value readout and nothing else (use SliderControl)
+  - Use against a limit that nobody edits (use Meter)
+  - Typing an exact number (use NumberInput)
+
+why: >
+  Slider has no marks, no evidence and nothing past a soft limit, so the
+  billing control could not be built from it. BillingSlider keeps Radix
+  Slider's pointer and accessibility model and draws the rest itself: the
+  filled range in the hue's strong fill, a notch for each mark (a mark is not
+  a stop), stripes past the mark with `hatchPast`, the evidence strip, its
+  dotted agent and pale proposed extensions and the ticks along the track's
+  foot, and the money-at-stake gap. Keys are its own: arrows step, Shift steps
+  four times, Home and End go to the floor and the end, Enter commits and
+  Escape returns to `savedValue`, so an arrow press never saves. The thumb
+  carries `aria-valuetext` for the value and its amount.
+
+variants:
+  size: [md, lg]
+  status: [saving, failed]
+
+props:
+  - name: value
+    type: number
+    required: true
+    description: What it bills. Controlled.
+  - name: onValueChange
+    type: "(value: number) => void"
+    required: true
+    description: Called while dragging and on every key step.
+  - name: onValueCommit
+    type: "(value: number) => void"
+    description: Enter, or releasing the thumb after a drag. Arrow keys never commit.
+  - name: savedValue
+    type: number
+    description: The last saved value. Escape returns the thumb here.
+  - name: min
+    type: number
+    required: true
+    description: The floor. Nothing below it.
+  - name: max
+    type: number
+    required: true
+    description: The track's end, computed by the caller.
+  - name: step
+    type: number
+    default: "0.25"
+    description: The arrow step. Shift + arrows step four times it (an hour).
+  - name: marks
+    type: "{ value: number; label?: ReactNode; hatchPast?: boolean }[]"
+    default: "[]"
+    description: Notches across the track with their text in the labels row. Past the mark with `hatchPast` the filled range stripes.
+  - name: evidence
+    type: "{ value: number; agent?: number; proposed?: number }"
+    description: Worked hours as a solid strip along the foot with a tick at the end. `agent` extends it dotted and moves the tick; `proposed` extends it pale with a dashed tick. A tick past max becomes an arrow at the end.
+  - name: gap
+    type: boolean
+    default: "false"
+    description: Stripe the gap between the thumb and the evidence tick, in --billing-slider-gap-color.
+  - name: hue
+    type: number
+    description: A Paper project-hue angle (75 to 339). Reads --paper-hue-<angle>-fill-strong and -ink.
+  - name: size
+    type: '"md" | "lg"'
+    default: '"md"'
+    description: '"md" is the 40px row track; "lg" is the 56px hero track.'
+  - name: status
+    type: '"saving" | "failed"'
+    description: '"saving" pulses the thumb. On "failed" put value back to savedValue.'
+  - name: disabled
+    type: boolean
+    default: "false"
+  - name: formatValue
+    type: "(value: number) => string"
+    description: Formats a value for the bubble and the labels row.
+  - name: valueText
+    type: "(value: number) => string"
+    description: aria-valuetext, the formatted value and its amount. Defaults to formatValue.
+  - name: minLabel
+    type: ReactNode
+    description: Text before the floor's value ("Low").
+  - name: maxLabel
+    type: ReactNode
+    description: Text before the end's value ("Ceiling allows").
+
+dependencies:
+  - "@radix-ui/react-slider"
+
+preview_url: "https://visor.loworbit.studio/docs/components/form/billing-slider"
+
+example: |
+  <BillingSlider
+    aria-label="Hours Website embeds bills"
+    value={hours}
+    onValueChange={setHours}
+    onValueCommit={save}
+    savedValue={saved}
+    min={8}
+    max={16.75}
+    hue={339}
+    marks={[{ value: 10, label: "High", hatchPast: true }]}
+    evidence={{ value: 10.5, agent: 3 }}
+    gap
+    minLabel="Low"
+    maxLabel="Ceiling allows"
+    formatValue={(h) => `${h} h`}
+    valueText={(h) => `Bills ${h} h, $${h * 120}`}
+  />
