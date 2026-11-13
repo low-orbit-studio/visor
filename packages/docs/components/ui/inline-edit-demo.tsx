@@ -51,3 +51,30 @@ export function InlineEditEdgesOffDemo() {
     </div>
   );
 }
+
+/* ─── InlineEditAsyncDemo ───────────────────────────────────────────────── */
+
+/** A fake server action: takes a second, and refuses any name containing "fail". */
+function saveRiderTitle(next: string): Promise<{ error?: string }> {
+  return new Promise((resolve) =>
+    setTimeout(() => resolve(/fail/i.test(next) ? { error: 'That title is already taken.' } : {}), 1000)
+  );
+}
+
+export function InlineEditAsyncDemo() {
+  const [value, setValue] = React.useState('Technical rider');
+  return (
+    <p style={{ margin: 0, fontSize: '14px', lineHeight: 1.5 }}>
+      <InlineEdit
+        label="Rider title"
+        value={value}
+        defaultValue="Rider"
+        onCommit={async (next) => {
+          const result = await saveRiderTitle(next);
+          if (!result.error) setValue(next);
+          return result;
+        }}
+      />
+    </p>
+  );
+}

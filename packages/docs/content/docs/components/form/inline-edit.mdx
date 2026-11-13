@@ -6,6 +6,7 @@ description: Inline-editable text — the text, then a pencil. A click or Enter 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import {
+  InlineEditAsyncDemo,
   InlineEditBodyDemo,
   InlineEditEdgesOffDemo,
   InlineEditHeadingDemo,
@@ -49,6 +50,17 @@ Pass `pencil={false}` when the design draws the text alone. The text is then the
   <InlineEditNoPencilDemo />
 </ComponentPreview>
 
+## Saving to a server
+
+`onCommit` may return a promise, such as a server action's. While it runs, the field stays open, read-only and marked `aria-busy`, its text in the secondary ink. When it resolves, the field closes and focus goes back to the pencil (or stays where Tab or a click took it). If it rejects, or resolves to `{ error: string }`, the message shows under the field the way [FieldError](/docs/components/form/field) shows one, the input draws the error edge and keeps what was typed, and Enter tries again. Escape gives up and restores `value`. Try a title containing "fail".
+
+<ComponentPreview
+  title="InlineEdit — an async save that can fail"
+  code={"<InlineEdit\n  label=\"Rider title\"\n  value={value}\n  onCommit={async (next) => {\n    const result = await saveRiderTitle(next); // { error?: string }\n    if (!result.error) setValue(next);\n    return result;\n  }}\n/>"}
+>
+  <InlineEditAsyncDemo />
+</ComponentPreview>
+
 ## Keyboard
 
 | Key | Action |
@@ -56,7 +68,7 @@ Pass `pencil={false}` when the design draws the text alone. The text is then the
 | `Enter` or `Space` (on the pencil, or on the text when `pencil={false}`) | Opens the input, with the text selected |
 | `Enter` | Commits, and returns focus to the pencil (or the text) |
 | `Tab` | Commits, and moves on to the next field |
-| `Escape` | Restores the text without committing |
+| `Escape` | Restores the text without committing (after a failed save, too) |
 
 Blur commits too. `onCommit` receives the trimmed text, and is not called when nothing changed.
 
@@ -75,7 +87,9 @@ At rest, InlineEdit is text and a pencil, with no edge. While editing, the input
 
 The pencil is the same mark as an icon-only [Button](/docs/components/general/button): it reads `--button-icon-size` (the glyph), `--button-icon-pad` (the hit target, drawn on `::before` so it adds no height to the line) and `--button-icon-ghost-color` (the ink at rest). The default's muted colour is `--text-tertiary`. With `pencil={false}`, the text button's hover underline reads `--inline-edit-underline-style` (default `solid`).
 
-The input takes its size, weight and line height from `font: inherit`, which comes from Visor's element reset (`@import "@loworbitstudio/visor-core/reset"`), as it does for every form control. Tailwind's preflight sets the same thing.
+The input (and the text button when `pencil={false}`) takes its size, weight and line height from `font: inherit`, which comes from Visor's element reset (`@import "@loworbitstudio/visor-core/reset"`), as it does for every form control. Tailwind's preflight sets the same thing. Without either, the browser's 13px control font shows, in InlineEdit and in every other Visor control.
+
+A failed save's edge reads `--control-invalid-ring-color` (falling back to `--border-error`), and its message `--text-error`, like FieldError.
 
 ## When not to use
 

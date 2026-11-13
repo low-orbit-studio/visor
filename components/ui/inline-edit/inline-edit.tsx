@@ -13,8 +13,13 @@ export interface InlineEditProps
   value: string
   /** Shown, muted, while `value` is empty. Committing an empty string brings it back. */
   defaultValue?: string
-  /** Called with the trimmed text on Enter, blur or Tab, only when it differs from `value`. */
-  onCommit: (value: string) => void
+  /**
+   * Called with the trimmed text on Enter, blur or Tab, only when it differs from `value`.
+   * Return a promise to save asynchronously: the field stays open and busy until it settles.
+   * If it rejects, or resolves to `{ error: string }`, the message shows under the field,
+   * the typed text stays, and Enter retries.
+   */
+  onCommit: (value: string) => void | Promise<unknown>
   /** The field's name, e.g. "Section title". Names the input, and the pencil as "Edit {label}". */
   label: string
   /** Accessible name of the pencil. Defaults to `Edit {label}`. */
@@ -58,6 +63,9 @@ const InlineEdit = React.forwardRef<HTMLElement, InlineEditProps>(
     // Where focus goes after the next render: into the input when editing
     // starts, back to the trigger after Enter or Escape.
     const pendingFocus = React.useRef<"input" | "trigger" | null>(null)
+    const [saving, setSaving] = React.useState(false)
+    const [error, setError] = React.useState<string>()
+    const errorId = React.useId()
 
     React.useEffect(() => {
       if (pendingFocus.current === "input" && inputRef.current) {
@@ -71,6 +79,7 @@ const InlineEdit = React.forwardRef<HTMLElement, InlineEditProps>(
 
     const start = () => {
       settled.current = false
+      setError(undefined)
       pendingFocus.current = "input"
       setDraft(value)
       setEditing(true)
@@ -79,10 +88,29 @@ const InlineEdit = React.forwardRef<HTMLElement, InlineEditProps>(
     const finish = (commit: boolean, returnFocus: boolean) => {
       if (settled.current) return
       settled.current = true
-      if (returnFocus) pendingFocus.current = "trigger"
-      setEditing(false)
       const next = draft.trim()
-      if (commit && next !== value) onCommit(next)
+      // After a failed save, Enter retries even if the parent already took the value.
+      const result = commit && (next !== value || error !== undefined) ? onCommit(next) : undefined
+      if (!(result instanceof Promise)) {
+        if (returnFocus) pendingFocus.current = "trigger"
+        setError(undefined)
+        setEditing(false)
+        return
+      }
+      setSaving(true)
+      setError(undefined)
+      result.then(saveError, (reason) => messageOf(reason) ?? "Could not save.").then((message) => {
+        setSaving(false)
+        if (message) {
+          settled.current = false
+          setError(message)
+          return
+        }
+        // Enter keeps focus in the input while saving; hand it back to the trigger.
+        // A blur or Tab has already moved it on, so leave it there.
+        if (document.activeElement === inputRef.current) pendingFocus.current = "trigger"
+        setEditing(false)
+      })
     }
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -104,29 +132,41 @@ const InlineEdit = React.forwardRef<HTMLElement, InlineEditProps>(
         ref={ref as React.Ref<never>}
         data-slot="inline-edit"
         data-state={editing ? "editing" : "rest"}
+        aria-busy={saving || undefined}
         className={cn(styles.root, className)}
         {...props}
       >
         {editing ? (
-          // The field is sized by a hidden copy of the draft (CSS ::after), so
-          // the input is as wide as the text it replaces, not its container.
-          <span data-slot="inline-edit-field" className={styles.field} data-value={draft || defaultValue}>
-            <input
-              ref={inputRef}
-              type="text"
-              // size={1} drops the input's own ~20-character width, so only the
-              // hidden copy of the draft sizes the field.
-              size={1}
-              data-slot="inline-edit-input"
-              className={styles.input}
-              aria-label={label}
-              value={draft}
-              placeholder={defaultValue}
-              onChange={(event) => setDraft(event.target.value)}
-              onKeyDown={onKeyDown}
-              onBlur={() => finish(true, false)}
-            />
-          </span>
+          <>
+            {/* The field is sized by a hidden copy of the draft (CSS ::after), so
+                the input is as wide as the text it replaces, not its container. */}
+            <span data-slot="inline-edit-field" className={styles.field} data-value={draft || defaultValue}>
+              <input
+                ref={inputRef}
+                type="text"
+                // size={1} drops the input's own ~20-character width, so only the
+                // hidden copy of the draft sizes the field.
+                size={1}
+                data-slot="inline-edit-input"
+                className={styles.input}
+                aria-label={label}
+                aria-invalid={error ? true : undefined}
+                aria-describedby={error ? errorId : undefined}
+                readOnly={saving}
+                value={draft}
+                placeholder={defaultValue}
+                onChange={(event) => setDraft(event.target.value)}
+                onKeyDown={onKeyDown}
+                onBlur={() => finish(true, false)}
+              />
+            </span>
+            {error && (
+              // A span, not FieldError's div: the root may be a span, p or heading.
+              <span id={errorId} role="alert" data-slot="inline-edit-error" className={styles.error}>
+                {error}
+              </span>
+            )}
+          </>
         ) : (
           <>
             {pencil ? (
@@ -171,5 +211,16 @@ const InlineEdit = React.forwardRef<HTMLElement, InlineEditProps>(
   }
 )
 InlineEdit.displayName = "InlineEdit"
+
+/** The message of a save that resolved to `{ error: string }`, else undefined. */
+function saveError(result: unknown): string | undefined {
+  if (result && typeof result === "object" && "error" in result) return messageOf(result.error)
+  return undefined
+}
+
+function messageOf(reason: unknown): string | undefined {
+  if (reason instanceof Error) return reason.message || undefined
+  return typeof reason === "string" && reason ? reason : undefined
+}
 
 export { InlineEdit }

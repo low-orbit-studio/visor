@@ -1,5 +1,5 @@
 import * as React from "react"
-import { fireEvent, render, screen } from "@testing-library/react"
+import { act, fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, it, expect, vi } from "vitest"
 import { InlineEdit, type InlineEditProps } from "../inline-edit"
@@ -279,6 +279,129 @@ describe("InlineEdit pencil={false} (VI-677)", () => {
     heading.unmount()
     const editing = render(<Harness pencil={false} defaultEditing />)
     await checkA11y(editing.container)
+  })
+})
+
+describe("InlineEdit async saves (VI-760)", () => {
+  /** A save the test settles by hand. */
+  function deferred() {
+    let resolve!: (value: unknown) => void
+    let reject!: (reason: unknown) => void
+    const promise = new Promise((res, rej) => {
+      resolve = res
+      reject = rej
+    })
+    return { promise, resolve, reject }
+  }
+
+  function AsyncHarness({ save }: { save: (next: string) => Promise<unknown> }) {
+    const [value, setValue] = React.useState("Technical rider")
+    return (
+      <InlineEdit
+        label="Rider title"
+        value={value}
+        onCommit={async (next) => {
+          const result = await save(next)
+          if (!(result && typeof result === "object" && "error" in result)) setValue(next)
+          return result
+        }}
+      />
+    )
+  }
+
+  const root = () => document.querySelector('[data-slot="inline-edit"]')!
+
+  it("is busy and read-only while the save runs, then rests with focus back on the pencil", async () => {
+    const user = userEvent.setup()
+    const save = deferred()
+    render(<AsyncHarness save={() => save.promise} />)
+    await user.click(pencil())
+    await user.type(input(), " v2{Enter}")
+    expect(root()).toHaveAttribute("aria-busy", "true")
+    expect(input()).toHaveAttribute("readonly")
+    expect(input()).toHaveValue("Technical rider v2")
+    await act(async () => save.resolve(undefined))
+    expect(root()).not.toHaveAttribute("aria-busy")
+    expect(screen.queryByRole("textbox")).toBeNull()
+    expect(screen.getByText("Technical rider v2")).toBeInTheDocument()
+    expect(pencil()).toHaveFocus()
+  })
+
+  it("a rejected save shows the message under the field, keeps the typed text, and Enter retries", async () => {
+    const user = userEvent.setup()
+    const save = vi.fn().mockRejectedValueOnce(new Error("Network down")).mockResolvedValueOnce(undefined)
+    render(<AsyncHarness save={save} />)
+    await user.click(pencil())
+    await user.clear(input())
+    await user.type(input(), "Stage plot{Enter}")
+    const alert = await screen.findByRole("alert")
+    expect(alert).toHaveTextContent("Network down")
+    expect(input()).toHaveValue("Stage plot")
+    expect(input()).toHaveAttribute("aria-invalid", "true")
+    expect(input()).toHaveAccessibleDescription("Network down")
+    expect(root()).not.toHaveAttribute("aria-busy")
+    await user.keyboard("{Enter}")
+    expect(save).toHaveBeenCalledTimes(2)
+    expect(save).toHaveBeenLastCalledWith("Stage plot")
+    await screen.findByText("Stage plot")
+    expect(screen.queryByRole("alert")).toBeNull()
+    expect(screen.queryByRole("textbox")).toBeNull()
+  })
+
+  it("a save that resolves to { error } fails the same way", async () => {
+    const user = userEvent.setup()
+    render(<AsyncHarness save={async () => ({ error: "Name taken" })} />)
+    await user.click(pencil())
+    await user.type(input(), "!{Enter}")
+    expect(await screen.findByRole("alert")).toHaveTextContent("Name taken")
+    expect(input()).toHaveValue("Technical rider!")
+  })
+
+  it("a rejection with no message falls back to a generic one", async () => {
+    const user = userEvent.setup()
+    render(<AsyncHarness save={() => Promise.reject(undefined)} />)
+    await user.click(pencil())
+    await user.type(input(), "!{Enter}")
+    expect(await screen.findByRole("alert")).toHaveTextContent("Could not save.")
+  })
+
+  it("Escape after a failure restores the value and clears the error", async () => {
+    const user = userEvent.setup()
+    render(<AsyncHarness save={() => Promise.reject(new Error("Nope"))} />)
+    await user.click(pencil())
+    await user.type(input(), "!{Enter}")
+    await screen.findByRole("alert")
+    await user.keyboard("{Escape}")
+    expect(screen.queryByRole("alert")).toBeNull()
+    expect(screen.getByText("Technical rider")).toBeInTheDocument()
+    expect(pencil()).toHaveFocus()
+  })
+
+  it("a save after blur does not pull focus back", async () => {
+    const user = userEvent.setup()
+    const save = deferred()
+    render(
+      <>
+        <AsyncHarness save={() => save.promise} />
+        <button type="button">Next field</button>
+      </>
+    )
+    await user.click(pencil())
+    await user.type(input(), "!")
+    await user.tab()
+    const next = screen.getByRole("button", { name: "Next field" })
+    expect(next).toHaveFocus()
+    await act(async () => save.resolve(undefined))
+    expect(next).toHaveFocus()
+  })
+
+  it("passes axe while showing an error", async () => {
+    const user = userEvent.setup()
+    const { container } = render(<AsyncHarness save={() => Promise.reject(new Error("Nope"))} />)
+    await user.click(pencil())
+    await user.type(input(), "!{Enter}")
+    await screen.findByRole("alert")
+    await checkA11y(container)
   })
 })
 
