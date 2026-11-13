@@ -373,6 +373,18 @@ components:
     font-family: "\"Courier New\", monospace"
     text-transform: uppercase
     letter-spacing: "3px"
+  proportion-bar:
+    fill-1: "#ff00aa"
+    fill-2: "#ffcc00"
+    fill-3: "#00ffcc"
+    fill-4: "#2b0a3d"
+    hatch-color: "#ff00aa"
+    hatch-gap: "#1a0526"
+    stripe-a: "#00ffcc"
+    stripe-b: "#00aa88"
+    alert-bg: "#ff3300"
+    alert-text: "#ff6600"
+    track-bg: "#1a0526"
   segmented-control:
     track-bg: "#2b0a3d"
     indicator-bg: "#ff00aa"

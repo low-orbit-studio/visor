@@ -1,0 +1,64 @@
+name: ProportionBar
+description: One measured total split into named parts, widths proportional to value, with an optional legend of swatch, label and value. Parts are told apart by the ground between them; hatched, striped and alert fills are built in.
+extends: HTMLDivElement
+category: data-display
+
+when_to_use:
+  - Hours split by bucket, money split by state, earned split into invoiced and waiting
+  - Two totals compared on one width, stacked one above the other (hours above money)
+  - A thin summary bar inside a card (`size="thin"`)
+
+when_not_to_use:
+  - One value against a maximum (use Progress)
+  - Equal steps of a flow (use SegmentedProgress)
+  - A share over time or many series (use Chart)
+
+why: >
+  Progress draws one value and SegmentedProgress draws equal steps; neither splits
+  a total by value. ProportionBar keeps the shape the money and hours screens share:
+  the ground shows between parts instead of a rule, only the outer ends round, a
+  sliver still draws at 4px so it can be hovered (its value is in the legend), and
+  the bar is one image with a text summary. The alert part is named in the alert
+  text colour, because a coral fill alone is under 3:1 on a light card.
+
+variants:
+  size: [default, thin]
+
+props:
+  - name: parts
+    type: "{ label: string; value: number; fill?: string | 'hatched' | 'striped' | 'alert' }[]"
+    required: true
+    description: The parts, left to right. A part of zero or less is left out of the bar and kept in the legend. Without `fill` a part takes --proportion-bar-fill-1 to -4 by position; any other string is the part's CSS background.
+  - name: size
+    type: '"default" | "thin"'
+    default: '"default"'
+    description: Bar height. default=30px (a main balance), thin=8px (inside a card).
+  - name: legend
+    type: boolean
+    default: "false"
+    description: Draw the legend row under the bar — swatch, label, value. The alert part's label and value read in --proportion-bar-alert-text.
+  - name: formatValue
+    type: "(value: number) => string"
+    default: "String"
+    description: Formats every value in the legend, the summary and the part tooltips (e.g. v => `${v} h`).
+  - name: summary
+    type: string
+    description: 'The bar''s accessible text (it is a role="img"). Defaults to "186.5 h: On a package 92.25 h, Outside a package 41.5 h, …".'
+
+dependencies:
+  - "@loworbitstudio/visor-core"
+
+preview_url: "https://visor.design/docs/components/data-display/proportion-bar"
+
+example: |
+  <ProportionBar
+    legend
+    formatValue={(v) => `${v} h`}
+    parts={[
+      { label: "On a package", value: 92.25 },
+      { label: "Outside a package", value: 41.5 },
+      { label: "Not billable", value: 4, fill: "hatched" },
+      { label: "Unresolved", value: 9.25, fill: "alert" },
+    ]}
+  />
+  <ProportionBar size="thin" parts={[{ label: "Invoiced", value: 12455 }, { label: "Waiting", value: 9025, fill: "striped" }]} />

@@ -799,6 +799,24 @@ The dot's box is as wide as the larger diameter, so the label never moves.
 
 SaveStatus draws no edge, so there is nothing for `control.edge-width` to turn off.
 
+### `proportion-bar`
+
+ProportionBar — the default part fills by position, the built-in hatched, striped and alert fills, the alert's legend text and the empty track.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--proportion-bar-fill-1` | First part's fill when it sets none (then every fourth). | `var(--chart-1, #2563eb)` |
+| `--proportion-bar-fill-2` | Second part's default fill. | `var(--chart-2, #16a34a)` |
+| `--proportion-bar-fill-3` | Third part's default fill. | `var(--chart-3, #d97706)` |
+| `--proportion-bar-fill-4` | Fourth part's default fill. | `var(--chart-4, #0891b2)` |
+| `--proportion-bar-hatch-color` | Stroke of the `hatched` fill (not billable, written off). | `var(--text-tertiary, #9ca3af)` |
+| `--proportion-bar-hatch-gap` | Ground between the hatch strokes. | `color-mix(in srgb, var(--surface-card, #ffffff) 70%, transparent)` |
+| `--proportion-bar-stripe-a` | First band of the `striped` fill (earned, not yet collected). | `var(--color-success-500, #22c55e)` |
+| `--proportion-bar-stripe-b` | Second band of the `striped` fill. | `var(--color-success-600, #16a34a)` |
+| `--proportion-bar-alert-bg` | The `alert` fill: the one part that needs a decision. | `var(--interactive-destructive-bg, #dc2626)` |
+| `--proportion-bar-alert-text` | The alert part's legend label and value. | `var(--text-error, #b91c1c)` |
+| `--proportion-bar-track-bg` | The one neutral track drawn when nothing is measured. | `var(--surface-muted, #e5e7eb)` |
+
 ### `segmented-control`
 
 SegmentedControl — the well, its corner radius, the sliding pill, the ink and the state edge on it. The resting edge is the shared `control` edge.

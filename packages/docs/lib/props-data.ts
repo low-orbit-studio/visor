@@ -1103,6 +1103,38 @@ export const propsData: Record<string, PropDef[]> = {
     { name: 'formatHours', type: '(hours: number) => string', default: '"{n} h"', description: 'Formats a total for the legend and the lanes\' names.' },
   ],
 
+  'proportion-bar': [
+    {
+      name: 'parts',
+      type: "{ label: string; value: number; fill?: string | 'hatched' | 'striped' | 'alert' }[]",
+      required: true,
+      description: 'The parts, left to right. A part of zero or less is left out of the bar and kept in the legend. Without `fill` a part takes --proportion-bar-fill-1 to -4 by position; any other string is its CSS background.',
+    },
+    {
+      name: 'size',
+      type: "'default' | 'thin'",
+      default: "'default'",
+      description: 'Bar height: 30px for a main balance, 8px inside a card.',
+    },
+    {
+      name: 'legend',
+      type: 'boolean',
+      default: 'false',
+      description: 'Draw the legend row under the bar: swatch, label, value. The alert part reads in --proportion-bar-alert-text.',
+    },
+    {
+      name: 'formatValue',
+      type: '(value: number) => string',
+      default: 'String',
+      description: 'Formats every value in the legend, the summary and the part tooltips.',
+    },
+    {
+      name: 'summary',
+      type: 'string',
+      description: 'The accessible text of the bar (a role="img"). Defaults to "186.5 h: On a package 92.25 h, …".',
+    },
+  ],
+
   meter: [
     { name: 'value', type: 'number', required: true, description: 'What has been used.' },
     { name: 'max', type: 'number', required: true, description: "The limit: a contract's ceiling, a month's included hours." },

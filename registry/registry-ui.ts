@@ -648,6 +648,24 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "proportion-bar",
+    type: "registry:ui",
+    description:
+      "One measured total split into named parts, widths proportional to value, with hatched, striped and alert fills, a 30px and an 8px (thin) size, and an optional legend of swatch, label and value.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/proportion-bar/proportion-bar.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/proportion-bar/proportion-bar.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "segmented-progress",
     type: "registry:ui",
     description:
