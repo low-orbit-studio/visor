@@ -30,7 +30,7 @@ variants:
     rest: The text (or the muted default), then the pencil. No edge.
     editing: A single-line input in the text's place, at the same size, drawing the shared control edge.
     saving: onCommit returned a promise that has not settled. The root carries aria-busy, the input is read-only and its text drops to --text-secondary.
-    error: The save rejected or resolved to `{ error }`. The message shows under the field (role="alert", read like FieldError), the input draws the error edge and keeps the typed text, and Enter retries.
+    error: 'The save rejected or resolved to `{ error }`. The message shows under the field (role="alert", read like FieldError), the input draws the error edge and keeps the typed text, and Enter retries.'
 
 theme_hooks:
   - name: --button-icon-size
@@ -58,7 +58,7 @@ props:
     description: Shown, muted, while `value` is empty, and used as the input's placeholder.
   - name: onCommit
     type: "(value: string) => void | Promise<unknown>"
-    description: Called with the trimmed text on Enter, blur or Tab, only when it differs from `value`. An empty string means "restore the default". The parent updates `value`. Return a promise (a server action) to save asynchronously - the field stays open and busy until it settles. If it rejects, or resolves to `{ error: string }`, the message shows under the field, the typed text stays, and Enter retries; Escape gives up and restores `value`.
+    description: 'Called with the trimmed text on Enter, blur or Tab, only when it differs from `value`. An empty string means "restore the default". The parent updates `value`. Return a promise (a server action) to save asynchronously - the field stays open and busy until it settles. If it rejects, or resolves to `{ error: string }`, the message shows under the field, the typed text stays, and Enter retries; Escape gives up and restores `value`.'
   - name: label
     type: string
     description: The field's name (e.g. "Section title"). Names the input, and the pencil as "Edit {label}".
