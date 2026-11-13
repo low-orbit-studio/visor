@@ -188,6 +188,9 @@ components:
     sidebar-footer-border: "3px dashed #ff00aa"
     topbar-bg: "#2b0a3d"
     topbar-border: "3px dashed #ff00aa"
+    rail-width: "77px"
+    rail-duration: "777ms"
+    rail-easing: "steps(7)"
   tabs:
     list-radius: "3px"
     list-height: "37px"

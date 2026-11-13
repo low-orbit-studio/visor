@@ -6,6 +6,7 @@ full: true
 
 import { BlockPreview } from '@/components/block-preview';
 import { AdminShell } from '@/components/blocks/admin-shell';
+import { AdminShellRailDemo } from '@/components/blocks/admin-shell-rail-demo';
 
 ## Preview
 
@@ -31,6 +32,30 @@ import { AdminShell } from '@/components/blocks/admin-shell';
     <p>Your admin content renders here.</p>
   </AdminShell>
 </BlockPreview>
+
+## Collapsible rail
+
+With `collapsible`, the sidebar folds to a 68px icon rail and back. The fold button sits beside the logo, and **⌘\\** (**Ctrl+\\** off a Mac) does the same from anywhere. There is no hidden state: every destination stays one click away. Pass `storageKey` and the choice is remembered in that browser; a private window, where storage throws, just opens expanded. The width animates on the theme's `--admin-shell-rail-duration` (Paper: 480ms), and not at all under reduced motion. Below 48rem the rail is off: the sidebar stays open and the button is not drawn.
+
+<BlockPreview
+  title="Admin Shell — collapsible rail"
+  code={"<AdminShell\n  collapsible\n  storageKey=\"acme-admin-sidebar\"\n  sidebarWidth={232}\n  logo={<Brand />}\n  sidebarNav={\n    <a href=\"/money\" title=\"Money\">\n      <Coins aria-hidden=\"true\" />\n      <span data-admin-shell-label>Money</span>\n    </a>\n  }\n  sidebarFooter={<UserMenu />}\n>\n  {children}\n</AdminShell>"}
+>
+  <AdminShellRailDemo />
+</BlockPreview>
+
+The shell draws the rail through its existing slots. It narrows the sidebar, stacks the header, centres the nav and footer, and sets `data-collapsed="true"` on the shell and the sidebar so a slot can restyle itself:
+
+- **Mark labels with `data-admin-shell-label`.** In the rail they are hidden visually but stay in the accessibility tree, so an icon-only link keeps its name. Give the link a `title` for the hover tooltip.
+- **Key anything else on `data-collapsed`**: a monogram in place of the wordmark, a count moved onto the icon as a badge.
+
+```css
+[data-collapsed="true"] .wordmark { display: none; }
+[data-collapsed="true"] .monogram { display: block; }
+[data-collapsed="true"] .navLink { width: 44px; padding: 0; justify-content: center; }
+```
+
+For a controlled shell, pass `collapsed` and `onCollapsedChange`. Set `collapseShortcut` to another key, or to `false` when the app already uses ⌘\\.
 
 ## Installation
 
@@ -115,8 +140,11 @@ Every rule the shell draws is a component token, so a theme can drop them instea
 | `--admin-shell-sidebar-footer-border` | Rule above the sidebar footer | `1px solid var(--border-muted)` |
 | `--admin-shell-topbar-bg` | Topbar fill | `var(--surface-card)` |
 | `--admin-shell-topbar-border` | Rule under the topbar | `1px solid var(--border-default)` |
+| `--admin-shell-rail-width` | Sidebar width in the rail | `4.25rem` (68px) |
+| `--admin-shell-rail-duration` | Fold duration | `var(--motion-duration-slow)` |
+| `--admin-shell-rail-easing` | Fold easing | `var(--motion-easing-default)` |
 
-Bind them under `components.admin-shell` in a `.visor.yaml`. The `paper` theme sets the borders to `none` and the topbar to `var(--surface-page)`, so its shell separates surfaces by tone alone. See [Component tokens](/docs/themes/component-tokens#admin-shell).
+Bind them under `components.admin-shell` in a `.visor.yaml`. The `paper` theme sets the borders to `none` and the topbar to `var(--surface-page)`, so its shell separates surfaces by tone alone, and folds the rail on a 480ms `cubic-bezier(0.2, 0.8, 0.2, 1)`. See [Component tokens](/docs/themes/component-tokens#admin-shell).
 
 ## Accessibility
 
@@ -125,6 +153,7 @@ Bind them under `components.admin-shell` in a `.visor.yaml`. The `paper` theme s
 - `<nav aria-label="Sidebar">` wraps the nav slot.
 - `<header role="banner">` wraps the topbar.
 - `<main role="main">` with `tabIndex={-1}` allows the skip link to move focus into the content area.
+- The fold button is named "Collapse the sidebar" or "Expand the sidebar", carries `aria-expanded`, `aria-controls` and `aria-keyshortcuts`, and keeps focus when pressed. Rail items stay in the Tab order, named by their `data-admin-shell-label` text.
 
 ## Props
 
@@ -134,6 +163,12 @@ Bind them under `components.admin-shell` in a `.visor.yaml`. The `paper` theme s
 | `sidebarNav` | `ReactNode` | — | **Required.** Navigation content. Consumer provides their own link list. |
 | `sidebarFooter` | `ReactNode` | — | Bottom-of-sidebar slot (user menu, logout, theme toggle). |
 | `sidebarWidth` | `number \| string` | `256` | Sidebar width. Numbers are pixels; strings pass through. |
+| `collapsible` | `boolean` | `false` | Draw the fold button and allow the icon rail. Desk only. |
+| `defaultCollapsed` | `boolean` | `false` | Initial state when nothing is remembered. |
+| `collapsed` | `boolean` | — | Controlled state. |
+| `onCollapsedChange` | `(collapsed: boolean) => void` | — | Called with the next state from the button or the key. |
+| `collapseShortcut` | `string \| false` | `"\\"` | Key pressed with ⌘ or Ctrl that folds the sidebar. `false` turns it off. |
+| `storageKey` | `string` | — | localStorage key that remembers the state per browser. |
 | `breadcrumb` | `ReactNode` | — | Rendered at the start of the topbar. |
 | `topbarStart` | `ReactNode` | — | Left side of the topbar, after the breadcrumb. |
 | `topbarCenter` | `ReactNode` | — | Center slot for status indicators, search, etc. |
