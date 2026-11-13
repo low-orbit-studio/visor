@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.45.1
+
+### Patch Changes
+
+- 5681508: `visor theme register --group "Low Orbit"` (or "Client") works again. Since the overlay pattern (W015), `theme-config.ts` holds only the stock group and `visor theme sync` builds the custom groups from each YAML's `group`, so register failed with `Group "Low Orbit" not found` for every custom theme. For a group outside `theme-config.ts`, register now checks that the YAML sits in `custom-themes/` with that `group` and edits nothing; `visor theme sync` (the docs `predev`) adds it to the switcher. Stock-group registration is unchanged.
+- 7589183: VI-749: add `paper`, Low Orbit's shared theme (`@loworbitstudio/visor-core/themes/paper`, `.paper-theme`). Light is "Paper" and dark is "Paper at night", set in Satoshi, from Flight Deck's codified tokens. It ships the Paper desk scale (desktop density: `--paper-desk-*` type roles, 36px controls, 10/14/20/24/28 corners) and the 12 project hues as theme data (`--paper-hue-<angle>-fill`, `-fill-strong`, `-ink`, `-solid`, per mode). Every text pair a Visor component draws clears WCAG AA in both modes (VI-746). The theme engine gains a test that pins those pairs; its runtime code is unchanged. `visor theme register` keeps a `custom-themes/` YAML on the `theme sync` path even when a stock group shares its label, so registering a custom Low Orbit theme no longer edits `theme-config.ts`.
+- Updated dependencies [7589183]
+  - @loworbitstudio/visor-theme-engine@0.34.1
+
 ## 1.45.0
 
 ### Minor Changes
