@@ -2138,7 +2138,8 @@ export const ui: Registry = [
     description:
       "A generic Tanstack-powered data table compound that composes Visor's table primitive. Handles client-side sorting, pagination, row selection, global filter, sticky header, loading skeleton rows, and a pluggable empty state.",
     dependencies: [
-      "@tanstack/react-table",
+      // Pinned: data-table is written for the v8 API; unpinned resolves to v9 (VI-751).
+      "@tanstack/react-table@^8.21.3",
       "@phosphor-icons/react",
       "class-variance-authority",
       "@loworbitstudio/visor-core",

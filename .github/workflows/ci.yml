@@ -90,6 +90,11 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      # VI-751: `visor add` into an empty project installs deps from the live
+      # npm registry, so it catches an unpinned dep that jumped a major. Reuses the build above.
+      - name: Fresh-install smoke (visor add + tsc)
+        run: node scripts/fresh-install-smoke.mjs data-table admin-list-page
+
   build-and-test:
     name: Build & Test (node ${{ matrix.node }}, shard ${{ matrix.shard }}/4)
     needs: changes
