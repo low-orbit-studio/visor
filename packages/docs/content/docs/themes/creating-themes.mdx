@@ -99,6 +99,18 @@ The legacy triad keys stay valid for back-compat and fold onto the ramp (`normal
 `wide`→`lg`, `tight`→`tight`). The engine also emits `--letter-spacing-normal` (= `md`) and
 `--letter-spacing-wide` (= `lg`) as aliases so older consumers keep resolving.
 
+### Type floor
+
+`typography.floor` is the smallest size, in px, that any `--font-size-*` step may emit. A step
+that scales below it is raised to it; steps above it are untouched. Unset, there is no floor.
+Paper sets `13`, so its `--font-size-xs` is 13px. The Flutter adapter ignores it, as it does
+`scale`.
+
+```yaml
+typography:
+  floor: 13 # --font-size-xs: 0.8125rem
+```
+
 ### Typography text-transform
 
 Every typography slot (`heading`, `display`, `body`, `mono`) accepts `text-transform` with

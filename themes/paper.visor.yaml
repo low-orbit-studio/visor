@@ -62,6 +62,9 @@ typography:
     source: fontshare
   mono:
     family: "ui-monospace, \"SF Mono\", Menlo, monospace"
+  # VI-754: the desk type floor. Nothing under 13px for body and meta, so --font-size-xs is 13px.
+  # The 11px uppercase label (text xs, --paper-desk-label) is a label role, not body or meta.
+  floor: 13
 
 radius:
   sm: 10
@@ -157,6 +160,22 @@ overrides:
     interactive-destructive-bg-hover: "#963212"
     interactive-destructive-text: "#fcfcfb"
     overlay-bg: "rgba(12, 16, 21, 0.42)"
+    # VI-754: the field family. A fill and no edge; focus and invalid still draw their ring.
+    # Declared here so a root theme's field tokens (Studio: Strata on <html>) cannot inherit in.
+    input-bg: "rgba(30, 31, 33, 0.06)"
+    textarea-bg: "rgba(30, 31, 33, 0.06)"
+    select-bg: "rgba(30, 31, 33, 0.06)"
+    number-input-bg: "rgba(30, 31, 33, 0.06)"
+    tag-input-bg: "rgba(30, 31, 33, 0.06)"
+    combobox-bg: "rgba(30, 31, 33, 0.06)"
+    otp-bg: "rgba(30, 31, 33, 0.06)"
+    input-border: "transparent"
+    textarea-border: "transparent"
+    select-border: "transparent"
+    number-input-border: "transparent"
+    tag-input-border: "transparent"
+    combobox-border: "transparent"
+    otp-border: "transparent"
     paper-desk-title: "900 34px/38px var(--font-heading)"
     paper-desk-title-2: "900 22px/27px var(--font-heading)"
     paper-desk-row: "600 15px/20px var(--font-body)"
@@ -262,6 +281,22 @@ overrides:
     interactive-destructive-bg-hover: "#ffa186"
     interactive-destructive-text: "#0c1015"
     overlay-bg: "rgba(0, 0, 0, 0.62)"
+    # VI-754: the field family. A fill and no edge; focus and invalid still draw their ring.
+    # Declared here so a root theme's field tokens (Studio: Strata on <html>) cannot inherit in.
+    input-bg: "rgba(245, 245, 240, 0.06)"
+    textarea-bg: "rgba(245, 245, 240, 0.06)"
+    select-bg: "rgba(245, 245, 240, 0.06)"
+    number-input-bg: "rgba(245, 245, 240, 0.06)"
+    tag-input-bg: "rgba(245, 245, 240, 0.06)"
+    combobox-bg: "rgba(245, 245, 240, 0.06)"
+    otp-bg: "rgba(245, 245, 240, 0.06)"
+    input-border: "transparent"
+    textarea-border: "transparent"
+    select-border: "transparent"
+    number-input-border: "transparent"
+    tag-input-border: "transparent"
+    combobox-border: "transparent"
+    otp-border: "transparent"
     paper-desk-title: "900 34px/38px var(--font-heading)"
     paper-desk-title-2: "900 22px/27px var(--font-heading)"
     paper-desk-row: "600 15px/20px var(--font-body)"

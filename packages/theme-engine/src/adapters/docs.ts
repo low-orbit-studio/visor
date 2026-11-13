@@ -123,7 +123,7 @@ function generateTypographyDecls(
 
   // Font sizes — multiplied by `typography.scale` (VI-638), from the same ramp
   // the core generator uses so the two outputs cannot drift.
-  decls.push(...generateFontSizeDecls(config.typography.scale));
+  decls.push(...generateFontSizeDecls(config.typography.scale, config.typography.floor));
 
   // Font weights — same resolution as the core generator (VI-639), so the two
   // outputs cannot disagree about what a named weight means.
