@@ -10,7 +10,7 @@ import { getContrastRatio } from "@loworbitstudio/visor-theme-engine";
  * yaml literal, so an override that never reaches the CSS cannot pass. Needs
  * `npm run build -w packages/tokens` first, like the other emitted-CSS tests.
  *
- * Neutral, space and modern-minimal are asserted at 4.5:1 (WCAG 2.2 AA, 1.4.3).
+ * Neutral, space, modern-minimal and paper are asserted at 4.5:1 (WCAG 2.2 AA, 1.4.3).
  * Every other shipped theme is measured and reported only: the table prints,
  * nothing fails.
  */
@@ -18,7 +18,7 @@ import { getContrastRatio } from "@loworbitstudio/visor-theme-engine";
 const AA_TEXT = 4.5;
 const THEMES_DIR = join(__dirname, "..", "..", "dist", "themes");
 const NON_THEME = new Set(["light", "dark"]);
-const ASSERTED = ["neutral", "space", "modern-minimal"];
+const ASSERTED = ["neutral", "space", "modern-minimal", "paper"];
 
 type Mode = "light" | "dark";
 

@@ -164,8 +164,9 @@ function MatrixContent() {
         {totalThemes === 0 ? (
           <p className={styles.empty}>No themes in this set.</p>
         ) : (
-          groups.map((group) => (
-            <section key={group.group} className={styles.group}>
+          // Stock and private themes can share a group label ("Low Orbit"), so the key carries the index.
+          groups.map((group, i) => (
+            <section key={`${i}-${group.group}`} className={styles.group}>
               <h2 className={styles.groupHead}>{group.group}</h2>
               {group.themes.map((theme) => {
                 const effMode = resolveEffectiveMode(theme, mode);

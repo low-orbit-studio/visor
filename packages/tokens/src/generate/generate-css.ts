@@ -88,7 +88,7 @@ const THEMES_DIR = join(DIST_DIR, "themes");
 // Repo-root themes dir (packages/tokens/src/generate → ../../../../themes)
 const STOCK_THEMES_DIR = join(__dirname, "../../../../themes");
 
-const STOCK_THEMES = ["blackout", "modern-minimal", "neutral", "space"] as const;
+const STOCK_THEMES = ["blackout", "modern-minimal", "neutral", "paper", "space"] as const;
 
 // ============================================================
 // Helpers

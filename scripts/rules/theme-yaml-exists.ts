@@ -10,6 +10,7 @@ const THEME_YAML_FILES: { label: string; yamlFile: string }[] = [
   { label: 'Blackout', yamlFile: 'blackout' },
   { label: 'Modern Minimal', yamlFile: 'modern-minimal' },
   { label: 'Neutral', yamlFile: 'neutral' },
+  { label: 'Paper', yamlFile: 'paper' },
   { label: 'Space', yamlFile: 'space' },
 ];
 

@@ -14,6 +14,7 @@ import 'src/blackout/theme/visor_theme.dart' as blackout_t;
 import 'src/borderless/theme/visor_theme.dart' as borderless_t;
 import 'src/modern-minimal/theme/visor_theme.dart' as modern_minimal_t;
 import 'src/neutral/theme/visor_theme.dart' as neutral_t;
+import 'src/paper/theme/visor_theme.dart' as paper_t;
 import 'src/space/theme/visor_theme.dart' as space_t;
 
 /// A light/dark [ThemeData] pair for a single Visor theme.
@@ -48,6 +49,10 @@ sealed class VisorThemes {
   static VisorThemePair get neutral => VisorThemePair(
     light: neutral_t.VisorAppTheme.light,
     dark: neutral_t.VisorAppTheme.dark,
+  );
+  static VisorThemePair get paper => VisorThemePair(
+    light: paper_t.VisorAppTheme.light,
+    dark: paper_t.VisorAppTheme.dark,
   );
   static VisorThemePair get space => VisorThemePair(
     light: space_t.VisorAppTheme.light,

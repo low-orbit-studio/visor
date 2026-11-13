@@ -72,6 +72,12 @@ const STOCK_GROUPS: ThemeGroup[] = [
       { value: "space", label: "Space", yamlFile: "space" },
     ],
   },
+  {
+    label: "Low Orbit",
+    themes: [
+      { value: "paper", label: "Paper", yamlFile: "paper" },
+    ],
+  },
 ];
 /* END visor-stock-themes */
 

@@ -1,0 +1,324 @@
+# Paper — Low Orbit's shared theme (VI-749). Light is "Paper", dark is "Paper at night".
+# Colours, project hues, Satoshi and the style rules come from flight-deck-ios
+# spec/codified-tokens.css and spec/style-rules.md. Flight Deck and the Studio admin both read it.
+#
+# Paper desk: the desktop density scale drawn in the approved Studio admin frames (LO-326).
+# Flight Deck keeps its iPhone sizes in its own tokens. Desk roles ship as --paper-* tokens:
+#   --paper-desk-title     900 34/38   screen titles
+#   --paper-desk-title-2   900 22/27   section titles
+#   --paper-desk-row       600 15/20   row titles
+#   --paper-desk-body      500 14/20   body
+#   --paper-desk-sub       400 13/18   second lines
+#   --paper-desk-label     700 11/16   labels, uppercase with --paper-track-label
+#   --paper-desk-hero / --paper-desk-num   the hero tile and its figures
+#   --paper-control-h      36px        buttons, fields, the segmented control
+# Corners: chip 10 = radius-sm, field 14 = radius-md, card 20 = radius-lg, tile 24 = radius-xl,
+# sheet 28 = --paper-radius-sheet.
+#
+# Project hues (no Visor role): 12 OKLCH angles, 24 degrees apart, none in the coral range.
+# Each ships as --paper-hue-<angle>-fill / -fill-strong / -ink / -solid, per mode.
+# 75 sand · 99 gold · 123 olive · 147 green · 171 jade · 195 teal · 219 cyan · 243 tide
+# 267 blue · 291 violet · 315 orchid · 339 rose
+#
+# No success, warning or info colour: those roles draw in Paper's neutral ink. Coral is for
+# alerts only (the error roles). Every text pair a Visor component draws clears AA 4.5:1 in
+# both modes (VI-746); text-disabled is exempt (WCAG 1.4.3). The pairs are pinned by
+# packages/theme-engine/src/__tests__/paper-theme.test.ts.
+name: paper
+label: Paper
+group: Low Orbit
+color-scheme: adaptive
+version: 1
+
+colors:
+  primary: "#1a5f7a"
+  neutral: "#1e1f21"
+  background: "#fcfcfb"
+  surface: "#f7f6f2"
+  error: "#f28b6d"
+
+colors-dark:
+  primary: "#1a5f7a"
+  neutral: "#1e1f21"
+  background: "#0c1015"
+  surface: "#151b20"
+  error: "#f28b6d"
+
+typography:
+  display:
+    family: "Satoshi"
+    weight: 900
+    weights: [300, 400, 500, 700, 900]
+    source: fontshare
+  heading:
+    family: "Satoshi"
+    weight: 900
+    weights: [300, 400, 500, 700, 900]
+    source: fontshare
+  body:
+    family: "Satoshi"
+    weight: 500
+    weights: [300, 400, 500, 700, 900]
+    source: fontshare
+  mono:
+    family: "ui-monospace, \"SF Mono\", Menlo, monospace"
+
+radius:
+  sm: 10
+  md: 14
+  lg: 20
+  xl: 24
+  pill: 999
+
+components:
+  button:
+    md-height: "36px"
+    radius: "999px"
+  input:
+    md-height: "36px"
+    md-radius: "14px"
+  textarea:
+    radius: "14px"
+  select:
+    height: "36px"
+    radius: "14px"
+  text:
+    xs-font-size: "11px"
+    xs-text-transform: "uppercase"
+    xs-letter-spacing: "0.08em"
+    sm-font-size: "13px"
+    md-font-size: "14px"
+  page-header:
+    title-font-size: "34px"
+  segmented-control:
+    radius: "14px"
+    track-bg:
+      light: "rgba(30, 31, 33, 0.07)"
+      dark: "rgba(245, 245, 240, 0.09)"
+    indicator-bg:
+      light: "#f7f6f2"
+      dark: "#3d4245"
+    # VI-746: the default indicator text is the primary button's ink (1.05:1 on the pill).
+    indicator-text:
+      light: "#1e1f21"
+      dark: "#f5f5f0"
+    inactive-text:
+      light: "#55575b"
+      dark: "#b1b8bf"
+  switch:
+    track-bg:
+      light: "rgba(30, 31, 33, 0.14)"
+      dark: "rgba(245, 245, 240, 0.2)"
+    knob-bg: "#f5f5f0"
+    knob-bg-checked: "#f5f5f0"
+
+overrides:
+  light:
+    text-primary: "#1e1f21"
+    text-secondary: "#55575b"
+    # VI-746: Paper's text-3 (#6e6f72) and 62% sub line clear AA on the card only. Visor
+    # draws them on wells and selected rows too, so tertiary takes text-2 (as it does at
+    # night) and muted takes the lowest opacity that clears every surface.
+    text-tertiary: "#55575b"
+    text-muted: "rgba(30, 31, 33, 0.7)"
+    text-disabled: "#7e7f7a"
+    text-link: "#1a5f7a"
+    # Paper's alert-text-strong: alert-ink (#ae411f) is 4.37:1 on pressed and raised surfaces.
+    text-error: "#963212"
+    text-success: "#55575b"
+    text-warning: "#55575b"
+    text-info: "#55575b"
+    text-inverse: "#fcfcfb"
+    text-inverse-secondary: "rgba(252, 252, 251, 0.85)"
+    surface-popover: "#fcfcfb"
+    surface-muted: "#f7f6f2"
+    surface-interactive-default: "#edede7"
+    surface-selected: "#d8e4e7"
+    surface-accent-subtle: "#d8e4e7"
+    surface-error-subtle: "#f7e0d4"
+    surface-error-soft: "#f7e0d4"
+    surface-error-default: "#ae411f"
+    surface-success-subtle: "#edede7"
+    surface-success-soft: "#edede7"
+    surface-success-default: "#55575b"
+    surface-warning-subtle: "#edede7"
+    surface-warning-soft: "#edede7"
+    surface-warning-default: "#55575b"
+    surface-info-subtle: "#edede7"
+    surface-info-default: "#55575b"
+    border-default: "rgba(30, 31, 33, 0.11)"
+    border-muted: "rgba(30, 31, 33, 0.07)"
+    border-focus: "#1a5f7a"
+    border-error: "rgba(242, 139, 109, 0.7)"
+    hairline: "rgba(30, 31, 33, 0.11)"
+    interactive-primary-bg: "#1a5f7a"
+    interactive-primary-text: "#fcfcfb"
+    interactive-destructive-bg: "#ae411f"
+    interactive-destructive-bg-hover: "#963212"
+    interactive-destructive-text: "#fcfcfb"
+    overlay-bg: "rgba(12, 16, 21, 0.42)"
+    paper-desk-title: "900 34px/38px var(--font-heading)"
+    paper-desk-title-2: "900 22px/27px var(--font-heading)"
+    paper-desk-row: "600 15px/20px var(--font-body)"
+    paper-desk-body: "500 14px/20px var(--font-body)"
+    paper-desk-sub: "400 13px/18px var(--font-body)"
+    paper-desk-label: "700 11px/16px var(--font-body)"
+    paper-desk-hero: "900 44px/44px var(--font-display)"
+    paper-desk-num: "900 26px/30px var(--font-display)"
+    paper-track-label: "0.08em"
+    paper-track-tight: "-0.025em"
+    paper-control-h: "36px"
+    paper-radius-sheet: "28px"
+    paper-hue-75-fill: "#ffebce"
+    paper-hue-75-fill-strong: "#f7ce97"
+    paper-hue-75-ink: "#693c00"
+    paper-hue-75-solid: "#bd7d00"
+    paper-hue-99-fill: "#f6f0ce"
+    paper-hue-99-fill-strong: "#e3d796"
+    paper-hue-99-ink: "#574700"
+    paper-hue-99-solid: "#a28c00"
+    paper-hue-123-fill: "#e8f4d3"
+    paper-hue-123-fill-strong: "#cbe0a1"
+    paper-hue-123-ink: "#3d5000"
+    paper-hue-123-solid: "#7c9928"
+    paper-hue-147-fill: "#dcf7dd"
+    paper-hue-147-fill-strong: "#b1e6b6"
+    paper-hue-147-ink: "#0e5720"
+    paper-hue-147-solid: "#48a257"
+    paper-hue-171-fill: "#d2f9ea"
+    paper-hue-171-fill-strong: "#9be9ce"
+    paper-hue-171-ink: "#005940"
+    paper-hue-171-solid: "#00a781"
+    paper-hue-195-fill: "#cdf9f8"
+    paper-hue-195-fill-strong: "#90e8e7"
+    paper-hue-195-ink: "#00585a"
+    paper-hue-195-solid: "#00a5a6"
+    paper-hue-219-fill: "#cef6ff"
+    paper-hue-219-fill-strong: "#94e4fc"
+    paper-hue-219-ink: "#00546f"
+    paper-hue-219-solid: "#009ec5"
+    paper-hue-243-fill: "#d5f3ff"
+    paper-hue-243-fill-strong: "#a5ddff"
+    paper-hue-243-ink: "#004c7d"
+    paper-hue-243-solid: "#2894da"
+    paper-hue-267-fill: "#e1eeff"
+    paper-hue-267-fill-strong: "#bdd5ff"
+    paper-hue-267-ink: "#2d4382"
+    paper-hue-267-solid: "#6687e1"
+    paper-hue-291-fill: "#eeeaff"
+    paper-hue-291-fill-strong: "#d5cdff"
+    paper-hue-291-ink: "#493a7e"
+    paper-hue-291-solid: "#8d7bda"
+    paper-hue-315-fill: "#fae6ff"
+    paper-hue-315-fill-strong: "#ebc6fd"
+    paper-hue-315-ink: "#5d3270"
+    paper-hue-315-solid: "#ac70c6"
+    paper-hue-339-fill: "#ffe3f9"
+    paper-hue-339-fill-strong: "#fcc1e9"
+    paper-hue-339-ink: "#6c2c5b"
+    paper-hue-339-solid: "#c267a8"
+  dark:
+    text-primary: "#f5f5f0"
+    text-secondary: "#b1b8bf"
+    text-tertiary: "#b1b8bf"
+    text-muted: "rgba(245, 245, 240, 0.55)"
+    text-disabled: "#888183"
+    text-link: "#5aabbf"
+    text-error: "#ffa186"
+    text-success: "#b1b8bf"
+    text-warning: "#b1b8bf"
+    text-info: "#b1b8bf"
+    text-inverse: "#0c1015"
+    text-inverse-secondary: "#151b20"
+    surface-popover: "#252a2f"
+    surface-muted: "#151b20"
+    surface-interactive-default: "#151b20"
+    surface-accent-subtle: "#1b3040"
+    # VI-746: Tide Mid under night ink was 2.74:1; the night accent is Tide Pale, the night link.
+    surface-accent-default: "#5aabbf"
+    surface-accent-strong: "#86b1c6"
+    surface-error-subtle: "#312423"
+    surface-error-soft: "#312423"
+    surface-error-default: "#f28b6d"
+    surface-success-subtle: "#151b20"
+    surface-success-soft: "#151b20"
+    surface-success-default: "#b1b8bf"
+    surface-warning-subtle: "#151b20"
+    surface-warning-soft: "#151b20"
+    surface-warning-default: "#b1b8bf"
+    surface-info-subtle: "#151b20"
+    surface-info-default: "#b1b8bf"
+    border-default: "rgba(245, 245, 240, 0.13)"
+    border-muted: "rgba(245, 245, 240, 0.07)"
+    border-focus: "#5aabbf"
+    border-error: "rgba(242, 139, 109, 0.75)"
+    hairline: "rgba(245, 245, 240, 0.13)"
+    interactive-primary-bg: "#f5f5f0"
+    # VI-746: the derived hover darkened the cream to Tide (2.83:1 under Tide Deep ink).
+    interactive-primary-bg-hover: "#e4e4de"
+    interactive-primary-bg-active: "#d3d3cc"
+    interactive-primary-text: "#0d3b4f"
+    interactive-destructive-bg: "#f28b6d"
+    interactive-destructive-bg-hover: "#ffa186"
+    interactive-destructive-text: "#0c1015"
+    overlay-bg: "rgba(0, 0, 0, 0.62)"
+    paper-desk-title: "900 34px/38px var(--font-heading)"
+    paper-desk-title-2: "900 22px/27px var(--font-heading)"
+    paper-desk-row: "600 15px/20px var(--font-body)"
+    paper-desk-body: "500 14px/20px var(--font-body)"
+    paper-desk-sub: "400 13px/18px var(--font-body)"
+    paper-desk-label: "700 11px/16px var(--font-body)"
+    paper-desk-hero: "900 44px/44px var(--font-display)"
+    paper-desk-num: "900 26px/30px var(--font-display)"
+    paper-track-label: "0.08em"
+    paper-track-tight: "-0.025em"
+    paper-control-h: "36px"
+    paper-radius-sheet: "28px"
+    paper-hue-75-fill: "#3a2b16"
+    paper-hue-75-fill-strong: "#553d1a"
+    paper-hue-75-ink: "#f7d19c"
+    paper-hue-75-solid: "#e1a447"
+    paper-hue-99-fill: "#332e16"
+    paper-hue-99-fill-strong: "#4a431a"
+    paper-hue-99-ink: "#e4d99c"
+    paper-hue-99-solid: "#c6b244"
+    paper-hue-123-fill: "#2a311a"
+    paper-hue-123-fill-strong: "#3c4822"
+    paper-hue-123-ink: "#cde1a6"
+    paper-hue-123-solid: "#a2be5c"
+    paper-hue-147-fill: "#203322"
+    paper-hue-147-fill-strong: "#2c4b2f"
+    paper-hue-147-ink: "#b5e6b9"
+    paper-hue-147-solid: "#75c77f"
+    paper-hue-171-fill: "#17342b"
+    paper-hue-171-fill-strong: "#1a4d3e"
+    paper-hue-171-ink: "#a1e9d0"
+    paper-hue-171-solid: "#41cba6"
+    paper-hue-195-fill: "#113434"
+    paper-hue-195-fill-strong: "#0c4c4c"
+    paper-hue-195-ink: "#96e9e8"
+    paper-hue-195-solid: "#00cacb"
+    paper-hue-219-fill: "#13333b"
+    paper-hue-219-fill-strong: "#134a58"
+    paper-hue-219-ink: "#9ae5fb"
+    paper-hue-219-solid: "#28c4e9"
+    paper-hue-243-fill: "#1b3040"
+    paper-hue-243-fill-strong: "#234660"
+    paper-hue-243-ink: "#aadeff"
+    paper-hue-243-solid: "#5fbafd"
+    paper-hue-267-fill: "#252d42"
+    paper-hue-267-fill-strong: "#344163"
+    paper-hue-267-ink: "#c0d7ff"
+    paper-hue-267-solid: "#8caeff"
+    paper-hue-291-fill: "#2e2a40"
+    paper-hue-291-fill-strong: "#423c60"
+    paper-hue-291-ink: "#d7cfff"
+    paper-hue-291-solid: "#b2a2fd"
+    paper-hue-315-fill: "#35283c"
+    paper-hue-315-fill-strong: "#4e3858"
+    paper-hue-315-ink: "#ecc8fc"
+    paper-hue-315-solid: "#d097ea"
+    paper-hue-339-fill: "#3b2634"
+    paper-hue-339-fill-strong: "#57354d"
+    paper-hue-339-ink: "#fcc4e9"
+    paper-hue-339-solid: "#e78fcc"
