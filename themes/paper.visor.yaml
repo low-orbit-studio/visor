@@ -111,6 +111,13 @@ components:
       dark: "rgba(245, 245, 240, 0.2)"
     knob-bg: "#f5f5f0"
     knob-bg-checked: "#f5f5f0"
+  # Paper separates surfaces by tone, never by lines; the topbar sits on the page.
+  admin-shell:
+    sidebar-border: none
+    sidebar-header-border: none
+    sidebar-footer-border: none
+    topbar-bg: "var(--surface-page)"
+    topbar-border: none
 
 overrides:
   light:

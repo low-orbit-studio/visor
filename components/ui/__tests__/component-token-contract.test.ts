@@ -199,6 +199,10 @@ describe("VI-625 component token contract", () => {
           "sidebar-width",
           "sidebar-width-mobile",
           "sidebar-width-icon",
+          // AdminShell writes its sidebar width and main max-width as inline
+          // styles from props, like the sidebar rail geometry above.
+          "admin-shell-sidebar-width",
+          "admin-shell-main-max-width",
           // Piped from admin-list-page so the shell can flatten the sort bar's
           // top corners; owned by the block, not the theme.
           "data-table-sort-bar-radius",

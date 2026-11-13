@@ -146,6 +146,7 @@ const RADIO_GROUP = "components/ui/radio-group/radio-group.module.css";
 const TOOLTIP = "components/ui/tooltip/tooltip.module.css";
 const ACTION_ROW = "components/ui/action-row/action-row.module.css";
 const DIALOG_FIELD = "blocks/dialog-field/dialog-field.module.css";
+const ADMIN_SHELL = "blocks/admin-shell/admin-shell.module.css";
 
 /** Shorthand for the common single-consumer case. */
 function at(file: string, fallback: string | null): ComponentTokenConsumer[] {
@@ -497,6 +498,20 @@ const sidebarFamily: ComponentTokenFamily = {
     { key: "item-height", property: "height", description: "Default nav-item height.", consumers: at(SIDEBAR, "2.25rem") },
     { key: "item-padding", property: "padding", description: "Default nav-item inset.", consumers: at(SIDEBAR, "0 var(--spacing-3, 0.75rem)") },
     { key: "item-active-font-weight", property: "font-weight", description: "Active nav-item weight.", consumers: at(SIDEBAR, "var(--font-weight-medium, 500)") },
+  ],
+};
+
+const adminShellFamily: ComponentTokenFamily = {
+  family: "admin-shell",
+  prefix: "admin-shell",
+  description:
+    "AdminShell block chrome. Every rule the shell draws is a token, so a theme that separates surfaces by tone (Paper) sets them to `none` and gets a borderless shell.",
+  tokens: [
+    { key: "sidebar-border", property: "border-right", description: "Rule between the sidebar and the body.", consumers: at(ADMIN_SHELL, "1px solid var(--border-default, #e5e7eb)") },
+    { key: "sidebar-header-border", property: "border-bottom", description: "Rule under the sidebar header.", consumers: at(ADMIN_SHELL, "1px solid var(--border-muted, #e5e7eb)") },
+    { key: "sidebar-footer-border", property: "border-top", description: "Rule above the sidebar footer.", consumers: at(ADMIN_SHELL, "1px solid var(--border-muted, #e5e7eb)") },
+    { key: "topbar-bg", property: "background", description: "Topbar fill.", consumers: at(ADMIN_SHELL, "var(--surface-card, #ffffff)") },
+    { key: "topbar-border", property: "border-bottom", description: "Rule under the topbar.", consumers: at(ADMIN_SHELL, "1px solid var(--border-default, #e5e7eb)") },
   ],
 };
 
@@ -1359,6 +1374,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   emptyStateFamily,
   bannerFamily,
   sidebarFamily,
+  adminShellFamily,
   tabsFamily,
   skeletonFamily,
   spinnerFamily,

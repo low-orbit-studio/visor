@@ -182,6 +182,12 @@ components:
     item-height: "37px"
     item-padding: "17px 21px"
     item-active-font-weight: "800"
+  admin-shell:
+    sidebar-border: "3px dashed #ff00aa"
+    sidebar-header-border: "3px dashed #ff00aa"
+    sidebar-footer-border: "3px dashed #ff00aa"
+    topbar-bg: "#2b0a3d"
+    topbar-border: "3px dashed #ff00aa"
   tabs:
     list-radius: "3px"
     list-height: "37px"
