@@ -512,6 +512,9 @@ const adminShellFamily: ComponentTokenFamily = {
     { key: "sidebar-footer-border", property: "border-top", description: "Rule above the sidebar footer.", consumers: at(ADMIN_SHELL, "1px solid var(--border-muted, #e5e7eb)") },
     { key: "topbar-bg", property: "background", description: "Topbar fill.", consumers: at(ADMIN_SHELL, "var(--surface-card, #ffffff)") },
     { key: "topbar-border", property: "border-bottom", description: "Rule under the topbar.", consumers: at(ADMIN_SHELL, "1px solid var(--border-default, #e5e7eb)") },
+    { key: "rail-width", property: "width", description: "Sidebar width when a collapsible shell folds to its icon rail.", consumers: at(ADMIN_SHELL, "4.25rem") },
+    { key: "rail-duration", property: "transition-duration", description: "How long the sidebar takes to fold to the rail and back.", consumers: at(ADMIN_SHELL, "var(--motion-duration-slow, 500ms)") },
+    { key: "rail-easing", property: "transition-timing-function", description: "Easing of the fold to the rail and back.", consumers: at(ADMIN_SHELL, "var(--motion-easing-default, ease)") },
   ],
 };
 

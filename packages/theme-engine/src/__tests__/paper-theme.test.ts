@@ -189,6 +189,12 @@ describe("VI-749: paper theme", () => {
     expect(css).toContain("--admin-shell-topbar-bg: var(--surface-page);");
   });
 
+  it("folds the AdminShell sidebar on Paper's 480ms ease (VI-770)", () => {
+    const css = nextjsAdapter(data);
+    expect(css).toContain("--admin-shell-rail-duration: 480ms;");
+    expect(css).toContain("--admin-shell-rail-easing: cubic-bezier(0.2, 0.8, 0.2, 1);");
+  });
+
   it("keeps Paper's colours: grounds, cards, ink, Tide and coral", () => {
     const t = data.tokens;
     expect(token(t, "surface-page", "light")).toBe("#fcfcfb");
