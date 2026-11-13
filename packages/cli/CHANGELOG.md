@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.48.0
+
+### Minor Changes
+
+- 626b60b: Add Meter, a thin meter for use against a limit. It takes `value`, `max`, `marks[]`, `hue` and a label slot (`children`). `hue` is a Paper project-hue angle: the track reads `--paper-hue-<angle>-fill-strong` and the fill `--paper-hue-<angle>-ink`, with neutral fallbacks on other themes (or set `--meter-hue-fill`, `--meter-hue-fill-strong` and `--meter-hue-ink` yourself). A mark with `threshold` is the heads-up point: once `value` reaches it the label's `<strong>` turns weight 800 in ink, never the alert colour. `variant: "limit"` draws a 3px ceiling tick, and `label`/`caption` write text under a tick (`hideWhenNarrow` drops it under 30rem). `size="contract"` is the 30px engagement meter with `zones` (solid or hatched bands behind the fill). Use past `max` stripes coral by default (`overflow="alert"`, unresolved) or in ink (`overflow="ink"`, billable overage); `scale` lines several meters up. The track carries `role="meter"` and takes its name from the label. `npx visor add meter`.
+- 372e834: AdminShell (VI-770): the sidebar folds to an icon rail and back. `collapsible` draws a fold button beside the logo ("Collapse the sidebar" / "Expand the sidebar", with `aria-expanded`), and ⌘\ (Ctrl+\ off a Mac) toggles it; `collapseShortcut` picks another key or `false`. `storageKey` remembers the choice in localStorage (a private window opens expanded), `defaultCollapsed` sets the start, and `collapsed` / `onCollapsedChange` make it controlled. The shell and sidebar carry `data-collapsed`, and labels marked `data-admin-shell-label` are hidden visually in the rail but keep naming their items. The rail is desk-only. The theme engine adds `rail-width` (68px), `rail-duration` and `rail-easing` to the `admin-shell` family, and Paper folds on its 480ms `cubic-bezier(0.2, 0.8, 0.2, 1)`.
+
+### Patch Changes
+
+- Updated dependencies [372e834]
+  - @loworbitstudio/visor-theme-engine@0.36.0
+
 ## 1.47.0
 
 ### Minor Changes
