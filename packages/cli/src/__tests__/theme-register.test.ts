@@ -295,6 +295,18 @@ describe("theme register command", () => {
       expect(existsSync(join(docsAppDir, "test-theme-theme.css"))).toBe(false)
     })
 
+    it("keeps a custom-themes YAML on the sync path when a stock group shares its label (VI-749)", () => {
+      writeCustomTheme(`${VALID_YAML}group: "Client"\n`)
+      const logs: string[] = []
+      vi.spyOn(console, "log").mockImplementation((msg) => logs.push(msg))
+
+      themeRegisterCommand("custom-themes/test-theme.visor.yaml", testDir, { group: "Client", json: true })
+
+      expect(JSON.parse(logs[0])).toMatchObject({ success: true, group: "Client", via: "theme sync" })
+      expect(readFileSync(themeConfigPath, "utf-8")).toBe(THEME_CONFIG_INITIAL)
+      expect(readFileSync(globalsPath, "utf-8")).toBe(GLOBALS_CSS_INITIAL)
+    })
+
     it("refuses when the YAML's group is not the one asked for", () => {
       writeCustomTheme(VALID_YAML)
       expect(() =>
