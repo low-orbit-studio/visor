@@ -271,4 +271,42 @@ describe("theme register command", () => {
       ).toThrow("process.exit(1)")
     })
   })
+
+  // theme-config.ts holds the stock group only (W015); a custom group comes from the YAML's `group` via `visor theme sync`.
+  describe("custom group (not in theme-config.ts)", () => {
+    const LOW_ORBIT_YAML = `${VALID_YAML}group: "Low Orbit"\n`
+
+    function writeCustomTheme(content: string) {
+      mkdirSync(join(testDir, "custom-themes"), { recursive: true })
+      return writeYaml("custom-themes/test-theme.visor.yaml", content)
+    }
+
+    it("registers a custom-themes YAML whose group matches, and edits no tracked file", () => {
+      writeCustomTheme(LOW_ORBIT_YAML)
+      const logs: string[] = []
+      vi.spyOn(console, "log").mockImplementation((msg) => logs.push(msg))
+
+      themeRegisterCommand("custom-themes/test-theme.visor.yaml", testDir, { group: "Low Orbit", json: true })
+
+      const result = JSON.parse(logs[0])
+      expect(result).toMatchObject({ success: true, slug: "test-theme", group: "Low Orbit", via: "theme sync" })
+      expect(readFileSync(themeConfigPath, "utf-8")).toBe(THEME_CONFIG_INITIAL)
+      expect(readFileSync(globalsPath, "utf-8")).toBe(GLOBALS_CSS_INITIAL)
+      expect(existsSync(join(docsAppDir, "test-theme-theme.css"))).toBe(false)
+    })
+
+    it("refuses when the YAML's group is not the one asked for", () => {
+      writeCustomTheme(VALID_YAML)
+      expect(() =>
+        themeRegisterCommand("custom-themes/test-theme.visor.yaml", testDir, { group: "Low Orbit" })
+      ).toThrow("process.exit(1)")
+    })
+
+    it("refuses a YAML outside custom-themes/, where sync would never read it", () => {
+      writeYaml("test-theme.visor.yaml", LOW_ORBIT_YAML)
+      expect(() =>
+        themeRegisterCommand("test-theme.visor.yaml", testDir, { group: "Low Orbit" })
+      ).toThrow("process.exit(1)")
+    })
+  })
 })
