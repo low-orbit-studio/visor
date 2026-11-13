@@ -35,7 +35,7 @@ const KNOWN_COLOR_KEYS = new Set([
 ]);
 
 const KNOWN_TYPOGRAPHY_KEYS = new Set([
-  "heading", "display", "body", "mono", "letter-spacing", "scale", "slots", "cdn-overrides",
+  "heading", "display", "body", "mono", "letter-spacing", "scale", "floor", "slots", "cdn-overrides",
   // VI-375: default text colors for interactive backgrounds (auto-picked by
   // paired `*-bg` luminance; theme-overridable).
   "text-on-light", "text-on-dark",

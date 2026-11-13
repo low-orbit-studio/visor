@@ -104,6 +104,20 @@ The shell is a two-column flex layout:
 
 The `<main>` element carries `id="admin-main-content"` so the built-in skip link (visible on keyboard focus) can jump past the chrome.
 
+## Theming
+
+Every rule the shell draws is a component token, so a theme can drop them instead of overriding the `data-slot` hooks. Unbound, each falls back to today's value.
+
+| Token | Draws | Default |
+|---|---|---|
+| `--admin-shell-sidebar-border` | Rule between the sidebar and the body | `1px solid var(--border-default)` |
+| `--admin-shell-sidebar-header-border` | Rule under the sidebar header | `1px solid var(--border-muted)` |
+| `--admin-shell-sidebar-footer-border` | Rule above the sidebar footer | `1px solid var(--border-muted)` |
+| `--admin-shell-topbar-bg` | Topbar fill | `var(--surface-card)` |
+| `--admin-shell-topbar-border` | Rule under the topbar | `1px solid var(--border-default)` |
+
+Bind them under `components.admin-shell` in a `.visor.yaml`. The `paper` theme sets the borders to `none` and the topbar to `var(--surface-page)`, so its shell separates surfaces by tone alone. See [Component tokens](/docs/themes/component-tokens#admin-shell).
+
 ## Accessibility
 
 - Skip link (visually hidden, visible on focus) jumps to `#admin-main-content`.

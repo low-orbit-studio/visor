@@ -318,6 +318,18 @@ Sidebar chrome and nav-item treatment. The palette roles (`bg`, `text`, `border`
 | `--sidebar-item-padding` | Default nav-item inset. | `0 var(--spacing-3, 0.75rem)` |
 | `--sidebar-item-active-font-weight` | Active nav-item weight. | `var(--font-weight-medium, 500)` |
 
+### `admin-shell`
+
+AdminShell block chrome. Every rule the shell draws is a token, so a theme that separates surfaces by tone (Paper) sets them to `none` and gets a borderless shell.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--admin-shell-sidebar-border` | Rule between the sidebar and the body. | `1px solid var(--border-default, #e5e7eb)` |
+| `--admin-shell-sidebar-header-border` | Rule under the sidebar header. | `1px solid var(--border-muted, #e5e7eb)` |
+| `--admin-shell-sidebar-footer-border` | Rule above the sidebar footer. | `1px solid var(--border-muted, #e5e7eb)` |
+| `--admin-shell-topbar-bg` | Topbar fill. | `var(--surface-card, #ffffff)` |
+| `--admin-shell-topbar-border` | Rule under the topbar. | `1px solid var(--border-default, #e5e7eb)` |
+
 ### `tabs`
 
 Tab rail and trigger treatment, for both the segmented (`default`) and underlined (`line`) variants.

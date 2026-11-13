@@ -1,0 +1,158 @@
+/* Kanban Board
+ * Stage columns in one row. Surfaces are told apart by tone, never borders:
+ * columns sit on the card tone, cards on the raised popover tone, so a card
+ * reads lighter than its column in light and dark alike. Every value binds to
+ * a Visor token unless noted.
+ */
+
+.board {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3, 0.75rem);
+  overflow-x: auto;
+  padding-bottom: var(--spacing-1, 0.25rem);
+}
+
+.column,
+.rail {
+  background: var(--surface-card, #ffffff);
+  border-radius: var(--radius-xl, 1rem);
+  /* Intentional: lanes keep their height when empty so drops have room. */
+  min-height: 26rem;
+  transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease);
+}
+
+.column {
+  flex: 1 1 0;
+  /* Intentional: a card stays readable before the board scrolls sideways. */
+  min-width: 12.5rem;
+  padding: var(--spacing-2, 0.5rem);
+}
+
+.column[data-target],
+.rail[data-target] {
+  background: color-mix(in srgb, var(--text-link, #2563eb) 10%, var(--surface-card, #ffffff));
+}
+
+/* ── Header ── */
+
+.head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-2, 0.5rem);
+  padding: var(--spacing-2, 0.5rem) var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+}
+
+.label {
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-bold, 700);
+  letter-spacing: var(--letter-spacing-wide, 0.05em);
+  text-transform: uppercase;
+  color: var(--text-secondary, #6b7280);
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+button.label {
+  cursor: pointer;
+}
+
+.count,
+.total {
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--text-secondary, #6b7280);
+}
+
+.total {
+  margin-left: auto;
+}
+
+/* ── Collapsed rail ── */
+
+.rail {
+  flex: none;
+  /* Intentional: a rail is one label wide. */
+  width: 3.5rem;
+  writing-mode: vertical-rl;
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-4, 1rem) 0;
+  border: 0;
+  cursor: pointer;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-bold, 700);
+  letter-spacing: var(--letter-spacing-wide, 0.05em);
+  text-transform: uppercase;
+  color: var(--text-secondary, #6b7280);
+}
+
+.rail:hover,
+button.label:hover {
+  color: var(--text-primary, #111827);
+}
+
+.rail:focus-visible,
+button.label:focus-visible,
+.board .card:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #2563eb);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+/* ── Cards ── */
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.board .card {
+  background: var(--surface-popover, #ffffff);
+  border-radius: var(--radius-lg, 0.75rem);
+  padding: var(--spacing-3, 0.75rem);
+  gap: 0;
+  box-shadow: var(--shadow-xs);
+  cursor: grab;
+}
+
+/* A held card tilts and lifts, as in the approved frame. */
+.board .card[data-grabbed] {
+  /* Intentional: the frame's tilt and lift. */
+  transform: rotate(-1.5deg) translateY(-0.25rem);
+  box-shadow: var(--shadow-lg);
+}
+
+.drop {
+  display: grid;
+  place-items: center;
+  /* Intentional: about one card tall. */
+  min-height: 4.5rem;
+  margin-bottom: var(--spacing-2, 0.5rem);
+  border-radius: var(--radius-lg, 0.75rem);
+  background: var(--surface-accent-subtle, #eff6ff);
+  color: var(--text-link, #2563eb);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.empty {
+  margin: 0;
+  padding: var(--spacing-6, 1.5rem) var(--spacing-3, 0.75rem);
+  text-align: center;
+  color: var(--text-muted, #6b7280);
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

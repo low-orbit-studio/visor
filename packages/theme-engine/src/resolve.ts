@@ -182,6 +182,7 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
     "colors-dark": config["colors-dark"],
     typography: {
       scale: config.typography?.scale ?? DEFAULTS.typography.scale,
+      ...(config.typography?.floor !== undefined && { floor: config.typography.floor }),
       "text-on-light":
         config.typography?.["text-on-light"] ?? DEFAULTS.typography["text-on-light"],
       "text-on-dark":

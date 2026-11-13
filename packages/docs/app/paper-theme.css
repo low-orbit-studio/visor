@@ -237,10 +237,24 @@ html:not(.dark) .paper-theme {
   }
 }
 
-/* [visor-brand] 122 passthrough: --overlay-bg, --paper-desk-title, --paper-desk-title-2, --paper-desk-row, --paper-desk-body, --paper-desk-sub, --paper-desk-label, --paper-desk-hero, --paper-desk-num, --paper-track-label, --paper-track-tight, --paper-control-h, --paper-radius-sheet, --paper-hue-75-fill, --paper-hue-75-fill-strong, --paper-hue-75-ink, --paper-hue-75-solid, --paper-hue-99-fill, --paper-hue-99-fill-strong, --paper-hue-99-ink, --paper-hue-99-solid, --paper-hue-123-fill, --paper-hue-123-fill-strong, --paper-hue-123-ink, --paper-hue-123-solid, --paper-hue-147-fill, --paper-hue-147-fill-strong, --paper-hue-147-ink, --paper-hue-147-solid, --paper-hue-171-fill, --paper-hue-171-fill-strong, --paper-hue-171-ink, --paper-hue-171-solid, --paper-hue-195-fill, --paper-hue-195-fill-strong, --paper-hue-195-ink, --paper-hue-195-solid, --paper-hue-219-fill, --paper-hue-219-fill-strong, --paper-hue-219-ink, --paper-hue-219-solid, --paper-hue-243-fill, --paper-hue-243-fill-strong, --paper-hue-243-ink, --paper-hue-243-solid, --paper-hue-267-fill, --paper-hue-267-fill-strong, --paper-hue-267-ink, --paper-hue-267-solid, --paper-hue-291-fill, --paper-hue-291-fill-strong, --paper-hue-291-ink, --paper-hue-291-solid, --paper-hue-315-fill, --paper-hue-315-fill-strong, --paper-hue-315-ink, --paper-hue-315-solid, --paper-hue-339-fill, --paper-hue-339-fill-strong, --paper-hue-339-ink, --paper-hue-339-solid */
+/* [visor-brand] 150 passthrough: --overlay-bg, --input-bg, --textarea-bg, --select-bg, --number-input-bg, --tag-input-bg, --combobox-bg, --otp-bg, --input-border, --textarea-border, --select-border, --number-input-border, --tag-input-border, --combobox-border, --otp-border, --paper-desk-title, --paper-desk-title-2, --paper-desk-row, --paper-desk-body, --paper-desk-sub, --paper-desk-label, --paper-desk-hero, --paper-desk-num, --paper-track-label, --paper-track-tight, --paper-control-h, --paper-radius-sheet, --paper-hue-75-fill, --paper-hue-75-fill-strong, --paper-hue-75-ink, --paper-hue-75-solid, --paper-hue-99-fill, --paper-hue-99-fill-strong, --paper-hue-99-ink, --paper-hue-99-solid, --paper-hue-123-fill, --paper-hue-123-fill-strong, --paper-hue-123-ink, --paper-hue-123-solid, --paper-hue-147-fill, --paper-hue-147-fill-strong, --paper-hue-147-ink, --paper-hue-147-solid, --paper-hue-171-fill, --paper-hue-171-fill-strong, --paper-hue-171-ink, --paper-hue-171-solid, --paper-hue-195-fill, --paper-hue-195-fill-strong, --paper-hue-195-ink, --paper-hue-195-solid, --paper-hue-219-fill, --paper-hue-219-fill-strong, --paper-hue-219-ink, --paper-hue-219-solid, --paper-hue-243-fill, --paper-hue-243-fill-strong, --paper-hue-243-ink, --paper-hue-243-solid, --paper-hue-267-fill, --paper-hue-267-fill-strong, --paper-hue-267-ink, --paper-hue-267-solid, --paper-hue-291-fill, --paper-hue-291-fill-strong, --paper-hue-291-ink, --paper-hue-291-solid, --paper-hue-315-fill, --paper-hue-315-fill-strong, --paper-hue-315-ink, --paper-hue-315-solid, --paper-hue-339-fill, --paper-hue-339-fill-strong, --paper-hue-339-ink, --paper-hue-339-solid */
 
 html:not(.dark) .paper-theme {
   --overlay-bg: rgba(12, 16, 21, 0.42);
+  --input-bg: rgba(30, 31, 33, 0.06);
+  --textarea-bg: rgba(30, 31, 33, 0.06);
+  --select-bg: rgba(30, 31, 33, 0.06);
+  --number-input-bg: rgba(30, 31, 33, 0.06);
+  --tag-input-bg: rgba(30, 31, 33, 0.06);
+  --combobox-bg: rgba(30, 31, 33, 0.06);
+  --otp-bg: rgba(30, 31, 33, 0.06);
+  --input-border: transparent;
+  --textarea-border: transparent;
+  --select-border: transparent;
+  --number-input-border: transparent;
+  --tag-input-border: transparent;
+  --combobox-border: transparent;
+  --otp-border: transparent;
   --paper-desk-title: 900 34px/38px var(--font-heading);
   --paper-desk-title-2: 900 22px/27px var(--font-heading);
   --paper-desk-row: 600 15px/20px var(--font-body);
@@ -305,6 +319,20 @@ html:not(.dark) .paper-theme {
 
 .dark .paper-theme {
   --overlay-bg: rgba(0, 0, 0, 0.62);
+  --input-bg: rgba(245, 245, 240, 0.06);
+  --textarea-bg: rgba(245, 245, 240, 0.06);
+  --select-bg: rgba(245, 245, 240, 0.06);
+  --number-input-bg: rgba(245, 245, 240, 0.06);
+  --tag-input-bg: rgba(245, 245, 240, 0.06);
+  --combobox-bg: rgba(245, 245, 240, 0.06);
+  --otp-bg: rgba(245, 245, 240, 0.06);
+  --input-border: transparent;
+  --textarea-border: transparent;
+  --select-border: transparent;
+  --number-input-border: transparent;
+  --tag-input-border: transparent;
+  --combobox-border: transparent;
+  --otp-border: transparent;
   --paper-desk-title: 900 34px/38px var(--font-heading);
   --paper-desk-title-2: 900 22px/27px var(--font-heading);
   --paper-desk-row: 600 15px/20px var(--font-body);
@@ -370,6 +398,20 @@ html:not(.dark) .paper-theme {
 @media (prefers-color-scheme: dark) {
   html:not(.light) .paper-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
     --overlay-bg: rgba(0, 0, 0, 0.62);
+    --input-bg: rgba(245, 245, 240, 0.06);
+    --textarea-bg: rgba(245, 245, 240, 0.06);
+    --select-bg: rgba(245, 245, 240, 0.06);
+    --number-input-bg: rgba(245, 245, 240, 0.06);
+    --tag-input-bg: rgba(245, 245, 240, 0.06);
+    --combobox-bg: rgba(245, 245, 240, 0.06);
+    --otp-bg: rgba(245, 245, 240, 0.06);
+    --input-border: transparent;
+    --textarea-border: transparent;
+    --select-border: transparent;
+    --number-input-border: transparent;
+    --tag-input-border: transparent;
+    --combobox-border: transparent;
+    --otp-border: transparent;
     --paper-desk-title: 900 34px/38px var(--font-heading);
     --paper-desk-title-2: 900 22px/27px var(--font-heading);
     --paper-desk-row: 600 15px/20px var(--font-body);
@@ -545,7 +587,7 @@ html:not(.dark) .paper-theme {
   --font-heading: Satoshi;
   --font-body: Satoshi;
   --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
-  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-xs: 0.8125rem; /* 13px */
   --font-size-sm: 0.875rem; /* 14px */
   --font-size-base: 1rem; /* 16px */
   --font-size-lg: 1.125rem; /* 18px */
@@ -1028,6 +1070,11 @@ html:not(.dark) .paper-theme {
 /* ── Component tokens (VI-625) — theme bindings for the admin-UI families ── */
 
 html:not(.dark) .paper-theme {
+  --admin-shell-sidebar-border: none;
+  --admin-shell-sidebar-footer-border: none;
+  --admin-shell-sidebar-header-border: none;
+  --admin-shell-topbar-bg: var(--surface-page);
+  --admin-shell-topbar-border: none;
   --button-md-height: 36px;
   --button-radius: 999px;
   --input-md-height: 36px;
@@ -1052,6 +1099,11 @@ html:not(.dark) .paper-theme {
 }
 
 .dark .paper-theme {
+  --admin-shell-sidebar-border: none;
+  --admin-shell-sidebar-footer-border: none;
+  --admin-shell-sidebar-header-border: none;
+  --admin-shell-topbar-bg: var(--surface-page);
+  --admin-shell-topbar-border: none;
   --button-md-height: 36px;
   --button-radius: 999px;
   --input-md-height: 36px;
@@ -1077,6 +1129,11 @@ html:not(.dark) .paper-theme {
 
 @media (prefers-color-scheme: dark) {
   html:not(.light) .paper-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
+    --admin-shell-sidebar-border: none;
+    --admin-shell-sidebar-footer-border: none;
+    --admin-shell-sidebar-header-border: none;
+    --admin-shell-topbar-bg: var(--surface-page);
+    --admin-shell-topbar-border: none;
     --button-md-height: 36px;
     --button-radius: 999px;
     --input-md-height: 36px;

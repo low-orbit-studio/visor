@@ -43,7 +43,7 @@
   width: var(--admin-shell-sidebar-width, 16rem);
   min-height: 100vh;
   background: var(--surface-card, #ffffff);
-  border-right: 1px solid var(--border-default, #e5e7eb);
+  border-right: var(--admin-shell-sidebar-border, 1px solid var(--border-default, #e5e7eb));
   position: sticky;
   top: 0;
   max-height: 100vh;
@@ -53,7 +53,7 @@
   display: flex;
   align-items: center;
   padding: var(--spacing-4, 1rem) var(--spacing-5, 1.25rem);
-  border-bottom: 1px solid var(--border-muted, #e5e7eb);
+  border-bottom: var(--admin-shell-sidebar-header-border, 1px solid var(--border-muted, #e5e7eb));
   min-height: 3.5rem;
   flex-shrink: 0;
 }
@@ -70,7 +70,7 @@
 .sidebarFooter {
   flex-shrink: 0;
   padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
-  border-top: 1px solid var(--border-muted, #e5e7eb);
+  border-top: var(--admin-shell-sidebar-footer-border, 1px solid var(--border-muted, #e5e7eb));
 }
 
 /* Body = topbar + main */
@@ -89,8 +89,8 @@
   gap: var(--spacing-4, 1rem);
   padding: var(--spacing-3, 0.75rem) var(--spacing-6, 1.5rem);
   min-height: 3.5rem;
-  background: var(--surface-card, #ffffff);
-  border-bottom: 1px solid var(--border-default, #e5e7eb);
+  background: var(--admin-shell-topbar-bg, var(--surface-card, #ffffff));
+  border-bottom: var(--admin-shell-topbar-border, 1px solid var(--border-default, #e5e7eb));
   position: sticky;
   top: 0;
   z-index: 10;

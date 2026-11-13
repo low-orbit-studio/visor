@@ -24,6 +24,12 @@ export function isPackageInstalled(
   )
 }
 
+/** Strip a version range from an install spec: `"@scope/pkg@^1.2"` → `"@scope/pkg"`. */
+export function packageName(spec: string): string {
+  const at = spec.indexOf("@", 1)
+  return at === -1 ? spec : spec.slice(0, at)
+}
+
 export function hasVisorTokens(cwd: string): boolean {
   return isPackageInstalled("@loworbitstudio/visor-core", cwd)
 }
@@ -32,7 +38,7 @@ export function getUninstalledDeps(
   dependencies: string[],
   cwd: string
 ): string[] {
-  return dependencies.filter((dep) => !isPackageInstalled(dep, cwd))
+  return dependencies.filter((dep) => !isPackageInstalled(packageName(dep), cwd))
 }
 
 export function installPackages(
