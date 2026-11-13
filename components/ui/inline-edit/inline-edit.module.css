@@ -194,9 +194,10 @@
   cursor: progress;
 }
 
-/* A failed save: the edge turns to the error colour, focused or not. */
-.input[aria-invalid="true"],
-.input[aria-invalid="true"]:focus-visible {
+/* A failed save: the edge turns to the error colour, focused or not. Same
+ * specificity as the focus rule above and later, so it wins over the focus
+ * edge while the focus halo stays. */
+.input[aria-invalid="true"] {
   outline: var(--control-state-edge-width, 1px) solid var(--control-invalid-ring-color, var(--border-error, #ef4444));
   outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
 }
