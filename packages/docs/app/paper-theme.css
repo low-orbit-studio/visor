@@ -1077,6 +1077,9 @@ html:not(.dark) .paper-theme {
   --admin-shell-sidebar-header-border: none;
   --admin-shell-topbar-bg: var(--surface-page);
   --admin-shell-topbar-border: none;
+  --billing-slider-gap-color: #0b6e4f;
+  --billing-slider-thumb-bg: #ffffff;
+  --billing-slider-track-bg: rgba(30, 31, 33, 0.07);
   --button-md-height: 36px;
   --button-radius: 999px;
   --input-md-height: 36px;
@@ -1122,6 +1125,10 @@ html:not(.dark) .paper-theme {
   --admin-shell-sidebar-header-border: none;
   --admin-shell-topbar-bg: var(--surface-page);
   --admin-shell-topbar-border: none;
+  --billing-slider-gap-color: #5fd4a8;
+  --billing-slider-thumb-bg: #f5f5f0;
+  --billing-slider-thumb-grip: #0c1015;
+  --billing-slider-track-bg: rgba(245, 245, 240, 0.09);
   --button-md-height: 36px;
   --button-radius: 999px;
   --input-md-height: 36px;
@@ -1168,6 +1175,10 @@ html:not(.dark) .paper-theme {
     --admin-shell-sidebar-header-border: none;
     --admin-shell-topbar-bg: var(--surface-page);
     --admin-shell-topbar-border: none;
+    --billing-slider-gap-color: #5fd4a8;
+    --billing-slider-thumb-bg: #f5f5f0;
+    --billing-slider-thumb-grip: #0c1015;
+    --billing-slider-track-bg: rgba(245, 245, 240, 0.09);
     --button-md-height: 36px;
     --button-radius: 999px;
     --input-md-height: 36px;

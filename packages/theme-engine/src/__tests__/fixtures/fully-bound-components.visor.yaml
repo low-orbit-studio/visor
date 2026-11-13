@@ -191,6 +191,11 @@ components:
     rail-width: "77px"
     rail-duration: "777ms"
     rail-easing: "steps(7)"
+  billing-slider:
+    track-bg: "#2b0a3d"
+    thumb-bg: "#ffd000"
+    thumb-grip: "#ff00aa"
+    gap-color: "#009966"
   tabs:
     list-radius: "3px"
     list-height: "37px"

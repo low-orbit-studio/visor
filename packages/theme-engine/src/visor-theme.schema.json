@@ -568,6 +568,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "billing-slider": {
+          "type": "object",
+          "description": "BillingSlider — the empty track, the thumb's pill and grip lines, and the striped money-at-stake gap between the thumb and the evidence tick. Keys: track-bg, thumb-bg, thumb-grip, gap-color.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "tabs": {
           "type": "object",
           "description": "Tab rail and trigger treatment, for both the segmented (`default`) and underlined (`line`) variants. Keys: list-radius, list-height, list-padding, list-color, list-bg, line-border-bottom, trigger-radius, trigger-padding, trigger-font-size, trigger-font-weight, trigger-letter-spacing, trigger-text-transform, trigger-color, trigger-active-bg, trigger-active-color, trigger-active-shadow, indicator-height, indicator-color.",

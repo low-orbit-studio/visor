@@ -383,6 +383,36 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'billing-slider': [
+    { name: 'value', type: 'number', required: true, description: 'What it bills. Controlled.' },
+    { name: 'onValueChange', type: '(value: number) => void', required: true, description: 'Called while dragging and on every key step.' },
+    { name: 'onValueCommit', type: '(value: number) => void', description: 'Enter, or releasing the thumb after a drag. Arrow keys never commit.' },
+    { name: 'savedValue', type: 'number', description: 'The last saved value. Escape returns the thumb here.' },
+    { name: 'min', type: 'number', required: true, description: 'The floor. Nothing below it.' },
+    { name: 'max', type: 'number', required: true, description: "The track's end, computed by the caller (as far as the ceiling allows)." },
+    { name: 'step', type: 'number', default: '0.25', description: 'The arrow step. Shift + arrows step four times it (an hour).' },
+    {
+      name: 'marks',
+      type: '{ value: number; label?: ReactNode; hatchPast?: boolean }[]',
+      default: '[]',
+      description: 'Notches across the track. A mark is not a stop. `label` writes text before its value in the labels row; past the mark with `hatchPast` the filled range stripes.',
+    },
+    {
+      name: 'evidence',
+      type: '{ value: number; agent?: number; proposed?: number }',
+      description: 'Worked hours: a solid strip along the foot and a tick at its end. `agent` extends it dotted and moves the tick (leave it off when agent time does not count); `proposed` extends it pale with a dashed tick. A tick past `max` becomes an arrow at the end.',
+    },
+    { name: 'gap', type: 'boolean', default: 'false', description: 'Stripe the gap between the thumb and the evidence tick, in `--billing-slider-gap-color` (Emerald on Paper, money at stake).' },
+    { name: 'hue', type: 'number', description: 'A Paper project-hue angle (75 to 339). Reads `--paper-hue-<angle>-fill-strong` (the fill) and `-ink` (the thumb ring, evidence, ticks and stripes).' },
+    { name: 'size', type: '"md" | "lg"', default: '"md"', description: '`md` is the 40px row track; `lg` is the 56px hero track.' },
+    { name: 'status', type: '"saving" | "failed"', description: '`saving` pulses the thumb. On `failed`, put `value` back to `savedValue`.' },
+    { name: 'disabled', type: 'boolean', default: 'false', description: 'Turns off the pointer and the keys and dims the thumb ring.' },
+    { name: 'formatValue', type: '(value: number) => string', default: 'String', description: 'Formats a value for the bubble and the labels row.' },
+    { name: 'valueText', type: '(value: number) => string', description: '`aria-valuetext`: the formatted value and its amount. Defaults to `formatValue`.' },
+    { name: 'minLabel', type: 'ReactNode', description: 'Text before the floor\'s value ("Low").' },
+    { name: 'maxLabel', type: 'ReactNode', description: 'Text before the end\'s value ("Ceiling allows").' },
+  ],
+
   slider: [
     {
       name: 'value',

@@ -238,6 +238,12 @@ describe("VI-749: paper theme", () => {
     expect(lc["alert-fill"].dark).toBe(mix("#f28b6d", "#0c1015", 0.3));
   });
 
+  it("stripes the billing slider's gap in Emerald, money at stake, in both modes (VI-768)", () => {
+    const css = nextjsAdapter(data);
+    expect(css).toContain("--billing-slider-gap-color: #0b6e4f;");
+    expect(css).toContain("--billing-slider-gap-color: #5fd4a8;");
+  });
+
   it("keeps Paper's colours: grounds, cards, ink, Tide and coral", () => {
     const t = data.tokens;
     expect(token(t, "surface-page", "light")).toBe("#fcfcfb");
