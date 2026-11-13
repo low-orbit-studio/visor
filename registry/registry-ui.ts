@@ -586,6 +586,24 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "meter",
+    type: "registry:ui",
+    description:
+      "A thin meter for use against a limit: the track in a hue's tint, the fill in its ink, ticks for a heads-up threshold and a ceiling, a label slot, zones, and striped use past the limit.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/meter/meter.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/meter/meter.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "progress",
     type: "registry:ui",
     description:

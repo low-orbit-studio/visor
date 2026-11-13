@@ -1,0 +1,75 @@
+name: Meter
+description: A thin meter for use against a limit. The track is a hue's tint, the fill its ink, ticks mark a heads-up threshold and a ceiling, and a one-line label sits under it. The contract size adds zones (up to the low, hatched to the high), mark text and striped use past the limit.
+extends: HTMLDivElement
+category: data-display
+
+when_to_use:
+  - Hours used against a contract's ceiling, with a tick at the heads-up point (usually 80%)
+  - One compact meter per row in a list of clients or accounts
+  - A full contract meter with the low and high totals as zones and labelled marks
+  - A retainer month against its included hours, with billable overage striped in ink
+  - Quota or plan usage where crossing a threshold matters more than the exact percentage
+
+when_not_to_use:
+  - Task completion or upload progress (use Progress)
+  - Discrete steps (use SegmentedProgress or Stepper)
+  - Parts of a whole that add up to 100% (use a stacked bar or chart)
+  - An editable amount (use Slider)
+
+why: >
+  Progress has no threshold tick, no hue and nothing past its limit. Meter
+  draws use against a limit the way an engagement's statement of work does:
+  the track in the owner's hue tint (a Paper project hue via `hue`), the used
+  fill in that hue's ink, ticks for the heads-up threshold and the ceiling, and
+  a label slot under it. Once `value` reaches the threshold mark the label's
+  figure turns weight 800 in ink, never the alert colour. Marks are a list, so a
+  contract can add its low and high totals; zones draw the bands behind the
+  fill. Use past `max` stripes coral when it is unresolved and ink when it is
+  billable overage. The track carries role="meter" and takes its name from the
+  label.
+
+variants:
+  size: [compact, contract]
+  overflow: [alert, ink]
+
+props:
+  - name: value
+    type: number
+    description: What has been used.
+  - name: max
+    type: number
+    description: The limit (a contract's ceiling, a month's included hours).
+  - name: marks
+    type: "{ value: number; label?: ReactNode; caption?: ReactNode; align?: 'start' | 'center' | 'end'; variant?: 'tick' | 'limit'; threshold?: boolean; hideWhenNarrow?: boolean }[]"
+    default: "[]"
+    description: Ticks on the track. `threshold` marks the heads-up point. `label` and `caption` draw text under the tick; `hideWhenNarrow` hides that text under 30rem.
+  - name: zones
+    type: "{ from?: number; to: number; variant?: 'solid' | 'hatched' }[]"
+    default: "[]"
+    description: Bands behind the fill, in the hue's strong fill, solid or hatched.
+  - name: hue
+    type: number
+    description: A Paper project-hue angle (75 to 339). Reads --paper-hue-<angle>-fill, -fill-strong and -ink. Set --meter-hue-fill, --meter-hue-fill-strong and --meter-hue-ink yourself for any other colour.
+  - name: size
+    type: '"compact" | "contract"'
+    default: '"compact"'
+    description: '"compact" is the 10px row meter; "contract" is the 30px meter with a thinner used bar.'
+  - name: overflow
+    type: '"alert" | "ink"'
+    default: '"alert"'
+    description: How use past max draws. "alert" stripes it coral (unresolved hours); "ink" stripes it in ink (billable overage) and runs the fill through it.
+  - name: scale
+    type: number
+    description: The value at the track's right edge. Defaults to max, or 6% past value when it overflows. Pass one scale to line several meters up.
+  - name: children
+    type: ReactNode
+    description: The one-line label under the meter. Wrap the figure in <strong>.
+
+dependencies: []
+
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/meter"
+
+example: |
+  <Meter value={141} max={220} hue={219} marks={[{ value: 176, threshold: true }]}>
+    <strong>64%</strong> of 220 h · heads-up at 80%
+  </Meter>

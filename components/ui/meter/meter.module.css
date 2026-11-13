@@ -1,0 +1,168 @@
+/*
+ * Meter: use against a limit. The track is the hue's tint, the fill is the
+ * hue's ink inset inside it, ticks mark the heads-up and the ceiling.
+ * `hue` sets --meter-hue-fill / -fill-strong / -ink from Paper's project
+ * hues; without them (or on another theme) the meter falls back to neutrals.
+ */
+.root {
+  --_fill: var(--meter-hue-fill, var(--surface-muted, #f3f4f6));
+  --_fill-strong: var(--meter-hue-fill-strong, var(--surface-interactive-active, #e5e7eb));
+  --_ink: var(--meter-hue-ink, var(--text-primary, #111827));
+  --_tick: var(--meter-tick, var(--text-primary, #111827));
+  --_alert: var(--meter-alert, var(--color-error-500, #ef4444));
+  --_hatch: var(--meter-hatch-width, 4px);
+  /* Compact (row) geometry from the LO-344 frame: a 10px track, the fill inset 2px, ticks 3px proud. */
+  --_track-h: 10px;
+  --_track-radius: var(--radius-full, 9999px);
+  --_inset-x: 2px;
+  --_inset-y: 2px;
+  --_tick-out: 3px;
+  display: block;
+  min-width: 0;
+}
+
+/* Contract geometry from the LO-345 frame: a 30px track, a thinner used bar, ticks 6px proud. */
+.root[data-size="contract"] {
+  --_track-h: 30px;
+  --_track-radius: 10px;
+  --_inset-x: 6px;
+  --_inset-y: 9px;
+  --_tick-out: 6px;
+}
+
+.track {
+  position: relative;
+  height: var(--_track-h);
+  border-radius: var(--_track-radius);
+  background: var(--_fill-strong);
+}
+
+/* The contract track is the pale fill; zones carry the strong fill. */
+.root[data-size="contract"] .track {
+  background: color-mix(in srgb, var(--_fill) 55%, transparent);
+}
+
+.zone,
+.overflow,
+.fill,
+.tick {
+  position: absolute;
+}
+
+.zone {
+  top: 0;
+  bottom: 0;
+  border-radius: var(--_track-radius);
+  background: var(--_fill-strong);
+}
+
+.zone[data-variant="hatched"] {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--_fill-strong) 0 var(--_hatch),
+    transparent var(--_hatch) calc(var(--_hatch) * 2)
+  );
+}
+
+/* Past the limit: coral stripes for unresolved hours, the one alert case. */
+.overflow {
+  top: 0;
+  bottom: 0;
+  border-radius: 0 var(--_track-radius) var(--_track-radius) 0;
+  background: repeating-linear-gradient(
+    135deg,
+    var(--_alert) 0 var(--_hatch),
+    color-mix(in srgb, var(--_alert) 35%, transparent) var(--_hatch) calc(var(--_hatch) * 2)
+  );
+}
+
+/* Billable overage (a retainer past its included hours) stripes in ink, never coral. */
+.overflow[data-variant="ink"] {
+  background: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--_ink) 55%, transparent) 0 var(--_hatch),
+    transparent var(--_hatch) calc(var(--_hatch) * 2)
+  );
+}
+
+.fill {
+  left: var(--_inset-x);
+  top: var(--_inset-y);
+  bottom: var(--_inset-y);
+  border-radius: var(--radius-full, 9999px);
+  background: var(--_ink);
+}
+
+.tick {
+  top: calc(var(--_tick-out) * -1);
+  bottom: calc(var(--_tick-out) * -1);
+  width: 2px;
+  border-radius: 2px;
+  background: var(--_tick);
+}
+
+/* A ceiling: 3px, set back so it ends inside the track. */
+.tick[data-variant="limit"] {
+  width: 3px;
+  margin-left: -2px;
+}
+
+/* Mark text under the ticks: two 16px lines, positioned by each mark's value. */
+.marks {
+  container-type: inline-size;
+  position: relative;
+  height: 2.5rem;
+  margin-top: var(--spacing-2, 0.5rem);
+  font-size: var(--font-size-xs, 0.75rem);
+  line-height: 1rem;
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-secondary, #4b5563);
+}
+
+.markText {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.markText[data-align="start"] {
+  transform: none;
+  text-align: left;
+}
+
+.markText[data-align="end"] {
+  transform: translateX(-100%);
+  text-align: right;
+}
+
+.markText b {
+  display: block;
+  color: var(--text-primary, #111827);
+  font-weight: var(--font-weight-bold, 700);
+}
+
+@container (max-width: 30rem) {
+  .markText[data-hide-narrow] {
+    display: none;
+  }
+}
+
+.label {
+  margin-top: calc(var(--spacing-1, 0.25rem) * 1.5);
+  font-size: var(--font-size-xs, 0.75rem);
+  line-height: var(--line-height-snug, 1.375);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-secondary, #4b5563);
+}
+
+.label strong {
+  color: var(--text-primary, #111827);
+  font-weight: var(--font-weight-bold, 700);
+}
+
+/* Past the heads-up the figure turns heavier in ink, never the alert colour (intentional 800, no token). */
+.root[data-over] .label strong {
+  font-weight: 800;
+}
