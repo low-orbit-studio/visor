@@ -112,8 +112,8 @@ npx visor add button input label card
 
 The registry ships 88+ UI components across 6 categories, plus admin compounds, blocks, and hooks.
 
-**Form (25)**
-`button` · `calendar` · `checkbox` · `combobox` · `date-picker` · `field` · `fieldset` · `file-upload` · `form` · `input` · `label` · `number-input` · `otp-input` · `password-input` · `phone-input` · `position-picker` · `radio-group` · `search-input` · `select` · `slider` · `slider-control` · `switch` · `tag-input` · `textarea` · `time-picker` · `toggle-group`
+**Form (26)**
+`billing-slider` · `button` · `calendar` · `checkbox` · `combobox` · `date-picker` · `field` · `fieldset` · `file-upload` · `form` · `input` · `label` · `number-input` · `otp-input` · `password-input` · `phone-input` · `position-picker` · `radio-group` · `search-input` · `select` · `slider` · `slider-control` · `switch` · `tag-input` · `textarea` · `time-picker` · `toggle-group`
 
 **Data Display (14)**
 `accordion` · `avatar` · `carousel` · `code-block` · `collapsible` · `heading` · `image` · `meter` · `progress` · `proportion-bar` · `separator` · `skeleton` · `text` · `timeline`

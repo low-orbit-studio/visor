@@ -2,8 +2,8 @@
 
 ## Current Components (84)
 
-### Form (22)
-- button, calendar, checkbox, combobox, date-picker, field, fieldset, file-upload, input, label, number-input, otp-input, password-input, phone-input, position-picker, radio-group, search-input, select, slider, switch, tag-input, textarea, time-picker, toggle-group
+### Form (23)
+- billing-slider, button, calendar, checkbox, combobox, date-picker, field, fieldset, file-upload, input, label, number-input, otp-input, password-input, phone-input, position-picker, radio-group, search-input, select, slider, switch, tag-input, textarea, time-picker, toggle-group
 
 ### Container / Layout (4)
 - badge, card, sheet, sidebar

@@ -333,6 +333,17 @@ AdminShell block chrome. Every rule the shell draws is a token, so a theme that 
 | `--admin-shell-rail-duration` | How long the sidebar takes to fold to the rail and back. | `var(--motion-duration-slow, 500ms)` |
 | `--admin-shell-rail-easing` | Easing of the fold to the rail and back. | `var(--motion-easing-default, ease)` |
 
+### `billing-slider`
+
+BillingSlider — the empty track, the thumb's pill and grip lines, and the striped money-at-stake gap between the thumb and the evidence tick.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--billing-slider-track-bg` | The empty track. | `color-mix(in srgb, var(--text-primary, #111827) 7%, transparent)` |
+| `--billing-slider-thumb-bg` | The thumb's pill. | `var(--surface-popover, #ffffff)` |
+| `--billing-slider-thumb-grip` | The two grip lines down the pill. | `color-mix(in srgb, var(--_ink) 45%, transparent)` |
+| `--billing-slider-gap-color` | The gap's stripes: undecided, and worked past what it bills (money at stake). | `var(--color-success-600, #16a34a)` |
+
 ### `tabs`
 
 Tab rail and trigger treatment, for both the segmented (`default`) and underlined (`line`) variants.

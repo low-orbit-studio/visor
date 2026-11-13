@@ -203,6 +203,10 @@ describe("VI-625 component token contract", () => {
           // styles from props, like the sidebar rail geometry above.
           "admin-shell-sidebar-width",
           "admin-shell-main-max-width",
+          // BillingSlider writes its hue from the `hue` prop as an inline style,
+          // like Meter; the theme binds the rest of the family.
+          "billing-slider-hue-fill-strong",
+          "billing-slider-hue-ink",
           // Piped from admin-list-page so the shell can flatten the sort bar's
           // top corners; owned by the block, not the theme.
           "data-table-sort-bar-radius",

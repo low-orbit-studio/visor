@@ -152,6 +152,21 @@ components:
     # The sidebar folds to its 68px rail on Paper's 480ms ease (VI-770).
     rail-duration: 480ms
     rail-easing: "cubic-bezier(0.2, 0.8, 0.2, 1)"
+  # VI-768: the billing slider (LO-345). The track is the segmented-control well, the thumb a
+  # light pill in both modes, and the gap between the thumb and the evidence is Emerald, money
+  # at stake (never coral).
+  billing-slider:
+    track-bg:
+      light: "rgba(30, 31, 33, 0.07)"
+      dark: "rgba(245, 245, 240, 0.09)"
+    thumb-bg:
+      light: "#ffffff"
+      dark: "#f5f5f0"
+    thumb-grip:
+      dark: "#0c1015"
+    gap-color:
+      light: "#0b6e4f"
+      dark: "#5fd4a8"
 
 overrides:
   light:

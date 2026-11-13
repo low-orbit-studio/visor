@@ -1074,6 +1074,27 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "billing-slider",
+    type: "registry:ui",
+    description:
+      "A range slider for how many hours a package bills: a floor, marks as notches, stripes past the high, worked, agent and proposed evidence along the foot, a money-at-stake gap and a pill thumb with a value bubble.",
+    dependencies: [
+      "@radix-ui/react-slider",
+      "@loworbitstudio/visor-core",
+    ],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/billing-slider/billing-slider.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/billing-slider/billing-slider.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "slider",
     type: "registry:ui",
     description:
