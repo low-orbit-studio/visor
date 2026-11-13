@@ -1,0 +1,52 @@
+name: Kanban Board
+description: >-
+  Stage columns in one row with cards that move between columns. Cards move by
+  native drag and drop or by keyboard: Space picks a card up, Left and Right
+  choose the column, Space or Enter drops, Escape cancels; arrows move focus
+  between cards when nothing is held. Each move is announced through an
+  aria-live region. Each column header shows its count and an optional total.
+  Columns listed in `rails` draw as collapsed side rails that expand on click
+  and accept drops. Columns are told apart by tone, never borders; a held card
+  tilts and lifts. The block owns no data: the consumer renders each card's
+  inside and owns persistence, optimistic state and Undo through onMove.
+category: data-display
+preview_url: "https://visor.loworbit.studio/docs/blocks/kanban-board"
+components_used:
+  - card
+  - status-dot
+  - chip
+props:
+  - name: columns
+    type: KanbanBoardColumn<T>[]
+    required: true
+    description: Columns in board order (id, label, optional total, items, optional empty). Keyboard moves step through this order.
+  - name: rails
+    type: string[]
+    default: "[]"
+    description: Column ids drawn as collapsed side rails until clicked open. A rail accepts drops while collapsed.
+  - name: renderCard
+    type: "(item: T, column: KanbanBoardColumn<T>) => ReactNode"
+    required: true
+    description: The inside of a card. The block supplies the card surface, drag, focus and keys.
+  - name: getItemLabel
+    type: "(item: T) => string"
+    required: true
+    description: Plain-text name of a card for screen reader announcements.
+  - name: onMove
+    type: "(itemId: string, toColumn: string) => void"
+    required: true
+    description: Called when a card lands in another column, by drag or by keyboard. Update your data here; the block re-renders from columns.
+  - name: onCardOpen
+    type: "(item: T) => void"
+    description: Called on Enter when no card is held, to open the record.
+  - name: renderColumnFooter
+    type: "(column: KanbanBoardColumn<T>) => ReactNode"
+    description: Content under an open column's cards, such as an Add button.
+when_to_use:
+  - Records that move through stages (a sales pipeline, orders, booking requests)
+  - Boards where stages are changed by drag and must also work from the keyboard
+  - Parked stages (paused, archived) that should stay one click away without taking a full column
+when_not_to_use:
+  - Sorting and filtering many records by field (use data-table)
+  - Reordering cards within one list (the block moves cards between columns only)
+  - Read-only status summaries (use stat-card or right-rail-list)

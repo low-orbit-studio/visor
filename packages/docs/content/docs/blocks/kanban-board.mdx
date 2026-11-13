@@ -1,0 +1,112 @@
+---
+title: Kanban Board
+description: Stage columns in one row. Cards move between columns by drag or by keyboard, each column header carries a count and a total, and parked stages fold into side rails.
+full: true
+---
+
+import { BlockPreview } from '@/components/block-preview';
+import { KanbanBoardDemo } from '@/components/blocks/kanban-board-demo';
+
+## Preview
+
+The board is drawn for the **Paper** theme: pick Paper in the theme switcher and flip light and dark to see columns and cards told apart by tone alone. Drag a card, or focus one and press <kbd>Space</kbd>, <kbd>→</kbd>, <kbd>Space</kbd>. Click a side rail to open it.
+
+<BlockPreview
+  title="Kanban Board"
+  code={"<KanbanBoard\n  aria-label=\"Deals\"\n  columns={columns}\n  rails={['paused', 'archived']}\n  getItemLabel={(deal) => deal.name}\n  renderCard={(deal) => <DealCard deal={deal} />}\n  onMove={(id, to) => moveDeal(id, to)}\n/>"}
+>
+  <KanbanBoardDemo />
+</BlockPreview>
+
+## Installation
+
+```bash
+npx visor add kanban-board
+```
+
+This copies files into your project:
+
+- `blocks/kanban-board/kanban-board.tsx` — the block component
+- `blocks/kanban-board/kanban-board.module.css` — the styles
+
+It installs `card` as a dependency. Add `--with-suggested` for `status-dot` and `chip`, which most card designs use.
+
+## Usage
+
+The block owns no data. You pass columns, render the inside of each card, and update your data in `onMove`. Persistence, optimistic state and Undo stay with you.
+
+```tsx
+'use client';
+
+import * as React from 'react';
+import { KanbanBoard, type KanbanBoardColumn } from '@/blocks/kanban-board/kanban-board';
+
+export function Pipeline({ deals, stages }: Props) {
+  const [board, setBoard] = React.useState(deals);
+
+  const columns: KanbanBoardColumn<Deal>[] = stages.map((stage) => ({
+    id: stage.id,
+    label: stage.label,
+    total: formatMoney(sum(board[stage.id])),
+    items: board[stage.id],
+    empty: 'Nothing here yet.',
+  }));
+
+  return (
+    <KanbanBoard
+      aria-label="Pipeline"
+      columns={columns}
+      rails={['paused', 'archived']}
+      getItemLabel={(deal) => deal.name}
+      renderCard={(deal) => <DealCard deal={deal} />}
+      onCardOpen={(deal) => router.push(`/deals/${deal.id}`)}
+      renderColumnFooter={(column) => <AddDealButton stage={column.id} />}
+      onMove={(id, to) => {
+        setBoard((prev) => moveDeal(prev, id, to)); // optimistic
+        saveStage(id, to).catch(() => setBoard(deals)); // roll back on failure
+      }}
+    />
+  );
+}
+```
+
+## Anatomy
+
+1. **Columns** — one per entry in `columns`, in order, side by side. The board scrolls sideways when the columns no longer fit.
+2. **Column header** — the label in uppercase, the card count, and the optional `total` at the right edge.
+3. **Cards** — a `Card` surface per item. `renderCard` fills it; the block owns the surface, focus, drag and keys.
+4. **Drop hint** — while a card is held over a column, a "Drop in …" slot opens at the top of that column and the column tints.
+5. **Side rails** — columns named in `rails` draw as narrow vertical rails (`Paused · 3`). A rail opens into a full column on click, and accepts drops while collapsed. An open rail's header label collapses it again.
+
+## Moving cards
+
+- **Drag** — native HTML drag and drop, no extra dependency. Drop on any open column or collapsed rail.
+- **Keyboard** — focus a card and press <kbd>Space</kbd> to pick it up. <kbd>←</kbd> and <kbd>→</kbd> choose the column (rails included), <kbd>Space</kbd> or <kbd>Enter</kbd> drops, <kbd>Escape</kbd> cancels. A drop on a collapsed rail opens it, and focus follows the card to its new column.
+- **Focus** — with nothing held, the arrow keys move focus between cards: up and down within a column, left and right to the nearest card in the next column that has any. <kbd>Enter</kbd> calls `onCardOpen`.
+
+`onMove(itemId, toColumn)` fires only when the card lands in a different column. Drops of anything that is not one of the board's cards are ignored.
+
+## Accessibility
+
+- Each column is a labelled region holding a list; each card is a focusable list item described by the keyboard instructions.
+- Every pick-up, column change, drop and cancel is announced through a polite `aria-live` region, using `getItemLabel` for the card's name.
+- Collapsed rails are buttons with `aria-expanded="false"` and a label that includes the card count.
+
+## Theming
+
+Columns sit on `--surface-card` and cards on `--surface-popover`, so a card reads lighter than its column in light and dark. There are no borders. A held card tilts and lifts onto `--shadow-lg`; the drop hint uses `--surface-accent-subtle` and `--text-link`.
+
+## Props
+
+See `KanbanBoardProps` in `blocks/kanban-board/kanban-board.tsx`. In summary:
+
+- **Data** — `columns` (required): `{ id, label, total?, items, empty? }[]`. Items need a string `id`.
+- **Cards** — `renderCard(item, column)` (required), `getItemLabel(item)` (required), `onCardOpen(item)`.
+- **Moves** — `onMove(itemId, toColumn)` (required).
+- **Layout** — `rails` (column ids shown collapsed), `renderColumnFooter(column)`.
+
+## About Blocks
+
+Blocks are complete UI patterns made up of multiple Visor components. Unlike individual components, blocks represent larger, composed sections of UI — such as admin shells, login forms, or dashboard panels.
+
+Blocks are copy-and-own, just like components. Install them into your project and customize freely.
