@@ -1,5 +1,6 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs"
 import { resolve, join } from "path"
+import { parse as parseYaml } from "yaml"
 import { generateThemeData } from "@loworbitstudio/visor-theme-engine"
 import { docsAdapter } from "@loworbitstudio/visor-theme-engine/adapters"
 import { logger } from "../utils/logger.js"
@@ -213,6 +214,33 @@ export function themeRegisterCommand(
       logger.error(msg)
     }
     process.exit(1)
+    return
+  }
+
+  // A group the tracked theme-config.ts does not hold (Client, Low Orbit) is a custom group. Since the overlay pattern
+  // (W015) theme-config.ts holds the stock group only, and `visor theme sync` builds the custom groups from each YAML's
+  // `group` into gitignored overlays. So register checks the YAML is where sync reads it, with that group, and edits nothing.
+  const escapedGroup = options.group.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  if (!new RegExp(`label:\\s*"${escapedGroup}"`).test(themeConfigContent)) {
+    const customDir = join(repoRoot, "custom-themes")
+    const yamlGroup = (parseYaml(yamlContent) as Record<string, unknown> | null)?.group
+    const problem = yamlGroup !== options.group
+      ? `${filePath} has group "${typeof yamlGroup === "string" ? yamlGroup : "(none)"}"; set \`group: "${options.group}"\` in it.`
+      : !filePath.startsWith(customDir + "/")
+        ? `${filePath} is not in ${customDir}, where \`visor theme sync\` reads it. Put it there, or in visor-themes-private.`
+        : null
+    if (problem) {
+      if (options.json) console.log(JSON.stringify({ success: false, error: problem }))
+      else logger.error(problem)
+      process.exit(1)
+      return
+    }
+    if (options.json) {
+      console.log(JSON.stringify({ success: true, slug, label, group: options.group, via: "theme sync", next: "visor theme sync" }))
+    } else {
+      logger.success(`Theme registered: ${label} (${slug}) in ${options.group}`)
+      logger.info("`visor theme sync` (the docs predev runs it) adds it to the switcher.")
+    }
     return
   }
 
