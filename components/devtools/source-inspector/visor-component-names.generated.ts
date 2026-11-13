@@ -348,6 +348,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "PricingSection",
   "ProfileMenu",
   "Progress",
+  "ProportionBar",
   "PrototypeReview",
   "QuickActions",
   "RadioGroup",
