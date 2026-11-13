@@ -275,6 +275,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "Inline",
   "InlineEdit",
   "Input",
+  "KanbanBoard",
   "Kbd",
   "KeyValueList",
   "Label",

@@ -312,6 +312,26 @@ export const blocks: Registry = [
     ],
   },
   {
+    name: "kanban-board",
+    type: "registry:block",
+    category: "data-display",
+    description:
+      "Kanban board: stage columns in one row, cards that move between columns by native drag and drop or by keyboard (Space, Left/Right, Space; Escape cancels), arrow-key focus between cards, a count and total in each column header, and collapsed side rails for parked stages that expand on click and accept drops. Owns no data: the consumer renders the card inside and persists moves in onMove.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils", "card"],
+    suggestedDependencies: ["status-dot", "chip"],
+    files: [
+      {
+        path: "blocks/kanban-board/kanban-board.tsx",
+        type: "registry:block",
+      },
+      {
+        path: "blocks/kanban-board/kanban-board.module.css",
+        type: "registry:block",
+      },
+    ],
+  },
+  {
     name: "workspace-switcher",
     type: "registry:block",
     category: "admin",
