@@ -186,3 +186,35 @@
   outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
   box-shadow: 0 0 0 var(--focus-ring-width, 2px) color-mix(in srgb, var(--border-focus, #111827) 15%, transparent);
 }
+
+/* Saving (VI-760): onCommit returned a promise that has not settled. The input
+ * is read-only and its text drops to the secondary ink until the save lands. */
+.root[aria-busy="true"] .input {
+  color: var(--text-secondary, #6b7280);
+  cursor: progress;
+}
+
+/* A failed save: the edge turns to the error colour, focused or not. */
+.input[aria-invalid="true"],
+.input[aria-invalid="true"]:focus-visible {
+  outline: var(--control-state-edge-width, 1px) solid var(--control-invalid-ring-color, var(--border-error, #ef4444));
+  outline-offset: calc(-1 * var(--control-state-edge-width, 1px));
+}
+
+/* The message under the field, read like FieldError: its own size and weight,
+ * not the heading's it may sit in. */
+.error {
+  display: block;
+  margin-block-start: var(--spacing-1, 0.25rem);
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-normal, 400);
+  font-style: normal;
+  line-height: var(--line-height-normal, 1.5);
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text-error, currentColor);
+}
+
+:global([data-density="editorial"]) .error {
+  font-size: 13px;
+}

@@ -6,6 +6,7 @@ declare const styles: {
   readonly pencil: string
   readonly field: string
   readonly input: string
+  readonly error: string
 }
 
 export default styles
