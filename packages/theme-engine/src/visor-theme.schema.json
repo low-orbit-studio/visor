@@ -610,6 +610,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "layer-chart": {
+          "type": "object",
+          "description": "LayerChart and SpanStrip \u2014 the investment hue (`hue=\"tide\"`), the unresolved fill and its ink, the opening motion, and the ground between blocks. Keys: investment-fill, investment-fill-strong, investment-ink, investment-solid, alert-fill, alert-text, duration, easing, ground.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "textarea": {
           "type": "object",
           "description": "Textarea shape at the default `md` size. Keys: padding, radius.",

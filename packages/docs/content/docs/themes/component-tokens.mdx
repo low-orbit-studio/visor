@@ -1052,6 +1052,24 @@ components:
     lead-font-weight: "600"
 ```
 
+### `layer-chart`
+
+LayerChart and SpanStrip — the investment hue (`hue="tide"`), the unresolved fill and its ink, the opening motion, and the ground between blocks.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--layer-chart-investment-fill` | The investment hue's pale fill: its deepest blocks and its band. | `var(--surface-muted, #f3f4f6)` |
+| `--layer-chart-investment-fill-strong` | The investment hue's strong fill: its top-level block. | `var(--surface-interactive-active, #e5e7eb)` |
+| `--layer-chart-investment-ink` | Text on the investment hue's fills, and a call in its span strip. | `var(--text-primary, #111827)` |
+| `--layer-chart-investment-solid` | The investment hue's solid, mixed into its span cells. | `var(--text-secondary, #4b5563)` |
+| `--layer-chart-alert-fill` | An unresolved block: the chart's only coral. | `color-mix(in srgb, var(--color-error-500, #ef4444) 35%, var(--surface-page, #ffffff))` |
+| `--layer-chart-alert-text` | Text on an unresolved block. | `var(--text-error, #b91c1c)` |
+| `--layer-chart-duration` | How long a block takes to open (none under reduced motion). | `480ms` |
+| `--layer-chart-easing` | The opening ease. | `cubic-bezier(0.2, 0.8, 0.2, 1)` |
+| `--layer-chart-ground` | The ground blocks are mixed toward (covered, today, the palest layer) and the span lanes' track. | `var(--surface-page, #ffffff)` |
+
+Client blocks draw in Paper's project hues (`--paper-hue-<angle>-*`) and need no binding. Paper binds the investment hue to Tide and the unresolved fill to coral mixed into the page.
+
 ### `admin-ui`
 
 Structural roles the admin-ui pattern owns. `marquee-family` is the display face for KPI hero figures and marquee page titles — the role the admin-ui portability audit named as the one piece of ENTR brand coupling a new theme must rebind.

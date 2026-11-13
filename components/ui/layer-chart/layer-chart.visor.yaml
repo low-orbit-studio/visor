@@ -1,0 +1,75 @@
+name: LayerChart
+description: A zoomable icicle that opens a tree layer by layer. Rows are layers; clicking a block grows it to full width and opens its children below it, animated. One hue per top-level node, lighter by depth, with solid, covered, not-billable, unresolved and today fills. SpanStrip draws a day's 5-minute spans in lanes on a time axis, the layer below the last.
+extends: HTMLDivElement
+category: data-display
+
+when_to_use:
+  - Hours or money broken down layer by layer (all clients, client, engagement, package, ticket, day) where the order of the layers matters
+  - Drilling into one branch of a deep tree while the path above it stays in view
+  - Showing what share of a parent each child takes, with thin children still clickable
+  - Re-measuring the same tree in a second measure (hours, then money) without changing its shapes
+  - A day's time in 5-minute cells per lane (SpanStrip), opened from the day layer
+
+when_not_to_use:
+  - A flat list of parts that add up to a whole (use a stacked bar or ProportionBar)
+  - Use against a limit (use Meter)
+  - Trends over time (use Chart)
+  - A tree where sizes do not matter, only structure (use a tree view or nested list)
+
+why: >
+  Visor's Chart wraps Recharts, which has a treemap and a Sankey but no icicle
+  (partition). A treemap labels small nodes better but loses the order of
+  layers, and a sunburst loses both. LayerChart keeps layers as rows: the
+  ancestors of the focus as compressed path rows, the focus row, then three
+  layers below it at falling heights. Labels step down by width, from name,
+  big number, sub line and share, to name and number, to the number, to none;
+  children under 6px fold into one "+n" block at least 24px wide. Every block
+  is a button named with its value, so Enter, Esc and the arrow keys and screen
+  readers reach it. Blocks are separated by ground, never lines, and coral is
+  kept for unresolved blocks only.
+
+variants:
+  kind: [solid, covered, not-billable, unresolved]
+
+props:
+  - name: data
+    type: LayerNode
+    description: "The tree. Each node has an id, a name, and optionally ref, layer, value, hue, kind, today, sub and children."
+  - name: measure
+    type: "(node: LayerNode) => number | undefined"
+    default: "(node) => node.value"
+    description: Reads a node's value in the current measure. Undefined on a parent sums its children; zero leaves the chart.
+  - name: focusId
+    type: string
+    description: The open block (controlled).
+  - name: defaultFocusId
+    type: string
+    description: The block open at first (uncontrolled). Defaults to the root.
+  - name: onFocusChange
+    type: "(id: string, node: LayerNode, reason: 'open' | 'up' | 'more') => void"
+    description: Called when a block opens, by a click, Enter, Esc (up a layer) or a "+n" block (opens its parent).
+  - name: format
+    type: "(value: number, info: { node: LayerNode; short: boolean }) => string"
+    description: Formats a value. short is the number alone, for thin blocks.
+  - name: renderBlock
+    type: "(node: LayerNode, info: { role, width }) => ReactNode"
+    description: Content drawn at the foot of a wide block one or two layers down, such as an estimate Meter in a package block.
+  - name: renderCard
+    type: "(node: LayerNode, info: { value, share, more }) => ReactNode"
+    description: The hover card's content. Defaults to the name, the layer, the value and the share of the parent.
+  - name: band
+    type: "{ value: (node) => number | undefined; label?: string; format?: (v) => string; note?: (layer) => ReactNode }"
+    description: An optional paler band under the rows where it is measured (agent time), with a one-line note where it is not.
+
+dependencies: []
+
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/layer-chart"
+
+example: |
+  <LayerChart
+    data={tree}
+    measure={(n) => (mode === "money" ? n.money : n.hours)}
+    focusId={focus}
+    onFocusChange={(id) => setFocus(id)}
+    format={(v) => `${v} h`}
+  />

@@ -1110,6 +1110,29 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'layer-chart': [
+    { name: 'data', type: 'LayerNode', required: true, description: 'The tree. Each node has an `id` (unique across the tree) and a `name`, and optionally `ref`, `layer` (names its row in the gutter), `value`, `hue`, `kind`, `today`, `sub` (the sub line) and `children`. `hue` and `kind` pass down to the children.' },
+    { name: 'measure', type: '(node: LayerNode) => number | undefined', default: '(node) => node.value', description: 'Reads a node\'s value in the current measure. Undefined on a parent sums its children; zero leaves the chart. Pass another accessor to re-measure the same shapes.' },
+    { name: 'focusId', type: 'string', description: 'The open block (controlled).' },
+    { name: 'defaultFocusId', type: 'string', description: 'The block open at first (uncontrolled). Defaults to the root.' },
+    { name: 'onFocusChange', type: "(id: string, node: LayerNode, reason: 'open' | 'up' | 'more') => void", description: 'Called when a block opens: a click or `Enter` (`open`), `Esc` or a click on the focus row (`up`), or a "+n" block, which opens its parent (`more`).' },
+    { name: 'format', type: '(value: number, info: { node: LayerNode; short: boolean }) => string', default: 'two decimals at most', description: 'Formats a value. `short` is the number alone, drawn on thin blocks.' },
+    { name: 'renderBlock', type: "(node: LayerNode, info: { role: 'kids' | 'gkids'; width: number }) => ReactNode", description: 'Content at the foot of a block over 120px wide one layer down (and two layers down at desk width): an estimate Meter in a package block.' },
+    { name: 'renderCard', type: '(node: LayerNode, info: { value: number; share?: number; more?: LayerNode[] }) => ReactNode', description: 'The hover card\'s content. Defaults to the name, the layer, the value and the share of the parent.' },
+    { name: 'band', type: '{ value: (node) => number | undefined; label?: string; format?: (v: number) => string; note?: (layer: string) => ReactNode }', description: 'An optional paler band under every row where `value` returns a number (agent time), labelled `"{label} {format(v)}"` on wide blocks. `note` writes one line under the first row below the focus without the band.' },
+    { name: 'aria-label', type: 'string', default: '"Layers"', description: 'Names the group of rows.' },
+  ],
+
+  'span-strip': [
+    { name: 'spans', type: "{ kind: 'attended' | 'call' | 'agent'; start: number; end: number }[]", required: true, description: 'The day\'s spans, in minutes after midnight. Each is cut into cells of `cell` minutes.' },
+    { name: 'lanes', type: "{ label: string; kinds: SpanKind[] }[]", default: '"You" (attended, call) and "Agent" (agent)', description: 'One lane per row. A lane of agent time alone is drawn thinner. The Agent lane is left out by default when there are no agent spans.' },
+    { name: 'hue', type: "number | 'tide'", description: 'The project\'s hue: a Paper project-hue angle, or `"tide"`.' },
+    { name: 'cell', type: 'number', default: '5', description: 'Minutes per cell.' },
+    { name: 'tickEvery', type: 'number', default: '120', description: 'Minutes between axis labels.' },
+    { name: 'kindLabels', type: 'Partial<Record<SpanKind, string>>', description: 'The legend\'s word for each kind (Attended, Call, Agent).' },
+    { name: 'formatHours', type: '(hours: number) => string', default: '"{n} h"', description: 'Formats a total for the legend and the lanes\' names.' },
+  ],
+
   'proportion-bar': [
     {
       name: 'parts',

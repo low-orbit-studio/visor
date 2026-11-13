@@ -1084,6 +1084,11 @@ html:not(.dark) .paper-theme {
   --button-radius: 999px;
   --input-md-height: 36px;
   --input-md-radius: 14px;
+  --layer-chart-alert-fill: #f8cfc2;
+  --layer-chart-investment-fill: #d8e8f0;
+  --layer-chart-investment-fill-strong: #b6d2e0;
+  --layer-chart-investment-ink: #0d3b4f;
+  --layer-chart-investment-solid: #1a5f7a;
   --page-header-title-font-size: 34px;
   --proportion-bar-alert-bg: #f28b6d;
   --proportion-bar-fill-1: #2c3e50;
@@ -1128,6 +1133,11 @@ html:not(.dark) .paper-theme {
   --button-radius: 999px;
   --input-md-height: 36px;
   --input-md-radius: 14px;
+  --layer-chart-alert-fill: #51352f;
+  --layer-chart-investment-fill: #142631;
+  --layer-chart-investment-fill-strong: #1d3a4a;
+  --layer-chart-investment-ink: #b6d2e0;
+  --layer-chart-investment-solid: #5aabbf;
   --page-header-title-font-size: 34px;
   --proportion-bar-alert-bg: #f28b6d;
   --proportion-bar-fill-1: #cde4ec;
@@ -1173,6 +1183,11 @@ html:not(.dark) .paper-theme {
     --button-radius: 999px;
     --input-md-height: 36px;
     --input-md-radius: 14px;
+    --layer-chart-alert-fill: #51352f;
+    --layer-chart-investment-fill: #142631;
+    --layer-chart-investment-fill-strong: #1d3a4a;
+    --layer-chart-investment-ink: #b6d2e0;
+    --layer-chart-investment-solid: #5aabbf;
     --page-header-title-font-size: 34px;
     --proportion-bar-alert-bg: #f28b6d;
     --proportion-bar-fill-1: #cde4ec;

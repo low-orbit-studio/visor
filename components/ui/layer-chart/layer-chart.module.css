@@ -1,0 +1,487 @@
+/*
+ * LayerChart: a zoomable icicle. Rows are layers; a block opens to full width
+ * and its children open below it. Ported from the LO-343 Layers frames.
+ * Blocks are separated by ground, never lines. One hue per top-level node
+ * (Paper's --paper-hue-<angle>-*), lighter by depth; coral only for unresolved.
+ * Pixel sizes, radii and type sizes below are the frames' own (intentional).
+ */
+.root {
+  --_ground: var(--layer-chart-ground, var(--surface-page, #ffffff));
+  --_dur: var(--layer-chart-duration, 480ms);
+  --_ease: var(--layer-chart-easing, cubic-bezier(0.2, 0.8, 0.2, 1));
+  --_segment: color-mix(in srgb, var(--text-primary, #111827) 7%, transparent);
+  container-type: inline-size;
+  display: flex;
+  gap: calc(var(--spacing-1, 0.25rem) * 2.5);
+  position: relative;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    --_dur: 0ms;
+  }
+}
+
+/* The gutter names each row's layer. It goes under 40rem. */
+.gutter {
+  position: relative;
+  flex: 0 0 108px;
+}
+
+.gutterLabel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: var(--font-weight-bold, 700);
+  letter-spacing: var(--paper-track-label, 0.08em);
+  text-transform: uppercase;
+  color: var(--text-secondary, #4b5563);
+  transition: top var(--_dur) var(--_ease), height var(--_dur) var(--_ease);
+}
+
+@container (max-width: 40rem) {
+  .gutter {
+    display: none;
+  }
+}
+
+.canvas {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.ice {
+  position: relative;
+  overflow: hidden;
+  transition: height var(--_dur) var(--_ease);
+}
+
+.ice[data-instant] *,
+.ice[data-instant] {
+  transition: none !important;
+}
+
+/* ---------- blocks ---------- */
+/* The studio's own investment hue (hue="tide") comes from the theme; Paper binds Tide. */
+.block[data-hue="tide"],
+.band[data-hue="tide"],
+.strip[data-hue="tide"] {
+  --layer-hue-fill: var(--layer-chart-investment-fill, var(--surface-muted, #f3f4f6));
+  --layer-hue-fill-strong: var(--layer-chart-investment-fill-strong, var(--surface-interactive-active, #e5e7eb));
+  --layer-hue-ink: var(--layer-chart-investment-ink, var(--text-primary, #111827));
+  --layer-hue-solid: var(--layer-chart-investment-solid, var(--text-secondary, #4b5563));
+}
+
+.block {
+  --_hf: var(--layer-hue-fill, var(--surface-muted, #f3f4f6));
+  --_hfs: var(--layer-hue-fill-strong, var(--surface-interactive-active, #e5e7eb));
+  --_hi: var(--layer-hue-ink, var(--text-primary, #111827));
+  --_c: var(--_hfs);
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  margin: 0;
+  border: 0;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  color: var(--_hi);
+  background: var(--_c);
+  border-radius: 12px;
+  padding: calc(var(--spacing-1, 0.25rem) * 2.5) var(--spacing-3, 0.75rem);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing-1, 0.25rem) * 0.5);
+  transition:
+    left var(--_dur) var(--_ease),
+    top var(--_dur) var(--_ease),
+    width var(--_dur) var(--_ease),
+    height var(--_dur) var(--_ease),
+    opacity calc(var(--_dur) * 0.7),
+    background-color var(--_dur),
+    border-radius var(--_dur);
+}
+
+.block:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #3b82f6);
+  outline-offset: var(--focus-ring-offset, 2px);
+  z-index: 2;
+}
+
+.block[data-ghost] {
+  pointer-events: none;
+}
+
+/* Lighter by depth, from the hue's strong fill to its pale fill and past it. */
+.block[data-tone="1"] {
+  --_c: color-mix(in srgb, var(--_hfs) 68%, var(--_hf));
+}
+.block[data-tone="2"] {
+  --_c: color-mix(in srgb, var(--_hfs) 38%, var(--_hf));
+}
+.block[data-tone="3"] {
+  --_c: var(--_hf);
+}
+.block[data-tone="4"] {
+  --_c: color-mix(in srgb, var(--_hf) 66%, var(--_ground));
+}
+
+.block[data-root] {
+  background: var(--surface-card, #f9fafb);
+  color: var(--text-primary, #111827);
+}
+
+/* Covered: pale, with a dot grid; the label sits on a plate so it reads. */
+.block[data-kind="covered"] {
+  background-color: color-mix(in srgb, var(--_c) 40%, var(--_ground));
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--_hfs) 90%, var(--_hi)) 1.1px, transparent 1.6px);
+  background-size: 8px 8px;
+}
+.block[data-kind="covered"] .text {
+  background: color-mix(in srgb, var(--_c) 40%, var(--_ground));
+}
+
+/* Not billable: hatched, the label on a solid plate. */
+.block[data-kind="not-billable"] {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--_c) 0 6px,
+    color-mix(in srgb, var(--_c) 38%, var(--_ground)) 6px 12px
+  );
+}
+.block[data-kind="not-billable"] .text {
+  background: var(--_c);
+}
+
+.block[data-kind="covered"] .text,
+.block[data-kind="not-billable"] .text {
+  border-radius: 8px;
+  padding: calc(var(--spacing-1, 0.25rem) * 0.5) calc(var(--spacing-1, 0.25rem) * 1.5);
+  margin: -2px calc(var(--spacing-1, 0.25rem) * -1.5);
+  align-self: flex-start;
+  max-width: calc(100% + 12px);
+}
+
+/* Unresolved: the only coral. */
+.block[data-kind="unresolved"] {
+  background: var(--layer-chart-alert-fill, color-mix(in srgb, var(--color-error-500, #ef4444) 35%, var(--surface-page, #ffffff)));
+  color: var(--layer-chart-alert-text, var(--text-error, #b91c1c));
+}
+
+/* Today counts once it is over, so it is drawn paler. */
+.block[data-today] {
+  background: color-mix(in srgb, var(--_c) 35%, var(--_ground));
+}
+
+.block[data-more] {
+  background: var(--_segment);
+  color: var(--text-secondary, #4b5563);
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* Row shapes: path and focus rows are one line; the rows below fall in height. */
+.block[data-role="anc"],
+.block[data-role="focus"] {
+  flex-direction: row;
+  align-items: center;
+  gap: calc(var(--spacing-1, 0.25rem) * 2.5);
+  padding: 0 calc(var(--spacing-1, 0.25rem) * 3.5);
+}
+.block[data-role="kids"] {
+  padding: calc(var(--spacing-1, 0.25rem) * 3.5) var(--spacing-4, 1rem);
+  border-radius: 16px;
+}
+.block[data-role="gkids"] {
+  padding: var(--spacing-2, 0.5rem) calc(var(--spacing-1, 0.25rem) * 2.5);
+  border-radius: 10px;
+}
+.block[data-role="ggkids"] {
+  padding: 0 var(--spacing-2, 0.5rem);
+  border-radius: 6px;
+  justify-content: center;
+}
+.block[data-more][data-role] {
+  padding: 0;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing-1, 0.25rem) * 0.5);
+  min-width: 0;
+}
+
+.name {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: var(--font-weight-bold, 700);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.block[data-role="anc"] .name,
+.block[data-role="gkids"] .name,
+.block[data-role="ggkids"] .name {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: var(--font-weight-semibold, 600);
+}
+.block[data-role="focus"] .name {
+  font-size: 17px;
+  line-height: 22px;
+}
+
+.value {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: var(--font-weight-semibold, 600);
+  font-variant-numeric: tabular-nums;
+}
+.block[data-role="anc"] .value,
+.block[data-role="focus"] .value {
+  margin-left: auto;
+}
+.block[data-role="focus"] .value {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.big {
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: 900;
+  letter-spacing: var(--paper-track-tight, -0.025em);
+  font-variant-numeric: tabular-nums;
+  margin-top: calc(var(--spacing-1, 0.25rem) * 0.5);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.block[data-role="kids"] .big {
+  font-size: 32px;
+  line-height: 36px;
+  margin-top: var(--spacing-1, 0.25rem);
+}
+
+.pct {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: var(--font-weight-bold, 700);
+  letter-spacing: 0;
+  margin-left: calc(var(--spacing-1, 0.25rem) * 1.5);
+}
+
+.sub {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: var(--font-weight-medium, 500);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.slot {
+  display: block;
+  margin-top: auto;
+  min-width: 0;
+}
+
+/* Narrow: smaller figures, tighter blocks. */
+.root[data-narrow] .block[data-role="kids"],
+.root[data-narrow] .block[data-role="gkids"] {
+  padding: var(--spacing-2, 0.5rem) calc(var(--spacing-1, 0.25rem) * 2.5);
+}
+.root[data-narrow] .big,
+.root[data-narrow] .block[data-role="kids"] .big {
+  font-size: 20px;
+  line-height: 24px;
+}
+.root[data-narrow] .pct {
+  display: none;
+}
+
+/* ---------- the band (agent time) and its note ---------- */
+.band {
+  position: absolute;
+  overflow: hidden;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--layer-hue-fill, var(--surface-muted, #f3f4f6)) 50%, var(--_ground));
+  color: var(--layer-hue-ink, var(--text-primary, #111827));
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: var(--font-weight-bold, 700);
+  letter-spacing: var(--paper-track-label, 0.08em);
+  text-transform: uppercase;
+  padding: 0 var(--spacing-2, 0.5rem);
+  white-space: nowrap;
+  transition: left var(--_dur) var(--_ease), top var(--_dur) var(--_ease), width var(--_dur) var(--_ease);
+}
+
+.note {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 22px;
+  border-radius: 8px;
+  background: var(--_segment);
+  color: var(--text-secondary, #4b5563);
+  font-size: 13px;
+  line-height: 22px;
+  font-weight: var(--font-weight-medium, 500);
+  padding: 0 calc(var(--spacing-1, 0.25rem) * 2.5);
+  white-space: nowrap;
+  overflow: hidden;
+  transition: top var(--_dur) var(--_ease);
+}
+
+/* ---------- hover card ---------- */
+.card {
+  position: absolute;
+  z-index: 20;
+  width: 300px;
+  background: var(--surface-popover, #ffffff);
+  color: var(--text-primary, #111827);
+  border-radius: 18px;
+  padding: calc(var(--spacing-1, 0.25rem) * 3.5) var(--spacing-4, 1rem);
+  box-shadow: var(--shadow-lg);
+  pointer-events: none;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.cardSub {
+  margin: 0;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-secondary, #4b5563);
+}
+
+.cardList {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: calc(var(--spacing-1, 0.25rem) * 0.5) var(--spacing-3, 0.75rem);
+  margin: calc(var(--spacing-1, 0.25rem) * 2.5) 0 var(--spacing-1, 0.25rem);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: var(--font-weight-medium, 500);
+}
+.cardList dt {
+  color: var(--text-secondary, #4b5563);
+}
+.cardList dd {
+  margin: 0;
+  font-weight: var(--font-weight-bold, 700);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- SpanStrip: a day's 5-minute cells in lanes on a time axis ---------- */
+.strip {
+  --_hf: var(--layer-hue-fill, var(--surface-muted, #f3f4f6));
+  --_hi: var(--layer-hue-ink, var(--text-primary, #111827));
+  --_hs: var(--layer-hue-solid, var(--text-secondary, #4b5563));
+  --_ground: var(--layer-chart-ground, var(--surface-page, #ffffff));
+  min-width: 0;
+}
+
+.lanes {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: var(--spacing-2, 0.5rem) calc(var(--spacing-1, 0.25rem) * 2.5);
+  align-items: center;
+}
+
+.laneLabel {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: var(--font-weight-bold, 700);
+  letter-spacing: var(--paper-track-label, 0.08em);
+  text-transform: uppercase;
+  color: var(--text-secondary, #4b5563);
+}
+
+.lane {
+  position: relative;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--_ground);
+  overflow: hidden;
+}
+.lane[data-thin] {
+  height: 22px;
+}
+
+.cell {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  border-radius: 2px;
+}
+
+.cell[data-kind="attended"],
+.swatch[data-kind="attended"] {
+  background: color-mix(in srgb, var(--_hs) 60%, var(--_hf));
+}
+.cell[data-kind="call"],
+.swatch[data-kind="call"] {
+  background: var(--_hi);
+}
+.cell[data-kind="agent"],
+.swatch[data-kind="agent"] {
+  background: color-mix(in srgb, var(--_hs) 38%, var(--_hf));
+}
+
+.axis {
+  position: relative;
+  height: 18px;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-secondary, #4b5563);
+}
+.axis span {
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.axis span:first-child {
+  transform: none;
+}
+.axis span:last-child {
+  transform: translateX(-100%);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--spacing-1, 0.25rem) * 1.5) var(--spacing-4, 1rem);
+  margin-top: calc(var(--spacing-1, 0.25rem) * 2.5);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--text-secondary, #4b5563);
+}
+.legend span {
+  display: inline-flex;
+  gap: calc(var(--spacing-1, 0.25rem) * 1.5);
+  align-items: center;
+}
+
+.swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  flex: none;
+}

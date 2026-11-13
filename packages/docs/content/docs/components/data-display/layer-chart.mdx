@@ -1,0 +1,103 @@
+---
+title: Layer Chart
+description: A zoomable icicle that opens a tree layer by layer, and the day span strip it opens into.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { LayerChartExplorerDemo, LayerChartNarrowDemo, LayerChartKindsDemo, SpanStripDemo } from '@/components/ui/layer-chart-demos';
+
+LayerChart opens a tree one layer at a time: all clients, a client, an engagement, a package, a ticket, a day. Rows are layers. The focus's ancestors sit on top as compressed path rows, then the focus row, then three layers below it at falling heights, and a gutter names each row's layer. Client blocks take Paper's project hues, so switch the site theme to **Paper** (light or dark) to see the colours as designed. On other themes the chart falls back to neutrals.
+
+## Layers
+
+Click a block (or focus it and press `Enter`) and it grows to full width while its children open below it. Click the focus row, or press `Esc`, to go up a layer. `←` and `→` move along the main row. **Hours** and **Money** re-measure the same shapes: a node can carry a value per measure, and a value of zero (investment, unassigned time in money) leaves the chart. **Agent time** adds a paler band under the rows where it is measured and a note under the first row where it is not. Open a day to see its span strip.
+
+<ComponentPreview
+  title="Layers explorer"
+  code={"import { LayerChart } from '@/components/ui/layer-chart/layer-chart';\n\n<LayerChart\n  data={tree}\n  measure={(n) => (mode === 'money' ? n.money : n.value)}\n  focusId={focus}\n  onFocusChange={(id) => setFocus(id)}\n  format={(v, { short }) => (short ? String(v) : `${v} h`)}\n  band={agent ? { value: (n) => n.agent, note: (layer) => `Agent time · not measured per ${layer} yet` } : undefined}\n  renderBlock={(n) => (n.low != null ? <Meter value={n.hours} max={n.high} marks={[{ value: n.low }]} /> : null)}\n/>"}
+>
+  <LayerChartExplorerDemo />
+</ComponentPreview>
+
+## Narrow
+
+Under 560px the rows drop to their narrow heights (40, 108, 52 and 22px), the gutter goes, and the sub lines and slots one layer down drop out. Thin blocks keep their accessible names, and the "+n" block stays a 24px target.
+
+<ComponentPreview
+  title="At 390px"
+  code={"<div style={{ width: 358 }}>\n  <LayerChart data={tree} focusId={focus} onFocusChange={setFocus} />\n</div>"}
+>
+  <LayerChartNarrowDemo />
+</ComponentPreview>
+
+## Kinds
+
+A node's `kind` sets its fill, and its children inherit it. Blocks are separated by ground, never lines.
+
+- `solid`: the hue, lighter by depth.
+- `covered`: pale with a dot grid, the label on a plate so it reads.
+- `not-billable`: hatched, the label on a solid plate.
+- `unresolved`: coral, the only coral in the chart.
+- `today: true`: paler, because today counts once it is over.
+
+<ComponentPreview
+  title="Kinds"
+  code={"<LayerChart\n  data={{ id: 'k', name: 'Kinds', children: [{ id: 'a', name: 'Client A', hue: 219, children: [\n    { id: 's', name: 'On a package', value: 12 },\n    { id: 'c', name: 'Covered', kind: 'covered', value: 9 },\n    { id: 'n', name: 'Not billable', kind: 'not-billable', value: 8 },\n    { id: 'u', name: 'Out of scope', kind: 'unresolved', value: 7 },\n    { id: 't', name: 'Today', today: true, value: 6 },\n  ] }] }}\n  defaultFocusId=\"a\"\n/>"}
+>
+  <LayerChartKindsDemo />
+</ComponentPreview>
+
+## Thin blocks
+
+Labels step down by width: name, big number, sub line and share, then name and number, then the number, then nothing. Children thinner than 6px fold into one "+n" block, at least 24px wide, that opens their parent (`onFocusChange` reports `reason: "more"`, so the page can show the full list). Every block keeps a hover card and an accessible name: `"{ref} {name}, {value}"`.
+
+## Span strip
+
+SpanStrip draws a day's spans as 5-minute cells on a time axis, separated by ground: attended time and calls in one lane, agent time in its own, thinner lane. The axis runs at least 8am to 7pm. Pass `lanes` to choose the lanes and `hue` for the project's colour.
+
+<ComponentPreview
+  title="Span strip"
+  code={"import { SpanStrip } from '@/components/ui/layer-chart/layer-chart';\n\n<SpanStrip\n  hue={147}\n  spans={[\n    { kind: 'attended', start: 550, end: 625 },\n    { kind: 'call', start: 630, end: 660 },\n    { kind: 'agent', start: 570, end: 650 },\n  ]}\n/>"}
+>
+  <SpanStripDemo />
+</ComponentPreview>
+
+## Colour
+
+`hue` takes a Paper project-hue angle (75, 99, 123 … 339) on a top-level node, and its children inherit it. The chart reads `--paper-hue-<angle>-fill`, `-fill-strong`, `-ink` and `-solid`, from the strong fill at the top layer to the pale fill at the bottom. `hue: "tide"` is the studio's own investment, read from the theme's `--layer-chart-investment-*` tokens; Paper binds them to Tide. The unresolved fill and its ink, the opening motion and the ground are `layer-chart` component tokens (see [Component tokens](/docs/themes/component-tokens)). Every part carries a `data-slot` (`layer-chart-block`, `layer-chart-band`, `layer-chart-note`, `layer-chart-card`, `span-strip-lane`, `span-strip-legend`).
+
+## Installation
+
+```bash
+npx visor add layer-chart
+```
+
+This copies four files into your project:
+
+- `components/ui/layer-chart/layer-chart.tsx` — LayerChart (and the SpanStrip export)
+- `components/ui/layer-chart/layer-chart-layout.ts` — the partition, rows, geometry and folding
+- `components/ui/layer-chart/span-strip.tsx` — SpanStrip
+- `components/ui/layer-chart/layer-chart.module.css` — the styles
+
+## API Reference
+
+### LayerChartProps
+
+<PropsTable component="layer-chart" />
+
+LayerChart renders a `<div>` and accepts all standard div attributes.
+
+### SpanStripProps
+
+<PropsTable component="span-strip" />
+
+## Accessibility
+
+- The rows are a `group` named by `aria-label` (default "Layers"). Every block is a `<button>` named `"{ref} {name}, {value}"`; the open block carries `aria-current="true"`.
+- `Enter` opens the focused block, `Esc` goes up a layer, `←` and `→` move along the main row. After a block opens, keyboard focus moves to it.
+- Blocks with no width (a value of zero, or off the canvas) leave the tab order and the accessibility tree.
+- The hover card repeats what the block's name says, so it is hidden from assistive tech.
+- Each span lane is an image named with its totals ("You: attended 3.5 h, call 0.5 h").
+- Kinds differ by pattern as well as colour (dots, hatching), and the unresolved block is named in its label (WCAG 1.4.1). On Paper every label passes AA on its fill in both modes.
+- Under `prefers-reduced-motion: reduce` blocks open without animating.
