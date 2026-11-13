@@ -680,6 +680,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "proportion-bar": {
+          "type": "object",
+          "description": "ProportionBar \u2014 the default part fills by position, the built-in hatched, striped and alert fills, the alert's legend text and the empty track. Keys: fill-1, fill-2, fill-3, fill-4, hatch-color, hatch-gap, stripe-a, stripe-b, alert-bg, alert-text, track-bg.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "segmented-control": {
           "type": "object",
           "description": "SegmentedControl \u2014 the well, its corner radius, the sliding pill, the ink and the state edge on it. The resting edge is the shared `control` edge. Keys: track-bg, radius, indicator-bg, indicator-text, indicator-edge, inactive-text, active-weight.",

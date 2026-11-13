@@ -1,0 +1,149 @@
+/* ProportionBar
+ *
+ * One measured total split into named parts, widths proportional to value.
+ * Parts are told apart by the ground showing between them, never by lines.
+ *
+ * Component-intrinsic dimensions (no spacing token maps to them):
+ * - bar height 30px (default) and 8px (thin), the approved sizes;
+ * - the 3px (default) and 2px (thin) gap between parts, and the same values
+ *   as the inner corners, so the ground reads as a cut, not a rule;
+ * - 4px minimum part width, so a sliver can still be hovered;
+ * - the 12px legend swatch with a 4px corner;
+ * - the hatch (3px stroke in a 7px period) and the stripes (6px bands) at 135deg.
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2, 0.5rem);
+  min-width: 0;
+}
+
+.bar {
+  display: flex;
+  gap: 3px;
+  height: 30px;
+  border-radius: var(--radius-sm, 0.375rem);
+  overflow: hidden;
+}
+
+.part {
+  flex: 1 1 0;
+  min-width: 4px;
+  border-radius: 3px;
+}
+
+/* Rounded ends on the outer parts only. */
+.part:first-child {
+  border-top-left-radius: var(--radius-sm, 0.375rem);
+  border-bottom-left-radius: var(--radius-sm, 0.375rem);
+}
+
+.part:last-child {
+  border-top-right-radius: var(--radius-sm, 0.375rem);
+  border-bottom-right-radius: var(--radius-sm, 0.375rem);
+}
+
+.root[data-size="thin"] .bar {
+  gap: 2px;
+  height: 8px;
+  border-radius: var(--radius-full, 9999px);
+}
+
+.root[data-size="thin"] .part {
+  border-radius: 2px;
+}
+
+.root[data-size="thin"] .part:first-child {
+  border-top-left-radius: var(--radius-full, 9999px);
+  border-bottom-left-radius: var(--radius-full, 9999px);
+}
+
+.root[data-size="thin"] .part:last-child {
+  border-top-right-radius: var(--radius-full, 9999px);
+  border-bottom-right-radius: var(--radius-full, 9999px);
+}
+
+/* Nothing measured: one neutral track. */
+.empty {
+  flex: 1;
+  background: var(--proportion-bar-track-bg, var(--surface-muted, #e5e7eb));
+}
+
+/* Default fills, by position. */
+.fill1 {
+  background: var(--proportion-bar-fill-1, var(--chart-1, #2563eb));
+}
+
+.fill2 {
+  background: var(--proportion-bar-fill-2, var(--chart-2, #16a34a));
+}
+
+.fill3 {
+  background: var(--proportion-bar-fill-3, var(--chart-3, #d97706));
+}
+
+.fill4 {
+  background: var(--proportion-bar-fill-4, var(--chart-4, #0891b2));
+}
+
+/* Hatched: not billable, written off. */
+.hatched {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--proportion-bar-hatch-color, var(--text-tertiary, #9ca3af)) 0 3px,
+    var(--proportion-bar-hatch-gap, color-mix(in srgb, var(--surface-card, #ffffff) 70%, transparent)) 3px 7px
+  );
+}
+
+/* Striped: two close tones in alternating bands (earned, not yet collected). */
+.striped {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--proportion-bar-stripe-a, var(--color-success-500, #22c55e)) 0 6px,
+    var(--proportion-bar-stripe-b, var(--color-success-600, #16a34a)) 6px 12px
+  );
+}
+
+/* Alert: the one part that needs a decision. */
+.alert {
+  background: var(--proportion-bar-alert-bg, var(--interactive-destructive-bg, #dc2626));
+}
+
+/* Legend: swatch, label, value. */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2, 0.5rem) var(--spacing-4, 1rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--line-height-snug, 1.375);
+  color: var(--text-secondary, #6b7280);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.swatch {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.legendValue {
+  color: var(--text-primary, #111827);
+  font-weight: var(--font-weight-bold, 700);
+}
+
+/* The alert part is named in text, not only by its fill. */
+.legendAlert,
+.legendAlert .legendValue {
+  color: var(--proportion-bar-alert-text, var(--text-error, #b91c1c));
+}

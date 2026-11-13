@@ -437,6 +437,18 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       props: `{ style: { width: 420 }, heading: "You\u2019re all set", description: "Your bookings, their fees and your payments live on your dashboard.", items: [{ content: [React.createElement("b", { key: "b" }, "Your info"), " is saved."] }, { content: [React.createElement("b", { key: "b" }, "Your W-9"), " is signed and released to Animal Brooklyn."] }], action: React.createElement("button", { type: "button" }, "Go to Dashboard") }`,
     },
   },
+  // VI-766: hours by bucket with a hatched and an alert part, money in thin with stripes, and empty.
+  "proportion-bar": {
+    default: {
+      export: "ProportionBar",
+      props: `{ style: { width: 520 }, legend: true, formatValue: function (v) { return v + " h"; }, parts: [{ label: "On a package", value: 92.25 }, { label: "Outside a package", value: 41.5 }, { label: "Covered", value: 18, fill: "var(--proportion-bar-fill-3)" }, { label: "Investment", value: 21.5, fill: "var(--proportion-bar-fill-4)" }, { label: "Not billable", value: 4, fill: "hatched" }, { label: "Unresolved", value: 9.25, fill: "alert" }] }`,
+    },
+    thin: {
+      export: "ProportionBar",
+      props: `{ size: "thin", style: { width: 360 }, legend: true, parts: [{ label: "Invoiced", value: 12455 }, { label: "Waiting", value: 9025, fill: "striped" }, { label: "Written off", value: 0, fill: "hatched" }] }`,
+    },
+    empty: { export: "ProportionBar", props: `{ style: { width: 360 }, parts: [] }` },
+  },
   // VI-713: labelled steps, one in every state, at both sizes.
   "segmented-progress": {
     default: { export: "SegmentedProgress", props: `{ total: 6, value: 2, current: 2, "aria-label": "Step 3 of 6", style: { width: 360 } }` },
