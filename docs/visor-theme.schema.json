@@ -219,6 +219,11 @@
           "type": "number",
           "description": "Type scale multiplier applied to the font-size ramp: every --font-size-* step is multiplied by it, and the page inherits the scaled --font-size-base. Default: 1. CSS adapters only — the Flutter adapter emits Material 3 slot sizes verbatim and ignores this field."
         },
+        "floor": {
+          "type": "number",
+          "minimum": 0,
+          "description": "VI-754: smallest size in px any --font-size-* step may emit. A step that scales below it is raised to it (Paper sets 13, so --font-size-xs is 13px). Unset: no floor. CSS adapters only."
+        },
         "text-on-light": {
           "type": "string",
           "description": "VI-375: text color placed on a LIGHT interactive background. Auto-picked for interactive *-text tokens whose paired *-bg has relative luminance > 0.5. Defaults to #FFFFFF (which deliberately still fails AA on a bright bg so the contrast validator flags it); set a readable near-black (e.g. #1E1F21) to clear the warning. Per-token overrides (overrides.{mode}.interactive-*-text) still win."

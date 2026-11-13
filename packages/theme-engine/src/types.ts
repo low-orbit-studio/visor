@@ -167,6 +167,11 @@ export interface VisorThemeConfig {
      */
     scale?: number;
     /**
+     * Smallest size, in px, any `--font-size-*` step may emit (VI-754). A step
+     * that scales below it is raised to it. CSS adapters only. Unset: no floor.
+     */
+    floor?: number;
+    /**
      * VI-375: text color placed on a LIGHT interactive background. Auto-picked
      * for interactive `*-text` tokens whose paired `*-bg` resolves to a light
      * color (relative luminance > 0.5). Defaults to `#FFFFFF` (preserving the
@@ -382,6 +387,8 @@ export interface ResolvedThemeConfig {
      * Material 3 slot sizes verbatim. Default: 1.
      */
     scale: number;
+    /** Smallest `--font-size-*` step in px (VI-754). Unset: no floor. */
+    floor?: number;
     /**
      * VI-375: resolved default text color for LIGHT interactive backgrounds.
      * Always present (defaults to `#1E1F21`); theme-overridable.

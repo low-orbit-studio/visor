@@ -168,9 +168,10 @@ export const FONT_SIZE_RAMP_PX: Readonly<Record<string, number>> = {
  *
  * `scale: 1` output is byte-identical to the pre-VI-638 emission.
  */
-export function generateFontSizeDecls(scale: number): string[] {
+export function generateFontSizeDecls(scale: number, floor = 0): string[] {
   return Object.entries(FONT_SIZE_RAMP_PX).map(([name, px]) => {
-    const scaled = px * scale;
+    // VI-754: `typography.floor` raises any step that scales below it.
+    const scaled = Math.max(px * scale, floor);
     const rem = Number((scaled / 16).toFixed(5));
     return `--font-size-${name}: ${rem}rem; /* ${Number(scaled.toFixed(2))}px */`;
   });
@@ -203,9 +204,9 @@ function generateTypographyPrimitives(
   decls.push(`--font-body: ${fontStack(config.typography.body.family, aliases)};`);
   decls.push(`--font-mono: ${fontStack(config.typography.mono.family, aliases)};`);
 
-  // Font sizes — the step values themselves are not configurable via
-  // .visor.yaml yet; `typography.scale` multiplies them.
-  decls.push(...generateFontSizeDecls(config.typography.scale));
+  // Font sizes — `typography.scale` multiplies the steps and
+  // `typography.floor` raises any step below it (VI-754).
+  decls.push(...generateFontSizeDecls(config.typography.scale, config.typography.floor));
 
   // Font weights — named ramp resolved against the faces the theme loaded,
   // plus the role tokens and the discrete ladder (VI-639).

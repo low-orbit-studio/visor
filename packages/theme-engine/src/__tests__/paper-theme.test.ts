@@ -106,6 +106,29 @@ describe("VI-749: paper theme", () => {
     }
   });
 
+  it("declares the field family, a fill and no edge, in both modes (VI-754)", () => {
+    const fields = ["input", "textarea", "select", "number-input", "tag-input", "combobox", "otp"];
+    for (const mode of MODES) {
+      const o = data.config.overrides![mode]!;
+      for (const f of fields) {
+        expect(o[`${f}-bg`], `${mode} ${f}-bg`).toMatch(/^rgba\(/);
+        expect(o[`${f}-border`], `${mode} ${f}-border`).toBe("transparent");
+      }
+    }
+    for (const css of [nextjsAdapter(data), docsAdapter(data)]) {
+      expect(css).toContain("--input-bg: rgba(30, 31, 33, 0.06)");
+      expect(css).toContain("--input-bg: rgba(245, 245, 240, 0.06)");
+      expect(css).toContain("--otp-border: transparent");
+    }
+  });
+
+  it("sets the 13px desk type floor on the ramp (VI-754)", () => {
+    for (const css of [nextjsAdapter(data), docsAdapter(data)]) {
+      expect(css).toContain("--font-size-xs: 0.8125rem; /* 13px */");
+      expect(css).toContain("--font-size-sm: 0.875rem; /* 14px */");
+    }
+  });
+
   it("ships the 12 project hues as theme data in both modes", () => {
     for (const mode of MODES) {
       const overrides = data.config.overrides?.[mode] ?? {};
