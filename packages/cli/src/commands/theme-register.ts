@@ -220,9 +220,10 @@ export function themeRegisterCommand(
   // A group the tracked theme-config.ts does not hold (Client, Low Orbit) is a custom group. Since the overlay pattern
   // (W015) theme-config.ts holds the stock group only, and `visor theme sync` builds the custom groups from each YAML's
   // `group` into gitignored overlays. So register checks the YAML is where sync reads it, with that group, and edits nothing.
+  // A custom-themes/ YAML takes this path even when a stock group shares its label (paper puts "Low Orbit" there, VI-749).
   const escapedGroup = options.group.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-  if (!new RegExp(`label:\\s*"${escapedGroup}"`).test(themeConfigContent)) {
-    const customDir = join(repoRoot, "custom-themes")
+  const customDir = join(repoRoot, "custom-themes")
+  if (filePath.startsWith(customDir + "/") || !new RegExp(`label:\\s*"${escapedGroup}"`).test(themeConfigContent)) {
     const yamlGroup = (parseYaml(yamlContent) as Record<string, unknown> | null)?.group
     const problem = yamlGroup !== options.group
       ? `${filePath} has group "${typeof yamlGroup === "string" ? yamlGroup : "(none)"}"; set \`group: "${options.group}"\` in it.`

@@ -6,6 +6,7 @@
 @import './borderless-theme.css';
 @import './modern-minimal-theme.css';
 @import './neutral-theme.css';
+@import './paper-theme.css';
 @import './space-theme.css';
 /* END visor-theme-imports */
 @import './custom-themes.generated.css';

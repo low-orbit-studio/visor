@@ -48,9 +48,15 @@ Available themes:
 | `@loworbitstudio/visor-core/themes/blackout` | `.blackout-theme` |
 | `@loworbitstudio/visor-core/themes/modern-minimal` | `.modern-minimal-theme` |
 | `@loworbitstudio/visor-core/themes/neutral` | `.neutral-theme` |
+| `@loworbitstudio/visor-core/themes/paper` | `.paper-theme` |
 | `@loworbitstudio/visor-core/themes/space` | `.space-theme` |
 
 Each stock theme is class-scoped — it only activates within elements that carry the theme class. Import the base `@loworbitstudio/visor-core` first; the stock theme import adds color, typography, and spacing overrides on top.
+
+**Paper** is Low Orbit's shared theme: "Paper" in light, "Paper at night" in dark, set in Satoshi. It has no success, warning or info colour; coral is for alerts only. Beside the Visor tokens it ships theme data under `--paper-*`:
+
+- **Desk scale** (desktop density): `--paper-desk-title` (900 34/38), `--paper-desk-title-2` (900 22/27), `--paper-desk-row` (600 15/20), `--paper-desk-body` (500 14/20), `--paper-desk-sub` (400 13/18), `--paper-desk-label` (700 11/16, uppercase with `--paper-track-label`), `--paper-control-h` (36px) and `--paper-radius-sheet` (28px). Use them with `font: var(--paper-desk-title)`. Corners map chip 10, field 14, card 20 and tile 24 to `--radius-sm` through `--radius-xl`.
+- **Project hues**: twelve OKLCH angles (75 to 339, 24° apart, none in the coral range), each as `--paper-hue-<angle>-fill`, `-fill-strong`, `-ink` and `-solid`, with values per mode.
 
 ## Automatic Dark Mode
 

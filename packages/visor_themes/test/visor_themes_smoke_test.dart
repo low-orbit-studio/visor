@@ -103,6 +103,11 @@ void main() {
       expect(VisorThemes.neutral.dark, isNotNull);
     });
 
+    test('paper is accessible', () {
+      expect(VisorThemes.paper.light, isNotNull);
+      expect(VisorThemes.paper.dark, isNotNull);
+    });
+
     test('space is accessible', () {
       expect(VisorThemes.space.light, isNotNull);
       expect(VisorThemes.space.dark, isNotNull);

@@ -4,7 +4,7 @@ import { checkA11y } from "../../../../../test-utils/a11y";
 
 // Deterministic theme registry (independent of whether the private package is
 // installed): no custom themes, plus one adaptive Client + one dark-locked Low
-// Orbit private theme. So `all` = 5 stock + 0 custom + 2 private = 7 rows.
+// Orbit private theme. So `all` = 6 stock + 0 custom + 2 private = 8 rows.
 vi.mock("@/lib/theme-config.custom.generated", () => ({
   customThemeGroups: [],
 }));
@@ -39,12 +39,12 @@ describe("MatrixPage", () => {
   it("renders one row per theme in the set, grouped, defaulting to the Form section across all themes", () => {
     const { container } = render(<MatrixPage />);
 
-    // all = 5 stock + 0 custom + 2 mocked private = 7 rows.
-    expect(frames(container)).toHaveLength(7);
+    // all = 6 stock + 0 custom + 2 mocked private = 8 rows.
+    expect(frames(container)).toHaveLength(8);
 
     // Group headings, in registry order.
     const heads = Array.from(container.querySelectorAll(".groupHead")).map((h) => h.textContent);
-    expect(heads).toEqual(["Visor", "Client", "Low Orbit"]);
+    expect(heads).toEqual(["Visor", "Low Orbit", "Client", "Low Orbit"]);
 
     // Default section selector reads "Form".
     expect(screen.getByRole("combobox", { name: "Component or block" })).toHaveTextContent("Form");
@@ -72,9 +72,9 @@ describe("MatrixPage", () => {
   it("honors the theme-set URL param (stock → no private rows)", () => {
     mocks.params = new URLSearchParams("themes=stock");
     const { container } = render(<MatrixPage />);
-    expect(frames(container)).toHaveLength(5);
+    expect(frames(container)).toHaveLength(6);
     const heads = Array.from(container.querySelectorAll(".groupHead")).map((h) => h.textContent);
-    expect(heads).toEqual(["Visor"]);
+    expect(heads).toEqual(["Visor", "Low Orbit"]);
   });
 
   it("honors light mode for adaptive themes while locked themes stay fixed", () => {

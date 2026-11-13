@@ -22,9 +22,13 @@ const lightLocked: MatrixTheme = {
 };
 
 describe("getMatrixThemeGroups", () => {
-  it("returns the stock Visor group with all five stock themes", () => {
+  it("returns the stock Visor group with all five stock themes, then Low Orbit's Paper", () => {
     const stock = getMatrixThemeGroups("stock");
-    expect(stock).toHaveLength(1);
+    expect(stock).toHaveLength(2);
+    expect(stock[1]).toEqual({
+      group: "Low Orbit",
+      themes: [{ slug: "paper", label: "Paper", group: "Low Orbit", defaultMode: undefined }],
+    });
     expect(stock[0].group).toBe("Visor");
     expect(stock[0].themes.map((t) => t.slug)).toEqual([
       "blackout",

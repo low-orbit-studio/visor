@@ -944,7 +944,7 @@ function findRepoRoot(): string {
 const REPO_ROOT = process.env.VISOR_REPO_ROOT ?? findRepoRoot();
 
 describe("Stock theme CSS generation", () => {
-  const STOCK_SLUGS = ["blackout", "modern-minimal", "neutral", "space"] as const;
+  const STOCK_SLUGS = ["blackout", "modern-minimal", "neutral", "paper", "space"] as const;
 
   it("generates class-scoped CSS for blackout theme", () => {
     const yaml = readFileSync(join(REPO_ROOT, "themes/blackout.visor.yaml"), "utf-8");
@@ -999,6 +999,7 @@ describe("Layered CSS output (VI-312)", () => {
     { path: "themes/blackout.css", layer: "visor-adaptive" },
     { path: "themes/modern-minimal.css", layer: "visor-adaptive" },
     { path: "themes/neutral.css", layer: "visor-adaptive" },
+    { path: "themes/paper.css", layer: "visor-adaptive" },
     { path: "themes/space.css", layer: "visor-adaptive" },
     { path: "utilities.css", layer: "visor-adaptive" },
     { path: "reset.css", layer: "visor-base" },

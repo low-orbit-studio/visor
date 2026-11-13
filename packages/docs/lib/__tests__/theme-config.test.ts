@@ -37,26 +37,23 @@ describe("theme-config", () => {
     expect(unique.size).toBe(ALL_THEMES.length);
   });
 
-  it("exports STOCK_GROUPS as the prefix of THEME_GROUPS (no custom groups)", () => {
-    // STOCK_GROUPS must be the stock-only prefix so callers (like /themes/private)
+  it("leads THEME_GROUPS with the stock groups, stock themes first (no custom groups in STOCK_GROUPS)", () => {
+    // STOCK_GROUPS must stay stock-only so callers (like /themes/private)
     // can avoid the overlap between customThemeGroups and PRIVATE_THEMES (VI-351).
     expect(STOCK_GROUPS.length).toBeGreaterThanOrEqual(1);
-    expect(STOCK_GROUPS.length).toBe(THEME_GROUPS.length - customThemeGroups.length);
     for (let i = 0; i < STOCK_GROUPS.length; i++) {
-      expect(THEME_GROUPS[i]).toBe(STOCK_GROUPS[i]);
+      expect(THEME_GROUPS[i].label).toBe(STOCK_GROUPS[i].label);
+      expect(THEME_GROUPS[i].themes.slice(0, STOCK_GROUPS[i].themes.length)).toEqual(STOCK_GROUPS[i].themes);
     }
   });
 
-  it("THEME_GROUPS merges STOCK_GROUPS with customThemeGroups", () => {
-    // Import STOCK_GROUPS indirectly: THEME_GROUPS = [...STOCK_GROUPS, ...customThemeGroups]
-    // If customThemeGroups is empty, THEME_GROUPS.length == STOCK_GROUPS.length (≥1)
-    // If customThemeGroups has groups, THEME_GROUPS.length == STOCK + CUSTOM group count
-    const expectedLength = THEME_GROUPS.length - customThemeGroups.length;
-    expect(expectedLength).toBeGreaterThanOrEqual(1); // at least one stock group
-    // All customThemeGroups must appear in THEME_GROUPS
+  it("THEME_GROUPS merges customThemeGroups in, one group per label (VI-749)", () => {
     for (const customGroup of customThemeGroups) {
-      expect(THEME_GROUPS.some((g) => g.label === customGroup.label)).toBe(true);
+      const merged = THEME_GROUPS.find((g) => g.label === customGroup.label);
+      expect(merged?.themes).toEqual(expect.arrayContaining(customGroup.themes));
     }
+    const labels = THEME_GROUPS.map((g) => g.label);
+    expect(new Set(labels).size).toBe(labels.length);
   });
 });
 
