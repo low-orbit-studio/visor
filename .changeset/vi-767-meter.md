@@ -1,5 +1,0 @@
----
-"@loworbitstudio/visor": minor
----
-
-Add Meter, a thin meter for use against a limit. It takes `value`, `max`, `marks[]`, `hue` and a label slot (`children`). `hue` is a Paper project-hue angle: the track reads `--paper-hue-<angle>-fill-strong` and the fill `--paper-hue-<angle>-ink`, with neutral fallbacks on other themes (or set `--meter-hue-fill`, `--meter-hue-fill-strong` and `--meter-hue-ink` yourself). A mark with `threshold` is the heads-up point: once `value` reaches it the label's `<strong>` turns weight 800 in ink, never the alert colour. `variant: "limit"` draws a 3px ceiling tick, and `label`/`caption` write text under a tick (`hideWhenNarrow` drops it under 30rem). `size="contract"` is the 30px engagement meter with `zones` (solid or hatched bands behind the fill). Use past `max` stripes coral by default (`overflow="alert"`, unresolved) or in ink (`overflow="ink"`, billable overage); `scale` lines several meters up. The track carries `role="meter"` and takes its name from the label. `npx visor add meter`.
