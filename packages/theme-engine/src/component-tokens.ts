@@ -141,6 +141,7 @@ const TEXT = "components/ui/text/text.module.css";
 const INLINE_EDIT = "components/ui/inline-edit/inline-edit.module.css";
 const SAVE_STATUS = "components/ui/save-status/save-status.module.css";
 const SEGMENTED_CONTROL = "components/ui/segmented-control/segmented-control.module.css";
+const LAYER_CHART = "components/ui/layer-chart/layer-chart.module.css";
 const TOGGLE_GROUP = "components/ui/toggle-group/toggle-group.module.css";
 const RADIO_GROUP = "components/ui/radio-group/radio-group.module.css";
 const TOOLTIP = "components/ui/tooltip/tooltip.module.css";
@@ -1366,6 +1367,27 @@ const adminUiFamily: ComponentTokenFamily = {
  * CSS emitter, the docs page test and the fallback-parity test all read this
  * array.
  */
+// VI-769: the layer chart (icicle) and its day span strip. Client blocks draw in Paper's
+// project hues; a theme binds the studio's own investment hue, the unresolved (alert)
+// fill and the ground that separates blocks.
+const layerChartFamily: ComponentTokenFamily = {
+  family: "layer-chart",
+  prefix: "layer-chart",
+  description:
+    "LayerChart and SpanStrip — the investment hue (`hue=\"tide\"`), the unresolved fill and its ink, the opening motion, and the ground between blocks.",
+  tokens: [
+    { key: "investment-fill", property: "background (palest layer)", description: "The investment hue's pale fill: its deepest blocks and its band.", consumers: at(LAYER_CHART, "var(--surface-muted, #f3f4f6)") },
+    { key: "investment-fill-strong", property: "background (top layer)", description: "The investment hue's strong fill: its top-level block.", consumers: at(LAYER_CHART, "var(--surface-interactive-active, #e5e7eb)") },
+    { key: "investment-ink", property: "color", description: "Text on the investment hue's fills, and a call in its span strip.", consumers: at(LAYER_CHART, "var(--text-primary, #111827)") },
+    { key: "investment-solid", property: "background (span cells)", description: "The investment hue's solid, mixed into its span cells.", consumers: at(LAYER_CHART, "var(--text-secondary, #4b5563)") },
+    { key: "alert-fill", property: "background", description: "An unresolved block: the chart's only coral.", consumers: at(LAYER_CHART, "color-mix(in srgb, var(--color-error-500, #ef4444) 35%, var(--surface-page, #ffffff))") },
+    { key: "alert-text", property: "color", description: "Text on an unresolved block.", consumers: at(LAYER_CHART, "var(--text-error, #b91c1c)") },
+    { key: "duration", property: "transition-duration", description: "How long a block takes to open (none under reduced motion).", consumers: at(LAYER_CHART, "480ms") },
+    { key: "easing", property: "transition-timing-function", description: "The opening ease.", consumers: at(LAYER_CHART, "cubic-bezier(0.2, 0.8, 0.2, 1)") },
+    { key: "ground", property: "background (mixes)", description: "The ground blocks are mixed toward (covered, today, the palest layer) and the span lanes' track.", consumers: at(LAYER_CHART, "var(--surface-page, #ffffff)") },
+  ],
+};
+
 export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   tableFamily,
   dataTableFamily,
@@ -1401,6 +1423,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   inputAffixFamily,
   separatorFamily,
   alertFamily,
+  layerChartFamily,
   adminUiFamily,
 ];
 

@@ -434,5 +434,15 @@ components:
     radius: "10px"
     font-size: "13px"
     lead-font-weight: "600"
+  layer-chart:
+    investment-fill: "#2b0a3d"
+    investment-fill-strong: "#ff00aa"
+    investment-ink: "#ffd000"
+    investment-solid: "#00ffcc"
+    alert-fill: "#ff3300"
+    alert-text: "#1a0526"
+    duration: "1200ms"
+    easing: "steps(4)"
+    ground: "#000000"
   admin-ui:
     marquee-family: "\"Courier New\", monospace"

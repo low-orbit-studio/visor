@@ -195,6 +195,27 @@ describe("VI-749: paper theme", () => {
     expect(css).toContain("--admin-shell-rail-easing: cubic-bezier(0.2, 0.8, 0.2, 1);");
   });
 
+  it("draws the LayerChart's investment and unresolved blocks with AA text (VI-769)", () => {
+    const lc = data.config.components!["layer-chart"] as Record<string, { light: string; dark: string }>;
+    const mix = (a: string, b: string, p: number) => {
+      const [x, y] = [parseColor(a)!.rgb, parseColor(b)!.rgb];
+      return rgbToHex(x.map((c, i) => c * p + y[i] * (1 - p)) as typeof x);
+    };
+    const fails: string[] = [];
+    for (const mode of MODES) {
+      const page = token(data.tokens, "surface-page", mode);
+      const [fill, strong, ink] = [lc["investment-fill"][mode], lc["investment-fill-strong"][mode], lc["investment-ink"][mode]];
+      // The layer steps the chart draws: strong, 68% and 38% of strong into fill, fill, 66% of fill into the page.
+      const steps = [strong, mix(strong, fill, 0.68), mix(strong, fill, 0.38), fill, mix(fill, page, 0.66)];
+      for (const s of steps) if (ratio(ink, s, mode) < 4.5) fails.push(`${mode} ink on ${s}`);
+      if (ratio("text-error", lc["alert-fill"][mode], mode) < 4.5) fails.push(`${mode} text-error on alert-fill`);
+    }
+    expect(fails).toEqual([]);
+    // Unresolved is coral mixed into the page: 40% light, 30% at night (LO-343).
+    expect(lc["alert-fill"].light).toBe(mix("#f28b6d", "#fcfcfb", 0.4));
+    expect(lc["alert-fill"].dark).toBe(mix("#f28b6d", "#0c1015", 0.3));
+  });
+
   it("keeps Paper's colours: grounds, cards, ink, Tide and coral", () => {
     const t = data.tokens;
     expect(token(t, "surface-page", "light")).toBe("#fcfcfb");

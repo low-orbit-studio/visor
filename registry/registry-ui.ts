@@ -586,6 +586,32 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "layer-chart",
+    type: "registry:ui",
+    description:
+      "A zoomable icicle that opens a tree layer by layer, with one hue per top-level node, kinds (covered, not billable, unresolved, today), thin blocks folded into a +n block, an optional band, and a day span strip.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/layer-chart/layer-chart.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/layer-chart/layer-chart-layout.ts",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/layer-chart/span-strip.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/layer-chart/layer-chart.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "meter",
     type: "registry:ui",
     description:
