@@ -14,6 +14,7 @@ import type {
   BundledRegistry,
   BundledRegistryItem,
 } from "./types.js"
+import { packageName } from "../utils/packages.js"
 
 /**
  * Peer dependencies that every consuming application is assumed to already
@@ -135,7 +136,7 @@ export function collectTransitiveDeclaredDeps(
     const item = byName.get(name)
     if (!item) continue
     if (item.dependencies) {
-      for (const dep of item.dependencies) deps.add(dep)
+      for (const dep of item.dependencies) deps.add(packageName(dep))
     }
     if (item.registryDependencies) {
       for (const r of item.registryDependencies) {

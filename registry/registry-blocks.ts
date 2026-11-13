@@ -56,7 +56,7 @@ export const blocks: Registry = [
     category: "admin",
     description:
       "CRUD list archetype composing PageHeader, FilterBar, DataTable, BulkActionBar, and EmptyState into a single drop-in page. Generic over row data type, with controlled/uncontrolled search, selection, sorting, and pagination.",
-    dependencies: ["@tanstack/react-table", "@loworbitstudio/visor-core"],
+    dependencies: ["@tanstack/react-table@^8.21.3", "@loworbitstudio/visor-core"],
     registryDependencies: [
       "utils",
       "page-header",

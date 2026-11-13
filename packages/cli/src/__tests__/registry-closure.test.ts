@@ -12,6 +12,7 @@ import { readFileSync, existsSync } from "fs"
 import { join, dirname, posix } from "path"
 import { fileURLToPath } from "url"
 import { auditRegistryDependencies } from "../registry/audit-dependencies.js"
+import { packageName } from "../utils/packages.js"
 import type { BundledRegistry, BundledRegistryItem } from "../registry/types.js"
 
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), "../../../..")
@@ -99,5 +100,20 @@ describe("registry closure (source registry)", () => {
       (issue) => `${issue.item}: ${issue.file} → ${issue.missing}`
     )
     expect(issues).toEqual([])
+  })
+
+  // VI-751: a package pinned in one item and unpinned in another installs both
+  // specs in one `npm install`, and the unpinned one can win.
+  it("every package is declared with one install spec across the registry", () => {
+    const specs = new Map<string, Set<string>>()
+    for (const item of items) {
+      for (const dep of item.dependencies ?? []) {
+        const name = packageName(dep)
+        specs.set(name, (specs.get(name) ?? new Set()).add(dep))
+      }
+    }
+    const conflicts = [...specs].filter(([, s]) => s.size > 1).map(([n, s]) => `${n}: ${[...s].join(", ")}`)
+    expect(conflicts).toEqual([])
+    expect(packageName("@tanstack/react-table@^8.21.3")).toBe("@tanstack/react-table")
   })
 })
