@@ -563,7 +563,7 @@
         },
         "admin-shell": {
           "type": "object",
-          "description": "AdminShell block chrome. Every rule the shell draws is a token, so a theme that separates surfaces by tone (Paper) sets them to `none` and gets a borderless shell. Keys: sidebar-border, sidebar-header-border, sidebar-footer-border, topbar-bg, topbar-border.",
+          "description": "AdminShell block chrome. Every rule the shell draws is a token, so a theme that separates surfaces by tone (Paper) sets them to `none` and gets a borderless shell. Keys: sidebar-border, sidebar-header-border, sidebar-footer-border, topbar-bg, topbar-border, rail-width, rail-duration, rail-easing.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

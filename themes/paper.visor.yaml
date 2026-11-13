@@ -149,6 +149,9 @@ components:
     sidebar-footer-border: none
     topbar-bg: "var(--surface-page)"
     topbar-border: none
+    # The sidebar folds to its 68px rail on Paper's 480ms ease (VI-770).
+    rail-duration: 480ms
+    rail-easing: "cubic-bezier(0.2, 0.8, 0.2, 1)"
 
 overrides:
   light:

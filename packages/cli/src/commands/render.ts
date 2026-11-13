@@ -449,6 +449,17 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     },
     empty: { export: "ProportionBar", props: `{ style: { width: 360 }, parts: [] }` },
   },
+  // VI-767: a row meter past its heads-up tick, and a contract meter with zones and mark text.
+  meter: {
+    default: {
+      export: "Meter",
+      props: `{ value: 162, max: 200, hue: 147, marks: [{ value: 160, threshold: true }], style: { width: 320 }, children: [React.createElement("strong", { key: "s" }, "81%"), " of 200 h \u00b7 heads-up due"] }`,
+    },
+    contract: {
+      export: "Meter",
+      props: `{ value: 118, max: 200, hue: 219, size: "contract", style: { width: 560 }, zones: [{ to: 190, variant: "hatched" }, { to: 166 }], marks: [{ value: 160, label: "160 h", caption: "heads-up", align: "end", threshold: true }, { value: 166, label: "166 h", caption: "the low", align: "start" }, { value: 200, label: "200 h", caption: "ceiling", align: "end", variant: "limit" }], children: [React.createElement("strong", { key: "s" }, "118 h"), " used of 200 h"] }`,
+    },
+  },
   // VI-713: labelled steps, one in every state, at both sizes.
   "segmented-progress": {
     default: { export: "SegmentedProgress", props: `{ total: 6, value: 2, current: 2, "aria-label": "Step 3 of 6", style: { width: 360 } }` },

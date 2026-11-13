@@ -1,5 +1,5 @@
-import { render, screen } from "@testing-library/react"
-import { describe, it, expect } from "vitest"
+import { fireEvent, render, screen } from "@testing-library/react"
+import { afterEach, describe, it, expect, vi } from "vitest"
 import { AdminShell } from "../admin-shell"
 import { checkA11y } from "../../../test-utils/a11y"
 
@@ -114,5 +114,139 @@ describe("AdminShell", () => {
       </AdminShell>
     )
     await checkA11y(container)
+  })
+
+  // ─── Collapsible rail (VI-770) ──────────────────────────────────────
+
+  describe("collapsible", () => {
+    const railNav = (
+      <a href="/home" title="Home">
+        <svg aria-hidden="true" />
+        <span data-admin-shell-label>Home</span>
+      </a>
+    )
+    const sidebar = (c: HTMLElement) => c.querySelector("[data-slot='admin-shell-sidebar']")
+
+    afterEach(() => window.localStorage.clear())
+
+    it("draws no fold button and no data-collapsed unless collapsible", () => {
+      const { container } = render(<AdminShell {...defaultProps} />)
+      expect(screen.queryByRole("button", { name: /sidebar/ })).not.toBeInTheDocument()
+      expect(container.firstChild).not.toHaveAttribute("data-collapsed")
+    })
+
+    it("folds and opens from the button, which keeps focus and follows the state", () => {
+      const { container } = render(<AdminShell {...defaultProps} sidebarNav={railNav} collapsible />)
+      const button = screen.getByRole("button", { name: "Collapse the sidebar" })
+      expect(button).toHaveAttribute("aria-expanded", "true")
+      expect(sidebar(container)).toHaveAttribute("data-collapsed", "false")
+
+      button.focus()
+      fireEvent.click(button)
+      expect(sidebar(container)).toHaveAttribute("data-collapsed", "true")
+      expect(container.firstChild).toHaveAttribute("data-collapsed", "true")
+      expect(button).toHaveAttribute("aria-expanded", "false")
+      expect(button).toHaveAccessibleName("Expand the sidebar")
+      expect(button).toHaveFocus()
+      // The label is hidden visually in the rail but still names the link.
+      expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument()
+
+      fireEvent.click(button)
+      expect(sidebar(container)).toHaveAttribute("data-collapsed", "false")
+    })
+
+    it("toggles with ⌘\\ or Ctrl+\\, and a configured key instead", () => {
+      const { container, rerender } = render(<AdminShell {...defaultProps} collapsible />)
+      fireEvent.keyDown(window, { key: "\\", metaKey: true })
+      expect(sidebar(container)).toHaveAttribute("data-collapsed", "true")
+      fireEvent.keyDown(window, { key: "\\", ctrlKey: true })
+      expect(sidebar(container)).toHaveAttribute("data-collapsed", "false")
+      fireEvent.keyDown(window, { key: "\\" })
+      expect(sidebar(container)).toHaveAttribute("data-collapsed", "false")
+
+      rerender(<AdminShell {...defaultProps} collapsible collapseShortcut="j" />)
+      fireEvent.keyDown(window, { key: "\\", metaKey: true })
+      expect(sidebar(container)).toHaveAttribute("data-collapsed", "false")
+      fireEvent.keyDown(window, { key: "j", metaKey: true })
+      expect(sidebar(container)).toHaveAttribute("data-collapsed", "true")
+
+      rerender(<AdminShell {...defaultProps} collapsible collapseShortcut={false} />)
+      fireEvent.keyDown(window, { key: "j", metaKey: true })
+      expect(sidebar(container)).toHaveAttribute("data-collapsed", "true")
+    })
+
+    it("remembers the choice under storageKey", () => {
+      const { container, unmount } = render(
+        <AdminShell {...defaultProps} collapsible storageKey="test-sidebar" />
+      )
+      fireEvent.click(screen.getByRole("button", { name: "Collapse the sidebar" }))
+      expect(window.localStorage.getItem("test-sidebar")).toBe("rail")
+      unmount()
+
+      const again = render(<AdminShell {...defaultProps} collapsible storageKey="test-sidebar" />)
+      expect(sidebar(again.container)).toHaveAttribute("data-collapsed", "true")
+      expect(sidebar(container)).toBeNull()
+    })
+
+    it("opens expanded when storage throws (private window)", () => {
+      const spy = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+        throw new Error("blocked")
+      })
+      const set = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+        throw new Error("blocked")
+      })
+      const { container } = render(<AdminShell {...defaultProps} collapsible storageKey="test-sidebar" />)
+      expect(sidebar(container)).toHaveAttribute("data-collapsed", "false")
+      fireEvent.click(screen.getByRole("button", { name: "Collapse the sidebar" }))
+      expect(sidebar(container)).toHaveAttribute("data-collapsed", "true")
+      spy.mockRestore()
+      set.mockRestore()
+    })
+
+    it("starts from defaultCollapsed when nothing is remembered", () => {
+      const { container } = render(<AdminShell {...defaultProps} collapsible defaultCollapsed />)
+      expect(sidebar(container)).toHaveAttribute("data-collapsed", "true")
+    })
+
+    it("follows a controlled collapsed prop and reports the next state", () => {
+      const onCollapsedChange = vi.fn()
+      const { container, rerender } = render(
+        <AdminShell {...defaultProps} collapsible collapsed={false} onCollapsedChange={onCollapsedChange} />
+      )
+      fireEvent.click(screen.getByRole("button", { name: "Collapse the sidebar" }))
+      expect(onCollapsedChange).toHaveBeenCalledWith(true)
+      expect(sidebar(container)).toHaveAttribute("data-collapsed", "false")
+
+      rerender(<AdminShell {...defaultProps} collapsible collapsed onCollapsedChange={onCollapsedChange} />)
+      expect(sidebar(container)).toHaveAttribute("data-collapsed", "true")
+    })
+
+    it("stays open with no button at phone width", () => {
+      const original = window.matchMedia
+      window.matchMedia = ((query: string) => ({
+        matches: true,
+        media: query,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+      })) as unknown as typeof window.matchMedia
+      try {
+        const { container } = render(<AdminShell {...defaultProps} collapsible defaultCollapsed />)
+        expect(sidebar(container)).toHaveAttribute("data-collapsed", "false")
+        expect(screen.queryByRole("button", { name: /sidebar/ })).not.toBeInTheDocument()
+        fireEvent.keyDown(window, { key: "\\", metaKey: true })
+        expect(sidebar(container)).toHaveAttribute("data-collapsed", "false")
+      } finally {
+        window.matchMedia = original
+      }
+    })
+
+    it("passes accessibility checks in the rail", async () => {
+      const { container } = render(
+        <AdminShell {...defaultProps} logo={<span>Acme</span>} sidebarNav={railNav} collapsible defaultCollapsed>
+          <h1>Dashboard</h1>
+        </AdminShell>
+      )
+      await checkA11y(container)
+    })
   })
 })

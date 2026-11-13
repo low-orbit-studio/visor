@@ -1070,6 +1070,8 @@ html:not(.dark) .paper-theme {
 /* ── Component tokens (VI-625) — theme bindings for the admin-UI families ── */
 
 html:not(.dark) .paper-theme {
+  --admin-shell-rail-duration: 480ms;
+  --admin-shell-rail-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
   --admin-shell-sidebar-border: none;
   --admin-shell-sidebar-footer-border: none;
   --admin-shell-sidebar-header-border: none;
@@ -1108,6 +1110,8 @@ html:not(.dark) .paper-theme {
 }
 
 .dark .paper-theme {
+  --admin-shell-rail-duration: 480ms;
+  --admin-shell-rail-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
   --admin-shell-sidebar-border: none;
   --admin-shell-sidebar-footer-border: none;
   --admin-shell-sidebar-header-border: none;
@@ -1147,6 +1151,8 @@ html:not(.dark) .paper-theme {
 
 @media (prefers-color-scheme: dark) {
   html:not(.light) .paper-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
+    --admin-shell-rail-duration: 480ms;
+    --admin-shell-rail-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
     --admin-shell-sidebar-border: none;
     --admin-shell-sidebar-footer-border: none;
     --admin-shell-sidebar-header-border: none;

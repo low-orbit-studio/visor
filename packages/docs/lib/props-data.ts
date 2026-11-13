@@ -1112,6 +1112,37 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  meter: [
+    { name: 'value', type: 'number', required: true, description: 'What has been used.' },
+    { name: 'max', type: 'number', required: true, description: "The limit: a contract's ceiling, a month's included hours." },
+    {
+      name: 'marks',
+      type: "{ value: number; label?: ReactNode; caption?: ReactNode; align?: 'start' | 'center' | 'end'; variant?: 'tick' | 'limit'; threshold?: boolean; hideWhenNarrow?: boolean }[]",
+      default: '[]',
+      description: 'Ticks on the track. `threshold` is the heads-up point: once `value` reaches it the label figure turns weight 800. `label` and `caption` draw text under the tick; `hideWhenNarrow` hides that text under 30rem (the tick stays). `variant="limit"` draws a 3px ceiling.',
+    },
+    {
+      name: 'zones',
+      type: "{ from?: number; to: number; variant?: 'solid' | 'hatched' }[]",
+      default: '[]',
+      description: "Bands behind the fill in the hue's strong fill, solid or hatched (up to the low, then hatched to the high).",
+    },
+    {
+      name: 'hue',
+      type: 'number',
+      description: 'A Paper project-hue angle (75 to 339). Reads `--paper-hue-<angle>-fill`, `-fill-strong` and `-ink`. For any other colour set `--meter-hue-fill`, `--meter-hue-fill-strong` and `--meter-hue-ink` yourself.',
+    },
+    { name: 'size', type: '"compact" | "contract"', default: '"compact"', description: '`compact` is the 10px row meter; `contract` is the 30px meter with a thinner used bar.' },
+    {
+      name: 'overflow',
+      type: '"alert" | "ink"',
+      default: '"alert"',
+      description: 'How use past `max` draws: `alert` stripes it coral (unresolved hours), `ink` stripes it in ink (billable overage) and runs the fill through it.',
+    },
+    { name: 'scale', type: 'number', description: "The value at the track's right edge. Defaults to `max`, or 6% past `value` when it overflows. Pass one scale to line several meters up." },
+    { name: 'children', type: 'ReactNode', description: 'The one-line label under the meter. Wrap the figure in `<strong>`; it names the meter for assistive tech.' },
+  ],
+
   'segmented-progress': [
     {
       name: 'total',
