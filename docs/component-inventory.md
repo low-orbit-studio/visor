@@ -8,8 +8,8 @@
 ### Container / Layout (4)
 - badge, card, sheet, sidebar
 
-### Content Display (8)
-- accordion, avatar, carousel, collapsible, image, progress, separator, skeleton
+### Content Display (9)
+- accordion, avatar, carousel, collapsible, image, meter, progress, separator, skeleton
 
 ### Navigation (5)
 - bottom-nav, breadcrumb, command, navbar, pagination

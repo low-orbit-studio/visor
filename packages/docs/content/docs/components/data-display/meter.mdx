@@ -1,0 +1,91 @@
+---
+title: Meter
+description: A thin meter for use against a limit, with a threshold tick, a hue and a one-line label.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { MeterRowsDemo, MeterContractDemo, MeterPastCeilingDemo, MeterRetainerDemo } from '@/components/ui/meter-demos';
+
+Meter draws use against a limit: hours against a contract's ceiling, a month against its included hours. The track is the owner's hue tint, the used fill is that hue's ink, a tick marks the heads-up point, and a label sits under it. `hue` reads Paper's project hues, so switch the site theme to **Paper** (light or dark) to see the colours as designed. On other themes the meter falls back to neutrals.
+
+## Row meter
+
+The compact size is one meter per row. Pass the heads-up point as a mark with `threshold`. Once `value` reaches it, the label's `<strong>` figure turns weight 800 in ink, never the alert colour (Client B below is past 80%).
+
+<ComponentPreview
+  title="Row meters"
+  code={"import { Meter } from '@/components/ui/meter/meter';\n\n<Meter value={162} max={200} hue={147} marks={[{ value: 160, threshold: true }]}>\n  <strong>81%</strong> of 200 h · heads-up due\n</Meter>"}
+>
+  <MeterRowsDemo />
+</ComponentPreview>
+
+## Contract meter
+
+`size="contract"` is the full meter for one engagement. `zones` draw bands behind the fill (solid up to the low, hatched up to the high) and the pale track runs to the ceiling. Marks with a `label` and `caption` write text under their tick. `hideWhenNarrow` drops a mark's text under 30rem while keeping its tick, so a legend beside the meter still explains it.
+
+<ComponentPreview
+  title="Contract meter"
+  code={"<Meter\n  value={118}\n  max={200}\n  hue={219}\n  size=\"contract\"\n  zones={[{ to: 190, variant: 'hatched' }, { to: 166 }]}\n  marks={[\n    { value: 160, label: '160 h', caption: 'heads-up', align: 'end', threshold: true, hideWhenNarrow: true },\n    { value: 166, label: '166 h', caption: 'the low', align: 'start', hideWhenNarrow: true },\n    { value: 200, label: '200 h', caption: 'ceiling', align: 'end', variant: 'limit' },\n  ]}\n>\n  <strong>118 h</strong> used of 200 h · 59% of the ceiling\n</Meter>"}
+>
+  <MeterContractDemo />
+</ComponentPreview>
+
+## Past the ceiling
+
+Use past `max` is unresolved, so by default (`overflow="alert"`) it stripes coral, the one alert case. The track stretches 6% past `value` to make room, and the fill stops at the limit.
+
+<ComponentPreview
+  title="Past the ceiling"
+  code={"<Meter value={212} max={200} hue={219} size=\"contract\" zones={zones} marks={marks}>\n  <strong>212 h</strong> used of 200 h · 12 h past the ceiling, unresolved\n</Meter>"}
+>
+  <MeterPastCeilingDemo />
+</ComponentPreview>
+
+## Retainer months
+
+A retainer's overage is billable, not a problem: `overflow="ink"` stripes it in ink and runs the fill through it. Give every month the same `scale` so the included-hours tick lines up.
+
+<ComponentPreview
+  title="Retainer months"
+  code={"<Meter value={46} max={40} scale={50} overflow=\"ink\" hue={147} size=\"contract\" zones={[{ to: 40 }]} marks={[{ value: 40, variant: 'limit' }]}>\n  October · <strong>46 of 40 h</strong> · +6 h overage\n</Meter>"}
+>
+  <MeterRetainerDemo />
+</ComponentPreview>
+
+## Colour
+
+`hue` takes a Paper project-hue angle (75, 99, 123 … 339) and sets three variables on the meter: `--meter-hue-fill` (the contract track), `--meter-hue-fill-strong` (the row track and the zones) and `--meter-hue-ink` (the fill). For a colour that is not a Paper hue, leave `hue` off and set them yourself:
+
+```tsx
+<Meter value={30} max={40} style={{ '--meter-hue-fill': '…', '--meter-hue-fill-strong': '…', '--meter-hue-ink': '…' } as React.CSSProperties} />
+```
+
+`--meter-tick`, `--meter-alert` and `--meter-hatch-width` override the tick colour, the overflow colour and the stripe width. Every part carries a `data-slot` (`meter-track`, `meter-fill`, `meter-zone`, `meter-overflow`, `meter-tick`, `meter-marks`, `meter-label`) for anything else, such as dimming the fill of an ended contract.
+
+## Installation
+
+```bash
+npx visor add meter
+```
+
+This copies two files into your project:
+
+- `components/ui/meter/meter.tsx` — the component
+- `components/ui/meter/meter.module.css` — the styles
+
+## API Reference
+
+### MeterProps
+
+<PropsTable component="meter" />
+
+Meter renders a `<div>` and accepts all standard div attributes.
+
+## Accessibility
+
+- The track has `role="meter"` with `aria-valuemin`, `aria-valuemax` and `aria-valuenow`. Its name comes from the label slot, or from `aria-label` when there is no label.
+- `aria-valuenow` never exceeds `aria-valuemax`; say how far past the limit the use went in the label ("12 h past the ceiling").
+- Ticks, zones and stripes are decoration inside the meter. Mark text is ordinary text.
+- Past the threshold the label changes weight, not only colour, and the overflow stripes have a pattern as well as a colour (WCAG 1.4.1).
+- The label is 13px on Paper in the secondary text colour, which meets AA on the page and card surfaces.
