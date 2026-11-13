@@ -1028,6 +1028,11 @@ html:not(.dark) .paper-theme {
 /* ── Component tokens (VI-625) — theme bindings for the admin-UI families ── */
 
 html:not(.dark) .paper-theme {
+  --admin-shell-sidebar-border: none;
+  --admin-shell-sidebar-footer-border: none;
+  --admin-shell-sidebar-header-border: none;
+  --admin-shell-topbar-bg: var(--surface-page);
+  --admin-shell-topbar-border: none;
   --button-md-height: 36px;
   --button-radius: 999px;
   --input-md-height: 36px;
@@ -1052,6 +1057,11 @@ html:not(.dark) .paper-theme {
 }
 
 .dark .paper-theme {
+  --admin-shell-sidebar-border: none;
+  --admin-shell-sidebar-footer-border: none;
+  --admin-shell-sidebar-header-border: none;
+  --admin-shell-topbar-bg: var(--surface-page);
+  --admin-shell-topbar-border: none;
   --button-md-height: 36px;
   --button-radius: 999px;
   --input-md-height: 36px;
@@ -1077,6 +1087,11 @@ html:not(.dark) .paper-theme {
 
 @media (prefers-color-scheme: dark) {
   html:not(.light) .paper-theme:not(.light):not(.theme-light):not([data-theme="light"]) {
+    --admin-shell-sidebar-border: none;
+    --admin-shell-sidebar-footer-border: none;
+    --admin-shell-sidebar-header-border: none;
+    --admin-shell-topbar-bg: var(--surface-page);
+    --admin-shell-topbar-border: none;
     --button-md-height: 36px;
     --button-radius: 999px;
     --input-md-height: 36px;

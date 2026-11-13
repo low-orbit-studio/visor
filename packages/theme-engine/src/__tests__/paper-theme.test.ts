@@ -158,6 +158,14 @@ describe("VI-749: paper theme", () => {
     for (const [mode, t, s] of vi746) expect(ratio(t, s, mode), `${mode} ${t} on ${s}`).toBeGreaterThanOrEqual(4.5);
   });
 
+  it("draws the AdminShell by tone, not rules (VI-753)", () => {
+    const css = nextjsAdapter(data);
+    for (const slot of ["sidebar", "sidebar-header", "sidebar-footer", "topbar"]) {
+      expect(css).toContain(`--admin-shell-${slot}-border: none;`);
+    }
+    expect(css).toContain("--admin-shell-topbar-bg: var(--surface-page);");
+  });
+
   it("keeps Paper's colours: grounds, cards, ink, Tide and coral", () => {
     const t = data.tokens;
     expect(token(t, "surface-page", "light")).toBe("#fcfcfb");

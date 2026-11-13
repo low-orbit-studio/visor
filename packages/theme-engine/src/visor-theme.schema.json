@@ -556,6 +556,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "admin-shell": {
+          "type": "object",
+          "description": "AdminShell block chrome. Every rule the shell draws is a token, so a theme that separates surfaces by tone (Paper) sets them to `none` and gets a borderless shell. Keys: sidebar-border, sidebar-header-border, sidebar-footer-border, topbar-bg, topbar-border.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "tabs": {
           "type": "object",
           "description": "Tab rail and trigger treatment, for both the segmented (`default`) and underlined (`line`) variants. Keys: list-radius, list-height, list-padding, list-color, list-bg, line-border-bottom, trigger-radius, trigger-padding, trigger-font-size, trigger-font-weight, trigger-letter-spacing, trigger-text-transform, trigger-color, trigger-active-bg, trigger-active-color, trigger-active-shadow, indicator-height, indicator-color.",
