@@ -87,7 +87,13 @@ const STOCK_GROUPS: ThemeGroup[] = [
 // PRIVATE_THEMES.
 export { STOCK_GROUPS };
 
-export const THEME_GROUPS: ThemeGroup[] = [...STOCK_GROUPS, ...customThemeGroups];
+// A custom group sharing a stock group's label ("Low Orbit": paper is stock, the rest custom)
+// folds into it, so every switcher shows one heading per label and keys stay unique.
+export const THEME_GROUPS: ThemeGroup[] = customThemeGroups.reduce<ThemeGroup[]>((groups, custom) => {
+  const i = groups.findIndex((g) => g.label === custom.label);
+  if (i === -1) return [...groups, custom];
+  return groups.map((g, j) => (j === i ? { ...g, themes: [...g.themes, ...custom.themes] } : g));
+}, [...STOCK_GROUPS]);
 
 export const ALL_THEMES = THEME_GROUPS.flatMap((g) => g.themes.map((t) => t.value));
 
