@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.35.0
+
+### Minor Changes
+
+- ed87108: VI-753: AdminShell's rules are now theme tokens. The block reads `--admin-shell-sidebar-border`, `--admin-shell-sidebar-header-border`, `--admin-shell-sidebar-footer-border`, `--admin-shell-topbar-bg` and `--admin-shell-topbar-border`, each falling back to the value it drew before, so an unbound theme renders unchanged. The theme engine adds them as the `admin-shell` component-token family (`components.admin-shell` in `.visor.yaml`). The `paper` theme binds the borders to `none` and the topbar to `var(--surface-page)`, so its shell is borderless without app CSS.
+- 58091ed: VI-754: Paper declares the field family and a 13px desk type floor.
+  
+  - Paper now sets `--input-bg`, `--textarea-bg`, `--select-bg`, `--number-input-bg`, `--tag-input-bg`, `--combobox-bg` and `--otp-bg` to a 6% ink fill, and their `-border` tokens to `transparent`, in both modes. A root theme's field tokens can no longer inherit into a Paper scope. Focus and invalid rings still draw.
+  - New `typography.floor` (px): any `--font-size-*` step below it is raised to it. Paper sets `13`, so its `--font-size-xs` is 13px. Unset, output is unchanged.
+
 ## 0.34.1
 
 ### Patch Changes
