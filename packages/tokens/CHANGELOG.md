@@ -1,5 +1,11 @@
 # @loworbitstudio/visor-core
 
+## 0.17.1
+
+### Patch Changes
+
+- 983abd5: Banner takes `intent="neutral"` (ink ground, page-coloured text, no rule) with `--banner-neutral-bg` and `--banner-neutral-text-color`, plus a `--banner-*-description-color` hook per intent. Paper binds the neutral face (18px corners, no rule, no shadow) in light and dark.
+
 ## 0.17.0
 
 ### Minor Changes
