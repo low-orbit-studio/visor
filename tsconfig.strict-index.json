@@ -19,6 +19,7 @@
   "include": [
     "components/ui/doc-frame/doc-frame.tsx",
     "components/ui/doc-nav/doc-nav.tsx",
+    "components/ui/lightbox/lightbox.tsx",
     "css-modules.d.ts"
   ]
 }
