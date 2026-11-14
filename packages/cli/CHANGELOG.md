@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.53.1
+
+### Patch Changes
+
+- a02e42c: Dialog: `--dialog-overlay-blur` and `--dialog-backdrop-filter` now blur in Next.js builds (VI-788).
+  
+  Lightning CSS, which Next.js uses for CSS modules, kept only the `-webkit-backdrop-filter` line when it followed an unprefixed `backdrop-filter` with a `var()` value, so Chrome, Edge and Firefox lost the blur. The prefixed line now comes first and both survive. Values and defaults are unchanged. Re-copy with `npx visor add dialog --overwrite`.
+- 71aada4: Lightbox type-checks under a consumer's `noUncheckedIndexedAccess` without non-null assertions: the touch and preload index reads are guarded. Behaviour is unchanged. Lightbox is now covered by the strict-index check.
+- d5c8da0: VI-790: `phone-input` keeps its full-screen country picker inside `portal.container`.
+  
+  Below 500px wide, intl-tel-input swaps the dropdown for a full-screen picker that ignores `dropdownParent` and appends to `document.body`. Inside a modal Dialog that put the picker under the dialog and outside its focus trap. With `portal` set, the full-screen picker is now appended to `portal.container` and carries `portal.scopeClassName`, like the dropdown. Without `portal`, nothing changes.
+  
+  `intl-tel-input` and `@intl-tel-input/react` bumped `^29.2.3` → `^29.5.11` (`fullscreenParent` arrived in 29.4.0).
+
 ## 1.53.0
 
 ### Minor Changes
