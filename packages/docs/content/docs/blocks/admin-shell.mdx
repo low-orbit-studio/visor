@@ -35,7 +35,7 @@ import { AdminShellRailDemo } from '@/components/blocks/admin-shell-rail-demo';
 
 ## Collapsible rail
 
-With `collapsible`, the sidebar folds to a 68px icon rail and back. The fold button sits beside the logo, and **⌘\\** (**Ctrl+\\** off a Mac) does the same from anywhere. There is no hidden state: every destination stays one click away. Pass `storageKey` and the choice is remembered in that browser; a private window, where storage throws, just opens expanded. The width animates on the theme's `--admin-shell-rail-duration` (Paper: 480ms), and not at all under reduced motion. Below 48rem the rail is off: the sidebar stays open and the button is not drawn.
+With `collapsible`, the sidebar folds to a 68px icon rail and back. The fold button sits beside the logo, and **⌘\\** (**Ctrl+\\** off a Mac) does the same from anywhere. There is no hidden state: every destination stays one click away. Pass `storageKey` and the choice is remembered in that browser; a private window, where storage throws, just opens expanded. The width animates on the theme's `--admin-shell-rail-duration` (Paper: 480ms), and not at all under reduced motion. Below 48rem the rail is off and the sidebar becomes a sheet (see [Phone](#phone)).
 
 <BlockPreview
   title="Admin Shell — collapsible rail"
@@ -57,6 +57,18 @@ The shell draws the rail through its existing slots. It narrows the sidebar, sta
 ```
 
 For a controlled shell, pass `collapsed` and `onCollapsedChange`. Set `collapseShortcut` to another key, or to `false` when the app already uses ⌘\\.
+
+## Phone
+
+Below 48rem the sidebar is hidden and the main column takes the full width. A menu button at the start of the topbar opens the sidebar as a sheet from the left, over a blurred `--overlay-bg` scrim. The sheet is the same sidebar with the same slots, so nothing remounts when the width crosses 48rem.
+
+- **Closing.** Esc, a tap on the scrim, and a tap on any link in the sheet close it. The sheet also closes if the window widens past 48rem.
+- **Focus.** Opening moves focus to the first item in the sheet. Tab and Shift+Tab stay inside the sheet. Closing returns focus to the menu button.
+- **The page behind.** The topbar and main column are `inert` while the sheet is open, and the page does not scroll.
+- **Motion.** The sheet slides in on `--motion-duration-normal`, and does not slide under reduced motion.
+- **`hideTopbar`.** A phone still gets a bar that holds only the menu button, so the nav can always be reached.
+
+The breakpoint is the viewport, not the preview box. To see the sheet, open this page on a phone (or narrow the window below 48rem), press **Fullscreen** on either preview above, then press the menu button.
 
 ## Installation
 
@@ -154,6 +166,7 @@ Bind them under `components.admin-shell` in a `.visor.yaml`. The `paper` theme s
 - `<nav aria-label="Sidebar">` wraps the nav slot.
 - `<header role="banner">` wraps the topbar.
 - `<main role="main">` with `tabIndex={-1}` allows the skip link to move focus into the content area.
+- Below 48rem the menu button is named "Menu" (a 44px target) and carries `aria-expanded` and `aria-controls`. While the sheet is open, the rest of the shell is `inert` and focus is held in the sheet.
 - The fold button is named "Collapse the sidebar" or "Expand the sidebar", carries `aria-expanded`, `aria-controls` and `aria-keyshortcuts`, and keeps focus when pressed. Rail items stay in the Tab order, named by their `data-admin-shell-label` text.
 
 ## Props
@@ -174,7 +187,7 @@ Bind them under `components.admin-shell` in a `.visor.yaml`. The `paper` theme s
 | `topbarStart` | `ReactNode` | — | Left side of the topbar, after the breadcrumb. |
 | `topbarCenter` | `ReactNode` | — | Center slot for status indicators, search, etc. |
 | `topbarEnd` | `ReactNode` | — | Right side of the topbar. |
-| `hideTopbar` | `boolean` | `false` | When true, no topbar is rendered. |
+| `hideTopbar` | `boolean` | `false` | When true, no topbar is rendered. Below 48rem a bar holding only the menu button still is. |
 | `children` | `ReactNode` | — | **Required.** Main content. |
 | `mainMaxWidth` | `number \| string` | — | Optional max-width for the main content area. |
 | `mainPadding` | `"none" \| "sm" \| "md" \| "lg"` | `"lg"` | Padding applied inside the main content area. |

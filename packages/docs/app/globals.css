@@ -66,7 +66,8 @@ html:not(.dark) .blackout-theme .wordmark-dark { display: block; }
   height: 100%;
   padding: 0;
   overflow: auto;
-  align-content: center;
+  /* safe: a block taller than the screen starts at the top instead of overflowing above it. */
+  align-content: safe center;
   background: var(--surface-page, #ffffff);
 }
 

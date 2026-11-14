@@ -214,6 +214,107 @@
   min-width: 0;
 }
 
+/* Phone: the sidebar is a sheet behind the topbar's menu button (VI-781). */
+.menuButton {
+  display: none;
+}
+
+/* With hideTopbar, the bar holding only the menu button exists on a phone alone. */
+.menuBar {
+  display: none;
+}
+
+.scrim {
+  display: none;
+}
+
+@media (max-width: 48rem) {
+  .menuBar {
+    display: flex;
+  }
+
+  .menuButton {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    /* 44px touch target (WCAG 2.5.5). */
+    width: 2.75rem;
+    height: 2.75rem;
+    /* The icon lines up with the page gutter; the 44px target overhangs it. */
+    margin-left: calc(var(--spacing-3, 0.75rem) * -1);
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-md, 0.5rem);
+    background: transparent;
+    color: var(--text-primary, #111827);
+    cursor: pointer;
+  }
+
+  .menuButton:hover {
+    background: var(--interactive-ghost-bg-hover, var(--surface-muted, #f3f4f6));
+  }
+
+  .menuButton:focus-visible {
+    outline: var(--focus-ring-width, 2px) solid
+      var(--focus-ring-color, var(--primary, #3b82f6));
+    outline-offset: calc(var(--focus-ring-offset, 2px) * -1);
+  }
+
+  .root .sidebar,
+  .root[data-animate] .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: var(--z-modal, 1300);
+    width: min(var(--admin-shell-sidebar-width, 16rem), calc(100% - var(--spacing-12, 3rem)));
+    min-height: 0;
+    max-height: none;
+    box-shadow: var(--shadow-xl, 0 20px 25px -5px rgba(0, 0, 0, 0.1));
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition:
+      transform var(--motion-duration-normal, 200ms) var(--motion-easing-exit, ease-in),
+      visibility 0s linear var(--motion-duration-normal, 200ms);
+  }
+
+  .root .sidebar[data-sheet="open"] {
+    transform: none;
+    visibility: visible;
+    transition: transform var(--motion-duration-normal, 200ms) var(--motion-easing-enter, ease-out);
+  }
+
+  .scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal, 1300);
+    background: var(--overlay-bg, rgba(0, 0, 0, 0.5));
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    animation: admin-shell-scrim-in var(--motion-duration-normal, 200ms)
+      var(--motion-easing-enter, ease-out);
+  }
+}
+
+@keyframes admin-shell-scrim-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 48rem) and (prefers-reduced-motion: reduce) {
+  .root .sidebar,
+  .root[data-animate] .sidebar,
+  .root .sidebar[data-sheet="open"] {
+    transition: none;
+  }
+
+  .scrim {
+    animation: none;
+  }
+}
+
 /* Main */
 .main {
   flex: 1 1 auto;
