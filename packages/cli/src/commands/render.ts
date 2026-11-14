@@ -448,6 +448,13 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       props: `{ "aria-label": "Hours Website embeds bills", value: 12.5, savedValue: 8, min: 8, max: 16.75, hue: 339, size: "lg", marks: [{ value: 10, label: "High", hatchPast: true }], evidence: { value: 10.5, agent: 3, proposed: 1.25 }, minLabel: "Low", maxLabel: "Ceiling allows", formatValue: (h) => h + " h", onValueChange: () => {}, style: { width: 640 } }`,
     },
   },
+  // VI-778: an editor and a preview pane, the editor at 280px.
+  "resizable-split": {
+    default: {
+      export: "ResizableSplit",
+      props: `{ style: { width: 640, height: 240 }, defaultSize: 280, minStart: 200, minEnd: 240, dividerLabel: "Resize editor and preview", children: [React.createElement("div", { key: "a", style: { padding: 16 } }, "Editor"), React.createElement("div", { key: "b", style: { padding: 16 } }, "Preview")] }`,
+    },
+  },
   // VI-766: hours by bucket with a hatched and an alert part, money in thin with stripes, and empty.
   "proportion-bar": {
     default: {

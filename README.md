@@ -127,8 +127,8 @@ The registry ships 88+ UI components across 6 categories, plus admin compounds, 
 **Feedback (6)**
 `alert` · `banner` · `chart` · `table` · `toast` · `tooltip`
 
-**Layout (9)**
-`badge` · `box` · `card` · `container` · `grid` · `inline` · `sheet` · `sidebar` · `stack`
+**Layout (10)**
+`badge` · `box` · `card` · `container` · `grid` · `inline` · `resizable-split` · `sheet` · `sidebar` · `stack`
 
 The five primitives `box`, `container`, `grid`, `inline`, and `stack` are token-typed layout building blocks: all spacing, surface, and radius props accept only Visor token names — off-system values are TypeScript errors. Pair them with `Card`, `Sheet`, and `Sidebar` for full-page chrome.
 

@@ -1,0 +1,61 @@
+/* ResizableSplit: two panes side by side and a draggable divider between them. */
+.root {
+  display: flex;
+  width: 100%;
+  min-height: 0;
+}
+
+.pane {
+  min-height: 0;
+}
+
+/* While dragging, the panes stop taking the pointer, so an iframe under it
+   cannot swallow the moves, and nothing gets selected. */
+.root[data-dragging] {
+  cursor: col-resize;
+  user-select: none;
+}
+
+.root[data-dragging] > .pane {
+  pointer-events: none;
+}
+
+/* The hit area is wider than the line it draws. */
+.divider {
+  position: relative;
+  flex: none;
+  width: var(--spacing-2, 0.5rem);
+  cursor: col-resize;
+  touch-action: none;
+  outline: none;
+}
+
+.divider::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 50%;
+  width: var(--stroke-width-thin, 1px);
+  transform: translateX(-50%);
+  background-color: var(--resizable-split-divider-color, var(--border-default, #e5e7eb));
+  transition: background-color var(--motion-duration-fast, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.divider:hover::before {
+  background-color: var(--resizable-split-divider-hover-color, var(--border-strong, #d1d5db));
+}
+
+.root[data-dragging] > .divider::before {
+  background-color: var(--resizable-split-divider-active-color, var(--interactive-primary-bg, #111827));
+}
+
+.divider:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #111827);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .divider::before {
+    transition: none;
+  }
+}

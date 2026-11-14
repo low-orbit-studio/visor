@@ -351,6 +351,16 @@ BillingSlider — the empty track, the thumb's pill and grip lines, and the stri
 | `--billing-slider-thumb-grip` | The two grip lines down the pill. | `color-mix(in srgb, var(--_ink) 45%, transparent)` |
 | `--billing-slider-gap-color` | The gap's stripes: undecided, and worked past what it bills (money at stake). | `var(--color-success-600, #16a34a)` |
 
+### `resizable-split`
+
+ResizableSplit — the line the divider draws between the two panes, at rest, under the pointer and while dragging.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--resizable-split-divider-color` | The divider's line at rest. | `var(--border-default, #e5e7eb)` |
+| `--resizable-split-divider-hover-color` | The divider's line under the pointer. | `var(--border-strong, #d1d5db)` |
+| `--resizable-split-divider-active-color` | The divider's line while it is dragged. | `var(--interactive-primary-bg, #111827)` |
+
 ### `tabs`
 
 Tab rail and trigger treatment, for both the segmented (`default`) and underlined (`line`) variants.

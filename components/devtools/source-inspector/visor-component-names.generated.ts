@@ -360,6 +360,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "RadiusSection",
   "RadiusSlide",
   "RecordSection",
+  "ResizableSplit",
   "RightRailList",
   "SaveStatus",
   "ScoreIndicator",

@@ -1,0 +1,74 @@
+name: ResizableSplit
+description: Two panes side by side with a draggable divider between them. Each pane has a minimum width, the start pane's width can be controlled or start from a default, and the divider is a focusable separator the arrow keys move.
+extends: HTMLDivElement
+category: layout
+
+when_to_use:
+  - An editor beside a live preview, where the person decides how much room each gets
+  - A list beside its detail, resizable by drag or keys
+  - A width the app should remember per device (persist `onSizeChange`, pass it back as `size` or `defaultSize`)
+
+when_not_to_use:
+  - A fixed two-column layout nobody resizes (use Grid)
+  - A side navigation that folds away (use Sidebar)
+  - Stacked panes on a phone; render one pane at a time there
+
+why: >
+  Nothing in Visor let a person resize two panes, and an app that needs it
+  should not build its own. ResizableSplit keeps the drag logic small and
+  dependency-free: the start pane takes the width, the end pane takes the
+  rest, and CSS min-widths hold both minimums when the window shrinks. The
+  divider is a `role="separator"` with `aria-valuenow`, `aria-valuemin` and
+  `aria-valuemax` in px, so arrows, Shift + arrows, Home and End move it. A
+  drag captures the pointer and turns off pointer events on both panes, so an
+  iframe in either pane cannot swallow the moves. The divider's line reads its
+  rest, hover and drag colours from theme tokens.
+
+props:
+  - name: children
+    type: "[ReactNode, ReactNode]"
+    required: true
+    description: The two panes, start (left) then end (right).
+  - name: size
+    type: number
+    description: The start pane's width in px. Controlled.
+  - name: defaultSize
+    type: number
+    description: The start pane's first width in px when uncontrolled. Without it the panes start equal.
+  - name: onSizeChange
+    type: "(size: number) => void"
+    description: The start pane's new width in px, while dragging and on every key step.
+  - name: minStart
+    type: number
+    default: "0"
+    description: The start pane's minimum width in px.
+  - name: minEnd
+    type: number
+    default: "0"
+    description: The end pane's minimum width in px.
+  - name: step
+    type: number
+    default: "16"
+    description: px per arrow key press. Shift + arrows step four times this.
+  - name: dividerLabel
+    type: string
+    default: '"Resize panes"'
+    description: The divider's accessible name.
+
+dependencies: []
+
+preview_url: "https://visor.loworbit.studio/docs/components/layout/resizable-split"
+
+example: |
+  const [width, setWidth] = useState(() => Number(localStorage.getItem("editor-width")) || 560)
+
+  <ResizableSplit
+    size={width}
+    onSizeChange={(w) => { setWidth(w); localStorage.setItem("editor-width", String(w)) }}
+    minStart={360}
+    minEnd={320}
+    dividerLabel="Resize editor and preview"
+  >
+    <EditorForms />
+    <iframe src={previewUrl} title="Preview" />
+  </ResizableSplit>

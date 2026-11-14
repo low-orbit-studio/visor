@@ -575,6 +575,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "resizable-split": {
+          "type": "object",
+          "description": "ResizableSplit — the line the divider draws between the two panes, at rest, under the pointer and while dragging. Keys: divider-color, divider-hover-color, divider-active-color.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "tabs": {
           "type": "object",
           "description": "Tab rail and trigger treatment, for both the segmented (`default`) and underlined (`line`) variants. Keys: list-radius, list-height, list-padding, list-color, list-bg, line-border-bottom, trigger-radius, trigger-padding, trigger-font-size, trigger-font-weight, trigger-letter-spacing, trigger-text-transform, trigger-color, trigger-active-bg, trigger-active-color, trigger-active-shadow, indicator-height, indicator-color.",

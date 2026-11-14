@@ -2761,6 +2761,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "resizable-split",
+    type: "registry:ui",
+    category: "layout",
+    description:
+      "Two panes side by side with a draggable, keyboard-accessible divider: a minimum width per pane, a controlled or default size, and a divider drawn from theme tokens that keeps the pointer over an iframe.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/resizable-split/resizable-split.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/resizable-split/resizable-split.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "container",
     type: "registry:ui",
     category: "layout",
