@@ -1452,7 +1452,7 @@ const toggleGroupFamily: ComponentTokenFamily = {
   family: "toggle-group",
   prefix: "toggle-group",
   description:
-    "ToggleGroup — the outline track's fill, the selected option's fill and ink, the unselected ink, and the compact (`xs`) size: its label size, option sides and corners. SegmentedControl takes the `xs` option keys too.",
+    "ToggleGroup — the outline track's fill, the selected option's fill and ink, the unselected ink, and the compact (`xs`) size: its label size, option sides and corners. SegmentedControl takes the `xs` option keys too. The `option-*` keys draw the option variant's rows, letter key and check.",
   tokens: [
     { key: "track-bg", property: "background-color", description: "The outline variant's track. Bind a well darker than its plane where the theme wants one.", consumers: at(TOGGLE_GROUP, "transparent") },
     {
@@ -1467,6 +1467,29 @@ const toggleGroupFamily: ComponentTokenFamily = {
     { key: "xs-padding-x", property: "padding-inline", description: "Compact (`xs`) option sides.", consumers: at(TOGGLE_GROUP, "var(--spacing-2, 0.5rem)") },
     { key: "xs-track-radius", property: "border-radius", description: "Compact (`xs`) outline track corner radius.", consumers: at(TOGGLE_GROUP, "var(--radius-md, 0.375rem)") },
     { key: "xs-item-radius", property: "border-radius", description: "Compact (`xs`) option and indicator corner radius. Concentric with the track is the track radius minus its 2px inset.", consumers: at(TOGGLE_GROUP, "var(--radius-sm, 0.25rem)") },
+    { key: "option-gap", property: "gap", description: "Option variant (VI-787): the space between rows.", consumers: at(TOGGLE_GROUP, "var(--spacing-2, 0.5rem)") },
+    { key: "option-inner-gap", property: "gap", description: "Option row: the space between key, label and check.", consumers: at(TOGGLE_GROUP, "var(--spacing-3_5, 0.875rem)") },
+    { key: "option-min-height", property: "min-height", description: "Option row height; a wrapped label grows past it.", consumers: at(TOGGLE_GROUP, "3.375rem") },
+    { key: "option-padding", property: "padding", description: "Option row padding (top, end, bottom, start).", consumers: at(TOGGLE_GROUP, "var(--spacing-2, 0.5rem) var(--spacing-4_5, 1.125rem) var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem)") },
+    { key: "option-radius", property: "border-radius", description: "Option row corner radius.", consumers: at(TOGGLE_GROUP, "var(--radius-lg, 0.5rem)") },
+    { key: "option-bg", property: "background-color", description: "Option row fill at rest, a glass wash of the ink.", consumers: at(TOGGLE_GROUP, "color-mix(in srgb, var(--text-primary, #111827) 9%, transparent)") },
+    { key: "option-hover-bg", property: "background-color", description: "Option row fill on hover, when not picked.", consumers: at(TOGGLE_GROUP, "color-mix(in srgb, var(--text-primary, #111827) 13%, transparent)") },
+    { key: "option-selected-bg", property: "background-color", description: "Picked option row fill.", consumers: at(TOGGLE_GROUP, "color-mix(in srgb, var(--text-primary, #111827) 20%, transparent)") },
+    { key: "option-selected-ring", property: "box-shadow", description: "Picked option row's 1px inset ring colour.", consumers: at(TOGGLE_GROUP, "color-mix(in srgb, var(--text-primary, #111827) 40%, transparent)") },
+    { key: "option-blur", property: "backdrop-filter", description: "Option row backdrop blur radius (a length, e.g. `24px`).", consumers: at(TOGGLE_GROUP, "24px") },
+    { key: "option-text", property: "color", description: "Option label ink.", consumers: at(TOGGLE_GROUP, "var(--text-primary, #111827)") },
+    { key: "option-font-size", property: "font-size", description: "Option label size.", consumers: at(TOGGLE_GROUP, "var(--font-size-base, 1rem)") },
+    { key: "option-font-weight", property: "font-weight", description: "Option label weight.", consumers: at(TOGGLE_GROUP, "var(--font-weight-medium, 500)") },
+    { key: "option-key-size", property: "width / height", description: "Letter key badge size.", consumers: at(TOGGLE_GROUP, "1.75rem") },
+    { key: "option-key-radius", property: "border-radius", description: "Letter key badge corner radius.", consumers: at(TOGGLE_GROUP, "var(--radius-md, 0.375rem)") },
+    { key: "option-key-border", property: "box-shadow", description: "Letter key badge's inset edge while not picked.", consumers: at(TOGGLE_GROUP, "var(--border-default, #e5e7eb)") },
+    { key: "option-key-text", property: "color", description: "Letter key ink while not picked.", consumers: at(TOGGLE_GROUP, "var(--text-secondary, #4b5563)") },
+    { key: "option-key-font-size", property: "font-size", description: "Letter key size.", consumers: at(TOGGLE_GROUP, "var(--font-size-xs, 0.75rem)") },
+    { key: "option-mark-bg", property: "background-color", description: "Picked fill of the letter key and the check box (the key colour).", consumers: at(TOGGLE_GROUP, "var(--interactive-primary-bg, var(--primary, #111827))") },
+    { key: "option-mark-text", property: "color", description: "Picked ink of the letter key and the check glyph.", consumers: at(TOGGLE_GROUP, "var(--interactive-primary-text, #f9fafb)") },
+    { key: "option-check-size", property: "width / height", description: "Multiple-mode check box size.", consumers: at(TOGGLE_GROUP, "1.25rem") },
+    { key: "option-check-radius", property: "border-radius", description: "Check box corner radius.", consumers: at(TOGGLE_GROUP, "var(--radius-sm, 0.25rem)") },
+    { key: "option-check-border", property: "box-shadow", description: "Check box's inset edge while not picked.", consumers: at(TOGGLE_GROUP, "var(--border-strong, #d1d5db)") },
   ],
 };
 

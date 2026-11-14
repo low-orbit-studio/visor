@@ -923,7 +923,7 @@ SegmentedControl's resting edge is an outline from `--control-edge-*`, so
 
 ### `toggle-group`
 
-ToggleGroup — the outline track's fill, the selected option's fill and ink, the unselected ink, and the compact (`xs`) size: its label size, option sides and corners. SegmentedControl takes the `xs` option keys too.
+ToggleGroup — the outline track's fill, the selected option's fill and ink, the unselected ink, and the compact (`xs`) size: its label size, option sides and corners. SegmentedControl takes the `xs` option keys too. The `option-*` keys draw the option variant's rows, letter key and check.
 
 | Token | Binds | Falls back to |
 |---|---|---|
@@ -935,6 +935,29 @@ ToggleGroup — the outline track's fill, the selected option's fill and ink, th
 | `--toggle-group-xs-padding-x` | Compact (`xs`) option sides. | `var(--spacing-2, 0.5rem)` |
 | `--toggle-group-xs-track-radius` | Compact (`xs`) outline track corner radius. | `var(--radius-md, 0.375rem)` |
 | `--toggle-group-xs-item-radius` | Compact (`xs`) option and indicator corner radius. Concentric with the track is the track radius minus its 2px inset. | `var(--radius-sm, 0.25rem)` |
+| `--toggle-group-option-gap` | Option variant (VI-787): the space between rows. | `var(--spacing-2, 0.5rem)` |
+| `--toggle-group-option-inner-gap` | Option row: the space between key, label and check. | `var(--spacing-3_5, 0.875rem)` |
+| `--toggle-group-option-min-height` | Option row height; a wrapped label grows past it. | `3.375rem` |
+| `--toggle-group-option-padding` | Option row padding (top, end, bottom, start). | `var(--spacing-2, 0.5rem) var(--spacing-4_5, 1.125rem) var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem)` |
+| `--toggle-group-option-radius` | Option row corner radius. | `var(--radius-lg, 0.5rem)` |
+| `--toggle-group-option-bg` | Option row fill at rest, a glass wash of the ink. | `color-mix(in srgb, var(--text-primary, #111827) 9%, transparent)` |
+| `--toggle-group-option-hover-bg` | Option row fill on hover, when not picked. | `color-mix(in srgb, var(--text-primary, #111827) 13%, transparent)` |
+| `--toggle-group-option-selected-bg` | Picked option row fill. | `color-mix(in srgb, var(--text-primary, #111827) 20%, transparent)` |
+| `--toggle-group-option-selected-ring` | Picked option row's 1px inset ring colour. | `color-mix(in srgb, var(--text-primary, #111827) 40%, transparent)` |
+| `--toggle-group-option-blur` | Option row backdrop blur radius (a length, e.g. `24px`). | `24px` |
+| `--toggle-group-option-text` | Option label ink. | `var(--text-primary, #111827)` |
+| `--toggle-group-option-font-size` | Option label size. | `var(--font-size-base, 1rem)` |
+| `--toggle-group-option-font-weight` | Option label weight. | `var(--font-weight-medium, 500)` |
+| `--toggle-group-option-key-size` | Letter key badge size. | `1.75rem` |
+| `--toggle-group-option-key-radius` | Letter key badge corner radius. | `var(--radius-md, 0.375rem)` |
+| `--toggle-group-option-key-border` | Letter key badge's inset edge while not picked. | `var(--border-default, #e5e7eb)` |
+| `--toggle-group-option-key-text` | Letter key ink while not picked. | `var(--text-secondary, #4b5563)` |
+| `--toggle-group-option-key-font-size` | Letter key size. | `var(--font-size-xs, 0.75rem)` |
+| `--toggle-group-option-mark-bg` | Picked fill of the letter key and the check box (the key colour). | `var(--interactive-primary-bg, var(--primary, #111827))` |
+| `--toggle-group-option-mark-text` | Picked ink of the letter key and the check glyph. | `var(--interactive-primary-text, #f9fafb)` |
+| `--toggle-group-option-check-size` | Multiple-mode check box size. | `1.25rem` |
+| `--toggle-group-option-check-radius` | Check box corner radius. | `var(--radius-sm, 0.25rem)` |
+| `--toggle-group-option-check-border` | Check box's inset edge while not picked. | `var(--border-strong, #d1d5db)` |
 
 The track fill is set at zero specificity, so a consumer class that sets the group's background still wins.
 SegmentedControl keeps its own track, pill and inks (`segmented-control`); only the `xs` option keys reach it.

@@ -162,3 +162,112 @@ describe("ToggleGroup accessibility", () => {
     await checkA11y(container)
   })
 })
+
+describe("ToggleGroup option variant (VI-787)", () => {
+  function renderOptions(groupProps?: Record<string, unknown>, type: "single" | "multiple" = "single") {
+    return render(
+      <ToggleGroup type={type} variant="option" aria-label="Shirt size" {...groupProps}>
+        <ToggleGroupItem value="s">Small</ToggleGroupItem>
+        <ToggleGroupItem value="m">Medium</ToggleGroupItem>
+        <ToggleGroupItem value="l" disabled>Large</ToggleGroupItem>
+        <ToggleGroupItem value="xl">Extra Large</ToggleGroupItem>
+      </ToggleGroup>
+    )
+  }
+
+  it("single: rows are radios named by their label alone, each with a hidden key and no check", () => {
+    const { container } = renderOptions({ defaultValue: "m" })
+    expect(screen.getByRole("radiogroup", { name: "Shirt size" })).toHaveAttribute("data-variant", "option")
+    const medium = screen.getByRole("radio", { name: "Medium" })
+    expect(medium).toHaveAttribute("aria-checked", "true")
+    expect(medium.querySelector('[data-slot="toggle-group-key"]')).toHaveAttribute("aria-hidden", "true")
+    expect(container.querySelector('[data-slot="toggle-group-check"]')).toBeNull()
+  })
+
+  it("single: tapping a row picks it and keeps ToggleGroup's semantics", async () => {
+    const user = userEvent.setup()
+    const handleChange = vi.fn()
+    renderOptions({ onValueChange: handleChange })
+    await user.click(screen.getByText("Small"))
+    expect(handleChange).toHaveBeenLastCalledWith("s")
+    expect(screen.getByRole("radio", { name: "Small" })).toHaveAttribute("data-state", "on")
+  })
+
+  it("multiple: rows are pressed buttons with a hidden check, and several can be picked", async () => {
+    const user = userEvent.setup()
+    const handleChange = vi.fn()
+    renderOptions({ onValueChange: handleChange }, "multiple")
+    expect(screen.getAllByRole("button")[0].querySelector('[data-slot="toggle-group-check"]')).toHaveAttribute("aria-hidden", "true")
+    await user.click(screen.getByText("Small"))
+    await user.click(screen.getByText("Extra Large"))
+    expect(handleChange).toHaveBeenLastCalledWith(["s", "xl"])
+    expect(screen.getByRole("button", { name: "Extra Large" })).toHaveAttribute("aria-pressed", "true")
+  })
+
+  it("arrow keys move focus and Space picks, as in the other variants", async () => {
+    const user = userEvent.setup()
+    const handleChange = vi.fn()
+    renderOptions({ onValueChange: handleChange })
+    await user.tab()
+    expect(screen.getByRole("radio", { name: "Small" })).toHaveFocus()
+    await user.keyboard("{ArrowDown}")
+    expect(screen.getByRole("radio", { name: "Medium" })).toHaveFocus()
+    await user.keyboard(" ")
+    expect(handleChange).toHaveBeenLastCalledWith("m")
+    await user.keyboard("{ArrowDown}{Enter}")
+    expect(handleChange).toHaveBeenLastCalledWith("xl")
+  })
+
+  it("shortcuts: a letter picks the item at that position and focuses it; a disabled one is skipped", async () => {
+    const user = userEvent.setup()
+    const handleChange = vi.fn()
+    renderOptions({ shortcuts: true, onValueChange: handleChange }, "multiple")
+    await user.tab()
+    await user.keyboard("d")
+    expect(handleChange).toHaveBeenLastCalledWith(["xl"])
+    expect(screen.getByRole("button", { name: "Extra Large" })).toHaveFocus()
+    await user.keyboard("c")
+    expect(handleChange).toHaveBeenCalledTimes(1)
+    await user.keyboard("{Control>}a{/Control}")
+    expect(handleChange).toHaveBeenCalledTimes(1)
+  })
+
+  it("letters do nothing without the shortcuts prop, and a caller's onKeyDown still runs with it", async () => {
+    const user = userEvent.setup()
+    const handleChange = vi.fn()
+    const handleKeyDown = vi.fn()
+    const { unmount } = renderOptions({ onValueChange: handleChange })
+    await user.tab()
+    await user.keyboard("a")
+    expect(handleChange).not.toHaveBeenCalled()
+    unmount()
+    renderOptions({ shortcuts: true, onKeyDown: handleKeyDown, onValueChange: handleChange })
+    await user.tab()
+    await user.keyboard("b")
+    expect(handleKeyDown).toHaveBeenCalled()
+    expect(handleChange).toHaveBeenLastCalledWith("m")
+  })
+
+  it("columns={2} marks the group for the two-column grid; other variants never get it", () => {
+    const { container, unmount } = renderOptions({ columns: 2 })
+    expect(container.querySelector('[data-slot="toggle-group"]')).toHaveAttribute("data-columns", "2")
+    unmount()
+    const outline = renderToggleGroup({ variant: "outline", columns: 2 })
+    expect(outline.container.querySelector('[data-slot="toggle-group"]')).not.toHaveAttribute("data-columns")
+  })
+
+  it("leaves the existing variants' markup as it was (no size class dropped, no option parts)", () => {
+    const { container } = renderToggleGroup({ defaultValue: "left" })
+    expect(container.querySelector('[data-slot="toggle-group-key"]')).toBeNull()
+    expect(container.querySelector('[data-slot="toggle-group-text"]')?.textContent).toBe("Left")
+    expect(container.querySelector('[data-slot="toggle-group"]')).not.toHaveAttribute("data-columns")
+  })
+
+  it("has no WCAG 2.1 AA violations (option, single and multiple)", async () => {
+    const single = renderOptions({ defaultValue: "m" })
+    await checkA11y(single.container)
+    single.unmount()
+    const multiple = renderOptions({ defaultValue: ["s", "xl"] }, "multiple")
+    await checkA11y(multiple.container)
+  })
+})

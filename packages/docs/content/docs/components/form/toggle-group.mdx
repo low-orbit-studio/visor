@@ -64,6 +64,65 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
   </ToggleGroup>
 </ComponentPreview>
 
+## Option Rows
+
+`variant="option"` draws each item as a full-width row you tap to pick: a lettered key on the left
+(A, B, C…, filled when picked), the label, and in a multiple group a check box on the right. There
+is no radio dot; the whole row is the target. The group keeps ToggleGroup's semantics: a single
+group is a radiogroup, a multiple group a group of pressed buttons, arrow keys move between rows and
+Space or Enter picks. Add `shortcuts` and the letters work as keys while focus is in the group.
+
+### Single Pick
+
+<ComponentPreview
+  title="Single Pick"
+  code={"<ToggleGroup type=\"single\" variant=\"option\" shortcuts aria-label=\"Arrival day\" defaultValue=\"thu\">\n  <ToggleGroupItem value=\"wed\">Wednesday</ToggleGroupItem>\n  <ToggleGroupItem value=\"thu\">Thursday</ToggleGroupItem>\n  <ToggleGroupItem value=\"fri\">Friday</ToggleGroupItem>\n</ToggleGroup>"}
+>
+  <div style={{ width: '100%', maxWidth: '28rem' }}>
+    <ToggleGroup type="single" variant="option" shortcuts aria-label="Arrival day" defaultValue="thu">
+      <ToggleGroupItem value="wed">Wednesday</ToggleGroupItem>
+      <ToggleGroupItem value="thu">Thursday</ToggleGroupItem>
+      <ToggleGroupItem value="fri">Friday</ToggleGroupItem>
+    </ToggleGroup>
+  </div>
+</ComponentPreview>
+
+### Multiple Picks
+
+<ComponentPreview
+  title="Multiple Picks"
+  code={"<ToggleGroup type=\"multiple\" variant=\"option\" shortcuts aria-label=\"Dietary needs\" defaultValue={['vegetarian']}>\n  <ToggleGroupItem value=\"vegetarian\">Vegetarian</ToggleGroupItem>\n  <ToggleGroupItem value=\"vegan\">Vegan</ToggleGroupItem>\n  <ToggleGroupItem value=\"gluten-free\">Gluten Free</ToggleGroupItem>\n  <ToggleGroupItem value=\"nut-allergy\">Nut Allergy</ToggleGroupItem>\n</ToggleGroup>"}
+>
+  <div style={{ width: '100%', maxWidth: '28rem' }}>
+    <ToggleGroup type="multiple" variant="option" shortcuts aria-label="Dietary needs" defaultValue={['vegetarian']}>
+      <ToggleGroupItem value="vegetarian">Vegetarian</ToggleGroupItem>
+      <ToggleGroupItem value="vegan">Vegan</ToggleGroupItem>
+      <ToggleGroupItem value="gluten-free">Gluten Free</ToggleGroupItem>
+      <ToggleGroupItem value="nut-allergy">Nut Allergy</ToggleGroupItem>
+    </ToggleGroup>
+  </div>
+</ComponentPreview>
+
+### Two Columns
+
+`columns={2}` lays the rows out two up, for a longer list of short answers.
+
+<ComponentPreview
+  title="Two Columns"
+  code={"<ToggleGroup type=\"single\" variant=\"option\" columns={2} aria-label=\"Shirt size\" defaultValue=\"m\">\n  <ToggleGroupItem value=\"xs\">XS</ToggleGroupItem>\n  <ToggleGroupItem value=\"s\">S</ToggleGroupItem>\n  <ToggleGroupItem value=\"m\">M</ToggleGroupItem>\n  <ToggleGroupItem value=\"l\">L</ToggleGroupItem>\n  <ToggleGroupItem value=\"xl\">XL</ToggleGroupItem>\n  <ToggleGroupItem value=\"xxl\">XXL</ToggleGroupItem>\n</ToggleGroup>"}
+>
+  <div style={{ width: '100%', maxWidth: '28rem' }}>
+    <ToggleGroup type="single" variant="option" columns={2} aria-label="Shirt size" defaultValue="m">
+      <ToggleGroupItem value="xs">XS</ToggleGroupItem>
+      <ToggleGroupItem value="s">S</ToggleGroupItem>
+      <ToggleGroupItem value="m">M</ToggleGroupItem>
+      <ToggleGroupItem value="l">L</ToggleGroupItem>
+      <ToggleGroupItem value="xl">XL</ToggleGroupItem>
+      <ToggleGroupItem value="xxl">XXL</ToggleGroupItem>
+    </ToggleGroup>
+  </div>
+</ComponentPreview>
+
 ## Installation
 
 ```bash
@@ -97,7 +156,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group/toggl
 | Component | Element | Purpose |
 | --- | --- | --- |
 | `ToggleGroup` | `<div>` | Root group container with variant/size context and optional sliding indicator |
-| `ToggleGroupItem` | `<button>` | Individual toggle button inheriting variant and size from the group |
+| `ToggleGroupItem` | `<button>` | Individual toggle button inheriting variant and size from the group. In the option variant it renders the key, label and (multiple) check |
 
 ## Accessibility
 
@@ -105,6 +164,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group/toggl
 - Keyboard focus draws a solid `--border-focus` ring at `--focus-ring-width`, offset by `--focus-ring-offset`, on every item
 - Provide an `aria-label` on `<ToggleGroup>` to describe the purpose of the group (e.g., "Text formatting", "View mode")
 - Keyboard: Arrow keys navigate between items within the group; Space/Enter toggles the focused item
+- Option variant: the letter key and the check box are `aria-hidden`, so each row is named by its label alone. With `shortcuts`, a letter key (no modifier) picks and focuses the row at that position; a disabled row ignores it
 
 ## Theming
 
@@ -125,6 +185,29 @@ components:
     xs-padding-x: 11px
     xs-track-radius: 8px
     xs-item-radius: 6px
+```
+
+The option variant has its own `option-*` keys: the row's gap, height, padding, corners, fill
+(rest, hover and picked), picked ring, backdrop blur, ink and type; the letter key's size, corners,
+edge, ink and type; the picked key and check fill (`option-mark-bg`, `option-mark-text`); and the check
+box's size, corners and edge. The defaults are Visor's tokens. Glass rows over a photo, in a dark theme:
+
+```yaml
+components:
+  toggle-group:
+    option-min-height: 54px
+    option-padding: 10px 18px 10px 13px
+    option-radius: 12px
+    option-bg: "rgba(255, 255, 255, 0.09)"
+    option-hover-bg: "rgba(255, 255, 255, 0.13)"
+    option-selected-bg: "rgba(255, 255, 255, 0.2)"
+    option-selected-ring: "rgba(255, 255, 255, 0.4)"
+    option-blur: 24px
+    option-font-size: 17px
+    option-key-radius: 8px
+    option-mark-bg: "#e8457c"
+    option-mark-text: "#ffffff"
+    option-check-radius: 6px
 ```
 
 The full list, with each fallback, is in [Component Tokens](/docs/themes/component-tokens#toggle-group).
