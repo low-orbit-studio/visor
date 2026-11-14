@@ -814,6 +814,19 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
         ] };
       })()`,
     },
+    // VI-787: the option variant's tap-to-pick rows, multiple so the check shows.
+    option: {
+      export: "ToggleGroup",
+      interactiveTarget: "[data-slot=toggle-group-item]",
+      props: `(function () {
+        var h = React.createElement;
+        return { type: "multiple", variant: "option", "aria-label": "Dietary needs", defaultValue: ["vegan"], style: { width: "22rem" }, children: [
+          h(__mod.ToggleGroupItem, { key: "v", value: "vegetarian" }, "Vegetarian"),
+          h(__mod.ToggleGroupItem, { key: "g", value: "vegan" }, "Vegan"),
+          h(__mod.ToggleGroupItem, { key: "f", value: "gluten-free" }, "Gluten Free"),
+        ] };
+      })()`,
+    },
   },
   "tag-input": {
     default: {

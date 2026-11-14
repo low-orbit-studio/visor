@@ -2,6 +2,7 @@ declare const styles: {
   readonly root: string
   readonly variantDefault: string
   readonly variantOutline: string
+  readonly variantOption: string
   readonly indicator: string
   readonly sizeXs: string
   readonly sizeSm: string
@@ -10,11 +11,15 @@ declare const styles: {
   readonly item: string
   readonly itemVariantDefault: string
   readonly itemVariantOutline: string
+  readonly itemVariantOption: string
   readonly itemSizeXs: string
   readonly itemSizeSm: string
   readonly itemSizeMd: string
   readonly itemSizeLg: string
   readonly label: string
+  readonly optionKey: string
+  readonly optionLabel: string
+  readonly optionCheck: string
 }
 
 export default styles

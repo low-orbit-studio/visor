@@ -717,7 +717,7 @@
         },
         "toggle-group": {
           "type": "object",
-          "description": "ToggleGroup \u2014 the outline track's fill, the selected option's fill and ink, the unselected ink, and the compact (`xs`) size: its label size, option sides and corners. SegmentedControl takes the `xs` option keys too. Keys: track-bg, selected-bg, selected-text, unselected-text, xs-font-size, xs-padding-x, xs-track-radius, xs-item-radius.",
+          "description": "ToggleGroup \u2014 the outline track's fill, the selected option's fill and ink, the unselected ink, and the compact (`xs`) size: its label size, option sides and corners. SegmentedControl takes the `xs` option keys too. The `option-*` keys draw the option variant's rows, letter key and check. Keys: track-bg, selected-bg, selected-text, unselected-text, xs-font-size, xs-padding-x, xs-track-radius, xs-item-radius, option-gap, option-inner-gap, option-min-height, option-padding, option-radius, option-bg, option-hover-bg, option-selected-bg, option-selected-ring, option-blur, option-text, option-font-size, option-font-weight, option-key-size, option-key-radius, option-key-border, option-key-text, option-key-font-size, option-mark-bg, option-mark-text, option-check-size, option-check-radius, option-check-border.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

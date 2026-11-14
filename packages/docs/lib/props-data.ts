@@ -521,15 +521,27 @@ export const propsData: Record<string, PropDef[]> = {
     },
     {
       name: 'variant',
-      type: "'default' | 'outline'",
+      type: "'default' | 'outline' | 'option'",
       default: "'default'",
-      description: 'Visual style variant of the toggle group.',
+      description: 'Visual style variant of the toggle group. option draws full-width tap-to-pick rows with a lettered key and, in a multiple group, a check box.',
     },
     {
       name: 'size',
       type: "'xs' | 'sm' | 'md' | 'lg'",
       default: "'md'",
-      description: 'Size of the toggle items.',
+      description: 'Size of the toggle items. The option variant ignores it.',
+    },
+    {
+      name: 'columns',
+      type: '1 | 2',
+      default: '1',
+      description: 'Option variant only: 2 lays the rows out in a two-column grid.',
+    },
+    {
+      name: 'shortcuts',
+      type: 'boolean',
+      default: 'false',
+      description: 'Pressing A, B, C… while focus is in the group picks the item at that position.',
     },
     {
       name: 'value',

@@ -206,3 +206,105 @@
     transform: translateY(calc((var(--label-box-height) + 1cap) / 2 - round((var(--label-box-height) + 1cap) / 2, 1px)));
   }
 }
+
+/* Option variant (VI-787): tap-to-pick rows, each a lettered key, the label and,
+   in a multiple group, a check box on the right. Every value is a
+   --toggle-group-option-* hook; the fallbacks are Visor's tokens, with the row
+   height, key and check sizes and the glass blur taken from Honcho's FormDeck rows. */
+.variantOption {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--toggle-group-option-gap, var(--spacing-2, 0.5rem));
+  counter-reset: toggle-group-option;
+}
+
+.variantOption[data-columns="2"] {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.itemVariantOption {
+  counter-increment: toggle-group-option;
+  justify-content: flex-start;
+  gap: var(--toggle-group-option-inner-gap, var(--spacing-3_5, 0.875rem));
+  width: 100%;
+  min-height: var(--toggle-group-option-min-height, 3.375rem);
+  padding: var(--toggle-group-option-padding, var(--spacing-2, 0.5rem) var(--spacing-4_5, 1.125rem) var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem));
+  border-radius: var(--toggle-group-option-radius, var(--radius-lg, 0.5rem));
+  background-color: var(--toggle-group-option-bg, color-mix(in srgb, var(--text-primary, #111827) 9%, transparent));
+  -webkit-backdrop-filter: blur(var(--toggle-group-option-blur, 24px));
+  backdrop-filter: blur(var(--toggle-group-option-blur, 24px));
+  color: var(--toggle-group-option-text, var(--text-primary, #111827));
+  font-size: var(--toggle-group-option-font-size, var(--font-size-base, 1rem));
+  font-weight: var(--toggle-group-option-font-weight, var(--font-weight-medium, 500));
+  text-align: start;
+  white-space: normal;
+}
+
+@media (hover: hover) {
+  .itemVariantOption:hover:not(:disabled):not([data-state="on"]) {
+    background-color: var(--toggle-group-option-hover-bg, color-mix(in srgb, var(--text-primary, #111827) 13%, transparent));
+  }
+}
+
+.itemVariantOption[data-state="on"] {
+  background-color: var(--toggle-group-option-selected-bg, color-mix(in srgb, var(--text-primary, #111827) 20%, transparent));
+  box-shadow: inset 0 0 0 var(--stroke-width-thin, 1px) var(--toggle-group-option-selected-ring, color-mix(in srgb, var(--text-primary, #111827) 40%, transparent));
+}
+
+.optionKey {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--toggle-group-option-key-size, 1.75rem);
+  height: var(--toggle-group-option-key-size, 1.75rem);
+  border-radius: var(--toggle-group-option-key-radius, var(--radius-md, 0.375rem));
+  box-shadow: inset 0 0 0 var(--stroke-width-thin, 1px) var(--toggle-group-option-key-border, var(--border-default, #e5e7eb));
+  color: var(--toggle-group-option-key-text, var(--text-secondary, #4b5563));
+  font-size: var(--toggle-group-option-key-font-size, var(--font-size-xs, 0.75rem));
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: 1;
+  transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.optionKey::before {
+  content: counter(toggle-group-option, upper-alpha);
+}
+
+.optionLabel {
+  flex: 1;
+  min-width: 0;
+}
+
+.optionCheck {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--toggle-group-option-check-size, 1.25rem);
+  height: var(--toggle-group-option-check-size, 1.25rem);
+  border-radius: var(--toggle-group-option-check-radius, var(--radius-sm, 0.25rem));
+  box-shadow: inset 0 0 0 var(--stroke-width-regular, 1.5px) var(--toggle-group-option-check-border, var(--border-strong, #d1d5db));
+  transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out),
+    box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.optionCheck svg {
+  width: 60%;
+  height: 60%;
+  opacity: 0;
+}
+
+/* Picked: the key and the check fill with the mark colour. */
+.itemVariantOption[data-state="on"] .optionKey,
+.itemVariantOption[data-state="on"] .optionCheck {
+  background-color: var(--toggle-group-option-mark-bg, var(--interactive-primary-bg, var(--primary, #111827)));
+  color: var(--toggle-group-option-mark-text, var(--interactive-primary-text, #f9fafb));
+  box-shadow: none;
+}
+
+.itemVariantOption[data-state="on"] .optionCheck svg {
+  opacity: 1;
+}

@@ -9,8 +9,9 @@ import styles from "./toggle-group.module.css"
 /* ─── Context ───────────────────────────────────────────────────────── */
 
 type ToggleGroupContextValue = {
-  variant?: "default" | "outline" | null
+  variant?: "default" | "outline" | "option" | null
   size?: "xs" | "sm" | "md" | "lg" | null
+  type?: "single" | "multiple"
 }
 
 const ToggleGroupContext = React.createContext<ToggleGroupContextValue>({})
@@ -72,6 +73,7 @@ const toggleGroupVariants = cva(styles.root, {
     variant: {
       default: styles.variantDefault,
       outline: styles.variantOutline,
+      option: styles.variantOption,
     },
     size: {
       xs: styles.sizeXs,
@@ -89,16 +91,22 @@ const toggleGroupVariants = cva(styles.root, {
 export type ToggleGroupProps = React.ComponentPropsWithoutRef<
   typeof ToggleGroupPrimitive.Root
 > &
-  VariantProps<typeof toggleGroupVariants>
+  VariantProps<typeof toggleGroupVariants> & {
+    /** Option variant: lay the rows out in two columns instead of one. */
+    columns?: 1 | 2
+    /** Pressing A, B, C… while focus is in the group picks the item at that position. */
+    shortcuts?: boolean
+  }
 
 const ToggleGroup = React.forwardRef<
   React.ElementRef<typeof ToggleGroupPrimitive.Root>,
   ToggleGroupProps
->(({ className, variant, size, ...props }, ref) => {
+>(({ className, variant, size, columns, shortcuts, onKeyDown, ...props }, ref) => {
   const contextValue = React.useMemo(
-    () => ({ variant, size }),
-    [variant, size]
+    () => ({ variant, size, type: props.type }),
+    [variant, size, props.type]
   )
+  const isOption = variant === "option"
   const internalRef = React.useRef<HTMLDivElement>(null)
   // Sliding indicator only works for single-select toggle groups
   const useIndicator = variant === "outline" && props.type !== "multiple"
@@ -114,6 +122,20 @@ const ToggleGroup = React.forwardRef<
     [ref],
   )
 
+  // Letter shortcuts: the Nth item answers to the Nth letter, matching its key badge.
+  const handleShortcut = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    onKeyDown?.(event)
+    if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return
+    const index = /^[a-z]$/i.test(event.key) ? event.key.toLowerCase().charCodeAt(0) - 97 : -1
+    const item = internalRef.current?.querySelectorAll<HTMLButtonElement>(
+      '[data-slot="toggle-group-item"]',
+    )[index]
+    if (!item || item.disabled) return
+    event.preventDefault()
+    item.focus()
+    item.click()
+  }
+
   return (
     <ToggleGroupContext.Provider value={contextValue}>
       <ToggleGroupPrimitive.Root
@@ -125,8 +147,10 @@ const ToggleGroup = React.forwardRef<
         // item needs a radiogroup parent (VI-690). Multi-select stays a group of
         // pressed buttons. Spread after, so a caller's own role still wins.
         {...(props.type === "multiple" ? {} : { role: "radiogroup" })}
-        className={cn(toggleGroupVariants({ variant, size }), className)}
+        data-columns={isOption && columns === 2 ? "2" : undefined}
+        className={cn(toggleGroupVariants({ variant, size: isOption ? null : size }), className)}
         ref={mergedRef}
+        onKeyDown={shortcuts ? handleShortcut : onKeyDown}
         {...props}
       >
         {useIndicator && (
@@ -150,6 +174,7 @@ const toggleGroupItemVariants = cva(styles.item, {
     variant: {
       default: styles.itemVariantDefault,
       outline: styles.itemVariantOutline,
+      option: styles.itemVariantOption,
     },
     size: {
       xs: styles.itemSizeXs,
@@ -192,14 +217,41 @@ const ToggleGroupItem = React.forwardRef<
   const ctx = React.useContext(ToggleGroupContext)
   const resolvedVariant = variant ?? ctx.variant
   const resolvedSize = size ?? ctx.size
+  const isOption = resolvedVariant === "option"
   return (
     <ToggleGroupPrimitive.Item
       data-slot="toggle-group-item"
-      className={cn(toggleGroupItemVariants({ variant: resolvedVariant, size: resolvedSize }), className)}
+      className={cn(
+        toggleGroupItemVariants({ variant: resolvedVariant, size: isOption ? null : resolvedSize }),
+        className
+      )}
       ref={ref}
       {...props}
     >
-      {wrapLabel(children)}
+      {isOption ? (
+        <>
+          {/* The letter comes from a CSS counter, so it follows the item's position. */}
+          <span className={styles.optionKey} data-slot="toggle-group-key" aria-hidden="true" />
+          <span className={styles.optionLabel} data-slot="toggle-group-label">
+            {children}
+          </span>
+          {ctx.type === "multiple" && (
+            <span className={styles.optionCheck} data-slot="toggle-group-check" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M3.5 8.5 6.5 11.5 12.5 4.5"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+          )}
+        </>
+      ) : (
+        wrapLabel(children)
+      )}
     </ToggleGroupPrimitive.Item>
   )
 })

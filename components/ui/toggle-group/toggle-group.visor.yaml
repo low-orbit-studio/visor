@@ -7,6 +7,7 @@ when_to_use:
   - Switching between mutually exclusive views or modes (grid/list, day/week/month)
   - Selecting one or multiple options from a small set of 2-5 choices
   - Toolbar-style option groups with icon or text items
+  - Tap-to-pick answer rows in a form, one or several (variant option)
 
 when_not_to_use:
   - Navigation between pages or routes (use Tabs)
@@ -16,12 +17,12 @@ when_not_to_use:
 
 why: >
   ToggleGroup wraps Radix UI ToggleGroup to provide accessible single-select
-  or multi-select behavior with keyboard navigation. It supports two visual
-  variants (default and outline) and three sizes via CVA. Items visually
+  or multi-select behavior with keyboard navigation. It supports three visual
+  variants (default, outline, and option's tap-to-pick rows) and three sizes via CVA. Items visually
   indicate their pressed state with distinct background and text colors.
 
 variants:
-  variant: [default, outline]
+  variant: [default, outline, option]
   size: [xs, sm, md, lg]
 
 theme_hooks:
@@ -60,14 +61,36 @@ theme_hooks:
       Compact (xs) option and indicator corners; concentric is the track radius
       minus its 2px inset. Falls back to var(--radius-sm, 0.25rem). Theme key:
       components.toggle-group.xs-item-radius.
+  - name: --toggle-group-option-*
+    description: >
+      Option variant rows (VI-787): option-gap, option-inner-gap,
+      option-min-height, option-padding, option-radius, option-bg,
+      option-hover-bg, option-selected-bg, option-selected-ring, option-blur,
+      option-text, option-font-size, option-font-weight; the letter key's
+      option-key-size, option-key-radius, option-key-border, option-key-text,
+      option-key-font-size; the picked key and check fill option-mark-bg and
+      option-mark-text; the multiple-mode check's option-check-size,
+      option-check-radius, option-check-border. Each falls back to a Visor
+      token. Theme keys: components.toggle-group.option-*.
 
 props:
   - name: type
     type: "'single' | 'multiple'"
     description: Whether one or multiple items can be pressed at a time
   - name: variant
-    type: "'default' | 'outline'"
+    type: "'default' | 'outline' | 'option'"
     default: "default"
+    description: >
+      option draws full-width tap-to-pick rows with a lettered key and, in a
+      multiple group, a check box.
+  - name: columns
+    type: "1 | 2"
+    default: "1"
+    description: Option variant only. Two lays the rows out in a two-column grid.
+  - name: shortcuts
+    type: boolean
+    default: false
+    description: Pressing A, B, C… while focus is in the group picks the item at that position.
   - name: size
     type: "'xs' | 'sm' | 'md' | 'lg'"
     default: "md"
