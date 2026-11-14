@@ -22,8 +22,8 @@ on:
   workflow_run:
     # Run immediately after a successful Release that published. Most Release
     # runs only open or refresh the Version Packages PR and publish nothing;
-    # the job `if:` below skips those (VI-780). We wait a beat for npm's CDN
-    # to index the new version before querying it.
+    # the job `if:` below skips those (VI-780). We wait until npm's CDN serves
+    # the released versions before querying it.
     workflows: ["Release"]
     types:
       - completed
@@ -87,9 +87,26 @@ jobs:
       - name: Build published packages (registry.json + every package dist/)
         run: npm run build -w packages/theme-engine -w packages/tokens -w packages/tailwind-preset -w packages/cli
 
-      - name: Wait for npm CDN to index new publish
+      - name: Wait until npm serves the released versions
+        # A fixed wait was not enough: after 1.52.0 the smoke still read 1.51.0
+        # as latest and reported drift that was gone two minutes later (VI-780).
+        # Poll until npm's `latest` for every published package equals the
+        # version in the checked-out package.json, up to 10 minutes.
         if: github.event_name == 'workflow_run'
-        run: sleep 60
+        run: |
+          for _ in $(seq 1 60); do
+            pending=""
+            for dir in packages/cli packages/tokens packages/theme-engine packages/tailwind-preset; do
+              name=$(node -p "require('./$dir/package.json').name")
+              want=$(node -p "require('./$dir/package.json').version")
+              have=$(npm view "$name" version 2>/dev/null || true)
+              [ "$have" = "$want" ] || pending="$pending $name@$want(npm:$have)"
+            done
+            if [ -z "$pending" ]; then echo "npm serves every released version."; exit 0; fi
+            echo "Waiting on:$pending"
+            sleep 10
+          done
+          echo "::warning::npm did not serve the released versions within 10 minutes:$pending"
 
       - name: Run publish smoke
         id: smoke
