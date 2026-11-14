@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.50.0
+
+### Minor Changes
+
+- 983abd5: Banner takes `intent="neutral"` (ink ground, page-coloured text, no rule) with `--banner-neutral-bg` and `--banner-neutral-text-color`, plus a `--banner-*-description-color` hook per intent. Paper binds the neutral face (18px corners, no rule, no shadow) in light and dark.
+
+### Patch Changes
+
+- a82dba2: ProfileMenu (VI-773): the trigger marks its identity and caret `data-admin-shell-label`, so in AdminShell's rail the trigger folds to its avatar, centred, and the menu still opens upward. Outside the rail nothing changes.
+- Updated dependencies [983abd5]
+  - @loworbitstudio/visor-theme-engine@0.38.0
+
 ## 1.49.0
 
 ### Minor Changes
