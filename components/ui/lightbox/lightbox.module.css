@@ -123,6 +123,60 @@
   user-select: none;
 }
 
+/*
+ * Motion. Every animation is entrance-only with backwards fill, so the settled
+ * frame is the plain styles above. Tunables:
+ *   --lightbox-slide-distance       how far a photo starts beside its place (40px)
+ *   --lightbox-image-duration       photo ease-in (350ms)
+ *   --lightbox-controls-duration    counter, close and arrows ease-in (400ms)
+ *   --lightbox-image-easing         photo ease-in curve (expo out)
+ * Easings match Blacklight Web's lightbox.
+ */
+
+/* A photo stays hidden until it has loaded, then eases in: scaling up on open,
+   sliding in from the side it comes from on next / previous. */
+.image:not([data-loaded]) {
+  opacity: 0;
+}
+
+.image[data-loaded] {
+  animation: lightboxImageOpen var(--lightbox-image-duration, 350ms) var(--lightbox-image-easing, cubic-bezier(0.16, 1, 0.3, 1)) backwards;
+}
+
+.image[data-loaded][data-direction="next"] {
+  animation-name: lightboxImageFromNext;
+}
+
+.image[data-loaded][data-direction="previous"] {
+  animation-name: lightboxImageFromPrevious;
+}
+
+/* Controls ease in just after the photo: counter and close drop down, arrows come in from their sides. */
+.counter,
+.close {
+  animation: lightboxControlDown var(--lightbox-controls-duration, 400ms) var(--motion-easing-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)) var(--motion-duration-100, 100ms) backwards;
+}
+
+.navPrevious {
+  animation: lightboxControlFromPrevious var(--lightbox-controls-duration, 400ms) var(--motion-easing-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)) var(--motion-duration-150, 150ms) backwards;
+}
+
+.navNext {
+  animation: lightboxControlFromNext var(--lightbox-controls-duration, 400ms) var(--motion-easing-ease-in-out, cubic-bezier(0.4, 0, 0.2, 1)) var(--motion-duration-150, 150ms) backwards;
+}
+
+/* Reduced motion: fade only, no slide or scale. */
+@media (prefers-reduced-motion: reduce) {
+  .image[data-loaded],
+  .image[data-loaded][data-direction],
+  .counter,
+  .close,
+  .navPrevious,
+  .navNext {
+    animation-name: fadeIn;
+  }
+}
+
 /* Screen reader only */
 .srOnly {
   position: absolute;
@@ -144,4 +198,29 @@
 @keyframes fadeOut {
   from { opacity: 1; }
   to { opacity: 0; }
+}
+
+@keyframes lightboxImageOpen {
+  from { opacity: 0; transform: scale(0.95); }
+}
+
+@keyframes lightboxImageFromNext {
+  from { opacity: 0; transform: translateX(var(--lightbox-slide-distance, 40px)) scale(0.98); }
+}
+
+@keyframes lightboxImageFromPrevious {
+  from { opacity: 0; transform: translateX(calc(-1 * var(--lightbox-slide-distance, 40px))) scale(0.98); }
+}
+
+@keyframes lightboxControlDown {
+  from { opacity: 0; transform: translateY(-10px); }
+}
+
+/* The arrows keep their vertical centring (translateY(-50%)) while they slide. */
+@keyframes lightboxControlFromPrevious {
+  from { opacity: 0; transform: translateY(-50%) translateX(-20px); }
+}
+
+@keyframes lightboxControlFromNext {
+  from { opacity: 0; transform: translateY(-50%) translateX(20px); }
 }

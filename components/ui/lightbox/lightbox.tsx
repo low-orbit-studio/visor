@@ -29,6 +29,8 @@ interface LightboxContextValue {
   setCurrentIndex: React.Dispatch<React.SetStateAction<number>>
   goToPrevious: () => void
   goToNext: () => void
+  /** Side the current photo came from; unset for the photo shown on open */
+  direction?: "previous" | "next"
 }
 
 const LightboxContext = React.createContext<LightboxContextValue | null>(null)
@@ -47,21 +49,34 @@ function Lightbox({
   children,
 }: LightboxProps) {
   const [currentIndex, setCurrentIndex] = React.useState(initialIndex)
+  const [direction, setDirection] =
+    React.useState<LightboxContextValue["direction"]>()
 
   // Reset currentIndex when opened
   React.useEffect(() => {
     if (open) {
       setCurrentIndex(initialIndex)
+      setDirection(undefined)
     }
   }, [open, initialIndex])
 
+  const handleOpenChange = React.useCallback(
+    (next: boolean) => {
+      if (next) setDirection(undefined)
+      onOpenChange?.(next)
+    },
+    [onOpenChange]
+  )
+
   const goToPrevious = React.useCallback(() => {
+    setDirection("previous")
     setCurrentIndex((prev) =>
       prev <= 0 ? images.length - 1 : prev - 1
     )
   }, [images.length])
 
   const goToNext = React.useCallback(() => {
+    setDirection("next")
     setCurrentIndex((prev) =>
       prev >= images.length - 1 ? 0 : prev + 1
     )
@@ -69,12 +84,19 @@ function Lightbox({
 
   return (
     <LightboxContext.Provider
-      value={{ images, currentIndex, setCurrentIndex, goToPrevious, goToNext }}
+      value={{
+        images,
+        currentIndex,
+        setCurrentIndex,
+        goToPrevious,
+        goToNext,
+        direction,
+      }}
     >
       <DialogPrimitive.Root
         data-slot="lightbox-root"
         open={open}
-        onOpenChange={onOpenChange}
+        onOpenChange={handleOpenChange}
       >
         {children}
       </DialogPrimitive.Root>
@@ -90,13 +112,18 @@ function LightboxTrigger({
 }
 LightboxTrigger.displayName = "LightboxTrigger"
 
+function markLoaded(event: React.SyntheticEvent<HTMLImageElement>) {
+  event.currentTarget.dataset.loaded = ""
+}
+
 const LightboxContent = React.forwardRef<
   React.ComponentRef<typeof DialogPrimitive.Content>,
   Omit<React.ComponentProps<typeof DialogPrimitive.Content>, "children"> & {
     className?: string
   }
 >(({ className, ...props }, ref) => {
-  const { images, currentIndex, goToPrevious, goToNext } = useLightbox()
+  const { images, currentIndex, goToPrevious, goToNext, direction } =
+    useLightbox()
 
   const touchStartX = React.useRef<number>(0)
   const touchEndX = React.useRef<number>(0)
@@ -230,6 +257,10 @@ const LightboxContent = React.forwardRef<
               alt={currentImage.alt}
               className={styles.image}
               draggable={false}
+              data-direction={direction}
+              // The photo eases in once it has loaded (see lightbox.module.css)
+              onLoad={markLoaded}
+              onError={markLoaded}
             />
           </div>
         )}
