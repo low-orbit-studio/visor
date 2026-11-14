@@ -277,15 +277,22 @@ Full-width notice bar. The retro found six separate banner systems across ~180 i
 | `--banner-info-bg` | Info-intent fill. | `var(--surface-info-subtle, transparent)` |
 | `--banner-info-text-color` | Info-intent text colour. | `var(--text-info, currentColor)` |
 | `--banner-info-border-color` | Info-intent rule colour. | `var(--border-info, currentColor)` |
+| `--banner-info-description-color` | Info-intent description colour. | `color-mix(in srgb, var(--text-info, currentColor) 90%, transparent)` |
 | `--banner-warning-bg` | Warning-intent fill. | `var(--surface-warning-subtle, transparent)` |
 | `--banner-warning-text-color` | Warning-intent text colour. | `var(--text-warning, currentColor)` |
 | `--banner-warning-border-color` | Warning-intent rule colour. | `var(--border-warning, currentColor)` |
+| `--banner-warning-description-color` | Warning-intent description colour. | `color-mix(in srgb, var(--text-warning, currentColor) 90%, transparent)` |
 | `--banner-error-bg` | Error-intent fill. | `var(--surface-error-subtle, transparent)` |
 | `--banner-error-text-color` | Error-intent text colour. | `var(--text-error, currentColor)` |
 | `--banner-error-border-color` | Error-intent rule colour. | `var(--border-error, currentColor)` |
+| `--banner-error-description-color` | Error-intent description colour. | `color-mix(in srgb, var(--text-error, currentColor) 90%, transparent)` |
 | `--banner-success-bg` | Success-intent fill. | `var(--surface-success-subtle, transparent)` |
 | `--banner-success-text-color` | Success-intent text colour. | `var(--text-success, currentColor)` |
 | `--banner-success-border-color` | Success-intent rule colour. | `var(--border-success, currentColor)` |
+| `--banner-success-description-color` | Success-intent description colour. | `color-mix(in srgb, var(--text-success, currentColor) 90%, transparent)` |
+| `--banner-neutral-bg` | Neutral-intent (ink) fill. | `var(--text-primary, currentColor)` |
+| `--banner-neutral-text-color` | Neutral-intent text colour, the page colour on ink. | `var(--surface-page, #fff)` |
+| `--banner-neutral-description-color` | Neutral-intent description colour. | `color-mix(in srgb, var(--banner-neutral-text-color, var(--surface-page, #fff)) 86%, transparent)` |
 
 ### `sidebar`
 

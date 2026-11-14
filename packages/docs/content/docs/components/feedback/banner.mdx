@@ -36,6 +36,25 @@ Each intent receives a semantic color treatment: an intent-colored subtle backgr
   </div>
 </ComponentPreview>
 
+## Neutral (ink)
+
+`intent="neutral"` draws the ink ground (`--text-primary`) with page-coloured text and no rule. Use it for a state that is not the reader's fault, such as "the books don't balance". Bind `--banner-neutral-bg`, `--banner-neutral-text-color` and `--banner-neutral-description-color` to restyle it; every intent has a `--banner-*-description-color` hook.
+
+<ComponentPreview
+  title="Neutral"
+  code={"<Banner intent=\"neutral\">\n  <BannerTitle>The books don't balance</BannerTitle>\n  <BannerDescription>1 day of hours and 1 engagement disagree.</BannerDescription>\n  <BannerAction>\n    <Button size=\"sm\">Show where</Button>\n  </BannerAction>\n</Banner>"}
+>
+  <div style={{ width: '100%' }}>
+    <Banner intent="neutral">
+      <BannerTitle>The books don't balance</BannerTitle>
+      <BannerDescription>1 day of hours and 1 engagement disagree.</BannerDescription>
+      <BannerAction>
+        <Button size="sm">Show where</Button>
+      </BannerAction>
+    </Banner>
+  </div>
+</ComponentPreview>
+
 ## With Action
 
 Use `BannerAction` to place a call-to-action alongside the message.

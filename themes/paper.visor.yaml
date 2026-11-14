@@ -170,6 +170,19 @@ components:
     # The sidebar folds to its 68px rail on Paper's 480ms ease (VI-770).
     rail-duration: 480ms
     rail-easing: "cubic-bezier(0.2, 0.8, 0.2, 1)"
+  # VI-776: the neutral (ink) banner for "the books don't balance" (LO-342). Ink ground with
+  # page-coloured text in both modes; Paper draws the card with no rule and no shadow.
+  banner:
+    radius: "18px"
+    border-width: "0px"
+    shadow: none
+    padding: "16px 18px"
+    neutral-bg:
+      light: "#1e1f21"
+      dark: "#f5f5f0"
+    neutral-text-color:
+      light: "#fcfcfb"
+      dark: "#0c1015"
   # VI-768: the billing slider (LO-345). The track is the segmented-control well, the thumb a
   # light pill in both modes, and the gap between the thumb and the evidence is Emerald, money
   # at stake (never coral).

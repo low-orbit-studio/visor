@@ -10,6 +10,7 @@ const bannerVariants = cva(styles.base, {
       warning: styles.intentWarning,
       error: styles.intentError,
       success: styles.intentSuccess,
+      neutral: styles.intentNeutral,
     },
     position: {
       inline: styles.positionInline,

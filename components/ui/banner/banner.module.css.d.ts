@@ -4,6 +4,7 @@ declare const styles: {
   readonly intentWarning: string
   readonly intentError: string
   readonly intentSuccess: string
+  readonly intentNeutral: string
   readonly positionInline: string
   readonly positionSticky: string
   readonly content: string

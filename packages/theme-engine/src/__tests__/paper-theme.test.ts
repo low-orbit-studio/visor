@@ -244,6 +244,16 @@ describe("VI-749: paper theme", () => {
     expect(css).toContain("--billing-slider-gap-color: #5fd4a8;");
   });
 
+  it("binds the neutral banner as ink with page-coloured text in both modes (VI-776)", () => {
+    const css = nextjsAdapter(data);
+    expect(css).toContain("--banner-neutral-bg: #1e1f21;");
+    expect(css).toContain("--banner-neutral-text-color: #fcfcfb;");
+    expect(css).toContain("--banner-neutral-bg: #f5f5f0;");
+    expect(css).toContain("--banner-neutral-text-color: #0c1015;");
+    expect(getContrastRatio("#fcfcfb", "#1e1f21")).toBeGreaterThanOrEqual(4.5);
+    expect(getContrastRatio("#0c1015", "#f5f5f0")).toBeGreaterThanOrEqual(4.5);
+  });
+
   it("keeps Paper's colours: grounds, cards, ink, Tide and coral", () => {
     const t = data.tokens;
     expect(token(t, "surface-page", "light")).toBe("#fcfcfb");

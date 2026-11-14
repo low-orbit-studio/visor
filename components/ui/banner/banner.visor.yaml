@@ -17,12 +17,12 @@ when_not_to_use:
 
 why: >
   Banner provides a full-width bar with semantic intent variants (info, warning,
-  error, success) and optional sticky positioning. It automatically sets the
+  error, success, neutral) and optional sticky positioning. It automatically sets the
   correct ARIA role based on intent (alert for warning/error, status for others)
   and includes sub-components for title, description, and action areas.
 
 variants:
-  intent: [info, warning, error, success]
+  intent: [info, warning, error, success, neutral]
   position: [inline, sticky]
 
 sub_components:
@@ -35,7 +35,7 @@ sub_components:
 
 props:
   - name: intent
-    type: "'info' | 'warning' | 'error' | 'success'"
+    type: "'info' | 'warning' | 'error' | 'success' | 'neutral'"
     default: "info"
   - name: position
     type: "'inline' | 'sticky'"

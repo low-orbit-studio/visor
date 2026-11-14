@@ -297,7 +297,7 @@ export const propsData: Record<string, PropDef[]> = {
   banner: [
     {
       name: 'intent',
-      type: "'info' | 'warning' | 'error' | 'success'",
+      type: "'info' | 'warning' | 'error' | 'success' | 'neutral'",
       default: "'info'",
       description: 'Semantic intent that controls the banner color scheme.',
     },

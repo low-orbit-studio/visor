@@ -41,6 +41,14 @@
   border-color: var(--banner-success-border-color, var(--border-success, currentColor));
 }
 
+/* Neutral: the ink ground (--text-primary) with page-coloured text. No rule, because it
+   is never the operator's work that is wrong (VI-776). */
+.intentNeutral {
+  background-color: var(--banner-neutral-bg, var(--text-primary, currentColor));
+  color: var(--banner-neutral-text-color, var(--surface-page, #fff));
+  border-bottom-width: 0;
+}
+
 /* Position variants */
 .positionInline {
   /* Default — no extra styles */
@@ -74,20 +82,25 @@
   line-height: 1.5;
 }
 
+/* Each intent exposes a description-colour hook; the fallback is its text colour at 90%. */
 .intentInfo .description {
-  color: color-mix(in srgb, var(--text-info, currentColor) 90%, transparent);
+  color: var(--banner-info-description-color, color-mix(in srgb, var(--text-info, currentColor) 90%, transparent));
 }
 
 .intentWarning .description {
-  color: color-mix(in srgb, var(--text-warning, currentColor) 90%, transparent);
+  color: var(--banner-warning-description-color, color-mix(in srgb, var(--text-warning, currentColor) 90%, transparent));
 }
 
 .intentError .description {
-  color: color-mix(in srgb, var(--text-error, currentColor) 90%, transparent);
+  color: var(--banner-error-description-color, color-mix(in srgb, var(--text-error, currentColor) 90%, transparent));
 }
 
 .intentSuccess .description {
-  color: color-mix(in srgb, var(--text-success, currentColor) 90%, transparent);
+  color: var(--banner-success-description-color, color-mix(in srgb, var(--text-success, currentColor) 90%, transparent));
+}
+
+.intentNeutral .description {
+  color: var(--banner-neutral-description-color, color-mix(in srgb, var(--banner-neutral-text-color, var(--surface-page, #fff)) 86%, transparent));
 }
 
 /* BannerAction */

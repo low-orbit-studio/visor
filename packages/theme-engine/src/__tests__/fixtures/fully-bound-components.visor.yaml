@@ -157,6 +157,13 @@ components:
     success-bg: "#2b0a3d"
     success-text-color: "#00d5ff"
     success-border-color: "#ff00aa"
+    info-description-color: "#00d5ff"
+    warning-description-color: "#00d5ff"
+    error-description-color: "#00d5ff"
+    success-description-color: "#00d5ff"
+    neutral-description-color: "#00d5ff"
+    neutral-bg: "#2b0a3d"
+    neutral-text-color: "#00d5ff"
   sidebar:
     bg: "#2b0a3d"
     text: "#00d5ff"

@@ -1077,6 +1077,12 @@ html:not(.dark) .paper-theme {
   --admin-shell-sidebar-header-border: none;
   --admin-shell-topbar-bg: var(--surface-page);
   --admin-shell-topbar-border: none;
+  --banner-border-width: 0px;
+  --banner-neutral-bg: #1e1f21;
+  --banner-neutral-text-color: #fcfcfb;
+  --banner-padding: 16px 18px;
+  --banner-radius: 18px;
+  --banner-shadow: none;
   --billing-slider-gap-color: #0b6e4f;
   --billing-slider-thumb-bg: #ffffff;
   --billing-slider-track-bg: rgba(30, 31, 33, 0.07);
@@ -1125,6 +1131,12 @@ html:not(.dark) .paper-theme {
   --admin-shell-sidebar-header-border: none;
   --admin-shell-topbar-bg: var(--surface-page);
   --admin-shell-topbar-border: none;
+  --banner-border-width: 0px;
+  --banner-neutral-bg: #f5f5f0;
+  --banner-neutral-text-color: #0c1015;
+  --banner-padding: 16px 18px;
+  --banner-radius: 18px;
+  --banner-shadow: none;
   --billing-slider-gap-color: #5fd4a8;
   --billing-slider-thumb-bg: #f5f5f0;
   --billing-slider-thumb-grip: #0c1015;
@@ -1175,6 +1187,12 @@ html:not(.dark) .paper-theme {
     --admin-shell-sidebar-header-border: none;
     --admin-shell-topbar-bg: var(--surface-page);
     --admin-shell-topbar-border: none;
+    --banner-border-width: 0px;
+    --banner-neutral-bg: #f5f5f0;
+    --banner-neutral-text-color: #0c1015;
+    --banner-padding: 16px 18px;
+    --banner-radius: 18px;
+    --banner-shadow: none;
     --billing-slider-gap-color: #5fd4a8;
     --billing-slider-thumb-bg: #f5f5f0;
     --billing-slider-thumb-grip: #0c1015;
