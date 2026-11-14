@@ -133,6 +133,36 @@ describe("SegmentedControl type and radius tokens (real browser)", () => {
   })
 })
 
+// VI-785: the segment box hooks. Unbound, md keeps ToggleGroup's 36px segment,
+// 12px sides, 14px label and 4px track inset; bound, the segment and pill follow.
+describe("SegmentedControl segment size tokens (real browser)", () => {
+  const BOX = `JSON.stringify((function () {
+    var root = document.querySelector("#root [data-slot=segmented-control]");
+    var item = root.querySelector("[data-slot=toggle-group-item]"), cs = getComputedStyle(item);
+    var pill = root.querySelector(":scope > [aria-hidden=true]");
+    return { item: item.getBoundingClientRect().height, pill: pill.getBoundingClientRect().height, root: root.getBoundingClientRect().height,
+      padX: cs.paddingLeft, padY: cs.paddingTop, font: cs.fontSize, inset: getComputedStyle(root).paddingTop };
+  })())`
+  const run = async (scopeCss = "") => {
+    const page = await open("segmented-control", "default", { scopeCss })
+    await page.waitForFunction(`${PILL}.style.opacity === "1"`, undefined, { timeout: 5000 })
+    const out = JSON.parse((await page.evaluate(BOX)) as string) as Record<string, number | string>
+    await page.close()
+    return out
+  }
+
+  it("unbound: md keeps its ToggleGroup segment box", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    expect(await run()).toEqual({ item: 36, pill: 36, root: 46, padX: "12px", padY: "0px", font: "14px", inset: "4px" })
+  })
+
+  it("item-height, track-padding, item-padding-x and font-size set the segment box and the pill follows", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    const e = await run("--segmented-control-item-height: 30px; --segmented-control-track-padding: 3px; --segmented-control-item-padding-x: 14px; --segmented-control-font-size: 15px;")
+    expect(e).toEqual({ item: 30, pill: 30, root: 38, padX: "14px", padY: "0px", font: "15px", inset: "3px" })
+  })
+})
+
 describe("SegmentedControl reserves each label's width (real browser)", () => {
   // Item boxes, the track and the pill, in order, after selecting each segment in turn.
   const SWEEP = `(async function () {

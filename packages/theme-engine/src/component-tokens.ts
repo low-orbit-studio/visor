@@ -1337,7 +1337,7 @@ const segmentedControlFamily: ComponentTokenFamily = {
   family: "segmented-control",
   prefix: "segmented-control",
   description:
-    "SegmentedControl — the well, its corner radius, the sliding pill, the ink and the state edge on it. The resting edge is the shared `control` edge.",
+    "SegmentedControl — the well, its corner radius and padding, the segment height, sides and label size, the sliding pill, the ink and the state edge on it. The resting edge is the shared `control` edge.",
   tokens: [
     { key: "track-bg", property: "background-color", description: "The well the pill slides in. Default is the page nudged 12% toward the ink, so it reads as a well in light and dark.", consumers: at(SEGMENTED_CONTROL, "color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff))") },
     {
@@ -1348,6 +1348,50 @@ const segmentedControlFamily: ComponentTokenFamily = {
         { file: SEGMENTED_CONTROL, fallback: "var(--radius-md, 0.375rem)" },
         { file: SEGMENTED_CONTROL, fallback: "var(--radius-lg, 0.5rem)" },
         { file: SEGMENTED_CONTROL, fallback: "var(--radius-xl, 0.75rem)" },
+      ],
+    },
+    // VI-785: the segment box. Each size falls back to its ToggleGroup value.
+    {
+      key: "track-padding",
+      property: "padding",
+      description: "Inset between the well's edge and the segments. Unset, xs keeps 2px and sm, md and lg `--spacing-1`.",
+      consumers: [
+        { file: SEGMENTED_CONTROL, fallback: "calc(var(--spacing-1, 0.25rem) / 2)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--spacing-1, 0.25rem)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--spacing-1, 0.25rem)" },
+      ],
+    },
+    {
+      key: "item-height",
+      property: "height (via --label-box-height)",
+      description: "Segment height, which the pill follows. Unset, xs 24px, sm 28px, md 36px, lg 44px.",
+      consumers: [
+        { file: SEGMENTED_CONTROL, fallback: "1.5rem" },
+        { file: SEGMENTED_CONTROL, fallback: "1.75rem" },
+        { file: SEGMENTED_CONTROL, fallback: "2.25rem" },
+        { file: SEGMENTED_CONTROL, fallback: "2.75rem" },
+      ],
+    },
+    {
+      key: "item-padding-x",
+      property: "padding-inline",
+      description: "Segment sides. Unset, each size keeps its ToggleGroup padding (xs reads `toggle-group.xs-padding-x`).",
+      consumers: [
+        { file: SEGMENTED_CONTROL, fallback: "var(--toggle-group-xs-padding-x, var(--spacing-2, 0.5rem))" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--spacing-2, 0.5rem)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--spacing-3, 0.75rem)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--spacing-4, 1rem)" },
+      ],
+    },
+    {
+      key: "font-size",
+      property: "font-size",
+      description: "Segment label size. Unset, each size keeps its ToggleGroup size (xs reads `toggle-group.xs-font-size`).",
+      consumers: [
+        { file: SEGMENTED_CONTROL, fallback: "var(--toggle-group-xs-font-size, var(--font-size-xs, 0.75rem))" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--font-size-xs, 0.75rem)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--font-size-sm, 0.875rem)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--font-size-base, 1rem)" },
       ],
     },
     { key: "indicator-bg", property: "background-color", description: "Sliding active pill. Bind a lifted dark fill where the theme wants one.", consumers: at(SEGMENTED_CONTROL, "var(--interactive-primary-bg, var(--primary, #111827))") },
