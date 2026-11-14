@@ -1,4 +1,6 @@
-import { render, screen } from "@testing-library/react"
+import * as fs from "node:fs"
+import * as path from "node:path"
+import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, it, expect } from "vitest"
 import { Lightbox, LightboxTrigger, LightboxContent } from "../lightbox"
 import { checkA11y } from "../../../../test-utils/a11y"
@@ -83,6 +85,95 @@ describe("Lightbox", () => {
     const img = screen.getByAltText("Image 1")
     expect(img).toBeInTheDocument()
     expect(img).toHaveAttribute("src", "/img1.jpg")
+  })
+})
+
+describe("motion", () => {
+  const currentImage = () =>
+    document.querySelector<HTMLImageElement>('[data-slot="lightbox"] img')!
+
+  it("shows the photo on open with no direction, so it scales up", () => {
+    renderLightbox()
+    expect(currentImage()).not.toHaveAttribute("data-direction")
+  })
+
+  it("marks the photo loaded once it loads, so it eases in", () => {
+    renderLightbox()
+    expect(currentImage()).not.toHaveAttribute("data-loaded")
+    fireEvent.load(currentImage())
+    expect(currentImage()).toHaveAttribute("data-loaded")
+  })
+
+  it("next photo comes from the next side", () => {
+    renderLightbox()
+    fireEvent.click(document.querySelector('[data-slot="lightbox-next"]')!)
+    expect(currentImage()).toHaveAttribute("alt", "Image 2")
+    expect(currentImage()).toHaveAttribute("data-direction", "next")
+  })
+
+  it("previous photo comes from the previous side, including on wrap-around", () => {
+    renderLightbox()
+    fireEvent.click(document.querySelector('[data-slot="lightbox-previous"]')!)
+    expect(currentImage()).toHaveAttribute("alt", "Image 3")
+    expect(currentImage()).toHaveAttribute("data-direction", "previous")
+  })
+
+  it("arrow keys set the direction too", () => {
+    renderLightbox()
+    const content = document.querySelector('[data-slot="lightbox"]')!
+    fireEvent.keyDown(content, { key: "ArrowRight" })
+    expect(currentImage()).toHaveAttribute("data-direction", "next")
+    fireEvent.keyDown(content, { key: "ArrowLeft" })
+    expect(currentImage()).toHaveAttribute("data-direction", "previous")
+  })
+
+  it("reopening scales up again instead of sliding", () => {
+    render(
+      <Lightbox images={testImages}>
+        <LightboxTrigger>Open</LightboxTrigger>
+        <LightboxContent />
+      </Lightbox>
+    )
+    fireEvent.click(screen.getByText("Open"))
+    fireEvent.click(document.querySelector('[data-slot="lightbox-next"]')!)
+    expect(currentImage()).toHaveAttribute("data-direction", "next")
+    fireEvent.click(document.querySelector('[data-slot="lightbox-close"]')!)
+    fireEvent.click(screen.getByText("Open"))
+    expect(currentImage()).not.toHaveAttribute("data-direction")
+  })
+
+  describe("CSS", () => {
+    const css = fs.readFileSync(
+      path.resolve(__dirname, "../lightbox.module.css"),
+      "utf-8"
+    )
+
+    it("next slides in from the right, previous from the left", () => {
+      expect(css).toMatch(
+        /@keyframes lightboxImageFromNext \{\s*from \{[^}]*translateX\(var\(--lightbox-slide-distance, 40px\)\)/
+      )
+      expect(css).toMatch(
+        /@keyframes lightboxImageFromPrevious \{\s*from \{[^}]*translateX\(calc\(-1 \* var\(--lightbox-slide-distance, 40px\)\)\)/
+      )
+    })
+
+    it("reduced motion fades only", () => {
+      const block = css.match(
+        /@media \(prefers-reduced-motion: reduce\) \{([\s\S]*?)\n\}/
+      )?.[1]
+      expect(block).toBeDefined()
+      for (const selector of [".image[data-loaded][data-direction]", ".counter", ".close", ".navPrevious", ".navNext"]) {
+        expect(block).toContain(selector)
+      }
+      expect(block).toContain("animation-name: fadeIn;")
+      expect(block).not.toMatch(/transform|translate|scale/)
+    })
+
+    it("exposes the distance and durations as CSS variables", () => {
+      for (const variable of ["--lightbox-slide-distance", "--lightbox-image-duration", "--lightbox-controls-duration"]) {
+        expect(css).toContain(`var(${variable},`)
+      }
+    })
   })
 })
 

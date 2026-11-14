@@ -18,7 +18,10 @@ when_not_to_use:
 why: >
   Lightbox wraps Radix Dialog with a dark overlay optimized for image viewing.
   It provides arrow key navigation, touch swipe support, image counter, close
-  button, and adjacent image preloading. The compound component API separates
+  button, and adjacent image preloading. Photos scale up on open and slide in from
+  the side they come from on next / previous; controls ease in after. Reduced
+  motion fades only. Tune with --lightbox-slide-distance,
+  --lightbox-image-duration and --lightbox-controls-duration. The compound component API separates
   trigger from content, and controlled open state allows programmatic control.
 
 props:
