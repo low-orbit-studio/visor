@@ -161,6 +161,35 @@ The resting edge comes from the shared `--control-edge-*` tokens, so `control.ed
 
 The active pill carries a 1px inset state edge (`--control-state-edge-width`, colour `--segmented-control-indicator-edge`, default `--text-primary`) so the selected state keeps a 3:1 boundary of its own (WCAG 1.4.11). It sits inside the pill, so nothing shifts, and it stays when edges are off. Bind the colour to `transparent` where the fill already clears 3:1 against the well.
 
+### Custom Size
+
+The segment box is bindable too: `--segmented-control-item-height`, `-track-padding`, `-item-padding-x`, `-font-size`, `-item-radius` (the hover fill and focus ring) and `-indicator-radius` (the pill). Each falls back to the value of the chosen `size`, so a theme that binds none of them renders the sizes above unchanged. The pill follows the segment height. This one is a fully round switch, a 30px segment in a 3px track:
+
+<ComponentPreview
+  title="Custom Size"
+  code={"<SegmentedControl\n  aria-label=\"Signature mode\"\n  defaultValue=\"draw\"\n  style={{\n    '--segmented-control-radius': '999px',\n    '--segmented-control-indicator-radius': '999px',\n    '--segmented-control-item-radius': '999px',\n    '--segmented-control-track-padding': '3px',\n    '--segmented-control-item-height': '30px',\n    '--segmented-control-item-padding-x': '14px',\n    '--segmented-control-font-size': '14px',\n  }}\n  options={[\n    { value: 'draw', label: 'Draw' },\n    { value: 'type', label: 'Type' },\n  ]}\n/>"}
+>
+  <SegmentedControl
+    aria-label="Signature mode"
+    defaultValue="draw"
+    style={{
+      '--segmented-control-radius': '999px',
+      '--segmented-control-indicator-radius': '999px',
+      '--segmented-control-item-radius': '999px',
+      '--segmented-control-track-padding': '3px',
+      '--segmented-control-item-height': '30px',
+      '--segmented-control-item-padding-x': '14px',
+      '--segmented-control-font-size': '14px',
+    }}
+    options={[
+      { value: 'draw', label: 'Draw' },
+      { value: 'type', label: 'Type' },
+    ]}
+  />
+</ComponentPreview>
+
+In a theme, bind the same values under `components.segmented-control` (`radius`, `indicator-radius`, `item-radius`, `item-height`, `track-padding`, `item-padding-x`, `font-size`).
+
 ## Accessibility
 
 - Built on ToggleGroup (`@radix-ui/react-toggle-group`, `type="single"`): the group has `role="group"` and each segment `role="radio"` with `aria-checked`
