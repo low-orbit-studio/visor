@@ -56,6 +56,39 @@ import { OTPInput } from '@/components/ui/otp-input';
   <OTPInput length={6} trailing={<button type="button">Resend</button>} />
 </ComponentPreview>
 
+## Sizing Hooks
+
+Five CSS variables size the cells. Set them on the component, or on any ancestor from a theme. Unset, each falls back to the default size.
+
+| Variable | Sets | Default |
+|----------|------|---------|
+| `--otp-cell-width` | Cell width. `100%` stretches the cells to share the row equally. | `2.5rem` |
+| `--otp-cell-height` | Cell height | `2.75rem` |
+| `--otp-cell-font-size` | Digit size | `var(--font-size-lg)` |
+| `--otp-cell-radius` | Cell corner radius | `var(--radius-md)` |
+| `--otp-gap` | Space between cells | `var(--spacing-2)` |
+
+To stretch the cells, set `--otp-cell-width: 100%` and give the component a width (here `width: 100%`). The cells then split that width, less the gaps.
+
+<ComponentPreview
+  title="Full-Width Cells"
+  code={"<OTPInput\n  length={6}\n  style={{\n    width: '100%',\n    '--otp-cell-width': '100%',\n    '--otp-cell-height': '72px',\n    '--otp-cell-font-size': '30px',\n    '--otp-cell-radius': '12px',\n    '--otp-gap': '10px',\n  }}\n/>"}
+>
+  <div style={{ width: '100%', maxWidth: '28rem' }}>
+    <OTPInput
+      length={6}
+      style={{
+        width: '100%',
+        '--otp-cell-width': '100%',
+        '--otp-cell-height': '72px',
+        '--otp-cell-font-size': '30px',
+        '--otp-cell-radius': '12px',
+        '--otp-gap': '10px',
+      }}
+    />
+  </div>
+</ComponentPreview>
+
 ## Installation
 
 ```bash
