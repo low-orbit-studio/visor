@@ -3718,6 +3718,17 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'resizable-split': [
+    { name: 'children', type: '[ReactNode, ReactNode]', required: true, description: 'The two panes: start (left), then end (right).' },
+    { name: 'size', type: 'number', description: "The start pane's width in px. Controlled." },
+    { name: 'defaultSize', type: 'number', description: "The start pane's first width in px when uncontrolled. Without it the panes start equal." },
+    { name: 'onSizeChange', type: '(size: number) => void', description: "The start pane's new width in px, while dragging and on every key step. Persist it here." },
+    { name: 'minStart', type: 'number', default: '0', description: "The start pane's minimum width in px." },
+    { name: 'minEnd', type: 'number', default: '0', description: "The end pane's minimum width in px." },
+    { name: 'step', type: 'number', default: '16', description: 'px per arrow key press. Shift + arrows step four times this.' },
+    { name: 'dividerLabel', type: 'string', default: '"Resize panes"', description: "The divider's accessible name." },
+  ],
+
   grid: [
     {
       name: 'as',

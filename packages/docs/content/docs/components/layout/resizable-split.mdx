@@ -1,0 +1,84 @@
+---
+title: Resizable Split
+description: Two panes side by side with a draggable, keyboard-accessible divider, a minimum width per pane, and a divider drawn from theme tokens.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ResizableSplit } from '@/components/ui/resizable-split';
+import { Box } from '@/components/ui/box';
+
+```bash
+npx visor add resizable-split
+```
+
+ResizableSplit puts two panes side by side with a divider between them. Drag the divider, or focus it and use the arrow keys. The start pane takes the width; the end pane takes the rest. Neither pane goes below its minimum, and when the window shrinks the start pane gives way first.
+
+## Editor and preview
+
+<ComponentPreview
+  title="Resizable split"
+  code={"<ResizableSplit defaultSize={280} minStart={200} minEnd={240} dividerLabel=\"Resize editor and preview\" style={{ height: 240 }}>\n  <Box padding=\"md\">Editor</Box>\n  <Box padding=\"md\" bg=\"subtle\">Preview</Box>\n</ResizableSplit>"}
+>
+  <ResizableSplit defaultSize={280} minStart={200} minEnd={240} dividerLabel="Resize editor and preview" style={{ height: 240 }}>
+    <Box padding="md">Editor</Box>
+    <Box padding="md" bg="subtle">Preview</Box>
+  </ResizableSplit>
+</ComponentPreview>
+
+## Remembering the width
+
+`size` is the start pane's width in px. Keep it in state, persist it from `onSizeChange`, and pass it back, so the split opens where the person left it on that device.
+
+```tsx
+const [width, setWidth] = useState(() => Number(localStorage.getItem('editor-width')) || 560);
+
+<ResizableSplit
+  size={width}
+  onSizeChange={(w) => {
+    setWidth(w);
+    localStorage.setItem('editor-width', String(w));
+  }}
+  minStart={360}
+  minEnd={320}
+  dividerLabel="Resize editor and preview"
+>
+  <EditorForms />
+  <iframe src={previewUrl} title="Preview" />
+</ResizableSplit>
+```
+
+Uncontrolled, `defaultSize` sets the first width; without either, the panes start equal.
+
+## Keys
+
+The divider is a focusable `role="separator"`. `aria-valuenow` is the start pane's width in px, between `aria-valuemin` (`minStart`) and `aria-valuemax` (the widest it can be while the end pane keeps `minEnd`).
+
+| Key | Does |
+|---|---|
+| <kbd>←</kbd> <kbd>→</kbd> | One step (`step`, 16px) |
+| <kbd>Shift</kbd> + arrows | Four steps |
+| <kbd>Home</kbd> | The start pane at its minimum |
+| <kbd>End</kbd> | The end pane at its minimum |
+
+## Iframes
+
+A drag captures the pointer on the divider and turns off pointer events on both panes until it ends, so an iframe in either pane (a live preview, even cross-origin) cannot swallow the moves.
+
+## Colour
+
+A theme draws the divider's line through the `resizable-split` [component tokens](/docs/themes/component-tokens): `divider-color` at rest (falls back to `--border-default`), `divider-hover-color` under the pointer (`--border-strong`) and `divider-active-color` while dragging (`--interactive-primary-bg`). Every part carries a `data-slot` (`resizable-split`, `-start`, `-divider`, `-end`), and the root carries `data-dragging` during a drag.
+
+## Installation
+
+```bash
+npx visor add resizable-split
+```
+
+## API Reference
+
+### ResizableSplitProps
+
+<PropsTable component="resizable-split" />
+
+The component also accepts all standard HTML attributes for the root element.

@@ -5,8 +5,8 @@
 ### Form (23)
 - billing-slider, button, calendar, checkbox, combobox, date-picker, field, fieldset, file-upload, input, label, number-input, otp-input, password-input, phone-input, position-picker, radio-group, search-input, select, slider, switch, tag-input, textarea, time-picker, toggle-group
 
-### Container / Layout (4)
-- badge, card, sheet, sidebar
+### Container / Layout (5)
+- badge, card, resizable-split, sheet, sidebar
 
 ### Content Display (10)
 - accordion, avatar, carousel, collapsible, image, layer-chart, meter, progress, proportion-bar, separator, skeleton

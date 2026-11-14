@@ -117,11 +117,12 @@ npx visor add <component-name> --overwrite
 | `time-picker` | Typeable time input with hour and minute popover, 12- or 24-hour |
 | `toggle-group` | Multi-option toggle button group |
 
-### Layout (4)
+### Layout (5)
 
 | Component | Description |
 | --- | --- |
 | `collapsible` | Show/hide content with animated expand/collapse |
+| `resizable-split` | Two panes with a draggable, keyboard-accessible divider |
 | `scroll-area` | Custom scrollbar container |
 | `separator` | Visual divider between sections |
 | `sidebar` | Collapsible side navigation panel |

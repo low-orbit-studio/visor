@@ -203,6 +203,10 @@ components:
     thumb-bg: "#ffd000"
     thumb-grip: "#ff00aa"
     gap-color: "#009966"
+  resizable-split:
+    divider-color: "#3d0a2b"
+    divider-hover-color: "#00aaff"
+    divider-active-color: "#ff7700"
   tabs:
     list-radius: "3px"
     list-height: "37px"

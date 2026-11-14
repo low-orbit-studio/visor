@@ -150,6 +150,7 @@ const ACTION_ROW = "components/ui/action-row/action-row.module.css";
 const DIALOG_FIELD = "blocks/dialog-field/dialog-field.module.css";
 const ADMIN_SHELL = "blocks/admin-shell/admin-shell.module.css";
 const BILLING_SLIDER = "components/ui/billing-slider/billing-slider.module.css";
+const RESIZABLE_SPLIT = "components/ui/resizable-split/resizable-split.module.css";
 
 /** Shorthand for the common single-consumer case. */
 function at(file: string, fallback: string | null): ComponentTokenConsumer[] {
@@ -540,6 +541,19 @@ const billingSliderFamily: ComponentTokenFamily = {
     { key: "thumb-bg", property: "background", description: "The thumb's pill.", consumers: at(BILLING_SLIDER, "var(--surface-popover, #ffffff)") },
     { key: "thumb-grip", property: "background", description: "The two grip lines down the pill.", consumers: at(BILLING_SLIDER, "color-mix(in srgb, var(--_ink) 45%, transparent)") },
     { key: "gap-color", property: "background (striped band)", description: "The gap's stripes: undecided, and worked past what it bills (money at stake).", consumers: at(BILLING_SLIDER, "var(--color-success-600, #16a34a)") },
+  ],
+};
+
+// VI-778: the resizable split's divider (BL-1430). A theme draws the line at rest, on hover and while dragging.
+const resizableSplitFamily: ComponentTokenFamily = {
+  family: "resizable-split",
+  prefix: "resizable-split",
+  description:
+    "ResizableSplit — the line the divider draws between the two panes, at rest, under the pointer and while dragging.",
+  tokens: [
+    { key: "divider-color", property: "background-color", description: "The divider's line at rest.", consumers: at(RESIZABLE_SPLIT, "var(--border-default, #e5e7eb)") },
+    { key: "divider-hover-color", property: "background-color", description: "The divider's line under the pointer.", consumers: at(RESIZABLE_SPLIT, "var(--border-strong, #d1d5db)") },
+    { key: "divider-active-color", property: "background-color", description: "The divider's line while it is dragged.", consumers: at(RESIZABLE_SPLIT, "var(--interactive-primary-bg, #111827)") },
   ],
 };
 
@@ -1447,6 +1461,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   sidebarFamily,
   adminShellFamily,
   billingSliderFamily,
+  resizableSplitFamily,
   tabsFamily,
   skeletonFamily,
   spinnerFamily,

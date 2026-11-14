@@ -30,6 +30,7 @@ export interface PageLike {
   addStyleTag(opts: { content: string }): Promise<unknown>
   screenshot(opts: { clip?: { x: number; y: number; width: number; height: number } }): Promise<Buffer>
   hover(selector: string): Promise<void>
+  mouse: { move(x: number, y: number): Promise<void>; down(): Promise<void>; up(): Promise<void> }
   emulateMedia(opts: { reducedMotion: "reduce" | "no-preference" }): Promise<void>
   close(): Promise<void>
 }
