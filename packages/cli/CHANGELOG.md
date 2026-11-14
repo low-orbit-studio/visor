@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.53.0
+
+### Minor Changes
+
+- d2abeec: OTPInput takes five size hooks for its cells: `--otp-cell-width`, `--otp-cell-height`, `--otp-cell-font-size`, `--otp-cell-radius` and `--otp-gap`. Each falls back to today's value, so unbound renders unchanged. `--otp-cell-width: 100%` on a widened component stretches the cells to share the row.
+- f3255f8: Dialog takes theme hooks for its panel and page scrim: `--dialog-max-width`, `--dialog-radius`, `--dialog-bg`, `--dialog-padding`, `--dialog-shadow`, `--dialog-backdrop-filter`, `--dialog-overlay-bg` and `--dialog-overlay-blur`, bindable under `components.dialog`. Unbound, Dialog and ConfirmDialog render as before in both densities.
+- b7f81a2: SegmentedControl size hooks (VI-785). Six new keys in the `segmented-control` family let a theme set the segment box and corners: `item-height` (`--segmented-control-item-height`, the pill follows it), `track-padding` (`--segmented-control-track-padding`), `item-padding-x` (`--segmented-control-item-padding-x`) `font-size` (`--segmented-control-font-size`), `item-radius` (`--segmented-control-item-radius`, the hover fill and focus ring) and `indicator-radius` (`--segmented-control-indicator-radius`, the pill; bind `999px` with `radius` for a fully round switch). Each falls back to the chosen size's ToggleGroup value (height xs 24px, sm 28px, md 36px, lg 44px), so a theme that binds none of them renders every size pixel-identical to before. Re-copy with `npx visor add segmented-control --overwrite`.
+- 05e3be7: Lightbox motion: the photo scales up on open and, on next / previous, slides in 40px from the side it comes from once loaded; the counter, close button and arrows ease in just after. Reduced motion fades only. Tune with `--lightbox-slide-distance`, `--lightbox-image-duration` and `--lightbox-controls-duration`. Settled frames are unchanged.
+- fa85739: ToggleGroup option variant (VI-787).
+  
+  `variant="option"` draws each item as a full-width tap-to-pick row: a lettered key on the left (A, B, C…, from a CSS counter, filled when picked), the label, and in a `type="multiple"` group a check box on the right that fills when picked. Hover and picked fills, and a 1px inset ring when picked. A column by default; `columns={2}` lays the rows out two up. The group keeps ToggleGroup's semantics: single is a radiogroup of radios, multiple a group of pressed buttons, arrow keys move and Space/Enter picks. A new `shortcuts` prop makes the letters keys while focus is in the group.
+  
+  Every colour, size, radius and the backdrop blur is a `--toggle-group-option-*` hook, bindable from a theme as the new `components.toggle-group.option-*` keys (23 keys, listed on Component Tokens). Each falls back to a Visor token. The default and outline variants are unchanged. Re-copy with `npx visor add toggle-group --overwrite`.
+
+### Patch Changes
+
+- Updated dependencies [f3255f8]
+- Updated dependencies [b7f81a2]
+- Updated dependencies [fa85739]
+  - @loworbitstudio/visor-theme-engine@0.40.0
+
 ## 1.52.0
 
 ### Minor Changes
