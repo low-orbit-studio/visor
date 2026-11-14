@@ -143,6 +143,9 @@ const PhoneInput = React.forwardRef<IntlTelInputRef, PhoneInputProps>(
       ...(countrySelectorMode !== undefined && { countrySelectorMode }),
       ...(portal && {
         classNames: { countrySelectorContainer: portal.scopeClassName },
+        // Below 500px the library swaps to its full-screen picker, which ignores
+        // dropdownParent and would otherwise land on document.body.
+        fullscreenParent: portal.container,
       }),
     }
 

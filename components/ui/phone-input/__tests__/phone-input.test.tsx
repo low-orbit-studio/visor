@@ -267,6 +267,42 @@ describe("PhoneInput portal", () => {
       host.remove()
     }
   })
+
+  it("keeps the full-screen picker inside the container on a narrow viewport", async () => {
+    // AUTO mode picks the full-screen picker when this media query matches.
+    vi.spyOn(window, "matchMedia").mockImplementation(
+      (query) =>
+        ({
+          matches: query === "(max-width: 500px)",
+          media: query,
+          addEventListener: () => {},
+          removeEventListener: () => {},
+        }) as unknown as MediaQueryList
+    )
+    const host = document.createElement("div")
+    document.body.appendChild(host)
+    try {
+      const ref = React.createRef<IntlTelInputRef>()
+      render(
+        <PhoneInput
+          ref={ref}
+          name="phone"
+          portal={{ container: host, scopeClassName: "theme-scope" }}
+        />
+      )
+      await waitFor(() => expect(ref.current?.getInstance()).toBeTruthy())
+      await ref.current!.getInstance()!.promise
+
+      fireEvent.click(document.querySelector(".iti__selected-country")!)
+
+      await waitFor(() =>
+        expect(host.querySelector(".iti--fullscreen-popup")).toBeInTheDocument()
+      )
+      expect(host.querySelector(".iti--fullscreen-popup")).toHaveClass("theme-scope")
+    } finally {
+      host.remove()
+    }
+  })
 })
 
 describe("PhoneInput console hygiene", () => {
