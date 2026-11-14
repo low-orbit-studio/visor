@@ -143,15 +143,18 @@ const LightboxContent = React.forwardRef<
 
   const handleTouchStart = React.useCallback(
     (event: React.TouchEvent) => {
-      touchStartX.current = event.touches[0].clientX
-      touchEndX.current = event.touches[0].clientX
+      const touch = event.touches[0]
+      if (!touch) return
+      touchStartX.current = touch.clientX
+      touchEndX.current = touch.clientX
     },
     []
   )
 
   const handleTouchMove = React.useCallback(
     (event: React.TouchEvent) => {
-      touchEndX.current = event.touches[0].clientX
+      const touch = event.touches[0]
+      if (touch) touchEndX.current = touch.clientX
     },
     []
   )
@@ -179,8 +182,10 @@ const LightboxContent = React.forwardRef<
     ]
 
     preloadIndexes.forEach((idx) => {
+      const image = images[idx]
+      if (!image) return
       const img = new Image()
-      img.src = images[idx].src
+      img.src = image.src
     })
   }, [currentIndex, images])
 
