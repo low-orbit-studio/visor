@@ -40,7 +40,7 @@ export interface AdminShellProps extends React.HTMLAttributes<HTMLDivElement> {
   topbarCenter?: React.ReactNode
   /** Right side of the topbar (user menu, theme toggle, quick actions). */
   topbarEnd?: React.ReactNode
-  /** When true, the topbar is not rendered. Default false. */
+  /** When true, the topbar is not rendered. Below 48rem a bar holding just the menu button still is. Default false. */
   hideTopbar?: boolean
 
   /** Main content. */
@@ -88,6 +88,16 @@ function writeStored(key: string | undefined, collapsed: boolean) {
   }
 }
 
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), details > summary'
+
+function focusables(container: HTMLElement): HTMLElement[] {
+  return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((el) => {
+    const css = getComputedStyle(el)
+    return css.display !== "none" && css.visibility !== "hidden"
+  })
+}
+
 function resolveSize(value: number | string | undefined, fallback: string): string {
   if (value == null) return fallback
   return typeof value === "number" ? `${value}px` : value
@@ -126,6 +136,12 @@ export function AdminShell({
   // Only a toggle animates; restoring the remembered state on load does not.
   const [animate, setAnimate] = React.useState(false)
   const sidebarId = React.useId()
+  // Below 48rem the sidebar is a sheet behind the topbar's menu button (VI-781).
+  const [sheetOpen, setSheetOpen] = React.useState(false)
+  const sidebarRef = React.useRef<HTMLElement>(null)
+  const menuRef = React.useRef<HTMLButtonElement>(null)
+  // Widening past the phone breakpoint closes the sheet.
+  if (sheetOpen && !narrow) setSheetOpen(false)
 
   const isCollapsed = collapsedProp ?? localCollapsed ?? stored ?? defaultCollapsed
   const canFold = collapsible && !narrow
@@ -151,6 +167,70 @@ export function AdminShell({
     return () => window.removeEventListener("keydown", onKeyDown)
   }, [canFold, collapseShortcut, toggle])
 
+  React.useEffect(() => {
+    const sheet = sidebarRef.current
+    if (!sheetOpen || !sheet) return
+    const menu = menuRef.current
+    const html = document.documentElement
+    const overflow = html.style.overflow
+    html.style.overflow = "hidden"
+    focusables(sheet)[0]?.focus()
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      // A menu open inside the sheet (Radix marks its Esc handled) closes first.
+      if (event.key === "Escape" && !event.defaultPrevented) {
+        event.preventDefault()
+        setSheetOpen(false)
+        return
+      }
+      if (event.key !== "Tab") return
+      const items = focusables(sheet)
+      if (items.length === 0) return
+      const active = document.activeElement
+      const edge = event.shiftKey ? items[0] : items[items.length - 1]
+      if (active === edge || !sheet.contains(active)) {
+        event.preventDefault()
+        ;(event.shiftKey ? items[items.length - 1] : items[0]).focus()
+      }
+    }
+    document.addEventListener("keydown", onKeyDown)
+    return () => {
+      document.removeEventListener("keydown", onKeyDown)
+      html.style.overflow = overflow
+      menu?.focus()
+    }
+  }, [sheetOpen])
+
+  const closeOnLink = (event: React.MouseEvent) => {
+    if ((event.target as Element).closest("a[href]")) setSheetOpen(false)
+  }
+
+  const menuButton = (
+    <button
+      ref={menuRef}
+      type="button"
+      className={styles.menuButton}
+      data-slot="admin-shell-menu"
+      aria-label="Menu"
+      aria-expanded={sheetOpen}
+      aria-controls={sidebarId}
+      onClick={() => setSheetOpen(true)}
+    >
+      <svg
+        viewBox="0 0 16 16"
+        width="20"
+        height="20"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        aria-hidden="true"
+      >
+        <path d="M2.5 4h11M2.5 8h11M2.5 12h11" />
+      </svg>
+    </button>
+  )
+
   const collapsedAttr = collapsible ? String(railed) : undefined
   const toggleLabel = railed ? "Expand the sidebar" : "Collapse the sidebar"
 
@@ -172,16 +252,28 @@ export function AdminShell({
       data-animate={animate ? "" : undefined}
       {...props}
     >
-      <a href="#admin-main-content" className={styles.skipLink}>
+      <a href="#admin-main-content" className={styles.skipLink} inert={sheetOpen}>
         Skip to main content
       </a>
 
+      {sheetOpen ? (
+        <div
+          className={styles.scrim}
+          data-slot="admin-shell-scrim"
+          aria-hidden="true"
+          onClick={() => setSheetOpen(false)}
+        />
+      ) : null}
+
       <aside
+        ref={sidebarRef}
         id={sidebarId}
         className={styles.sidebar}
         data-slot="admin-shell-sidebar"
         data-collapsed={collapsedAttr}
+        data-sheet={sheetOpen ? "open" : undefined}
         aria-label="Primary navigation"
+        onClick={sheetOpen ? closeOnLink : undefined}
       >
         {logo || canFold ? (
           <div className={styles.sidebarHeader} data-slot="admin-shell-sidebar-header">
@@ -234,21 +326,30 @@ export function AdminShell({
         ) : null}
       </aside>
 
-      <div className={styles.body} data-slot="admin-shell-body">
-        {!hideTopbar ? (
+      <div className={styles.body} data-slot="admin-shell-body" inert={sheetOpen}>
+        {hideTopbar ? (
+          <header
+            role="banner"
+            className={cn(styles.topbar, styles.menuBar)}
+            data-slot="admin-shell-menu-bar"
+          >
+            {menuButton}
+          </header>
+        ) : (
           <header
             role="banner"
             className={styles.topbar}
             data-slot="admin-shell-topbar"
           >
             <div className={styles.topbarStart}>
+              {menuButton}
               {breadcrumb}
               {topbarStart}
             </div>
             <div className={styles.topbarCenter}>{topbarCenter}</div>
             <div className={styles.topbarEnd}>{topbarEnd}</div>
           </header>
-        ) : null}
+        )}
 
         <main
           id="admin-main-content"

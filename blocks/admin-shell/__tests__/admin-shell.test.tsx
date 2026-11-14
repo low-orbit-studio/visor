@@ -1,5 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react"
-import { afterEach, describe, it, expect, vi } from "vitest"
+import { act, fireEvent, render, screen } from "@testing-library/react"
+import { afterEach, beforeEach, describe, it, expect, vi } from "vitest"
 import { AdminShell } from "../admin-shell"
 import { checkA11y } from "../../../test-utils/a11y"
 
@@ -246,6 +246,137 @@ describe("AdminShell", () => {
           <h1>Dashboard</h1>
         </AdminShell>
       )
+      await checkA11y(container)
+    })
+  })
+
+  // ─── Phone sheet (VI-781) ───────────────────────────────────────────
+
+  describe("phone sheet", () => {
+    const original = window.matchMedia
+    let narrow = true
+    let notify: () => void = () => {}
+
+    beforeEach(() => {
+      narrow = true
+      window.matchMedia = ((query: string) => ({
+        get matches() {
+          return narrow
+        },
+        media: query,
+        addEventListener: (_: string, cb: () => void) => {
+          notify = cb
+        },
+        removeEventListener: () => {},
+      })) as unknown as typeof window.matchMedia
+    })
+
+    afterEach(() => {
+      window.matchMedia = original
+      document.documentElement.style.overflow = ""
+    })
+
+    const phoneNav = (
+      <>
+        <a href="/home">Home</a>
+        <a href="/users">Users</a>
+      </>
+    )
+    const renderPhone = (props: Partial<React.ComponentProps<typeof AdminShell>> = {}) =>
+      render(
+        <AdminShell {...defaultProps} sidebarNav={phoneNav} collapsible {...props}>
+          <h1>Dashboard</h1>
+        </AdminShell>
+      )
+    const sidebar = (c: HTMLElement) => c.querySelector("[data-slot='admin-shell-sidebar']")!
+    const body = (c: HTMLElement) => c.querySelector("[data-slot='admin-shell-body']")!
+    const menu = () => screen.getByRole("button", { name: "Menu" })
+
+    it("draws a menu button that controls the sidebar, closed by default", () => {
+      const { container } = renderPhone()
+      expect(menu()).toHaveAttribute("aria-expanded", "false")
+      expect(menu()).toHaveAttribute("aria-controls", sidebar(container).id)
+      expect(sidebar(container)).not.toHaveAttribute("data-sheet")
+      expect(container.querySelector("[data-slot='admin-shell-scrim']")).toBeNull()
+    })
+
+    it("opens as a sheet: focus moves in, the page behind is inert and does not scroll", () => {
+      const { container } = renderPhone()
+      fireEvent.click(menu())
+      expect(sidebar(container)).toHaveAttribute("data-sheet", "open")
+      expect(container.querySelector("[data-slot='admin-shell-scrim']")).toBeInTheDocument()
+      expect(body(container)).toHaveAttribute("inert")
+      expect(document.documentElement.style.overflow).toBe("hidden")
+      expect(screen.getByRole("link", { name: "Home" })).toHaveFocus()
+    })
+
+    it("closes on Esc and returns focus to the menu button, restoring scroll", () => {
+      const { container } = renderPhone()
+      fireEvent.click(menu())
+      fireEvent.keyDown(document, { key: "Escape" })
+      expect(sidebar(container)).not.toHaveAttribute("data-sheet")
+      expect(body(container)).not.toHaveAttribute("inert")
+      expect(document.documentElement.style.overflow).toBe("")
+      expect(menu()).toHaveFocus()
+      expect(menu()).toHaveAttribute("aria-expanded", "false")
+    })
+
+    it("leaves Esc to a menu inside the sheet that already handled it", () => {
+      const { container } = renderPhone()
+      fireEvent.click(menu())
+      const handled = (event: KeyboardEvent) => event.preventDefault()
+      document.addEventListener("keydown", handled, { capture: true })
+      fireEvent.keyDown(document, { key: "Escape" })
+      document.removeEventListener("keydown", handled, { capture: true })
+      expect(sidebar(container)).toHaveAttribute("data-sheet", "open")
+    })
+
+    it("closes on a scrim tap", () => {
+      const { container } = renderPhone()
+      fireEvent.click(menu())
+      fireEvent.click(container.querySelector("[data-slot='admin-shell-scrim']")!)
+      expect(sidebar(container)).not.toHaveAttribute("data-sheet")
+      expect(menu()).toHaveFocus()
+    })
+
+    it("closes when a link in the sheet is followed", () => {
+      const { container } = renderPhone()
+      fireEvent.click(menu())
+      fireEvent.click(screen.getByRole("link", { name: "Users" }))
+      expect(sidebar(container)).not.toHaveAttribute("data-sheet")
+    })
+
+    it("traps Tab and Shift+Tab inside the open sheet", () => {
+      renderPhone()
+      fireEvent.click(menu())
+      const home = screen.getByRole("link", { name: "Home" })
+      const users = screen.getByRole("link", { name: "Users" })
+      users.focus()
+      fireEvent.keyDown(document, { key: "Tab" })
+      expect(home).toHaveFocus()
+      fireEvent.keyDown(document, { key: "Tab", shiftKey: true })
+      expect(users).toHaveFocus()
+    })
+
+    it("closes when the window widens past the phone breakpoint", () => {
+      const { container } = renderPhone()
+      fireEvent.click(menu())
+      act(() => {
+        narrow = false
+        notify()
+      })
+      expect(sidebar(container)).not.toHaveAttribute("data-sheet")
+      expect(document.documentElement.style.overflow).toBe("")
+    })
+
+    it("keeps a bar with the menu button when hideTopbar is set", () => {
+      renderPhone({ hideTopbar: true })
+      expect(screen.getByRole("banner")).toContainElement(menu())
+    })
+
+    it("passes accessibility checks with the sheet open", async () => {
+      const { container } = renderPhone({ logo: <span>Acme</span> })
+      fireEvent.click(menu())
       await checkA11y(container)
     })
   })
