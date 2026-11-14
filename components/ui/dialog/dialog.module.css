@@ -1,6 +1,6 @@
 /* Dialog overlay
  * Default: 4px backdrop blur. Density axis: editorial uses 2px.
- * Prefixed line first: Lightning CSS (Next.js) keeps only the last of the pair when
+ * Prefixed line first: Lightning CSS (in Next) keeps only the last of the pair when
  * the value holds a var(), so unprefixed-first loses backdrop-filter (VI-788). */
 .overlay {
   position: fixed;
