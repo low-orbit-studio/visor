@@ -151,6 +151,7 @@ const DIALOG_FIELD = "blocks/dialog-field/dialog-field.module.css";
 const ADMIN_SHELL = "blocks/admin-shell/admin-shell.module.css";
 const BILLING_SLIDER = "components/ui/billing-slider/billing-slider.module.css";
 const RESIZABLE_SPLIT = "components/ui/resizable-split/resizable-split.module.css";
+const DIALOG = "components/ui/dialog/dialog.module.css";
 
 /** Shorthand for the common single-consumer case. */
 function at(file: string, fallback: string | null): ComponentTokenConsumer[] {
@@ -554,6 +555,26 @@ const resizableSplitFamily: ComponentTokenFamily = {
     { key: "divider-color", property: "background-color", description: "The divider's line at rest.", consumers: at(RESIZABLE_SPLIT, "var(--border-default, #e5e7eb)") },
     { key: "divider-hover-color", property: "background-color", description: "The divider's line under the pointer.", consumers: at(RESIZABLE_SPLIT, "var(--border-strong, #d1d5db)") },
     { key: "divider-active-color", property: "background-color", description: "The divider's line while it is dragged.", consumers: at(RESIZABLE_SPLIT, "var(--interactive-primary-bg, #111827)") },
+  ],
+};
+
+// VI-784: Dialog's panel and scrim, so a theme can skin it (a glass sheet) and keep
+// Dialog's focus trap, scroll lock and Escape. Each key also reads in the editorial
+// density with that density's fallback; the bottom sheet keeps full width.
+const dialogFamily: ComponentTokenFamily = {
+  family: "dialog",
+  prefix: "dialog",
+  description:
+    "Dialog's panel and page scrim — width, corners, fill, inset, shadow, a backdrop filter for glass, and the scrim's colour and blur. ConfirmDialog shares them.",
+  tokens: [
+    { key: "max-width", property: "max-width", description: "The centred panel's widest. The bottom sheet stays full width.", consumers: [{ file: DIALOG, fallback: "32rem" }, { file: DIALOG, fallback: "480px" }] },
+    { key: "radius", property: "border-radius", description: "Panel corners; the bottom sheet's top corners.", consumers: [{ file: DIALOG, fallback: "var(--radius-lg, 0.5rem)" }, { file: DIALOG, fallback: "var(--radius-xl)" }] },
+    { key: "bg", property: "background-color", description: "Panel fill. Translucent for glass, with `backdrop-filter`.", consumers: [{ file: DIALOG, fallback: "var(--surface-page, #ffffff)" }, { file: DIALOG, fallback: "var(--surface-popover, var(--surface-page, #ffffff))" }] },
+    { key: "padding", property: "padding", description: "Panel inset. The bottom sheet keeps its own bottom inset over the safe area.", consumers: [{ file: DIALOG, fallback: "var(--spacing-6, 1.5rem)" }, { file: DIALOG, fallback: "var(--spacing-8)" }] },
+    { key: "shadow", property: "box-shadow", description: "Panel shadow.", consumers: [{ file: DIALOG, fallback: "var(--shadow-xl)" }, { file: DIALOG, fallback: "var(--shadow-lg)" }] },
+    { key: "backdrop-filter", property: "backdrop-filter", description: "Filter on what shows through the panel, e.g. `blur(32px) saturate(110%)` for glass.", consumers: at(DIALOG, "none") },
+    { key: "overlay-bg", property: "background-color", description: "The page scrim's colour.", consumers: at(DIALOG, "var(--overlay-bg, rgba(0, 0, 0, 0.8))") },
+    { key: "overlay-blur", property: "backdrop-filter: blur()", description: "How much the scrim blurs the page, a length.", consumers: [{ file: DIALOG, fallback: "4px" }, { file: DIALOG, fallback: "2px" }] },
   ],
 };
 
@@ -1528,6 +1549,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   adminShellFamily,
   billingSliderFamily,
   resizableSplitFamily,
+  dialogFamily,
   tabsFamily,
   skeletonFamily,
   spinnerFamily,

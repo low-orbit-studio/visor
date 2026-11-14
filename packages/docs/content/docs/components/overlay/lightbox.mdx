@@ -113,11 +113,27 @@ export default function ControlledLightbox() {
 }
 ```
 
+## Motion
+
+Open the gallery above to see it. On open, the photo scales up from 95% and fades in. Moving to the next or previous photo, the new photo starts 40px to the side it comes from at 98% and slides into place once it has loaded. The counter and close button drop in from 10px above, and the arrows come in 20px from their own sides, just after the photo.
+
+With `prefers-reduced-motion: reduce`, everything fades only: no slide, no scale. Every animation is entrance-only, so the settled lightbox looks exactly as it did before.
+
+Tune it with these CSS variables, on `:root` or any ancestor:
+
+| Variable | Default | Controls |
+|----------|---------|----------|
+| `--lightbox-slide-distance` | `40px` | How far beside its place a photo starts |
+| `--lightbox-image-duration` | `350ms` | The photo's ease-in |
+| `--lightbox-image-easing` | `cubic-bezier(0.16, 1, 0.3, 1)` | The photo's ease-in curve |
+| `--lightbox-controls-duration` | `400ms` | The counter, close button and arrows' ease-in |
+
 ## Features
 
 - **Keyboard navigation:** `ArrowLeft`/`ArrowRight` to navigate, `Escape` to close
 - **Touch/swipe support:** Swipe left/right on mobile to navigate
 - **Image preloading:** Adjacent images are preloaded for smooth transitions
+- **Directional motion:** Photos slide in from the side they come from; controls ease in after the photo
 - **Auto-hides navigation:** Arrows and counter are hidden for single-image lightboxes
 - **Accessible:** Built on Radix Dialog for focus management and screen reader support
 - **Theme-agnostic:** Uses CSS custom properties for all visual tokens

@@ -361,6 +361,21 @@ ResizableSplit — the line the divider draws between the two panes, at rest, un
 | `--resizable-split-divider-hover-color` | The divider's line under the pointer. | `var(--border-strong, #d1d5db)` |
 | `--resizable-split-divider-active-color` | The divider's line while it is dragged. | `var(--interactive-primary-bg, #111827)` |
 
+### `dialog`
+
+Dialog's panel and page scrim — width, corners, fill, inset, shadow, a backdrop filter for glass, and the scrim's colour and blur. ConfirmDialog shares them.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--dialog-max-width` | The centred panel's widest. The bottom sheet stays full width. | `32rem` (editorial `480px`) |
+| `--dialog-radius` | Panel corners; the bottom sheet's top corners. | `var(--radius-lg, 0.5rem)` (editorial `var(--radius-xl)`) |
+| `--dialog-bg` | Panel fill. Translucent for glass, with `backdrop-filter`. | `var(--surface-page, #ffffff)` (editorial `var(--surface-popover, var(--surface-page, #ffffff))`) |
+| `--dialog-padding` | Panel inset. The bottom sheet keeps its own bottom inset over the safe area. | `var(--spacing-6, 1.5rem)` (editorial `var(--spacing-8)`) |
+| `--dialog-shadow` | Panel shadow. | `var(--shadow-xl)` (editorial `var(--shadow-lg)`) |
+| `--dialog-backdrop-filter` | Filter on what shows through the panel, e.g. `blur(32px) saturate(110%)` for glass. | `none` |
+| `--dialog-overlay-bg` | The page scrim's colour. | `var(--overlay-bg, rgba(0, 0, 0, 0.8))` |
+| `--dialog-overlay-blur` | How much the scrim blurs the page, a length. | `4px` (editorial `2px`) |
+
 ### `tabs`
 
 Tab rail and trigger treatment, for both the segmented (`default`) and underlined (`line`) variants.
