@@ -141,7 +141,8 @@ describe("SegmentedControl segment size tokens (real browser)", () => {
     var item = root.querySelector("[data-slot=toggle-group-item]"), cs = getComputedStyle(item);
     var pill = root.querySelector(":scope > [aria-hidden=true]");
     return { item: item.getBoundingClientRect().height, pill: pill.getBoundingClientRect().height, root: root.getBoundingClientRect().height,
-      padX: cs.paddingLeft, padY: cs.paddingTop, font: cs.fontSize, inset: getComputedStyle(root).paddingTop };
+      padX: cs.paddingLeft, padY: cs.paddingTop, font: cs.fontSize, inset: getComputedStyle(root).paddingTop,
+      itemRadius: cs.borderTopLeftRadius, pillRadius: getComputedStyle(pill).borderTopLeftRadius };
   })())`
   const run = async (scopeCss = "") => {
     const page = await open("segmented-control", "default", { scopeCss })
@@ -153,13 +154,13 @@ describe("SegmentedControl segment size tokens (real browser)", () => {
 
   it("unbound: md keeps its ToggleGroup segment box", async (ctx) => {
     if (!ready()) return ctx.skip()
-    expect(await run()).toEqual({ item: 36, pill: 36, root: 46, padX: "12px", padY: "0px", font: "14px", inset: "4px" })
+    expect(await run()).toEqual({ item: 36, pill: 36, root: 46, padX: "12px", padY: "0px", font: "14px", inset: "4px", itemRadius: "6px", pillRadius: "6px" })
   })
 
-  it("item-height, track-padding, item-padding-x and font-size set the segment box and the pill follows", async (ctx) => {
+  it("item-height, track-padding, item-padding-x, font-size and the radii set the segment box and the pill follows", async (ctx) => {
     if (!ready()) return ctx.skip()
-    const e = await run("--segmented-control-item-height: 30px; --segmented-control-track-padding: 3px; --segmented-control-item-padding-x: 14px; --segmented-control-font-size: 15px;")
-    expect(e).toEqual({ item: 30, pill: 30, root: 38, padX: "14px", padY: "0px", font: "15px", inset: "3px" })
+    const e = await run("--segmented-control-item-height: 30px; --segmented-control-track-padding: 3px; --segmented-control-item-padding-x: 14px; --segmented-control-font-size: 15px; --segmented-control-item-radius: 998px; --segmented-control-indicator-radius: 999px;")
+    expect(e).toEqual({ item: 30, pill: 30, root: 38, padX: "14px", padY: "0px", font: "15px", inset: "3px", itemRadius: "998px", pillRadius: "999px" })
   })
 })
 

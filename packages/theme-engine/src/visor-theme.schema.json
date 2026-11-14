@@ -710,7 +710,7 @@
         },
         "segmented-control": {
           "type": "object",
-          "description": "SegmentedControl \u2014 the well, its corner radius and padding, the segment height, sides and label size, the sliding pill, the ink and the state edge on it. The resting edge is the shared `control` edge. Keys: track-bg, radius, track-padding, item-height, item-padding-x, font-size, indicator-bg, indicator-text, indicator-edge, inactive-text, active-weight.",
+          "description": "SegmentedControl \u2014 the well, its corner radius and padding, the segment height, sides, label size and corners, the sliding pill and its corners, the ink and the state edge on it. The resting edge is the shared `control` edge. Keys: track-bg, radius, track-padding, item-height, item-padding-x, font-size, item-radius, indicator-radius, indicator-bg, indicator-text, indicator-edge, inactive-text, active-weight.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

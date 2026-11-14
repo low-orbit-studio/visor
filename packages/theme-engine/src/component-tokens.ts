@@ -1337,7 +1337,7 @@ const segmentedControlFamily: ComponentTokenFamily = {
   family: "segmented-control",
   prefix: "segmented-control",
   description:
-    "SegmentedControl — the well, its corner radius and padding, the segment height, sides and label size, the sliding pill, the ink and the state edge on it. The resting edge is the shared `control` edge.",
+    "SegmentedControl — the well, its corner radius and padding, the segment height, sides, label size and corners, the sliding pill and its corners, the ink and the state edge on it. The resting edge is the shared `control` edge.",
   tokens: [
     { key: "track-bg", property: "background-color", description: "The well the pill slides in. Default is the page nudged 12% toward the ink, so it reads as a well in light and dark.", consumers: at(SEGMENTED_CONTROL, "color-mix(in srgb, var(--text-primary, #111827) 12%, var(--surface-page, #ffffff))") },
     {
@@ -1392,6 +1392,28 @@ const segmentedControlFamily: ComponentTokenFamily = {
         { file: SEGMENTED_CONTROL, fallback: "var(--font-size-xs, 0.75rem)" },
         { file: SEGMENTED_CONTROL, fallback: "var(--font-size-sm, 0.875rem)" },
         { file: SEGMENTED_CONTROL, fallback: "var(--font-size-base, 1rem)" },
+      ],
+    },
+    {
+      key: "item-radius",
+      property: "border-radius",
+      description: "Segment corners: the hover fill and the focus ring. Unset, each size keeps its ToggleGroup radius (xs reads `toggle-group.xs-item-radius`).",
+      consumers: [
+        { file: SEGMENTED_CONTROL, fallback: "var(--toggle-group-xs-item-radius, var(--radius-sm, 0.25rem))" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--radius-md, 0.375rem)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--radius-md, 0.375rem)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--radius-lg, 0.5rem)" },
+      ],
+    },
+    {
+      key: "indicator-radius",
+      property: "border-radius",
+      description: "Sliding pill corners. Bind `999px` with `radius` for a fully round switch. Unset, each size keeps its ToggleGroup radius (xs reads `toggle-group.xs-item-radius`).",
+      consumers: [
+        { file: SEGMENTED_CONTROL, fallback: "var(--toggle-group-xs-item-radius, var(--radius-sm, 0.25rem))" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--radius-md, 0.375rem)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--radius-md, 0.375rem)" },
+        { file: SEGMENTED_CONTROL, fallback: "var(--radius-lg, 0.5rem)" },
       ],
     },
     { key: "indicator-bg", property: "background-color", description: "Sliding active pill. Bind a lifted dark fill where the theme wants one.", consumers: at(SEGMENTED_CONTROL, "var(--interactive-primary-bg, var(--primary, #111827))") },

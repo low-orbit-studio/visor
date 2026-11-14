@@ -410,6 +410,8 @@ components:
     item-height: "30px"
     item-padding-x: "14px"
     font-size: "14px"
+    item-radius: "13px"
+    indicator-radius: "15px"
     indicator-edge: "#ffcc00"
     inactive-text: "#c7b8d6"
     active-weight: "650"
