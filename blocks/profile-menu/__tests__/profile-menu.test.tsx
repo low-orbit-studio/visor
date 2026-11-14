@@ -244,6 +244,15 @@ describe("ProfileMenu", () => {
     expect(trigger).not.toBeNull()
   })
 
+  it("marks the identity and caret as admin-shell rail labels", () => {
+    renderMenu()
+    const trigger = screen.getByRole("button")
+    const marked = trigger.querySelectorAll("[data-admin-shell-label]")
+    expect(marked).toHaveLength(2)
+    expect(trigger.textContent).toContain(user.name)
+    expect(marked[1]?.tagName.toLowerCase()).toBe("svg")
+  })
+
   // ─── Keyboard navigation ────────────────────────────────────────────
 
   it("opens via keyboard (Enter on focused trigger)", async () => {

@@ -34,6 +34,13 @@
   background: var(--surface-interactive-hover, var(--surface-hover, #f3f4f6));
 }
 
+/* In AdminShell's rail the label spans are hidden; the trigger shrinks to its avatar. */
+[data-collapsed="true"] .trigger {
+  width: auto;
+  padding: var(--spacing-1, 0.25rem);
+  justify-content: center;
+}
+
 .triggerAvatarWrap {
   position: relative;
   flex-shrink: 0;

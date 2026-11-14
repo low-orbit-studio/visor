@@ -11,6 +11,10 @@ import {
   type Icon,
 } from '@phosphor-icons/react';
 import { AdminShell } from '../../../../blocks/admin-shell/admin-shell';
+import {
+  ProfileMenu,
+  defaultProfileMenuItems,
+} from '../../../../blocks/profile-menu/profile-menu';
 import styles from './admin-shell-rail-demo.module.css';
 
 const NAV: { label: string; icon: Icon; count?: number; active?: boolean }[] = [
@@ -75,10 +79,10 @@ export function AdminShellRailDemo() {
         </>
       }
       sidebarFooter={
-        <div className={styles.me}>
-          <span className={styles.avatar} aria-hidden="true">JD</span>
-          <span data-admin-shell-label>Jane Doe</span>
-        </div>
+        <ProfileMenu
+          user={{ name: 'Jane Doe', email: 'jane@acme.com', initials: 'JD' }}
+          items={defaultProfileMenuItems({ name: 'Jane Doe' })}
+        />
       }
     >
       <h2 className={styles.title}>Money</h2>

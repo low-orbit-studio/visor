@@ -136,7 +136,11 @@ export function ProfileMenu({
             ) : null}
           </span>
 
-          <span className={styles.triggerIdentity} aria-hidden="true">
+          <span
+            className={styles.triggerIdentity}
+            aria-hidden="true"
+            data-admin-shell-label
+          >
             <span className={styles.triggerName}>{user.name}</span>
             {context ? (
               <span className={styles.triggerContext}>
@@ -155,6 +159,7 @@ export function ProfileMenu({
             weight="regular"
             aria-hidden="true"
             className={styles.triggerCaret}
+            data-admin-shell-label
           />
         </button>
       </DropdownMenuTrigger>
