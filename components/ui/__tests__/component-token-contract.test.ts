@@ -207,6 +207,16 @@ describe("VI-625 component token contract", () => {
           // like Meter; the theme binds the rest of the family.
           "billing-slider-hue-fill-strong",
           "billing-slider-hue-ink",
+          // DialogContent writes the visual viewport's size as inline style for
+          // the bottom sheet (VI-667), like the sidebar rail geometry above.
+          "dialog-viewport-height",
+          "dialog-keyboard-inset",
+          // DialogForm's own hooks (VI-620) share the `dialog` prefix and
+          // predate the Dialog family (VI-784).
+          "dialog-form-panel-border",
+          "dialog-form-width-sm",
+          "dialog-form-width-md",
+          "dialog-form-width-lg",
           // Piped from admin-list-page so the shell can flatten the sort bar's
           // top corners; owned by the block, not the theme.
           "data-table-sort-bar-radius",

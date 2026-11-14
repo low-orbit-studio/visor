@@ -207,6 +207,15 @@ components:
     divider-color: "#3d0a2b"
     divider-hover-color: "#00aaff"
     divider-active-color: "#ff7700"
+  dialog:
+    max-width: "760px"
+    radius: "56px"
+    bg: "#2b0a3d"
+    padding: "48px 56px 40px"
+    shadow: "0 48px 120px -48px #000"
+    backdrop-filter: "blur(32px) saturate(110%)"
+    overlay-bg: "#00000066"
+    overlay-blur: "6px"
   tabs:
     list-radius: "3px"
     list-height: "37px"

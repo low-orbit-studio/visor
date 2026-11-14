@@ -98,6 +98,55 @@ const [pane, setPane] = useState<HTMLElement | null>(null)
 
 `DialogHeader` takes a `back` slot, rendered before the title and opposite the close button. `DialogBack` is a ready-made arrow button labelled "Back" for it.
 
+## Theme Hooks
+
+A theme can skin the panel and the page scrim without leaving Dialog, so the focus trap, scroll lock and Escape still come with it. ConfirmDialog reads the same hooks. Unbound, each one falls back to the value Dialog has always drawn, in both the default and the editorial density.
+
+| Hook | Binds | Unbound |
+|---|---|---|
+| `--dialog-max-width` | The centred panel's widest. The bottom sheet stays full width. | `32rem` (editorial `480px`) |
+| `--dialog-radius` | Panel corners; the bottom sheet's top corners. | `--radius-lg` (editorial `--radius-xl`) |
+| `--dialog-bg` | Panel fill. | `--surface-page` (editorial `--surface-popover`) |
+| `--dialog-padding` | Panel inset. | `--spacing-6` (editorial `--spacing-8`) |
+| `--dialog-shadow` | Panel shadow. | `--shadow-xl` (editorial `--shadow-lg`) |
+| `--dialog-backdrop-filter` | Filter on what shows through the panel. | `none` |
+| `--dialog-overlay-bg` | The scrim's colour. | `--overlay-bg`, else `rgba(0, 0, 0, 0.8)` |
+| `--dialog-overlay-blur` | How much the scrim blurs the page. | `4px` (editorial `2px`) |
+
+A glass edit sheet, bound in the theme under `components.dialog`:
+
+```yaml
+# my-theme.visor.yaml
+components:
+  dialog:
+    max-width: "min(760px, calc(100vw - 48px))"
+    radius: "56px"
+    padding: "48px 56px 40px"
+    bg:
+      light: "rgb(255 255 255 / 0.72)"
+      dark: "rgb(20 21 23 / 0.72)"
+    backdrop-filter: "blur(32px) saturate(110%)"
+    shadow: "inset 0 0 0 1px rgb(0 0 0 / 0.16), 0 48px 120px -48px rgb(0 0 0 / 0.55)"
+    overlay-bg: "rgb(0 0 0 / 0.42)"
+    overlay-blur: "6px"
+```
+
+Or the same hooks in plain CSS:
+
+```css
+:root {
+  --dialog-max-width: min(760px, calc(100vw - 48px));
+  --dialog-radius: 56px;
+  --dialog-padding: 48px 56px 40px;
+  --dialog-bg: rgb(255 255 255 / 0.72);
+  --dialog-backdrop-filter: blur(32px) saturate(110%);
+  --dialog-overlay-bg: rgb(0 0 0 / 0.42);
+  --dialog-overlay-blur: 6px;
+}
+```
+
+Every theme-bindable token is listed on [Component Tokens](/docs/themes/component-tokens#dialog).
+
 ## Installation
 
 ```bash
