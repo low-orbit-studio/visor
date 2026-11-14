@@ -47,6 +47,7 @@ With `collapsible`, the sidebar folds to a 68px icon rail and back. The fold but
 The shell draws the rail through its existing slots. It narrows the sidebar, stacks the header, centres the nav and footer, and sets `data-collapsed="true"` on the shell and the sidebar so a slot can restyle itself:
 
 - **Mark labels with `data-admin-shell-label`.** In the rail they are hidden visually but stay in the accessibility tree, so an icon-only link keeps its name. Give the link a `title` for the hover tooltip.
+- **`ProfileMenu` in `sidebarFooter` folds itself.** It marks its name and caret with `data-admin-shell-label`, so the rail shows just the avatar and the menu still opens upward.
 - **Key anything else on `data-collapsed`**: a monogram in place of the wordmark, a count moved onto the icon as a badge.
 
 ```css

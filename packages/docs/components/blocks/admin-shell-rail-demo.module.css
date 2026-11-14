@@ -95,25 +95,6 @@
   flex: none;
 }
 
-.me {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-2, 0.5rem);
-  color: var(--text-primary, #111827);
-  font: 600 14px/20px var(--font-sans, sans-serif);
-}
-
-.avatar {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--surface-accent-subtle, #eff6ff);
-  color: var(--text-link, #2563eb);
-  font: 700 13px/1 var(--font-sans, sans-serif);
-}
-
 /* The rail: 44px icon targets, the count as a badge on the icon, the clients as their dots. */
 [data-collapsed="true"] .search,
 [data-collapsed="true"] .link {
