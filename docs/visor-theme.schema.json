@@ -582,6 +582,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "dialog": {
+          "type": "object",
+          "description": "Dialog's panel and page scrim — width, corners, fill, inset, shadow, a backdrop filter for glass, and the scrim's colour and blur. ConfirmDialog shares them. Keys: max-width, radius, bg, padding, shadow, backdrop-filter, overlay-bg, overlay-blur.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "tabs": {
           "type": "object",
           "description": "Tab rail and trigger treatment, for both the segmented (`default`) and underlined (`line`) variants. Keys: list-radius, list-height, list-padding, list-color, list-bg, line-border-bottom, trigger-radius, trigger-padding, trigger-font-size, trigger-font-weight, trigger-letter-spacing, trigger-text-transform, trigger-color, trigger-active-bg, trigger-active-color, trigger-active-shadow, indicator-height, indicator-color.",
