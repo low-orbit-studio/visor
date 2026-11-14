@@ -549,7 +549,7 @@
         },
         "banner": {
           "type": "object",
-          "description": "Full-width notice bar. The retro found six separate banner systems across ~180 instances in one app; binding this family collapses them to one. Keys: padding, gap, font-size, radius, border-width, shadow, title-font-weight, description-font-size, info-bg, info-text-color, info-border-color, warning-bg, warning-text-color, warning-border-color, error-bg, error-text-color, error-border-color, success-bg, success-text-color, success-border-color.",
+          "description": "Full-width notice bar. The retro found six separate banner systems across ~180 instances in one app; binding this family collapses them to one. Keys: padding, gap, font-size, radius, border-width, shadow, title-font-weight, description-font-size, info-bg, info-text-color, info-border-color, info-description-color, warning-bg, warning-text-color, warning-border-color, warning-description-color, error-bg, error-text-color, error-border-color, error-description-color, success-bg, success-text-color, success-border-color, success-description-color, neutral-bg, neutral-text-color, neutral-description-color.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

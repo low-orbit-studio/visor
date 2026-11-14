@@ -50,6 +50,12 @@ describe("Banner", () => {
     expect(screen.getByRole("status")).toBeInTheDocument()
   })
 
+  it("renders neutral intent as a status with the neutral class (VI-776)", () => {
+    render(<Banner intent="neutral">Books</Banner>)
+    const el = screen.getByRole("status")
+    expect(el.className).toMatch(/intentNeutral/)
+  })
+
   it("uses role='status' for success intent", () => {
     render(<Banner intent="success">Success</Banner>)
     expect(screen.getByRole("status")).toBeInTheDocument()
@@ -159,6 +165,16 @@ describe("accessibility", () => {
       <Banner intent="success">
         <BannerTitle>Success</BannerTitle>
         <BannerDescription>Operation completed successfully.</BannerDescription>
+      </Banner>
+    )
+    await checkA11y(container)
+  })
+
+  it("has no WCAG 2.1 AA violations (neutral intent)", async () => {
+    const { container } = render(
+      <Banner intent="neutral">
+        <BannerTitle>The books do not balance</BannerTitle>
+        <BannerDescription>1 day of hours disagrees.</BannerDescription>
       </Banner>
     )
     await checkA11y(container)
