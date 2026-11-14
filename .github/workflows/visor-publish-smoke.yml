@@ -8,8 +8,9 @@ name: Visor Publish Smoke
 # latest tarballs (VI-649). Any per-file content drift fails the job.
 #
 # No untrusted inputs are interpolated into run: steps — only the GitHub-
-# controlled event_name and workflow_run.conclusion fields are referenced,
-# both inside `if:` conditionals (never in shell).
+# controlled event_name, workflow_run.conclusion, workflow_run.head_sha and
+# workflow_run.head_commit.message fields are referenced, all inside `if:`
+# conditionals or `with:` inputs (never in shell).
 #
 # See: scripts/visor-publish-smoke.mjs, VI-305
 
@@ -19,8 +20,9 @@ on:
     # Daily at 06:00 UTC — drift surfaces within ~24h of a missed publish.
     - cron: "0 6 * * *"
   workflow_run:
-    # Run immediately after a successful Release. The release workflow has
-    # already published to npm by this point; we wait a beat for npm's CDN
+    # Run immediately after a successful Release that published. Most Release
+    # runs only open or refresh the Version Packages PR and publish nothing;
+    # the job `if:` below skips those (VI-780). We wait a beat for npm's CDN
     # to index the new version before querying it.
     workflows: ["Release"]
     types:
@@ -33,8 +35,15 @@ concurrency:
 jobs:
   smoke:
     name: Compare local registry against latest published
-    # Skip the workflow_run trigger if the upstream Release didn't succeed.
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    # On workflow_run, run only after a Release that succeeded AND published.
+    # Release publishes only when its push is the Version Packages merge, whose
+    # squash subject starts with "Version Packages" (scripts/compute-release-
+    # title.mjs). Any other Release only refreshed that PR, so main carries
+    # merged-but-unreleased work and drift there is expected (VI-780).
+    if: >-
+      ${{ github.event_name != 'workflow_run' ||
+          (github.event.workflow_run.conclusion == 'success' &&
+           startsWith(github.event.workflow_run.head_commit.message, 'Version Packages')) }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -44,14 +53,16 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Checkout main
+      - name: Checkout released commit (workflow_run) or main
         # Fetch full history so the audit step can walk `git log` per drifted
         # file. Shallow clones would mask the touching commits.
         uses: actions/checkout@v4
         with:
-          # Always check main — drift is a property of (main vs npm), not
-          # of an arbitrary branch.
-          ref: main
+          # After a Release, check out the exact commit it published, so a PR
+          # merged while it ran cannot show up as drift (VI-780). The schedule
+          # and manual runs check main: work merged and unreleased for a day
+          # is a real signal.
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || 'main' }}
           fetch-depth: 0
 
       - name: Setup Node.js
