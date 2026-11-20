@@ -1,0 +1,52 @@
+today@1440 glass=off error=rgb(157, 5, 0) icon=rgb(157, 5, 0) themeError=rgb(157, 5, 0) ink=rgb(25, 25, 25) filters=none
+  look-name: ring 2px rgb(25, 25, 25) pixel 25,25,25 vs fill 255,255,255 = 17.58:1, vs page 245,245,245 = 16.13:1
+  look-arrival: ring 2px rgb(25, 25, 25) pixel 25,25,25 vs fill 255,255,255 = 17.58:1, vs page 245,245,245 = 16.13:1
+  look-notes: ring 2px rgb(25, 25, 25) pixel 25,25,25 vs fill 255,255,255 = 17.58:1, vs page 245,245,245 = 16.13:1
+  look-email: ring 2px rgb(25, 25, 25) pixel 25,25,25 vs fill 255,242,239 = 16.07:1, vs page 245,245,245 = 16.13:1
+dark@1440 glass=off error=rgb(239, 68, 68) icon=rgb(239, 68, 68) themeError=rgb(239, 68, 68) ink=rgb(255, 255, 255) filters=none
+  look-name: ring 2px rgb(255, 255, 255) pixel 255,255,255 vs fill 32,32,32 = 16.29:1, vs page 10,10,10 = 19.80:1
+  look-arrival: ring 2px rgb(255, 255, 255) pixel 255,255,255 vs fill 32,32,32 = 16.29:1, vs page 10,10,10 = 19.80:1
+  look-notes: ring 2px rgb(255, 255, 255) pixel 255,255,255 vs fill 32,32,32 = 16.29:1, vs page 10,10,10 = 19.80:1
+  look-email: ring 2px rgb(255, 255, 255) pixel 255,255,255 vs fill 65,0,4 = 17.12:1, vs page 10,10,10 = 19.80:1
+dark-photo@1440 glass=on error=rgb(255, 255, 255) icon=rgb(255, 255, 255) themeError=rgb(239, 68, 68) ink=rgb(255, 255, 255) filters=blur(24px) saturate(1.15)
+  look-name: ring 2px rgb(255, 255, 255) pixel 255,255,255 vs fill 95,104,110 = 5.69:1, vs page 70,82,88 = 8.05:1
+  look-arrival: ring 2px rgb(255, 255, 255) pixel 255,255,255 vs fill 60,77,71 = 8.96:1, vs page 36,52,46 = 13.08:1
+  look-notes: ring 2px rgb(255, 255, 255) pixel 255,255,255 vs fill 61,66,58 = 10.30:1, vs page 36,41,30 = 14.88:1
+  look-email: ring 2px rgb(255, 255, 255) pixel 255,255,255 vs fill 96,99,57 = 6.29:1, vs page 37,56,12 = 12.73:1
+light@1440 glass=off error=rgb(153, 0, 21) icon=rgb(153, 0, 21) themeError=rgb(153, 0, 21) ink=rgb(11, 11, 12) filters=none
+  look-name: ring 2px rgb(11, 11, 12) pixel 11,11,12 vs fill 233,233,233 = 16.20:1, vs page 255,255,255 = 19.67:1
+  look-arrival: ring 2px rgb(11, 11, 12) pixel 11,11,12 vs fill 233,233,233 = 16.20:1, vs page 255,255,255 = 19.67:1
+  look-notes: ring 2px rgb(11, 11, 12) pixel 11,11,12 vs fill 233,233,233 = 16.20:1, vs page 255,255,255 = 19.67:1
+  look-email: ring 2px rgb(11, 11, 12) pixel 11,11,12 vs fill 255,242,240 = 18.00:1, vs page 255,255,255 = 19.67:1
+light-photo@1440 glass=on error=rgb(11, 11, 12) icon=rgb(11, 11, 12) themeError=rgb(153, 0, 21) ink=rgb(11, 11, 12) filters=blur(24px) saturate(1.15)
+  look-name: ring 2px rgb(11, 11, 12) pixel 11,11,12 vs fill 186,199,207 = 11.39:1, vs page 211,228,236 = 15.06:1
+  look-arrival: ring 2px rgb(11, 11, 12) pixel 11,11,12 vs fill 138,160,154 = 7.10:1, vs page 164,186,178 = 9.60:1
+  look-notes: ring 2px rgb(11, 11, 12) pixel 11,11,12 vs fill 139,146,137 = 6.16:1, vs page 165,171,156 = 8.34:1
+  look-email: ring 2px rgb(11, 11, 12) pixel 11,11,12 vs fill 186,191,135 = 10.20:1, vs page 166,191,131 = 9.74:1
+today@390 glass=off error=rgb(157, 5, 0) icon=rgb(157, 5, 0) themeError=rgb(157, 5, 0) ink=rgb(25, 25, 25) filters=none
+  look-name: ring 2px rgb(25, 25, 25) pixel 25,25,25 vs fill 255,255,255 = 17.58:1, vs page 245,245,245 = 16.13:1
+  look-arrival: ring 2px rgb(25, 25, 25) pixel 25,25,25 vs fill 255,255,255 = 17.58:1, vs page 245,245,245 = 16.13:1
+  look-notes: ring 2px rgb(25, 25, 25) pixel 25,25,25 vs fill 255,255,255 = 17.58:1, vs page 245,245,245 = 16.13:1
+  look-email: ring 2px rgb(25, 25, 25) pixel 25,25,25 vs fill 255,242,239 = 16.07:1, vs page 245,245,245 = 16.13:1
+dark@390 glass=off error=rgb(239, 68, 68) icon=rgb(239, 68, 68) themeError=rgb(239, 68, 68) ink=rgb(255, 255, 255) filters=none
+  look-name: ring 2px rgb(255, 255, 255) pixel 255,255,255 vs fill 32,32,32 = 16.29:1, vs page 10,10,10 = 19.80:1
+  look-arrival: ring 2px rgb(255, 255, 255) pixel 255,255,255 vs fill 32,32,32 = 16.29:1, vs page 10,10,10 = 19.80:1
+  look-notes: ring 2px rgb(255, 255, 255) pixel 255,255,255 vs fill 32,32,32 = 16.29:1, vs page 10,10,10 = 19.80:1
+  look-email: ring 2px rgb(255, 255, 255) pixel 255,255,255 vs fill 65,0,4 = 17.12:1, vs page 10,10,10 = 19.80:1
+dark-photo@390 glass=on error=rgb(255, 255, 255) icon=rgb(255, 255, 255) themeError=rgb(239, 68, 68) ink=rgb(255, 255, 255) filters=blur(24px) saturate(1.15)
+  look-name: ring 2px rgb(255, 255, 255) pixel 255,255,255 vs fill 91,101,108 = 5.96:1, vs page 70,80,88 = 8.24:1
+  look-arrival: ring 2px rgb(255, 255, 255) pixel 255,255,255 vs fill 66,77,75 = 8.77:1, vs page 17,32,12 = 16.99:1
+  look-notes: ring 2px rgb(255, 255, 255) pixel 255,255,255 vs fill 59,71,33 = 9.96:1, vs page 10,29,1 = 17.66:1
+  look-email: ring 2px rgb(255, 255, 255) pixel 255,255,255 vs fill 113,93,50 = 6.34:1, vs page 20,38,0 = 16.07:1
+light@390 glass=off error=rgb(153, 0, 21) icon=rgb(153, 0, 21) themeError=rgb(153, 0, 21) ink=rgb(11, 11, 12) filters=none
+  look-name: ring 2px rgb(11, 11, 12) pixel 11,11,12 vs fill 233,233,233 = 16.20:1, vs page 255,255,255 = 19.67:1
+  look-arrival: ring 2px rgb(11, 11, 12) pixel 11,11,12 vs fill 233,233,233 = 16.20:1, vs page 255,255,255 = 19.67:1
+  look-notes: ring 2px rgb(11, 11, 12) pixel 11,11,12 vs fill 233,233,233 = 16.20:1, vs page 255,255,255 = 19.67:1
+  look-email: ring 2px rgb(11, 11, 12) pixel 11,11,12 vs fill 255,242,240 = 18.00:1, vs page 255,255,255 = 19.67:1
+light-photo@390 glass=on error=rgb(11, 11, 12) icon=rgb(11, 11, 12) themeError=rgb(153, 0, 21) ink=rgb(11, 11, 12) filters=blur(24px) saturate(1.15)
+  look-name: ring 2px rgb(11, 11, 12) pixel 11,11,12 vs fill 181,194,205 = 10.83:1, vs page 210,225,235 = 14.72:1
+  look-arrival: ring 2px rgb(11, 11, 12) pixel 11,11,12 vs fill 146,160,159 = 7.26:1, vs page 138,159,132 = 6.91:1
+  look-notes: ring 2px rgb(11, 11, 12) pixel 11,11,12 vs fill 137,152,102 = 6.32:1, vs page 128,154,116 = 6.36:1
+  look-email: ring 2px rgb(11, 11, 12) pixel 11,11,12 vs fill 210,183,126 = 10.13:1, vs page 142,167,115 = 7.42:1
+
+0 failures
