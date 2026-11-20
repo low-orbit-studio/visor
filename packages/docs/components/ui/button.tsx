@@ -1,3 +1,3 @@
 'use client';
 
-export { Button } from '../../../../components/ui/button/button';
+export { ArrowSwap, Button } from '../../../../components/ui/button/button';

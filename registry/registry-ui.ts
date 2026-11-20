@@ -123,8 +123,9 @@ export const ui: Registry = [
     name: "button",
     type: "registry:ui",
     description:
-      "A button component with multiple variants and sizes using CVA. Includes a gated permission state and a pending state that holds the control's geometry while its action is in flight.",
+      "A button component with multiple variants and sizes using CVA. Includes a gated permission state, a pending state that holds the control's geometry while its action is in flight, a glass variant and an arrow-swap slot.",
     dependencies: [
+      "@phosphor-icons/react",
       "@radix-ui/react-slot",
       "class-variance-authority",
       "@loworbitstudio/visor-core",

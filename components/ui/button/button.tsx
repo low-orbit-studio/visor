@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
+import { ArrowLeftIcon, ArrowRightIcon } from "@phosphor-icons/react"
 import { cn } from "../../../lib/utils"
 import styles from "./button.module.css"
 import { Spinner } from "../spinner/spinner"
@@ -19,6 +20,7 @@ const buttonVariants = cva(styles.base, {
       outline: styles.variantOutline,
       ghost: styles.variantGhost,
       destructive: styles.variantDestructive,
+      glass: styles.variantGlass,
     },
     size: {
       sm: styles.sizeSm,
@@ -391,4 +393,26 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 )
 Button.displayName = "Button"
 
-export { Button, buttonVariants }
+export interface ArrowSwapProps {
+  /** Which way the arrow points. @default "right" */
+  direction?: "left" | "right"
+}
+
+/**
+ * Two arrows in a one-arrow window, for a Button's trailing (or leading) slot.
+ * On the button's hover or keyboard focus both slide the way the arrow points:
+ * the hidden one takes the visible one's place as it leaves. Decorative only.
+ */
+function ArrowSwap({ direction = "right" }: ArrowSwapProps) {
+  const Arrow = direction === "left" ? ArrowLeftIcon : ArrowRightIcon
+  return (
+    <span className={styles.arrowSwap} data-slot="button-arrow" data-direction={direction} aria-hidden="true">
+      <span className={styles.arrowTrack}>
+        <Arrow weight="bold" />
+        <Arrow weight="bold" />
+      </span>
+    </span>
+  )
+}
+
+export { ArrowSwap, Button, buttonVariants }

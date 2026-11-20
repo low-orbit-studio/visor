@@ -995,6 +995,21 @@ const buttonFamily: ComponentTokenFamily = {
     { key: "md-height", property: "height", description: "`md` height. Bind `auto` with `md-padding` to let the padding set the height.", consumers: at(BUTTON, "var(--label-box-height)") },
     { key: "md-padding", property: "padding", description: "`md` padding.", consumers: at(BUTTON, "0 var(--spacing-4, 1rem)") },
     { key: "dlg-padding", property: "padding", description: "`dlg` padding.", consumers: at(BUTTON, "var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem)") },
+    // VI-807: the pill hooks. With `radius` / `icon-radius` at `999px` they draw
+    // the Honcho kit's pill: a taller `lg`, a lifted default face, a grow on
+    // hover and a press. Unbound, every one renders as before.
+    { key: "lg-height", property: "height", description: "`lg` height (`54px` for the kit's pill).", consumers: at(BUTTON, "var(--label-box-height)") },
+    { key: "lg-padding", property: "padding", description: "`lg` padding.", consumers: at(BUTTON, "0 var(--spacing-6, 1.5rem)") },
+    { key: "default-shadow", property: "box-shadow", description: "`default` variant drop shadow. Unbound, no shadow is declared.", consumers: at(BUTTON, "revert-layer") },
+    { key: "default-shadow-hover", property: "box-shadow", description: "`default` variant drop shadow on hover. Defaults to `default-shadow`.", consumers: at(BUTTON, "var(--button-default-shadow, revert-layer)") },
+    { key: "outline-text", property: "color", description: "`outline` variant ink.", consumers: at(BUTTON, "var(--text-primary, #111827)") },
+    { key: "outline-bg-hover", property: "background-color", description: "`outline` variant fill on hover.", consumers: at(BUTTON, "var(--surface-muted, #f3f4f6)") },
+    { key: "hover-scale", property: "scale", description: "Grow on hover, every variant (`1.06` for the kit). Off for disabled, gated and pending buttons.", consumers: at(BUTTON, "revert-layer") },
+    { key: "press-scale", property: "scale", description: "Scale while pressed (`0.97` for the kit). Replaces the hover grow while held.", consumers: at(BUTTON, "revert-layer") },
+    { key: "press-transform", property: "transform", description: "Press nudge. Bind `none` when `press-scale` carries the press.", consumers: at(BUTTON, "translateY(1px)") },
+    { key: "press-duration", property: "transition-duration", description: "How fast the press lands. Unbound, it is instant.", consumers: at(BUTTON, "0s") },
+    { key: "motion-duration", property: "transition-duration", description: "Duration of the fill, ink, grow, shadow and arrow-swap transitions.", consumers: at(BUTTON, "var(--motion-duration-150, 150ms)") },
+    { key: "motion-easing", property: "transition-timing-function", description: "Curve of the fill, ink, grow, shadow and arrow-swap transitions.", consumers: at(BUTTON, "var(--motion-easing-default, ease-in-out)") },
     {
       key: "text-transform",
       property: "text-transform",

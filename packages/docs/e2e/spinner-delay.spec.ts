@@ -58,9 +58,23 @@ test("Spinner delay: nothing shows until the wait passes, then it fades in", asy
   await expect(words).toHaveText("Loading your form");
 
   await replay(page);
-  // Inside the 600ms wait both are fully transparent.
-  expect(await opacity(ring)).toBe("0");
-  expect(await opacity(words)).toBe("0");
+  // Inside the 600ms wait both are fully transparent. Replay again and read in the
+  // same task, before a frame can render: separate round trips can take longer than
+  // the wait on a busy runner (the five-look frames reload after hydration).
+  const read = await page.locator('[data-demo="spinner-delay"]').first().evaluate(async (demo) => {
+    const ringOf = () => demo.querySelector('[data-slot="spinner"][data-delay]')!;
+    const before = ringOf();
+    [...demo.querySelectorAll("button")].find((b) => b.textContent?.trim() === "Replay")!.click();
+    // React commits the click's update in a microtask, still ahead of the next frame.
+    for (let i = 0; i < 50 && ringOf() === before; i++) await Promise.resolve();
+    const statusOf = demo.querySelector('[data-slot="spinner-status"]')!;
+    return {
+      remounted: ringOf() !== before,
+      ring: getComputedStyle(ringOf()).opacity,
+      words: getComputedStyle(statusOf).opacity,
+    };
+  });
+  expect(read).toEqual({ remounted: true, ring: "0", words: "0" });
   expect(await animations(words)).toContainEqual(expect.objectContaining({ name: "appear", delay: 600 }));
   expect(await animations(ring)).toContainEqual(expect.objectContaining({ name: "appear", delay: 600 }));
 
@@ -89,10 +103,12 @@ test("Spinner without a delay is visible on first paint", async ({ page }) => {
 });
 
 async function lookFrame(page: Page, id: string): Promise<Frame> {
-  const handle = await page
-    .locator(`[data-slot="five-looks"] [data-look="${id}"] iframe`)
-    .elementHandle();
-  const frame = await handle!.contentFrame();
+  const iframe = page.locator(`[data-slot="five-looks"] [data-look="${id}"] iframe`);
+  // The frames first render on the default theme, then reload on the docs theme
+  // after hydration. Read only the final document.
+  await expect(iframe).toHaveAttribute("src", /theme=neutral/, { timeout: 20_000 });
+  const frame = await (await iframe.elementHandle())!.contentFrame();
+  await expect.poll(() => frame!.url()).toContain("theme=neutral");
   await frame!.waitForSelector(`[data-slot="look-panel"][data-look="${id}"] [data-slot="spinner-status"]`);
   return frame!;
 }

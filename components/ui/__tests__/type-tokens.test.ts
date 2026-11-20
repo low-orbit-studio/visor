@@ -33,6 +33,10 @@ interface Case {
   density?: "editorial"
   /** Hover the target before reading (the hover-only hooks). */
   hover?: boolean
+  /** Hold the mouse down on the target before reading (the :active hooks). */
+  press?: boolean
+  /** Keep transitions on, so `transition-*` reads the bound value. */
+  motion?: boolean
 }
 
 const LABEL = "[data-slot=field-label]"
@@ -90,6 +94,20 @@ const CASES: Case[] = [
   { token: "--button-md-height", fixture: "button/default", target: "button", prop: "height", value: "50px" },
   { token: "--button-md-padding", fixture: "button/default", target: "button", prop: "padding-left", value: "20px" },
   { token: "--button-dlg-padding", fixture: "button/dlg", target: "button", prop: "padding-left", value: "11px" },
+  // pill hooks (VI-807): lg box, lifted default face, outline face, grow, press and timing
+  { token: "--button-lg-height", fixture: "button/lg", target: "button", prop: "height", value: "60px" },
+  { token: "--button-lg-padding", fixture: "button/lg", target: "button", prop: "padding-left", value: "20px" },
+  { token: "--button-default-shadow", fixture: "button/default", target: "button", prop: "box-shadow", value: "rgb(1, 2, 3) 0px 4px 8px 0px" },
+  { token: "--button-default-shadow-hover", fixture: "button/default", target: "button", prop: "box-shadow", value: "rgb(4, 5, 6) 0px 2px 3px 0px", hover: true },
+  { token: "--button-outline-text", fixture: "button/outline", target: "button", prop: "color", value: "rgb(4, 5, 6)" },
+  { token: "--button-outline-bg-hover", fixture: "button/outline", target: "button", prop: "background-color", value: "rgb(1, 2, 3)", hover: true },
+  { token: "--button-hover-scale", fixture: "button/default", target: "button", prop: "scale", value: "1.5", hover: true },
+  { token: "--button-press-scale", fixture: "button/default", target: "button", prop: "scale", value: "0.5", press: true },
+  { token: "--button-press-transform", fixture: "button/default", target: "button", prop: "transform", value: "translateY(5px)", expected: "matrix(1, 0, 0, 1, 0, 5)", press: true },
+  { token: "--button-press-duration", fixture: "button/default", target: "button", prop: "transition-duration", value: "0.2s", press: true, motion: true },
+  // one value per transitioned property: background-color, color, opacity, transform, scale, box-shadow
+  { token: "--button-motion-duration", fixture: "button/default", target: "button", prop: "transition-duration", value: "0.4s", expected: Array(6).fill("0.4s").join(", "), motion: true },
+  { token: "--button-motion-easing", fixture: "button/default", target: "button", prop: "transition-timing-function", value: "linear", expected: Array(6).fill("linear").join(", "), motion: true },
   // icon gap (VI-733); the compact destructive face is in button-vi733.test.ts
   { token: "--button-icon-gap", fixture: "button/icon-label", target: "button", prop: "column-gap", value: "6px" },
   // InlineEdit's pencil is the same mark (VI-658)
@@ -119,9 +137,10 @@ const CASES: Case[] = [
 
 async function read(c: Case, opts: { scopeCss?: string; componentCss?: string } = {}): Promise<string> {
   const [component, fixture] = c.fixture.split("/")
-  const page = await open(component, fixture, opts)
+  const page = await open(component, fixture, { ...opts, motion: c.motion ? "no-preference" : undefined })
   if (c.density) await page.evaluate(`document.getElementById("theme-scope").setAttribute("data-density", ${JSON.stringify(c.density)})`)
-  if (c.hover) await page.hover(`#root ${c.target}`)
+  if (c.hover || c.press) await page.hover(`#root ${c.target}`)
+  if (c.press) await page.mouse.down()
   const value = (await page.evaluate(
     `getComputedStyle(document.querySelector(${JSON.stringify(`#root ${c.target}`)})).getPropertyValue(${JSON.stringify(c.prop)})`,
   )) as string

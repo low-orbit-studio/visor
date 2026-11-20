@@ -6,6 +6,7 @@ declare const styles: {
   readonly variantOutline: string
   readonly variantGhost: string
   readonly variantDestructive: string
+  readonly variantGlass: string
   readonly isActive: string
   readonly sizeSm: string
   readonly sizeMd: string
@@ -16,6 +17,8 @@ declare const styles: {
   readonly pendingLabel: string
   readonly pendingOverlay: string
   readonly pendingText: string
+  readonly arrowSwap: string
+  readonly arrowTrack: string
 }
 
 export default styles

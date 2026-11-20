@@ -360,6 +360,18 @@ components:
     md-height: auto
     md-padding: "12px 20px"
     dlg-padding: "6px 11px"
+    lg-height: "54px"
+    lg-padding: "0 24px 0 30px"
+    default-shadow: "0 12px 32px -12px rgb(0 0 0 / 0.4)"
+    default-shadow-hover: "0 18px 40px -14px rgb(0 0 0 / 0.45)"
+    outline-text: "#c7b8d6"
+    outline-bg-hover: "#2ce0e6"
+    hover-scale: "1.06"
+    press-scale: "0.97"
+    press-transform: none
+    press-duration: "0.15s"
+    motion-duration: "0.5s"
+    motion-easing: "cubic-bezier(0.22, 1, 0.36, 1)"
     text-transform: uppercase
     letter-spacing: "0.3em"
     font-weight: "300"
