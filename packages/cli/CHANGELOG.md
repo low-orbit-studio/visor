@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.56.0
+
+### Minor Changes
+
+- a806b8c: VI-796: corner shape and motion as theme values. A theme can set `corners: squircle`, which emits `--corner-shape: squircle` and binds `corner-shape` to every element in the `visor-base` layer; browsers without `corner-shape` draw round. `motion.easing-out` sets `--motion-easing-ease-out`, and the opt-in `duration-enter`, `duration-exit`, `duration-page`, `duration-stagger` and `duration-enter-delay` keys emit `--motion-duration-<role>` only when a theme sets them. Themes that set none of these emit the same CSS as before.
+
+### Patch Changes
+
+- bd602ae: VI-795: the glass layer. Themes bind glass per tone under `components.glass` (fill, blur, edge, lift, shadow, on-photo ink, and control fill, hover fill, ring, ink and blur). visor-core adds the `[data-glass="on"]` / `[data-glass="off"]` switch, which copies those values (or Visor's defaults) into `--glass-on-*` variables that components read with their solid look as the fallback. Glass is off unless a container turns it on.
+- Updated dependencies [bd602ae]
+- Updated dependencies [a806b8c]
+  - @loworbitstudio/visor-theme-engine@0.42.0
+
 ## 1.55.0
 
 ### Minor Changes
