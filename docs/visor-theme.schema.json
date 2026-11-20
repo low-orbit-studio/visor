@@ -631,6 +631,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "stat-card": {
+          "type": "object",
+          "description": "StatCard \u2014 the card's edge, corners, elevation and inset, the rule above the footer, and the label, value and footer type. Keys: border, radius, shadow, padding, footer-border, footer-font-size, footer-font-weight, footer-line-height, footer-color, value-font-family, value-font-size, value-font-weight, value-line-height, value-letter-spacing, label-font-size, label-font-weight, label-line-height, label-letter-spacing, label-color.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "textarea": {
           "type": "object",
           "description": "Textarea shape at the default `md` size. Keys: padding, radius.",

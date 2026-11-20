@@ -1146,6 +1146,34 @@ LayerChart and SpanStrip — the investment hue (`hue="tide"`), the unresolved f
 
 Client blocks draw in Paper's project hues (`--paper-hue-<angle>-*`) and need no binding. Paper binds the investment hue to Tide and the unresolved fill to coral mixed into the page.
 
+### `stat-card`
+
+StatCard — the card's edge, corners, elevation and inset, the rule above the footer, and the label, value and footer type.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--stat-card-border` | Card edge — `0` draws a borderless card. | `1px solid var(--border-default, #e5e7eb)` |
+| `--stat-card-radius` | Card corner rounding. | `var(--radius-lg, 0.75rem)` |
+| `--stat-card-shadow` | Card elevation. | `var(--shadow-xs, 0 1px 2px 0 rgb(0 0 0 / 0.05))` |
+| `--stat-card-padding` | Card inset. | `var(--spacing-5, 1.25rem)` |
+| `--stat-card-footer-border` | Rule above the footer — `0` drops it. | `1px solid var(--border-default, #e5e7eb)` |
+| `--stat-card-footer-font-size` | Footer type size. | `var(--font-size-sm, 0.875rem)` |
+| `--stat-card-footer-font-weight` | Footer weight. | `inherit` |
+| `--stat-card-footer-line-height` | Footer line height. | `var(--line-height-normal, 1.5)` |
+| `--stat-card-footer-color` | Footer colour. | `var(--text-secondary, #6b7280)` |
+| `--stat-card-value-font-family` | Value family. | `var(--font-family-heading, inherit)` |
+| `--stat-card-value-font-size` | Value type size. | `var(--font-size-3xl, 1.875rem)` |
+| `--stat-card-value-font-weight` | Value weight. | `var(--font-weight-semibold, 600)` |
+| `--stat-card-value-line-height` | Value line height. | `var(--line-height-tight, 1.1)` |
+| `--stat-card-value-letter-spacing` | Value tracking. | `var(--letter-spacing-tight, -0.02em)` |
+| `--stat-card-label-font-size` | Label type size. | `var(--font-size-xs, 0.75rem)` |
+| `--stat-card-label-font-weight` | Label weight. | `var(--font-weight-semibold, 600)` |
+| `--stat-card-label-line-height` | Label line height. | `var(--line-height-tight, 1.25)` |
+| `--stat-card-label-letter-spacing` | Label tracking. | `var(--letter-spacing-wide, 0.05em)` |
+| `--stat-card-label-color` | Label colour. | `var(--text-tertiary, #6b7280)` |
+
+Where the `sm` size, the `highlight` variant or a `hero` / `compact` value sets its own padding, type size or elevation, that rule still wins. The type hooks are longhands, not a `font` shorthand: a shorthand would need a fallback naming a family, and the unbound label and footer inherit theirs.
+
 ### `admin-ui`
 
 Structural roles the admin-ui pattern owns. `marquee-family` is the display face for KPI hero figures and marquee page titles — the role the admin-ui portability audit named as the one piece of ENTR brand coupling a new theme must rebind.

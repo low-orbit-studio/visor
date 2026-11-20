@@ -198,6 +198,29 @@ components:
     gap-color:
       light: "#0b6e4f"
       dark: "#5fd4a8"
+  # VI-782: the summary card (Money home, Today money card). No edge, no rule above the footer,
+  # no shadow, tile corners; the value is --paper-desk-hero (900 44/44 display), the footer
+  # --paper-desk-sub (400 13/18) in muted ink, the label 700 12/16 with label tracking.
+  stat-card:
+    border: "0"
+    radius: "24px"
+    shadow: none
+    padding: "18px 20px 16px"
+    footer-border: "0"
+    footer-font-size: "13px"
+    footer-font-weight: "400"
+    footer-line-height: "18px"
+    footer-color: "var(--text-muted)"
+    value-font-family: "var(--font-display)"
+    value-font-size: "44px"
+    value-font-weight: "900"
+    value-line-height: "44px"
+    value-letter-spacing: "var(--paper-track-tight)"
+    label-font-size: "12px"
+    label-font-weight: "700"
+    label-line-height: "16px"
+    label-letter-spacing: "var(--paper-track-label)"
+    label-color: "var(--text-secondary)"
 
 overrides:
   light:

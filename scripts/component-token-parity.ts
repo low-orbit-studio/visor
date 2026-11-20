@@ -266,6 +266,16 @@ function fixtureMarkup(): string {
       <div class="${c("sidebar", "footer")}" data-probe="sidebar-footer">Settings</div>
     </div>
   </section>
+
+  <section class="band" data-family="stat-card">
+    <article class="${c("stat-card", "base", "variantDefault", "sizeMd")}" data-probe="stat-card-base">
+      <div class="${c("stat-card", "header")}">
+        <p class="${c("stat-card", "label")}" data-probe="stat-card-label">Billed this month</p>
+      </div>
+      <p class="${c("stat-card", "value")}" data-probe="stat-card-value">$48,120</p>
+      <div class="${c("stat-card", "footer")}" data-probe="stat-card-footer">12 invoices</div>
+    </article>
+  </section>
 </main>`;
 }
 
