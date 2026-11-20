@@ -11,6 +11,10 @@
   --button-font-weight: 620;
   --button-letter-spacing: -0.005em;
   --button-icon-gap: 12px;
+  /* Ink on paper, so the primary inverts with the tone instead of taking the theme's key colour. */
+  --button-default-bg: var(--text-primary);
+  --button-default-bg-hover: var(--text-primary);
+  --button-default-text: var(--surface-page);
   --button-default-shadow: 0 12px 32px -12px rgb(0 0 0 / 0.4);
   --button-default-shadow-hover: 0 18px 40px -14px rgb(0 0 0 / 0.45);
   --button-hover-scale: 1.06;
