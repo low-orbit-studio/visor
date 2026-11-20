@@ -387,6 +387,20 @@ Dialog's panel and page scrim — width, corners, fill, inset, shadow, a backdro
 | `--dialog-overlay-bg` | The page scrim's colour. | `var(--overlay-bg, rgba(0, 0, 0, 0.8))` |
 | `--dialog-overlay-blur` | How much the scrim blurs the page, a length. | `4px` (editorial `2px`) |
 
+### `popover`
+
+Popover's panel — corners, inset, fill and shadow — and the stay-mounted (`forceMount`) fade's timing, curve and rise. Under `data-glass="on"` the panel reads the glass layer's fill, blur, shadow and ink; a bound `bg` or `shadow` wins in every look.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--popover-radius` | Panel corners. | `var(--radius-lg, 0.5rem)` |
+| `--popover-padding` | Panel inset, one length. PopoverFooter's rule spans it. | `var(--spacing-4, 1rem)` |
+| `--popover-bg` | Panel fill, in every look. Unset, the glass layer's fill over a photo and `--surface-popover` elsewhere. | `var(--glass-on-fill, var(--surface-popover, var(--surface-card, #ffffff)))` |
+| `--popover-shadow` | Panel shadow (and any inset ring), in every look. Unset, the glass layer's shadow over a photo and `--shadow-lg` elsewhere. | `var(--glass-on-shadow, var(--shadow-lg))` |
+| `--popover-duration` | Stay-mounted fade length. | `var(--motion-duration-normal, 200ms)` |
+| `--popover-easing` | Stay-mounted fade curve. | `var(--motion-easing-enter, ease-out)` |
+| `--popover-rise` | How far the stay-mounted panel rises as it fades in. None under reduced motion. | `6px` |
+
 ### `glass`
 
 The glass layer over a photo: surface fill, blur, edge, lift, shadow and on-photo ink, plus the glass values controls read. No component reads these directly. visor-core's `data-glass="on"` switch copies each one into a `--glass-on-<key>` variable, and components read those, so glass draws only where the switch is on. See [Glass](/docs/themes/glass).

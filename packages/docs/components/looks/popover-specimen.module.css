@@ -1,0 +1,39 @@
+/* The bar the menu hangs from: the stay-mounted panel is placed by its caller,
+ * against this positioned ancestor, as the kit's top bar does. */
+.stage {
+  width: min(100%, 20rem);
+  min-height: 17rem;
+}
+
+.bar {
+  position: relative;
+  display: flex;
+  gap: var(--spacing-3, 0.75rem);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menu {
+  top: calc(100% + var(--spacing-2, 0.5rem));
+  left: 0;
+  right: 0;
+  display: grid;
+}
+
+.who {
+  display: grid;
+  gap: var(--spacing-1, 0.25rem);
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem) var(--spacing-3, 0.75rem);
+  margin-bottom: var(--spacing-1, 0.25rem);
+  border-bottom: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
+  font-size: var(--font-size-sm, 0.875rem);
+}
+
+.who span {
+  color: var(--text-secondary, #6b7280);
+}
+
+/* Menu rows: a full-width ghost Button, label at the start. */
+.item {
+  justify-content: flex-start;
+}
