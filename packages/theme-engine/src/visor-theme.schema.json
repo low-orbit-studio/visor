@@ -805,6 +805,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "number-input": {
+          "type": "object",
+          "description": "NumberInput \u2014 the field fill (resting and focused), edge colour, corner radius, height, the value's width, size and weight, and the \u2212 and + buttons' size, inset, corners, ink, hover fill and icon size. Under `data-glass=\"on\"` the field reads the glass layer's control values instead. Keys: bg, bg-focus, border, radius, height, value-width, value-font-size, value-font-weight, button-size, button-inset, button-radius, button-color, button-hover-bg, icon-size.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "separator": {
           "type": "object",
           "description": "Separator rule colour, bare or either side of a label. Keys: color.",

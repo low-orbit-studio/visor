@@ -46,6 +46,34 @@ props:
     description: Fixed text after the value, inside the same well (a unit such as `h` or `m`).
 
 theme_hooks:
+  - name: --number-input-bg
+    description: Field fill.
+  - name: --number-input-bg-focus
+    description: Field fill while the value has focus.
+  - name: --number-input-border
+    description: Resting edge colour.
+  - name: --number-input-radius
+    description: Field corner radius.
+  - name: --number-input-height
+    description: Field and value height.
+  - name: --number-input-value-width
+    description: Width of the value between the buttons.
+  - name: --number-input-value-font-size
+    description: Value size.
+  - name: --number-input-value-font-weight
+    description: Value weight.
+  - name: --number-input-button-size
+    description: − and + button size.
+  - name: --number-input-button-inset
+    description: Space either side of each button.
+  - name: --number-input-button-radius
+    description: Button corner radius (50% for round buttons).
+  - name: --number-input-button-color
+    description: Button icon ink.
+  - name: --number-input-button-hover-bg
+    description: Button fill on hover.
+  - name: --number-input-icon-size
+    description: Button icon size.
   - name: --input-affix-gap
     description: Space between a prefix or suffix and the value (shared with Input).
   - name: --input-affix-color

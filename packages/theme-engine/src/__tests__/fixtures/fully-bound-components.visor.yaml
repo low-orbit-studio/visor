@@ -515,6 +515,21 @@ components:
   input-affix:
     gap: "12px"
     color: "#6b21a8"
+  number-input:
+    bg: "#2b0a3d"
+    bg-focus: "#3b0a4d"
+    border: "#ff00aa"
+    radius: "3px"
+    height: "37px"
+    value-width: "37px"
+    value-font-size: "37px"
+    value-font-weight: "900"
+    button-size: "37px"
+    button-inset: "3px"
+    button-radius: "50%"
+    button-color: "#ff00aa"
+    button-hover-bg: "#2b0a3d"
+    icon-size: "37px"
   separator:
     color: "#2c2c2c"
   alert:

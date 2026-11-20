@@ -47,6 +47,7 @@ const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
       disabled,
       prefix,
       suffix,
+      onKeyDown,
       ...props
     },
     ref
@@ -114,16 +115,29 @@ const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
       updateValue(clamped)
     }
 
-    const increment = () => {
-      const current = Number(displayValue) || 0
-      const next = clamp(current + step, min, max)
-      updateValue(next)
-    }
+    const parsedValue = displayValue === "" ? NaN : Number(displayValue)
+    const atMin = min !== undefined && parsedValue <= min
+    const atMax = max !== undefined && parsedValue >= max
 
-    const decrement = () => {
+    // From empty, the first press lands on `min` when there is one.
+    const stepBy = (delta: number) => {
+      if (Number.isNaN(parsedValue) && min !== undefined) {
+        updateValue(min)
+        return
+      }
       const current = Number(displayValue) || 0
-      const next = clamp(current - step, min, max)
-      updateValue(next)
+      updateValue(clamp(current + delta, min, max))
+    }
+    const increment = () => stepBy(step)
+    const decrement = () => stepBy(-step)
+
+    // ArrowUp and ArrowDown step the value, as on a native spinbutton.
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      onKeyDown?.(e)
+      if (e.defaultPrevented || (e.key !== "ArrowUp" && e.key !== "ArrowDown")) return
+      e.preventDefault()
+      if (e.key === "ArrowUp") increment()
+      else decrement()
     }
 
     return (
@@ -136,7 +150,7 @@ const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
           type="button"
           className={styles.button}
           onClick={decrement}
-          disabled={disabled}
+          disabled={disabled || atMin}
           aria-label="Decrease value"
           tabIndex={-1}
         >
@@ -161,6 +175,7 @@ const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
           value={displayValue}
           onChange={handleInputChange}
           onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
           disabled={disabled}
           className={cn(
             styles.input,
@@ -179,7 +194,7 @@ const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
           type="button"
           className={styles.button}
           onClick={increment}
-          disabled={disabled}
+          disabled={disabled || atMax}
           aria-label="Increase value"
           tabIndex={-1}
         >
