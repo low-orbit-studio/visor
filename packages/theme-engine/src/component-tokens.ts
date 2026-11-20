@@ -1271,6 +1271,33 @@ const inputAffixFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-798: NumberInput's skin, so a theme can draw the kit's count stepper (a tall
+// field, round buttons in wide end columns, a large bold value). Each key falls
+// back to what NumberInput drew before it. Under the glass switch (VI-795) the
+// field reads the glass layer's shared control values ahead of these.
+const numberInputFamily: ComponentTokenFamily = {
+  family: "number-input",
+  prefix: "number-input",
+  description:
+    "NumberInput \u2014 the field fill (resting and focused), edge colour, corner radius, height, the value's width, size and weight, and the \u2212 and + buttons' size, inset, corners, ink, hover fill and icon size. Under `data-glass=\"on\"` the field reads the glass layer's control values instead.",
+  tokens: [
+    { key: "bg", property: "background-color", description: "Field fill.", consumers: at(NUMBER_INPUT, "var(--surface-interactive-default, #f9fafb)") },
+    { key: "bg-focus", property: "background-color", description: "Field fill while the value has focus. Unset, the resting fill.", consumers: at(NUMBER_INPUT, "var(--number-input-bg, var(--surface-interactive-default, #f9fafb))") },
+    { key: "border", property: "outline-color", description: "Resting edge colour. Unset, the shared `control` edge colour.", consumers: at(NUMBER_INPUT, "var(--control-edge-color, var(--border-default, #e5e7eb))") },
+    { key: "radius", property: "border-radius", description: "Field corner radius.", consumers: at(NUMBER_INPUT, "var(--radius-md, 0.375rem)") },
+    { key: "height", property: "height", description: "Field and value height.", consumers: at(NUMBER_INPUT, "2.25rem") },
+    { key: "value-width", property: "width", description: "Width of the value between the buttons.", consumers: at(NUMBER_INPUT, "4rem") },
+    { key: "value-font-size", property: "font-size", description: "Value size.", consumers: at(NUMBER_INPUT, "var(--font-size-sm, 0.875rem)") },
+    { key: "value-font-weight", property: "font-weight", description: "Value weight.", consumers: at(NUMBER_INPUT, "inherit") },
+    { key: "button-size", property: "width / height", description: "\u2212 and + button size.", consumers: at(NUMBER_INPUT, "2.25rem") },
+    { key: "button-inset", property: "margin-inline", description: "Space either side of each button, so a round button sits centred in a wider end column.", consumers: at(NUMBER_INPUT, "0") },
+    { key: "button-radius", property: "border-radius", description: "Button corner radius (`50%` for round buttons).", consumers: at(NUMBER_INPUT, "0") },
+    { key: "button-color", property: "color", description: "Button icon ink.", consumers: at(NUMBER_INPUT, "var(--text-secondary, #9ca3af)") },
+    { key: "button-hover-bg", property: "background-color", description: "Button fill on hover.", consumers: at(NUMBER_INPUT, "var(--surface-muted, #f3f4f6)") },
+    { key: "icon-size", property: "width / height", description: "Button icon size.", consumers: at(NUMBER_INPUT, "0.875rem") },
+  ],
+};
+
 // VI-671. The line a Separator draws, bare or either side of a label. Unbound it
 // is the default border colour, so nothing moves; a borderless theme that sets
 // `border-default` to transparent binds this to keep the rule visible.
@@ -1658,6 +1685,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   tooltipFamily,
   actionRowFamily,
   inputAffixFamily,
+  numberInputFamily,
   separatorFamily,
   alertFamily,
   layerChartFamily,

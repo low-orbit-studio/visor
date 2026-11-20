@@ -7,6 +7,7 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { NumberInput } from '@/components/ui/number-input';
 import { Field, FieldLabel, FieldError } from '@/components/ui/field';
+import { FiveLooks } from '@/components/looks/five-looks';
 
 ## Default
 
@@ -101,6 +102,39 @@ steppers.
   </div>
 </ComponentPreview>
 
+## Skin and Glass
+
+A theme reshapes the field and its buttons through the `number-input` hooks: fill,
+focused fill, edge colour, corners, height, the value's width, size and weight, and
+the buttons' size, inset, corners, ink, hover fill and icon size. Each falls back to
+the look above, so a theme that binds none of them draws NumberInput unchanged. The
+full list is on [Component Tokens](/docs/themes/component-tokens#number-input).
+
+```yaml
+components:
+  number-input:
+    height: "54px"
+    radius: "12px"
+    value-width: "72px"
+    value-font-size: "22px"
+    value-font-weight: "640"
+    button-size: "40px"
+    button-inset: "7px"
+    button-radius: "50%"
+    icon-size: "20px"
+```
+
+Glass is off by default. Inside `data-glass="on"` (see [Glass](/docs/themes/glass)),
+the field takes the glass layer's control values: its fill, a brighter fill on focus,
+its ring as the edge, its ink and its blur. Everywhere else the field is solid.
+
+### In Five Looks
+
+NumberInput as shipped, and with the sizes above, in each look on the theme picked
+in the docs. The Photo looks turn glass on over a photo.
+
+<FiveLooks specimen="number-input" height={160} />
+
 ## API Reference
 
 ### NumberInputProps
@@ -110,7 +144,8 @@ steppers.
 ## Accessibility
 
 - Always provide an `aria-label` or pair with a `<Label>` using `htmlFor`/`id` — the component has no visible label by default
-- Increment/decrement buttons have `aria-label="Increment"` and `aria-label="Decrement"`
+- The buttons have `aria-label="Decrease value"` and `aria-label="Increase value"`, and stay out of the tab order: the keyboard steps the value instead
 - The input renders as `type="text"` with `inputmode="numeric"` for appropriate mobile keyboard
-- Keyboard: Up/Down arrow keys increment/decrement the value; Tab navigates between the input and buttons
+- Keyboard: ArrowUp and ArrowDown step the value by `step`, holding at `min` and `max`. A caller's `onKeyDown` runs first and can cancel the step with `preventDefault()`
+- From empty, the first press of either button lands on `min` when one is set
 - `min`/`max` bounds are enforced both visually (buttons disable at bounds) and on input blur

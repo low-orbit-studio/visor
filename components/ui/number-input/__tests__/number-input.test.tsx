@@ -84,6 +84,67 @@ describe("NumberInput", () => {
     expect(screen.getByLabelText("Increase value")).toBeDisabled()
     expect(screen.getByLabelText("Decrease value")).toBeDisabled()
   })
+
+  // VI-798: the kit stepper's keyboard and bounds behaviour.
+  it("steps by `step` on ArrowUp and ArrowDown and holds at min and max", async () => {
+    const user = userEvent.setup()
+    render(<NumberInput defaultValue={8} min={0} max={10} step={2} aria-label="Quantity" />)
+    const input = screen.getByRole("spinbutton")
+
+    await user.click(input)
+    await user.keyboard("{ArrowUp}")
+    expect(input).toHaveValue("10")
+    await user.keyboard("{ArrowUp}")
+    expect(input).toHaveValue("10")
+    await user.keyboard("{ArrowDown}{ArrowDown}{ArrowDown}{ArrowDown}{ArrowDown}{ArrowDown}")
+    expect(input).toHaveValue("0")
+  })
+
+  it("still calls the caller's onKeyDown, and lets it cancel the step", async () => {
+    const user = userEvent.setup()
+    const onKeyDown = vi.fn((e: React.KeyboardEvent) => {
+      if (e.key === "ArrowDown") e.preventDefault()
+    })
+    render(<NumberInput defaultValue={5} onKeyDown={onKeyDown} aria-label="Quantity" />)
+    const input = screen.getByRole("spinbutton")
+
+    await user.click(input)
+    await user.keyboard("{ArrowUp}{ArrowDown}")
+    expect(onKeyDown).toHaveBeenCalledTimes(2)
+    expect(input).toHaveValue("6")
+  })
+
+  it("disables − at min and + at max, and re-enables them off the bound", async () => {
+    const user = userEvent.setup()
+    render(<NumberInput defaultValue={0} min={0} max={1} aria-label="Quantity" />)
+    const minus = screen.getByLabelText("Decrease value")
+    const plus = screen.getByLabelText("Increase value")
+
+    expect(minus).toBeDisabled()
+    expect(plus).toBeEnabled()
+    await user.click(plus)
+    expect(screen.getByRole("spinbutton")).toHaveValue("1")
+    expect(minus).toBeEnabled()
+    expect(plus).toBeDisabled()
+  })
+
+  it("lands on min on the first press from empty", async () => {
+    const user = userEvent.setup()
+    render(<NumberInput min={3} max={9} aria-label="Quantity" />)
+
+    expect(screen.getByLabelText("Decrease value")).toBeEnabled()
+    await user.click(screen.getByLabelText("Increase value"))
+    expect(screen.getByRole("spinbutton")).toHaveValue("3")
+  })
+
+  it("takes typed digits and ignores a stray letter", async () => {
+    const user = userEvent.setup()
+    render(<NumberInput aria-label="Quantity" />)
+    const input = screen.getByRole("spinbutton")
+
+    await user.type(input, "1x2")
+    expect(input).toHaveValue("12")
+  })
 })
 
 describe("accessibility", () => {

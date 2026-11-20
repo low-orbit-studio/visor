@@ -1110,6 +1110,45 @@ components:
       dark: "#a3a3a3"
 ```
 
+### `number-input`
+
+NumberInput — the field fill (resting and focused), edge colour, corner radius, height, the value's width, size and weight, and the − and + buttons' size, inset, corners, ink, hover fill and icon size. Under `data-glass="on"` the field reads the glass layer's control values instead.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--number-input-bg` | Field fill. | `var(--surface-interactive-default, #f9fafb)` |
+| `--number-input-bg-focus` | Field fill while the value has focus. Unset, the resting fill. | `var(--number-input-bg, var(--surface-interactive-default, #f9fafb))` |
+| `--number-input-border` | Resting edge colour. Unset, the shared `control` edge colour. | `var(--control-edge-color, var(--border-default, #e5e7eb))` |
+| `--number-input-radius` | Field corner radius. | `var(--radius-md, 0.375rem)` |
+| `--number-input-height` | Field and value height. | `2.25rem` |
+| `--number-input-value-width` | Width of the value between the buttons. | `4rem` |
+| `--number-input-value-font-size` | Value size. | `var(--font-size-sm, 0.875rem)` |
+| `--number-input-value-font-weight` | Value weight. | `inherit` |
+| `--number-input-button-size` | − and + button size. | `2.25rem` |
+| `--number-input-button-inset` | Space either side of each button, so a round button sits centred in a wider end column. | `0` |
+| `--number-input-button-radius` | Button corner radius (`50%` for round buttons). | `0` |
+| `--number-input-button-color` | Button icon ink. | `var(--text-secondary, #9ca3af)` |
+| `--number-input-button-hover-bg` | Button fill on hover. | `var(--surface-muted, #f3f4f6)` |
+| `--number-input-icon-size` | Button icon size. | `0.875rem` |
+
+The resting edge's width and style come from the shared [`control`](#control) tokens.
+Glass is off unless an ancestor sets `data-glass="on"`: there the fill, focused fill,
+edge, ink and blur come from the [glass layer](/docs/themes/glass)'s control values.
+
+```yaml
+components:
+  number-input:
+    height: "54px"
+    radius: "12px"
+    value-width: "72px"
+    value-font-size: "22px"
+    value-font-weight: "640"
+    button-size: "40px"
+    button-inset: "7px"
+    button-radius: "50%"
+    icon-size: "20px"
+```
+
 ### `separator`
 
 The line a Separator draws, bare or on both sides of a label.
