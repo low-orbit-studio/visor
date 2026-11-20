@@ -1,0 +1,54 @@
+name: ThemeToggle
+description: A round light/dark button. Dark shows the sun and light shows the moon; on a press the icon going away turns 100deg and shrinks out as the other springs in. Controlled, and keyed off its own data-tone.
+extends: HTMLButtonElement
+category: general
+
+when_to_use:
+  - One button that flips a page or app between light and dark
+  - A floating look switch, a top bar or an account menu's tone control
+  - The same toggle, with the same motion, across several apps that each store the tone their own way
+
+when_not_to_use:
+  - Choosing among several themes as well as the mode (use ThemeSwitcher)
+  - A labelled on/off setting inside a form (use Switch)
+
+why: >
+  Lifted from Honcho Backstage so every surface that flips light and dark
+  shares one button and one motion. It is controlled: the host owns the tone
+  and where it is stored (a class on html, a data attribute, localStorage),
+  and the toggle only asks for the other one. Because it keys off its own
+  data-tone rather than an attribute on html, it works on any page. The look
+  is CSS variables over Visor tokens, so a glass button on a photo is a
+  className and a few overrides, not a fork.
+
+props:
+  - name: value
+    type: "'light' | 'dark'"
+    required: true
+    description: The tone in force now. Dark shows the sun, light shows the moon.
+  - name: onValueChange
+    type: "(value: 'light' | 'dark') => void"
+    description: Called with the other tone on a press.
+  - name: aria-label
+    type: string
+    default: '"Switch light or dark"'
+    description: The button's accessible name.
+  - name: onClick
+    type: React.MouseEventHandler<HTMLButtonElement>
+    description: Runs before onValueChange. Call preventDefault() to skip the change.
+
+dependencies:
+  - "@phosphor-icons/react"
+
+preview_url: "https://visor.loworbit.studio/docs/components/general/theme-toggle"
+
+example: |
+  const [tone, setTone] = useState<"light" | "dark">("light")
+
+  <ThemeToggle
+    value={tone}
+    onValueChange={(next) => {
+      setTone(next)
+      document.documentElement.dataset.tone = next
+    }}
+  />

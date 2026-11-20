@@ -1,0 +1,86 @@
+---
+title: Photo Picker
+description: A grid of photo thumbnails, one chosen, with a staggered draw wave each time it opens.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { PhotoPickerDefaultDemo, PhotoPickerPopoverDemo } from '@/components/ui/photo-picker-demos';
+
+## Default
+
+Each thumbnail is a button with `aria-pressed`; the chosen one wears a 2px ring and every image grows a little on hover. The thumbnails rise in a quick wave from the top left when the grid mounts and every time `play` changes. Here a counter replays it.
+
+<ComponentPreview
+  title="Photo Picker"
+  code={"const [value, setValue] = React.useState('dusk');\nconst [play, setPlay] = React.useState(0);\n\n<PhotoPicker aria-label=\"Pick Your Background\" photos={photos} value={value} onValueChange={setValue} play={play} />\n<Button onClick={() => setPlay((n) => n + 1)}>Replay the Wave</Button>"}
+>
+  <PhotoPickerDefaultDemo />
+</ComponentPreview>
+
+## In a Popover
+
+The picker is only the grid, so it sits in whatever popover or panel you bring. Pass the open state to `play` so the wave replays on every open, and to `load` so no thumbnail is fetched before the first open. Once loaded, thumbnails stay loaded.
+
+<ComponentPreview
+  title="In a Popover"
+  code={"<Popover open={open} onOpenChange={setOpen}>\n  <PopoverTrigger asChild><Button variant=\"outline\">Photo</Button></PopoverTrigger>\n  <PopoverContent>\n    <PhotoPicker\n      aria-label=\"Pick Your Background\"\n      photos={photos}\n      value={value}\n      onValueChange={setValue}\n      play={open}\n      load={open}\n    />\n  </PopoverContent>\n</Popover>"}
+>
+  <PhotoPickerPopoverDemo />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add photo-picker
+```
+
+This copies two files into your project:
+
+- `components/ui/photo-picker/photo-picker.tsx` — the component
+- `components/ui/photo-picker/photo-picker.module.css` — the styles
+
+## Usage
+
+```tsx
+import { PhotoPicker } from '@/components/ui/photo-picker/photo-picker';
+
+const photos = [
+  { key: 'dusk', thumb: '/photos/dusk-480.webp', label: 'Dusk at the stage' },
+  { key: 'lake', thumb: '/photos/lake-480.webp' },
+];
+
+<PhotoPicker aria-label="Pick Your Background" photos={photos} value={photo} onValueChange={setPhoto} play={open} load={open} />
+```
+
+## Theming
+
+| Variable | Default | Sets |
+|---|---|---|
+| `--photo-picker-columns` | `5` | Columns above 760px |
+| `--photo-picker-columns-narrow` | `3` | Columns at 760px and under |
+| `--photo-picker-gap` | `--spacing-2` (8px) | Gap between thumbnails |
+| `--photo-picker-padding` | `--spacing-1` (4px) | Room for the chosen ring inside the scroll box |
+| `--photo-picker-max-height` | `min(62vh, 560px)` | Height before the grid scrolls |
+| `--photo-picker-radius` | `--radius-xl` | Thumbnail corner radius |
+| `--photo-picker-ring` | `--border-default` | The 1px inset ring before a thumbnail loads |
+| `--photo-picker-ring-selected` | `--interactive-primary-bg` | The chosen thumbnail's 2px ring |
+| `--photo-picker-ease` | `cubic-bezier(0.22, 1, 0.36, 1)` | The wave's and the hover's easing |
+| `--photo-picker-draw-duration` | 320ms (`--motion-duration-800` × 0.4) | Each thumbnail's rise |
+| `--photo-picker-draw-gap` | `48ms` | The beat between neighbours |
+| `--photo-picker-draw-rise` | `10px` | How far each thumbnail rises |
+
+Thumbnails are 4:3 and scale to 1.08 on hover. For anything else, target the buttons through your own `className`.
+
+## API Reference
+
+### PhotoPickerProps
+
+<PropsTable component="photo-picker" />
+
+## Accessibility
+
+- The grid is `role="group"`; give it an `aria-label` or `aria-labelledby` (4.1.2)
+- Each thumbnail is a native button with `aria-pressed`, named by its `label` or "Photo N" (4.1.2)
+- The chosen thumbnail is marked by a ring as well as by `aria-pressed`, and focus draws its own ring at the focus-ring tokens (2.4.7)
+- With `prefers-reduced-motion: reduce`, the wave and the hover zoom are off (2.3.3)

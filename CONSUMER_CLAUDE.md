@@ -59,7 +59,7 @@ npx visor add <component-name> --overwrite
 
 ---
 
-## Component Catalog (81)
+## Component Catalog (82)
 
 ### Data Display (7)
 
@@ -86,7 +86,7 @@ npx visor add <component-name> --overwrite
 | `toast` | Non-blocking notification that auto-dismisses |
 | `tooltip` | Small label shown on hover/focus |
 
-### Form (24)
+### Form (25)
 
 | Component | Description |
 | --- | --- |
@@ -105,6 +105,7 @@ npx visor add <component-name> --overwrite
 | `otp-input` | Multi-digit one-time-password input |
 | `password-input` | Masked input with show/hide toggle and strength meter |
 | `phone-input` | Phone number input with country code selector |
+| `photo-picker` | Photo thumbnail grid, one chosen; draw wave on open; thumbnails load on first open |
 | `position-picker` | 3x3 anchor grid; value is a { y, x } pair; on its own or over an image |
 | `radio-group` | Single-select from a group of options |
 | `search-input` | Input with search icon and clear button |

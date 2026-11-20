@@ -1,0 +1,63 @@
+name: PhotoPicker
+description: A grid of photo thumbnails, one chosen. Each thumbnail is a pressed-state button; a staggered draw wave plays each time the picker opens, and thumbnails wait to load until it has been opened once. The consumer supplies the popover or panel.
+extends: HTMLDivElement
+category: form
+
+when_to_use:
+  - Picking a background, cover or header photo from a set
+  - A photo menu in a popover, where the wave should replay on every open
+  - Any single choice whose options are best shown as pictures
+
+when_not_to_use:
+  - Uploading a new photo (use FileUpload)
+  - Choosing several photos at once (build a multi-select grid)
+  - Browsing photos full size (use Lightbox)
+
+why: >
+  Lifted from Honcho Backstage's Photo menu so every app that lets a person
+  pick a photo gets the same grid and the same motion. The picker is only the
+  grid: Backstage keeps its glass popover, another app can use Popover or a
+  panel. Thumbnails are buttons with aria-pressed and a name each. The wave is
+  part of the component, keyed on the play prop, and load holds the
+  thumbnails back until the first open so a closed menu never races the page
+  for bandwidth. Every visual value is a CSS variable that defaults to
+  Backstage's value wherever no theme token speaks for it.
+
+props:
+  - name: photos
+    type: "{ key: string; thumb: string; label?: string }[]"
+    required: true
+    description: The photos, in order. label is the thumbnail's accessible name; it defaults to "Photo N".
+  - name: value
+    type: string | null
+    default: "null"
+    description: The chosen photo's key.
+  - name: onValueChange
+    type: "(key: string) => void"
+    description: Called with a photo's key when it is pressed.
+  - name: play
+    type: boolean | number
+    description: The draw wave plays on mount and every time play changes, except to false. Pass the menu's open state, or a counter you bump.
+  - name: load
+    type: boolean
+    default: "true"
+    description: Thumbnails load only once this has been true, and stay loaded after. Pass the menu's open state to wait for the first open.
+
+dependencies: []
+
+preview_url: "https://visor.loworbit.studio/docs/components/form/photo-picker"
+
+example: |
+  <Popover open={open} onOpenChange={setOpen}>
+    <PopoverTrigger asChild><Button>Photo</Button></PopoverTrigger>
+    <PopoverContent>
+      <PhotoPicker
+        aria-label="Pick Your Background"
+        photos={photos}
+        value={photo}
+        onValueChange={setPhoto}
+        play={open}
+        load={open}
+      />
+    </PopoverContent>
+  </Popover>
