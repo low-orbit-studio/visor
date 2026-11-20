@@ -5,9 +5,12 @@ description: A form field wrapper composing label, description, and error displa
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
-import { Field, FieldLabel, FieldDescription, FieldError } from '@/components/ui/field';
+import { Field, FieldLabel, FieldControl, FieldDescription, FieldError } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { WarningCircleIcon } from '@phosphor-icons/react/dist/ssr';
+import { FiveLooks } from '@/components/looks/five-looks';
 
 ## Default
 
@@ -108,11 +111,82 @@ Input and Textarea accept a `size` prop (`sm`, `md`, `lg`) that controls height,
   </div>
 </ComponentPreview>
 
+## Control Box
+
+`FieldControl` is the box a control sits in. Put one Input, Textarea or Select
+inside: the control fills the box and goes bare, and the box draws the fill, the
+edge, the focus ring (2px on keyboard focus) and the invalid look, read from the
+control's `aria-invalid`. Pass `tall` for a Textarea, so the box grows with its
+text. `FieldLabel optional` adds the "optional" mark. Without `FieldControl`,
+Field renders exactly as above.
+
+<ComponentPreview
+  title="Field with Control Box"
+  code={"import { Field, FieldLabel, FieldControl, FieldDescription, FieldError } from '@/components/ui/field/field';\nimport { Input } from '@/components/ui/input/input';\n\n<Field>\n  <FieldLabel htmlFor=\"name\">Your name</FieldLabel>\n  <FieldControl>\n    <Input id=\"name\" placeholder=\"Jane Doe\" />\n  </FieldControl>\n  <FieldDescription>As it appears on your ID.</FieldDescription>\n</Field>\n\n<Field>\n  <FieldLabel htmlFor=\"email\">Email</FieldLabel>\n  <FieldControl>\n    <Input id=\"email\" aria-invalid=\"true\" aria-describedby=\"email-error\" defaultValue=\"jane@\" />\n  </FieldControl>\n  <FieldError id=\"email-error\" icon={<WarningCircleIcon weight=\"fill\" />}>Check the email address.</FieldError>\n</Field>"}
+>
+  <div style={{ width: '100%', maxWidth: '22rem', display: 'grid', gap: '1.5rem' }} data-demo="field-control">
+    <Field>
+      <FieldLabel htmlFor="box-name">Your name</FieldLabel>
+      <FieldControl>
+        <Input id="box-name" placeholder="Jane Doe" aria-describedby="box-name-hint" />
+      </FieldControl>
+      <FieldDescription id="box-name-hint">As it appears on your ID.</FieldDescription>
+    </Field>
+    <Field>
+      <FieldLabel htmlFor="box-arrival" optional>Arrival</FieldLabel>
+      <FieldControl>
+        <Select>
+          <SelectTrigger id="box-arrival">
+            <SelectValue placeholder="Choose one" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="thu">Thursday</SelectItem>
+            <SelectItem value="fri">Friday</SelectItem>
+          </SelectContent>
+        </Select>
+      </FieldControl>
+    </Field>
+    <Field>
+      <FieldLabel htmlFor="box-notes" optional>Notes</FieldLabel>
+      <FieldControl tall>
+        <Textarea id="box-notes" placeholder="Anything we should know" />
+      </FieldControl>
+    </Field>
+    <Field>
+      <FieldLabel htmlFor="box-email">Email</FieldLabel>
+      <FieldControl>
+        <Input id="box-email" aria-invalid="true" aria-describedby="box-email-error" defaultValue="jane@" />
+      </FieldControl>
+      <FieldError id="box-email-error" icon={<WarningCircleIcon weight="fill" />}>Check the email address.</FieldError>
+    </Field>
+  </div>
+</ComponentPreview>
+
+### Glass and the Error Colour
+
+Glass is off by default: the box is solid, with the shared control edge. Inside
+`data-glass="on"` (see [Glass](/docs/themes/glass)) it takes the glass layer's
+control fill, hover fill, ring, ink and blur. The error colour is a theme value,
+`field.error-color` (unset, `--text-error`), so a plain page draws the error line
+in red. Over a photo, red sinks into warm colours, so under glass the error line
+and the invalid edge take the glass layer's on-photo ink, and the icon and the
+edge carry the error.
+
+### In Five Looks
+
+Field with its control box, valid and invalid, in each look on the theme picked in
+the docs. The Photo looks turn glass on over a photo. The specimen binds the kit's
+sizes and inks through the `field` tokens, as a theme would (see Theming below).
+
+<FiveLooks specimen="field" height={760} />
+
 ## Theming
 
-A theme sets the label's size, case, tracking and colour through the `field`
-component tokens, in both densities. See
-[Component tokens](/docs/themes/component-tokens#field).
+A theme sets the label (size, weight, case, tracking, colour, the "optional"
+mark), the hint, the error line and the control box through the `field`
+component tokens. Each falls back to the look above, so a theme that binds none
+of them draws Field unchanged. See
+[Component Tokens](/docs/themes/component-tokens#field).
 
 ```yaml
 components:
@@ -152,6 +226,14 @@ import { Input } from '@/components/ui/input/input';
 
 <PropsTable component="field" />
 
+### FieldLabelProps
+
+<PropsTable component="field-label" />
+
+### FieldControlProps
+
+<PropsTable component="field-control" />
+
 ### FieldErrorProps
 
 <PropsTable component="field-error" />
@@ -162,6 +244,7 @@ import { Input } from '@/components/ui/input/input';
 | --- | --- | --- |
 | `Field` | `<div>` | Wrapper grouping label, input, description, and error |
 | `FieldLabel` | `<label>` | Semantic label linked to the input via `htmlFor` |
+| `FieldControl` | `<div>` | The box a control sits in: fill, edge, focus ring, invalid look, glass under `data-glass="on"` |
 | `FieldDescription` | `<p>` | Helper text providing additional context for the field |
 | `FieldError` | `<div>` | Error message container with `role="alert"` for live announcements |
 
@@ -171,4 +254,7 @@ import { Input } from '@/components/ui/input/input';
 - `FieldLabel` renders a semantic `<label>` — always use `htmlFor` matching the control's `id`
 - `FieldDescription` renders with a generated `id` that can be referenced by `aria-describedby` on the input
 - `FieldError` renders with `role="alert"` so screen readers announce errors immediately
-- Set `aria-invalid="true"` on the input when showing a `FieldError` to communicate the invalid state
+- Set `aria-invalid="true"` on the input when showing a `FieldError` to communicate the invalid state; inside `FieldControl` the box reads it for the invalid look
+- `FieldLabel optional` puts "optional" inside the label, so the control's accessible name includes it
+- The `FieldError` icon is `aria-hidden`; the message carries the error
+- Inside `FieldControl`, keyboard focus draws a 2px ring on the box in every look, valid or invalid

@@ -3,6 +3,7 @@ import { AlertSpecimen } from './alert-specimen';
 import { AnimatedTitleSpecimen } from './animated-title-specimen';
 import { ButtonSpecimen } from './button-specimen';
 import { CardSpecimen } from './card-specimen';
+import { FieldSpecimen } from './field-specimen';
 import { GlassSpecimen } from './glass-specimen';
 import { ItineraryLabelsSpecimen } from './itinerary-labels-specimen';
 import { KeyValueListSpecimen } from './key-value-list-specimen';
@@ -32,6 +33,7 @@ export const LOOK_SPECIMENS: Record<string, ComponentType<LookSpecimenProps>> = 
   'animated-title': AnimatedTitleSpecimen,
   button: ButtonSpecimen,
   card: CardSpecimen,
+  field: FieldSpecimen,
   glass: GlassSpecimen,
   'itinerary-labels': ItineraryLabelsSpecimen,
   'key-value-list': KeyValueListSpecimen,

@@ -34,7 +34,7 @@
     "generate:component-names": "npx tsx scripts/generate-visor-component-names.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:glass": "VISOR_REQUIRE_BROWSER=1 vitest run packages/docs/components/looks/__tests__/glass-switch.test.ts components/ui/number-input/__tests__/number-input-glass.test.ts components/ui/__tests__/segmented-control-glass.test.ts components/ui/__tests__/scroll-hint-tokens.test.ts components/ui/__tests__/theme-toggle-photo-picker-glass.test.ts components/ui/card/__tests__/card-glass.test.ts components/ui/photo-backdrop/__tests__/photo-backdrop-glass.test.tsx",
+    "test:glass": "VISOR_REQUIRE_BROWSER=1 vitest run packages/docs/components/looks/__tests__/glass-switch.test.ts components/ui/number-input/__tests__/number-input-glass.test.ts components/ui/__tests__/segmented-control-glass.test.ts components/ui/__tests__/scroll-hint-tokens.test.ts components/ui/__tests__/theme-toggle-photo-picker-glass.test.ts components/ui/card/__tests__/card-glass.test.ts components/ui/photo-backdrop/__tests__/photo-backdrop-glass.test.tsx components/ui/field/__tests__/field-control-glass.test.ts",
     "test:oracle:e2e": "playwright test --config=playwright.oracle.config.ts",
     "typecheck": "tsc --noEmit && npm run typecheck --workspaces --if-present",
     "validate": "npx tsx scripts/validate.ts",
