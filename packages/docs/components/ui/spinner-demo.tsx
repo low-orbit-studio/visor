@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { Spinner, type SpinnerOrbState } from '../../../../components/ui/spinner/spinner';
+import { Button } from '@/components/ui/button';
 
 const ORB_STATES: { state: SpinnerOrbState; note: string }[] = [
   { state: 'working', note: 'particles on tilted orbits' },
@@ -125,6 +126,24 @@ export function SpinnerOrbScrimDemo() {
         <Spinner variant="orb" orb="working" label="Rendering share card…" />
         <span style={{ fontSize: 'var(--font-size-sm)' }}>Rendering…</span>
       </div>
+    </div>
+  );
+}
+
+/* ─── SpinnerDelayDemo ───────────────────────────────────────────────── */
+
+/** A delayed ring, and one with its words. Replay remounts both, so a reader can watch the wait again. */
+export function SpinnerDelayDemo() {
+  const [run, setRun] = React.useState(0);
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-6)' }} data-demo="spinner-delay">
+      <Spinner key={`ring-${run}`} label="Loading" delay={600} />
+      <span style={{ minWidth: '12rem' }}>
+        <Spinner key={`words-${run}`} size="sm" label="Loading your form" showLabel delay={600} />
+      </span>
+      <Button variant="outline" size="sm" onClick={() => setRun((n) => n + 1)}>
+        Replay
+      </Button>
     </div>
   );
 }

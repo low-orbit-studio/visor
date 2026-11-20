@@ -230,6 +230,9 @@ describe("VI-625 component token contract", () => {
           "stat-card-value-size",
           "stat-card-value-size-hero",
           "stat-card-trend-padding-top",
+          // Spinner writes its `delay` prop as an inline style (VI-797), like
+          // the sidebar rail geometry above.
+          "spinner-delay",
           // The Tier-1 hairline colours share the `hairline` prefix; only
           // `--hairline-width` is the family's.
           "hairline",

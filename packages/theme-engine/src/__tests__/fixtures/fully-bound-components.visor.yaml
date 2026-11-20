@@ -286,6 +286,11 @@ components:
     sm-border-width: "3px"
     md-size: "37px"
     md-border-width: "3px"
+    appear-duration: "3s"
+    label-gap: "37px"
+    label-font-size: "37px"
+    label-font-weight: "900"
+    label-color: "#ff00aa"
   checkbox:
     size: "37px"
     radius: "3px"

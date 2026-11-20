@@ -1,11 +1,12 @@
 name: Spinner
-description: Loading spinner — an inline rotating border ring, or a dotted thinking-orb (nine animations) for waits over larger surfaces. Three sizes (xs/sm/md), two tones (default/primary), and full reduced-motion support.
+description: Loading spinner — an inline rotating border ring, or a dotted thinking-orb (nine animations) for waits over larger surfaces. Three sizes (xs/sm/md), two tones (default/primary), optional visible words, an opt-in delay so quick loads never flash it, and full reduced-motion support.
 extends: HTMLSpanElement
 category: data-display
 
 when_to_use:
   - Indicating an async operation is in progress within a button, form field, or inline context
   - Replacing text or an icon while content is loading (inline, non-blocking)
+  - A page or card still loading that may finish fast — set delay (e.g. 600) and showLabel so a quick load never flashes the spinner
   - Decorative loading affordance inside a card or panel where a full-page skeleton would be too heavy
   - A wait over a large visual (a card re-rendering under a scrim, an agent thinking) — use variant="orb" at md (64px)
 
@@ -46,6 +47,13 @@ props:
   - name: label
     type: string
     description: Accessible label. When provided, renders role="status" with visually-hidden text. When omitted, aria-hidden="true" (decorative).
+  - name: showLabel
+    type: boolean
+    default: "false"
+    description: Show the label as visible words beside the spinner. The spinner and the words sit in one role="status" wrapper, and delay fades both. The words read --spinner-label-color (falls back to --text-secondary).
+  - name: delay
+    type: number
+    description: Milliseconds to wait before fading in, so a quick load never flashes the spinner. A CSS animation-delay, so server and client markup match. Omit for no delay.
 
 dependencies:
   - "class-variance-authority"
@@ -59,3 +67,4 @@ example: |
   <Spinner size="xs" tone="primary" />
   <Spinner size="sm" label="Loading results…" />
   <Spinner variant="orb" orb="working" label="Rendering preview…" />
+  <Spinner label="Loading your form" showLabel delay={600} />

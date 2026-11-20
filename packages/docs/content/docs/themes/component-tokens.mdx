@@ -446,7 +446,7 @@ Loading-placeholder shimmer and the content-shape geometry the admin list/table/
 
 ### `spinner`
 
-Inline loading ring — track, leading edge, per-size geometry and cycle length.
+Inline loading ring — track, leading edge, per-size geometry, cycle length, the delayed fade-in and the visible words.
 
 | Token | Binds | Falls back to |
 |---|---|---|
@@ -461,6 +461,11 @@ Inline loading ring — track, leading edge, per-size geometry and cycle length.
 | `--spinner-sm-border-width` | Small ring stroke. | `var(--stroke-width-regular, 1.5px)` |
 | `--spinner-md-size` | Default ring diameter. | `24px` |
 | `--spinner-md-border-width` | Default ring stroke. | `var(--stroke-width-medium, 2px)` |
+| `--spinner-appear-duration` | Fade-in length once a `delay` passes. | `var(--motion-duration-500, 500ms)` |
+| `--spinner-label-gap` | Space between the spinner and its visible words (`showLabel`). | `var(--spacing-2, 0.5rem)` |
+| `--spinner-label-font-size` | Visible words size (`showLabel`). | `var(--font-size-sm, 0.875rem)` |
+| `--spinner-label-font-weight` | Visible words weight (`showLabel`). | `var(--font-weight-medium, 500)` |
+| `--spinner-label-color` | Visible words colour (`showLabel`). | `var(--text-secondary, #4b5563)` |
 
 ### `checkbox`
 
