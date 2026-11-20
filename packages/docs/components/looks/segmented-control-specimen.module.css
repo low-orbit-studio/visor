@@ -1,0 +1,6 @@
+.stack {
+  display: grid;
+  gap: var(--spacing-4, 1rem);
+  justify-items: center;
+  width: min(100%, 16rem);
+}

@@ -24,6 +24,8 @@ why: >
   and onValueChange never receives an empty string), and fullWidth gives equal-width
   segments for a list-filter bar. The resting edge comes from the shared
   --control-edge-* tokens, so edges: off removes it while focus stays visible.
+  The well follows the glass layer: under data-glass="on" it blurs the photo
+  behind it, and nowhere else.
 
 variants:
   size: [xs, sm, md, lg]
