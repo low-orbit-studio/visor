@@ -32,22 +32,26 @@ export interface PhotoPickerProps
 // Each thumbnail rises on its own beat, a wave from the top left: its row plus its
 // place in the row, by where it sits on screen now. Capped so a long grid doesn't drag.
 const BEAT_CAP = 12
+const DRAWING = styles.drawing ?? "drawing" // ?? only types the checked index read
 
 function drawWave(items: HTMLElement[]) {
   const rects = items.map((x) => x.getBoundingClientRect())
   const tops = rects.map((r) => Math.round(r.top))
   const rows = [...new Set(tops)].sort((a, b) => a - b)
   items.forEach((x, i) => {
-    const col = rects.filter((r, j) => tops[j] === tops[i] && r.left < rects[i].left).length
-    x.style.setProperty("--draw-i", String(Math.min(rows.indexOf(tops[i]) + col, BEAT_CAP)))
-    x.classList.remove(styles.drawing)
+    const rect = rects[i]
+    const top = tops[i]
+    if (!rect || top === undefined) return
+    const col = rects.filter((r, j) => tops[j] === top && r.left < rect.left).length
+    x.style.setProperty("--draw-i", String(Math.min(rows.indexOf(top) + col, BEAT_CAP)))
+    x.classList.remove(DRAWING)
   })
   void items[0]?.offsetWidth // one reflow, so every animation restarts
   items.forEach((x) => {
-    x.classList.add(styles.drawing)
+    x.classList.add(DRAWING)
     const done = (e: AnimationEvent) => {
       if (e.target !== x) return
-      x.classList.remove(styles.drawing)
+      x.classList.remove(DRAWING)
       x.removeEventListener("animationend", done)
     }
     x.addEventListener("animationend", done)

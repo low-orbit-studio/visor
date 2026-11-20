@@ -49,6 +49,8 @@ const GUARDED_FILES = [
   "components/ui/doc-nav/doc-nav.tsx",
   // VI-789 — vendored into honcho-planning.
   "components/ui/lightbox/lightbox.tsx",
+  // VI-817 — vendored into honcho-planning.
+  "components/ui/photo-picker/photo-picker.tsx",
   ...GUARDED_INSTALLS.flatMap(installedFiles),
 ]
 
@@ -95,7 +97,7 @@ function typecheckStrictIndex(): string[] {
 }
 
 describe("checked-index safety (VI-628)", () => {
-  it("compiles doc-frame, doc-nav, lightbox and the design-system-deck install clean under noUncheckedIndexedAccess", () => {
+  it("compiles doc-frame, doc-nav, lightbox, photo-picker and the design-system-deck install clean under noUncheckedIndexedAccess", () => {
     expect(typecheckStrictIndex()).toEqual([])
   }, 120_000)
 })
