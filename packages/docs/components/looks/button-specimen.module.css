@@ -1,0 +1,28 @@
+/* The pill hooks bound the way a theme binds them (components.button), with the
+   Honcho kit's numbers as intentional values, so every look shows the pill. */
+.pills {
+  --button-radius: 999px;
+  --button-icon-radius: 999px;
+  --button-icon-size: 18px;
+  --button-icon-pad: 18px;
+  --button-lg-height: 54px;
+  --button-lg-padding: 0 24px 0 30px;
+  --button-lg-font-size: 17px;
+  --button-font-weight: 620;
+  --button-letter-spacing: -0.005em;
+  --button-icon-gap: 12px;
+  --button-default-shadow: 0 12px 32px -12px rgb(0 0 0 / 0.4);
+  --button-default-shadow-hover: 0 18px 40px -14px rgb(0 0 0 / 0.45);
+  --button-hover-scale: 1.06;
+  --button-press-scale: 0.97;
+  --button-press-transform: none;
+  --button-press-duration: 0.15s;
+  --button-motion-duration: 0.5s;
+  --button-motion-easing: var(--motion-easing-enter, cubic-bezier(0.22, 1, 0.36, 1));
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3, 0.75rem);
+  align-items: center;
+  justify-content: center;
+}

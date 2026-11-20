@@ -718,6 +718,18 @@ Button type treatment and rounding. The unprefixed keys set every size at once; 
 | `--button-md-height` | `md` height. Bind `auto` with `md-padding` to let the padding set the height. | `var(--label-box-height)` (2.5rem) |
 | `--button-md-padding` | `md` padding. | `0 var(--spacing-4, 1rem)` |
 | `--button-dlg-padding` | `dlg` padding. | `var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem)` |
+| `--button-lg-height` | `lg` height (`54px` for the kit's pill). | `var(--label-box-height)` |
+| `--button-lg-padding` | `lg` padding. | `0 var(--spacing-6, 1.5rem)` |
+| `--button-default-shadow` | `default` variant drop shadow. Unbound, no shadow is declared. | `revert-layer` |
+| `--button-default-shadow-hover` | `default` variant drop shadow on hover. Defaults to `default-shadow`. | `var(--button-default-shadow, revert-layer)` |
+| `--button-outline-text` | `outline` variant ink. | `var(--text-primary, #111827)` |
+| `--button-outline-bg-hover` | `outline` variant fill on hover. | `var(--surface-muted, #f3f4f6)` |
+| `--button-hover-scale` | Grow on hover, every variant (`1.06` for the kit). Off for disabled, gated and pending buttons. | `revert-layer` |
+| `--button-press-scale` | Scale while pressed (`0.97` for the kit). Replaces the hover grow while held. | `revert-layer` |
+| `--button-press-transform` | Press nudge. Bind `none` when `press-scale` carries the press. | `translateY(1px)` |
+| `--button-press-duration` | How fast the press lands. Unbound, it is instant. | `0s` |
+| `--button-motion-duration` | Duration of the fill, ink, grow, shadow and arrow-swap transitions. | `var(--motion-duration-150, 150ms)` |
+| `--button-motion-easing` | Curve of the fill, ink, grow, shadow and arrow-swap transitions. | `var(--motion-easing-default, ease-in-out)` |
 | `--button-text-transform` | Casing for every size. | `revert-layer` |
 | `--button-letter-spacing` | Tracking for every size. | `revert-layer` |
 | `--button-font-weight` | Weight for every size. | `var(--font-weight-medium, 500)` · `var(--font-weight-semibold, 600)` |

@@ -20,16 +20,20 @@ why: >
   Using it instead of a styled <div> or <a> ensures accessibility compliance.
 
 variants:
-  variant: [default, hero, secondary, outline, ghost, destructive]
+  variant: [default, hero, secondary, outline, ghost, destructive, glass]
   size: [sm, md, lg, dlg, icon]
 
 props:
   - name: variant
-    type: "'default' | 'hero' | 'secondary' | 'outline' | 'ghost' | 'destructive'"
+    type: "'default' | 'hero' | 'secondary' | 'outline' | 'ghost' | 'destructive' | 'glass'"
     default: "default"
     description: >
       `hero` is the solid face for special moments. Unset it renders as `default`;
       a theme sets its own fill and ink with `components.button.hero-bg` / `hero-text`.
+      `glass` is a solid ringed control on a plain page and turns to glass (the
+      glass layer's control fill, ring, ink and blur) under `data-glass="on"`.
+      Pair it with `size="icon"` and `components.button.icon-radius: 999px` for a
+      round glass icon button.
   - name: size
     type: "'sm' | 'md' | 'lg' | 'dlg' | 'icon'"
     default: "md"
@@ -106,6 +110,7 @@ props:
       --button-pending-min-duration.
 
 dependencies:
+  - "@phosphor-icons/react"
   - "class-variance-authority"
   - "@radix-ui/react-tooltip"
 
@@ -150,6 +155,15 @@ notes: |
   always active when no `data-density` attribute is present — zero-regression for
   default consumers.
 
+  **Pill shape and arrow swap (VI-807):** the pill is theme hooks, not a prop.
+  `radius` / `icon-radius: 999px` round it; `lg-height`, `lg-padding`,
+  `default-shadow`, `default-shadow-hover`, `hover-scale`, `press-scale`,
+  `press-transform`, `press-duration`, `motion-duration` and `motion-easing` add
+  the kit's height, lift, grow and press. Unbound, none of them changes a pixel.
+  `ArrowSwap` (exported beside `Button`) is two arrows in a one-arrow window:
+  put it after the label (`direction="right"`) or alone in an icon button
+  (`direction="left"`), and it slides on the button's hover or keyboard focus.
+
 preview_url: "https://visor.loworbit.studio/docs/components/general/button"
 
 example: |
@@ -158,6 +172,10 @@ example: |
   <Button variant="destructive">Delete account</Button>
 
   <Button variant="ghost" size="sm">Cancel</Button>
+
+  {/* Pill with an arrow swap, and a round glass icon button */}
+  <Button size="lg">Continue <ArrowSwap /></Button>
+  <Button variant="glass" size="icon" aria-label="Back"><ArrowSwap direction="left" /></Button>
 
   {/* Gated — no reason (tooltip suppressed) */}
   <Button gated>Delete organization</Button>

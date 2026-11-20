@@ -15,7 +15,9 @@
      see "Edged faces" below — so the button's own outline stays free for the
      focus ring. */
   border: 1px solid transparent;
-  transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), opacity var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out), transform var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+  /* VI-807: one duration and curve for every property, so a theme can slow the
+     grow, press and fill change together (the kit's 0.5s ease-out). */
+  transition: background-color var(--button-motion-duration, var(--motion-duration-150, 150ms)) var(--button-motion-easing, var(--motion-easing-default, ease-in-out)), color var(--button-motion-duration, var(--motion-duration-150, 150ms)) var(--button-motion-easing, var(--motion-easing-default, ease-in-out)), opacity var(--button-motion-duration, var(--motion-duration-150, 150ms)) var(--button-motion-easing, var(--motion-easing-default, ease-in-out)), transform var(--button-motion-duration, var(--motion-duration-150, 150ms)) var(--button-motion-easing, var(--motion-easing-default, ease-in-out)), scale var(--button-motion-duration, var(--motion-duration-150, 150ms)) var(--button-motion-easing, var(--motion-easing-default, ease-in-out)), box-shadow var(--button-motion-duration, var(--motion-duration-150, 150ms)) var(--button-motion-easing, var(--motion-easing-default, ease-in-out));
   text-decoration: none;
   outline: none;
 }
@@ -23,11 +25,13 @@
 .base:focus-visible {
   outline: var(--focus-ring-width, 2px) solid var(--border-focus, currentColor);
   outline-offset: var(--focus-ring-offset, 2px);
+  /* Slides an ArrowSwap child, as hover does. */
+  --_button-swap: 1;
 }
 
 .base:active:not(:disabled) {
-  transform: translateY(1px);
-  transition: none;
+  transform: var(--button-press-transform, translateY(1px));
+  transition-duration: var(--button-press-duration, 0s);
 }
 
 .base:disabled {
@@ -101,7 +105,7 @@
 
 .variantOutline {
   background-color: transparent;
-  color: var(--text-primary, #111827);
+  color: var(--button-outline-text, var(--text-primary, #111827));
 }
 
 /* Edged faces (VI-655). The resting edge is an inset outline over the border
@@ -141,6 +145,20 @@
   color: var(--interactive-destructive-text, #fef2f2);
 }
 
+/* Glass (VI-807): a control that turns to glass under the glass switch
+   (data-glass="on", VI-795) and is a solid ringed control everywhere else, the
+   glass layer's documented control recipe. It reads the layer's shared control
+   values, the same set ThemeToggle reads, so the blur exists only where glass
+   is on. The prefixed
+   backdrop-filter line comes first so Lightning CSS keeps both (VI-788). */
+.variantGlass {
+  background-color: var(--glass-on-control-fill, var(--surface-subtle, #f3f4f6));
+  color: var(--glass-on-control-ink, var(--text-primary, #111827));
+  box-shadow: inset 0 0 0 var(--stroke-width-thin, 1px) var(--glass-on-control-ring, var(--border-default, #e5e7eb));
+  -webkit-backdrop-filter: var(--glass-on-control-blur, none);
+  backdrop-filter: var(--glass-on-control-blur, none);
+}
+
 @media (hover: hover) {
   .variantDefault:hover {
     background-color: var(--button-default-bg-hover, var(--interactive-primary-bg-hover, #1f2937));
@@ -155,7 +173,11 @@
   }
 
   .variantOutline:hover {
-    background-color: var(--surface-muted, #f3f4f6);
+    background-color: var(--button-outline-bg-hover, var(--surface-muted, #f3f4f6));
+  }
+
+  .variantGlass:hover {
+    background-color: var(--glass-on-control-hover-fill, var(--surface-muted, #f3f4f6));
   }
 
   .variantGhost:hover {
@@ -255,8 +277,8 @@
 
 .sizeLg {
   --label-box-height: 3rem;
-  height: var(--label-box-height);
-  padding: 0 var(--spacing-6, 1.5rem);
+  height: var(--button-lg-height, var(--label-box-height));
+  padding: var(--button-lg-padding, 0 var(--spacing-6, 1.5rem));
   font-size: var(--button-lg-font-size, var(--font-size-base, 1rem));
   font-weight: var(--button-lg-font-weight, var(--button-font-weight, var(--font-weight-medium, 500)));
   border-radius: var(--button-lg-radius, var(--button-radius, var(--radius-md, 0.375rem)));
@@ -339,6 +361,81 @@
   .sizeDlg {
     text-transform: var(--button-dlg-text-transform, var(--button-text-transform, revert-layer));
     letter-spacing: var(--button-dlg-letter-spacing, var(--button-letter-spacing, revert-layer));
+  }
+}
+
+/* Pill motion and lift (VI-807). The grow on hover and the press both use the
+   scale property, apart from the press nudge on transform, so a theme can turn
+   on the kit's grow (1.06) and press (0.97) without touching a consumer's own
+   transform. The default face can carry a drop shadow that deepens on hover.
+   Each falls back to revert-layer in visor-base, so an unbound theme renders
+   as if these rules were absent and every consumer rule still wins. A busy or
+   gated button holds still. */
+@layer visor-base {
+  .variantDefault {
+    box-shadow: var(--button-default-shadow, revert-layer);
+  }
+
+  .variantDefault:disabled {
+    box-shadow: none;
+  }
+
+  @media (hover: hover) {
+    .variantDefault:hover {
+      box-shadow: var(--button-default-shadow-hover, var(--button-default-shadow, revert-layer));
+    }
+
+    .base:hover:not(:disabled, [aria-busy="true"], [aria-disabled="true"]) {
+      scale: var(--button-hover-scale, revert-layer);
+    }
+  }
+
+  .base:active:not(:disabled, [aria-busy="true"], [aria-disabled="true"]) {
+    scale: var(--button-press-scale, revert-layer);
+  }
+}
+
+/* Arrow swap (VI-807): two arrows in a one-arrow window. At rest a right arrow's
+   track sits half left, showing its second arrow; on the button's hover or
+   keyboard focus it slides right, so the first arrow arrives as the second
+   leaves. A left arrow is the mirror. */
+.arrowSwap {
+  display: inline-flex;
+  flex: none;
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
+}
+
+.arrowTrack {
+  display: flex;
+  flex: none;
+  width: 2em;
+  transform: translateX(calc(-50% + 50% * var(--_button-swap, 0)));
+  transition: transform var(--button-motion-duration, var(--motion-duration-150, 150ms)) var(--button-motion-easing, var(--motion-easing-default, ease-in-out));
+}
+
+.arrowTrack > svg {
+  flex: none;
+  width: 1em;
+  height: 1em;
+}
+
+.arrowSwap[data-direction="left"] .arrowTrack {
+  transform: translateX(calc(-50% * var(--_button-swap, 0)));
+}
+
+/* The button's hover (and its keyboard focus, in the focus-ring rule at the
+   top) sets the swap to 1. */
+@media (hover: hover) {
+  .base:hover {
+    --_button-swap: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrowTrack {
+    transition: none;
   }
 }
 

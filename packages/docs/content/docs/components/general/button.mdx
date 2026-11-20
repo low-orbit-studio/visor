@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { PencilSimple, Trash, X } from '@phosphor-icons/react/dist/ssr';
+import { FiveLooks } from '@/components/looks/five-looks';
 
 <Tabs defaultValue="react">
   <TabsList>
@@ -230,6 +231,55 @@ async function handleSave() {
   but no chrome is injected — Slot takes a single child, so there is nowhere to put
   the overlay. Render a real `<button>` when you need the glyph.
 </Callout>
+
+## Pill Shape, Glass Icon Button and Arrow Swap
+
+The same three buttons in all five looks: a round glass icon button, the ink pill with an arrow swap, and the outline pill. The specimen binds the pill hooks the way a theme does. Hover a button to see it grow and its arrow swap; press to see it press in. Only the two Photo looks turn glass on, so the icon button is solid in the other three.
+
+<FiveLooks specimen="button" height={200} />
+
+### Pill Shape
+
+The pill is a set of theme hooks, not a prop. `radius` and `icon-radius` at `999px` round every size; the rest add the kit's height, lift, grow and press. Unbound, none of them changes a pixel.
+
+```yaml
+components:
+  button:
+    radius: "999px"
+    icon-radius: "999px"
+    lg-height: "54px"
+    lg-padding: "0 24px 0 30px"
+    default-shadow: "0 12px 32px -12px rgb(0 0 0 / 0.4)"
+    default-shadow-hover: "0 18px 40px -14px rgb(0 0 0 / 0.45)"
+    hover-scale: "1.06"
+    press-scale: "0.97"
+    press-transform: none
+    press-duration: "0.15s"
+    motion-duration: "0.5s"
+    motion-easing: "var(--motion-easing-enter)"
+```
+
+The grow and press are off for disabled, gated and pending buttons, so a button that can't act holds still.
+
+### Glass Icon Button
+
+`variant="glass"` is a solid ringed control on a plain page (the subtle surface with the default border). Under the [glass switch](/docs/themes/glass) (`data-glass="on"`) it reads the glass layer's shared control values: fill, hover fill, ring, ink and blur. With glass off it draws no `backdrop-filter`.
+
+```tsx
+<Button variant="glass" size="icon" aria-label="Back">
+  <ArrowSwap direction="left" />
+</Button>
+```
+
+### Arrow Swap
+
+`ArrowSwap` is two arrows in a one-arrow window. On the button's hover or keyboard focus both slide the way the arrow points: the hidden arrow takes the visible one's place as it leaves. It is decorative (`aria-hidden`), so the button's name stays its label. It keeps `data-direction` on its root, so a consumer can rotate it.
+
+```tsx
+import { ArrowSwap, Button } from '@/components/ui/button/button';
+
+<Button size="lg">Keep Going <ArrowSwap /></Button>
+```
 
 ## Theming
 
