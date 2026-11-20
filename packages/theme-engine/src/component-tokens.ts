@@ -152,6 +152,7 @@ const ADMIN_SHELL = "blocks/admin-shell/admin-shell.module.css";
 const BILLING_SLIDER = "components/ui/billing-slider/billing-slider.module.css";
 const RESIZABLE_SPLIT = "components/ui/resizable-split/resizable-split.module.css";
 const DIALOG = "components/ui/dialog/dialog.module.css";
+const STAT_CARD = "components/ui/stat-card/stat-card.module.css";
 
 /** Shorthand for the common single-consumer case. */
 function at(file: string, fallback: string | null): ComponentTokenConsumer[] {
@@ -1558,6 +1559,37 @@ const layerChartFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-782: the summary card (Paper's Money home and Today money card). Where the sm size, the
+// highlight variant or a hero/compact value sets its own padding, size or shadow, that rule wins.
+// Type hooks are longhands: a `font` shorthand's fallback must name a family, and these inherit.
+const statCardFamily: ComponentTokenFamily = {
+  family: "stat-card",
+  prefix: "stat-card",
+  description:
+    "StatCard — the card's edge, corners, elevation and inset, the rule above the footer, and the label, value and footer type.",
+  tokens: [
+    { key: "border", property: "border", description: "Card edge — `0` draws a borderless card.", consumers: at(STAT_CARD, "1px solid var(--border-default, #e5e7eb)") },
+    { key: "radius", property: "border-radius", description: "Card corner rounding.", consumers: at(STAT_CARD, "var(--radius-lg, 0.75rem)") },
+    { key: "shadow", property: "box-shadow", description: "Card elevation.", consumers: at(STAT_CARD, "var(--shadow-xs, 0 1px 2px 0 rgb(0 0 0 / 0.05))") },
+    { key: "padding", property: "padding", description: "Card inset.", consumers: at(STAT_CARD, "var(--spacing-5, 1.25rem)") },
+    { key: "footer-border", property: "border-top", description: "Rule above the footer — `0` drops it.", consumers: at(STAT_CARD, "1px solid var(--border-default, #e5e7eb)") },
+    { key: "footer-font-size", property: "font-size", description: "Footer type size.", consumers: at(STAT_CARD, "var(--font-size-sm, 0.875rem)") },
+    { key: "footer-font-weight", property: "font-weight", description: "Footer weight.", consumers: at(STAT_CARD, "inherit") },
+    { key: "footer-line-height", property: "line-height", description: "Footer line height.", consumers: at(STAT_CARD, "var(--line-height-normal, 1.5)") },
+    { key: "footer-color", property: "color", description: "Footer colour.", consumers: at(STAT_CARD, "var(--text-secondary, #6b7280)") },
+    { key: "value-font-family", property: "font-family", description: "Value family.", consumers: at(STAT_CARD, "var(--font-family-heading, inherit)") },
+    { key: "value-font-size", property: "font-size", description: "Value type size.", consumers: at(STAT_CARD, "var(--font-size-3xl, 1.875rem)") },
+    { key: "value-font-weight", property: "font-weight", description: "Value weight.", consumers: at(STAT_CARD, "var(--font-weight-semibold, 600)") },
+    { key: "value-line-height", property: "line-height", description: "Value line height.", consumers: at(STAT_CARD, "var(--line-height-tight, 1.1)") },
+    { key: "value-letter-spacing", property: "letter-spacing", description: "Value tracking.", consumers: at(STAT_CARD, "var(--letter-spacing-tight, -0.02em)") },
+    { key: "label-font-size", property: "font-size", description: "Label type size.", consumers: at(STAT_CARD, "var(--font-size-xs, 0.75rem)") },
+    { key: "label-font-weight", property: "font-weight", description: "Label weight.", consumers: at(STAT_CARD, "var(--font-weight-semibold, 600)") },
+    { key: "label-line-height", property: "line-height", description: "Label line height.", consumers: at(STAT_CARD, "var(--line-height-tight, 1.25)") },
+    { key: "label-letter-spacing", property: "letter-spacing", description: "Label tracking.", consumers: at(STAT_CARD, "var(--letter-spacing-wide, 0.05em)") },
+    { key: "label-color", property: "color", description: "Label colour.", consumers: at(STAT_CARD, "var(--text-tertiary, #6b7280)") },
+  ],
+};
+
 export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   tableFamily,
   dataTableFamily,
@@ -1598,6 +1630,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   separatorFamily,
   alertFamily,
   layerChartFamily,
+  statCardFamily,
   adminUiFamily,
 ];
 

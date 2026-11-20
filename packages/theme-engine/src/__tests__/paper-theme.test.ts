@@ -254,6 +254,38 @@ describe("VI-749: paper theme", () => {
     expect(getContrastRatio("#0c1015", "#f5f5f0")).toBeGreaterThanOrEqual(4.5);
   });
 
+  it("binds the borderless summary card: no edge, no footer rule, tile corners, desk type (VI-782)", () => {
+    const css = nextjsAdapter(data);
+    for (const decl of [
+      "--stat-card-border: 0;",
+      "--stat-card-radius: 24px;",
+      "--stat-card-shadow: none;",
+      "--stat-card-padding: 18px 20px 16px;",
+      "--stat-card-footer-border: 0;",
+      // --paper-desk-sub in muted ink
+      "--stat-card-footer-font-size: 13px;",
+      "--stat-card-footer-font-weight: 400;",
+      "--stat-card-footer-line-height: 18px;",
+      "--stat-card-footer-color: var(--text-muted);",
+      // --paper-desk-hero, tight tracking
+      "--stat-card-value-font-family: var(--font-display);",
+      "--stat-card-value-font-size: 44px;",
+      "--stat-card-value-font-weight: 900;",
+      "--stat-card-value-line-height: 44px;",
+      "--stat-card-value-letter-spacing: var(--paper-track-tight);",
+      "--stat-card-label-font-size: 12px;",
+      "--stat-card-label-font-weight: 700;",
+      "--stat-card-label-line-height: 16px;",
+      "--stat-card-label-letter-spacing: var(--paper-track-label);",
+      "--stat-card-label-color: var(--text-secondary);",
+    ]) {
+      expect(css).toContain(decl);
+    }
+    // The value binding is the desk hero role, longhand by longhand.
+    expect(css).toContain("--paper-desk-hero: 900 44px/44px var(--font-display);");
+    expect(css).toContain("--paper-desk-sub: 400 13px/18px var(--font-body);");
+  });
+
   it("keeps Paper's colours: grounds, cards, ink, Tide and coral", () => {
     const t = data.tokens;
     expect(token(t, "surface-page", "light")).toBe("#fcfcfb");
