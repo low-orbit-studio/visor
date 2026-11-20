@@ -121,32 +121,35 @@ for (const width of [1440, 390]) {
 
       const ink: Record<string, string> = {};
       for (const look of LOOKS) {
-        const frame = await lookFrame(page, look.id);
-        const panel = frame.locator('[data-slot="look-panel"]');
-        const status = frame.locator('[data-slot="spinner-status"]');
-        await expect(panel).toHaveAttribute("data-mode", look.mode ?? docsMode);
-        await expect(status).toHaveText("Loading your form");
-        await expect.poll(() => opacity(status)).toBe("1");
-        ink[look.id] = await status.evaluate((n) => getComputedStyle(n).color);
-        // The words read the theme's ink where they sit (--text-secondary by default).
-        const themeInk = await status.evaluate((n) => {
-          const probe = document.createElement("span");
-          probe.style.color = "var(--text-secondary)";
-          n.parentElement!.appendChild(probe);
-          const c = getComputedStyle(probe).color;
-          probe.remove();
-          return c;
-        });
-        expect(ink[look.id]).toBe(themeInk);
+        // The look iframes can reload while the docs page settles; retry the look on a fresh frame.
+        await expect(async () => {
+          const frame = await lookFrame(page, look.id);
+          const panel = frame.locator('[data-slot="look-panel"]');
+          const status = frame.locator('[data-slot="spinner-status"]');
+          await expect(panel).toHaveAttribute("data-mode", look.mode ?? docsMode);
+          await expect(status).toHaveText("Loading your form");
+          await expect.poll(() => opacity(status)).toBe("1");
+          ink[look.id] = await status.evaluate((n) => getComputedStyle(n).color);
+          // The words read the theme's ink where they sit (--text-secondary by default).
+          const themeInk = await status.evaluate((n) => {
+            const probe = document.createElement("span");
+            probe.style.color = "var(--text-secondary)";
+            n.parentElement!.appendChild(probe);
+            const c = getComputedStyle(probe).color;
+            probe.remove();
+            return c;
+          });
+          expect(ink[look.id]).toBe(themeInk);
 
-        if (!look.photo) {
-          const bg = await panel.evaluate((n) => getComputedStyle(n).backgroundColor);
-          expect(contrast(ink[look.id], bg)).toBeGreaterThanOrEqual(4.5);
-          const glassy = await frame.evaluate(() =>
-            [...document.querySelectorAll("*")].filter((el) => getComputedStyle(el).backdropFilter !== "none").length,
-          );
-          expect(glassy).toBe(0);
-        }
+          if (!look.photo) {
+            const bg = await panel.evaluate((n) => getComputedStyle(n).backgroundColor);
+            expect(contrast(ink[look.id], bg)).toBeGreaterThanOrEqual(4.5);
+            const glassy = await frame.evaluate(() =>
+              [...document.querySelectorAll("*")].filter((el) => getComputedStyle(el).backdropFilter !== "none").length,
+            );
+            expect(glassy).toBe(0);
+          }
+        }).toPass({ timeout: 20_000 });
       }
       // The words invert with the tone.
       expect(ink.dark).not.toBe(ink.light);
