@@ -143,7 +143,9 @@
 }
 
 /* The icon: outline, unchipped, in the tone's colour. The SVG's own width is
-   the token's fallback; this governs the rendered size so a theme can bind it. */
+   the token's fallback; this governs the rendered size so a theme can bind it.
+   The neutral note takes the same size by default (VI-799), so its text column
+   lines up with every other tone's; a theme can still bind a smaller note. */
 .icon {
   flex: none;
   display: inline-flex;
@@ -155,8 +157,8 @@
 }
 
 .softNote .icon > svg {
-  width: var(--alert-icon-size-note, 1.5rem);
-  height: var(--alert-icon-size-note, 1.5rem);
+  width: var(--alert-icon-size-note, var(--alert-icon-size, 2rem));
+  height: var(--alert-icon-size-note, var(--alert-icon-size, 2rem));
 }
 
 .softDestructive .icon {
@@ -188,7 +190,7 @@
 }
 
 .softNote .content {
-  min-height: var(--alert-icon-size-note, 1.5rem);
+  min-height: var(--alert-icon-size-note, var(--alert-icon-size, 2rem));
 }
 
 /* Trim the outer margins of whatever sits at the content's edges. MDX wraps

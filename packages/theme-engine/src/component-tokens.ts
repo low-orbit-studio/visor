@@ -1343,7 +1343,7 @@ const alertFamily: ComponentTokenFamily = {
     "Alert's soft appearance: the inline alert under a control or in a dialog — icon size, inset, gap, rounding and type.",
   tokens: [
     { key: "icon-size", property: "width / height / min-height", description: "Soft icon size for the destructive, warning and success tones; the content is at least this tall.", consumers: at(ALERT, "2rem") },
-    { key: "icon-size-note", property: "width / height / min-height", description: "Soft icon size for the neutral note (`default` and `info`).", consumers: at(ALERT, "1.5rem") },
+    { key: "icon-size-note", property: "width / height / min-height", description: "Soft icon size for the neutral note (`default` and `info`). Unbound, it matches `icon-size`, so every tone's text lines up.", consumers: at(ALERT, "var(--alert-icon-size, 2rem)") },
     { key: "soft-padding", property: "padding", description: "Soft alert inset.", consumers: at(ALERT, "var(--spacing-3, 0.75rem) calc(var(--spacing-3, 0.75rem) + var(--spacing-1, 0.25rem) / 2)") },
     { key: "gap", property: "gap", description: "Gap between the soft icon and its text.", consumers: at(ALERT, "var(--spacing-3, 0.75rem)") },
     { key: "radius", property: "border-radius", description: "Soft alert corner rounding.", consumers: at(ALERT, "var(--radius-lg, 0.5rem)") },

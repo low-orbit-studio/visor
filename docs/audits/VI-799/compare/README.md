@@ -26,10 +26,10 @@ per-pixel difference (brighter is more different), both padded, never stretched.
 | Outline, Light + Photo | ink at 80% | ink at 64% | the kit's light ink-64 is 80%; LYD-92 |
 | Corner | 16px | 24px | bind `--alert-radius` in honcho-backstage |
 | Inset | 14px 18px | 12px 14px | bind `--alert-soft-padding` |
-| Icon | 20px | 32px | bind `--alert-icon-size` |
+| Icon | 20px | 32px (every tone, the info note included, since round 2) | bind `--alert-icon-size` |
 | Title | 15/22, weight 620 | 14/21, weight 700 | no Visor knob; LYD-92 |
 | Body line height | 20px | 21px | no Visor knob; LYD-92 |
 | Link | underlined, 2px offset | inherits the page's link style | a line in honcho-planning; LYD-92 |
-| Behind the panel | the FormDeck slide's scrim and blur | the docs look's photo scrim | page context, not the Alert |
+| Behind the alert | the FormDeck slide's glass card | the docs specimen's glass form panel (the glass layer's recipe, card fill and blur) | page context, not the Alert |
 
 Captured with `clean-capture.mjs` (`cleanShot`), each PNG stamped with its base commit.

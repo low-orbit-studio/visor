@@ -39,9 +39,9 @@ const SOFT: Record<
   destructive: { fill: styles.softDestructive, Icon: WarningOctagon, size: 32, role: "alert" },
   warning: { fill: styles.softWarning, Icon: Warning, size: 32, role: "status" },
   success: { fill: styles.softSuccess, Icon: CheckCircle, size: 32, role: "status" },
-  default: { fill: styles.softNote, Icon: Info, size: 24, role: "status" },
+  default: { fill: styles.softNote, Icon: Info, size: 32, role: "status" },
   // `info` has no soft surface yet, so it falls back to the neutral note.
-  info: { fill: styles.softNote, Icon: Info, size: 24, role: "status" },
+  info: { fill: styles.softNote, Icon: Info, size: 32, role: "status" },
 }
 
 const VARIANTS = Object.keys(SOFT) as Variant[]
@@ -129,7 +129,7 @@ describe("Alert appearance=\"soft\" (VI-698)", () => {
 
     it("sizes a custom note icon at the note size", () => {
       softAlert("default", { icon: <Lightning /> })
-      expect(iconOf(screen.getByTestId("alert"))).toHaveAttribute("width", "24")
+      expect(iconOf(screen.getByTestId("alert"))).toHaveAttribute("width", "32")
     })
   })
 
@@ -217,7 +217,7 @@ describe("Alert appearance=\"soft\" (VI-698)", () => {
 
     it("sizes the icon from the component tokens", () => {
       expect(rule(".icon > svg")).toContain("width: var(--alert-icon-size, 2rem)")
-      expect(rule(".softNote .icon > svg")).toContain("width: var(--alert-icon-size-note, 1.5rem)")
+      expect(rule(".softNote .icon > svg")).toContain("width: var(--alert-icon-size-note, var(--alert-icon-size, 2rem))")
     })
 
     it("keeps the body in secondary ink, not the tone's colour", () => {
