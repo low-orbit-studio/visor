@@ -44,6 +44,11 @@
       "enum": ["on", "off"],
       "description": "The one switch for hairlines (VI-680). 'off' sets --hairline-width to 0, so every hairline rule, divider and ring disappears. Shorthand for components.hairline.width: \"0\" (an explicit binding there wins). Independent of 'edges'. Defaults to 'on'. Optional."
     },
+    "corners": {
+      "type": "string",
+      "enum": ["round", "squircle"],
+      "description": "The one switch for corner shape (VI-796). 'squircle' emits --corner-shape: squircle and binds corner-shape to every element, so each border-radius draws as a squircle; browsers without corner-shape draw round. Set --corner-shape: round on any ancestor to keep a part round. Defaults to 'round' (nothing emitted). Optional."
+    },
     "colors": {
       "type": "object",
       "description": "Color definitions for light mode. Only primary is required — all others have sensible defaults.",
@@ -466,6 +471,35 @@
         "easing": {
           "type": "string",
           "description": "Default easing curve as a CSS timing function."
+        },
+        "easing-out": {
+          "type": "string",
+          "description": "Out curve as a CSS timing function (VI-796). Emits --motion-easing-ease-out, which --motion-easing-enter reads. Default: cubic-bezier(0, 0, 0.2, 1)."
+        },
+        "duration-enter": {
+          "type": "string",
+          "pattern": "^\\d+ms$",
+          "description": "Opt-in duration for entrances (VI-796). Emits --motion-duration-enter only when set. No default."
+        },
+        "duration-exit": {
+          "type": "string",
+          "pattern": "^\\d+ms$",
+          "description": "Opt-in duration for exits (VI-796). Emits --motion-duration-exit only when set. No default."
+        },
+        "duration-page": {
+          "type": "string",
+          "pattern": "^\\d+ms$",
+          "description": "Opt-in duration for page transitions (VI-796). Emits --motion-duration-page only when set. No default."
+        },
+        "duration-stagger": {
+          "type": "string",
+          "pattern": "^\\d+ms$",
+          "description": "Opt-in duration for the gap between staggered items (VI-796). Emits --motion-duration-stagger only when set. No default."
+        },
+        "duration-enter-delay": {
+          "type": "string",
+          "pattern": "^\\d+ms$",
+          "description": "Opt-in duration for the delay before an entrance starts (VI-796). Emits --motion-duration-enter-delay only when set. No default."
         }
       }
     },

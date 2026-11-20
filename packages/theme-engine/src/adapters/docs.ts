@@ -34,6 +34,10 @@ import {
   generateSpaceAliasDecls,
   generateFontSizeDecls,
   generateFontTextTransformDecls,
+  generateCornerShapeDecls,
+  generateOptInMotionDurationDecls,
+  CORNER_SHAPE_BINDING,
+  DEFAULT_EASING_OUT,
 } from "../generate-css.js";
 import { generateFontMetricDecls } from "../font-metrics.js";
 import { generateFontWeightDecls } from "../font-weights.js";
@@ -96,6 +100,7 @@ function generateRadiusDecls(config: ResolvedThemeConfig): string[] {
     `--radius-2xl: ${(config.radius.xl * 1.333) / 16}rem; /* ${Math.round(config.radius.xl * 1.333)}px */`,
     `--radius-3xl: ${(config.radius.xl * 2) / 16}rem; /* ${config.radius.xl * 2}px */`,
     `--radius-full: ${config.radius.pill}px;`,
+    ...generateCornerShapeDecls(config),
   ];
 }
 
@@ -176,9 +181,10 @@ function generateMotionDecls(config: ResolvedThemeConfig): string[] {
     `--motion-duration-500: ${config.motion["duration-slow"]};`,
     "--motion-duration-800: 800ms;",
     "--motion-duration-1500: 1500ms;",
+    ...generateOptInMotionDurationDecls(config),
     "--motion-easing-linear: linear;",
     "--motion-easing-ease-in: cubic-bezier(0.4, 0, 1, 1);",
-    "--motion-easing-ease-out: cubic-bezier(0, 0, 0.2, 1);",
+    `--motion-easing-ease-out: ${config.motion["easing-out"] ?? DEFAULT_EASING_OUT};`,
     `--motion-easing-ease-in-out: ${config.motion.easing};`,
     "--motion-easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);",
   ];
@@ -647,6 +653,11 @@ export function docsAdapter(
   const brandLayerBody = [brandResult.css, passthroughCss].filter(Boolean).join("\n\n");
   const brandLayer = wrapInLayer("visor-brand", brandLayerBody);
   const head = fontLines.length > 0 ? fontLines.join("\n") + "\n" : "";
-  const layerBlocks = [semanticLayer, brandLayer, adaptiveLayer].filter(Boolean);
+  // VI-796: corner-shape binding, lowest layer, only for `corners: squircle`.
+  const baseLayer =
+    input.config.corners === "squircle"
+      ? wrapInLayer("visor-base", `${sectionComment("Base: corner shape")}\n${CORNER_SHAPE_BINDING}`)
+      : "";
+  const layerBlocks = [baseLayer, semanticLayer, brandLayer, adaptiveLayer].filter(Boolean);
   return head + LAYER_ORDER + "\n\n" + layerBlocks.join("\n\n") + "\n";
 }

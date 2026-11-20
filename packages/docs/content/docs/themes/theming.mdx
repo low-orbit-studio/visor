@@ -118,6 +118,39 @@ hairlines: off   # on (default) | off
 
 `hairlines: off` emits `--hairline-width: 0`. It is independent of `edges`: neither switch touches the other's tokens, and focus and invalid states are untouched. To scope it to one part of an app, set `--hairline-width: 0` on any ancestor. The full token set is in [Component Tokens → `hairline`](/docs/themes/component-tokens#hairline).
 
+## Corner Shape (`corners`)
+
+One line draws every rounded corner as a squircle, the smooth superellipse corner, instead of a circular arc:
+
+```yaml
+# my-theme.visor.yaml
+corners: squircle   # round (default) | squircle
+```
+
+`corners: squircle` emits `--corner-shape: squircle` and, in the lowest layer (`visor-base`), binds `corner-shape: var(--corner-shape)` to every element. Each `border-radius` keeps its value; only the curve changes. Browsers that can't draw `corner-shape` drop the declaration and draw round, so there is nothing to polyfill. To keep part of an app round (a circular avatar, a pill), set `--corner-shape: round` on it or on any ancestor, or write `corner-shape: round` in its own class, which beats the base layer. With `corners` absent or `round`, the theme emits nothing.
+
+## Motion Values (`motion`)
+
+The `motion` block sets the theme's curves and durations. Every key is optional:
+
+```yaml
+# my-theme.visor.yaml
+motion:
+  duration-fast: 100ms      # --motion-duration-100
+  duration-normal: 200ms    # --motion-duration-200
+  duration-slow: 500ms      # --motion-duration-500
+  easing: "cubic-bezier(0.83, 0, 0.17, 1)"       # --motion-easing-ease-in-out (the default curve)
+  easing-out: "cubic-bezier(0.22, 1, 0.36, 1)"   # --motion-easing-ease-out (the enter curve)
+  # Opt-in role durations: each emits only when set.
+  duration-enter: 800ms        # --motion-duration-enter
+  duration-exit: 380ms         # --motion-duration-exit
+  duration-page: 1200ms        # --motion-duration-page
+  duration-stagger: 75ms       # --motion-duration-stagger
+  duration-enter-delay: 120ms  # --motion-duration-enter-delay
+```
+
+`easing-out` defaults to `cubic-bezier(0, 0, 0.2, 1)`, and the semantic `--motion-easing-enter` reads it. The five role durations have no default: a theme that leaves them out emits none of them, so read them with a fallback, for example `var(--motion-duration-exit, var(--motion-duration-normal))`. Durations are whole milliseconds (`1200ms`, not `1.2s`). The [Visual Explorer](/docs/playgrounds/visual-explorer)'s Motion section shows every value and the corner shape as the active theme resolves them.
+
 ## Manual Theme Toggle
 
 To override the system preference, apply one of the following to your `<html>` element (or any root container):

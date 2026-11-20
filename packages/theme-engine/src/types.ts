@@ -8,6 +8,15 @@ import type { FontSource } from "./fonts/types.js";
 
 /** VI-687: casing a typography slot applies to its text. */
 export type TextTransform = "none" | "uppercase" | "lowercase" | "capitalize";
+/** VI-796: opt-in role durations; each emits `--motion-<key>` only when a theme sets it. */
+export const OPT_IN_MOTION_DURATION_KEYS = [
+  "duration-enter",
+  "duration-exit",
+  "duration-page",
+  "duration-stagger",
+  "duration-enter-delay",
+] as const;
+
 export const TEXT_TRANSFORMS: readonly TextTransform[] = ["none", "uppercase", "lowercase", "capitalize"];
 import type { VisorBrand } from "./brand/types.js";
 import type { BrandStrategy } from "./brand-strategy/types.js";
@@ -305,6 +314,20 @@ export interface VisorThemeConfig {
      * when set; absent themes fall through to the default `--motion-easing-spring`.
      */
     "easing-overshoot"?: string;
+    /**
+     * VI-796: the out curve, emitted as `--motion-easing-ease-out` (which the
+     * semantic `--motion-easing-enter` reads). Default: `cubic-bezier(0, 0, 0.2, 1)`.
+     */
+    "easing-out"?: string;
+    /**
+     * VI-796: opt-in role durations (`Nms`). Each emits
+     * `--motion-duration-<role>` only when set, the way `easing-overshoot` does.
+     */
+    "duration-enter"?: string;
+    "duration-exit"?: string;
+    "duration-page"?: string;
+    "duration-stagger"?: string;
+    "duration-enter-delay"?: string;
   };
   overrides?: {
     light?: Record<string, string>;
@@ -336,6 +359,13 @@ export interface VisorThemeConfig {
    * neither switch touches the other's tokens. Default: `on`.
    */
   hairlines?: "on" | "off";
+  /**
+   * VI-796: the one switch for corner shape. `squircle` emits
+   * `--corner-shape: squircle` and binds `corner-shape` to every element, so
+   * each `border-radius` draws as a squircle. Browsers without `corner-shape`
+   * drop the declaration and draw round. Default: `round` (nothing emitted).
+   */
+  corners?: "round" | "squircle";
   /**
    * Migration metadata — optional, additive, consumed by `visor migrate` commands.
    * Does not affect CSS generation or theme application.
@@ -447,7 +477,17 @@ export interface ResolvedThemeConfig {
     easing: string;
     /** VI-451 (drive-by): opt-in bouncy easing for marker pops / scale-in entrances. */
     "easing-overshoot"?: string;
+    /** VI-796: opt-in out curve; emitters fall back to `cubic-bezier(0, 0, 0.2, 1)`. */
+    "easing-out"?: string;
+    /** VI-796: opt-in role durations, emitted only when set. */
+    "duration-enter"?: string;
+    "duration-exit"?: string;
+    "duration-page"?: string;
+    "duration-stagger"?: string;
+    "duration-enter-delay"?: string;
   };
+  /** VI-796: present only when the theme sets `corners: squircle`. */
+  corners?: "squircle";
   overrides?: {
     light?: Record<string, string>;
     dark?: Record<string, string>;

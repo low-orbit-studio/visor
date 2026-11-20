@@ -22,6 +22,7 @@ import {
   sectionComment,
   block,
   header,
+  CORNER_SHAPE_BINDING,
 } from "../generate-css.js";
 import { collectBrandPassthrough } from "../overrides.js";
 import { generateBrandPassthroughCss } from "./brand-passthrough.js";
@@ -189,6 +190,13 @@ export function nextjsAdapter(
         "background: var(--surface-page, var(--surface-background));",
       ]),
     );
+
+    // VI-796: bind the theme's corner shape (`corners: squircle` only).
+    if (input.config.corners === "squircle") {
+      baseLines.push("");
+      baseLines.push(sectionComment("Base: corner shape"));
+      baseLines.push(CORNER_SHAPE_BINDING);
+    }
 
     lines.push(wrapInLayer("visor-base", baseLines.join("\n").trim()));
     lines.push("");
