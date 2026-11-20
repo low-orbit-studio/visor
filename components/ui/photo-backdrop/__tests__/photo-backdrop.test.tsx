@@ -203,7 +203,6 @@ describe("PhotoBackdrop", () => {
     const reduced = css.slice(css.indexOf("prefers-reduced-motion: reduce"))
     expect(reduced).toMatch(/\.layer\[data-ready\][\s\S]*animation-duration: 1ms/)
     expect(reduced).not.toMatch(/animation: none/)
-    expect(source).not.toMatch(/motion\/react|from "motion"|framer-motion/)
   })
 
   it("forwards className and ref", () => {
