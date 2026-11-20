@@ -562,6 +562,17 @@ components:
     duration: "1200ms"
     easing: "steps(4)"
     ground: "#000000"
+  card:
+    radius: "3px"
+    glass-bg: "#2b0a3d"
+    glass-filter: "blur(3px)"
+    glass-shadow: "0 0 0 4px #00ffcc"
+    glass-display: "block"
+    edge-display: "none"
+    editable-hover-bg: "#3b0a4d"
+    editable-hover-shadow: "0 0 0 4px #ff00aa"
+    pen-size: "37px"
+    pen-inset: "3px"
   stat-card:
     border: "3px dashed #ff00aa"
     radius: "0"

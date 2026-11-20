@@ -1436,6 +1436,33 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  card: [
+    {
+      name: 'size',
+      type: "'default' | 'sm'",
+      default: "'default'",
+      description: 'Controls internal padding and gap spacing.',
+    },
+    {
+      name: 'variant',
+      type: "'default' | 'glass'",
+      default: "'default'",
+      description: 'glass draws a glass fill and a blended edge on sibling layers under data-glass="on", and the card surface and a border elsewhere.',
+    },
+    {
+      name: 'editable',
+      type: 'boolean',
+      default: 'false',
+      description: 'The whole card is a button, with a pen in the corner and a lift on hover. Set data-flash to play the save flash.',
+    },
+    {
+      name: 'as',
+      type: "'div' | 'section' | 'main' | 'button'",
+      default: "'div' ('button' when editable)",
+      description: 'The element to render.',
+    },
+  ],
+
   calendar: [
     {
       name: 'mode',

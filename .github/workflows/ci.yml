@@ -248,8 +248,9 @@ jobs:
 
       # VI-795: the glass switch, read in a real browser (Build & Test shards have no Chromium).
       # VI-798: NumberInput's skin hooks and glass, read the same way.
+      # VI-804: Card's glass variant and editable state, read the same way.
       - name: Glass switch (real browser)
-        run: npx vitest run packages/docs/components/looks/__tests__/glass-switch.test.ts components/ui/number-input/__tests__/number-input-glass.test.ts
+        run: npx vitest run packages/docs/components/looks/__tests__/glass-switch.test.ts components/ui/number-input/__tests__/number-input-glass.test.ts components/ui/card/__tests__/card-glass.test.ts
         env:
           VISOR_REQUIRE_BROWSER: "1"
 
