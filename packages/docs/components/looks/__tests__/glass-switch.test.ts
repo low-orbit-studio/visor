@@ -5,7 +5,7 @@
  * the docs glass recipe, then reads computed styles in Chromium: with no switch the
  * card is solid and nothing has a backdrop-filter; under `data-glass="on"` the glass
  * layer blurs and the edge blends; `data-glass="off"` inside it turns glass back off.
- * Self-skips only where playwright is not installed.
+ * Self-skips where playwright's Chromium is not installed (see the runs-in-Chromium test).
  */
 
 import { readFileSync } from "node:fs"
@@ -78,7 +78,9 @@ async function read(id: string) {
 }
 
 describe("VI-795 glass switch (real browser)", () => {
-  it("runs in Chromium", () => {
+  // Build & Test shards have no Chromium and self-skip; "Verify docs build" installs it
+  // and sets VISOR_REQUIRE_BROWSER, so the proof cannot silently skip there.
+  it.runIf(process.env.VISOR_REQUIRE_BROWSER)("runs in Chromium", () => {
     expect(browser, "playwright's chromium is not installed").not.toBeNull()
   })
 

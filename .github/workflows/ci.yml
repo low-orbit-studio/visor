@@ -246,6 +246,12 @@ jobs:
       - name: Color mode and routing (production build)
         run: npm run test:prod -w packages/docs
 
+      # VI-795: the glass switch, read in a real browser (Build & Test shards have no Chromium).
+      - name: Glass switch (real browser)
+        run: npx vitest run packages/docs/components/looks/__tests__/glass-switch.test.ts
+        env:
+          VISOR_REQUIRE_BROWSER: "1"
+
       # Content-only PRs skip the `code` filter, so the unit tests that read
       # packages/docs/content must run here (VI-721 internal-links guard).
       - name: Docs internal links test
