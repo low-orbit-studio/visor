@@ -1,19 +1,69 @@
-/* Popover content */
+/* Popover content.
+   Skin hooks (VI-808): --popover-* each fall back to the value shipped before them,
+   so an unbound theme renders as it did. Glass (VI-795): under data-glass="on" the
+   panel reads the glass layer's fill, lift, blur, shadow and ink; everywhere else the
+   --glass-on-* variables are unset and the panel stays solid with no blur. A bound
+   --popover-bg or --popover-shadow wins in every look, so a theme can keep its own
+   menu fill over a photo. A portaled popover sits outside any glass switch, so only
+   stay-mounted (in-place) content can turn to glass. */
 .content {
   z-index: 50;
   min-width: 12rem;
   overflow: hidden;
-  border-radius: var(--radius-lg, 0.5rem);
-  background-color: var(--surface-popover, var(--surface-card, #ffffff));
-  color: var(--text-primary, #111827);
-  padding: var(--spacing-4, 1rem);
-  box-shadow: var(--shadow-lg);
+  border-radius: var(--popover-radius, var(--radius-lg, 0.5rem));
+  background: linear-gradient(var(--glass-on-lift, transparent) 0 0),
+    var(--popover-bg, var(--glass-on-fill, var(--surface-popover, var(--surface-card, #ffffff))));
+  color: var(--glass-on-ink, var(--text-primary, #111827));
+  padding: var(--popover-padding, var(--spacing-4, 1rem));
+  box-shadow: var(--popover-shadow, var(--glass-on-shadow, var(--shadow-lg)));
+  /* Prefixed line first, so Lightning CSS keeps both (VI-788). */
+  -webkit-backdrop-filter: var(--glass-on-blur, none);
+  backdrop-filter: var(--glass-on-blur, none);
+}
+
+/* Stay mounted (`forceMount`): the panel renders in place and never unmounts, so it
+   fades out as well as in. Radix's positioning wrapper is display: contents, so the
+   panel lays out as a child of the element it sits in: the caller places it with its
+   own class (top, right, width) against a positioned ancestor. */
+:global([data-radix-popper-content-wrapper]):has(> .stayMounted) {
+  display: contents;
+}
+
+.stayMounted {
+  position: absolute;
+  opacity: 0;
+  /* 6px is the kit's rise, intentional. */
+  translate: 0 calc(-1 * var(--popover-rise, 6px));
+  pointer-events: none;
+  /* Hidden once the fade-out ends, so no accessibility tree or find-in-page reaches the
+     closed panel even where `inert` is unsupported. Visible at once on open. */
+  visibility: hidden;
+  transition:
+    opacity var(--popover-duration, var(--motion-duration-normal, 200ms)) var(--popover-easing, var(--motion-easing-enter, ease-out)),
+    translate var(--popover-duration, var(--motion-duration-normal, 200ms)) var(--popover-easing, var(--motion-easing-enter, ease-out)),
+    visibility 0s linear var(--popover-duration, var(--motion-duration-normal, 200ms));
+}
+
+.stayMounted[data-state="open"] {
+  opacity: 1;
+  translate: 0 0;
+  pointer-events: auto;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+/* Reduced motion keeps the fade and drops the rise. */
+@media (prefers-reduced-motion: reduce) {
+  .stayMounted,
+  .stayMounted[data-state="open"] {
+    translate: none;
+  }
 }
 
 /* Footer — right-aligned action row separated from the body by a top border.
    Negative horizontal margins let the border span the full popover width while
    the action row stays aligned with body content (offsets PopoverContent's
-   padding: var(--spacing-4)). */
+   padding: --popover-padding). */
 .footer {
   display: flex;
   flex-direction: row;
@@ -21,8 +71,8 @@
   gap: var(--spacing-2, 0.5rem);
   margin-top: var(--spacing-3, 0.75rem);
   padding-top: var(--spacing-3, 0.75rem);
-  margin-inline: calc(-1 * var(--spacing-4, 1rem));
-  padding-inline: var(--spacing-4, 1rem);
+  margin-inline: calc(-1 * var(--popover-padding, var(--spacing-4, 1rem)));
+  padding-inline: var(--popover-padding, var(--spacing-4, 1rem));
   border-top: 1px solid var(--border-default, #e5e7eb);
 }
 
@@ -32,6 +82,11 @@
 
 .content[data-state="closed"] {
   animation: contentHide var(--motion-duration-fast, 100ms) var(--motion-easing-exit, ease-in);
+}
+
+/* Stay-mounted content fades with its transition, not the scale keyframes. */
+.content.stayMounted {
+  animation: none;
 }
 
 @keyframes contentShow {

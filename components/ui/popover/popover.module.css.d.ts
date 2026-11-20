@@ -1,6 +1,7 @@
 declare const styles: {
   readonly content: string
   readonly footer: string
+  readonly stayMounted: string
   readonly selectionLabel: string
   readonly selectionList: string
   readonly selectionItem: string

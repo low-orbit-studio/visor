@@ -88,9 +88,14 @@ describe('Elevation token coverage — VI-131', () => {
           // a private `--_glass-ring` set only under the glass switch, VI-799)
           // whose fallback chain still terminates in a --shadow-* token or none.
           // Checking the fallback rather than the hook's NAME means a new
-          // theme-bindable shadow can't quietly smuggle in an inline rgba.
+          // theme-bindable shadow can't quietly smuggle in an inline rgba. The chain
+          // may pass through more hooks first (Popover: --popover-shadow, then glass).
           if (
+<<<<<<< HEAD
             /^var\(--[a-z0-9_-]+,\s*(var\(--shadow-|none\s*\))/.test(value)
+=======
+            /^(var\(--[a-z0-9-]+,\s*)+(var\(--shadow-|none\s*\))/.test(value)
+>>>>>>> c8d8d45b (VI-808 feat: popover skin hooks, glass and a stay-mounted fade that keeps focus)
           ) {
             return false
           }
