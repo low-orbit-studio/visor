@@ -271,3 +271,139 @@ describe("ToggleGroup option variant (VI-787)", () => {
     await checkA11y(multiple.container)
   })
 })
+
+describe("ToggleGroup option descriptions and the round mark (VI-806)", () => {
+  function renderRows(
+    groupProps: Record<string, unknown> = {},
+    type: "single" | "multiple" = "single",
+    itemProps: Record<string, unknown> = {},
+  ) {
+    return render(
+      <ToggleGroup type={type} variant="option" aria-label="Ticket" {...groupProps}>
+        <ToggleGroupItem value="weekend" description="Friday to Sunday" {...itemProps}>Weekend Pass</ToggleGroupItem>
+        <ToggleGroupItem value="day" description="One day">Day Ticket</ToggleGroupItem>
+        <ToggleGroupItem value="none">Not Going</ToggleGroupItem>
+      </ToggleGroup>
+    )
+  }
+  const marks = (c: HTMLElement) => c.querySelectorAll('[data-slot="toggle-group-mark"]')
+
+  it("a description is the row's accessible description; the title alone stays its name", () => {
+    renderRows()
+    const row = screen.getByRole("radio", { name: "Weekend Pass" })
+    expect(row).toHaveAccessibleName("Weekend Pass")
+    expect(row).toHaveAccessibleDescription("Friday to Sunday")
+    expect(row.querySelector('[data-slot="toggle-group-title"]')).toHaveTextContent("Weekend Pass")
+    expect(row.querySelector('[data-slot="toggle-group-description"]')).toHaveTextContent("Friday to Sunday")
+  })
+
+  it("keeps the caller's aria-describedby id alongside the description's", () => {
+    render(<span id="hint">Pick one</span>)
+    renderRows({}, "single", { "aria-describedby": "hint" })
+    const row = screen.getByRole("radio", { name: "Weekend Pass" })
+    expect(row.getAttribute("aria-describedby")?.split(" ")).toContain("hint")
+    expect(row).toHaveAccessibleDescription("Friday to Sunday Pick one")
+  })
+
+  it("without the new props, an option row renders exactly the pre-change markup", () => {
+    const { container } = render(
+      <ToggleGroup type="single" variant="option" aria-label="Shirt size" defaultValue="m">
+        <ToggleGroupItem value="s">Small</ToggleGroupItem>
+        <ToggleGroupItem value="m">Medium</ToggleGroupItem>
+      </ToggleGroup>
+    )
+    const item = container.querySelector('[data-slot="toggle-group-item"]')!
+    // Visor 1.56.0's markup for this row, attributes and children.
+    expect(item.outerHTML).toBe(
+      '<button type="button" data-state="off" role="radio" aria-checked="false" data-slot="toggle-group-item" class="item itemVariantOption" tabindex="-1" data-radix-collection-item=""><span class="optionKey" data-slot="toggle-group-key" aria-hidden="true"></span><span class="optionLabel" data-slot="toggle-group-label">Small</span></button>'
+    )
+  })
+
+  it("the round mark shows only for option + single + mark, hidden from assistive tech", () => {
+    const withMark = renderRows({ mark: true })
+    expect(marks(withMark.container)).toHaveLength(3)
+    marks(withMark.container).forEach((m) => expect(m).toHaveAttribute("aria-hidden", "true"))
+    expect(withMark.container.querySelector('[data-slot="toggle-group-check"]')).toBeNull()
+    // The letter key still renders beside the mark.
+    expect(withMark.container.querySelectorAll('[data-slot="toggle-group-key"]')).toHaveLength(3)
+    withMark.unmount()
+
+    const noMark = renderRows()
+    expect(marks(noMark.container)).toHaveLength(0)
+    noMark.unmount()
+
+    const multiple = renderRows({ mark: true }, "multiple")
+    expect(marks(multiple.container)).toHaveLength(0)
+    expect(multiple.container.querySelectorAll('[data-slot="toggle-group-check"]')).toHaveLength(3)
+    multiple.unmount()
+
+    for (const variant of ["default", "outline"]) {
+      const other = renderToggleGroup({ variant, mark: true })
+      expect(marks(other.container)).toHaveLength(0)
+      other.unmount()
+    }
+  })
+
+  it("the box and the round mark draw Phosphor's bold check", () => {
+    const single = renderRows({ mark: true })
+    const markPath = single.container.querySelector('[data-slot="toggle-group-mark"] svg path')!.getAttribute("d")
+    single.unmount()
+    const multiple = renderRows({}, "multiple")
+    const boxPath = multiple.container.querySelector('[data-slot="toggle-group-check"] svg path')!.getAttribute("d")
+    expect(boxPath).toBe(markPath)
+    expect(markPath).toMatch(/^M232\.49,80\.49/)
+  })
+
+  it("description is ignored outside the option variant", () => {
+    const { container } = render(
+      <ToggleGroup type="single" aria-label="View">
+        <ToggleGroupItem value="a" description="Ignored">Day</ToggleGroupItem>
+      </ToggleGroup>
+    )
+    expect(container.querySelector('[data-slot="toggle-group-description"]')).toBeNull()
+    expect(screen.getByRole("radio", { name: "Day" })).not.toHaveAttribute("aria-describedby")
+  })
+
+  it("tap picks a row, B picks the second with shortcuts, and arrows move focus, with descriptions", async () => {
+    const user = userEvent.setup()
+    const handleChange = vi.fn()
+    renderRows({ mark: true, shortcuts: true, onValueChange: handleChange })
+    await user.click(screen.getByText("Friday to Sunday"))
+    expect(handleChange).toHaveBeenLastCalledWith("weekend")
+    expect(screen.getByRole("radio", { name: "Weekend Pass" })).toHaveAttribute("data-state", "on")
+    await user.keyboard("b")
+    expect(handleChange).toHaveBeenLastCalledWith("day")
+    expect(screen.getByRole("radio", { name: "Day Ticket" })).toHaveFocus()
+    await user.keyboard("{ArrowDown}")
+    expect(screen.getByRole("radio", { name: "Not Going" })).toHaveFocus()
+  })
+
+  it("multiple: two clicks give two picked rows", async () => {
+    const user = userEvent.setup()
+    const { container } = renderRows({}, "multiple")
+    await user.click(screen.getByText("Weekend Pass"))
+    await user.click(screen.getByText("Day Ticket"))
+    expect(container.querySelectorAll('[data-slot="toggle-group-item"][data-state="on"]')).toHaveLength(2)
+  })
+
+  it("the stylesheet keeps the letter counter, reads no kit --key and gates the blur on glass", () => {
+    const css = readFileSync(join(process.cwd(), "components/ui/toggle-group/toggle-group.module.css"), "utf-8")
+    expect(css).toContain("counter-reset: toggle-group-option")
+    expect(css).toContain("counter-increment: toggle-group-option")
+    expect(css).not.toMatch(/var\(--key\b/)
+    expect(css).not.toContain("--toggle-group-option-blur")
+    expect(css).toContain("backdrop-filter: var(--glass-on-control-blur, none)")
+    // Lightning CSS keeps only the last of the pair, so the unprefixed line comes last (VI-788).
+    expect(css.indexOf("-webkit-backdrop-filter: var(--glass-on-control-blur")).toBeLessThan(
+      css.indexOf("  backdrop-filter: var(--glass-on-control-blur"),
+    )
+  })
+
+  it("has no WCAG 2.1 AA violations (single + description + mark, multiple + description)", async () => {
+    const single = renderRows({ mark: true, defaultValue: "weekend" })
+    await checkA11y(single.container)
+    single.unmount()
+    const multiple = renderRows({ defaultValue: ["weekend", "day"] }, "multiple")
+    await checkA11y(multiple.container)
+  })
+})

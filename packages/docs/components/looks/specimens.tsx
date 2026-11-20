@@ -9,6 +9,7 @@ import { SegmentedControlSpecimen } from './segmented-control-specimen';
 import { SegmentedProgressSpecimen } from './segmented-progress-specimen';
 import { SpinnerSpecimen } from './spinner-specimen';
 import { ThemeSpecimen } from './theme-specimen';
+import { ToggleGroupSpecimen } from './toggle-group-specimen';
 
 /**
  * What a five-look frame can draw, by `specimen` key. Part tickets add theirs here. A specimen's
@@ -25,4 +26,5 @@ export const LOOK_SPECIMENS: Record<string, ComponentType> = {
   'segmented-progress': SegmentedProgressSpecimen,
   spinner: SpinnerSpecimen,
   theme: ThemeSpecimen,
+  'toggle-group': ToggleGroupSpecimen,
 };
