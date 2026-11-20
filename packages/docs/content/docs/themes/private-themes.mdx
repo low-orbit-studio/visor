@@ -11,6 +11,7 @@ The `/themes/private` route renders every theme from `@low-orbit-studio/visor-th
 - `scripts/generate-private-themes.mjs` runs in `prebuild` (and `predev`). When the package is present, it materializes per-theme CSS and a manifest at `app/private-themes.generated.css` and `lib/private-themes.generated.ts`. For any theme that ships a `brand/` directory (BO-47 `source: local` marks), it also copies the brand SVGs into `public/themes/{slug}/brand/` and records the resolved marks on the manifest entry. When the package is absent, both files are empty stubs. The copied SVGs are gitignored — never committed to the public repo.
 - The `/themes/private` route reads `PRIVATE_THEMES`. When the array is empty, the route returns 404 — that's the public-build behavior.
 - When `PRIVATE_THEMES` is non-empty, the page renders a switcher, a representative component preview, and the Brand cohesion view — each theme's real logo, brandmark, and wordmark on light and dark surfaces. Slots a theme omits (e.g. monochrome) fall back to the Visor default mark. Cloudflare Access enforces who can reach the route in the first place.
+- When `honcho-backstage` is installed, the page also shows Honcho's five looks with the [Glass](/docs/themes/glass) page's five-look frame: Today on the `honcho` theme, and Dark, Dark + Photo, Light and Light + Photo on `honcho-backstage`. Add `?photo=/path.webp` to the URL to put a real photo behind the two Photo looks.
 
 ## One-time infrastructure setup
 
