@@ -376,6 +376,24 @@ Dialog's panel and page scrim — width, corners, fill, inset, shadow, a backdro
 | `--dialog-overlay-bg` | The page scrim's colour. | `var(--overlay-bg, rgba(0, 0, 0, 0.8))` |
 | `--dialog-overlay-blur` | How much the scrim blurs the page, a length. | `4px` (editorial `2px`) |
 
+### `glass`
+
+The glass layer over a photo: surface fill, blur, edge, lift, shadow and on-photo ink, plus the glass values controls read. No component reads these directly. visor-core's `data-glass="on"` switch copies each one into a `--glass-on-<key>` variable, and components read those, so glass draws only where the switch is on. See [Glass](/docs/themes/glass).
+
+| Token | Binds | Recommended (Visor default) |
+|---|---|---|
+| `--glass-fill` | Glass surface fill, see-through. | `color-mix(in srgb, var(--text-primary) 5%, transparent)` |
+| `--glass-blur` | Filter on the photo behind a glass surface. | `blur(32px) saturate(110%)` |
+| `--glass-edge` | Edge colour, drawn with `mix-blend-mode: soft-light`. | `color-mix(in srgb, var(--text-primary) 25%, transparent)` |
+| `--glass-lift` | White lift laid over the fill, e.g. `rgb(255 255 255 / 0.45)` in light. | `transparent` |
+| `--glass-shadow` | Glass surface shadow. | `var(--shadow-xl)` |
+| `--glass-ink` | Text colour on glass over a photo. | `var(--text-primary)` |
+| `--glass-control-fill` | Glass control fill (icon buttons, toggles). | `color-mix(in srgb, var(--text-primary) 14%, transparent)` |
+| `--glass-control-hover-fill` | Glass control fill on hover. | `color-mix(in srgb, var(--text-primary) 24%, transparent)` |
+| `--glass-control-ring` | Glass control ring colour. | `color-mix(in srgb, var(--text-primary) 16%, transparent)` |
+| `--glass-control-ink` | Glass control icon and label colour. | `var(--text-primary)` |
+| `--glass-control-blur` | Filter on the photo behind a glass control. | `blur(16px)` |
+
 ### `tabs`
 
 Tab rail and trigger treatment, for both the segmented (`default`) and underlined (`line`) variants.
@@ -1184,12 +1202,16 @@ Structural roles the admin-ui pattern owns. `marquee-family` is the display face
 
 ## Emit-only roles
 
-Two entries above have no Visor component reading them. They exist so a
+Two entries above (`--admin-ui-marquee-family`, `--surface-screen`) have no Visor component reading them. They exist so a
 **generated** theme can carry the admin-ui pattern's Tier-2 treatment layer
 rather than leaving it as prose in a design audit — the pattern shell
 (`design-prototypes/admin-ui/tokens.css`) is the consumer. `--surface-screen` is
 the deepest chrome tier (the sidebar rail); bind it to the theme's deep overlay,
 never to a literal.
+
+The `glass` family is emit-only too, for a different reason: visor-core's
+`data-glass` switch is its consumer, and components read the switch's
+`--glass-on-*` variables instead, so glass stays off on a plain page.
 
 ## See also
 

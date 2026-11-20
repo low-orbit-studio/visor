@@ -589,6 +589,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "glass": {
+          "type": "object",
+          "description": "The glass layer over a photo: surface fill, blur, edge, lift, shadow and on-photo ink, plus the glass values controls read. Draws only inside `data-glass=\"on\"`; elsewhere components keep their solid surface and border. Keys: fill, blur, edge, lift, shadow, ink, control-fill, control-hover-fill, control-ring, control-ink, control-blur.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "tabs": {
           "type": "object",
           "description": "Tab rail and trigger treatment, for both the segmented (`default`) and underlined (`line`) variants. Keys: list-radius, list-height, list-padding, list-color, list-bg, line-border-bottom, trigger-radius, trigger-padding, trigger-font-size, trigger-font-weight, trigger-letter-spacing, trigger-text-transform, trigger-color, trigger-active-bg, trigger-active-color, trigger-active-shadow, indicator-height, indicator-color.",

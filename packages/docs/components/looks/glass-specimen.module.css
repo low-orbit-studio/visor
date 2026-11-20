@@ -1,0 +1,82 @@
+/* The glass recipe from /docs/themes/glass, as a component author writes it.
+ * Off (no data-glass="on" above): the solid card surface and border, no blur.
+ * On: the host clears, and two sibling layers draw the glass and its edge. */
+.panel {
+  position: relative;
+  display: grid;
+  gap: var(--spacing-3, 0.75rem);
+  max-width: 22rem;
+  padding: var(--spacing-6, 1.5rem);
+  border-radius: var(--radius-lg, 0.5rem);
+  background: var(--glass-on-clear, var(--surface-card, #ffffff));
+  border: var(--stroke-width-thin, 1px) solid var(--glass-on-clear, var(--border-default, #e5e7eb));
+  color: var(--glass-on-ink, var(--text-primary, #111827));
+}
+
+/* Siblings of the content, never its ancestors: an ancestor with a backdrop-filter
+ * would become the backdrop root of a blurred field inside, which would then blur
+ * only the card. Prefixed line first, so Lightning CSS keeps both (VI-788). */
+.glass,
+.edge {
+  display: var(--glass-on-display, none);
+  position: absolute;
+  inset: calc(-1 * var(--stroke-width-thin, 1px));
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.glass {
+  background: linear-gradient(var(--glass-on-lift, transparent) 0 0), var(--glass-on-fill, transparent);
+  -webkit-backdrop-filter: var(--glass-on-blur, none);
+  backdrop-filter: var(--glass-on-blur, none);
+  box-shadow: var(--glass-on-shadow, none);
+}
+
+/* The edge blends with the photo only because nothing between them forms a stacking context. */
+.edge {
+  border: var(--stroke-width-thin, 1px) solid var(--glass-on-edge, transparent);
+  mix-blend-mode: soft-light;
+}
+
+.content {
+  position: relative;
+  display: grid;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.body {
+  margin: 0;
+  font-size: var(--font-size-sm, 0.875rem);
+  line-height: var(--line-height-normal, 1.5);
+}
+
+/* A glass control: one element with no blurred children, so it carries its own blur. */
+.control {
+  justify-self: start;
+  padding: var(--spacing-2, 0.5rem) var(--spacing-4, 1rem);
+  border: 0;
+  border-radius: var(--radius-full, 9999px);
+  font: inherit;
+  font-size: var(--font-size-sm, 0.875rem);
+  cursor: pointer;
+  background: var(--glass-on-control-fill, var(--surface-subtle, #f9fafb));
+  box-shadow: inset 0 0 0 var(--stroke-width-thin, 1px) var(--glass-on-control-ring, var(--border-default, #e5e7eb));
+  color: var(--glass-on-control-ink, var(--text-primary, #111827));
+  -webkit-backdrop-filter: var(--glass-on-control-blur, none);
+  backdrop-filter: var(--glass-on-control-blur, none);
+}
+
+.control:hover {
+  background: var(--glass-on-control-hover-fill, var(--surface-muted, #f3f4f6));
+}
+
+.control:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #3b82f6);
+  outline-offset: var(--focus-ring-offset, 2px);
+}

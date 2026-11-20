@@ -929,7 +929,7 @@ describe("Theme utilities", () => {
 
 import { readFileSync, existsSync } from "fs";
 import { join, dirname } from "path";
-import { generateThemeData } from "@loworbitstudio/visor-theme-engine";
+import { COMPONENT_TOKEN_FAMILY_BY_NAME, generateThemeData } from "@loworbitstudio/visor-theme-engine";
 import { docsAdapter } from "@loworbitstudio/visor-theme-engine/adapters";
 
 function findRepoRoot(): string {
@@ -977,6 +977,43 @@ describe("Stock theme CSS generation", () => {
       expect(distCss).toBe(docsCss);
     }
   });
+});
+
+// ============================================================
+// Glass switch (VI-795)
+// ============================================================
+
+describe("Glass switch (VI-795)", () => {
+  const glass = COMPONENT_TOKEN_FAMILY_BY_NAME.get("glass")!;
+
+  for (const file of ["tokens.css", "semantic.css"]) {
+    const css = readFileSync(join(REPO_ROOT, "packages/tokens/dist", file), "utf-8");
+    const on = css.match(/\[data-glass="on"\] \{([^}]*)\}/)?.[1] ?? "";
+    const off = css.match(/\[data-glass="off"\] \{([^}]*)\}/)?.[1] ?? "";
+
+    it(`${file}: the switch sits in the visor-semantic layer`, () => {
+      const semantic = css.slice(css.indexOf("@layer visor-semantic {"));
+      expect(semantic.indexOf('[data-glass="on"]')).toBeGreaterThan(0);
+    });
+
+    it(`${file}: on copies every theme glass value, with the contract's default`, () => {
+      for (const t of glass.tokens) {
+        expect(on).toContain(`--glass-on-${t.key}: var(--glass-${t.key}, ${t.recommended});`);
+      }
+      expect(on).toContain("--glass-on-display: block;");
+      expect(on).toContain("--glass-on-clear: transparent;");
+    });
+
+    it(`${file}: off clears every variable on sets`, () => {
+      const names = (block: string) => [...block.matchAll(/(--glass-on-[a-z-]+):/g)].map((m) => m[1]);
+      expect(names(off)).toEqual(names(on));
+      expect(off.match(/: initial;/g)?.length).toBe(names(on).length);
+    });
+
+    it(`${file}: nothing outside the switch sets a --glass-on-* variable`, () => {
+      expect(css.match(/--glass-on-[a-z-]+:/g)?.length).toBe(on.match(/--glass-on-[a-z-]+:/g)!.length * 2);
+    });
+  }
 });
 
 // ============================================================

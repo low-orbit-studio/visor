@@ -122,6 +122,39 @@ describe("VI-625 component-token emission", () => {
     });
   });
 
+  describe("VI-795 glass keys", () => {
+    const components = {
+      glass: {
+        fill: { light: "#ffffff1f", dark: "#0000003d" },
+        blur: "blur(48px) saturate(161%)",
+        lift: { light: "rgb(255 255 255 / 0.45)", dark: "transparent" },
+        "control-ink": "#ffffff",
+      },
+    };
+
+    it("emits glass values per tone as --glass-*", () => {
+      const config = { name: "x", version: 1, colors: { primary: "#6b46ff" }, components };
+      expect(validateConfig(config).errors).toEqual([]);
+      const css = generateComponentTokensCss(resolveComponentBindings(components as never), {
+        light: ":root",
+        dark: ".dark",
+        prefers: ":root:not(.light)",
+      });
+      expect(css).toContain(
+        ":root {\n  --glass-blur: blur(48px) saturate(161%);\n  --glass-control-ink: #ffffff;\n  --glass-fill: #ffffff1f;\n  --glass-lift: rgb(255 255 255 / 0.45);\n}",
+      );
+      expect(css).toContain(
+        ".dark {\n  --glass-blur: blur(48px) saturate(161%);\n  --glass-control-ink: #ffffff;\n  --glass-fill: #0000003d;\n  --glass-lift: transparent;\n}",
+      );
+      expect(css).toContain("@media (prefers-color-scheme: dark) {\n  :root:not(.light) {\n    --glass-blur");
+    });
+
+    it("rejects an unknown glass key", () => {
+      const config = { name: "x", version: 1, colors: { primary: "#6b46ff" }, components: { glass: { bogus: "1px" } } };
+      expect(validateConfig(config).errors.join("\n")).toContain("Unknown key 'components.glass.bogus'");
+    });
+  });
+
   describe("VI-720 radio-card keys", () => {
     it("emits ring, ring-selected and dot per mode as --radio-card-*", () => {
       const components = {
