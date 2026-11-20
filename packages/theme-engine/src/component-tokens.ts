@@ -153,6 +153,7 @@ const BILLING_SLIDER = "components/ui/billing-slider/billing-slider.module.css";
 const RESIZABLE_SPLIT = "components/ui/resizable-split/resizable-split.module.css";
 const DIALOG = "components/ui/dialog/dialog.module.css";
 const STAT_CARD = "components/ui/stat-card/stat-card.module.css";
+const KEY_VALUE_LIST = "components/ui/key-value-list/key-value-list.module.css";
 
 /** Shorthand for the common single-consumer case. */
 function at(file: string, fallback: string | null): ComponentTokenConsumer[] {
@@ -1662,6 +1663,44 @@ const statCardFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-800: KeyValueList's skin, so a theme can draw Honcho's Facts panel and the
+// Backstage itinerary's key-value pairs: label and value type, the horizontal
+// columns, row spacing and divider, and the `surface="panel"` fill, edge, corners
+// and inset. Each key falls back to what KeyValueList drew before it. Under the
+// glass switch (VI-795) the panel reads the glass layer's fill, lift and blur.
+const keyValueListFamily: ComponentTokenFamily = {
+  family: "key-value-list",
+  prefix: "key-value-list",
+  description:
+    "KeyValueList \u2014 label and value type and ink, the horizontal columns, item gap and alignment, row spacing, padding and divider, and the `surface=\"panel\"` fill, edge colour, corners and inset. Under `data-glass=\"on\"` the panel reads the glass layer instead.",
+  tokens: [
+    { key: "label-font-size", property: "font-size", description: "Label type size.", consumers: at(KEY_VALUE_LIST, "var(--font-size-xs, 0.6875rem)") },
+    { key: "label-font-weight", property: "font-weight", description: "Label weight.", consumers: at(KEY_VALUE_LIST, "var(--font-weight-medium, 500)") },
+    { key: "label-line-height", property: "line-height", description: "Label line height.", consumers: at(KEY_VALUE_LIST, "1.4") },
+    { key: "label-letter-spacing", property: "letter-spacing", description: "Label tracking, stacked and horizontal.", consumers: [{ file: KEY_VALUE_LIST, fallback: "0.12em" }, { file: KEY_VALUE_LIST, fallback: "0.06em" }] },
+    { key: "label-text-transform", property: "text-transform", description: "Label case (`none` for sentence-case labels).", consumers: at(KEY_VALUE_LIST, "uppercase") },
+    { key: "label-color", property: "color", description: "Label ink.", consumers: at(KEY_VALUE_LIST, "var(--text-tertiary, #6b7280)") },
+    { key: "label-padding-top", property: "padding-top", description: "Nudge the label down against a larger value.", consumers: at(KEY_VALUE_LIST, "0") },
+    { key: "value-font-size", property: "font-size", description: "Value type size, in every density.", consumers: [{ file: KEY_VALUE_LIST, fallback: "var(--font-size-lg, 1.125rem)" }, { file: KEY_VALUE_LIST, fallback: "var(--font-size-base, 1rem)" }, { file: KEY_VALUE_LIST, fallback: "var(--font-size-sm, 0.8125rem)" }] },
+    { key: "value-font-weight", property: "font-weight", description: "Value weight.", consumers: at(KEY_VALUE_LIST, "inherit") },
+    { key: "value-line-height", property: "line-height", description: "Value line height.", consumers: at(KEY_VALUE_LIST, "inherit") },
+    { key: "value-color", property: "color", description: "Value ink.", consumers: at(KEY_VALUE_LIST, "var(--text-primary, #111827)") },
+    { key: "value-text-wrap", property: "text-wrap", description: "Value line breaking, e.g. `pretty`.", consumers: at(KEY_VALUE_LIST, "inherit") },
+    { key: "value-overflow-wrap", property: "overflow-wrap", description: "`anywhere` breaks a long name or email rather than widening the list.", consumers: at(KEY_VALUE_LIST, "inherit") },
+    { key: "value-font-variant-numeric", property: "font-variant-numeric", description: "Value figures (`normal` for proportional).", consumers: at(KEY_VALUE_LIST, "tabular-nums") },
+    { key: "columns", property: "grid-template-columns", description: "Horizontal label and value columns.", consumers: at(KEY_VALUE_LIST, "minmax(7rem, 0.4fr) 1fr") },
+    { key: "item-gap", property: "gap", description: "Horizontal gap between label and value.", consumers: at(KEY_VALUE_LIST, "var(--spacing-4, 1rem)") },
+    { key: "item-align", property: "align-items", description: "Horizontal label and value alignment.", consumers: at(KEY_VALUE_LIST, "baseline") },
+    { key: "item-padding", property: "padding", description: "Inset of each row.", consumers: at(KEY_VALUE_LIST, "0") },
+    { key: "row-gap", property: "row-gap", description: "Space between rows, in every density.", consumers: [{ file: KEY_VALUE_LIST, fallback: "var(--spacing-6, 1.5rem)" }, { file: KEY_VALUE_LIST, fallback: "var(--spacing-4, 1rem)" }, { file: KEY_VALUE_LIST, fallback: "var(--spacing-3, 0.75rem)" }] },
+    { key: "divider", property: "border-top", description: "Rule between rows of a one-column list, e.g. `1px solid var(--border-default)`.", consumers: at(KEY_VALUE_LIST, "0") },
+    { key: "panel-bg", property: "background", description: "`surface=\"panel\"` fill off glass.", consumers: at(KEY_VALUE_LIST, "var(--surface-card, #ffffff)") },
+    { key: "panel-border-color", property: "border-color", description: "`surface=\"panel\"` edge colour off glass.", consumers: at(KEY_VALUE_LIST, "var(--border-default, #e5e7eb)") },
+    { key: "panel-radius", property: "border-radius", description: "`surface=\"panel\"` corner radius.", consumers: at(KEY_VALUE_LIST, "var(--radius-lg, 0.5rem)") },
+    { key: "panel-padding", property: "padding", description: "`surface=\"panel\"` inset.", consumers: at(KEY_VALUE_LIST, "var(--spacing-2, 0.5rem) var(--spacing-6, 1.5rem)") },
+  ],
+};
+
 export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   tableFamily,
   dataTableFamily,
@@ -1705,6 +1744,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   alertFamily,
   layerChartFamily,
   statCardFamily,
+  keyValueListFamily,
   adminUiFamily,
 ];
 

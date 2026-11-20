@@ -276,6 +276,24 @@ function fixtureMarkup(): string {
       <div class="${c("stat-card", "footer")}" data-probe="stat-card-footer">12 invoices</div>
     </article>
   </section>
+  <section class="band" data-family="key-value-list">
+    <dl class="${c("key-value-list", "root")}" data-columns="1" data-orientation="stacked" data-density="editorial" data-probe="key-value-list-root">
+      <div class="${c("key-value-list", "item")}" data-probe="key-value-list-item">
+        <dt class="${c("key-value-list", "label")}" data-probe="key-value-list-label">Plan</dt>
+        <dd class="${c("key-value-list", "value")}" data-probe="key-value-list-value">Enterprise</dd>
+      </div>
+      <div class="${c("key-value-list", "item")}" data-probe="key-value-list-item-next">
+        <dt class="${c("key-value-list", "label")}">Members</dt>
+        <dd class="${c("key-value-list", "value")}">142</dd>
+      </div>
+    </dl>
+    <dl class="${c("key-value-list", "root")}" data-columns="1" data-orientation="horizontal" data-density="compact" data-probe="key-value-list-horizontal">
+      <div class="${c("key-value-list", "item")}" data-probe="key-value-list-horizontal-item">
+        <dt class="${c("key-value-list", "label")}" data-probe="key-value-list-horizontal-label">Owner</dt>
+        <dd class="${c("key-value-list", "value")}" data-probe="key-value-list-horizontal-value">Alma Reyes</dd>
+      </div>
+    </dl>
+  </section>
 </main>`;
 }
 
@@ -299,6 +317,7 @@ const PROPS = [
   "width", "height", "box-shadow",
   "font-family", "font-size", "font-weight", "letter-spacing", "text-transform", "line-height",
   "animation-duration", "transform", "outline-color",
+  "grid-template-columns", "align-items", "text-wrap-style", "overflow-wrap", "font-variant-numeric", "backdrop-filter",
 ];
 
 interface Probe {

@@ -1,0 +1,68 @@
+/* The Honcho kit's two label-and-value lists, bound through KeyValueList's skin
+   hooks the way a theme binds them (components.key-value-list), with the kit's
+   numbers as intentional values. Ink stays the theme's. */
+.stack {
+  display: grid;
+  gap: var(--spacing-4, 1rem);
+  width: min(100%, 22rem);
+}
+
+/* FormDeck's Facts panel (form-deck.module.css .facts). */
+.facts {
+  --key-value-list-panel-padding: 6px 24px;
+  --key-value-list-panel-radius: 24px;
+  --key-value-list-row-gap: 0;
+  --key-value-list-columns: minmax(96px, 1fr) 3fr;
+  --key-value-list-item-gap: 4px 20px;
+  --key-value-list-item-align: normal;
+  --key-value-list-item-padding: 14px 0;
+  --key-value-list-divider: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
+  --key-value-list-label-font-size: 13px;
+  --key-value-list-label-line-height: 24px;
+  --key-value-list-label-font-weight: 560;
+  --key-value-list-label-letter-spacing: 0.02em;
+  --key-value-list-label-text-transform: none;
+  --key-value-list-label-color: var(--text-secondary, #6b7280);
+  --key-value-list-value-font-size: 17px;
+  --key-value-list-value-line-height: 1.45;
+  --key-value-list-value-font-weight: 480;
+  --key-value-list-value-text-wrap: pretty;
+  --key-value-list-value-overflow-wrap: anywhere;
+  --key-value-list-value-font-variant-numeric: normal;
+}
+
+/* Backstage's itinerary pairs (itinerary.module.css .kv) inside the Meals tile. */
+.kv {
+  --key-value-list-row-gap: 6px;
+  --key-value-list-columns: 64px 1fr;
+  --key-value-list-item-gap: 12px;
+  --key-value-list-item-align: normal;
+  --key-value-list-label-font-size: 13px;
+  --key-value-list-label-line-height: 1.4;
+  --key-value-list-label-font-weight: 600;
+  --key-value-list-label-letter-spacing: normal;
+  --key-value-list-label-text-transform: none;
+  --key-value-list-label-padding-top: 2px;
+  --key-value-list-value-font-size: 16px;
+  --key-value-list-value-line-height: 1.4;
+  --key-value-list-value-font-weight: 540;
+  --key-value-list-value-font-variant-numeric: normal;
+}
+
+/* The tile is a button, as in Backstage, so the list renders as spans. */
+.tile {
+  width: 100%;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: var(--spacing-1, 0.25rem);
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-semibold, 600);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary, #6b7280);
+}

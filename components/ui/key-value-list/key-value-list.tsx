@@ -26,8 +26,12 @@ export interface KeyValueListProps
   /** Row density. `editorial` is the admin-ui default. */
   density?: "compact" | "default" | "editorial"
   /** Root element. `dl` (default) renders semantic `<dl>`/`<dt>`/`<dd>`; `div`
-   *  opts out of definition-list semantics. */
-  as?: "dl" | "div"
+   *  opts out of definition-list semantics; `span` renders spans throughout, so
+   *  the list fits inside phrasing content such as a `<button>` tile. */
+  as?: "dl" | "div" | "span"
+  /** `none` (default) draws no surface. `panel` draws the theme's card surface
+   *  and border, and turns to glass inside `data-glass="on"`. */
+  surface?: "none" | "panel"
 }
 
 // ─── KeyValueList ─────────────────────────────────────────────────────────────
@@ -40,15 +44,17 @@ const KeyValueList = React.forwardRef<HTMLElement, KeyValueListProps>(
       orientation = "stacked",
       density = "editorial",
       as = "dl",
+      surface = "none",
       className,
       ...props
     },
     ref
   ) => {
     const isDl = as === "dl"
-    const Root = (isDl ? "dl" : "div") as React.ElementType
-    const Term = (isDl ? "dt" : "div") as React.ElementType
-    const Desc = (isDl ? "dd" : "div") as React.ElementType
+    const Root = (isDl ? "dl" : as) as React.ElementType
+    const Item = (isDl ? "div" : as) as React.ElementType
+    const Term = (isDl ? "dt" : as) as React.ElementType
+    const Desc = (isDl ? "dd" : as) as React.ElementType
 
     return (
       <Root
@@ -57,11 +63,12 @@ const KeyValueList = React.forwardRef<HTMLElement, KeyValueListProps>(
         data-columns={columns}
         data-orientation={orientation}
         data-density={density}
+        data-surface={surface === "panel" ? "panel" : undefined}
         className={cn(styles.root, className)}
         {...props}
       >
         {items.map((item, i) => (
-          <div key={i} data-slot="key-value-item" className={styles.item}>
+          <Item key={i} data-slot="key-value-item" className={styles.item}>
             <Term data-slot="key-value-label" className={styles.label}>
               {item.label}
             </Term>
@@ -73,7 +80,7 @@ const KeyValueList = React.forwardRef<HTMLElement, KeyValueListProps>(
                 </span>
               ) : null}
             </Desc>
-          </div>
+          </Item>
         ))}
       </Root>
     )

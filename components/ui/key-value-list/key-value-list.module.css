@@ -1,6 +1,10 @@
 /* Key-value list — a definition-list display primitive for one record's
    attributes (the "key facts" panel). Label/value pairs in a responsive grid.
-   Values accept any node: Badge, AvatarStack, StatHero, ScoreIndicator, text. */
+   Values accept any node: Badge, AvatarStack, StatHero, ScoreIndicator, text.
+   Skin hooks (VI-800): --key-value-list-* each fall back to the value shipped
+   before them, so an unbound theme renders as it did. Glass (VI-795): only
+   surface="panel" reads the glass layer, so a bare list inside a glass tile
+   never draws a nested blur. */
 .root {
   display: grid;
   grid-template-columns: 1fr;
@@ -19,17 +23,25 @@
 
 .item {
   min-width: 0;
+  padding: var(--key-value-list-item-padding, 0);
+}
+
+/* The rule between rows, single-column lists only: a multi-column grid would
+   draw it inside a row. */
+.root[data-columns="1"] .item + .item {
+  border-top: var(--key-value-list-divider, 0);
 }
 
 /* Label — uppercase eyebrow. */
 .label {
   margin: 0;
-  font-size: var(--font-size-xs, 0.6875rem);
-  font-weight: var(--font-weight-medium, 500);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-tertiary, #6b7280);
-  line-height: 1.4;
+  padding-top: var(--key-value-list-label-padding-top, 0);
+  font-size: var(--key-value-list-label-font-size, var(--font-size-xs, 0.6875rem));
+  font-weight: var(--key-value-list-label-font-weight, var(--font-weight-medium, 500));
+  letter-spacing: var(--key-value-list-label-letter-spacing, 0.12em);
+  text-transform: var(--key-value-list-label-text-transform, uppercase);
+  color: var(--key-value-list-label-color, var(--text-tertiary, #6b7280));
+  line-height: var(--key-value-list-label-line-height, 1.4);
 }
 
 /* Value — primary text; resets the native <dd> indent. */
@@ -40,8 +52,12 @@
   flex-wrap: wrap;
   gap: var(--spacing-2, 0.5rem);
   min-width: 0;
-  color: var(--text-primary, #111827);
-  font-variant-numeric: tabular-nums;
+  color: var(--key-value-list-value-color, var(--text-primary, #111827));
+  font-weight: var(--key-value-list-value-font-weight, inherit);
+  line-height: var(--key-value-list-value-line-height, inherit);
+  text-wrap: var(--key-value-list-value-text-wrap, inherit);
+  overflow-wrap: var(--key-value-list-value-overflow-wrap, inherit);
+  font-variant-numeric: var(--key-value-list-value-font-variant-numeric, tabular-nums);
 }
 
 /* Hint — secondary trailing text ("/ 100", "142 total"). */
@@ -64,40 +80,56 @@
 /* Horizontal — label beside value. */
 .root[data-orientation="horizontal"] .item {
   display: grid;
-  grid-template-columns: minmax(7rem, 0.4fr) 1fr;
-  align-items: baseline;
-  gap: var(--spacing-4, 1rem);
+  grid-template-columns: var(--key-value-list-columns, minmax(7rem, 0.4fr) 1fr);
+  align-items: var(--key-value-list-item-align, baseline);
+  gap: var(--key-value-list-item-gap, var(--spacing-4, 1rem));
 }
 .root[data-orientation="horizontal"] .label {
-  letter-spacing: 0.06em;
+  letter-spacing: var(--key-value-list-label-letter-spacing, 0.06em);
 }
 
 /* ── Density ──────────────────────────────────────────────────── */
 .root[data-density="editorial"] {
   column-gap: var(--spacing-8, 2rem);
-  row-gap: var(--spacing-6, 1.5rem);
+  row-gap: var(--key-value-list-row-gap, var(--spacing-6, 1.5rem));
 }
 .root[data-density="editorial"] .value {
-  font-size: var(--font-size-lg, 1.125rem);
+  font-size: var(--key-value-list-value-font-size, var(--font-size-lg, 1.125rem));
 }
 
 .root[data-density="default"] {
   column-gap: var(--spacing-6, 1.5rem);
-  row-gap: var(--spacing-4, 1rem);
+  row-gap: var(--key-value-list-row-gap, var(--spacing-4, 1rem));
 }
 .root[data-density="default"] .value {
-  font-size: var(--font-size-base, 1rem);
+  font-size: var(--key-value-list-value-font-size, var(--font-size-base, 1rem));
 }
 
 .root[data-density="compact"] {
   column-gap: var(--spacing-4, 1rem);
-  row-gap: var(--spacing-3, 0.75rem);
+  row-gap: var(--key-value-list-row-gap, var(--spacing-3, 0.75rem));
 }
 .root[data-density="compact"] .value {
-  font-size: var(--font-size-sm, 0.8125rem);
+  font-size: var(--key-value-list-value-font-size, var(--font-size-sm, 0.8125rem));
 }
 .root[data-density="compact"][data-orientation="stacked"] .label {
   margin-bottom: var(--spacing-1, 0.25rem);
+}
+
+/* ── Panel surface ────────────────────────────────────────────── */
+/* Off glass: the theme's solid card surface and border, no blur. Under
+   data-glass="on": the glass layer's fill and lift, its blur, and a cleared
+   border. The list holds no blurred children, so the panel carries its own
+   blur. Prefixed line first, so Lightning CSS keeps both (VI-788). */
+.root[data-surface="panel"] {
+  padding: var(--key-value-list-panel-padding, var(--spacing-2, 0.5rem) var(--spacing-6, 1.5rem));
+  border-radius: var(--key-value-list-panel-radius, var(--radius-lg, 0.5rem));
+  border: var(--stroke-width-thin, 1px) solid
+    var(--glass-on-clear, var(--key-value-list-panel-border-color, var(--border-default, #e5e7eb)));
+  background: linear-gradient(var(--glass-on-lift, transparent) 0 0),
+    var(--glass-on-fill, var(--key-value-list-panel-bg, var(--surface-card, #ffffff)));
+  -webkit-backdrop-filter: var(--glass-on-blur, none);
+  backdrop-filter: var(--glass-on-blur, none);
 }
 
 /* ── Responsive collapse ──────────────────────────────────────── */
