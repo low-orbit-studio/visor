@@ -1,0 +1,62 @@
+/* PhotoBackdrop: the photo layers behind a surface, each filling it, cropped to cover.
+   Lifted from the Honcho kit's backdrop. A new layer stays clear until its photo
+   loads, then fades in over the last one while it settles from a slight zoom.
+
+   Variables: --photo-backdrop-fallback (the fill until the first photo loads),
+   --photo-backdrop-duration and --photo-backdrop-ease (the fade), and
+   --photo-backdrop-zoom, --photo-backdrop-zoom-duration and
+   --photo-backdrop-zoom-ease (the settle). */
+.root {
+  /* The page crossfade: a theme's --motion-duration-page and in-out curve, else the kit's 1.2s quint. */
+  --_duration: var(--photo-backdrop-duration, var(--motion-duration-page, 1200ms));
+  --_ease: var(--photo-backdrop-ease, var(--motion-easing-ease-in-out, cubic-bezier(0.83, 0, 0.17, 1)));
+  /* The kit's settle: 1.06 to 1 over 1.6 fades on an expo-out curve. No Visor token carries it; intentional. */
+  --_zoom: var(--photo-backdrop-zoom, 1.06);
+  --_zoom-duration: var(--photo-backdrop-zoom-duration, calc(var(--_duration) * 1.6));
+  --_zoom-ease: var(--photo-backdrop-zoom-ease, cubic-bezier(0.16, 1, 0.3, 1));
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--photo-backdrop-fallback, var(--surface-page, #ffffff));
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.layer[data-ready] {
+  opacity: 1;
+  animation:
+    photo-backdrop-fade var(--_duration) var(--_ease) backwards,
+    photo-backdrop-settle var(--_zoom-duration) var(--_zoom-ease) backwards;
+}
+
+.photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes photo-backdrop-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes photo-backdrop-settle {
+  from {
+    scale: var(--_zoom);
+  }
+}
+
+/* Reduced motion: no settle, and a near-instant fade, so animationend still fires and the old layer goes. */
+@media (prefers-reduced-motion: reduce) {
+  .layer[data-ready] {
+    animation-name: photo-backdrop-fade;
+    animation-duration: 1ms;
+  }
+}

@@ -6,7 +6,9 @@ import { CardSpecimen } from './card-specimen';
 import { GlassSpecimen } from './glass-specimen';
 import { ItineraryLabelsSpecimen } from './itinerary-labels-specimen';
 import { KeyValueListSpecimen } from './key-value-list-specimen';
+import type { LookSpecimenProps } from './looks';
 import { NumberInputSpecimen } from './number-input-specimen';
+import { PhotoBackdropSpecimen } from './photo-backdrop-specimen';
 import { PhotoDropSpecimen } from './photo-drop-specimen';
 import { PhotoPickerSpecimen } from './photo-picker-specimen';
 import { PopoverSpecimen } from './popover-specimen';
@@ -24,7 +26,7 @@ import { ToggleGroupSpecimen } from './toggle-group-specimen';
  * What a five-look frame can draw, by `specimen` key. Part tickets add theirs here. A specimen's
  * form controls sit on `FormPanel` (or a glass card of their own), never straight on the photo (VI-829).
  */
-export const LOOK_SPECIMENS: Record<string, ComponentType> = {
+export const LOOK_SPECIMENS: Record<string, ComponentType<LookSpecimenProps>> = {
   alert: AlertSpecimen,
   'animated-title': AnimatedTitleSpecimen,
   button: ButtonSpecimen,
@@ -33,6 +35,7 @@ export const LOOK_SPECIMENS: Record<string, ComponentType> = {
   'itinerary-labels': ItineraryLabelsSpecimen,
   'key-value-list': KeyValueListSpecimen,
   'number-input': NumberInputSpecimen,
+  'photo-backdrop': PhotoBackdropSpecimen,
   'photo-drop': PhotoDropSpecimen,
   'photo-picker': PhotoPickerSpecimen,
   popover: PopoverSpecimen,
