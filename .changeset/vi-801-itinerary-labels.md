@@ -1,0 +1,6 @@
+---
+"@loworbitstudio/visor": minor
+"@loworbitstudio/visor-theme-engine": minor
+---
+
+OfflineBanner gains `variant="pill"`, a compact inline pill for a top bar, and a `detail` prop shown after the label as `· {detail}` (with a detail the root drops its `aria-label`, so the status reads the whole text). The pill is solid by default and reads the glass layer's control fill, ring, ink and blur inside `data-glass="on"`. Text gains `size="eyebrow"`, an all-caps row label whose weight and colour come from its own hooks unless the caller passes `weight` or `color`. StatusDot reads `--status-dot-size` (6px unset) and `--status-dot-color` (each tone's token unset). Chip's default variant now honours `--chip-bg` and `--chip-text-color`. The theme engine gains a `status-dot` family (`size`), an `offline-banner` family (`pill-height`, `pill-padding-x`, `pill-gap`, `pill-font-size`, `pill-font-weight`, `pill-detail-font-weight`, `pill-detail-opacity`, `pill-icon-size`, `pill-bg`, `pill-text-color`, `pill-border`) and the Text family's `eyebrow-*` keys (`font-size`, `text-transform`, `letter-spacing`, `font-weight`, `color`, `gap`). Every hook falls back to what each component drew before, so an unbound theme renders as it did.

@@ -27,6 +27,18 @@
   font-size: var(--text-xl-font-size, var(--font-size-xl, 1.25rem));
 }
 
+/* An all-caps label above a section, with room for a leading dot or icon (VI-801).
+   Text drops its default weight and colour classes for this size, so these hooks
+   set them; a weight or colour the caller passes still applies. */
+.sizeEyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--text-eyebrow-gap, var(--spacing-2, 0.5rem));
+  font-size: var(--text-eyebrow-font-size, var(--font-size-xs, 0.75rem));
+  font-weight: var(--text-eyebrow-font-weight, var(--font-weight-semibold, 600));
+  color: var(--text-eyebrow-color, var(--text-secondary, #6b7280));
+}
+
 /* Case and tracking are inherited properties, so any unlayered fallback would
    override something: `inherit` beats a layered utility, `revert-layer` drops
    an unlayered consumer rule. In visor-base, the lowest Visor layer (the reset's),
@@ -56,6 +68,12 @@
   .sizeXl {
     text-transform: var(--text-xl-text-transform, revert-layer);
     letter-spacing: var(--text-xl-letter-spacing, revert-layer);
+  }
+
+  /* PageHeader's eyebrow case and tracking. */
+  .sizeEyebrow {
+    text-transform: var(--text-eyebrow-text-transform, uppercase);
+    letter-spacing: var(--text-eyebrow-letter-spacing, var(--letter-spacing-wide, 0.05em));
   }
 }
 

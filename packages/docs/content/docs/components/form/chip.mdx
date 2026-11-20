@@ -7,6 +7,7 @@ import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Chip, ChoiceChip, FilterChip } from '@/components/ui/chip';
 import { DeletableChipDemo, ChoiceChipGroupDemo, FilterChipGroupDemo } from '@/components/ui/chip-demo';
+import { FiveLooks } from '@/components/looks/five-looks';
 
 ## Chip (display)
 
@@ -86,6 +87,34 @@ All three chip types share `sm`, `md` (default), and `lg` sizes.
 Use `filled-primary` when a chip must assert primary brand prominence — for example, essence words on the Brand Workbench Elicit canvas, brand strategy surfaces, or marketing deck templates. It renders a saturated primary fill with `--primary-text` foreground and `--shadow-sm` depth.
 
 Avoid using `filled-primary` for generic tags or filters; prefer `default` or `outlined` there to preserve the variant's signal weight.
+
+## Theming
+
+A theme reshapes the chip through the `chip` component tokens. The default variant
+reads `--chip-bg` and `--chip-text-color` over its muted fill and primary ink, so a
+theme's fill and ink reach the chips most callers render. Unbound, the chip draws as
+before. See [Component Tokens](/docs/themes/component-tokens#chip).
+
+```yaml
+components:
+  chip:
+    md-height: "30px"
+    md-padding-x: "13px"
+    md-font-size: "13px"
+    font-weight: "600"
+    bg: "var(--fill)"
+    text-color: "var(--ink-80)"
+```
+
+### In Five Looks
+
+The itinerary's labels in each look, on the theme picked in the docs: the offline pill
+from the top bar, and a tile of eyebrows with role dots and chips. The specimen binds
+the Honcho kit's sizes the way a theme would, and reads the theme's fill and inks. Only
+the two Photo looks turn glass on: the tile and the pill turn to glass, while the
+chips, dots and eyebrows never blur themselves.
+
+<FiveLooks specimen="itinerary-labels" height={460} />
 
 ## Installation
 

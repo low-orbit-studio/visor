@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs"
+import { join } from "node:path"
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, it, expect, vi } from "vitest"
@@ -482,5 +484,15 @@ describe("accessibility", () => {
   it("FilterChip neutral treatment with count (selected) has no violations", async () => {
     const { container } = render(<FilterChip label="Active" count={47} selectedTreatment="neutral" selected />)
     await checkA11y(container)
+  })
+})
+
+// VI-801: the default variant honours the chip's fill and ink hooks.
+describe("Chip default variant hooks", () => {
+  it("reads --chip-bg and --chip-text-color over the fill and ink it shipped with", () => {
+    const css = readFileSync(join(process.cwd(), "components/ui/chip/chip.module.css"), "utf-8")
+    const rule = css.match(/\.variantDefault \{[^}]*\}/)![0]
+    expect(rule).toContain("background-color: var(--chip-bg, var(--surface-muted, #f3f4f6));")
+    expect(rule).toContain("color: var(--chip-text-color, var(--text-primary, #111827));")
   })
 })
