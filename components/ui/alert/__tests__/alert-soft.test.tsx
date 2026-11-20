@@ -202,7 +202,8 @@ describe("Alert appearance=\"soft\" (VI-698)", () => {
     }
 
     it("draws no edge and no shadow", () => {
-      expect(rule(".soft")).toContain("box-shadow: none")
+      // Off the glass switch the ring is unset, so the shadow falls back to none.
+      expect(rule(".soft")).toContain("box-shadow: var(--_glass-ring, none)")
       for (const selector of [".soft", ".softDestructive", ".softWarning", ".softSuccess", ".softNote"]) {
         expect(rule(selector)).not.toMatch(/\bborder\s*:/)
       }
@@ -220,7 +221,18 @@ describe("Alert appearance=\"soft\" (VI-698)", () => {
     })
 
     it("keeps the body in secondary ink, not the tone's colour", () => {
-      expect(rule(".soft .description")).toContain("color: var(--text-secondary")
+      expect(rule(".soft .description")).toContain("color: var(--_glass-body, var(--text-secondary")
+    })
+
+    // VI-799: over a photo (data-glass="on") every tone reads the glass layer and draws in its ink.
+    it("reads the glass layer's control fill, blur and ink, with the plain soft look as each fallback", () => {
+      for (const selector of [".softDestructive", ".softWarning", ".softSuccess", ".softNote"]) {
+        expect(rule(selector)).toContain("background-color: var(--glass-on-control-fill, ")
+        expect(rule(`${selector} .icon`)).toContain("color: var(--glass-on-ink, ")
+      }
+      expect(rule(".soft")).toContain("backdrop-filter: var(--glass-on-control-blur, none)")
+      expect(rule(".soft")).toMatch(/--_glass-ring: inset 0 0 0 [^;]*var\(--glass-on-ink\)/)
+      expect(rule(".soft .title,\n.soft .lead")).toContain("color: var(--glass-on-ink, var(--text-primary")
     })
 
     // MDX wraps multi-line children in a <p>, and prose styles give it a top
