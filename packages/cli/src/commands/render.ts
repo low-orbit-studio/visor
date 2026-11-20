@@ -538,6 +538,32 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     invalid: { export: "OTPInput", interactiveTarget: "input", props: `{ value: "428519", invalid: true, errorMessage: "That code didn't work. Check it and try again." }` },
     trailing: { export: "OTPInput", interactiveTarget: "input", props: `{ value: "428519", trailing: React.createElement("button", { type: "button" }, "Resend") }` },
   },
+  // VI-811: sized in place (the root is absolute, inset 0, and the harness gives it no
+  // positioned frame). The solid kind draws at once; the photo fades in once it loads.
+  "photo-backdrop": {
+    default: {
+      export: "PhotoBackdrop",
+      props: `({
+        style: { position: "relative", width: 640, height: 400 },
+        backgrounds: { night: { kind: "solid", color: "#1e3a8a" } },
+        current: "night",
+      })`,
+    },
+    photo: {
+      export: "PhotoBackdrop",
+      props: `({
+        style: { position: "relative", width: 640, height: 400 },
+        backgrounds: {
+          dusk: {
+            kind: "photo",
+            focal: [0.7, 0.3],
+            src: "data:image/svg+xml;utf8," + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='800'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#f59e0b'/><stop offset='1' stop-color='#1e3a8a'/></linearGradient></defs><rect width='1200' height='800' fill='url(#g)'/><circle cx='880' cy='220' r='150' fill='#fde68a'/></svg>"),
+          },
+        },
+        current: "dusk",
+      })`,
+    },
+  },
   // VI-793: ten gradient stand-in photos, one chosen, loaded, in a 600px frame
   // (Backstage's menu width) so the five-column grid renders at its real size.
   "photo-picker": {

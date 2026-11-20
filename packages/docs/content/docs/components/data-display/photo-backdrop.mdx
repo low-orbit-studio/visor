@@ -1,0 +1,101 @@
+---
+title: Photo Backdrop
+description: The photo behind a surface, crossfading to the next one, with preloading, a focal point and a solid fallback.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { FiveLooks } from '@/components/looks/five-looks';
+import { PhotoBackdropDefaultDemo, PhotoBackdropFocalDemo } from '@/components/ui/photo-backdrop-demos';
+
+## Default
+
+PhotoBackdrop fills its nearest positioned ancestor with a photo, cropped to cover. Change `current` and the new photo fades in over the last one once it has loaded, settling from a slight zoom, and then the last one goes. A `solid` background crossfades the same way. With no `current`, it renders nothing. The card on the stage turns to glass because its container holds a PhotoBackdrop, and back to solid under None.
+
+<ComponentPreview
+  title="Photo Backdrop"
+  code={"<div style={{ position: 'relative' }}>\n  <PhotoBackdrop backgrounds={backgrounds} current={current} upcoming={upcoming} />\n  <div style={{ position: 'relative' }}>…</div>\n</div>"}
+>
+  <PhotoBackdropDefaultDemo />
+</ComponentPreview>
+
+## Focal Point
+
+`focal` is the point of the photo to keep in frame, as `[x, y]` from 0 to 1. When the frame's shape differs from the photo's, the crop moves toward it. Without it the photo is centred.
+
+<ComponentPreview
+  title="Focal Point"
+  code={"<PhotoBackdrop backgrounds={{ stage: { kind: 'photo', src, focal: [0.9, 0.2] } }} current=\"stage\" />"}
+>
+  <PhotoBackdropFocalDemo />
+</ComponentPreview>
+
+## In Five Looks
+
+In Today, Dark and Light the page has no photo, so PhotoBackdrop renders nothing and the card is solid. In Dark + Photo and Light + Photo it draws the photo, and the card over it is glass. Next Photo crossfades to the other photo.
+
+<FiveLooks specimen="photo-backdrop" height={360} />
+
+## Installation
+
+```bash
+npx visor add photo-backdrop
+```
+
+This copies two files into your project:
+
+- `components/ui/photo-backdrop/photo-backdrop.tsx` — the component
+- `components/ui/photo-backdrop/photo-backdrop.module.css` — the styles
+
+## Usage
+
+Put PhotoBackdrop first inside a positioned container, and position the content after it so it paints on top. `srcSet` builds each photo's `srcset` from its `src`, so the file naming stays yours. This one matches photos saved as `name.webp` (1920 wide) beside `name-1280.webp` and `name-2560.webp`:
+
+```tsx
+import { PhotoBackdrop } from '@/components/ui/photo-backdrop/photo-backdrop';
+
+const backgrounds = {
+  dusk: { kind: 'photo', src: '/photos/dusk.webp', focal: [0.5, 0.3] },
+  lake: { kind: 'photo', src: '/photos/lake.webp' },
+  night: { kind: 'solid', color: '#0b0b0c' },
+} as const;
+
+const srcSet = (src: string) => {
+  const sized = (w: number) => src.replace(/\.webp$/, `-${w}.webp`);
+  return `${sized(1280)} 1280w, ${src} 1920w, ${sized(2560)} 2560w`;
+};
+
+<div style={{ position: 'relative', minHeight: '100vh' }}>
+  <PhotoBackdrop backgrounds={backgrounds} current={step} upcoming={nextSteps} srcSet={srcSet} />
+  <main style={{ position: 'relative' }}>…</main>
+</div>
+```
+
+The photo on screen loads first, at high priority. Once it has loaded, the photos in `upcoming` are fetched one at a time, at low priority, with the same `srcset` and `sizes`, so each later change is a cache hit. A photo is fetched once per page.
+
+### Glass
+
+Its container turns the [glass layer](/docs/themes/glass) on: visor-core's glass switch matches `data-glass="on"` and any element holding a PhotoBackdrop as a direct child. So glass shows exactly where a photo is drawn, and a plain page keeps solid surfaces. `data-glass="off"` on a subtree still turns it off.
+
+## Theming
+
+| Variable | Default | Sets |
+|---|---|---|
+| `--photo-backdrop-fallback` | `--surface-page` | The fill until the first photo loads |
+| `--photo-backdrop-duration` | `--motion-duration-page`, else `1200ms` | The fade |
+| `--photo-backdrop-ease` | `--motion-easing-ease-in-out`, else `cubic-bezier(0.83, 0, 0.17, 1)` | The fade's curve |
+| `--photo-backdrop-zoom` | `1.06` | The scale a new photo settles from |
+| `--photo-backdrop-zoom-duration` | 1.6 × the fade | The settle |
+| `--photo-backdrop-zoom-ease` | `cubic-bezier(0.16, 1, 0.3, 1)` | The settle's curve |
+
+## API Reference
+
+### PhotoBackdropProps
+
+<PropsTable component="photo-backdrop" />
+
+## Accessibility
+
+- The backdrop is decorative: its root is `aria-hidden="true"` and every photo has `alt=""` (1.1.1)
+- With `prefers-reduced-motion: reduce`, there is no zoom and the fade is near-instant (2.3.3)
+- Text over a photo needs its own contrast: lay a scrim over the photo or use glass surfaces (1.4.3)

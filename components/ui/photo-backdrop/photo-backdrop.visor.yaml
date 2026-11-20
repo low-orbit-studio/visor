@@ -1,0 +1,60 @@
+name: PhotoBackdrop
+description: The photo behind a surface. Each new background crossfades in over the last once it has loaded, the next ones preload at low priority, a focal point keeps the subject in frame, and a solid colour shows until the first photo loads. Its presence turns the glass layer on for its container; with no photo it renders nothing.
+extends: HTMLDivElement
+category: media
+
+when_to_use:
+  - A full-bleed photo behind a page, a stage or a hero, where glass surfaces sit on top
+  - Changing the background photo as a person moves through steps or slides
+  - A flat colour background that crossfades with photos
+
+when_not_to_use:
+  - A photo that is content, with a size and a caption (use Image)
+  - Browsing photos full size (use Lightbox)
+  - A static decorative pattern (use CSS background-image)
+
+why: >
+  Lifted from the Honcho kit's backdrop so every app and every "+ Photo" look
+  draws its background with one engine. The crossfade is a CSS animation
+  started once the photo has loaded, so a background never paints half-loaded
+  and the fallback colour shows until then. Upcoming photos are fetched one at
+  a time at low priority, after the photo on screen, with the same srcset, so
+  each later change is a cache hit. File naming is the consumer's: a srcSet
+  builder turns a photo's src into its srcset. The glass layer's switch also
+  matches any container that holds a PhotoBackdrop, so glass is on exactly
+  where a photo is drawn and off on a plain page.
+
+props:
+  - name: backgrounds
+    type: "Record<string, { kind: 'photo'; src: string; focal?: [number, number] } | { kind: 'solid'; color: string }>"
+    required: true
+    description: Every background the page can show, by key. focal is the point to keep in frame, as [x, y] from 0 to 1 (default [0.5, 0.5]).
+  - name: current
+    type: string | null | undefined
+    required: true
+    description: The key of the background on screen. Null, undefined or a key missing from backgrounds renders nothing.
+  - name: upcoming
+    type: string[]
+    default: "[]"
+    description: Every other background, nearest first. Fetched one at a time, at low priority, once the current photo has loaded.
+  - name: srcSet
+    type: "(src: string) => string"
+    description: Builds a photo's srcset from its src, for both the rendered photo and the preload. Without it the photo is a plain src.
+  - name: sizes
+    type: string
+    default: "'100vw'"
+    description: The sizes sent with a srcSet.
+
+dependencies: []
+
+preview_url: "https://visor.loworbit.studio/docs/components/data-display/photo-backdrop"
+
+example: |
+  <div style={{ position: "relative", minHeight: "100vh" }}>
+    <PhotoBackdrop
+      backgrounds={{ dusk: { kind: "photo", src: "/photos/dusk.webp", focal: [0.5, 0.3] } }}
+      current="dusk"
+      srcSet={(src) => `${src.replace(/\.webp$/, "-1280.webp")} 1280w, ${src} 1920w`}
+    />
+    <main style={{ position: "relative" }}>…</main>
+  </div>

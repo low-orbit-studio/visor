@@ -59,7 +59,7 @@ npx visor add <component-name> --overwrite
 
 ---
 
-## Component Catalog (82)
+## Component Catalog (83)
 
 ### Data Display (7)
 
@@ -128,13 +128,14 @@ npx visor add <component-name> --overwrite
 | `separator` | Visual divider between sections |
 | `sidebar` | Collapsible side navigation panel |
 
-### Media (3)
+### Media (4)
 
 | Component | Description |
 | --- | --- |
 | `carousel` | Horizontally scrollable content slider |
 | `image` | Responsive image with loading states |
 | `lightbox` | Full-screen image viewer overlay |
+| `photo-backdrop` | Crossfading background photo behind a surface; turns glass on |
 
 ### Navigation (6)
 

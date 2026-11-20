@@ -2018,6 +2018,41 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'photo-backdrop': [
+    {
+      name: 'backgrounds',
+      type: "Record<string, { kind: 'photo'; src: string; focal?: [number, number] } | { kind: 'solid'; color: string }>",
+      description: 'Every background the page can show, by key. focal is the point to keep in frame, as [x, y] from 0 to 1 (default [0.5, 0.5]).',
+    },
+    {
+      name: 'current',
+      type: 'string | null | undefined',
+      description: 'The key of the background on screen. Null, undefined or a key missing from backgrounds renders nothing. Required.',
+    },
+    {
+      name: 'upcoming',
+      type: 'string[]',
+      default: '[]',
+      description: 'Every other background, nearest first. Fetched one at a time, at low priority, once the current photo has loaded.',
+    },
+    {
+      name: 'srcSet',
+      type: '(src: string) => string',
+      description: "Builds a photo's srcset from its src, for both the rendered photo and the preload. Without it the photo is a plain src.",
+    },
+    {
+      name: 'sizes',
+      type: 'string',
+      default: "'100vw'",
+      description: 'The sizes sent with a srcSet.',
+    },
+    {
+      name: '...props',
+      type: 'React.HTMLAttributes<HTMLDivElement>',
+      description: 'Standard div attributes are forwarded to the root, which is aria-hidden.',
+    },
+  ],
+
   'photo-picker': [
     {
       name: 'photos',

@@ -431,7 +431,8 @@ function buildSemanticBody(): string {
  * The glass switch (VI-795). Glass is off unless an ancestor says a photo sits
  * behind: `[data-glass="on"]` copies each theme `--glass-<key>` (or its Visor
  * default) into `--glass-on-<key>`, and `[data-glass="off"]` clears them again
- * for a subtree. Components read only `var(--glass-on-<key>, <solid value>)`,
+ * for a subtree. A container holding a PhotoBackdrop counts as `on` (VI-811).
+ * Components read only `var(--glass-on-<key>, <solid value>)`,
  * so with no switch they draw their solid surface and border and no blur.
  * The defaults are the glass family's recommended values in the engine contract.
  */
@@ -448,7 +449,8 @@ function buildGlassSwitch(): string {
   const off = on.map((d) => `${d.slice(0, d.indexOf(":"))}: initial;`);
   return [
     sectionComment("Glass switch (VI-795)"),
-    block('[data-glass="on"]', on),
+    // A container holding a PhotoBackdrop (VI-811) has a photo behind it, so it turns glass on too.
+    block('[data-glass="on"],\n:has(> [data-slot="photo-backdrop"])', on),
     block('[data-glass="off"]', off),
   ].join("\n");
 }
