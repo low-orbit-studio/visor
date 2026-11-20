@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.54.0
+
+### Minor Changes
+
+- 0e937fb: StatCard takes theme hooks for its edge, corners, elevation and inset (`--stat-card-border`, `--stat-card-radius`, `--stat-card-shadow`, `--stat-card-padding`), the rule above the footer (`--stat-card-footer-border`) and its type (`--stat-card-label-*`, `--stat-card-value-*`, `--stat-card-footer-*` font size, weight, line height, tracking and colour), bindable as `components.stat-card` in a theme. Every hook falls back to the look that shipped, so unbound themes render unchanged. Paper binds a borderless summary card: no edge, no footer rule, 24px corners, no shadow, the desk hero value, and desk label and second-line type.
+
+### Patch Changes
+
+- Updated dependencies [0e937fb]
+  - @loworbitstudio/visor-theme-engine@0.41.0
+
 ## 1.53.1
 
 ### Patch Changes
