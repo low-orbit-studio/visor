@@ -6,6 +6,7 @@ description: Definition-list display primitive for one record's attributes — l
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { KeyValueList } from '@/components/ui/key-value-list';
+import { FiveLooks } from '@/components/looks/five-looks';
 
 ## Basic
 
@@ -58,6 +59,87 @@ The canonical "key facts" row atop a detail page. Each value is an arbitrary nod
   />
 </ComponentPreview>
 
+## Panel Surface
+
+`surface="panel"` draws the theme's card surface and border around the list, for a
+facts panel that stands on its own. Inside `data-glass="on"` (see
+[Glass](/docs/themes/glass)) the panel turns to glass: the glass layer's fill, lift
+and blur, with its edge cleared. The label and value keep the theme's ink. A list
+with no surface never blurs, so it can sit inside a glass tile without a nested blur.
+
+<ComponentPreview
+  title="surface=panel, horizontal"
+  code={"<KeyValueList\n  surface=\"panel\"\n  orientation=\"horizontal\"\n  items={[\n    { label: 'Role', value: 'Stage Manager' },\n    { label: 'Stage', value: 'The Barn' },\n  ]}\n/>"}
+>
+  <KeyValueList
+    surface="panel"
+    orientation="horizontal"
+    items={[
+      { label: 'Role', value: 'Stage Manager' },
+      { label: 'Stage', value: 'The Barn' },
+    ]}
+  />
+</ComponentPreview>
+
+## Inside a Button
+
+`as="span"` renders spans throughout (root, rows, labels and values), so the list is
+valid phrasing content inside a `<button>`, such as a tappable tile. It carries no
+definition-list semantics; the button's accessible name reads the pairs in order.
+
+```tsx
+<button type="button" onClick={edit}>
+  <KeyValueList
+    as="span"
+    orientation="horizontal"
+    items={[
+      { label: 'Food', value: 'Three meals a day' },
+      { label: 'Access', value: 'All areas' },
+    ]}
+  />
+</button>
+```
+
+## Skin and Glass
+
+A theme reshapes the list through the `key-value-list` hooks: label and value type
+and ink, the horizontal columns, item gap and alignment, row spacing, padding and
+divider, and the panel's fill, edge colour, corners and inset. Each falls back to the
+look above, so a theme that binds none of them draws KeyValueList unchanged. The
+full list is on [Component Tokens](/docs/themes/component-tokens#key-value-list).
+
+```yaml
+components:
+  key-value-list:
+    # FormDeck's Facts panel
+    panel-padding: "6px 24px"
+    panel-radius: "24px"
+    row-gap: "0"
+    columns: "minmax(96px, 1fr) 3fr"
+    item-gap: "4px 20px"
+    item-align: "normal"
+    item-padding: "14px 0"
+    divider: "1px solid var(--border-default)"
+    label-font-size: "13px"
+    label-line-height: "24px"
+    label-font-weight: "560"
+    label-letter-spacing: "0.02em"
+    label-text-transform: "none"
+    value-font-size: "17px"
+    value-line-height: "1.45"
+    value-font-weight: "480"
+    value-text-wrap: "pretty"
+```
+
+### In Five Looks
+
+The Facts panel (`surface="panel"`) and the Backstage itinerary's pairs (`as="span"`,
+inside a glass tile), each skinned with the Honcho kit's numbers, in each look on the
+theme picked in the docs. The Photo looks turn glass on over a photo: the panel turns
+to glass and the bare list inside the tile stays unblurred.
+
+<FiveLooks specimen="key-value-list" height={460} />
+
 ## Installation
 
 ```bash
@@ -100,7 +182,7 @@ Each entry in `items` is a `KeyValueItem`: `{ label: ReactNode; value: ReactNode
 
 ## Accessibility
 
-`KeyValueList` renders a semantic `<dl>` with `<dt>`/`<dd>` pairs by default, so assistive technology announces each label with its value. Set `as="div"` only when the surrounding markup already supplies the term/description semantics. When a value is itself a graphical or interactive element (a score ring, an avatar stack), give it an `aria-label` so the pairing stays meaningful without sight.
+`KeyValueList` renders a semantic `<dl>` with `<dt>`/`<dd>` pairs by default, so assistive technology announces each label with its value. Set `as="div"` only when the surrounding markup already supplies the term/description semantics, and `as="span"` only inside phrasing content such as a `<button>`. When a value is itself a graphical or interactive element (a score ring, an avatar stack), give it an `aria-label` so the pairing stays meaningful without sight.
 
 ## When to Use
 

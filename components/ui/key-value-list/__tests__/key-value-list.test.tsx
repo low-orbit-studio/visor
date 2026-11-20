@@ -117,4 +117,36 @@ describe("KeyValueList", () => {
       container.querySelectorAll('[data-slot="key-value-item"]')
     ).toHaveLength(0)
   })
+
+  it('renders spans throughout with as="span", so it fits inside a button', () => {
+    const { container } = render(
+      <button type="button">
+        <KeyValueList as="span" items={items} />
+      </button>
+    )
+    const root = container.querySelector('[data-slot="key-value-list"]')!
+    expect(root.tagName).toBe("SPAN")
+    for (const slot of ["key-value-item", "key-value-label", "key-value-value"]) {
+      const nodes = container.querySelectorAll(`[data-slot="${slot}"]`)
+      expect(nodes).toHaveLength(2)
+      nodes.forEach((n) => expect(n.tagName).toBe("SPAN"))
+    }
+    expect(container.querySelector("dl, dt, dd, div")).toBeNull()
+  })
+
+  it("keeps div rows inside a dl by default", () => {
+    const { container } = render(<KeyValueList items={items} />)
+    container
+      .querySelectorAll('[data-slot="key-value-item"]')
+      .forEach((n) => expect(n.tagName).toBe("DIV"))
+  })
+
+  it('draws no surface by default and marks surface="panel"', () => {
+    const { container, rerender } = render(<KeyValueList items={items} />)
+    const root = () => container.querySelector('[data-slot="key-value-list"]')!
+    expect(root()).not.toHaveAttribute("data-surface")
+    rerender(<KeyValueList items={items} surface="panel" />)
+    expect(root()).toHaveAttribute("data-surface", "panel")
+    expect(root().tagName).toBe("DL")
+  })
 })

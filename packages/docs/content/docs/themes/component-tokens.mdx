@@ -1248,6 +1248,39 @@ StatCard — the card's edge, corners, elevation and inset, the rule above the f
 
 Where the `sm` size, the `highlight` variant or a `hero` / `compact` value sets its own padding, type size or elevation, that rule still wins. The type hooks are longhands, not a `font` shorthand: a shorthand would need a fallback naming a family, and the unbound label and footer inherit theirs.
 
+### `key-value-list`
+
+KeyValueList — label and value type and ink, the horizontal columns, item gap and alignment, row spacing, padding and divider, and the `surface="panel"` fill, edge colour, corners and inset. Under `data-glass="on"` the panel reads the glass layer instead.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--key-value-list-label-font-size` | Label type size. | `var(--font-size-xs, 0.6875rem)` |
+| `--key-value-list-label-font-weight` | Label weight. | `var(--font-weight-medium, 500)` |
+| `--key-value-list-label-line-height` | Label line height. | `1.4` |
+| `--key-value-list-label-letter-spacing` | Label tracking, stacked and horizontal. | `0.12em` stacked, `0.06em` horizontal |
+| `--key-value-list-label-text-transform` | Label case (`none` for sentence-case labels). | `uppercase` |
+| `--key-value-list-label-color` | Label ink. | `var(--text-tertiary, #6b7280)` |
+| `--key-value-list-label-padding-top` | Nudge the label down against a larger value. | `0` |
+| `--key-value-list-value-font-size` | Value type size, in every density. | `var(--font-size-lg, 1.125rem)` editorial, `var(--font-size-base, 1rem)` default, `var(--font-size-sm, 0.8125rem)` compact |
+| `--key-value-list-value-font-weight` | Value weight. | `inherit` |
+| `--key-value-list-value-line-height` | Value line height. | `inherit` |
+| `--key-value-list-value-color` | Value ink. | `var(--text-primary, #111827)` |
+| `--key-value-list-value-text-wrap` | Value line breaking, e.g. `pretty`. | `inherit` |
+| `--key-value-list-value-overflow-wrap` | `anywhere` breaks a long name or email rather than widening the list. | `inherit` |
+| `--key-value-list-value-font-variant-numeric` | Value figures (`normal` for proportional). | `tabular-nums` |
+| `--key-value-list-columns` | Horizontal label and value columns. | `minmax(7rem, 0.4fr) 1fr` |
+| `--key-value-list-item-gap` | Horizontal gap between label and value. | `var(--spacing-4, 1rem)` |
+| `--key-value-list-item-align` | Horizontal label and value alignment. | `baseline` |
+| `--key-value-list-item-padding` | Inset of each row. | `0` |
+| `--key-value-list-row-gap` | Space between rows, in every density. | `var(--spacing-6, 1.5rem)` editorial, `var(--spacing-4, 1rem)` default, `var(--spacing-3, 0.75rem)` compact |
+| `--key-value-list-divider` | Rule between rows of a one-column list, e.g. `1px solid var(--border-default)`. | `0` |
+| `--key-value-list-panel-bg` | `surface="panel"` fill off glass. | `var(--surface-card, #ffffff)` |
+| `--key-value-list-panel-border-color` | `surface="panel"` edge colour off glass. | `var(--border-default, #e5e7eb)` |
+| `--key-value-list-panel-radius` | `surface="panel"` corner radius. | `var(--radius-lg, 0.5rem)` |
+| `--key-value-list-panel-padding` | `surface="panel"` inset. | `var(--spacing-2, 0.5rem) var(--spacing-6, 1.5rem)` |
+
+Inside `data-glass="on"` (see [Glass](/docs/themes/glass)) a `surface="panel"` list takes the glass layer's fill, lift and blur, and its edge clears; the label and value keep the theme's ink. A list with no surface never blurs, so it can sit inside a glass tile without a nested blur.
+
 ### `admin-ui`
 
 Structural roles the admin-ui pattern owns. `marquee-family` is the display face for KPI hero figures and marquee page titles — the role the admin-ui portability audit named as the one piece of ENTR brand coupling a new theme must rebind.

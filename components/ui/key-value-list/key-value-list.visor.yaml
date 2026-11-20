@@ -36,9 +36,13 @@ props:
     default: '"editorial"'
     description: Row density; editorial is the admin-ui default.
   - name: as
-    type: '"dl" | "div"'
+    type: '"dl" | "div" | "span"'
     default: '"dl"'
-    description: Root element; dl renders semantic <dl>/<dt>/<dd>, div opts out.
+    description: Root element; dl renders semantic <dl>/<dt>/<dd>, div opts out, span renders spans throughout so the list fits inside a <button> tile.
+  - name: surface
+    type: '"none" | "panel"'
+    default: '"none"'
+    description: panel draws the theme's card surface and border, and turns to glass inside data-glass="on"; none draws no surface.
 
 dependencies: []
 

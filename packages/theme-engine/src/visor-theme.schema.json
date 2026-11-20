@@ -679,6 +679,13 @@
             "$ref": "#/$defs/componentTokenBinding"
           }
         },
+        "key-value-list": {
+          "type": "object",
+          "description": "KeyValueList \u2014 label and value type and ink, the horizontal columns, item gap and alignment, row spacing, padding and divider, and the `surface=\"panel\"` fill, edge colour, corners and inset. Under `data-glass=\"on\"` the panel reads the glass layer instead. Keys: label-font-size, label-font-weight, label-line-height, label-letter-spacing, label-text-transform, label-color, label-padding-top, value-font-size, value-font-weight, value-line-height, value-color, value-text-wrap, value-overflow-wrap, value-font-variant-numeric, columns, item-gap, item-align, item-padding, row-gap, divider, panel-bg, panel-border-color, panel-radius, panel-padding.",
+          "additionalProperties": {
+            "$ref": "#/$defs/componentTokenBinding"
+          }
+        },
         "textarea": {
           "type": "object",
           "description": "Textarea shape at the default `md` size. Keys: padding, radius.",
