@@ -11,6 +11,8 @@
  * Skips where Chromium is unavailable (playwright is an optional dep).
  */
 
+import { readFileSync } from "node:fs"
+import { join } from "node:path"
 import { afterAll, beforeAll, describe, expect, it } from "vitest"
 import { close, launch, open, ready } from "../../__tests__/render-page"
 
@@ -123,5 +125,111 @@ describe("VI-713 — labelled steps (real browser)", () => {
   it("a bar without steps draws no fill layer", async (ctx) => {
     if (!ready()) return ctx.skip()
     expect(await read("default", "#root [data-slot=segmented-progress-segment]", "content", { pseudo: "::before" })).toBe("none")
+  }, 30_000)
+})
+
+// VI-809 — sections: weighted, tappable, labels that fade in, ink from the theme.
+const CSS = readFileSync(join(process.cwd(), "components/ui/segmented-progress/segmented-progress.module.css"), "utf-8")
+
+/** Run `script` (an expression over `q`, querySelector on #root) in the `sections` fixture. */
+async function inSections<T>(script: string, opts: Parameters<typeof open>[2] = {}): Promise<T> {
+  const page = await open("segmented-progress", "sections", opts)
+  const value = (await page.evaluate(
+    `(async function () { var q = function (s) { return document.querySelector("#root " + s) }; return ${script} })()`,
+  )) as T
+  await page.close()
+  return value
+}
+
+describe("VI-809 — sections (real browser)", () => {
+  it("the module CSS draws no literal white: over a photo the ink is the theme's", () => {
+    expect(CSS).not.toMatch(/#fff\b|#ffffff|\bwhite\b(?!-)|rgb\(\s*255[ ,]+255[ ,]+255/i)
+  })
+
+  it("weights 2, 1 and 3 split the width after the gaps 2:1:3", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    const r = await inSections<{ weights: string[]; widths: number[] }>(`(function () {
+      var steps = document.querySelectorAll("#root [data-slot=segmented-progress-step]")
+      return {
+      weights: [1, 2, 3].map(function (n) { return getComputedStyle(steps[n - 1]).getPropertyValue("--segmented-progress-weight").trim() }),
+      widths: [1, 2, 3].map(function (n) { return steps[n - 1].getBoundingClientRect().width })
+    } })()`)
+    expect(r.weights).toEqual(["2", "1", "3"])
+    const unit = r.widths[1]
+    expect(Math.abs(r.widths[0] - 2 * unit)).toBeLessThanOrEqual(1)
+    expect(Math.abs(r.widths[2] - 3 * unit)).toBeLessThanOrEqual(1)
+  }, 30_000)
+
+  it("fill: 0.25 clips the current fill to inset(0 75% ...); unset it stays at 45%", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    const read = `getComputedStyle(q("[data-state=current] [data-slot=segmented-progress-segment]"), "::before").clipPath`
+    expect(await inSections<string>(read)).toBe("inset(0px 75% 0px 0px round 9999px)")
+  }, 30_000)
+
+  it("only the step with onSelect is a button, with a focus ring and the whole step as target", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    const r = await inSections<{ tags: string[]; height: number; cursor: string }>(`{
+      tags: Array.from(document.querySelectorAll("#root [data-slot=segmented-progress-step]")).map(function (s) { return s.tagName }),
+      height: q("button").getBoundingClientRect().height,
+      cursor: getComputedStyle(q("button")).cursor
+    }`)
+    expect(r.tags).toEqual(["BUTTON", "DIV", "DIV"])
+    expect(r.height).toBeGreaterThanOrEqual(24)
+    expect(r.cursor).toBe("pointer")
+  }, 30_000)
+
+  it("revealLabels hides a pending label and fades it in when its step fills", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    const r = await inSections<{ pending: string; done: string; duration: string; after: string }>(
+      `(function () {
+        var pending = q("[data-state=pending] [data-slot=segmented-progress-label]")
+        var out = {
+          pending: getComputedStyle(pending).opacity,
+          done: getComputedStyle(q("[data-state=done] [data-slot=segmented-progress-label]")).opacity,
+          duration: getComputedStyle(pending).transitionDuration.split(",")[0].trim()
+        }
+        pending.parentElement.setAttribute("data-state", "current")
+        return new Promise(function (resolve) {
+          setTimeout(function () { out.after = getComputedStyle(pending).opacity; resolve(out) }, 1200)
+        })
+      })()`,
+      { motion: "no-preference" },
+    )
+    // A done label is visible from the first frame: a transition never runs on mount.
+    expect(r).toEqual({ pending: "0", done: "1", duration: "0.8s", after: "1" })
+  }, 30_000)
+
+  it("under reduced motion a label switches with no transition", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    const read = `getComputedStyle(q("[data-state=pending] [data-slot=segmented-progress-label]")).transitionDuration`
+    // visor-core's tokens.css pins every duration to 0.01ms under reduce; the label adds none of its own.
+    expect(parseFloat(await inSections<string>(read, { motion: "reduce" }))).toBeLessThanOrEqual(0.00001)
+  }, 30_000)
+
+  it("with no glass switch the labels read the theme's text inks and the track does not blur", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    const r = await inSections<{ label: string; filter: string }>(`{
+      label: getComputedStyle(q("[data-state=done] [data-slot=segmented-progress-label]")).color,
+      filter: getComputedStyle(q("[data-state=done] [data-slot=segmented-progress-segment]")).backdropFilter
+    }`, { scopeCss: SCOPE })
+    expect(r).toEqual({ label: "rgb(34, 34, 34)", filter: "none" })
+  }, 30_000)
+
+  it('under data-glass="on" the labels take the glass ink and the track the glass fill and blur', async (ctx) => {
+    if (!ready()) return ctx.skip()
+    const glass = "--glass-ink: rgb(255, 255, 255); --glass-fill: rgb(1, 2, 3); --glass-blur: blur(15px);"
+    const r = await inSections<{ labels: string[]; failed: string; track: string; filter: string }>(`(function () {
+      document.getElementById("theme-scope").setAttribute("data-glass", "on")
+      return {
+        labels: Array.from(document.querySelectorAll("#root [data-slot=segmented-progress-label]")).map(function (l) { return getComputedStyle(l).color }),
+        track: getComputedStyle(q("[data-slot=segmented-progress-segment]")).backgroundColor,
+        filter: getComputedStyle(q("[data-slot=segmented-progress-segment]")).backdropFilter
+      }
+    })()`, { scopeCss: SCOPE + glass })
+    expect(r).toEqual({
+      labels: ["rgb(255, 255, 255)", "rgb(255, 255, 255)", "rgb(255, 255, 255)"],
+      track: "rgb(1, 2, 3)",
+      filter: "blur(15px)",
+    })
   }, 30_000)
 })

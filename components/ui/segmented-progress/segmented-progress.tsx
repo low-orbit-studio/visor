@@ -26,6 +26,15 @@ export interface SegmentedProgressStep {
    * unlabelled bar does.
    */
   state?: SegmentedProgressStepState
+  /** The step's share of the bar's width, e.g. its slide count. @default 1 */
+  weight?: number
+  /**
+   * Makes the step a button that calls this when pressed, e.g. to jump back to
+   * a finished step. Steps without it are not focusable.
+   */
+  onSelect?: () => void
+  /** How much of a current step's segment is filled, 0 to 1. @default 0.55 */
+  fill?: number
 }
 
 interface SegmentedProgressBaseProps
@@ -43,6 +52,7 @@ interface SegmentedProgressBaseProps
 export interface SegmentedProgressCountProps extends SegmentedProgressBaseProps {
   steps?: undefined
   summary?: undefined
+  revealLabels?: undefined
   /** Total number of segments. */
   total: number
   /** Count of completed segments (indices 0..value-1 render done). */
@@ -62,6 +72,11 @@ export interface SegmentedProgressStepsProps extends SegmentedProgressBaseProps 
    * "Step 2 of 3: Bank Details", naming the failed, current or next step.
    */
   summary?: React.ReactNode
+  /**
+   * Hides each pending step's label, and fades it in when the step fills.
+   * Labels already filled on first render show without animating.
+   */
+  revealLabels?: boolean
   /** Ignored with `steps`: the step count is `steps.length`. */
   total?: number
   /** Count of steps that default to done when a step sets no `state`. */
@@ -105,6 +120,7 @@ const SegmentedProgress = React.forwardRef<HTMLDivElement, SegmentedProgressProp
       size = "sm",
       steps,
       summary,
+      revealLabels,
       "aria-label": ariaLabel,
       ...props
     },
@@ -118,6 +134,7 @@ const SegmentedProgress = React.forwardRef<HTMLDivElement, SegmentedProgressProp
           data-slot="segmented-progress"
           data-size={size}
           data-labelled=""
+          data-reveal={revealLabels ? "" : undefined}
           className={cn(segmentedProgressVariants({ size }), styles.labelled, className)}
           {...props}
         >
@@ -127,14 +144,27 @@ const SegmentedProgress = React.forwardRef<HTMLDivElement, SegmentedProgressProp
           {steps.map((step, i) => {
             const state = states[i]
             const Icon = state === "done" ? CheckCircle : state === "failed" ? WarningCircle : null
+            const Step = step.onSelect ? "button" : "div"
+            const style: Record<string, string | number> = { "--segmented-progress-index": i }
+            if (step.weight !== undefined) style["--segmented-progress-weight"] = step.weight
+            if (step.fill !== undefined) {
+              style["--segmented-progress-fill-inset"] = `${(1 - Math.min(Math.max(step.fill, 0), 1)) * 100}%`
+            }
             return (
-              <div
+              <Step
                 key={i}
                 data-slot="segmented-progress-step"
                 data-state={state}
-                aria-hidden="true"
+                // A button stays in the accessibility tree; every other step is read through the summary.
+                {...(step.onSelect
+                  ? {
+                      type: "button" as const,
+                      onClick: step.onSelect,
+                      "aria-label": typeof step.label === "string" ? `Go to ${step.label}` : undefined,
+                    }
+                  : { "aria-hidden": true })}
                 className={styles.step}
-                style={{ "--segmented-progress-index": i } as React.CSSProperties}
+                style={style as React.CSSProperties}
               >
                 <span
                   data-slot="segmented-progress-segment"
@@ -145,7 +175,7 @@ const SegmentedProgress = React.forwardRef<HTMLDivElement, SegmentedProgressProp
                   {Icon && <Icon className={styles.labelIcon} />}
                   <span className={styles.labelText}>{step.label}</span>
                 </span>
-              </div>
+              </Step>
             )
           })}
         </div>

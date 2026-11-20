@@ -494,6 +494,11 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       export: "SegmentedProgress",
       props: `{ size: "md", style: { width: 360 }, steps: [{ label: "Your Info", state: "done" }, { label: "Bank Details", state: "current" }, { label: "W-9", state: "pending" }, { label: "Paid", state: "failed" }] }`,
     },
+    // VI-809: sections sized 2:1:3, the finished one a button, the current one a quarter filled, labels revealed.
+    sections: {
+      export: "SegmentedProgress",
+      props: `{ style: { width: 360 }, revealLabels: true, steps: [{ label: "About You", state: "done", weight: 2, onSelect: () => {} }, { label: "Tickets", state: "current", weight: 1, fill: 0.25 }, { label: "Travel", state: "pending", weight: 3 }] }`,
+    },
   },
   // Form controls (VI-655). Each has a resting fixture plus the states that
   // redraw the edge (invalid, checked, selected), so `visor render` can prove
