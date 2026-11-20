@@ -39,9 +39,17 @@ interface Case {
   motion?: boolean
   /** Read a pseudo-element of the target (`::after`, the edged faces' ring). */
   pseudo?: string
+  /** Focus this selector under #root before reading (the focus-ring hooks). */
+  focus?: string
+  /** The bound value need only contain this (a box-shadow with an unbound part). */
+  contains?: string
 }
 
 const LABEL = "[data-slot=field-label]"
+const OPTIONAL = "[data-slot=field-label-optional]"
+const HINT = "[data-slot=field-description]"
+const ERROR = "[data-slot=field-error]"
+const BOX = "[data-slot=field-control]"
 const SIZE_TEXT = (i: number) => `[data-slot=text] > [data-slot=text]:nth-child(${i})`
 
 const TYPE = [
@@ -60,6 +68,40 @@ const CASES: Case[] = [
   { token: "--field-label-letter-spacing", fixture: "field/default", target: LABEL, prop: "letter-spacing", value: "3px" },
   { token: "--field-label-color", fixture: "field/default", target: LABEL, prop: "color", value: "rgb(255, 0, 170)" },
   { token: "--field-label-color", fixture: "field/editorial", target: LABEL, prop: "color", value: "rgb(255, 0, 170)" },
+  // VI-805: the label's weight and optional mark, the hint, the error line and the control box.
+  { token: "--field-gap", fixture: "field/default", target: "[data-slot=field]", prop: "row-gap", value: "23px" },
+  { token: "--field-text-inset", fixture: "field/default", target: LABEL, prop: "padding-left", value: "7px" },
+  { token: "--field-label-font-weight", fixture: "field/default", target: LABEL, prop: "font-weight", value: "800" },
+  { token: "--field-label-line-height", fixture: "field/default", target: LABEL, prop: "line-height", value: "41px" },
+  { token: "--field-label-optional-color", fixture: "field/control", target: OPTIONAL, prop: "color", value: "rgb(1, 2, 3)" },
+  { token: "--field-label-optional-font-weight", fixture: "field/control", target: OPTIONAL, prop: "font-weight", value: "900" },
+  { token: "--field-description-font-size", fixture: "field/default", target: HINT, prop: "font-size", value: "19px" },
+  { token: "--field-description-font-size", fixture: "field/editorial", target: HINT, prop: "font-size", value: "19px" },
+  { token: "--field-description-color", fixture: "field/default", target: HINT, prop: "color", value: "rgb(1, 2, 3)" },
+  { token: "--field-description-color", fixture: "field/editorial", target: HINT, prop: "color", value: "rgb(1, 2, 3)" },
+  { token: "--field-description-line-height", fixture: "field/default", target: HINT, prop: "line-height", value: "31px" },
+  { token: "--field-error-color", fixture: "field/control", target: ERROR, prop: "color", value: "rgb(1, 2, 3)" },
+  { token: "--field-error-font-weight", fixture: "field/control", target: ERROR, prop: "font-weight", value: "800" },
+  { token: "--field-error-line-height", fixture: "field/control", target: ERROR, prop: "line-height", value: "29px" },
+  { token: "--field-error-icon-gap", fixture: "field/control", target: ERROR, prop: "column-gap", value: "17px" },
+  { token: "--field-error-icon-size", fixture: "field/control", target: "[data-slot=field-error-icon]", prop: "font-size", value: "27px" },
+  { token: "--field-error-fill", fixture: "field/invalid", target: BOX, prop: "background-color", value: "rgb(1, 2, 3)" },
+  { token: "--field-error-line", fixture: "field/invalid", target: BOX, prop: "box-shadow", value: "rgb(1, 2, 3)", contains: "rgb(1, 2, 3) 0px 0px 0px" },
+  { token: "--field-error-line-width", fixture: "field/invalid", target: BOX, prop: "box-shadow", value: "5px", contains: " 0px 0px 0px 5px inset" },
+  { token: "--field-control-height", fixture: "field/control", target: BOX, prop: "height", value: "71px" },
+  { token: "--field-control-radius", fixture: "field/control", target: BOX, prop: "border-top-left-radius", value: "19px" },
+  { token: "--field-control-fill", fixture: "field/control", target: BOX, prop: "background-color", value: "rgb(1, 2, 3)" },
+  { token: "--field-control-fill-hover", fixture: "field/control", target: BOX, prop: "background-color", value: "rgb(1, 2, 3)", hover: true },
+  { token: "--field-control-focus-ring-color", fixture: "field/control", target: BOX, prop: "box-shadow", value: "rgb(1, 2, 3)", focus: "input", contains: "rgb(1, 2, 3) 0px 0px 0px" },
+  { token: "--field-control-focus-ring-width", fixture: "field/control", target: BOX, prop: "box-shadow", value: "6px", focus: "input", contains: " 0px 0px 0px 6px inset" },
+  { token: "--field-control-padding-x", fixture: "field/control", target: `${BOX} input`, prop: "padding-left", value: "33px" },
+  { token: "--field-control-font-size", fixture: "field/control", target: `${BOX} input`, prop: "font-size", value: "23px" },
+  { token: "--field-control-font-weight", fixture: "field/control", target: `${BOX} input`, prop: "font-weight", value: "700" },
+  { token: "--field-control-letter-spacing", fixture: "field/control", target: `${BOX} input`, prop: "letter-spacing", value: "3px" },
+  { token: "--field-control-placeholder-color", fixture: "field/select", target: "[data-slot=select-trigger]", prop: "color", value: "rgb(1, 2, 3)" },
+  { token: "--field-control-tall-min-height", fixture: "field/tall", target: "textarea", prop: "min-height", value: "211px" },
+  { token: "--field-control-tall-max-height", fixture: "field/tall", target: "textarea", prop: "max-height", value: "301px" },
+  { token: "--field-control-tall-padding-y", fixture: "field/tall", target: "textarea", prop: "padding-top", value: "27px" },
 
   // button — one size at a time, then the unprefixed keys on every size
   ...Object.entries(BUTTON_FIXTURES).flatMap(([size, fixture]) => [
@@ -157,6 +199,7 @@ async function read(c: Case, opts: { scopeCss?: string; componentCss?: string } 
   if (c.density) await page.evaluate(`document.getElementById("theme-scope").setAttribute("data-density", ${JSON.stringify(c.density)})`)
   if (c.hover || c.press) await page.hover(`#root ${c.target}`)
   if (c.press) await page.mouse.down()
+  if (c.focus) await page.evaluate(`document.querySelector(${JSON.stringify(`#root ${c.focus}`)}).focus()`)
   const value = (await page.evaluate(
     `getComputedStyle(document.querySelector(${JSON.stringify(`#root ${c.target}`)}), ${JSON.stringify(c.pseudo ?? null)}).getPropertyValue(${JSON.stringify(c.prop)})`,
   )) as string
@@ -177,7 +220,8 @@ describe("VI-656 — type, case and size hooks (real browser)", () => {
       if (!ready()) return ctx.skip()
       const unset = await read(c)
       const bound = await read(c, { scopeCss: `${c.token}: ${c.value};` })
-      if (c.expectedPx !== undefined) expect(parseFloat(bound)).toBeCloseTo(c.expectedPx, 1)
+      if (c.contains !== undefined) expect(bound).toContain(c.contains)
+      else if (c.expectedPx !== undefined) expect(parseFloat(bound)).toBeCloseTo(c.expectedPx, 1)
       else expect(bound).toBe(c.expected ?? c.value)
       expect(bound).not.toBe(unset)
     }, 30_000)
