@@ -14,7 +14,7 @@ import { writeFileSync, readFileSync, mkdirSync, existsSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
-import { generateThemeData } from "@loworbitstudio/visor-theme-engine";
+import { COMPONENT_TOKEN_FAMILY_BY_NAME, generateThemeData } from "@loworbitstudio/visor-theme-engine";
 import { docsAdapter } from "@loworbitstudio/visor-theme-engine/adapters";
 
 // Layer-order declaration — must precede any @layer blocks. Mirrors LAYER_ORDER
@@ -422,7 +422,35 @@ function buildSemanticBody(): string {
   ];
   lines.push(block(":root", fieldDecls));
 
+  lines.push(buildGlassSwitch());
+
   return lines.join("\n");
+}
+
+/**
+ * The glass switch (VI-795). Glass is off unless an ancestor says a photo sits
+ * behind: `[data-glass="on"]` copies each theme `--glass-<key>` (or its Visor
+ * default) into `--glass-on-<key>`, and `[data-glass="off"]` clears them again
+ * for a subtree. Components read only `var(--glass-on-<key>, <solid value>)`,
+ * so with no switch they draw their solid surface and border and no blur.
+ * The defaults are the glass family's recommended values in the engine contract.
+ */
+function buildGlassSwitch(): string {
+  const glass = COMPONENT_TOKEN_FAMILY_BY_NAME.get("glass");
+  if (!glass) throw new Error("theme engine has no glass component-token family");
+  const on = [
+    // Glass layers show (`display: var(--glass-on-display, none)`) and the host's
+    // solid surface and border clear (`var(--glass-on-clear, var(--surface-card))`).
+    "--glass-on-display: block;",
+    "--glass-on-clear: transparent;",
+    ...glass.tokens.map((t) => `--glass-on-${t.key}: var(--glass-${t.key}, ${t.recommended});`),
+  ];
+  const off = on.map((d) => `${d.slice(0, d.indexOf(":"))}: initial;`);
+  return [
+    sectionComment("Glass switch (VI-795)"),
+    block('[data-glass="on"]', on),
+    block('[data-glass="off"]', off),
+  ].join("\n");
 }
 
 function generateSemanticCSS(): string {

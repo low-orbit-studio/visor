@@ -216,6 +216,26 @@ components:
     backdrop-filter: "blur(32px) saturate(110%)"
     overlay-bg: "#00000066"
     overlay-blur: "6px"
+  glass:
+    fill:
+      light: "#ffffff1f"
+      dark: "#0000003d"
+    blur: "blur(48px) saturate(161%)"
+    edge:
+      light: "#ff00ff80"
+      dark: "#00ffff80"
+    lift:
+      light: "rgb(255 255 255 / 0.45)"
+      dark: "transparent"
+    shadow: "0 48px 120px -48px #000"
+    ink: "#ffffff"
+    control-fill:
+      light: "#ffffff24"
+      dark: "#ffffff3d"
+    control-hover-fill: "#ffffff3d"
+    control-ring: "#ffffff29"
+    control-ink: "#ffffff"
+    control-blur: "blur(16px)"
   tabs:
     list-radius: "3px"
     list-height: "37px"

@@ -187,6 +187,10 @@ describe("VI-625 component token contract", () => {
           // share the `text` prefix. Every Text-family key begins with a size,
           // so only a `--text-<size>-*` read can be a Text-family orphan.
           ...[...css.matchAll(/var\(\s*--(text-(?!(?:xs|sm|md|lg|xl)-)[a-z0-9-]+)/g)].map((m) => m[1]),
+          // The glass switch's variables (VI-795) are set by visor-core's
+          // `[data-glass]` rules, not by a theme: components read them in
+          // place of the theme's `--glass-<key>` values.
+          ...[...css.matchAll(/var\(\s*--(glass-on-[a-z0-9-]+)/g)].map((m) => m[1]),
           // Field surfaces that share the `field` prefix and predate the
           // contract: `--field-menu-bg` is a visor-core semantic alias, and
           // `--field-control-bg` is the VI-620 dialog-substrate field fill.

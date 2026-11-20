@@ -579,6 +579,31 @@ const dialogFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-795: the glass layer. A theme binds what glass looks like per tone; visor-core's
+// `[data-glass="on"]` switch (packages/tokens) reads each one into a `--glass-on-<key>`
+// variable, and components read only those, so glass draws only under the switch.
+// No component reads `--glass-<key>` itself: each is emit-only, with the Visor default
+// (lifted from Honcho's GlassCard and Backstage controls) as its recommended value.
+const glassFamily: ComponentTokenFamily = {
+  family: "glass",
+  prefix: "glass",
+  description:
+    "The glass layer over a photo: surface fill, blur, edge, lift, shadow and on-photo ink, plus the glass values controls read. Draws only inside `data-glass=\"on\"`; elsewhere components keep their solid surface and border.",
+  tokens: [
+    { key: "fill", property: "background", description: "Glass surface fill, see-through.", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 5%, transparent)" },
+    { key: "blur", property: "backdrop-filter", description: "Filter on the photo behind a glass surface.", consumers: [], recommended: "blur(32px) saturate(110%)" },
+    { key: "edge", property: "border-color", description: "Edge colour, drawn with `mix-blend-mode: soft-light`.", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 25%, transparent)" },
+    { key: "lift", property: "background", description: "White lift laid over the fill, e.g. `rgb(255 255 255 / 0.45)` in light.", consumers: [], recommended: "transparent" },
+    { key: "shadow", property: "box-shadow", description: "Glass surface shadow.", consumers: [], recommended: "var(--shadow-xl)" },
+    { key: "ink", property: "color", description: "Text colour on glass over a photo.", consumers: [], recommended: "var(--text-primary)" },
+    { key: "control-fill", property: "background", description: "Glass control fill (icon buttons, toggles).", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 14%, transparent)" },
+    { key: "control-hover-fill", property: "background", description: "Glass control fill on hover.", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 24%, transparent)" },
+    { key: "control-ring", property: "box-shadow (inset ring)", description: "Glass control ring colour.", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 16%, transparent)" },
+    { key: "control-ink", property: "color", description: "Glass control icon and label colour.", consumers: [], recommended: "var(--text-primary)" },
+    { key: "control-blur", property: "backdrop-filter", description: "Filter on the photo behind a glass control.", consumers: [], recommended: "blur(16px)" },
+  ],
+};
+
 const tabsFamily: ComponentTokenFamily = {
   family: "tabs",
   prefix: "tabs",
@@ -1605,6 +1630,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   billingSliderFamily,
   resizableSplitFamily,
   dialogFamily,
+  glassFamily,
   tabsFamily,
   skeletonFamily,
   spinnerFamily,

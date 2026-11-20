@@ -1,0 +1,145 @@
+---
+title: Glass
+description: One switch for glass over a photo. Off on a plain page, on where a photo sits behind.
+---
+
+import { FiveLooks } from '@/components/looks/five-looks';
+
+Glass is a switch, not a theme. A plain page gets solid surfaces and borders. Where a photo sits behind part of a page, set `data-glass="on"` on that container and the components inside draw a see-through fill, a blur of the photo, a soft edge and a lift instead. A theme says what its glass looks like in each tone; the switch says where it shows.
+
+## The Five Looks
+
+The same card and control on the theme picked in the docs, in each look. Today is the theme as it ships, in the docs site's own mode. Dark and Light force a mode. Only the two Photo looks turn glass on. The photo is a stand-in gradient so the docs ship no image files.
+
+<FiveLooks specimen="glass" />
+
+## Turning Glass On
+
+Glass is off unless an ancestor turns it on. The nearest switch wins, so a subtree can turn it back off:
+
+```html
+<main>                          <!-- off: solid surfaces -->
+  <section data-glass="on">     <!-- on: a photo sits behind this section -->
+    <article>…</article>        <!-- glass -->
+    <aside data-glass="off">…</aside>  <!-- solid again -->
+  </section>
+</main>
+```
+
+With glass off, nothing that reads the glass layer renders a `backdrop-filter`. Modal scrims (Dialog, Sheet, Lightbox) keep their own blur: they blur the page under a modal, not a photo.
+
+Put the switch at or inside the element that sets the light/dark mode. The switch resolves the theme's glass values for the tone in force where it sits.
+
+## Binding Glass in a Theme
+
+A theme binds the `glass` family under `components`. Every key takes one value for both tones or `{ light, dark }`. A theme that binds nothing gets the Visor defaults, lifted from Honcho's glass card.
+
+```yaml
+components:
+  glass:
+    fill:
+      light: "color-mix(in srgb, #0b0b0c 5%, transparent)"
+      dark: "color-mix(in srgb, #ffffff 5%, transparent)"
+    blur: "blur(32px) saturate(110%)"
+    edge: "color-mix(in srgb, #ffffff 25%, transparent)"
+    lift:
+      light: "rgb(255 255 255 / 0.45)"
+      dark: "transparent"
+    ink: "#ffffff"
+    control-fill:
+      light: "rgb(255 255 255 / 0.14)"
+      dark: "rgb(255 255 255 / 0.14)"
+    control-hover-fill: "rgb(255 255 255 / 0.24)"
+    control-ring: "rgb(255 255 255 / 0.16)"
+    control-ink: "#ffffff"
+    control-blur: "blur(16px)"
+```
+
+| Key | What it sets | Visor default |
+|---|---|---|
+| `fill` | Glass surface fill | `color-mix(in srgb, var(--text-primary) 5%, transparent)` |
+| `blur` | Filter on the photo behind a surface | `blur(32px) saturate(110%)` |
+| `edge` | Edge colour, blended `soft-light` | `color-mix(in srgb, var(--text-primary) 25%, transparent)` |
+| `lift` | White laid over the fill | `transparent` |
+| `shadow` | Surface shadow | `var(--shadow-xl)` |
+| `ink` | Text on glass | `var(--text-primary)` |
+| `control-fill` | Glass control fill | `color-mix(in srgb, var(--text-primary) 14%, transparent)` |
+| `control-hover-fill` | Glass control fill on hover | `color-mix(in srgb, var(--text-primary) 24%, transparent)` |
+| `control-ring` | Glass control ring | `color-mix(in srgb, var(--text-primary) 16%, transparent)` |
+| `control-ink` | Glass control icon and label | `var(--text-primary)` |
+| `control-blur` | Filter behind a glass control | `blur(16px)` |
+
+The percentages are the Honcho kit's, kept as intentional values.
+
+## For Component Authors
+
+Read the switch's variables, never the theme's `--glass-*` values: those are set on every page, and the switch's are set only where glass is on. Each one falls back to the solid look.
+
+| Variable | Set under `data-glass="on"` to |
+|---|---|
+| `--glass-on-display` | `block`, to show the glass layers |
+| `--glass-on-clear` | `transparent`, to clear the host's solid surface and border |
+| `--glass-on-<key>` | the theme's `--glass-<key>`, or the Visor default, for every key above |
+
+A surface draws its glass on sibling layers, so fields inside it can still blur the photo:
+
+```css
+.card {
+  position: relative;
+  background: var(--glass-on-clear, var(--surface-card));
+  border: var(--stroke-width-thin) solid var(--glass-on-clear, var(--border-default));
+  color: var(--glass-on-ink, var(--text-primary));
+}
+.glass, .edge {
+  display: var(--glass-on-display, none);
+  position: absolute;
+  inset: calc(-1 * var(--stroke-width-thin));
+  border-radius: inherit;
+  pointer-events: none;
+}
+.glass {
+  background: linear-gradient(var(--glass-on-lift, transparent) 0 0), var(--glass-on-fill, transparent);
+  -webkit-backdrop-filter: var(--glass-on-blur, none);
+  backdrop-filter: var(--glass-on-blur, none);
+  box-shadow: var(--glass-on-shadow, none);
+}
+.edge {
+  border: var(--stroke-width-thin) solid var(--glass-on-edge, transparent);
+  mix-blend-mode: soft-light;
+}
+.content { position: relative; }
+```
+
+```tsx
+<div className={styles.card}>
+  <span className={styles.glass} aria-hidden="true" />
+  <span className={styles.edge} aria-hidden="true" />
+  <div className={styles.content}>…</div>
+</div>
+```
+
+A control with no blurred children carries its own blur:
+
+```css
+.control {
+  background: var(--glass-on-control-fill, var(--surface-subtle));
+  box-shadow: inset 0 0 0 var(--stroke-width-thin) var(--glass-on-control-ring, var(--border-default));
+  color: var(--glass-on-control-ink, var(--text-primary));
+  -webkit-backdrop-filter: var(--glass-on-control-blur, none);
+  backdrop-filter: var(--glass-on-control-blur, none);
+}
+.control:hover { background: var(--glass-on-control-hover-fill, var(--surface-muted)); }
+```
+
+### Nested Blur
+
+A `backdrop-filter` sees only as far back as its backdrop root. An ancestor with a `backdrop-filter`, a `filter`, an `opacity` below 1, a `mask` or a `mix-blend-mode` becomes that root, and a blurred field inside it then blurs only the card, not the photo. So:
+
+- Draw a surface's glass on a sibling layer (as above) or on its own `::before`, never on the element that holds blurred children.
+- Keep every element between a blurred part and the photo free of `filter`, `backdrop-filter`, `opacity` below 1, `mask` and blend modes.
+- Fade glass parts one at a time, never their shared parent.
+- The edge's `soft-light` blend reaches the photo only while nothing between them forms a stacking context.
+
+### Lightning CSS
+
+Write the `-webkit-backdrop-filter` line before `backdrop-filter`. Lightning CSS (Next.js) keeps only the last of the pair when the value holds a `var()`, so the unprefixed line must come last (VI-788).

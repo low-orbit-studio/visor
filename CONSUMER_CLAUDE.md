@@ -353,6 +353,7 @@ Use only these subpath imports — no others exist:
 | `--font-size-*` | Type scale | `--font-size-sm`, `--font-size-base`, `--font-size-lg` |
 | `--shadow-*` | Box shadows | `--shadow-sm`, `--shadow-md`, `--shadow-lg` |
 | `--motion-*` | Animation timing | `--motion-duration-fast`, `--motion-easing-default` |
+| `--glass-on-*` | Glass, set only under `data-glass="on"` (VI-795) | `var(--glass-on-fill, var(--surface-card))`, `var(--glass-on-blur, none)` |
 
 ---
 
