@@ -330,6 +330,8 @@
   height: var(--toggle-group-option-check-size, 1.25rem);
   border-radius: var(--radius-full, 9999px);
   transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+  /* A circle even when a theme draws squircle corners (VI-796), as Spinner's ring does. */
+  --corner-shape: round;
 }
 
 .optionCheck svg,

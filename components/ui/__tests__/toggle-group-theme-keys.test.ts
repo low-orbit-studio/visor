@@ -197,8 +197,9 @@ async function readMarkAndBlur(opts: Parameters<typeof open>[2], glass?: "on" | 
     var probe = document.createElement("i"); probe.style.color = "var(--interactive-primary-bg)"; root.appendChild(probe);
     var key = getComputedStyle(probe).color; probe.remove();
     var rows = Array.prototype.map.call(document.querySelectorAll("#root [data-slot=toggle-group-item]"), function (r) { return getComputedStyle(r).backdropFilter; });
-    return { mark: getComputedStyle(document.querySelector(${JSON.stringify(MARK_ON)})).backgroundColor, key: key, rows: rows };
-  })()`)) as { mark: string; key: string; rows: string[] }
+    var mark = getComputedStyle(document.querySelector(${JSON.stringify(MARK_ON)}));
+    return { mark: mark.backgroundColor, shape: mark.getPropertyValue("corner-shape"), key: key, rows: rows };
+  })()`)) as { mark: string; shape: string; key: string; rows: string[] }
   await page.close()
   return out
 }
@@ -233,6 +234,8 @@ describe("VI-806 — round mark colour and glass-gated blur (real browser)", () 
       expect(off.mark, mode).toBe(off.key)
       expect(off.key, mode).toBe("rgb(255, 45, 138)")
       expect(off.rows, mode).toEqual(["none", "none"])
+      // The theme draws squircle corners; the mark stays a circle.
+      expect(off.shape, mode).toBe("round")
       const on = await readMarkAndBlur({ theme }, "on")
       expect(on.rows, mode).toEqual(["blur(24px) saturate(1.15)", "blur(24px) saturate(1.15)"])
     }
