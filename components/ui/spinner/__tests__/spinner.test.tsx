@@ -1,4 +1,5 @@
 import { act, render, screen, waitFor } from "@testing-library/react"
+import { renderToString } from "react-dom/server"
 import { afterEach, beforeEach, describe, it, expect, vi } from "vitest"
 import { Spinner, type SpinnerOrbState } from "../spinner"
 
@@ -125,6 +126,108 @@ describe("Spinner", () => {
     // No .srOnly span should be present when no label is provided
     const root = container.querySelector('[data-slot="spinner"]')
     expect(root?.children.length).toBe(0)
+  })
+
+  describe("delay (VI-797)", () => {
+    it.each(["ring", "orb"] as const)(
+      "adds nothing to the %s without a delay",
+      (variant) => {
+        const { container } = render(
+          <Spinner variant={variant} label="Loading" />
+        )
+        const root = screen.getByRole("status")
+        expect(root).not.toHaveAttribute("data-delay")
+        expect(root.getAttribute("style") ?? "").not.toContain("--spinner-delay")
+        expect(container.querySelector('[data-slot="spinner-status"]')).toBeNull()
+      }
+    )
+
+    it.each(["ring", "orb"] as const)(
+      "carries the delay on the %s root and keeps the caller's style",
+      (variant) => {
+        render(
+          <Spinner
+            variant={variant}
+            label="Loading"
+            delay={600}
+            style={{ marginTop: 4 }}
+          />
+        )
+        const root = screen.getByRole("status")
+        expect(root).toHaveAttribute("data-delay", "")
+        expect(root.style.getPropertyValue("--spinner-delay")).toBe("600ms")
+        expect(root.style.marginTop).toBe("4px")
+      }
+    )
+
+    it("treats delay={0} as a delay, not as off", () => {
+      render(<Spinner label="Loading" delay={0} />)
+      const root = screen.getByRole("status")
+      expect(root).toHaveAttribute("data-delay", "")
+      expect(root.style.getPropertyValue("--spinner-delay")).toBe("0ms")
+    })
+
+    it("puts the delay in the server markup, so hydration matches", () => {
+      const html = renderToString(<Spinner label="Loading" delay={600} />)
+      expect(html).toContain("--spinner-delay:600ms")
+      expect(html).toContain('data-delay=""')
+    })
+  })
+
+  describe("showLabel (VI-797)", () => {
+    it("shows the words beside the spinner in one status wrapper", () => {
+      const { container } = render(
+        <Spinner label="Loading your form" showLabel className="custom" />
+      )
+      const status = screen.getByRole("status")
+      expect(status).toHaveAttribute("data-slot", "spinner-status")
+      expect(status).toHaveClass("custom")
+      expect(status).not.toHaveAttribute("aria-label")
+      expect(status).toHaveTextContent("Loading your form")
+      // One copy of the words: visible, no screen-reader-only twin.
+      expect(screen.getAllByText("Loading your form")).toHaveLength(1)
+      const ring = container.querySelector('[data-slot="spinner"]')
+      expect(status).toContainElement(ring as HTMLElement)
+      expect(ring).toHaveAttribute("aria-hidden", "true")
+      expect(ring).not.toHaveClass("custom")
+    })
+
+    it("fades the wrapper, not the ring, when delayed", () => {
+      const { container } = render(
+        <Spinner label="Loading your form" showLabel delay={600} />
+      )
+      const status = screen.getByRole("status")
+      expect(status).toHaveAttribute("data-delay", "")
+      expect(status.style.getPropertyValue("--spinner-delay")).toBe("600ms")
+      const ring = container.querySelector('[data-slot="spinner"]')
+      expect(ring).not.toHaveAttribute("data-delay")
+      expect(ring).not.toHaveAttribute("style")
+    })
+
+    it("forwards ref to the wrapper", () => {
+      const ref = { current: null as HTMLSpanElement | null }
+      render(<Spinner ref={ref} label="Loading" showLabel />)
+      expect(ref.current).toBe(screen.getByRole("status"))
+    })
+
+    it("wraps the orb too", () => {
+      const { container } = render(
+        <Spinner variant="orb" label="Thinking" showLabel delay={300} />
+      )
+      const status = screen.getByRole("status")
+      expect(status).toHaveAttribute("data-delay", "")
+      expect(status).toHaveTextContent("Thinking")
+      const orb = status.firstElementChild
+      expect(orb).toHaveAttribute("aria-hidden", "true")
+      expect(orb).not.toHaveAttribute("data-delay")
+      expect(container.querySelectorAll('[role="status"]')).toHaveLength(1)
+    })
+
+    it("renders the plain spinner when there is no label to show", () => {
+      const a = render(<Spinner showLabel />)
+      const b = render(<Spinner />)
+      expect(a.container.innerHTML).toBe(b.container.innerHTML)
+    })
   })
 
   describe("ring (default variant)", () => {

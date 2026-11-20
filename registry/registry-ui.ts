@@ -470,7 +470,7 @@ export const ui: Registry = [
     name: "spinner",
     type: "registry:ui",
     description:
-      "Loading spinner — an inline rotating ring, or a dotted thinking-orb (nine animations) for waits over larger surfaces. Three sizes (xs/sm/md), two tones (default/primary), accessible label contract, and full reduced-motion support.",
+      "Loading spinner — an inline rotating ring, or a dotted thinking-orb (nine animations) for waits over larger surfaces. Three sizes (xs/sm/md), two tones (default/primary), accessible label contract with optional visible words (showLabel), a delay so quick loads never flash it, and full reduced-motion support.",
     dependencies: [
       "class-variance-authority",
       "thinking-orbs",

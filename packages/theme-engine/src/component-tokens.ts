@@ -659,7 +659,7 @@ const skeletonFamily: ComponentTokenFamily = {
 const spinnerFamily: ComponentTokenFamily = {
   family: "spinner",
   prefix: "spinner",
-  description: "Inline loading ring — track, leading edge, per-size geometry and cycle length.",
+  description: "Inline loading ring — track, leading edge, per-size geometry, cycle length, the delayed fade-in and the visible words.",
   tokens: [
     { key: "track-color", property: "border-color", description: "Ring track colour.", consumers: at(SPINNER, "var(--border-default, #e5e7eb)") },
     { key: "edge-color", property: "border-top-color", description: "Leading-edge colour (default tone).", consumers: at(SPINNER, "var(--text-tertiary, #6b7280)") },
@@ -672,6 +672,11 @@ const spinnerFamily: ComponentTokenFamily = {
     { key: "sm-border-width", property: "border-width", description: "Small ring stroke.", consumers: at(SPINNER, "var(--stroke-width-regular, 1.5px)") },
     { key: "md-size", property: "width / height", description: "Default ring diameter.", consumers: at(SPINNER, "24px") },
     { key: "md-border-width", property: "border-width", description: "Default ring stroke.", consumers: at(SPINNER, "var(--stroke-width-medium, 2px)") },
+    { key: "appear-duration", property: "animation-duration", description: "Fade-in length once a `delay` passes.", consumers: at(SPINNER, "var(--motion-duration-500, 500ms)") },
+    { key: "label-gap", property: "gap", description: "Space between the spinner and its visible words (`showLabel`).", consumers: at(SPINNER, "var(--spacing-2, 0.5rem)") },
+    { key: "label-font-size", property: "font-size", description: "Visible words size (`showLabel`).", consumers: at(SPINNER, "var(--font-size-sm, 0.875rem)") },
+    { key: "label-font-weight", property: "font-weight", description: "Visible words weight (`showLabel`).", consumers: at(SPINNER, "var(--font-weight-medium, 500)") },
+    { key: "label-color", property: "color", description: "Visible words colour (`showLabel`).", consumers: at(SPINNER, "var(--text-secondary, #4b5563)") },
   ],
 };
 

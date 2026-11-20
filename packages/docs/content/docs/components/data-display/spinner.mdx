@@ -6,7 +6,8 @@ description: Loading indicator — an inline rotating ring, or a dotted thinking
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { Spinner } from '@/components/ui/spinner';
-import { SpinnerOrbGalleryDemo, SpinnerRingVsOrbDemo, SpinnerOrbScrimDemo } from '@/components/ui/spinner-demo';
+import { SpinnerOrbGalleryDemo, SpinnerRingVsOrbDemo, SpinnerOrbScrimDemo, SpinnerDelayDemo } from '@/components/ui/spinner-demo';
+import { FiveLooks } from '@/components/looks/five-looks';
 
 ## Default
 
@@ -58,6 +59,34 @@ Pass a `label` to make the spinner meaningful to screen readers. It renders `rol
 >
   <Spinner size="sm" tone="primary" label="Loading results…" />
 </ComponentPreview>
+
+## Visible Words
+
+Add `showLabel` to show the `label` as words beside the spinner. The spinner and the words sit in one `role="status"` wrapper, so a screen reader hears the words once. The words read `--spinner-label-color`, which falls back to `--text-secondary`, so they follow the theme's ink in light and dark.
+
+<ComponentPreview
+  title="Spinner with visible words"
+  code={"import { Spinner } from '@/components/ui/spinner/spinner';\n\n<Spinner size=\"sm\" label=\"Loading your form\" showLabel />"}
+>
+  <Spinner size="sm" label="Loading your form" showLabel />
+</ComponentPreview>
+
+## Delay
+
+Pass `delay` in milliseconds and the spinner shows nothing until the wait passes, then fades in. A load that finishes first never flashes it. With `showLabel`, the words fade in with the spinner. The delay is a CSS `animation-delay`, so the server renders the same markup as the client. With `prefers-reduced-motion: reduce`, the ring stops turning but still fades in.
+
+<ComponentPreview
+  title="Spinner with a delay"
+  code={"import { Spinner } from '@/components/ui/spinner/spinner';\n\n<Spinner label=\"Loading\" delay={600} />\n<Spinner size=\"sm\" label=\"Loading your form\" showLabel delay={600} />"}
+>
+  <SpinnerDelayDemo />
+</ComponentPreview>
+
+### In Five Looks
+
+The same delayed spinner in each look, on the theme picked in the docs. Reload the page to watch the wait.
+
+<FiveLooks specimen="spinner" height={160} />
 
 ## Orb
 
@@ -129,6 +158,9 @@ import { Spinner } from '@/components/ui/spinner/spinner';
 
 {/* Accessible — standalone loading indicator */}
 <Spinner size="md" tone="primary" label="Loading data…" />
+
+{/* Visible words that fade in after 600ms, so a quick load never flashes */}
+<Spinner label="Loading your form" showLabel delay={600} />
 
 {/* Orb — a wait over a large visual */}
 <Spinner variant="orb" orb="working" label="Rendering preview…" />

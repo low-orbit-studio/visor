@@ -35,54 +35,86 @@ export interface SpinnerProps
   orb?: SpinnerOrbState
   /** Accessible label. When provided, renders role="status" with visually-hidden text. When omitted, aria-hidden="true". */
   label?: string
+  /** Show `label` as visible words beside the spinner. The spinner and the words sit in one `role="status"` wrapper, and `delay` fades both. @default false */
+  showLabel?: boolean
+  /** Wait this many milliseconds before fading in, so a quick load never flashes the spinner. CSS `animation-delay`, so the server renders the same markup. */
+  delay?: number
 }
 
 const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(
   (
     {
       className,
+      style,
       size = "md",
       tone = "default",
       label,
+      showLabel = false,
+      delay,
       variant = "ring",
       orb = "working",
       ...props
     },
     ref
   ) => {
-    if (variant === "orb") {
-      return (
+    // The delay goes on the outermost element: the status wrapper when the words show, else the spinner.
+    const delayed = {
+      "data-delay": delay == null ? undefined : "",
+      style:
+        delay == null
+          ? style
+          : ({ ...style, "--spinner-delay": `${delay}ms` } as React.CSSProperties),
+    }
+    const words = showLabel && label ? label : undefined
+    const outer = words
+      ? { "aria-hidden": "true" as const }
+      : {
+          ref,
+          ...(label
+            ? { role: "status", "aria-label": label }
+            : { "aria-hidden": "true" as const }),
+          ...props,
+          ...delayed,
+        }
+    const srLabel =
+      label && !words ? <span className={styles.srOnly}>{label}</span> : null
+
+    const spinner =
+      variant === "orb" ? (
         <SpinnerOrb
-          ref={ref}
           state={orb}
           size={size}
           tone={tone}
-          className={className}
-          {...(label
-            ? { role: "status", "aria-label": label }
-            : { "aria-hidden": "true" })}
-          {...props}
+          className={words ? undefined : className}
+          {...outer}
         >
-          {label ? <span className={styles.srOnly}>{label}</span> : null}
+          {srLabel}
         </SpinnerOrb>
+      ) : (
+        <span
+          data-slot="spinner"
+          data-size={size}
+          data-tone={tone}
+          className={cn(spinnerVariants({ size, tone }), !words && className)}
+          {...outer}
+        >
+          {srLabel}
+        </span>
       )
-    }
+
+    if (!words) return spinner
 
     return (
       <span
         ref={ref}
-        data-slot="spinner"
-        data-size={size}
-        data-tone={tone}
-        className={cn(spinnerVariants({ size, tone }), className)}
-        {...(label
-          ? { role: "status", "aria-label": label }
-          : { "aria-hidden": "true" })}
+        role="status"
+        data-slot="spinner-status"
+        className={cn(styles.status, className)}
         {...props}
+        {...delayed}
       >
-        {label ? (
-          <span className={styles.srOnly}>{label}</span>
-        ) : null}
+        {spinner}
+        <span>{words}</span>
       </span>
     )
   }

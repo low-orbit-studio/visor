@@ -6,6 +6,7 @@ declare const styles: {
   readonly toneDefault: string
   readonly tonePrimary: string
   readonly srOnly: string
+  readonly status: string
   readonly orb: string
   readonly orbInk: string
   readonly orbInkPrimary: string

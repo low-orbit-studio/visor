@@ -646,7 +646,7 @@
         },
         "spinner": {
           "type": "object",
-          "description": "Inline loading ring — track, leading edge, per-size geometry and cycle length. Keys: track-color, edge-color, primary-edge-color, radius, duration, xs-size, xs-border-width, sm-size, sm-border-width, md-size, md-border-width.",
+          "description": "Inline loading ring — track, leading edge, per-size geometry, cycle length, the delayed fade-in and the visible words. Keys: track-color, edge-color, primary-edge-color, radius, duration, xs-size, xs-border-width, sm-size, sm-border-width, md-size, md-border-width, appear-duration, label-gap, label-font-size, label-font-weight, label-color.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

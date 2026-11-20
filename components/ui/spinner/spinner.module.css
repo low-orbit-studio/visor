@@ -33,6 +33,8 @@
   border-top-color: var(--spinner-edge-color, var(--text-tertiary, #6b7280));
   animation: spin var(--spinner-duration, var(--motion-duration-1500, 1500ms)) var(--motion-easing-linear, linear) infinite;
   box-sizing: border-box;
+  /* VI-797: a ring stays a circle when a theme draws squircle corners (VI-796). */
+  --corner-shape: round;
 }
 
 /* Visually-hidden label text — accessible to screen readers, not visible */
@@ -79,10 +81,45 @@
   border-top-color: var(--spinner-primary-edge-color, var(--primary, #111827));
 }
 
-/* Respect reduced motion — stop rotation */
+/* VI-797: `delay` — nothing shows until the wait passes, then the spinner (or
+   the status wrapper with its words) fades in. Pure CSS, so the server and the
+   client render the same markup. */
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+}
+
+.root[data-delay] {
+  animation:
+    spin var(--spinner-duration, var(--motion-duration-1500, 1500ms)) var(--motion-easing-linear, linear) infinite,
+    appear var(--spinner-appear-duration, var(--motion-duration-500, 500ms)) var(--motion-easing-ease-out, cubic-bezier(0, 0, 0.2, 1)) var(--spinner-delay) both;
+}
+
+.orb[data-delay],
+.status[data-delay] {
+  animation: appear var(--spinner-appear-duration, var(--motion-duration-500, 500ms)) var(--motion-easing-ease-out, cubic-bezier(0, 0, 0.2, 1)) var(--spinner-delay) both;
+}
+
+/* `showLabel` — the spinner and its visible words in one status wrapper. */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spinner-label-gap, var(--spacing-2, 0.5rem));
+  font-size: var(--spinner-label-font-size, var(--font-size-sm, 0.875rem));
+  font-weight: var(--spinner-label-font-weight, var(--font-weight-medium, 500));
+  color: var(--spinner-label-color, var(--text-secondary, #4b5563));
+}
+
+/* Respect reduced motion — stop rotation. A delayed spinner still fades in:
+   only the spin pauses, or the fade would freeze at opacity 0. */
 @media (prefers-reduced-motion: reduce) {
   .root {
     animation-play-state: paused;
+  }
+
+  .root[data-delay] {
+    animation-play-state: paused, running;
   }
 }
 
