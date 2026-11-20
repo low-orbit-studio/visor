@@ -40,4 +40,9 @@ describe("PrivateThemesPage", () => {
     // CSS modules use non-scoped strategy in tests → class is literal "page".
     expect(wrapper.classList).toContain("page");
   });
+
+  it("shows no Honcho five looks when honcho-backstage is not installed", () => {
+    const { container } = render(<PrivateThemesPage />);
+    expect(container.querySelector('[data-slot="honcho-looks"]')).toBeNull();
+  });
 });

@@ -20,6 +20,10 @@ export interface FiveLooksProps {
   specimen: string;
   /** Height of each look, in px. */
   height?: number;
+  /** Draw every look on this theme instead of the one picked in the docs. */
+  theme?: string;
+  /** Draw Today on this theme (Honcho's Today look is its own theme). Defaults to `theme`. */
+  todayTheme?: string;
 }
 
 /**
@@ -28,8 +32,8 @@ export interface FiveLooksProps {
  * only hold one light/dark mode per theme. Today follows the docs site's mode.
  * A `?photo=/path.jpg` on the page swaps the stand-in photo for a real one.
  */
-export function FiveLooks({ specimen, height = 340 }: FiveLooksProps) {
-  const theme = useActiveTheme(undefined, PRIVATE_SLUGS);
+export function FiveLooks({ specimen, height = 340, theme: themeProp, todayTheme }: FiveLooksProps) {
+  const theme = useActiveTheme(themeProp, PRIVATE_SLUGS);
   const [mode, setMode] = useState<LookMode>('light');
   const [photo, setPhoto] = useState('');
 
@@ -45,7 +49,8 @@ export function FiveLooks({ specimen, height = 340 }: FiveLooksProps) {
   return (
     <div className={styles.grid} data-slot="five-looks">
       {LOOKS.map((look) => {
-        const query = new URLSearchParams({ theme, look: look.id, mode, specimen });
+        const lookTheme = look.id === 'today' ? (todayTheme ?? theme) : theme;
+        const query = new URLSearchParams({ theme: lookTheme, look: look.id, mode, specimen });
         if (photo) query.set('photo', photo);
         return (
           <figure key={look.id} className={styles.look} data-look={look.id}>
