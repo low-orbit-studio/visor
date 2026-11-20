@@ -1,0 +1,82 @@
+/* ThemeToggle: a round light/dark button, lifted from Honcho Backstage.
+
+   The look is variables, so a consumer can dress it (Backstage's glass is a
+   className with backdrop-filter plus these): --theme-toggle-size, -bg,
+   -bg-hover, -ring, -color, -icon-size. The motion is Backstage's, exact:
+   the icon going away turns 100deg and shrinks to .3 as it fades (turn
+   600ms on --theme-toggle-ease, scale 500ms on the spring, fade 300ms). */
+.root {
+  /* Backstage's --ease. No Visor token carries this curve; intentional. */
+  --_ease: var(--theme-toggle-ease, cubic-bezier(0.22, 1, 0.36, 1));
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--theme-toggle-size, var(--spacing-10, 2.5rem));
+  height: var(--theme-toggle-size, var(--spacing-10, 2.5rem));
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full, 9999px);
+  background: var(--theme-toggle-bg, var(--surface-subtle, #f9fafb));
+  box-shadow: inset 0 0 0 var(--stroke-width-thin, 1px) var(--theme-toggle-ring, var(--border-default, #e5e7eb));
+  color: var(--theme-toggle-color, var(--text-primary, #111827));
+  cursor: pointer;
+  transition: background var(--motion-duration-300, 300ms) var(--_ease);
+}
+
+@media (hover: hover) {
+  .root:hover {
+    background: var(--theme-toggle-bg-hover, var(--surface-muted, #f3f4f6));
+  }
+}
+
+/* Press: the button dips, as Backstage's glass buttons do. */
+.root:active {
+  scale: 0.94;
+}
+
+.root:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid var(--border-focus, #3b82f6);
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+.sun,
+.moon {
+  position: absolute;
+  width: var(--theme-toggle-icon-size, var(--spacing-4, 1rem));
+  height: var(--theme-toggle-icon-size, var(--spacing-4, 1rem));
+  transition:
+    rotate calc(var(--motion-duration-300, 300ms) * 2) var(--_ease),
+    scale var(--motion-duration-500, 500ms) var(--motion-easing-spring, cubic-bezier(0.34, 1.56, 0.64, 1)),
+    opacity var(--motion-duration-300, 300ms);
+}
+
+/* Dark shows the sun (the way to light); light shows the moon. */
+.root[data-tone="dark"] .moon {
+  opacity: 0;
+  rotate: -100deg;
+  scale: 0.3;
+}
+
+.root[data-tone="light"] .sun {
+  opacity: 0;
+  rotate: 100deg;
+  scale: 0.3;
+}
+
+/* Reduced motion: the icons cross-fade in place, and the press does not dip. */
+@media (prefers-reduced-motion: reduce) {
+  .root[data-tone] .sun,
+  .root[data-tone] .moon {
+    rotate: none;
+    scale: none;
+    transition: opacity var(--motion-duration-300, 300ms);
+  }
+
+  .root:active {
+    scale: none;
+  }
+}

@@ -1998,6 +1998,65 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'photo-picker': [
+    {
+      name: 'photos',
+      type: '{ key: string; thumb: string; label?: string }[]',
+      description: 'The photos, in order. label is the thumbnail\'s accessible name; it defaults to "Photo N".',
+    },
+    {
+      name: 'value',
+      type: 'string | null',
+      default: 'null',
+      description: "The chosen photo's key.",
+    },
+    {
+      name: 'onValueChange',
+      type: '(key: string) => void',
+      description: "Called with a photo's key when it is pressed.",
+    },
+    {
+      name: 'play',
+      type: 'boolean | number',
+      description: "The draw wave plays on mount and every time play changes, except to false. Pass the menu's open state, or a counter you bump.",
+    },
+    {
+      name: 'load',
+      type: 'boolean',
+      default: 'true',
+      description: "Thumbnails load only once this has been true, and stay loaded after. Pass the menu's open state to wait for the first open.",
+    },
+    {
+      name: '...props',
+      type: 'React.HTMLAttributes<HTMLDivElement>',
+      description: 'Standard div attributes are forwarded to the grid (role="group"). Give it an aria-label or aria-labelledby.',
+    },
+  ],
+
+  'theme-toggle': [
+    {
+      name: 'value',
+      type: "'light' | 'dark'",
+      description: 'The tone in force now. Dark shows the sun, light shows the moon. Required.',
+    },
+    {
+      name: 'onValueChange',
+      type: "(value: 'light' | 'dark') => void",
+      description: 'Called with the other tone on a press.',
+    },
+    {
+      name: 'aria-label',
+      type: 'string',
+      default: '"Switch light or dark"',
+      description: "The button's accessible name.",
+    },
+    {
+      name: '...props',
+      type: 'React.ButtonHTMLAttributes<HTMLButtonElement>',
+      description: 'Standard button attributes are forwarded. onClick runs first; call preventDefault() in it to skip the change.',
+    },
+  ],
+
   'position-picker': [
     {
       name: 'value',

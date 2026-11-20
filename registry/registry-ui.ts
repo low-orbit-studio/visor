@@ -1786,6 +1786,25 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "photo-picker",
+    type: "registry:ui",
+    category: "form",
+    description:
+      "A grid of photo thumbnails, one chosen. A staggered draw wave plays each time it opens, and thumbnails wait to load until it has been opened. The consumer supplies the popover or panel.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/photo-picker/photo-picker.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/photo-picker/photo-picker.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "position-picker",
     type: "registry:ui",
     category: "form",
@@ -2677,6 +2696,25 @@ export const ui: Registry = [
       },
       {
         path: "components/ui/theme-switcher/theme-switcher.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
+    name: "theme-toggle",
+    type: "registry:ui",
+    category: "general",
+    description:
+      "A round light/dark button. The icon going away turns and shrinks out as the other springs in. Controlled; keys off its own data-tone, so it works on any page.",
+    dependencies: ["@phosphor-icons/react", "@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/theme-toggle/theme-toggle.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/theme-toggle/theme-toggle.module.css",
         type: "registry:ui",
       },
     ],

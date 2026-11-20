@@ -526,6 +526,27 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     invalid: { export: "OTPInput", interactiveTarget: "input", props: `{ value: "428519", invalid: true, errorMessage: "That code didn't work. Check it and try again." }` },
     trailing: { export: "OTPInput", interactiveTarget: "input", props: `{ value: "428519", trailing: React.createElement("button", { type: "button" }, "Resend") }` },
   },
+  // VI-793: ten gradient stand-in photos, one chosen, loaded, in a 600px frame
+  // (Backstage's menu width) so the five-column grid renders at its real size.
+  "photo-picker": {
+    default: {
+      export: "PhotoPicker",
+      interactiveTarget: "button",
+      props: `(function () {
+        var stops = [["#f59e0b", "#7c2d12"], ["#38bdf8", "#1e3a8a"], ["#a3e635", "#14532d"], ["#f472b6", "#4c1d95"], ["#e5e7eb", "#4b5563"], ["#fb923c", "#450a0a"], ["#6ee7b7", "#064e3b"], ["#818cf8", "#0f172a"], ["#fde68a", "#92400e"], ["#5eead4", "#134e4a"]];
+        return {
+          "aria-label": "Pick Your Background",
+          value: "p2",
+          play: false,
+          style: { width: 600 },
+          photos: stops.map(function (s, i) {
+            var svg = "<svg xmlns='http://www.w3.org/2000/svg' width='480' height='360'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='" + s[0] + "'/><stop offset='1' stop-color='" + s[1] + "'/></linearGradient></defs><rect width='480' height='360' fill='url(#g)'/></svg>";
+            return { key: "p" + i, thumb: "data:image/svg+xml;utf8," + encodeURIComponent(svg) };
+          }),
+        };
+      })()`,
+    },
+  },
   // VI-672: `default` is the grid on its own ground; `on-image` draws it over a busy
   // synthetic photograph (turbulence, one light half and one dark half) so each
   // target's scrim ring is checked against both. The picker is its own frame here:
@@ -546,6 +567,11 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       })()`,
     },
     thumbnail: { export: "PositionPicker", interactiveTarget: "[role=\"radio\"]", props: `{ variant: "on-image", "aria-label": "Focal point", defaultValue: { y: "bottom", x: "left" }, style: { position: "relative", inset: "auto", width: 40, height: 28, background: "#667" } }` },
+  },
+  // VI-793: one fixture per tone, so both resting icons (sun on dark, moon on light) render.
+  "theme-toggle": {
+    default: { export: "ThemeToggle", interactiveTarget: "button", props: `{ value: "light" }` },
+    dark: { export: "ThemeToggle", interactiveTarget: "button", props: `{ value: "dark" }` },
   },
   // VI-624: `default` is the closed field; the popover fixtures render open so the
   // two-column (24-hour) and three-column (12-hour) anatomy can be inspected.

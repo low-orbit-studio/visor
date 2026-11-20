@@ -1,0 +1,84 @@
+---
+title: Theme Toggle
+description: A round light/dark button. The icon going away turns and shrinks out as the other springs in.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { ThemeToggleControlledDemo, ThemeToggleGlassDemo } from '@/components/ui/theme-toggle-demos';
+
+## Default
+
+One button that flips between light and dark. Dark shows the sun, the way to light; light shows the moon. On a press the icon going away turns 100° and shrinks to 0.3 as it fades, and the other springs in from the opposite turn. The toggle is controlled: it asks for the other tone and the host decides where the tone lives.
+
+<ComponentPreview
+  title="Theme Toggle"
+  code={"const [tone, setTone] = React.useState<'light' | 'dark'>('light');\n\n<ThemeToggle value={tone} onValueChange={setTone} />"}
+>
+  <ThemeToggleControlledDemo />
+</ComponentPreview>
+
+## On a Photo
+
+The same component dressed as Honcho Backstage's glass button: every part of the look is a CSS variable, and the blur is a plain `backdrop-filter` on top.
+
+<ComponentPreview
+  title="On a Photo"
+  code={"<ThemeToggle\n  value={tone}\n  onValueChange={setTone}\n  style={{\n    '--theme-toggle-size': '42px',\n    '--theme-toggle-icon-size': '17px',\n    '--theme-toggle-bg': 'rgb(255 255 255 / 0.14)',\n    '--theme-toggle-bg-hover': 'rgb(255 255 255 / 0.24)',\n    '--theme-toggle-ring': 'rgb(255 255 255 / 0.16)',\n    '--theme-toggle-color': '#ffffff',\n    backdropFilter: 'blur(16px)',\n  }}\n/>"}
+>
+  <ThemeToggleGlassDemo />
+</ComponentPreview>
+
+## Installation
+
+```bash
+npx visor add theme-toggle
+```
+
+This copies two files into your project:
+
+- `components/ui/theme-toggle/theme-toggle.tsx` — the component
+- `components/ui/theme-toggle/theme-toggle.module.css` — the styles
+
+## Usage
+
+```tsx
+import { ThemeToggle } from '@/components/ui/theme-toggle/theme-toggle';
+
+const [tone, setTone] = useState<'light' | 'dark'>('light');
+
+<ThemeToggle
+  value={tone}
+  onValueChange={(next) => {
+    setTone(next);
+    document.documentElement.dataset.tone = next;
+  }}
+/>
+```
+
+## Theming
+
+| Variable | Default | Sets |
+|---|---|---|
+| `--theme-toggle-size` | `--spacing-10` (40px) | Width and height |
+| `--theme-toggle-icon-size` | `--spacing-4` (16px) | Sun and moon size |
+| `--theme-toggle-bg` | `--surface-subtle` | Background |
+| `--theme-toggle-bg-hover` | `--surface-muted` | Background on hover |
+| `--theme-toggle-ring` | `--border-default` | The 1px inset ring's colour |
+| `--theme-toggle-color` | `--text-primary` | Icon colour |
+| `--theme-toggle-ease` | `cubic-bezier(0.22, 1, 0.36, 1)` | The turn's and the hover's easing |
+
+The motion itself is fixed: the turn takes 600ms, the scale 500ms on `--motion-easing-spring`, the fade 300ms, and a press dips the button to 0.94.
+
+## API Reference
+
+### ThemeToggleProps
+
+<PropsTable component="theme-toggle" />
+
+## Accessibility
+
+- A native `<button type="button">` named "Switch light or dark" by default; pass `aria-label` to change it (4.1.2)
+- Both icons are `aria-hidden`; the name carries the meaning
+- With `prefers-reduced-motion: reduce`, the icons cross-fade in place and the press does not dip (2.3.3)
+- Focus draws a visible ring at the focus-ring tokens (2.4.7)
