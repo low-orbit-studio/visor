@@ -27,4 +27,20 @@ describe("KeyValueList a11y (vitest-axe)", () => {
     const { container } = render(<KeyValueList items={facts} as="div" />)
     expect(await axe(container)).toHaveNoViolations()
   })
+
+  it('has no WCAG 2.1 AA violations (surface="panel")', async () => {
+    const { container } = render(
+      <KeyValueList items={facts} surface="panel" orientation="horizontal" />
+    )
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
+  it('has no WCAG 2.1 AA violations (as="span" inside a button)', async () => {
+    const { container } = render(
+      <button type="button">
+        <KeyValueList items={facts} as="span" orientation="horizontal" />
+      </button>
+    )
+    expect(await axe(container)).toHaveNoViolations()
+  })
 })
