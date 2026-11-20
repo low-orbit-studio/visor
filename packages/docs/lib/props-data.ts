@@ -1840,6 +1840,29 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'field-label': [
+    {
+      name: 'optional',
+      type: 'boolean',
+      default: 'false',
+      description: 'Renders " optional" after the label text, inside the label, so the accessible name includes it.',
+    },
+  ],
+
+  'field-control': [
+    {
+      name: 'tall',
+      type: 'boolean',
+      default: 'false',
+      description: 'Lets the box grow with its content, for a Textarea.',
+    },
+    {
+      name: 'children',
+      type: 'React.ReactNode',
+      description: 'One Input, Textarea or Select. It fills the box and goes bare; the box draws the fill, edge, focus ring and invalid look (from the control\'s aria-invalid).',
+    },
+  ],
+
   'field-error': [
     {
       name: 'errors',

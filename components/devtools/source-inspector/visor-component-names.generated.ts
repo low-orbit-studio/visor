@@ -236,6 +236,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "FeaturesGrid",
   "FidelityMirror",
   "Field",
+  "FieldControl",
   "FieldDescription",
   "FieldError",
   "FieldLabel",

@@ -737,7 +737,7 @@
         },
         "field": {
           "type": "object",
-          "description": "Field label treatment — size, case, tracking and colour of `FieldLabel`, in both densities. Keys: label-font-size, label-text-transform, label-letter-spacing, label-color.",
+          "description": "Field's parts: the label (size, weight, line height, case, tracking, colour, the \"optional\" mark), the hint, the error line (a theme error colour, weight, icon gap and size) and the `FieldControl` box a control sits in (height, corners, fill, focus ring, invalid fill and line, the control's padding, type and placeholder, the tall box for a Textarea). Under `data-glass=\"on\"` the box reads the glass layer's control values and the error line its on-photo ink. Keys: gap, text-inset, label-font-weight, label-line-height, label-optional-color, label-optional-font-weight, description-font-size, description-color, description-line-height, error-color, error-font-weight, error-line-height, error-icon-gap, error-icon-size, error-fill, error-line, error-line-width, control-height, control-radius, control-fill, control-fill-hover, control-focus-ring-color, control-focus-ring-width, control-padding-x, control-font-size, control-font-weight, control-letter-spacing, control-placeholder-color, control-tall-min-height, control-tall-max-height, control-tall-padding-y, label-font-size, label-text-transform, label-letter-spacing, label-color.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

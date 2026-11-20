@@ -40,22 +40,66 @@ Field.displayName = "Field"
 
 /* ─── FieldLabel ────────────────────────────────────────────────────── */
 
-export type FieldLabelProps = React.ComponentPropsWithoutRef<typeof Label>
+export interface FieldLabelProps extends React.ComponentPropsWithoutRef<typeof Label> {
+  /**
+   * Marks the field as optional: renders " optional" after the label text,
+   * inside the label, so the accessible name includes it.
+   */
+  optional?: boolean
+}
 
 const FieldLabel = React.forwardRef<
   React.ElementRef<typeof Label>,
   FieldLabelProps
->(({ className, ...props }, ref) => {
+>(({ className, optional, children, ...props }, ref) => {
   return (
     <Label
       data-slot="field-label"
       className={cn(styles.fieldLabel, className)}
       ref={ref}
       {...props}
-    />
+    >
+      {optional ? (
+        <span className={styles.fieldLabelText}>
+          {children}{" "}
+          <span className={styles.fieldLabelOptional} data-slot="field-label-optional">
+            optional
+          </span>
+        </span>
+      ) : (
+        children
+      )}
+    </Label>
   )
 })
 FieldLabel.displayName = "FieldLabel"
+
+/* ─── FieldControl ──────────────────────────────────────────────────── */
+
+export interface FieldControlProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Let the box grow with its content, for a Textarea. */
+  tall?: boolean
+}
+
+/**
+ * The box a form control sits in. Input, Textarea or a Select trigger placed
+ * inside fills it and goes bare; the box draws the fill, edge, focus ring and
+ * invalid look (from the control's `aria-invalid`). Glass only inside
+ * `data-glass="on"`.
+ */
+const FieldControl = React.forwardRef<HTMLDivElement, FieldControlProps>(
+  ({ className, tall, ...props }, ref) => {
+    return (
+      <div
+        data-slot="field-control"
+        className={cn(styles.control, tall && styles.controlTall, className)}
+        ref={ref}
+        {...props}
+      />
+    )
+  }
+)
+FieldControl.displayName = "FieldControl"
 
 /* ─── FieldDescription ──────────────────────────────────────────────── */
 
@@ -134,4 +178,4 @@ const FieldError = React.forwardRef<HTMLDivElement, FieldErrorProps>(
 )
 FieldError.displayName = "FieldError"
 
-export { Field, FieldLabel, FieldDescription, FieldError, fieldVariants }
+export { Field, FieldLabel, FieldControl, FieldDescription, FieldError, fieldVariants }
