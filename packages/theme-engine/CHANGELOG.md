@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.43.0
+
+### Minor Changes
+
+- b2e8d18: Spinner takes a `delay` (milliseconds): it shows nothing until the wait passes, then fades in, so a quick load never flashes it. The delay is a CSS `animation-delay`, so server and client markup match, and under reduced motion the ring stops turning but still fades in. A new `showLabel` option shows the `label` as visible words beside the spinner, in one `role="status"` wrapper that the delay fades as a whole. Callers that set neither render exactly as before. The theme engine's `spinner` family gains `appear-duration`, `label-gap`, `label-font-size`, `label-font-weight` and `label-color`.
+- 36eb4f8: NumberInput takes skin hooks for its field and its − and + buttons, and reads the glass layer. The theme engine gains a `number-input` family: `bg`, `bg-focus`, `border`, `radius`, `height`, `value-width`, `value-font-size`, `value-font-weight`, `button-size`, `button-inset`, `button-radius`, `button-color`, `button-hover-bg` and `icon-size`, each falling back to the look NumberInput drew before, so an unbound theme renders as it did. Inside `data-glass="on"` the field takes the glass layer's control fill, focused fill, ring, ink and blur; elsewhere it stays solid with no blur. ArrowUp and ArrowDown now step the value by `step` and hold at `min` and `max` (a caller's `onKeyDown` runs first and can cancel the step), the − button disables at `min` and the + button at `max`, and from empty the first press lands on `min` when one is set.
+- f97d81e: VI-807: Button gets the Honcho kit's pill. New `components.button` hooks (`lg-height`, `lg-padding`, `default-shadow`, `default-shadow-hover`, `outline-text`, `outline-bg-hover`, `hover-scale`, `press-scale`, `press-transform`, `press-duration`, `motion-duration`, `motion-easing`) add the kit's height, lift, grow and press; unbound, none changes a pixel. A `glass` variant is a solid ringed control on a plain page and reads the glass layer's control fill, ring, ink and blur under `data-glass="on"`. `ArrowSwap`, exported beside `Button`, is two arrows in a one-arrow window that slide on the button's hover or keyboard focus.
+
 ## 0.42.0
 
 ### Minor Changes
