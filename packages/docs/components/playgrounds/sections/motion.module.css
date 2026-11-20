@@ -1,0 +1,27 @@
+.cornerRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.cornerTiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
+}
+
+.cornerLabel {
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-tertiary, #6b7280);
+}
+
+.cornerTile {
+  display: grid;
+  place-items: center;
+  inline-size: var(--spacing-16, 4rem);
+  block-size: var(--spacing-16, 4rem);
+  background: var(--surface-card, var(--surface-primary, transparent));
+  border: var(--stroke-width-medium, 2px) solid var(--border-strong, var(--border-default, #d1d5db));
+  font-size: var(--font-size-xs, 0.75rem);
+  color: var(--text-secondary, #4b5563);
+}

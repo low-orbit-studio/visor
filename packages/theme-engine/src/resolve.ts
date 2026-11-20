@@ -9,6 +9,7 @@ import { parseColor } from "./color.js";
 import { DEFAULT_VISOR_BRAND } from "./brand/resolve.js";
 import type { VisorBrand } from "./brand/types.js";
 import type { VisorThemeConfig, ResolvedThemeConfig, ColorFormat } from "./types.js";
+import { OPT_IN_MOTION_DURATION_KEYS } from "./types.js";
 
 // ============================================================
 // Default Values (from Visor's primitives.ts)
@@ -271,7 +272,15 @@ export function resolveConfig(config: VisorThemeConfig): ResolvedThemeConfig {
       ...(config.motion?.["easing-overshoot"] !== undefined
         ? { "easing-overshoot": config.motion["easing-overshoot"] }
         : {}),
+      // VI-796: opt-in out curve and role durations, passed through only when set.
+      ...Object.fromEntries(
+        (["easing-out", ...OPT_IN_MOTION_DURATION_KEYS] as const).filter((key) => config.motion?.[key] !== undefined).map((key) => [
+          key,
+          config.motion![key],
+        ]),
+      ),
     },
+    ...(config.corners === "squircle" ? { corners: "squircle" as const } : {}),
     overrides: config.overrides,
     // VI-625: component bindings pass through untouched — the contract in
     // component-tokens.ts owns their shape, there is nothing to default.

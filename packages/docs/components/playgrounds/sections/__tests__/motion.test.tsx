@@ -31,6 +31,37 @@ describe("MotionSection rendering", () => {
     expect(screen.getByText("500ms")).toBeInTheDocument();
   });
 
+  it("lists the opt-in role durations as not set on a stock theme (VI-796)", () => {
+    render(<MotionSection />);
+    const roles = screen.getByTestId("motion-role-durations");
+    expect(roles.textContent).toContain("--motion-duration-enter");
+    expect(roles.textContent).toContain("--motion-duration-enter-delay");
+  });
+
+  it("shows the corner shape specimen with theme, squircle and round rows (VI-796)", () => {
+    render(<MotionSection />);
+    const corner = screen.getByTestId("motion-corner-shape");
+    expect(corner.textContent).toContain("This theme: round");
+    const tiles = corner.querySelectorAll("div[style]");
+    expect(tiles).toHaveLength(15);
+    expect((tiles[5] as HTMLElement).style.getPropertyValue("corner-shape")).toBe("squircle");
+  });
+
+  it("reads the active theme's motion values off the page (VI-796)", async () => {
+    const root = document.documentElement;
+    root.style.setProperty("--motion-duration-exit", "380ms");
+    root.style.setProperty("--motion-easing-ease-out", "cubic-bezier(0.22, 1, 0.36, 1)");
+    root.style.setProperty("--corner-shape", "squircle");
+    try {
+      render(<MotionSection />);
+      expect(await screen.findByText("380ms")).toBeInTheDocument();
+      expect(screen.getByText("cubic-bezier(0.22, 1, 0.36, 1)")).toBeInTheDocument();
+      expect(screen.getByTestId("motion-corner-shape").textContent).toContain("This theme: squircle");
+    } finally {
+      root.removeAttribute("style");
+    }
+  });
+
   it("provides replay controls for both specimens", () => {
     render(<MotionSection />);
     // MotionEasing + MotionDuration each render their own "Play animation" button.

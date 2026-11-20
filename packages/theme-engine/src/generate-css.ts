@@ -13,6 +13,7 @@ import type {
   ColorRole,
   ColorScheme,
 } from "./types.js";
+import { OPT_IN_MOTION_DURATION_KEYS } from "./types.js";
 import { FULL_SHADE_STEPS, SELECTIVE_SHADE_STEPS } from "./shades.js";
 import { generateFontMetricDecls } from "./font-metrics.js";
 import { generateFontWeightDecls } from "./font-weights.js";
@@ -123,7 +124,33 @@ function generateRadiusPrimitives(config: ResolvedThemeConfig): string[] {
     `--radius-3xl: ${(config.radius.xl * 2) / 16}rem; /* ${config.radius.xl * 2}px */`
   );
   decls.push(`--radius-full: ${config.radius.pill}px;`);
+  decls.push(...generateCornerShapeDecls(config));
   return decls;
+}
+
+/** VI-796: `--corner-shape`, emitted only for `corners: squircle`. */
+export function generateCornerShapeDecls(config: ResolvedThemeConfig): string[] {
+  return config.corners === "squircle" ? ["--corner-shape: squircle;"] : [];
+}
+
+/**
+ * VI-796: binds `corner-shape` to every element so each `border-radius` draws
+ * the theme's corner. Elements outside the theme scope (or under an ancestor
+ * that sets `--corner-shape: round`) resolve round, and browsers without
+ * `corner-shape` drop the declaration and draw round. Adapters emit it in the
+ * lowest layer (`visor-base`), so any component or consumer rule wins.
+ */
+export const CORNER_SHAPE_BINDING =
+  "*, *::before, *::after {\n  corner-shape: var(--corner-shape);\n}";
+
+/** VI-796: the out curve's value when a theme sets no `motion.easing-out`. */
+export const DEFAULT_EASING_OUT = "cubic-bezier(0, 0, 0.2, 1)";
+
+/** VI-796: opt-in role durations, emitted only for the keys a theme sets. */
+export function generateOptInMotionDurationDecls(config: ResolvedThemeConfig): string[] {
+  return OPT_IN_MOTION_DURATION_KEYS.filter((key) => config.motion[key] !== undefined).map(
+    (key) => `--motion-${key}: ${config.motion[key]};`,
+  );
 }
 
 function generateShadowPrimitives(config: ResolvedThemeConfig): string[] {
@@ -242,11 +269,12 @@ function generateMotionPrimitives(config: ResolvedThemeConfig): string[] {
   decls.push(`--motion-duration-500: ${config.motion["duration-slow"]};`);
   decls.push("--motion-duration-800: 800ms;");
   decls.push("--motion-duration-1500: 1500ms;");
+  decls.push(...generateOptInMotionDurationDecls(config));
 
   // Easings
   decls.push("--motion-easing-linear: linear;");
   decls.push("--motion-easing-ease-in: cubic-bezier(0.4, 0, 1, 1);");
-  decls.push("--motion-easing-ease-out: cubic-bezier(0, 0, 0.2, 1);");
+  decls.push(`--motion-easing-ease-out: ${config.motion["easing-out"] ?? DEFAULT_EASING_OUT};`);
   decls.push(`--motion-easing-ease-in-out: ${config.motion.easing};`);
   decls.push(
     "--motion-easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);"

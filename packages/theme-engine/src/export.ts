@@ -6,6 +6,7 @@
  */
 
 import { stringify as stringifyYaml } from "yaml";
+import { OPT_IN_MOTION_DURATION_KEYS } from "./types.js";
 import type {
   GeneratedPrimitives,
   ResolvedThemeConfig,
@@ -199,8 +200,18 @@ export function exportTheme(
   if (config.motion["easing-overshoot"] !== undefined) {
     motion["easing-overshoot"] = config.motion["easing-overshoot"];
   }
+  // VI-796: opt-in out curve and role durations (no default — opt-in only).
+  for (const key of ["easing-out", ...OPT_IN_MOTION_DURATION_KEYS] as const) {
+    const val = config.motion[key];
+    if (val !== undefined) motion[key] = val;
+  }
   if (Object.keys(motion).length > 0) {
     output.motion = motion as VisorThemeConfig["motion"];
+  }
+
+  // VI-796: corner shape (only `squircle` is carried; round is the default).
+  if (config.corners) {
+    output.corners = config.corners;
   }
 
   // Overrides — include if present

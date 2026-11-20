@@ -7,7 +7,7 @@
 
 import visorThemeSchema from "./visor-theme.schema.json";
 import { isValidHex, isValidColor } from "./color.js";
-import { MATERIAL_TEXT_SLOTS, TEXT_TRANSFORMS } from "./types.js";
+import { MATERIAL_TEXT_SLOTS, OPT_IN_MOTION_DURATION_KEYS, TEXT_TRANSFORMS } from "./types.js";
 import type { VisorThemeConfig } from "./types.js";
 import { checkBrandStrategyStructure } from "./brand-strategy/validate.js";
 import { validateComponentBindings } from "./component-tokens.js";
@@ -26,7 +26,7 @@ export interface ValidationResult {
 const KNOWN_TOP_LEVEL_KEYS = new Set([
   "name", "version", "group", "label", "default-mode", "color-scheme", "colors", "colors-dark", "typography",
   "brand", "brand-strategy", "spacing", "radius", "shadows", "strokeWidths", "motion", "overrides",
-  "components", "edges", "hairlines",
+  "components", "edges", "hairlines", "corners",
 ]);
 
 const KNOWN_COLOR_KEYS = new Set([
@@ -64,7 +64,11 @@ const KNOWN_STROKE_WIDTH_KEYS = new Set(["thin", "regular", "medium", "thick"]);
 // fall through to the existing `--motion-easing-spring` default. The CLI
 // design-check rule still flags bouncy easings in component CSS — this is
 // only a schema unblock so the theme YAML validates.
-const KNOWN_MOTION_KEYS = new Set(["duration-fast", "duration-normal", "duration-slow", "easing", "easing-overshoot"]);
+// VI-796: `easing-out` and the opt-in role durations (emit only when set).
+const KNOWN_MOTION_KEYS = new Set([
+  "duration-fast", "duration-normal", "duration-slow", "easing", "easing-overshoot", "easing-out",
+  ...OPT_IN_MOTION_DURATION_KEYS,
+]);
 const KNOWN_OVERRIDES_KEYS = new Set(["light", "dark"]);
 
 // VI-470: brand block. Shared org/source/cdn-overrides defaults plus the
@@ -361,6 +365,11 @@ export function validateConfig(config: unknown): ValidationResult {
     errors.push("'hairlines' must be either 'on' or 'off'");
   }
 
+  // VI-796: the one switch for corner shape.
+  if (obj.corners !== undefined && obj.corners !== "round" && obj.corners !== "squircle") {
+    errors.push("'corners' must be either 'round' or 'squircle'");
+  }
+
   if (typeof obj.colors !== "object" || obj.colors === null) {
     errors.push("'colors' is required and must be an object");
     return { valid: false, errors };
@@ -415,7 +424,7 @@ export function validateConfig(config: unknown): ValidationResult {
   // Validate motion duration patterns
   if (obj.motion && typeof obj.motion === "object") {
     const motion = obj.motion as Record<string, unknown>;
-    for (const key of ["duration-fast", "duration-normal", "duration-slow"]) {
+    for (const key of ["duration-fast", "duration-normal", "duration-slow", ...OPT_IN_MOTION_DURATION_KEYS]) {
       if (motion[key] !== undefined) {
         if (
           typeof motion[key] !== "string" ||
