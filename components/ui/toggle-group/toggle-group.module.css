@@ -223,10 +223,12 @@
   }
 }
 
-/* Option variant (VI-787): tap-to-pick rows, each a lettered key, the label and,
-   in a multiple group, a check box on the right. Every value is a
+/* Option variant (VI-787): tap-to-pick rows, each a lettered key, the label (and
+   an optional description line, VI-806) and, on the right, a check box in a
+   multiple group or a round mark in a single group with `mark`. Every value is a
    --toggle-group-option-* hook; the fallbacks are Visor's tokens, with the row
-   height, key and check sizes and the glass blur taken from Honcho's FormDeck rows. */
+   height and the key and check sizes taken from Honcho's FormDeck rows. The blur
+   is the glass layer's (VI-795): none unless an ancestor sets data-glass="on". */
 .variantOption {
   display: flex;
   flex-direction: column;
@@ -249,8 +251,8 @@
   padding: var(--toggle-group-option-padding, var(--spacing-2, 0.5rem) var(--spacing-4_5, 1.125rem) var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem));
   border-radius: var(--toggle-group-option-radius, var(--radius-lg, 0.5rem));
   background-color: var(--toggle-group-option-bg, color-mix(in srgb, var(--text-primary, #111827) 9%, transparent));
-  -webkit-backdrop-filter: blur(var(--toggle-group-option-blur, 24px));
-  backdrop-filter: blur(var(--toggle-group-option-blur, 24px));
+  -webkit-backdrop-filter: var(--glass-on-control-blur, none);
+  backdrop-filter: var(--glass-on-control-blur, none);
   color: var(--toggle-group-option-text, var(--text-primary, #111827));
   font-size: var(--toggle-group-option-font-size, var(--font-size-base, 1rem));
   font-weight: var(--toggle-group-option-font-weight, var(--font-weight-medium, 500));
@@ -307,21 +309,47 @@
     box-shadow var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
 }
 
-.optionCheck svg {
+.optionTitle,
+.optionDescription {
+  display: block;
+}
+
+.optionDescription {
+  margin-top: var(--spacing-1, 0.25rem);
+  color: var(--toggle-group-option-description-text, var(--text-secondary, #4b5563));
+  font-size: var(--toggle-group-option-description-font-size, var(--font-size-sm, 0.875rem));
+  line-height: var(--line-height-snug, 1.375);
+}
+
+/* The single-choice mark: a round well, clear at rest, that fills with a check when picked. */
+.optionMark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--toggle-group-option-check-size, 1.25rem);
+  height: var(--toggle-group-option-check-size, 1.25rem);
+  border-radius: var(--radius-full, 9999px);
+  transition: background-color var(--motion-duration-150, 150ms) var(--motion-easing-default, ease-in-out);
+}
+
+.optionCheck svg,
+.optionMark svg {
   width: 60%;
   height: 60%;
   opacity: 0;
 }
 
-/* Picked: the key and the check fill with the mark colour. */
+/* Picked: the key, the check and the mark fill with the mark colour. */
 .itemVariantOption[data-state="on"] .optionKey,
-.itemVariantOption[data-state="on"] .optionCheck {
+.itemVariantOption[data-state="on"] .optionCheck,
+.itemVariantOption[data-state="on"] .optionMark {
   background-color: var(--toggle-group-option-mark-bg, var(--interactive-primary-bg, var(--primary, #111827)));
   color: var(--toggle-group-option-mark-text, var(--interactive-primary-text, #f9fafb));
   box-shadow: none;
 }
 
-.itemVariantOption[data-state="on"] .optionCheck svg {
+.itemVariantOption[data-state="on"] .optionCheck svg,
+.itemVariantOption[data-state="on"] .optionMark svg {
   opacity: 1;
 }
 

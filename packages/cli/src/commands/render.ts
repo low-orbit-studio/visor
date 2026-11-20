@@ -968,6 +968,18 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
         ] };
       })()`,
     },
+    // VI-806: one answer with descriptions and the round mark.
+    "option-mark": {
+      export: "ToggleGroup",
+      interactiveTarget: "[data-slot=toggle-group-item]",
+      props: `(function () {
+        var h = React.createElement;
+        return { type: "single", variant: "option", mark: true, "aria-label": "Ticket", defaultValue: "weekend", style: { width: "22rem" }, children: [
+          h(__mod.ToggleGroupItem, { key: "w", value: "weekend", description: "Friday to Sunday, every stage" }, "Weekend Pass"),
+          h(__mod.ToggleGroupItem, { key: "d", value: "day", description: "One day, pick it at the gate" }, "Day Ticket"),
+        ] };
+      })()`,
+    },
   },
   "tag-input": {
     default: {

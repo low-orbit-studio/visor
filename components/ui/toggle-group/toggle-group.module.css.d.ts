@@ -20,6 +20,9 @@ declare const styles: {
   readonly optionKey: string
   readonly optionLabel: string
   readonly optionCheck: string
+  readonly optionTitle: string
+  readonly optionDescription: string
+  readonly optionMark: string
 }
 
 export default styles

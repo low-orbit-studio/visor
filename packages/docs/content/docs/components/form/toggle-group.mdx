@@ -6,6 +6,7 @@ description: A group of toggle buttons where one or multiple can be active. Buil
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { FiveLooks } from '@/components/looks/five-looks';
 
 ## Variants
 
@@ -125,6 +126,37 @@ Space or Enter picks. Add `shortcuts` and the letters work as keys while focus i
   </div>
 </ComponentPreview>
 
+### Descriptions and a Round Mark
+
+`description` on an item adds a second line under its label. On a single group, `mark` puts a round
+mark on the right of each row: clear at rest, filled with a check in the theme's key colour
+(`--interactive-primary-bg`) once the row is picked. A multiple group keeps its check box, and takes
+descriptions the same way. The label stays each row's accessible name and the description becomes its
+accessible description.
+
+<ComponentPreview
+  title="Descriptions and a Round Mark"
+  code={"<ToggleGroup type=\"single\" variant=\"option\" mark shortcuts aria-label=\"Ticket\" defaultValue=\"weekend\">\n  <ToggleGroupItem value=\"weekend\" description=\"Friday to Sunday, every stage\">Weekend Pass</ToggleGroupItem>\n  <ToggleGroupItem value=\"day\" description=\"One day, pick it at the gate\">Day Ticket</ToggleGroupItem>\n</ToggleGroup>\n\n<ToggleGroup type=\"multiple\" variant=\"option\" aria-label=\"Add-ons\" defaultValue={['camping']}>\n  <ToggleGroupItem value=\"camping\" description=\"A pitch in the quiet field\">Camping</ToggleGroupItem>\n  <ToggleGroupItem value=\"parking\" description=\"One car, all weekend\">Parking</ToggleGroupItem>\n</ToggleGroup>"}
+>
+  <div style={{ width: '100%', maxWidth: '28rem', display: 'grid', gap: '1rem' }}>
+    <ToggleGroup type="single" variant="option" mark shortcuts aria-label="Ticket" defaultValue="weekend">
+      <ToggleGroupItem value="weekend" description="Friday to Sunday, every stage">Weekend Pass</ToggleGroupItem>
+      <ToggleGroupItem value="day" description="One day, pick it at the gate">Day Ticket</ToggleGroupItem>
+    </ToggleGroup>
+    <ToggleGroup type="multiple" variant="option" aria-label="Add-ons" defaultValue={['camping']}>
+      <ToggleGroupItem value="camping" description="A pitch in the quiet field">Camping</ToggleGroupItem>
+      <ToggleGroupItem value="parking" description="One car, all weekend">Parking</ToggleGroupItem>
+    </ToggleGroup>
+  </div>
+</ComponentPreview>
+
+### In Five Looks
+
+The rows above in each look on the theme picked in the docs. The rows are solid on a plain page; only
+the two Photo looks, which turn glass on (see [Glass](/docs/themes/glass)), blur the photo behind them.
+
+<FiveLooks specimen="toggle-group" height={420} />
+
 ### Two Columns
 
 `columns={2}` lays the rows out two up, for a longer list of short answers.
@@ -178,7 +210,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group/toggl
 | Component | Element | Purpose |
 | --- | --- | --- |
 | `ToggleGroup` | `<div>` | Root group container with variant/size context and optional sliding indicator |
-| `ToggleGroupItem` | `<button>` | Individual toggle button inheriting variant and size from the group. In the option variant it renders the key, label and (multiple) check |
+| `ToggleGroupItem` | `<button>` | Individual toggle button inheriting variant and size from the group. In the option variant it renders the key, the label and optional `description`, and the check box (multiple) or the round mark (single with `mark`) |
 
 ## Accessibility
 
@@ -186,7 +218,7 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group/toggl
 - Keyboard focus draws a solid `--border-focus` ring at `--focus-ring-width`, offset by `--focus-ring-offset`, on every item
 - Provide an `aria-label` on `<ToggleGroup>` to describe the purpose of the group (e.g., "Text formatting", "View mode")
 - Keyboard: Arrow keys navigate between items within the group; Space/Enter toggles the focused item
-- Option variant: the letter key and the check box are `aria-hidden`, so each row is named by its label alone. With `shortcuts`, a letter key (no modifier) picks and focuses the row at that position; a disabled row ignores it
+- Option variant: the letter key, the check box and the round mark are `aria-hidden`, so each row is named by its label alone. A `description` is wired to the row with `aria-describedby`, after any id the caller passes. With `shortcuts`, a letter key (no modifier) picks and focuses the row at that position; a disabled row ignores it
 
 ## Theming
 
@@ -210,9 +242,11 @@ components:
 ```
 
 The option variant has its own `option-*` keys: the row's gap, height, padding, corners, fill
-(rest, hover and picked), picked ring, backdrop blur, ink and type; the letter key's size, corners,
-edge, ink and type; the picked key and check fill (`option-mark-bg`, `option-mark-text`); and the check
-box's size, corners and edge. The defaults are Visor's tokens. Glass rows over a photo, in a dark theme:
+(rest, hover and picked), picked ring, ink and type; the description line's ink and size; the letter
+key's size, corners, edge, ink and type; the picked key, check and round mark fill (`option-mark-bg`,
+`option-mark-text`, by default the theme's key colour); and the check box's size (the round mark's
+too), corners and edge. The defaults are Visor's tokens. The row's blur is not a key: it is the glass
+layer's control blur, so it shows only inside `data-glass="on"`. Glass rows over a photo, in a dark theme:
 
 ```yaml
 components:
@@ -224,7 +258,7 @@ components:
     option-hover-bg: "rgba(255, 255, 255, 0.13)"
     option-selected-bg: "rgba(255, 255, 255, 0.2)"
     option-selected-ring: "rgba(255, 255, 255, 0.4)"
-    option-blur: 24px
+    option-description-text: "rgba(255, 255, 255, 0.64)"
     option-font-size: 17px
     option-key-radius: 8px
     option-mark-bg: "#e8457c"
