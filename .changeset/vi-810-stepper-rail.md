@@ -1,0 +1,7 @@
+---
+"@loworbitstudio/visor": minor
+"@loworbitstudio/visor-theme-engine": minor
+"@loworbitstudio/visor-core": minor
+---
+
+Stepper gains a `rail` variant: a side list of form sections, used vertically. Each `StepperTrigger` is one row-wide button holding a dot mark and its label (the trigger's children), with no circles, glyphs or separators; the current row's mark stretches to a pill and its trigger carries `aria-current="step"`. The four states are one ink at 100/64/40/24%: the theme's `--text-primary`, or under `data-glass="on"` the glass layer's on-photo ink with a soft label shadow. The default and prominent variants are unchanged. The theme engine adds a `stepper` component-token family (`rail-gap`, `rail-padding`, `rail-mark-gap`, `rail-font-size`, `rail-font-weight`, `rail-letter-spacing`, `rail-mark-size`, `rail-mark-active-width`) and a glass `ink-shadow` value, which visor-core's glass switch copies into `--glass-on-ink-shadow`.

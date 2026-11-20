@@ -5,6 +5,8 @@ description: A multi-step progress indicator with horizontal and vertical orient
 
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
+import { FiveLooks } from '@/components/looks/five-looks';
+import { StepperRailSpecimen } from '@/components/looks/stepper-rail-specimen';
 import {
   Stepper,
   StepperItem,
@@ -130,6 +132,23 @@ The `prominent` variant turns the Stepper into a primary-navigation surface: the
   </Stepper>
 </ComponentPreview>
 
+## Rail Variant
+
+The `rail` variant is a side list of form sections, the desktop companion to a progress bar. Each `StepperTrigger` is one row-wide button holding a dot mark and its label, which you pass as the trigger's children: no circles, no glyphs, no separators. The current section's mark stretches to a pill and its trigger carries `aria-current="step"`. Done, current, upcoming and locked read as one ink at four strengths, the Honcho kit's ramp: `--text-primary` at 64%, 100%, 40% and 24%. Pass `onClick` to let a section jump back, and `disabled` on a row that shouldn't be clicked (the current one, say).
+
+<ComponentPreview
+  title="Section Rail"
+  code={"<Stepper orientation=\"vertical\" variant=\"rail\" aria-label=\"Sections\">\n  <StepperItem step={0} status=\"complete\">\n    <StepperTrigger step={0} status=\"complete\" onClick={() => jump(0)}>Welcome</StepperTrigger>\n  </StepperItem>\n  <StepperItem step={1} status=\"active\">\n    <StepperTrigger step={1} status=\"active\">About You</StepperTrigger>\n  </StepperItem>\n  <StepperItem step={2} status=\"upcoming\">\n    <StepperTrigger step={2} status=\"upcoming\" onClick={() => jump(2)}>Travel</StepperTrigger>\n  </StepperItem>\n  <StepperItem step={3} status=\"locked\">\n    <StepperTrigger step={3} status=\"locked\">Pay</StepperTrigger>\n  </StepperItem>\n  <StepperItem step={4} status=\"locked\">\n    <StepperTrigger step={4} status=\"locked\">Agreements</StepperTrigger>\n  </StepperItem>\n</Stepper>"}
+>
+  <StepperRailSpecimen />
+</ComponentPreview>
+
+### Over a Photo
+
+Glass is off unless an ancestor sets `data-glass="on"` (see [Glass](/docs/themes/glass)). On a plain page the rail draws theme ink with no shadow and no blur. Over a photo the same ramp runs on the glass layer's `ink`, with its `ink-shadow` to seat the labels on bright and dark patches. A theme that wants white labels over a light photo binds `components.glass.ink` to white in its light tone. Row sizes bind under `components.stepper` (`rail-padding`, `rail-font-size`, `rail-mark-size` and so on, see [Component Tokens](/docs/themes/component-tokens)).
+
+<FiveLooks specimen="stepper-rail" height={260} />
+
 ## Locked Step
 
 <ComponentPreview
@@ -230,6 +249,7 @@ export default function Example() {
 | Vertical derivation spine, primary side-column navigation | `prominent` |
 | Stepper is a supporting element on a page | `default` |
 | Stepper **is** the primary surface of a page | `prominent` |
+| A side rail of form sections, beside the form | `rail` |
 
 The `prominent` variant uses `--interactive-primary-soft` for the active-row tint and concentric halo, `--interactive-primary-bg` for the bullet border, pulse dot, and check fill, and a `color-mix` tint of `--interactive-primary-bg` at 34% for the complete-to-next rail. All values resolve against the active theme — monochromatic themes (e.g., Blackout) stay restrained while colorful ones get the full pop.
 
@@ -253,7 +273,7 @@ The `prominent` variant uses `--interactive-primary-soft` for the active-row tin
 ## Accessibility
 
 - `Stepper` renders with `role="group"` and `aria-label="Progress"` to group the steps as a meaningful unit.
-- `StepperItem` sets `aria-current="step"` on the currently active step.
+- `StepperItem` sets `aria-current="step"` on the currently active step. In the `rail` variant the active `StepperTrigger` carries it instead, since the row-wide button is the thing a screen reader lands on.
 - `StepperTrigger` is a `<button>` element and includes a visually hidden label ("Completed", "Step N", or "Step N, locked") for screen readers.
 - The check icon in completed triggers and the lock icon in locked triggers both have `aria-hidden="true"` since the status is communicated via the button's text content.
 - Step status (`complete`, `active`, `upcoming`, `locked`) is also exposed as a `data-status` attribute for custom CSS targeting.

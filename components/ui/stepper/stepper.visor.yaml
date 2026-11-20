@@ -8,6 +8,7 @@ when_to_use:
   - Onboarding flows with sequential steps
   - Checkout or signup processes with distinct stages
   - Any workflow where users need to see their current position and progress
+  - A side rail of form sections, beside the form (variant="rail")
 
 when_not_to_use:
   - Simple progress percentage (use Progress)
@@ -36,6 +37,7 @@ variants:
     values:
       - default
       - prominent
+      - rail
     description: >
       Visual treatment for the entire Stepper. "default" is the standard step
       indicator for multi-step forms and linear wizards. "prominent" is designed
@@ -45,7 +47,15 @@ variants:
       render in a primary-line tint. Token surface: --interactive-primary-bg
       (border + fill + pulse dot), --interactive-primary-soft (row tint + halo),
       color-mix(in srgb, --interactive-primary-bg 34%, transparent) (rail tint).
-      All values are fully theme-agnostic.
+      All values are fully theme-agnostic. "rail" is a side list of form
+      sections, used vertically: each StepperTrigger is one row-wide button
+      holding a dot mark and its label (pass the label as the trigger's
+      children), with no circles and no separators. The current row's mark
+      stretches to a pill and its trigger carries aria-current="step". The
+      states are one ink at 100% (active), 64% (complete), 40% (upcoming) and
+      24% (locked): the theme's --text-primary, or under data-glass="on" the
+      glass layer's on-photo ink with its ink shadow. Sizes bind through the stepper component-token
+      family (--stepper-rail-*).
   - name: status
     values:
       - complete
@@ -65,7 +75,7 @@ sub_components:
   - name: StepperItem
     description: Container for a single step with auto-derived status from context. Pass status="locked" to override.
   - name: StepperTrigger
-    description: Clickable step indicator circle with status-based styling; check icon for complete, lock glyph for locked.
+    description: Clickable step indicator circle with status-based styling; check icon for complete, lock glyph for locked. In the rail variant, a row-wide button holding a dot mark and its label (the children).
   - name: StepperTitle
     description: Step label text. Rendered in secondary color when the parent item is locked.
   - name: StepperDescription
@@ -93,5 +103,20 @@ example: |
     <StepperItem step={2}>
       <StepperTrigger step={2} />
       <StepperTitle>Review</StepperTitle>
+    </StepperItem>
+  </Stepper>
+
+  <Stepper orientation="vertical" variant="rail" activeStep={1} aria-label="Sections">
+    <StepperItem step={0}>
+      <StepperTrigger step={0} onClick={() => jump(0)}>Welcome</StepperTrigger>
+    </StepperItem>
+    <StepperItem step={1}>
+      <StepperTrigger step={1}>About You</StepperTrigger>
+    </StepperItem>
+    <StepperItem step={2}>
+      <StepperTrigger step={2} onClick={() => jump(2)}>Travel</StepperTrigger>
+    </StepperItem>
+    <StepperItem step={3} status="locked">
+      <StepperTrigger step={3} status="locked">Pay</StepperTrigger>
     </StepperItem>
   </Stepper>

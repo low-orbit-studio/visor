@@ -1289,9 +1289,9 @@ export const propsData: Record<string, PropDef[]> = {
     },
     {
       name: 'variant',
-      type: "'default' | 'prominent'",
+      type: "'default' | 'prominent' | 'rail'",
       default: "'default'",
-      description: 'Visual treatment. "default" is the standard step indicator for multi-step forms. "prominent" adds a primary-soft active-row tint, a concentric halo, a filled pulse dot in the active bullet, and a primary-tinted complete rail — use it vertically as a primary derivation spine or navigation surface.',
+      description: 'Visual treatment. "default" is the standard step indicator for multi-step forms. "prominent" adds a primary-soft active-row tint, a concentric halo, a filled pulse dot in the active bullet, and a primary-tinted complete rail — use it vertically as a primary derivation spine or navigation surface. "rail" is a side list of form sections: each trigger is a row-wide button with a dot mark and its label (the children), the current mark stretches to a pill, and over a photo (data-glass="on") the ink is the glass ink with its shadow.',
     },
     {
       name: 'step',
