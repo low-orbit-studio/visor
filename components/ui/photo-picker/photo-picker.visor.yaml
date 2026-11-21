@@ -20,8 +20,10 @@ why: >
   panel. Thumbnails are buttons with aria-pressed and a name each. The wave is
   part of the component, keyed on the play prop, and load holds the
   thumbnails back until the first open so a closed menu never races the page
-  for bandwidth. Every visual value is a CSS variable that defaults to
-  Backstage's value wherever no theme token speaks for it.
+  for bandwidth. Colours, corners and motion come from the theme (the chosen
+  ring is the key colour), and every other visual value is a CSS variable that
+  defaults to Backstage's value. The grid draws no surface, so over a photo the
+  glass is the panel's or popover's it sits in.
 
 props:
   - name: photos

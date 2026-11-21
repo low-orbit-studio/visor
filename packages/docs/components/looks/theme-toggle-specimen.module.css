@@ -1,0 +1,12 @@
+/* Backstage's top-bar button size (top-bar.module.css): 42px with a 17px icon, 38px at 760px and under. */
+.bar {
+  --theme-toggle-size: 42px;
+  --theme-toggle-icon-size: 17px;
+  display: flex;
+}
+
+@media (max-width: 760px) {
+  .bar {
+    --theme-toggle-size: 38px;
+  }
+}
