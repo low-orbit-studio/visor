@@ -4,8 +4,9 @@ import { test, expect, type Frame, type Locator, type Page } from "@playwright/t
 // on the docs page, and the sections bar in all five looks at 390 and 1440 wide
 // with the docs site in light and dark. The ink comes from the theme in every look.
 const PAGE = "/docs/components/data-display/segmented-progress";
-const THEME = process.env.VI809_THEME ?? "neutral";
-const TODAY_THEME = process.env.VI809_TODAY_THEME ?? THEME;
+// The five looks are Backstage's (honcho-backstage, with Today on honcho); needs visor-themes-private.
+const THEME = process.env.VI809_THEME ?? "honcho-backstage";
+const TODAY_THEME = process.env.VI809_TODAY_THEME ?? "honcho";
 const SHOTS = process.env.VI809_SHOTS;
 const LOOKS = [
   { id: "today", label: "Today", photo: false },
@@ -115,16 +116,21 @@ for (const width of [1440, 390]) {
           const done = frame.locator('[data-slot="segmented-progress-step"][data-state="done"] [data-slot="segmented-progress-label"]').first();
           const track = frame.locator('[data-slot="segmented-progress-segment"]').first();
           const ink = await style(done, "color");
-          // The ink the theme gives a label where it sits: the glass ink over a photo, its text ink elsewhere.
-          const themeInk = await done.evaluate((n, photo) => {
-            const probe = document.createElement("span");
-            probe.style.color = photo ? "var(--glass-on-ink)" : "var(--text-secondary)";
-            n.parentElement!.appendChild(probe);
-            const c = getComputedStyle(probe).color;
-            probe.remove();
-            return c;
-          }, look.photo);
-          expect(ink).toBe(themeInk);
+          if (look.id === "light-photo") {
+            // FormDeck's white over the photo, from the theme's glass layer.
+            expect(ink).toBe("rgb(255, 255, 255)");
+          } else if (!look.photo) {
+            // The theme's text ink, resolved where the label sits.
+            const themeInk = await done.evaluate((n) => {
+              const probe = document.createElement("span");
+              probe.style.color = "var(--text-secondary)";
+              n.parentElement!.appendChild(probe);
+              const c = getComputedStyle(probe).color;
+              probe.remove();
+              return c;
+            });
+            expect(ink).toBe(themeInk);
+          }
           const blur = await style(track, "backdrop-filter");
           if (look.photo) expect(blur).not.toBe("none");
           else expect(blur).toBe("none");

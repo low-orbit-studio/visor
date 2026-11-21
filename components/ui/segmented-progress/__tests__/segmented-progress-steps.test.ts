@@ -162,8 +162,10 @@ describe("VI-809 — sections (real browser)", () => {
 
   it("fill: 0.25 clips the current fill to inset(0 75% ...); unset it stays at 45%", async (ctx) => {
     if (!ready()) return ctx.skip()
-    const read = `getComputedStyle(q("[data-state=current] [data-slot=segmented-progress-segment]"), "::before").clipPath`
-    expect(await inSections<string>(read)).toBe("inset(0px 75% 0px 0px round 9999px)")
+    const clip = `getComputedStyle(q("[data-state=current] [data-slot=segmented-progress-segment]"), "::before").clipPath`
+    expect(await inSections<string>(clip)).toBe("inset(0px 75% 0px 0px round 9999px)")
+    // The `steps` fixture's current step sets no `fill`.
+    expect(await read("steps", FILL("current"), "clip-path", { pseudo: "::before" })).toBe("inset(0px 45% 0px 0px round 9999px)")
   }, 30_000)
 
   it("only the step with onSelect is a button, with a focus ring and the whole step as target", async (ctx) => {
