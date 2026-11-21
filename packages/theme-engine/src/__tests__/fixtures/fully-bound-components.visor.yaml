@@ -226,6 +226,8 @@ components:
     duration: "250ms"
     easing: "cubic-bezier(0.22, 1, 0.36, 1)"
     rise: "6px"
+    item-bg: "#ffffff0f"
+    item-bg-hover: "#ffffff1a"
   glass:
     fill:
       light: "#ffffff1f"

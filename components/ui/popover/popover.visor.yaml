@@ -89,6 +89,10 @@ theme_hooks:
     description: Stay-mounted fade curve.
   - name: --popover-rise
     description: How far the stay-mounted panel rises as it fades in. None under reduced motion.
+  - name: --popover-item-bg
+    description: Menu row fill (a ghost Button in a stay-mounted panel). Unset, the glass control fill over a photo and a faint ink tint elsewhere.
+  - name: --popover-item-bg-hover
+    description: Menu row fill on hover. Unset, the glass control hover fill over a photo and a stronger ink tint elsewhere.
 
 dependencies:
   - "@radix-ui/react-popover"

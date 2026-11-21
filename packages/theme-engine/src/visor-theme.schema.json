@@ -632,7 +632,7 @@
         },
         "popover": {
           "type": "object",
-          "description": "Popover's panel — corners, inset, fill and shadow — and the stay-mounted (`forceMount`) fade's timing, curve and rise. Under `data-glass=\"on\"` the panel reads the glass layer's fill, blur, shadow and ink; a bound `bg` or `shadow` wins in every look. Keys: radius, padding, bg, shadow, duration, easing, rise.",
+          "description": "Popover's panel — corners, inset, fill and shadow — and the stay-mounted (`forceMount`) fade's timing, curve and rise. Under `data-glass=\"on\"` the panel reads the glass layer's fill, blur, shadow and ink; a bound `bg` or `shadow` wins in every look. Keys: radius, padding, bg, shadow, duration, easing, rise, item-bg, item-bg-hover.",
           "additionalProperties": {
             "$ref": "#/$defs/componentTokenBinding"
           }

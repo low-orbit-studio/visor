@@ -35,6 +35,11 @@
   /* 6px is the kit's rise, intentional. */
   translate: 0 calc(-1 * var(--popover-rise, 6px));
   pointer-events: none;
+  /* Menu rows (a ghost Button in the stay-mounted menu) sit softly inside the panel:
+     the glass layer's control fill over a photo, a faint ink tint elsewhere, never
+     the theme's solid ghost slab. A portaled Popover keeps the theme's ghost. */
+  --interactive-ghost-bg: var(--popover-item-bg, var(--glass-on-control-fill, color-mix(in srgb, var(--text-primary, #111827) 5%, transparent)));
+  --interactive-ghost-bg-hover: var(--popover-item-bg-hover, var(--glass-on-control-hover-fill, color-mix(in srgb, var(--text-primary, #111827) 10%, transparent)));
   /* Hidden once the fade-out ends, so no accessibility tree or find-in-page reaches the
      closed panel even where `inert` is unsupported. Visible at once on open. */
   visibility: hidden;
