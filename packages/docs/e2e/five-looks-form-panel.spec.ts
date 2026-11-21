@@ -253,19 +253,14 @@ const worstContrast = (page: Page, png: Buffer, ink: number[]) =>
       const lum = (r: number, g: number, b: number) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
       const a = ink[3] / 255;
       const ratios: number[] = [];
-      const counts = new Map<string, number>();
       for (let i = 0; i < px.length; i += 4) {
         const bg = [px[i], px[i + 1], px[i + 2]];
-        const key = `rgb(${bg.join(", ")})`;
-        counts.set(key, (counts.get(key) ?? 0) + 1);
         const fg = bg.map((c, k) => ink[k] * a + c * (1 - a));
         const [l1, l2] = [lum(fg[0], fg[1], fg[2]), lum(bg[0], bg[1], bg[2])].sort((x, y) => y - x);
         ratios.push((l1 + 0.05) / (l2 + 0.05));
       }
       ratios.sort((x, y) => x - y);
-      // The colour most of the ink sits on: a segmented control's pill is a layer, not the button's fill.
-      const behind = [...counts].sort((x, y) => y[1] - x[1])[0][0];
-      return { min: ratios[0], p5: ratios[Math.floor(ratios.length * 0.05)], behind };
+      return { min: ratios[0], p5: ratios[Math.floor(ratios.length * 0.05)] };
     },
     { src: `data:image/png;base64,${png.toString("base64")}`, ink },
   );
@@ -305,18 +300,15 @@ for (const width of [1440, 390]) {
           const png = await page.screenshot({ clip: { x: box.x + b.clip.x, y: box.y + b.clip.y, width: b.clip.width, height: b.clip.height } });
           const contrast = await worstContrast(page, png, b.ink);
           const floor = b.kind === "text" ? 4.5 : 3;
-          rows.push({ width, specimen, theme, look, name: b.name, kind: b.kind, wash: b.wash, cornerShape: b.cornerShape, background: b.background, behind: contrast.behind, ink: `rgba(${b.ink.join(",")})`, min: +contrast.min.toFixed(2), p5: +contrast.p5.toFixed(2), floor });
+          rows.push({ width, specimen, theme, look, name: b.name, kind: b.kind, wash: b.wash, cornerShape: b.cornerShape, background: b.background, ink: `rgba(${b.ink.join(",")})`, min: +contrast.min.toFixed(2), p5: +contrast.p5.toFixed(2), floor });
         }
       }
     }
     await testInfo.attach("button-measurements", { body: JSON.stringify(rows, null, 2), contentType: "application/json" });
     if (process.env.LOOKS_AUDIT_OUT) (await import("node:fs")).writeFileSync(`${process.env.LOOKS_AUDIT_OUT}-${width}.json`, JSON.stringify(rows, null, 2));
-    // Honcho's white label on its key pink measures 3.5:1, accepted in the themes themselves (BO-80,
-    // visor-themes-private): the primary button in Today, and the selected segmented-control pill in
-    // every look. Still measured and listed, held to that 3.5:1.
-    const PINK = "rgb(255, 45, 138)";
-    const accepted = (r: Record<string, unknown>) =>
-      (r.theme === "honcho" && r.background === PINK) || (r.specimen === "segmented-control" && r.behind === PINK);
+    // Honcho's white label on its key pink measures 3.5:1, accepted in the theme itself (BO-80,
+    // visor-themes-private themes/honcho): still measured and listed, held to that 3.5:1.
+    const accepted = (r: Record<string, unknown>) => r.theme === "honcho" && r.background === "rgb(255, 45, 138)";
     for (const r of rows.filter(accepted)) expect(r.min as number, `${r.specimen} "${r.name}"`).toBeGreaterThanOrEqual(3.49);
     const short = rows.filter((r) => !accepted(r) && (r.min as number) < (r.floor as number));
     expect(short, "buttons under their contrast floor").toEqual([]);
