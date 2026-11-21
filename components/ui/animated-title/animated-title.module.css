@@ -1,0 +1,124 @@
+/*
+ * AnimatedTitle — a title drawn word by word, CSS only.
+ *
+ * Settings (set on the title or any ancestor):
+ *   --animated-title-duration  each word's run    (defaults per animation below)
+ *   --animated-title-stagger   gap between words  (defaults per animation below)
+ *   --animated-title-delay     before word 1      (default 0ms; the `delay` prop sets it)
+ *
+ * The default durations and staggers are intentional: they are the Honcho kit's
+ * TitleWords numbers (rise 1.05s / 55ms, blur 1.1s / 60ms, weight 1.3s / 50ms), not
+ * motion-scale steps, so the title moves the same in every theme (VI-815 ruling).
+ * The curve reads the theme's enter easing.
+ *
+ * Fill is `backwards`: each word holds its first frame through its delay, then the
+ * animation ends on the static rules, so the settled title is the same with or
+ * without motion and nothing stays animating.
+ */
+
+.root {
+  --animated-title-ink-room: 0.2em;
+}
+
+/* Room above and below each word for its ink: see .wordInner. */
+.wordMask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-block: var(--animated-title-ink-room);
+  margin-block: calc(-1 * var(--animated-title-ink-room));
+}
+
+.word,
+.wordInner {
+  display: inline-block;
+}
+
+/* Safari draws each animating word on a layer cut to the word's box, so ink outside the box
+   vanishes until the animation ends (on iPhone it can stay cut). Accents reach about 1.05em and
+   descenders 0.26em below the baseline; a tight line box stops about 0.15em short of each. The
+   padding gives the box that room (0.2em, intentional) and the margin cancels it, so layout
+   doesn't move. Guarded by the glyph ink check in the docs e2e suite. */
+.wordInner {
+  padding-block: var(--animated-title-ink-room);
+  margin-block: calc(-1 * var(--animated-title-ink-room));
+  animation-timing-function: var(--motion-easing-enter, cubic-bezier(0, 0, 0.2, 1));
+  animation-fill-mode: backwards;
+  animation-delay: calc(var(--animated-title-delay, 0ms) + var(--i, 0) * var(--animated-title-stagger, var(--animated-title-default-stagger)));
+}
+
+.rise .wordInner {
+  --animated-title-default-stagger: 55ms;
+  animation-name: animatedTitleRise;
+  animation-duration: var(--animated-title-duration, 1.05s);
+}
+
+.blur .wordInner {
+  --animated-title-default-stagger: 60ms;
+  animation-name: animatedTitleBlur;
+  animation-duration: var(--animated-title-duration, 1.1s);
+}
+
+/* 300 → 520 are the kit's weights (intentional); the settled weight is a static rule. */
+.weight .wordInner {
+  --animated-title-default-stagger: 50ms;
+  font-weight: 520;
+  animation-name: animatedTitleWeight;
+  animation-duration: var(--animated-title-duration, 1.3s);
+}
+
+.root[data-play="false"] .wordInner {
+  animation-play-state: paused;
+}
+
+@keyframes animatedTitleRise {
+  from {
+    transform: translateY(112%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes animatedTitleBlur {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+    filter: blur(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes animatedTitleWeight {
+  from {
+    opacity: 0;
+    font-weight: 300;
+  }
+  to {
+    opacity: 1;
+    font-weight: 520;
+  }
+}
+
+/* Same specificity as the per-animation rules above, and later, so it wins. */
+@media (prefers-reduced-motion: reduce) {
+  .root .wordInner {
+    animation: none;
+  }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

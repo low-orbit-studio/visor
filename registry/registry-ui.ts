@@ -2702,6 +2702,24 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "animated-title",
+    type: "registry:ui",
+    description:
+      "A title drawn word by word in CSS: each word rises, unblurs or settles its weight in turn, and screen readers read the whole title once.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: ["utils"],
+    files: [
+      {
+        path: "components/ui/animated-title/animated-title.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/animated-title/animated-title.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "theme-toggle",
     type: "registry:ui",
     category: "general",

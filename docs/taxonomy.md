@@ -158,6 +158,7 @@ Text rendering components.
 
 | Component | Status | Notes |
 |-----------|--------|-------|
+| animated-title | ✅ Documented | Title drawn word by word in CSS (rise, blur, weight) |
 | heading | ✅ Documented | Semantic heading (h1-h6) |
 | text | ✅ Documented | Body text with variants |
 

@@ -985,6 +985,43 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'animated-title': [
+    {
+      name: 'text',
+      type: 'string',
+      description: 'The title. Split into words on single spaces.',
+    },
+    {
+      name: 'as',
+      type: "'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span'",
+      default: "'h2'",
+      description: 'The element to render.',
+    },
+    {
+      name: 'animation',
+      type: "'rise' | 'blur' | 'weight'",
+      default: "'blur'",
+      description: 'How each word arrives: up out of a mask, up into focus, or from light to settled weight.',
+    },
+    {
+      name: 'format',
+      type: '(word: string) => ReactNode',
+      description: 'Draws each word, for example swapping hyphens for dashes.',
+    },
+    {
+      name: 'play',
+      type: 'boolean',
+      default: 'true',
+      description: "false holds every word on its first frame. Replay by changing the component's key.",
+    },
+    {
+      name: 'delay',
+      type: 'number',
+      default: '0',
+      description: 'Milliseconds before the first word starts. Sets --animated-title-delay.',
+    },
+  ],
+
   heading: [
     {
       name: 'level',
