@@ -127,3 +127,7 @@ packages/docs/public/themes/*.visor.yaml
 .env*
 
 /scripts-playbook
+
+# VI-808: the popover five-look frames are written on every run (and may show a
+# local photo passed with VISOR_LOOK_PHOTO), so they are never committed.
+packages/docs/e2e/__snapshots__/popover-glass.spec.ts/

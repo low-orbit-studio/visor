@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { BuildingsIcon } from '@phosphor-icons/react';
+import { BuildingsIcon, EnvelopeSimpleIcon, SignOutIcon } from '@phosphor-icons/react';
 import {
   ProfileMenu,
   defaultProfileMenuItems,
@@ -18,6 +18,43 @@ const DEFAULT_USER: ProfileMenuUser = {
 
 interface ProfileMenuDemoProps {
   variant?: 'default' | 'no-context' | 'no-email' | 'with-badge';
+}
+
+const TOP_BAR_USER: ProfileMenuUser = { name: 'Sam Rivera', email: 'sam@example.com' };
+
+/** Change Email and Sign Out, as a top bar's account menu carries them. */
+export function topBarItems(onChangeEmail?: () => void, onSignOut?: () => void): ProfileMenuItem[] {
+  return [
+    { type: 'item', icon: <EnvelopeSimpleIcon size={16} weight="regular" />, label: 'Change Email', onSelect: onChangeEmail },
+    { type: 'item', icon: <SignOutIcon size={16} weight="regular" />, label: 'Sign Out', onSelect: onSignOut },
+  ];
+}
+
+/**
+ * A top bar's account menu: the avatar trigger, the menu in place under it. Solid on a
+ * plain page; glass where an ancestor sets `data-glass="on"` over a photo.
+ */
+export function ProfileMenuTopBarDemo({ defaultOpen = false, modal }: { defaultOpen?: boolean; modal?: boolean }) {
+  return (
+    <div
+      data-demo="profile-menu-top-bar"
+      style={{
+        width: 'min(100%, 20rem)',
+        minHeight: '15rem',
+        display: 'flex',
+        justifyContent: 'flex-end',
+        alignItems: 'flex-start',
+      }}
+    >
+      <ProfileMenu
+        trigger="avatar"
+        user={TOP_BAR_USER}
+        items={topBarItems(() => undefined, () => undefined)}
+        defaultOpen={defaultOpen}
+        modal={modal}
+      />
+    </div>
+  );
 }
 
 export function ProfileMenuDemo({ variant = 'default' }: ProfileMenuDemoProps) {

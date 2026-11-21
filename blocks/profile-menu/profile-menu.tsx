@@ -69,8 +69,19 @@ export interface ProfileMenuProps {
   onSignOut?: () => void
   /** Register a window-level ⌘⇧Q / Ctrl+⇧+Q handler that calls onSignOut. Default false. */
   enableGlobalShortcuts?: boolean
-  /** Open direction. Default "top" — footer is bottom-anchored. */
+  /**
+   * The button that opens the menu. "row" (default): avatar, name, context and caret,
+   * for a sidebar footer. "avatar": the round avatar alone, ringed in the key colour on
+   * hover and while open, for a top bar; the menu header then shows the name and email,
+   * and the menu renders in place so it reads a glass switch (`data-glass="on"`) around it.
+   */
+  trigger?: "row" | "avatar"
+  /** Open direction. Default "top" for the row trigger (footer is bottom-anchored), "bottom" for the avatar. */
   side?: "top" | "bottom" | "auto"
+  /** Open on first render (uncontrolled). That first open leaves focus where it is; later opens move it into the menu. */
+  defaultOpen?: boolean
+  /** Default true: while open, the rest of the page is inert to the pointer and hidden from screen readers. */
+  modal?: boolean
   className?: string
 }
 
@@ -87,9 +98,17 @@ export function ProfileMenu({
   items,
   onSignOut,
   enableGlobalShortcuts = false,
-  side = "top",
+  trigger = "row",
+  side = trigger === "avatar" ? "bottom" : "top",
+  defaultOpen,
+  modal,
   className,
 }: ProfileMenuProps) {
+  const isAvatar = trigger === "avatar"
+  // The avatar menu renders into this layer beside its trigger, not at the end of the page.
+  const [layer, setLayer] = React.useState<HTMLSpanElement | null>(null)
+  // A menu rendered open with the page must not pull focus off the page (or out of a frame).
+  const skipFirstAutoFocus = React.useRef(Boolean(defaultOpen))
   const initials = user.initials ?? deriveInitials(user.name)
   const triggerLabel = context?.label
     ? `Account menu · ${user.name} · ${context.label}`
@@ -111,16 +130,17 @@ export function ProfileMenu({
   const contentSide = side === "auto" ? undefined : side
 
   return (
-    <DropdownMenu>
+    <DropdownMenu defaultOpen={defaultOpen} modal={modal}>
       <DropdownMenuTrigger asChild>
         <button
           type="button"
           aria-label={triggerLabel}
           data-slot="profile-menu-trigger"
-          className={cn(styles.trigger, className)}
+          data-trigger={trigger}
+          className={cn(isAvatar ? styles.avatarTrigger : styles.trigger, className)}
         >
           <span className={styles.triggerAvatarWrap}>
-            <Avatar size="default" className={styles.triggerAvatar} aria-hidden="true">
+            <Avatar size={isAvatar ? "lg" : "default"} className={styles.triggerAvatar} aria-hidden="true">
               {user.avatarUrl ? (
                 <AvatarImage src={user.avatarUrl} alt="" />
               ) : null}
@@ -135,42 +155,62 @@ export function ProfileMenu({
               />
             ) : null}
           </span>
-
-          <span
-            className={styles.triggerIdentity}
-            aria-hidden="true"
-            data-admin-shell-label
-          >
-            <span className={styles.triggerName}>{user.name}</span>
-            {context ? (
-              <span className={styles.triggerContext}>
-                {context.icon ? (
-                  <span className={styles.triggerContextIcon} aria-hidden="true">
-                    {context.icon}
+          {isAvatar ? null : (
+            <>
+              <span
+                className={styles.triggerIdentity}
+                aria-hidden="true"
+                data-admin-shell-label
+              >
+                <span className={styles.triggerName}>{user.name}</span>
+                {context ? (
+                  <span className={styles.triggerContext}>
+                    {context.icon ? (
+                      <span className={styles.triggerContextIcon} aria-hidden="true">
+                        {context.icon}
+                      </span>
+                    ) : null}
+                    <span className={styles.triggerContextLabel}>{context.label}</span>
                   </span>
                 ) : null}
-                <span className={styles.triggerContextLabel}>{context.label}</span>
               </span>
-            ) : null}
-          </span>
 
-          <CaretUpDownIcon
-            size={14}
-            weight="regular"
-            aria-hidden="true"
-            className={styles.triggerCaret}
-            data-admin-shell-label
-          />
+              <CaretUpDownIcon
+                size={14}
+                weight="regular"
+                aria-hidden="true"
+                className={styles.triggerCaret}
+                data-admin-shell-label
+              />
+            </>
+          )}
         </button>
       </DropdownMenuTrigger>
+      {isAvatar ? <span ref={setLayer} data-slot="profile-menu-layer" /> : null}
 
       <DropdownMenuContent
         side={contentSide}
-        align="start"
-        sideOffset={6}
-        className={styles.content}
+        align={isAvatar ? "end" : "start"}
+        sideOffset={isAvatar ? 8 : 6}
+        collisionPadding={isAvatar ? 16 : undefined}
+        container={isAvatar ? layer : undefined}
+        data-skin={isAvatar ? "popover" : undefined}
+        className={cn(styles.content, isAvatar && styles.popoverSkin)}
+        // shortcut: Radix forwards onOpenAutoFocus to the menu's focus scope but its DropdownMenuContent
+        // type hides it; the defaultOpen focus test catches a Radix upgrade that drops it.
+        {...({
+          onOpenAutoFocus: (event: Event) => {
+            if (skipFirstAutoFocus.current) event.preventDefault()
+            skipFirstAutoFocus.current = false
+          },
+        } as object)}
       >
-        {user.email ? (
+        {isAvatar ? (
+          <DropdownMenuLabel className={cn(styles.menuHeader, styles.menuHeaderWho)}>
+            <span className={styles.menuHeaderName}>{user.name}</span>
+            {user.email ? <span className={styles.menuHeaderHint}>{user.email}</span> : null}
+          </DropdownMenuLabel>
+        ) : user.email ? (
           <DropdownMenuLabel className={styles.menuHeader}>
             <span className={styles.menuHeaderHint}>Signed in as</span>
             <span className={styles.menuHeaderEmail}>{user.email}</span>

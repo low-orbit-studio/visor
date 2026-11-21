@@ -41,6 +41,44 @@
   justify-content: center;
 }
 
+/* Avatar trigger (trigger="avatar", a top bar): the round avatar alone. The theme's key
+   colour rings it on hover and while open, never a fixed pink. */
+.avatarTrigger {
+  display: inline-flex;
+  flex-shrink: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-full, 9999px);
+  cursor: pointer;
+  transition: box-shadow var(--motion-duration-fast, 150ms)
+    var(--motion-easing-standard, ease);
+}
+
+.avatarTrigger:hover,
+.avatarTrigger[data-state="open"] {
+  box-shadow: 0 0 0 var(--stroke-width-medium, 2px) var(--primary, #3b82f6);
+}
+
+.avatarTrigger:focus-visible {
+  outline: var(--focus-ring-width, 2px) solid
+    var(--focus-ring-color, var(--primary, #3b82f6));
+  outline-offset: var(--focus-ring-offset, 2px);
+}
+
+.avatarTrigger .triggerAvatar {
+  border-radius: inherit;
+  -webkit-backdrop-filter: var(--glass-on-control-blur, none);
+  backdrop-filter: var(--glass-on-control-blur, none);
+}
+
+/* Over a photo the avatar is a glass control (VI-824): the control fill and full control
+   ink, so its initials hold 4.5:1 on any photo. Glass off: Avatar's own fill and ink. */
+.avatarTrigger .triggerAvatar > * {
+  background-color: var(--glass-on-control-fill, var(--surface-muted, #f3f4f6));
+  color: var(--glass-on-control-ink, var(--text-secondary, #6b7280));
+}
+
 .triggerAvatarWrap {
   position: relative;
   flex-shrink: 0;
@@ -154,6 +192,59 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Avatar menu (trigger="avatar"): Popover's skin (VI-808). It reads the popover hooks
+   and, inside data-glass="on", the glass layer's fill, lift, blur, shadow and ink;
+   everywhere else it is solid with no blur. Rendered in place, so the switch reaches it.
+   Doubled class so it wins over DropdownMenu's own .content wherever its CSS loads. */
+.content.popoverSkin {
+  gap: var(--spacing-2, 0.5rem);
+  /* The kit's 300px panel, never wider than a phone allows. Intentional. */
+  width: min(18.75rem, calc(100vw - var(--spacing-8, 2rem)));
+  border-radius: var(--popover-radius, var(--radius-lg, 0.5rem));
+  padding: var(--popover-padding, var(--spacing-2, 0.5rem));
+  background: linear-gradient(var(--glass-on-lift, transparent) 0 0),
+    var(--popover-bg, var(--glass-on-fill, var(--surface-popover, var(--surface-card, #ffffff))));
+  color: var(--glass-on-ink, var(--text-primary, #111827));
+  box-shadow: var(--popover-shadow, var(--glass-on-shadow, var(--shadow-lg)));
+  /* Prefixed line first, so Lightning CSS keeps both (VI-788). */
+  -webkit-backdrop-filter: var(--glass-on-blur, none);
+  backdrop-filter: var(--glass-on-blur, none);
+}
+
+.menuHeaderWho {
+  gap: var(--spacing-1, 0.25rem);
+  padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem) var(--spacing-3, 0.75rem);
+  border-bottom: var(--stroke-width-thin, 1px) solid var(--border-default, #e5e7eb);
+}
+
+.menuHeaderName {
+  font-size: var(--font-size-base, 1rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--text-primary, #111827);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menuHeaderWho .menuHeaderHint {
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--text-secondary, #6b7280);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Rows sit softly in the panel and never touch: the glass layer's control fill over a
+   photo, a faint ink tint elsewhere, as in Popover's stay-mounted menu. */
+.popoverSkin .item {
+  background-color: var(--popover-item-bg, var(--glass-on-control-fill, color-mix(in srgb, var(--text-primary, #111827) 5%, transparent)));
+}
+
+.popoverSkin .item:focus,
+.popoverSkin .item[data-highlighted] {
+  background-color: var(--popover-item-bg-hover, var(--glass-on-control-hover-fill, color-mix(in srgb, var(--text-primary, #111827) 10%, transparent)));
 }
 
 /* Item rows */

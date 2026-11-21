@@ -5,6 +5,8 @@ import { GlassSpecimen } from './glass-specimen';
 import { ItineraryLabelsSpecimen } from './itinerary-labels-specimen';
 import { KeyValueListSpecimen } from './key-value-list-specimen';
 import { NumberInputSpecimen } from './number-input-specimen';
+import { PopoverSpecimen } from './popover-specimen';
+import { ProfileMenuSpecimen } from './profile-menu-specimen';
 import { SegmentedControlSpecimen } from './segmented-control-specimen';
 import { SegmentedProgressSpecimen } from './segmented-progress-specimen';
 import { SpinnerSpecimen } from './spinner-specimen';
@@ -18,6 +20,8 @@ export const LOOK_SPECIMENS: Record<string, ComponentType> = {
   'itinerary-labels': ItineraryLabelsSpecimen,
   'key-value-list': KeyValueListSpecimen,
   'number-input': NumberInputSpecimen,
+  popover: PopoverSpecimen,
+  'profile-menu': ProfileMenuSpecimen,
   'segmented-control': SegmentedControlSpecimen,
   'segmented-progress': SegmentedProgressSpecimen,
   spinner: SpinnerSpecimen,

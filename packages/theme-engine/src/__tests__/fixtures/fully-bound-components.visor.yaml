@@ -218,6 +218,16 @@ components:
     backdrop-filter: "blur(32px) saturate(110%)"
     overlay-bg: "#00000066"
     overlay-blur: "6px"
+  popover:
+    radius: "24px"
+    padding: "10px"
+    bg: "#141517cc"
+    shadow: "0 30px 60px -20px #00000080"
+    duration: "250ms"
+    easing: "cubic-bezier(0.22, 1, 0.36, 1)"
+    rise: "6px"
+    item-bg: "#ffffff0f"
+    item-bg-hover: "#ffffff1a"
   glass:
     fill:
       light: "#ffffff1f"
