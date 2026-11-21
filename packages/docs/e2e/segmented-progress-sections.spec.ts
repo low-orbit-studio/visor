@@ -1,4 +1,6 @@
 import { test, expect, type Frame, type Locator, type Page } from "@playwright/test";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 
 // VI-809: SegmentedProgress sections — weighted, tappable, labels that fade in —
 // on the docs page, and the sections bar in all five looks at 390 and 1440 wide
@@ -8,6 +10,11 @@ const PAGE = "/docs/components/data-display/segmented-progress";
 const THEME = process.env.VI809_THEME ?? "honcho-backstage";
 const TODAY_THEME = process.env.VI809_TODAY_THEME ?? "honcho";
 const SHOTS = process.env.VI809_SHOTS;
+// The docs list a private theme only where visor-themes-private is installed (predev writes this
+// file); a public build such as CI has none, so the looks checks skip there, as VI-803's do.
+const GENERATED = join(__dirname, "../lib/private-themes.generated.ts");
+const THEME_INSTALLED = existsSync(GENERATED) && readFileSync(GENERATED, "utf-8").includes(`slug: "${THEME}"`);
+const NOT_INSTALLED = `${THEME} is a private theme; not installed in this build`;
 const LOOKS = [
   { id: "today", label: "Today", photo: false },
   { id: "dark", label: "Dark", photo: false, mode: "dark" },
@@ -123,6 +130,7 @@ async function lookFrame(page: Page, id: string): Promise<Frame> {
 for (const width of [1440, 390]) {
   for (const docsMode of ["light", "dark"] as const) {
     test(`Sections: five looks at ${width} with the docs in ${docsMode}`, async ({ page }) => {
+      test.skip(!THEME_INSTALLED, NOT_INSTALLED);
       await page.setViewportSize({ width, height: 900 });
       await openDocs(page, docsMode);
       const grid = page.locator('[data-slot="five-looks"]');
@@ -164,6 +172,7 @@ for (const width of [1440, 390]) {
 // V6 (white Light + Photo labels) stays open until BO-84 binds components.segmented-progress.glass-ink
 // to #ffffff in honcho-backstage's light tone. This proves the token reaches the labels and only them.
 test("Light + Photo: binding --segmented-progress-glass-ink turns the labels white and leaves Alert's ink alone", async ({ page }) => {
+  test.skip(!THEME_INSTALLED, NOT_INSTALLED);
   const panel = (specimen: string) => `/looks/panel?theme=${THEME}&look=light-photo&mode=light&specimen=${specimen}`;
   const bind = () =>
     page.evaluate(() =>
