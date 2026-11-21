@@ -156,6 +156,7 @@ const RESIZABLE_SPLIT = "components/ui/resizable-split/resizable-split.module.cs
 const DIALOG = "components/ui/dialog/dialog.module.css";
 const STAT_CARD = "components/ui/stat-card/stat-card.module.css";
 const KEY_VALUE_LIST = "components/ui/key-value-list/key-value-list.module.css";
+const RICH_TEXT = "components/ui/rich-text/rich-text.module.css";
 
 /** Shorthand for the common single-consumer case. */
 function at(file: string, fallback: string | null): ComponentTokenConsumer[] {
@@ -1756,6 +1757,22 @@ const keyValueListFamily: ComponentTokenFamily = {
   ],
 };
 
+// VI-813: RichText's link underline. Link text inherits the host's ink; the underline is
+// the theme's (the Honcho kit draws it at ink-40). Unbound, it is the host's ink at 40%.
+const richTextFamily: ComponentTokenFamily = {
+  family: "rich-text",
+  prefix: "rich-text",
+  description: "RichText link underline colour. Link text inherits the surrounding ink.",
+  tokens: [
+    {
+      key: "link-underline",
+      property: "text-decoration-color",
+      description: "Link underline colour at rest; on hover it turns the link's own ink.",
+      consumers: at(RICH_TEXT, "color-mix(in srgb, currentColor 40%, transparent)"),
+    },
+  ],
+};
+
 export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   tableFamily,
   dataTableFamily,
@@ -1802,6 +1819,7 @@ export const COMPONENT_TOKEN_FAMILIES: readonly ComponentTokenFamily[] = [
   layerChartFamily,
   statCardFamily,
   keyValueListFamily,
+  richTextFamily,
   adminUiFamily,
 ];
 

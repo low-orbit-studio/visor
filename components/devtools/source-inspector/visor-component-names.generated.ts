@@ -363,6 +363,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "RadiusSlide",
   "RecordSection",
   "ResizableSplit",
+  "RichText",
   "RightRailList",
   "SaveStatus",
   "ScoreIndicator",

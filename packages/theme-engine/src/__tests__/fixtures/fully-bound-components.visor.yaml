@@ -632,5 +632,7 @@ components:
     panel-border-color: "#ff00aa"
     panel-radius: "3px"
     panel-padding: "19px"
+  rich-text:
+    link-underline: "#ff00aa"
   admin-ui:
     marquee-family: "\"Courier New\", monospace"

@@ -1,0 +1,121 @@
+---
+title: Rich Text
+description: Safe, tiny markup for text that comes from a database — bold, italic, links, paragraphs and lists, and nothing else.
+---
+
+import { ComponentPreview } from '@/components/preview';
+import { PropsTable } from '@/components/props-table';
+import { RichText } from '@/components/ui/rich-text';
+import { FiveLooks } from '@/components/looks/five-looks';
+
+RichText renders copy that an editor wrote and a database stored: a form's intro, a field hint, a sheet body. It reads five constructs and builds React elements from them. It never parses HTML, so the text cannot add a tag, an attribute or a script.
+
+## Markup
+
+<ComponentPreview
+  title="Paragraphs, a Line Break, a List and Links"
+  code={"import { RichText } from '@/components/ui/rich-text/rich-text';\n\n<p>\n  <RichText text={\"Doors open *Friday at 6 PM*, bring _your_ ticket and read the [crew guide](https://example.com).\\nGates close at 11 PM.\\n\\n- Parking opens at noon\\n- Questions? Write to [the crew desk](mailto:help@example.com)\"} />\n</p>"}
+>
+  <p style={{ margin: 0, maxWidth: '32rem' }}>
+    <RichText text={"Doors open *Friday at 6 PM*, bring _your_ ticket and read the [crew guide](https://example.com).\nGates close at 11 PM.\n\n- Parking opens at noon\n- Questions? Write to [the crew desk](mailto:help@example.com)"} />
+  </p>
+</ComponentPreview>
+
+| Write | Renders |
+| --- | --- |
+| `*bold*` | `<strong>` (`<b>` with `elements`) |
+| `_italic_` | `<em>` (`<i>` with `elements`) |
+| `[label](https://…)` | a link, for `http:`, `https:` and `mailto:` only |
+| a blank line | a new paragraph |
+| a single newline | a line break |
+| `- ` at the start of a line | a list item |
+
+Bold and italic can hold a link, and a link label can hold bold or italic. A word with two underscores in it (`foo_bar_baz`) italicises the middle part, the same as the kit it was lifted from.
+
+## Safe by Design
+
+- **No HTML.** Anything that is not one of the constructs above is plain text that React escapes. `<b>x</b>` shows on screen as typed; `<script>` and `<img onerror>` never become elements.
+- **Only safe links.** A link renders only when its URL starts with `http:`, `https:` or `mailto:` (in any case). Every other scheme, such as `javascript:`, `data:`, `vbscript:` or `file:`, plus protocol-relative (`//host`) and relative (`/path`) URLs, renders the label as plain text and drops the URL.
+- **Links open safely.** Every link has `target="_blank"` and `rel="noreferrer"`.
+- **No runaway input.** The parser is one regular expression whose every scan stops at the next marker or bracket, so it runs in linear time: 50,000 characters of stray markers render at once. A link label cannot hold `[` and a URL cannot hold `[` or `]`.
+
+## Inside a Paragraph
+
+By default paragraphs and lists are block `<span>`s (the list carries `role="list"`, each item `role="listitem"`), so a RichText can sit inside a `<p>` or a `<label>` without breaking the HTML. Text with a single paragraph and no list renders inline, with no wrapper at all.
+
+## Plain Elements
+
+With `elements`, RichText renders bare `p`, `ul`, `li`, `a`, `b` and `i` with no classes, for a host that styles those elements itself, such as a sheet with its own prose styles. Don't put an `elements` RichText inside a `<p>`.
+
+<ComponentPreview
+  title="Plain Elements"
+  code={"<div className=\"prose\">\n  <RichText elements text={\"Your *pay* is set for _three_ days.\\n\\n- [Edit your details](https://example.com)\\n- Confirm by Friday\"} />\n</div>"}
+>
+  <div style={{ maxWidth: '32rem' }}>
+    <RichText elements text={"Your *pay* is set for _three_ days.\n\n- [Edit your details](https://example.com)\n- Confirm by Friday"} />
+  </div>
+</ComponentPreview>
+
+## En Dashes
+
+Satoshi draws its en dash as long as an em dash. `dashes` wraps each `–` in a span that draws it at en-dash width. Other faces don't need it, so it is off by default. For a plain string with no markup, call the `dashes()` function directly: it returns the string untouched when there is no en dash.
+
+<ComponentPreview
+  title="Dashes On"
+  code={"<RichText dashes text=\"Fri – Sun, 9–5\" />\n\n// Plain strings, no markup\n{dashes(\"Fri – Sun\")}"}
+>
+  <p style={{ margin: 0 }}>
+    <RichText dashes text="Fri – Sun, 9–5" />
+  </p>
+</ComponentPreview>
+
+## In Five Looks
+
+RichText in each look, as a form's intro on the theme picked in the docs. It draws no surface and no glass: the text and the link take the card's ink, which is solid in Today, Dark and Light and glass over the photo, and the link underline is the theme's `rich-text.link-underline`.
+
+<FiveLooks specimen="rich-text" height={320} />
+
+## Theming the Link
+
+| Hook | Default | Drives |
+| --- | --- | --- |
+| `--rich-text-link-underline` | `color-mix(in srgb, currentColor 40%, transparent)` | The link underline at rest. On hover it turns the link's own ink |
+| `--motion-duration-300`, `--motion-easing-ease-out` | 300ms, the theme's ease-out | The underline's colour change on hover (CSS only) |
+
+A theme binds the underline under `components.rich-text.link-underline`. Link text always inherits the surrounding colour.
+
+## Installation
+
+```bash
+npx visor add rich-text
+```
+
+This copies three files into your project:
+
+- `components/ui/rich-text/rich-text.tsx` — the component
+- `components/ui/rich-text/dashes.tsx` — the en-dash helper
+- `components/ui/rich-text/rich-text.module.css` — the styles
+
+## Usage
+
+```tsx
+import { RichText, dashes } from '@/components/ui/rich-text/rich-text';
+
+<p className="hint">
+  <RichText text={field.hint} />
+</p>
+```
+
+## API Reference
+
+### RichTextProps
+
+<PropsTable component="rich-text" />
+
+RichText renders a fragment: it adds no wrapper element and takes no `className`.
+
+## Accessibility
+
+- Lists keep their semantics: `role="list"` and `role="listitem"` on the block spans, or real `ul`/`li` with `elements`.
+- Links are underlined, so they are told apart from the text around them by more than colour (WCAG 1.4.1). Link text keeps the surrounding text colour and its contrast.
+- Links open in a new tab. Say so in the label when it matters to the reader.
