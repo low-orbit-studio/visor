@@ -1,4 +1,6 @@
 import { test, expect, type Frame, type Locator, type Page } from "@playwright/test";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 
 // VI-815: AnimatedTitle draws a title word by word in CSS. The docs page shows the three
 // entrances (rise, blur, weight), a held title, and the title in all five looks.
@@ -20,8 +22,10 @@ const LOOKS: { id: string; label: string; photo: boolean; mode?: "light" | "dark
 
 // Real Campout photos for the Photo looks (a night one behind Dark + Photo, a day one behind
 // Light + Photo). Local review fixtures seeded with review_station.py photo-fixtures, never
-// committed; without them the frame shows the stand-in and the checks still hold.
-const PHOTOS = "?photo-dark=/vi-815-photos/photo-1.webp&photo-light=/vi-815-photos/photo-2.webp";
+// committed, so they are asked for only where they are on disk: CI would 404 on them. Without
+// them the frame shows the stand-in and the checks still hold.
+const FIXTURES = ["photo-1.webp", "photo-2.webp"].every((f) => existsSync(join(__dirname, "../public/vi-815-photos", f)));
+const PHOTOS = FIXTURES ? "?photo-dark=/vi-815-photos/photo-1.webp&photo-light=/vi-815-photos/photo-2.webp" : "";
 
 async function openDocs(page: Page, mode: "light" | "dark" = "light", query = "") {
   await page.addInitScript((m) => {
