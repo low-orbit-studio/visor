@@ -41,11 +41,11 @@ An empty squircle with a dashed edge and a `+`. Hover it, tab to it or drag a fi
 
 ## States
 
-Uploading with a known amount and with `progress="indeterminate"` (a sweeping arc), failed, locked and read-only. Locked shows a lock badge where the camera sits, "Locked" and your `lockedReason`. Read-only shows the photo only, with a quiet rim and no hint. Neither has an input, so nothing inside takes focus.
+Uploading with a known amount and with `progress="indeterminate"` (a sweeping arc), failed, locked and read-only. Locked shows a lock badge where the camera sits, "Locked" and your `lockedReason`. Read-only shows the photo only, with a quiet rim and no hint; give it a `readOnlyReason` and it shows "Read-Only" and that line. Neither has an input, so nothing inside takes focus.
 
 <ComponentPreview
   title="States"
-  code={"<PhotoDrop id=\"a\" src={src} alt=\"Your photo\" size={128} progress={0.4} />\n<PhotoDrop id=\"b\" src={src} alt=\"Your photo\" size={128} progress=\"indeterminate\" />\n<PhotoDrop id=\"c\" src={src} alt=\"Your photo\" size={128} failed onRetry={retry} />\n<PhotoDrop id=\"d\" src={src} alt=\"Your photo\" size={128} locked lockedReason=\"Check-in has started.\" />\n<PhotoDrop id=\"e\" src={src} alt=\"Your photo\" size={128} readOnly />"}
+  code={"<PhotoDrop id=\"a\" src={src} alt=\"Your photo\" size={128} progress={0.4} />\n<PhotoDrop id=\"b\" src={src} alt=\"Your photo\" size={128} progress=\"indeterminate\" />\n<PhotoDrop id=\"c\" src={src} alt=\"Your photo\" size={128} failed onRetry={retry} />\n<PhotoDrop id=\"d\" src={src} alt=\"Your photo\" size={128} locked lockedReason=\"Check-in has started.\" />\n<PhotoDrop id=\"e\" src={src} alt=\"Your photo\" size={128} readOnly readOnlyReason=\"It can't be changed here.\" />"}
 >
   <PhotoDropStatesDemo />
 </ComponentPreview>

@@ -86,7 +86,7 @@ export function PhotoDropStatesDemo() {
       <PhotoDrop id="demo-sweep" src={DEMO_PHOTO} alt="Your photo" size={128} progress="indeterminate" />
       <PhotoDrop id="demo-failed" src={DEMO_PHOTO} alt="Your photo" size={128} failed onRetry={() => {}} />
       <PhotoDrop id="demo-locked" src={DEMO_PHOTO} alt="Your photo" size={128} locked lockedReason="Check-in has started." />
-      <PhotoDrop id="demo-readonly" src={DEMO_PHOTO} alt="Your photo" size={128} readOnly />
+      <PhotoDrop id="demo-readonly" src={DEMO_PHOTO} alt="Your photo" size={128} readOnly readOnlyReason="It can't be changed here." />
     </div>
   );
 }

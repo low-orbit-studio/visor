@@ -29,7 +29,7 @@ export function PhotoDropSpecimen() {
         <PhotoDrop id="look-uploading" src={photo} alt="Your photo" size={96} progress={0.4} />
         <PhotoDrop id="look-failed" src={photo} alt="Your photo" size={96} failed onRetry={() => {}} />
         <PhotoDrop id="look-locked" src={photo} alt="Your photo" size={96} locked lockedReason="Check-in has started." />
-        <PhotoDrop id="look-readonly" src={photo} alt="Your photo" size={96} readOnly />
+        <PhotoDrop id="look-readonly" src={photo} alt="Your photo" size={96} readOnly readOnlyReason="It can't be changed here." />
       </div>
     </div>
   );

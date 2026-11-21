@@ -150,6 +150,14 @@ describe("PhotoDrop states (A1)", () => {
     expect(zone(container)).toHaveAttribute("data-readonly")
   })
 
+  it("read-only with a reason: 'Read-Only' and the reason, still no input", () => {
+    const { container } = render(<Tile {...STATES.readOnly} readOnlyReason="It can't be changed here." />)
+    expect(input(container)).toBeNull()
+    expect(screen.getByText("Read-Only")).toBeInTheDocument()
+    expect(screen.getByText("It can't be changed here.")).toBeInTheDocument()
+    expect(screen.queryByText(/Tap it/)).toBeNull()
+  })
+
   it("read-only with nothing picked: an empty quiet tile", () => {
     const { container } = render(<Tile readOnly />)
     expect(container.querySelector("[data-slot=photo-drop-plus]")).toBeNull()

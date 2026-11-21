@@ -2024,6 +2024,7 @@ export const propsData: Record<string, PropDef[]> = {
     { name: 'locked', type: 'boolean', description: 'Locked: the photo or file shows with a lock badge, "Locked" and no input.' },
     { name: 'lockedReason', type: 'ReactNode', description: 'Why it is locked, shown under "Locked".' },
     { name: 'readOnly', type: 'boolean', description: 'Read-only: the photo (or file name) only, with a quiet rim, no hint and no input.' },
+    { name: 'readOnlyReason', type: 'ReactNode', description: 'Read-only with a note, shown under "Read-Only" (e.g. why it can\'t be changed). Without it, read-only shows no caption.' },
     { name: 'alt', type: 'string', default: '""', description: "The photo's alt text. Give one when the photo means something, as in read-only and locked." },
     { name: 'invalid', type: 'boolean', description: 'Sets aria-invalid on the input and draws the edge in the error colour.' },
     { name: 'required', type: 'boolean', description: 'Sets aria-required on the input.' },

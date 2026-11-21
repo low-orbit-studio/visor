@@ -60,6 +60,9 @@ props:
   - name: readOnly
     type: boolean
     description: The photo only, with a quiet rim, no hint and no input.
+  - name: readOnlyReason
+    type: ReactNode
+    description: Read-only with a note, shown under "Read-Only" (e.g. why it can't be changed). Without it, read-only shows no caption.
   - name: alt
     type: string
     description: The photo's alt text.

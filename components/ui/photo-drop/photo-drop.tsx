@@ -70,6 +70,8 @@ export interface PhotoDropProps extends Omit<React.HTMLAttributes<HTMLDivElement
   lockedReason?: React.ReactNode
   /** Read-only: the photo or file only, with no hint and no way to change it. */
   readOnly?: boolean
+  /** Read-only with a note: shown under "Read-Only", e.g. why it can't be changed. Without it, read-only shows no caption. */
+  readOnlyReason?: React.ReactNode
   /** The photo's alt text. */
   alt?: string
 }
@@ -97,6 +99,7 @@ export const PhotoDrop = React.forwardRef<HTMLDivElement, PhotoDropProps>(functi
     locked,
     lockedReason,
     readOnly,
+    readOnlyReason,
     alt,
     className,
     ...props
@@ -207,7 +210,7 @@ export const PhotoDrop = React.forwardRef<HTMLDivElement, PhotoDropProps>(functi
           />
         ) : null}
       </div>
-      {readOnly && !locked && !(file && src) ? null : (
+      {readOnly && !locked && !(file && src) && !readOnlyReason ? null : (
         <p className={styles.hint} id={hintId}>
           {uploading ? (
             <>
@@ -229,6 +232,12 @@ export const PhotoDrop = React.forwardRef<HTMLDivElement, PhotoDropProps>(functi
               <span className={styles.lead}>Locked</span>
               {file && src ? <span>{src}</span> : null}
               {lockedReason ? <span>{lockedReason}</span> : null}
+            </>
+          ) : readOnly && readOnlyReason ? (
+            <>
+              <span className={styles.lead}>Read-Only</span>
+              {file && src ? <span>{src}</span> : null}
+              <span>{readOnlyReason}</span>
             </>
           ) : readOnly ? (
             <span className={styles.lead}>{src}</span>
