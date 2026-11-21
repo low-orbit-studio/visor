@@ -1384,6 +1384,14 @@ KeyValueList — label and value type and ink, the horizontal columns, item gap 
 
 Inside `data-glass="on"` (see [Glass](/docs/themes/glass)) a `surface="panel"` list takes the glass layer's fill, lift and blur, and its edge clears; the label and value keep the theme's ink. A list with no surface never blurs, so it can sit inside a glass tile without a nested blur.
 
+### `rich-text`
+
+RichText link underline colour. Link text inherits the surrounding ink.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--rich-text-link-underline` | Link underline colour at rest; on hover it turns the link's own ink. | `color-mix(in srgb, currentColor 40%, transparent)` |
+
 ### `admin-ui`
 
 Structural roles the admin-ui pattern owns. `marquee-family` is the display face for KPI hero figures and marquee page titles — the role the admin-ui portability audit named as the one piece of ENTR brand coupling a new theme must rebind.

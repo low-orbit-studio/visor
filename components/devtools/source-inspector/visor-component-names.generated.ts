@@ -364,6 +364,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "ReachRings",
   "RecordSection",
   "ResizableSplit",
+  "RichText",
   "RightRailList",
   "SaveStatus",
   "ScoreIndicator",
