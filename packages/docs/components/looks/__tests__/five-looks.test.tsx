@@ -32,6 +32,18 @@ describe('FiveLooks', () => {
     window.history.replaceState(null, '', '/');
   });
 
+  it('passes real thumbnails to every look', () => {
+    window.history.replaceState(null, '', '/?thumbs=/a.webp,/b.webp');
+    const { container } = render(<FiveLooks specimen="photo-picker" />);
+    expect(srcs(container).every((p) => p.get('thumbs') === '/a.webp,/b.webp')).toBe(true);
+    window.history.replaceState(null, '', '/');
+  });
+
+  it('registers the ThemeToggle and PhotoPicker specimens', () => {
+    expect(LOOK_SPECIMENS['theme-toggle']).toBeTypeOf('function');
+    expect(LOOK_SPECIMENS['photo-picker']).toBeTypeOf('function');
+  });
+
   it('registers the theme specimen', () => {
     expect(LOOK_SPECIMENS.theme).toBeTypeOf('function');
   });

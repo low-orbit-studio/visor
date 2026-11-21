@@ -1,0 +1,18 @@
+/* Off the photo the panel adds nothing: no fill, edge or padding. Over a photo it is the
+ * glass recipe's panel, as Backstage's Photo menu sits in a glass popover. */
+.panel {
+  width: min(100%, 37.5rem);
+  min-width: 0;
+  border-radius: var(--radius-lg, 0.5rem);
+}
+
+:global([data-glass='on']) .panel {
+  position: relative;
+  padding: var(--spacing-4, 1rem);
+}
+
+/* Not in a scrolling menu here, so the grid shows every row. */
+.grid {
+  --photo-picker-max-height: none;
+  position: relative;
+}
