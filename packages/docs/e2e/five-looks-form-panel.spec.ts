@@ -86,7 +86,7 @@ for (const width of [1440, 390]) {
 }
 
 test("Form panel: the plain looks draw no panel, so they are unchanged", async ({ page }) => {
-  for (const specimen of ["theme", "button", "number-input"]) {
+  for (const specimen of ["theme", "button", "number-input", "toggle-group"]) {
     for (const look of ["today", "dark", "light"]) {
       await page.goto(`/looks/panel?theme=${THEME}&look=${look}&specimen=${specimen}`);
       await expect(page.locator(`body.${THEME}-theme`)).toHaveCount(1);
