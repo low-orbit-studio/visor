@@ -224,6 +224,7 @@ const readButtons = (frame: Frame) =>
       return {
         wash,
         index: i,
+        secondary: /variantSecondary/.test(button.className) || button.dataset.slot === "glass-control",
         name: (button.getAttribute("aria-label") ?? button.textContent ?? "").trim().slice(0, 40),
         kind: text ? "text" : "icon",
         ink: toRgba(getComputedStyle(target === button ? button : target).color),
@@ -288,7 +289,19 @@ for (const width of [1440, 390]) {
         // Settle hover/entrance motion before measuring, and park the pointer off every button.
         await page.mouse.move(0, 0);
         await page.addStyleTag({ content: "*,*::before,*::after{transition:none!important;animation:none!important}" });
+        // The plain looks' secondary controls fill with the kit's neutral surface (BO-85), never Visor's default #1f2937.
+        const subtleFill = await page.evaluate(() => {
+          const probe = document.querySelector('[data-slot="look-panel"]')!.appendChild(document.createElement("i"));
+          probe.style.backgroundColor = "var(--surface-subtle)";
+          const fill = getComputedStyle(probe).backgroundColor;
+          probe.remove();
+          return fill;
+        });
         for (const b of await readButtons(page.mainFrame())) {
+          if (look === "dark" || look === "light") {
+            expect(b.background, `${where} "${b.name}" fill`).not.toBe("rgb(31, 41, 55)");
+            if (b.secondary) expect(b.background, `${where} "${b.name}" secondary fill is the kit's surface-subtle`).toBe(subtleFill);
+          }
           expect(b.cornerShape, `${where} "${b.name}" corner-shape`).toBe("squircle");
           if (look.endsWith("photo")) expect(b.wash, `${where} "${b.name}" has a wash, not a bare edge`).toBe(true);
           const button = page.locator(`[data-audit="${b.index}"]`);
