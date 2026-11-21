@@ -6,7 +6,7 @@ import { test, expect, type Frame, type Page } from "@playwright/test";
 // The stock theme CI has; LOOKS_THEME=honcho-backstage draws the kit's looks locally.
 const THEME = process.env.LOOKS_THEME ?? "neutral";
 // Every specimen with form controls or tiles (the spinner has neither). Add new ones here.
-const SPECIMENS = ["theme", "button", "number-input", "alert", "glass", "key-value-list"];
+const SPECIMENS = ["theme", "button", "number-input", "alert", "glass", "key-value-list", "card"];
 const PHOTO_LOOKS = [
   { id: "dark-photo", mode: "dark" },
   { id: "light-photo", mode: "light" },
