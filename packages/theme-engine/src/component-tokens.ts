@@ -638,9 +638,9 @@ const glassFamily: ComponentTokenFamily = {
     { key: "lift", property: "background", description: "White lift laid over the fill, e.g. `rgb(255 255 255 / 0.45)` in light.", consumers: [], recommended: "transparent" },
     { key: "shadow", property: "box-shadow", description: "Glass surface shadow.", consumers: [], recommended: "var(--shadow-xl)" },
     { key: "ink", property: "color", description: "Text colour on glass over a photo.", consumers: [], recommended: "var(--text-primary)" },
-    // VI-810: a dark scrim under white labels, so white clears 4.5:1 even on a bright, white-veiled day photo
-    // (measured 5.1:1 worst at 50% black under the light tone's blur), and FormDeck's label shadow.
-    { key: "scrim", property: "background", description: "Dark glass laid under white labels on a photo (e.g. Stepper's rail panel), dark enough that white clears 4.5:1 on a bright photo.", consumers: [], recommended: "rgb(0 0 0 / 0.5)" },
+    // VI-810: a dark scrim under white labels: at 55% black, white clears 4.5:1 (4.95:1) even over pure white,
+    // so over any photo; and FormDeck's label shadow.
+    { key: "scrim", property: "background", description: "Dark glass laid under white labels on a photo (e.g. Stepper's rail panel), dark enough that white clears 4.5:1 on a bright photo.", consumers: [], recommended: "rgb(0 0 0 / 0.55)" },
     { key: "scrim-ink", property: "color", description: "Label colour on the scrim, in both photo looks.", consumers: [], recommended: "#ffffff" },
     { key: "ink-shadow", property: "text-shadow", description: "Shadow under the scrim ink, seating the labels.", consumers: [], recommended: "0 0 10px rgb(0 0 0 / 0.55), 0 1px 3px rgb(0 0 0 / 0.5)" },
     { key: "control-fill", property: "background", description: "Glass control fill (icon buttons, toggles).", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 14%, transparent)" },
