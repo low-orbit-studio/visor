@@ -485,6 +485,17 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
       props: `{ value: 118, max: 200, hue: 219, size: "contract", style: { width: 560 }, zones: [{ to: 190, variant: "hatched" }, { to: 166 }], marks: [{ value: 160, label: "160 h", caption: "heads-up", align: "end", threshold: true }, { value: 166, label: "166 h", caption: "the low", align: "start" }, { value: 200, label: "200 h", caption: "ceiling", align: "end", variant: "limit" }], children: [React.createElement("strong", { key: "s" }, "118 h"), " used of 200 h"] }`,
     },
   },
+  // VI-813: a paragraph with bold, italic, a link and en dashes, then a list with a mailto link.
+  "rich-text": {
+    default: {
+      export: "RichText",
+      props: `{ dashes: true, text: "Doors open at *6 PM* \u2013 bring _your_ ticket and read the [guide](https://example.com).\\nGates close at 11 PM.\\n\\n- Parking opens Fri \u2013 Sun\\n- Questions? Write to [the crew](mailto:help@example.com)" }`,
+    },
+    elements: {
+      export: "RichText",
+      props: `{ elements: true, text: "Plain elements for a host that styles them: *bold*, _italic_ and a [link](https://example.com).\\n\\n- one\\n- two" }`,
+    },
+  },
   // VI-713: labelled steps, one in every state, at both sizes.
   "segmented-progress": {
     default: { export: "SegmentedProgress", props: `{ total: 6, value: 2, current: 2, "aria-label": "Step 3 of 6", style: { width: 360 } }` },

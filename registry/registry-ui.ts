@@ -1700,6 +1700,28 @@ export const ui: Registry = [
     ],
   },
   {
+    name: "rich-text",
+    type: "registry:ui",
+    description:
+      "Safe, tiny markup for text that comes from a database: *bold*, _italic_, [links](https://…), blank-line paragraphs and \"- \" lists. Only http, https and mailto links render; raw HTML shows as plain text. Exports RichText and dashes.",
+    dependencies: ["@loworbitstudio/visor-core"],
+    registryDependencies: [],
+    files: [
+      {
+        path: "components/ui/rich-text/rich-text.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/rich-text/dashes.tsx",
+        type: "registry:ui",
+      },
+      {
+        path: "components/ui/rich-text/rich-text.module.css",
+        type: "registry:ui",
+      },
+    ],
+  },
+  {
     name: "offline-banner",
     type: "registry:ui",
     description:

@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { glob } from 'node:fs/promises';
+import { join } from 'node:path';
 import { parse } from 'yaml';
 import type { Rule, RuleResult } from './types.js';
 
@@ -21,10 +22,10 @@ async function readManifest(filePath: string): Promise<Manifest | null> {
   }
 }
 
-async function collect(pattern: string): Promise<Map<string, { path: string; doc: Manifest }>> {
+async function collect(pattern: string, cwd: string): Promise<Map<string, { path: string; doc: Manifest }>> {
   const byName = new Map<string, { path: string; doc: Manifest }>();
-  for await (const filePath of glob(pattern)) {
-    const doc = await readManifest(filePath);
+  for await (const filePath of glob(pattern, { cwd })) {
+    const doc = await readManifest(join(cwd, filePath));
     if (!doc) continue;
     const name = typeof doc.name === 'string' ? doc.name : null;
     if (!name) continue;
@@ -40,62 +41,75 @@ function deepEqual(a: unknown, b: unknown): boolean {
 export const crossPlatformManifestSync: Rule = {
   name: 'cross-platform-manifest-sync',
   description:
-    'When a component has both a React manifest (components/ui/**) and a Flutter manifest (components/flutter/**), shared fields (description, category, when_to_use, when_not_to_use) must match',
+    'When a component has both a React manifest (components/ui/**) and a Flutter manifest (components/flutter/**), shared fields (description, category, when_to_use, when_not_to_use) must match. A React manifest with `flutter_sibling: none` is a different component that only shares the name, and is skipped',
   category: 'structure',
-  async run() {
-    const results: RuleResult[] = [];
+  run: () => syncManifests('.'),
+};
 
-    const flutterManifests = await collect(
-      'components/flutter/**/*.visor.yaml'
-    );
-    if (flutterManifests.size === 0) {
+/** The rule's check against the manifests under `cwd` (the repo root when the rule runs). */
+export async function syncManifests(cwd: string): Promise<RuleResult[]> {
+  const results: RuleResult[] = [];
+
+  const flutterManifests = await collect(
+    'components/flutter/**/*.visor.yaml',
+    cwd
+  );
+  if (flutterManifests.size === 0) {
+    results.push({
+      pass: true,
+      message: 'No Flutter manifests found — cross-platform sync not applicable',
+    });
+    return results;
+  }
+
+  const reactManifests = await collect('components/ui/**/*.visor.yaml', cwd);
+
+  for (const [key, flutter] of flutterManifests) {
+    const react = reactManifests.get(key);
+    if (react?.doc.flutter_sibling === 'none') {
+      // Same name, different component (VI-813: RichText). The React manifest opts out.
       results.push({
         pass: true,
-        message: 'No Flutter manifests found — cross-platform sync not applicable',
+        message: `"${flutter.doc.name}" shares a name with ${react.path}, which declares flutter_sibling: none — not synced`,
+        file: flutter.path,
       });
-      return results;
+      continue;
+    }
+    if (!react) {
+      // Flutter-only component — nothing to sync against
+      results.push({
+        pass: true,
+        message: `Flutter-only component "${flutter.doc.name}" — no React sibling to compare`,
+        file: flutter.path,
+      });
+      continue;
     }
 
-    const reactManifests = await collect('components/ui/**/*.visor.yaml');
-
-    for (const [key, flutter] of flutterManifests) {
-      const react = reactManifests.get(key);
-      if (!react) {
-        // Flutter-only component — nothing to sync against
-        results.push({
-          pass: true,
-          message: `Flutter-only component "${flutter.doc.name}" — no React sibling to compare`,
-          file: flutter.path,
-        });
-        continue;
-      }
-
-      const mismatches: string[] = [];
-      for (const field of SHARED_FIELDS) {
-        const a = flutter.doc[field];
-        const b = react.doc[field];
-        // Both undefined: OK. One side undefined: flag as mismatch unless both are
-        if (a === undefined && b === undefined) continue;
-        if (!deepEqual(a, b)) {
-          mismatches.push(field);
-        }
-      }
-
-      if (mismatches.length > 0) {
-        results.push({
-          pass: false,
-          message: `Shared fields out of sync with ${react.path}: ${mismatches.join(', ')}`,
-          file: flutter.path,
-        });
-      } else {
-        results.push({
-          pass: true,
-          message: `Shared fields match React sibling`,
-          file: flutter.path,
-        });
+    const mismatches: string[] = [];
+    for (const field of SHARED_FIELDS) {
+      const a = flutter.doc[field];
+      const b = react.doc[field];
+      // Both undefined: OK. One side undefined: flag as mismatch unless both are
+      if (a === undefined && b === undefined) continue;
+      if (!deepEqual(a, b)) {
+        mismatches.push(field);
       }
     }
 
-    return results;
-  },
-};
+    if (mismatches.length > 0) {
+      results.push({
+        pass: false,
+        message: `Shared fields out of sync with ${react.path}: ${mismatches.join(', ')}`,
+        file: flutter.path,
+      });
+    } else {
+      results.push({
+        pass: true,
+        message: `Shared fields match React sibling`,
+        file: flutter.path,
+      });
+    }
+  }
+
+  return results;
+}

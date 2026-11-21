@@ -1317,6 +1317,27 @@ export const propsData: Record<string, PropDef[]> = {
     },
   ],
 
+  'rich-text': [
+    {
+      name: 'text',
+      type: 'string',
+      required: true,
+      description: 'The markup: `*bold*`, `_italic_`, `[label](https://…)`, a blank line between paragraphs, a single newline for a line break, and `- ` at the start of a line for a list item. Everything else, HTML included, is plain text.',
+    },
+    {
+      name: 'elements',
+      type: 'boolean',
+      default: 'false',
+      description: 'Render bare `p`, `ul`, `li`, `a`, `b` and `i` with no classes, for a host that styles them. Off, paragraphs and lists are block spans (`role="list"`/`"listitem"`) and bold and italic are `strong` and `em`.',
+    },
+    {
+      name: 'dashes',
+      type: 'boolean',
+      default: 'false',
+      description: "Draw every en dash at en-dash width (Satoshi's runs as long as an em dash). Also exported as the `dashes(text)` function.",
+    },
+  ],
+
   text: [
     {
       name: 'as',
