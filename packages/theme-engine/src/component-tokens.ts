@@ -638,11 +638,11 @@ const glassFamily: ComponentTokenFamily = {
     { key: "lift", property: "background", description: "White lift laid over the fill, e.g. `rgb(255 255 255 / 0.45)` in light.", consumers: [], recommended: "transparent" },
     { key: "shadow", property: "box-shadow", description: "Glass surface shadow.", consumers: [], recommended: "var(--shadow-xl)" },
     { key: "ink", property: "color", description: "Text colour on glass over a photo.", consumers: [], recommended: "var(--text-primary)" },
-    // VI-810: a dark scrim under white labels: at 55% black, white clears 4.5:1 (4.95:1) even over pure white,
-    // so over any photo; and FormDeck's label shadow.
-    { key: "scrim", property: "background", description: "Dark glass laid under white labels on a photo (e.g. Stepper's rail panel), dark enough that white clears 4.5:1 on a bright photo.", consumers: [], recommended: "rgb(0 0 0 / 0.55)" },
-    { key: "scrim-ink", property: "color", description: "Label colour on the scrim, in both photo looks.", consumers: [], recommended: "#ffffff" },
-    { key: "ink-shadow", property: "text-shadow", description: "Shadow under the scrim ink, seating the labels.", consumers: [], recommended: "0 0 10px rgb(0 0 0 / 0.55), 0 1px 3px rgb(0 0 0 / 0.5)" },
+    // VI-810: a dark scrim under white labels in the dark photo look: at 55% black, white clears 4.5:1 (4.95:1)
+    // even over pure white, so over any photo; and FormDeck's label shadow. Light + Photo keeps the light glass and its ink.
+    { key: "scrim", property: "background", description: "Dark glass laid under white labels on a photo in dark mode (e.g. Stepper's rail panel in Dark + Photo), dark enough that white clears 4.5:1 on a bright photo.", consumers: [], recommended: "rgb(0 0 0 / 0.55)" },
+    { key: "scrim-ink", property: "color", description: "Label colour on the scrim, in dark mode over a photo.", consumers: [], recommended: "#ffffff" },
+    { key: "ink-shadow", property: "text-shadow", description: "Shadow under the scrim ink in dark mode over a photo, seating the labels.", consumers: [], recommended: "0 0 10px rgb(0 0 0 / 0.55), 0 1px 3px rgb(0 0 0 / 0.5)" },
     { key: "control-fill", property: "background", description: "Glass control fill (icon buttons, toggles).", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 14%, transparent)" },
     { key: "control-hover-fill", property: "background", description: "Glass control fill on hover.", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 24%, transparent)" },
     { key: "control-ring", property: "box-shadow (inset ring)", description: "Glass control ring colour.", consumers: [], recommended: "color-mix(in srgb, var(--text-primary) 16%, transparent)" },
@@ -728,7 +728,7 @@ const spinnerFamily: ComponentTokenFamily = {
 };
 
 // VI-810: Stepper's rail variant, the side list of form sections (FormDeck's section
-// rail). Sizes only: the ink is --text-primary, or the glass ink over a photo.
+// rail). Sizes only: the ink is --text-primary, or over a photo the glass ink (light) or scrim ink (dark).
 const stepperFamily: ComponentTokenFamily = {
   family: "stepper",
   prefix: "stepper",

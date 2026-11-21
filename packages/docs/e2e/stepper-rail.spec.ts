@@ -4,9 +4,11 @@ import { test, expect, type Frame, type Locator, type Page, type TestInfo } from
 
 // VI-810: Stepper's rail variant on its docs page, in all five looks, at 390 and
 // 1440 wide, with the docs site in light and dark. A plain look draws theme ink
-// on a solid card with no glass and no shadow; a Photo look puts the rail on a
-// form panel of the glass layer's dark scrim and draws the white scrim ink with
-// its shadow, measured at 4.5:1 or better against the pixels behind it.
+// on a solid card with no glass and no shadow. Over a photo the rail sits on a
+// glass form panel: in Light + Photo the light glass with its dark glass ink and
+// no shadow (Justin's v14 ruling, "Light Glass, Dark Text"); in Dark + Photo the
+// glass layer's dark scrim with the white scrim ink and its shadow. The active
+// label is measured at 4.5:1 or better against the pixels behind it.
 const PAGE = "/docs/components/navigation/stepper";
 const THEME = process.env.VISOR_LOOK_THEME ?? "neutral";
 // Real Campout photos for the Photo looks, a night one behind Dark + Photo and a day one behind
@@ -81,6 +83,8 @@ function readRail(frame: Frame) {
       blurred: all.filter((el) => getComputedStyle(el).backdropFilter !== "none").length,
       shadowed: all.filter((el) => getComputedStyle(el).textShadow !== "none").length,
       textPrimary: resolve("var(--text-primary)"),
+      glassInk: resolve("var(--glass-on-ink)"),
+      glassFill: resolve("var(--glass-on-fill)"),
       scrimInk: resolve("var(--glass-on-scrim-ink)"),
       scrim: resolve("var(--glass-on-scrim)"),
       panelGlass: getComputedStyle(panelGlass).display,
@@ -97,39 +101,64 @@ function luminance(r: number, g: number, b: number): number {
 }
 
 /**
- * White's contrast against the brightest pixel behind the active row: the row is shot with its
- * label and mark hidden (ink transparent, no shadow), so the PNG is only the scrim over the photo.
+ * The active label's ink against the worst pixel behind its row: the row is shot with its label
+ * and mark hidden (ink transparent, no shadow), so the PNG is only the panel over the photo.
  */
-async function whiteContrastBehind(page: Page, frame: Frame): Promise<number> {
+async function inkContrastBehind(page: Page, frame: Frame, ink: string): Promise<number> {
   const row = frame.locator('[data-slot="stepper-trigger"][data-status="active"]');
   const hide = await frame.addStyleTag({ content: '[data-variant="rail"] *{color:transparent!important;text-shadow:none!important;transition:none!important}' });
   const png = await row.screenshot({ animations: "disabled", caret: "hide" });
   await hide.evaluate((n) => (n as Element).remove());
-  const pixels = await page.evaluate(async (b64) => {
+  const { pixels, inkRgb } = await page.evaluate(async ({ b64, ink }) => {
     const img = new Image();
     img.src = `data:image/png;base64,${b64}`;
     await img.decode();
     const canvas = Object.assign(document.createElement("canvas"), { width: img.width, height: img.height });
     const ctx = canvas.getContext("2d")!;
     ctx.drawImage(img, 0, 0);
-    return Array.from(ctx.getImageData(0, 0, img.width, img.height).data);
-  }, png.toString("base64"));
-  let brightest = 0;
-  for (let i = 0; i < pixels.length; i += 4) brightest = Math.max(brightest, luminance(pixels[i], pixels[i + 1], pixels[i + 2]));
-  return 1.05 / (brightest + 0.05);
+    const data = Array.from(ctx.getImageData(0, 0, img.width, img.height).data);
+    // Any CSS colour string, read back as sRGB through a one-pixel fill.
+    ctx.fillStyle = ink;
+    ctx.fillRect(0, 0, 1, 1);
+    return { pixels: data, inkRgb: Array.from(ctx.getImageData(0, 0, 1, 1).data) };
+  }, { b64: png.toString("base64"), ink });
+  const inkLum = luminance(inkRgb[0], inkRgb[1], inkRgb[2]);
+  let worst = Infinity;
+  for (let i = 0; i < pixels.length; i += 4) {
+    const bg = luminance(pixels[i], pixels[i + 1], pixels[i + 2]);
+    worst = Math.min(worst, (Math.max(inkLum, bg) + 0.05) / (Math.min(inkLum, bg) + 0.05));
+  }
+  return worst;
 }
 
-/** One hand-back frame per look and width, into `.visor/renders/vi-810/<set>/` (gitignored). */
-async function saveFrame(grid: Locator, lookId: string, set: string, width: number, testInfo: TestInfo) {
+/**
+ * One hand-back frame per look, width and mode, full size: the look's own page at the width,
+ * 900 tall, at 2x, into `.visor/renders/vi-810/<set>/<look>-<mode>-<width>.png` (gitignored).
+ */
+async function saveFrame(frame: Frame, lookId: string, mode: string, set: string, width: number, testInfo: TestInfo) {
   const dir = path.resolve(testInfo.config.rootDir, "../../../.visor/renders/vi-810", set);
   mkdirSync(dir, { recursive: true });
-  const target = grid.locator(`[data-look="${lookId}"]`);
-  await target.scrollIntoViewIfNeeded();
-  const file = path.join(dir, `${lookId}-${width}.png`);
+  const file = path.join(dir, `${lookId}-${mode}-${width}.png`);
+  const context = await frame.page().context().browser()!.newContext({ viewport: { width, height: 900 }, deviceScaleFactor: 2 });
+  const shot = await context.newPage();
+  const url = new URL(frame.url());
+  await shot.goto(url.href);
+  await shot.waitForSelector('[data-slot="look-panel"] [data-variant="rail"][data-slot="stepper"]');
+  await expect(shot.locator("body")).toHaveClass(new RegExp(`\\b${url.searchParams.get("theme")}-theme\\b`));
+  await shot.addStyleTag({ content: "nextjs-portal{display:none!important}" });
+  await shot.evaluate(async () => {
+    await document.fonts.ready;
+    const src = new URLSearchParams(location.search).get("photo");
+    if (!src) return;
+    const img = new Image();
+    img.src = src;
+    await img.decode().catch(() => {});
+  });
   // LO_CLEAN_CAPTURE points at the Playbook's clean-capture.mjs for a stamped review shot.
   const clean = process.env.LO_CLEAN_CAPTURE;
-  if (clean) await (await import(clean)).cleanShot(grid.page(), { path: file, target });
-  else await target.screenshot({ path: file, animations: "disabled", caret: "hide" });
+  if (clean) await (await import(clean)).cleanShot(shot, { path: file });
+  else await shot.screenshot({ path: file, animations: "disabled", caret: "hide" });
+  await context.close();
 }
 
 async function checkLooks(page: Page, grid: Locator, set: string, width: number, docsMode: "light" | "dark", themeOf: (id: string) => string, testInfo: TestInfo) {
@@ -146,17 +175,21 @@ async function checkLooks(page: Page, grid: Locator, set: string, width: number,
       // Nothing in the rail ever blurs; the panel behind it carries the glass, and only over a photo.
       expect(rail.blurred).toBe(0);
       expect(rail.panelGlass).toBe(look.photo ? "block" : "none");
-      if (look.photo) {
+      if (look.id === "dark-photo") {
         expect(rail.panelBlur).toContain("blur(");
         // On the scrim panel: the glass layer's scrim ink, with its shadow under every label.
         expect(rail.panelFill).toBe(rail.scrim);
         expect(rail.color.active).toBe(rail.scrimInk);
         for (const s of STATES) expect(rail.shadow[s]).not.toBe("none");
-        // White only on a photo, in Light + Photo too, and it reads: 4.5:1 against the pixels behind it.
-        if (look.id === "light-photo") {
-          expect(rail.color.active).toBe("rgb(255, 255, 255)");
-          expect(await whiteContrastBehind(page, frame)).toBeGreaterThanOrEqual(4.5);
-        }
+      } else if (look.id === "light-photo") {
+        // Light glass, dark text (Justin's v14 ruling, superseding V9's white): the panel is the
+        // light glass every other Light + Photo panel uses, and the rail draws its ink, the same
+        // role as plain Light, with no shadow anywhere.
+        expect(rail.panelBlur).toContain("blur(");
+        expect(rail.panelFill).toBe(rail.glassFill);
+        expect(rail.color.active).toBe(rail.glassInk);
+        expect(rail.color.active).not.toBe("rgb(255, 255, 255)");
+        expect(rail.shadowed).toBe(0);
       } else {
         // Glass off: theme ink, no shadow anywhere.
         expect(rail.shadowed).toBe(0);
@@ -166,6 +199,8 @@ async function checkLooks(page: Page, grid: Locator, set: string, width: number,
       // The four states read differently, and the current mark is the stretched one.
       expect(new Set(Object.values(rail.color)).size).toBe(STATES.length);
       expect(rail.markWidth.active).toBeGreaterThan(rail.markWidth.complete);
+      // Over a photo the active label reads: 4.5:1 against the pixels behind it.
+      if (look.photo) expect(await inkContrastBehind(page, frame, rail.color.active)).toBeGreaterThanOrEqual(4.5);
 
       const overflow = await frame.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -174,7 +209,7 @@ async function checkLooks(page: Page, grid: Locator, set: string, width: number,
     }).toPass({ timeout: 30_000 });
 
     // Ten frames per set (five looks × two widths), shot with the docs in light.
-    if (docsMode === "light") await saveFrame(grid, look.id, set, width, testInfo);
+    if (docsMode === "light") await saveFrame(await lookFrame(grid, look.id, theme), look.id, look.mode ?? docsMode, set, width, testInfo);
   }
 
   const overflow = await page.evaluate(

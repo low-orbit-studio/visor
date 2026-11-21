@@ -27,18 +27,14 @@ export function StepperRail() {
 
 /**
  * Stepper's rail variant on a form panel built from the glass recipe, as form content over a
- * photo always sits on the slide's glass card. Theme ink on a solid card on a plain page; where
- * `data-glass="on"` the panel's glass is the glass layer's dark scrim, under the rail's white
- * scrim ink and its shadow.
+ * photo always sits on the slide's glass card. Theme ink on a solid card on a plain page. Where
+ * `data-glass="on"`: in light, the light glass panel with its dark glass ink; in dark, the glass
+ * layer's dark scrim under the rail's white scrim ink and its shadow.
  */
 export function StepperRailSpecimen() {
   return (
     <div className={glass.panel} data-slot="stepper-rail-panel">
-      <span
-        className={glass.glass}
-        aria-hidden="true"
-        style={{ background: 'var(--glass-on-scrim, transparent)' }}
-      />
+      <span className={`${glass.glass} ${glass.scrim}`} aria-hidden="true" />
       <span className={glass.edge} aria-hidden="true" />
       <div className={glass.content}>
         <StepperRail />

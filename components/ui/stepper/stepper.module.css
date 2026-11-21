@@ -205,8 +205,8 @@
  * row-wide button holding a dot mark and its label. The four states are the
  * kit's ink ramp: one ink at 100% (active), 64% (complete), 40% (upcoming) and
  * 24% (locked). The ink is the theme's --text-primary, or under data-glass="on"
- * (VI-795) the glass layer's scrim ink (white) with its shadow, the way FormDeck
- * draws labels over a photo in both tones. Nothing here sets a backdrop-filter.
+ * (VI-795) the glass panel's ink, like every other panel over a photo. Nothing
+ * here sets a backdrop-filter.
  */
 .stepperRail {
   gap: var(--stepper-rail-gap, 0);
@@ -217,7 +217,7 @@
 }
 
 .railTrigger {
-  --_rail-ink: var(--glass-on-scrim-ink, var(--text-primary, #111827));
+  --_rail-ink: var(--glass-on-ink, var(--text-primary, #111827));
   --_rail-strength: 40%;
   display: flex;
   align-items: center;
@@ -231,9 +231,19 @@
   line-height: var(--line-height-snug, 1.375);
   text-align: left;
   color: color-mix(in srgb, var(--_rail-ink) var(--_rail-strength), transparent);
-  text-shadow: var(--glass-on-ink-shadow, none);
+  text-shadow: none;
   cursor: pointer;
   transition: color var(--motion-duration-500, 500ms) var(--motion-easing-ease-out, ease-out);
+}
+
+/* Dark + Photo: the glass layer's white scrim ink with its shadow, on the scrim
+   panel (FormDeck's labels over a night photo). Glass off leaves both unset, so
+   plain Dark keeps theme ink. Light + Photo stays on the light glass ink.
+   :where() keeps this at the specificity of the rail trigger. */
+:global(:where(.dark)) .railTrigger,
+:global(:where([data-theme="dark"])) .railTrigger {
+  --_rail-ink: var(--glass-on-scrim-ink, var(--glass-on-ink, var(--text-primary, #f9fafb)));
+  text-shadow: var(--glass-on-ink-shadow, none);
 }
 
 .railTrigger[data-status="complete"] {
