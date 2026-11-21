@@ -2,9 +2,29 @@
    squircle hooks under components.button (BO-77, BO-82), so each look shows
    exactly what the theme ships. */
 .pills {
+  /* The outline squircle button (VI-824): its own padding, weight and 24% ink
+     ring, on the back-arrow button's solid wash. The theme does not bind these
+     yet, so the specimen carries them. Over a photo it sits on the glass
+     surface fill instead, never on a ring alone. */
+  --button-outline-padding: 0 26px;
+  --button-outline-font-weight: 520;
+  --button-outline-ring-color: color-mix(in srgb, var(--text-primary) 24%, transparent);
+  --button-outline-bg: var(--glass-on-fill, var(--surface-subtle));
+  /* Frosted like the back arrow over a photo; the blur is unset off a photo. */
+  --button-outline-backdrop-filter: var(--glass-on-control-blur, none);
+
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-3, 0.75rem);
   align-items: center;
   justify-content: center;
+}
+
+/* Over a photo the outline keeps the glass fill on hover too, so its label
+   never drops to a thin wash; the grow is the hover cue. The back arrow sits on
+   the same frosted glass fill, so the two secondary controls match (BO-77). */
+:global([data-glass="on"]) .pills {
+  --button-outline-bg-hover: var(--glass-on-fill);
+  --glass-on-control-fill: var(--glass-on-fill);
+  --glass-on-control-hover-fill: var(--glass-on-fill);
 }

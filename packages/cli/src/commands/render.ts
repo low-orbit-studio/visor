@@ -377,6 +377,8 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     hero: { export: "Button", interactiveTarget: "button", props: `{ variant: "hero", children: "Send invoice" }` },
     sm: { export: "Button", interactiveTarget: "button", props: `{ size: "sm", children: "Small" }` },
     lg: { export: "Button", interactiveTarget: "button", props: `{ size: "lg", children: "Large" }` },
+    // VI-824: the kit's outline squircle button is lg.
+    "lg-outline": { export: "Button", interactiveTarget: "button", props: `{ size: "lg", variant: "outline", children: "Not Now" }` },
     dlg: { export: "Button", interactiveTarget: "button", props: `{ size: "dlg", children: "Save" }` },
     // VI-733: the compact destructive face, and an icon beside a label with JSX's " " between.
     "dlg-destructive": { export: "Button", interactiveTarget: "button", props: `{ size: "dlg", variant: "destructive", children: "Void" }` },
@@ -493,6 +495,11 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     "steps-md": {
       export: "SegmentedProgress",
       props: `{ size: "md", style: { width: 360 }, steps: [{ label: "Your Info", state: "done" }, { label: "Bank Details", state: "current" }, { label: "W-9", state: "pending" }, { label: "Paid", state: "failed" }] }`,
+    },
+    // VI-809: sections sized 2:1:3, the finished one a button, the current one a quarter filled, labels revealed.
+    sections: {
+      export: "SegmentedProgress",
+      props: `{ style: { width: 360 }, revealLabels: true, steps: [{ label: "About You", state: "done", weight: 2, onSelect: () => {} }, { label: "Tickets", state: "current", weight: 1, fill: 0.25 }, { label: "Travel", state: "pending", weight: 3 }] }`,
     },
   },
   // Form controls (VI-655). Each has a resting fixture plus the states that
