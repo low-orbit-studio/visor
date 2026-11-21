@@ -34,6 +34,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "AlertLead",
   "AlertTitle",
   "AmbientGlow",
+  "AnimatedTitle",
   "ArrowSwap",
   "Avatar",
   "AvatarFallback",
