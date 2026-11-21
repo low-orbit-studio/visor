@@ -264,6 +264,22 @@ components:
 
 The grow and press are off for disabled, gated and pending buttons, so a button that can't act holds still.
 
+### Outline Squircle Button
+
+The outline face has its own padding, weight, ring and resting fill, so a theme can draw the kit's outline squircle button ("Not Now") beside the ink one without changing the other variants. `outline-padding` and `outline-font-weight` win over the size and family values on the outline face only. Unbound, the outline renders as before: transparent, on its size's padding and weight, with the shared control edge.
+
+Over a photo, never leave the outline as a ring alone: bind `outline-bg` to the [glass](/docs/themes/glass) surface fill and `outline-backdrop-filter` to the glass control blur, which apply only under `data-glass="on"`, so the label keeps its contrast. The five looks above do this, and give the glass back arrow the same fill so the two secondary buttons match.
+
+```yaml
+components:
+  button:
+    outline-padding: "0 26px"
+    outline-font-weight: "520"
+    outline-ring-color: "var(--ink-24)"
+    outline-bg: "var(--glass-on-fill, var(--surface-subtle))"
+    outline-backdrop-filter: "var(--glass-on-control-blur, none)"
+```
+
 ### Glass Icon Button
 
 `variant="glass"` is a solid ringed control on a plain page (the subtle surface with the default border). Under the [glass switch](/docs/themes/glass) (`data-glass="on"`) it reads the glass layer's shared control values: fill, hover fill, ring, ink and blur. With glass off it draws no `backdrop-filter`.

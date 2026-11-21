@@ -37,6 +37,8 @@ interface Case {
   press?: boolean
   /** Keep transitions on, so `transition-*` reads the bound value. */
   motion?: boolean
+  /** Read a pseudo-element of the target (`::after`, the edged faces' ring). */
+  pseudo?: string
 }
 
 const LABEL = "[data-slot=field-label]"
@@ -101,6 +103,12 @@ const CASES: Case[] = [
   { token: "--button-default-shadow-hover", fixture: "button/default", target: "button", prop: "box-shadow", value: "rgb(4, 5, 6) 0px 2px 3px 0px", hover: true },
   { token: "--button-outline-text", fixture: "button/outline", target: "button", prop: "color", value: "rgb(4, 5, 6)" },
   { token: "--button-outline-bg-hover", fixture: "button/outline", target: "button", prop: "background-color", value: "rgb(1, 2, 3)", hover: true },
+  // outline-only face (VI-824): resting fill, padding and weight over the size's, and the ring
+  { token: "--button-outline-bg", fixture: "button/outline", target: "button", prop: "background-color", value: "rgb(1, 2, 3)" },
+  { token: "--button-outline-padding", fixture: "button/lg-outline", target: "button", prop: "padding-left", value: "0 26px", expected: "26px" },
+  { token: "--button-outline-font-weight", fixture: "button/lg-outline", target: "button", prop: "font-weight", value: "520" },
+  { token: "--button-outline-ring-color", fixture: "button/outline", target: "button", prop: "outline-color", value: "rgb(1, 2, 3)", pseudo: "::after" },
+  { token: "--button-outline-backdrop-filter", fixture: "button/outline", target: "button", prop: "backdrop-filter", value: "blur(24px)" },
   { token: "--button-hover-scale", fixture: "button/default", target: "button", prop: "scale", value: "1.5", hover: true },
   { token: "--button-press-scale", fixture: "button/default", target: "button", prop: "scale", value: "0.5", press: true },
   { token: "--button-press-transform", fixture: "button/default", target: "button", prop: "transform", value: "translateY(5px)", expected: "matrix(1, 0, 0, 1, 0, 5)", press: true },
@@ -150,7 +158,7 @@ async function read(c: Case, opts: { scopeCss?: string; componentCss?: string } 
   if (c.hover || c.press) await page.hover(`#root ${c.target}`)
   if (c.press) await page.mouse.down()
   const value = (await page.evaluate(
-    `getComputedStyle(document.querySelector(${JSON.stringify(`#root ${c.target}`)})).getPropertyValue(${JSON.stringify(c.prop)})`,
+    `getComputedStyle(document.querySelector(${JSON.stringify(`#root ${c.target}`)}), ${JSON.stringify(c.pseudo ?? null)}).getPropertyValue(${JSON.stringify(c.prop)})`,
   )) as string
   await page.close()
   return value
@@ -320,6 +328,49 @@ describe("VI-656 — consumer rules still win while a hook is unset (real browse
         extraCss: unlayered("button", "padding-inline", "revert-layer"),
       }),
     ).not.toBe("0px")
+  }, 30_000)
+})
+
+describe("VI-824 — the kit's outline squircle button", () => {
+  // honcho-backstage binds the kit's lg pill for every variant; the outline
+  // keys must win over it on the outline face alone.
+  const KIT = [
+    "--button-lg-padding: 0 24px 0 30px;",
+    "--button-font-weight: 620;",
+    "--button-outline-padding: 0 26px;",
+    "--button-outline-font-weight: 520;",
+    "--button-outline-ring-color: rgba(11, 11, 12, 0.24);",
+  ].join(" ")
+  const PROBE = `(function () {
+    var b = document.querySelector("#root button");
+    var s = getComputedStyle(b);
+    return [s.paddingLeft, s.paddingRight, s.fontWeight, getComputedStyle(b, "::after").outlineColor];
+  })()`
+
+  async function probe(fixture: string, scopeCss?: string): Promise<string[]> {
+    const page = await open("button", fixture, { scopeCss })
+    const out = (await page.evaluate(PROBE)) as string[]
+    await page.close()
+    return out
+  }
+
+  it("binds 0 26px / 520 / ink-24 on the outline face", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    expect(await probe("lg-outline", KIT)).toEqual(["26px", "26px", "520", "rgba(11, 11, 12, 0.24)"])
+  }, 30_000)
+
+  it("leaves the default face on the family's lg padding and weight", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    const [left, right, weight] = await probe("lg", KIT)
+    expect([left, right, weight]).toEqual(["30px", "24px", "620"])
+  }, 30_000)
+
+  it("unbound, the outline keeps its size's padding, weight and ring", async (ctx) => {
+    if (!ready()) return ctx.skip()
+    const [left, right, weight, ring] = await probe("lg-outline")
+    const [, , , edge] = await probe("lg-outline", "--button-outline-ring-color: var(--control-edge-color, var(--border-strong, #e5e7eb));")
+    expect([left, right, weight]).toEqual(["24px", "24px", "500"])
+    expect(ring).toBe(edge)
   }, 30_000)
 })
 

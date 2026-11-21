@@ -377,6 +377,8 @@ export const FIXTURES: Record<string, Record<string, Fixture>> = {
     hero: { export: "Button", interactiveTarget: "button", props: `{ variant: "hero", children: "Send invoice" }` },
     sm: { export: "Button", interactiveTarget: "button", props: `{ size: "sm", children: "Small" }` },
     lg: { export: "Button", interactiveTarget: "button", props: `{ size: "lg", children: "Large" }` },
+    // VI-824: the kit's outline squircle button is lg.
+    "lg-outline": { export: "Button", interactiveTarget: "button", props: `{ size: "lg", variant: "outline", children: "Not Now" }` },
     dlg: { export: "Button", interactiveTarget: "button", props: `{ size: "dlg", children: "Save" }` },
     // VI-733: the compact destructive face, and an icon beside a label with JSX's " " between.
     "dlg-destructive": { export: "Button", interactiveTarget: "button", props: `{ size: "dlg", variant: "destructive", children: "Void" }` },

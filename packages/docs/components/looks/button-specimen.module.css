@@ -23,10 +23,39 @@
   --button-press-duration: 0.15s;
   --button-motion-duration: 0.5s;
   --button-motion-easing: var(--motion-easing-enter, cubic-bezier(0.22, 1, 0.36, 1));
+  /* The outline squircle button (VI-824): its own padding, weight and 24% ink
+     ring, on the back-arrow button's solid wash. Over a photo it sits on the
+     glass surface fill instead, never on a ring alone: the back arrow's thin
+     control wash left its label at 3.2:1 on real photos. */
+  --button-outline-padding: 0 26px;
+  --button-outline-font-weight: 520;
+  --button-outline-ring-color: color-mix(in srgb, var(--text-primary) 24%, transparent);
+  --button-outline-bg: var(--glass-on-fill, var(--surface-subtle));
+  /* Frosted like the back arrow over a photo; the blur is unset off a photo. */
+  --button-outline-backdrop-filter: var(--glass-on-control-blur, none);
+  /* The kit's buttons are squircles in every look, Today included. */
+  --corner-shape: squircle;
 
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-3, 0.75rem);
   align-items: center;
   justify-content: center;
+}
+
+/* Over a photo the outline keeps the glass fill on hover too, so its label
+   never drops to a thin wash; the grow is the hover cue. The back arrow sits on
+   the same frosted glass fill, so the two secondary controls match (BO-77). */
+:global([data-glass="on"]) .pills {
+  --button-outline-bg-hover: var(--glass-on-fill);
+  --glass-on-control-fill: var(--glass-on-fill);
+  --glass-on-control-hover-fill: var(--glass-on-fill);
+}
+
+/* Today is the theme as it ships, so the primary takes the theme's own key
+   colour (honcho's pink since BO-80), not the ink face the other looks draw. */
+:global([data-look="today"]) .pills {
+  --button-default-bg: initial;
+  --button-default-bg-hover: initial;
+  --button-default-text: initial;
 }
