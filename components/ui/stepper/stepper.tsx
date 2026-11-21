@@ -10,7 +10,7 @@ import styles from "./stepper.module.css"
 interface StepperContextValue {
   activeStep: number
   orientation: "horizontal" | "vertical"
-  variant: "default" | "prominent"
+  variant: "default" | "prominent" | "rail"
 }
 
 const StepperContext = React.createContext<StepperContextValue>({
@@ -39,8 +39,17 @@ export interface StepperProps extends React.HTMLAttributes<HTMLDivElement> {
    *   Best used vertically. Fully theme-agnostic — tokens resolve against the
    *   active theme, so monochromatic themes stay restrained while colorful ones
    *   get the intended pop.
+   * - `"rail"` — a side list of form sections: each trigger is one row-wide
+   *   button holding a dot mark and its label (pass the label as the trigger's
+   *   children), with no circles and no separators. The current row's mark
+   *   stretches to a pill. The states are one ink at 100/64/40/24%: the
+   *   theme's `--text-primary`, or under `data-glass="on"` the glass ink in
+   *   light, and in dark the glass layer's scrim ink (white) with its shadow;
+   *   over a dark photo, sit it on the glass layer's `scrim` so white clears
+   *   contrast.
+   *   Use with `orientation="vertical"`.
    */
-  variant?: "default" | "prominent"
+  variant?: "default" | "prominent" | "rail"
 }
 
 const Stepper = React.forwardRef<HTMLDivElement, StepperProps>(
@@ -62,6 +71,7 @@ const Stepper = React.forwardRef<HTMLDivElement, StepperProps>(
           className={cn(
             styles.stepper,
             orientation === "vertical" && styles.stepperVertical,
+            variant === "rail" && styles.stepperRail,
             className
           )}
           {...props}
@@ -96,7 +106,7 @@ const StepperItem = React.forwardRef<HTMLDivElement, StepperItemProps>(
         data-status={resolvedStatus}
         data-orientation={orientation}
         data-variant={variant}
-        aria-current={resolvedStatus === "active" ? "step" : undefined}
+        aria-current={resolvedStatus === "active" && variant !== "rail" ? "step" : undefined}
         className={cn(
           styles.item,
           orientation === "vertical" && styles.itemVertical,
@@ -129,6 +139,7 @@ const StepperTrigger = React.forwardRef<HTMLButtonElement, StepperTriggerProps>(
       status ?? (step < activeStep ? "complete" : step === activeStep ? "active" : "upcoming")
 
     const isLocked = resolvedStatus === "locked"
+    const isRail = variant === "rail"
     const isProminentActive = variant === "prominent" && resolvedStatus === "active"
 
     const handleClick = isLocked
@@ -143,17 +154,22 @@ const StepperTrigger = React.forwardRef<HTMLButtonElement, StepperTriggerProps>(
         data-status={resolvedStatus}
         data-variant={variant}
         aria-disabled={isLocked || undefined}
+        aria-current={isRail && resolvedStatus === "active" ? "step" : undefined}
         tabIndex={isLocked ? -1 : undefined}
         className={cn(
-          styles.trigger,
-          styles[`trigger--${resolvedStatus}`],
+          isRail ? styles.railTrigger : [styles.trigger, styles[`trigger--${resolvedStatus}`]],
           variant === "prominent" && styles[`triggerProminent--${resolvedStatus}`],
           className
         )}
         onClick={handleClick}
         {...props}
       >
-        {resolvedStatus === "complete" ? (
+        {isRail ? (
+          <>
+            <span className={styles.railMark} aria-hidden="true" />
+            {children}
+          </>
+        ) : resolvedStatus === "complete" ? (
           <Check size={14} weight="bold" aria-hidden="true" />
         ) : resolvedStatus === "locked" ? (
           <Lock size={12} weight="bold" aria-hidden="true" />

@@ -347,7 +347,7 @@ emits no extra CSS at all. Bind one and every consuming surface follows.
 
 Families: `table` · `data-table` · `chip` · `badge` · `status-badge` ·
 `filter-bar` · `page-header` · `empty-state` · `banner` · `sidebar` · `tabs` ·
-`skeleton` · `spinner` · `checkbox` · `switch` · `toggle-group` · `radio-card` · `tooltip` · `action-row` · `glass` · `admin-ui`. The full token list, with each
+`skeleton` · `spinner` · `stepper` · `checkbox` · `switch` · `toggle-group` · `radio-card` · `tooltip` · `action-row` · `glass` · `admin-ui`. The full token list, with each
 one's fallback, is in [Component Tokens](https://visor.design/docs/themes/component-tokens)
 and in [`docs/token-rules.md`](./docs/token-rules.md).
 
@@ -356,7 +356,7 @@ and in [`docs/token-rules.md`](./docs/token-rules.md).
 Glass is a switch, off by default. Set `data-glass="on"` on the container a photo
 sits behind, and `data-glass="off"` to turn a subtree back to solid. A theme binds
 its glass per tone under `components.glass` (`fill`, `blur`, `edge`, `lift`,
-`shadow`, `ink`, and `control-fill`, `control-hover-fill`, `control-ring`,
+`shadow`, `ink`, `ink-shadow`, and `control-fill`, `control-hover-fill`, `control-ring`,
 `control-ink`, `control-blur` for controls). Components read the switch's
 `var(--glass-on-<key>, <solid value>)`, so a plain page keeps its solid surfaces and
 borders and renders no `backdrop-filter`. See [Glass](https://visor.design/docs/themes/glass).
