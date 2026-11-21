@@ -63,7 +63,7 @@ props:
     required: false
     description: >
       soft only. Replaces the tone's default icon (WarningOctagon, Warning, CheckCircle, Info).
-      Drawn at --alert-icon-size (32px, the neutral note too) and hidden from assistive tech.
+      Drawn at --alert-icon-size (32px; 24px for the neutral note) and hidden from assistive tech.
 
 dependencies:
   - "class-variance-authority"

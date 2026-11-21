@@ -81,7 +81,7 @@ Use `AlertActions` to add a right-aligned, gap-aware row of action buttons — i
 | `destructive` | `--surface-error-soft` | `WarningOctagon`, 32px | `alert` |
 | `warning` | `--surface-warning-soft` | `Warning`, 32px | `status` |
 | `success` | `--surface-success-soft` | `CheckCircle`, 32px | `status` |
-| `default` | a faint wash of the ink colour | `Info`, 32px | `status` |
+| `default` | a faint wash of the ink colour | `Info`, 24px | `status` |
 
 Danger is an octagon, so it differs from a warning by shape as well as colour. `info` has no soft surface yet and draws as `default`. An explicit `role` prop still wins.
 
@@ -132,7 +132,7 @@ Danger is an octagon, so it differs from a warning by shape as well as colour. `
 
 ### Over a Photo
 
-Inside the [glass layer](/docs/themes/glass)'s `data-glass="on"` switch, the soft alert draws on glass: the glass layer's control fill and blur (the light glass of a field, not a card's), a full hairline outline (never a stripe), and every tone in the glass ink instead of its tone colour, because red sinks into a warm photo. The icon's shape still tells the tones apart. Off the switch it is the plain soft alert above, with no blur. This is the look that replaces the Honcho kit's Notice: pass `icon={<WarningCircle weight="bold" />}` for a send that failed, or `icon={<WifiSlash weight="bold" />}` for offline. Below, the alerts sit on a form panel drawn with the glass layer's recipe, as a FormDeck slide sets its notices on the slide's glass card. Over a photo the panel turns to glass too, so the alerts read against a calm surface instead of the photo itself.
+Inside the [glass layer](/docs/themes/glass)'s `data-glass="on"` switch, the soft alert draws on glass: the glass layer's control fill and blur (the light glass of a field, not a card's), a full hairline outline (never a stripe), and every tone in the glass ink instead of its tone colour, because red sinks into a warm photo. The icon's shape still tells the tones apart, and the neutral note draws its icon at the other tones' 32px, so every tone's text starts in one column. Off the switch it is the plain soft alert above, with no blur. This is the look that replaces the Honcho kit's Notice: pass `icon={<WarningCircle weight="bold" />}` for a send that failed, or `icon={<WifiSlash weight="bold" />}` for offline. Below, the alerts sit on a form panel drawn with the glass layer's recipe, as a FormDeck slide sets its notices on the slide's glass card. Over a photo the panel turns to glass too, so the alerts read against a calm surface instead of the photo itself.
 
 <FiveLooks specimen="alert" height={620} />
 
@@ -145,7 +145,7 @@ Inside the [glass layer](/docs/themes/glass)'s `data-glass="on"` switch, the sof
 
 ### Tuning
 
-The soft sizes are component tokens, so a product tunes them in its theme without forking the component: `--alert-icon-size` (32px), `--alert-icon-size-note` (the same 32px, so every tone's text lines up), `--alert-soft-padding` (12px 14px), `--alert-gap` (12px), `--alert-radius` (`--radius-lg`), `--alert-font-size` (`--font-size-sm`) and `--alert-lead-font-weight` (`--font-weight-bold`). Bind them under `components.alert` in a theme. See [Component Tokens](/docs/themes/component-tokens).
+The soft sizes are component tokens, so a product tunes them in its theme without forking the component: `--alert-icon-size` (32px), `--alert-icon-size-note` (24px), `--alert-soft-padding` (12px 14px), `--alert-gap` (12px), `--alert-radius` (`--radius-lg`), `--alert-font-size` (`--font-size-sm`) and `--alert-lead-font-weight` (`--font-weight-bold`). Bind them under `components.alert` in a theme. See [Component Tokens](/docs/themes/component-tokens).
 
 ## Installation
 

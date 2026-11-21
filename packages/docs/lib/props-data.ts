@@ -25,7 +25,7 @@ export const propsData: Record<string, PropDef[]> = {
       name: 'icon',
       type: 'React.ReactElement<IconProps>',
       description:
-        "soft only. Replaces the tone's default icon; drawn at --alert-icon-size (32px, the default note too) and hidden from assistive tech.",
+        "soft only. Replaces the tone's default icon; drawn at --alert-icon-size (24px for the default note) and hidden from assistive tech.",
     },
     {
       name: 'role',

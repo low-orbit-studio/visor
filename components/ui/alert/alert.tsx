@@ -64,10 +64,9 @@ const SOFT_ICON: Record<AlertVariant, React.ElementType<IconProps>> = {
 /** The soft icon size for every tone but the neutral note. Matches the
  *  `--alert-icon-size` fallback; the CSS token governs the rendered size. */
 export const ALERT_ICON_SIZE = 32
-/** The neutral note's icon size: the same as every other tone by default
- *  (VI-799), so the text columns line up. Matches the `--alert-icon-size-note`
- *  fallback, which falls back to `--alert-icon-size`. */
-export const ALERT_ICON_SIZE_NOTE = ALERT_ICON_SIZE
+/** The neutral note is usually one line, where 32px reads heavy. Matches the
+ *  `--alert-icon-size-note` fallback. */
+export const ALERT_ICON_SIZE_NOTE = 24
 
 export interface AlertProps
   extends React.HTMLAttributes<HTMLDivElement>,

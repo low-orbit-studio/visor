@@ -3,8 +3,8 @@ import { test, expect, type Frame, type Page } from "@playwright/test";
 // VI-799: the soft Alert replaces the kit's Notice. In the plain looks it keeps
 // its danger tone and no glass; over a photo every tone draws in the glass ink,
 // on the glass fill and blur, with a full hairline outline and never a stripe.
-// The alerts sit on a form panel built from the glass recipe, and every tone's
-// text starts in the same column (the info note included).
+// The alerts sit on a form panel built from the glass recipe, and over a photo
+// every tone's text starts in the same column (the info note included).
 // The stock theme CI has; LOOKS_THEME=honcho-backstage and LOOKS_PHOTO=/a-real-photo.webp
 // draw the kit's looks over a real photo locally.
 const THEME = process.env.LOOKS_THEME ?? "neutral";
@@ -82,9 +82,14 @@ for (const width of [1440, 390]) {
           await expect(frame.locator('[data-slot="look-panel"]')).toHaveAttribute("data-mode", look.mode ?? docsMode);
           const alerts = await probe(frame);
           expect(alerts).toHaveLength(5);
-          // Every tone, the info note included, draws one icon size and starts its text in one column.
-          expect(new Set(alerts.map((a) => a.iconWidth)).size).toBe(1);
-          expect(new Set(alerts.map((a) => a.textLeft)).size).toBe(1);
+          // Over a photo every tone, the info note included, draws one icon size and starts its
+          // text in one column. The plain looks keep the note's smaller 24px icon.
+          if (look.photo) {
+            expect(new Set(alerts.map((a) => a.iconWidth)).size).toBe(1);
+            expect(new Set(alerts.map((a) => a.textLeft)).size).toBe(1);
+          } else {
+            expect(alerts.at(-1)!.iconWidth).toBe(24);
+          }
           // The alerts sit on the glass recipe's form panel: glass over a photo, a solid card elsewhere.
           const panelGlass = await frame
             .locator('[data-slot="alert-form-panel"] > span[aria-hidden]')

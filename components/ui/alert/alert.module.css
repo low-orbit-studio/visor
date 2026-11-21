@@ -143,9 +143,7 @@
 }
 
 /* The icon: outline, unchipped, in the tone's colour. The SVG's own width is
-   the token's fallback; this governs the rendered size so a theme can bind it.
-   The neutral note takes the same size by default (VI-799), so its text column
-   lines up with every other tone's; a theme can still bind a smaller note. */
+   the token's fallback; this governs the rendered size so a theme can bind it. */
 .icon {
   flex: none;
   display: inline-flex;
@@ -157,8 +155,8 @@
 }
 
 .softNote .icon > svg {
-  width: var(--alert-icon-size-note, var(--alert-icon-size, 2rem));
-  height: var(--alert-icon-size-note, var(--alert-icon-size, 2rem));
+  width: var(--alert-icon-size-note, 1.5rem);
+  height: var(--alert-icon-size-note, 1.5rem);
 }
 
 .softDestructive .icon {
@@ -190,7 +188,29 @@
 }
 
 .softNote .content {
-  min-height: var(--alert-icon-size-note, var(--alert-icon-size, 2rem));
+  min-height: var(--alert-icon-size-note, 1.5rem);
+}
+
+/* Over a photo (VI-799) the note draws its icon at the other tones' size, so
+   every tone's text starts in one column on the glass. A size can't ride a
+   --glass-on-* fallback, so this keys off the switch itself; the off rule
+   after it restores the note for a data-glass="off" subtree inside it. */
+:global([data-glass="on"]) .softNote .icon > svg {
+  width: var(--alert-icon-size, 2rem);
+  height: var(--alert-icon-size, 2rem);
+}
+
+:global([data-glass="on"]) .softNote .content {
+  min-height: var(--alert-icon-size, 2rem);
+}
+
+:global([data-glass="off"]) .softNote .icon > svg {
+  width: var(--alert-icon-size-note, 1.5rem);
+  height: var(--alert-icon-size-note, 1.5rem);
+}
+
+:global([data-glass="off"]) .softNote .content {
+  min-height: var(--alert-icon-size-note, 1.5rem);
 }
 
 /* Trim the outer margins of whatever sits at the content's edges. MDX wraps
