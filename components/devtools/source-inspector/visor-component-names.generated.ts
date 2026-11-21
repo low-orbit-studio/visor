@@ -338,6 +338,7 @@ export const VISOR_COMPONENT_NAMES: ReadonlySet<string> = new Set([
   "PaginationPrevious",
   "PasswordInput",
   "PhoneInput",
+  "PhotoDrop",
   "PhotoPicker",
   "PlatformChip",
   "Popover",

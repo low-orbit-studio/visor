@@ -1,0 +1,96 @@
+name: PhotoDrop
+description: A squircle drop tile for one photo or file. A dashed edge wakes into marching ants on hover, focus or a drag; a picked photo fills the same shape. Uploading draws a ring along the edge, failed offers Try Again, and locked and read-only show the photo with no input.
+extends: HTMLDivElement
+category: form
+
+when_to_use:
+  - A contact or profile photo in a form
+  - One document (a PDF, an insurance card) in a form, with file mode
+  - A photo that is uploading, failed, locked or only shown, in the same tile
+
+when_not_to_use:
+  - Several files with a list of names and sizes (use FileUpload)
+  - Picking a photo from a set you already have (use PhotoPicker)
+  - Browsing photos full size (use Lightbox)
+
+why: >
+  Lifted from the Honcho kit's photo drop (FormDeck and the Backstage edit
+  sheet), so every app that asks for one photo gets the same tile. The
+  squircle is a JS superellipse path, so it draws in every browser; the clip
+  and the edge come from the same path at any size. The real file input
+  covers the tile, so click, drop and keyboard all go through the browser's
+  own picker, and the row draws a focus ring the clip cannot cut. Every
+  animation is CSS. Glass is off by default: the tile never blurs, and its
+  badges blur only under the glass layer's switch.
+
+props:
+  - name: id
+    type: string
+    required: true
+    description: The file input's id, for a label's htmlFor.
+  - name: src
+    type: string
+    required: true
+    description: The picked photo's URL (in file mode, the file's name), or empty.
+  - name: onPick
+    type: "(url: string, file: File) => void"
+    description: Called with a preview object URL and the picked File.
+  - name: size
+    type: number
+    default: "220"
+    description: Side of the tile, in px. 128 in file mode.
+  - name: file
+    type: "{ icon: ReactNode; accept?: string; onFile: (file: File) => void; onClear: () => void }"
+    description: File mode. The tile shows the icon, the name sits beside it, and Remove calls onClear.
+  - name: progress
+    type: number | "indeterminate"
+    description: Uploading, 0 to 1, drawn as a ring along the edge; "indeterminate" sweeps an arc.
+  - name: failed
+    type: boolean
+    description: The upload stopped. An error edge and Try Again; a tap still picks a new file.
+  - name: onRetry
+    type: "() => void"
+    description: Called by Try Again.
+  - name: locked
+    type: boolean
+    description: A lock badge, "Locked" and no input.
+  - name: lockedReason
+    type: ReactNode
+    description: Why it is locked, shown under "Locked".
+  - name: readOnly
+    type: boolean
+    description: The photo only, with a quiet rim, no hint and no input.
+  - name: readOnlyReason
+    type: ReactNode
+    description: Read-only with a note, shown under "Read-Only" (e.g. why it can't be changed). Without it, read-only shows no caption.
+  - name: alt
+    type: string
+    description: The photo's alt text.
+  - name: invalid
+    type: boolean
+    description: aria-invalid on the input, and the edge in the error colour.
+  - name: required
+    type: boolean
+    description: aria-required on the input.
+  - name: describedBy
+    type: string
+    description: More ids for the input's aria-describedby.
+
+dependencies:
+  - "@phosphor-icons/react"
+
+preview_url: "https://visor.loworbit.studio/docs/components/form/photo-drop"
+
+example: |
+  <label htmlFor="photo">Your Photo</label>
+  <PhotoDrop
+    id="photo"
+    src={photo}
+    onPick={(url, file) => {
+      setPhoto(url)
+      upload(file)
+    }}
+    progress={uploading ? progress : undefined}
+    failed={failed}
+    onRetry={retry}
+  />
