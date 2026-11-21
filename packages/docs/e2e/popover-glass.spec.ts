@@ -4,8 +4,6 @@ import { test, expect, type Frame, type Locator, type Page } from "@playwright/t
 // is hidden from the keyboard and screen readers while closed, keeps focus on its
 // trigger, and turns to glass only in the Photo looks.
 const PAGE = "/docs/components/overlay/popover";
-// A real photo for the Photo looks (`?photo=/path.jpg`); the stand-in is used without it.
-const PHOTO = process.env.VISOR_LOOK_PHOTO ? `?photo=${process.env.VISOR_LOOK_PHOTO}` : "";
 const LOOKS = [
   { id: "today", label: "Today", photo: false },
   { id: "dark", label: "Dark", photo: false, mode: "dark" },
@@ -20,7 +18,7 @@ async function openDocs(page: Page, mode: "light" | "dark" = "light") {
     localStorage.setItem("visor-color-mode", m);
     localStorage.setItem("theme", m);
   }, mode);
-  await page.goto(PAGE + PHOTO);
+  await page.goto(PAGE);
 }
 
 function demo(page: Page) {
