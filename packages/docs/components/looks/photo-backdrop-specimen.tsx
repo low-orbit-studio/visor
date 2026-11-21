@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import { PhotoBackdrop, type PhotoBackdropSource } from '@/components/ui/photo-backdrop';
 import { PHOTO_SCRIM, type LookSpecimenProps } from './looks';
 import glass from './glass-specimen.module.css';
@@ -30,12 +31,12 @@ export function PhotoBackdropSpecimen({ look, mode, photos }: LookSpecimenProps)
         <span className={glass.glass} aria-hidden="true" data-slot="glass-layer" />
         <span className={glass.edge} aria-hidden="true" />
         <div className={glass.content}>
-          <h3 className={glass.title}>Friday Night</h3>
+          <h3 className={glass.title}>This Weekend</h3>
           <p className={glass.body}>The photo behind this card is a PhotoBackdrop. Where it draws one, the card turns to glass.</p>
           {look.photo && photos.length > 1 && (
-            <button type="button" className={glass.control} onClick={() => setIndex((i) => i + 1)}>
+            <Button variant="outline" className={styles.next} onClick={() => setIndex((i) => i + 1)}>
               Next Photo
-            </button>
+            </Button>
           )}
         </div>
       </div>
