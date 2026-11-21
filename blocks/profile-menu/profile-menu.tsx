@@ -78,8 +78,10 @@ export interface ProfileMenuProps {
   trigger?: "row" | "avatar"
   /** Open direction. Default "top" for the row trigger (footer is bottom-anchored), "bottom" for the avatar. */
   side?: "top" | "bottom" | "auto"
-  /** Open on first render (uncontrolled). */
+  /** Open on first render (uncontrolled). That first open leaves focus where it is; later opens move it into the menu. */
   defaultOpen?: boolean
+  /** Default true: while open, the rest of the page is inert to the pointer and hidden from screen readers. */
+  modal?: boolean
   className?: string
 }
 
@@ -99,11 +101,14 @@ export function ProfileMenu({
   trigger = "row",
   side = trigger === "avatar" ? "bottom" : "top",
   defaultOpen,
+  modal,
   className,
 }: ProfileMenuProps) {
   const isAvatar = trigger === "avatar"
   // The avatar menu renders into this layer beside its trigger, not at the end of the page.
   const [layer, setLayer] = React.useState<HTMLSpanElement | null>(null)
+  // A menu rendered open with the page must not pull focus off the page (or out of a frame).
+  const skipFirstAutoFocus = React.useRef(Boolean(defaultOpen))
   const initials = user.initials ?? deriveInitials(user.name)
   const triggerLabel = context?.label
     ? `Account menu · ${user.name} · ${context.label}`
@@ -125,7 +130,7 @@ export function ProfileMenu({
   const contentSide = side === "auto" ? undefined : side
 
   return (
-    <DropdownMenu defaultOpen={defaultOpen}>
+    <DropdownMenu defaultOpen={defaultOpen} modal={modal}>
       <DropdownMenuTrigger asChild>
         <button
           type="button"
@@ -191,6 +196,14 @@ export function ProfileMenu({
         container={isAvatar ? layer : undefined}
         data-skin={isAvatar ? "popover" : undefined}
         className={cn(styles.content, isAvatar && styles.popoverSkin)}
+        // shortcut: Radix forwards onOpenAutoFocus to the menu's focus scope but its DropdownMenuContent
+        // type hides it; the defaultOpen focus test catches a Radix upgrade that drops it.
+        {...({
+          onOpenAutoFocus: (event: Event) => {
+            if (skipFirstAutoFocus.current) event.preventDefault()
+            skipFirstAutoFocus.current = false
+          },
+        } as object)}
       >
         {isAvatar ? (
           <DropdownMenuLabel className={cn(styles.menuHeader, styles.menuHeaderWho)}>

@@ -444,6 +444,20 @@ describe("ProfileMenu trigger=\"avatar\"", () => {
     await waitFor(() => expect(trigger).toHaveFocus())
   })
 
+  it("defaultOpen renders the menu open without moving focus into it", async () => {
+    render(
+      <ProfileMenu
+        trigger="avatar"
+        defaultOpen
+        user={{ name: "Sam Rivera", email: "sam@example.com" }}
+        items={[{ type: "item", label: "Sign Out" }]}
+      />
+    )
+    const menu = await screen.findByRole("menu")
+    expect(menu).toBeInTheDocument()
+    expect(document.activeElement).toBe(document.body)
+  })
+
   it("the default row trigger still folds to its avatar in a collapsed AdminShell rail", () => {
     const { container } = render(
       <AdminShell

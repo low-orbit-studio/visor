@@ -34,7 +34,7 @@ export function topBarItems(onChangeEmail?: () => void, onSignOut?: () => void):
  * A top bar's account menu: the avatar trigger, the menu in place under it. Solid on a
  * plain page; glass where an ancestor sets `data-glass="on"` over a photo.
  */
-export function ProfileMenuTopBarDemo({ defaultOpen = false }: { defaultOpen?: boolean }) {
+export function ProfileMenuTopBarDemo({ defaultOpen = false, modal }: { defaultOpen?: boolean; modal?: boolean }) {
   return (
     <div
       data-demo="profile-menu-top-bar"
@@ -51,6 +51,7 @@ export function ProfileMenuTopBarDemo({ defaultOpen = false }: { defaultOpen?: b
         user={TOP_BAR_USER}
         items={topBarItems(() => undefined, () => undefined)}
         defaultOpen={defaultOpen}
+        modal={modal}
       />
     </div>
   );
