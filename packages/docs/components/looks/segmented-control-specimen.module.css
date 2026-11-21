@@ -1,6 +1,19 @@
 .stack {
+  position: relative;
   display: grid;
   gap: var(--spacing-4, 1rem);
   justify-items: center;
   width: min(100%, 16rem);
+}
+
+/* Over a photo the switches sit on a glass form panel, as FormDeck's slides do, never on the
+ * photo itself. Off the photo the panel adds nothing: no fill, edge or padding. */
+.panel {
+  min-width: 0;
+  border-radius: var(--radius-lg, 0.5rem);
+}
+
+:global([data-glass='on']) .panel {
+  position: relative;
+  padding: var(--spacing-6, 1.5rem);
 }

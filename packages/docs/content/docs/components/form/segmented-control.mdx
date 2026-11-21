@@ -205,17 +205,18 @@ layer's control fill. Everywhere else the well is solid, with no `backdrop-filte
 SegmentedControl as the theme skins it, with no local hooks, in each look on the theme picked in the docs.
 The Photo looks turn glass on over a photo.
 
-<FiveLooks specimen="segmented-control" height={180} />
+<FiveLooks specimen="segmented-control" height={240} />
 
 {HONCHO_BACKSTAGE && (
   <section data-slot="honcho-backstage-looks" aria-label="Honcho Backstage">
     <h3>Honcho Backstage</h3>
     <p>
-      The Honcho kit's pill switch, from the theme alone: a well of field fill, a pill of 20% ink with no edge,
-      the active label at full ink and the others at 64%. Today is the <code>honcho</code> theme; the other four
-      looks are <code>honcho-backstage</code>.
+      The Honcho kit's pill switch, from the theme alone: a well of field fill with no edge, a pill of 20% ink
+      with no edge, the active label at full ink and the others at 64%. Today is the <code>honcho</code> theme,
+      which draws the same switch inverted on its light page: an ink well, a 20% white pill and white labels.
+      The other four looks are <code>honcho-backstage</code>. Over a photo the switches sit on a glass form panel.
     </p>
-    <FiveLooks specimen="segmented-control" theme="honcho-backstage" todayTheme="honcho" height={180} />
+    <FiveLooks specimen="segmented-control" theme="honcho-backstage" todayTheme="honcho" height={240} />
   </section>
 )}
 

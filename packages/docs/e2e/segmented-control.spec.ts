@@ -35,13 +35,18 @@ const LOOKS: { id: string; label: string; photo: boolean; mode?: "light" | "dark
   { id: "light-photo", label: "Light + Photo", photo: true, mode: "light" },
 ];
 
-async function openDocs(page: Page, mode: "light" | "dark") {
+// Real Campout photos for the Photo looks, a night one behind Dark + Photo and a day one behind
+// Light + Photo. Local review fixtures (seeded with review_station.py photo-fixtures), never
+// committed; without them the frame shows no photo and the checks still hold.
+const PHOTOS = "?photo-dark=/vi-803-photos/photo-1.webp&photo-light=/vi-803-photos/photo-2.webp";
+
+async function openDocs(page: Page, mode: "light" | "dark", query = "") {
   await page.addInitScript((m) => {
     localStorage.setItem("visor-theme", "neutral");
     localStorage.setItem("visor-color-mode", m);
     localStorage.setItem("theme", m);
   }, mode);
-  await page.goto(PAGE);
+  await page.goto(PAGE + query);
 }
 
 /** The look's frame once it shows the specimen on `theme`, with fonts loaded. */
@@ -68,6 +73,8 @@ interface Well {
   ink20: string;
   ink100: string;
   ink64: string;
+  edge: string;
+  panelBlur: string;
   blurred: number;
 }
 
@@ -107,6 +114,10 @@ function readWell(frame: Frame): Promise<Well> {
       ink20: px(probe("backgroundColor", "color-mix(in srgb, var(--ink-100) 20%, transparent)")),
       ink100: px(probe("color", "var(--ink-100)")),
       ink64: px(probe("color", "var(--ink-64)")),
+      edge: cs.outlineStyle,
+      panelBlur: getComputedStyle(
+        document.querySelector('[data-slot="segmented-control-form-panel"] > [data-slot="glass-layer"]')!,
+      ).backdropFilter,
       blurred: [...document.querySelectorAll("*")].filter((el) => getComputedStyle(el).backdropFilter !== "none").length,
     };
   });
@@ -142,7 +153,7 @@ for (const width of [1440, 390]) {
 
     test(`SegmentedControl on honcho-backstage: five looks at ${width} with the docs in ${docsMode}`, async ({ page }, testInfo) => {
       await page.setViewportSize({ width, height: 900 });
-      await openDocs(page, docsMode);
+      await openDocs(page, docsMode, PHOTOS);
       const section = page.locator('[data-slot="honcho-backstage-looks"]');
       test.skip((await section.count()) === 0, "honcho-backstage is a private theme; not installed in this build");
       const grid = section.locator('[data-slot="five-looks"]');
@@ -156,6 +167,8 @@ for (const width of [1440, 390]) {
           if (look.photo) {
             expect(w.filter).toBe(w.glassBlur);
             expect(w.filter).toContain("blur(24px)");
+            // The switches sit on a glass form panel, never straight on the photo.
+            expect(w.panelBlur).toContain("blur(");
           } else {
             expect(w.filter).toBe("none");
             expect(w.blurred).toBe(0);
@@ -165,7 +178,15 @@ for (const width of [1440, 390]) {
             expect(w.pill, "pill = 20% ink").toBe(w.ink20);
             expect(w.on, "active label = ink 100").toBe(w.ink100);
             expect(w.off, "inactive label = ink 64").toBe(w.ink64);
+          } else {
+            // Today (VI-803 v9): the Backstage switch inverted on honcho's light page, never the key colour.
+            expect(w.bg, "well = ink").toBe("11,11,12,255");
+            expect(w.pill, "pill = 20% white").toBe("255,255,255,51");
+            expect(w.on, "active label = white").toBe("255,255,255,255");
+            expect(w.off, "inactive label = 66% white").toBe("255,255,255,168");
           }
+          // No edge on the well in any look, as the kit's switch draws none.
+          expect(w.edge, "well edge").toBe("none");
         }).toPass({ timeout: 30_000 });
       }
 

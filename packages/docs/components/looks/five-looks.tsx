@@ -30,19 +30,22 @@ export interface FiveLooksProps {
  * One specimen in all five looks (Today, Dark, Dark + Photo, Light, Light + Photo),
  * on the theme picked in the docs. Each look is its own frame, because a page can
  * only hold one light/dark mode per theme. Today follows the docs site's mode.
- * A `?photo=/path.jpg` on the page swaps the stand-in photo for a real one.
+ * A `?photo=/path.jpg` on the page swaps the stand-in photo for a real one; `?photo-dark=` and
+ * `?photo-light=` set one per tone (a night photo behind Dark + Photo, a day photo behind Light + Photo).
  */
 export function FiveLooks({ specimen, height = 340, theme: themeProp, todayTheme }: FiveLooksProps) {
   const theme = useActiveTheme(themeProp, PRIVATE_SLUGS);
   const [mode, setMode] = useState<LookMode>('light');
-  const [photo, setPhoto] = useState('');
+  const [photos, setPhotos] = useState<Record<LookMode, string>>({ dark: '', light: '' });
 
   useEffect(() => {
     const read = () => setMode(readDocsMode());
     read();
     const observer = new MutationObserver(read);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    setPhoto(new URLSearchParams(window.location.search).get('photo') ?? '');
+    const params = new URLSearchParams(window.location.search);
+    const photo = params.get('photo') ?? '';
+    setPhotos({ dark: params.get('photo-dark') ?? photo, light: params.get('photo-light') ?? photo });
     return () => observer.disconnect();
   }, []);
 
@@ -51,6 +54,7 @@ export function FiveLooks({ specimen, height = 340, theme: themeProp, todayTheme
       {LOOKS.map((look) => {
         const lookTheme = look.id === 'today' ? (todayTheme ?? theme) : theme;
         const query = new URLSearchParams({ theme: lookTheme, look: look.id, mode, specimen });
+        const photo = look.mode ? photos[look.mode] : '';
         if (photo) query.set('photo', photo);
         return (
           <figure key={look.id} className={styles.look} data-look={look.id}>
