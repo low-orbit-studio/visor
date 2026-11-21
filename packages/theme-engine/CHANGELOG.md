@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.44.0
+
+### Minor Changes
+
+- c30e747: KeyValueList takes skin hooks and reads the glass layer. The theme engine gains a `key-value-list` family: label `font-size`, `font-weight`, `line-height`, `letter-spacing`, `text-transform`, `color` and `padding-top`; value `font-size`, `font-weight`, `line-height`, `color`, `text-wrap`, `overflow-wrap` and `font-variant-numeric`; the horizontal `columns`, `item-gap` and `item-align`; `item-padding`, `row-gap` and a `divider` between rows of a one-column list; and `panel-bg`, `panel-border-color`, `panel-radius` and `panel-padding`. Each falls back to the look KeyValueList drew before, so an unbound theme renders as it did. A new `surface="panel"` draws the theme's card surface and border, and inside `data-glass="on"` turns to the glass layer's fill, lift and blur with its edge cleared; a list with no surface never blurs. A new `as="span"` renders spans throughout, so the list fits inside a `<button>` tile.
+- 2d6c540: OfflineBanner gains `variant="pill"`, a compact inline pill for a top bar, and a `detail` prop shown after the label as `· {detail}` (with a detail the root drops its `aria-label`, so the status reads the whole text). The pill is solid by default and reads the glass layer's control fill, ring, ink and blur inside `data-glass="on"`. Text gains `size="eyebrow"`, an all-caps row label whose weight and colour come from its own hooks unless the caller passes `weight` or `color`. StatusDot reads `--status-dot-size` (6px unset) and `--status-dot-color` (each tone's token unset). Chip's default variant now honours `--chip-bg` and `--chip-text-color`. The theme engine gains a `status-dot` family (`size`), an `offline-banner` family (`pill-height`, `pill-padding-x`, `pill-gap`, `pill-font-size`, `pill-font-weight`, `pill-detail-font-weight`, `pill-detail-opacity`, `pill-icon-size`, `pill-bg`, `pill-text-color`, `pill-border`) and the Text family's `eyebrow-*` keys (`font-size`, `text-transform`, `letter-spacing`, `font-weight`, `color`, `gap`). Every hook falls back to what each component drew before, so an unbound theme renders as it did.
+- ac3c226: VI-824: Button's outline face gets its own hooks, so a theme can draw the Honcho kit's outline squircle button. New `components.button` keys `outline-bg` (resting fill), `outline-padding`, `outline-font-weight`, `outline-ring-color` and `outline-backdrop-filter` (so it can frost over a photo like the glass icon button) set the outline variant alone, over the size and family padding, weight and the shared control edge. Unbound, the outline renders exactly as before.
+
+### Patch Changes
+
+- a00873c: SegmentedControl's well reads the glass layer. Inside `data-glass="on"` the well blurs the photo behind it with the glass layer's control blur and, when the theme leaves `segmented-control.track-bg` unbound, takes the glass layer's control fill; a theme's own `track-bg` still wins. Everywhere else the well is solid with no `backdrop-filter`, so a page without glass renders exactly as before. The theme engine's `segmented-control` family description and the schema say so.
+
 ## 0.43.0
 
 ### Minor Changes
