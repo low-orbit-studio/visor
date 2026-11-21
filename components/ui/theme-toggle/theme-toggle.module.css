@@ -1,13 +1,18 @@
 /* ThemeToggle: a round light/dark button, lifted from Honcho Backstage.
 
-   The look is variables, so a consumer can dress it (Backstage's glass is a
-   className with backdrop-filter plus these): --theme-toggle-size, -bg,
-   -bg-hover, -ring, -color, -icon-size. The motion is Backstage's, exact:
-   the icon going away turns 100deg and shrinks to .3 as it fades (turn
-   600ms on --theme-toggle-ease, scale 500ms on the spring, fade 300ms). */
+   Solid by default: theme surface, border and ink. Under the glass switch
+   (data-glass="on", VI-795) it reads the glass layer's shared control values,
+   the same set Button's glass variant reads, so it frosts the photo behind it
+   only where a photo sits; a theme binds Backstage's numbers there, never the
+   consumer. The --theme-toggle-* variables (size, -bg, -bg-hover, -ring,
+   -color, -icon-size) still win when set. The motion is Backstage's: the icon
+   going away turns 100deg and shrinks to .3 as it fades (turn 600ms on the
+   enter curve, scale 500ms on the spring, fade 300ms). */
 .root {
-  /* Backstage's --ease. No Visor token carries this curve; intentional. */
-  --_ease: var(--theme-toggle-ease, cubic-bezier(0.22, 1, 0.36, 1));
+  /* The enter curve (VI-796), which carries Backstage's --ease in the honcho-backstage theme. */
+  --_ease: var(--theme-toggle-ease, var(--motion-easing-enter, cubic-bezier(0.22, 1, 0.36, 1)));
+  /* Round even where the theme draws squircles, as Backstage's round class does (VI-796). */
+  --corner-shape: round;
   position: relative;
   overflow: hidden;
   display: inline-flex;
@@ -20,16 +25,19 @@
   padding: 0;
   border: 0;
   border-radius: var(--radius-full, 9999px);
-  background: var(--theme-toggle-bg, var(--surface-subtle, #f9fafb));
-  box-shadow: inset 0 0 0 var(--stroke-width-thin, 1px) var(--theme-toggle-ring, var(--border-default, #e5e7eb));
-  color: var(--theme-toggle-color, var(--text-primary, #111827));
+  background: var(--theme-toggle-bg, var(--glass-on-control-fill, var(--surface-subtle, #f9fafb)));
+  box-shadow: inset 0 0 0 var(--stroke-width-thin, 1px) var(--theme-toggle-ring, var(--glass-on-control-ring, var(--border-default, #e5e7eb)));
+  color: var(--theme-toggle-color, var(--glass-on-control-ink, var(--text-primary, #111827)));
+  /* Glass off, the --glass-on-* values are unset: no blur. Prefixed line first, so Lightning CSS keeps both (VI-788). */
+  -webkit-backdrop-filter: var(--glass-on-control-blur, none);
+  backdrop-filter: var(--glass-on-control-blur, none);
   cursor: pointer;
   transition: background var(--motion-duration-300, 300ms) var(--_ease);
 }
 
 @media (hover: hover) {
   .root:hover {
-    background: var(--theme-toggle-bg-hover, var(--surface-muted, #f3f4f6));
+    background: var(--theme-toggle-bg-hover, var(--glass-on-control-hover-fill, var(--surface-muted, #f3f4f6)));
   }
 }
 
