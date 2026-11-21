@@ -6,6 +6,8 @@ description: Discrete per-step progress meter — N equal pill segments in a row
 import { ComponentPreview } from '@/components/preview';
 import { PropsTable } from '@/components/props-table';
 import { SegmentedProgress } from '@/components/ui/segmented-progress';
+import { SegmentedProgressSectionsDemo } from '@/components/ui/segmented-progress-demo';
+import { FiveLooks } from '@/components/looks/five-looks';
 
 ## Default
 
@@ -124,6 +126,32 @@ A `failed` step fills with `--interactive-destructive-bg`, and its label reads b
   </div>
 </ComponentPreview>
 
+## Sections
+
+A multi-step form's step bar. Give each step a `weight` (its slide count, say) and its segment
+takes that share of the width. Give a finished step an `onSelect` and it becomes a button that
+jumps back to it; steps without one stay out of the tab order. Set `fill` (0 to 1) on the current
+step to fill its segment as far as the form has got through it. With `revealLabels`, a pending
+step's label is hidden, and fades, rises and sharpens in when its step fills. Labels already
+filled on first render show without animating, and under `prefers-reduced-motion` they switch with
+no transition. Press Next to walk the form, and press a finished section to jump back.
+
+<ComponentPreview
+  title="Weighted, tappable sections with labels that fade in"
+  code={"<SegmentedProgress\n  size=\"md\"\n  revealLabels\n  steps={[\n    { label: 'About You', weight: 2, state: 'done', onSelect: () => goTo(0) },\n    { label: 'Tickets', weight: 1, state: 'current', fill: 0.5 },\n    { label: 'Travel', weight: 3, state: 'pending' },\n  ]}\n/>"}
+>
+  <SegmentedProgressSectionsDemo />
+</ComponentPreview>
+
+### In Five Looks
+
+The same sections bar in each look, on the theme picked in the docs. The labels take the theme's
+text inks. Over a photo (`data-glass="on"`) they take the glass layer's control ink, as the glass
+controls beside them do, and the track takes the glass fill and blurs
+the photo behind it; everywhere else the track is solid and does not blur.
+
+<FiveLooks specimen="segmented-progress" height={200} />
+
 ## Theming the steps
 
 | Hook | Default | Drives |
@@ -133,6 +161,8 @@ A `failed` step fills with `--interactive-destructive-bg`, and its label reads b
 | `--segmented-progress-md-label-font-size` | `--font-size-sm` (14px) | Labels under `md` |
 | `--segmented-progress-fill-duration` | `600ms` | Each segment's fill-in |
 | `--segmented-progress-fill-stagger` | `140ms` | The delay between one segment's fill and the next |
+| `--motion-duration-enter`, `--motion-easing-enter` | `--motion-duration-800`, `--motion-easing-ease-out` | A revealed label's fade in |
+| `--glass-control-ink`, `--glass-fill`, `--glass-blur` | the theme's text inks, `--surface-muted`, `none` | Labels, track and track blur under `data-glass="on"` |
 
 A host that wants smaller labels at desktop widths sets the label hooks in its own media or
 container query.
@@ -176,7 +206,8 @@ The component also accepts all standard `<div>` HTML attributes.
 ## Accessibility
 
 - Without `steps`, the root element has `role="progressbar"` with `aria-valuemin={0}`, `aria-valuemax={total}`, and `aria-valuenow={value}`.
-- With `steps`, every step is `aria-hidden` and a visually hidden line beside the bar is read instead: "Step 2 of 3: Bank Details" by default, naming the failed step first, then the current one, then the next one ("All 3 steps done" when every step is done). Pass `summary` to say it differently.
+- A step with `onSelect` is a `<button>` named "Go to" and its label (when the label is a string), and it stays in the accessibility tree and the tab order. Every other step is `aria-hidden` and never focusable.
+- With `steps`, every other step is `aria-hidden` and a visually hidden line beside the bar is read instead: "Step 2 of 3: Bank Details" by default, naming the failed step first, then the current one, then the next one ("All 3 steps done" when every step is done). Pass `summary` to say it differently.
 - Without `steps`, an `aria-label` is required — describe the current step context (e.g. `"Step 3 of 10"` or `"Brand elicitation: step 3 of 10 complete"`).
 - Individual segment `<span>` elements are presentational; the progressbar role carries all announcements.
 - Segment transitions and the fill-in animation are disabled under `prefers-reduced-motion`.

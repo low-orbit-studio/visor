@@ -7,6 +7,7 @@ import { KeyValueListSpecimen } from './key-value-list-specimen';
 import { NumberInputSpecimen } from './number-input-specimen';
 import { PhotoDropSpecimen } from './photo-drop-specimen';
 import { SegmentedControlSpecimen } from './segmented-control-specimen';
+import { SegmentedProgressSpecimen } from './segmented-progress-specimen';
 import { SpinnerSpecimen } from './spinner-specimen';
 import { ThemeSpecimen } from './theme-specimen';
 
@@ -20,6 +21,7 @@ export const LOOK_SPECIMENS: Record<string, ComponentType> = {
   'number-input': NumberInputSpecimen,
   'photo-drop': PhotoDropSpecimen,
   'segmented-control': SegmentedControlSpecimen,
+  'segmented-progress': SegmentedProgressSpecimen,
   spinner: SpinnerSpecimen,
   theme: ThemeSpecimen,
 };
