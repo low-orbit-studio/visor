@@ -30,7 +30,8 @@ function LookPanel() {
   const look = LOOKS.find((l) => l.id === params.get('look')) ?? LOOKS[0];
   const mode: LookMode = look.mode ?? (params.get('mode') === 'dark' ? 'dark' : 'light');
   const Specimen = LOOK_SPECIMENS[params.get('specimen') ?? ''] ?? LOOK_SPECIMENS.glass;
-  const given = (params.get('photo') ?? '').split(',').filter((p) => PHOTO_PATH.test(p) && !p.startsWith('//'));
+  // `photo-dark` / `photo-light` pick each tone's photos (a night shot in dark, a day shot in light).
+  const given = (params.get(`photo-${mode}`) ?? params.get('photo') ?? '').split(',').filter((p) => PHOTO_PATH.test(p) && !p.startsWith('//'));
   const real = lookPhotos(theme)?.[mode];
   const photos = given.length ? given : real ? [real] : [STAND_IN_PHOTO, STAND_IN_PHOTO_ALT];
   const photo = photos[0];

@@ -55,14 +55,33 @@ for (const width of [1440, 390]) {
   }
 }
 
-test("PhotoBackdrop: Next Photo crossfades to the other photo and drops the old layer", async ({ page }) => {
-  await page.goto(PAGE);
-  const frame = await lookFrame(page, "dark-photo");
-  await page.locator('[data-slot="five-looks"] [data-look="dark-photo"] iframe').scrollIntoViewIfNeeded();
-  const layers = frame.locator('[data-slot="photo-backdrop-layer"]');
-  await expect(layers.locator("img")).toHaveAttribute("src", /./);
-  const first = await layers.locator("img").getAttribute("src");
-  await frame.getByRole("button", { name: "Next Photo" }).click();
-  await expect(layers).toHaveCount(1, { timeout: 10_000 });
-  await expect(layers.locator("img")).not.toHaveAttribute("src", first!);
-});
+// The panel the review link opens. Click only once the first photo has settled, so the next one
+// has been preloaded and is ready the moment it mounts: that case once dropped the new layer, so
+// Next Photo did nothing.
+for (const look of ["dark-photo", "light-photo"]) {
+  test(`PhotoBackdrop: Next Photo crossfades to the other photo in ${look}`, async ({ page }) => {
+    await page.goto(`/looks/panel?theme=neutral&look=${look}&specimen=photo-backdrop`);
+    const layers = page.locator('[data-slot="photo-backdrop-layer"]');
+    await expect(layers).toHaveCount(1);
+    await expect(layers).toHaveAttribute("data-ready", "");
+    const first = await layers.locator("img").getAttribute("src");
+    await expect.poll(() => layers.evaluate((el) => el.getAnimations().length), { timeout: 10_000 }).toBe(0);
+
+    await page.getByRole("button", { name: "Next Photo" }).click();
+    await expect(layers).toHaveCount(2);
+    const top = layers.nth(1);
+    await expect(layers.nth(0).locator("img")).toHaveAttribute("src", first!);
+    await expect(top.locator("img")).not.toHaveAttribute("src", first!);
+    await expect(top).toHaveAttribute("data-ready", "");
+    // Mid-crossfade: the new photo is part-way in over the old one.
+    const opacity = await top.evaluate((el) => Number(getComputedStyle(el).opacity));
+    expect(opacity).toBeGreaterThanOrEqual(0);
+    expect(opacity).toBeLessThan(1);
+    await expect(top).toHaveCSS("animation-name", /photo-backdrop-fade/);
+
+    // Settled: the old layer goes and the other photo is the only one left.
+    await expect(layers).toHaveCount(1, { timeout: 10_000 });
+    await expect(layers.locator("img")).not.toHaveAttribute("src", first!);
+    await expect(layers).toHaveCSS("opacity", "1");
+  });
+}
