@@ -195,6 +195,7 @@ const HONCHO_GRIDS = [
   { path: "/docs/components/data-display/spinner", primary: false },
   { path: "/docs/components/typography/text", primary: false },
   { path: "/docs/components/data-display/status-dot", primary: false },
+  { path: "/docs/components/form/field", primary: false },
 ];
 
 // Visor's default greys (Tailwind Gray 50-900 fallbacks). Honcho binds every role a component
