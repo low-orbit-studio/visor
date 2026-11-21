@@ -1050,6 +1050,7 @@ const buttonFamily: ComponentTokenFamily = {
     { key: "outline-padding", property: "padding", description: "`outline` variant padding on every labelled size, over the size's own padding (`0 26px` for the kit). Unbound, each size keeps its padding.", consumers: at(BUTTON, null) },
     { key: "outline-font-weight", property: "font-weight", description: "`outline` variant weight on every size, over the size and family weights (`520` for the kit). Unbound, each size keeps its weight.", consumers: at(BUTTON, null) },
     { key: "outline-ring-color", property: "outline-color", description: "`outline` variant ring colour, apart from the shared `--control-edge-color`.", consumers: at(BUTTON, "var(--control-edge-color, var(--border-strong, #e5e7eb))") },
+    { key: "outline-backdrop-filter", property: "backdrop-filter", description: "`outline` variant backdrop filter, so it can frost over a photo like the glass icon button. Unbound, none.", consumers: at(BUTTON, "none") },
     { key: "hover-scale", property: "scale", description: "Grow on hover, every variant (`1.06` for the kit). Off for disabled, gated and pending buttons.", consumers: at(BUTTON, "revert-layer") },
     { key: "press-scale", property: "scale", description: "Scale while pressed (`0.97` for the kit). Replaces the hover grow while held.", consumers: at(BUTTON, "revert-layer") },
     { key: "press-transform", property: "transform", description: "Press nudge. Bind `none` when `press-scale` carries the press.", consumers: at(BUTTON, "translateY(1px)") },

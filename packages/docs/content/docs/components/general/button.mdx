@@ -268,7 +268,7 @@ The grow and press are off for disabled, gated and pending buttons, so a button 
 
 The outline face has its own padding, weight, ring and resting fill, so a theme can draw the kit's outline squircle button ("Not Now") beside the ink one without changing the other variants. `outline-padding` and `outline-font-weight` win over the size and family values on the outline face only. Unbound, the outline renders as before: transparent, on its size's padding and weight, with the shared control edge.
 
-Over a photo, never leave the outline as a ring alone: bind `outline-bg` to the [glass](/docs/themes/glass) surface fill, which applies only under `data-glass="on"`, so the label keeps its contrast. The five looks above do this.
+Over a photo, never leave the outline as a ring alone: bind `outline-bg` to the [glass](/docs/themes/glass) surface fill and `outline-backdrop-filter` to the glass control blur, which apply only under `data-glass="on"`, so the label keeps its contrast. The five looks above do this, and give the glass back arrow the same fill so the two secondary buttons match.
 
 ```yaml
 components:
@@ -277,6 +277,7 @@ components:
     outline-font-weight: "520"
     outline-ring-color: "var(--ink-24)"
     outline-bg: "var(--glass-on-fill, var(--surface-subtle))"
+    outline-backdrop-filter: "var(--glass-on-control-blur, none)"
 ```
 
 ### Glass Icon Button

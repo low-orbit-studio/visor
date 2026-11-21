@@ -106,6 +106,8 @@
 .variantOutline {
   background-color: var(--button-outline-bg, transparent);
   color: var(--button-outline-text, var(--text-primary, #111827));
+  -webkit-backdrop-filter: var(--button-outline-backdrop-filter, none);
+  backdrop-filter: var(--button-outline-backdrop-filter, none);
   /* VI-824: outline-only padding and weight. The size rules read these first;
      unbound they are invalid, so each size keeps its own padding and weight. */
   --_button-padding: var(--button-outline-padding);

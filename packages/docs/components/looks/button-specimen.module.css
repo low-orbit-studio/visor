@@ -31,6 +31,8 @@
   --button-outline-font-weight: 520;
   --button-outline-ring-color: color-mix(in srgb, var(--text-primary) 24%, transparent);
   --button-outline-bg: var(--glass-on-fill, var(--surface-subtle));
+  /* Frosted like the back arrow over a photo; the blur is unset off a photo. */
+  --button-outline-backdrop-filter: var(--glass-on-control-blur, none);
   /* The kit's buttons are squircles in every look, Today included. */
   --corner-shape: squircle;
 
@@ -42,7 +44,10 @@
 }
 
 /* Over a photo the outline keeps the glass fill on hover too, so its label
-   never drops to a thin wash; the grow is the hover cue. */
+   never drops to a thin wash; the grow is the hover cue. The back arrow sits on
+   the same frosted glass fill, so the two secondary controls match (BO-77). */
 :global([data-glass="on"]) .pills {
   --button-outline-bg-hover: var(--glass-on-fill);
+  --glass-on-control-fill: var(--glass-on-fill);
+  --glass-on-control-hover-fill: var(--glass-on-fill);
 }

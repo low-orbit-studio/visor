@@ -165,7 +165,8 @@ notes: |
   (`direction="left"`), and it slides on the button's hover or keyboard focus.
 
   **Outline squircle button (VI-824):** `outline-bg`, `outline-padding`,
-  `outline-font-weight` and `outline-ring-color` set the outline face alone, over
+  `outline-font-weight`, `outline-ring-color` and `outline-backdrop-filter` set
+  the outline face alone, over
   the size and family values, so a theme can draw the kit's outline squircle
   button (0 26px, 520, a 24% ink ring) beside the ink one. Unbound, the outline
   renders as before.

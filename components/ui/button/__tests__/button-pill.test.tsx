@@ -66,10 +66,12 @@ describe('variant="glass"', () => {
 })
 
 describe("stylesheet", () => {
-  it("draws a backdrop-filter only from the glass switch's control blur", () => {
+  it("draws a backdrop-filter only from the glass switch's control blur or the outline's own hook (unbound: none)", () => {
     const filters = [...squashed.matchAll(/backdrop-filter:\s*([^;]+);/g)].map((m) => m[1].trim())
     expect(filters.length).toBeGreaterThan(0)
-    for (const value of filters) expect(value).toBe("var(--glass-on-control-blur, none)")
+    for (const value of filters) {
+      expect(["var(--glass-on-control-blur, none)", "var(--button-outline-backdrop-filter, none)"]).toContain(value)
+    }
   })
 
   it("reads the glass layer's shared control values with a solid ringed control as fallback", () => {

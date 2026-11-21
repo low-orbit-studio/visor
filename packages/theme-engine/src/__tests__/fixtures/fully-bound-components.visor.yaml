@@ -372,6 +372,7 @@ components:
     outline-padding: "0 26px"
     outline-font-weight: "520"
     outline-ring-color: "rgba(255, 255, 255, 0.24)"
+    outline-backdrop-filter: "blur(24px)"
     hover-scale: "1.06"
     press-scale: "0.97"
     press-transform: none

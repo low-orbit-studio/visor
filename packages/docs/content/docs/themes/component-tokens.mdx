@@ -739,6 +739,7 @@ Button type treatment and rounding. The unprefixed keys set every size at once; 
 | `--button-outline-padding` | `outline` variant padding on every labelled size, over the size's own padding (`0 26px` for the kit). Unbound, each size keeps its padding. | — (each size's padding) |
 | `--button-outline-font-weight` | `outline` variant weight on every size, over the size and family weights (`520` for the kit). Unbound, each size keeps its weight. | — (each size's weight) |
 | `--button-outline-ring-color` | `outline` variant ring colour, apart from the shared `--control-edge-color`. | `var(--control-edge-color, var(--border-strong, #e5e7eb))` |
+| `--button-outline-backdrop-filter` | `outline` variant backdrop filter, so it can frost over a photo like the glass icon button. Unbound, none. | `none` |
 | `--button-hover-scale` | Grow on hover, every variant (`1.06` for the kit). Off for disabled, gated and pending buttons. | `revert-layer` |
 | `--button-press-scale` | Scale while pressed (`0.97` for the kit). Replaces the hover grow while held. | `revert-layer` |
 | `--button-press-transform` | Press nudge. Bind `none` when `press-scale` carries the press. | `translateY(1px)` |

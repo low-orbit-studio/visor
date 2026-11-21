@@ -108,6 +108,7 @@ const CASES: Case[] = [
   { token: "--button-outline-padding", fixture: "button/lg-outline", target: "button", prop: "padding-left", value: "0 26px", expected: "26px" },
   { token: "--button-outline-font-weight", fixture: "button/lg-outline", target: "button", prop: "font-weight", value: "520" },
   { token: "--button-outline-ring-color", fixture: "button/outline", target: "button", prop: "outline-color", value: "rgb(1, 2, 3)", pseudo: "::after" },
+  { token: "--button-outline-backdrop-filter", fixture: "button/outline", target: "button", prop: "backdrop-filter", value: "blur(24px)" },
   { token: "--button-hover-scale", fixture: "button/default", target: "button", prop: "scale", value: "1.5", hover: true },
   { token: "--button-press-scale", fixture: "button/default", target: "button", prop: "scale", value: "0.5", press: true },
   { token: "--button-press-transform", fixture: "button/default", target: "button", prop: "transform", value: "translateY(5px)", expected: "matrix(1, 0, 0, 1, 0, 5)", press: true },
