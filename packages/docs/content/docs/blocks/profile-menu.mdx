@@ -5,7 +5,8 @@ full: true
 ---
 
 import { BlockPreview } from '@/components/block-preview';
-import { ProfileMenuDemo } from '@/components/blocks/profile-menu-demo';
+import { ProfileMenuDemo, ProfileMenuTopBarDemo } from '@/components/blocks/profile-menu-demo';
+import { FiveLooks } from '@/components/looks/five-looks';
 
 ## Preview
 
@@ -44,6 +45,25 @@ import { ProfileMenuDemo } from '@/components/blocks/profile-menu-demo';
 >
   <ProfileMenuDemo variant="no-email" />
 </BlockPreview>
+
+## Top Bar With an Avatar Trigger
+
+Pass `trigger="avatar"` for a top bar's account menu. The trigger is the round avatar alone, ringed in the theme's key colour (`--primary`) on hover and while open. The menu opens below and aligned to the end, and its header shows the name and the email.
+
+The avatar menu draws on Popover's skin: it reads the [popover hooks](/docs/themes/component-tokens#popover) (corners, inset, fill, shadow and the rows' fill) and renders in place beside its trigger, so a glass switch around it reaches it. Glass is off by default: on a plain page the menu is solid with no blur. Inside `data-glass="on"` (see [Glass](/docs/themes/glass)) it takes the glass layer's fill, blur, shadow and ink. The rows sit softly in the panel with a gap between them, never as solid slabs.
+
+<BlockPreview
+  title="Profile Menu — avatar trigger"
+  code={"<ProfileMenu\n  trigger=\"avatar\"\n  user={{ name: 'Sam Rivera', email: 'sam@example.com' }}\n  items={[\n    { type: 'item', icon: <EnvelopeSimpleIcon />, label: 'Change Email', onSelect: changeEmail },\n    { type: 'item', icon: <SignOutIcon />, label: 'Sign Out', onSelect: signOut },\n  ]}\n/>"}
+>
+  <ProfileMenuTopBarDemo />
+</BlockPreview>
+
+### In Five Looks
+
+The avatar menu, open, in each look on the theme picked in the docs. The Photo looks turn glass on over a photo.
+
+<FiveLooks specimen="profile-menu" height={340} />
 
 ## Installation
 
@@ -141,7 +161,9 @@ const items: ProfileMenuItem[] = [
 | `items` | `ProfileMenuItem[]` | — | **Required.** Menu entries. Use `defaultProfileMenuItems` for the Low Orbit baseline. |
 | `onSignOut` | `() => void` | — | Used by the global keyboard shortcut. The default item list also wires this to the Sign out entry. |
 | `enableGlobalShortcuts` | `boolean` | `false` | When `true`, registers a window-level `⌘⇧Q` / `Ctrl+⇧+Q` handler that calls `onSignOut`. |
-| `side` | `"top" \| "bottom" \| "auto"` | `"top"` | Direction the menu opens. `"top"` matches the bottom-anchored sidebar footer; `"auto"` lets Radix decide. |
+| `trigger` | `"row" \| "avatar"` | `"row"` | `"row"`: avatar, name, context and caret, for a sidebar footer. `"avatar"`: the round avatar alone, for a top bar (see Top Bar With an Avatar Trigger). |
+| `side` | `"top" \| "bottom" \| "auto"` | `"top"`, or `"bottom"` with `trigger="avatar"` | Direction the menu opens. `"top"` matches the bottom-anchored sidebar footer; `"auto"` lets Radix decide. |
+| `defaultOpen` | `boolean` | — | Open on first render (uncontrolled). |
 | `className` | `string` | — | Forwarded to the trigger button. |
 
 ### `ProfileMenuUser`
@@ -149,7 +171,7 @@ const items: ProfileMenuItem[] = [
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `name` | `string` | Yes | Display name. Truncated in the trigger. |
-| `email` | `string` | No | Shown in the menu header (`Signed in as …`). Omit to hide the header. |
+| `email` | `string` | No | Shown in the menu header (`Signed in as …`; under the name with `trigger="avatar"`). Omit to hide it. |
 | `avatarUrl` | `string` | No | Avatar image. Falls back to initials. |
 | `initials` | `string` | No | Avatar fallback text. If omitted, derived from `name`. |
 | `status` | `"online" \| "away" \| "busy" \| "offline"` | No | Renders a colored dot overlay on the avatar with the corresponding accessible label. |
