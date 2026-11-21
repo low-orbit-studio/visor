@@ -230,6 +230,19 @@ describe("VI-625 component token contract", () => {
           "stat-card-value-size",
           "stat-card-value-size-hero",
           "stat-card-trend-padding-top",
+          // SegmentedProgress writes a step's weight, fill and index as inline
+          // style from its props (VI-809), and the label sizes and fill timing
+          // are host hooks that predate its family; only `glass-ink` is the theme's.
+          "segmented-progress-weight",
+          "segmented-progress-fill-inset",
+          "segmented-progress-index",
+          "segmented-progress-sm-label-font-size",
+          "segmented-progress-md-label-font-size",
+          "segmented-progress-fill-duration",
+          "segmented-progress-fill-stagger",
+          // SegmentedProgress's current fill takes a host's strong rung (VI-713);
+          // a host hook in the `button` prefix, not a Button-family token.
+          "button-strong-fill",
           // Spinner writes its `delay` prop as an inline style (VI-797), like
           // the sidebar rail geometry above.
           "spinner-delay",

@@ -61,6 +61,16 @@
   position: relative;
 }
 
+/* Under the glass switch the labels take the theme's progress ink
+   (--segmented-progress-glass-ink, VI-809) or, unbound, the glass layer's.
+   Off the switch --glass-on-ink is unset, so --_glass-ink is too and the
+   labels keep the theme's text inks.
+   shortcut: a bound ink still reaches a bar inside a data-glass="off" reset
+   nested in an on zone; scope it to the nearest switch if a page nests one. */
+:global([data-glass="on"]) .labelled {
+  --_glass-ink: var(--segmented-progress-glass-ink, var(--glass-on-ink));
+}
+
 .labelled.sizeMd {
   gap: var(--spacing-2, 0.5rem);
 }
@@ -94,7 +104,7 @@ button.step:focus-visible {
 
 @media (hover: hover) {
   button.step:hover .label {
-    color: var(--glass-on-ink, var(--text-primary, #111827));
+    color: var(--_glass-ink, var(--text-primary, #111827));
   }
 
   button.step:hover .fill.segmentDone::before {
@@ -150,7 +160,7 @@ button.step:focus-visible {
   min-width: 0;
   font-size: var(--segmented-progress-sm-label-font-size, var(--font-size-xs, 0.75rem));
   line-height: var(--line-height-tight, 1.25);
-  color: var(--glass-on-ink, var(--text-tertiary, #9ca3af));
+  color: var(--_glass-ink, var(--text-tertiary, #9ca3af));
 }
 
 .sizeMd .label {
@@ -171,14 +181,14 @@ button.step:focus-visible {
   color: var(--interactive-primary-bg, var(--primary, #111827));
 }
 
-/* Over a photo every label takes the glass layer's ink (VI-809); a failed one stays red. */
+/* Over a photo every label takes the glass ink above (VI-809); a failed one stays red. */
 .step[data-state="current"] .label {
-  color: var(--glass-on-ink, var(--text-primary, #111827));
+  color: var(--_glass-ink, var(--text-primary, #111827));
   font-weight: var(--font-weight-bold, 700);
 }
 
 .step[data-state="done"] .label {
-  color: var(--glass-on-ink, var(--text-secondary, #6b7280));
+  color: var(--_glass-ink, var(--text-secondary, #6b7280));
 }
 
 .step[data-state="failed"] .label,

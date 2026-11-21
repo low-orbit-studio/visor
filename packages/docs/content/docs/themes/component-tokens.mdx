@@ -973,6 +973,23 @@ SegmentedControl's resting edge is an outline from `--control-edge-*`, so
 `control.edge-width: 0` turns it off while focus stays visible.
 
 
+### `segmented-progress`
+
+SegmentedProgress — the step labels' ink over a photo. It applies only under `data-glass="on"`; elsewhere the labels keep the theme's text inks.
+
+| Token | Binds | Falls back to |
+|---|---|---|
+| `--segmented-progress-glass-ink` | Step label colour under the glass switch (a failed label stays in the error ink). Unbound, the glass layer's ink. | `var(--glass-on-ink)` |
+
+White labels over the photo in the light tone only, while plain pages keep the theme's text inks and other glass text (Alert, say) keeps the glass layer's ink:
+
+```yaml
+components:
+  segmented-progress:
+    glass-ink:
+      light: "#ffffff"
+```
+
 ### `toggle-group`
 
 ToggleGroup — the outline track's fill, the selected option's fill and ink, the unselected ink, and the compact (`xs`) size: its label size, option sides and corners. SegmentedControl takes the `xs` option keys too. The `option-*` keys draw the option variant's rows, letter key and check.
