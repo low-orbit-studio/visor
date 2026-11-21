@@ -248,8 +248,9 @@ jobs:
 
       # VI-795: the glass switch, read in a real browser (Build & Test shards have no Chromium).
       # VI-798: NumberInput's skin hooks and glass, read the same way. VI-803: SegmentedControl's well.
+      # VI-806: ToggleGroup's option keys, round mark colour and glass-gated blur.
       - name: Glass switch (real browser)
-        run: npx vitest run packages/docs/components/looks/__tests__/glass-switch.test.ts components/ui/number-input/__tests__/number-input-glass.test.ts components/ui/__tests__/segmented-control-glass.test.ts
+        run: npx vitest run packages/docs/components/looks/__tests__/glass-switch.test.ts components/ui/number-input/__tests__/number-input-glass.test.ts components/ui/__tests__/segmented-control-glass.test.ts components/ui/__tests__/toggle-group-theme-keys.test.ts
         env:
           VISOR_REQUIRE_BROWSER: "1"
 

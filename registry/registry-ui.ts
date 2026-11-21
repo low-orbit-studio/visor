@@ -1168,6 +1168,7 @@ export const ui: Registry = [
     dependencies: [
       "@radix-ui/react-toggle-group",
       "class-variance-authority",
+      "@phosphor-icons/react",
       "@loworbitstudio/visor-core",
     ],
     registryDependencies: ["utils"],
